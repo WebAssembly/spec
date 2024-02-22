@@ -365,10 +365,10 @@ warning: syntax `externval` was never spliced
 warning: syntax `f32` was never spliced
 warning: syntax `f64` was never spliced
 warning: syntax `fN` was never spliced
+warning: syntax `fNmag` was never spliced
 warning: syntax `fieldtype` was never spliced
 warning: syntax `fieldval` was never spliced
 warning: syntax `fin` was never spliced
-warning: syntax `fmag` was never spliced
 warning: syntax `fnn` was never spliced
 warning: syntax `frame` was never spliced
 warning: syntax `fshape` was never spliced
@@ -1070,6 +1070,7 @@ warning: definition `arrayinst` was never spliced
 warning: definition `before` was never spliced
 warning: definition `binop` was never spliced
 warning: definition `blocktype` was never spliced
+warning: definition `canon_` was never spliced
 warning: definition `clostype` was never spliced
 warning: definition `clostypes` was never spliced
 warning: definition `concat_` was never spliced
@@ -1088,6 +1089,7 @@ warning: definition `ext_structinst` was never spliced
 warning: definition `fadd` was never spliced
 warning: definition `fbits` was never spliced
 warning: definition `fbytes` was never spliced
+warning: definition `fone` was never spliced
 warning: definition `frame` was never spliced
 warning: definition `free_dataidx_expr` was never spliced
 warning: definition `free_dataidx_func` was never spliced
@@ -1454,6 +1456,7 @@ warning: definition prose `arrayinst` was never spliced
 warning: definition prose `before` was never spliced
 warning: definition prose `binop` was never spliced
 warning: definition prose `blocktype` was never spliced
+warning: definition prose `canon_` was never spliced
 warning: definition prose `clostype` was never spliced
 warning: definition prose `clostypes` was never spliced
 warning: definition prose `concat_` was never spliced
@@ -1469,6 +1472,7 @@ warning: definition prose `expanddt` was never spliced
 warning: definition prose `expon` was never spliced
 warning: definition prose `ext_arrayinst` was never spliced
 warning: definition prose `ext_structinst` was never spliced
+warning: definition prose `fone` was never spliced
 warning: definition prose `frame` was never spliced
 warning: definition prose `free_dataidx_expr` was never spliced
 warning: definition prose `free_dataidx_func` was never spliced

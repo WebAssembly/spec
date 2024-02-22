@@ -75,10 +75,19 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathrm{concat}}}_{{\mathsf{x}}}(\epsilon) &=& \epsilon &  \\
-{{\mathrm{concat}}}_{{\mathsf{x}}}(({{\mathit{w}}^\ast})~{({{\mathit{w}'}^\ast})^\ast}) &=& {{\mathit{w}}^\ast}~{{\mathrm{concat}}}_{{\mathsf{x}}}({({{\mathit{w}'}^\ast})^\ast}) &  \\
+{{\mathrm{concat}}}_{{\mathit{X}}}(\epsilon) &=& \epsilon &  \\
+{{\mathrm{concat}}}_{{\mathit{X}}}(({{\mathit{w}}^\ast})~{({{\mathit{w}'}^\ast})^\ast}) &=& {{\mathit{w}}^\ast}~{{\mathrm{concat}}}_{{\mathit{X}}}({({{\mathit{w}'}^\ast})^\ast}) &  \\
 \end{array}
 $$
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+& {\mathit{list}}({\mathit{A}}) &::=& {{\mathit{A}}^\ast} &\quad
+  \mbox{if}~{|{{\mathit{A}}^\ast}|} < {2^{32}} \\
+\end{array}
+$$
+
+\vspace{1ex}
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
@@ -126,40 +135,46 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathrm{M}}}_{{\mathit{N}}} &=& {\mathrm{signif}}({\mathit{N}}) &  \\
+{\mathit{M}} &=& {\mathrm{signif}}({\mathit{N}}) &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathrm{E}}}_{{\mathit{N}}} &=& {\mathrm{expon}}({\mathit{N}}) &  \\
+{\mathit{E}} &=& {\mathrm{expon}}({\mathit{N}}) &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-\mbox{(floating-point number)} & {{\mathit{f}}}{{\mathit{N}}} &::=& {+{{{\mathit{f}}}{{\mathit{N}}}}{{\mathit{mag}}}} \\ &&|&
-{-{{{\mathit{f}}}{{\mathit{N}}}}{{\mathit{mag}}}} \\
-\mbox{(floating-point magnitude)} & {{{\mathit{f}}}{{\mathit{N}}}}{{\mathit{mag}}} &::=& (1 + {\mathit{m}} \cdot {2^{{-{{\mathrm{M}}}_{{\mathit{N}}}}}}) \cdot {2^{{\mathit{n}}}} &\quad
-  \mbox{if}~2 - {2^{{{\mathrm{E}}}_{{\mathit{N}}} - 1}} \leq {\mathit{n}} \leq {2^{{{\mathrm{E}}}_{{\mathit{N}}} - 1}} - 1 \\ &&|&
-(0 + {\mathit{m}} \cdot {2^{{-{{\mathrm{M}}}_{{\mathit{N}}}}}}) \cdot {2^{{\mathit{n}}}} &\quad
-  \mbox{if}~2 - {2^{{{\mathrm{E}}}_{{\mathit{N}}} - 1}} = {\mathit{n}} \\ &&|&
+\mbox{(floating-point number)} & {{\mathit{f}}}{{\mathit{N}}} &::=& {+{{{\mathit{f}}}{{\mathit{N}}}}{{\mathit{mag}}}} ~|~ {-{{{\mathit{f}}}{{\mathit{N}}}}{{\mathit{mag}}}} \\
+\mbox{(floating-point magnitude)} & {{{\mathit{f}}}{{\mathit{N}}}}{{\mathit{mag}}} &::=& (1 + {\mathit{m}} \cdot {2^{{-{\mathit{M}}}}}) \cdot {2^{{\mathit{n}}}} &\quad
+  \mbox{if}~{\mathit{m}} < {2^{{\mathit{M}}}} \land 2 - {2^{{\mathit{E}} - 1}} \leq {\mathit{n}} \leq {2^{{\mathit{E}} - 1}} - 1 \\ &&|&
+(0 + {\mathit{m}} \cdot {2^{{-{\mathit{M}}}}}) \cdot {2^{{\mathit{n}}}} &\quad
+  \mbox{if}~{\mathit{m}} < {2^{{\mathit{M}}}} \land 2 - {2^{{\mathit{E}} - 1}} = {\mathit{n}} \\ &&|&
 \infty \\ &&|&
 {\mathsf{nan}}{({\mathit{m}})} &\quad
-  \mbox{if}~1 \leq {\mathit{m}} < {{\mathrm{M}}}_{{\mathit{N}}} \\
+  \mbox{if}~1 \leq {\mathit{m}} < {2^{{\mathit{M}}}} \\
+& {\mathit{f{\scriptstyle32}}} &::=& {{\mathit{f}}}{32} \\
+& {\mathit{f{\scriptstyle64}}} &::=& {{\mathit{f}}}{64} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{+0} &=& {+((0 + 0 \cdot {2^{{-{{\mathrm{M}}}_{{\mathit{N}}}}}}) \cdot {2^{{\mathit{n}}}})} &  \\
+{+0} &=& {+((0 + 0 \cdot {2^{{-{\mathit{M}}}}}) \cdot {2^{{\mathit{n}}}})} &  \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
-& {\mathit{f{\scriptstyle32}}} &::=& {{\mathit{f}}}{32} \\
-& {\mathit{f{\scriptstyle64}}} &::=& {{\mathit{f}}}{64} \\
+\begin{array}{@{}lcl@{}l@{}}
+{+1} &=& {+((1 + 1 \cdot {2^{{-{\mathit{M}}}}}) \cdot {2^{0}})} &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\mathrm{canon}}}_{{\mathit{N}}} &=& {2^{{\mathrm{signif}}({\mathit{N}}) - 1}} &  \\
 \end{array}
 $$
 
@@ -6973,15 +6988,6 @@ $$
   {}[{\mathit{i}}]~{\mathit{pth}}~(),\; \\
   \mathsf{field}~{\mathit{pth}}~(),\; \\
   {}.\mathsf{field}~() \;\}\end{array} \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}{@{}lrrl@{}l@{}}
-& {\mathit{list}}({\mathit{A}}) &::=& {{\mathit{A}}^\ast} &\quad
-  \mbox{if}~{|{{\mathit{A}}^\ast}|} < {2^{32}} \\
 \end{array}
 $$
 

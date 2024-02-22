@@ -38,10 +38,19 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathrm{concat}}}_{{\mathsf{x}}}(\epsilon) &=& \epsilon &  \\
-{{\mathrm{concat}}}_{{\mathsf{x}}}(({{\mathit{w}}^\ast})~{({{\mathit{w}'}^\ast})^\ast}) &=& {{\mathit{w}}^\ast}~{{\mathrm{concat}}}_{{\mathsf{x}}}({({{\mathit{w}'}^\ast})^\ast}) &  \\
+{{\mathrm{concat}}}_{{\mathit{X}}}(\epsilon) &=& \epsilon &  \\
+{{\mathrm{concat}}}_{{\mathit{X}}}(({{\mathit{w}}^\ast})~{({{\mathit{w}'}^\ast})^\ast}) &=& {{\mathit{w}}^\ast}~{{\mathrm{concat}}}_{{\mathit{X}}}({({{\mathit{w}'}^\ast})^\ast}) &  \\
 \end{array}
 $$
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+& {\mathit{list}}({\mathit{A}}) &::=& {{\mathit{A}}^\ast} &\quad
+  \mbox{if}~{|{{\mathit{A}}^\ast}|} < {2^{32}} \\
+\end{array}
+$$
+
+\vspace{1ex}
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
@@ -89,40 +98,46 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathrm{M}}}_{{\mathit{N}}} &=& {\mathrm{signif}}({\mathit{N}}) &  \\
+{\mathit{M}} &=& {\mathrm{signif}}({\mathit{N}}) &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathrm{E}}}_{{\mathit{N}}} &=& {\mathrm{expon}}({\mathit{N}}) &  \\
+{\mathit{E}} &=& {\mathrm{expon}}({\mathit{N}}) &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-\mbox{(floating-point number)} & {{\mathit{f}}}{{\mathit{N}}} &::=& {+{{{\mathit{f}}}{{\mathit{N}}}}{{\mathit{mag}}}} \\ &&|&
-{-{{{\mathit{f}}}{{\mathit{N}}}}{{\mathit{mag}}}} \\
-\mbox{(floating-point magnitude)} & {{{\mathit{f}}}{{\mathit{N}}}}{{\mathit{mag}}} &::=& (1 + {\mathit{m}} \cdot {2^{{-{{\mathrm{M}}}_{{\mathit{N}}}}}}) \cdot {2^{{\mathit{n}}}} &\quad
-  \mbox{if}~2 - {2^{{{\mathrm{E}}}_{{\mathit{N}}} - 1}} \leq {\mathit{n}} \leq {2^{{{\mathrm{E}}}_{{\mathit{N}}} - 1}} - 1 \\ &&|&
-(0 + {\mathit{m}} \cdot {2^{{-{{\mathrm{M}}}_{{\mathit{N}}}}}}) \cdot {2^{{\mathit{n}}}} &\quad
-  \mbox{if}~2 - {2^{{{\mathrm{E}}}_{{\mathit{N}}} - 1}} = {\mathit{n}} \\ &&|&
+\mbox{(floating-point number)} & {{\mathit{f}}}{{\mathit{N}}} &::=& {+{{{\mathit{f}}}{{\mathit{N}}}}{{\mathit{mag}}}} ~|~ {-{{{\mathit{f}}}{{\mathit{N}}}}{{\mathit{mag}}}} \\
+\mbox{(floating-point magnitude)} & {{{\mathit{f}}}{{\mathit{N}}}}{{\mathit{mag}}} &::=& (1 + {\mathit{m}} \cdot {2^{{-{\mathit{M}}}}}) \cdot {2^{{\mathit{n}}}} &\quad
+  \mbox{if}~{\mathit{m}} < {2^{{\mathit{M}}}} \land 2 - {2^{{\mathit{E}} - 1}} \leq {\mathit{n}} \leq {2^{{\mathit{E}} - 1}} - 1 \\ &&|&
+(0 + {\mathit{m}} \cdot {2^{{-{\mathit{M}}}}}) \cdot {2^{{\mathit{n}}}} &\quad
+  \mbox{if}~{\mathit{m}} < {2^{{\mathit{M}}}} \land 2 - {2^{{\mathit{E}} - 1}} = {\mathit{n}} \\ &&|&
 \infty \\ &&|&
 {\mathsf{nan}}{({\mathit{m}})} &\quad
-  \mbox{if}~1 \leq {\mathit{m}} < {{\mathrm{M}}}_{{\mathit{N}}} \\
+  \mbox{if}~1 \leq {\mathit{m}} < {2^{{\mathit{M}}}} \\
+& {\mathit{f{\scriptstyle32}}} &::=& {{\mathit{f}}}{32} \\
+& {\mathit{f{\scriptstyle64}}} &::=& {{\mathit{f}}}{64} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{+0} &=& {+((0 + 0 \cdot {2^{{-{{\mathrm{M}}}_{{\mathit{N}}}}}}) \cdot {2^{{\mathit{n}}}})} &  \\
+{+0} &=& {+((0 + 0 \cdot {2^{{-{\mathit{M}}}}}) \cdot {2^{{\mathit{n}}}})} &  \\
 \end{array}
 $$
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
-& {\mathit{f{\scriptstyle32}}} &::=& {{\mathit{f}}}{32} \\
-& {\mathit{f{\scriptstyle64}}} &::=& {{\mathit{f}}}{64} \\
+\begin{array}{@{}lcl@{}l@{}}
+{+1} &=& {+((1 + 1 \cdot {2^{{-{\mathit{M}}}}}) \cdot {2^{0}})} &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\mathrm{canon}}}_{{\mathit{N}}} &=& {2^{{\mathrm{signif}}({\mathit{N}}) - 1}} &  \\
 \end{array}
 $$
 
@@ -275,7 +290,7 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& {{\mathit{unop}}}_{{\mathsf{i}}{{\mathit{n}}}} &::=& \mathsf{clz} ~|~ \mathsf{ctz} ~|~ \mathsf{popcnt} \\
+& {{\mathit{unop}}}_{{\mathsf{i}}{{\mathit{n}}}} &::=& \mathsf{clz} ~|~ \mathsf{ctz} ~|~ \mathsf{popcnt} ~|~ \mathsf{extend}~{\mathit{n}} \\
 & {{\mathit{unop}}}_{{\mathsf{f}}{{\mathit{n}}}} &::=& \mathsf{abs} ~|~ \mathsf{neg} ~|~ \mathsf{sqrt} ~|~ \mathsf{ceil} ~|~ \mathsf{floor} ~|~ \mathsf{trunc} ~|~ \mathsf{nearest} \\
 \end{array}
 $$
@@ -442,7 +457,6 @@ $$
 {\mathit{numtype}} . {{\mathit{testop}}}_{{\mathit{numtype}}} \\ &&|&
 {\mathit{numtype}} . {{\mathit{relop}}}_{{\mathit{numtype}}} \\ &&|&
 {\mathit{numtype}} . {{{{{\mathit{cvtop}}}{\mathsf{\_}}}{{\mathit{numtype}}}}{\mathsf{\_}}}{{{\mathit{sx}}^?}} \\ &&|&
-{{\mathit{numtype}}.\mathsf{extend}}{{\mathit{n}}} \\ &&|&
 \dots \\
 \mbox{(lane part)} & {\mathit{half}} &::=& \mathsf{low} ~|~ \mathsf{high} \\
 & {\mathit{zero}} &::=& {\mathsf{zero}^?} \\
@@ -1035,26 +1049,27 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathrm{unop}}(\mathsf{i{\scriptstyle32}}, \mathsf{clz}, {\mathit{i}}) &=& {\mathrm{iclz}}~{|\mathsf{i{\scriptstyle32}}|}~({\mathit{i}}) &  \\
-{\mathrm{unop}}(\mathsf{i{\scriptstyle32}}, \mathsf{ctz}, {\mathit{i}}) &=& {\mathrm{iclz}}~{|\mathsf{i{\scriptstyle32}}|}~({\mathit{i}}) &  \\
-{\mathrm{unop}}(\mathsf{i{\scriptstyle32}}, \mathsf{popcnt}, {\mathit{i}}) &=& {\mathrm{ipopcnt}}~{|\mathsf{i{\scriptstyle32}}|}~({\mathit{i}}) &  \\
+{\mathrm{unop}}({\mathsf{i}}{{\mathit{n}}}, \mathsf{clz}, {\mathit{i}}) &=& {\mathrm{iclz}}~{|{\mathsf{i}}{{\mathit{n}}}|}~({\mathit{i}}) &  \\
+{\mathrm{unop}}({\mathsf{i}}{{\mathit{n}}}, \mathsf{ctz}, {\mathit{i}}) &=& {\mathrm{iclz}}~{|{\mathsf{i}}{{\mathit{n}}}|}~({\mathit{i}}) &  \\
+{\mathrm{unop}}({\mathsf{i}}{{\mathit{n}}}, \mathsf{popcnt}, {\mathit{i}}) &=& {\mathrm{ipopcnt}}~{|{\mathsf{i}}{{\mathit{n}}}|}~({\mathit{i}}) &  \\
+{\mathrm{unop}}({\mathsf{i}}{{\mathit{n}}}, \mathsf{extend}~{\mathit{N}}, {\mathit{i}}) &=& {{{{\mathrm{ext}}}_{({\mathit{N}},\, {|{\mathsf{i}}{{\mathit{n}}}|})}^{\mathsf{s}}}}{({{{\mathrm{wrap}}}_{({|{\mathsf{i}}{{\mathit{n}}}|},\, {\mathit{N}})}}{({\mathit{i}})})} &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathrm{testop}}(\mathsf{i{\scriptstyle32}}, \mathsf{eqz}, {\mathit{i}}) &=& {\mathrm{ieqz}}~{|\mathsf{i{\scriptstyle32}}|}~({\mathit{i}}) &  \\
+{\mathrm{testop}}({\mathsf{i}}{{\mathit{n}}}, \mathsf{eqz}, {\mathit{i}}) &=& {\mathrm{ieqz}}~{|{\mathsf{i}}{{\mathit{n}}}|}~({\mathit{i}}) &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathrm{relop}}(\mathsf{i{\scriptstyle32}}, \mathsf{eq}, {\mathit{i}}, {\mathit{j}}) &=& {\mathrm{ieq}}~{|\mathsf{i{\scriptstyle32}}|}~({\mathit{i}},\, {\mathit{j}}) &  \\
-{\mathrm{relop}}(\mathsf{i{\scriptstyle32}}, \mathsf{ne}, {\mathit{i}}, {\mathit{j}}) &=& {\mathrm{ine}}~{|\mathsf{i{\scriptstyle32}}|}~({\mathit{i}},\, {\mathit{j}}) &  \\
-{\mathrm{relop}}(\mathsf{i{\scriptstyle32}}, {\mathsf{lt\_}}{{\mathit{sx}}}, {\mathit{i}}, {\mathit{j}}) &=& {\mathrm{ilt}}~{{|\mathsf{i{\scriptstyle32}}|}^{{\mathit{sx}}}}~({\mathit{i}},\, {\mathit{j}}) &  \\
-{\mathrm{relop}}(\mathsf{i{\scriptstyle32}}, {\mathsf{gt\_}}{{\mathit{sx}}}, {\mathit{i}}, {\mathit{j}}) &=& {\mathrm{ilt}}~{{|\mathsf{i{\scriptstyle32}}|}^{{\mathit{sx}}}}~({\mathit{i}},\, {\mathit{j}}) &  \\
-{\mathrm{relop}}(\mathsf{i{\scriptstyle32}}, {\mathsf{le\_}}{{\mathit{sx}}}, {\mathit{i}}, {\mathit{j}}) &=& {\mathrm{ile}}~{{|\mathsf{i{\scriptstyle32}}|}^{{\mathit{sx}}}}~({\mathit{i}},\, {\mathit{j}}) &  \\
-{\mathrm{relop}}(\mathsf{i{\scriptstyle32}}, {\mathsf{ge\_}}{{\mathit{sx}}}, {\mathit{i}}, {\mathit{j}}) &=& {\mathrm{ihe}}~{{|\mathsf{i{\scriptstyle32}}|}^{{\mathit{sx}}}}~({\mathit{i}},\, {\mathit{j}}) &  \\
+{\mathrm{relop}}({\mathsf{i}}{{\mathit{n}}}, \mathsf{eq}, {\mathit{i}}, {\mathit{j}}) &=& {\mathrm{ieq}}~{|{\mathsf{i}}{{\mathit{n}}}|}~({\mathit{i}},\, {\mathit{j}}) &  \\
+{\mathrm{relop}}({\mathsf{i}}{{\mathit{n}}}, \mathsf{ne}, {\mathit{i}}, {\mathit{j}}) &=& {\mathrm{ine}}~{|{\mathsf{i}}{{\mathit{n}}}|}~({\mathit{i}},\, {\mathit{j}}) &  \\
+{\mathrm{relop}}({\mathsf{i}}{{\mathit{n}}}, {\mathsf{lt\_}}{{\mathit{sx}}}, {\mathit{i}}, {\mathit{j}}) &=& {\mathrm{ilt}}~{{|{\mathsf{i}}{{\mathit{n}}}|}^{{\mathit{sx}}}}~({\mathit{i}},\, {\mathit{j}}) &  \\
+{\mathrm{relop}}({\mathsf{i}}{{\mathit{n}}}, {\mathsf{gt\_}}{{\mathit{sx}}}, {\mathit{i}}, {\mathit{j}}) &=& {\mathrm{ilt}}~{{|{\mathsf{i}}{{\mathit{n}}}|}^{{\mathit{sx}}}}~({\mathit{i}},\, {\mathit{j}}) &  \\
+{\mathrm{relop}}({\mathsf{i}}{{\mathit{n}}}, {\mathsf{le\_}}{{\mathit{sx}}}, {\mathit{i}}, {\mathit{j}}) &=& {\mathrm{ile}}~{{|{\mathsf{i}}{{\mathit{n}}}|}^{{\mathit{sx}}}}~({\mathit{i}},\, {\mathit{j}}) &  \\
+{\mathrm{relop}}({\mathsf{i}}{{\mathit{n}}}, {\mathsf{ge\_}}{{\mathit{sx}}}, {\mathit{i}}, {\mathit{j}}) &=& {\mathrm{ihe}}~{{|{\mathsf{i}}{{\mathit{n}}}|}^{{\mathit{sx}}}}~({\mathit{i}},\, {\mathit{j}}) &  \\
 \end{array}
 $$
 
@@ -3161,17 +3176,6 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathit{n}} \leq {|{\mathit{nt}}|}
-}{
-{\mathit{C}} \vdash {{\mathit{nt}}.\mathsf{extend}}{{\mathit{n}}} : {\mathit{nt}} \rightarrow {\mathit{nt}}
-} \, {[\textsc{\scriptsize T{-}extend}]}
-\qquad
-\end{array}
-$$
-
-$$
-\begin{array}{@{}c@{}}\displaystyle
-\frac{
 {\mathit{nt}}_{{1}} \neq {\mathit{nt}}_{{2}}
  \qquad
 {|{\mathit{nt}}_{{1}}|} = {|{\mathit{nt}}_{{2}}|}
@@ -4955,14 +4959,6 @@ $$
 
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
-{[\textsc{\scriptsize E{-}extend}]} \quad & ({\mathsf{i}}{{\mathit{n}}}.\mathsf{const}~{\mathit{c}})~({{\mathsf{i}}{{\mathit{n}}}.\mathsf{extend}}{{\mathit{N}}}) &\hookrightarrow& ({\mathsf{i}}{{\mathit{n}}}.\mathsf{const}~{{{{\mathrm{ext}}}_{({\mathit{N}},\, {|{\mathsf{i}}{{\mathit{n}}}|})}^{\mathsf{s}}}}{({{{\mathrm{wrap}}}_{({|{\mathsf{i}}{{\mathit{n}}}|},\, {\mathit{N}})}}{({\mathit{c}})})}) &  \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}cvtop{-}val}]} \quad & ({\mathit{nt}}_{{1}}.\mathsf{const}~{\mathit{c}}_{{1}})~({\mathit{nt}}_{{2}} . {{{{{\mathit{cvtop}}}{\mathsf{\_}}}{{\mathit{nt}}_{{1}}}}{\mathsf{\_}}}{{{\mathit{sx}}^?}}) &\hookrightarrow& ({\mathit{nt}}_{{2}}.\mathsf{const}~{\mathit{c}}) &\quad
   \mbox{if}~{\mathrm{cvtop}}({\mathit{nt}}_{{1}}, {\mathit{nt}}_{{2}}, {\mathit{cvtop}}, {{\mathit{sx}}^?}, {\mathit{c}}_{{1}}) = {\mathit{c}} \\
 {[\textsc{\scriptsize E{-}cvtop{-}trap}]} \quad & ({\mathit{nt}}_{{1}}.\mathsf{const}~{\mathit{c}}_{{1}})~({\mathit{nt}}_{{2}} . {{{{{\mathit{cvtop}}}{\mathsf{\_}}}{{\mathit{nt}}_{{1}}}}{\mathsf{\_}}}{{{\mathit{sx}}^?}}) &\hookrightarrow& \mathsf{trap} &\quad
@@ -6494,11 +6490,11 @@ $$
 \mathtt{0xBD} &\Rightarrow& \mathsf{cvtop}~\mathsf{i{\scriptstyle64}}~\mathsf{reinterpret}~\mathsf{f{\scriptstyle64}} \\ &&|&
 \mathtt{0xBE} &\Rightarrow& \mathsf{cvtop}~\mathsf{f{\scriptstyle32}}~\mathsf{reinterpret}~\mathsf{i{\scriptstyle32}} \\ &&|&
 \mathtt{0xBF} &\Rightarrow& \mathsf{cvtop}~\mathsf{f{\scriptstyle64}}~\mathsf{reinterpret}~\mathsf{i{\scriptstyle64}} \\ &&|&
-\mathtt{0xC0} &\Rightarrow& {\mathsf{i{\scriptstyle32}}.\mathsf{extend}}{8} \\ &&|&
-\mathtt{0xC1} &\Rightarrow& {\mathsf{i{\scriptstyle32}}.\mathsf{extend}}{16} \\ &&|&
-\mathtt{0xC2} &\Rightarrow& {\mathsf{i{\scriptstyle64}}.\mathsf{extend}}{8} \\ &&|&
-\mathtt{0xC3} &\Rightarrow& {\mathsf{i{\scriptstyle64}}.\mathsf{extend}}{16} \\ &&|&
-\mathtt{0xC4} &\Rightarrow& {\mathsf{i{\scriptstyle64}}.\mathsf{extend}}{32} \\ &&|&
+\mathtt{0xC0} &\Rightarrow& \mathsf{i{\scriptstyle32}} . (\mathsf{extend}~8) \\ &&|&
+\mathtt{0xC1} &\Rightarrow& \mathsf{i{\scriptstyle32}} . (\mathsf{extend}~16) \\ &&|&
+\mathtt{0xC2} &\Rightarrow& \mathsf{i{\scriptstyle64}} . (\mathsf{extend}~8) \\ &&|&
+\mathtt{0xC3} &\Rightarrow& \mathsf{i{\scriptstyle64}} . (\mathsf{extend}~16) \\ &&|&
+\mathtt{0xC4} &\Rightarrow& \mathsf{i{\scriptstyle64}} . (\mathsf{extend}~32) \\ &&|&
 \dots \\
 \end{array}
 $$
@@ -6936,15 +6932,6 @@ $$
   {}[{\mathit{i}}]~{\mathit{pth}}~(),\; \\
   \mathsf{field}~{\mathit{pth}}~(),\; \\
   {}.\mathsf{field}~() \;\}\end{array} \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}{@{}lrrl@{}l@{}}
-& {\mathit{list}}({\mathit{A}}) &::=& {{\mathit{A}}^\ast} &\quad
-  \mbox{if}~{|{{\mathit{A}}^\ast}|} < {2^{32}} \\
 \end{array}
 $$
 

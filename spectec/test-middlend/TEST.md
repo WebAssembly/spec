@@ -57,149 +57,164 @@ def $concat_(syntax X, X**) : X*
   def $concat_{syntax X, w* : X*, w'** : X**}(syntax X, [w*{w}] :: w'*{w'}*{w'}) = w*{w} :: $concat_(syntax X, w'*{w'}*{w'})
 }
 
-;; 1-syntax.watsup:5.1-5.85
+;; 1-syntax.watsup:6.1-6.57
+syntax list{syntax A}(syntax A) =
+  | _LIST{A* : A*}(A*)
+    -- if (|A*{A}| < (2 ^ 32))
+
+;; 1-syntax.watsup:13.1-13.85
 syntax char = nat
 
-;; 1-syntax.watsup:7.1-7.38
+;; 1-syntax.watsup:16.1-16.38
 syntax name = char*
 
-;; 1-syntax.watsup:18.1-18.36
+;; 1-syntax.watsup:27.1-27.36
 syntax bit = nat
 
-;; 1-syntax.watsup:19.1-19.50
+;; 1-syntax.watsup:28.1-28.50
 syntax byte = nat
 
-;; 1-syntax.watsup:21.1-22.18
+;; 1-syntax.watsup:30.1-31.18
 syntax uN{N : N}(N) = nat
 
-;; 1-syntax.watsup:23.1-24.49
+;; 1-syntax.watsup:32.1-33.49
 syntax sN{N : N}(N) = int
 
-;; 1-syntax.watsup:25.1-26.8
+;; 1-syntax.watsup:34.1-35.8
 syntax iN{N : N}(N) = uN(N)
 
-;; 1-syntax.watsup:28.1-28.18
+;; 1-syntax.watsup:37.1-37.18
 syntax u8 = uN(8)
 
-;; 1-syntax.watsup:29.1-29.20
+;; 1-syntax.watsup:38.1-38.20
 syntax u16 = uN(16)
 
-;; 1-syntax.watsup:30.1-30.20
+;; 1-syntax.watsup:39.1-39.20
 syntax u31 = uN(31)
 
-;; 1-syntax.watsup:31.1-31.20
+;; 1-syntax.watsup:40.1-40.20
 syntax u32 = uN(32)
 
-;; 1-syntax.watsup:32.1-32.20
+;; 1-syntax.watsup:41.1-41.20
 syntax u64 = uN(64)
 
-;; 1-syntax.watsup:33.1-33.22
+;; 1-syntax.watsup:42.1-42.22
 syntax u128 = uN(128)
 
-;; 1-syntax.watsup:34.1-34.20
+;; 1-syntax.watsup:43.1-43.20
 syntax s33 = sN(33)
 
-;; 1-syntax.watsup:41.1-41.21
+;; 1-syntax.watsup:50.1-50.21
 def $signif(N : N) : nat
-  ;; 1-syntax.watsup:42.1-42.21
+  ;; 1-syntax.watsup:51.1-51.21
   def $signif(32) = 23
-  ;; 1-syntax.watsup:43.1-43.21
+  ;; 1-syntax.watsup:52.1-52.21
   def $signif(64) = 52
 
-;; 1-syntax.watsup:45.1-45.20
+;; 1-syntax.watsup:54.1-54.20
 def $expon(N : N) : nat
-  ;; 1-syntax.watsup:46.1-46.19
+  ;; 1-syntax.watsup:55.1-55.19
   def $expon(32) = 8
-  ;; 1-syntax.watsup:47.1-47.20
+  ;; 1-syntax.watsup:56.1-56.20
   def $expon(64) = 11
 
-;; 1-syntax.watsup:49.1-49.35
+;; 1-syntax.watsup:58.1-58.30
 def $M(N : N) : nat
-  ;; 1-syntax.watsup:50.1-50.23
+  ;; 1-syntax.watsup:59.1-59.23
   def $M{N : N}(N) = $signif(N)
 
-;; 1-syntax.watsup:52.1-52.35
+;; 1-syntax.watsup:61.1-61.30
 def $E(N : N) : nat
-  ;; 1-syntax.watsup:53.1-53.22
+  ;; 1-syntax.watsup:62.1-62.22
   def $E{N : N}(N) = $expon(N)
 
-;; 1-syntax.watsup:59.1-63.81
-syntax fmag{N : N}(N) =
-  | NORM{n : n}(m : m, n : n)
-    -- if (((2 - (2 ^ ($E(N) - 1))) <= n) /\ (n <= ((2 ^ ($E(N) - 1)) - 1)))
-  | SUBNORM{N : N, n : n}(m : m)
-    -- if ((2 - (2 ^ ($E(N) - 1))) = n)
+;; 1-syntax.watsup:68.1-72.83
+syntax fNmag{N : N}(N) =
+  | NORM{m : m, n : n}(m : m, n : n)
+    -- if ((m < (2 ^ $M(N))) /\ (((2 - (2 ^ ($E(N) - 1))) <= n) /\ (n <= ((2 ^ ($E(N) - 1)) - 1))))
+  | SUBNORM{m : m, N : N, n : n}(m : m)
+    -- if ((m < (2 ^ $M(N))) /\ ((2 - (2 ^ ($E(N) - 1))) = n))
   | INF
   | NAN{m : m}(m : m)
-    -- if ((1 <= m) /\ (m < $M(N)))
+    -- if ((1 <= m) /\ (m < (2 ^ $M(N))))
 
-;; 1-syntax.watsup:55.1-57.34
+;; 1-syntax.watsup:64.1-66.35
 syntax fN{N : N}(N) =
-  | POS(fmag : fmag(N))
-  | NEG(fmag : fmag(N))
+  | POS(fNmag : fNmag(N))
+  | NEG(fNmag : fNmag(N))
 
-;; 1-syntax.watsup:65.1-65.40
-def $fzero(N : N) : fN(N)
-  ;; 1-syntax.watsup:66.1-66.32
-  def $fzero{N : N}(N) = POS_fN(N)(SUBNORM_fmag(N)(0))
-
-;; 1-syntax.watsup:68.1-68.20
+;; 1-syntax.watsup:74.1-74.20
 syntax f32 = fN(32)
 
-;; 1-syntax.watsup:69.1-69.20
+;; 1-syntax.watsup:75.1-75.20
 syntax f64 = fN(64)
 
-;; 1-syntax.watsup:74.1-75.8
+;; 1-syntax.watsup:77.1-77.39
+def $fzero(N : N) : fN(N)
+  ;; 1-syntax.watsup:78.1-78.32
+  def $fzero{N : N}(N) = POS_fN(N)(SUBNORM_fNmag(N)(0))
+
+;; 1-syntax.watsup:80.1-80.39
+def $fone(N : N) : fN(N)
+  ;; 1-syntax.watsup:81.1-81.30
+  def $fone{N : N}(N) = POS_fN(N)(NORM_fNmag(N)(1, 0))
+
+;; 1-syntax.watsup:83.1-83.21
+def $canon_(N : N) : nat
+  ;; 1-syntax.watsup:84.1-84.37
+  def $canon_{N : N}(N) = (2 ^ ($signif(N) - 1))
+
+;; 1-syntax.watsup:89.1-90.8
 syntax vN{N : N}(N) = iN(N)
 
-;; 1-syntax.watsup:82.1-82.36
+;; 1-syntax.watsup:97.1-97.36
 syntax idx = u32
 
-;; 1-syntax.watsup:83.1-83.44
+;; 1-syntax.watsup:98.1-98.44
 syntax laneidx = u8
 
-;; 1-syntax.watsup:85.1-85.45
+;; 1-syntax.watsup:100.1-100.45
 syntax typeidx = idx
 
-;; 1-syntax.watsup:86.1-86.49
+;; 1-syntax.watsup:101.1-101.49
 syntax funcidx = idx
 
-;; 1-syntax.watsup:87.1-87.49
+;; 1-syntax.watsup:102.1-102.49
 syntax globalidx = idx
 
-;; 1-syntax.watsup:88.1-88.47
+;; 1-syntax.watsup:103.1-103.47
 syntax tableidx = idx
 
-;; 1-syntax.watsup:89.1-89.46
+;; 1-syntax.watsup:104.1-104.46
 syntax memidx = idx
 
-;; 1-syntax.watsup:90.1-90.45
+;; 1-syntax.watsup:105.1-105.45
 syntax elemidx = idx
 
-;; 1-syntax.watsup:91.1-91.45
+;; 1-syntax.watsup:106.1-106.45
 syntax dataidx = idx
 
-;; 1-syntax.watsup:92.1-92.47
+;; 1-syntax.watsup:107.1-107.47
 syntax labelidx = idx
 
-;; 1-syntax.watsup:93.1-93.47
+;; 1-syntax.watsup:108.1-108.47
 syntax localidx = idx
 
-;; 1-syntax.watsup:107.1-107.19
+;; 1-syntax.watsup:122.1-122.19
 syntax nul = `NULL%?`(()?)
 
-;; 1-syntax.watsup:109.1-110.26
+;; 1-syntax.watsup:124.1-125.26
 syntax numtype =
   | I32
   | I64
   | F32
   | F64
 
-;; 1-syntax.watsup:112.1-113.9
+;; 1-syntax.watsup:127.1-128.9
 syntax vectype =
   | V128
 
-;; 1-syntax.watsup:120.1-121.14
+;; 1-syntax.watsup:135.1-136.14
 syntax absheaptype =
   | ANY
   | EQ
@@ -213,16 +228,16 @@ syntax absheaptype =
   | NOEXTERN
   | BOT
 
-;; 1-syntax.watsup:157.1-157.18
+;; 1-syntax.watsup:172.1-172.18
 syntax mut = `MUT%?`(()?)
 
-;; 1-syntax.watsup:158.1-158.20
+;; 1-syntax.watsup:173.1-173.20
 syntax fin = `FINAL%?`(()?)
 
-;; 1-syntax.watsup:132.1-188.54
+;; 1-syntax.watsup:147.1-203.54
 rec {
 
-;; 1-syntax.watsup:132.1-133.14
+;; 1-syntax.watsup:147.1-148.14
 syntax valtype =
   | I32
   | I64
@@ -232,10 +247,10 @@ syntax valtype =
   | REF(nul : nul, heaptype : heaptype)
   | BOT
 
-;; 1-syntax.watsup:140.1-141.11
+;; 1-syntax.watsup:155.1-156.11
 syntax resulttype = valtype*
 
-;; 1-syntax.watsup:148.1-148.68
+;; 1-syntax.watsup:163.1-163.68
 syntax storagetype =
   | BOT
   | I32
@@ -247,23 +262,23 @@ syntax storagetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:160.1-161.18
+;; 1-syntax.watsup:175.1-176.18
 syntax fieldtype = `%%`(mut, storagetype)
 
-;; 1-syntax.watsup:163.1-164.27
+;; 1-syntax.watsup:178.1-179.27
 syntax functype = `%->%`(resulttype, resulttype)
 
-;; 1-syntax.watsup:166.1-169.18
+;; 1-syntax.watsup:181.1-184.18
 syntax comptype =
   | STRUCT(fieldtype*)
   | ARRAY(fieldtype : fieldtype)
   | FUNC(functype : functype)
 
-;; 1-syntax.watsup:175.1-176.17
+;; 1-syntax.watsup:190.1-191.17
 syntax rectype =
   | REC(subtype*)
 
-;; 1-syntax.watsup:181.1-184.12
+;; 1-syntax.watsup:196.1-199.12
 syntax heaptype =
   | _IDX(typeidx : typeidx)
   | ANY
@@ -280,36 +295,36 @@ syntax heaptype =
   | DEF(rectype : rectype, nat)
   | REC(nat)
 
-;; 1-syntax.watsup:186.1-188.54
+;; 1-syntax.watsup:201.1-203.54
 syntax subtype =
   | SUB(fin : fin, typeidx*, comptype : comptype)
   | SUBD(fin : fin, heaptype*, comptype : comptype)
 }
 
-;; 1-syntax.watsup:127.1-128.21
+;; 1-syntax.watsup:142.1-143.21
 syntax reftype =
   | REF(nul : nul, heaptype : heaptype)
 
-;; 1-syntax.watsup:135.1-135.40
+;; 1-syntax.watsup:150.1-150.40
 syntax inn =
   | I32
   | I64
 
-;; 1-syntax.watsup:136.1-136.40
+;; 1-syntax.watsup:151.1-151.40
 syntax fnn =
   | F32
   | F64
 
-;; 1-syntax.watsup:137.1-137.35
+;; 1-syntax.watsup:152.1-152.35
 syntax vnn =
   | V128
 
-;; 1-syntax.watsup:146.1-146.54
+;; 1-syntax.watsup:161.1-161.54
 syntax packtype =
   | I8
   | I16
 
-;; 1-syntax.watsup:147.1-147.62
+;; 1-syntax.watsup:162.1-162.62
 syntax lanetype =
   | I32
   | I64
@@ -318,12 +333,12 @@ syntax lanetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:150.1-150.39
+;; 1-syntax.watsup:165.1-165.39
 syntax pnn =
   | I8
   | I16
 
-;; 1-syntax.watsup:151.1-151.44
+;; 1-syntax.watsup:166.1-166.44
 syntax lnn =
   | I32
   | I64
@@ -332,43 +347,43 @@ syntax lnn =
   | I8
   | I16
 
-;; 1-syntax.watsup:152.1-152.40
+;; 1-syntax.watsup:167.1-167.40
 syntax imm =
   | I32
   | I64
   | I8
   | I16
 
-;; 1-syntax.watsup:178.1-179.35
+;; 1-syntax.watsup:193.1-194.35
 syntax deftype =
   | DEF(rectype : rectype, nat)
 
-;; 1-syntax.watsup:193.1-194.16
+;; 1-syntax.watsup:208.1-209.16
 syntax limits = `[%..%]`(u32, u32)
 
-;; 1-syntax.watsup:196.1-197.14
+;; 1-syntax.watsup:211.1-212.14
 syntax globaltype = `%%`(mut, valtype)
 
-;; 1-syntax.watsup:198.1-199.17
+;; 1-syntax.watsup:213.1-214.17
 syntax tabletype = `%%`(limits, reftype)
 
-;; 1-syntax.watsup:200.1-201.12
+;; 1-syntax.watsup:215.1-216.12
 syntax memtype = `%I8`(limits)
 
-;; 1-syntax.watsup:202.1-203.10
+;; 1-syntax.watsup:217.1-218.10
 syntax elemtype = reftype
 
-;; 1-syntax.watsup:204.1-205.5
+;; 1-syntax.watsup:219.1-220.5
 syntax datatype = OK
 
-;; 1-syntax.watsup:206.1-207.69
+;; 1-syntax.watsup:221.1-222.69
 syntax externtype =
   | FUNC(deftype : deftype)
   | GLOBAL(globaltype : globaltype)
   | TABLE(tabletype : tabletype)
   | MEM(memtype : memtype)
 
-;; 1-syntax.watsup:244.1-244.60
+;; 1-syntax.watsup:259.1-259.60
 def $size(valtype : valtype) : nat
   ;; 2-syntax-aux.watsup:53.1-53.20
   def $size(I32_valtype) = 32
@@ -381,97 +396,97 @@ def $size(valtype : valtype) : nat
   ;; 2-syntax-aux.watsup:57.1-57.22
   def $size(V128_valtype) = 128
 
-;; 1-syntax.watsup:245.1-245.44
+;; 1-syntax.watsup:260.1-260.44
 def $psize(packtype : packtype) : nat
   ;; 2-syntax-aux.watsup:59.1-59.19
   def $psize(I8_packtype) = 8
   ;; 2-syntax-aux.watsup:60.1-60.21
   def $psize(I16_packtype) = 16
 
-;; 1-syntax.watsup:246.1-246.46
+;; 1-syntax.watsup:261.1-261.46
 def $lsize(lanetype : lanetype) : nat
   ;; 2-syntax-aux.watsup:62.1-62.37
   def $lsize{numtype : numtype}((numtype : numtype <: lanetype)) = $size((numtype : numtype <: valtype))
   ;; 2-syntax-aux.watsup:63.1-63.40
   def $lsize{packtype : packtype}((packtype : packtype <: lanetype)) = $psize(packtype)
 
-;; 1-syntax.watsup:247.1-247.46
+;; 1-syntax.watsup:262.1-262.46
 def $zsize(storagetype : storagetype) : nat
   ;; 2-syntax-aux.watsup:65.1-65.37
   def $zsize{valtype : valtype}((valtype : valtype <: storagetype)) = $size(valtype)
   ;; 2-syntax-aux.watsup:66.1-66.40
   def $zsize{packtype : packtype}((packtype : packtype <: storagetype)) = $psize(packtype)
 
-;; 1-syntax.watsup:301.1-301.55
+;; 1-syntax.watsup:316.1-316.55
 syntax dim = nat
 
-;; 1-syntax.watsup:302.1-302.49
+;; 1-syntax.watsup:317.1-317.49
 syntax shape = `%X%`(lanetype, dim)
 
-;; 1-syntax.watsup:248.1-248.32
+;; 1-syntax.watsup:263.1-263.32
 def $lanetype(shape : shape) : lanetype
   ;; 2-syntax-aux.watsup:94.1-94.29
   def $lanetype{lnn : lnn, N : N}(`%X%`(lnn, N)) = lnn
 
-;; 1-syntax.watsup:250.1-250.21
+;; 1-syntax.watsup:265.1-265.21
 syntax num_(numtype : numtype)
-  ;; 1-syntax.watsup:251.1-251.34
+  ;; 1-syntax.watsup:266.1-266.34
   syntax num_{inn : inn}((inn : inn <: numtype)) = iN($size((inn : inn <: valtype)))
 
 
-  ;; 1-syntax.watsup:252.1-252.34
+  ;; 1-syntax.watsup:267.1-267.34
   syntax num_{fnn : fnn}((fnn : fnn <: numtype)) = fN($size((fnn : fnn <: valtype)))
 
 
-;; 1-syntax.watsup:254.1-254.36
+;; 1-syntax.watsup:269.1-269.36
 syntax pack_{pnn : pnn}(pnn) = iN($psize(pnn))
 
-;; 1-syntax.watsup:256.1-256.23
+;; 1-syntax.watsup:271.1-271.23
 syntax lane_(lanetype : lanetype)
-  ;; 1-syntax.watsup:257.1-257.38
+  ;; 1-syntax.watsup:272.1-272.38
   syntax lane_{numtype : numtype}((numtype : numtype <: lanetype)) = num_(numtype)
 
 
-  ;; 1-syntax.watsup:258.1-258.41
+  ;; 1-syntax.watsup:273.1-273.41
   syntax lane_{packtype : packtype}((packtype : packtype <: lanetype)) = pack_(packtype)
 
 
-  ;; 1-syntax.watsup:259.1-259.36
+  ;; 1-syntax.watsup:274.1-274.36
   syntax lane_{imm : imm}((imm : imm <: lanetype)) = iN($lsize((imm : imm <: lanetype)))
 
 
-;; 1-syntax.watsup:261.1-261.34
+;; 1-syntax.watsup:276.1-276.34
 syntax vec_{vnn : vnn}(vnn) = vN($size((vnn : vnn <: valtype)))
 
-;; 1-syntax.watsup:263.1-263.26
+;; 1-syntax.watsup:278.1-278.26
 syntax zval_(storagetype : storagetype)
-  ;; 1-syntax.watsup:264.1-264.38
+  ;; 1-syntax.watsup:279.1-279.38
   syntax zval_{numtype : numtype}((numtype : numtype <: storagetype)) = num_(numtype)
 
 
-  ;; 1-syntax.watsup:265.1-265.38
+  ;; 1-syntax.watsup:280.1-280.38
   syntax zval_{vectype : vectype}((vectype : vectype <: storagetype)) = vec_(vectype)
 
 
-  ;; 1-syntax.watsup:266.1-266.41
+  ;; 1-syntax.watsup:281.1-281.41
   syntax zval_{packtype : packtype}((packtype : packtype <: storagetype)) = pack_(packtype)
 
 
-;; 1-syntax.watsup:271.1-271.44
+;; 1-syntax.watsup:286.1-286.44
 syntax sx =
   | U
   | S
 
-;; 1-syntax.watsup:273.1-273.22
+;; 1-syntax.watsup:288.1-288.22
 syntax unop_(numtype : numtype)
-  ;; 1-syntax.watsup:274.1-274.41
+  ;; 1-syntax.watsup:289.1-289.41
   syntax unop_{inn : inn}((inn : inn <: numtype)) =
   | CLZ
   | CTZ
   | POPCNT
 
 
-  ;; 1-syntax.watsup:275.1-275.72
+  ;; 1-syntax.watsup:290.1-290.72
   syntax unop_{fnn : fnn}((fnn : fnn <: numtype)) =
   | ABS
   | NEG
@@ -482,9 +497,9 @@ syntax unop_(numtype : numtype)
   | NEAREST
 
 
-;; 1-syntax.watsup:277.1-277.23
+;; 1-syntax.watsup:292.1-292.23
 syntax binop_(numtype : numtype)
-  ;; 1-syntax.watsup:278.1-280.66
+  ;; 1-syntax.watsup:293.1-295.66
   syntax binop_{inn : inn}((inn : inn <: numtype)) =
   | ADD
   | SUB
@@ -500,7 +515,7 @@ syntax binop_(numtype : numtype)
   | ROTR
 
 
-  ;; 1-syntax.watsup:281.1-282.49
+  ;; 1-syntax.watsup:296.1-297.49
   syntax binop_{fnn : fnn}((fnn : fnn <: numtype)) =
   | ADD
   | SUB
@@ -511,21 +526,21 @@ syntax binop_(numtype : numtype)
   | COPYSIGN
 
 
-;; 1-syntax.watsup:284.1-284.24
+;; 1-syntax.watsup:299.1-299.24
 syntax testop_(numtype : numtype)
-  ;; 1-syntax.watsup:285.1-285.28
+  ;; 1-syntax.watsup:300.1-300.28
   syntax testop_{inn : inn}((inn : inn <: numtype)) =
   | EQZ
 
 
-  ;; 1-syntax.watsup:286.1-286.24
+  ;; 1-syntax.watsup:301.1-301.24
   syntax testop_{fnn : fnn}((fnn : fnn <: numtype)) =
   |
 
 
-;; 1-syntax.watsup:288.1-288.23
+;; 1-syntax.watsup:303.1-303.23
 syntax relop_(numtype : numtype)
-  ;; 1-syntax.watsup:289.1-292.52
+  ;; 1-syntax.watsup:304.1-307.52
   syntax relop_{inn : inn}((inn : inn <: numtype)) =
   | EQ
   | NE
@@ -535,7 +550,7 @@ syntax relop_(numtype : numtype)
   | GE(sx : sx)
 
 
-  ;; 1-syntax.watsup:293.1-294.32
+  ;; 1-syntax.watsup:308.1-309.32
   syntax relop_{fnn : fnn}((fnn : fnn <: numtype)) =
   | EQ
   | NE
@@ -545,52 +560,52 @@ syntax relop_(numtype : numtype)
   | GE
 
 
-;; 1-syntax.watsup:296.1-296.39
+;; 1-syntax.watsup:311.1-311.39
 syntax cvtop =
   | CONVERT
   | REINTERPRET
 
-;; 1-syntax.watsup:303.1-303.45
+;; 1-syntax.watsup:318.1-318.45
 syntax ishape = `%X%`(imm, dim)
 
-;; 1-syntax.watsup:304.1-304.45
+;; 1-syntax.watsup:319.1-319.45
 syntax fshape = `%X%`(fnn, dim)
 
-;; 1-syntax.watsup:305.1-305.45
+;; 1-syntax.watsup:320.1-320.45
 syntax pshape = `%X%`(pnn, dim)
 
-;; 1-syntax.watsup:307.1-307.22
+;; 1-syntax.watsup:322.1-322.22
 def $dim(shape : shape) : dim
   ;; 2-syntax-aux.watsup:97.1-97.22
   def $dim{lnn : lnn, N : N}(`%X%`(lnn, N)) = N
 
-;; 1-syntax.watsup:308.1-308.41
+;; 1-syntax.watsup:323.1-323.41
 def $shsize(shape : shape) : nat
   ;; 2-syntax-aux.watsup:100.1-100.42
   def $shsize{lnn : lnn, N : N}(`%X%`(lnn, N)) = ($lsize(lnn) * N)
 
-;; 1-syntax.watsup:310.1-310.22
+;; 1-syntax.watsup:325.1-325.22
 syntax vvunop =
   | NOT
 
-;; 1-syntax.watsup:311.1-311.43
+;; 1-syntax.watsup:326.1-326.43
 syntax vvbinop =
   | AND
   | ANDNOT
   | OR
   | XOR
 
-;; 1-syntax.watsup:312.1-312.30
+;; 1-syntax.watsup:327.1-327.30
 syntax vvternop =
   | BITSELECT
 
-;; 1-syntax.watsup:313.1-313.29
+;; 1-syntax.watsup:328.1-328.29
 syntax vvtestop =
   | ANY_TRUE
 
-;; 1-syntax.watsup:315.1-315.21
+;; 1-syntax.watsup:330.1-330.21
 syntax vunop_(shape : shape)
-  ;; 1-syntax.watsup:316.1-316.61
+  ;; 1-syntax.watsup:331.1-331.61
   syntax vunop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ABS
   | NEG
@@ -598,7 +613,7 @@ syntax vunop_(shape : shape)
     -- if (imm = I8_imm)
 
 
-  ;; 1-syntax.watsup:317.1-317.77
+  ;; 1-syntax.watsup:332.1-332.77
   syntax vunop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | ABS
   | NEG
@@ -609,9 +624,9 @@ syntax vunop_(shape : shape)
   | NEAREST
 
 
-;; 1-syntax.watsup:319.1-319.22
+;; 1-syntax.watsup:334.1-334.22
 syntax vbinop_(shape : shape)
-  ;; 1-syntax.watsup:320.1-329.43
+  ;; 1-syntax.watsup:335.1-344.43
   syntax vbinop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ADD
   | SUB
@@ -631,7 +646,7 @@ syntax vbinop_(shape : shape)
     -- if ($lsize((imm : imm <: lanetype)) <= 32)
 
 
-  ;; 1-syntax.watsup:330.1-330.76
+  ;; 1-syntax.watsup:345.1-345.76
   syntax vbinop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | ADD
   | SUB
@@ -643,21 +658,21 @@ syntax vbinop_(shape : shape)
   | PMAX
 
 
-;; 1-syntax.watsup:332.1-332.23
+;; 1-syntax.watsup:347.1-347.23
 syntax vtestop_(shape : shape)
-  ;; 1-syntax.watsup:333.1-333.38
+  ;; 1-syntax.watsup:348.1-348.38
   syntax vtestop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ALL_TRUE
 
 
-  ;; 1-syntax.watsup:334.1-334.29
+  ;; 1-syntax.watsup:349.1-349.29
   syntax vtestop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:336.1-336.22
+;; 1-syntax.watsup:351.1-351.22
 syntax vrelop_(shape : shape)
-  ;; 1-syntax.watsup:337.1-337.68
+  ;; 1-syntax.watsup:352.1-352.68
   syntax vrelop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | EQ
   | NE
@@ -667,7 +682,7 @@ syntax vrelop_(shape : shape)
   | GE(sx : sx)
 
 
-  ;; 1-syntax.watsup:338.1-338.56
+  ;; 1-syntax.watsup:353.1-353.56
   syntax vrelop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | EQ
   | NE
@@ -677,7 +692,7 @@ syntax vrelop_(shape : shape)
   | GE
 
 
-;; 1-syntax.watsup:340.1-340.66
+;; 1-syntax.watsup:355.1-355.66
 syntax vcvtop =
   | EXTEND
   | TRUNC_SAT
@@ -685,52 +700,52 @@ syntax vcvtop =
   | DEMOTE
   | PROMOTE
 
-;; 1-syntax.watsup:351.1-351.25
+;; 1-syntax.watsup:366.1-366.25
 syntax vshiftop_{imm : imm, N : N}(`%X%`(imm, N)) =
   | SHL
   | SHR(sx : sx)
 
-;; 1-syntax.watsup:354.1-354.66
+;; 1-syntax.watsup:369.1-369.66
 syntax vextunop_{imm_1 : imm, N_1 : N, imm_2 : imm, N_2 : N}(`%X%`(imm_1, N_1), `%X%`(imm_2, N_2)) =
   | EXTADD_PAIRWISE
     -- if ((16 <= $lsize((imm_1 : imm <: lanetype))) /\ ($lsize((imm_1 : imm <: lanetype)) <= 32))
 
-;; 1-syntax.watsup:419.1-419.50
+;; 1-syntax.watsup:434.1-434.50
 syntax half =
   | LOW
   | HIGH
 
-;; 1-syntax.watsup:357.1-357.68
+;; 1-syntax.watsup:372.1-372.68
 syntax vextbinop_{imm_1 : imm, N_1 : N, imm_2 : imm, N_2 : N}(`%X%`(imm_1, N_1), `%X%`(imm_2, N_2)) =
   | EXTMUL(half : half)
   | DOT{imm_1 : imm}
     -- if ($lsize((imm_1 : imm <: lanetype)) = 32)
 
-;; 1-syntax.watsup:365.1-365.68
+;; 1-syntax.watsup:380.1-380.68
 syntax memop =
 {
   ALIGN u32,
   OFFSET u32
 }
 
-;; 1-syntax.watsup:367.1-370.44
+;; 1-syntax.watsup:382.1-385.44
 syntax vloadop =
   | SHAPE(nat, nat, sx : sx)
   | SPLAT(nat)
   | ZERO(nat)
 
-;; 1-syntax.watsup:379.1-381.17
+;; 1-syntax.watsup:394.1-396.17
 syntax blocktype =
   | _RESULT(valtype?)
   | _IDX(funcidx : funcidx)
 
-;; 1-syntax.watsup:420.1-420.20
+;; 1-syntax.watsup:435.1-435.20
 syntax zero = `ZERO%?`(()?)
 
-;; 1-syntax.watsup:507.1-519.78
+;; 1-syntax.watsup:522.1-534.78
 rec {
 
-;; 1-syntax.watsup:507.1-519.78
+;; 1-syntax.watsup:522.1-534.78
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -839,61 +854,61 @@ syntax instr =
   | VSTORE_LANE(n : n, memidx : memidx, memop : memop, laneidx : laneidx)
 }
 
-;; 1-syntax.watsup:521.1-522.9
+;; 1-syntax.watsup:536.1-537.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:534.1-534.61
+;; 1-syntax.watsup:549.1-549.61
 syntax elemmode =
   | ACTIVE(tableidx : tableidx, expr : expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:535.1-535.49
+;; 1-syntax.watsup:550.1-550.49
 syntax datamode =
   | ACTIVE(memidx : memidx, expr : expr)
   | PASSIVE
 
-;; 1-syntax.watsup:537.1-538.15
+;; 1-syntax.watsup:552.1-553.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:539.1-540.16
+;; 1-syntax.watsup:554.1-555.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:541.1-542.27
+;; 1-syntax.watsup:556.1-557.27
 syntax func = `FUNC%%*%`(typeidx, local*, expr)
 
-;; 1-syntax.watsup:543.1-544.25
+;; 1-syntax.watsup:558.1-559.25
 syntax global = GLOBAL(globaltype, expr)
 
-;; 1-syntax.watsup:545.1-546.23
+;; 1-syntax.watsup:560.1-561.23
 syntax table = TABLE(tabletype, expr)
 
-;; 1-syntax.watsup:547.1-548.17
+;; 1-syntax.watsup:562.1-563.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:549.1-550.30
+;; 1-syntax.watsup:564.1-565.30
 syntax elem = `ELEM%%*%`(reftype, expr*, elemmode)
 
-;; 1-syntax.watsup:551.1-552.22
+;; 1-syntax.watsup:566.1-567.22
 syntax data = `DATA%*%`(byte*, datamode)
 
-;; 1-syntax.watsup:553.1-554.16
+;; 1-syntax.watsup:568.1-569.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:556.1-557.66
+;; 1-syntax.watsup:571.1-572.66
 syntax externidx =
   | FUNC(funcidx : funcidx)
   | GLOBAL(globalidx : globalidx)
   | TABLE(tableidx : tableidx)
   | MEM(memidx : memidx)
 
-;; 1-syntax.watsup:558.1-559.24
+;; 1-syntax.watsup:573.1-574.24
 syntax export = EXPORT(name, externidx)
 
-;; 1-syntax.watsup:560.1-561.30
+;; 1-syntax.watsup:575.1-576.30
 syntax import = IMPORT(name, name, externtype)
 
-;; 1-syntax.watsup:563.1-564.76
+;; 1-syntax.watsup:578.1-579.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -4927,7 +4942,7 @@ syntax symsplit =
 ;; C-conventions.watsup:14.1-14.41
 syntax recorddots = `...`
 
-;; C-conventions.watsup:15.1-16.102
+;; C-conventions.watsup:15.1-18.36
 syntax record =
 {
   FIELD_1 A,
@@ -4935,7 +4950,7 @@ syntax record =
   DOTS recorddots
 }
 
-;; C-conventions.watsup:18.1-19.104
+;; C-conventions.watsup:20.1-23.36
 syntax recordstar =
 {
   FIELD_1 A*,
@@ -4943,14 +4958,14 @@ syntax recordstar =
   DOTS recorddots
 }
 
-;; C-conventions.watsup:21.1-21.58
+;; C-conventions.watsup:25.1-25.58
 syntax recordeq = `%++%=%`(recordstar, recordstar, recordstar)
 
-;; C-conventions.watsup:23.1-23.56
+;; C-conventions.watsup:27.1-27.56
 syntax pth =
   | PTHSYNTAX
 
-;; C-conventions.watsup:25.1-30.4
+;; C-conventions.watsup:29.1-34.4
 syntax pthaux =
 {
   PTH (),
@@ -4958,11 +4973,6 @@ syntax pthaux =
   FIELD_PTH (),
   DOT_FIELD_PTH ()
 }
-
-;; C-conventions.watsup:35.1-35.57
-syntax list{syntax A}(syntax A) =
-  | _LIST{A* : A*}(A*)
-    -- if (|A*{A}| < (2 ^ 32))
 
 == IL Validation...
 == Running pass totalize...
@@ -5019,149 +5029,164 @@ def $concat_(syntax X, X**) : X*
   def $concat_{syntax X, w* : X*, w'** : X**}(syntax X, [w*{w}] :: w'*{w'}*{w'}) = w*{w} :: $concat_(syntax X, w'*{w'}*{w'})
 }
 
-;; 1-syntax.watsup:5.1-5.85
+;; 1-syntax.watsup:6.1-6.57
+syntax list{syntax A}(syntax A) =
+  | _LIST{A* : A*}(A*)
+    -- if (|A*{A}| < (2 ^ 32))
+
+;; 1-syntax.watsup:13.1-13.85
 syntax char = nat
 
-;; 1-syntax.watsup:7.1-7.38
+;; 1-syntax.watsup:16.1-16.38
 syntax name = char*
 
-;; 1-syntax.watsup:18.1-18.36
+;; 1-syntax.watsup:27.1-27.36
 syntax bit = nat
 
-;; 1-syntax.watsup:19.1-19.50
+;; 1-syntax.watsup:28.1-28.50
 syntax byte = nat
 
-;; 1-syntax.watsup:21.1-22.18
+;; 1-syntax.watsup:30.1-31.18
 syntax uN{N : N}(N) = nat
 
-;; 1-syntax.watsup:23.1-24.49
+;; 1-syntax.watsup:32.1-33.49
 syntax sN{N : N}(N) = int
 
-;; 1-syntax.watsup:25.1-26.8
+;; 1-syntax.watsup:34.1-35.8
 syntax iN{N : N}(N) = uN(N)
 
-;; 1-syntax.watsup:28.1-28.18
+;; 1-syntax.watsup:37.1-37.18
 syntax u8 = uN(8)
 
-;; 1-syntax.watsup:29.1-29.20
+;; 1-syntax.watsup:38.1-38.20
 syntax u16 = uN(16)
 
-;; 1-syntax.watsup:30.1-30.20
+;; 1-syntax.watsup:39.1-39.20
 syntax u31 = uN(31)
 
-;; 1-syntax.watsup:31.1-31.20
+;; 1-syntax.watsup:40.1-40.20
 syntax u32 = uN(32)
 
-;; 1-syntax.watsup:32.1-32.20
+;; 1-syntax.watsup:41.1-41.20
 syntax u64 = uN(64)
 
-;; 1-syntax.watsup:33.1-33.22
+;; 1-syntax.watsup:42.1-42.22
 syntax u128 = uN(128)
 
-;; 1-syntax.watsup:34.1-34.20
+;; 1-syntax.watsup:43.1-43.20
 syntax s33 = sN(33)
 
-;; 1-syntax.watsup:41.1-41.21
+;; 1-syntax.watsup:50.1-50.21
 def $signif(N : N) : nat
-  ;; 1-syntax.watsup:42.1-42.21
+  ;; 1-syntax.watsup:51.1-51.21
   def $signif(32) = 23
-  ;; 1-syntax.watsup:43.1-43.21
+  ;; 1-syntax.watsup:52.1-52.21
   def $signif(64) = 52
 
-;; 1-syntax.watsup:45.1-45.20
+;; 1-syntax.watsup:54.1-54.20
 def $expon(N : N) : nat
-  ;; 1-syntax.watsup:46.1-46.19
+  ;; 1-syntax.watsup:55.1-55.19
   def $expon(32) = 8
-  ;; 1-syntax.watsup:47.1-47.20
+  ;; 1-syntax.watsup:56.1-56.20
   def $expon(64) = 11
 
-;; 1-syntax.watsup:49.1-49.35
+;; 1-syntax.watsup:58.1-58.30
 def $M(N : N) : nat
-  ;; 1-syntax.watsup:50.1-50.23
+  ;; 1-syntax.watsup:59.1-59.23
   def $M{N : N}(N) = $signif(N)
 
-;; 1-syntax.watsup:52.1-52.35
+;; 1-syntax.watsup:61.1-61.30
 def $E(N : N) : nat
-  ;; 1-syntax.watsup:53.1-53.22
+  ;; 1-syntax.watsup:62.1-62.22
   def $E{N : N}(N) = $expon(N)
 
-;; 1-syntax.watsup:59.1-63.81
-syntax fmag{N : N}(N) =
-  | NORM{n : n}(m : m, n : n)
-    -- if (((2 - (2 ^ ($E(N) - 1))) <= n) /\ (n <= ((2 ^ ($E(N) - 1)) - 1)))
-  | SUBNORM{N : N, n : n}(m : m)
-    -- if ((2 - (2 ^ ($E(N) - 1))) = n)
+;; 1-syntax.watsup:68.1-72.83
+syntax fNmag{N : N}(N) =
+  | NORM{m : m, n : n}(m : m, n : n)
+    -- if ((m < (2 ^ $M(N))) /\ (((2 - (2 ^ ($E(N) - 1))) <= n) /\ (n <= ((2 ^ ($E(N) - 1)) - 1))))
+  | SUBNORM{m : m, N : N, n : n}(m : m)
+    -- if ((m < (2 ^ $M(N))) /\ ((2 - (2 ^ ($E(N) - 1))) = n))
   | INF
   | NAN{m : m}(m : m)
-    -- if ((1 <= m) /\ (m < $M(N)))
+    -- if ((1 <= m) /\ (m < (2 ^ $M(N))))
 
-;; 1-syntax.watsup:55.1-57.34
+;; 1-syntax.watsup:64.1-66.35
 syntax fN{N : N}(N) =
-  | POS(fmag : fmag(N))
-  | NEG(fmag : fmag(N))
+  | POS(fNmag : fNmag(N))
+  | NEG(fNmag : fNmag(N))
 
-;; 1-syntax.watsup:65.1-65.40
-def $fzero(N : N) : fN(N)
-  ;; 1-syntax.watsup:66.1-66.32
-  def $fzero{N : N}(N) = POS_fN(N)(SUBNORM_fmag(N)(0))
-
-;; 1-syntax.watsup:68.1-68.20
+;; 1-syntax.watsup:74.1-74.20
 syntax f32 = fN(32)
 
-;; 1-syntax.watsup:69.1-69.20
+;; 1-syntax.watsup:75.1-75.20
 syntax f64 = fN(64)
 
-;; 1-syntax.watsup:74.1-75.8
+;; 1-syntax.watsup:77.1-77.39
+def $fzero(N : N) : fN(N)
+  ;; 1-syntax.watsup:78.1-78.32
+  def $fzero{N : N}(N) = POS_fN(N)(SUBNORM_fNmag(N)(0))
+
+;; 1-syntax.watsup:80.1-80.39
+def $fone(N : N) : fN(N)
+  ;; 1-syntax.watsup:81.1-81.30
+  def $fone{N : N}(N) = POS_fN(N)(NORM_fNmag(N)(1, 0))
+
+;; 1-syntax.watsup:83.1-83.21
+def $canon_(N : N) : nat
+  ;; 1-syntax.watsup:84.1-84.37
+  def $canon_{N : N}(N) = (2 ^ ($signif(N) - 1))
+
+;; 1-syntax.watsup:89.1-90.8
 syntax vN{N : N}(N) = iN(N)
 
-;; 1-syntax.watsup:82.1-82.36
+;; 1-syntax.watsup:97.1-97.36
 syntax idx = u32
 
-;; 1-syntax.watsup:83.1-83.44
+;; 1-syntax.watsup:98.1-98.44
 syntax laneidx = u8
 
-;; 1-syntax.watsup:85.1-85.45
+;; 1-syntax.watsup:100.1-100.45
 syntax typeidx = idx
 
-;; 1-syntax.watsup:86.1-86.49
+;; 1-syntax.watsup:101.1-101.49
 syntax funcidx = idx
 
-;; 1-syntax.watsup:87.1-87.49
+;; 1-syntax.watsup:102.1-102.49
 syntax globalidx = idx
 
-;; 1-syntax.watsup:88.1-88.47
+;; 1-syntax.watsup:103.1-103.47
 syntax tableidx = idx
 
-;; 1-syntax.watsup:89.1-89.46
+;; 1-syntax.watsup:104.1-104.46
 syntax memidx = idx
 
-;; 1-syntax.watsup:90.1-90.45
+;; 1-syntax.watsup:105.1-105.45
 syntax elemidx = idx
 
-;; 1-syntax.watsup:91.1-91.45
+;; 1-syntax.watsup:106.1-106.45
 syntax dataidx = idx
 
-;; 1-syntax.watsup:92.1-92.47
+;; 1-syntax.watsup:107.1-107.47
 syntax labelidx = idx
 
-;; 1-syntax.watsup:93.1-93.47
+;; 1-syntax.watsup:108.1-108.47
 syntax localidx = idx
 
-;; 1-syntax.watsup:107.1-107.19
+;; 1-syntax.watsup:122.1-122.19
 syntax nul = `NULL%?`(()?)
 
-;; 1-syntax.watsup:109.1-110.26
+;; 1-syntax.watsup:124.1-125.26
 syntax numtype =
   | I32
   | I64
   | F32
   | F64
 
-;; 1-syntax.watsup:112.1-113.9
+;; 1-syntax.watsup:127.1-128.9
 syntax vectype =
   | V128
 
-;; 1-syntax.watsup:120.1-121.14
+;; 1-syntax.watsup:135.1-136.14
 syntax absheaptype =
   | ANY
   | EQ
@@ -5175,16 +5200,16 @@ syntax absheaptype =
   | NOEXTERN
   | BOT
 
-;; 1-syntax.watsup:157.1-157.18
+;; 1-syntax.watsup:172.1-172.18
 syntax mut = `MUT%?`(()?)
 
-;; 1-syntax.watsup:158.1-158.20
+;; 1-syntax.watsup:173.1-173.20
 syntax fin = `FINAL%?`(()?)
 
-;; 1-syntax.watsup:132.1-188.54
+;; 1-syntax.watsup:147.1-203.54
 rec {
 
-;; 1-syntax.watsup:132.1-133.14
+;; 1-syntax.watsup:147.1-148.14
 syntax valtype =
   | I32
   | I64
@@ -5194,10 +5219,10 @@ syntax valtype =
   | REF(nul : nul, heaptype : heaptype)
   | BOT
 
-;; 1-syntax.watsup:140.1-141.11
+;; 1-syntax.watsup:155.1-156.11
 syntax resulttype = valtype*
 
-;; 1-syntax.watsup:148.1-148.68
+;; 1-syntax.watsup:163.1-163.68
 syntax storagetype =
   | BOT
   | I32
@@ -5209,23 +5234,23 @@ syntax storagetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:160.1-161.18
+;; 1-syntax.watsup:175.1-176.18
 syntax fieldtype = `%%`(mut, storagetype)
 
-;; 1-syntax.watsup:163.1-164.27
+;; 1-syntax.watsup:178.1-179.27
 syntax functype = `%->%`(resulttype, resulttype)
 
-;; 1-syntax.watsup:166.1-169.18
+;; 1-syntax.watsup:181.1-184.18
 syntax comptype =
   | STRUCT(fieldtype*)
   | ARRAY(fieldtype : fieldtype)
   | FUNC(functype : functype)
 
-;; 1-syntax.watsup:175.1-176.17
+;; 1-syntax.watsup:190.1-191.17
 syntax rectype =
   | REC(subtype*)
 
-;; 1-syntax.watsup:181.1-184.12
+;; 1-syntax.watsup:196.1-199.12
 syntax heaptype =
   | _IDX(typeidx : typeidx)
   | ANY
@@ -5242,36 +5267,36 @@ syntax heaptype =
   | DEF(rectype : rectype, nat)
   | REC(nat)
 
-;; 1-syntax.watsup:186.1-188.54
+;; 1-syntax.watsup:201.1-203.54
 syntax subtype =
   | SUB(fin : fin, typeidx*, comptype : comptype)
   | SUBD(fin : fin, heaptype*, comptype : comptype)
 }
 
-;; 1-syntax.watsup:127.1-128.21
+;; 1-syntax.watsup:142.1-143.21
 syntax reftype =
   | REF(nul : nul, heaptype : heaptype)
 
-;; 1-syntax.watsup:135.1-135.40
+;; 1-syntax.watsup:150.1-150.40
 syntax inn =
   | I32
   | I64
 
-;; 1-syntax.watsup:136.1-136.40
+;; 1-syntax.watsup:151.1-151.40
 syntax fnn =
   | F32
   | F64
 
-;; 1-syntax.watsup:137.1-137.35
+;; 1-syntax.watsup:152.1-152.35
 syntax vnn =
   | V128
 
-;; 1-syntax.watsup:146.1-146.54
+;; 1-syntax.watsup:161.1-161.54
 syntax packtype =
   | I8
   | I16
 
-;; 1-syntax.watsup:147.1-147.62
+;; 1-syntax.watsup:162.1-162.62
 syntax lanetype =
   | I32
   | I64
@@ -5280,12 +5305,12 @@ syntax lanetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:150.1-150.39
+;; 1-syntax.watsup:165.1-165.39
 syntax pnn =
   | I8
   | I16
 
-;; 1-syntax.watsup:151.1-151.44
+;; 1-syntax.watsup:166.1-166.44
 syntax lnn =
   | I32
   | I64
@@ -5294,43 +5319,43 @@ syntax lnn =
   | I8
   | I16
 
-;; 1-syntax.watsup:152.1-152.40
+;; 1-syntax.watsup:167.1-167.40
 syntax imm =
   | I32
   | I64
   | I8
   | I16
 
-;; 1-syntax.watsup:178.1-179.35
+;; 1-syntax.watsup:193.1-194.35
 syntax deftype =
   | DEF(rectype : rectype, nat)
 
-;; 1-syntax.watsup:193.1-194.16
+;; 1-syntax.watsup:208.1-209.16
 syntax limits = `[%..%]`(u32, u32)
 
-;; 1-syntax.watsup:196.1-197.14
+;; 1-syntax.watsup:211.1-212.14
 syntax globaltype = `%%`(mut, valtype)
 
-;; 1-syntax.watsup:198.1-199.17
+;; 1-syntax.watsup:213.1-214.17
 syntax tabletype = `%%`(limits, reftype)
 
-;; 1-syntax.watsup:200.1-201.12
+;; 1-syntax.watsup:215.1-216.12
 syntax memtype = `%I8`(limits)
 
-;; 1-syntax.watsup:202.1-203.10
+;; 1-syntax.watsup:217.1-218.10
 syntax elemtype = reftype
 
-;; 1-syntax.watsup:204.1-205.5
+;; 1-syntax.watsup:219.1-220.5
 syntax datatype = OK
 
-;; 1-syntax.watsup:206.1-207.69
+;; 1-syntax.watsup:221.1-222.69
 syntax externtype =
   | FUNC(deftype : deftype)
   | GLOBAL(globaltype : globaltype)
   | TABLE(tabletype : tabletype)
   | MEM(memtype : memtype)
 
-;; 1-syntax.watsup:244.1-244.60
+;; 1-syntax.watsup:259.1-259.60
 def $size(valtype : valtype) : nat?
   ;; 2-syntax-aux.watsup:53.1-53.20
   def $size(I32_valtype) = ?(32)
@@ -5344,97 +5369,97 @@ def $size(valtype : valtype) : nat?
   def $size(V128_valtype) = ?(128)
   def $size{x0 : valtype}(x0) = ?()
 
-;; 1-syntax.watsup:245.1-245.44
+;; 1-syntax.watsup:260.1-260.44
 def $psize(packtype : packtype) : nat
   ;; 2-syntax-aux.watsup:59.1-59.19
   def $psize(I8_packtype) = 8
   ;; 2-syntax-aux.watsup:60.1-60.21
   def $psize(I16_packtype) = 16
 
-;; 1-syntax.watsup:246.1-246.46
+;; 1-syntax.watsup:261.1-261.46
 def $lsize(lanetype : lanetype) : nat
   ;; 2-syntax-aux.watsup:62.1-62.37
   def $lsize{numtype : numtype}((numtype : numtype <: lanetype)) = !($size((numtype : numtype <: valtype)))
   ;; 2-syntax-aux.watsup:63.1-63.40
   def $lsize{packtype : packtype}((packtype : packtype <: lanetype)) = $psize(packtype)
 
-;; 1-syntax.watsup:247.1-247.46
+;; 1-syntax.watsup:262.1-262.46
 def $zsize(storagetype : storagetype) : nat
   ;; 2-syntax-aux.watsup:65.1-65.37
   def $zsize{valtype : valtype}((valtype : valtype <: storagetype)) = !($size(valtype))
   ;; 2-syntax-aux.watsup:66.1-66.40
   def $zsize{packtype : packtype}((packtype : packtype <: storagetype)) = $psize(packtype)
 
-;; 1-syntax.watsup:301.1-301.55
+;; 1-syntax.watsup:316.1-316.55
 syntax dim = nat
 
-;; 1-syntax.watsup:302.1-302.49
+;; 1-syntax.watsup:317.1-317.49
 syntax shape = `%X%`(lanetype, dim)
 
-;; 1-syntax.watsup:248.1-248.32
+;; 1-syntax.watsup:263.1-263.32
 def $lanetype(shape : shape) : lanetype
   ;; 2-syntax-aux.watsup:94.1-94.29
   def $lanetype{lnn : lnn, N : N}(`%X%`(lnn, N)) = lnn
 
-;; 1-syntax.watsup:250.1-250.21
+;; 1-syntax.watsup:265.1-265.21
 syntax num_(numtype : numtype)
-  ;; 1-syntax.watsup:251.1-251.34
+  ;; 1-syntax.watsup:266.1-266.34
   syntax num_{inn : inn}((inn : inn <: numtype)) = iN(!($size((inn : inn <: valtype))))
 
 
-  ;; 1-syntax.watsup:252.1-252.34
+  ;; 1-syntax.watsup:267.1-267.34
   syntax num_{fnn : fnn}((fnn : fnn <: numtype)) = fN(!($size((fnn : fnn <: valtype))))
 
 
-;; 1-syntax.watsup:254.1-254.36
+;; 1-syntax.watsup:269.1-269.36
 syntax pack_{pnn : pnn}(pnn) = iN($psize(pnn))
 
-;; 1-syntax.watsup:256.1-256.23
+;; 1-syntax.watsup:271.1-271.23
 syntax lane_(lanetype : lanetype)
-  ;; 1-syntax.watsup:257.1-257.38
+  ;; 1-syntax.watsup:272.1-272.38
   syntax lane_{numtype : numtype}((numtype : numtype <: lanetype)) = num_(numtype)
 
 
-  ;; 1-syntax.watsup:258.1-258.41
+  ;; 1-syntax.watsup:273.1-273.41
   syntax lane_{packtype : packtype}((packtype : packtype <: lanetype)) = pack_(packtype)
 
 
-  ;; 1-syntax.watsup:259.1-259.36
+  ;; 1-syntax.watsup:274.1-274.36
   syntax lane_{imm : imm}((imm : imm <: lanetype)) = iN($lsize((imm : imm <: lanetype)))
 
 
-;; 1-syntax.watsup:261.1-261.34
+;; 1-syntax.watsup:276.1-276.34
 syntax vec_{vnn : vnn}(vnn) = vN(!($size((vnn : vnn <: valtype))))
 
-;; 1-syntax.watsup:263.1-263.26
+;; 1-syntax.watsup:278.1-278.26
 syntax zval_(storagetype : storagetype)
-  ;; 1-syntax.watsup:264.1-264.38
+  ;; 1-syntax.watsup:279.1-279.38
   syntax zval_{numtype : numtype}((numtype : numtype <: storagetype)) = num_(numtype)
 
 
-  ;; 1-syntax.watsup:265.1-265.38
+  ;; 1-syntax.watsup:280.1-280.38
   syntax zval_{vectype : vectype}((vectype : vectype <: storagetype)) = vec_(vectype)
 
 
-  ;; 1-syntax.watsup:266.1-266.41
+  ;; 1-syntax.watsup:281.1-281.41
   syntax zval_{packtype : packtype}((packtype : packtype <: storagetype)) = pack_(packtype)
 
 
-;; 1-syntax.watsup:271.1-271.44
+;; 1-syntax.watsup:286.1-286.44
 syntax sx =
   | U
   | S
 
-;; 1-syntax.watsup:273.1-273.22
+;; 1-syntax.watsup:288.1-288.22
 syntax unop_(numtype : numtype)
-  ;; 1-syntax.watsup:274.1-274.41
+  ;; 1-syntax.watsup:289.1-289.41
   syntax unop_{inn : inn}((inn : inn <: numtype)) =
   | CLZ
   | CTZ
   | POPCNT
 
 
-  ;; 1-syntax.watsup:275.1-275.72
+  ;; 1-syntax.watsup:290.1-290.72
   syntax unop_{fnn : fnn}((fnn : fnn <: numtype)) =
   | ABS
   | NEG
@@ -5445,9 +5470,9 @@ syntax unop_(numtype : numtype)
   | NEAREST
 
 
-;; 1-syntax.watsup:277.1-277.23
+;; 1-syntax.watsup:292.1-292.23
 syntax binop_(numtype : numtype)
-  ;; 1-syntax.watsup:278.1-280.66
+  ;; 1-syntax.watsup:293.1-295.66
   syntax binop_{inn : inn}((inn : inn <: numtype)) =
   | ADD
   | SUB
@@ -5463,7 +5488,7 @@ syntax binop_(numtype : numtype)
   | ROTR
 
 
-  ;; 1-syntax.watsup:281.1-282.49
+  ;; 1-syntax.watsup:296.1-297.49
   syntax binop_{fnn : fnn}((fnn : fnn <: numtype)) =
   | ADD
   | SUB
@@ -5474,21 +5499,21 @@ syntax binop_(numtype : numtype)
   | COPYSIGN
 
 
-;; 1-syntax.watsup:284.1-284.24
+;; 1-syntax.watsup:299.1-299.24
 syntax testop_(numtype : numtype)
-  ;; 1-syntax.watsup:285.1-285.28
+  ;; 1-syntax.watsup:300.1-300.28
   syntax testop_{inn : inn}((inn : inn <: numtype)) =
   | EQZ
 
 
-  ;; 1-syntax.watsup:286.1-286.24
+  ;; 1-syntax.watsup:301.1-301.24
   syntax testop_{fnn : fnn}((fnn : fnn <: numtype)) =
   |
 
 
-;; 1-syntax.watsup:288.1-288.23
+;; 1-syntax.watsup:303.1-303.23
 syntax relop_(numtype : numtype)
-  ;; 1-syntax.watsup:289.1-292.52
+  ;; 1-syntax.watsup:304.1-307.52
   syntax relop_{inn : inn}((inn : inn <: numtype)) =
   | EQ
   | NE
@@ -5498,7 +5523,7 @@ syntax relop_(numtype : numtype)
   | GE(sx : sx)
 
 
-  ;; 1-syntax.watsup:293.1-294.32
+  ;; 1-syntax.watsup:308.1-309.32
   syntax relop_{fnn : fnn}((fnn : fnn <: numtype)) =
   | EQ
   | NE
@@ -5508,52 +5533,52 @@ syntax relop_(numtype : numtype)
   | GE
 
 
-;; 1-syntax.watsup:296.1-296.39
+;; 1-syntax.watsup:311.1-311.39
 syntax cvtop =
   | CONVERT
   | REINTERPRET
 
-;; 1-syntax.watsup:303.1-303.45
+;; 1-syntax.watsup:318.1-318.45
 syntax ishape = `%X%`(imm, dim)
 
-;; 1-syntax.watsup:304.1-304.45
+;; 1-syntax.watsup:319.1-319.45
 syntax fshape = `%X%`(fnn, dim)
 
-;; 1-syntax.watsup:305.1-305.45
+;; 1-syntax.watsup:320.1-320.45
 syntax pshape = `%X%`(pnn, dim)
 
-;; 1-syntax.watsup:307.1-307.22
+;; 1-syntax.watsup:322.1-322.22
 def $dim(shape : shape) : dim
   ;; 2-syntax-aux.watsup:97.1-97.22
   def $dim{lnn : lnn, N : N}(`%X%`(lnn, N)) = N
 
-;; 1-syntax.watsup:308.1-308.41
+;; 1-syntax.watsup:323.1-323.41
 def $shsize(shape : shape) : nat
   ;; 2-syntax-aux.watsup:100.1-100.42
   def $shsize{lnn : lnn, N : N}(`%X%`(lnn, N)) = ($lsize(lnn) * N)
 
-;; 1-syntax.watsup:310.1-310.22
+;; 1-syntax.watsup:325.1-325.22
 syntax vvunop =
   | NOT
 
-;; 1-syntax.watsup:311.1-311.43
+;; 1-syntax.watsup:326.1-326.43
 syntax vvbinop =
   | AND
   | ANDNOT
   | OR
   | XOR
 
-;; 1-syntax.watsup:312.1-312.30
+;; 1-syntax.watsup:327.1-327.30
 syntax vvternop =
   | BITSELECT
 
-;; 1-syntax.watsup:313.1-313.29
+;; 1-syntax.watsup:328.1-328.29
 syntax vvtestop =
   | ANY_TRUE
 
-;; 1-syntax.watsup:315.1-315.21
+;; 1-syntax.watsup:330.1-330.21
 syntax vunop_(shape : shape)
-  ;; 1-syntax.watsup:316.1-316.61
+  ;; 1-syntax.watsup:331.1-331.61
   syntax vunop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ABS
   | NEG
@@ -5561,7 +5586,7 @@ syntax vunop_(shape : shape)
     -- if (imm = I8_imm)
 
 
-  ;; 1-syntax.watsup:317.1-317.77
+  ;; 1-syntax.watsup:332.1-332.77
   syntax vunop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | ABS
   | NEG
@@ -5572,9 +5597,9 @@ syntax vunop_(shape : shape)
   | NEAREST
 
 
-;; 1-syntax.watsup:319.1-319.22
+;; 1-syntax.watsup:334.1-334.22
 syntax vbinop_(shape : shape)
-  ;; 1-syntax.watsup:320.1-329.43
+  ;; 1-syntax.watsup:335.1-344.43
   syntax vbinop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ADD
   | SUB
@@ -5594,7 +5619,7 @@ syntax vbinop_(shape : shape)
     -- if ($lsize((imm : imm <: lanetype)) <= 32)
 
 
-  ;; 1-syntax.watsup:330.1-330.76
+  ;; 1-syntax.watsup:345.1-345.76
   syntax vbinop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | ADD
   | SUB
@@ -5606,21 +5631,21 @@ syntax vbinop_(shape : shape)
   | PMAX
 
 
-;; 1-syntax.watsup:332.1-332.23
+;; 1-syntax.watsup:347.1-347.23
 syntax vtestop_(shape : shape)
-  ;; 1-syntax.watsup:333.1-333.38
+  ;; 1-syntax.watsup:348.1-348.38
   syntax vtestop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ALL_TRUE
 
 
-  ;; 1-syntax.watsup:334.1-334.29
+  ;; 1-syntax.watsup:349.1-349.29
   syntax vtestop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:336.1-336.22
+;; 1-syntax.watsup:351.1-351.22
 syntax vrelop_(shape : shape)
-  ;; 1-syntax.watsup:337.1-337.68
+  ;; 1-syntax.watsup:352.1-352.68
   syntax vrelop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | EQ
   | NE
@@ -5630,7 +5655,7 @@ syntax vrelop_(shape : shape)
   | GE(sx : sx)
 
 
-  ;; 1-syntax.watsup:338.1-338.56
+  ;; 1-syntax.watsup:353.1-353.56
   syntax vrelop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | EQ
   | NE
@@ -5640,7 +5665,7 @@ syntax vrelop_(shape : shape)
   | GE
 
 
-;; 1-syntax.watsup:340.1-340.66
+;; 1-syntax.watsup:355.1-355.66
 syntax vcvtop =
   | EXTEND
   | TRUNC_SAT
@@ -5648,52 +5673,52 @@ syntax vcvtop =
   | DEMOTE
   | PROMOTE
 
-;; 1-syntax.watsup:351.1-351.25
+;; 1-syntax.watsup:366.1-366.25
 syntax vshiftop_{imm : imm, N : N}(`%X%`(imm, N)) =
   | SHL
   | SHR(sx : sx)
 
-;; 1-syntax.watsup:354.1-354.66
+;; 1-syntax.watsup:369.1-369.66
 syntax vextunop_{imm_1 : imm, N_1 : N, imm_2 : imm, N_2 : N}(`%X%`(imm_1, N_1), `%X%`(imm_2, N_2)) =
   | EXTADD_PAIRWISE
     -- if ((16 <= $lsize((imm_1 : imm <: lanetype))) /\ ($lsize((imm_1 : imm <: lanetype)) <= 32))
 
-;; 1-syntax.watsup:419.1-419.50
+;; 1-syntax.watsup:434.1-434.50
 syntax half =
   | LOW
   | HIGH
 
-;; 1-syntax.watsup:357.1-357.68
+;; 1-syntax.watsup:372.1-372.68
 syntax vextbinop_{imm_1 : imm, N_1 : N, imm_2 : imm, N_2 : N}(`%X%`(imm_1, N_1), `%X%`(imm_2, N_2)) =
   | EXTMUL(half : half)
   | DOT{imm_1 : imm}
     -- if ($lsize((imm_1 : imm <: lanetype)) = 32)
 
-;; 1-syntax.watsup:365.1-365.68
+;; 1-syntax.watsup:380.1-380.68
 syntax memop =
 {
   ALIGN u32,
   OFFSET u32
 }
 
-;; 1-syntax.watsup:367.1-370.44
+;; 1-syntax.watsup:382.1-385.44
 syntax vloadop =
   | SHAPE(nat, nat, sx : sx)
   | SPLAT(nat)
   | ZERO(nat)
 
-;; 1-syntax.watsup:379.1-381.17
+;; 1-syntax.watsup:394.1-396.17
 syntax blocktype =
   | _RESULT(valtype?)
   | _IDX(funcidx : funcidx)
 
-;; 1-syntax.watsup:420.1-420.20
+;; 1-syntax.watsup:435.1-435.20
 syntax zero = `ZERO%?`(()?)
 
-;; 1-syntax.watsup:507.1-519.78
+;; 1-syntax.watsup:522.1-534.78
 rec {
 
-;; 1-syntax.watsup:507.1-519.78
+;; 1-syntax.watsup:522.1-534.78
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -5802,61 +5827,61 @@ syntax instr =
   | VSTORE_LANE(n : n, memidx : memidx, memop : memop, laneidx : laneidx)
 }
 
-;; 1-syntax.watsup:521.1-522.9
+;; 1-syntax.watsup:536.1-537.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:534.1-534.61
+;; 1-syntax.watsup:549.1-549.61
 syntax elemmode =
   | ACTIVE(tableidx : tableidx, expr : expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:535.1-535.49
+;; 1-syntax.watsup:550.1-550.49
 syntax datamode =
   | ACTIVE(memidx : memidx, expr : expr)
   | PASSIVE
 
-;; 1-syntax.watsup:537.1-538.15
+;; 1-syntax.watsup:552.1-553.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:539.1-540.16
+;; 1-syntax.watsup:554.1-555.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:541.1-542.27
+;; 1-syntax.watsup:556.1-557.27
 syntax func = `FUNC%%*%`(typeidx, local*, expr)
 
-;; 1-syntax.watsup:543.1-544.25
+;; 1-syntax.watsup:558.1-559.25
 syntax global = GLOBAL(globaltype, expr)
 
-;; 1-syntax.watsup:545.1-546.23
+;; 1-syntax.watsup:560.1-561.23
 syntax table = TABLE(tabletype, expr)
 
-;; 1-syntax.watsup:547.1-548.17
+;; 1-syntax.watsup:562.1-563.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:549.1-550.30
+;; 1-syntax.watsup:564.1-565.30
 syntax elem = `ELEM%%*%`(reftype, expr*, elemmode)
 
-;; 1-syntax.watsup:551.1-552.22
+;; 1-syntax.watsup:566.1-567.22
 syntax data = `DATA%*%`(byte*, datamode)
 
-;; 1-syntax.watsup:553.1-554.16
+;; 1-syntax.watsup:568.1-569.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:556.1-557.66
+;; 1-syntax.watsup:571.1-572.66
 syntax externidx =
   | FUNC(funcidx : funcidx)
   | GLOBAL(globalidx : globalidx)
   | TABLE(tableidx : tableidx)
   | MEM(memidx : memidx)
 
-;; 1-syntax.watsup:558.1-559.24
+;; 1-syntax.watsup:573.1-574.24
 syntax export = EXPORT(name, externidx)
 
-;; 1-syntax.watsup:560.1-561.30
+;; 1-syntax.watsup:575.1-576.30
 syntax import = IMPORT(name, name, externtype)
 
-;; 1-syntax.watsup:563.1-564.76
+;; 1-syntax.watsup:578.1-579.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -9894,7 +9919,7 @@ syntax symsplit =
 ;; C-conventions.watsup:14.1-14.41
 syntax recorddots = `...`
 
-;; C-conventions.watsup:15.1-16.102
+;; C-conventions.watsup:15.1-18.36
 syntax record =
 {
   FIELD_1 A,
@@ -9902,7 +9927,7 @@ syntax record =
   DOTS recorddots
 }
 
-;; C-conventions.watsup:18.1-19.104
+;; C-conventions.watsup:20.1-23.36
 syntax recordstar =
 {
   FIELD_1 A*,
@@ -9910,14 +9935,14 @@ syntax recordstar =
   DOTS recorddots
 }
 
-;; C-conventions.watsup:21.1-21.58
+;; C-conventions.watsup:25.1-25.58
 syntax recordeq = `%++%=%`(recordstar, recordstar, recordstar)
 
-;; C-conventions.watsup:23.1-23.56
+;; C-conventions.watsup:27.1-27.56
 syntax pth =
   | PTHSYNTAX
 
-;; C-conventions.watsup:25.1-30.4
+;; C-conventions.watsup:29.1-34.4
 syntax pthaux =
 {
   PTH (),
@@ -9925,11 +9950,6 @@ syntax pthaux =
   FIELD_PTH (),
   DOT_FIELD_PTH ()
 }
-
-;; C-conventions.watsup:35.1-35.57
-syntax list{syntax A}(syntax A) =
-  | _LIST{A* : A*}(A*)
-    -- if (|A*{A}| < (2 ^ 32))
 
 == IL Validation after pass totalize...
 == Running pass the-elimination...
@@ -9986,149 +10006,164 @@ def $concat_(syntax X, X**) : X*
   def $concat_{syntax X, w* : X*, w'** : X**}(syntax X, [w*{w}] :: w'*{w'}*{w'}) = w*{w} :: $concat_(syntax X, w'*{w'}*{w'})
 }
 
-;; 1-syntax.watsup:5.1-5.85
+;; 1-syntax.watsup:6.1-6.57
+syntax list{syntax A}(syntax A) =
+  | _LIST{A* : A*}(A*)
+    -- if (|A*{A}| < (2 ^ 32))
+
+;; 1-syntax.watsup:13.1-13.85
 syntax char = nat
 
-;; 1-syntax.watsup:7.1-7.38
+;; 1-syntax.watsup:16.1-16.38
 syntax name = char*
 
-;; 1-syntax.watsup:18.1-18.36
+;; 1-syntax.watsup:27.1-27.36
 syntax bit = nat
 
-;; 1-syntax.watsup:19.1-19.50
+;; 1-syntax.watsup:28.1-28.50
 syntax byte = nat
 
-;; 1-syntax.watsup:21.1-22.18
+;; 1-syntax.watsup:30.1-31.18
 syntax uN{N : N}(N) = nat
 
-;; 1-syntax.watsup:23.1-24.49
+;; 1-syntax.watsup:32.1-33.49
 syntax sN{N : N}(N) = int
 
-;; 1-syntax.watsup:25.1-26.8
+;; 1-syntax.watsup:34.1-35.8
 syntax iN{N : N}(N) = uN(N)
 
-;; 1-syntax.watsup:28.1-28.18
+;; 1-syntax.watsup:37.1-37.18
 syntax u8 = uN(8)
 
-;; 1-syntax.watsup:29.1-29.20
+;; 1-syntax.watsup:38.1-38.20
 syntax u16 = uN(16)
 
-;; 1-syntax.watsup:30.1-30.20
+;; 1-syntax.watsup:39.1-39.20
 syntax u31 = uN(31)
 
-;; 1-syntax.watsup:31.1-31.20
+;; 1-syntax.watsup:40.1-40.20
 syntax u32 = uN(32)
 
-;; 1-syntax.watsup:32.1-32.20
+;; 1-syntax.watsup:41.1-41.20
 syntax u64 = uN(64)
 
-;; 1-syntax.watsup:33.1-33.22
+;; 1-syntax.watsup:42.1-42.22
 syntax u128 = uN(128)
 
-;; 1-syntax.watsup:34.1-34.20
+;; 1-syntax.watsup:43.1-43.20
 syntax s33 = sN(33)
 
-;; 1-syntax.watsup:41.1-41.21
+;; 1-syntax.watsup:50.1-50.21
 def $signif(N : N) : nat
-  ;; 1-syntax.watsup:42.1-42.21
+  ;; 1-syntax.watsup:51.1-51.21
   def $signif(32) = 23
-  ;; 1-syntax.watsup:43.1-43.21
+  ;; 1-syntax.watsup:52.1-52.21
   def $signif(64) = 52
 
-;; 1-syntax.watsup:45.1-45.20
+;; 1-syntax.watsup:54.1-54.20
 def $expon(N : N) : nat
-  ;; 1-syntax.watsup:46.1-46.19
+  ;; 1-syntax.watsup:55.1-55.19
   def $expon(32) = 8
-  ;; 1-syntax.watsup:47.1-47.20
+  ;; 1-syntax.watsup:56.1-56.20
   def $expon(64) = 11
 
-;; 1-syntax.watsup:49.1-49.35
+;; 1-syntax.watsup:58.1-58.30
 def $M(N : N) : nat
-  ;; 1-syntax.watsup:50.1-50.23
+  ;; 1-syntax.watsup:59.1-59.23
   def $M{N : N}(N) = $signif(N)
 
-;; 1-syntax.watsup:52.1-52.35
+;; 1-syntax.watsup:61.1-61.30
 def $E(N : N) : nat
-  ;; 1-syntax.watsup:53.1-53.22
+  ;; 1-syntax.watsup:62.1-62.22
   def $E{N : N}(N) = $expon(N)
 
-;; 1-syntax.watsup:59.1-63.81
-syntax fmag{N : N}(N) =
-  | NORM{n : n}(m : m, n : n)
-    -- if (((2 - (2 ^ ($E(N) - 1))) <= n) /\ (n <= ((2 ^ ($E(N) - 1)) - 1)))
-  | SUBNORM{N : N, n : n}(m : m)
-    -- if ((2 - (2 ^ ($E(N) - 1))) = n)
+;; 1-syntax.watsup:68.1-72.83
+syntax fNmag{N : N}(N) =
+  | NORM{m : m, n : n}(m : m, n : n)
+    -- if ((m < (2 ^ $M(N))) /\ (((2 - (2 ^ ($E(N) - 1))) <= n) /\ (n <= ((2 ^ ($E(N) - 1)) - 1))))
+  | SUBNORM{m : m, N : N, n : n}(m : m)
+    -- if ((m < (2 ^ $M(N))) /\ ((2 - (2 ^ ($E(N) - 1))) = n))
   | INF
   | NAN{m : m}(m : m)
-    -- if ((1 <= m) /\ (m < $M(N)))
+    -- if ((1 <= m) /\ (m < (2 ^ $M(N))))
 
-;; 1-syntax.watsup:55.1-57.34
+;; 1-syntax.watsup:64.1-66.35
 syntax fN{N : N}(N) =
-  | POS(fmag : fmag(N))
-  | NEG(fmag : fmag(N))
+  | POS(fNmag : fNmag(N))
+  | NEG(fNmag : fNmag(N))
 
-;; 1-syntax.watsup:65.1-65.40
-def $fzero(N : N) : fN(N)
-  ;; 1-syntax.watsup:66.1-66.32
-  def $fzero{N : N}(N) = POS_fN(N)(SUBNORM_fmag(N)(0))
-
-;; 1-syntax.watsup:68.1-68.20
+;; 1-syntax.watsup:74.1-74.20
 syntax f32 = fN(32)
 
-;; 1-syntax.watsup:69.1-69.20
+;; 1-syntax.watsup:75.1-75.20
 syntax f64 = fN(64)
 
-;; 1-syntax.watsup:74.1-75.8
+;; 1-syntax.watsup:77.1-77.39
+def $fzero(N : N) : fN(N)
+  ;; 1-syntax.watsup:78.1-78.32
+  def $fzero{N : N}(N) = POS_fN(N)(SUBNORM_fNmag(N)(0))
+
+;; 1-syntax.watsup:80.1-80.39
+def $fone(N : N) : fN(N)
+  ;; 1-syntax.watsup:81.1-81.30
+  def $fone{N : N}(N) = POS_fN(N)(NORM_fNmag(N)(1, 0))
+
+;; 1-syntax.watsup:83.1-83.21
+def $canon_(N : N) : nat
+  ;; 1-syntax.watsup:84.1-84.37
+  def $canon_{N : N}(N) = (2 ^ ($signif(N) - 1))
+
+;; 1-syntax.watsup:89.1-90.8
 syntax vN{N : N}(N) = iN(N)
 
-;; 1-syntax.watsup:82.1-82.36
+;; 1-syntax.watsup:97.1-97.36
 syntax idx = u32
 
-;; 1-syntax.watsup:83.1-83.44
+;; 1-syntax.watsup:98.1-98.44
 syntax laneidx = u8
 
-;; 1-syntax.watsup:85.1-85.45
+;; 1-syntax.watsup:100.1-100.45
 syntax typeidx = idx
 
-;; 1-syntax.watsup:86.1-86.49
+;; 1-syntax.watsup:101.1-101.49
 syntax funcidx = idx
 
-;; 1-syntax.watsup:87.1-87.49
+;; 1-syntax.watsup:102.1-102.49
 syntax globalidx = idx
 
-;; 1-syntax.watsup:88.1-88.47
+;; 1-syntax.watsup:103.1-103.47
 syntax tableidx = idx
 
-;; 1-syntax.watsup:89.1-89.46
+;; 1-syntax.watsup:104.1-104.46
 syntax memidx = idx
 
-;; 1-syntax.watsup:90.1-90.45
+;; 1-syntax.watsup:105.1-105.45
 syntax elemidx = idx
 
-;; 1-syntax.watsup:91.1-91.45
+;; 1-syntax.watsup:106.1-106.45
 syntax dataidx = idx
 
-;; 1-syntax.watsup:92.1-92.47
+;; 1-syntax.watsup:107.1-107.47
 syntax labelidx = idx
 
-;; 1-syntax.watsup:93.1-93.47
+;; 1-syntax.watsup:108.1-108.47
 syntax localidx = idx
 
-;; 1-syntax.watsup:107.1-107.19
+;; 1-syntax.watsup:122.1-122.19
 syntax nul = `NULL%?`(()?)
 
-;; 1-syntax.watsup:109.1-110.26
+;; 1-syntax.watsup:124.1-125.26
 syntax numtype =
   | I32
   | I64
   | F32
   | F64
 
-;; 1-syntax.watsup:112.1-113.9
+;; 1-syntax.watsup:127.1-128.9
 syntax vectype =
   | V128
 
-;; 1-syntax.watsup:120.1-121.14
+;; 1-syntax.watsup:135.1-136.14
 syntax absheaptype =
   | ANY
   | EQ
@@ -10142,16 +10177,16 @@ syntax absheaptype =
   | NOEXTERN
   | BOT
 
-;; 1-syntax.watsup:157.1-157.18
+;; 1-syntax.watsup:172.1-172.18
 syntax mut = `MUT%?`(()?)
 
-;; 1-syntax.watsup:158.1-158.20
+;; 1-syntax.watsup:173.1-173.20
 syntax fin = `FINAL%?`(()?)
 
-;; 1-syntax.watsup:132.1-188.54
+;; 1-syntax.watsup:147.1-203.54
 rec {
 
-;; 1-syntax.watsup:132.1-133.14
+;; 1-syntax.watsup:147.1-148.14
 syntax valtype =
   | I32
   | I64
@@ -10161,10 +10196,10 @@ syntax valtype =
   | REF(nul : nul, heaptype : heaptype)
   | BOT
 
-;; 1-syntax.watsup:140.1-141.11
+;; 1-syntax.watsup:155.1-156.11
 syntax resulttype = valtype*
 
-;; 1-syntax.watsup:148.1-148.68
+;; 1-syntax.watsup:163.1-163.68
 syntax storagetype =
   | BOT
   | I32
@@ -10176,23 +10211,23 @@ syntax storagetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:160.1-161.18
+;; 1-syntax.watsup:175.1-176.18
 syntax fieldtype = `%%`(mut, storagetype)
 
-;; 1-syntax.watsup:163.1-164.27
+;; 1-syntax.watsup:178.1-179.27
 syntax functype = `%->%`(resulttype, resulttype)
 
-;; 1-syntax.watsup:166.1-169.18
+;; 1-syntax.watsup:181.1-184.18
 syntax comptype =
   | STRUCT(fieldtype*)
   | ARRAY(fieldtype : fieldtype)
   | FUNC(functype : functype)
 
-;; 1-syntax.watsup:175.1-176.17
+;; 1-syntax.watsup:190.1-191.17
 syntax rectype =
   | REC(subtype*)
 
-;; 1-syntax.watsup:181.1-184.12
+;; 1-syntax.watsup:196.1-199.12
 syntax heaptype =
   | _IDX(typeidx : typeidx)
   | ANY
@@ -10209,36 +10244,36 @@ syntax heaptype =
   | DEF(rectype : rectype, nat)
   | REC(nat)
 
-;; 1-syntax.watsup:186.1-188.54
+;; 1-syntax.watsup:201.1-203.54
 syntax subtype =
   | SUB(fin : fin, typeidx*, comptype : comptype)
   | SUBD(fin : fin, heaptype*, comptype : comptype)
 }
 
-;; 1-syntax.watsup:127.1-128.21
+;; 1-syntax.watsup:142.1-143.21
 syntax reftype =
   | REF(nul : nul, heaptype : heaptype)
 
-;; 1-syntax.watsup:135.1-135.40
+;; 1-syntax.watsup:150.1-150.40
 syntax inn =
   | I32
   | I64
 
-;; 1-syntax.watsup:136.1-136.40
+;; 1-syntax.watsup:151.1-151.40
 syntax fnn =
   | F32
   | F64
 
-;; 1-syntax.watsup:137.1-137.35
+;; 1-syntax.watsup:152.1-152.35
 syntax vnn =
   | V128
 
-;; 1-syntax.watsup:146.1-146.54
+;; 1-syntax.watsup:161.1-161.54
 syntax packtype =
   | I8
   | I16
 
-;; 1-syntax.watsup:147.1-147.62
+;; 1-syntax.watsup:162.1-162.62
 syntax lanetype =
   | I32
   | I64
@@ -10247,12 +10282,12 @@ syntax lanetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:150.1-150.39
+;; 1-syntax.watsup:165.1-165.39
 syntax pnn =
   | I8
   | I16
 
-;; 1-syntax.watsup:151.1-151.44
+;; 1-syntax.watsup:166.1-166.44
 syntax lnn =
   | I32
   | I64
@@ -10261,43 +10296,43 @@ syntax lnn =
   | I8
   | I16
 
-;; 1-syntax.watsup:152.1-152.40
+;; 1-syntax.watsup:167.1-167.40
 syntax imm =
   | I32
   | I64
   | I8
   | I16
 
-;; 1-syntax.watsup:178.1-179.35
+;; 1-syntax.watsup:193.1-194.35
 syntax deftype =
   | DEF(rectype : rectype, nat)
 
-;; 1-syntax.watsup:193.1-194.16
+;; 1-syntax.watsup:208.1-209.16
 syntax limits = `[%..%]`(u32, u32)
 
-;; 1-syntax.watsup:196.1-197.14
+;; 1-syntax.watsup:211.1-212.14
 syntax globaltype = `%%`(mut, valtype)
 
-;; 1-syntax.watsup:198.1-199.17
+;; 1-syntax.watsup:213.1-214.17
 syntax tabletype = `%%`(limits, reftype)
 
-;; 1-syntax.watsup:200.1-201.12
+;; 1-syntax.watsup:215.1-216.12
 syntax memtype = `%I8`(limits)
 
-;; 1-syntax.watsup:202.1-203.10
+;; 1-syntax.watsup:217.1-218.10
 syntax elemtype = reftype
 
-;; 1-syntax.watsup:204.1-205.5
+;; 1-syntax.watsup:219.1-220.5
 syntax datatype = OK
 
-;; 1-syntax.watsup:206.1-207.69
+;; 1-syntax.watsup:221.1-222.69
 syntax externtype =
   | FUNC(deftype : deftype)
   | GLOBAL(globaltype : globaltype)
   | TABLE(tabletype : tabletype)
   | MEM(memtype : memtype)
 
-;; 1-syntax.watsup:244.1-244.60
+;; 1-syntax.watsup:259.1-259.60
 def $size(valtype : valtype) : nat?
   ;; 2-syntax-aux.watsup:53.1-53.20
   def $size(I32_valtype) = ?(32)
@@ -10311,97 +10346,97 @@ def $size(valtype : valtype) : nat?
   def $size(V128_valtype) = ?(128)
   def $size{x0 : valtype}(x0) = ?()
 
-;; 1-syntax.watsup:245.1-245.44
+;; 1-syntax.watsup:260.1-260.44
 def $psize(packtype : packtype) : nat
   ;; 2-syntax-aux.watsup:59.1-59.19
   def $psize(I8_packtype) = 8
   ;; 2-syntax-aux.watsup:60.1-60.21
   def $psize(I16_packtype) = 16
 
-;; 1-syntax.watsup:246.1-246.46
+;; 1-syntax.watsup:261.1-261.46
 def $lsize(lanetype : lanetype) : nat
   ;; 2-syntax-aux.watsup:62.1-62.37
   def $lsize{numtype : numtype}((numtype : numtype <: lanetype)) = !($size((numtype : numtype <: valtype)))
   ;; 2-syntax-aux.watsup:63.1-63.40
   def $lsize{packtype : packtype}((packtype : packtype <: lanetype)) = $psize(packtype)
 
-;; 1-syntax.watsup:247.1-247.46
+;; 1-syntax.watsup:262.1-262.46
 def $zsize(storagetype : storagetype) : nat
   ;; 2-syntax-aux.watsup:65.1-65.37
   def $zsize{valtype : valtype}((valtype : valtype <: storagetype)) = !($size(valtype))
   ;; 2-syntax-aux.watsup:66.1-66.40
   def $zsize{packtype : packtype}((packtype : packtype <: storagetype)) = $psize(packtype)
 
-;; 1-syntax.watsup:301.1-301.55
+;; 1-syntax.watsup:316.1-316.55
 syntax dim = nat
 
-;; 1-syntax.watsup:302.1-302.49
+;; 1-syntax.watsup:317.1-317.49
 syntax shape = `%X%`(lanetype, dim)
 
-;; 1-syntax.watsup:248.1-248.32
+;; 1-syntax.watsup:263.1-263.32
 def $lanetype(shape : shape) : lanetype
   ;; 2-syntax-aux.watsup:94.1-94.29
   def $lanetype{lnn : lnn, N : N}(`%X%`(lnn, N)) = lnn
 
-;; 1-syntax.watsup:250.1-250.21
+;; 1-syntax.watsup:265.1-265.21
 syntax num_(numtype : numtype)
-  ;; 1-syntax.watsup:251.1-251.34
+  ;; 1-syntax.watsup:266.1-266.34
   syntax num_{inn : inn}((inn : inn <: numtype)) = iN(!($size((inn : inn <: valtype))))
 
 
-  ;; 1-syntax.watsup:252.1-252.34
+  ;; 1-syntax.watsup:267.1-267.34
   syntax num_{fnn : fnn}((fnn : fnn <: numtype)) = fN(!($size((fnn : fnn <: valtype))))
 
 
-;; 1-syntax.watsup:254.1-254.36
+;; 1-syntax.watsup:269.1-269.36
 syntax pack_{pnn : pnn}(pnn) = iN($psize(pnn))
 
-;; 1-syntax.watsup:256.1-256.23
+;; 1-syntax.watsup:271.1-271.23
 syntax lane_(lanetype : lanetype)
-  ;; 1-syntax.watsup:257.1-257.38
+  ;; 1-syntax.watsup:272.1-272.38
   syntax lane_{numtype : numtype}((numtype : numtype <: lanetype)) = num_(numtype)
 
 
-  ;; 1-syntax.watsup:258.1-258.41
+  ;; 1-syntax.watsup:273.1-273.41
   syntax lane_{packtype : packtype}((packtype : packtype <: lanetype)) = pack_(packtype)
 
 
-  ;; 1-syntax.watsup:259.1-259.36
+  ;; 1-syntax.watsup:274.1-274.36
   syntax lane_{imm : imm}((imm : imm <: lanetype)) = iN($lsize((imm : imm <: lanetype)))
 
 
-;; 1-syntax.watsup:261.1-261.34
+;; 1-syntax.watsup:276.1-276.34
 syntax vec_{vnn : vnn}(vnn) = vN(!($size((vnn : vnn <: valtype))))
 
-;; 1-syntax.watsup:263.1-263.26
+;; 1-syntax.watsup:278.1-278.26
 syntax zval_(storagetype : storagetype)
-  ;; 1-syntax.watsup:264.1-264.38
+  ;; 1-syntax.watsup:279.1-279.38
   syntax zval_{numtype : numtype}((numtype : numtype <: storagetype)) = num_(numtype)
 
 
-  ;; 1-syntax.watsup:265.1-265.38
+  ;; 1-syntax.watsup:280.1-280.38
   syntax zval_{vectype : vectype}((vectype : vectype <: storagetype)) = vec_(vectype)
 
 
-  ;; 1-syntax.watsup:266.1-266.41
+  ;; 1-syntax.watsup:281.1-281.41
   syntax zval_{packtype : packtype}((packtype : packtype <: storagetype)) = pack_(packtype)
 
 
-;; 1-syntax.watsup:271.1-271.44
+;; 1-syntax.watsup:286.1-286.44
 syntax sx =
   | U
   | S
 
-;; 1-syntax.watsup:273.1-273.22
+;; 1-syntax.watsup:288.1-288.22
 syntax unop_(numtype : numtype)
-  ;; 1-syntax.watsup:274.1-274.41
+  ;; 1-syntax.watsup:289.1-289.41
   syntax unop_{inn : inn}((inn : inn <: numtype)) =
   | CLZ
   | CTZ
   | POPCNT
 
 
-  ;; 1-syntax.watsup:275.1-275.72
+  ;; 1-syntax.watsup:290.1-290.72
   syntax unop_{fnn : fnn}((fnn : fnn <: numtype)) =
   | ABS
   | NEG
@@ -10412,9 +10447,9 @@ syntax unop_(numtype : numtype)
   | NEAREST
 
 
-;; 1-syntax.watsup:277.1-277.23
+;; 1-syntax.watsup:292.1-292.23
 syntax binop_(numtype : numtype)
-  ;; 1-syntax.watsup:278.1-280.66
+  ;; 1-syntax.watsup:293.1-295.66
   syntax binop_{inn : inn}((inn : inn <: numtype)) =
   | ADD
   | SUB
@@ -10430,7 +10465,7 @@ syntax binop_(numtype : numtype)
   | ROTR
 
 
-  ;; 1-syntax.watsup:281.1-282.49
+  ;; 1-syntax.watsup:296.1-297.49
   syntax binop_{fnn : fnn}((fnn : fnn <: numtype)) =
   | ADD
   | SUB
@@ -10441,21 +10476,21 @@ syntax binop_(numtype : numtype)
   | COPYSIGN
 
 
-;; 1-syntax.watsup:284.1-284.24
+;; 1-syntax.watsup:299.1-299.24
 syntax testop_(numtype : numtype)
-  ;; 1-syntax.watsup:285.1-285.28
+  ;; 1-syntax.watsup:300.1-300.28
   syntax testop_{inn : inn}((inn : inn <: numtype)) =
   | EQZ
 
 
-  ;; 1-syntax.watsup:286.1-286.24
+  ;; 1-syntax.watsup:301.1-301.24
   syntax testop_{fnn : fnn}((fnn : fnn <: numtype)) =
   |
 
 
-;; 1-syntax.watsup:288.1-288.23
+;; 1-syntax.watsup:303.1-303.23
 syntax relop_(numtype : numtype)
-  ;; 1-syntax.watsup:289.1-292.52
+  ;; 1-syntax.watsup:304.1-307.52
   syntax relop_{inn : inn}((inn : inn <: numtype)) =
   | EQ
   | NE
@@ -10465,7 +10500,7 @@ syntax relop_(numtype : numtype)
   | GE(sx : sx)
 
 
-  ;; 1-syntax.watsup:293.1-294.32
+  ;; 1-syntax.watsup:308.1-309.32
   syntax relop_{fnn : fnn}((fnn : fnn <: numtype)) =
   | EQ
   | NE
@@ -10475,52 +10510,52 @@ syntax relop_(numtype : numtype)
   | GE
 
 
-;; 1-syntax.watsup:296.1-296.39
+;; 1-syntax.watsup:311.1-311.39
 syntax cvtop =
   | CONVERT
   | REINTERPRET
 
-;; 1-syntax.watsup:303.1-303.45
+;; 1-syntax.watsup:318.1-318.45
 syntax ishape = `%X%`(imm, dim)
 
-;; 1-syntax.watsup:304.1-304.45
+;; 1-syntax.watsup:319.1-319.45
 syntax fshape = `%X%`(fnn, dim)
 
-;; 1-syntax.watsup:305.1-305.45
+;; 1-syntax.watsup:320.1-320.45
 syntax pshape = `%X%`(pnn, dim)
 
-;; 1-syntax.watsup:307.1-307.22
+;; 1-syntax.watsup:322.1-322.22
 def $dim(shape : shape) : dim
   ;; 2-syntax-aux.watsup:97.1-97.22
   def $dim{lnn : lnn, N : N}(`%X%`(lnn, N)) = N
 
-;; 1-syntax.watsup:308.1-308.41
+;; 1-syntax.watsup:323.1-323.41
 def $shsize(shape : shape) : nat
   ;; 2-syntax-aux.watsup:100.1-100.42
   def $shsize{lnn : lnn, N : N}(`%X%`(lnn, N)) = ($lsize(lnn) * N)
 
-;; 1-syntax.watsup:310.1-310.22
+;; 1-syntax.watsup:325.1-325.22
 syntax vvunop =
   | NOT
 
-;; 1-syntax.watsup:311.1-311.43
+;; 1-syntax.watsup:326.1-326.43
 syntax vvbinop =
   | AND
   | ANDNOT
   | OR
   | XOR
 
-;; 1-syntax.watsup:312.1-312.30
+;; 1-syntax.watsup:327.1-327.30
 syntax vvternop =
   | BITSELECT
 
-;; 1-syntax.watsup:313.1-313.29
+;; 1-syntax.watsup:328.1-328.29
 syntax vvtestop =
   | ANY_TRUE
 
-;; 1-syntax.watsup:315.1-315.21
+;; 1-syntax.watsup:330.1-330.21
 syntax vunop_(shape : shape)
-  ;; 1-syntax.watsup:316.1-316.61
+  ;; 1-syntax.watsup:331.1-331.61
   syntax vunop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ABS
   | NEG
@@ -10528,7 +10563,7 @@ syntax vunop_(shape : shape)
     -- if (imm = I8_imm)
 
 
-  ;; 1-syntax.watsup:317.1-317.77
+  ;; 1-syntax.watsup:332.1-332.77
   syntax vunop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | ABS
   | NEG
@@ -10539,9 +10574,9 @@ syntax vunop_(shape : shape)
   | NEAREST
 
 
-;; 1-syntax.watsup:319.1-319.22
+;; 1-syntax.watsup:334.1-334.22
 syntax vbinop_(shape : shape)
-  ;; 1-syntax.watsup:320.1-329.43
+  ;; 1-syntax.watsup:335.1-344.43
   syntax vbinop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ADD
   | SUB
@@ -10561,7 +10596,7 @@ syntax vbinop_(shape : shape)
     -- if ($lsize((imm : imm <: lanetype)) <= 32)
 
 
-  ;; 1-syntax.watsup:330.1-330.76
+  ;; 1-syntax.watsup:345.1-345.76
   syntax vbinop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | ADD
   | SUB
@@ -10573,21 +10608,21 @@ syntax vbinop_(shape : shape)
   | PMAX
 
 
-;; 1-syntax.watsup:332.1-332.23
+;; 1-syntax.watsup:347.1-347.23
 syntax vtestop_(shape : shape)
-  ;; 1-syntax.watsup:333.1-333.38
+  ;; 1-syntax.watsup:348.1-348.38
   syntax vtestop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ALL_TRUE
 
 
-  ;; 1-syntax.watsup:334.1-334.29
+  ;; 1-syntax.watsup:349.1-349.29
   syntax vtestop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:336.1-336.22
+;; 1-syntax.watsup:351.1-351.22
 syntax vrelop_(shape : shape)
-  ;; 1-syntax.watsup:337.1-337.68
+  ;; 1-syntax.watsup:352.1-352.68
   syntax vrelop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | EQ
   | NE
@@ -10597,7 +10632,7 @@ syntax vrelop_(shape : shape)
   | GE(sx : sx)
 
 
-  ;; 1-syntax.watsup:338.1-338.56
+  ;; 1-syntax.watsup:353.1-353.56
   syntax vrelop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | EQ
   | NE
@@ -10607,7 +10642,7 @@ syntax vrelop_(shape : shape)
   | GE
 
 
-;; 1-syntax.watsup:340.1-340.66
+;; 1-syntax.watsup:355.1-355.66
 syntax vcvtop =
   | EXTEND
   | TRUNC_SAT
@@ -10615,52 +10650,52 @@ syntax vcvtop =
   | DEMOTE
   | PROMOTE
 
-;; 1-syntax.watsup:351.1-351.25
+;; 1-syntax.watsup:366.1-366.25
 syntax vshiftop_{imm : imm, N : N}(`%X%`(imm, N)) =
   | SHL
   | SHR(sx : sx)
 
-;; 1-syntax.watsup:354.1-354.66
+;; 1-syntax.watsup:369.1-369.66
 syntax vextunop_{imm_1 : imm, N_1 : N, imm_2 : imm, N_2 : N}(`%X%`(imm_1, N_1), `%X%`(imm_2, N_2)) =
   | EXTADD_PAIRWISE
     -- if ((16 <= $lsize((imm_1 : imm <: lanetype))) /\ ($lsize((imm_1 : imm <: lanetype)) <= 32))
 
-;; 1-syntax.watsup:419.1-419.50
+;; 1-syntax.watsup:434.1-434.50
 syntax half =
   | LOW
   | HIGH
 
-;; 1-syntax.watsup:357.1-357.68
+;; 1-syntax.watsup:372.1-372.68
 syntax vextbinop_{imm_1 : imm, N_1 : N, imm_2 : imm, N_2 : N}(`%X%`(imm_1, N_1), `%X%`(imm_2, N_2)) =
   | EXTMUL(half : half)
   | DOT{imm_1 : imm}
     -- if ($lsize((imm_1 : imm <: lanetype)) = 32)
 
-;; 1-syntax.watsup:365.1-365.68
+;; 1-syntax.watsup:380.1-380.68
 syntax memop =
 {
   ALIGN u32,
   OFFSET u32
 }
 
-;; 1-syntax.watsup:367.1-370.44
+;; 1-syntax.watsup:382.1-385.44
 syntax vloadop =
   | SHAPE(nat, nat, sx : sx)
   | SPLAT(nat)
   | ZERO(nat)
 
-;; 1-syntax.watsup:379.1-381.17
+;; 1-syntax.watsup:394.1-396.17
 syntax blocktype =
   | _RESULT(valtype?)
   | _IDX(funcidx : funcidx)
 
-;; 1-syntax.watsup:420.1-420.20
+;; 1-syntax.watsup:435.1-435.20
 syntax zero = `ZERO%?`(()?)
 
-;; 1-syntax.watsup:507.1-519.78
+;; 1-syntax.watsup:522.1-534.78
 rec {
 
-;; 1-syntax.watsup:507.1-519.78
+;; 1-syntax.watsup:522.1-534.78
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -10769,61 +10804,61 @@ syntax instr =
   | VSTORE_LANE(n : n, memidx : memidx, memop : memop, laneidx : laneidx)
 }
 
-;; 1-syntax.watsup:521.1-522.9
+;; 1-syntax.watsup:536.1-537.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:534.1-534.61
+;; 1-syntax.watsup:549.1-549.61
 syntax elemmode =
   | ACTIVE(tableidx : tableidx, expr : expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:535.1-535.49
+;; 1-syntax.watsup:550.1-550.49
 syntax datamode =
   | ACTIVE(memidx : memidx, expr : expr)
   | PASSIVE
 
-;; 1-syntax.watsup:537.1-538.15
+;; 1-syntax.watsup:552.1-553.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:539.1-540.16
+;; 1-syntax.watsup:554.1-555.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:541.1-542.27
+;; 1-syntax.watsup:556.1-557.27
 syntax func = `FUNC%%*%`(typeidx, local*, expr)
 
-;; 1-syntax.watsup:543.1-544.25
+;; 1-syntax.watsup:558.1-559.25
 syntax global = GLOBAL(globaltype, expr)
 
-;; 1-syntax.watsup:545.1-546.23
+;; 1-syntax.watsup:560.1-561.23
 syntax table = TABLE(tabletype, expr)
 
-;; 1-syntax.watsup:547.1-548.17
+;; 1-syntax.watsup:562.1-563.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:549.1-550.30
+;; 1-syntax.watsup:564.1-565.30
 syntax elem = `ELEM%%*%`(reftype, expr*, elemmode)
 
-;; 1-syntax.watsup:551.1-552.22
+;; 1-syntax.watsup:566.1-567.22
 syntax data = `DATA%*%`(byte*, datamode)
 
-;; 1-syntax.watsup:553.1-554.16
+;; 1-syntax.watsup:568.1-569.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:556.1-557.66
+;; 1-syntax.watsup:571.1-572.66
 syntax externidx =
   | FUNC(funcidx : funcidx)
   | GLOBAL(globalidx : globalidx)
   | TABLE(tableidx : tableidx)
   | MEM(memidx : memidx)
 
-;; 1-syntax.watsup:558.1-559.24
+;; 1-syntax.watsup:573.1-574.24
 syntax export = EXPORT(name, externidx)
 
-;; 1-syntax.watsup:560.1-561.30
+;; 1-syntax.watsup:575.1-576.30
 syntax import = IMPORT(name, name, externtype)
 
-;; 1-syntax.watsup:563.1-564.76
+;; 1-syntax.watsup:578.1-579.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -14898,7 +14933,7 @@ syntax symsplit =
 ;; C-conventions.watsup:14.1-14.41
 syntax recorddots = `...`
 
-;; C-conventions.watsup:15.1-16.102
+;; C-conventions.watsup:15.1-18.36
 syntax record =
 {
   FIELD_1 A,
@@ -14906,7 +14941,7 @@ syntax record =
   DOTS recorddots
 }
 
-;; C-conventions.watsup:18.1-19.104
+;; C-conventions.watsup:20.1-23.36
 syntax recordstar =
 {
   FIELD_1 A*,
@@ -14914,14 +14949,14 @@ syntax recordstar =
   DOTS recorddots
 }
 
-;; C-conventions.watsup:21.1-21.58
+;; C-conventions.watsup:25.1-25.58
 syntax recordeq = `%++%=%`(recordstar, recordstar, recordstar)
 
-;; C-conventions.watsup:23.1-23.56
+;; C-conventions.watsup:27.1-27.56
 syntax pth =
   | PTHSYNTAX
 
-;; C-conventions.watsup:25.1-30.4
+;; C-conventions.watsup:29.1-34.4
 syntax pthaux =
 {
   PTH (),
@@ -14929,11 +14964,6 @@ syntax pthaux =
   FIELD_PTH (),
   DOT_FIELD_PTH ()
 }
-
-;; C-conventions.watsup:35.1-35.57
-syntax list{syntax A}(syntax A) =
-  | _LIST{A* : A*}(A*)
-    -- if (|A*{A}| < (2 ^ 32))
 
 == IL Validation after pass the-elimination...
 == Running pass wildcards...
@@ -14990,149 +15020,164 @@ def $concat_(syntax X, X**) : X*
   def $concat_{syntax X, w* : X*, w'** : X**}(syntax X, [w*{w}] :: w'*{w'}*{w'}) = w*{w} :: $concat_(syntax X, w'*{w'}*{w'})
 }
 
-;; 1-syntax.watsup:5.1-5.85
+;; 1-syntax.watsup:6.1-6.57
+syntax list{syntax A}(syntax A) =
+  | _LIST{A* : A*}(A*)
+    -- if (|A*{A}| < (2 ^ 32))
+
+;; 1-syntax.watsup:13.1-13.85
 syntax char = nat
 
-;; 1-syntax.watsup:7.1-7.38
+;; 1-syntax.watsup:16.1-16.38
 syntax name = char*
 
-;; 1-syntax.watsup:18.1-18.36
+;; 1-syntax.watsup:27.1-27.36
 syntax bit = nat
 
-;; 1-syntax.watsup:19.1-19.50
+;; 1-syntax.watsup:28.1-28.50
 syntax byte = nat
 
-;; 1-syntax.watsup:21.1-22.18
+;; 1-syntax.watsup:30.1-31.18
 syntax uN{N : N}(N) = nat
 
-;; 1-syntax.watsup:23.1-24.49
+;; 1-syntax.watsup:32.1-33.49
 syntax sN{N : N}(N) = int
 
-;; 1-syntax.watsup:25.1-26.8
+;; 1-syntax.watsup:34.1-35.8
 syntax iN{N : N}(N) = uN(N)
 
-;; 1-syntax.watsup:28.1-28.18
+;; 1-syntax.watsup:37.1-37.18
 syntax u8 = uN(8)
 
-;; 1-syntax.watsup:29.1-29.20
+;; 1-syntax.watsup:38.1-38.20
 syntax u16 = uN(16)
 
-;; 1-syntax.watsup:30.1-30.20
+;; 1-syntax.watsup:39.1-39.20
 syntax u31 = uN(31)
 
-;; 1-syntax.watsup:31.1-31.20
+;; 1-syntax.watsup:40.1-40.20
 syntax u32 = uN(32)
 
-;; 1-syntax.watsup:32.1-32.20
+;; 1-syntax.watsup:41.1-41.20
 syntax u64 = uN(64)
 
-;; 1-syntax.watsup:33.1-33.22
+;; 1-syntax.watsup:42.1-42.22
 syntax u128 = uN(128)
 
-;; 1-syntax.watsup:34.1-34.20
+;; 1-syntax.watsup:43.1-43.20
 syntax s33 = sN(33)
 
-;; 1-syntax.watsup:41.1-41.21
+;; 1-syntax.watsup:50.1-50.21
 def $signif(N : N) : nat
-  ;; 1-syntax.watsup:42.1-42.21
+  ;; 1-syntax.watsup:51.1-51.21
   def $signif(32) = 23
-  ;; 1-syntax.watsup:43.1-43.21
+  ;; 1-syntax.watsup:52.1-52.21
   def $signif(64) = 52
 
-;; 1-syntax.watsup:45.1-45.20
+;; 1-syntax.watsup:54.1-54.20
 def $expon(N : N) : nat
-  ;; 1-syntax.watsup:46.1-46.19
+  ;; 1-syntax.watsup:55.1-55.19
   def $expon(32) = 8
-  ;; 1-syntax.watsup:47.1-47.20
+  ;; 1-syntax.watsup:56.1-56.20
   def $expon(64) = 11
 
-;; 1-syntax.watsup:49.1-49.35
+;; 1-syntax.watsup:58.1-58.30
 def $M(N : N) : nat
-  ;; 1-syntax.watsup:50.1-50.23
+  ;; 1-syntax.watsup:59.1-59.23
   def $M{N : N}(N) = $signif(N)
 
-;; 1-syntax.watsup:52.1-52.35
+;; 1-syntax.watsup:61.1-61.30
 def $E(N : N) : nat
-  ;; 1-syntax.watsup:53.1-53.22
+  ;; 1-syntax.watsup:62.1-62.22
   def $E{N : N}(N) = $expon(N)
 
-;; 1-syntax.watsup:59.1-63.81
-syntax fmag{N : N}(N) =
-  | NORM{n : n}(m : m, n : n)
-    -- if (((2 - (2 ^ ($E(N) - 1))) <= n) /\ (n <= ((2 ^ ($E(N) - 1)) - 1)))
-  | SUBNORM{N : N, n : n}(m : m)
-    -- if ((2 - (2 ^ ($E(N) - 1))) = n)
+;; 1-syntax.watsup:68.1-72.83
+syntax fNmag{N : N}(N) =
+  | NORM{m : m, n : n}(m : m, n : n)
+    -- if ((m < (2 ^ $M(N))) /\ (((2 - (2 ^ ($E(N) - 1))) <= n) /\ (n <= ((2 ^ ($E(N) - 1)) - 1))))
+  | SUBNORM{m : m, N : N, n : n}(m : m)
+    -- if ((m < (2 ^ $M(N))) /\ ((2 - (2 ^ ($E(N) - 1))) = n))
   | INF
   | NAN{m : m}(m : m)
-    -- if ((1 <= m) /\ (m < $M(N)))
+    -- if ((1 <= m) /\ (m < (2 ^ $M(N))))
 
-;; 1-syntax.watsup:55.1-57.34
+;; 1-syntax.watsup:64.1-66.35
 syntax fN{N : N}(N) =
-  | POS(fmag : fmag(N))
-  | NEG(fmag : fmag(N))
+  | POS(fNmag : fNmag(N))
+  | NEG(fNmag : fNmag(N))
 
-;; 1-syntax.watsup:65.1-65.40
-def $fzero(N : N) : fN(N)
-  ;; 1-syntax.watsup:66.1-66.32
-  def $fzero{N : N}(N) = POS_fN(N)(SUBNORM_fmag(N)(0))
-
-;; 1-syntax.watsup:68.1-68.20
+;; 1-syntax.watsup:74.1-74.20
 syntax f32 = fN(32)
 
-;; 1-syntax.watsup:69.1-69.20
+;; 1-syntax.watsup:75.1-75.20
 syntax f64 = fN(64)
 
-;; 1-syntax.watsup:74.1-75.8
+;; 1-syntax.watsup:77.1-77.39
+def $fzero(N : N) : fN(N)
+  ;; 1-syntax.watsup:78.1-78.32
+  def $fzero{N : N}(N) = POS_fN(N)(SUBNORM_fNmag(N)(0))
+
+;; 1-syntax.watsup:80.1-80.39
+def $fone(N : N) : fN(N)
+  ;; 1-syntax.watsup:81.1-81.30
+  def $fone{N : N}(N) = POS_fN(N)(NORM_fNmag(N)(1, 0))
+
+;; 1-syntax.watsup:83.1-83.21
+def $canon_(N : N) : nat
+  ;; 1-syntax.watsup:84.1-84.37
+  def $canon_{N : N}(N) = (2 ^ ($signif(N) - 1))
+
+;; 1-syntax.watsup:89.1-90.8
 syntax vN{N : N}(N) = iN(N)
 
-;; 1-syntax.watsup:82.1-82.36
+;; 1-syntax.watsup:97.1-97.36
 syntax idx = u32
 
-;; 1-syntax.watsup:83.1-83.44
+;; 1-syntax.watsup:98.1-98.44
 syntax laneidx = u8
 
-;; 1-syntax.watsup:85.1-85.45
+;; 1-syntax.watsup:100.1-100.45
 syntax typeidx = idx
 
-;; 1-syntax.watsup:86.1-86.49
+;; 1-syntax.watsup:101.1-101.49
 syntax funcidx = idx
 
-;; 1-syntax.watsup:87.1-87.49
+;; 1-syntax.watsup:102.1-102.49
 syntax globalidx = idx
 
-;; 1-syntax.watsup:88.1-88.47
+;; 1-syntax.watsup:103.1-103.47
 syntax tableidx = idx
 
-;; 1-syntax.watsup:89.1-89.46
+;; 1-syntax.watsup:104.1-104.46
 syntax memidx = idx
 
-;; 1-syntax.watsup:90.1-90.45
+;; 1-syntax.watsup:105.1-105.45
 syntax elemidx = idx
 
-;; 1-syntax.watsup:91.1-91.45
+;; 1-syntax.watsup:106.1-106.45
 syntax dataidx = idx
 
-;; 1-syntax.watsup:92.1-92.47
+;; 1-syntax.watsup:107.1-107.47
 syntax labelidx = idx
 
-;; 1-syntax.watsup:93.1-93.47
+;; 1-syntax.watsup:108.1-108.47
 syntax localidx = idx
 
-;; 1-syntax.watsup:107.1-107.19
+;; 1-syntax.watsup:122.1-122.19
 syntax nul = `NULL%?`(()?)
 
-;; 1-syntax.watsup:109.1-110.26
+;; 1-syntax.watsup:124.1-125.26
 syntax numtype =
   | I32
   | I64
   | F32
   | F64
 
-;; 1-syntax.watsup:112.1-113.9
+;; 1-syntax.watsup:127.1-128.9
 syntax vectype =
   | V128
 
-;; 1-syntax.watsup:120.1-121.14
+;; 1-syntax.watsup:135.1-136.14
 syntax absheaptype =
   | ANY
   | EQ
@@ -15146,16 +15191,16 @@ syntax absheaptype =
   | NOEXTERN
   | BOT
 
-;; 1-syntax.watsup:157.1-157.18
+;; 1-syntax.watsup:172.1-172.18
 syntax mut = `MUT%?`(()?)
 
-;; 1-syntax.watsup:158.1-158.20
+;; 1-syntax.watsup:173.1-173.20
 syntax fin = `FINAL%?`(()?)
 
-;; 1-syntax.watsup:132.1-188.54
+;; 1-syntax.watsup:147.1-203.54
 rec {
 
-;; 1-syntax.watsup:132.1-133.14
+;; 1-syntax.watsup:147.1-148.14
 syntax valtype =
   | I32
   | I64
@@ -15165,10 +15210,10 @@ syntax valtype =
   | REF(nul : nul, heaptype : heaptype)
   | BOT
 
-;; 1-syntax.watsup:140.1-141.11
+;; 1-syntax.watsup:155.1-156.11
 syntax resulttype = valtype*
 
-;; 1-syntax.watsup:148.1-148.68
+;; 1-syntax.watsup:163.1-163.68
 syntax storagetype =
   | BOT
   | I32
@@ -15180,23 +15225,23 @@ syntax storagetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:160.1-161.18
+;; 1-syntax.watsup:175.1-176.18
 syntax fieldtype = `%%`(mut, storagetype)
 
-;; 1-syntax.watsup:163.1-164.27
+;; 1-syntax.watsup:178.1-179.27
 syntax functype = `%->%`(resulttype, resulttype)
 
-;; 1-syntax.watsup:166.1-169.18
+;; 1-syntax.watsup:181.1-184.18
 syntax comptype =
   | STRUCT(fieldtype*)
   | ARRAY(fieldtype : fieldtype)
   | FUNC(functype : functype)
 
-;; 1-syntax.watsup:175.1-176.17
+;; 1-syntax.watsup:190.1-191.17
 syntax rectype =
   | REC(subtype*)
 
-;; 1-syntax.watsup:181.1-184.12
+;; 1-syntax.watsup:196.1-199.12
 syntax heaptype =
   | _IDX(typeidx : typeidx)
   | ANY
@@ -15213,36 +15258,36 @@ syntax heaptype =
   | DEF(rectype : rectype, nat)
   | REC(nat)
 
-;; 1-syntax.watsup:186.1-188.54
+;; 1-syntax.watsup:201.1-203.54
 syntax subtype =
   | SUB(fin : fin, typeidx*, comptype : comptype)
   | SUBD(fin : fin, heaptype*, comptype : comptype)
 }
 
-;; 1-syntax.watsup:127.1-128.21
+;; 1-syntax.watsup:142.1-143.21
 syntax reftype =
   | REF(nul : nul, heaptype : heaptype)
 
-;; 1-syntax.watsup:135.1-135.40
+;; 1-syntax.watsup:150.1-150.40
 syntax inn =
   | I32
   | I64
 
-;; 1-syntax.watsup:136.1-136.40
+;; 1-syntax.watsup:151.1-151.40
 syntax fnn =
   | F32
   | F64
 
-;; 1-syntax.watsup:137.1-137.35
+;; 1-syntax.watsup:152.1-152.35
 syntax vnn =
   | V128
 
-;; 1-syntax.watsup:146.1-146.54
+;; 1-syntax.watsup:161.1-161.54
 syntax packtype =
   | I8
   | I16
 
-;; 1-syntax.watsup:147.1-147.62
+;; 1-syntax.watsup:162.1-162.62
 syntax lanetype =
   | I32
   | I64
@@ -15251,12 +15296,12 @@ syntax lanetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:150.1-150.39
+;; 1-syntax.watsup:165.1-165.39
 syntax pnn =
   | I8
   | I16
 
-;; 1-syntax.watsup:151.1-151.44
+;; 1-syntax.watsup:166.1-166.44
 syntax lnn =
   | I32
   | I64
@@ -15265,43 +15310,43 @@ syntax lnn =
   | I8
   | I16
 
-;; 1-syntax.watsup:152.1-152.40
+;; 1-syntax.watsup:167.1-167.40
 syntax imm =
   | I32
   | I64
   | I8
   | I16
 
-;; 1-syntax.watsup:178.1-179.35
+;; 1-syntax.watsup:193.1-194.35
 syntax deftype =
   | DEF(rectype : rectype, nat)
 
-;; 1-syntax.watsup:193.1-194.16
+;; 1-syntax.watsup:208.1-209.16
 syntax limits = `[%..%]`(u32, u32)
 
-;; 1-syntax.watsup:196.1-197.14
+;; 1-syntax.watsup:211.1-212.14
 syntax globaltype = `%%`(mut, valtype)
 
-;; 1-syntax.watsup:198.1-199.17
+;; 1-syntax.watsup:213.1-214.17
 syntax tabletype = `%%`(limits, reftype)
 
-;; 1-syntax.watsup:200.1-201.12
+;; 1-syntax.watsup:215.1-216.12
 syntax memtype = `%I8`(limits)
 
-;; 1-syntax.watsup:202.1-203.10
+;; 1-syntax.watsup:217.1-218.10
 syntax elemtype = reftype
 
-;; 1-syntax.watsup:204.1-205.5
+;; 1-syntax.watsup:219.1-220.5
 syntax datatype = OK
 
-;; 1-syntax.watsup:206.1-207.69
+;; 1-syntax.watsup:221.1-222.69
 syntax externtype =
   | FUNC(deftype : deftype)
   | GLOBAL(globaltype : globaltype)
   | TABLE(tabletype : tabletype)
   | MEM(memtype : memtype)
 
-;; 1-syntax.watsup:244.1-244.60
+;; 1-syntax.watsup:259.1-259.60
 def $size(valtype : valtype) : nat?
   ;; 2-syntax-aux.watsup:53.1-53.20
   def $size(I32_valtype) = ?(32)
@@ -15315,97 +15360,97 @@ def $size(valtype : valtype) : nat?
   def $size(V128_valtype) = ?(128)
   def $size{x0 : valtype}(x0) = ?()
 
-;; 1-syntax.watsup:245.1-245.44
+;; 1-syntax.watsup:260.1-260.44
 def $psize(packtype : packtype) : nat
   ;; 2-syntax-aux.watsup:59.1-59.19
   def $psize(I8_packtype) = 8
   ;; 2-syntax-aux.watsup:60.1-60.21
   def $psize(I16_packtype) = 16
 
-;; 1-syntax.watsup:246.1-246.46
+;; 1-syntax.watsup:261.1-261.46
 def $lsize(lanetype : lanetype) : nat
   ;; 2-syntax-aux.watsup:62.1-62.37
   def $lsize{numtype : numtype}((numtype : numtype <: lanetype)) = !($size((numtype : numtype <: valtype)))
   ;; 2-syntax-aux.watsup:63.1-63.40
   def $lsize{packtype : packtype}((packtype : packtype <: lanetype)) = $psize(packtype)
 
-;; 1-syntax.watsup:247.1-247.46
+;; 1-syntax.watsup:262.1-262.46
 def $zsize(storagetype : storagetype) : nat
   ;; 2-syntax-aux.watsup:65.1-65.37
   def $zsize{valtype : valtype}((valtype : valtype <: storagetype)) = !($size(valtype))
   ;; 2-syntax-aux.watsup:66.1-66.40
   def $zsize{packtype : packtype}((packtype : packtype <: storagetype)) = $psize(packtype)
 
-;; 1-syntax.watsup:301.1-301.55
+;; 1-syntax.watsup:316.1-316.55
 syntax dim = nat
 
-;; 1-syntax.watsup:302.1-302.49
+;; 1-syntax.watsup:317.1-317.49
 syntax shape = `%X%`(lanetype, dim)
 
-;; 1-syntax.watsup:248.1-248.32
+;; 1-syntax.watsup:263.1-263.32
 def $lanetype(shape : shape) : lanetype
   ;; 2-syntax-aux.watsup:94.1-94.29
   def $lanetype{lnn : lnn, N : N}(`%X%`(lnn, N)) = lnn
 
-;; 1-syntax.watsup:250.1-250.21
+;; 1-syntax.watsup:265.1-265.21
 syntax num_(numtype : numtype)
-  ;; 1-syntax.watsup:251.1-251.34
+  ;; 1-syntax.watsup:266.1-266.34
   syntax num_{inn : inn}((inn : inn <: numtype)) = iN(!($size((inn : inn <: valtype))))
 
 
-  ;; 1-syntax.watsup:252.1-252.34
+  ;; 1-syntax.watsup:267.1-267.34
   syntax num_{fnn : fnn}((fnn : fnn <: numtype)) = fN(!($size((fnn : fnn <: valtype))))
 
 
-;; 1-syntax.watsup:254.1-254.36
+;; 1-syntax.watsup:269.1-269.36
 syntax pack_{pnn : pnn}(pnn) = iN($psize(pnn))
 
-;; 1-syntax.watsup:256.1-256.23
+;; 1-syntax.watsup:271.1-271.23
 syntax lane_(lanetype : lanetype)
-  ;; 1-syntax.watsup:257.1-257.38
+  ;; 1-syntax.watsup:272.1-272.38
   syntax lane_{numtype : numtype}((numtype : numtype <: lanetype)) = num_(numtype)
 
 
-  ;; 1-syntax.watsup:258.1-258.41
+  ;; 1-syntax.watsup:273.1-273.41
   syntax lane_{packtype : packtype}((packtype : packtype <: lanetype)) = pack_(packtype)
 
 
-  ;; 1-syntax.watsup:259.1-259.36
+  ;; 1-syntax.watsup:274.1-274.36
   syntax lane_{imm : imm}((imm : imm <: lanetype)) = iN($lsize((imm : imm <: lanetype)))
 
 
-;; 1-syntax.watsup:261.1-261.34
+;; 1-syntax.watsup:276.1-276.34
 syntax vec_{vnn : vnn}(vnn) = vN(!($size((vnn : vnn <: valtype))))
 
-;; 1-syntax.watsup:263.1-263.26
+;; 1-syntax.watsup:278.1-278.26
 syntax zval_(storagetype : storagetype)
-  ;; 1-syntax.watsup:264.1-264.38
+  ;; 1-syntax.watsup:279.1-279.38
   syntax zval_{numtype : numtype}((numtype : numtype <: storagetype)) = num_(numtype)
 
 
-  ;; 1-syntax.watsup:265.1-265.38
+  ;; 1-syntax.watsup:280.1-280.38
   syntax zval_{vectype : vectype}((vectype : vectype <: storagetype)) = vec_(vectype)
 
 
-  ;; 1-syntax.watsup:266.1-266.41
+  ;; 1-syntax.watsup:281.1-281.41
   syntax zval_{packtype : packtype}((packtype : packtype <: storagetype)) = pack_(packtype)
 
 
-;; 1-syntax.watsup:271.1-271.44
+;; 1-syntax.watsup:286.1-286.44
 syntax sx =
   | U
   | S
 
-;; 1-syntax.watsup:273.1-273.22
+;; 1-syntax.watsup:288.1-288.22
 syntax unop_(numtype : numtype)
-  ;; 1-syntax.watsup:274.1-274.41
+  ;; 1-syntax.watsup:289.1-289.41
   syntax unop_{inn : inn}((inn : inn <: numtype)) =
   | CLZ
   | CTZ
   | POPCNT
 
 
-  ;; 1-syntax.watsup:275.1-275.72
+  ;; 1-syntax.watsup:290.1-290.72
   syntax unop_{fnn : fnn}((fnn : fnn <: numtype)) =
   | ABS
   | NEG
@@ -15416,9 +15461,9 @@ syntax unop_(numtype : numtype)
   | NEAREST
 
 
-;; 1-syntax.watsup:277.1-277.23
+;; 1-syntax.watsup:292.1-292.23
 syntax binop_(numtype : numtype)
-  ;; 1-syntax.watsup:278.1-280.66
+  ;; 1-syntax.watsup:293.1-295.66
   syntax binop_{inn : inn}((inn : inn <: numtype)) =
   | ADD
   | SUB
@@ -15434,7 +15479,7 @@ syntax binop_(numtype : numtype)
   | ROTR
 
 
-  ;; 1-syntax.watsup:281.1-282.49
+  ;; 1-syntax.watsup:296.1-297.49
   syntax binop_{fnn : fnn}((fnn : fnn <: numtype)) =
   | ADD
   | SUB
@@ -15445,21 +15490,21 @@ syntax binop_(numtype : numtype)
   | COPYSIGN
 
 
-;; 1-syntax.watsup:284.1-284.24
+;; 1-syntax.watsup:299.1-299.24
 syntax testop_(numtype : numtype)
-  ;; 1-syntax.watsup:285.1-285.28
+  ;; 1-syntax.watsup:300.1-300.28
   syntax testop_{inn : inn}((inn : inn <: numtype)) =
   | EQZ
 
 
-  ;; 1-syntax.watsup:286.1-286.24
+  ;; 1-syntax.watsup:301.1-301.24
   syntax testop_{fnn : fnn}((fnn : fnn <: numtype)) =
   |
 
 
-;; 1-syntax.watsup:288.1-288.23
+;; 1-syntax.watsup:303.1-303.23
 syntax relop_(numtype : numtype)
-  ;; 1-syntax.watsup:289.1-292.52
+  ;; 1-syntax.watsup:304.1-307.52
   syntax relop_{inn : inn}((inn : inn <: numtype)) =
   | EQ
   | NE
@@ -15469,7 +15514,7 @@ syntax relop_(numtype : numtype)
   | GE(sx : sx)
 
 
-  ;; 1-syntax.watsup:293.1-294.32
+  ;; 1-syntax.watsup:308.1-309.32
   syntax relop_{fnn : fnn}((fnn : fnn <: numtype)) =
   | EQ
   | NE
@@ -15479,52 +15524,52 @@ syntax relop_(numtype : numtype)
   | GE
 
 
-;; 1-syntax.watsup:296.1-296.39
+;; 1-syntax.watsup:311.1-311.39
 syntax cvtop =
   | CONVERT
   | REINTERPRET
 
-;; 1-syntax.watsup:303.1-303.45
+;; 1-syntax.watsup:318.1-318.45
 syntax ishape = `%X%`(imm, dim)
 
-;; 1-syntax.watsup:304.1-304.45
+;; 1-syntax.watsup:319.1-319.45
 syntax fshape = `%X%`(fnn, dim)
 
-;; 1-syntax.watsup:305.1-305.45
+;; 1-syntax.watsup:320.1-320.45
 syntax pshape = `%X%`(pnn, dim)
 
-;; 1-syntax.watsup:307.1-307.22
+;; 1-syntax.watsup:322.1-322.22
 def $dim(shape : shape) : dim
   ;; 2-syntax-aux.watsup:97.1-97.22
   def $dim{lnn : lnn, N : N}(`%X%`(lnn, N)) = N
 
-;; 1-syntax.watsup:308.1-308.41
+;; 1-syntax.watsup:323.1-323.41
 def $shsize(shape : shape) : nat
   ;; 2-syntax-aux.watsup:100.1-100.42
   def $shsize{lnn : lnn, N : N}(`%X%`(lnn, N)) = ($lsize(lnn) * N)
 
-;; 1-syntax.watsup:310.1-310.22
+;; 1-syntax.watsup:325.1-325.22
 syntax vvunop =
   | NOT
 
-;; 1-syntax.watsup:311.1-311.43
+;; 1-syntax.watsup:326.1-326.43
 syntax vvbinop =
   | AND
   | ANDNOT
   | OR
   | XOR
 
-;; 1-syntax.watsup:312.1-312.30
+;; 1-syntax.watsup:327.1-327.30
 syntax vvternop =
   | BITSELECT
 
-;; 1-syntax.watsup:313.1-313.29
+;; 1-syntax.watsup:328.1-328.29
 syntax vvtestop =
   | ANY_TRUE
 
-;; 1-syntax.watsup:315.1-315.21
+;; 1-syntax.watsup:330.1-330.21
 syntax vunop_(shape : shape)
-  ;; 1-syntax.watsup:316.1-316.61
+  ;; 1-syntax.watsup:331.1-331.61
   syntax vunop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ABS
   | NEG
@@ -15532,7 +15577,7 @@ syntax vunop_(shape : shape)
     -- if (imm = I8_imm)
 
 
-  ;; 1-syntax.watsup:317.1-317.77
+  ;; 1-syntax.watsup:332.1-332.77
   syntax vunop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | ABS
   | NEG
@@ -15543,9 +15588,9 @@ syntax vunop_(shape : shape)
   | NEAREST
 
 
-;; 1-syntax.watsup:319.1-319.22
+;; 1-syntax.watsup:334.1-334.22
 syntax vbinop_(shape : shape)
-  ;; 1-syntax.watsup:320.1-329.43
+  ;; 1-syntax.watsup:335.1-344.43
   syntax vbinop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ADD
   | SUB
@@ -15565,7 +15610,7 @@ syntax vbinop_(shape : shape)
     -- if ($lsize((imm : imm <: lanetype)) <= 32)
 
 
-  ;; 1-syntax.watsup:330.1-330.76
+  ;; 1-syntax.watsup:345.1-345.76
   syntax vbinop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | ADD
   | SUB
@@ -15577,21 +15622,21 @@ syntax vbinop_(shape : shape)
   | PMAX
 
 
-;; 1-syntax.watsup:332.1-332.23
+;; 1-syntax.watsup:347.1-347.23
 syntax vtestop_(shape : shape)
-  ;; 1-syntax.watsup:333.1-333.38
+  ;; 1-syntax.watsup:348.1-348.38
   syntax vtestop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ALL_TRUE
 
 
-  ;; 1-syntax.watsup:334.1-334.29
+  ;; 1-syntax.watsup:349.1-349.29
   syntax vtestop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:336.1-336.22
+;; 1-syntax.watsup:351.1-351.22
 syntax vrelop_(shape : shape)
-  ;; 1-syntax.watsup:337.1-337.68
+  ;; 1-syntax.watsup:352.1-352.68
   syntax vrelop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | EQ
   | NE
@@ -15601,7 +15646,7 @@ syntax vrelop_(shape : shape)
   | GE(sx : sx)
 
 
-  ;; 1-syntax.watsup:338.1-338.56
+  ;; 1-syntax.watsup:353.1-353.56
   syntax vrelop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | EQ
   | NE
@@ -15611,7 +15656,7 @@ syntax vrelop_(shape : shape)
   | GE
 
 
-;; 1-syntax.watsup:340.1-340.66
+;; 1-syntax.watsup:355.1-355.66
 syntax vcvtop =
   | EXTEND
   | TRUNC_SAT
@@ -15619,52 +15664,52 @@ syntax vcvtop =
   | DEMOTE
   | PROMOTE
 
-;; 1-syntax.watsup:351.1-351.25
+;; 1-syntax.watsup:366.1-366.25
 syntax vshiftop_{imm : imm, N : N}(`%X%`(imm, N)) =
   | SHL
   | SHR(sx : sx)
 
-;; 1-syntax.watsup:354.1-354.66
+;; 1-syntax.watsup:369.1-369.66
 syntax vextunop_{imm_1 : imm, N_1 : N, imm_2 : imm, N_2 : N}(`%X%`(imm_1, N_1), `%X%`(imm_2, N_2)) =
   | EXTADD_PAIRWISE
     -- if ((16 <= $lsize((imm_1 : imm <: lanetype))) /\ ($lsize((imm_1 : imm <: lanetype)) <= 32))
 
-;; 1-syntax.watsup:419.1-419.50
+;; 1-syntax.watsup:434.1-434.50
 syntax half =
   | LOW
   | HIGH
 
-;; 1-syntax.watsup:357.1-357.68
+;; 1-syntax.watsup:372.1-372.68
 syntax vextbinop_{imm_1 : imm, N_1 : N, imm_2 : imm, N_2 : N}(`%X%`(imm_1, N_1), `%X%`(imm_2, N_2)) =
   | EXTMUL(half : half)
   | DOT{imm_1 : imm}
     -- if ($lsize((imm_1 : imm <: lanetype)) = 32)
 
-;; 1-syntax.watsup:365.1-365.68
+;; 1-syntax.watsup:380.1-380.68
 syntax memop =
 {
   ALIGN u32,
   OFFSET u32
 }
 
-;; 1-syntax.watsup:367.1-370.44
+;; 1-syntax.watsup:382.1-385.44
 syntax vloadop =
   | SHAPE(nat, nat, sx : sx)
   | SPLAT(nat)
   | ZERO(nat)
 
-;; 1-syntax.watsup:379.1-381.17
+;; 1-syntax.watsup:394.1-396.17
 syntax blocktype =
   | _RESULT(valtype?)
   | _IDX(funcidx : funcidx)
 
-;; 1-syntax.watsup:420.1-420.20
+;; 1-syntax.watsup:435.1-435.20
 syntax zero = `ZERO%?`(()?)
 
-;; 1-syntax.watsup:507.1-519.78
+;; 1-syntax.watsup:522.1-534.78
 rec {
 
-;; 1-syntax.watsup:507.1-519.78
+;; 1-syntax.watsup:522.1-534.78
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -15773,61 +15818,61 @@ syntax instr =
   | VSTORE_LANE(n : n, memidx : memidx, memop : memop, laneidx : laneidx)
 }
 
-;; 1-syntax.watsup:521.1-522.9
+;; 1-syntax.watsup:536.1-537.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:534.1-534.61
+;; 1-syntax.watsup:549.1-549.61
 syntax elemmode =
   | ACTIVE(tableidx : tableidx, expr : expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:535.1-535.49
+;; 1-syntax.watsup:550.1-550.49
 syntax datamode =
   | ACTIVE(memidx : memidx, expr : expr)
   | PASSIVE
 
-;; 1-syntax.watsup:537.1-538.15
+;; 1-syntax.watsup:552.1-553.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:539.1-540.16
+;; 1-syntax.watsup:554.1-555.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:541.1-542.27
+;; 1-syntax.watsup:556.1-557.27
 syntax func = `FUNC%%*%`(typeidx, local*, expr)
 
-;; 1-syntax.watsup:543.1-544.25
+;; 1-syntax.watsup:558.1-559.25
 syntax global = GLOBAL(globaltype, expr)
 
-;; 1-syntax.watsup:545.1-546.23
+;; 1-syntax.watsup:560.1-561.23
 syntax table = TABLE(tabletype, expr)
 
-;; 1-syntax.watsup:547.1-548.17
+;; 1-syntax.watsup:562.1-563.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:549.1-550.30
+;; 1-syntax.watsup:564.1-565.30
 syntax elem = `ELEM%%*%`(reftype, expr*, elemmode)
 
-;; 1-syntax.watsup:551.1-552.22
+;; 1-syntax.watsup:566.1-567.22
 syntax data = `DATA%*%`(byte*, datamode)
 
-;; 1-syntax.watsup:553.1-554.16
+;; 1-syntax.watsup:568.1-569.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:556.1-557.66
+;; 1-syntax.watsup:571.1-572.66
 syntax externidx =
   | FUNC(funcidx : funcidx)
   | GLOBAL(globalidx : globalidx)
   | TABLE(tableidx : tableidx)
   | MEM(memidx : memidx)
 
-;; 1-syntax.watsup:558.1-559.24
+;; 1-syntax.watsup:573.1-574.24
 syntax export = EXPORT(name, externidx)
 
-;; 1-syntax.watsup:560.1-561.30
+;; 1-syntax.watsup:575.1-576.30
 syntax import = IMPORT(name, name, externtype)
 
-;; 1-syntax.watsup:563.1-564.76
+;; 1-syntax.watsup:578.1-579.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -19902,7 +19947,7 @@ syntax symsplit =
 ;; C-conventions.watsup:14.1-14.41
 syntax recorddots = `...`
 
-;; C-conventions.watsup:15.1-16.102
+;; C-conventions.watsup:15.1-18.36
 syntax record =
 {
   FIELD_1 A,
@@ -19910,7 +19955,7 @@ syntax record =
   DOTS recorddots
 }
 
-;; C-conventions.watsup:18.1-19.104
+;; C-conventions.watsup:20.1-23.36
 syntax recordstar =
 {
   FIELD_1 A*,
@@ -19918,14 +19963,14 @@ syntax recordstar =
   DOTS recorddots
 }
 
-;; C-conventions.watsup:21.1-21.58
+;; C-conventions.watsup:25.1-25.58
 syntax recordeq = `%++%=%`(recordstar, recordstar, recordstar)
 
-;; C-conventions.watsup:23.1-23.56
+;; C-conventions.watsup:27.1-27.56
 syntax pth =
   | PTHSYNTAX
 
-;; C-conventions.watsup:25.1-30.4
+;; C-conventions.watsup:29.1-34.4
 syntax pthaux =
 {
   PTH (),
@@ -19933,11 +19978,6 @@ syntax pthaux =
   FIELD_PTH (),
   DOT_FIELD_PTH ()
 }
-
-;; C-conventions.watsup:35.1-35.57
-syntax list{syntax A}(syntax A) =
-  | _LIST{A* : A*}(A*)
-    -- if (|A*{A}| < (2 ^ 32))
 
 == IL Validation after pass wildcards...
 == Running pass sideconditions...
@@ -19994,149 +20034,164 @@ def $concat_(syntax X, X**) : X*
   def $concat_{syntax X, w* : X*, w'** : X**}(syntax X, [w*{w}] :: w'*{w'}*{w'}) = w*{w} :: $concat_(syntax X, w'*{w'}*{w'})
 }
 
-;; 1-syntax.watsup:5.1-5.85
+;; 1-syntax.watsup:6.1-6.57
+syntax list{syntax A}(syntax A) =
+  | _LIST{A* : A*}(A*)
+    -- if (|A*{A}| < (2 ^ 32))
+
+;; 1-syntax.watsup:13.1-13.85
 syntax char = nat
 
-;; 1-syntax.watsup:7.1-7.38
+;; 1-syntax.watsup:16.1-16.38
 syntax name = char*
 
-;; 1-syntax.watsup:18.1-18.36
+;; 1-syntax.watsup:27.1-27.36
 syntax bit = nat
 
-;; 1-syntax.watsup:19.1-19.50
+;; 1-syntax.watsup:28.1-28.50
 syntax byte = nat
 
-;; 1-syntax.watsup:21.1-22.18
+;; 1-syntax.watsup:30.1-31.18
 syntax uN{N : N}(N) = nat
 
-;; 1-syntax.watsup:23.1-24.49
+;; 1-syntax.watsup:32.1-33.49
 syntax sN{N : N}(N) = int
 
-;; 1-syntax.watsup:25.1-26.8
+;; 1-syntax.watsup:34.1-35.8
 syntax iN{N : N}(N) = uN(N)
 
-;; 1-syntax.watsup:28.1-28.18
+;; 1-syntax.watsup:37.1-37.18
 syntax u8 = uN(8)
 
-;; 1-syntax.watsup:29.1-29.20
+;; 1-syntax.watsup:38.1-38.20
 syntax u16 = uN(16)
 
-;; 1-syntax.watsup:30.1-30.20
+;; 1-syntax.watsup:39.1-39.20
 syntax u31 = uN(31)
 
-;; 1-syntax.watsup:31.1-31.20
+;; 1-syntax.watsup:40.1-40.20
 syntax u32 = uN(32)
 
-;; 1-syntax.watsup:32.1-32.20
+;; 1-syntax.watsup:41.1-41.20
 syntax u64 = uN(64)
 
-;; 1-syntax.watsup:33.1-33.22
+;; 1-syntax.watsup:42.1-42.22
 syntax u128 = uN(128)
 
-;; 1-syntax.watsup:34.1-34.20
+;; 1-syntax.watsup:43.1-43.20
 syntax s33 = sN(33)
 
-;; 1-syntax.watsup:41.1-41.21
+;; 1-syntax.watsup:50.1-50.21
 def $signif(N : N) : nat
-  ;; 1-syntax.watsup:42.1-42.21
+  ;; 1-syntax.watsup:51.1-51.21
   def $signif(32) = 23
-  ;; 1-syntax.watsup:43.1-43.21
+  ;; 1-syntax.watsup:52.1-52.21
   def $signif(64) = 52
 
-;; 1-syntax.watsup:45.1-45.20
+;; 1-syntax.watsup:54.1-54.20
 def $expon(N : N) : nat
-  ;; 1-syntax.watsup:46.1-46.19
+  ;; 1-syntax.watsup:55.1-55.19
   def $expon(32) = 8
-  ;; 1-syntax.watsup:47.1-47.20
+  ;; 1-syntax.watsup:56.1-56.20
   def $expon(64) = 11
 
-;; 1-syntax.watsup:49.1-49.35
+;; 1-syntax.watsup:58.1-58.30
 def $M(N : N) : nat
-  ;; 1-syntax.watsup:50.1-50.23
+  ;; 1-syntax.watsup:59.1-59.23
   def $M{N : N}(N) = $signif(N)
 
-;; 1-syntax.watsup:52.1-52.35
+;; 1-syntax.watsup:61.1-61.30
 def $E(N : N) : nat
-  ;; 1-syntax.watsup:53.1-53.22
+  ;; 1-syntax.watsup:62.1-62.22
   def $E{N : N}(N) = $expon(N)
 
-;; 1-syntax.watsup:59.1-63.81
-syntax fmag{N : N}(N) =
-  | NORM{n : n}(m : m, n : n)
-    -- if (((2 - (2 ^ ($E(N) - 1))) <= n) /\ (n <= ((2 ^ ($E(N) - 1)) - 1)))
-  | SUBNORM{N : N, n : n}(m : m)
-    -- if ((2 - (2 ^ ($E(N) - 1))) = n)
+;; 1-syntax.watsup:68.1-72.83
+syntax fNmag{N : N}(N) =
+  | NORM{m : m, n : n}(m : m, n : n)
+    -- if ((m < (2 ^ $M(N))) /\ (((2 - (2 ^ ($E(N) - 1))) <= n) /\ (n <= ((2 ^ ($E(N) - 1)) - 1))))
+  | SUBNORM{m : m, N : N, n : n}(m : m)
+    -- if ((m < (2 ^ $M(N))) /\ ((2 - (2 ^ ($E(N) - 1))) = n))
   | INF
   | NAN{m : m}(m : m)
-    -- if ((1 <= m) /\ (m < $M(N)))
+    -- if ((1 <= m) /\ (m < (2 ^ $M(N))))
 
-;; 1-syntax.watsup:55.1-57.34
+;; 1-syntax.watsup:64.1-66.35
 syntax fN{N : N}(N) =
-  | POS(fmag : fmag(N))
-  | NEG(fmag : fmag(N))
+  | POS(fNmag : fNmag(N))
+  | NEG(fNmag : fNmag(N))
 
-;; 1-syntax.watsup:65.1-65.40
-def $fzero(N : N) : fN(N)
-  ;; 1-syntax.watsup:66.1-66.32
-  def $fzero{N : N}(N) = POS_fN(N)(SUBNORM_fmag(N)(0))
-
-;; 1-syntax.watsup:68.1-68.20
+;; 1-syntax.watsup:74.1-74.20
 syntax f32 = fN(32)
 
-;; 1-syntax.watsup:69.1-69.20
+;; 1-syntax.watsup:75.1-75.20
 syntax f64 = fN(64)
 
-;; 1-syntax.watsup:74.1-75.8
+;; 1-syntax.watsup:77.1-77.39
+def $fzero(N : N) : fN(N)
+  ;; 1-syntax.watsup:78.1-78.32
+  def $fzero{N : N}(N) = POS_fN(N)(SUBNORM_fNmag(N)(0))
+
+;; 1-syntax.watsup:80.1-80.39
+def $fone(N : N) : fN(N)
+  ;; 1-syntax.watsup:81.1-81.30
+  def $fone{N : N}(N) = POS_fN(N)(NORM_fNmag(N)(1, 0))
+
+;; 1-syntax.watsup:83.1-83.21
+def $canon_(N : N) : nat
+  ;; 1-syntax.watsup:84.1-84.37
+  def $canon_{N : N}(N) = (2 ^ ($signif(N) - 1))
+
+;; 1-syntax.watsup:89.1-90.8
 syntax vN{N : N}(N) = iN(N)
 
-;; 1-syntax.watsup:82.1-82.36
+;; 1-syntax.watsup:97.1-97.36
 syntax idx = u32
 
-;; 1-syntax.watsup:83.1-83.44
+;; 1-syntax.watsup:98.1-98.44
 syntax laneidx = u8
 
-;; 1-syntax.watsup:85.1-85.45
+;; 1-syntax.watsup:100.1-100.45
 syntax typeidx = idx
 
-;; 1-syntax.watsup:86.1-86.49
+;; 1-syntax.watsup:101.1-101.49
 syntax funcidx = idx
 
-;; 1-syntax.watsup:87.1-87.49
+;; 1-syntax.watsup:102.1-102.49
 syntax globalidx = idx
 
-;; 1-syntax.watsup:88.1-88.47
+;; 1-syntax.watsup:103.1-103.47
 syntax tableidx = idx
 
-;; 1-syntax.watsup:89.1-89.46
+;; 1-syntax.watsup:104.1-104.46
 syntax memidx = idx
 
-;; 1-syntax.watsup:90.1-90.45
+;; 1-syntax.watsup:105.1-105.45
 syntax elemidx = idx
 
-;; 1-syntax.watsup:91.1-91.45
+;; 1-syntax.watsup:106.1-106.45
 syntax dataidx = idx
 
-;; 1-syntax.watsup:92.1-92.47
+;; 1-syntax.watsup:107.1-107.47
 syntax labelidx = idx
 
-;; 1-syntax.watsup:93.1-93.47
+;; 1-syntax.watsup:108.1-108.47
 syntax localidx = idx
 
-;; 1-syntax.watsup:107.1-107.19
+;; 1-syntax.watsup:122.1-122.19
 syntax nul = `NULL%?`(()?)
 
-;; 1-syntax.watsup:109.1-110.26
+;; 1-syntax.watsup:124.1-125.26
 syntax numtype =
   | I32
   | I64
   | F32
   | F64
 
-;; 1-syntax.watsup:112.1-113.9
+;; 1-syntax.watsup:127.1-128.9
 syntax vectype =
   | V128
 
-;; 1-syntax.watsup:120.1-121.14
+;; 1-syntax.watsup:135.1-136.14
 syntax absheaptype =
   | ANY
   | EQ
@@ -20150,16 +20205,16 @@ syntax absheaptype =
   | NOEXTERN
   | BOT
 
-;; 1-syntax.watsup:157.1-157.18
+;; 1-syntax.watsup:172.1-172.18
 syntax mut = `MUT%?`(()?)
 
-;; 1-syntax.watsup:158.1-158.20
+;; 1-syntax.watsup:173.1-173.20
 syntax fin = `FINAL%?`(()?)
 
-;; 1-syntax.watsup:132.1-188.54
+;; 1-syntax.watsup:147.1-203.54
 rec {
 
-;; 1-syntax.watsup:132.1-133.14
+;; 1-syntax.watsup:147.1-148.14
 syntax valtype =
   | I32
   | I64
@@ -20169,10 +20224,10 @@ syntax valtype =
   | REF(nul : nul, heaptype : heaptype)
   | BOT
 
-;; 1-syntax.watsup:140.1-141.11
+;; 1-syntax.watsup:155.1-156.11
 syntax resulttype = valtype*
 
-;; 1-syntax.watsup:148.1-148.68
+;; 1-syntax.watsup:163.1-163.68
 syntax storagetype =
   | BOT
   | I32
@@ -20184,23 +20239,23 @@ syntax storagetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:160.1-161.18
+;; 1-syntax.watsup:175.1-176.18
 syntax fieldtype = `%%`(mut, storagetype)
 
-;; 1-syntax.watsup:163.1-164.27
+;; 1-syntax.watsup:178.1-179.27
 syntax functype = `%->%`(resulttype, resulttype)
 
-;; 1-syntax.watsup:166.1-169.18
+;; 1-syntax.watsup:181.1-184.18
 syntax comptype =
   | STRUCT(fieldtype*)
   | ARRAY(fieldtype : fieldtype)
   | FUNC(functype : functype)
 
-;; 1-syntax.watsup:175.1-176.17
+;; 1-syntax.watsup:190.1-191.17
 syntax rectype =
   | REC(subtype*)
 
-;; 1-syntax.watsup:181.1-184.12
+;; 1-syntax.watsup:196.1-199.12
 syntax heaptype =
   | _IDX(typeidx : typeidx)
   | ANY
@@ -20217,36 +20272,36 @@ syntax heaptype =
   | DEF(rectype : rectype, nat)
   | REC(nat)
 
-;; 1-syntax.watsup:186.1-188.54
+;; 1-syntax.watsup:201.1-203.54
 syntax subtype =
   | SUB(fin : fin, typeidx*, comptype : comptype)
   | SUBD(fin : fin, heaptype*, comptype : comptype)
 }
 
-;; 1-syntax.watsup:127.1-128.21
+;; 1-syntax.watsup:142.1-143.21
 syntax reftype =
   | REF(nul : nul, heaptype : heaptype)
 
-;; 1-syntax.watsup:135.1-135.40
+;; 1-syntax.watsup:150.1-150.40
 syntax inn =
   | I32
   | I64
 
-;; 1-syntax.watsup:136.1-136.40
+;; 1-syntax.watsup:151.1-151.40
 syntax fnn =
   | F32
   | F64
 
-;; 1-syntax.watsup:137.1-137.35
+;; 1-syntax.watsup:152.1-152.35
 syntax vnn =
   | V128
 
-;; 1-syntax.watsup:146.1-146.54
+;; 1-syntax.watsup:161.1-161.54
 syntax packtype =
   | I8
   | I16
 
-;; 1-syntax.watsup:147.1-147.62
+;; 1-syntax.watsup:162.1-162.62
 syntax lanetype =
   | I32
   | I64
@@ -20255,12 +20310,12 @@ syntax lanetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:150.1-150.39
+;; 1-syntax.watsup:165.1-165.39
 syntax pnn =
   | I8
   | I16
 
-;; 1-syntax.watsup:151.1-151.44
+;; 1-syntax.watsup:166.1-166.44
 syntax lnn =
   | I32
   | I64
@@ -20269,43 +20324,43 @@ syntax lnn =
   | I8
   | I16
 
-;; 1-syntax.watsup:152.1-152.40
+;; 1-syntax.watsup:167.1-167.40
 syntax imm =
   | I32
   | I64
   | I8
   | I16
 
-;; 1-syntax.watsup:178.1-179.35
+;; 1-syntax.watsup:193.1-194.35
 syntax deftype =
   | DEF(rectype : rectype, nat)
 
-;; 1-syntax.watsup:193.1-194.16
+;; 1-syntax.watsup:208.1-209.16
 syntax limits = `[%..%]`(u32, u32)
 
-;; 1-syntax.watsup:196.1-197.14
+;; 1-syntax.watsup:211.1-212.14
 syntax globaltype = `%%`(mut, valtype)
 
-;; 1-syntax.watsup:198.1-199.17
+;; 1-syntax.watsup:213.1-214.17
 syntax tabletype = `%%`(limits, reftype)
 
-;; 1-syntax.watsup:200.1-201.12
+;; 1-syntax.watsup:215.1-216.12
 syntax memtype = `%I8`(limits)
 
-;; 1-syntax.watsup:202.1-203.10
+;; 1-syntax.watsup:217.1-218.10
 syntax elemtype = reftype
 
-;; 1-syntax.watsup:204.1-205.5
+;; 1-syntax.watsup:219.1-220.5
 syntax datatype = OK
 
-;; 1-syntax.watsup:206.1-207.69
+;; 1-syntax.watsup:221.1-222.69
 syntax externtype =
   | FUNC(deftype : deftype)
   | GLOBAL(globaltype : globaltype)
   | TABLE(tabletype : tabletype)
   | MEM(memtype : memtype)
 
-;; 1-syntax.watsup:244.1-244.60
+;; 1-syntax.watsup:259.1-259.60
 def $size(valtype : valtype) : nat?
   ;; 2-syntax-aux.watsup:53.1-53.20
   def $size(I32_valtype) = ?(32)
@@ -20319,97 +20374,97 @@ def $size(valtype : valtype) : nat?
   def $size(V128_valtype) = ?(128)
   def $size{x0 : valtype}(x0) = ?()
 
-;; 1-syntax.watsup:245.1-245.44
+;; 1-syntax.watsup:260.1-260.44
 def $psize(packtype : packtype) : nat
   ;; 2-syntax-aux.watsup:59.1-59.19
   def $psize(I8_packtype) = 8
   ;; 2-syntax-aux.watsup:60.1-60.21
   def $psize(I16_packtype) = 16
 
-;; 1-syntax.watsup:246.1-246.46
+;; 1-syntax.watsup:261.1-261.46
 def $lsize(lanetype : lanetype) : nat
   ;; 2-syntax-aux.watsup:62.1-62.37
   def $lsize{numtype : numtype}((numtype : numtype <: lanetype)) = !($size((numtype : numtype <: valtype)))
   ;; 2-syntax-aux.watsup:63.1-63.40
   def $lsize{packtype : packtype}((packtype : packtype <: lanetype)) = $psize(packtype)
 
-;; 1-syntax.watsup:247.1-247.46
+;; 1-syntax.watsup:262.1-262.46
 def $zsize(storagetype : storagetype) : nat
   ;; 2-syntax-aux.watsup:65.1-65.37
   def $zsize{valtype : valtype}((valtype : valtype <: storagetype)) = !($size(valtype))
   ;; 2-syntax-aux.watsup:66.1-66.40
   def $zsize{packtype : packtype}((packtype : packtype <: storagetype)) = $psize(packtype)
 
-;; 1-syntax.watsup:301.1-301.55
+;; 1-syntax.watsup:316.1-316.55
 syntax dim = nat
 
-;; 1-syntax.watsup:302.1-302.49
+;; 1-syntax.watsup:317.1-317.49
 syntax shape = `%X%`(lanetype, dim)
 
-;; 1-syntax.watsup:248.1-248.32
+;; 1-syntax.watsup:263.1-263.32
 def $lanetype(shape : shape) : lanetype
   ;; 2-syntax-aux.watsup:94.1-94.29
   def $lanetype{lnn : lnn, N : N}(`%X%`(lnn, N)) = lnn
 
-;; 1-syntax.watsup:250.1-250.21
+;; 1-syntax.watsup:265.1-265.21
 syntax num_(numtype : numtype)
-  ;; 1-syntax.watsup:251.1-251.34
+  ;; 1-syntax.watsup:266.1-266.34
   syntax num_{inn : inn}((inn : inn <: numtype)) = iN(!($size((inn : inn <: valtype))))
 
 
-  ;; 1-syntax.watsup:252.1-252.34
+  ;; 1-syntax.watsup:267.1-267.34
   syntax num_{fnn : fnn}((fnn : fnn <: numtype)) = fN(!($size((fnn : fnn <: valtype))))
 
 
-;; 1-syntax.watsup:254.1-254.36
+;; 1-syntax.watsup:269.1-269.36
 syntax pack_{pnn : pnn}(pnn) = iN($psize(pnn))
 
-;; 1-syntax.watsup:256.1-256.23
+;; 1-syntax.watsup:271.1-271.23
 syntax lane_(lanetype : lanetype)
-  ;; 1-syntax.watsup:257.1-257.38
+  ;; 1-syntax.watsup:272.1-272.38
   syntax lane_{numtype : numtype}((numtype : numtype <: lanetype)) = num_(numtype)
 
 
-  ;; 1-syntax.watsup:258.1-258.41
+  ;; 1-syntax.watsup:273.1-273.41
   syntax lane_{packtype : packtype}((packtype : packtype <: lanetype)) = pack_(packtype)
 
 
-  ;; 1-syntax.watsup:259.1-259.36
+  ;; 1-syntax.watsup:274.1-274.36
   syntax lane_{imm : imm}((imm : imm <: lanetype)) = iN($lsize((imm : imm <: lanetype)))
 
 
-;; 1-syntax.watsup:261.1-261.34
+;; 1-syntax.watsup:276.1-276.34
 syntax vec_{vnn : vnn}(vnn) = vN(!($size((vnn : vnn <: valtype))))
 
-;; 1-syntax.watsup:263.1-263.26
+;; 1-syntax.watsup:278.1-278.26
 syntax zval_(storagetype : storagetype)
-  ;; 1-syntax.watsup:264.1-264.38
+  ;; 1-syntax.watsup:279.1-279.38
   syntax zval_{numtype : numtype}((numtype : numtype <: storagetype)) = num_(numtype)
 
 
-  ;; 1-syntax.watsup:265.1-265.38
+  ;; 1-syntax.watsup:280.1-280.38
   syntax zval_{vectype : vectype}((vectype : vectype <: storagetype)) = vec_(vectype)
 
 
-  ;; 1-syntax.watsup:266.1-266.41
+  ;; 1-syntax.watsup:281.1-281.41
   syntax zval_{packtype : packtype}((packtype : packtype <: storagetype)) = pack_(packtype)
 
 
-;; 1-syntax.watsup:271.1-271.44
+;; 1-syntax.watsup:286.1-286.44
 syntax sx =
   | U
   | S
 
-;; 1-syntax.watsup:273.1-273.22
+;; 1-syntax.watsup:288.1-288.22
 syntax unop_(numtype : numtype)
-  ;; 1-syntax.watsup:274.1-274.41
+  ;; 1-syntax.watsup:289.1-289.41
   syntax unop_{inn : inn}((inn : inn <: numtype)) =
   | CLZ
   | CTZ
   | POPCNT
 
 
-  ;; 1-syntax.watsup:275.1-275.72
+  ;; 1-syntax.watsup:290.1-290.72
   syntax unop_{fnn : fnn}((fnn : fnn <: numtype)) =
   | ABS
   | NEG
@@ -20420,9 +20475,9 @@ syntax unop_(numtype : numtype)
   | NEAREST
 
 
-;; 1-syntax.watsup:277.1-277.23
+;; 1-syntax.watsup:292.1-292.23
 syntax binop_(numtype : numtype)
-  ;; 1-syntax.watsup:278.1-280.66
+  ;; 1-syntax.watsup:293.1-295.66
   syntax binop_{inn : inn}((inn : inn <: numtype)) =
   | ADD
   | SUB
@@ -20438,7 +20493,7 @@ syntax binop_(numtype : numtype)
   | ROTR
 
 
-  ;; 1-syntax.watsup:281.1-282.49
+  ;; 1-syntax.watsup:296.1-297.49
   syntax binop_{fnn : fnn}((fnn : fnn <: numtype)) =
   | ADD
   | SUB
@@ -20449,21 +20504,21 @@ syntax binop_(numtype : numtype)
   | COPYSIGN
 
 
-;; 1-syntax.watsup:284.1-284.24
+;; 1-syntax.watsup:299.1-299.24
 syntax testop_(numtype : numtype)
-  ;; 1-syntax.watsup:285.1-285.28
+  ;; 1-syntax.watsup:300.1-300.28
   syntax testop_{inn : inn}((inn : inn <: numtype)) =
   | EQZ
 
 
-  ;; 1-syntax.watsup:286.1-286.24
+  ;; 1-syntax.watsup:301.1-301.24
   syntax testop_{fnn : fnn}((fnn : fnn <: numtype)) =
   |
 
 
-;; 1-syntax.watsup:288.1-288.23
+;; 1-syntax.watsup:303.1-303.23
 syntax relop_(numtype : numtype)
-  ;; 1-syntax.watsup:289.1-292.52
+  ;; 1-syntax.watsup:304.1-307.52
   syntax relop_{inn : inn}((inn : inn <: numtype)) =
   | EQ
   | NE
@@ -20473,7 +20528,7 @@ syntax relop_(numtype : numtype)
   | GE(sx : sx)
 
 
-  ;; 1-syntax.watsup:293.1-294.32
+  ;; 1-syntax.watsup:308.1-309.32
   syntax relop_{fnn : fnn}((fnn : fnn <: numtype)) =
   | EQ
   | NE
@@ -20483,52 +20538,52 @@ syntax relop_(numtype : numtype)
   | GE
 
 
-;; 1-syntax.watsup:296.1-296.39
+;; 1-syntax.watsup:311.1-311.39
 syntax cvtop =
   | CONVERT
   | REINTERPRET
 
-;; 1-syntax.watsup:303.1-303.45
+;; 1-syntax.watsup:318.1-318.45
 syntax ishape = `%X%`(imm, dim)
 
-;; 1-syntax.watsup:304.1-304.45
+;; 1-syntax.watsup:319.1-319.45
 syntax fshape = `%X%`(fnn, dim)
 
-;; 1-syntax.watsup:305.1-305.45
+;; 1-syntax.watsup:320.1-320.45
 syntax pshape = `%X%`(pnn, dim)
 
-;; 1-syntax.watsup:307.1-307.22
+;; 1-syntax.watsup:322.1-322.22
 def $dim(shape : shape) : dim
   ;; 2-syntax-aux.watsup:97.1-97.22
   def $dim{lnn : lnn, N : N}(`%X%`(lnn, N)) = N
 
-;; 1-syntax.watsup:308.1-308.41
+;; 1-syntax.watsup:323.1-323.41
 def $shsize(shape : shape) : nat
   ;; 2-syntax-aux.watsup:100.1-100.42
   def $shsize{lnn : lnn, N : N}(`%X%`(lnn, N)) = ($lsize(lnn) * N)
 
-;; 1-syntax.watsup:310.1-310.22
+;; 1-syntax.watsup:325.1-325.22
 syntax vvunop =
   | NOT
 
-;; 1-syntax.watsup:311.1-311.43
+;; 1-syntax.watsup:326.1-326.43
 syntax vvbinop =
   | AND
   | ANDNOT
   | OR
   | XOR
 
-;; 1-syntax.watsup:312.1-312.30
+;; 1-syntax.watsup:327.1-327.30
 syntax vvternop =
   | BITSELECT
 
-;; 1-syntax.watsup:313.1-313.29
+;; 1-syntax.watsup:328.1-328.29
 syntax vvtestop =
   | ANY_TRUE
 
-;; 1-syntax.watsup:315.1-315.21
+;; 1-syntax.watsup:330.1-330.21
 syntax vunop_(shape : shape)
-  ;; 1-syntax.watsup:316.1-316.61
+  ;; 1-syntax.watsup:331.1-331.61
   syntax vunop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ABS
   | NEG
@@ -20536,7 +20591,7 @@ syntax vunop_(shape : shape)
     -- if (imm = I8_imm)
 
 
-  ;; 1-syntax.watsup:317.1-317.77
+  ;; 1-syntax.watsup:332.1-332.77
   syntax vunop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | ABS
   | NEG
@@ -20547,9 +20602,9 @@ syntax vunop_(shape : shape)
   | NEAREST
 
 
-;; 1-syntax.watsup:319.1-319.22
+;; 1-syntax.watsup:334.1-334.22
 syntax vbinop_(shape : shape)
-  ;; 1-syntax.watsup:320.1-329.43
+  ;; 1-syntax.watsup:335.1-344.43
   syntax vbinop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ADD
   | SUB
@@ -20569,7 +20624,7 @@ syntax vbinop_(shape : shape)
     -- if ($lsize((imm : imm <: lanetype)) <= 32)
 
 
-  ;; 1-syntax.watsup:330.1-330.76
+  ;; 1-syntax.watsup:345.1-345.76
   syntax vbinop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | ADD
   | SUB
@@ -20581,21 +20636,21 @@ syntax vbinop_(shape : shape)
   | PMAX
 
 
-;; 1-syntax.watsup:332.1-332.23
+;; 1-syntax.watsup:347.1-347.23
 syntax vtestop_(shape : shape)
-  ;; 1-syntax.watsup:333.1-333.38
+  ;; 1-syntax.watsup:348.1-348.38
   syntax vtestop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ALL_TRUE
 
 
-  ;; 1-syntax.watsup:334.1-334.29
+  ;; 1-syntax.watsup:349.1-349.29
   syntax vtestop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:336.1-336.22
+;; 1-syntax.watsup:351.1-351.22
 syntax vrelop_(shape : shape)
-  ;; 1-syntax.watsup:337.1-337.68
+  ;; 1-syntax.watsup:352.1-352.68
   syntax vrelop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | EQ
   | NE
@@ -20605,7 +20660,7 @@ syntax vrelop_(shape : shape)
   | GE(sx : sx)
 
 
-  ;; 1-syntax.watsup:338.1-338.56
+  ;; 1-syntax.watsup:353.1-353.56
   syntax vrelop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | EQ
   | NE
@@ -20615,7 +20670,7 @@ syntax vrelop_(shape : shape)
   | GE
 
 
-;; 1-syntax.watsup:340.1-340.66
+;; 1-syntax.watsup:355.1-355.66
 syntax vcvtop =
   | EXTEND
   | TRUNC_SAT
@@ -20623,52 +20678,52 @@ syntax vcvtop =
   | DEMOTE
   | PROMOTE
 
-;; 1-syntax.watsup:351.1-351.25
+;; 1-syntax.watsup:366.1-366.25
 syntax vshiftop_{imm : imm, N : N}(`%X%`(imm, N)) =
   | SHL
   | SHR(sx : sx)
 
-;; 1-syntax.watsup:354.1-354.66
+;; 1-syntax.watsup:369.1-369.66
 syntax vextunop_{imm_1 : imm, N_1 : N, imm_2 : imm, N_2 : N}(`%X%`(imm_1, N_1), `%X%`(imm_2, N_2)) =
   | EXTADD_PAIRWISE
     -- if ((16 <= $lsize((imm_1 : imm <: lanetype))) /\ ($lsize((imm_1 : imm <: lanetype)) <= 32))
 
-;; 1-syntax.watsup:419.1-419.50
+;; 1-syntax.watsup:434.1-434.50
 syntax half =
   | LOW
   | HIGH
 
-;; 1-syntax.watsup:357.1-357.68
+;; 1-syntax.watsup:372.1-372.68
 syntax vextbinop_{imm_1 : imm, N_1 : N, imm_2 : imm, N_2 : N}(`%X%`(imm_1, N_1), `%X%`(imm_2, N_2)) =
   | EXTMUL(half : half)
   | DOT{imm_1 : imm}
     -- if ($lsize((imm_1 : imm <: lanetype)) = 32)
 
-;; 1-syntax.watsup:365.1-365.68
+;; 1-syntax.watsup:380.1-380.68
 syntax memop =
 {
   ALIGN u32,
   OFFSET u32
 }
 
-;; 1-syntax.watsup:367.1-370.44
+;; 1-syntax.watsup:382.1-385.44
 syntax vloadop =
   | SHAPE(nat, nat, sx : sx)
   | SPLAT(nat)
   | ZERO(nat)
 
-;; 1-syntax.watsup:379.1-381.17
+;; 1-syntax.watsup:394.1-396.17
 syntax blocktype =
   | _RESULT(valtype?)
   | _IDX(funcidx : funcidx)
 
-;; 1-syntax.watsup:420.1-420.20
+;; 1-syntax.watsup:435.1-435.20
 syntax zero = `ZERO%?`(()?)
 
-;; 1-syntax.watsup:507.1-519.78
+;; 1-syntax.watsup:522.1-534.78
 rec {
 
-;; 1-syntax.watsup:507.1-519.78
+;; 1-syntax.watsup:522.1-534.78
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -20777,61 +20832,61 @@ syntax instr =
   | VSTORE_LANE(n : n, memidx : memidx, memop : memop, laneidx : laneidx)
 }
 
-;; 1-syntax.watsup:521.1-522.9
+;; 1-syntax.watsup:536.1-537.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:534.1-534.61
+;; 1-syntax.watsup:549.1-549.61
 syntax elemmode =
   | ACTIVE(tableidx : tableidx, expr : expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:535.1-535.49
+;; 1-syntax.watsup:550.1-550.49
 syntax datamode =
   | ACTIVE(memidx : memidx, expr : expr)
   | PASSIVE
 
-;; 1-syntax.watsup:537.1-538.15
+;; 1-syntax.watsup:552.1-553.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:539.1-540.16
+;; 1-syntax.watsup:554.1-555.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:541.1-542.27
+;; 1-syntax.watsup:556.1-557.27
 syntax func = `FUNC%%*%`(typeidx, local*, expr)
 
-;; 1-syntax.watsup:543.1-544.25
+;; 1-syntax.watsup:558.1-559.25
 syntax global = GLOBAL(globaltype, expr)
 
-;; 1-syntax.watsup:545.1-546.23
+;; 1-syntax.watsup:560.1-561.23
 syntax table = TABLE(tabletype, expr)
 
-;; 1-syntax.watsup:547.1-548.17
+;; 1-syntax.watsup:562.1-563.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:549.1-550.30
+;; 1-syntax.watsup:564.1-565.30
 syntax elem = `ELEM%%*%`(reftype, expr*, elemmode)
 
-;; 1-syntax.watsup:551.1-552.22
+;; 1-syntax.watsup:566.1-567.22
 syntax data = `DATA%*%`(byte*, datamode)
 
-;; 1-syntax.watsup:553.1-554.16
+;; 1-syntax.watsup:568.1-569.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:556.1-557.66
+;; 1-syntax.watsup:571.1-572.66
 syntax externidx =
   | FUNC(funcidx : funcidx)
   | GLOBAL(globalidx : globalidx)
   | TABLE(tableidx : tableidx)
   | MEM(memidx : memidx)
 
-;; 1-syntax.watsup:558.1-559.24
+;; 1-syntax.watsup:573.1-574.24
 syntax export = EXPORT(name, externidx)
 
-;; 1-syntax.watsup:560.1-561.30
+;; 1-syntax.watsup:575.1-576.30
 syntax import = IMPORT(name, name, externtype)
 
-;; 1-syntax.watsup:563.1-564.76
+;; 1-syntax.watsup:578.1-579.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -25062,7 +25117,7 @@ syntax symsplit =
 ;; C-conventions.watsup:14.1-14.41
 syntax recorddots = `...`
 
-;; C-conventions.watsup:15.1-16.102
+;; C-conventions.watsup:15.1-18.36
 syntax record =
 {
   FIELD_1 A,
@@ -25070,7 +25125,7 @@ syntax record =
   DOTS recorddots
 }
 
-;; C-conventions.watsup:18.1-19.104
+;; C-conventions.watsup:20.1-23.36
 syntax recordstar =
 {
   FIELD_1 A*,
@@ -25078,14 +25133,14 @@ syntax recordstar =
   DOTS recorddots
 }
 
-;; C-conventions.watsup:21.1-21.58
+;; C-conventions.watsup:25.1-25.58
 syntax recordeq = `%++%=%`(recordstar, recordstar, recordstar)
 
-;; C-conventions.watsup:23.1-23.56
+;; C-conventions.watsup:27.1-27.56
 syntax pth =
   | PTHSYNTAX
 
-;; C-conventions.watsup:25.1-30.4
+;; C-conventions.watsup:29.1-34.4
 syntax pthaux =
 {
   PTH (),
@@ -25093,11 +25148,6 @@ syntax pthaux =
   FIELD_PTH (),
   DOT_FIELD_PTH ()
 }
-
-;; C-conventions.watsup:35.1-35.57
-syntax list{syntax A}(syntax A) =
-  | _LIST{A* : A*}(A*)
-    -- if (|A*{A}| < (2 ^ 32))
 
 == IL Validation after pass sideconditions...
 == Running pass animate...
@@ -25154,149 +25204,164 @@ def $concat_(syntax X, X**) : X*
   def $concat_{syntax X, w* : X*, w'** : X**}(syntax X, [w*{w}] :: w'*{w'}*{w'}) = w*{w} :: $concat_(syntax X, w'*{w'}*{w'})
 }
 
-;; 1-syntax.watsup:5.1-5.85
+;; 1-syntax.watsup:6.1-6.57
+syntax list{syntax A}(syntax A) =
+  | _LIST{A* : A*}(A*)
+    -- if (|A*{A}| < (2 ^ 32))
+
+;; 1-syntax.watsup:13.1-13.85
 syntax char = nat
 
-;; 1-syntax.watsup:7.1-7.38
+;; 1-syntax.watsup:16.1-16.38
 syntax name = char*
 
-;; 1-syntax.watsup:18.1-18.36
+;; 1-syntax.watsup:27.1-27.36
 syntax bit = nat
 
-;; 1-syntax.watsup:19.1-19.50
+;; 1-syntax.watsup:28.1-28.50
 syntax byte = nat
 
-;; 1-syntax.watsup:21.1-22.18
+;; 1-syntax.watsup:30.1-31.18
 syntax uN{N : N}(N) = nat
 
-;; 1-syntax.watsup:23.1-24.49
+;; 1-syntax.watsup:32.1-33.49
 syntax sN{N : N}(N) = int
 
-;; 1-syntax.watsup:25.1-26.8
+;; 1-syntax.watsup:34.1-35.8
 syntax iN{N : N}(N) = uN(N)
 
-;; 1-syntax.watsup:28.1-28.18
+;; 1-syntax.watsup:37.1-37.18
 syntax u8 = uN(8)
 
-;; 1-syntax.watsup:29.1-29.20
+;; 1-syntax.watsup:38.1-38.20
 syntax u16 = uN(16)
 
-;; 1-syntax.watsup:30.1-30.20
+;; 1-syntax.watsup:39.1-39.20
 syntax u31 = uN(31)
 
-;; 1-syntax.watsup:31.1-31.20
+;; 1-syntax.watsup:40.1-40.20
 syntax u32 = uN(32)
 
-;; 1-syntax.watsup:32.1-32.20
+;; 1-syntax.watsup:41.1-41.20
 syntax u64 = uN(64)
 
-;; 1-syntax.watsup:33.1-33.22
+;; 1-syntax.watsup:42.1-42.22
 syntax u128 = uN(128)
 
-;; 1-syntax.watsup:34.1-34.20
+;; 1-syntax.watsup:43.1-43.20
 syntax s33 = sN(33)
 
-;; 1-syntax.watsup:41.1-41.21
+;; 1-syntax.watsup:50.1-50.21
 def $signif(N : N) : nat
-  ;; 1-syntax.watsup:42.1-42.21
+  ;; 1-syntax.watsup:51.1-51.21
   def $signif(32) = 23
-  ;; 1-syntax.watsup:43.1-43.21
+  ;; 1-syntax.watsup:52.1-52.21
   def $signif(64) = 52
 
-;; 1-syntax.watsup:45.1-45.20
+;; 1-syntax.watsup:54.1-54.20
 def $expon(N : N) : nat
-  ;; 1-syntax.watsup:46.1-46.19
+  ;; 1-syntax.watsup:55.1-55.19
   def $expon(32) = 8
-  ;; 1-syntax.watsup:47.1-47.20
+  ;; 1-syntax.watsup:56.1-56.20
   def $expon(64) = 11
 
-;; 1-syntax.watsup:49.1-49.35
+;; 1-syntax.watsup:58.1-58.30
 def $M(N : N) : nat
-  ;; 1-syntax.watsup:50.1-50.23
+  ;; 1-syntax.watsup:59.1-59.23
   def $M{N : N}(N) = $signif(N)
 
-;; 1-syntax.watsup:52.1-52.35
+;; 1-syntax.watsup:61.1-61.30
 def $E(N : N) : nat
-  ;; 1-syntax.watsup:53.1-53.22
+  ;; 1-syntax.watsup:62.1-62.22
   def $E{N : N}(N) = $expon(N)
 
-;; 1-syntax.watsup:59.1-63.81
-syntax fmag{N : N}(N) =
-  | NORM{n : n}(m : m, n : n)
-    -- if (((2 - (2 ^ ($E(N) - 1))) <= n) /\ (n <= ((2 ^ ($E(N) - 1)) - 1)))
-  | SUBNORM{N : N, n : n}(m : m)
-    -- if ((2 - (2 ^ ($E(N) - 1))) = n)
+;; 1-syntax.watsup:68.1-72.83
+syntax fNmag{N : N}(N) =
+  | NORM{m : m, n : n}(m : m, n : n)
+    -- if ((m < (2 ^ $M(N))) /\ (((2 - (2 ^ ($E(N) - 1))) <= n) /\ (n <= ((2 ^ ($E(N) - 1)) - 1))))
+  | SUBNORM{m : m, N : N, n : n}(m : m)
+    -- if ((m < (2 ^ $M(N))) /\ ((2 - (2 ^ ($E(N) - 1))) = n))
   | INF
   | NAN{m : m}(m : m)
-    -- if ((1 <= m) /\ (m < $M(N)))
+    -- if ((1 <= m) /\ (m < (2 ^ $M(N))))
 
-;; 1-syntax.watsup:55.1-57.34
+;; 1-syntax.watsup:64.1-66.35
 syntax fN{N : N}(N) =
-  | POS(fmag : fmag(N))
-  | NEG(fmag : fmag(N))
+  | POS(fNmag : fNmag(N))
+  | NEG(fNmag : fNmag(N))
 
-;; 1-syntax.watsup:65.1-65.40
-def $fzero(N : N) : fN(N)
-  ;; 1-syntax.watsup:66.1-66.32
-  def $fzero{N : N}(N) = POS_fN(N)(SUBNORM_fmag(N)(0))
-
-;; 1-syntax.watsup:68.1-68.20
+;; 1-syntax.watsup:74.1-74.20
 syntax f32 = fN(32)
 
-;; 1-syntax.watsup:69.1-69.20
+;; 1-syntax.watsup:75.1-75.20
 syntax f64 = fN(64)
 
-;; 1-syntax.watsup:74.1-75.8
+;; 1-syntax.watsup:77.1-77.39
+def $fzero(N : N) : fN(N)
+  ;; 1-syntax.watsup:78.1-78.32
+  def $fzero{N : N}(N) = POS_fN(N)(SUBNORM_fNmag(N)(0))
+
+;; 1-syntax.watsup:80.1-80.39
+def $fone(N : N) : fN(N)
+  ;; 1-syntax.watsup:81.1-81.30
+  def $fone{N : N}(N) = POS_fN(N)(NORM_fNmag(N)(1, 0))
+
+;; 1-syntax.watsup:83.1-83.21
+def $canon_(N : N) : nat
+  ;; 1-syntax.watsup:84.1-84.37
+  def $canon_{N : N}(N) = (2 ^ ($signif(N) - 1))
+
+;; 1-syntax.watsup:89.1-90.8
 syntax vN{N : N}(N) = iN(N)
 
-;; 1-syntax.watsup:82.1-82.36
+;; 1-syntax.watsup:97.1-97.36
 syntax idx = u32
 
-;; 1-syntax.watsup:83.1-83.44
+;; 1-syntax.watsup:98.1-98.44
 syntax laneidx = u8
 
-;; 1-syntax.watsup:85.1-85.45
+;; 1-syntax.watsup:100.1-100.45
 syntax typeidx = idx
 
-;; 1-syntax.watsup:86.1-86.49
+;; 1-syntax.watsup:101.1-101.49
 syntax funcidx = idx
 
-;; 1-syntax.watsup:87.1-87.49
+;; 1-syntax.watsup:102.1-102.49
 syntax globalidx = idx
 
-;; 1-syntax.watsup:88.1-88.47
+;; 1-syntax.watsup:103.1-103.47
 syntax tableidx = idx
 
-;; 1-syntax.watsup:89.1-89.46
+;; 1-syntax.watsup:104.1-104.46
 syntax memidx = idx
 
-;; 1-syntax.watsup:90.1-90.45
+;; 1-syntax.watsup:105.1-105.45
 syntax elemidx = idx
 
-;; 1-syntax.watsup:91.1-91.45
+;; 1-syntax.watsup:106.1-106.45
 syntax dataidx = idx
 
-;; 1-syntax.watsup:92.1-92.47
+;; 1-syntax.watsup:107.1-107.47
 syntax labelidx = idx
 
-;; 1-syntax.watsup:93.1-93.47
+;; 1-syntax.watsup:108.1-108.47
 syntax localidx = idx
 
-;; 1-syntax.watsup:107.1-107.19
+;; 1-syntax.watsup:122.1-122.19
 syntax nul = `NULL%?`(()?)
 
-;; 1-syntax.watsup:109.1-110.26
+;; 1-syntax.watsup:124.1-125.26
 syntax numtype =
   | I32
   | I64
   | F32
   | F64
 
-;; 1-syntax.watsup:112.1-113.9
+;; 1-syntax.watsup:127.1-128.9
 syntax vectype =
   | V128
 
-;; 1-syntax.watsup:120.1-121.14
+;; 1-syntax.watsup:135.1-136.14
 syntax absheaptype =
   | ANY
   | EQ
@@ -25310,16 +25375,16 @@ syntax absheaptype =
   | NOEXTERN
   | BOT
 
-;; 1-syntax.watsup:157.1-157.18
+;; 1-syntax.watsup:172.1-172.18
 syntax mut = `MUT%?`(()?)
 
-;; 1-syntax.watsup:158.1-158.20
+;; 1-syntax.watsup:173.1-173.20
 syntax fin = `FINAL%?`(()?)
 
-;; 1-syntax.watsup:132.1-188.54
+;; 1-syntax.watsup:147.1-203.54
 rec {
 
-;; 1-syntax.watsup:132.1-133.14
+;; 1-syntax.watsup:147.1-148.14
 syntax valtype =
   | I32
   | I64
@@ -25329,10 +25394,10 @@ syntax valtype =
   | REF(nul : nul, heaptype : heaptype)
   | BOT
 
-;; 1-syntax.watsup:140.1-141.11
+;; 1-syntax.watsup:155.1-156.11
 syntax resulttype = valtype*
 
-;; 1-syntax.watsup:148.1-148.68
+;; 1-syntax.watsup:163.1-163.68
 syntax storagetype =
   | BOT
   | I32
@@ -25344,23 +25409,23 @@ syntax storagetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:160.1-161.18
+;; 1-syntax.watsup:175.1-176.18
 syntax fieldtype = `%%`(mut, storagetype)
 
-;; 1-syntax.watsup:163.1-164.27
+;; 1-syntax.watsup:178.1-179.27
 syntax functype = `%->%`(resulttype, resulttype)
 
-;; 1-syntax.watsup:166.1-169.18
+;; 1-syntax.watsup:181.1-184.18
 syntax comptype =
   | STRUCT(fieldtype*)
   | ARRAY(fieldtype : fieldtype)
   | FUNC(functype : functype)
 
-;; 1-syntax.watsup:175.1-176.17
+;; 1-syntax.watsup:190.1-191.17
 syntax rectype =
   | REC(subtype*)
 
-;; 1-syntax.watsup:181.1-184.12
+;; 1-syntax.watsup:196.1-199.12
 syntax heaptype =
   | _IDX(typeidx : typeidx)
   | ANY
@@ -25377,36 +25442,36 @@ syntax heaptype =
   | DEF(rectype : rectype, nat)
   | REC(nat)
 
-;; 1-syntax.watsup:186.1-188.54
+;; 1-syntax.watsup:201.1-203.54
 syntax subtype =
   | SUB(fin : fin, typeidx*, comptype : comptype)
   | SUBD(fin : fin, heaptype*, comptype : comptype)
 }
 
-;; 1-syntax.watsup:127.1-128.21
+;; 1-syntax.watsup:142.1-143.21
 syntax reftype =
   | REF(nul : nul, heaptype : heaptype)
 
-;; 1-syntax.watsup:135.1-135.40
+;; 1-syntax.watsup:150.1-150.40
 syntax inn =
   | I32
   | I64
 
-;; 1-syntax.watsup:136.1-136.40
+;; 1-syntax.watsup:151.1-151.40
 syntax fnn =
   | F32
   | F64
 
-;; 1-syntax.watsup:137.1-137.35
+;; 1-syntax.watsup:152.1-152.35
 syntax vnn =
   | V128
 
-;; 1-syntax.watsup:146.1-146.54
+;; 1-syntax.watsup:161.1-161.54
 syntax packtype =
   | I8
   | I16
 
-;; 1-syntax.watsup:147.1-147.62
+;; 1-syntax.watsup:162.1-162.62
 syntax lanetype =
   | I32
   | I64
@@ -25415,12 +25480,12 @@ syntax lanetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:150.1-150.39
+;; 1-syntax.watsup:165.1-165.39
 syntax pnn =
   | I8
   | I16
 
-;; 1-syntax.watsup:151.1-151.44
+;; 1-syntax.watsup:166.1-166.44
 syntax lnn =
   | I32
   | I64
@@ -25429,43 +25494,43 @@ syntax lnn =
   | I8
   | I16
 
-;; 1-syntax.watsup:152.1-152.40
+;; 1-syntax.watsup:167.1-167.40
 syntax imm =
   | I32
   | I64
   | I8
   | I16
 
-;; 1-syntax.watsup:178.1-179.35
+;; 1-syntax.watsup:193.1-194.35
 syntax deftype =
   | DEF(rectype : rectype, nat)
 
-;; 1-syntax.watsup:193.1-194.16
+;; 1-syntax.watsup:208.1-209.16
 syntax limits = `[%..%]`(u32, u32)
 
-;; 1-syntax.watsup:196.1-197.14
+;; 1-syntax.watsup:211.1-212.14
 syntax globaltype = `%%`(mut, valtype)
 
-;; 1-syntax.watsup:198.1-199.17
+;; 1-syntax.watsup:213.1-214.17
 syntax tabletype = `%%`(limits, reftype)
 
-;; 1-syntax.watsup:200.1-201.12
+;; 1-syntax.watsup:215.1-216.12
 syntax memtype = `%I8`(limits)
 
-;; 1-syntax.watsup:202.1-203.10
+;; 1-syntax.watsup:217.1-218.10
 syntax elemtype = reftype
 
-;; 1-syntax.watsup:204.1-205.5
+;; 1-syntax.watsup:219.1-220.5
 syntax datatype = OK
 
-;; 1-syntax.watsup:206.1-207.69
+;; 1-syntax.watsup:221.1-222.69
 syntax externtype =
   | FUNC(deftype : deftype)
   | GLOBAL(globaltype : globaltype)
   | TABLE(tabletype : tabletype)
   | MEM(memtype : memtype)
 
-;; 1-syntax.watsup:244.1-244.60
+;; 1-syntax.watsup:259.1-259.60
 def $size(valtype : valtype) : nat?
   ;; 2-syntax-aux.watsup:53.1-53.20
   def $size(I32_valtype) = ?(32)
@@ -25479,97 +25544,97 @@ def $size(valtype : valtype) : nat?
   def $size(V128_valtype) = ?(128)
   def $size{x0 : valtype}(x0) = ?()
 
-;; 1-syntax.watsup:245.1-245.44
+;; 1-syntax.watsup:260.1-260.44
 def $psize(packtype : packtype) : nat
   ;; 2-syntax-aux.watsup:59.1-59.19
   def $psize(I8_packtype) = 8
   ;; 2-syntax-aux.watsup:60.1-60.21
   def $psize(I16_packtype) = 16
 
-;; 1-syntax.watsup:246.1-246.46
+;; 1-syntax.watsup:261.1-261.46
 def $lsize(lanetype : lanetype) : nat
   ;; 2-syntax-aux.watsup:62.1-62.37
   def $lsize{numtype : numtype}((numtype : numtype <: lanetype)) = !($size((numtype : numtype <: valtype)))
   ;; 2-syntax-aux.watsup:63.1-63.40
   def $lsize{packtype : packtype}((packtype : packtype <: lanetype)) = $psize(packtype)
 
-;; 1-syntax.watsup:247.1-247.46
+;; 1-syntax.watsup:262.1-262.46
 def $zsize(storagetype : storagetype) : nat
   ;; 2-syntax-aux.watsup:65.1-65.37
   def $zsize{valtype : valtype}((valtype : valtype <: storagetype)) = !($size(valtype))
   ;; 2-syntax-aux.watsup:66.1-66.40
   def $zsize{packtype : packtype}((packtype : packtype <: storagetype)) = $psize(packtype)
 
-;; 1-syntax.watsup:301.1-301.55
+;; 1-syntax.watsup:316.1-316.55
 syntax dim = nat
 
-;; 1-syntax.watsup:302.1-302.49
+;; 1-syntax.watsup:317.1-317.49
 syntax shape = `%X%`(lanetype, dim)
 
-;; 1-syntax.watsup:248.1-248.32
+;; 1-syntax.watsup:263.1-263.32
 def $lanetype(shape : shape) : lanetype
   ;; 2-syntax-aux.watsup:94.1-94.29
   def $lanetype{lnn : lnn, N : N}(`%X%`(lnn, N)) = lnn
 
-;; 1-syntax.watsup:250.1-250.21
+;; 1-syntax.watsup:265.1-265.21
 syntax num_(numtype : numtype)
-  ;; 1-syntax.watsup:251.1-251.34
+  ;; 1-syntax.watsup:266.1-266.34
   syntax num_{inn : inn}((inn : inn <: numtype)) = iN(!($size((inn : inn <: valtype))))
 
 
-  ;; 1-syntax.watsup:252.1-252.34
+  ;; 1-syntax.watsup:267.1-267.34
   syntax num_{fnn : fnn}((fnn : fnn <: numtype)) = fN(!($size((fnn : fnn <: valtype))))
 
 
-;; 1-syntax.watsup:254.1-254.36
+;; 1-syntax.watsup:269.1-269.36
 syntax pack_{pnn : pnn}(pnn) = iN($psize(pnn))
 
-;; 1-syntax.watsup:256.1-256.23
+;; 1-syntax.watsup:271.1-271.23
 syntax lane_(lanetype : lanetype)
-  ;; 1-syntax.watsup:257.1-257.38
+  ;; 1-syntax.watsup:272.1-272.38
   syntax lane_{numtype : numtype}((numtype : numtype <: lanetype)) = num_(numtype)
 
 
-  ;; 1-syntax.watsup:258.1-258.41
+  ;; 1-syntax.watsup:273.1-273.41
   syntax lane_{packtype : packtype}((packtype : packtype <: lanetype)) = pack_(packtype)
 
 
-  ;; 1-syntax.watsup:259.1-259.36
+  ;; 1-syntax.watsup:274.1-274.36
   syntax lane_{imm : imm}((imm : imm <: lanetype)) = iN($lsize((imm : imm <: lanetype)))
 
 
-;; 1-syntax.watsup:261.1-261.34
+;; 1-syntax.watsup:276.1-276.34
 syntax vec_{vnn : vnn}(vnn) = vN(!($size((vnn : vnn <: valtype))))
 
-;; 1-syntax.watsup:263.1-263.26
+;; 1-syntax.watsup:278.1-278.26
 syntax zval_(storagetype : storagetype)
-  ;; 1-syntax.watsup:264.1-264.38
+  ;; 1-syntax.watsup:279.1-279.38
   syntax zval_{numtype : numtype}((numtype : numtype <: storagetype)) = num_(numtype)
 
 
-  ;; 1-syntax.watsup:265.1-265.38
+  ;; 1-syntax.watsup:280.1-280.38
   syntax zval_{vectype : vectype}((vectype : vectype <: storagetype)) = vec_(vectype)
 
 
-  ;; 1-syntax.watsup:266.1-266.41
+  ;; 1-syntax.watsup:281.1-281.41
   syntax zval_{packtype : packtype}((packtype : packtype <: storagetype)) = pack_(packtype)
 
 
-;; 1-syntax.watsup:271.1-271.44
+;; 1-syntax.watsup:286.1-286.44
 syntax sx =
   | U
   | S
 
-;; 1-syntax.watsup:273.1-273.22
+;; 1-syntax.watsup:288.1-288.22
 syntax unop_(numtype : numtype)
-  ;; 1-syntax.watsup:274.1-274.41
+  ;; 1-syntax.watsup:289.1-289.41
   syntax unop_{inn : inn}((inn : inn <: numtype)) =
   | CLZ
   | CTZ
   | POPCNT
 
 
-  ;; 1-syntax.watsup:275.1-275.72
+  ;; 1-syntax.watsup:290.1-290.72
   syntax unop_{fnn : fnn}((fnn : fnn <: numtype)) =
   | ABS
   | NEG
@@ -25580,9 +25645,9 @@ syntax unop_(numtype : numtype)
   | NEAREST
 
 
-;; 1-syntax.watsup:277.1-277.23
+;; 1-syntax.watsup:292.1-292.23
 syntax binop_(numtype : numtype)
-  ;; 1-syntax.watsup:278.1-280.66
+  ;; 1-syntax.watsup:293.1-295.66
   syntax binop_{inn : inn}((inn : inn <: numtype)) =
   | ADD
   | SUB
@@ -25598,7 +25663,7 @@ syntax binop_(numtype : numtype)
   | ROTR
 
 
-  ;; 1-syntax.watsup:281.1-282.49
+  ;; 1-syntax.watsup:296.1-297.49
   syntax binop_{fnn : fnn}((fnn : fnn <: numtype)) =
   | ADD
   | SUB
@@ -25609,21 +25674,21 @@ syntax binop_(numtype : numtype)
   | COPYSIGN
 
 
-;; 1-syntax.watsup:284.1-284.24
+;; 1-syntax.watsup:299.1-299.24
 syntax testop_(numtype : numtype)
-  ;; 1-syntax.watsup:285.1-285.28
+  ;; 1-syntax.watsup:300.1-300.28
   syntax testop_{inn : inn}((inn : inn <: numtype)) =
   | EQZ
 
 
-  ;; 1-syntax.watsup:286.1-286.24
+  ;; 1-syntax.watsup:301.1-301.24
   syntax testop_{fnn : fnn}((fnn : fnn <: numtype)) =
   |
 
 
-;; 1-syntax.watsup:288.1-288.23
+;; 1-syntax.watsup:303.1-303.23
 syntax relop_(numtype : numtype)
-  ;; 1-syntax.watsup:289.1-292.52
+  ;; 1-syntax.watsup:304.1-307.52
   syntax relop_{inn : inn}((inn : inn <: numtype)) =
   | EQ
   | NE
@@ -25633,7 +25698,7 @@ syntax relop_(numtype : numtype)
   | GE(sx : sx)
 
 
-  ;; 1-syntax.watsup:293.1-294.32
+  ;; 1-syntax.watsup:308.1-309.32
   syntax relop_{fnn : fnn}((fnn : fnn <: numtype)) =
   | EQ
   | NE
@@ -25643,52 +25708,52 @@ syntax relop_(numtype : numtype)
   | GE
 
 
-;; 1-syntax.watsup:296.1-296.39
+;; 1-syntax.watsup:311.1-311.39
 syntax cvtop =
   | CONVERT
   | REINTERPRET
 
-;; 1-syntax.watsup:303.1-303.45
+;; 1-syntax.watsup:318.1-318.45
 syntax ishape = `%X%`(imm, dim)
 
-;; 1-syntax.watsup:304.1-304.45
+;; 1-syntax.watsup:319.1-319.45
 syntax fshape = `%X%`(fnn, dim)
 
-;; 1-syntax.watsup:305.1-305.45
+;; 1-syntax.watsup:320.1-320.45
 syntax pshape = `%X%`(pnn, dim)
 
-;; 1-syntax.watsup:307.1-307.22
+;; 1-syntax.watsup:322.1-322.22
 def $dim(shape : shape) : dim
   ;; 2-syntax-aux.watsup:97.1-97.22
   def $dim{lnn : lnn, N : N}(`%X%`(lnn, N)) = N
 
-;; 1-syntax.watsup:308.1-308.41
+;; 1-syntax.watsup:323.1-323.41
 def $shsize(shape : shape) : nat
   ;; 2-syntax-aux.watsup:100.1-100.42
   def $shsize{lnn : lnn, N : N}(`%X%`(lnn, N)) = ($lsize(lnn) * N)
 
-;; 1-syntax.watsup:310.1-310.22
+;; 1-syntax.watsup:325.1-325.22
 syntax vvunop =
   | NOT
 
-;; 1-syntax.watsup:311.1-311.43
+;; 1-syntax.watsup:326.1-326.43
 syntax vvbinop =
   | AND
   | ANDNOT
   | OR
   | XOR
 
-;; 1-syntax.watsup:312.1-312.30
+;; 1-syntax.watsup:327.1-327.30
 syntax vvternop =
   | BITSELECT
 
-;; 1-syntax.watsup:313.1-313.29
+;; 1-syntax.watsup:328.1-328.29
 syntax vvtestop =
   | ANY_TRUE
 
-;; 1-syntax.watsup:315.1-315.21
+;; 1-syntax.watsup:330.1-330.21
 syntax vunop_(shape : shape)
-  ;; 1-syntax.watsup:316.1-316.61
+  ;; 1-syntax.watsup:331.1-331.61
   syntax vunop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ABS
   | NEG
@@ -25696,7 +25761,7 @@ syntax vunop_(shape : shape)
     -- if (imm = I8_imm)
 
 
-  ;; 1-syntax.watsup:317.1-317.77
+  ;; 1-syntax.watsup:332.1-332.77
   syntax vunop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | ABS
   | NEG
@@ -25707,9 +25772,9 @@ syntax vunop_(shape : shape)
   | NEAREST
 
 
-;; 1-syntax.watsup:319.1-319.22
+;; 1-syntax.watsup:334.1-334.22
 syntax vbinop_(shape : shape)
-  ;; 1-syntax.watsup:320.1-329.43
+  ;; 1-syntax.watsup:335.1-344.43
   syntax vbinop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ADD
   | SUB
@@ -25729,7 +25794,7 @@ syntax vbinop_(shape : shape)
     -- if ($lsize((imm : imm <: lanetype)) <= 32)
 
 
-  ;; 1-syntax.watsup:330.1-330.76
+  ;; 1-syntax.watsup:345.1-345.76
   syntax vbinop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | ADD
   | SUB
@@ -25741,21 +25806,21 @@ syntax vbinop_(shape : shape)
   | PMAX
 
 
-;; 1-syntax.watsup:332.1-332.23
+;; 1-syntax.watsup:347.1-347.23
 syntax vtestop_(shape : shape)
-  ;; 1-syntax.watsup:333.1-333.38
+  ;; 1-syntax.watsup:348.1-348.38
   syntax vtestop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ALL_TRUE
 
 
-  ;; 1-syntax.watsup:334.1-334.29
+  ;; 1-syntax.watsup:349.1-349.29
   syntax vtestop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:336.1-336.22
+;; 1-syntax.watsup:351.1-351.22
 syntax vrelop_(shape : shape)
-  ;; 1-syntax.watsup:337.1-337.68
+  ;; 1-syntax.watsup:352.1-352.68
   syntax vrelop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | EQ
   | NE
@@ -25765,7 +25830,7 @@ syntax vrelop_(shape : shape)
   | GE(sx : sx)
 
 
-  ;; 1-syntax.watsup:338.1-338.56
+  ;; 1-syntax.watsup:353.1-353.56
   syntax vrelop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | EQ
   | NE
@@ -25775,7 +25840,7 @@ syntax vrelop_(shape : shape)
   | GE
 
 
-;; 1-syntax.watsup:340.1-340.66
+;; 1-syntax.watsup:355.1-355.66
 syntax vcvtop =
   | EXTEND
   | TRUNC_SAT
@@ -25783,52 +25848,52 @@ syntax vcvtop =
   | DEMOTE
   | PROMOTE
 
-;; 1-syntax.watsup:351.1-351.25
+;; 1-syntax.watsup:366.1-366.25
 syntax vshiftop_{imm : imm, N : N}(`%X%`(imm, N)) =
   | SHL
   | SHR(sx : sx)
 
-;; 1-syntax.watsup:354.1-354.66
+;; 1-syntax.watsup:369.1-369.66
 syntax vextunop_{imm_1 : imm, N_1 : N, imm_2 : imm, N_2 : N}(`%X%`(imm_1, N_1), `%X%`(imm_2, N_2)) =
   | EXTADD_PAIRWISE
     -- if ((16 <= $lsize((imm_1 : imm <: lanetype))) /\ ($lsize((imm_1 : imm <: lanetype)) <= 32))
 
-;; 1-syntax.watsup:419.1-419.50
+;; 1-syntax.watsup:434.1-434.50
 syntax half =
   | LOW
   | HIGH
 
-;; 1-syntax.watsup:357.1-357.68
+;; 1-syntax.watsup:372.1-372.68
 syntax vextbinop_{imm_1 : imm, N_1 : N, imm_2 : imm, N_2 : N}(`%X%`(imm_1, N_1), `%X%`(imm_2, N_2)) =
   | EXTMUL(half : half)
   | DOT{imm_1 : imm}
     -- if ($lsize((imm_1 : imm <: lanetype)) = 32)
 
-;; 1-syntax.watsup:365.1-365.68
+;; 1-syntax.watsup:380.1-380.68
 syntax memop =
 {
   ALIGN u32,
   OFFSET u32
 }
 
-;; 1-syntax.watsup:367.1-370.44
+;; 1-syntax.watsup:382.1-385.44
 syntax vloadop =
   | SHAPE(nat, nat, sx : sx)
   | SPLAT(nat)
   | ZERO(nat)
 
-;; 1-syntax.watsup:379.1-381.17
+;; 1-syntax.watsup:394.1-396.17
 syntax blocktype =
   | _RESULT(valtype?)
   | _IDX(funcidx : funcidx)
 
-;; 1-syntax.watsup:420.1-420.20
+;; 1-syntax.watsup:435.1-435.20
 syntax zero = `ZERO%?`(()?)
 
-;; 1-syntax.watsup:507.1-519.78
+;; 1-syntax.watsup:522.1-534.78
 rec {
 
-;; 1-syntax.watsup:507.1-519.78
+;; 1-syntax.watsup:522.1-534.78
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -25937,61 +26002,61 @@ syntax instr =
   | VSTORE_LANE(n : n, memidx : memidx, memop : memop, laneidx : laneidx)
 }
 
-;; 1-syntax.watsup:521.1-522.9
+;; 1-syntax.watsup:536.1-537.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:534.1-534.61
+;; 1-syntax.watsup:549.1-549.61
 syntax elemmode =
   | ACTIVE(tableidx : tableidx, expr : expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:535.1-535.49
+;; 1-syntax.watsup:550.1-550.49
 syntax datamode =
   | ACTIVE(memidx : memidx, expr : expr)
   | PASSIVE
 
-;; 1-syntax.watsup:537.1-538.15
+;; 1-syntax.watsup:552.1-553.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:539.1-540.16
+;; 1-syntax.watsup:554.1-555.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:541.1-542.27
+;; 1-syntax.watsup:556.1-557.27
 syntax func = `FUNC%%*%`(typeidx, local*, expr)
 
-;; 1-syntax.watsup:543.1-544.25
+;; 1-syntax.watsup:558.1-559.25
 syntax global = GLOBAL(globaltype, expr)
 
-;; 1-syntax.watsup:545.1-546.23
+;; 1-syntax.watsup:560.1-561.23
 syntax table = TABLE(tabletype, expr)
 
-;; 1-syntax.watsup:547.1-548.17
+;; 1-syntax.watsup:562.1-563.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:549.1-550.30
+;; 1-syntax.watsup:564.1-565.30
 syntax elem = `ELEM%%*%`(reftype, expr*, elemmode)
 
-;; 1-syntax.watsup:551.1-552.22
+;; 1-syntax.watsup:566.1-567.22
 syntax data = `DATA%*%`(byte*, datamode)
 
-;; 1-syntax.watsup:553.1-554.16
+;; 1-syntax.watsup:568.1-569.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:556.1-557.66
+;; 1-syntax.watsup:571.1-572.66
 syntax externidx =
   | FUNC(funcidx : funcidx)
   | GLOBAL(globalidx : globalidx)
   | TABLE(tableidx : tableidx)
   | MEM(memidx : memidx)
 
-;; 1-syntax.watsup:558.1-559.24
+;; 1-syntax.watsup:573.1-574.24
 syntax export = EXPORT(name, externidx)
 
-;; 1-syntax.watsup:560.1-561.30
+;; 1-syntax.watsup:575.1-576.30
 syntax import = IMPORT(name, name, externtype)
 
-;; 1-syntax.watsup:563.1-564.76
+;; 1-syntax.watsup:578.1-579.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -30300,7 +30365,7 @@ syntax symsplit =
 ;; C-conventions.watsup:14.1-14.41
 syntax recorddots = `...`
 
-;; C-conventions.watsup:15.1-16.102
+;; C-conventions.watsup:15.1-18.36
 syntax record =
 {
   FIELD_1 A,
@@ -30308,7 +30373,7 @@ syntax record =
   DOTS recorddots
 }
 
-;; C-conventions.watsup:18.1-19.104
+;; C-conventions.watsup:20.1-23.36
 syntax recordstar =
 {
   FIELD_1 A*,
@@ -30316,14 +30381,14 @@ syntax recordstar =
   DOTS recorddots
 }
 
-;; C-conventions.watsup:21.1-21.58
+;; C-conventions.watsup:25.1-25.58
 syntax recordeq = `%++%=%`(recordstar, recordstar, recordstar)
 
-;; C-conventions.watsup:23.1-23.56
+;; C-conventions.watsup:27.1-27.56
 syntax pth =
   | PTHSYNTAX
 
-;; C-conventions.watsup:25.1-30.4
+;; C-conventions.watsup:29.1-34.4
 syntax pthaux =
 {
   PTH (),
@@ -30331,11 +30396,6 @@ syntax pthaux =
   FIELD_PTH (),
   DOT_FIELD_PTH ()
 }
-
-;; C-conventions.watsup:35.1-35.57
-syntax list{syntax A}(syntax A) =
-  | _LIST{A* : A*}(A*)
-    -- if (|A*{A}| < (2 ^ 32))
 
 == IL Validation after pass animate...
 == Complete.

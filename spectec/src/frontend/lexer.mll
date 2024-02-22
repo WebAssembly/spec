@@ -72,7 +72,7 @@ let letter = upletter | loletter
 let idchar = letter | digit | '_' | '\''
 
 let upid = (upletter | '_') idchar*
-let loid = (loletter | '`') idchar*
+let loid = loletter idchar*
 let id = upid | loid
 let atomid = upid
 let typid = loid
@@ -184,6 +184,8 @@ and token = parse
   | "\\" { BACKSLASH }
   | "^" { UP }
   | "++" { COMPOSE }
+  | "+-" { PLUSMINUS }
+  | "-+" { MINUSPLUS }
 
   | "<-" { IN }
   | "->" { ARROW }
@@ -244,6 +246,10 @@ and token = parse
   | loid as s { LOID s }
   | (upid as s) "(" { if is_var s then LOID_LPAREN s else UPID_LPAREN s }
   | (loid as s) "(" { LOID_LPAREN s }
+  | "`"(upid as s) { LOID s }
+  | "`"(loid as s) { UPID s }
+  | "`"(upid as s) "(" { LOID_LPAREN s }
+  | "`"(loid as s) "(" { UPID_LPAREN s }
   | "."(id as s) { DOTID s }
 
   | ";;"utf8_no_nl*eof { EOF }
@@ -251,7 +257,8 @@ and token = parse
   | ";;"utf8_no_nl* { token lexbuf (* causes error on following position *) }
   | "(;" { comment (Lexing.lexeme_start_p lexbuf) lexbuf; token lexbuf }
   | space#'\n' { token lexbuf }
-  | '\n' { Lexing.new_line lexbuf; token lexbuf }
+  | "\n" { Lexing.new_line lexbuf; token lexbuf }
+  | "\\\n" { Lexing.new_line lexbuf; token lexbuf }
   | eof { EOF }
 
   | printable { error lexbuf "malformed token" }
@@ -262,7 +269,7 @@ and token = parse
 and comment start = parse
   | ";)" { () }
   | "(;" { comment (Lexing.lexeme_start_p lexbuf) lexbuf; comment start lexbuf }
-  | '\n' { Lexing.new_line lexbuf; comment start lexbuf }
+  | "\n" { Lexing.new_line lexbuf; comment start lexbuf }
   | utf8_no_nl { comment start lexbuf }
   | eof { error_nest start lexbuf "unclosed comment" }
   | _ { error lexbuf "malformed UTF-8 encoding" }

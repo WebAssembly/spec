@@ -110,6 +110,8 @@ and unop =
   | NotOp   (* `~` *)
   | PlusOp  (* `+` *)
   | MinusOp (* `-` *)
+  | PlusMinusOp (* `+-` *)
+  | MinusPlusOp (* `-+` *)
 
 and binop =
   | AndOp  (* `/\` *)

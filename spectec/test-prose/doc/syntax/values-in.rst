@@ -37,13 +37,13 @@ Floating-Point
 ~~~~~~~~~~~~~~
 
 .. _syntax-fN:
-.. _syntax-fmag:
+.. _syntax-fNmag:
 .. _syntax-f32:
 .. _syntax-f64:
 
 $${syntax+: 
   fN
-  fmag
+  fNmag
   f32
   f64
 }

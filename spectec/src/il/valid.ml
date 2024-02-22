@@ -195,7 +195,7 @@ and selfify_typ env e t =
 
 let infer_unop = function
   | NotOp -> BoolT, BoolT
-  | PlusOp t | MinusOp t -> NumT t, NumT t
+  | PlusOp t | MinusOp t | PlusMinusOp t | MinusPlusOp t -> NumT t, NumT t
 
 let infer_binop = function
   | AndOp | OrOp | ImplOp | EquivOp -> BoolT, BoolT, BoolT

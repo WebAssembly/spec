@@ -369,14 +369,14 @@ let render_id' env style id note =
   else
     id_style style ^ "{" ^ shrink_id id ^ "}"
 
-let rec render_id_sub env style show at = function
+let rec render_id_sub env style show first at = function
   | [] -> ""
-  | ""::ss -> render_id_sub env style show at ss
-  | s::ss when style = `Var && is_upper s.[0] && not (Set.mem (chop_tick s) !(env.vars)) ->
-    render_id_sub env `Atom show at (lower s :: ss)  (* subscripts may be atoms *)
-  | s1::""::ss -> render_id_sub env style show at (s1::ss)
+  | ""::ss -> render_id_sub env style show first at ss
+  | s::ss when style = `Var && not first && is_upper s.[0] && not (Set.mem (chop_tick s) !(env.vars)) ->
+    render_id_sub env `Atom show first at (lower s :: ss)  (* subscripts may be atoms *)
+  | s1::""::ss -> render_id_sub env style show first at (s1::ss)
   | s1::s2::ss when style = `Atom && is_upper s2.[0] ->
-    render_id_sub env `Atom show at ((s1 ^ "_" ^ lower s2)::ss)
+    render_id_sub env `Atom show first at ((s1 ^ "_" ^ lower s2)::ss)
   | s::ss ->
     let rec find_ticks i =
       if i > 0 && s.[i - 1] = '\'' then find_ticks (i - 1) else i
@@ -390,10 +390,10 @@ let rec render_id_sub env style show at = function
         (s' $ at) [] (fun () -> render_id' env style s' "")
     in
     "{" ^ (if i = n then s'' else s'' ^ String.sub s i (n - i)) ^ "}" ^
-    (if ss = [] then "" else "_{" ^ render_id_sub env `Var env.show_var at ss ^ "}")
+    (if ss = [] then "" else "_{" ^ render_id_sub env `Var env.show_var false at ss ^ "}")
 
 let render_id env style show id =
-  render_id_sub env style show id.at (String.split_on_char '_' id.it)
+  render_id_sub env style show true id.at (String.split_on_char '_' id.it)
 
 let render_typid env id = render_id env `Var env.show_typ id
 let render_varid env id = render_id env `Var env.show_var id
@@ -485,6 +485,8 @@ let render_unop = function
   | NotOp -> "\\neg"
   | PlusOp -> "+"
   | MinusOp -> "-"
+  | PlusMinusOp -> "\\pm"
+  | MinusPlusOp -> "\\mp"
 
 let render_binop = function
   | AndOp -> "\\land"

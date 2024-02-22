@@ -70,6 +70,8 @@ let string_of_unop = function
   | NotOp -> "~"
   | PlusOp -> "+"
   | MinusOp -> "-"
+  | PlusMinusOp -> "+-"
+  | MinusPlusOp -> "-+"
 
 let string_of_binop = function
   | AndOp -> "/\\"

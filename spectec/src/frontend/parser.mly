@@ -97,7 +97,7 @@ let is_post_exp e =
 %token COMMA_NL NL_BAR NL_NL_DASH NL_NL_NL
 %token EQ NE LT GT LE GE APPROX EQUIV ASSIGN SUB SUP EQDOT2
 %token NOT AND OR
-%token QUEST PLUS MINUS STAR SLASH BACKSLASH UP COMPOSE
+%token QUEST PLUS MINUS STAR SLASH BACKSLASH UP COMPOSE PLUSMINUS MINUSPLUS
 %token IN ARROW ARROW2 DARROW2 SQARROW SQARROWSTAR PREC SUCC TURNSTILE TILESTURN
 %token DOLLAR TICK
 %token BOT TOP
@@ -231,6 +231,8 @@ atom_ :
   | TICK DOTDOT { Dot2 }
   | TICK DOTDOTDOT { Dot3 }
   | TICK COMPOSE { Comp }
+  | TICK ARROW { Arrow }
+  | TICK COMMA { Comma }
   | BOT { Bot }
   | TOP { Top }
   | INFINITY { Infinity }
@@ -259,6 +261,8 @@ check_atom :
   | NOT { NotOp }
   | PLUS { PlusOp }
   | MINUS { MinusOp }
+  | PLUSMINUS { PlusMinusOp }
+  | MINUSPLUS { MinusPlusOp }
 
 %inline binop :
   | PLUS { AddOp }
@@ -518,7 +522,7 @@ exp_un_ :
   | exp_seq_ { signify_pars Op $1 }
   | bar exp bar { LenE $2 }
   | BARBAR gramid BARBAR { SizeE $2 }
-  | NOT exp_un { UnE (NotOp, $2) }
+  | unop exp_un { UnE ($1, $2) }
   | infixop exp_un { InfixE (SeqE [] $ $loc($1), $1, $2) }
 
 exp_bin : exp_bin_ { $1 $ $sloc }

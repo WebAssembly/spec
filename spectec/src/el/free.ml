@@ -111,7 +111,7 @@ and free_typenum (e, eo) = free_exp e + free_opt free_exp eo
 (* Variables can be determined by types through implicit binders *)
 and det_typ t =
   match t.it with
-  | VarT (id, _) -> free_varid id
+  | VarT (id, _) | ParenT {it = VarT (id, _); _} -> free_varid id
   | SeqT ts -> free_list det_typ ts
   | IterT (t1, iter) -> det_typ t1 + det_iter iter
   | _ -> empty

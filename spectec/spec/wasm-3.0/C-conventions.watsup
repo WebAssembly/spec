@@ -13,10 +13,14 @@ syntax symsplit/2 hint(show sym) = ... | _LAST A_2
 
 syntax recorddots hint(show `...) = `...
 syntax record hint(show r) =
-  { FIELD_1 A_1 hint(show FIELD_ 1), FIELD_2 A_2 hint(show FIELD_ 2), DOTS recorddots hint(show !%) }
+  { FIELD_1 A_1 hint(show FIELD_ 1), \
+    FIELD_2 A_2 hint(show FIELD_ 2), \
+    DOTS recorddots hint(show !%) }
 
 syntax recordstar hint(show r) =
-  { FIELD_1 A_1* hint(show FIELD_ 1), FIELD_2 A_2* hint(show FIELD_ 2), DOTS recorddots hint(show !%) }
+  { FIELD_1 A_1* hint(show FIELD_ 1), \
+    FIELD_2 A_2* hint(show FIELD_ 2), \
+    DOTS recorddots hint(show !%) }
 
 syntax recordeq = recordstar `++ recordstar `= recordstar
 
@@ -28,8 +32,3 @@ syntax pthaux =
     FIELD_PTH ()     hint(show FIELD pth),
     DOT_FIELD_PTH () hint(show !%.FIELD)
   }
-
-
-;; Lists
-
-syntax list(syntax A) = | _LIST A*  -- if |A*| < $(2^32)

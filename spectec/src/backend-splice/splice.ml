@@ -16,14 +16,19 @@ let advn src i = src.i <- src.i + i
 let adv src = advn src 1
 let left src = String.length src.s - src.i
 
-let rec pos' src j (line, column) : Source.pos =
-  if j = src.i then
-    Source.{file = src.file; line; column}
-  else
-    pos' src (j + 1)
-      (if src.s.[j] = '\n' then line + 1, 1 else line, column + 1)
+let col src =
+  let j = ref src.i in
+  while !j > 0 && src.s.[!j - 1] <> '\n' do decr j done;
+  src.i - !j
 
-let pos src = pos' src 0 (1, 1)
+let pos src =
+  let line = ref 1 in
+  let col = ref 1 in
+  for j = 0 to src.i - 1 do
+    if src.s.[j] = '\n' then (incr line; col := 1) else incr col
+  done;
+  Source.{file = src.file; line = !line; column = !col}
+
 let region src = let pos = pos src in {left = pos; right = pos}
 
 let error src msg = Source.error (region src) "splicing" msg
@@ -36,7 +41,6 @@ let try_with_error src i f x =
       { file = src.file; line = line + pos.line - 1;
         column = if line = 1 then column + pos.column - 1 else column} in
     let at' = {left = shift at.left; right = shift at.right} in
-Printexc.print_backtrace stdout;
     raise (Source.Error (at', msg))
 
 
@@ -391,7 +395,7 @@ let try_prose_anchor env src r sort space1 space2 find mode : bool =
 
 (* Splicing *)
 
-let splice_anchor env src anchor buf =
+let splice_anchor env src splice_pos anchor buf =
   let open Backend_latex in
   let config = {(Render.config env.latex) with Config.display = anchor.newline} in
   let env' = {env with latex = Render.env_with_config env.latex config} in
@@ -420,21 +424,22 @@ let splice_anchor env src anchor buf =
     error src "unknown anchor sort";
   );
   if !r <> "" then
-  ( let s =
-      if !prose || anchor.newline && anchor.indent = "" then !r else
-      let nl = if anchor.newline then "\n" ^ anchor.indent else "" in
-      Str.(global_replace (regexp "\n") nl !r)
+  ( let s = if !prose then !r else anchor.prefix ^ !r ^ anchor.suffix in
+    let indent = if !prose then "" else anchor.indent in
+    let nl =
+      if not anchor.newline then " " else
+      "\n" ^ String.make (col {src with i = splice_pos}) ' ' ^ indent
     in
-    if not !prose then Buffer.add_string buf anchor.prefix;
-    Buffer.add_string buf s;
-    if not !prose then Buffer.add_string buf anchor.suffix;
+    let s' = if nl = "\n" then s else Str.(global_replace (regexp "\n") nl s) in
+    Buffer.add_string buf s'
   )
 
 let rec try_anchors env src buf = function
   | [] -> false
   | anchor::anchors ->
+    let i = src.i in
     if try_anchor_start src anchor.token then
-      (splice_anchor env src anchor buf; true)
+      (splice_anchor env src i anchor buf; true)
     else
       try_anchors env src buf anchors
 

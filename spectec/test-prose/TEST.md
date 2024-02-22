@@ -206,6 +206,12 @@ E N
 fzero N
 1. Return (POS (SUBNORM 0)).
 
+fone N
+1. Return (POS (NORM 1 0)).
+
+canon_ N
+1. Return (2 ^ ($signif(N) - 1)).
+
 size valty_u0
 1. If (valty_u0 is I32), then:
   a. Return 32.
@@ -1287,6 +1293,12 @@ E N
 
 fzero N
 1. Return (POS (SUBNORM 0)).
+
+fone N
+1. Return (POS (NORM 1 0)).
+
+canon_ N
+1. Return (2 ^ ($signif(N) - 1)).
 
 size valty_u0
 1. If (valty_u0 is I32), then:
@@ -3212,6 +3224,12 @@ E N
 
 fzero N
 1. Return (POS (SUBNORM 0)).
+
+fone N
+1. Return (POS (NORM 1 0)).
+
+canon_ N
+1. Return (2 ^ ($signif(N) - 1)).
 
 size valty_u0
 1. If (valty_u0 is I32), then:

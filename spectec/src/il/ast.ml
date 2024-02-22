@@ -98,6 +98,8 @@ and unop =
   | NotOp             (* `~` *)
   | PlusOp of numtyp  (* `+` *)
   | MinusOp of numtyp (* `-` *)
+  | PlusMinusOp of numtyp (* `+-` *)
+  | MinusPlusOp of numtyp (* `-+` *)
 
 and binop =
   | AndOp            (* `/\` *)

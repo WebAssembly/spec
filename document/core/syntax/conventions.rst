@@ -20,7 +20,7 @@ Grammar Notation
 
 The following conventions are adopted in defining grammar rules for abstract syntax.
 
-* Terminal symbols (atoms) are written in sans-serif font or in symbolic form: ${valtype: I32}, ${instr:NOP}, :math:`\to`, :math:`[`, :math:`]`.
+* Terminal symbols (atoms) are written in sans-serif font or in symbolic form: ${:I32}, ${:NOP}, ${:`->}, ${:`[`,]}.
 
 * Nonterminal symbols are written in italic font: ${:valtype}, ${:instr}.
 
@@ -58,6 +58,8 @@ The following conventions are adopted in defining grammar rules for abstract syn
 Auxiliary Notation
 ~~~~~~~~~~~~~~~~~~
 
+${syntax-ignore: A B}
+
 When dealing with syntactic constructs the following notation is also used:
 
 * ${:eps} denotes the empty sequence.
@@ -66,13 +68,13 @@ When dealing with syntactic constructs the following notation is also used:
 
 * ${:s[i]} denotes the ${:i}-th element of a sequence ${:s}`, starting from ${:0}.
 
-* ${:s[i:n]} denotes the sub-sequence ${:s[i]...s[i+n-1]} of a sequence ${:s}.
+* ${:s[i : n]} denotes the sub-sequence ${:s[i]...s[i+n-1]} of a sequence ${:s}.
 
 * ${:s[[i]=A]} denotes the same sequence as ${:s},
   except that the ${:i}-th element is replaced with ${:A}.
 
-* ${:s[[i:n]=A^n]} denotes the same sequence as ${:s},
-  except that the sub-sequence ${:s[i:n]} is replaced with ${:A^n}.
+* ${:s[[i : n] = A^n]} denotes the same sequence as ${:s},
+  except that the sub-sequence ${:s[i : n]} is replaced with ${:A^n}.
 
 * ${:$concat(s*)} denotes the flat sequence formed by concatenating all sequences ${:s_i} in ${:s*}.
 
@@ -86,37 +88,43 @@ Moreover, the following conventions are employed:
   This implicitly expresses a form of mapping syntactic constructions over a sequence.
 
 
-Productions of the following form are interpreted as *records* that map a fixed set of fields ${:FIELD_i} to "values" ${:A_i}, respectively:
+Productions of the following form are interpreted as *records* that map a fixed set of fields ${:FIELD_ i} to "values" ${:A_i}, respectively:
 
-$${syntax:record}
+$${syntax: record}
 
 The following notation is adopted for manipulating such records:
 
 * ${:r.FIELD} denotes the contents of the ${:FIELD} component of ${:r}.
 
-* ${:r[.FIELD=A]} denotes the same record as ${:r},
+* ${:r[.FIELD = A]} denotes the same record as ${:r},
   except that the contents of the ${:FIELD} component is replaced with ${:A}.
 
-* ${:r[.FIELD=..A^n]} denotes the same record as ${:r},
+* ${:r[.FIELD = ..A^n]} denotes the same record as ${:r},
   except that ${:A^n} is appended to the sequence of the ${:FIELD} component,
-  i.e, it is short for ${:r[.FIELD=r.FIELD A^n]}.
+  i.e, it is short for ${:r[.FIELD = r.FIELD A^n]}.
 
 * ${:r_1++r_2} denotes the composition of two records with the same fields of sequences by appending each sequence point-wise:
 
   $${recordeq:
-{FIELD_1 A_1*, FIELD_2 A_2*, DOTS `...} `++ {FIELD_1 B_1*, FIELD_2 B_2*, DOTS `...} `=
-{FIELD_1 A_1* B_1*, FIELD_2 A_2* B_2*, DOTS `...}
-}
+    {FIELD_1 A_1*, FIELD_2 A_2*, DOTS `...} `++
+    {FIELD_1 B_1*, FIELD_2 B_2*, DOTS `...} `=
+    {FIELD_1 A_1* B_1*, FIELD_2 A_2* B_2*, DOTS `...}
+  }
 
 * ${:(++) r*} denotes the composition of a sequence of records, respectively; if the sequence is empty, then all fields of the resulting record are empty.
 
-The update notation for sequences and records generalizes recursively to nested components accessed by "paths" ${syntax:pth}:
+${syntax-ignore: recorddots recordstar recordeq}
 
-* ${:s[.I_PTH=A]} is short for ${:s[[i]=(s[i][.PTH=A])]},
+The update notation for sequences and records generalizes recursively to nested components accessed by "paths" ${syntax: pth}:
 
-* ${:r[.FIELD_PTH=A]} is short for ${:r[.FIELD=(s.FIELD[.PTH=A])]},
+* ${:s[.I_PTH = A]} is short for ${:s[[i] = (s[i][.PTH = A])]},
 
-where ${:r[.DOT_FIELD_PTH=A]} is shortened to ${:r[.FIELD=A]}.
+* ${:r[.FIELD_PTH = A]} is short for ${:r[.FIELD = (s.FIELD[.PTH = A])]},
+
+where ${:r[.DOT_FIELD_PTH = A]} is shortened to ${:r[.FIELD = A]}.
+
+${syntax-ignore: pthaux}
+
 
 
 .. index:: ! list
@@ -130,4 +138,4 @@ Lists
 where the ${:A} can either be values or complex constructions.
 A list can have at most ${:$(2^32-1)} elements.
 
-$${syntax:list}
+$${syntax: list}

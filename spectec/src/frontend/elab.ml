@@ -474,6 +474,8 @@ let infer_unop = function
   | NotOp -> [Il.NotOp, BoolT]
   | PlusOp -> infer_numop (fun t -> Il.PlusOp t) (List.tl numtyps)
   | MinusOp -> infer_numop (fun t -> Il.MinusOp t) (List.tl numtyps)
+  | PlusMinusOp -> infer_numop (fun t -> Il.PlusMinusOp t) (List.tl numtyps)
+  | MinusPlusOp -> infer_numop (fun t -> Il.MinusPlusOp t) (List.tl numtyps)
 
 let infer_binop = function
   | AndOp -> [Il.AndOp, BoolT]

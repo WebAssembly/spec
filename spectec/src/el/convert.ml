@@ -42,7 +42,7 @@ let typ_of_varid id =
 
 let varid_of_typ t =
   (match t.it with
-  | VarT (id, _) -> id.it
+  | VarT (id, _) | ParenT {it = VarT (id, _); _} -> id.it
   | BoolT -> "bool"
   | NumT NatT -> "nat"
   | NumT IntT -> "int"
