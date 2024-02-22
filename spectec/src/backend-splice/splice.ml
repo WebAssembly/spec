@@ -176,10 +176,11 @@ let match_full re s =
   Str.string_match re s 0 && Str.match_end () = String.length s
 
 let find_entries space src id1 id2 entries =
-  let re = Str.(regexp (global_replace (regexp "\\*\\|\\?") (".\\0") id2)) in
+  let id2' = if id2 = "" then "*" else id2 in
+  let re = Str.(regexp (global_replace (regexp "\\*\\|\\?") (".\\0") id2')) in
   let defs = List.filter (fun (id, _, _) -> match_full re id) entries in
   if defs = [] then
-    error src ("unknown " ^ space ^ " identifier `" ^ id1 ^ "/" ^ id2 ^ "`");
+    error src ("unknown " ^ space ^ " identifier `" ^ id1 ^ "/" ^ id2' ^ "`");
   List.map (fun (_, def, use) -> incr use; def) defs
 
 let find_entry space src id1 id2 entries =
@@ -195,23 +196,27 @@ let find_entry space src id1 id2 entries =
 let find_syntax env src id1 id2 =
   match Map.find_opt id1 env.syn with
   | None -> error src ("unknown syntax identifier `" ^ id1 ^ "`")
-  | Some syntax -> find_entries "syntax" src id1 id2 syntax.sfragments
+  | Some syntax ->
+    let defs = find_entries "syntax" src id1 id2 syntax.sfragments in
+    if id2 = "" then [defs] else List.map (fun def -> [def]) defs
 
 let find_grammar env src id1 id2 =
   match Map.find_opt id1 env.gram with
   | None -> error src ("unknown grammar identifier `" ^ id1 ^ "`")
-  | Some grammar -> find_entries "grammar" src id1 id2 grammar.gfragments
+  | Some grammar ->
+    let defs = find_entries "grammar" src id1 id2 grammar.gfragments in
+    if id2 = "" then [defs] else List.map (fun def -> [def]) defs
 
 let find_relation env src id1 id2 =
   find_nosub "relation" src id1 id2;
   match Map.find_opt id1 env.rel with
   | None -> error src ("unknown relation identifier `" ^ id1 ^ "`")
-  | Some relation -> [relation.rdef]
+  | Some relation -> [[relation.rdef]]
 
 let find_rule env src id1 id2 =
   match Map.find_opt id1 env.rel with
   | None -> error src ("unknown relation identifier `" ^ id1 ^ "`")
-  | Some relation -> find_entries "rule" src id1 id2 relation.rules
+  | Some relation -> [find_entries "rule" src id1 id2 relation.rules]
 
 let find_def env src id1 id2 =
   find_nosub "definition" src id1 id2;
@@ -220,7 +225,7 @@ let find_def env src id1 id2 =
   | Some definition ->
     if definition.clauses = [] then
       error src ("definition `" ^ id1 ^ "` has no clauses");
-    incr definition.use; definition.clauses
+    incr definition.use; [definition.clauses]
 
 let find_rule_prose env src id1 id2 =
   match Map.find_opt id1 env.rel_prose with
@@ -288,7 +293,7 @@ let parse_id_id env src space1 space2 find =
     if space2 <> "" && try_string src "/" then parse_id src space2 else ""
   in find env {src with i = j} id1 id2
 
-let rec parse_id_id_list env src space1 space2 find : El.Ast.def list =
+let rec parse_id_id_list env src space1 space2 find : El.Ast.def list list =
   parse_space src;
   if try_string src "}" then [] else
   let defs1 = parse_id_id env src space1 space2 find in
@@ -300,9 +305,9 @@ let rec parse_group_list env src space1 space2 find : El.Ast.def list list =
   if try_string src "}" then [] else
   let groups =
     if try_string src "{" then
-      [parse_id_id_list env src space1 space2 find]
+      [List.concat (parse_id_id_list env src space1 space2 find)]
     else
-      List.map (fun def -> [def]) (parse_id_id env src space1 space2 find)
+      parse_id_id env src space1 space2 find
   in
   groups @ parse_group_list env src space1 space2 find
 

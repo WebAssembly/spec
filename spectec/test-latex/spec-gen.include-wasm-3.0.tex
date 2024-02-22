@@ -45,8 +45,7 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& {\mathit{list}}({\mathit{A}}) &::=& {{\mathit{A}}^\ast} &\quad
-  \mbox{if}~{|{{\mathit{A}}^\ast}|} < {2^{32}} \\
+& {\mathit{list}}({\mathit{X}}) &::=& {{\mathit{X}}^\ast} \\
 \end{array}
 $$
 
@@ -176,15 +175,13 @@ $$
 & {\mathit{nul}} &::=& {\mathsf{null}^?} \\
 \mbox{(number type)} & {\mathit{numtype}} &::=& \mathsf{i{\scriptstyle32}} ~|~ \mathsf{i{\scriptstyle64}} ~|~ \mathsf{f{\scriptstyle32}} ~|~ \mathsf{f{\scriptstyle64}} \\
 \mbox{(vector type)} & {\mathit{vectype}} &::=& \mathsf{v{\scriptstyle128}} \\
-\mbox{(abstract heap type)} & {\mathit{absheaptype}} &::=& \mathsf{any} ~|~ \mathsf{eq} ~|~ \mathsf{i{\scriptstyle31}} ~|~ \mathsf{struct} ~|~ \mathsf{array} ~|~ \mathsf{none} \\ &&|&
+& {\mathit{absheaptype}} &::=& \mathsf{any} ~|~ \mathsf{eq} ~|~ \mathsf{i{\scriptstyle31}} ~|~ \mathsf{struct} ~|~ \mathsf{array} ~|~ \mathsf{none} \\ &&|&
 \mathsf{func} ~|~ \mathsf{nofunc} \\ &&|&
 \mathsf{extern} ~|~ \mathsf{noextern} \\ &&|&
 \mathsf{bot} \\
-\mbox{(heap type)} & {\mathit{heaptype}} &::=& {\mathit{absheaptype}} \\ &&|&
-{\mathit{typeidx}} \\ &&|&
-\dots \\
+& {\mathit{heaptype}} &::=& {\mathit{absheaptype}} ~|~ {\mathit{typeidx}} ~|~ \dots \\
 \mbox{(reference type)} & {\mathit{reftype}} &::=& \mathsf{ref}~{\mathit{nul}}~{\mathit{heaptype}} \\
-\mbox{(value type)} & {\mathit{valtype}} &::=& {\mathit{numtype}} ~|~ {\mathit{vectype}} ~|~ {\mathit{reftype}} ~|~ \mathsf{bot} \\
+& {\mathit{valtype}} &::=& {\mathit{numtype}} ~|~ {\mathit{vectype}} ~|~ {\mathit{reftype}} ~|~ \mathsf{bot} \\
 & {\mathsf{i}}{{\mathit{n}}} &::=& \mathsf{i{\scriptstyle32}} ~|~ \mathsf{i{\scriptstyle64}} \\
 & {\mathsf{f}}{{\mathit{n}}} &::=& \mathsf{f{\scriptstyle32}} ~|~ \mathsf{f{\scriptstyle64}} \\
 & {\mathsf{v}}{{\mathit{n}}} &::=& \mathsf{v{\scriptstyle128}} \\
@@ -195,7 +192,7 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-\mbox{(result type)} & {\mathit{resulttype}} &::=& {{\mathit{valtype}}^\ast} \\
+\mbox{(result type)} & {\mathit{resulttype}} &::=& {\mathit{list}}({\mathit{valtype}}) \\
 \end{array}
 $$
 
@@ -220,18 +217,15 @@ $$
 & {\mathit{fin}} &::=& {\mathsf{final}^?} \\
 \mbox{(field type)} & {\mathit{fieldtype}} &::=& {\mathit{mut}}~{\mathit{storagetype}} \\
 \mbox{(function type)} & {\mathit{functype}} &::=& {\mathit{resulttype}} \rightarrow {\mathit{resulttype}} \\
-\mbox{(composite type)} & {\mathit{comptype}} &::=& \mathsf{struct}~{{\mathit{fieldtype}}^\ast} \\ &&|&
-\mathsf{array}~{\mathit{fieldtype}} \\ &&|&
+\mbox{(structure type)} & {\mathit{structtype}} &::=& {\mathit{list}}({\mathit{fieldtype}}) \\
+\mbox{(array type)} & {\mathit{arraytype}} &::=& {\mathit{fieldtype}} \\
+\mbox{(composite type)} & {\mathit{comptype}} &::=& \mathsf{struct}~{\mathit{structtype}} \\ &&|&
+\mathsf{array}~{\mathit{arraytype}} \\ &&|&
 \mathsf{func}~{\mathit{functype}} \\
-\mbox{(sub type)} & {\mathit{subtype}} &::=& \mathsf{sub}~{\mathit{fin}}~{{\mathit{typeidx}}^\ast}~{\mathit{comptype}} \\ &&|&
-\dots \\
-\mbox{(recursive type)} & {\mathit{rectype}} &::=& \mathsf{rec}~{{\mathit{subtype}}^\ast} \\
+& {\mathit{subtype}} &::=& \mathsf{sub}~{\mathit{fin}}~{{\mathit{typeidx}}^\ast}~{\mathit{comptype}} ~|~ \mathsf{sub}~{\mathit{fin}}~{{\mathit{heaptype}}^\ast}~{\mathit{comptype}} \\
+\mbox{(recursive type)} & {\mathit{rectype}} &::=& \mathsf{rec}~{\mathit{list}}({\mathit{subtype}}) \\
 \mbox{(defined type)} & {\mathit{deftype}} &::=& {\mathit{rectype}} . {\mathit{nat}} \\
-\mbox{(heap type)} & {\mathit{heaptype}} &::=& \dots \\ &&|&
-{\mathit{deftype}} \\ &&|&
-\mathsf{rec}~{\mathit{nat}} \\
-\mbox{(sub type)} & {\mathit{subtype}} &::=& \dots \\ &&|&
-\mathsf{sub}~{\mathit{fin}}~{{\mathit{heaptype}}^\ast}~{\mathit{comptype}} \\
+& {\mathit{heaptype}} &::=& \dots ~|~ {\mathit{deftype}} ~|~ \mathsf{rec}~{\mathit{n}} \\
 \end{array}
 $$
 

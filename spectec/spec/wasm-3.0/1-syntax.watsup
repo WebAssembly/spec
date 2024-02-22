@@ -2,8 +2,8 @@
 ;; Lists
 ;;
 
-;; TODO: make alias
-syntax list(syntax A) = | _LIST A*  -- if |A*| < $(2^32)
+;; TODO: enable side condition
+syntax list(syntax X) = X*  ;; -- if |X*| < $(2^32)
 
 
 ;;
@@ -119,6 +119,7 @@ var x33 : s33 hint(show x)
 
 ;; Value types
 
+;; TODO: inline
 syntax nul = NULL?
 
 syntax numtype hint(desc "number type") =
@@ -127,24 +128,22 @@ syntax numtype hint(desc "number type") =
 syntax vectype hint(desc "vector type") =
   | V128
 
-syntax absheaptype hint(desc "abstract heap type") =
+syntax absheaptype/syn hint(desc "abstract heap type") =
   | ANY | EQ | I31 | STRUCT | ARRAY | NONE
   | FUNC | NOFUNC
   | EXTERN | NOEXTERN
   | ...
-syntax absheaptype =
+syntax absheaptype/sem =
   | ... | BOT
-syntax heaptype hint(desc "heap type") =
-  | absheaptype
-  | _IDX typeidx
-  | ...
+syntax heaptype/syn hint(desc "heap type") =
+  | absheaptype | _IDX typeidx | ...
 
 syntax reftype hint(desc "reference type") =
   | REF nul heaptype
 
-syntax valtype hint(desc "value type") =
+syntax valtype/syn hint(desc "value type") =
   | numtype | vectype | reftype | ...
-syntax valtype =
+syntax valtype/sem =
   | ... | BOT
 
 syntax inn hint(show I#n) = | I32 | I64
@@ -153,7 +152,7 @@ syntax vnn hint(show V#n) = | V128
 
 
 syntax resulttype hint(desc "result type") =
-  valtype*
+  list(valtype)
 
 
 ;; Packed types
@@ -169,38 +168,35 @@ syntax imm hint(show I#n) = | inn | pnn
 
 ;; Type definitions
 
+;; TODO: inline
 syntax mut = MUT?
 syntax fin = FINAL?
 
 syntax fieldtype hint(desc "field type") =
   mut storagetype
 
-syntax functype hint(desc "function type") =
-  resulttype -> resulttype
+syntax functype hint(desc "function type") = resulttype -> resulttype
+syntax structtype hint(desc "structure type") = list(fieldtype)
+syntax arraytype hint(desc "array type") = fieldtype
 
 syntax comptype hint(desc "composite type") =
-  | STRUCT fieldtype*
-  | ARRAY fieldtype
+  | STRUCT structtype
+  | ARRAY arraytype
   | FUNC functype
 
-syntax subtype hint(desc "sub type") =
-  | SUB fin typeidx* comptype
-  | ...
+syntax subtype/syn hint(desc "sub type") =
+  | SUB fin typeidx* comptype | ...
+syntax subtype/sem =
+  | ... | SUBD fin heaptype* comptype  hint(show SUB % % %)
 
 syntax rectype hint(desc "recursive type") =
-  | REC subtype*
+  | REC list(subtype)
 
 syntax deftype hint(desc "defined type") =
   | DEF rectype nat hint(show %.%)
 
-syntax heaptype =
-  | ...
-  | deftype
-  | REC nat
-
-syntax subtype =
-  | ...
-  | SUBD fin heaptype* comptype  hint(show SUB % % %)
+syntax heaptype/sem =
+  | ... | deftype | REC n
 
 
 ;; External types

@@ -410,10 +410,19 @@ and match_typ env s t1 t2 : subst option =
     | Some s -> Some s
     | None ->
       (* If that fails, fall back to reduction. *)
-      match_typ env s (reduce_typ env t1) (reduce_typ env t2)
+      let t1' = reduce_typ env t1 in
+      let t2' = reduce_typ env t2 in
+      if Eq.(eq_typ t1 t1' && eq_typ t2 t2') then None else
+      match_typ env s t1' t2'
     )
-  | VarT _, _ -> match_typ env s (reduce_typ env t1) t2
-  | _, VarT _ -> match_typ env s t1 (reduce_typ env t2)
+  | VarT _, _ ->
+    let t1' = reduce_typ env t1 in
+    if Eq.eq_typ t1 t1' then None else
+    match_typ env s t1' t2
+  | _, VarT _ ->
+    let t2' = reduce_typ env t2 in
+    if Eq.eq_typ t2 t2' then None else
+    match_typ env s t1 t2'
   | TupT xts1, TupT xts2 -> match_list match_typbind env s xts1 xts2
   | IterT (t11, iter1), IterT (t21, iter2) ->
     let* s' = match_typ env s t11 t21 in match_iter env s' iter1 iter2

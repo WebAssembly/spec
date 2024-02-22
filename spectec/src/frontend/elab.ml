@@ -124,17 +124,13 @@ let find space env' id =
   | None -> error_id (spaceid space id) ("undeclared " ^ space)
   | Some t -> t
 
-let bind_shadow _space env' id t =
+let bind space env' id t =
   if id.it = "_" then
     env'
-  else
-    Map.add id.it t env'
-
-let bind space env' id t =
-  if Map.mem id.it env' then
+  else if Map.mem id.it env' then
     error_id (spaceid space id) ("duplicate declaration for " ^ space)
   else
-    bind_shadow space env' id t
+    Map.add id.it t env'
 
 let rebind _space env' id t =
   assert (Map.mem id.it env');
@@ -1483,8 +1479,8 @@ and elab_arg in_lhs env a p s : Il.arg option * Subst.subst =
     Some (Il.ExpA e' $ a.at), Subst.add_varid s id e
   | TypA ({it = VarT (id', []); _} as t), TypP id when in_lhs = `Lhs ->
     let id'' = strip_var_suffix id' in
-    env.typs <- bind_shadow "syntax type" env.typs id'' ([], Opaque);
-    env.gvars <- bind_shadow "variable" env.gvars id'' (VarT (id'', []) $ id''.at);
+    env.typs <- bind "syntax type" env.typs id'' ([], Opaque);
+    env.gvars <- bind "variable" env.gvars id'' (VarT (id'', []) $ id''.at);
     Some (Il.TypA (Il.VarT (id'', []) $ t.at) $ a.at), Subst.add_typid s id t
   | TypA t, TypP _ when in_lhs = `Lhs ->
     error t.at "misplaced syntax type"
@@ -1554,8 +1550,8 @@ let elab_params env ps : Il.param list =
         env.vars <- bind "variable" env.vars id t;
       ps' @ [Il.ExpP (id, t') $ p.at]
     | TypP id ->
-      env.typs <- bind_shadow "syntax type" env.typs id ([], Opaque);
-      env.gvars <- bind_shadow "variable" env.gvars id (VarT (id, []) $ id.at);
+      env.typs <- bind "syntax type" env.typs id ([], Opaque);
+      env.gvars <- bind "variable" env.gvars id (VarT (id, []) $ id.at);
       ps' @ [Il.TypP id $ p.at]
     | GramP (id, t) ->
       (* Treat unbound type identifiers in t as implicitly bound. *)
