@@ -548,7 +548,7 @@ and render_typ env t =
 
 
 and render_typfield env (atom, (t, prems), _hints) =
-  render_fieldname env atom t.at ^ "~" ^ render_typ env t ^
+  render_fieldname env atom t.at ^ "~\\," ^ render_typ env t ^
   if prems = [] then "" else render_conditions env "&&&&" prems
 
 and render_typcase env (_atom, (t, prems), _hints) =
@@ -607,19 +607,19 @@ and render_exp env e =
           (* Handle subscripting *)
           "{" ^ render_atomid env (chop_sub id) !(atom.note) ^
           "}_{" ^ render_exps "," env (as_tup_exp e1) ^ "}" ^
-          (if es2 = [] then "" else "\\," ^ render_exps "~" env es2)
+          (if es2 = [] then "" else "\\," ^ render_exps "~\\," env es2)
         | _ ->
           let s1 = render_atom env atom in
-          let s2 = render_exps "~" env es in
+          let s2 = render_exps "~\\," env es in
           assert (s1 <> "" || s2 <> "");
-          if s1 <> "" && s2 <> "" then s1 ^ "~" ^ s2 else s1 ^ s2
+          if s1 <> "" && s2 <> "" then s1 ^ "~\\," ^ s2 else s1 ^ s2
       )
   (* Hack for binop_nt *)
   | SeqE (e1::e2::es) when chop_sub_exp e1 <> None ->
     "{" ^ render_exp env (Option.get (chop_sub_exp e1)) ^ "}_{" ^
       render_exps "," env (as_tup_exp e2) ^ "}" ^
       (if es = [] then "" else "\\," ^ render_exp env (SeqE es $ e.at))
-  | SeqE es -> render_exps "~" env es
+  | SeqE es -> render_exps "~\\," env es
   | IdxE (e1, e2) -> render_exp env e1 ^ "{}[" ^ render_exp env e2 ^ "]"
   | SliceE (e1, e2, e3) ->
     render_exp env e1 ^
@@ -673,7 +673,7 @@ and render_exps sep env es =
   concat sep (List.filter ((<>) "") (List.map (render_exp env) es))
 
 and render_expfield env (atom, e) =
-  render_fieldname env atom e.at ^ "~" ^ render_exp env e
+  render_fieldname env atom e.at ^ "~\\," ^ render_exp env e
 
 and render_path env p =
   match p.it with
@@ -745,7 +745,7 @@ and render_sym env g =
     in "\\mathrm{U{+}" ^ Z.format fmt n ^ "}"
   | TextG t -> "`" ^ t ^ "'"
   | EpsG -> "\\epsilon"
-  | SeqG gs -> render_syms "~" env gs
+  | SeqG gs -> render_syms "~\\," env gs
   | AltG gs -> render_syms " ~|~ " env gs
   | RangeG (g1, g2) ->
     render_sym env g1 ^ " ~|~ \\dots ~|~ " ^ render_sym env g2

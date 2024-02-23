@@ -54,14 +54,14 @@ test: exe $(TESTDIRS) dunetest
 
 dunetest:
 	@echo "#### Running (dune runtest)"
-	@dune runtest && echo OK || (echo "=>" Failure running dune test. && echo "=>" Run \`make testpromote\` to accept changes in test expectations. && false)
+	@dune runtest && echo OK || (echo "####>" Failure running dune test. && echo "####>" Run \`make testpromote\` to accept changes in test expectations. && false)
 
 testpromote:
 	dune promote
 
 $(TESTDIRS): test-%: exe
 	@echo "#### Running (cd $@; make test)"
-	@(cd $@ && (make test >$(LOG) || (cat $(LOG) && echo "=>" Failure running $@. See log above. && false)))
+	@(cd $@ && ((make test >$(LOG) 2>&1 && (grep warning $(LOG) || true)) || (cat $(LOG) && echo "####>" Failure running $@. See log above. && false)))
 
 
 # Cleanup

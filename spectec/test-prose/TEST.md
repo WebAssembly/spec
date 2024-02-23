@@ -3833,6 +3833,9 @@ zsize stora_u0
 lanetype (lnn X N)
 1. Return lnn.
 
+sizenn t
+1. Return $size(t).
+
 dim (lnn X N)
 1. Return N.
 

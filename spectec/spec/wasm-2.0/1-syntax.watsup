@@ -231,26 +231,26 @@ syntax binop_(fnn) =
 
 syntax testop_(numtype)
 syntax testop_(inn) = | EQZ
-syntax testop_(fnn) = |      ;; uninhabited
+;; syntax testop_(fnn) = |      ;; uninhabited
 
 syntax relop_(numtype)
 syntax relop_(inn) =
-  | EQ | NE
-  | LT sx hint(show LT_#%) | GT sx hint(show GT_#%)
+  | EQ | NE \
+  | LT sx hint(show LT_#%) | GT sx hint(show GT_#%) \
   | LE sx hint(show LE_#%) | GE sx hint(show GE_#%)
 syntax relop_(fnn) =
   | EQ | NE | LT | GT | LE | GE
 
-syntax cvtop = | CONVERT | REINTERPRET | CONVERT_SAT
+syntax cvtop = | CONVERT | CONVERT_SAT | REINTERPRET
 
 
 ;; Vector operators
 
 syntax dim hint(desc "dimension") = 1 | 2 | 4 | 8 | 16
-syntax shape hint(desc "shape") = lanetype X dim
-syntax ishape hint(desc "shape") = imm X dim
-syntax fshape hint(desc "shape") = fnn X dim
-syntax pshape hint(desc "shape") = pnn X dim
+syntax shape hint(desc "shape") = lanetype X dim  ;; TODO: hint(show %#X#%)
+syntax ishape hint(desc "shape") = imm X dim      ;; TODO: hint(show %#X#%)
+syntax fshape hint(desc "shape") = fnn X dim      ;; TODO: hint(show %#X#%)
+syntax pshape hint(desc "shape") = pnn X dim      ;; TODO: hint(show %#X#%)
 
 def $dim(shape) : dim
 def $shsize(shape) : nat  hint(show |%|)
@@ -279,7 +279,7 @@ syntax vbinop_(fnn X N) = | ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX
 
 syntax vtestop_(shape)
 syntax vtestop_(imm X N) = | ALL_TRUE
-syntax vtestop_(fnn X N) = |           ;; uninhabited
+;; syntax vtestop_(fnn X N) = |           ;; uninhabited
 
 syntax vrelop_(shape)
 syntax vrelop_(imm X N) = | EQ | NE | LT sx | GT sx | LE sx | GE sx
@@ -346,20 +346,20 @@ syntax instr/control hint(desc "control instruction") =
   | RETURN
   | ...
 
-syntax instr/numeric hint(desc "numeric instruction") = ...
+syntax instr/num hint(desc "numeric instruction") = ...
   | CONST numtype num_(numtype)      hint(show %.CONST %)
   | UNOP numtype unop_(numtype)      hint(show %.%)
   | BINOP numtype binop_(numtype)    hint(show %.%)
   | TESTOP numtype testop_(numtype)  hint(show %.%)
   | RELOP numtype relop_(numtype)    hint(show %.%)
-  | CVTOP numtype cvtop numtype sx?  hint(show %.%#_#%#_#%)
-  | EXTEND numtype n                 hint(show %.EXTEND#%)
+  | CVTOP numtype_1 cvtop numtype_1 sx?  hint(show %.%#_#%#_#%)
+  | EXTEND numtype N                 hint(show %.EXTEND#%#_S)
   | ...
 
 syntax half hint(desc "lane part") = | LOW | HIGH
 syntax zero = ZERO?
 
-syntax instr/vector hint(desc "vector instruction") = ...
+syntax instr/vec hint(desc "vector instruction") = ...
   | VCONST vectype vec_(vectype)        hint(show %.CONST %)
   | VVUNOP vectype vvunop               hint(show %.%)
   | VVBINOP vectype vvbinop             hint(show %.%)
@@ -388,7 +388,7 @@ syntax instr/vector hint(desc "vector instruction") = ...
   | ...
 ;; TODO: check for missing constraints
 
-syntax instr/reference hint(desc "reference instruction") = ...
+syntax instr/ref hint(desc "reference instruction") = ...
   | REF.NULL reftype
   | REF.FUNC funcidx
   | REF.IS_NULL

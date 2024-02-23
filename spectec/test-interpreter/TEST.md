@@ -2910,244 +2910,247 @@ watsup 0.4 generator
 - 14/86 (16.28%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast =====
-Result: 4_096 0 -863_091_656 32_560 : [v128]
+Result: 29_507 0 3_072 0 : [v128]
 Expect: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:43.1-43.109 (Error(_, "wrong return values"))
-Result: 6_358_432 0 5 16_777_216 : [v128]
+Result: 0 0 1_346_405_688 1 : [v128]
 Expect: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:44.1-44.109 (Error(_, "wrong return values"))
-Result: -861_381_800 32_560 3_072 0 : [v128]
+Result: 2_048 0 113 0 : [v128]
 Expect: 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:45.1-45.109 (Error(_, "wrong return values"))
-Result: 7 0 0 0 : [v128]
+Result: 1 0 1 0 : [v128]
 Expect: 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:46.1-46.109 (Error(_, "wrong return values"))
-Result: 0 0 -958_682_800 32_560 : [v128]
+Result: 1_344_600_288 1 0 0 : [v128]
 Expect: 31 31 31 31 31 31 31 31 31 31 31 31 31 31 31 31 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:47.1-47.129 (Error(_, "wrong return values"))
-Result: -2_147_483_520 -1 2_303 0 : [v128]
+Result: 2_303 0 6_127_384 1 : [v128]
 Expect: 1_284 1_284 1_284 1_284 1_284 1_284 1_284 1_284 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:48.1-48.134 (Error(_, "wrong return values"))
-Result: 231 0 -861_607_032 32_560 : [v128]
+Result: 116 100_663_296 4_096 0 : [v128]
 Expect: 1_541 1_541 1_541 1_541 1_541 1_541 1_541 1_541 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:49.1-49.134 (Error(_, "wrong return values"))
-Result: 631 0 -861_650_624 32_560 : [v128]
+Result: 36_947 0 37_029 0 : [v128]
 Expect: 1_798 1_798 1_798 1_798 1_798 1_798 1_798 1_798 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:50.1-50.134 (Error(_, "wrong return values"))
-Result: -863_091_656 32_560 493 0 : [v128]
+Result: 1_372_132_216 1 497 0 : [v128]
 Expect: 2_055 2_055 2_055 2_055 2_055 2_055 2_055 2_055 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:51.1-51.134 (Error(_, "wrong return values"))
-Result: 1_639 0 3_072 0 : [v128]
+Result: 1_344_367_344 1 497 0 : [v128]
 Expect: 7_966 7_966 7_966 7_966 7_966 7_966 7_966 7_966 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:52.1-52.138 (Error(_, "wrong return values"))
-Result: 2_048 0 191 0 : [v128]
+Result: 5 16_777_216 1_344_324_152 1 : [v128]
 Expect: 185_207_048 185_207_048 185_207_048 185_207_048 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:53.1-53.122 (Error(_, "wrong return values"))
-Result: -861_819_520 32_560 -861_820_088 32_560 : [v128]
+Result: 4_714_208 1 3_072 0 : [v128]
 Expect: 202_050_057 202_050_057 202_050_057 202_050_057 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:54.1-54.122 (Error(_, "wrong return values"))
-Result: 5_120 0 -861_859_224 32_560 : [v128]
+Result: 2_048 0 195 0 : [v128]
 Expect: 218_893_066 218_893_066 218_893_066 218_893_066 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:55.1-55.123 (Error(_, "wrong return values"))
-Result: -861_898_560 32_560 10_405_928 0 : [v128]
+Result: 7_327 0 7_509 0 : [v128]
 Expect: 235_736_075 235_736_075 235_736_075 235_736_075 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:56.1-56.123 (Error(_, "wrong return values"))
-Result: 37 0 247 0 : [v128]
+Result: 3_319 0 1_351_536 1 : [v128]
 Expect: 522_067_228 522_067_228 522_067_228 522_067_228 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:57.1-57.126 (Error(_, "wrong return values"))
-Result: -861_977_456 32_560 1_024 0 : [v128]
+Result: 0 0 1_372_569_216 1 : [v128]
 Expect: 252_579_084 252_579_084 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:58.1-58.117 (Error(_, "wrong return values"))
-Result: 4_096 0 -861_698_176 32_560 : [v128]
+Result: 89 0 31 0 : [v128]
 Expect: 986_637 986_637 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:59.1-59.117 (Error(_, "wrong return values"))
-Result: -861_698_176 32_560 93 0 : [v128]
+Result: 0 0 2_303 0 : [v128]
 Expect: 3_854 3_854 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:60.1-60.117 (Error(_, "wrong return values"))
-Result: -862_089_600 32_560 10_628_472 0 : [v128]
+Result: 1_372_423_832 1 95 0 : [v128]
 Expect: 15 15 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:61.1-61.117 (Error(_, "wrong return values"))
-Result: 2_303 0 9_578_272 0 : [v128]
+Result: 6_127_384 1 4 0 : [v128]
 Expect: 2_242_261_671_028_070_680 2_242_261_671_028_070_680 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:62.1-62.120 (Error(_, "wrong return values"))
-Result: 9_578_272 0 128 0 : [v128]
+Result: 5 16_777_216 4_362_824 1 : [v128]
 Expect: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:65.1-65.106 (Error(_, "wrong return values"))
-Result: 49_328 0 2_303 0 : [v128]
+Result: 2_303 0 6_127_448 1 : [v128]
 Expect: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:66.1-66.105 (Error(_, "wrong return values"))
-Result: 11_295 0 11_487 0 : [v128]
+Result: 1_372_360_424 1 1 0 : [v128]
 Expect: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:67.1-67.113 (Error(_, "wrong return values"))
-Result: 2_303 0 9_578_208 0 : [v128]
+Result: 1_343_763_296 1 2_048 0 : [v128]
 Expect: 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:68.1-68.113 (Error(_, "wrong return values"))
-Result: 9_578_272 0 0 0 : [v128]
+Result: 6_127_384 1 -2_147_483_648 -1 : [v128]
 Expect: 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:69.1-69.130 (Error(_, "wrong return values"))
-Result: 9_578_272 0 -1_717_986_919 -1 : [v128]
+Result: 1_346_371_016 1 1_346_370_592 1 : [v128]
 Expect: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:70.1-70.106 (Error(_, "wrong return values"))
-Result: -862_527_416 32_560 2_048 0 : [v128]
+Result: 6_127_384 1 0 0 : [v128]
 Expect: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:71.1-71.105 (Error(_, "wrong return values"))
-Result: 15_247 0 15_293 0 : [v128]
+Result: 1_343_523_000 1 0 0 : [v128]
 Expect: 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:72.1-72.113 (Error(_, "wrong return values"))
-Result: 4_095 0 2_303 0 : [v128]
+Result: 6_127_384 1 65_535 0 : [v128]
 Expect: 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:73.1-73.113 (Error(_, "wrong return values"))
-Result: 9_578_272 0 0 0 : [v128]
+Result: 1_050 0 1_343_402_720 1 : [v128]
 Expect: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:74.1-74.114 (Error(_, "wrong return values"))
-Result: 2_303 0 9_578_272 0 : [v128]
+Result: 1_343_343_008 1 2_048 0 : [v128]
 Expect: 31 31 31 31 31 31 31 31 31 31 31 31 31 31 31 31 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:75.1-75.126 (Error(_, "wrong return values"))
-Result: 18_309 0 3_072 0 : [v128]
+Result: 6_127_384 1 496 0 : [v128]
 Expect: 31 31 31 31 31 31 31 31 31 31 31 31 31 31 31 31 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:76.1-76.125 (Error(_, "wrong return values"))
-Result: 4_343 0 5_676_208 0 : [v128]
+Result: 1_345_322_264 1 3_072 0 : [v128]
 Expect: 256 256 256 256 256 256 256 256 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:78.1-78.130 (Error(_, "wrong return values"))
-Result: -860_757_776 32_560 2_048 0 : [v128]
+Result: 1 0 1_300_971_432 1 : [v128]
 Expect: 256 256 256 256 256 256 256 256 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:79.1-79.129 (Error(_, "wrong return values"))
-Result: 5_676_768 0 5 16_777_216 : [v128]
+Result: 5_905_064 1 4_343 0 : [v128]
 Expect: 513 513 513 513 513 513 513 513 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:80.1-80.137 (Error(_, "wrong return values"))
-Result: -958_904_264 32_560 1 0 : [v128]
+Result: 4_096 0 1 0 : [v128]
 Expect: 770 770 770 770 770 770 770 770 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:81.1-81.137 (Error(_, "wrong return values"))
-Result: 3_072 0 -868_045_224 32_560 : [v128]
+Result: 2_053 0 1_351_497_480 1 : [v128]
 Expect: 15 15 15 15 15 15 15 15 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:82.1-82.138 (Error(_, "wrong return values"))
-Result: 2_048 0 -868_043_160 32_560 : [v128]
+Result: 1_345_104_024 1 2_048 0 : [v128]
 Expect: 513 513 513 513 513 513 513 513 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:83.1-83.130 (Error(_, "wrong return values"))
-Result: 3_072 0 -868_224_232 32_560 : [v128]
+Result: 1_345_342_760 1 3_072 0 : [v128]
 Expect: 513 513 513 513 513 513 513 513 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:84.1-84.129 (Error(_, "wrong return values"))
-Result: 2_048 0 -861_097_904 32_560 : [v128]
+Result: 2_053 0 1_351_514_664 1 : [v128]
 Expect: 770 770 770 770 770 770 770 770 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:85.1-85.137 (Error(_, "wrong return values"))
-Result: -868_043_160 32_560 1 0 : [v128]
+Result: 1_300_080_064 1 1_344_974_280 1 : [v128]
 Expect: 1_027 1_027 1_027 1_027 1_027 1_027 1_027 1_027 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:86.1-86.137 (Error(_, "wrong return values"))
-Result: 3_072 0 -868_224_232 32_560 : [v128]
+Result: 1_345_342_760 1 3_072 0 : [v128]
 Expect: 0 0 0 0 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:87.1-87.138 (Error(_, "wrong return values"))
-Result: 1 0 4_343 0 : [v128]
+Result: 1_345_342_760 1 1_027 0 : [v128]
 Expect: 7_966 7_966 7_966 7_966 7_966 7_966 7_966 7_966 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:88.1-88.134 (Error(_, "wrong return values"))
-Result: 9_578_272 0 0 0 : [v128]
+Result: 1_344_845_264 1 9 0 : [v128]
 Expect: 7_966 7_966 7_966 7_966 7_966 7_966 7_966 7_966 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:89.1-89.133 (Error(_, "wrong return values"))
-Result: -867_652_872 32_560 1 0 : [v128]
+Result: 1 0 1_351_118_296 1 : [v128]
 Expect: 50_462_976 50_462_976 50_462_976 50_462_976 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:91.1-91.118 (Error(_, "wrong return values"))
-Result: 2_052 0 -861_353_992 32_560 : [v128]
+Result: 0 0 3_324 0 : [v128]
 Expect: 50_462_976 50_462_976 50_462_976 50_462_976 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:92.1-92.117 (Error(_, "wrong return values"))
-Result: -861_392_792 32_560 -861_393_272 32_560 : [v128]
+Result: 1_344_731_560 1 4_343 0 : [v128]
 Expect: 67_305_985 67_305_985 67_305_985 67_305_985 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:93.1-93.125 (Error(_, "wrong return values"))
-Result: -861_431_952 32_560 2_048 0 : [v128]
+Result: 1 0 1_351_110_688 1 : [v128]
 Expect: 84_148_994 84_148_994 84_148_994 84_148_994 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:94.1-94.125 (Error(_, "wrong return values"))
-Result: -861_471_760 32_560 3 0 : [v128]
+Result: 1 0 0 117_440_512 : [v128]
 Expect: 15 15 15 15 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:95.1-95.126 (Error(_, "wrong return values"))
-Result: 0 0 -958_682_800 32_560 : [v128]
+Result: 1_344_607_768 1 2_048 0 : [v128]
 Expect: 67_305_985 67_305_985 67_305_985 67_305_985 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:96.1-96.118 (Error(_, "wrong return values"))
-Result: -878_653_368 32_560 -958_899_368 32_560 : [v128]
+Result: 1_344_569_144 1 43 0 : [v128]
 Expect: 67_305_985 67_305_985 67_305_985 67_305_985 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:97.1-97.117 (Error(_, "wrong return values"))
-Result: 8_122_800 0 4_345 0 : [v128]
+Result: 0 117_440_512 2_303 0 : [v128]
 Expect: 84_148_994 84_148_994 84_148_994 84_148_994 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:98.1-98.125 (Error(_, "wrong return values"))
-Result: 4_343 0 5_676_240 0 : [v128]
+Result: 5_031_600 1 2_048 0 : [v128]
 Expect: 100_992_003 100_992_003 100_992_003 100_992_003 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:99.1-99.125 (Error(_, "wrong return values"))
-Result: 1_835_627_311 1_869_373_284 1_935_631_457 1_952_541_808 : [v128]
+Result: 1_299_922_976 1 1 0 : [v128]
 Expect: 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:100.1-100.126 (Error(_, "wrong return values"))
-Result: -861_702_232 32_560 -861_705_792 32_560 : [v128]
+Result: 1_344_413_872 1 1_350_147_560 1 : [v128]
 Expect: 522_067_228 522_067_228 522_067_228 522_067_228 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:101.1-101.122 (Error(_, "wrong return values"))
-Result: 3_072 0 0 117_440_512 : [v128]
+Result: 1_344_375_144 1 5_120 0 : [v128]
 Expect: 522_067_228 522_067_228 522_067_228 522_067_228 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:102.1-102.121 (Error(_, "wrong return values"))
-Result: 2_048 0 -861_782_696 32_560 : [v128]
+Result: 1_024 0 1_344_336_504 1 : [v128]
 Expect: 506_097_522_914_230_528 506_097_522_914_230_528 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:104.1-104.112 (Error(_, "wrong return values"))
-Result: -861_821_056 32_560 1 0 : [v128]
+Result: 1_300_010_160 1 1_344_299_216 1 : [v128]
 Expect: 506_097_522_914_230_528 506_097_522_914_230_528 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:105.1-105.111 (Error(_, "wrong return values"))
-Result: 1 0 1_027 0 : [v128]
+Result: 113_232 1 7 33_554_432 : [v128]
 Expect: 578_437_695_752_307_201 578_437_695_752_307_201 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:106.1-106.119 (Error(_, "wrong return values"))
-Result: 1 0 5 0 : [v128]
+Result: 515_392 1 5 16_777_216 : [v128]
 Expect: 650_777_868_590_383_874 650_777_868_590_383_874 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:107.1-107.119 (Error(_, "wrong return values"))
-Result: -958_899_272 32_560 1 0 : [v128]
+Result: 1_350_538_448 1 1_344_186_112 1 : [v128]
 Expect: 15 15 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:108.1-108.120 (Error(_, "wrong return values"))
-Result: -861_967_512 32_560 3_072 0 : [v128]
+Result: 1_300_782_920 1 1_344_148_864 1 : [v128]
 Expect: 578_437_695_752_307_201 578_437_695_752_307_201 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:109.1-109.112 (Error(_, "wrong return values"))
-Result: -872_166_200 32_560 -862_009_632 32_560 : [v128]
+Result: 2_048 0 1_300_783_144 1 : [v128]
 Expect: 578_437_695_752_307_201 578_437_695_752_307_201 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:110.1-110.111 (Error(_, "wrong return values"))
-Result: 5_120 0 -862_047_536 32_560 : [v128]
+Result: 2_048 0 1_350_538_072 1 : [v128]
 Expect: 650_777_868_590_383_874 650_777_868_590_383_874 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:111.1-111.119 (Error(_, "wrong return values"))
-Result: -862_085_472 32_560 1 0 : [v128]
+Result: 2_048 0 1_344_036_192 1 : [v128]
 Expect: 723_118_041_428_460_547 723_118_041_428_460_547 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:112.1-112.119 (Error(_, "wrong return values"))
-Result: 5 0 5_120 0 : [v128]
+Result: 1_350_538_448 1 1 0 : [v128]
 Expect: 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:113.1-113.120 (Error(_, "wrong return values"))
-Result: 3_072 0 -867_657_160 32_560 : [v128]
+Result: 1_027 0 1_343_961_272 1 : [v128]
 Expect: 2_242_261_671_028_070_680 2_242_261_671_028_070_680 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:114.1-114.116 (Error(_, "wrong return values"))
-Result: -862_198_328 32_560 2_048 0 : [v128]
+Result: 6_127_384 1 0 0 : [v128]
 Expect: 2_242_261_671_028_070_680 2_242_261_671_028_070_680 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:115.1-115.115 (Error(_, "wrong return values"))
-Result: -958_825_752 32_560 -891_565_320 32_560 : [v128]
+Result: 1_351_214_088 1 1 0 : [v128]
 Expect: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:198.1-198.104 (Error(_, "wrong return values"))
-Result: -860_898_568 32_560 1 0 : [v128]
+Result: 1 0 3_072 0 : [v128]
 Expect: 513 513 513 513 513 513 513 513 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:199.1-199.129 (Error(_, "wrong return values"))
-Result: 7 0 0 0 : [v128]
+Result: 1_300_051_616 1 1_345_020_320 1 : [v128]
 Expect: 84_148_994 84_148_994 84_148_994 84_148_994 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:200.1-200.117 (Error(_, "wrong return values"))
-Result: 2_048 0 -861_131_704 32_560 : [v128]
+Result: 3_072 0 1_344_994_272 1 : [v128]
 Expect: 2_569 2_569 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:201.1-201.111 (Error(_, "wrong return values"))
-Result: 5_676_240 0 5 16_777_216 : [v128]
+Result: 4_032_280 1 1_299_929_776 1 : [v128]
 Expect: 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:202.1-202.107 (Error(_, "wrong return values"))
-Result: 8_337_760 0 5 16_777_216 : [v128]
+Result: 1_344_859_704 1 1_024 0 : [v128]
 Expect: 1_284 1_284 1_284 1_284 1_284 1_284 1_284 1_284 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:203.1-203.132 (Error(_, "wrong return values"))
-Result: 9_962_376 0 -891_564_024 32_560 : [v128]
+Result: 1_350_151_056 1 1_300_236_296 1 : [v128]
 Expect: 134_678_021 134_678_021 134_678_021 134_678_021 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:204.1-204.120 (Error(_, "wrong return values"))
-Result: -867_252_312 32_560 -861_341_752 32_560 : [v128]
+Result: 3_072 0 1_344_774_016 1 : [v128]
 Expect: 10 10 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:205.1-205.114 (Error(_, "wrong return values"))
-Result: 3 : [i32]
+Result: 32 : [i32]
 Expect: 6 : [i32]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:206.1-206.81 (Error(_, "wrong return values"))
-Result: 40 : [i32]
+Result: 56 : [i32]
 Expect: 7 : [i32]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:207.1-207.82 (Error(_, "wrong return values"))
-Result: 1 : [i32]
+Result: -40 : [i32]
 Expect: 8 : [i32]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:208.1-208.82 (Error(_, "wrong return values"))
-- 35/114 (30.70%)
+Result: -24 : [i32]
+Expect: 0 : [i32]
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:209.1-209.82 (Error(_, "wrong return values"))
+- 34/114 (29.82%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_load_zero.wast =====
 - 29/29 (100.00%)
@@ -3254,7 +3257,7 @@ Expect: 8 : [i32]
 ===== ../../test-interpreter/spec-test-2/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [42860/45187] (94.85%)
+Total [42859/45187] (94.85%)
 
 == Complete.
 Running test for Wasm 3.0...
@@ -6101,244 +6104,247 @@ Expect: 26_984 : [i32]
 - 14/86 (16.28%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast =====
-Result: -1_833_053_520 32_581 -1_833_054_240 32_581 : [v128]
+Result: 21 0 1_479_892_672 1 : [v128]
 Expect: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:43.1-43.109 (Error(_, "wrong return values"))
-Result: 9_578_208 0 268_435_455 0 : [v128]
+Result: 12 0 2_303 0 : [v128]
 Expect: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:44.1-44.109 (Error(_, "wrong return values"))
-Result: 0 -2_147_483_648 2_303 0 : [v128]
+Result: 4 0 2_303 0 : [v128]
 Expect: 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:45.1-45.109 (Error(_, "wrong return values"))
-Result: 0 0 -2_031_650_504 32_581 : [v128]
+Result: 1_478_679_344 1 0 0 : [v128]
 Expect: 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:46.1-46.109 (Error(_, "wrong return values"))
-Result: 105 0 -1_833_418_248 32_581 : [v128]
+Result: 3_072 0 1_612_494_712 1 : [v128]
 Expect: 31 31 31 31 31 31 31 31 31 31 31 31 31 31 31 31 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:47.1-47.129 (Error(_, "wrong return values"))
-Result: 445 0 -1_833_509_304 32_581 : [v128]
+Result: 30_775 0 3_072 0 : [v128]
 Expect: 1_284 1_284 1_284 1_284 1_284 1_284 1_284 1_284 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:48.1-48.134 (Error(_, "wrong return values"))
-Result: 33_081 0 3_072 0 : [v128]
+Result: 1_478_427_144 1 4_343 0 : [v128]
 Expect: 1_541 1_541 1_541 1_541 1_541 1_541 1_541 1_541 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:49.1-49.134 (Error(_, "wrong return values"))
-Result: 1 0 1 0 : [v128]
+Result: 33_667 0 33_713 0 : [v128]
 Expect: 1_798 1_798 1_798 1_798 1_798 1_798 1_798 1_798 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:50.1-50.134 (Error(_, "wrong return values"))
-Result: 2_048 0 -1_833_731_568 32_581 : [v128]
+Result: 0 0 1_612_768_976 1 : [v128]
 Expect: 2_055 2_055 2_055 2_055 2_055 2_055 2_055 2_055 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:51.1-51.134 (Error(_, "wrong return values"))
-Result: 2_048 0 223 0 : [v128]
+Result: 113 0 1_478_203_304 1 : [v128]
 Expect: 7_966 7_966 7_966 7_966 7_966 7_966 7_966 7_966 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:52.1-52.138 (Error(_, "wrong return values"))
-Result: 449 0 37_687 0 : [v128]
+Result: 1_478_129_488 1 8_444 0 : [v128]
 Expect: 185_207_048 185_207_048 185_207_048 185_207_048 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:53.1-53.122 (Error(_, "wrong return values"))
-Result: -1_833_948_664 32_581 6_391 0 : [v128]
+Result: 3_072 0 121 0 : [v128]
 Expect: 202_050_057 202_050_057 202_050_057 202_050_057 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:54.1-54.122 (Error(_, "wrong return values"))
-Result: -1_834_018_904 32_581 10_405_928 0 : [v128]
+Result: 3_072 0 85_032_448 1 : [v128]
 Expect: 218_893_066 218_893_066 218_893_066 218_893_066 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:55.1-55.123 (Error(_, "wrong return values"))
-Result: -1_834_088_344 32_581 3_072 0 : [v128]
+Result: 84_464_200 1 1_479_892_472 1 : [v128]
 Expect: 235_736_075 235_736_075 235_736_075 235_736_075 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:56.1-56.123 (Error(_, "wrong return values"))
-Result: 0 0 -1_842_866_648 32_581 : [v128]
+Result: 1_026 0 1_477_852_184 1 : [v128]
 Expect: 522_067_228 522_067_228 522_067_228 522_067_228 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:57.1-57.126 (Error(_, "wrong return values"))
-Result: 2_048 0 -1_834_227_632 32_581 : [v128]
+Result: 0 0 1_612_585_472 1 : [v128]
 Expect: 252_579_084 252_579_084 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:58.1-58.117 (Error(_, "wrong return values"))
-Result: 0 0 -2_031_747_856 32_581 : [v128]
+Result: 1 0 2_303 0 : [v128]
 Expect: 986_637 986_637 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:59.1-59.117 (Error(_, "wrong return values"))
-Result: -2_031_808_128 32_581 -1_834_363_888 32_581 : [v128]
+Result: 2_303 0 86_228_824 1 : [v128]
 Expect: 3_854 3_854 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:60.1-60.117 (Error(_, "wrong return values"))
-Result: 268_435_455 0 2_303 0 : [v128]
+Result: 4_096 0 1_478_097_616 1 : [v128]
 Expect: 15 15 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:61.1-61.117 (Error(_, "wrong return values"))
-Result: 2_303 0 9_578_208 0 : [v128]
+Result: 613 0 1_477_511_656 1 : [v128]
 Expect: 2_242_261_671_028_070_680 2_242_261_671_028_070_680 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:62.1-62.120 (Error(_, "wrong return values"))
-Result: -1_862_809_304 32_581 -2_075_367_032 32_581 : [v128]
+Result: 1_479_540_584 1 5_120 0 : [v128]
 Expect: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:65.1-65.106 (Error(_, "wrong return values"))
-Result: 3_072 0 -1_841_409_848 32_581 : [v128]
+Result: 1_487_790_632 1 1_613_516_272 1 : [v128]
 Expect: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:66.1-66.105 (Error(_, "wrong return values"))
-Result: 1 0 5 0 : [v128]
+Result: 1_484_031_624 1 1_479_360_024 1 : [v128]
 Expect: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:67.1-67.113 (Error(_, "wrong return values"))
-Result: -1_832_743_816 32_581 2_048 0 : [v128]
+Result: 2_048 0 1_479_268_696 1 : [v128]
 Expect: 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:68.1-68.113 (Error(_, "wrong return values"))
-Result: 2_048 0 45 0 : [v128]
+Result: 80_613_520 1 5 16_777_216 : [v128]
 Expect: 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:69.1-69.130 (Error(_, "wrong return values"))
-Result: 1 0 1_025 0 : [v128]
+Result: 1_024 0 17 0 : [v128]
 Expect: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:70.1-70.106 (Error(_, "wrong return values"))
-Result: -1_833_017_080 32_581 1 0 : [v128]
+Result: 1 0 3_072 0 : [v128]
 Expect: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:71.1-71.105 (Error(_, "wrong return values"))
-Result: -2_031_673_000 32_581 -1_833_108_264 32_581 : [v128]
+Result: 1 0 1_187_772_896 1 : [v128]
 Expect: 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:72.1-72.113 (Error(_, "wrong return values"))
-Result: 5_676_864 0 5 16_777_216 : [v128]
+Result: 1_478_815_824 1 84_360_544 1 : [v128]
 Expect: 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:73.1-73.113 (Error(_, "wrong return values"))
-Result: -1_833_290_768 32_581 1_024 0 : [v128]
+Result: 1 0 5 0 : [v128]
 Expect: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:74.1-74.114 (Error(_, "wrong return values"))
-Result: 2_048 0 9_889_976 0 : [v128]
+Result: 1_478_638_144 1 1 0 : [v128]
 Expect: 31 31 31 31 31 31 31 31 31 31 31 31 31 31 31 31 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:75.1-75.126 (Error(_, "wrong return values"))
-Result: 3_072 0 9_962_376 0 : [v128]
+Result: 1_478_547_528 1 1_478_544_120 1 : [v128]
 Expect: 31 31 31 31 31 31 31 31 31 31 31 31 31 31 31 31 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:76.1-76.125 (Error(_, "wrong return values"))
-Result: 3_072 0 -1_836_905_048 32_581 : [v128]
+Result: 4_343 0 80_613_616 1 : [v128]
 Expect: 256 256 256 256 256 256 256 256 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:78.1-78.130 (Error(_, "wrong return values"))
-Result: 5_120 0 -1_833_637_080 32_581 : [v128]
+Result: 1_478_380_136 1 1 0 : [v128]
 Expect: 256 256 256 256 256 256 256 256 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:79.1-79.129 (Error(_, "wrong return values"))
-Result: 3_072 0 -1_836_905_048 32_581 : [v128]
+Result: 4_343 0 80_604_696 1 : [v128]
 Expect: 513 513 513 513 513 513 513 513 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:80.1-80.137 (Error(_, "wrong return values"))
-Result: 1 0 4_343 0 : [v128]
+Result: 1 0 5_367 0 : [v128]
 Expect: 770 770 770 770 770 770 770 770 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:81.1-81.137 (Error(_, "wrong return values"))
-Result: -1_833_859_840 32_581 5 0 : [v128]
+Result: 1 0 2_048 0 : [v128]
 Expect: 15 15 15 15 15 15 15 15 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:82.1-82.138 (Error(_, "wrong return values"))
-Result: 11_605_456 0 4_343 0 : [v128]
+Result: 1_478_087_816 1 1_478_084_832 1 : [v128]
 Expect: 513 513 513 513 513 513 513 513 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:83.1-83.130 (Error(_, "wrong return values"))
-Result: 9_889_456 0 -2_031_670_072 32_581 : [v128]
+Result: 1_478_019_232 1 1 0 : [v128]
 Expect: 513 513 513 513 513 513 513 513 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:84.1-84.129 (Error(_, "wrong return values"))
-Result: -1_834_081_832 32_581 1 0 : [v128]
+Result: 84_293_376 1 1 0 : [v128]
 Expect: 770 770 770 770 770 770 770 770 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:85.1-85.137 (Error(_, "wrong return values"))
-Result: 5_676_208 0 5 16_777_216 : [v128]
+Result: 1_477_888_040 1 2_050 0 : [v128]
 Expect: 1_027 1_027 1_027 1_027 1_027 1_027 1_027 1_027 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:86.1-86.137 (Error(_, "wrong return values"))
-Result: -1_834_215_288 32_581 -1_834_230_384 32_581 : [v128]
+Result: 4_343 0 80_613_520 1 : [v128]
 Expect: 0 0 0 0 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:87.1-87.138 (Error(_, "wrong return values"))
-Result: 0 117_440_512 2_052 0 : [v128]
+Result: 1_477_715_904 1 1_188_535_176 1 : [v128]
 Expect: 7_966 7_966 7_966 7_966 7_966 7_966 7_966 7_966 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:88.1-88.134 (Error(_, "wrong return values"))
-Result: 1_027 0 -1_834_378_168 32_581 : [v128]
+Result: 1_477_642_408 1 2_048 0 : [v128]
 Expect: 7_966 7_966 7_966 7_966 7_966 7_966 7_966 7_966 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:89.1-89.133 (Error(_, "wrong return values"))
-Result: -2_075_191_664 32_581 -1_834_452_008 32_581 : [v128]
+Result: 2_048 0 113 0 : [v128]
 Expect: 50_462_976 50_462_976 50_462_976 50_462_976 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:91.1-91.118 (Error(_, "wrong return values"))
-Result: -1_834_519_728 32_581 -1_834_521_464 32_581 : [v128]
+Result: 0 0 1_613_529_216 1 : [v128]
 Expect: 50_462_976 50_462_976 50_462_976 50_462_976 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:92.1-92.117 (Error(_, "wrong return values"))
-Result: -1_832_494_136 32_581 2_048 0 : [v128]
+Result: 5_120 0 0 117_440_512 : [v128]
 Expect: 67_305_985 67_305_985 67_305_985 67_305_985 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:93.1-93.125 (Error(_, "wrong return values"))
-Result: 9_889_912 0 -2_075_447_928 32_581 : [v128]
+Result: 3_072 0 84_189_904 1 : [v128]
 Expect: 84_148_994 84_148_994 84_148_994 84_148_994 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:94.1-94.125 (Error(_, "wrong return values"))
-Result: 2_048 0 -2_031_582_736 32_581 : [v128]
+Result: 1 0 2_048 0 : [v128]
 Expect: 15 15 15 15 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:95.1-95.126 (Error(_, "wrong return values"))
-Result: -1_837_072_536 32_581 -2_031_582_736 32_581 : [v128]
+Result: 1_482_860_336 1 1_187_336_176 1 : [v128]
 Expect: 67_305_985 67_305_985 67_305_985 67_305_985 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:96.1-96.118 (Error(_, "wrong return values"))
-Result: -1_832_772_288 32_581 29 0 : [v128]
+Result: 88 0 3_324 0 : [v128]
 Expect: 67_305_985 67_305_985 67_305_985 67_305_985 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:97.1-97.117 (Error(_, "wrong return values"))
-Result: 0 0 3_324 0 : [v128]
+Result: 1_479_186_504 1 1_479_182_784 1 : [v128]
 Expect: 84_148_994 84_148_994 84_148_994 84_148_994 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:98.1-98.125 (Error(_, "wrong return values"))
-Result: -1_832_890_488 32_581 3_072 0 : [v128]
+Result: 2_048 0 1_479_111_416 1 : [v128]
 Expect: 100_992_003 100_992_003 100_992_003 100_992_003 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:99.1-99.125 (Error(_, "wrong return values"))
-Result: -1_842_598_016 32_581 -1_832_981_400 32_581 : [v128]
+Result: 4_343 0 80_604_696 1 : [v128]
 Expect: 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:100.1-100.126 (Error(_, "wrong return values"))
-Result: -1_833_050_704 32_581 2_048 0 : [v128]
+Result: 1_478_973_424 1 1_478_972_864 1 : [v128]
 Expect: 522_067_228 522_067_228 522_067_228 522_067_228 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:101.1-101.122 (Error(_, "wrong return values"))
-Result: 3_324 0 -2_031_673_000 32_581 : [v128]
+Result: 1_478_903_744 1 1_478_904_080 1 : [v128]
 Expect: 522_067_228 522_067_228 522_067_228 522_067_228 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:102.1-102.121 (Error(_, "wrong return values"))
-Result: 2_048 0 -1_833_189_456 32_581 : [v128]
+Result: 1_024 0 1_478_834_584 1 : [v128]
 Expect: 506_097_522_914_230_528 506_097_522_914_230_528 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:104.1-104.112 (Error(_, "wrong return values"))
-Result: 1 0 9_891_312 0 : [v128]
+Result: 5_120 0 1 0 : [v128]
 Expect: 506_097_522_914_230_528 506_097_522_914_230_528 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:105.1-105.111 (Error(_, "wrong return values"))
-Result: 2_048 0 -1_842_492_728 32_581 : [v128]
+Result: 86_228_760 1 0 0 : [v128]
 Expect: 578_437_695_752_307_201 578_437_695_752_307_201 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:106.1-106.119 (Error(_, "wrong return values"))
-Result: 0 0 3_324 0 : [v128]
+Result: 5_120 0 1 0 : [v128]
 Expect: 650_777_868_590_383_874 650_777_868_590_383_874 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:107.1-107.119 (Error(_, "wrong return values"))
-Result: 1 0 3_072 0 : [v128]
+Result: 1_478_562_472 1 1_482_854_632 1 : [v128]
 Expect: 15 15 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:108.1-108.120 (Error(_, "wrong return values"))
-Result: -1_842_598_016 32_581 -1_833_529_096 32_581 : [v128]
+Result: 80_613_048 1 5 16_777_216 : [v128]
 Expect: 578_437_695_752_307_201 578_437_695_752_307_201 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:109.1-109.112 (Error(_, "wrong return values"))
-Result: -1_833_596_840 32_581 1_024 0 : [v128]
+Result: 1_478_426_872 1 5 0 : [v128]
 Expect: 578_437_695_752_307_201 578_437_695_752_307_201 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:110.1-110.111 (Error(_, "wrong return values"))
-Result: -1_837_072_440 32_581 -1_833_662_880 32_581 : [v128]
+Result: 2_048 0 1_478_358_584 1 : [v128]
 Expect: 650_777_868_590_383_874 650_777_868_590_383_874 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:111.1-111.119 (Error(_, "wrong return values"))
-Result: -1_833_735_136 32_581 2_048 0 : [v128]
+Result: 774_843_950 1_702_113_070 1_764_586_611 1_919_251_566 : [v128]
 Expect: 723_118_041_428_460_547 723_118_041_428_460_547 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:112.1-112.119 (Error(_, "wrong return values"))
-Result: 1_024 0 9_963_672 0 : [v128]
+Result: 0 117_440_512 2_303 0 : [v128]
 Expect: 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:113.1-113.120 (Error(_, "wrong return values"))
-Result: 945_764_661 16_789_556 2_300 0 : [v128]
+Result: 1_478_195_096 1 1_478_154_264 1 : [v128]
 Expect: 2_242_261_671_028_070_680 2_242_261_671_028_070_680 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:114.1-114.116 (Error(_, "wrong return values"))
-Result: 2_303 0 9_578_272 0 : [v128]
+Result: 3_072 0 1_487_858_344 1 : [v128]
 Expect: 2_242_261_671_028_070_680 2_242_261_671_028_070_680 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:115.1-115.115 (Error(_, "wrong return values"))
-Result: -1_832_693_992 32_581 1_024 0 : [v128]
+Result: 1_479_332_960 1 2_048 0 : [v128]
 Expect: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:198.1-198.104 (Error(_, "wrong return values"))
-Result: -1_832_791_064 32_581 -1_837_086_808 32_581 : [v128]
+Result: 7 0 5_120 0 : [v128]
 Expect: 513 513 513 513 513 513 513 513 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:199.1-199.129 (Error(_, "wrong return values"))
-Result: -1_832_871_264 32_581 -1_837_072_488 32_581 : [v128]
+Result: 1_479_134_680 1 3_072 0 : [v128]
 Expect: 84_148_994 84_148_994 84_148_994 84_148_994 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:200.1-200.117 (Error(_, "wrong return values"))
-Result: 2_048 0 223 0 : [v128]
+Result: 5 16_777_216 1_479_060_040 1 : [v128]
 Expect: 2_569 2_569 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:201.1-201.111 (Error(_, "wrong return values"))
-Result: 3 0 5_120 0 : [v128]
+Result: 1_479_675_448 1 1_478_996_792 1 : [v128]
 Expect: 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:202.1-202.107 (Error(_, "wrong return values"))
-Result: 1 0 3 0 : [v128]
+Result: 1_024 0 1_613_455_768 1 : [v128]
 Expect: 1_284 1_284 1_284 1_284 1_284 1_284 1_284 1_284 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:203.1-203.132 (Error(_, "wrong return values"))
-Result: 4_343 0 5_676_800 0 : [v128]
+Result: 4_343 0 80_616_768 1 : [v128]
 Expect: 134_678_021 134_678_021 134_678_021 134_678_021 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:204.1-204.120 (Error(_, "wrong return values"))
-Result: -1_833_241_432 32_581 3_072 0 : [v128]
+Result: 1_478_747_640 1 2_048 0 : [v128]
 Expect: 10 10 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:205.1-205.114 (Error(_, "wrong return values"))
-Result: -88 : [i32]
+Result: -104 : [i32]
 Expect: 6 : [i32]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:206.1-206.81 (Error(_, "wrong return values"))
-Result: 24 : [i32]
+Result: 0 : [i32]
 Expect: 7 : [i32]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:207.1-207.82 (Error(_, "wrong return values"))
-Result: 0 : [i32]
+Result: -9 : [i32]
 Expect: 8 : [i32]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:208.1-208.82 (Error(_, "wrong return values"))
-- 35/114 (30.70%)
+Result: -48 : [i32]
+Expect: 0 : [i32]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:209.1-209.82 (Error(_, "wrong return values"))
+- 34/114 (29.82%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_load_zero.wast =====
 - 29/29 (100.00%)
@@ -6454,7 +6460,7 @@ Expect: 8 : [i32]
 ===== ../../test-interpreter/spec-test-3/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [43298/45764] (94.61%)
+Total [43297/45764] (94.61%)
 
 == Complete.
 ```

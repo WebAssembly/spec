@@ -40,7 +40,7 @@ gen: $(SPECS:%=$(GENINNAME)-%.tex)
 test-gen: $(SPECS:%=$(GENOUTNAME)-%.pdf) test-test
 
 $(GENINNAME)-%.tex: $(SPECFILES) $(EXE)
-	(cd $(SPECDIR)/$* && $(EXE) -l *.$(EXT) -o $(OWNDIR)/$@)
+	(cd $(SPECDIR)/$* && $(EXE) -l --latex *.$(EXT) -o $(OWNDIR)/$@)
 
 $(GENOUTNAME)-%.tex: $(GENOUTNAME).tex
 	ln -f $< $@
@@ -53,7 +53,7 @@ $(GENOUTNAME)-%.pdf: $(GENOUTNAME)-%.tex $(EXE) $(GENINNAME)-%.tex
 test-test: $(TESTFILES:%.$(EXT)=test-%.pdf)
 
 test-%.tex: %.$(EXT) $(EXE)
-	$(EXE) -l $< -o $@
+	$(EXE) -l --latex $< -o $@
 
 test-%.pdf: test-%.tex $(GENOUTNAME).tex
 	ln -f $< $(GENINNAME).tex

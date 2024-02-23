@@ -160,12 +160,12 @@ syntax binop_(fnn) =
 
 syntax testop_(valtype)
 syntax testop_(inn) = | EQZ
-syntax testop_(fnn) = |      ;; uninhabited
+;; syntax testop_(fnn) = |      ;; uninhabited
 
 syntax relop_(valtype)
 syntax relop_(inn) =
-  | EQ | NE
-  | LT sx hint(show LT_#%) | GT sx hint(show GT_#%)
+  | EQ | NE \
+  | LT sx hint(show LT_#%) | GT sx hint(show GT_#%) \
   | LE sx hint(show LE_#%) | GE sx hint(show GE_#%)
 syntax relop_(fnn) =
   | EQ | NE | LT | GT | LE | GE
@@ -200,13 +200,13 @@ syntax instr/control hint(desc "control instruction") =
   | RETURN
   | ...
 
-syntax instr/numeric hint(desc "numeric instruction") = ...
+syntax instr/num hint(desc "numeric instruction") = ...
   | CONST valtype val_(valtype)      hint(show %.CONST %)
   | UNOP valtype unop_(valtype)      hint(show %.%)
   | BINOP valtype binop_(valtype)    hint(show %.%)
   | TESTOP valtype testop_(valtype)  hint(show %.%)
   | RELOP valtype relop_(valtype)    hint(show %.%)
-  | CVTOP valtype cvtop valtype sx?  hint(show %.%#_#%#_#%)
+  | CVTOP valtype_1 cvtop valtype_2 sx?  hint(show %.%#_#%#_#%)
   | ...
 
 syntax instr/local hint(desc "local instruction") = ...

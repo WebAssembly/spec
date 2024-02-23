@@ -69,11 +69,12 @@ GENERATED = appendix/index-instructions.rst
 spectec:
 	(cd $(SPECTECDIR); make exe >/dev/null)
 
-SPECTECFILES = $(shell ls $(SPECTECSPEC)/*.$(SPECTECEXT))
+SPECTECPAT = $(SPECTECSPEC)/*.$(SPECTECEXT)
+SPECTECFILES = $(shell ls $(SPECTECPAT))
 RSTDIRS = $(shell ls -d [a-z]*/ util/[a-z]*/)
 RSTFILES = $(shell ls -d *.rst [a-z]*/*.rst) $(GENERATED)
 CTRLFILES = $(shell ls Makefile *.* util/*.* util/bikeshed/*.*) $(shell ls static/*)
-ALLFILES = $(RSTDIRS) $(RSTFILES) $(CTRLFILES)
+ALLFILES = $(RSTDIRS) $(CTRLFILES) _splice  #$(RSTFILES)
 SPLICEDFILES = spectec $(ALLFILES:%=$(SPLICEDIR)/%) $(BUILDDIR)
 
 .PHONY: ls-spectec ls-splice
@@ -91,14 +92,20 @@ $(SPLICEDIR)/$(BUILDDIR): $(SPLICEDIR)
 $(BUILDDIR): $(SPLICEDIR)/$(BUILDDIR)
 	ln -s $< $@
 
-$(RSTDIRS:%=$(SPLICEDIR)/%): $(SPLICEDIR)
+$(RSTDIRS:%=$(SPLICEDIR)/%):: $(SPLICEDIR)
 	mkdir -p $@
 
-$(SPLICEDIR)/util/katex: util/katex
+$(SPLICEDIR)/util/katex:: util/katex
 	cp -R $< $@   # F it!
 
-$(RSTFILES:%=$(SPLICEDIR)/%): $(SPLICEDIR)/%: % $(SPECTECFILES)
-	$(SPECTEC) $(SPECTECFILES) --splice-sphinx -p $< -o $@
+$(SPLICEDIR)/_splice: $(SPLICEDIR) $(RSTFILES) $(SPECTECFILES)
+	@echo Modified $?
+	@echo ${if ${filter %.$(SPECTECEXT), $?}, $(RSTFILES), ${filter %.rst, $?}} >$@
+	@echo Splicing `cat $@`
+	@$(SPECTEC) $(SPECTECPAT) --splice-sphinx -p `cat $@` -o $(SPLICEDIR)
+
+#$(RSTFILES:%=$(SPLICEDIR)/%): $(SPLICEDIR)/%: % $(SPECTECFILES)
+#	$(SPECTEC) $(SPECTECFILES) --splice-sphinx -p $< -o $@
 
 $(CTRLFILES:%=$(SPLICEDIR)/%): $(SPLICEDIR)/%: %
 	cp $< $@

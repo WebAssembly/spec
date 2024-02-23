@@ -123,6 +123,8 @@ Conventions
 
 * The meta variable ${:z} ranges over floating-point values where clear from context.
 
+* Where clear from context, shorthands like ${:$fone} or ${:$fzero} denote floating point values like ${:POS $($(NORM 1 0))} or ${:POS $($(SUBNORM 0))}.
+
 
 .. index:: ! numeric vector, integer, floating-point, lane, SIMD
    pair: abstract syntax; vector

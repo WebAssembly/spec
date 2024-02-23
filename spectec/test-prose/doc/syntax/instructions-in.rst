@@ -9,7 +9,7 @@ Numeric Instructions
 .. _syntax-inn:
 .. _syntax-fnn:
 .. _syntax-sx:
-.. _syntax-instr-numeric:
+.. _syntax-instr-num:
 .. _syntax-unop:
 .. _syntax-binop:
 .. _syntax-testop:
@@ -19,7 +19,7 @@ $${syntax+:
   {inn
   fnn}
   sx
-  instr/numeric
+  instr/num
   {unop_
   binop_
   testop_
@@ -28,12 +28,12 @@ $${syntax+:
 }
 
 
-.. _syntax-instr-reference:
+.. _syntax-instr-ref:
 
 Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
 
-$${syntax: instr/reference}
+$${syntax: instr/ref}
 
 .. _syntax-instr-heap:
 

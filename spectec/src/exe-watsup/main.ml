@@ -38,7 +38,7 @@ type file_kind =
   | Patch
   | Output
 
-let target = ref Latex
+let target = ref Check
 let log = ref false        (* log execution steps *)
 let in_place = ref false   (* splice patch files in place *)
 let dry = ref false        (* dry run for patching *)
@@ -55,10 +55,15 @@ let print_elab_il = ref false
 let print_final_il = ref false
 let print_all_il = ref false
 let print_al = ref false
+let print_no_pos = ref false
 
 module PS = Set.Make(struct type t = pass let compare = compare; end)
 let selected_passes = ref (PS.empty)
 let enable_pass pass = selected_passes := PS.add pass !selected_passes
+
+
+let print_il il =
+  Printf.printf "%s\n%!" (Il.Print.string_of_script ~suppress_pos:(!print_no_pos) il)
 
 
 (* Il pass metadata *)
@@ -121,9 +126,8 @@ let argspec = Arg.align
   "--warn-prose", Arg.Set warn_prose,
     " Warn about unused or multiply used prose splices";
 
-  "--check", Arg.Unit (fun () -> target := Check), " Check only";
-  "--latex", Arg.Unit (fun () -> target := Latex),
-    " Generate Latex (default)";
+  "--check", Arg.Unit (fun () -> target := Check), " Check only (default)";
+  "--latex", Arg.Unit (fun () -> target := Latex), " Generate Latex";
   "--splice-latex", Arg.Unit (fun () -> target := Splice Backend_splice.Config.latex),
     " Splice Sphinx";
   "--splice-sphinx", Arg.Unit (fun () -> target := Splice Backend_splice.Config.sphinx),
@@ -137,6 +141,7 @@ let argspec = Arg.align
   "--print-final-il", Arg.Set print_final_il, " Print final IL";
   "--print-all-il", Arg.Set print_all_il, " Print IL after each step";
   "--print-al", Arg.Set print_al, " Print al";
+  "--print-no-pos", Arg.Set print_no_pos, " Suppress position info in output";
 ] @ List.map pass_argspec all_passes @ [
   "--all-passes", Arg.Unit (fun () -> List.iter enable_pass all_passes)," Run all passes";
 
@@ -162,8 +167,7 @@ let () =
       Printf.printf "%s\n%!" (El.Print.string_of_script el);
     log "Elaboration...";
     let il, elab_env = Frontend.Elab.elab el in
-    if !print_elab_il || !print_all_il then
-      Printf.printf "%s\n%!" (Il.Print.string_of_script il);
+    if !print_elab_il || !print_all_il then print_il il;
     log "IL Validation...";
     Il.Valid.valid il;
 
@@ -180,7 +184,7 @@ let () =
           last_pass := pass_flag pass;
           log ("Running pass " ^ pass_flag pass ^ "...");
           let il = run_pass pass il in
-          if !print_all_il then Printf.printf "%s\n%!" (Il.Print.string_of_script il);
+          if !print_all_il then print_il il;
           log ("IL Validation after pass " ^ pass_flag pass ^ "...");
           Il.Valid.valid il;
           il
@@ -189,8 +193,7 @@ let () =
     in
     last_pass := "";
 
-    if !print_final_il && not !print_all_il then
-      Printf.printf "%s\n%!" (Il.Print.string_of_script il);
+    if !print_final_il && not !print_all_il then print_il il;
 
     let al =
       if !target = Check || not (PS.mem Animate !selected_passes) then [] else (
@@ -236,12 +239,16 @@ let () =
     | Splice config ->
       if !in_place then
         odsts := !pdsts
-      else if !odsts = [] then
-        odsts := List.map (Fun.const "") !pdsts
-      else if List.length !odsts <> List.length !pdsts then
+      else
       (
-        prerr_endline "inconsistent number of input and output file names";
-        exit 2
+        match !odsts with
+        | [] -> odsts := List.map (Fun.const "") !pdsts
+        | [odst] when Sys.is_directory odst ->
+          odsts := List.map (fun pdst -> Filename.concat odst pdst) !pdsts
+        | _ when List.length !odsts = List.length !pdsts -> ()
+        | _ ->
+          prerr_endline "inconsistent number of input and output file names";
+          exit 2
       );
       log "Prose Generation...";
       let prose = Backend_prose.Gen.gen_prose il al in

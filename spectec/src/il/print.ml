@@ -268,49 +268,50 @@ let string_of_params = function
   | [] -> ""
   | ps -> "(" ^ concat ", " (List.map string_of_param ps) ^ ")"
 
-let region_comment indent at =
+let region_comment ?(suppress_pos = false) indent at =
   if at = no_region then "" else
-  indent ^ ";; " ^ string_of_region at ^ "\n"
+  let s = if suppress_pos then at.left.file else string_of_region at in
+  indent ^ ";; " ^ s ^ "\n"
 
-let string_of_inst id inst =
+let string_of_inst ?(suppress_pos = false) id inst =
   match inst.it with
   | InstD (bs, as_, dt) ->
-    "\n" ^ region_comment "  " inst.at ^
+    "\n" ^ region_comment ~suppress_pos "  " inst.at ^
     "  syntax " ^ id.it ^ string_of_binds bs ^ string_of_args as_ ^ " = " ^
       string_of_deftyp `V dt ^ "\n"
 
-let string_of_rule rule =
+let string_of_rule ?(suppress_pos = false) rule =
   match rule.it with
   | RuleD (id, bs, mixop, e, prems) ->
     let id' = if id.it = "" then "_" else id.it in
-    "\n" ^ region_comment "  " rule.at ^
+    "\n" ^ region_comment ~suppress_pos "  " rule.at ^
     "  rule " ^ id' ^ string_of_binds bs ^ ":\n    " ^
       string_of_exp {e with it = MixE (mixop, e)} ^
       concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
-let string_of_clause id clause =
+let string_of_clause ?(suppress_pos = false) id clause =
   match clause.it with
   | DefD (bs, as_, e, prems) ->
-    "\n" ^ region_comment "  " clause.at ^
+    "\n" ^ region_comment ~suppress_pos "  " clause.at ^
     "  def $" ^ id.it ^ string_of_binds bs ^ string_of_args as_ ^ " = " ^
       string_of_exp e ^
       concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
-let rec string_of_def d =
-  let pre = "\n" ^ region_comment "" d.at in
+let rec string_of_def ?(suppress_pos = false) d =
+  let pre = "\n" ^ region_comment ~suppress_pos "" d.at in
   match d.it with
   | TypD (id, _ps, [{it = InstD (bs, as_, dt); _}]) ->
     pre ^ "syntax " ^ id.it ^ string_of_binds bs ^ string_of_args as_ ^ " = " ^
       string_of_deftyp `V dt ^ "\n"
   | TypD (id, ps, insts) ->
     pre ^ "syntax " ^ id.it ^ string_of_params ps ^
-     concat "\n" (List.map (string_of_inst id) insts) ^ "\n"
+     concat "\n" (List.map (string_of_inst ~suppress_pos id) insts) ^ "\n"
   | RelD (id, mixop, t, rules) ->
     pre ^ "relation " ^ id.it ^ ": " ^ string_of_typ_mix mixop t ^
-      concat "\n" (List.map string_of_rule rules) ^ "\n"
+      concat "\n" (List.map (string_of_rule ~suppress_pos) rules) ^ "\n"
   | DecD (id, ps, t, clauses) ->
     pre ^ "def $" ^ id.it ^ string_of_params ps ^ " : " ^ string_of_typ t ^
-      concat "" (List.map (string_of_clause id) clauses) ^ "\n"
+      concat "" (List.map (string_of_clause ~suppress_pos id) clauses) ^ "\n"
   | RecD ds ->
     pre ^ "rec {\n" ^ concat "" (List.map string_of_def ds) ^ "}" ^ "\n"
   | HintD _ ->
@@ -319,5 +320,5 @@ let rec string_of_def d =
 
 (* Scripts *)
 
-let string_of_script ds =
-  concat "" (List.map string_of_def ds)
+let string_of_script ?(suppress_pos = false) ds =
+  concat "" (List.map (string_of_def ~suppress_pos) ds)

@@ -21,15 +21,12 @@ The following sections group instructions into a number of different categories.
 .. index:: ! numeric instruction, value, value type, integer, floating-point, two's complement
    pair: abstract syntax; instruction
 .. _syntax-sx:
+.. _syntax-num:
 .. _syntax-const:
-.. _syntax-iunop:
-.. _syntax-ibinop:
-.. _syntax-itestop:
-.. _syntax-irelop:
-.. _syntax-funop:
-.. _syntax-fbinop:
-.. _syntax-ftestop:
-.. _syntax-frelop:
+.. _syntax-unop:
+.. _syntax-binop:
+.. _syntax-testop:
+.. _syntax-relop:
 .. _syntax-instr-numeric:
 
 Numeric Instructions
@@ -38,85 +35,7 @@ Numeric Instructions
 Numeric instructions provide basic operations over numeric :ref:`values <syntax-value>` of specific :ref:`type <syntax-numtype>`.
 These operations closely match respective operations available in hardware.
 
-.. math::
-   \begin{array}{llrl}
-   \production{width} & \X{nn}, \X{mm} &::=&
-     \K{32} ~|~ \K{64} \\
-   \production{signedness} & \sx &::=&
-     \K{u} ~|~ \K{s} \\
-   \production{instruction} & \instr &::=&
-     \K{i}\X{nn}\K{.}\CONST~\xref{syntax/values}{syntax-int}{\uX{\X{nn}}} ~|~
-     \K{f}\X{nn}\K{.}\CONST~\xref{syntax/values}{syntax-float}{\fX{\X{nn}}} \\&&|&
-     \K{i}\X{nn}\K{.}\iunop ~|~
-     \K{f}\X{nn}\K{.}\funop \\&&|&
-     \K{i}\X{nn}\K{.}\ibinop ~|~
-     \K{f}\X{nn}\K{.}\fbinop \\&&|&
-     \K{i}\X{nn}\K{.}\itestop \\&&|&
-     \K{i}\X{nn}\K{.}\irelop ~|~
-     \K{f}\X{nn}\K{.}\frelop \\&&|&
-     \K{i}\X{nn}\K{.}\EXTEND\K{8\_s} ~|~
-     \K{i}\X{nn}\K{.}\EXTEND\K{16\_s} ~|~
-     \K{i64.}\EXTEND\K{32\_s} \\&&|&
-     \K{i32.}\WRAP\K{\_i64} ~|~
-     \K{i64.}\EXTEND\K{\_i32}\K{\_}\sx ~|~
-     \K{i}\X{nn}\K{.}\TRUNC\K{\_f}\X{mm}\K{\_}\sx \\&&|&
-     \K{i}\X{nn}\K{.}\TRUNC\K{\_sat\_f}\X{mm}\K{\_}\sx \\&&|&
-     \K{f32.}\DEMOTE\K{\_f64} ~|~
-     \K{f64.}\PROMOTE\K{\_f32} ~|~
-     \K{f}\X{nn}\K{.}\CONVERT\K{\_i}\X{mm}\K{\_}\sx \\&&|&
-     \K{i}\X{nn}\K{.}\REINTERPRET\K{\_f}\X{nn} ~|~
-     \K{f}\X{nn}\K{.}\REINTERPRET\K{\_i}\X{nn} \\&&|&
-     \dots \\
-   \production{integer unary operator} & \iunop &::=&
-     \K{clz} ~|~
-     \K{ctz} ~|~
-     \K{popcnt} \\
-   \production{integer binary operator} & \ibinop &::=&
-     \K{add} ~|~
-     \K{sub} ~|~
-     \K{mul} ~|~
-     \K{div\_}\sx ~|~
-     \K{rem\_}\sx \\&&|&
-     \K{and} ~|~
-     \K{or} ~|~
-     \K{xor} ~|~
-     \K{shl} ~|~
-     \K{shr\_}\sx ~|~
-     \K{rotl} ~|~
-     \K{rotr} \\
-   \production{floating-point unary operator} & \funop &::=&
-     \K{abs} ~|~
-     \K{neg} ~|~
-     \K{sqrt} ~|~
-     \K{ceil} ~|~ 
-     \K{floor} ~|~ 
-     \K{trunc} ~|~ 
-     \K{nearest} \\
-   \production{floating-point binary operator} & \fbinop &::=&
-     \K{add} ~|~
-     \K{sub} ~|~
-     \K{mul} ~|~
-     \K{div} ~|~
-     \K{min} ~|~
-     \K{max} ~|~
-     \K{copysign} \\
-   \production{integer test operator} & \itestop &::=&
-     \K{eqz} \\
-   \production{integer relational operator} & \irelop &::=&
-     \K{eq} ~|~
-     \K{ne} ~|~
-     \K{lt\_}\sx ~|~
-     \K{gt\_}\sx ~|~
-     \K{le\_}\sx ~|~
-     \K{ge\_}\sx \\
-   \production{floating-point relational operator} & \frelop &::=&
-     \K{eq} ~|~
-     \K{ne} ~|~
-     \K{lt} ~|~
-     \K{gt} ~|~
-     \K{le} ~|~
-     \K{ge} \\
-   \end{array}
+$${syntax: sx num_ instr/num unop_ binop_ testop_ relop_ cvtop}
 
 Numeric instructions are divided by :ref:`number type <syntax-numtype>`.
 For each type, several subcategories can be distinguished:
@@ -132,43 +51,11 @@ For each type, several subcategories can be distinguished:
 * *Comparisons*: consume two operands of the respective type and produce a Boolean integer result.
 
 * *Conversions*: consume a value of one type and produce a result of another
-  (the source type of the conversion is the one after the ":math:`\K{\_}`").
+  (the source type of the conversion is the one after the "${:_}").
 
 Some integer instructions come in two flavors,
-where a signedness annotation |sx| distinguishes whether the operands are to be :ref:`interpreted <aux-signed>` as :ref:`unsigned <syntax-uint>` or :ref:`signed <syntax-sint>` integers.
+where a signedness annotation ${:sx} distinguishes whether the operands are to be :ref:`interpreted <aux-signed>` as :ref:`unsigned <syntax-uint>` or :ref:`signed <syntax-sint>` integers.
 For the other integer instructions, the use of two's complement for the signed interpretation means that they behave the same regardless of signedness.
-
-
-.. _syntax-unop:
-.. _syntax-binop:
-.. _syntax-testop:
-.. _syntax-relop:
-.. _syntax-cvtop:
-
-Conventions
-...........
-
-Occasionally, it is convenient to group operators together according to the following grammar shorthands:
-
-.. math::
-   \begin{array}{llrl}
-   \production{unary operator} & \unop &::=&
-     \iunop ~|~
-     \funop ~|~
-     \EXTEND{N}\K{\_s} \\
-   \production{binary operator} & \binop &::=& \ibinop ~|~ \fbinop \\
-   \production{test operator} & \testop &::=& \itestop \\
-   \production{relational operator} & \relop &::=& \irelop ~|~ \frelop \\
-   \production{conversion operator} & \cvtop &::=&
-     \WRAP ~|~
-     \EXTEND ~|~
-     \TRUNC ~|~
-     \TRUNC\K{\_sat} ~|~
-     \CONVERT ~|~
-     \DEMOTE ~|~
-     \PROMOTE ~|~
-     \REINTERPRET \\
-   \end{array}
 
 
 .. index:: ! vector instruction, numeric vector, number, value, value type, SIMD
@@ -180,13 +67,11 @@ Occasionally, it is convenient to group operators together according to the foll
 .. _syntax-vvbinop:
 .. _syntax-vvternop:
 .. _syntax-vvtestop:
-.. _syntax-vitestop:
-.. _syntax-virelop:
-.. _syntax-vfrelop:
-.. _syntax-vishiftop:
-.. _syntax-viunop:
-.. _syntax-vibinop:
-.. _syntax-viminmaxop:
+.. _syntax-vtestop:
+.. _syntax-vrelop:
+.. _syntax-vshiftop:
+.. _syntax-vunop:
+.. _syntax-vbinop:
 .. _syntax-visatbinop:
 .. _syntax-vfunop:
 .. _syntax-vfbinop:
@@ -196,6 +81,13 @@ Vector Instructions
 ~~~~~~~~~~~~~~~~~~~
 
 Vector instructions (also known as *SIMD* instructions, *single instruction multiple data*) provide basic operations over :ref:`values <syntax-value>` of :ref:`vector type <syntax-vectype>`.
+
+$${syntax: lanetype dim shape half laneidx instr/vec}
+
+$${syntax:
+  vvunop vvbinop vvternop vvtestop
+  vunop_ vbinop_ vtestop_ vrelop_ vshiftop_ vextunop_ vextbinop_
+}
 
 .. math::
    \begin{array}{llrl}

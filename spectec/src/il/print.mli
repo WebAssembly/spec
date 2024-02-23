@@ -12,9 +12,9 @@ val string_of_path : path -> string
 val string_of_prem : prem -> string
 val string_of_arg : arg -> string
 val string_of_param : param -> string
-val string_of_def : def -> string
-val string_of_rule : rule -> string
-val string_of_inst : id -> inst -> string
-val string_of_clause : id -> clause -> string
 val string_of_deftyp : [`H | `V] -> deftyp -> string
-val string_of_script : script -> string
+val string_of_def : ?suppress_pos:bool -> def -> string
+val string_of_rule : ?suppress_pos:bool -> rule -> string
+val string_of_inst : ?suppress_pos:bool -> id -> inst -> string
+val string_of_clause : ?suppress_pos:bool -> id -> clause -> string
+val string_of_script : ?suppress_pos:bool -> script -> string
