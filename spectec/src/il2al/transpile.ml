@@ -94,8 +94,10 @@ let unify_tail l1 l2 =
   let unified, l1', l2' = unify [] (List.rev l1) (List.rev l2) in
   List.rev unified, List.rev l1', List.rev l2'
 
+(*
 let intersect_list xs ys = List.filter (fun x -> List.mem x ys) xs
 let diff_list xs ys = Lib.List.filter_not (fun x -> List.mem x ys) xs
+*)
 
 
 (* AL -> AL transpilers *)
@@ -265,6 +267,7 @@ let merge_three_branches i =
     ifI (binE (AndOp, neg e1, e2), il2, il1) ~at:at
   | _ -> i
 
+(*
 let remove_dead_assignment il =
   let rec remove_dead_assignment' il pair =
     List.fold_right
@@ -294,6 +297,7 @@ let remove_dead_assignment il =
       il pair
   in
   remove_dead_assignment' il ([], []) |> fst
+*)
 
 let remove_sub e =
   let e' =
@@ -407,7 +411,6 @@ let rec enhance_readability instrs =
 
   let instrs' =
     instrs
-    |> remove_dead_assignment
     |> unify_if
     |> infer_else
     |> List.concat_map remove_unnecessary_branch
@@ -493,7 +496,7 @@ let remove_state algo =
   match Walk.walk walk_config algo with
   | FuncA (name, params, body) -> (match params with
     | { it = TupE [ _; { it = VarE "f"; _ } ]; _ } :: tail ->
-        FuncA (name, tail, letI (varE "f", getCurFrameE ()) :: body |> remove_dead_assignment)
+        FuncA (name, tail, letI (varE "f", getCurFrameE ()) :: body)
     | { it = VarE ("s" | "z"); _ } :: tail ->
         FuncA (name, tail, body)
     | _ -> FuncA(name, params, body))

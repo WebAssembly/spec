@@ -21,9 +21,6 @@ let i16_to_i32 i16 =
   (* NOTE: This operation extends the sign of i8 to i32 *)
   I32.shr_s (I32.shl i16 16l) 16l
 
-let i32_to_i8 i32 = Int32.logand 0xffl i32
-let i32_to_i16 i32 = Int32.logand 0xffffl i32
-
 let signed : numerics =
   {
     name = "signed";
@@ -67,7 +64,7 @@ let sat : numerics =
           inverse_of_signed.f [ NumV z; NumV Z.(shift_left one n |> pred) ]
         else
           NumV i
-      | v -> fail_list "Invalid idiv" v
+      | v -> fail_list "Invalid isat" v
       );
   }
 
@@ -121,7 +118,7 @@ let idiv : numerics =
       | v -> fail_list "Invalid idiv" v
       );
   }
-let irem: numerics =
+let irem : numerics =
   {
     name = "irem";
     f =
@@ -281,7 +278,7 @@ let ipopcnt : numerics =
             let acc' = if Z.(equal (logand n one) one) then acc + 1 else acc in
             loop acc' (i - 1) (Z.shift_right n 1)
         in al_of_int (loop 0 (Z.to_int z) m)
-      | v -> fail_list "Invalid popcnt" v
+      | v -> fail_list "Invalid ipopcnt" v
       );
   }
 let ieqz : numerics =
@@ -448,6 +445,247 @@ let iq15mulrsat_s : numerics =
       );
   }
 
+let fadd : numerics =
+  {
+    name = "fadd";
+    f =
+      (function
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 32 ->
+        F32.add (al_to_float32 f1) (al_to_float32 f2) |> al_of_float32
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 64 ->
+        F64.add (al_to_float64 f1) (al_to_float64 f2) |> al_of_float64
+      | v -> fail_list "Invalid fadd" v
+      );
+  }
+let fsub : numerics =
+  {
+    name = "fsub";
+    f =
+      (function
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 32 ->
+        F32.sub (al_to_float32 f1) (al_to_float32 f2) |> al_of_float32
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 64 ->
+        F64.sub (al_to_float64 f1) (al_to_float64 f2) |> al_of_float64
+      | v -> fail_list "Invalid fsub" v
+      );
+  }
+let fmul : numerics =
+  {
+    name = "fmul";
+    f =
+      (function
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 32 ->
+        F32.mul (al_to_float32 f1) (al_to_float32 f2) |> al_of_float32
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 64 ->
+        F64.mul (al_to_float64 f1) (al_to_float64 f2) |> al_of_float64
+      | v -> fail_list "Invalid fmul" v
+      );
+  }
+let fdiv : numerics =
+  {
+    name = "fdiv";
+    f =
+      (function
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 32 ->
+        F32.div (al_to_float32 f1) (al_to_float32 f2) |> al_of_float32
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 64 ->
+        F64.div (al_to_float64 f1) (al_to_float64 f2) |> al_of_float64
+      | v -> fail_list "Invalid fdiv" v
+      );
+  }
+let fmin : numerics =
+  {
+    name = "fmin";
+    f =
+      (function
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 32 ->
+        F32.min (al_to_float32 f1) (al_to_float32 f2) |> al_of_float32
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 64 ->
+        F64.min (al_to_float64 f1) (al_to_float64 f2) |> al_of_float64
+      | v -> fail_list "Invalid fmin" v
+      );
+  }
+let fmax : numerics =
+  {
+    name = "fmax";
+    f =
+      (function
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 32 ->
+        F32.max (al_to_float32 f1) (al_to_float32 f2) |> al_of_float32
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 64 ->
+        F64.max (al_to_float64 f1) (al_to_float64 f2) |> al_of_float64
+      | v -> fail_list "Invalid fmax" v
+      );
+  }
+let fcopysign : numerics =
+  {
+    name = "fcopysign";
+    f =
+      (function
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 32 ->
+        F32.copysign (al_to_float32 f1) (al_to_float32 f2) |> al_of_float32
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 64 ->
+        F64.copysign (al_to_float64 f1) (al_to_float64 f2) |> al_of_float64
+      | v -> fail_list "Invalid fcopysign" v
+      );
+  }
+let fabs : numerics =
+  {
+    name = "fabs";
+    f =
+      (function
+      | [ NumV z; CaseV _ as f ] when z = Z.of_int 32 ->
+        F32.abs (al_to_float32 f) |> al_of_float32
+      | [ NumV z; CaseV _ as f ] when z = Z.of_int 64 ->
+        F64.abs (al_to_float64 f) |> al_of_float64
+      | v -> fail_list "Invalid fabs" v
+      );
+  }
+let fneg : numerics =
+  {
+    name = "fneg";
+    f =
+      (function
+      | [ NumV z; CaseV _ as f ] when z = Z.of_int 32 ->
+        F32.neg (al_to_float32 f) |> al_of_float32
+      | [ NumV z; CaseV _ as f ] when z = Z.of_int 64 ->
+        F64.neg (al_to_float64 f) |> al_of_float64
+      | v -> fail_list "Invalid fneg" v
+      );
+  }
+let fsqrt : numerics =
+  {
+    name = "fsqrt";
+    f =
+      (function
+      | [ NumV z; CaseV _ as f ] when z = Z.of_int 32 ->
+        F32.sqrt (al_to_float32 f) |> al_of_float32
+      | [ NumV z; CaseV _ as f ] when z = Z.of_int 64 ->
+        F64.sqrt (al_to_float64 f) |> al_of_float64
+      | v -> fail_list "Invalid fsqrt" v
+      );
+  }
+let fceil : numerics =
+  {
+    name = "fceil";
+    f =
+      (function
+      | [ NumV z; CaseV _ as f ] when z = Z.of_int 32 ->
+        F32.ceil (al_to_float32 f) |> al_of_float32
+      | [ NumV z; CaseV _ as f ] when z = Z.of_int 64 ->
+        F64.ceil (al_to_float64 f) |> al_of_float64
+      | v -> fail_list "Invalid fceil" v
+      );
+  }
+let ffloor : numerics =
+  {
+    name = "ffloor";
+    f =
+      (function
+      | [ NumV z; CaseV _ as f ] when z = Z.of_int 32 ->
+        F32.floor (al_to_float32 f) |> al_of_float32
+      | [ NumV z; CaseV _ as f ] when z = Z.of_int 64 ->
+        F64.floor (al_to_float64 f) |> al_of_float64
+      | v -> fail_list "Invalid ffloor" v
+      );
+  }
+let ftrunc : numerics =
+  {
+    name = "ftrunc";
+    f =
+      (function
+      | [ NumV z; CaseV _ as f ] when z = Z.of_int 32 ->
+        F32.trunc (al_to_float32 f) |> al_of_float32
+      | [ NumV z; CaseV _ as f ] when z = Z.of_int 64 ->
+        F64.trunc (al_to_float64 f) |> al_of_float64
+      | v -> fail_list "Invalid ftrunc" v
+      );
+  }
+let fnearest : numerics =
+  {
+    name = "fnearest";
+    f =
+      (function
+      | [ NumV z; CaseV _ as f ] when z = Z.of_int 32 ->
+        F32.nearest (al_to_float32 f) |> al_of_float32
+      | [ NumV z; CaseV _ as f ] when z = Z.of_int 64 ->
+        F64.nearest (al_to_float64 f) |> al_of_float64
+      | v -> fail_list "Invalid fnearest" v
+      );
+  }
+let feq : numerics =
+  {
+    name = "feq";
+    f =
+      (function
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 32 ->
+        F32.eq (al_to_float32 f1) (al_to_float32 f2) |> al_of_bool
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 64 ->
+        F64.eq (al_to_float64 f1) (al_to_float64 f2) |> al_of_bool
+      | v -> fail_list "Invalid feq" v
+      );
+  }
+let fne : numerics =
+  {
+    name = "fne";
+    f =
+      (function
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 32 ->
+        F32.ne (al_to_float32 f1) (al_to_float32 f2) |> al_of_bool
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 64 ->
+        F64.ne (al_to_float64 f1) (al_to_float64 f2) |> al_of_bool
+      | v -> fail_list "Invalid fne" v
+      );
+  }
+let flt : numerics =
+  {
+    name = "flt";
+    f =
+      (function
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 32 ->
+        F32.lt (al_to_float32 f1) (al_to_float32 f2) |> al_of_bool
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 64 ->
+        F64.lt (al_to_float64 f1) (al_to_float64 f2) |> al_of_bool
+      | v -> fail_list "Invalid flt" v
+      );
+  }
+let fgt : numerics =
+  {
+    name = "fgt";
+    f =
+      (function
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 32 ->
+        F32.gt (al_to_float32 f1) (al_to_float32 f2) |> al_of_bool
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 64 ->
+        F64.gt (al_to_float64 f1) (al_to_float64 f2) |> al_of_bool
+      | v -> fail_list "Invalid fgt" v
+      );
+  }
+let fle : numerics =
+  {
+    name = "fle";
+    f =
+      (function
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 32 ->
+        F32.le (al_to_float32 f1) (al_to_float32 f2) |> al_of_bool
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 64 ->
+        F64.le (al_to_float64 f1) (al_to_float64 f2) |> al_of_bool
+      | v -> fail_list "Invalid fle" v
+      );
+  }
+let fge : numerics =
+  {
+    name = "fge";
+    f =
+      (function
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 32 ->
+        F32.ge (al_to_float32 f1) (al_to_float32 f2) |> al_of_bool
+      | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 64 ->
+        F64.ge (al_to_float64 f1) (al_to_float64 f2) |> al_of_bool
+      | v -> fail_list "Invalid fge" v
+      );
+  }
+
 let ext : numerics =
   {
     name = "ext";
@@ -458,6 +696,56 @@ let ext : numerics =
       | [ NumV _ as m; NumV _ as n; CaseV ("S", []); NumV _ as i ] ->
         inverse_of_signed.f [ n; signed.f [ m; i ] ]
       | _ -> failwith "Invalid argument fot ext"
+      );
+  }
+
+let trunc : numerics =
+  {
+    name = "trunc";
+    f =
+      (function
+      | [ NumV m; NumV n; CaseV ("U", []); NumV _ as i ] when m = Z.of_int 32 && n = Z.of_int 32 ->
+        i |> al_to_float32 |> I32_convert.trunc_f32_u |> al_of_int32
+      | [ NumV m; NumV n; CaseV ("U", []); NumV _ as i ] when m = Z.of_int 64 && n = Z.of_int 32 ->
+        i |> al_to_float32 |> I64_convert.trunc_f32_u |> al_of_int64
+      | [ NumV m; NumV n; CaseV ("U", []); NumV _ as i ] when m = Z.of_int 32 && n = Z.of_int 64 ->
+        i |> al_to_float64 |> I32_convert.trunc_f64_u |> al_of_int32
+      | [ NumV m; NumV n; CaseV ("U", []); NumV _ as i ] when m = Z.of_int 64 && n = Z.of_int 64 ->
+        i |> al_to_float64 |> I64_convert.trunc_f64_u |> al_of_int64
+      | [ NumV m; NumV n; CaseV ("S", []); NumV _ as i ] when m = Z.of_int 32 && n = Z.of_int 32 ->
+        i |> al_to_float32 |> I32_convert.trunc_f32_s |> al_of_int32
+      | [ NumV m; NumV n; CaseV ("S", []); NumV _ as i ] when m = Z.of_int 64 && n = Z.of_int 32 ->
+        i |> al_to_float32 |> I64_convert.trunc_f32_s |> al_of_int64
+      | [ NumV m; NumV n; CaseV ("S", []); NumV _ as i ] when m = Z.of_int 32 && n = Z.of_int 64 ->
+        i |> al_to_float64 |> I32_convert.trunc_f64_s |> al_of_int32
+      | [ NumV m; NumV n; CaseV ("S", []); NumV _ as i ] when m = Z.of_int 64 && n = Z.of_int 64 ->
+        i |> al_to_float64 |> I64_convert.trunc_f64_s |> al_of_int64
+      | v -> fail_list "Invalid trunc" v
+      );
+  }
+
+let trunc_sat : numerics =
+  {
+    name = "trunc_sat";
+    f =
+      (function
+      | [ NumV m; NumV n; CaseV ("U", []); NumV _ as i ] when m = Z.of_int 32 && n = Z.of_int 32 ->
+        i |> al_to_float32 |> I32_convert.trunc_sat_f32_u |> al_of_int32
+      | [ NumV m; NumV n; CaseV ("U", []); NumV _ as i ] when m = Z.of_int 64 && n = Z.of_int 32 ->
+        i |> al_to_float32 |> I64_convert.trunc_sat_f32_u |> al_of_int64
+      | [ NumV m; NumV n; CaseV ("U", []); NumV _ as i ] when m = Z.of_int 32 && n = Z.of_int 64 ->
+        i |> al_to_float64 |> I32_convert.trunc_sat_f64_u |> al_of_int32
+      | [ NumV m; NumV n; CaseV ("U", []); NumV _ as i ] when m = Z.of_int 64 && n = Z.of_int 64 ->
+        i |> al_to_float64 |> I64_convert.trunc_sat_f64_u |> al_of_int64
+      | [ NumV m; NumV n; CaseV ("S", []); NumV _ as i ] when m = Z.of_int 32 && n = Z.of_int 32 ->
+        i |> al_to_float32 |> I32_convert.trunc_sat_f32_s |> al_of_int32
+      | [ NumV m; NumV n; CaseV ("S", []); NumV _ as i ] when m = Z.of_int 64 && n = Z.of_int 32 ->
+        i |> al_to_float32 |> I64_convert.trunc_sat_f32_s |> al_of_int64
+      | [ NumV m; NumV n; CaseV ("S", []); NumV _ as i ] when m = Z.of_int 32 && n = Z.of_int 64 ->
+        i |> al_to_float64 |> I32_convert.trunc_sat_f64_s |> al_of_int32
+      | [ NumV m; NumV n; CaseV ("S", []); NumV _ as i ] when m = Z.of_int 64 && n = Z.of_int 64 ->
+        i |> al_to_float64 |> I64_convert.trunc_sat_f64_s |> al_of_int64
+      | v -> fail_list "Invalid trunc_sat" v
       );
   }
 
@@ -876,18 +1164,8 @@ let narrow : numerics =
     name = "narrow";
     f =
       (function
-      | [ NumV _; NumV n; CaseV ("S", []); NumV i ] -> (
-        match z_to_int64 n with
-        | 8L -> NumV (i |> z_to_int32 |> i16_to_i32 |> I8.saturate_s |> i32_to_i8 |> Z.of_int32)
-        | 16L -> NumV (i |> z_to_int32 |> I16.saturate_s |> i32_to_i16 |> Z.of_int32)
-        | _ -> failwith "Invalid narrow"
-        )
-      | [ NumV _; NumV n; CaseV ("U", []); NumV i ] -> (
-        match z_to_int64 n with
-        | 8L -> NumV (i |> z_to_int32 |> i16_to_i32 |> I8.saturate_u |> Z.of_int32)
-        | 16L -> NumV (i |> z_to_int32 |> I16.saturate_u |> i32_to_i16 |> Z.of_int32)
-        | _ -> failwith "Invalid narrow"
-        )
+      | [ NumV _ as m; NumV _ as n; CaseV (_, []) as sx; NumV _ as i ] ->
+        sat.f [ n; sx; signed.f [ m; i ]]
       | _ -> failwith "Invalid narrow");
   }
 
@@ -1058,11 +1336,33 @@ let numerics_list : numerics list = [
   iaddsat;
   isubsat;
   iq15mulrsat_s;
+  fadd;
+  fsub;
+  fmul;
+  fdiv;
+  fmin;
+  fmax;
+  fcopysign;
+  fabs;
+  fneg;
+  fsqrt;
+  fceil;
+  ffloor;
+  ftrunc;
+  fnearest;
+  feq;
+  fne;
+  flt;
+  fgt;
+  fle;
+  fge;
   ext;
   wrap;
+  trunc;
+  trunc_sat;
+  narrow;
   vrelop;
   vishiftop;
-  narrow;
   lanes;
   inverse_of_lanes;
   inverse_of_lsize;

@@ -304,7 +304,7 @@ syntax relop_(inn) =
 syntax relop_(fnn) =
   | EQ | NE | LT | GT | LE | GE
 
-syntax cvtop = | CONVERT | REINTERPRET
+syntax cvtop = | CONVERT | REINTERPRET | CONVERT_SAT
 
 
 ;; Vector operators
