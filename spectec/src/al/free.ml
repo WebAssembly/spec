@@ -5,14 +5,11 @@ open Source
 (* TODO: Change list to set *)
 module IdSet = Set.Make (String)
 
-(* intersection between id list *)
-let intersection l1 l2 =
-  let s1 = IdSet.of_list l1 in
-  let s2 = IdSet.of_list l2 in
-  IdSet.inter s1 s2 |> IdSet.elements
-
-
 (* Expressions *)
+
+let (@) = IdSet.union
+let free_opt free_x xo = Option.(value (map free_x xo) ~default:IdSet.empty)
+let free_list free_x xs = List.(fold_left IdSet.union IdSet.empty (map free_x xs))
 
 let rec free_expr expr =
   match expr.it with
@@ -21,9 +18,9 @@ let rec free_expr expr =
   | GetCurLabelE
   | GetCurContextE
   | GetCurFrameE
-  | YetE _ -> []
+  | YetE _ -> IdSet.empty
   | VarE id
-  | SubE (id, _) -> [id]
+  | SubE (id, _) -> IdSet.singleton id
   | UnE (_, e)
   | LenE e
   | ArityE e
@@ -32,22 +29,21 @@ let rec free_expr expr =
   | CatE (e1, e2)
   | InfixE (e1, _, e2)
   | LabelE (e1, e2) -> free_expr e1 @ free_expr e2
-  | FrameE (e_opt, e) ->
-    Option.value (Option.map free_expr e_opt) ~default:[] @ free_expr e
+  | FrameE (e_opt, e) -> free_opt free_expr e_opt @ free_expr e
   | CallE (_, el)
   | TupE el
   | ListE el
-  | CaseE (_, el) -> List.concat_map free_expr el
-  | StrE r -> Record.fold (fun _k e acc -> free_expr e @ acc) r []
+  | CaseE (_, el) -> free_list free_expr el
+  | StrE r -> free_list (fun (_, e) -> free_expr !e) r
   | AccE (e, p) -> free_expr e @ free_path p
   | ExtE (e1, ps, e2, _)
-  | UpdE (e1, ps, e2) -> free_expr e1 @ List.concat_map free_path ps @ free_expr e2
-  | OptE e_opt -> List.concat_map free_expr (Option.to_list e_opt)
+  | UpdE (e1, ps, e2) -> free_expr e1 @ free_list free_path ps @ free_expr e2
+  | OptE e_opt -> free_opt free_expr e_opt
   | IterE (e, _, i) -> free_expr e @ free_iter i
   | MatchE (e1, e2) -> free_expr e1 @ free_expr e2
   | TopLabelE
   | TopFrameE
-  | TopValueE None -> []
+  | TopValueE None -> IdSet.empty
   | ContextKindE (_, e)
   | IsDefinedE e
   | IsCaseOfE (e, _)
@@ -62,8 +58,8 @@ let rec free_expr expr =
 and free_iter = function
   | Opt
   | List
-  | List1 -> []
-  | ListN (e, id_opt) -> Option.to_list id_opt @ free_expr e
+  | List1 -> IdSet.empty
+  | ListN (e, id_opt) -> free_opt IdSet.singleton id_opt @ free_expr e
 
 
 (* Paths *)
@@ -72,22 +68,22 @@ and free_path path =
   match path.it with
   | IdxP e -> free_expr e
   | SliceP (e1, e2) -> free_expr e1 @ free_expr e2
-  | DotP _ -> []
+  | DotP _ -> IdSet.empty
 
 
 (* Instructions *)
 
 let rec free_instr instr =
   match instr.it with
-  | IfI (e, il1, il2) -> free_expr e @ List.concat_map free_instr il1 @ List.concat_map free_instr il2
-  | OtherwiseI il -> List.concat_map free_instr il
-  | EitherI (il1, il2) -> List.concat_map free_instr il1 @ List.concat_map free_instr il2
-  | TrapI | NopI | ReturnI None | ExitI | YetI _ -> []
+  | IfI (e, il1, il2) -> free_expr e @ free_list free_instr il1 @ free_list free_instr il2
+  | OtherwiseI il -> free_list free_instr il
+  | EitherI (il1, il2) -> free_list free_instr il1 @ free_list free_instr il2
+  | TrapI | NopI | ReturnI None | ExitI | YetI _ -> IdSet.empty
   | PushI e | PopI e | PopAllI e | ReturnI (Some e)
   | ExecuteI e | ExecuteSeqI e ->
     free_expr e
   | LetI (e1, e2) | AppendI (e1, e2) -> free_expr e1 @ free_expr e2
-  | EnterI (e1, e2, il) -> free_expr e1 @ free_expr e2 @ List.concat_map free_instr il
+  | EnterI (e1, e2, il) -> free_expr e1 @ free_expr e2 @ free_list free_instr il
   | AssertI e -> free_expr e
-  | PerformI (_, el) -> List.concat_map free_expr el
+  | PerformI (_, el) -> free_list free_expr el
   | ReplaceI (e1, p, e2) -> free_expr e1 @ free_path p @ free_expr e2

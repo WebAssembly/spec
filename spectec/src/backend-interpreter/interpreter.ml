@@ -375,7 +375,9 @@ and assign lhs rhs env =
     in
 
     let default_env =
-      Al.Free.free_expr e
+      e
+      |> Free.free_expr
+      |> Free.IdSet.elements
       |> List.map (fun n -> n, default_rhs)
       |> List.to_seq
       |> Env.of_seq

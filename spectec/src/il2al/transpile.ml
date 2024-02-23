@@ -94,11 +94,6 @@ let unify_tail l1 l2 =
   let unified, l1', l2' = unify [] (List.rev l1) (List.rev l2) in
   List.rev unified, List.rev l1', List.rev l2'
 
-(*
-let intersect_list xs ys = List.filter (fun x -> List.mem x ys) xs
-let diff_list xs ys = Lib.List.filter_not (fun x -> List.mem x ys) xs
-*)
-
 
 (* AL -> AL transpilers *)
 
@@ -267,8 +262,9 @@ let merge_three_branches i =
     ifI (binE (AndOp, neg e1, e2), il2, il1) ~at:at
   | _ -> i
 
-(*
 let remove_dead_assignment il =
+  let open Free in
+  let (@) = IdSet.union in
   let rec remove_dead_assignment' il pair =
     List.fold_right
       (fun instr (acc, bounds) ->
@@ -277,27 +273,26 @@ let remove_dead_assignment il =
         | IfI (e, il1, il2) ->
           let il1', bounds1 = remove_dead_assignment' il1 ([], bounds) in
           let il2', bounds2 = remove_dead_assignment' il2 ([], bounds) in
-          ifI (e, il1', il2') ~at:at :: acc, bounds1 @ bounds2 @ Free.free_expr e
+          ifI (e, il1', il2') ~at:at :: acc, bounds1 @ bounds2 @ free_expr e
         | EitherI (il1, il2) ->
           let il1', bounds1 = remove_dead_assignment' il1 ([], bounds) in
           let il2', bounds2 = remove_dead_assignment' il2 ([], bounds) in
           eitherI (il1', il2') ~at:at :: acc, bounds1 @ bounds2
         | EnterI (e1, e2, il) ->
           let il', bounds = remove_dead_assignment' il ([], bounds) in
-          enterI (e1, e2, il') ~at:at :: acc, bounds @ Free.free_expr e1 @ Free.free_expr e2
+          enterI (e1, e2, il') ~at:at :: acc, bounds @ free_expr e1 @ free_expr e2
         | LetI (e1, e2) ->
-          let bindings = (Free.free_expr e1) in
-          if intersect_list bindings bounds = [] then
+          let bindings = free_expr e1 in
+          if IdSet.(is_empty (inter bindings bounds)) then
             acc, bounds
           else
-            (instr :: acc), (diff_list bounds bindings) @ Free.free_expr e2
+            (instr :: acc), (IdSet.diff bounds bindings) @ free_expr e2
         | AssertI _ when acc = [] -> acc, bounds
         | _ ->
-          instr :: acc, bounds @ Free.free_instr instr)
+          instr :: acc, bounds @ free_instr instr)
       il pair
   in
-  remove_dead_assignment' il ([], []) |> fst
-*)
+  remove_dead_assignment' il ([], IdSet.empty) |> fst
 
 let remove_sub e =
   let e' =
@@ -411,6 +406,7 @@ let rec enhance_readability instrs =
 
   let instrs' =
     instrs
+    |> remove_dead_assignment
     |> unify_if
     |> infer_else
     |> List.concat_map remove_unnecessary_branch
@@ -496,7 +492,7 @@ let remove_state algo =
   match Walk.walk walk_config algo with
   | FuncA (name, params, body) -> (match params with
     | { it = TupE [ _; { it = VarE "f"; _ } ]; _ } :: tail ->
-        FuncA (name, tail, letI (varE "f", getCurFrameE ()) :: body)
+        FuncA (name, tail, letI (varE "f", getCurFrameE ()) :: body |> remove_dead_assignment)
     | { it = VarE ("s" | "z"); _ } :: tail ->
         FuncA (name, tail, body)
     | _ -> FuncA(name, params, body))

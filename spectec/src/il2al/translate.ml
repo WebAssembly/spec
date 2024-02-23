@@ -80,7 +80,6 @@ let name_of_rule rule =
 
 let lower = String.lowercase_ascii
 let upper = String.uppercase_ascii
-let disjoint xs ys = List.for_all (fun x -> not (List.mem x ys)) xs
 let kwd name note = name, Il.Print.string_of_typ note
 let wrap typ e = e $$ no_region % typ
 
@@ -421,7 +420,7 @@ let extract_non_names =
 
 let contains_diff target_ns e =
   let free_ns = free_expr e in
-  free_ns <> [] && disjoint free_ns target_ns
+  not (IdSet.is_empty free_ns) && IdSet.disjoint free_ns target_ns
 
 let extract_diff lhs rhs ids cont =
   let at = lhs.at in
@@ -434,7 +433,7 @@ let extract_diff lhs rhs ids cont =
     new_lhs, new_rhs, cont
   | _ ->
     let conds = ref [] in
-    let target_ns = List.map it ids in
+    let target_ns = IdSet.of_list (List.map it ids) in
     let pre_expr = (fun e ->
       if not (contains_diff target_ns e) then
         e
@@ -454,7 +453,7 @@ let extract_diff lhs rhs ids cont =
 let rec translate_bindings ids cont bindings =
   List.fold_right (fun (l, r) cont ->
     match l with
-    | _ when free_expr l = [] -> [ ifI (binE (EqOp, r, l), cont, []) ]
+    | _ when IdSet.is_empty (free_expr l) -> [ ifI (binE (EqOp, r, l), cont, []) ]
     | _ -> translate_letpr l r ids cont
   ) bindings cont
 
@@ -576,12 +575,12 @@ let translate_rulepr id exp =
 
 let rec translate_iterpr pr (iter, ids) =
   let instrs = translate_prem pr in
-  let iter', ids' = translate_iter iter, List.map it ids in
+  let iter', ids' = translate_iter iter, IdSet.of_list (List.map it ids) in
   let lhs_iter = match iter' with | ListN (e, _) -> ListN (e, None) | _ -> iter' in
 
   let distribute_iter lhs rhs =
-    let lhs_ids = intersection (free_expr lhs) ids' in
-    let rhs_ids = intersection (free_expr rhs) ids' in
+    let lhs_ids = IdSet.elements (IdSet.inter (free_expr lhs) ids') in
+    let rhs_ids = IdSet.elements (IdSet.inter (free_expr rhs) ids') in
 
     assert (List.length (lhs_ids @ rhs_ids) > 0);
     iterE (lhs, lhs_ids, lhs_iter) ~at:lhs.at, iterE (rhs, rhs_ids, iter') ~at:rhs.at
@@ -592,7 +591,7 @@ let rec translate_iterpr pr (iter, ids) =
     match i.it with
     | LetI (lhs, rhs) -> [ letI (distribute_iter lhs rhs) ~at:at ]
     | IfI (cond, il1, il2) ->
-        let cond_ids = intersection (free_expr cond) ids' in
+        let cond_ids = IdSet.elements (IdSet.inter (free_expr cond) ids') in
         [ ifI (iterE (cond, cond_ids, iter') ~at:cond.at, il1, il2) ~at:at ]
     | _ -> [ i ]
   in
@@ -740,7 +739,7 @@ let insert_deferred = function
     (* Insert the translated instructions right after the binding *)
     let f instr =
       match instr.it with
-      | LetI (lhs, _) when free_expr lhs |> List.mem unbound_variable ->
+      | LetI (lhs, _) when free_expr lhs |> IdSet.mem unbound_variable ->
         instr :: deferred_instrs
       | _ -> [ instr ] in
 

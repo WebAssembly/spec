@@ -233,7 +233,7 @@ module WasmContext = struct
     | h :: _ -> h
     | _ -> failwith "Wasm context stack underflow"
 
-  let init_context () = context_stack := [FrameV (None, strV Record.empty), [], []; top_level_context]
+  let init_context () = context_stack := [top_level_context]
 
   let push_context ctx = context_stack := ctx :: !context_stack
 
