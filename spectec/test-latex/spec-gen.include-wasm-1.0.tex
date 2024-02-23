@@ -354,6 +354,100 @@ $$
 \end{array}
 $$
 
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{binop}}({\mathsf{i}}{{\mathit{n}}}, \mathsf{add}, {\mathit{iN}}_{{1}}, {\mathit{iN}}_{{2}}) &=& {\mathrm{iadd}}~{|{\mathsf{i}}{{\mathit{n}}}|}~({\mathit{iN}}_{{1}},\, {\mathit{iN}}_{{2}}) &  \\
+{\mathrm{binop}}({\mathsf{i}}{{\mathit{n}}}, \mathsf{sub}, {\mathit{iN}}_{{1}}, {\mathit{iN}}_{{2}}) &=& {\mathrm{isub}}~{|{\mathsf{i}}{{\mathit{n}}}|}~({\mathit{iN}}_{{1}},\, {\mathit{iN}}_{{2}}) &  \\
+{\mathrm{binop}}({\mathsf{i}}{{\mathit{n}}}, \mathsf{mul}, {\mathit{iN}}_{{1}}, {\mathit{iN}}_{{2}}) &=& {\mathrm{imul}}~{|{\mathsf{i}}{{\mathit{n}}}|}~({\mathit{iN}}_{{1}},\, {\mathit{iN}}_{{2}}) &  \\
+{\mathrm{binop}}({\mathsf{i}}{{\mathit{n}}}, {\mathsf{div\_}}{{\mathit{sx}}}, {\mathit{iN}}_{{1}}, {\mathit{iN}}_{{2}}) &=& {\mathrm{idiv}}~{{|{\mathsf{i}}{{\mathit{n}}}|}^{{\mathit{sx}}}}~({\mathit{iN}}_{{1}},\, {\mathit{iN}}_{{2}}) &  \\
+{\mathrm{binop}}({\mathsf{i}}{{\mathit{n}}}, {\mathsf{rem\_}}{{\mathit{sx}}}, {\mathit{iN}}_{{1}}, {\mathit{iN}}_{{2}}) &=& {\mathrm{irem}}~{{|{\mathsf{i}}{{\mathit{n}}}|}^{{\mathit{sx}}}}~({\mathit{iN}}_{{1}},\, {\mathit{iN}}_{{2}}) &  \\
+{\mathrm{binop}}({\mathsf{i}}{{\mathit{n}}}, \mathsf{and}, {\mathit{iN}}_{{1}}, {\mathit{iN}}_{{2}}) &=& {\mathrm{iand}}~{|{\mathsf{i}}{{\mathit{n}}}|}~({\mathit{iN}}_{{1}},\, {\mathit{iN}}_{{2}}) &  \\
+{\mathrm{binop}}({\mathsf{i}}{{\mathit{n}}}, \mathsf{or}, {\mathit{iN}}_{{1}}, {\mathit{iN}}_{{2}}) &=& {\mathrm{ior}}~{|{\mathsf{i}}{{\mathit{n}}}|}~({\mathit{iN}}_{{1}},\, {\mathit{iN}}_{{2}}) &  \\
+{\mathrm{binop}}({\mathsf{i}}{{\mathit{n}}}, \mathsf{xor}, {\mathit{iN}}_{{1}}, {\mathit{iN}}_{{2}}) &=& {\mathrm{ixor}}~{|{\mathsf{i}}{{\mathit{n}}}|}~({\mathit{iN}}_{{1}},\, {\mathit{iN}}_{{2}}) &  \\
+{\mathrm{binop}}({\mathsf{i}}{{\mathit{n}}}, \mathsf{shl}, {\mathit{iN}}_{{1}}, {\mathit{iN}}_{{2}}) &=& {\mathrm{ishl}}~{|{\mathsf{i}}{{\mathit{n}}}|}~({\mathit{iN}}_{{1}},\, {\mathit{iN}}_{{2}}) &  \\
+{\mathrm{binop}}({\mathsf{i}}{{\mathit{n}}}, {\mathsf{shr\_}}{{\mathit{sx}}}, {\mathit{iN}}_{{1}}, {\mathit{iN}}_{{2}}) &=& {\mathrm{ishr}}~{{|{\mathsf{i}}{{\mathit{n}}}|}^{{\mathit{sx}}}}~({\mathit{iN}}_{{1}},\, {\mathit{iN}}_{{2}}) &  \\
+{\mathrm{binop}}({\mathsf{i}}{{\mathit{n}}}, \mathsf{rotl}, {\mathit{iN}}_{{1}}, {\mathit{iN}}_{{2}}) &=& {\mathrm{irotl}}~{|{\mathsf{i}}{{\mathit{n}}}|}~({\mathit{iN}}_{{1}},\, {\mathit{iN}}_{{2}}) &  \\
+{\mathrm{binop}}({\mathsf{i}}{{\mathit{n}}}, \mathsf{rotr}, {\mathit{iN}}_{{1}}, {\mathit{iN}}_{{2}}) &=& {\mathrm{irotr}}~{|{\mathsf{i}}{{\mathit{n}}}|}~({\mathit{iN}}_{{1}},\, {\mathit{iN}}_{{2}}) &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{unop}}({\mathsf{i}}{{\mathit{n}}}, \mathsf{clz}, {\mathit{iN}}) &=& {\mathrm{iclz}}~{|{\mathsf{i}}{{\mathit{n}}}|}~({\mathit{iN}}) &  \\
+{\mathrm{unop}}({\mathsf{i}}{{\mathit{n}}}, \mathsf{ctz}, {\mathit{iN}}) &=& {\mathrm{iclz}}~{|{\mathsf{i}}{{\mathit{n}}}|}~({\mathit{iN}}) &  \\
+{\mathrm{unop}}({\mathsf{i}}{{\mathit{n}}}, \mathsf{popcnt}, {\mathit{iN}}) &=& {\mathrm{ipopcnt}}~{|{\mathsf{i}}{{\mathit{n}}}|}~({\mathit{iN}}) &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{testop}}({\mathsf{i}}{{\mathit{n}}}, \mathsf{eqz}, {\mathit{iN}}) &=& {\mathrm{ieqz}}~{|{\mathsf{i}}{{\mathit{n}}}|}~({\mathit{iN}}) &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{relop}}({\mathsf{i}}{{\mathit{n}}}, \mathsf{eq}, {\mathit{iN}}_{{1}}, {\mathit{iN}}_{{2}}) &=& {\mathrm{ieq}}~{|{\mathsf{i}}{{\mathit{n}}}|}~({\mathit{iN}}_{{1}},\, {\mathit{iN}}_{{2}}) &  \\
+{\mathrm{relop}}({\mathsf{i}}{{\mathit{n}}}, \mathsf{ne}, {\mathit{iN}}_{{1}}, {\mathit{iN}}_{{2}}) &=& {\mathrm{ine}}~{|{\mathsf{i}}{{\mathit{n}}}|}~({\mathit{iN}}_{{1}},\, {\mathit{iN}}_{{2}}) &  \\
+{\mathrm{relop}}({\mathsf{i}}{{\mathit{n}}}, {\mathsf{lt\_}}{{\mathit{sx}}}, {\mathit{iN}}_{{1}}, {\mathit{iN}}_{{2}}) &=& {\mathrm{ilt}}~{{|{\mathsf{i}}{{\mathit{n}}}|}^{{\mathit{sx}}}}~({\mathit{iN}}_{{1}},\, {\mathit{iN}}_{{2}}) &  \\
+{\mathrm{relop}}({\mathsf{i}}{{\mathit{n}}}, {\mathsf{gt\_}}{{\mathit{sx}}}, {\mathit{iN}}_{{1}}, {\mathit{iN}}_{{2}}) &=& {\mathrm{ilt}}~{{|{\mathsf{i}}{{\mathit{n}}}|}^{{\mathit{sx}}}}~({\mathit{iN}}_{{1}},\, {\mathit{iN}}_{{2}}) &  \\
+{\mathrm{relop}}({\mathsf{i}}{{\mathit{n}}}, {\mathsf{le\_}}{{\mathit{sx}}}, {\mathit{iN}}_{{1}}, {\mathit{iN}}_{{2}}) &=& {\mathrm{ile}}~{{|{\mathsf{i}}{{\mathit{n}}}|}^{{\mathit{sx}}}}~({\mathit{iN}}_{{1}},\, {\mathit{iN}}_{{2}}) &  \\
+{\mathrm{relop}}({\mathsf{i}}{{\mathit{n}}}, {\mathsf{ge\_}}{{\mathit{sx}}}, {\mathit{iN}}_{{1}}, {\mathit{iN}}_{{2}}) &=& {\mathrm{ihe}}~{{|{\mathsf{i}}{{\mathit{n}}}|}^{{\mathit{sx}}}}~({\mathit{iN}}_{{1}},\, {\mathit{iN}}_{{2}}) &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{binop}}({\mathsf{f}}{{\mathit{n}}}, \mathsf{add}, {\mathit{fN}}_{{1}}, {\mathit{fN}}_{{2}}) &=& {\mathrm{fadd}}~{|{\mathsf{f}}{{\mathit{n}}}|}~({\mathit{fN}}_{{1}},\, {\mathit{fN}}_{{2}}) &  \\
+{\mathrm{binop}}({\mathsf{f}}{{\mathit{n}}}, \mathsf{sub}, {\mathit{fN}}_{{1}}, {\mathit{fN}}_{{2}}) &=& {\mathrm{fsub}}~{|{\mathsf{f}}{{\mathit{n}}}|}~({\mathit{fN}}_{{1}},\, {\mathit{fN}}_{{2}}) &  \\
+{\mathrm{binop}}({\mathsf{f}}{{\mathit{n}}}, \mathsf{mul}, {\mathit{fN}}_{{1}}, {\mathit{fN}}_{{2}}) &=& {\mathrm{fmul}}~{|{\mathsf{f}}{{\mathit{n}}}|}~({\mathit{fN}}_{{1}},\, {\mathit{fN}}_{{2}}) &  \\
+{\mathrm{binop}}({\mathsf{f}}{{\mathit{n}}}, \mathsf{div}, {\mathit{fN}}_{{1}}, {\mathit{fN}}_{{2}}) &=& {\mathrm{fdiv}}~{|{\mathsf{f}}{{\mathit{n}}}|}~({\mathit{fN}}_{{1}},\, {\mathit{fN}}_{{2}}) &  \\
+{\mathrm{binop}}({\mathsf{f}}{{\mathit{n}}}, \mathsf{min}, {\mathit{fN}}_{{1}}, {\mathit{fN}}_{{2}}) &=& {\mathrm{fmin}}~{|{\mathsf{f}}{{\mathit{n}}}|}~({\mathit{fN}}_{{1}},\, {\mathit{fN}}_{{2}}) &  \\
+{\mathrm{binop}}({\mathsf{f}}{{\mathit{n}}}, \mathsf{max}, {\mathit{fN}}_{{1}}, {\mathit{fN}}_{{2}}) &=& {\mathrm{fmax}}~{|{\mathsf{f}}{{\mathit{n}}}|}~({\mathit{fN}}_{{1}},\, {\mathit{fN}}_{{2}}) &  \\
+{\mathrm{binop}}({\mathsf{f}}{{\mathit{n}}}, \mathsf{copysign}, {\mathit{fN}}_{{1}}, {\mathit{fN}}_{{2}}) &=& {\mathrm{fcopysign}}~{|{\mathsf{f}}{{\mathit{n}}}|}~({\mathit{fN}}_{{1}},\, {\mathit{fN}}_{{2}}) &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{unop}}({\mathsf{f}}{{\mathit{n}}}, \mathsf{abs}, {\mathit{fN}}) &=& {\mathrm{fabs}}~{|{\mathsf{f}}{{\mathit{n}}}|}~({\mathit{fN}}) &  \\
+{\mathrm{unop}}({\mathsf{f}}{{\mathit{n}}}, \mathsf{neg}, {\mathit{fN}}) &=& {\mathrm{fneg}}~{|{\mathsf{f}}{{\mathit{n}}}|}~({\mathit{fN}}) &  \\
+{\mathrm{unop}}({\mathsf{f}}{{\mathit{n}}}, \mathsf{sqrt}, {\mathit{fN}}) &=& {\mathrm{fsqrt}}~{|{\mathsf{f}}{{\mathit{n}}}|}~({\mathit{fN}}) &  \\
+{\mathrm{unop}}({\mathsf{f}}{{\mathit{n}}}, \mathsf{ceil}, {\mathit{fN}}) &=& {\mathrm{fceil}}~{|{\mathsf{f}}{{\mathit{n}}}|}~({\mathit{fN}}) &  \\
+{\mathrm{unop}}({\mathsf{f}}{{\mathit{n}}}, \mathsf{floor}, {\mathit{fN}}) &=& {\mathrm{ffloor}}~{|{\mathsf{f}}{{\mathit{n}}}|}~({\mathit{fN}}) &  \\
+{\mathrm{unop}}({\mathsf{f}}{{\mathit{n}}}, \mathsf{trunc}, {\mathit{fN}}) &=& {\mathrm{ftrunc}}~{|{\mathsf{f}}{{\mathit{n}}}|}~({\mathit{fN}}) &  \\
+{\mathrm{unop}}({\mathsf{f}}{{\mathit{n}}}, \mathsf{nearest}, {\mathit{fN}}) &=& {\mathrm{fnearest}}~{|{\mathsf{f}}{{\mathit{n}}}|}~({\mathit{fN}}) &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{relop}}({\mathsf{f}}{{\mathit{n}}}, \mathsf{eq}, {\mathit{fN}}_{{1}}, {\mathit{fN}}_{{2}}) &=& {\mathrm{feq}}~{|{\mathsf{f}}{{\mathit{n}}}|}~({\mathit{fN}}_{{1}},\, {\mathit{fN}}_{{2}}) &  \\
+{\mathrm{relop}}({\mathsf{f}}{{\mathit{n}}}, \mathsf{ne}, {\mathit{fN}}_{{1}}, {\mathit{fN}}_{{2}}) &=& {\mathrm{fne}}~{|{\mathsf{f}}{{\mathit{n}}}|}~({\mathit{fN}}_{{1}},\, {\mathit{fN}}_{{2}}) &  \\
+{\mathrm{relop}}({\mathsf{f}}{{\mathit{n}}}, \mathsf{lt}, {\mathit{fN}}_{{1}}, {\mathit{fN}}_{{2}}) &=& {\mathrm{flt}}~{|{\mathsf{f}}{{\mathit{n}}}|}~({\mathit{fN}}_{{1}},\, {\mathit{fN}}_{{2}}) &  \\
+{\mathrm{relop}}({\mathsf{f}}{{\mathit{n}}}, \mathsf{gt}, {\mathit{fN}}_{{1}}, {\mathit{fN}}_{{2}}) &=& {\mathrm{fgt}}~{|{\mathsf{f}}{{\mathit{n}}}|}~({\mathit{fN}}_{{1}},\, {\mathit{fN}}_{{2}}) &  \\
+{\mathrm{relop}}({\mathsf{f}}{{\mathit{n}}}, \mathsf{le}, {\mathit{fN}}_{{1}}, {\mathit{fN}}_{{2}}) &=& {\mathrm{fle}}~{|{\mathsf{f}}{{\mathit{n}}}|}~({\mathit{fN}}_{{1}},\, {\mathit{fN}}_{{2}}) &  \\
+{\mathrm{relop}}({\mathsf{f}}{{\mathit{n}}}, \mathsf{ge}, {\mathit{fN}}_{{1}}, {\mathit{fN}}_{{2}}) &=& {\mathrm{fge}}~{|{\mathsf{f}}{{\mathit{n}}}|}~({\mathit{fN}}_{{1}},\, {\mathit{fN}}_{{2}}) &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{cvtop}}(\mathsf{i{\scriptstyle32}}, \mathsf{i{\scriptstyle64}}, \mathsf{convert}, {\mathit{sx}}, {\mathit{iN}}) &=& {{{{\mathrm{ext}}}_{(32,\, 64)}^{{\mathit{sx}}}}}{({\mathit{iN}})} &  \\
+{\mathrm{cvtop}}(\mathsf{i{\scriptstyle64}}, \mathsf{i{\scriptstyle32}}, \mathsf{convert}, {{\mathit{sx}}^?}, {\mathit{iN}}) &=& {{{\mathrm{wrap}}}_{(64,\, 32)}}{({\mathit{iN}})} &  \\
+{\mathrm{cvtop}}({\mathsf{f}}{{\mathit{n}}}, {\mathsf{i}}{{\mathit{n}}}, \mathsf{convert}, {\mathit{sx}}, {\mathit{fN}}) &=& {{{{\mathrm{trunc}}}_{({|{\mathsf{f}}{{\mathit{n}}}|},\, {|{\mathsf{i}}{{\mathit{n}}}|})}^{{\mathit{sx}}}}}{({\mathit{fN}})} &  \\
+{\mathrm{cvtop}}(\mathsf{f{\scriptstyle32}}, \mathsf{f{\scriptstyle64}}, \mathsf{convert}, {{\mathit{sx}}^?}, {\mathit{fN}}) &=& {{{\mathrm{promote}}}_{(32,\, 64)}}{({\mathit{fN}})} &  \\
+{\mathrm{cvtop}}(\mathsf{f{\scriptstyle64}}, \mathsf{f{\scriptstyle32}}, \mathsf{convert}, {{\mathit{sx}}^?}, {\mathit{fN}}) &=& {{{\mathrm{demote}}}_{(64,\, 32)}}{({\mathit{fN}})} &  \\
+{\mathrm{cvtop}}({\mathsf{i}}{{\mathit{n}}}, {\mathsf{f}}{{\mathit{n}}}, \mathsf{convert}, {\mathit{sx}}, {\mathit{iN}}) &=& {{{{\mathrm{convert}}}_{({|{\mathsf{i}}{{\mathit{n}}}|},\, {|{\mathsf{f}}{{\mathit{n}}}|})}^{{\mathit{sx}}}}}{({\mathit{iN}})} &  \\
+{\mathrm{cvtop}}({\mathsf{i}}{{\mathit{n}}}, {\mathsf{f}}{{\mathit{n}}}, \mathsf{reinterpret}, {{\mathit{sx}}^?}, {\mathit{iN}}) &=& {{{\mathrm{narrow}}}_{({\mathsf{i}}{{\mathit{n}}},\, {\mathsf{f}}{{\mathit{n}}})}}{{\mathit{iN}}} &\quad
+  \mbox{if}~{|{\mathsf{i}}{{\mathit{n}}}|} = {|{\mathsf{f}}{{\mathit{n}}}|} \\
+{\mathrm{cvtop}}({\mathsf{f}}{{\mathit{n}}}, {\mathsf{i}}{{\mathit{n}}}, \mathsf{reinterpret}, {{\mathit{sx}}^?}, {\mathit{fN}}) &=& {{{\mathrm{narrow}}}_{({\mathsf{f}}{{\mathit{n}}},\, {\mathsf{i}}{{\mathit{n}}})}}{{\mathit{fN}}} &\quad
+  \mbox{if}~{|{\mathsf{i}}{{\mathit{n}}}|} = {|{\mathsf{f}}{{\mathit{n}}}|} \\
+\end{array}
+$$
+
 $$
 \begin{array}{@{}lrrl@{}l@{}}
 \mbox{(address)} & {\mathit{addr}} &::=& {\mathit{nat}} \\

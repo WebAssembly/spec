@@ -530,145 +530,11 @@ watsup 0.4 generator
 - 141/141 (100.00%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_boolean.wast =====
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:39.1-40.55 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:41.1-42.55 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:43.1-44.55 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:45.1-46.55 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:47.1-48.55 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:49.1-50.55 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:51.1-52.55 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:53.1-54.55 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:55.1-56.55 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:57.1-58.64 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:303.30-303.33"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:59.1-60.64 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:303.30-303.33"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:85.1-86.55 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:87.1-88.55 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:89.1-90.55 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:91.1-92.55 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:93.1-94.55 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:95.1-96.55 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:97.1-98.55 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:99.1-100.55 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:101.1-102.55 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:103.1-104.55 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:105.1-106.55 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:107.1-108.64 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:303.30-303.33"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:109.1-110.64 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:303.30-303.33"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:135.1-136.55 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:137.1-138.55 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:139.1-140.55 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:141.1-142.55 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:143.1-144.55 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:145.1-146.55 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:147.1-148.55 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:149.1-150.55 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:151.1-152.55 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:153.1-154.55 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:155.1-156.55 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:157.1-158.64 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:303.30-303.33"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:159.1-160.64 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:303.30-303.33"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:163.1-164.55 (Failure("Invalid assignment on value I64: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:165.1-166.55 (Failure("Invalid assignment on value I64: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:167.1-168.55 (Failure("Invalid assignment on value I64: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:169.1-170.55 (Failure("Invalid assignment on value I64: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:171.1-172.55 (Failure("Invalid assignment on value I64: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:173.1-174.55 (Failure("Invalid assignment on value I64: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:175.1-176.55 (Failure("Invalid assignment on value I64: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:177.1-178.55 (Failure("Invalid assignment on value I64: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:179.1-180.55 (Failure("Invalid assignment on value I64: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:181.1-182.64 (Failure("Invalid assignment on value I64: SubE (inn,inn) @8-reduction.watsup:303.30-303.33"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:183.1-184.64 (Failure("Invalid assignment on value I64: SubE (inn,inn) @8-reduction.watsup:303.30-303.33"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:495.1-496.66 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:497.1-498.66 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:499.1-500.66 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:502.1-503.66 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:504.1-505.66 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:506.1-507.66 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:509.1-510.66 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:511.1-512.66 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:513.1-514.66 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:530.1-531.70 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:532.1-533.70 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:534.1-535.70 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:536.1-537.70 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:538.1-539.70 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:540.1-541.70 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:556.1-557.69 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:558.1-559.69 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:560.1-561.69 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:562.1-563.69 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:564.1-565.69 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:566.1-567.69 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:653.1-655.74 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:656.1-658.74 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:659.1-661.74 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:662.1-664.74 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:665.1-667.74 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:668.1-670.74 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:671.1-673.74 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:674.1-676.74 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:677.1-679.74 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:681.1-683.73 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:684.1-686.73 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:687.1-689.73 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:690.1-692.73 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:693.1-695.73 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:696.1-698.73 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:699.1-701.73 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:702.1-704.73 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:705.1-707.73 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:709.1-711.74 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:712.1-714.74 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:715.1-717.74 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:718.1-720.74 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:721.1-723.74 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:724.1-726.74 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:727.1-729.74 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:730.1-732.74 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:733.1-735.74 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:865.1-866.69 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:867.1-868.69 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:869.1-870.69 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:871.1-872.69 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:873.1-874.69 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:875.1-876.69 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:877.1-878.69 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:879.1-880.69 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:881.1-882.69 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:884.1-886.69 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:887.1-889.69 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:890.1-892.69 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:893.1-895.69 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:896.1-898.69 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:899.1-901.69 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:902.1-904.69 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:905.1-907.69 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:908.1-910.69 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:912.1-914.68 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:915.1-917.68 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:918.1-920.68 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:921.1-923.68 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:924.1-926.68 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:927.1-929.68 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:930.1-932.68 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:933.1-935.68 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:936.1-938.68 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:940.1-942.69 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:943.1-945.69 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:946.1-948.69 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:949.1-951.69 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:952.1-954.69 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:955.1-957.69 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:958.1-960.69 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:961.1-963.69 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:964.1-966.69 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:968.1-971.75 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:972.1-975.75 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:976.1-979.75 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:980.1-983.75 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:984.1-987.75 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:988.1-991.75 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- 123/261 (47.13%)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:57.1-58.64 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:59.1-60.64 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:107.1-108.64 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_boolean.wast:109.1-110.64 (Backend_interpreter.Exception.MissingReturnValue)
+- 257/261 (98.47%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_const.wast =====
 - 577/577 (100.00%)
@@ -742,6 +608,36 @@ watsup 0.4 generator
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:171.1-172.83 (Failure("Wasm value stack underflow"))
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:173.1-174.91 (Failure("Wasm value stack underflow"))
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:175.1-176.93 (Failure("Wasm value stack underflow"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:182.1-183.83 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:184.1-185.83 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:186.1-187.87 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:188.1-189.119 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:190.1-191.123 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:192.1-193.127 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:194.1-195.115 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:196.1-197.115 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:200.1-201.111 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:202.1-203.115 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:204.1-205.111 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:206.1-207.115 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:208.1-209.103 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:213.1-214.83 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:215.1-216.83 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:217.1-218.119 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:219.1-220.119 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:221.1-222.119 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:223.1-224.127 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:225.1-226.127 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:227.1-228.127 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:229.1-230.127 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:231.1-232.127 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:233.1-234.127 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:235.1-236.127 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:237.1-238.115 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:239.1-240.119 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:243.1-244.111 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:245.1-246.111 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:247.1-248.110 (Failure("Invalid DSL function call: vcvtop"))
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:253.1-254.79 (Failure("Wasm value stack underflow"))
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:255.1-256.81 (Failure("Wasm value stack underflow"))
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:257.1-258.79 (Failure("Wasm value stack underflow"))
@@ -753,127 +649,130 @@ watsup 0.4 generator
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:273.1-274.93 (Failure("Wasm value stack underflow"))
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:275.1-276.93 (Failure("Wasm value stack underflow"))
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:277.1-278.97 (Failure("Wasm value stack underflow"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:283.1-285.98 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:286.1-288.98 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:289.1-291.98 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:292.1-294.106 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:295.1-297.106 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:298.1-300.106 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:301.1-303.106 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:304.1-306.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:307.1-309.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:310.1-312.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:313.1-315.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:316.1-318.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:319.1-321.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:322.1-324.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:325.1-327.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:328.1-330.154 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:331.1-333.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:334.1-336.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:337.1-339.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:340.1-342.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:343.1-345.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:346.1-348.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:349.1-351.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:352.1-354.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:355.1-357.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:358.1-360.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:361.1-363.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:364.1-366.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:367.1-369.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:372.1-374.98 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:375.1-377.98 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:378.1-380.98 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:381.1-383.98 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:384.1-386.98 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:387.1-389.98 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:390.1-392.98 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:393.1-395.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:396.1-398.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:399.1-401.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:402.1-404.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:405.1-407.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:408.1-410.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:411.1-413.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:414.1-416.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:417.1-419.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:420.1-422.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:423.1-425.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:426.1-428.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:429.1-431.122 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:432.1-434.122 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:435.1-437.122 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:438.1-440.122 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:441.1-443.98 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:444.1-446.122 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:447.1-449.122 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:452.1-454.82 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:455.1-457.82 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:458.1-460.82 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:461.1-463.86 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:464.1-466.86 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:467.1-469.86 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:470.1-472.86 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:473.1-475.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:476.1-478.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:479.1-481.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:482.1-484.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:485.1-487.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:488.1-490.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:491.1-493.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:494.1-496.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:497.1-499.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:500.1-502.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:503.1-505.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:506.1-508.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:509.1-511.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:512.1-514.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:515.1-517.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:518.1-520.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:521.1-523.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:524.1-526.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:527.1-529.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:530.1-532.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:533.1-535.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:536.1-538.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:541.1-543.82 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:544.1-546.82 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:547.1-549.82 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:550.1-552.82 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:553.1-555.82 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:556.1-558.82 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:559.1-561.82 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:562.1-564.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:565.1-567.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:568.1-570.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:571.1-573.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:574.1-576.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:577.1-579.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:580.1-582.102 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:583.1-585.102 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:586.1-588.102 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:589.1-591.102 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:592.1-594.82 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:595.1-597.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:598.1-600.102 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:768.1-770.124 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:771.1-773.98 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:774.1-776.125 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:777.1-779.99 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:780.1-782.88 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:783.1-785.112 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:786.1-788.95 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:789.1-791.113 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:793.1-795.108 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:796.1-798.89 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:799.1-801.109 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:802.1-804.90 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:805.1-807.85 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:808.1-810.100 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:811.1-813.86 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:814.1-816.101 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:309.63-309.68"))
-- 35/234 (14.96%)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:283.1-285.98 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:286.1-288.98 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:289.1-291.98 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:292.1-294.106 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:295.1-297.106 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:298.1-300.106 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:301.1-303.106 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:304.1-306.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:307.1-309.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:310.1-312.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:313.1-315.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:316.1-318.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:319.1-321.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:322.1-324.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:325.1-327.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:328.1-330.154 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:331.1-333.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:334.1-336.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:337.1-339.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:340.1-342.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:343.1-345.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:346.1-348.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:349.1-351.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:352.1-354.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:355.1-357.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:358.1-360.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:361.1-363.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:364.1-366.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:367.1-369.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:372.1-374.98 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:375.1-377.98 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:378.1-380.98 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:381.1-383.98 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:384.1-386.98 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:387.1-389.98 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:390.1-392.98 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:393.1-395.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:396.1-398.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:399.1-401.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:402.1-404.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:405.1-407.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:408.1-410.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:411.1-413.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:414.1-416.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:417.1-419.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:420.1-422.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:423.1-425.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:426.1-428.146 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:429.1-431.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:432.1-434.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:435.1-437.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:438.1-440.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:441.1-443.98 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:444.1-446.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:447.1-449.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:452.1-454.82 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:455.1-457.82 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:458.1-460.82 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:461.1-463.86 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:464.1-466.86 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:467.1-469.86 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:470.1-472.86 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:473.1-475.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:476.1-478.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:479.1-481.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:482.1-484.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:485.1-487.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:488.1-490.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:491.1-493.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:494.1-496.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:497.1-499.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:500.1-502.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:503.1-505.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:506.1-508.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:509.1-511.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:512.1-514.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:515.1-517.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:518.1-520.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:521.1-523.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:524.1-526.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:527.1-529.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:530.1-532.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:533.1-535.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:536.1-538.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:541.1-543.82 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:544.1-546.82 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:547.1-549.82 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:550.1-552.82 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:553.1-555.82 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:556.1-558.82 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:559.1-561.82 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:562.1-564.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:565.1-567.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:568.1-570.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:571.1-573.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:574.1-576.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:577.1-579.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:580.1-582.102 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:583.1-585.102 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:586.1-588.102 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:589.1-591.102 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:592.1-594.82 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:595.1-597.122 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:598.1-600.102 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:758.1-760.87 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:761.1-763.88 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:764.1-766.88 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:768.1-770.124 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:771.1-773.98 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:774.1-776.125 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:777.1-779.99 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:780.1-782.88 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:783.1-785.112 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:786.1-788.95 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:789.1-791.113 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:793.1-795.108 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:796.1-798.89 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:799.1-801.109 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:802.1-804.90 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:805.1-807.85 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:808.1-810.100 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:811.1-813.86 (Not_found)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_conversions.wast:814.1-816.101 (Not_found)
+- 2/234 (0.85%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_f32x4.wast =====
 - 774/774 (100.00%)
@@ -1894,7 +1793,109 @@ watsup 0.4 generator
 - 1/105 (0.95%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast =====
-- 103/103 (100.00%)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:10.1-11.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:12.1-13.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:14.1-15.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:16.1-17.81 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:18.1-19.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:20.1-21.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:22.1-23.81 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:24.1-25.81 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:26.1-27.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:28.1-29.117 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:30.1-31.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:32.1-33.117 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:34.1-35.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:36.1-37.117 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:38.1-39.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:40.1-41.117 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:42.1-43.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:44.1-45.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:46.1-47.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:48.1-49.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:50.1-51.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:52.1-53.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:54.1-55.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:56.1-57.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:58.1-59.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:60.1-61.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:62.1-63.81 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:64.1-65.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:66.1-67.81 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:68.1-69.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:70.1-71.81 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:72.1-73.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:74.1-75.117 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:76.1-77.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:78.1-79.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:80.1-81.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:82.1-83.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:84.1-85.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:86.1-87.81 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:88.1-89.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:90.1-91.117 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:92.1-93.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:94.1-95.117 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:96.1-97.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:98.1-99.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:100.1-101.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:102.1-103.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:104.1-105.81 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:106.1-107.85 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:108.1-109.109 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:110.1-111.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:114.1-115.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:116.1-117.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:118.1-119.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:120.1-121.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:122.1-123.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:124.1-125.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:126.1-127.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:128.1-129.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:130.1-131.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:132.1-133.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:134.1-135.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:136.1-137.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:138.1-139.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:140.1-141.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:142.1-143.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:144.1-145.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:146.1-147.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:148.1-149.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:150.1-151.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:152.1-153.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:154.1-155.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:156.1-157.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:158.1-159.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:160.1-161.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:162.1-163.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:164.1-165.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:166.1-167.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:168.1-169.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:170.1-171.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:172.1-173.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:174.1-175.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:176.1-177.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:178.1-179.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:180.1-181.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:182.1-183.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:184.1-185.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:186.1-187.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:188.1-189.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:190.1-191.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:192.1-193.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:194.1-195.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:196.1-197.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:198.1-199.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:200.1-201.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:202.1-203.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:204.1-205.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:206.1-207.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:208.1-209.81 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:210.1-211.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:212.1-213.109 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast:214.1-215.113 (Failure("Invalid DSL function call: vcvtop"))
+- 1/103 (0.97%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f64x2.wast =====
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f64x2.wast:10.1-11.82 (Failure("Wasm value stack underflow"))
@@ -2697,52 +2698,129 @@ watsup 0.4 generator
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:323.1-324.94 (Failure("Wasm value stack underflow"))
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:325.1-326.94 (Failure("Wasm value stack underflow"))
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:327.1-328.94 (Failure("Wasm value stack underflow"))
-- 77/229 (33.62%)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:330.1-331.75 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:332.1-333.75 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:334.1-335.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:336.1-337.75 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:338.1-339.75 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:340.1-341.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:342.1-343.75 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:344.1-345.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:346.1-347.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:348.1-349.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:350.1-351.95 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:352.1-353.95 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:354.1-355.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:356.1-357.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:358.1-359.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:360.1-361.95 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:362.1-363.95 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:364.1-365.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:366.1-367.95 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:369.1-370.75 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:371.1-372.75 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:373.1-374.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:375.1-376.75 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:377.1-378.75 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:379.1-380.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:381.1-382.75 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:383.1-384.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:385.1-386.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:387.1-388.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:389.1-390.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:391.1-392.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:393.1-394.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:395.1-396.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:397.1-398.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:399.1-400.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:401.1-402.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:403.1-404.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:405.1-406.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:408.1-409.74 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:410.1-411.74 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:412.1-413.74 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:414.1-415.74 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:416.1-417.76 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:418.1-419.74 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:420.1-421.76 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:422.1-423.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:424.1-425.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:426.1-427.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:428.1-429.94 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:430.1-431.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:432.1-433.94 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:434.1-435.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:436.1-437.76 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:438.1-439.94 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:440.1-441.94 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:442.1-443.94 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:444.1-445.76 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:447.1-448.74 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:449.1-450.74 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:451.1-452.74 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:453.1-454.74 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:455.1-456.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:457.1-458.74 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:459.1-460.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:461.1-462.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:463.1-464.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:465.1-466.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:467.1-468.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:469.1-470.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:471.1-472.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:473.1-474.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:475.1-476.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:477.1-478.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:479.1-480.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:481.1-482.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast:483.1-484.92 (Failure("Invalid DSL function call: vcvtop"))
+- 1/229 (0.44%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_lane.wast =====
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:292.1-295.70 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:228.50-228.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:296.1-299.77 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:228.50-228.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:300.1-303.86 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:228.50-228.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:304.1-307.86 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:228.50-228.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:308.1-311.86 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:228.50-228.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:312.1-315.102 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:228.50-228.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:316.1-319.78 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:228.50-228.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:320.1-323.66 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:228.50-228.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:324.1-327.66 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:228.50-228.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:328.1-331.66 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:228.50-228.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:333.1-336.60 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:236.50-236.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:337.1-340.77 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:236.50-236.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:341.1-344.84 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:236.50-236.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:345.1-348.77 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:236.50-236.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:349.1-352.77 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:236.50-236.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:353.1-356.86 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:236.50-236.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:357.1-360.86 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:236.50-236.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:361.1-364.102 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:236.50-236.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:365.1-368.78 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:236.50-236.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:369.1-372.66 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:236.50-236.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:373.1-376.60 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:236.50-236.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:377.1-380.66 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:236.50-236.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:381.1-384.60 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:236.50-236.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:387.1-390.70 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:228.50-228.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:391.1-394.70 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:236.50-236.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:692.1-695.60 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:228.50-228.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:696.1-699.102 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:236.50-236.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:769.1-774.70 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:228.50-228.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:775.1-780.68 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:236.50-236.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:787.1-789.75 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:228.50-228.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:790.1-792.75 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:228.50-228.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:793.1-795.75 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:236.50-236.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:863.1-866.77 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:228.50-228.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:867.1-870.69 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:236.50-236.53"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:292.1-295.70 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:296.1-299.77 (Failure("Failed Array.get on base [] and index 248: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:300.1-303.86 (Failure("Failed Array.get on base [] and index 15: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:304.1-307.86 (Failure("Failed Array.get on base [] and index 255: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:308.1-311.86 (Failure("Failed Array.get on base [] and index 9: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:312.1-315.102 (Failure("Failed Array.get on base [] and index 9: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:316.1-319.78 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:320.1-323.66 (Failure("Failed Array.get on base [] and index 15: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:324.1-327.66 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:328.1-331.66 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:333.1-336.60 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:337.1-340.77 (Failure("Failed Array.get on base [] and index 16: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:341.1-344.84 (Failure("Failed Array.get on base [] and index 31: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:345.1-348.77 (Failure("Failed Array.get on base [] and index 15: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:349.1-352.77 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:353.1-356.86 (Failure("Failed Array.get on base [] and index 16: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:357.1-360.86 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:361.1-364.102 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:365.1-368.78 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:369.1-372.66 (Failure("Failed Array.get on base [] and index 16: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:373.1-376.60 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:377.1-380.66 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:381.1-384.60 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:387.1-390.70 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:391.1-394.70 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:692.1-695.60 (Failure("Failed Array.get on base [] and index 255: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:696.1-699.102 (Failure("Failed Array.get on base [] and index 16: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:769.1-774.70 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:775.1-780.68 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:787.1-789.75 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:790.1-792.75 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:793.1-795.75 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:863.1-866.77 (Failure("Failed Array.get on base [] and index 15: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:867.1-870.69 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
 - 252/286 (88.11%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_linking.wast =====
 - 2/2 (100.00%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_load.wast =====
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_load.wast:44.1-44.67 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_load.wast:127.1-127.134 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:228.50-228.53"))
-- 29/31 (93.55%)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_load.wast:110.1-110.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_load.wast:118.1-118.87 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_load.wast:127.1-127.134 (Failure("Failed Array.get on base [] and index 15: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- 28/31 (90.32%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_load16_lane.wast =====
 - 33/33 (100.00%)
@@ -2832,258 +2910,253 @@ watsup 0.4 generator
 - 14/86 (16.28%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast =====
-Result: 3_324 0 2_016_817_526 1_718_562_360 : [v128]
+Result: 4_096 0 -863_091_656 32_560 : [v128]
 Expect: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:43.1-43.109 (Error(_, "wrong return values"))
-Result: 5 16_777_216 1_733_908_480 32_568 : [v128]
+Result: 6_358_432 0 5 16_777_216 : [v128]
 Expect: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:44.1-44.109 (Error(_, "wrong return values"))
-Result: 33_093 0 33_099 0 : [v128]
+Result: -861_381_800 32_560 3_072 0 : [v128]
 Expect: 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:45.1-45.109 (Error(_, "wrong return values"))
-Result: 0 0 1_730_405_064 32_568 : [v128]
+Result: 7 0 0 0 : [v128]
 Expect: 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:46.1-46.109 (Error(_, "wrong return values"))
-Result: 2_303 0 1_653_540_672 21_999 : [v128]
+Result: 0 0 -958_682_800 32_560 : [v128]
 Expect: 31 31 31 31 31 31 31 31 31 31 31 31 31 31 31 31 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:47.1-47.129 (Error(_, "wrong return values"))
-Result: 191 0 1_733_661_640 32_568 : [v128]
+Result: -2_147_483_520 -1 2_303 0 : [v128]
 Expect: 1_284 1_284 1_284 1_284 1_284 1_284 1_284 1_284 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:48.1-48.134 (Error(_, "wrong return values"))
-Result: 1_733_616_840 32_568 0 0 : [v128]
+Result: 231 0 -861_607_032 32_560 : [v128]
 Expect: 1_541 1_541 1_541 1_541 1_541 1_541 1_541 1_541 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:49.1-49.134 (Error(_, "wrong return values"))
-Result: 1_733_578_120 32_568 3 0 : [v128]
+Result: 631 0 -861_650_624 32_560 : [v128]
 Expect: 1_798 1_798 1_798 1_798 1_798 1_798 1_798 1_798 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:50.1-50.134 (Error(_, "wrong return values"))
-Result: 1_722_508_600 32_568 0 0 : [v128]
+Result: -863_091_656 32_560 493 0 : [v128]
 Expect: 2_055 2_055 2_055 2_055 2_055 2_055 2_055 2_055 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:51.1-51.134 (Error(_, "wrong return values"))
-Result: 195 0 1_733_482_776 32_568 : [v128]
+Result: 1_639 0 3_072 0 : [v128]
 Expect: 7_966 7_966 7_966 7_966 7_966 7_966 7_966 7_966 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:52.1-52.138 (Error(_, "wrong return values"))
-Result: 1_733_438_584 32_568 3_072 0 : [v128]
+Result: 2_048 0 191 0 : [v128]
 Expect: 185_207_048 185_207_048 185_207_048 185_207_048 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:53.1-53.122 (Error(_, "wrong return values"))
-Result: 1_733_397_648 32_568 4_096 0 : [v128]
+Result: -861_819_520 32_560 -861_820_088 32_560 : [v128]
 Expect: 202_050_057 202_050_057 202_050_057 202_050_057 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:54.1-54.122 (Error(_, "wrong return values"))
-Result: 6_681 0 5_120 0 : [v128]
+Result: 5_120 0 -861_859_224 32_560 : [v128]
 Expect: 218_893_066 218_893_066 218_893_066 218_893_066 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:55.1-55.123 (Error(_, "wrong return values"))
-Result: 4_343 0 1_650_532_560 21_999 : [v128]
+Result: -861_898_560 32_560 10_405_928 0 : [v128]
 Expect: 235_736_075 235_736_075 235_736_075 235_736_075 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:56.1-56.123 (Error(_, "wrong return values"))
-Result: 2_048 0 1_733_276_864 32_568 : [v128]
+Result: 37 0 247 0 : [v128]
 Expect: 522_067_228 522_067_228 522_067_228 522_067_228 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:57.1-57.126 (Error(_, "wrong return values"))
-Result: 0 0 1_725_278_152 32_568 : [v128]
+Result: -861_977_456 32_560 1_024 0 : [v128]
 Expect: 252_579_084 252_579_084 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:58.1-58.117 (Error(_, "wrong return values"))
-Result: 1_733_197_736 32_568 1_733_197_856 32_568 : [v128]
+Result: 4_096 0 -861_698_176 32_560 : [v128]
 Expect: 986_637 986_637 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:59.1-59.117 (Error(_, "wrong return values"))
-Result: 12_595 83_886_080 4_096 0 : [v128]
+Result: -861_698_176 32_560 93 0 : [v128]
 Expect: 3_854 3_854 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:60.1-60.117 (Error(_, "wrong return values"))
-Result: 1_733_120_000 32_568 2_048 0 : [v128]
+Result: -862_089_600 32_560 10_628_472 0 : [v128]
 Expect: 15 15 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:61.1-61.117 (Error(_, "wrong return values"))
-Result: 4_095 0 2_303 0 : [v128]
+Result: 2_303 0 9_578_272 0 : [v128]
 Expect: 2_242_261_671_028_070_680 2_242_261_671_028_070_680 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:62.1-62.120 (Error(_, "wrong return values"))
-Result: 1_649_242_048 21_999 7 33_554_432 : [v128]
+Result: 9_578_272 0 128 0 : [v128]
 Expect: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:65.1-65.106 (Error(_, "wrong return values"))
-Result: 3_072 0 1_732_980_936 32_568 : [v128]
+Result: 49_328 0 2_303 0 : [v128]
 Expect: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:66.1-66.105 (Error(_, "wrong return values"))
-Result: 1_653_540_672 21_999 63 0 : [v128]
+Result: 11_295 0 11_487 0 : [v128]
 Expect: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:67.1-67.113 (Error(_, "wrong return values"))
-Result: 2_303 0 1_653_540_736 21_999 : [v128]
+Result: 2_303 0 9_578_208 0 : [v128]
 Expect: 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:68.1-68.113 (Error(_, "wrong return values"))
-Result: 116 100_663_296 4_096 0 : [v128]
+Result: 9_578_272 0 0 0 : [v128]
 Expect: 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:69.1-69.130 (Error(_, "wrong return values"))
-Result: 2_048 0 1_732_733_880 32_568 : [v128]
+Result: 9_578_272 0 -1_717_986_919 -1 : [v128]
 Expect: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:70.1-70.106 (Error(_, "wrong return values"))
-Result: 205 0 2_048 0 : [v128]
+Result: -862_527_416 32_560 2_048 0 : [v128]
 Expect: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:71.1-71.105 (Error(_, "wrong return values"))
-Result: 1_732_610_288 32_568 0 0 : [v128]
+Result: 15_247 0 15_293 0 : [v128]
 Expect: 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:72.1-72.113 (Error(_, "wrong return values"))
-Result: 47 0 3_324 0 : [v128]
+Result: 4_095 0 2_303 0 : [v128]
 Expect: 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:73.1-73.113 (Error(_, "wrong return values"))
-Result: 1 0 2_303 0 : [v128]
+Result: 9_578_272 0 0 0 : [v128]
 Expect: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:74.1-74.114 (Error(_, "wrong return values"))
-Result: 1_027 0 1_734_522_320 32_568 : [v128]
+Result: 2_303 0 9_578_272 0 : [v128]
 Expect: 31 31 31 31 31 31 31 31 31 31 31 31 31 31 31 31 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:75.1-75.126 (Error(_, "wrong return values"))
-Result: 1_732_309_480 32_568 1_734_462_184 32_568 : [v128]
+Result: 18_309 0 3_072 0 : [v128]
 Expect: 31 31 31 31 31 31 31 31 31 31 31 31 31 31 31 31 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:76.1-76.125 (Error(_, "wrong return values"))
-Result: 3_072 0 1_727_288_768 32_568 : [v128]
+Result: 4_343 0 5_676_208 0 : [v128]
 Expect: 256 256 256 256 256 256 256 256 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:78.1-78.130 (Error(_, "wrong return values"))
-Result: 1_734_354_688 32_568 2_048 0 : [v128]
+Result: -860_757_776 32_560 2_048 0 : [v128]
 Expect: 256 256 256 256 256 256 256 256 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:79.1-79.129 (Error(_, "wrong return values"))
-Result: 1 0 2_048 0 : [v128]
+Result: 5_676_768 0 5 16_777_216 : [v128]
 Expect: 513 513 513 513 513 513 513 513 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:80.1-80.137 (Error(_, "wrong return values"))
-Result: 1 0 3 0 : [v128]
+Result: -958_904_264 32_560 1 0 : [v128]
 Expect: 770 770 770 770 770 770 770 770 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:81.1-81.137 (Error(_, "wrong return values"))
-Result: 1 0 1_025 0 : [v128]
+Result: 3_072 0 -868_045_224 32_560 : [v128]
 Expect: 15 15 15 15 15 15 15 15 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:82.1-82.138 (Error(_, "wrong return values"))
-Result: 1_734_509_440 32_568 3_072 0 : [v128]
+Result: 2_048 0 -868_043_160 32_560 : [v128]
 Expect: 513 513 513 513 513 513 513 513 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:83.1-83.130 (Error(_, "wrong return values"))
-Result: 1_653_875_248 21_999 2_048 0 : [v128]
+Result: 3_072 0 -868_224_232 32_560 : [v128]
 Expect: 513 513 513 513 513 513 513 513 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:84.1-84.129 (Error(_, "wrong return values"))
-Result: 1_727_189_688 32_568 2_048 0 : [v128]
+Result: 2_048 0 -861_097_904 32_560 : [v128]
 Expect: 770 770 770 770 770 770 770 770 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:85.1-85.137 (Error(_, "wrong return values"))
-Result: 1_024 0 1 0 : [v128]
+Result: -868_043_160 32_560 1 0 : [v128]
 Expect: 1_027 1_027 1_027 1_027 1_027 1_027 1_027 1_027 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:86.1-86.137 (Error(_, "wrong return values"))
-Result: 5_120 0 1 0 : [v128]
+Result: 3_072 0 -868_224_232 32_560 : [v128]
 Expect: 0 0 0 0 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:87.1-87.138 (Error(_, "wrong return values"))
-Result: 2_016_817_526 1_718_562_360 0 117_440_512 : [v128]
+Result: 1 0 4_343 0 : [v128]
 Expect: 7_966 7_966 7_966 7_966 7_966 7_966 7_966 7_966 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:88.1-88.134 (Error(_, "wrong return values"))
-Result: 2_048 0 1_733_906_656 32_568 : [v128]
+Result: 9_578_272 0 0 0 : [v128]
 Expect: 7_966 7_966 7_966 7_966 7_966 7_966 7_966 7_966 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:89.1-89.133 (Error(_, "wrong return values"))
-Result: 1 0 1_728_467_016 32_568 : [v128]
+Result: -867_652_872 32_560 1 0 : [v128]
 Expect: 50_462_976 50_462_976 50_462_976 50_462_976 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:91.1-91.118 (Error(_, "wrong return values"))
-Result: 0 0 3_324 0 : [v128]
+Result: 2_052 0 -861_353_992 32_560 : [v128]
 Expect: 50_462_976 50_462_976 50_462_976 50_462_976 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:92.1-92.117 (Error(_, "wrong return values"))
-Result: 7 0 5_120 0 : [v128]
+Result: -861_392_792 32_560 -861_393_272 32_560 : [v128]
 Expect: 67_305_985 67_305_985 67_305_985 67_305_985 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:93.1-93.125 (Error(_, "wrong return values"))
-Result: 3_072 0 1 0 : [v128]
+Result: -861_431_952 32_560 2_048 0 : [v128]
 Expect: 84_148_994 84_148_994 84_148_994 84_148_994 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:94.1-94.125 (Error(_, "wrong return values"))
-Result: 1_733_700_856 32_568 1_733_700_672 32_568 : [v128]
+Result: -861_471_760 32_560 3 0 : [v128]
 Expect: 15 15 15 15 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:95.1-95.126 (Error(_, "wrong return values"))
-Result: 1_728_449_480 32_568 1_733_661_176 32_568 : [v128]
+Result: 0 0 -958_682_800 32_560 : [v128]
 Expect: 67_305_985 67_305_985 67_305_985 67_305_985 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:96.1-96.118 (Error(_, "wrong return values"))
-Result: 5 0 5_120 0 : [v128]
+Result: -878_653_368 32_560 -958_899_368 32_560 : [v128]
 Expect: 67_305_985 67_305_985 67_305_985 67_305_985 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:97.1-97.117 (Error(_, "wrong return values"))
-Result: 1_733_580_488 32_568 1_653_875_248 21_999 : [v128]
+Result: 8_122_800 0 4_345 0 : [v128]
 Expect: 84_148_994 84_148_994 84_148_994 84_148_994 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:98.1-98.125 (Error(_, "wrong return values"))
-Result: 7 0 5_120 0 : [v128]
+Result: 4_343 0 5_676_240 0 : [v128]
 Expect: 100_992_003 100_992_003 100_992_003 100_992_003 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:99.1-99.125 (Error(_, "wrong return values"))
-Result: 1_733_499_728 32_568 1 0 : [v128]
+Result: 1_835_627_311 1_869_373_284 1_935_631_457 1_952_541_808 : [v128]
 Expect: 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:100.1-100.126 (Error(_, "wrong return values"))
-Result: 1_733_459_512 32_568 9 0 : [v128]
+Result: -861_702_232 32_560 -861_705_792 32_560 : [v128]
 Expect: 522_067_228 522_067_228 522_067_228 522_067_228 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:101.1-101.122 (Error(_, "wrong return values"))
-Result: 1_733_419_440 32_568 5 0 : [v128]
+Result: 3_072 0 0 117_440_512 : [v128]
 Expect: 522_067_228 522_067_228 522_067_228 522_067_228 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:102.1-102.121 (Error(_, "wrong return values"))
-Result: 1 0 1_733_379_336 32_568 : [v128]
+Result: 2_048 0 -861_782_696 32_560 : [v128]
 Expect: 506_097_522_914_230_528 506_097_522_914_230_528 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:104.1-104.112 (Error(_, "wrong return values"))
-Result: 2_048 0 1_727_988_136 32_568 : [v128]
+Result: -861_821_056 32_560 1 0 : [v128]
 Expect: 506_097_522_914_230_528 506_097_522_914_230_528 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:105.1-105.111 (Error(_, "wrong return values"))
-Result: 5 16_777_216 1_733_301_480 32_568 : [v128]
+Result: 1 0 1_027 0 : [v128]
 Expect: 578_437_695_752_307_201 578_437_695_752_307_201 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:106.1-106.119 (Error(_, "wrong return values"))
-Result: 1_719_160_136 32_568 5_120 0 : [v128]
+Result: 1 0 5 0 : [v128]
 Expect: 650_777_868_590_383_874 650_777_868_590_383_874 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:107.1-107.119 (Error(_, "wrong return values"))
-Result: 5 0 3_072 0 : [v128]
+Result: -958_899_272 32_560 1 0 : [v128]
 Expect: 15 15 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:108.1-108.120 (Error(_, "wrong return values"))
-Result: 1 0 1_727_987_800 32_568 : [v128]
+Result: -861_967_512 32_560 3_072 0 : [v128]
 Expect: 578_437_695_752_307_201 578_437_695_752_307_201 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:109.1-109.112 (Error(_, "wrong return values"))
-Result: 1_727_987_800 32_568 1_733_146_168 32_568 : [v128]
+Result: -872_166_200 32_560 -862_009_632 32_560 : [v128]
 Expect: 578_437_695_752_307_201 578_437_695_752_307_201 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:110.1-110.111 (Error(_, "wrong return values"))
-Result: 1 0 1_727_987_800 32_568 : [v128]
+Result: 5_120 0 -862_047_536 32_560 : [v128]
 Expect: 650_777_868_590_383_874 650_777_868_590_383_874 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:111.1-111.119 (Error(_, "wrong return values"))
-Result: 1_733_067_512 32_568 1 0 : [v128]
+Result: -862_085_472 32_560 1 0 : [v128]
 Expect: 723_118_041_428_460_547 723_118_041_428_460_547 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:112.1-112.119 (Error(_, "wrong return values"))
-Result: 1_653_540_736 21_999 2 0 : [v128]
+Result: 5 0 5_120 0 : [v128]
 Expect: 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:113.1-113.120 (Error(_, "wrong return values"))
-Result: 1_732_990_448 32_568 1_653_729_384 21_999 : [v128]
+Result: 3_072 0 -867_657_160 32_560 : [v128]
 Expect: 2_242_261_671_028_070_680 2_242_261_671_028_070_680 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:114.1-114.116 (Error(_, "wrong return values"))
-Result: 48 100_663_296 1_276 0 : [v128]
+Result: -862_198_328 32_560 2_048 0 : [v128]
 Expect: 2_242_261_671_028_070_680 2_242_261_671_028_070_680 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:115.1-115.115 (Error(_, "wrong return values"))
-Result: 4_343 0 1_649_651_152 21_999 : [v128]
+Result: -958_825_752 32_560 -891_565_320 32_560 : [v128]
 Expect: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:198.1-198.104 (Error(_, "wrong return values"))
-Result: 1_734_226_712 32_568 2_048 0 : [v128]
+Result: -860_898_568 32_560 1 0 : [v128]
 Expect: 513 513 513 513 513 513 513 513 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:199.1-199.129 (Error(_, "wrong return values"))
-Result: 4_343 0 1_649_651_248 21_999 : [v128]
+Result: 7 0 0 0 : [v128]
 Expect: 84_148_994 84_148_994 84_148_994 84_148_994 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:200.1-200.117 (Error(_, "wrong return values"))
-Result: 1_649_211_888 32_568 1_734_244_616 32_568 : [v128]
+Result: 2_048 0 -861_131_704 32_560 : [v128]
 Expect: 2_569 2_569 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:201.1-201.111 (Error(_, "wrong return values"))
-Result: 2_048 0 1_734_075_248 32_568 : [v128]
+Result: 5_676_240 0 5 16_777_216 : [v128]
 Expect: 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:202.1-202.107 (Error(_, "wrong return values"))
-Result: 3 0 5_120 0 : [v128]
+Result: 8_337_760 0 5 16_777_216 : [v128]
 Expect: 1_284 1_284 1_284 1_284 1_284 1_284 1_284 1_284 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:203.1-203.132 (Error(_, "wrong return values"))
-Result: 1 0 7 0 : [v128]
+Result: 9_962_376 0 -891_564_024 32_560 : [v128]
 Expect: 134_678_021 134_678_021 134_678_021 134_678_021 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:204.1-204.120 (Error(_, "wrong return values"))
-Result: 2_048 0 1_733_904_280 32_568 : [v128]
+Result: -867_252_312 32_560 -861_341_752 32_560 : [v128]
 Expect: 10 10 : [v128]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:205.1-205.114 (Error(_, "wrong return values"))
-Result: 120 : [i32]
+Result: 3 : [i32]
 Expect: 6 : [i32]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:206.1-206.81 (Error(_, "wrong return values"))
-Result: -120 : [i32]
+Result: 40 : [i32]
 Expect: 7 : [i32]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:207.1-207.82 (Error(_, "wrong return values"))
-Result: 0 : [i32]
+Result: 1 : [i32]
 Expect: 8 : [i32]
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:208.1-208.82 (Error(_, "wrong return values"))
-Result: -16 : [i32]
-Expect: 0 : [i32]
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast:209.1-209.82 (Error(_, "wrong return values"))
-- 34/114 (29.82%)
+- 35/114 (30.70%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_load_zero.wast =====
 - 29/29 (100.00%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_splat.wast =====
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_splat.wast:300.1-300.133 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:228.50-228.53"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_splat.wast:325.1-325.81 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_splat.wast:326.1-326.86 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_splat.wast:327.1-327.91 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_splat.wast:328.1-328.83 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:293.29-293.32"))
-- 157/162 (96.91%)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_splat.wast:300.1-300.133 (Failure("Failed Array.get on base [] and index 255: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_splat.wast:341.1-341.129 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_splat.wast:342.1-342.105 (Failure("Invalid DSL function call: vcvtop"))
+- 159/162 (98.15%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_store.wast =====
 - 19/19 (100.00%)
@@ -3181,7 +3254,7 @@ Expect: 0 : [i32]
 ===== ../../test-interpreter/spec-test-2/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [42935/45187] (95.02%)
+Total [42860/45187] (94.85%)
 
 == Complete.
 Running test for Wasm 3.0...
@@ -3366,14 +3439,14 @@ Expect: 108 : [i32]
 - 14/14 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/array_init_data.wast =====
-- Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:95.1-95.85 (File "src/backend-interpreter/numerics.ml", line 341, characters 10-16: Assertion failed)
+- Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:95.1-95.85 (File "src/backend-interpreter/numerics.ml", line 846, characters 10-16: Assertion failed)
 Result: 0 : [i32]
 Expect: 99 : [i32]
 - Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:97.1-97.70 (Error(_, "wrong return values"))
 Result: 0 : [i32]
 Expect: 100 : [i32]
 - Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:98.1-98.71 (Error(_, "wrong return values"))
-- Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:101.1-101.89 (File "src/backend-interpreter/numerics.ml", line 341, characters 10-16: Assertion failed)
+- Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:101.1-101.89 (File "src/backend-interpreter/numerics.ml", line 846, characters 10-16: Assertion failed)
 Result: 0 : [i32]
 Expect: 26_470 : [i32]
 - Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:103.1-103.78 (Error(_, "wrong return values"))
@@ -3536,145 +3609,11 @@ Expect: 26_984 : [i32]
 - 141/141 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_boolean.wast =====
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:39.1-40.55 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:41.1-42.55 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:43.1-44.55 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:45.1-46.55 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:47.1-48.55 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:49.1-50.55 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:51.1-52.55 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:53.1-54.55 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:55.1-56.55 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:57.1-58.64 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:658.30-658.33"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:59.1-60.64 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:658.30-658.33"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:85.1-86.55 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:87.1-88.55 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:89.1-90.55 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:91.1-92.55 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:93.1-94.55 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:95.1-96.55 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:97.1-98.55 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:99.1-100.55 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:101.1-102.55 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:103.1-104.55 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:105.1-106.55 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:107.1-108.64 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:658.30-658.33"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:109.1-110.64 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:658.30-658.33"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:135.1-136.55 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:137.1-138.55 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:139.1-140.55 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:141.1-142.55 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:143.1-144.55 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:145.1-146.55 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:147.1-148.55 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:149.1-150.55 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:151.1-152.55 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:153.1-154.55 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:155.1-156.55 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:157.1-158.64 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:658.30-658.33"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:159.1-160.64 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:658.30-658.33"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:163.1-164.55 (Failure("Invalid assignment on value I64: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:165.1-166.55 (Failure("Invalid assignment on value I64: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:167.1-168.55 (Failure("Invalid assignment on value I64: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:169.1-170.55 (Failure("Invalid assignment on value I64: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:171.1-172.55 (Failure("Invalid assignment on value I64: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:173.1-174.55 (Failure("Invalid assignment on value I64: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:175.1-176.55 (Failure("Invalid assignment on value I64: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:177.1-178.55 (Failure("Invalid assignment on value I64: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:179.1-180.55 (Failure("Invalid assignment on value I64: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:181.1-182.64 (Failure("Invalid assignment on value I64: SubE (inn,inn) @8-reduction.watsup:658.30-658.33"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:183.1-184.64 (Failure("Invalid assignment on value I64: SubE (inn,inn) @8-reduction.watsup:658.30-658.33"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:495.1-496.66 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:497.1-498.66 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:499.1-500.66 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:502.1-503.66 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:504.1-505.66 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:506.1-507.66 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:509.1-510.66 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:511.1-512.66 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:513.1-514.66 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:530.1-531.70 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:532.1-533.70 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:534.1-535.70 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:536.1-537.70 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:538.1-539.70 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:540.1-541.70 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:556.1-557.69 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:558.1-559.69 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:560.1-561.69 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:562.1-563.69 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:564.1-565.69 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:566.1-567.69 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:653.1-655.74 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:656.1-658.74 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:659.1-661.74 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:662.1-664.74 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:665.1-667.74 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:668.1-670.74 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:671.1-673.74 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:674.1-676.74 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:677.1-679.74 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:681.1-683.73 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:684.1-686.73 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:687.1-689.73 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:690.1-692.73 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:693.1-695.73 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:696.1-698.73 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:699.1-701.73 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:702.1-704.73 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:705.1-707.73 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:709.1-711.74 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:712.1-714.74 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:715.1-717.74 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:718.1-720.74 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:721.1-723.74 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:724.1-726.74 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:727.1-729.74 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:730.1-732.74 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:733.1-735.74 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:865.1-866.69 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:867.1-868.69 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:869.1-870.69 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:871.1-872.69 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:873.1-874.69 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:875.1-876.69 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:877.1-878.69 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:879.1-880.69 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:881.1-882.69 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:884.1-886.69 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:887.1-889.69 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:890.1-892.69 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:893.1-895.69 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:896.1-898.69 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:899.1-901.69 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:902.1-904.69 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:905.1-907.69 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:908.1-910.69 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:912.1-914.68 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:915.1-917.68 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:918.1-920.68 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:921.1-923.68 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:924.1-926.68 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:927.1-929.68 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:930.1-932.68 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:933.1-935.68 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:936.1-938.68 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:940.1-942.69 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:943.1-945.69 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:946.1-948.69 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:949.1-951.69 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:952.1-954.69 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:955.1-957.69 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:958.1-960.69 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:961.1-963.69 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:964.1-966.69 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:968.1-971.75 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:972.1-975.75 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:976.1-979.75 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:980.1-983.75 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:984.1-987.75 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:988.1-991.75 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- 123/261 (47.13%)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:57.1-58.64 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:59.1-60.64 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:107.1-108.64 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_boolean.wast:109.1-110.64 (Backend_interpreter.Exception.MissingReturnValue)
+- 257/261 (98.47%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_const.wast =====
 - 577/577 (100.00%)
@@ -3748,6 +3687,36 @@ Expect: 26_984 : [i32]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:171.1-172.83 (Failure("Wasm value stack underflow"))
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:173.1-174.91 (Failure("Wasm value stack underflow"))
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:175.1-176.93 (Failure("Wasm value stack underflow"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:182.1-183.83 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:184.1-185.83 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:186.1-187.87 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:188.1-189.119 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:190.1-191.123 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:192.1-193.127 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:194.1-195.115 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:196.1-197.115 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:200.1-201.111 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:202.1-203.115 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:204.1-205.111 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:206.1-207.115 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:208.1-209.103 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:213.1-214.83 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:215.1-216.83 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:217.1-218.119 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:219.1-220.119 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:221.1-222.119 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:223.1-224.127 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:225.1-226.127 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:227.1-228.127 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:229.1-230.127 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:231.1-232.127 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:233.1-234.127 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:235.1-236.127 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:237.1-238.115 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:239.1-240.119 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:243.1-244.111 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:245.1-246.111 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:247.1-248.110 (Failure("Invalid DSL function call: vcvtop"))
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:253.1-254.79 (Failure("Wasm value stack underflow"))
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:255.1-256.81 (Failure("Wasm value stack underflow"))
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:257.1-258.79 (Failure("Wasm value stack underflow"))
@@ -3759,127 +3728,130 @@ Expect: 26_984 : [i32]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:273.1-274.93 (Failure("Wasm value stack underflow"))
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:275.1-276.93 (Failure("Wasm value stack underflow"))
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:277.1-278.97 (Failure("Wasm value stack underflow"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:283.1-285.98 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:286.1-288.98 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:289.1-291.98 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:292.1-294.106 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:295.1-297.106 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:298.1-300.106 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:301.1-303.106 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:304.1-306.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:307.1-309.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:310.1-312.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:313.1-315.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:316.1-318.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:319.1-321.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:322.1-324.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:325.1-327.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:328.1-330.154 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:331.1-333.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:334.1-336.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:337.1-339.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:340.1-342.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:343.1-345.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:346.1-348.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:349.1-351.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:352.1-354.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:355.1-357.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:358.1-360.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:361.1-363.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:364.1-366.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:367.1-369.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:372.1-374.98 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:375.1-377.98 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:378.1-380.98 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:381.1-383.98 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:384.1-386.98 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:387.1-389.98 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:390.1-392.98 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:393.1-395.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:396.1-398.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:399.1-401.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:402.1-404.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:405.1-407.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:408.1-410.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:411.1-413.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:414.1-416.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:417.1-419.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:420.1-422.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:423.1-425.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:426.1-428.146 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:429.1-431.122 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:432.1-434.122 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:435.1-437.122 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:438.1-440.122 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:441.1-443.98 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:444.1-446.122 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:447.1-449.122 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:452.1-454.82 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:455.1-457.82 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:458.1-460.82 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:461.1-463.86 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:464.1-466.86 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:467.1-469.86 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:470.1-472.86 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:473.1-475.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:476.1-478.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:479.1-481.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:482.1-484.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:485.1-487.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:488.1-490.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:491.1-493.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:494.1-496.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:497.1-499.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:500.1-502.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:503.1-505.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:506.1-508.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:509.1-511.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:512.1-514.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:515.1-517.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:518.1-520.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:521.1-523.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:524.1-526.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:527.1-529.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:530.1-532.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:533.1-535.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:536.1-538.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:541.1-543.82 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:544.1-546.82 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:547.1-549.82 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:550.1-552.82 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:553.1-555.82 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:556.1-558.82 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:559.1-561.82 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:562.1-564.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:565.1-567.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:568.1-570.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:571.1-573.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:574.1-576.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:577.1-579.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:580.1-582.102 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:583.1-585.102 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:586.1-588.102 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:589.1-591.102 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:592.1-594.82 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:595.1-597.122 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:598.1-600.102 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:768.1-770.124 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:771.1-773.98 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:774.1-776.125 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:777.1-779.99 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:780.1-782.88 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:783.1-785.112 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:786.1-788.95 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:789.1-791.113 (Failure("Invalid assignment on value I16: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:793.1-795.108 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:796.1-798.89 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:799.1-801.109 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:802.1-804.90 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:805.1-807.85 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:808.1-810.100 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:811.1-813.86 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:814.1-816.101 (Failure("Invalid assignment on value I32: SubE (inn_2,inn) @8-reduction.watsup:664.63-664.68"))
-- 35/234 (14.96%)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:283.1-285.98 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:286.1-288.98 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:289.1-291.98 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:292.1-294.106 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:295.1-297.106 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:298.1-300.106 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:301.1-303.106 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:304.1-306.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:307.1-309.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:310.1-312.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:313.1-315.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:316.1-318.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:319.1-321.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:322.1-324.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:325.1-327.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:328.1-330.154 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:331.1-333.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:334.1-336.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:337.1-339.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:340.1-342.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:343.1-345.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:346.1-348.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:349.1-351.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:352.1-354.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:355.1-357.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:358.1-360.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:361.1-363.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:364.1-366.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:367.1-369.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:372.1-374.98 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:375.1-377.98 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:378.1-380.98 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:381.1-383.98 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:384.1-386.98 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:387.1-389.98 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:390.1-392.98 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:393.1-395.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:396.1-398.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:399.1-401.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:402.1-404.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:405.1-407.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:408.1-410.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:411.1-413.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:414.1-416.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:417.1-419.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:420.1-422.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:423.1-425.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:426.1-428.146 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:429.1-431.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:432.1-434.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:435.1-437.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:438.1-440.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:441.1-443.98 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:444.1-446.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:447.1-449.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:452.1-454.82 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:455.1-457.82 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:458.1-460.82 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:461.1-463.86 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:464.1-466.86 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:467.1-469.86 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:470.1-472.86 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:473.1-475.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:476.1-478.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:479.1-481.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:482.1-484.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:485.1-487.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:488.1-490.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:491.1-493.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:494.1-496.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:497.1-499.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:500.1-502.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:503.1-505.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:506.1-508.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:509.1-511.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:512.1-514.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:515.1-517.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:518.1-520.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:521.1-523.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:524.1-526.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:527.1-529.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:530.1-532.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:533.1-535.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:536.1-538.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:541.1-543.82 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:544.1-546.82 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:547.1-549.82 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:550.1-552.82 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:553.1-555.82 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:556.1-558.82 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:559.1-561.82 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:562.1-564.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:565.1-567.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:568.1-570.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:571.1-573.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:574.1-576.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:577.1-579.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:580.1-582.102 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:583.1-585.102 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:586.1-588.102 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:589.1-591.102 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:592.1-594.82 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:595.1-597.122 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:598.1-600.102 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:758.1-760.87 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:761.1-763.88 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:764.1-766.88 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:768.1-770.124 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:771.1-773.98 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:774.1-776.125 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:777.1-779.99 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:780.1-782.88 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:783.1-785.112 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:786.1-788.95 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:789.1-791.113 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:793.1-795.108 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:796.1-798.89 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:799.1-801.109 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:802.1-804.90 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:805.1-807.85 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:808.1-810.100 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:811.1-813.86 (Backend_interpreter.Exception.MissingReturnValue)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_conversions.wast:814.1-816.101 (Backend_interpreter.Exception.MissingReturnValue)
+- 2/234 (0.85%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_f32x4.wast =====
 - 774/774 (100.00%)
@@ -4900,7 +4872,109 @@ Expect: 26_984 : [i32]
 - 1/105 (0.95%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast =====
-- 103/103 (100.00%)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:10.1-11.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:12.1-13.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:14.1-15.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:16.1-17.81 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:18.1-19.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:20.1-21.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:22.1-23.81 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:24.1-25.81 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:26.1-27.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:28.1-29.117 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:30.1-31.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:32.1-33.117 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:34.1-35.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:36.1-37.117 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:38.1-39.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:40.1-41.117 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:42.1-43.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:44.1-45.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:46.1-47.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:48.1-49.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:50.1-51.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:52.1-53.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:54.1-55.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:56.1-57.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:58.1-59.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:60.1-61.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:62.1-63.81 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:64.1-65.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:66.1-67.81 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:68.1-69.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:70.1-71.81 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:72.1-73.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:74.1-75.117 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:76.1-77.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:78.1-79.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:80.1-81.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:82.1-83.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:84.1-85.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:86.1-87.81 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:88.1-89.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:90.1-91.117 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:92.1-93.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:94.1-95.117 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:96.1-97.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:98.1-99.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:100.1-101.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:102.1-103.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:104.1-105.81 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:106.1-107.85 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:108.1-109.109 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:110.1-111.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:114.1-115.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:116.1-117.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:118.1-119.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:120.1-121.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:122.1-123.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:124.1-125.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:126.1-127.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:128.1-129.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:130.1-131.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:132.1-133.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:134.1-135.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:136.1-137.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:138.1-139.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:140.1-141.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:142.1-143.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:144.1-145.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:146.1-147.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:148.1-149.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:150.1-151.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:152.1-153.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:154.1-155.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:156.1-157.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:158.1-159.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:160.1-161.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:162.1-163.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:164.1-165.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:166.1-167.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:168.1-169.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:170.1-171.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:172.1-173.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:174.1-175.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:176.1-177.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:178.1-179.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:180.1-181.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:182.1-183.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:184.1-185.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:186.1-187.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:188.1-189.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:190.1-191.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:192.1-193.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:194.1-195.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:196.1-197.113 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:198.1-199.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:200.1-201.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:202.1-203.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:204.1-205.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:206.1-207.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:208.1-209.81 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:210.1-211.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:212.1-213.109 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast:214.1-215.113 (Failure("Invalid DSL function call: vcvtop"))
+- 1/103 (0.97%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f64x2.wast =====
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f64x2.wast:10.1-11.82 (Failure("Wasm value stack underflow"))
@@ -5703,52 +5777,129 @@ Expect: 26_984 : [i32]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:323.1-324.94 (Failure("Wasm value stack underflow"))
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:325.1-326.94 (Failure("Wasm value stack underflow"))
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:327.1-328.94 (Failure("Wasm value stack underflow"))
-- 77/229 (33.62%)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:330.1-331.75 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:332.1-333.75 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:334.1-335.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:336.1-337.75 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:338.1-339.75 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:340.1-341.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:342.1-343.75 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:344.1-345.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:346.1-347.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:348.1-349.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:350.1-351.95 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:352.1-353.95 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:354.1-355.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:356.1-357.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:358.1-359.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:360.1-361.95 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:362.1-363.95 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:364.1-365.77 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:366.1-367.95 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:369.1-370.75 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:371.1-372.75 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:373.1-374.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:375.1-376.75 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:377.1-378.75 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:379.1-380.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:381.1-382.75 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:383.1-384.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:385.1-386.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:387.1-388.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:389.1-390.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:391.1-392.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:393.1-394.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:395.1-396.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:397.1-398.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:399.1-400.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:401.1-402.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:403.1-404.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:405.1-406.93 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:408.1-409.74 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:410.1-411.74 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:412.1-413.74 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:414.1-415.74 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:416.1-417.76 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:418.1-419.74 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:420.1-421.76 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:422.1-423.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:424.1-425.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:426.1-427.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:428.1-429.94 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:430.1-431.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:432.1-433.94 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:434.1-435.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:436.1-437.76 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:438.1-439.94 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:440.1-441.94 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:442.1-443.94 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:444.1-445.76 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:447.1-448.74 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:449.1-450.74 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:451.1-452.74 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:453.1-454.74 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:455.1-456.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:457.1-458.74 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:459.1-460.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:461.1-462.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:463.1-464.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:465.1-466.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:467.1-468.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:469.1-470.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:471.1-472.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:473.1-474.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:475.1-476.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:477.1-478.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:479.1-480.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:481.1-482.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_int_to_int_extend.wast:483.1-484.92 (Failure("Invalid DSL function call: vcvtop"))
+- 1/229 (0.44%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_lane.wast =====
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:292.1-295.70 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:583.50-583.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:296.1-299.77 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:583.50-583.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:300.1-303.86 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:583.50-583.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:304.1-307.86 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:583.50-583.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:308.1-311.86 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:583.50-583.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:312.1-315.102 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:583.50-583.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:316.1-319.78 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:583.50-583.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:320.1-323.66 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:583.50-583.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:324.1-327.66 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:583.50-583.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:328.1-331.66 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:583.50-583.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:333.1-336.60 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:591.50-591.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:337.1-340.77 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:591.50-591.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:341.1-344.84 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:591.50-591.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:345.1-348.77 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:591.50-591.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:349.1-352.77 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:591.50-591.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:353.1-356.86 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:591.50-591.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:357.1-360.86 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:591.50-591.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:361.1-364.102 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:591.50-591.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:365.1-368.78 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:591.50-591.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:369.1-372.66 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:591.50-591.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:373.1-376.60 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:591.50-591.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:377.1-380.66 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:591.50-591.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:381.1-384.60 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:591.50-591.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:387.1-390.70 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:583.50-583.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:391.1-394.70 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:591.50-591.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:692.1-695.60 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:583.50-583.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:696.1-699.102 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:591.50-591.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:769.1-774.70 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:583.50-583.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:775.1-780.68 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:591.50-591.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:787.1-789.75 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:583.50-583.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:790.1-792.75 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:583.50-583.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:793.1-795.75 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:591.50-591.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:863.1-866.77 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:583.50-583.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:867.1-870.69 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:591.50-591.53"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:292.1-295.70 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:296.1-299.77 (Failure("Failed Array.get on base [] and index 248: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:300.1-303.86 (Failure("Failed Array.get on base [] and index 15: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:304.1-307.86 (Failure("Failed Array.get on base [] and index 255: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:308.1-311.86 (Failure("Failed Array.get on base [] and index 9: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:312.1-315.102 (Failure("Failed Array.get on base [] and index 9: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:316.1-319.78 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:320.1-323.66 (Failure("Failed Array.get on base [] and index 15: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:324.1-327.66 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:328.1-331.66 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:333.1-336.60 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:337.1-340.77 (Failure("Failed Array.get on base [] and index 16: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:341.1-344.84 (Failure("Failed Array.get on base [] and index 31: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:345.1-348.77 (Failure("Failed Array.get on base [] and index 15: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:349.1-352.77 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:353.1-356.86 (Failure("Failed Array.get on base [] and index 16: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:357.1-360.86 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:361.1-364.102 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:365.1-368.78 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:369.1-372.66 (Failure("Failed Array.get on base [] and index 16: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:373.1-376.60 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:377.1-380.66 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:381.1-384.60 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:387.1-390.70 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:391.1-394.70 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:692.1-695.60 (Failure("Failed Array.get on base [] and index 255: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:696.1-699.102 (Failure("Failed Array.get on base [] and index 16: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:769.1-774.70 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:775.1-780.68 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:787.1-789.75 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:790.1-792.75 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:793.1-795.75 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:863.1-866.77 (Failure("Failed Array.get on base [] and index 15: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:867.1-870.69 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
 - 252/286 (88.11%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_linking.wast =====
 - 2/2 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_load.wast =====
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_load.wast:44.1-44.67 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_load.wast:127.1-127.134 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:583.50-583.53"))
-- 29/31 (93.55%)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_load.wast:110.1-110.92 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_load.wast:118.1-118.87 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_load.wast:127.1-127.134 (Failure("Failed Array.get on base [] and index 15: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- 28/31 (90.32%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_load16_lane.wast =====
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load16_lane.wast:105.1-107.82 (Not_found)
@@ -5950,258 +6101,253 @@ Expect: 26_984 : [i32]
 - 14/86 (16.28%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast =====
-Result: 2_303 0 515_336_000 21_920 : [v128]
+Result: -1_833_053_520 32_581 -1_833_054_240 32_581 : [v128]
 Expect: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:43.1-43.109 (Error(_, "wrong return values"))
-Result: 3_072 0 -671_020_784 32_753 : [v128]
+Result: 9_578_208 0 268_435_455 0 : [v128]
 Expect: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:44.1-44.109 (Error(_, "wrong return values"))
-Result: 209 0 21_431 0 : [v128]
+Result: 0 -2_147_483_648 2_303 0 : [v128]
 Expect: 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:45.1-45.109 (Error(_, "wrong return values"))
-Result: 515_336_000 21_920 -1 268_435_455 : [v128]
+Result: 0 0 -2_031_650_504 32_581 : [v128]
 Expect: 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:46.1-46.109 (Error(_, "wrong return values"))
-Result: -671_306_848 32_753 589 0 : [v128]
+Result: 105 0 -1_833_418_248 32_581 : [v128]
 Expect: 31 31 31 31 31 31 31 31 31 31 31 31 31 31 31 31 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:47.1-47.129 (Error(_, "wrong return values"))
-Result: -671_402_856 32_753 591 0 : [v128]
+Result: 445 0 -1_833_509_304 32_581 : [v128]
 Expect: 1_284 1_284 1_284 1_284 1_284 1_284 1_284 1_284 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:48.1-48.134 (Error(_, "wrong return values"))
-Result: -671_483_024 32_753 1_276 0 : [v128]
+Result: 33_081 0 3_072 0 : [v128]
 Expect: 1_541 1_541 1_541 1_541 1_541 1_541 1_541 1_541 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:49.1-49.134 (Error(_, "wrong return values"))
-Result: 0 0 -762_666_544 32_753 : [v128]
+Result: 1 0 1 0 : [v128]
 Expect: 1_798 1_798 1_798 1_798 1_798 1_798 1_798 1_798 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:50.1-50.134 (Error(_, "wrong return values"))
-Result: 515_336_064 21_920 20_544 0 : [v128]
+Result: 2_048 0 -1_833_731_568 32_581 : [v128]
 Expect: 2_055 2_055 2_055 2_055 2_055 2_055 2_055 2_055 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:51.1-51.134 (Error(_, "wrong return values"))
-Result: 2_303 0 515_336_064 21_920 : [v128]
+Result: 2_048 0 223 0 : [v128]
 Expect: 7_966 7_966 7_966 7_966 7_966 7_966 7_966 7_966 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:52.1-52.138 (Error(_, "wrong return values"))
-Result: 4_096 0 -672_655_632 32_753 : [v128]
+Result: 449 0 37_687 0 : [v128]
 Expect: 185_207_048 185_207_048 185_207_048 185_207_048 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:53.1-53.122 (Error(_, "wrong return values"))
-Result: 0 0 -762_806_152 32_753 : [v128]
+Result: -1_833_948_664 32_581 6_391 0 : [v128]
 Expect: 202_050_057 202_050_057 202_050_057 202_050_057 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:54.1-54.122 (Error(_, "wrong return values"))
-Result: 2_048 0 -671_947_376 32_753 : [v128]
+Result: -1_834_018_904 32_581 10_405_928 0 : [v128]
 Expect: 218_893_066 218_893_066 218_893_066 218_893_066 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:55.1-55.123 (Error(_, "wrong return values"))
-Result: 1_952_805_734 859_125_046 51 67_108_864 : [v128]
+Result: -1_834_088_344 32_581 3_072 0 : [v128]
 Expect: 235_736_075 235_736_075 235_736_075 235_736_075 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:56.1-56.123 (Error(_, "wrong return values"))
-Result: 3_072 0 -671_834_512 32_753 : [v128]
+Result: 0 0 -1_842_866_648 32_581 : [v128]
 Expect: 522_067_228 522_067_228 522_067_228 522_067_228 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:57.1-57.126 (Error(_, "wrong return values"))
-Result: 4_096 0 -671_834_512 32_753 : [v128]
+Result: 2_048 0 -1_834_227_632 32_581 : [v128]
 Expect: 252_579_084 252_579_084 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:58.1-58.117 (Error(_, "wrong return values"))
-Result: 515_336_000 21_920 4_095 0 : [v128]
+Result: 0 0 -2_031_747_856 32_581 : [v128]
 Expect: 986_637 986_637 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:59.1-59.117 (Error(_, "wrong return values"))
-Result: 4_096 0 -671_834_512 32_753 : [v128]
+Result: -2_031_808_128 32_581 -1_834_363_888 32_581 : [v128]
 Expect: 3_854 3_854 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:60.1-60.117 (Error(_, "wrong return values"))
-Result: 3 0 5_120 0 : [v128]
+Result: 268_435_455 0 2_303 0 : [v128]
 Expect: 15 15 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:61.1-61.117 (Error(_, "wrong return values"))
-Result: 515_670_576 21_920 2_048 0 : [v128]
+Result: 2_303 0 9_578_208 0 : [v128]
 Expect: 2_242_261_671_028_070_680 2_242_261_671_028_070_680 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:62.1-62.120 (Error(_, "wrong return values"))
-Result: -670_438_216 32_753 2_048 0 : [v128]
+Result: -1_862_809_304 32_581 -2_075_367_032 32_581 : [v128]
 Expect: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:65.1-65.106 (Error(_, "wrong return values"))
-Result: 515_443_048 21_920 -670_275_152 32_753 : [v128]
+Result: 3_072 0 -1_841_409_848 32_581 : [v128]
 Expect: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:66.1-66.105 (Error(_, "wrong return values"))
-Result: -670_629_872 32_753 2_048 0 : [v128]
+Result: 1 0 5 0 : [v128]
 Expect: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:67.1-67.113 (Error(_, "wrong return values"))
-Result: -670_725_896 32_753 -670_718_776 32_753 : [v128]
+Result: -1_832_743_816 32_581 2_048 0 : [v128]
 Expect: 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:68.1-68.113 (Error(_, "wrong return values"))
-Result: 4_343 0 511_446_480 21_920 : [v128]
+Result: 2_048 0 45 0 : [v128]
 Expect: 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:69.1-69.130 (Error(_, "wrong return values"))
-Result: -679_057_576 32_753 -846_448_152 32_753 : [v128]
+Result: 1 0 1_025 0 : [v128]
 Expect: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:70.1-70.106 (Error(_, "wrong return values"))
-Result: -671_013_288 32_753 1 0 : [v128]
+Result: -1_833_017_080 32_581 1 0 : [v128]
 Expect: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:71.1-71.105 (Error(_, "wrong return values"))
-Result: 515_670_576 21_920 2_048 0 : [v128]
+Result: -2_031_673_000 32_581 -1_833_108_264 32_581 : [v128]
 Expect: 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:72.1-72.113 (Error(_, "wrong return values"))
-Result: 3_072 0 -679_057_576 32_753 : [v128]
+Result: 5_676_864 0 5 16_777_216 : [v128]
 Expect: 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:73.1-73.113 (Error(_, "wrong return values"))
-Result: -671_300_368 32_753 515_670_576 21_920 : [v128]
+Result: -1_833_290_768 32_581 1_024 0 : [v128]
 Expect: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:74.1-74.114 (Error(_, "wrong return values"))
-Result: 2_048 0 -671_397_040 32_753 : [v128]
+Result: 2_048 0 9_889_976 0 : [v128]
 Expect: 31 31 31 31 31 31 31 31 31 31 31 31 31 31 31 31 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:75.1-75.126 (Error(_, "wrong return values"))
-Result: 2_048 0 -671_492_136 32_753 : [v128]
+Result: 3_072 0 9_962_376 0 : [v128]
 Expect: 31 31 31 31 31 31 31 31 31 31 31 31 31 31 31 31 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:76.1-76.125 (Error(_, "wrong return values"))
-Result: -671_587_552 32_753 2_048 0 : [v128]
+Result: 3_072 0 -1_836_905_048 32_581 : [v128]
 Expect: 256 256 256 256 256 256 256 256 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:78.1-78.130 (Error(_, "wrong return values"))
-Result: -671_666_992 32_753 515_670_576 21_920 : [v128]
+Result: 5_120 0 -1_833_637_080 32_581 : [v128]
 Expect: 256 256 256 256 256 256 256 256 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:79.1-79.129 (Error(_, "wrong return values"))
-Result: 1_024 0 -671_746_096 32_753 : [v128]
+Result: 3_072 0 -1_836_905_048 32_581 : [v128]
 Expect: 513 513 513 513 513 513 513 513 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:80.1-80.137 (Error(_, "wrong return values"))
-Result: 1 0 2_048 0 : [v128]
+Result: 1 0 4_343 0 : [v128]
 Expect: 770 770 770 770 770 770 770 770 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:81.1-81.137 (Error(_, "wrong return values"))
-Result: -671_904_248 32_753 2_053 0 : [v128]
+Result: -1_833_859_840 32_581 5 0 : [v128]
 Expect: 15 15 15 15 15 15 15 15 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:82.1-82.138 (Error(_, "wrong return values"))
-Result: 2_048 0 -671_982_912 32_753 : [v128]
+Result: 11_605_456 0 4_343 0 : [v128]
 Expect: 513 513 513 513 513 513 513 513 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:83.1-83.130 (Error(_, "wrong return values"))
-Result: -672_468_504 32_753 -672_061_600 32_753 : [v128]
+Result: 9_889_456 0 -2_031_670_072 32_581 : [v128]
 Expect: 513 513 513 513 513 513 513 513 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:84.1-84.129 (Error(_, "wrong return values"))
-Result: 511_446_480 21_920 5 16_777_216 : [v128]
+Result: -1_834_081_832 32_581 1 0 : [v128]
 Expect: 770 770 770 770 770 770 770 770 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:85.1-85.137 (Error(_, "wrong return values"))
-Result: -762_388_512 32_753 -672_219_752 32_753 : [v128]
+Result: 5_676_208 0 5 16_777_216 : [v128]
 Expect: 1_027 1_027 1_027 1_027 1_027 1_027 1_027 1_027 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:86.1-86.137 (Error(_, "wrong return values"))
-Result: 515_707_800 21_920 -672_298_872 32_753 : [v128]
+Result: -1_834_215_288 32_581 -1_834_230_384 32_581 : [v128]
 Expect: 0 0 0 0 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:87.1-87.138 (Error(_, "wrong return values"))
-Result: 1 0 4_343 0 : [v128]
+Result: 0 117_440_512 2_052 0 : [v128]
 Expect: 7_966 7_966 7_966 7_966 7_966 7_966 7_966 7_966 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:88.1-88.134 (Error(_, "wrong return values"))
-Result: 515_522_248 21_920 2_048 0 : [v128]
+Result: 1_027 0 -1_834_378_168 32_581 : [v128]
 Expect: 7_966 7_966 7_966 7_966 7_966 7_966 7_966 7_966 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:89.1-89.133 (Error(_, "wrong return values"))
-Result: -679_005_520 32_753 -846_430_584 32_753 : [v128]
+Result: -2_075_191_664 32_581 -1_834_452_008 32_581 : [v128]
 Expect: 50_462_976 50_462_976 50_462_976 50_462_976 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:91.1-91.118 (Error(_, "wrong return values"))
-Result: 1 0 3_072 0 : [v128]
+Result: -1_834_519_728 32_581 -1_834_521_464 32_581 : [v128]
 Expect: 50_462_976 50_462_976 50_462_976 50_462_976 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:92.1-92.117 (Error(_, "wrong return values"))
-Result: 2_048 0 -670_586_584 32_753 : [v128]
+Result: -1_832_494_136 32_581 2_048 0 : [v128]
 Expect: 67_305_985 67_305_985 67_305_985 67_305_985 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:93.1-93.125 (Error(_, "wrong return values"))
-Result: 540_090_417 540_090_417 540_090_417 540_090_417 : [v128]
+Result: 9_889_912 0 -2_075_447_928 32_581 : [v128]
 Expect: 84_148_994 84_148_994 84_148_994 84_148_994 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:94.1-94.125 (Error(_, "wrong return values"))
-Result: 127 0 3_324 0 : [v128]
+Result: 2_048 0 -2_031_582_736 32_581 : [v128]
 Expect: 15 15 15 15 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:95.1-95.126 (Error(_, "wrong return values"))
-Result: -672_468_504 32_753 -670_806_744 32_753 : [v128]
+Result: -1_837_072_536 32_581 -2_031_582_736 32_581 : [v128]
 Expect: 67_305_985 67_305_985 67_305_985 67_305_985 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:96.1-96.118 (Error(_, "wrong return values"))
-Result: -675_112_032 32_753 -846_434_928 32_753 : [v128]
+Result: -1_832_772_288 32_581 29 0 : [v128]
 Expect: 67_305_985 67_305_985 67_305_985 67_305_985 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:97.1-97.117 (Error(_, "wrong return values"))
-Result: 515_670_576 21_920 2_048 0 : [v128]
+Result: 0 0 3_324 0 : [v128]
 Expect: 84_148_994 84_148_994 84_148_994 84_148_994 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:98.1-98.125 (Error(_, "wrong return values"))
-Result: -671_013_288 32_753 1 0 : [v128]
+Result: -1_832_890_488 32_581 3_072 0 : [v128]
 Expect: 100_992_003 100_992_003 100_992_003 100_992_003 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:99.1-99.125 (Error(_, "wrong return values"))
-Result: 3 0 1_024 0 : [v128]
+Result: -1_842_598_016 32_581 -1_832_981_400 32_581 : [v128]
 Expect: 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:100.1-100.126 (Error(_, "wrong return values"))
-Result: 1 0 5 0 : [v128]
+Result: -1_833_050_704 32_581 2_048 0 : [v128]
 Expect: 522_067_228 522_067_228 522_067_228 522_067_228 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:101.1-101.122 (Error(_, "wrong return values"))
-Result: -671_252_680 32_753 2_048 0 : [v128]
+Result: 3_324 0 -2_031_673_000 32_581 : [v128]
 Expect: 522_067_228 522_067_228 522_067_228 522_067_228 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:102.1-102.121 (Error(_, "wrong return values"))
-Result: 1_276 0 962_539_826 16_789_554 : [v128]
+Result: 2_048 0 -1_833_189_456 32_581 : [v128]
 Expect: 506_097_522_914_230_528 506_097_522_914_230_528 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:104.1-104.112 (Error(_, "wrong return values"))
-Result: -671_403_016 32_753 -671_402_992 32_753 : [v128]
+Result: 1 0 9_891_312 0 : [v128]
 Expect: 506_097_522_914_230_528 506_097_522_914_230_528 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:105.1-105.111 (Error(_, "wrong return values"))
-Result: 515_670_672 21_920 -672_539_256 32_753 : [v128]
+Result: 2_048 0 -1_842_492_728 32_581 : [v128]
 Expect: 578_437_695_752_307_201 578_437_695_752_307_201 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:106.1-106.119 (Error(_, "wrong return values"))
-Result: -671_549_560 32_753 -671_549_072 32_753 : [v128]
+Result: 0 0 3_324 0 : [v128]
 Expect: 650_777_868_590_383_874 650_777_868_590_383_874 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:107.1-107.119 (Error(_, "wrong return values"))
-Result: -675_204_144 32_753 -846_441_840 32_753 : [v128]
+Result: 1 0 3_072 0 : [v128]
 Expect: 15 15 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:108.1-108.120 (Error(_, "wrong return values"))
-Result: 515_524_712 21_920 -672_468_504 32_753 : [v128]
+Result: -1_842_598_016 32_581 -1_833_529_096 32_581 : [v128]
 Expect: 578_437_695_752_307_201 578_437_695_752_307_201 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:109.1-109.112 (Error(_, "wrong return values"))
-Result: 1 0 3 0 : [v128]
+Result: -1_833_596_840 32_581 1_024 0 : [v128]
 Expect: 578_437_695_752_307_201 578_437_695_752_307_201 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:110.1-110.111 (Error(_, "wrong return values"))
-Result: -762_434_312 32_753 16_636 0 : [v128]
+Result: -1_837_072_440 32_581 -1_833_662_880 32_581 : [v128]
 Expect: 650_777_868_590_383_874 650_777_868_590_383_874 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:111.1-111.119 (Error(_, "wrong return values"))
-Result: 2_303 0 515_336_064 21_920 : [v128]
+Result: -1_833_735_136 32_581 2_048 0 : [v128]
 Expect: 723_118_041_428_460_547 723_118_041_428_460_547 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:112.1-112.119 (Error(_, "wrong return values"))
-Result: 1 0 3_072 0 : [v128]
+Result: 1_024 0 9_963_672 0 : [v128]
 Expect: 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:113.1-113.120 (Error(_, "wrong return values"))
-Result: 517_364_504 21_920 4_343 0 : [v128]
+Result: 945_764_661 16_789_556 2_300 0 : [v128]
 Expect: 2_242_261_671_028_070_680 2_242_261_671_028_070_680 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:114.1-114.116 (Error(_, "wrong return values"))
-Result: 3_072 0 -679_057_576 32_753 : [v128]
+Result: 2_303 0 9_578_272 0 : [v128]
 Expect: 2_242_261_671_028_070_680 2_242_261_671_028_070_680 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:115.1-115.115 (Error(_, "wrong return values"))
-Result: 515_524_240 21_920 3_072 0 : [v128]
+Result: -1_832_693_992 32_581 1_024 0 : [v128]
 Expect: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:198.1-198.104 (Error(_, "wrong return values"))
-Result: 1 0 -674_907_800 32_753 : [v128]
+Result: -1_832_791_064 32_581 -1_837_086_808 32_581 : [v128]
 Expect: 513 513 513 513 513 513 513 513 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:199.1-199.129 (Error(_, "wrong return values"))
-Result: -674_916_008 32_753 -670_726_776 32_753 : [v128]
+Result: -1_832_871_264 32_581 -1_837_072_488 32_581 : [v128]
 Expect: 84_148_994 84_148_994 84_148_994 84_148_994 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:200.1-200.117 (Error(_, "wrong return values"))
-Result: -670_807_952 32_753 515_670_576 21_920 : [v128]
+Result: 2_048 0 223 0 : [v128]
 Expect: 2_569 2_569 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:201.1-201.111 (Error(_, "wrong return values"))
-Result: -670_881_440 32_753 1 0 : [v128]
+Result: 3 0 5_120 0 : [v128]
 Expect: 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:202.1-202.107 (Error(_, "wrong return values"))
-Result: 515_706_328 21_920 -762_415_976 32_753 : [v128]
+Result: 1 0 3 0 : [v128]
 Expect: 1_284 1_284 1_284 1_284 1_284 1_284 1_284 1_284 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:203.1-203.132 (Error(_, "wrong return values"))
-Result: -672_468_504 32_753 -671_062_064 32_753 : [v128]
+Result: 4_343 0 5_676_800 0 : [v128]
 Expect: 134_678_021 134_678_021 134_678_021 134_678_021 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:204.1-204.120 (Error(_, "wrong return values"))
-Result: -674_907_592 32_753 -671_139_408 32_753 : [v128]
+Result: -1_833_241_432 32_581 3_072 0 : [v128]
 Expect: 10 10 : [v128]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:205.1-205.114 (Error(_, "wrong return values"))
-Result: 1 : [i32]
+Result: -88 : [i32]
 Expect: 6 : [i32]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:206.1-206.81 (Error(_, "wrong return values"))
-Result: -64 : [i32]
+Result: 24 : [i32]
 Expect: 7 : [i32]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:207.1-207.82 (Error(_, "wrong return values"))
-Result: 16 : [i32]
+Result: 0 : [i32]
 Expect: 8 : [i32]
 - Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:208.1-208.82 (Error(_, "wrong return values"))
-Result: 1 : [i32]
-Expect: 0 : [i32]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast:209.1-209.82 (Error(_, "wrong return values"))
-- 34/114 (29.82%)
+- 35/114 (30.70%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_load_zero.wast =====
 - 29/29 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_splat.wast =====
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_splat.wast:300.1-300.133 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:583.50-583.53"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_splat.wast:325.1-325.81 (Failure("Invalid assignment on value I8: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_splat.wast:326.1-326.86 (Failure("Invalid assignment on value I16: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_splat.wast:327.1-327.91 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_splat.wast:328.1-328.83 (Failure("Invalid assignment on value I32: SubE (inn,inn) @8-reduction.watsup:648.29-648.32"))
-- 157/162 (96.91%)
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_splat.wast:300.1-300.133 (Failure("Failed Array.get on base [] and index 255: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_splat.wast:341.1-341.129 (Failure("Invalid DSL function call: vcvtop"))
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_splat.wast:342.1-342.105 (Failure("Invalid DSL function call: vcvtop"))
+- 159/162 (98.15%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_store.wast =====
 - 19/19 (100.00%)
@@ -6308,7 +6454,7 @@ Expect: 0 : [i32]
 ===== ../../test-interpreter/spec-test-3/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [43373/45764] (94.78%)
+Total [43298/45764] (94.61%)
 
 == Complete.
 ```

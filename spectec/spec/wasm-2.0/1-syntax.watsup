@@ -219,7 +219,7 @@ syntax vec_(vnn) = vN($size(vnn))
 syntax sx hint(desc "signedness") = | U | S
 
 syntax unop_(numtype)
-syntax unop_(inn) = | CLZ | CTZ | POPCNT
+syntax unop_(inn) = | CLZ | CTZ | POPCNT | EXTEND n
 syntax unop_(fnn) = | ABS | NEG | SQRT | CEIL | FLOOR | TRUNC | NEAREST
 
 syntax binop_(numtype)
@@ -241,7 +241,7 @@ syntax relop_(inn) =
 syntax relop_(fnn) =
   | EQ | NE | LT | GT | LE | GE
 
-syntax cvtop = | CONVERT | REINTERPRET
+syntax cvtop = | CONVERT | REINTERPRET | CONVERT_SAT
 
 
 ;; Vector operators

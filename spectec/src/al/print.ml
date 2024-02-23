@@ -341,7 +341,7 @@ let structured_string_of_ids ids =
 let rec structured_string_of_value = function
   | LabelV (v1, v2) -> "LabelV (" ^ structured_string_of_value v1 ^ "," ^ structured_string_of_value v2 ^ ")"
   | FrameV _ -> "FrameV (TODO)"
-  | ListV _ -> "ListV"
+  | ListV lv -> "ListV" ^ "[" ^ string_of_values ", " (Array.to_list !lv) ^ "]"
   | BoolV b -> "BoolV (" ^ string_of_bool b ^ ")"
   | NumV n -> "NumV (" ^ Z.to_string n ^ ")"
   | TextV s -> "TextV (" ^ s ^ ")"

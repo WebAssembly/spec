@@ -253,7 +253,7 @@ var zt : storagetype
 ;; Constants
 
 def $size(valtype) : nat       hint(partial) hint(show |%|)
-def $psize(packtype) : nat   hint(show |%|)
+def $psize(packtype) : nat     hint(show |%|)
 def $lsize(lanetype) : nat     hint(show |%|)
 def $zsize(storagetype) : nat  hint(show |%|)
 def $lanetype(shape) : lanetype

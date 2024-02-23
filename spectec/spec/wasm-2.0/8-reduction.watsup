@@ -174,10 +174,6 @@ rule Step_pure/relop:
   -- if c = $relop(nt, relop, c_1, c_2)
 
 
-rule Step_pure/extend:
-  (CONST inn c) (EXTEND inn N)  ~>  (CONST inn $ext(N, $size(inn), S, $wrap($size(inn), N, c)))
-
-
 rule Step_pure/cvtop-val:
   (CONST nt_1 c_1) (CVTOP nt_2 cvtop nt_1 sx?)  ~>  (CONST nt_2 c)
   -- if $cvtop(nt_1, nt_2, cvtop, sx?, c_1) = c  ;; TODO

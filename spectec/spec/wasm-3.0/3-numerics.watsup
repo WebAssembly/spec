@@ -38,6 +38,8 @@ def $demote(M, N, fN(M)) : fN(N)                    hint(show $demote_((%,%))#((
 def $promote(M, N, fN(M)) : fN(N)                   hint(show $promote_((%,%))#((%)))
 def $convert(M, N, sx, iN(M)) : fN(N)               hint(show $convert_((%,%))^(%)#((%)))
 def $narrow(M, N, sx, iN(M)) : iN(N)                hint(show $narrow_((%,%))^(%)#(%))
+def $reinterpret(numtype_1, numtype_2, num_(numtype_1)) : num_(numtype_2)
+    hint(show $narrow_((%,%))#(%))
 
 def $ibits(N, iN(N)) : bit*                         hint(show $bits_(i#%,%))
 def $fbits(N, fN(N)) : bit*                         hint(show $bits_(f#%,%))
@@ -149,12 +151,14 @@ def $relop(fnn, LE, fN_1, fN_2) = $fle($size(fnn), fN_1, fN_2)
 def $relop(fnn, GE, fN_1, fN_2) = $fge($size(fnn), fN_1, fN_2)
 
 def $cvtop(I32, I64, CONVERT, sx, iN) = $ext(32, 64, sx, iN)
-def $cvtop(I64, I32, CONVERT, sx?, iN) = $wrap(32, 64, iN)
+def $cvtop(I64, I32, CONVERT, sx?, iN) = $wrap(64, 32, iN)
 def $cvtop(fnn, inn, CONVERT, sx, fN) = $trunc($size(fnn), $size(inn), sx, fN)
 def $cvtop(fnn, inn, CONVERT_SAT, sx, fN) = $trunc_sat($size(fnn), $size(inn), sx, fN)
-def $cvtop(F32, F64, CONVERT, sx?, fN) = $demote(32, 64, fN)
-def $cvtop(F64, F32, CONVERT, sx?, fN) = $promote(64, 32, fN)
-def $cvtop(inn, fnn, CONVERT, sx, iN) = $convert($size(inn), $size(fnn), sx, iN) -- if $size(inn) =/= $size(fnn)
+def $cvtop(F32, F64, CONVERT, sx?, fN) = $promote(32, 64, fN)
+def $cvtop(F64, F32, CONVERT, sx?, fN) = $demote(64, 32, fN)
+def $cvtop(inn, fnn, CONVERT, sx, iN) = $convert($size(inn), $size(fnn), sx, iN)
+def $cvtop(inn, fnn, REINTERPRET, sx?, iN) = $reinterpret(inn, fnn, iN) -- if $size(inn) = $size(fnn)
+def $cvtop(fnn, inn, REINTERPRET, sx?, fN) = $reinterpret(fnn, inn, fN) -- if $size(inn) = $size(fnn)
 
 
 ;; Packed values
