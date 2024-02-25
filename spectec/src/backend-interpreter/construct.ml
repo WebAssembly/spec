@@ -1341,14 +1341,14 @@ let al_of_vtestop = al_of_vop al_of_int_vtestop al_of_float_vtestop
 let al_of_int_vrelop : V128Op.irelop -> value = function
   | V128Op.Eq -> nullary "EQ"
   | V128Op.Ne -> nullary "NE"
-  | V128Op.LtS -> nullary "LTS"
-  | V128Op.LtU -> nullary "LTU"
-  | V128Op.LeS -> nullary "LES"
-  | V128Op.LeU -> nullary "LEU"
-  | V128Op.GtS -> nullary "GTS"
-  | V128Op.GtU -> nullary "GTU"
-  | V128Op.GeS -> nullary "GES"
-  | V128Op.GeU -> nullary "GEU"
+  | V128Op.LtS -> caseV ("LT", [nullary "S"])
+  | V128Op.LtU -> caseV ("LT", [nullary "U"])
+  | V128Op.LeS -> caseV ("LE", [nullary "S"])
+  | V128Op.LeU -> caseV ("LE", [nullary "U"])
+  | V128Op.GtS -> caseV ("GT", [nullary "S"])
+  | V128Op.GtU -> caseV ("GT", [nullary "U"])
+  | V128Op.GeS -> caseV ("GE", [nullary "S"])
+  | V128Op.GeU -> caseV ("GE", [nullary "U"])
 
 let al_of_float_vrelop : V128Op.frelop -> value = function
   | V128Op.Eq -> nullary "EQ"

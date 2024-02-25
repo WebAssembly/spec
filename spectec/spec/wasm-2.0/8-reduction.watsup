@@ -496,7 +496,7 @@ rule Step_read/vload-splat-val:
   -- if $ibytes(N, j) = $mem(z, 0).DATA[i + mo.OFFSET : N/8]
   -- if N = $lsize(imm)  ;; TODO: relate implicitly
   -- if M = $(128/N)
-  -- if c = $invlanes_(imm X M, j*)
+  -- if c = $invlanes_(imm X M, j^M)
 
 
 rule Step_read/vload-zero-oob:
