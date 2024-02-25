@@ -431,4 +431,3 @@ def $vishiftop(ishape, vshiftop_(ishape), lane_($lanetype(ishape)), u32) : lane_
 
 def $vishiftop(imm X N, SHL, lane, n) = $ishl($lsize(imm), lane, n)
 def $vishiftop(imm X N, SHR sx, lane, n) = $ishr($lsize(imm), sx, lane, n)
-
