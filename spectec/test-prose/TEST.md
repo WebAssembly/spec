@@ -4480,42 +4480,47 @@ vunop (lanet_u1 X N) vunop_u0 v128_1
   b. Let lane_1* be $lanes_((imm X N), v128_1).
   c. Let v128 be $invlanes_((imm X N), $ineg($lsize(imm), lane_1)*).
   d. Return v128.
-3. If ((vunop_u0 is ABS) and the type of lanet_u1 is fnn), then:
+3. If ((vunop_u0 is POPCNT) and the type of lanet_u1 is imm), then:
+  a. Let imm be lanet_u1.
+  b. Let lane_1* be $lanes_((imm X N), v128_1).
+  c. Let v128 be $invlanes_((imm X N), $ipopcnt($lsize(imm), lane_1)*).
+  d. Return v128.
+4. If ((vunop_u0 is ABS) and the type of lanet_u1 is fnn), then:
   a. Let fnn be lanet_u1.
   b. Let lane_1* be $lanes_((fnn X N), v128_1).
   c. Let v128 be $invlanes_((fnn X N), $fabs($size(fnn), lane_1)*).
   d. Return v128.
-4. If ((vunop_u0 is NEG) and the type of lanet_u1 is fnn), then:
+5. If ((vunop_u0 is NEG) and the type of lanet_u1 is fnn), then:
   a. Let fnn be lanet_u1.
   b. Let lane_1* be $lanes_((fnn X N), v128_1).
   c. Let v128 be $invlanes_((fnn X N), $fneg($size(fnn), lane_1)*).
   d. Return v128.
-5. If ((vunop_u0 is SQRT) and the type of lanet_u1 is fnn), then:
+6. If ((vunop_u0 is SQRT) and the type of lanet_u1 is fnn), then:
   a. Let fnn be lanet_u1.
   b. Let lane_1* be $lanes_((fnn X N), v128_1).
   c. Let v128 be $invlanes_((fnn X N), $fsqrt($size(fnn), lane_1)*).
   d. Return v128.
-6. If ((vunop_u0 is CEIL) and the type of lanet_u1 is fnn), then:
+7. If ((vunop_u0 is CEIL) and the type of lanet_u1 is fnn), then:
   a. Let fnn be lanet_u1.
   b. Let lane_1* be $lanes_((fnn X N), v128_1).
   c. Let v128 be $invlanes_((fnn X N), $fceil($size(fnn), lane_1)*).
   d. Return v128.
-7. If ((vunop_u0 is FLOOR) and the type of lanet_u1 is fnn), then:
+8. If ((vunop_u0 is FLOOR) and the type of lanet_u1 is fnn), then:
   a. Let fnn be lanet_u1.
   b. Let lane_1* be $lanes_((fnn X N), v128_1).
   c. Let v128 be $invlanes_((fnn X N), $ffloor($size(fnn), lane_1)*).
   d. Return v128.
-8. If ((vunop_u0 is TRUNC) and the type of lanet_u1 is fnn), then:
+9. If ((vunop_u0 is TRUNC) and the type of lanet_u1 is fnn), then:
   a. Let fnn be lanet_u1.
   b. Let lane_1* be $lanes_((fnn X N), v128_1).
   c. Let v128 be $invlanes_((fnn X N), $ftrunc($size(fnn), lane_1)*).
   d. Return v128.
-9. Assert: Due to validation, (vunop_u0 is NEAREST).
-10. Assert: Due to validation, the type of lanet_u1 is fnn.
-11. Let fnn be lanet_u1.
-12. Let lane_1* be $lanes_((fnn X N), v128_1).
-13. Let v128 be $invlanes_((fnn X N), $fnearest($size(fnn), lane_1)*).
-14. Return v128.
+10. Assert: Due to validation, (vunop_u0 is NEAREST).
+11. Assert: Due to validation, the type of lanet_u1 is fnn.
+12. Let fnn be lanet_u1.
+13. Let lane_1* be $lanes_((fnn X N), v128_1).
+14. Let v128 be $invlanes_((fnn X N), $fnearest($size(fnn), lane_1)*).
+15. Return v128.
 
 vbinop (lanet_u1 X N) vbino_u0 v128_1 v128_2
 1. If ((vbino_u0 is ADD) and the type of lanet_u1 is imm), then:

@@ -24032,14 +24032,14 @@ Expect: 108 : [i32]
 - 14/14 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/array_init_data.wast =====
-- Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:95.1-95.85 (File "src/backend-interpreter/numerics.ml", line 873, characters 10-16: Assertion failed)
+- Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:95.1-95.85 (File "src/backend-interpreter/numerics.ml", line 875, characters 10-16: Assertion failed)
 Result: 0 : [i32]
 Expect: 99 : [i32]
 - Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:97.1-97.70 (Error(_, "wrong return values"))
 Result: 0 : [i32]
 Expect: 100 : [i32]
 - Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:98.1-98.71 (Error(_, "wrong return values"))
-- Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:101.1-101.89 (File "src/backend-interpreter/numerics.ml", line 873, characters 10-16: Assertion failed)
+- Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:101.1-101.89 (File "src/backend-interpreter/numerics.ml", line 875, characters 10-16: Assertion failed)
 Result: 0 : [i32]
 Expect: 26_470 : [i32]
 - Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:103.1-103.78 (Error(_, "wrong return values"))
@@ -24612,33 +24612,64 @@ Expect: 26_984 : [i32]
 - 1/105 (0.95%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast =====
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:10.1-12.81 (Failure("Invalid Invalid ishr: ListV[0x10, 0x4000, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:13.1-15.81 (Failure("Invalid Invalid ishr: ListV[0x10, 0x4000, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:16.1-18.81 (Failure("Invalid Invalid ishr: ListV[0x10, 0x4001, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:19.1-21.81 (Failure("Invalid Invalid ishr: ListV[0x10, 0x4000, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:22.1-24.81 (Failure("Invalid Invalid ishr: ListV[0x10, 0x13FFF, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:25.1-27.81 (Failure("Invalid Invalid ishr: ListV[0x10, 0xFFFE4001, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:28.1-30.105 (Failure("Invalid Invalid ishr: ListV[0x10, 0x10000000, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:31.1-33.105 (Failure("Invalid Invalid ishr: ListV[0x10, 0x10004000, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:34.1-36.105 (Failure("Invalid Invalid ishr: ListV[0x10, 0x90010000, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:37.1-39.105 (Failure("Invalid Invalid ishr: ListV[0x10, 0x90004000, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:40.1-42.105 (Failure("Invalid Invalid ishr: ListV[0x10, 0x8FFF8000, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:43.1-45.81 (Failure("Invalid Invalid ishr: ListV[0x10, 0xBFFD, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:46.1-48.81 (Failure("Invalid Invalid ishr: ListV[0x10, 0xBFFE, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:49.1-51.89 (Failure("Invalid Invalid ishr: ListV[0x10, 0xC000, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:52.1-54.81 (Failure("Invalid Invalid ishr: ListV[0x10, 0x8001BFFE, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:55.1-57.81 (Failure("Invalid Invalid ishr: ListV[0x10, 0x8000BFFF, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:58.1-60.81 (Failure("Invalid Invalid ishr: ListV[0x10, 0x7FFFC000, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:61.1-63.113 (Failure("Invalid Invalid ishr: ListV[0x10, 0x3FFF4001, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:64.1-66.113 (Failure("Invalid Invalid ishr: ListV[0x10, 0x40004000, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:67.1-69.113 (Failure("Invalid Invalid ishr: ListV[0x10, 0x4000C000, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:70.1-72.81 (Failure("Invalid Invalid ishr: ListV[0x10, 0x4000, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:73.1-75.81 (Failure("Invalid Invalid ishr: ListV[0x10, 0x13FFF, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:76.1-78.81 (Failure("Invalid Invalid ishr: ListV[0x10, 0xFFFE4001, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:79.1-81.89 (Failure("Invalid Invalid ishr: ListV[0x10, 0x7FFEC001, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:82.1-84.81 (Failure("Invalid Invalid ishr: ListV[0x10, 0x7FFFC000, 0xF]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:85.1-87.81 (Failure("Invalid Invalid ishr: ListV[0x10, 0xFFFE4001, 0xF]"))
-- 1/27 (3.70%)
+Result: 2_147_450_879 2_147_450_879 2_147_450_879 2_147_450_879 : [v128]
+Expect: 0 0 0 0 0 0 0 0 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:22.1-24.81 (Error(_, "wrong return values"))
+Result: 2_147_450_879 2_147_450_879 2_147_450_879 2_147_450_879 : [v128]
+Expect: 0 0 0 0 0 0 0 0 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:25.1-27.81 (Error(_, "wrong return values"))
+Result: 2_147_450_879 2_147_450_879 2_147_450_879 2_147_450_879 : [v128]
+Expect: 8_192 8_192 8_192 8_192 8_192 8_192 8_192 8_192 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:28.1-30.105 (Error(_, "wrong return values"))
+Result: 2_147_450_879 2_147_450_879 2_147_450_879 2_147_450_879 : [v128]
+Expect: 8_192 8_192 8_192 8_192 8_192 8_192 8_192 8_192 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:31.1-33.105 (Error(_, "wrong return values"))
+Result: 2_147_450_879 2_147_450_879 2_147_450_879 2_147_450_879 : [v128]
+Expect: 8_192 8_192 8_192 8_192 8_192 8_192 8_192 8_192 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:34.1-36.105 (Error(_, "wrong return values"))
+Result: 2_147_450_879 2_147_450_879 2_147_450_879 2_147_450_879 : [v128]
+Expect: 8_192 8_192 8_192 8_192 8_192 8_192 8_192 8_192 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:37.1-39.105 (Error(_, "wrong return values"))
+Result: 2_147_450_879 2_147_450_879 2_147_450_879 2_147_450_879 : [v128]
+Expect: 8_193 8_193 8_193 8_193 8_193 8_193 8_193 8_193 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:40.1-42.105 (Error(_, "wrong return values"))
+Result: 2_147_450_879 2_147_450_879 2_147_450_879 2_147_450_879 : [v128]
+Expect: 1 1 1 1 1 1 1 1 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:43.1-45.81 (Error(_, "wrong return values"))
+Result: 2_147_450_879 2_147_450_879 2_147_450_879 2_147_450_879 : [v128]
+Expect: 1 1 1 1 1 1 1 1 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:46.1-48.81 (Error(_, "wrong return values"))
+Result: 2_147_450_879 2_147_450_879 2_147_450_879 2_147_450_879 : [v128]
+Expect: -1 -1 -1 -1 -1 -1 -1 -1 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:49.1-51.89 (Error(_, "wrong return values"))
+Result: 2_147_450_879 2_147_450_879 2_147_450_879 2_147_450_879 : [v128]
+Expect: 1 1 1 1 1 1 1 1 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:52.1-54.81 (Error(_, "wrong return values"))
+Result: 2_147_450_879 2_147_450_879 2_147_450_879 2_147_450_879 : [v128]
+Expect: 1 1 1 1 1 1 1 1 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:55.1-57.81 (Error(_, "wrong return values"))
+Result: 2_147_450_879 2_147_450_879 2_147_450_879 2_147_450_879 : [v128]
+Expect: 1 1 1 1 1 1 1 1 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:58.1-60.81 (Error(_, "wrong return values"))
+Result: 2_147_450_879 2_147_450_879 2_147_450_879 2_147_450_879 : [v128]
+Expect: 32_766 32_766 32_766 32_766 32_766 32_766 32_766 32_766 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:61.1-63.113 (Error(_, "wrong return values"))
+Result: 2_147_450_879 2_147_450_879 2_147_450_879 2_147_450_879 : [v128]
+Expect: 0 0 0 0 0 0 0 0 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:73.1-75.81 (Error(_, "wrong return values"))
+Result: 2_147_450_879 2_147_450_879 2_147_450_879 2_147_450_879 : [v128]
+Expect: 0 0 0 0 0 0 0 0 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:76.1-78.81 (Error(_, "wrong return values"))
+Result: 2_147_450_879 2_147_450_879 2_147_450_879 2_147_450_879 : [v128]
+Expect: -1 -1 -1 -1 -1 -1 -1 -1 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:79.1-81.89 (Error(_, "wrong return values"))
+Result: 2_147_450_879 2_147_450_879 2_147_450_879 2_147_450_879 : [v128]
+Expect: 1 1 1 1 1 1 1 1 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:82.1-84.81 (Error(_, "wrong return values"))
+Result: 2_147_450_879 2_147_450_879 2_147_450_879 2_147_450_879 : [v128]
+Expect: 0 0 0 0 0 0 0 0 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast:85.1-87.81 (Error(_, "wrong return values"))
+- 8/27 (29.63%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i16x8_sat_arith.wast =====
 - 206/206 (100.00%)
@@ -25137,40 +25168,7 @@ Expect: 26_984 : [i32]
 - 123/123 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast =====
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:228.1-229.90 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:230.1-231.90 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:232.1-233.90 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:234.1-235.90 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:236.1-237.90 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:238.1-239.90 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:240.1-241.90 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:242.1-243.90 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:244.1-245.90 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:246.1-247.90 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:248.1-249.90 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:250.1-251.90 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:252.1-253.90 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:254.1-255.90 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:269.1-269.105 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:326.1-327.90 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:368.1-369.90 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:370.1-371.90 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:372.1-373.90 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:374.1-375.90 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:572.1-574.102 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:575.1-577.102 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:604.1-606.102 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:607.1-609.102 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:636.1-638.102 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:639.1-641.102 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:668.1-670.102 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:671.1-673.102 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:700.1-702.103 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:703.1-705.103 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:706.1-707.100 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:710.1-711.103 (Backend_interpreter.Exception.MissingReturnValue)
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith2.wast:712.1-713.100 (Backend_interpreter.Exception.MissingReturnValue)
-- 153/186 (82.26%)
+- 186/186 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i8x16_cmp.wast =====
 - 415/415 (100.00%)
@@ -25771,7 +25769,7 @@ Expect: 26_984 : [i32]
 ===== ../../test-interpreter/spec-test-3/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [44416/45764] (97.05%)
+Total [44456/45764] (97.14%)
 
 == Complete.
 ```

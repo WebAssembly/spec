@@ -8,7 +8,7 @@ type numerics = { name : string; f : value list -> value }
 
 let mask64 = Z.of_int64_unsigned (-1L)
 
-let maskN n = Z.(pred (shift_left one (Z.to_int n)))
+let maskN n = Z.(pred (shift_left one (to_int n)))
 
 let z_to_int64 z = Z.(to_int64_unsigned (logand mask64 z))
 
@@ -131,11 +131,10 @@ let irem : numerics =
           raise Exception.Trap
         else
           Z.(rem m n) |> al_of_z
-      | [ NumV z; CaseV ("S", []); NumV m; NumV n ] ->
+      | [ NumV _ as z; CaseV ("S", []); NumV m; NumV n ] ->
         if n = Z.zero then
           raise Exception.Trap
         else
-          let z = NumV z in
           let m = signed.f [ z; NumV m ] |> al_to_z in
           let n = signed.f [ z; NumV n ] |> al_to_z in
           inverse_of_signed.f [ z; NumV Z.(rem m n) ]
@@ -203,9 +202,12 @@ let ishr : numerics =
       (function
       | [ NumV z; CaseV ("U", []); NumV m; NumV n ] -> Z.(shift_right m (Z.to_int (rem n z))) |> al_of_z
       | [ NumV z; CaseV ("S", []); NumV m; NumV n ] ->
-          let m = signed.f [ NumV z; NumV m ] |> al_to_z in
-          let n = Z.rem n z |> Z.to_int in
-          inverse_of_signed.f [ NumV z; NumV Z.(shift_right m n) ]
+          let n = Z.(to_int (rem n z)) in
+          let s = Z.to_int z in
+          let d = s - n in
+          let msb = Z.shift_right m (s - 1) in
+          let pad = Z.(mul (shift_left one s - shift_left one d) msb) in
+          NumV Z.(logor pad (shift_right m n))
       | v -> fail_list "Invalid ishr" v
       );
   }
@@ -387,7 +389,7 @@ let ineg : numerics =
     name = "ineg";
     f =
       (function
-      | [ NumV z; NumV m ] -> Z.(logand (neg m) (maskN z)) |> al_of_z
+      | [ NumV z; NumV m ] -> Z.(logand (shift_left one (to_int z) - m) (maskN z)) |> al_of_z
       | v -> fail_list "Invalid ineg" v
       );
   }
@@ -452,7 +454,7 @@ let iq15mulrsat_s : numerics =
     f =
       (function
       | [ NumV _ as z; NumV m; NumV n ] ->
-        sat.f [ z; ishr.f [ z; NumV Z.(mul m n + (shift_left one 14)); al_of_int 15 ]]
+        sat.f [ z; nullary "S"; ishr.f [ z; nullary "S"; NumV Z.(mul m n + of_int 0x4000); al_of_int 15 ]]
       | v -> fail_list "Invalid iq15mulrsat_s" v
       );
   }

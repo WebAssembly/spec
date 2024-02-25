@@ -229,6 +229,9 @@ def $vunop(imm X N, ABS, v128_1) = v128
 def $vunop(imm X N, NEG, v128_1) = v128
     -- if lane_1* = $lanes_(imm X N, v128_1)
     -- if v128 = $invlanes_(imm X N, $ineg($lsize(imm), lane_1)*)
+def $vunop(imm X N, POPCNT, v128_1) = v128
+    -- if lane_1* = $lanes_(imm X N, v128_1)
+    -- if v128 = $invlanes_(imm X N, $ipopcnt($lsize(imm), lane_1)*)
 
 def $vbinop(imm X N, ADD, v128_1, v128_2) = v128
     -- if lane_1* = $lanes_(imm X N, v128_1)
