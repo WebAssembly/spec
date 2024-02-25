@@ -3,6 +3,10 @@ let active : string list = []
 
 let fmt = Printf.sprintf
 
+let log_exn _exn =
+  if active <> [] then
+    Printf.eprintf "\n%s\n%!" (Printexc.get_backtrace ())
+
 let log_at (type a) label at (arg_f : unit -> string) (res_f : a -> string) (f : unit -> a) : a =
   if not (List.mem label active) then f () else
   let ats = if at = Source.no_region then "" else " " ^ Source.string_of_region at in

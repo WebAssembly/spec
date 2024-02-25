@@ -105,6 +105,9 @@ and check_typ env ctx t =
       check_typ env ctx tI;
       iter_nl_list (check_prem env ctx) prems
     ) tcs
+  | ConT ((t1, prems), _) ->
+    check_typ env ctx t1;
+    iter_nl_list (check_prem env ctx) prems
   | RangeT tes ->
     iter_nl_list (fun (eI1, eoI2) ->
       check_exp env ctx eI1;
@@ -367,6 +370,9 @@ and annot_exp env e : Il.Ast.exp * occur =
     | ProjE (e1, i) ->
       let e1', occur1 = annot_exp env e1 in
       ProjE (e1', i), occur1
+    | UnmixE (e1, op) ->
+      let e1', occur1 = annot_exp env e1 in
+      UnmixE (e1', op), occur1
     | OptE None ->
       OptE None, Env.empty
     | OptE (Some e1) ->

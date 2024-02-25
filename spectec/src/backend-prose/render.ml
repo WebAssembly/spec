@@ -328,7 +328,7 @@ and render_expr' env expr =
       let loop = Al.Al_util.iterE (ids, [], iter) in
       let sloop = render_expr env loop in
       sprintf "for all %s, %s" sloop se
-  | Al.Ast.ArityE e -> 
+  | Al.Ast.ArityE e ->
       let se = render_expr env e in
       sprintf "the arity of %s" se 
   | Al.Ast.GetCurLabelE -> "the current label"
@@ -381,7 +381,7 @@ and render_expr' env expr =
   | _ ->
       let se = Al.Print.string_of_expr expr in
       let msg = sprintf "%s was not properly handled\n" se in
-      Util.Source.error expr.at "prose backend error: " msg 
+      Util.Source.error expr.at "prose backend" msg
 
 and render_path env path =
   match path.it with

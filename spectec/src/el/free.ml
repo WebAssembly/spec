@@ -97,6 +97,7 @@ and free_typ t =
   | CaseT (_, ts, tcs, _) ->
     free_nl_list free_typ ts +
       free_nl_list (fun tc -> free_typcase tc - det_typcase tc) tcs
+  | ConT tc -> free_typcon tc
   | RangeT tes -> free_nl_list free_typenum tes
   | AtomT _ -> empty
   | SeqT ts -> free_list free_typ ts
@@ -105,6 +106,7 @@ and free_typ t =
 
 and free_typfield (_, (t, prems), _) = free_typ t + free_prems prems
 and free_typcase (_, (t, prems), _) = free_typ t + free_prems prems
+and free_typcon ((t, prems), _) = free_typ t + free_prems prems
 and free_typenum (e, eo) = free_exp e + free_opt free_exp eo
 
 
@@ -118,6 +120,7 @@ and det_typ t =
 
 and det_typfield (_, (t, prems), _) = det_typ t + det_prems prems
 and det_typcase (_, (t, prems), _) = det_typ t + det_prems prems
+and det_typcon ((t, prems), _) = det_typ t + det_prems prems
 
 
 (* Expressions *)

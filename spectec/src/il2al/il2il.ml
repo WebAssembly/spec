@@ -43,6 +43,7 @@ let rec transform_expr f e =
     | CallE (id, as1) -> CallE (id, List.map (transform_arg f) as1)
     | IterE (e1, iter) -> IterE (new_ e1, iter) (* TODO iter *)
     | ProjE (e1, i) -> ProjE (new_ e1, i)
+    | UnmixE (e1, op) -> UnmixE (new_ e1, op)
     | OptE eo -> OptE ((Option.map new_) eo)
     | TheE e1 -> TheE (new_ e1)
     | ListE es -> ListE ((List.map new_) es)
@@ -148,6 +149,8 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
       IterE (overlap e1 e2, itere1)
     | ProjE (e1, i1), ProjE (e2, i2) when i1 = i2 ->
       ProjE (overlap e1 e2, i1)
+    | UnmixE (e1, op1), UnmixE (e2, op2) when op1 = op2 ->
+      UnmixE (overlap e1 e2, op1)
     | OptE (Some e1), OptE (Some e2) ->
       OptE (Some (overlap e1 e2))
     | TheE e1, TheE e2 ->
@@ -190,6 +193,7 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
     | MixE (_, e1), MixE (_, e2)
     | IterE (e1, _), IterE (e2, _)
     | ProjE (e1, _), ProjE (e2, _)
+    | UnmixE (e1, _), UnmixE (e2, _)
     | OptE (Some e1), OptE (Some e2)
     | TheE e1, TheE e2
     | CaseE (_, e1), CaseE (_, e2)

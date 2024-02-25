@@ -102,6 +102,7 @@ and typ t =
   | StrT tfs -> nl_list typfield tfs
   | CaseT (dots1, ts, tcs, dots2) ->
     dots dots1; nl_list typ ts; nl_list typcase tcs; dots dots2
+  | ConT tc -> typcon tc
   | RangeT tes -> nl_list typenum tes
   | AtomT at -> atom at
   | SeqT ts -> list typ ts
@@ -110,6 +111,7 @@ and typ t =
 
 and typfield (at, (t, prs), hs) = atom at; typ t; prems prs; hints hs
 and typcase (at, (t, prs), hs) = atom at; typ t; prems prs; hints hs
+and typcon ((t, prs), hs) = typ t; prems prs; hints hs
 and typenum (e, eo) = exp e; opt exp eo
 
 

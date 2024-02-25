@@ -246,6 +246,12 @@ and reduce_exp env e : exp =
     | TupE es -> List.nth es i
     | _ -> ProjE (e1', i) $> e
     )
+  | UnmixE (e1, mixop) ->
+    let e1' = reduce_exp env e1 in
+    (match e1'.it with
+    | MixE (_, e11') -> e11'
+    | _ -> UnmixE (e1', mixop) $> e
+    )
   | OptE eo -> OptE (Option.map (reduce_exp env) eo) $> e
   | TheE e1 ->
     let e1' = reduce_exp env e1 in
@@ -331,6 +337,10 @@ and reduce_path env e p f =
     reduce_path env e p1 f'
 
 and reduce_arg env a : arg =
+  Debug.(log "il.reduce_arg"
+    (fun _ -> fmt "%s" (il_arg a))
+    (fun a' -> fmt "%s" (il_arg a'))
+  ) @@ fun _ ->
   match a.it with
   | ExpA e -> ExpA (reduce_exp env e) $ a.at
   | TypA _t -> a  (* types are reduced on demand *)
@@ -564,7 +574,11 @@ and equiv_typ env t1 t2 =
     let t2' = reduce_typ env t2 in
     (t1 <> t1' || t2 <> t2') && equiv_typ env t1' t2' ||
     (match reduce_typ_app env id1 as1 t1'.at, reduce_typ_app env id2 as2 t2'.at with
-    | Some dt1, Some dt2 -> Eq.eq_deftyp (dt1 $ t1.at) (dt2 $ t2.at)
+    | Some (NotationT tc1), Some (NotationT tc2) ->
+      let (op1, (_binds1, t11, prems1), _) = tc1 in
+      let (op2, (_binds2, t21, prems2), _) = tc2 in
+      op1 = op2 && equiv_typ env t11 t21 && equiv_list equiv_prem env prems1 prems2
+    | Some dt1, Some dt2 -> Eq.eq_deftyp (dt1 $ t1.at) (dt2 $ t2.at)  (* TODO *)
     | _, _ -> false
     )
   | VarT _, _ ->
@@ -575,7 +589,7 @@ and equiv_typ env t1 t2 =
     t2 <> t2' && equiv_typ env t1 t2'
   | TupT xts1, TupT xts2 -> equiv_tup env xts1 xts2
   | IterT (t11, iter1), IterT (t21, iter2) ->
-    equiv_typ env t11 t21 && Eq.eq_iter iter1 iter2
+    equiv_typ env t11 t21 && equiv_iter env iter1 iter2
   | _, _ ->
     t1.it = t2.it
 
@@ -586,6 +600,22 @@ and equiv_tup env xts1 xts2 =
     equiv_typ env t1 t2 && equiv_tup env xts1' (List.map (Subst.subst_typbind s) xts2')
   | _, _ -> xts1 = xts2
 
+and equiv_iter env iter1 iter2 =
+  match iter1, iter2 with
+  | ListN (e1, ido1), ListN (e2, ido2) ->
+    equiv_exp env e1 e2 && Option.equal (fun id1 id2 -> id1.it = id2.it) ido1 ido2
+  | _, _ -> iter1 = iter2
+
+and equiv_prem env pr1 pr2 =
+  match pr1.it, pr2.it with
+  | RulePr (id1, mixop1, e1), RulePr (id2, mixop2, e2) ->
+    id1.it = id2.it && mixop1 = mixop2 && equiv_exp env e1 e2
+  | IfPr e1, IfPr e2 -> equiv_exp env e1 e2
+  | LetPr (e11, e12, _ids1), LetPr (e21, e22, _id2) ->
+    equiv_exp env e11 e21 && equiv_exp env e12 e22
+  | IterPr (pr11, iter1), IterPr (pr21, iter2) ->
+    equiv_prem env pr11 pr21 && equiv_iter env (fst iter1) (fst iter2)
+  | pr1', pr2' -> pr1' = pr2'
 
 and equiv_exp env e1 e2 =
   Debug.(log "il.equiv_exp"
@@ -632,9 +662,27 @@ and sub_typ env t1 t2 =
           equiv_typ env t1 t2 && Eq.eq_list Eq.eq_prem prems1 prems2
         | None -> false
       ) tcs1
-    | Some (NotationT (mixop1, t11)), Some (NotationT (mixop2, t21)) ->
-      mixop1 = mixop2 && sub_typ env t11 t21
+    | Some (NotationT tc1), _ ->
+      let (_op1, (_binds1, t11, _prems1), _) = tc1 in
+      sub_typ env t11 t2'
+    | _, Some (NotationT tc2) ->
+      let (_op2, (_binds2, t21, _prems2), _) = tc2 in
+      sub_typ env t1' t21
     | _, _ -> false
+    )
+  | VarT (id1, as1), _ ->
+    (match reduce_typ_app env id1 as1 t1'.at with
+    | Some (NotationT tc1) ->
+      let (_op1, (_binds1, t11, _prems1), _) = tc1 in
+      sub_typ env t11 t2'
+    | _ -> false
+    )
+  | _, VarT (id2, as2) ->
+    (match reduce_typ_app env id2 as2 t2'.at with
+    | Some (NotationT tc2) ->
+      let (_op2, (_binds2, t21, _prems2), _) = tc2 in
+      sub_typ env t1' t21
+    | _ -> false
     )
   | _, _ ->
     false

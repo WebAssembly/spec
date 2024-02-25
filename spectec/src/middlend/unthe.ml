@@ -92,7 +92,7 @@ let rec t_exp n e : eqns * exp =
   (* Descend first using t_exp2, and then see if we have to pull out the current expression *)
   let eqns, e' = t_exp2 n e in
   match e.it with
-  |  TheE exp ->
+  | TheE exp ->
     let ot = exp.note in
     let t = match ot.it with
       | IterT (t, Opt) -> t
@@ -126,6 +126,7 @@ and t_exp' n e : eqns * exp' =
   | MixE (mo, exp) -> t_e n exp (fun exp' -> MixE (mo, exp'))
   | CallE (f, args) -> t_list t_arg n args (fun args' -> CallE (f, args'))
   | ProjE (exp, i) -> t_e n exp (fun exp' -> ProjE (exp', i))
+  | UnmixE (exp, mo) -> t_e n exp (fun exp' -> UnmixE (exp', mo))
   | OptE (Some exp) -> t_e n exp (fun exp' -> OptE (Some exp'))
   | TheE exp -> t_e n exp (fun exp' -> TheE exp')
   | CaseE (a, exp) -> t_e n exp (fun exp' -> CaseE (a, exp'))

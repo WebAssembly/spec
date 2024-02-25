@@ -88,6 +88,7 @@ and typ' =
   (* The forms below are only allowed in type definitions *)
   | StrT of typfield nl_list     (* `{` list(typfield,`,`') `}` *)
   | CaseT of dots * typ nl_list * typcase nl_list * dots (* `|` list(`...`|typ|typcase, `|`) *)
+  | ConT of typcon               (* typ prem* *)
   | RangeT of typenum nl_list    (* exp `|` `...` `|` exp *)
   | AtomT of atom                (* atom *)
   | SeqT of typ list             (* `eps` / typ typ *)
@@ -96,7 +97,8 @@ and typ' =
 
 and typfield = atom * (typ * prem nl_list) * hint list (* atom typ prem* hint* *)
 and typcase = atom * (typ * prem nl_list) * hint list  (* atom typ* prem* hint* *)
-and typenum = exp * exp option                  (* exp (`|` exp (`|` `...` `|` exp)?)* *)
+and typcon = (typ * prem nl_list) * hint list          (* typ prem* *)
+and typenum = exp * exp option                         (* exp (`|` exp (`|` `...` `|` exp)?)* *)
 
 
 (* Expressions *)

@@ -1046,7 +1046,7 @@ rule Instr_ok/vload_lane:
 rule Instr_ok/vstore:
   C |- VSTORE x {ALIGN n_A, OFFSET n_O} : I32 V128 -> eps
   -- if C.MEM[x] = mt
-  -- if $(2^(n_A) <= $size(V128)/8)
+  -- if $(2^(n_A) <= $vsize(V128)/8)
 
 rule Instr_ok/vstore_lane:
   C |- VSTORE_LANE n x {ALIGN n_A, OFFSET n_O} laneidx : I32 V128 -> eps

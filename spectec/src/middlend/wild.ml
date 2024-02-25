@@ -148,6 +148,7 @@ and t_exp' env e : bind list * exp' =
   | MixE (mo, exp) -> t_e env exp (fun exp' -> MixE (mo, exp'))
   | CallE (f, args) -> t_list t_arg env args (fun args' -> CallE (f, args'))
   | ProjE (exp, i) -> t_e env exp (fun exp' -> ProjE (exp', i))
+  | UnmixE (exp, mo) -> t_e env exp (fun exp' -> UnmixE (exp', mo))
   | OptE (Some exp) -> t_e env exp (fun exp' -> OptE (Some exp'))
   | TheE exp -> t_e env exp (fun exp' -> TheE exp')
   | CaseE (a, exp) -> t_e env exp (fun exp' -> CaseE (a, exp'))

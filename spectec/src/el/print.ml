@@ -131,6 +131,7 @@ and string_of_typ t =
     "| " ^ concat " | "
       (strings_of_dots dots1 @ map_filter_nl_list string_of_typ ts @
         map_filter_nl_list string_of_typcase tcases @ strings_of_dots dots2)
+  | ConT tc -> string_of_typcon tc
   | RangeT tes -> concat " | " (map_filter_nl_list string_of_typenum tes)
   | AtomT atom -> string_of_atom atom
   | SeqT ts -> "{" ^ string_of_typs " " ts ^ "}"
@@ -147,6 +148,10 @@ and string_of_typfield (atom, (t, prems), _hints) =
     concat "" (map_filter_nl_list (prefix "\n  -- " string_of_prem) prems)
 
 and string_of_typcase (_atom, (t, prems), _hints) =
+  string_of_typ t ^
+    concat "" (map_filter_nl_list (prefix "\n  -- " string_of_prem) prems)
+
+and string_of_typcon ((t, prems), _hints) =
   string_of_typ t ^
     concat "" (map_filter_nl_list (prefix "\n  -- " string_of_prem) prems)
 

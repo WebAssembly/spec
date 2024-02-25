@@ -266,7 +266,7 @@ let () =
     );
     log "Complete."
   with
-  | Source.Error (at, msg) ->
+  | Source.Error (at, msg) as exn ->
     let msg' =
       if !last_pass <> "" && String.starts_with ~prefix:"validation" msg then
         "(after pass " ^ !last_pass ^ ") " ^ msg
@@ -274,6 +274,7 @@ let () =
         msg
     in
     Source.print_error at msg';
+    Debug_log.log_exn exn;
     exit 1
   | exn ->
     flush_all ();

@@ -77,10 +77,14 @@ and subst_typbind s (id, t) =
 and subst_deftyp s dt =
   (match dt.it with
   | AliasT t -> AliasT (subst_typ s t)
-  | NotationT (op, t) -> NotationT (op, subst_typ s t)
+  | NotationT tc -> NotationT (subst_typcon s tc)
   | StructT tfs -> StructT (subst_list subst_typfield s tfs)
   | VariantT tcs -> VariantT (subst_list subst_typcase s tcs)
   ) $ dt.at
+
+and subst_typcon s (op, (bs, t, prems), hints) =
+  let bs', s' = subst_binds s bs in
+  (op, (bs', subst_typ s' t, subst_list subst_prem s' prems), hints)
 
 and subst_typfield s (atom, (bs, t, prems), hints) =
   let bs', s' = subst_binds s bs in
@@ -117,6 +121,7 @@ and subst_exp s e =
   | CallE (id, as_) -> CallE (id, subst_args s as_)
   | IterE (e1, iterexp) -> IterE (subst_exp s e1, subst_iterexp s iterexp)
   | ProjE (e1, i) -> ProjE (subst_exp s e1, i)
+  | UnmixE (e1, op) -> UnmixE (subst_exp s e1, op)
   | OptE eo -> OptE (subst_opt subst_exp s eo)
   | TheE e -> TheE (subst_exp s e)
   | ListE es -> ListE (subst_list subst_exp s es)

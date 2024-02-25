@@ -42,6 +42,7 @@ and eq_typ t1 t2 =
   | CaseT (dots11, ts1, tcs1, dots12), CaseT (dots21, ts2, tcs2, dots22) ->
     dots11 = dots21 && eq_nl_list eq_typ ts1 ts2 &&
     eq_nl_list eq_typcase tcs1 tcs2 && dots12 = dots22
+  | ConT tc1, ConT tc2 -> eq_typcon tc1 tc2
   | RangeT tes1, RangeT tes2 -> eq_nl_list eq_typenum tes1 tes2
   | AtomT atom1, AtomT atom2 -> atom1.it = atom2.it
   | SeqT ts1, SeqT ts2 -> eq_list eq_typ ts1 ts2
@@ -59,6 +60,9 @@ and eq_typcase (atom1, (t1, prems1), _) (atom2, (t2, prems2), _) =
 
 and eq_typenum (e1, eo1) (e2, eo2) =
   eq_exp e1 e2 && eq_opt eq_exp eo1 eo2
+
+and eq_typcon ((t1, prems1), _) ((t2, prems2), _) =
+  eq_typ t1 t2 && eq_nl_list eq_prem prems1 prems2
 
 
 (* Expressions *)

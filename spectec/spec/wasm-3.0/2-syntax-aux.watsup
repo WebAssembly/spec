@@ -45,16 +45,18 @@ def $free_dataidx_funcs(func func'*) = $free_dataidx_func(func) $free_dataidx_fu
 
 ;; def |I n| = |F n| = |V n| = n        ;; ????
 
-;;def $size(valtype) : nat       hint(partial) hint(show |%|)
+;;def $size(numtype) : nat       hint(show |%|)
+;;def $vsize(vectype) : nat      hint(show |%|)
 ;;def $psize(packtype) : nat     hint(show |%|)
 ;;def $lsize(lanetype) : nat     hint(show |%|)
-;;def $zsize(storagetype) : nat  hint(show |%|)
+;;def $zsize(storagetype) : nat  hint(show |%|) hint(partial)
 
 def $size(I32) = 32
 def $size(I64) = 64
 def $size(F32) = 32
 def $size(F64) = 64
-def $size(V128) = 128
+
+def $vsize(V128) = 128
 
 def $psize(I8) = 8
 def $psize(I16) = 16
@@ -62,7 +64,8 @@ def $psize(I16) = 16
 def $lsize(numtype) = $size(numtype)
 def $lsize(packtype) = $psize(packtype)
 
-def $zsize(valtype) = $size(valtype)
+def $zsize(numtype) = $size(numtype)
+def $zsize(vectype) = $vsize(vectype)
 def $zsize(packtype) = $psize(packtype)
 
 
@@ -196,8 +199,8 @@ def $subst_externtype((MEM mt), xx*, ht*) = MEM $subst_memtype(mt, xx*, ht*)
 def $subst_all_reftype(reftype, heaptype*) : reftype  hint(show %#`[:=%])
 def $subst_all_deftype(deftype, heaptype*) : deftype  hint(show %#`[:=%])
 
-def $subst_all_reftype(rt, ht^n) = $subst_reftype(rt, $idx(x)^(x<n), ht^n)
-def $subst_all_deftype(dt, ht^n) = $subst_deftype(dt, $idx(x)^(x<n), ht^n)
+def $subst_all_reftype(rt, ht^n) = $subst_reftype(rt, $idx(i)^(i<n), ht^n)
+def $subst_all_deftype(dt, ht^n) = $subst_deftype(dt, $idx(i)^(i<n), ht^n)
 
 def $subst_all_deftypes(deftype*, heaptype*) : deftype*  hint(show %#`[:=%])
 

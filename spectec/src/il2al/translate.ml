@@ -178,6 +178,7 @@ and translate_exp exp =
   (* CaseE *)
   | Il.CaseE (Il.Atom cons, argexp) -> caseE (kwd cons exp.note, translate_argexp argexp) ~at:at
   (* Tuple *)
+  | Il.TupE [e] -> translate_exp e
   | Il.TupE exps -> tupE (List.map translate_exp exps) ~at:at
   (* Call *)
   | Il.CallE (id, args) -> callE (id.it, translate_args args) ~at:at
@@ -198,6 +199,7 @@ and translate_exp exp =
       | _ -> [ e ]
     in
     match (op, exps) with
+    | [ []; [] ], [ e1 ] -> translate_exp e1
     | [ []; []; [] ], [ e1; e2 ]
     | [ []; [ Il.Semicolon ]; [] ], [ e1; e2 ]
     | [ []; [ Il.Semicolon ]; [ Il.Star ] ], [ e1; e2 ]
@@ -246,6 +248,11 @@ and translate_exp exp =
       when List.for_all (fun l -> l = [] || l = [ Il.Star ] || l = [ Il.Quest ]) ll ->
       caseE ((name, lower name), List.map translate_exp el) ~at:at
     | _ -> yetE (Il.Print.string_of_exp exp) ~at:at)
+  | Il.UnmixE (e, op) -> (
+    match op with
+    | [ []; [] ] -> translate_exp e
+    | _ -> yetE (Il.Print.string_of_exp exp) ~at:at)
+  | Il.ProjE (e, 0) -> translate_exp e
   | Il.OptE inner_exp -> optE (Option.map translate_exp inner_exp) ~at:at
   (* Yet *)
   | _ -> yetE (Il.Print.string_of_exp exp) ~at:at

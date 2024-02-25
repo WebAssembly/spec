@@ -94,7 +94,7 @@ let expand_app env id as_ : deftyp' option =
       let InstD (_binds, as', dt) = inst.it in
       if as' = [] && as_ = [] then Some dt.it else   (* optimisation *)
       match Eval.(match_list match_arg env' Subst.empty as_ as') with
-      | exception Eval.Irred -> None  (* cannot reduce *)
+      | exception Eval.Irred -> lookup insts'  (* cannot reduce, try next *)
       | None -> lookup insts'
       | Some s -> Some (Subst.subst_deftyp s dt).it
   in lookup insts
@@ -154,7 +154,7 @@ let as_tup_typ phrase env dir t at : (id * typ) list =
 
 let as_mix_typ phrase env dir t at : mixop * typ =
   match expand_def env t with
-  | NotationT (mixop, t) -> mixop, t
+  | NotationT (mixop, (_, t, _), _) -> mixop, t
   | _ -> as_error at phrase dir t ("`mixin-op`(...)")
 
 let as_struct_typ phrase env dir t at : typfield list =
@@ -274,8 +274,8 @@ and valid_deftyp env dt =
   match dt.it with
   | AliasT t ->
     valid_typ env [] t
-  | NotationT (mixop, t) ->
-    valid_typ_mix env mixop t dt.at
+  | NotationT tc ->
+    valid_typcon env tc dt.at
   | StructT tfs ->
     check_atoms "record" "field" tfs dt.at;
     List.iter (valid_typfield env) tfs
@@ -283,7 +283,7 @@ and valid_deftyp env dt =
     check_atoms "variant" "case" tcs dt.at;
     List.iter (valid_typcase env) tcs
 
-and valid_typ_mix env mixop t at =
+and valid_typcon env (mixop, (bs, t, prems), _hints) at =
   let arity =
     match t.it with
     | TupT ts -> List.length ts
@@ -292,7 +292,10 @@ and valid_typ_mix env mixop t at =
   if List.length mixop <> arity + 1 then
     error at ("inconsistent arity in mixin notation, `" ^ string_of_mixop mixop ^
       "` applied to " ^ typ_string env t);
-  valid_typ env [] t
+  let env' = local_env env in
+  List.iter (valid_bind env') bs;
+  valid_typ env' [] t;
+  List.iter (valid_prem env') prems
 
 and valid_typfield env (_atom, (bs, t, prems), _hints) =
   let env' = local_env env in
@@ -347,6 +350,12 @@ and infer_exp env e : typ =
     if i >= List.length xts then
       error e.at "invalid tuple projection";
     snd (List.nth xts i)
+  | UnmixE (e1, op) ->
+    let t1 = infer_exp env e1 in
+    let op', t = as_mix_typ "expression" env Infer (selfify_typ env e1 t1) e1.at in
+    if op <> op' then
+      error e.at "invalid mixfix projection";
+    t
   | OptE _ -> error e.at "cannot infer type of option"
   | TheE e1 -> as_iter_typ Opt "option" env Check (infer_exp env e1) e1.at
   | ListE _ -> error e.at "cannot infer type of list"
@@ -452,6 +461,12 @@ and valid_exp env e t =
     if i >= List.length xts then
       error e.at "invalid tuple projection";
     equiv_typ env (snd (List.nth xts i)) t e.at
+  | UnmixE (e1, op) ->
+    let t1 = infer_exp env e1 in
+    let op', t' = as_mix_typ "expression" env Infer (selfify_typ env e1 t1) e1.at in
+    if op <> op' then
+      error e.at "invalid mixfix projection";
+    equiv_typ env t' t e.at
   | OptE eo ->
     let t1 = as_iter_typ Opt "option" env Check t e.at in
     Option.iter (fun e1 -> valid_exp env e1 t1) eo
@@ -644,7 +659,7 @@ let infer_def env d =
     List.iter (valid_param env') ps;
     env.typs <- bind "syntax type" env.typs id (ps, [])
   | RelD (id, mixop, t, _rules) ->
-    valid_typ_mix env mixop t d.at;
+    valid_typcon env (mixop, ([], t, []), []) d.at;
     env.rels <- bind "relation" env.rels id (mixop, t)
   | DecD (id, ps, t, clauses) ->
     let env' = local_env env in
@@ -666,7 +681,7 @@ let rec valid_def {bind} env d =
     List.iter (valid_inst env ps) insts;
     env.typs <- bind "syntax type" env.typs id (ps, insts);
   | RelD (id, mixop, t, rules) ->
-    valid_typ_mix env mixop t d.at;
+    valid_typcon env (mixop, ([], t, []), []) d.at;
     List.iter (valid_rule env mixop t) rules;
     env.rels <- bind "relation" env.rels id (mixop, t)
   | DecD (id, ps, t, clauses) ->

@@ -268,13 +268,13 @@ syntax vbinop_(shape)
 syntax vbinop_(imm X N) =
   | ADD
   | SUB
-  | ADD_SAT sx     -- if $lsize(imm) <= 16
-  | SUB_SAT sx     -- if $lsize(imm) <= 16
-  | MUL            -- if $lsize(imm) >= 16
-  | AVGR_U         -- if $lsize(imm) <= 16
-  | Q15MULR_SAT_S  -- if $lsize(imm) = 16
-  | MIN sx         -- if $lsize(imm) <= 32
-  | MAX sx         -- if $lsize(imm) <= 32
+  | ADD_SAT sx hint(show ADD_SAT#_#sx)     -- if $lsize(imm) <= 16
+  | SUB_SAT sx hint(show SUB_SAT#_#sx)     -- if $lsize(imm) <= 16
+  | MUL                                    -- if $lsize(imm) >= 16
+  | AVGR_U                                 -- if $lsize(imm) <= 16
+  | Q15MULR_SAT_S                          -- if $lsize(imm) = 16
+  | MIN sx hint(show MIN#_#sx)             -- if $lsize(imm) <= 32
+  | MAX sx hint(show MAX#_#sx)             -- if $lsize(imm) <= 32
 syntax vbinop_(fnn X N) = | ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX
 
 syntax vtestop_(shape)
