@@ -58,7 +58,6 @@ $$
 {|\mathsf{i{\scriptstyle64}}|} &=& 64 &  \\
 {|\mathsf{f{\scriptstyle32}}|} &=& 32 &  \\
 {|\mathsf{f{\scriptstyle64}}|} &=& 64 &  \\
-{|\mathsf{v{\scriptstyle128}}|} &=& 128 &  \\
 \end{array}
 $$
 
@@ -1106,6 +1105,8 @@ warning: definition `fne` was never spliced
 warning: definition `fnearest` was never spliced
 warning: definition `fneg` was never spliced
 warning: definition `fone` was never spliced
+warning: definition `fpmax` was never spliced
+warning: definition `fpmin` was never spliced
 warning: definition `frame` was never spliced
 warning: definition `free_dataidx_expr` was never spliced
 warning: definition `free_dataidx_func` was never spliced
@@ -1125,9 +1126,14 @@ warning: definition `globalsxv` was never spliced
 warning: definition `growmemory` was never spliced
 warning: definition `growtable` was never spliced
 warning: definition `halfop` was never spliced
+warning: definition `iabs` was never spliced
 warning: definition `iadd` was never spliced
+warning: definition `iaddsat` was never spliced
 warning: definition `iand` was never spliced
+warning: definition `iandnot` was never spliced
+warning: definition `iavgr_u` was never spliced
 warning: definition `ibits` was never spliced
+warning: definition `ibitselect` was never spliced
 warning: definition `ibytes` was never spliced
 warning: definition `iclz` was never spliced
 warning: definition `ictz` was never spliced
@@ -1139,10 +1145,13 @@ warning: definition `ige` was never spliced
 warning: definition `igt` was never spliced
 warning: definition `ile` was never spliced
 warning: definition `ilt` was never spliced
+warning: definition `imax` was never spliced
+warning: definition `imin` was never spliced
 warning: definition `imul` was never spliced
 warning: definition `in_binop` was never spliced
 warning: definition `in_numtype` was never spliced
 warning: definition `ine` was never spliced
+warning: definition `ineg` was never spliced
 warning: definition `inot` was never spliced
 warning: definition `inst_reftype` was never spliced
 warning: definition `instantiate` was never spliced
@@ -1154,12 +1163,14 @@ warning: definition `invoke` was never spliced
 warning: definition `invsigned` was never spliced
 warning: definition `ior` was never spliced
 warning: definition `ipopcnt` was never spliced
+warning: definition `iq15mulrsat_s` was never spliced
 warning: definition `irem` was never spliced
 warning: definition `irotl` was never spliced
 warning: definition `irotr` was never spliced
 warning: definition `ishl` was never spliced
 warning: definition `ishr` was never spliced
 warning: definition `isub` was never spliced
+warning: definition `isubsat` was never spliced
 warning: definition `ixor` was never spliced
 warning: definition `lanes_` was never spliced
 warning: definition `lanetype` was never spliced
@@ -1240,6 +1251,7 @@ warning: definition `vextbinop` was never spliced
 warning: definition `vextunop` was never spliced
 warning: definition `vishiftop` was never spliced
 warning: definition `vrelop` was never spliced
+warning: definition `vsize` was never spliced
 warning: definition `vunop` was never spliced
 warning: definition `vunpack` was never spliced
 warning: definition `vvbinop` was never spliced
@@ -1593,7 +1605,15 @@ warning: definition prose `unrolldt` was never spliced
 warning: definition prose `unrollht` was never spliced
 warning: definition prose `unrollrt` was never spliced
 warning: definition prose `utf8` was never spliced
+warning: definition prose `vbinop` was never spliced
+warning: definition prose `vishiftop` was never spliced
+warning: definition prose `vrelop` was never spliced
+warning: definition prose `vsize` was never spliced
+warning: definition prose `vunop` was never spliced
 warning: definition prose `vunpack` was never spliced
+warning: definition prose `vvbinop` was never spliced
+warning: definition prose `vvternop` was never spliced
+warning: definition prose `vvunop` was never spliced
 warning: definition prose `with_array` was never spliced
 warning: definition prose `with_data` was never spliced
 warning: definition prose `with_elem` was never spliced

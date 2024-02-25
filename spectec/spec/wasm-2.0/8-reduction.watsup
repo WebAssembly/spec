@@ -498,6 +498,7 @@ rule Step_read/vload-splat-val:
   -- if M = $(128/N)
   -- if c = $invlanes_(imm X M, j^M)
 
+
 rule Step_read/vload-zero-oob:
   z; (CONST I32 i) (VLOAD (ZERO N) mo)  ~>  TRAP
   -- if $(i + mo.OFFSET + N/8) > |$mem(z, 0).DATA|

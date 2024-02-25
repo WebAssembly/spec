@@ -1,7 +1,7 @@
 # Test
 
 ```sh
-$ (../src/exe-watsup/main.exe test.watsup -o test.tex && cat test.tex)
+$ (../src/exe-watsup/main.exe test.watsup --latex)
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {\mathrm{test}}_{{\mathit{sub}}_{{\mathsf{atom}}_{{22}}}}({\mathit{n}}_{{3}_{{\mathsf{atom}}_{{\mathit{y}}}}}) &=& 0 &  \\
@@ -27,6 +27,7 @@ $$
 {{\mathsf{qr}}_{{\mathit{nat}}}}{\mathsf{ab}}~\,{\mathit{nat}}~\,{\mathit{nat}} \\
 \end{array}
 $$
+
 
 ```
 
