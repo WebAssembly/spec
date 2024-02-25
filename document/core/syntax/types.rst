@@ -36,8 +36,10 @@ Values of number type can be stored in :ref:`memories <syntax-mem>`.
 Conventions
 ...........
 
-* The notation ${:|t|}` denotes the *bit width* of a number type ${:t}.
-  That is, ${:|I32| = |F32| = 32} and ${:|I64| = |F64| = 64}.
+* The notation ${:$size(t)}` denotes the *bit width* of a number type ${:t}.
+  That is, ${:$size(I32) = $size(F32) = 32} and ${:$size(I64) = $size(F64) = 64}.
+
+$${definition-ignore: size}
 
 
 .. index:: ! vector type, integer, floating-point, IEEE 754, bit width, memory, SIMD
@@ -64,8 +66,9 @@ Values of vector type can be stored in :ref:`memories <syntax-mem>`.
 Conventions
 ...........
 
-* The notation ${:|t|} for :ref:`bit width <bitwidth-numtype>` extends to vector types as well, that is, ${:|V128| = 128}.
+* The notation ${:$vsize(t)} for :ref:`bit width <bitwidth-numtype>` extends to vector types as well, that is, ${:$vsize(V128} = 128}.
 
+$${definition-ignore: vsize}
 
 
 .. index:: ! heap type, store, type index, ! abstract type, ! concrete type, ! unboxed scalar
@@ -85,7 +88,7 @@ There are three disjoint hierarchies of heap types:
 - *aggregate types* classify dynamically allocated *managed* data, such as *structures*, *arrays*, or *unboxed scalars*,
 - *external types* classify *external* references possibly owned by the :ref:`embedder <embedder>`.
 
-The values from the latter two hierarchies are interconvertible by ways of the |EXTERNCONVERTANY| and |ANYCONVERTEXTERN| instructions.
+The values from the latter two hierarchies are interconvertible by ways of the ${instr: EXTERN.CONVERT_ANY} and ${instr: ANY.CONVERT_EXTERN} instructions.
 That is, both type hierarchies are inhabited by an isomorphic set of values, but may have different, incompatible representations in practice.
 
 $${syntax: {absheaptype/syn heaptype/syn}}
@@ -250,7 +253,9 @@ $${syntax: {structtype arraytype fieldtype storagetype packtype}}
 Conventions
 ...........
 
-* The notation ${:|t|} for :ref:`bit width <bitwidth-valtype>` extends to packed types as well, that is, ${:|I8| = 8} and ${:|I16| = 16}.
+* The notation ${:$psize(t)} for :ref:`bit width <bitwidth-valtype>` extends to packed types as well, that is, ${:$psize(I8) = 8} and ${:$psize(I16) = 16}.
+
+$${definition-ignore: psize}
 
 
 .. index:: ! composite type, function type, aggreagate type, structure type, array type

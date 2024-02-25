@@ -11,6 +11,7 @@ val (let*) : subst option -> (subst -> subst option) -> subst option
 
 val reduce_exp : env -> exp -> exp
 val reduce_typ : env -> typ -> typ
+val reduce_typdef : env -> typ -> deftyp
 val reduce_arg : env -> arg -> arg
 
 val equiv_typ : env -> typ -> typ -> bool

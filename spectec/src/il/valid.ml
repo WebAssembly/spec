@@ -34,6 +34,7 @@ let new_env () =
 
 let local_env env = {env with vars = env.vars; typs = env.typs}
 
+(* TODO: avoid repeated copying of environment *)
 let to_eval_env env =
   let vars = Env.map (fun (t, _iters) -> t) env.vars in
   let typs = Env.map (fun (_ps, insts) -> insts) env.typs in
@@ -79,44 +80,8 @@ let typ_string env t =
 
 (* Type Accessors *)
 
-(* Returns None when args cannot be reduced enough to decide family instance. *)
-let expand_app env id as_ : deftyp' option =
-  Debug.(log "il.expand_app"
-    (fun _ -> fmt "%s(%s)" id.it (il_args as_))
-    (fun r -> fmt "%s" (opt il_deftyp (Option.map (fun r -> r $ no_region) r)))
-  ) @@ fun _ ->
-  let env' = to_eval_env env in
-  let as_ = List.map (Eval.reduce_arg env') as_ in
-  let _ps, insts = find "syntax type" env.typs id in
-  let rec lookup = function
-    | [] -> None  (* no match, cannot reduce *)
-    | inst::insts' ->
-      let InstD (_binds, as', dt) = inst.it in
-      if as' = [] && as_ = [] then Some dt.it else   (* optimisation *)
-      match Eval.(match_list match_arg env' Subst.empty as_ as') with
-      | exception Eval.Irred -> lookup insts'  (* cannot reduce, try next *)
-      | None -> lookup insts'
-      | Some s -> Some (Subst.subst_deftyp s dt).it
-  in lookup insts
-
-let rec expand env t : typ' =
-  match t.it with
-  | VarT (id, as_) ->
-    (match expand_app env id as_ with
-    | Some (AliasT t1) -> expand env t1
-    | _ -> t.it
-    )
-  | _ -> t.it
-
-let expand_def env t : deftyp' =
-  match expand env t with
-  | VarT (id, as_) ->
-    (match expand_app env id as_ with
-    | Some dt' -> dt'
-    | None -> AliasT t
-    )
-  | _ -> AliasT t
-
+let expand_typ env t = (Eval.reduce_typ (to_eval_env env) t).it
+let expand_typdef env t = (Eval.reduce_typdef (to_eval_env env) t).it
 
 type direction = Infer | Check
 
@@ -137,33 +102,33 @@ let match_iter iter1 iter2 =
   iter2 = List || Eq.eq_iter iter1 iter2
 
 let as_iter_typ iter phrase env dir t at : typ =
-  match expand env t with
+  match expand_typ env t with
   | IterT (t1, iter2) when match_iter iter iter2 -> t1
   | _ -> as_error at phrase dir t ("(_)" ^ string_of_iter iter)
 
 let as_list_typ phrase env dir t at : typ =
-  match expand env t with
+  match expand_typ env t with
   | IterT (t1, (List | List1 | ListN _)) -> t1
   | _ -> as_error at phrase dir t "(_)*"
 
 let as_tup_typ phrase env dir t at : (id * typ) list =
-  match expand env t with
+  match expand_typ env t with
   | TupT xts -> xts
   | _ -> as_error at phrase dir t "(_,...,_)"
 
 
 let as_mix_typ phrase env dir t at : mixop * typ =
-  match expand_def env t with
+  match expand_typdef env t with
   | NotationT (mixop, (_, t, _), _) -> mixop, t
   | _ -> as_error at phrase dir t ("`mixin-op`(...)")
 
 let as_struct_typ phrase env dir t at : typfield list =
-  match expand_def env t with
+  match expand_typdef env t with
   | StructT tfs -> tfs
   | _ -> as_error at phrase dir t "{...}"
 
 let as_variant_typ phrase env dir t at : typcase list =
-  match expand_def env t with
+  match expand_typdef env t with
   | VariantT tcs -> tcs
   | _ -> as_error at phrase dir t "| ..."
 
@@ -181,7 +146,7 @@ let sub_typ env t1 t2 at =
       "does not match expected supertype `" ^ typ_string env t2 ^ "`")
 
 and selfify_typ env e t =
-  match expand env t with
+  match expand_typ env t with
   | TupT xts ->
     let s, _ =
       List.fold_left (fun (s, i) (xI, tI) ->

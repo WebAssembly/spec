@@ -46,7 +46,7 @@ let equiv_list equiv_x env xs1 xs2 =
 (* Type Reduction (weak-head) *)
 
 let rec reduce_typ env t : typ =
-  Debug.(log_if "il.reduce_typ_app" (t.it <> NumT NatT)
+  Debug.(log_if "il.reduce_typ" (t.it <> NumT NatT)
     (fun _ -> fmt "%s" (il_typ t))
     (fun r -> fmt "%s" (il_typ r))
   ) @@ fun _ ->
@@ -54,15 +54,25 @@ let rec reduce_typ env t : typ =
   | VarT (id, args) ->
     let args' = List.map (reduce_arg env) args in
     (match reduce_typ_app' env id args' t.at (Map.find id.it env.typs) with
-    | Some (AliasT t') -> reduce_typ env t'
+    | Some {it = AliasT t'; _} -> reduce_typ env t'
     | _ -> VarT (id, args') $ t.at
     )
   | _ -> t
 
-and reduce_typ_app env id args at : deftyp' option =
+and reduce_typdef env t : deftyp =
+  let t' = reduce_typ env t in
+  match t'.it with
+  | VarT (id, as_) ->
+    (match reduce_typ_app env id as_ t'.at with
+    | Some dt -> dt
+    | None -> AliasT t $ t'.at
+    )
+  | _ -> AliasT t $ t'.at
+
+and reduce_typ_app env id args at : deftyp option =
   Debug.(log "il.reduce_typ_app"
     (fun _ -> fmt "%s(%s)" id.it (il_args args))
-    (fun r -> fmt "%s" (opt il_deftyp (Option.map (fun dt -> dt $ no_region) r)))
+    (fun r -> fmt "%s" (opt il_deftyp r))
   ) @@ fun _ ->
   reduce_typ_app' env id (List.map (reduce_arg env) args) at (Map.find id.it env.typs)
 
@@ -81,7 +91,7 @@ and reduce_typ_app' env id args at = function
       if not !assume_coherent_matches then None else
       reduce_typ_app' env id args at insts'
     | None -> reduce_typ_app' env id args at insts'
-    | Some s -> Some (Subst.subst_deftyp s dt).it
+    | Some s -> Some (Subst.subst_deftyp s dt)
 
 
 (* Expression Reduction *)
@@ -524,13 +534,12 @@ and match_exp env s e1 e2 : subst option =
         | NatE _, NumT _
         | TextE _, TextT -> true
         | UnE (MinusOp _, _), NumT t -> t >= IntT
-        | CaseE (atom, _), VarT (id, as_) ->
-          (match reduce_typ_app env id as_ t21'.at with
-          | Some (VariantT tcs) ->
+        | CaseE (atom, _), VarT _ ->
+          (match (reduce_typdef env t21).it with
+          | VariantT tcs ->
             (* Assumes that we only have shallow subtyping. *)
             List.exists (fun (atomN, _, _) -> atomN = atom) tcs
-          | Some _ -> false
-          | None -> raise Irred
+          | _ -> false
           )
         | VarE id1, _ ->
           let t1 = reduce_typ env (Map.find id1.it env.vars) in
@@ -573,13 +582,12 @@ and equiv_typ env t1 t2 =
     let t1' = reduce_typ env t1 in
     let t2' = reduce_typ env t2 in
     (t1 <> t1' || t2 <> t2') && equiv_typ env t1' t2' ||
-    (match reduce_typ_app env id1 as1 t1'.at, reduce_typ_app env id2 as2 t2'.at with
-    | Some (NotationT tc1), Some (NotationT tc2) ->
+    (match (reduce_typdef env t1').it, (reduce_typdef env t2').it with
+    | NotationT tc1, NotationT tc2 ->
       let (op1, (_binds1, t11, prems1), _) = tc1 in
       let (op2, (_binds2, t21, prems2), _) = tc2 in
       op1 = op2 && equiv_typ env t11 t21 && equiv_list equiv_prem env prems1 prems2
-    | Some dt1, Some dt2 -> Eq.eq_deftyp (dt1 $ t1.at) (dt2 $ t2.at)  (* TODO *)
-    | _, _ -> false
+    | dt1, dt2 -> Eq.eq_deftyp (dt1 $ t1'.at) (dt2 $ t2'.at)  (* TODO *)
     )
   | VarT _, _ ->
     let t1' = reduce_typ env t1 in
@@ -646,40 +654,40 @@ and sub_typ env t1 t2 =
   match t1'.it, t2'.it with
   | NumT t1', NumT t2' -> t1' < t2'
   | TupT xts1, TupT xts2 -> sub_tup env xts1 xts2
-  | VarT (id1, as1), VarT (id2, as2) ->
-    (match reduce_typ_app env id1 as1 t1'.at, reduce_typ_app env id2 as2 t2'.at with
-    | Some (StructT tfs1), Some (StructT tfs2) ->
+  | VarT _, VarT _ ->
+    (match (reduce_typdef env t1').it, (reduce_typdef env t2').it with
+    | StructT tfs1, StructT tfs2 ->
       List.for_all (fun (atom, (_binds2, t2, prems2), _) ->
         match find_field tfs1 atom with
         | Some (_binds1, t1, prems1) ->
           equiv_typ env t1 t2 && Eq.eq_list Eq.eq_prem prems1 prems2
         | None -> false
       ) tfs2
-    | Some (VariantT tcs1), Some (VariantT tcs2) ->
+    | VariantT tcs1, VariantT tcs2 ->
       List.for_all (fun (atom, (_binds1, t1, prems1), _) ->
         match find_case tcs2 atom with
         | Some (_binds2, t2, prems2) ->
           equiv_typ env t1 t2 && Eq.eq_list Eq.eq_prem prems1 prems2
         | None -> false
       ) tcs1
-    | Some (NotationT tc1), _ ->
+    | NotationT tc1, _ ->
       let (_op1, (_binds1, t11, _prems1), _) = tc1 in
       sub_typ env t11 t2'
-    | _, Some (NotationT tc2) ->
+    | _, NotationT tc2 ->
       let (_op2, (_binds2, t21, _prems2), _) = tc2 in
       sub_typ env t1' t21
     | _, _ -> false
     )
-  | VarT (id1, as1), _ ->
-    (match reduce_typ_app env id1 as1 t1'.at with
-    | Some (NotationT tc1) ->
+  | VarT _, _ ->
+    (match (reduce_typdef env t1').it with
+    | NotationT tc1 ->
       let (_op1, (_binds1, t11, _prems1), _) = tc1 in
       sub_typ env t11 t2'
     | _ -> false
     )
-  | _, VarT (id2, as2) ->
-    (match reduce_typ_app env id2 as2 t2'.at with
-    | Some (NotationT tc2) ->
+  | _, VarT _ ->
+    (match (reduce_typdef env t2').it with
+    | NotationT tc2 ->
       let (_op2, (_binds2, t21, _prems2), _) = tc2 in
       sub_typ env t1' t21
     | _ -> false
@@ -712,16 +720,16 @@ and disj_typ env t1 t2 =
     (fun _ -> fmt "%s ## %s" (il_typ t1) (il_typ t2)) Bool.to_string
   ) @@ fun _ ->
   match t1.it, t2.it with
-  | VarT (id1, as1), VarT (id2, as2) ->
-    (match reduce_typ_app env id1 as1 t1.at, reduce_typ_app env id2 as2 t2.at with
-    | Some (StructT tfs1), Some (StructT tfs2) ->
+  | VarT _, VarT _ ->
+    (match (reduce_typdef env t1).it, (reduce_typdef env t2).it with
+    | StructT tfs1, StructT tfs2 ->
       unordered (atoms tfs1) (atoms tfs2) ||
       List.exists (fun (atom, (_binds2, t2, _prems2), _) ->
         match find_field tfs1 atom with
         | Some (_binds1, t1, _prems1) -> disj_typ env t1 t2
         | None -> true
       ) tfs2
-    | Some (VariantT tcs1), Some (VariantT tcs2) ->
+    | VariantT tcs1, VariantT tcs2 ->
       Set.disjoint (atoms tcs1) (atoms tcs2) ||
       List.exists (fun (atom, (_binds1, t1, _prems1), _) ->
         match find_case tcs2 atom with
