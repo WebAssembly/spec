@@ -1606,6 +1606,8 @@ warning: definition prose `unrollht` was never spliced
 warning: definition prose `unrollrt` was never spliced
 warning: definition prose `utf8` was never spliced
 warning: definition prose `vbinop` was never spliced
+warning: definition prose `vcvtop` was never spliced
+warning: definition prose `vextbinop` was never spliced
 warning: definition prose `vishiftop` was never spliced
 warning: definition prose `vrelop` was never spliced
 warning: definition prose `vunop` was never spliced

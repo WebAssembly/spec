@@ -1929,12 +1929,45 @@ def $vrelop(shape : shape, vrelop_ : vrelop_(shape), vec_ : vec_(V128_vnn), vec_
 
 ;; 3-numerics.watsup
 def $vcvtop(shape_1 : shape, shape_2 : shape, vcvtop : vcvtop, sx?, lane_ : lane_($lanetype(shape_1))) : lane_($lanetype(shape_2))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i8 : lane_($lanetype(`%X%`(I8_lanetype, N_1))), i16 : lane_($lanetype(`%X%`(I16_lanetype, N_2)))}(`%X%`(I8_lanetype, N_1), `%X%`(I16_lanetype, N_2), EXTEND_vcvtop, ?(sx), i8) = i16
+    -- if (i16 = $ext(8, 16, sx, i8))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i16 : lane_($lanetype(`%X%`(I16_lanetype, N_1))), i32 : lane_($lanetype(`%X%`(I32_lanetype, N_2)))}(`%X%`(I16_lanetype, N_1), `%X%`(I32_lanetype, N_2), EXTEND_vcvtop, ?(sx), i16) = i32
+    -- if (i32 = $ext(16, 32, sx, i16))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_1))), i64 : lane_($lanetype(`%X%`(I64_lanetype, N_2)))}(`%X%`(I32_lanetype, N_1), `%X%`(I64_lanetype, N_2), EXTEND_vcvtop, ?(sx), i32) = i64
+    -- if (i64 = $ext(32, 64, sx, i32))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, f32 : f32, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_2)))}(`%X%`(F32_lanetype, N_1), `%X%`(I32_lanetype, N_2), TRUNC_SAT_vcvtop, ?(sx), f32) = i32
+    -- if (i32 = $trunc_sat(32, 32, sx, f32))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, f64 : f64, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_2)))}(`%X%`(F64_lanetype, N_1), `%X%`(I32_lanetype, N_2), TRUNC_SAT_vcvtop, ?(sx), f64) = i32
+    -- if (i32 = $trunc_sat(64, 32, sx, f64))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_1))), f32 : f32}(`%X%`(I32_lanetype, N_1), `%X%`(F32_lanetype, N_2), CONVERT_vcvtop, ?(sx), i32) = f32
+    -- if (f32 = $convert(32, 32, sx, i32))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_1))), f64 : f64}(`%X%`(I32_lanetype, N_1), `%X%`(F64_lanetype, N_2), CONVERT_vcvtop, ?(sx), i32) = f64
+    -- if (f64 = $convert(32, 64, sx, i32))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, f64 : f64, f32 : f32}(`%X%`(F64_lanetype, N_1), `%X%`(F32_lanetype, N_2), DEMOTE_vcvtop, ?(sx), f64) = f32
+    -- if (f32 = $demote(64, 32, f64))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, f32 : f32, f64 : f64}(`%X%`(F32_lanetype, N_1), `%X%`(F64_lanetype, N_2), PROMOTE_vcvtop, ?(sx), f32) = f64
+    -- if (f64 = $promote(32, 64, f32))
 
 ;; 3-numerics.watsup
 def $vextunop(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx, vec_ : vec_(V128_vnn)) : vec_(V128_vnn)
 
 ;; 3-numerics.watsup
 def $vextbinop(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx, vec_ : vec_(V128_vnn), vec_ : vec_(V128_vnn)) : vec_(V128_vnn)
+  ;; 3-numerics.watsup
+  def $vextbinop{inn_1 : inn, N_1 : N, inn_2 : inn, N_2 : N, sx : sx, c_1 : vec_(V128_vnn), c_2 : vec_(V128_vnn), c : vec_(V128_vnn), cj_1 : iN($lsize((inn_1 : inn <: lanetype))), cj_2 : iN($lsize((inn_1 : inn <: lanetype))), ci_1* : lane_($lanetype(`%X%`((inn_2 : inn <: lanetype), N_2)))*, ci_2* : lane_($lanetype(`%X%`((inn_2 : inn <: lanetype), N_2)))*}(`%X%`((inn_1 : inn <: imm), N_1), `%X%`((inn_2 : inn <: imm), N_2), DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), N_1), `%X%`((inn_2 : inn <: imm), N_2)), sx, c_1, c_2) = c
+    -- if (ci_1*{ci_1} = $lanes_(`%X%`((inn_2 : inn <: lanetype), N_2), c_1))
+    -- if (ci_2*{ci_2} = $lanes_(`%X%`((inn_2 : inn <: lanetype), N_2), c_2))
+    -- if ($concat_(syntax iN($lsize((inn_1 : inn <: lanetype))), [cj_1 cj_2]*{}) = $imul($lsize((inn_1 : inn <: lanetype)), $ext($lsize((inn_2 : inn <: lanetype)), $lsize((inn_1 : inn <: lanetype)), S_sx, ci_1), $ext($lsize((inn_2 : inn <: lanetype)), $lsize((inn_1 : inn <: lanetype)), S_sx, ci_2))*{ci_1 ci_2})
+    -- if (c = $invlanes_(`%X%`((inn_1 : inn <: lanetype), N_1), $iadd($lsize((inn_1 : inn <: lanetype)), cj_1, cj_2)^N_1{}))
 
 ;; 3-numerics.watsup
 def $vishiftop(ishape : ishape, vshiftop_ : vshiftop_(ishape), lane_ : lane_($lanetype((ishape : ishape <: shape))), u32 : u32) : lane_($lanetype((ishape : ishape <: shape)))
@@ -4364,7 +4397,7 @@ relation Step_pure: `%*_~>%*`(admininstr*, admininstr*)
   rule vbitmask{c : vec_(V128_vnn), inn : inn, N : N, ci : num_(I32_numtype), ci_1* : lane_($lanetype(`%X%`((inn : inn <: lanetype), N)))*}:
     `%*_~>%*`([VCONST_admininstr(V128_vectype, c) VBITMASK_admininstr(`%X%`((inn : inn <: imm), N))], [CONST_admininstr(I32_numtype, ci)])
     -- if (ci_1*{ci_1} = $lanes_(`%X%`((inn : inn <: lanetype), N), c))
-    -- if ($ibits(32, ci) = $ilt($size((inn : inn <: valtype)), S_sx, ci_1, 0)*{ci_1})
+    -- if ($ibits(32, ci) = $ilt($lsize((inn : inn <: lanetype)), S_sx, ci_1, 0)*{ci_1})
 
   ;; 8-reduction.watsup
   rule vnarrow{c_1 : vec_(V128_vnn), c_2 : vec_(V128_vnn), inn_1 : inn, N_1 : N, inn_2 : inn, N_2 : N, sx : sx, c : vec_(V128_vnn), ci_1* : lane_($lanetype(`%X%`((inn_1 : inn <: lanetype), N_1)))*, ci_2* : lane_($lanetype(`%X%`((inn_1 : inn <: lanetype), N_1)))*, cj_1* : iN($size((inn_2 : inn <: valtype)))*, cj_2* : iN($size((inn_2 : inn <: valtype)))*}:
@@ -4857,16 +4890,16 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- if (c = $ext(N, 128, U_sx, j))
 
   ;; 8-reduction.watsup
-  rule vload_lane-oob{z : state, i : nat, vt : vectype, c_1 : vec_(vt), N : N, x : idx, mo : memop, j : nat}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VCONST_admininstr(vt, c_1) VLOAD_LANE_admininstr(N, x, mo, j)]), [TRAP_admininstr])
+  rule vload_lane-oob{z : state, i : nat, c_1 : vec_(V128_vnn), N : N, x : idx, mo : memop, j : nat}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VCONST_admininstr(V128_vectype, c_1) VLOAD_LANE_admininstr(N, x, mo, j)]), [TRAP_admininstr])
     -- if (((i + (mo.OFFSET_memop : uN(32) <: nat)) + (N / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup
-  rule vload_lane-val{z : state, i : nat, vt : vectype, c_1 : vec_(vt), N : N, x : idx, mo : memop, j : nat, c : vec_(vt), k : nat, imm : imm, M : M}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VCONST_admininstr(vt, c_1) VLOAD_LANE_admininstr(N, x, mo, j)]), [VCONST_admininstr(vt, c)])
+  rule vload_lane-val{z : state, i : nat, c_1 : vec_(V128_vnn), N : N, x : idx, mo : memop, j : nat, c : vec_(V128_vnn), k : nat, imm : imm, M : M}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VCONST_admininstr(V128_vectype, c_1) VLOAD_LANE_admininstr(N, x, mo, j)]), [VCONST_admininstr(V128_vectype, c)])
     -- if ($ibytes(N, k) = $mem(z, x).DATA_meminst[(i + (mo.OFFSET_memop : uN(32) <: nat)) : (N / 8)])
     -- if (N = $lsize((imm : imm <: lanetype)))
-    -- if (M = ($size((vt : vectype <: valtype)) / N))
+    -- if (M = ($size(V128_valtype) / N))
     -- if (c = $invlanes_(`%X%`((imm : imm <: lanetype), M), $lanes_(`%X%`((imm : imm <: lanetype), M), c_1)[[j] = (k : nat <: lane_($lanetype(`%X%`((imm : imm <: lanetype), M))))]))
 
   ;; 8-reduction.watsup
@@ -7310,12 +7343,45 @@ def $vrelop(shape : shape, vrelop_ : vrelop_(shape), vec_ : vec_(V128_vnn), vec_
 
 ;; 3-numerics.watsup
 def $vcvtop(shape_1 : shape, shape_2 : shape, vcvtop : vcvtop, sx?, lane_ : lane_($lanetype(shape_1))) : lane_($lanetype(shape_2))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i8 : lane_($lanetype(`%X%`(I8_lanetype, N_1))), i16 : lane_($lanetype(`%X%`(I16_lanetype, N_2)))}(`%X%`(I8_lanetype, N_1), `%X%`(I16_lanetype, N_2), EXTEND_vcvtop, ?(sx), i8) = i16
+    -- if (i16 = $ext(8, 16, sx, i8))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i16 : lane_($lanetype(`%X%`(I16_lanetype, N_1))), i32 : lane_($lanetype(`%X%`(I32_lanetype, N_2)))}(`%X%`(I16_lanetype, N_1), `%X%`(I32_lanetype, N_2), EXTEND_vcvtop, ?(sx), i16) = i32
+    -- if (i32 = $ext(16, 32, sx, i16))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_1))), i64 : lane_($lanetype(`%X%`(I64_lanetype, N_2)))}(`%X%`(I32_lanetype, N_1), `%X%`(I64_lanetype, N_2), EXTEND_vcvtop, ?(sx), i32) = i64
+    -- if (i64 = $ext(32, 64, sx, i32))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, f32 : f32, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_2)))}(`%X%`(F32_lanetype, N_1), `%X%`(I32_lanetype, N_2), TRUNC_SAT_vcvtop, ?(sx), f32) = i32
+    -- if (i32 = $trunc_sat(32, 32, sx, f32))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, f64 : f64, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_2)))}(`%X%`(F64_lanetype, N_1), `%X%`(I32_lanetype, N_2), TRUNC_SAT_vcvtop, ?(sx), f64) = i32
+    -- if (i32 = $trunc_sat(64, 32, sx, f64))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_1))), f32 : f32}(`%X%`(I32_lanetype, N_1), `%X%`(F32_lanetype, N_2), CONVERT_vcvtop, ?(sx), i32) = f32
+    -- if (f32 = $convert(32, 32, sx, i32))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_1))), f64 : f64}(`%X%`(I32_lanetype, N_1), `%X%`(F64_lanetype, N_2), CONVERT_vcvtop, ?(sx), i32) = f64
+    -- if (f64 = $convert(32, 64, sx, i32))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, f64 : f64, f32 : f32}(`%X%`(F64_lanetype, N_1), `%X%`(F32_lanetype, N_2), DEMOTE_vcvtop, ?(sx), f64) = f32
+    -- if (f32 = $demote(64, 32, f64))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, f32 : f32, f64 : f64}(`%X%`(F32_lanetype, N_1), `%X%`(F64_lanetype, N_2), PROMOTE_vcvtop, ?(sx), f32) = f64
+    -- if (f64 = $promote(32, 64, f32))
 
 ;; 3-numerics.watsup
 def $vextunop(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx, vec_ : vec_(V128_vnn)) : vec_(V128_vnn)
 
 ;; 3-numerics.watsup
 def $vextbinop(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx, vec_ : vec_(V128_vnn), vec_ : vec_(V128_vnn)) : vec_(V128_vnn)
+  ;; 3-numerics.watsup
+  def $vextbinop{inn_1 : inn, N_1 : N, inn_2 : inn, N_2 : N, sx : sx, c_1 : vec_(V128_vnn), c_2 : vec_(V128_vnn), c : vec_(V128_vnn), cj_1 : iN($lsize((inn_1 : inn <: lanetype))), cj_2 : iN($lsize((inn_1 : inn <: lanetype))), ci_1* : lane_($lanetype(`%X%`((inn_2 : inn <: lanetype), N_2)))*, ci_2* : lane_($lanetype(`%X%`((inn_2 : inn <: lanetype), N_2)))*}(`%X%`((inn_1 : inn <: imm), N_1), `%X%`((inn_2 : inn <: imm), N_2), DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), N_1), `%X%`((inn_2 : inn <: imm), N_2)), sx, c_1, c_2) = c
+    -- if (ci_1*{ci_1} = $lanes_(`%X%`((inn_2 : inn <: lanetype), N_2), c_1))
+    -- if (ci_2*{ci_2} = $lanes_(`%X%`((inn_2 : inn <: lanetype), N_2), c_2))
+    -- if ($concat_(syntax iN($lsize((inn_1 : inn <: lanetype))), [cj_1 cj_2]*{}) = $imul($lsize((inn_1 : inn <: lanetype)), $ext($lsize((inn_2 : inn <: lanetype)), $lsize((inn_1 : inn <: lanetype)), S_sx, ci_1), $ext($lsize((inn_2 : inn <: lanetype)), $lsize((inn_1 : inn <: lanetype)), S_sx, ci_2))*{ci_1 ci_2})
+    -- if (c = $invlanes_(`%X%`((inn_1 : inn <: lanetype), N_1), $iadd($lsize((inn_1 : inn <: lanetype)), cj_1, cj_2)^N_1{}))
 
 ;; 3-numerics.watsup
 def $vishiftop(ishape : ishape, vshiftop_ : vshiftop_(ishape), lane_ : lane_($lanetype((ishape : ishape <: shape))), u32 : u32) : lane_($lanetype((ishape : ishape <: shape)))
@@ -9747,7 +9813,7 @@ relation Step_pure: `%*_~>%*`(admininstr*, admininstr*)
   rule vbitmask{c : vec_(V128_vnn), inn : inn, N : N, ci : num_(I32_numtype), ci_1* : lane_($lanetype(`%X%`((inn : inn <: lanetype), N)))*}:
     `%*_~>%*`([VCONST_admininstr(V128_vectype, c) VBITMASK_admininstr(`%X%`((inn : inn <: imm), N))], [CONST_admininstr(I32_numtype, ci)])
     -- if (ci_1*{ci_1} = $lanes_(`%X%`((inn : inn <: lanetype), N), c))
-    -- if ($ibits(32, ci) = $ilt(!($size((inn : inn <: valtype))), S_sx, ci_1, 0)*{ci_1})
+    -- if ($ibits(32, ci) = $ilt($lsize((inn : inn <: lanetype)), S_sx, ci_1, 0)*{ci_1})
 
   ;; 8-reduction.watsup
   rule vnarrow{c_1 : vec_(V128_vnn), c_2 : vec_(V128_vnn), inn_1 : inn, N_1 : N, inn_2 : inn, N_2 : N, sx : sx, c : vec_(V128_vnn), ci_1* : lane_($lanetype(`%X%`((inn_1 : inn <: lanetype), N_1)))*, ci_2* : lane_($lanetype(`%X%`((inn_1 : inn <: lanetype), N_1)))*, cj_1* : iN(!($size((inn_2 : inn <: valtype))))*, cj_2* : iN(!($size((inn_2 : inn <: valtype))))*}:
@@ -10240,16 +10306,16 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- if (c = $ext(N, 128, U_sx, j))
 
   ;; 8-reduction.watsup
-  rule vload_lane-oob{z : state, i : nat, vt : vectype, c_1 : vec_(vt), N : N, x : idx, mo : memop, j : nat}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VCONST_admininstr(vt, c_1) VLOAD_LANE_admininstr(N, x, mo, j)]), [TRAP_admininstr])
+  rule vload_lane-oob{z : state, i : nat, c_1 : vec_(V128_vnn), N : N, x : idx, mo : memop, j : nat}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VCONST_admininstr(V128_vectype, c_1) VLOAD_LANE_admininstr(N, x, mo, j)]), [TRAP_admininstr])
     -- if (((i + (mo.OFFSET_memop : uN(32) <: nat)) + (N / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup
-  rule vload_lane-val{z : state, i : nat, vt : vectype, c_1 : vec_(vt), N : N, x : idx, mo : memop, j : nat, c : vec_(vt), k : nat, imm : imm, M : M}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VCONST_admininstr(vt, c_1) VLOAD_LANE_admininstr(N, x, mo, j)]), [VCONST_admininstr(vt, c)])
+  rule vload_lane-val{z : state, i : nat, c_1 : vec_(V128_vnn), N : N, x : idx, mo : memop, j : nat, c : vec_(V128_vnn), k : nat, imm : imm, M : M}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VCONST_admininstr(V128_vectype, c_1) VLOAD_LANE_admininstr(N, x, mo, j)]), [VCONST_admininstr(V128_vectype, c)])
     -- if ($ibytes(N, k) = $mem(z, x).DATA_meminst[(i + (mo.OFFSET_memop : uN(32) <: nat)) : (N / 8)])
     -- if (N = $lsize((imm : imm <: lanetype)))
-    -- if (M = (!($size((vt : vectype <: valtype))) / N))
+    -- if (M = (!($size(V128_valtype)) / N))
     -- if (c = $invlanes_(`%X%`((imm : imm <: lanetype), M), $lanes_(`%X%`((imm : imm <: lanetype), M), c_1)[[j] = (k : nat <: lane_($lanetype(`%X%`((imm : imm <: lanetype), M))))]))
 
   ;; 8-reduction.watsup
@@ -12693,12 +12759,45 @@ def $vrelop(shape : shape, vrelop_ : vrelop_(shape), vec_ : vec_(V128_vnn), vec_
 
 ;; 3-numerics.watsup
 def $vcvtop(shape_1 : shape, shape_2 : shape, vcvtop : vcvtop, sx?, lane_ : lane_($lanetype(shape_1))) : lane_($lanetype(shape_2))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i8 : lane_($lanetype(`%X%`(I8_lanetype, N_1))), i16 : lane_($lanetype(`%X%`(I16_lanetype, N_2)))}(`%X%`(I8_lanetype, N_1), `%X%`(I16_lanetype, N_2), EXTEND_vcvtop, ?(sx), i8) = i16
+    -- if (i16 = $ext(8, 16, sx, i8))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i16 : lane_($lanetype(`%X%`(I16_lanetype, N_1))), i32 : lane_($lanetype(`%X%`(I32_lanetype, N_2)))}(`%X%`(I16_lanetype, N_1), `%X%`(I32_lanetype, N_2), EXTEND_vcvtop, ?(sx), i16) = i32
+    -- if (i32 = $ext(16, 32, sx, i16))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_1))), i64 : lane_($lanetype(`%X%`(I64_lanetype, N_2)))}(`%X%`(I32_lanetype, N_1), `%X%`(I64_lanetype, N_2), EXTEND_vcvtop, ?(sx), i32) = i64
+    -- if (i64 = $ext(32, 64, sx, i32))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, f32 : f32, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_2)))}(`%X%`(F32_lanetype, N_1), `%X%`(I32_lanetype, N_2), TRUNC_SAT_vcvtop, ?(sx), f32) = i32
+    -- if (i32 = $trunc_sat(32, 32, sx, f32))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, f64 : f64, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_2)))}(`%X%`(F64_lanetype, N_1), `%X%`(I32_lanetype, N_2), TRUNC_SAT_vcvtop, ?(sx), f64) = i32
+    -- if (i32 = $trunc_sat(64, 32, sx, f64))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_1))), f32 : f32}(`%X%`(I32_lanetype, N_1), `%X%`(F32_lanetype, N_2), CONVERT_vcvtop, ?(sx), i32) = f32
+    -- if (f32 = $convert(32, 32, sx, i32))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_1))), f64 : f64}(`%X%`(I32_lanetype, N_1), `%X%`(F64_lanetype, N_2), CONVERT_vcvtop, ?(sx), i32) = f64
+    -- if (f64 = $convert(32, 64, sx, i32))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, f64 : f64, f32 : f32}(`%X%`(F64_lanetype, N_1), `%X%`(F32_lanetype, N_2), DEMOTE_vcvtop, ?(sx), f64) = f32
+    -- if (f32 = $demote(64, 32, f64))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, f32 : f32, f64 : f64}(`%X%`(F32_lanetype, N_1), `%X%`(F64_lanetype, N_2), PROMOTE_vcvtop, ?(sx), f32) = f64
+    -- if (f64 = $promote(32, 64, f32))
 
 ;; 3-numerics.watsup
 def $vextunop(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx, vec_ : vec_(V128_vnn)) : vec_(V128_vnn)
 
 ;; 3-numerics.watsup
 def $vextbinop(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx, vec_ : vec_(V128_vnn), vec_ : vec_(V128_vnn)) : vec_(V128_vnn)
+  ;; 3-numerics.watsup
+  def $vextbinop{inn_1 : inn, N_1 : N, inn_2 : inn, N_2 : N, sx : sx, c_1 : vec_(V128_vnn), c_2 : vec_(V128_vnn), c : vec_(V128_vnn), cj_1 : iN($lsize((inn_1 : inn <: lanetype))), cj_2 : iN($lsize((inn_1 : inn <: lanetype))), ci_1* : lane_($lanetype(`%X%`((inn_2 : inn <: lanetype), N_2)))*, ci_2* : lane_($lanetype(`%X%`((inn_2 : inn <: lanetype), N_2)))*}(`%X%`((inn_1 : inn <: imm), N_1), `%X%`((inn_2 : inn <: imm), N_2), DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), N_1), `%X%`((inn_2 : inn <: imm), N_2)), sx, c_1, c_2) = c
+    -- if (ci_1*{ci_1} = $lanes_(`%X%`((inn_2 : inn <: lanetype), N_2), c_1))
+    -- if (ci_2*{ci_2} = $lanes_(`%X%`((inn_2 : inn <: lanetype), N_2), c_2))
+    -- if ($concat_(syntax iN($lsize((inn_1 : inn <: lanetype))), [cj_1 cj_2]*{}) = $imul($lsize((inn_1 : inn <: lanetype)), $ext($lsize((inn_2 : inn <: lanetype)), $lsize((inn_1 : inn <: lanetype)), S_sx, ci_1), $ext($lsize((inn_2 : inn <: lanetype)), $lsize((inn_1 : inn <: lanetype)), S_sx, ci_2))*{ci_1 ci_2})
+    -- if (c = $invlanes_(`%X%`((inn_1 : inn <: lanetype), N_1), $iadd($lsize((inn_1 : inn <: lanetype)), cj_1, cj_2)^N_1{}))
 
 ;; 3-numerics.watsup
 def $vishiftop(ishape : ishape, vshiftop_ : vshiftop_(ishape), lane_ : lane_($lanetype((ishape : ishape <: shape))), u32 : u32) : lane_($lanetype((ishape : ishape <: shape)))
@@ -15137,11 +15236,10 @@ relation Step_pure: `%*_~>%*`(admininstr*, admininstr*)
     -- otherwise
 
   ;; 8-reduction.watsup
-  rule vbitmask{c : vec_(V128_vnn), inn : inn, N : N, ci : num_(I32_numtype), ci_1* : lane_($lanetype(`%X%`((inn : inn <: lanetype), N)))*, o0* : N*}:
+  rule vbitmask{c : vec_(V128_vnn), inn : inn, N : N, ci : num_(I32_numtype), ci_1* : lane_($lanetype(`%X%`((inn : inn <: lanetype), N)))*}:
     `%*_~>%*`([VCONST_admininstr(V128_vectype, c) VBITMASK_admininstr(`%X%`((inn : inn <: imm), N))], [CONST_admininstr(I32_numtype, ci)])
-    -- (if ($size((inn : inn <: valtype)) = ?(o0)))*{o0}
     -- if (ci_1*{ci_1} = $lanes_(`%X%`((inn : inn <: lanetype), N), c))
-    -- if ($ibits(32, ci) = $ilt(o0, S_sx, ci_1, 0)*{ci_1 o0})
+    -- if ($ibits(32, ci) = $ilt($lsize((inn : inn <: lanetype)), S_sx, ci_1, 0)*{ci_1})
 
   ;; 8-reduction.watsup
   rule vnarrow{c_1 : vec_(V128_vnn), c_2 : vec_(V128_vnn), inn_1 : inn, N_1 : N, inn_2 : inn, N_2 : N, sx : sx, c : vec_(V128_vnn), ci_1* : lane_($lanetype(`%X%`((inn_1 : inn <: lanetype), N_1)))*, ci_2* : lane_($lanetype(`%X%`((inn_1 : inn <: lanetype), N_1)))*, cj_1* : iN(!($size((inn_2 : inn <: valtype))))*, cj_2* : iN(!($size((inn_2 : inn <: valtype))))*, o0* : M*, o1* : N*, o2* : M*, o3* : N*}:
@@ -15649,14 +15747,14 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- if (c = $ext(N, 128, U_sx, j))
 
   ;; 8-reduction.watsup
-  rule vload_lane-oob{z : state, i : nat, vt : vectype, c_1 : vec_(vt), N : N, x : idx, mo : memop, j : nat}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VCONST_admininstr(vt, c_1) VLOAD_LANE_admininstr(N, x, mo, j)]), [TRAP_admininstr])
+  rule vload_lane-oob{z : state, i : nat, c_1 : vec_(V128_vnn), N : N, x : idx, mo : memop, j : nat}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VCONST_admininstr(V128_vectype, c_1) VLOAD_LANE_admininstr(N, x, mo, j)]), [TRAP_admininstr])
     -- if (((i + (mo.OFFSET_memop : uN(32) <: nat)) + (N / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup
-  rule vload_lane-val{z : state, i : nat, vt : vectype, c_1 : vec_(vt), N : N, x : idx, mo : memop, j : nat, c : vec_(vt), k : nat, imm : imm, M : M, o0 : nat}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VCONST_admininstr(vt, c_1) VLOAD_LANE_admininstr(N, x, mo, j)]), [VCONST_admininstr(vt, c)])
-    -- if ($size((vt : vectype <: valtype)) = ?(o0))
+  rule vload_lane-val{z : state, i : nat, c_1 : vec_(V128_vnn), N : N, x : idx, mo : memop, j : nat, c : vec_(V128_vnn), k : nat, imm : imm, M : M, o0 : nat}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VCONST_admininstr(V128_vectype, c_1) VLOAD_LANE_admininstr(N, x, mo, j)]), [VCONST_admininstr(V128_vectype, c)])
+    -- if ($size(V128_valtype) = ?(o0))
     -- if ($ibytes(N, k) = $mem(z, x).DATA_meminst[(i + (mo.OFFSET_memop : uN(32) <: nat)) : (N / 8)])
     -- if (N = $lsize((imm : imm <: lanetype)))
     -- if (M = (o0 / N))
@@ -18110,12 +18208,45 @@ def $vrelop(shape : shape, vrelop_ : vrelop_(shape), vec_ : vec_(V128_vnn), vec_
 
 ;; 3-numerics.watsup
 def $vcvtop(shape_1 : shape, shape_2 : shape, vcvtop : vcvtop, sx?, lane_ : lane_($lanetype(shape_1))) : lane_($lanetype(shape_2))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i8 : lane_($lanetype(`%X%`(I8_lanetype, N_1))), i16 : lane_($lanetype(`%X%`(I16_lanetype, N_2)))}(`%X%`(I8_lanetype, N_1), `%X%`(I16_lanetype, N_2), EXTEND_vcvtop, ?(sx), i8) = i16
+    -- if (i16 = $ext(8, 16, sx, i8))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i16 : lane_($lanetype(`%X%`(I16_lanetype, N_1))), i32 : lane_($lanetype(`%X%`(I32_lanetype, N_2)))}(`%X%`(I16_lanetype, N_1), `%X%`(I32_lanetype, N_2), EXTEND_vcvtop, ?(sx), i16) = i32
+    -- if (i32 = $ext(16, 32, sx, i16))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_1))), i64 : lane_($lanetype(`%X%`(I64_lanetype, N_2)))}(`%X%`(I32_lanetype, N_1), `%X%`(I64_lanetype, N_2), EXTEND_vcvtop, ?(sx), i32) = i64
+    -- if (i64 = $ext(32, 64, sx, i32))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, f32 : f32, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_2)))}(`%X%`(F32_lanetype, N_1), `%X%`(I32_lanetype, N_2), TRUNC_SAT_vcvtop, ?(sx), f32) = i32
+    -- if (i32 = $trunc_sat(32, 32, sx, f32))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, f64 : f64, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_2)))}(`%X%`(F64_lanetype, N_1), `%X%`(I32_lanetype, N_2), TRUNC_SAT_vcvtop, ?(sx), f64) = i32
+    -- if (i32 = $trunc_sat(64, 32, sx, f64))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_1))), f32 : f32}(`%X%`(I32_lanetype, N_1), `%X%`(F32_lanetype, N_2), CONVERT_vcvtop, ?(sx), i32) = f32
+    -- if (f32 = $convert(32, 32, sx, i32))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_1))), f64 : f64}(`%X%`(I32_lanetype, N_1), `%X%`(F64_lanetype, N_2), CONVERT_vcvtop, ?(sx), i32) = f64
+    -- if (f64 = $convert(32, 64, sx, i32))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, f64 : f64, f32 : f32}(`%X%`(F64_lanetype, N_1), `%X%`(F32_lanetype, N_2), DEMOTE_vcvtop, ?(sx), f64) = f32
+    -- if (f32 = $demote(64, 32, f64))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, f32 : f32, f64 : f64}(`%X%`(F32_lanetype, N_1), `%X%`(F64_lanetype, N_2), PROMOTE_vcvtop, ?(sx), f32) = f64
+    -- if (f64 = $promote(32, 64, f32))
 
 ;; 3-numerics.watsup
 def $vextunop(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx, vec_ : vec_(V128_vnn)) : vec_(V128_vnn)
 
 ;; 3-numerics.watsup
 def $vextbinop(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx, vec_ : vec_(V128_vnn), vec_ : vec_(V128_vnn)) : vec_(V128_vnn)
+  ;; 3-numerics.watsup
+  def $vextbinop{inn_1 : inn, N_1 : N, inn_2 : inn, N_2 : N, sx : sx, c_1 : vec_(V128_vnn), c_2 : vec_(V128_vnn), c : vec_(V128_vnn), cj_1 : iN($lsize((inn_1 : inn <: lanetype))), cj_2 : iN($lsize((inn_1 : inn <: lanetype))), ci_1* : lane_($lanetype(`%X%`((inn_2 : inn <: lanetype), N_2)))*, ci_2* : lane_($lanetype(`%X%`((inn_2 : inn <: lanetype), N_2)))*}(`%X%`((inn_1 : inn <: imm), N_1), `%X%`((inn_2 : inn <: imm), N_2), DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), N_1), `%X%`((inn_2 : inn <: imm), N_2)), sx, c_1, c_2) = c
+    -- if (ci_1*{ci_1} = $lanes_(`%X%`((inn_2 : inn <: lanetype), N_2), c_1))
+    -- if (ci_2*{ci_2} = $lanes_(`%X%`((inn_2 : inn <: lanetype), N_2), c_2))
+    -- if ($concat_(syntax iN($lsize((inn_1 : inn <: lanetype))), [cj_1 cj_2]*{}) = $imul($lsize((inn_1 : inn <: lanetype)), $ext($lsize((inn_2 : inn <: lanetype)), $lsize((inn_1 : inn <: lanetype)), S_sx, ci_1), $ext($lsize((inn_2 : inn <: lanetype)), $lsize((inn_1 : inn <: lanetype)), S_sx, ci_2))*{ci_1 ci_2})
+    -- if (c = $invlanes_(`%X%`((inn_1 : inn <: lanetype), N_1), $iadd($lsize((inn_1 : inn <: lanetype)), cj_1, cj_2)^N_1{}))
 
 ;; 3-numerics.watsup
 def $vishiftop(ishape : ishape, vshiftop_ : vshiftop_(ishape), lane_ : lane_($lanetype((ishape : ishape <: shape))), u32 : u32) : lane_($lanetype((ishape : ishape <: shape)))
@@ -20554,11 +20685,10 @@ relation Step_pure: `%*_~>%*`(admininstr*, admininstr*)
     -- otherwise
 
   ;; 8-reduction.watsup
-  rule vbitmask{c : vec_(V128_vnn), inn : inn, N : N, ci : num_(I32_numtype), ci_1* : lane_($lanetype(`%X%`((inn : inn <: lanetype), N)))*, o0* : N*}:
+  rule vbitmask{c : vec_(V128_vnn), inn : inn, N : N, ci : num_(I32_numtype), ci_1* : lane_($lanetype(`%X%`((inn : inn <: lanetype), N)))*}:
     `%*_~>%*`([VCONST_admininstr(V128_vectype, c) VBITMASK_admininstr(`%X%`((inn : inn <: imm), N))], [CONST_admininstr(I32_numtype, ci)])
-    -- (if ($size((inn : inn <: valtype)) = ?(o0)))*{o0}
     -- if (ci_1*{ci_1} = $lanes_(`%X%`((inn : inn <: lanetype), N), c))
-    -- if ($ibits(32, ci) = $ilt(o0, S_sx, ci_1, 0)*{ci_1 o0})
+    -- if ($ibits(32, ci) = $ilt($lsize((inn : inn <: lanetype)), S_sx, ci_1, 0)*{ci_1})
 
   ;; 8-reduction.watsup
   rule vnarrow{c_1 : vec_(V128_vnn), c_2 : vec_(V128_vnn), inn_1 : inn, N_1 : N, inn_2 : inn, N_2 : N, sx : sx, c : vec_(V128_vnn), ci_1* : lane_($lanetype(`%X%`((inn_1 : inn <: lanetype), N_1)))*, ci_2* : lane_($lanetype(`%X%`((inn_1 : inn <: lanetype), N_1)))*, cj_1* : iN(!($size((inn_2 : inn <: valtype))))*, cj_2* : iN(!($size((inn_2 : inn <: valtype))))*, o0* : M*, o1* : N*, o2* : M*, o3* : N*}:
@@ -21066,14 +21196,14 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- if (c = $ext(N, 128, U_sx, j))
 
   ;; 8-reduction.watsup
-  rule vload_lane-oob{z : state, i : nat, vt : vectype, c_1 : vec_(vt), N : N, x : idx, mo : memop, j : nat}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VCONST_admininstr(vt, c_1) VLOAD_LANE_admininstr(N, x, mo, j)]), [TRAP_admininstr])
+  rule vload_lane-oob{z : state, i : nat, c_1 : vec_(V128_vnn), N : N, x : idx, mo : memop, j : nat}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VCONST_admininstr(V128_vectype, c_1) VLOAD_LANE_admininstr(N, x, mo, j)]), [TRAP_admininstr])
     -- if (((i + (mo.OFFSET_memop : uN(32) <: nat)) + (N / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup
-  rule vload_lane-val{z : state, i : nat, vt : vectype, c_1 : vec_(vt), N : N, x : idx, mo : memop, j : nat, c : vec_(vt), k : nat, imm : imm, M : M, o0 : nat}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VCONST_admininstr(vt, c_1) VLOAD_LANE_admininstr(N, x, mo, j)]), [VCONST_admininstr(vt, c)])
-    -- if ($size((vt : vectype <: valtype)) = ?(o0))
+  rule vload_lane-val{z : state, i : nat, c_1 : vec_(V128_vnn), N : N, x : idx, mo : memop, j : nat, c : vec_(V128_vnn), k : nat, imm : imm, M : M, o0 : nat}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VCONST_admininstr(V128_vectype, c_1) VLOAD_LANE_admininstr(N, x, mo, j)]), [VCONST_admininstr(V128_vectype, c)])
+    -- if ($size(V128_valtype) = ?(o0))
     -- if ($ibytes(N, k) = $mem(z, x).DATA_meminst[(i + (mo.OFFSET_memop : uN(32) <: nat)) : (N / 8)])
     -- if (N = $lsize((imm : imm <: lanetype)))
     -- if (M = (o0 / N))
@@ -23527,12 +23657,45 @@ def $vrelop(shape : shape, vrelop_ : vrelop_(shape), vec_ : vec_(V128_vnn), vec_
 
 ;; 3-numerics.watsup
 def $vcvtop(shape_1 : shape, shape_2 : shape, vcvtop : vcvtop, sx?, lane_ : lane_($lanetype(shape_1))) : lane_($lanetype(shape_2))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i8 : lane_($lanetype(`%X%`(I8_lanetype, N_1))), i16 : lane_($lanetype(`%X%`(I16_lanetype, N_2)))}(`%X%`(I8_lanetype, N_1), `%X%`(I16_lanetype, N_2), EXTEND_vcvtop, ?(sx), i8) = i16
+    -- if (i16 = $ext(8, 16, sx, i8))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i16 : lane_($lanetype(`%X%`(I16_lanetype, N_1))), i32 : lane_($lanetype(`%X%`(I32_lanetype, N_2)))}(`%X%`(I16_lanetype, N_1), `%X%`(I32_lanetype, N_2), EXTEND_vcvtop, ?(sx), i16) = i32
+    -- if (i32 = $ext(16, 32, sx, i16))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_1))), i64 : lane_($lanetype(`%X%`(I64_lanetype, N_2)))}(`%X%`(I32_lanetype, N_1), `%X%`(I64_lanetype, N_2), EXTEND_vcvtop, ?(sx), i32) = i64
+    -- if (i64 = $ext(32, 64, sx, i32))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, f32 : f32, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_2)))}(`%X%`(F32_lanetype, N_1), `%X%`(I32_lanetype, N_2), TRUNC_SAT_vcvtop, ?(sx), f32) = i32
+    -- if (i32 = $trunc_sat(32, 32, sx, f32))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, f64 : f64, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_2)))}(`%X%`(F64_lanetype, N_1), `%X%`(I32_lanetype, N_2), TRUNC_SAT_vcvtop, ?(sx), f64) = i32
+    -- if (i32 = $trunc_sat(64, 32, sx, f64))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_1))), f32 : f32}(`%X%`(I32_lanetype, N_1), `%X%`(F32_lanetype, N_2), CONVERT_vcvtop, ?(sx), i32) = f32
+    -- if (f32 = $convert(32, 32, sx, i32))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_1))), f64 : f64}(`%X%`(I32_lanetype, N_1), `%X%`(F64_lanetype, N_2), CONVERT_vcvtop, ?(sx), i32) = f64
+    -- if (f64 = $convert(32, 64, sx, i32))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, f64 : f64, f32 : f32}(`%X%`(F64_lanetype, N_1), `%X%`(F32_lanetype, N_2), DEMOTE_vcvtop, ?(sx), f64) = f32
+    -- if (f32 = $demote(64, 32, f64))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, f32 : f32, f64 : f64}(`%X%`(F32_lanetype, N_1), `%X%`(F64_lanetype, N_2), PROMOTE_vcvtop, ?(sx), f32) = f64
+    -- if (f64 = $promote(32, 64, f32))
 
 ;; 3-numerics.watsup
 def $vextunop(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx, vec_ : vec_(V128_vnn)) : vec_(V128_vnn)
 
 ;; 3-numerics.watsup
 def $vextbinop(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx, vec_ : vec_(V128_vnn), vec_ : vec_(V128_vnn)) : vec_(V128_vnn)
+  ;; 3-numerics.watsup
+  def $vextbinop{inn_1 : inn, N_1 : N, inn_2 : inn, N_2 : N, sx : sx, c_1 : vec_(V128_vnn), c_2 : vec_(V128_vnn), c : vec_(V128_vnn), cj_1 : iN($lsize((inn_1 : inn <: lanetype))), cj_2 : iN($lsize((inn_1 : inn <: lanetype))), ci_1* : lane_($lanetype(`%X%`((inn_2 : inn <: lanetype), N_2)))*, ci_2* : lane_($lanetype(`%X%`((inn_2 : inn <: lanetype), N_2)))*}(`%X%`((inn_1 : inn <: imm), N_1), `%X%`((inn_2 : inn <: imm), N_2), DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), N_1), `%X%`((inn_2 : inn <: imm), N_2)), sx, c_1, c_2) = c
+    -- if (ci_1*{ci_1} = $lanes_(`%X%`((inn_2 : inn <: lanetype), N_2), c_1))
+    -- if (ci_2*{ci_2} = $lanes_(`%X%`((inn_2 : inn <: lanetype), N_2), c_2))
+    -- if ($concat_(syntax iN($lsize((inn_1 : inn <: lanetype))), [cj_1 cj_2]*{}) = $imul($lsize((inn_1 : inn <: lanetype)), $ext($lsize((inn_2 : inn <: lanetype)), $lsize((inn_1 : inn <: lanetype)), S_sx, ci_1), $ext($lsize((inn_2 : inn <: lanetype)), $lsize((inn_1 : inn <: lanetype)), S_sx, ci_2))*{ci_1 ci_2})
+    -- if (c = $invlanes_(`%X%`((inn_1 : inn <: lanetype), N_1), $iadd($lsize((inn_1 : inn <: lanetype)), cj_1, cj_2)^N_1{}))
 
 ;; 3-numerics.watsup
 def $vishiftop(ishape : ishape, vshiftop_ : vshiftop_(ishape), lane_ : lane_($lanetype((ishape : ishape <: shape))), u32 : u32) : lane_($lanetype((ishape : ishape <: shape)))
@@ -26093,12 +26256,10 @@ relation Step_pure: `%*_~>%*`(admininstr*, admininstr*)
     -- otherwise
 
   ;; 8-reduction.watsup
-  rule vbitmask{c : vec_(V128_vnn), inn : inn, N : N, ci : num_(I32_numtype), ci_1* : lane_($lanetype(`%X%`((inn : inn <: lanetype), N)))*, o0* : N*}:
+  rule vbitmask{c : vec_(V128_vnn), inn : inn, N : N, ci : num_(I32_numtype), ci_1* : lane_($lanetype(`%X%`((inn : inn <: lanetype), N)))*}:
     `%*_~>%*`([VCONST_admininstr(V128_vectype, c) VBITMASK_admininstr(`%X%`((inn : inn <: imm), N))], [CONST_admininstr(I32_numtype, ci)])
-    -- if (|ci_1*{ci_1}| = |o0*{o0}|)
-    -- (if ($size((inn : inn <: valtype)) = ?(o0)))*{o0}
     -- if (ci_1*{ci_1} = $lanes_(`%X%`((inn : inn <: lanetype), N), c))
-    -- if ($ibits(32, ci) = $ilt(o0, S_sx, ci_1, 0)*{ci_1 o0})
+    -- if ($ibits(32, ci) = $ilt($lsize((inn : inn <: lanetype)), S_sx, ci_1, 0)*{ci_1})
 
   ;; 8-reduction.watsup
   rule vnarrow{c_1 : vec_(V128_vnn), c_2 : vec_(V128_vnn), inn_1 : inn, N_1 : N, inn_2 : inn, N_2 : N, sx : sx, c : vec_(V128_vnn), ci_1* : lane_($lanetype(`%X%`((inn_1 : inn <: lanetype), N_1)))*, ci_2* : lane_($lanetype(`%X%`((inn_1 : inn <: lanetype), N_1)))*, cj_1* : iN(!($size((inn_2 : inn <: valtype))))*, cj_2* : iN(!($size((inn_2 : inn <: valtype))))*, o0* : M*, o1* : N*, o2* : M*, o3* : N*}:
@@ -26632,14 +26793,14 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- if (c = $ext(N, 128, U_sx, j))
 
   ;; 8-reduction.watsup
-  rule vload_lane-oob{z : state, i : nat, vt : vectype, c_1 : vec_(vt), N : N, x : idx, mo : memop, j : nat}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VCONST_admininstr(vt, c_1) VLOAD_LANE_admininstr(N, x, mo, j)]), [TRAP_admininstr])
+  rule vload_lane-oob{z : state, i : nat, c_1 : vec_(V128_vnn), N : N, x : idx, mo : memop, j : nat}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VCONST_admininstr(V128_vectype, c_1) VLOAD_LANE_admininstr(N, x, mo, j)]), [TRAP_admininstr])
     -- if (((i + (mo.OFFSET_memop : uN(32) <: nat)) + (N / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup
-  rule vload_lane-val{z : state, i : nat, vt : vectype, c_1 : vec_(vt), N : N, x : idx, mo : memop, j : nat, c : vec_(vt), k : nat, imm : imm, M : M, o0 : nat}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VCONST_admininstr(vt, c_1) VLOAD_LANE_admininstr(N, x, mo, j)]), [VCONST_admininstr(vt, c)])
-    -- if ($size((vt : vectype <: valtype)) = ?(o0))
+  rule vload_lane-val{z : state, i : nat, c_1 : vec_(V128_vnn), N : N, x : idx, mo : memop, j : nat, c : vec_(V128_vnn), k : nat, imm : imm, M : M, o0 : nat}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VCONST_admininstr(V128_vectype, c_1) VLOAD_LANE_admininstr(N, x, mo, j)]), [VCONST_admininstr(V128_vectype, c)])
+    -- if ($size(V128_valtype) = ?(o0))
     -- if ($ibytes(N, k) = $mem(z, x).DATA_meminst[(i + (mo.OFFSET_memop : uN(32) <: nat)) : (N / 8)])
     -- if (N = $lsize((imm : imm <: lanetype)))
     -- if (M = (o0 / N))
@@ -29101,12 +29262,45 @@ def $vrelop(shape : shape, vrelop_ : vrelop_(shape), vec_ : vec_(V128_vnn), vec_
 
 ;; 3-numerics.watsup
 def $vcvtop(shape_1 : shape, shape_2 : shape, vcvtop : vcvtop, sx?, lane_ : lane_($lanetype(shape_1))) : lane_($lanetype(shape_2))
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i8 : lane_($lanetype(`%X%`(I8_lanetype, N_1))), i16 : lane_($lanetype(`%X%`(I16_lanetype, N_2)))}(`%X%`(I8_lanetype, N_1), `%X%`(I16_lanetype, N_2), EXTEND_vcvtop, ?(sx), i8) = i16
+    -- where i16 = $ext(8, 16, sx, i8)
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i16 : lane_($lanetype(`%X%`(I16_lanetype, N_1))), i32 : lane_($lanetype(`%X%`(I32_lanetype, N_2)))}(`%X%`(I16_lanetype, N_1), `%X%`(I32_lanetype, N_2), EXTEND_vcvtop, ?(sx), i16) = i32
+    -- where i32 = $ext(16, 32, sx, i16)
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_1))), i64 : lane_($lanetype(`%X%`(I64_lanetype, N_2)))}(`%X%`(I32_lanetype, N_1), `%X%`(I64_lanetype, N_2), EXTEND_vcvtop, ?(sx), i32) = i64
+    -- where i64 = $ext(32, 64, sx, i32)
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, f32 : f32, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_2)))}(`%X%`(F32_lanetype, N_1), `%X%`(I32_lanetype, N_2), TRUNC_SAT_vcvtop, ?(sx), f32) = i32
+    -- where i32 = $trunc_sat(32, 32, sx, f32)
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, f64 : f64, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_2)))}(`%X%`(F64_lanetype, N_1), `%X%`(I32_lanetype, N_2), TRUNC_SAT_vcvtop, ?(sx), f64) = i32
+    -- where i32 = $trunc_sat(64, 32, sx, f64)
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_1))), f32 : f32}(`%X%`(I32_lanetype, N_1), `%X%`(F32_lanetype, N_2), CONVERT_vcvtop, ?(sx), i32) = f32
+    -- where f32 = $convert(32, 32, sx, i32)
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, i32 : lane_($lanetype(`%X%`(I32_lanetype, N_1))), f64 : f64}(`%X%`(I32_lanetype, N_1), `%X%`(F64_lanetype, N_2), CONVERT_vcvtop, ?(sx), i32) = f64
+    -- where f64 = $convert(32, 64, sx, i32)
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, f64 : f64, f32 : f32}(`%X%`(F64_lanetype, N_1), `%X%`(F32_lanetype, N_2), DEMOTE_vcvtop, ?(sx), f64) = f32
+    -- where f32 = $demote(64, 32, f64)
+  ;; 3-numerics.watsup
+  def $vcvtop{N_1 : N, N_2 : N, sx : sx, f32 : f32, f64 : f64}(`%X%`(F32_lanetype, N_1), `%X%`(F64_lanetype, N_2), PROMOTE_vcvtop, ?(sx), f32) = f64
+    -- where f64 = $promote(32, 64, f32)
 
 ;; 3-numerics.watsup
 def $vextunop(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx, vec_ : vec_(V128_vnn)) : vec_(V128_vnn)
 
 ;; 3-numerics.watsup
 def $vextbinop(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx, vec_ : vec_(V128_vnn), vec_ : vec_(V128_vnn)) : vec_(V128_vnn)
+  ;; 3-numerics.watsup
+  def $vextbinop{inn_1 : inn, N_1 : N, inn_2 : inn, N_2 : N, sx : sx, c_1 : vec_(V128_vnn), c_2 : vec_(V128_vnn), c : vec_(V128_vnn), cj_1 : iN($lsize((inn_1 : inn <: lanetype))), cj_2 : iN($lsize((inn_1 : inn <: lanetype))), ci_1* : lane_($lanetype(`%X%`((inn_2 : inn <: lanetype), N_2)))*, ci_2* : lane_($lanetype(`%X%`((inn_2 : inn <: lanetype), N_2)))*}(`%X%`((inn_1 : inn <: imm), N_1), `%X%`((inn_2 : inn <: imm), N_2), DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), N_1), `%X%`((inn_2 : inn <: imm), N_2)), sx, c_1, c_2) = c
+    -- where ci_1*{ci_1} = $lanes_(`%X%`((inn_2 : inn <: lanetype), N_2), c_1)
+    -- where ci_2*{ci_2} = $lanes_(`%X%`((inn_2 : inn <: lanetype), N_2), c_2)
+    -- where $concat_(syntax iN($lsize((inn_1 : inn <: lanetype))), [cj_1 cj_2]*{}) = $imul($lsize((inn_1 : inn <: lanetype)), $ext($lsize((inn_2 : inn <: lanetype)), $lsize((inn_1 : inn <: lanetype)), S_sx, ci_1), $ext($lsize((inn_2 : inn <: lanetype)), $lsize((inn_1 : inn <: lanetype)), S_sx, ci_2))*{ci_1 ci_2}
+    -- where c = $invlanes_(`%X%`((inn_1 : inn <: lanetype), N_1), $iadd($lsize((inn_1 : inn <: lanetype)), cj_1, cj_2)^N_1{})
 
 ;; 3-numerics.watsup
 def $vishiftop(ishape : ishape, vshiftop_ : vshiftop_(ishape), lane_ : lane_($lanetype((ishape : ishape <: shape))), u32 : u32) : lane_($lanetype((ishape : ishape <: shape)))
@@ -31718,12 +31912,10 @@ relation Step_pure: `%*_~>%*`(admininstr*, admininstr*)
     -- otherwise
 
   ;; 8-reduction.watsup
-  rule vbitmask{c : vec_(V128_vnn), inn : inn, N : N, ci : num_(I32_numtype), ci_1* : lane_($lanetype(`%X%`((inn : inn <: lanetype), N)))*, o0* : N*}:
+  rule vbitmask{c : vec_(V128_vnn), inn : inn, N : N, ci : num_(I32_numtype), ci_1* : lane_($lanetype(`%X%`((inn : inn <: lanetype), N)))*}:
     `%*_~>%*`([VCONST_admininstr(V128_vectype, c) VBITMASK_admininstr(`%X%`((inn : inn <: imm), N))], [CONST_admininstr(I32_numtype, ci)])
-    -- (where ?(o0) = $size((inn : inn <: valtype)))*{o0}
     -- where ci_1*{ci_1} = $lanes_(`%X%`((inn : inn <: lanetype), N), c)
-    -- if (|ci_1*{ci_1}| = |o0*{o0}|)
-    -- where $ibits(32, ci) = $ilt(o0, S_sx, ci_1, 0)*{ci_1 o0}
+    -- where $ibits(32, ci) = $ilt($lsize((inn : inn <: lanetype)), S_sx, ci_1, 0)*{ci_1}
 
   ;; 8-reduction.watsup
   rule vnarrow{c_1 : vec_(V128_vnn), c_2 : vec_(V128_vnn), inn_1 : inn, N_1 : N, inn_2 : inn, N_2 : N, sx : sx, c : vec_(V128_vnn), ci_1* : lane_($lanetype(`%X%`((inn_1 : inn <: lanetype), N_1)))*, ci_2* : lane_($lanetype(`%X%`((inn_1 : inn <: lanetype), N_1)))*, cj_1* : iN(!($size((inn_2 : inn <: valtype))))*, cj_2* : iN(!($size((inn_2 : inn <: valtype))))*, o0* : M*, o1* : N*, o2* : M*, o3* : N*}:
@@ -32267,14 +32459,14 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- where c = $ext(N, 128, U_sx, j)
 
   ;; 8-reduction.watsup
-  rule vload_lane-oob{z : state, i : nat, vt : vectype, c_1 : vec_(vt), N : N, x : idx, mo : memop, j : nat}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VCONST_admininstr(vt, c_1) VLOAD_LANE_admininstr(N, x, mo, j)]), [TRAP_admininstr])
+  rule vload_lane-oob{z : state, i : nat, c_1 : vec_(V128_vnn), N : N, x : idx, mo : memop, j : nat}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VCONST_admininstr(V128_vectype, c_1) VLOAD_LANE_admininstr(N, x, mo, j)]), [TRAP_admininstr])
     -- if (((i + (mo.OFFSET_memop : uN(32) <: nat)) + (N / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup
-  rule vload_lane-val{z : state, i : nat, vt : vectype, c_1 : vec_(vt), N : N, x : idx, mo : memop, j : nat, c : vec_(vt), k : nat, imm : imm, M : M, o0 : nat}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VCONST_admininstr(vt, c_1) VLOAD_LANE_admininstr(N, x, mo, j)]), [VCONST_admininstr(vt, c)])
-    -- where ?(o0) = $size((vt : vectype <: valtype))
+  rule vload_lane-val{z : state, i : nat, c_1 : vec_(V128_vnn), N : N, x : idx, mo : memop, j : nat, c : vec_(V128_vnn), k : nat, imm : imm, M : M, o0 : nat}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VCONST_admininstr(V128_vectype, c_1) VLOAD_LANE_admininstr(N, x, mo, j)]), [VCONST_admininstr(V128_vectype, c)])
+    -- where ?(o0) = $size(V128_valtype)
     -- where $lsize((imm : imm <: lanetype)) = N
     -- where $ibytes(N, k) = $mem(z, x).DATA_meminst[(i + (mo.OFFSET_memop : uN(32) <: nat)) : (N / 8)]
     -- where M = (o0 / N)
