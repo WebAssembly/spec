@@ -17,3 +17,7 @@ let error at category msg =
 
 let print_error at msg = prerr_endline (string_of_error at msg)
 let print_warn at msg = prerr_endline (string_of_error at ("warning: " ^ msg))
+
+let print_yet at category msg =
+  (string_of_region at ^ ": ") ^ (category ^ ": Yet " ^ msg)
+  |> print_endline

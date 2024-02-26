@@ -10,27 +10,22 @@ open Source
 open Printf
 
 
-(* Error message *)
+(* Errors *)
 
-let fail_on_instr msg instr =
-  (sprintf "%s: %s @%s" msg
-    (structured_string_of_instr instr) (string_of_region instr.at))
-  |> failwith
+let error at msg = Error.error at "interpreter" msg
 
-let fail_on_expr msg expr =
-  (sprintf "%s: %s @%s" msg
-    (structured_string_of_expr expr) (string_of_region expr.at))
-  |> failwith
+let error_instr instr msg =
+  error instr.at (msg ^ " `" ^ structured_string_of_instr instr ^ "`")
 
-let fail_on_path msg path =
-  (sprintf "%s: %s @%s" msg
-    (structured_string_of_path path) (string_of_region path.at))
-  |> failwith
+let error_expr expr msg =
+  error expr.at (msg ^ " `" ^ structured_string_of_expr expr ^ "`")
+
+let error_path path msg =
+  error path.at (msg ^ " `" ^ structured_string_of_path path ^ "`")
 
 
-(* Expression *)
+(* Matrix operations *)
 
-(* TODO: move to util? *)
 let is_matrix matrix =
   match matrix with
   | [] -> true  (* Empty matrix is considered a valid matrix *)
@@ -74,10 +69,9 @@ and access_path env base path =
     let i = eval_expr env e' |> al_to_int in
     begin try Array.get a i with
     | Invalid_argument _ ->
-      fail_on_path
+      error_path path
         (sprintf "Failed Array.get on base %s and index %s"
           (string_of_value base) (string_of_int i))
-        path
     end
   | SliceP (e1, e2) ->
     let a = base |> unwrap_listv_to_array in
@@ -89,9 +83,9 @@ and access_path env base path =
     | FrameV (_, StrV r) -> Record.find str r
     | StrV r -> Record.find str r
     | v ->
-      fail_on_path
+      error_path path
         (sprintf "Base %s is not a record" (string_of_value v))
-        path)
+    )
 
 and replace_path env base path v_new =
   match path.it with
@@ -112,9 +106,8 @@ and replace_path env base path v_new =
       | FrameV (_, StrV r) -> r
       | StrV r -> r
       | v ->
-        fail_on_path
+        error_path path
           (sprintf "Base %s is not a record" (string_of_value v))
-          path
     in
     let r_new = Record.clone r in
     Record.replace str v_new r_new;
@@ -144,7 +137,8 @@ and eval_expr env expr =
     | GtOp, v1, v2 -> boolV (v1 > v2)
     | LeOp, v1, v2 -> boolV (v1 <= v2)
     | GeOp, v1, v2 -> boolV (v1 >= v2)
-    | _ -> fail_on_expr "Invalid BinE" expr)
+    | _ -> error_expr expr "Invalid BinE"
+    )
   (* Function Call *)
   | CallE (fname, el) ->
     let args = List.map (eval_expr env) el in
@@ -195,14 +189,15 @@ and eval_expr env expr =
     | LabelV (v, _) -> v
     | FrameV (Some v, _) -> v
     | FrameV _ -> numV Z.zero
-    | _ -> fail_on_expr "Not a context" expr (* Due to AL validation, unreachable *))
+    | _ -> error_expr expr "Not a context" (* Due to AL validation, unreachable *))
   | FrameE (e1, e2) ->
     let v1 = Option.map (eval_expr env) e1 in
     let v2 = eval_expr env e2 in
     (match v1, v2 with
     | (Some (NumV _)|None), StrV _ -> FrameV (v1, v2)
     (* Due to AL validation unreachable *)
-    | _ -> fail_on_expr "Invalid frame" expr)
+    | _ -> error_expr expr "Invalid frame"
+    )
   | GetCurFrameE -> WasmContext.get_current_frame ()
   | LabelE (e1, e2) ->
     let v1 = eval_expr env e1 in
@@ -213,7 +208,7 @@ and eval_expr env expr =
   | ContE e ->
     (match eval_expr env e with
     | LabelV (_, vs) -> vs
-    | _ -> fail_on_expr "Not a label" expr)
+    | _ -> error_expr expr "Not a label")
   | VarE "s" -> Store.get ()
   | VarE name -> lookup_env name env
   (* Optimized getter for simple IterE(VarE, ...) *)
@@ -249,7 +244,7 @@ and eval_expr env expr =
     (match eval_expr env e with
     | OptV (Some _) -> boolV true
     | OptV _ -> boolV false
-    | _ -> fail_on_expr "Not an option" expr)
+    | _ -> error_expr expr "Not an option")
   | IsCaseOfE (e, (expected_tag, _)) ->
     (match eval_expr env e with
     | CaseV (tag, _) -> boolV (expected_tag = tag)
@@ -265,7 +260,7 @@ and eval_expr env expr =
     (* valid_memtype *)
     | CaseV ("I8", [ lim ]) -> valid_lim (Z.of_int 0x10000) lim |> boolV
     (* valid_other *)
-    | _ -> fail_on_expr "TODO: Currently, we are already validating tabletype and memtype" expr)
+    | _ -> error_expr expr "TODO: Currently, we are already validating tabletype and memtype")
   | HasTypeE (e, s) ->
 
     (* TODO: This shouldn't be hardcoded *)
@@ -320,15 +315,15 @@ and eval_expr env expr =
     | CaseV (pt, []) when List.mem pt pnn_types ->
       boolV (s = "pnn" || s = "imm" || s = "packtype" || s = "storagetype")
     | v ->
-      fail_on_expr
+      error_expr expr
         (sprintf "%s doesn't have type %s" (string_of_value v) s)
-        expr)
+    )
   | MatchE (e1, e2) ->
     (* Deferred to reference interpreter *)
     let rt1 = e1 |> eval_expr env |> Construct.al_to_ref_type in
     let rt2 = e2 |> eval_expr env |> Construct.al_to_ref_type in
     boolV (Match.match_ref_type [] rt1 rt2)
-  | _ -> fail_on_expr "No interpreter for" expr
+  | _ -> error_expr expr "unsupported"
 
 
 (* Assignment *)
@@ -344,7 +339,7 @@ and merge_envs_with_grouping default_env envs =
       | ListV arr ->
           Array.append [| v1 |] !arr |> listV |> Option.some
       | OptV None -> Option.some v1 |> optV |> Option.some
-      | _ -> failwith "Unreachable merge"
+      | _ -> failwith "merge_envs_with_grouping"
     in
     Env.union f env acc
   in
@@ -363,15 +358,9 @@ and assign lhs rhs env =
         let length = Array.length !arr |> Z.of_int |> numV in
         assign expr length env, listV [||], Array.to_list !arr
       | Opt, OptV opt -> env, optV None, Option.to_list opt
-      | ListN (_, Some _), ListV _ ->
-        sprintf "Invalid iter %s with rhs %s"
-          (string_of_iter iter)
-          (string_of_value rhs)
-        |> failwith
-      | _, _ ->
-        fail_on_expr
-          (sprintf "Invalid assignment on value %s" (string_of_value rhs))
-          lhs
+      | ListN (_, Some _), ListV _ | _, _ ->
+        error_expr lhs
+          (sprintf "Invalid assignment on rhs %s" (string_of_value rhs))
     in
 
     let default_env =
@@ -406,26 +395,30 @@ and assign lhs rhs env =
       | SubOp -> Z.add
       | MulOp -> Z.div
       | DivOp -> Z.mul
-      | _ -> failwith "Invalid binop for lhs of assignment" in
+      | _ -> error_expr lhs "Invalid binop for lhs of assign" in
     let v = eval_expr env e2 |> al_to_z |> invop m |> numV in
     assign e1 v env
-  | CatE (e1, e2), ListV vs -> assign_split e1 e2 !vs env
+  | CatE (e1, e2), ListV vs ->
+    (try assign_split e1 e2 !vs env with _ ->
+      error_expr lhs
+        (sprintf "Invalid assignment on rhs %s" (string_of_value rhs))
+    )
   | StrE r1, StrV r2 when has_same_keys r1 r2 ->
     Record.fold (fun k v acc -> (Record.find (string_of_kwd k) r2 |> assign v) acc) r1 env
-  | _, v ->
-    fail_on_expr
-      (sprintf "Invalid assignment on value %s" (string_of_value v))
-      lhs
+  | _, _ ->
+    error_expr lhs
+      (sprintf "Invalid assignment on rhs %s" (string_of_value rhs))
 
 and assign_split ep es vs env =
   let len = Array.length vs in
   let prefix_len, suffix_len =
-    let get_length e = match e.it with
-    | ListE es -> List.length es |> Option.some
-    | IterE (_, _, ListN (e, None)) -> eval_expr env e |> al_to_int |> Option.some
-    | _ -> None in
+    let get_length e =
+      match e.it with
+      | ListE es -> List.length es |> Option.some
+      | IterE (_, _, ListN (e, None)) -> eval_expr env e |> al_to_int |> Option.some
+      | _ -> None in
     match get_length ep, get_length es with
-    | None, None -> failwith "Unreachable: nondeterministic list split"
+    | None, None -> failwith "nondeterministic assign_split"
     | Some l, None -> l, len - l
     | None, Some l -> len - l, l
     | Some l1, Some l2 -> l1, l2 in
@@ -438,13 +431,11 @@ and assign_split ep es vs env =
 (* Step *)
 
 and step_instr (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.t =
-
   (Info.find instr.note).covered <- true;
 
   match instr.it with
   (* Block instruction *)
   | IfI (e, il1, il2) ->
-
     let rec is_true = function
       | BoolV true -> true
       | ListV a -> Array.for_all is_true !a
@@ -496,14 +487,15 @@ and step_instr (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.
       assert (eval_expr env tyE = ty);
       AlContext.update_env name v ctx
     | (_, h) ->
-      fail_on_instr
-        (sprintf "Invalid pop for value %s: " (structured_string_of_value h))
+      error_instr
         instr
+        (sprintf "Invalid pop for value %s: " (structured_string_of_value h))
+
     )
   | PopAllI ({ it = IterE ({ it = VarE name; _ }, [name'], List); _ }) when name = name' ->
     let v = WasmContext.get_value_stack () |> List.rev |> listV_of_list in
     AlContext.update_env name v ctx
-  | PopAllI _ -> fail_on_instr "Invalid pop" instr
+  | PopAllI _ -> error_instr instr "Invalid pop"
   | LetI (e1, e2) ->
     let new_env = ctx |> AlContext.get_env |> assign e1 (eval_expr env e2) in
     AlContext.set_env new_env ctx
@@ -558,14 +550,14 @@ and step_instr (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.
     let v = eval_expr env e2 in
     a := Array.append !a [|v|];
     ctx
-  | _ -> fail_on_instr "No interpreter for" instr
+  | _ -> error_instr instr "unsupported"
 
 and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
   (* TODO: Change ref.null semantics *)
   | CaseV ("REF.NULL", [ ht ]) when !version = 3 ->
     let mm =
       WasmContext.get_current_frame ()
-      |> unwrap_frame
+      |> unwrap_framev
       |> strv_access "MODULE"
     in
     (* TODO: some *)
@@ -583,16 +575,13 @@ and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
   | CaseV ("VCONST", _) as v -> WasmContext.push_value v; ctx
   | CaseV (name, []) when Builtin.is_builtin name -> Builtin.call name; ctx
   | CaseV (fname, args) -> create_context fname args :: ctx
-  | v ->
-    string_of_value v
-    |> sprintf "Executing invalid value: %s"
-    |> failwith
+  | v -> fail_value "step_wasm" v
 
 and step : AlContext.t -> AlContext.t = AlContext.(function
   | Al (name, il, env) :: ctx ->
     (match il with
     | [] -> ctx
-    | [instr] when AlContext.can_tail_call instr -> step_instr ctx env instr
+    | [ instr ] when AlContext.can_tail_call instr -> step_instr ctx env instr
     | h :: t ->
       let new_ctx = Al (name, t, env) :: ctx in
       step_instr new_ctx env h
@@ -615,7 +604,7 @@ and step : AlContext.t -> AlContext.t = AlContext.(function
       step_instr new_ctx env h
     )
   | Execute v :: ctx -> step_wasm ctx v
-  | _ -> failwith "Unreachable"
+  | _ -> failwith "Invalid context for step"
 )
 
 
@@ -627,11 +616,11 @@ and run (ctx: AlContext.t) : AlContext.t =
 and create_context (name: string) (args: value list) : AlContext.mode =
 
   let algo = lookup_algo name in
-  let params = get_param algo in
-  let body = get_body algo in
+  let params = params_of_algo algo in
+  let body = body_of_algo algo in
 
   if List.length args <> List.length params then
-    failwith ("Argument number mismatch for algorithm " ^ name);
+    failwith ("Args number mismatch for algorithm " ^ name);
 
   let env =
     Env.empty
@@ -649,7 +638,7 @@ and call_func (fname: string) (args: value list) : value option =
   (* Numerics *)
   else if Numerics.mem fname then
     Some (Numerics.call_numerics fname args)
-  else if fname = "ref_type_of" then 
+  else if fname = "ref_type_of" then
     Some (Manual.ref_type_of args)
   else
     failwith ("Invalid DSL function call: " ^ fname)

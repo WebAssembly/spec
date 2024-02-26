@@ -81,28 +81,28 @@ let textual_to_module textual =
   | Script.Textual m -> m
   | _ -> assert false
 
+let get_export_addr name modulename =
+  let vl =
+    modulename
+    |> get_export name
+    |> strv_access "VALUE"
+    |> args_of_casev
+  in
+  try List.hd vl with Failure _ -> failwith ("Invalid export " ^ name)
 
 (** Main functions **)
 
 let invoke module_name funcname args =
   Printf.eprintf "[Invoking %s %s...]\n" funcname (Value.string_of_values args);
 
-  let funcaddr =
-    module_name
-    |> get_export funcname
-    |> strv_access "VALUE"
-    |> casev_nth_arg 0
-  in
-
+  let funcaddr = get_export_addr funcname module_name in
   Interpreter.invoke [funcaddr; al_of_list al_of_value args]
 
 let get_global_value module_name globalname =
   Printf.eprintf "[Getting %s...]\n" globalname;
 
-  module_name
-  |> get_export globalname
-  |> strv_access "VALUE"
-  |> casev_nth_arg 0
+  let index = get_export_addr globalname module_name in
+  index
   |> al_to_int
   |> listv_nth (Store.access "GLOBAL")
   |> strv_access "VALUE"

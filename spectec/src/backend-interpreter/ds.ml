@@ -327,7 +327,7 @@ end
 let init algos =
   (* Initialize info_map *)
   let init_info algo =
-    let algo_name = get_name algo in
+    let algo_name = name_of_algo algo in
     let config = {
       Walk.default_config with pre_instr =
         (fun i ->

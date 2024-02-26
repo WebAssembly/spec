@@ -10,12 +10,14 @@ open Source
 module Il = struct include Il include Ast include Print end
 
 
-(* Helpers *)
+(* Errors *)
 
-let fail_on_exp exp typ_msg =
-  sprintf "Invalid expression `%s` to be %s."
-    (Il.Print.string_of_exp exp) typ_msg
-  |> failwith
+let error at msg = Error.error at "translate" msg
+
+let error_exp exp typ =
+  error exp.at (sprintf "Invalid exp `%s` to be %s" (Il.Print.string_of_exp exp) typ)
+
+(* Helpers *)
 
 let is_state expr = match expr.it with
   | Il.VarE z ->
@@ -68,7 +70,7 @@ let get_params winstr =
   match winstr.it with
   | Il.CaseE (_, { it = Il.TupE exps; _ }) -> exps
   | Il.CaseE (_, exp) -> [ exp ]
-  | _ -> fail_on_exp winstr "a valid wasm instruction"
+  | _ -> error_exp winstr "a valid wasm instruction"
 
 let lhs_of_rgroup rgroup =
   let (lhs, _, _) = List.hd rgroup in
@@ -131,7 +133,7 @@ and translate_exp exp =
           extE (acc, [ dotP (kwd name inner_exp.note) ], extend_expr, Front) ~at:at
         else
           acc
-      | _ -> fail_on_exp exp "AL record expression")
+      | _ -> error_exp exp "AL record expression")
       (translate_exp inner_exp) expfields
   (* extension of record field *)
   | Il.ExtE (base, path, v) -> extE (translate_exp base, translate_path path, translate_exp v, Back) ~at:at
@@ -143,7 +145,7 @@ and translate_exp exp =
     let op = match op with
     | Il.NotOp -> NotOp
     | Il.MinusOp _ -> MinusOp
-    | _ -> fail_on_exp exp "AL unary expression"
+    | _ -> error_exp exp "AL unary expression"
     in
     unE (op, exp') ~at:at
   | Il.BinE (op, exp1, exp2) ->
@@ -187,7 +189,7 @@ and translate_exp exp =
       | Il.Atom name, fieldexp ->
         let expr = translate_exp fieldexp in
         Record.add (kwd name exp.note) expr acc
-      | _ -> fail_on_exp exp "AL record expression"
+      | _ -> error_exp exp "AL record expression"
     in
     let record = List.fold_left f Record.empty expfields in
     strE record ~at:at
@@ -272,7 +274,7 @@ and translate_path path =
     | Il.SliceP (p, e1, e2) -> (translate_path' p) @ [ sliceP (translate_exp e1, translate_exp e2) ~at:at ]
     | Il.DotP (p, Atom a) ->
       (translate_path' p) @ [ dotP (kwd a p.note) ~at:at ]
-    | _ -> failwith "unreachable"
+    | _ -> assert false
   in
   translate_path' path
 
@@ -303,7 +305,7 @@ let is_unbound vars e =
 let get_unbound e =
   match e.it with
   | Il.IterE (_, (ListN ({ it = VarE id; _ }, _), _)) -> id.it
-  | _ -> failwith "Invalid deferred expression"
+  | _ -> error_exp e "Invalid deferred expression"
 
 
 let rec translate_rhs exp =
@@ -392,8 +394,8 @@ let rec translate_rhs exp =
     | Il.MixE ([ []; [ Il.Semicolon ]; [] ], _)
     | Il.VarE _ -> push_instrs
     | Il.CallE (f, ae) -> push_instrs @ [ performI (f.it, translate_args ae) ~at:at ]
-    | _ -> failwith "Invalid new state" )
-  | _ -> fail_on_exp exp "AL rhs instructions"
+    | _ -> error_exp se "Invalid new state" )
+  | _ -> error_exp exp "AL rhs instructions"
 
 
 let lhs_id_ref = ref 0
@@ -570,7 +572,7 @@ let translate_rulepr id exp =
   | "Reftype_sub", [_C; rt1; rt2] ->
     [ ifI (matchE (rt1, rt2) ~at:at, [], []) ~at:at ]
   | _ ->
-    prerr_endline (Il.Print.string_of_exp exp);
+    Error.print_yet exp.at "translate_rulepr" (Il.Print.string_of_exp exp);
     [ yetI ("TODO: Unsupported rule premise:" ^ id.it) ~at:at ]
 
 let rec translate_iterpr pr (iter, ids) =
@@ -629,8 +631,9 @@ let get_tup_exps c =
   | Il.MixE ([ []; [ Il.Semicolon ]; _ ], tup) ->
     (match tup.it with
     | Il.TupE [ e1; e2 ] -> e1, e2
-    | _ -> failwith "Invalid config")
-  | _ -> failwith "Invalid config"
+    | _ -> error_exp c "Invalid config"
+    )
+  | _ -> error_exp c "Invalid config"
 
 
 (* s; f; e -> `expr * expr * instr list` *)
@@ -641,7 +644,7 @@ let translate_config config =
   if is_store sto && is_frame f then
     translate_exp sto, translate_exp f, translate_rhs e
   else
-    failwith "Invalid config"
+    error_exp config "Invalid config"
 
 let translate_helper_body name clause =
   let Il.DefD (_, _, re, prems) = clause.it in
@@ -703,7 +706,7 @@ let rec kind_of_context e =
   | Il.ListE [ e' ]
   | Il.MixE (_ (* ; *), e')
   | Il.TupE [_ (* z *); e'] -> kind_of_context e'
-  | _ -> "Could not get kind_of_context" ^ Il.Print.string_of_exp e |> failwith
+  | _ -> error_exp e "Could not get kind_of_context"
 
 let in_same_context (lhs1, _, _) (lhs2, _, _) =
   kind_of_context lhs1 = kind_of_context lhs2
@@ -714,7 +717,7 @@ let group_contexts xs =
     match g1 with
     | [] -> [ x ] :: acc
     | [ g ] -> (x :: g) :: g2
-    | _ -> failwith "Impossible list_partiton_with: perhaps f is not equivalence relation"
+    | _ -> failwith "group_contexts: perhaps in_same_context is not equivalence relation"
     ) [] xs |> List.rev
 
 let un_unify (lhs, rhs, prems) =
@@ -768,7 +771,7 @@ let translate_context_winstr winstr =
   match winstr.it with
   (* Frame *)
   | Il.CaseE (Il.Atom "FRAME_", args) ->
-    ( match args.it with
+    (match args.it with
     | Il.TupE [arity; name; inner_exp] ->
       [
         letI (translate_exp name, getCurFrameE ()) ~at:at;
@@ -778,7 +781,8 @@ let translate_context_winstr winstr =
         insert_assert winstr;
         exitI () ~at:at
       ]
-    | _ -> failwith "Invalid frame")
+    | _ -> error_exp winstr "frame"
+    )
   (* Label *)
   | Il.CaseE (Il.Atom "LABEL_", { it = Il.TupE [ _n; _instrs; vals ]; _ }) ->
     [
@@ -943,7 +947,7 @@ let rule_to_tup rule =
   let Il.RuleD (_, _, _, exp, prems) = rule.it in
   match exp.it with
   | Il.TupE [ lhs; rhs ] -> lhs, rhs, prems
-  | _ -> fail_on_exp exp "reduction rule"
+  | _ -> error_exp exp "reduction rule"
 
 
 (* group reduction rules that have same name *)

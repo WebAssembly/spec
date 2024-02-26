@@ -3,6 +3,12 @@ open Printf
 open Config
 open Util.Source
 
+
+(* Errors *)
+
+let error at msg = Util.Error.error at "prose render" msg
+
+
 (* Environment *)
 
 module Set = Set.Make(String)
@@ -226,7 +232,7 @@ let render_order index depth =
   | 1 -> alp_idx ^ "."
   | 2 -> num_idx ^ ")"
   | 3 -> alp_idx ^ ")"
-  | _ -> failwith "unreachable"
+  | _ -> assert false
 
 (* Operators *)
 
@@ -381,7 +387,7 @@ and render_expr' env expr =
   | _ ->
       let se = Al.Print.string_of_expr expr in
       let msg = sprintf "%s was not properly handled\n" se in
-      Util.Error.error expr.at "prose backend error: " msg
+      error expr.at msg
 
 and render_path env path =
   match path.it with

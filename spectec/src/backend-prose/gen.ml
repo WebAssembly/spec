@@ -4,6 +4,20 @@ open Il
 open Al.Al_util
 open Il2al.Translate
 open Util.Source
+open Util.Error
+
+
+(* Errors *)
+
+let error at msg = error at "prose generation" msg
+
+let print_prem prem fname typ =
+  let s = Il.Print.string_of_prem prem in
+  print_yet prem.at fname (typ ^ "(" ^ s ^ ")")
+
+let print_exp exp fname typ =
+  let s = Il.Print.string_of_exp exp in
+  print_yet exp.at fname (typ ^ "(" ^ s ^ ")")
 
 let cmpop_to_cmpop = function
 | Ast.EqOp -> Eq
@@ -24,10 +38,6 @@ let exp_to_expr e = translate_exp e |> transpile_expr
 let exp_to_argexpr es = translate_argexp es |> List.map transpile_expr
 
 let rec if_expr_to_instrs e =
-  let fail _ =
-    let s = Il.Print.string_of_exp e in
-    print_endline ("if_expr_to_instrs: Invalid if_prem (" ^ s ^ ")");
-    YetI s in
   match e.it with
   | Ast.CmpE (op, e1, e2) ->
     let op = cmpop_to_cmpop op in
@@ -42,38 +52,38 @@ let rec if_expr_to_instrs e =
     [ match neg_cond with
       | [ CmpI ({ it = IterE ({ it = VarE name; _ }, _, Opt); _ }, Eq, { it = OptE None; _ }) ] ->
           IfI (isDefinedE (varE name), body)
-      | _ -> fail() ]
+      | _ -> print_exp e "if_expr_to_instrs" "if_exp"; YetI (Il.Print.string_of_exp e) ]
   | Ast.BinE (Ast.EquivOp, e1, e2) ->
       [ EquivI (exp_to_expr e1, exp_to_expr e2) ]
-  | _ -> [ fail() ]
+  | _ -> print_exp e "if_expr_to_instrs" "if_exp"; [ YetI (Il.Print.string_of_exp e) ]
 
 let rec prem_to_instrs prem = match prem.it with
   | Ast.LetPr (e1, e2, _) ->
     [ LetI (exp_to_expr e1, exp_to_expr e2) ]
   | Ast.IfPr e ->
     if_expr_to_instrs e
-  | Ast.RulePr (id, _, exp) when String.ends_with ~suffix:"_ok" id.it ->
-    ( match exp_to_argexpr exp with
-    | [c; e; t] -> [ MustValidI (c, e, Some t) ]
-    | [c; e] -> [ MustValidI (c, e, None) ]
-    | _ -> failwith "prem_to_instr: Invalid prem 1"
+  | Ast.RulePr (id, _, e) when String.ends_with ~suffix:"_ok" id.it ->
+    (match exp_to_argexpr e with
+    | [c; e'; t] -> [ MustValidI (c, e', Some t) ]
+    | [c; e'] -> [ MustValidI (c, e', None) ]
+    | _ -> error prem.at "prem_to_instrs: Invalid prem rule_ok"
     )
-  | Ast.RulePr (id, _, exp) when String.ends_with ~suffix:"_sub" id.it ->
-    ( match exp_to_argexpr exp with
+  | Ast.RulePr (id, _, e) when String.ends_with ~suffix:"_sub" id.it ->
+    (match exp_to_argexpr e with
     | [t1; t2] -> [ MustMatchI (t1, t2) ]
-    | _ -> print_endline "prem_to_instr: Invalid prem 2"; [ YetI "TODO: prem_to_instrs 2" ]
+    | _ -> print_prem prem "prem_to_instrs" "prem rule_sub"; [ YetI "TODO: prem_to_instrs rule_sub" ]
     )
   | Ast.IterPr (prem, iter) ->
-    ( match iter with
+    (match iter with
     | Ast.Opt, [id] -> [ IfI (isDefinedE (varE id.it), prem_to_instrs prem) ]
     | Ast.(List | ListN _), [id] ->
         let name = varE id.it in
         [ ForallI (name, iterE (name, [id.it], Al.Ast.List), prem_to_instrs prem) ]
-    | _ -> print_endline "prem_to_instr: Invalid prem 3"; [ YetI "TODO: prem_to_intrs 3" ])
+    | _ -> print_prem prem "prem_to_instrs" "prem iter"; [ YetI "TODO: prem_to_intrs iter" ]
+    )
   | _ ->
     let s = Il.Print.string_of_prem prem in
-    print_endline ("prem_to_instrs: Invalid prem (" ^ s ^ ")");
-    [ YetI s ]
+    print_prem prem "prem_to_instrs" "prem"; [ YetI s ]
 
 type vrule_group =
   string * (Ast.exp * Ast.exp * Ast.prem list * Ast.bind list) list
@@ -107,10 +117,9 @@ let pack_vrule vrule =
   match exp.it with
   (* c |- e : t *)
   | Ast.TupE [ _c; e; t ] -> (e, t, prems, tenv)
-  | _ ->
-      Print.string_of_exp exp
-      |> Printf.sprintf "Invalid expression `%s` to be typing rule."
-      |> failwith
+  | _ -> error exp.at
+    (Print.string_of_exp exp
+    |> Printf.sprintf "Invalid expression `%s` to be typing rule.")
 
 (* group typing rules that have same name *)
 (* Il.rule list -> vrule_group list *)

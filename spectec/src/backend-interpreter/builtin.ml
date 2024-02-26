@@ -137,7 +137,7 @@ let is_builtin = function
 let call name =
   let local =
     WasmContext.get_current_frame ()
-    |> unwrap_frame
+    |> unwrap_framev
     |> strv_access "LOCAL"
     |> listv_nth
   in
