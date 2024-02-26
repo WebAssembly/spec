@@ -653,7 +653,7 @@ rule Step_pure/vtestop-false:
 rule Step_pure/vbitmask:
   (VCONST V128 c) (VBITMASK (inn X N)) ~> (CONST I32 ci)
   -- if ci_1* = $lanes_(inn X N, c)
-  -- if $ibits(32, ci) = $ilt($size(inn), S, ci_1, 0)*
+  -- if $ibits(32, ci) = $ilt($lsize(inn), S, ci_1, 0)*
 
 
 rule Step_pure/vnarrow:
@@ -866,14 +866,14 @@ rule Step_read/vload-zero-val:
 
 
 rule Step_read/vload_lane-oob:
-  z; (CONST I32 i) (VCONST vt c_1) (VLOAD_LANE N x mo j)  ~>  TRAP
-  -- if $(i + mo.OFFSET + N/8 > |$mem(z, x).DATA|)
+  z; (CONST I32 i) (VCONST V128 c_1) (VLOAD_LANE N x mo j)  ~>  TRAP
+  -- if $(i + mo.OFFSET + N/8) > |$mem(z, x).DATA|
 
 rule Step_read/vload_lane-val:
-  z; (CONST I32 i) (VCONST vt c_1) (VLOAD_LANE N x mo j)  ~>  (VCONST vt c)
+  z; (CONST I32 i) (VCONST V128 c_1) (VLOAD_LANE N x mo j)  ~>  (VCONST V128 c)
   -- if $ibytes(N, k) = $mem(z, x).DATA[i + mo.OFFSET : N/8]
   -- if N = $lsize(imm)  ;; TODO: relate implicitly
-  -- if M = $($size(vt)/N)
+  -- if M = $($size(V128)/N)
   -- if c = $invlanes_(imm X M, $lanes_(imm X M, c_1)[[j] = k])
 
 
