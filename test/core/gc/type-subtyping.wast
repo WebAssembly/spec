@@ -316,6 +316,34 @@
 (assert_trap (invoke "fail3") "cast")
 (assert_trap (invoke "fail4") "cast")
 
+(module
+  (type $t1 (sub (func)))
+  (type $t2 (sub $t1 (func)))
+  (type $t3 (sub $t2 (func)))
+  (type $t4 (sub final (func)))
+
+  (func $f2 (type $t2))
+  (func $f3 (type $t3))
+  (table (ref null $t2) (elem $f2 $f3))
+
+  (func (export "run")
+    (call_indirect (type $t1) (i32.const 0))
+    (call_indirect (type $t1) (i32.const 1))
+    (call_indirect (type $t2) (i32.const 0))
+    (call_indirect (type $t2) (i32.const 1))
+    (call_indirect (type $t3) (i32.const 1))
+  )
+
+  (func (export "fail1")
+    (call_indirect (type $t3) (i32.const 0))
+  )
+  (func (export "fail2")
+    (call_indirect (type $t4) (i32.const 0))
+  )
+)
+(assert_return (invoke "run"))
+(assert_trap (invoke "fail1") "indirect call")
+(assert_trap (invoke "fail2") "indirect call")
 
 (module
   (rec (type $f1 (sub (func))) (type (struct (field (ref $f1)))))
@@ -740,7 +768,7 @@
   "sub type"
 )
 
-(assert_invalid 
+(assert_invalid
   (module
     (type $f0 (sub (func (param i32) (result i32))))
     (type $s0 (sub $f0 (struct)))
@@ -764,7 +792,7 @@
   "sub type"
 )
 
-(assert_invalid 
+(assert_invalid
   (module
     (type $s0 (sub (struct)))
     (type $f0 (sub $s0 (func (param i32) (result i32))))
@@ -772,7 +800,7 @@
   "sub type"
 )
 
-(assert_invalid 
+(assert_invalid
   (module
     (type $a0 (sub (array i32)))
     (type $f0 (sub $a0 (func (param i32) (result i32))))
@@ -803,4 +831,3 @@
   )
   "sub type"
 )
-
