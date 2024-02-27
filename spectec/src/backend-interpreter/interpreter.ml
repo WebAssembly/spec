@@ -150,7 +150,7 @@ and eval_expr env expr =
     let args = List.map (eval_expr env) el in
     (match call_func fname args  with
     | Some v -> v
-    | _ -> raise Exception.MissingReturnValue
+    | _ -> raise (Exception.MissingReturnValue fname)
     )
   (* Data Structure *)
   | ListE el -> List.map (eval_expr env) el |> listV_of_list
@@ -459,7 +459,7 @@ and step_instr (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.
     (try
       ctx |> AlContext.add_instrs il1 |> run
     with
-    | Exception.MissingReturnValue
+    | Exception.MissingReturnValue _
     | Exception.OutOfMemory ->
       AlContext.add_instrs il2 ctx
     )
@@ -576,7 +576,7 @@ and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
     (match call_func "inst_reftype" [ mm; dummy_rt ] with
     | Some (CaseV ("REF", [ n; ht' ])) when n = null ->
       CaseV ("REF.NULL", [ ht' ]) |> WasmContext.push_value
-    | _ -> raise Exception.MissingReturnValue);
+    | _ -> raise (Exception.MissingReturnValue "inst_reftype"));
     ctx
   | CaseV ("REF.NULL", _)
   | CaseV ("CONST", _)
