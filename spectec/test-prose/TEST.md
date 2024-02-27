@@ -5576,27 +5576,27 @@ execution_of_VVTESTOP V128 ANY_TRUE
 3. Let c be $ine($size(V128), c_1, 0).
 4. Push (I32.CONST c) to the stack.
 
-execution_of_VSWIZZLE (inn X N)
+execution_of_VSWIZZLE (pnn X N)
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VCONST V128 c_2) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop (VCONST V128 c_1) from the stack.
-5. Let c* be $lanes_((inn X N), c_1) ++ 0^(256 - N).
-6. Let ci* be $lanes_((inn X N), c_2).
+5. Let c* be $lanes_((pnn X N), c_1) ++ 0^(256 - N).
+6. Let ci* be $lanes_((pnn X N), c_2).
 7. Assert: Due to validation, (ci*[k] < |c*|)^(k<N).
 8. Assert: Due to validation, (k < |ci*|)^(k<N).
-9. Let c' be $invlanes_((inn X N), c*[ci*[k]]^(k<N)).
+9. Let c' be $invlanes_((pnn X N), c*[ci*[k]]^(k<N)).
 10. Push (VCONST V128 c') to the stack.
 
-execution_of_VSHUFFLE (inn X N) i*
+execution_of_VSHUFFLE (pnn X N) i*
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VCONST V128 c_2) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop (VCONST V128 c_1) from the stack.
 5. Assert: Due to validation, (k < |i*|)^(k<N).
-6. Let c'* be $lanes_((inn X N), c_1) ++ $lanes_((inn X N), c_2).
+6. Let c'* be $lanes_((pnn X N), c_1) ++ $lanes_((pnn X N), c_2).
 7. Assert: Due to validation, (i*[k] < |c'*|)^(k<N).
-8. Let c be $invlanes_((inn X N), c'*[i*[k]]^(k<N)).
+8. Let c be $invlanes_((pnn X N), c'*[i*[k]]^(k<N)).
 9. Push (VCONST V128 c) to the stack.
 
 execution_of_VSPLAT (lnn X N)
@@ -5663,32 +5663,32 @@ execution_of_VSHIFTOP (imm X N) vshiftop
 6. Let c be $invlanes_((imm X N), $vishiftop((imm X N), vshiftop, c', n)*).
 7. Push (VCONST V128 c) to the stack.
 
-execution_of_VTESTOP (inn X N) ALL_TRUE
+execution_of_VTESTOP (imm X N) ALL_TRUE
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VCONST V128 c) from the stack.
-3. Let ci_1* be $lanes_((inn X N), c).
+3. Let ci_1* be $lanes_((imm X N), c).
 4. If (ci_1 is not 0)*, then:
   a. Push (I32.CONST 1) to the stack.
 5. Else:
   a. Push (I32.CONST 0) to the stack.
 
-execution_of_VBITMASK (inn X N)
+execution_of_VBITMASK (imm X N)
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VCONST V128 c) from the stack.
-3. Let ci_1* be $lanes_((inn X N), c).
-4. Let ci be $inverse_of_ibits(32, $ilt($lsize(inn), S, ci_1, 0)*).
+3. Let ci_1* be $lanes_((imm X N), c).
+4. Let ci be $inverse_of_ibits(32, $ilt($lsize(imm), S, ci_1, 0)*).
 5. Push (I32.CONST ci) to the stack.
 
-execution_of_VNARROW (inn_1 X N_1) (inn_2 X N_2) sx
+execution_of_VNARROW (imm_1 X N_1) (imm_2 X N_2) sx
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VCONST V128 c_2) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop (VCONST V128 c_1) from the stack.
-5. Let ci_1* be $lanes_((inn_1 X N_1), c_1).
-6. Let ci_2* be $lanes_((inn_1 X N_1), c_2).
-7. Let cj_1* be $narrow($size(inn_1), $size(inn_2), sx, ci_1)*.
-8. Let cj_2* be $narrow($size(inn_1), $size(inn_2), sx, ci_2)*.
-9. Let c be $invlanes_((inn_2 X N_2), cj_1* ++ cj_2*).
+5. Let ci_1* be $lanes_((imm_1 X N_1), c_1).
+6. Let ci_2* be $lanes_((imm_1 X N_1), c_2).
+7. Let cj_1* be $narrow($lsize(imm_1), $lsize(imm_2), sx, ci_1)*.
+8. Let cj_2* be $narrow($lsize(imm_1), $lsize(imm_2), sx, ci_2)*.
+9. Let c be $invlanes_((imm_2 X N_2), cj_1* ++ cj_2*).
 10. Push (VCONST V128 c) to the stack.
 
 execution_of_VCVTOP (lanet_u0 X N_2) vcvtop half_u1? (lanet_u2 X N_1) sx_u3? (ZERO _u4?)
@@ -5704,13 +5704,13 @@ execution_of_VCVTOP (lanet_u0 X N_2) vcvtop half_u1? (lanet_u2 X N_1) sx_u3? (ZE
     4) Push (VCONST V128 c) to the stack.
 4. If (_u4? is not defined and half_u1? is defined), then:
   a. Let ?(hf) be half_u1?.
-  b. If the type of lanet_u2 is inn, then:
-    1) Let inn_1 be lanet_u2.
-    2) If the type of lanet_u0 is inn, then:
-      a) Let inn_2 be lanet_u0.
+  b. If the type of lanet_u2 is imm, then:
+    1) Let imm_1 be lanet_u2.
+    2) If the type of lanet_u0 is imm, then:
+      a) Let imm_2 be lanet_u0.
       b) Let sx? be sx_u3?.
-      c) Let ci* be $lanes_((inn_1 X N_1), c_1)[$halfop(hf, 0, N_2) : N_2].
-      d) Let c be $invlanes_((inn_2 X N_2), $vcvtop((inn_1 X N_1), (inn_2 X N_2), vcvtop, sx?, ci)*).
+      c) Let ci* be $lanes_((imm_1 X N_1), c_1)[$halfop(hf, 0, N_2) : N_2].
+      d) Let c be $invlanes_((imm_2 X N_2), $vcvtop((imm_1 X N_1), (imm_2 X N_2), vcvtop, sx?, ci)*).
       e) Push (VCONST V128 c) to the stack.
 5. If (half_u1? is not defined and ((_u4? is ?(())) and the type of lanet_u2 is inn)), then:
   a. Let inn_1 be lanet_u2.
