@@ -74,7 +74,7 @@ let fresh_id env : id =
 let under_iterexp (iter, vs) binds : iterexp * bind list =
    let new_vs = List.map (fun bind ->
      match bind.it with
-     | ExpB (v, _, _) -> v
+     | ExpB (v, t, _) -> (v, t)
      | TypB _ -> error bind.at "unexpected type binding") binds in
    let iterexp' = (iter, vs @ new_vs) in
    let binds' = List.map (fun bind ->

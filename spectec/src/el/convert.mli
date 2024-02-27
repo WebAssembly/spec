@@ -23,4 +23,7 @@ val exp_of_arg : arg -> exp (* raises Source.Error *)
 val param_of_arg : arg -> param (* raises Source.Error *)
 val arg_of_param : param -> arg (* raises Source.Error *)
 
+val pat_of_typ : typ -> exp
+val pats_of_typs : typ list -> exp list
+
 val strip_var_suffix : id -> id

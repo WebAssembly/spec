@@ -67,12 +67,12 @@ and subst_typ s t =
     | Some t' -> assert (as_ = []); t'.it  (* We do not support higher-order substitutions yet *)
     )
   | BoolT | NumT _ | TextT -> t.it
-  | TupT xts -> TupT (fst (subst_list_dep subst_typbind Free.bound_typbind s xts))
+  | TupT ets -> TupT (fst (subst_list_dep subst_typbind Free.bound_typbind s ets))
   | IterT (t1, iter) -> IterT (subst_typ s t1, subst_iter s iter)
   ) $ t.at
 
-and subst_typbind s (id, t) =
-  (id, subst_typ s t)
+and subst_typbind s (e, t) =
+  (e, subst_typ s t)
 
 and subst_deftyp s dt =
   (match dt.it with
@@ -141,9 +141,47 @@ and subst_path s p =
   | DotP (p1, atom) -> DotP (subst_path s p1, atom)
   ) $$ p.at % subst_typ s p.note
 
-and subst_iterexp s (iter, ids) =
+and subst_iterexp s (iter, bs) =
   (* TODO: This is assuming expressions in s are closed. *)
-  (subst_iter s iter, List.filter (fun id -> not (mem_varid s id)) ids)
+  subst_iter s iter,
+  List.map (fun (id, t) ->
+    let id' =
+      match Map.find_opt id.it s.varid with
+      | None -> id
+      | Some {it = VarE id'; _} -> id'
+      | Some _ ->
+        id  (* TODO: would need to update bind list; change bs to proper bindings *)
+    in (id', subst_typ s t)
+  ) bs
+(*
+  let iter' = subst_iter s iter in
+  let bs' = 
+    List.map_filter (fun (id, t) ->
+      if mem_varid s id then None else Some (id, subst_typ s t)
+    ) bs
+  in
+  let iter'', f =
+    match iter' with
+    | Opt -> iter', fun e -> TheE e
+    | ListN (e1, Some idx) ->
+      let eidx = VarE idx $$ idx.at % (NumT NatT $ idx.at) in
+      iter', fun e -> IdxE (e, eidx)
+    | ListN (e1, None) ->
+      let idx = gen_id "i" $ e1.at in
+      let eidx = VarE idx $$ at % (NumT NatT $ idx.at) in
+      ListN (e1, Some idx), fun e -> IdxE (e, eidx)
+    | List1 | List ->
+      let idx = gen_id "i" $ at in
+      let eidx = VarE idx $$ idx.at % (NumT NatT $ idx.at) in
+      let e1 = LenE (gen_id "n" $ at) $$ at % (NumT NatT $ idx.at) in
+      ListN (e1, Some idx), fun e -> IdxE (e, eidx)
+  in
+  (iter'', bs'),
+  List.fold_left (fun s' (id, t) ->
+    let e = Map.find id.it s.varid in
+    add_varid s' id (f e $$ e.at % subst_typ s t)
+  ) s bs
+*)
 
 
 (* Premises *)
@@ -153,7 +191,8 @@ and subst_prem s prem =
   | RulePr (id, op, e) -> RulePr (id, op, subst_exp s e)
   | IfPr e -> IfPr (subst_exp s e)
   | ElsePr -> ElsePr
-  | IterPr (prem1, iterexp) -> IterPr (subst_prem s prem1, subst_iterexp s iterexp)
+  | IterPr (prem1, iterexp) ->
+    IterPr (subst_prem s prem1, subst_iterexp s iterexp)
   | LetPr (e1, e2, ids) -> LetPr (subst_exp s e1, subst_exp s e2, ids)
   ) $ prem.at
 

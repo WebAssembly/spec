@@ -114,7 +114,7 @@ and translate_exp exp =
   | Il.SubE ({ it = Il.VarE id; _}, { it = VarT (t, _); _ }, _) -> subE (id.it, t.it) ~at:at
   | Il.SubE (inner_exp, _, _) -> translate_exp inner_exp
   | Il.IterE (inner_exp, (iter, ids)) ->
-    let names = List.map (fun id -> id.it) ids in
+    let names = List.map (fun (id, _) -> id.it) ids in
     iterE (translate_exp inner_exp, names, translate_iter iter) ~at:at
   (* property access *)
   | Il.DotE (inner_exp, Atom p) ->
@@ -324,7 +324,7 @@ let rec translate_rhs exp =
   | Il.IterE ({ it = SubE ({ it = VarE id; _ }, _, _); _}, (Il.List, _))
     when String.starts_with ~prefix:"instr" id.it ->
     [ executeseqI (translate_exp exp) ~at:at ]
-  | Il.IterE ({ it = CaseE (Atom id', _); note = note; _ }, (Opt, [ id ]))
+  | Il.IterE ({ it = CaseE (Atom id', _); note = note; _ }, (Opt, [ (id, _) ]))
     when id' = "CALL" ->
     let new_name = varE (id.it ^ "_0") in
     [ ifI (isDefinedE (varE id.it),
@@ -582,7 +582,7 @@ let translate_rulepr id exp =
 
 let rec translate_iterpr pr (iter, ids) =
   let instrs = translate_prem pr in
-  let iter', ids' = translate_iter iter, IdSet.of_list (List.map it ids) in
+  let iter', ids' = translate_iter iter, IdSet.of_list (List.map (fun (id, _) -> id.it) ids) in
   let lhs_iter = match iter' with | ListN (e, _) -> ListN (e, None) | _ -> iter' in
 
   let distribute_iter lhs rhs =
@@ -620,8 +620,8 @@ and translate_prem prem =
 (* Insert `target` at the innermost if instruction *)
 let rec insert_instrs target il =
   match Util.Lib.List.split_last_opt il with
-  | [], Some { it = OtherwiseI il'; _ } -> [ otherwiseI (il' @ insert_nop target) ]
-  | h, Some { it = IfI (cond, il', []); _ } ->
+  | Some ([], { it = OtherwiseI il'; _ }) -> [ otherwiseI (il' @ insert_nop target) ]
+  | Some (h, { it = IfI (cond, il', []); _ }) ->
     h @ [ ifI (cond, insert_instrs (insert_nop target) il' , []) ]
   | _ -> il @ target
 

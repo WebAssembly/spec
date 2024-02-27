@@ -35,14 +35,14 @@ let fresh_id (n : int ref) : id =
 drop some variables from the iterexp *)
 
 let update_iterexp_vars (sets : Il.Free.sets) ((iter, vs) : iterexp) : iterexp =
-  (iter, List.filter (fun v -> Il.Free.Set.mem v.it sets.varid) vs)
+  (iter, List.filter (fun (v, _) -> Il.Free.Set.mem v.it sets.varid) vs)
 
 (* If a bind and premise is generated under an iteration, wrap them accordingly *)
 
 let under_iterexp (iter, vs) eqns : iterexp * eqns =
    let new_vs = List.map (fun (bind, _) ->
      match bind.it with
-     | ExpB (v, _, _) -> v
+     | ExpB (v, t, _) -> (v, t)
      | TypB _ -> error bind.at "unexpected type binding") eqns in
    let iterexp' = (iter, vs @ new_vs) in
    let eqns' = List.map (fun (bind, pr) ->

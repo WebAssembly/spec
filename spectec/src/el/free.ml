@@ -97,7 +97,7 @@ and free_typ t =
   | CaseT (_, ts, tcs, _) ->
     free_nl_list free_typ ts +
       free_nl_list (fun tc -> free_typcase tc - det_typcase tc) tcs
-  | ConT tc -> free_typcon tc
+  | ConT tc -> free_typcon tc - det_typcon tc
   | RangeT tes -> free_nl_list free_typenum tes
   | AtomT _ -> empty
   | SeqT ts -> free_list free_typ ts
@@ -111,12 +111,7 @@ and free_typenum (e, eo) = free_exp e + free_opt free_exp eo
 
 
 (* Variables can be determined by types through implicit binders *)
-and det_typ t =
-  match t.it with
-  | VarT (id, _) | ParenT {it = VarT (id, _); _} -> free_varid id
-  | SeqT ts -> free_list det_typ ts
-  | IterT (t1, iter) -> det_typ t1 + det_iter iter
-  | _ -> empty
+and det_typ t = det_exp (Convert.pat_of_typ t)
 
 and det_typfield (_, (t, prems), _) = det_typ t + det_prems prems
 and det_typcase (_, (t, prems), _) = det_typ t + det_prems prems
@@ -157,7 +152,7 @@ and free_path p =
 
 and det_exp e =
   match e.it with
-  | VarE (id, []) -> free_varid id
+  | VarE (id, []) -> bound_varid id
   | VarE _ -> assert false
   | UnE ((PlusOp | MinusOp), e1)
   | ParenE (e1, _) | BrackE (_, e1, _) -> det_exp e1
@@ -185,7 +180,7 @@ and det_expfield (_, e) = det_exp e
 and det_iter iter =
   match iter with
   | Opt | List | List1 -> empty
-  | ListN (e, id_opt) -> det_exp e + free_opt free_varid id_opt
+  | ListN (e, id_opt) -> det_exp e + free_opt bound_varid id_opt
 
 and idx_exp e =
   match e.it with
@@ -205,7 +200,7 @@ and idx_expfield (_, e) = idx_exp e
 and idx_iter iter =
   match iter with
   | Opt | List | List1 -> empty
-  | ListN (e, id_opt) -> idx_exp e + free_opt free_varid id_opt
+  | ListN (e, id_opt) -> idx_exp e + free_opt bound_varid id_opt
 
 and det_cond_exp e =
   match e.it with

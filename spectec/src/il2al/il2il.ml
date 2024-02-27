@@ -167,7 +167,7 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
       let ty = e1.note in
       let id = gen_new_unified ty in
       match ty.it with
-      | IterT (ty, iter) -> to_iter (VarE id $$ no_region % ty) (iter, [id])
+      | IterT (ty, iter) -> to_iter (VarE id $$ no_region % ty) (iter, [(id, ty)])
       | _ -> VarE id
   in { e1 with it }
 

@@ -65,8 +65,8 @@ let rec prem_to_instrs prem = match prem.it with
     )
   | Ast.IterPr (prem, iter) ->
     ( match iter with
-    | Ast.Opt, [id] -> [ IfI (isDefinedE (varE id.it), prem_to_instrs prem) ]
-    | Ast.(List | ListN _), [id] ->
+    | Ast.Opt, [(id, _)] -> [ IfI (isDefinedE (varE id.it), prem_to_instrs prem) ]
+    | Ast.(List | ListN _), [(id, _)] ->
         let name = varE id.it in
         [ ForallI (name, iterE (name, [id.it], Al.Ast.List), prem_to_instrs prem) ]
     | _ -> print_endline "prem_to_instr: Invalid prem 3"; [ YetI "TODO: prem_to_intrs 3" ])

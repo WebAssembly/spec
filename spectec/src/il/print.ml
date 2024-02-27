@@ -115,7 +115,7 @@ and string_of_typ t =
   | BoolT -> "bool"
   | NumT t -> string_of_numtyp t
   | TextT -> "text"
-  | TupT xts -> "(" ^ concat ", " (List.map string_of_typbind xts) ^ ")"
+  | TupT ets -> "(" ^ concat ", " (List.map string_of_typbind ets) ^ ")"
   | IterT (t1, iter) -> string_of_typ t1 ^ string_of_iter iter
 
 and string_of_typ_args t =
@@ -124,8 +124,10 @@ and string_of_typ_args t =
   | TupT _ -> string_of_typ t
   | _ -> "(" ^ string_of_typ t ^ ")"
 
-and string_of_typbind (id, t) =
-  (if id.it = "_" then "" else id.it ^ " : ") ^ string_of_typ t
+and string_of_typbind (e, t) =
+  match e.it with
+  | VarE {it = "_"; _} -> string_of_typ t
+  | _ -> string_of_exp e ^ " : " ^ string_of_typ t
 
 and string_of_deftyp layout dt =
   match dt.it with
@@ -220,8 +222,9 @@ and string_of_path p =
   | DotP (p1, atom) ->
     string_of_path p1 ^ "." ^ string_of_atom atom ^ "_" ^ string_of_typ p1.note
 
-and string_of_iterexp (iter, ids) =
-  string_of_iter iter ^ "{" ^ String.concat " " (List.map Source.it ids) ^ "}"
+and string_of_iterexp (iter, bs) =
+  string_of_iter iter ^ "{" ^ String.concat " "
+    (List.map (fun (id, t) -> id.it ^ " : " ^ string_of_typ t) bs) ^ "}"
 
 
 (* Premises *)

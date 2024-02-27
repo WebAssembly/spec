@@ -38,7 +38,7 @@ and eq_typ t1 t2 =
   t1.it = t2.it ||
   match t1.it, t2.it with
   | VarT (id1, as1), VarT (id2, as2) -> eq_id id1 id2 && eq_list eq_arg as1 as2
-  | TupT xts1, TupT xts2 -> eq_list (eq_pair eq_id eq_typ) xts1 xts2
+  | TupT xts1, TupT xts2 -> eq_list (eq_pair eq_exp eq_typ) xts1 xts2
   | IterT (t11, iter1), IterT (t21, iter2) ->
     eq_typ t11 t21 && eq_iter iter1 iter2
   | _, _ -> t1.it = t2.it
@@ -109,8 +109,8 @@ and eq_path p1 p2 =
   | DotP (p11, atom1), DotP (p21, atom2) -> eq_path p11 p21 && atom1 = atom2
   | _, _ -> p1.it = p2.it
 
-and eq_iterexp (iter1, ids1) (iter2, ids2) =
-  eq_iter iter1 iter2 && eq_list eq_id ids1 ids2
+and eq_iterexp (iter1, bs1) (iter2, bs2) =
+  eq_iter iter1 iter2 && eq_list (eq_pair eq_id eq_typ) bs1 bs2
 
 
 (* Premises *)

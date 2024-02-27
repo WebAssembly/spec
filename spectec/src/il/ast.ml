@@ -78,7 +78,7 @@ and typ' =
   | BoolT                        (* `bool` *)
   | NumT of numtyp               (* numtyp *)
   | TextT                        (* `text` *)
-  | TupT of (id * typ) list      (* typ * ... * typ *)
+  | TupT of (exp * typ) list     (* typ * ... * typ *)
   | IterT of typ * iter          (* typ iter *)
 
 and deftyp = deftyp' phrase
@@ -160,7 +160,7 @@ and path' =
   | SliceP of path * exp * exp   (* path `[` exp `:` exp `]` *)
   | DotP of path * atom          (* path `.` atom *)
 
-and iterexp = iter * id list
+and iterexp = iter * (id * typ) list
 
 
 (* Definitions *)

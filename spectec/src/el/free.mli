@@ -42,9 +42,8 @@ val free_def : def -> sets
      (this case is to handle function inverses)
   This is a pragmatic criterium, intended only for sanity checks.
 *)
-val det_typfield : typfield -> sets
-val det_typcase : typcase -> sets
-val det_typcon : typcon -> sets
+val det_exp : exp -> sets
+val det_prems : prem nl_list -> sets
 val det_prod : prod -> sets
 val det_def : def -> sets
 

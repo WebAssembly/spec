@@ -40,9 +40,9 @@ let disjoint sets1 sets2 =
   Set.disjoint sets1.varid sets2.varid &&
   Set.disjoint sets1.defid sets2.defid
 
-
 let free_opt free_x xo = Option.(value (map free_x xo) ~default:empty)
 let free_list free_x xs = List.(fold_left (+) empty (map free_x xs))
+let free_pair free_x free_y (x, y) = free_x x + free_y y
 let bound_list = free_list
 
 let rec free_list_dep free_x bound_x = function
@@ -75,17 +75,17 @@ and free_typ t =
   match t.it with
   | VarT (id, as_) -> free_typid id + free_args as_
   | BoolT | NumT _ | TextT -> empty
-  | TupT xts -> free_typbinds xts
+  | TupT ets -> free_typbinds ets
   | IterT (t1, iter) -> free_typ t1 + free_iter iter
 
 and bound_typ t =
   match t.it with
   | VarT _ | BoolT | NumT _ | TextT -> empty
-  | TupT xts -> bound_list bound_typbind xts
+  | TupT ets -> bound_list bound_typbind ets
   | IterT (t1, _iter) -> bound_typ t1
   
-and free_typbind (_id, t) = free_typ t
-and bound_typbind (id, _t) = bound_varid id
+and free_typbind (_e, t) = free_typ t
+and bound_typbind (e, _t) = free_exp e
 and free_typbinds xts = free_list_dep free_typbind bound_typbind xts
 
 and free_deftyp dt =
@@ -131,8 +131,8 @@ and free_path p =
   | SliceP (p1, e1, e2) -> free_path p1 + free_exp e1 + free_exp e2
   | DotP (p1, _atom) -> free_path p1
 
-and free_iterexp (iter, ids) =
-    free_iter iter + free_list free_varid ids
+and free_iterexp (iter, bs) =
+    free_iter iter + free_list (free_pair free_varid free_typ) bs
 
 
 (* Premises *)

@@ -36,20 +36,20 @@ let fully_iterated v t is =
     | [] -> VarE v $$ v.at % t
     | (i::is) ->
       let e = go is in
-      IterE (e, (i, [v])) $$ v.at % (IterT (e.note, i) $ v.at)
+      IterE (e, (i, [(v, t)])) $$ v.at % (IterT (e.note, i) $ v.at)
   in
   go (List.rev is)
 
 (* updates the types in the environment as we go under iteras *)
 let env_under_iter env ((_, vs) : iterexp) =
-  let vs' = List.map (fun v -> v.it) vs in
+  let vs' = List.map (fun (v, _) -> v.it) vs in
   Env.mapi (fun v (t,is) ->
     if List.mem v vs' then (t, fst (Lib.List.split_last is)) else (t, is)
   ) env
 
 let iter_side_conditions env ((iter, vs) : iterexp) : prem list =
   (* let iter' = if iter = Opt then Opt else List in *)
-  let ves = List.map (fun v ->
+  let ves = List.map (fun (v, _) ->
     let (t,is) = Env.find v.it env in
     fully_iterated v t is
   ) vs in
