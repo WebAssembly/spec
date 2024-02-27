@@ -196,7 +196,8 @@ let () =
     if !print_final_il && not !print_all_il then print_il il;
 
     let al =
-      if !target = Check || not (PS.mem Animate !selected_passes) then [] else (
+      if !target = Check || !target = Latex || not (PS.mem Animate !selected_passes)
+      then [] else (
         log "Translating to AL...";
         (Il2al.Translate.translate il @ Backend_interpreter.Manual.manual_algos)
       )

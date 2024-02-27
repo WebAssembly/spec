@@ -58,7 +58,7 @@ let rec reduce_typ env t : typ =
   match t.it with
   | VarT (id, args) ->
     let args' = List.map (reduce_arg env) args in
-    (match reduce_typ_app' env id args' t.at (Map.find id.it env.typs) with
+    (match reduce_typ_app' env id args' t.at (Map.find_opt id.it env.typs) with
     | Some {it = AliasT t'; _} -> reduce_typ env t'
     | _ -> VarT (id, args') $ t.at
     )
@@ -79,14 +79,15 @@ and reduce_typ_app env id args at : deftyp option =
     (fun _ -> fmt "%s(%s)" id.it (il_args args))
     (fun r -> fmt "%s" (opt il_deftyp r))
   ) @@ fun _ ->
-  reduce_typ_app' env id (List.map (reduce_arg env) args) at (Map.find id.it env.typs)
+  reduce_typ_app' env id (List.map (reduce_arg env) args) at (Map.find_opt id.it env.typs)
 
 and reduce_typ_app' env id args at = function
-  | [] ->
+  | None -> None  (* id is a type parameter *)
+  | Some [] ->
     if !assume_coherent_matches then None else
     Source.error at "validation"
       ("undefined instance of partial type `" ^ id.it ^ "`")
-  | {it = InstD (_binds, args', dt); _}::insts' ->
+  | Some ({it = InstD (_binds, args', dt); _}::insts') ->
     Debug.(log "il.reduce_typ_app'"
       (fun _ -> fmt "%s(%s) =: %s(%s)" id.it (il_args args) id.it (il_args args'))
       (fun r -> fmt "%s" (opt (Fun.const "!") r))
@@ -94,8 +95,8 @@ and reduce_typ_app' env id args at = function
     match match_list match_arg env Subst.empty args args' with
     | exception Irred ->
       if not !assume_coherent_matches then None else
-      reduce_typ_app' env id args at insts'
-    | None -> reduce_typ_app' env id args at insts'
+      reduce_typ_app' env id args at (Some insts')
+    | None -> reduce_typ_app' env id args at (Some insts')
     | Some s -> Some (Subst.subst_deftyp s dt)
 
 

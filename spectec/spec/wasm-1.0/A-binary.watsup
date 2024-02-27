@@ -43,9 +43,9 @@ grammar Bf64 : f64 = | p:BfN(64) => p
 
 ;; Names
 
-var ch : nat
+var ch : char
 
-def $utf8(name) : byte*
+;; def $utf8(char*) : byte*
 def $utf8(ch) = b  -- if ch < U+0080 /\ ch = b
 def $utf8(ch) = b_1 b_2  -- if U+0080 <= ch < U+0800 /\ ch = $(2^6*(b_1 - 0xC0) + (b_2 - 0x80))
 def $utf8(ch) = b_1 b_2 b_3  -- if (U+0800 <= ch < U+D800 \/ U+E000 <= ch < U+10000) /\ ch = $(2^12*(b_1 - 0xE0) + 2^6*(b_2 - 0x80) + (b_3 - 0x80))

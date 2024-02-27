@@ -3,19 +3,7 @@
 ;;
 
 ;; TODO: enable writing X^n
-syntax list(syntax X) = X*  ;;-- if |X*| < $(2^32)
-
-
-;;
-;; Names
-;;
-
-syntax char hint(desc "character") = U+0000 | ... | U+D7FF | U+E000 | ... | U+10FFFF
-
-;; TODO: enable side condition
-syntax name hint(desc "name") = char*  ;; -- if |$utf8(char*)| < $(2^32)
-
-var nm : name
+syntax list(syntax X) = X*  -- if |X*| < $(2^32)
 
 
 ;;
@@ -88,6 +76,19 @@ def $canon_(N) = $(2^($signif(N)-1))
 
 syntax vN(N) hint(desc "vector") hint(show v#%) =
   iN(N)
+
+
+;;
+;; Names
+;;
+
+syntax char hint(desc "character") = U+0000 | ... | U+D7FF | U+E000 | ... | U+10FFFF
+
+def $utf8(char*) : byte*
+
+syntax name hint(desc "name") = char*  -- if |$utf8(char*)| < $(2^32)
+
+var nm : name
 
 
 ;;

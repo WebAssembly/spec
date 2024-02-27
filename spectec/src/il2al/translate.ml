@@ -41,11 +41,11 @@ let split_state e =
   let state_instr = [ letI (varE "f", getCurFrameE ()) ] in
   match e.it with
   (* z; e *)
-  | Il.MixE ([ []; [ Il.Semicolon ]; [ Il.Star ] ], { it = Il.TupE [ state; e' ]; _ })
+  | Il.MixE ([ []; [ Il.Semicolon ]; [] ], { it = Il.TupE [ state; e' ]; _ })
     when is_state state -> state_instr, e'
   (* s; f; e *)
   | Il.MixE
-    ( [ []; [ Il.Semicolon ]; [ Il.Star ] ],
+    ( [ []; [ Il.Semicolon ]; [] ],
       { it = Il.TupE [ { it = Il.MixE (
         [[]; [ Il.Semicolon ]; []],
         { it = Il.TupE [ store; frame ]; _ }
@@ -208,11 +208,12 @@ and translate_exp exp =
     | [ []; [ Il.Star; atom ]; [ Il.Star ] ], [ e1; e2 ]
     | [ []; [ atom ]; [] ], [ e1; e2 ] ->
       infixE (translate_exp e1, Il.Print.string_of_atom atom, translate_exp e2) ~at:at
+    | [ []; [ Il.Arrow ]; []; [] ], [ e1; e2; e3 ]
     | [ []; [ Il.Arrow ]; [ Il.Star ]; [] ], [ e1; e2; e3 ] -> (* HARDCODE *)
       infixE (translate_exp e1, "->", catE (translate_exp e2, translate_exp e3)) ~at:at
     (* Constructor *)
     (* TODO: Need a better way to convert these CaseE into ConstructE *)
-    | [ [ Il.Atom "FUNC" ]; []; [ Il.Star ]; [] ], _ ->
+    | [ [ Il.Atom "FUNC" ]; []; []; [] ], _ ->
       caseE (("FUNC", "func"), List.map translate_exp exps) ~at:at
     | [ [ Il.Atom "OK" ] ], [] ->
       caseE (("OK", "datatype"), []) ~at:at
@@ -234,9 +235,9 @@ and translate_exp exp =
       caseE (("MEMORY", "mem"), List.map translate_exp el) ~at:at
     | [ []; [ Il.Atom "I8" ] ], el ->
       caseE (("I8", "memtype"), List.map translate_exp el) ~at:at
-    | [ [ Il.Atom "ELEM" ]; []; [ Il.Star ]; [] ], el ->
+    | [ [ Il.Atom "ELEM" ]; []; []; [] ], el ->
       caseE (("ELEM", "elem"), List.map translate_exp el) ~at:at
-    | [ [ Il.Atom "DATA" ]; [ Il.Star ]; [] ], el ->
+    | [ [ Il.Atom "DATA" ]; []; [] ], el ->
       caseE (("DATA", "data"), List.map translate_exp el) ~at:at
     | [ [ Il.Atom "START" ]; [] ], el ->
       caseE (("START", "start"), List.map translate_exp el) ~at:at
@@ -390,7 +391,7 @@ let rec translate_rhs exp =
   | Il.CaseE (Atom atomid, argexp) ->
       [ executeI (caseE (kwd atomid exp.note, translate_argexp argexp)) ~at:at ]
   | Il.MixE
-    ( [ []; [ Il.Semicolon ]; [ Il.Star ] ],
+    ( [ []; [ Il.Semicolon ]; [] ],
       (* z' ; instr'* *)
       { it = TupE [ se; rhs ]; _ } ) -> (
     let push_instrs = translate_rhs rhs in

@@ -212,6 +212,24 @@ fone N
 canon_ N
 1. Return (2 ^ ($signif(N) - 1)).
 
+utf8 char_u0*
+1. If (|char_u0*| is 1), then:
+  a. Let [ch] be char_u0*.
+  b. If (ch < 128), then:
+    1) Let b be ch.
+    2) Return [b].
+  c. If ((128 ≤ ch) and ((ch < 2048) and (ch ≥ (b_2 - 128)))), then:
+    1) Let ((2 ^ 6) · (b_1 - 192)) be (ch - (b_2 - 128)).
+    2) Return [b_1, b_2].
+  d. If ((((2048 ≤ ch) and (ch < 55296)) or ((57344 ≤ ch) and (ch < 65536))) and (ch ≥ (b_3 - 128))), then:
+    1) Let (((2 ^ 12) · (b_1 - 224)) + ((2 ^ 6) · (b_2 - 128))) be (ch - (b_3 - 128)).
+    2) Return [b_1, b_2, b_3].
+  e. If ((65536 ≤ ch) and ((ch < 69632) and (ch ≥ (b_4 - 128)))), then:
+    1) Let ((((2 ^ 18) · (b_1 - 240)) + ((2 ^ 12) · (b_2 - 128))) + ((2 ^ 6) · (b_3 - 128))) be (ch - (b_4 - 128)).
+    2) Return [b_1, b_2, b_3, b_4].
+2. Let ch* be char_u0*.
+3. Return $concat_($utf8([ch])*).
+
 size valty_u0
 1. If (valty_u0 is I32), then:
   a. Return 32.
@@ -872,24 +890,6 @@ invoke fa val^n
   b. Execute (CALL_ADDR fa).
 5. Pop val^k from the stack.
 6. Return val^k.
-
-utf8 name_u0
-1. If (|name_u0| is 1), then:
-  a. Let [ch] be name_u0.
-  b. If (ch < 128), then:
-    1) Let b be ch.
-    2) Return [b].
-  c. If ((128 ≤ ch) and ((ch < 2048) and (ch ≥ (b_2 - 128)))), then:
-    1) Let ((2 ^ 6) · (b_1 - 192)) be (ch - (b_2 - 128)).
-    2) Return [b_1, b_2].
-  d. If ((((2048 ≤ ch) and (ch < 55296)) or ((57344 ≤ ch) and (ch < 65536))) and (ch ≥ (b_3 - 128))), then:
-    1) Let (((2 ^ 12) · (b_1 - 224)) + ((2 ^ 6) · (b_2 - 128))) be (ch - (b_3 - 128)).
-    2) Return [b_1, b_2, b_3].
-  e. If ((65536 ≤ ch) and ((ch < 69632) and (ch ≥ (b_4 - 128)))), then:
-    1) Let ((((2 ^ 18) · (b_1 - 240)) + ((2 ^ 12) · (b_2 - 128))) + ((2 ^ 6) · (b_3 - 128))) be (ch - (b_4 - 128)).
-    2) Return [b_1, b_2, b_3, b_4].
-2. Let ch* be name_u0.
-3. Return $concat_($utf8([ch])*).
 
 execution_of_UNREACHABLE
 1. Trap.
@@ -1579,6 +1579,24 @@ fone N
 
 canon_ N
 1. Return (2 ^ ($signif(N) - 1)).
+
+utf8 char_u0*
+1. If (|char_u0*| is 1), then:
+  a. Let [ch] be char_u0*.
+  b. If (ch < 128), then:
+    1) Let b be ch.
+    2) Return [b].
+  c. If ((128 ≤ ch) and ((ch < 2048) and (ch ≥ (b_2 - 128)))), then:
+    1) Let ((2 ^ 6) · (b_1 - 192)) be (ch - (b_2 - 128)).
+    2) Return [b_1, b_2].
+  d. If ((((2048 ≤ ch) and (ch < 55296)) or ((57344 ≤ ch) and (ch < 65536))) and (ch ≥ (b_3 - 128))), then:
+    1) Let (((2 ^ 12) · (b_1 - 224)) + ((2 ^ 6) · (b_2 - 128))) be (ch - (b_3 - 128)).
+    2) Return [b_1, b_2, b_3].
+  e. If ((65536 ≤ ch) and ((ch < 69632) and (ch ≥ (b_4 - 128)))), then:
+    1) Let ((((2 ^ 18) · (b_1 - 240)) + ((2 ^ 12) · (b_2 - 128))) + ((2 ^ 6) · (b_3 - 128))) be (ch - (b_4 - 128)).
+    2) Return [b_1, b_2, b_3, b_4].
+2. Let ch* be char_u0*.
+3. Return $concat_($utf8([ch])*).
 
 size valty_u0
 1. If (valty_u0 is I32), then:
@@ -2415,24 +2433,6 @@ invoke fa val^n
   b. Execute (CALL_ADDR fa).
 5. Pop val^k from the stack.
 6. Return val^k.
-
-utf8 name_u0
-1. If (|name_u0| is 1), then:
-  a. Let [ch] be name_u0.
-  b. If (ch < 128), then:
-    1) Let b be ch.
-    2) Return [b].
-  c. If ((128 ≤ ch) and ((ch < 2048) and (ch ≥ (b_2 - 128)))), then:
-    1) Let ((2 ^ 6) · (b_1 - 192)) be (ch - (b_2 - 128)).
-    2) Return [b_1, b_2].
-  d. If ((((2048 ≤ ch) and (ch < 55296)) or ((57344 ≤ ch) and (ch < 65536))) and (ch ≥ (b_3 - 128))), then:
-    1) Let (((2 ^ 12) · (b_1 - 224)) + ((2 ^ 6) · (b_2 - 128))) be (ch - (b_3 - 128)).
-    2) Return [b_1, b_2, b_3].
-  e. If ((65536 ≤ ch) and ((ch < 69632) and (ch ≥ (b_4 - 128)))), then:
-    1) Let ((((2 ^ 18) · (b_1 - 240)) + ((2 ^ 12) · (b_2 - 128))) + ((2 ^ 6) · (b_3 - 128))) be (ch - (b_4 - 128)).
-    2) Return [b_1, b_2, b_3, b_4].
-2. Let ch* be name_u0.
-3. Return $concat_($utf8([ch])*).
 
 execution_of_UNREACHABLE
 1. Trap.
@@ -3795,6 +3795,24 @@ fone N
 
 canon_ N
 1. Return (2 ^ ($signif(N) - 1)).
+
+utf8 char_u0*
+1. If (|char_u0*| is 1), then:
+  a. Let [ch] be char_u0*.
+  b. If (ch < 128), then:
+    1) Let b be ch.
+    2) Return [b].
+  c. If ((128 ≤ ch) and ((ch < 2048) and (ch ≥ (b_2 - 128)))), then:
+    1) Let ((2 ^ 6) · (b_1 - 192)) be (ch - (b_2 - 128)).
+    2) Return [b_1, b_2].
+  d. If ((((2048 ≤ ch) and (ch < 55296)) or ((57344 ≤ ch) and (ch < 65536))) and (ch ≥ (b_3 - 128))), then:
+    1) Let (((2 ^ 12) · (b_1 - 224)) + ((2 ^ 6) · (b_2 - 128))) be (ch - (b_3 - 128)).
+    2) Return [b_1, b_2, b_3].
+  e. If ((65536 ≤ ch) and ((ch < 69632) and (ch ≥ (b_4 - 128)))), then:
+    1) Let ((((2 ^ 18) · (b_1 - 240)) + ((2 ^ 12) · (b_2 - 128))) + ((2 ^ 6) · (b_3 - 128))) be (ch - (b_4 - 128)).
+    2) Return [b_1, b_2, b_3, b_4].
+2. Let ch* be char_u0*.
+3. Return $concat_($utf8([ch])*).
 
 size numty_u0
 1. If (numty_u0 is I32), then:
@@ -5262,24 +5280,6 @@ invoke fa val^n
   c. Execute (CALL_REF ?(0)).
 8. Pop val^k from the stack.
 9. Return val^k.
-
-utf8 name_u0
-1. If (|name_u0| is 1), then:
-  a. Let [ch] be name_u0.
-  b. If (ch < 128), then:
-    1) Let b be ch.
-    2) Return [b].
-  c. If ((128 ≤ ch) and ((ch < 2048) and (ch ≥ (b_2 - 128)))), then:
-    1) Let ((2 ^ 6) · (b_1 - 192)) be (ch - (b_2 - 128)).
-    2) Return [b_1, b_2].
-  d. If ((((2048 ≤ ch) and (ch < 55296)) or ((57344 ≤ ch) and (ch < 65536))) and (ch ≥ (b_3 - 128))), then:
-    1) Let (((2 ^ 12) · (b_1 - 224)) + ((2 ^ 6) · (b_2 - 128))) be (ch - (b_3 - 128)).
-    2) Return [b_1, b_2, b_3].
-  e. If ((65536 ≤ ch) and ((ch < 69632) and (ch ≥ (b_4 - 128)))), then:
-    1) Let ((((2 ^ 18) · (b_1 - 240)) + ((2 ^ 12) · (b_2 - 128))) + ((2 ^ 6) · (b_3 - 128))) be (ch - (b_4 - 128)).
-    2) Return [b_1, b_2, b_3, b_4].
-2. Let ch* be name_u0.
-3. Return $concat_($utf8([ch])*).
 
 execution_of_UNREACHABLE
 1. Trap.
