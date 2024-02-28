@@ -66,7 +66,7 @@ Values of vector type can be stored in :ref:`memories <syntax-mem>`.
 Conventions
 ...........
 
-* The notation ${:$vsize(t)} for :ref:`bit width <bitwidth-numtype>` extends to vector types as well, that is, ${:$vsize(V128} = 128}.
+* The notation ${:$vsize(t)} for :ref:`bit width <bitwidth-numtype>` extends to vector types as well, that is, ${:$vsize(V128) = 128}.
 
 $${definition-ignore: vsize}
 
