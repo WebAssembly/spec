@@ -163,6 +163,9 @@ and instr' =
   | ReturnCall of idx                 (* tail-call function *)
   | ReturnCallRef of idx              (* tail call through reference *)
   | ReturnCallIndirect of idx * idx   (* tail-call function through table *)
+  | Throw of idx                      (* throw exception *)
+  | ThrowRef                          (* rethrow exception *)
+  | TryTable of block_type * catch list * instr list  (* handle exceptions *)
   | LocalGet of idx                   (* read local idxiable *)
   | LocalSet of idx                   (* write local idxiable *)
   | LocalTee of idx                   (* write local idxiable and keep value *)
@@ -234,6 +237,13 @@ and instr' =
   | VecExtract of vec_extractop       (* extract lane from vector *)
   | VecReplace of vec_replaceop       (* replace lane in vector *)
 
+and catch = catch' Source.phrase
+and catch' =
+  | Catch of idx * idx
+  | CatchRef of idx * idx
+  | CatchAll of idx
+  | CatchAllRef of idx
+
 
 (* Locals, globals & Functions *)
 
@@ -276,6 +286,13 @@ and memory' =
   mtype : memory_type;
 }
 
+type tag = tag' Source.phrase
+and tag' =
+{
+  tgtype : idx;
+}
+
+
 type segment_mode = segment_mode' Source.phrase
 and segment_mode' =
   | Passive
@@ -308,6 +325,7 @@ and export_desc' =
   | TableExport of idx
   | MemoryExport of idx
   | GlobalExport of idx
+  | TagExport of idx
 
 type export = export' Source.phrase
 and export' =
@@ -322,6 +340,7 @@ and import_desc' =
   | TableImport of table_type
   | MemoryImport of memory_type
   | GlobalImport of global_type
+  | TagImport of idx
 
 type import = import' Source.phrase
 and import' =
@@ -344,6 +363,7 @@ and module_' =
   globals : global list;
   tables : table list;
   memories : memory list;
+  tags : tag list;
   funcs : func list;
   start : start option;
   elems : elem_segment list;
@@ -361,6 +381,7 @@ let empty_module =
   globals = [];
   tables = [];
   memories = [];
+  tags = [];
   funcs = [];
   start = None;
   elems = [];
@@ -387,6 +408,7 @@ let import_type_of (m : module_) (im : import) : import_type =
     | TableImport tt -> ExternTableT tt
     | MemoryImport mt -> ExternMemoryT mt
     | GlobalImport gt -> ExternGlobalT gt
+    | TagImport x -> ExternTagT (TagT (Lib.List32.nth dts x.it))
   in ImportT (subst_extern_type (subst_of dts) et, module_name, item_name)
 
 let export_type_of (m : module_) (ex : export) : export_type =
@@ -409,6 +431,10 @@ let export_type_of (m : module_) (ex : export) : export_type =
     | GlobalExport x ->
       let gts = globals ets @ List.map (fun g -> g.it.gtype) m.it.globals in
       ExternGlobalT (Lib.List32.nth gts x.it)
+    | TagExport x ->
+      let tts = tags ets @ List.map (fun t ->
+        TagT (Lib.List32.nth dts t.it.tgtype.it)) m.it.tags in
+      ExternTagT (Lib.List32.nth tts x.it)
   in ExportT (subst_extern_type (subst_of dts) et, name)
 
 let module_type_of (m : module_) : module_type =

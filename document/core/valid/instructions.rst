@@ -1798,7 +1798,7 @@ Memory Instructions
    }
 
 
-.. index:: control instructions, structured control, label, block, branch, block type, label index, function index, type index, vector, polymorphism, context
+.. index:: control instructions, structured control, label, block, branch, block type, label index, result type, function index, type index, tag index, vector, polymorphism, context
    pair: validation; instruction
    single: abstract syntax; instruction
 .. _valid-label:
@@ -1925,6 +1925,125 @@ Control Instructions
    The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,[t^\ast]` inserts the new label type at index :math:`0`, shifting all others.
 
 
+
+.. _valid-try_table:
+
+:math:`\TRYTABLE~\blocktype~\catch^\ast~\instr^\ast~\END`
+.........................................................
+
+* The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
+
+* For every :ref:`catch clause <syntax-catch>` :math:`\catch_i` in :math:`\catch^\ast`, :math:`\catch_i` must be :ref:`valid <valid-catch>`.
+
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` prepended to the |CLABELS| vector.
+
+* Under context :math:`C'`,
+  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
+
+* Then the compound instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
+
+
+.. math::
+   \frac{
+     \begin{array}{c}
+     C \vdashblocktype \blocktype : [t_1^\ast] \to [t_2^\ast]
+     \qquad
+     (C \vdashcatch \catch \ok)^\ast
+     \qquad
+     C,\CLABELS\,[t_2^\ast] \vdashinstrseq \instr^\ast : [t_1^\ast] \to [t_2^\ast] \\
+     \end{array}
+   }{
+     C \vdashinstr \TRYTABLE~\blocktype~\catch^\ast~\instr^\ast~\END : [t_1^\ast] \to [t_2^\ast]
+   }
+
+.. note::
+   The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,[t^\ast]` inserts the new label type at index :math:`0`, shifting all others.
+
+
+.. _valid-catch:
+
+:math:`\CATCH~x~l`
+..................
+
+* The tag :math:`C.\CTAGS[x]` must be defined in the context.
+
+* Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[{t'}^\ast]` must be empty.
+
+* The label :math:`C.\CLABELS[l]` must be defined in the context.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[t^\ast]` must be the same as :math:`C.\CLABELS[l]`.
+
+* Then the catch clause is valid.
+
+.. math::
+   \frac{
+     C.\CTAGS[x] = [t^\ast] \toF []
+     \qquad
+     C.\CLABELS[l] = [t^\ast]
+   }{
+     C \vdashcatch \CATCH~x~l \ok
+   }
+
+:math:`\CATCHREF~x~l`
+.....................
+
+* The tag :math:`C.\CTAGS[x]` must be defined in the context.
+
+* Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[{t'}^\ast]` must be empty.
+
+* The label :math:`C.\CLABELS[l]` must be defined in the context.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[t^\ast]` must be the same as :math:`C.\CLABELS[l]` with |EXNREF| appended.
+
+* Then the catch clause is valid.
+
+.. math::
+   \frac{
+     C.\CTAGS[x] = [t^\ast] \toF []
+     \qquad
+     C.\CLABELS[l] = [t^\ast~\EXNREF]
+   }{
+     C \vdashcatch \CATCHREF~x~l \ok
+   }
+
+:math:`\CATCHALL~l`
+...................
+
+* The label :math:`C.\CLABELS[l]` must be defined in the context.
+
+* The :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l]` must be empty.
+
+* Then the catch clause is valid.
+
+.. math::
+   \frac{
+     C.\CLABELS[l] = []
+   }{
+     C \vdashcatch \CATCHALL~l \ok
+   }
+
+:math:`\CATCHALLREF~l`
+......................
+
+* The label :math:`C.\CLABELS[l]` must be defined in the context.
+
+* The :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l] must be :math:`[\EXNREF]`.
+
+* Then the catch clause is valid.
+
+.. math::
+   \frac{
+     C.\CLABELS[l] = [\EXNREF]
+   }{
+     C \vdashcatch \CATCHALLREF~l \ok
+   }
+
+
+
 .. _valid-br:
 
 :math:`\BR~l`
@@ -1946,7 +2065,7 @@ Control Instructions
    }
 
 .. note::
-   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` :math:`C` contains the most recent label first, so that :math:`C.\CLABELS[l]` performs a relative lookup as expected.
+   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` :math:`C` contains the most recent label type first, so that :math:`C.\CLABELS[l]` performs a relative lookup as expected.
 
    The |BR| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
@@ -1970,7 +2089,7 @@ Control Instructions
    }
 
 .. note::
-   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` :math:`C` contains the most recent label first, so that :math:`C.\CLABELS[l]` performs a relative lookup as expected.
+   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` :math:`C` contains the most recent label type first, so that :math:`C.\CLABELS[l]` performs a relative lookup as expected.
 
 
 .. _valid-br_table:
@@ -2323,6 +2442,50 @@ Control Instructions
 
 .. note::
    The |RETURNCALLINDIRECT| instruction is :ref:`stack-polymorphic <polymorphism>`.
+
+
+.. _valid-throw:
+
+:math:`\THROW~x`
+................
+
+* The tag :math:`C.\CTAGS[x]` must be defined in the context.
+
+* Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[{t'}^\ast]` must be empty.
+
+* Then the instruction is valid with type :math:`[t_1^\ast t^\ast] \to [t_2^\ast]`, for any sequences of  :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
+
+.. math::
+   \frac{
+     C.\CTAGS[x] = [t^\ast] \to []
+   }{
+     C \vdashinstr \THROW~x : [t_1^\ast~t^\ast] \to [t_2^\ast]
+   }
+
+
+.. note::
+   The |THROW| instruction is :ref:`stack-polymorphic <polymorphism>`.
+
+
+.. _valid-throw_ref:
+
+:math:`\THROWREF`
+.................
+
+* The instruction is valid with type :math:`[t_1^\ast~\EXNREF] \to [t_2^\ast]`, for any sequences of  :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
+
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstr \THROWREF : [t_1^\ast~\EXNREF] \to [t_2^\ast]
+   }
+
+
+.. note::
+   The |THROWREF| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
 
 .. index:: instruction, instruction sequence, local type

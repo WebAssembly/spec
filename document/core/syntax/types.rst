@@ -75,7 +75,6 @@ Conventions
 * The notation :math:`|t|` for :ref:`bit width <bitwidth-numtype>` extends to vector types as well, that is, :math:`|\V128| = 128`.
 
 
-
 .. index:: ! heap type, store, type index, ! abstract type, ! concrete type, ! unboxed scalar
    pair: abstract syntax; heap type
 .. _type-abstract:
@@ -100,6 +99,7 @@ That is, both type hierarchies are inhabited by an isomorphic set of values, but
    \begin{array}{llrl}
    \production{abstract heap type} & \absheaptype &::=&
      \FUNC ~|~ \NOFUNC \\&&|&
+     \EXN ~|~ \NOEXN \\&&|&
      \EXTERN ~|~ \NOEXTERN \\&&|&
      \ANY ~|~ \EQT ~|~ \I31 ~|~ \STRUCT ~|~ \ARRAY ~|~ \NONE \\
    \production{heap type} & \heaptype &::=&
@@ -110,6 +110,10 @@ A heap type is either *abstract* or *concrete*.
 
 The abstract type |FUNC| denotes the common supertype of all :ref:`function types <syntax-functype>`, regardless of their concrete definition.
 Dually, the type |NOFUNC| denotes the common subtype of all :ref:`function types <syntax-functype>`, regardless of their concrete definition.
+This type has no values.
+
+The abstract type |EXN| denotes the type of all :ref:`exception references <syntax-ref.exn>`.
+Dually, the type |NOEXN| denotes the common subtype of all forms of exception references.
 This type has no values.
 
 The abstract type |EXTERN| denotes the common supertype of all external references received through the :ref:`embedder <embedder>`.
@@ -134,7 +138,7 @@ Their observable value range is limited to 31 bits.
    Engines need to perform some form of *pointer tagging* to achieve this,
    which is why 1 bit is reserved.
 
-   Although the types |NONE|, |NOFUNC|, and |NOEXTERN| are not inhabited by any values,
+   Although the types |NONE|, |NOFUNC|, |NOEXN|, and |NOEXTERN| are not inhabited by any values,
    they can be used to form the types of all null :ref:`references <syntax-reftype>` in their respective hierarchy.
    For example, :math:`(\REF~\NULL~\NOFUNC)` is the generic type of a null reference compatible with all function reference types.
 
@@ -183,11 +187,15 @@ Conventions
 
 * The reference type |FUNCREF| is an abbreviation for :math:`\REF~\NULL~\FUNC`.
 
+* The reference type |EXNREF| is an abbreviation for :math:`\REF~\NULL~\EXN`.
+
 * The reference type |EXTERNREF| is an abbreviation for :math:`\REF~\NULL~\EXTERN`.
 
 * The reference type |NULLREF| is an abbreviation for :math:`\REF~\NULL~\NONE`.
 
 * The reference type |NULLFUNCREF| is an abbreviation for :math:`\REF~\NULL~\NOFUNC`.
+
+* The reference type |NULLEXNREF| is an abbreviation for :math:`\REF~\NULL~\NOEXN`.
 
 * The reference type |NULLEXTERNREF| is an abbreviation for :math:`\REF~\NULL~\NOEXTERN`.
 
@@ -424,7 +432,31 @@ Global Types
    \end{array}
 
 
-.. index:: ! external type, defined type, function type, table type, memory type, global type, import, external value
+.. index:: ! tag, tag type, function type, exception tag
+   pair: abstract syntax; tag
+   pair: tag; exception tag
+   single: tag; type; exception
+.. _syntax-tagtype:
+
+Tag Types
+~~~~~~~~~
+
+*Tag types* classify the signature of :ref:`tags <syntax-tag>` with a function type.
+
+.. math::
+   \begin{array}{llll}
+   \production{tag type} &\tagtype &::=& \functype \\
+   \end{array}
+
+Currently tags are only used for categorizing exceptions.
+The parameters of |functype| define the list of values associated with the exception thrown with this tag.
+Furthermore, it is an invariant of the semantics that every |functype| in a :ref:`valid <valid-tagtype>` tag type for an exception has an empty result type.
+
+.. note::
+   Future versions of WebAssembly may have additional uses for tags, and may allow non-empty result types in the function types of tags.
+
+
+.. index:: ! external type, defined type, function type, table type, memory type, global type, tag type, import, external value
    pair: abstract syntax; external type
    pair: external; type
 .. _syntax-externtype:
@@ -440,7 +472,8 @@ External Types
      \ETFUNC~\deftype ~|~
      \ETTABLE~\tabletype ~|~
      \ETMEM~\memtype ~|~
-     \ETGLOBAL~\globaltype \\
+     \ETGLOBAL~\globaltype ~|~
+     \ETTAG~\tagtype \\
    \end{array}
 
 
@@ -457,3 +490,5 @@ It filters out entries of a specific kind in an order-preserving fashion:
 * :math:`\etmems(\externtype^\ast) = [\memtype ~|~ (\ETMEM~\memtype) \in \externtype^\ast]`
 
 * :math:`\etglobals(\externtype^\ast) = [\globaltype ~|~ (\ETGLOBAL~\globaltype) \in \externtype^\ast]`
+
+* :math:`\ettags(\externtype^\ast) = [\tagtype ~|~ (\ETTAG~\tagtype) \in \externtype^\ast]`

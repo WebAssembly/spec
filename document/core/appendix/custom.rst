@@ -46,7 +46,8 @@ Each subsection consists of a
      n{:}\Bname & (\iff n = \text{name}) \\ &&&
      \Bmodulenamesubsec^? \\ &&&
      \Bfuncnamesubsec^? \\ &&&
-     \Blocalnamesubsec^? \\
+     \Blocalnamesubsec^? \\ &&&
+     \Btagnamesubsec^? \\
    \production{name subsection} & \Bnamesubsection_N(\B{B}) &::=&
      N{:}\Bbyte~~\X{size}{:}\Bu32~~\B{B}
        & (\iff \X{size} = ||\B{B}||) \\
@@ -62,6 +63,7 @@ Id  Subsection
  2  :ref:`local names <binary-localnamesec>`
  4  :ref:`type names <binary-typenamesec>`
 10  :ref:`field names <binary-fieldnamesec>`
+11  :ref:`tag names <binary-tagnamesec>`
 ==  ===========================================
 
 Each subsection may occur at most once, and in order of increasing id.
@@ -176,4 +178,20 @@ It consists of an :ref:`indirect name map <binary-indirectnamemap>` assigning fi
    \begin{array}{llclll}
    \production{field name subsection} & \Bfieldnamesubsec &::=&
      \Bnamesubsection_2(\Bindirectnamemap) \\
+   \end{array}
+
+
+.. index:: tag, tag index
+.. _binary-tagnamesec:
+
+Tag Names
+.........
+
+The *tag name subsection* has the id 11.
+It consists of a :ref:`name map <binary-namemap>` assigning tag names to :ref:`tag indices <syntax-tagidx>`.
+
+.. math::
+   \begin{array}{llclll}
+   \production{tag name subsection} & \Btagnamesubsec &::=&
+     \Bnamesubsection_1(\Bnamemap) \\
    \end{array}

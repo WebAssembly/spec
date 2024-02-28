@@ -16,7 +16,8 @@ Category                                  Constructor                           
 (reserved)                                                                                    :math:`\hex{7A}` .. :math:`\hex{79}`
 :ref:`Packed type <syntax-packedtype>`    |I8|                                                :math:`\hex{78}` (-8 as |Bs7|)
 :ref:`Packed type <syntax-packedtype>`    |I16|                                               :math:`\hex{77}` (-9 as |Bs7|)
-(reserved)                                                                                    :math:`\hex{78}` .. :math:`\hex{74}`
+(reserved)                                                                                    :math:`\hex{78}` .. :math:`\hex{75}`
+:ref:`Heap type <syntax-heaptype>`        |NOEXN|                                             :math:`\hex{74}` (-14 as |Bs7|)
 :ref:`Heap type <syntax-heaptype>`        |NOFUNC|                                            :math:`\hex{73}` (-13 as |Bs7|)
 :ref:`Heap type <syntax-heaptype>`        |NOEXTERN|                                          :math:`\hex{72}` (-14 as |Bs7|)
 :ref:`Heap type <syntax-heaptype>`        |NONE|                                              :math:`\hex{71}` (-15 as |Bs7|)
@@ -27,7 +28,8 @@ Category                                  Constructor                           
 :ref:`Heap type <syntax-heaptype>`        |I31|                                               :math:`\hex{6C}` (-20 as |Bs7|)
 :ref:`Heap type <syntax-heaptype>`        |STRUCT|                                            :math:`\hex{6B}` (-21 as |Bs7|)
 :ref:`Heap type <syntax-heaptype>`        |ARRAY|                                             :math:`\hex{6A}` (-22 as |Bs7|)
-(reserved)                                                                                    :math:`\hex{69}` .. :math:`\hex{65}`
+:ref:`Heap type <syntax-heaptype>`        |EXN|                                               :math:`\hex{69}` (-23 as |Bs7|)
+(reserved)                                                                                    :math:`\hex{68}` .. :math:`\hex{65}`
 :ref:`Reference type <syntax-reftype>`    |REF|                                               :math:`\hex{64}` (-28 as |Bs7|)
 :ref:`Reference type <syntax-reftype>`    |REF| |NULL|                                        :math:`\hex{63}` (-29 as |Bs7|)
 (reserved)                                                                                    :math:`\hex{62}` .. :math:`\hex{61}`
@@ -43,4 +45,5 @@ Category                                  Constructor                           
 :ref:`Table type <syntax-tabletype>`      :math:`\limits~\reftype`                            (none)
 :ref:`Memory type <syntax-memtype>`       :math:`\limits`                                     (none)
 :ref:`Global type <syntax-globaltype>`    :math:`\mut~\valtype`                               (none)
+:ref:`Tag type <syntax-tagtype>`          :math:`\functype`                                   (none)
 ========================================  ==================================================  ===============================================================

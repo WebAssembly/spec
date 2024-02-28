@@ -71,6 +71,7 @@ let ref_type t =
   | (Null, StructHT) -> "structref"
   | (Null, ArrayHT) -> "arrayref"
   | (Null, FuncHT) -> "funcref"
+  | (Null, ExnHT) -> "exnref"
   | t -> string_of_ref_type t
 
 let heap_type t = string_of_heap_type t
@@ -513,6 +514,10 @@ let rec instr e =
     | ReturnCallRef x -> "return_call_ref " ^ var x, []
     | ReturnCallIndirect (x, y) ->
       "return_call_indirect " ^ var x, [Node ("type " ^ var y, [])]
+    | Throw x -> "throw " ^ var x, []
+    | ThrowRef -> "throw_ref", []
+    | TryTable (bt, cs, es) ->
+      "try_table", block_type bt @ list catch cs @ list instr es
     | LocalGet x -> "local.get " ^ var x, []
     | LocalSet x -> "local.set " ^ var x, []
     | LocalTee x -> "local.tee " ^ var x, []
@@ -585,6 +590,13 @@ let rec instr e =
     | VecExtract op -> vec_extractop op, []
     | VecReplace op -> vec_replaceop op, []
   in Node (head, inner)
+
+and catch c =
+  match c.it with
+  | Catch (x1, x2) -> Node ("catch " ^ var x1 ^ " " ^ var x2, [])
+  | CatchRef (x1, x2) -> Node ("catch_ref " ^ var x1 ^ " " ^ var x2, [])
+  | CatchAll x -> Node ("catch_all " ^ var x, [])
+  | CatchAllRef x -> Node ("catch_all_ref " ^ var x, [])
 
 let const head c =
   match c.it with
@@ -662,6 +674,17 @@ let data i seg =
   Node ("data $" ^ nat i, segment_mode "memory" dmode @ break_bytes dinit)
 
 
+(* Tags *)
+
+let tag_with_name name (t : tag) =
+  Node ("tag" ^ name,
+    [Node ("type " ^ var (t.it.tgtype), [])]
+  )
+
+let tag_with_index off i t =
+  tag_with_name (" $" ^ nat (off + i)) t
+
+
 (* Modules *)
 
 let type_ (ns, i) ty =
@@ -671,7 +694,7 @@ let type_ (ns, i) ty =
   | RecT sts ->
     Node ("rec", List.mapi (rec_type i) sts) :: ns, i + List.length sts
 
-let import_desc fx tx mx gx d =
+let import_desc fx tx mx tgx gx d =
   match d.it with
   | FuncImport x ->
     incr fx; Node ("func $" ^ nat (!fx - 1), [Node ("type", [atom var x])])
@@ -681,11 +704,13 @@ let import_desc fx tx mx gx d =
     incr mx; memory 0 (!mx - 1) ({mtype = t} @@ d.at)
   | GlobalImport t ->
     incr gx; Node ("global $" ^ nat (!gx - 1), [global_type t])
+  | TagImport x ->
+    incr tgx; Node ("tag $" ^ nat (!tgx - 1), [Node ("type", [atom var x])])
 
-let import fx tx mx gx im =
+let import fx tx mx ex gx im =
   let {module_name; item_name; idesc} = im.it in
   Node ("import",
-    [atom name module_name; atom name item_name; import_desc fx tx mx gx idesc]
+    [atom name module_name; atom name item_name; import_desc fx tx mx ex gx idesc]
   )
 
 let export_desc d =
@@ -693,6 +718,7 @@ let export_desc d =
   | FuncExport x -> Node ("func", [atom var x])
   | TableExport x -> Node ("table", [atom var x])
   | MemoryExport x -> Node ("memory", [atom var x])
+  | TagExport x -> Node ("tag", [atom var x])
   | GlobalExport x -> Node ("global", [atom var x])
 
 let export ex =
@@ -717,13 +743,15 @@ let module_with_var_opt x_opt m =
   let fx = ref 0 in
   let tx = ref 0 in
   let mx = ref 0 in
+  let tgx = ref 0 in
   let gx = ref 0 in
-  let imports = list (import fx tx mx gx) m.it.imports in
+  let imports = list (import fx tx mx tgx gx) m.it.imports in
   Node ("module" ^ var_opt x_opt,
     List.rev (fst (List.fold_left type_ ([], 0) m.it.types)) @
     imports @
     listi (table !tx) m.it.tables @
     listi (memory !mx) m.it.memories @
+    listi (tag_with_index !tgx) m.it.tags @
     listi (global !gx) m.it.globals @
     listi (func_with_index !fx) m.it.funcs @
     list export m.it.exports @
@@ -850,6 +878,8 @@ let assertion mode ass =
     [Node ("assert_return", action mode act :: List.map (result mode) results)]
   | AssertTrap (act, re) ->
     [Node ("assert_trap", [action mode act; Atom (string re)])]
+  | AssertException act ->
+    [Node ("assert_exception", [action mode act])]
   | AssertExhaustion (act, re) ->
     [Node ("assert_exhaustion", [action mode act; Atom (string re)])]
 

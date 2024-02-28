@@ -32,6 +32,11 @@ let br_on_non_null x = BrOnNonNull x
 let br_on_cast x t1 t2 = BrOnCast (x, t1, t2)
 let br_on_cast_fail x t1 t2 = BrOnCastFail (x, t1, t2)
 
+let catch x1 x2 = Catch (x1, x2)
+let catch_ref x1 x2 = CatchRef (x1, x2)
+let catch_all x = CatchAll x
+let catch_all_ref x = CatchAllRef x
+
 let return = Return
 let call x = Call x
 let call_ref x = CallRef x
@@ -39,6 +44,10 @@ let call_indirect x y = CallIndirect (x, y)
 let return_call x = ReturnCall x
 let return_call_ref x = ReturnCallRef x
 let return_call_indirect x y = ReturnCallIndirect (x, y)
+
+let throw x = Throw x
+let throw_ref = ThrowRef
+let try_table bt cs es = TryTable (bt, cs, es)
 
 let local_get x = LocalGet x
 let local_set x = LocalSet x

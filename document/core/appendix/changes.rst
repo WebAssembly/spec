@@ -138,8 +138,37 @@ Added vector type and instructions that manipulate multiple numeric values in pa
 * New injection/projection :ref:`vector instructions <syntax-instr-vec>`: :math:`\K{i}\!N\!\K{x}\!M\!\K{.splat}`, :math:`\K{f}\!N\!\K{x}\!M\!\K{.splat}`, :math:`\K{i}\!N\!\K{x}\!M\!\K{.bitmask}`
 
 
-Release 2.?
+.. [#proposal-signext]
+   https://github.com/WebAssembly/spec/tree/main/proposals/sign-extension-ops/
+
+.. [#proposal-cvtsat]
+   https://github.com/WebAssembly/spec/tree/main/proposals/nontrapping-float-to-int-conversion/
+
+.. [#proposal-multivalue]
+   https://github.com/WebAssembly/spec/tree/main/proposals/multi-value/
+
+.. [#proposal-reftype]
+   https://github.com/WebAssembly/spec/tree/main/proposals/reference-types/
+
+.. [#proposal-bulk]
+   https://github.com/WebAssembly/spec/tree/main/proposals/bulk-memory-operations/
+
+.. [#proposal-vectype]
+   https://github.com/WebAssembly/spec/tree/main/proposals/simd/
+
+
+Release 3.0
 ~~~~~~~~~~~
+
+.. index: instruction, function, call
+
+Tail Calls
+..........
+
+Added instructions to perform tail calls [#proposal-tailcall]_.
+
+* New :ref:`control instructions <syntax-instr-control>`: :math:`RETURNCALL` and :math:`RETURNCALLINDIRECT`
+
 
 .. index:: reference, reference type, heap type, value type, local, local type, instruction, instruction type, table, function, function type, matching, subtyping
 
@@ -193,60 +222,22 @@ Added managed reference types [#proposal-gc]_.
 * Extended set of :ref:`constant instructions <valid-const>` with |REFI31|, |STRUCTNEW|, |STRUCTNEWDEFAULT|, |ARRAYNEW|, |ARRAYNEWDEFAULT|, |ARRAYNEWFIXED|, |ANYCONVERTEXTERN|, |EXTERNCONVERTANY|, and |GLOBALGET| for any previously declared immutable :ref:`global <syntax-global>`
 
 
-.. [#proposal-signext]
-   https://github.com/WebAssembly/spec/tree/main/proposals/sign-extension-ops/
+.. index:: instruction, exception, reference type, tag type, tag, handler
 
-.. [#proposal-cvtsat]
-   https://github.com/WebAssembly/spec/tree/main/proposals/nontrapping-float-to-int-conversion/
-
-.. [#proposal-multivalue]
-   https://github.com/WebAssembly/spec/tree/main/proposals/multi-value/
-
-.. [#proposal-reftype]
-   https://github.com/WebAssembly/spec/tree/main/proposals/reference-types/
-
-.. [#proposal-bulk]
-   https://github.com/WebAssembly/spec/tree/main/proposals/bulk-memory-operations/
-
-.. [#proposal-vectype]
-   https://github.com/WebAssembly/spec/tree/main/proposals/simd/
-
-
-Release 3.0
-~~~~~~~~~~~
-
-.. index: instruction, function, call
-
-Tail calls
-..........
-
-Added instructions to perform tail calls [#proposal-tailcall]_.
-
-* New :ref:`control instructions <syntax-instr-control>`: :math:`RETURNCALL` and :math:`RETURNCALLINDIRECT`
-
-
-.. index:: reference, reference type, heap type, value type, local, local type, instruction, instruction type, table, function, function type, matching, subtyping
-
-Typeful References
+Exception Handling
 ..................
 
-Added more precise types for references [#proposal-typedref]_.
+Added tag definitions, imports, and exports, and instructions to throw and catch exceptions [#proposal-exn]_
 
-* New generalised form of :ref:`reference types <syntax-reftype>`: :math:`(\REF~\NULL^?~\heaptype)`
+* Modules may :ref:`define <syntax-tagtype>`, :ref:`import <syntax-import>`, and :ref:`export <syntax-export>` tags.
 
-* New class of :ref:`heap types <syntax-heaptype>`: |FUNC|, |EXTERN|, :math:`\typeidx`
+* New :ref:`heap types <syntax-heaptype>`: |EXN|, |NOEXN|
 
-* Basic :ref:`subtyping <match>` on :ref:`reference <match-reftype>` and :ref:`value <match-valtype>` types
+* New :ref:`reference type <syntax-reftype>` short-hands: |EXNREF|, |NULLEXNREF|
 
-* New :ref:`reference instructions <syntax-instr-ref>`: |REFASNONNULL|, |BRONNULL|, |BRONNONNULL|
+* New :ref:`control instructions <syntax-instr-control>`: |THROW|, |THROWREF|, and |TRYTABLE|.
 
-* New :ref:`control instruction <syntax-instr-control>`: |CALLREF|
-
-* Refined typing of :ref:`reference instruction <syntax-instr-ref>` |REFFUNC| with more precise result type
-
-* Refined typing of :ref:`local instructions <valid-instr-variable>` and :ref:`instruction sequences <valid-instr-seq>` to track the :ref:`initialization status <syntax-init>` of :ref:`locals <syntax-local>` with non-:ref:`defaultable <valid-defaultable>` type
-
-* Extended :ref:`table definitions <syntax-table>` with optional initializer expression
+* New :ref:`tag section <binary-tagsec>` in binary format.
 
 
 .. [#proposal-tailcall]
@@ -257,3 +248,6 @@ Added more precise types for references [#proposal-typedref]_.
 
 .. [#proposal-gc]
    https://github.com/WebAssembly/spec/tree/main/proposals/gc/
+
+.. [#proposal-exn]
+   https://github.com/WebAssembly/spec/tree/main/proposals/exception-handling/

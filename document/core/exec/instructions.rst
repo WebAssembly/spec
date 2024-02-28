@@ -4013,6 +4013,187 @@ Control Instructions
    \end{array}
 
 
+.. _exec-throw:
+
+:math:`\THROW~x`
+................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: due to :ref:`validation <valid-throw>`, :math:`F.\AMODULE.\MITAGS[x]` exists.
+
+3. Let :math:`a` be the :ref:`tag address <syntax-tagaddr>` :math:`F.\AMODULE.\MITAGS[x]`.
+
+4. Assert: due to :ref:`validation <valid-throw>`, :math:`S.\STAGS[a]` exists.
+
+5. Let :math:`\X{ti}` be the :ref:`tag instance <syntax-taginst>` :math:`S.\STAGS[a]`.
+
+6. Let :math:`[t^n] \toF [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`\X{ti}.\TAGITYPE`.
+
+7. Assert: due to :ref:`validation <valid-throw>`, there are at least :math:`n` values on the top of the stack.
+
+8. Pop the :math:`n` values :math:`\val^n` from the stack.
+
+9. Let :math:`\X{exn}` be the :ref:`exception instance <syntax-exninst>` :math:`\{ \EITAG~a, \EIFIELDS~\val^n \}`.
+
+10. Let :math:`\X{ea}` be the length of :math:`S.\SEXNS`.
+
+11. Append :math:`\X{exn}` to :math:`S.\SEXNS`.
+
+12. Push the value :math:`\REFEXNADDR~\X{ea}` to the stack.
+
+13. Execute the instruction |THROWREF|.
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{lclr@{\qquad}l}
+   S; F; \val^n~(\THROW~x) &\stepto& S'; F; (\REFEXNADDR~|S.\SEXNS|)~\THROWREF &
+     (\begin{array}[t]{@{}r@{~}l@{}}
+      \iff & F.\AMODULE.\MITAGS[x] = a \\
+      \land & S.\STAGS[a].\TAGITYPE = [t^n] \toF [] \\
+      \land & \X{exn} = \{ \EITAG~a, \EIFIELDS~\val^n \} \\
+      \land & S' = S \with \SEXNS = S.\SEXNS~\X{exn} ) \\
+      \end{array} \\
+   \end{array}
+
+
+.. _exec-throw_ref:
+
+:math:`\THROWREF`
+.................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: due to :ref:`validation <valid-throw_ref>`, a :ref:`reference <syntax-ref>` is on the top of the stack.
+
+3. Pop the reference :math:`\reff` from the stack.
+
+4. If :math:`\reff` is :math:`\REFNULL~\X{ht}`, then:
+
+   a. Trap.
+
+5. Assert: due to :ref:`validation <valid-throw_ref>`, :math:`\reff` is an :ref:`exception reference <syntax-ref.exn>`.
+
+6. Let :math:`\REFEXNADDR~\X{ea}` be :math:`\reff`.
+
+7. Assert: due to :ref:`validation <valid-throw_ref>`, :math:`S.\SEXNS[\X{ea}]` exists.
+
+8. Let :math:`\X{exn}` be the :ref:`exception instance <syntax-exninst>` :math:`S.\SEXNS[\X{ea}]`.
+
+9. Let :math:`a` be the :ref:`tag address <syntax-tagaddr>` :math:`\X{exn}.\EITAG`.
+
+10. While the stack is not empty and the top of the stack is not an :ref:`exception handler <syntax-handler>`, do:
+
+   a. Pop the top element from the stack.
+
+11. Assert: the stack is now either empty, or there is an exception handler on the top of the stack.
+
+12. If the stack is empty, then:
+
+   a. Return the exception :math:`(\REFEXNADDR~a)` as a :ref:`result <syntax-result>`.
+
+13. Assert: there is an :ref:`exception handler <syntax-handler>` on the top of the stack.
+
+14. Pop the exception handler  :math:`\HANDLER_n\{\catch^\ast\}` from the stack.
+
+15. If :math:`\catch^\ast` is empty, then:
+
+    a. Push the exception reference :math:`\REFEXNADDR~\X{ea}` back to the stack.
+
+    b. Execute the instruction |THROWREF| again.
+
+16. Else:
+
+    a. Let :math:`\catch_1` be the first :ref:`catch clause <syntax-catch>` in :math:`\catch^\ast` and :math:`{\catch'}^\ast` the remaining clauses.
+
+    b. If :math:`\catch_1` is of the form :math:`\CATCH~x~l` and the :ref:`exception address <syntax-exnaddr>` :math:`a` equals :math:`F.\AMODULE.\MITAGS[x]`, then:
+
+       i. Push the values :math:`\X{exn}.\EIFIELDS` to the stack.
+
+       ii. Execute the instruction :math:`\BR~l`.
+
+    c. Else if :math:`\catch_1` is of the form :math:`\CATCHREF~x~l` and the :ref:`exception address <syntax-exnaddr>` :math:`a` equals :math:`F.\AMODULE.\MITAGS[x]`, then:
+
+       i. Push the values :math:`\X{exn}.\EIFIELDS` to the stack.
+
+       ii. Push the exception reference :math:`\REFEXNADDR~\X{ea}` to the stack.
+
+       iii. Execute the instruction :math:`\BR~l`.
+
+    d. Else if :math:`\catch_1` is of the form :math:`\CATCHALL~l`, then:
+
+       i. Execute the instruction :math:`\BR~l`.
+
+    e. Else if :math:`\catch_1` is of the form :math:`\CATCHALLREF~l`, then:
+
+       i. Push the exception reference :math:`\REFEXNADDR~\X{ea}` to the stack.
+
+       ii. Execute the instruction :math:`\BR~l`.
+
+    f. Else:
+
+       1. Push the modified handler  :math:`\HANDLER_n\{{\catch'}^\ast\}` back to the stack.
+
+       2. Push the exception reference :math:`\REFEXNADDR~\X{ea}` back to the stack.
+
+       3. Execute the instruction :math:`\THROWREF` again.
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{rcl}
+   (\REFNULL~\X{ht})~\THROWREF &\stepto&
+     \TRAP \\
+   \HANDLER_n\{\}~\XT[(\REFEXNADDR~a)~\THROWREF]~\END &\stepto&
+     (\REFEXNADDR~a)~\THROWREF \\
+   S; F; \HANDLER_n\{(\CATCH~x~l)~\catch^\ast\}~\XT[(\REFEXNADDR~a)~\THROWREF]~\END &\stepto&
+     \X{exn}.\EIFIELDS~(\BR~l) \\ &&
+     (\begin{array}[t]{@{}r@{~}l@{}}
+      \iff & \X{exn} = S.\SEXNS[a] \\
+      \land & \X{exn}.\EITAG = F.\AMODULE.\MITAGS[x]) \\
+      \end{array} \\
+   S; F; \HANDLER_n\{(\CATCHREF~x~l)~\catch^\ast\}~\XT[(\REFEXNADDR~a)~\THROWREF]~\END &\stepto&
+     \X{exn}.\EIFIELDS~(\REFEXNADDR~a)~(\BR~l) \\ &&
+     (\begin{array}[t]{@{}r@{~}l@{}}
+      \iff & \X{exn} = S.\SEXNS[a] \\
+      \land & \X{exn}.\EITAG = F.\AMODULE.\MITAGS[x]) \\
+      \end{array} \\
+   \HANDLER_n\{(\CATCHALL~l)~\catch^\ast\}~\XT[(\REFEXNADDR~a)~\THROWREF]~\END &\stepto&
+     (\BR~l) \\
+   \HANDLER_n\{(\CATCHALLREF~l)~\catch^\ast\}~\XT[(\REFEXNADDR~a)~\THROWREF]~\END &\stepto&
+     (\REFEXNADDR~a)~(\BR~l) \\
+   \HANDLER_n\{\catch_1~\catch^\ast\}~\XT[(\REFEXNADDR~a)~\THROWREF]~\END &\stepto&
+     \HANDLER_n\{\catch^\ast\}~\XT[(\REFEXNADDR~a)~\THROWREF]~\END \\ &&
+     (\otherwise) \\
+   \end{array}
+
+
+.. _exec-try_table:
+
+:math:`\TRYTABLE~\blocktype~\catch^\ast~\instr^\ast~\END`
+.........................................................
+
+1. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\fblocktype_{S;F}(\blocktype)` is defined.
+
+2. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`instruction type <syntax-instrtype>` :math:`\fblocktype_{S;F}(\blocktype)`.
+
+3. Assert: due to :ref:`validation <valid-try_table>`, there are at least :math:`m` values on the top of the stack.
+
+4. Pop the values :math:`\val^m` from the stack.
+
+5. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the |TRYTABLE| instruction.
+
+6. :ref:`Enter <exec-handler-enter>` the block :math:`\val^m~\instr_1^\ast` with label :math:`L` and exception handler :math:`\HANDLER_n\{\catch^\ast\}`.
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{r}
+   F; \val^m~(\TRYTABLE~\X{bt}~\catch^\ast~\instr^\ast~\END
+   \quad \stepto \quad
+   F; \HANDLER_n\{\catch^\ast\}~(\LABEL_n\{\epsilon\}~\val^m~\instr^\ast~\END)~\END \\ \qquad\qquad
+   (\iff \fblocktype_{S;F}(\X{bt}) = [t_1^m] \to [t_2^n] \land (F.\AMODULE.\MITAGS[x]=a_x)^\ast)
+   \end{array}
+
+
 .. _exec-br:
 
 :math:`\BR~l`
@@ -4030,9 +4211,9 @@ Control Instructions
 
 6. Repeat :math:`l+1` times:
 
-   a. While the top of the stack is a value, do:
+   a. While the top of the stack is a value or a :ref:`handler <syntax-handler>`, do:
 
-      i. Pop the value from the stack.
+      i. Pop the value or handler from the stack.
 
    b. Assert: due to :ref:`validation <valid-br>`, the top of the stack now is a label.
 
@@ -4484,7 +4665,7 @@ Control Instructions
    \end{array}
 
 
-.. index:: instruction, instruction sequence, block
+.. index:: instruction, instruction sequence, block, exception, trap
 .. _exec-instr-seq:
 
 Blocks
@@ -4513,7 +4694,7 @@ Entering :math:`\instr^\ast` with label :math:`L`
 Exiting :math:`\instr^\ast` with label :math:`L`
 ................................................
 
-When the end of a block is reached without a jump or trap aborting it, then the following steps are performed.
+When the end of a block is reached without a jump, :ref:`exception <exception>`, or :ref:`trap <trap>` aborting it, then the following steps are performed.
 
 1. Pop all values :math:`\val^\ast` from the top of the stack.
 
@@ -4534,6 +4715,60 @@ When the end of a block is reached without a jump or trap aborting it, then the 
 .. note::
    This semantics also applies to the instruction sequence contained in a |LOOP| instruction.
    Therefore, execution of a loop falls off the end, unless a backwards branch is performed explicitly.
+
+
+.. index:: exception, handler, throw context, tag, exception tag
+
+.. _exec-handler:
+
+Exception Handling
+~~~~~~~~~~~~~~~~~~
+
+The following auxiliary rules define the semantics of entering and exiting |TRYTABLE| blocks.
+
+.. _exec-handler-enter:
+
+Entering :math:`\instr^\ast` with label :math:`L` and exception handler :math:`H`
+.................................................................................
+
+1. Push :math:`L` to the stack.
+
+2. Push :math:`H` onto the stack.
+
+3. Jump to the start of the instruction sequence :math:`\instr^\ast`.
+
+
+.. note::
+   No formal reduction rule is needed for entering an exception :ref:`handler <syntax-handler>`
+   because it is an :ref:`administrative instruction <syntax-instr-admin>`
+   that the |TRYTABLE| instruction reduces to directly.
+
+.. _exec-handler-exit:
+
+Exiting an exception handler
+............................
+
+When the end of a |TRYTABLE| block is reached without a jump, :ref:`exception <exception>`, or :ref:`trap <trap>`, then the following steps are performed.
+
+1. Let :math:`m` be the number of values on the top of the stack.
+
+2. Pop the values :math:`\val^m` from the stack.
+
+3. Assert: due to :ref:`validation <valid-instr-seq>`, a handler and a label are now on the top of the stack.
+
+4. Pop the label from the stack.
+
+5. Pop the handler :math:`H` from the stack.
+
+6. Push :math:`\val^m` back to the stack.
+
+7. Jump to the position after the |END| of the administrative instruction associated with the handler :math:`H`.
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{lcl@{\qquad}l}
+   \HANDLER_m\{\catch^\ast\}~\val^m~\END &\stepto& \val^m \\
+   \end{array}
 
 
 .. index:: ! call, function, function instance, label, frame
@@ -4633,7 +4868,7 @@ Tail-invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 Returning from a function
 .........................
 
-When the end of a function is reached without a jump (i.e., |RETURN|) or trap aborting it, then the following steps are performed.
+When the end of a function is reached without a jump (including through |RETURN|), or an :ref:`exception <exception>` or :ref:`trap <trap>` aborting it, then the following steps are performed.
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -4665,7 +4900,7 @@ Host Functions
 ..............
 
 Invoking a :ref:`host function <syntax-hostfunc>` has non-deterministic behavior.
-It may either terminate with a :ref:`trap <trap>` or return regularly.
+It may either terminate with a :ref:`trap <trap>`, an :ref:`exception <exception>`, or return regularly.
 However, in the latter case, it must consume and produce the right number and types of WebAssembly :ref:`values <syntax-val>` on the stack,
 according to its :ref:`function type <syntax-functype>`.
 

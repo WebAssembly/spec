@@ -34,6 +34,7 @@ Construct                                        Judgement
 :ref:`Table type <valid-tabletype>`              :math:`C \vdashtabletype \tabletype \ok`
 :ref:`Memory type <valid-memtype>`               :math:`C \vdashmemtype \memtype \ok`
 :ref:`Global type <valid-globaltype>`            :math:`C \vdashglobaltype \globaltype \ok`
+:ref:`Tag type <valid-tagtype>`                  :math:`C \vdashtagtype \tagtype \ok`
 :ref:`External type <valid-externtype>`          :math:`C \vdashexterntype \externtype \ok`
 :ref:`Type definitions <valid-type>`             :math:`C \vdashtypes \type^\ast \ok`
 ===============================================  ===============================================================================
@@ -47,6 +48,7 @@ Construct                                        Judgement
 ===============================================  ===============================================================================
 :ref:`Instruction <valid-instr>`                 :math:`S;C \vdashinstr \instr : \functype`
 :ref:`Instruction sequence <valid-instr-seq>`    :math:`S;C \vdashinstrseq \instr^\ast : \functype`
+:ref:`Catch clause <valid-catch>`                :math:`C \vdashcatch \catch \ok`
 :ref:`Expression <valid-expr>`                   :math:`C \vdashexpr \expr : \resulttype`
 :ref:`Function <valid-func>`                     :math:`C \vdashfunc \func : \functype`
 :ref:`Local <valid-local>`                       :math:`C \vdashlocal \local : \localtype`
@@ -54,6 +56,7 @@ Construct                                        Judgement
 :ref:`Memory <valid-mem>`                        :math:`C \vdashmem \mem : \memtype`
 :ref:`Limits <valid-limits>`                     :math:`C \vdashlimits \limits : k`
 :ref:`Global <valid-global>`                     :math:`C \vdashglobal \global : \globaltype`
+:ref:`Tag <valid-tag>`                           :math:`C \vdashtag \tag : \tagtype`
 :ref:`Element segment <valid-elem>`              :math:`C \vdashelem \elem : \reftype`
 :ref:`Element mode <valid-elemmode>`             :math:`C \vdashelemmode \elemmode : \reftype`
 :ref:`Data segment <valid-data>`                 :math:`C \vdashdata \data \ok`
@@ -84,6 +87,7 @@ Construct                                        Judgement
 :ref:`Table instance <valid-tableinst>`          :math:`S \vdashtableinst \tableinst : \tabletype`
 :ref:`Memory instance <valid-meminst>`           :math:`S \vdashmeminst \meminst : \memtype`
 :ref:`Global instance <valid-globalinst>`        :math:`S \vdashglobalinst \globalinst : \globaltype`
+:ref:`Tag instance <valid-taginst>`              :math:`S \vdashtaginst \taginst : \tagtype`
 :ref:`Element instance <valid-eleminst>`         :math:`S \vdasheleminst \eleminst : t`
 :ref:`Data instance <valid-datainst>`            :math:`S \vdashdatainst \datainst \ok`
 :ref:`Structure instance <valid-structinst>`     :math:`S \vdashstructinst \structinst \ok`
@@ -142,6 +146,7 @@ Construct                                        Judgement
 :ref:`Table type <match-tabletype>`              :math:`C \vdashtabletypematch \tabletype_1 \matchestabletype \tabletype_2`
 :ref:`Memory type <match-memtype>`               :math:`C \vdashmemtypematch \memtype_1 \matchesmemtype \memtype_2`
 :ref:`Global type <match-globaltype>`            :math:`C \vdashglobaltypematch \globaltype_1 \matchesglobaltype \globaltype_2`
+:ref:`Tag type <match-tagtype>`                  :math:`C \vdashtagtypematch \tagtype_1 \matchestagtype \tagtype_2`
 :ref:`External type <match-externtype>`          :math:`C \vdashexterntypematch \externtype_1 \matchesexterntype \externtype_2`
 :ref:`Limits <match-limits>`                     :math:`C \vdashlimitsmatch \limits_1 \matcheslimits \limits_2`
 ===============================================  ==================================================================================
@@ -157,6 +162,7 @@ Construct                                        Judgement
 :ref:`Table instance <extend-tableinst>`         :math:`\vdashtableinstextends \tableinst_1 \extendsto \tableinst_2`
 :ref:`Memory instance <extend-meminst>`          :math:`\vdashmeminstextends \meminst_1 \extendsto \meminst_2`
 :ref:`Global instance <extend-globalinst>`       :math:`\vdashglobalinstextends \globalinst_1 \extendsto \globalinst_2`
+:ref:`Tag instance <extend-taginst>`             :math:`\vdashtaginstextends \taginst_1 \extendsto \taginst_2`
 :ref:`Element instance <extend-eleminst>`        :math:`\vdasheleminstextends \eleminst_1 \extendsto \eleminst_2`
 :ref:`Data instance <extend-datainst>`           :math:`\vdashdatainstextends \datainst_1 \extendsto \datainst_2`
 :ref:`Structure instance <extend-structinst>`    :math:`\vdashstructinstextends \structinst_1 \extendsto \structinst_2`

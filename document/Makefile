@@ -1,4 +1,4 @@
-DIRS     = core js-api web-api
+DIRS     = core js-api web-api legacy/exceptions
 FILES    = index.html
 BUILDDIR = _build
 

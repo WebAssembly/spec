@@ -56,6 +56,8 @@ Heap Types
      \text{func} &\Rightarrow& \FUNC \\ &&|&
      \text{nofunc} &\Rightarrow& \NOFUNC \\ &&|&
      \text{extern} &\Rightarrow& \EXTERN \\ &&|&
+     \text{noexn} &\Rightarrow& \NOEXN \\ &&|&
+     \text{exn} &\Rightarrow& \EXN \\ &&|&
      \text{noextern} &\Rightarrow& \NOEXTERN \\
    \production{heap type} & \Theaptype_I &::=&
      t{:}\Tabsheaptype &\Rightarrow& y \\ &&|&
@@ -95,6 +97,8 @@ There are shorthands for references to abstract heap types.
      \text{nullref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{none}~\text{)} \\
      \text{funcref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{func}~\text{)} \\
      \text{nullfuncref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{nofunc}~\text{)} \\
+     \text{exnref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{exn}~\text{)} \\
+     \text{nullexnref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{noexn}~\text{)} \\
      \text{externref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{extern}~\text{)} \\
      \text{nullexternref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{noextern}~\text{)} \\
    \end{array}

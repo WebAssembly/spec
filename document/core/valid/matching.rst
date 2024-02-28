@@ -570,6 +570,21 @@ A :ref:`global type <syntax-globaltype>` :math:`(\mut_1~t_1)` matches :math:`(\m
    }
 
 
+.. index:: tag type
+.. _match-tagtype:
+
+Tag Types
+~~~~~~~~~
+
+A :ref:`tag type <syntax-tagtype>` :math:`\tagtype_1` matches :math:`\tagtype_2` if and only if they are the same.
+
+.. math::
+   \frac{
+   }{
+     C \vdashtagtypematch \tagtype \matchestagtype \tagtype
+   }
+
+
 .. index:: external type, function type, table type, memory type, global type
 .. _match-externtype:
 
@@ -637,4 +652,19 @@ An :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~\globaltype_1` matc
      C \vdashglobaltypematch \globaltype_1 \matchesglobaltype \globaltype_2
    }{
      C \vdashexterntypematch \ETGLOBAL~\globaltype_1 \matchesexterntype \ETGLOBAL~\globaltype_2
+   }
+
+
+Tags
+....
+
+An :ref:`external type <syntax-externtype>` :math:`\ETTAG~\tagtype_1` matches :math:`\ETTAG~\tagtype_2`  if and only if:
+
+* Tag type :math:`\tagtype_1` :ref:`matches <match-tagtype>` :math:`\tagtype_2`.
+
+.. math::
+   \frac{
+     C \vdashtagtypematch \tagtype_1 \matchestagtype \tagtype_2
+   }{
+     C \vdashexterntypematch \ETTAG~\tagtype_1 \matchesexterntype \ETTAG~\tagtype_2
    }

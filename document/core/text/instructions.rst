@@ -48,7 +48,7 @@ The following grammar handles the corresponding update to the :ref:`identifier c
    then it is shadowed and the earlier label becomes inaccessible.
 
 
-.. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism, reference
+.. index:: control instructions, structured control, label, block, branch, result type, label index, function index, tag index, type index, vector, polymorphism, reference
    pair: text format; instruction
 .. _text-blockinstr:
 .. _text-plaininstr:
@@ -62,9 +62,11 @@ Control Instructions
 .. _text-loop:
 .. _text-if:
 .. _text-instr-block:
+.. _text-try_table:
+.. _text-catch:
 
 :ref:`Structured control instructions <syntax-instr-control>` can bind an optional symbolic :ref:`label identifier <text-label>`.
-The same label identifier may optionally be repeated after the corresponding :math:`\T{end}` and :math:`\T{else}` pseudo instructions, to indicate the matching delimiters.
+The same label identifier may optionally be repeated after the corresponding :math:`\T{end}` or :math:`\T{else}` keywords, to indicate the matching delimiters.
 
 Their :ref:`block type <syntax-blocktype>` is given as a :ref:`type use <text-typeuse>`, analogous to the type of :ref:`functions <text-func>`.
 However, the special case of a type use that is syntactically empty or consists of only a single :ref:`result <text-result>` is not regarded as an :ref:`abbreviation <text-typeuse-abbrev>` for an inline :ref:`function type <syntax-functype>`, but is parsed directly into an optional :ref:`value type <syntax-valtype>`.
@@ -88,7 +90,23 @@ However, the special case of a type use that is syntactically empty or consists 
      \text{if}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype_I~~(\X{in}_1{:}\Tinstr_{I'})^\ast~~
        \text{else}~~\Tid_1^?~~(\X{in}_2{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid_2^?
        \\ &&&\qquad \Rightarrow\quad \IF~\X{bt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END
-       \qquad (\iff \Tid_1^? = \epsilon \vee \Tid_1^? = \Tlabel, \Tid_2^? = \epsilon \vee \Tid_2^? = \Tlabel) \\
+       \qquad (\iff \Tid_1^? = \epsilon \vee \Tid_1^? = \Tlabel, \Tid_2^? = \epsilon \vee \Tid_2^? = \Tlabel) \\ &&|&
+     \text{try\_table}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype~~(c{:}\Tcatch_I)^\ast~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
+       \\ &&&\qquad \Rightarrow\quad \TRYTABLE~\X{bt}~c^\ast~\X{in}^\ast~~\END
+       \qquad\qquad (\iff \Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\
+   \production{catch clause} & \Tcatch_I &
+   \begin{array}[t]{@{}c@{}} ::= \\ | \\ | \\ | \\ \end{array}
+   &
+   \begin{array}[t]{@{}lcll@{}}
+     \text{(}~\text{catch}~~x{:}\Ttagidx_I~~l{:}\Tlabelidx_I~\text{)}
+       &\Rightarrow& \CATCH~x~l \\
+     \text{(}~\text{catch\_ref}~~x{:}\Ttagidx_I~~l{:}\Tlabelidx_I~\text{)}
+       &\Rightarrow& \CATCHREF~x~l \\
+     \text{(}~\text{catch\_all}~~l{:}\Tlabelidx_I~\text{)}
+       &\Rightarrow& \CATCHALL~l \\
+     \text{(}~\text{catch\_all\_ref}~~l{:}\Tlabelidx_I~\text{)}
+       &\Rightarrow& \CATCHALLREF~l \\
+   \end{array} \\
    \end{array}
 
 .. note::
@@ -110,6 +128,8 @@ However, the special case of a type use that is syntactically empty or consists 
 .. _text-call_indirect:
 .. _text-return_call:
 .. _text-return_call_indirect:
+.. _text-throw:
+.. _text-throw_ref:
 
 All other control instruction are represented verbatim.
 
@@ -134,7 +154,9 @@ All other control instruction are represented verbatim.
      \text{return\_call}~~x{:}\Tfuncidx_I &\Rightarrow& \RETURNCALL~x \\ &&|&
      \text{return\_call\_ref}~~x{:}\Ttypeidx &\Rightarrow& \RETURNCALLREF~x \\ &&|&
      \text{return\_call\_indirect}~~x{:}\Ttableidx~~y,I'{:}\Ttypeuse_I &\Rightarrow& \RETURNCALLINDIRECT~x~y
-       & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\
+       & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\ &&|&
+     \text{throw}~~x{:}\Ttagidx_I &\Rightarrow& \THROW~x \\ &&|&
+     \text{throw\_ref} &\Rightarrow& \THROWREF \\
    \end{array}
 
 .. note::
@@ -1007,8 +1029,13 @@ Such a folded instruction can appear anywhere a regular instruction can.
      \text{(}~\text{if}~~\Tlabel~~\Tblocktype~~\Tfoldedinstr^\ast
        &\hspace{-3ex} \text{(}~\text{then}~~\Tinstr_1^\ast~\text{)}~~(\text{(}~\text{else}~~\Tinstr_2^\ast~\text{)})^?~~\text{)}
        \quad\equiv \\ &\qquad
-         \Tfoldedinstr^\ast~~\text{if}~~\Tlabel~~\Tblocktype &\hspace{-1ex} \Tinstr_1^\ast~~\text{else}~~(\Tinstr_2^\ast)^?~\text{end} \\
+       \Tfoldedinstr^\ast~~\text{if}~~\Tlabel
+       &\hspace{-12ex} \Tblocktype~~\Tinstr_1^\ast~~\text{else}~~(\Tinstr_2^\ast)^?~\text{end} \\ &
+     \text{(}~\text{try\_table}~~\Tlabel~~\Tblocktype~~\Tcatch^\ast~~\Tinstr^\ast~\text{)}
+       \quad\equiv \\ &\qquad
+       \text{try\_table}~~\Tlabel~~\Tblocktype~~\Tcatch^\ast~~\Tinstr^\ast~~\text{end} \\
    \end{array}
+
 
 .. note::
    For example, the instruction sequence

@@ -79,7 +79,7 @@ struct
   let string bs = len (String.length bs); put_string s bs
   let name n = string (Utf8.encode n)
   let list f xs = List.iter f xs
-  let opt f xo = Lib.Option.app f xo
+  let opt f xo = Option.iter f xo
   let vec f xs = len (List.length xs); list f xs
 
   let gap32 () = let p = pos s in word32 0l; byte 0; p
@@ -96,6 +96,9 @@ struct
   (* Types *)
 
   open Types
+  open Source
+
+  let var x = u32 x.it
 
   let mutability = function
     | Cons -> byte 0
@@ -123,6 +126,8 @@ struct
     | NoneHT -> s7 (-0x0f)
     | FuncHT -> s7 (-0x10)
     | NoFuncHT -> s7 (-0x0d)
+    | ExnHT -> s7 (-0x17)
+    | NoExnHT -> s7 (-0x0c)
     | ExternHT -> s7 (-0x11)
     | NoExternHT -> s7 (-0x0e)
     | VarHT x -> var_type s33 x
@@ -141,6 +146,8 @@ struct
     | (Null, NoneHT) -> s7 (-0x0f)
     | (Null, FuncHT) -> s7 (-0x10)
     | (Null, NoFuncHT) -> s7 (-0x0d)
+    | (Null, ExnHT) -> s7 (-0x17)
+    | (Null, NoExnHT) -> s7 (-0x0c)
     | (Null, ExternHT) -> s7 (-0x11)
     | (Null, NoExternHT) -> s7 (-0x0e)
     | (Null, t) -> s7 (-0x1d); heap_type t
@@ -199,10 +206,12 @@ struct
   let global_type = function
     | GlobalT (mut, t) -> val_type t; mutability mut
 
+  let tag_type x =
+    u32 0x00l; var x
 
-  (* Instructions *)
 
-  open Source
+  (* Expressions *)
+
   open Ast
   open Value
   open V128
@@ -213,8 +222,6 @@ struct
   let end_ () = op 0x0b
 
   let memop {align; offset; _} = u32 (Int32.of_int align); u32 offset
-
-  let var x = u32 x.it
 
   let block_type = function
     | VarBlockType x -> var_type s33 (StatX x.it)
@@ -241,6 +248,8 @@ struct
       op 0x04; block_type bt; list instr es1;
       if es2 <> [] then op 0x05;
       list instr es2; end_ ()
+    | TryTable (bt, cs, es) ->
+      op 0x1f; block_type bt; vec catch cs; list instr es; end_ ()
 
     | Br x -> op 0x0c; var x
     | BrIf x -> op 0x0d; var x
@@ -260,6 +269,9 @@ struct
     | ReturnCall x -> op 0x12; var x
     | ReturnCallRef x -> op 0x15; var x
     | ReturnCallIndirect (x, y) -> op 0x13; var y; var x
+
+    | Throw x -> op 0x08; var x
+    | ThrowRef -> op 0x0a
 
     | Drop -> op 0x1a
     | Select None -> op 0x1b
@@ -842,6 +854,13 @@ struct
     | VecReplace (V128 (F32x4 (V128Op.Replace i))) -> vecop 0x20l; byte i
     | VecReplace (V128 (F64x2 (V128Op.Replace i))) -> vecop 0x22l; byte i
 
+  and catch c =
+    match c.it with
+    | Catch (x1, x2) -> byte 0x00; var x1; var x2
+    | CatchRef (x1, x2) -> byte 0x01; var x1; var x2
+    | CatchAll x -> byte 0x02; var x
+    | CatchAllRef x -> byte 0x03; var x
+
   let const c =
     list instr c.it; end_ ()
 
@@ -874,6 +893,7 @@ struct
     | TableImport t -> byte 0x01; table_type t
     | MemoryImport t -> byte 0x02; memory_type t
     | GlobalImport t -> byte 0x03; global_type t
+    | TagImport t -> byte 0x04; tag_type t
 
   let import im =
     let {module_name; item_name; idesc} = im.it in
@@ -914,6 +934,14 @@ struct
     section 5 (vec memory) mems (mems <> [])
 
 
+  (* Tag section *)
+
+  let tag (t : tag) = byte 0x00; var t.it.tgtype
+
+  let tag_section ts =
+    section 13 (vec tag) ts (ts <> [])
+
+
   (* Global section *)
 
   let global g =
@@ -932,6 +960,7 @@ struct
     | TableExport x -> byte 1; var x
     | MemoryExport x -> byte 2; var x
     | GlobalExport x -> byte 3; var x
+    | TagExport x -> byte 4; var x
 
   let export ex =
     let {name = n; edesc} = ex.it in
@@ -1058,6 +1087,7 @@ struct
     func_section m.it.funcs;
     table_section m.it.tables;
     memory_section m.it.memories;
+    tag_section m.it.tags;
     global_section m.it.globals;
     export_section m.it.exports;
     start_section m.it.start;
