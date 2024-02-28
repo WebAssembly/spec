@@ -1038,7 +1038,7 @@ let rec inverse_of_concat_helper = function
 
 let inverse_of_concat : numerics =
   {
-    name = "inverse_of_concat";
+    name = "inverse_of_concat_";
     f =
       (function
       | [ ListV l ] -> listV_of_list (inverse_of_concat_helper (Array.to_list !l))

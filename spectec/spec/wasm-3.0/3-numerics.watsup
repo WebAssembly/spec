@@ -222,6 +222,8 @@ def $vbinop(shape, vbinop_(shape), vec_(V128), vec_(V128)) : vec_(V128)*
     hint(show %2#_%1#(%3, %4))
 def $vrelop(shape, vrelop_(shape), vec_(V128), vec_(V128)) : vec_(V128)
     hint(show %2#_%1#(%3, %4))
+def $vcvtop(shape_1, shape_2, vcvtop, sx?, lane_($lanetype(shape_1))) : lane_($lanetype(shape_2))
+    hint(show %3#$_((%1,%2))^(%5)#((%6)))
 
 def $vunop(imm X N, ABS, v128_1) = v128
     -- if lane_1* = $lanes_(imm X N, v128_1)
@@ -417,13 +419,37 @@ def $vrelop(F64 X N, GE, v128_1, v128_2) = v128
     -- if lane_3* = $ext(1, 64, S, $fge(64, lane_1, lane_2))*
     -- if v128 = $invlanes_(I64 X N, lane_3*)
 
-def $vcvtop(shape_1, shape_2, vcvtop, sx?, lane_($lanetype(shape_1))) : lane_($lanetype(shape_2))
-    hint(show %3#$_((%1,%2))^(%5)#((%6)))
+def $vcvtop(I8 X N_1, I16 X N_2, EXTEND, sx, i8) = i16
+    -- if i16 = $ext(8, 16, sx, i8)
+def $vcvtop(I16 X N_1, I32 X N_2, EXTEND, sx, i16) = i32
+    -- if i32 = $ext(16, 32, sx, i16)
+def $vcvtop(I32 X N_1, I64 X N_2, EXTEND, sx, i32) = i64
+    -- if i64 = $ext(32, 64, sx, i32)
+def $vcvtop(F32 X N_1, I32 X N_2, TRUNC_SAT, sx, f32) = i32
+    -- if i32 = $trunc_sat(32, 32, sx, f32)
+def $vcvtop(F64 X N_1, I32 X N_2, TRUNC_SAT, sx, f64) = i32
+    -- if i32 = $trunc_sat(64, 32, sx, f64)
+def $vcvtop(I32 X N_1, F32 X N_2, CONVERT, sx, i32) = f32
+    -- if f32 = $convert(32, 32, sx, i32)
+def $vcvtop(I32 X N_1, F64 X N_2, CONVERT, sx, i32) = f64
+    -- if f64 = $convert(32, 64, sx, i32)
+def $vcvtop(F64 X N_1, F32 X N_2, DEMOTE, sx, f64) = f32
+    -- if f32 = $demote(64, 32, f64)
+def $vcvtop(F32 X N_1, F64 X N_2, PROMOTE, sx, f32) = f64
+    -- if f64 = $promote(32, 64, f32)
 
 def $vextunop(ishape_1, ishape_2, vextunop_(ishape_1, ishape_2), sx, vec_(V128)) : vec_(V128)
     hint(show %3#$_((%1,%2))^(%5)#((%6)))
 def $vextbinop(ishape_1, ishape_2, vextbinop_(ishape_1, ishape_2), sx, vec_(V128), vec_(V128)) : vec_(V128)
     hint(show %3#$_((%1,%2))^(%5)#((%6,%7)))
+
+def $vextbinop(inn_1 X N_1, inn_2 X N_2, DOT, sx, c_1, c_2) = c
+  -- var cj_1 : iN($lsize(inn_1))
+  -- var cj_2 : iN($lsize(inn_1))
+  -- if ci_1* = $lanes_(inn_2 X N_2, c_1)
+  -- if ci_2* = $lanes_(inn_2 X N_2, c_2)
+  -- if $concat_(iN($lsize(inn_1)), (cj_1 cj_2)*) = $imul($lsize(inn_1), $ext($lsize(inn_2), $lsize(inn_1), S, ci_1), $ext($lsize(inn_2), $lsize(inn_1), S, ci_2))*
+  -- if c = $invlanes_(inn_1 X N_1, $iadd($lsize(inn_1), cj_1, cj_2)^N_1)
 
 ;; TODO: refactor for consistency?
 def $vishiftop(ishape, vshiftop_(ishape), lane_($lanetype(ishape)), u32) : lane_($lanetype(ishape))
