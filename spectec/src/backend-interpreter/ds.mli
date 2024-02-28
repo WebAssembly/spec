@@ -74,6 +74,7 @@ module WasmContext : sig
   val get_current_label : unit -> value
 
   val get_value_stack : unit -> value list
+  val pop_value_stack : unit -> value list
   val push_value : value -> unit
   val pop_value : unit -> value
 

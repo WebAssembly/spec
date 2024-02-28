@@ -288,7 +288,31 @@ let insert_assert exp =
     -> assertI (topValueE (Some (translate_exp ty)) ~at:at) ~at:at
   | _ -> assertI (topValueE None) ~at:at
 
-let insert_pop e = [ insert_assert e; popI (translate_exp e) ~at:e.at ]
+let insert_pop e =
+  let consts = [ "CONST"; "VCONST" ] in
+
+  let e' =
+    let open Il in
+    match e.it with
+    | CaseE (Atom name, tup) when List.mem name consts ->
+      let tup' =
+        match tup.it with
+        | TupE (ty :: exps) ->
+          let ty' =
+            match ty.it with
+            | CallE _ ->
+              let var, typ = if name = "CONST" then "nt_0", "numtype" else "vt_0", "vectype" in
+              VarE (var $ no_region) $$ no_region % (VarT (typ $ no_region, []) $ no_region)
+            | _ -> ty
+          in
+          { tup with it = TupE (ty' :: exps) }
+        | _ -> tup
+      in
+      { e with it = CaseE (Atom name, tup') }
+    | _ -> e
+  in
+
+  [ insert_assert e; popI (translate_exp e') ~at:e'.at ]
 
 let insert_nop instrs = match instrs with [] -> [ nopI () ] | _ -> instrs
 
