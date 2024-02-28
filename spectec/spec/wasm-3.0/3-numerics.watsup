@@ -208,12 +208,12 @@ def $vvbinop(vectype, vvbinop, vec_(vectype), vec_(vectype)) : vec_(vectype)
 def $vvternop(vectype, vvternop, vec_(vectype), vec_(vectype), vec_(vectype)) : vec_(vectype)
     hint(show %2#_%1#(%3, %4, %5))
 
-def $vvunop(V128, NOT, v128) = $inot($size(V128), v128)
-def $vvbinop(V128, AND, v128_1, v128_2) = $iand($size(V128), v128_1, v128_2)
-def $vvbinop(V128, ANDNOT, v128_1, v128_2) = $iandnot($size(V128), v128_1, v128_2)
-def $vvbinop(V128, OR, v128_1, v128_2) = $ior($size(V128), v128_1, v128_2)
-def $vvbinop(V128, XOR, v128_1, v128_2) = $ixor($size(V128), v128_1, v128_2)
-def $vvternop(V128, BITSELECT, v128_1, v128_2, v128_3) = $ibitselect($size(V128), v128_1, v128_2, v128_3)
+def $vvunop(V128, NOT, v128) = $inot($vsize(V128), v128)
+def $vvbinop(V128, AND, v128_1, v128_2) = $iand($vsize(V128), v128_1, v128_2)
+def $vvbinop(V128, ANDNOT, v128_1, v128_2) = $iandnot($vsize(V128), v128_1, v128_2)
+def $vvbinop(V128, OR, v128_1, v128_2) = $ior($vsize(V128), v128_1, v128_2)
+def $vvbinop(V128, XOR, v128_1, v128_2) = $ixor($vsize(V128), v128_1, v128_2)
+def $vvternop(V128, BITSELECT, v128_1, v128_2, v128_3) = $ibitselect($vsize(V128), v128_1, v128_2, v128_3)
 
 ;; TODO: rename these to mapunop etc?
 def $vunop(shape, vunop_(shape), vec_(V128)) : vec_(V128)

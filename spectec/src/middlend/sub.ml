@@ -126,7 +126,7 @@ and t_deftyp env x = { x with it = t_deftyp' env x.it }
 
 and t_deftyp' env = function
   | AliasT t -> AliasT (t_typ env t)
-  | NotationT (mixop, t) -> NotationT (mixop, t_typ env t)
+  | NotationT typcon -> NotationT (t_typcon env typcon)
   | StructT typfields -> StructT (List.map (t_typfield env) typfields)
   | VariantT typcases -> VariantT (List.map (t_typcase env) typcases)
 
@@ -134,6 +134,8 @@ and t_typfield env (atom, (binds, t, prems), hints) =
   (atom, (t_binds env binds, t_typ env t, t_prems env prems), hints)
 and t_typcase env (atom, (binds, t, prems), hints) =
   (atom, (t_binds env binds, t_typ env t, t_prems env prems), hints)
+and t_typcon env (mixop, (binds, t, prems), hints) =
+  (mixop, (t_binds env binds, t_typ env t, t_prems env prems), hints)
 
 and t_exp2 env x = { x with it = t_exp' env x.it; note = t_typ env x.note }
 
@@ -155,6 +157,7 @@ and t_exp' env = function
   | CallE (a, args) -> CallE (a, t_args env args)
   | IterE (e, iterexp) -> IterE (t_exp env e, t_iterexp env iterexp)
   | ProjE (e, i) -> ProjE (t_exp env e, i)
+  | UnmixE (e, mixop) -> UnmixE (t_exp env e, mixop)
   | OptE None -> OptE None
   | OptE (Some exp) -> OptE (Some exp)
   | TheE exp -> TheE exp

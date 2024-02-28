@@ -25,6 +25,7 @@ type env =
     show_var : exp list Map.t ref;
     show_rel : exp list Map.t ref;
     show_def : exp list Map.t ref;
+    show_con : exp list Map.t ref;
     show_case : exp list Map.t ref;
     show_field : exp list Map.t ref;
     desc_typ : exp list Map.t ref;
@@ -42,6 +43,7 @@ let new_env config =
     show_var = ref Map.empty;
     show_rel = ref Map.empty;
     show_def = ref Map.empty;
+    show_con = ref Map.empty;
     show_case = ref Map.empty;
     show_field = ref Map.empty;
     desc_typ = ref Map.empty;
@@ -55,6 +57,8 @@ let with_syntax_decoration b env = {env with deco_typ = b}
 let with_rule_decoration b env = {env with deco_rule = b}
 
 
+let typed_id id _id1 = id (* TODO ^ ":" ^ id1 *)
+
 let env_hints name map id hints =
   List.iter (fun {hintid; hintexp} ->
     if hintid.it = name then
@@ -62,20 +66,24 @@ let env_hints name map id hints =
     map := Map.add id (hintexp::exps) !map
   ) hints
 
-let env_typfield env = function
+let env_typfield env id1 = function
   | Elem ({it = Atom id; _}, _, hints) ->
-    env_hints "show" env.show_field id hints
+    env_hints "show" env.show_field (typed_id id id1) hints
   | _ -> ()
 
-let env_typcase env = function
+let env_typcase env id1 = function
   | Elem ({it = Atom id; _}, _, hints) ->
-    env_hints "show" env.show_case id hints
+    env_hints "show" env.show_case (typed_id id id1) hints
   | _ -> ()
 
-let env_typ env t =
+let env_typcon env id1 = function
+  | (_, hints) -> env_hints "show" env.show_con (typed_id "" id1) hints
+
+let env_typ env id1 t =
   match t.it with
-  | StrT tfs -> List.iter (env_typfield env) tfs
-  | CaseT (_, _, tcases, _) -> List.iter (env_typcase env) tcases
+  | StrT tfs -> List.iter (env_typfield env id1) tfs
+  | CaseT (_, _, tcases, _) -> List.iter (env_typcase env id1) tcases
+  | ConT tcon -> env_typcon env id1 tcon
   | _ -> ()  (* TODO: this assumes that types structs & variants aren't nested *)
 
 let env_hintdef env hd =
@@ -106,7 +114,7 @@ let env_def env d =
     env.vars := Set.add id1.it !(env.vars);
     env_hintdef env (TypH (id1, id2, hints) $ d.at);
     env_hintdef env (VarH (id1, hints) $ d.at);
-    env_typ env t
+    env_typ env id1.it t
   | GramD (id1, id2, _ps, _t, _gram, hints) ->
     env_hintdef env (GramH (id1, id2, hints) $ d.at)
   | RelD (id, _t, hints) -> env_hintdef env (RelH (id, hints) $ d.at)
@@ -541,6 +549,8 @@ and render_typ env t =
     altern_map_nl " ~|~ " " \\\\ &&|&\n" Fun.id
       (render_dots dots1 @ map_nl_list (render_typ env) ts @
         map_nl_list (render_typcase env) tcases @ render_dots dots2)
+  | ConT tcon ->
+    render_typcon env tcon
   | RangeT tes ->
     altern_map_nl " ~|~ " "\\\\ &&|&\n" (render_typenum env) tes
   | _ ->
@@ -552,6 +562,10 @@ and render_typfield env (atom, (t, prems), _hints) =
   if prems = [] then "" else render_conditions env "&&&&" prems
 
 and render_typcase env (_atom, (t, prems), _hints) =
+  render_typ env t ^
+  if prems = [] then "" else render_conditions env "&&&&" prems
+
+and render_typcon env ((t, prems), _hints) =
   render_typ env t ^
   if prems = [] then "" else render_conditions env "&&&&" prems
 

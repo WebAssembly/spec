@@ -88,6 +88,7 @@ and subst_typ s t =
   | CaseT (dots1, ts, tcs, dots2) ->
     CaseT (dots1, subst_nl_list subst_typ s ts,
       subst_nl_list subst_typcase s tcs, dots2)
+  | ConT tc -> ConT (subst_typcon s tc)
   | RangeT tes -> RangeT (subst_nl_list subst_typenum s tes)
   | SeqT ts -> SeqT (subst_list subst_typ s ts)
   | InfixT (t1, op, t2) -> InfixT (subst_typ s t1, op, subst_typ s t2)
@@ -98,6 +99,8 @@ and subst_typfield s (atom, (t, prems), hints) =
   (atom, (subst_typ s t, subst_nl_list subst_prem s prems), hints)
 and subst_typcase s (atom, (t, prems), hints) =
   (atom, (subst_typ s t, subst_nl_list subst_prem s prems), hints)
+and subst_typcon s ((t, prems), hints) =
+  ((subst_typ s t, subst_nl_list subst_prem s prems), hints)
 and subst_typenum s (e, eo) =
   (subst_exp s e, subst_opt subst_exp s eo)
 

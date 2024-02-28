@@ -58,7 +58,6 @@ $$
 {|\mathsf{i{\scriptstyle64}}|} &=& 64 &  \\
 {|\mathsf{f{\scriptstyle32}}|} &=& 32 &  \\
 {|\mathsf{f{\scriptstyle64}}|} &=& 64 &  \\
-{|\mathsf{v{\scriptstyle128}}|} &=& 128 &  \\
 \end{array}
 $$
 
@@ -1252,6 +1251,7 @@ warning: definition `vextbinop` was never spliced
 warning: definition `vextunop` was never spliced
 warning: definition `vishiftop` was never spliced
 warning: definition `vrelop` was never spliced
+warning: definition `vsize` was never spliced
 warning: definition `vunop` was never spliced
 warning: definition `vunpack` was never spliced
 warning: definition `vvbinop` was never spliced
@@ -1610,6 +1610,7 @@ warning: definition prose `vcvtop` was never spliced
 warning: definition prose `vextbinop` was never spliced
 warning: definition prose `vishiftop` was never spliced
 warning: definition prose `vrelop` was never spliced
+warning: definition prose `vsize` was never spliced
 warning: definition prose `vunop` was never spliced
 warning: definition prose `vunpack` was never spliced
 warning: definition prose `vvbinop` was never spliced

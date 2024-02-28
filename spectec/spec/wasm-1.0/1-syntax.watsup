@@ -2,20 +2,8 @@
 ;; Lists
 ;;
 
-;; TODO: make alias
-syntax list(syntax A) = | _LIST A*  -- if |A*| < $(2^32)
-
-
-;;
-;; Names
-;;
-
-syntax char hint(desc "character") = U+0000 | ... | U+D7FF | U+E000 | ... | U+10FFFF
-
-;; TODO: enable side condition
-syntax name hint(desc "name") = char*  ;; -- if |$utf8(char*)| < $(2^32)
-
-var nm : name
+;; TODO: enable writing X^n
+syntax list(syntax X) = X*  -- if |X*| < $(2^32)
 
 
 ;;
@@ -77,6 +65,19 @@ def $fone(N) = POS (NORM 1 0)
 
 def $canon_(N) : nat
 def $canon_(N) = $(2^($signif(N)-1))
+
+
+;;
+;; Names
+;;
+
+syntax char hint(desc "character") = U+0000 | ... | U+D7FF | U+E000 | ... | U+10FFFF
+
+def $utf8(char*) : byte*
+
+syntax name hint(desc "name") = char*  -- if |$utf8(char*)| < $(2^32)
+
+var nm : name
 
 
 ;;

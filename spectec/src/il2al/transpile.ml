@@ -390,8 +390,8 @@ let infer_case_assert instrs =
       | _ -> i
     ) il in
     match Util.Lib.List.split_last_opt il' with
-    | _, None -> []
-    | hd, Some tl -> hd @ rewrite_if tl
+    | None -> []
+    | Some (hd, tl) -> hd @ rewrite_if tl
   in
   rewrite_il instrs
 

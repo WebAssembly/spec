@@ -22,6 +22,7 @@ val free_iter : iter -> sets
 val free_typ : typ -> sets
 val free_typfield : typfield -> sets
 val free_typcase : typcase -> sets
+val free_typcon : typcon -> sets
 val free_exp : exp -> sets
 val free_path : path -> sets
 val free_arg : arg -> sets
@@ -41,8 +42,8 @@ val free_def : def -> sets
      (this case is to handle function inverses)
   This is a pragmatic criterium, intended only for sanity checks.
 *)
-val det_typfield : typfield -> sets
-val det_typcase : typcase -> sets
+val det_exp : exp -> sets
+val det_prems : prem nl_list -> sets
 val det_prod : prod -> sets
 val det_def : def -> sets
 

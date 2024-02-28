@@ -115,7 +115,7 @@ and string_of_typ t =
   | BoolT -> "bool"
   | NumT t -> string_of_numtyp t
   | TextT -> "text"
-  | TupT xts -> "(" ^ concat ", " (List.map string_of_typbind xts) ^ ")"
+  | TupT ets -> "(" ^ concat ", " (List.map string_of_typbind ets) ^ ")"
   | IterT (t1, iter) -> string_of_typ t1 ^ string_of_iter iter
 
 and string_of_typ_args t =
@@ -124,13 +124,15 @@ and string_of_typ_args t =
   | TupT _ -> string_of_typ t
   | _ -> "(" ^ string_of_typ t ^ ")"
 
-and string_of_typbind (id, t) =
-  (if id.it = "_" then "" else id.it ^ " : ") ^ string_of_typ t
+and string_of_typbind (e, t) =
+  match e.it with
+  | VarE {it = "_"; _} -> string_of_typ t
+  | _ -> string_of_exp e ^ " : " ^ string_of_typ t
 
 and string_of_deftyp layout dt =
   match dt.it with
   | AliasT t -> string_of_typ t
-  | NotationT (mixop, t) -> string_of_typ_mix mixop t
+  | NotationT tc -> string_of_typcon tc
   | StructT tfs when layout = `H ->
     "{" ^ concat ", " (List.map string_of_typfield tfs) ^ "}"
   | StructT tfs ->
@@ -140,16 +142,16 @@ and string_of_deftyp layout dt =
   | VariantT tcs ->
     "\n  | " ^ concat "\n  | " (List.map string_of_typcase tcs)
 
-and string_of_typ_mix mixop t =
-  if mixop = [[]; []] then string_of_typ t else
-  string_of_mixop mixop ^ string_of_typ_args t
-
 and string_of_typfield (atom, (bs, t, prems), _hints) =
   string_of_atom atom ^ string_of_binds bs ^ " " ^ string_of_typ t ^
     concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
 and string_of_typcase (atom, (bs, t, prems), _hints) =
   string_of_atom atom ^ string_of_binds bs ^ string_of_typ_args t ^
+    concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
+
+and string_of_typcon (mixop, (bs, t, prems), _hints) =
+  string_of_mixop mixop ^ string_of_binds bs ^ string_of_typ_args t ^
     concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
 
@@ -186,6 +188,7 @@ and string_of_exp e =
   | CallE (id, as1) -> "$" ^ id.it ^ string_of_args as1
   | IterE (e1, iter) -> string_of_exp e1 ^ string_of_iterexp iter
   | ProjE (e1, i) -> string_of_exp e1 ^ "." ^ string_of_int i
+  | UnmixE (e1, op) -> string_of_exp e1 ^ "." ^ string_of_mixop op
   | OptE eo -> "?(" ^ string_of_exps "" (Option.to_list eo) ^ ")"
   | TheE e1 -> "!(" ^ string_of_exp e1 ^ ")"
   | ListE es -> "[" ^ string_of_exps " " es ^ "]"
@@ -219,8 +222,9 @@ and string_of_path p =
   | DotP (p1, atom) ->
     string_of_path p1 ^ "." ^ string_of_atom atom ^ "_" ^ string_of_typ p1.note
 
-and string_of_iterexp (iter, ids) =
-  string_of_iter iter ^ "{" ^ String.concat " " (List.map Source.it ids) ^ "}"
+and string_of_iterexp (iter, bs) =
+  string_of_iter iter ^ "{" ^ String.concat " "
+    (List.map (fun (id, t) -> id.it ^ " : " ^ string_of_typ t) bs) ^ "}"
 
 
 (* Premises *)
@@ -307,7 +311,8 @@ let rec string_of_def ?(suppress_pos = false) d =
     pre ^ "syntax " ^ id.it ^ string_of_params ps ^
      concat "\n" (List.map (string_of_inst ~suppress_pos id) insts) ^ "\n"
   | RelD (id, mixop, t, rules) ->
-    pre ^ "relation " ^ id.it ^ ": " ^ string_of_typ_mix mixop t ^
+    pre ^ "relation " ^ id.it ^ ": " ^
+      string_of_typcon (mixop, ([], t, []), []) ^
       concat "\n" (List.map (string_of_rule ~suppress_pos) rules) ^ "\n"
   | DecD (id, ps, t, clauses) ->
     pre ^ "def $" ^ id.it ^ string_of_params ps ^ " : " ^ string_of_typ t ^

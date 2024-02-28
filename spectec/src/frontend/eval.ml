@@ -70,7 +70,7 @@ let rec reduce_typ env t : typ =
     let id' = El.Convert.strip_var_suffix id in
     (match reduce_typ_app env id args' t.at (Map.find id'.it env.typs) with
     | Some t' ->
-(* TODO: renable?
+(* TODO: reenable?
       if id'.it <> id.it then
         Source.error id.at "syntax" "identifer suffix encountered during reduction";
 *)
@@ -487,7 +487,7 @@ and match_exp env s e1 e2 : subst option =
           | Some t1 -> sub_typ env t1 t2' ||
             if disj_typ env t1 t2' then false else raise Irred
           )
-        | _, (RangeT _ | StrT _ | CaseT _) -> raise Irred
+        | _, (StrT _ | CaseT _ | ConT _ | RangeT _) -> raise Irred
         | _, _ -> true
     then
       if id2.it = "_" then Some s else
@@ -637,6 +637,7 @@ and equiv_typ env t1 t2 =
   | StrT tfs1, StrT tfs2 -> equiv_nl_list equiv_typfield env tfs1 tfs2
   | CaseT (NoDots, [], tcs1, NoDots), CaseT (NoDots, [], tcs2, NoDots) ->
     equiv_nl_list equiv_typcase env tcs1 tcs2
+  | ConT tc1, ConT tc2 -> equiv_typcon env tc1 tc2
   | RangeT tes1, RangeT tes2 -> equiv_nl_list equiv_typenum env tes1 tes2
   | _, _ -> t1.it = t2.it
 
@@ -644,6 +645,8 @@ and equiv_typfield env (atom1, (t1, prems1), _) (atom2, (t2, prems2), _) =
   atom1.it = atom2.it && equiv_typ env t1 t2 && Eq.(eq_nl_list eq_prem prems1 prems2)
 and equiv_typcase env (atom1, (t1, prems1), _) (atom2, (t2, prems2), _) =
   atom1.it = atom2.it && equiv_typ env t1 t2 && Eq.(eq_nl_list eq_prem prems1 prems2)
+and equiv_typcon env ((t1, prems1), _) ((t2, prems2), _) =
+  equiv_typ env t1 t2 && Eq.(eq_nl_list eq_prem prems1 prems2)
 and equiv_typenum env (e11, e12o) (e21, e22o) =
   equiv_exp env e11 e21 && equiv_opt equiv_exp env e12o e22o
 
@@ -676,21 +679,10 @@ and sub_typ env t1 t2 =
   Debug.(log "el.sub_typ"
     (fun _ -> fmt "%s <: %s" (el_typ t1) (el_typ t2)) Bool.to_string
   ) @@ fun _ ->
-  match (reduce_typ env t1).it, (reduce_typ env t2).it with
+  let t1 = reduce_typ env t1 in
+  let t2 = reduce_typ env t2 in
+  match t1.it, t2.it with
   | NumT t1', NumT t2' -> t1' <= t2'
-  | RangeT (Elem (e1, _)::_), NumT t2' ->
-    (match (reduce_exp env e1).it with
-    | NatE _ -> true
-    | UnE (MinusOp, _) -> t2' <= IntT
-    | _ -> assert false
-    )
-  | NumT t1', RangeT (Elem (e2, _)::_) ->
-    (* HACK to treat nat and int interconvertible with ranges *)
-    (match (reduce_exp env e2).it with
-    | NatE _ -> t1' <= NatT
-    | UnE (MinusOp, _) -> true
-    | _ -> assert false
-    )
   | StrT tfs1, StrT tfs2 ->
     El.Convert.forall_nl_list (fun (atom, (t2, prems2), _) ->
       match find_field tfs1 atom with
@@ -705,6 +697,25 @@ and sub_typ env t1 t2 =
         equiv_typ env t1 t2 && Eq.eq_nl_list Eq.eq_prem prems1 prems2
       | None -> false
     ) tcs1
+  | ConT ((t11, _), _), ConT ((t21, _), _) -> sub_typ env t11 t21
+(*
+  | ConT ((t11, _), _), _ -> sub_typ env t11 t2
+  | _, ConT ((t21, _), _) -> sub_typ env t1 t21
+  | RangeT [], NumT _ -> true
+  | RangeT (Elem (e1, _)::tes1), NumT t2' ->
+    (match (reduce_exp env e1).it with
+    | NatE _ -> true
+    | UnE (MinusOp, _) -> t2' <= IntT
+    | _ -> assert false
+    ) && sub_typ env (RangeT tes1 $ t1.at) t2
+  | NumT _, RangeT [] -> true
+  | NumT t1', RangeT (Elem (e2, _)::tes2) ->
+    (match (reduce_exp env e2).it with
+    | NatE _ -> t1' <= NatT
+    | UnE (MinusOp, _) -> true
+    | _ -> assert false
+    ) && sub_typ env t1 (RangeT tes2 $ t2.at)
+*)
   | TupT ts1, TupT ts2 
   | SeqT ts1, SeqT ts2 ->
     List.length ts1 = List.length ts2 && List.for_all2 (sub_typ env) ts1 ts2
@@ -767,6 +778,7 @@ and disj_typ env t1 t2 =
       | Some (t2, _prems2) -> disj_typ env t1 t2
       | None -> false
     ) tcs1
+  | ConT ((t11, _), _), ConT ((t21, _), _) -> disj_typ env t11 t21
   | RangeT _, RangeT _ -> false  (* approximation *)
   | _, _ -> t1.it <> t2.it
 

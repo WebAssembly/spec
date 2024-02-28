@@ -212,6 +212,24 @@ fone N
 canon_ N
 1. Return (2 ^ ($signif(N) - 1)).
 
+utf8 char_u0*
+1. If (|char_u0*| is 1), then:
+  a. Let [ch] be char_u0*.
+  b. If (ch < 128), then:
+    1) Let b be ch.
+    2) Return [b].
+  c. If ((128 ≤ ch) and ((ch < 2048) and (ch ≥ (b_2 - 128)))), then:
+    1) Let ((2 ^ 6) · (b_1 - 192)) be (ch - (b_2 - 128)).
+    2) Return [b_1, b_2].
+  d. If ((((2048 ≤ ch) and (ch < 55296)) or ((57344 ≤ ch) and (ch < 65536))) and (ch ≥ (b_3 - 128))), then:
+    1) Let (((2 ^ 12) · (b_1 - 224)) + ((2 ^ 6) · (b_2 - 128))) be (ch - (b_3 - 128)).
+    2) Return [b_1, b_2, b_3].
+  e. If ((65536 ≤ ch) and ((ch < 69632) and (ch ≥ (b_4 - 128)))), then:
+    1) Let ((((2 ^ 18) · (b_1 - 240)) + ((2 ^ 12) · (b_2 - 128))) + ((2 ^ 6) · (b_3 - 128))) be (ch - (b_4 - 128)).
+    2) Return [b_1, b_2, b_3, b_4].
+2. Let ch* be char_u0*.
+3. Return $concat_($utf8([ch])*).
+
 size valty_u0
 1. If (valty_u0 is I32), then:
   a. Return 32.
@@ -873,24 +891,6 @@ invoke fa val^n
 5. Pop val^k from the stack.
 6. Return val^k.
 
-utf8 name_u0
-1. If (|name_u0| is 1), then:
-  a. Let [ch] be name_u0.
-  b. If ((ch < 128) and the type of ch is byte), then:
-    1) Let b be ch.
-    2) Return [b].
-  c. If ((128 ≤ ch) and ((ch < 2048) and (ch ≥ (b_2 - 128)))), then:
-    1) Let ((2 ^ 6) · (b_1 - 192)) be (ch - (b_2 - 128)).
-    2) Return [b_1, b_2].
-  d. If ((((2048 ≤ ch) and (ch < 55296)) or ((57344 ≤ ch) and (ch < 65536))) and (ch ≥ (b_3 - 128))), then:
-    1) Let (((2 ^ 12) · (b_1 - 224)) + ((2 ^ 6) · (b_2 - 128))) be (ch - (b_3 - 128)).
-    2) Return [b_1, b_2, b_3].
-  e. If ((65536 ≤ ch) and ((ch < 69632) and (ch ≥ (b_4 - 128)))), then:
-    1) Let ((((2 ^ 18) · (b_1 - 240)) + ((2 ^ 12) · (b_2 - 128))) + ((2 ^ 6) · (b_3 - 128))) be (ch - (b_4 - 128)).
-    2) Return [b_1, b_2, b_3, b_4].
-2. Let ch* be name_u0.
-3. Return $concat_($utf8([ch])*).
-
 execution_of_UNREACHABLE
 1. Trap.
 
@@ -928,18 +928,18 @@ execution_of_LABEL_
 3. Exit current context.
 4. Push val* to the stack.
 
-execution_of_BR label_u0
+execution_of_BR n_u0
 1. Let L be the current label.
 2. Let n be the arity of L.
 3. Let instr'* be the continuation of L.
 4. Pop all values admin_u1* from the stack.
 5. Exit current context.
-6. If ((label_u0 is 0) and (|admin_u1*| ≥ n)), then:
+6. If ((n_u0 is 0) and (|admin_u1*| ≥ n)), then:
   a. Let val'* ++ val^n be admin_u1*.
   b. Push val^n to the stack.
   c. Execute the sequence (instr'*).
-7. If (label_u0 ≥ 1), then:
-  a. Let l be (label_u0 - 1).
+7. If (n_u0 ≥ 1), then:
+  a. Let l be (n_u0 - 1).
   b. Let val* be admin_u1*.
   c. Push val* to the stack.
   d. Execute (BR l).
@@ -1579,6 +1579,24 @@ fone N
 
 canon_ N
 1. Return (2 ^ ($signif(N) - 1)).
+
+utf8 char_u0*
+1. If (|char_u0*| is 1), then:
+  a. Let [ch] be char_u0*.
+  b. If (ch < 128), then:
+    1) Let b be ch.
+    2) Return [b].
+  c. If ((128 ≤ ch) and ((ch < 2048) and (ch ≥ (b_2 - 128)))), then:
+    1) Let ((2 ^ 6) · (b_1 - 192)) be (ch - (b_2 - 128)).
+    2) Return [b_1, b_2].
+  d. If ((((2048 ≤ ch) and (ch < 55296)) or ((57344 ≤ ch) and (ch < 65536))) and (ch ≥ (b_3 - 128))), then:
+    1) Let (((2 ^ 12) · (b_1 - 224)) + ((2 ^ 6) · (b_2 - 128))) be (ch - (b_3 - 128)).
+    2) Return [b_1, b_2, b_3].
+  e. If ((65536 ≤ ch) and ((ch < 69632) and (ch ≥ (b_4 - 128)))), then:
+    1) Let ((((2 ^ 18) · (b_1 - 240)) + ((2 ^ 12) · (b_2 - 128))) + ((2 ^ 6) · (b_3 - 128))) be (ch - (b_4 - 128)).
+    2) Return [b_1, b_2, b_3, b_4].
+2. Let ch* be char_u0*.
+3. Return $concat_($utf8([ch])*).
 
 size valty_u0
 1. If (valty_u0 is I32), then:
@@ -2416,24 +2434,6 @@ invoke fa val^n
 5. Pop val^k from the stack.
 6. Return val^k.
 
-utf8 name_u0
-1. If (|name_u0| is 1), then:
-  a. Let [ch] be name_u0.
-  b. If ((ch < 128) and the type of ch is byte), then:
-    1) Let b be ch.
-    2) Return [b].
-  c. If ((128 ≤ ch) and ((ch < 2048) and (ch ≥ (b_2 - 128)))), then:
-    1) Let ((2 ^ 6) · (b_1 - 192)) be (ch - (b_2 - 128)).
-    2) Return [b_1, b_2].
-  d. If ((((2048 ≤ ch) and (ch < 55296)) or ((57344 ≤ ch) and (ch < 65536))) and (ch ≥ (b_3 - 128))), then:
-    1) Let (((2 ^ 12) · (b_1 - 224)) + ((2 ^ 6) · (b_2 - 128))) be (ch - (b_3 - 128)).
-    2) Return [b_1, b_2, b_3].
-  e. If ((65536 ≤ ch) and ((ch < 69632) and (ch ≥ (b_4 - 128)))), then:
-    1) Let ((((2 ^ 18) · (b_1 - 240)) + ((2 ^ 12) · (b_2 - 128))) + ((2 ^ 6) · (b_3 - 128))) be (ch - (b_4 - 128)).
-    2) Return [b_1, b_2, b_3, b_4].
-2. Let ch* be name_u0.
-3. Return $concat_($utf8([ch])*).
-
 execution_of_UNREACHABLE
 1. Trap.
 
@@ -2471,18 +2471,18 @@ execution_of_LABEL_
 3. Exit current context.
 4. Push val* to the stack.
 
-execution_of_BR label_u0
+execution_of_BR n_u0
 1. Let L be the current label.
 2. Let n be the arity of L.
 3. Let instr'* be the continuation of L.
 4. Pop all values admin_u1* from the stack.
 5. Exit current context.
-6. If ((label_u0 is 0) and (|admin_u1*| ≥ n)), then:
+6. If ((n_u0 is 0) and (|admin_u1*| ≥ n)), then:
   a. Let val'* ++ val^n be admin_u1*.
   b. Push val^n to the stack.
   c. Execute the sequence (instr'*).
-7. If (label_u0 ≥ 1), then:
-  a. Let l be (label_u0 - 1).
+7. If (n_u0 ≥ 1), then:
+  a. Let l be (n_u0 - 1).
   b. Let val* be admin_u1*.
   c. Push val* to the stack.
   d. Execute (BR l).
@@ -3732,7 +3732,7 @@ validation_of_VLOAD_LANE n x { ALIGN: n_A; OFFSET: n_O; } laneidx
 
 validation_of_VSTORE x { ALIGN: n_A; OFFSET: n_O; }
 - |C.MEM| must be greater than x.
-- (2 ^ n_A) must be less than or equal to ($size(V128) / 8).
+- (2 ^ n_A) must be less than or equal to ($vsize(V128) / 8).
 - Let mt be C.MEM[x].
 - The instruction is valid with type ([I32, V128] -> []).
 
@@ -3796,17 +3796,36 @@ fone N
 canon_ N
 1. Return (2 ^ ($signif(N) - 1)).
 
-size valty_u0
-1. If (valty_u0 is I32), then:
+utf8 char_u0*
+1. If (|char_u0*| is 1), then:
+  a. Let [ch] be char_u0*.
+  b. If (ch < 128), then:
+    1) Let b be ch.
+    2) Return [b].
+  c. If ((128 ≤ ch) and ((ch < 2048) and (ch ≥ (b_2 - 128)))), then:
+    1) Let ((2 ^ 6) · (b_1 - 192)) be (ch - (b_2 - 128)).
+    2) Return [b_1, b_2].
+  d. If ((((2048 ≤ ch) and (ch < 55296)) or ((57344 ≤ ch) and (ch < 65536))) and (ch ≥ (b_3 - 128))), then:
+    1) Let (((2 ^ 12) · (b_1 - 224)) + ((2 ^ 6) · (b_2 - 128))) be (ch - (b_3 - 128)).
+    2) Return [b_1, b_2, b_3].
+  e. If ((65536 ≤ ch) and ((ch < 69632) and (ch ≥ (b_4 - 128)))), then:
+    1) Let ((((2 ^ 18) · (b_1 - 240)) + ((2 ^ 12) · (b_2 - 128))) + ((2 ^ 6) · (b_3 - 128))) be (ch - (b_4 - 128)).
+    2) Return [b_1, b_2, b_3, b_4].
+2. Let ch* be char_u0*.
+3. Return $concat_($utf8([ch])*).
+
+size numty_u0
+1. If (numty_u0 is I32), then:
   a. Return 32.
-2. If (valty_u0 is I64), then:
+2. If (numty_u0 is I64), then:
   a. Return 64.
-3. If (valty_u0 is F32), then:
+3. If (numty_u0 is F32), then:
   a. Return 32.
-4. If (valty_u0 is F64), then:
-  a. Return 64.
-5. If (valty_u0 is V128), then:
-  a. Return 128.
+4. Assert: Due to validation, (numty_u0 is F64).
+5. Return 64.
+
+vsize V128
+1. Return 128.
 
 psize packt_u0
 1. If (packt_u0 is I8), then:
@@ -3823,18 +3842,21 @@ lsize lanet_u0
 4. Return $psize(packtype).
 
 zsize stora_u0
-1. If the type of stora_u0 is valtype, then:
-  a. Let valtype be stora_u0.
-  b. Return $size(valtype).
-2. Assert: Due to validation, the type of stora_u0 is packtype.
-3. Let packtype be stora_u0.
-4. Return $psize(packtype).
+1. If the type of stora_u0 is numtype, then:
+  a. Let numtype be stora_u0.
+  b. Return $size(numtype).
+2. If the type of stora_u0 is vectype, then:
+  a. Let vectype be stora_u0.
+  b. Return $vsize(vectype).
+3. Assert: Due to validation, the type of stora_u0 is packtype.
+4. Let packtype be stora_u0.
+5. Return $psize(packtype).
 
 lanetype (lnn X N)
 1. Return lnn.
 
-sizenn t
-1. Return $size(t).
+sizenn nt
+1. Return $size(nt).
 
 dim (lnn X N)
 1. Return N.
@@ -4035,10 +4057,10 @@ subst_externtype exter_u0 xx* ht*
 6. Return (MEM $subst_memtype(mt, xx*, ht*)).
 
 subst_all_reftype rt ht^n
-1. Return $subst_reftype(rt, $idx(x)^(x<n), ht^n).
+1. Return $subst_reftype(rt, $idx(i)^(i<n), ht^n).
 
 subst_all_deftype dt ht^n
-1. Return $subst_deftype(dt, $idx(x)^(x<n), ht^n).
+1. Return $subst_deftype(dt, $idx(i)^(i<n), ht^n).
 
 subst_all_deftypes defty_u0* ht*
 1. If (defty_u0* is []), then:
@@ -4454,20 +4476,20 @@ halfop half_u0 i j
 3. Return j.
 
 vvunop V128 NOT v128
-1. Return $inot($size(V128), v128).
+1. Return $inot($vsize(V128), v128).
 
 vvbinop V128 vvbin_u0 v128_1 v128_2
 1. If (vvbin_u0 is AND), then:
-  a. Return $iand($size(V128), v128_1, v128_2).
+  a. Return $iand($vsize(V128), v128_1, v128_2).
 2. If (vvbin_u0 is ANDNOT), then:
-  a. Return $iandnot($size(V128), v128_1, v128_2).
+  a. Return $iandnot($vsize(V128), v128_1, v128_2).
 3. If (vvbin_u0 is OR), then:
-  a. Return $ior($size(V128), v128_1, v128_2).
+  a. Return $ior($vsize(V128), v128_1, v128_2).
 4. Assert: Due to validation, (vvbin_u0 is XOR).
-5. Return $ixor($size(V128), v128_1, v128_2).
+5. Return $ixor($vsize(V128), v128_1, v128_2).
 
 vvternop V128 BITSELECT v128_1 v128_2 v128_3
-1. Return $ibitselect($size(V128), v128_1, v128_2, v128_3).
+1. Return $ibitselect($vsize(V128), v128_1, v128_2, v128_3).
 
 vunop (lanet_u1 X N) vunop_u0 v128_1
 1. If ((vunop_u0 is ABS) and the type of lanet_u1 is imm), then:
@@ -5092,9 +5114,9 @@ alloctypes type_u0*
 1. If (type_u0* is []), then:
   a. Return [].
 2. Let type'* ++ [type] be type_u0*.
-3. Let deftype'* be $alloctypes(type'*).
-4. Assert: Due to validation, type is of the case TYPE.
-5. Let (TYPE rectype) be type.
+3. Assert: Due to validation, type is of the case TYPE.
+4. Let (TYPE rectype) be type.
+5. Let deftype'* be $alloctypes(type'*).
 6. Let x be |deftype'*|.
 7. Let deftype* be $subst_all_deftypes($rolldt(x, rectype), deftype'*).
 8. Return deftype'* ++ deftype*.
@@ -5307,24 +5329,6 @@ invoke fa val^n
 8. Pop val^k from the stack.
 9. Return val^k.
 
-utf8 name_u0
-1. If (|name_u0| is 1), then:
-  a. Let [ch] be name_u0.
-  b. If ((ch < 128) and the type of ch is byte), then:
-    1) Let b be ch.
-    2) Return [b].
-  c. If ((128 ≤ ch) and ((ch < 2048) and (ch ≥ (b_2 - 128)))), then:
-    1) Let ((2 ^ 6) · (b_1 - 192)) be (ch - (b_2 - 128)).
-    2) Return [b_1, b_2].
-  d. If ((((2048 ≤ ch) and (ch < 55296)) or ((57344 ≤ ch) and (ch < 65536))) and (ch ≥ (b_3 - 128))), then:
-    1) Let (((2 ^ 12) · (b_1 - 224)) + ((2 ^ 6) · (b_2 - 128))) be (ch - (b_3 - 128)).
-    2) Return [b_1, b_2, b_3].
-  e. If ((65536 ≤ ch) and ((ch < 69632) and (ch ≥ (b_4 - 128)))), then:
-    1) Let ((((2 ^ 18) · (b_1 - 240)) + ((2 ^ 12) · (b_2 - 128))) + ((2 ^ 6) · (b_3 - 128))) be (ch - (b_4 - 128)).
-    2) Return [b_1, b_2, b_3, b_4].
-2. Let ch* be name_u0.
-3. Return $concat_($utf8([ch])*).
-
 execution_of_UNREACHABLE
 1. Trap.
 
@@ -5362,18 +5366,18 @@ execution_of_LABEL_
 3. Exit current context.
 4. Push val* to the stack.
 
-execution_of_BR label_u0
+execution_of_BR n_u0
 1. Let L be the current label.
 2. Let n be the arity of L.
 3. Let instr'* be the continuation of L.
 4. Pop all values admin_u1* from the stack.
 5. Exit current context.
-6. If ((label_u0 is 0) and (|admin_u1*| ≥ n)), then:
+6. If ((n_u0 is 0) and (|admin_u1*| ≥ n)), then:
   a. Let val'* ++ val^n be admin_u1*.
   b. Push val^n to the stack.
   c. Execute the sequence (instr'*).
-7. If (label_u0 ≥ 1), then:
-  a. Let l be (label_u0 - 1).
+7. If (n_u0 ≥ 1), then:
+  a. Let l be (n_u0 - 1).
   b. Let val* be admin_u1*.
   c. Push val* to the stack.
   d. Execute (BR l).
@@ -5573,7 +5577,7 @@ execution_of_VVTERNOP V128 vvternop
 execution_of_VVTESTOP V128 ANY_TRUE
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (V128.CONST c_1) from the stack.
-3. Let c be $ine($size(V128), c_1, 0).
+3. Let c be $ine($vsize(V128), c_1, 0).
 4. Push (I32.CONST c) to the stack.
 
 execution_of_VSWIZZLE (pnn X N)
@@ -6243,10 +6247,10 @@ execution_of_LOAD numty_u0 n_sx_u1? x mo
 execution_of_VLOAD vload_u0? x mo
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
-3. If ((((i + mo.OFFSET) + ($size(V128) / 8)) > |$mem(x).DATA|) and vload_u0? is not defined), then:
+3. If ((((i + mo.OFFSET) + ($vsize(V128) / 8)) > |$mem(x).DATA|) and vload_u0? is not defined), then:
   a. Trap.
 4. If vload_u0? is not defined, then:
-  a. Let c be $inverse_of_vbytes(V128, $mem(x).DATA[(i + mo.OFFSET) : ($size(V128) / 8)]).
+  a. Let c be $inverse_of_vbytes(V128, $mem(x).DATA[(i + mo.OFFSET) : ($vsize(V128) / 8)]).
   b. Push (V128.CONST c) to the stack.
 5. Else:
   a. Let ?(y_0) be vload_u0?.
@@ -6284,7 +6288,7 @@ execution_of_VLOAD_LANE N x mo j
 4. Pop (I32.CONST i) from the stack.
 5. If (((i + mo.OFFSET) + (N / 8)) > |$mem(x).DATA|), then:
   a. Trap.
-6. Let M be ($size(V128) / N).
+6. Let M be ($vsize(V128) / N).
 7. If the type of $inverse_of_lsize(N) is imm, then:
   a. Let imm be $inverse_of_lsize(N).
   b. Let k be $inverse_of_ibytes(N, $mem(x).DATA[(i + mo.OFFSET) : (N / 8)]).
@@ -6486,10 +6490,10 @@ execution_of_VSTORE x mo
 2. Pop (V128.CONST c) from the stack.
 3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
-5. If (((i + mo.OFFSET) + ($size(V128) / 8)) > |$mem(x).DATA|), then:
+5. If (((i + mo.OFFSET) + ($vsize(V128) / 8)) > |$mem(x).DATA|), then:
   a. Trap.
 6. Let b* be $vbytes(V128, c).
-7. Perform $with_mem(x, (i + mo.OFFSET), ($size(V128) / 8), b*).
+7. Perform $with_mem(x, (i + mo.OFFSET), ($vsize(V128) / 8), b*).
 
 execution_of_VSTORE_LANE N x mo j
 1. Assert: Due to validation, a value is on the top of the stack.

@@ -41,11 +41,11 @@ let split_state e =
   let state_instr = [ letI (varE "f", getCurFrameE ()) ] in
   match e.it with
   (* z; e *)
-  | Il.MixE ([ []; [ Il.Semicolon ]; [ Il.Star ] ], { it = Il.TupE [ state; e' ]; _ })
+  | Il.MixE ([ []; [ Il.Semicolon ]; [] ], { it = Il.TupE [ state; e' ]; _ })
     when is_state state -> state_instr, e'
   (* s; f; e *)
   | Il.MixE
-    ( [ []; [ Il.Semicolon ]; [ Il.Star ] ],
+    ( [ []; [ Il.Semicolon ]; [] ],
       { it = Il.TupE [ { it = Il.MixE (
         [[]; [ Il.Semicolon ]; []],
         { it = Il.TupE [ store; frame ]; _ }
@@ -114,7 +114,7 @@ and translate_exp exp =
   | Il.SubE ({ it = Il.VarE id; _}, { it = VarT (t, _); _ }, _) -> subE (id.it, t.it) ~at:at
   | Il.SubE (inner_exp, _, _) -> translate_exp inner_exp
   | Il.IterE (inner_exp, (iter, ids)) ->
-    let names = List.map (fun id -> id.it) ids in
+    let names = List.map (fun (id, _) -> id.it) ids in
     iterE (translate_exp inner_exp, names, translate_iter iter) ~at:at
   (* property access *)
   | Il.DotE (inner_exp, Atom p) ->
@@ -178,6 +178,7 @@ and translate_exp exp =
   (* CaseE *)
   | Il.CaseE (Il.Atom cons, argexp) -> caseE (kwd cons exp.note, translate_argexp argexp) ~at:at
   (* Tuple *)
+  | Il.TupE [e] -> translate_exp e
   | Il.TupE exps -> tupE (List.map translate_exp exps) ~at:at
   (* Call *)
   | Il.CallE (id, args) -> callE (id.it, translate_args args) ~at:at
@@ -198,6 +199,7 @@ and translate_exp exp =
       | _ -> [ e ]
     in
     match (op, exps) with
+    | [ []; [] ], [ e1 ] -> translate_exp e1
     | [ []; []; [] ], [ e1; e2 ]
     | [ []; [ Il.Semicolon ]; [] ], [ e1; e2 ]
     | [ []; [ Il.Semicolon ]; [ Il.Star ] ], [ e1; e2 ]
@@ -206,11 +208,12 @@ and translate_exp exp =
     | [ []; [ Il.Star; atom ]; [ Il.Star ] ], [ e1; e2 ]
     | [ []; [ atom ]; [] ], [ e1; e2 ] ->
       infixE (translate_exp e1, Il.Print.string_of_atom atom, translate_exp e2) ~at:at
+    | [ []; [ Il.Arrow ]; []; [] ], [ e1; e2; e3 ]
     | [ []; [ Il.Arrow ]; [ Il.Star ]; [] ], [ e1; e2; e3 ] -> (* HARDCODE *)
       infixE (translate_exp e1, "->", catE (translate_exp e2, translate_exp e3)) ~at:at
     (* Constructor *)
     (* TODO: Need a better way to convert these CaseE into ConstructE *)
-    | [ [ Il.Atom "FUNC" ]; []; [ Il.Star ]; [] ], _ ->
+    | [ [ Il.Atom "FUNC" ]; []; []; [] ], _ ->
       caseE (("FUNC", "func"), List.map translate_exp exps) ~at:at
     | [ [ Il.Atom "OK" ] ], [] ->
       caseE (("OK", "datatype"), []) ~at:at
@@ -232,9 +235,9 @@ and translate_exp exp =
       caseE (("MEMORY", "mem"), List.map translate_exp el) ~at:at
     | [ []; [ Il.Atom "I8" ] ], el ->
       caseE (("I8", "memtype"), List.map translate_exp el) ~at:at
-    | [ [ Il.Atom "ELEM" ]; []; [ Il.Star ]; [] ], el ->
+    | [ [ Il.Atom "ELEM" ]; []; []; [] ], el ->
       caseE (("ELEM", "elem"), List.map translate_exp el) ~at:at
-    | [ [ Il.Atom "DATA" ]; [ Il.Star ]; [] ], el ->
+    | [ [ Il.Atom "DATA" ]; []; [] ], el ->
       caseE (("DATA", "data"), List.map translate_exp el) ~at:at
     | [ [ Il.Atom "START" ]; [] ], el ->
       caseE (("START", "start"), List.map translate_exp el) ~at:at
@@ -246,6 +249,11 @@ and translate_exp exp =
       when List.for_all (fun l -> l = [] || l = [ Il.Star ] || l = [ Il.Quest ]) ll ->
       caseE ((name, lower name), List.map translate_exp el) ~at:at
     | _ -> yetE (Il.Print.string_of_exp exp) ~at:at)
+  | Il.UnmixE (e, op) -> (
+    match op with
+    | [ []; [] ] -> translate_exp e
+    | _ -> yetE (Il.Print.string_of_exp exp) ~at:at)
+  | Il.ProjE (e, 0) -> translate_exp e
   | Il.OptE inner_exp -> optE (Option.map translate_exp inner_exp) ~at:at
   (* Yet *)
   | _ -> yetE (Il.Print.string_of_exp exp) ~at:at
@@ -341,7 +349,7 @@ let rec translate_rhs exp =
   | Il.IterE ({ it = SubE ({ it = VarE id; _ }, _, _); _}, (Il.List, _))
     when String.starts_with ~prefix:"instr" id.it ->
     [ executeseqI (translate_exp exp) ~at:at ]
-  | Il.IterE ({ it = CaseE (Atom id', _); note = note; _ }, (Opt, [ id ]))
+  | Il.IterE ({ it = CaseE (Atom id', _); note = note; _ }, (Opt, [ (id, _) ]))
     when id' = "CALL" ->
     let new_name = varE (id.it ^ "_0") in
     [ ifI (isDefinedE (varE id.it),
@@ -407,7 +415,7 @@ let rec translate_rhs exp =
   | Il.CaseE (Atom atomid, argexp) ->
       [ executeI (caseE (kwd atomid exp.note, translate_argexp argexp)) ~at:at ]
   | Il.MixE
-    ( [ []; [ Il.Semicolon ]; [ Il.Star ] ],
+    ( [ []; [ Il.Semicolon ]; [] ],
       (* z' ; instr'* *)
       { it = TupE [ se; rhs ]; _ } ) -> (
     let push_instrs = translate_rhs rhs in
@@ -599,7 +607,7 @@ let translate_rulepr id exp =
 
 let rec translate_iterpr pr (iter, ids) =
   let instrs = translate_prem pr in
-  let iter', ids' = translate_iter iter, IdSet.of_list (List.map it ids) in
+  let iter', ids' = translate_iter iter, IdSet.of_list (List.map (fun (id, _) -> id.it) ids) in
   let lhs_iter = match iter' with | ListN (e, _) -> ListN (e, None) | _ -> iter' in
 
   let distribute_iter lhs rhs =
@@ -637,8 +645,8 @@ and translate_prem prem =
 (* Insert `target` at the innermost if instruction *)
 let rec insert_instrs target il =
   match Util.Lib.List.split_last_opt il with
-  | [], Some { it = OtherwiseI il'; _ } -> [ otherwiseI (il' @ insert_nop target) ]
-  | h, Some { it = IfI (cond, il', []); _ } ->
+  | Some ([], { it = OtherwiseI il'; _ }) -> [ otherwiseI (il' @ insert_nop target) ]
+  | Some (h, { it = IfI (cond, il', []); _ }) ->
     h @ [ ifI (cond, insert_instrs (insert_nop target) il' , []) ]
   | _ -> il @ target
 
