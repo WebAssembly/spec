@@ -23571,45 +23571,13 @@ watsup 0.4 generator
 - 1/229 (0.44%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_lane.wast =====
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:292.1-295.70 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:296.1-299.77 (Failure("Failed Array.get on base [] and index 248: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:300.1-303.86 (Failure("Failed Array.get on base [] and index 15: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:304.1-307.86 (Failure("Failed Array.get on base [] and index 255: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:308.1-311.86 (Failure("Failed Array.get on base [] and index 9: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:312.1-315.102 (Failure("Failed Array.get on base [] and index 9: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:316.1-319.78 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:320.1-323.66 (Failure("Failed Array.get on base [] and index 15: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:324.1-327.66 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:328.1-331.66 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:333.1-336.60 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:337.1-340.77 (Failure("Failed Array.get on base [] and index 16: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:341.1-344.84 (Failure("Failed Array.get on base [] and index 31: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:345.1-348.77 (Failure("Failed Array.get on base [] and index 15: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:349.1-352.77 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:353.1-356.86 (Failure("Failed Array.get on base [] and index 16: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:357.1-360.86 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:361.1-364.102 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:365.1-368.78 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:369.1-372.66 (Failure("Failed Array.get on base [] and index 16: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:373.1-376.60 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:377.1-380.66 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:381.1-384.60 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:387.1-390.70 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:391.1-394.70 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:692.1-695.60 (Failure("Failed Array.get on base [] and index 255: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:696.1-699.102 (Failure("Failed Array.get on base [] and index 16: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:756.1-759.70 (Failure("Invalid DSL function call: vbinop"))
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:760.1-763.46 (Failure("Invalid DSL function call: vbinop"))
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:764.1-765.123 (Failure("Invalid DSL function call: vbinop"))
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:766.1-767.105 (Failure("Invalid DSL function call: vbinop"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:769.1-774.70 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:775.1-780.68 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:787.1-789.75 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:790.1-792.75 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:793.1-795.75 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:863.1-866.77 (Failure("Failed Array.get on base [] and index 15: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:867.1-870.69 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- 248/286 (86.71%)
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:769.1-774.70 (Failure("Invalid DSL function call: vbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_lane.wast:775.1-780.68 (Failure("Invalid DSL function call: vbinop"))
+- 280/286 (97.90%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_linking.wast =====
 - 2/2 (100.00%)
@@ -23625,8 +23593,7 @@ watsup 0.4 generator
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load.wast:102.1-102.111 (Failure("Invalid DSL function call: vbinop"))
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load.wast:110.1-110.92 (Failure("Invalid DSL function call: vcvtop"))
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_load.wast:118.1-118.87 (Failure("Invalid DSL function call: vcvtop"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_load.wast:127.1-127.134 (Failure("Failed Array.get on base [] and index 15: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- 20/31 (64.52%)
+- 21/31 (67.74%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_load16_lane.wast =====
 - 33/33 (100.00%)
@@ -23722,7 +23689,6 @@ watsup 0.4 generator
 - 29/29 (100.00%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_splat.wast =====
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_splat.wast:300.1-300.133 (Failure("Failed Array.get on base [] and index 255: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_splat.wast:306.1-306.146 (Failure("Invalid DSL function call: vbinop"))
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_splat.wast:307.1-307.170 (Failure("Invalid DSL function call: vbinop"))
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_splat.wast:308.1-308.176 (Failure("Invalid DSL function call: vbinop"))
@@ -23749,7 +23715,7 @@ watsup 0.4 generator
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_splat.wast:339.1-339.124 (Failure("Invalid DSL function call: vbinop"))
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_splat.wast:341.1-341.129 (Failure("Invalid DSL function call: vcvtop"))
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_splat.wast:342.1-342.105 (Failure("Invalid DSL function call: vcvtop"))
-- 135/162 (83.33%)
+- 136/162 (83.95%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_store.wast =====
 - 19/19 (100.00%)
@@ -23847,7 +23813,7 @@ watsup 0.4 generator
 ===== ../../test-interpreter/spec-test-2/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [22109/45187] (48.93%)
+Total [22143/45187] (49.00%)
 
 == Complete.
 Running test for Wasm 3.0...
@@ -24390,55 +24356,7 @@ watsup 0.4 generator
 - 435/435 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast =====
-Result: 5_120 0 2_037_608_760 32_665 : [v128]
-Expect: 0 0 0 0 0 0 0 0 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:11.1-12.91 (Error(_, "wrong return values"))
-Result: 3_072 0 2_027_646_472 32_665 : [v128]
-Expect: 2 2 2 2 2 2 2 2 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:13.1-14.91 (Error(_, "wrong return values"))
-Result: 5_664_784 0 5 16_777_216 : [v128]
-Expect: -2 -2 -2 -2 -2 -2 -2 -2 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:15.1-16.99 (Error(_, "wrong return values"))
-Result: 1 0 3_072 0 : [v128]
-Expect: 252 252 252 252 252 252 252 252 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:17.1-18.107 (Error(_, "wrong return values"))
-Result: 5_664_784 0 5 16_777_216 : [v128]
-Expect: -254 -254 -254 -254 -254 -254 -254 -254 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:19.1-20.115 (Error(_, "wrong return values"))
-Result: 2_036_922_256 32_665 2_048 0 : [v128]
-Expect: -256 -256 -256 -256 -256 -256 -256 -256 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:21.1-22.115 (Error(_, "wrong return values"))
-Result: 1 0 2_053 0 : [v128]
-Expect: 254 254 254 254 254 254 254 254 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:23.1-24.107 (Error(_, "wrong return values"))
-Result: 2_036_648_520 32_665 5_120 0 : [v128]
-Expect: -2 -2 -2 -2 -2 -2 -2 -2 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:25.1-26.99 (Error(_, "wrong return values"))
-Result: 1_025 0 1 0 : [v128]
-Expect: 0 0 0 0 0 0 0 0 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:29.1-30.91 (Error(_, "wrong return values"))
-Result: 2_036_379_536 32_665 2_036_379_560 32_665 : [v128]
-Expect: 2 2 2 2 2 2 2 2 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:31.1-32.91 (Error(_, "wrong return values"))
-Result: 9_602_848 0 -1_717_986_919 -1 : [v128]
-Expect: 510 510 510 510 510 510 510 510 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:33.1-34.107 (Error(_, "wrong return values"))
-Result: -2_147_483_623 -1 2_303 0 : [v128]
-Expect: 252 252 252 252 252 252 252 252 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:35.1-36.107 (Error(_, "wrong return values"))
-Result: -1_717_986_919 -1 2_303 0 : [v128]
-Expect: 258 258 258 258 258 258 258 258 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:37.1-38.107 (Error(_, "wrong return values"))
-Result: 2_035_840_536 32_665 2_048 0 : [v128]
-Expect: 256 256 256 256 256 256 256 256 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:39.1-40.107 (Error(_, "wrong return values"))
-Result: 3 0 1_027 0 : [v128]
-Expect: 254 254 254 254 254 254 254 254 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:41.1-42.107 (Error(_, "wrong return values"))
-Result: 2_037_668_320 32_665 2_048 0 : [v128]
-Expect: 510 510 510 510 510 510 510 510 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:43.1-44.107 (Error(_, "wrong return values"))
-- 1/17 (5.88%)
+- 17/17 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast =====
 - 105/105 (100.00%)
@@ -24516,136 +24434,10 @@ Expect: 0 0 0 0 0 0 0 0 : [v128]
 - 435/435 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast =====
-Result: 2_037_590_496 32_665 2_037_590_264 32_665 : [v128]
-Expect: 0 0 0 0 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:10.1-12.71 (Error(_, "wrong return values"))
-Result: 5 16_777_216 11_805_088 0 : [v128]
-Expect: 0 0 0 0 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:13.1-15.71 (Error(_, "wrong return values"))
-Result: 2_037_439_344 32_665 53 0 : [v128]
-Expect: 2 2 2 2 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:16.1-18.71 (Error(_, "wrong return values"))
-Result: 2_048 0 2_037_138_968 32_665 : [v128]
-Expect: 0 0 0 0 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:19.1-21.71 (Error(_, "wrong return values"))
-Result: 2_035_349_680 32_665 9_463 0 : [v128]
-Expect: -2 -2 -2 -2 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:22.1-24.75 (Error(_, "wrong return values"))
-Result: 9_602_848 0 -65_536 -1 : [v128]
-Expect: 2 2 2 2 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:25.1-27.71 (Error(_, "wrong return values"))
-Result: 2_036_686_560 32_665 3_072 0 : [v128]
-Expect: 536_838_144 536_838_144 536_838_144 536_838_144 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:28.1-30.103 (Error(_, "wrong return values"))
-Result: 3_072 0 2_032_404_264 32_665 : [v128]
-Expect: 536_870_912 536_870_912 536_870_912 536_870_912 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:31.1-33.103 (Error(_, "wrong return values"))
-Result: 2_027_977_208 32_665 1_931_626_272 32_665 : [v128]
-Expect: 536_838_144 536_838_144 536_838_144 536_838_144 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:34.1-36.103 (Error(_, "wrong return values"))
-Result: 1_025 0 3 0 : [v128]
-Expect: 536_870_912 536_870_912 536_870_912 536_870_912 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:37.1-39.103 (Error(_, "wrong return values"))
-Result: 7 0 5_120 0 : [v128]
-Expect: 536_903_680 536_903_680 536_903_680 536_903_680 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:40.1-42.103 (Error(_, "wrong return values"))
-Result: 3_072 0 2_035_929_776 32_665 : [v128]
-Expect: 65_530 65_530 65_530 65_530 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:43.1-45.87 (Error(_, "wrong return values"))
-Result: 1 0 5 0 : [v128]
-Expect: 65_532 65_532 65_532 65_532 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:46.1-48.87 (Error(_, "wrong return values"))
-Result: 2_037_723_952 32_665 1 0 : [v128]
-Expect: -65_536 -65_536 -65_536 -65_536 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:49.1-51.91 (Error(_, "wrong return values"))
-Result: 9_983_168 0 4_343 0 : [v128]
-Expect: 65_532 65_532 65_532 65_532 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:52.1-54.87 (Error(_, "wrong return values"))
-Result: 5 16_777_216 2_037_421_808 32_665 : [v128]
-Expect: 65_534 65_534 65_534 65_534 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:55.1-57.87 (Error(_, "wrong return values"))
-Result: 2_037_269_136 32_665 5_120 0 : [v128]
-Expect: 65_536 65_536 65_536 65_536 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:58.1-60.87 (Error(_, "wrong return values"))
-Result: 8_189_184 0 2_037_754_752 32_665 : [v128]
-Expect: 2_147_352_578 2_147_352_578 2_147_352_578 2_147_352_578 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:61.1-63.107 (Error(_, "wrong return values"))
-Result: 9_983_168 0 2_048 0 : [v128]
-Expect: -2_147_483_648 -2_147_483_648 -2_147_483_648 -2_147_483_648 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:64.1-66.107 (Error(_, "wrong return values"))
-Result: 1 0 2_048 0 : [v128]
-Expect: 2_147_418_112 2_147_418_112 2_147_418_112 2_147_418_112 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:67.1-69.107 (Error(_, "wrong return values"))
-Result: 5_120 0 1 0 : [v128]
-Expect: 0 0 0 0 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:70.1-72.71 (Error(_, "wrong return values"))
-Result: 9_986_944 0 2_048 0 : [v128]
-Expect: -2 -2 -2 -2 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:73.1-75.75 (Error(_, "wrong return values"))
-Result: 1 0 2_033_235_608 32_665 : [v128]
-Expect: 2 2 2 2 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:76.1-78.71 (Error(_, "wrong return values"))
-Result: 1_027 0 2_036_211_160 32_665 : [v128]
-Expect: -65_534 -65_534 -65_534 -65_534 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:79.1-81.91 (Error(_, "wrong return values"))
-Result: 2_036_059_648 32_665 1_024 0 : [v128]
-Expect: 65_536 65_536 65_536 65_536 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:82.1-84.87 (Error(_, "wrong return values"))
-Result: 0 0 1_931_643_272 32_665 : [v128]
-Expect: 2 2 2 2 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:85.1-87.71 (Error(_, "wrong return values"))
-- 1/27 (3.70%)
+- 27/27 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast =====
-Result: 87 0 7_055 0 : [v128]
-Expect: 0 0 0 0 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:11.1-12.83 (Error(_, "wrong return values"))
-Result: 5_120 0 1 0 : [v128]
-Expect: 2 2 2 2 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:13.1-14.83 (Error(_, "wrong return values"))
-Result: 1 0 2_033_246_824 32_665 : [v128]
-Expect: -2 -2 -2 -2 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:15.1-16.87 (Error(_, "wrong return values"))
-Result: 1 0 3_072 0 : [v128]
-Expect: 65_532 65_532 65_532 65_532 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:17.1-18.99 (Error(_, "wrong return values"))
-Result: 2_037_236_480 32_665 2_048 0 : [v128]
-Expect: -65_534 -65_534 -65_534 -65_534 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:19.1-20.103 (Error(_, "wrong return values"))
-Result: 1_903_793_832 32_665 2_037_136_008 32_665 : [v128]
-Expect: -65_536 -65_536 -65_536 -65_536 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:21.1-22.103 (Error(_, "wrong return values"))
-Result: 5_120 0 2_037_035_520 32_665 : [v128]
-Expect: 65_534 65_534 65_534 65_534 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:23.1-24.99 (Error(_, "wrong return values"))
-Result: 2_036_935_272 32_665 7 0 : [v128]
-Expect: -2 -2 -2 -2 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:25.1-26.87 (Error(_, "wrong return values"))
-Result: 2_036_836_536 32_665 2_048 0 : [v128]
-Expect: 0 0 0 0 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:29.1-30.83 (Error(_, "wrong return values"))
-Result: 2_303 0 9_602_848 0 : [v128]
-Expect: 2 2 2 2 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:31.1-32.83 (Error(_, "wrong return values"))
-Result: 7 33_554_432 8_189_184 0 : [v128]
-Expect: 131_070 131_070 131_070 131_070 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:33.1-34.103 (Error(_, "wrong return values"))
-Result: 2_036_538_640 32_665 2_048 0 : [v128]
-Expect: 65_532 65_532 65_532 65_532 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:35.1-36.99 (Error(_, "wrong return values"))
-Result: 3_324 0 -1 -1 : [v128]
-Expect: 65_538 65_538 65_538 65_538 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:37.1-38.99 (Error(_, "wrong return values"))
-Result: 2_036_339_824 32_665 2_033_236_920 32_665 : [v128]
-Expect: 65_536 65_536 65_536 65_536 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:39.1-40.99 (Error(_, "wrong return values"))
-Result: 1_903_794_288 32_665 2_036_240_368 32_665 : [v128]
-Expect: 65_534 65_534 65_534 65_534 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:41.1-42.99 (Error(_, "wrong return values"))
-Result: 3_072 0 2_027_963_352 32_665 : [v128]
-Expect: 131_070 131_070 131_070 131_070 : [v128]
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:43.1-44.103 (Error(_, "wrong return values"))
-- 1/17 (5.88%)
+- 17/17 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast =====
 - 105/105 (100.00%)
@@ -24786,48 +24578,13 @@ Expect: 131_070 131_070 131_070 131_070 : [v128]
 - 229/229 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_lane.wast =====
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:292.1-295.70 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:296.1-299.77 (Failure("Failed Array.get on base [] and index 248: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:300.1-303.86 (Failure("Failed Array.get on base [] and index 15: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:304.1-307.86 (Failure("Failed Array.get on base [] and index 255: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:308.1-311.86 (Failure("Failed Array.get on base [] and index 9: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:312.1-315.102 (Failure("Failed Array.get on base [] and index 9: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:316.1-319.78 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:320.1-323.66 (Failure("Failed Array.get on base [] and index 15: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:324.1-327.66 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:328.1-331.66 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:333.1-336.60 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:337.1-340.77 (Failure("Failed Array.get on base [] and index 16: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:341.1-344.84 (Failure("Failed Array.get on base [] and index 31: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:345.1-348.77 (Failure("Failed Array.get on base [] and index 15: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:349.1-352.77 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:353.1-356.86 (Failure("Failed Array.get on base [] and index 16: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:357.1-360.86 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:361.1-364.102 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:365.1-368.78 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:369.1-372.66 (Failure("Failed Array.get on base [] and index 16: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:373.1-376.60 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:377.1-380.66 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:381.1-384.60 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:387.1-390.70 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:391.1-394.70 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:692.1-695.60 (Failure("Failed Array.get on base [] and index 255: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:696.1-699.102 (Failure("Failed Array.get on base [] and index 16: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:769.1-774.70 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:775.1-780.68 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:787.1-789.75 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:790.1-792.75 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:793.1-795.75 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:863.1-866.77 (Failure("Failed Array.get on base [] and index 15: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_lane.wast:867.1-870.69 (Failure("Failed Array.get on base [] and index 0: IdxP (AccE (IterE (VarE (i), [i], *), IdxP (VarE (k)))) @"))
-- 252/286 (88.11%)
+- 286/286 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_linking.wast =====
 - 2/2 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_load.wast =====
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_load.wast:127.1-127.134 (Failure("Failed Array.get on base [] and index 15: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- 30/31 (96.77%)
+- 31/31 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_load16_lane.wast =====
 - 33/33 (100.00%)
@@ -24923,8 +24680,7 @@ Expect: 131_070 131_070 131_070 131_070 : [v128]
 - 29/29 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_splat.wast =====
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_splat.wast:300.1-300.133 (Failure("Failed Array.get on base [] and index 255: IdxP (AccE (IterE (VarE (ci), [ci], *), IdxP (VarE (k)))) @"))
-- 161/162 (99.38%)
+- 162/162 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_store.wast =====
 - 19/19 (100.00%)
@@ -25031,7 +24787,7 @@ Expect: 131_070 131_070 131_070 131_070 : [v128]
 ===== ../../test-interpreter/spec-test-3/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [45278/45764] (98.94%)
+Total [45372/45764] (99.14%)
 
 == Complete.
 ```
