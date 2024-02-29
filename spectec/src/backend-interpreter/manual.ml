@@ -147,7 +147,7 @@ let array_new_data =
   let mut = varE "mut" in
   let zt = varE "zt" in
 
-  let nt = varE "nt" in
+  let cnn = varE "cnn" in
 
   let c = varE "c" in
 
@@ -157,12 +157,12 @@ let array_new_data =
   let cn = iterE (c, ["c"], ListN (n, None)) in
 
   let expanddt_with_type = callE ("expanddt", [callE ("type", [x])]) in
-  let storagesize = callE ("storagesize", [zt]) in
-  let unpacknumtype = callE ("unpacknumtype", [zt]) in
+  let zsize = callE ("zsize", [zt]) in
+  let cunpack = callE ("cunpack", [zt]) in
   (* include z or not ??? *)
   let data = callE ("data", [y]) in
-  let group_bytes_by = callE ("group_bytes_by", [binE (DivOp, storagesize, numE (Z.of_int 8)); bstar]) in
-  let inverse_of_bytes_ = iterE (callE ("inverse_of_ibytes", [storagesize; gb]), ["gb"], List) in
+  let group_bytes_by = callE ("group_bytes_by", [binE (DivOp, zsize, numE (Z.of_int 8)); bstar]) in
+  let inverse_of_bytes_ = iterE (callE ("inverse_of_ibytes", [zsize; gb]), ["gb"], List) in
 
   RuleA (
     ("ARRAY.NEW_DATA", "admininstr"),
@@ -180,23 +180,23 @@ let array_new_data =
           ifI (
             binE (
               GtOp,
-              binE (AddOp, i, binE (DivOp, binE (MulOp, n, storagesize), numE (Z.of_int 8))),
+              binE (AddOp, i, binE (DivOp, binE (MulOp, n, zsize), numE (Z.of_int 8))),
               lenE (accE (callE ("data", [y]), dotP ("DATA", "datainst")))
             ),
             [ trapI () ],
             []
           );
-          letI (nt, unpacknumtype);
+          letI (cnn, cunpack);
           letI (
             bstar,
             accE (
               accE (data, dotP ("DATA", "datainst")),
-              sliceP (i, binE (DivOp, binE (MulOp, n, storagesize), numE (Z.of_int 8)))
+              sliceP (i, binE (DivOp, binE (MulOp, n, zsize), numE (Z.of_int 8)))
             )
           );
           letI (gbstar, group_bytes_by);
           letI (cn, inverse_of_bytes_);
-          pushI (iterE (caseE (("CONST", "admininstr"), [nt; c]), ["c"], ListN (n, None)));
+          pushI (iterE (caseE (("CONST", "admininstr"), [cnn; c]), ["c"], ListN (n, None)));
           executeI (caseE (("ARRAY.NEW_FIXED", "admininstr"), [x; n]));
         ],
         []

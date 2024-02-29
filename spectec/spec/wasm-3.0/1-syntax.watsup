@@ -150,7 +150,7 @@ syntax valtype/sem =
 syntax inn hint(show I#n) = | I32 | I64
 syntax fnn hint(show F#n) = | F32 | F64
 syntax vnn hint(show V#n) = | V128
-
+syntax cnn hint(show t) = | inn | fnn | vnn
 
 syntax resulttype hint(desc "result type") =
   list(valtype)

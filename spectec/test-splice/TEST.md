@@ -339,6 +339,7 @@ warning: syntax `blocktype` was never spliced
 warning: syntax `byte` was never spliced
 warning: syntax `castop` was never spliced
 warning: syntax `char` was never spliced
+warning: syntax `cnn` was never spliced
 warning: syntax `code` was never spliced
 warning: syntax `comptype` was never spliced
 warning: syntax `config` was never spliced
@@ -954,7 +955,6 @@ warning: rule `Step_read/array.new_elem-oob` was never spliced
 warning: rule `Step_read/array.new_elem-alloc` was never spliced
 warning: rule `Step_read/array.new_data-oob` was never spliced
 warning: rule `Step_read/array.new_data-num` was never spliced
-warning: rule `Step_read/array.new_data-vec` was never spliced
 warning: rule `Step_read/array.get-null` was never spliced
 warning: rule `Step_read/array.get-oob` was never spliced
 warning: rule `Step_read/array.get-array` was never spliced
@@ -980,7 +980,6 @@ warning: rule `Step_read/array.init_data-null` was never spliced
 warning: rule `Step_read/array.init_data-oob1` was never spliced
 warning: rule `Step_read/array.init_data-oob2` was never spliced
 warning: rule `Step_read/array.init_data-zero` was never spliced
-warning: rule `Step_read/array.init_data-num` was never spliced
 warning: rule `Step_read/array.init_data-num` was never spliced
 warning: rule `Step_read/local.get` was never spliced
 warning: rule `Step_read/global.get` was never spliced
@@ -1068,10 +1067,13 @@ warning: definition `before` was never spliced
 warning: definition `binop` was never spliced
 warning: definition `blocktype` was never spliced
 warning: definition `canon_` was never spliced
+warning: definition `cbytes` was never spliced
 warning: definition `clostype` was never spliced
 warning: definition `clostypes` was never spliced
 warning: definition `concat_` was never spliced
+warning: definition `const` was never spliced
 warning: definition `convert` was never spliced
+warning: definition `cunpack` was never spliced
 warning: definition `cvtop` was never spliced
 warning: definition `data` was never spliced
 warning: definition `datainst` was never spliced
@@ -1494,6 +1496,8 @@ warning: definition prose `canon_` was never spliced
 warning: definition prose `clostype` was never spliced
 warning: definition prose `clostypes` was never spliced
 warning: definition prose `concat_` was never spliced
+warning: definition prose `const` was never spliced
+warning: definition prose `cunpack` was never spliced
 warning: definition prose `cvtop` was never spliced
 warning: definition prose `data` was never spliced
 warning: definition prose `datainst` was never spliced

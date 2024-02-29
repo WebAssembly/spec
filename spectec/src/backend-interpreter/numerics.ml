@@ -872,7 +872,12 @@ let inverse_of_ibytes : numerics =
     f =
       (function
       | [ NumV n; ListV bs ] ->
-          assert (n = Z.of_int (Array.length !bs * 8));
+          assert (
+            (* numtype *)
+            n = Z.of_int (Array.length !bs * 8) ||
+            (* packtype *)
+            (n = Z.of_int 32 && Array.length !bs <= 2)
+          );
           NumV (Array.fold_right (fun b acc ->
             match b with
             | NumV b when Z.zero <= b && b < Z.of_int 256 -> Z.add b (Z.shift_left acc 8)
@@ -944,6 +949,14 @@ let inverse_of_zbytes : numerics =
       | [ CaseV ("I16", []); l ] -> inverse_of_ibytes.f [ NumV (Z.of_int 16); l ]
       | args -> inverse_of_nbytes.f args
       );
+  }
+
+let inverse_of_cbytes : numerics =
+  {
+    name = "inverse_of_cbytes";
+    f = function
+      | [ CaseV ("V128", []); _ ] as args -> inverse_of_vbytes.f args
+      | args -> inverse_of_nbytes.f args
   }
 
 let bytes_ : numerics = { name = "bytes"; f = nbytes.f }
@@ -1054,6 +1067,7 @@ let numerics_list : numerics list = [
   inverse_of_nbytes;
   inverse_of_vbytes;
   inverse_of_zbytes;
+  inverse_of_cbytes;
   bytes_;
   inverse_of_bytes_;
   inverse_of_concat;

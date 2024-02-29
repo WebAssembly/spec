@@ -86,9 +86,21 @@ def $nunpack(packtype) = I32
 def $vunpack(storagetype) : vectype  hint(show $unpack(%)) hint(partial)
 def $vunpack(vectype) = vectype
 
+def $cunpack(storagetype) : cnn  hint(show $unpack(%)) hint(partial)
+def $cunpack(vt) = vt
+def $cunpack(nt) = nt
+def $cunpack(pt) = I32
+
 def $sxfield(storagetype) : sx?  hint(show $sx(%))
 def $sxfield(valtype) = eps
 def $sxfield(packtype) = S
+
+
+;; Const
+
+def $const(cnn, zval_(cnn)): instr  hint(show %.CONST %)
+def $const(vt, c) = (VCONST vt c)
+def $const(nt, c) = (CONST nt c)
 
 
 ;; Shapes

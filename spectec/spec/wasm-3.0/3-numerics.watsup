@@ -48,6 +48,7 @@ def $fbytes(N, fN(N)) : byte*                       hint(show $bytes_(f#%,%))
 def $nbytes(numtype, num_(numtype)) : byte*         hint(show $bytes_(%,%))
 def $vbytes(vectype, vec_(vectype)) : byte*         hint(show $bytes_(%,%))
 def $zbytes(storagetype, zval_(storagetype)) : byte*  hint(show $bytes_(%,%))
+def $cbytes(cnn, zval_(cnn)) : byte*    hint(show $bytes_(%,%))
 
 
 def $invibytes(N, byte*) : iN(N)
