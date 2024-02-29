@@ -248,10 +248,10 @@ syntax cvtop = | CONVERT | CONVERT_SAT | REINTERPRET
 ;; Vector operators
 
 syntax dim hint(desc "dimension") = 1 | 2 | 4 | 8 | 16
-syntax shape hint(desc "shape") = lanetype X dim  ;; TODO: hint(show %#X#%)
-syntax ishape hint(desc "shape") = imm X dim      ;; TODO: hint(show %#X#%)
-syntax fshape hint(desc "shape") = fnn X dim      ;; TODO: hint(show %#X#%)
-syntax pshape hint(desc "shape") = pnn X dim      ;; TODO: hint(show %#X#%)
+syntax shape hint(desc "shape") = lanetype X dim  hint(show %0#X#%2)
+syntax ishape hint(desc "shape") = imm X dim      hint(show %0#X#%2)
+syntax fshape hint(desc "shape") = fnn X dim      hint(show %0#X#%2)
+syntax pshape hint(desc "shape") = pnn X dim      hint(show %0#X#%2)
 
 def $dim(shape) : dim
 def $shsize(shape) : nat  hint(show |%|)

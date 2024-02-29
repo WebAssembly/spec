@@ -25,7 +25,6 @@ type env =
     show_var : exp list Map.t ref;
     show_rel : exp list Map.t ref;
     show_def : exp list Map.t ref;
-    show_con : exp list Map.t ref;
     show_case : exp list Map.t ref;
     show_field : exp list Map.t ref;
     desc_typ : exp list Map.t ref;
@@ -43,7 +42,6 @@ let new_env config =
     show_var = ref Map.empty;
     show_rel = ref Map.empty;
     show_def = ref Map.empty;
-    show_con = ref Map.empty;
     show_case = ref Map.empty;
     show_field = ref Map.empty;
     desc_typ = ref Map.empty;
@@ -55,6 +53,12 @@ let new_env config =
 
 let with_syntax_decoration b env = {env with deco_typ = b}
 let with_rule_decoration b env = {env with deco_rule = b}
+
+
+let is_atom_typ t =
+  match t.it with
+  | AtomT _ -> true
+  | _ -> false
 
 
 let typed_id id _id1 = id (* TODO ^ ":" ^ id1 *)
@@ -77,12 +81,28 @@ let env_typcase env id1 = function
   | _ -> ()
 
 let env_typcon env id1 = function
-  | (_, hints) -> env_hints "show" env.show_con (typed_id "" id1) hints
+  | (({it = SeqT ts; _}, _prems), hints) ->
+    (match List.find_opt is_atom_typ ts with
+    | Some {it = AtomT {it = Atom id; _}; _} ->
+      env_hints "show" env.show_case (typed_id id id1) hints
+    | _ -> ()
+    )
+  | _ -> ()
 
 let env_typ env id1 t =
   match t.it with
   | StrT tfs -> List.iter (env_typfield env id1) tfs
-  | CaseT (_, _, tcases, _) -> List.iter (env_typcase env id1) tcases
+  | CaseT (_, _ts, tcases, _) ->
+(*
+    List.iter (fun t ->
+      match t.it with
+      | VarT (id, _) ->
+        Map.iter (fun 
+        ) !(env.show_case)
+      | _ -> ()
+    ) ts;
+*)
+    List.iter (env_typcase env id1) tcases
   | ConT tcon -> env_typcon env id1 tcon
   | _ -> ()  (* TODO: this assumes that types structs & variants aren't nested *)
 
@@ -309,7 +329,7 @@ let render_expand render env (show : exp list Map.t ref) id args f =
       | [] -> f ()
       | showexp::showexps' ->
         try
-          let e = expand_exp args (ref 0) showexp in
+          let e = expand_exp args (ref 1) showexp in
           (* Avoid cyclic expansion *)
           show := Map.remove id.it !show;
           Fun.protect (fun () -> render env e)
@@ -322,12 +342,18 @@ let render_expand render env (show : exp list Map.t ref) id args f =
 let ends_sub id = id <> "" && id.[String.length id - 1] = '_'
 let chop_sub id = String.sub id 0 (String.length id - 1)
 
+(* Same as render_expand, but with rendered id funnelled as argument 0 *)
+let render_expand_id render_id render_exp env show id args f =
+  let atom = Atom (" " ^ render_id env id) $$ id.at % (ref "") in
+  let arg0 = arg_of_exp (AtomE atom $ id.at) in
+  render_expand render_exp env show id (arg0::args) f
+
 (* Render the application `id(args)`, using the hints `show`,
  * and the function `render_id`, `render_exp` for rendering the id and
  * possible show expansion results, respectively.
  *)
 let render_apply render_id render_exp env show id args =
-  render_expand render_exp env show id args
+  render_expand_id render_id render_exp env show id args
     (fun () ->
       match args with
       | arg::args when ends_sub id.it ->
@@ -351,7 +377,7 @@ let rec chop_tick id =
 let rec chop_sub_exp e =
   match e.it with
   | VarE (id, []) when ends_sub id.it -> Some (VarE (chop_sub id.it $ id.at, []) $ e.at)
-  | AtomE {it = Atom "_"; _} -> Some (SeqE [] $ e.at)
+  | AtomE {it = Atom "_"; _} -> None
   | AtomE {it = Atom id; at; note} when ends_sub id ->
     Some (AtomE {it = Atom (chop_sub id); at; note} $ e.at)
   | FuseE (e1, e2) ->
@@ -377,14 +403,14 @@ let render_id' env style id note =
   else
     id_style style ^ "{" ^ shrink_id id ^ "}"
 
-let rec render_id_sub env style show first at = function
+let rec render_id_sub style show env first at = function
   | [] -> ""
-  | ""::ss -> render_id_sub env style show first at ss
+  | ""::ss -> render_id_sub style show env first at ss
   | s::ss when style = `Var && not first && is_upper s.[0] && not (Set.mem (chop_tick s) !(env.vars)) ->
-    render_id_sub env `Atom show first at (lower s :: ss)  (* subscripts may be atoms *)
-  | s1::""::ss -> render_id_sub env style show first at (s1::ss)
+    render_id_sub `Atom show env first at (lower s :: ss)  (* subscripts may be atoms *)
+  | s1::""::ss -> render_id_sub style show env first at (s1::ss)
   | s1::s2::ss when style = `Atom && is_upper s2.[0] ->
-    render_id_sub env `Atom show first at ((s1 ^ "_" ^ lower s2)::ss)
+    render_id_sub `Atom show env first at ((s1 ^ "_" ^ lower s2)::ss)
   | s::ss ->
     let rec find_ticks i =
       if i > 0 && s.[i - 1] = '\'' then find_ticks (i - 1) else i
@@ -398,15 +424,15 @@ let rec render_id_sub env style show first at = function
         (s' $ at) [] (fun () -> render_id' env style s' "")
     in
     "{" ^ (if i = n then s'' else s'' ^ String.sub s i (n - i)) ^ "}" ^
-    (if ss = [] then "" else "_{" ^ render_id_sub env `Var env.show_var false at ss ^ "}")
+    (if ss = [] then "" else "_{" ^ render_id_sub `Var env.show_var env false at ss ^ "}")
 
-let render_id env style show id =
-  render_id_sub env style show true id.at (String.split_on_char '_' id.it)
+and render_id style show env id =
+  render_id_sub style show env true id.at (String.split_on_char '_' id.it)
 
-let render_typid env id = render_id env `Var env.show_typ id
-let render_varid env id = render_id env `Var env.show_var id
-let render_defid env id = render_id env `Func (ref Map.empty) id
-let render_gramid env id = render_id env `Token env.show_gram
+let render_typid env id = render_id `Var env.show_typ env id
+let render_varid env id = render_id `Var env.show_var env id
+let render_defid env id = render_id `Func (ref Map.empty) env id
+let render_gramid env id = render_id `Token env.show_gram env
   (* TODO: HACK for now *)
   (let len = String.length id.it in
   if len > 1 && is_upper id.it.[0] then String.sub id.it 1 (len - 1) $ id.at else id)
@@ -447,6 +473,8 @@ let render_atom env atom =
   let s =
     match atom.it with
     | Atom id when id.[0] = '_' && id <> "_" -> ""
+    (* HACK: inject literal, already rendered stuff *)
+    | Atom id when id.[0] = ' ' -> String.sub id 1 (String.length id - 1)
     | Atom id -> render_atomid env id tid
     | Infinity -> "\\infty"
     | Bot -> "\\bot"
@@ -558,7 +586,7 @@ and render_typ env t =
 
 
 and render_typfield env (atom, (t, prems), _hints) =
-  render_fieldname env atom t.at ^ "~\\," ^ render_typ env t ^
+  render_fieldname env atom ^ "~\\," ^ render_typ env t ^
   if prems = [] then "" else render_conditions env "&&&&" prems
 
 and render_typcase env (_atom, (t, prems), _hints) =
@@ -577,6 +605,11 @@ and render_typenum env (e, eo) =
 
 
 (* Expressions *)
+
+and is_atom_exp e =
+  match e.it with
+  | AtomE _ -> true
+  | _ -> false
 
 and render_exp env e =
   (*
@@ -610,30 +643,18 @@ and render_exp env e =
     render_exp env e1 ^ space render_cmpop op ^ render_exp env e2
   | EpsE -> "\\epsilon"
   | AtomE atom ->
-    render_expand render_exp env env.show_case (El.Print.string_of_atom atom $ e.at) []
+    render_expand render_exp env env.show_case
+      (El.Print.string_of_atom atom $ e.at) [arg_of_exp e]
       (fun () -> render_atom env atom)
-  | SeqE ({it = AtomE atom; at; _}::es) ->
-    let args = List.map arg_of_exp es in
-    render_expand render_exp env env.show_case (El.Print.string_of_atom atom $ at) args
-      (fun () ->
-        match atom.it, es with
-        | Atom id, e1::es2 when ends_sub id ->
-          (* Handle subscripting *)
-          "{" ^ render_atomid env (chop_sub id) !(atom.note) ^
-          "}_{" ^ render_exps "," env (as_tup_exp e1) ^ "}" ^
-          (if es2 = [] then "" else "\\," ^ render_exps "~\\," env es2)
-        | _ ->
-          let s1 = render_atom env atom in
-          let s2 = render_exps "~\\," env es in
-          assert (s1 <> "" || s2 <> "");
-          if s1 <> "" && s2 <> "" then s1 ^ "~\\," ^ s2 else s1 ^ s2
-      )
-  (* Hack for binop_nt *)
-  | SeqE (e1::e2::es) when chop_sub_exp e1 <> None ->
-    "{" ^ render_exp env (Option.get (chop_sub_exp e1)) ^ "}_{" ^
-      render_exps "," env (as_tup_exp e2) ^ "}" ^
-      (if es = [] then "" else "\\," ^ render_exp env (SeqE es $ e.at))
-  | SeqE es -> render_exps "~\\," env es
+  | SeqE es ->
+    (match List.find_opt is_atom_exp es with
+    | Some {it = AtomE atom; _} ->
+      let args = List.map arg_of_exp es in
+      render_expand render_exp env env.show_case
+        (El.Print.string_of_atom atom $ atom.at) args
+        (fun () -> render_exp_seq env es)
+    | _ -> render_exp_seq env es
+    )
   | IdxE (e1, e2) -> render_exp env e1 ^ "{}[" ^ render_exp env e2 ^ "]"
   | SliceE (e1, e2, e3) ->
     render_exp env e1 ^
@@ -649,12 +670,13 @@ and render_exp env e =
     "\\begin{array}[t]{@{}l@{}}\n" ^
     concat_map_nl ",\\; " "\\\\\n  " (render_expfield env) efs ^ " \\}" ^
     "\\end{array}"
-  | DotE (e1, atom) -> render_exp env e1 ^ "." ^ render_fieldname env atom e.at
+  | DotE (e1, atom) -> render_exp env e1 ^ "." ^ render_fieldname env atom
   | CommaE (e1, e2) -> render_exp env e1 ^ ", " ^ render_exp env e2
   | CompE (e1, e2) -> render_exp env e1 ^ " \\oplus " ^ render_exp env e2
   | LenE e1 -> "{|" ^ render_exp env e1 ^ "|}"
   | SizeE id -> "||" ^ render_gramid env id ^ "||"
-  | ParenE ({it = SeqE [{it = AtomE atom; _}; _]; _} as e1, _) when render_atom env atom = "" ->
+  | ParenE ({it = SeqE [{it = AtomE atom; _}; _]; _} as e1, _)
+    when render_atom env atom = "" ->
     render_exp env e1
   | ParenE (e1, _) -> "(" ^ render_exp env e1 ^ ")"
   | TupE es -> "(" ^ render_exps ",\\, " env es ^ ")"
@@ -686,8 +708,23 @@ and render_exp env e =
 and render_exps sep env es =
   concat sep (List.filter ((<>) "") (List.map (render_exp env) es))
 
+and render_exp_seq env = function
+  | [] -> ""
+  | e1::e2::es when chop_sub_exp e1 <> None ->
+    (* Handle subscripting *)
+    let s1 =
+      "{" ^ render_exp env (Option.get (chop_sub_exp e1)) ^ "}_{" ^
+        render_exps "," env (as_tup_exp e2) ^ "}"
+    in
+    let s2 = render_exp_seq env es in
+    if s1 <> "" && s2 <> "" then s1 ^ "\\," ^ s2 else s1 ^ s2
+  | e1::es ->
+    let s1 = render_exp env e1 in
+    let s2 = render_exp_seq env es in
+    if s1 <> "" && s2 <> "" then s1 ^ "~\\," ^ s2 else s1 ^ s2
+
 and render_expfield env (atom, e) =
-  render_fieldname env atom e.at ^ "~\\," ^ render_exp env e
+  render_fieldname env atom ^ "~\\," ^ render_exp env e
 
 and render_path env p =
   match p.it with
@@ -695,16 +732,19 @@ and render_path env p =
   | IdxP (p1, e) -> render_path env p1 ^ "{}[" ^ render_exp env e ^ "]"
   | SliceP (p1, e1, e2) ->
     render_path env p1 ^ "{}[" ^ render_exp env e1 ^ " : " ^ render_exp env e2 ^ "]"
-  | DotP ({it = RootP; _}, atom) -> render_fieldname env atom p.at
+  | DotP ({it = RootP; _}, atom) -> render_fieldname env atom
   | DotP (p1, atom) ->
-    render_path env p1 ^ "." ^ render_fieldname env atom p.at
+    render_path env p1 ^ "." ^ render_fieldname env atom
 
-and render_fieldname env atom at =
+and render_fieldname env atom =
   El.Debug.(log "render.fieldname"
-    (fun _ -> fmt "%s %s" (el_atom atom) (mapping (fun xs -> string_of_int (List.length xs)) !(env.show_field)))
+    (fun _ -> fmt "%s %s" (el_atom atom)
+      (mapping (fun xs -> string_of_int (List.length xs)) !(env.show_field)))
     (fun s -> s)
   ) @@ fun _ ->
-  render_expand render_exp env env.show_field (El.Print.string_of_atom atom $ at) []
+  let e = AtomE atom $ atom.at in
+  render_expand render_exp env env.show_field
+    (El.Print.string_of_atom atom $ atom.at) [arg_of_exp e]
     (fun () -> render_atom env atom)
 
 
