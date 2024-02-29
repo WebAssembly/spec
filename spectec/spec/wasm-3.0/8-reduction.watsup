@@ -641,7 +641,7 @@ rule Step_pure/vbitmask:
 
 
 rule Step_pure/vnarrow:
-  (VCONST V128 c_1) (VCONST V128 c_2) (VNARROW (imm_1 X N_1) (imm_2 X N_2) sx) ~> (VCONST V128 c)
+  (VCONST V128 c_1) (VCONST V128 c_2) (VNARROW (imm_2 X N_2) (imm_1 X N_1) sx) ~> (VCONST V128 c)
   -- if ci_1* = $lanes_(imm_1 X N_1, c_1)
   -- if ci_2* = $lanes_(imm_1 X N_1, c_2)
   -- if cj_1* = $narrow($lsize(imm_1), $lsize(imm_2), sx, ci_1)*
@@ -650,21 +650,21 @@ rule Step_pure/vnarrow:
 
 
 rule Step_pure/vcvtop-normal:
-  (VCONST V128 c_1) (VCVTOP (lnn_2 X N_2) vcvtop eps (lnn_1 X N_1) sx) ~> (VCONST V128 c)
+  (VCONST V128 c_1) (VCVTOP (lnn_2 X N_2) vcvtop eps (lnn_1 X N_1) sx?) ~> (VCONST V128 c)
   -- if c'* = $lanes_(lnn_1 X N_1, c_1)
-  -- if c = $invlanes_(lnn_2 X N_2, $vcvtop(lnn_1 X N_1, lnn_2 X N_2, vcvtop, sx, c')*)
+  -- if c = $invlanes_(lnn_2 X N_2, $vcvtop(lnn_1 X N_1, lnn_2 X N_2, vcvtop, sx?, c')*)
 
 var hf : half  ;; TODO: this declaration shouldn't be needed
 rule Step_pure/vcvtop-half:
-  (VCONST V128 c_1) (VCVTOP (imm_2 X N_2) vcvtop hf (imm_1 X N_1) sx?) ~> (VCONST V128 c)
-  -- if ci* = $lanes_(imm_1 X N_1, c_1)[$halfop(hf, 0, N_2) : N_2]
-  -- if c = $invlanes_(imm_2 X N_2, $vcvtop(imm_1 X N_1, imm_2 X N_2, vcvtop, sx?, ci)*)
+  (VCONST V128 c_1) (VCVTOP (lnn_2 X N_2) vcvtop hf (lnn_1 X N_1) sx?) ~> (VCONST V128 c)
+  -- if ci* = $lanes_(lnn_1 X N_1, c_1)[$halfop(hf, 0, N_2) : N_2]
+  -- if c = $invlanes_(lnn_2 X N_2, $vcvtop(lnn_1 X N_1, lnn_2 X N_2, vcvtop, sx?, ci)*)
 
-;; TODO: change inn to nt
+;; TODO: change inn to nt 
 rule Step_pure/vcvtop-zero:
-  (VCONST V128 c_1) (VCVTOP (inn_2 X N_2) vcvtop eps (inn_1 X N_1) sx? ZERO) ~> (VCONST V128 c)
-  -- if ci* = $lanes_(inn_1 X N_1, c_1)
-  -- if c = $invlanes_(inn_2 X N_2, $vcvtop(inn_1 X N_1, inn_2 X N_2, vcvtop, sx?, ci)* 0^N_1)
+  (VCONST V128 c_1) (VCVTOP (nt_2 X N_2) vcvtop eps (nt_1 X N_1) sx? ZERO) ~> (VCONST V128 c)
+  -- if ci* = $lanes_(nt_1 X N_1, c_1)
+  -- if c = $invlanes_(nt_2 X N_2, $vcvtop(nt_1 X N_1, nt_2 X N_2, vcvtop, sx?, ci)* $zero(nt_2)^N_1)
 
 
 rule Step_pure/vextunop:
@@ -824,8 +824,8 @@ rule Step_read/vload-shape-oob:
 rule Step_read/vload-shape-val:
   z; (CONST I32 i) (VLOAD (SHAPE M X N sx) x mo)  ~>  (VCONST V128 c)
   -- (if $ibytes(M, j) = $mem(z, x).DATA[i + mo.OFFSET + k * M/8 : M/8])^(k<N)
-  -- if $size(inn) = $(M * 2)  ;; TODO: relate implicitly
-  -- if c = $invlanes_(inn X N, $ext(M, $size(inn), sx, j)^N)
+  -- if $lsize(imm) = $(M * 2)  ;; TODO: relate implicitly
+  -- if c = $invlanes_(imm X N, $ext(M, $lsize(imm), sx, j)^N)
 
 
 rule Step_read/vload-splat-oob:

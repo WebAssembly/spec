@@ -254,6 +254,7 @@ var zt : storagetype
 ;; Constants
 
 def $size(numtype) : nat       hint(show |%|)
+def $isize(inn) : nat          hint(show |%|)
 def $vsize(vectype) : nat      hint(show |%|)
 def $psize(packtype) : nat     hint(show |%|)
 def $lsize(lanetype) : nat     hint(show |%|)
@@ -281,6 +282,9 @@ syntax zval_(numtype) = num_(numtype)
 syntax zval_(vectype) = vec_(vectype)
 syntax zval_(packtype) = pack_(packtype)
 
+def $zero(numtype) : num_(numtype)
+def $zero(inn) = 0
+def $zero(fnn) = $fzero($size(fnn))
 
 ;; Numeric operators
 

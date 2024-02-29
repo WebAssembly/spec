@@ -1171,6 +1171,7 @@ warning: definition `irotl` was never spliced
 warning: definition `irotr` was never spliced
 warning: definition `ishl` was never spliced
 warning: definition `ishr` was never spliced
+warning: definition `isize` was never spliced
 warning: definition `isub` was never spliced
 warning: definition `isubsat` was never spliced
 warning: definition `ixor` was never spliced
@@ -1272,6 +1273,7 @@ warning: definition `with_table` was never spliced
 warning: definition `with_tableinst` was never spliced
 warning: definition `wrap` was never spliced
 warning: definition `zbytes` was never spliced
+warning: definition `zero` was never spliced
 warning: definition `zsize` was never spliced
 warning: rule prose `exec/array.new_data` was never spliced
 warning: rule prose `exec/call_ref` was never spliced
@@ -1543,6 +1545,7 @@ warning: definition prose `invibytes` was never spliced
 warning: definition prose `invlanes_` was never spliced
 warning: definition prose `invoke` was never spliced
 warning: definition prose `invsigned` was never spliced
+warning: definition prose `isize` was never spliced
 warning: definition prose `lanetype` was never spliced
 warning: definition prose `local` was never spliced
 warning: definition prose `lsize` was never spliced
@@ -1632,6 +1635,7 @@ warning: definition prose `with_meminst` was never spliced
 warning: definition prose `with_struct` was never spliced
 warning: definition prose `with_table` was never spliced
 warning: definition prose `with_tableinst` was never spliced
+warning: definition prose `zero` was never spliced
 warning: definition prose `zsize` was never spliced
 == Complete.
 ```
