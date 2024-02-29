@@ -4830,12 +4830,25 @@ vcvtop (lanet_u0 X N_1) (lanet_u1 X N_2) vcvto_u3 ?(sx) lane__u2
 12. Let f64 be $promote(32, 64, f32).
 13. Return f64.
 
-vextbinop (inn_1 X N_1) (inn_2 X N_2) DOT sx c_1 c_2
-1. Let ci_1* be $lanes_((inn_2 X N_2), c_1).
-2. Let ci_2* be $lanes_((inn_2 X N_2), c_2).
-3. Let [cj_1, cj_2]* be $inverse_of_concat_($imul($lsize(inn_1), $ext($lsize(inn_2), $lsize(inn_1), S, ci_1), $ext($lsize(inn_2), $lsize(inn_1), S, ci_2))*).
-4. Let c be $invlanes_((inn_1 X N_1), $iadd($lsize(inn_1), cj_1, cj_2)^N_1).
-5. Return c.
+vextunop (inn_1 X N_1) (inn_2 X N_2) EXTADD_PAIRWISE sx c_1
+1. Let ci* be $lanes_((inn_2 X N_2), c_1).
+2. Let [cj_1, cj_2]* be $inverse_of_concat_($ext($lsize(inn_2), $lsize(inn_1), sx, ci)*).
+3. Let c be $invlanes_((inn_1 X N_1), $iadd($lsize(inn_1), cj_1, cj_2)*).
+4. Return c.
+
+vextbinop (inn_1 X N_1) (inn_2 X N_2) vextb_u0 sx c_1 c_2
+1. If vextb_u0 is of the case EXTMUL, then:
+  a. Let (EXTMUL hf) be vextb_u0.
+  b. Let ci_1* be $lanes_((inn_2 X N_2), c_1)[$halfop(hf, 0, N_1) : N_1].
+  c. Let ci_2* be $lanes_((inn_2 X N_2), c_2)[$halfop(hf, 0, N_1) : N_1].
+  d. Let c be $invlanes_((inn_1 X N_1), $imul($lsize(inn_1), $ext($lsize(inn_2), $lsize(inn_1), sx, ci_1), $ext($lsize(inn_2), $lsize(inn_1), sx, ci_2))*).
+  e. Return c.
+2. Assert: Due to validation, (vextb_u0 is DOT).
+3. Let ci_1* be $lanes_((inn_2 X N_2), c_1).
+4. Let ci_2* be $lanes_((inn_2 X N_2), c_2).
+5. Let [cj_1, cj_2]* be $inverse_of_concat_($imul($lsize(inn_1), $ext($lsize(inn_2), $lsize(inn_1), S, ci_1), $ext($lsize(inn_2), $lsize(inn_1), S, ci_2))*).
+6. Let c be $invlanes_((inn_1 X N_1), $iadd($lsize(inn_1), cj_1, cj_2)*).
+7. Return c.
 
 vishiftop (imm X N) vshif_u0 lane n
 1. If (vshif_u0 is SHL), then:

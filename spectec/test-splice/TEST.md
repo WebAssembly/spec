@@ -1612,6 +1612,7 @@ warning: definition prose `utf8` was never spliced
 warning: definition prose `vbinop` was never spliced
 warning: definition prose `vcvtop` was never spliced
 warning: definition prose `vextbinop` was never spliced
+warning: definition prose `vextunop` was never spliced
 warning: definition prose `vishiftop` was never spliced
 warning: definition prose `vrelop` was never spliced
 warning: definition prose `vsize` was never spliced

@@ -20525,22 +20525,22 @@ watsup 0.4 generator
 - 2/435 (0.46%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast =====
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:11.1-12.91 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:13.1-14.91 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:15.1-16.99 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:17.1-18.107 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:19.1-20.115 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:21.1-22.115 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:23.1-24.107 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:25.1-26.99 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:29.1-30.91 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:31.1-32.91 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:33.1-34.107 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:35.1-36.107 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:37.1-38.107 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:39.1-40.107 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:41.1-42.107 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:43.1-44.107 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:11.1-12.91 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:13.1-14.91 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:15.1-16.99 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:17.1-18.107 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:19.1-20.115 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:21.1-22.115 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:23.1-24.107 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:25.1-26.99 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:29.1-30.91 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:31.1-32.91 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:33.1-34.107 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:35.1-36.107 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:37.1-38.107 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:39.1-40.107 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:41.1-42.107 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast:43.1-44.107 (Failure("Invalid DSL function call: vextunop"))
 - 1/17 (5.88%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_i16x8_extmul_i8x16.wast =====
@@ -21660,22 +21660,22 @@ watsup 0.4 generator
 - 1/27 (3.70%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast =====
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:11.1-12.83 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:13.1-14.83 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:15.1-16.87 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:17.1-18.99 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:19.1-20.103 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:21.1-22.103 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:23.1-24.99 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:25.1-26.87 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:29.1-30.83 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:31.1-32.83 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:33.1-34.103 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:35.1-36.99 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:37.1-38.99 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:39.1-40.99 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:41.1-42.99 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:43.1-44.103 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:11.1-12.83 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:13.1-14.83 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:15.1-16.87 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:17.1-18.99 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:19.1-20.103 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:21.1-22.103 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:23.1-24.99 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:25.1-26.87 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:29.1-30.83 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:31.1-32.83 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:33.1-34.103 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:35.1-36.99 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:37.1-38.99 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:39.1-40.99 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:41.1-42.99 (Failure("Invalid DSL function call: vextunop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast:43.1-44.103 (Failure("Invalid DSL function call: vextunop"))
 - 1/17 (5.88%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_i32x4_extmul_i16x8.wast =====
@@ -22315,32 +22315,32 @@ watsup 0.4 generator
 - 1/103 (0.97%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast =====
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:13.1-15.74 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:16.1-18.74 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:19.1-21.74 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:22.1-24.74 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:25.1-27.76 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:28.1-30.74 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:31.1-33.110 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:34.1-36.110 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:37.1-39.110 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:40.1-42.110 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:43.1-45.110 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:46.1-48.92 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:49.1-51.92 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:52.1-54.94 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:55.1-57.92 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:58.1-60.92 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:61.1-63.92 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:64.1-66.110 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:67.1-69.110 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:70.1-72.110 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:73.1-75.74 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:76.1-78.76 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:79.1-81.74 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:82.1-84.94 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:85.1-87.92 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:88.1-90.74 (Failure("Algorithm not found: VEXBINOP"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:13.1-15.74 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:16.1-18.74 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:19.1-21.74 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:22.1-24.74 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:25.1-27.76 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:28.1-30.74 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:31.1-33.110 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:34.1-36.110 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:37.1-39.110 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:40.1-42.110 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:43.1-45.110 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:46.1-48.92 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:49.1-51.92 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:52.1-54.94 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:55.1-57.92 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:58.1-60.92 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:61.1-63.92 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:64.1-66.110 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:67.1-69.110 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:70.1-72.110 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:73.1-75.74 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:76.1-78.76 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:79.1-81.74 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:82.1-84.94 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:85.1-87.92 (Failure("Invalid DSL function call: vextbinop"))
+- Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:88.1-90.74 (Failure("Invalid DSL function call: vextbinop"))
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:93.1-95.75 (Failure("Invalid DSL function call: vextbinop"))
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:96.1-98.75 (Failure("Invalid DSL function call: vextbinop"))
 - Test failed at ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast:99.1-101.75 (Failure("Invalid DSL function call: vextbinop"))
@@ -24390,130 +24390,58 @@ watsup 0.4 generator
 - 435/435 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast =====
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:11.1-12.91 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:13.1-14.91 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:15.1-16.99 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:17.1-18.107 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:19.1-20.115 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:21.1-22.115 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:23.1-24.107 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:25.1-26.99 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:29.1-30.91 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:31.1-32.91 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:33.1-34.107 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:35.1-36.107 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:37.1-38.107 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:39.1-40.107 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:41.1-42.107 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:43.1-44.107 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
+Result: 5_120 0 2_037_608_760 32_665 : [v128]
+Expect: 0 0 0 0 0 0 0 0 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:11.1-12.91 (Error(_, "wrong return values"))
+Result: 3_072 0 2_027_646_472 32_665 : [v128]
+Expect: 2 2 2 2 2 2 2 2 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:13.1-14.91 (Error(_, "wrong return values"))
+Result: 5_664_784 0 5 16_777_216 : [v128]
+Expect: -2 -2 -2 -2 -2 -2 -2 -2 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:15.1-16.99 (Error(_, "wrong return values"))
+Result: 1 0 3_072 0 : [v128]
+Expect: 252 252 252 252 252 252 252 252 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:17.1-18.107 (Error(_, "wrong return values"))
+Result: 5_664_784 0 5 16_777_216 : [v128]
+Expect: -254 -254 -254 -254 -254 -254 -254 -254 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:19.1-20.115 (Error(_, "wrong return values"))
+Result: 2_036_922_256 32_665 2_048 0 : [v128]
+Expect: -256 -256 -256 -256 -256 -256 -256 -256 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:21.1-22.115 (Error(_, "wrong return values"))
+Result: 1 0 2_053 0 : [v128]
+Expect: 254 254 254 254 254 254 254 254 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:23.1-24.107 (Error(_, "wrong return values"))
+Result: 2_036_648_520 32_665 5_120 0 : [v128]
+Expect: -2 -2 -2 -2 -2 -2 -2 -2 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:25.1-26.99 (Error(_, "wrong return values"))
+Result: 1_025 0 1 0 : [v128]
+Expect: 0 0 0 0 0 0 0 0 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:29.1-30.91 (Error(_, "wrong return values"))
+Result: 2_036_379_536 32_665 2_036_379_560 32_665 : [v128]
+Expect: 2 2 2 2 2 2 2 2 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:31.1-32.91 (Error(_, "wrong return values"))
+Result: 9_602_848 0 -1_717_986_919 -1 : [v128]
+Expect: 510 510 510 510 510 510 510 510 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:33.1-34.107 (Error(_, "wrong return values"))
+Result: -2_147_483_623 -1 2_303 0 : [v128]
+Expect: 252 252 252 252 252 252 252 252 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:35.1-36.107 (Error(_, "wrong return values"))
+Result: -1_717_986_919 -1 2_303 0 : [v128]
+Expect: 258 258 258 258 258 258 258 258 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:37.1-38.107 (Error(_, "wrong return values"))
+Result: 2_035_840_536 32_665 2_048 0 : [v128]
+Expect: 256 256 256 256 256 256 256 256 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:39.1-40.107 (Error(_, "wrong return values"))
+Result: 3 0 1_027 0 : [v128]
+Expect: 254 254 254 254 254 254 254 254 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:41.1-42.107 (Error(_, "wrong return values"))
+Result: 2_037_668_320 32_665 2_048 0 : [v128]
+Expect: 510 510 510 510 510 510 510 510 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extadd_pairwise_i8x16.wast:43.1-44.107 (Error(_, "wrong return values"))
 - 1/17 (5.88%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast =====
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:13.1-15.86 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:16.1-18.86 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:19.1-21.86 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:22.1-24.86 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:25.1-27.94 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:28.1-30.86 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:31.1-33.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:34.1-36.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:37.1-39.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:40.1-42.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:43.1-45.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:46.1-48.102 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:49.1-51.102 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:52.1-54.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:55.1-57.102 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:58.1-60.102 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:61.1-63.102 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:64.1-66.118 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:67.1-69.118 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:70.1-72.118 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:73.1-75.86 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:76.1-78.94 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:79.1-81.86 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:82.1-84.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:85.1-87.102 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:88.1-90.86 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:93.1-95.87 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:96.1-98.87 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:99.1-101.87 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:102.1-104.87 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:105.1-107.95 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:108.1-110.87 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:111.1-113.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:114.1-116.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:117.1-119.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:120.1-122.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:123.1-125.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:126.1-128.103 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:129.1-131.103 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:132.1-134.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:135.1-137.103 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:138.1-140.103 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:141.1-143.103 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:144.1-146.119 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:147.1-149.119 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:150.1-152.119 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:153.1-155.87 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:156.1-158.95 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:159.1-161.87 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:162.1-164.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:165.1-167.103 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:168.1-170.87 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:173.1-175.86 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:176.1-178.86 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:179.1-181.86 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:182.1-184.86 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:185.1-187.102 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:188.1-190.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:191.1-193.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:194.1-196.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:197.1-199.126 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:200.1-202.126 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:203.1-205.126 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:206.1-208.102 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:209.1-211.102 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:212.1-214.102 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:215.1-217.126 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:218.1-220.126 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:221.1-223.118 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:224.1-226.118 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:227.1-229.118 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:230.1-232.118 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:233.1-235.86 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:236.1-238.102 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:239.1-241.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:242.1-244.118 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:245.1-247.118 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:248.1-250.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:253.1-255.87 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:256.1-258.87 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:259.1-261.87 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:262.1-264.87 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:265.1-267.103 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:268.1-270.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:271.1-273.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:274.1-276.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:277.1-279.127 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:280.1-282.127 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:283.1-285.127 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:286.1-288.103 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:289.1-291.103 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:292.1-294.103 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:295.1-297.127 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:298.1-300.127 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:301.1-303.119 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:304.1-306.119 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:307.1-309.119 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:310.1-312.119 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:313.1-315.87 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:316.1-318.103 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:319.1-321.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:322.1-324.119 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:325.1-327.119 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i16x8_extmul_i8x16.wast:328.1-330.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- 1/105 (0.95%)
+- 105/105 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i16x8_q15mulr_sat_s.wast =====
 Result: 2_147_450_879 2_147_450_879 2_147_450_879 2_147_450_879 : [v128]
@@ -24588,159 +24516,139 @@ Expect: 0 0 0 0 0 0 0 0 : [v128]
 - 435/435 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast =====
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:10.1-12.71 (Failure("Invalid Invalid iadd: ListV[0x20, [0x0, 0x0, 0x0, 0x0], [0x0, 0x0, 0x0, 0x0]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:13.1-15.71 (Failure("Invalid Invalid iadd: ListV[0x20, [0x0, 0x0, 0x0, 0x0], [0x0, 0x0, 0x0, 0x0]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:16.1-18.71 (Failure("Invalid Invalid iadd: ListV[0x20, [0x1, 0x1, 0x1, 0x1], [0x1, 0x1, 0x1, 0x1]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:19.1-21.71 (Failure("Invalid Invalid iadd: ListV[0x20, [0x0, 0x0, 0x0, 0x0], [0x0, 0x0, 0x0, 0x0]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:22.1-24.75 (Failure("Invalid Invalid iadd: ListV[0x20, [0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF], [0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:25.1-27.71 (Failure("Invalid Invalid iadd: ListV[0x20, [0x1, 0x1, 0x1, 0x1], [0x1, 0x1, 0x1, 0x1]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:28.1-30.103 (Failure("Invalid Invalid iadd: ListV[0x20, [0xFFFC000, 0xFFFC000, 0xFFFC000, 0xFFFC000], [0xFFFC000, 0xFFFC000, 0xFFFC000, 0xFFFC000]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:31.1-33.103 (Failure("Invalid Invalid iadd: ListV[0x20, [0x10000000, 0x10000000, 0x10000000, 0x10000000], [0x10000000, 0x10000000, 0x10000000, 0x10000000]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:34.1-36.103 (Failure("Invalid Invalid iadd: ListV[0x20, [0xFFFC000, 0xFFFC000, 0xFFFC000, 0xFFFC000], [0xFFFC000, 0xFFFC000, 0xFFFC000, 0xFFFC000]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:37.1-39.103 (Failure("Invalid Invalid iadd: ListV[0x20, [0x10000000, 0x10000000, 0x10000000, 0x10000000], [0x10000000, 0x10000000, 0x10000000, 0x10000000]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:40.1-42.103 (Failure("Invalid Invalid iadd: ListV[0x20, [0x10004000, 0x10004000, 0x10004000, 0x10004000], [0x10004000, 0x10004000, 0x10004000, 0x10004000]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:43.1-45.87 (Failure("Invalid Invalid iadd: ListV[0x20, [0x7FFD, 0x7FFD, 0x7FFD, 0x7FFD], [0x7FFD, 0x7FFD, 0x7FFD, 0x7FFD]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:46.1-48.87 (Failure("Invalid Invalid iadd: ListV[0x20, [0x7FFE, 0x7FFE, 0x7FFE, 0x7FFE], [0x7FFE, 0x7FFE, 0x7FFE, 0x7FFE]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:49.1-51.91 (Failure("Invalid Invalid iadd: ListV[0x20, [0xFFFF8000, 0xFFFF8000, 0xFFFF8000, 0xFFFF8000], [0xFFFF8000, 0xFFFF8000, 0xFFFF8000, 0xFFFF8000]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:52.1-54.87 (Failure("Invalid Invalid iadd: ListV[0x20, [0x7FFE, 0x7FFE, 0x7FFE, 0x7FFE], [0x7FFE, 0x7FFE, 0x7FFE, 0x7FFE]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:55.1-57.87 (Failure("Invalid Invalid iadd: ListV[0x20, [0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF], [0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:58.1-60.87 (Failure("Invalid Invalid iadd: ListV[0x20, [0x8000, 0x8000, 0x8000, 0x8000], [0x8000, 0x8000, 0x8000, 0x8000]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:61.1-63.107 (Failure("Invalid Invalid iadd: ListV[0x20, [0x3FFF0001, 0x3FFF0001, 0x3FFF0001, 0x3FFF0001], [0x3FFF0001, 0x3FFF0001, 0x3FFF0001, 0x3FFF0001]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:64.1-66.107 (Failure("Invalid Invalid iadd: ListV[0x20, [0x40000000, 0x40000000, 0x40000000, 0x40000000], [0x40000000, 0x40000000, 0x40000000, 0x40000000]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:67.1-69.107 (Failure("Invalid Invalid iadd: ListV[0x20, [0x3FFF8000, 0x3FFF8000, 0x3FFF8000, 0x3FFF8000], [0x3FFF8000, 0x3FFF8000, 0x3FFF8000, 0x3FFF8000]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:70.1-72.71 (Failure("Invalid Invalid iadd: ListV[0x20, [0x0, 0x0, 0x0, 0x0], [0x0, 0x0, 0x0, 0x0]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:73.1-75.75 (Failure("Invalid Invalid iadd: ListV[0x20, [0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF], [0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:76.1-78.71 (Failure("Invalid Invalid iadd: ListV[0x20, [0x1, 0x1, 0x1, 0x1], [0x1, 0x1, 0x1, 0x1]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:79.1-81.91 (Failure("Invalid Invalid iadd: ListV[0x20, [0xFFFF8001, 0xFFFF8001, 0xFFFF8001, 0xFFFF8001], [0xFFFF8001, 0xFFFF8001, 0xFFFF8001, 0xFFFF8001]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:82.1-84.87 (Failure("Invalid Invalid iadd: ListV[0x20, [0x8000, 0x8000, 0x8000, 0x8000], [0x8000, 0x8000, 0x8000, 0x8000]]"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:85.1-87.71 (Failure("Invalid Invalid iadd: ListV[0x20, [0x1, 0x1, 0x1, 0x1], [0x1, 0x1, 0x1, 0x1]]"))
+Result: 2_037_590_496 32_665 2_037_590_264 32_665 : [v128]
+Expect: 0 0 0 0 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:10.1-12.71 (Error(_, "wrong return values"))
+Result: 5 16_777_216 11_805_088 0 : [v128]
+Expect: 0 0 0 0 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:13.1-15.71 (Error(_, "wrong return values"))
+Result: 2_037_439_344 32_665 53 0 : [v128]
+Expect: 2 2 2 2 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:16.1-18.71 (Error(_, "wrong return values"))
+Result: 2_048 0 2_037_138_968 32_665 : [v128]
+Expect: 0 0 0 0 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:19.1-21.71 (Error(_, "wrong return values"))
+Result: 2_035_349_680 32_665 9_463 0 : [v128]
+Expect: -2 -2 -2 -2 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:22.1-24.75 (Error(_, "wrong return values"))
+Result: 9_602_848 0 -65_536 -1 : [v128]
+Expect: 2 2 2 2 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:25.1-27.71 (Error(_, "wrong return values"))
+Result: 2_036_686_560 32_665 3_072 0 : [v128]
+Expect: 536_838_144 536_838_144 536_838_144 536_838_144 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:28.1-30.103 (Error(_, "wrong return values"))
+Result: 3_072 0 2_032_404_264 32_665 : [v128]
+Expect: 536_870_912 536_870_912 536_870_912 536_870_912 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:31.1-33.103 (Error(_, "wrong return values"))
+Result: 2_027_977_208 32_665 1_931_626_272 32_665 : [v128]
+Expect: 536_838_144 536_838_144 536_838_144 536_838_144 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:34.1-36.103 (Error(_, "wrong return values"))
+Result: 1_025 0 3 0 : [v128]
+Expect: 536_870_912 536_870_912 536_870_912 536_870_912 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:37.1-39.103 (Error(_, "wrong return values"))
+Result: 7 0 5_120 0 : [v128]
+Expect: 536_903_680 536_903_680 536_903_680 536_903_680 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:40.1-42.103 (Error(_, "wrong return values"))
+Result: 3_072 0 2_035_929_776 32_665 : [v128]
+Expect: 65_530 65_530 65_530 65_530 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:43.1-45.87 (Error(_, "wrong return values"))
+Result: 1 0 5 0 : [v128]
+Expect: 65_532 65_532 65_532 65_532 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:46.1-48.87 (Error(_, "wrong return values"))
+Result: 2_037_723_952 32_665 1 0 : [v128]
+Expect: -65_536 -65_536 -65_536 -65_536 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:49.1-51.91 (Error(_, "wrong return values"))
+Result: 9_983_168 0 4_343 0 : [v128]
+Expect: 65_532 65_532 65_532 65_532 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:52.1-54.87 (Error(_, "wrong return values"))
+Result: 5 16_777_216 2_037_421_808 32_665 : [v128]
+Expect: 65_534 65_534 65_534 65_534 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:55.1-57.87 (Error(_, "wrong return values"))
+Result: 2_037_269_136 32_665 5_120 0 : [v128]
+Expect: 65_536 65_536 65_536 65_536 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:58.1-60.87 (Error(_, "wrong return values"))
+Result: 8_189_184 0 2_037_754_752 32_665 : [v128]
+Expect: 2_147_352_578 2_147_352_578 2_147_352_578 2_147_352_578 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:61.1-63.107 (Error(_, "wrong return values"))
+Result: 9_983_168 0 2_048 0 : [v128]
+Expect: -2_147_483_648 -2_147_483_648 -2_147_483_648 -2_147_483_648 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:64.1-66.107 (Error(_, "wrong return values"))
+Result: 1 0 2_048 0 : [v128]
+Expect: 2_147_418_112 2_147_418_112 2_147_418_112 2_147_418_112 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:67.1-69.107 (Error(_, "wrong return values"))
+Result: 5_120 0 1 0 : [v128]
+Expect: 0 0 0 0 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:70.1-72.71 (Error(_, "wrong return values"))
+Result: 9_986_944 0 2_048 0 : [v128]
+Expect: -2 -2 -2 -2 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:73.1-75.75 (Error(_, "wrong return values"))
+Result: 1 0 2_033_235_608 32_665 : [v128]
+Expect: 2 2 2 2 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:76.1-78.71 (Error(_, "wrong return values"))
+Result: 1_027 0 2_036_211_160 32_665 : [v128]
+Expect: -65_534 -65_534 -65_534 -65_534 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:79.1-81.91 (Error(_, "wrong return values"))
+Result: 2_036_059_648 32_665 1_024 0 : [v128]
+Expect: 65_536 65_536 65_536 65_536 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:82.1-84.87 (Error(_, "wrong return values"))
+Result: 0 0 1_931_643_272 32_665 : [v128]
+Expect: 2 2 2 2 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_dot_i16x8.wast:85.1-87.71 (Error(_, "wrong return values"))
 - 1/27 (3.70%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast =====
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:11.1-12.83 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:13.1-14.83 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:15.1-16.87 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:17.1-18.99 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:19.1-20.103 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:21.1-22.103 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:23.1-24.99 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:25.1-26.87 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:29.1-30.83 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:31.1-32.83 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:33.1-34.103 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:35.1-36.99 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:37.1-38.99 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:39.1-40.99 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:41.1-42.99 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:43.1-44.103 (Failure("Algorithm not found: VEXTADD_PAIRWISE"))
+Result: 87 0 7_055 0 : [v128]
+Expect: 0 0 0 0 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:11.1-12.83 (Error(_, "wrong return values"))
+Result: 5_120 0 1 0 : [v128]
+Expect: 2 2 2 2 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:13.1-14.83 (Error(_, "wrong return values"))
+Result: 1 0 2_033_246_824 32_665 : [v128]
+Expect: -2 -2 -2 -2 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:15.1-16.87 (Error(_, "wrong return values"))
+Result: 1 0 3_072 0 : [v128]
+Expect: 65_532 65_532 65_532 65_532 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:17.1-18.99 (Error(_, "wrong return values"))
+Result: 2_037_236_480 32_665 2_048 0 : [v128]
+Expect: -65_534 -65_534 -65_534 -65_534 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:19.1-20.103 (Error(_, "wrong return values"))
+Result: 1_903_793_832 32_665 2_037_136_008 32_665 : [v128]
+Expect: -65_536 -65_536 -65_536 -65_536 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:21.1-22.103 (Error(_, "wrong return values"))
+Result: 5_120 0 2_037_035_520 32_665 : [v128]
+Expect: 65_534 65_534 65_534 65_534 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:23.1-24.99 (Error(_, "wrong return values"))
+Result: 2_036_935_272 32_665 7 0 : [v128]
+Expect: -2 -2 -2 -2 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:25.1-26.87 (Error(_, "wrong return values"))
+Result: 2_036_836_536 32_665 2_048 0 : [v128]
+Expect: 0 0 0 0 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:29.1-30.83 (Error(_, "wrong return values"))
+Result: 2_303 0 9_602_848 0 : [v128]
+Expect: 2 2 2 2 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:31.1-32.83 (Error(_, "wrong return values"))
+Result: 7 33_554_432 8_189_184 0 : [v128]
+Expect: 131_070 131_070 131_070 131_070 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:33.1-34.103 (Error(_, "wrong return values"))
+Result: 2_036_538_640 32_665 2_048 0 : [v128]
+Expect: 65_532 65_532 65_532 65_532 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:35.1-36.99 (Error(_, "wrong return values"))
+Result: 3_324 0 -1 -1 : [v128]
+Expect: 65_538 65_538 65_538 65_538 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:37.1-38.99 (Error(_, "wrong return values"))
+Result: 2_036_339_824 32_665 2_033_236_920 32_665 : [v128]
+Expect: 65_536 65_536 65_536 65_536 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:39.1-40.99 (Error(_, "wrong return values"))
+Result: 1_903_794_288 32_665 2_036_240_368 32_665 : [v128]
+Expect: 65_534 65_534 65_534 65_534 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:41.1-42.99 (Error(_, "wrong return values"))
+Result: 3_072 0 2_027_963_352 32_665 : [v128]
+Expect: 131_070 131_070 131_070 131_070 : [v128]
+- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extadd_pairwise_i16x8.wast:43.1-44.103 (Error(_, "wrong return values"))
 - 1/17 (5.88%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast =====
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:13.1-15.78 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:16.1-18.78 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:19.1-21.78 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:22.1-24.78 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:25.1-27.82 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:28.1-30.78 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:31.1-33.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:34.1-36.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:37.1-39.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:40.1-42.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:43.1-45.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:46.1-48.94 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:49.1-51.94 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:52.1-54.98 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:55.1-57.94 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:58.1-60.94 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:61.1-63.94 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:64.1-66.114 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:67.1-69.114 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:70.1-72.114 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:73.1-75.78 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:76.1-78.82 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:79.1-81.78 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:82.1-84.98 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:85.1-87.94 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:88.1-90.78 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:93.1-95.79 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:96.1-98.79 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:99.1-101.79 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:102.1-104.79 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:105.1-107.83 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:108.1-110.79 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:111.1-113.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:114.1-116.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:117.1-119.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:120.1-122.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:123.1-125.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:126.1-128.95 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:129.1-131.95 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:132.1-134.99 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:135.1-137.95 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:138.1-140.95 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:141.1-143.95 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:144.1-146.115 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:147.1-149.115 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:150.1-152.115 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:153.1-155.79 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:156.1-158.83 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:159.1-161.79 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:162.1-164.99 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:165.1-167.95 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:168.1-170.79 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:173.1-175.78 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:176.1-178.78 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:179.1-181.78 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:182.1-184.78 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:185.1-187.94 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:188.1-190.102 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:191.1-193.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:194.1-196.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:197.1-199.118 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:200.1-202.118 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:203.1-205.118 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:206.1-208.94 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:209.1-211.94 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:212.1-214.94 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:215.1-217.118 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:218.1-220.118 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:221.1-223.114 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:224.1-226.114 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:227.1-229.114 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:230.1-232.114 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:233.1-235.78 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:236.1-238.94 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:239.1-241.102 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:242.1-244.114 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:245.1-247.114 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:248.1-250.102 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:253.1-255.79 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:256.1-258.79 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:259.1-261.79 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:262.1-264.79 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:265.1-267.95 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:268.1-270.103 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:271.1-273.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:274.1-276.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:277.1-279.119 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:280.1-282.119 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:283.1-285.119 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:286.1-288.95 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:289.1-291.95 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:292.1-294.95 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:295.1-297.119 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:298.1-300.119 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:301.1-303.115 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:304.1-306.115 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:307.1-309.115 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:310.1-312.115 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:313.1-315.79 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:316.1-318.95 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:319.1-321.103 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:322.1-324.115 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:325.1-327.115 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i32x4_extmul_i16x8.wast:328.1-330.103 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- 1/105 (0.95%)
+- 105/105 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i32x4_trunc_sat_f32x4.wast =====
 - 103/103 (100.00%)
@@ -24860,111 +24768,7 @@ Expect: 0 0 0 0 0 0 0 0 : [v128]
 - 103/103 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast =====
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:13.1-15.74 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:16.1-18.74 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:19.1-21.74 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:22.1-24.74 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:25.1-27.76 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:28.1-30.74 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:31.1-33.110 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:34.1-36.110 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:37.1-39.110 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:40.1-42.110 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:43.1-45.110 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:46.1-48.92 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:49.1-51.92 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:52.1-54.94 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:55.1-57.92 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:58.1-60.92 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:61.1-63.92 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:64.1-66.110 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:67.1-69.110 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:70.1-72.110 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:73.1-75.74 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:76.1-78.76 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:79.1-81.74 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:82.1-84.94 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:85.1-87.92 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:88.1-90.74 (Failure("Algorithm not found: VEXBINOP"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:93.1-95.75 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:96.1-98.75 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:99.1-101.75 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:102.1-104.75 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:105.1-107.77 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:108.1-110.75 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:111.1-113.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:114.1-116.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:117.1-119.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:120.1-122.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:123.1-125.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:126.1-128.93 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:129.1-131.93 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:132.1-134.95 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:135.1-137.93 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:138.1-140.93 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:141.1-143.93 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:144.1-146.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:147.1-149.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:150.1-152.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:153.1-155.75 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:156.1-158.77 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:159.1-161.75 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:162.1-164.95 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:165.1-167.93 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:168.1-170.75 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:173.1-175.74 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:176.1-178.74 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:179.1-181.74 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:182.1-184.74 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:185.1-187.92 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:188.1-190.94 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:191.1-193.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:194.1-196.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:197.1-199.112 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:200.1-202.112 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:203.1-205.112 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:206.1-208.92 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:209.1-211.92 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:212.1-214.92 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:215.1-217.112 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:218.1-220.112 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:221.1-223.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:224.1-226.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:227.1-229.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:230.1-232.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:233.1-235.74 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:236.1-238.92 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:239.1-241.94 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:242.1-244.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:245.1-247.110 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:248.1-250.94 (Failure("Invalid assignment on value (EXTMUL LOW): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:253.1-255.75 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:256.1-258.75 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:259.1-261.75 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:262.1-264.75 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:265.1-267.93 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:268.1-270.95 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:271.1-273.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:274.1-276.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:277.1-279.113 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:280.1-282.113 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:283.1-285.113 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:286.1-288.93 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:289.1-291.93 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:292.1-294.93 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:295.1-297.113 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:298.1-300.113 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:301.1-303.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:304.1-306.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:307.1-309.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:310.1-312.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:313.1-315.75 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:316.1-318.93 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:319.1-321.95 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:322.1-324.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:325.1-327.111 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- Test failed at ../../test-interpreter/spec-test-3/simd/simd_i64x2_extmul_i32x4.wast:328.1-330.95 (Failure("Invalid assignment on value (EXTMUL HIGH): CaseE (DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), []) @3-numerics.watsup:447.42-447.45"))
-- 1/105 (0.95%)
+- 105/105 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_i8x16_arith.wast =====
 - 123/123 (100.00%)
@@ -25227,7 +25031,7 @@ Expect: 0 0 0 0 0 0 0 0 : [v128]
 ===== ../../test-interpreter/spec-test-3/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [44966/45764] (98.26%)
+Total [45278/45764] (98.94%)
 
 == Complete.
 ```

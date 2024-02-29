@@ -2030,15 +2030,25 @@ def $vcvtop(shape_1 : shape, shape_2 : shape, vcvtop : vcvtop, sx?, lane_ : lane
 
 ;; 3-numerics.watsup
 def $vextunop(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx, vec_ : vec_(V128_vnn)) : vec_(V128_vnn)
+  ;; 3-numerics.watsup
+  def $vextunop{inn_1 : inn, N_1 : N, inn_2 : inn, N_2 : N, sx : sx, c_1 : vec_(V128_vnn), c : vec_(V128_vnn), cj_1 : iN($lsize((inn_1 : inn <: lanetype))), cj_2 : iN($lsize((inn_1 : inn <: lanetype))), ci* : lane_($lanetype(`%X%`((inn_2 : inn <: lanetype), `%`(N_2))))*}(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2)), EXTADD_PAIRWISE_vextunop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), sx, c_1) = c
+    -- if (ci*{ci : lane_($lanetype(`%X%`((inn_2 : inn <: lanetype), `%`(N_2))))} = $lanes_(`%X%`((inn_2 : inn <: lanetype), `%`(N_2)), c_1))
+    -- if ($concat_(syntax iN($lsize((inn_1 : inn <: lanetype))), [cj_1 cj_2]*{}) = $ext($lsize((inn_2 : inn <: lanetype)), $lsize((inn_1 : inn <: lanetype)), sx, ci)*{ci : iN($lsize((inn_2 : inn <: lanetype)))})
+    -- if (c = $invlanes_(`%X%`((inn_1 : inn <: lanetype), `%`(N_1)), $iadd($lsize((inn_1 : inn <: lanetype)), cj_1, cj_2)*{}))
 
 ;; 3-numerics.watsup
 def $vextbinop(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx, vec_ : vec_(V128_vnn), vec_ : vec_(V128_vnn)) : vec_(V128_vnn)
+  ;; 3-numerics.watsup
+  def $vextbinop{inn_1 : inn, N_1 : N, inn_2 : inn, N_2 : N, hf : half, sx : sx, c_1 : vec_(V128_vnn), c_2 : vec_(V128_vnn), c : vec_(V128_vnn), ci_1* : lane_($lanetype(`%X%`((inn_2 : inn <: lanetype), `%`(N_2))))*, ci_2* : lane_($lanetype(`%X%`((inn_2 : inn <: lanetype), `%`(N_2))))*}(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2)), EXTMUL_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2)))(hf), sx, c_1, c_2) = c
+    -- if (ci_1*{ci_1 : lane_($lanetype(`%X%`((inn_2 : inn <: lanetype), `%`(N_2))))} = $lanes_(`%X%`((inn_2 : inn <: lanetype), `%`(N_2)), c_1)[$halfop(hf, 0, N_1) : N_1])
+    -- if (ci_2*{ci_2 : lane_($lanetype(`%X%`((inn_2 : inn <: lanetype), `%`(N_2))))} = $lanes_(`%X%`((inn_2 : inn <: lanetype), `%`(N_2)), c_2)[$halfop(hf, 0, N_1) : N_1])
+    -- if (c = $invlanes_(`%X%`((inn_1 : inn <: lanetype), `%`(N_1)), $imul($lsize((inn_1 : inn <: lanetype)), $ext($lsize((inn_2 : inn <: lanetype)), $lsize((inn_1 : inn <: lanetype)), sx, ci_1), $ext($lsize((inn_2 : inn <: lanetype)), $lsize((inn_1 : inn <: lanetype)), sx, ci_2))*{ci_1 : iN($lsize((inn_2 : inn <: lanetype))) ci_2 : iN($lsize((inn_2 : inn <: lanetype)))}))
   ;; 3-numerics.watsup
   def $vextbinop{inn_1 : inn, N_1 : N, inn_2 : inn, N_2 : N, sx : sx, c_1 : vec_(V128_vnn), c_2 : vec_(V128_vnn), c : vec_(V128_vnn), cj_1 : iN($lsize((inn_1 : inn <: lanetype))), cj_2 : iN($lsize((inn_1 : inn <: lanetype))), ci_1* : lane_($lanetype(`%X%`((inn_2 : inn <: lanetype), `%`(N_2))))*, ci_2* : lane_($lanetype(`%X%`((inn_2 : inn <: lanetype), `%`(N_2))))*}(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2)), DOT_vextbinop_(`%X%`((inn_1 : inn <: imm), `%`(N_1)), `%X%`((inn_2 : inn <: imm), `%`(N_2))), sx, c_1, c_2) = c
     -- if (ci_1*{ci_1 : lane_($lanetype(`%X%`((inn_2 : inn <: lanetype), `%`(N_2))))} = $lanes_(`%X%`((inn_2 : inn <: lanetype), `%`(N_2)), c_1))
     -- if (ci_2*{ci_2 : lane_($lanetype(`%X%`((inn_2 : inn <: lanetype), `%`(N_2))))} = $lanes_(`%X%`((inn_2 : inn <: lanetype), `%`(N_2)), c_2))
     -- if ($concat_(syntax iN($lsize((inn_1 : inn <: lanetype))), [cj_1 cj_2]*{}) = $imul($lsize((inn_1 : inn <: lanetype)), $ext($lsize((inn_2 : inn <: lanetype)), $lsize((inn_1 : inn <: lanetype)), S_sx, ci_1), $ext($lsize((inn_2 : inn <: lanetype)), $lsize((inn_1 : inn <: lanetype)), S_sx, ci_2))*{ci_1 : iN($lsize((inn_2 : inn <: lanetype))) ci_2 : iN($lsize((inn_2 : inn <: lanetype)))})
-    -- if (c = $invlanes_(`%X%`((inn_1 : inn <: lanetype), `%`(N_1)), $iadd($lsize((inn_1 : inn <: lanetype)), cj_1, cj_2)^N_1{}))
+    -- if (c = $invlanes_(`%X%`((inn_1 : inn <: lanetype), `%`(N_1)), $iadd($lsize((inn_1 : inn <: lanetype)), cj_1, cj_2)*{}))
 
 ;; 3-numerics.watsup
 def $vishiftop(ishape : ishape, vshiftop_ : vshiftop_(ishape), lane_ : lane_($lanetype((ishape : ishape <: shape))), u32 : u32) : lane_($lanetype((ishape : ishape <: shape)))
