@@ -90,12 +90,20 @@ let is_post_exp e =
   | HoleE _ -> true
   | _ -> false
 
+let is_typcase t =
+  match t.it with
+  | AtomT _ | InfixT _ | BrackT _ -> true
+  | SeqT ({it = AtomT _; _}::_) -> true
+  | VarT _ | BoolT | NumT _ | TextT | TupT _ | SeqT _
+  | ParenT _ | IterT _ -> false
+  | StrT _ | CaseT _ | ConT _ | RangeT _ -> assert false
+
 let rec is_typcon t =
   match t.it with
+  | AtomT _ | InfixT _ | BrackT _ | SeqT _ -> true
   | VarT _ | BoolT | NumT _ | TextT | TupT _ -> false
-  | StrT _ | CaseT _ | ConT _ | RangeT _
-  | AtomT _ | SeqT _ | InfixT _ | BrackT _ -> true
   | ParenT t1 | IterT (t1, _) -> is_typcon t1
+  | StrT _ | CaseT _ | ConT _ | RangeT _ -> assert false
 
 %}
 
@@ -183,6 +191,7 @@ nl_dash_list(X) :
   | bar DOTDOTDOT {}
 
 dots_list(X) :
+  | dots_list1(X) { let x, y = $1 in (NoDots, x, y) }
   | bar dots_list1(X) { let x, y = $2 in (NoDots, x, y) }
   | dots BAR dots_list1(X) { let x, y = $3 in (Dots, x, y) }
   | dots NL_BAR dots_list1(X) { let x, y = $3 in (Dots, Nl::x, y) }
@@ -360,36 +369,38 @@ typ : typ_post { $1 }
 
 deftyp : deftyp_ { $1 $ $sloc }
 deftyp_ :
-  | nottyp hint* prem_list
-    { if is_typcon $1 || $3 <> [] then
-        ConT (($1, $3), $2)
-      else if $2 <> [] then
-        Source.error (List.hd $2).hintid.at "syntax" "misplaced hint"
-      else $1.it
-    }
   | LBRACE comma_nl_list(fieldtyp) RBRACE { StrT $2 }
   | dots_list(casetyp)
-    { let x, y, z = $1 in
-      let y1, y2, _ =
-        List.fold_right
-          (fun elem (y1, y2, at) ->
-            (* at is the position of leftmost id element so far *)
-            match elem with
-            | Nl -> if at = None then y1, Nl::y2, at else Nl::y1, y2, at
-            | Elem (t, prems, hints) ->
-              match t.it with
-              | AtomT atom
-              | SeqT ({it = AtomT atom; _}::_)
-              | InfixT (_, atom, _)
-              | BrackT (atom, _, _) when at = None ->
-                y1, (Elem (atom, (t, prems), hints))::y2, at
-              | _ when prems = [] && hints = [] ->
-                (Elem t)::y1, y2, Some t.at
-              | _ ->
-                let at = Option.value at ~default:t.at in
-                Source.error at "syntax" "misplaced type";
-          ) y ([], [], None)
-      in CaseT (x, y1, y2, z) }
+    { let dots1, tcs, dots2 = $1 in
+      match dots1, El.Convert.filter_nl tcs, dots2 with
+      | NoDots, [(t, prems, hints)], NoDots when not (is_typcase t) ->
+        if is_typcon t || prems <> [] then
+          ConT ((t, prems), hints)
+        else if hints = [] then
+          t.it
+        else
+          Source.error (List.hd hints).hintid.at "syntax" "misplaced hint"
+      | _ ->
+        let y1, y2, _ =
+          List.fold_right
+            (fun elem (y1, y2, at) ->
+              (* at is the position of leftmost id element so far *)
+              match elem with
+              | Nl -> if at = None then y1, Nl::y2, at else Nl::y1, y2, at
+              | Elem (t, prems, hints) ->
+                match t.it with
+                | AtomT atom
+                | SeqT ({it = AtomT atom; _}::_)
+                | InfixT (_, atom, _)
+                | BrackT (atom, _, _) when at = None ->
+                  y1, (Elem (atom, (t, prems), hints))::y2, at
+                | _ when prems = [] && hints = [] ->
+                  (Elem t)::y1, y2, Some t.at
+                | _ ->
+                  let at = Option.value at ~default:t.at in
+                  Source.error at "syntax" "misplaced type";
+            ) tcs ([], [], None)
+        in CaseT (dots1, y1, y2, dots2) }
   | nl_bar_list1(enumtyp(enum1), enumtyp(arith)) { RangeT $1 }
 
 

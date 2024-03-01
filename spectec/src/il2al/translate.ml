@@ -41,15 +41,12 @@ let split_state e =
   let state_instr = [ letI (varE "f", getCurFrameE ()) ] in
   match e.it with
   (* z; e *)
-  | Il.MixE ([ []; [ Il.Semicolon ]; [] ], { it = Il.TupE [ state; e' ]; _ })
+  | Il.CaseE (Il.Semicolon, {it = TupE [ state; e' ]; _})
     when is_state state -> state_instr, e'
   (* s; f; e *)
-  | Il.MixE
-    ( [ []; [ Il.Semicolon ]; [] ],
-      { it = Il.TupE [ { it = Il.MixE (
-        [[]; [ Il.Semicolon ]; []],
-        { it = Il.TupE [ store; frame ]; _ }
-      ); _ }; e' ]; _ } )
+  | Il.CaseE ( Il.Semicolon,
+      {it = TupE [ { it = Il.CaseE (Il.Semicolon,
+        {it = TupE [ store; frame ]; _}); _ }; e' ]; _} )
     when is_store store && is_frame frame -> state_instr, e'
   | _ -> [], e
 
@@ -177,6 +174,10 @@ and translate_exp exp =
     binE (compare_op, lhs, rhs) ~at:at
   (* CaseE *)
   | Il.CaseE (Il.Atom cons, argexp) -> caseE (kwd cons exp.note, translate_argexp argexp) ~at:at
+  | Il.CaseE (Il.Semicolon, {it = TupE [ e1; e2 ]; _}) -> tupE [ translate_exp e1; translate_exp e2 ] ~at:at
+  | Il.CaseE (Il.LBrack, {it = TupE [ e1; e2 ]; _}) -> tupE [ translate_exp e1; translate_exp e2 ] ~at:at
+  | Il.CaseE (Il.Arrow, {it = TupE [ e1; e2; e3 ]; _}) -> infixE (translate_exp e1, "->", catE (translate_exp e2, translate_exp e3)) ~at:at
+  | Il.CaseE (atom, {it = TupE [ e1; e2 ]; _}) -> infixE (translate_exp e1, Il.Print.string_of_atom atom, translate_exp e2) ~at:at
   (* Tuple *)
   | Il.TupE [e] -> translate_exp e
   | Il.TupE exps -> tupE (List.map translate_exp exps) ~at:at
@@ -200,49 +201,20 @@ and translate_exp exp =
     in
     match (op, exps) with
     | [ []; [] ], [ e1 ] -> translate_exp e1
-    | [ []; []; [] ], [ e1; e2 ]
-    | [ []; [ Il.Semicolon ]; [] ], [ e1; e2 ]
-    | [ []; [ Il.Semicolon ]; [ Il.Star ] ], [ e1; e2 ]
-    | [ [ Il.LBrack ]; [ Il.Dot2 ]; [ Il.RBrack ]], [ e1; e2 ] ->
+    | [ []; []; [] ], [ e1; e2 ] ->
       tupE [ translate_exp e1; translate_exp e2 ] ~at:at
-    | [ []; [ Il.Star; atom ]; [ Il.Star ] ], [ e1; e2 ]
     | [ []; [ atom ]; [] ], [ e1; e2 ] ->
       infixE (translate_exp e1, Il.Print.string_of_atom atom, translate_exp e2) ~at:at
-    | [ []; [ Il.Arrow ]; []; [] ], [ e1; e2; e3 ]
-    | [ []; [ Il.Arrow ]; [ Il.Star ]; [] ], [ e1; e2; e3 ] -> (* HARDCODE *)
-      infixE (translate_exp e1, "->", catE (translate_exp e2, translate_exp e3)) ~at:at
     (* Constructor *)
     (* TODO: Need a better way to convert these CaseE into ConstructE *)
-    | [ [ Il.Atom "FUNC" ]; []; []; [] ], _ ->
-      caseE (("FUNC", "func"), List.map translate_exp exps) ~at:at
-    | [ [ Il.Atom "OK" ] ], [] ->
-      caseE (("OK", "datatype"), []) ~at:at
     | [ [ Il.Atom "MUT" ]; [ Il.Quest ]; [] ],
       [ { it = Il.OptE (Some { it = Il.TupE []; _ }); _}; t ] ->
       tupE [ caseE (("MUT", "globaltype"), []); translate_exp t ] ~at:at
     | [ [ Il.Atom "MUT" ]; [ Il.Quest ]; [] ],
       [ { it = Il.IterE ({ it = Il.TupE []; _ }, (Il.Opt, [])); _}; t ] ->
       tupE [ iterE (varE "mut", ["mut"], Opt); translate_exp t ] ~at:at
-    | [ Il.Atom "MODULE" ] :: _, el ->
-      caseE (("MODULE", "module"), List.map translate_exp el) ~at:at
-    | [ [ Il.Atom "IMPORT" ]; []; []; [] ], el ->
-      caseE (("IMPORT", "import"), List.map translate_exp el) ~at:at
-    | [ [ Il.Atom "GLOBAL" ]; []; [] ], el ->
-      caseE (("GLOBAL", "global"), List.map translate_exp el) ~at:at
-    | [ Il.Atom "TABLE" ] :: _, el ->
-      caseE (("TABLE", "table"), List.map translate_exp el) ~at:at
-    | [ [ Il.Atom "MEMORY" ]; [] ], el ->
-      caseE (("MEMORY", "mem"), List.map translate_exp el) ~at:at
     | [ []; [ Il.Atom "I8" ] ], el ->
       caseE (("I8", "memtype"), List.map translate_exp el) ~at:at
-    | [ [ Il.Atom "ELEM" ]; []; []; [] ], el ->
-      caseE (("ELEM", "elem"), List.map translate_exp el) ~at:at
-    | [ [ Il.Atom "DATA" ]; []; [] ], el ->
-      caseE (("DATA", "data"), List.map translate_exp el) ~at:at
-    | [ [ Il.Atom "START" ]; [] ], el ->
-      caseE (("START", "start"), List.map translate_exp el) ~at:at
-    | [ [ Il.Atom "EXPORT" ]; []; [] ], el ->
-      caseE (("EXPORT", "export"), List.map translate_exp el) ~at:at
     | [ [ Il.Atom "NULL" ]; [ Il.Quest ] ], el ->
       caseE (("NULL", "nul"), List.map translate_exp el) ~at:at
     | [ Il.Atom name ] :: ll, el
@@ -414,14 +386,11 @@ let rec translate_rhs exp =
   (* Execute instr *)
   | Il.CaseE (Atom atomid, argexp) ->
       [ executeI (caseE (kwd atomid exp.note, translate_argexp argexp)) ~at:at ]
-  | Il.MixE
-    ( [ []; [ Il.Semicolon ]; [] ],
-      (* z' ; instr'* *)
-      { it = TupE [ se; rhs ]; _ } ) -> (
+  | Il.CaseE (Il.Semicolon, {it = TupE [ se; rhs ]; _}) -> (
     let push_instrs = translate_rhs rhs in
     let at = se.at in
     match se.it with
-    | Il.MixE ([ []; [ Il.Semicolon ]; [] ], _)
+    | Il.CaseE (Il.Semicolon, _)
     | Il.VarE _ -> push_instrs
     | Il.CallE (f, ae) -> push_instrs @ [ performI (f.it, translate_args ae) ~at:at ]
     | _ -> failwith "Invalid new state" )
@@ -658,10 +627,7 @@ let translate_prems =
 
 let get_tup_exps c =
   match c.it with
-  | Il.MixE ([ []; [ Il.Semicolon ]; _ ], tup) ->
-    (match tup.it with
-    | Il.TupE [ e1; e2 ] -> e1, e2
-    | _ -> failwith "Invalid config")
+  | Il.CaseE (Il.Semicolon, {it = TupE [ e1; e2 ]; _}) -> e1, e2
   | _ -> failwith "Invalid config"
 
 
@@ -732,8 +698,8 @@ let rec kind_of_context e =
   match e.it with
   | Il.CaseE (Il.Atom "FRAME_", _) -> ("frame", "admininstr")
   | Il.CaseE (Il.Atom "LABEL_", _) -> ("label", "admininstr")
+  | Il.CaseE (Il.Semicolon, e')
   | Il.ListE [ e' ]
-  | Il.MixE (_ (* ; *), e')
   | Il.TupE [_ (* z *); e'] -> kind_of_context e'
   | _ -> "Could not get kind_of_context" ^ Il.Print.string_of_exp e |> failwith
 

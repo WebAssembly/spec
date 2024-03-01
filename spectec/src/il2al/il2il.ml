@@ -1,5 +1,5 @@
 (**
-Functions that trasnforms IL into IL.
+Functions that transform IL into IL.
 **)
 
 open Il.Ast

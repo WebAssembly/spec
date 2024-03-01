@@ -156,7 +156,7 @@ let is_not_lhs e = match e.it with
 
 (* Hack to handle RETURN_CALL_ADDR, eventually should be removed *)
 let is_atomic_lhs e = match e.it with
-| CaseE (Atom "FUNC", { it = MixE ([ []; [Arrow]; [] ], { it = TupE [ { it = IterE (_, (ListN _, _)); _} ; { it = IterE (_, (ListN _, _)); _} ] ; _} ); _ }) -> true
+| CaseE (Atom "FUNC", { it = CaseE (Arrow, { it = TupE [ { it = IterE (_, (ListN _, _)); _} ; { it = IterE (_, (ListN _, _)); _} ] ; _} ); _ }) -> true
 | _ -> false
 
 (* Hack to handle ARRAY.INIT_DATA, eventually should be removed *)
