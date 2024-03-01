@@ -196,7 +196,8 @@ let () =
     if !print_final_il && not !print_all_il then print_il il;
 
     let al =
-      if !target = Check || not (PS.mem Animate !selected_passes) then [] else (
+      if !target = Check || !target = Latex || not (PS.mem Animate !selected_passes)
+      then [] else (
         log "Translating to AL...";
         (Il2al.Translate.translate il @ Backend_interpreter.Manual.manual_algos)
       )
@@ -266,7 +267,7 @@ let () =
     );
     log "Complete."
   with
-  | Error.Error (at, msg) ->
+  | Error.Error (at, msg) as exn ->
     let msg' =
       if !last_pass <> "" && String.starts_with ~prefix:"validation" msg then
         "(after pass " ^ !last_pass ^ ") " ^ msg
@@ -274,6 +275,7 @@ let () =
         msg
     in
     Error.print_error at msg';
+    Debug_log.log_exn exn;
     exit 1
   | exn ->
     flush_all ();

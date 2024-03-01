@@ -46,7 +46,8 @@ let rec string_of_record r =
   depth := !depth - 1;
   str
 
-and string_of_value = function
+and string_of_value =
+  function
   | LabelV (v1, v2) ->
     sprintf "Label_%s %s" (string_of_value v1) (string_of_value v2)
   (*| FrameV (None, v2) -> sprintf "(Frame %s)" (string_of_value v2)
@@ -57,7 +58,7 @@ and string_of_value = function
   | BoolV b -> string_of_bool b
   | TextV s -> s
   | TupV vl -> "(" ^ string_of_values ", " vl ^ ")"
-  | CaseV ("CONST", hd::tl) -> "(" ^ string_of_value hd ^ ".CONST " ^ string_of_values " " tl ^ ")"
+  | CaseV (("CONST" | "VCONST"), hd::tl) -> "(" ^ string_of_value hd ^ ".CONST " ^ string_of_values " " tl ^ ")"
   | CaseV (s, []) -> s
   | CaseV (s, vl) -> "(" ^ s ^ " " ^ string_of_values " " vl ^ ")"
   | StrV r -> string_of_record r
@@ -156,7 +157,7 @@ and string_of_expr expr =
   | SubE (id, _) -> id
   | IterE (e, _, iter) -> string_of_expr e ^ string_of_iter iter
   | InfixE (e1, infix, e2) -> "(" ^ string_of_expr e1 ^ " " ^ infix ^ " " ^ string_of_expr e2 ^ ")"
-  | CaseE (("CONST", _), hd::tl) -> "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
+  | CaseE ((("CONST"|"VCONST"), _), hd::tl) -> "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
   | CaseE ((s, _), []) -> s
   | CaseE ((s, _), el) -> "(" ^ s ^ " " ^ string_of_exprs " " el ^ ")"
   | OptE (Some e) -> "?(" ^ string_of_expr e ^ ")"

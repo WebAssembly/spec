@@ -40,9 +40,9 @@ let disjoint sets1 sets2 =
   Set.disjoint sets1.varid sets2.varid &&
   Set.disjoint sets1.defid sets2.defid
 
-
 let free_opt free_x xo = Option.(value (map free_x xo) ~default:empty)
 let free_list free_x xs = List.(fold_left (+) empty (map free_x xs))
+let free_pair free_x free_y (x, y) = free_x x + free_y y
 let bound_list = free_list
 
 let rec free_list_dep free_x bound_x = function
@@ -75,25 +75,28 @@ and free_typ t =
   match t.it with
   | VarT (id, as_) -> free_typid id + free_args as_
   | BoolT | NumT _ | TextT -> empty
-  | TupT xts -> free_typbinds xts
+  | TupT ets -> free_typbinds ets
   | IterT (t1, iter) -> free_typ t1 + free_iter iter
 
 and bound_typ t =
   match t.it with
   | VarT _ | BoolT | NumT _ | TextT -> empty
-  | TupT xts -> bound_list bound_typbind xts
+  | TupT ets -> bound_list bound_typbind ets
   | IterT (t1, _iter) -> bound_typ t1
   
-and free_typbind (_id, t) = free_typ t
-and bound_typbind (id, _t) = bound_varid id
+and free_typbind (_e, t) = free_typ t
+and bound_typbind (e, _t) = free_exp e
 and free_typbinds xts = free_list_dep free_typbind bound_typbind xts
 
 and free_deftyp dt =
   match dt.it with
-  | AliasT t | NotationT (_, t) -> free_typ t
+  | AliasT t -> free_typ t
+  | NotationT tc -> free_typcon tc
   | StructT tfs -> free_list free_typfield tfs
   | VariantT tcs -> free_list free_typcase tcs
 
+and free_typcon (_, (bs, t, prems), _) =
+  free_binds bs + (free_typ t + (free_prems prems - bound_typ t) - bound_binds bs)
 and free_typfield (_, (bs, t, prems), _) =
   free_binds bs + (free_typ t + (free_prems prems - bound_typ t) - bound_binds bs)
 and free_typcase (_, (bs, t, prems), _) =
@@ -114,7 +117,7 @@ and free_exp e =
   | TupE es | ListE es -> free_list free_exp es
   | UpdE (e1, p, e2) | ExtE (e1, p, e2) -> free_exp e1 + free_path p + free_exp e2
   | StrE efs -> free_list free_expfield efs
-  | MixE (_, e1) | CaseE (_, e1) -> free_exp e1
+  | MixE (_, e1) | CaseE (_, e1) | UnmixE (e1, _) -> free_exp e1
   | CallE (id, as1) -> free_defid id + free_args as1
   | IterE (e1, iter) -> free_exp e1 + free_iterexp iter
   | SubE (e1, t1, t2) -> free_exp e1 + free_typ t1 + free_typ t2
@@ -128,8 +131,8 @@ and free_path p =
   | SliceP (p1, e1, e2) -> free_path p1 + free_exp e1 + free_exp e2
   | DotP (p1, _atom) -> free_path p1
 
-and free_iterexp (iter, ids) =
-    free_iter iter + free_list free_varid ids
+and free_iterexp (iter, bs) =
+    free_iter iter + free_list (free_pair free_varid free_typ) bs
 
 
 (* Premises *)

@@ -370,17 +370,10 @@ rule Step_read/array.new_data-oob:
   -- if $(i + n * $zsize(zt)/8 > |$data(z, y).DATA|)
 
 rule Step_read/array.new_data-num:
-  z; (CONST I32 i) (CONST I32 n) (ARRAY.NEW_DATA x y)  ~>  (CONST nt c)^n (ARRAY.NEW_FIXED x n)
+  z; (CONST I32 i) (CONST I32 n) (ARRAY.NEW_DATA x y)  ~>  ($const(cnn, c))^n (ARRAY.NEW_FIXED x n)
   -- Expand: $type(z, x) ~~ ARRAY (mut zt)
-  -- if nt = $nunpack(zt)
-  -- if $concat_(byte, $nbytes(nt, c)^n) = $data(z, y).DATA[i : n * $zsize(zt)/8]
-
-;; TODO: can we merge these rules?
-rule Step_read/array.new_data-vec:
-  z; (CONST I32 i) (CONST I32 n) (ARRAY.NEW_DATA x y)  ~>  (VCONST vt c)^n (ARRAY.NEW_FIXED x n)
-  -- Expand: $type(z, x) ~~ ARRAY (mut zt)
-  -- if vt = $vunpack(zt)
-  -- if $concat_(byte, $vbytes(vt, c)^n) = $data(z, y).DATA[i : n * $zsize(zt)/8]
+  -- if cnn = $cunpack(zt)
+  -- if $concat_(byte, $cbytes(cnn, c)^n) = $data(z, y).DATA[i : n * $zsize(zt)/8]
 
 
 rule Step_read/array.get-null:
@@ -519,22 +512,12 @@ rule Step_read/array.init_data-zero:
 
 rule Step_read/array.init_data-num:
   z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 n) (ARRAY.INIT_DATA x y)  ~>
-    (REF.ARRAY_ADDR a) (CONST I32 i) (CONST nt c) (ARRAY.SET x)
+    (REF.ARRAY_ADDR a) (CONST I32 i) $const(cnn, c) (ARRAY.SET x)
     (REF.ARRAY_ADDR a) (CONST I32 $(i + 1)) (CONST I32 $(j + $zsize(zt)/8)) (CONST I32 $(n-1)) (ARRAY.INIT_DATA x y)
   -- otherwise
   -- Expand: $type(z, x) ~~ ARRAY (mut zt)
-  -- if nt = $nunpack(zt)
-  -- if $nbytes(nt, c) = $data(z, y).DATA[j : $zsize(zt)/8]
-
-;; TODO: can we merge these rules?
-rule Step_read/array.init_data-num:
-  z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 n) (ARRAY.INIT_DATA x y)  ~>
-    (REF.ARRAY_ADDR a) (CONST I32 i) (VCONST vt c) (ARRAY.SET x)
-    (REF.ARRAY_ADDR a) (CONST I32 $(i + 1)) (CONST I32 $(j + $zsize(zt)/8)) (CONST I32 $(n-1)) (ARRAY.INIT_DATA x y)
-  -- otherwise
-  -- Expand: $type(z, x) ~~ ARRAY (mut zt)
-  -- if vt = $vunpack(vt)
-  -- if $vbytes(vt, c) = $data(z, y).DATA[j : $zsize(zt)/8]
+  -- if cnn = $cunpack(zt)
+  -- if $cbytes(cnn, c) = $data(z, y).DATA[j : $zsize(zt)/8]
 
 
 ;; External reference instructions
@@ -572,22 +555,22 @@ rule Step_pure/vvternop:
 
 rule Step_pure/vvtestop:
   (VCONST V128 c_1) (VVTESTOP V128 ANY_TRUE) ~> (CONST I32 c)
-  -- if c = $ine($size(V128), c_1, 0)
+  -- if c = $ine($vsize(V128), c_1, 0)
 
 
 rule Step_pure/vswizzle:
-  (VCONST V128 c_1) (VCONST V128 c_2) (VSWIZZLE (inn X N)) ~> (VCONST V128 c')
-  -- var c : iN($size(inn))
-  -- if ci* = $lanes_(inn X N, c_2)
-  -- if c* = $lanes_(inn X N, c_1) 0^(256 - N)
-  -- if c' = $invlanes_(inn X N, c*[$(ci*[k])]^(k<N))
+  (VCONST V128 c_1) (VCONST V128 c_2) (VSWIZZLE (pnn X N)) ~> (VCONST V128 c')
+  -- var c : iN($lsize(pnn))
+  -- if ci* = $lanes_(pnn X N, c_2)
+  -- if c* = $lanes_(pnn X N, c_1) 0^(256 - N)
+  -- if c' = $invlanes_(pnn X N, c*[$(ci*[k])]^(k<N))
 
 
 rule Step_pure/vshuffle:
-  (VCONST V128 c_1) (VCONST V128 c_2) (VSHUFFLE (inn X N) i*) ~> (VCONST V128 c)
-  -- var c' : iN($size(inn))
-  -- if c'* = $lanes_(inn X N, c_1) $lanes_(inn X N, c_2)
-  -- if c = $invlanes_(inn X N, c'*[$(i*[k])]^(k<N))
+  (VCONST V128 c_1) (VCONST V128 c_2) (VSHUFFLE (pnn X N) i*) ~> (VCONST V128 c)
+  -- var c' : iN($lsize(pnn))
+  -- if c'* = $lanes_(pnn X N, c_1) $lanes_(pnn X N, c_2)
+  -- if c = $invlanes_(pnn X N, c'*[$(i*[k])]^(k<N))
 
 
 rule Step_pure/vsplat:
@@ -599,6 +582,7 @@ rule Step_pure/vextract_lane-num:
   (VCONST V128 c_1) (VEXTRACT_LANE (nt X N) i) ~> (CONST nt c_2)
   -- if c_2 = $lanes_(nt X N, c_1)[i]
 
+;; TODO : fshape
 rule Step_pure/vextract_lane-pack:
   (VCONST V128 c_1) (VEXTRACT_LANE (pt X N) sx i) ~> (CONST I32 c_2)
   -- if c_2 = $ext($psize(pt), 32, sx, $lanes_(pt X N, c_1)[i])
@@ -641,45 +625,46 @@ rule Step_pure/vshiftop:
 
 ;; TODO: introduce $vitestop for uniformity
 rule Step_pure/vtestop-true:
-  (VCONST V128 c) (VTESTOP (inn X N) ALL_TRUE) ~> (CONST I32 1)
-  -- if ci_1* = $lanes_(inn X N, c)
+  (VCONST V128 c) (VTESTOP (imm X N) ALL_TRUE) ~> (CONST I32 1)
+  -- if ci_1* = $lanes_(imm X N, c)
   -- (if $(ci_1 =/= 0))*
 
 rule Step_pure/vtestop-false:
-  (VCONST V128 c) (VTESTOP (inn X N) ALL_TRUE) ~> (CONST I32 0)
+  (VCONST V128 c) (VTESTOP (imm X N) ALL_TRUE) ~> (CONST I32 0)
   -- otherwise
 
 
 rule Step_pure/vbitmask:
-  (VCONST V128 c) (VBITMASK (inn X N)) ~> (CONST I32 ci)
-  -- if ci_1* = $lanes_(inn X N, c)
-  -- if $ibits(32, ci) = $ilt($lsize(inn), S, ci_1, 0)*
+  (VCONST V128 c) (VBITMASK (imm X N)) ~> (CONST I32 ci)
+  -- if ci_1* = $lanes_(imm X N, c)
+  -- if $ibits(32, ci) = $ilt($lsize(imm), S, ci_1, 0)*
 
 
 rule Step_pure/vnarrow:
-  (VCONST V128 c_1) (VCONST V128 c_2) (VNARROW (inn_1 X N_1) (inn_2 X N_2) sx) ~> (VCONST V128 c)
-  -- if ci_1* = $lanes_(inn_1 X N_1, c_1)
-  -- if ci_2* = $lanes_(inn_1 X N_1, c_2)
-  -- if cj_1* = $narrow($size(inn_1), $size(inn_2), sx, ci_1)*
-  -- if cj_2* = $narrow($size(inn_1), $size(inn_2), sx, ci_2)*
-  -- if c = $invlanes_(inn_2 X N_2, cj_1* cj_2*)
+  (VCONST V128 c_1) (VCONST V128 c_2) (VNARROW (imm_2 X N_2) (imm_1 X N_1) sx) ~> (VCONST V128 c)
+  -- if ci_1* = $lanes_(imm_1 X N_1, c_1)
+  -- if ci_2* = $lanes_(imm_1 X N_1, c_2)
+  -- if cj_1* = $narrow($lsize(imm_1), $lsize(imm_2), sx, ci_1)*
+  -- if cj_2* = $narrow($lsize(imm_1), $lsize(imm_2), sx, ci_2)*
+  -- if c = $invlanes_(imm_2 X N_2, cj_1* cj_2*)
 
 
 rule Step_pure/vcvtop-normal:
-  (VCONST V128 c_1) (VCVTOP (lnn_2 X N_2) vcvtop eps (lnn_1 X N_1) sx) ~> (VCONST V128 c)
+  (VCONST V128 c_1) (VCVTOP (lnn_2 X N_2) vcvtop eps (lnn_1 X N_1) sx?) ~> (VCONST V128 c)
   -- if c'* = $lanes_(lnn_1 X N_1, c_1)
-  -- if c = $invlanes_(lnn_2 X N_2, $vcvtop(lnn_1 X N_1, lnn_2 X N_2, vcvtop, sx, c')*)
+  -- if c = $invlanes_(lnn_2 X N_2, $vcvtop(lnn_1 X N_1, lnn_2 X N_2, vcvtop, sx?, c')*)
 
 var hf : half  ;; TODO: this declaration shouldn't be needed
 rule Step_pure/vcvtop-half:
-  (VCONST V128 c_1) (VCVTOP (inn_2 X N_2) vcvtop hf (inn_1 X N_1) sx?) ~> (VCONST V128 c)
-  -- if ci* = $lanes_(inn_1 X N_1, c_1)[$halfop(hf, 0, N_2) : N_2]
-  -- if c = $invlanes_(inn_2 X N_2, $vcvtop(inn_1 X N_1, inn_2 X N_2, vcvtop, sx?, ci)*)
+  (VCONST V128 c_1) (VCVTOP (lnn_2 X N_2) vcvtop hf (lnn_1 X N_1) sx?) ~> (VCONST V128 c)
+  -- if ci* = $lanes_(lnn_1 X N_1, c_1)[$halfop(hf, 0, N_2) : N_2]
+  -- if c = $invlanes_(lnn_2 X N_2, $vcvtop(lnn_1 X N_1, lnn_2 X N_2, vcvtop, sx?, ci)*)
 
+;; TODO: change inn to nt 
 rule Step_pure/vcvtop-zero:
-  (VCONST V128 c_1) (VCVTOP (inn_2 X N_2) vcvtop eps (inn_1 X N_1) sx? ZERO) ~> (VCONST V128 c)
-  -- if ci* = $lanes_(inn_1 X N_1, c_1)
-  -- if c = $invlanes_(inn_2 X N_2, $vcvtop(inn_1 X N_1, inn_2 X N_2, vcvtop, sx?, ci)* 0^N_1)
+  (VCONST V128 c_1) (VCVTOP (nt_2 X N_2) vcvtop eps (nt_1 X N_1) sx? ZERO) ~> (VCONST V128 c)
+  -- if ci* = $lanes_(nt_1 X N_1, c_1)
+  -- if c = $invlanes_(nt_2 X N_2, $vcvtop(nt_1 X N_1, nt_2 X N_2, vcvtop, sx?, ci)* $zero(nt_2)^N_1)
 
 
 rule Step_pure/vextunop:
@@ -825,11 +810,11 @@ rule Step_read/load-pack-val:
 
 rule Step_read/vload-oob:
   z; (CONST I32 i) (VLOAD x mo)  ~>  TRAP
-  -- if $(i + mo.OFFSET + $size(V128)/8 > |$mem(z, x).DATA|)
+  -- if $(i + mo.OFFSET + $vsize(V128)/8 > |$mem(z, x).DATA|)
 
 rule Step_read/vload-val:
   z; (CONST I32 i) (VLOAD x mo)  ~>  (VCONST V128 c)
-  -- if $vbytes(V128, c) = $mem(z, x).DATA[i + mo.OFFSET : $size(V128)/8]
+  -- if $vbytes(V128, c) = $mem(z, x).DATA[i + mo.OFFSET : $vsize(V128)/8]
 
 
 rule Step_read/vload-shape-oob:
@@ -839,8 +824,8 @@ rule Step_read/vload-shape-oob:
 rule Step_read/vload-shape-val:
   z; (CONST I32 i) (VLOAD (SHAPE M X N sx) x mo)  ~>  (VCONST V128 c)
   -- (if $ibytes(M, j) = $mem(z, x).DATA[i + mo.OFFSET + k * M/8 : M/8])^(k<N)
-  -- if $size(inn) = $(M * 2)  ;; TODO: relate implicitly
-  -- if c = $invlanes_(inn X N, $ext(M, $size(inn), sx, j)^N)
+  -- if $lsize(imm) = $(M * 2)  ;; TODO: relate implicitly
+  -- if c = $invlanes_(imm X N, $ext(M, $lsize(imm), sx, j)^N)
 
 
 rule Step_read/vload-splat-oob:
@@ -873,7 +858,7 @@ rule Step_read/vload_lane-val:
   z; (CONST I32 i) (VCONST V128 c_1) (VLOAD_LANE N x mo j)  ~>  (VCONST V128 c)
   -- if $ibytes(N, k) = $mem(z, x).DATA[i + mo.OFFSET : N/8]
   -- if N = $lsize(imm)  ;; TODO: relate implicitly
-  -- if M = $($size(V128)/N)
+  -- if M = $($vsize(V128)/N)
   -- if c = $invlanes_(imm X M, $lanes_(imm X M, c_1)[[j] = k])
 
 
@@ -895,10 +880,10 @@ rule Step/store-pack-val:
 
 rule Step/vstore-oob:
   z; (CONST I32 i) (VCONST V128 c) (VSTORE x mo)  ~>  z; TRAP
-  -- if $(i + mo.OFFSET + $size(V128)/8) > |$mem(z, x).DATA|
+  -- if $(i + mo.OFFSET + $vsize(V128)/8) > |$mem(z, x).DATA|
 
 rule Step/vstore-val:
-  z; (CONST I32 i) (VCONST V128 c) (VSTORE x mo)  ~>  $with_mem(z, x, $(i + mo.OFFSET), $($size(V128)/8), b*); eps
+  z; (CONST I32 i) (VCONST V128 c) (VSTORE x mo)  ~>  $with_mem(z, x, $(i + mo.OFFSET), $($vsize(V128)/8), b*); eps
   -- if b* = $vbytes(V128, c)
 
 

@@ -144,7 +144,7 @@ and eval_expr env expr =
     let args = List.map (eval_expr env) el in
     (match call_func fname args  with
     | Some v -> v
-    | _ -> raise Exception.MissingReturnValue
+    | _ -> raise (Exception.MissingReturnValue fname)
     )
   (* Data Structure *)
   | ListE el -> List.map (eval_expr env) el |> listV_of_list
@@ -450,7 +450,7 @@ and step_instr (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.
     (try
       ctx |> AlContext.add_instrs il1 |> run
     with
-    | Exception.MissingReturnValue
+    | Exception.MissingReturnValue _
     | Exception.OutOfMemory ->
       AlContext.add_instrs il2 ctx
     )
@@ -462,40 +462,29 @@ and step_instr (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.
     | v -> WasmContext.push_value v
     );
     ctx
-  | PopI ({ it = FrameE _; _ }) ->
-    WasmContext.pop_context () |> ignore;
-    ctx
-  | PopI ({ it = IterE ({ it = VarE name; _ }, [name'], ListN (e', None)); _ }) when name = name' ->
-    let i = eval_expr env e' |> al_to_int in
-    let v =
-      List.init i (fun _ -> WasmContext.pop_value ())
-      |> List.rev
-      |> listV_of_list
-    in
-    AlContext.update_env name v ctx
   | PopI e ->
-    (match e.it, WasmContext.pop_value () with
-    | CaseE (("CONST", _), [{ it = VarE nt; _ }; { it = VarE name; _ }]), CaseV ("CONST", [ ty; v ]) ->
+    (match e.it with
+    | FrameE _ ->
+      (match WasmContext.pop_context () with
+      | FrameV _, _, _ -> ()
+      | _ -> failwith "Invalid context");
       ctx
-      |> AlContext.update_env nt ty
-      |> AlContext.update_env name v
-    | CaseE (("CONST", _), [tyE; { it = VarE name; _ }]), CaseV ("CONST", [ ty; v ]) ->
-      assert (eval_expr env tyE = ty);
+    | IterE ({ it = VarE name; _ }, [name'], ListN (e', None)) when name = name' ->
+      let i = eval_expr env e' |> al_to_int in
+      let v =
+        List.init i (fun _ -> WasmContext.pop_value ())
+        |> List.rev
+        |> listV_of_list
+      in
       AlContext.update_env name v ctx
-    | VarE name, v -> AlContext.update_env name v ctx
-    | CaseE (("VCONST", _), [tyE; { it = VarE name; _ }]), CaseV ("VCONST", [ ty; v ]) ->
-      assert (eval_expr env tyE = ty);
-      AlContext.update_env name v ctx
-    | (_, h) ->
-      error_instr
-        instr
-        (sprintf "Invalid pop for value %s: " (structured_string_of_value h))
-
-    )
-  | PopAllI ({ it = IterE ({ it = VarE name; _ }, [name'], List); _ }) when name = name' ->
-    let v = WasmContext.get_value_stack () |> List.rev |> listV_of_list in
-    AlContext.update_env name v ctx
-  | PopAllI _ -> error_instr instr "Invalid pop"
+    | _ ->
+      let new_env = assign e (WasmContext.pop_value ()) env in
+      AlContext.set_env new_env ctx
+      )
+  | PopAllI e ->
+    let v = WasmContext.pop_value_stack () |> List.rev |> listV_of_list in
+    let new_env = assign e v env in
+    AlContext.set_env new_env ctx
   | LetI (e1, e2) ->
     let new_env = ctx |> AlContext.get_env |> assign e1 (eval_expr env e2) in
     AlContext.set_env new_env ctx
@@ -568,7 +557,7 @@ and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
     (match call_func "inst_reftype" [ mm; dummy_rt ] with
     | Some (CaseV ("REF", [ n; ht' ])) when n = null ->
       CaseV ("REF.NULL", [ ht' ]) |> WasmContext.push_value
-    | _ -> raise Exception.MissingReturnValue);
+    | _ -> raise (Exception.MissingReturnValue "inst_reftype"));
     ctx
   | CaseV ("REF.NULL", _)
   | CaseV ("CONST", _)

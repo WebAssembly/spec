@@ -453,9 +453,11 @@ let iq15mulrsat_s : numerics =
     name = "iq15mulrsat_s";
     f =
       (function
-      | [ NumV _ as z; NumV m; NumV n ] ->
-        sat.f [ z; nullary "S"; ishr.f [ z; nullary "S"; NumV Z.(mul m n + of_int 0x4000); al_of_int 15 ]]
-      | vs -> fail_list "iq15mulrsat_s" vs
+      | [ NumV _ as z; NumV _ as m; NumV _ as n ] ->
+        let m = signed.f [ z; m ] |> al_to_z in
+        let n = signed.f [ z; n ] |> al_to_z in
+        sat.f [ z; nullary "S"; NumV Z.(shift_right (mul m n + of_int 0x4000) 15) ]
+      | vs -> fail_list "Invalid iq15mulrsat_s" vs
       );
   }
 
@@ -872,7 +874,12 @@ let inverse_of_ibytes : numerics =
     f =
       (function
       | [ NumV n; ListV bs ] ->
-          assert (n = Z.of_int (Array.length !bs * 8));
+          assert (
+            (* numtype *)
+            n = Z.of_int (Array.length !bs * 8) ||
+            (* packtype *)
+            (n = Z.of_int 32 && Array.length !bs <= 2)
+          );
           NumV (Array.fold_right (fun b acc ->
             match b with
             | NumV b when Z.zero <= b && b < Z.of_int 256 -> Z.add b (Z.shift_left acc 8)
@@ -947,6 +954,14 @@ let inverse_of_zbytes : numerics =
       );
   }
 
+let inverse_of_cbytes : numerics =
+  {
+    name = "inverse_of_cbytes";
+    f = function
+      | [ CaseV ("V128", []); _ ] as args -> inverse_of_vbytes.f args
+      | args -> inverse_of_nbytes.f args
+  }
+
 let bytes_ : numerics = { name = "bytes"; f = nbytes.f }
 let inverse_of_bytes_ : numerics = { name = "inverse_of_bytes"; f = inverse_of_nbytes.f }
 
@@ -1018,6 +1033,16 @@ let inverse_of_lanes : numerics =
       );
   }
 
+let inverse_of_isize : numerics =
+  {
+    name = "inverse_of_isize";
+    f =
+      (function
+      | [ NumV z ] when z = Z.of_int 32 -> CaseV ("I32", [])
+      | [ NumV z ] when z = Z.of_int 64 -> CaseV ("I64", [])
+      | _ -> failwith "Invalid inverse_of_isize"
+      );
+  }
 let inverse_of_lsize : numerics =
   {
     name = "inverse_of_lsize";
@@ -1059,6 +1084,7 @@ let numerics_list : numerics list = [
   inverse_of_nbytes;
   inverse_of_vbytes;
   inverse_of_zbytes;
+  inverse_of_cbytes;
   bytes_;
   inverse_of_bytes_;
   inverse_of_concat;
@@ -1131,6 +1157,7 @@ let numerics_list : numerics list = [
   reinterpret;
   lanes;
   inverse_of_lanes;
+  inverse_of_isize;
   inverse_of_lsize;
   inverse_of_ibits;
 ]

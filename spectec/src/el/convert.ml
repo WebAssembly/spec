@@ -40,15 +40,16 @@ let typ_of_varid id =
     | _ -> VarT (id, [])
     ) $ id.at
 
-let varid_of_typ t =
+let rec varid_of_typ t =
   (match t.it with
-  | VarT (id, _) | ParenT {it = VarT (id, _); _} -> id.it
+  | VarT (id, _) -> id.it
   | BoolT -> "bool"
   | NumT NatT -> "nat"
   | NumT IntT -> "int"
   | NumT RatT -> "rat"
   | NumT RealT -> "real"
   | TextT -> "text"
+  | ParenT t1 -> (varid_of_typ t1).it
   | _ -> "_"
   ) $ t.at
 
@@ -84,11 +85,47 @@ let rec exp_of_typ t =
   | SeqT ts -> SeqE (List.map exp_of_typ ts)
   | InfixT (t1, atom, t2) -> InfixE (exp_of_typ t1, atom, exp_of_typ t2)
   | BrackT (l, t1, r) -> BrackE (l, exp_of_typ t1, r)
-  | CaseT _ | RangeT _ -> error t.at "malformed expression"
+  | CaseT _ | ConT _ | RangeT _ -> error t.at "malformed expression"
   ) $ t.at
 
 and expfield_of_typfield (atom, (t, _prems), _) =
   (atom, exp_of_typ t)
+
+
+let expify t = function
+  | Some e -> e
+  | None -> VarE ("_" $ t.at, []) $ t.at
+
+module Set = Set.Make(String)
+
+let rec pat_of_typ' s t : exp option =
+  let (let*) = Option.bind in
+  match t.it with
+  | VarT (id, _args) when not (Set.mem id.it !s) ->
+    (* Suppress duplicates. *)
+    s := Set.add id.it !s;
+    Some (VarE (id, []) $ t.at)
+  | ParenT t1 ->
+    let* e1 = pat_of_typ' s t1 in
+    Some (ParenE (e1, false) $ t.at)
+  | TupT ts ->
+    let* es = pats_of_typs' s ts in
+    Some (TupE es $ t.at)
+  | SeqT ts ->
+    let* es = pats_of_typs' s ts in
+    Some (SeqE es $ t.at)
+  | IterT (t1, iter) ->
+    let* e1 = pat_of_typ' s t1 in
+    Some (IterE (e1, iter) $ t.at)
+  | _ -> None
+
+and pats_of_typs' s ts : exp list option =
+  let eos = List.map (pat_of_typ' s) ts in
+  if List.for_all ((=) None) eos then None else
+  Some (List.map2 expify ts eos)
+
+let pat_of_typ t = expify t (pat_of_typ' (ref Set.empty) t)
+let pats_of_typs ts = List.map2 expify ts (List.map (pat_of_typ' (ref Set.empty)) ts)
 
 
 let rec sym_of_exp e =

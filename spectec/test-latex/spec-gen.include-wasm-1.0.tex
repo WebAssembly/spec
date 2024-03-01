@@ -45,17 +45,8 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& {\mathit{list}}({\mathit{A}}) &::=& {{\mathit{A}}^\ast} &\quad
-  \mbox{if}~{|{{\mathit{A}}^\ast}|} < {2^{32}} \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}{@{}lrrl@{}l@{}}
-\mbox{(character)} & {\mathit{char}} &::=& \mathrm{U{+}00} ~|~ \dots ~|~ \mathrm{U{+}D7FF} ~|~ \mathrm{U{+}E000} ~|~ \dots ~|~ \mathrm{U{+}10FFFF} \\
-\mbox{(name)} & {\mathit{name}} &::=& {{\mathit{char}}^\ast} \\
+& {\mathit{list}}({\mathit{X}}) &::=& {{\mathit{X}}^\ast} &\quad
+  \mbox{if}~{|{{\mathit{X}}^\ast}|} < {2^{32}} \\
 \end{array}
 $$
 
@@ -133,6 +124,21 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {{\mathrm{canon}}}_{{\mathit{N}}} &=& {2^{{\mathrm{signif}}({\mathit{N}}) - 1}} &  \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+\mbox{(character)} & {\mathit{char}} &::=& \mathrm{U{+}00} ~|~ \dots ~|~ \mathrm{U{+}D7FF} ~|~ \mathrm{U{+}E000} ~|~ \dots ~|~ \mathrm{U{+}10FFFF} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+\mbox{(name)} & {\mathit{name}} &::=& {{\mathit{char}}^\ast} &\quad
+  \mbox{if}~{|{\mathrm{utf{\scriptstyle8}}}({{\mathit{char}}^\ast})|} < {2^{32}} \\
 \end{array}
 $$
 

@@ -185,7 +185,7 @@ rule Rectype_ok/empty:
   C |- REC eps : OK(x)
 
 rule Rectype_ok/cons:
-  C |- REC st_1 st* : OK(x)
+  C |- REC (st_1 st*) : OK(x)
   -- Subtype_ok: C |- st_1 : OK(x)
   -- Rectype_ok: C |- REC st* : OK($(x+1))
 
@@ -197,7 +197,7 @@ rule Rectype_ok2/empty:
   C |- REC eps : OK x i
 
 rule Rectype_ok2/cons:
-  C |- REC st_1 st* : OK x i
+  C |- REC (st_1 st*) : OK x i
   -- Subtype_ok2: C |- st_1 : OK x i
   -- Rectype_ok2: C |- REC st* : OK $(x+1) $(i+1)
 
@@ -419,7 +419,7 @@ rule Fieldtype_sub/var:
 
 
 rule Comptype_sub/struct:
-  C |- STRUCT yt_1* yt'_1 <: STRUCT yt_2*
+  C |- STRUCT (yt_1* yt'_1) <: STRUCT yt_2*
   -- (Fieldtype_sub: C |- yt_1 <: yt_2)*
 
 rule Comptype_sub/array:
@@ -1046,7 +1046,7 @@ rule Instr_ok/vload_lane:
 rule Instr_ok/vstore:
   C |- VSTORE x {ALIGN n_A, OFFSET n_O} : I32 V128 -> eps
   -- if C.MEM[x] = mt
-  -- if $(2^(n_A) <= $size(V128)/8)
+  -- if $(2^(n_A) <= $vsize(V128)/8)
 
 rule Instr_ok/vstore_lane:
   C |- VSTORE_LANE n x {ALIGN n_A, OFFSET n_O} laneidx : I32 V128 -> eps

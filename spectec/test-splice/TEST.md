@@ -58,7 +58,6 @@ $$
 {|\mathsf{i{\scriptstyle64}}|} &=& 64 &  \\
 {|\mathsf{f{\scriptstyle32}}|} &=& 32 &  \\
 {|\mathsf{f{\scriptstyle64}}|} &=& 64 &  \\
-{|\mathsf{v{\scriptstyle128}}|} &=& 128 &  \\
 \end{array}
 $$
 
@@ -340,6 +339,7 @@ warning: syntax `blocktype` was never spliced
 warning: syntax `byte` was never spliced
 warning: syntax `castop` was never spliced
 warning: syntax `char` was never spliced
+warning: syntax `cnn` was never spliced
 warning: syntax `code` was never spliced
 warning: syntax `comptype` was never spliced
 warning: syntax `config` was never spliced
@@ -955,7 +955,6 @@ warning: rule `Step_read/array.new_elem-oob` was never spliced
 warning: rule `Step_read/array.new_elem-alloc` was never spliced
 warning: rule `Step_read/array.new_data-oob` was never spliced
 warning: rule `Step_read/array.new_data-num` was never spliced
-warning: rule `Step_read/array.new_data-vec` was never spliced
 warning: rule `Step_read/array.get-null` was never spliced
 warning: rule `Step_read/array.get-oob` was never spliced
 warning: rule `Step_read/array.get-array` was never spliced
@@ -981,7 +980,6 @@ warning: rule `Step_read/array.init_data-null` was never spliced
 warning: rule `Step_read/array.init_data-oob1` was never spliced
 warning: rule `Step_read/array.init_data-oob2` was never spliced
 warning: rule `Step_read/array.init_data-zero` was never spliced
-warning: rule `Step_read/array.init_data-num` was never spliced
 warning: rule `Step_read/array.init_data-num` was never spliced
 warning: rule `Step_read/local.get` was never spliced
 warning: rule `Step_read/global.get` was never spliced
@@ -1069,10 +1067,13 @@ warning: definition `before` was never spliced
 warning: definition `binop` was never spliced
 warning: definition `blocktype` was never spliced
 warning: definition `canon_` was never spliced
+warning: definition `cbytes` was never spliced
 warning: definition `clostype` was never spliced
 warning: definition `clostypes` was never spliced
 warning: definition `concat_` was never spliced
+warning: definition `const` was never spliced
 warning: definition `convert` was never spliced
+warning: definition `cunpack` was never spliced
 warning: definition `cvtop` was never spliced
 warning: definition `data` was never spliced
 warning: definition `datainst` was never spliced
@@ -1170,6 +1171,7 @@ warning: definition `irotl` was never spliced
 warning: definition `irotr` was never spliced
 warning: definition `ishl` was never spliced
 warning: definition `ishr` was never spliced
+warning: definition `isize` was never spliced
 warning: definition `isub` was never spliced
 warning: definition `isubsat` was never spliced
 warning: definition `ixor` was never spliced
@@ -1252,6 +1254,7 @@ warning: definition `vextbinop` was never spliced
 warning: definition `vextunop` was never spliced
 warning: definition `vishiftop` was never spliced
 warning: definition `vrelop` was never spliced
+warning: definition `vsize` was never spliced
 warning: definition `vunop` was never spliced
 warning: definition `vunpack` was never spliced
 warning: definition `vvbinop` was never spliced
@@ -1270,6 +1273,7 @@ warning: definition `with_table` was never spliced
 warning: definition `with_tableinst` was never spliced
 warning: definition `wrap` was never spliced
 warning: definition `zbytes` was never spliced
+warning: definition `zero` was never spliced
 warning: definition `zsize` was never spliced
 warning: rule prose `exec/array.new_data` was never spliced
 warning: rule prose `exec/call_ref` was never spliced
@@ -1494,6 +1498,8 @@ warning: definition prose `canon_` was never spliced
 warning: definition prose `clostype` was never spliced
 warning: definition prose `clostypes` was never spliced
 warning: definition prose `concat_` was never spliced
+warning: definition prose `const` was never spliced
+warning: definition prose `cunpack` was never spliced
 warning: definition prose `cvtop` was never spliced
 warning: definition prose `data` was never spliced
 warning: definition prose `datainst` was never spliced
@@ -1539,6 +1545,7 @@ warning: definition prose `invibytes` was never spliced
 warning: definition prose `invlanes_` was never spliced
 warning: definition prose `invoke` was never spliced
 warning: definition prose `invsigned` was never spliced
+warning: definition prose `isize` was never spliced
 warning: definition prose `lanetype` was never spliced
 warning: definition prose `local` was never spliced
 warning: definition prose `lsize` was never spliced
@@ -1608,8 +1615,10 @@ warning: definition prose `utf8` was never spliced
 warning: definition prose `vbinop` was never spliced
 warning: definition prose `vcvtop` was never spliced
 warning: definition prose `vextbinop` was never spliced
+warning: definition prose `vextunop` was never spliced
 warning: definition prose `vishiftop` was never spliced
 warning: definition prose `vrelop` was never spliced
+warning: definition prose `vsize` was never spliced
 warning: definition prose `vunop` was never spliced
 warning: definition prose `vunpack` was never spliced
 warning: definition prose `vvbinop` was never spliced
@@ -1626,6 +1635,7 @@ warning: definition prose `with_meminst` was never spliced
 warning: definition prose `with_struct` was never spliced
 warning: definition prose `with_table` was never spliced
 warning: definition prose `with_tableinst` was never spliced
+warning: definition prose `zero` was never spliced
 warning: definition prose `zsize` was never spliced
 == Complete.
 ```

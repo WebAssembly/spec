@@ -297,6 +297,11 @@ module WasmContext = struct
     let _, vs, _ = get_context () in
     vs
 
+  let pop_value_stack () =
+    let v, vs, ws = pop_context () in
+    push_context (v, [], ws);
+    vs
+
   let push_value v =
     let v_ctx, vs, vs_instr = pop_context () in
     if is_value v then

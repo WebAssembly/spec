@@ -78,18 +78,19 @@ and typ' =
   | BoolT                        (* `bool` *)
   | NumT of numtyp               (* numtyp *)
   | TextT                        (* `text` *)
-  | TupT of (id * typ) list      (* typ * ... * typ *)
+  | TupT of (exp * typ) list     (* typ * ... * typ *)
   | IterT of typ * iter          (* typ iter *)
 
 and deftyp = deftyp' phrase
 and deftyp' =
-  | AliasT of typ                       (* type alias *)
-  | NotationT of mixop * typ            (* notation type *)
-  | StructT of typfield list            (* record type *)
-  | VariantT of typcase list            (* variant type *)
+  | AliasT of typ                (* type alias *)
+  | NotationT of typcon          (* notation type *)
+  | StructT of typfield list     (* record type *)
+  | VariantT of typcase list     (* variant type *)
 
 and typfield = atom * (bind list * typ * prem list) * hint list  (* record field *)
 and typcase = atom * (bind list * typ * prem list) * hint list   (* variant case *)
+and typcon = mixop * (bind list * typ * prem list) * hint list   (* notation *)
 
 
 (* Expressions *)
@@ -142,6 +143,7 @@ and exp' =
   | CallE of id * arg list       (* defid( arg* ) *)
   | IterE of exp * iterexp       (* exp iter *)
   | ProjE of exp * int           (* exp.i *)
+  | UnmixE of exp * mixop        (* exp.mixop *)
   | OptE of exp option           (* exp? *)
   | TheE of exp                  (* exp! *)
   | ListE of exp list            (* [exp ... exp] *)
@@ -158,7 +160,7 @@ and path' =
   | SliceP of path * exp * exp   (* path `[` exp `:` exp `]` *)
   | DotP of path * atom          (* path `.` atom *)
 
-and iterexp = iter * id list
+and iterexp = iter * (id * typ) list
 
 
 (* Definitions *)

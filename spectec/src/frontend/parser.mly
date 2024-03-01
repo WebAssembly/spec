@@ -95,6 +95,13 @@ let is_post_exp e =
   | HoleE _ -> true
   | _ -> false
 
+let rec is_typcon t =
+  match t.it with
+  | VarT _ | BoolT | NumT _ | TextT | TupT _ -> false
+  | StrT _ | CaseT _ | ConT _ | RangeT _
+  | AtomT _ | SeqT _ | InfixT _ | BrackT _ -> true
+  | ParenT t1 | IterT (t1, _) -> is_typcon t1
+
 %}
 
 %token LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE
@@ -358,7 +365,13 @@ typ : typ_post { $1 }
 
 deftyp : deftyp_ { $1 $ $sloc }
 deftyp_ :
-  | nottyp { $1.it }
+  | nottyp hint* prem_list
+    { if is_typcon $1 || $3 <> [] then
+        ConT (($1, $3), $2)
+      else if $2 <> [] then
+        error (List.hd $2).hintid.at "misplaced hint"
+      else $1.it
+    }
   | LBRACE comma_nl_list(fieldtyp) RBRACE { StrT $2 }
   | dots_list(casetyp)
     { let x, y, z = $1 in
