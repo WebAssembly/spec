@@ -27,6 +27,8 @@ def $size(F32) = 32
 def $size(F64) = 64
 def $size(V128) = 128
 
+def $isize(inn) = $size(inn)
+
 def $psize(I8) = 8
 def $psize(I16) = 16
 

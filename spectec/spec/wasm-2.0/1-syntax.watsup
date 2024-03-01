@@ -197,6 +197,7 @@ var xt : externtype
 ;; Constants
 
 def $size(valtype) : nat      hint(partial) hint(show |%|)
+def $isize(inn) : nat         hint(show |%|)
 def $psize(packtype) : nat    hint(show |%|)
 def $lsize(lanetype) : nat    hint(show |%|)
 def $lanetype(shape) : lanetype
@@ -214,6 +215,9 @@ syntax lane_(imm) = iN($lsize(imm))  ;; HACK
 
 syntax vec_(vnn) = vN($size(vnn))
 
+def $zero(numtype) : num_(numtype)
+def $zero(inn) = 0
+def $zero(fnn) = $fzero($size(fnn))
 
 ;; Numeric operators
 
