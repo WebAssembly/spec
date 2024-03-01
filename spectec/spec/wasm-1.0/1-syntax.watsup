@@ -104,8 +104,8 @@ var l : labelidx
 syntax valtype hint(desc "number type") =
   | I32 | I64 | F32 | F64
 
-syntax inn hint(show I#n) = | I32 | I64
-syntax fnn hint(show F#n) = | F32 | F64
+syntax inn hint(show I#n) = I32 | I64
+syntax fnn hint(show F#n) = F32 | F64
 
 var t : valtype
 
@@ -146,11 +146,11 @@ syntax val_(fnn) = fN($size(fnn))
 
 ;; Operators
 
-syntax sx hint(desc "signedness") = | U | S
+syntax sx hint(desc "signedness") = U | S
 
 syntax unop_(valtype)
-syntax unop_(inn) = | CLZ | CTZ | POPCNT
-syntax unop_(fnn) = | ABS | NEG | SQRT | CEIL | FLOOR | TRUNC | NEAREST
+syntax unop_(inn) = CLZ | CTZ | POPCNT
+syntax unop_(fnn) = ABS | NEG | SQRT | CEIL | FLOOR | TRUNC | NEAREST
 
 syntax binop_(valtype)
 syntax binop_(inn) =
@@ -160,7 +160,7 @@ syntax binop_(fnn) =
   | ADD | SUB | MUL | DIV | MIN | MAX | COPYSIGN
 
 syntax testop_(valtype)
-syntax testop_(inn) = | EQZ
+syntax testop_(inn) = EQZ
 ;; syntax testop_(fnn) = |      ;; uninhabited
 
 syntax relop_(valtype)
@@ -171,7 +171,7 @@ syntax relop_(inn) =
 syntax relop_(fnn) =
   | EQ | NE | LT | GT | LE | GE
 
-syntax cvtop = | CONVERT | REINTERPRET
+syntax cvtop = CONVERT | REINTERPRET
 
 
 syntax memop hint(desc "memory operator") = {ALIGN u32, OFFSET u32}

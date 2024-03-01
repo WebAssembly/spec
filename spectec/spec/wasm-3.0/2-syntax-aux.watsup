@@ -127,7 +127,7 @@ def $diffrt((REF nul_1 ht_1), (REF eps ht_2)) = (REF nul_1 ht_1)
 
 ;; Injection
 
-syntax typevar = | _IDX typeidx | REC nat
+syntax typevar = _IDX typeidx | REC nat
 var xx : typevar
 
 def $idx(typeidx) : typevar  hint(show %)
