@@ -133,7 +133,7 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
       ExtE (overlap e1 e2, path1, overlap e1' e2')
     | StrE efs1, StrE efs2 when List.map fst efs1 = List.map fst efs2 ->
       StrE (List.map2 (fun (a1, e1) (_, e2) -> (a1, overlap e1 e2)) efs1 efs2)
-    | DotE (e1, atom1), DotE (e2, atom2) when atom1 = atom2 ->
+    | DotE (e1, atom1), DotE (e2, atom2) when eq_atom atom1 atom2 ->
       DotE (overlap e1 e2, atom1)
     | CompE (e1, e1'), CompE (e2, e2') ->
       CompE (overlap e1 e2, overlap e1' e2')
@@ -141,7 +141,7 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
       LenE (overlap e1 e2)
     | TupE es1, TupE es2 when List.length es1 = List.length es2 ->
       TupE (List.map2 overlap es1 es2)
-    | MixE (mixop1, e1), MixE (mixop2, e2) when mixop1 = mixop2 ->
+    | MixE (mixop1, e1), MixE (mixop2, e2) when eq_mixop mixop1 mixop2 ->
       MixE (mixop1, overlap e1 e2)
     | CallE (id1, as1), CallE (id2, as2) when eq_id id1 id2 ->
       CallE (id1, List.map2 overlap_arg as1 as2)
@@ -149,7 +149,7 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
       IterE (overlap e1 e2, itere1)
     | ProjE (e1, i1), ProjE (e2, i2) when i1 = i2 ->
       ProjE (overlap e1 e2, i1)
-    | UnmixE (e1, op1), UnmixE (e2, op2) when op1 = op2 ->
+    | UnmixE (e1, op1), UnmixE (e2, op2) when eq_mixop op1 op2 ->
       UnmixE (overlap e1 e2, op1)
     | OptE (Some e1), OptE (Some e2) ->
       OptE (Some (overlap e1 e2))
@@ -159,7 +159,7 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
       ListE (List.map2 overlap es1 es2)
     | CatE (e1, e1'), CatE (e2, e2') ->
       CatE (overlap e1 e2, overlap e1' e2')
-    | CaseE (atom1, e1), CaseE (atom2, e2) when atom1 = atom2 ->
+    | CaseE (atom1, e1), CaseE (atom2, e2) when eq_atom atom1 atom2 ->
       CaseE (atom1, overlap e1 e2)
     | SubE (e1, typ1, typ1'), SubE (e2, typ2, typ2') when eq_typ typ1 typ2 && eq_typ typ1' typ2' ->
       SubE (overlap e1 e2, typ1, typ1')

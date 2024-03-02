@@ -60,12 +60,12 @@ let rebind _space env' id t =
   Env.add id.it t env'
 
 let find_field fs atom at =
-  match List.find_opt (fun (atom', _, _) -> atom' = atom) fs with
+  match List.find_opt (fun (atom', _, _) -> Eq.eq_atom atom' atom) fs with
   | Some (_, x, _) -> x
   | None -> error at ("unbound field `" ^ string_of_atom atom ^ "`")
 
 let find_case cases atom at =
-  match List.find_opt (fun (atom', _, _) -> atom' = atom) cases with
+  match List.find_opt (fun (atom', _, _) -> Eq.eq_atom atom' atom) cases with
   | Some (_, x, _) -> x
   | None -> error at ("unknown case `" ^ string_of_atom atom ^ "`")
 
@@ -324,7 +324,7 @@ and infer_exp env e : typ =
   | UnmixE (e1, op) ->
     let t1 = infer_exp env e1 in
     let op', t = as_mix_typ "expression" env Infer t1 e1.at in
-    if op <> op' then
+    if not (Eq.eq_mixop op op') then
       error e.at "invalid mixfix projection";
     t
   | OptE _ -> error e.at "cannot infer type of option"
@@ -439,7 +439,7 @@ and valid_exp env e t =
   | UnmixE (e1, op) ->
     let t1 = infer_exp env e1 in
     let op', t' = as_mix_typ "expression" env Infer t1 e1.at in
-    if op <> op' then
+    if not (Eq.eq_mixop op op') then
       error e.at "invalid mixfix projection";
     equiv_typ env t' t e.at
   | OptE eo ->
@@ -467,7 +467,7 @@ and valid_exp env e t =
 
 
 and valid_expmix env mixop e (mixop', t) at =
-  if mixop <> mixop' then
+  if not (Eq.eq_mixop mixop mixop') then
     error at (
       "mixin notation `" ^ string_of_mixop mixop ^
       "` does not match expected notation `" ^ string_of_mixop mixop' ^ "`"
@@ -486,7 +486,7 @@ and valid_tup_exp env s es ets =
   | _, _ -> true
 
 and valid_expfield env (atom1, e) (atom2, (_binds, t, _prems), _) =
-  if atom1 <> atom2 then error e.at "unexpected record field";
+  if not (Eq.eq_atom atom1 atom2) then error e.at "unexpected record field";
   valid_exp env e t
 
 and valid_path env p t : typ =

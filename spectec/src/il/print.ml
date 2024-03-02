@@ -12,7 +12,8 @@ let space f x = " " ^ f x ^ " "
 
 (* Operators *)
 
-let string_of_atom = function
+let string_of_atom atom =
+  match atom.it with
   | Atom atomid -> atomid
   | Infinity -> "infinity"
   | Bot -> "_|_"
@@ -81,7 +82,7 @@ let string_of_cmpop = function
   | GeOp _ -> ">="
 
 let string_of_mixop = function
-  | [Atom a]::tail when List.for_all ((=) []) tail -> a
+  | [{it = Atom a; _}]::tail when List.for_all ((=) []) tail -> a
   | mixop ->
     let s =
       String.concat "%" (List.map (

@@ -442,7 +442,7 @@ let elab_hints tid = List.map (elab_hint tid)
 
 let elab_atom atom tid =
   atom.note := tid.it;
-  match atom.it with
+  (match atom.it with
   | Atom s -> Il.Atom s
   | Infinity -> Il.Infinity
   | Bot -> Il.Bot
@@ -483,6 +483,7 @@ let elab_atom atom tid =
   | RBrack -> Il.RBrack
   | LBrace -> Il.LBrace
   | RBrace -> Il.RBrace
+  ) $$ atom.at % !(atom.note)
 
 let numtyps = [NatT; IntT; RatT; RealT]
 
@@ -805,7 +806,9 @@ and elab_typ_notation env tid t : Il.mixop * Il.typ list * typ list =
       ts1', ts1
   | ParenT t1 ->
     let mixop1, ts1', ts1 = elab_typ_notation env tid t1 in
-    merge_mixop (merge_mixop [[Il.LParen]] mixop1) [[Il.RParen]], ts1', ts1
+    let l = Il.LParen $$ t.at % tid.it in
+    let r = Il.RParen $$ t.at % tid.it in
+    merge_mixop (merge_mixop [[l]] mixop1) [[r]], ts1', ts1
   | IterT (t1, iter) ->
     (match iter with
     | List1 | ListN _ -> error t.at "illegal iterator in notation type"
@@ -814,7 +817,7 @@ and elab_typ_notation env tid t : Il.mixop * Il.typ list * typ list =
       let iter' = elab_iter env iter in
       let tit = IterT (tup_typ ts1 t1.at, iter) $ t.at in
       let t' = Il.IterT (tup_typ' ts1' t1.at, iter') $ t.at in
-      let op = match iter with Opt -> Il.Quest | _ -> Il.Star in
+      let op = (match iter with Opt -> Il.Quest | _ -> Il.Star) $$ t.at % tid.it in
       (if mixop1 = [[]; []] then mixop1 else [List.flatten mixop1] @ [[op]]),
       [t'], [tit]
     )
