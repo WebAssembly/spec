@@ -156,7 +156,7 @@ let is_not_lhs e = match e.it with
 
 (* Hack to handle RETURN_CALL_ADDR, eventually should be removed *)
 let is_atomic_lhs e = match e.it with
-| CaseE (Atom "FUNC", { it = CaseE (Arrow, { it = TupE [ { it = IterE (_, (ListN _, _)); _} ; { it = IterE (_, (ListN _, _)); _} ] ; _} ); _ }) -> true
+| CaseE ({it = Atom "FUNC"; _}, { it = CaseE ({it = Arrow; _}, { it = TupE [ { it = IterE (_, (ListN _, _)); _} ; { it = IterE (_, (ListN _, _)); _} ] ; _} ); _ }) -> true
 | _ -> false
 
 (* Hack to handle ARRAY.INIT_DATA, eventually should be removed *)
@@ -223,7 +223,7 @@ let rec pre_process prem = match prem.it with
   (* HARDCODE: translation of `Expand: dt ~~ ct` into `$expanddt(dt) = ct` *)
   | RulePr (
       { it = "Expand"; _ },
-      [[]; [Approx]; []],
+      [[]; [{it = Approx; _}]; []],
       { it = TupE [dt; ct]; _ }
     ) ->
       let expanded_dt = { dt with it = CallE ("expanddt" $ no_region, [ExpA dt $ no_region]); note = ct.note } in
@@ -259,15 +259,11 @@ let animate_rule r = match r.it with
   | RuleD(id, binds, mixop, args, prems) -> (
     match (mixop, args.it) with
     (* c |- e : t *)
-    | ([ [] ; [Turnstile] ; [Colon] ; []] , TupE ([c; e; _t])) ->
+    | ([ [] ; [{it = Turnstile; _}] ; [{it = Colon; _}] ; []] , TupE ([c; e; _t])) ->
       let new_prems = animate_prems (union (free_exp false c) (free_exp false e)) prems in
       RuleD(id, binds, mixop, args, new_prems) $ r.at
-    (* lhs* ~> rhs* *)
-    | ([ [] ; [Star ; SqArrow] ; [Star]] , TupE ([lhs; _rhs]))
-    (* lhs ~> rhs* *)
-    | ([ [] ; [SqArrow] ; [Star]] , TupE ([lhs; _rhs]))
     (* lhs ~> rhs *)
-    | ([ [] ; [SqArrow] ; []] , TupE ([lhs; _rhs])) ->
+    | ([ [] ; [{it = SqArrow; _}] ; []] , TupE ([lhs; _rhs])) ->
       let new_prems = animate_prems (free_exp true lhs) prems in
       RuleD(id, binds, mixop, args, new_prems) $ r.at
     | _ -> r

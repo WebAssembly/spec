@@ -1,6 +1,8 @@
 open Ast
 
 val eq_id : id -> id -> bool
+val eq_atom : atom -> atom -> bool
+val eq_mixop : mixop -> mixop -> bool
 val eq_iter : iter -> iter -> bool
 val eq_iterexp : iterexp -> iterexp -> bool
 val eq_typ : typ -> typ -> bool

@@ -84,7 +84,7 @@ let vrule_group_to_prose ((_name, vrules): vrule_group) =
 
   (* name *)
   let winstr_name = match winstr.it with
-  | Ast.CaseE (Ast.Atom winstr_name, _) -> winstr_name
+  | Ast.CaseE ({it = Ast.Atom winstr_name; _}, _) -> winstr_name
   | _ -> failwith "unreachable"
   in
   let name = kwd winstr_name winstr.note in

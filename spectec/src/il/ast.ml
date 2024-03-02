@@ -10,7 +10,8 @@ type nat = Z.t
 type text = string
 type id = string phrase
 
-type atom =
+type atom = (atom', string) note_phrase
+and atom' =
   | Atom of string               (* atomid *)
   | Infinity                     (* infinity *)
   | Bot                          (* `_|_` *)
