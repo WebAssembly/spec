@@ -548,7 +548,6 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
   * :math:`C'.\CREFS` is the same as :math:`C.\CREFS`,
 
-
   * all other fields are empty.
 
 * For each :math:`\functype_i` in :math:`\module.\MTYPES`,
