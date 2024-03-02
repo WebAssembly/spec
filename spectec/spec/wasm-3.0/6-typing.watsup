@@ -1228,12 +1228,6 @@ relation Module_ok: |- module : OK                    hint(show "T-module")
 relation Types_ok: context |- type* : deftype*        hint(show "T-types")
 relation Globals_ok: context |- global* : globaltype* hint(show "T-globals")
 
-var ixt : externtype
-var idt : deftype
-var igt : globaltype
-var itt : tabletype
-var imt : memtype
-
 ;; TODO: refs
 rule Module_ok:
   |- MODULE type* import* func* global* table* mem* elem* data^n start? export* : OK
@@ -1248,7 +1242,7 @@ rule Module_ok:
   -- (Elem_ok: C |- elem : rt)*
   -- (Data_ok: C |- data : OK)^n
   -- (Start_ok: C |- start : OK)?
-  -- (Export_ok: C |- export : et)*
+  -- (Export_ok: C |- export : xt)*
   ;; -- TODO: disjoint export names
 
   -- if C = {TYPE dt'*, FUNC idt* dt*, GLOBAL igt* gt*, TABLE itt* tt*, MEM imt* mt*, ELEM rt*, DATA OK^n}

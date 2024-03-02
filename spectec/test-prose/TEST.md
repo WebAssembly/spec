@@ -240,6 +240,46 @@ size valty_u0
 4. If (valty_u0 is F64), then:
   a. Return 64.
 
+funcsxt exter_u0*
+1. If (exter_u0* is []), then:
+  a. Return [].
+2. Let [y_0] ++ xt* be exter_u0*.
+3. If y_0 is of the case FUNC, then:
+  a. Let (FUNC ft) be y_0.
+  b. Return [ft] ++ $funcsxt(xt*).
+4. Let [externtype] ++ xt* be exter_u0*.
+5. Return $funcsxt(xt*).
+
+globalsxt exter_u0*
+1. If (exter_u0* is []), then:
+  a. Return [].
+2. Let [y_0] ++ xt* be exter_u0*.
+3. If y_0 is of the case GLOBAL, then:
+  a. Let (GLOBAL gt) be y_0.
+  b. Return [gt] ++ $globalsxt(xt*).
+4. Let [externtype] ++ xt* be exter_u0*.
+5. Return $globalsxt(xt*).
+
+tablesxt exter_u0*
+1. If (exter_u0* is []), then:
+  a. Return [].
+2. Let [y_0] ++ xt* be exter_u0*.
+3. If y_0 is of the case TABLE, then:
+  a. Let (TABLE tt) be y_0.
+  b. Return [tt] ++ $tablesxt(xt*).
+4. Let [externtype] ++ xt* be exter_u0*.
+5. Return $tablesxt(xt*).
+
+memsxt exter_u0*
+1. If (exter_u0* is []), then:
+  a. Return [].
+2. Let [y_0] ++ xt* be exter_u0*.
+3. If y_0 is of the case MEM, then:
+  a. Let (MEM mt) be y_0.
+  b. Return [mt] ++ $memsxt(xt*).
+4. Let [externtype] ++ xt* be exter_u0*.
+5. Return $memsxt(xt*).
+
 memop0
 1. Return { ALIGN: 0; OFFSET: 0; }.
 
@@ -1655,6 +1695,46 @@ unpack lanet_u0
   b. Return numtype.
 2. Assert: Due to validation, the type of lanet_u0 is packtype.
 3. Return I32.
+
+funcsxt exter_u0*
+1. If (exter_u0* is []), then:
+  a. Return [].
+2. Let [y_0] ++ xt* be exter_u0*.
+3. If y_0 is of the case FUNC, then:
+  a. Let (FUNC ft) be y_0.
+  b. Return [ft] ++ $funcsxt(xt*).
+4. Let [externtype] ++ xt* be exter_u0*.
+5. Return $funcsxt(xt*).
+
+globalsxt exter_u0*
+1. If (exter_u0* is []), then:
+  a. Return [].
+2. Let [y_0] ++ xt* be exter_u0*.
+3. If y_0 is of the case GLOBAL, then:
+  a. Let (GLOBAL gt) be y_0.
+  b. Return [gt] ++ $globalsxt(xt*).
+4. Let [externtype] ++ xt* be exter_u0*.
+5. Return $globalsxt(xt*).
+
+tablesxt exter_u0*
+1. If (exter_u0* is []), then:
+  a. Return [].
+2. Let [y_0] ++ xt* be exter_u0*.
+3. If y_0 is of the case TABLE, then:
+  a. Let (TABLE tt) be y_0.
+  b. Return [tt] ++ $tablesxt(xt*).
+4. Let [externtype] ++ xt* be exter_u0*.
+5. Return $tablesxt(xt*).
+
+memsxt exter_u0*
+1. If (exter_u0* is []), then:
+  a. Return [].
+2. Let [y_0] ++ xt* be exter_u0*.
+3. If y_0 is of the case MEM, then:
+  a. Let (MEM mt) be y_0.
+  b. Return [mt] ++ $memsxt(xt*).
+4. Let [externtype] ++ xt* be exter_u0*.
+5. Return $memsxt(xt*).
 
 free_dataidx_instr instr_u0
 1. If instr_u0 is of the case MEMORY.INIT, then:
@@ -4482,42 +4562,42 @@ expanddt dt
 funcsxt exter_u0*
 1. If (exter_u0* is []), then:
   a. Return [].
-2. Let [y_0] ++ et* be exter_u0*.
+2. Let [y_0] ++ xt* be exter_u0*.
 3. If y_0 is of the case FUNC, then:
   a. Let (FUNC dt) be y_0.
-  b. Return [dt] ++ $funcsxt(et*).
-4. Let [externtype] ++ et* be exter_u0*.
-5. Return $funcsxt(et*).
+  b. Return [dt] ++ $funcsxt(xt*).
+4. Let [externtype] ++ xt* be exter_u0*.
+5. Return $funcsxt(xt*).
 
 globalsxt exter_u0*
 1. If (exter_u0* is []), then:
   a. Return [].
-2. Let [y_0] ++ et* be exter_u0*.
+2. Let [y_0] ++ xt* be exter_u0*.
 3. If y_0 is of the case GLOBAL, then:
   a. Let (GLOBAL gt) be y_0.
-  b. Return [gt] ++ $globalsxt(et*).
-4. Let [externtype] ++ et* be exter_u0*.
-5. Return $globalsxt(et*).
+  b. Return [gt] ++ $globalsxt(xt*).
+4. Let [externtype] ++ xt* be exter_u0*.
+5. Return $globalsxt(xt*).
 
 tablesxt exter_u0*
 1. If (exter_u0* is []), then:
   a. Return [].
-2. Let [y_0] ++ et* be exter_u0*.
+2. Let [y_0] ++ xt* be exter_u0*.
 3. If y_0 is of the case TABLE, then:
   a. Let (TABLE tt) be y_0.
-  b. Return [tt] ++ $tablesxt(et*).
-4. Let [externtype] ++ et* be exter_u0*.
-5. Return $tablesxt(et*).
+  b. Return [tt] ++ $tablesxt(xt*).
+4. Let [externtype] ++ xt* be exter_u0*.
+5. Return $tablesxt(xt*).
 
 memsxt exter_u0*
 1. If (exter_u0* is []), then:
   a. Return [].
-2. Let [y_0] ++ et* be exter_u0*.
+2. Let [y_0] ++ xt* be exter_u0*.
 3. If y_0 is of the case MEM, then:
   a. Let (MEM mt) be y_0.
-  b. Return [mt] ++ $memsxt(et*).
-4. Let [externtype] ++ et* be exter_u0*.
-5. Return $memsxt(et*).
+  b. Return [mt] ++ $memsxt(xt*).
+4. Let [externtype] ++ xt* be exter_u0*.
+5. Return $memsxt(xt*).
 
 memop0
 1. Return { ALIGN: 0; OFFSET: 0; }.

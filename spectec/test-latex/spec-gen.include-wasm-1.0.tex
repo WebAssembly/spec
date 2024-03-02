@@ -314,6 +314,44 @@ $$
 
 \vspace{1ex}
 
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{funcs}}(\epsilon) &=& \epsilon &  \\
+{\mathrm{funcs}}((\mathsf{func}~\,{\mathit{ft}})~\,{{\mathit{xt}}^\ast}) &=& {\mathit{ft}}~\,{\mathrm{funcs}}({{\mathit{xt}}^\ast}) &  \\
+{\mathrm{funcs}}({\mathit{externtype}}~\,{{\mathit{xt}}^\ast}) &=& {\mathrm{funcs}}({{\mathit{xt}}^\ast}) &\quad
+  \mbox{otherwise} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{globals}}(\epsilon) &=& \epsilon &  \\
+{\mathrm{globals}}((\mathsf{global}~\,{\mathit{gt}})~\,{{\mathit{xt}}^\ast}) &=& {\mathit{gt}}~\,{\mathrm{globals}}({{\mathit{xt}}^\ast}) &  \\
+{\mathrm{globals}}({\mathit{externtype}}~\,{{\mathit{xt}}^\ast}) &=& {\mathrm{globals}}({{\mathit{xt}}^\ast}) &\quad
+  \mbox{otherwise} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{tables}}(\epsilon) &=& \epsilon &  \\
+{\mathrm{tables}}((\mathsf{table}~\,{\mathit{tt}})~\,{{\mathit{xt}}^\ast}) &=& {\mathit{tt}}~\,{\mathrm{tables}}({{\mathit{xt}}^\ast}) &  \\
+{\mathrm{tables}}({\mathit{externtype}}~\,{{\mathit{xt}}^\ast}) &=& {\mathrm{tables}}({{\mathit{xt}}^\ast}) &\quad
+  \mbox{otherwise} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{mems}}(\epsilon) &=& \epsilon &  \\
+{\mathrm{mems}}((\mathsf{mem}~\,{\mathit{mt}})~\,{{\mathit{xt}}^\ast}) &=& {\mathit{mt}}~\,{\mathrm{mems}}({{\mathit{xt}}^\ast}) &  \\
+{\mathrm{mems}}({\mathit{externtype}}~\,{{\mathit{xt}}^\ast}) &=& {\mathrm{mems}}({{\mathit{xt}}^\ast}) &\quad
+  \mbox{otherwise} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
 \vspace{1ex}
 
 $$
@@ -1670,14 +1708,14 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 \begin{array}{@{}c@{}}
-{\mathit{C}} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{type}~\,{{\mathit{ft}'}^\ast},\; \mathsf{func}~\,{{\mathit{ft}}^\ast},\; \mathsf{global}~\,{{\mathit{gt}}^\ast},\; \mathsf{table}~\,{{\mathit{tt}}^\ast},\; \mathsf{mem}~\,{{\mathit{mt}}^\ast} \}\end{array}
- \\
 ({ \vdash }\;{\mathit{type}} : {\mathit{ft}'})^\ast
  \qquad
-({\mathit{C}} \vdash {\mathit{func}} : {\mathit{ft}})^\ast
+(\{ \begin{array}[t]{@{}l@{}}
+\mathsf{type}~\,{{\mathit{ft}'}^\ast} \}\end{array} \vdash {\mathit{import}} : {\mathit{ixt}})^\ast
+ \\
+({\mathit{C}'} \vdash {\mathit{global}} : {\mathit{gt}})^\ast
  \qquad
-({\mathit{C}} \vdash {\mathit{global}} : {\mathit{gt}})^\ast
+({\mathit{C}} \vdash {\mathit{func}} : {\mathit{ft}})^\ast
  \qquad
 ({\mathit{C}} \vdash {\mathit{table}} : {\mathit{tt}})^\ast
  \qquad
@@ -1688,10 +1726,26 @@ $$
 ({\mathit{C}} \vdash {\mathit{data}} : \mathsf{ok})^\ast
  \qquad
 ({\mathit{C}} \vdash {\mathit{start}} : \mathsf{ok})^?
+ \qquad
+({\mathit{C}} \vdash {\mathit{export}} : {\mathit{xt}})^\ast
  \\
 {|{{\mathit{tt}}^\ast}|} \leq 1
  \qquad
 {|{{\mathit{mt}}^\ast}|} \leq 1
+ \\
+{\mathit{C}} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{type}~\,{{\mathit{ft}'}^\ast},\; \mathsf{func}~\,{{\mathit{ift}}^\ast}~\,{{\mathit{ft}}^\ast},\; \mathsf{global}~\,{{\mathit{igt}}^\ast}~\,{{\mathit{gt}}^\ast},\; \mathsf{table}~\,{{\mathit{itt}}^\ast}~\,{{\mathit{tt}}^\ast},\; \mathsf{mem}~\,{{\mathit{imt}}^\ast}~\,{{\mathit{mt}}^\ast} \}\end{array}
+ \\
+{\mathit{C}'} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{type}~\,{{\mathit{ft}'}^\ast},\; \mathsf{func}~\,{{\mathit{ift}}^\ast}~\,{{\mathit{ft}}^\ast},\; \mathsf{global}~\,{{\mathit{igt}}^\ast} \}\end{array}
+ \\
+{{\mathit{ift}}^\ast} = {\mathrm{funcs}}({{\mathit{ixt}}^\ast})
+ \qquad
+{{\mathit{igt}}^\ast} = {\mathrm{globals}}({{\mathit{ixt}}^\ast})
+ \qquad
+{{\mathit{itt}}^\ast} = {\mathrm{tables}}({{\mathit{ixt}}^\ast})
+ \qquad
+{{\mathit{imt}}^\ast} = {\mathrm{mems}}({{\mathit{ixt}}^\ast})
 \end{array}
 }{
 { \vdash }\;\mathsf{module}~\,{{\mathit{type}}^\ast}~\,{{\mathit{import}}^\ast}~\,{{\mathit{func}}^\ast}~\,{{\mathit{global}}^\ast}~\,{{\mathit{table}}^\ast}~\,{{\mathit{mem}}^\ast}~\,{{\mathit{elem}}^\ast}~\,{{\mathit{data}}^\ast}~\,{{\mathit{start}}^?}~\,{{\mathit{export}}^\ast} : \mathsf{ok}

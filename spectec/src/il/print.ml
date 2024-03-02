@@ -224,7 +224,7 @@ and string_of_path p =
     string_of_path p1 ^ "." ^ string_of_mixop [[atom]] ^ "_" ^ string_of_typ p1.note
 
 and string_of_iterexp (iter, bs) =
-  string_of_iter iter ^ "{" ^ String.concat " "
+  string_of_iter iter ^ "{" ^ String.concat ", "
     (List.map (fun (id, t) -> id.it ^ " : " ^ string_of_typ t) bs) ^ "}"
 
 

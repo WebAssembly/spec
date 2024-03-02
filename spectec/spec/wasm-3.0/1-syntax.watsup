@@ -227,7 +227,6 @@ var t : valtype
 ;; var bt : blocktype  ;; defined below
 var ct : comptype
 var dt : deftype
-var et : externtype
 var ft : functype
 var gt : globaltype
 var ht : heaptype
