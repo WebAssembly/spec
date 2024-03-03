@@ -1144,13 +1144,16 @@ and elab_exp' env e t : Il.exp' =
   | HoleE _ -> error e.at "misplaced hole"
   | FuseE _ -> error e.at "misplaced token fuse"
 
-and elab_expfields env tid efs tfs t at : Il.expfield list =
+and elab_expfields env tid efs tfs t0 at : Il.expfield list =
+  Debug.(log_in_at "el.elab_expfields" at
+    (fun _ -> fmt "{%s} : {%s} = %s" (list el_expfield efs) (list el_typfield tfs) (el_typ t0))
+  );
   assert (tid.it <> "");
   match efs, tfs with
   | [], [] -> []
   | (atom1, e)::efs2, (atom2, (t, prems), _)::tfs2 when atom1.it = atom2.it ->
     let es', _s = elab_exp_notation' env tid e t in
-    let efs2' = elab_expfields env tid efs2 tfs2 t at in
+    let efs2' = elab_expfields env tid efs2 tfs2 t0 at in
     let e' = (if prems = [] then tup_exp' else tup_exp_bind') es' e.at in
     (elab_atom atom1 tid, e') :: efs2'
   | _, (atom, (t, prems), _)::tfs2 ->
@@ -1158,10 +1161,10 @@ and elab_expfields env tid efs tfs t at : Il.expfield list =
     let es' =
       [cast_empty ("omitted record field `" ^ atom' ^ "`") env t at (elab_typ env t)] in
     let e' = (if prems = [] then tup_exp' else tup_exp_bind') es' at in
-    let efs2' = elab_expfields env tid efs tfs2 t at in
+    let efs2' = elab_expfields env tid efs tfs2 t0 at in
     (elab_atom atom tid, e') :: efs2'
   | (atom, e)::_, [] ->
-    error_atom e.at atom t "unexpected record field"
+    error_atom e.at atom t0 "undefined or misplaced record field"
 
 and elab_exp_iter env es (t1, iter) t at : Il.exp =
   let e' = elab_exp_iter' env es (t1, iter) t at in
