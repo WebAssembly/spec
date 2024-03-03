@@ -106,7 +106,7 @@ and is_normal_exp e =
   match e.it with
   | BoolE _ | NatE _ | TextE _ | ListE _ | OptE _
   | UnE (MinusOp _, {it = NatE _; _})
-  | StrE _ | TupE _ | CaseE _ | MixE _ -> true
+  | StrE _ | TupE _ | CaseE _ -> true
   | _ -> false
 
 and reduce_exp env e : exp =
@@ -241,9 +241,6 @@ and reduce_exp env e : exp =
     | _ -> LenE e1'
     ) $> e
   | TupE es -> TupE (List.map (reduce_exp env) es) $> e
-  | MixE (op, e1) ->
-    let e1' = reduce_exp env e1 in
-    MixE (op, e1') $> e
   | CallE (id, args) ->
     let args' = List.map (reduce_arg env) args in
     let clauses = Map.find id.it env.defs in
@@ -282,11 +279,11 @@ and reduce_exp env e : exp =
     | TupE es -> List.nth es i
     | _ -> ProjE (e1', i) $> e
     )
-  | UnmixE (e1, mixop) ->
+  | UncaseE (e1, mixop) ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with
-    | MixE (_, e11') -> e11'
-    | _ -> UnmixE (e1', mixop) $> e
+    | CaseE (_, e11') -> e11'
+    | _ -> UncaseE (e1', mixop) $> e
     )
   | OptE eo -> OptE (Option.map (reduce_exp env) eo) $> e
   | TheE e1 ->
@@ -567,8 +564,6 @@ and match_exp' env s e1 e2 : subst option =
 *)
   | CaseE (op1, e11), CaseE (op2, e21) when Eq.eq_mixop op1 op2 ->
     match_exp' env s e11 e21
-  | MixE (op1, e11), MixE (op2, e21) when Eq.eq_mixop op1 op2 ->
-    match_exp' env s e11 e21
 (*
   | CallE (id1, args1), CallE (id2, args2) when id1.it = id2.it ->
     match_list match_arg env s args1 args2
@@ -669,14 +664,7 @@ and equiv_typ env t1 t2 =
     let t1' = reduce_typ env t1 in
     let t2' = reduce_typ env t2 in
     (t1 <> t1' || t2 <> t2') && equiv_typ env t1' t2' ||
-    (match (reduce_typdef env t1').it, (reduce_typdef env t2').it with
-    | NotationT tc1, NotationT tc2 ->
-      let (op1, (_binds1, t11, prems1), _) = tc1 in
-      let (op2, (_binds2, t21, prems2), _) = tc2 in
-      Eq.eq_mixop op1 op2 && equiv_typ env t11 t21 &&
-      equiv_list equiv_prem env prems1 prems2
-    | dt1, dt2 -> Eq.eq_deftyp (dt1 $ t1'.at) (dt2 $ t2'.at)  (* TODO *)
-    )
+    Eq.eq_deftyp (reduce_typdef env t1') (reduce_typdef env t2')  (* TODO *)
   | VarT _, _ ->
     let t1' = reduce_typ env t1 in
     t1 <> t1' && equiv_typ env t1' t2
@@ -752,37 +740,17 @@ and sub_typ env t1 t2 =
       List.for_all (fun (atom, (_binds2, t2, prems2), _) ->
         match find_field tfs1 atom with
         | Some (_binds1, t1, prems1) ->
-          equiv_typ env t1 t2 && Eq.eq_list Eq.eq_prem prems1 prems2
+          sub_typ env t1 t2 && equiv_list equiv_prem env prems1 prems2
         | None -> false
       ) tfs2
     | VariantT tcs1, VariantT tcs2 ->
       List.for_all (fun (atom, (_binds1, t1, prems1), _) ->
         match find_case tcs2 atom with
         | Some (_binds2, t2, prems2) ->
-          equiv_typ env t1 t2 && Eq.eq_list Eq.eq_prem prems1 prems2
+          sub_typ env t1 t2 && equiv_list equiv_prem env prems1 prems2
         | None -> false
       ) tcs1
-    | NotationT tc1, _ ->
-      let (_op1, (_binds1, t11, _prems1), _) = tc1 in
-      sub_typ env t11 t2'
-    | _, NotationT tc2 ->
-      let (_op2, (_binds2, t21, _prems2), _) = tc2 in
-      sub_typ env t1' t21
     | _, _ -> false
-    )
-  | VarT _, _ ->
-    (match (reduce_typdef env t1').it with
-    | NotationT tc1 ->
-      let (_op1, (_binds1, t11, _prems1), _) = tc1 in
-      sub_typ env t11 t2'
-    | _ -> false
-    )
-  | _, VarT _ ->
-    (match (reduce_typdef env t2').it with
-    | NotationT tc2 ->
-      let (_op2, (_binds2, t21, _prems2), _) = tc2 in
-      sub_typ env t1' t21
-    | _ -> false
     )
   | _, _ ->
     false

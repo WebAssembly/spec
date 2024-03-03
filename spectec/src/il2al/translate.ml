@@ -172,12 +172,6 @@ and translate_exp exp =
       | Il.GeOp _ -> GeOp
     in
     binE (compare_op, lhs, rhs) ~at:at
-  (* CaseE *)
-  | Il.CaseE (({it = Il.Atom cons; _}::_)::_, argexp) -> caseE (kwd cons exp.note, translate_argexp argexp) ~at:at
-  | Il.CaseE ([[]; [{it = Il.Semicolon; _}]; []], {it = TupE [ e1; e2 ]; _}) -> tupE [ translate_exp e1; translate_exp e2 ] ~at:at
-  | Il.CaseE ([[{it = Il.LBrack; _}]; [{it = Il.Dot2; _}]; [{it = Il.RBrack; _}]], {it = TupE [ e1; e2 ]; _}) -> tupE [ translate_exp e1; translate_exp e2 ] ~at:at
-  | Il.CaseE ([[]; [{it = Il.Arrow; _}]; []; []], {it = TupE [ e1; e2; e3 ]; _}) -> infixE (translate_exp e1, "->", catE (translate_exp e2, translate_exp e3)) ~at:at
-  | Il.CaseE ([[]; [atom]; []], {it = TupE [ e1; e2 ]; _}) -> infixE (translate_exp e1, Il.Print.string_of_atom atom, translate_exp e2) ~at:at
   (* Tuple *)
   | Il.TupE [e] -> translate_exp e
   | Il.TupE exps -> tupE (List.map translate_exp exps) ~at:at
@@ -193,18 +187,14 @@ and translate_exp exp =
     in
     let record = List.fold_left f Record.empty expfields in
     strE record ~at:at
-  | Il.MixE (op, e) -> (
+  (* CaseE *)
+  | Il.CaseE (op, e) -> (
     let exps =
       match e.it with
       | TupE exps -> exps
       | _ -> [ e ]
     in
     match (op, exps) with
-    | [ []; [] ], [ e1 ] -> translate_exp e1
-    | [ []; []; [] ], [ e1; e2 ] ->
-      tupE [ translate_exp e1; translate_exp e2 ] ~at:at
-    | [ []; [ atom ]; [] ], [ e1; e2 ] ->
-      infixE (translate_exp e1, Il.Print.string_of_atom atom, translate_exp e2) ~at:at
     (* Constructor *)
     (* TODO: Need a better way to convert these CaseE into ConstructE *)
     | [ [ {it = Il.Atom "MUT"; _} ]; [ {it = Il.Quest; _} ]; [] ],
@@ -220,8 +210,17 @@ and translate_exp exp =
     | [ {it = Il.Atom name; _} ] :: ll, el
       when List.for_all (function ([] | [ {it = (Il.Star | Il.Quest); _} ]) -> true | _ -> false) ll ->
       caseE ((name, lower name), List.map translate_exp el) ~at:at
+    | [ [{it = Il.LBrack; _}]; [{it = Il.Dot2; _}]; [{it = Il.RBrack; _}] ], [ e1; e2 ] -> tupE [ translate_exp e1; translate_exp e2 ] ~at:at
+    | ({it = Il.Atom cons; _}::_)::_, _ -> caseE (kwd cons exp.note, translate_argexp e) ~at:at
+    | [ []; [] ], [ e1 ] -> translate_exp e1
+    | [ []; []; [] ], [ e1; e2 ] ->
+      tupE [ translate_exp e1; translate_exp e2 ] ~at:at
+    | [ []; [{it = Il.Semicolon; _}]; [] ], [ e1; e2 ] -> tupE [ translate_exp e1; translate_exp e2 ] ~at:at
+    | [ []; [{it = Il.Arrow; _}]; []; [] ], [ e1; e2; e3 ] -> infixE (translate_exp e1, "->", catE (translate_exp e2, translate_exp e3)) ~at:at
+    | [ []; [ atom ]; [] ], [ e1; e2 ] ->
+      infixE (translate_exp e1, Il.Print.string_of_atom atom, translate_exp e2) ~at:at
     | _ -> yetE (Il.Print.string_of_exp exp) ~at:at)
-  | Il.UnmixE (e, op) -> (
+  | Il.UncaseE (e, op) -> (
     match op with
     | [ []; [] ] -> translate_exp e
     | _ -> yetE (Il.Print.string_of_exp exp) ~at:at)

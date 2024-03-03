@@ -364,9 +364,6 @@ and annot_exp env e : Il.Ast.exp * occur =
     | TupE es ->
       let es', occurs = List.split (List.map (annot_exp env) es) in
       TupE es', List.fold_left union Env.empty occurs
-    | MixE (op, e1) ->
-      let e1', occur1 = annot_exp env e1 in
-      MixE (op, e1'), occur1
     | CallE (id, as1) ->
       let as1', occurs = List.split (List.map (annot_arg env) as1) in
       CallE (id, as1'), List.fold_left union Env.empty occurs
@@ -377,9 +374,9 @@ and annot_exp env e : Il.Ast.exp * occur =
     | ProjE (e1, i) ->
       let e1', occur1 = annot_exp env e1 in
       ProjE (e1', i), occur1
-    | UnmixE (e1, op) ->
+    | UncaseE (e1, op) ->
       let e1', occur1 = annot_exp env e1 in
-      UnmixE (e1', op), occur1
+      UncaseE (e1', op), occur1
     | OptE None ->
       OptE None, Env.empty
     | OptE (Some e1) ->

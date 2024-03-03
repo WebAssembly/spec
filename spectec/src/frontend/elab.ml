@@ -638,7 +638,7 @@ and elab_typ_definition env tid t : Il.deftyp =
     Il.VariantT tcs'
   | ConT tc ->
     let tc' = elab_typcon env tid t.at tc in
-    Il.NotationT tc'
+    Il.VariantT [tc']
   | RangeT tes ->
     let ts_fes' = map_filter_nl_list (elab_typenum env tid) tes in
     let t1, fe' =
@@ -656,7 +656,8 @@ and elab_typ_definition env tid t : Il.deftyp =
     let eid' = Il.VarE id' $$ t.at % t' in
     let bs' = [Il.ExpB (id', t', []) $ t.at] in
     let prems' = [Il.IfPr (fe' eid' nt) $ t.at] in
-    Il.NotationT ([[]; []], (bs', Il.TupT [(eid', t')] $ t.at, prems'), [])
+    let tc' = ([[]; []], (bs', Il.TupT [(eid', t')] $ t.at, prems'), []) in
+    Il.VariantT [tc']
   | _ ->
     let t' = elab_typ env t in
     Il.AliasT t'
@@ -724,7 +725,7 @@ and elab_typcase env tid at ((_atom, (t, prems), hints) as tc) : Il.typcase =
     elab_hints tid hints
   )
 
-and elab_typcon env tid at (((t, prems), hints) as tc) : Il.typcon =
+and elab_typcon env tid at (((t, prems), hints) as tc) : Il.typcase =
   assert (tid.it <> "");
   let env' = local_env env in
   let mixop, ts', ts = elab_typ_notation env' tid t in
@@ -1203,7 +1204,7 @@ and elab_exp_notation env tid e nt t : Il.exp =
   assert (tid.it <> "");
   let es', _s = elab_exp_notation' env tid e nt in
   let mixop, _, _ = elab_typ_notation env tid nt in
-  Il.MixE (mixop, tup_exp_bind' es' e.at) $$ e.at % elab_typ env t
+  Il.CaseE (mixop, tup_exp_bind' es' e.at) $$ e.at % elab_typ env t
 
 and elab_exp_notation' env tid e t : Il.exp list * Subst.t =
   Debug.(log_at "el.elab_exp_notation" e.at
@@ -1398,7 +1399,7 @@ and cast_empty phrase env t at t' : Il.exp =
       let mixop, ts', _ts = elab_typ_notation env (expand_id env t) (t1 $ t.at) in
       assert (List.length ts' = 1);
       let e1' = if iter = Opt then Il.OptE None else Il.ListE [] in
-      Il.MixE (mixop, tup_exp_bind' [e1' $$ at % List.hd ts'] at) $$ at % t'
+      Il.CaseE (mixop, tup_exp_bind' [e1' $$ at % List.hd ts'] at) $$ at % t'
     | _ -> error_typ env at phrase t
     )
   | _ -> error_typ env at phrase t
@@ -1426,11 +1427,11 @@ and cast_exp' phrase env e' t1 t2 : Il.exp' =
     let mixop2, _ts2', ts2 = elab_typ_notation env (expand_id env t2) t21 in
     if mixop1 <> mixop2 then
       error_typ2 env e'.at phrase t1 t2 "";
-    let e'' = Il.UnmixE (e', mixop1) $$ e'.at % tup_typ' ts1' e'.at in
+    let e'' = Il.UncaseE (e', mixop1) $$ e'.at % tup_typ' ts1' e'.at in
     let es' = List.mapi (fun i t1I' -> Il.ProjE (e'', i) $$ e''.at % t1I') ts1' in
     let es'' = List.map2 (fun eI' (t1I, t2I) ->
       cast_exp phrase env eI' t1I t2I) es' (List.combine ts1 ts2) in
-    Il.MixE (mixop2, tup_exp_bind' es'' e'.at)
+    Il.CaseE (mixop2, tup_exp_bind' es'' e'.at)
   | ConT ((t11, _), _), t2' ->
     (try
       match t2' with
@@ -1449,14 +1450,14 @@ and cast_exp' phrase env e' t1 t2 : Il.exp' =
       let mixop, ts', ts = elab_typ_notation env (expand_id env t1) t11 in
       let t111, t111' = match ts, ts' with [t111], [t111'] -> t111, t111' | _ ->
         error_typ2 env e'.at phrase t1 t2 "" in
-      let e'' = Il.UnmixE (e', mixop) $$ e'.at % tup_typ' ts' e'.at in
+      let e'' = Il.UncaseE (e', mixop) $$ e'.at % tup_typ' ts' e'.at in
       cast_exp' phrase env (Il.ProjE (e'', 0) $$ e'.at % t111') t111 t2
     )
   | _, ConT ((t21, _), _) ->
     let mixop, _ts', ts = elab_typ_notation env (expand_id env t2) t21 in
     let t211 = match ts with [t211] -> t211 | _ ->
       error_typ2 env e'.at phrase t1 t2 "" in
-    Il.MixE (mixop, tup_exp_bind' [cast_exp phrase env e' t1 t211] e'.at)
+    Il.CaseE (mixop, tup_exp_bind' [cast_exp phrase env e' t1 t211] e'.at)
   | RangeT _, t2' ->
     (try
       match t2' with
@@ -1474,14 +1475,14 @@ and cast_exp' phrase env e' t1 t2 : Il.exp' =
       );
       let t11 = typ_rep env t1 in
       let t11' = elab_typ env t11 in
-      let e'' = Il.UnmixE (e', [[]; []]) $$ e'.at % tup_typ' [t11'] e'.at in
+      let e'' = Il.UncaseE (e', [[]; []]) $$ e'.at % tup_typ' [t11'] e'.at in
       let e''' = Il.ProjE (e'', 0) $$ e'.at % t11' in
       cast_exp' phrase env e''' t11 t2
     )
   | _, RangeT _ ->
     let t21 = typ_rep env t2 in
     let e'' = cast_exp phrase env e' t1 t21 in
-    Il.MixE ([[]; []], tup_exp_bind' [e''] e'.at)
+    Il.CaseE ([[]; []], tup_exp_bind' [e''] e'.at)
   | _, IterT (t21, Opt) ->
     Il.OptE (Some (cast_exp phrase env e' t1 t21))
   | _, IterT (t21, (List | List1)) ->

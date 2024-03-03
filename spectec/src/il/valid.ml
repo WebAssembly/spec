@@ -117,11 +117,6 @@ let as_tup_typ phrase env dir t at : (exp * typ) list =
   | _ -> as_error at phrase dir t "(_,...,_)"
 
 
-let as_mix_typ phrase env dir t at : mixop * typ =
-  match expand_typdef env t with
-  | NotationT (mixop, (_, t, _), _) -> mixop, t
-  | _ -> as_error at phrase dir t ("`mixin-op`(...)")
-
 let as_struct_typ phrase env dir t at : typfield list =
   match expand_typdef env t with
   | StructT tfs -> tfs
@@ -229,8 +224,6 @@ and valid_deftyp env dt =
   match dt.it with
   | AliasT t ->
     valid_typ env t
-  | NotationT tc ->
-    valid_typcon env tc dt.at
   | StructT tfs ->
     check_mixops "record" "field" (List.map (fun (atom, _, _) -> [[atom]]) tfs) dt.at;
     List.iter (valid_typfield env) tfs
@@ -238,27 +231,21 @@ and valid_deftyp env dt =
     check_mixops "variant" "case" (List.map (fun (op, _, _) -> op) tcs) dt.at;
     List.iter (valid_typcase env) tcs
 
-and valid_typcon env (mixop, (bs, t, prems), _hints) at =
-  let arity =
-    match t.it with
-    | TupT ts -> List.length ts
-    | _ -> 1
-  in
-  if List.length mixop <> arity + 1 then
-    error at ("inconsistent arity in mixin notation, `" ^ string_of_mixop mixop ^
-      "` applied to " ^ typ_string env t);
-  let env' = local_env env in
-  List.iter (valid_bind env') bs;
-  valid_typ env' t;
-  List.iter (valid_prem env') prems
-
 and valid_typfield env (_atom, (bs, t, prems), _hints) =
   let env' = local_env env in
   List.iter (valid_bind env') bs;
   valid_typ env' t;
   List.iter (valid_prem env') prems
 
-and valid_typcase env (_op, (bs, t, prems), _hints) =
+and valid_typcase env (mixop, (bs, t, prems), _hints) =
+  let arity =
+    match t.it with
+    | TupT ts -> List.length ts
+    | _ -> 1
+  in
+  if List.length mixop <> arity + 1 then
+    error t.at ("inconsistent arity in mixin notation, `" ^ string_of_mixop mixop ^
+      "` applied to " ^ typ_string env t);
   let env' = local_env env in
   List.iter (valid_bind env') bs;
   valid_typ env' t;
@@ -308,7 +295,6 @@ and infer_exp env e : typ =
     let ps, t, _ = find "function" env.defs id in
     let s = valid_args env as_ ps Subst.empty e.at in
     Subst.subst_typ s t
-  | MixE _ -> error e.at "cannot infer type of mixin notation"
   | IterE (e1, iter) ->
     let iter' = match fst iter with ListN _ -> List | iter' -> iter' in
     IterT (infer_exp env e1, iter') $ e.at
@@ -321,12 +307,12 @@ and infer_exp env e : typ =
     | Some tI -> tI
     | None -> error e.at "cannot infer type of tuple projection"
     )
-  | UnmixE (e1, op) ->
+  | UncaseE (e1, op) ->
     let t1 = infer_exp env e1 in
-    let op', t = as_mix_typ "expression" env Infer t1 e1.at in
-    if not (Eq.eq_mixop op op') then
-      error e.at "invalid mixfix projection";
-    t
+    (match as_variant_typ "expression" env Infer t1 e1.at with
+    | [(op', (_, t, _), _)] when Eq.eq_mixop op op' -> t
+    | _ -> error e.at "invalid case projection";
+    )
   | OptE _ -> error e.at "cannot infer type of option"
   | TheE e1 -> as_iter_typ Opt "option" env Check (infer_exp env e1) e1.at
   | ListE _ -> error e.at "cannot infer type of list"
@@ -420,9 +406,6 @@ and valid_exp env e t =
     let ps, t', _ = find "function" env.defs id in
     let s = valid_args env as_ ps Subst.empty e.at in
     equiv_typ env (Subst.subst_typ s t') t e.at
-  | MixE (op, e) ->
-    let tmix = as_mix_typ "mixin notation" env Check t e.at in
-    valid_expmix env op e tmix e.at
   | IterE (e1, iter) ->
     let env' = valid_iterexp env iter in
     let t1 = as_iter_typ (fst iter) "iteration" env Check t e.at in
@@ -436,12 +419,12 @@ and valid_exp env e t =
     | Some tI -> equiv_typ env tI t e.at
     | None -> error e.at "invalid tuple projection, cannot match pattern"
     )
-  | UnmixE (e1, op) ->
+  | UncaseE (e1, op) ->
     let t1 = infer_exp env e1 in
-    let op', t' = as_mix_typ "expression" env Infer t1 e1.at in
-    if not (Eq.eq_mixop op op') then
-      error e.at "invalid mixfix projection";
-    equiv_typ env t' t e.at
+    (match as_variant_typ "expression" env Infer t1 e1.at with
+    | [(op', (_, t', _), _)] when Eq.eq_mixop op op' -> equiv_typ env t' t e.at
+    | _ -> error e.at "invalid case projection";
+    )
   | OptE eo ->
     let t1 = as_iter_typ Opt "option" env Check t e.at in
     Option.iter (fun e1 -> valid_exp env e1 t1) eo
@@ -642,7 +625,7 @@ let infer_def env d =
     List.iter (valid_param env') ps;
     env.typs <- bind "syntax type" env.typs id (ps, [])
   | RelD (id, mixop, t, _rules) ->
-    valid_typcon env (mixop, ([], t, []), []) d.at;
+    valid_typcase env (mixop, ([], t, []), []);
     env.rels <- bind "relation" env.rels id (mixop, t)
   | DecD (id, ps, t, clauses) ->
     let env' = local_env env in
@@ -664,7 +647,7 @@ let rec valid_def {bind} env d =
     List.iter (valid_inst env ps) insts;
     env.typs <- bind "syntax type" env.typs id (ps, insts);
   | RelD (id, mixop, t, rules) ->
-    valid_typcon env (mixop, ([], t, []), []) d.at;
+    valid_typcase env (mixop, ([], t, []), []);
     List.iter (valid_rule env mixop t) rules;
     env.rels <- bind "relation" env.rels id (mixop, t)
   | DecD (id, ps, t, clauses) ->
