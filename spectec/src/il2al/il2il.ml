@@ -48,7 +48,7 @@ let rec transform_expr f e =
     | TheE e1 -> TheE (new_ e1)
     | ListE es -> ListE ((List.map new_) es)
     | CatE (e1, e2) -> CatE (new_ e1, new_ e2)
-    | CaseE (atom, e1) -> CaseE (atom, new_ e1)
+    | CaseE (mixop, e1) -> CaseE (mixop, new_ e1)
     | SubE (e1, _t1, t2) -> SubE (new_ e1, _t1, t2)
   in { e with it }
 
@@ -159,8 +159,8 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
       ListE (List.map2 overlap es1 es2)
     | CatE (e1, e1'), CatE (e2, e2') ->
       CatE (overlap e1 e2, overlap e1' e2')
-    | CaseE (atom1, e1), CaseE (atom2, e2) when eq_atom atom1 atom2 ->
-      CaseE (atom1, overlap e1 e2)
+    | CaseE (mixop1, e1), CaseE (mixop2, e2) when eq_mixop mixop1 mixop2 ->
+      CaseE (mixop1, overlap e1 e2)
     | SubE (e1, typ1, typ1'), SubE (e2, typ2, typ2') when eq_typ typ1 typ2 && eq_typ typ1' typ2' ->
       SubE (overlap e1 e2, typ1, typ1')
     | _ ->

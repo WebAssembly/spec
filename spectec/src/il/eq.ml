@@ -60,8 +60,8 @@ and eq_typcon (op1, (_binds1, t1, prems1), _) (op2, (_binds2, t2, prems2), _) =
 and eq_typfield (atom1, (_binds1, t1, prems1), _) (atom2, (_binds2, t2, prems2), _) =
   eq_atom atom1 atom2 && eq_typ t1 t2 && eq_list eq_prem prems1 prems2
 
-and eq_typcase (atom1, (_binds1, t1, prems1), _) (atom2, (_binds2, t2, prems2), _) =
-  eq_atom atom1 atom2 && eq_typ t1 t2 && eq_list eq_prem prems1 prems2
+and eq_typcase (op1, (_binds1, t1, prems1), _) (op2, (_binds2, t2, prems2), _) =
+  eq_mixop op1 op2 && eq_typ t1 t2 && eq_list eq_prem prems1 prems2
 
 
 (* Expressions *)
@@ -95,7 +95,7 @@ and eq_exp e1 e2 =
   | OptE eo1, OptE eo2 -> eq_opt eq_exp eo1 eo2
   | ProjE (e1, i1), ProjE (e2, i2) -> eq_exp e1 e2 && i1 = i2
   | TheE e1, TheE e2 -> eq_exp e1 e2
-  | CaseE (atom1, e1), CaseE (atom2, e2) -> eq_atom atom1 atom2 && eq_exp e1 e2
+  | CaseE (op1, e1), CaseE (op2, e2) -> eq_mixop op1 op2 && eq_exp e1 e2
   | SubE (e1, t11, t12), SubE (e2, t21, t22) ->
     eq_exp e1 e2 && eq_typ t11 t21 && eq_typ t12 t22
   | _, _ -> e1.it = e2.it

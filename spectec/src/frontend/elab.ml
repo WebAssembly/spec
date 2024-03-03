@@ -393,9 +393,9 @@ and as_variant_typ phrase env dir t at : typcase list * dots =
   | VarT (id, args) -> as_variant_typid' phrase env id args at
   | _ -> error_dir_typ env at phrase dir t "| ..."
 
-let case_has_args env t atom at : bool =
+let case_has_args env t op at : bool =
   let cases, _ = as_variant_typ "" env Check t at in
-  let t, _prems = find_case cases atom at t in
+  let t, _prems = find_case cases op at t in
   match t.it with
   | SeqT ({it = AtomT _; _}::_) -> true
   | _ -> false
@@ -700,10 +700,10 @@ and elab_typfield env tid at ((atom, (t, prems), hints) as tf) : Il.typfield =
     elab_hints tid hints
   )
 
-and elab_typcase env tid at ((atom, (t, prems), hints) as tc) : Il.typcase =
+and elab_typcase env tid at ((_atom, (t, prems), hints) as tc) : Il.typcase =
   assert (tid.it <> "");
   let env' = local_env env in
-  let _mixop, ts', ts = elab_typ_notation env' tid t in
+  let mixop, ts', ts = elab_typ_notation env' tid t in
   let es = Convert.pats_of_typs ts in
   let dims = Dim.check_typdef t prems in
   let dims' = Dim.Env.map (List.map (elab_iter env')) dims in
@@ -719,7 +719,7 @@ and elab_typcase env tid at ((atom, (t, prems), hints) as tc) : Il.typcase =
   let module Acc = Iter.Make(Arg) in
   List.iter Acc.exp es;
   Acc.prems prems;
-  ( elab_atom atom tid,
+  ( mixop,
     (!acc_bs', tup_typ_bind' es' ts' at, prems'),
     elab_hints tid hints
   )
@@ -1352,8 +1352,9 @@ and elab_exp_variant env tid e cases t at : Il.exp =
   let es', _s = elab_exp_notation' env tid e t1 in
   let t2 = expand_singular env t $ at in
   let t2' = elab_typ env t2 in
+  let mixop, _, _ = elab_typ_notation env tid t1 in
   cast_exp "variant case" env
-    (Il.CaseE (elab_atom atom tid, tup_exp_bind' es' at) $$ at % t2') t2 t
+    (Il.CaseE (mixop, tup_exp_bind' es' at) $$ at % t2') t2 t
 
 
 and elab_path env p t : Il.path * typ =

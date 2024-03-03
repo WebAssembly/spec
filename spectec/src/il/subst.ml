@@ -90,9 +90,9 @@ and subst_typfield s (atom, (bs, t, prems), hints) =
   let bs', s' = subst_binds s bs in
   (atom, (bs', subst_typ s' t, subst_list subst_prem s' prems), hints)
 
-and subst_typcase s (atom, (bs, t, prems), hints) =
+and subst_typcase s (op, (bs, t, prems), hints) =
   let bs', s' = subst_binds s bs in
-  (atom, (bs', subst_typ s' t, subst_list subst_prem s' prems), hints)
+  (op, (bs', subst_typ s' t, subst_list subst_prem s' prems), hints)
 
 
 (* Expressions *)
@@ -126,7 +126,7 @@ and subst_exp s e =
   | TheE e -> TheE (subst_exp s e)
   | ListE es -> ListE (subst_list subst_exp s es)
   | CatE (e1, e2) -> CatE (subst_exp s e1, subst_exp s e2)
-  | CaseE (a, e1) -> CaseE (a, subst_exp s e1)
+  | CaseE (op, e1) -> CaseE (op, subst_exp s e1)
   | SubE (e1, t1, t2) -> SubE (subst_exp s e1, subst_typ s t1, subst_typ s t2)
   ) $$ e.at % subst_typ s e.note
 

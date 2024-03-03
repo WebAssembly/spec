@@ -303,7 +303,7 @@ and reduce_exp env e : exp =
     | ListE es1, ListE es2 -> ListE (es1 @ es2)
     | _ -> CatE (e1', e2')
     ) $> e
-  | CaseE (atom, e1) -> CaseE (atom, reduce_exp env e1) $> e
+  | CaseE (op, e1) -> CaseE (op, reduce_exp env e1) $> e
   | SubE (e1, t1, t2) when equiv_typ env t1 t2 ->
     reduce_exp env e1
   | SubE (e1, t1, t2) ->
@@ -565,7 +565,7 @@ and match_exp' env s e1 e2 : subst option =
     match_exp' env s e11 e21
   | LenE e11, LenE e21 -> match_exp' env s e11 e21
 *)
-  | CaseE (atom1, e11), CaseE (atom2, e21) when Eq.eq_atom atom1 atom2 ->
+  | CaseE (op1, e11), CaseE (op2, e21) when Eq.eq_mixop op1 op2 ->
     match_exp' env s e11 e21
   | MixE (op1, e11), MixE (op2, e21) when Eq.eq_mixop op1 op2 ->
     match_exp' env s e11 e21
@@ -595,11 +595,11 @@ and match_exp' env s e1 e2 : subst option =
         | NatE _, NumT _
         | TextE _, TextT -> true
         | UnE (MinusOp _, _), NumT t -> t >= IntT
-        | CaseE (atom, _), VarT _ ->
+        | CaseE (op, _), VarT _ ->
           (match (reduce_typdef env t21).it with
           | VariantT tcs ->
             (* Assumes that we only have shallow subtyping. *)
-            List.exists (fun (atomN, _, _) -> Eq.eq_atom atomN atom) tcs
+            List.exists (fun (opN, _, _) -> Eq.eq_mixop opN op) tcs
           | _ -> false
           )
         | VarE id1, _ ->
@@ -802,8 +802,8 @@ and sub_tup env s ets1 ets2 =
 and find_field tfs atom =
   List.find_opt (fun (atom', _, _) -> Eq.eq_atom atom' atom) tfs |> Option.map snd3
 
-and find_case tcs atom =
-  List.find_opt (fun (atom', _, _) -> Eq.eq_atom atom' atom) tcs |> Option.map snd3
+and find_case tcs op =
+  List.find_opt (fun (op', _, _) -> Eq.eq_mixop op' op) tcs |> Option.map snd3
 
 
 (* Type Disjointness *)
@@ -823,7 +823,7 @@ and disj_typ env t1 t2 =
         | None -> true
       ) tfs2
     | VariantT tcs1, VariantT tcs2 ->
-      Set.disjoint (atoms tcs1) (atoms tcs2) ||
+      Set.disjoint (mixops tcs1) (mixops tcs2) ||
       List.exists (fun (atom, (_binds1, t1, _prems1), _) ->
         match find_case tcs2 atom with
         | Some (_binds2, t2, _prems2) -> disj_typ env t1 t2
@@ -844,6 +844,7 @@ and disj_typ env t1 t2 =
     t1.it <> t2.it
 
 and atoms xs = Set.of_list (List.map Print.string_of_atom (List.map fst3 xs))
+and mixops xs = Set.of_list (List.map Print.string_of_mixop (List.map fst3 xs))
 
 and disj_tup env s ets1 ets2 =
   match ets1, ets2 with

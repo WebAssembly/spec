@@ -64,10 +64,10 @@ let find_field fs atom at =
   | Some (_, x, _) -> x
   | None -> error at ("unbound field `" ^ string_of_atom atom ^ "`")
 
-let find_case cases atom at =
-  match List.find_opt (fun (atom', _, _) -> Eq.eq_atom atom' atom) cases with
+let find_case cases op at =
+  match List.find_opt (fun (op', _, _) -> Eq.eq_mixop op' op) cases with
   | Some (_, x, _) -> x
-  | None -> error at ("unknown case `" ^ string_of_atom atom ^ "`")
+  | None -> error at ("unknown case `" ^ string_of_mixop op ^ "`")
 
 
 let typ_string env t =
@@ -164,10 +164,10 @@ let infer_cmpop = function
 
 (* Atom Bindings *)
 
-let check_atoms phrase item list at =
+let check_mixops phrase item list at =
   let _, dups =
-    List.fold_right (fun (atom, _, _) (set, dups) ->
-      let s = Print.string_of_atom atom in
+    List.fold_right (fun op (set, dups) ->
+      let s = Print.string_of_mixop op in
       Free.Set.(if mem s set then (set, s::dups) else (add s set, dups))
     ) list (Free.Set.empty, [])
   in
@@ -232,10 +232,10 @@ and valid_deftyp env dt =
   | NotationT tc ->
     valid_typcon env tc dt.at
   | StructT tfs ->
-    check_atoms "record" "field" tfs dt.at;
+    check_mixops "record" "field" (List.map (fun (atom, _, _) -> [[atom]]) tfs) dt.at;
     List.iter (valid_typfield env) tfs
   | VariantT tcs ->
-    check_atoms "variant" "case" tcs dt.at;
+    check_mixops "variant" "case" (List.map (fun (op, _, _) -> op) tcs) dt.at;
     List.iter (valid_typcase env) tcs
 
 and valid_typcon env (mixop, (bs, t, prems), _hints) at =
@@ -258,7 +258,7 @@ and valid_typfield env (_atom, (bs, t, prems), _hints) =
   valid_typ env' t;
   List.iter (valid_prem env') prems
 
-and valid_typcase env (_atom, (bs, t, prems), _hints) =
+and valid_typcase env (_op, (bs, t, prems), _hints) =
   let env' = local_env env in
   List.iter (valid_bind env') bs;
   valid_typ env' t;
@@ -454,9 +454,9 @@ and valid_exp env e t =
     let _typ1 = as_iter_typ List "list" env Check t e.at in
     valid_exp env e1 t;
     valid_exp env e2 t
-  | CaseE (atom, e1) ->
+  | CaseE (op, e1) ->
     let cases = as_variant_typ "case" env Check t e.at in
-    let _binds, t1, _prems = find_case cases atom e1.at in
+    let _binds, t1, _prems = find_case cases op e1.at in
     valid_exp env e1 t1
   | SubE (e1, t1, t2) ->
     valid_typ env t1;

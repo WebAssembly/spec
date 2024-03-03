@@ -90,7 +90,7 @@ and deftyp' =
   | VariantT of typcase list     (* variant type *)
 
 and typfield = atom * (bind list * typ * prem list) * hint list  (* record field *)
-and typcase = atom * (bind list * typ * prem list) * hint list   (* variant case *)
+and typcase = mixop * (bind list * typ * prem list) * hint list  (* variant case *)
 and typcon = mixop * (bind list * typ * prem list) * hint list   (* notation *)
 
 
@@ -149,7 +149,7 @@ and exp' =
   | TheE of exp                  (* exp! *)
   | ListE of exp list            (* [exp ... exp] *)
   | CatE of exp * exp            (* exp :: exp *)
-  | CaseE of atom * exp          (* atom exp? *)
+  | CaseE of mixop * exp         (* atom exp? *)
   | SubE of exp * typ * typ      (* exp : typ1 <: typ2 *)
 
 and expfield = atom * exp        (* atom exp *)

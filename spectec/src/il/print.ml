@@ -147,8 +147,8 @@ and string_of_typfield (atom, (bs, t, prems), _hints) =
   string_of_mixop [[atom]] ^ string_of_binds bs ^ " " ^ string_of_typ t ^
     concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
-and string_of_typcase (atom, (bs, t, prems), _hints) =
-  string_of_mixop [[atom]] ^ string_of_binds bs ^ string_of_typ_args t ^
+and string_of_typcase (op, (bs, t, prems), _hints) =
+  string_of_mixop op ^ string_of_binds bs ^ string_of_typ_args t ^
     concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
 and string_of_typcon (mixop, (bs, t, prems), _hints) =
@@ -194,8 +194,8 @@ and string_of_exp e =
   | TheE e1 -> "!(" ^ string_of_exp e1 ^ ")"
   | ListE es -> "[" ^ string_of_exps " " es ^ "]"
   | CatE (e1, e2) -> string_of_exp e1 ^ " :: " ^ string_of_exp e2
-  | CaseE (atom, e1) ->
-    string_of_mixop [[atom]] ^ "_" ^ string_of_typ e.note ^ string_of_exp_args e1
+  | CaseE (op, e1) ->
+    string_of_mixop op ^ "_" ^ string_of_typ e.note ^ string_of_exp_args e1
   | SubE (e1, t1, t2) ->
     "(" ^ string_of_exp e1 ^ " : " ^ string_of_typ t1 ^ " <: " ^ string_of_typ t2 ^ ")"
 
