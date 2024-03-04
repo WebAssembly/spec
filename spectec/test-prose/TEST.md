@@ -29,7 +29,7 @@ validation_of_NOP
 validation_of_DROP
 - The instruction is valid with type ([t] -> []).
 
-validation_of_SELECT ?()
+validation_of_SELECT
 - The instruction is valid with type ([t, t, I32] -> [t]).
 
 validation_of_BLOCK t? instr*
@@ -942,7 +942,7 @@ execution_of_DROP
 2. Pop val from the stack.
 3. Do nothing.
 
-execution_of_SELECT t*?
+execution_of_SELECT
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST c) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
@@ -1123,24 +1123,24 @@ execution_of_LOCAL.GET x
 execution_of_GLOBAL.GET x
 1. Push $global(x).VALUE to the stack.
 
-execution_of_LOAD valty_u0 n_sx_u1? mo
+execution_of_LOAD valty_u0 ww_sx_u1? mo
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
-3. If n_sx_u1? is not defined, then:
+3. If ww_sx_u1? is not defined, then:
   a. Let t be valty_u0.
   b. If (((i + mo.OFFSET) + ($size(t) / 8)) > |$mem(0).DATA|), then:
     1) Trap.
   c. Let c be $inverse_of_bytes(t, $mem(0).DATA[(i + mo.OFFSET) : ($size(t) / 8)]).
   d. Push (t.CONST c) to the stack.
 4. If the type of valty_u0 is inn, then:
-  a. If n_sx_u1? is defined, then:
-    1) Let ?(y_0) be n_sx_u1?.
+  a. If ww_sx_u1? is defined, then:
+    1) Let ?(y_0) be ww_sx_u1?.
     2) Let (n, sx) be y_0.
     3) If (((i + mo.OFFSET) + (n / 8)) > |$mem(0).DATA|), then:
       a) Trap.
   b. Let inn be valty_u0.
-  c. If n_sx_u1? is defined, then:
-    1) Let ?(y_0) be n_sx_u1?.
+  c. If ww_sx_u1? is defined, then:
+    1) Let ?(y_0) be ww_sx_u1?.
     2) Let (n, sx) be y_0.
     3) Let c be $inverse_of_ibytes(n, $mem(0).DATA[(i + mo.OFFSET) : (n / 8)]).
     4) Push (inn.CONST $ext(n, $size(inn), sx, c)) to the stack.
@@ -1159,12 +1159,12 @@ execution_of_GLOBAL.SET x
 2. Pop val from the stack.
 3. Perform $with_global(x, val).
 
-execution_of_STORE valty_u1 n_u2? mo
+execution_of_STORE valty_u1 ww_u2? mo
 1. Assert: Due to validation, a value of value type valty_u0 is on the top of the stack.
 2. Pop (valty_u0.CONST c) from the stack.
 3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
-5. If n_u2? is not defined, then:
+5. If ww_u2? is not defined, then:
   a. Let t be valty_u1.
   b. If ((((i + mo.OFFSET) + ($size(t) / 8)) > |$mem(0).DATA|) and (valty_u0 is t)), then:
     1) Trap.
@@ -1172,7 +1172,7 @@ execution_of_STORE valty_u1 n_u2? mo
     1) Let b* be $bytes(t, c).
     2) Perform $with_mem(0, (i + mo.OFFSET), ($size(t) / 8), b*).
 6. Else:
-  a. Let ?(n) be n_u2?.
+  a. Let ?(n) be ww_u2?.
   b. If the type of valty_u1 is inn, then:
     1) Let inn be valty_u1.
     2) If ((((i + mo.OFFSET) + (n / 8)) > |$mem(0).DATA|) and (valty_u0 is inn)), then:
@@ -3356,24 +3356,24 @@ execution_of_TABLE.INIT x y
   f. Push (I32.CONST (n - 1)) to the stack.
   g. Execute (TABLE.INIT x y).
 
-execution_of_LOAD numty_u0 n_sx_u1? mo
+execution_of_LOAD numty_u0 ww_sx_u1? mo
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
-3. If n_sx_u1? is not defined, then:
+3. If ww_sx_u1? is not defined, then:
   a. Let nt be numty_u0.
   b. If (((i + mo.OFFSET) + ($size(nt) / 8)) > |$mem(0).DATA|), then:
     1) Trap.
   c. Let c be $inverse_of_nbytes(nt, $mem(0).DATA[(i + mo.OFFSET) : ($size(nt) / 8)]).
   d. Push (nt.CONST c) to the stack.
 4. If the type of numty_u0 is inn, then:
-  a. If n_sx_u1? is defined, then:
-    1) Let ?(y_0) be n_sx_u1?.
+  a. If ww_sx_u1? is defined, then:
+    1) Let ?(y_0) be ww_sx_u1?.
     2) Let (n, sx) be y_0.
     3) If (((i + mo.OFFSET) + (n / 8)) > |$mem(0).DATA|), then:
       a) Trap.
   b. Let inn be numty_u0.
-  c. If n_sx_u1? is defined, then:
-    1) Let ?(y_0) be n_sx_u1?.
+  c. If ww_sx_u1? is defined, then:
+    1) Let ?(y_0) be ww_sx_u1?.
     2) Let (n, sx) be y_0.
     3) Let c be $inverse_of_ibytes(n, $mem(0).DATA[(i + mo.OFFSET) : (n / 8)]).
     4) Push (inn.CONST $ext(n, $size(inn), sx, c)) to the stack.
@@ -3540,12 +3540,12 @@ execution_of_TABLE.GROW x
 execution_of_ELEM.DROP x
 1. Perform $with_elem(x, []).
 
-execution_of_STORE numty_u1 n_u2? mo
+execution_of_STORE numty_u1 ww_u2? mo
 1. Assert: Due to validation, a value of value type numty_u0 is on the top of the stack.
 2. Pop (numty_u0.CONST c) from the stack.
 3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
-5. If n_u2? is not defined, then:
+5. If ww_u2? is not defined, then:
   a. Let nt be numty_u1.
   b. If ((((i + mo.OFFSET) + ($size(nt) / 8)) > |$mem(0).DATA|) and (numty_u0 is nt)), then:
     1) Trap.
@@ -3553,7 +3553,7 @@ execution_of_STORE numty_u1 n_u2? mo
     1) Let b* be $nbytes(nt, c).
     2) Perform $with_mem(0, (i + mo.OFFSET), ($size(nt) / 8), b*).
 6. Else:
-  a. Let ?(n) be n_u2?.
+  a. Let ?(n) be ww_u2?.
   b. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) If ((((i + mo.OFFSET) + (n / 8)) > |$mem(0).DATA|) and (numty_u0 is inn)), then:
@@ -5518,10 +5518,10 @@ with_locals C local_u0* local_u1*
 1. If ((local_u0* is []) and (local_u1* is [])), then:
   a. Return C.
 2. Assert: Due to validation, (|local_u1*| ≥ 1).
-3. Let [lt_1] ++ lt* be local_u1*.
+3. Let [lct_1] ++ lct* be local_u1*.
 4. Assert: Due to validation, (|local_u0*| ≥ 1).
 5. Let [x_1] ++ x* be local_u0*.
-6. Return $with_locals(C with .LOCAL[x_1] replaced by lt_1, x*, lt*).
+6. Return $with_locals(C with .LOCAL[x_1] replaced by lct_1, x*, lct*).
 
 clostypes defty_u0*
 1. If (defty_u0* is []), then:
@@ -6684,24 +6684,24 @@ execution_of_TABLE.INIT x y
   f. Push (I32.CONST (n - 1)) to the stack.
   g. Execute (TABLE.INIT x y).
 
-execution_of_LOAD numty_u0 n_sx_u1? x mo
+execution_of_LOAD numty_u0 ww_sx_u1? x mo
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
-3. If n_sx_u1? is not defined, then:
+3. If ww_sx_u1? is not defined, then:
   a. Let nt be numty_u0.
   b. If (((i + mo.OFFSET) + ($size(nt) / 8)) > |$mem(x).DATA|), then:
     1) Trap.
   c. Let c be $inverse_of_nbytes(nt, $mem(x).DATA[(i + mo.OFFSET) : ($size(nt) / 8)]).
   d. Push (nt.CONST c) to the stack.
 4. If the type of numty_u0 is inn, then:
-  a. If n_sx_u1? is defined, then:
-    1) Let ?(y_0) be n_sx_u1?.
+  a. If ww_sx_u1? is defined, then:
+    1) Let ?(y_0) be ww_sx_u1?.
     2) Let (n, sx) be y_0.
     3) If (((i + mo.OFFSET) + (n / 8)) > |$mem(x).DATA|), then:
       a) Trap.
   b. Let inn be numty_u0.
-  c. If n_sx_u1? is defined, then:
-    1) Let ?(y_0) be n_sx_u1?.
+  c. If ww_sx_u1? is defined, then:
+    1) Let ?(y_0) be ww_sx_u1?.
     2) Let (n, sx) be y_0.
     3) Let c be $inverse_of_ibytes(n, $mem(x).DATA[(i + mo.OFFSET) : (n / 8)]).
     4) Push (inn.CONST $ext(n, $size(inn), sx, c)) to the stack.
@@ -6925,25 +6925,25 @@ execution_of_TABLE.GROW x
 execution_of_ELEM.DROP x
 1. Perform $with_elem(x, []).
 
-execution_of_STORE nt n_u1? x mo
+execution_of_STORE nt ww_u1? x mo
 1. Assert: Due to validation, a value of value type numty_u0 is on the top of the stack.
 2. Pop (numty_u0.CONST c) from the stack.
 3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
 5. If (numty_u0 is nt), then:
-  a. If ((((i + mo.OFFSET) + ($size(nt) / 8)) > |$mem(x).DATA|) and n_u1? is not defined), then:
+  a. If ((((i + mo.OFFSET) + ($size(nt) / 8)) > |$mem(x).DATA|) and ww_u1? is not defined), then:
     1) Trap.
-  b. If n_u1? is not defined, then:
+  b. If ww_u1? is not defined, then:
     1) Let b* be $nbytes(nt, c).
     2) Perform $with_mem(x, (i + mo.OFFSET), ($size(nt) / 8), b*).
 6. If the type of numty_u0 is inn, then:
-  a. If n_u1? is defined, then:
-    1) Let ?(n) be n_u1?.
+  a. If ww_u1? is defined, then:
+    1) Let ?(n) be ww_u1?.
     2) If (((i + mo.OFFSET) + (n / 8)) > |$mem(x).DATA|), then:
       a) Trap.
   b. Let inn be numty_u0.
-  c. If n_u1? is defined, then:
-    1) Let ?(n) be n_u1?.
+  c. If ww_u1? is defined, then:
+    1) Let ?(n) be ww_u1?.
     2) Let b* be $ibytes(n, $wrap($size(inn), n, c)).
     3) Perform $with_mem(x, (i + mo.OFFSET), (n / 8), b*).
 

@@ -19,14 +19,14 @@ syntax context hint(desc "context") =
     LOCAL localtype*, LABEL resulttype*, RETURN resulttype? }
 
 var C : context
-var lt : localtype
+var lct : localtype  hint(show lt)
 var it : instrtype
 
 
 def $with_locals(context, localidx*, localtype*) : context  hint(show %[.LOCAL[%]=%])
 
 def $with_locals(C, eps, eps) = C
-def $with_locals(C, x_1 x*, lt_1 lt*) = $with_locals(C[.LOCAL[x_1] = lt_1], x*, lt*)
+def $with_locals(C, x_1 x*, lct_1 lct*) = $with_locals(C[.LOCAL[x_1] = lct_1], x*, lct*)
 
 
 def $clostype(context, deftype) : deftype  hint(show $clos_%(%))
@@ -101,7 +101,7 @@ rule Instrtype_ok:
   C |- t_1* -> x* t_2* : OK
   -- Resulttype_ok: C |- t_1* : OK
   -- Resulttype_ok: C |- t_2* : OK
-  -- if (C.LOCAL[x] = lt)*
+  -- if (C.LOCAL[x] = lct)*
 
 
 ;; Type definitions
@@ -500,7 +500,9 @@ rule Externtype_sub/mem:
 ;; Instructions
 ;;
 
-relation Instr_ok: context |- instr : functype      hint(show "T")
+syntax finstrtype = resulttype -> resulttype  ;; TODO: HACK, shouldn't be needed
+
+relation Instr_ok: context |- instr : finstrtype    hint(show "T")
 relation Instrf_ok: context |- instr : instrtype    hint(show "T")
 relation Instrs_ok: context |- instr* : instrtype   hint(show "T-instr*")
 relation Expr_ok: context |- expr : resulttype      hint(show "T-expr")
@@ -1138,8 +1140,8 @@ rule Local_ok/unset:
 rule Func_ok:
   C |- FUNC x local* expr : C.TYPE[x]
   -- Expand: C.TYPE[x] ~~ FUNC (t_1* -> t_2*)
-  -- (Local_ok: C |- local : lt)*
-  -- Expr_ok: C, LOCAL (SET t_1)* lt*, LABEL (t_2*), RETURN (t_2*) |- expr : t_2*
+  -- (Local_ok: C |- local : lct)*
+  -- Expr_ok: C, LOCAL (SET t_1)* lct*, LABEL (t_2*), RETURN (t_2*) |- expr : t_2*
 
 rule Global_ok:
   C |- GLOBAL gt expr : gt

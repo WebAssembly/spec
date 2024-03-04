@@ -232,7 +232,7 @@ var gt : globaltype
 var ht : heaptype
 ;; var it : instrtype  ;; defined in typing
 ;; kt : conttype       ;; future extension
-;; var lt : localtype  ;; defined in typing
+var lt : lanetype
 var mt : memtype
 var nt : numtype
 var pt : packtype
@@ -284,6 +284,7 @@ syntax zval_(packtype) = pack_(packtype)
 def $zero(numtype) : num_(numtype)
 def $zero(inn) = 0
 def $zero(fnn) = $fzero($size(fnn))
+
 
 ;; Numeric operators
 
@@ -402,10 +403,8 @@ syntax blocktype hint(desc "block type") =
 var bt : blocktype
 
 syntax instr/control hint(desc "control instruction") =
-  | UNREACHABLE
   | NOP
-  | DROP
-  | SELECT (valtype*)?
+  | UNREACHABLE
   | BLOCK blocktype instr*
   | LOOP blocktype instr*
   | IF blocktype instr* ELSE instr*
@@ -416,6 +415,9 @@ syntax instr/control hint(desc "control instruction") =
   | BR_ON_NON_NULL labelidx
   | BR_ON_CAST labelidx reftype reftype
   | BR_ON_CAST_FAIL labelidx reftype reftype
+  | ...
+
+syntax instr/call hint(desc "call instruction") = ...
   | CALL funcidx
   | CALL_REF typeidx?
   | CALL_INDIRECT tableidx typeidx
@@ -423,6 +425,11 @@ syntax instr/control hint(desc "control instruction") =
   | RETURN_CALL funcidx
   | RETURN_CALL_REF typeidx?
   | RETURN_CALL_INDIRECT tableidx typeidx
+  | ...
+
+syntax instr/parametric hint(desc "parametric instruction") = ...
+  | DROP
+  | SELECT (valtype*)?
   | ...
 
 syntax instr/num hint(desc "numeric instruction") = ...
@@ -469,8 +476,6 @@ syntax instr/vec hint(desc "vector instruction") = ...
 
 syntax instr/ref hint(desc "reference instruction") = ...
   | REF.NULL heaptype
-  | REF.I31
-  | REF.FUNC funcidx
   | REF.IS_NULL
   | REF.AS_NON_NULL
   | REF.EQ
@@ -478,15 +483,26 @@ syntax instr/ref hint(desc "reference instruction") = ...
   | REF.CAST reftype
   | ...
 
-syntax instr/heap hint(desc "heap instruction") = ...
+syntax instr/func hint(desc "function reference instruction") = ...
+  | REF.FUNC funcidx
+  | ...
+
+syntax instr/i31 hint(desc "scalar reference instruction") = ...
+  | REF.I31
   | I31.GET sx                      hint(show I31.GET#_#%)
+  | ...
+
+syntax instr/struct hint(desc "structure reference instruction") = ...
   | STRUCT.NEW typeidx
   | STRUCT.NEW_DEFAULT typeidx
   | STRUCT.GET sx? typeidx u32      hint(show STRUCT.GET#_#% % %)
   | STRUCT.SET typeidx u32
+  | ...
+
+syntax instr/array hint(desc "array reference instruction") = ...
   | ARRAY.NEW typeidx
   | ARRAY.NEW_DEFAULT typeidx
-  | ARRAY.NEW_FIXED typeidx nat
+  | ARRAY.NEW_FIXED typeidx u32
   | ARRAY.NEW_DATA typeidx dataidx
   | ARRAY.NEW_ELEM typeidx elemidx
   | ARRAY.GET sx? typeidx           hint(show ARRAY.GET#_#% %)
@@ -496,6 +512,9 @@ syntax instr/heap hint(desc "heap instruction") = ...
   | ARRAY.COPY typeidx typeidx
   | ARRAY.INIT_DATA typeidx dataidx
   | ARRAY.INIT_ELEM typeidx elemidx
+  | ...
+
+syntax instr/extern hint(desc "external reference instruction") = ...
   | EXTERN.CONVERT_ANY
   | ANY.CONVERT_EXTERN
   | ...
@@ -519,23 +538,34 @@ syntax instr/table hint(desc "table instruction") = ...
   | TABLE.FILL tableidx
   | TABLE.COPY tableidx tableidx
   | TABLE.INIT tableidx elemidx
+  | ...
+
+syntax instr/elem hint(desc "element instruction") = ...
   | ELEM.DROP elemidx
   | ...
 
+syntax packsize hint(desc "pack size") = 8 | 16 | 32 | 64
+syntax ww hint(show w) = packsize
 
 syntax instr/memory hint(desc "memory instruction") = ...
+  | LOAD numtype (ww _ sx)? memidx memop  hint(show %.LOAD % %)    hint(show %.LOAD#% % %)
+    -- (if numtype = inn /\ ww < $size(inn))?  ;; TODO: take size implicitly
+  | STORE numtype ww? memidx memop        hint(show %.STORE % %)   hint(show %.STORE#% % %)
+    -- (if numtype = inn /\ ww < $size(inn))?  ;; TODO: take size implicitly
+  | VLOAD vloadop? memidx memop           hint(show V128.LOAD % %) hint(show V128.LOAD#% % %)
+  | VLOAD_LANE ww memidx memop laneidx    hint(show V128.LOAD#%#_#LANE % % %)
+  | VSTORE memidx memop                   hint(show V128.STORE % %)
+  | VSTORE_LANE ww memidx memop laneidx   hint(show V128.STORE#%#_#LANE % % %)
   | MEMORY.SIZE memidx
   | MEMORY.GROW memidx
   | MEMORY.FILL memidx
   | MEMORY.COPY memidx memidx
   | MEMORY.INIT memidx dataidx
+  | ...
+
+syntax instr/data hint(desc "data instruction") = ...
   | DATA.DROP dataidx
-  | LOAD numtype (n _ sx)? memidx memop  hint(show %.LOAD % %)    hint(show %.LOAD#% % %)
-  | STORE numtype n? memidx memop        hint(show %.STORE % %)   hint(show %.STORE#% % %)
-  | VLOAD vloadop? memidx memop          hint(show V128.LOAD % %) hint(show V128.LOAD#% % %)
-  | VLOAD_LANE n memidx memop laneidx    hint(show V128.LOAD#%#_#LANE % % %)
-  | VSTORE memidx memop                  hint(show V128.STORE % %)
-  | VSTORE_LANE n memidx memop laneidx   hint(show V128.STORE#%#_#LANE % % %)
+
 
 syntax expr hint(desc "expression") =
   instr*

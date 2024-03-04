@@ -736,7 +736,6 @@ grammar Binstr/vector-cvt : instr = ...
   | 0xFD 255:Bu32 => VCVTOP (F64 X 2) CONVERT LOW (I32 X 4) U
   | 0xFD 94:Bu32 => VCVTOP (F32 X 4) DEMOTE (F64 X 2) ZERO
   | 0xFD 95:Bu32 => VCVTOP (F64 X 2) PROMOTE LOW (F32 X 4)
-  | ...
 
 
 ;; Expressions

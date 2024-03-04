@@ -75,10 +75,8 @@ $$
 
 $$
 \begin{array}{@{}l@{}rrl@{}l@{}}
-& {\mathit{instr}} &::=& \mathsf{unreachable} \\ &&|&
-\mathsf{nop} \\ &&|&
-\mathsf{drop} \\ &&|&
-\mathsf{select}~\,{({{\mathit{valtype}}^\ast})^?} \\ &&|&
+& {\mathit{instr}} &::=& \mathsf{nop} \\ &&|&
+\mathsf{unreachable} \\ &&|&
 \mathsf{block}~\,{\mathit{blocktype}}~\,{{\mathit{instr}}^\ast} \\ &&|&
 \mathsf{loop}~\,{\mathit{blocktype}}~\,{{\mathit{instr}}^\ast} \\ &&|&
 \mathsf{if}~\,{\mathit{blocktype}}~\,{{\mathit{instr}}^\ast}~\,\mathsf{else}~\,{{\mathit{instr}}^\ast} \\ &&|&
@@ -89,13 +87,6 @@ $$
 \mathsf{br\_on\_non\_null}~\,{\mathit{labelidx}} \\ &&|&
 \mathsf{br\_on\_cast}~\,{\mathit{labelidx}}~\,{\mathit{reftype}}~\,{\mathit{reftype}} \\ &&|&
 \mathsf{br\_on\_cast\_fail}~\,{\mathit{labelidx}}~\,{\mathit{reftype}}~\,{\mathit{reftype}} \\ &&|&
-\mathsf{call}~\,{\mathit{funcidx}} \\ &&|&
-\mathsf{call\_ref}~\,{{\mathit{typeidx}}^?} \\ &&|&
-\mathsf{call\_indirect}~\,{\mathit{tableidx}}~\,{\mathit{typeidx}} \\ &&|&
-\mathsf{return} \\ &&|&
-\mathsf{return\_call}~\,{\mathit{funcidx}} \\ &&|&
-\mathsf{return\_call\_ref}~\,{{\mathit{typeidx}}^?} \\ &&|&
-\mathsf{return\_call\_indirect}~\,{\mathit{tableidx}}~\,{\mathit{typeidx}} \\ &&|&
 \dots \\
 \end{array}
 $$
@@ -115,24 +106,26 @@ $$
 \mathsf{local.tee}~\,{\mathit{localidx}} \\ &&|&
 \mathsf{global.get}~\,{\mathit{globalidx}} \\ &&|&
 \mathsf{global.set}~\,{\mathit{globalidx}} \\ &&|&
+{{\mathit{numtype}}.\mathsf{load}}{{({\mathit{w}}~\,\mathsf{\_}~\,{\mathit{sx}})^?}}~\,{\mathit{memidx}}~\,{\mathit{memop}} &\quad
+  \mbox{if}~({\mathit{numtype}} = {\mathsf{i}}{{\mathit{n}}} \land {\mathit{w}} < {|{\mathsf{i}}{{\mathit{n}}}|})^? \\ &&|&
+{{\mathit{numtype}}.\mathsf{store}}{{{\mathit{w}}^?}}~\,{\mathit{memidx}}~\,{\mathit{memop}} &\quad
+  \mbox{if}~({\mathit{numtype}} = {\mathsf{i}}{{\mathit{n}}} \land {\mathit{w}} < {|{\mathsf{i}}{{\mathit{n}}}|})^? \\ &&|&
+{\mathsf{v{\scriptstyle128}.load}}{{{\mathit{vloadop}}^?}}~\,{\mathit{memidx}}~\,{\mathit{memop}} \\ &&|&
+{{{\mathsf{v{\scriptstyle128}.load}}{{\mathit{w}}}}{\mathsf{\_}}}{\mathsf{lane}}~\,{\mathit{memidx}}~\,{\mathit{memop}}~\,{\mathit{laneidx}} \\ &&|&
+\mathsf{v{\scriptstyle128}.store}~\,{\mathit{memidx}}~\,{\mathit{memop}} \\ &&|&
+{{{\mathsf{v{\scriptstyle128}.store}}{{\mathit{w}}}}{\mathsf{\_}}}{\mathsf{lane}}~\,{\mathit{memidx}}~\,{\mathit{memop}}~\,{\mathit{laneidx}} \\ &&|&
 \mathsf{memory.size}~\,{\mathit{memidx}} \\ &&|&
 \mathsf{memory.grow}~\,{\mathit{memidx}} \\ &&|&
 \mathsf{memory.fill}~\,{\mathit{memidx}} \\ &&|&
 \mathsf{memory.copy}~\,{\mathit{memidx}}~\,{\mathit{memidx}} \\ &&|&
 \mathsf{memory.init}~\,{\mathit{memidx}}~\,{\mathit{dataidx}} \\ &&|&
-\mathsf{data.drop}~\,{\mathit{dataidx}} \\ &&|&
-{{\mathit{numtype}}.\mathsf{load}}{{({\mathit{n}}~\,\mathsf{\_}~\,{\mathit{sx}})^?}}~\,{\mathit{memidx}}~\,{\mathit{memop}} \\ &&|&
-{{\mathit{numtype}}.\mathsf{store}}{{{\mathit{n}}^?}}~\,{\mathit{memidx}}~\,{\mathit{memop}} \\ &&|&
-{\mathsf{v{\scriptstyle128}.load}}{{{\mathit{vloadop}}^?}}~\,{\mathit{memidx}}~\,{\mathit{memop}} \\ &&|&
-{{{\mathsf{v{\scriptstyle128}.load}}{{\mathit{n}}}}{\mathsf{\_}}}{\mathsf{lane}}~\,{\mathit{memidx}}~\,{\mathit{memop}}~\,{\mathit{laneidx}} \\ &&|&
-\mathsf{v{\scriptstyle128}.store}~\,{\mathit{memidx}}~\,{\mathit{memop}} \\ &&|&
-{{{\mathsf{v{\scriptstyle128}.store}}{{\mathit{n}}}}{\mathsf{\_}}}{\mathsf{lane}}~\,{\mathit{memidx}}~\,{\mathit{memop}}~\,{\mathit{laneidx}} \\[0.8ex]
+\dots \\[0.8ex]
 & {\mathit{expr}} &::=& {{\mathit{instr}}^\ast} \\
 \end{array}
 $$
 
 
-\subsection*{Typing $\boxed{{\mathit{context}} \vdash {\mathit{instr}} : {\mathit{functype}}}$}
+\subsection*{Typing $\boxed{{\mathit{context}} \vdash {\mathit{instr}} : {\mathit{finstrtype}}}$}
 
 An instruction sequence ${{\mathit{instr}}^\ast}$ is well-typed with an instruction type ${{\mathit{t}}_{{1}}^\ast} \rightarrow {{\mathit{t}}_{{2}}^\ast}$, written ${{\mathit{instr}}^\ast}$ $:$ ${{\mathit{t}}_{{1}}^\ast} \rightarrow {{\mathit{t}}_{{2}}^\ast}$, according to the following rules:
 
@@ -370,6 +363,7 @@ warning: syntax `fNmag` was never spliced
 warning: syntax `fieldtype` was never spliced
 warning: syntax `fieldval` was never spliced
 warning: syntax `fin` was never spliced
+warning: syntax `finstrtype` was never spliced
 warning: syntax `fnn` was never spliced
 warning: syntax `frame` was never spliced
 warning: syntax `fshape` was never spliced
@@ -391,10 +385,18 @@ warning: syntax `imm` was never spliced
 warning: syntax `import` was never spliced
 warning: syntax `init` was never spliced
 warning: syntax `inn` was never spliced
+warning: syntax `instr/call` was never spliced
+warning: syntax `instr/parametric` was never spliced
 warning: syntax `instr/vec` was never spliced
 warning: syntax `instr/ref` was never spliced
-warning: syntax `instr/heap` was never spliced
+warning: syntax `instr/func` was never spliced
+warning: syntax `instr/i31` was never spliced
+warning: syntax `instr/struct` was never spliced
+warning: syntax `instr/array` was never spliced
+warning: syntax `instr/extern` was never spliced
 warning: syntax `instr/table` was never spliced
+warning: syntax `instr/elem` was never spliced
+warning: syntax `instr/data` was never spliced
 warning: syntax `instrtype` was never spliced
 warning: syntax `ishape` was never spliced
 warning: syntax `labelidx` was never spliced
@@ -428,6 +430,7 @@ warning: syntax `numtype` was never spliced
 warning: syntax `oktypeidx` was never spliced
 warning: syntax `oktypeidxnat` was never spliced
 warning: syntax `pack_` was never spliced
+warning: syntax `packsize` was never spliced
 warning: syntax `packtype` was never spliced
 warning: syntax `packval` was never spliced
 warning: syntax `pnn` was never spliced
@@ -502,6 +505,7 @@ warning: syntax `vvbinop` was never spliced
 warning: syntax `vvternop` was never spliced
 warning: syntax `vvtestop` was never spliced
 warning: syntax `vvunop` was never spliced
+warning: syntax `ww` was never spliced
 warning: syntax `zero` was never spliced
 warning: syntax `zval_` was never spliced
 warning: syntax `zval_` was never spliced

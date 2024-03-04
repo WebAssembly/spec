@@ -181,6 +181,7 @@ var lim : limits
 var t : valtype
 var ft : functype
 var gt : globaltype
+var lt : lanetype
 var mt : memtype
 var nt : numtype
 var pt : packtype
@@ -218,6 +219,7 @@ syntax vec_(vnn) = vN($size(vnn))
 def $zero(numtype) : num_(numtype)
 def $zero(inn) = 0
 def $zero(fnn) = $fzero($size(fnn))
+
 
 ;; Numeric operators
 
@@ -336,19 +338,25 @@ syntax blocktype hint(desc "block type") =
 var bt : blocktype
 
 syntax instr/control hint(desc "control instruction") =
-  | UNREACHABLE
   | NOP
-  | DROP
-  | SELECT (valtype*)?
+  | UNREACHABLE
   | BLOCK blocktype instr*
   | LOOP blocktype instr*
   | IF blocktype instr* ELSE instr*
   | BR labelidx
   | BR_IF labelidx
   | BR_TABLE labelidx* labelidx
+  | ...
+
+syntax instr/call hint(desc "call instruction") = ...
   | CALL funcidx
   | CALL_INDIRECT tableidx typeidx
   | RETURN
+  | ...
+
+syntax instr/parametric hint(desc "parametric instruction") = ...
+  | DROP
+  | SELECT (valtype*)?
   | ...
 
 syntax instr/num hint(desc "numeric instruction") = ...
@@ -418,23 +426,34 @@ syntax instr/table hint(desc "table instruction") = ...
   | TABLE.FILL tableidx
   | TABLE.COPY tableidx tableidx
   | TABLE.INIT tableidx elemidx
-  | ELEM.DROP elemidx
   | ...
 
+syntax instr/elem hint(desc "element instruction") = ...
+  | ELEM.DROP elemidx
+  | ...
+ 
+syntax packsize hint(desc "pack size") = 8 | 16 | 32 | 64
+syntax ww hint(show w) = packsize
 
 syntax instr/memory hint(desc "memory instruction") = ...
+  | LOAD numtype (ww _ sx)? memop  hint(show %.LOAD % %)    hint(show %.LOAD#% % %)
+    -- (if numtype = inn /\ ww < $size(inn))?  ;; TODO: take size implicitly
+  | STORE numtype ww? memop        hint(show %.STORE % %)   hint(show %.STORE#% % %)
+    -- (if numtype = inn /\ ww < $size(inn))?  ;; TODO: take size implicitly
+  | VLOAD vloadop? memop           hint(show V128.LOAD % %) hint(show V128.LOAD#% % %)
+  | VLOAD_LANE ww memop laneidx    hint(show V128.LOAD#%#_#LANE % % %)
+  | VSTORE memop                   hint(show V128.STORE % %)
+  | VSTORE_LANE ww memop laneidx   hint(show V128.STORE#%#_#LANE % % %)
   | MEMORY.SIZE
   | MEMORY.GROW
   | MEMORY.FILL
   | MEMORY.COPY
   | MEMORY.INIT dataidx
+  | ...
+
+syntax instr/data hint(desc "data instruction") = ...
   | DATA.DROP dataidx
-  | LOAD numtype (n _ sx)? memop  hint(show %.LOAD % %)  hint(show %.LOAD#% %)
-  | STORE numtype n? memop        hint(show %.STORE % %) hint(show %.STORE#% %)
-  | VLOAD vloadop? memop          hint(show V128.LOAD %) hint(show V128.LOAD#% %)
-  | VLOAD_LANE n memop laneidx    hint(show V128.LOAD#%#_#LANE % %)
-  | VSTORE memop                  hint(show V128.STORE %)
-  | VSTORE_LANE n memop laneidx   hint(show V128.STORE#%#_#LANE % %)
+
 
 syntax expr hint(desc "expression") =
   instr*

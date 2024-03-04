@@ -188,17 +188,23 @@ var bt : blocktype
 syntax instr/control hint(desc "control instruction") =
   | UNREACHABLE
   | NOP
-  | DROP
-  | SELECT (valtype*)?
   | BLOCK blocktype instr*
   | LOOP blocktype instr*
   | IF blocktype instr* ELSE instr*
   | BR labelidx
   | BR_IF labelidx
   | BR_TABLE labelidx* labelidx
+  | ...
+
+syntax instr/call hint(desc "call instruction") = ...
   | CALL funcidx
   | CALL_INDIRECT typeidx
   | RETURN
+  | ...
+
+syntax instr/parametric hint(desc "parametric instruction") = ...
+  | DROP
+  | SELECT
   | ...
 
 syntax instr/num hint(desc "numeric instruction") = ...
@@ -221,11 +227,16 @@ syntax instr/global hint(desc "global instruction") = ...
   | GLOBAL.SET globalidx
   | ...
 
+syntax packsize hint(desc "pack size") = 8 | 16 | 32
+syntax ww hint(show w) = packsize
+
 syntax instr/memory hint(desc "memory instruction") = ...
+  | LOAD valtype (ww _ sx)? memop  hint(show %.LOAD % %)    hint(show %.LOAD#% % %)
+    -- (if valtype = inn /\ ww < $size(inn))?  ;; TODO: take size implicitly
+  | STORE valtype ww? memop        hint(show %.STORE % %)   hint(show %.STORE#% % %)
+    -- (if valtype = inn /\ ww < $size(inn))?  ;; TODO: take size implicitly
   | MEMORY.SIZE
   | MEMORY.GROW
-  | LOAD valtype (n _ sx)? memop  hint(show %.LOAD % %)  hint(show %.LOAD#% %)
-  | STORE valtype n? memop        hint(show %.STORE % %) hint(show %.STORE#% %)
 
 syntax expr hint(desc "expression") =
   instr*

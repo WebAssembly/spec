@@ -382,7 +382,6 @@ grammar Binstr/numeric-cvt : instr = ...
   | 0xBD => CVTOP I64 REINTERPRET F64
   | 0xBE => CVTOP F32 REINTERPRET I32
   | 0xBF => CVTOP F64 REINTERPRET I64
-  | ...
 
 
 ;; Expressions

@@ -89,23 +89,24 @@ type gram_typ = param list * typ * gram option
 type rel_typ = typ * Il.rule list
 type def_typ = param list * typ * (def * Il.clause) list
 
+type 'a env' = (region * 'a) Map.t
 type env =
-  { mutable gvars : var_typ Map.t; (* variable type declarations *)
-    mutable vars : var_typ Map.t;  (* local bindings *)
-    mutable typs : typ_typ Map.t;
-    mutable syms : gram_typ Map.t;
-    mutable rels : rel_typ Map.t;
-    mutable defs : def_typ Map.t;
+  { mutable gvars : var_typ env'; (* variable type declarations *)
+    mutable vars : var_typ env';  (* local bindings *)
+    mutable typs : typ_typ env';
+    mutable syms : gram_typ env';
+    mutable rels : rel_typ env';
+    mutable defs : def_typ env';
   }
 
 let new_env () =
   { gvars = Map.empty
-      |> Map.add "bool" (BoolT $ no_region)
-      |> Map.add "nat" (NumT NatT $ no_region)
-      |> Map.add "int" (NumT IntT $ no_region)
-      |> Map.add "rat" (NumT RatT $ no_region)
-      |> Map.add "real" (NumT RealT $ no_region)
-      |> Map.add "text" (TextT $ no_region);
+      |> Map.add "bool" (no_region, BoolT $ no_region)
+      |> Map.add "nat" (no_region, NumT NatT $ no_region)
+      |> Map.add "int" (no_region, NumT IntT $ no_region)
+      |> Map.add "rat" (no_region, NumT RatT $ no_region)
+      |> Map.add "real" (no_region, NumT RealT $ no_region)
+      |> Map.add "text" (no_region, TextT $ no_region);
     vars = Map.empty;
     typs = Map.empty;
     syms = Map.empty;
@@ -122,7 +123,7 @@ let spaceid space id = if space = "definition" then ("$" ^ id.it) $ id.at else i
 let find space env' id =
   match Map.find_opt id.it env' with
   | None -> error_id (spaceid space id) ("undeclared " ^ space)
-  | Some t -> t
+  | Some (_at, t) -> t
 
 let bind space env' id t =
   if id.it = "_" then
@@ -130,11 +131,11 @@ let bind space env' id t =
   else if Map.mem id.it env' then
     error_id (spaceid space id) ("duplicate declaration for " ^ space)
   else
-    Map.add id.it t env'
+    Map.add id.it (id.at, t) env'
 
 let rebind _space env' id t =
   assert (Map.mem id.it env');
-  Map.add id.it t env'
+  Map.add id.it (id.at, t) env'
 
 let find_field fs atom at t =
   match List.find_opt (fun (atom', _, _) -> atom'.it = atom.it) fs with
@@ -156,7 +157,9 @@ let bound_env env =
     gramid = bound_env' env.syms;
   }
 
-let to_eval_typ id (ps, k) =
+let to_eval_var (_at, t) = t
+
+let to_eval_typ id (_at, (ps, k)) =
   match k with
   | Opaque | Transp ->
     let args' = List.map Convert.arg_of_param ps in
@@ -166,7 +169,7 @@ let to_eval_typ id (ps, k) =
   | Family insts ->
     List.map (fun (args, t, _inst') -> (args, t)) insts
 
-let to_eval_def (_ps, _t, clauses) =
+let to_eval_def (_at, (_ps, _t, clauses)) =
   List.map (fun (d, _) ->
     match d.it with
     | DefD (_id, args, e, prems) -> (args, e, Convert.filter_nl prems)
@@ -175,11 +178,12 @@ let to_eval_def (_ps, _t, clauses) =
 
 let to_eval_env env =
   (* Need to include gvars, since matching can encounter uimplicit vars *)
-  let vars = Map.union (fun _ _ t -> Some t) env.gvars env.vars in
+  let gvars = Map.map to_eval_var env.gvars in
+  let vars = Map.map to_eval_var env.vars in
   let typs = Map.mapi to_eval_typ env.typs in
   let defs = Map.map to_eval_def env.defs in
   let syms = Map.map ignore env.syms in
-  Eval.{vars; typs; defs; syms}
+  Eval.{vars = Map.union (fun _ _ t -> Some t) gvars vars; typs; defs; syms}
 
 
 (* More Errors *)
@@ -1546,7 +1550,7 @@ and elab_prem env prem : Il.prem list =
 and elab_sym env g : typ * env =
   match g.it with
   | VarG (id, as_) ->
-    let ps, t, _gram = find "grammar" env.syms id in
+    let ps, t, _gram_opt = find "grammar" env.syms id in
     let _as', s = elab_args `Rhs env as_ ps g.at in
     Subst.subst_typ s t, env
   | NatG _ -> NumT NatT $ g.at, env
@@ -1644,7 +1648,7 @@ and make_binds_iter_arg env free dims : Il.bind list ref * (module Iter.Arg) =
 
       let visit_gramid id =
         if Free.(Set.mem id.it !left.gramid) then (
-          let ps, t, _prems = find "grammar" env.syms id in
+          let ps, t, _gram_opt = find "grammar" env.syms id in
           let free' = Free.(union (free_params ps) (diff (free_typ t) (bound_params ps))) in
           let fwd = Free.(inter free' !left) in
           if fwd <> Free.empty then
@@ -1979,14 +1983,31 @@ let elab_gramdef env d =
   | _ -> ()
 
 
+let check_dots env =
+  Map.iter (fun id (at, (_ps, k)) ->
+    match k with
+    | Transp | Opaque -> assert false
+    | Defined ({it = CaseT (_, _, _, Dots); _}, _) ->
+      error_id (id $ at) "missing final extension to syntax type"
+    | Family [] ->
+      error_id (id $ at) "no defined cases for syntax type family"
+    | Defined _ | Family _ -> ()
+  ) env.typs;
+  Map.iter (fun id (at, (_ps, _t, gram_opt)) ->
+    match gram_opt with
+    | None -> assert false
+    | Some {it = (_, _, Dots); _} ->
+      error_id (id $ at) "missing final extension to grammar"
+    | _ -> ()
+  ) env.syms
+
+
 let populate_def env d' : Il.def =
   Debug.(log_in "el.populate_def" dline);
   Debug.(log_in_at "el.populate_def" d'.at (Fun.const ""));
   match d'.it with
   | Il.TypD (id, ps', _dt') ->
     (match find "syntax type" env.typs id with
-    | _ps, Family [] ->
-      error_id id "syntax type family has no defined cases";
     | _ps, Family insts ->
       let insts' = List.map (fun (_, _, inst') -> inst') insts in
       Il.TypD (id, ps', insts') $ d'.at
@@ -2065,9 +2086,10 @@ let elab ds : Il.script * env =
   let env = new_env () in
   List.iter (infer_typdef env) ds;
   let ds' = List.concat_map (elab_def env) ds in
-  let ds' = List.map (populate_def env) ds' in
   List.iter (infer_gramdef env) ds;
   List.iter (elab_gramdef env) ds;
+  check_dots env;
+  let ds' = List.map (populate_def env) ds' in
   recursify_defs ds', env
 
 let elab_exp env e t : Il.exp =

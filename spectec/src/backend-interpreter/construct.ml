@@ -768,7 +768,8 @@ and al_to_instr': value -> Ast.instr' = function
   | CaseV ("VREPLACE_LANE", vop) -> VecReplace (al_to_vreplaceop vop)
   | CaseV ("REF.IS_NULL", []) -> RefIsNull
   | CaseV ("REF.FUNC", [ idx ]) -> RefFunc (al_to_idx idx)
-  | CaseV ("SELECT", [ vtl_opt ]) -> Select (al_to_opt (al_to_list al_to_val_type) vtl_opt)
+  | CaseV ("SELECT", []) when !version = 1 -> Select None
+  | CaseV ("SELECT", [ vtl_opt ]) when !version <> 1 -> Select (al_to_opt (al_to_list al_to_val_type) vtl_opt)
   | CaseV ("LOCAL.GET", [ idx ]) -> LocalGet (al_to_idx idx)
   | CaseV ("LOCAL.SET", [ idx ]) -> LocalSet (al_to_idx idx)
   | CaseV ("LOCAL.TEE", [ idx ]) -> LocalTee (al_to_idx idx)
@@ -1722,6 +1723,7 @@ let rec al_of_instr instr =
   | VecReplace vop -> CaseV ("VREPLACE_LANE", al_of_vreplaceop vop)
   | RefIsNull -> nullary "REF.IS_NULL"
   | RefFunc idx -> CaseV ("REF.FUNC", [ al_of_idx idx ])
+  | Select vtl_opt when !version = 1 -> assert (vtl_opt = None); nullary "SELECT"
   | Select vtl_opt -> CaseV ("SELECT", [ al_of_opt (al_of_list al_of_val_type) vtl_opt ])
   | LocalGet idx -> CaseV ("LOCAL.GET", [ al_of_idx idx ])
   | LocalSet idx -> CaseV ("LOCAL.SET", [ al_of_idx idx ])
