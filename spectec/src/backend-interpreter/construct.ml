@@ -4,8 +4,21 @@ open Types
 open Value
 open Al.Ast
 open Al.Al_util
+open Al.Print
 open Source
 open Util
+
+
+(* Errors *)
+
+exception InvalidConversion of string
+
+let error category msg =
+  raise (InvalidConversion (Printf.sprintf "%s: invalid construct %s" category msg))
+
+let error_value category v = error category (string_of_value v)
+
+let error_values category vs = error category ("[" ^ string_of_values ", " vs ^ "]")
 
 (* Constant *)
 
@@ -46,12 +59,12 @@ let al_to_fmagN layout = function
   | CaseV ("SUBNORM", [ m ]) -> al_to_z m
   | CaseV ("INF", []) -> mask_exp layout
   | CaseV ("NAN", [ m ]) -> Z.(mask_exp layout + al_to_z m)
-  | v -> fail_typ_value "al_to_fmagN" v
+  | v -> error_value "fmagN" v
 
 let al_to_floatN layout = function
   | CaseV ("POS", [ mag ]) -> al_to_fmagN layout mag
   | CaseV ("NEG", [ mag ]) -> Z.(mask_sign layout + al_to_fmagN layout mag)
-  | v -> fail_typ_value "al_to_floatN" v
+  | v -> error_value "floatN" v
 
 let e64 = Z.(shift_left one 64)
 let z_to_vec128 i =
@@ -69,7 +82,7 @@ let al_to_byte (v: value): Char.t = al_to_int v |> Char.chr
 let al_to_bytes (v: value): string = al_to_seq al_to_byte v |> String.of_seq
 let al_to_string = function
   | TextV str -> str
-  | v -> fail_typ_value "text" v
+  | v -> error_value "text" v
 let al_to_name name = name |> al_to_string |> Utf8.decode
 let al_to_bool = unwrap_boolv
 
@@ -79,17 +92,17 @@ let al_to_bool = unwrap_boolv
 let al_to_null: value -> null = function
   | CaseV ("NULL", [ OptV None ]) -> NoNull
   | CaseV ("NULL", [ OptV _ ]) -> Null
-  | v -> fail_typ_value "null" v
+  | v -> error_value "null" v
 
 let al_to_final: value -> final = function
   | CaseV ("FINAL", [ OptV None ]) -> NoFinal
   | CaseV ("FINAL", [ OptV _ ]) -> Final
-  | v -> fail_typ_value "final" v
+  | v -> error_value "final" v
 
 let al_to_mut: value -> mut = function
   | CaseV ("MUT", [ OptV None ]) -> Cons
   | CaseV ("MUT", [ OptV _ ]) -> Var
-  | v -> fail_typ_value "mut" v
+  | v -> error_value "mut" v
 
 let rec al_to_storage_type: value -> storage_type = function
   | CaseV ("I8", []) -> PackStorageT Pack8
@@ -98,7 +111,7 @@ let rec al_to_storage_type: value -> storage_type = function
 
 and al_to_field_type: value -> field_type = function
   | TupV [ mut; st ] -> FieldT (al_to_mut mut, al_to_storage_type st)
-  | v -> fail_typ_value "field type" v
+  | v -> error_value "field type" v
 
 and al_to_result_type: value -> result_type = function
   v -> al_to_list al_to_val_type v
@@ -108,20 +121,20 @@ and al_to_str_type: value -> str_type = function
   | CaseV ("ARRAY", [ ft ]) -> DefArrayT (ArrayT (al_to_field_type ft))
   | CaseV ("FUNC", [ TupV [ rt1; rt2 ] ]) ->
     DefFuncT (FuncT (al_to_result_type rt1, (al_to_result_type rt2)))
-  | v -> fail_typ_value "str type" v
+  | v -> error_value "str type" v
 
 and al_to_sub_type: value -> sub_type = function
   | CaseV ("SUBD", [ fin; htl; st ]) ->
     SubT (al_to_final fin, al_to_list al_to_heap_type htl, al_to_str_type st)
-  | v -> fail_typ_value "sub type" v
+  | v -> error_value "sub type" v
 
 and al_to_rec_type: value -> rec_type = function
   | CaseV ("REC", [ stl ]) -> RecT (al_to_list al_to_sub_type stl)
-  | v -> fail_typ_value "rec type" v
+  | v -> error_value "rec type" v
 
 and al_to_def_type: value -> def_type = function
   | CaseV ("DEF", [ rt; i32 ]) -> DefT (al_to_rec_type rt, al_to_int32 i32)
-  | v -> fail_typ_value "def type" v
+  | v -> error_value "def type" v
 
 and al_to_heap_type: value -> heap_type = function
   | CaseV ("_IDX", [ i32 ]) -> VarHT (StatX (al_to_int32 i32))
@@ -140,19 +153,19 @@ and al_to_heap_type: value -> heap_type = function
     | "NOFUNC" -> NoFuncHT
     | "EXTERN" | "EXTERNREF" -> ExternHT
     | "NOEXTERN" -> NoExternHT
-    | _ -> fail_typ_value "abstract heap type" v)
-  | v -> fail_typ_value "heap type" v
+    | _ -> error_value "abstract heap type" v)
+  | v -> error_value "heap type" v
 
 and al_to_ref_type: value -> ref_type = function
   | CaseV ("REF", [ n; ht ]) -> al_to_null n, al_to_heap_type ht
-  | v -> fail_typ_value "ref type" v
+  | v -> error_value "ref type" v
 
 and al_to_num_type: value -> num_type = function
   | CaseV ("I32", []) -> I32T
   | CaseV ("I64", []) -> I64T
   | CaseV ("F32", []) -> F32T
   | CaseV ("F64", []) -> F64T
-  | v -> fail_typ_value "num type" v
+  | v -> error_value "num type" v
 
 and al_to_val_type: value -> val_type = function
   | CaseV ("I32", _) | CaseV ("I64", _)
@@ -160,12 +173,12 @@ and al_to_val_type: value -> val_type = function
   | CaseV ("V128", []) -> VecT V128T
   | CaseV ("REF", _) as v -> RefT (al_to_ref_type v)
   | CaseV ("BOT", []) -> BotT
-  | v -> fail_typ_value "val type" v
+  | v -> error_value "val type" v
 
 let al_to_block_type: value -> block_type = function
   | CaseV ("_IDX", [ idx ]) -> VarBlockType (al_to_idx idx)
   | CaseV ("_RESULT", [ vt_opt ]) -> ValBlockType (al_to_opt al_to_val_type vt_opt)
-  | v -> fail_typ_value "block type" v
+  | v -> error_value "block type" v
 
 let al_to_limits (default: int64): value -> int32 limits = function
   | TupV [ min; max ] ->
@@ -175,20 +188,20 @@ let al_to_limits (default: int64): value -> int32 limits = function
       | _ -> Some (al_to_int32 max)
     in
     { min = al_to_int32 min; max = max' }
-  | v -> fail_typ_value "limits" v
+  | v -> error_value "limits" v
 
 
 let al_to_global_type: value -> global_type = function
   | TupV [ mut; vt ] -> GlobalT (al_to_mut mut, al_to_val_type vt)
-  | v -> fail_typ_value "global type" v
+  | v -> error_value "global type" v
 
 let al_to_table_type: value -> table_type = function
   | TupV [ limits; rt ] -> TableT (al_to_limits default_table_max limits, al_to_ref_type rt)
-  | v -> fail_typ_value "table type" v
+  | v -> error_value "table type" v
 
 let al_to_memory_type: value -> memory_type = function
   | CaseV ("I8", [ limits ]) -> MemoryT (al_to_limits default_memory_max limits)
-  | v -> fail_typ_value "memory type" v
+  | v -> error_value "memory type" v
 
 
 (* Destruct value *)
@@ -202,7 +215,7 @@ let rec al_to_field: value -> Aggr.field = function
       | CaseV ("I16", []) -> Pack.Pack16
       | CaseV ("I32", []) -> Pack.Pack32
       | CaseV ("I64", []) -> Pack.Pack64
-      | v -> fail_typ_value "packsize" v
+      | v -> error_value "packsize" v
     in
     Aggr.PackField (pack_size', ref (al_to_int c))
   | v -> Aggr.ValField (ref (al_to_value v))
@@ -213,7 +226,7 @@ and al_to_array: value -> Aggr.array = function
       al_to_def_type (Record.find "TYPE" r),
       al_to_list al_to_field (Record.find "FIELD" r)
     )
-  | v -> fail_typ_value "array" v
+  | v -> error_value "array" v
 
 and al_to_struct: value -> Aggr.struct_ = function
   | StrV r when Record.mem "TYPE" r && Record.mem "FIELD" r ->
@@ -221,18 +234,18 @@ and al_to_struct: value -> Aggr.struct_ = function
       al_to_def_type (Record.find "TYPE" r),
       al_to_list al_to_field (Record.find "FIELD" r)
     )
-  | v -> fail_typ_value "struct" v
+  | v -> error_value "struct" v
 
 and al_to_num: value -> num = function
   | CaseV ("CONST", [ CaseV ("I32", []); i32 ]) -> I32 (al_to_int32 i32)
   | CaseV ("CONST", [ CaseV ("I64", []); i64 ]) -> I64 (al_to_int64 i64)
   | CaseV ("CONST", [ CaseV ("F32", []); f32 ]) -> F32 (al_to_float32 f32)
   | CaseV ("CONST", [ CaseV ("F64", []); f64 ]) -> F64 (al_to_float64 f64)
-  | v -> fail_typ_value "num" v
+  | v -> error_value "num" v
 
 and al_to_vec: value -> vec = function
   | CaseV ("VCONST", [ CaseV ("V128", []); v128 ]) -> V128 (al_to_vec128 v128)
-  | v -> fail_typ_value "vec" v
+  | v -> error_value "vec" v
 
 and al_to_ref: value -> ref_ = function
   | CaseV ("REF.NULL", [ ht ]) -> NullRef (al_to_heap_type ht)
@@ -247,13 +260,13 @@ and al_to_ref: value -> ref_ = function
     let arr = addr |> al_to_int |> listv_nth arr_insts |> al_to_array in
     Aggr.ArrayRef arr
   | CaseV ("REF.EXTERN", [ r ]) -> Extern.ExternRef (al_to_ref r)
-  | v -> fail_typ_value "ref" v
+  | v -> error_value "ref" v
 
 and al_to_value: value -> Value.value = function
   | CaseV ("CONST", _) as v -> Num (al_to_num v)
   | CaseV (ref_, _) as v when String.sub ref_ 0 4 = "REF." -> Ref (al_to_ref v)
   | CaseV ("VCONST", _) as v -> Vec (al_to_vec v)
-  | v -> fail_typ_value "value" v
+  | v -> error_value "value" v
 
 
 (* Destruct operator *)
@@ -263,7 +276,7 @@ let al_to_op f1 f2 = function
   | [ CaseV ("I64", []); op ] -> I64 (f1 op)
   | [ CaseV ("F32", []); op ] -> F32 (f2 op)
   | [ CaseV ("F64", []); op ] -> F64 (f2 op)
-  | l -> fail_list "op" l
+  | l -> error_values "op" l
 
 let al_to_int_unop: value -> IntOp.unop = function
   | CaseV ("CLZ", []) -> IntOp.Clz
@@ -273,7 +286,7 @@ let al_to_int_unop: value -> IntOp.unop = function
   | CaseV ("EXTEND", [NumV z]) when z = Z.of_int 16 -> IntOp.ExtendS Pack.Pack16
   | CaseV ("EXTEND", [NumV z]) when z = Z.of_int 32 -> IntOp.ExtendS Pack.Pack32
   | CaseV ("EXTEND", [NumV z]) when z = Z.of_int 64 -> IntOp.ExtendS Pack.Pack64
-  | v -> fail_typ_value "integer unop" v
+  | v -> error_value "integer unop" v
 let al_to_float_unop: value -> FloatOp.unop = function
   | CaseV ("NEG", []) -> FloatOp.Neg
   | CaseV ("ABS", []) -> FloatOp.Abs
@@ -282,7 +295,7 @@ let al_to_float_unop: value -> FloatOp.unop = function
   | CaseV ("TRUNC", []) -> FloatOp.Trunc
   | CaseV ("NEAREST", []) -> FloatOp.Nearest
   | CaseV ("SQRT", []) -> FloatOp.Sqrt
-  | v -> fail_typ_value "float unop" v
+  | v -> error_value "float unop" v
 let al_to_unop: value list -> Ast.unop = al_to_op al_to_int_unop al_to_float_unop
 
 let al_to_int_binop: value -> IntOp.binop = function
@@ -301,7 +314,7 @@ let al_to_int_binop: value -> IntOp.binop = function
   | CaseV ("SHR", [CaseV ("U", [])]) -> IntOp.ShrU
   | CaseV ("ROTL", []) -> IntOp.Rotl
   | CaseV ("ROTR", []) -> IntOp.Rotr
-  | v -> fail_typ_value "integer binop" v
+  | v -> error_value "integer binop" v
 let al_to_float_binop: value -> FloatOp.binop = function
   | CaseV ("ADD", []) -> FloatOp.Add
   | CaseV ("SUB", []) -> FloatOp.Sub
@@ -310,16 +323,16 @@ let al_to_float_binop: value -> FloatOp.binop = function
   | CaseV ("MIN", []) -> FloatOp.Min
   | CaseV ("MAX", []) -> FloatOp.Max
   | CaseV ("COPYSIGN", []) -> FloatOp.CopySign
-  | v -> fail_typ_value "float binop" v
+  | v -> error_value "float binop" v
 let al_to_binop: value list -> Ast.binop = al_to_op al_to_int_binop al_to_float_binop
 
 let al_to_int_testop: value -> IntOp.testop = function
   | CaseV ("EQZ", []) -> IntOp.Eqz
-  | v -> fail_typ_value "integer testop" v
+  | v -> error_value "integer testop" v
 let al_to_testop: value list -> Ast.testop = function
   | [ CaseV ("I32", []); op ] -> Value.I32 (al_to_int_testop op)
   | [ CaseV ("I64", []); op ] -> Value.I64 (al_to_int_testop op)
-  | l -> fail_list "testop" l
+  | l -> error_values "testop" l
 
 let al_to_int_relop: value -> IntOp.relop = function
   | CaseV ("EQ", []) -> IntOp.Eq
@@ -332,7 +345,7 @@ let al_to_int_relop: value -> IntOp.relop = function
   | CaseV ("LE", [CaseV ("U", [])]) -> IntOp.LeU
   | CaseV ("GE", [CaseV ("S", [])]) -> IntOp.GeS
   | CaseV ("GE", [CaseV ("U", [])]) -> IntOp.GeU
-  | v -> fail_typ_value "integer relop" v
+  | v -> error_value "integer relop" v
 let al_to_float_relop: value -> FloatOp.relop = function
   | CaseV ("EQ", []) -> FloatOp.Eq
   | CaseV ("NE", []) -> FloatOp.Ne
@@ -340,7 +353,7 @@ let al_to_float_relop: value -> FloatOp.relop = function
   | CaseV ("GT", []) -> FloatOp.Gt
   | CaseV ("LE", []) -> FloatOp.Le
   | CaseV ("GE", []) -> FloatOp.Ge
-  | v -> fail_typ_value "float relop" v
+  | v -> error_value "float relop" v
 let al_to_relop: value list -> relop = al_to_op al_to_int_relop al_to_float_relop
 
 let al_to_int_cvtop: value list -> IntOp.cvtop = function
@@ -348,7 +361,7 @@ let al_to_int_cvtop: value list -> IntOp.cvtop = function
     (match opt with
     | OptV (Some (CaseV ("S", []))) -> IntOp.ExtendSI32
     | OptV (Some (CaseV ("U", []))) -> IntOp.ExtendUI32
-    | _ -> fail_list "extend" l)
+    | _ -> error_values "extend" l)
   | CaseV ("I32", []) :: [ CaseV ("CONVERT", []); CaseV ("I64", []); OptV None ] -> IntOp.WrapI64
   | CaseV (_, []) :: CaseV ("CONVERT", []) :: args ->
     (match args with
@@ -356,16 +369,16 @@ let al_to_int_cvtop: value list -> IntOp.cvtop = function
     | [ CaseV ("F32", []); OptV (Some (CaseV ("U", []))) ] -> IntOp.TruncUF32
     | [ CaseV ("F64", []); OptV (Some (CaseV ("S", []))) ] -> IntOp.TruncSF64
     | [ CaseV ("F64", []); OptV (Some (CaseV ("U", []))) ] -> IntOp.TruncUF64
-    | l -> fail_list "trunc" l)
+    | l -> error_values "trunc" l)
   | CaseV (_, []) :: CaseV ("CONVERT_SAT", []) :: args ->
     (match args with
     | [ CaseV ("F32", []); OptV (Some (CaseV ("S", []))) ] -> IntOp.TruncSatSF32
     | [ CaseV ("F32", []); OptV (Some (CaseV ("U", []))) ] -> IntOp.TruncSatUF32
     | [ CaseV ("F64", []); OptV (Some (CaseV ("S", []))) ] -> IntOp.TruncSatSF64
     | [ CaseV ("F64", []); OptV (Some (CaseV ("U", []))) ] -> IntOp.TruncSatUF64
-    | l -> fail_list "truncsat" l)
+    | l -> error_values "truncsat" l)
   | [ _; CaseV ("REINTERPRET", []); _; OptV None ] -> IntOp.ReinterpretFloat
-  | l -> fail_list "integer cvtop" l
+  | l -> error_values "integer cvtop" l
 let al_to_float_cvtop : value list -> FloatOp.cvtop = function
   | [ CaseV (_, []); CaseV ("CONVERT", []); CaseV (nt, []); OptV (Some (CaseV (opt, []))) ] as l ->
     (match nt, opt with
@@ -373,17 +386,17 @@ let al_to_float_cvtop : value list -> FloatOp.cvtop = function
     | "I32", "U" -> FloatOp.ConvertUI32
     | "I64", "S" -> FloatOp.ConvertSI64
     | "I64", "U" -> FloatOp.ConvertUI64
-    | _ -> fail_list "convert" l)
+    | _ -> error_values "convert" l)
   | [ CaseV ("F64", []); CaseV ("CONVERT", []); CaseV ("F32", []); OptV None ] -> FloatOp.PromoteF32
   | [ CaseV ("F32", []); CaseV ("CONVERT", []); CaseV ("F64", []); OptV None ] -> FloatOp.DemoteF64
   | [ _; CaseV ("REINTERPRET", []); _; OptV None ] -> FloatOp.ReinterpretInt
-  | l -> fail_list "float cvtop" l
+  | l -> error_values "float cvtop" l
 let al_to_cvtop: value list -> cvtop = function
   | CaseV ("I32", []) :: _ as op -> I32 (al_to_int_cvtop op)
   | CaseV ("I64", []) :: _ as op -> I64 (al_to_int_cvtop op)
   | CaseV ("F32", []) :: _ as op -> F32 (al_to_float_cvtop op)
   | CaseV ("F64", []) :: _ as op -> F64 (al_to_float_cvtop op)
-  | l -> fail_list "cvtop" l
+  | l -> error_values "cvtop" l
 
 (* Vector operator *)
 
@@ -397,7 +410,7 @@ let sixtyfour = Z.of_int 64
 let al_to_extension : value -> Pack.extension = function
   | CaseV ("S", []) -> Pack.SX
   | CaseV ("U", []) -> Pack.ZX
-  | v -> fail_typ_value "extension" v
+  | v -> error_value "extension" v
 
 let al_to_vop f1 f2 = function
   | [ TupV [ CaseV ("I8", []); NumV z ]; vop ] when z = sixteen -> V128 (V128.I8x16 (f1 vop))
@@ -406,18 +419,18 @@ let al_to_vop f1 f2 = function
   | [ TupV [ CaseV ("I64", []); NumV z ]; vop ] when z = two -> V128 (V128.I64x2 (f1 vop))
   | [ TupV [ CaseV ("F32", []); NumV z ]; vop ] when z = four -> V128 (V128.F32x4 (f2 vop))
   | [ TupV [ CaseV ("F64", []); NumV z ]; vop ] when z = two -> V128 (V128.F64x2 (f2 vop))
-  | l -> fail_list "vop" l
+  | l -> error_values "vop" l
 
 let al_to_vvop f = function
   | [ CaseV ("V128", []); vop ] -> V128 (f vop)
-  | l -> fail_list "vvop" l
+  | l -> error_values "vvop" l
 
 let al_to_int_vtestop : value -> V128Op.itestop = function
   | CaseV ("ALL_TRUE", []) -> V128Op.AllTrue
-  | v -> fail_typ_value "integer vtestop" v
+  | v -> error_value "integer vtestop" v
 
 let al_to_float_vtestop : value -> Ast.void = function
-  | v -> fail_typ_value "float vtestop" v
+  | v -> error_value "float vtestop" v
 
 let al_to_vtestop : value list -> vec_testop =
   al_to_vop al_to_int_vtestop al_to_float_vtestop
@@ -427,7 +440,7 @@ let al_to_vbitmaskop : value list -> vec_bitmaskop = function
   | [ TupV [ CaseV ("I16", []); NumV z ] ] when z = eight -> V128 (V128.I16x8 (V128Op.Bitmask))
   | [ TupV [ CaseV ("I32", []); NumV z ] ] when z = four -> V128 (V128.I32x4 (V128Op.Bitmask))
   | [ TupV [ CaseV ("I64", []); NumV z ] ] when z = two -> V128 (V128.I64x2 (V128Op.Bitmask))
-  | l -> fail_list "vbitmaskop" l
+  | l -> error_values "vbitmaskop" l
 
 let al_to_int_vrelop : value -> V128Op.irelop = function
   | CaseV ("EQ", []) -> V128Op.Eq
@@ -440,7 +453,7 @@ let al_to_int_vrelop : value -> V128Op.irelop = function
   | CaseV ("GT", [CaseV ("U", [])]) -> V128Op.GtU
   | CaseV ("GE", [CaseV ("S", [])]) -> V128Op.GeS
   | CaseV ("GE", [CaseV ("U", [])]) -> V128Op.GeU
-  | v -> fail_typ_value "integer vrelop" v
+  | v -> error_value "integer vrelop" v
 
 let al_to_float_vrelop : value -> V128Op.frelop = function
   | CaseV ("EQ", []) -> V128Op.Eq
@@ -449,7 +462,7 @@ let al_to_float_vrelop : value -> V128Op.frelop = function
   | CaseV ("LE", []) -> V128Op.Le
   | CaseV ("GT", []) -> V128Op.Gt
   | CaseV ("GE", []) -> V128Op.Ge
-  | v -> fail_typ_value "float vrelop" v
+  | v -> error_value "float vrelop" v
 
 let al_to_vrelop : value list -> vec_relop =
   al_to_vop al_to_int_vrelop al_to_float_vrelop
@@ -458,7 +471,7 @@ let al_to_int_vunop : value -> V128Op.iunop = function
   | CaseV ("ABS", []) -> V128Op.Abs
   | CaseV ("NEG", []) -> V128Op.Neg
   | CaseV ("POPCNT", []) -> V128Op.Popcnt
-  | v -> fail_typ_value "integer vunop" v
+  | v -> error_value "integer vunop" v
 
 let al_to_float_vunop : value -> V128Op.funop = function
   | CaseV ("ABS", []) -> V128Op.Abs
@@ -468,7 +481,7 @@ let al_to_float_vunop : value -> V128Op.funop = function
   | CaseV ("FLOOR", []) -> V128Op.Floor
   | CaseV ("TRUNC", []) -> V128Op.Trunc
   | CaseV ("NEAREST", []) -> V128Op.Nearest
-  | v -> fail_typ_value "float vunop" v
+  | v -> error_value "float vunop" v
 
 let al_to_vunop : value list -> vec_unop =
   al_to_vop al_to_int_vunop al_to_float_vunop
@@ -491,7 +504,7 @@ let al_to_int_vbinop : value -> V128Op.ibinop = function
   | CaseV ("SWIZZLE", []) -> V128Op.Swizzle
   (*TODO *)
   | CaseV ("Shuffle", [ l ]) -> V128Op.Shuffle (al_to_list al_to_int l)
-  | v -> fail_typ_value "integer vbinop" v
+  | v -> error_value "integer vbinop" v
 
 let al_to_float_vbinop : value -> V128Op.fbinop = function
   | CaseV ("ADD", []) -> V128Op.Add
@@ -502,7 +515,7 @@ let al_to_float_vbinop : value -> V128Op.fbinop = function
   | CaseV ("MAX", []) -> V128Op.Max
   | CaseV ("PMIN", []) -> V128Op.Pmin
   | CaseV ("PMAX", []) -> V128Op.Pmax
-  | v -> fail_typ_value "float vbinop" v
+  | v -> error_value "float vbinop" v
 
 let al_to_vbinop : value list -> vec_binop = al_to_vop al_to_int_vbinop al_to_float_vbinop
 
@@ -526,7 +539,7 @@ let al_to_special_vbinop = function
   | CaseV ("VEXTMUL", [ TupV [ CaseV ("I64", []); NumV z1 ]; CaseV ("LOW", []); TupV [ CaseV ("I32", []); NumV z2 ]; CaseV ("S", []) ]) when z1 = two && z2 = four -> V128 (V128.I64x2 (V128Op.ExtMulLowS))
   | CaseV ("VEXTMUL", [ TupV [ CaseV ("I64", []); NumV z1 ]; CaseV ("LOW", []); TupV [ CaseV ("I32", []); NumV z2 ]; CaseV ("U", []) ] ) when z1 = two && z2 = four -> V128 (V128.I64x2 (V128Op.ExtMulLowU))
   | CaseV ("VDOT", [ TupV [ CaseV ("I32", []); NumV z1 ]; TupV [ CaseV ("I16", []); NumV z2 ]; CaseV ("S", []) ]) when z1 = four && z2 = eight -> V128 (V128.I32x4 (V128Op.DotS))
-  | v -> fail_typ_value "special vbinop" v
+  | v -> error_value "special vbinop" v
 
 let al_to_int_vcvtop : value list -> V128Op.icvtop = function
   | [ CaseV (op, []); OptV half; sh; OptV ext; CaseV ("ZERO", [OptV _]) ] as l -> (
@@ -537,7 +550,7 @@ let al_to_int_vcvtop : value list -> V128Op.icvtop = function
       | Some (CaseV ("LOW", [])), Some (CaseV ("U", [])) -> V128Op.ExtendLowU
       | Some (CaseV ("HIGH", [])), Some (CaseV ("S", [])) -> V128Op.ExtendHighS
       | Some (CaseV ("HIGH", [])), Some (CaseV ("U", [])) -> V128Op.ExtendHighU
-      | _ -> fail_list "integer vcvtop" l
+      | _ -> error_values "integer vcvtop" l
     )
     | "TRUNC_SAT" -> (
       match sh, ext with
@@ -545,11 +558,11 @@ let al_to_int_vcvtop : value list -> V128Op.icvtop = function
       | TupV [ CaseV ("F32", []); NumV z ], Some (CaseV ("U", [])) when z = four -> V128Op.TruncSatUF32x4
       | TupV [ CaseV ("F64", []); NumV z ], Some (CaseV ("S", [])) when z = two -> V128Op.TruncSatSZeroF64x2
       | TupV [ CaseV ("F64", []); NumV z ], Some (CaseV ("U", [])) when z = two -> V128Op.TruncSatUZeroF64x2
-      | _ -> fail_list "integer vcvtop" l
+      | _ -> error_values "integer vcvtop" l
     )
-    | _ -> fail_list "integer vcvtop" l
+    | _ -> error_values "integer vcvtop" l
   )
-  | l -> fail_list "integer vcvtop" l
+  | l -> error_values "integer vcvtop" l
 
 let al_to_float_vcvtop : value list -> V128Op.fcvtop = function
   | [ CaseV (op, []); OptV _; _; OptV ext; CaseV ("ZERO", [OptV _]) ] as l -> (
@@ -559,12 +572,12 @@ let al_to_float_vcvtop : value list -> V128Op.fcvtop = function
       match ext with
       | Some (CaseV ("S", [])) -> V128Op.ConvertSI32x4
       | Some (CaseV ("U", [])) -> V128Op.ConvertUI32x4
-      | _ -> fail_list "float vcvtop" l
+      | _ -> error_values "float vcvtop" l
     )
     | "PROMOTE" -> V128Op.PromoteLowF32x4
-    | _ -> fail_list "float vcvtop" l
+    | _ -> error_values "float vcvtop" l
   )
-  | l -> fail_list "float vcvtop" l
+  | l -> error_values "float vcvtop" l
 
 let al_to_vcvtop : value list -> vec_cvtop = function
   | TupV [ CaseV ("I8", []); NumV z ] :: op when z = sixteen -> V128 (V128.I8x16 (al_to_int_vcvtop op))
@@ -573,31 +586,31 @@ let al_to_vcvtop : value list -> vec_cvtop = function
   | TupV [ CaseV ("I64", []); NumV z ] :: op when z = two -> V128 (V128.I64x2 (al_to_int_vcvtop op))
   | TupV [ CaseV ("F32", []); NumV z ] :: op when z = four -> V128 (V128.F32x4 (al_to_float_vcvtop op))
   | TupV [ CaseV ("F64", []); NumV z ] :: op when z = two -> V128 (V128.F64x2 (al_to_float_vcvtop op))
-  | l -> fail_list "vcvtop" l
+  | l -> error_values "vcvtop" l
 
 let al_to_special_vcvtop = function
   | CaseV ("VEXTADD_PAIRWISE", [ TupV [ CaseV ("I16", []); NumV z1]; TupV [ CaseV ("I8", []); NumV z2 ]; CaseV ("S", []) ]) when z1 = eight && z2 = sixteen -> V128 (V128.I16x8 (V128Op.ExtAddPairwiseS))
   | CaseV ("VEXTADD_PAIRWISE", [ TupV [ CaseV ("I16", []); NumV z1]; TupV [ CaseV ("I8", []); NumV z2 ]; CaseV ("U", []) ]) when z1 = eight && z2 = sixteen -> V128 (V128.I16x8 (V128Op.ExtAddPairwiseU))
   | CaseV ("VEXTADD_PAIRWISE", [ TupV [ CaseV ("I32", []); NumV z1]; TupV [ CaseV ("I16", []); NumV z2 ]; CaseV ("S", []) ]) when z1 = four && z2 = eight -> V128 (V128.I32x4 (V128Op.ExtAddPairwiseS))
   | CaseV ("VEXTADD_PAIRWISE", [ TupV [ CaseV ("I32", []); NumV z1]; TupV [ CaseV ("I16", []); NumV z2 ]; CaseV ("U", []) ]) when z1 = four && z2 = eight -> V128 (V128.I32x4 (V128Op.ExtAddPairwiseU))
-  | v -> fail_typ_value "special vcvtop" v
+  | v -> error_value "special vcvtop" v
 
 let al_to_int_vshiftop : value -> V128Op.ishiftop = function
   | CaseV ("SHL", []) -> V128Op.Shl
   | CaseV ("SHR", [CaseV ("S", [])]) -> V128Op.ShrS
   | CaseV ("SHR", [CaseV ("U", [])]) -> V128Op.ShrU
-  | v -> fail_typ_value "integer vshiftop" v
-let al_to_float_vshiftop : value -> void = fail_typ_value "float vshiftop"
+  | v -> error_value "integer vshiftop" v
+let al_to_float_vshiftop : value -> void = error_value "float vshiftop"
 let al_to_vshiftop : value list -> vec_shiftop = al_to_vop al_to_int_vshiftop al_to_float_vshiftop
 
 let al_to_vvtestop' : value -> V128Op.vtestop = function
   | CaseV ("ANY_TRUE", []) -> V128Op.AnyTrue
-  | v -> fail_typ_value "vvtestop" v
+  | v -> error_value "vvtestop" v
 let al_to_vvtestop : value list -> vec_vtestop = al_to_vvop al_to_vvtestop'
 
 let al_to_vvunop' : value -> V128Op.vunop = function
   | CaseV ("NOT", []) -> V128Op.Not
-  | v -> fail_typ_value "vvunop" v
+  | v -> error_value "vvunop" v
 let al_to_vvunop : value list -> vec_vunop = al_to_vvop al_to_vvunop'
 
 let al_to_vvbinop' = function
@@ -605,12 +618,12 @@ let al_to_vvbinop' = function
   | CaseV ("OR", []) -> V128Op.Or
   | CaseV ("XOR", []) -> V128Op.Xor
   | CaseV ("ANDNOT", []) -> V128Op.AndNot
-  | v -> fail_typ_value "vvbinop" v
+  | v -> error_value "vvbinop" v
 let al_to_vvbinop : value list -> vec_vbinop = al_to_vvop al_to_vvbinop'
 
 let al_to_vvternop' : value -> V128Op.vternop = function
   | CaseV ("BITSELECT", []) -> V128Op.Bitselect
-  | v -> fail_typ_value "vvternop" v
+  | v -> error_value "vvternop" v
 let al_to_vvternop : value list -> vec_vternop = al_to_vvop al_to_vvternop'
 
 let al_to_vsplatop : value list -> vec_splatop = function
@@ -620,7 +633,7 @@ let al_to_vsplatop : value list -> vec_splatop = function
   | [ TupV [ CaseV ("I64", []); NumV z ] ] when z = two -> V128 (V128.I64x2 Splat)
   | [ TupV [ CaseV ("F32", []); NumV z ] ] when z = four -> V128 (V128.F32x4 Splat)
   | [ TupV [ CaseV ("F64", []); NumV z ] ] when z = two -> V128 (V128.F64x2 Splat)
-  | vl -> fail_list "vsplatop" vl
+  | vs -> error_values "vsplatop" vs
 
 let al_to_vextractop : value list -> vec_extractop = function
   | [ TupV [ CaseV ("I8", []); NumV z ]; OptV (Some ext); n ] when z = sixteen ->
@@ -635,7 +648,7 @@ let al_to_vextractop : value list -> vec_extractop = function
     V128 (V128.F32x4 (Extract (al_to_int n, ())))
   | [ TupV [ CaseV ("F64", []); NumV z ]; OptV None; n ] when z = two ->
     V128 (V128.F64x2 (Extract (al_to_int n, ())))
-  | vl -> fail_list "vextractop" vl
+  | vs -> error_values "vextractop" vs
 
 let al_to_vreplaceop : value list -> vec_replaceop = function
   | [ TupV [ CaseV ("I8", []); NumV z ]; n ] when z = sixteen -> V128 (V128.I8x16 (Replace (al_to_int n)))
@@ -644,19 +657,19 @@ let al_to_vreplaceop : value list -> vec_replaceop = function
   | [ TupV [ CaseV ("I64", []); NumV z ]; n ] when z = two -> V128 (V128.I64x2 (Replace (al_to_int n)))
   | [ TupV [ CaseV ("F32", []); NumV z ]; n ] when z = four -> V128 (V128.F32x4 (Replace (al_to_int n)))
   | [ TupV [ CaseV ("F64", []); NumV z ]; n ] when z = two -> V128 (V128.F64x2 (Replace (al_to_int n)))
-  | vl -> fail_list "vreplaceop" vl
+  | vs -> error_values "vreplaceop" vs
 
 let al_to_pack_size : value -> Pack.pack_size = function
   | NumV z when z = eight -> Pack.Pack8
   | NumV z when z = sixteen -> Pack.Pack16
   | NumV z when z = thirtytwo -> Pack.Pack32
   | NumV z when z = sixtyfour -> Pack.Pack64
-  | v -> fail_typ_value "pack_size" v
+  | v -> error_value "pack_size" v
 
 let al_to_extension: value -> Pack.extension = function
   | CaseV ("S", []) -> Pack.SX
   | CaseV ("U", []) -> Pack.ZX
-  | v -> fail_typ_value "extension" v
+  | v -> error_value "extension" v
 
 let al_to_memop (f: value -> 'p) : value list -> (num_type, 'p) memop = function
   | [ nt; p; NumV z; StrV str ] when z = Z.zero ->
@@ -666,11 +679,11 @@ let al_to_memop (f: value -> 'p) : value list -> (num_type, 'p) memop = function
       offset = Record.find "OFFSET" str |> al_to_int32;
       pack = f p;
     }
-  | v -> fail_list "memop" v
+  | v -> error_values "memop" v
 
 let al_to_pack_size_extension: value -> Pack.pack_size * Pack.extension = function
   | TupV [ p; ext ] -> al_to_pack_size p, al_to_extension ext
-  | v -> fail_typ_value "pack size, extension" v
+  | v -> error_value "pack size, extension" v
 
 let al_to_loadop: value list -> loadop = al_to_opt al_to_pack_size_extension |> al_to_memop
 
@@ -691,13 +704,13 @@ let al_to_vmemop (f: value -> 'p): value list -> (vec_type, 'p) memop = function
       offset = Record.find "OFFSET" str |> al_to_int32;
       pack = f p;
     }
-  | v -> fail_list "vmemop" v
+  | v -> error_values "vmemop" v
 
 let al_to_pack_shape = function
   | [NumV z1; NumV z2] when z1 = eight && z2 = eight -> Pack.Pack8x8
   | [NumV z1; NumV z2] when z1 = sixteen && z2 = four -> Pack.Pack16x4
   | [NumV z1; NumV z2] when z1 = thirtytwo && z2 = two -> Pack.Pack32x2
-  | vs -> fail_typ_value "pack shape" (TupV vs)
+  | vs -> error_value "pack shape" (TupV vs)
 
 let pack_shape_to_pack_size = function
   | Pack.Pack8x8 -> Pack.Pack8
@@ -713,14 +726,14 @@ let al_to_vloadop': value -> Pack.pack_size * Pack.vec_extension = function
     )
   | CaseV ("SPLAT", [ pack_size ]) -> al_to_pack_size pack_size, Pack.ExtSplat
   | CaseV ("ZERO", [ pack_size ]) -> al_to_pack_size pack_size, Pack.ExtZero
-  | v -> fail_typ_value "vloadop" v
+  | v -> error_value "vloadop" v
 
 let al_to_vloadop: value list -> vec_loadop = al_to_vmemop (al_to_opt al_to_vloadop')
 
 let al_to_vstoreop = al_to_vmemop (fun _ -> ())
 
-let al_to_vlaneop (vl: value list): vec_laneop =
-  let h, t = Util.Lib.List.split_last vl in
+let al_to_vlaneop (vs: value list): vec_laneop =
+  let h, t = Util.Lib.List.split_last vs in
   al_to_vmemop al_to_pack_size h, al_to_int t
 
 
@@ -839,7 +852,7 @@ and al_to_instr': value -> Ast.instr' = function
     ArrayInitElem (al_to_idx idx1, al_to_idx idx2)
   | CaseV ("ANY.CONVERT_EXTERN", []) -> ExternConvert Internalize
   | CaseV ("EXTERN.CONVERT_ANY", []) -> ExternConvert Externalize
-  | v -> fail_typ_value "instrunction" v
+  | v -> error_value "instrunction" v
 
 let al_to_const: value -> const = al_to_list al_to_instr |> al_to_phrase
 
@@ -848,11 +861,11 @@ let al_to_const: value -> const = al_to_list al_to_instr |> al_to_phrase
 
 let al_to_type: value -> type_ = function
   | CaseV ("TYPE", [ rt ]) -> al_to_phrase al_to_rec_type rt
-  | v -> fail_typ_value "type" v
+  | v -> error_value "type" v
 
 let al_to_local': value -> local' = function
   | CaseV ("LOCAL", [ vt ]) -> { ltype = al_to_val_type vt }
-  | v -> fail_typ_value "local" v
+  | v -> error_value "local" v
 let al_to_local: value -> local = al_to_phrase al_to_local'
 
 let al_to_func': value -> func' = function
@@ -862,24 +875,24 @@ let al_to_func': value -> func' = function
       locals = al_to_list al_to_local locals;
       body = al_to_list al_to_instr instrs;
     }
-  | v -> fail_typ_value "func" v
+  | v -> error_value "func" v
 let al_to_func: value -> func = al_to_phrase al_to_func'
 
 let al_to_global': value -> global' = function
   | CaseV ("GLOBAL", [ gt; const ]) ->
     { gtype = al_to_global_type gt; ginit = al_to_const const }
-  | v -> fail_typ_value "global" v
+  | v -> error_value "global" v
 let al_to_global: value -> global = al_to_phrase al_to_global'
 
 let al_to_table': value -> table' = function
   | CaseV ("TABLE", [ tt; const ]) ->
     { ttype = al_to_table_type tt; tinit = al_to_const const }
-  | v -> fail_typ_value "table" v
+  | v -> error_value "table" v
 let al_to_table: value -> table = al_to_phrase al_to_table'
 
 let al_to_memory': value -> memory' = function
   | CaseV ("MEMORY", [ mt ]) -> { mtype = al_to_memory_type mt }
-  | v -> fail_typ_value "memory" v
+  | v -> error_value "memory" v
 let al_to_memory: value -> memory = al_to_phrase al_to_memory'
 
 let al_to_segment': value -> segment_mode' = function
@@ -887,7 +900,7 @@ let al_to_segment': value -> segment_mode' = function
   | CaseV ("ACTIVE", [ idx; const ]) ->
     Active { index = al_to_idx idx; offset = al_to_const const }
   | CaseV ("DECLARE", []) -> Declarative
-  | v -> fail_typ_value "segment mode" v
+  | v -> error_value "segment mode" v
 let al_to_segment: value -> segment_mode = al_to_phrase al_to_segment'
 
 let al_to_elem': value -> elem_segment' = function
@@ -897,13 +910,13 @@ let al_to_elem': value -> elem_segment' = function
       einit = al_to_list al_to_const consts;
       emode = al_to_segment seg
     }
-  | v -> fail_typ_value "elem segment" v
+  | v -> error_value "elem segment" v
 let al_to_elem: value -> elem_segment = al_to_phrase al_to_elem'
 
 let al_to_data': value -> data_segment' = function
   | CaseV ("DATA", [ bytes_; seg ]) ->
     { dinit = al_to_bytes bytes_; dmode = al_to_segment seg }
-  | v -> fail_typ_value "data segment" v
+  | v -> error_value "data segment" v
 let al_to_data: value -> data_segment = al_to_phrase al_to_data'
 
   (*
@@ -931,18 +944,18 @@ let al_to_export_desc': value -> export_desc' = function
   | CaseV ("TABLE", [ idx ]) -> TableExport (al_to_idx idx)
   | CaseV ("MEM", [ idx ]) -> MemoryExport (al_to_idx idx)
   | CaseV ("GLOBAL", [ idx ]) -> GlobalExport (al_to_idx idx)
-  | v -> fail_typ_value "export desc" v
+  | v -> error_value "export desc" v
 let al_to_export_desc: value -> export_desc = al_to_phrase al_to_export_desc'
 
 let al_to_start': value -> start' = function
   | CaseV ("START", [ idx ]) -> { sfunc = al_to_idx idx }
-  | v -> fail_typ_value "start" v
+  | v -> error_value "start" v
 let al_to_start: value -> start = al_to_phrase al_to_start'
 
 let al_to_export': value -> export' = function
   | CaseV ("EXPORT", [ name; ed ]) ->
     { name = al_to_name name; edesc = al_to_export_desc ed }
-  | v -> fail_typ_value "export" v
+  | v -> error_value "export" v
 let al_to_export: value -> export = al_to_phrase al_to_export'
 
 let al_to_module': value -> module_' = function
@@ -962,7 +975,7 @@ let al_to_module': value -> module_' = function
       start = al_to_opt al_to_start start;
       exports = al_to_list al_to_export exports;
     }
-  | v -> fail_typ_value "module" v
+  | v -> error_value "module" v
 let al_to_module: value -> module_ = al_to_phrase al_to_module'
 
 
@@ -1161,7 +1174,7 @@ let rec al_of_ref = function
   *)
   | Script.HostRef i32 -> CaseV ("REF.HOST_ADDR", [ al_of_int32 i32 ])
   | Extern.ExternRef r -> CaseV ("REF.EXTERN", [ al_of_ref r ])
-  | r -> string_of_ref r |> failwith
+  | r -> string_of_ref r |> error "al_of_ref"
 
 let al_of_value = function
   | Num n -> al_of_num n
@@ -1185,6 +1198,7 @@ let al_of_int_unop = function
   | IntOp.ExtendS Pack.Pack16 -> CaseV ("EXTEND", [al_of_int 16])
   | IntOp.ExtendS Pack.Pack32 -> CaseV ("EXTEND", [al_of_int 32])
   | IntOp.ExtendS Pack.Pack64 -> CaseV ("EXTEND", [al_of_int 64])
+
 let al_of_float_unop = function
   | FloatOp.Neg -> CaseV ("NEG", [])
   | FloatOp.Abs -> CaseV ("ABS", [])
@@ -1193,6 +1207,7 @@ let al_of_float_unop = function
   | FloatOp.Trunc -> CaseV ("TRUNC", [])
   | FloatOp.Nearest -> CaseV ("NEAREST", [])
   | FloatOp.Sqrt -> CaseV ("SQRT", [])
+
 let al_of_unop = al_of_op al_of_int_unop al_of_float_unop
 
 let al_of_int_binop = function
@@ -1211,6 +1226,7 @@ let al_of_int_binop = function
   | IntOp.ShrU -> CaseV ("SHR", [CaseV ("U", [])])
   | IntOp.Rotl -> CaseV ("ROTL", [])
   | IntOp.Rotr -> CaseV ("ROTR", [])
+
 let al_of_float_binop = function
   | FloatOp.Add -> CaseV ("ADD", [])
   | FloatOp.Sub -> CaseV ("SUB", [])
@@ -1219,12 +1235,15 @@ let al_of_float_binop = function
   | FloatOp.Min -> CaseV ("MIN", [])
   | FloatOp.Max -> CaseV ("MAX", [])
   | FloatOp.CopySign -> CaseV ("COPYSIGN", [])
+
 let al_of_binop = al_of_op al_of_int_binop al_of_float_binop
 
 let al_of_int_testop: IntOp.testop -> value = function
   | IntOp.Eqz -> CaseV ("EQZ", [])
+
 let al_of_float_testop: FloatOp.testop -> value = function
   | _ -> .
+
 let al_of_testop: testop -> value list = al_of_op al_of_int_testop al_of_float_testop
 
 let al_of_int_relop = function
@@ -1238,6 +1257,7 @@ let al_of_int_relop = function
   | IntOp.LeU -> CaseV ("LE", [CaseV ("U", [])])
   | IntOp.GeS -> CaseV ("GE", [CaseV ("S", [])])
   | IntOp.GeU -> CaseV ("GE", [CaseV ("U", [])])
+
 let al_of_float_relop = function
   | FloatOp.Eq -> CaseV ("EQ", [])
   | FloatOp.Ne -> CaseV ("NE", [])
@@ -1245,6 +1265,7 @@ let al_of_float_relop = function
   | FloatOp.Gt -> CaseV ("GT", [])
   | FloatOp.Le -> CaseV ("LE", [])
   | FloatOp.Ge -> CaseV ("GE", [])
+
 let al_of_relop = al_of_op al_of_int_relop al_of_float_relop
 
 let al_of_int_cvtop num_bits = function
@@ -1260,6 +1281,7 @@ let al_of_int_cvtop num_bits = function
   | IntOp.TruncSatSF64 -> "Convert_sat", "F64", Some (nullary "S")
   | IntOp.TruncSatUF64 -> "Convert_sat", "F64", Some (nullary "U")
   | IntOp.ReinterpretFloat -> "Reinterpret", "F" ^ num_bits, None
+
 let al_of_float_cvtop num_bits = function
   | FloatOp.ConvertSI32 -> "Convert", "I32", Some (nullary ("S"))
   | FloatOp.ConvertUI32 -> "Convert", "I32", Some (nullary ("U"))
@@ -1268,6 +1290,7 @@ let al_of_float_cvtop num_bits = function
   | FloatOp.PromoteF32 -> "Convert", "F32", None
   | FloatOp.DemoteF64 -> "Convert", "F64", None
   | FloatOp.ReinterpretInt -> "Reinterpret", "I" ^ num_bits, None
+
 let al_of_cvtop = function
   | I32 op ->
     let op', to_, ext = al_of_int_cvtop "32" op in
@@ -1300,8 +1323,7 @@ let al_of_vop f1 f2 = function
   )
 
 let al_of_viop f1:
-    ('a, 'a, 'a, 'a, void, void) V128.laneop vecop -> value list =
-  function
+    ('a, 'a, 'a, 'a, void, void) V128.laneop vecop -> value list = function
   | V128 vop -> (
     match vop with
     | V128.I8x16 op -> [ TupV [ nullary "I8"; numV sixteen ]; f1 op ]
@@ -1318,7 +1340,7 @@ let al_of_vbitmaskop = function
     | V128.I16x8 _ -> [ TupV [ nullary "I16"; numV eight ] ]
     | V128.I32x4 _ -> [ TupV [ nullary "I32"; numV four ] ]
     | V128.I64x2 _ -> [ TupV [ nullary "I64"; numV two ] ]
-    | _ -> failwith "Invalid shape"
+    | _ -> error "al_of_vbitmaskop" ""
   )
 
 let al_of_int_vtestop : V128Op.itestop -> value = function
@@ -1424,7 +1446,7 @@ let al_of_special_vbinop = function
   | V128 (V128.I64x2 (V128Op.ExtMulLowS)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I64"; numV two ]; TupV [ nullary "I32"; numV four ]; caseV ("EXTMUL", [nullary "LOW"]); al_of_extension Pack.SX ])
   | V128 (V128.I64x2 (V128Op.ExtMulLowU)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I64"; numV two ]; TupV [ nullary "I32"; numV four ]; caseV ("EXTMUL", [nullary "LOW"]); al_of_extension Pack.ZX ] )
   | V128 (V128.I32x4 (V128Op.DotS)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I32"; numV four ]; TupV [ nullary "I16"; numV eight ]; nullary "DOT"; al_of_extension Pack.SX ])
-  | _ -> failwith "invalid special vbinop"
+  | _ -> error "al_of_special_vbinop" ""
 
 let al_of_int_vcvtop = function
   | V128Op.ExtendLowS -> Some (nullary "EXTEND", Some (nullary "LOW"), None, Some (nullary "S"), None)
@@ -1456,7 +1478,7 @@ let al_of_vcvtop = function
       Option.map (fun (op', half, to_, ext, zero) ->
         let sh = match to_ with Some sh -> sh | None -> (
           match half with
-          | Some _ -> failwith "invalid vcvtop"
+          | Some _ -> error "al_of_vcvtop" ""
           | None -> TupV [ nullary "I8"; numV sixteen ]
         ) in
         [ TupV [ nullary "I8"; numV sixteen ]; op'; optV half; sh; optV ext; CaseV ("ZERO", [OptV zero]) ]
@@ -1496,7 +1518,7 @@ let al_of_vcvtop = function
       Option.map (fun (op', half, to_, ext, zero) ->
         let sh = match to_ with Some sh -> sh | None -> (
           match half with
-          | Some _ -> failwith "invalid vcvtop"
+          | Some _ -> error "al_of_vcvtop" ""
           | None -> TupV [ nullary "F32"; numV four ]
         ) in
         [ TupV [ nullary "F32"; numV four ]; op'; optV half; sh; optV ext; CaseV ("ZERO", [OptV zero]) ]
@@ -1520,7 +1542,7 @@ let al_of_special_vcvtop = function
   | V128 (V128.I16x8 (V128Op.ExtAddPairwiseU)) -> CaseV ("VEXTUNOP", [ TupV [ nullary "I16"; numV eight]; TupV [ nullary "I8"; numV sixteen ]; nullary "EXTADD_PAIRWISE"; al_of_extension Pack.ZX ])
   | V128 (V128.I32x4 (V128Op.ExtAddPairwiseS)) -> CaseV ("VEXTUNOP", [ TupV [ nullary "I32"; numV four]; TupV [ nullary "I16"; numV eight ]; nullary "EXTADD_PAIRWISE"; al_of_extension Pack.SX ])
   | V128 (V128.I32x4 (V128Op.ExtAddPairwiseU)) -> CaseV ("VEXTUNOP", [ TupV [ nullary "I32"; numV four]; TupV [ nullary "I16"; numV eight ]; nullary "EXTADD_PAIRWISE"; al_of_extension Pack.ZX ])
-  | _ -> failwith "invalid vcvtop"
+  | _ -> error "al_of_special_vcvtop" ""
 
 let al_of_int_vshiftop : V128Op.ishiftop -> value = function
   | V128Op.Shl -> nullary "SHL"

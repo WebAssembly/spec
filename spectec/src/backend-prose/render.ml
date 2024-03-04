@@ -6,7 +6,7 @@ open Util.Source
 
 (* Errors *)
 
-let error at msg = Util.Error.error at "prose render" msg
+let error at msg = Util.Error.error at "prose rendering" msg
 
 
 (* Environment *)

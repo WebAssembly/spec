@@ -107,14 +107,9 @@ let fail_value msg v =
   |> Printf.sprintf "%s: %s" msg
   |> failwith
 
-let fail_typ_value typ v =
-  fail_value (Printf.sprintf "Invalid %s" typ) v
-
-let fail_list typ vl =
-  "[" ^ Print.string_of_list Print.string_of_value "," vl ^ "]"
-  |> Printf.sprintf "Invalid %s: %s" typ
-  |> failwith
-
+let print_yet at category msg =
+  (Util.Source.string_of_region at ^ ": ") ^ (category ^ ": Yet " ^ msg)
+  |> print_endline
 
 (* Helper functions *)
 

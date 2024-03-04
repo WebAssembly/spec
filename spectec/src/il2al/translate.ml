@@ -12,7 +12,7 @@ module Il = struct include Il include Ast include Print end
 
 (* Errors *)
 
-let error at msg = Error.error at "translate" msg
+let error at msg = Error.error at "translation" msg
 
 let error_exp exp typ =
   error exp.at (sprintf "Invalid exp `%s` to be %s" (Il.Print.string_of_exp exp) typ)
@@ -604,7 +604,7 @@ let translate_rulepr id exp =
   | "Reftype_sub", [_C; rt1; rt2] ->
     [ ifI (matchE (rt1, rt2) ~at:at, [], []) ~at:at ]
   | _ ->
-    Error.print_yet exp.at "translate_rulepr" (Il.Print.string_of_exp exp);
+    print_yet exp.at "translate_rulepr" (Il.Print.string_of_exp exp);
     [ yetI ("TODO: Unsupported rule premise:" ^ id.it) ~at:at ]
 
 let rec translate_iterpr pr (iter, ids) =
@@ -948,7 +948,7 @@ and translate_rgroup (instr_name, rgroup) =
   let winstr_name =
     match winstr.it with
     | Il.CaseE (Il.Atom winstr_name, _) -> winstr_name
-    | _ -> failwith "unreachable"
+    | _ -> error_exp winstr "winstr"
   in
   let kwd = kwd winstr_name winstr.note in
   let al_params =
