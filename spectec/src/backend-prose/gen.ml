@@ -115,13 +115,14 @@ let rec extract_vrules def =
   | _ -> []
 
 let pack_vrule vrule =
-  let (Ast.RuleD (_, tenv, _, exp, prems)) = vrule.it in
-  match exp.it with
-  (* c |- e : t *)
-  | Ast.TupE [ _c; e; t ] -> (e, t, prems, tenv)
-  | _ -> error exp.at
-    (Print.string_of_exp exp
-    |> Printf.sprintf "Invalid expression `%s` to be typing rule.")
+  match vrule.it with
+  | Ast.RuleD (_, tenv, _, exp, prems) ->
+    match exp.it with
+    (* c |- e : t *)
+    | Ast.TupE [ _c; e; t ] -> (e, t, prems, tenv)
+    | _ -> error exp.at
+      (Print.string_of_exp exp
+      |> Printf.sprintf "Invalid expression `%s` to be typing rule.")
 
 (* group typing rules that have same name *)
 (* Il.rule list -> vrule_group list *)

@@ -77,8 +77,13 @@ let lhs_of_rgroup rgroup =
   lhs
 
 let name_of_rule rule =
-  let Il.RuleD (id1, _, _, _, _) = rule.it in
-  String.split_on_char '-' id1.it |> List.hd
+  match rule.it with
+  | Il.RuleD (id, _, _, _, _) ->
+    String.split_on_char '-' id.it |> List.hd
+
+let args_of_clause clause =
+  match clause.it with
+  | Il.DefD (_, args, _, _) -> args
 
 let lower = String.lowercase_ascii
 let upper = String.uppercase_ascii
@@ -679,18 +684,18 @@ let translate_config config =
     error_exp config "Invalid config"
 
 let translate_helper_body name clause =
-  let Il.DefD (_, _, re, prems) = clause.it in
-  (* TODO: Remove hack *)
-  let return_instrs =
-    if name = "instantiate" then
-      translate_config re |> return_instrs_of_instantiate
-    else if name = "invoke" then
-      translate_config re |> return_instrs_of_invoke
-    else
-      [ returnI (Some (translate_exp re)) ]
-  in
-  translate_prems prems return_instrs
-
+  match clause.it with
+  | Il.DefD (_, _, re, prems) ->
+    (* TODO: Remove hack *)
+    let return_instrs =
+      if name = "instantiate" then
+        translate_config re |> return_instrs_of_instantiate
+      else if name = "invoke" then
+        translate_config re |> return_instrs_of_invoke
+      else
+        [ returnI (Some (translate_exp re)) ]
+    in
+    translate_prems prems return_instrs
 
 (* Main translation for helper functions *)
 let translate_helper partial_funcs def =
@@ -698,7 +703,7 @@ let translate_helper partial_funcs def =
   | Il.DecD (id, _, _, clauses) when List.length clauses > 0 ->
     let name = id.it in
     let unified_clauses = Il2il.unify_defs clauses in
-    let Il.DefD (_, args, _, _) = List.hd unified_clauses |> it in
+    let args = List.hd unified_clauses |> args_of_clause in
     let params =
       args
       |> translate_args
@@ -976,10 +981,11 @@ and translate_rgroup (instr_name, rgroup) =
 
 
 let rule_to_tup rule =
-  let Il.RuleD (_, _, _, exp, prems) = rule.it in
-  match exp.it with
-  | Il.TupE [ lhs; rhs ] -> lhs, rhs, prems
-  | _ -> error_exp exp "reduction rule"
+  match rule.it with
+  | Il.RuleD (_, _, _, exp, prems) ->
+    match exp.it with
+    | Il.TupE [ lhs; rhs ] -> lhs, rhs, prems
+    | _ -> error_exp exp "reduction rule"
 
 
 (* group reduction rules that have same name *)
@@ -997,8 +1003,9 @@ let extract_rules def =
   match def.it with
   | Il.RelD (id, _, _, rules) when String.starts_with ~prefix:"Step" id.it ->
     let condition rule =
-      let Il.RuleD (id', _, _, _, _) = rule.it in
-      id.it <> "Steps" && id'.it <> "pure" && id'.it <> "read"
+      match rule.it with
+      | Il.RuleD (id', _, _, _, _) ->
+        id.it <> "Steps" && id'.it <> "pure" && id'.it <> "read"
     in
     List.filter condition rules
   | _ -> []

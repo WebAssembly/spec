@@ -249,10 +249,11 @@ let unify_lhs (rname, rgroup) =
   rname, (rgroup |> List.map to_left_assoc |> unify_lhs' |> List.map to_right_assoc)
 
 let apply_template_to_def template def =
-  let DefD (binds, lhs, rhs, prems) = def.it in
-  let new_prems, new_binds = collect_unified_args template lhs in
-  let animated_prems = Animate.animate_prems Il.Free.(free_list free_arg template) new_prems in
-  DefD (binds @ new_binds, template, rhs, (animated_prems @ prems) |> prioritize_else) $ no_region
+  match def.it with
+  | DefD (binds, lhs, rhs, prems) ->
+    let new_prems, new_binds = collect_unified_args template lhs in
+    let animated_prems = Animate.animate_prems Il.Free.(free_list free_arg template) new_prems in
+    DefD (binds @ new_binds, template, rhs, (animated_prems @ prems) |> prioritize_else) $ no_region
 
 let unify_defs defs =
   init_unified_idx();
