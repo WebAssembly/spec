@@ -410,19 +410,28 @@ relation Module_ok: |- module : OK      hint(show "T-module")
 
 rule Module_ok:
   |- MODULE type* import* func* global* table* mem* elem* data* start? export* : OK
-  ;; TODO: incremental contexts for globals
-  -- if C = {TYPE ft'*, FUNC ft*, GLOBAL gt*, TABLE tt*, MEM mt*}
-
   -- (Type_ok: |- type : ft')*
+  -- (Import_ok: {TYPE ft'*} |- import : ixt)*
+
+  -- (Global_ok: C' |- global : gt)*
   -- (Func_ok: C |- func : ft)*
-  -- (Global_ok: C |- global : gt)*
   -- (Table_ok: C |- table : tt)*
   -- (Mem_ok: C |- mem : mt)*
 
   -- (Elem_ok: C |- elem : OK)*
   -- (Data_ok: C |- data : OK)*
   -- (Start_ok: C |- start : OK)?
+  -- (Export_ok: C |- export : xt)*
 
   -- if |tt*| <= 1
   -- if |mt*| <= 1
   ;; -- TODO: disjoint export names
+
+  -- if C = {TYPE ft'*, FUNC ift* ft*, GLOBAL igt* gt*, TABLE itt* tt*, MEM imt* mt*}
+
+  -- if C' = {TYPE ft'*, FUNC ift* ft*, GLOBAL igt*}
+
+  -- if ift* = $funcsxt(ixt*)
+  -- if igt* = $globalsxt(ixt*)
+  -- if itt* = $tablesxt(ixt*)
+  -- if imt* = $memsxt(ixt*)

@@ -7,8 +7,8 @@
 syntax A = nat
 syntax B = nat
 
-syntax sym = | _FIRST A_1 | _DOTS hint(show `...) | _LAST A_n
-syntax symsplit/1 hint(show sym) = | _FIRST A_1 | ...
+syntax sym = _FIRST A_1 | _DOTS hint(show `...) | _LAST A_n
+syntax symsplit/1 hint(show sym) = _FIRST A_1 | ...
 syntax symsplit/2 hint(show sym) = ... | _LAST A_2
 
 syntax recorddots hint(show `...) = `...
@@ -24,7 +24,7 @@ syntax recordstar hint(show r) =
 
 syntax recordeq = recordstar `++ recordstar `= recordstar
 
-syntax pth = | PTHSYNTAX hint(show (`[i] `| !%.FIELD)+)
+syntax pth = PTHSYNTAX hint(show (`[i] `| !%.FIELD)+)
 
 syntax pthaux =
   { PTH ()           hint(show pth),

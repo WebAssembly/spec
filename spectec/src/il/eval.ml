@@ -106,7 +106,7 @@ and is_normal_exp e =
   match e.it with
   | BoolE _ | NatE _ | TextE _ | ListE _ | OptE _
   | UnE (MinusOp _, {it = NatE _; _})
-  | StrE _ | TupE _ | CaseE _ | MixE _ -> true
+  | StrE _ | TupE _ | CaseE _ -> true
   | _ -> false
 
 and reduce_exp env e : exp =
@@ -224,7 +224,7 @@ and reduce_exp env e : exp =
   | DotE (e1, atom) ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with
-    | StrE efs -> snd (List.find (fun (atomN, _) -> atomN = atom) efs)
+    | StrE efs -> snd (List.find (fun (atomN, _) -> Eq.eq_atom atomN atom) efs)
     | _ -> DotE (e1', atom) $> e
     )
   | CompE (e1, e2) ->
@@ -241,9 +241,6 @@ and reduce_exp env e : exp =
     | _ -> LenE e1'
     ) $> e
   | TupE es -> TupE (List.map (reduce_exp env) es) $> e
-  | MixE (op, e1) ->
-    let e1' = reduce_exp env e1 in
-    MixE (op, e1') $> e
   | CallE (id, args) ->
     let args' = List.map (reduce_arg env) args in
     let clauses = Map.find id.it env.defs in
@@ -282,11 +279,11 @@ and reduce_exp env e : exp =
     | TupE es -> List.nth es i
     | _ -> ProjE (e1', i) $> e
     )
-  | UnmixE (e1, mixop) ->
+  | UncaseE (e1, mixop) ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with
-    | MixE (_, e11') -> e11'
-    | _ -> UnmixE (e1', mixop) $> e
+    | CaseE (_, e11') -> e11'
+    | _ -> UncaseE (e1', mixop) $> e
     )
   | OptE eo -> OptE (Option.map (reduce_exp env) eo) $> e
   | TheE e1 ->
@@ -303,7 +300,7 @@ and reduce_exp env e : exp =
     | ListE es1, ListE es2 -> ListE (es1 @ es2)
     | _ -> CatE (e1', e2')
     ) $> e
-  | CaseE (atom, e1) -> CaseE (atom, reduce_exp env e1) $> e
+  | CaseE (op, e1) -> CaseE (op, reduce_exp env e1) $> e
   | SubE (e1, t1, t2) when equiv_typ env t1 t2 ->
     reduce_exp env e1
   | SubE (e1, t1, t2) ->
@@ -379,7 +376,7 @@ and reduce_path env e p f =
       match e'.it with
       | StrE efs ->
         StrE (List.map (fun (atomI, eI) ->
-          if atomI = atom then (atomI, f eI p1') else (atomI, eI)) efs) $> e'
+          if Eq.eq_atom atomI atom then (atomI, f eI p1') else (atomI, eI)) efs) $> e'
       | _ ->
         f e' (DotP (p1', atom) $> p)
     in
@@ -561,13 +558,11 @@ and match_exp' env s e1 e2 : subst option =
 *)
   | StrE efs1, StrE efs2 -> match_list match_expfield env s efs1 efs2
 (*
-  | DotE (e11, atom1), DotE (e21, atom2) when atom1 = atom2 ->
+  | DotE (e11, atom1), DotE (e21, atom2) when Eq.eq_atom atom1 atom2 ->
     match_exp' env s e11 e21
   | LenE e11, LenE e21 -> match_exp' env s e11 e21
 *)
-  | CaseE (atom1, e11), CaseE (atom2, e21) when atom1 = atom2 ->
-    match_exp' env s e11 e21
-  | MixE (op1, e11), MixE (op2, e21) when op1 = op2 ->
+  | CaseE (op1, e11), CaseE (op2, e21) when Eq.eq_mixop op1 op2 ->
     match_exp' env s e11 e21
 (*
   | CallE (id1, args1), CallE (id2, args2) when id1.it = id2.it ->
@@ -595,11 +590,11 @@ and match_exp' env s e1 e2 : subst option =
         | NatE _, NumT _
         | TextE _, TextT -> true
         | UnE (MinusOp _, _), NumT t -> t >= IntT
-        | CaseE (atom, _), VarT _ ->
+        | CaseE (op, _), VarT _ ->
           (match (reduce_typdef env t21).it with
           | VariantT tcs ->
             (* Assumes that we only have shallow subtyping. *)
-            List.exists (fun (atomN, _, _) -> atomN = atom) tcs
+            List.exists (fun (opN, _, _) -> Eq.eq_mixop opN op) tcs
           | _ -> false
           )
         | VarE id1, _ ->
@@ -614,7 +609,7 @@ and match_exp' env s e1 e2 : subst option =
     raise Irred
 
 and match_expfield env s (atom1, e1) (atom2, e2) =
-  if atom1 <> atom2 then None else
+  if not (Eq.eq_atom atom1 atom2) then None else
   match_exp' env s e1 e2
 
 and match_iterexp env s (iter1, _ids1) (iter2, _ids2) =
@@ -669,13 +664,7 @@ and equiv_typ env t1 t2 =
     let t1' = reduce_typ env t1 in
     let t2' = reduce_typ env t2 in
     (t1 <> t1' || t2 <> t2') && equiv_typ env t1' t2' ||
-    (match (reduce_typdef env t1').it, (reduce_typdef env t2').it with
-    | NotationT tc1, NotationT tc2 ->
-      let (op1, (_binds1, t11, prems1), _) = tc1 in
-      let (op2, (_binds2, t21, prems2), _) = tc2 in
-      op1 = op2 && equiv_typ env t11 t21 && equiv_list equiv_prem env prems1 prems2
-    | dt1, dt2 -> Eq.eq_deftyp (dt1 $ t1'.at) (dt2 $ t2'.at)  (* TODO *)
-    )
+    Eq.eq_deftyp (reduce_typdef env t1') (reduce_typdef env t2')  (* TODO *)
   | VarT _, _ ->
     let t1' = reduce_typ env t1 in
     t1 <> t1' && equiv_typ env t1' t2
@@ -708,7 +697,7 @@ and equiv_iter env iter1 iter2 =
 and equiv_prem env pr1 pr2 =
   match pr1.it, pr2.it with
   | RulePr (id1, mixop1, e1), RulePr (id2, mixop2, e2) ->
-    id1.it = id2.it && mixop1 = mixop2 && equiv_exp env e1 e2
+    id1.it = id2.it && Eq.eq_mixop mixop1 mixop2 && equiv_exp env e1 e2
   | IfPr e1, IfPr e2 -> equiv_exp env e1 e2
   | LetPr (e11, e12, _ids1), LetPr (e21, e22, _id2) ->
     equiv_exp env e11 e21 && equiv_exp env e12 e22
@@ -751,37 +740,17 @@ and sub_typ env t1 t2 =
       List.for_all (fun (atom, (_binds2, t2, prems2), _) ->
         match find_field tfs1 atom with
         | Some (_binds1, t1, prems1) ->
-          equiv_typ env t1 t2 && Eq.eq_list Eq.eq_prem prems1 prems2
+          sub_typ env t1 t2 && equiv_list equiv_prem env prems1 prems2
         | None -> false
       ) tfs2
     | VariantT tcs1, VariantT tcs2 ->
       List.for_all (fun (atom, (_binds1, t1, prems1), _) ->
         match find_case tcs2 atom with
         | Some (_binds2, t2, prems2) ->
-          equiv_typ env t1 t2 && Eq.eq_list Eq.eq_prem prems1 prems2
+          sub_typ env t1 t2 && equiv_list equiv_prem env prems1 prems2
         | None -> false
       ) tcs1
-    | NotationT tc1, _ ->
-      let (_op1, (_binds1, t11, _prems1), _) = tc1 in
-      sub_typ env t11 t2'
-    | _, NotationT tc2 ->
-      let (_op2, (_binds2, t21, _prems2), _) = tc2 in
-      sub_typ env t1' t21
     | _, _ -> false
-    )
-  | VarT _, _ ->
-    (match (reduce_typdef env t1').it with
-    | NotationT tc1 ->
-      let (_op1, (_binds1, t11, _prems1), _) = tc1 in
-      sub_typ env t11 t2'
-    | _ -> false
-    )
-  | _, VarT _ ->
-    (match (reduce_typdef env t2').it with
-    | NotationT tc2 ->
-      let (_op2, (_binds2, t21, _prems2), _) = tc2 in
-      sub_typ env t1' t21
-    | _ -> false
     )
   | _, _ ->
     false
@@ -799,10 +768,10 @@ and sub_tup env s ets1 ets2 =
 
 
 and find_field tfs atom =
-  List.find_opt (fun (atom', _, _) -> atom' = atom) tfs |> Option.map snd3
+  List.find_opt (fun (atom', _, _) -> Eq.eq_atom atom' atom) tfs |> Option.map snd3
 
-and find_case tcs atom =
-  List.find_opt (fun (atom', _, _) -> atom' = atom) tcs |> Option.map snd3
+and find_case tcs op =
+  List.find_opt (fun (op', _, _) -> Eq.eq_mixop op' op) tcs |> Option.map snd3
 
 
 (* Type Disjointness *)
@@ -822,7 +791,7 @@ and disj_typ env t1 t2 =
         | None -> true
       ) tfs2
     | VariantT tcs1, VariantT tcs2 ->
-      Set.disjoint (atoms tcs1) (atoms tcs2) ||
+      Set.disjoint (mixops tcs1) (mixops tcs2) ||
       List.exists (fun (atom, (_binds1, t1, _prems1), _) ->
         match find_case tcs2 atom with
         | Some (_binds2, t2, _prems2) -> disj_typ env t1 t2
@@ -843,6 +812,7 @@ and disj_typ env t1 t2 =
     t1.it <> t2.it
 
 and atoms xs = Set.of_list (List.map Print.string_of_atom (List.map fst3 xs))
+and mixops xs = Set.of_list (List.map Print.string_of_mixop (List.map fst3 xs))
 
 and disj_tup env s ets1 ets2 =
   match ets1, ets2 with

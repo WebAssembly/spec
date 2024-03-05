@@ -91,12 +91,9 @@ and free_typbinds xts = free_list_dep free_typbind bound_typbind xts
 and free_deftyp dt =
   match dt.it with
   | AliasT t -> free_typ t
-  | NotationT tc -> free_typcon tc
   | StructT tfs -> free_list free_typfield tfs
   | VariantT tcs -> free_list free_typcase tcs
 
-and free_typcon (_, (bs, t, prems), _) =
-  free_binds bs + (free_typ t + (free_prems prems - bound_typ t) - bound_binds bs)
 and free_typfield (_, (bs, t, prems), _) =
   free_binds bs + (free_typ t + (free_prems prems - bound_typ t) - bound_binds bs)
 and free_typcase (_, (bs, t, prems), _) =
@@ -117,7 +114,7 @@ and free_exp e =
   | TupE es | ListE es -> free_list free_exp es
   | UpdE (e1, p, e2) | ExtE (e1, p, e2) -> free_exp e1 + free_path p + free_exp e2
   | StrE efs -> free_list free_expfield efs
-  | MixE (_, e1) | CaseE (_, e1) | UnmixE (e1, _) -> free_exp e1
+  | CaseE (_, e1) | UncaseE (e1, _) -> free_exp e1
   | CallE (id, as1) -> free_defid id + free_args as1
   | IterE (e1, iter) -> free_exp e1 + free_iterexp iter
   | SubE (e1, t1, t2) -> free_exp e1 + free_typ t1 + free_typ t2

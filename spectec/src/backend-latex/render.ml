@@ -702,7 +702,7 @@ and render_exp env e =
     (* Hack for printing t.LOADn_sx *)
     let e2' = as_paren_exp (fuse_exp e2 true) in
     "{" ^ render_exp env e1 ^ "}" ^ "{" ^ render_exp env e2' ^ "}"
-  | HoleE `None -> "{}"
+  | HoleE `None -> ""
   | HoleE _ -> error e.at "misplaced hole"
 
 and render_exps sep env es =

@@ -453,8 +453,10 @@ let iq15mulrsat_s : numerics =
     name = "iq15mulrsat_s";
     f =
       (function
-      | [ NumV _ as z; NumV m; NumV n ] ->
-        sat.f [ z; nullary "S"; ishr.f [ z; nullary "S"; NumV Z.(mul m n + of_int 0x4000); al_of_int 15 ]]
+      | [ NumV _ as z; NumV _ as m; NumV _ as n ] ->
+        let m = signed.f [ z; m ] |> al_to_z in
+        let n = signed.f [ z; n ] |> al_to_z in
+        sat.f [ z; nullary "S"; NumV Z.(shift_right (mul m n + of_int 0x4000) 15) ]
       | v -> fail_list "Invalid iq15mulrsat_s" v
       );
   }
@@ -1030,6 +1032,16 @@ let inverse_of_lanes : numerics =
       );
   }
 
+let inverse_of_isize : numerics =
+  {
+    name = "inverse_of_isize";
+    f =
+      (function
+      | [ NumV z ] when z = Z.of_int 32 -> CaseV ("I32", [])
+      | [ NumV z ] when z = Z.of_int 64 -> CaseV ("I64", [])
+      | _ -> failwith "Invalid inverse_of_isize"
+      );
+  }
 let inverse_of_lsize : numerics =
   {
     name = "inverse_of_lsize";
@@ -1140,6 +1152,7 @@ let numerics_list : numerics list = [
   reinterpret;
   lanes;
   inverse_of_lanes;
+  inverse_of_isize;
   inverse_of_lsize;
   inverse_of_ibits;
 ]

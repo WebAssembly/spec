@@ -6,8 +6,10 @@ val string_of_binop : binop -> string
 val string_of_cmpop : cmpop -> string
 val string_of_iter : iter -> string
 val string_of_typ : typ -> string
+val string_of_typfield : typfield -> string
 val string_of_exp : exp -> string
 val string_of_exps : string -> exp list -> string
+val string_of_expfield : expfield -> string
 val string_of_sym : sym -> string
 val string_of_prem : prem -> string
 val string_of_param : param -> string
