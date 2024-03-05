@@ -542,6 +542,10 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
   * :math:`C'.\CFUNCS` is the same as :math:`C.\CFUNCS`,
 
+  * :math:`C'.\CTABLES` is the same as :math:`C.\CTABLES`,
+
+  * :math:`C'.\CMEMS` is the same as :math:`C.\CMEMS`,
+
   * :math:`C'.\CREFS` is the same as :math:`C.\CREFS`,
 
   * all other fields are empty.
@@ -635,7 +639,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \\
      C = \{ \CTYPES~\type^\ast, \CFUNCS~\X{ift}^\ast\,\X{ft}^\ast, \CTABLES~\X{itt}^\ast\,\X{tt}^\ast, \CMEMS~\X{imt}^\ast\,\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast\,\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~{\ok}^n, \CREFS~x^\ast \}
      \\
-     C' = \{ \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS) \}
+     C' = \{ \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CTABLES~(C.\CTABLES), \CMEMS~(C.\CMEMS), \CREFS~(C.\CREFS) \}
      \qquad
      |C.\CMEMS| \leq 1
      \qquad
