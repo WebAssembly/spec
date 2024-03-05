@@ -482,15 +482,15 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathsf{convert}}{{{}_{(\mathsf{i{\scriptstyle32}},\, \mathsf{i{\scriptstyle64}})}^{{\mathit{sx}}}}}}{({\mathit{iN}})} &=& {{{{\mathrm{ext}}}_{(32,\, 64)}^{{\mathit{sx}}}}}{({\mathit{iN}})} &  \\
-{{\mathsf{convert}}{{{}_{(\mathsf{i{\scriptstyle64}},\, \mathsf{i{\scriptstyle32}})}^{{{\mathit{sx}}^?}}}}}{({\mathit{iN}})} &=& {{{\mathrm{wrap}}}_{(64,\, 32)}}{({\mathit{iN}})} &  \\
-{{\mathsf{convert}}{{{}_{({\mathsf{f}}{{\mathit{n}}},\, {\mathsf{i}}{{\mathit{n}}})}^{{\mathit{sx}}}}}}{({\mathit{fN}})} &=& {{{{\mathrm{trunc}}}_{({|{\mathsf{f}}{{\mathit{n}}}|},\, {|{\mathsf{i}}{{\mathit{n}}}|})}^{{\mathit{sx}}}}}{({\mathit{fN}})} &  \\
-{{\mathsf{convert}}{{{}_{(\mathsf{f{\scriptstyle32}},\, \mathsf{f{\scriptstyle64}})}^{{{\mathit{sx}}^?}}}}}{({\mathit{fN}})} &=& {{{\mathrm{promote}}}_{(32,\, 64)}}{({\mathit{fN}})} &  \\
-{{\mathsf{convert}}{{{}_{(\mathsf{f{\scriptstyle64}},\, \mathsf{f{\scriptstyle32}})}^{{{\mathit{sx}}^?}}}}}{({\mathit{fN}})} &=& {{{\mathrm{demote}}}_{(64,\, 32)}}{({\mathit{fN}})} &  \\
-{{\mathsf{convert}}{{{}_{({\mathsf{i}}{{\mathit{n}}},\, {\mathsf{f}}{{\mathit{n}}})}^{{\mathit{sx}}}}}}{({\mathit{iN}})} &=& {{{{\mathrm{convert}}}_{({|{\mathsf{i}}{{\mathit{n}}}|},\, {|{\mathsf{f}}{{\mathit{n}}}|})}^{{\mathit{sx}}}}}{({\mathit{iN}})} &  \\
-{{\mathsf{reinterpret}}{{{}_{({\mathsf{i}}{{\mathit{n}}},\, {\mathsf{f}}{{\mathit{n}}})}^{{{\mathit{sx}}^?}}}}}{({\mathit{iN}})} &=& {{{\mathrm{narrow}}}_{({\mathsf{i}}{{\mathit{n}}},\, {\mathsf{f}}{{\mathit{n}}})}}{{\mathit{iN}}} &\quad
+{{\mathsf{convert}}{{{}_{\mathsf{i{\scriptstyle32}}, \mathsf{i{\scriptstyle64}}}^{{\mathit{sx}}}}}}{({\mathit{iN}})} &=& {{{{\mathrm{ext}}}_{32, 64}^{{\mathit{sx}}}}}{({\mathit{iN}})} &  \\
+{{\mathsf{convert}}{{{}_{\mathsf{i{\scriptstyle64}}, \mathsf{i{\scriptstyle32}}}^{{{\mathit{sx}}^?}}}}}{({\mathit{iN}})} &=& {{{\mathrm{wrap}}}_{64, 32}}{({\mathit{iN}})} &  \\
+{{\mathsf{convert}}{{{}_{{\mathsf{f}}{{\mathit{n}}}, {\mathsf{i}}{{\mathit{n}}}}^{{\mathit{sx}}}}}}{({\mathit{fN}})} &=& {{{{\mathrm{trunc}}}_{{|{\mathsf{f}}{{\mathit{n}}}|}, {|{\mathsf{i}}{{\mathit{n}}}|}}^{{\mathit{sx}}}}}{({\mathit{fN}})} &  \\
+{{\mathsf{convert}}{{{}_{\mathsf{f{\scriptstyle32}}, \mathsf{f{\scriptstyle64}}}^{{{\mathit{sx}}^?}}}}}{({\mathit{fN}})} &=& {{{\mathrm{promote}}}_{32, 64}}{({\mathit{fN}})} &  \\
+{{\mathsf{convert}}{{{}_{\mathsf{f{\scriptstyle64}}, \mathsf{f{\scriptstyle32}}}^{{{\mathit{sx}}^?}}}}}{({\mathit{fN}})} &=& {{{\mathrm{demote}}}_{64, 32}}{({\mathit{fN}})} &  \\
+{{\mathsf{convert}}{{{}_{{\mathsf{i}}{{\mathit{n}}}, {\mathsf{f}}{{\mathit{n}}}}^{{\mathit{sx}}}}}}{({\mathit{iN}})} &=& {{{{\mathrm{convert}}}_{{|{\mathsf{i}}{{\mathit{n}}}|}, {|{\mathsf{f}}{{\mathit{n}}}|}}^{{\mathit{sx}}}}}{({\mathit{iN}})} &  \\
+{{\mathsf{reinterpret}}{{{}_{{\mathsf{i}}{{\mathit{n}}}, {\mathsf{f}}{{\mathit{n}}}}^{{{\mathit{sx}}^?}}}}}{({\mathit{iN}})} &=& {{{\mathrm{narrow}}}_{{\mathsf{i}}{{\mathit{n}}}, {\mathsf{f}}{{\mathit{n}}}}}{{\mathit{iN}}} &\quad
   \mbox{if}~{|{\mathsf{i}}{{\mathit{n}}}|} = {|{\mathsf{f}}{{\mathit{n}}}|} \\
-{{\mathsf{reinterpret}}{{{}_{({\mathsf{f}}{{\mathit{n}}},\, {\mathsf{i}}{{\mathit{n}}})}^{{{\mathit{sx}}^?}}}}}{({\mathit{fN}})} &=& {{{\mathrm{narrow}}}_{({\mathsf{f}}{{\mathit{n}}},\, {\mathsf{i}}{{\mathit{n}}})}}{{\mathit{fN}}} &\quad
+{{\mathsf{reinterpret}}{{{}_{{\mathsf{f}}{{\mathit{n}}}, {\mathsf{i}}{{\mathit{n}}}}^{{{\mathit{sx}}^?}}}}}{({\mathit{fN}})} &=& {{{\mathrm{narrow}}}_{{\mathsf{f}}{{\mathit{n}}}, {\mathsf{i}}{{\mathit{n}}}}}{{\mathit{fN}}} &\quad
   \mbox{if}~{|{\mathsf{i}}{{\mathit{n}}}|} = {|{\mathsf{f}}{{\mathit{n}}}|} \\
 \end{array}
 $$
@@ -1945,9 +1945,9 @@ $$
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}cvtop{-}val}]} \quad & ({\mathit{t}}_{{1}}.\mathsf{const}~\,{\mathit{c}}_{{1}})~\,({\mathit{t}}_{{2}} . {{{{{\mathit{cvtop}}}{\mathsf{\_}}}{{\mathit{t}}_{{1}}}}{\mathsf{\_}}}{{{\mathit{sx}}^?}}) &\hookrightarrow& ({\mathit{t}}_{{2}}.\mathsf{const}~\,{\mathit{c}}) &\quad
-  \mbox{if}~{{{\mathit{cvtop}}}{{{}_{({\mathit{t}}_{{1}},\, {\mathit{t}}_{{2}})}^{{{\mathit{sx}}^?}}}}}{({\mathit{c}}_{{1}})} = {\mathit{c}} \\
+  \mbox{if}~{{{\mathit{cvtop}}}{{{}_{{\mathit{t}}_{{1}}, {\mathit{t}}_{{2}}}^{{{\mathit{sx}}^?}}}}}{({\mathit{c}}_{{1}})} = {\mathit{c}} \\
 {[\textsc{\scriptsize E{-}cvtop{-}trap}]} \quad & ({\mathit{t}}_{{1}}.\mathsf{const}~\,{\mathit{c}}_{{1}})~\,({\mathit{t}}_{{2}} . {{{{{\mathit{cvtop}}}{\mathsf{\_}}}{{\mathit{t}}_{{1}}}}{\mathsf{\_}}}{{{\mathit{sx}}^?}}) &\hookrightarrow& \mathsf{trap} &\quad
-  \mbox{if}~{{{\mathit{cvtop}}}{{{}_{({\mathit{t}}_{{1}},\, {\mathit{t}}_{{2}})}^{{{\mathit{sx}}^?}}}}}{({\mathit{c}}_{{1}})} = \epsilon \\
+  \mbox{if}~{{{\mathit{cvtop}}}{{{}_{{\mathit{t}}_{{1}}, {\mathit{t}}_{{2}}}^{{{\mathit{sx}}^?}}}}}{({\mathit{c}}_{{1}})} = \epsilon \\
 \end{array}
 $$
 
@@ -1995,7 +1995,7 @@ $$
   \mbox{if}~{{\mathrm{bytes}}}_{{\mathit{t}}}({\mathit{c}}) = {{\mathit{z}}.\mathsf{mem}}{{}[0]}.\mathsf{data}{}[{\mathit{i}} + {\mathit{mo}}.\mathsf{offset} : {|{\mathit{t}}|} / 8] \\
 {[\textsc{\scriptsize E{-}load{-}pack{-}trap}]} \quad & {\mathit{z}} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\,{\mathit{i}})~\,({\mathsf{i}}{{\mathit{n}}}.\mathsf{load}~\,({\mathit{n}}~\,\mathsf{\_}~\,{\mathit{sx}})~\,{\mathit{mo}}) &\hookrightarrow& \mathsf{trap} &\quad
   \mbox{if}~{\mathit{i}} + {\mathit{mo}}.\mathsf{offset} + {\mathit{n}} / 8 > {|{{\mathit{z}}.\mathsf{mem}}{{}[0]}.\mathsf{data}|} \\
-{[\textsc{\scriptsize E{-}load{-}pack{-}val}]} \quad & {\mathit{z}} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\,{\mathit{i}})~\,({\mathsf{i}}{{\mathit{n}}}.\mathsf{load}~\,({\mathit{n}}~\,\mathsf{\_}~\,{\mathit{sx}})~\,{\mathit{mo}}) &\hookrightarrow& ({\mathsf{i}}{{\mathit{n}}}.\mathsf{const}~\,{{{{\mathrm{ext}}}_{({\mathit{n}},\, {|{\mathsf{i}}{{\mathit{n}}}|})}^{{\mathit{sx}}}}}{({\mathit{c}})}) &\quad
+{[\textsc{\scriptsize E{-}load{-}pack{-}val}]} \quad & {\mathit{z}} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\,{\mathit{i}})~\,({\mathsf{i}}{{\mathit{n}}}.\mathsf{load}~\,({\mathit{n}}~\,\mathsf{\_}~\,{\mathit{sx}})~\,{\mathit{mo}}) &\hookrightarrow& ({\mathsf{i}}{{\mathit{n}}}.\mathsf{const}~\,{{{{\mathrm{ext}}}_{{\mathit{n}}, {|{\mathsf{i}}{{\mathit{n}}}|}}^{{\mathit{sx}}}}}{({\mathit{c}})}) &\quad
   \mbox{if}~{{\mathrm{bytes}}}_{{{\mathit{i}}}{{\mathit{n}}}}({\mathit{c}}) = {{\mathit{z}}.\mathsf{mem}}{{}[0]}.\mathsf{data}{}[{\mathit{i}} + {\mathit{mo}}.\mathsf{offset} : {\mathit{n}} / 8] \\
 \end{array}
 $$
@@ -2011,7 +2011,7 @@ $$
 {[\textsc{\scriptsize E{-}store{-}pack{-}trap}]} \quad & {\mathit{z}} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\,{\mathit{i}})~\,({\mathsf{i}}{{\mathit{n}}}.\mathsf{const}~\,{\mathit{c}})~\,({\mathsf{i}}{{\mathit{n}}}.\mathsf{store}~\,{\mathit{n}}~\,{\mathit{mo}}) &\hookrightarrow& {\mathit{z}} ; \mathsf{trap} &\quad
   \mbox{if}~{\mathit{i}} + {\mathit{mo}}.\mathsf{offset} + {\mathit{n}} / 8 > {|{{\mathit{z}}.\mathsf{mem}}{{}[0]}.\mathsf{data}|} \\
 {[\textsc{\scriptsize E{-}store{-}pack{-}val}]} \quad & {\mathit{z}} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\,{\mathit{i}})~\,({\mathsf{i}}{{\mathit{n}}}.\mathsf{const}~\,{\mathit{c}})~\,({\mathsf{i}}{{\mathit{n}}}.\mathsf{store}~\,{\mathit{n}}~\,{\mathit{mo}}) &\hookrightarrow& {\mathit{z}}{}[\mathsf{mem}{}[0].\mathsf{data}{}[{\mathit{i}} + {\mathit{mo}}.\mathsf{offset} : {\mathit{n}} / 8] = {{\mathit{b}}^\ast}] ; \epsilon &\quad
-  \mbox{if}~{{\mathit{b}}^\ast} = {{\mathrm{bytes}}}_{{{\mathit{i}}}{{\mathit{n}}}}({{{\mathrm{wrap}}}_{({|{\mathsf{i}}{{\mathit{n}}}|},\, {\mathit{n}})}}{({\mathit{c}})}) \\
+  \mbox{if}~{{\mathit{b}}^\ast} = {{\mathrm{bytes}}}_{{{\mathit{i}}}{{\mathit{n}}}}({{{\mathrm{wrap}}}_{{|{\mathsf{i}}{{\mathit{n}}}|}, {\mathit{n}}}}{({\mathit{c}})}) \\
 \end{array}
 $$
 

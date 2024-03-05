@@ -93,7 +93,7 @@ let env_typ env id1 t =
   match t.it with
   | StrT tfs -> List.iter (env_typfield env id1) tfs
   | CaseT (_, _ts, tcases, _) ->
-(*
+(* TODO: inherit typed atoms
     List.iter (fun t ->
       match t.it with
       | VarT (id, _) ->
@@ -202,6 +202,12 @@ let rec fuse_exp e deep =
   | IterE (e1, iter) -> IterE (fuse_exp e1 deep, iter) $ e.at
   | SeqE (e1::es) -> List.fold_left (fun e1 e2 -> FuseE (e1, e2) $ e.at) e1 es
   | _ -> e
+
+let as_tup_arg a =
+  match !(a.it) with
+  | ExpA {it = TupE es; _} -> List.map (fun e -> ref (ExpA e) $ e.at) es
+  | _ -> [a]
+
 
 
 (* Show expansions *)
@@ -326,7 +332,8 @@ let render_expand render env (show : exp list Map.t ref) id args f =
   | None -> f ()
   | Some showexps ->
     let rec attempt = function
-      | [] -> f ()
+      | [] ->
+      f ()
       | showexp::showexps' ->
         try
           let e = expand_exp args (ref 1) showexp in
@@ -359,7 +366,9 @@ let render_apply render_id render_exp env show id args =
       | arg::args when ends_sub id.it ->
         (* Handle subscripting *)
         "{" ^ render_id env (chop_sub id.it $ id.at) ^
-        "}_{" ^ !render_arg_fwd env arg ^ "}" ^ !render_args_fwd env args
+        "}_{" ^
+          String.concat ", " (List.map (!render_arg_fwd env) (as_tup_arg arg)) ^
+        "}" ^ !render_args_fwd env args
       | args -> render_id env id ^ !render_args_fwd env args
     )
 
@@ -606,9 +615,9 @@ and render_typenum env (e, eo) =
 
 (* Expressions *)
 
-and is_atom_exp e =
+and is_atom_exp_with_show env e =
   match e.it with
-  | AtomE _ -> true
+  | AtomE {it = Atom atom; _} when Map.mem atom !(env.show_case) -> true
   | _ -> false
 
 and render_exp env e =
@@ -633,6 +642,7 @@ and render_exp env e =
       if n < Z.of_int 0x10000 then "%04X" else
       "%X"
     in "\\mathrm{U{+}" ^ Z.format fmt n ^ "}"
+  | NatE (AtomOp, n) -> render_atomid env (Z.to_string n) "nat"
   | TextE t -> "``" ^ t ^ "''"
   | UnE (op, e2) -> "{" ^ render_unop op ^ render_exp env e2 ^ "}"
   | BinE (e1, ExpOp, ({it = ParenE (e2, _); _ } | e2)) ->
@@ -647,7 +657,7 @@ and render_exp env e =
       (El.Print.string_of_atom atom $ e.at) [arg_of_exp e]
       (fun () -> render_atom env atom)
   | SeqE es ->
-    (match List.find_opt is_atom_exp es with
+    (match List.find_opt (is_atom_exp_with_show env) es with
     | Some {it = AtomE atom; _} ->
       let args = List.map arg_of_exp es in
       render_expand render_exp env env.show_case
@@ -797,6 +807,7 @@ and render_sym env g =
       if n < Z.of_int 0x10000 then "%04X" else
       "%X"
     in "\\mathrm{U{+}" ^ Z.format fmt n ^ "}"
+  | NatG (AtomOp, n) -> "\\mathtt{" ^ Z.to_string n ^ "}"
   | TextG t -> "`" ^ t ^ "'"
   | EpsG -> "\\epsilon"
   | SeqG gs -> render_syms "~\\," env gs

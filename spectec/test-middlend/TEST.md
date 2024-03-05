@@ -825,7 +825,7 @@ syntax zero =
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:566.1-567.22
+;; 1-syntax.watsup:569.1-570.22
 syntax instr =
   | NOP
   | UNREACHABLE
@@ -863,7 +863,7 @@ syntax instr =
   | VSWIZZLE{ishape : ishape}(ishape : ishape)
     -- if (ishape = `%X%`_ishape(I8_imm, `%`_dim(16)))
   | VSHUFFLE{ishape : ishape, laneidx* : laneidx*}(ishape : ishape, laneidx*{laneidx : laneidx} : laneidx*)
-    -- if ((ishape = `%X%`_ishape(I8_imm, `%`_dim(16))) /\ (|laneidx*{laneidx : laneidx}| = $dim((ishape : ishape <: shape))!`%`_dim.0))
+    -- if ((ishape = `%X%`_ishape(I8_imm, `%`_dim(16))) /\ (|laneidx*{laneidx : laneidx}| = 16))
   | VSPLAT{shape : shape}(shape : shape)
   | VEXTRACT_LANE{shape : shape, sx? : sx?, laneidx : laneidx, numtype : numtype}(shape : shape, sx?{sx : sx} : sx?, laneidx : laneidx)
     -- if (($lanetype(shape) = (numtype : numtype <: lanetype)) <=> (sx?{sx : sx} = ?()))
@@ -876,10 +876,10 @@ syntax instr =
   | VBITMASK{ishape : ishape}(ishape : ishape)
   | VCVTOP{shape : shape, vcvtop : vcvtop, half? : half?, sx? : sx?, zero : zero}(shape : shape, vcvtop : vcvtop, half?{half : half} : half?, shape, sx?{sx : sx} : sx?, zero : zero)
   | VNARROW{ishape : ishape, sx : sx}(ishape : ishape, ishape, sx : sx)
-  | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx, imm_1 : imm, imm_2 : imm}(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx)
-    -- if ($lsize((imm_1 : imm <: lanetype)) = (2 * $lsize((imm_2 : imm <: lanetype))))
-  | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx, imm_1 : imm, imm_2 : imm}(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx)
-    -- if ($lsize((imm_1 : imm <: lanetype)) = (2 * $lsize((imm_2 : imm <: lanetype))))
+  | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx}(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx)
+    -- if ($lsize($lanetype((ishape_1 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_2 : ishape <: shape)))))
+  | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx}(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx)
+    -- if ($lsize($lanetype((ishape_1 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_2 : ishape <: shape)))))
   | REF.NULL{heaptype : heaptype}(heaptype : heaptype)
   | REF.IS_NULL
   | REF.AS_NON_NULL
@@ -2317,7 +2317,7 @@ syntax admininstr =
   | VSWIZZLE{ishape : ishape}(ishape : ishape)
     -- if (ishape = `%X%`_ishape(I8_imm, `%`_dim(16)))
   | VSHUFFLE{ishape : ishape, laneidx* : laneidx*}(ishape : ishape, laneidx*{laneidx : laneidx} : laneidx*)
-    -- if ((ishape = `%X%`_ishape(I8_imm, `%`_dim(16))) /\ (|laneidx*{laneidx : laneidx}| = $dim((ishape : ishape <: shape))!`%`_dim.0))
+    -- if ((ishape = `%X%`_ishape(I8_imm, `%`_dim(16))) /\ (|laneidx*{laneidx : laneidx}| = 16))
   | VSPLAT{shape : shape}(shape : shape)
   | VEXTRACT_LANE{shape : shape, sx? : sx?, laneidx : laneidx, numtype : numtype}(shape : shape, sx?{sx : sx} : sx?, laneidx : laneidx)
     -- if (($lanetype(shape) = (numtype : numtype <: lanetype)) <=> (sx?{sx : sx} = ?()))
@@ -2330,10 +2330,10 @@ syntax admininstr =
   | VBITMASK{ishape : ishape}(ishape : ishape)
   | VCVTOP{shape : shape, vcvtop : vcvtop, half? : half?, sx? : sx?, zero : zero}(shape : shape, vcvtop : vcvtop, half?{half : half} : half?, shape, sx?{sx : sx} : sx?, zero : zero)
   | VNARROW{ishape : ishape, sx : sx}(ishape : ishape, ishape, sx : sx)
-  | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx, imm_1 : imm, imm_2 : imm}(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx)
-    -- if ($lsize((imm_1 : imm <: lanetype)) = (2 * $lsize((imm_2 : imm <: lanetype))))
-  | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx, imm_1 : imm, imm_2 : imm}(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx)
-    -- if ($lsize((imm_1 : imm <: lanetype)) = (2 * $lsize((imm_2 : imm <: lanetype))))
+  | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx}(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx)
+    -- if ($lsize($lanetype((ishape_1 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_2 : ishape <: shape)))))
+  | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx}(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx)
+    -- if ($lsize($lanetype((ishape_1 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_2 : ishape <: shape)))))
   | REF.NULL{heaptype : heaptype}(heaptype : heaptype)
   | REF.IS_NULL
   | REF.AS_NON_NULL
@@ -6310,7 +6310,7 @@ syntax zero =
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:566.1-567.22
+;; 1-syntax.watsup:569.1-570.22
 syntax instr =
   | NOP
   | UNREACHABLE
@@ -6348,7 +6348,7 @@ syntax instr =
   | VSWIZZLE{ishape : ishape}(ishape : ishape)
     -- if (ishape = `%X%`_ishape(I8_imm, `%`_dim(16)))
   | VSHUFFLE{ishape : ishape, laneidx* : laneidx*}(ishape : ishape, laneidx*{laneidx : laneidx} : laneidx*)
-    -- if ((ishape = `%X%`_ishape(I8_imm, `%`_dim(16))) /\ (|laneidx*{laneidx : laneidx}| = $dim((ishape : ishape <: shape))!`%`_dim.0))
+    -- if ((ishape = `%X%`_ishape(I8_imm, `%`_dim(16))) /\ (|laneidx*{laneidx : laneidx}| = 16))
   | VSPLAT{shape : shape}(shape : shape)
   | VEXTRACT_LANE{shape : shape, sx? : sx?, laneidx : laneidx, numtype : numtype}(shape : shape, sx?{sx : sx} : sx?, laneidx : laneidx)
     -- if (($lanetype(shape) = (numtype : numtype <: lanetype)) <=> (sx?{sx : sx} = ?()))
@@ -6361,10 +6361,10 @@ syntax instr =
   | VBITMASK{ishape : ishape}(ishape : ishape)
   | VCVTOP{shape : shape, vcvtop : vcvtop, half? : half?, sx? : sx?, zero : zero}(shape : shape, vcvtop : vcvtop, half?{half : half} : half?, shape, sx?{sx : sx} : sx?, zero : zero)
   | VNARROW{ishape : ishape, sx : sx}(ishape : ishape, ishape, sx : sx)
-  | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx, imm_1 : imm, imm_2 : imm}(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx)
-    -- if ($lsize((imm_1 : imm <: lanetype)) = (2 * $lsize((imm_2 : imm <: lanetype))))
-  | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx, imm_1 : imm, imm_2 : imm}(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx)
-    -- if ($lsize((imm_1 : imm <: lanetype)) = (2 * $lsize((imm_2 : imm <: lanetype))))
+  | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx}(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx)
+    -- if ($lsize($lanetype((ishape_1 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_2 : ishape <: shape)))))
+  | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx}(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx)
+    -- if ($lsize($lanetype((ishape_1 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_2 : ishape <: shape)))))
   | REF.NULL{heaptype : heaptype}(heaptype : heaptype)
   | REF.IS_NULL
   | REF.AS_NON_NULL
@@ -7805,7 +7805,7 @@ syntax admininstr =
   | VSWIZZLE{ishape : ishape}(ishape : ishape)
     -- if (ishape = `%X%`_ishape(I8_imm, `%`_dim(16)))
   | VSHUFFLE{ishape : ishape, laneidx* : laneidx*}(ishape : ishape, laneidx*{laneidx : laneidx} : laneidx*)
-    -- if ((ishape = `%X%`_ishape(I8_imm, `%`_dim(16))) /\ (|laneidx*{laneidx : laneidx}| = $dim((ishape : ishape <: shape))!`%`_dim.0))
+    -- if ((ishape = `%X%`_ishape(I8_imm, `%`_dim(16))) /\ (|laneidx*{laneidx : laneidx}| = 16))
   | VSPLAT{shape : shape}(shape : shape)
   | VEXTRACT_LANE{shape : shape, sx? : sx?, laneidx : laneidx, numtype : numtype}(shape : shape, sx?{sx : sx} : sx?, laneidx : laneidx)
     -- if (($lanetype(shape) = (numtype : numtype <: lanetype)) <=> (sx?{sx : sx} = ?()))
@@ -7818,10 +7818,10 @@ syntax admininstr =
   | VBITMASK{ishape : ishape}(ishape : ishape)
   | VCVTOP{shape : shape, vcvtop : vcvtop, half? : half?, sx? : sx?, zero : zero}(shape : shape, vcvtop : vcvtop, half?{half : half} : half?, shape, sx?{sx : sx} : sx?, zero : zero)
   | VNARROW{ishape : ishape, sx : sx}(ishape : ishape, ishape, sx : sx)
-  | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx, imm_1 : imm, imm_2 : imm}(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx)
-    -- if ($lsize((imm_1 : imm <: lanetype)) = (2 * $lsize((imm_2 : imm <: lanetype))))
-  | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx, imm_1 : imm, imm_2 : imm}(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx)
-    -- if ($lsize((imm_1 : imm <: lanetype)) = (2 * $lsize((imm_2 : imm <: lanetype))))
+  | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx}(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx)
+    -- if ($lsize($lanetype((ishape_1 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_2 : ishape <: shape)))))
+  | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx}(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx)
+    -- if ($lsize($lanetype((ishape_1 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_2 : ishape <: shape)))))
   | REF.NULL{heaptype : heaptype}(heaptype : heaptype)
   | REF.IS_NULL
   | REF.AS_NON_NULL
@@ -11800,7 +11800,7 @@ syntax zero =
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:566.1-567.22
+;; 1-syntax.watsup:569.1-570.22
 syntax instr =
   | NOP
   | UNREACHABLE
@@ -11838,7 +11838,7 @@ syntax instr =
   | VSWIZZLE{ishape : ishape}(ishape : ishape)
     -- if (ishape = `%X%`_ishape(I8_imm, `%`_dim(16)))
   | VSHUFFLE{ishape : ishape, laneidx* : laneidx*}(ishape : ishape, laneidx*{laneidx : laneidx} : laneidx*)
-    -- if ((ishape = `%X%`_ishape(I8_imm, `%`_dim(16))) /\ (|laneidx*{laneidx : laneidx}| = $dim((ishape : ishape <: shape))!`%`_dim.0))
+    -- if ((ishape = `%X%`_ishape(I8_imm, `%`_dim(16))) /\ (|laneidx*{laneidx : laneidx}| = 16))
   | VSPLAT{shape : shape}(shape : shape)
   | VEXTRACT_LANE{shape : shape, sx? : sx?, laneidx : laneidx, numtype : numtype}(shape : shape, sx?{sx : sx} : sx?, laneidx : laneidx)
     -- if (($lanetype(shape) = (numtype : numtype <: lanetype)) <=> (sx?{sx : sx} = ?()))
@@ -11851,10 +11851,10 @@ syntax instr =
   | VBITMASK{ishape : ishape}(ishape : ishape)
   | VCVTOP{shape : shape, vcvtop : vcvtop, half? : half?, sx? : sx?, zero : zero}(shape : shape, vcvtop : vcvtop, half?{half : half} : half?, shape, sx?{sx : sx} : sx?, zero : zero)
   | VNARROW{ishape : ishape, sx : sx}(ishape : ishape, ishape, sx : sx)
-  | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx, imm_1 : imm, imm_2 : imm}(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx)
-    -- if ($lsize((imm_1 : imm <: lanetype)) = (2 * $lsize((imm_2 : imm <: lanetype))))
-  | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx, imm_1 : imm, imm_2 : imm}(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx)
-    -- if ($lsize((imm_1 : imm <: lanetype)) = (2 * $lsize((imm_2 : imm <: lanetype))))
+  | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx}(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx)
+    -- if ($lsize($lanetype((ishape_1 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_2 : ishape <: shape)))))
+  | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx}(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx)
+    -- if ($lsize($lanetype((ishape_1 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_2 : ishape <: shape)))))
   | REF.NULL{heaptype : heaptype}(heaptype : heaptype)
   | REF.IS_NULL
   | REF.AS_NON_NULL
@@ -13295,7 +13295,7 @@ syntax admininstr =
   | VSWIZZLE{ishape : ishape}(ishape : ishape)
     -- if (ishape = `%X%`_ishape(I8_imm, `%`_dim(16)))
   | VSHUFFLE{ishape : ishape, laneidx* : laneidx*}(ishape : ishape, laneidx*{laneidx : laneidx} : laneidx*)
-    -- if ((ishape = `%X%`_ishape(I8_imm, `%`_dim(16))) /\ (|laneidx*{laneidx : laneidx}| = $dim((ishape : ishape <: shape))!`%`_dim.0))
+    -- if ((ishape = `%X%`_ishape(I8_imm, `%`_dim(16))) /\ (|laneidx*{laneidx : laneidx}| = 16))
   | VSPLAT{shape : shape}(shape : shape)
   | VEXTRACT_LANE{shape : shape, sx? : sx?, laneidx : laneidx, numtype : numtype}(shape : shape, sx?{sx : sx} : sx?, laneidx : laneidx)
     -- if (($lanetype(shape) = (numtype : numtype <: lanetype)) <=> (sx?{sx : sx} = ?()))
@@ -13308,10 +13308,10 @@ syntax admininstr =
   | VBITMASK{ishape : ishape}(ishape : ishape)
   | VCVTOP{shape : shape, vcvtop : vcvtop, half? : half?, sx? : sx?, zero : zero}(shape : shape, vcvtop : vcvtop, half?{half : half} : half?, shape, sx?{sx : sx} : sx?, zero : zero)
   | VNARROW{ishape : ishape, sx : sx}(ishape : ishape, ishape, sx : sx)
-  | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx, imm_1 : imm, imm_2 : imm}(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx)
-    -- if ($lsize((imm_1 : imm <: lanetype)) = (2 * $lsize((imm_2 : imm <: lanetype))))
-  | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx, imm_1 : imm, imm_2 : imm}(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx)
-    -- if ($lsize((imm_1 : imm <: lanetype)) = (2 * $lsize((imm_2 : imm <: lanetype))))
+  | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx}(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx)
+    -- if ($lsize($lanetype((ishape_1 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_2 : ishape <: shape)))))
+  | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx}(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx)
+    -- if ($lsize($lanetype((ishape_1 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_2 : ishape <: shape)))))
   | REF.NULL{heaptype : heaptype}(heaptype : heaptype)
   | REF.IS_NULL
   | REF.AS_NON_NULL
@@ -17294,7 +17294,7 @@ syntax zero =
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:566.1-567.22
+;; 1-syntax.watsup:569.1-570.22
 syntax instr =
   | NOP
   | UNREACHABLE
@@ -17332,7 +17332,7 @@ syntax instr =
   | VSWIZZLE{ishape : ishape}(ishape : ishape)
     -- if (ishape = `%X%`_ishape(I8_imm, `%`_dim(16)))
   | VSHUFFLE{ishape : ishape, laneidx* : laneidx*}(ishape : ishape, laneidx*{laneidx : laneidx} : laneidx*)
-    -- if ((ishape = `%X%`_ishape(I8_imm, `%`_dim(16))) /\ (|laneidx*{laneidx : laneidx}| = $dim((ishape : ishape <: shape))!`%`_dim.0))
+    -- if ((ishape = `%X%`_ishape(I8_imm, `%`_dim(16))) /\ (|laneidx*{laneidx : laneidx}| = 16))
   | VSPLAT{shape : shape}(shape : shape)
   | VEXTRACT_LANE{shape : shape, sx? : sx?, laneidx : laneidx, numtype : numtype}(shape : shape, sx?{sx : sx} : sx?, laneidx : laneidx)
     -- if (($lanetype(shape) = (numtype : numtype <: lanetype)) <=> (sx?{sx : sx} = ?()))
@@ -17345,10 +17345,10 @@ syntax instr =
   | VBITMASK{ishape : ishape}(ishape : ishape)
   | VCVTOP{shape : shape, vcvtop : vcvtop, half? : half?, sx? : sx?, zero : zero}(shape : shape, vcvtop : vcvtop, half?{half : half} : half?, shape, sx?{sx : sx} : sx?, zero : zero)
   | VNARROW{ishape : ishape, sx : sx}(ishape : ishape, ishape, sx : sx)
-  | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx, imm_1 : imm, imm_2 : imm}(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx)
-    -- if ($lsize((imm_1 : imm <: lanetype)) = (2 * $lsize((imm_2 : imm <: lanetype))))
-  | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx, imm_1 : imm, imm_2 : imm}(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx)
-    -- if ($lsize((imm_1 : imm <: lanetype)) = (2 * $lsize((imm_2 : imm <: lanetype))))
+  | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx}(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx)
+    -- if ($lsize($lanetype((ishape_1 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_2 : ishape <: shape)))))
+  | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx}(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx)
+    -- if ($lsize($lanetype((ishape_1 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_2 : ishape <: shape)))))
   | REF.NULL{heaptype : heaptype}(heaptype : heaptype)
   | REF.IS_NULL
   | REF.AS_NON_NULL
@@ -18789,7 +18789,7 @@ syntax admininstr =
   | VSWIZZLE{ishape : ishape}(ishape : ishape)
     -- if (ishape = `%X%`_ishape(I8_imm, `%`_dim(16)))
   | VSHUFFLE{ishape : ishape, laneidx* : laneidx*}(ishape : ishape, laneidx*{laneidx : laneidx} : laneidx*)
-    -- if ((ishape = `%X%`_ishape(I8_imm, `%`_dim(16))) /\ (|laneidx*{laneidx : laneidx}| = $dim((ishape : ishape <: shape))!`%`_dim.0))
+    -- if ((ishape = `%X%`_ishape(I8_imm, `%`_dim(16))) /\ (|laneidx*{laneidx : laneidx}| = 16))
   | VSPLAT{shape : shape}(shape : shape)
   | VEXTRACT_LANE{shape : shape, sx? : sx?, laneidx : laneidx, numtype : numtype}(shape : shape, sx?{sx : sx} : sx?, laneidx : laneidx)
     -- if (($lanetype(shape) = (numtype : numtype <: lanetype)) <=> (sx?{sx : sx} = ?()))
@@ -18802,10 +18802,10 @@ syntax admininstr =
   | VBITMASK{ishape : ishape}(ishape : ishape)
   | VCVTOP{shape : shape, vcvtop : vcvtop, half? : half?, sx? : sx?, zero : zero}(shape : shape, vcvtop : vcvtop, half?{half : half} : half?, shape, sx?{sx : sx} : sx?, zero : zero)
   | VNARROW{ishape : ishape, sx : sx}(ishape : ishape, ishape, sx : sx)
-  | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx, imm_1 : imm, imm_2 : imm}(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx)
-    -- if ($lsize((imm_1 : imm <: lanetype)) = (2 * $lsize((imm_2 : imm <: lanetype))))
-  | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx, imm_1 : imm, imm_2 : imm}(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx)
-    -- if ($lsize((imm_1 : imm <: lanetype)) = (2 * $lsize((imm_2 : imm <: lanetype))))
+  | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx}(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx)
+    -- if ($lsize($lanetype((ishape_1 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_2 : ishape <: shape)))))
+  | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx}(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx)
+    -- if ($lsize($lanetype((ishape_1 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_2 : ishape <: shape)))))
   | REF.NULL{heaptype : heaptype}(heaptype : heaptype)
   | REF.IS_NULL
   | REF.AS_NON_NULL
@@ -22788,7 +22788,7 @@ syntax zero =
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:566.1-567.22
+;; 1-syntax.watsup:569.1-570.22
 syntax instr =
   | NOP
   | UNREACHABLE
@@ -22826,7 +22826,7 @@ syntax instr =
   | VSWIZZLE{ishape : ishape}(ishape : ishape)
     -- if (ishape = `%X%`_ishape(I8_imm, `%`_dim(16)))
   | VSHUFFLE{ishape : ishape, laneidx* : laneidx*}(ishape : ishape, laneidx*{laneidx : laneidx} : laneidx*)
-    -- if ((ishape = `%X%`_ishape(I8_imm, `%`_dim(16))) /\ (|laneidx*{laneidx : laneidx}| = $dim((ishape : ishape <: shape))!`%`_dim.0))
+    -- if ((ishape = `%X%`_ishape(I8_imm, `%`_dim(16))) /\ (|laneidx*{laneidx : laneidx}| = 16))
   | VSPLAT{shape : shape}(shape : shape)
   | VEXTRACT_LANE{shape : shape, sx? : sx?, laneidx : laneidx, numtype : numtype}(shape : shape, sx?{sx : sx} : sx?, laneidx : laneidx)
     -- if (($lanetype(shape) = (numtype : numtype <: lanetype)) <=> (sx?{sx : sx} = ?()))
@@ -22839,10 +22839,10 @@ syntax instr =
   | VBITMASK{ishape : ishape}(ishape : ishape)
   | VCVTOP{shape : shape, vcvtop : vcvtop, half? : half?, sx? : sx?, zero : zero}(shape : shape, vcvtop : vcvtop, half?{half : half} : half?, shape, sx?{sx : sx} : sx?, zero : zero)
   | VNARROW{ishape : ishape, sx : sx}(ishape : ishape, ishape, sx : sx)
-  | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx, imm_1 : imm, imm_2 : imm}(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx)
-    -- if ($lsize((imm_1 : imm <: lanetype)) = (2 * $lsize((imm_2 : imm <: lanetype))))
-  | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx, imm_1 : imm, imm_2 : imm}(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx)
-    -- if ($lsize((imm_1 : imm <: lanetype)) = (2 * $lsize((imm_2 : imm <: lanetype))))
+  | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx}(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx)
+    -- if ($lsize($lanetype((ishape_1 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_2 : ishape <: shape)))))
+  | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx}(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx)
+    -- if ($lsize($lanetype((ishape_1 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_2 : ishape <: shape)))))
   | REF.NULL{heaptype : heaptype}(heaptype : heaptype)
   | REF.IS_NULL
   | REF.AS_NON_NULL
@@ -24283,7 +24283,7 @@ syntax admininstr =
   | VSWIZZLE{ishape : ishape}(ishape : ishape)
     -- if (ishape = `%X%`_ishape(I8_imm, `%`_dim(16)))
   | VSHUFFLE{ishape : ishape, laneidx* : laneidx*}(ishape : ishape, laneidx*{laneidx : laneidx} : laneidx*)
-    -- if ((ishape = `%X%`_ishape(I8_imm, `%`_dim(16))) /\ (|laneidx*{laneidx : laneidx}| = $dim((ishape : ishape <: shape))!`%`_dim.0))
+    -- if ((ishape = `%X%`_ishape(I8_imm, `%`_dim(16))) /\ (|laneidx*{laneidx : laneidx}| = 16))
   | VSPLAT{shape : shape}(shape : shape)
   | VEXTRACT_LANE{shape : shape, sx? : sx?, laneidx : laneidx, numtype : numtype}(shape : shape, sx?{sx : sx} : sx?, laneidx : laneidx)
     -- if (($lanetype(shape) = (numtype : numtype <: lanetype)) <=> (sx?{sx : sx} = ?()))
@@ -24296,10 +24296,10 @@ syntax admininstr =
   | VBITMASK{ishape : ishape}(ishape : ishape)
   | VCVTOP{shape : shape, vcvtop : vcvtop, half? : half?, sx? : sx?, zero : zero}(shape : shape, vcvtop : vcvtop, half?{half : half} : half?, shape, sx?{sx : sx} : sx?, zero : zero)
   | VNARROW{ishape : ishape, sx : sx}(ishape : ishape, ishape, sx : sx)
-  | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx, imm_1 : imm, imm_2 : imm}(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx)
-    -- if ($lsize((imm_1 : imm <: lanetype)) = (2 * $lsize((imm_2 : imm <: lanetype))))
-  | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx, imm_1 : imm, imm_2 : imm}(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx)
-    -- if ($lsize((imm_1 : imm <: lanetype)) = (2 * $lsize((imm_2 : imm <: lanetype))))
+  | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx}(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx)
+    -- if ($lsize($lanetype((ishape_1 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_2 : ishape <: shape)))))
+  | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx}(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx)
+    -- if ($lsize($lanetype((ishape_1 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_2 : ishape <: shape)))))
   | REF.NULL{heaptype : heaptype}(heaptype : heaptype)
   | REF.IS_NULL
   | REF.AS_NON_NULL
@@ -28437,7 +28437,7 @@ syntax zero =
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:566.1-567.22
+;; 1-syntax.watsup:569.1-570.22
 syntax instr =
   | NOP
   | UNREACHABLE
@@ -28475,7 +28475,7 @@ syntax instr =
   | VSWIZZLE{ishape : ishape}(ishape : ishape)
     -- if (ishape = `%X%`_ishape(I8_imm, `%`_dim(16)))
   | VSHUFFLE{ishape : ishape, laneidx* : laneidx*}(ishape : ishape, laneidx*{laneidx : laneidx} : laneidx*)
-    -- if ((ishape = `%X%`_ishape(I8_imm, `%`_dim(16))) /\ (|laneidx*{laneidx : laneidx}| = $dim((ishape : ishape <: shape))!`%`_dim.0))
+    -- if ((ishape = `%X%`_ishape(I8_imm, `%`_dim(16))) /\ (|laneidx*{laneidx : laneidx}| = 16))
   | VSPLAT{shape : shape}(shape : shape)
   | VEXTRACT_LANE{shape : shape, sx? : sx?, laneidx : laneidx, numtype : numtype}(shape : shape, sx?{sx : sx} : sx?, laneidx : laneidx)
     -- if (($lanetype(shape) = (numtype : numtype <: lanetype)) <=> (sx?{sx : sx} = ?()))
@@ -28488,10 +28488,10 @@ syntax instr =
   | VBITMASK{ishape : ishape}(ishape : ishape)
   | VCVTOP{shape : shape, vcvtop : vcvtop, half? : half?, sx? : sx?, zero : zero}(shape : shape, vcvtop : vcvtop, half?{half : half} : half?, shape, sx?{sx : sx} : sx?, zero : zero)
   | VNARROW{ishape : ishape, sx : sx}(ishape : ishape, ishape, sx : sx)
-  | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx, imm_1 : imm, imm_2 : imm}(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx)
-    -- if ($lsize((imm_1 : imm <: lanetype)) = (2 * $lsize((imm_2 : imm <: lanetype))))
-  | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx, imm_1 : imm, imm_2 : imm}(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx)
-    -- if ($lsize((imm_1 : imm <: lanetype)) = (2 * $lsize((imm_2 : imm <: lanetype))))
+  | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx}(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx)
+    -- if ($lsize($lanetype((ishape_1 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_2 : ishape <: shape)))))
+  | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx}(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx)
+    -- if ($lsize($lanetype((ishape_1 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_2 : ishape <: shape)))))
   | REF.NULL{heaptype : heaptype}(heaptype : heaptype)
   | REF.IS_NULL
   | REF.AS_NON_NULL
@@ -29933,7 +29933,7 @@ syntax admininstr =
   | VSWIZZLE{ishape : ishape}(ishape : ishape)
     -- if (ishape = `%X%`_ishape(I8_imm, `%`_dim(16)))
   | VSHUFFLE{ishape : ishape, laneidx* : laneidx*}(ishape : ishape, laneidx*{laneidx : laneidx} : laneidx*)
-    -- if ((ishape = `%X%`_ishape(I8_imm, `%`_dim(16))) /\ (|laneidx*{laneidx : laneidx}| = $dim((ishape : ishape <: shape))!`%`_dim.0))
+    -- if ((ishape = `%X%`_ishape(I8_imm, `%`_dim(16))) /\ (|laneidx*{laneidx : laneidx}| = 16))
   | VSPLAT{shape : shape}(shape : shape)
   | VEXTRACT_LANE{shape : shape, sx? : sx?, laneidx : laneidx, numtype : numtype}(shape : shape, sx?{sx : sx} : sx?, laneidx : laneidx)
     -- if (($lanetype(shape) = (numtype : numtype <: lanetype)) <=> (sx?{sx : sx} = ?()))
@@ -29946,10 +29946,10 @@ syntax admininstr =
   | VBITMASK{ishape : ishape}(ishape : ishape)
   | VCVTOP{shape : shape, vcvtop : vcvtop, half? : half?, sx? : sx?, zero : zero}(shape : shape, vcvtop : vcvtop, half?{half : half} : half?, shape, sx?{sx : sx} : sx?, zero : zero)
   | VNARROW{ishape : ishape, sx : sx}(ishape : ishape, ishape, sx : sx)
-  | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx, imm_1 : imm, imm_2 : imm}(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx)
-    -- if ($lsize((imm_1 : imm <: lanetype)) = (2 * $lsize((imm_2 : imm <: lanetype))))
-  | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx, imm_1 : imm, imm_2 : imm}(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx)
-    -- if ($lsize((imm_1 : imm <: lanetype)) = (2 * $lsize((imm_2 : imm <: lanetype))))
+  | VEXTUNOP{ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx}(ishape_1 : ishape, ishape_2 : ishape, vextunop_ : vextunop_(ishape_1, ishape_2), sx : sx)
+    -- if ($lsize($lanetype((ishape_1 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_2 : ishape <: shape)))))
+  | VEXTBINOP{ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx}(ishape_1 : ishape, ishape_2 : ishape, vextbinop_ : vextbinop_(ishape_1, ishape_2), sx : sx)
+    -- if ($lsize($lanetype((ishape_1 : ishape <: shape))) = (2 * $lsize($lanetype((ishape_2 : ishape <: shape)))))
   | REF.NULL{heaptype : heaptype}(heaptype : heaptype)
   | REF.IS_NULL
   | REF.AS_NON_NULL

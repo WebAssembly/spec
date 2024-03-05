@@ -26,7 +26,7 @@ list(x, sep) ::=
 digit ::= "0" | ... | "9"
 hex ::= digit | "A" | ... | "F"
 
-num ::= digit+ | "0x" hex+ | "U+" hex+
+num ::= digit+ | "0x" hex+ | "U+" hex+ | "`" digit+
 text ::= """ utf8* """
 ```
 
@@ -122,7 +122,7 @@ logop ::= "/\" | "\/" | "=>"
 cmpop ::= "=" | "=/=" | "<" | ">" | "<=" | ">="
 exp ::=
   varid                                meta variable
-  nat                                  natural number literal
+  num                                  natural number literal
   text                                 text literal
   notop exp                            logical negation
   exp logop exp                        logical connective
@@ -157,7 +157,7 @@ binop ::= logop | "+" | "-" | "*" | "/" | "^"
 arith ::=
   varid                                meta variable
   atom                                 token
-  nat                                  natural number literal
+  num                                  natural number literal
   unop arith                           unary operator
   arith binop arith                    binary operator
   arith cmpop arith                    comparison

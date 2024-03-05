@@ -107,6 +107,7 @@ and natop =
   | DecOp   (* n *)
   | HexOp   (* 0xhex *)
   | CharOp  (* U+hex *)
+  | AtomOp  (* `n *)
 
 and unop =
   | NotOp   (* `~` *)

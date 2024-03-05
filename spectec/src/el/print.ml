@@ -172,6 +172,7 @@ and string_of_exp e =
   | NatE (DecOp, n) -> Z.to_string n
   | NatE (HexOp, n) -> "0x" ^ Z.format "%X" n
   | NatE (CharOp, n) -> "U+" ^ Z.format "%X" n
+  | NatE (AtomOp, n) -> "`" ^ Z.to_string n
   | TextE t -> "\"" ^ String.escaped t ^ "\""
   | UnE (op, e2) -> string_of_unop op ^ " " ^ string_of_exp e2
   | BinE (e1, op, e2) ->
@@ -249,6 +250,7 @@ and string_of_sym g =
   | NatG (DecOp, n) -> Z.to_string n
   | NatG (HexOp, n) -> "0x" ^ Z.format "%X" n
   | NatG (CharOp, n) -> "U+" ^ Z.format "%X" n
+  | NatG (AtomOp, n) -> "`" ^ Z.to_string n
   | TextG t -> "\"" ^ String.escaped t ^ "\""
   | EpsG -> "eps"
   | SeqG gs -> "{" ^ concat " " (map_filter_nl_list string_of_sym gs) ^ "}"

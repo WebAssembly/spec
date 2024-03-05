@@ -476,6 +476,7 @@ exp_lit_ :
   | HEXLIT { NatE (HexOp, $1) }
   | CHARLIT { NatE (CharOp, $1) }
   | TEXTLIT { TextE $1 }
+  | TICK NATLIT { NatE (AtomOp, $2) }
 
 exp_var_ :
   | varid { VarE ($1, []) }
@@ -683,6 +684,7 @@ sym_prim_ :
   | HEXLIT { NatG (HexOp, $1) }
   | CHARLIT { NatG (CharOp, $1) }
   | TEXTLIT { TextG $1 }
+  | TICK NATLIT { NatG (AtomOp, $2) }
   | EPS { EpsG }
   | LPAREN tup_list(sym) RPAREN
     { match $2 with [g], false -> ParenG g | gs, _ -> TupG gs }
