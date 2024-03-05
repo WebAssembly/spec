@@ -379,7 +379,7 @@ Aggregate Reference Instructions
      \qquad
      \X{ft}^\ast[y] = \mut~\X{st}
      \qquad
-     \sx = \epsilon \Leftrightarrow \X{st} = \unpacktype(\X{st})
+     \sx^? = \epsilon \Leftrightarrow \X{st} = \unpacktype(\X{st})
    }{
      C \vdashinstr \STRUCTGET\K{\_}\sx^?~x~y : [(\REF~\NULL~x)] \to [\unpacktype(\X{st})]
    }
@@ -566,7 +566,7 @@ Aggregate Reference Instructions
    \frac{
      \expanddt(C.\CTYPES[x]) = \TARRAY~(\mut~\X{st})
      \qquad
-     \sx = \epsilon \Leftrightarrow \X{st} = \unpacktype(\X{st})
+     \sx^? = \epsilon \Leftrightarrow \X{st} = \unpacktype(\X{st})
    }{
      C \vdashinstr \ARRAYGET\K{\_}\sx^?~x : [(\REF~\NULL~x)~\I32] \to [\unpacktype(\X{st})]
    }
