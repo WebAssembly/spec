@@ -513,31 +513,31 @@ Most other vector instructions are defined in terms of numeric operators that ar
 
 1. Assert: due to :ref:`validation <valid-vec-replace_lane>`, :math:`x < \dim(\shape)`.
 
-2. Let :math:`t_1` be the type :math:`\unpacked(\shape)`.
+2. Let :math:`t_2` be the type :math:`\unpacked(\shape)`.
 
 3. Assert: due to :ref:`validation <valid-vec-replace_lane>`, a value of :ref:`value type <syntax-valtype>` :math:`t_1` is on the top of the stack.
 
-4. Pop the value :math:`t_1.\CONST~c_1` from the stack.
+4. Pop the value :math:`t_2.\CONST~c_2` from the stack.
 
 5. Assert: due to :ref:`validation <valid-vec-replace_lane>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
-6. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
+6. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-7. Let :math:`i^\ast` be the result of computing :math:`\lanes_{\shape}(c_2)`.
+7. Let :math:`i^\ast` be the result of computing :math:`\lanes_{\shape}(c_1)`.
 
-8. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\shape}(i^\ast \with [x] = c_1)`.
+8. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\shape}(i^\ast \with [x] = c_2)`.
 
 9. Push :math:`\V128.\VCONST~c` on the stack.
 
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (t_1\K{.}\CONST~c_1)~(\V128\K{.}\VCONST~c_2)~(\shape\K{.}\REPLACELANE~x) &\stepto& (\V128\K{.}\VCONST~c)
+   (\V128\K{.}\VCONST~c_1)~(t_2\K{.}\CONST~c_2)~(\shape\K{.}\REPLACELANE~x) &\stepto& (\V128\K{.}\VCONST~c)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & i^\ast = \lanes_{\shape}(c_2) \\
-       \wedge & c = \lanes^{-1}_{\shape}(i^\ast \with [x] = c_1))
+      (\iff & i^\ast = \lanes_{\shape}(c_1) \\
+       \wedge & c = \lanes^{-1}_{\shape}(i^\ast \with [x] = c_2))
      \end{array}
    \end{array}
 
@@ -669,9 +669,9 @@ Most other vector instructions are defined in terms of numeric operators that ar
 
 1. Assert: due to :ref:`validation <valid-vtestop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
-2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+2. Pop the value :math:`\V128.\VCONST~c` from the stack.
 
-3. Let :math:`i_1^\ast` be the result of computing :math:`\lanes_{\shape}(c_1)`.
+3. Let :math:`i_1^\ast` be the result of computing :math:`\lanes_{\shape}(c)`.
 
 4. Let :math:`i` be the result of computing :math:`\bool(\bigwedge(i_1 \neq 0)^\ast)`.
 
@@ -681,7 +681,7 @@ Most other vector instructions are defined in terms of numeric operators that ar
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~\shape\K{.}\ALLTRUE &\stepto& (\I32\K{.}\CONST~i)
+   (\V128\K{.}\VCONST~c)~\shape\K{.}\ALLTRUE &\stepto& (\I32\K{.}\CONST~i)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
@@ -698,7 +698,7 @@ Most other vector instructions are defined in terms of numeric operators that ar
 
 1. Assert: due to :ref:`validation <valid-vec-bitmask>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
-2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+2. Pop the value :math:`\V128.\VCONST~c` from the stack.
 
 3. Let :math:`i_1^N` be the result of computing :math:`\lanes_{t\K{x}N}(c)`.
 
@@ -708,14 +708,14 @@ Most other vector instructions are defined in terms of numeric operators that ar
 
 6. Let :math:`j^\ast` be the concatenation of the two sequences :math:`i_2^N` and :math:`0^{32-N}`.
 
-7. Let :math:`c` be the result of computing :math:`\ibits_{32}^{-1}(j^\ast)`.
+7. Let :math:`i` be the result of computing :math:`\ibits_{32}^{-1}(j^\ast)`.
 
-8. Push the value :math:`\I32.\CONST~c` onto the stack.
+8. Push the value :math:`\I32.\CONST~i` onto the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~t\K{x}N\K{.}\BITMASK &\stepto& (\I32\K{.}\CONST~c)
-     & (\iff c = \ibits_{32}^{-1}(\ilts_{|t|}(\lanes_{t\K{x}N}(c), 0^N)))
+   (\V128\K{.}\VCONST~c)~t\K{x}N\K{.}\BITMASK &\stepto& (\I32\K{.}\CONST~i)
+     & (\iff i = \ibits_{32}^{-1}(\ilts_{|t|}(\lanes_{t\K{x}N}(c), 0^N)))
      \\
    \end{array}
 
@@ -837,8 +837,8 @@ where:
    \end{array}
 
 
-:math:`t_2\K{x}N\K{.}\vcvtop\K{\_}t_1\K{x}M\K{\_}\sx\K{\_zero}`
-...............................................................
+:math:`t_2\K{x}N\K{.}\vcvtop\K{\_}t_1\K{x}M\K{\_}\sx^?\K{\_zero}`
+.................................................................
 
 1. Assert: due to :ref:`syntax <syntax-instr-vec>`, :math:`N = 2 \cdot M`.
 
@@ -848,7 +848,7 @@ where:
 
 4. Let :math:`i^\ast` be the result of computing :math:`\lanes_{t_1\K{x}M}(c_1)`.
 
-5. Let :math:`j^\ast` be the result of computing :math:`\vcvtop^{\sx}_{|t_1|,|t_2|}(i^\ast)`.
+5. Let :math:`j^\ast` be the result of computing :math:`\vcvtop^{\sx^?}_{|t_1|,|t_2|}(i^\ast)`.
 
 6. Let :math:`k^\ast` be the concatenation of the two sequences :math:`j^\ast` and :math:`0^M`.
 
@@ -859,11 +859,11 @@ where:
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~t_2\K{x}N\K{.}\vcvtop\K{\_}t_1\K{x}M\K{\_}\sx\K{\_zero} &\stepto& (\V128\K{.}\VCONST~c) \\
+   (\V128\K{.}\VCONST~c_1)~t_2\K{x}N\K{.}\vcvtop\K{\_}t_1\K{x}M\K{\_}\sx^?\K{\_zero} &\stepto& (\V128\K{.}\VCONST~c) \\
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1))~0^M))
+     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1))~0^M))
      \end{array}
    \end{array}
 
@@ -942,7 +942,7 @@ where:
 
 10. Let :math:`k_2^\ast` be the result of computing :math:`\extend^{\sx}_{|t_1|,|t_2|}(j_2^\ast)`.
 
-11. Let :math:`k^\ast` be the result of computing :math:`\imul_{t_2\K{x}N}(k_1^\ast, k_2^\ast)`.
+11. Let :math:`k^\ast` be the result of computing :math:`\imul_{|t_2|}(k_1^\ast, k_2^\ast)`.
 
 12. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(k^\ast)`.
 
@@ -956,7 +956,7 @@ where:
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & i^\ast = \lanes_{t_1\K{x}M}(c_1)[\half(0, N) \slice N] \\
      \wedge & j^\ast = \lanes_{t_1\K{x}M}(c_2)[\half(0, N) \slice N] \\
-     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{|t_1|,|t_2|}(i^\ast), \extend^{\sx}_{|t_1|,|t_2|}(j^\ast))))
+     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(\imul_{|t_2|}(\extend^{\sx}_{|t_1|,|t_2|}(i^\ast), \extend^{\sx}_{|t_1|,|t_2|}(j^\ast))))
      \end{array}
 
 where:
@@ -983,7 +983,7 @@ where:
 
 5. Let :math:`(j_1~j_2)^\ast` be the result of computing :math:`\extend^{\sx}_{|t_1|,|t_2|}(i^\ast)`.
 
-6. Let :math:`k^\ast` be the result of computing :math:`\iadd_{N}(j_1, j_2)^\ast`.
+6. Let :math:`k^\ast` be the result of computing :math:`\iadd_{|t_2|}(j_1, j_2)^\ast`.
 
 7. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(k^\ast)`.
 
@@ -997,7 +997,7 @@ where:
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & (i_1~i_2)^\ast = \extend^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)) \\
-     \wedge & j^\ast = \iadd_{N}(i_1, i_2)^\ast \\
+     \wedge & j^\ast = \iadd_{|t_2|}(i_1, i_2)^\ast \\
      \wedge & c = \lanes^{-1}_{t_2\K{x}N}(j^\ast))
      \end{array}
    \end{array}
