@@ -99,29 +99,3 @@ jobs:
         with:
           publish_dir: ./_output
           github_token: ${{ secrets.GITHUB_TOKEN }}
-
-  publish-to-w3c-TR:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v2
-        with:
-          submodules: "recursive"
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - name: Setup Bikeshed
-        run: pip install bikeshed && bikeshed update
-      - name: Setup TexLive
-        run: sudo apt-get update -y && sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
-      - name: Setup Sphinx
-        run: pip install six && pip install sphinx==5.1.0
-      - name: Publish all specs to their https://www.w3.org/TR/ URLs
-        run: cd document && make -e WD-echidna-CI
-        env:
-          STATUS: --md-status=WD
-          W3C_ECHIDNA_TOKEN_CORE: ${{ secrets.W3C_ECHIDNA_TOKEN_CORE }}
-          W3C_ECHIDNA_TOKEN_JSAPI: ${{ secrets.W3C_ECHIDNA_TOKEN_JSAPI }}
-          W3C_ECHIDNA_TOKEN_WEBAPI: ${{ secrets.W3C_ECHIDNA_TOKEN_WEBAPI }}
-          YARN_ENABLE_IMMUTABLE_INSTALLS: false
