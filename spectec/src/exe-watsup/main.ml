@@ -277,6 +277,9 @@ let () =
     Error.print_error at msg';
     Debug_log.log_exn exn;
     exit 1
+  | Backend_interpreter.Exception.Error (at, msg) ->
+    Error.print_error at ("interpreter error: " ^ msg);
+    exit 1
   | exn ->
     flush_all ();
     prerr_endline

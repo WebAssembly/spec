@@ -12,7 +12,7 @@ open Printf
 
 (* Errors *)
 
-let error at msg = Error.error at "interpreter" msg
+let error at msg = raise (Exception.Error (at, msg))
 
 let error_instr instr msg =
   error instr.at (msg ^ " `" ^ structured_string_of_instr instr ^ "`")
