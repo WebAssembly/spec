@@ -482,6 +482,8 @@ with the import’s <a class="reference internal" href="../syntax/types.html#syn
 <ul>
 <li><p><span class="math notranslate nohighlight">\(C'.\href{../valid/conventions.html#context}{\mathsf{globals}}\)</span> is the sequence <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-externtype}{\mathrm{globals}}(\mathit{it}^\ast)\)</span>,</p></li>
 <li><p><span class="math notranslate nohighlight">\(C'.\href{../valid/conventions.html#context}{\mathsf{funcs}}\)</span> is the same as <span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{funcs}}\)</span>,</p></li>
+<li><p><span class="math notranslate nohighlight">\(C'.\href{../valid/conventions.html#context}{\mathsf{tables}}\)</span> is the same as <span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{tables}}\)</span>,</p></li>
+<li><p><span class="math notranslate nohighlight">\(C'.\href{../valid/conventions.html#context}{\mathsf{mems}}\)</span> is the same as <span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{mems}}\)</span>,</p></li>
 <li><p><span class="math notranslate nohighlight">\(C'.\href{../valid/conventions.html#context}{\mathsf{refs}}\)</span> is the same as <span class="math notranslate nohighlight">\(C.\href{../valid/conventions.html#context}{\mathsf{refs}}\)</span>,</p></li>
 <li><p>all other fields are empty.</p></li>
 </ul>
@@ -560,7 +562,7 @@ the segment <span class="math notranslate nohighlight">\(\href{../syntax/modules
   \\
   C = \{ \href{../valid/conventions.html#context}{\mathsf{types}}~\href{../syntax/types.html#syntax-functype}{\mathit{type}}^\ast, \href{../valid/conventions.html#context}{\mathsf{funcs}}~\mathit{ift}^\ast\,\mathit{ft}^\ast, \href{../valid/conventions.html#context}{\mathsf{tables}}~\mathit{itt}^\ast\,\mathit{tt}^\ast, \href{../valid/conventions.html#context}{\mathsf{mems}}~\mathit{imt}^\ast\,\mathit{mt}^\ast, \href{../valid/conventions.html#context}{\mathsf{globals}}~\mathit{igt}^\ast\,\mathit{gt}^\ast, \href{../valid/conventions.html#context}{\mathsf{elems}}~\mathit{rt}^\ast, \href{../valid/conventions.html#context}{\mathsf{datas}}~{\mathrel{\mbox{ok}}}^n, \href{../valid/conventions.html#context}{\mathsf{refs}}~x^\ast \}
   \\
-  C' = \{ \href{../valid/conventions.html#context}{\mathsf{globals}}~\mathit{igt}^\ast, \href{../valid/conventions.html#context}{\mathsf{funcs}}~(C.\href{../valid/conventions.html#context}{\mathsf{funcs}}), \href{../valid/conventions.html#context}{\mathsf{refs}}~(C.\href{../valid/conventions.html#context}{\mathsf{refs}}) \}
+  C' = \{ \href{../valid/conventions.html#context}{\mathsf{globals}}~\mathit{igt}^\ast, \href{../valid/conventions.html#context}{\mathsf{funcs}}~(C.\href{../valid/conventions.html#context}{\mathsf{funcs}}), \href{../valid/conventions.html#context}{\mathsf{tables}}~(C.\href{../valid/conventions.html#context}{\mathsf{tables}}), \href{../valid/conventions.html#context}{\mathsf{mems}}~(C.\href{../valid/conventions.html#context}{\mathsf{mems}}), \href{../valid/conventions.html#context}{\mathsf{refs}}~(C.\href{../valid/conventions.html#context}{\mathsf{refs}}) \}
   \qquad
   |C.\href{../valid/conventions.html#context}{\mathsf{mems}}| \leq 1
   \qquad
