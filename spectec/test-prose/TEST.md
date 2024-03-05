@@ -64,10 +64,6 @@ validation_of_BR_TABLE l* l'
 - t? must be equal to C.LABEL[l'].
 - The instruction is valid with type (t_1* ++ t? -> t_2*).
 
-validation_of_RETURN
-- Let ?(t?) be C.RETURN.
-- The instruction is valid with type (t_1* ++ t? -> t_2*).
-
 validation_of_CALL x
 - |C.FUNC| must be greater than x.
 - Let (t_1* -> t_2?) be C.FUNC[x].
@@ -77,6 +73,10 @@ validation_of_CALL_INDIRECT x
 - |C.TYPE| must be greater than x.
 - Let (t_1* -> t_2?) be C.TYPE[x].
 - The instruction is valid with type (t_1* ++ [I32] -> t_2?).
+
+validation_of_RETURN
+- Let ?(t?) be C.RETURN.
+- The instruction is valid with type (t_1* ++ t? -> t_2*).
 
 validation_of_CONST t c_t
 - The instruction is valid with type ([] -> [t]).
@@ -1303,10 +1303,6 @@ validation_of_BR_TABLE l* l'
 - C.LABEL[l'] must match t*.
 - The instruction is valid with type (t_1* ++ t* -> t_2*).
 
-validation_of_RETURN
-- Let ?(t*) be C.RETURN.
-- The instruction is valid with type (t_1* ++ t* -> t_2*).
-
 validation_of_CALL x
 - |C.FUNC| must be greater than x.
 - Let (t_1* -> t_2*) be C.FUNC[x].
@@ -1318,6 +1314,10 @@ validation_of_CALL_INDIRECT x y
 - Let (lim, FUNCREF) be C.TABLE[x].
 - Let (t_1* -> t_2*) be C.TYPE[y].
 - The instruction is valid with type (t_1* ++ [I32] -> t_2*).
+
+validation_of_RETURN
+- Let ?(t*) be C.RETURN.
+- The instruction is valid with type (t_1* ++ t* -> t_2*).
 
 validation_of_CONST nt c_nt
 - The instruction is valid with type ([] -> [nt]).
@@ -3760,10 +3760,6 @@ validation_of_BR_ON_CAST_FAIL l rt_1 rt_2
 - Yet: TODO: prem_to_instrs 2
 - The instruction is valid with type (t* ++ [rt_1] -> t* ++ [rt_2]).
 
-validation_of_RETURN
-- Let ?(t*) be C.RETURN.
-- The instruction is valid with type (t_1* ++ t* -> t_2*).
-
 validation_of_CALL x
 - |C.FUNC| must be greater than x.
 - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.FUNC[x]).
@@ -3781,6 +3777,10 @@ validation_of_CALL_INDIRECT x y
 - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPE[y]).
 - Yet: TODO: prem_to_instrs 2
 - The instruction is valid with type (t_1* ++ [I32] -> t_2*).
+
+validation_of_RETURN
+- Let ?(t*) be C.RETURN.
+- The instruction is valid with type (t_1* ++ t* -> t_2*).
 
 validation_of_RETURN_CALL x
 - |C.FUNC| must be greater than x.

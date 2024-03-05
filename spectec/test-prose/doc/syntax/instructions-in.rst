@@ -88,7 +88,7 @@ Control Instructions
 
 $${syntax+: 
   blocktype
-  instr/control
+  {instr/block instr/br instr/call}
 }
 
 .. _syntax-instr-expr:

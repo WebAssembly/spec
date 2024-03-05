@@ -185,12 +185,20 @@ syntax blocktype hint(desc "block type") = valtype?
 
 var bt : blocktype
 
-syntax instr/control hint(desc "control instruction") =
+syntax instr/parametric hint(desc "parametric instruction") =
   | UNREACHABLE
   | NOP
+  | DROP
+  | SELECT
+  | ...
+
+syntax instr/block hint(desc "block instruction") = ...
   | BLOCK blocktype instr*
   | LOOP blocktype instr*
   | IF blocktype instr* ELSE instr*
+  | ...
+
+syntax instr/br hint(desc "branch instruction") = ...
   | BR labelidx
   | BR_IF labelidx
   | BR_TABLE labelidx* labelidx
@@ -200,11 +208,6 @@ syntax instr/call hint(desc "call instruction") = ...
   | CALL funcidx
   | CALL_INDIRECT typeidx
   | RETURN
-  | ...
-
-syntax instr/parametric hint(desc "parametric instruction") = ...
-  | DROP
-  | SELECT
   | ...
 
 syntax instr/num hint(desc "numeric instruction") = ...

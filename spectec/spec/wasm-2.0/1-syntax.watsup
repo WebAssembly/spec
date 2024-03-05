@@ -138,7 +138,7 @@ syntax vnn hint(show V#n) = V128
 
 
 syntax resulttype hint(desc "result type") =
-  valtype*
+  list(valtype)
 
 
 ;; Packed types
@@ -337,12 +337,20 @@ syntax blocktype hint(desc "block type") =
 
 var bt : blocktype
 
-syntax instr/control hint(desc "control instruction") =
-  | NOP
+syntax instr/parametric hint(desc "parametric instruction") =
   | UNREACHABLE
+  | NOP
+  | DROP
+  | SELECT (valtype*)?
+  | ...
+
+syntax instr/block hint(desc "block instruction") = ...
   | BLOCK blocktype instr*
   | LOOP blocktype instr*
   | IF blocktype instr* ELSE instr*
+  | ...
+
+syntax instr/br hint(desc "branch instruction") = ...
   | BR labelidx
   | BR_IF labelidx
   | BR_TABLE labelidx* labelidx
@@ -352,11 +360,6 @@ syntax instr/call hint(desc "call instruction") = ...
   | CALL funcidx
   | CALL_INDIRECT tableidx typeidx
   | RETURN
-  | ...
-
-syntax instr/parametric hint(desc "parametric instruction") = ...
-  | DROP
-  | SELECT (valtype*)?
   | ...
 
 syntax instr/num hint(desc "numeric instruction") = ...

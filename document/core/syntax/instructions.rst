@@ -37,6 +37,10 @@ $${syntax: instr/parametric}
      \SELECT~(\valtype^\ast)^? \\
    \end{array}
 
+The ${:NOP} instruction does nothing.
+
+The ${:UNREACHABLE} instruction causes an unconditional :ref:`trap <trap>`.
+
 The ${:DROP} instruction simply throws away a single operand.
 
 The ${:SELECT} instruction selects one of its first two operands based on whether its third operand is zero or not.
@@ -602,7 +606,7 @@ Control Instructions
 
 Instructions in this group affect the flow of control.
 
-$${syntax: {instr/control instr/call}}
+$${syntax: {instr/block instr/br instr/call}}
 
 .. math::
    \begin{array}{llrl}
@@ -630,10 +634,6 @@ $${syntax: {instr/control instr/call}}
      \RETURNCALLREF~\funcidx \\&&|&
      \RETURNCALLINDIRECT~\tableidx~\typeidx \\
    \end{array}
-
-The ${:NOP} instruction does nothing.
-
-The ${:UNREACHABLE} instruction causes an unconditional :ref:`trap <trap>`.
 
 The ${:BLOCK}, ${:LOOP} and ${:IF} instructions are *structured* instructions.
 They bracket nested sequences of instructions, called *blocks*, terminated with, or separated by, ${:END} or ${:ELSE} pseudo-instructions.

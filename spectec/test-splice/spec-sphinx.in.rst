@@ -15,7 +15,7 @@ $${syntax+:
   externtype
 }
 
-$${syntax: {instr/control}}
+$${syntax: {instr/block}}
 
 $${syntax: {instr/num instr/local instr/global instr/memory} expr}
 

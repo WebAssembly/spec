@@ -61,16 +61,16 @@ rule Heaptype_ok/abs:
   C |- absheaptype : OK
 
 rule Heaptype_ok/typeidx:
-  C |- _IDX x : OK
-  -- if C.TYPE[x] = dt
+  C |- _IDX typeidx : OK
+  -- if C.TYPE[typeidx] = dt
 
 rule Heaptype_ok/rec:
   C |- REC i : OK
   -- if C.REC[i] = st
 
 rule Reftype_ok:
-  C |- REF nul ht : OK
-  -- Heaptype_ok: C |- ht : OK
+  C |- REF NULL? heaptype : OK
+  -- Heaptype_ok: C |- heaptype : OK
 
 rule Valtype_ok/num:
   C |- numtype : OK
@@ -101,7 +101,7 @@ rule Instrtype_ok:
   C |- t_1* -> x* t_2* : OK
   -- Resulttype_ok: C |- t_1* : OK
   -- Resulttype_ok: C |- t_2* : OK
-  -- if (C.LOCAL[x] = lct)*
+  -- (if C.LOCAL[x] = lct)*
 
 
 ;; Type definitions
@@ -137,30 +137,31 @@ rule Storagetype_ok/pack:
   -- Packtype_ok: C |- packtype : OK
 
 rule Fieldtype_ok:
-  C |- mut zt : OK
-  -- Storagetype_ok: C |- zt : OK
+  C |- MUT? storagetype : OK
+  -- Storagetype_ok: C |- storagetype : OK
 
 
 rule Comptype_ok/struct:
-  C |- STRUCT yt* : OK
-  -- (Fieldtype_ok: C |- yt : OK)*
+  C |- STRUCT fieldtype* : OK
+  -- (Fieldtype_ok: C |- fieldtype : OK)*
 
 rule Comptype_ok/array:
-  C |- ARRAY yt : OK
-  -- Fieldtype_ok: C |- yt : OK
+  C |- ARRAY fieldtype : OK
+  -- Fieldtype_ok: C |- fieldtype : OK
 
 rule Comptype_ok/func:
-  C |- FUNC ft : OK
-  -- Functype_ok: C |- ft : OK
+  C |- FUNC functype : OK
+  -- Functype_ok: C |- functype : OK
 
 
 rule Subtype_ok:
-  C |- SUB fin y* ct : OK(x)
-  -- if |y*| <= 1
-  -- if (y < x)*
-  -- if ($unrolldt(C.TYPE[y]) = SUB y'* ct')*
-  -- Comptype_ok: C |- ct : OK
-  -- (Comptype_sub: C |- ct <: ct')*
+  C |- SUB FINAL? typeidx* comptype : OK(x_0)
+  -- if |x*| <= 1
+  -- (if x < x_0)*
+  -- (if $unrolldt(C.TYPE[x]) = SUB x'* comptype')*
+
+  -- Comptype_ok: C |- comptype : OK
+  -- (Comptype_sub: C |- comptype <: comptype')*
 
 def $before(heaptype, typeidx, nat) : bool   hint(show % << %,%)
 def $before(deftype, x, i) = true
@@ -173,39 +174,40 @@ def $unrollht(C, _IDX typeidx) = $unrolldt(C.TYPE[typeidx])
 def $unrollht(C, REC i) = C.REC[i]
 
 rule Subtype_ok2:
-  C |- SUBD fin ht* ct : OK x i
-  -- if |ht*| <= 1
-  -- if ($before(ht, x, i))*
-  -- if ($unrollht(C, ht) = SUBD ht'* ct')*
-  -- Comptype_ok: C |- ct : OK
-  -- (Comptype_sub: C |- ct <: ct')*
+  C |- SUBD FINAL? heaptype* compttype : OK x i
+  -- if |heaptype*| <= 1
+  -- (if $before(heaptype, x, i))*
+  -- (if $unrollht(C, heaptype) = SUBD heaptype'* comptype')*
+
+  -- Comptype_ok: C |- comptype : OK
+  -- (Comptype_sub: C |- comptype <: comptype')*
 
 
 rule Rectype_ok/empty:
   C |- REC eps : OK(x)
 
 rule Rectype_ok/cons:
-  C |- REC (st_1 st*) : OK(x)
-  -- Subtype_ok: C |- st_1 : OK(x)
-  -- Rectype_ok: C |- REC st* : OK($(x+1))
+  C |- REC (subtype_1 subtype*) : OK(x)
+  -- Subtype_ok: C |- subtype_1 : OK(x)
+  -- Rectype_ok: C |- REC subtype* : OK($(x+1))
 
 rule Rectype_ok/rec2:
-  C |- REC st* : OK(x)
-  -- Rectype_ok2: C, REC st* |- REC st* : OK x 0
+  C |- REC subtype* : OK(x)
+  -- Rectype_ok2: C, REC subtype* |- REC subtype* : OK x 0
 
 rule Rectype_ok2/empty:
   C |- REC eps : OK x i
 
 rule Rectype_ok2/cons:
-  C |- REC (st_1 st*) : OK x i
-  -- Subtype_ok2: C |- st_1 : OK x i
-  -- Rectype_ok2: C |- REC st* : OK $(x+1) $(i+1)
+  C |- REC (subtype_1 subtype*) : OK x i
+  -- Subtype_ok2: C |- subtype_1 : OK x i
+  -- Rectype_ok2: C |- REC subtype* : OK $(x+1) $(i+1)
 
 
 rule Deftype_ok:
-  C |- DEF qt i : OK
-  -- Rectype_ok: C |- qt : OK(x)
-  -- if qt = REC st^n
+  C |- DEF rectype i : OK
+  -- Rectype_ok: C |- rectype : OK(x)
+  -- if rectype = REC subtype^n
   -- if i < n
 
 
@@ -219,8 +221,8 @@ relation Externtype_ok: context |- externtype : OK  hint(show "K-extern")
 
 
 rule Limits_ok:
-  C |- `[n_1 .. n_2] : k
-  -- if n_1 <= n_2 <= k
+  C |- `[n .. m] : k
+  -- if n <= m <= k
 
 rule Functype_ok:
   C |- t_1* -> t_2* : OK
@@ -228,35 +230,35 @@ rule Functype_ok:
   -- Resulttype_ok: C |- t_2* : OK
 
 rule Globaltype_ok:
-  C |- mut t : OK
+  C |- MUT? t : OK
   -- Valtype_ok: C |- t : OK
 
 rule Tabletype_ok:
-  C |- lim rt : OK
-  -- Limits_ok: C |- lim : $(2^32 - 1)
-  -- Reftype_ok: C |- rt : OK
+  C |- limits reftype : OK
+  -- Limits_ok: C |- limits : $(2^32 - 1)
+  -- Reftype_ok: C |- reftype : OK
 
 rule Memtype_ok:
-  C |- lim I8 : OK
-  -- Limits_ok: C |- lim : $(2^16)
+  C |- limits I8 : OK
+  -- Limits_ok: C |- limits : $(2^16)
 
 
 rule Externtype_ok/func:
-  C |- FUNC dt : OK
-  -- Deftype_ok: C |- dt : OK
-  -- Expand: dt ~~ FUNC ft
+  C |- FUNC deftype : OK
+  -- Deftype_ok: C |- deftype : OK
+  -- Expand: deftype ~~ FUNC functype
 
 rule Externtype_ok/global:
-  C |- GLOBAL gt : OK
-  -- Globaltype_ok: C |- gt : OK
+  C |- GLOBAL globaltype : OK
+  -- Globaltype_ok: C |- globaltype : OK
 
 rule Externtype_ok/table:
-  C |- TABLE tt : OK
-  -- Tabletype_ok: C |- tt : OK
+  C |- TABLE tabletype : OK
+  -- Tabletype_ok: C |- tabletype : OK
 
 rule Externtype_ok/mem:
-  C |- MEM mt : OK
-  -- Memtype_ok: C |- mt : OK
+  C |- MEM memtype : OK
+  -- Memtype_ok: C |- memtype : OK
 
 
 
@@ -564,17 +566,15 @@ rule Instr_ok/select-impl:
 
 ;; Block instructions
 
-relation Blocktype_ok: context |- blocktype : functype hint(show "K-block")
+relation Blocktype_ok: context |- blocktype : finstrtype hint(show "K-block")
 
-rule Blocktype_ok/void:
-  C |- _RESULT eps : eps -> eps
-
-rule Blocktype_ok/result:
-  C |- _RESULT t : eps -> t
+rule Blocktype_ok/valtype:
+  C |- _RESULT valtype? : eps -> valtype?
+  -- (Valtype_ok: C |- valtype : OK)?
 
 rule Blocktype_ok/typeidx:
-  C |- _IDX x : ft
-  -- Expand: C.TYPE[x] ~~ FUNC ft
+  C |- _IDX typeidx : t_1* -> t_2*
+  -- Expand: C.TYPE[typeidx] ~~ FUNC (t_1* -> t_2*)
 
 
 rule Instr_ok/block:
@@ -638,10 +638,6 @@ rule Instr_ok/br_on_cast_fail:
 
 ;; Function instructions
 
-rule Instr_ok/return:
-  C |- RETURN : t_1* t* -> t_2*
-  -- if C.RETURN = (t*)
-
 rule Instr_ok/call:
   C |- CALL x : t_1* -> t_2*
   -- Expand: C.FUNC[x] ~~ FUNC (t_1* -> t_2*)
@@ -655,6 +651,10 @@ rule Instr_ok/call_indirect:
   -- if C.TABLE[x] = lim rt
   -- Reftype_sub: C |- rt <: (REF NULL FUNC)
   -- Expand: C.TYPE[y] ~~ FUNC (t_1* -> t_2*)
+
+rule Instr_ok/return:
+  C |- RETURN : t_1* t* -> t_2*
+  -- if C.RETURN = (t*)
 
 rule Instr_ok/return_call:
   C |- RETURN_CALL x : t_3* t_1* -> t_4*

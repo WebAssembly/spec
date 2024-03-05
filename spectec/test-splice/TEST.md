@@ -75,18 +75,10 @@ $$
 
 $$
 \begin{array}{@{}l@{}rrl@{}l@{}}
-& {\mathit{instr}} &::=& \mathsf{nop} \\ &&|&
-\mathsf{unreachable} \\ &&|&
+& {\mathit{instr}} &::=& \dots \\ &&|&
 \mathsf{block}~\,{\mathit{blocktype}}~\,{{\mathit{instr}}^\ast} \\ &&|&
 \mathsf{loop}~\,{\mathit{blocktype}}~\,{{\mathit{instr}}^\ast} \\ &&|&
 \mathsf{if}~\,{\mathit{blocktype}}~\,{{\mathit{instr}}^\ast}~\,\mathsf{else}~\,{{\mathit{instr}}^\ast} \\ &&|&
-\mathsf{br}~\,{\mathit{labelidx}} \\ &&|&
-\mathsf{br\_if}~\,{\mathit{labelidx}} \\ &&|&
-\mathsf{br\_table}~\,{{\mathit{labelidx}}^\ast}~\,{\mathit{labelidx}} \\ &&|&
-\mathsf{br\_on\_null}~\,{\mathit{labelidx}} \\ &&|&
-\mathsf{br\_on\_non\_null}~\,{\mathit{labelidx}} \\ &&|&
-\mathsf{br\_on\_cast}~\,{\mathit{labelidx}}~\,{\mathit{reftype}}~\,{\mathit{reftype}} \\ &&|&
-\mathsf{br\_on\_cast\_fail}~\,{\mathit{labelidx}}~\,{\mathit{reftype}}~\,{\mathit{reftype}} \\ &&|&
 \dots \\
 \end{array}
 $$
@@ -385,8 +377,9 @@ warning: syntax `imm` was never spliced
 warning: syntax `import` was never spliced
 warning: syntax `init` was never spliced
 warning: syntax `inn` was never spliced
-warning: syntax `instr/call` was never spliced
 warning: syntax `instr/parametric` was never spliced
+warning: syntax `instr/br` was never spliced
+warning: syntax `instr/call` was never spliced
 warning: syntax `instr/vec` was never spliced
 warning: syntax `instr/ref` was never spliced
 warning: syntax `instr/func` was never spliced
@@ -630,8 +623,7 @@ warning: grammar `BuN` was never spliced
 warning: grammar `Bvaltype` was never spliced
 warning: grammar `Bvec` was never spliced
 warning: grammar `Bvectype` was never spliced
-warning: rule `Blocktype_ok/void` was never spliced
-warning: rule `Blocktype_ok/result` was never spliced
+warning: rule `Blocktype_ok/valtype` was never spliced
 warning: rule `Blocktype_ok/typeidx` was never spliced
 warning: rule `Comptype_ok/struct` was never spliced
 warning: rule `Comptype_ok/array` was never spliced
@@ -715,10 +707,10 @@ warning: rule `Instr_ok/br_on_null` was never spliced
 warning: rule `Instr_ok/br_on_non_null` was never spliced
 warning: rule `Instr_ok/br_on_cast` was never spliced
 warning: rule `Instr_ok/br_on_cast_fail` was never spliced
-warning: rule `Instr_ok/return` was never spliced
 warning: rule `Instr_ok/call` was never spliced
 warning: rule `Instr_ok/call_ref` was never spliced
 warning: rule `Instr_ok/call_indirect` was never spliced
+warning: rule `Instr_ok/return` was never spliced
 warning: rule `Instr_ok/return_call` was never spliced
 warning: rule `Instr_ok/return_call_ref` was never spliced
 warning: rule `Instr_ok/return_call_indirect` was never spliced
@@ -1459,10 +1451,10 @@ warning: rule prose `valid/const` was never spliced
 warning: rule prose `valid/return_call_indirect` was never spliced
 warning: rule prose `valid/return_call_ref` was never spliced
 warning: rule prose `valid/return_call` was never spliced
+warning: rule prose `valid/return` was never spliced
 warning: rule prose `valid/call_indirect` was never spliced
 warning: rule prose `valid/call_ref` was never spliced
 warning: rule prose `valid/call` was never spliced
-warning: rule prose `valid/return` was never spliced
 warning: rule prose `valid/br_on_cast_fail` was never spliced
 warning: rule prose `valid/br_on_cast` was never spliced
 warning: rule prose `valid/br_on_non_null` was never spliced

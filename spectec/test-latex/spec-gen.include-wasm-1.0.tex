@@ -247,6 +247,8 @@ $$
 \begin{array}{@{}lrrl@{}l@{}}
 \mbox{(instruction)} & {\mathit{instr}} &::=& \mathsf{unreachable} \\ &&|&
 \mathsf{nop} \\ &&|&
+\mathsf{drop} \\ &&|&
+\mathsf{select} \\ &&|&
 \mathsf{block}~\,{\mathit{blocktype}}~\,{{\mathit{instr}}^\ast} \\ &&|&
 \mathsf{loop}~\,{\mathit{blocktype}}~\,{{\mathit{instr}}^\ast} \\ &&|&
 \mathsf{if}~\,{\mathit{blocktype}}~\,{{\mathit{instr}}^\ast}~\,\mathsf{else}~\,{{\mathit{instr}}^\ast} \\ &&|&
@@ -256,8 +258,6 @@ $$
 \mathsf{call}~\,{\mathit{funcidx}} \\ &&|&
 \mathsf{call\_indirect}~\,{\mathit{typeidx}} \\ &&|&
 \mathsf{return} \\ &&|&
-\mathsf{drop} \\ &&|&
-\mathsf{select} \\ &&|&
 {\mathit{valtype}}.\mathsf{const}~\,{{\mathit{val}}}_{{\mathit{valtype}}} \\ &&|&
 {\mathit{valtype}} . {{\mathit{unop}}}_{{\mathit{valtype}}} \\ &&|&
 {\mathit{valtype}} . {{\mathit{binop}}}_{{\mathit{valtype}}} \\ &&|&
@@ -818,9 +818,9 @@ $\boxed{{ \vdash }\;{\mathit{externtype}} : \mathsf{ok}}$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathit{n}}_{{1}} \leq {\mathit{n}}_{{2}} \leq {\mathit{k}}
+{\mathit{n}} \leq {\mathit{m}} \leq {\mathit{k}}
 }{
-{ \vdash }\;{}[{\mathit{n}}_{{1}} .. {\mathit{n}}_{{2}}] : {\mathit{k}}
+{ \vdash }\;{}[{\mathit{n}} .. {\mathit{m}}] : {\mathit{k}}
 } \, {[\textsc{\scriptsize K{-}limits}]}
 \qquad
 \end{array}
@@ -840,7 +840,7 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 }{
-{ \vdash }\;{\mathit{gt}} : \mathsf{ok}
+{ \vdash }\;{\mathsf{mut}^?}~\,{\mathit{t}} : \mathsf{ok}
 } \, {[\textsc{\scriptsize K{-}global}]}
 \qquad
 \end{array}
@@ -849,9 +849,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{ \vdash }\;{\mathit{lim}} : {2^{32}} - 1
+{ \vdash }\;{\mathit{limits}} : {2^{32}} - 1
 }{
-{ \vdash }\;{\mathit{lim}} : \mathsf{ok}
+{ \vdash }\;{\mathit{limits}} : \mathsf{ok}
 } \, {[\textsc{\scriptsize K{-}table}]}
 \qquad
 \end{array}
@@ -860,9 +860,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{ \vdash }\;{\mathit{lim}} : {2^{16}}
+{ \vdash }\;{\mathit{limits}} : {2^{16}}
 }{
-{ \vdash }\;{\mathit{lim}} : \mathsf{ok}
+{ \vdash }\;{\mathit{limits}} : \mathsf{ok}
 } \, {[\textsc{\scriptsize K{-}mem}]}
 \qquad
 \end{array}
@@ -1213,17 +1213,6 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathit{C}}.\mathsf{return} = ({{\mathit{t}}^?})
-}{
-{\mathit{C}} \vdash \mathsf{return} : {{\mathit{t}}_{{1}}^\ast}~\,{{\mathit{t}}^?} \rightarrow {{\mathit{t}}_{{2}}^\ast}
-} \, {[\textsc{\scriptsize T{-}return}]}
-\qquad
-\end{array}
-$$
-
-$$
-\begin{array}{@{}c@{}}\displaystyle
-\frac{
 {\mathit{C}}.\mathsf{func}{}[{\mathit{x}}] = {{\mathit{t}}_{{1}}^\ast} \rightarrow {{\mathit{t}}_{{2}}^?}
 }{
 {\mathit{C}} \vdash \mathsf{call}~\,{\mathit{x}} : {{\mathit{t}}_{{1}}^\ast} \rightarrow {{\mathit{t}}_{{2}}^?}
@@ -1239,6 +1228,17 @@ $$
 }{
 {\mathit{C}} \vdash \mathsf{call\_indirect}~\,{\mathit{x}} : {{\mathit{t}}_{{1}}^\ast}~\,\mathsf{i{\scriptstyle32}} \rightarrow {{\mathit{t}}_{{2}}^?}
 } \, {[\textsc{\scriptsize T{-}call\_indirect}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{\mathit{C}}.\mathsf{return} = ({{\mathit{t}}^?})
+}{
+{\mathit{C}} \vdash \mathsf{return} : {{\mathit{t}}_{{1}}^\ast}~\,{{\mathit{t}}^?} \rightarrow {{\mathit{t}}_{{2}}^\ast}
+} \, {[\textsc{\scriptsize T{-}return}]}
 \qquad
 \end{array}
 $$

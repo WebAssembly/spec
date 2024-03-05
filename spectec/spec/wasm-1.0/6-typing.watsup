@@ -23,22 +23,22 @@ relation Externtype_ok: |- externtype : OK  hint(show "K-extern")
 
 
 rule Limits_ok:
-  |- `[n_1 .. n_2] : k
-  -- if n_1 <= n_2 <= k
+  |- `[n .. m] : k
+  -- if n <= m <= k
 
 rule Functype_ok:
   |- t_1* -> t_2? : OK
 
 rule Globaltype_ok:
-  |- gt : OK
+  |- MUT? t : OK
 
 rule Tabletype_ok:
-  |- lim : OK
-  -- Limits_ok: |- lim : $(2^32-1)
+  |- limits : OK
+  -- Limits_ok: |- limits : $(2^32-1)
 
 rule Memtype_ok:
-  |- lim : OK
-  -- Limits_ok: |- lim : $(2^16)
+  |- limits : OK
+  -- Limits_ok: |- limits : $(2^16)
 
 
 rule Externtype_ok/func:
@@ -192,10 +192,6 @@ rule Instr_ok/br_table:
 
 ;; Function instructions
 
-rule Instr_ok/return:
-  C |- RETURN : t_1* t? -> t_2*
-  -- if C.RETURN = (t?)
-
 rule Instr_ok/call:
   C |- CALL x : t_1* -> t_2?
   -- if C.FUNC[x] = t_1* -> t_2?
@@ -203,6 +199,10 @@ rule Instr_ok/call:
 rule Instr_ok/call_indirect:
   C |- CALL_INDIRECT x : t_1* I32 -> t_2?
   -- if C.TYPE[x] = t_1* -> t_2?
+
+rule Instr_ok/return:
+  C |- RETURN : t_1* t? -> t_2*
+  -- if C.RETURN = (t?)
 
 
 ;; Numeric instructions

@@ -24,22 +24,22 @@ relation Externtype_ok: |- externtype : OK  hint(show "K-extern")
 
 
 rule Limits_ok:
-  |- `[n_1 .. n_2] : k
-  -- if n_1 <= n_2 <= k
+  |- `[n .. m] : k
+  -- if n <= m <= k
 
 rule Functype_ok:
-  |- ft : OK
+  |- t_1* -> t_2* : OK
 
 rule Globaltype_ok:
-  |- gt : OK
+  |- MUT? t : OK
 
 rule Tabletype_ok:
-  |- lim rt : OK
-  -- Limits_ok: |- lim : $(2^32-1)
+  |- limits reftype : OK
+  -- Limits_ok: |- limits : $(2^32-1)
 
 rule Memtype_ok:
-  |- lim I8 : OK
-  -- Limits_ok: |- lim : $(2^16)
+  |- limits I8 : OK
+  -- Limits_ok: |- limits : $(2^16)
 
 
 rule Externtype_ok/func:
@@ -191,15 +191,12 @@ rule Instr_ok/select-impl:
 
 relation Blocktype_ok: context |- blocktype : functype hint(show "K-block")
 
-rule Blocktype_ok/void:
-  C |- _RESULT eps : eps -> eps
-
-rule Blocktype_ok/result:
-  C |- _RESULT t : eps -> t
+rule Blocktype_ok/valtype:
+  C |- _RESULT valtype? : eps -> valtype?
 
 rule Blocktype_ok/typeidx:
-  C |- _IDX x : ft
-  -- if C.TYPE[x] = ft
+  C |- _IDX typeidx : t_1* -> t_2*
+  -- if C.TYPE[typeidx] = t_1* -> t_2*
 
 
 rule Instr_ok/block:
@@ -237,10 +234,6 @@ rule Instr_ok/br_table:
 
 ;; Function instructions
 
-rule Instr_ok/return:
-  C |- RETURN : t_1* t* -> t_2*
-  -- if C.RETURN = (t*)
-
 rule Instr_ok/call:
   C |- CALL x : t_1* -> t_2*
   -- if C.FUNC[x] = t_1* -> t_2*
@@ -249,6 +242,10 @@ rule Instr_ok/call_indirect:
   C |- CALL_INDIRECT x y : t_1* I32 -> t_2*
   -- if C.TABLE[x] = lim FUNCREF
   -- if C.TYPE[y] = t_1* -> t_2*
+
+rule Instr_ok/return:
+  C |- RETURN : t_1* t* -> t_2*
+  -- if C.RETURN = (t*)
 
 
 ;; Numeric instructions
