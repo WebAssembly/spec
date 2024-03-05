@@ -216,7 +216,8 @@ syntax instr/num hint(desc "numeric instruction") = ...
   | BINOP valtype binop_(valtype)    hint(show %.%)
   | TESTOP valtype testop_(valtype)  hint(show %.%)
   | RELOP valtype relop_(valtype)    hint(show %.%)
-  | CVTOP valtype_1 cvtop valtype_2 sx?  hint(show %.%#_#%#_#%)
+  | CVTOP valtype_1 cvtop valtype_2 sx?  hint(show %.%#_#%) hint(show %.%#_#%#_#%)
+    -- if valtype_1 =/= valtype_2
   | ...
 
 syntax instr/local hint(desc "local instruction") = ...

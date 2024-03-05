@@ -94,14 +94,8 @@ validation_of_RELOP t relop_t
 - The instruction is valid with type ([t, t] -> [I32]).
 
 validation_of_CVTOP t_1 REINTERPRET t_2 ?()
-- t_1 must be different with t_2.
 - $size(t_1) must be equal to $size(t_2).
 - The instruction is valid with type ([t_2] -> [t_1]).
-
-validation_of_CVTOP inn_1 CONVERT inn_2 sx?
-- inn_1 must be different with inn_2.
-- (($size(inn_1) > $size(inn_2))) and ((sx? is ?())) are equivalent.
-- The instruction is valid with type ([inn_2] -> [inn_1]).
 
 validation_of_LOCAL.GET x
 - |C.LOCAL| must be greater than x.
@@ -586,7 +580,7 @@ invfbytes N b*
 1. Let p be $inverse_of_fbytes(N, b*).
 2. Return p.
 
-default valty_u0
+default_ valty_u0
 1. If (valty_u0 is I32), then:
   a. Return (I32.CONST 0).
 2. If (valty_u0 is I64), then:
@@ -1111,7 +1105,7 @@ execution_of_CALL_ADDR a
 5. Assert: Due to validation, func is of the case FUNC.
 6. Let (FUNC x y_0 instr*) be func.
 7. Let (LOCAL t)* be y_0.
-8. Let f be { LOCAL: val^k ++ $default(t)*; MODULE: mm; }.
+8. Let f be { LOCAL: val^k ++ $default_(t)*; MODULE: mm; }.
 9. Let F be the activation of f with arity n.
 10. Enter F with label [FRAME_]:
   a. Let L be the label_n{[]}.
@@ -1213,7 +1207,7 @@ execution_of_CALL_REF x
   g. Let (t_1^n -> t_2^m) be y_0.
   h. Assert: Due to validation, there are at least n values on the top of the stack.
   i. Pop val^n from the stack.
-  j. Let f be { LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }.
+  j. Let f be { LOCAL: ?(val)^n ++ $default_(t)*; MODULE: fi.MODULE; }.
   k. Let F be the activation of f with arity m.
   l. Enter F with label [FRAME_]:
     1) Let L be the label_m{[]}.
@@ -1335,14 +1329,8 @@ validation_of_RELOP nt relop_nt
 - The instruction is valid with type ([nt, nt] -> [I32]).
 
 validation_of_CVTOP nt_1 REINTERPRET nt_2 ?()
-- nt_1 must be different with nt_2.
 - $size(nt_1) must be equal to $size(nt_2).
 - The instruction is valid with type ([nt_2] -> [nt_1]).
-
-validation_of_CVTOP inn_1 CONVERT inn_2 sx?
-- inn_1 must be different with inn_2.
-- (($size(inn_1) > $size(inn_2))) and ((sx? is ?())) are equivalent.
-- The instruction is valid with type ([inn_2] -> [inn_1]).
 
 validation_of_REF.NULL rt
 - The instruction is valid with type ([] -> [rt]).
@@ -2456,7 +2444,7 @@ vishiftop (imm X N) vshif_u0 lane n
 3. Let (SHR sx) be vshif_u0.
 4. Return $ishr($lsize(imm), sx, lane, n).
 
-default valty_u0
+default_ valty_u0
 1. If (valty_u0 is I32), then:
   a. Return (I32.CONST 0).
 2. If (valty_u0 is I64), then:
@@ -3256,7 +3244,7 @@ execution_of_CALL_ADDR a
 5. Assert: Due to validation, func is of the case FUNC.
 6. Let (FUNC x y_0 instr*) be func.
 7. Let (LOCAL t)* be y_0.
-8. Let f be { LOCAL: val^k ++ $default(t)*; MODULE: mm; }.
+8. Let f be { LOCAL: val^k ++ $default_(t)*; MODULE: mm; }.
 9. Let F be the activation of f with arity n.
 10. Enter F with label [FRAME_]:
   a. Let L be the label_n{[]}.
@@ -3621,7 +3609,7 @@ execution_of_CALL_REF x
   g. Let (t_1^n -> t_2^m) be y_0.
   h. Assert: Due to validation, there are at least n values on the top of the stack.
   i. Pop val^n from the stack.
-  j. Let f be { LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }.
+  j. Let f be { LOCAL: ?(val)^n ++ $default_(t)*; MODULE: fi.MODULE; }.
   k. Let F be the activation of f with arity m.
   l. Enter F with label [FRAME_]:
     1) Let L be the label_m{[]}.
@@ -3822,14 +3810,8 @@ validation_of_RELOP nt relop_nt
 - The instruction is valid with type ([nt, nt] -> [I32]).
 
 validation_of_CVTOP nt_1 REINTERPRET nt_2 ?()
-- nt_1 must be different with nt_2.
 - $size(nt_1) must be equal to $size(nt_2).
 - The instruction is valid with type ([nt_2] -> [nt_1]).
-
-validation_of_CVTOP inn_1 CONVERT inn_2 sx?
-- inn_1 must be different with inn_2.
-- (($size(inn_1) > $size(inn_2))) and ((sx? is ?())) are equivalent.
-- The instruction is valid with type ([inn_2] -> [inn_1]).
 
 validation_of_REF.NULL ht
 - Under the context C, ht must be valid.
@@ -3838,13 +3820,14 @@ validation_of_REF.NULL ht
 validation_of_REF.FUNC x
 - |C.FUNC| must be greater than x.
 - Let dt be C.FUNC[x].
-- The instruction is valid with type (epsilon -> [(REF (NULL ?()) dt)]).
+- The instruction is valid with type ([] -> [(REF (NULL ?()) dt)]).
 
 validation_of_REF.I31
 - The instruction is valid with type ([I32] -> [(REF (NULL ?()) I31)]).
 
 validation_of_REF.IS_NULL
-- The instruction is valid with type ([rt] -> [I32]).
+- Under the context C, ht must be valid.
+- The instruction is valid with type ([(REF (NULL ?(())) ht)] -> [I32]).
 
 validation_of_REF.AS_NON_NULL
 - Under the context C, ht must be valid.
@@ -3880,7 +3863,7 @@ validation_of_STRUCT.NEW_DEFAULT x
 - |zt*| must be equal to |mut*|.
 - Yet: TODO: prem_to_intrs 3
 - |zt*| must be equal to |val*|.
-- The instruction is valid with type ($unpack(zt)* -> [(REF (NULL ?()) $idx(x))]).
+- The instruction is valid with type ([] -> [(REF (NULL ?()) $idx(x))]).
 
 validation_of_STRUCT.GET sx? x i
 - |C.TYPE| must be greater than x.
@@ -3905,13 +3888,13 @@ validation_of_ARRAY.NEW x
 validation_of_ARRAY.NEW_DEFAULT x
 - |C.TYPE| must be greater than x.
 - Let (ARRAY (mut, zt)) be $expanddt(C.TYPE[x]).
-- Let ?(val) be $default($unpack(zt)).
+- Let ?(val) be $default_($unpack(zt)).
 - The instruction is valid with type ([I32] -> [(REF (NULL ?()) $idx(x))]).
 
 validation_of_ARRAY.NEW_FIXED x n
 - |C.TYPE| must be greater than x.
 - Let (ARRAY (mut, zt)) be $expanddt(C.TYPE[x]).
-- The instruction is valid with type ([$unpack(zt)] -> [(REF (NULL ?()) $idx(x))]).
+- The instruction is valid with type ($unpack(zt)^n -> [(REF (NULL ?()) $idx(x))]).
 
 validation_of_ARRAY.NEW_ELEM x y
 - |C.TYPE| must be greater than x.
@@ -3924,8 +3907,8 @@ validation_of_ARRAY.NEW_DATA x y
 - |C.TYPE| must be greater than x.
 - |C.DATA| must be greater than y.
 - C.DATA[y] must be equal to OK.
-- Let (ARRAY (mut, t)) be $expanddt(C.TYPE[x]).
-- Let numtype be t.
+- Let (ARRAY (mut, zt)) be $expanddt(C.TYPE[x]).
+- Let numtype be $unpack(zt).
 - The instruction is valid with type ([I32, I32] -> [(REF (NULL ?()) $idx(x))]).
 
 validation_of_ARRAY.GET sx? x
@@ -3965,11 +3948,11 @@ validation_of_ARRAY.INIT_ELEM x y
 - The instruction is valid with type ([(REF (NULL ?(())) $idx(x)), I32, I32, I32] -> []).
 
 validation_of_ARRAY.INIT_DATA x y
-- |C.DATA| must be greater than y.
 - |C.TYPE| must be greater than x.
+- |C.DATA| must be greater than y.
 - C.DATA[y] must be equal to OK.
-- Let numtype be t.
-- $expanddt(C.TYPE[x]) must be equal to (ARRAY ((MUT ?(())), zt)).
+- Let (ARRAY ((MUT ?(())), zt)) be $expanddt(C.TYPE[x]).
+- Let numtype be $unpack(zt).
 - The instruction is valid with type ([(REF (NULL ?(())) $idx(x)), I32, I32, I32] -> []).
 
 validation_of_EXTERN.CONVERT_ANY
@@ -5301,7 +5284,7 @@ inst_reftype mm rt
 1. Let dt* be mm.TYPE.
 2. Return $subst_all_reftype(rt, dt*).
 
-default valty_u0
+default_ valty_u0
 1. If (valty_u0 is I32), then:
   a. Return ?((I32.CONST 0)).
 2. If (valty_u0 is I64), then:
@@ -6310,8 +6293,8 @@ execution_of_STRUCT.NEW_DEFAULT x
 2. Let (STRUCT y_0) be $expanddt($type(x)).
 3. Let (mut, zt)* be y_0.
 4. Assert: Due to validation, (|mut*| is |zt*|).
-5. Assert: Due to validation, $default($unpack(zt)) is defined*.
-6. Let ?(val)* be $default($unpack(zt))*.
+5. Assert: Due to validation, $default_($unpack(zt)) is defined*.
+6. Let ?(val)* be $default_($unpack(zt))*.
 7. Assert: Due to validation, (|val*| is |zt*|).
 8. Push val* to the stack.
 9. Execute (STRUCT.NEW x).
@@ -6346,8 +6329,8 @@ execution_of_ARRAY.NEW_DEFAULT x
 3. Assert: Due to validation, $expanddt($type(x)) is of the case ARRAY.
 4. Let (ARRAY y_0) be $expanddt($type(x)).
 5. Let (mut, zt) be y_0.
-6. Assert: Due to validation, $default($unpack(zt)) is defined.
-7. Let ?(val) be $default($unpack(zt)).
+6. Assert: Due to validation, $default_($unpack(zt)) is defined.
+7. Let ?(val) be $default_($unpack(zt)).
 8. Push val^n to the stack.
 9. Execute (ARRAY.NEW_FIXED x n).
 
@@ -7006,7 +6989,7 @@ execution_of_CALL_REF x
   g. Let (t_1^n -> t_2^m) be y_0.
   h. Assert: Due to validation, there are at least n values on the top of the stack.
   i. Pop val^n from the stack.
-  j. Let f be { LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }.
+  j. Let f be { LOCAL: ?(val)^n ++ $default_(t)*; MODULE: fi.MODULE; }.
   k. Let F be the activation of f with arity m.
   l. Enter F with label [FRAME_]:
     1) Let L be the label_m{[]}.

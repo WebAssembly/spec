@@ -4,12 +4,12 @@
 
 ;; Default values
 
-def $default(valtype) : val  hint(show $default_%)
+def $default_(valtype) : val
 
-def $default(I32) = (CONST I32 0)
-def $default(I64) = (CONST I64 0)
-def $default(F32) = (CONST F32 $fzero(32))
-def $default(F64) = (CONST F64 $fzero(64))
+def $default_(I32) = (CONST I32 0)
+def $default_(I64) = (CONST I64 0)
+def $default_(F32) = (CONST F32 $fzero(32))
+def $default_(F64) = (CONST F64 $fzero(64))
 
 
 ;; Projections

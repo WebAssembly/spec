@@ -695,19 +695,17 @@ rule Instr_ok/relop:
   C |- RELOP nt relop_nt : nt nt -> I32
 
 
-rule Instr_ok/reinterpret:
+;; TODO: move side conditions to syntax
+rule Instr_ok/cvtop-reinterpret:
   C |- CVTOP nt_1 REINTERPRET nt_2 : nt_2 -> nt_1
-  -- if nt_1 =/= nt_2
   -- if $size(nt_1) = $size(nt_2)
 
-rule Instr_ok/convert-i:
+rule Instr_ok/cvtop-convert-i:
   C |- CVTOP inn_1 CONVERT inn_2 sx? : inn_2 -> inn_1
-  -- if inn_1 =/= inn_2
   -- if sx? = eps <=> $size(inn_1) > $size(inn_2)
 
-rule Instr_ok/convert-f:
+rule Instr_ok/cvtop-convert-f:
   C |- CVTOP fnn_1 CONVERT fnn_2 : fnn_2 -> fnn_1
-  -- if fnn_1 =/= fnn_2
 
 
 ;; Reference instructions
@@ -716,16 +714,17 @@ rule Instr_ok/ref.null:
   C |- REF.NULL ht : eps -> (REF NULL ht)
   -- Heaptype_ok: C |- ht : OK
 
-;; TODO: need type index
+;; TODO: check C.refs
 rule Instr_ok/ref.func:
-  C |- REF.FUNC x : epsilon -> (REF dt)
+  C |- REF.FUNC x : eps -> (REF dt)
   -- if C.FUNC[x] = dt
 
 rule Instr_ok/ref.i31:
   C |- REF.I31 : I32 -> (REF I31)
 
 rule Instr_ok/ref.is_null:
-  C |- REF.IS_NULL : rt -> I32
+  C |- REF.IS_NULL : (REF NULL ht) -> I32
+  -- Heaptype_ok: C |- ht : OK
 
 rule Instr_ok/ref.as_non_null:
   C |- REF.AS_NON_NULL : (REF NULL ht) -> (REF ht)
@@ -760,9 +759,9 @@ rule Instr_ok/struct.new:
   -- Expand: C.TYPE[x] ~~ STRUCT (mut zt)*
 
 rule Instr_ok/struct.new_default:
-  C |- STRUCT.NEW_DEFAULT x : $unpack(zt)* -> (REF $idx(x))
+  C |- STRUCT.NEW_DEFAULT x : eps -> (REF $idx(x))
   -- Expand: C.TYPE[x] ~~ STRUCT (mut zt)*
-  -- if ($default($unpack(zt)) = val)*
+  -- (if $default_($unpack(zt)) = val)*
 
 rule Instr_ok/struct.get:
   C |- STRUCT.GET sx? x i : (REF NULL $idx(x)) -> $unpack(zt)
@@ -785,10 +784,10 @@ rule Instr_ok/array.new:
 rule Instr_ok/array.new_default:
   C |- ARRAY.NEW_DEFAULT x : I32 -> (REF $idx(x))
   -- Expand: C.TYPE[x] ~~ ARRAY (mut zt)
-  -- if $default($unpack(zt)) = val
+  -- if $default_($unpack(zt)) = val
 
 rule Instr_ok/array.new_fixed:
-  C |- ARRAY.NEW_FIXED x n : $unpack(zt) -> (REF $idx(x))
+  C |- ARRAY.NEW_FIXED x n : $unpack(zt)^n -> (REF $idx(x))
   -- Expand: C.TYPE[x] ~~ ARRAY (mut zt)
 
 rule Instr_ok/array.new_elem:
@@ -798,8 +797,8 @@ rule Instr_ok/array.new_elem:
 
 rule Instr_ok/array.new_data:
   C |- ARRAY.NEW_DATA x y : I32 I32 -> (REF $idx(x))
-  -- Expand: C.TYPE[x] ~~ ARRAY (mut t)
-  -- if t = numtype \/ t = vectype
+  -- Expand: C.TYPE[x] ~~ ARRAY (mut zt)
+  -- if $unpack(zt) = numtype \/ $unpack(zt) = vectype
   -- if C.DATA[y] = OK
 
 rule Instr_ok/array.get:
@@ -833,7 +832,7 @@ rule Instr_ok/array.init_elem:
 rule Instr_ok/array.init_data:
   C |- ARRAY.INIT_DATA x y : (REF NULL $idx(x)) I32 I32 I32 -> eps
   -- Expand: C.TYPE[x] ~~ ARRAY (MUT zt)
-  -- if t = numtype \/ t = vectype
+  -- if $unpack(zt) = numtype \/ $unpack(zt) = vectype
   -- if C.DATA[y] = OK
 
 
@@ -1131,11 +1130,11 @@ rule Type_ok:
 
 rule Local_ok/set:
   C |- LOCAL t : SET t
-  -- if $default(t) =/= eps
+  -- if $default_(t) =/= eps
 
 rule Local_ok/unset:
   C |- LOCAL t : UNSET t
-  -- if $default(t) = eps
+  -- if $default_(t) = eps
 
 rule Func_ok:
   C |- FUNC x local* expr : C.TYPE[x]

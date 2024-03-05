@@ -35,7 +35,7 @@ execution_of_CALL_REF ?(x)
   b) Let [t_1^n]->[t_2^m] be y_0.
   c) Assert: Due to validation, there are at least n values on the top of the stack.
   d) Pop val^n from the stack.
-  e) Let f be { LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }.
+  e) Let f be { LOCAL: ?(val)^n ++ $default_(t)*; MODULE: fi.MODULE; }.
   f) Let F be the activation of f with arity m.
   g) Enter F with label [FRAME_]:
     1. Let L be the label_m{[]}.
@@ -89,7 +89,7 @@ let call_ref =
           letI (f, strE (Record.empty
             |> Record.add
               ("LOCAL", "frame")
-              (catE (iterE (optE (Some v), ["val"], ListN (n, None)), iterE (callE("default", [t]), ["t"], List)))
+              (catE (iterE (optE (Some v), ["val"], ListN (n, None)), iterE (callE("default_", [t]), ["t"], List)))
             |> Record.add
               ("MODULE", "frame")
               (accE (fi, dotP ("MODULE", "module")))

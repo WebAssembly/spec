@@ -595,7 +595,7 @@ and render_typ env t =
 
 
 and render_typfield env (atom, (t, prems), _hints) =
-  render_fieldname env atom ^ "~\\," ^ render_typ env t ^
+  render_fieldname env atom ^ "~" ^ render_typ env t ^
   if prems = [] then "" else render_conditions env "&&&&" prems
 
 and render_typcase env (_atom, (t, prems), _hints) =
@@ -731,10 +731,10 @@ and render_exp_seq env = function
   | e1::es ->
     let s1 = render_exp env e1 in
     let s2 = render_exp_seq env es in
-    if s1 <> "" && s2 <> "" then s1 ^ "~\\," ^ s2 else s1 ^ s2
+    if s1 <> "" && s2 <> "" then s1 ^ "~" ^ s2 else s1 ^ s2
 
 and render_expfield env (atom, e) =
-  render_fieldname env atom ^ "~\\," ^ render_exp env e
+  render_fieldname env atom ^ "~" ^ render_exp env e
 
 and render_path env p =
   match p.it with
@@ -810,7 +810,7 @@ and render_sym env g =
   | NatG (AtomOp, n) -> "\\mathtt{" ^ Z.to_string n ^ "}"
   | TextG t -> "`" ^ t ^ "'"
   | EpsG -> "\\epsilon"
-  | SeqG gs -> render_syms "~\\," env gs
+  | SeqG gs -> render_syms "~" env gs
   | AltG gs -> render_syms " ~|~ " env gs
   | RangeG (g1, g2) ->
     render_sym env g1 ^ " ~|~ \\dots ~|~ " ^ render_sym env g2

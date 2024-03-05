@@ -266,19 +266,16 @@ rule Instr_ok/relop:
   C |- RELOP nt relop_nt : nt nt -> I32
 
 
-rule Instr_ok/reinterpret:
+rule Instr_ok/cvtop-reinterpret:
   C |- CVTOP nt_1 REINTERPRET nt_2 : nt_2 -> nt_1
-  -- if nt_1 =/= nt_2
   -- if $size(nt_1) = $size(nt_2)
 
-rule Instr_ok/convert-i:
+rule Instr_ok/cvtop-convert-i:
   C |- CVTOP inn_1 CONVERT inn_2 sx? : inn_2 -> inn_1
-  -- if inn_1 =/= inn_2
   -- if sx? = eps <=> $size(inn_1) > $size(inn_2)
 
-rule Instr_ok/convert-f:
+rule Instr_ok/cvtop-convert-f:
   C |- CVTOP fnn_1 CONVERT fnn_2 : fnn_2 -> fnn_1
-  -- if fnn_1 =/= fnn_2
 
 
 ;; Reference instructions
