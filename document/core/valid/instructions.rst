@@ -508,7 +508,7 @@ Aggregate Reference Instructions
      \qquad
      C \vdashreftypematch C.\CELEMS[y] \matchesreftype \X{rt}
    }{
-     C \vdashinstr \ARRAYNEWELEM~x~n : [\I32~\I32] \to [(\REF~x)]
+     C \vdashinstr \ARRAYNEWELEM~x~y : [\I32~\I32] \to [(\REF~x)]
    }
 
 
@@ -539,7 +539,7 @@ Aggregate Reference Instructions
      \qquad
      C.\CDATAS[y] = {\ok}
    }{
-     C \vdashinstr \ARRAYNEWDATA~x~n : [\I32~\I32] \to [(\REF~x)]
+     C \vdashinstr \ARRAYNEWDATA~x~y : [\I32~\I32] \to [(\REF~x)]
    }
 
 
