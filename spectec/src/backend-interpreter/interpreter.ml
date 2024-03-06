@@ -245,26 +245,30 @@ and eval_expr env expr =
     | "label", LabelV _ -> boolV true
     | _ -> boolV false)
   | IsDefinedE e ->
-    (match eval_expr env e with
-    | OptV (Some _) -> boolV true
-    | OptV _ -> boolV false
-    | _ -> error_expr expr "Not an option")
+    e
+    |> eval_expr env
+    |> unwrap_optv
+    |> Option.is_some
+    |> boolV
   | IsCaseOfE (e, (expected_tag, _)) ->
     (match eval_expr env e with
     | CaseV (tag, _) -> boolV (expected_tag = tag)
     | _ -> boolV false)
-  (* TODO : This sohuld be replaced with executing the validation algorithm *)
+  (* TODO : This should be replaced with executing the validation algorithm *)
   | IsValidE e ->
     let valid_lim k = function
       | TupV [ NumV n; NumV m ] -> n <= m && m <= k
-      | _ -> false in
+      | _ -> false
+    in
     (match eval_expr env e with
     (* valid_tabletype *)
     | TupV [ lim; _ ] -> valid_lim (Z.of_int 0xffffffff) lim |> boolV
     (* valid_memtype *)
     | CaseV ("I8", [ lim ]) -> valid_lim (Z.of_int 0x10000) lim |> boolV
     (* valid_other *)
-    | _ -> error_expr expr "TODO: Currently, we are already validating tabletype and memtype")
+    | _ ->
+      error_expr expr "TODO: deferring validation to reference interpreter"
+    )
   | HasTypeE (e, s) ->
 
     (* TODO: This shouldn't be hardcoded *)
