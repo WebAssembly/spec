@@ -347,7 +347,7 @@ INSTRUCTIONS = [
     Instruction(r'\BRONCASTFAIL~t_1~t_2', r'\hex{FB}~\hex{19}', r'[t_1] \to [t_2]', r'valid-br_on_cast_fail', r'exec-br_on_cast_fail'),
     Instruction(r'\ANYCONVERTEXTERN', r'\hex{FB}~\hex{1A}', r'[(\REF~\NULL~\EXTERN)] \to [(\REF~\NULL~\ANY)]', r'valid-any.convert_extern', r'exec-any.convert_extern'),
     Instruction(r'\EXTERNCONVERTANY', r'\hex{FB}~\hex{1B}', r'[(\REF~\NULL~\ANY)] \to [(\REF~\NULL~\EXTERN)]', r'valid-extern.convert_any', r'exec-extern.convert_any'),
-    Instruction(r'\REFI31', r'\hex{FB}~\hex{1C}', r'[\I32] \to [\I31REF]', r'valid-ref.i31', r'exec-ref.i31'),
+    Instruction(r'\REFI31', r'\hex{FB}~\hex{1C}', r'[\I32] \to [(\REF~\I31)]', r'valid-ref.i31', r'exec-ref.i31'),
     Instruction(r'\I31GETS', r'\hex{FB}~\hex{1D}', r'[\I31REF] \to [\I32]', r'valid-i31.get_sx', r'exec-i31.get_sx'),
     Instruction(r'\I31GETU', r'\hex{FB}~\hex{1E}', r'[\I31REF] \to [\I32]', r'valid-i31.get_sx', r'exec-i31.get_sx'),
     Instruction(None, r'\hex{FB}~\hex{1E} \dots'),
