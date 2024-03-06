@@ -30,13 +30,13 @@ Two degrees of polymorphism can be distinguished:
   That is the case for all :ref:`parametric instructions <valid-instr-parametric>` like ${:DROP} and ${:SELECT}.
 
 * *stack-polymorphic*:
-  the entire (or most of the) :ref:`instruction type <syntax-instrtype>` ${finstrtype: t_1* -> t_2*} of the instruction is unconstrained.
+  the entire (or most of the) :ref:`instruction type <syntax-instrtype>` ${instrtype: t_1* -> t_2*} of the instruction is unconstrained.
   That is the case for all :ref:`control instructions <valid-instr-control>` that perform an *unconditional control transfer*, such as ${:UNREACHABLE}, ${:BR}, or ${:RETURN}.
 
 In both cases, the unconstrained types or type sequences can be chosen arbitrarily, as long as they meet the constraints imposed for the surrounding parts of the program.
 
 .. note::
-   For example, the ${:SELECT} instruction is valid with type ${finstrtype: t t I32 -> t}, for any possible :ref:`number type <syntax-numtype>` ${:t}.
+   For example, the ${:SELECT} instruction is valid with type ${instrtype: t t I32 -> t}, for any possible :ref:`number type <syntax-numtype>` ${:t}.
    Consequently, both instruction sequences
 
    $${: (CONST I32 1) (CONST I32 2) (CONST I32 3) SELECT}
@@ -48,12 +48,12 @@ In both cases, the unconstrained types or type sequences can be chosen arbitrari
    are valid, with ${:t} in the typing of ${:SELECT} being instantiated to ${:I32} or ${:F64}, respectively.
 
    The ${:UNREACHABLE} instruction is stack-polymorphic,
-   and hence valid with type ${finstrtype: t_1* -> t_2*} for any possible sequences of value types ${:t_1*} and ${:t_2*}.
+   and hence valid with type ${instrtype: t_1* -> t_2*} for any possible sequences of value types ${:t_1*} and ${:t_2*}.
    Consequently,
 
    $${: UNREACHABLE $($(BINOP I32 ADD))}
 
-   is valid by assuming type ${finstrtype: eps -> I32} for the ${:UNREACHABLE} instruction.
+   is valid by assuming type ${instrtype: eps -> I32} for the ${:UNREACHABLE} instruction.
    In contrast,
 
    $${: UNREACHABLE (CONST I64 0) $($(BINOP I32 ADD))}
@@ -1935,8 +1935,8 @@ $${rule: Instrs_ok/sub Instrs_ok/frame}
       (\I32.\CONST~1)~(\I32.\CONST~2)~\I32.\ADD
 
    To type this sequence, its subsequence ${:(CONST I32 2) $($(BINOP I32 ADD))} needs to be valid with an intermediate type.
-   But the direct type of ${:(CONST I32 2)} is ${finstrtype: eps -> I32}, not matching the two inputs expected by ${:BINOP I32 ADD}.
-   The subsumption rule allows to weaken the type of ${:(CONST I32 2)} to the supertype ${finstrtype: I32 -> I32 I32}, such that it can be composed with ${:ADD I32} and yields the intermediate type ${finstrtype: I32 -> I32 I32} for the subsequence. That can in turn be composed with the first constant.
+   But the direct type of ${:(CONST I32 2)} is ${instrtype: eps -> I32}, not matching the two inputs expected by ${:BINOP I32 ADD}.
+   The subsumption rule allows to weaken the type of ${:(CONST I32 2)} to the supertype ${instrtype: I32 -> I32 I32}, such that it can be composed with ${:ADD I32} and yields the intermediate type ${instrtype: I32 -> I32 I32} for the subsequence. That can in turn be composed with the first constant.
 
    Furthermore, subsumption allows to drop init variables ${:x*} from the instruction type in a context where they are not needed, for example, at the end of the body of a :ref:`block <valid-block>`.
 
