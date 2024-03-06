@@ -9,51 +9,8 @@ open Util.Source
 type nat = Z.t
 type text = string
 type id = string phrase
-
-type atom = (atom', string) note_phrase
-and atom' =
-  | Atom of string               (* atomid *)
-  | Infinity                     (* infinity *)
-  | Bot                          (* `_|_` *)
-  | Top                          (* `^|^` *)
-  | Dot                          (* `.` *)
-  | Dot2                         (* `..` *)
-  | Dot3                         (* `...` *)
-  | Semicolon                    (* `;` *)
-  | Backslash                    (* `\` *)
-  | In                           (* `<-` *)
-  | Arrow                        (* `->` *)
-  | Arrow2                       (* `=>` *)
-  | Colon                        (* `:` *)
-  | Sub                          (* `<:` *)
-  | Sup                          (* `:>` *)
-  | Assign                       (* `:=` *)
-  | Equal                        (* ``=` *)
-  | Equiv                        (* `==` *)
-  | Approx                       (* `~~` *)
-  | SqArrow                      (* `~>` *)
-  | SqArrowStar                  (* `~>*` *)
-  | Prec                         (* `<<` *)
-  | Succ                         (* `>>` *)
-  | Turnstile                    (* `|-` *)
-  | Tilesturn                    (* `-|` *)
-  | Quest                        (* `?` *)
-  | Plus                         (* `+` *)
-  | Star                         (* `*` *)
-  | Comma                        (* `,` *)
-  | Comp                         (* ``++` *)
-  | Bar                          (* `|` *)
-  | BigComp                      (* `(++)` *)
-  | BigAnd                       (* `(/\)` *)
-  | BigOr                        (* `(\/)` *)
-  | LParen                       (* `(` *)
-  | LBrack                       (* `[` *)
-  | LBrace                       (* `{` *)
-  | RParen                       (* `)` *)
-  | RBrack                       (* `]` *)
-  | RBrace                       (* `}` *)
-
-type mixop = atom list list      (* mixfix name *)
+type atom = Atom.atom
+type mixop = Atom.mixop
 
 
 (* Iteration *)

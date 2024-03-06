@@ -47,8 +47,8 @@ let al_to_el_binop = function
    *)
 let al_to_el_infixop op =
   let elatom, typ = match op with
-  | "->" -> Some El.Ast.Arrow, ""
-  | "X" -> Some (El.Ast.Atom "X"), "shape"
+  | "->" -> Some Il.Atom.Arrow, ""
+  | "X" -> Some (Il.Atom.Atom "X"), "shape"
   | _ -> None, ""
   in
   Option.map
@@ -56,7 +56,7 @@ let al_to_el_infixop op =
     elatom
 
 let al_to_el_kwd (id, typ) = 
-  let elatom = El.Ast.Atom id in
+  let elatom = Il.Atom.Atom id in
   elatom $$ no_region % (ref typ)
 
 let rec al_to_el_iter iter = match iter with

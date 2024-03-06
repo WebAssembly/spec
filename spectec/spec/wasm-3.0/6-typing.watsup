@@ -9,7 +9,10 @@ syntax localtype hint(desc "local type") =
   init valtype
 
 syntax instrtype hint(desc "instruction type") =
-  resulttype -> localidx* resulttype
+  resulttype ->_ localidx* resulttype  hint(show %0 `->_ %2 %3)
+
+syntax finstrtype =
+  resulttype -> resulttype  ;; TODO: HACK, shouldn't be needed
 
 
 syntax context hint(desc "context") =
@@ -98,7 +101,7 @@ rule Resulttype_ok:
   -- (Valtype_ok: C |- t : OK)*
 
 rule Instrtype_ok:
-  C |- t_1* -> x* t_2* : OK
+  C |- t_1* ->_(x*) t_2* : OK
   -- Resulttype_ok: C |- t_1* : OK
   -- Resulttype_ok: C |- t_2* : OK
   -- (if C.LOCAL[x] = lct)*
@@ -381,7 +384,7 @@ rule Resulttype_sub:
   -- (Valtype_sub: C |- t_1 <: t_2)*
 
 rule Instrtype_sub:
-  C |- t_11* ->(x_1*) t_12* <: t_21* ->(x_2*) t_22*
+  C |- t_11* ->_(x_1*) t_12* <: t_21* ->_(x_2*) t_22*
   -- Resulttype_sub: C |- t_21* <: t_11*
   -- Resulttype_sub: C |- t_12* <: t_22*
   -- if x* = $setminus(x_2*, x_1*)
@@ -502,8 +505,6 @@ rule Externtype_sub/mem:
 ;; Instructions
 ;;
 
-syntax finstrtype = resulttype -> resulttype  ;; TODO: HACK, shouldn't be needed
-
 relation Instr_ok: context |- instr : finstrtype    hint(show "T")
 relation Instrf_ok: context |- instr : instrtype    hint(show "T")
 relation Instrs_ok: context |- instr* : instrtype   hint(show "T-instr*")
@@ -514,24 +515,24 @@ relation Expr_ok: context |- expr : resulttype      hint(show "T-expr")
 
 rule Expr_ok:
   C |- instr* : t*
-  -- Instrs_ok: C |- instr* : eps ->(eps) t*
+  -- Instrs_ok: C |- instr* : eps ->_(eps) t*
 
 
 ;; Instruction sequences
 
 rule Instrf_ok/instr:
-  C |- instr : t_1* ->(eps) t_2*
+  C |- instr : t_1* ->_(eps) t_2*
   -- Instr_ok: C |- instr : t_1* -> t_2*
 
 rule Instrs_ok/empty:
-  C |- eps : eps ->(eps) eps
+  C |- eps : eps ->_(eps) eps
 
 rule Instrs_ok/seq:
-  C |- instr_1 instr_2* : t_1* ->(x_1* x_2*) t_3*
+  C |- instr_1 instr_2* : t_1* ->_(x_1* x_2*) t_3*
   -- if (C.LOCAL[x_1] = init t)*
   -- if C' = $with_locals(C, x_1*, (SET t)*)
-  -- Instrf_ok: C |- instr_1 : t_1* ->(x_1*) t_2*
-  -- Instrs_ok: C' |- instr_2* : t_2* ->(x_2*) t_3*
+  -- Instrf_ok: C |- instr_1 : t_1* ->_(x_1*) t_2*
+  -- Instrs_ok: C' |- instr_2* : t_2* ->_(x_2*) t_3*
 
 rule Instrs_ok/sub:
   C |- instr* : it'
@@ -539,8 +540,8 @@ rule Instrs_ok/sub:
   -- Instrtype_sub: C |- it <: it'
 
 rule Instrs_ok/frame:
-  C |- instr* : t* t_1* ->(x*) (t* t_2*)
-  -- Instrs_ok: C |- instr* : t_1* ->(x*) t_2*
+  C |- instr* : t* t_1* ->_(x*) (t* t_2*)
+  -- Instrs_ok: C |- instr* : t_1* ->_(x*) t_2*
 
 
 ;; Polymorphic instructions
@@ -580,18 +581,18 @@ rule Blocktype_ok/typeidx:
 rule Instr_ok/block:
   C |- BLOCK bt instr* : t_1* -> t_2*
   -- Blocktype_ok: C |- bt : t_1* -> t_2*
-  -- Instrs_ok: C, LABEL (t_2*) |- instr* : t_1* ->(x*) t_2*
+  -- Instrs_ok: C, LABEL (t_2*) |- instr* : t_1* ->_(x*) t_2*
 
 rule Instr_ok/loop:
   C |- LOOP bt instr* : t_1* -> t_2*
   -- Blocktype_ok: C |- bt : t_1* -> t_2*
-  -- Instrs_ok: C, LABEL (t_1*) |- instr* : t_1* ->(x*) t_2*
+  -- Instrs_ok: C, LABEL (t_1*) |- instr* : t_1* ->_(x*) t_2*
 
 rule Instr_ok/if:
   C |- IF bt instr_1* ELSE instr_2* : t_1* I32 -> t_2*
   -- Blocktype_ok: C |- bt : t_1* -> t_2*
-  -- Instrs_ok: C, LABEL (t_2*) |- instr_1* : t_1* ->(x_1*) t_2*
-  -- Instrs_ok: C, LABEL (t_2*) |- instr_2* : t_1* ->(x_2*) t_2*
+  -- Instrs_ok: C, LABEL (t_2*) |- instr_1* : t_1* ->_(x_1*) t_2*
+  -- Instrs_ok: C, LABEL (t_2*) |- instr_2* : t_1* ->_(x_2*) t_2*
 
 
 ;; Branch instructions
@@ -923,11 +924,11 @@ rule Instr_ok/local.get:
   -- if C.LOCAL[x] = init t
 
 rule Instrf_ok/local.set:
-  C |- LOCAL.SET x : t ->(x) eps
+  C |- LOCAL.SET x : t ->_(x) eps
   -- if C.LOCAL[x] = init t
 
 rule Instrf_ok/local.tee:
-  C |- LOCAL.TEE x : t ->(x) t
+  C |- LOCAL.TEE x : t ->_(x) t
   -- if C.LOCAL[x] = init t
 
 

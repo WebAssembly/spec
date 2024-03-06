@@ -70,21 +70,27 @@ let env_hints name map id hints =
     map := Map.add id (hintexp::exps) !map
   ) hints
 
+let env_atom map atom id1 hints =
+  let id = El.Print.string_of_atom atom in
+  env_hints "show" map (typed_id id id1) hints
+
 let env_typfield env id1 = function
-  | Elem ({it = Atom id; _}, _, hints) ->
-    env_hints "show" env.show_field (typed_id id id1) hints
+  | Elem (atom, _, hints) -> env_atom env.show_field atom id1 hints
   | _ -> ()
 
 let env_typcase env id1 = function
-  | Elem ({it = Atom id; _}, _, hints) ->
-    env_hints "show" env.show_case (typed_id id id1) hints
+  | Elem (atom, _, hints) -> env_atom env.show_case atom id1 hints
   | _ -> ()
 
-let env_typcon env id1 = function
-  | (({it = SeqT ts; _}, _prems), hints) ->
+let env_typcon env id1 ((t, _prems), hints) =
+  match t.it with
+  | AtomT atom
+  | InfixT (_, atom, _)
+  | BrackT (atom, _, _) ->
+    env_atom env.show_case atom id1 hints
+  | SeqT ts ->
     (match List.find_opt is_atom_typ ts with
-    | Some {it = AtomT {it = Atom id; _}; _} ->
-      env_hints "show" env.show_case (typed_id id id1) hints
+    | Some {it = AtomT atom; _} -> env_atom env.show_case atom id1 hints
     | _ -> ()
     )
   | _ -> ()
@@ -194,6 +200,12 @@ let as_paren_exp e =
 let as_tup_exp e =
   match e.it with
   | TupE es -> es
+  | ParenE (e1, _) -> [e1]
+  | _ -> [e]
+
+let as_seq_exp e =
+  match e.it with
+  | SeqE es -> es
   | _ -> [e]
 
 let rec fuse_exp e deep =
@@ -284,7 +296,10 @@ and expand_exp args i e =
   | HoleE (`Num j) ->
     (match List.nth_opt args j with
     | None -> raise Arity_mismatch
-    | Some arg -> i := j + 1; CallE ("" $ e.at, [arg])
+    | Some arg -> i := j + 1;
+      match !(arg.it) with
+      | ExpA eJ -> eJ.it
+      | _ -> CallE ("" $ e.at, [arg])
     )
   | HoleE `Next -> (expand_exp args i (HoleE (`Num !i) $ e.at)).it
   | HoleE `Rest ->
@@ -323,6 +338,19 @@ and expand_arg args i a =
   ) $ a.at
 
 
+let ends_sub id = id <> "" && id.[String.length id - 1] = '_'
+let chop_sub id = String.sub id 0 (String.length id - 1)
+
+let ends_sub_atom atom = ends_sub (Il.Atom.string_of_atom atom)
+let chop_sub_atom atom =
+  (match atom.it with
+  | Il.Atom.Atom id -> Il.Atom.Atom (chop_sub id)
+  | Il.Atom.ArrowSub -> Il.Atom.Arrow
+  | Il.Atom.Arrow2Sub -> Il.Atom.Arrow2
+  | _ -> assert false
+  ) $$ atom.at % atom.note
+
+
 (* Attempt to show-expand the application `id(args)`, using the hints `show`,
  * and the function `render` for rendering the resulting expression.
  * If no hint can be found, fall back to the default of rendering `f`.
@@ -332,8 +360,7 @@ let render_expand render env (show : exp list Map.t ref) id args f =
   | None -> f ()
   | Some showexps ->
     let rec attempt = function
-      | [] ->
-      f ()
+      | [] -> f ()
       | showexp::showexps' ->
         try
           let e = expand_exp args (ref 1) showexp in
@@ -346,12 +373,9 @@ let render_expand render env (show : exp list Map.t ref) id args f =
            * e.g., using CONST for both instruction and relation. *)
     in attempt showexps
 
-let ends_sub id = id <> "" && id.[String.length id - 1] = '_'
-let chop_sub id = String.sub id 0 (String.length id - 1)
-
 (* Same as render_expand, but with rendered id funnelled as argument 0 *)
 let render_expand_id render_id render_exp env show id args f =
-  let atom = Atom (" " ^ render_id env id) $$ id.at % (ref "") in
+  let atom = Il.Atom.Atom (" " ^ render_id env id) $$ id.at % (ref "") in
   let arg0 = arg_of_exp (AtomE atom $ id.at) in
   render_expand render_exp env show id (arg0::args) f
 
@@ -386,9 +410,9 @@ let rec chop_tick id =
 let rec chop_sub_exp e =
   match e.it with
   | VarE (id, []) when ends_sub id.it -> Some (VarE (chop_sub id.it $ id.at, []) $ e.at)
-  | AtomE {it = Atom "_"; _} -> None
-  | AtomE {it = Atom id; at; note} when ends_sub id ->
-    Some (AtomE {it = Atom (chop_sub id); at; note} $ e.at)
+  | AtomE atom when atom.it = Il.Atom.Atom "_" -> None
+  | AtomE atom when ends_sub_atom atom ->
+    Some (AtomE (chop_sub_atom atom) $ e.at)
   | FuseE (e1, e2) ->
     (match chop_sub_exp e2 with
     | Some e2' -> Some (FuseE (e1, e2') $ e.at)
@@ -480,6 +504,7 @@ let render_atom env atom =
         ("cannot infer type of notation `" ^ El.Print.string_of_atom atom ^ "`")
   in
   let s =
+    let open Il.Atom in
     match atom.it with
     | Atom id when id.[0] = '_' && id <> "_" -> ""
     (* HACK: inject literal, already rendered stuff *)
@@ -494,8 +519,8 @@ let render_atom env atom =
     | Semicolon -> if macros then "\\semicolon" else ";"
     | Backslash -> "\\setminus"
     | In -> "\\in"
-    | Arrow -> "\\rightarrow"
-    | Arrow2 -> "\\Rightarrow"
+    | Arrow | ArrowSub -> "\\rightarrow"
+    | Arrow2 | Arrow2Sub -> "\\Rightarrow"
     | Colon -> if macros then "\\colon" else ":"
     | Sub -> "\\leq"
     | Sup -> "\\geq"
@@ -578,9 +603,9 @@ and render_typ env t =
   *)
   match t.it with
   | StrT tfs ->
-    "\\{\\; " ^
+    "\\{ " ^
     "\\begin{array}[t]{@{}l@{}l@{}}\n" ^
-    concat_map_nl ",\\; " "\\\\\n  " (render_typfield env) tfs ^ " \\;\\}" ^
+    concat_map_nl ",\\; " "\\\\\n  " (render_typfield env) tfs ^ " \\}" ^
     "\\end{array}"
   | CaseT (dots1, ts, tcases, dots2) ->
     altern_map_nl " ~|~ " " \\\\ &&|&\n" Fun.id
@@ -628,7 +653,8 @@ and render_exp env e =
   match e.it with
   | VarE (id, args) ->
     render_apply render_varid render_exp env env.show_typ id args
-  | BoolE b -> render_atom env (Atom (string_of_bool b) $$ e.at % ref "bool")
+  | BoolE b ->
+    render_atom env (Il.Atom.Atom (string_of_bool b) $$ e.at % ref "bool")
   | NatE (DecOp, n) -> Z.to_string n
   | NatE (HexOp, n) ->
     let fmt =
@@ -657,14 +683,14 @@ and render_exp env e =
       (El.Print.string_of_atom atom $ e.at) [arg_of_exp e]
       (fun () -> render_atom env atom)
   | SeqE es ->
-    (match List.find_opt (is_atom_exp_with_show env) es with
-    | Some {it = AtomE atom; _} ->
-      let args = List.map arg_of_exp es in
-      render_expand render_exp env env.show_case
-        (El.Print.string_of_atom atom $ atom.at) args
-        (fun () -> render_exp_seq env es)
-    | _ -> render_exp_seq env es
-    )
+    let id =
+      match List.find_opt (is_atom_exp_with_show env) es with
+      | Some {it = AtomE atom; _} -> El.Print.string_of_atom atom $ atom.at
+      | _ -> "" $ e.at
+    in
+    let args = List.map arg_of_exp es in
+    render_expand render_exp env env.show_case id args
+      (fun () -> render_exp_seq env es)
   | IdxE (e1, e2) -> render_exp env e1 ^ "{}[" ^ render_exp env e2 ^ "]"
   | SliceE (e1, e2, e3) ->
     render_exp env e1 ^
@@ -690,12 +716,24 @@ and render_exp env e =
     render_exp env e1
   | ParenE (e1, _) -> "(" ^ render_exp env e1 ^ ")"
   | TupE es -> "(" ^ render_exps ",\\, " env es ^ ")"
-  | InfixE ({it = SeqE []; _}, atom, e2) ->
-    "{" ^ space (render_atom env) atom ^ "}\\;" ^ render_exp env e2
   | InfixE (e1, atom, e2) ->
-    render_exp env e1 ^ space (render_atom env) atom ^ render_exp env e2
+    let id = El.Print.string_of_atom atom $ atom.at in
+    let e = AtomE atom $ atom.at in
+    let args = List.map arg_of_exp (as_seq_exp e1 @ [e] @ as_seq_exp e2) in
+    render_expand render_exp env env.show_case id args
+      (fun () ->
+        (match e1.it with
+        | SeqE [] -> "{" ^ space (render_atom env) atom ^ "}\\;"
+        | _ -> render_exp env e1 ^ space (render_atom env) atom
+        ) ^ render_exp env e2
+      )
   | BrackE (l, e1, r) ->
-    render_atom env l ^ render_exp env e1 ^ render_atom env r
+    let id = El.Print.string_of_atom l $ l.at in
+    let el = AtomE l $ l.at in
+    let er = AtomE r $ r.at in
+    let args = List.map arg_of_exp ([el] @ as_seq_exp e1 @ [er]) in
+    render_expand render_exp env env.show_case id args
+      (fun () -> render_atom env l ^ render_exp env e1 ^ render_atom env r)
   | CallE (id, [arg]) when id.it = "" -> (* expansion result only *)
     render_arg env arg
   | CallE (id, args) when id.it = "" ->  (* expansion result only *)

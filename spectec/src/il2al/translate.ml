@@ -7,7 +7,7 @@ open Backend_interpreter.Manual
 open Util
 open Source
 
-module Il = struct include Il include Ast include Print end
+module Il = struct include Il include Ast include Print include Atom end
 
 
 (* Helpers *)
@@ -216,7 +216,7 @@ and translate_exp exp =
     | [ []; []; [] ], [ e1; e2 ] ->
       tupE [ translate_exp e1; translate_exp e2 ] ~at:at
     | [ []; [{it = Il.Semicolon; _}]; [] ], [ e1; e2 ] -> tupE [ translate_exp e1; translate_exp e2 ] ~at:at
-    | [ []; [{it = Il.Arrow; _}]; []; [] ], [ e1; e2; e3 ] -> infixE (translate_exp e1, "->", catE (translate_exp e2, translate_exp e3)) ~at:at
+    | [ []; [{it = (Il.Arrow | Il.ArrowSub); _}]; []; [] ], [ e1; e2; e3 ] -> infixE (translate_exp e1, "->", catE (translate_exp e2, translate_exp e3)) ~at:at
     | [ []; [ atom ]; [] ], [ e1; e2 ] ->
       infixE (translate_exp e1, Il.Print.string_of_atom atom, translate_exp e2) ~at:at
     | _ -> yetE (Il.Print.string_of_exp exp) ~at:at)
@@ -830,7 +830,7 @@ let rec split_lhs_stack' ?(note : Il.typ option) name stack ctxs instrs =
   match stack with
   | [] ->
     let typ = Option.get note in
-    let tag = [[Il.Atom target $$ typ.at % "instr"]] in
+    let tag = [[Il.Atom target $$ typ.at % ref "instr"]] in
     let winstr = Il.CaseE (tag, Il.TupE [] |> wrap top) |> wrap typ in
     ctxs @ [ ([], instrs), None ], winstr
   | hd :: tl ->

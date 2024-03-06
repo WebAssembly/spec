@@ -5,7 +5,7 @@ Instructions
 ------------
 
 :ref:`Instructions <syntax-instr>` are classified by :ref:`instruction types <syntax-instrtype>` that describe how they manipulate the :ref:`operand stack <stack>` and initialize :ref:`locals <syntax-local>`:
-A type ${instrtype: t_1* ->x* t_2*} describes the required input stack with argument values of types ${:t_1*}` that an instruction pops off
+A type ${instrtype: t_1* ->_(x*) t_2*} describes the required input stack with argument values of types ${:t_1*}` that an instruction pops off
 and the provided output stack with result values of types ${:t_2*} that it pushes back.
 Moreover, it enumerates the :ref:`indices <syntax-localidx>` ${:x*} of locals that have been set by the instruction.
 In most cases, this is empty.
@@ -13,10 +13,10 @@ In most cases, this is empty.
 .. note::
    For example, the instruction ${:BINOP I32 ADD} has type ${: I32 I32 -> I32},
    consuming two ${:I32} values and producing one.
-   The instruction ${:LOCAL.SET x} has type ${instrtype: t ->x eps}, provided ${:t} is the type declared for the local ${:x}.
+   The instruction ${:LOCAL.SET x} has type ${instrtype: t ->_(x) eps}, provided ${:t} is the type declared for the local ${:x}.
 
 Typing extends to :ref:`instruction sequences <valid-instr-seq>` ${:instr*}.
-Such a sequence has an instruction type ${instrtype: t_1* ->x* t_2*} if the accumulative effect of executing the instructions is consuming values of types ${:t_1*} off the operand stack, pushing new values of types ${:t_2*}, and setting all locals ${:x*}.
+Such a sequence has an instruction type ${instrtype: t_1* ->_(x*) t_2*} if the accumulative effect of executing the instructions is consuming values of types ${:t_1*} off the operand stack, pushing new values of types ${:t_2*}, and setting all locals ${:x*}.
 
 .. _polymorphism:
 

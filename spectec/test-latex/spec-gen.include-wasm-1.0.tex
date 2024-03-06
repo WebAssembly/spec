@@ -102,7 +102,7 @@ $$
 (0 + {\mathit{m}} \cdot {2^{{-{\mathit{M}}}}}) \cdot {2^{{\mathit{n}}}} &\quad
   \mbox{if}~{\mathit{m}} < {2^{{\mathit{M}}}} \land 2 - {2^{{\mathit{E}} - 1}} = {\mathit{n}} \\ &&|&
 \infty \\ &&|&
-{\mathsf{nan}}{({\mathit{m}})} &\quad
+{\mathsf{nan}}{{\mathit{m}}} &\quad
   \mbox{if}~1 \leq {\mathit{m}} < {2^{{\mathit{M}}}} \\
 & {\mathit{f{\scriptstyle32}}} &::=& {{\mathit{f}}}{32} \\
 & {\mathit{f{\scriptstyle64}}} &::=& {{\mathit{f}}}{64} \\
@@ -230,8 +230,8 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-\mbox{(memory operator)} & {\mathit{memop}} &::=& \{\; \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{align}~{\mathit{u{\scriptstyle32}}},\; \mathsf{offset}~{\mathit{u{\scriptstyle32}}} \;\}\end{array} \\
+\mbox{(memory operator)} & {\mathit{memop}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
+\mathsf{align}~{\mathit{u{\scriptstyle32}}},\; \mathsf{offset}~{\mathit{u{\scriptstyle32}}} \}\end{array} \\
 \end{array}
 $$
 
@@ -531,29 +531,29 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-\mbox{(function instance)} & {\mathit{funcinst}} &::=& \{\; \begin{array}[t]{@{}l@{}l@{}}
+\mbox{(function instance)} & {\mathit{funcinst}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
 \mathsf{type}~{\mathit{functype}},\; \\
   \mathsf{module}~{\mathit{moduleinst}},\; \\
-  \mathsf{code}~{\mathit{func}} \;\}\end{array} \\
-\mbox{(global instance)} & {\mathit{globalinst}} &::=& \{\; \begin{array}[t]{@{}l@{}l@{}}
+  \mathsf{code}~{\mathit{func}} \}\end{array} \\
+\mbox{(global instance)} & {\mathit{globalinst}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
 \mathsf{type}~{\mathit{globaltype}},\; \\
-  \mathsf{value}~{\mathit{val}} \;\}\end{array} \\
-\mbox{(table instance)} & {\mathit{tableinst}} &::=& \{\; \begin{array}[t]{@{}l@{}l@{}}
+  \mathsf{value}~{\mathit{val}} \}\end{array} \\
+\mbox{(table instance)} & {\mathit{tableinst}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
 \mathsf{type}~{\mathit{tabletype}},\; \\
-  \mathsf{elem}~{({{\mathit{funcaddr}}^?})^\ast} \;\}\end{array} \\
-\mbox{(memory instance)} & {\mathit{meminst}} &::=& \{\; \begin{array}[t]{@{}l@{}l@{}}
+  \mathsf{elem}~{({{\mathit{funcaddr}}^?})^\ast} \}\end{array} \\
+\mbox{(memory instance)} & {\mathit{meminst}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
 \mathsf{type}~{\mathit{memtype}},\; \\
-  \mathsf{data}~{{\mathit{byte}}^\ast} \;\}\end{array} \\
-\mbox{(export instance)} & {\mathit{exportinst}} &::=& \{\; \begin{array}[t]{@{}l@{}l@{}}
+  \mathsf{data}~{{\mathit{byte}}^\ast} \}\end{array} \\
+\mbox{(export instance)} & {\mathit{exportinst}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
 \mathsf{name}~{\mathit{name}},\; \\
-  \mathsf{value}~{\mathit{externval}} \;\}\end{array} \\
-\mbox{(module instance)} & {\mathit{moduleinst}} &::=& \{\; \begin{array}[t]{@{}l@{}l@{}}
+  \mathsf{value}~{\mathit{externval}} \}\end{array} \\
+\mbox{(module instance)} & {\mathit{moduleinst}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
 \mathsf{type}~{{\mathit{functype}}^\ast},\; \\
   \mathsf{func}~{{\mathit{funcaddr}}^\ast},\; \\
   \mathsf{global}~{{\mathit{globaladdr}}^\ast},\; \\
   \mathsf{table}~{{\mathit{tableaddr}}^\ast},\; \\
   \mathsf{mem}~{{\mathit{memaddr}}^\ast},\; \\
-  \mathsf{export}~{{\mathit{exportinst}}^\ast} \;\}\end{array} \\
+  \mathsf{export}~{{\mathit{exportinst}}^\ast} \}\end{array} \\
 \end{array}
 $$
 
@@ -561,14 +561,14 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-\mbox{(store)} & {\mathit{store}} &::=& \{\; \begin{array}[t]{@{}l@{}l@{}}
+\mbox{(store)} & {\mathit{store}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
 \mathsf{func}~{{\mathit{funcinst}}^\ast},\; \\
   \mathsf{global}~{{\mathit{globalinst}}^\ast},\; \\
   \mathsf{table}~{{\mathit{tableinst}}^\ast},\; \\
-  \mathsf{mem}~{{\mathit{meminst}}^\ast} \;\}\end{array} \\
-\mbox{(frame)} & {\mathit{frame}} &::=& \{\; \begin{array}[t]{@{}l@{}l@{}}
+  \mathsf{mem}~{{\mathit{meminst}}^\ast} \}\end{array} \\
+\mbox{(frame)} & {\mathit{frame}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
 \mathsf{local}~{{\mathit{val}}^\ast},\; \\
-  \mathsf{module}~{\mathit{moduleinst}} \;\}\end{array} \\
+  \mathsf{module}~{\mathit{moduleinst}} \}\end{array} \\
 \mbox{(state)} & {\mathit{state}} &::=& {\mathit{store}} ; {\mathit{frame}} \\
 \mbox{(configuration)} & {\mathit{config}} &::=& {\mathit{state}} ; {{\mathit{instr}}^\ast} \\
 \end{array}
@@ -794,9 +794,9 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-\mbox{(context)} & {\mathit{context}} &::=& \{\; \begin{array}[t]{@{}l@{}l@{}}
+\mbox{(context)} & {\mathit{context}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
 \mathsf{type}~{{\mathit{functype}}^\ast},\; \mathsf{func}~{{\mathit{functype}}^\ast},\; \mathsf{global}~{{\mathit{globaltype}}^\ast},\; \mathsf{table}~{{\mathit{tabletype}}^\ast},\; \mathsf{mem}~{{\mathit{memtype}}^\ast},\; \\
-  \mathsf{local}~{{\mathit{valtype}}^\ast},\; \mathsf{label}~{{\mathit{resulttype}}^\ast},\; \mathsf{return}~{{\mathit{resulttype}}^?} \;\}\end{array} \\
+  \mathsf{local}~{{\mathit{valtype}}^\ast},\; \mathsf{label}~{{\mathit{resulttype}}^\ast},\; \mathsf{return}~{{\mathit{resulttype}}^?} \}\end{array} \\
 \end{array}
 $$
 
@@ -2258,17 +2258,17 @@ $$
 $$
 \begin{array}{@{}l@{}rrlll@{}l@{}}
 & {\mathtt{byte}} &::=& {\mathit{b}}{:}\mathtt{0x00} ~|~ \dots ~|~ {\mathit{b}}{:}\mathtt{0xFF} &\Rightarrow& {\mathit{b}} \\
-& {{\mathtt{u}}}{{\mathit{N}}} &::=& {\mathit{n}}{:}{\mathtt{byte}} &\Rightarrow& {\mathit{n}} &\quad
+& {{\mathtt{u}}}{{\mathit{N}}{:}{\mathtt{N}}} &::=& {\mathit{n}}{:}{\mathtt{byte}} &\Rightarrow& {\mathit{n}} &\quad
   \mbox{if}~{\mathit{n}} < {2^{7}} \land {\mathit{n}} < {2^{{\mathit{N}}}} \\ &&|&
 {\mathit{n}}{:}{\mathtt{byte}}~{\mathit{m}}{:}{{\mathtt{u}}}{({\mathit{N}} - 7)} &\Rightarrow& {2^{7}} \cdot {\mathit{m}} + ({\mathit{n}} - {2^{7}}) &\quad
   \mbox{if}~{\mathit{n}} \geq {2^{7}} \land {\mathit{N}} > 7 \\
-& {{\mathtt{s}}}{{\mathit{N}}} &::=& {\mathit{n}}{:}{\mathtt{byte}} &\Rightarrow& {\mathit{n}} &\quad
+& {{\mathtt{s}}}{{\mathit{N}}{:}{\mathtt{N}}} &::=& {\mathit{n}}{:}{\mathtt{byte}} &\Rightarrow& {\mathit{n}} &\quad
   \mbox{if}~{\mathit{n}} < {2^{6}} \land {\mathit{n}} < {2^{{\mathit{N}} - 1}} \\ &&|&
 {\mathit{n}}{:}{\mathtt{byte}} &\Rightarrow& {\mathit{n}} - {2^{7}} &\quad
   \mbox{if}~{2^{6}} \leq {\mathit{n}} < {2^{7}} \land {\mathit{n}} \geq {2^{7}} - {2^{{\mathit{N}} - 1}} \\ &&|&
 {\mathit{n}}{:}{\mathtt{byte}}~{\mathit{i}}{:}{{\mathtt{u}}}{({\mathit{N}} - 7)} &\Rightarrow& {2^{7}} \cdot {\mathit{i}} + ({\mathit{n}} - {2^{7}}) &\quad
   \mbox{if}~{\mathit{n}} \geq {2^{7}} \land {\mathit{N}} > 7 \\
-& {{\mathtt{i}}}{{\mathit{N}}} &::=& {\mathit{i}}{:}{{\mathtt{s}}}{{\mathit{N}}} &\Rightarrow& {{{{\mathrm{signed}}^{{-1}}}}{\mathsf{\_}}~{\mathit{N}}}{{\mathit{i}}} \\
+& {{\mathtt{i}}}{{\mathit{N}}{:}{\mathtt{N}}} &::=& {\mathit{i}}{:}{{\mathtt{s}}}{{\mathtt{N}}} &\Rightarrow& {{{{\mathrm{signed}}^{{-1}}}}{\mathsf{\_}}~{\mathit{N}}}{{\mathit{i}}} \\
 \end{array}
 $$
 
@@ -2276,7 +2276,7 @@ $$
 
 $$
 \begin{array}{@{}l@{}rrlll@{}l@{}}
-& {{\mathtt{f}}}{{\mathit{N}}} &::=& {{\mathit{b}}^\ast}{:}{{\mathtt{byte}}^{{\mathit{N}} / 8}} &\Rightarrow& {\mathrm{invfbytes}}({\mathit{N}}, {{\mathit{b}}^\ast}) \\
+& {{\mathtt{f}}}{{\mathit{N}}{:}{\mathtt{N}}} &::=& {{\mathit{b}}^\ast}{:}{{\mathtt{byte}}^{{\mathit{N}} / 8}} &\Rightarrow& {\mathrm{invfbytes}}({\mathit{N}}, {{\mathit{b}}^\ast}) \\
 \end{array}
 $$
 
