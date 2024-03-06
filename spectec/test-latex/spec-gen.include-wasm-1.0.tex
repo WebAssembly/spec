@@ -245,8 +245,8 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-\mbox{(instruction)} & {\mathit{instr}} &::=& \mathsf{unreachable} \\ &&|&
-\mathsf{nop} \\ &&|&
+\mbox{(instruction)} & {\mathit{instr}} &::=& \mathsf{nop} \\ &&|&
+\mathsf{unreachable} \\ &&|&
 \mathsf{drop} \\ &&|&
 \mathsf{select} \\ &&|&
 \mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast} \\ &&|&
@@ -1097,8 +1097,8 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 }{
-{\mathit{C}} \vdash \mathsf{unreachable} : {{\mathit{t}}_{{1}}^\ast} \rightarrow {{\mathit{t}}_{{2}}^\ast}
-} \, {[\textsc{\scriptsize T{-}unreachable}]}
+{\mathit{C}} \vdash \mathsf{nop} : \epsilon \rightarrow \epsilon
+} \, {[\textsc{\scriptsize T{-}nop}]}
 \qquad
 \end{array}
 $$
@@ -1107,8 +1107,8 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 }{
-{\mathit{C}} \vdash \mathsf{nop} : \epsilon \rightarrow \epsilon
-} \, {[\textsc{\scriptsize T{-}nop}]}
+{\mathit{C}} \vdash \mathsf{unreachable} : {{\mathit{t}}_{{1}}^\ast} \rightarrow {{\mathit{t}}_{{2}}^\ast}
+} \, {[\textsc{\scriptsize T{-}unreachable}]}
 \qquad
 \end{array}
 $$
@@ -1122,8 +1122,6 @@ $$
 \qquad
 \end{array}
 $$
-
-\vspace{1ex}
 
 $$
 \begin{array}{@{}c@{}}\displaystyle
@@ -1418,14 +1416,13 @@ $$
 \frac{
 {\mathit{C}}.\mathsf{mem}{}[0] = {\mathit{mt}}
  \qquad
-{2^{{\mathit{n}}_{{\mathsf{a}}}}} \leq {|{\mathit{t}}|} / 8
+{2^{{\mathit{memop}}.\mathsf{align}}} \leq {|{\mathit{nt}}|} / 8
  \qquad
-({2^{{\mathit{n}}_{{\mathsf{a}}}}} \leq {\mathit{n}} / 8 < {|{\mathit{t}}|} / 8)^?
+({2^{{\mathit{memop}}.\mathsf{align}}} \leq {\mathit{n}} / 8 < {|{\mathit{nt}}|} / 8)^?
  \qquad
-{{\mathit{n}}^?} = \epsilon \lor {\mathit{t}} = {\mathsf{i}}{{\mathit{n}}}
+{{\mathit{n}}^?} = \epsilon \lor {\mathit{nt}} = {\mathsf{i}}{{\mathit{n}}}
 }{
-{\mathit{C}} \vdash {\mathit{t}}.\mathsf{load}~{({\mathit{n}}~\mathsf{\_}~{\mathit{sx}})^?}~\{ \begin{array}[t]{@{}l@{}}
-\mathsf{align}~{\mathit{n}}_{{\mathsf{a}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array} : \mathsf{i{\scriptstyle32}} \rightarrow {\mathit{t}}
+{\mathit{C}} \vdash {\mathit{nt}}.\mathsf{load}~{({\mathit{n}}~\mathsf{\_}~{\mathit{sx}})^?}~{\mathit{memop}} : \mathsf{i{\scriptstyle32}} \rightarrow {\mathit{nt}}
 } \, {[\textsc{\scriptsize T{-}load}]}
 \qquad
 \end{array}
@@ -1436,14 +1433,13 @@ $$
 \frac{
 {\mathit{C}}.\mathsf{mem}{}[0] = {\mathit{mt}}
  \qquad
-{2^{{\mathit{n}}_{{\mathsf{a}}}}} \leq {|{\mathit{t}}|} / 8
+{2^{{\mathit{memop}}.\mathsf{align}}} \leq {|{\mathit{nt}}|} / 8
  \qquad
-({2^{{\mathit{n}}_{{\mathsf{a}}}}} \leq {\mathit{n}} / 8 < {|{\mathit{t}}|} / 8)^?
+({2^{{\mathit{memop}}.\mathsf{align}}} \leq {\mathit{n}} / 8 < {|{\mathit{nt}}|} / 8)^?
  \qquad
-{{\mathit{n}}^?} = \epsilon \lor {\mathit{t}} = {\mathsf{i}}{{\mathit{n}}}
+{{\mathit{n}}^?} = \epsilon \lor {\mathit{nt}} = {\mathsf{i}}{{\mathit{n}}}
 }{
-{\mathit{C}} \vdash {\mathit{t}}.\mathsf{store}~{{\mathit{n}}^?}~\{ \begin{array}[t]{@{}l@{}}
-\mathsf{align}~{\mathit{n}}_{{\mathsf{a}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array} : \mathsf{i{\scriptstyle32}}~{\mathit{t}} \rightarrow \epsilon
+{\mathit{C}} \vdash {\mathit{nt}}.\mathsf{store}~{{\mathit{n}}^?}~{\mathit{memop}} : \mathsf{i{\scriptstyle32}}~{\mathit{nt}} \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}store}]}
 \qquad
 \end{array}

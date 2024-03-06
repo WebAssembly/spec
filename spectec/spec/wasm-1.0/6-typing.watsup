@@ -142,17 +142,16 @@ rule Instrs_ok/frame:
   -- Instrs_ok: C |- instr* : t_1* -> t_2*
 
 
-;; Polymorphic instructions
-
-rule Instr_ok/unreachable:
-  C |- UNREACHABLE : t_1* -> t_2*
+;; Parametric instructions
 
 rule Instr_ok/nop:
   C |- NOP : eps -> eps
 
+rule Instr_ok/unreachable:
+  C |- UNREACHABLE : t_1* -> t_2*
+
 rule Instr_ok/drop:
   C |- DROP : t -> eps
-
 
 rule Instr_ok/select:
   C |- SELECT : t t I32 -> t
@@ -272,18 +271,18 @@ rule Instr_ok/memory.grow:
   -- if C.MEM[0] = mt
 
 rule Instr_ok/load:
-  C |- LOAD t (n _ sx)? {ALIGN n_A, OFFSET n_O} : I32 -> t
+  C |- LOAD nt (n _ sx)? memop : I32 -> nt
   -- if C.MEM[0] = mt
-  -- if $(2^(n_A) <= $size(t)/8)
-  -- if $(2^(n_A) <= n/8 < $size(t)/8)?
-  -- if n? = eps \/ t = inn
+  -- if $(2^(memop.ALIGN) <= $size(nt)/8)
+  -- if $(2^(memop.ALIGN) <= n/8 < $size(nt)/8)?
+  -- if n? = eps \/ nt = inn
 
 rule Instr_ok/store:
-  C |- STORE t n? {ALIGN n_A, OFFSET n_O} : I32 t -> eps
+  C |- STORE nt n? memop : I32 nt -> eps
   -- if C.MEM[0] = mt
-  -- if $(2^(n_A) <= $size(t)/8)
-  -- if $(2^(n_A) <= n/8 < $size(t)/8)?
-  -- if n? = eps \/ t = inn
+  -- if $(2^(memop.ALIGN) <= $size(nt)/8)
+  -- if $(2^(memop.ALIGN) <= n/8 < $size(nt)/8)?
+  -- if n? = eps \/ nt = inn
 
 
 ;;

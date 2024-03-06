@@ -119,7 +119,7 @@ def $shsize(lnn X N) = $($lsize(lnn) * N)
 
 ;; Type difference
 
-def $diffrt(reftype, reftype) : reftype  hint(show $(%-%))
+def $diffrt(reftype, reftype) : reftype  hint(show %\%)
 
 def $diffrt((REF nul_1 ht_1), (REF NULL ht_2)) = (REF eps ht_1)
 def $diffrt((REF nul_1 ht_1), (REF eps ht_2)) = (REF nul_1 ht_1)

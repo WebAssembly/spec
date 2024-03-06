@@ -26,6 +26,7 @@ var lct : localtype  hint(show lt)
 var it : instrtype
 
 
+;; TODO: is there a way to show this as %[.LOCAL[%]*=%*] ?
 def $with_locals(context, localidx*, localtype*) : context  hint(show %[.LOCAL[%]=%])
 
 def $with_locals(C, eps, eps) = C
@@ -95,6 +96,7 @@ rule Valtype_ok/bot:
 
 relation Resulttype_ok: context |- resulttype : OK  hint(show "K-result")
 relation Instrtype_ok: context |- instrtype : OK    hint(show "K-instr")
+relation Finstrtype_ok: context |- finstrtype : OK  hint(show "K-instr")  ;; HACK, shouldn't be needed
 
 rule Resulttype_ok:
   C |- t* : OK
@@ -105,6 +107,10 @@ rule Instrtype_ok:
   -- Resulttype_ok: C |- t_1* : OK
   -- Resulttype_ok: C |- t_2* : OK
   -- (if C.LOCAL[x] = lct)*
+
+rule Finstrtype_ok:
+  C |- t_1* -> t_2* : OK
+  -- Instrtype_ok: C |- t_1* ->_() t_2* : OK
 
 
 ;; Type definitions
@@ -506,7 +512,7 @@ rule Externtype_sub/mem:
 ;;
 
 relation Instr_ok: context |- instr : finstrtype    hint(show "T")
-relation Instrf_ok: context |- instr : instrtype    hint(show "T")
+relation Instr_x_ok: context |- instr : instrtype   hint(show "T")
 relation Instrs_ok: context |- instr* : instrtype   hint(show "T-instr*")
 relation Expr_ok: context |- expr : resulttype      hint(show "T-expr")
 
@@ -520,47 +526,54 @@ rule Expr_ok:
 
 ;; Instruction sequences
 
-rule Instrf_ok/instr:
-  C |- instr : t_1* ->_(eps) t_2*
+rule Instr_x_ok/instr:
+  C |- instr : t_1* ->_() t_2*
   -- Instr_ok: C |- instr : t_1* -> t_2*
 
 rule Instrs_ok/empty:
-  C |- eps : eps ->_(eps) eps
+  C |- eps : eps ->_() eps
 
+;; TODO: enable x_1*#x_2*
 rule Instrs_ok/seq:
   C |- instr_1 instr_2* : t_1* ->_(x_1* x_2*) t_3*
-  -- if (C.LOCAL[x_1] = init t)*
-  -- if C' = $with_locals(C, x_1*, (SET t)*)
-  -- Instrf_ok: C |- instr_1 : t_1* ->_(x_1*) t_2*
-  -- Instrs_ok: C' |- instr_2* : t_2* ->_(x_2*) t_3*
+  -- Instr_x_ok: C |- instr_1 : t_1* ->_(x_1*) t_2*
+  -- (if C.LOCAL[x_1] = init t)*
+  -- Instrs_ok: $with_locals(C, x_1*, (SET t)*) |- instr_2* : t_2* ->_(x_2*) t_3*
 
 rule Instrs_ok/sub:
   C |- instr* : it'
   -- Instrs_ok: C |- instr* : it
   -- Instrtype_sub: C |- it <: it'
+  -- Instrtype_ok: C |- it' : OK
 
+;; TODO: allow omitting parens
 rule Instrs_ok/frame:
-  C |- instr* : t* t_1* ->_(x*) (t* t_2*)
+  C |- instr* : (t* t_1*) ->_(x*) (t* t_2*)
   -- Instrs_ok: C |- instr* : t_1* ->_(x*) t_2*
+  -- Resulttype_ok: C |- t* : OK
 
 
-;; Polymorphic instructions
-
-rule Instr_ok/unreachable:
-  C |- UNREACHABLE : t_1* -> t_2*
+;; Parametric instructions
 
 rule Instr_ok/nop:
   C |- NOP : eps -> eps
 
+rule Instr_ok/unreachable:
+  C |- UNREACHABLE : t_1* -> t_2*
+  -- Finstrtype_ok: C |- t_1* -> t_2* : OK
+
 rule Instr_ok/drop:
   C |- DROP : t -> eps
+  -- Valtype_ok: C |- t : OK
 
 
 rule Instr_ok/select-expl:
   C |- SELECT t : t t I32 -> t
+  -- Valtype_ok: C |- t : OK
 
 rule Instr_ok/select-impl:
   C |- SELECT : t t I32 -> t
+  -- Valtype_ok: C |- t : OK
   -- Valtype_sub: C |- t <: t'
   -- if t' = numtype \/ t' = vectype
 
@@ -600,6 +613,7 @@ rule Instr_ok/if:
 rule Instr_ok/br:
   C |- BR l : t_1* t* -> t_2*
   -- if C.LABEL[l] = t*
+  -- Finstrtype_ok: C |- t_1* -> t_2* : OK
 
 rule Instr_ok/br_if:
   C |- BR_IF l : t* I32 -> t*
@@ -609,6 +623,7 @@ rule Instr_ok/br_table:
   C |- BR_TABLE l* l' : t_1* t* -> t_2*
   -- (Resulttype_sub: C |- t* <: C.LABEL[l])*
   -- Resulttype_sub: C |- t* <: C.LABEL[l']
+  -- Finstrtype_ok: C |- t_1* -> t_2* : OK
 
 rule Instr_ok/br_on_null:
   C |- BR_ON_NULL l : t* (REF NULL ht) -> t* (REF ht)
@@ -618,7 +633,6 @@ rule Instr_ok/br_on_null:
 rule Instr_ok/br_on_non_null:
   C |- BR_ON_NON_NULL l : t* (REF NULL ht) -> t*
   -- if C.LABEL[l] = t* (REF ht)
-  -- Heaptype_ok: C |- ht : OK
 
 rule Instr_ok/br_on_cast:
   C |- BR_ON_CAST l rt_1 rt_2 : t* rt_1 -> t* ($diffrt(rt_1, rt_2))
@@ -656,26 +670,34 @@ rule Instr_ok/call_indirect:
 rule Instr_ok/return:
   C |- RETURN : t_1* t* -> t_2*
   -- if C.RETURN = (t*)
+  -- Finstrtype_ok: C |- t_1* -> t_2* : OK
 
+;; TODO: enable t_2* <: C.RETURN
 rule Instr_ok/return_call:
   C |- RETURN_CALL x : t_3* t_1* -> t_4*
   -- Expand: C.FUNC[x] ~~ FUNC (t_1* -> t_2*)
   -- if C.RETURN = (t'_2*)
   -- Resulttype_sub: C |- t_2* <: t'_2*
+  -- Finstrtype_ok: C |- t_3* -> t_4* : OK
 
+;; TODO: enable t_2* <: C.RETURN
 rule Instr_ok/return_call_ref:
   C |- RETURN_CALL_REF x : t_3* t_1* (REF NULL $idx(x)) -> t_4*
   -- Expand: C.TYPE[x] ~~ FUNC (t_1* -> t_2*)
   -- if C.RETURN = (t'_2*)
   -- Resulttype_sub: C |- t_2* <: t'_2*
+  -- Finstrtype_ok: C |- t_3* -> t_4* : OK
 
+;; TODO: enable t_2* <: C.RETURN
 rule Instr_ok/return_call_indirect:
   C |- RETURN_CALL_INDIRECT x y : t_3* t_1* I32 -> t_4*
   -- if C.TABLE[x] = lim rt
   -- Reftype_sub: C |- rt <: (REF NULL FUNC)
+
   -- Expand: C.TYPE[y] ~~ FUNC (t_1* -> t_2*)
   -- if C.RETURN = (t'_2*)
   -- Resulttype_sub: C |- t_2* <: t'_2*
+  -- Finstrtype_ok: C |- t_3* -> t_4* : OK
 
 
 ;; Numeric instructions
@@ -921,13 +943,13 @@ rule Instr_ok/vbitmask:
 
 rule Instr_ok/local.get:
   C |- LOCAL.GET x : eps -> t
-  -- if C.LOCAL[x] = init t
+  -- if C.LOCAL[x] = SET t
 
-rule Instrf_ok/local.set:
+rule Instr_x_ok/local.set:
   C |- LOCAL.SET x : t ->_(x) eps
   -- if C.LOCAL[x] = init t
 
-rule Instrf_ok/local.tee:
+rule Instr_x_ok/local.tee:
   C |- LOCAL.TEE x : t ->_(x) t
   -- if C.LOCAL[x] = init t
 
@@ -955,7 +977,7 @@ rule Instr_ok/table.set:
 
 rule Instr_ok/table.size:
   C |- TABLE.SIZE x : eps -> I32
-  -- if C.TABLE[x] = tt
+  -- if C.TABLE[x] = lim rt
 
 rule Instr_ok/table.grow:
   C |- TABLE.GROW x : rt I32 -> I32
@@ -1011,50 +1033,51 @@ rule Instr_ok/data.drop:
   -- if C.DATA[x] = OK
 
 rule Instr_ok/load:
-  C |- LOAD nt (n _ sx)? x {ALIGN n_A, OFFSET n_O} : I32 -> nt
+  C |- LOAD nt (n _ sx)? x memop : I32 -> nt
   -- if C.MEM[x] = mt
-  -- if $(2^(n_A) <= $size(nt)/8)
-  -- if $(2^(n_A) <= n/8 < $size(nt)/8)?
+  -- if $(2^(memop.ALIGN) <= $size(nt)/8)
+  -- if $(2^(memop.ALIGN) <= n/8 < $size(nt)/8)?
   -- if n? = eps \/ nt = inn
 
 rule Instr_ok/store:
-  C |- STORE nt n? x {ALIGN n_A, OFFSET n_O} : I32 nt -> eps
+  C |- STORE nt n? x memop : I32 nt -> eps
   -- if C.MEM[x] = mt
-  -- if $(2^(n_A) <= $size(nt)/8)
-  -- if $(2^(n_A) <= n/8 < $size(nt)/8)?
+  -- if $(2^(memop.ALIGN) <= $size(nt)/8)
+  -- if $(2^(memop.ALIGN) <= n/8 < $size(nt)/8)?
   -- if n? = eps \/ nt = inn
 
 rule Instr_ok/vload:
-  C |- VLOAD (SHAPE M X N sx) x {ALIGN n_A, OFFSET n_O} : I32 -> V128
+  C |- VLOAD (SHAPE M X N sx) x memop : I32 -> V128
   -- if C.MEM[x] = mt
-  -- if $(2^(n_A) <= M/8 * N)
+  -- if $(2^(memop.ALIGN) <= M/8 * N)
 
 rule Instr_ok/vload-splat:
-  C |- VLOAD (SPLAT n) x {ALIGN n_A, OFFSET n_O} : I32 -> V128
+  C |- VLOAD (SPLAT n) x memop : I32 -> V128
   -- if C.MEM[x] = mt
-  -- if $(2^(n_A) <= n/8)
+  -- if $(2^(memop.ALIGN) <= n/8)
 
 rule Instr_ok/vload-zero:
-  C |- VLOAD (ZERO n) x {ALIGN n_A, OFFSET n_O} : I32 -> V128
+  C |- VLOAD (ZERO n) x memop : I32 -> V128
   -- if C.MEM[x] = mt
-  -- if $(2^(n_A) < n/8)
+  -- if $(2^(memop.ALIGN) < n/8)
 
 rule Instr_ok/vload_lane:
-  C |- VLOAD_LANE n x {ALIGN n_A, OFFSET n_O} laneidx : I32 V128 -> V128
+  C |- VLOAD_LANE n x memop laneidx : I32 V128 -> V128
   -- if C.MEM[x] = mt
-  -- if $(2^(n_A) < n/8)
+  -- if $(2^(memop.ALIGN) < n/8)
   -- if $(laneidx < 128 / n)
 
 rule Instr_ok/vstore:
-  C |- VSTORE x {ALIGN n_A, OFFSET n_O} : I32 V128 -> eps
+  C |- VSTORE x memop : I32 V128 -> eps
   -- if C.MEM[x] = mt
-  -- if $(2^(n_A) <= $vsize(V128)/8)
+  -- if $(2^(memop.ALIGN) <= $vsize(V128)/8)
 
 rule Instr_ok/vstore_lane:
-  C |- VSTORE_LANE n x {ALIGN n_A, OFFSET n_O} laneidx : I32 V128 -> eps
+  C |- VSTORE_LANE n x memop laneidx : I32 V128 -> eps
   -- if C.MEM[x] = mt
-  -- if $(2^(n_A) < n/8)
+  -- if $(2^(memop.ALIGN) < n/8)
   -- if $(laneidx < 128 / n)
+
 
 ;;
 ;; Constant Expressions
@@ -1065,22 +1088,46 @@ relation Expr_const: context |- expr CONST               hint(show "C-expr")
 relation Expr_ok_const: context |- expr : valtype CONST  hint(show "TC-expr")
 
 rule Instr_const/const:
-  C |- (CONST nt c) CONST
+  C |- (CONST nt c_nt) CONST
 
-rule Instr_const/vvconst:
+rule Instr_const/vconst:
   C |- (VCONST vt c_vt) CONST
 
 rule Instr_const/ref.null:
   C |- (REF.NULL ht) CONST
 
+rule Instr_const/ref.i31:
+  C |- (REF.I31) CONST
+
 rule Instr_const/ref.func:
   C |- (REF.FUNC x) CONST
+
+rule Instr_const/struct.new:
+  C |- (STRUCT.NEW x) CONST
+
+rule Instr_const/struct.new_default:
+  C |- (STRUCT.NEW_DEFAULT x) CONST
+
+rule Instr_const/array.new:
+  C |- (ARRAY.NEW x) CONST
+
+rule Instr_const/array.new_default:
+  C |- (ARRAY.NEW_DEFAULT x) CONST
+
+rule Instr_const/array.new_fixed:
+  C |- (ARRAY.NEW_FIXED x n) CONST
+
+rule Instr_const/any.convert_extern:
+  C |- (ANY.CONVERT_EXTERN) CONST
+
+rule Instr_const/extern.convert_any:
+  C |- (EXTERN.CONVERT_ANY) CONST
 
 rule Instr_const/global.get:
   C |- (GLOBAL.GET x) CONST
   -- if C.GLOBAL[x] = t
 
-;; TODO: builtin elemof
+;; TODO: built in elemof
 def $in_numtype(numtype, numtype*) : bool    hint(show % <- %)
 def $in_numtype(nt, epsilon) = false
 def $in_numtype(nt, nt_1 nt'*) = nt = nt_1 \/ $in_numtype(nt, nt'*)

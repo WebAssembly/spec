@@ -126,25 +126,25 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 }{
-{\mathit{C}} \vdash \epsilon : \epsilon~{\rightarrow}_{\epsilon}\,\epsilon
+{\mathit{C}} \vdash \epsilon : \epsilon~{\rightarrow}_{}\,\epsilon
 }
 \qquad
 \frac{
-(({\mathit{C}}.\mathsf{local}{}[{\mathit{x}}_{{1}}] = {\mathit{init}}~{\mathit{t}}))^\ast
- \qquad
-{\mathit{C}'} = {\mathit{C}}{}[\mathsf{local}{}[{{\mathit{x}}_{{1}}^\ast}] = {(\mathsf{set}~{\mathit{t}})^\ast}]
- \qquad
 {\mathit{C}} \vdash {\mathit{instr}}_{{1}} : {{\mathit{t}}_{{1}}^\ast}~{\rightarrow}_{{{\mathit{x}}_{{1}}^\ast}}\,{{\mathit{t}}_{{2}}^\ast}
  \qquad
-{\mathit{C}'} \vdash {{\mathit{instr}}_{{2}}^\ast} : {{\mathit{t}}_{{2}}^\ast}~{\rightarrow}_{{{\mathit{x}}_{{2}}^\ast}}\,{{\mathit{t}}_{{3}}^\ast}
+({\mathit{C}}.\mathsf{local}{}[{\mathit{x}}_{{1}}] = {\mathit{init}}~{\mathit{t}})^\ast
+ \qquad
+{\mathit{C}}{}[\mathsf{local}{}[{{\mathit{x}}_{{1}}^\ast}] = {(\mathsf{set}~{\mathit{t}})^\ast}] \vdash {{\mathit{instr}}_{{2}}^\ast} : {{\mathit{t}}_{{2}}^\ast}~{\rightarrow}_{{{\mathit{x}}_{{2}}^\ast}}\,{{\mathit{t}}_{{3}}^\ast}
 }{
 {\mathit{C}} \vdash {\mathit{instr}}_{{1}}~{{\mathit{instr}}_{{2}}^\ast} : {{\mathit{t}}_{{1}}^\ast}~{\rightarrow}_{{{\mathit{x}}_{{1}}^\ast}~{{\mathit{x}}_{{2}}^\ast}}\,{{\mathit{t}}_{{3}}^\ast}
 }
 \\[3ex]\displaystyle
 \frac{
 {\mathit{C}} \vdash {{\mathit{instr}}^\ast} : {{\mathit{t}}_{{1}}^\ast}~{\rightarrow}_{{{\mathit{x}}^\ast}}\,{{\mathit{t}}_{{2}}^\ast}
+ \qquad
+{\mathit{C}} \vdash {{\mathit{t}}^\ast} : \mathsf{ok}
 }{
-{\mathit{C}} \vdash {{\mathit{instr}}^\ast} : {{\mathit{t}}^\ast}~{\rightarrow}_{\rightarrow}\,({{\mathit{x}}^\ast})
+{\mathit{C}} \vdash {{\mathit{instr}}^\ast} : ({{\mathit{t}}^\ast}~{{\mathit{t}}_{{1}}^\ast})~{\rightarrow}_{{{\mathit{x}}^\ast}}\,({{\mathit{t}}^\ast}~{{\mathit{t}}_{{2}}^\ast})
 }
 \qquad
 \end{array}
@@ -154,24 +154,28 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 }{
-{\mathit{C}} \vdash \epsilon : \epsilon~{\rightarrow}_{\epsilon}\,\epsilon
+{\mathit{C}} \vdash \epsilon : \epsilon~{\rightarrow}_{}\,\epsilon
 } \, {[\textsc{\scriptsize T{-}instr*{-}empty}]}
 \qquad
 \frac{
 {\mathit{C}} \vdash {{\mathit{instr}}^\ast} : {{\mathit{t}}_{{1}}^\ast}~{\rightarrow}_{{{\mathit{x}}^\ast}}\,{{\mathit{t}}_{{2}}^\ast}
+ \qquad
+{\mathit{C}} \vdash {{\mathit{t}}^\ast} : \mathsf{ok}
 }{
-{\mathit{C}} \vdash {{\mathit{instr}}^\ast} : {{\mathit{t}}^\ast}~{\rightarrow}_{\rightarrow}\,({{\mathit{x}}^\ast})
+{\mathit{C}} \vdash {{\mathit{instr}}^\ast} : ({{\mathit{t}}^\ast}~{{\mathit{t}}_{{1}}^\ast})~{\rightarrow}_{{{\mathit{x}}^\ast}}\,({{\mathit{t}}^\ast}~{{\mathit{t}}_{{2}}^\ast})
 } \, {[\textsc{\scriptsize T{-}instr*{-}frame}]}
 \\[3ex]\displaystyle
 \frac{
 }{
-{\mathit{C}} \vdash \epsilon : \epsilon~{\rightarrow}_{\epsilon}\,\epsilon
+{\mathit{C}} \vdash \epsilon : \epsilon~{\rightarrow}_{}\,\epsilon
 } \, {[\textsc{\scriptsize T{-}instr*{-}empty}]}
 \qquad
 \frac{
 {\mathit{C}} \vdash {{\mathit{instr}}^\ast} : {{\mathit{t}}_{{1}}^\ast}~{\rightarrow}_{{{\mathit{x}}^\ast}}\,{{\mathit{t}}_{{2}}^\ast}
+ \qquad
+{\mathit{C}} \vdash {{\mathit{t}}^\ast} : \mathsf{ok}
 }{
-{\mathit{C}} \vdash {{\mathit{instr}}^\ast} : {{\mathit{t}}^\ast}~{\rightarrow}_{\rightarrow}\,({{\mathit{x}}^\ast})
+{\mathit{C}} \vdash {{\mathit{instr}}^\ast} : ({{\mathit{t}}^\ast}~{{\mathit{t}}_{{1}}^\ast})~{\rightarrow}_{{{\mathit{x}}^\ast}}\,({{\mathit{t}}^\ast}~{{\mathit{t}}_{{2}}^\ast})
 } \, {[\textsc{\scriptsize T{-}instr*{-}frame}]}
 \qquad
 \end{array}
@@ -180,6 +184,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
+{\mathit{C}} \vdash {{\mathit{t}}_{{1}}^\ast} \rightarrow {{\mathit{t}}_{{2}}^\ast} : \mathsf{ok}
 }{
 {\mathit{C}} \vdash \mathsf{unreachable} : {{\mathit{t}}_{{1}}^\ast} \rightarrow {{\mathit{t}}_{{2}}^\ast}
 }
@@ -190,6 +195,7 @@ $$
 }
 \qquad
 \frac{
+{\mathit{C}} \vdash {\mathit{t}} : \mathsf{ok}
 }{
 {\mathit{C}} \vdash \mathsf{drop} : {\mathit{t}} \rightarrow \epsilon
 }
@@ -663,6 +669,7 @@ warning: rule `Externtype_sub/mem` was never spliced
 warning: rule `Fieldtype_ok` was never spliced
 warning: rule `Fieldtype_sub/const` was never spliced
 warning: rule `Fieldtype_sub/var` was never spliced
+warning: rule `Finstrtype_ok` was never spliced
 warning: rule `Func_ok` was never spliced
 warning: rule `Functype_ok` was never spliced
 warning: rule `Functype_sub` was never spliced
@@ -694,9 +701,17 @@ warning: rule `Heaptype_sub/noextern` was never spliced
 warning: rule `Heaptype_sub/bot` was never spliced
 warning: rule `Import_ok` was never spliced
 warning: rule `Instr_const/const` was never spliced
-warning: rule `Instr_const/vvconst` was never spliced
+warning: rule `Instr_const/vconst` was never spliced
 warning: rule `Instr_const/ref.null` was never spliced
+warning: rule `Instr_const/ref.i31` was never spliced
 warning: rule `Instr_const/ref.func` was never spliced
+warning: rule `Instr_const/struct.new` was never spliced
+warning: rule `Instr_const/struct.new_default` was never spliced
+warning: rule `Instr_const/array.new` was never spliced
+warning: rule `Instr_const/array.new_default` was never spliced
+warning: rule `Instr_const/array.new_fixed` was never spliced
+warning: rule `Instr_const/any.convert_extern` was never spliced
+warning: rule `Instr_const/extern.convert_any` was never spliced
 warning: rule `Instr_const/global.get` was never spliced
 warning: rule `Instr_const/binop` was never spliced
 warning: rule `Instr_ok/select-expl` was never spliced
@@ -793,9 +808,9 @@ warning: rule `Instr_ok/vload-zero` was never spliced
 warning: rule `Instr_ok/vload_lane` was never spliced
 warning: rule `Instr_ok/vstore` was never spliced
 warning: rule `Instr_ok/vstore_lane` was never spliced
-warning: rule `Instrf_ok/instr` was never spliced
-warning: rule `Instrf_ok/local.set` was never spliced
-warning: rule `Instrf_ok/local.tee` was never spliced
+warning: rule `Instr_x_ok/instr` was never spliced
+warning: rule `Instr_x_ok/local.set` was never spliced
+warning: rule `Instr_x_ok/local.tee` was never spliced
 warning: rule `Instrs_ok/empty` was spliced more than once
 warning: rule `Instrs_ok/sub` was never spliced
 warning: rule `Instrs_ok/frame` was spliced more than once
@@ -1466,8 +1481,8 @@ warning: rule prose `valid/loop` was never spliced
 warning: rule prose `valid/block` was never spliced
 warning: rule prose `valid/select` was never spliced
 warning: rule prose `valid/drop` was never spliced
-warning: rule prose `valid/nop` was never spliced
 warning: rule prose `valid/unreachable` was never spliced
+warning: rule prose `valid/nop` was never spliced
 warning: definition prose `E` was never spliced
 warning: definition prose `Ki` was never spliced
 warning: definition prose `M` was never spliced

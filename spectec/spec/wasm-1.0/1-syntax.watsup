@@ -186,8 +186,8 @@ syntax blocktype hint(desc "block type") = valtype?
 var bt : blocktype
 
 syntax instr/parametric hint(desc "parametric instruction") =
-  | UNREACHABLE
   | NOP
+  | UNREACHABLE
   | DROP
   | SELECT
   | ...

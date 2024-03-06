@@ -364,7 +364,10 @@ typ_post : typ_post_ { $1 $ $sloc }
 typ_post_ :
   | typ_prim_ { $1 }
   | LPAREN tup_list(typ) RPAREN
-    { match $2 with [t], false -> ParenT t | ts, _ -> TupT ts }
+    { match $2 with
+      | [], _ -> ParenT (SeqT [] $ $sloc)
+      | [t], false -> ParenT t
+      | ts, _ -> TupT ts }
   | typ_post iter { IterT ($1, $2) }
 
 typ : typ_post { $1 }
@@ -422,7 +425,10 @@ nottyp_prim_ :
   | TICK LBRACE nottyp RBRACE
     { BrackT (Il.Atom.LBrace $$ $loc($2), $3, Il.Atom.RBrace $$ $loc($4)) }
   | LPAREN tup_list(nottyp) RPAREN
-    { match $2 with [t], false -> ParenT t | ts, _ -> TupT ts }
+    { match $2 with
+      | [], _ -> ParenT (SeqT [] $ $sloc)
+      | [t], false -> ParenT t
+      | ts, _ -> TupT ts }
 
 nottyp_post : nottyp_post_ { $1 $ $sloc }
 nottyp_post_ :
@@ -509,7 +515,10 @@ exp_prim_ :
   | EPS { EpsE }
   | LBRACE comma_nl_list(fieldexp) RBRACE { StrE $2 }
   | LPAREN tup_list(exp_bin) RPAREN
-    { match $2 with [e], false -> ParenE (e, false) | es, _ -> TupE es }
+    { match $2 with
+      | [], b -> ParenE (SeqE [] $ $sloc, b)
+      | [e], false -> ParenE (e, false)
+      | es, _ -> TupE es }
   | TICK LPAREN exp RPAREN
     { BrackE (Il.Atom.LParen $$ $loc($2), $3, Il.Atom.RParen $$ $loc($4)) }
   | TICK LBRACK exp RBRACK
@@ -689,7 +698,10 @@ sym_prim_ :
   | TICK NATLIT { NatG (AtomOp, $2) }
   | EPS { EpsG }
   | LPAREN tup_list(sym) RPAREN
-    { match $2 with [g], false -> ParenG g | gs, _ -> TupG gs }
+    { match $2 with
+      | [], _ -> ParenG (SeqG [] $ $sloc)
+      | [g], false -> ParenG g
+      | gs, _ -> TupG gs }
   | DOLLAR LPAREN arith RPAREN { ArithG $3 }
 
 sym_post : sym_post_ { $1 $ $sloc }

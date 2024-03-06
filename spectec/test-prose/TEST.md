@@ -20,11 +20,11 @@ watsup 0.4 generator
 =================
  Generated prose
 =================
-validation_of_UNREACHABLE
-- The instruction is valid with type (t_1* -> t_2*).
-
 validation_of_NOP
 - The instruction is valid with type ([] -> []).
+
+validation_of_UNREACHABLE
+- The instruction is valid with type (t_1* -> t_2*).
 
 validation_of_DROP
 - The instruction is valid with type ([t] -> []).
@@ -132,26 +132,26 @@ validation_of_MEMORY.GROW
 - Let mt be C.MEM[0].
 - The instruction is valid with type ([I32] -> [I32]).
 
-validation_of_LOAD t (n, sx)? { ALIGN: n_A; OFFSET: n_O; }
+validation_of_LOAD nt (n, sx)? memop
 - |C.MEM| must be greater than 0.
 - ((sx? is ?())) and ((n? is ?())) are equivalent.
-- (2 ^ n_A) must be less than or equal to ($size(t) / 8).
+- (2 ^ memop.ALIGN) must be less than or equal to ($size(nt) / 8).
 - If n is defined,
-  - (2 ^ n_A) must be less than or equal to (n / 8).
-  - (n / 8) must be less than ($size(t) / 8).
+  - (2 ^ memop.ALIGN) must be less than or equal to (n / 8).
+  - (n / 8) must be less than ($size(nt) / 8).
 - n? must be equal to ?().
 - Let mt be C.MEM[0].
-- The instruction is valid with type ([I32] -> [t]).
+- The instruction is valid with type ([I32] -> [nt]).
 
-validation_of_STORE t n? { ALIGN: n_A; OFFSET: n_O; }
+validation_of_STORE nt n? memop
 - |C.MEM| must be greater than 0.
-- (2 ^ n_A) must be less than or equal to ($size(t) / 8).
+- (2 ^ memop.ALIGN) must be less than or equal to ($size(nt) / 8).
 - If n is defined,
-  - (2 ^ n_A) must be less than or equal to (n / 8).
-  - (n / 8) must be less than ($size(t) / 8).
+  - (2 ^ memop.ALIGN) must be less than or equal to (n / 8).
+  - (n / 8) must be less than ($size(nt) / 8).
 - n? must be equal to ?().
 - Let mt be C.MEM[0].
-- The instruction is valid with type ([I32, t] -> []).
+- The instruction is valid with type ([I32, nt] -> []).
 
 Ki
 1. Return 1024.
@@ -1250,11 +1250,11 @@ watsup 0.4 generator
 =================
  Generated prose
 =================
-validation_of_UNREACHABLE
-- The instruction is valid with type (t_1* -> t_2*).
-
 validation_of_NOP
 - The instruction is valid with type ([] -> []).
+
+validation_of_UNREACHABLE
+- The instruction is valid with type (t_1* -> t_2*).
 
 validation_of_DROP
 - The instruction is valid with type ([t] -> []).
@@ -1444,7 +1444,7 @@ validation_of_TABLE.SET x
 
 validation_of_TABLE.SIZE x
 - |C.TABLE| must be greater than x.
-- Let tt be C.TABLE[x].
+- Let (lim, rt) be C.TABLE[x].
 - The instruction is valid with type ([] -> [I32]).
 
 validation_of_TABLE.GROW x
@@ -1508,50 +1508,50 @@ validation_of_DATA.DROP x
 - C.DATA[x] must be equal to OK.
 - The instruction is valid with type ([] -> []).
 
-validation_of_LOAD nt (n, sx)? { ALIGN: n_A; OFFSET: n_O; }
+validation_of_LOAD nt (n, sx)? memop
 - |C.MEM| must be greater than 0.
 - ((sx? is ?())) and ((n? is ?())) are equivalent.
-- (2 ^ n_A) must be less than or equal to ($size(nt) / 8).
+- (2 ^ memop.ALIGN) must be less than or equal to ($size(nt) / 8).
 - If n is defined,
-  - (2 ^ n_A) must be less than or equal to (n / 8).
+  - (2 ^ memop.ALIGN) must be less than or equal to (n / 8).
   - (n / 8) must be less than ($size(nt) / 8).
 - n? must be equal to ?().
 - Let mt be C.MEM[0].
 - The instruction is valid with type ([I32] -> [nt]).
 
-validation_of_STORE nt n? { ALIGN: n_A; OFFSET: n_O; }
+validation_of_STORE nt n? memop
 - |C.MEM| must be greater than 0.
-- (2 ^ n_A) must be less than or equal to ($size(nt) / 8).
+- (2 ^ memop.ALIGN) must be less than or equal to ($size(nt) / 8).
 - If n is defined,
-  - (2 ^ n_A) must be less than or equal to (n / 8).
+  - (2 ^ memop.ALIGN) must be less than or equal to (n / 8).
   - (n / 8) must be less than ($size(nt) / 8).
 - n? must be equal to ?().
 - Let mt be C.MEM[0].
 - The instruction is valid with type ([I32, nt] -> []).
 
-validation_of_VLOAD ?((SHAPE M N sx)) { ALIGN: n_A; OFFSET: n_O; }
+validation_of_VLOAD ?((SHAPE M N sx)) memop
 - |C.MEM| must be greater than 0.
-- (2 ^ n_A) must be less than or equal to ((M / 8) · N).
+- (2 ^ memop.ALIGN) must be less than or equal to ((M / 8) · N).
 - Let mt be C.MEM[0].
 - The instruction is valid with type ([I32] -> [V128]).
 
-validation_of_VLOAD_LANE N { ALIGN: n_A; OFFSET: n_O; } i
+validation_of_VLOAD_LANE n memop laneidx
 - |C.MEM| must be greater than 0.
-- (2 ^ n_A) must be less than (N / 8).
-- i must be less than (128 / N).
+- (2 ^ memop.ALIGN) must be less than (n / 8).
+- laneidx must be less than (128 / n).
 - Let mt be C.MEM[0].
 - The instruction is valid with type ([I32, V128] -> [V128]).
 
-validation_of_VSTORE { ALIGN: n_A; OFFSET: n_O; }
+validation_of_VSTORE memop
 - |C.MEM| must be greater than 0.
-- (2 ^ n_A) must be less than or equal to ($size(V128) / 8).
+- (2 ^ memop.ALIGN) must be less than or equal to ($size(V128) / 8).
 - Let mt be C.MEM[0].
 - The instruction is valid with type ([I32, V128] -> []).
 
-validation_of_VSTORE_LANE N { ALIGN: n_A; OFFSET: n_O; } i
+validation_of_VSTORE_LANE n memop laneidx
 - |C.MEM| must be greater than 0.
-- (2 ^ n_A) must be less than (N / 8).
-- i must be less than (128 / N).
+- (2 ^ memop.ALIGN) must be less than (n / 8).
+- laneidx must be less than (128 / n).
 - Let mt be C.MEM[0].
 - The instruction is valid with type ([I32, V128] -> []).
 
@@ -3671,16 +3671,19 @@ prem_to_instr: Invalid prem 2
 =================
  Generated prose
 =================
-validation_of_UNREACHABLE
-- The instruction is valid with type (t_1* -> t_2*).
-
 validation_of_NOP
 - The instruction is valid with type ([] -> []).
 
+validation_of_UNREACHABLE
+- Under the context C, (t_1* -> t_2*) must be valid.
+- The instruction is valid with type (t_1* -> t_2*).
+
 validation_of_DROP
+- Under the context C, t must be valid.
 - The instruction is valid with type ([t] -> []).
 
 validation_of_SELECT ?([t])
+- Under the context C, t must be valid.
 - The instruction is valid with type ([t, t, I32] -> [t]).
 
 validation_of_BLOCK bt instr*
@@ -3702,6 +3705,7 @@ validation_of_IF bt instr_1* instr_2*
 validation_of_BR l
 - |C.LABEL| must be greater than l.
 - Let t* be C.LABEL[l].
+- Under the context C, (t_1* -> t_2*) must be valid.
 - The instruction is valid with type (t_1* ++ t* -> t_2*).
 
 validation_of_BR_IF l
@@ -3716,6 +3720,7 @@ validation_of_BR_TABLE l* l'
 - For all l in l*,
   - Yet: TODO: prem_to_instrs 2
 - Yet: TODO: prem_to_instrs 2
+- Under the context C, (t_1* -> t_2*) must be valid.
 - The instruction is valid with type (t_1* ++ t* -> t_2*).
 
 validation_of_BR_ON_NULL l
@@ -3727,7 +3732,6 @@ validation_of_BR_ON_NULL l
 validation_of_BR_ON_NON_NULL l
 - |C.LABEL| must be greater than l.
 - Let t* ++ [(REF (NULL ?()) ht)] be C.LABEL[l].
-- Under the context C, ht must be valid.
 - The instruction is valid with type (t* ++ [(REF (NULL ?(())) ht)] -> t*).
 
 validation_of_BR_ON_CAST l rt_1 rt_2
@@ -3768,10 +3772,12 @@ validation_of_CALL_INDIRECT x y
 
 validation_of_RETURN
 - Let ?(t*) be C.RETURN.
+- Under the context C, (t_1* -> t_2*) must be valid.
 - The instruction is valid with type (t_1* ++ t* -> t_2*).
 
 validation_of_RETURN_CALL x
 - |C.FUNC| must be greater than x.
+- Under the context C, (t_3* -> t_4*) must be valid.
 - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.FUNC[x]).
 - Yet: TODO: prem_to_instrs 2
 - C.RETURN must be equal to ?(t'_2*).
@@ -3779,6 +3785,7 @@ validation_of_RETURN_CALL x
 
 validation_of_RETURN_CALL_REF ?(x)
 - |C.TYPE| must be greater than x.
+- Under the context C, (t_3* -> t_4*) must be valid.
 - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPE[x]).
 - Yet: TODO: prem_to_instrs 2
 - C.RETURN must be equal to ?(t'_2*).
@@ -3787,6 +3794,7 @@ validation_of_RETURN_CALL_REF ?(x)
 validation_of_RETURN_CALL_INDIRECT x y
 - |C.TABLE| must be greater than x.
 - |C.TYPE| must be greater than y.
+- Under the context C, (t_3* -> t_4*) must be valid.
 - Let (lim, rt) be C.TABLE[x].
 - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPE[y]).
 - Yet: TODO: prem_to_instrs 2
@@ -4027,7 +4035,7 @@ validation_of_VEXTBINOP sh sh vextbinop sx
 
 validation_of_LOCAL.GET x
 - |C.LOCAL| must be greater than x.
-- Let (init, t) be C.LOCAL[x].
+- Let (SET, t) be C.LOCAL[x].
 - The instruction is valid with type ([] -> [t]).
 
 validation_of_GLOBAL.GET x
@@ -4052,7 +4060,7 @@ validation_of_TABLE.SET x
 
 validation_of_TABLE.SIZE x
 - |C.TABLE| must be greater than x.
-- Let tt be C.TABLE[x].
+- Let (lim, rt) be C.TABLE[x].
 - The instruction is valid with type ([] -> [I32]).
 
 validation_of_TABLE.GROW x
@@ -4120,49 +4128,49 @@ validation_of_DATA.DROP x
 - C.DATA[x] must be equal to OK.
 - The instruction is valid with type ([] -> []).
 
-validation_of_LOAD nt (n, sx)? x { ALIGN: n_A; OFFSET: n_O; }
+validation_of_LOAD nt (n, sx)? x memop
 - |C.MEM| must be greater than x.
 - ((sx? is ?())) and ((n? is ?())) are equivalent.
-- (2 ^ n_A) must be less than or equal to ($size(nt) / 8).
+- (2 ^ memop.ALIGN) must be less than or equal to ($size(nt) / 8).
 - If n is defined,
-  - (2 ^ n_A) must be less than or equal to (n / 8).
+  - (2 ^ memop.ALIGN) must be less than or equal to (n / 8).
   - (n / 8) must be less than ($size(nt) / 8).
 - n? must be equal to ?().
 - Let mt be C.MEM[x].
 - The instruction is valid with type ([I32] -> [nt]).
 
-validation_of_STORE nt n? x { ALIGN: n_A; OFFSET: n_O; }
+validation_of_STORE nt n? x memop
 - |C.MEM| must be greater than x.
-- (2 ^ n_A) must be less than or equal to ($size(nt) / 8).
+- (2 ^ memop.ALIGN) must be less than or equal to ($size(nt) / 8).
 - If n is defined,
-  - (2 ^ n_A) must be less than or equal to (n / 8).
+  - (2 ^ memop.ALIGN) must be less than or equal to (n / 8).
   - (n / 8) must be less than ($size(nt) / 8).
 - n? must be equal to ?().
 - Let mt be C.MEM[x].
 - The instruction is valid with type ([I32, nt] -> []).
 
-validation_of_VLOAD ?((SHAPE M N sx)) x { ALIGN: n_A; OFFSET: n_O; }
+validation_of_VLOAD ?((SHAPE M N sx)) x memop
 - |C.MEM| must be greater than x.
-- (2 ^ n_A) must be less than or equal to ((M / 8) · N).
+- (2 ^ memop.ALIGN) must be less than or equal to ((M / 8) · N).
 - Let mt be C.MEM[x].
 - The instruction is valid with type ([I32] -> [V128]).
 
-validation_of_VLOAD_LANE n x { ALIGN: n_A; OFFSET: n_O; } laneidx
+validation_of_VLOAD_LANE n x memop laneidx
 - |C.MEM| must be greater than x.
-- (2 ^ n_A) must be less than (n / 8).
+- (2 ^ memop.ALIGN) must be less than (n / 8).
 - laneidx must be less than (128 / n).
 - Let mt be C.MEM[x].
 - The instruction is valid with type ([I32, V128] -> [V128]).
 
-validation_of_VSTORE x { ALIGN: n_A; OFFSET: n_O; }
+validation_of_VSTORE x memop
 - |C.MEM| must be greater than x.
-- (2 ^ n_A) must be less than or equal to ($vsize(V128) / 8).
+- (2 ^ memop.ALIGN) must be less than or equal to ($vsize(V128) / 8).
 - Let mt be C.MEM[x].
 - The instruction is valid with type ([I32, V128] -> []).
 
-validation_of_VSTORE_LANE n x { ALIGN: n_A; OFFSET: n_O; } laneidx
+validation_of_VSTORE_LANE n x memop laneidx
 - |C.MEM| must be greater than x.
-- (2 ^ n_A) must be less than (n / 8).
+- (2 ^ memop.ALIGN) must be less than (n / 8).
 - laneidx must be less than (128 / n).
 - Let mt be C.MEM[x].
 - The instruction is valid with type ([I32, V128] -> []).

@@ -403,8 +403,8 @@ syntax blocktype hint(desc "block type") =
 var bt : blocktype
 
 syntax instr/parametric hint(desc "parametric instruction") =
-  | UNREACHABLE
   | NOP
+  | UNREACHABLE
   | DROP
   | SELECT (valtype*)?
   | ...

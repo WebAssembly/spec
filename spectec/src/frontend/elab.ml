@@ -340,6 +340,9 @@ let as_opt_notation_typ_opt env t : typ option =
 let as_tup_typ_opt env t : typ list option =
   match expand_singular env t with TupT ts -> Some ts | _ -> None
 
+let as_empty_typ_opt env t : unit option =
+  match expand env t with SeqT [] -> Some () | _ -> None
+
 
 let as_x_typ as_t_opt phrase env dir t at shape =
   match as_t_opt env t with
@@ -356,6 +359,8 @@ let as_iter_notation_typ phrase env dir t at =
   as_x_typ as_iter_notation_typ_opt phrase env dir t at "(_)*"
 let as_opt_notation_typ phrase env dir t at =
   as_x_typ as_opt_notation_typ_opt phrase env dir t at "(_)?"
+let as_empty_typ phrase env dir t at =
+  as_x_typ as_empty_typ_opt phrase env dir t at "()"
 
 
 let rec as_notation_typid' phrase env id args at : typ =
@@ -409,6 +414,7 @@ let is_x_typ as_x_typ env t =
   try ignore (as_x_typ "" env Check t no_region); true
   with Error _ -> false
 
+let is_empty_typ = is_x_typ as_empty_typ
 let is_iter_typ = is_x_typ as_iter_typ
 let is_iter_notation_typ = is_x_typ as_iter_notation_typ
 let is_opt_notation_typ = is_x_typ as_opt_notation_typ
@@ -573,6 +579,7 @@ and elab_typ env t : Il.typ =
   | BoolT -> Il.BoolT $ t.at
   | NumT t' -> Il.NumT (elab_numtyp t') $ t.at
   | TextT -> Il.TextT $ t.at
+  | ParenT {it = SeqT []; _} -> Il.TupT [] $ t.at
   | ParenT t1 -> elab_typ env t1
   | TupT ts -> tup_typ' (List.map (elab_typ env) ts) t.at
   | IterT (t1, iter) ->
@@ -934,7 +941,7 @@ and infer_exp' env e : Il.exp' * typ =
     Il.LenE e1', NumT NatT $ e.at
   | SizeE id ->
     let _ = find "grammar" env.syms id in
-    NatE Z.zero, NumT NatT $ e.at
+    Il.NatE Z.zero, NumT NatT $ e.at
   | ParenE (e1, _) ->
     infer_exp' env e1
   | TupE es ->
@@ -944,6 +951,8 @@ and infer_exp' env e : Il.exp' * typ =
     let ps, t, _ = find "definition" env.defs id in
     let as', s = elab_args `Rhs env as_ ps e.at in
     Il.CallE (id, as'), Subst.subst_typ s t
+  | SeqE [] ->  (* empty tuples *)
+    Il.TupE [], TupT [] $ e.at
   | EpsE -> error e.at "cannot infer type of empty sequence"
   | SeqE _ -> error e.at "cannot infer type of expression sequence"
   | InfixE _ -> error e.at "cannot infer type of infix expression"
@@ -1075,6 +1084,9 @@ and elab_exp' env e t : Il.exp' =
   | CallE _ ->
     let e', t' = infer_exp env e in
     cast_exp' "function application" env e' t' t
+  | SeqE [] when is_empty_typ env t ->
+    let e', t' = infer_exp env e in
+    cast_exp' "empty expression" env e' t' t
   | EpsE | SeqE _ when is_iter_typ env t ->
     let es = unseq_exp e in
     elab_exp_iter' env es (as_iter_typ "" env Check t e.at) t e.at
@@ -1386,6 +1398,8 @@ and cast_exp' phrase env e' t1 t2 : Il.exp' =
     let t1' = elab_typ env (expand_nondef env t1) in
     let t2' = elab_typ env (expand_nondef env t2) in
     Il.SubE (e', t1', t2')
+  | TupT [], SeqT [] ->
+    e'.it
   | ConT ((t11, _), _), ConT ((t21, _), _) ->
     let mixop1, ts1', ts1 = elab_typ_notation env (expand_id env t1) t11 in
     let mixop2, _ts2', ts2 = elab_typ_notation env (expand_id env t2) t21 in

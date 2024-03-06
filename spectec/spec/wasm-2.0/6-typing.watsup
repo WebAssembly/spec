@@ -166,13 +166,13 @@ rule Instrs_ok/frame:
   -- Instrs_ok: C |- instr* : t_1* -> t_2*
 
 
-;; Polymorphic instructions
-
-rule Instr_ok/unreachable:
-  C |- UNREACHABLE : t_1* -> t_2*
+;; Parametric instructions
 
 rule Instr_ok/nop:
   C |- NOP : eps -> eps
+
+rule Instr_ok/unreachable:
+  C |- UNREACHABLE : t_1* -> t_2*
 
 rule Instr_ok/drop:
   C |- DROP : t -> eps
@@ -400,7 +400,7 @@ rule Instr_ok/table.set:
 
 rule Instr_ok/table.size:
   C |- TABLE.SIZE x : eps -> I32
-  -- if C.TABLE[x] = tt
+  -- if C.TABLE[x] = lim rt
 
 rule Instr_ok/table.grow:
   C |- TABLE.GROW x : rt I32 -> I32
@@ -453,50 +453,50 @@ rule Instr_ok/data.drop:
   -- if C.DATA[x] = OK
 
 rule Instr_ok/load:
-  C |- LOAD nt (n _ sx)? {ALIGN n_A, OFFSET n_O} : I32 -> nt
+  C |- LOAD nt (n _ sx)? memop : I32 -> nt
   -- if C.MEM[0] = mt
-  -- if $(2^(n_A) <= $size(nt)/8)
-  -- if $(2^(n_A) <= n/8 < $size(nt)/8)?
+  -- if $(2^(memop.ALIGN) <= $size(nt)/8)
+  -- if $(2^(memop.ALIGN) <= n/8 < $size(nt)/8)?
   -- if n? = eps \/ nt = inn
 
 rule Instr_ok/store:
-  C |- STORE nt n? {ALIGN n_A, OFFSET n_O} : I32 nt -> eps
+  C |- STORE nt n? memop : I32 nt -> eps
   -- if C.MEM[0] = mt
-  -- if $(2^(n_A) <= $size(nt)/8)
-  -- if $(2^(n_A) <= n/8 < $size(nt)/8)?
+  -- if $(2^(memop.ALIGN) <= $size(nt)/8)
+  -- if $(2^(memop.ALIGN) <= n/8 < $size(nt)/8)?
   -- if n? = eps \/ nt = inn
 
 rule Instr_ok/vload:
-  C |- VLOAD (SHAPE M X N sx) {ALIGN n_A, OFFSET n_O} : I32 -> V128
+  C |- VLOAD (SHAPE M X N sx) memop : I32 -> V128
   -- if C.MEM[0] = mt
-  -- if $(2^(n_A) <= M/8 * N)
+  -- if $(2^(memop.ALIGN) <= M/8 * N)
 
 rule Instr_ok/vload-splat:
-  C |- VLOAD (SPLAT N) {ALIGN n_A, OFFSET n_O} : I32 -> V128
+  C |- VLOAD (SPLAT n) memop : I32 -> V128
   -- if C.MEM[0] = mt
-  -- if $(2^(n_A) <= N/8)
+  -- if $(2^(memop.ALIGN) <= n/8)
 
 rule Instr_ok/vload-zero:
-  C |- VLOAD (ZERO N) {ALIGN n_A, OFFSET n_O} : I32 -> V128
+  C |- VLOAD (ZERO n) memop : I32 -> V128
   -- if C.MEM[0] = mt
-  -- if $(2^(n_A) < N/8)
+  -- if $(2^(memop.ALIGN) < n/8)
 
 rule Instr_ok/vload_lane:
-  C |- VLOAD_LANE N {ALIGN n_A, OFFSET n_O} i : I32 V128 -> V128
+  C |- VLOAD_LANE n memop laneidx : I32 V128 -> V128
   -- if C.MEM[0] = mt
-  -- if $(2^(n_A) < N/8)
-  -- if $(i < 128 / N)
+  -- if $(2^(memop.ALIGN) < n/8)
+  -- if $(laneidx < 128 / n)
 
 rule Instr_ok/vstore:
-  C |- VSTORE {ALIGN n_A, OFFSET n_O} : I32 V128 -> eps
+  C |- VSTORE memop : I32 V128 -> eps
   -- if C.MEM[0] = mt
-  -- if $(2^(n_A) <= $size(V128)/8)
+  -- if $(2^(memop.ALIGN) <= $size(V128)/8)
 
 rule Instr_ok/vstore_lane:
-  C |- VSTORE_LANE N {ALIGN n_A, OFFSET n_O} i : I32 V128 -> eps
+  C |- VSTORE_LANE n memop laneidx : I32 V128 -> eps
   -- if C.MEM[0] = mt
-  -- if $(2^(n_A) < N/8)
-  -- if $(i < 128 / N)
+  -- if $(2^(memop.ALIGN) < n/8)
+  -- if $(laneidx < 128 / n)
 
 
 ;;
