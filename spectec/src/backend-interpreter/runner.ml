@@ -88,7 +88,8 @@ let get_export_addr name modulename =
     |> strv_access "VALUE"
     |> args_of_casev
   in
-  try List.hd vl with Failure _ -> failwith ("Invalid export " ^ name)
+  try List.hd vl with Failure _ ->
+    failwith ("Function export doesn't contains function address")
 
 (** Main functions **)
 

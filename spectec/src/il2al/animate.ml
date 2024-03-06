@@ -138,7 +138,7 @@ let singletons = List.map wrap
 let group_arg e _ =
   match e.it with
   | CallE (_, args) -> List.map free_arg_list args
-  | _ -> failwith "Unreachable"
+  | _ -> assert false
 
 let large_enough_subsets xs =
   let yss = powset xs in
