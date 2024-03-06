@@ -1,10 +1,11 @@
 open Ast
 open Util
+open Source
 
 
 (* Constructor Shorthands *)
 
-let no = Util.Source.no_region
+let no = no_region
 
 let _nid_count = ref 0
 let gen_nid () =
@@ -12,7 +13,7 @@ let gen_nid () =
   _nid_count := nid + 1;
   nid
 
-let mk_instr at it = Util.Source.($$) it (at, gen_nid())
+let mk_instr at it = it $$ (at, gen_nid())
 
 let ifI ?(at = no) (c, il1, il2) = IfI (c, il1, il2) |> mk_instr at
 let eitherI ?(at = no) (il1, il2) = EitherI (il1, il2) |> mk_instr at
@@ -107,8 +108,13 @@ let fail_value msg v =
   |> Printf.sprintf "%s: %s" msg
   |> failwith
 
+let fail_expr msg e =
+  Print.string_of_expr e
+  |> Printf.sprintf "%s: %s" msg
+  |> failwith
+
 let print_yet at category msg =
-  (Util.Source.string_of_region at ^ ": ") ^ (category ^ ": Yet " ^ msg)
+  (string_of_region at ^ ": ") ^ (category ^ ": Yet " ^ msg)
   |> print_endline
 
 (* Helper functions *)
@@ -143,6 +149,11 @@ let map2
   (v1: value)
   (v2: value): value =
     op (destruct v1) (destruct v2) |> construct
+
+let iter_type_of_value: value -> iter = function
+  | ListV _ -> List
+  | OptV _ -> Opt
+  | v -> fail_value "iter_type_of_value" v
 
 
 (* Destruct *)
@@ -179,6 +190,11 @@ let unwrap_tupv: value -> value list = function
 let unwrap_strv = function
   | StrV r -> r
   | v -> fail_value "unwrap_strv" v
+
+let unwrap_cate e =
+  match e.it with
+  | CatE (e1, e2) -> e1, e2
+  | _ -> fail_expr "unwrap_cate" e
 
 let name_of_algo = function
   | RuleA ((name, _), _, _) -> name

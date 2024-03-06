@@ -137,12 +137,12 @@ and eval_expr env expr =
     | GtOp, v1, v2 -> boolV (v1 > v2)
     | LeOp, v1, v2 -> boolV (v1 <= v2)
     | GeOp, v1, v2 -> boolV (v1 >= v2)
-    | _ -> error_expr expr "Invalid BinE"
+    | _ -> error_expr expr "Type mismatch"
     )
   (* Function Call *)
   | CallE (fname, el) ->
     let args = List.map (eval_expr env) el in
-    (match try_call_func expr.at fname args  with
+    (match try_call_func expr.at fname args with
     | Some v -> v
     | _ -> raise (Exception.MissingReturnValue fname)
     )
@@ -190,14 +190,18 @@ and eval_expr env expr =
     | FrameV (Some v, _) -> v
     | FrameV _ -> numV Z.zero
     | _ -> error_expr expr "Not a context" (* Due to AL validation, unreachable *))
-  | FrameE (e1, e2) ->
-    let v1 = Option.map (eval_expr env) e1 in
-    let v2 = eval_expr env e2 in
-    (match v1, v2 with
-    | (Some (NumV _)|None), StrV _ -> FrameV (v1, v2)
-    (* Due to AL validation unreachable *)
-    | _ -> error_expr expr "Invalid frame"
-    )
+  | FrameE (e_opt, e) ->
+    let arity =
+      match Option.map (eval_expr env) e_opt with
+      | None | Some (NumV _) as arity -> arity
+      | _ -> error_expr expr "Wrong arity"
+    in
+    let r =
+      match eval_expr env e with
+      | StrV _ as v -> v
+      | _ -> error_expr expr "Not a frame"
+    in
+    FrameV (arity, r)
   | GetCurFrameE -> WasmContext.get_current_frame ()
   | LabelE (e1, e2) ->
     let v1 = eval_expr env e1 in
@@ -333,24 +337,24 @@ and has_same_keys re rv =
   let k2 = Record.keys rv |> List.sort String.compare in
   k1 = k2
 
-and merge_envs_with_grouping default_env envs =
-  let merge env acc =
-    let f _ v1 = function
-      | ListV arr ->
-          Array.append [| v1 |] !arr |> listV |> Option.some
-      | OptV None -> Option.some v1 |> optV |> Option.some
-      | _ -> failwith "merge_envs_with_grouping"
+and merge env acc =
+  let f _ v1 v2 =
+    let wrapped =
+      match iter_type_of_value v2 with
+      | List | List1 | ListN _ ->
+        unwrap_listv_to_array v2 |> Array.append [| v1 |] |> listV
+      | Opt -> optV (Some v1)
     in
-    Env.union f env acc
+    Some wrapped
   in
-  List.fold_right merge envs default_env
+  Env.union f env acc
 
 and assign lhs rhs env =
   match lhs.it, rhs with
   | VarE name, v -> Env.add name v env
   | IterE ({ it = VarE n; _ }, _, List), ListV _ -> (* Optimized assign for simple IterE(VarE, ...) *)
     Env.add n rhs env
-  | IterE (e, _, iter), _ ->
+  | IterE (e, ids, iter), _ ->
     let new_env, default_rhs, rhs_list =
       match iter, rhs with
       | (List | List1), ListV arr -> env, listV [||], Array.to_list !arr
@@ -358,23 +362,23 @@ and assign lhs rhs env =
         let length = Array.length !arr |> Z.of_int |> numV in
         assign expr length env, listV [||], Array.to_list !arr
       | Opt, OptV opt -> env, optV None, Option.to_list opt
-      | ListN (_, Some _), ListV _ | _, _ ->
+      | ListN (_, Some _), ListV _ ->
+        error_expr lhs "Invalid assignment: iter with index cannot be an assignment target"
+      | _, _ ->
         error_expr lhs
-          (sprintf "Invalid assignment on rhs %s" (string_of_value rhs))
+          (sprintf
+            "Invalid assignment: %s is not an iterable value" (string_of_value rhs)
+          )
     in
 
-    let default_env =
-      e
-      |> Free.free_expr
-      |> Free.IdSet.elements
-      |> List.map (fun n -> n, default_rhs)
-      |> List.to_seq
-      |> Env.of_seq
-    in
+    let envs = List.map (fun v -> assign e v Env.empty) rhs_list in
 
-    List.map (fun v -> assign e v Env.empty) rhs_list
-      |> merge_envs_with_grouping default_env
-      |> Env.union (fun _ _ v -> Some v) new_env
+    ids
+    |> List.map (fun n -> n, default_rhs)
+    |> List.to_seq
+    |> Env.of_seq
+    |> List.fold_right merge envs
+    |> Env.union (fun _ _ v -> Some v) new_env
   | InfixE (lhs1, _, lhs2), TupV [rhs1; rhs2] ->
     env |> assign lhs1 rhs1 |> assign lhs2 rhs2
   | TupE lhs_s, TupV rhs_s
@@ -395,37 +399,47 @@ and assign lhs rhs env =
       | SubOp -> Z.add
       | MulOp -> Z.div
       | DivOp -> Z.mul
-      | _ -> error_expr lhs "Invalid binop for lhs of assign" in
+      | ExpOp -> error_expr lhs "Invalid assignment: ExpOp cannot be an assignment target"
+      | _ -> error_expr lhs "Invalid assignment: logical binop cannot be an assignment target" in
     let v = eval_expr env e2 |> al_to_z |> invop m |> numV in
     assign e1 v env
-  | CatE (e1, e2), ListV vs ->
-    (try assign_split e1 e2 !vs env with _ ->
-      error_expr lhs
-        (sprintf "Invalid assignment on rhs %s" (string_of_value rhs))
-    )
+  | CatE _, ListV vs -> assign_split lhs !vs env
   | StrE r1, StrV r2 when has_same_keys r1 r2 ->
     Record.fold (fun k v acc -> (Record.find (string_of_kwd k) r2 |> assign v) acc) r1 env
   | _, _ ->
     error_expr lhs
       (sprintf "Invalid assignment on rhs %s" (string_of_value rhs))
 
-and assign_split ep es vs env =
+and assign_split lhs vs env =
+  let ep, es = unwrap_cate lhs in
   let len = Array.length vs in
   let prefix_len, suffix_len =
-    let get_length e =
+    let get_fixed_length e =
       match e.it with
-      | ListE es -> List.length es |> Option.some
-      | IterE (_, _, ListN (e, None)) -> eval_expr env e |> al_to_int |> Option.some
-      | _ -> None in
-    match get_length ep, get_length es with
-    | None, None -> failwith "non-deterministic assign_split"
+      | ListE es -> Some (List.length es)
+      | IterE (_, _, ListN (e, None)) -> Some (al_to_int (eval_expr env e))
+      | _ -> None
+    in
+    match get_fixed_length ep, get_fixed_length es with
+    | None, None ->
+      error_expr lhs
+        "Invalid assignment: non-deterministic pattern cannot be an assignment target"
     | Some l, None -> l, len - l
     | None, Some l -> len - l, l
-    | Some l1, Some l2 -> l1, l2 in
-  assert (prefix_len >= 0 && suffix_len >= 0 && prefix_len + suffix_len = len);
-  let prefix = Array.sub vs 0 prefix_len |> listV in
-  let suffix = Array.sub vs prefix_len suffix_len |> listV in
-  env |> assign ep prefix |> assign es suffix
+    | Some l1, Some l2 -> l1, l2
+  in
+  if prefix_len < 0 || suffix_len < 0 then
+    error_expr lhs "Invalid assignment: negative length cannot be an assignment target"
+  else if prefix_len + suffix_len <> len then
+    error_expr lhs
+      (sprintf "Invalid assignment: %s's length is not equal to lhs"
+        (string_of_value (listV vs))
+      )
+  else (
+    let prefix = Array.sub vs 0 prefix_len |> listV in
+    let suffix = Array.sub vs prefix_len suffix_len |> listV in
+    env |> assign ep prefix |> assign es suffix
+  )
 
 
 (* Step *)
@@ -469,7 +483,7 @@ and step_instr (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.
       | FrameV _, _, _ -> ctx
       | v, _, _ ->
         error_expr e
-          (sprintf "Invalid context %s for" (string_of_value v))
+          (sprintf "current context is not a frame: %s" (string_of_value v))
       )
     | IterE ({ it = VarE name; _ }, [name'], ListN (e', None)) when name = name' ->
       let i = eval_expr env e' |> al_to_int in
@@ -566,7 +580,7 @@ and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
   | CaseV ("VCONST", _) as v -> WasmContext.push_value v; ctx
   | CaseV (name, []) when Builtin.is_builtin name -> Builtin.call name; ctx
   | CaseV (fname, args) -> create_context fname args :: ctx
-  | v -> fail_value "Invalid wasm instr for step_wasm" v
+  | v -> fail_value "Not a wasm instr" v
 
 and step : AlContext.t -> AlContext.t = AlContext.(function
   | Al (name, il, env) :: ctx ->
@@ -595,7 +609,7 @@ and step : AlContext.t -> AlContext.t = AlContext.(function
       step_instr new_ctx env h
     )
   | Execute v :: ctx -> step_wasm ctx v
-  | _ -> failwith "Invalid al context for step"
+  | _ -> assert false
 )
 
 
