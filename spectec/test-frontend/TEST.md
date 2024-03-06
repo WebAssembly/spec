@@ -147,7 +147,7 @@ syntax fNmag{N : N}(N) =
   | SUBNORM{m : m, N : N, n : n}(m : m)
     -- if ((m < (2 ^ $M(N))) /\ ((2 - (2 ^ ($E(N) - 1))) = n))
   | INF
-  | `NAN_(%)`{m : m}(m : m)
+  | `NAN(%)`{m : m}(m : m)
     -- if ((1 <= m) /\ (m < (2 ^ $M(N))))
 
 ;; 1-syntax.watsup
@@ -840,7 +840,7 @@ syntax instr =
   | UNREACHABLE
   | NOP
   | DROP
-  | `SELECT_(_)%?`{valtype*? : valtype*?}(valtype*{valtype : valtype}?{valtype : valtype} : valtype*?)
+  | `SELECT()%?`{valtype*? : valtype*?}(valtype*{valtype : valtype}?{valtype : valtype} : valtype*?)
   | BLOCK{blocktype : blocktype, instr* : instr*}(blocktype : blocktype, instr*{instr : instr} : instr*)
   | LOOP{blocktype : blocktype, instr* : instr*}(blocktype : blocktype, instr*{instr : instr} : instr*)
   | `IF%%ELSE%`{blocktype : blocktype, instr* : instr*}(blocktype : blocktype, instr*{instr : instr} : instr*, instr*)
@@ -931,7 +931,7 @@ syntax instr =
   | TABLE.COPY{tableidx : tableidx}(tableidx : tableidx, tableidx)
   | TABLE.INIT{tableidx : tableidx, elemidx : elemidx}(tableidx : tableidx, elemidx : elemidx)
   | ELEM.DROP{elemidx : elemidx}(elemidx : elemidx)
-  | `LOAD%(___)%?%%`{numtype : numtype, ww? : ww?, sx? : sx?, memidx : memidx, memop : memop, inn? : inn?}(numtype : numtype, (ww, sx)?{sx : sx, ww : ww} : (ww, sx)?, memidx : memidx, memop : memop)
+  | `LOAD%(_)%?%%`{numtype : numtype, ww? : ww?, sx? : sx?, memidx : memidx, memop : memop, inn? : inn?}(numtype : numtype, (ww, sx)?{sx : sx, ww : ww} : (ww, sx)?, memidx : memidx, memop : memop)
     -- (if ((numtype = (inn : inn <: numtype)) /\ (ww!`%`_ww.0 < $size((inn : inn <: numtype)))))?{inn : inn, ww : ww}
   | STORE{numtype : numtype, ww? : ww?, memidx : memidx, memop : memop, inn? : inn?}(numtype : numtype, ww?{ww : ww} : ww?, memidx : memidx, memop : memop)
     -- (if ((numtype = (inn : inn <: numtype)) /\ (ww!`%`_ww.0 < $size((inn : inn <: numtype)))))?{inn : inn, ww : ww}
@@ -2295,7 +2295,7 @@ syntax admininstr =
   | UNREACHABLE
   | NOP
   | DROP
-  | `SELECT_(_)%?`{valtype*? : valtype*?}(valtype*{valtype : valtype}?{valtype : valtype} : valtype*?)
+  | `SELECT()%?`{valtype*? : valtype*?}(valtype*{valtype : valtype}?{valtype : valtype} : valtype*?)
   | BLOCK{blocktype : blocktype, instr* : instr*}(blocktype : blocktype, instr*{instr : instr} : instr*)
   | LOOP{blocktype : blocktype, instr* : instr*}(blocktype : blocktype, instr*{instr : instr} : instr*)
   | `IF%%ELSE%`{blocktype : blocktype, instr* : instr*}(blocktype : blocktype, instr*{instr : instr} : instr*, instr*)
@@ -2386,7 +2386,7 @@ syntax admininstr =
   | TABLE.COPY{tableidx : tableidx}(tableidx : tableidx, tableidx)
   | TABLE.INIT{tableidx : tableidx, elemidx : elemidx}(tableidx : tableidx, elemidx : elemidx)
   | ELEM.DROP{elemidx : elemidx}(elemidx : elemidx)
-  | `LOAD%(___)%?%%`{numtype : numtype, ww? : ww?, sx? : sx?, memidx : memidx, memop : memop, inn? : inn?}(numtype : numtype, (ww, sx)?{sx : sx, ww : ww} : (ww, sx)?, memidx : memidx, memop : memop)
+  | `LOAD%(_)%?%%`{numtype : numtype, ww? : ww?, sx? : sx?, memidx : memidx, memop : memop, inn? : inn?}(numtype : numtype, (ww, sx)?{sx : sx, ww : ww} : (ww, sx)?, memidx : memidx, memop : memop)
     -- (if ((numtype = (inn : inn <: numtype)) /\ (ww!`%`_ww.0 < $size((inn : inn <: numtype)))))?{inn : inn, ww : ww}
   | STORE{numtype : numtype, ww? : ww?, memidx : memidx, memop : memop, inn? : inn?}(numtype : numtype, ww?{ww : ww} : ww?, memidx : memidx, memop : memop)
     -- (if ((numtype = (inn : inn <: numtype)) /\ (ww!`%`_ww.0 < $size((inn : inn <: numtype)))))?{inn : inn, ww : ww}
@@ -2420,7 +2420,7 @@ rec {
 
 ;; 4-runtime.watsup:165.1-168.25
 syntax E =
-  | `_HOLE_[___]`
+  | `_HOLE[_]`
   | _SEQ{val* : val*, E : E, instr* : instr*}(val*{val : val} : val*, E : E, instr*{instr : instr} : instr*)
   | `LABEL_%{%}%`{n : n, instr* : instr*, E : E}(n : n, instr*{instr : instr} : instr*, E : E)
 }
@@ -2707,7 +2707,11 @@ syntax localtype =
 
 ;; 6-typing.watsup
 syntax instrtype =
-  | `%->%%`{resulttype : resulttype, localidx* : localidx*}(resulttype : resulttype, localidx*{localidx : localidx} : localidx*, resulttype)
+  | `%->_%%`{resulttype : resulttype, localidx* : localidx*}(resulttype : resulttype, localidx*{localidx : localidx} : localidx*, resulttype)
+
+;; 6-typing.watsup
+syntax finstrtype =
+  | `%->%`{resulttype : resulttype}(resulttype : resulttype, resulttype)
 
 ;; 6-typing.watsup
 syntax context =
@@ -2728,22 +2732,22 @@ syntax context =
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:26.1-26.86
+;; 6-typing.watsup:29.1-29.86
 def $with_locals(context : context, localidx*, localtype*) : context
-  ;; 6-typing.watsup:28.1-28.34
+  ;; 6-typing.watsup:31.1-31.34
   def $with_locals{C : context}(C, [], []) = C
-  ;; 6-typing.watsup:29.1-29.89
+  ;; 6-typing.watsup:32.1-32.89
   def $with_locals{C : context, x_1 : idx, x* : idx*, lct_1 : localtype, lct* : localtype*}(C, [x_1] :: x*{x : localidx}, [lct_1] :: lct*{lct : localtype}) = $with_locals(C[LOCAL_context[x_1!`%`_idx.0] = lct_1], x*{x : localidx}, lct*{lct : localtype})
 }
 
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:33.1-33.65
+;; 6-typing.watsup:36.1-36.65
 def $clostypes(deftype*) : deftype*
-  ;; 6-typing.watsup:37.1-37.26
+  ;; 6-typing.watsup:40.1-40.26
   def $clostypes([]) = []
-  ;; 6-typing.watsup:38.1-38.93
+  ;; 6-typing.watsup:41.1-41.93
   def $clostypes{dt* : deftype*, dt_N : deftype, dt'* : deftype*}(dt*{dt : deftype} :: [dt_N]) = dt'*{dt' : deftype} :: [$subst_all_deftype(dt_N, (dt' : deftype <: heaptype)*{dt' : deftype})]
     -- if (dt'*{dt' : deftype} = $clostypes(dt*{dt : deftype}))
 }
@@ -2755,75 +2759,75 @@ def $clostype(context : context, deftype : deftype) : deftype
     -- if (dt'*{dt' : deftype} = $clostypes(C.TYPE_context))
 
 ;; 6-typing.watsup
-relation Numtype_ok: `%|-%:_OK`(context, numtype)
+relation Numtype_ok: `%|-%:OK`(context, numtype)
   ;; 6-typing.watsup
   rule _{C : context, numtype : numtype}:
-    `%|-%:_OK`(C, numtype)
+    `%|-%:OK`(C, numtype)
 
 ;; 6-typing.watsup
-relation Vectype_ok: `%|-%:_OK`(context, vectype)
+relation Vectype_ok: `%|-%:OK`(context, vectype)
   ;; 6-typing.watsup
   rule _{C : context, vectype : vectype}:
-    `%|-%:_OK`(C, vectype)
+    `%|-%:OK`(C, vectype)
 
 ;; 6-typing.watsup
-relation Heaptype_ok: `%|-%:_OK`(context, heaptype)
+relation Heaptype_ok: `%|-%:OK`(context, heaptype)
   ;; 6-typing.watsup
   rule abs{C : context, absheaptype : absheaptype}:
-    `%|-%:_OK`(C, (absheaptype : absheaptype <: heaptype))
+    `%|-%:OK`(C, (absheaptype : absheaptype <: heaptype))
 
   ;; 6-typing.watsup
   rule typeidx{C : context, typeidx : typeidx, dt : deftype}:
-    `%|-%:_OK`(C, _IDX_heaptype(typeidx))
+    `%|-%:OK`(C, _IDX_heaptype(typeidx))
     -- if (C.TYPE_context[typeidx!`%`_typeidx.0] = dt)
 
   ;; 6-typing.watsup
   rule rec{C : context, i : nat, st : subtype}:
-    `%|-%:_OK`(C, REC_heaptype(i))
+    `%|-%:OK`(C, REC_heaptype(i))
     -- if (C.REC_context[i] = st)
 
 ;; 6-typing.watsup
-relation Reftype_ok: `%|-%:_OK`(context, reftype)
+relation Reftype_ok: `%|-%:OK`(context, reftype)
   ;; 6-typing.watsup
   rule _{C : context, heaptype : heaptype}:
-    `%|-%:_OK`(C, REF_reftype(`NULL%?`_nul(()?{}), heaptype))
-    -- Heaptype_ok: `%|-%:_OK`(C, heaptype)
+    `%|-%:OK`(C, REF_reftype(`NULL%?`_nul(()?{}), heaptype))
+    -- Heaptype_ok: `%|-%:OK`(C, heaptype)
 
 ;; 6-typing.watsup
-relation Valtype_ok: `%|-%:_OK`(context, valtype)
+relation Valtype_ok: `%|-%:OK`(context, valtype)
   ;; 6-typing.watsup
   rule num{C : context, numtype : numtype}:
-    `%|-%:_OK`(C, (numtype : numtype <: valtype))
-    -- Numtype_ok: `%|-%:_OK`(C, numtype)
+    `%|-%:OK`(C, (numtype : numtype <: valtype))
+    -- Numtype_ok: `%|-%:OK`(C, numtype)
 
   ;; 6-typing.watsup
   rule vec{C : context, vectype : vectype}:
-    `%|-%:_OK`(C, (vectype : vectype <: valtype))
-    -- Vectype_ok: `%|-%:_OK`(C, vectype)
+    `%|-%:OK`(C, (vectype : vectype <: valtype))
+    -- Vectype_ok: `%|-%:OK`(C, vectype)
 
   ;; 6-typing.watsup
   rule ref{C : context, reftype : reftype}:
-    `%|-%:_OK`(C, (reftype : reftype <: valtype))
-    -- Reftype_ok: `%|-%:_OK`(C, reftype)
+    `%|-%:OK`(C, (reftype : reftype <: valtype))
+    -- Reftype_ok: `%|-%:OK`(C, reftype)
 
   ;; 6-typing.watsup
   rule bot{C : context}:
-    `%|-%:_OK`(C, BOT_valtype)
+    `%|-%:OK`(C, BOT_valtype)
 
 ;; 6-typing.watsup
-relation Resulttype_ok: `%|-%:_OK`(context, resulttype)
+relation Resulttype_ok: `%|-%:OK`(context, resulttype)
   ;; 6-typing.watsup
   rule _{C : context, t* : valtype*}:
-    `%|-%:_OK`(C, `%`_resulttype(t*{t : valtype}))
-    -- (Valtype_ok: `%|-%:_OK`(C, t))*{t : valtype}
+    `%|-%:OK`(C, `%`_resulttype(t*{t : valtype}))
+    -- (Valtype_ok: `%|-%:OK`(C, t))*{t : valtype}
 
 ;; 6-typing.watsup
-relation Instrtype_ok: `%|-%:_OK`(context, instrtype)
+relation Instrtype_ok: `%|-%:OK`(context, instrtype)
   ;; 6-typing.watsup
   rule _{C : context, t_1* : valtype*, x* : idx*, t_2* : valtype*, lct* : localtype*}:
-    `%|-%:_OK`(C, `%->%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x*{x : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
-    -- Resulttype_ok: `%|-%:_OK`(C, `%`_resulttype(t_1*{t_1 : valtype}))
-    -- Resulttype_ok: `%|-%:_OK`(C, `%`_resulttype(t_2*{t_2 : valtype}))
+    `%|-%:OK`(C, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x*{x : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
+    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_1*{t_1 : valtype}))
+    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_2*{t_2 : valtype}))
     -- (if (C.LOCAL_context[x!`%`_idx.0] = lct))*{lct : localtype, x : idx}
 
 ;; 6-typing.watsup
@@ -2835,54 +2839,54 @@ syntax oktypeidxnat =
   | OK{typeidx : typeidx}(typeidx : typeidx, nat)
 
 ;; 6-typing.watsup
-relation Packtype_ok: `%|-%:_OK`(context, packtype)
+relation Packtype_ok: `%|-%:OK`(context, packtype)
   ;; 6-typing.watsup
   rule _{C : context, packtype : packtype}:
-    `%|-%:_OK`(C, packtype)
+    `%|-%:OK`(C, packtype)
 
 ;; 6-typing.watsup
-relation Storagetype_ok: `%|-%:_OK`(context, storagetype)
+relation Storagetype_ok: `%|-%:OK`(context, storagetype)
   ;; 6-typing.watsup
   rule val{C : context, valtype : valtype}:
-    `%|-%:_OK`(C, (valtype : valtype <: storagetype))
-    -- Valtype_ok: `%|-%:_OK`(C, valtype)
+    `%|-%:OK`(C, (valtype : valtype <: storagetype))
+    -- Valtype_ok: `%|-%:OK`(C, valtype)
 
   ;; 6-typing.watsup
   rule pack{C : context, packtype : packtype}:
-    `%|-%:_OK`(C, (packtype : packtype <: storagetype))
-    -- Packtype_ok: `%|-%:_OK`(C, packtype)
+    `%|-%:OK`(C, (packtype : packtype <: storagetype))
+    -- Packtype_ok: `%|-%:OK`(C, packtype)
 
 ;; 6-typing.watsup
-relation Fieldtype_ok: `%|-%:_OK`(context, fieldtype)
+relation Fieldtype_ok: `%|-%:OK`(context, fieldtype)
   ;; 6-typing.watsup
   rule _{C : context, storagetype : storagetype}:
-    `%|-%:_OK`(C, `%%`_fieldtype(`MUT%?`_mut(()?{}), storagetype))
-    -- Storagetype_ok: `%|-%:_OK`(C, storagetype)
+    `%|-%:OK`(C, `%%`_fieldtype(`MUT%?`_mut(()?{}), storagetype))
+    -- Storagetype_ok: `%|-%:OK`(C, storagetype)
 
 ;; 6-typing.watsup
-relation Functype_ok: `%|-%:_OK`(context, functype)
+relation Functype_ok: `%|-%:OK`(context, functype)
   ;; 6-typing.watsup
   rule _{C : context, t_1* : valtype*, t_2* : valtype*}:
-    `%|-%:_OK`(C, `%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype})))
-    -- Resulttype_ok: `%|-%:_OK`(C, `%`_resulttype(t_1*{t_1 : valtype}))
-    -- Resulttype_ok: `%|-%:_OK`(C, `%`_resulttype(t_2*{t_2 : valtype}))
+    `%|-%:OK`(C, `%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype})))
+    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_1*{t_1 : valtype}))
+    -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_2*{t_2 : valtype}))
 
 ;; 6-typing.watsup
-relation Comptype_ok: `%|-%:_OK`(context, comptype)
+relation Comptype_ok: `%|-%:OK`(context, comptype)
   ;; 6-typing.watsup
   rule struct{C : context, fieldtype* : fieldtype*}:
-    `%|-%:_OK`(C, STRUCT_comptype(`%`_structtype(fieldtype*{fieldtype : fieldtype})))
-    -- (Fieldtype_ok: `%|-%:_OK`(C, fieldtype))*{fieldtype : fieldtype}
+    `%|-%:OK`(C, STRUCT_comptype(`%`_structtype(fieldtype*{fieldtype : fieldtype})))
+    -- (Fieldtype_ok: `%|-%:OK`(C, fieldtype))*{fieldtype : fieldtype}
 
   ;; 6-typing.watsup
   rule array{C : context, fieldtype : fieldtype}:
-    `%|-%:_OK`(C, ARRAY_comptype(fieldtype))
-    -- Fieldtype_ok: `%|-%:_OK`(C, fieldtype)
+    `%|-%:OK`(C, ARRAY_comptype(fieldtype))
+    -- Fieldtype_ok: `%|-%:OK`(C, fieldtype)
 
   ;; 6-typing.watsup
   rule func{C : context, functype : functype}:
-    `%|-%:_OK`(C, FUNC_comptype(functype))
-    -- Functype_ok: `%|-%:_OK`(C, functype)
+    `%|-%:OK`(C, FUNC_comptype(functype))
+    -- Functype_ok: `%|-%:OK`(C, functype)
 
 ;; 6-typing.watsup
 relation Packtype_sub: `%|-%<:%`(context, packtype, packtype)
@@ -2899,99 +2903,99 @@ relation Numtype_sub: `%|-%<:%`(context, numtype, numtype)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:125.1-125.75
+;; 6-typing.watsup:128.1-128.75
 relation Deftype_sub: `%|-%<:%`(context, deftype, deftype)
-  ;; 6-typing.watsup:436.1-438.58
+  ;; 6-typing.watsup:439.1-441.58
   rule refl{C : context, deftype_1 : deftype, deftype_2 : deftype}:
     `%|-%<:%`(C, deftype_1, deftype_2)
     -- if ($clostype(C, deftype_1) = $clostype(C, deftype_2))
 
-  ;; 6-typing.watsup:440.1-443.40
+  ;; 6-typing.watsup:443.1-446.40
   rule super{C : context, deftype_1 : deftype, deftype_2 : deftype, fin : fin, ht_1* : heaptype*, ht : heaptype, ht_2* : heaptype*, ct : comptype}:
     `%|-%<:%`(C, deftype_1, deftype_2)
     -- if ($unrolldt(deftype_1) = SUBD_subtype(fin, ht_1*{ht_1 : heaptype} :: [ht] :: ht_2*{ht_2 : heaptype}, ct))
     -- Heaptype_sub: `%|-%<:%`(C, ht, (deftype_2 : deftype <: heaptype))
 
-;; 6-typing.watsup:273.1-273.79
+;; 6-typing.watsup:276.1-276.79
 relation Heaptype_sub: `%|-%<:%`(context, heaptype, heaptype)
-  ;; 6-typing.watsup:284.1-285.28
+  ;; 6-typing.watsup:287.1-288.28
   rule refl{C : context, heaptype : heaptype}:
     `%|-%<:%`(C, heaptype, heaptype)
 
-  ;; 6-typing.watsup:287.1-291.48
+  ;; 6-typing.watsup:290.1-294.48
   rule trans{C : context, heaptype_1 : heaptype, heaptype_2 : heaptype, heaptype' : heaptype}:
     `%|-%<:%`(C, heaptype_1, heaptype_2)
-    -- Heaptype_ok: `%|-%:_OK`(C, heaptype')
+    -- Heaptype_ok: `%|-%:OK`(C, heaptype')
     -- Heaptype_sub: `%|-%<:%`(C, heaptype_1, heaptype')
     -- Heaptype_sub: `%|-%<:%`(C, heaptype', heaptype_2)
 
-  ;; 6-typing.watsup:293.1-294.17
+  ;; 6-typing.watsup:296.1-297.17
   rule eq-any{C : context}:
     `%|-%<:%`(C, EQ_heaptype, ANY_heaptype)
 
-  ;; 6-typing.watsup:296.1-297.17
+  ;; 6-typing.watsup:299.1-300.17
   rule i31-eq{C : context}:
     `%|-%<:%`(C, I31_heaptype, EQ_heaptype)
 
-  ;; 6-typing.watsup:299.1-300.20
+  ;; 6-typing.watsup:302.1-303.20
   rule struct-eq{C : context}:
     `%|-%<:%`(C, STRUCT_heaptype, EQ_heaptype)
 
-  ;; 6-typing.watsup:302.1-303.19
+  ;; 6-typing.watsup:305.1-306.19
   rule array-eq{C : context}:
     `%|-%<:%`(C, ARRAY_heaptype, EQ_heaptype)
 
-  ;; 6-typing.watsup:305.1-307.35
+  ;; 6-typing.watsup:308.1-310.35
   rule struct{C : context, deftype : deftype, yt* : fieldtype*}:
     `%|-%<:%`(C, (deftype : deftype <: heaptype), STRUCT_heaptype)
     -- Expand: `%~~%`(deftype, STRUCT_comptype(`%`_structtype(yt*{yt : fieldtype})))
 
-  ;; 6-typing.watsup:309.1-311.33
+  ;; 6-typing.watsup:312.1-314.33
   rule array{C : context, deftype : deftype, yt : fieldtype}:
     `%|-%<:%`(C, (deftype : deftype <: heaptype), ARRAY_heaptype)
     -- Expand: `%~~%`(deftype, ARRAY_comptype(yt))
 
-  ;; 6-typing.watsup:313.1-315.32
+  ;; 6-typing.watsup:316.1-318.32
   rule func{C : context, deftype : deftype, ft : functype}:
     `%|-%<:%`(C, (deftype : deftype <: heaptype), FUNC_heaptype)
     -- Expand: `%~~%`(deftype, FUNC_comptype(ft))
 
-  ;; 6-typing.watsup:317.1-319.46
+  ;; 6-typing.watsup:320.1-322.46
   rule def{C : context, deftype_1 : deftype, deftype_2 : deftype}:
     `%|-%<:%`(C, (deftype_1 : deftype <: heaptype), (deftype_2 : deftype <: heaptype))
     -- Deftype_sub: `%|-%<:%`(C, deftype_1, deftype_2)
 
-  ;; 6-typing.watsup:321.1-323.52
+  ;; 6-typing.watsup:324.1-326.52
   rule typeidx-l{C : context, typeidx : typeidx, heaptype : heaptype}:
     `%|-%<:%`(C, _IDX_heaptype(typeidx), heaptype)
     -- Heaptype_sub: `%|-%<:%`(C, (C.TYPE_context[typeidx!`%`_typeidx.0] : deftype <: heaptype), heaptype)
 
-  ;; 6-typing.watsup:325.1-327.52
+  ;; 6-typing.watsup:328.1-330.52
   rule typeidx-r{C : context, heaptype : heaptype, typeidx : typeidx}:
     `%|-%<:%`(C, heaptype, _IDX_heaptype(typeidx))
     -- Heaptype_sub: `%|-%<:%`(C, heaptype, (C.TYPE_context[typeidx!`%`_typeidx.0] : deftype <: heaptype))
 
-  ;; 6-typing.watsup:329.1-331.48
+  ;; 6-typing.watsup:332.1-334.48
   rule rec{C : context, i : nat, ht : heaptype, fin : fin, ht_1* : heaptype*, ht_2* : heaptype*, ct : comptype}:
     `%|-%<:%`(C, REC_heaptype(i), ht)
     -- if (C.REC_context[i] = SUBD_subtype(fin, ht_1*{ht_1 : heaptype} :: [ht] :: ht_2*{ht_2 : heaptype}, ct))
 
-  ;; 6-typing.watsup:333.1-335.40
+  ;; 6-typing.watsup:336.1-338.40
   rule none{C : context, heaptype : heaptype}:
     `%|-%<:%`(C, NONE_heaptype, heaptype)
     -- Heaptype_sub: `%|-%<:%`(C, heaptype, ANY_heaptype)
 
-  ;; 6-typing.watsup:337.1-339.41
+  ;; 6-typing.watsup:340.1-342.41
   rule nofunc{C : context, heaptype : heaptype}:
     `%|-%<:%`(C, NOFUNC_heaptype, heaptype)
     -- Heaptype_sub: `%|-%<:%`(C, heaptype, FUNC_heaptype)
 
-  ;; 6-typing.watsup:341.1-343.43
+  ;; 6-typing.watsup:344.1-346.43
   rule noextern{C : context, heaptype : heaptype}:
     `%|-%<:%`(C, NOEXTERN_heaptype, heaptype)
     -- Heaptype_sub: `%|-%<:%`(C, heaptype, EXTERN_heaptype)
 
-  ;; 6-typing.watsup:345.1-346.23
+  ;; 6-typing.watsup:348.1-349.23
   rule bot{C : context, heaptype : heaptype}:
     `%|-%<:%`(C, BOT_heaptype, heaptype)
 }
@@ -3091,7 +3095,7 @@ relation Subtype_ok: `%|-%:%`(context, subtype, oktypeidx)
     -- if (|x*{x : idx}| <= 1)
     -- (if (x!`%`_idx.0 < x_0!`%`_idx.0))*{x : idx}
     -- (if ($unrolldt(C.TYPE_context[x!`%`_idx.0]) = SUB_subtype(`FINAL%?`_fin(?()), x'*{x' : typeidx}, comptype')))*{comptype' : comptype, x : idx, x' : typeidx}
-    -- Comptype_ok: `%|-%:_OK`(C, comptype)
+    -- Comptype_ok: `%|-%:OK`(C, comptype)
     -- (Comptype_sub: `%|-%<:%`(C, comptype, comptype'))*{comptype' : comptype}
 
 ;; 6-typing.watsup
@@ -3120,19 +3124,19 @@ relation Subtype_ok2: `%|-%:%`(context, subtype, oktypeidxnat)
     -- if (|heaptype*{heaptype : heaptype}| <= 1)
     -- (if $before(heaptype, x, i))*{heaptype : heaptype}
     -- (if ($unrollht(C, heaptype) = SUBD_subtype(`FINAL%?`_fin(?()), heaptype'*{heaptype' : heaptype}, comptype')))*{comptype' : comptype, heaptype : heaptype, heaptype' : heaptype}
-    -- Comptype_ok: `%|-%:_OK`(C, comptype)
+    -- Comptype_ok: `%|-%:OK`(C, comptype)
     -- (Comptype_sub: `%|-%<:%`(C, comptype, comptype'))*{comptype' : comptype}
 
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:120.1-120.76
+;; 6-typing.watsup:123.1-123.76
 relation Rectype_ok2: `%|-%:%`(context, rectype, oktypeidxnat)
-  ;; 6-typing.watsup:198.1-199.24
+  ;; 6-typing.watsup:201.1-202.24
   rule empty{C : context, x : idx, i : nat}:
     `%|-%:%`(C, REC_rectype(`%`_list([])), OK_oktypeidxnat(x, i))
 
-  ;; 6-typing.watsup:201.1-204.55
+  ;; 6-typing.watsup:204.1-207.55
   rule cons{C : context, subtype_1 : subtype, subtype* : subtype*, x : idx, i : nat}:
     `%|-%:%`(C, REC_rectype(`%`_list([subtype_1] :: subtype*{subtype : subtype})), OK_oktypeidxnat(x, i))
     -- Subtype_ok2: `%|-%:%`(C, subtype_1, OK_oktypeidxnat(x, i))
@@ -3142,29 +3146,29 @@ relation Rectype_ok2: `%|-%:%`(context, rectype, oktypeidxnat)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:118.1-118.74
+;; 6-typing.watsup:121.1-121.74
 relation Rectype_ok: `%|-%:%`(context, rectype, oktypeidx)
-  ;; 6-typing.watsup:186.1-187.23
+  ;; 6-typing.watsup:189.1-190.23
   rule empty{C : context, x : idx}:
     `%|-%:%`(C, REC_rectype(`%`_list([])), OK_oktypeidx(x))
 
-  ;; 6-typing.watsup:189.1-192.48
+  ;; 6-typing.watsup:192.1-195.48
   rule cons{C : context, subtype_1 : subtype, subtype* : subtype*, x : idx}:
     `%|-%:%`(C, REC_rectype(`%`_list([subtype_1] :: subtype*{subtype : subtype})), OK_oktypeidx(x))
     -- Subtype_ok: `%|-%:%`(C, subtype_1, OK_oktypeidx(x))
     -- Rectype_ok: `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype : subtype})), OK_oktypeidx(`%`_typeidx((x!`%`_idx.0 + 1))))
 
-  ;; 6-typing.watsup:194.1-196.59
+  ;; 6-typing.watsup:197.1-199.59
   rule rec2{C : context, subtype* : subtype*, x : idx}:
     `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype : subtype})), OK_oktypeidx(x))
     -- Rectype_ok2: `%|-%:%`(C ++ {TYPE [], REC subtype*{subtype : subtype}, FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, REC_rectype(`%`_list(subtype*{subtype : subtype})), OK_oktypeidxnat(x, 0))
 }
 
 ;; 6-typing.watsup
-relation Deftype_ok: `%|-%:_OK`(context, deftype)
+relation Deftype_ok: `%|-%:OK`(context, deftype)
   ;; 6-typing.watsup
   rule _{C : context, rectype : rectype, i : nat, x : idx, subtype^n : subtype^n, n : n}:
-    `%|-%:_OK`(C, DEF_deftype(rectype, i))
+    `%|-%:OK`(C, DEF_deftype(rectype, i))
     -- Rectype_ok: `%|-%:%`(C, rectype, OK_oktypeidx(x))
     -- if (rectype = REC_rectype(`%`_list(subtype^n{subtype : subtype})))
     -- if (i < n)
@@ -3177,49 +3181,49 @@ relation Limits_ok: `%|-%:%`(context, limits, nat)
     -- if ((n <= m) /\ (m <= k))
 
 ;; 6-typing.watsup
-relation Globaltype_ok: `%|-%:_OK`(context, globaltype)
+relation Globaltype_ok: `%|-%:OK`(context, globaltype)
   ;; 6-typing.watsup
   rule _{C : context, t : valtype}:
-    `%|-%:_OK`(C, `%%`_globaltype(`MUT%?`_mut(()?{}), t))
-    -- Valtype_ok: `%|-%:_OK`(C, t)
+    `%|-%:OK`(C, `%%`_globaltype(`MUT%?`_mut(()?{}), t))
+    -- Valtype_ok: `%|-%:OK`(C, t)
 
 ;; 6-typing.watsup
-relation Tabletype_ok: `%|-%:_OK`(context, tabletype)
+relation Tabletype_ok: `%|-%:OK`(context, tabletype)
   ;; 6-typing.watsup
   rule _{C : context, limits : limits, reftype : reftype}:
-    `%|-%:_OK`(C, `%%`_tabletype(limits, reftype))
+    `%|-%:OK`(C, `%%`_tabletype(limits, reftype))
     -- Limits_ok: `%|-%:%`(C, limits, ((2 ^ 32) - 1))
-    -- Reftype_ok: `%|-%:_OK`(C, reftype)
+    -- Reftype_ok: `%|-%:OK`(C, reftype)
 
 ;; 6-typing.watsup
-relation Memtype_ok: `%|-%:_OK`(context, memtype)
+relation Memtype_ok: `%|-%:OK`(context, memtype)
   ;; 6-typing.watsup
   rule _{C : context, limits : limits}:
-    `%|-%:_OK`(C, `%I8`_memtype(limits))
+    `%|-%:OK`(C, `%I8`_memtype(limits))
     -- Limits_ok: `%|-%:%`(C, limits, (2 ^ 16))
 
 ;; 6-typing.watsup
-relation Externtype_ok: `%|-%:_OK`(context, externtype)
+relation Externtype_ok: `%|-%:OK`(context, externtype)
   ;; 6-typing.watsup
   rule func{C : context, deftype : deftype, functype : functype}:
-    `%|-%:_OK`(C, FUNC_externtype(deftype))
-    -- Deftype_ok: `%|-%:_OK`(C, deftype)
+    `%|-%:OK`(C, FUNC_externtype(deftype))
+    -- Deftype_ok: `%|-%:OK`(C, deftype)
     -- Expand: `%~~%`(deftype, FUNC_comptype(functype))
 
   ;; 6-typing.watsup
   rule global{C : context, globaltype : globaltype}:
-    `%|-%:_OK`(C, GLOBAL_externtype(globaltype))
-    -- Globaltype_ok: `%|-%:_OK`(C, globaltype)
+    `%|-%:OK`(C, GLOBAL_externtype(globaltype))
+    -- Globaltype_ok: `%|-%:OK`(C, globaltype)
 
   ;; 6-typing.watsup
   rule table{C : context, tabletype : tabletype}:
-    `%|-%:_OK`(C, TABLE_externtype(tabletype))
-    -- Tabletype_ok: `%|-%:_OK`(C, tabletype)
+    `%|-%:OK`(C, TABLE_externtype(tabletype))
+    -- Tabletype_ok: `%|-%:OK`(C, tabletype)
 
   ;; 6-typing.watsup
   rule mem{C : context, memtype : memtype}:
-    `%|-%:_OK`(C, MEM_externtype(memtype))
-    -- Memtype_ok: `%|-%:_OK`(C, memtype)
+    `%|-%:OK`(C, MEM_externtype(memtype))
+    -- Memtype_ok: `%|-%:OK`(C, memtype)
 
 ;; 6-typing.watsup
 relation Resulttype_sub: `%|-%<:%`(context, valtype*, valtype*)
@@ -3232,7 +3236,7 @@ relation Resulttype_sub: `%|-%<:%`(context, valtype*, valtype*)
 relation Instrtype_sub: `%|-%<:%`(context, instrtype, instrtype)
   ;; 6-typing.watsup
   rule _{C : context, t_11* : valtype*, x_1* : idx*, t_12* : valtype*, t_21* : valtype*, x_2* : idx*, t_22* : valtype*, x* : idx*, t* : valtype*}:
-    `%|-%<:%`(C, `%->%%`_instrtype(`%`_resulttype(t_11*{t_11 : valtype}), x_1*{x_1 : localidx}, `%`_resulttype(t_12*{t_12 : valtype})), `%->%%`_instrtype(`%`_resulttype(t_21*{t_21 : valtype}), x_2*{x_2 : localidx}, `%`_resulttype(t_22*{t_22 : valtype})))
+    `%|-%<:%`(C, `%->_%%`_instrtype(`%`_resulttype(t_11*{t_11 : valtype}), x_1*{x_1 : localidx}, `%`_resulttype(t_12*{t_12 : valtype})), `%->_%%`_instrtype(`%`_resulttype(t_21*{t_21 : valtype}), x_2*{x_2 : localidx}, `%`_resulttype(t_22*{t_22 : valtype})))
     -- Resulttype_sub: `%|-%<:%`(C, t_21*{t_21 : valtype}, t_11*{t_11 : valtype})
     -- Resulttype_sub: `%|-%<:%`(C, t_12*{t_12 : valtype}, t_22*{t_22 : valtype})
     -- if (x*{x : idx} = $setminus(x_2*{x_2 : idx}, x_1*{x_1 : idx}))
@@ -3298,15 +3302,11 @@ relation Externtype_sub: `%|-%<:%`(context, externtype, externtype)
     -- Memtype_sub: `%|-%<:%`(C, mt_1, mt_2)
 
 ;; 6-typing.watsup
-syntax finstrtype =
-  | `%->%`{resulttype : resulttype}(resulttype : resulttype, resulttype)
-
-;; 6-typing.watsup
 relation Blocktype_ok: `%|-%:%`(context, blocktype, finstrtype)
   ;; 6-typing.watsup
   rule valtype{C : context, valtype? : valtype?}:
     `%|-%:%`(C, _RESULT_blocktype(valtype?{valtype : valtype}), `%->%`_finstrtype(`%`_resulttype([]), `%`_resulttype(valtype?{valtype : valtype})))
-    -- (Valtype_ok: `%|-%:_OK`(C, valtype))?{valtype : valtype}
+    -- (Valtype_ok: `%|-%:OK`(C, valtype))?{valtype : valtype}
 
   ;; 6-typing.watsup
   rule typeidx{C : context, typeidx : typeidx, t_1* : valtype*, t_2* : valtype*}:
@@ -3316,132 +3316,132 @@ relation Blocktype_ok: `%|-%:%`(context, blocktype, finstrtype)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:507.1-507.67
+;; 6-typing.watsup:508.1-508.67
 relation Instr_ok: `%|-%:%`(context, instr, finstrtype)
-  ;; 6-typing.watsup:548.1-549.34
+  ;; 6-typing.watsup:549.1-550.34
   rule unreachable{C : context, t_1* : valtype*, t_2* : valtype*}:
     `%|-%:%`(C, UNREACHABLE_instr, `%->%`_finstrtype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype})))
 
-  ;; 6-typing.watsup:551.1-552.24
+  ;; 6-typing.watsup:552.1-553.24
   rule nop{C : context}:
     `%|-%:%`(C, NOP_instr, `%->%`_finstrtype(`%`_resulttype([]), `%`_resulttype([])))
 
-  ;; 6-typing.watsup:554.1-555.23
+  ;; 6-typing.watsup:555.1-556.23
   rule drop{C : context, t : valtype}:
     `%|-%:%`(C, DROP_instr, `%->%`_finstrtype(`%`_resulttype([t]), `%`_resulttype([])))
 
-  ;; 6-typing.watsup:558.1-559.31
+  ;; 6-typing.watsup:559.1-560.31
   rule select-expl{C : context, t : valtype}:
-    `%|-%:%`(C, `SELECT_(_)%?`_instr(?([t])), `%->%`_finstrtype(`%`_resulttype([t t I32_valtype]), `%`_resulttype([t])))
+    `%|-%:%`(C, `SELECT()%?`_instr(?([t])), `%->%`_finstrtype(`%`_resulttype([t t I32_valtype]), `%`_resulttype([t])))
 
-  ;; 6-typing.watsup:561.1-564.37
+  ;; 6-typing.watsup:562.1-565.37
   rule select-impl{C : context, t : valtype, t' : valtype, numtype : numtype, vectype : vectype}:
-    `%|-%:%`(C, `SELECT_(_)%?`_instr(?()), `%->%`_finstrtype(`%`_resulttype([t t I32_valtype]), `%`_resulttype([t])))
+    `%|-%:%`(C, `SELECT()%?`_instr(?()), `%->%`_finstrtype(`%`_resulttype([t t I32_valtype]), `%`_resulttype([t])))
     -- Valtype_sub: `%|-%<:%`(C, t, t')
     -- if ((t' = (numtype : numtype <: valtype)) \/ (t' = (vectype : vectype <: valtype)))
 
-  ;; 6-typing.watsup:580.1-583.61
+  ;; 6-typing.watsup:581.1-584.62
   rule block{C : context, bt : blocktype, instr* : instr*, t_1* : valtype*, t_2* : valtype*, x* : idx*}:
     `%|-%:%`(C, BLOCK_instr(bt, instr*{instr : instr}), `%->%`_finstrtype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype})))
     -- Blocktype_ok: `%|-%:%`(C, bt, `%->%`_finstrtype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype})))
-    -- Instrs_ok: `%|-%:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [`%`_resulttype(t_2*{t_2 : valtype})], RETURN ?()}, instr*{instr : instr}, `%->%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x*{x : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
+    -- Instrs_ok: `%|-%:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [`%`_resulttype(t_2*{t_2 : valtype})], RETURN ?()}, instr*{instr : instr}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x*{x : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
 
-  ;; 6-typing.watsup:585.1-588.61
+  ;; 6-typing.watsup:586.1-589.62
   rule loop{C : context, bt : blocktype, instr* : instr*, t_1* : valtype*, t_2* : valtype*, x* : idx*}:
     `%|-%:%`(C, LOOP_instr(bt, instr*{instr : instr}), `%->%`_finstrtype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype})))
     -- Blocktype_ok: `%|-%:%`(C, bt, `%->%`_finstrtype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype})))
-    -- Instrs_ok: `%|-%:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [`%`_resulttype(t_1*{t_1 : valtype})], RETURN ?()}, instr*{instr : instr}, `%->%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x*{x : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
+    -- Instrs_ok: `%|-%:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [`%`_resulttype(t_1*{t_1 : valtype})], RETURN ?()}, instr*{instr : instr}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x*{x : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
 
-  ;; 6-typing.watsup:590.1-594.65
+  ;; 6-typing.watsup:591.1-595.66
   rule if{C : context, bt : blocktype, instr_1* : instr*, instr_2* : instr*, t_1* : valtype*, t_2* : valtype*, x_1* : idx*, x_2* : idx*}:
     `%|-%:%`(C, `IF%%ELSE%`_instr(bt, instr_1*{instr_1 : instr}, instr_2*{instr_2 : instr}), `%->%`_finstrtype(`%`_resulttype(t_1*{t_1 : valtype} :: [I32_valtype]), `%`_resulttype(t_2*{t_2 : valtype})))
     -- Blocktype_ok: `%|-%:%`(C, bt, `%->%`_finstrtype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype})))
-    -- Instrs_ok: `%|-%:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [`%`_resulttype(t_2*{t_2 : valtype})], RETURN ?()}, instr_1*{instr_1 : instr}, `%->%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x_1*{x_1 : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
-    -- Instrs_ok: `%|-%:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [`%`_resulttype(t_2*{t_2 : valtype})], RETURN ?()}, instr_2*{instr_2 : instr}, `%->%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x_2*{x_2 : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
+    -- Instrs_ok: `%|-%:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [`%`_resulttype(t_2*{t_2 : valtype})], RETURN ?()}, instr_1*{instr_1 : instr}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x_1*{x_1 : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
+    -- Instrs_ok: `%|-%:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [`%`_resulttype(t_2*{t_2 : valtype})], RETURN ?()}, instr_2*{instr_2 : instr}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x_2*{x_2 : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
 
-  ;; 6-typing.watsup:599.1-601.24
+  ;; 6-typing.watsup:600.1-602.24
   rule br{C : context, l : labelidx, t_1* : valtype*, t* : valtype*, t_2* : valtype*}:
     `%|-%:%`(C, BR_instr(l), `%->%`_finstrtype(`%`_resulttype(t_1*{t_1 : valtype} :: t*{t : valtype}), `%`_resulttype(t_2*{t_2 : valtype})))
     -- if (C.LABEL_context[l!`%`_labelidx.0] = `%`_resulttype(t*{t : valtype}))
 
-  ;; 6-typing.watsup:603.1-605.24
+  ;; 6-typing.watsup:604.1-606.24
   rule br_if{C : context, l : labelidx, t* : valtype*}:
     `%|-%:%`(C, BR_IF_instr(l), `%->%`_finstrtype(`%`_resulttype(t*{t : valtype} :: [I32_valtype]), `%`_resulttype(t*{t : valtype})))
     -- if (C.LABEL_context[l!`%`_labelidx.0] = `%`_resulttype(t*{t : valtype}))
 
-  ;; 6-typing.watsup:607.1-610.44
+  ;; 6-typing.watsup:608.1-611.44
   rule br_table{C : context, l* : labelidx*, l' : labelidx, t_1* : valtype*, t* : valtype*, t_2* : valtype*}:
     `%|-%:%`(C, BR_TABLE_instr(l*{l : labelidx}, l'), `%->%`_finstrtype(`%`_resulttype(t_1*{t_1 : valtype} :: t*{t : valtype}), `%`_resulttype(t_2*{t_2 : valtype})))
     -- (Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABEL_context[l!`%`_labelidx.0]!`%`_resulttype.0))*{l : labelidx}
     -- Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABEL_context[l'!`%`_labelidx.0]!`%`_resulttype.0)
 
-  ;; 6-typing.watsup:612.1-615.31
+  ;; 6-typing.watsup:613.1-616.31
   rule br_on_null{C : context, l : labelidx, t* : valtype*, ht : heaptype}:
     `%|-%:%`(C, BR_ON_NULL_instr(l), `%->%`_finstrtype(`%`_resulttype(t*{t : valtype} :: [REF_valtype(`NULL%?`_nul(?(())), ht)]), `%`_resulttype(t*{t : valtype} :: [REF_valtype(`NULL%?`_nul(?()), ht)])))
     -- if (C.LABEL_context[l!`%`_labelidx.0] = `%`_resulttype(t*{t : valtype}))
-    -- Heaptype_ok: `%|-%:_OK`(C, ht)
+    -- Heaptype_ok: `%|-%:OK`(C, ht)
 
-  ;; 6-typing.watsup:617.1-620.31
+  ;; 6-typing.watsup:618.1-621.31
   rule br_on_non_null{C : context, l : labelidx, t* : valtype*, ht : heaptype}:
     `%|-%:%`(C, BR_ON_NON_NULL_instr(l), `%->%`_finstrtype(`%`_resulttype(t*{t : valtype} :: [REF_valtype(`NULL%?`_nul(?(())), ht)]), `%`_resulttype(t*{t : valtype})))
     -- if (C.LABEL_context[l!`%`_labelidx.0] = `%`_resulttype(t*{t : valtype} :: [REF_valtype(`NULL%?`_nul(?()), ht)]))
-    -- Heaptype_ok: `%|-%:_OK`(C, ht)
+    -- Heaptype_ok: `%|-%:OK`(C, ht)
 
-  ;; 6-typing.watsup:622.1-628.34
+  ;; 6-typing.watsup:623.1-629.34
   rule br_on_cast{C : context, l : labelidx, rt_1 : reftype, rt_2 : reftype, t* : valtype*, rt : reftype}:
     `%|-%:%`(C, BR_ON_CAST_instr(l, rt_1, rt_2), `%->%`_finstrtype(`%`_resulttype(t*{t : valtype} :: [(rt_1 : reftype <: valtype)]), `%`_resulttype(t*{t : valtype} :: [($diffrt(rt_1, rt_2) : reftype <: valtype)])))
     -- if (C.LABEL_context[l!`%`_labelidx.0] = `%`_resulttype(t*{t : valtype} :: [(rt : reftype <: valtype)]))
-    -- Reftype_ok: `%|-%:_OK`(C, rt_1)
-    -- Reftype_ok: `%|-%:_OK`(C, rt_2)
+    -- Reftype_ok: `%|-%:OK`(C, rt_1)
+    -- Reftype_ok: `%|-%:OK`(C, rt_2)
     -- Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)
     -- Reftype_sub: `%|-%<:%`(C, rt_2, rt)
 
-  ;; 6-typing.watsup:630.1-636.49
+  ;; 6-typing.watsup:631.1-637.49
   rule br_on_cast_fail{C : context, l : labelidx, rt_1 : reftype, rt_2 : reftype, t* : valtype*, rt : reftype}:
     `%|-%:%`(C, BR_ON_CAST_FAIL_instr(l, rt_1, rt_2), `%->%`_finstrtype(`%`_resulttype(t*{t : valtype} :: [(rt_1 : reftype <: valtype)]), `%`_resulttype(t*{t : valtype} :: [(rt_2 : reftype <: valtype)])))
     -- if (C.LABEL_context[l!`%`_labelidx.0] = `%`_resulttype(t*{t : valtype} :: [(rt : reftype <: valtype)]))
-    -- Reftype_ok: `%|-%:_OK`(C, rt_1)
-    -- Reftype_ok: `%|-%:_OK`(C, rt_2)
+    -- Reftype_ok: `%|-%:OK`(C, rt_1)
+    -- Reftype_ok: `%|-%:OK`(C, rt_2)
     -- Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)
     -- Reftype_sub: `%|-%<:%`(C, $diffrt(rt_1, rt_2), rt)
 
-  ;; 6-typing.watsup:641.1-643.46
+  ;; 6-typing.watsup:642.1-644.46
   rule call{C : context, x : idx, t_1* : valtype*, t_2* : valtype*}:
     `%|-%:%`(C, CALL_instr(x), `%->%`_finstrtype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype})))
     -- Expand: `%~~%`(C.FUNC_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype}))))
 
-  ;; 6-typing.watsup:645.1-647.46
+  ;; 6-typing.watsup:646.1-648.46
   rule call_ref{C : context, x : idx, t_1* : valtype*, t_2* : valtype*}:
     `%|-%:%`(C, CALL_REF_instr(?(x)), `%->%`_finstrtype(`%`_resulttype(t_1*{t_1 : valtype} :: [REF_valtype(`NULL%?`_nul(?(())), ($idx(x) : typevar <: heaptype))]), `%`_resulttype(t_2*{t_2 : valtype})))
     -- Expand: `%~~%`(C.TYPE_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype}))))
 
-  ;; 6-typing.watsup:649.1-653.46
+  ;; 6-typing.watsup:650.1-654.46
   rule call_indirect{C : context, x : idx, y : idx, t_1* : valtype*, t_2* : valtype*, lim : limits, rt : reftype}:
     `%|-%:%`(C, CALL_INDIRECT_instr(x, y), `%->%`_finstrtype(`%`_resulttype(t_1*{t_1 : valtype} :: [I32_valtype]), `%`_resulttype(t_2*{t_2 : valtype})))
     -- if (C.TABLE_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
     -- Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))
     -- Expand: `%~~%`(C.TYPE_context[y!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype}))))
 
-  ;; 6-typing.watsup:655.1-657.24
+  ;; 6-typing.watsup:656.1-658.24
   rule return{C : context, t_1* : valtype*, t* : valtype*, t_2* : valtype*}:
     `%|-%:%`(C, RETURN_instr, `%->%`_finstrtype(`%`_resulttype(t_1*{t_1 : valtype} :: t*{t : valtype}), `%`_resulttype(t_2*{t_2 : valtype})))
     -- if (C.RETURN_context = ?(`%`_list(t*{t : valtype})))
 
-  ;; 6-typing.watsup:659.1-663.40
+  ;; 6-typing.watsup:660.1-664.40
   rule return_call{C : context, x : idx, t_3* : valtype*, t_1* : valtype*, t_4* : valtype*, t_2* : valtype*, t'_2* : valtype*}:
     `%|-%:%`(C, RETURN_CALL_instr(x), `%->%`_finstrtype(`%`_resulttype(t_3*{t_3 : valtype} :: t_1*{t_1 : valtype}), `%`_resulttype(t_4*{t_4 : valtype})))
     -- Expand: `%~~%`(C.FUNC_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype}))))
     -- if (C.RETURN_context = ?(`%`_list(t'_2*{t'_2 : valtype})))
     -- Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})
 
-  ;; 6-typing.watsup:665.1-669.40
+  ;; 6-typing.watsup:666.1-670.40
   rule return_call_ref{C : context, x : idx, t_3* : valtype*, t_1* : valtype*, t_4* : valtype*, t_2* : valtype*, t'_2* : valtype*}:
     `%|-%:%`(C, RETURN_CALL_REF_instr(?(x)), `%->%`_finstrtype(`%`_resulttype(t_3*{t_3 : valtype} :: t_1*{t_1 : valtype} :: [REF_valtype(`NULL%?`_nul(?(())), ($idx(x) : typevar <: heaptype))]), `%`_resulttype(t_4*{t_4 : valtype})))
     -- Expand: `%~~%`(C.TYPE_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype}))))
     -- if (C.RETURN_context = ?(`%`_list(t'_2*{t'_2 : valtype})))
     -- Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})
 
-  ;; 6-typing.watsup:671.1-677.40
+  ;; 6-typing.watsup:672.1-678.40
   rule return_call_indirect{C : context, x : idx, y : idx, t_3* : valtype*, t_1* : valtype*, t_4* : valtype*, lim : limits, rt : reftype, t_2* : valtype*, t'_2* : valtype*}:
     `%|-%:%`(C, RETURN_CALL_INDIRECT_instr(x, y), `%->%`_finstrtype(`%`_resulttype(t_3*{t_3 : valtype} :: t_1*{t_1 : valtype} :: [I32_valtype]), `%`_resulttype(t_4*{t_4 : valtype})))
     -- if (C.TABLE_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
@@ -3450,375 +3450,375 @@ relation Instr_ok: `%|-%:%`(context, instr, finstrtype)
     -- if (C.RETURN_context = ?(`%`_list(t'_2*{t'_2 : valtype})))
     -- Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})
 
-  ;; 6-typing.watsup:682.1-683.33
+  ;; 6-typing.watsup:683.1-684.33
   rule const{C : context, nt : numtype, c_nt : num_(nt)}:
     `%|-%:%`(C, CONST_instr(nt, c_nt), `%->%`_finstrtype(`%`_resulttype([]), `%`_resulttype([(nt : numtype <: valtype)])))
 
-  ;; 6-typing.watsup:685.1-686.34
+  ;; 6-typing.watsup:686.1-687.34
   rule unop{C : context, nt : numtype, unop_nt : unop_(nt)}:
     `%|-%:%`(C, UNOP_instr(nt, unop_nt), `%->%`_finstrtype(`%`_resulttype([(nt : numtype <: valtype)]), `%`_resulttype([(nt : numtype <: valtype)])))
 
-  ;; 6-typing.watsup:688.1-689.39
+  ;; 6-typing.watsup:689.1-690.39
   rule binop{C : context, nt : numtype, binop_nt : binop_(nt)}:
     `%|-%:%`(C, BINOP_instr(nt, binop_nt), `%->%`_finstrtype(`%`_resulttype([(nt : numtype <: valtype) (nt : numtype <: valtype)]), `%`_resulttype([(nt : numtype <: valtype)])))
 
-  ;; 6-typing.watsup:691.1-692.39
+  ;; 6-typing.watsup:692.1-693.39
   rule testop{C : context, nt : numtype, testop_nt : testop_(nt)}:
     `%|-%:%`(C, TESTOP_instr(nt, testop_nt), `%->%`_finstrtype(`%`_resulttype([(nt : numtype <: valtype)]), `%`_resulttype([I32_valtype])))
 
-  ;; 6-typing.watsup:694.1-695.40
+  ;; 6-typing.watsup:695.1-696.40
   rule relop{C : context, nt : numtype, relop_nt : relop_(nt)}:
     `%|-%:%`(C, RELOP_instr(nt, relop_nt), `%->%`_finstrtype(`%`_resulttype([(nt : numtype <: valtype) (nt : numtype <: valtype)]), `%`_resulttype([I32_valtype])))
 
-  ;; 6-typing.watsup:699.1-701.34
+  ;; 6-typing.watsup:700.1-702.34
   rule cvtop-reinterpret{C : context, nt_1 : numtype, nt_2 : numtype}:
     `%|-%:%`(C, CVTOP_instr(nt_1, REINTERPRET_cvtop, nt_2, ?()), `%->%`_finstrtype(`%`_resulttype([(nt_2 : numtype <: valtype)]), `%`_resulttype([(nt_1 : numtype <: valtype)])))
     -- if ($size(nt_1) = $size(nt_2))
 
-  ;; 6-typing.watsup:703.1-705.50
+  ;; 6-typing.watsup:704.1-706.50
   rule cvtop-convert-i{C : context, inn_1 : inn, inn_2 : inn, sx? : sx?}:
     `%|-%:%`(C, CVTOP_instr((inn_1 : inn <: numtype), CONVERT_cvtop, (inn_2 : inn <: numtype), sx?{sx : sx}), `%->%`_finstrtype(`%`_resulttype([(inn_2 : inn <: valtype)]), `%`_resulttype([(inn_1 : inn <: valtype)])))
     -- if ((sx?{sx : sx} = ?()) <=> ($size((inn_1 : inn <: numtype)) > $size((inn_2 : inn <: numtype))))
 
-  ;; 6-typing.watsup:707.1-708.50
+  ;; 6-typing.watsup:708.1-709.50
   rule cvtop-convert-f{C : context, fnn_1 : fnn, fnn_2 : fnn}:
     `%|-%:%`(C, CVTOP_instr((fnn_1 : fnn <: numtype), CONVERT_cvtop, (fnn_2 : fnn <: numtype), ?()), `%->%`_finstrtype(`%`_resulttype([(fnn_2 : fnn <: valtype)]), `%`_resulttype([(fnn_1 : fnn <: valtype)])))
 
-  ;; 6-typing.watsup:713.1-715.31
+  ;; 6-typing.watsup:714.1-716.31
   rule ref.null{C : context, ht : heaptype}:
     `%|-%:%`(C, REF.NULL_instr(ht), `%->%`_finstrtype(`%`_resulttype([]), `%`_resulttype([REF_valtype(`NULL%?`_nul(?(())), ht)])))
-    -- Heaptype_ok: `%|-%:_OK`(C, ht)
+    -- Heaptype_ok: `%|-%:OK`(C, ht)
 
-  ;; 6-typing.watsup:718.1-720.23
+  ;; 6-typing.watsup:719.1-721.23
   rule ref.func{C : context, x : idx, dt : deftype}:
     `%|-%:%`(C, REF.FUNC_instr(x), `%->%`_finstrtype(`%`_resulttype([]), `%`_resulttype([REF_valtype(`NULL%?`_nul(?()), (dt : deftype <: heaptype))])))
     -- if (C.FUNC_context[x!`%`_idx.0] = dt)
 
-  ;; 6-typing.watsup:722.1-723.34
+  ;; 6-typing.watsup:723.1-724.34
   rule ref.i31{C : context}:
     `%|-%:%`(C, REF.I31_instr, `%->%`_finstrtype(`%`_resulttype([I32_valtype]), `%`_resulttype([REF_valtype(`NULL%?`_nul(?()), I31_heaptype)])))
 
-  ;; 6-typing.watsup:725.1-727.31
+  ;; 6-typing.watsup:726.1-728.31
   rule ref.is_null{C : context, ht : heaptype}:
     `%|-%:%`(C, REF.IS_NULL_instr, `%->%`_finstrtype(`%`_resulttype([REF_valtype(`NULL%?`_nul(?(())), ht)]), `%`_resulttype([I32_valtype])))
-    -- Heaptype_ok: `%|-%:_OK`(C, ht)
+    -- Heaptype_ok: `%|-%:OK`(C, ht)
 
-  ;; 6-typing.watsup:729.1-731.31
+  ;; 6-typing.watsup:730.1-732.31
   rule ref.as_non_null{C : context, ht : heaptype}:
     `%|-%:%`(C, REF.AS_NON_NULL_instr, `%->%`_finstrtype(`%`_resulttype([REF_valtype(`NULL%?`_nul(?(())), ht)]), `%`_resulttype([REF_valtype(`NULL%?`_nul(?()), ht)])))
-    -- Heaptype_ok: `%|-%:_OK`(C, ht)
+    -- Heaptype_ok: `%|-%:OK`(C, ht)
 
-  ;; 6-typing.watsup:733.1-734.51
+  ;; 6-typing.watsup:734.1-735.51
   rule ref.eq{C : context}:
     `%|-%:%`(C, REF.EQ_instr, `%->%`_finstrtype(`%`_resulttype([REF_valtype(`NULL%?`_nul(?(())), EQ_heaptype) REF_valtype(`NULL%?`_nul(?(())), EQ_heaptype)]), `%`_resulttype([I32_valtype])))
 
-  ;; 6-typing.watsup:736.1-740.33
+  ;; 6-typing.watsup:737.1-741.33
   rule ref.test{C : context, rt : reftype, rt' : reftype}:
     `%|-%:%`(C, REF.TEST_instr(rt), `%->%`_finstrtype(`%`_resulttype([(rt' : reftype <: valtype)]), `%`_resulttype([I32_valtype])))
-    -- Reftype_ok: `%|-%:_OK`(C, rt)
-    -- Reftype_ok: `%|-%:_OK`(C, rt')
+    -- Reftype_ok: `%|-%:OK`(C, rt)
+    -- Reftype_ok: `%|-%:OK`(C, rt')
     -- Reftype_sub: `%|-%<:%`(C, rt, rt')
 
-  ;; 6-typing.watsup:742.1-746.33
+  ;; 6-typing.watsup:743.1-747.33
   rule ref.cast{C : context, rt : reftype, rt' : reftype}:
     `%|-%:%`(C, REF.CAST_instr(rt), `%->%`_finstrtype(`%`_resulttype([(rt' : reftype <: valtype)]), `%`_resulttype([(rt : reftype <: valtype)])))
-    -- Reftype_ok: `%|-%:_OK`(C, rt)
-    -- Reftype_ok: `%|-%:_OK`(C, rt')
+    -- Reftype_ok: `%|-%:OK`(C, rt)
+    -- Reftype_ok: `%|-%:OK`(C, rt')
     -- Reftype_sub: `%|-%<:%`(C, rt, rt')
 
-  ;; 6-typing.watsup:751.1-752.42
+  ;; 6-typing.watsup:752.1-753.42
   rule i31.get{C : context, sx : sx}:
     `%|-%:%`(C, I31.GET_instr(sx), `%->%`_finstrtype(`%`_resulttype([REF_valtype(`NULL%?`_nul(?(())), I31_heaptype)]), `%`_resulttype([I32_valtype])))
 
-  ;; 6-typing.watsup:757.1-759.43
+  ;; 6-typing.watsup:758.1-760.43
   rule struct.new{C : context, x : idx, zt* : storagetype*, mut* : mut*}:
     `%|-%:%`(C, STRUCT.NEW_instr(x), `%->%`_finstrtype(`%`_resulttype($unpack(zt)*{zt : storagetype}), `%`_resulttype([REF_valtype(`NULL%?`_nul(?()), ($idx(x) : typevar <: heaptype))])))
     -- Expand: `%~~%`(C.TYPE_context[x!`%`_idx.0], STRUCT_comptype(`%`_structtype(`%%`_fieldtype(mut, zt)*{mut : mut, zt : storagetype})))
 
-  ;; 6-typing.watsup:761.1-764.40
+  ;; 6-typing.watsup:762.1-765.40
   rule struct.new_default{C : context, x : idx, mut* : mut*, zt* : storagetype*, val* : val*}:
     `%|-%:%`(C, STRUCT.NEW_DEFAULT_instr(x), `%->%`_finstrtype(`%`_resulttype([]), `%`_resulttype([REF_valtype(`NULL%?`_nul(?()), ($idx(x) : typevar <: heaptype))])))
     -- Expand: `%~~%`(C.TYPE_context[x!`%`_idx.0], STRUCT_comptype(`%`_structtype(`%%`_fieldtype(mut, zt)*{mut : mut, zt : storagetype})))
     -- (if ($default_($unpack(zt)) = ?(val)))*{val : val, zt : storagetype}
 
-  ;; 6-typing.watsup:766.1-770.39
+  ;; 6-typing.watsup:767.1-771.39
   rule struct.get{C : context, sx? : sx?, x : idx, i : nat, zt : storagetype, yt* : fieldtype*, mut : mut}:
     `%|-%:%`(C, STRUCT.GET_instr(sx?{sx : sx}, x, `%`_u32(i)), `%->%`_finstrtype(`%`_resulttype([REF_valtype(`NULL%?`_nul(?(())), ($idx(x) : typevar <: heaptype))]), `%`_resulttype([$unpack(zt)])))
     -- Expand: `%~~%`(C.TYPE_context[x!`%`_idx.0], STRUCT_comptype(`%`_structtype(yt*{yt : fieldtype})))
     -- if (yt*{yt : fieldtype}[i] = `%%`_fieldtype(mut, zt))
     -- if ((sx?{sx : sx} = ?()) <=> (zt = ($unpack(zt) : valtype <: storagetype)))
 
-  ;; 6-typing.watsup:772.1-775.24
+  ;; 6-typing.watsup:773.1-776.24
   rule struct.set{C : context, x : idx, i : nat, zt : storagetype, yt* : fieldtype*}:
     `%|-%:%`(C, STRUCT.SET_instr(x, `%`_u32(i)), `%->%`_finstrtype(`%`_resulttype([REF_valtype(`NULL%?`_nul(?(())), ($idx(x) : typevar <: heaptype)) $unpack(zt)]), `%`_resulttype([])))
     -- Expand: `%~~%`(C.TYPE_context[x!`%`_idx.0], STRUCT_comptype(`%`_structtype(yt*{yt : fieldtype})))
     -- if (yt*{yt : fieldtype}[i] = `%%`_fieldtype(`MUT%?`_mut(?(())), zt))
 
-  ;; 6-typing.watsup:780.1-782.41
+  ;; 6-typing.watsup:781.1-783.41
   rule array.new{C : context, x : idx, zt : storagetype, mut : mut}:
     `%|-%:%`(C, ARRAY.NEW_instr(x), `%->%`_finstrtype(`%`_resulttype([$unpack(zt) I32_valtype]), `%`_resulttype([REF_valtype(`NULL%?`_nul(?()), ($idx(x) : typevar <: heaptype))])))
     -- Expand: `%~~%`(C.TYPE_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(mut, zt)))
 
-  ;; 6-typing.watsup:784.1-787.37
+  ;; 6-typing.watsup:785.1-788.37
   rule array.new_default{C : context, x : idx, mut : mut, zt : storagetype, val : val}:
     `%|-%:%`(C, ARRAY.NEW_DEFAULT_instr(x), `%->%`_finstrtype(`%`_resulttype([I32_valtype]), `%`_resulttype([REF_valtype(`NULL%?`_nul(?()), ($idx(x) : typevar <: heaptype))])))
     -- Expand: `%~~%`(C.TYPE_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(mut, zt)))
     -- if ($default_($unpack(zt)) = ?(val))
 
-  ;; 6-typing.watsup:789.1-791.41
+  ;; 6-typing.watsup:790.1-792.41
   rule array.new_fixed{C : context, x : idx, n : n, zt : storagetype, mut : mut}:
     `%|-%:%`(C, ARRAY.NEW_FIXED_instr(x, `%`_u32(n)), `%->%`_finstrtype(`%`_resulttype($unpack(zt)^n{}), `%`_resulttype([REF_valtype(`NULL%?`_nul(?()), ($idx(x) : typevar <: heaptype))])))
     -- Expand: `%~~%`(C.TYPE_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(mut, zt)))
 
-  ;; 6-typing.watsup:793.1-796.39
+  ;; 6-typing.watsup:794.1-797.39
   rule array.new_elem{C : context, x : idx, y : idx, mut : mut, rt : reftype}:
     `%|-%:%`(C, ARRAY.NEW_ELEM_instr(x, y), `%->%`_finstrtype(`%`_resulttype([I32_valtype I32_valtype]), `%`_resulttype([REF_valtype(`NULL%?`_nul(?()), ($idx(x) : typevar <: heaptype))])))
     -- Expand: `%~~%`(C.TYPE_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(mut, (rt : reftype <: storagetype))))
     -- Reftype_sub: `%|-%<:%`(C, C.ELEM_context[y!`%`_idx.0], rt)
 
-  ;; 6-typing.watsup:798.1-802.23
+  ;; 6-typing.watsup:799.1-803.23
   rule array.new_data{C : context, x : idx, y : idx, mut : mut, zt : storagetype, numtype : numtype, vectype : vectype}:
     `%|-%:%`(C, ARRAY.NEW_DATA_instr(x, y), `%->%`_finstrtype(`%`_resulttype([I32_valtype I32_valtype]), `%`_resulttype([REF_valtype(`NULL%?`_nul(?()), ($idx(x) : typevar <: heaptype))])))
     -- Expand: `%~~%`(C.TYPE_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(mut, zt)))
     -- if (($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))
     -- if (C.DATA_context[y!`%`_idx.0] = OK_datatype)
 
-  ;; 6-typing.watsup:804.1-807.39
+  ;; 6-typing.watsup:805.1-808.39
   rule array.get{C : context, sx? : sx?, x : idx, zt : storagetype, mut : mut}:
     `%|-%:%`(C, ARRAY.GET_instr(sx?{sx : sx}, x), `%->%`_finstrtype(`%`_resulttype([REF_valtype(`NULL%?`_nul(?(())), ($idx(x) : typevar <: heaptype)) I32_valtype]), `%`_resulttype([$unpack(zt)])))
     -- Expand: `%~~%`(C.TYPE_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(mut, zt)))
     -- if ((sx?{sx : sx} = ?()) <=> (zt = ($unpack(zt) : valtype <: storagetype)))
 
-  ;; 6-typing.watsup:809.1-811.41
+  ;; 6-typing.watsup:810.1-812.41
   rule array.set{C : context, x : idx, zt : storagetype}:
     `%|-%:%`(C, ARRAY.SET_instr(x), `%->%`_finstrtype(`%`_resulttype([REF_valtype(`NULL%?`_nul(?(())), ($idx(x) : typevar <: heaptype)) I32_valtype $unpack(zt)]), `%`_resulttype([])))
     -- Expand: `%~~%`(C.TYPE_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(`MUT%?`_mut(?(())), zt)))
 
-  ;; 6-typing.watsup:813.1-815.41
+  ;; 6-typing.watsup:814.1-816.41
   rule array.len{C : context, x : idx, zt : storagetype}:
     `%|-%:%`(C, ARRAY.LEN_instr, `%->%`_finstrtype(`%`_resulttype([REF_valtype(`NULL%?`_nul(?(())), ARRAY_heaptype)]), `%`_resulttype([I32_valtype])))
     -- Expand: `%~~%`(C.TYPE_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(`MUT%?`_mut(?(())), zt)))
 
-  ;; 6-typing.watsup:817.1-819.41
+  ;; 6-typing.watsup:818.1-820.41
   rule array.fill{C : context, x : idx, zt : storagetype}:
     `%|-%:%`(C, ARRAY.FILL_instr(x), `%->%`_finstrtype(`%`_resulttype([REF_valtype(`NULL%?`_nul(?(())), ($idx(x) : typevar <: heaptype)) I32_valtype $unpack(zt) I32_valtype]), `%`_resulttype([])))
     -- Expand: `%~~%`(C.TYPE_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(`MUT%?`_mut(?(())), zt)))
 
-  ;; 6-typing.watsup:821.1-825.40
+  ;; 6-typing.watsup:822.1-826.40
   rule array.copy{C : context, x_1 : idx, x_2 : idx, zt_1 : storagetype, mut : mut, zt_2 : storagetype}:
     `%|-%:%`(C, ARRAY.COPY_instr(x_1, x_2), `%->%`_finstrtype(`%`_resulttype([REF_valtype(`NULL%?`_nul(?(())), ($idx(x_1) : typevar <: heaptype)) I32_valtype REF_valtype(`NULL%?`_nul(?(())), ($idx(x_2) : typevar <: heaptype)) I32_valtype I32_valtype]), `%`_resulttype([])))
     -- Expand: `%~~%`(C.TYPE_context[x_1!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(`MUT%?`_mut(?(())), zt_1)))
     -- Expand: `%~~%`(C.TYPE_context[x_2!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(mut, zt_2)))
     -- Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)
 
-  ;; 6-typing.watsup:827.1-830.43
+  ;; 6-typing.watsup:828.1-831.43
   rule array.init_elem{C : context, x : idx, y : idx, zt : storagetype}:
     `%|-%:%`(C, ARRAY.INIT_ELEM_instr(x, y), `%->%`_finstrtype(`%`_resulttype([REF_valtype(`NULL%?`_nul(?(())), ($idx(x) : typevar <: heaptype)) I32_valtype I32_valtype I32_valtype]), `%`_resulttype([])))
     -- Expand: `%~~%`(C.TYPE_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(`MUT%?`_mut(?(())), zt)))
     -- Storagetype_sub: `%|-%<:%`(C, (C.ELEM_context[y!`%`_idx.0] : reftype <: storagetype), zt)
 
-  ;; 6-typing.watsup:832.1-836.23
+  ;; 6-typing.watsup:833.1-837.23
   rule array.init_data{C : context, x : idx, y : idx, zt : storagetype, numtype : numtype, vectype : vectype}:
     `%|-%:%`(C, ARRAY.INIT_DATA_instr(x, y), `%->%`_finstrtype(`%`_resulttype([REF_valtype(`NULL%?`_nul(?(())), ($idx(x) : typevar <: heaptype)) I32_valtype I32_valtype I32_valtype]), `%`_resulttype([])))
     -- Expand: `%~~%`(C.TYPE_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(`MUT%?`_mut(?(())), zt)))
     -- if (($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))
     -- if (C.DATA_context[y!`%`_idx.0] = OK_datatype)
 
-  ;; 6-typing.watsup:841.1-842.62
+  ;; 6-typing.watsup:842.1-843.62
   rule extern.convert_any{C : context, nul : nul}:
     `%|-%:%`(C, EXTERN.CONVERT_ANY_instr, `%->%`_finstrtype(`%`_resulttype([REF_valtype(nul, ANY_heaptype)]), `%`_resulttype([REF_valtype(nul, EXTERN_heaptype)])))
 
-  ;; 6-typing.watsup:844.1-845.62
+  ;; 6-typing.watsup:845.1-846.62
   rule any.convert_extern{C : context, nul : nul}:
     `%|-%:%`(C, ANY.CONVERT_EXTERN_instr, `%->%`_finstrtype(`%`_resulttype([REF_valtype(nul, EXTERN_heaptype)]), `%`_resulttype([REF_valtype(nul, ANY_heaptype)])))
 
-  ;; 6-typing.watsup:850.1-851.35
+  ;; 6-typing.watsup:851.1-852.35
   rule vconst{C : context, c : vec_(V128_vnn)}:
     `%|-%:%`(C, VCONST_instr(V128_vectype, c), `%->%`_finstrtype(`%`_resulttype([]), `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:853.1-854.41
+  ;; 6-typing.watsup:854.1-855.41
   rule vvunop{C : context, vvunop : vvunop}:
     `%|-%:%`(C, VVUNOP_instr(V128_vectype, vvunop), `%->%`_finstrtype(`%`_resulttype([V128_valtype]), `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:856.1-857.48
+  ;; 6-typing.watsup:857.1-858.48
   rule vvbinop{C : context, vvbinop : vvbinop}:
     `%|-%:%`(C, VVBINOP_instr(V128_vectype, vvbinop), `%->%`_finstrtype(`%`_resulttype([V128_valtype V128_valtype]), `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:859.1-860.55
+  ;; 6-typing.watsup:860.1-861.55
   rule vvternop{C : context, vvternop : vvternop}:
     `%|-%:%`(C, VVTERNOP_instr(V128_vectype, vvternop), `%->%`_finstrtype(`%`_resulttype([V128_valtype V128_valtype V128_valtype]), `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:862.1-863.44
+  ;; 6-typing.watsup:863.1-864.44
   rule vvtestop{C : context, vvtestop : vvtestop}:
     `%|-%:%`(C, VVTESTOP_instr(V128_vectype, vvtestop), `%->%`_finstrtype(`%`_resulttype([V128_valtype]), `%`_resulttype([I32_valtype])))
 
-  ;; 6-typing.watsup:865.1-866.33
+  ;; 6-typing.watsup:866.1-867.33
   rule vbitmask{C : context, sh : ishape}:
     `%|-%:%`(C, VBITMASK_instr(sh), `%->%`_finstrtype(`%`_resulttype([V128_valtype]), `%`_resulttype([I32_valtype])))
 
-  ;; 6-typing.watsup:868.1-869.39
+  ;; 6-typing.watsup:869.1-870.39
   rule vswizzle{C : context, sh : ishape}:
     `%|-%:%`(C, VSWIZZLE_instr(sh), `%->%`_finstrtype(`%`_resulttype([V128_valtype V128_valtype]), `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:871.1-873.22
+  ;; 6-typing.watsup:872.1-874.22
   rule vshuffle{C : context, imm : imm, N : N, i* : nat*}:
     `%|-%:%`(C, VSHUFFLE_instr(`%X%`_ishape(imm, `%`_dim(N)), `%`_laneidx(i)*{i : nat}), `%->%`_finstrtype(`%`_resulttype([V128_valtype V128_valtype]), `%`_resulttype([V128_valtype])))
     -- (if (i < (N * 2)))*{i : nat}
 
-  ;; 6-typing.watsup:875.1-876.48
+  ;; 6-typing.watsup:876.1-877.48
   rule vsplat{C : context, lnn : lnn, N : N}:
     `%|-%:%`(C, VSPLAT_instr(`%X%`_shape(lnn, `%`_dim(N))), `%->%`_finstrtype(`%`_resulttype([($lunpack(lnn) : numtype <: valtype)]), `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:879.1-881.14
+  ;; 6-typing.watsup:880.1-882.14
   rule vextract_lane{C : context, lnn : lnn, N : N, sx? : sx?, i : nat}:
     `%|-%:%`(C, VEXTRACT_LANE_instr(`%X%`_shape(lnn, `%`_dim(N)), sx?{sx : sx}, `%`_laneidx(i)), `%->%`_finstrtype(`%`_resulttype([V128_valtype]), `%`_resulttype([($lunpack(lnn) : numtype <: valtype)])))
     -- if (i < N)
 
-  ;; 6-typing.watsup:883.1-885.14
+  ;; 6-typing.watsup:884.1-886.14
   rule vreplace_lane{C : context, lnn : lnn, N : N, i : nat}:
     `%|-%:%`(C, VREPLACE_LANE_instr(`%X%`_shape(lnn, `%`_dim(N)), `%`_laneidx(i)), `%->%`_finstrtype(`%`_resulttype([V128_valtype ($lunpack(lnn) : numtype <: valtype)]), `%`_resulttype([V128_valtype])))
     -- if (i < N)
 
-  ;; 6-typing.watsup:887.1-888.40
+  ;; 6-typing.watsup:888.1-889.40
   rule vunop{C : context, sh : shape, vunop_sh : vunop_(sh)}:
     `%|-%:%`(C, VUNOP_instr(sh, vunop_sh), `%->%`_finstrtype(`%`_resulttype([V128_valtype]), `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:890.1-891.47
+  ;; 6-typing.watsup:891.1-892.47
   rule vbinop{C : context, sh : shape, vbinop_sh : vbinop_(sh)}:
     `%|-%:%`(C, VBINOP_instr(sh, vbinop_sh), `%->%`_finstrtype(`%`_resulttype([V128_valtype V128_valtype]), `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:893.1-894.43
+  ;; 6-typing.watsup:894.1-895.43
   rule vtestop{C : context, sh : shape, vtestop_sh : vtestop_(sh)}:
     `%|-%:%`(C, VTESTOP_instr(sh, vtestop_sh), `%->%`_finstrtype(`%`_resulttype([V128_valtype]), `%`_resulttype([I32_valtype])))
 
-  ;; 6-typing.watsup:896.1-897.47
+  ;; 6-typing.watsup:897.1-898.47
   rule vrelop{C : context, sh : shape, vrelop_sh : vrelop_(sh)}:
     `%|-%:%`(C, VRELOP_instr(sh, vrelop_sh), `%->%`_finstrtype(`%`_resulttype([V128_valtype V128_valtype]), `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:899.1-900.50
+  ;; 6-typing.watsup:900.1-901.50
   rule vshiftop{C : context, sh : ishape, vshiftop_sh : vshiftop_(sh)}:
     `%|-%:%`(C, VSHIFTOP_instr(sh, vshiftop_sh), `%->%`_finstrtype(`%`_resulttype([V128_valtype I32_valtype]), `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:903.1-904.55
+  ;; 6-typing.watsup:904.1-905.55
   rule vcvtop{C : context, sh : shape, vcvtop : vcvtop, hf? : half?, sx? : sx?, zero : zero}:
     `%|-%:%`(C, VCVTOP_instr(sh, vcvtop, hf?{hf : half}, sh, sx?{sx : sx}, zero), `%->%`_finstrtype(`%`_resulttype([V128_valtype]), `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:906.1-907.44
+  ;; 6-typing.watsup:907.1-908.44
   rule vnarrow{C : context, sh : ishape, sx : sx}:
     `%|-%:%`(C, VNARROW_instr(sh, sh, sx), `%->%`_finstrtype(`%`_resulttype([V128_valtype V128_valtype]), `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:909.1-910.49
+  ;; 6-typing.watsup:910.1-911.49
   rule vextunop{C : context, sh : ishape, vextunop : vextunop_(sh, sh), sx : sx}:
     `%|-%:%`(C, VEXTUNOP_instr(sh, sh, vextunop, sx), `%->%`_finstrtype(`%`_resulttype([V128_valtype]), `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:912.1-913.56
+  ;; 6-typing.watsup:913.1-914.56
   rule vextbinop{C : context, sh : ishape, vextbinop : vextbinop_(sh, sh), sx : sx}:
     `%|-%:%`(C, VEXTBINOP_instr(sh, sh, vextbinop, sx), `%->%`_finstrtype(`%`_resulttype([V128_valtype V128_valtype]), `%`_resulttype([V128_valtype])))
 
-  ;; 6-typing.watsup:915.1-916.33
+  ;; 6-typing.watsup:916.1-917.33
   rule vbitmask{C : context, sh : ishape}:
     `%|-%:%`(C, VBITMASK_instr(sh), `%->%`_finstrtype(`%`_resulttype([V128_valtype]), `%`_resulttype([I32_valtype])))
 
-  ;; 6-typing.watsup:921.1-923.28
+  ;; 6-typing.watsup:922.1-924.28
   rule local.get{C : context, x : idx, t : valtype, init : init}:
     `%|-%:%`(C, LOCAL.GET_instr(x), `%->%`_finstrtype(`%`_resulttype([]), `%`_resulttype([t])))
     -- if (C.LOCAL_context[x!`%`_idx.0] = `%%`_localtype(init, t))
 
-  ;; 6-typing.watsup:936.1-938.28
+  ;; 6-typing.watsup:937.1-939.28
   rule global.get{C : context, x : idx, t : valtype, mut : mut}:
     `%|-%:%`(C, GLOBAL.GET_instr(x), `%->%`_finstrtype(`%`_resulttype([]), `%`_resulttype([t])))
     -- if (C.GLOBAL_context[x!`%`_idx.0] = `%%`_globaltype(mut, t))
 
-  ;; 6-typing.watsup:940.1-942.28
+  ;; 6-typing.watsup:941.1-943.28
   rule global.set{C : context, x : idx, t : valtype}:
     `%|-%:%`(C, GLOBAL.SET_instr(x), `%->%`_finstrtype(`%`_resulttype([t]), `%`_resulttype([])))
     -- if (C.GLOBAL_context[x!`%`_idx.0] = `%%`_globaltype(`MUT%?`_mut(?(())), t))
 
-  ;; 6-typing.watsup:947.1-949.28
+  ;; 6-typing.watsup:948.1-950.28
   rule table.get{C : context, x : idx, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.GET_instr(x), `%->%`_finstrtype(`%`_resulttype([I32_valtype]), `%`_resulttype([(rt : reftype <: valtype)])))
     -- if (C.TABLE_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
 
-  ;; 6-typing.watsup:951.1-953.28
+  ;; 6-typing.watsup:952.1-954.28
   rule table.set{C : context, x : idx, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.SET_instr(x), `%->%`_finstrtype(`%`_resulttype([I32_valtype (rt : reftype <: valtype)]), `%`_resulttype([])))
     -- if (C.TABLE_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
 
-  ;; 6-typing.watsup:955.1-957.24
+  ;; 6-typing.watsup:956.1-958.24
   rule table.size{C : context, x : idx, tt : tabletype}:
     `%|-%:%`(C, TABLE.SIZE_instr(x), `%->%`_finstrtype(`%`_resulttype([]), `%`_resulttype([I32_valtype])))
     -- if (C.TABLE_context[x!`%`_idx.0] = tt)
 
-  ;; 6-typing.watsup:959.1-961.28
+  ;; 6-typing.watsup:960.1-962.28
   rule table.grow{C : context, x : idx, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.GROW_instr(x), `%->%`_finstrtype(`%`_resulttype([(rt : reftype <: valtype) I32_valtype]), `%`_resulttype([I32_valtype])))
     -- if (C.TABLE_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
 
-  ;; 6-typing.watsup:963.1-965.28
+  ;; 6-typing.watsup:964.1-966.28
   rule table.fill{C : context, x : idx, rt : reftype, lim : limits}:
     `%|-%:%`(C, TABLE.FILL_instr(x), `%->%`_finstrtype(`%`_resulttype([I32_valtype (rt : reftype <: valtype) I32_valtype]), `%`_resulttype([])))
     -- if (C.TABLE_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
 
-  ;; 6-typing.watsup:967.1-971.36
+  ;; 6-typing.watsup:968.1-972.36
   rule table.copy{C : context, x_1 : idx, x_2 : idx, lim_1 : limits, rt_1 : reftype, lim_2 : limits, rt_2 : reftype}:
     `%|-%:%`(C, TABLE.COPY_instr(x_1, x_2), `%->%`_finstrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), `%`_resulttype([])))
     -- if (C.TABLE_context[x_1!`%`_idx.0] = `%%`_tabletype(lim_1, rt_1))
     -- if (C.TABLE_context[x_2!`%`_idx.0] = `%%`_tabletype(lim_2, rt_2))
     -- Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)
 
-  ;; 6-typing.watsup:973.1-977.36
+  ;; 6-typing.watsup:974.1-978.36
   rule table.init{C : context, x : idx, y : idx, lim : limits, rt_1 : reftype, rt_2 : reftype}:
     `%|-%:%`(C, TABLE.INIT_instr(x, y), `%->%`_finstrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), `%`_resulttype([])))
     -- if (C.TABLE_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt_1))
     -- if (C.ELEM_context[y!`%`_idx.0] = rt_2)
     -- Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)
 
-  ;; 6-typing.watsup:979.1-981.23
+  ;; 6-typing.watsup:980.1-982.23
   rule elem.drop{C : context, x : idx, rt : reftype}:
     `%|-%:%`(C, ELEM.DROP_instr(x), `%->%`_finstrtype(`%`_resulttype([]), `%`_resulttype([])))
     -- if (C.ELEM_context[x!`%`_idx.0] = rt)
 
-  ;; 6-typing.watsup:986.1-988.22
+  ;; 6-typing.watsup:987.1-989.22
   rule memory.size{C : context, x : idx, mt : memtype}:
     `%|-%:%`(C, MEMORY.SIZE_instr(x), `%->%`_finstrtype(`%`_resulttype([]), `%`_resulttype([I32_valtype])))
     -- if (C.MEM_context[x!`%`_idx.0] = mt)
 
-  ;; 6-typing.watsup:990.1-992.22
+  ;; 6-typing.watsup:991.1-993.22
   rule memory.grow{C : context, x : idx, mt : memtype}:
     `%|-%:%`(C, MEMORY.GROW_instr(x), `%->%`_finstrtype(`%`_resulttype([I32_valtype]), `%`_resulttype([I32_valtype])))
     -- if (C.MEM_context[x!`%`_idx.0] = mt)
 
-  ;; 6-typing.watsup:994.1-996.22
+  ;; 6-typing.watsup:995.1-997.22
   rule memory.fill{C : context, x : idx, mt : memtype}:
     `%|-%:%`(C, MEMORY.FILL_instr(x), `%->%`_finstrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), `%`_resulttype([])))
     -- if (C.MEM_context[x!`%`_idx.0] = mt)
 
-  ;; 6-typing.watsup:998.1-1001.26
+  ;; 6-typing.watsup:999.1-1002.26
   rule memory.copy{C : context, x_1 : idx, x_2 : idx, mt_1 : memtype, mt_2 : memtype}:
     `%|-%:%`(C, MEMORY.COPY_instr(x_1, x_2), `%->%`_finstrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), `%`_resulttype([])))
     -- if (C.MEM_context[x_1!`%`_idx.0] = mt_1)
     -- if (C.MEM_context[x_2!`%`_idx.0] = mt_2)
 
-  ;; 6-typing.watsup:1003.1-1006.23
+  ;; 6-typing.watsup:1004.1-1007.23
   rule memory.init{C : context, x : idx, y : idx, mt : memtype}:
     `%|-%:%`(C, MEMORY.INIT_instr(x, y), `%->%`_finstrtype(`%`_resulttype([I32_valtype I32_valtype I32_valtype]), `%`_resulttype([])))
     -- if (C.MEM_context[x!`%`_idx.0] = mt)
     -- if (C.DATA_context[y!`%`_idx.0] = OK_datatype)
 
-  ;; 6-typing.watsup:1008.1-1010.23
+  ;; 6-typing.watsup:1009.1-1011.23
   rule data.drop{C : context, x : idx}:
     `%|-%:%`(C, DATA.DROP_instr(x), `%->%`_finstrtype(`%`_resulttype([]), `%`_resulttype([])))
     -- if (C.DATA_context[x!`%`_idx.0] = OK_datatype)
 
-  ;; 6-typing.watsup:1012.1-1017.29
+  ;; 6-typing.watsup:1013.1-1018.29
   rule load{C : context, nt : numtype, n? : n?, sx? : sx?, x : idx, n_A : n, n_O : n, mt : memtype, inn : inn}:
-    `%|-%:%`(C, `LOAD%(___)%?%%`_instr(nt, (`%`_ww(n), sx)?{n : nat, sx : sx}, x, {ALIGN `%`_u32(n_A), OFFSET `%`_u32(n_O)}), `%->%`_finstrtype(`%`_resulttype([I32_valtype]), `%`_resulttype([(nt : numtype <: valtype)])))
+    `%|-%:%`(C, `LOAD%(_)%?%%`_instr(nt, (`%`_ww(n), sx)?{n : nat, sx : sx}, x, {ALIGN `%`_u32(n_A), OFFSET `%`_u32(n_O)}), `%->%`_finstrtype(`%`_resulttype([I32_valtype]), `%`_resulttype([(nt : numtype <: valtype)])))
     -- if (C.MEM_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ n_A) <= ($size(nt) / 8))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt) / 8))))?{n : nat}
     -- if ((n?{n : n} = ?()) \/ (nt = (inn : inn <: numtype)))
 
-  ;; 6-typing.watsup:1019.1-1024.29
+  ;; 6-typing.watsup:1020.1-1025.29
   rule store{C : context, nt : numtype, n? : n?, x : idx, n_A : n, n_O : n, mt : memtype, inn : inn}:
     `%|-%:%`(C, STORE_instr(nt, `%`_ww(n)?{n : nat}, x, {ALIGN `%`_u32(n_A), OFFSET `%`_u32(n_O)}), `%->%`_finstrtype(`%`_resulttype([I32_valtype (nt : numtype <: valtype)]), `%`_resulttype([])))
     -- if (C.MEM_context[x!`%`_idx.0] = mt)
@@ -3826,85 +3826,85 @@ relation Instr_ok: `%|-%:%`(context, instr, finstrtype)
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt) / 8))))?{n : nat}
     -- if ((n?{n : n} = ?()) \/ (nt = (inn : inn <: numtype)))
 
-  ;; 6-typing.watsup:1026.1-1029.30
+  ;; 6-typing.watsup:1027.1-1030.30
   rule vload{C : context, M : M, N : N, sx : sx, x : idx, n_A : n, n_O : n, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(?(`SHAPE%X%%`_vloadop(M, N, sx)), x, {ALIGN `%`_u32(n_A), OFFSET `%`_u32(n_O)}), `%->%`_finstrtype(`%`_resulttype([I32_valtype]), `%`_resulttype([V128_valtype])))
     -- if (C.MEM_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ n_A) <= ((M / 8) * N))
 
-  ;; 6-typing.watsup:1031.1-1034.26
+  ;; 6-typing.watsup:1032.1-1035.26
   rule vload-splat{C : context, n : n, x : idx, n_A : n, n_O : n, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(?(SPLAT_vloadop(n)), x, {ALIGN `%`_u32(n_A), OFFSET `%`_u32(n_O)}), `%->%`_finstrtype(`%`_resulttype([I32_valtype]), `%`_resulttype([V128_valtype])))
     -- if (C.MEM_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ n_A) <= (n / 8))
 
-  ;; 6-typing.watsup:1036.1-1039.25
+  ;; 6-typing.watsup:1037.1-1040.25
   rule vload-zero{C : context, n : n, x : idx, n_A : n, n_O : n, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(?(ZERO_vloadop(n)), x, {ALIGN `%`_u32(n_A), OFFSET `%`_u32(n_O)}), `%->%`_finstrtype(`%`_resulttype([I32_valtype]), `%`_resulttype([V128_valtype])))
     -- if (C.MEM_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ n_A) < (n / 8))
 
-  ;; 6-typing.watsup:1041.1-1045.29
+  ;; 6-typing.watsup:1042.1-1046.29
   rule vload_lane{C : context, n : n, x : idx, n_A : n, n_O : n, laneidx : laneidx, mt : memtype}:
     `%|-%:%`(C, VLOAD_LANE_instr(`%`_ww(n), x, {ALIGN `%`_u32(n_A), OFFSET `%`_u32(n_O)}, laneidx), `%->%`_finstrtype(`%`_resulttype([I32_valtype V128_valtype]), `%`_resulttype([V128_valtype])))
     -- if (C.MEM_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ n_A) < (n / 8))
     -- if (laneidx!`%`_laneidx.0 < (128 / n))
 
-  ;; 6-typing.watsup:1047.1-1050.37
+  ;; 6-typing.watsup:1048.1-1051.37
   rule vstore{C : context, x : idx, n_A : n, n_O : n, mt : memtype}:
     `%|-%:%`(C, VSTORE_instr(x, {ALIGN `%`_u32(n_A), OFFSET `%`_u32(n_O)}), `%->%`_finstrtype(`%`_resulttype([I32_valtype V128_valtype]), `%`_resulttype([])))
     -- if (C.MEM_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ n_A) <= ($vsize(V128_vectype) / 8))
 
-  ;; 6-typing.watsup:1052.1-1056.29
+  ;; 6-typing.watsup:1053.1-1057.29
   rule vstore_lane{C : context, n : n, x : idx, n_A : n, n_O : n, laneidx : laneidx, mt : memtype}:
     `%|-%:%`(C, VSTORE_LANE_instr(`%`_ww(n), x, {ALIGN `%`_u32(n_A), OFFSET `%`_u32(n_O)}, laneidx), `%->%`_finstrtype(`%`_resulttype([I32_valtype V128_valtype]), `%`_resulttype([])))
     -- if (C.MEM_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ n_A) < (n / 8))
     -- if (laneidx!`%`_laneidx.0 < (128 / n))
 
-;; 6-typing.watsup:508.1-508.67
+;; 6-typing.watsup:509.1-509.67
 relation Instrf_ok: `%|-%:%`(context, instr, instrtype)
-  ;; 6-typing.watsup:522.1-524.41
+  ;; 6-typing.watsup:523.1-525.41
   rule instr{C : context, instr : instr, t_1* : valtype*, t_2* : valtype*}:
-    `%|-%:%`(C, instr, `%->%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), [], `%`_resulttype(t_2*{t_2 : valtype})))
+    `%|-%:%`(C, instr, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), [], `%`_resulttype(t_2*{t_2 : valtype})))
     -- Instr_ok: `%|-%:%`(C, instr, `%->%`_finstrtype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype})))
 
-  ;; 6-typing.watsup:925.1-927.28
+  ;; 6-typing.watsup:926.1-928.28
   rule local.set{C : context, x : idx, t : valtype, init : init}:
-    `%|-%:%`(C, LOCAL.SET_instr(x), `%->%%`_instrtype(`%`_resulttype([t]), [x], `%`_resulttype([])))
+    `%|-%:%`(C, LOCAL.SET_instr(x), `%->_%%`_instrtype(`%`_resulttype([t]), [x], `%`_resulttype([])))
     -- if (C.LOCAL_context[x!`%`_idx.0] = `%%`_localtype(init, t))
 
-  ;; 6-typing.watsup:929.1-931.28
+  ;; 6-typing.watsup:930.1-932.28
   rule local.tee{C : context, x : idx, t : valtype, init : init}:
-    `%|-%:%`(C, LOCAL.TEE_instr(x), `%->%%`_instrtype(`%`_resulttype([t]), [x], `%`_resulttype([t])))
+    `%|-%:%`(C, LOCAL.TEE_instr(x), `%->_%%`_instrtype(`%`_resulttype([t]), [x], `%`_resulttype([t])))
     -- if (C.LOCAL_context[x!`%`_idx.0] = `%%`_localtype(init, t))
 
-;; 6-typing.watsup:509.1-509.74
+;; 6-typing.watsup:510.1-510.74
 relation Instrs_ok: `%|-%:%`(context, instr*, instrtype)
-  ;; 6-typing.watsup:526.1-527.29
+  ;; 6-typing.watsup:527.1-528.30
   rule empty{C : context}:
-    `%|-%:%`(C, [], `%->%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
+    `%|-%:%`(C, [], `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([])))
 
-  ;; 6-typing.watsup:529.1-534.52
+  ;; 6-typing.watsup:530.1-535.53
   rule seq{C : context, instr_1 : instr, instr_2* : instr*, t_1* : valtype*, x_1* : idx*, x_2* : idx*, t_3* : valtype*, init* : init*, t* : valtype*, C' : context, t_2* : valtype*}:
-    `%|-%:%`(C, [instr_1] :: instr_2*{instr_2 : instr}, `%->%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x_1*{x_1 : localidx} :: x_2*{x_2 : localidx}, `%`_resulttype(t_3*{t_3 : valtype})))
+    `%|-%:%`(C, [instr_1] :: instr_2*{instr_2 : instr}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x_1*{x_1 : localidx} :: x_2*{x_2 : localidx}, `%`_resulttype(t_3*{t_3 : valtype})))
     -- (if (C.LOCAL_context[x_1!`%`_idx.0] = `%%`_localtype(init, t)))*{init : init, t : valtype, x_1 : idx}
     -- if (C' = $with_locals(C, x_1*{x_1 : localidx}, `%%`_localtype(SET_init, t)*{t : valtype}))
-    -- Instrf_ok: `%|-%:%`(C, instr_1, `%->%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x_1*{x_1 : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
-    -- Instrs_ok: `%|-%:%`(C', instr_2*{instr_2 : instr}, `%->%%`_instrtype(`%`_resulttype(t_2*{t_2 : valtype}), x_2*{x_2 : localidx}, `%`_resulttype(t_3*{t_3 : valtype})))
+    -- Instrf_ok: `%|-%:%`(C, instr_1, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x_1*{x_1 : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
+    -- Instrs_ok: `%|-%:%`(C', instr_2*{instr_2 : instr}, `%->_%%`_instrtype(`%`_resulttype(t_2*{t_2 : valtype}), x_2*{x_2 : localidx}, `%`_resulttype(t_3*{t_3 : valtype})))
 
-  ;; 6-typing.watsup:536.1-539.35
+  ;; 6-typing.watsup:537.1-540.35
   rule sub{C : context, instr* : instr*, it' : instrtype, it : instrtype}:
     `%|-%:%`(C, instr*{instr : instr}, it')
     -- Instrs_ok: `%|-%:%`(C, instr*{instr : instr}, it)
     -- Instrtype_sub: `%|-%<:%`(C, it, it')
 
-  ;; 6-typing.watsup:541.1-543.47
+  ;; 6-typing.watsup:542.1-544.48
   rule frame{C : context, instr* : instr*, t* : valtype*, t_1* : valtype*, x* : idx*, t_2* : valtype*}:
-    `%|-%:%`(C, instr*{instr : instr}, `%->%%`_instrtype(`%`_resulttype(t*{t : valtype} :: t_1*{t_1 : valtype}), x*{x : localidx}, `%`_resulttype(t*{t : valtype} :: t_2*{t_2 : valtype})))
-    -- Instrs_ok: `%|-%:%`(C, instr*{instr : instr}, `%->%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x*{x : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
+    `%|-%:%`(C, instr*{instr : instr}, `%->_%%`_instrtype(`%`_resulttype(t*{t : valtype} :: t_1*{t_1 : valtype}), x*{x : localidx}, `%`_resulttype(t*{t : valtype} :: t_2*{t_2 : valtype})))
+    -- Instrs_ok: `%|-%:%`(C, instr*{instr : instr}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x*{x : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
 }
 
 ;; 6-typing.watsup
@@ -3912,27 +3912,27 @@ relation Expr_ok: `%|-%:%`(context, expr, resulttype)
   ;; 6-typing.watsup
   rule _{C : context, instr* : instr*, t* : valtype*}:
     `%|-%:%`(C, instr*{instr : instr}, `%`_resulttype(t*{t : valtype}))
-    -- Instrs_ok: `%|-%:%`(C, instr*{instr : instr}, `%->%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype(t*{t : valtype})))
+    -- Instrs_ok: `%|-%:%`(C, instr*{instr : instr}, `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype(t*{t : valtype})))
 
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1087.1-1087.86
+;; 6-typing.watsup:1088.1-1088.86
 def $in_binop(numtype : numtype, binop_ : binop_(numtype), binop_(numtype)*) : bool
-  ;; 6-typing.watsup:1088.1-1088.42
+  ;; 6-typing.watsup:1089.1-1089.42
   def $in_binop{nt : numtype, binop : binop_(nt), epsilon : binop_(nt)*}(nt, binop, epsilon) = false
-  ;; 6-typing.watsup:1089.1-1089.99
+  ;; 6-typing.watsup:1090.1-1090.99
   def $in_binop{nt : numtype, binop : binop_(nt), ibinop_1 : binop_(nt), ibinop'* : binop_(nt)*}(nt, binop, [ibinop_1] :: ibinop'*{ibinop' : binop_(nt)}) = ((binop = ibinop_1) \/ $in_binop(nt, binop, ibinop'*{ibinop' : binop_(nt)}))
 }
 
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1083.1-1083.63
+;; 6-typing.watsup:1084.1-1084.63
 def $in_numtype(numtype : numtype, numtype*) : bool
-  ;; 6-typing.watsup:1084.1-1084.37
+  ;; 6-typing.watsup:1085.1-1085.37
   def $in_numtype{nt : numtype, epsilon : numtype*}(nt, epsilon) = false
-  ;; 6-typing.watsup:1085.1-1085.68
+  ;; 6-typing.watsup:1086.1-1086.68
   def $in_numtype{nt : numtype, nt_1 : numtype, nt'* : numtype*}(nt, [nt_1] :: nt'*{nt' : numtype}) = ((nt = nt_1) \/ $in_numtype(nt, nt'*{nt' : numtype}))
 }
 
@@ -4015,7 +4015,7 @@ relation Global_ok: `%|-%:%`(context, global, globaltype)
   ;; 6-typing.watsup
   rule _{C : context, gt : globaltype, expr : expr, mut : mut, t : valtype}:
     `%|-%:%`(C, GLOBAL_global(gt, expr), gt)
-    -- Globaltype_ok: `%|-%:_OK`(C, gt)
+    -- Globaltype_ok: `%|-%:OK`(C, gt)
     -- if (gt = `%%`_globaltype(mut, t))
     -- Expr_ok_const: `%|-%:%CONST`(C, expr, t)
 
@@ -4024,7 +4024,7 @@ relation Table_ok: `%|-%:%`(context, table, tabletype)
   ;; 6-typing.watsup
   rule _{C : context, tt : tabletype, expr : expr, limits : limits, rt : reftype}:
     `%|-%:%`(C, TABLE_table(tt, expr), tt)
-    -- Tabletype_ok: `%|-%:_OK`(C, tt)
+    -- Tabletype_ok: `%|-%:OK`(C, tt)
     -- if (tt = `%%`_tabletype(limits, rt))
     -- Expr_ok_const: `%|-%:%CONST`(C, expr, (rt : reftype <: valtype))
 
@@ -4033,7 +4033,7 @@ relation Mem_ok: `%|-%:%`(context, mem, memtype)
   ;; 6-typing.watsup
   rule _{C : context, mt : memtype}:
     `%|-%:%`(C, MEMORY_mem(mt), mt)
-    -- Memtype_ok: `%|-%:_OK`(C, mt)
+    -- Memtype_ok: `%|-%:OK`(C, mt)
 
 ;; 6-typing.watsup
 relation Elemmode_ok: `%|-%:%`(context, elemmode, reftype)
@@ -4060,29 +4060,29 @@ relation Elem_ok: `%|-%:%`(context, elem, reftype)
     -- Elemmode_ok: `%|-%:%`(C, elemmode, rt)
 
 ;; 6-typing.watsup
-relation Datamode_ok: `%|-%:_OK`(context, datamode)
+relation Datamode_ok: `%|-%:OK`(context, datamode)
   ;; 6-typing.watsup
   rule active{C : context, x : idx, expr : expr, mt : memtype}:
-    `%|-%:_OK`(C, ACTIVE_datamode(x, expr))
+    `%|-%:OK`(C, ACTIVE_datamode(x, expr))
     -- if (C.MEM_context[x!`%`_idx.0] = mt)
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
 
   ;; 6-typing.watsup
   rule passive{C : context}:
-    `%|-%:_OK`(C, PASSIVE_datamode)
+    `%|-%:OK`(C, PASSIVE_datamode)
 
 ;; 6-typing.watsup
-relation Data_ok: `%|-%:_OK`(context, data)
+relation Data_ok: `%|-%:OK`(context, data)
   ;; 6-typing.watsup
   rule _{C : context, b* : byte*, datamode : datamode}:
-    `%|-%:_OK`(C, DATA_data(b*{b : byte}, datamode))
-    -- Datamode_ok: `%|-%:_OK`(C, datamode)
+    `%|-%:OK`(C, DATA_data(b*{b : byte}, datamode))
+    -- Datamode_ok: `%|-%:OK`(C, datamode)
 
 ;; 6-typing.watsup
-relation Start_ok: `%|-%:_OK`(context, start)
+relation Start_ok: `%|-%:OK`(context, start)
   ;; 6-typing.watsup
   rule _{C : context, x : idx}:
-    `%|-%:_OK`(C, START_start(x))
+    `%|-%:OK`(C, START_start(x))
     -- Expand: `%~~%`(C.FUNC_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype([]), `%`_resulttype([]))))
 
 ;; 6-typing.watsup
@@ -4090,7 +4090,7 @@ relation Import_ok: `%|-%:%`(context, import, externtype)
   ;; 6-typing.watsup
   rule _{C : context, name_1 : name, name_2 : name, xt : externtype}:
     `%|-%:%`(C, IMPORT_import(name_1, name_2, xt), xt)
-    -- Externtype_ok: `%|-%:_OK`(C, xt)
+    -- Externtype_ok: `%|-%:OK`(C, xt)
 
 ;; 6-typing.watsup
 relation Externidx_ok: `%|-%:%`(context, externidx, externtype)
@@ -4124,13 +4124,13 @@ relation Export_ok: `%|-%:%`(context, export, externtype)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1230.1-1230.77
+;; 6-typing.watsup:1231.1-1231.77
 relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
-  ;; 6-typing.watsup:1267.1-1268.17
+  ;; 6-typing.watsup:1268.1-1269.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1270.1-1273.54
+  ;; 6-typing.watsup:1271.1-1274.54
   rule cons{C : context, global_1 : global, global : global, gt_1 : globaltype, gt* : globaltype*}:
     `%|-%:%`(C, [global_1] :: global*{}, [gt_1] :: gt*{gt : globaltype})
     -- Global_ok: `%|-%:%`(C, global, gt_1)
@@ -4140,13 +4140,13 @@ relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1229.1-1229.75
+;; 6-typing.watsup:1230.1-1230.75
 relation Types_ok: `%|-%:%`(context, type*, deftype*)
-  ;; 6-typing.watsup:1259.1-1260.17
+  ;; 6-typing.watsup:1260.1-1261.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1262.1-1265.49
+  ;; 6-typing.watsup:1263.1-1266.49
   rule cons{C : context, type_1 : type, type* : type*, dt_1 : deftype, dt* : deftype*}:
     `%|-%:%`(C, [type_1] :: type*{type : type}, dt_1*{} :: dt*{dt : deftype})
     -- Type_ok: `%|-%:%`(C, type_1, [dt_1])
@@ -4154,10 +4154,10 @@ relation Types_ok: `%|-%:%`(context, type*, deftype*)
 }
 
 ;; 6-typing.watsup
-relation Module_ok: `|-%:_OK`(module)
+relation Module_ok: `|-%:OK`(module)
   ;; 6-typing.watsup
   rule _{type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data^n : data^n, n : n, start? : start?, export* : export*, dt'* : deftype*, ixt* : externtype*, C' : context, gt* : globaltype*, tt* : tabletype*, mt* : memtype*, C : context, dt* : deftype*, rt* : reftype*, xt* : externtype*, idt* : deftype*, igt* : globaltype*, itt* : tabletype*, imt* : memtype*}:
-    `|-%:_OK`(MODULE_module(type*{type : type}, import*{import : import}, func*{func : func}, global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data^n{data : data}, start?{start : start}, export*{export : export}))
+    `|-%:OK`(MODULE_module(type*{type : type}, import*{import : import}, func*{func : func}, global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data^n{data : data}, start?{start : start}, export*{export : export}))
     -- Types_ok: `%|-%:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, type*{type : type}, dt'*{dt' : deftype})
     -- (Import_ok: `%|-%:%`({TYPE dt'*{dt' : deftype}, REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, import, ixt))*{import : import, ixt : externtype}
     -- Globals_ok: `%|-%:%`(C', global*{global : global}, gt*{gt : globaltype})
@@ -4165,8 +4165,8 @@ relation Module_ok: `|-%:_OK`(module)
     -- (Mem_ok: `%|-%:%`(C', mem, mt))*{mem : mem, mt : memtype}
     -- (Func_ok: `%|-%:%`(C, func, dt))*{dt : deftype, func : func}
     -- (Elem_ok: `%|-%:%`(C, elem, rt))*{elem : elem, rt : reftype}
-    -- (Data_ok: `%|-%:_OK`(C, data))^n{data : data}
-    -- (Start_ok: `%|-%:_OK`(C, start))?{start : start}
+    -- (Data_ok: `%|-%:OK`(C, data))^n{data : data}
+    -- (Start_ok: `%|-%:OK`(C, start))?{start : start}
     -- (Export_ok: `%|-%:%`(C, export, xt))*{export : export, xt : externtype}
     -- if (C = {TYPE dt'*{dt' : deftype}, REC [], FUNC idt*{idt : deftype} :: dt*{dt : deftype}, GLOBAL igt*{igt : globaltype} :: gt*{gt : globaltype}, TABLE itt*{itt : tabletype} :: tt*{tt : tabletype}, MEM imt*{imt : memtype} :: mt*{mt : memtype}, ELEM rt*{rt : elemtype}, DATA OK_datatype^n{}, LOCAL [], LABEL [], RETURN ?()})
     -- if (C' = {TYPE dt'*{dt' : deftype}, REC [], FUNC idt*{idt : deftype} :: dt*{dt : deftype}, GLOBAL igt*{igt : globaltype}, TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()})
@@ -4224,12 +4224,12 @@ relation Step_pure: `%~>%`(admininstr*, admininstr*)
 
   ;; 8-reduction.watsup
   rule select-true{val_1 : val, val_2 : val, c : num_(I32_numtype), t*? : valtype*?}:
-    `%~>%`([(val_1 : val <: admininstr) (val_2 : val <: admininstr) CONST_admininstr(I32_numtype, c) `SELECT_(_)%?`_admininstr(t*{t : valtype}?{t : valtype})], [(val_1 : val <: admininstr)])
+    `%~>%`([(val_1 : val <: admininstr) (val_2 : val <: admininstr) CONST_admininstr(I32_numtype, c) `SELECT()%?`_admininstr(t*{t : valtype}?{t : valtype})], [(val_1 : val <: admininstr)])
     -- if (c =/= `%`_num_(0))
 
   ;; 8-reduction.watsup
   rule select-false{val_1 : val, val_2 : val, c : num_(I32_numtype), t*? : valtype*?}:
-    `%~>%`([(val_1 : val <: admininstr) (val_2 : val <: admininstr) CONST_admininstr(I32_numtype, c) `SELECT_(_)%?`_admininstr(t*{t : valtype}?{t : valtype})], [(val_2 : val <: admininstr)])
+    `%~>%`([(val_1 : val <: admininstr) (val_2 : val <: admininstr) CONST_admininstr(I32_numtype, c) `SELECT()%?`_admininstr(t*{t : valtype}?{t : valtype})], [(val_2 : val <: admininstr)])
     -- if (c = `%`_num_(0))
 
   ;; 8-reduction.watsup
@@ -4925,22 +4925,22 @@ relation Step_read: `%~>%`(config, admininstr*)
 
   ;; 8-reduction.watsup
   rule load-num-oob{z : state, i : nat, nt : numtype, x : idx, mo : memop}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) `LOAD%(___)%?%%`_admininstr(nt, ?(), x, mo)]), [TRAP_admininstr])
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) `LOAD%(_)%?%%`_admininstr(nt, ?(), x, mo)]), [TRAP_admininstr])
     -- if (((i + mo.OFFSET_memop!`%`_u32.0) + ($size(nt) / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup
   rule load-num-val{z : state, i : nat, nt : numtype, x : idx, mo : memop, c : num_(nt)}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) `LOAD%(___)%?%%`_admininstr(nt, ?(), x, mo)]), [CONST_admininstr(nt, c)])
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) `LOAD%(_)%?%%`_admininstr(nt, ?(), x, mo)]), [CONST_admininstr(nt, c)])
     -- if ($nbytes(nt, c) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop!`%`_u32.0) : ($size(nt) / 8)])
 
   ;; 8-reduction.watsup
   rule load-pack-oob{z : state, i : nat, inn : inn, n : n, sx : sx, x : idx, mo : memop}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) `LOAD%(___)%?%%`_admininstr((inn : inn <: numtype), ?((`%`_ww(n), sx)), x, mo)]), [TRAP_admininstr])
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) `LOAD%(_)%?%%`_admininstr((inn : inn <: numtype), ?((`%`_ww(n), sx)), x, mo)]), [TRAP_admininstr])
     -- if (((i + mo.OFFSET_memop!`%`_u32.0) + (n / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup
   rule load-pack-val{z : state, i : nat, inn : inn, n : n, sx : sx, x : idx, mo : memop, c : iN(n)}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) `LOAD%(___)%?%%`_admininstr((inn : inn <: numtype), ?((`%`_ww(n), sx)), x, mo)]), [CONST_admininstr((inn : inn <: numtype), $ext(n, $size((inn : inn <: numtype)), sx, c))])
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) `LOAD%(_)%?%%`_admininstr((inn : inn <: numtype), ?((`%`_ww(n), sx)), x, mo)]), [CONST_admininstr((inn : inn <: numtype), $ext(n, $size((inn : inn <: numtype)), sx, c))])
     -- if ($ibytes(n, c) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop!`%`_u32.0) : (n / 8)])
 
   ;; 8-reduction.watsup
@@ -5036,13 +5036,13 @@ relation Step_read: `%~>%`(config, admininstr*)
 
   ;; 8-reduction.watsup
   rule memory.copy-le{z : state, i_1 : nat, i_2 : nat, n : n, x_1 : idx, x_2 : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i_1)) CONST_admininstr(I32_numtype, `%`_num_(i_2)) CONST_admininstr(I32_numtype, `%`_num_(n)) MEMORY.COPY_admininstr(x_1, x_2)]), [CONST_admininstr(I32_numtype, `%`_num_(i_1)) CONST_admininstr(I32_numtype, `%`_num_(i_2)) `LOAD%(___)%?%%`_admininstr(I32_numtype, ?((`%`_ww(8), U_sx)), x_2, $memop0) STORE_admininstr(I32_numtype, ?(`%`_ww(8)), x_1, $memop0) CONST_admininstr(I32_numtype, `%`_num_((i_1 + 1))) CONST_admininstr(I32_numtype, `%`_num_((i_2 + 1))) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) MEMORY.COPY_admininstr(x_1, x_2)])
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i_1)) CONST_admininstr(I32_numtype, `%`_num_(i_2)) CONST_admininstr(I32_numtype, `%`_num_(n)) MEMORY.COPY_admininstr(x_1, x_2)]), [CONST_admininstr(I32_numtype, `%`_num_(i_1)) CONST_admininstr(I32_numtype, `%`_num_(i_2)) `LOAD%(_)%?%%`_admininstr(I32_numtype, ?((`%`_ww(8), U_sx)), x_2, $memop0) STORE_admininstr(I32_numtype, ?(`%`_ww(8)), x_1, $memop0) CONST_admininstr(I32_numtype, `%`_num_((i_1 + 1))) CONST_admininstr(I32_numtype, `%`_num_((i_2 + 1))) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) MEMORY.COPY_admininstr(x_1, x_2)])
     -- otherwise
     -- if (i_1 <= i_2)
 
   ;; 8-reduction.watsup
   rule memory.copy-gt{z : state, i_1 : nat, i_2 : nat, n : n, x_1 : idx, x_2 : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i_1)) CONST_admininstr(I32_numtype, `%`_num_(i_2)) CONST_admininstr(I32_numtype, `%`_num_(n)) MEMORY.COPY_admininstr(x_1, x_2)]), [CONST_admininstr(I32_numtype, `%`_num_(((i_1 + n) - 1))) CONST_admininstr(I32_numtype, `%`_num_(((i_2 + n) - 1))) `LOAD%(___)%?%%`_admininstr(I32_numtype, ?((`%`_ww(8), U_sx)), x_2, $memop0) STORE_admininstr(I32_numtype, ?(`%`_ww(8)), x_1, $memop0) CONST_admininstr(I32_numtype, `%`_num_(i_1)) CONST_admininstr(I32_numtype, `%`_num_(i_2)) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) MEMORY.COPY_admininstr(x_1, x_2)])
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i_1)) CONST_admininstr(I32_numtype, `%`_num_(i_2)) CONST_admininstr(I32_numtype, `%`_num_(n)) MEMORY.COPY_admininstr(x_1, x_2)]), [CONST_admininstr(I32_numtype, `%`_num_(((i_1 + n) - 1))) CONST_admininstr(I32_numtype, `%`_num_(((i_2 + n) - 1))) `LOAD%(_)%?%%`_admininstr(I32_numtype, ?((`%`_ww(8), U_sx)), x_2, $memop0) STORE_admininstr(I32_numtype, ?(`%`_ww(8)), x_1, $memop0) CONST_admininstr(I32_numtype, `%`_num_(i_1)) CONST_admininstr(I32_numtype, `%`_num_(i_2)) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) MEMORY.COPY_admininstr(x_1, x_2)])
     -- otherwise
 
   ;; 8-reduction.watsup

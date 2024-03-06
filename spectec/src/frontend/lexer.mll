@@ -190,6 +190,8 @@ and token = parse
   | "<-" { IN }
   | "->" { ARROW }
   | "=>" { ARROW2 }
+  | "->_" { ARROWSUB }
+  | "=>_" { ARROW2SUB }
   | "<=>" { DARROW2 }
   | "~>" { SQARROW }
   | "~>*" { SQARROWSTAR }

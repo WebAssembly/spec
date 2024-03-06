@@ -38,58 +38,8 @@ let string_of_cmpop = function
   | LeOp _ -> "<="
   | GeOp _ -> ">="
 
-let string_of_atom atom =
-  match atom.it with
-  | Atom atomid -> atomid
-  | Infinity -> "infinity"
-  | Bot -> "_|_"
-  | Top -> "^|^"
-  | Dot -> "."
-  | Dot2 -> ".."
-  | Dot3 -> "..."
-  | Semicolon -> ";"
-  | Backslash -> "\\"
-  | In -> "in"
-  | Arrow -> "->"
-  | Arrow2 -> "=>"
-  | Colon -> ":"
-  | Sub -> "<:"
-  | Sup -> ":>"
-  | Assign -> ":="
-  | Equal -> "="
-  | Equiv -> "=="
-  | Approx -> "~~"
-  | SqArrow -> "~>"
-  | SqArrowStar -> "~>*"
-  | Prec -> "<<"
-  | Succ -> ">>"
-  | Tilesturn -> "-|"
-  | Turnstile -> "|-"
-  | Quest -> "?"
-  | Plus -> "+"
-  | Star -> "*"
-  | Comma -> ","
-  | Comp -> "++"
-  | Bar -> "|"
-  | BigComp -> "(++)"
-  | BigAnd -> "(/\\)"
-  | BigOr -> "(\\/)"
-  | LParen -> "("
-  | LBrack -> "["
-  | LBrace -> "{"
-  | RParen -> ")"
-  | RBrack -> "]"
-  | RBrace -> "}"
-
-let string_of_mixop = function
-  | [{it = Atom a; _}]::tail when List.for_all ((=) []) tail -> a
-  | mixop ->
-    let s =
-      String.concat "%" (List.map (
-        fun atoms -> String.concat "_" (List.map string_of_atom atoms)) mixop
-      )
-    in
-    "`" ^ s ^ "`"
+let string_of_atom = Atom.string_of_atom
+let string_of_mixop = Atom.string_of_mixop
 
 
 (* Types *)

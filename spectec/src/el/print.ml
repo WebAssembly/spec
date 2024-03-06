@@ -23,48 +23,7 @@ let string_of_gramid id = id.it
 
 (* Operators *)
 
-let string_of_atom atom =
-  match atom.it with
-  | Atom atomid -> atomid
-  | Infinity -> "infinity"
-  | Bot -> "_|_"
-  | Top -> "^|^"
-  | Dot -> "."
-  | Dot2 -> ".."
-  | Dot3 -> "..."
-  | Semicolon -> ";"
-  | Backslash -> "\\"
-  | In -> "<-"
-  | Arrow -> "->"
-  | Arrow2 -> "`=>"
-  | Colon -> ":"
-  | Sub -> "<:"
-  | Sup -> ":>"
-  | Assign -> ":="
-  | Equal -> "="
-  | Equiv -> "=="
-  | Approx -> "~~"
-  | SqArrow -> "~>"
-  | SqArrowStar -> "~>*"
-  | Prec -> "<<"
-  | Succ -> ">>"
-  | Tilesturn -> "-|"
-  | Turnstile -> "|-"
-  | Quest -> "`?"
-  | Plus -> "`+"
-  | Star -> "`*"
-  | Comma -> "`,"
-  | Comp -> "++"
-  | Bar -> "`|"
-  | BigComp -> "(++)"
-  | BigAnd -> "(/\\)"
-  | BigOr -> "(\\/)"
-  | LParen -> "`("
-  | RParen -> "`)"
-  | LBrack -> "`["
-  | RBrack -> "`]"
-  | LBrace -> "`{"
-  | RBrace -> "`}"
+let string_of_atom = Il.Atom.string_of_atom
 
 let string_of_unop = function
   | NotOp -> "~"

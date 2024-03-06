@@ -446,48 +446,7 @@ let elab_hints tid = List.map (elab_hint tid)
 
 let elab_atom atom tid =
   atom.note := tid.it;
-  (match atom.it with
-  | Atom s -> Il.Atom s
-  | Infinity -> Il.Infinity
-  | Bot -> Il.Bot
-  | Top -> Il.Top
-  | Dot -> Il.Dot
-  | Dot2 -> Il.Dot2
-  | Dot3 -> Il.Dot3
-  | Semicolon -> Il.Semicolon
-  | Backslash -> Il.Backslash
-  | In -> Il.In
-  | Arrow -> Il.Arrow
-  | Arrow2 -> Il.Arrow2
-  | Colon -> Il.Colon
-  | Sub -> Il.Sub
-  | Sup -> Il.Sup
-  | Assign -> Il.Assign
-  | Equal -> Il.Equal
-  | Equiv -> Il.Equiv
-  | Approx -> Il.Approx
-  | SqArrow -> Il.SqArrow
-  | SqArrowStar -> Il.SqArrowStar
-  | Prec -> Il.Prec
-  | Succ -> Il.Succ
-  | Turnstile -> Il.Turnstile
-  | Tilesturn -> Il.Tilesturn
-  | Quest -> Il.Quest
-  | Plus -> Il.Plus
-  | Star -> Il.Star
-  | Comma -> Il.Comma
-  | Comp -> Il.Comp
-  | Bar -> Il.Bar
-  | BigComp -> Il.BigComp
-  | BigAnd -> Il.BigAnd
-  | BigOr -> Il.BigOr
-  | LParen -> Il.LParen
-  | RParen -> Il.RParen
-  | LBrack -> Il.LBrack
-  | RBrack -> Il.RBrack
-  | LBrace -> Il.LBrace
-  | RBrace -> Il.RBrace
-  ) $$ atom.at % !(atom.note)
+  atom
 
 let numtyps = [NatT; IntT; RatT; RealT]
 
@@ -811,8 +770,8 @@ and elab_typ_notation env tid t : Il.mixop * Il.typ list * typ list =
       ts1', ts1
   | ParenT t1 ->
     let mixop1, ts1', ts1 = elab_typ_notation env tid t1 in
-    let l = Il.LParen $$ t.at % tid.it in
-    let r = Il.RParen $$ t.at % tid.it in
+    let l = Il.Atom.LParen $$ t.at % ref tid.it in
+    let r = Il.Atom.RParen $$ t.at % ref tid.it in
     merge_mixop (merge_mixop [[l]] mixop1) [[r]], ts1', ts1
   | IterT (t1, iter) ->
     (match iter with
@@ -822,7 +781,8 @@ and elab_typ_notation env tid t : Il.mixop * Il.typ list * typ list =
       let iter' = elab_iter env iter in
       let tit = IterT (tup_typ ts1 t1.at, iter) $ t.at in
       let t' = Il.IterT (tup_typ' ts1' t1.at, iter') $ t.at in
-      let op = (match iter with Opt -> Il.Quest | _ -> Il.Star) $$ t.at % tid.it in
+      let op =
+        Il.Atom.(match iter with Opt -> Quest | _ -> Star) $$ t.at % ref tid.it in
       (if mixop1 = [[]; []] then mixop1 else [List.flatten mixop1] @ [[op]]),
       [t'], [tit]
     )
