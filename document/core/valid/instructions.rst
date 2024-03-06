@@ -1060,7 +1060,7 @@ $${rule: Instr_ok/local.get}
 
 * Then the instruction is valid with type :math:`[t] \to_{x} []`.
 
-$${rule: Instr_x_ok/local.set}
+$${rule: Instr_ok/local.set}
 
 
 .. _valid-local.tee:
@@ -1074,7 +1074,7 @@ $${rule: Instr_x_ok/local.set}
 
 * Then the instruction is valid with type :math:`[t] \to_{x} [t]`.
 
-$${rule: Instr_x_ok/local.tee}
+$${rule: Instr_ok/local.tee}
 
 
 .. _valid-global.get:
