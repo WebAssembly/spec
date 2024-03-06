@@ -147,6 +147,11 @@ let find_case cases atom at t =
   | Some (_, x, _) -> x
   | None -> error_atom at atom t "unknown case"
 
+let find_case_sub cases atom at t =
+  match List.find_opt (fun (atom', _, _) -> atom'.it = atom.it || Il.Atom.sub atom' atom) cases with
+  | Some (_, x, _) -> x
+  | None -> error_atom at atom t "unknown case"
+
 let bound_env' env' = Map.fold (fun id _ s -> Free.Set.add id s) env' Free.Set.empty
 let bound_env env =
   Free.{
@@ -404,7 +409,7 @@ and as_variant_typ phrase env dir t at : typcase list * dots =
 
 let case_has_args env t op at : bool =
   let cases, _ = as_variant_typ "" env Check t at in
-  let t, _prems = find_case cases op at t in
+  let t, _prems = find_case_sub cases op at t in
   match t.it with
   | SeqT ({it = AtomT _; _}::_) -> true
   | _ -> false
@@ -1193,6 +1198,10 @@ and elab_exp_notation' env tid e t : Il.exp list * Subst.t =
     if atom.it <> atom'.it then error_typ env e.at "atom" t;
     ignore (elab_atom atom tid);
     [], Subst.empty
+  | InfixE (e1, atom, e2), InfixT (_, atom', _) when Il.Atom.sub atom' atom ->
+    let e21 = ParenE (SeqE [] $ e2.at, false) $ e2.at in
+    elab_exp_notation' env tid
+      (InfixE (e1, atom', SeqE [e21; e2] $ e2.at) $ e.at) t
   | InfixE (e1, atom, e2), InfixT (t1, atom', t2) ->
     if atom.it <> atom'.it then error_typ env e.at "infix expression" t;
     let es1', s1 = elab_exp_notation' env tid e1 t1 in
@@ -1225,6 +1234,10 @@ and elab_exp_notation' env tid e t : Il.exp list * Subst.t =
         elab_exp_notation' env tid (SeqE es2 $ e.at) (Subst.subst_typ s1 (SeqT ts2 $ t.at)) in
       es1' @ es2', Subst.union s2 s2
     )
+  | SeqE ({it = AtomE atom; at; _}::es2), SeqT ({it = AtomT atom'; _}::_)
+    when Il.Atom.sub atom' atom ->
+    let e21 = ParenE (SeqE [] $ at, false) $ at in
+    elab_exp_notation' env tid (SeqE ((AtomE atom' $ at) :: e21 :: es2) $ e.at) t
   | SeqE (e1::es2), SeqT (t1::ts2) ->
     let es1', s1 = elab_exp_notation' env tid (unparen_exp e1) t1 in
     let es2', s2 =
@@ -1325,7 +1338,7 @@ and elab_exp_variant env tid e cases t at : Il.exp =
     | BrackE (atom, _, _) -> atom
     | _ -> error_typ env at "expression" t
   in
-  let t1, _prems = find_case cases atom at t in
+  let t1, _prems = find_case_sub cases atom at t in
   let es', _s = elab_exp_notation' env tid e t1 in
   let t2 = expand_singular env t $ at in
   let t2' = elab_typ env t2 in
@@ -1476,7 +1489,7 @@ and cast_exp' phrase env e' t1 t2 : Il.exp' =
         (* Shallow subtyping on variants *)
         let env' = to_eval_env env in
         if not (Eq.eq_typ (Eval.reduce_typ env' t1') (Eval.reduce_typ env' t2')) then
-          failwith "bla" (*error_atom e'.at atom t1 "type mismatch for case"*)
+          error_atom e'.at atom t1 "type mismatch for case"
       ) cases1
     with Error (_, msg) -> error_typ2 env e'.at phrase t1 t2 (", " ^ msg)
     );

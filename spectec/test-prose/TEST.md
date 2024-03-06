@@ -3672,46 +3672,46 @@ prem_to_instr: Invalid prem 2
  Generated prose
 =================
 validation_of_NOP
-- The instruction is valid with type ([] -> []).
+- The instruction is valid with type ([] -> [] ++ []).
 
 validation_of_UNREACHABLE
-- Under the context C, (t_1* -> t_2*) must be valid.
-- The instruction is valid with type (t_1* -> t_2*).
+- Under the context C, (t_1* -> [] ++ t_2*) must be valid.
+- The instruction is valid with type (t_1* -> [] ++ t_2*).
 
 validation_of_DROP
 - Under the context C, t must be valid.
-- The instruction is valid with type ([t] -> []).
+- The instruction is valid with type ([t] -> [] ++ []).
 
 validation_of_SELECT ?([t])
 - Under the context C, t must be valid.
-- The instruction is valid with type ([t, t, I32] -> [t]).
+- The instruction is valid with type ([t, t, I32] -> [] ++ [t]).
 
 validation_of_BLOCK bt instr*
 - Under the context C with .LABEL prepended by [t_2*], instr* must be valid with type (t_1* -> x* ++ t_2*).
-- Under the context C, bt must be valid with type (t_1* -> t_2*).
-- The instruction is valid with type (t_1* -> t_2*).
+- Under the context C, bt must be valid with type (t_1* -> [] ++ t_2*).
+- The instruction is valid with type (t_1* -> [] ++ t_2*).
 
 validation_of_LOOP bt instr*
 - Under the context C with .LABEL prepended by [t_1*], instr* must be valid with type (t_1* -> x* ++ t_2*).
-- Under the context C, bt must be valid with type (t_1* -> t_2*).
-- The instruction is valid with type (t_1* -> t_2*).
+- Under the context C, bt must be valid with type (t_1* -> [] ++ t_2*).
+- The instruction is valid with type (t_1* -> [] ++ t_2*).
 
 validation_of_IF bt instr_1* instr_2*
 - Under the context C with .LABEL prepended by [t_2*], instr_1* must be valid with type (t_1* -> x_1* ++ t_2*).
-- Under the context C, bt must be valid with type (t_1* -> t_2*).
+- Under the context C, bt must be valid with type (t_1* -> [] ++ t_2*).
 - Under the context C with .LABEL prepended by [t_2*], instr_2* must be valid with type (t_1* -> x_2* ++ t_2*).
-- The instruction is valid with type (t_1* ++ [I32] -> t_2*).
+- The instruction is valid with type (t_1* ++ [I32] -> [] ++ t_2*).
 
 validation_of_BR l
 - |C.LABEL| must be greater than l.
 - Let t* be C.LABEL[l].
-- Under the context C, (t_1* -> t_2*) must be valid.
-- The instruction is valid with type (t_1* ++ t* -> t_2*).
+- Under the context C, (t_1* -> [] ++ t_2*) must be valid.
+- The instruction is valid with type (t_1* ++ t* -> [] ++ t_2*).
 
 validation_of_BR_IF l
 - |C.LABEL| must be greater than l.
 - Let t* be C.LABEL[l].
-- The instruction is valid with type (t* ++ [I32] -> t*).
+- The instruction is valid with type (t* ++ [I32] -> [] ++ t*).
 
 validation_of_BR_TABLE l* l'
 - For all l in l*,
@@ -3720,19 +3720,19 @@ validation_of_BR_TABLE l* l'
 - For all l in l*,
   - Yet: TODO: prem_to_instrs 2
 - Yet: TODO: prem_to_instrs 2
-- Under the context C, (t_1* -> t_2*) must be valid.
-- The instruction is valid with type (t_1* ++ t* -> t_2*).
+- Under the context C, (t_1* -> [] ++ t_2*) must be valid.
+- The instruction is valid with type (t_1* ++ t* -> [] ++ t_2*).
 
 validation_of_BR_ON_NULL l
 - |C.LABEL| must be greater than l.
 - Under the context C, ht must be valid.
 - Let t* be C.LABEL[l].
-- The instruction is valid with type (t* ++ [(REF (NULL ?(())) ht)] -> t* ++ [(REF (NULL ?()) ht)]).
+- The instruction is valid with type (t* ++ [(REF (NULL ?(())) ht)] -> [] ++ t* ++ [(REF (NULL ?()) ht)]).
 
 validation_of_BR_ON_NON_NULL l
 - |C.LABEL| must be greater than l.
 - Let t* ++ [(REF (NULL ?()) ht)] be C.LABEL[l].
-- The instruction is valid with type (t* ++ [(REF (NULL ?(())) ht)] -> t*).
+- The instruction is valid with type (t* ++ [(REF (NULL ?(())) ht)] -> [] ++ t*).
 
 validation_of_BR_ON_CAST l rt_1 rt_2
 - |C.LABEL| must be greater than l.
@@ -3741,7 +3741,7 @@ validation_of_BR_ON_CAST l rt_1 rt_2
 - Yet: TODO: prem_to_instrs 2
 - Let t* ++ [rt] be C.LABEL[l].
 - Yet: TODO: prem_to_instrs 2
-- The instruction is valid with type (t* ++ [rt_1] -> t* ++ [$diffrt(rt_1, rt_2)]).
+- The instruction is valid with type (t* ++ [rt_1] -> [] ++ t* ++ [$diffrt(rt_1, rt_2)]).
 
 validation_of_BR_ON_CAST_FAIL l rt_1 rt_2
 - |C.LABEL| must be greater than l.
@@ -3750,17 +3750,17 @@ validation_of_BR_ON_CAST_FAIL l rt_1 rt_2
 - Yet: TODO: prem_to_instrs 2
 - Let t* ++ [rt] be C.LABEL[l].
 - Yet: TODO: prem_to_instrs 2
-- The instruction is valid with type (t* ++ [rt_1] -> t* ++ [rt_2]).
+- The instruction is valid with type (t* ++ [rt_1] -> [] ++ t* ++ [rt_2]).
 
 validation_of_CALL x
 - |C.FUNC| must be greater than x.
 - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.FUNC[x]).
-- The instruction is valid with type (t_1* -> t_2*).
+- The instruction is valid with type (t_1* -> [] ++ t_2*).
 
 validation_of_CALL_REF ?(x)
 - |C.TYPE| must be greater than x.
 - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPE[x]).
-- The instruction is valid with type (t_1* ++ [(REF (NULL ?(())) $idx(x))] -> t_2*).
+- The instruction is valid with type (t_1* ++ [(REF (NULL ?(())) $idx(x))] -> [] ++ t_2*).
 
 validation_of_CALL_INDIRECT x y
 - |C.TABLE| must be greater than x.
@@ -3768,102 +3768,102 @@ validation_of_CALL_INDIRECT x y
 - Let (lim, rt) be C.TABLE[x].
 - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPE[y]).
 - Yet: TODO: prem_to_instrs 2
-- The instruction is valid with type (t_1* ++ [I32] -> t_2*).
+- The instruction is valid with type (t_1* ++ [I32] -> [] ++ t_2*).
 
 validation_of_RETURN
 - Let ?(t*) be C.RETURN.
-- Under the context C, (t_1* -> t_2*) must be valid.
-- The instruction is valid with type (t_1* ++ t* -> t_2*).
+- Under the context C, (t_1* -> [] ++ t_2*) must be valid.
+- The instruction is valid with type (t_1* ++ t* -> [] ++ t_2*).
 
 validation_of_RETURN_CALL x
 - |C.FUNC| must be greater than x.
-- Under the context C, (t_3* -> t_4*) must be valid.
+- Under the context C, (t_3* -> [] ++ t_4*) must be valid.
 - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.FUNC[x]).
 - Yet: TODO: prem_to_instrs 2
 - C.RETURN must be equal to ?(t'_2*).
-- The instruction is valid with type (t_3* ++ t_1* -> t_4*).
+- The instruction is valid with type (t_3* ++ t_1* -> [] ++ t_4*).
 
 validation_of_RETURN_CALL_REF ?(x)
 - |C.TYPE| must be greater than x.
-- Under the context C, (t_3* -> t_4*) must be valid.
+- Under the context C, (t_3* -> [] ++ t_4*) must be valid.
 - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPE[x]).
 - Yet: TODO: prem_to_instrs 2
 - C.RETURN must be equal to ?(t'_2*).
-- The instruction is valid with type (t_3* ++ t_1* ++ [(REF (NULL ?(())) $idx(x))] -> t_4*).
+- The instruction is valid with type (t_3* ++ t_1* ++ [(REF (NULL ?(())) $idx(x))] -> [] ++ t_4*).
 
 validation_of_RETURN_CALL_INDIRECT x y
 - |C.TABLE| must be greater than x.
 - |C.TYPE| must be greater than y.
-- Under the context C, (t_3* -> t_4*) must be valid.
+- Under the context C, (t_3* -> [] ++ t_4*) must be valid.
 - Let (lim, rt) be C.TABLE[x].
 - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPE[y]).
 - Yet: TODO: prem_to_instrs 2
 - Yet: TODO: prem_to_instrs 2
 - C.RETURN must be equal to ?(t'_2*).
-- The instruction is valid with type (t_3* ++ t_1* ++ [I32] -> t_4*).
+- The instruction is valid with type (t_3* ++ t_1* ++ [I32] -> [] ++ t_4*).
 
 validation_of_CONST nt c_nt
-- The instruction is valid with type ([] -> [nt]).
+- The instruction is valid with type ([] -> [] ++ [nt]).
 
 validation_of_UNOP nt unop_nt
-- The instruction is valid with type ([nt] -> [nt]).
+- The instruction is valid with type ([nt] -> [] ++ [nt]).
 
 validation_of_BINOP nt binop_nt
-- The instruction is valid with type ([nt, nt] -> [nt]).
+- The instruction is valid with type ([nt, nt] -> [] ++ [nt]).
 
 validation_of_TESTOP nt testop_nt
-- The instruction is valid with type ([nt] -> [I32]).
+- The instruction is valid with type ([nt] -> [] ++ [I32]).
 
 validation_of_RELOP nt relop_nt
-- The instruction is valid with type ([nt, nt] -> [I32]).
+- The instruction is valid with type ([nt, nt] -> [] ++ [I32]).
 
 validation_of_CVTOP nt_1 REINTERPRET nt_2 ?()
 - $size(nt_1) must be equal to $size(nt_2).
-- The instruction is valid with type ([nt_2] -> [nt_1]).
+- The instruction is valid with type ([nt_2] -> [] ++ [nt_1]).
 
 validation_of_REF.NULL ht
 - Under the context C, ht must be valid.
-- The instruction is valid with type ([] -> [(REF (NULL ?(())) ht)]).
+- The instruction is valid with type ([] -> [] ++ [(REF (NULL ?(())) ht)]).
 
 validation_of_REF.FUNC x
 - |C.FUNC| must be greater than x.
 - Let dt be C.FUNC[x].
-- The instruction is valid with type ([] -> [(REF (NULL ?()) dt)]).
+- The instruction is valid with type ([] -> [] ++ [(REF (NULL ?()) dt)]).
 
 validation_of_REF.I31
-- The instruction is valid with type ([I32] -> [(REF (NULL ?()) I31)]).
+- The instruction is valid with type ([I32] -> [] ++ [(REF (NULL ?()) I31)]).
 
 validation_of_REF.IS_NULL
 - Under the context C, ht must be valid.
-- The instruction is valid with type ([(REF (NULL ?(())) ht)] -> [I32]).
+- The instruction is valid with type ([(REF (NULL ?(())) ht)] -> [] ++ [I32]).
 
 validation_of_REF.AS_NON_NULL
 - Under the context C, ht must be valid.
-- The instruction is valid with type ([(REF (NULL ?(())) ht)] -> [(REF (NULL ?()) ht)]).
+- The instruction is valid with type ([(REF (NULL ?(())) ht)] -> [] ++ [(REF (NULL ?()) ht)]).
 
 validation_of_REF.EQ
-- The instruction is valid with type ([(REF (NULL ?(())) EQ), (REF (NULL ?(())) EQ)] -> [I32]).
+- The instruction is valid with type ([(REF (NULL ?(())) EQ), (REF (NULL ?(())) EQ)] -> [] ++ [I32]).
 
 validation_of_REF.TEST rt
 - Under the context C, rt must be valid.
 - Yet: TODO: prem_to_instrs 2
 - Under the context C, rt' must be valid.
-- The instruction is valid with type ([rt'] -> [I32]).
+- The instruction is valid with type ([rt'] -> [] ++ [I32]).
 
 validation_of_REF.CAST rt
 - Under the context C, rt must be valid.
 - Yet: TODO: prem_to_instrs 2
 - Under the context C, rt' must be valid.
-- The instruction is valid with type ([rt'] -> [rt]).
+- The instruction is valid with type ([rt'] -> [] ++ [rt]).
 
 validation_of_I31.GET sx
-- The instruction is valid with type ([(REF (NULL ?(())) I31)] -> [I32]).
+- The instruction is valid with type ([(REF (NULL ?(())) I31)] -> [] ++ [I32]).
 
 validation_of_STRUCT.NEW x
 - |C.TYPE| must be greater than x.
 - Let (STRUCT (mut, zt)*) be $expanddt(C.TYPE[x]).
 - |zt*| must be equal to |mut*|.
-- The instruction is valid with type ($unpack(zt)* -> [(REF (NULL ?()) $idx(x))]).
+- The instruction is valid with type ($unpack(zt)* -> [] ++ [(REF (NULL ?()) $idx(x))]).
 
 validation_of_STRUCT.NEW_DEFAULT x
 - |C.TYPE| must be greater than x.
@@ -3871,7 +3871,7 @@ validation_of_STRUCT.NEW_DEFAULT x
 - |zt*| must be equal to |mut*|.
 - Yet: TODO: prem_to_intrs 3
 - |zt*| must be equal to |val*|.
-- The instruction is valid with type ([] -> [(REF (NULL ?()) $idx(x))]).
+- The instruction is valid with type ([] -> [] ++ [(REF (NULL ?()) $idx(x))]).
 
 validation_of_STRUCT.GET sx? x i
 - |C.TYPE| must be greater than x.
@@ -3879,37 +3879,37 @@ validation_of_STRUCT.GET sx? x i
 - |yt*| must be greater than i.
 - Let (mut, zt) be yt*[i].
 - ((zt is $unpack(zt))) and ((sx? is ?())) are equivalent.
-- The instruction is valid with type ([(REF (NULL ?(())) $idx(x))] -> [$unpack(zt)]).
+- The instruction is valid with type ([(REF (NULL ?(())) $idx(x))] -> [] ++ [$unpack(zt)]).
 
 validation_of_STRUCT.SET x i
 - |C.TYPE| must be greater than x.
 - Let (STRUCT yt*) be $expanddt(C.TYPE[x]).
 - |yt*| must be greater than i.
 - Let ((MUT ?(())), zt) be yt*[i].
-- The instruction is valid with type ([(REF (NULL ?(())) $idx(x)), $unpack(zt)] -> []).
+- The instruction is valid with type ([(REF (NULL ?(())) $idx(x)), $unpack(zt)] -> [] ++ []).
 
 validation_of_ARRAY.NEW x
 - |C.TYPE| must be greater than x.
 - Let (ARRAY (mut, zt)) be $expanddt(C.TYPE[x]).
-- The instruction is valid with type ([$unpack(zt), I32] -> [(REF (NULL ?()) $idx(x))]).
+- The instruction is valid with type ([$unpack(zt), I32] -> [] ++ [(REF (NULL ?()) $idx(x))]).
 
 validation_of_ARRAY.NEW_DEFAULT x
 - |C.TYPE| must be greater than x.
 - Let (ARRAY (mut, zt)) be $expanddt(C.TYPE[x]).
 - Let ?(val) be $default_($unpack(zt)).
-- The instruction is valid with type ([I32] -> [(REF (NULL ?()) $idx(x))]).
+- The instruction is valid with type ([I32] -> [] ++ [(REF (NULL ?()) $idx(x))]).
 
 validation_of_ARRAY.NEW_FIXED x n
 - |C.TYPE| must be greater than x.
 - Let (ARRAY (mut, zt)) be $expanddt(C.TYPE[x]).
-- The instruction is valid with type ($unpack(zt)^n -> [(REF (NULL ?()) $idx(x))]).
+- The instruction is valid with type ($unpack(zt)^n -> [] ++ [(REF (NULL ?()) $idx(x))]).
 
 validation_of_ARRAY.NEW_ELEM x y
 - |C.TYPE| must be greater than x.
 - |C.ELEM| must be greater than y.
 - Let (ARRAY (mut, rt)) be $expanddt(C.TYPE[x]).
 - Yet: TODO: prem_to_instrs 2
-- The instruction is valid with type ([I32, I32] -> [(REF (NULL ?()) $idx(x))]).
+- The instruction is valid with type ([I32, I32] -> [] ++ [(REF (NULL ?()) $idx(x))]).
 
 validation_of_ARRAY.NEW_DATA x y
 - |C.TYPE| must be greater than x.
@@ -3917,28 +3917,28 @@ validation_of_ARRAY.NEW_DATA x y
 - C.DATA[y] must be equal to OK.
 - Let (ARRAY (mut, zt)) be $expanddt(C.TYPE[x]).
 - Let numtype be $unpack(zt).
-- The instruction is valid with type ([I32, I32] -> [(REF (NULL ?()) $idx(x))]).
+- The instruction is valid with type ([I32, I32] -> [] ++ [(REF (NULL ?()) $idx(x))]).
 
 validation_of_ARRAY.GET sx? x
 - |C.TYPE| must be greater than x.
 - Let (ARRAY (mut, zt)) be $expanddt(C.TYPE[x]).
 - ((zt is $unpack(zt))) and ((sx? is ?())) are equivalent.
-- The instruction is valid with type ([(REF (NULL ?(())) $idx(x)), I32] -> [$unpack(zt)]).
+- The instruction is valid with type ([(REF (NULL ?(())) $idx(x)), I32] -> [] ++ [$unpack(zt)]).
 
 validation_of_ARRAY.SET x
 - |C.TYPE| must be greater than x.
 - Let (ARRAY ((MUT ?(())), zt)) be $expanddt(C.TYPE[x]).
-- The instruction is valid with type ([(REF (NULL ?(())) $idx(x)), I32, $unpack(zt)] -> []).
+- The instruction is valid with type ([(REF (NULL ?(())) $idx(x)), I32, $unpack(zt)] -> [] ++ []).
 
 validation_of_ARRAY.LEN
 - Let $expanddt(C.TYPE[x]) be (ARRAY ((MUT ?(())), zt)).
 - |C.TYPE| must be greater than x.
-- The instruction is valid with type ([(REF (NULL ?(())) ARRAY)] -> [I32]).
+- The instruction is valid with type ([(REF (NULL ?(())) ARRAY)] -> [] ++ [I32]).
 
 validation_of_ARRAY.FILL x
 - |C.TYPE| must be greater than x.
 - Let (ARRAY ((MUT ?(())), zt)) be $expanddt(C.TYPE[x]).
-- The instruction is valid with type ([(REF (NULL ?(())) $idx(x)), I32, $unpack(zt), I32] -> []).
+- The instruction is valid with type ([(REF (NULL ?(())) $idx(x)), I32, $unpack(zt), I32] -> [] ++ []).
 
 validation_of_ARRAY.COPY x_1 x_2
 - |C.TYPE| must be greater than x_1.
@@ -3946,14 +3946,14 @@ validation_of_ARRAY.COPY x_1 x_2
 - Let (ARRAY (mut, zt_2)) be $expanddt(C.TYPE[x_2]).
 - Yet: TODO: prem_to_instrs 2
 - $expanddt(C.TYPE[x_1]) must be equal to (ARRAY ((MUT ?(())), zt_1)).
-- The instruction is valid with type ([(REF (NULL ?(())) $idx(x_1)), I32, (REF (NULL ?(())) $idx(x_2)), I32, I32] -> []).
+- The instruction is valid with type ([(REF (NULL ?(())) $idx(x_1)), I32, (REF (NULL ?(())) $idx(x_2)), I32, I32] -> [] ++ []).
 
 validation_of_ARRAY.INIT_ELEM x y
 - |C.TYPE| must be greater than x.
 - |C.ELEM| must be greater than y.
 - Yet: TODO: prem_to_instrs 2
 - $expanddt(C.TYPE[x]) must be equal to (ARRAY ((MUT ?(())), zt)).
-- The instruction is valid with type ([(REF (NULL ?(())) $idx(x)), I32, I32, I32] -> []).
+- The instruction is valid with type ([(REF (NULL ?(())) $idx(x)), I32, I32, I32] -> [] ++ []).
 
 validation_of_ARRAY.INIT_DATA x y
 - |C.TYPE| must be greater than x.
@@ -3961,117 +3961,127 @@ validation_of_ARRAY.INIT_DATA x y
 - C.DATA[y] must be equal to OK.
 - Let (ARRAY ((MUT ?(())), zt)) be $expanddt(C.TYPE[x]).
 - Let numtype be $unpack(zt).
-- The instruction is valid with type ([(REF (NULL ?(())) $idx(x)), I32, I32, I32] -> []).
+- The instruction is valid with type ([(REF (NULL ?(())) $idx(x)), I32, I32, I32] -> [] ++ []).
 
 validation_of_EXTERN.CONVERT_ANY
-- The instruction is valid with type ([(REF nul ANY)] -> [(REF nul EXTERN)]).
+- The instruction is valid with type ([(REF nul ANY)] -> [] ++ [(REF nul EXTERN)]).
 
 validation_of_ANY.CONVERT_EXTERN
-- The instruction is valid with type ([(REF nul EXTERN)] -> [(REF nul ANY)]).
+- The instruction is valid with type ([(REF nul EXTERN)] -> [] ++ [(REF nul ANY)]).
 
 validation_of_VCONST V128 c
-- The instruction is valid with type ([] -> [V128]).
+- The instruction is valid with type ([] -> [] ++ [V128]).
 
 validation_of_VVUNOP V128 vvunop
-- The instruction is valid with type ([V128] -> [V128]).
+- The instruction is valid with type ([V128] -> [] ++ [V128]).
 
 validation_of_VVBINOP V128 vvbinop
-- The instruction is valid with type ([V128, V128] -> [V128]).
+- The instruction is valid with type ([V128, V128] -> [] ++ [V128]).
 
 validation_of_VVTERNOP V128 vvternop
-- The instruction is valid with type ([V128, V128, V128] -> [V128]).
+- The instruction is valid with type ([V128, V128, V128] -> [] ++ [V128]).
 
 validation_of_VVTESTOP V128 vvtestop
-- The instruction is valid with type ([V128] -> [I32]).
+- The instruction is valid with type ([V128] -> [] ++ [I32]).
 
 validation_of_VBITMASK sh
-- The instruction is valid with type ([V128] -> [I32]).
+- The instruction is valid with type ([V128] -> [] ++ [I32]).
 
 validation_of_VSWIZZLE sh
-- The instruction is valid with type ([V128, V128] -> [V128]).
+- The instruction is valid with type ([V128, V128] -> [] ++ [V128]).
 
 validation_of_VSHUFFLE (imm X N) i*
 - For all i in i*,
   - i must be less than (N · 2).
-- The instruction is valid with type ([V128, V128] -> [V128]).
+- The instruction is valid with type ([V128, V128] -> [] ++ [V128]).
 
 validation_of_VSPLAT (lnn X N)
-- The instruction is valid with type ([$lunpack(lnn)] -> [V128]).
+- The instruction is valid with type ([$lunpack(lnn)] -> [] ++ [V128]).
 
 validation_of_VEXTRACT_LANE (lnn X N) sx? i
 - i must be less than N.
-- The instruction is valid with type ([V128] -> [$lunpack(lnn)]).
+- The instruction is valid with type ([V128] -> [] ++ [$lunpack(lnn)]).
 
 validation_of_VREPLACE_LANE (lnn X N) i
 - i must be less than N.
-- The instruction is valid with type ([V128, $lunpack(lnn)] -> [V128]).
+- The instruction is valid with type ([V128, $lunpack(lnn)] -> [] ++ [V128]).
 
 validation_of_VUNOP sh vunop_sh
-- The instruction is valid with type ([V128] -> [V128]).
+- The instruction is valid with type ([V128] -> [] ++ [V128]).
 
 validation_of_VBINOP sh vbinop_sh
-- The instruction is valid with type ([V128, V128] -> [V128]).
+- The instruction is valid with type ([V128, V128] -> [] ++ [V128]).
 
 validation_of_VTESTOP sh vtestop_sh
-- The instruction is valid with type ([V128] -> [I32]).
+- The instruction is valid with type ([V128] -> [] ++ [I32]).
 
 validation_of_VRELOP sh vrelop_sh
-- The instruction is valid with type ([V128, V128] -> [V128]).
+- The instruction is valid with type ([V128, V128] -> [] ++ [V128]).
 
 validation_of_VSHIFTOP sh vshiftop_sh
-- The instruction is valid with type ([V128, I32] -> [V128]).
+- The instruction is valid with type ([V128, I32] -> [] ++ [V128]).
 
 validation_of_VCVTOP sh vcvtop hf? sh sx? zero
-- The instruction is valid with type ([V128] -> [V128]).
+- The instruction is valid with type ([V128] -> [] ++ [V128]).
 
 validation_of_VNARROW sh sh sx
-- The instruction is valid with type ([V128, V128] -> [V128]).
+- The instruction is valid with type ([V128, V128] -> [] ++ [V128]).
 
 validation_of_VEXTUNOP sh sh vextunop sx
-- The instruction is valid with type ([V128] -> [V128]).
+- The instruction is valid with type ([V128] -> [] ++ [V128]).
 
 validation_of_VEXTBINOP sh sh vextbinop sx
-- The instruction is valid with type ([V128, V128] -> [V128]).
+- The instruction is valid with type ([V128, V128] -> [] ++ [V128]).
 
 validation_of_LOCAL.GET x
 - |C.LOCAL| must be greater than x.
 - Let (SET, t) be C.LOCAL[x].
-- The instruction is valid with type ([] -> [t]).
+- The instruction is valid with type ([] -> [] ++ [t]).
+
+validation_of_LOCAL.SET x
+- |C.LOCAL| must be greater than x.
+- Let (init, t) be C.LOCAL[x].
+- The instruction is valid with type ([t] -> [x] ++ []).
+
+validation_of_LOCAL.TEE x
+- |C.LOCAL| must be greater than x.
+- Let (init, t) be C.LOCAL[x].
+- The instruction is valid with type ([t] -> [x] ++ [t]).
 
 validation_of_GLOBAL.GET x
 - |C.GLOBAL| must be greater than x.
 - Let (mut, t) be C.GLOBAL[x].
-- The instruction is valid with type ([] -> [t]).
+- The instruction is valid with type ([] -> [] ++ [t]).
 
 validation_of_GLOBAL.SET x
 - |C.GLOBAL| must be greater than x.
 - Let ((MUT ?(())), t) be C.GLOBAL[x].
-- The instruction is valid with type ([t] -> []).
+- The instruction is valid with type ([t] -> [] ++ []).
 
 validation_of_TABLE.GET x
 - |C.TABLE| must be greater than x.
 - Let (lim, rt) be C.TABLE[x].
-- The instruction is valid with type ([I32] -> [rt]).
+- The instruction is valid with type ([I32] -> [] ++ [rt]).
 
 validation_of_TABLE.SET x
 - |C.TABLE| must be greater than x.
 - Let (lim, rt) be C.TABLE[x].
-- The instruction is valid with type ([I32, rt] -> []).
+- The instruction is valid with type ([I32, rt] -> [] ++ []).
 
 validation_of_TABLE.SIZE x
 - |C.TABLE| must be greater than x.
 - Let (lim, rt) be C.TABLE[x].
-- The instruction is valid with type ([] -> [I32]).
+- The instruction is valid with type ([] -> [] ++ [I32]).
 
 validation_of_TABLE.GROW x
 - |C.TABLE| must be greater than x.
 - Let (lim, rt) be C.TABLE[x].
-- The instruction is valid with type ([rt, I32] -> [I32]).
+- The instruction is valid with type ([rt, I32] -> [] ++ [I32]).
 
 validation_of_TABLE.FILL x
 - |C.TABLE| must be greater than x.
 - Let (lim, rt) be C.TABLE[x].
-- The instruction is valid with type ([I32, rt, I32] -> []).
+- The instruction is valid with type ([I32, rt, I32] -> [] ++ []).
 
 validation_of_TABLE.COPY x_1 x_2
 - |C.TABLE| must be greater than x_1.
@@ -4079,7 +4089,7 @@ validation_of_TABLE.COPY x_1 x_2
 - Let (lim_1, rt_1) be C.TABLE[x_1].
 - Let (lim_2, rt_2) be C.TABLE[x_2].
 - Yet: TODO: prem_to_instrs 2
-- The instruction is valid with type ([I32, I32, I32] -> []).
+- The instruction is valid with type ([I32, I32, I32] -> [] ++ []).
 
 validation_of_TABLE.INIT x y
 - |C.TABLE| must be greater than x.
@@ -4087,46 +4097,46 @@ validation_of_TABLE.INIT x y
 - Let rt_2 be C.ELEM[y].
 - Let (lim, rt_1) be C.TABLE[x].
 - Yet: TODO: prem_to_instrs 2
-- The instruction is valid with type ([I32, I32, I32] -> []).
+- The instruction is valid with type ([I32, I32, I32] -> [] ++ []).
 
 validation_of_ELEM.DROP x
 - |C.ELEM| must be greater than x.
 - Let rt be C.ELEM[x].
-- The instruction is valid with type ([] -> []).
+- The instruction is valid with type ([] -> [] ++ []).
 
 validation_of_MEMORY.SIZE x
 - |C.MEM| must be greater than x.
 - Let mt be C.MEM[x].
-- The instruction is valid with type ([] -> [I32]).
+- The instruction is valid with type ([] -> [] ++ [I32]).
 
 validation_of_MEMORY.GROW x
 - |C.MEM| must be greater than x.
 - Let mt be C.MEM[x].
-- The instruction is valid with type ([I32] -> [I32]).
+- The instruction is valid with type ([I32] -> [] ++ [I32]).
 
 validation_of_MEMORY.FILL x
 - |C.MEM| must be greater than x.
 - Let mt be C.MEM[x].
-- The instruction is valid with type ([I32, I32, I32] -> []).
+- The instruction is valid with type ([I32, I32, I32] -> [] ++ []).
 
 validation_of_MEMORY.COPY x_1 x_2
 - |C.MEM| must be greater than x_1.
 - |C.MEM| must be greater than x_2.
 - Let mt_1 be C.MEM[x_1].
 - Let mt_2 be C.MEM[x_2].
-- The instruction is valid with type ([I32, I32, I32] -> []).
+- The instruction is valid with type ([I32, I32, I32] -> [] ++ []).
 
 validation_of_MEMORY.INIT x y
 - |C.MEM| must be greater than x.
 - |C.DATA| must be greater than y.
 - C.DATA[y] must be equal to OK.
 - Let mt be C.MEM[x].
-- The instruction is valid with type ([I32, I32, I32] -> []).
+- The instruction is valid with type ([I32, I32, I32] -> [] ++ []).
 
 validation_of_DATA.DROP x
 - |C.DATA| must be greater than x.
 - C.DATA[x] must be equal to OK.
-- The instruction is valid with type ([] -> []).
+- The instruction is valid with type ([] -> [] ++ []).
 
 validation_of_LOAD nt (n, sx)? x memop
 - |C.MEM| must be greater than x.
@@ -4137,7 +4147,7 @@ validation_of_LOAD nt (n, sx)? x memop
   - (n / 8) must be less than ($size(nt) / 8).
 - n? must be equal to ?().
 - Let mt be C.MEM[x].
-- The instruction is valid with type ([I32] -> [nt]).
+- The instruction is valid with type ([I32] -> [] ++ [nt]).
 
 validation_of_STORE nt n? x memop
 - |C.MEM| must be greater than x.
@@ -4147,33 +4157,33 @@ validation_of_STORE nt n? x memop
   - (n / 8) must be less than ($size(nt) / 8).
 - n? must be equal to ?().
 - Let mt be C.MEM[x].
-- The instruction is valid with type ([I32, nt] -> []).
+- The instruction is valid with type ([I32, nt] -> [] ++ []).
 
 validation_of_VLOAD ?((SHAPE M N sx)) x memop
 - |C.MEM| must be greater than x.
 - (2 ^ memop.ALIGN) must be less than or equal to ((M / 8) · N).
 - Let mt be C.MEM[x].
-- The instruction is valid with type ([I32] -> [V128]).
+- The instruction is valid with type ([I32] -> [] ++ [V128]).
 
 validation_of_VLOAD_LANE n x memop laneidx
 - |C.MEM| must be greater than x.
 - (2 ^ memop.ALIGN) must be less than (n / 8).
 - laneidx must be less than (128 / n).
 - Let mt be C.MEM[x].
-- The instruction is valid with type ([I32, V128] -> [V128]).
+- The instruction is valid with type ([I32, V128] -> [] ++ [V128]).
 
 validation_of_VSTORE x memop
 - |C.MEM| must be greater than x.
 - (2 ^ memop.ALIGN) must be less than or equal to ($vsize(V128) / 8).
 - Let mt be C.MEM[x].
-- The instruction is valid with type ([I32, V128] -> []).
+- The instruction is valid with type ([I32, V128] -> [] ++ []).
 
 validation_of_VSTORE_LANE n x memop laneidx
 - |C.MEM| must be greater than x.
 - (2 ^ memop.ALIGN) must be less than (n / 8).
 - laneidx must be less than (128 / n).
 - Let mt be C.MEM[x].
-- The instruction is valid with type ([I32, V128] -> []).
+- The instruction is valid with type ([I32, V128] -> [] ++ []).
 
 Ki
 1. Return 1024.

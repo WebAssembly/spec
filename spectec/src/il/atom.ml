@@ -45,6 +45,13 @@ and atom' =
 type mixop = atom list list
 
 
+let sub atom1 atom2 =
+  match atom1.it, atom2.it with
+  | ArrowSub, Arrow
+  | Arrow2Sub, Arrow2 -> true
+  | _, _ -> false
+
+
 let string_of_atom atom =
   match atom.it with
   | Atom id -> id

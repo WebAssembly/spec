@@ -118,7 +118,7 @@ $$
 $$
 
 
-\subsection*{Typing $\boxed{{\mathit{context}} \vdash {\mathit{instr}} : {\mathit{finstrtype}}}$}
+\subsection*{Typing $\boxed{{\mathit{context}} \vdash {\mathit{instr}} : {\mathit{instrtype}}}$}
 
 An instruction sequence ${{\mathit{instr}}^\ast}$ is well-typed with an instruction type ${{\mathit{t}}_{{1}}^\ast} \rightarrow {{\mathit{t}}_{{2}}^\ast}$, written ${{\mathit{instr}}^\ast}$ $:$ ${{\mathit{t}}_{{1}}^\ast} \rightarrow {{\mathit{t}}_{{2}}^\ast}$, according to the following rules:
 
@@ -126,7 +126,7 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 }{
-{\mathit{C}} \vdash \epsilon : \epsilon~{\rightarrow}_{}\,\epsilon
+{\mathit{C}} \vdash \epsilon : \epsilon \rightarrow \epsilon
 }
 \qquad
 \frac{
@@ -154,7 +154,7 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 }{
-{\mathit{C}} \vdash \epsilon : \epsilon~{\rightarrow}_{}\,\epsilon
+{\mathit{C}} \vdash \epsilon : \epsilon \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}instr*{-}empty}]}
 \qquad
 \frac{
@@ -167,7 +167,7 @@ $$
 \\[3ex]\displaystyle
 \frac{
 }{
-{\mathit{C}} \vdash \epsilon : \epsilon~{\rightarrow}_{}\,\epsilon
+{\mathit{C}} \vdash \epsilon : \epsilon \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}instr*{-}empty}]}
 \qquad
 \frac{
@@ -362,7 +362,6 @@ warning: syntax `fNmag` was never spliced
 warning: syntax `fieldtype` was never spliced
 warning: syntax `fieldval` was never spliced
 warning: syntax `fin` was never spliced
-warning: syntax `finstrtype` was never spliced
 warning: syntax `fnn` was never spliced
 warning: syntax `frame` was never spliced
 warning: syntax `fshape` was never spliced
@@ -669,7 +668,6 @@ warning: rule `Externtype_sub/mem` was never spliced
 warning: rule `Fieldtype_ok` was never spliced
 warning: rule `Fieldtype_sub/const` was never spliced
 warning: rule `Fieldtype_sub/var` was never spliced
-warning: rule `Finstrtype_ok` was never spliced
 warning: rule `Func_ok` was never spliced
 warning: rule `Functype_ok` was never spliced
 warning: rule `Functype_sub` was never spliced
@@ -784,6 +782,8 @@ warning: rule `Instr_ok/vextunop` was never spliced
 warning: rule `Instr_ok/vextbinop` was never spliced
 warning: rule `Instr_ok/vbitmask` was never spliced
 warning: rule `Instr_ok/local.get` was never spliced
+warning: rule `Instr_ok/local.set` was never spliced
+warning: rule `Instr_ok/local.tee` was never spliced
 warning: rule `Instr_ok/global.get` was never spliced
 warning: rule `Instr_ok/global.set` was never spliced
 warning: rule `Instr_ok/table.get` was never spliced
@@ -808,9 +808,6 @@ warning: rule `Instr_ok/vload-zero` was never spliced
 warning: rule `Instr_ok/vload_lane` was never spliced
 warning: rule `Instr_ok/vstore` was never spliced
 warning: rule `Instr_ok/vstore_lane` was never spliced
-warning: rule `Instr_x_ok/instr` was never spliced
-warning: rule `Instr_x_ok/local.set` was never spliced
-warning: rule `Instr_x_ok/local.tee` was never spliced
 warning: rule `Instrs_ok/empty` was spliced more than once
 warning: rule `Instrs_ok/sub` was never spliced
 warning: rule `Instrs_ok/frame` was spliced more than once
@@ -1408,6 +1405,8 @@ warning: rule prose `valid/table.set` was never spliced
 warning: rule prose `valid/table.get` was never spliced
 warning: rule prose `valid/global.set` was never spliced
 warning: rule prose `valid/global.get` was never spliced
+warning: rule prose `valid/local.tee` was never spliced
+warning: rule prose `valid/local.set` was never spliced
 warning: rule prose `valid/local.get` was never spliced
 warning: rule prose `valid/vextbinop` was never spliced
 warning: rule prose `valid/vextunop` was never spliced

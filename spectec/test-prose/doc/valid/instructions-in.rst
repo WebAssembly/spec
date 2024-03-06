@@ -495,7 +495,7 @@ TODO (not found)
 
 \
 
-$${rule+: Instr_x_ok/local.set}
+$${rule+: Instr_ok/local.set}
 
 .. _valid-local.tee:
 
@@ -506,7 +506,7 @@ TODO (not found)
 
 \
 
-$${rule+: Instr_x_ok/local.tee}
+$${rule+: Instr_ok/local.tee}
 
 .. _valid-global.get:
 
@@ -859,7 +859,6 @@ Instruction Sequences
 ~~~~~~~~~~~~~~~~~~~~~
 
 $${rule+:
-  Instr_x_ok/instr
   Instrs_ok/*
 }
 

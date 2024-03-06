@@ -11,9 +11,6 @@ syntax localtype hint(desc "local type") =
 syntax instrtype hint(desc "instruction type") =
   resulttype ->_ localidx* resulttype  hint(show %0 `->_ %2 %3)
 
-syntax finstrtype =
-  resulttype -> resulttype  ;; TODO: HACK, shouldn't be needed
-
 
 syntax context hint(desc "context") =
   { TYPE deftype*, REC subtype*,
@@ -96,7 +93,6 @@ rule Valtype_ok/bot:
 
 relation Resulttype_ok: context |- resulttype : OK  hint(show "K-result")
 relation Instrtype_ok: context |- instrtype : OK    hint(show "K-instr")
-relation Finstrtype_ok: context |- finstrtype : OK  hint(show "K-instr")  ;; HACK, shouldn't be needed
 
 rule Resulttype_ok:
   C |- t* : OK
@@ -107,10 +103,6 @@ rule Instrtype_ok:
   -- Resulttype_ok: C |- t_1* : OK
   -- Resulttype_ok: C |- t_2* : OK
   -- (if C.LOCAL[x] = lct)*
-
-rule Finstrtype_ok:
-  C |- t_1* -> t_2* : OK
-  -- Instrtype_ok: C |- t_1* ->_() t_2* : OK
 
 
 ;; Type definitions
@@ -511,8 +503,7 @@ rule Externtype_sub/mem:
 ;; Instructions
 ;;
 
-relation Instr_ok: context |- instr : finstrtype    hint(show "T")
-relation Instr_x_ok: context |- instr : instrtype   hint(show "T")
+relation Instr_ok: context |- instr : instrtype     hint(show "T")
 relation Instrs_ok: context |- instr* : instrtype   hint(show "T-instr*")
 relation Expr_ok: context |- expr : resulttype      hint(show "T-expr")
 
@@ -526,17 +517,13 @@ rule Expr_ok:
 
 ;; Instruction sequences
 
-rule Instr_x_ok/instr:
-  C |- instr : t_1* ->_() t_2*
-  -- Instr_ok: C |- instr : t_1* -> t_2*
-
 rule Instrs_ok/empty:
-  C |- eps : eps ->_() eps
+  C |- eps : eps -> eps
 
 ;; TODO: enable x_1*#x_2*
 rule Instrs_ok/seq:
   C |- instr_1 instr_2* : t_1* ->_(x_1* x_2*) t_3*
-  -- Instr_x_ok: C |- instr_1 : t_1* ->_(x_1*) t_2*
+  -- Instr_ok: C |- instr_1 : t_1* ->_(x_1*) t_2*
   -- (if C.LOCAL[x_1] = init t)*
   -- Instrs_ok: $with_locals(C, x_1*, (SET t)*) |- instr_2* : t_2* ->_(x_2*) t_3*
 
@@ -560,7 +547,7 @@ rule Instr_ok/nop:
 
 rule Instr_ok/unreachable:
   C |- UNREACHABLE : t_1* -> t_2*
-  -- Finstrtype_ok: C |- t_1* -> t_2* : OK
+  -- Instrtype_ok: C |- t_1* -> t_2* : OK
 
 rule Instr_ok/drop:
   C |- DROP : t -> eps
@@ -580,7 +567,7 @@ rule Instr_ok/select-impl:
 
 ;; Block instructions
 
-relation Blocktype_ok: context |- blocktype : finstrtype hint(show "K-block")
+relation Blocktype_ok: context |- blocktype : instrtype hint(show "K-block")
 
 rule Blocktype_ok/valtype:
   C |- _RESULT valtype? : eps -> valtype?
@@ -613,7 +600,7 @@ rule Instr_ok/if:
 rule Instr_ok/br:
   C |- BR l : t_1* t* -> t_2*
   -- if C.LABEL[l] = t*
-  -- Finstrtype_ok: C |- t_1* -> t_2* : OK
+  -- Instrtype_ok: C |- t_1* -> t_2* : OK
 
 rule Instr_ok/br_if:
   C |- BR_IF l : t* I32 -> t*
@@ -623,7 +610,7 @@ rule Instr_ok/br_table:
   C |- BR_TABLE l* l' : t_1* t* -> t_2*
   -- (Resulttype_sub: C |- t* <: C.LABEL[l])*
   -- Resulttype_sub: C |- t* <: C.LABEL[l']
-  -- Finstrtype_ok: C |- t_1* -> t_2* : OK
+  -- Instrtype_ok: C |- t_1* -> t_2* : OK
 
 rule Instr_ok/br_on_null:
   C |- BR_ON_NULL l : t* (REF NULL ht) -> t* (REF ht)
@@ -670,7 +657,7 @@ rule Instr_ok/call_indirect:
 rule Instr_ok/return:
   C |- RETURN : t_1* t* -> t_2*
   -- if C.RETURN = (t*)
-  -- Finstrtype_ok: C |- t_1* -> t_2* : OK
+  -- Instrtype_ok: C |- t_1* -> t_2* : OK
 
 ;; TODO: enable t_2* <: C.RETURN
 rule Instr_ok/return_call:
@@ -678,7 +665,7 @@ rule Instr_ok/return_call:
   -- Expand: C.FUNC[x] ~~ FUNC (t_1* -> t_2*)
   -- if C.RETURN = (t'_2*)
   -- Resulttype_sub: C |- t_2* <: t'_2*
-  -- Finstrtype_ok: C |- t_3* -> t_4* : OK
+  -- Instrtype_ok: C |- t_3* -> t_4* : OK
 
 ;; TODO: enable t_2* <: C.RETURN
 rule Instr_ok/return_call_ref:
@@ -686,7 +673,7 @@ rule Instr_ok/return_call_ref:
   -- Expand: C.TYPE[x] ~~ FUNC (t_1* -> t_2*)
   -- if C.RETURN = (t'_2*)
   -- Resulttype_sub: C |- t_2* <: t'_2*
-  -- Finstrtype_ok: C |- t_3* -> t_4* : OK
+  -- Instrtype_ok: C |- t_3* -> t_4* : OK
 
 ;; TODO: enable t_2* <: C.RETURN
 rule Instr_ok/return_call_indirect:
@@ -697,7 +684,7 @@ rule Instr_ok/return_call_indirect:
   -- Expand: C.TYPE[y] ~~ FUNC (t_1* -> t_2*)
   -- if C.RETURN = (t'_2*)
   -- Resulttype_sub: C |- t_2* <: t'_2*
-  -- Finstrtype_ok: C |- t_3* -> t_4* : OK
+  -- Instrtype_ok: C |- t_3* -> t_4* : OK
 
 
 ;; Numeric instructions
@@ -945,11 +932,11 @@ rule Instr_ok/local.get:
   C |- LOCAL.GET x : eps -> t
   -- if C.LOCAL[x] = SET t
 
-rule Instr_x_ok/local.set:
+rule Instr_ok/local.set:
   C |- LOCAL.SET x : t ->_(x) eps
   -- if C.LOCAL[x] = init t
 
-rule Instr_x_ok/local.tee:
+rule Instr_ok/local.tee:
   C |- LOCAL.TEE x : t ->_(x) t
   -- if C.LOCAL[x] = init t
 
