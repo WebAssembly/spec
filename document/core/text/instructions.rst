@@ -390,36 +390,117 @@ Lexically, an |Toffset| or |Talign| phrase is considered a single :ref:`keyword 
    \production{memory alignment} & \Talign_N &::=&
      \text{align{=}}a{:}\Tu32 &\Rightarrow& a \\ &&|&
      \epsilon &\Rightarrow& N \\
-   \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
-     \text{i32.load}~~m{:}\Tmemarg_4 &\Rightarrow& \I32.\LOAD~m \\ &&|&
-     \text{i64.load}~~m{:}\Tmemarg_8 &\Rightarrow& \I64.\LOAD~m \\ &&|&
-     \text{f32.load}~~m{:}\Tmemarg_4 &\Rightarrow& \F32.\LOAD~m \\ &&|&
-     \text{f64.load}~~m{:}\Tmemarg_8 &\Rightarrow& \F64.\LOAD~m \\ &&|&
-     \text{i32.load8\_s}~~m{:}\Tmemarg_1 &\Rightarrow& \I32.\LOAD\K{8\_s}~m \\ &&|&
-     \text{i32.load8\_u}~~m{:}\Tmemarg_1 &\Rightarrow& \I32.\LOAD\K{8\_u}~m \\ &&|&
-     \text{i32.load16\_s}~~m{:}\Tmemarg_2 &\Rightarrow& \I32.\LOAD\K{16\_s}~m \\ &&|&
-     \text{i32.load16\_u}~~m{:}\Tmemarg_2 &\Rightarrow& \I32.\LOAD\K{16\_u}~m \\ &&|&
-     \text{i64.load8\_s}~~m{:}\Tmemarg_1 &\Rightarrow& \I64.\LOAD\K{8\_s}~m \\ &&|&
-     \text{i64.load8\_u}~~m{:}\Tmemarg_1 &\Rightarrow& \I64.\LOAD\K{8\_u}~m \\ &&|&
-     \text{i64.load16\_s}~~m{:}\Tmemarg_2 &\Rightarrow& \I64.\LOAD\K{16\_s}~m \\ &&|&
-     \text{i64.load16\_u}~~m{:}\Tmemarg_2 &\Rightarrow& \I64.\LOAD\K{16\_u}~m \\ &&|&
-     \text{i64.load32\_s}~~m{:}\Tmemarg_4 &\Rightarrow& \I64.\LOAD\K{32\_s}~m \\ &&|&
-     \text{i64.load32\_u}~~m{:}\Tmemarg_4 &\Rightarrow& \I64.\LOAD\K{32\_u}~m \\ &&|&
-     \text{i32.store}~~m{:}\Tmemarg_4 &\Rightarrow& \I32.\STORE~m \\ &&|&
-     \text{i64.store}~~m{:}\Tmemarg_8 &\Rightarrow& \I64.\STORE~m \\ &&|&
-     \text{f32.store}~~m{:}\Tmemarg_4 &\Rightarrow& \F32.\STORE~m \\ &&|&
-     \text{f64.store}~~m{:}\Tmemarg_8 &\Rightarrow& \F64.\STORE~m \\ &&|&
-     \text{i32.store8}~~m{:}\Tmemarg_1 &\Rightarrow& \I32.\STORE\K{8}~m \\ &&|&
-     \text{i32.store16}~~m{:}\Tmemarg_2 &\Rightarrow& \I32.\STORE\K{16}~m \\ &&|&
-     \text{i64.store8}~~m{:}\Tmemarg_1 &\Rightarrow& \I64.\STORE\K{8}~m \\ &&|&
-     \text{i64.store16}~~m{:}\Tmemarg_2 &\Rightarrow& \I64.\STORE\K{16}~m \\ &&|&
-     \text{i64.store32}~~m{:}\Tmemarg_4 &\Rightarrow& \I64.\STORE\K{32}~m \\ &&|&
-     \text{memory.size} &\Rightarrow& \MEMORYSIZE \\ &&|&
-     \text{memory.grow} &\Rightarrow& \MEMORYGROW \\ &&|&
-     \text{memory.fill} &\Rightarrow& \MEMORYFILL \\ &&|&
-     \text{memory.copy} &\Rightarrow& \MEMORYCOPY \\ &&|&
-     \text{memory.init}~~x{:}\Tdataidx_I &\Rightarrow& \MEMORYINIT~x \\ &&|&
+   \production{instruction} & \Tplaininstr_I &::=& \dots \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallylonginstructionnames} \\ &&|&
+     \text{i32.load}~~x{:}\Tmemidx~~m{:}\Tmemarg_4 &\Rightarrow& \I32.\LOAD~x~m \\ &&|&
+     \text{i64.load}~~x{:}\Tmemidx~~m{:}\Tmemarg_8 &\Rightarrow& \I64.\LOAD~x~m \\ &&|&
+     \text{f32.load}~~x{:}\Tmemidx~~m{:}\Tmemarg_4 &\Rightarrow& \F32.\LOAD~x~m \\ &&|&
+     \text{f64.load}~~x{:}\Tmemidx~~m{:}\Tmemarg_8 &\Rightarrow& \F64.\LOAD~x~m \\ &&|&
+     \text{v128.load}~~x{:}\Tmemidx~~m{:}\Tmemarg_{16} &\Rightarrow& \V128.\LOAD~x~m \\ &&|&
+     \text{i32.load8\_s}~~x{:}\Tmemidx~~m{:}\Tmemarg_1 &\Rightarrow& \I32.\LOAD\K{8\_s}~x~m \\ &&|&
+     \text{i32.load8\_u}~~x{:}\Tmemidx~~m{:}\Tmemarg_1 &\Rightarrow& \I32.\LOAD\K{8\_u}~x~m \\ &&|&
+     \text{i32.load16\_s}~~x{:}\Tmemidx~~m{:}\Tmemarg_2 &\Rightarrow& \I32.\LOAD\K{16\_s}~x~m \\ &&|&
+     \text{i32.load16\_u}~~x{:}\Tmemidx~~m{:}\Tmemarg_2 &\Rightarrow& \I32.\LOAD\K{16\_u}~x~m \\ &&|&
+     \text{i64.load8\_s}~~x{:}\Tmemidx~~m{:}\Tmemarg_1 &\Rightarrow& \I64.\LOAD\K{8\_s}~x~m \\ &&|&
+     \text{i64.load8\_u}~~x{:}\Tmemidx~~m{:}\Tmemarg_1 &\Rightarrow& \I64.\LOAD\K{8\_u}~x~m \\ &&|&
+     \text{i64.load16\_s}~~x{:}\Tmemidx~~m{:}\Tmemarg_2 &\Rightarrow& \I64.\LOAD\K{16\_s}~x~m \\ &&|&
+     \text{i64.load16\_u}~~x{:}\Tmemidx~~m{:}\Tmemarg_2 &\Rightarrow& \I64.\LOAD\K{16\_u}~x~m \\ &&|&
+     \text{i64.load32\_s}~~x{:}\Tmemidx~~m{:}\Tmemarg_4 &\Rightarrow& \I64.\LOAD\K{32\_s}~x~m \\ &&|&
+     \text{i64.load32\_u}~~x{:}\Tmemidx~~m{:}\Tmemarg_4 &\Rightarrow& \I64.\LOAD\K{32\_u}~x~m \\ &&|&
+     \text{v128.load8x8\_s}~~x{:}\Tmemidx~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{8x8\_s}~x~m \\ &&|&
+     \text{v128.load8x8\_u}~~x{:}\Tmemidx~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{8x8\_u}~x~m \\ &&|&
+     \text{v128.load16x4\_s}~~x{:}\Tmemidx~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{16x4\_s}~x~m \\ &&|&
+     \text{v128.load16x4\_u}~~x{:}\Tmemidx~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{16x4\_u}~x~m \\ &&|&
+     \text{v128.load32x2\_s}~~x{:}\Tmemidx~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{32x2\_s}~x~m \\ &&|&
+     \text{v128.load32x2\_u}~~x{:}\Tmemidx~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{32x2\_u}~x~m \\ &&|&
+     \text{v128.load8\_splat}~~x{:}\Tmemidx~~m{:}\Tmemarg_1 &\Rightarrow& \V128.\LOAD\K{8\_splat}~x~m \\ &&|&
+     \text{v128.load16\_splat}~~x{:}\Tmemidx~~m{:}\Tmemarg_2 &\Rightarrow& \V128.\LOAD\K{16\_splat}~x~m \\ &&|&
+     \text{v128.load32\_splat}~~x{:}\Tmemidx~~m{:}\Tmemarg_4 &\Rightarrow& \V128.\LOAD\K{32\_splat}~x~m \\ &&|&
+     \text{v128.load64\_splat}~~x{:}\Tmemidx~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{64\_splat}~x~m \\ &&|&
+     \text{v128.load32\_zero}~~x{:}\Tmemidx~~m{:}\Tmemarg_4 &\Rightarrow& \V128.\LOAD\K{32\_zero}~x~m \\ &&|&
+     \text{v128.load64\_zero}~~x{:}\Tmemidx~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{64\_zero}~x~m \\ &&|&
+     \text{v128.load8\_lane}~~x{:}\Tmemidx~~m{:}\Tmemarg_1~~y{:}\Tu8 &\Rightarrow& \V128.\LOAD\K{8\_lane}~x~m~y \\ &&|&
+     \text{v128.load16\_lane}~~x{:}\Tmemidx~~m{:}\Tmemarg_2~~y{:}\Tu8 &\Rightarrow& \V128.\LOAD\K{16\_lane}~x~m~y \\ &&|&
+     \text{v128.load32\_lane}~~x{:}\Tmemidx~~m{:}\Tmemarg_4~~y{:}\Tu8 &\Rightarrow& \V128.\LOAD\K{32\_lane}~x~m~y \\ &&|&
+     \text{v128.load64\_lane}~~x{:}\Tmemidx~~m{:}\Tmemarg_8~~y{:}\Tu8 &\Rightarrow& \V128.\LOAD\K{64\_lane}~x~m~y \\ &&|&
+     \text{i32.store}~~x{:}\Tmemidx~~m{:}\Tmemarg_4 &\Rightarrow& \I32.\STORE~x~m \\ &&|&
+     \text{i64.store}~~x{:}\Tmemidx~~m{:}\Tmemarg_8 &\Rightarrow& \I64.\STORE~x~m \\ &&|&
+     \text{f32.store}~~x{:}\Tmemidx~~m{:}\Tmemarg_4 &\Rightarrow& \F32.\STORE~x~m \\ &&|&
+     \text{f64.store}~~x{:}\Tmemidx~~m{:}\Tmemarg_8 &\Rightarrow& \F64.\STORE~x~m \\ &&|&
+     \text{v128.store}~~x{:}\Tmemidx~~m{:}\Tmemarg_{16} &\Rightarrow& \V128.\STORE~x~m \\ &&|&
+     \text{i32.store8}~~x{:}\Tmemidx~~m{:}\Tmemarg_1 &\Rightarrow& \I32.\STORE\K{8}~x~m \\ &&|&
+     \text{i32.store16}~~x{:}\Tmemidx~~m{:}\Tmemarg_2 &\Rightarrow& \I32.\STORE\K{16}~x~m \\ &&|&
+     \text{i64.store8}~~x{:}\Tmemidx~~m{:}\Tmemarg_1 &\Rightarrow& \I64.\STORE\K{8}~x~m \\ &&|&
+     \text{i64.store16}~~x{:}\Tmemidx~~m{:}\Tmemarg_2 &\Rightarrow& \I64.\STORE\K{16}~x~m \\ &&|&
+     \text{i64.store32}~~x{:}\Tmemidx~~m{:}\Tmemarg_4 &\Rightarrow& \I64.\STORE\K{32}~x~m \\ &&|&
+     \text{v128.store8\_lane}~~x{:}\Tmemidx~~m{:}\Tmemarg_1~~y{:}\Tu8 &\Rightarrow& \V128.\STORE\K{8\_lane}~x~m~y \\ &&|&
+     \text{v128.store16\_lane}~~x{:}\Tmemidx~~m{:}\Tmemarg_2~~y{:}\Tu8 &\Rightarrow& \V128.\STORE\K{16\_lane}~x~m~y \\ &&|&
+     \text{v128.store32\_lane}~~x{:}\Tmemidx~~m{:}\Tmemarg_4~~y{:}\Tu8 &\Rightarrow& \V128.\STORE\K{32\_lane}~x~m~y \\ &&|&
+     \text{v128.store64\_lane}~~x{:}\Tmemidx~~m{:}\Tmemarg_8~~y{:}\Tu8 &\Rightarrow& \V128.\STORE\K{64\_lane}~x~m~y \\
+     \text{memory.size}~~x{:}\Tmemidx &\Rightarrow& \MEMORYSIZE~x \\ &&|&
+     \text{memory.grow}~~x{:}\Tmemidx &\Rightarrow& \MEMORYGROW~x \\ &&|&
+     \text{memory.fill}~~x{:}\Tmemidx &\Rightarrow& \MEMORYFILL~x \\ &&|&
+     \text{memory.copy}~~x{:}\Tmemidx~~y{:}\Tmemidx &\Rightarrow& \MEMORYCOPY~x~y \\ &&|&
+     \text{memory.init}~~x{:}\Tmemidx~~y{:}\Tdataidx_I &\Rightarrow& \MEMORYINIT~x~y \\ &&|&
      \text{data.drop}~~x{:}\Tdataidx_I &\Rightarrow& \DATADROP~x \\
+   \end{array}
+
+
+Abbreviations
+.............
+
+As an abbreviation, the memory index can be omitted in all memory instructions, defaulting to :math:`\T{0}`.
+
+.. math::
+   \begin{array}{llclll}
+   \production{instruction} &
+    \Tnumtype\text{.load}~~\Tmemarg
+       &\equiv&
+     \Tnumtype\text{.load}~~\text{0}~~\Tmemarg \\&
+    \Tvectype\text{.load}~~\Tmemarg
+       &\equiv&
+     \Tvectype\text{.load}~~\text{0}~~\Tmemarg \\&
+    \Tnumtype\text{.load}N\text{\_}\sx~~\Tmemarg
+       &\equiv&
+     \Tnumtype\text{.load}N\text{\_}\sx~~\text{0}~~\Tmemarg \\&
+    \Tvectype\text{.load}{N}\K{x}M\text{\_}\sx~~\Tmemarg
+       &\equiv&
+     \Tvectype\text{.load}{N}\K{x}M\text{\_}\sx~~\text{0}~~\Tmemarg \\&
+    \Tvectype\text{.load}N\text{\_splat}~~\Tmemarg
+       &\equiv&
+     \Tvectype\text{.load}N\text{\_splat}~~\text{0}~~\Tmemarg \\&
+    \Tvectype\text{.load}N\text{\_zero}~~\Tmemarg
+       &\equiv&
+     \Tvectype\text{.load}N\text{\_zero}~~\text{0}~~\Tmemarg \\&
+    \Tvectype\text{.load}N\text{\_lane}~~\Tmemarg~~\Tu8
+       &\equiv&
+     \Tvectype\text{.load}N\text{\_lane}~~\text{0}~~\Tmemarg~~\Tu8 \\&
+    \Tnumtype\text{.store}~~\Tmemarg
+       &\equiv&
+     \Tnumtype\text{.store}~~\text{0}~~\Tmemarg \\&
+    \Tvectype\text{.store}~~\Tmemarg
+       &\equiv&
+     \Tvectype\text{.store}~~\text{0}~~\Tmemarg \\&
+    \Tnumtype\text{.store}N~~\Tmemarg
+       &\equiv&
+     \Tnumtype\text{.store}N~~\text{0}~~\Tmemarg \\&
+    \Tvectype\text{.store}N\text{\_lane}~~\Tmemarg~~\Tu8
+       &\equiv&
+     \Tvectype\text{.store}N\text{\_lane}~~\text{0}~~\Tmemarg~~\Tu8 \\&
+    \text{memory.size}
+       &\equiv&
+     \text{memory.size}~~\text{0} \\&
+    \text{memory.grow}
+       &\equiv&
+     \text{memory.grow}~~\text{0} \\&
+    \text{memory.fill}
+       &\equiv&
+     \text{memory.fill}~~\text{0} \\&
+    \text{memory.copy}
+       &\equiv&
+     \text{memory.copy}~~\text{0}~~\text{0} \\&
+    \text{memory.init}~~x{:}\Telemidx_I
+       &\equiv&
+     \text{memory.init}~~\text{0}~~x{:}\Telemidx_I
    \end{array}
 
 
@@ -642,35 +723,6 @@ Numeric Instructions
 
 Vector Instructions
 ~~~~~~~~~~~~~~~~~~~
-
-Vector memory instructions have optional offset and alignment immediates, like the :ref:`memory instructions <text-memarg>`.
-
-.. math::
-   \begin{array}{llclll}
-   \production{instruction} & \Tplaininstr_I &::=& \dots \phantom{averylonginstructionnameforvectext} && \phantom{vechasreallylonginstructionnames} \\ &&|&
-     \text{v128.load}~~m{:}\Tmemarg_{16} &\Rightarrow& \V128.\LOAD~m \\ &&|&
-     \text{v128.load8x8\_s}~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{8x8\_s}~m \\ &&|&
-     \text{v128.load8x8\_u}~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{8x8\_u}~m \\ &&|&
-     \text{v128.load16x4\_s}~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{16x4\_s}~m \\ &&|&
-     \text{v128.load16x4\_u}~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{16x4\_u}~m \\ &&|&
-     \text{v128.load32x2\_s}~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{32x2\_s}~m \\ &&|&
-     \text{v128.load32x2\_u}~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{32x2\_u}~m \\ &&|&
-     \text{v128.load8\_splat}~~m{:}\Tmemarg_1 &\Rightarrow& \V128.\LOAD\K{8\_splat}~m \\ &&|&
-     \text{v128.load16\_splat}~~m{:}\Tmemarg_2 &\Rightarrow& \V128.\LOAD\K{16\_splat}~m \\ &&|&
-     \text{v128.load32\_splat}~~m{:}\Tmemarg_4 &\Rightarrow& \V128.\LOAD\K{32\_splat}~m \\ &&|&
-     \text{v128.load64\_splat}~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{64\_splat}~m \\ &&|&
-     \text{v128.load32\_zero}~~m{:}\Tmemarg_4 &\Rightarrow& \V128.\LOAD\K{32\_zero}~m \\ &&|&
-     \text{v128.load64\_zero}~~m{:}\Tmemarg_8 &\Rightarrow& \V128.\LOAD\K{64\_zero}~m \\ &&|&
-     \text{v128.store}~~m{:}\Tmemarg_{16} &\Rightarrow& \V128.\STORE~m \\ &&|&
-     \text{v128.load8\_lane}~~m{:}\Tmemarg_1~~laneidx{:}\Tu8 &\Rightarrow& \V128.\LOAD\K{8\_lane}~m~laneidx \\ &&|&
-     \text{v128.load16\_lane}~~m{:}\Tmemarg_2~~laneidx{:}\Tu8 &\Rightarrow& \V128.\LOAD\K{16\_lane}~m~laneidx \\ &&|&
-     \text{v128.load32\_lane}~~m{:}\Tmemarg_4~~laneidx{:}\Tu8 &\Rightarrow& \V128.\LOAD\K{32\_lane}~m~laneidx \\ &&|&
-     \text{v128.load64\_lane}~~m{:}\Tmemarg_8~~laneidx{:}\Tu8 &\Rightarrow& \V128.\LOAD\K{64\_lane}~m~laneidx \\ &&|&
-     \text{v128.store8\_lane}~~m{:}\Tmemarg_1~~laneidx{:}\Tu8 &\Rightarrow& \V128.\STORE\K{8\_lane}~m~laneidx \\ &&|&
-     \text{v128.store16\_lane}~~m{:}\Tmemarg_2~~laneidx{:}\Tu8 &\Rightarrow& \V128.\STORE\K{16\_lane}~m~laneidx \\ &&|&
-     \text{v128.store32\_lane}~~m{:}\Tmemarg_4~~laneidx{:}\Tu8 &\Rightarrow& \V128.\STORE\K{32\_lane}~m~laneidx \\ &&|&
-     \text{v128.store64\_lane}~~m{:}\Tmemarg_8~~laneidx{:}\Tu8 &\Rightarrow& \V128.\STORE\K{64\_lane}~m~laneidx \\
-   \end{array}
 
 Vector constant instructions have a mandatory :ref:`shape <syntax-vec-shape>` descriptor, which determines how the following values are parsed.
 

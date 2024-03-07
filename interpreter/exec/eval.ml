@@ -438,8 +438,8 @@ let rec step (c : config) : config =
         Elem.drop seg;
         vs, []
 
-      | Load {offset; ty; pack; _}, Num (I32 i) :: vs' ->
-        let mem = memory c.frame.inst (0l @@ e.at) in
+      | Load (x, {offset; ty; pack; _}), Num (I32 i) :: vs' ->
+        let mem = memory c.frame.inst x in
         let a = I64_convert.extend_i32_u i in
         (try
           let n =
@@ -449,8 +449,8 @@ let rec step (c : config) : config =
           in Num n :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
-      | Store {offset; pack; _}, Num n :: Num (I32 i) :: vs' ->
-        let mem = memory c.frame.inst (0l @@ e.at) in
+      | Store (x, {offset; pack; _}), Num n :: Num (I32 i) :: vs' ->
+        let mem = memory c.frame.inst x in
         let a = I64_convert.extend_i32_u i in
         (try
           (match pack with
@@ -460,8 +460,8 @@ let rec step (c : config) : config =
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
 
-      | VecLoad {offset; ty; pack; _}, Num (I32 i) :: vs' ->
-        let mem = memory c.frame.inst (0l @@ e.at) in
+      | VecLoad (x, {offset; ty; pack; _}), Num (I32 i) :: vs' ->
+        let mem = memory c.frame.inst x in
         let a = I64_convert.extend_i32_u i in
         (try
           let v =
@@ -471,16 +471,16 @@ let rec step (c : config) : config =
           in Vec v :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
-      | VecStore {offset; _}, Vec v :: Num (I32 i) :: vs' ->
-        let mem = memory c.frame.inst (0l @@ e.at) in
+      | VecStore (x, {offset; _}), Vec v :: Num (I32 i) :: vs' ->
+        let mem = memory c.frame.inst x in
         let addr = I64_convert.extend_i32_u i in
         (try
           Memory.store_vec mem addr offset v;
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
 
-      | VecLoadLane ({offset; ty; pack; _}, j), Vec (V128 v) :: Num (I32 i) :: vs' ->
-        let mem = memory c.frame.inst (0l @@ e.at) in
+      | VecLoadLane (x, {offset; ty; pack; _}, j), Vec (V128 v) :: Num (I32 i) :: vs' ->
+        let mem = memory c.frame.inst x in
         let addr = I64_convert.extend_i32_u i in
         (try
           let v =
@@ -500,8 +500,8 @@ let rec step (c : config) : config =
           in Vec (V128 v) :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
-      | VecStoreLane ({offset; ty; pack; _}, j), Vec (V128 v) :: Num (I32 i) :: vs' ->
-        let mem = memory c.frame.inst (0l @@ e.at) in
+      | VecStoreLane (x, {offset; ty; pack; _}, j), Vec (V128 v) :: Num (I32 i) :: vs' ->
+        let mem = memory c.frame.inst x in
         let addr = I64_convert.extend_i32_u i in
         (try
           (match pack with
@@ -517,20 +517,20 @@ let rec step (c : config) : config =
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
-      | MemorySize, vs ->
-        let mem = memory c.frame.inst (0l @@ e.at) in
+      | MemorySize x, vs ->
+        let mem = memory c.frame.inst x in
         Num (I32 (Memory.size mem)) :: vs, []
 
-      | MemoryGrow, Num (I32 delta) :: vs' ->
-        let mem = memory c.frame.inst (0l @@ e.at) in
+      | MemoryGrow x, Num (I32 delta) :: vs' ->
+        let mem = memory c.frame.inst x in
         let old_size = Memory.size mem in
         let result =
           try Memory.grow mem delta; old_size
           with Memory.SizeOverflow | Memory.SizeLimit | Memory.OutOfMemory -> -1l
         in Num (I32 result) :: vs', []
 
-      | MemoryFill, Num (I32 n) :: Num k :: Num (I32 i) :: vs' ->
-        if mem_oob c.frame (0l @@ e.at) i n then
+      | MemoryFill x, Num (I32 n) :: Num k :: Num (I32 i) :: vs' ->
+        if mem_oob c.frame x i n then
           vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
         else if n = 0l then
           vs', []
@@ -539,15 +539,15 @@ let rec step (c : config) : config =
             Plain (Const (I32 i @@ e.at));
             Plain (Const (k @@ e.at));
             Plain (Store
-              {ty = Types.I32T; align = 0; offset = 0l; pack = Some Pack8});
+              (x, {ty = I32T; align = 0; offset = 0l; pack = Some Pack8}));
             Plain (Const (I32 (I32.add i 1l) @@ e.at));
             Plain (Const (k @@ e.at));
             Plain (Const (I32 (I32.sub n 1l) @@ e.at));
-            Plain (MemoryFill);
+            Plain (MemoryFill x);
           ]
 
-      | MemoryCopy, Num (I32 n) :: Num (I32 s) :: Num (I32 d) :: vs' ->
-        if mem_oob c.frame (0l @@ e.at) s n || mem_oob c.frame (0l @@ e.at) d n then
+      | MemoryCopy (x, y), Num (I32 n) :: Num (I32 s) :: Num (I32 d) :: vs' ->
+        if mem_oob c.frame x d n || mem_oob c.frame y s n then
           vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
         else if n = 0l then
           vs', []
@@ -556,13 +556,13 @@ let rec step (c : config) : config =
             Plain (Const (I32 d @@ e.at));
             Plain (Const (I32 s @@ e.at));
             Plain (Load
-              {ty = Types.I32T; align = 0; offset = 0l; pack = Some (Pack8, ZX)});
+              (y, {ty = I32T; align = 0; offset = 0l; pack = Some (Pack8, ZX)}));
             Plain (Store
-              {ty = Types.I32T; align = 0; offset = 0l; pack = Some Pack8});
+              (x, {ty = I32T; align = 0; offset = 0l; pack = Some Pack8}));
             Plain (Const (I32 (I32.add d 1l) @@ e.at));
             Plain (Const (I32 (I32.add s 1l) @@ e.at));
             Plain (Const (I32 (I32.sub n 1l) @@ e.at));
-            Plain (MemoryCopy);
+            Plain (MemoryCopy (x, y));
           ]
         else (* d > s *)
           let n' = I32.sub n 1l in
@@ -570,33 +570,33 @@ let rec step (c : config) : config =
             Plain (Const (I32 (I32.add d n') @@ e.at));
             Plain (Const (I32 (I32.add s n') @@ e.at));
             Plain (Load
-              {ty = Types.I32T; align = 0; offset = 0l; pack = Some (Pack8, ZX)});
+              (y, {ty = I32T; align = 0; offset = 0l; pack = Some (Pack8, ZX)}));
             Plain (Store
-              {ty = Types.I32T; align = 0; offset = 0l; pack = Some Pack8});
+              (x, {ty = I32T; align = 0; offset = 0l; pack = Some Pack8}));
             Plain (Const (I32 d @@ e.at));
             Plain (Const (I32 s @@ e.at));
             Plain (Const (I32 n' @@ e.at));
-            Plain (MemoryCopy);
+            Plain (MemoryCopy (x, y));
           ]
 
-      | MemoryInit x, Num (I32 n) :: Num (I32 s) :: Num (I32 d) :: vs' ->
-        if mem_oob c.frame (0l @@ e.at) d n || data_oob c.frame x s n then
+      | MemoryInit (x, y), Num (I32 n) :: Num (I32 s) :: Num (I32 d) :: vs' ->
+        if mem_oob c.frame x d n || data_oob c.frame y s n then
           vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
         else if n = 0l then
           vs', []
         else
-          let seg = data c.frame.inst x in
+          let seg = data c.frame.inst y in
           let a = I64_convert.extend_i32_u s in
           let b = Data.load_byte seg a in
           vs', List.map (Lib.Fun.flip (@@) e.at) [
             Plain (Const (I32 d @@ e.at));
             Plain (Const (I32 (I32.of_int_u (Char.code b)) @@ e.at));
             Plain (Store
-              {ty = Types.I32T; align = 0; offset = 0l; pack = Some Pack8});
+              (x, {ty = I32T; align = 0; offset = 0l; pack = Some Pack8}));
             Plain (Const (I32 (I32.add d 1l) @@ e.at));
             Plain (Const (I32 (I32.add s 1l) @@ e.at));
             Plain (Const (I32 (I32.sub n 1l) @@ e.at));
-            Plain (MemoryInit x);
+            Plain (MemoryInit (x, y));
           ]
 
       | DataDrop x, vs ->
@@ -1254,11 +1254,10 @@ let run_data i data =
   match data.it.dmode.it with
   | Passive -> []
   | Active {index; offset} ->
-    assert (index.it = 0l);
     offset.it @ [
       Const (I32 0l @@ at) @@ at;
       Const (I32 (Int32.of_int (String.length data.it.dinit)) @@ at) @@ at;
-      MemoryInit x @@ at;
+      MemoryInit (index, x) @@ at;
       DataDrop x @@ at
     ]
   | Declarative -> assert false

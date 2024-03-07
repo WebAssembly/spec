@@ -269,7 +269,7 @@ let inline_func_type_explicit (c : context) x ft loc =
 %token TABLE_GET TABLE_SET
 %token TABLE_SIZE TABLE_GROW TABLE_FILL TABLE_COPY TABLE_INIT ELEM_DROP
 %token MEMORY_SIZE MEMORY_GROW MEMORY_FILL MEMORY_COPY MEMORY_INIT DATA_DROP
-%token<int option -> Memory.offset -> Ast.instr'> LOAD STORE
+%token<Ast.idx -> int option -> Memory.offset -> Ast.instr'> LOAD STORE
 %token<string> OFFSET_EQ_NAT ALIGN_EQ_NAT
 %token<string Source.phrase -> Ast.instr' * Value.num> CONST
 %token<Ast.instr'> UNARY BINARY TEST COMPARE CONVERT
@@ -283,8 +283,8 @@ let inline_func_type_explicit (c : context) x ft loc =
 %token ARRAY_SET ARRAY_LEN
 %token ARRAY_COPY ARRAY_FILL ARRAY_INIT_DATA ARRAY_INIT_ELEM
 %token<Ast.instr'> EXTERN_CONVERT
-%token<int option -> Memory.offset -> Ast.instr'> VEC_LOAD VEC_STORE
-%token<int option -> Memory.offset -> int -> Ast.instr'> VEC_LOAD_LANE VEC_STORE_LANE
+%token<Ast.idx -> int option -> Memory.offset -> Ast.instr'> VEC_LOAD VEC_STORE
+%token<Ast.idx -> int option -> Memory.offset -> int -> Ast.instr'> VEC_LOAD_LANE VEC_STORE_LANE
 %token<V128.shape -> string Source.phrase list -> Source.region -> Ast.instr' * Value.vec> VEC_CONST
 %token<Ast.instr'> VEC_UNARY VEC_BINARY VEC_TERNARY VEC_TEST
 %token<Ast.instr'> VEC_SHIFT VEC_BITMASK VEC_SPLAT
@@ -450,6 +450,14 @@ var :
   | NAT { fun c lookup -> nat32 $1 $sloc @@ $sloc }
   | VAR { fun c lookup -> lookup c ($1 @@ $sloc) @@ $sloc }
 
+var_opt :
+  | /* empty */ { fun c lookup at -> 0l @@ at }
+  | var { fun c lookup at -> $1 c lookup }
+
+var_var_opt :
+  | /* empty */ { fun c lookup at -> 0l @@ at, 0l @@ at }
+  | var var { fun c lookup at -> $1 c lookup, $2 c lookup }
+
 var_list :
   | /* empty */ { fun c lookup -> [] }
   | var var_list { fun c lookup -> $1 c lookup :: $2 c lookup }
@@ -476,17 +484,23 @@ labeling_end_opt :
   | /* empty */ { [] }
   | bind_var { [$1] }
 
-offset_opt :
-  | /* empty */ { 0l }
+offset_ :
   | OFFSET_EQ_NAT { nat32 $1 $sloc }
 
-align_opt :
-  | /* empty */ { None }
+offset_opt :
+  | /* empty */ { 0l }
+  | offset_ { $1 }
+
+align :
   | ALIGN_EQ_NAT
     { let n = nat $1 $sloc in
       if not (Lib.Int.is_power_of_two n) then
         error (at $sloc) "alignment must be a power of two";
       Some (Lib.Int.log2 n) }
+
+align_opt :
+  | /* empty */ { None }
+  | align { $1 }
 
 
 /* Instructions & Expressions */
@@ -525,36 +539,37 @@ plain_instr :
   | LOCAL_TEE var { fun c -> local_tee ($2 c local) }
   | GLOBAL_GET var { fun c -> global_get ($2 c global) }
   | GLOBAL_SET var { fun c -> global_set ($2 c global) }
-  | TABLE_GET var { fun c -> table_get ($2 c table) }
-  | TABLE_SET var { fun c -> table_set ($2 c table) }
-  | TABLE_SIZE var { fun c -> table_size ($2 c table) }
-  | TABLE_GROW var { fun c -> table_grow ($2 c table) }
-  | TABLE_FILL var { fun c -> table_fill ($2 c table) }
-  | TABLE_COPY var var { fun c -> table_copy ($2 c table) ($3 c table) }
-  | TABLE_INIT var var { fun c -> table_init ($2 c table) ($3 c elem) }
-  | TABLE_GET { fun c -> table_get (0l @@ $sloc) }  /* Sugar */
-  | TABLE_SET { fun c -> table_set (0l @@ $sloc) }  /* Sugar */
-  | TABLE_SIZE { fun c -> table_size (0l @@ $sloc) }  /* Sugar */
-  | TABLE_GROW { fun c -> table_grow (0l @@ $sloc) }  /* Sugar */
-  | TABLE_FILL { fun c -> table_fill (0l @@ $sloc) }  /* Sugar */
-  | TABLE_COPY  /* Sugar */
-    { fun c -> table_copy (0l @@ $sloc) (0l @@ $sloc) }
+  | TABLE_GET var_opt { fun c -> table_get ($2 c table $loc($1)) }
+  | TABLE_SET var_opt { fun c -> table_set ($2 c table $loc($1)) }
+  | TABLE_SIZE var_opt { fun c -> table_size ($2 c table $loc($1)) }
+  | TABLE_GROW var_opt { fun c -> table_grow ($2 c table $loc($1)) }
+  | TABLE_FILL var_opt { fun c -> table_fill ($2 c table $loc($1)) }
+  | TABLE_COPY var_var_opt
+    { fun c -> let x, y = $2 c table $loc($1) in table_copy x y }
+  | TABLE_INIT var var
+    { fun c -> table_init ($2 c table) ($3 c elem) }
   | TABLE_INIT var  /* Sugar */
-    { fun c -> table_init (0l @@ $sloc) ($2 c elem) }
+    { fun c -> table_init (0l @@ $loc($1)) ($2 c elem) }
   | ELEM_DROP var { fun c -> elem_drop ($2 c elem) }
-  | LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
-  | STORE offset_opt align_opt { fun c -> $1 $3 $2 }
-  | VEC_LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
-  | VEC_STORE offset_opt align_opt { fun c -> $1 $3 $2 }
-  | VEC_LOAD_LANE offset_opt align_opt NAT
-    { fun c -> $1 $3 $2 (vec_lane_index $4 (at $sloc)) }
-  | VEC_STORE_LANE offset_opt align_opt NAT
-    { fun c -> $1 $3 $2 (vec_lane_index $4 (at $sloc)) }
-  | MEMORY_SIZE { fun c -> memory_size }
-  | MEMORY_GROW { fun c -> memory_grow }
-  | MEMORY_FILL { fun c -> memory_fill }
-  | MEMORY_COPY { fun c -> memory_copy }
-  | MEMORY_INIT var { fun c -> memory_init ($2 c data) }
+  | LOAD var_opt offset_opt align_opt
+    { fun c -> $1 ($2 c memory $loc($1)) $4 $3 }
+  | STORE var_opt offset_opt align_opt
+    { fun c -> $1 ($2 c memory $loc($1)) $4 $3 }
+  | VEC_LOAD var_opt offset_opt align_opt
+    { fun c -> $1 ($2 c memory $loc($1)) $4 $3 }
+  | VEC_STORE var_opt offset_opt align_opt
+    { fun c -> $1 ($2 c memory $loc($1)) $4 $3 }
+  | VEC_LOAD_LANE lane_imms { fun c -> $2 $1 $loc($1) c }
+  | VEC_STORE_LANE lane_imms { fun c -> $2 $1 $loc($1) c }
+  | MEMORY_SIZE var_opt { fun c -> memory_size ($2 c memory $loc($1)) }
+  | MEMORY_GROW var_opt { fun c -> memory_grow ($2 c memory $loc($1)) }
+  | MEMORY_FILL var_opt { fun c -> memory_fill ($2 c memory $loc($1)) }
+  | MEMORY_COPY var_var_opt
+    { fun c -> let x, y = $2 c memory $loc($1) in memory_copy x y }
+  | MEMORY_INIT var var
+    { fun c -> memory_init ($2 c memory) ($3 c data) }
+  | MEMORY_INIT var  /* Sugar */
+    { fun c -> memory_init (0l @@ $loc($1)) ($2 c data) }
   | DATA_DROP var { fun c -> data_drop ($2 c data) }
   | REF_NULL heap_type { fun c -> ref_null ($2 c) }
   | REF_FUNC var { fun c -> ref_func ($2 c func) }
@@ -597,6 +612,26 @@ plain_instr :
   | VEC_SPLAT { fun c -> $1 }
   | VEC_EXTRACT NAT { fun c -> $1 (vec_lane_index $2 (at $sloc)) }
   | VEC_REPLACE NAT { fun c -> $1 (vec_lane_index $2 (at $sloc)) }
+
+
+lane_imms :
+  /* Need to multiply out options and var to avoid spurious conflicts */
+  | NAT offset_opt align_opt NAT
+    { fun instr at0 c ->
+      instr (nat32 $1 $loc($1) @@ $loc($1)) $3 $2
+        (vec_lane_index $4 (at $loc($4))) }
+  | VAR offset_opt align_opt NAT  /* Sugar */
+    { fun instr at0 c -> instr (memory c ($1 @@ $loc($1)) @@ $loc($1)) $3 $2
+        (vec_lane_index $4 (at $loc($4))) }
+  | offset_ align_opt NAT  /* Sugar */
+    { fun instr at0 c -> instr (0l @@ at0) $2 $1
+        (vec_lane_index $3 (at $loc($3))) }
+  | align NAT  /* Sugar */
+    { fun instr at0 c -> instr (0l @@ at0) $1 0l
+       (vec_lane_index $2 (at $loc($2))) }
+  | NAT  /* Sugar */
+    { fun instr at0 c -> instr (0l @@ at0) None 0l
+        (vec_lane_index $1 (at $loc($1))) }
 
 
 select_instr_instr_list :

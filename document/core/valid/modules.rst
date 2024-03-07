@@ -895,8 +895,6 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
      \\
      C' = \{ \CTYPES~C_0.\CTYPES, \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CTABLES~(C.\CTABLES), \CMEMS~(C.\CMEMS), \CREFS~(C.\CREFS) \}
      \qquad
-     |C.\CMEMS| \leq 1
-     \qquad
      (\export.\ENAME)^\ast ~\F{disjoint}
      \\
      \module = \{

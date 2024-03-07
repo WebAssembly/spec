@@ -1197,7 +1197,9 @@ Parametric Instructions
    }
    \qquad
    \frac{
-     \vdash t \leq \vectype
+     C \vdashresulttype [t] \ok
+     \qquad
+     C \vdash t \leq \vectype
    }{
      C \vdashinstr \SELECT : [t~t~\I32] \to [t]
    }
@@ -1500,10 +1502,10 @@ Memory Instructions
 
 .. _valid-load:
 
-:math:`t\K{.}\LOAD~\memarg`
-...........................
+:math:`t\K{.}\LOAD~x~\memarg`
+.............................
 
-* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-numtype>` of :math:`t` divided by :math:`8`.
 
@@ -1511,20 +1513,20 @@ Memory Instructions
 
 .. math::
    \frac{
-     C.\CMEMS[0] = \memtype
+     C.\CMEMS[x] = \memtype
      \qquad
      2^{\memarg.\ALIGN} \leq |t|/8
    }{
-     C \vdashinstr t\K{.load}~\memarg : [\I32] \to [t]
+     C \vdashinstr t\K{.load}~x~\memarg : [\I32] \to [t]
    }
 
 
 .. _valid-loadn:
 
-:math:`t\K{.}\LOAD{N}\K{\_}\sx~\memarg`
-.......................................
+:math:`t\K{.}\LOAD{N}\K{\_}\sx~x~\memarg`
+.........................................
 
-* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
@@ -1532,18 +1534,18 @@ Memory Instructions
 
 .. math::
    \frac{
-     C.\CMEMS[0] = \memtype
+     C.\CMEMS[x] = \memtype
      \qquad
      2^{\memarg.\ALIGN} \leq N/8
    }{
-     C \vdashinstr t\K{.load}N\K{\_}\sx~\memarg : [\I32] \to [t]
+     C \vdashinstr t\K{.load}N\K{\_}\sx~x~\memarg : [\I32] \to [t]
    }
 
 
-:math:`t\K{.}\STORE~\memarg`
-............................
+:math:`t\K{.}\STORE~x~\memarg`
+..............................
 
-* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-numtype>` of :math:`t` divided by :math:`8`.
 
@@ -1551,20 +1553,20 @@ Memory Instructions
 
 .. math::
    \frac{
-     C.\CMEMS[0] = \memtype
+     C.\CMEMS[x] = \memtype
      \qquad
      2^{\memarg.\ALIGN} \leq |t|/8
    }{
-     C \vdashinstr t\K{.store}~\memarg : [\I32~t] \to []
+     C \vdashinstr t\K{.store}~x~\memarg : [\I32~t] \to []
    }
 
 
 .. _valid-storen:
 
-:math:`t\K{.}\STORE{N}~\memarg`
-...............................
+:math:`t\K{.}\STORE{N}~x~\memarg`
+.................................
 
-* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
@@ -1572,20 +1574,20 @@ Memory Instructions
 
 .. math::
    \frac{
-     C.\CMEMS[0] = \memtype
+     C.\CMEMS[x] = \memtype
      \qquad
      2^{\memarg.\ALIGN} \leq N/8
    }{
-     C \vdashinstr t\K{.store}N~\memarg : [\I32~t] \to []
+     C \vdashinstr t\K{.store}N~x~\memarg : [\I32~t] \to []
    }
 
 
 .. _valid-load-extend:
 
-:math:`\K{v128.}\LOAD{N}\K{x}M\_\sx~\memarg`
-...............................................
+:math:`\K{v128.}\LOAD{N}\K{x}M\_\sx~x~\memarg`
+..............................................
 
-* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8 \cdot M`.
 
@@ -1593,20 +1595,20 @@ Memory Instructions
 
 .. math::
    \frac{
-     C.\CMEMS[0] = \memtype
+     C.\CMEMS[x] = \memtype
      \qquad
      2^{\memarg.\ALIGN} \leq N/8 \cdot M
    }{
-     C \vdashinstr \K{v128.}\LOAD{N}\K{x}M\_\sx~\memarg : [\I32] \to [\V128]
+     C \vdashinstr \K{v128.}\LOAD{N}\K{x}M\_\sx~x~\memarg : [\I32] \to [\V128]
    }
 
 
 .. _valid-load-splat:
 
-:math:`\K{v128.}\LOAD{N}\K{\_splat}~\memarg`
-...............................................
+:math:`\K{v128.}\LOAD{N}\K{\_splat}~x~\memarg`
+..............................................
 
-* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
@@ -1614,20 +1616,20 @@ Memory Instructions
 
 .. math::
    \frac{
-     C.\CMEMS[0] = \memtype
+     C.\CMEMS[x] = \memtype
      \qquad
      2^{\memarg.\ALIGN} \leq N/8
    }{
-     C \vdashinstr \K{v128.}\LOAD{N}\K{\_splat}~\memarg : [\I32] \to [\V128]
+     C \vdashinstr \K{v128.}\LOAD{N}\K{\_splat}~x~\memarg : [\I32] \to [\V128]
    }
 
 
 .. _valid-load-zero:
 
-:math:`\K{v128.}\LOAD{N}\K{\_zero}~\memarg`
-...........................................
+:math:`\K{v128.}\LOAD{N}\K{\_zero}~x~\memarg`
+.............................................
 
-* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
 
@@ -1635,149 +1637,154 @@ Memory Instructions
 
 .. math::
    \frac{
-     C.\CMEMS[0] = \memtype
+     C.\CMEMS[x] = \memtype
      \qquad
      2^{\memarg.\ALIGN} \leq N/8
    }{
-     C \vdashinstr \K{v128.}\LOAD{N}\K{\_zero}~\memarg : [\I32] \to [\V128]
+     C \vdashinstr \K{v128.}\LOAD{N}\K{\_zero}~x~\memarg : [\I32] \to [\V128]
    }
 
 
 .. _valid-load-lane:
 
-:math:`\K{v128.}\LOAD{N}\K{\_lane}~\memarg~\laneidx`
-....................................................
+:math:`\K{v128.}\LOAD{N}\K{\_lane}~x~\memarg~\laneidx`
+......................................................
 
-* The lane index :math:`\laneidx` must be smaller than :math:`128/N`.
-
-* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
+
+* The lane index :math:`\laneidx` must be smaller than :math:`128/N`.
 
 * Then the instruction is valid with type :math:`[\I32~\V128] \to [\V128]`.
 
 .. math::
    \frac{
-     \laneidx < 128/N
-     \qquad
-     C.\CMEMS[0] = \memtype
+     C.\CMEMS[x] = \memtype
      \qquad
      2^{\memarg.\ALIGN} < N/8
+     \qquad
+     \laneidx < 128/N
    }{
-     C \vdashinstr \K{v128.}\LOAD{N}\K{\_lane}~\memarg~\laneidx : [\I32~\V128] \to [\V128]
+     C \vdashinstr \K{v128.}\LOAD{N}\K{\_lane}~x~\memarg~\laneidx : [\I32~\V128] \to [\V128]
    }
+
 
 .. _valid-store-lane:
 
-:math:`\K{v128.}\STORE{N}\K{\_lane}~\memarg~\laneidx`
-.....................................................
+:math:`\K{v128.}\STORE{N}\K{\_lane}~x~\memarg~\laneidx`
+.......................................................
 
-* The lane index :math:`\laneidx` must be smaller than :math:`128/N`.
-
-* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
+
+* The lane index :math:`\laneidx` must be smaller than :math:`128/N`.
 
 * Then the instruction is valid with type :math:`[\I32~\V128] \to [\V128]`.
 
 .. math::
    \frac{
-     \laneidx < 128/N
-     \qquad
-     C.\CMEMS[0] = \memtype
+     C.\CMEMS[x] = \memtype
      \qquad
      2^{\memarg.\ALIGN} < N/8
+     \qquad
+     \laneidx < 128/N
    }{
-     C \vdashinstr \K{v128.}\STORE{N}\K{\_lane}~\memarg~\laneidx : [\I32~\V128] \to []
+     C \vdashinstr \K{v128.}\STORE{N}\K{\_lane}~x~\memarg~\laneidx : [\I32~\V128] \to []
    }
 
 
 .. _valid-memory.size:
 
-:math:`\MEMORYSIZE`
-...................
+:math:`\MEMORYSIZE~x`
+.....................
 
-* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * Then the instruction is valid with type :math:`[] \to [\I32]`.
 
 .. math::
    \frac{
-     C.\CMEMS[0] = \memtype
+     C.\CMEMS[x] = \memtype
    }{
-     C \vdashinstr \MEMORYSIZE : [] \to [\I32]
+     C \vdashinstr \MEMORYSIZE~x : [] \to [\I32]
    }
 
 
 .. _valid-memory.grow:
 
-:math:`\MEMORYGROW`
-...................
+:math:`\MEMORYGROW~x`
+.....................
 
-* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * Then the instruction is valid with type :math:`[\I32] \to [\I32]`.
 
 .. math::
    \frac{
-     C.\CMEMS[0] = \memtype
+     C.\CMEMS[x] = \memtype
    }{
-     C \vdashinstr \MEMORYGROW : [\I32] \to [\I32]
+     C \vdashinstr \MEMORYGROW~x : [\I32] \to [\I32]
    }
 
 
 .. _valid-memory.fill:
 
-:math:`\MEMORYFILL`
-...................
+:math:`\MEMORYFILL~x`
+.....................
 
-* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
 
 .. math::
    \frac{
-     C.\CMEMS[0] = \memtype
+     C.\CMEMS[x] = \memtype
    }{
-     C \vdashinstr \MEMORYFILL : [\I32~\I32~\I32] \to []
+     C \vdashinstr \MEMORYFILL~x : [\I32~\I32~\I32] \to []
    }
 
 
 .. _valid-memory.copy:
 
-:math:`\MEMORYCOPY`
-...................
+:math:`\MEMORYCOPY~x~y`
+.......................
 
-* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[x]` must be defined in the context.
+
+* The memory :math:`C.\CMEMS[y]` must be defined in the context.
 
 * Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
 
 .. math::
    \frac{
-     C.\CMEMS[0] = \memtype
+     C.\CMEMS[x] = \memtype
+     \qquad
+     C.\CMEMS[x] = \memtype
    }{
-     C \vdashinstr \MEMORYCOPY : [\I32~\I32~\I32] \to []
+     C \vdashinstr \MEMORYCOPY~x~y : [\I32~\I32~\I32] \to []
    }
 
 
 .. _valid-memory.init:
 
-:math:`\MEMORYINIT~x`
-.....................
+:math:`\MEMORYINIT~x~y`
+.......................
 
-* The memory :math:`C.\CMEMS[0]` must be defined in the context.
+* The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
-* The data segment :math:`C.\CDATAS[x]` must be defined in the context.
+* The data segment :math:`C.\CDATAS[y]` must be defined in the context.
 
 * Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
 
 .. math::
    \frac{
-     C.\CMEMS[0] = \memtype
+     C.\CMEMS[x] = \memtype
      \qquad
-     C.\CDATAS[x] = {\ok}
+     C.\CDATAS[y] = {\ok}
    }{
-     C \vdashinstr \MEMORYINIT~x : [\I32~\I32~\I32] \to []
+     C \vdashinstr \MEMORYINIT~x~y : [\I32~\I32~\I32] \to []
    }
 
 
@@ -2372,6 +2379,8 @@ Control Instructions
      \expanddt(C.\CFUNCS[x]) = \TFUNC~[t_1^\ast] \toF [t_2^\ast]
      \qquad
      C \vdashresulttypematch [t_2^\ast] \matchesresulttype C.\CRETURN
+     \qquad
+     C \vdashinstrtype [t_3^\ast~t_1^\ast] \to [t_4^\ast] \ok
    }{
      C \vdashinstr \RETURNCALL~x : [t_3^\ast~t_1^\ast] \to [t_4^\ast]
    }
@@ -2398,6 +2407,8 @@ Control Instructions
      \expanddt(C.\CTYPES[x]) = \TFUNC~[t_1^\ast] \toF [t_2^\ast]
      \qquad
      C \vdashresulttypematch [t_2^\ast] \matchesresulttype C.\CRETURN
+     \qquad
+     C \vdashinstrtype [t_3^\ast~t_1^\ast~(\REF~\NULL~x)] \to [t_4^\ast] \ok
    }{
      C \vdashinstr \CALLREF~x : [t_3^\ast~t_1^\ast~(\REF~\NULL~x)] \to [t_4^\ast]
    }
@@ -2436,6 +2447,8 @@ Control Instructions
      \expanddt(C.\CTYPES[y]) = \TFUNC~[t_1^\ast] \toF [t_2^\ast]
      \qquad
      C \vdashresulttypematch [t_2^\ast] \matchesresulttype C.\CRETURN
+     \qquad
+     C \vdashinstrtype [t_3^\ast~t_1^\ast~\I32] \to [t_4^\ast] \ok
    }{
      C \vdashinstr \RETURNCALLINDIRECT~x~y : [t_3^\ast~t_1^\ast~\I32] \to [t_4^\ast]
    }
@@ -2617,6 +2630,8 @@ Constant Expressions
 
   * either of the form :math:`t.\CONST~c`,
 
+  * or of the form :math:`\K{i}\X{nn}\K{.}\ibinop`, where :math:`\ibinop` is limited to :math:`\ADD`, :math:`\SUB`, or :math:`\MUL`.
+
   * or of the form :math:`\REFNULL`,
 
   * or of the form :math:`\REFI31`,
@@ -2648,14 +2663,13 @@ Constant Expressions
 
 .. math::
    \frac{
-   }{
      C \vdashinstrconst t.\CONST~c \const
    }
    \qquad
    \frac{
-     C.\CGLOBALS[x] = \CONST~t
+     \ibinop \in \{\ADD, \SUB, \MUL\}
    }{
-     C \vdashinstrconst \GLOBALGET~x \const
+     C \vdashinstrconst \K{i}\X{nn}\K{.}\ibinop \const
    }
 
 .. math::
@@ -2710,6 +2724,13 @@ Constant Expressions
    \frac{
    }{
      C \vdashinstrconst \EXTERNCONVERTANY \const
+   }
+
+.. math::
+   \frac{
+     C.\CGLOBALS[x] = \CONST~t
+   }{
+     C \vdashinstrconst \GLOBALGET~x \const
    }
 
 

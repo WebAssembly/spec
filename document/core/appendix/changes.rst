@@ -15,7 +15,7 @@ Release 2.0
 Sign extension instructions
 ...........................
 
-Added new numeric instructions for performing sign extension within integer representations [#proposal-signext]_.
+Added new numeric instructions for performing sign extension within integer representations. [#proposal-signext]_
 
 * New :ref:`numeric instructions <syntax-instr-numeric>`: :math:`\K{i}\X{nn}\K{.}\EXTEND\X{N}\K{\_s}`
 
@@ -25,7 +25,7 @@ Added new numeric instructions for performing sign extension within integer repr
 Non-trapping float-to-int conversions
 .....................................
 
-Added new conversion instructions that avoid trapping when converting a floating-point number to an integer [#proposal-cvtsat]_.
+Added new conversion instructions that avoid trapping when converting a floating-point number to an integer. [#proposal-cvtsat]_
 
 * New :ref:`numeric instructions <syntax-instr-numeric>`: :math:`\K{i}\X{nn}\K{.}\TRUNC\K{\_sat\_f}\X{mm}\K{\_}\sx`
 
@@ -35,7 +35,7 @@ Added new conversion instructions that avoid trapping when converting a floating
 Multiple values
 ...............
 
-Generalized the result type of blocks and functions to allow for multiple values; in addition, introduced the ability to have block parameters [#proposal-multivalue]_.
+Generalized the result type of blocks and functions to allow for multiple values; in addition, introduced the ability to have block parameters. [#proposal-multivalue]_
 
 * :ref:`Function types <syntax-functype>` allow more than one result
 
@@ -47,7 +47,7 @@ Generalized the result type of blocks and functions to allow for multiple values
 Reference types
 ...............
 
-Added |FUNCREF| and |EXTERNREF| as new value types and respective instructions [#proposal-reftype]_.
+Added |FUNCREF| and |EXTERNREF| as new value types and respective instructions. [#proposal-reftype]_
 
 * New :ref:`value types <syntax-valtype>`: :ref:`reference types <syntax-reftype>` |FUNCREF| and |EXTERNREF|
 
@@ -63,19 +63,19 @@ Added |FUNCREF| and |EXTERNREF| as new value types and respective instructions [
 Table instructions
 ..................
 
-Added instructions to directly access and modify tables [#proposal-reftype]_.
+Added instructions to directly access and modify tables. [#proposal-reftype]_
 
 * :ref:`Table types <syntax-tabletype>` allow any :ref:`reference type <syntax-reftype>` as element type
 
 * New :ref:`table instructions <syntax-instr-table>`: |TABLEGET|, |TABLESET|, |TABLESIZE|, |TABLEGROW|
 
 
-.. index:: table, instruction, table index, element segment
+.. index:: table, instruction, table index, element segment, import, export
 
 Multiple tables
 ...............
 
-Added the ability to use multiple tables per module [#proposal-reftype]_.
+Added the ability to use multiple tables per module. [#proposal-reftype]_
 
 * :ref:`Modules <syntax-module>` may :ref:`define <syntax-table>`, :ref:`import <syntax-import>`, and :ref:`export <syntax-export>` multiple tables
 
@@ -89,7 +89,7 @@ Added the ability to use multiple tables per module [#proposal-reftype]_.
 Bulk memory and table instructions
 ..................................
 
-Added instructions that modify ranges of memory or table entries [#proposal-reftype]_ [#proposal-bulk]_
+Added instructions that modify ranges of memory or table entries. [#proposal-reftype]_ [#proposal-bulk]_
 
 * New :ref:`memory instructions <syntax-instr-memory>`: |MEMORYFILL|, |MEMORYINIT|, |MEMORYCOPY|, |DATADROP|
 
@@ -240,14 +240,49 @@ Added tag definitions, imports, and exports, and instructions to throw and catch
 * New :ref:`tag section <binary-tagsec>` in binary format.
 
 
+.. index:: reference, reference type, heap type, field type, storage type, structure type, array type, composite type, sub type, recursive type
+.. _extension-gc:
+
+Garbage collection
+..................
+
+Added managed reference types. [#proposal-gc]_
+
+* New forms of :ref:`heap types <syntax-heaptype>`: |ANY|, |EQT|, |I31|, |STRUCT|, |ARRAY|, |NONE|, |NOFUNC|, |NOEXTERN|
+
+* New :ref:`reference type <syntax-reftype>` short-hands: |ANYREF|, |EQREF|, |I31REF|, |STRUCTREF|, |ARRAYREF|, |NULLREF|, |NULLFUNCREF|, |NULLEXTERNREF|
+
+* New forms of type definitions: :ref:`structure <syntax-structtype>` and :ref:`array types <syntax-arraytype>`, :ref:`sub types <syntax-subtype>`, and :ref:`recursive types <syntax-rectype>`
+
+* Enriched :ref:`subtyping <match>` based on explicitly declared :ref:`sub types <syntax-subtype>` and the new heap types
+
+* New generic :ref:`reference instructions <syntax-instr-ref>`: |REFEQ|, |REFTEST|, |REFCAST|, |BRONCAST|, |BRONCASTFAIL|
+
+* New :ref:`reference instructions <syntax-instr-ref>` for :ref:`unboxed scalars <syntax-i31>`: |REFI31|, :math:`\I31GET\K{\_}\sx`
+
+* New :ref:`reference instructions <syntax-instr-ref>` for :ref:`structure types <syntax-structtype>`: |STRUCTNEW|, |STRUCTNEWDEFAULT|, :math:`\STRUCTGET\K{\_}\sx^?`, |STRUCTSET|
+
+* New :ref:`reference instructions <syntax-instr-ref>` for :ref:`array types <syntax-structtype>`: |ARRAYNEW|, |ARRAYNEWDEFAULT|, |ARRAYNEWFIXED|, |ARRAYNEWDATA|, |ARRAYNEWELEM|, :math:`\ARRAYGET\K{\_}\sx^?`, |ARRAYSET|, |ARRAYLEN|, |ARRAYFILL|, |ARRAYCOPY|, |ARRAYINITDATA|, |ARRAYINITELEM|
+
+* New :ref:`reference instructions <syntax-instr-ref>` for converting :ref:`host types <syntax-externtype>`: |ANYCONVERTEXTERN|, |EXTERNCONVERTANY|
+
+* Extended set of :ref:`constant instructions <valid-const>` with |REFI31|, |STRUCTNEW|, |STRUCTNEWDEFAULT|, |ARRAYNEW|, |ARRAYNEWDEFAULT|, |ARRAYNEWFIXED|, |ANYCONVERTEXTERN|, |EXTERNCONVERTANY|
+
+
+.. [#proposal-extconst]
+   https://github.com/WebAssembly/extended-const/blob/main/proposals/extended-const/
+
 .. [#proposal-tailcall]
    https://github.com/WebAssembly/spec/tree/main/proposals/tail-call/
+
+.. [#proposal-multimem]
+   https://github.com/WebAssembly/multi-memory/blob/main/proposals/multi-memory/
 
 .. [#proposal-typedref]
    https://github.com/WebAssembly/spec/tree/main/proposals/function-references/
 
-.. [#proposal-gc]
-   https://github.com/WebAssembly/spec/tree/main/proposals/gc/
-
 .. [#proposal-exn]
    https://github.com/WebAssembly/spec/tree/main/proposals/exception-handling/
+
+.. [#proposal-gc]
+   https://github.com/WebAssembly/spec/tree/main/proposals/gc/
