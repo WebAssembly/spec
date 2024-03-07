@@ -2462,6 +2462,8 @@ Constant Expressions
 
   * either of the form :math:`t.\CONST~c`,
 
+  * or of the form :math:`\K{i}\X{nn}\K{.}\ibinop`, where :math:`\ibinop` is limited to :math:`\ADD`, :math:`\SUB`, or :math:`\MUL`.
+
   * or of the form :math:`\REFNULL`,
 
   * or of the form :math:`\REFI31`,
@@ -2493,14 +2495,13 @@ Constant Expressions
 
 .. math::
    \frac{
-   }{
      C \vdashinstrconst t.\CONST~c \const
    }
    \qquad
    \frac{
-     C.\CGLOBALS[x] = \CONST~t
+     \ibinop \in \{\ADD, \SUB, \MUL\}
    }{
-     C \vdashinstrconst \GLOBALGET~x \const
+     C \vdashinstrconst \K{i}\X{nn}\K{.}\ibinop \const
    }
 
 .. math::
@@ -2555,6 +2556,13 @@ Constant Expressions
    \frac{
    }{
      C \vdashinstrconst \EXTERNCONVERTANY \const
+   }
+
+.. math::
+   \frac{
+     C.\CGLOBALS[x] = \CONST~t
+   }{
+     C \vdashinstrconst \GLOBALGET~x \const
    }
 
 

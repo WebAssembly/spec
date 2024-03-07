@@ -943,6 +943,8 @@ let check_func_body (c : context) (f : func) =
 let is_const (c : context) (e : instr) =
   match e.it with
   | Const _ | VecConst _
+  | Binary (Value.I32 I32Op.(Add | Sub | Mul))
+  | Binary (Value.I64 I64Op.(Add | Sub | Mul))
   | RefNull _ | RefFunc _
   | RefI31 | StructNew _ | ArrayNew _ | ArrayNewFixed _ -> true
   | GlobalGet x -> let GlobalT (mut, _t) = global c x in mut = Cons
