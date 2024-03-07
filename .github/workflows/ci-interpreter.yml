@@ -3,11 +3,11 @@ name: CI for interpreter & tests
 on:
   push:
     branches: [ main ]
-    paths: [ interpreter/**, test/** ]
+    paths: [ .github/**, interpreter/**, test/** ]
 
   pull_request:
     branches: [ main ]
-    paths: [ interpreter/**, test/** ]
+    paths: [ .github/**, interpreter/**, test/** ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
