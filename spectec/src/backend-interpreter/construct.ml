@@ -668,8 +668,17 @@ let al_to_extension: value -> Pack.extension = function
   | CaseV ("U", []) -> Pack.ZX
   | v -> fail "extension" v
 
-let al_to_memop (f: value -> 'p) : value list -> (num_type, 'p) memop = function
-  | [ nt; p; NumV z; StrV str ] when z = Z.zero ->
+let al_to_memop (f: value -> 'p) : value list -> idx * (num_type, 'p) memop = function
+  | [ nt; p; StrV str ] when !version <= 2 ->
+    0l @@ no_region,
+    {
+      ty = al_to_num_type nt;
+      align = Record.find "ALIGN" str |> al_to_int;
+      offset = Record.find "OFFSET" str |> al_to_int32;
+      pack = f p;
+    }
+  | [ nt; p; idx; StrV str ] when !version >= 3 ->
+    al_to_idx idx,
     {
       ty = al_to_num_type nt;
       align = Record.find "ALIGN" str |> al_to_int;
@@ -682,11 +691,11 @@ let al_to_pack_size_extension: value -> Pack.pack_size * Pack.extension = functi
   | TupV [ p; ext ] -> al_to_pack_size p, al_to_extension ext
   | v -> fail "pack size, extension" v
 
-let al_to_loadop: value list -> loadop = al_to_opt al_to_pack_size_extension |> al_to_memop
+let al_to_loadop: value list -> idx * loadop = al_to_opt al_to_pack_size_extension |> al_to_memop
 
-let al_to_storeop: value list -> storeop = al_to_opt al_to_pack_size |> al_to_memop
+let al_to_storeop: value list -> idx * storeop = al_to_opt al_to_pack_size |> al_to_memop
 
-let al_to_vmemop (f: value -> 'p): value list -> (vec_type, 'p) memop = function
+let al_to_vmemop' (f: value -> 'p): value list -> (vec_type, 'p) memop = function
   | [ StrV str ] ->
     {
       ty = V128T;
@@ -701,6 +710,11 @@ let al_to_vmemop (f: value -> 'p): value list -> (vec_type, 'p) memop = function
       offset = Record.find "OFFSET" str |> al_to_int32;
       pack = f p;
     }
+  | v -> fail_list "vmemop" v
+
+let al_to_vmemop (f: value -> 'p): value list -> idx * (vec_type, 'p) memop = function
+  | vl when !version <= 2 -> 0l @@ no_region, al_to_vmemop' f vl
+  | idx :: vl when !version >= 3 -> al_to_idx idx, al_to_vmemop' f vl
   | v -> fail_list "vmemop" v
 
 let al_to_pack_shape = function
@@ -725,13 +739,14 @@ let al_to_vloadop': value -> Pack.pack_size * Pack.vec_extension = function
   | CaseV ("ZERO", [ pack_size ]) -> al_to_pack_size pack_size, Pack.ExtZero
   | v -> fail "vloadop" v
 
-let al_to_vloadop: value list -> vec_loadop = al_to_vmemop (al_to_opt al_to_vloadop')
+let al_to_vloadop: value list -> idx * vec_loadop = al_to_vmemop (al_to_opt al_to_vloadop')
 
 let al_to_vstoreop = al_to_vmemop (fun _ -> ())
 
-let al_to_vlaneop (vl: value list): vec_laneop =
+let al_to_vlaneop (vl: value list): idx * vec_laneop * int =
   let h, t = Util.Lib.List.split_last vl in
-  al_to_vmemop al_to_pack_size h, al_to_int t
+  let idx, op = al_to_vmemop al_to_pack_size h in
+  idx, op, al_to_int t
 
 
 let rec al_to_instr (v: value): Ast.instr = al_to_phrase al_to_instr' v
@@ -807,17 +822,19 @@ and al_to_instr': value -> Ast.instr' = function
   | CaseV ("RETURN_CALL_REF", [ OptV (Some idx) ]) -> ReturnCallRef (al_to_idx idx)
   | CaseV ("RETURN_CALL_INDIRECT", [ idx1; idx2 ]) ->
     ReturnCallIndirect (al_to_idx idx1, al_to_idx idx2)
-  | CaseV ("LOAD", loadop) -> Load (al_to_loadop loadop)
-  | CaseV ("STORE", storeop) -> Store (al_to_storeop storeop)
-  | CaseV ("VLOAD", vloadop) -> VecLoad (al_to_vloadop vloadop)
-  | CaseV ("VLOAD_LANE", vlaneop) -> VecLoadLane (al_to_vlaneop vlaneop)
-  | CaseV ("VSTORE", vstoreop) -> VecStore (al_to_vstoreop vstoreop)
-  | CaseV ("VSTORE_LANE", vlaneop) -> VecStoreLane (al_to_vlaneop vlaneop)
-  | CaseV ("MEMORY.SIZE", [ NumV z ]) when z = Z.zero -> MemorySize
-  | CaseV ("MEMORY.GROW", [ NumV z ]) when z = Z.zero -> MemoryGrow
-  | CaseV ("MEMORY.FILL", [ NumV z ]) when z = Z.zero -> MemoryFill
-  | CaseV ("MEMORY.COPY", [ NumV z1; NumV z2 ]) when z1 = Z.zero && z2 = Z.zero -> MemoryCopy
-  | CaseV ("MEMORY.INIT", [ NumV z; idx ]) when z = Z.zero -> MemoryInit (al_to_idx idx)
+  | CaseV ("LOAD", loadop) -> let idx, op = al_to_loadop loadop in Load (idx, op)
+  | CaseV ("STORE", storeop) -> let idx, op = al_to_storeop storeop in Store (idx, op)
+  | CaseV ("VLOAD", vloadop) -> let idx , op = al_to_vloadop vloadop in VecLoad (idx, op)
+  | CaseV ("VLOAD_LANE", vlaneop) ->
+    let idx, op, i = al_to_vlaneop vlaneop in VecLoadLane (idx, op, i)
+  | CaseV ("VSTORE", vstoreop) -> let idx, op = al_to_vstoreop vstoreop in VecStore (idx, op)
+  | CaseV ("VSTORE_LANE", vlaneop) ->
+    let idx, op, i = al_to_vlaneop vlaneop in VecStoreLane (idx, op, i)
+  | CaseV ("MEMORY.SIZE", [ idx ]) -> MemorySize (al_to_idx idx)
+  | CaseV ("MEMORY.GROW", [ idx ]) -> MemoryGrow (al_to_idx idx)
+  | CaseV ("MEMORY.FILL", [ idx ]) -> MemoryFill (al_to_idx idx)
+  | CaseV ("MEMORY.COPY", [ idx1; idx2 ]) -> MemoryCopy (al_to_idx idx1, al_to_idx idx2)
+  | CaseV ("MEMORY.INIT", [ idx1; idx2 ]) -> MemoryInit (al_to_idx idx1, al_to_idx idx2)
   | CaseV ("DATA.DROP", [ idx ]) -> DataDrop (al_to_idx idx)
   | CaseV ("REF.AS_NON_NULL", []) -> RefAsNonNull
   | CaseV ("REF.TEST", [ rt ]) -> RefTest (al_to_ref_type rt)
@@ -1034,7 +1051,7 @@ let al_of_byte byte = Char.code byte |> al_of_int
 let al_of_bytes bytes_ = String.to_seq bytes_ |> al_of_seq al_of_byte
 let al_of_name name = TextV (Utf8.encode name)
 let al_with_version vs f a = if (List.mem !version vs) then [ f a ] else []
-let al_of_memidx () = al_with_version [ 3 ] (fun v -> v) zero
+let al_of_memidx idx = al_with_version [ 3 ] (fun v -> v) (al_of_idx idx)
 
 (* Helper *)
 
@@ -1636,13 +1653,13 @@ let al_of_extension = function
   | Pack.SX -> nullary "S"
   | Pack.ZX -> nullary "U"
 
-let al_of_memop f memop =
+let al_of_memop f idx memop =
   let str =
     Record.empty
     |> Record.add "ALIGN" (al_of_int memop.align)
     |> Record.add "OFFSET" (al_of_int32 memop.offset)
   in
-  [ al_of_num_type memop.ty; f memop.pack ] @ al_of_memidx () @ [ StrV str ]
+  [ al_of_num_type memop.ty; f memop.pack ] @ al_of_memidx idx @ [ StrV str ]
 
 let al_of_pack_size_extension (p, s) = tupV [ al_of_pack_size p; al_of_extension s ]
 
@@ -1650,7 +1667,7 @@ let al_of_loadop = al_of_opt al_of_pack_size_extension |> al_of_memop
 
 let al_of_storeop = al_of_opt al_of_pack_size |> al_of_memop
 
-let al_of_vloadop vloadop =
+let al_of_vloadop idx vloadop =
 
   let str =
     Record.empty
@@ -1667,28 +1684,27 @@ let al_of_vloadop vloadop =
   ) |> Option.some |> optV
   | None -> OptV None in
 
-  [ vmemop ] @ al_of_memidx () @ [ StrV str ]
+  [ vmemop ] @ al_of_memidx idx @ [ StrV str ]
 
-let al_of_vstoreop vstoreop =
+let al_of_vstoreop idx vstoreop =
   let str =
     Record.empty
     |> Record.add "ALIGN" (al_of_int vstoreop.align)
     |> Record.add "OFFSET" (al_of_int32 vstoreop.offset)
   in
 
-  al_of_memidx () @ [ StrV str; ]
+  al_of_memidx idx @ [ StrV str; ]
 
-let al_of_vlaneop vlaneop =
-  let (vmemop, laneidx) = vlaneop in
-  let pack_size = vmemop.pack in
+let al_of_vlaneop idx vlaneop laneidx =
+  let pack_size = vlaneop.pack in
 
   let str =
     Record.empty
-    |> Record.add "ALIGN" (al_of_int vmemop.align)
-    |> Record.add "OFFSET" (al_of_int32 vmemop.offset)
+    |> Record.add "ALIGN" (al_of_int vlaneop.align)
+    |> Record.add "OFFSET" (al_of_int32 vlaneop.offset)
   in
 
-  [ al_of_pack_size pack_size; ] @ al_of_memidx () @ [ StrV str; al_of_int laneidx ]
+  [ al_of_pack_size pack_size; ] @ al_of_memidx idx @ [ StrV str; al_of_int laneidx ]
 
 (* Construct instruction *)
 
@@ -1768,17 +1784,17 @@ let rec al_of_instr instr =
   | ReturnCallRef idx -> CaseV ("RETURN_CALL_REF", [ optV (Some (al_of_idx idx)) ])
   | ReturnCallIndirect (idx1, idx2) ->
     CaseV ("RETURN_CALL_INDIRECT", [ al_of_idx idx1; al_of_idx idx2 ])
-  | Load loadop -> CaseV ("LOAD", al_of_loadop loadop)
-  | Store storeop -> CaseV ("STORE", al_of_storeop storeop)
-  | VecLoad vloadop -> CaseV ("VLOAD", al_of_vloadop vloadop)
-  | VecLoadLane vlaneop -> CaseV ("VLOAD_LANE", al_of_vlaneop vlaneop)
-  | VecStore vstoreop -> CaseV ("VSTORE", al_of_vstoreop vstoreop)
-  | VecStoreLane vlaneop -> CaseV ("VSTORE_LANE", al_of_vlaneop vlaneop)
-  | MemorySize -> CaseV ("MEMORY.SIZE", al_of_memidx ())
-  | MemoryGrow -> CaseV ("MEMORY.GROW", al_of_memidx ())
-  | MemoryFill -> CaseV ("MEMORY.FILL", al_of_memidx ())
-  | MemoryCopy -> CaseV ("MEMORY.COPY", al_of_memidx () @ al_of_memidx ())
-  | MemoryInit i32 -> CaseV ("MEMORY.INIT", (al_of_memidx ()) @ [ al_of_idx i32 ])
+  | Load (idx, loadop) -> CaseV ("LOAD", al_of_loadop idx loadop)
+  | Store (idx, storeop) -> CaseV ("STORE", al_of_storeop idx storeop)
+  | VecLoad (idx, vloadop) -> CaseV ("VLOAD", al_of_vloadop idx vloadop)
+  | VecLoadLane (idx, vlaneop, i) -> CaseV ("VLOAD_LANE", al_of_vlaneop idx vlaneop i)
+  | VecStore (idx, vstoreop) -> CaseV ("VSTORE", al_of_vstoreop idx vstoreop)
+  | VecStoreLane (idx, vlaneop, i) -> CaseV ("VSTORE_LANE", al_of_vlaneop idx vlaneop i)
+  | MemorySize idx -> CaseV ("MEMORY.SIZE", al_of_memidx idx)
+  | MemoryGrow idx -> CaseV ("MEMORY.GROW", al_of_memidx idx)
+  | MemoryFill idx -> CaseV ("MEMORY.FILL", al_of_memidx idx)
+  | MemoryCopy (idx1, idx2) -> CaseV ("MEMORY.COPY", al_of_memidx idx1 @ al_of_memidx idx2)
+  | MemoryInit (idx1, idx2) -> CaseV ("MEMORY.INIT", al_of_memidx idx1 @ [ al_of_idx idx2 ])
   | DataDrop idx -> CaseV ("DATA.DROP", [ al_of_idx idx ])
   | RefAsNonNull -> nullary "REF.AS_NON_NULL"
   | RefTest rt -> CaseV ("REF.TEST", [ al_of_ref_type rt ])
