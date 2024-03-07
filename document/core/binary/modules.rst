@@ -109,6 +109,9 @@ Id  Section
 13  :ref:`tag section <binary-tagsec>`
 ==  ===============================================
 
+.. note::
+   Section ids do not always correspond to the :ref:`order of sections <binary-module>` in the encoding of a module.
+
 
 .. index:: ! custom section
    pair: binary format; custom section
