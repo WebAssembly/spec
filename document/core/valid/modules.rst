@@ -713,6 +713,10 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
   * :math:`C'.\CFUNCS` is the same as :math:`C.\CFUNCS`,
 
+  * :math:`C'.\CTABLES` is the same as :math:`C.\CTABLES`,
+
+  * :math:`C'.\CMEMS` is the same as :math:`C.\CMEMS`,
+
   * :math:`C'.\CREFS` is the same as :math:`C.\CREFS`,
 
   * all other fields are empty.
