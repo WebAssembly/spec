@@ -141,6 +141,19 @@ Added vector type and instructions that manipulate multiple numeric values in pa
 Release 3.0
 ~~~~~~~~~~~
 
+.. index: instruction, expression, constant
+
+Extended Constant Expressions
+.............................
+
+Allowed basic numeric computations in constant expressions [#proposal-extconst]_.
+
+* Extended set of :ref:`constant instructions <valid-const>` with :math:`\K{i}\!N\!\K{.add}`, :math:`\K{i}\!N\!\K{.sub}`, and :math:`\K{i}\!N\!\K{.mul}`
+
+.. note::
+   The :ref:`garbage collection <extension-gc>` added further constant instructions.
+
+
 .. index: instruction, function, call
 
 Tail calls
@@ -176,6 +189,7 @@ Added more precise types for references [#proposal-typedref]_.
 
 
 .. index:: reference, reference type, heap type, field type, storage type, structure type, array type, composite type, sub type, recursive type
+.. _extension-gc:
 
 Garbage Collection
 ..................
@@ -220,6 +234,9 @@ Added managed reference types [#proposal-gc]_.
 
 .. [#proposal-vectype]
    https://github.com/WebAssembly/spec/tree/main/proposals/simd/
+
+.. [#proposal-extconst]
+   https://github.com/WebAssembly/extended-const/blob/main/proposals/extended-const/
 
 .. [#proposal-tailcall]
    https://github.com/WebAssembly/spec/tree/main/proposals/tail-call/
