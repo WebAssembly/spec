@@ -1197,7 +1197,9 @@ Parametric Instructions
    }
    \qquad
    \frac{
-     \vdash t \leq \vectype
+     C \vdashresulttype [t] \ok
+     \qquad
+     C \vdash t \leq \vectype
    }{
      C \vdashinstr \SELECT : [t~t~\I32] \to [t]
    }
@@ -2253,6 +2255,8 @@ Control Instructions
      \expanddt(C.\CFUNCS[x]) = \TFUNC~[t_1^\ast] \toF [t_2^\ast]
      \qquad
      C \vdashresulttypematch [t_2^\ast] \matchesresulttype C.\CRETURN
+     \qquad
+     C \vdashinstrtype [t_3^\ast~t_1^\ast] \to [t_4^\ast] \ok
    }{
      C \vdashinstr \RETURNCALL~x : [t_3^\ast~t_1^\ast] \to [t_4^\ast]
    }
@@ -2279,6 +2283,8 @@ Control Instructions
      \expanddt(C.\CTYPES[x]) = \TFUNC~[t_1^\ast] \toF [t_2^\ast]
      \qquad
      C \vdashresulttypematch [t_2^\ast] \matchesresulttype C.\CRETURN
+     \qquad
+     C \vdashinstrtype [t_3^\ast~t_1^\ast~(\REF~\NULL~x)] \to [t_4^\ast] \ok
    }{
      C \vdashinstr \CALLREF~x : [t_3^\ast~t_1^\ast~(\REF~\NULL~x)] \to [t_4^\ast]
    }
@@ -2317,6 +2323,8 @@ Control Instructions
      \expanddt(C.\CTYPES[y]) = \TFUNC~[t_1^\ast] \toF [t_2^\ast]
      \qquad
      C \vdashresulttypematch [t_2^\ast] \matchesresulttype C.\CRETURN
+     \qquad
+     C \vdashinstrtype [t_3^\ast~t_1^\ast~\I32] \to [t_4^\ast] \ok
    }{
      C \vdashinstr \RETURNCALLINDIRECT~x~y : [t_3^\ast~t_1^\ast~\I32] \to [t_4^\ast]
    }
