@@ -655,36 +655,37 @@ Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
      8 ~|~ 16 ~|~ 32 ~|~ 64 \\
    \production{instruction} & \instr &::=&
      \dots \\&&|&
-     \K{i}\X{nn}\K{.}\LOAD~\memarg ~|~
-     \K{f}\X{nn}\K{.}\LOAD~\memarg ~|~
-     \K{v128.}\LOAD~\memarg \\&&|&
-     \K{i}\X{nn}\K{.}\STORE~\memarg ~|~
-     \K{f}\X{nn}\K{.}\STORE~\memarg ~|~
-     \K{v128.}\STORE~\memarg \\&&|&
-     \K{i}\X{nn}\K{.}\LOAD\K{8\_}\sx~\memarg ~|~
-     \K{i}\X{nn}\K{.}\LOAD\K{16\_}\sx~\memarg ~|~
-     \K{i64.}\LOAD\K{32\_}\sx~\memarg \\&&|&
-     \K{i}\X{nn}\K{.}\STORE\K{8}~\memarg ~|~
-     \K{i}\X{nn}\K{.}\STORE\K{16}~\memarg ~|~
-     \K{i64.}\STORE\K{32}~\memarg \\&&|&
-     \K{v128.}\LOAD\K{8x8\_}\sx~\memarg ~|~
-     \K{v128.}\LOAD\K{16x4\_}\sx~\memarg ~|~
-     \K{v128.}\LOAD\K{32x2\_}\sx~\memarg \\&&|&
-     \K{v128.}\LOAD\K{32\_zero}~\memarg ~|~
-     \K{v128.}\LOAD\K{64\_zero}~\memarg \\&&|&
-     \K{v128.}\LOAD\X{ww}\K{\_splat}~\memarg \\&&|&
-     \K{v128.}\LOAD\X{ww}\K{\_lane}~\memarg~\laneidx ~|~
-     \K{v128.}\STORE\X{ww}\K{\_lane}~\memarg~\laneidx \\&&|&
-     \MEMORYSIZE \\&&|&
-     \MEMORYGROW \\&&|&
-     \MEMORYFILL \\&&|&
-     \MEMORYCOPY \\&&|&
-     \MEMORYINIT~\dataidx \\&&|&
+     \K{i}\X{nn}\K{.}\LOAD~\memidx~\memarg ~|~
+     \K{f}\X{nn}\K{.}\LOAD~\memidx~\memarg \\&&|&
+     \K{v128.}\LOAD~\memidx~\memarg \\&&|&
+     \K{i}\X{nn}\K{.}\STORE~\memidx~\memarg ~|~
+     \K{f}\X{nn}\K{.}\STORE~\memidx~\memarg \\&&|&
+     \K{v128.}\STORE~\memidx~\memarg \\&&|&
+     \K{i}\X{nn}\K{.}\LOAD\K{8\_}\sx~\memidx~\memarg ~|~
+     \K{i}\X{nn}\K{.}\LOAD\K{16\_}\sx~\memidx~\memarg ~|~
+     \K{i64.}\LOAD\K{32\_}\sx~\memidx~\memarg \\&&|&
+     \K{v128.}\LOAD\K{8x8\_}\sx~\memidx~\memarg ~|~
+     \K{v128.}\LOAD\K{16x4\_}\sx~\memidx~\memarg ~|~
+     \K{v128.}\LOAD\K{32x2\_}\sx~\memidx~\memarg \\&&|&
+     \K{v128.}\LOAD\K{32\_zero}~\memidx~\memarg ~|~
+     \K{v128.}\LOAD\K{64\_zero}~\memidx~\memarg \\&&|&
+     \K{v128.}\LOAD\X{ww}\K{\_splat}~\memidx~\memarg \\&&|&
+     \K{v128.}\LOAD\X{ww}\K{\_lane}~\memidx~\memarg~\laneidx ~|~
+     \K{i}\X{nn}\K{.}\STORE\K{8}~\memidx~\memarg ~|~
+     \K{i}\X{nn}\K{.}\STORE\K{16}~\memidx~\memarg ~|~
+     \K{i64.}\STORE\K{32}~\memidx~\memarg \\&&|&
+     \K{v128.}\STORE\X{ww}\K{\_lane}~\memidx~\memarg~\laneidx \\&&|&
+     \MEMORYSIZE~\memidx \\&&|&
+     \MEMORYGROW~\memidx \\&&|&
+     \MEMORYFILL~\memidx \\&&|&
+     \MEMORYCOPY~\memidx~\memidx \\&&|&
+     \MEMORYINIT~\memidx~\dataidx \\&&|&
      \DATADROP~\dataidx \\
    \end{array}
 
-Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`number types <syntax-numtype>`.
-They all take a *memory immediate* |memarg| that contains an address *offset* and the expected *alignment* (expressed as the exponent of a power of 2).
+Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`number types <syntax-numtype>` and `vector types <syntax-vectype>`.
+They all take a :ref:`memory index <syntax-memidx>` and a *memory immediate* |memarg| that contains an address *offset* and the expected *alignment* (expressed as the exponent of a power of 2).
+
 Integer loads and stores can optionally specify a *storage size* that is smaller than the :ref:`bit width <syntax-numtype>` of the respective value type.
 In the case of loads, a sign extension mode |sx| is then required to select appropriate behavior.
 
@@ -699,21 +700,14 @@ A :ref:`trap <trap>` results if any of the accessed memory bytes lies outside th
    Future versions of WebAssembly might provide memory instructions with 64 bit address ranges.
 
 The |MEMORYSIZE| instruction returns the current size of a memory.
-The |MEMORYGROW| instruction grows memory by a given delta and returns the previous size, or :math:`-1` if enough memory cannot be allocated.
+The |MEMORYGROW| instruction grows a memory by a given delta and returns the previous size, or :math:`-1` if enough memory cannot be allocated.
 Both instructions operate in units of :ref:`page size <page-size>`.
-
-The |MEMORYFILL| instruction sets all values in a region to a given byte.
-The |MEMORYCOPY| instruction copies data from a source memory region to a possibly overlapping destination region.
+The |MEMORYFILL| instruction sets all values in a region of a memory to a given byte.
+The |MEMORYCOPY| instruction copies data from a source memory region to a possibly overlapping destination region in another or the same memory; the first index denotes the destination.
 The |MEMORYINIT| instruction copies data from a :ref:`passive data segment <syntax-data>` into a memory.
 The |DATADROP| instruction prevents further use of a passive data segment. This instruction is intended to be used as an optimization hint. After a data segment is dropped its data can no longer be retrieved, so the memory used by this segment may be freed.
 
-.. note::
-   In the current version of WebAssembly,
-   all memory instructions implicitly operate on :ref:`memory <syntax-mem>` :ref:`index <syntax-memidx>` :math:`0`.
-   This restriction may be lifted in future versions.
-
-
-.. index:: ! control instruction, ! structured control, ! label, ! block, ! block type, ! branch, ! unwinding, stack type, label index, function index, type index, vector, trap, function, table, function type, value type, type index
+.. index:: ! control instruction, ! structured control, ! label, ! block, ! block type, ! branch, ! unwinding, result type, label index, function index, type index, vector, trap, function, table, function type, value type, type index
    pair: abstract syntax; instruction
    pair: abstract syntax; block type
    pair: block; type

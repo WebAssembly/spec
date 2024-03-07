@@ -227,68 +227,68 @@ rule token = parse
       | "memory.init" -> MEMORY_INIT
       | "data.drop" -> DATA_DROP
 
-      | "i32.load" -> LOAD (fun a o -> i32_load (opt a 2) o)
-      | "i64.load" -> LOAD (fun a o -> i64_load (opt a 3) o)
-      | "f32.load" -> LOAD (fun a o -> f32_load (opt a 2) o)
-      | "f64.load" -> LOAD (fun a o -> f64_load (opt a 3) o)
-      | "i32.store" -> STORE (fun a o -> i32_store (opt a 2) o)
-      | "i64.store" -> STORE (fun a o -> i64_store (opt a 3) o)
-      | "f32.store" -> STORE (fun a o -> f32_store (opt a 2) o)
-      | "f64.store" -> STORE (fun a o -> f64_store (opt a 3) o)
+      | "i32.load" -> LOAD (fun x a o -> i32_load x (opt a 2) o)
+      | "i64.load" -> LOAD (fun x a o -> i64_load x (opt a 3) o)
+      | "f32.load" -> LOAD (fun x a o -> f32_load x (opt a 2) o)
+      | "f64.load" -> LOAD (fun x a o -> f64_load x (opt a 3) o)
+      | "i32.store" -> STORE (fun x a o -> i32_store x (opt a 2) o)
+      | "i64.store" -> STORE (fun x a o -> i64_store x (opt a 3) o)
+      | "f32.store" -> STORE (fun x a o -> f32_store x (opt a 2) o)
+      | "f64.store" -> STORE (fun x a o -> f64_store x (opt a 3) o)
 
-      | "i32.load8_u" -> LOAD (fun a o -> i32_load8_u (opt a 0) o)
-      | "i32.load8_s" -> LOAD (fun a o -> i32_load8_s (opt a 0) o)
-      | "i32.load16_u" -> LOAD (fun a o -> i32_load16_u (opt a 1) o)
-      | "i32.load16_s" -> LOAD (fun a o -> i32_load16_s (opt a 1) o)
-      | "i64.load8_u" -> LOAD (fun a o -> i64_load8_u (opt a 0) o)
-      | "i64.load8_s" -> LOAD (fun a o -> i64_load8_s (opt a 0) o)
-      | "i64.load16_u" -> LOAD (fun a o -> i64_load16_u (opt a 1) o)
-      | "i64.load16_s" -> LOAD (fun a o -> i64_load16_s (opt a 1) o)
-      | "i64.load32_u" -> LOAD (fun a o -> i64_load32_u (opt a 2) o)
-      | "i64.load32_s" -> LOAD (fun a o -> i64_load32_s (opt a 2) o)
+      | "i32.load8_u" -> LOAD (fun x a o -> i32_load8_u x (opt a 0) o)
+      | "i32.load8_s" -> LOAD (fun x a o -> i32_load8_s x (opt a 0) o)
+      | "i32.load16_u" -> LOAD (fun x a o -> i32_load16_u x (opt a 1) o)
+      | "i32.load16_s" -> LOAD (fun x a o -> i32_load16_s x (opt a 1) o)
+      | "i64.load8_u" -> LOAD (fun x a o -> i64_load8_u x (opt a 0) o)
+      | "i64.load8_s" -> LOAD (fun x a o -> i64_load8_s x (opt a 0) o)
+      | "i64.load16_u" -> LOAD (fun x a o -> i64_load16_u x (opt a 1) o)
+      | "i64.load16_s" -> LOAD (fun x a o -> i64_load16_s x (opt a 1) o)
+      | "i64.load32_u" -> LOAD (fun x a o -> i64_load32_u x (opt a 2) o)
+      | "i64.load32_s" -> LOAD (fun x a o -> i64_load32_s x (opt a 2) o)
 
-      | "i32.store8" -> LOAD (fun a o -> i32_store8 (opt a 0) o)
-      | "i32.store16" -> LOAD (fun a o -> i32_store16 (opt a 1) o)
-      | "i64.store8" -> LOAD (fun a o -> i64_store8 (opt a 0) o)
-      | "i64.store16" -> LOAD (fun a o -> i64_store16 (opt a 1) o)
-      | "i64.store32" -> LOAD (fun a o -> i64_store32 (opt a 2) o)
+      | "i32.store8" -> LOAD (fun x a o -> i32_store8 x (opt a 0) o)
+      | "i32.store16" -> LOAD (fun x a o -> i32_store16 x (opt a 1) o)
+      | "i64.store8" -> LOAD (fun x a o -> i64_store8 x (opt a 0) o)
+      | "i64.store16" -> LOAD (fun x a o -> i64_store16 x (opt a 1) o)
+      | "i64.store32" -> LOAD (fun x a o -> i64_store32 x (opt a 2) o)
 
-      | "v128.load" -> VEC_LOAD (fun a o -> v128_load (opt a 4) o)
-      | "v128.store" -> VEC_STORE (fun a o -> v128_store (opt a 4) o)
-      | "v128.load8x8_u" -> VEC_LOAD (fun a o -> v128_load8x8_u (opt a 3) o)
-      | "v128.load8x8_s" -> VEC_LOAD (fun a o -> v128_load8x8_s (opt a 3) o)
-      | "v128.load16x4_u" -> VEC_LOAD (fun a o -> v128_load16x4_u (opt a 3) o)
-      | "v128.load16x4_s" -> VEC_LOAD (fun a o -> v128_load16x4_s (opt a 3) o)
-      | "v128.load32x2_u" -> VEC_LOAD (fun a o -> v128_load32x2_u (opt a 3) o)
-      | "v128.load32x2_s" -> VEC_LOAD (fun a o -> v128_load32x2_s (opt a 3) o)
+      | "v128.load" -> VEC_LOAD (fun x a o -> v128_load x (opt a 4) o)
+      | "v128.store" -> VEC_STORE (fun x a o -> v128_store x (opt a 4) o)
+      | "v128.load8x8_u" -> VEC_LOAD (fun x a o -> v128_load8x8_u x (opt a 3) o)
+      | "v128.load8x8_s" -> VEC_LOAD (fun x a o -> v128_load8x8_s x (opt a 3) o)
+      | "v128.load16x4_u" -> VEC_LOAD (fun x a o -> v128_load16x4_u x (opt a 3) o)
+      | "v128.load16x4_s" -> VEC_LOAD (fun x a o -> v128_load16x4_s x (opt a 3) o)
+      | "v128.load32x2_u" -> VEC_LOAD (fun x a o -> v128_load32x2_u x (opt a 3) o)
+      | "v128.load32x2_s" -> VEC_LOAD (fun x a o -> v128_load32x2_s x (opt a 3) o)
       | "v128.load8_splat" ->
-        VEC_LOAD (fun a o -> v128_load8_splat (opt a 0) o)
+        VEC_LOAD (fun x a o -> v128_load8_splat x (opt a 0) o)
       | "v128.load16_splat" ->
-        VEC_LOAD (fun a o -> v128_load16_splat (opt a 1) o)
+        VEC_LOAD (fun x a o -> v128_load16_splat x (opt a 1) o)
       | "v128.load32_splat" ->
-        VEC_LOAD (fun a o -> v128_load32_splat (opt a 2) o)
+        VEC_LOAD (fun x a o -> v128_load32_splat x (opt a 2) o)
       | "v128.load64_splat" ->
-        VEC_LOAD (fun a o -> v128_load64_splat (opt a 3) o)
+        VEC_LOAD (fun x a o -> v128_load64_splat x (opt a 3) o)
       | "v128.load32_zero" ->
-        VEC_LOAD (fun a o -> v128_load32_zero (opt a 2) o)
+        VEC_LOAD (fun x a o -> v128_load32_zero x (opt a 2) o)
       | "v128.load64_zero" ->
-        VEC_LOAD (fun a o -> v128_load64_zero (opt a 3) o)
+        VEC_LOAD (fun x a o -> v128_load64_zero x (opt a 3) o)
       | "v128.load8_lane" ->
-        VEC_LOAD_LANE (fun a o i -> v128_load8_lane (opt a 0) o i)
+        VEC_LOAD_LANE (fun x a o i -> v128_load8_lane x (opt a 0) o i)
       | "v128.load16_lane" ->
-        VEC_LOAD_LANE (fun a o i -> v128_load16_lane (opt a 1) o i)
+        VEC_LOAD_LANE (fun x a o i -> v128_load16_lane x (opt a 1) o i)
       | "v128.load32_lane" ->
-        VEC_LOAD_LANE (fun a o i -> v128_load32_lane (opt a 2) o i)
+        VEC_LOAD_LANE (fun x a o i -> v128_load32_lane x (opt a 2) o i)
       | "v128.load64_lane" ->
-        VEC_LOAD_LANE (fun a o i -> v128_load64_lane (opt a 3) o i)
+        VEC_LOAD_LANE (fun x a o i -> v128_load64_lane x (opt a 3) o i)
       | "v128.store8_lane" ->
-        VEC_STORE_LANE (fun a o i -> v128_store8_lane (opt a 0) o i)
+        VEC_STORE_LANE (fun x a o i -> v128_store8_lane x (opt a 0) o i)
       | "v128.store16_lane" ->
-        VEC_STORE_LANE (fun a o i -> v128_store16_lane (opt a 1) o i)
+        VEC_STORE_LANE (fun x a o i -> v128_store16_lane x (opt a 1) o i)
       | "v128.store32_lane" ->
-        VEC_STORE_LANE (fun a o i -> v128_store32_lane (opt a 2) o i)
+        VEC_STORE_LANE (fun x a o i -> v128_store32_lane x (opt a 2) o i)
       | "v128.store64_lane" ->
-        VEC_STORE_LANE (fun a o i -> v128_store64_lane (opt a 3) o i)
+        VEC_STORE_LANE (fun x a o i -> v128_store64_lane x (opt a 3) o i)
 
       | "i32.const" ->
         CONST (fun s ->

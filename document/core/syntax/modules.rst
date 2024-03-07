@@ -212,11 +212,6 @@ Memories are referenced through :ref:`memory indices <syntax-memidx>`,
 starting with the smallest index not referencing a memory :ref:`import <syntax-import>`.
 Most constructs implicitly reference memory index :math:`0`.
 
-.. note::
-   In the current version of WebAssembly, at most one memory may be defined or imported in a single module,
-   and *all* constructs implicitly reference this memory :math:`0`.
-   This restriction may be lifted in future versions.
-
 
 .. index:: ! global, global index, global type, mutability, expression, constant, value, import
    pair: abstract syntax; global

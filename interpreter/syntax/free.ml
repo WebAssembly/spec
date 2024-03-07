@@ -55,7 +55,6 @@ let labels s = {empty with labels = s}
 
 let idx' x' = Set.singleton x'
 let idx x = Set.singleton x.it
-let zero = Set.singleton 0l
 let shift s = Set.map (Int32.add (-1l)) (Set.remove 0l s)
 
 let (++) = union
@@ -170,17 +169,18 @@ let rec instr (e : instr) =
   | TableCopy (x, y) -> tables (idx x) ++ tables (idx y)
   | TableInit (x, y) -> tables (idx x) ++ elems (idx y)
   | ElemDrop x -> elems (idx x)
-  | Load _ | Store _
-  | VecLoad _ | VecStore _ | VecLoadLane _ | VecStoreLane _
-  | MemorySize | MemoryGrow | MemoryCopy | MemoryFill ->
-    memories zero
+  | Load (x, _) | Store (x, _) | VecLoad (x, _) | VecStore (x, _)
+  | VecLoadLane (x, _, _) | VecStoreLane (x, _, _)
+  | MemorySize x | MemoryGrow x | MemoryFill x ->
+    memories (idx x)
+  | MemoryCopy (x, y) -> memories (idx x) ++ memories (idx y)
+  | MemoryInit (x, y) -> memories (idx x) ++ datas (idx y)
+  | DataDrop x -> datas (idx x)
   | VecConst _ | VecTest _ | VecUnary _ | VecBinary _ | VecCompare _
   | VecConvert _ | VecShift _ | VecBitmask _
   | VecTestBits _ | VecUnaryBits _ | VecBinaryBits _ | VecTernaryBits _
   | VecSplat _ | VecExtract _ | VecReplace _ ->
-    memories zero
-  | MemoryInit x -> memories zero ++ datas (idx x)
-  | DataDrop x -> datas (idx x)
+    empty
 
 and block (es : instr list) =
   let free = list instr es in {free with labels = shift free.labels}

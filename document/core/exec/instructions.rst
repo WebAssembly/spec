@@ -3044,14 +3044,14 @@ Memory Instructions
 .. _exec-load:
 .. _exec-loadn:
 
-:math:`t\K{.}\LOAD~\memarg` and :math:`t\K{.}\LOAD{N}\K{\_}\sx~\memarg`
-.......................................................................
+:math:`t\K{.}\LOAD~x~\memarg` and :math:`t\K{.}\LOAD{N}\K{\_}\sx~x~\memarg`
+...........................................................................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-loadn>`, :math:`F.\AMODULE.\MIMEMS[0]` exists.
+2. Assert: due to :ref:`validation <valid-loadn>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
 
-3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[0]`.
+3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[x]`.
 
 4. Assert: due to :ref:`validation <valid-loadn>`, :math:`S.\SMEMS[a]` exists.
 
@@ -3089,28 +3089,28 @@ Memory Instructions
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(t.\LOAD~\memarg) &\stepto& S; F; (t.\CONST~c)
+   S; F; (\I32.\CONST~i)~(t.\LOAD~x~\memarg) &\stepto& S; F; (t.\CONST~c)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + |t|/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-     \wedge & \bytes_t(c) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice |t|/8]) \\[1ex]
+     \wedge & \X{ea} + |t|/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA| \\
+     \wedge & \bytes_t(c) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA[\X{ea} \slice |t|/8]) \\[1ex]
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(t.\LOAD{N}\K{\_}\sx~\memarg) &\stepto&
+   S; F; (\I32.\CONST~i)~(t.\LOAD{N}\K{\_}\sx~x~\memarg) &\stepto&
      S; F; (t.\CONST~\extend^{\sx}_{N,|t|}(n))
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-     \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8]) \\[1ex]
+     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA| \\
+     \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA[\X{ea} \slice N/8]) \\[1ex]
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(t.\LOAD({N}\K{\_}\sx)^?~\memarg) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(t.\LOAD({N}\K{\_}\sx)^?~x~\memarg) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -3119,14 +3119,14 @@ Memory Instructions
 
 .. _exec-load-extend:
 
-:math:`\V128\K{.}\LOAD{M}\K{x}N\_\sx~\memarg`
-.............................................
+:math:`\V128\K{.}\LOAD{M}\K{x}N\_\sx~x~\memarg`
+...............................................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-load-extend>`, :math:`F.\AMODULE.\MIMEMS[0]` exists.
+2. Assert: due to :ref:`validation <valid-load-extend>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
 
-3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[0]`.
+3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[x]`.
 
 4. Assert: due to :ref:`validation <valid-load-extend>`, :math:`S.\SMEMS[a]` exists.
 
@@ -3158,20 +3158,20 @@ Memory Instructions
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\V128.\LOAD{M}\K{x}N\_\sx~\memarg) &\stepto&
+   S; F; (\I32.\CONST~i)~(\V128.\LOAD{M}\K{x}N\_\sx~x~\memarg) &\stepto&
      S; F; (\V128.\CONST~c)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + M \cdot N / 8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-     \wedge & \bytes_{\iM}(m_k) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} + k \cdot M/8 \slice M/8] \\
+     \wedge & \X{ea} + M \cdot N / 8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA| \\
+     \wedge & \bytes_{\iM}(m_k) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA[\X{ea} + k \cdot M/8 \slice M/8]) \\
      \wedge & W = M \cdot 2 \\
      \wedge & c = \lanes^{-1}_{\K{i}W\K{x}N}(\extend^{\sx}_{M,W}(m_0) \dots \extend^{\sx}_{M,W}(m_{N-1})))
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\V128.\LOAD{M}\K{x}N\K{\_}\sx~\memarg) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(\V128.\LOAD{M}\K{x}N\K{\_}\sx~x~\memarg) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -3180,14 +3180,14 @@ Memory Instructions
 
 .. _exec-load-splat:
 
-:math:`\V128\K{.}\LOAD{N}\K{\_splat}~\memarg`
-.............................................
+:math:`\V128\K{.}\LOAD{N}\K{\_splat}~x~\memarg`
+...............................................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-load-extend>`, :math:`F.\AMODULE.\MIMEMS[0]` exists.
+2. Assert: due to :ref:`validation <valid-load-extend>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
 
-3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[0]`.
+3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[x]`.
 
 4. Assert: due to :ref:`validation <valid-load-extend>`, :math:`S.\SMEMS[a]` exists.
 
@@ -3217,18 +3217,18 @@ Memory Instructions
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\V128\K{.}\LOAD{N}\K{\_splat}~\memarg) &\stepto& S; F; (\V128.\CONST~c)
+   S; F; (\I32.\CONST~i)~(\V128\K{.}\LOAD{N}\K{\_splat}~x~\memarg) &\stepto& S; F; (\V128.\CONST~c)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-     \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8] \\
+     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA| \\
+     \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA[\X{ea} \slice N/8] \\
      \wedge & c = \lanes^{-1}_{\IN\K{x}L}(n^L))
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\V128.\LOAD{N}\K{\_splat}~\memarg) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(\V128.\LOAD{N}\K{\_splat}~x~\memarg) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -3237,14 +3237,14 @@ Memory Instructions
 
 .. _exec-load-zero:
 
-:math:`\V128\K{.}\LOAD{N}\K{\_zero}~\memarg`
-.............................................
+:math:`\V128\K{.}\LOAD{N}\K{\_zero}~x~\memarg`
+..............................................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-load-extend>`, :math:`F.\AMODULE.\MIMEMS[0]` exists.
+2. Assert: due to :ref:`validation <valid-load-extend>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
 
-3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[0]`.
+3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[x]`.
 
 4. Assert: due to :ref:`validation <valid-load-extend>`, :math:`S.\SMEMS[a]` exists.
 
@@ -3272,18 +3272,18 @@ Memory Instructions
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\V128\K{.}\LOAD{N}\K{\_zero}~\memarg) &\stepto& S; F; (\V128.\CONST~c)
+   S; F; (\I32.\CONST~i)~(\V128\K{.}\LOAD{N}\K{\_zero}~x~\memarg) &\stepto& S; F; (\V128.\CONST~c)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-     \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8] \\
-     \wedge & c = \extendu_{N,128}(n))
+     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA| \\
+     \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA[\X{ea} \slice N/8]) \\
+     \wedge & c = \extendu_{N,128}(n)
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\V128.\LOAD{N}\K{\_zero}~\memarg) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(\V128.\LOAD{N}\K{\_zero}~x~\memarg) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -3292,14 +3292,14 @@ Memory Instructions
 
 .. _exec-load-lane:
 
-:math:`\V128\K{.}\LOAD{N}\K{\_lane}~\memarg~x`
-.....................................................
+:math:`\V128\K{.}\LOAD{N}\K{\_lane}~x~\memarg~y`
+................................................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-load-extend>`, :math:`F.\AMODULE.\MIMEMS[0]` exists.
+2. Assert: due to :ref:`validation <valid-load-extend>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
 
-3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[0]`.
+3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[x]`.
 
 4. Assert: due to :ref:`validation <valid-load-extend>`, :math:`S.\SMEMS[a]` exists.
 
@@ -3327,7 +3327,7 @@ Memory Instructions
 
 15. Let :math:`j^\ast` be the result of computing :math:`\lanes_{\IN\K{x}L}(v)`.
 
-16. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\IN\K{x}L}(j^\ast \with [x] = r)`.
+16. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\IN\K{x}L}(j^\ast \with [y] = r)`.
 
 17. Push the value :math:`\V128.\CONST~c` to the stack.
 
@@ -3335,19 +3335,19 @@ Memory Instructions
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\V128.\CONST~v)~(\V128\K{.}\LOAD{N}\K{\_lane}~\memarg~x) &\stepto& S; F; (\V128.\CONST~c)
+   S; F; (\I32.\CONST~i)~(\V128.\CONST~v)~(\V128\K{.}\LOAD{N}\K{\_lane}~x~\memarg~y) &\stepto& S; F; (\V128.\CONST~c)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-     \wedge & \bytes_{\iN}(r) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8] \\
+     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA| \\
+     \wedge & \bytes_{\iN}(r) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA[\X{ea} \slice N/8]) \\
      \wedge & L = 128/N \\
-     \wedge & c = \lanes^{-1}_{\IN\K{x}L}(\lanes_{\IN\K{x}L}(v) \with [x] = r))
+     \wedge & c = \lanes^{-1}_{\IN\K{x}L}(\lanes_{\IN\K{x}L}(v) \with [y] = r))
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\V128.\CONST~v)~(\V128.\LOAD{N}\K{\_lane}~\memarg~x) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(\V128.\CONST~v)~(\V128.\LOAD{N}\K{\_lane}~x~\memarg~y) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -3357,14 +3357,14 @@ Memory Instructions
 .. _exec-store:
 .. _exec-storen:
 
-:math:`t\K{.}\STORE~\memarg` and :math:`t\K{.}\STORE{N}~\memarg`
-................................................................
+:math:`t\K{.}\STORE~x~\memarg` and :math:`t\K{.}\STORE{N}~x~\memarg`
+....................................................................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-storen>`, :math:`F.\AMODULE.\MIMEMS[0]` exists.
+2. Assert: due to :ref:`validation <valid-storen>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
 
-3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[0]`.
+3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[x]`.
 
 4. Assert: due to :ref:`validation <valid-storen>`, :math:`S.\SMEMS[a]` exists.
 
@@ -3404,27 +3404,27 @@ Memory Instructions
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(t.\CONST~c)~(t.\STORE~\memarg) &\stepto& S'; F; \epsilon
+   S; F; (\I32.\CONST~i)~(t.\CONST~c)~(t.\STORE~x~\memarg) &\stepto& S'; F; \epsilon
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + |t|/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice |t|/8] = \bytes_t(c)) \\[1ex]
+     \wedge & \X{ea} + |t|/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA| \\
+     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA[\X{ea} \slice |t|/8] = \bytes_t(c)) \\[1ex]
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(t.\CONST~c)~(t.\STORE{N}~\memarg) &\stepto& S'; F; \epsilon
+   S; F; (\I32.\CONST~i)~(t.\CONST~c)~(t.\STORE{N}~x~\memarg) &\stepto& S'; F; \epsilon
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8] = \bytes_{\iN}(\wrap_{|t|,N}(c))) \\[1ex]
+     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA| \\
+     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA[\X{ea} \slice N/8] = \bytes_{\iN}(\wrap_{|t|,N}(c)) \\[1ex]
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(t.\CONST~c)~(t.\STORE{N}^?~\memarg) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(t.\CONST~c)~(t.\STORE{N}^?~x~\memarg) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -3433,14 +3433,14 @@ Memory Instructions
 
 .. _exec-store-lane:
 
-:math:`\V128\K{.}\STORE{N}\K{\_lane}~\memarg~x`
-......................................................
+:math:`\V128\K{.}\STORE{N}\K{\_lane}~x~\memarg~y`
+.................................................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-storen>`, :math:`F.\AMODULE.\MIMEMS[0]` exists.
+2. Assert: due to :ref:`validation <valid-storen>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
 
-3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[0]`.
+3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[x]`.
 
 4. Assert: due to :ref:`validation <valid-storen>`, :math:`S.\SMEMS[a]` exists.
 
@@ -3464,7 +3464,7 @@ Memory Instructions
 
 13. Let :math:`j^\ast` be the result of computing :math:`\lanes_{\IN\K{x}L}(c)`.
 
-14. Let :math:`b^\ast` be the result of computing :math:`\bytes_{\iN}(j^\ast[x])`.
+14. Let :math:`b^\ast` be the result of computing :math:`\bytes_{\iN}(j^\ast[y])`.
 
 15. Replace the bytes :math:`\X{mem}.\MIDATA[\X{ea} \slice N/8]` with :math:`b^\ast`.
 
@@ -3472,18 +3472,18 @@ Memory Instructions
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\V128.\CONST~c)~(\V128.\STORE{N}\K{\_lane}~\memarg~x) &\stepto& S'; F; \epsilon
+   S; F; (\I32.\CONST~i)~(\V128.\CONST~c)~(\V128.\STORE{N}\K{\_lane}~x~\memarg~y) &\stepto& S'; F; \epsilon
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + N \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
+     \wedge & \X{ea} + N \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA| \\
      \wedge & L = 128/N \\
-     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8] = \bytes_{\iN}(\lanes_{\IN\K{x}L}(c)[x]))
+     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA[\X{ea} \slice N/8] = \bytes_{\iN}(\lanes_{\IN\K{x}L}(c)[y]))
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\V128.\CONST~c)~(\V128.\STORE{N}\K{\_lane}~\memarg~x) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(\V128.\CONST~c)~(\V128.\STORE{N}\K{\_lane}~x~\memarg~y) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -3492,14 +3492,14 @@ Memory Instructions
 
 .. _exec-memory.size:
 
-:math:`\MEMORYSIZE`
-...................
+:math:`\MEMORYSIZE~x`
+.....................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-memory.size>`, :math:`F.\AMODULE.\MIMEMS[0]` exists.
+2. Assert: due to :ref:`validation <valid-memory.size>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
 
-3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[0]`.
+3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[x]`.
 
 4. Assert: due to :ref:`validation <valid-memory.size>`, :math:`S.\SMEMS[a]` exists.
 
@@ -3512,23 +3512,23 @@ Memory Instructions
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; \MEMORYSIZE &\stepto& S; F; (\I32.\CONST~\X{sz})
+   S; F; (\MEMORYSIZE~x) &\stepto& S; F; (\I32.\CONST~\X{sz})
    \end{array}
    \\ \qquad
-     (\iff |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| = \X{sz}\cdot64\,\F{Ki}) \\
+     (\iff |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA| = \X{sz}\cdot64\,\F{Ki}) \\
    \end{array}
 
 
 .. _exec-memory.grow:
 
-:math:`\MEMORYGROW`
-...................
+:math:`\MEMORYGROW~x`
+.....................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-memory.grow>`, :math:`F.\AMODULE.\MIMEMS[0]` exists.
+2. Assert: due to :ref:`validation <valid-memory.grow>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
 
-3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[0]`.
+3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[x]`.
 
 4. Assert: due to :ref:`validation <valid-memory.grow>`, :math:`S.\SMEMS[a]` exists.
 
@@ -3560,17 +3560,17 @@ Memory Instructions
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~n)~\MEMORYGROW &\stepto& S'; F; (\I32.\CONST~\X{sz})
+   S; F; (\I32.\CONST~n)~(\MEMORYGROW~x) &\stepto& S'; F; (\I32.\CONST~\X{sz})
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & F.\AMODULE.\MIMEMS[0] = a \\
+     (\iff & F.\AMODULE.\MIMEMS[x] = a \\
      \wedge & \X{sz} = |S.\SMEMS[a].\MIDATA|/64\,\F{Ki} \\
      \wedge & S' = S \with \SMEMS[a] = \growmem(S.\SMEMS[a], n)) \\[1ex]
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~n)~\MEMORYGROW &\stepto& S; F; (\I32.\CONST~\signed_{32}^{-1}(-1))
+   S; F; (\I32.\CONST~n)~(\MEMORYGROW~x) &\stepto& S; F; (\I32.\CONST~\signed_{32}^{-1}(-1))
    \end{array}
    \end{array}
 
@@ -3585,14 +3585,14 @@ Memory Instructions
 
 .. _exec-memory.fill:
 
-:math:`\MEMORYFILL`
-...................
+:math:`\MEMORYFILL~x`
+.....................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-memory.fill>`, :math:`F.\AMODULE.\MIMEMS[0]` exists.
+2. Assert: due to :ref:`validation <valid-memory.fill>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
 
-3. Let :math:`\X{ma}` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[0]`.
+3. Let :math:`\X{ma}` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[x]`.
 
 4. Assert: due to :ref:`validation <valid-memory.fill>`, :math:`S.\SMEMS[\X{ma}]` exists.
 
@@ -3632,27 +3632,27 @@ Memory Instructions
 
 20. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
 
-21. Execute the instruction :math:`\MEMORYFILL`.
+21. Execute the instruction :math:`\MEMORYFILL~x`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{l}
-   S; F; (\I32.\CONST~d)~\val~(\I32.\CONST~n)~\MEMORYFILL
+   S; F; (\I32.\CONST~d)~\val~(\I32.\CONST~n)~\MEMORYFILL~x
      \quad\stepto\quad S; F; \TRAP
      \\ \qquad
-     (\iff d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA|)
+     (\iff d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA|)
    \\[1ex]
-   S; F; (\I32.\CONST~d)~\val~(\I32.\CONST~0)~\MEMORYFILL
+   S; F; (\I32.\CONST~d)~\val~(\I32.\CONST~0)~\MEMORYFILL~x
      \quad\stepto\quad S; F; \epsilon
      \\ \qquad
      (\otherwise)
    \\[1ex]
-   S; F; (\I32.\CONST~d)~\val~(\I32.\CONST~n+1)~\MEMORYFILL
+   S; F; (\I32.\CONST~d)~\val~(\I32.\CONST~n+1)~\MEMORYFILL~x
      \quad\stepto
      \\ \qquad S; F;
        \begin{array}[t]{@{}l@{}}
-       (\I32.\CONST~d)~\val~(\I32\K{.}\STORE\K{8}~\{ \OFFSET~0, \ALIGN~0 \}) \\
-       (\I32.\CONST~d+1)~\val~(\I32.\CONST~n)~\MEMORYFILL \\
+       (\I32.\CONST~d)~\val~(\I32\K{.}\STORE\K{8}~x~\{ \OFFSET~0, \ALIGN~0 \}) \\
+       (\I32.\CONST~d+1)~\val~(\I32.\CONST~n)~\MEMORYFILL~x \\
        \end{array}
      \\ \qquad
      (\otherwise) \\
@@ -3661,48 +3661,56 @@ Memory Instructions
 
 .. _exec-memory.copy:
 
-:math:`\MEMORYCOPY`
-...................
+:math:`\MEMORYCOPY~x~y`
+.......................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-memory.copy>`, :math:`F.\AMODULE.\MIMEMS[0]` exists.
+2. Assert: due to :ref:`validation <valid-memory.copy>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
 
-3. Let :math:`\X{ma}` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[0]`.
+3. Assert: due to :ref:`validation <valid-memory.copy>`, :math:`F.\AMODULE.\MIMEMS[y]` exists.
 
-4. Assert: due to :ref:`validation <valid-memory.copy>`, :math:`S.\SMEMS[\X{ma}]` exists.
+4. Let :math:`\X{da}` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[x]`.
 
-5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[\X{ma}]`.
+5. Let :math:`\X{sa}` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[y]`.
 
-6. Assert: due to :ref:`validation <valid-memory.copy>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+6. Assert: due to :ref:`validation <valid-memory.copy>`, :math:`S.\SMEMS[\X{da}]` exists.
 
-7. Pop the value :math:`\I32.\CONST~n` from the stack.
+7. Assert: due to :ref:`validation <valid-memory.copy>`, :math:`S.\SMEMS[\X{sa}]` exists.
 
-8. Assert: due to :ref:`validation <valid-memory.copy>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+8. Let :math:`\X{mem}_d` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[\X{da}]`.
 
-9. Pop the value :math:`\I32.\CONST~s` from the stack.
+9. Let :math:`\X{mem}_s` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[\X{sa}]`.
 
 10. Assert: due to :ref:`validation <valid-memory.copy>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
-11. Pop the value :math:`\I32.\CONST~d` from the stack.
+11. Pop the value :math:`\I32.\CONST~n` from the stack.
 
-12. If :math:`s + n` is larger than the length of :math:`\X{mem}.\MIDATA` or :math:`d + n` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
+12. Assert: due to :ref:`validation <valid-memory.copy>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+13. Pop the value :math:`\I32.\CONST~s` from the stack.
+
+14. Assert: due to :ref:`validation <valid-memory.copy>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+15. Pop the value :math:`\I32.\CONST~d` from the stack.
+
+16. If :math:`s + n` is larger than the length of :math:`\X{mem}_s.\MIDATA` or :math:`d + n` is larger than the length of :math:`\X{mem}_d.\MIDATA`, then:
 
     a. Trap.
 
-13. If :math:`n = 0`, then:
+17. If :math:`n = 0`, then:
 
    a. Return.
 
-14. If :math:`d \leq s`, then:
+18. If :math:`d \leq s`, then:
 
    a. Push the value :math:`\I32.\CONST~d` to the stack.
 
    b. Push the value :math:`\I32.\CONST~s` to the stack.
 
-   c. Execute the instruction :math:`\I32\K{.}\LOAD\K{8\_u}~\{ \OFFSET~0, \ALIGN~0 \}`.
+   c. Execute the instruction :math:`\I32\K{.}\LOAD\K{8\_u}~y~\{ \OFFSET~0, \ALIGN~0 \}`.
 
-   d. Execute the instruction :math:`\I32\K{.}\STORE\K{8}~\{ \OFFSET~0, \ALIGN~0 \}`.
+   d. Execute the instruction :math:`\I32\K{.}\STORE\K{8}~x~\{ \OFFSET~0, \ALIGN~0 \}`.
 
    e. Assert: due to the earlier check against the memory size, :math:`d+1 < 2^{32}`.
 
@@ -3712,7 +3720,7 @@ Memory Instructions
 
    h. Push the value :math:`\I32.\CONST~(s+1)` to the stack.
 
-15. Else:
+19. Else:
 
    a. Assert: due to the earlier check against the memory size, :math:`d+n-1 < 2^{32}`.
 
@@ -3722,54 +3730,54 @@ Memory Instructions
 
    d. Push the value :math:`\I32.\CONST~(s+n-1)` to the stack.
 
-   e. Execute the instruction :math:`\I32\K{.}\LOAD\K{8\_u}~\{ \OFFSET~0, \ALIGN~0 \}`.
+   e. Execute the instruction :math:`\I32\K{.}\LOAD\K{8\_u}~y~\{ \OFFSET~0, \ALIGN~0 \}`.
 
-   f. Execute the instruction :math:`\I32\K{.}\STORE\K{8}~\{ \OFFSET~0, \ALIGN~0 \}`.
+   f. Execute the instruction :math:`\I32\K{.}\STORE\K{8}~x~\{ \OFFSET~0, \ALIGN~0 \}`.
 
    g. Push the value :math:`\I32.\CONST~d` to the stack.
 
    h. Push the value :math:`\I32.\CONST~s` to the stack.
 
-16. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
+20. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
 
-17. Execute the instruction :math:`\MEMORYCOPY`.
+21. Execute the instruction :math:`\MEMORYCOPY~x~y`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{l}
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~\MEMORYCOPY
+   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~\MEMORYCOPY~x~y
      \quad\stepto\quad S; F; \TRAP
      \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & s + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
-      \vee & d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA|) \\[1ex]
+     (\iff & d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA| \\
+      \vee & s + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[y]].\MIDATA|) \\[1ex]
      \end{array}
    \\[1ex]
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~\MEMORYCOPY
+   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~\MEMORYCOPY~x~y
      \quad\stepto\quad S; F; \epsilon
      \\ \qquad
      (\otherwise)
    \\[1ex]
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~\MEMORYCOPY
+   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~\MEMORYCOPY~x~y
      \quad\stepto
      \\ \qquad S; F;
        \begin{array}[t]{@{}l@{}}
        (\I32.\CONST~d) \\
-       (\I32.\CONST~s)~(\I32\K{.}\LOAD\K{8\_u}~\{ \OFFSET~0, \ALIGN~0 \}) \\
-       (\I32\K{.}\STORE\K{8}~\{ \OFFSET~0, \ALIGN~0 \}) \\
-       (\I32.\CONST~d+1)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~\MEMORYCOPY \\
+       (\I32.\CONST~s)~(\I32\K{.}\LOAD\K{8\_u}~y~\{ \OFFSET~0, \ALIGN~0 \}) \\
+       (\I32\K{.}\STORE\K{8}~x~\{ \OFFSET~0, \ALIGN~0 \}) \\
+       (\I32.\CONST~d+1)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~\MEMORYCOPY~x~y \\
        \end{array}
      \\ \qquad
      (\otherwise, \iff d \leq s)
    \\[1ex]
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~\MEMORYCOPY
+   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~\MEMORYCOPY~x~y
      \quad\stepto
      \\ \qquad S; F;
        \begin{array}[t]{@{}l@{}}
        (\I32.\CONST~d+n) \\
-       (\I32.\CONST~s+n)~(\I32\K{.}\LOAD\K{8\_u}~\{ \OFFSET~0, \ALIGN~0 \}) \\
-       (\I32\K{.}\STORE\K{8}~\{ \OFFSET~0, \ALIGN~0 \}) \\
-       (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~\MEMORYCOPY \\
+       (\I32.\CONST~s+n)~(\I32\K{.}\LOAD\K{8\_u}~y~\{ \OFFSET~0, \ALIGN~0 \}) \\
+       (\I32\K{.}\STORE\K{8}~x~\{ \OFFSET~0, \ALIGN~0 \}) \\
+       (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~\MEMORYCOPY~x~y \\
        \end{array}
      \\ \qquad
      (\otherwise, \iff d > s) \\
@@ -3778,22 +3786,22 @@ Memory Instructions
 
 .. _exec-memory.init:
 
-:math:`\MEMORYINIT~x`
-.....................
+:math:`\MEMORYINIT~x~y`
+.......................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-memory.init>`, :math:`F.\AMODULE.\MIMEMS[0]` exists.
+2. Assert: due to :ref:`validation <valid-memory.init>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
 
-3. Let :math:`\X{ma}` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[0]`.
+3. Let :math:`\X{ma}` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[x]`.
 
 4. Assert: due to :ref:`validation <valid-memory.init>`, :math:`S.\SMEMS[\X{ma}]` exists.
 
 5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[\X{ma}]`.
 
-6. Assert: due to :ref:`validation <valid-memory.init>`, :math:`F.\AMODULE.\MIDATAS[x]` exists.
+6. Assert: due to :ref:`validation <valid-memory.init>`, :math:`F.\AMODULE.\MIDATAS[y]` exists.
 
-7. Let :math:`\X{da}` be the :ref:`data address <syntax-dataaddr>` :math:`F.\AMODULE.\MIDATAS[x]`.
+7. Let :math:`\X{da}` be the :ref:`data address <syntax-dataaddr>` :math:`F.\AMODULE.\MIDATAS[y]`.
 
 8. Assert: due to :ref:`validation <valid-memory.init>`, :math:`S.\SDATAS[\X{da}]` exists.
 
@@ -3837,33 +3845,33 @@ Memory Instructions
 
 26. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
 
-27. Execute the instruction :math:`\MEMORYINIT~x`.
+27. Execute the instruction :math:`\MEMORYINIT~x~y`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{l}
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\MEMORYINIT~x)
+   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\MEMORYINIT~x~y)
      \quad\stepto\quad S; F; \TRAP
      \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & s + n > |S.\SDATAS[F.\AMODULE.\MIDATAS[x]].\DIDATA| \\
-      \vee & d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA|) \\[1ex]
+     (\iff & d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\DIDATA| \\
+      \vee & s + n > |S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\MIDATA|) \\[1ex]
      \end{array}
    \\[1ex]
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\MEMORYINIT~x)
+   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\MEMORYINIT~x~y)
      \quad\stepto\quad S; F; \epsilon
      \\ \qquad
      (\otherwise)
    \\[1ex]
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\MEMORYINIT~x)
+   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\MEMORYINIT~x~y)
      \quad\stepto
        \\ \qquad S; F;
        \begin{array}[t]{@{}l@{}}
-       (\I32.\CONST~d)~(\I32.\CONST~b)~(\I32\K{.}\STORE\K{8}~\{ \OFFSET~0, \ALIGN~0 \}) \\
-       (\I32.\CONST~d+1)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\MEMORYINIT~x) \\
+       (\I32.\CONST~d)~(\I32.\CONST~b)~(\I32\K{.}\STORE\K{8}~x~\{ \OFFSET~0, \ALIGN~0 \}) \\
+       (\I32.\CONST~d+1)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\MEMORYINIT~x~y) \\
        \end{array}
      \\ \qquad
-     (\otherwise, \iff b = S.\SDATAS[F.\AMODULE.\MIDATAS[x]].\DIDATA[s]) \\
+     (\otherwise, \iff b = S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA[s]) \\
    \end{array}
 
 

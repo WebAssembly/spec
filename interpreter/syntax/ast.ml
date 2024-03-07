@@ -125,7 +125,7 @@ type storeop = (num_type, pack_size option) memop
 
 type vec_loadop = (vec_type, (pack_size * vec_extension) option) memop
 type vec_storeop = (vec_type, unit) memop
-type vec_laneop = (vec_type, pack_size) memop * int
+type vec_laneop = (vec_type, pack_size) memop
 
 type initop = Explicit | Implicit
 type externop = Internalize | Externalize
@@ -176,17 +176,17 @@ and instr' =
   | TableCopy of idx * idx            (* copy table range *)
   | TableInit of idx * idx            (* initialize table range from segment *)
   | ElemDrop of idx                   (* drop passive element segment *)
-  | Load of loadop                    (* read memory at address *)
-  | Store of storeop                  (* write memory at address *)
-  | VecLoad of vec_loadop             (* read memory at address *)
-  | VecStore of vec_storeop           (* write memory at address *)
-  | VecLoadLane of vec_laneop         (* read single lane at address *)
-  | VecStoreLane of vec_laneop        (* write single lane to address *)
-  | MemorySize                        (* size of memory *)
-  | MemoryGrow                        (* grow memory *)
-  | MemoryFill                        (* fill memory range with value *)
-  | MemoryCopy                        (* copy memory ranges *)
-  | MemoryInit of idx                 (* initialize memory range from segment *)
+  | Load of idx * loadop              (* read memory at address *)
+  | Store of idx * storeop            (* write memory at address *)
+  | VecLoad of idx * vec_loadop       (* read memory at address *)
+  | VecStore of idx * vec_storeop     (* write memory at address *)
+  | VecLoadLane of idx * vec_laneop * int  (* read single lane at address *)
+  | VecStoreLane of idx * vec_laneop * int (* write single lane to address *)
+  | MemorySize of idx                 (* size of memory *)
+  | MemoryGrow of idx                 (* grow memory *)
+  | MemoryFill of idx                 (* fill memory range with value *)
+  | MemoryCopy of idx * idx           (* copy memory ranges *)
+  | MemoryInit of idx * idx           (* initialize memory range from segment *)
   | DataDrop of idx                   (* drop passive data segment *)
   | Const of num                      (* constant *)
   | Test of testop                    (* numeric test *)

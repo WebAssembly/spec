@@ -1345,7 +1345,7 @@ Note: ECMAScript doesn't specify any sort of behavior on out-of-memory condition
 
 The WebAssembly core specification allows an implementation to define limits on the syntactic structure of the module.
 While each embedding of WebAssembly may choose to define its own limits, for predictability the standard WebAssembly JavaScript Interface described in this document defines the following exact limits.
-An implementation must reject a module that exceeds one of the following limits with a {{CompileError}}:
+An implementation must reject a module that exceeds one of the following limits with a {{CompileError}}.
 In practice, an implementation may run out of resources for valid modules below these limits.
 
 <ul>
@@ -1363,7 +1363,7 @@ In practice, an implementation may run out of resources for valid modules below 
 <li>The maximum number of tables, including declared or imported tables, is 100,000.</li>
 <li>The maximum size of a table is 10,000,000.</li>
 <li>The maximum number of table entries in any table initialization is 10,000,000.</li>
-<li>The maximum number of memories, including declared or imported memories, is 1.</li>
+<li>The maximum number of memories, including defined and imported memories, is 100.</li>
 
 <li>The maximum number of parameters to any function or block is 1,000.</li>
 <li>The maximum number of return values for any function or block is 1,000.</li>

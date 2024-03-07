@@ -345,7 +345,6 @@ let check_vec_binop binop at =
   | _ -> ()
 
 let check_memop (c : context) (memop : ('t, 's) memop) ty_size get_sz at =
-  let _mt = memory c (0l @@ at) in
   let size =
     match get_sz memop.pack with
     | None -> ty_size memop.ty
@@ -593,53 +592,60 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
     ignore (elem c x);
     [] --> [], []
 
-  | Load memop ->
+  | Load (x, memop) ->
+    let _mt = memory c x in
     let t = check_memop c memop num_size (Lib.Option.map fst) e.at in
     [NumT I32T] --> [NumT t], []
 
-  | Store memop ->
+  | Store (x, memop) ->
+    let _mt = memory c x in
     let t = check_memop c memop num_size (fun sz -> sz) e.at in
     [NumT I32T; NumT t] --> [], []
 
-  | VecLoad memop ->
+  | VecLoad (x, memop) ->
+    let _mt = memory c x in
     let t = check_memop c memop vec_size (Lib.Option.map fst) e.at in
     [NumT I32T] --> [VecT t], []
 
-  | VecStore memop ->
+  | VecStore (x, memop) ->
+    let _mt = memory c x in
     let t = check_memop c memop vec_size (fun _ -> None) e.at in
     [NumT I32T; VecT t] --> [], []
 
-  | VecLoadLane (memop, i) ->
+  | VecLoadLane (x, memop, i) ->
+    let _mt = memory c x in
     let t = check_memop c memop vec_size (fun sz -> Some sz) e.at in
     require (i < vec_size t / Pack.packed_size memop.pack) e.at
       "invalid lane index";
     [NumT I32T; VecT t] -->  [VecT t], []
 
-  | VecStoreLane (memop, i) ->
+  | VecStoreLane (x, memop, i) ->
+    let _mt = memory c x in
     let t = check_memop c memop vec_size (fun sz -> Some sz) e.at in
     require (i < vec_size t / Pack.packed_size memop.pack) e.at
       "invalid lane index";
     [NumT I32T; VecT t] -->  [], []
 
-  | MemorySize ->
-    let _mt = memory c (0l @@ e.at) in
+  | MemorySize x ->
+    let _mt = memory c x in
     [] --> [NumT I32T], []
 
-  | MemoryGrow ->
-    let _mt = memory c (0l @@ e.at) in
+  | MemoryGrow x ->
+    let _mt = memory c x in
     [NumT I32T] --> [NumT I32T], []
 
-  | MemoryFill ->
-    let _mt = memory c (0l @@ e.at) in
+  | MemoryFill x ->
+    let _mt = memory c x in
     [NumT I32T; NumT I32T; NumT I32T] --> [], []
 
-  | MemoryCopy ->
-    let _mt = memory c (0l @@ e.at) in
+  | MemoryCopy (x, y)->
+    let _mt = memory c x in
+    let _mt = memory c y in
     [NumT I32T; NumT I32T; NumT I32T] --> [], []
 
-  | MemoryInit x ->
-    let _mt = memory c (0l @@ e.at) in
-    let () = data c x in
+  | MemoryInit (x, y) ->
+    let _mt = memory c x in
+    let () = data c y in
     [NumT I32T; NumT I32T; NumT I32T] --> [], []
 
   | DataDrop x ->
@@ -999,7 +1005,7 @@ let check_data_mode (c : context) (mode : segment_mode) =
   match mode.it with
   | Passive -> ()
   | Active {index; offset} ->
-    ignore (memory c index);
+    let _mt = memory c index in
     check_const c offset (NumT I32T)
   | Declarative -> assert false
 
@@ -1063,8 +1069,6 @@ let check_module (m : module_) =
     |> check_list check_elem m.it.elems
     |> check_list check_data m.it.datas
   in
-  require (List.length c.memories <= 1) m.at
-    "multiple memories are not allowed (yet)";
   List.iter (check_func_body c) m.it.funcs;
   Option.iter (check_start c) m.it.start;
   ignore (List.fold_left (check_export c) NameSet.empty m.it.exports)
