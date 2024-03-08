@@ -6,4 +6,4 @@ exception InvalidArg of string
 exception InvalidFunc of string
 
 (* For AL-level debugging *)
-exception Error of Util.Source.region * string
+exception Error of Util.Source.region * string * string

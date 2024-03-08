@@ -12,17 +12,23 @@ open Printf
 
 (* Errors *)
 
-let error at msg = raise (Exception.Error (at, msg))
+let error at msg step = raise (Exception.Error (at, msg, step))
 
 let error_instr instr msg =
-  error instr.at (msg ^ " `" ^ structured_string_of_instr instr ^ "`")
+  error instr.at msg ("`" ^ structured_string_of_instr instr ^ "`")
 
 let error_expr expr msg =
-  error expr.at (msg ^ " `" ^ structured_string_of_expr expr ^ "`")
+  error expr.at msg ("`" ^ structured_string_of_expr expr ^ "`")
 
 let error_path path msg =
-  error path.at (msg ^ " `" ^ structured_string_of_path path ^ "`")
+  error path.at msg ("`" ^ structured_string_of_path path ^ "`")
 
+let try_with_error at stringifier f instr =
+  try f instr with
+  | Construct.InvalidConversion msg
+  | Exception.InvalidArg msg
+  | Exception.InvalidFunc msg
+  | Failure msg -> error at msg (stringifier instr)
 
 (* Matrix operations *)
 
@@ -142,7 +148,7 @@ and eval_expr env expr =
   (* Function Call *)
   | CallE (fname, el) ->
     let args = List.map (eval_expr env) el in
-    (match try_call_func expr.at fname args with
+    (match call_func fname args  with
     | Some v -> v
     | _ -> raise (Exception.MissingReturnValue fname)
     )
@@ -448,6 +454,7 @@ and assign_split lhs vs env =
 
 (* Step *)
 
+(* // catch *)
 and step_instr (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.t =
   (Info.find instr.note).covered <- true;
 
@@ -510,27 +517,27 @@ and step_instr (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.
     AlContext.set_env new_env ctx
   | PerformI (f, el) ->
     let args = List.map (eval_expr env) el in
-    try_call_func instr.at f args |> ignore;
+    call_func f args |> ignore;
     ctx
   | TrapI -> raise Exception.Trap
   | NopI -> ctx
   | ReturnI None -> AlContext.tl ctx
   | ReturnI (Some e) ->
     AlContext.return (eval_expr env e) :: AlContext.tl ctx
-  | ExecuteI e -> AlContext.execute (eval_expr env e) :: ctx
+  | ExecuteI e -> AlContext.execute (instr, eval_expr env e) :: ctx
   | ExecuteSeqI e ->
     let ctx' =
       e
       |> eval_expr env
       |> unwrap_listv_to_list
-      |> List.map AlContext.execute
+      |> List.map (fun l -> AlContext.execute (instr, l))
     in
     ctx' @ ctx
   | EnterI (e1, e2, il) ->
     let v1 = eval_expr env e1 in
     let v2 = eval_expr env e2 in
     WasmContext.push_context (v1, [], unwrap_listv_to_list v2);
-    AlContext.enter (il, env) :: ctx
+    AlContext.enter (instr, il, env) :: ctx
   | ExitI ->
     WasmContext.pop_context () |> ignore;
     AlContext.decrease_depth ctx
@@ -561,6 +568,9 @@ and step_instr (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.
     ctx
   | _ -> error_instr instr "unsupported"
 
+and try_step_instr ctx env instr =
+  try_with_error instr.at structured_string_of_instr (step_instr ctx env) instr
+
 and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
   (* TODO: Change ref.null semantics *)
   | CaseV ("REF.NULL", [ ht ]) when !version = 3 ->
@@ -574,7 +584,7 @@ and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
     let dummy_rt = CaseV ("REF", [ null; ht ]) in
 
     (* substitute heap type *)
-    (match try_call_func no_region "inst_reftype" [ mm; dummy_rt ] with
+    (match call_func "inst_reftype" [ mm; dummy_rt ] with
     | Some (CaseV ("REF", [ n; ht' ])) when n = null ->
       CaseV ("REF.NULL", [ ht' ]) |> WasmContext.push_value
     | _ -> raise (Exception.MissingReturnValue "inst_reftype"));
@@ -586,33 +596,37 @@ and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
   | CaseV (fname, args) -> create_context fname args :: ctx
   | v -> fail_value "Not a wasm instr" v
 
+
+and try_step_wasm ctx v instr =
+  try_with_error instr.at structured_string_of_value (step_wasm ctx) v
+
 and step : AlContext.t -> AlContext.t = AlContext.(function
   | Al (name, il, env) :: ctx ->
     (match il with
     | [] -> ctx
-    | [ instr ] when AlContext.can_tail_call instr -> step_instr ctx env instr
+    | [ instr ] when AlContext.can_tail_call instr -> try_step_instr ctx env instr
     | h :: t ->
       let new_ctx = Al (name, t, env) :: ctx in
-      step_instr new_ctx env h
+      try_step_instr new_ctx env h
     )
-  | Wasm n :: ctx ->
+  | Wasm (enteri, n) :: ctx ->
     if n = 0 then
       ctx
     else
-      step_wasm (Wasm n :: ctx) (WasmContext.pop_instr ())
-  | Enter (il, env) :: ctx ->
+      try_step_wasm (Wasm (enteri, n) :: ctx) (WasmContext.pop_instr ()) enteri
+  | Enter (enteri, il, env) :: ctx ->
     (match il with
     | [] ->
       (match ctx with
-      | Wasm n :: t -> Wasm (n + 1) :: t
-      | Enter ([], _) :: t -> Wasm 2 :: t
-      | ctx -> Wasm 1 :: ctx
+      | Wasm (_, n) :: t -> Wasm (enteri, n + 1) :: t
+      | Enter (enteri', [], _) :: t -> Wasm (enteri', 2) :: t
+      | ctx -> Wasm (enteri, 1) :: ctx
       )
     | h :: t ->
-      let new_ctx = Enter (t, env) :: ctx in
-      step_instr new_ctx env h
+      let new_ctx = Enter (enteri, t, env) :: ctx in
+      try_step_instr new_ctx env h
     )
-  | Execute v :: ctx -> step_wasm ctx v
+  | Execute (executei, v) :: ctx -> try_step_wasm ctx v executei
   | _ -> assert false
 )
 
@@ -646,28 +660,23 @@ and call_func (fname: string) (args: value list) : value option =
   (* Numerics *)
   else if Numerics.mem fname then
     Some (Numerics.call_numerics fname args)
+  (* Manual *)
   else if fname = "ref_type_of" then
     Some (Manual.ref_type_of args)
   else
     raise (Exception.InvalidFunc ("Invalid DSL function: " ^ fname))
 
-and try_call_func at fname args =
-  try call_func fname args with
-  | Construct.InvalidConversion msg
-  | Exception.InvalidArg msg
-  | Exception.InvalidFunc msg
-  | Failure msg -> error at msg
 
 (* Wasm interpreter entry *)
 
 let instantiate (args: value list) : value =
   WasmContext.init_context ();
-  match try_call_func no_region "instantiate" args with
+  match call_func "instantiate" args with
   | Some module_inst -> module_inst
-  | None -> error no_region "Instantiation doesn't return module instance"
+  | None -> failwith "Instantiation doesn't return module instance"
 
 let invoke (args: value list) : value =
   WasmContext.init_context ();
-  match try_call_func no_region "invoke" args with
+  match call_func "invoke" args with
   | Some v -> v
-  | None -> error no_region "Invocation doesn't return any values"
+  | None -> failwith "Invocation doesn't return any values"

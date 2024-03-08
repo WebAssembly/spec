@@ -153,17 +153,17 @@ module AlContext = struct
     (* Al context *)
     | Al of string * instr list * env
     (* Wasm context *)
-    | Wasm of int
+    | Wasm of instr * int
     (* Special context for enter/execute *)
-    | Enter of instr list * env
-    | Execute of value
+    | Enter of instr * instr list * env
+    | Execute of instr * value
     (* Return register *)
     | Return of value
 
   let al (name, il, env) = Al (name, il, env)
-  let wasm n = Wasm n
-  let enter (il, env) = Enter (il, env)
-  let execute v = Execute v
+  let wasm (instr, n) = Wasm (instr, n)
+  let enter (instr, il, env) = Enter (instr, il, env)
+  let execute (instr, v) = Execute (instr, v)
   let return v = Return v
 
   type t = mode list
@@ -189,22 +189,22 @@ module AlContext = struct
 
   let add_instrs il = function
     | Al (name, il', env) :: t -> Al (name, il @ il', env) :: t
-    | Enter (il', env) :: t -> Enter (il @ il', env) :: t
+    | Enter (instr, il', env) :: t -> Enter (instr, il @ il', env) :: t
     | _ -> failwith "Not in AL context"
 
   let get_env = function
     | Al (_, _, env) :: _ -> env
-    | Enter (_, env) :: _ -> env
+    | Enter (_, _, env) :: _ -> env
     | _ -> failwith "Not in AL context"
 
   let set_env env = function
-    | Al (name, instrs, _) :: t -> Al (name, instrs, env) :: t
-    | Enter (instrs, _) :: t -> Enter (instrs, env) :: t
+    | Al (name, il, _) :: t -> Al (name, il, env) :: t
+    | Enter (instr, il, _) :: t -> Enter (instr, il, env) :: t
     | _ -> failwith "Not in AL context"
 
   let update_env k v = function
     | Al (name, il, env) :: t -> Al (name, il, Env.add k v env) :: t
-    | Enter (instrs, env) :: t -> Enter (instrs, Env.add k v env) :: t
+    | Enter (instr, il, env) :: t -> Enter (instr, il, Env.add k v env) :: t
     | _ -> failwith "Not in AL context"
 
   let get_return_value = function
@@ -213,8 +213,8 @@ module AlContext = struct
     | _ -> failwith "Unreachable"
 
   let rec decrease_depth = function
-    | Wasm 1 :: t -> t
-    | Wasm n :: t -> Wasm (n - 1) :: t
+    | Wasm (_, 1) :: t -> t
+    | Wasm (instr, n) :: t -> Wasm (instr, n - 1) :: t
     | Al _ as mode :: t -> mode :: decrease_depth t
     | _ -> failwith "Not in AL or Wasm context"
 end
@@ -225,7 +225,7 @@ end
 module WasmContext = struct
   type t = value * value list * value list
 
-  let top_level_context = TextV "TopLevelContexet", [], []
+  let top_level_context = TextV "TopLevelContext", [], []
   let context_stack: t list ref = ref [top_level_context]
 
   let get_context () =
