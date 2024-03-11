@@ -23,12 +23,12 @@ let error_expr expr msg =
 let error_path path msg =
   error path.at msg ("`" ^ structured_string_of_path path ^ "`")
 
-let try_with_error at stringifier f instr =
-  try f instr with
+let try_with_error at stringifier f step =
+  try f step with
   | Construct.InvalidConversion msg
   | Exception.InvalidArg msg
   | Exception.InvalidFunc msg
-  | Failure msg -> error at msg (stringifier instr)
+  | Failure msg -> error at msg (stringifier step)
 
 (* Matrix operations *)
 
@@ -276,11 +276,9 @@ and eval_expr env expr =
       error_expr expr "TODO: deferring validation to reference interpreter"
     )
   | HasTypeE (e, s) ->
-
     (* TODO: This shouldn't be hardcoded *)
 
     (* type definition *)
-
     let addr_refs = [
       "REF.I31_NUM"; "REF.STRUCT_ADDR"; "REF.ARRAY_ADDR";
       "REF.FUNC_ADDR"; "REF.HOST_ADDR"; "REF.EXTERN";
@@ -454,8 +452,7 @@ and assign_split lhs vs env =
 
 (* Step *)
 
-(* // catch *)
-and step_instr (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.t =
+and step_instr (name: string) (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.t =
   (Info.find instr.note).covered <- true;
 
   match instr.it with
@@ -524,20 +521,20 @@ and step_instr (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.
   | ReturnI None -> AlContext.tl ctx
   | ReturnI (Some e) ->
     AlContext.return (eval_expr env e) :: AlContext.tl ctx
-  | ExecuteI e -> AlContext.execute (instr, eval_expr env e) :: ctx
+  | ExecuteI e -> AlContext.execute (eval_expr env e) :: ctx
   | ExecuteSeqI e ->
     let ctx' =
       e
       |> eval_expr env
       |> unwrap_listv_to_list
-      |> List.map (fun l -> AlContext.execute (instr, l))
+      |> List.map AlContext.execute
     in
     ctx' @ ctx
   | EnterI (e1, e2, il) ->
     let v1 = eval_expr env e1 in
     let v2 = eval_expr env e2 in
     WasmContext.push_context (v1, [], unwrap_listv_to_list v2);
-    AlContext.enter (instr, il, env) :: ctx
+    AlContext.enter (name, il, env) :: ctx
   | ExitI ->
     WasmContext.pop_context () |> ignore;
     AlContext.decrease_depth ctx
@@ -568,8 +565,8 @@ and step_instr (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.
     ctx
   | _ -> error_instr instr "unsupported"
 
-and try_step_instr ctx env instr =
-  try_with_error instr.at structured_string_of_instr (step_instr ctx env) instr
+and try_step_instr fname ctx env instr =
+  try_with_error instr.at structured_string_of_instr (step_instr fname ctx env) instr
 
 and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
   (* TODO: Change ref.null semantics *)
@@ -597,36 +594,36 @@ and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
   | v -> fail_value "Not a wasm instr" v
 
 
-and try_step_wasm ctx v instr =
-  try_with_error instr.at structured_string_of_value (step_wasm ctx) v
+and try_step_wasm ctx v =
+  try_with_error no_region structured_string_of_value (step_wasm ctx) v
 
 and step : AlContext.t -> AlContext.t = AlContext.(function
   | Al (name, il, env) :: ctx ->
     (match il with
     | [] -> ctx
-    | [ instr ] when AlContext.can_tail_call instr -> try_step_instr ctx env instr
+    | [ instr ] when AlContext.can_tail_call instr -> try_step_instr name ctx env instr
     | h :: t ->
       let new_ctx = Al (name, t, env) :: ctx in
-      try_step_instr new_ctx env h
+      try_step_instr name new_ctx env h
     )
-  | Wasm (enteri, n) :: ctx ->
+  | Wasm n :: ctx ->
     if n = 0 then
       ctx
     else
-      try_step_wasm (Wasm (enteri, n) :: ctx) (WasmContext.pop_instr ()) enteri
-  | Enter (enteri, il, env) :: ctx ->
+      try_step_wasm (Wasm n :: ctx) (WasmContext.pop_instr ())
+  | Enter (name, il, env) :: ctx ->
     (match il with
     | [] ->
       (match ctx with
-      | Wasm (_, n) :: t -> Wasm (enteri, n + 1) :: t
-      | Enter (enteri', [], _) :: t -> Wasm (enteri', 2) :: t
-      | ctx -> Wasm (enteri, 1) :: ctx
+      | Wasm n :: t -> Wasm (n + 1) :: t
+      | Enter (_, [], _) :: t -> Wasm 2 :: t
+      | ctx -> Wasm 1 :: ctx
       )
     | h :: t ->
-      let new_ctx = Enter (enteri, t, env) :: ctx in
-      try_step_instr new_ctx env h
+      let new_ctx = Enter (name, t, env) :: ctx in
+      try_step_instr name new_ctx env h
     )
-  | Execute (executei, v) :: ctx -> try_step_wasm ctx v executei
+  | Execute v :: ctx -> try_step_wasm ctx v
   | _ -> assert false
 )
 

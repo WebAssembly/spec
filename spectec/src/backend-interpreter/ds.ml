@@ -153,17 +153,17 @@ module AlContext = struct
     (* Al context *)
     | Al of string * instr list * env
     (* Wasm context *)
-    | Wasm of instr * int
+    | Wasm of int
     (* Special context for enter/execute *)
-    | Enter of instr * instr list * env
-    | Execute of instr * value
+    | Enter of string * instr list * env
+    | Execute of value
     (* Return register *)
     | Return of value
 
   let al (name, il, env) = Al (name, il, env)
-  let wasm (instr, n) = Wasm (instr, n)
-  let enter (instr, il, env) = Enter (instr, il, env)
-  let execute (instr, v) = Execute (instr, v)
+  let wasm n = Wasm n
+  let enter (name, il, env) = Enter (name, il, env)
+  let execute v = Execute v
   let return v = Return v
 
   type t = mode list
@@ -189,7 +189,7 @@ module AlContext = struct
 
   let add_instrs il = function
     | Al (name, il', env) :: t -> Al (name, il @ il', env) :: t
-    | Enter (instr, il', env) :: t -> Enter (instr, il @ il', env) :: t
+    | Enter (name, il', env) :: t -> Enter (name, il @ il', env) :: t
     | _ -> failwith "Not in AL context"
 
   let get_env = function
@@ -199,12 +199,12 @@ module AlContext = struct
 
   let set_env env = function
     | Al (name, il, _) :: t -> Al (name, il, env) :: t
-    | Enter (instr, il, _) :: t -> Enter (instr, il, env) :: t
+    | Enter (name, il, _) :: t -> Enter (name, il, env) :: t
     | _ -> failwith "Not in AL context"
 
   let update_env k v = function
     | Al (name, il, env) :: t -> Al (name, il, Env.add k v env) :: t
-    | Enter (instr, il, env) :: t -> Enter (instr, il, Env.add k v env) :: t
+    | Enter (name, il, env) :: t -> Enter (name, il, Env.add k v env) :: t
     | _ -> failwith "Not in AL context"
 
   let get_return_value = function
@@ -213,8 +213,8 @@ module AlContext = struct
     | _ -> failwith "Unreachable"
 
   let rec decrease_depth = function
-    | Wasm (_, 1) :: t -> t
-    | Wasm (instr, n) :: t -> Wasm (instr, n - 1) :: t
+    | Wasm 1 :: t -> t
+    | Wasm n :: t -> Wasm (n - 1) :: t
     | Al _ as mode :: t -> mode :: decrease_depth t
     | _ -> failwith "Not in AL or Wasm context"
 end
