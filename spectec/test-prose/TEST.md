@@ -912,7 +912,7 @@ instantiate module externval*
 25. Enter the activation of f with arity 0 with label [FRAME_]:
   a. If x' is defined, then:
     1) Let ?(x'_0) be x'.
-    2) Execute (CALL x'_0).
+    2) Execute the instruction (CALL x'_0).
 26. Return mm.
 
 invoke fa val^n
@@ -921,7 +921,7 @@ invoke fa val^n
 3. Let k be |t_2*|.
 4. Enter the activation of f with arity k with label [FRAME_]:
   a. Push val^n to the stack.
-  b. Execute (CALL_ADDR fa).
+  b. Execute the instruction (CALL_ADDR fa).
 5. Pop val^k from the stack.
 6. Return val^k.
 
@@ -952,9 +952,9 @@ execution_of_IF t? instr_1* instr_2*
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST c) from the stack.
 3. If (c is not 0), then:
-  a. Execute (BLOCK t? instr_1*).
+  a. Execute the instruction (BLOCK t? instr_1*).
 4. Else:
-  a. Execute (BLOCK t? instr_2*).
+  a. Execute the instruction (BLOCK t? instr_2*).
 
 execution_of_LABEL_
 1. Pop all values val* from the stack.
@@ -976,13 +976,13 @@ execution_of_BR n_u0
   a. Let l be (n_u0 - 1).
   b. Let val* be admin_u1*.
   c. Push val* to the stack.
-  d. Execute (BR l).
+  d. Execute the instruction (BR l).
 
 execution_of_BR_IF l
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST c) from the stack.
 3. If (c is not 0), then:
-  a. Execute (BR l).
+  a. Execute the instruction (BR l).
 4. Else:
   a. Do nothing.
 
@@ -990,9 +990,9 @@ execution_of_BR_TABLE l* l'
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
 3. If (i < |l*|), then:
-  a. Execute (BR l*[i]).
+  a. Execute the instruction (BR l*[i]).
 4. Else:
-  a. Execute (BR l').
+  a. Execute the instruction (BR l').
 
 execution_of_FRAME_
 1. Let f be the current frame.
@@ -1015,7 +1015,7 @@ execution_of_RETURN
   a. Pop all values val* from the stack.
   b. Exit current context.
   c. Push val* to the stack.
-  d. Execute RETURN.
+  d. Execute the instruction RETURN.
 
 execution_of_UNOP t unop
 1. Assert: Due to validation, a value of value type t is on the top of the stack.
@@ -1065,7 +1065,7 @@ execution_of_LOCAL.TEE x
 2. Pop val from the stack.
 3. Push val to the stack.
 4. Push val to the stack.
-5. Execute (LOCAL.SET x).
+5. Execute the instruction (LOCAL.SET x).
 
 execution_of_BLOCK t? instr*
 1. If t? is not defined, then:
@@ -1081,7 +1081,7 @@ execution_of_LOOP t? instr*
 
 execution_of_CALL x
 1. Assert: Due to validation, (x < |$funcaddr()|).
-2. Execute (CALL_ADDR $funcaddr()[x]).
+2. Execute the instruction (CALL_ADDR $funcaddr()[x]).
 
 execution_of_CALL_INDIRECT x
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -1095,7 +1095,7 @@ execution_of_CALL_INDIRECT x
   a. Trap.
 7. If ($type(x) is not $funcinst()[a].TYPE), then:
   a. Trap.
-8. Execute (CALL_ADDR a).
+8. Execute the instruction (CALL_ADDR a).
 
 execution_of_CALL_ADDR a
 1. Assert: Due to validation, (a < |$funcinst()|).
@@ -1234,7 +1234,7 @@ execution_of_ARRAY.NEW_DATA x y
   f. Let gb* be $group_bytes_by(($zsize(zt) / 8), b*).
   g. Let c^n be $inverse_of_ibytes($zsize(zt), gb)*.
   h. Push (cnn.CONST c)^n to the stack.
-  i. Execute (ARRAY.NEW_FIXED x n).
+  i. Execute the instruction (ARRAY.NEW_FIXED x n).
 == Complete.
 Generating prose for Wasm 2.0...
 watsup 0.4 generator
@@ -2852,7 +2852,7 @@ instantiate module externval*
   b. Execute the sequence (instr_D*).
   c. If x is defined, then:
     1) Let ?(x_0) be x.
-    2) Execute (CALL x_0).
+    2) Execute the instruction (CALL x_0).
 24. Return mm.
 
 invoke fa val^n
@@ -2861,7 +2861,7 @@ invoke fa val^n
 3. Let k be |t_2*|.
 4. Enter the activation of f with arity k with label [FRAME_]:
   a. Push val^n to the stack.
-  b. Execute (CALL_ADDR fa).
+  b. Execute the instruction (CALL_ADDR fa).
 5. Pop val^k from the stack.
 6. Return val^k.
 
@@ -2892,9 +2892,9 @@ execution_of_IF bt instr_1* instr_2*
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST c) from the stack.
 3. If (c is not 0), then:
-  a. Execute (BLOCK bt instr_1*).
+  a. Execute the instruction (BLOCK bt instr_1*).
 4. Else:
-  a. Execute (BLOCK bt instr_2*).
+  a. Execute the instruction (BLOCK bt instr_2*).
 
 execution_of_LABEL_
 1. Pop all values val* from the stack.
@@ -2916,13 +2916,13 @@ execution_of_BR n_u0
   a. Let l be (n_u0 - 1).
   b. Let val* be admin_u1*.
   c. Push val* to the stack.
-  d. Execute (BR l).
+  d. Execute the instruction (BR l).
 
 execution_of_BR_IF l
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST c) from the stack.
 3. If (c is not 0), then:
-  a. Execute (BR l).
+  a. Execute the instruction (BR l).
 4. Else:
   a. Do nothing.
 
@@ -2930,9 +2930,9 @@ execution_of_BR_TABLE l* l'
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
 3. If (i < |l*|), then:
-  a. Execute (BR l*[i]).
+  a. Execute the instruction (BR l*[i]).
 4. Else:
-  a. Execute (BR l').
+  a. Execute the instruction (BR l').
 
 execution_of_FRAME_
 1. Let f be the current frame.
@@ -2955,7 +2955,7 @@ execution_of_RETURN
   a. Pop all values val* from the stack.
   b. Exit current context.
   c. Push val* to the stack.
-  d. Execute RETURN.
+  d. Execute the instruction RETURN.
 
 execution_of_UNOP nt unop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
@@ -3200,7 +3200,7 @@ execution_of_LOCAL.TEE x
 2. Pop val from the stack.
 3. Push val to the stack.
 4. Push val to the stack.
-5. Execute (LOCAL.SET x).
+5. Execute the instruction (LOCAL.SET x).
 
 execution_of_BLOCK bt instr*
 1. Let (t_1^k -> t_2^n) be $blocktype(bt).
@@ -3220,7 +3220,7 @@ execution_of_LOOP bt instr*
 
 execution_of_CALL x
 1. Assert: Due to validation, (x < |$funcaddr()|).
-2. Execute (CALL_ADDR $funcaddr()[x]).
+2. Execute the instruction (CALL_ADDR $funcaddr()[x]).
 
 execution_of_CALL_INDIRECT x y
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -3234,7 +3234,7 @@ execution_of_CALL_INDIRECT x y
   a. Trap.
 7. If ($type(y) is not $funcinst()[a].TYPE), then:
   a. Trap.
-8. Execute (CALL_ADDR a).
+8. Execute the instruction (CALL_ADDR a).
 
 execution_of_CALL_ADDR a
 1. Assert: Due to validation, (a < |$funcinst()|).
@@ -3285,11 +3285,11 @@ execution_of_TABLE.FILL x
 9. Else:
   a. Push (I32.CONST i) to the stack.
   b. Push val to the stack.
-  c. Execute (TABLE.SET x).
+  c. Execute the instruction (TABLE.SET x).
   d. Push (I32.CONST (i + 1)) to the stack.
   e. Push val to the stack.
   f. Push (I32.CONST (n - 1)) to the stack.
-  g. Execute (TABLE.FILL x).
+  g. Execute the instruction (TABLE.FILL x).
 
 execution_of_TABLE.COPY x y
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -3308,19 +3308,19 @@ execution_of_TABLE.COPY x y
   a. If (j ≤ i), then:
     1) Push (I32.CONST j) to the stack.
     2) Push (I32.CONST i) to the stack.
-    3) Execute (TABLE.GET y).
-    4) Execute (TABLE.SET x).
+    3) Execute the instruction (TABLE.GET y).
+    4) Execute the instruction (TABLE.SET x).
     5) Push (I32.CONST (j + 1)) to the stack.
     6) Push (I32.CONST (i + 1)) to the stack.
   b. Else:
     1) Push (I32.CONST ((j + n) - 1)) to the stack.
     2) Push (I32.CONST ((i + n) - 1)) to the stack.
-    3) Execute (TABLE.GET y).
-    4) Execute (TABLE.SET x).
+    3) Execute the instruction (TABLE.GET y).
+    4) Execute the instruction (TABLE.SET x).
     5) Push (I32.CONST j) to the stack.
     6) Push (I32.CONST i) to the stack.
   c. Push (I32.CONST (n - 1)) to the stack.
-  d. Execute (TABLE.COPY x y).
+  d. Execute the instruction (TABLE.COPY x y).
 
 execution_of_TABLE.INIT x y
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -3338,11 +3338,11 @@ execution_of_TABLE.INIT x y
 10. Else if (i < |$elem(y).ELEM|), then:
   a. Push (I32.CONST j) to the stack.
   b. Push $elem(y).ELEM[i] to the stack.
-  c. Execute (TABLE.SET x).
+  c. Execute the instruction (TABLE.SET x).
   d. Push (I32.CONST (j + 1)) to the stack.
   e. Push (I32.CONST (i + 1)) to the stack.
   f. Push (I32.CONST (n - 1)) to the stack.
-  g. Execute (TABLE.INIT x y).
+  g. Execute the instruction (TABLE.INIT x y).
 
 execution_of_LOAD numty_u0 ww_sx_u1? mo
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -3435,11 +3435,11 @@ execution_of_MEMORY.FILL
 9. Else:
   a. Push (I32.CONST i) to the stack.
   b. Push val to the stack.
-  c. Execute (STORE I32 ?(8) $memop0()).
+  c. Execute the instruction (STORE I32 ?(8) $memop0()).
   d. Push (I32.CONST (i + 1)) to the stack.
   e. Push val to the stack.
   f. Push (I32.CONST (n - 1)) to the stack.
-  g. Execute MEMORY.FILL.
+  g. Execute the instruction MEMORY.FILL.
 
 execution_of_MEMORY.COPY
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -3458,19 +3458,19 @@ execution_of_MEMORY.COPY
   a. If (j ≤ i), then:
     1) Push (I32.CONST j) to the stack.
     2) Push (I32.CONST i) to the stack.
-    3) Execute (LOAD I32 ?((8, U)) $memop0()).
-    4) Execute (STORE I32 ?(8) $memop0()).
+    3) Execute the instruction (LOAD I32 ?((8, U)) $memop0()).
+    4) Execute the instruction (STORE I32 ?(8) $memop0()).
     5) Push (I32.CONST (j + 1)) to the stack.
     6) Push (I32.CONST (i + 1)) to the stack.
   b. Else:
     1) Push (I32.CONST ((j + n) - 1)) to the stack.
     2) Push (I32.CONST ((i + n) - 1)) to the stack.
-    3) Execute (LOAD I32 ?((8, U)) $memop0()).
-    4) Execute (STORE I32 ?(8) $memop0()).
+    3) Execute the instruction (LOAD I32 ?((8, U)) $memop0()).
+    4) Execute the instruction (STORE I32 ?(8) $memop0()).
     5) Push (I32.CONST j) to the stack.
     6) Push (I32.CONST i) to the stack.
   c. Push (I32.CONST (n - 1)) to the stack.
-  d. Execute MEMORY.COPY.
+  d. Execute the instruction MEMORY.COPY.
 
 execution_of_MEMORY.INIT x
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -3488,11 +3488,11 @@ execution_of_MEMORY.INIT x
 10. Else if (i < |$data(x).DATA|), then:
   a. Push (I32.CONST j) to the stack.
   b. Push (I32.CONST $data(x).DATA[i]) to the stack.
-  c. Execute (STORE I32 ?(8) $memop0()).
+  c. Execute the instruction (STORE I32 ?(8) $memop0()).
   d. Push (I32.CONST (j + 1)) to the stack.
   e. Push (I32.CONST (i + 1)) to the stack.
   f. Push (I32.CONST (n - 1)) to the stack.
-  g. Execute (MEMORY.INIT x).
+  g. Execute the instruction (MEMORY.INIT x).
 
 execution_of_LOCAL.SET x
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -3636,7 +3636,7 @@ execution_of_ARRAY.NEW_DATA x y
   f. Let gb* be $group_bytes_by(($zsize(zt) / 8), b*).
   g. Let c^n be $inverse_of_ibytes($zsize(zt), gb)*.
   h. Push (cnn.CONST c)^n to the stack.
-  i. Execute (ARRAY.NEW_FIXED x n).
+  i. Execute the instruction (ARRAY.NEW_FIXED x n).
 == Complete.
 Generating prose for Wasm 3.0...
 watsup 0.4 generator
@@ -5784,7 +5784,7 @@ instantiate module externval*
   b. Execute the sequence (instr_D*).
   c. If x is defined, then:
     1) Let ?(x_0) be x.
-    2) Execute (CALL x_0).
+    2) Execute the instruction (CALL x_0).
 26. Return mm.
 
 invoke fa val^n
@@ -5797,7 +5797,7 @@ invoke fa val^n
 7. Enter the activation of f with arity k with label [FRAME_]:
   a. Push val^n to the stack.
   b. Push (REF.FUNC_ADDR fa) to the stack.
-  c. Execute (CALL_REF ?(0)).
+  c. Execute the instruction (CALL_REF ?(0)).
 8. Pop val^k from the stack.
 9. Return val^k.
 
@@ -5828,9 +5828,9 @@ execution_of_IF bt instr_1* instr_2*
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST c) from the stack.
 3. If (c is not 0), then:
-  a. Execute (BLOCK bt instr_1*).
+  a. Execute the instruction (BLOCK bt instr_1*).
 4. Else:
-  a. Execute (BLOCK bt instr_2*).
+  a. Execute the instruction (BLOCK bt instr_2*).
 
 execution_of_LABEL_
 1. Pop all values val* from the stack.
@@ -5852,13 +5852,13 @@ execution_of_BR n_u0
   a. Let l be (n_u0 - 1).
   b. Let val* be admin_u1*.
   c. Push val* to the stack.
-  d. Execute (BR l).
+  d. Execute the instruction (BR l).
 
 execution_of_BR_IF l
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST c) from the stack.
 3. If (c is not 0), then:
-  a. Execute (BR l).
+  a. Execute the instruction (BR l).
 4. Else:
   a. Do nothing.
 
@@ -5866,15 +5866,15 @@ execution_of_BR_TABLE l* l'
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
 3. If (i < |l*|), then:
-  a. Execute (BR l*[i]).
+  a. Execute the instruction (BR l*[i]).
 4. Else:
-  a. Execute (BR l').
+  a. Execute the instruction (BR l').
 
 execution_of_BR_ON_NULL l
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
 3. If val is of the case REF.NULL, then:
-  a. Execute (BR l).
+  a. Execute the instruction (BR l).
 4. Else:
   a. Push val to the stack.
 
@@ -5885,17 +5885,17 @@ execution_of_BR_ON_NON_NULL l
   a. Do nothing.
 4. Else:
   a. Push val to the stack.
-  b. Execute (BR l).
+  b. Execute the instruction (BR l).
 
 execution_of_CALL_INDIRECT x y
-1. Execute (TABLE.GET x).
-2. Execute (REF.CAST (REF (NULL ?(())) $idx(y))).
-3. Execute (CALL_REF ?(y)).
+1. Execute the instruction (TABLE.GET x).
+2. Execute the instruction (REF.CAST (REF (NULL ?(())) $idx(y))).
+3. Execute the instruction (CALL_REF ?(y)).
 
 execution_of_RETURN_CALL_INDIRECT x y
-1. Execute (TABLE.GET x).
-2. Execute (REF.CAST (REF (NULL ?(())) $idx(y))).
-3. Execute (RETURN_CALL_REF ?(y)).
+1. Execute the instruction (TABLE.GET x).
+2. Execute the instruction (REF.CAST (REF (NULL ?(())) $idx(y))).
+3. Execute the instruction (RETURN_CALL_REF ?(y)).
 
 execution_of_FRAME_
 1. Let f be the current frame.
@@ -5918,7 +5918,7 @@ execution_of_RETURN
   a. Pop all values val* from the stack.
   b. Exit current context.
   c. Push val* to the stack.
-  d. Execute RETURN.
+  d. Execute the instruction RETURN.
 
 execution_of_UNOP nt unop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
@@ -6210,7 +6210,7 @@ execution_of_LOCAL.TEE x
 2. Pop val from the stack.
 3. Push val to the stack.
 4. Push val to the stack.
-5. Execute (LOCAL.SET x).
+5. Execute the instruction (LOCAL.SET x).
 
 execution_of_BLOCK bt instr*
 1. Let (t_1^k -> t_2^n) be $blocktype(bt).
@@ -6236,7 +6236,7 @@ execution_of_BR_ON_CAST l rt_1 rt_2
   a. Push ref to the stack.
 5. Else:
   a. Push ref to the stack.
-  b. Execute (BR l).
+  b. Execute the instruction (BR l).
 
 execution_of_BR_ON_CAST_FAIL l rt_1 rt_2
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -6246,12 +6246,12 @@ execution_of_BR_ON_CAST_FAIL l rt_1 rt_2
   a. Push ref to the stack.
 5. Else:
   a. Push ref to the stack.
-  b. Execute (BR l).
+  b. Execute the instruction (BR l).
 
 execution_of_CALL x
 1. Assert: Due to validation, (x < |$funcaddr()|).
 2. Push (REF.FUNC_ADDR $funcaddr()[x]) to the stack.
-3. Execute (CALL_REF ?()).
+3. Execute the instruction (CALL_REF ?()).
 
 execution_of_CALL_REF
 1. YetI: TODO: It is likely that the value stack of two rules are different.
@@ -6259,14 +6259,14 @@ execution_of_CALL_REF
 execution_of_RETURN_CALL x
 1. Assert: Due to validation, (x < |$funcaddr()|).
 2. Push (REF.FUNC_ADDR $funcaddr()[x]) to the stack.
-3. Execute (RETURN_CALL_REF ?()).
+3. Execute the instruction (RETURN_CALL_REF ?()).
 
 execution_of_RETURN_CALL_REF x?
 1. If the current context is label, then:
   a. Pop all values val* from the stack.
   b. Exit current context.
   c. Push val* to the stack.
-  d. Execute (RETURN_CALL_REF x?).
+  d. Execute the instruction (RETURN_CALL_REF x?).
 2. Else if the current context is frame, then:
   a. Pop admin_u0 from the stack.
   b. Pop all values admin_u1* from the stack.
@@ -6283,7 +6283,7 @@ execution_of_RETURN_CALL_REF x?
         1. Let val'* ++ val^n be admin_u1*.
         2. Push val^n to the stack.
         3. Push (REF.FUNC_ADDR a) to the stack.
-        4. Execute (CALL_REF x?).
+        4. Execute the instruction (CALL_REF x?).
 
 execution_of_REF.FUNC x
 1. Assert: Due to validation, (x < |$funcaddr()|).
@@ -6315,7 +6315,7 @@ execution_of_STRUCT.NEW_DEFAULT x
 6. Let ?(val)* be $default_($unpack(zt))*.
 7. Assert: Due to validation, (|val*| is |zt*|).
 8. Push val* to the stack.
-9. Execute (STRUCT.NEW x).
+9. Execute the instruction (STRUCT.NEW x).
 
 execution_of_STRUCT.GET sx? x i
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -6339,7 +6339,7 @@ execution_of_ARRAY.NEW x
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop val from the stack.
 5. Push val^n to the stack.
-6. Execute (ARRAY.NEW_FIXED x n).
+6. Execute the instruction (ARRAY.NEW_FIXED x n).
 
 execution_of_ARRAY.NEW_DEFAULT x
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -6350,7 +6350,7 @@ execution_of_ARRAY.NEW_DEFAULT x
 6. Assert: Due to validation, $default_($unpack(zt)) is defined.
 7. Let ?(val) be $default_($unpack(zt)).
 8. Push val^n to the stack.
-9. Execute (ARRAY.NEW_FIXED x n).
+9. Execute the instruction (ARRAY.NEW_FIXED x n).
 
 execution_of_ARRAY.NEW_ELEM x y
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -6361,7 +6361,7 @@ execution_of_ARRAY.NEW_ELEM x y
   a. Trap.
 6. Let ref^n be $elem(y).ELEM[i : n].
 7. Push ref^n to the stack.
-8. Execute (ARRAY.NEW_FIXED x n).
+8. Execute the instruction (ARRAY.NEW_FIXED x n).
 
 execution_of_ARRAY.NEW_DATA x y
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -6375,7 +6375,7 @@ execution_of_ARRAY.NEW_DATA x y
   a. Trap.
 9. Let $cbytes(cnn, c)^n be $inverse_of_concat_($data(y).DATA[i : ((n · $zsize(zt)) / 8)]).
 10. Push $const(cnn, c)^n to the stack.
-11. Execute (ARRAY.NEW_FIXED x n).
+11. Execute the instruction (ARRAY.NEW_FIXED x n).
 
 execution_of_ARRAY.GET sx? x
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -6428,12 +6428,12 @@ execution_of_ARRAY.FILL x
     2) Push (REF.ARRAY_ADDR a) to the stack.
     3) Push (I32.CONST i) to the stack.
     4) Push val to the stack.
-    5) Execute (ARRAY.SET x).
+    5) Execute the instruction (ARRAY.SET x).
     6) Push (REF.ARRAY_ADDR a) to the stack.
     7) Push (I32.CONST (i + 1)) to the stack.
     8) Push val to the stack.
     9) Push (I32.CONST (n - 1)) to the stack.
-    10) Execute (ARRAY.FILL x).
+    10) Execute the instruction (ARRAY.FILL x).
 
 execution_of_ARRAY.COPY x_1 x_2
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -6473,14 +6473,14 @@ execution_of_ARRAY.COPY x_1 x_2
       d) Push (I32.CONST ((i_1 + n) - 1)) to the stack.
       e) Push (REF.ARRAY_ADDR a_2) to the stack.
       f) Push (I32.CONST ((i_2 + n) - 1)) to the stack.
-      g) Execute (ARRAY.GET sx? x_2).
-      h) Execute (ARRAY.SET x_1).
+      g) Execute the instruction (ARRAY.GET sx? x_2).
+      h) Execute the instruction (ARRAY.SET x_1).
       i) Push (REF.ARRAY_ADDR a_1) to the stack.
       j) Push (I32.CONST i_1) to the stack.
       k) Push (REF.ARRAY_ADDR a_2) to the stack.
       l) Push (I32.CONST i_2) to the stack.
       m) Push (I32.CONST (n - 1)) to the stack.
-      n) Execute (ARRAY.COPY x_1 x_2).
+      n) Execute the instruction (ARRAY.COPY x_1 x_2).
   e. Else:
     1) Assert: Due to validation, $expanddt($type(x_2)) is of the case ARRAY.
     2) Let (ARRAY y_0) be $expanddt($type(x_2)).
@@ -6493,14 +6493,14 @@ execution_of_ARRAY.COPY x_1 x_2
       d) Push (I32.CONST i_1) to the stack.
       e) Push (REF.ARRAY_ADDR a_2) to the stack.
       f) Push (I32.CONST i_2) to the stack.
-      g) Execute (ARRAY.GET sx? x_2).
-      h) Execute (ARRAY.SET x_1).
+      g) Execute the instruction (ARRAY.GET sx? x_2).
+      h) Execute the instruction (ARRAY.SET x_1).
       i) Push (REF.ARRAY_ADDR a_1) to the stack.
       j) Push (I32.CONST (i_1 + 1)) to the stack.
       k) Push (REF.ARRAY_ADDR a_2) to the stack.
       l) Push (I32.CONST (i_2 + 1)) to the stack.
       m) Push (I32.CONST (n - 1)) to the stack.
-      n) Execute (ARRAY.COPY x_1 x_2).
+      n) Execute the instruction (ARRAY.COPY x_1 x_2).
 
 execution_of_ARRAY.INIT_ELEM x y
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -6527,12 +6527,12 @@ execution_of_ARRAY.INIT_ELEM x y
       b) Push (REF.ARRAY_ADDR a) to the stack.
       c) Push (I32.CONST i) to the stack.
       d) Push ref to the stack.
-      e) Execute (ARRAY.SET x).
+      e) Execute the instruction (ARRAY.SET x).
       f) Push (REF.ARRAY_ADDR a) to the stack.
       g) Push (I32.CONST (i + 1)) to the stack.
       h) Push (I32.CONST (j + 1)) to the stack.
       i) Push (I32.CONST (n - 1)) to the stack.
-      j) Execute (ARRAY.INIT_ELEM x y).
+      j) Execute the instruction (ARRAY.INIT_ELEM x y).
 12. Else if (n is 0), then:
   a. If admin_u0 is of the case REF.ARRAY_ADDR, then:
     1) Do nothing.
@@ -6544,12 +6544,12 @@ execution_of_ARRAY.INIT_ELEM x y
       b) Push (REF.ARRAY_ADDR a) to the stack.
       c) Push (I32.CONST i) to the stack.
       d) Push ref to the stack.
-      e) Execute (ARRAY.SET x).
+      e) Execute the instruction (ARRAY.SET x).
       f) Push (REF.ARRAY_ADDR a) to the stack.
       g) Push (I32.CONST (i + 1)) to the stack.
       h) Push (I32.CONST (j + 1)) to the stack.
       i) Push (I32.CONST (n - 1)) to the stack.
-      j) Execute (ARRAY.INIT_ELEM x y).
+      j) Execute the instruction (ARRAY.INIT_ELEM x y).
 
 execution_of_ARRAY.INIT_DATA x y
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -6586,12 +6586,12 @@ execution_of_ARRAY.INIT_DATA x y
       f) Push (REF.ARRAY_ADDR a) to the stack.
       g) Push (I32.CONST i) to the stack.
       h) Push $const(cnn, c) to the stack.
-      i) Execute (ARRAY.SET x).
+      i) Execute the instruction (ARRAY.SET x).
       j) Push (REF.ARRAY_ADDR a) to the stack.
       k) Push (I32.CONST (i + 1)) to the stack.
       l) Push (I32.CONST (j + ($zsize(zt) / 8))) to the stack.
       m) Push (I32.CONST (n - 1)) to the stack.
-      n) Execute (ARRAY.INIT_DATA x y).
+      n) Execute the instruction (ARRAY.INIT_DATA x y).
 
 execution_of_LOCAL.GET x
 1. Assert: Due to validation, $local(x) is defined.
@@ -6626,11 +6626,11 @@ execution_of_TABLE.FILL x
 9. Else:
   a. Push (I32.CONST i) to the stack.
   b. Push val to the stack.
-  c. Execute (TABLE.SET x).
+  c. Execute the instruction (TABLE.SET x).
   d. Push (I32.CONST (i + 1)) to the stack.
   e. Push val to the stack.
   f. Push (I32.CONST (n - 1)) to the stack.
-  g. Execute (TABLE.FILL x).
+  g. Execute the instruction (TABLE.FILL x).
 
 execution_of_TABLE.COPY x y
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -6649,19 +6649,19 @@ execution_of_TABLE.COPY x y
   a. If (j ≤ i), then:
     1) Push (I32.CONST j) to the stack.
     2) Push (I32.CONST i) to the stack.
-    3) Execute (TABLE.GET y).
-    4) Execute (TABLE.SET x).
+    3) Execute the instruction (TABLE.GET y).
+    4) Execute the instruction (TABLE.SET x).
     5) Push (I32.CONST (j + 1)) to the stack.
     6) Push (I32.CONST (i + 1)) to the stack.
   b. Else:
     1) Push (I32.CONST ((j + n) - 1)) to the stack.
     2) Push (I32.CONST ((i + n) - 1)) to the stack.
-    3) Execute (TABLE.GET y).
-    4) Execute (TABLE.SET x).
+    3) Execute the instruction (TABLE.GET y).
+    4) Execute the instruction (TABLE.SET x).
     5) Push (I32.CONST j) to the stack.
     6) Push (I32.CONST i) to the stack.
   c. Push (I32.CONST (n - 1)) to the stack.
-  d. Execute (TABLE.COPY x y).
+  d. Execute the instruction (TABLE.COPY x y).
 
 execution_of_TABLE.INIT x y
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -6679,11 +6679,11 @@ execution_of_TABLE.INIT x y
 10. Else if (i < |$elem(y).ELEM|), then:
   a. Push (I32.CONST j) to the stack.
   b. Push $elem(y).ELEM[i] to the stack.
-  c. Execute (TABLE.SET x).
+  c. Execute the instruction (TABLE.SET x).
   d. Push (I32.CONST (j + 1)) to the stack.
   e. Push (I32.CONST (i + 1)) to the stack.
   f. Push (I32.CONST (n - 1)) to the stack.
-  g. Execute (TABLE.INIT x y).
+  g. Execute the instruction (TABLE.INIT x y).
 
 execution_of_LOAD numty_u0 ww_sx_u1? x mo
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -6776,11 +6776,11 @@ execution_of_MEMORY.FILL x
 9. Else:
   a. Push (I32.CONST i) to the stack.
   b. Push val to the stack.
-  c. Execute (STORE I32 ?(8) x $memop0()).
+  c. Execute the instruction (STORE I32 ?(8) x $memop0()).
   d. Push (I32.CONST (i + 1)) to the stack.
   e. Push val to the stack.
   f. Push (I32.CONST (n - 1)) to the stack.
-  g. Execute (MEMORY.FILL x).
+  g. Execute the instruction (MEMORY.FILL x).
 
 execution_of_MEMORY.COPY x_1 x_2
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -6799,19 +6799,19 @@ execution_of_MEMORY.COPY x_1 x_2
   a. If (i_1 ≤ i_2), then:
     1) Push (I32.CONST i_1) to the stack.
     2) Push (I32.CONST i_2) to the stack.
-    3) Execute (LOAD I32 ?((8, U)) x_2 $memop0()).
-    4) Execute (STORE I32 ?(8) x_1 $memop0()).
+    3) Execute the instruction (LOAD I32 ?((8, U)) x_2 $memop0()).
+    4) Execute the instruction (STORE I32 ?(8) x_1 $memop0()).
     5) Push (I32.CONST (i_1 + 1)) to the stack.
     6) Push (I32.CONST (i_2 + 1)) to the stack.
   b. Else:
     1) Push (I32.CONST ((i_1 + n) - 1)) to the stack.
     2) Push (I32.CONST ((i_2 + n) - 1)) to the stack.
-    3) Execute (LOAD I32 ?((8, U)) x_2 $memop0()).
-    4) Execute (STORE I32 ?(8) x_1 $memop0()).
+    3) Execute the instruction (LOAD I32 ?((8, U)) x_2 $memop0()).
+    4) Execute the instruction (STORE I32 ?(8) x_1 $memop0()).
     5) Push (I32.CONST i_1) to the stack.
     6) Push (I32.CONST i_2) to the stack.
   c. Push (I32.CONST (n - 1)) to the stack.
-  d. Execute (MEMORY.COPY x_1 x_2).
+  d. Execute the instruction (MEMORY.COPY x_1 x_2).
 
 execution_of_MEMORY.INIT x y
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -6829,11 +6829,11 @@ execution_of_MEMORY.INIT x y
 10. Else if (i < |$data(y).DATA|), then:
   a. Push (I32.CONST j) to the stack.
   b. Push (I32.CONST $data(y).DATA[i]) to the stack.
-  c. Execute (STORE I32 ?(8) x $memop0()).
+  c. Execute the instruction (STORE I32 ?(8) x $memop0()).
   d. Push (I32.CONST (j + 1)) to the stack.
   e. Push (I32.CONST (i + 1)) to the stack.
   f. Push (I32.CONST (n - 1)) to the stack.
-  g. Execute (MEMORY.INIT x y).
+  g. Execute the instruction (MEMORY.INIT x y).
 
 execution_of_STRUCT.NEW x
 1. Assert: Due to validation, $expanddt($type(x)) is of the case STRUCT.
@@ -7034,6 +7034,6 @@ execution_of_ARRAY.NEW_DATA x y
   f. Let gb* be $group_bytes_by(($zsize(zt) / 8), b*).
   g. Let c^n be $inverse_of_ibytes($zsize(zt), gb)*.
   h. Push (cnn.CONST c)^n to the stack.
-  i. Execute (ARRAY.NEW_FIXED x n).
+  i. Execute the instruction (ARRAY.NEW_FIXED x n).
 == Complete.
 ```

@@ -532,7 +532,7 @@ let rec render_al_instr env algoname index depth instr =
         (render_expr env e1) (render_expr env e2)
         (render_al_instrs env algoname (depth + 1) il)
   | Al.Ast.ExecuteI e ->
-      sprintf "%s Execute %s." (render_order index depth) (render_expr env e)
+      sprintf "%s Execute the instruction %s." (render_order index depth) (render_expr env e)
   | Al.Ast.ExecuteSeqI e ->
       sprintf "%s Execute the sequence %s." (render_order index depth) (render_expr env e)
   | Al.Ast.PerformI (n, es) ->
