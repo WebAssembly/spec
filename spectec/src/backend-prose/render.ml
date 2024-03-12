@@ -301,6 +301,10 @@ and render_expr' env expr =
   | Al.Ast.UnE (NotOp, { it = Al.Ast.IsValidE e; _ }) ->
       let se = render_expr env e in
       sprintf "%s is not valid" se
+  | Al.Ast.UnE (NotOp, { it = Al.Ast.MatchE (e1, e2); _ }) ->
+      let se1 = render_expr env e1 in
+      let se2 = render_expr env e2 in
+      sprintf "%s does not match %s" se1 se2
   | Al.Ast.UnE (op, e) ->
       let sop = render_al_unop op in
       let se = render_expr env e in

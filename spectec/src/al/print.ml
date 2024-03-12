@@ -123,6 +123,8 @@ and string_of_expr expr =
     sprintf "%s is not defined" (string_of_expr e)
   | UnE (NotOp, { it = IsValidE e; _ }) ->
     sprintf "%s is not valid" (string_of_expr e)
+  | UnE (NotOp, { it = MatchE (e1, e2); _ }) ->
+    sprintf "%s does not match %s" (string_of_expr e1) (string_of_expr e2)
   | UnE (NotOp, e) -> sprintf "not %s" (string_of_expr e)
   | UnE (op, e) -> sprintf "(%s %s)" (string_of_unop op) (string_of_expr e)
   | BinE (op, e1, e2) ->

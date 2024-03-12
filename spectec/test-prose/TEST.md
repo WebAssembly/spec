@@ -6232,7 +6232,7 @@ execution_of_BR_ON_CAST l rt_1 rt_2
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop ref from the stack.
 3. Let rt be $ref_type_of(ref).
-4. If not rt matches $inst_reftype($moduleinst(), rt_2), then:
+4. If rt does not match $inst_reftype($moduleinst(), rt_2), then:
   a. Push ref to the stack.
 5. Else:
   a. Push ref to the stack.
@@ -6302,7 +6302,7 @@ execution_of_REF.CAST rt
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop ref from the stack.
 3. Let rt' be $ref_type_of(ref).
-4. If not rt' matches $inst_reftype($moduleinst(), rt), then:
+4. If rt' does not match $inst_reftype($moduleinst(), rt), then:
   a. Trap.
 5. Push ref to the stack.
 
