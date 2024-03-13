@@ -4,6 +4,9 @@ open Al_util
 open Util
 
 
+type config = expr * expr * instr list
+
+
 let eval_expr =
   let instrs = iterE (varE "instr", ["instr"], List) in
   let result = varE "val" in

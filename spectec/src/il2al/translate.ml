@@ -15,7 +15,7 @@ module Il = struct include Il include Ast include Print end
 let error at msg = Error.error at "translation" msg
 
 let error_exp exp typ =
-  error exp.at (sprintf "Invalid exp `%s` to be %s" (Il.Print.string_of_exp exp) typ)
+  error exp.at (sprintf "invalid %s: `%s`" typ (Il.Print.string_of_exp exp))
 
 (* Helpers *)
 
@@ -70,7 +70,8 @@ let get_params winstr =
   match winstr.it with
   | Il.CaseE (_, { it = Il.TupE exps; _ }) -> exps
   | Il.CaseE (_, exp) -> [ exp ]
-  | _ -> error_exp winstr "a valid wasm instruction"
+  | _ -> error winstr.at
+    (sprintf "cannot get params of wasm instruction `%s`" (Il.Print.string_of_exp winstr))
 
 let lhs_of_rgroup rgroup =
   let (lhs, _, _) = List.hd rgroup in
@@ -126,7 +127,7 @@ and translate_exp exp =
   (* property access *)
   | Il.DotE (inner_exp, Atom p) ->
     accE (translate_exp inner_exp, dotP (kwd p inner_exp.note)) ~at:at
-  (* conacatenation of records *)
+  (* concatenation of records *)
   | Il.CompE (inner_exp, { it = Il.StrE expfields; _ }) ->
     (* assumption: CompE is only used for prepending to validation context *)
     let nonempty e = (match e.it with ListE [] | OptE None -> false | _ -> true) in
@@ -342,7 +343,8 @@ let is_unbound vars e =
 let get_unbound e =
   match e.it with
   | Il.IterE (_, (ListN ({ it = VarE id; _ }, _), _)) -> id.it
-  | _ -> error_exp e "Invalid deferred expression"
+  | _ -> error e.at
+    (sprintf "cannot get_unbound: not an iter expression `%s`" (Il.Print.string_of_exp e))
 
 
 let rec translate_rhs exp =
@@ -431,8 +433,8 @@ let rec translate_rhs exp =
     | Il.MixE ([ []; [ Il.Semicolon ]; [] ], _)
     | Il.VarE _ -> push_instrs
     | Il.CallE (f, ae) -> push_instrs @ [ performI (f.it, translate_args ae) ~at:at ]
-    | _ -> error_exp se "Invalid new state" )
-  | _ -> error_exp exp "AL rhs instructions"
+    | _ -> error_exp se "state expression" )
+  | _ -> error_exp exp "expression on rhs of reduction"
 
 
 let lhs_id_ref = ref 0
@@ -609,8 +611,8 @@ let translate_rulepr id exp =
   | "Reftype_sub", [_C; rt1; rt2] ->
     [ ifI (matchE (rt1, rt2) ~at:at, [], []) ~at:at ]
   | _ ->
-    print_yet exp.at "translate_rulepr" (Il.Print.string_of_exp exp);
-    [ yetI ("TODO: Unsupported rule premise:" ^ id.it) ~at:at ]
+    print_yet exp.at "translate_rulepr" ("`" ^ Il.Print.string_of_exp exp ^ "`");
+    [ yetI ("TODO: translate_rulepr " ^ id.it) ~at:at ]
 
 let rec translate_iterpr pr (iter, ids) =
   let instrs = translate_prem pr in
@@ -663,25 +665,33 @@ let translate_prems =
   List.fold_right (fun prem il -> translate_prem prem |> insert_instrs il)
 
 
-let get_tup_exps c =
-  match c.it with
-  | Il.MixE ([ []; [ Il.Semicolon ]; _ ], tup) ->
-    (match tup.it with
-    | Il.TupE [ e1; e2 ] -> e1, e2
-    | _ -> error_exp c "Invalid config"
-    )
-  | _ -> error_exp c "Invalid config"
+let split e = match e.it with
+| Il.MixE ([ []; [ Il.Semicolon ]; _ ], tup) ->
+  (match tup.it with
+  | Il.TupE [ e1; e2 ] -> e1, e2
+  | _ -> failwith "split"
+  )
+| _ -> failwith "split"
+
+
+let split_config ce =
+  try
+    let state, e = split ce in
+    let sto, f = split state in
+    sto, f, e
+  with _ -> error ce.at
+    (sprintf "cannot split `%s` into store, frame and rhs" (Il.Print.string_of_exp ce))
 
 
 (* s; f; e -> `expr * expr * instr list` *)
-let translate_config config =
-  let state, e = get_tup_exps config in
-  let sto, f = get_tup_exps state in
+let translate_config ce =
+  let sto, f, e = split_config ce in
 
   if is_store sto && is_frame f then
     translate_exp sto, translate_exp f, translate_rhs e
   else
-    error_exp config "Invalid config"
+    error ce.at
+      (sprintf "cannot translate `%s` into store, frame and rhs" (Il.Print.string_of_exp ce))
 
 let translate_helper_body name clause =
   match clause.it with
@@ -743,7 +753,7 @@ let rec kind_of_context e =
   | Il.ListE [ e' ]
   | Il.MixE (_ (* ; *), e')
   | Il.TupE [_ (* z *); e'] -> kind_of_context e'
-  | _ -> error_exp e "Could not get kind_of_context"
+  | _ -> error e.at "cannot get context of expression"
 
 let in_same_context (lhs1, _, _) (lhs2, _, _) =
   kind_of_context lhs1 = kind_of_context lhs2
@@ -754,7 +764,7 @@ let group_contexts xs =
     match g1 with
     | [] -> [ x ] :: acc
     | [ g ] -> (x :: g) :: g2
-    | _ -> failwith "group_contexts: perhaps in_same_context is not equivalence relation"
+    | _ -> failwith "group_contexts: duplicate groups"
     ) [] xs |> List.rev
 
 let un_unify (lhs, rhs, prems) =
@@ -818,7 +828,7 @@ let translate_context_winstr winstr =
         insert_assert winstr;
         exitI () ~at:at
       ]
-    | _ -> error_exp winstr "frame"
+    | _ -> error_exp args "argument of frame"
     )
   (* Label *)
   | Il.CaseE (Il.Atom "LABEL_", { it = Il.TupE [ _n; _instrs; vals ]; _ }) ->
@@ -865,7 +875,7 @@ let translate_context_rgroup lhss sub_algos inner_params =
         contextKindE (kind, getCurContextE ()),
         body,
         acc ) ]
-    | _ -> failwith "unreachable")
+    | _ -> assert false)
   lhss sub_algos []
 
 
@@ -934,9 +944,9 @@ let rec translate_rgroup' context winstr instr_name rgroup =
       let lhss = List.map (fun (_, g) -> lhs_of_rgroup g) unified_sub_groups in
       let sub_algos = List.map translate_rgroup unified_sub_groups in
       translate_context_rgroup lhss sub_algos inner_params
-
-      with _ -> [ yetI "TODO: It is likely that the value stack of two rules are different" ])
-    | _ -> [ yetI "TODO" ] in
+      with _ ->
+        [ yetI "TODO: It is likely that the value stack of two rules are different" ])
+    | _ -> [ yetI "TODO: translate_rgroup" ] in
   !inner_params, instrs
 
 
@@ -953,7 +963,7 @@ and translate_rgroup (instr_name, rgroup) =
   let winstr_name =
     match winstr.it with
     | Il.CaseE (Il.Atom winstr_name, _) -> winstr_name
-    | _ -> error_exp winstr "winstr"
+    | _ -> error_exp winstr "form of wasm instruction"
   in
   let kwd = kwd winstr_name winstr.note in
   let al_params =
@@ -985,7 +995,7 @@ let rule_to_tup rule =
   | Il.RuleD (_, _, _, exp, prems) ->
     match exp.it with
     | Il.TupE [ lhs; rhs ] -> lhs, rhs, prems
-    | _ -> error_exp exp "reduction rule"
+    | _ -> error_exp exp "form of reduction rule"
 
 
 (* group reduction rules that have same name *)

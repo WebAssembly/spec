@@ -12,10 +12,9 @@ open Printf
 
 (* Errors *)
 
-let error at msg step = raise (Exception.Error (at, msg, step))
+let empty = ""
 
-let error_instr instr msg =
-  error instr.at msg ("`" ^ structured_string_of_instr instr ^ "`")
+let error at msg step = raise (Exception.Error (at, msg, step))
 
 let error_expr expr msg =
   error expr.at msg ("`" ^ structured_string_of_expr expr ^ "`")
@@ -23,12 +22,14 @@ let error_expr expr msg =
 let error_path path msg =
   error path.at msg ("`" ^ structured_string_of_path path ^ "`")
 
-let try_with_error at stringifier f step =
+let try_with_error fname at stringifier f step =
+  let prefix = if fname <> empty then fname ^ ": " else fname in
   try f step with
   | Construct.InvalidConversion msg
   | Exception.InvalidArg msg
   | Exception.InvalidFunc msg
-  | Failure msg -> error at msg (stringifier step)
+  | Failure msg -> error at (prefix ^ msg) (stringifier step)
+
 
 (* Matrix operations *)
 
@@ -47,6 +48,7 @@ let transpose matrix =
       let new_rows = transpose' (xs :: List.map List.tl xss) in
       new_row :: new_rows in
   transpose' matrix
+
 
 let rec create_sub_al_context names iter env =
   let option_name_to_list name = lookup_env name env |> unwrap_optv |> Option.to_list in
@@ -76,7 +78,7 @@ and access_path env base path =
     begin try Array.get a i with
     | Invalid_argument _ ->
       error_path path
-        (sprintf "Failed Array.get on base %s and index %s"
+        (sprintf "failed Array.get on base %s and index %s"
           (string_of_value base) (string_of_int i))
     end
   | SliceP (e1, e2) ->
@@ -90,7 +92,7 @@ and access_path env base path =
     | StrV r -> Record.find str r
     | v ->
       error_path path
-        (sprintf "Base %s is not a record" (string_of_value v))
+        (sprintf "base %s is not a record" (string_of_value v))
     )
 
 and replace_path env base path v_new =
@@ -113,7 +115,7 @@ and replace_path env base path v_new =
       | StrV r -> r
       | v ->
         error_path path
-          (sprintf "Base %s is not a record" (string_of_value v))
+          (sprintf "base %s is not a record" (string_of_value v))
     in
     let r_new = Record.clone r in
     Record.replace str v_new r_new;
@@ -143,7 +145,7 @@ and eval_expr env expr =
     | GtOp, v1, v2 -> boolV (v1 > v2)
     | LeOp, v1, v2 -> boolV (v1 <= v2)
     | GeOp, v1, v2 -> boolV (v1 >= v2)
-    | _ -> error_expr expr "Type mismatch"
+    | _ -> error_expr expr "type mismatch for binary operation"
     )
   (* Function Call *)
   | CallE (fname, el) ->
@@ -195,17 +197,17 @@ and eval_expr env expr =
     | LabelV (v, _) -> v
     | FrameV (Some v, _) -> v
     | FrameV _ -> numV Z.zero
-    | _ -> error_expr expr "Not a context" (* Due to AL validation, unreachable *))
+    | _ -> error_expr expr "inner expr is not a context" (* Due to AL validation, unreachable *))
   | FrameE (e_opt, e) ->
     let arity =
       match Option.map (eval_expr env) e_opt with
       | None | Some (NumV _) as arity -> arity
-      | _ -> error_expr expr "Wrong arity"
+      | _ -> error_expr expr "wrong arity of frame"
     in
     let r =
       match eval_expr env e with
       | StrV _ as v -> v
-      | _ -> error_expr expr "Not a frame"
+      | _ -> error_expr expr "inner expr is not a frame"
     in
     FrameV (arity, r)
   | GetCurFrameE -> WasmContext.get_current_frame ()
@@ -218,7 +220,7 @@ and eval_expr env expr =
   | ContE e ->
     (match eval_expr env e with
     | LabelV (_, vs) -> vs
-    | _ -> error_expr expr "Not a label")
+    | _ -> error_expr expr "inner expr is not a label")
   | VarE "s" -> Store.get ()
   | VarE name -> lookup_env name env
   (* Optimized getter for simple IterE(VarE, ...) *)
@@ -335,7 +337,7 @@ and eval_expr env expr =
     let rt1 = e1 |> eval_expr env |> Construct.al_to_ref_type in
     let rt2 = e2 |> eval_expr env |> Construct.al_to_ref_type in
     boolV (Match.match_ref_type [] rt1 rt2)
-  | _ -> error_expr expr "unsupported"
+  | _ -> error_expr expr "cannot evaluate expr"
 
 
 (* Assignment *)
@@ -371,11 +373,11 @@ and assign lhs rhs env =
         assign expr length env, listV [||], Array.to_list !arr
       | Opt, OptV opt -> env, optV None, Option.to_list opt
       | ListN (_, Some _), ListV _ ->
-        error_expr lhs "Invalid assignment: iter with index cannot be an assignment target"
+        error_expr lhs "invalid assignment: iter with index cannot be an assignment target"
       | _, _ ->
         error_expr lhs
           (sprintf
-            "Invalid assignment: %s is not an iterable value" (string_of_value rhs)
+            "invalid assignment: %s is not an iterable value" (string_of_value rhs)
           )
     in
 
@@ -407,8 +409,8 @@ and assign lhs rhs env =
       | SubOp -> Z.add
       | MulOp -> Z.div
       | DivOp -> Z.mul
-      | ExpOp -> error_expr lhs "Invalid assignment: ExpOp cannot be an assignment target"
-      | _ -> error_expr lhs "Invalid assignment: logical binop cannot be an assignment target" in
+      | ExpOp -> error_expr lhs "invalid assignment: ExpOp cannot be an assignment target"
+      | _ -> error_expr lhs "invalid assignment: logical binop cannot be an assignment target" in
     let v = eval_expr env e2 |> al_to_z |> invop m |> numV in
     assign e1 v env
   | CatE _, ListV vs -> assign_split lhs !vs env
@@ -416,7 +418,7 @@ and assign lhs rhs env =
     Record.fold (fun k v acc -> (Record.find (string_of_kwd k) r2 |> assign v) acc) r1 env
   | _, _ ->
     error_expr lhs
-      (sprintf "Invalid assignment on rhs %s" (string_of_value rhs))
+      (sprintf "invalid assignment: on rhs %s" (string_of_value rhs))
 
 and assign_split lhs vs env =
   let ep, es = unwrap_cate lhs in
@@ -431,16 +433,16 @@ and assign_split lhs vs env =
     match get_fixed_length ep, get_fixed_length es with
     | None, None ->
       error_expr lhs
-        "Invalid assignment: non-deterministic pattern cannot be an assignment target"
+        "invalid assignment: non-deterministic pattern cannot be an assignment target"
     | Some l, None -> l, len - l
     | None, Some l -> len - l, l
     | Some l1, Some l2 -> l1, l2
   in
   if prefix_len < 0 || suffix_len < 0 then
-    error_expr lhs "Invalid assignment: negative length cannot be an assignment target"
+    error_expr lhs "invalid assignment: negative length cannot be an assignment target"
   else if prefix_len + suffix_len <> len then
     error_expr lhs
-      (sprintf "Invalid assignment: %s's length is not equal to lhs"
+      (sprintf "invalid assignment: %s's length is not equal to lhs"
         (string_of_value (listV vs))
       )
   else (
@@ -452,7 +454,7 @@ and assign_split lhs vs env =
 
 (* Step *)
 
-and step_instr (name: string) (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.t =
+and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.t =
   (Info.find instr.note).covered <- true;
 
   match instr.it with
@@ -489,9 +491,7 @@ and step_instr (name: string) (ctx: AlContext.t) (env: value Env.t) (instr: inst
     | FrameE _ ->
       (match WasmContext.pop_context () with
       | FrameV _, _, _ -> ctx
-      | v, _, _ ->
-        error_expr e
-          (sprintf "current context is not a frame: %s" (string_of_value v))
+      | v, _, _ -> failwith (sprintf "current context `%s` is not a frame" (string_of_value v))
       )
     | IterE ({ it = VarE name; _ }, [name'], ListN (e', None)) when name = name' ->
       let i = eval_expr env e' |> al_to_int in
@@ -534,7 +534,7 @@ and step_instr (name: string) (ctx: AlContext.t) (env: value Env.t) (instr: inst
     let v1 = eval_expr env e1 in
     let v2 = eval_expr env e2 in
     WasmContext.push_context (v1, [], unwrap_listv_to_list v2);
-    AlContext.enter (name, il, env) :: ctx
+    AlContext.enter (fname, il, env) :: ctx
   | ExitI ->
     WasmContext.pop_context () |> ignore;
     AlContext.decrease_depth ctx
@@ -563,10 +563,10 @@ and step_instr (name: string) (ctx: AlContext.t) (env: value Env.t) (instr: inst
     let v = eval_expr env e2 in
     a := Array.append !a [|v|];
     ctx
-  | _ -> error_instr instr "unsupported"
+  | _ -> failwith "cannot step instr"
 
 and try_step_instr fname ctx env instr =
-  try_with_error instr.at structured_string_of_instr (step_instr fname ctx env) instr
+  try_with_error fname instr.at structured_string_of_instr (step_instr fname ctx env) instr
 
 and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
   (* TODO: Change ref.null semantics *)
@@ -591,11 +591,11 @@ and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
   | CaseV ("VCONST", _) as v -> WasmContext.push_value v; ctx
   | CaseV (name, []) when Builtin.is_builtin name -> Builtin.call name; ctx
   | CaseV (fname, args) -> create_context fname args :: ctx
-  | v -> fail_value "Not a wasm instr" v
+  | v -> fail_value "cannot step a wasm instr" v
 
 
 and try_step_wasm ctx v =
-  try_with_error no_region structured_string_of_value (step_wasm ctx) v
+  try_with_error empty no_region structured_string_of_value (step_wasm ctx) v
 
 and step : AlContext.t -> AlContext.t = AlContext.(function
   | Al (name, il, env) :: ctx ->

@@ -89,7 +89,7 @@ let builtin () =
     let addr =
       match Store.access kind with
       | ListV a -> Array.length !a |> Z.of_int
-      | _ -> failwith "Unreachable"
+      | _ -> assert false
     in
     let new_extern =
       StrV [ "NAME", ref (TextV name); "VALUE", ref (CaseV (kind, [ numV addr ])) ]
@@ -99,7 +99,7 @@ let builtin () =
 
     (match Store.access kind with
     | ListV a -> a := Array.append !a [|inst|]
-    | _ -> failwith "Unreachable");
+    | _ -> assert false);
 
     new_extern :: extern in
 

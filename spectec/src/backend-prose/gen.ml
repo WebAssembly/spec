@@ -11,13 +11,13 @@ open Util.Error
 
 let error at msg = error at "prose generation" msg
 
-let print_yet_prem prem fname typ =
+let print_yet_prem prem fname =
   let s = Il.Print.string_of_prem prem in
-  print_yet prem.at fname (typ ^ "(" ^ s ^ ")")
+  print_yet prem.at fname ("`" ^ s ^ "`")
 
-let print_yet_exp exp fname typ =
+let print_yet_exp exp fname =
   let s = Il.Print.string_of_exp exp in
-  print_yet exp.at fname (typ ^ "(" ^ s ^ ")")
+  print_yet exp.at fname ("`" ^ s ^ "`")
 
 
 let cmpop_to_cmpop = function
@@ -52,11 +52,11 @@ let rec if_expr_to_instrs e =
     let body = if_expr_to_instrs e2 in
     [ match neg_cond with
       | [ CmpI ({ it = IterE ({ it = VarE name; _ }, _, Opt); _ }, Eq, { it = OptE None; _ }) ] ->
-          IfI (isDefinedE (varE name), body)
-      | _ -> print_yet_exp e "if_expr_to_instrs" "if_exp"; YetI (Il.Print.string_of_exp e) ]
+        IfI (isDefinedE (varE name), body)
+      | _ -> print_yet_exp e "if_expr_to_instrs"; YetI (Il.Print.string_of_exp e) ]
   | Ast.BinE (Ast.EquivOp, e1, e2) ->
       [ EquivI (exp_to_expr e1, exp_to_expr e2) ]
-  | _ -> print_yet_exp e "if_expr_to_instrs" "if_exp"; [ YetI (Il.Print.string_of_exp e) ]
+  | _ -> print_yet_exp e "if_expr_to_instrs"; [ YetI (Il.Print.string_of_exp e) ]
 
 let rec prem_to_instrs prem = match prem.it with
   | Ast.LetPr (e1, e2, _) ->
@@ -67,12 +67,12 @@ let rec prem_to_instrs prem = match prem.it with
     (match exp_to_argexpr e with
     | [c; e'; t] -> [ MustValidI (c, e', Some t) ]
     | [c; e'] -> [ MustValidI (c, e', None) ]
-    | _ -> error prem.at "prem_to_instrs: Invalid prem rule_ok"
+    | _ -> error e.at "unrecognized form of argument in rule_ok"
     )
   | Ast.RulePr (id, _, e) when String.ends_with ~suffix:"_sub" id.it ->
     (match exp_to_argexpr e with
     | [t1; t2] -> [ MustMatchI (t1, t2) ]
-    | _ -> print_yet_prem prem "prem_to_instrs" "prem rule_sub"; [ YetI "TODO: prem_to_instrs rule_sub" ]
+    | _ -> print_yet_prem prem "prem_to_instrs"; [ YetI "TODO: prem_to_instrs rule_sub" ]
     )
   | Ast.IterPr (prem, iter) ->
     (match iter with
@@ -80,11 +80,11 @@ let rec prem_to_instrs prem = match prem.it with
     | Ast.(List | ListN _), [(id, _)] ->
         let name = varE id.it in
         [ ForallI (name, iterE (name, [id.it], Al.Ast.List), prem_to_instrs prem) ]
-    | _ -> print_yet_prem prem "prem_to_instrs" "prem iter"; [ YetI "TODO: prem_to_intrs iter" ]
+    | _ -> print_yet_prem prem "prem_to_instrs"; [ YetI "TODO: prem_to_intrs iter" ]
     )
   | _ ->
     let s = Il.Print.string_of_prem prem in
-    print_yet_prem prem "prem_to_instrs" "prem"; [ YetI s ]
+    print_yet_prem prem "prem_to_instrs"; [ YetI s ]
 
 type vrule_group =
   string * (Ast.exp * Ast.exp * Ast.prem list * Ast.bind list) list
@@ -97,7 +97,7 @@ let vrule_group_to_prose ((_name, vrules): vrule_group) =
   let winstr_name = match winstr.it with
   | Ast.CaseE (Ast.Atom winstr_name, _) -> winstr_name
   | _ -> error winstr.at
-    ("vrule_group_to_prose: invalid winstr " ^ Il.Print.string_of_exp winstr)
+    ("unrecognized form of winstr " ^ Il.Print.string_of_exp winstr)
   in
   let name = kwd winstr_name winstr.note in
   (* params *)
@@ -122,7 +122,7 @@ let pack_vrule vrule =
     | Ast.TupE [ _c; e; t ] -> (e, t, prems, tenv)
     | _ -> error exp.at
       (Print.string_of_exp exp
-      |> Printf.sprintf "Invalid expression `%s` to be typing rule.")
+      |> Printf.sprintf "exp `%s` cannot be typing rule")
 
 (* group typing rules that have same name *)
 (* Il.rule list -> vrule_group list *)

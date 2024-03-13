@@ -13,12 +13,14 @@ open Util
 
 exception InvalidConversion of string
 
+let empty = ""
+
 let error category msg =
-  raise (InvalidConversion (Printf.sprintf "%s: invalid construct %s" category msg))
+  raise (InvalidConversion (Printf.sprintf "%s: invalid construction %s" category msg))
 
-let error_value category v = error category (string_of_value v)
+let error_value category v = error category ("`" ^ string_of_value v ^ "`")
 
-let error_values category vs = error category ("[" ^ string_of_values ", " vs ^ "]")
+let error_values category vs = error category ("`[" ^ string_of_values ", " vs ^ "]")
 
 (* Constant *)
 
@@ -1340,7 +1342,7 @@ let al_of_vbitmaskop = function
     | V128.I16x8 _ -> [ TupV [ nullary "I16"; numV eight ] ]
     | V128.I32x4 _ -> [ TupV [ nullary "I32"; numV four ] ]
     | V128.I64x2 _ -> [ TupV [ nullary "I64"; numV two ] ]
-    | _ -> error "al_of_vbitmaskop" ""
+    | _ -> error "al_of_vbitmaskop" empty
   )
 
 let al_of_int_vtestop : V128Op.itestop -> value = function
@@ -1446,7 +1448,7 @@ let al_of_special_vbinop = function
   | V128 (V128.I64x2 (V128Op.ExtMulLowS)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I64"; numV two ]; TupV [ nullary "I32"; numV four ]; caseV ("EXTMUL", [nullary "LOW"]); al_of_extension Pack.SX ])
   | V128 (V128.I64x2 (V128Op.ExtMulLowU)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I64"; numV two ]; TupV [ nullary "I32"; numV four ]; caseV ("EXTMUL", [nullary "LOW"]); al_of_extension Pack.ZX ] )
   | V128 (V128.I32x4 (V128Op.DotS)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I32"; numV four ]; TupV [ nullary "I16"; numV eight ]; nullary "DOT"; al_of_extension Pack.SX ])
-  | _ -> error "al_of_special_vbinop" ""
+  | _ -> error "al_of_special_vbinop" empty
 
 let al_of_int_vcvtop = function
   | V128Op.ExtendLowS -> Some (nullary "EXTEND", Some (nullary "LOW"), None, Some (nullary "S"), None)
@@ -1478,7 +1480,7 @@ let al_of_vcvtop = function
       Option.map (fun (op', half, to_, ext, zero) ->
         let sh = match to_ with Some sh -> sh | None -> (
           match half with
-          | Some _ -> error "al_of_vcvtop" ""
+          | Some _ -> error "al_of_vcvtop" empty
           | None -> TupV [ nullary "I8"; numV sixteen ]
         ) in
         [ TupV [ nullary "I8"; numV sixteen ]; op'; optV half; sh; optV ext; CaseV ("ZERO", [OptV zero]) ]
@@ -1518,7 +1520,7 @@ let al_of_vcvtop = function
       Option.map (fun (op', half, to_, ext, zero) ->
         let sh = match to_ with Some sh -> sh | None -> (
           match half with
-          | Some _ -> error "al_of_vcvtop" ""
+          | Some _ -> error "al_of_vcvtop" empty
           | None -> TupV [ nullary "F32"; numV four ]
         ) in
         [ TupV [ nullary "F32"; numV four ]; op'; optV half; sh; optV ext; CaseV ("ZERO", [OptV zero]) ]
@@ -1542,7 +1544,7 @@ let al_of_special_vcvtop = function
   | V128 (V128.I16x8 (V128Op.ExtAddPairwiseU)) -> CaseV ("VEXTUNOP", [ TupV [ nullary "I16"; numV eight]; TupV [ nullary "I8"; numV sixteen ]; nullary "EXTADD_PAIRWISE"; al_of_extension Pack.ZX ])
   | V128 (V128.I32x4 (V128Op.ExtAddPairwiseS)) -> CaseV ("VEXTUNOP", [ TupV [ nullary "I32"; numV four]; TupV [ nullary "I16"; numV eight ]; nullary "EXTADD_PAIRWISE"; al_of_extension Pack.SX ])
   | V128 (V128.I32x4 (V128Op.ExtAddPairwiseU)) -> CaseV ("VEXTUNOP", [ TupV [ nullary "I32"; numV four]; TupV [ nullary "I16"; numV eight ]; nullary "EXTADD_PAIRWISE"; al_of_extension Pack.ZX ])
-  | _ -> error "al_of_special_vcvtop" ""
+  | _ -> error "al_of_special_vcvtop" empty
 
 let al_of_int_vshiftop : V128Op.ishiftop -> value = function
   | V128Op.Shl -> nullary "SHL"

@@ -65,7 +65,7 @@ let to_left_assoc_cat =
     | CatE (l, r) ->
       begin match r.it with
       | CatE (rl, rr) ->
-          { e with it = CatE (CatE (l, rl) $$ no_region % e.note, rr) } |> rotate_ccw
+        { e with it = CatE (CatE (l, rl) $$ no_region % e.note, rr) } |> rotate_ccw
       | _ -> e
       end
     | _ -> e
@@ -80,7 +80,7 @@ let to_right_assoc_cat =
     | CatE (l, r) ->
       begin match l.it with
       | CatE (ll, lr) ->
-          { e with it = CatE (ll, CatE (lr, r) $$ no_region% e.note) } |> rotate_cw
+        { e with it = CatE (ll, CatE (lr, r) $$ no_region% e.note) } |> rotate_cw
       | _ -> e
       end
     | _ -> e
@@ -172,7 +172,7 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
   in { e1 with it }
 
 and overlap_arg a1 a2 = if eq_arg a1 a2 then a1 else
-  ( match a1.it, a2.it with
+  (match a1.it, a2.it with
     | ExpA e1, ExpA e2 -> ExpA (overlap e1 e2)
     | TypA _, TypA _ -> a1.it
     | _, _ -> assert false
@@ -213,12 +213,12 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
     | ListE es1, ListE es2 ->
         List.fold_left2 (fun acc e1 e2 -> pairwise_concat acc (collect_unified e1 e2)) ([], []) es1 es2
     | CallE (_, as1), CallE (_, as2) -> collect_unified_args as1 as2
-    | _ -> Util.Error.error template.at "il2il" "collect_unified"
+    | _ -> Util.Error.error template.at "il2il" "cannot match template with expression"
 
 and collect_unified_arg template a = if eq_arg template a then [], [] else match template.it, a.it with
   | ExpA template', ExpA e -> collect_unified template' e
   | TypA _, TypA _ -> [], []
-  | _ -> Util.Error.error template.at "il2il" "collect_unified_arg"
+  | _ -> Util.Error.error template.at "il2il" "cannot match template with argument"
 
 and collect_unified_args as1 as2 =
   List.fold_left2 (fun acc a1 a2 -> pairwise_concat acc (collect_unified_arg a1 a2)) ([], []) as1 as2
