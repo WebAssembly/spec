@@ -488,10 +488,8 @@ $${rule: Instr_ok/local.get}
 
 .. _valid-local.set:
 
-LOCAL.SET
-^^^^^^^^^
 
-TODO (not found) 
+$${rule-prose: valid/local.set}
 
 \
 
@@ -499,10 +497,7 @@ $${rule+: Instr_ok/local.set}
 
 .. _valid-local.tee:
 
-LOCAL.TEE
-^^^^^^^^^
-
-TODO (not found)
+$${rule-prose: valid/local.tee}
 
 \
 
