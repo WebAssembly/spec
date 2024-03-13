@@ -91,6 +91,11 @@ let string_of_binop = function
   | LeOp -> "≤"
   | GeOp -> "≥"
 
+let string_of_infix = function
+  | AtomOp (s, _) -> s
+  | ArrowOp -> "->"
+  | ArrowSubOp -> "->_"
+
 
 (* Iters *)
 
@@ -123,6 +128,8 @@ and string_of_expr expr =
     sprintf "%s is not defined" (string_of_expr e)
   | UnE (NotOp, { it = IsValidE e; _ }) ->
     sprintf "%s is not valid" (string_of_expr e)
+  | UnE (NotOp, { it = MatchE (e1, e2); _ }) ->
+    sprintf "%s does not match %s" (string_of_expr e1) (string_of_expr e2)
   | UnE (NotOp, e) -> sprintf "not %s" (string_of_expr e)
   | UnE (op, e) -> sprintf "(%s %s)" (string_of_unop op) (string_of_expr e)
   | BinE (op, e1, e2) ->
@@ -156,7 +163,7 @@ and string_of_expr expr =
   | VarE id -> id
   | SubE (id, _) -> id
   | IterE (e, _, iter) -> string_of_expr e ^ string_of_iter iter
-  | InfixE (e1, infix, e2) -> "(" ^ string_of_expr e1 ^ " " ^ infix ^ " " ^ string_of_expr e2 ^ ")"
+  | InfixE (e1, infix, e2) -> "(" ^ string_of_expr e1 ^ " " ^ string_of_infix infix ^ " " ^ string_of_expr e2 ^ ")"
   | CaseE ((("CONST"|"VCONST"), _), hd::tl) -> "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
   | CaseE ((s, _), []) -> s
   | CaseE ((s, _), el) -> "(" ^ s ^ " " ^ string_of_exprs " " el ^ ")"
@@ -220,6 +227,15 @@ let make_index depth =
   | 3 -> alp_idx ^ ")"
   | _ -> assert false
 
+(* Prefix for stack push/pop operations *)
+let string_of_stack_prefix expr =
+  match expr.it with
+  | ContE _
+  | LabelE _
+  | FrameE _ -> ""
+  | IterE _ -> "the values "
+  | _ -> "the value "
+
 let rec string_of_instr' depth instr =
   match instr.it with
   | IfI (e, il, []) ->
@@ -267,11 +283,11 @@ let rec string_of_instr' depth instr =
       (string_of_instrs' (depth + 1) il2)
   | AssertI e -> sprintf "%s Assert: Due to validation, %s." (make_index depth) (string_of_expr e)
   | PushI e ->
-    sprintf "%s Push %s to the stack." (make_index depth)
-      (string_of_expr e)
+    sprintf "%s Push %s%s to the stack." (make_index depth)
+      (string_of_stack_prefix e) (string_of_expr e)
   | PopI e ->
-    sprintf "%s Pop %s from the stack." (make_index depth)
-      (string_of_expr e)
+    sprintf "%s Pop %s%s from the stack." (make_index depth)
+      (string_of_stack_prefix e) (string_of_expr e)
   | PopAllI e ->
     sprintf "%s Pop all values %s from the stack." (make_index depth)
       (string_of_expr e)
@@ -286,7 +302,7 @@ let rec string_of_instr' depth instr =
     sprintf "%s Enter %s with label %s:%s" (make_index depth)
       (string_of_expr e1) (string_of_expr e2) (string_of_instrs' (depth + 1) il)
   | ExecuteI e ->
-    sprintf "%s Execute %s." (make_index depth) (string_of_expr e)
+    sprintf "%s Execute the instruction %s." (make_index depth) (string_of_expr e)
   | ExecuteSeqI e ->
     sprintf "%s Execute the sequence (%s)." (make_index depth) (string_of_expr e)
   | PerformI (id, el) ->
@@ -451,7 +467,7 @@ and structured_string_of_expr expr =
     "InfixE ("
     ^ structured_string_of_expr e1
     ^ ", "
-    ^ infix
+    ^ string_of_infix infix
     ^ ", "
     ^ structured_string_of_expr e2
     ^ ")"

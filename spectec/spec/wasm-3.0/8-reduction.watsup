@@ -165,7 +165,7 @@ rule Step_read/call_ref-func:
   -- if $funcinst(z)[a] = fi
   -- Expand: fi.TYPE ~~ FUNC (t_1^n -> t_2^m)
   -- if fi.CODE = FUNC y (LOCAL t)* (instr*)
-  -- if f = {LOCAL val^n ($default(t))*, MODULE fi.MODULE}
+  -- if f = {LOCAL val^n ($default_(t))*, MODULE fi.MODULE}
 
 
 rule Step_read/return_call:
@@ -318,7 +318,7 @@ rule Step/struct.new:
 rule Step_read/struct.new_default:
   z; (STRUCT.NEW_DEFAULT x)  ~>  val* (STRUCT.NEW x)
   -- Expand: $type(z, x) ~~ STRUCT (mut zt)*
-  -- if ($default($unpack(zt)) = val)*
+  -- if ($default_($unpack(zt)) = val)*
 
 
 rule Step_read/struct.get-null:
@@ -347,7 +347,7 @@ rule Step_read/array.new:
 rule Step_read/array.new_default:
   z; (CONST I32 n) (ARRAY.NEW_DEFAULT x)  ~>  val^n (ARRAY.NEW_FIXED x n)
   -- Expand: $type(z, x) ~~ ARRAY (mut zt)
-  -- if $default($unpack(zt)) = val
+  -- if $default_($unpack(zt)) = val
 
 rule Step/array.new_fixed:
   z; val^n (ARRAY.NEW_FIXED x n)  ~>  $ext_arrayinst(z, ai); (REF.ARRAY_ADDR $(|$arrayinst(z)|))

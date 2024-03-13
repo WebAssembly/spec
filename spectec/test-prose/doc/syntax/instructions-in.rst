@@ -40,7 +40,7 @@ $${syntax: instr/ref}
 Aggregate Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
 
-$${syntax: instr/heap}
+$${syntax: instr/struct instr/array instr/i31 instr/extern}
 
 .. _syntax-instr-local:
 .. _syntax-instr-global:
@@ -58,7 +58,7 @@ $${syntax+:
 Table Instructions
 ~~~~~~~~~~~~~~~~~~
 
-$${syntax: instr/table}
+$${syntax: instr/table instr/elem}
 
 
 Memory Instructions
@@ -68,7 +68,7 @@ Memory Instructions
 .. _syntax-memop:
 
 $${syntax+: 
-  instr/memory
+  instr/memory instr/data
   memop
 }
 
@@ -88,7 +88,7 @@ Control Instructions
 
 $${syntax+: 
   blocktype
-  instr/control
+  {instr/block instr/br instr/call}
 }
 
 .. _syntax-instr-expr:

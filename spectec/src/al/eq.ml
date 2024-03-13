@@ -2,6 +2,13 @@ open Ast
 open Util
 open Source
 
+let eq_infixop op1 op2 = 
+  match op1, op2 with
+  | AtomOp s1, AtomOp s2 -> s1 = s2
+  | ArrowOp, ArrowOp
+  | ArrowSubOp, ArrowSubOp -> true
+  | _ -> false
+
 let rec eq_expr e1 e2 =
   match e1.it, e2.it with
   | VarE id1, VarE id2 -> id1 = id2
@@ -46,7 +53,7 @@ let rec eq_expr e1 e2 =
   | ListE el1, ListE el2 -> eq_exprs el1 el2
   | InfixE (e11, infix1, e12), InfixE (e21, infix2, e22) ->
       eq_expr e11 e21 &&
-      infix1 = infix2 &&
+      eq_infixop infix1 infix2 &&
       eq_expr e12 e22
   | ArityE e1, ArityE e2 -> eq_expr e1 e2
   | FrameE (eo1, e1), FrameE (eo2, e2) ->

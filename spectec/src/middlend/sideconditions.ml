@@ -77,9 +77,8 @@ let rec t_exp env e : prem list =
   | UnE (_, exp)
   | DotE (exp, _)
   | LenE exp
-  | MixE (_, exp)
   | ProjE (exp, _)
-  | UnmixE (exp, _)
+  | UncaseE (exp, _)
   | OptE (Some exp)
   | TheE exp
   | CaseE (_, exp)

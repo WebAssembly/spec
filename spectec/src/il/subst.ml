@@ -77,22 +77,17 @@ and subst_typbind s (e, t) =
 and subst_deftyp s dt =
   (match dt.it with
   | AliasT t -> AliasT (subst_typ s t)
-  | NotationT tc -> NotationT (subst_typcon s tc)
   | StructT tfs -> StructT (subst_list subst_typfield s tfs)
   | VariantT tcs -> VariantT (subst_list subst_typcase s tcs)
   ) $ dt.at
-
-and subst_typcon s (op, (bs, t, prems), hints) =
-  let bs', s' = subst_binds s bs in
-  (op, (bs', subst_typ s' t, subst_list subst_prem s' prems), hints)
 
 and subst_typfield s (atom, (bs, t, prems), hints) =
   let bs', s' = subst_binds s bs in
   (atom, (bs', subst_typ s' t, subst_list subst_prem s' prems), hints)
 
-and subst_typcase s (atom, (bs, t, prems), hints) =
+and subst_typcase s (op, (bs, t, prems), hints) =
   let bs', s' = subst_binds s bs in
-  (atom, (bs', subst_typ s' t, subst_list subst_prem s' prems), hints)
+  (op, (bs', subst_typ s' t, subst_list subst_prem s' prems), hints)
 
 
 (* Expressions *)
@@ -117,16 +112,15 @@ and subst_exp s e =
   | CompE (e1, e2) -> CompE (subst_exp s e1, subst_exp s e2)
   | LenE e1 -> LenE (subst_exp s e1)
   | TupE es -> TupE (subst_list subst_exp s es)
-  | MixE (op, e1) -> MixE (op, subst_exp s e1)
   | CallE (id, as_) -> CallE (id, subst_args s as_)
   | IterE (e1, iterexp) -> IterE (subst_exp s e1, subst_iterexp s iterexp)
   | ProjE (e1, i) -> ProjE (subst_exp s e1, i)
-  | UnmixE (e1, op) -> UnmixE (subst_exp s e1, op)
+  | UncaseE (e1, op) -> UncaseE (subst_exp s e1, op)
   | OptE eo -> OptE (subst_opt subst_exp s eo)
   | TheE e -> TheE (subst_exp s e)
   | ListE es -> ListE (subst_list subst_exp s es)
   | CatE (e1, e2) -> CatE (subst_exp s e1, subst_exp s e2)
-  | CaseE (a, e1) -> CaseE (a, subst_exp s e1)
+  | CaseE (op, e1) -> CaseE (op, subst_exp s e1)
   | SubE (e1, t1, t2) -> SubE (subst_exp s e1, subst_typ s t1, subst_typ s t2)
   ) $$ e.at % subst_typ s e.note
 

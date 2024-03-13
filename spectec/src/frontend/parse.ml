@@ -6,7 +6,7 @@ let with_lexbuf name lexbuf start =
   try
     start Lexer.token lexbuf
   with Parser.Error ->
-    raise (Error.Error (Lexer.region lexbuf, "unexpected token"))
+    raise (Error.Error (Lexer.region lexbuf, "syntax error: unexpected token"))
 
 let parse_typ s =
   let lexbuf = Lexing.from_string s in

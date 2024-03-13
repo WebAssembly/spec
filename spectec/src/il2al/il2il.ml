@@ -1,5 +1,5 @@
 (**
-Functions that trasnforms IL into IL.
+Functions that transform IL into IL.
 **)
 
 open Il.Ast
@@ -39,16 +39,15 @@ let rec transform_expr f e =
     | CompE (e1, e2) -> CompE (new_ e1, new_ e2)
     | LenE e1 -> LenE (new_ e1)
     | TupE es -> TupE ((List.map new_) es)
-    | MixE (op, e1) -> MixE (op, new_ e1)
     | CallE (id, as1) -> CallE (id, List.map (transform_arg f) as1)
     | IterE (e1, iter) -> IterE (new_ e1, iter) (* TODO iter *)
     | ProjE (e1, i) -> ProjE (new_ e1, i)
-    | UnmixE (e1, op) -> UnmixE (new_ e1, op)
+    | UncaseE (e1, op) -> UncaseE (new_ e1, op)
     | OptE eo -> OptE ((Option.map new_) eo)
     | TheE e1 -> TheE (new_ e1)
     | ListE es -> ListE ((List.map new_) es)
     | CatE (e1, e2) -> CatE (new_ e1, new_ e2)
-    | CaseE (atom, e1) -> CaseE (atom, new_ e1)
+    | CaseE (mixop, e1) -> CaseE (mixop, new_ e1)
     | SubE (e1, _t1, t2) -> SubE (new_ e1, _t1, t2)
   in { e with it }
 
@@ -133,7 +132,7 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
       ExtE (overlap e1 e2, path1, overlap e1' e2')
     | StrE efs1, StrE efs2 when List.map fst efs1 = List.map fst efs2 ->
       StrE (List.map2 (fun (a1, e1) (_, e2) -> (a1, overlap e1 e2)) efs1 efs2)
-    | DotE (e1, atom1), DotE (e2, atom2) when atom1 = atom2 ->
+    | DotE (e1, atom1), DotE (e2, atom2) when eq_atom atom1 atom2 ->
       DotE (overlap e1 e2, atom1)
     | CompE (e1, e1'), CompE (e2, e2') ->
       CompE (overlap e1 e2, overlap e1' e2')
@@ -141,16 +140,14 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
       LenE (overlap e1 e2)
     | TupE es1, TupE es2 when List.length es1 = List.length es2 ->
       TupE (List.map2 overlap es1 es2)
-    | MixE (mixop1, e1), MixE (mixop2, e2) when mixop1 = mixop2 ->
-      MixE (mixop1, overlap e1 e2)
     | CallE (id1, as1), CallE (id2, as2) when eq_id id1 id2 ->
       CallE (id1, List.map2 overlap_arg as1 as2)
     | IterE (e1, itere1), IterE (e2, itere2) when eq_iterexp itere1 itere2 ->
       IterE (overlap e1 e2, itere1)
     | ProjE (e1, i1), ProjE (e2, i2) when i1 = i2 ->
       ProjE (overlap e1 e2, i1)
-    | UnmixE (e1, op1), UnmixE (e2, op2) when op1 = op2 ->
-      UnmixE (overlap e1 e2, op1)
+    | UncaseE (e1, op1), UncaseE (e2, op2) when eq_mixop op1 op2 ->
+      UncaseE (overlap e1 e2, op1)
     | OptE (Some e1), OptE (Some e2) ->
       OptE (Some (overlap e1 e2))
     | TheE e1, TheE e2 ->
@@ -159,8 +156,8 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
       ListE (List.map2 overlap es1 es2)
     | CatE (e1, e1'), CatE (e2, e2') ->
       CatE (overlap e1 e2, overlap e1' e2')
-    | CaseE (atom1, e1), CaseE (atom2, e2) when atom1 = atom2 ->
-      CaseE (atom1, overlap e1 e2)
+    | CaseE (mixop1, e1), CaseE (mixop2, e2) when eq_mixop mixop1 mixop2 ->
+      CaseE (mixop1, overlap e1 e2)
     | SubE (e1, typ1, typ1'), SubE (e2, typ2, typ2') when eq_typ typ1 typ2 && eq_typ typ1' typ2' ->
       SubE (overlap e1 e2, typ1, typ1')
     | _ ->
@@ -190,10 +187,9 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
     | UnE (_, e1), UnE (_, e2)
     | DotE (e1, _), DotE (e2, _)
     | LenE e1, LenE e2
-    | MixE (_, e1), MixE (_, e2)
     | IterE (e1, _), IterE (e2, _)
     | ProjE (e1, _), ProjE (e2, _)
-    | UnmixE (e1, _), UnmixE (e2, _)
+    | UncaseE (e1, _), UncaseE (e2, _)
     | OptE (Some e1), OptE (Some e2)
     | TheE e1, TheE e2
     | CaseE (_, e1), CaseE (_, e2)

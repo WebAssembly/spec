@@ -12,10 +12,11 @@ import sys
 
 ownDir = os.path.dirname(os.path.abspath(sys.argv[0]))
 inputDir = ownDir
+interpDir = os.path.join(os.path.dirname(os.path.dirname(ownDir)), 'interpreter')
 outputDir = os.path.join(inputDir, "_output")
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--wasm", metavar="<wasm-command>", default=os.path.join(os.getcwd(), "wasm"))
+parser.add_argument("--wasm", metavar="<wasm-command>", default=os.path.join(interpDir, "wasm"))
 parser.add_argument("--js", metavar="<js-command>")
 parser.add_argument("--generate-js-only", action='store_true')
 parser.add_argument("--out", metavar="<out-dir>", default=outputDir)
@@ -27,7 +28,8 @@ main_test_files = glob.glob(os.path.join(inputDir, "*.wast"))
 # Other test files are in subdirectories
 simd_test_files = glob.glob(os.path.join(inputDir, "simd", "*.wast"))
 gc_test_files = glob.glob(os.path.join(inputDir, "gc", "*.wast"))
-all_test_files = main_test_files + simd_test_files + gc_test_files
+multi_memory_test_files = glob.glob(os.path.join(inputDir, "multi-memory", "*.wast"))
+all_test_files = main_test_files + simd_test_files + gc_test_files + multi_memory_test_files
 
 wasmCommand = arguments.wasm
 jsCommand = arguments.js

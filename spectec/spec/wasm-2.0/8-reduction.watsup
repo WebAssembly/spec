@@ -132,7 +132,7 @@ rule Step_read/call_addr:
   z; val^k (CALL_ADDR a)  ~>  (FRAME_ n `{f} (LABEL_ n `{eps} instr*))
   -- if $funcinst(z)[a] = {TYPE (t_1^k -> t_2^n), MODULE mm, CODE func}
   -- if func = FUNC x (LOCAL t)* instr*
-  -- if f = {LOCAL val^k ($default(t))*, MODULE mm}
+  -- if f = {LOCAL val^k ($default_(t))*, MODULE mm}
 
 
 rule Step_pure/frame-vals:

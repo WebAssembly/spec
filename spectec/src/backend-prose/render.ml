@@ -49,20 +49,19 @@ let al_to_el_binop = function
   | Al.Ast.ExpOp -> Some El.Ast.ExpOp
   | _ -> None
 
-(* TODO hardcoded types for infixop atom,
-   *)
 let al_to_el_infixop op =
   let elatom, typ = match op with
-  | "->" -> Some El.Ast.Arrow, ""
-  | "X" -> Some (El.Ast.Atom "X"), "shape"
-  | _ -> None, ""
+  | Al.Ast.AtomOp (s, typ) ->
+      Some (Il.Atom.Atom s), typ
+  | Al.Ast.ArrowOp -> Some Il.Atom.Arrow, ""
+  | Al.Ast.ArrowSubOp -> Some Il.Atom.ArrowSub, ""
   in
   Option.map
     (fun elatom -> elatom $$ no_region % ref typ)
     elatom
 
 let al_to_el_kwd (id, typ) =
-  let elatom = El.Ast.Atom id in
+  let elatom = Il.Atom.Atom id in
   elatom $$ no_region % (ref typ)
 
 let rec al_to_el_iter iter = match iter with
@@ -307,6 +306,10 @@ and render_expr' env expr =
   | Al.Ast.UnE (NotOp, { it = Al.Ast.IsValidE e; _ }) ->
     let se = render_expr env e in
     sprintf "%s is not valid" se
+  | Al.Ast.UnE (NotOp, { it = Al.Ast.MatchE (e1, e2); _ }) ->
+    let se1 = render_expr env e1 in
+    let se2 = render_expr env e2 in
+    sprintf "%s does not match %s" se1 se2
   | Al.Ast.UnE (op, e) ->
     let sop = render_al_unop op in
     let se = render_expr env e in
@@ -440,7 +443,7 @@ let rec render_prose_instr env depth = function
       (render_expr env e2)
       (render_prose_instrs env (depth + 1) is)
   | EquivI (c1, c2) ->
-    sprintf "* %s and %s are equivalent."
+    sprintf "* %s if and only if %s."
       (String.capitalize_ascii (render_expr env c1))
       (render_expr env c2)
   | YetI s ->
@@ -451,6 +454,15 @@ and render_prose_instrs env depth instrs =
     (fun sinstrs i ->
       sinstrs ^ "\n\n" ^ repeat indent depth ^ render_prose_instr env depth i)
     "" instrs
+
+(* Prefix for stack push/pop operations *)
+let render_stack_prefix expr =
+  match expr.it with
+  | Al.Ast.ContE _
+  | Al.Ast.FrameE _
+  | Al.Ast.LabelE _ -> ""
+  | Al.Ast.IterE _ -> "the values "
+  | _ -> "the value "
 
 let rec render_al_instr env algoname index depth instr =
   match instr.it with
@@ -510,14 +522,11 @@ let rec render_al_instr env algoname index depth instr =
     sprintf "%s Assert: Due to %s, %s." (render_order index depth)
       vref (render_expr env c)
   | Al.Ast.PushI e ->
-    sprintf "%s Push %s to the stack." (render_order index depth)
-      (render_expr env e)
-  (* TODO hardcoded for PopI on label or frame by raw string *)
-  | Al.Ast.PopI ({ it = Al.Ast.VarE s; _ }) when s = "the label" || s = "the frame" ->
-    sprintf "%s Pop %s from the stack." (render_order index depth) s
+    sprintf "%s Push %s%s to the stack." (render_order index depth)
+      (render_stack_prefix e) (render_expr env e)
   | Al.Ast.PopI e ->
-    sprintf "%s Pop %s from the stack." (render_order index depth)
-      (render_expr env e)
+    sprintf "%s Pop %s%s from the stack." (render_order index depth)
+      (render_stack_prefix e) (render_expr env e)
   | Al.Ast.PopAllI e ->
     sprintf "%s Pop all values %s from the stack." (render_order index depth)
       (render_expr env e)
@@ -534,7 +543,7 @@ let rec render_al_instr env algoname index depth instr =
       (render_expr env e1) (render_expr env e2)
       (render_al_instrs env algoname (depth + 1) il)
   | Al.Ast.ExecuteI e ->
-    sprintf "%s Execute %s." (render_order index depth) (render_expr env e)
+    sprintf "%s Execute the instruction %s." (render_order index depth) (render_expr env e)
   | Al.Ast.ExecuteSeqI e ->
     sprintf "%s Execute the sequence %s." (render_order index depth) (render_expr env e)
   | Al.Ast.PerformI (n, es) ->

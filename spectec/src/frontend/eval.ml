@@ -78,8 +78,11 @@ let rec reduce_typ env t : typ =
     | None -> VarT (id, args') $ t.at
     )
   | ParenT t1 -> reduce_typ env t1
-  | CaseT (dots1, ts, tcs, dots2) ->
-    assert (dots1 = NoDots && dots2 = NoDots);
+  | CaseT (dots1, ts, tcs, _dots2) ->
+    assert (dots1 = NoDots);
+(* TODO: unclosed case types are not checked early enough for this
+    assert (dots2 = NoDots);
+*)
     let tcs' = Convert.concat_map_nl_list (reduce_casetyp env) ts in
     CaseT (NoDots, [], tcs' @ tcs, NoDots) $ t.at
   | _ -> t

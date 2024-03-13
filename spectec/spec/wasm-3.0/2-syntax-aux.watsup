@@ -119,7 +119,7 @@ def $shsize(lnn X N) = $($lsize(lnn) * N)
 
 ;; Type difference
 
-def $diffrt(reftype, reftype) : reftype  hint(show $(%-%))
+def $diffrt(reftype, reftype) : reftype  hint(show %\%)
 
 def $diffrt((REF nul_1 ht_1), (REF NULL ht_2)) = (REF eps ht_1)
 def $diffrt((REF nul_1 ht_1), (REF eps ht_2)) = (REF nul_1 ht_1)
@@ -127,7 +127,7 @@ def $diffrt((REF nul_1 ht_1), (REF eps ht_2)) = (REF nul_1 ht_1)
 
 ;; Injection
 
-syntax typevar = | _IDX typeidx | REC nat
+syntax typevar = _IDX typeidx | REC nat
 var xx : typevar
 
 def $idx(typeidx) : typevar  hint(show %)
@@ -255,20 +255,21 @@ def $tablesxt(externtype*) : tabletype*    hint(show $tables(%))
 def $memsxt(externtype*) : memtype*        hint(show $mems(%))
 
 def $funcsxt(eps) = eps
-def $funcsxt((FUNC dt) et*) = dt $funcsxt(et*)
-def $funcsxt(externtype et*) = $funcsxt(et*)  -- otherwise
+def $funcsxt((FUNC dt) xt*) = dt $funcsxt(xt*)
+def $funcsxt(externtype xt*) = $funcsxt(xt*)  -- otherwise
 
 def $globalsxt(eps) = eps
-def $globalsxt((GLOBAL gt) et*) = gt $globalsxt(et*)
-def $globalsxt(externtype et*) = $globalsxt(et*)  -- otherwise
+def $globalsxt((GLOBAL gt) xt*) = gt $globalsxt(xt*)
+def $globalsxt(externtype xt*) = $globalsxt(xt*)  -- otherwise
 
 def $tablesxt(eps) = eps
-def $tablesxt((TABLE tt) et*) = tt $tablesxt(et*)
-def $tablesxt(externtype et*) = $tablesxt(et*)  -- otherwise
+def $tablesxt((TABLE tt) xt*) = tt $tablesxt(xt*)
+def $tablesxt(externtype xt*) = $tablesxt(xt*)  -- otherwise
 
 def $memsxt(eps) = eps
-def $memsxt((MEM mt) et*) = mt $memsxt(et*)
-def $memsxt(externtype et*) = $memsxt(et*)  -- otherwise
+def $memsxt((MEM mt) xt*) = mt $memsxt(xt*)
+def $memsxt(externtype xt*) = $memsxt(xt*)  -- otherwise
+
 
 
 ;;

@@ -19,11 +19,7 @@ Number Types
 
 :ref:`Number types <syntax-numtype>` are always valid.
 
-.. math::
-   \frac{
-   }{
-     C \vdashnumtype \numtype \ok
-   }
+$${rule: Numtype_ok}
 
 
 .. index:: vector type
@@ -36,11 +32,7 @@ Vector Types
 
 :ref:`Vector types <syntax-vectype>` are always valid.
 
-.. math::
-   \frac{
-   }{
-     C \vdashvectype \vectype \ok
-   }
+$${rule: Vectype_ok}
 
 
 .. index:: heap type, type identifier
@@ -58,11 +50,8 @@ Concrete :ref:`Heap types <syntax-heaptype>` are only valid when the :ref:`type 
 
 * The heap type is valid.
 
-.. math::
-   \frac{
-   }{
-     C \vdashheaptype \absheaptype \ok
-   }
+$${rule: Heaptype_ok/abs}
+
 
 :math:`\typeidx`
 ................
@@ -71,12 +60,7 @@ Concrete :ref:`Heap types <syntax-heaptype>` are only valid when the :ref:`type 
 
 * Then the heap type is valid.
 
-.. math::
-   \frac{
-     C.\CTYPES[\typeidx] = \deftype
-   }{
-     C \vdashheaptype \typeidx \ok
-   }
+$${rule: Heaptype_ok/typeidx}
 
 
 .. index:: reference type, heap type
@@ -96,12 +80,7 @@ Reference Types
 
 * Then the reference type is valid.
 
-.. math::
-   \frac{
-     C \vdashreftype \heaptype \ok
-   }{
-     C \vdashreftype \REF~\NULL^?~\heaptype \ok
-   }
+$${rule: Reftype_ok}
 
 
 .. index:: value type, reference type, number type, vector type
@@ -134,12 +113,7 @@ Block Types
 
 * Then the block type is valid as :ref:`instruction type <syntax-instrtype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
 
-.. math::
-   \frac{
-     \expanddt(C.\CTYPES[\typeidx]) = \TFUNC~[t_1^\ast] \toF [t_2^\ast]
-   }{
-     C \vdashblocktype \typeidx : [t_1^\ast] \to [t_2^\ast]
-   }
+$${rule: Blocktype_ok/typeidx}
 
 
 :math:`[\valtype^?]`
@@ -149,12 +123,7 @@ Block Types
 
 * Then the block type is valid as :ref:`instruction type <syntax-instrtype>` :math:`[] \to [\valtype^?]`.
 
-.. math::
-   \frac{
-     (C \vdashvaltype \valtype \ok)^?
-   }{
-     C \vdashblocktype [\valtype^?] : [] \to [\valtype^?]
-   }
+$${rule: Blocktype_ok/valtype}
 
 
 .. index:: result type, value type
@@ -172,12 +141,7 @@ Result Types
 
 * Then the result type is valid.
 
-.. math::
-   \frac{
-     (C \vdashvaltype t \ok)^\ast
-   }{
-     C \vdashresulttype [t^\ast] \ok
-   }
+$${rule: Resulttype_ok}
 
 
 .. index:: instruction type
@@ -199,16 +163,7 @@ Instruction Types
 
 * Then the instruction type is valid.
 
-.. math::
-   \frac{
-     C \vdashvaltype [t_1^\ast] \ok
-     \qquad
-     C \vdashvaltype [t_2^\ast] \ok
-     \qquad
-     (C.\CLOCALS[x] = \localtype)^\ast
-   }{
-     C \vdashfunctype [t_1^\ast] \to_{x^\ast} [t_2^\ast] \ok
-   }
+$${rule: Instrtype_ok}
 
 
 .. index:: function type
@@ -228,14 +183,7 @@ Function Types
 
 * Then the function type is valid.
 
-.. math::
-   \frac{
-     C \vdashvaltype [t_1^\ast] \ok
-     \qquad
-     C \vdashvaltype [t_2^\ast] \ok
-   }{
-     C \vdashfunctype [t_1^\ast] \toF [t_2^\ast] \ok
-   }
+$${rule: Functype_ok}
 
 
 .. index:: composite type, function type, aggregate type, structure type, array type, field type
@@ -263,12 +211,7 @@ Composite Types
 
 * Then the composite type is valid.
 
-.. math::
-   \frac{
-     C \vdashfunctype \functype \ok
-   }{
-     C \vdashcomptype \TFUNC~\functype \ok
-   }
+$${rule: Comptype_ok/func}
 
 :math:`\TSTRUCT~\fieldtype^\ast`
 ................................
@@ -279,12 +222,7 @@ Composite Types
 
 * Then the composite type is valid.
 
-.. math::
-   \frac{
-     (C \vdashfieldtype \X{ft} \ok)^\ast
-   }{
-     C \vdashcomptype \TSTRUCT~\X{ft}^\ast \ok
-   }
+$${rule: Comptype_ok/struct}
 
 :math:`\TARRAY~\fieldtype`
 ..........................
@@ -293,12 +231,7 @@ Composite Types
 
 * Then the composite type is valid.
 
-.. math::
-   \frac{
-     C \vdashfieldtype \X{ft} \ok
-   }{
-     C \vdashcomptype \TARRAY~\X{ft} \ok
-   }
+$${rule: Comptype_ok/array}
 
 
 .. index:: field type, storage type, packed type, value type, mutability
@@ -323,23 +256,15 @@ Field Types
 
 * Then the field type is valid.
 
-.. math::
-   \frac{
-     C \vdashstoragetype \X{st} \ok
-   }{
-     C \vdashfieldtype \mut~\X{st} \ok
-   }
+$${rule: Fieldtype_ok}
+
 
 :math:`\packedtype`
 ...................
 
 * The packed type is valid.
 
-.. math::
-   \frac{
-   }{
-     C \vdashpackedtype \packedtype \ok
-   }
+$${rule: Packtype_ok}
 
 
 .. index:: recursive type, sub type, composite type, final, subtyping
@@ -366,19 +291,8 @@ Recursive Types
 
 * Then the recursive type is valid for the :ref:`type index <syntax-typeidx>` :math:`x`.
 
-.. math::
-   \frac{
-   }{
-     C \vdashrectype \TREC~\epsilon ~{\ok}(x)
-   }
-   \qquad
-   \frac{
-     C \vdashsubtype \subtype ~{\ok}(x)
-     \qquad
-     C \vdashrectype \TREC~{\subtype'}^\ast ~{\ok}(x + 1)
-   }{
-     C \vdashrectype \TREC~\subtype~{\subtype'}^\ast ~{\ok}(x)
-   }
+$${rule: {Rectype_ok/empty Rectype_ok/cons}}
+
 
 :math:`\TSUB~\TFINAL^?~y^\ast~\comptype`
 ........................................
@@ -403,22 +317,7 @@ Recursive Types
 
 * Then the sub type is valid for the :ref:`type index <syntax-typeidx>` :math:`x`.
 
-.. math::
-   \frac{
-     \begin{array}{@{}c@{}}
-     |y^\ast| \leq 1
-     \qquad
-     (y < x)^\ast
-     \qquad
-     (\unrolldt(C.\CTYPES[y]) = \TSUB~{y'}^\ast~\comptype')^\ast
-     \\
-     C \vdashcomptype \comptype \ok
-     \qquad
-     (C \vdashcomptypematch \comptype \matchescomptype \comptype')^\ast
-     \end{array}
-   }{
-     C \vdashsubtype \TSUB~\TFINAL^?~y^\ast~\comptype ~{\ok}(x)
-   }
+$${rule: Subtype_ok}
 
 .. note::
    The side condition on the index ensures that a declared supertype is a previously defined types,
@@ -445,16 +344,7 @@ Defined Types
 
 * Then the defined type is valid.
 
-.. math::
-   \frac{
-     C \vdashrectype \rectype ~{\ok}(x)
-     \qquad
-     \rectype = \TREC~\subtype^n
-     \qquad
-     i < n
-   }{
-     C \vdashdeftype \rectype.i \ok
-   }
+$${rule: Deftype_ok}
 
 
 .. index:: limits
@@ -480,16 +370,7 @@ Limits
 
 * Then the limit is valid within range :math:`k`.
 
-.. math::
-   \frac{
-     n \leq k
-     \qquad
-     (m \leq k)^?
-     \qquad
-     (n \leq m)^?
-   }{
-     C \vdashlimits \{ \LMIN~n, \LMAX~m^? \} : k
-   }
+$${rule: Limits_ok}
 
 
 .. index:: table type, reference type, limits
@@ -509,14 +390,7 @@ Table Types
 
 * Then the table type is valid.
 
-.. math::
-   \frac{
-     C \vdashlimits \limits : 2^{32} - 1
-     \qquad
-     C \vdashreftype \reftype \ok
-   }{
-     C \vdashtabletype \limits~\reftype \ok
-   }
+$${rule: Tabletype_ok}
 
 
 .. index:: memory type, limits
@@ -534,12 +408,7 @@ Memory Types
 
 * Then the memory type is valid.
 
-.. math::
-   \frac{
-     C \vdashlimits \limits : 2^{16}
-   }{
-     C \vdashmemtype \limits \ok
-   }
+$${rule: Memtype_ok}
 
 
 .. index:: global type, value type, mutability
@@ -557,12 +426,7 @@ Global Types
 
 * Then the global type is valid.
 
-.. math::
-   \frac{
-     C \vdashreftype \valtype \ok
-   }{
-     C \vdashglobaltype \mut~\valtype \ok
-   }
+$${rule: Globaltype_ok}
 
 
 .. index:: external type, function type, table type, memory type, global type
@@ -582,14 +446,8 @@ External Types
 
 * Then the external type is valid.
 
-.. math::
-   \frac{
-     C \vdashdeftype \deftype \ok
-     \qquad
-     \expanddt(\deftype) = \TFUNC~\functype
-   }{
-     C \vdashexterntype \ETFUNC~\deftype
-   }
+$${rule: Externtype_ok/func}
+
 
 :math:`\ETTABLE~\tabletype`
 ...........................
@@ -598,12 +456,8 @@ External Types
 
 * Then the external type is valid.
 
-.. math::
-   \frac{
-     C \vdashtabletype \tabletype \ok
-   }{
-     C \vdashexterntype \ETTABLE~\tabletype \ok
-   }
+$${rule: Externtype_ok/table}
+
 
 :math:`\ETMEM~\memtype`
 .......................
@@ -612,12 +466,8 @@ External Types
 
 * Then the external type is valid.
 
-.. math::
-   \frac{
-     C \vdashmemtype \memtype \ok
-   }{
-     C \vdashexterntype \ETMEM~\memtype \ok
-   }
+$${rule: Externtype_ok/mem}
+
 
 :math:`\ETGLOBAL~\globaltype`
 .............................
@@ -626,48 +476,4 @@ External Types
 
 * Then the external type is valid.
 
-.. math::
-   \frac{
-     C \vdashglobaltype \globaltype \ok
-   }{
-     C \vdashexterntype \ETGLOBAL~\globaltype \ok
-   }
-
-
-.. index:: value type, ! defaultable, number type, vector type, reference type, table type
-.. _valid-defaultable:
-
-Defaultable Types
-~~~~~~~~~~~~~~~~~
-
-A type is *defaultable* if it has a :ref:`default value <default-val>` for initialization.
-
-Value Types
-...........
-
-* A defaultable :ref:`value type <syntax-valtype>` :math:`t` must be:
-
-  - either a :ref:`number type <syntax-numtype>`,
-
-  - or a :ref:`vector type <syntax-vectype>`,
-
-  - or a :ref:`nullable reference type <syntax-numtype>`.
-
-
-.. math::
-   \frac{
-   }{
-     C \vdashvaltypedefaultable \numtype \defaultable
-   }
-
-.. math::
-   \frac{
-   }{
-     C \vdashvaltypedefaultable \vectype \defaultable
-   }
-
-.. math::
-   \frac{
-   }{
-     C \vdashvaltypedefaultable (\REF~\NULL~\heaptype) \defaultable
-   }
+$${rule: Externtype_ok/global}

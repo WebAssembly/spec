@@ -14,6 +14,7 @@ type kwd = kwd' * string
 and kwd' = string
 
 (* Values *)
+
 type 'a growable_array = 'a array ref
 
 type ('a, 'b) record = ('a * 'b ref) list
@@ -61,6 +62,11 @@ type binop =
   | LeOp     (* `<=` *)
   | GeOp     (* `>=` *)
 
+type infixop =
+  | AtomOp of kwd
+  | ArrowOp
+  | ArrowSubOp
+
 (* Iteration *)
 
 type iter =
@@ -90,7 +96,7 @@ and expr' =
   | IterE of expr * id list * iter      (* expr (`{` id* `}`)* *)
   | OptE of expr option                 (* expr?  *)
   | ListE of expr list                  (* `[` expr* `]` *)
-  | InfixE of expr * string * expr      (* "expr infix expr" *) (* TODO: Remove InfixE using hint *)
+  | InfixE of expr * infixop * expr      (* "expr infix expr" *) (* TODO: Remove InfixE using hint *)
   | ArityE of expr                      (* "the arity of expr" *)
   | FrameE of expr option * expr        (* "the activation of expr (with arity expr)?" *)
   | LabelE of expr * expr               (* "the label whose arity is expr and whose continuation is expr" *)
@@ -119,7 +125,6 @@ and path' =
   | IdxP of expr                    (* `[` expr `]` *)
   | SliceP of expr * expr           (* `[` expr `:` expr `]` *)
   | DotP of kwd                     (* `.` atom *)
-
 
 (* Instructions *)
 

@@ -147,10 +147,10 @@ syntax valtype/syn hint(desc "value type") =
 syntax valtype/sem =
   | ... | BOT
 
-syntax inn hint(show I#n) = | I32 | I64
-syntax fnn hint(show F#n) = | F32 | F64
-syntax vnn hint(show V#n) = | V128
-syntax cnn hint(show t) = | inn | fnn | vnn
+syntax inn hint(show I#n) = I32 | I64
+syntax fnn hint(show F#n) = F32 | F64
+syntax vnn hint(show V#n) = V128
+syntax cnn hint(show t) = inn | fnn | vnn
 
 syntax resulttype hint(desc "result type") =
   list(valtype)
@@ -158,13 +158,13 @@ syntax resulttype hint(desc "result type") =
 
 ;; Packed types
 
-syntax packtype hint(desc "packed type") = | I8 | I16
-syntax lanetype hint(desc "lane type") = | numtype | packtype
-syntax storagetype hint(desc "storage type") = | valtype | packtype
+syntax packtype hint(desc "packed type") = I8 | I16
+syntax lanetype hint(desc "lane type") = numtype | packtype
+syntax storagetype hint(desc "storage type") = valtype | packtype
 
-syntax pnn hint(show I#n) = | I8 | I16
-syntax lnn hint(show I#n) = | numtype | pnn
-syntax imm hint(show I#n) = | inn | pnn
+syntax pnn hint(show I#n) = I8 | I16
+syntax lnn hint(show I#n) = numtype | pnn
+syntax imm hint(show I#n) = inn | pnn
 
 
 ;; Type definitions
@@ -227,13 +227,12 @@ var t : valtype
 ;; var bt : blocktype  ;; defined below
 var ct : comptype
 var dt : deftype
-var et : externtype
 var ft : functype
 var gt : globaltype
 var ht : heaptype
 ;; var it : instrtype  ;; defined in typing
 ;; kt : conttype       ;; future extension
-;; var lt : localtype  ;; defined in typing
+var lt : lanetype
 var mt : memtype
 var nt : numtype
 var pt : packtype
@@ -286,13 +285,14 @@ def $zero(numtype) : num_(numtype)
 def $zero(inn) = 0
 def $zero(fnn) = $fzero($size(fnn))
 
+
 ;; Numeric operators
 
-syntax sx hint(desc "signedness") = | U | S
+syntax sx hint(desc "signedness") = U | S
 
 syntax unop_(numtype)
-syntax unop_(inn) = | CLZ | CTZ | POPCNT | EXTEND n
-syntax unop_(fnn) = | ABS | NEG | SQRT | CEIL | FLOOR | TRUNC | NEAREST
+syntax unop_(inn) = CLZ | CTZ | POPCNT | EXTEND n
+syntax unop_(fnn) = ABS | NEG | SQRT | CEIL | FLOOR | TRUNC | NEAREST
 
 syntax binop_(numtype)
 syntax binop_(inn) =
@@ -302,7 +302,7 @@ syntax binop_(fnn) =
   | ADD | SUB | MUL | DIV | MIN | MAX | COPYSIGN
 
 syntax testop_(numtype)
-syntax testop_(inn) = | EQZ
+syntax testop_(inn) = EQZ
 ;; syntax testop_(fnn) = |      ;; uninhabited
 
 syntax relop_(numtype)
@@ -313,28 +313,28 @@ syntax relop_(inn) =
 syntax relop_(fnn) =
   | EQ | NE | LT | GT | LE | GE
 
-syntax cvtop = | CONVERT | CONVERT_SAT | REINTERPRET
+syntax cvtop = CONVERT | CONVERT_SAT | REINTERPRET
 
 
 ;; Vector operators
 
-syntax dim hint(desc "dimension") = 1 | 2 | 4 | 8 | 16
-syntax shape hint(desc "shape") = lanetype X dim  ;; TODO: hint(show %#X#%)
-syntax ishape hint(desc "shape") = imm X dim      ;; TODO: hint(show %#X#%)
-syntax fshape hint(desc "shape") = fnn X dim      ;; TODO: hint(show %#X#%)
-syntax pshape hint(desc "shape") = pnn X dim      ;; TODO: hint(show %#X#%)
+syntax dim hint(desc "dimension") = `1 | `2 | `4 | `8 | `16
+syntax shape hint(desc "shape") = lanetype X dim  hint(show %0#X#%2)
+syntax ishape hint(desc "shape") = imm X dim      hint(show %0#X#%2)
+syntax fshape hint(desc "shape") = fnn X dim      hint(show %0#X#%2)
+syntax pshape hint(desc "shape") = pnn X dim      hint(show %0#X#%2)
 
 def $dim(shape) : dim
 def $shsize(shape) : nat  hint(show |%|)
 
-syntax vvunop = | NOT
-syntax vvbinop = | AND | ANDNOT | OR | XOR
-syntax vvternop = | BITSELECT
-syntax vvtestop = | ANY_TRUE
+syntax vvunop = NOT
+syntax vvbinop = AND | ANDNOT | OR | XOR
+syntax vvternop = BITSELECT
+syntax vvtestop = ANY_TRUE
 
 syntax vunop_(shape)
-syntax vunop_(imm X N) = | ABS | NEG | POPCNT -- if imm = I8
-syntax vunop_(fnn X N) = | ABS | NEG | SQRT | CEIL | FLOOR | TRUNC | NEAREST
+syntax vunop_(imm X N) = ABS | NEG | POPCNT -- if imm = I8
+syntax vunop_(fnn X N) = ABS | NEG | SQRT | CEIL | FLOOR | TRUNC | NEAREST
 
 syntax vbinop_(shape)
 syntax vbinop_(imm X N) =
@@ -347,17 +347,17 @@ syntax vbinop_(imm X N) =
   | Q15MULR_SAT_S                          -- if $lsize(imm) = 16
   | MIN sx hint(show MIN#_#sx)             -- if $lsize(imm) <= 32
   | MAX sx hint(show MAX#_#sx)             -- if $lsize(imm) <= 32
-syntax vbinop_(fnn X N) = | ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX
+syntax vbinop_(fnn X N) = ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX
 
 syntax vtestop_(shape)
-syntax vtestop_(imm X N) = | ALL_TRUE
+syntax vtestop_(imm X N) = ALL_TRUE
 ;; syntax vtestop_(fnn X N) = |           ;; uninhabited
 
 syntax vrelop_(shape)
-syntax vrelop_(imm X N) = | EQ | NE | LT sx | GT sx | LE sx | GE sx
-syntax vrelop_(fnn X N) = | EQ | NE | LT | GT | LE | GE
+syntax vrelop_(imm X N) = EQ | NE | LT sx | GT sx | LE sx | GE sx
+syntax vrelop_(fnn X N) = EQ | NE | LT | GT | LE | GE
 
-syntax vcvtop = | EXTEND | TRUNC_SAT | CONVERT | DEMOTE | PROMOTE
+syntax vcvtop = EXTEND | TRUNC_SAT | CONVERT | DEMOTE | PROMOTE
 ;; TODO: analogous to cvtop, this could just universally be CONVERT.
 ;; Otherwise, it needs to be indexed by 2 shapes.
 ;; TODO: the following syntactic constraints apply:
@@ -369,15 +369,15 @@ syntax vcvtop = | EXTEND | TRUNC_SAT | CONVERT | DEMOTE | PROMOTE
 ;; fNxM <- fN'xM'  N > N'  PROMOTE LOW
 
 syntax vshiftop_(ishape)
-syntax vshiftop_(imm X N) = | SHL | SHR sx
+syntax vshiftop_(imm X N) = SHL | SHR sx
 
-syntax vextunop_(ishape_1, ishape_2)  hint(show vextunop_((%,%)))
+syntax vextunop_(ishape_1, ishape_2)   hint(show vextunop_((%,%)))
 syntax vextunop_(imm_1 X N_1, imm_2 X N_2) =
-  | EXTADD_PAIRWISE -- if 16 <= $lsize(imm_1) <= 32
+  | EXTADD_PAIRWISE  -- if 16 <= $lsize(imm_1) <= 32
 syntax vextbinop_(ishape_1, ishape_2)  hint(show vextbinop_((%,%)))
 syntax vextbinop_(imm_1 X N_1, imm_2 X N_2) =
-  | EXTMUL half
-  | DOT         -- if $lsize(imm_1) = 32
+  | EXTMUL half                        hint(show EXTMUL#_#%)
+  | DOT              -- if $lsize(imm_1) = 32
 
 
 ;; Memory operators
@@ -402,14 +402,20 @@ syntax blocktype hint(desc "block type") =
 
 var bt : blocktype
 
-syntax instr/control hint(desc "control instruction") =
-  | UNREACHABLE
+syntax instr/parametric hint(desc "parametric instruction") =
   | NOP
+  | UNREACHABLE
   | DROP
   | SELECT (valtype*)?
+  | ...
+
+syntax instr/block hint(desc "block instruction") = ...
   | BLOCK blocktype instr*
   | LOOP blocktype instr*
   | IF blocktype instr* ELSE instr*
+  | ...
+
+syntax instr/br hint(desc "branch instruction") = ...
   | BR labelidx
   | BR_IF labelidx
   | BR_TABLE labelidx* labelidx
@@ -417,6 +423,9 @@ syntax instr/control hint(desc "control instruction") =
   | BR_ON_NON_NULL labelidx
   | BR_ON_CAST labelidx reftype reftype
   | BR_ON_CAST_FAIL labelidx reftype reftype
+  | ...
+
+syntax instr/call hint(desc "function instruction") = ...
   | CALL funcidx
   | CALL_REF typeidx?
   | CALL_INDIRECT tableidx typeidx
@@ -432,11 +441,12 @@ syntax instr/num hint(desc "numeric instruction") = ...
   | BINOP numtype binop_(numtype)    hint(show %.%)
   | TESTOP numtype testop_(numtype)  hint(show %.%)
   | RELOP numtype relop_(numtype)    hint(show %.%)
-  | CVTOP numtype_1 cvtop numtype_2 sx?  hint(show %.%#_#%#_#%)
+  | CVTOP numtype_1 cvtop numtype_2 sx?  hint(show %.%#_#%) hint(show %.%#_#%#_#%)
+    -- if numtype_1 =/= numtype_2
   | EXTEND numtype n                 hint(show %.EXTEND#%#_#S)
   | ...
 
-syntax half hint(desc "lane part") = | LOW | HIGH
+syntax half hint(desc "lane part") = LOW | HIGH
 syntax zero = ZERO?
 
 syntax instr/vec hint(desc "vector instruction") = ...
@@ -446,9 +456,9 @@ syntax instr/vec hint(desc "vector instruction") = ...
   | VVTERNOP vectype vvternop           hint(show %.%)
   | VVTESTOP vectype vvtestop           hint(show %.%)
   | VSWIZZLE ishape                     hint(show %.SWIZZLE)
-    -- if ishape = I8 X 16
+    -- if ishape = I8 X `16
   | VSHUFFLE ishape laneidx*            hint(show %.SHUFFLE %)
-    -- if ishape = I8 X 16 /\ |laneidx*| = $dim(ishape)
+    -- if ishape = I8 X `16 /\ |laneidx*| = 16
   | VSPLAT shape                        hint(show %.SPLAT)
   | VEXTRACT_LANE shape sx? laneidx     hint(show %.EXTRACT_LANE_#% %)
     -- if $lanetype(shape) = numtype <=> sx? = eps
@@ -459,19 +469,20 @@ syntax instr/vec hint(desc "vector instruction") = ...
   | VRELOP shape vrelop_(shape)         hint(show %.%)
   | VSHIFTOP ishape vshiftop_(ishape)   hint(show %.%)
   | VBITMASK ishape                     hint(show %.BITMASK)
-  | VCVTOP shape vcvtop half? shape sx? zero  hint(show %.%#_#%#_#%#_#%) hint(show %.%#_#%#_#%#_#%) hint(show %.%#_#%#_#%#_#%#_#%)
+  | VCVTOP shape vcvtop half? shape sx? zero 
+    hint(show %.%#_#%#_#%#_#%) hint(show %.%#_#%#_#%#_#%) hint(show %.%#_#%#_#%#_#%#_#%)
   | VNARROW ishape ishape sx            hint(show %.NARROW#_#%#_#%)
   | VEXTUNOP ishape_1 ishape_2 vextunop_(ishape_1, ishape_2) sx
-    -- if $($lsize(imm_1) = 2*$lsize(imm_2))
+    hint(show %1.%3#_#%2#_#%4)
+    -- if $($lsize($lanetype(ishape_1)) = 2*$lsize($lanetype(ishape_2)))
   | VEXTBINOP ishape_1 ishape_2 vextbinop_(ishape_1, ishape_2) sx
-    -- if $($lsize(imm_1) = 2*$lsize(imm_2))
+    hint(show %1.%3#_#%2#_#%4)
+    -- if $($lsize($lanetype(ishape_1)) = 2*$lsize($lanetype(ishape_2)))
   | ...
 ;; TODO: check for missing constraints
 
 syntax instr/ref hint(desc "reference instruction") = ...
   | REF.NULL heaptype
-  | REF.I31
-  | REF.FUNC funcidx
   | REF.IS_NULL
   | REF.AS_NON_NULL
   | REF.EQ
@@ -479,15 +490,26 @@ syntax instr/ref hint(desc "reference instruction") = ...
   | REF.CAST reftype
   | ...
 
-syntax instr/heap hint(desc "heap instruction") = ...
+syntax instr/func hint(desc "function reference instruction") = ...
+  | REF.FUNC funcidx
+  | ...
+
+syntax instr/i31 hint(desc "scalar reference instruction") = ...
+  | REF.I31
   | I31.GET sx                      hint(show I31.GET#_#%)
+  | ...
+
+syntax instr/struct hint(desc "structure reference instruction") = ...
   | STRUCT.NEW typeidx
   | STRUCT.NEW_DEFAULT typeidx
   | STRUCT.GET sx? typeidx u32      hint(show STRUCT.GET#_#% % %)
   | STRUCT.SET typeidx u32
+  | ...
+
+syntax instr/array hint(desc "array reference instruction") = ...
   | ARRAY.NEW typeidx
   | ARRAY.NEW_DEFAULT typeidx
-  | ARRAY.NEW_FIXED typeidx nat
+  | ARRAY.NEW_FIXED typeidx u32
   | ARRAY.NEW_DATA typeidx dataidx
   | ARRAY.NEW_ELEM typeidx elemidx
   | ARRAY.GET sx? typeidx           hint(show ARRAY.GET#_#% %)
@@ -497,6 +519,9 @@ syntax instr/heap hint(desc "heap instruction") = ...
   | ARRAY.COPY typeidx typeidx
   | ARRAY.INIT_DATA typeidx dataidx
   | ARRAY.INIT_ELEM typeidx elemidx
+  | ...
+
+syntax instr/extern hint(desc "external reference instruction") = ...
   | EXTERN.CONVERT_ANY
   | ANY.CONVERT_EXTERN
   | ...
@@ -520,23 +545,34 @@ syntax instr/table hint(desc "table instruction") = ...
   | TABLE.FILL tableidx
   | TABLE.COPY tableidx tableidx
   | TABLE.INIT tableidx elemidx
+  | ...
+
+syntax instr/elem hint(desc "element instruction") = ...
   | ELEM.DROP elemidx
   | ...
 
+syntax packsize hint(desc "pack size") = `8 | `16 | `32 | `64
+syntax ww hint(show w) = packsize
 
 syntax instr/memory hint(desc "memory instruction") = ...
+  | LOAD numtype (ww _ sx)? memidx memop  hint(show %.LOAD % %)    hint(show %.LOAD#% % %)
+    -- (if numtype = inn /\ ww < $size(inn))?  ;; TODO: take size implicitly
+  | STORE numtype ww? memidx memop        hint(show %.STORE % %)   hint(show %.STORE#% % %)
+    -- (if numtype = inn /\ ww < $size(inn))?  ;; TODO: take size implicitly
+  | VLOAD vloadop? memidx memop           hint(show V128.LOAD % %) hint(show V128.LOAD#% % %)
+  | VLOAD_LANE ww memidx memop laneidx    hint(show V128.LOAD#%#_#LANE % % %)
+  | VSTORE memidx memop                   hint(show V128.STORE % %)
+  | VSTORE_LANE ww memidx memop laneidx   hint(show V128.STORE#%#_#LANE % % %)
   | MEMORY.SIZE memidx
   | MEMORY.GROW memidx
   | MEMORY.FILL memidx
   | MEMORY.COPY memidx memidx
   | MEMORY.INIT memidx dataidx
+  | ...
+
+syntax instr/data hint(desc "data instruction") = ...
   | DATA.DROP dataidx
-  | LOAD numtype (n _ sx)? memidx memop  hint(show %.LOAD % %)    hint(show %.LOAD#% % %)
-  | STORE numtype n? memidx memop        hint(show %.STORE % %)   hint(show %.STORE#% % %)
-  | VLOAD vloadop? memidx memop          hint(show V128.LOAD % %) hint(show V128.LOAD#% % %)
-  | VLOAD_LANE n memidx memop laneidx    hint(show V128.LOAD#%#_#LANE % % %)
-  | VSTORE memidx memop                  hint(show V128.STORE % %)
-  | VSTORE_LANE n memidx memop laneidx   hint(show V128.STORE#%#_#LANE % % %)
+
 
 syntax expr hint(desc "expression") =
   instr*
@@ -551,8 +587,8 @@ var e : expr
 ;; Modules
 ;;
 
-syntax elemmode = | ACTIVE tableidx expr | PASSIVE | DECLARE
-syntax datamode = | ACTIVE memidx expr | PASSIVE
+syntax elemmode = ACTIVE tableidx expr | PASSIVE | DECLARE
+syntax datamode = ACTIVE memidx expr | PASSIVE
 
 syntax type hint(desc "type definition") =
   TYPE rectype

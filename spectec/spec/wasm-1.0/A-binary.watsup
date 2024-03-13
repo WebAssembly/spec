@@ -15,7 +15,7 @@ grammar Bvec(grammar BX : el) : el* =
 
 ;; Numbers
 
-grammar Bbyte : byte = | b:0x00 | ... | b:0xFF => b
+grammar Bbyte : byte = b:0x00 | ... | b:0xFF => b
 
 grammar BuN(N) : uN(N) hint(show Bu#%) =
   | n:Bbyte                 => n                       -- if $(n < 2^7 /\ n < 2^N)
@@ -34,11 +34,11 @@ grammar BfN(N) : fN(N) hint(show Bf#%) =
   | b*:Bbyte^(N/8)  => $invfbytes(N, b*)
 
 
-grammar Bu32 : u32 = | n:BuN(32) => n
-grammar Bu64 : u64 = | n:BuN(64) => n
+grammar Bu32 : u32 = n:BuN(32) => n
+grammar Bu64 : u64 = n:BuN(64) => n
 
-grammar Bf32 : f32 = | p:BfN(32) => p
-grammar Bf64 : f64 = | p:BfN(64) => p
+grammar Bf32 : f32 = p:BfN(32) => p
+grammar Bf64 : f64 = p:BfN(64) => p
 
 
 ;; Names
@@ -58,13 +58,13 @@ grammar Bname : name =
 
 ;; Indices
 
-grammar Btypeidx : typeidx = | x:Bu32 => x
-grammar Bfuncidx : funcidx = | x:Bu32 => x
-grammar Bglobalidx : globalidx = | x:Bu32 => x
-grammar Btableidx : tableidx = | x:Bu32 => x
-grammar Bmemidx : memidx = | x:Bu32 => x
-grammar Blocalidx : localidx = | x:Bu32 => x
-grammar Blabelidx : labelidx = | x:Bu32 => x
+grammar Btypeidx : typeidx = x:Bu32 => x
+grammar Bfuncidx : funcidx = x:Bu32 => x
+grammar Bglobalidx : globalidx = x:Bu32 => x
+grammar Btableidx : tableidx = x:Bu32 => x
+grammar Bmemidx : memidx = x:Bu32 => x
+grammar Blocalidx : localidx = x:Bu32 => x
+grammar Blabelidx : labelidx = x:Bu32 => x
 
 grammar Bexternidx : externidx =
   | 0x00 x:Bfuncidx => FUNC x
@@ -382,7 +382,6 @@ grammar Binstr/numeric-cvt : instr = ...
   | 0xBD => CVTOP I64 REINTERPRET F64
   | 0xBE => CVTOP F32 REINTERPRET I32
   | 0xBF => CVTOP F64 REINTERPRET I64
-  | ...
 
 
 ;; Expressions

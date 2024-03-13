@@ -20,11 +20,11 @@ $${syntax+:
 
 .. _def-default:
 
-$${definition-prose: default}
+$${definition-prose: default_}
 
 \
 
-$${definition: default}
+$${definition: default_}
 
 Results
 ~~~~~~~

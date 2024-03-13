@@ -15,46 +15,7 @@ type 'a nl_list = 'a nl_elem list
 type nat = Z.t
 type text = string
 type id = string phrase
-
-type atom = (atom', string ref) note_phrase
-and atom' =
-  | Atom of string               (* atomid *)
-  | Infinity                     (* infinity *)
-  | Bot                          (* `_|_` *)
-  | Top                          (* `^|^` *)
-  | Dot                          (* `.` *)
-  | Dot2                         (* `..` *)
-  | Dot3                         (* `...` *)
-  | Semicolon                    (* `;` *)
-  | Backslash                    (* `\` *)
-  | In                           (* `<-` *)
-  | Arrow                        (* `->` *)
-  | Arrow2                       (* ``=>` *)
-  | Colon                        (* `:` *)
-  | Sub                          (* `<:` *)
-  | Sup                          (* `:>` *)
-  | Assign                       (* `:=` *)
-  | Equal                        (* ``=` *)
-  | Equiv                        (* `==` *)
-  | Approx                       (* `~~` *)
-  | SqArrow                      (* `~>` *)
-  | SqArrowStar                  (* `~>*` *)
-  | Prec                         (* `<<` *)
-  | Succ                         (* `>>` *)
-  | Turnstile                    (* `|-` *)
-  | Tilesturn                    (* `-|` *)
-  | Quest                        (* ``?` *)
-  | Plus                         (* ``+` *)
-  | Star                         (* ``*` *)
-  | Comma                        (* ``,` *)
-  | Comp                         (* ``++` *)
-  | Bar                          (* ``|` *)
-  | BigComp                      (* `(++)` *)
-  | BigAnd                       (* `(/\)` *)
-  | BigOr                        (* `(\/)` *)
-  | LParen | RParen              (* ``(` `)` *)
-  | LBrack | RBrack              (* ``[` `]` *)
-  | LBrace | RBrace              (* ``{` `}` *)
+type atom = Il.Atom.atom
 
 
 (* Iteration *)
@@ -107,6 +68,7 @@ and natop =
   | DecOp   (* n *)
   | HexOp   (* 0xhex *)
   | CharOp  (* U+hex *)
+  | AtomOp  (* `n *)
 
 and unop =
   | NotOp   (* `~` *)

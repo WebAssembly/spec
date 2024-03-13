@@ -23,22 +23,22 @@ relation Externtype_ok: |- externtype : OK  hint(show "K-extern")
 
 
 rule Limits_ok:
-  |- `[n_1 .. n_2] : k
-  -- if n_1 <= n_2 <= k
+  |- `[n .. m] : k
+  -- if n <= m <= k
 
 rule Functype_ok:
   |- t_1* -> t_2? : OK
 
 rule Globaltype_ok:
-  |- gt : OK
+  |- MUT? t : OK
 
 rule Tabletype_ok:
-  |- lim : OK
-  -- Limits_ok: |- lim : $(2^32-1)
+  |- limits : OK
+  -- Limits_ok: |- limits : $(2^32-1)
 
 rule Memtype_ok:
-  |- lim : OK
-  -- Limits_ok: |- lim : $(2^16)
+  |- limits : OK
+  -- Limits_ok: |- limits : $(2^16)
 
 
 rule Externtype_ok/func:
@@ -142,17 +142,16 @@ rule Instrs_ok/frame:
   -- Instrs_ok: C |- instr* : t_1* -> t_2*
 
 
-;; Polymorphic instructions
-
-rule Instr_ok/unreachable:
-  C |- UNREACHABLE : t_1* -> t_2*
+;; Parametric instructions
 
 rule Instr_ok/nop:
   C |- NOP : eps -> eps
 
+rule Instr_ok/unreachable:
+  C |- UNREACHABLE : t_1* -> t_2*
+
 rule Instr_ok/drop:
   C |- DROP : t -> eps
-
 
 rule Instr_ok/select:
   C |- SELECT : t t I32 -> t
@@ -192,10 +191,6 @@ rule Instr_ok/br_table:
 
 ;; Function instructions
 
-rule Instr_ok/return:
-  C |- RETURN : t_1* t? -> t_2*
-  -- if C.RETURN = (t?)
-
 rule Instr_ok/call:
   C |- CALL x : t_1* -> t_2?
   -- if C.FUNC[x] = t_1* -> t_2?
@@ -203,6 +198,10 @@ rule Instr_ok/call:
 rule Instr_ok/call_indirect:
   C |- CALL_INDIRECT x : t_1* I32 -> t_2?
   -- if C.TYPE[x] = t_1* -> t_2?
+
+rule Instr_ok/return:
+  C |- RETURN : t_1* t? -> t_2*
+  -- if C.RETURN = (t?)
 
 
 ;; Numeric instructions
@@ -223,19 +222,16 @@ rule Instr_ok/relop:
   C |- RELOP t relop_t : t t -> I32
 
 
-rule Instr_ok/reinterpret:
+rule Instr_ok/cvtop-reinterpret:
   C |- CVTOP t_1 REINTERPRET t_2 : t_2 -> t_1
-  -- if t_1 =/= t_2
   -- if $size(t_1) = $size(t_2)
 
-rule Instr_ok/convert-i:
+rule Instr_ok/cvtop-convert-i:
   C |- CVTOP inn_1 CONVERT inn_2 sx? : inn_2 -> inn_1
-  -- if inn_1 =/= inn_2
   -- if sx? = eps <=> $size(inn_1) > $size(inn_2)
 
-rule Instr_ok/convert-f:
+rule Instr_ok/cvtop-convert-f:
   C |- CVTOP fnn_1 CONVERT fnn_2 : fnn_2 -> fnn_1
-  -- if fnn_1 =/= fnn_2
 
 
 ;; Local instructions
@@ -275,18 +271,18 @@ rule Instr_ok/memory.grow:
   -- if C.MEM[0] = mt
 
 rule Instr_ok/load:
-  C |- LOAD t (n _ sx)? {ALIGN n_A, OFFSET n_O} : I32 -> t
+  C |- LOAD nt (n _ sx)? memop : I32 -> nt
   -- if C.MEM[0] = mt
-  -- if $(2^(n_A) <= $size(t)/8)
-  -- if $(2^(n_A) <= n/8 < $size(t)/8)?
-  -- if n? = eps \/ t = inn
+  -- if $(2^(memop.ALIGN) <= $size(nt)/8)
+  -- if $(2^(memop.ALIGN) <= n/8 < $size(nt)/8)?
+  -- if n? = eps \/ nt = inn
 
 rule Instr_ok/store:
-  C |- STORE t n? {ALIGN n_A, OFFSET n_O} : I32 t -> eps
+  C |- STORE nt n? memop : I32 nt -> eps
   -- if C.MEM[0] = mt
-  -- if $(2^(n_A) <= $size(t)/8)
-  -- if $(2^(n_A) <= n/8 < $size(t)/8)?
-  -- if n? = eps \/ t = inn
+  -- if $(2^(memop.ALIGN) <= $size(nt)/8)
+  -- if $(2^(memop.ALIGN) <= n/8 < $size(nt)/8)?
+  -- if n? = eps \/ nt = inn
 
 
 ;;
@@ -410,19 +406,28 @@ relation Module_ok: |- module : OK      hint(show "T-module")
 
 rule Module_ok:
   |- MODULE type* import* func* global* table* mem* elem* data* start? export* : OK
-  ;; TODO: incremental contexts for globals
-  -- if C = {TYPE ft'*, FUNC ft*, GLOBAL gt*, TABLE tt*, MEM mt*}
-
   -- (Type_ok: |- type : ft')*
+  -- (Import_ok: {TYPE ft'*} |- import : ixt)*
+
+  -- (Global_ok: C' |- global : gt)*
   -- (Func_ok: C |- func : ft)*
-  -- (Global_ok: C |- global : gt)*
   -- (Table_ok: C |- table : tt)*
   -- (Mem_ok: C |- mem : mt)*
 
   -- (Elem_ok: C |- elem : OK)*
   -- (Data_ok: C |- data : OK)*
   -- (Start_ok: C |- start : OK)?
+  -- (Export_ok: C |- export : xt)*
 
   -- if |tt*| <= 1
   -- if |mt*| <= 1
   ;; -- TODO: disjoint export names
+
+  -- if C = {TYPE ft'*, FUNC ift* ft*, GLOBAL igt* gt*, TABLE itt* tt*, MEM imt* mt*}
+
+  -- if C' = {TYPE ft'*, FUNC ift* ft*, GLOBAL igt*}
+
+  -- if ift* = $funcsxt(ixt*)
+  -- if igt* = $globalsxt(ixt*)
+  -- if itt* = $tablesxt(ixt*)
+  -- if imt* = $memsxt(ixt*)

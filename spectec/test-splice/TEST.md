@@ -64,38 +64,21 @@ $$
 $$
 \begin{array}{@{}lrrl@{}l@{}}
 \mbox{(limits)} & {\mathit{limits}} &::=& {}[{\mathit{u{\scriptstyle32}}} .. {\mathit{u{\scriptstyle32}}}] \\[0.8ex]
-\mbox{(global type)} & {\mathit{globaltype}} &::=& {\mathit{mut}}~\,{\mathit{valtype}} \\
+\mbox{(global type)} & {\mathit{globaltype}} &::=& {\mathit{mut}}~{\mathit{valtype}} \\
 \mbox{(function type)} & {\mathit{functype}} &::=& {\mathit{resulttype}} \rightarrow {\mathit{resulttype}} \\
-\mbox{(table type)} & {\mathit{tabletype}} &::=& {\mathit{limits}}~\,{\mathit{reftype}} \\
-\mbox{(memory type)} & {\mathit{memtype}} &::=& {\mathit{limits}}~\,\mathsf{i{\scriptstyle8}} \\[0.8ex]
+\mbox{(table type)} & {\mathit{tabletype}} &::=& {\mathit{limits}}~{\mathit{reftype}} \\
+\mbox{(memory type)} & {\mathit{memtype}} &::=& {\mathit{limits}}~\mathsf{i{\scriptstyle8}} \\[0.8ex]
 {} \\[-2ex]
-\mbox{(external type)} & {\mathit{externtype}} &::=& \mathsf{func}~\,{\mathit{deftype}} ~|~ \mathsf{global}~\,{\mathit{globaltype}} ~|~ \mathsf{table}~\,{\mathit{tabletype}} ~|~ \mathsf{mem}~\,{\mathit{memtype}} \\
+\mbox{(external type)} & {\mathit{externtype}} &::=& \mathsf{func}~{\mathit{deftype}} ~|~ \mathsf{global}~{\mathit{globaltype}} ~|~ \mathsf{table}~{\mathit{tabletype}} ~|~ \mathsf{mem}~{\mathit{memtype}} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}l@{}rrl@{}l@{}}
-& {\mathit{instr}} &::=& \mathsf{unreachable} \\ &&|&
-\mathsf{nop} \\ &&|&
-\mathsf{drop} \\ &&|&
-\mathsf{select}~\,{({{\mathit{valtype}}^\ast})^?} \\ &&|&
-\mathsf{block}~\,{\mathit{blocktype}}~\,{{\mathit{instr}}^\ast} \\ &&|&
-\mathsf{loop}~\,{\mathit{blocktype}}~\,{{\mathit{instr}}^\ast} \\ &&|&
-\mathsf{if}~\,{\mathit{blocktype}}~\,{{\mathit{instr}}^\ast}~\,\mathsf{else}~\,{{\mathit{instr}}^\ast} \\ &&|&
-\mathsf{br}~\,{\mathit{labelidx}} \\ &&|&
-\mathsf{br\_if}~\,{\mathit{labelidx}} \\ &&|&
-\mathsf{br\_table}~\,{{\mathit{labelidx}}^\ast}~\,{\mathit{labelidx}} \\ &&|&
-\mathsf{br\_on\_null}~\,{\mathit{labelidx}} \\ &&|&
-\mathsf{br\_on\_non\_null}~\,{\mathit{labelidx}} \\ &&|&
-\mathsf{br\_on\_cast}~\,{\mathit{labelidx}}~\,{\mathit{reftype}}~\,{\mathit{reftype}} \\ &&|&
-\mathsf{br\_on\_cast\_fail}~\,{\mathit{labelidx}}~\,{\mathit{reftype}}~\,{\mathit{reftype}} \\ &&|&
-\mathsf{call}~\,{\mathit{funcidx}} \\ &&|&
-\mathsf{call\_ref}~\,{{\mathit{typeidx}}^?} \\ &&|&
-\mathsf{call\_indirect}~\,{\mathit{tableidx}}~\,{\mathit{typeidx}} \\ &&|&
-\mathsf{return} \\ &&|&
-\mathsf{return\_call}~\,{\mathit{funcidx}} \\ &&|&
-\mathsf{return\_call\_ref}~\,{{\mathit{typeidx}}^?} \\ &&|&
-\mathsf{return\_call\_indirect}~\,{\mathit{tableidx}}~\,{\mathit{typeidx}} \\ &&|&
+& {\mathit{instr}} &::=& \dots \\ &&|&
+\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast} \\ &&|&
+\mathsf{loop}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast} \\ &&|&
+\mathsf{if}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast}~\mathsf{else}~{{\mathit{instr}}^\ast} \\ &&|&
 \dots \\
 \end{array}
 $$
@@ -103,36 +86,39 @@ $$
 $$
 \begin{array}{@{}l@{}rrl@{}l@{}}
 & {\mathit{instr}} &::=& \dots \\ &&|&
-{\mathit{numtype}}.\mathsf{const}~\,{{\mathit{num}}}_{{\mathit{numtype}}} \\ &&|&
+{\mathit{numtype}}.\mathsf{const}~{{\mathit{num}}}_{{\mathit{numtype}}} \\ &&|&
 {\mathit{numtype}} . {{\mathit{unop}}}_{{\mathit{numtype}}} \\ &&|&
 {\mathit{numtype}} . {{\mathit{binop}}}_{{\mathit{numtype}}} \\ &&|&
 {\mathit{numtype}} . {{\mathit{testop}}}_{{\mathit{numtype}}} \\ &&|&
 {\mathit{numtype}} . {{\mathit{relop}}}_{{\mathit{numtype}}} \\ &&|&
-{\mathit{numtype}}_{{1}} . {{{{{\mathit{cvtop}}}{\mathsf{\_}}}{{\mathit{numtype}}_{{2}}}}{\mathsf{\_}}}{{{\mathit{sx}}^?}} \\ &&|&
+{\mathit{numtype}}_{{1}} . {{{{{\mathit{cvtop}}}{\mathsf{\_}}}{{\mathit{numtype}}_{{2}}}}{\mathsf{\_}}}{{{\mathit{sx}}^?}} &\quad
+  \mbox{if}~{\mathit{numtype}}_{{1}} \neq {\mathit{numtype}}_{{2}} \\ &&|&
 {{{{\mathit{numtype}}.\mathsf{extend}}{{\mathit{n}}}}{\mathsf{\_}}}{\mathsf{s}} \\ &&|&
-\mathsf{local.get}~\,{\mathit{localidx}} \\ &&|&
-\mathsf{local.set}~\,{\mathit{localidx}} \\ &&|&
-\mathsf{local.tee}~\,{\mathit{localidx}} \\ &&|&
-\mathsf{global.get}~\,{\mathit{globalidx}} \\ &&|&
-\mathsf{global.set}~\,{\mathit{globalidx}} \\ &&|&
-\mathsf{memory.size}~\,{\mathit{memidx}} \\ &&|&
-\mathsf{memory.grow}~\,{\mathit{memidx}} \\ &&|&
-\mathsf{memory.fill}~\,{\mathit{memidx}} \\ &&|&
-\mathsf{memory.copy}~\,{\mathit{memidx}}~\,{\mathit{memidx}} \\ &&|&
-\mathsf{memory.init}~\,{\mathit{memidx}}~\,{\mathit{dataidx}} \\ &&|&
-\mathsf{data.drop}~\,{\mathit{dataidx}} \\ &&|&
-{{\mathit{numtype}}.\mathsf{load}}{{({\mathit{n}}~\,\mathsf{\_}~\,{\mathit{sx}})^?}}~\,{\mathit{memidx}}~\,{\mathit{memop}} \\ &&|&
-{{\mathit{numtype}}.\mathsf{store}}{{{\mathit{n}}^?}}~\,{\mathit{memidx}}~\,{\mathit{memop}} \\ &&|&
-{\mathsf{v{\scriptstyle128}.load}}{{{\mathit{vloadop}}^?}}~\,{\mathit{memidx}}~\,{\mathit{memop}} \\ &&|&
-{{{\mathsf{v{\scriptstyle128}.load}}{{\mathit{n}}}}{\mathsf{\_}}}{\mathsf{lane}}~\,{\mathit{memidx}}~\,{\mathit{memop}}~\,{\mathit{laneidx}} \\ &&|&
-\mathsf{v{\scriptstyle128}.store}~\,{\mathit{memidx}}~\,{\mathit{memop}} \\ &&|&
-{{{\mathsf{v{\scriptstyle128}.store}}{{\mathit{n}}}}{\mathsf{\_}}}{\mathsf{lane}}~\,{\mathit{memidx}}~\,{\mathit{memop}}~\,{\mathit{laneidx}} \\[0.8ex]
+\mathsf{local.get}~{\mathit{localidx}} \\ &&|&
+\mathsf{local.set}~{\mathit{localidx}} \\ &&|&
+\mathsf{local.tee}~{\mathit{localidx}} \\ &&|&
+\mathsf{global.get}~{\mathit{globalidx}} \\ &&|&
+\mathsf{global.set}~{\mathit{globalidx}} \\ &&|&
+{{\mathit{numtype}}.\mathsf{load}}{{({{{\mathit{w}}}{\mathsf{\_}}}{{\mathit{sx}}})^?}}~{\mathit{memidx}}~{\mathit{memop}} &\quad
+  \mbox{if}~({\mathit{numtype}} = {\mathsf{i}}{{\mathit{n}}} \land {\mathit{w}} < {|{\mathsf{i}}{{\mathit{n}}}|})^? \\ &&|&
+{{\mathit{numtype}}.\mathsf{store}}{{{\mathit{w}}^?}}~{\mathit{memidx}}~{\mathit{memop}} &\quad
+  \mbox{if}~({\mathit{numtype}} = {\mathsf{i}}{{\mathit{n}}} \land {\mathit{w}} < {|{\mathsf{i}}{{\mathit{n}}}|})^? \\ &&|&
+{\mathsf{v{\scriptstyle128}.load}}{{{\mathit{vloadop}}^?}}~{\mathit{memidx}}~{\mathit{memop}} \\ &&|&
+{{{\mathsf{v{\scriptstyle128}.load}}{{\mathit{w}}}}{\mathsf{\_}}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memop}}~{\mathit{laneidx}} \\ &&|&
+\mathsf{v{\scriptstyle128}.store}~{\mathit{memidx}}~{\mathit{memop}} \\ &&|&
+{{{\mathsf{v{\scriptstyle128}.store}}{{\mathit{w}}}}{\mathsf{\_}}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memop}}~{\mathit{laneidx}} \\ &&|&
+\mathsf{memory.size}~{\mathit{memidx}} \\ &&|&
+\mathsf{memory.grow}~{\mathit{memidx}} \\ &&|&
+\mathsf{memory.fill}~{\mathit{memidx}} \\ &&|&
+\mathsf{memory.copy}~{\mathit{memidx}}~{\mathit{memidx}} \\ &&|&
+\mathsf{memory.init}~{\mathit{memidx}}~{\mathit{dataidx}} \\ &&|&
+\dots \\[0.8ex]
 & {\mathit{expr}} &::=& {{\mathit{instr}}^\ast} \\
 \end{array}
 $$
 
 
-\subsection*{Typing $\boxed{{\mathit{context}} \vdash {\mathit{instr}} : {\mathit{functype}}}$}
+\subsection*{Typing $\boxed{{\mathit{context}} \vdash {\mathit{instr}} : {\mathit{instrtype}}}$}
 
 An instruction sequence ${{\mathit{instr}}^\ast}$ is well-typed with an instruction type ${{\mathit{t}}_{{1}}^\ast} \rightarrow {{\mathit{t}}_{{2}}^\ast}$, written ${{\mathit{instr}}^\ast}$ $:$ ${{\mathit{t}}_{{1}}^\ast} \rightarrow {{\mathit{t}}_{{2}}^\ast}$, according to the following rules:
 
@@ -140,25 +126,25 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 }{
-{\mathit{C}} \vdash \epsilon : \epsilon \rightarrow (\epsilon)~\,\epsilon
+{\mathit{C}} \vdash \epsilon : \epsilon \rightarrow \epsilon
 }
 \qquad
 \frac{
-(({\mathit{C}}.\mathsf{local}{}[{\mathit{x}}_{{1}}] = {\mathit{init}}~\,{\mathit{t}}))^\ast
+{\mathit{C}} \vdash {\mathit{instr}}_{{1}} : {{\mathit{t}}_{{1}}^\ast}~{\rightarrow}_{{{\mathit{x}}_{{1}}^\ast}}\,{{\mathit{t}}_{{2}}^\ast}
  \qquad
-{\mathit{C}'} = {\mathit{C}}{}[\mathsf{local}{}[{{\mathit{x}}_{{1}}^\ast}] = {(\mathsf{set}~\,{\mathit{t}})^\ast}]
+({\mathit{C}}.\mathsf{local}{}[{\mathit{x}}_{{1}}] = {\mathit{init}}~{\mathit{t}})^\ast
  \qquad
-{\mathit{C}} \vdash {\mathit{instr}}_{{1}} : {{\mathit{t}}_{{1}}^\ast} \rightarrow ({{\mathit{x}}_{{1}}^\ast})~\,{{\mathit{t}}_{{2}}^\ast}
- \qquad
-{\mathit{C}'} \vdash {{\mathit{instr}}_{{2}}^\ast} : {{\mathit{t}}_{{2}}^\ast} \rightarrow ({{\mathit{x}}_{{2}}^\ast})~\,{{\mathit{t}}_{{3}}^\ast}
+{\mathit{C}}{}[\mathsf{local}{}[{{\mathit{x}}_{{1}}^\ast}] = {(\mathsf{set}~{\mathit{t}})^\ast}] \vdash {{\mathit{instr}}_{{2}}^\ast} : {{\mathit{t}}_{{2}}^\ast}~{\rightarrow}_{{{\mathit{x}}_{{2}}^\ast}}\,{{\mathit{t}}_{{3}}^\ast}
 }{
-{\mathit{C}} \vdash {\mathit{instr}}_{{1}}~\,{{\mathit{instr}}_{{2}}^\ast} : {{\mathit{t}}_{{1}}^\ast} \rightarrow ({{\mathit{x}}_{{1}}^\ast}~\,{{\mathit{x}}_{{2}}^\ast})~\,{{\mathit{t}}_{{3}}^\ast}
+{\mathit{C}} \vdash {\mathit{instr}}_{{1}}~{{\mathit{instr}}_{{2}}^\ast} : {{\mathit{t}}_{{1}}^\ast}~{\rightarrow}_{{{\mathit{x}}_{{1}}^\ast}~{{\mathit{x}}_{{2}}^\ast}}\,{{\mathit{t}}_{{3}}^\ast}
 }
 \\[3ex]\displaystyle
 \frac{
-{\mathit{C}} \vdash {{\mathit{instr}}^\ast} : {{\mathit{t}}_{{1}}^\ast} \rightarrow ({{\mathit{x}}^\ast})~\,{{\mathit{t}}_{{2}}^\ast}
+{\mathit{C}} \vdash {{\mathit{instr}}^\ast} : {{\mathit{t}}_{{1}}^\ast}~{\rightarrow}_{{{\mathit{x}}^\ast}}\,{{\mathit{t}}_{{2}}^\ast}
+ \qquad
+{\mathit{C}} \vdash {{\mathit{t}}^\ast} : \mathsf{ok}
 }{
-{\mathit{C}} \vdash {{\mathit{instr}}^\ast} : {{\mathit{t}}^\ast}~\,{{\mathit{t}}_{{1}}^\ast} \rightarrow ({{\mathit{x}}^\ast})~\,({{\mathit{t}}^\ast}~\,{{\mathit{t}}_{{2}}^\ast})
+{\mathit{C}} \vdash {{\mathit{instr}}^\ast} : ({{\mathit{t}}^\ast}~{{\mathit{t}}_{{1}}^\ast})~{\rightarrow}_{{{\mathit{x}}^\ast}}\,({{\mathit{t}}^\ast}~{{\mathit{t}}_{{2}}^\ast})
 }
 \qquad
 \end{array}
@@ -168,24 +154,28 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 }{
-{\mathit{C}} \vdash \epsilon : \epsilon \rightarrow (\epsilon)~\,\epsilon
+{\mathit{C}} \vdash \epsilon : \epsilon \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}instr*{-}empty}]}
 \qquad
 \frac{
-{\mathit{C}} \vdash {{\mathit{instr}}^\ast} : {{\mathit{t}}_{{1}}^\ast} \rightarrow ({{\mathit{x}}^\ast})~\,{{\mathit{t}}_{{2}}^\ast}
+{\mathit{C}} \vdash {{\mathit{instr}}^\ast} : {{\mathit{t}}_{{1}}^\ast}~{\rightarrow}_{{{\mathit{x}}^\ast}}\,{{\mathit{t}}_{{2}}^\ast}
+ \qquad
+{\mathit{C}} \vdash {{\mathit{t}}^\ast} : \mathsf{ok}
 }{
-{\mathit{C}} \vdash {{\mathit{instr}}^\ast} : {{\mathit{t}}^\ast}~\,{{\mathit{t}}_{{1}}^\ast} \rightarrow ({{\mathit{x}}^\ast})~\,({{\mathit{t}}^\ast}~\,{{\mathit{t}}_{{2}}^\ast})
+{\mathit{C}} \vdash {{\mathit{instr}}^\ast} : ({{\mathit{t}}^\ast}~{{\mathit{t}}_{{1}}^\ast})~{\rightarrow}_{{{\mathit{x}}^\ast}}\,({{\mathit{t}}^\ast}~{{\mathit{t}}_{{2}}^\ast})
 } \, {[\textsc{\scriptsize T{-}instr*{-}frame}]}
 \\[3ex]\displaystyle
 \frac{
 }{
-{\mathit{C}} \vdash \epsilon : \epsilon \rightarrow (\epsilon)~\,\epsilon
+{\mathit{C}} \vdash \epsilon : \epsilon \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}instr*{-}empty}]}
 \qquad
 \frac{
-{\mathit{C}} \vdash {{\mathit{instr}}^\ast} : {{\mathit{t}}_{{1}}^\ast} \rightarrow ({{\mathit{x}}^\ast})~\,{{\mathit{t}}_{{2}}^\ast}
+{\mathit{C}} \vdash {{\mathit{instr}}^\ast} : {{\mathit{t}}_{{1}}^\ast}~{\rightarrow}_{{{\mathit{x}}^\ast}}\,{{\mathit{t}}_{{2}}^\ast}
+ \qquad
+{\mathit{C}} \vdash {{\mathit{t}}^\ast} : \mathsf{ok}
 }{
-{\mathit{C}} \vdash {{\mathit{instr}}^\ast} : {{\mathit{t}}^\ast}~\,{{\mathit{t}}_{{1}}^\ast} \rightarrow ({{\mathit{x}}^\ast})~\,({{\mathit{t}}^\ast}~\,{{\mathit{t}}_{{2}}^\ast})
+{\mathit{C}} \vdash {{\mathit{instr}}^\ast} : ({{\mathit{t}}^\ast}~{{\mathit{t}}_{{1}}^\ast})~{\rightarrow}_{{{\mathit{x}}^\ast}}\,({{\mathit{t}}^\ast}~{{\mathit{t}}_{{2}}^\ast})
 } \, {[\textsc{\scriptsize T{-}instr*{-}frame}]}
 \qquad
 \end{array}
@@ -194,6 +184,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
+{\mathit{C}} \vdash {{\mathit{t}}_{{1}}^\ast} \rightarrow {{\mathit{t}}_{{2}}^\ast} : \mathsf{ok}
 }{
 {\mathit{C}} \vdash \mathsf{unreachable} : {{\mathit{t}}_{{1}}^\ast} \rightarrow {{\mathit{t}}_{{2}}^\ast}
 }
@@ -204,6 +195,7 @@ $$
 }
 \qquad
 \frac{
+{\mathit{C}} \vdash {\mathit{t}} : \mathsf{ok}
 }{
 {\mathit{C}} \vdash \mathsf{drop} : {\mathit{t}} \rightarrow \epsilon
 }
@@ -216,9 +208,9 @@ $$
 \frac{
 {\mathit{C}} \vdash {\mathit{bt}} : {{\mathit{t}}_{{1}}^\ast} \rightarrow {{\mathit{t}}_{{2}}^\ast}
  \qquad
-{\mathit{C}}, \mathsf{label}~\,({{\mathit{t}}_{{2}}^\ast}) \vdash {{\mathit{instr}}^\ast} : {{\mathit{t}}_{{1}}^\ast} \rightarrow ({{\mathit{x}}^\ast})~\,{{\mathit{t}}_{{2}}^\ast}
+{\mathit{C}}, \mathsf{label}~({{\mathit{t}}_{{2}}^\ast}) \vdash {{\mathit{instr}}^\ast} : {{\mathit{t}}_{{1}}^\ast}~{\rightarrow}_{{{\mathit{x}}^\ast}}\,{{\mathit{t}}_{{2}}^\ast}
 }{
-{\mathit{C}} \vdash \mathsf{block}~\,{\mathit{bt}}~\,{{\mathit{instr}}^\ast} : {{\mathit{t}}_{{1}}^\ast} \rightarrow {{\mathit{t}}_{{2}}^\ast}
+{\mathit{C}} \vdash \mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast} : {{\mathit{t}}_{{1}}^\ast} \rightarrow {{\mathit{t}}_{{2}}^\ast}
 } \, {[\textsc{\scriptsize T{-}block}]}
 \qquad
 \end{array}
@@ -229,9 +221,9 @@ $$
 \frac{
 {\mathit{C}} \vdash {\mathit{bt}} : {{\mathit{t}}_{{1}}^\ast} \rightarrow {{\mathit{t}}_{{2}}^\ast}
  \qquad
-{\mathit{C}}, \mathsf{label}~\,({{\mathit{t}}_{{1}}^\ast}) \vdash {{\mathit{instr}}^\ast} : {{\mathit{t}}_{{1}}^\ast} \rightarrow ({{\mathit{x}}^\ast})~\,{{\mathit{t}}_{{2}}^\ast}
+{\mathit{C}}, \mathsf{label}~({{\mathit{t}}_{{1}}^\ast}) \vdash {{\mathit{instr}}^\ast} : {{\mathit{t}}_{{1}}^\ast}~{\rightarrow}_{{{\mathit{x}}^\ast}}\,{{\mathit{t}}_{{2}}^\ast}
 }{
-{\mathit{C}} \vdash \mathsf{loop}~\,{\mathit{bt}}~\,{{\mathit{instr}}^\ast} : {{\mathit{t}}_{{1}}^\ast} \rightarrow {{\mathit{t}}_{{2}}^\ast}
+{\mathit{C}} \vdash \mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast} : {{\mathit{t}}_{{1}}^\ast} \rightarrow {{\mathit{t}}_{{2}}^\ast}
 } \, {[\textsc{\scriptsize T{-}loop}]}
 \qquad
 \end{array}
@@ -242,11 +234,11 @@ $$
 \frac{
 {\mathit{C}} \vdash {\mathit{bt}} : {{\mathit{t}}_{{1}}^\ast} \rightarrow {{\mathit{t}}_{{2}}^\ast}
  \qquad
-{\mathit{C}}, \mathsf{label}~\,({{\mathit{t}}_{{2}}^\ast}) \vdash {{\mathit{instr}}_{{1}}^\ast} : {{\mathit{t}}_{{1}}^\ast} \rightarrow ({{\mathit{x}}_{{1}}^\ast})~\,{{\mathit{t}}_{{2}}^\ast}
+{\mathit{C}}, \mathsf{label}~({{\mathit{t}}_{{2}}^\ast}) \vdash {{\mathit{instr}}_{{1}}^\ast} : {{\mathit{t}}_{{1}}^\ast}~{\rightarrow}_{{{\mathit{x}}_{{1}}^\ast}}\,{{\mathit{t}}_{{2}}^\ast}
  \qquad
-{\mathit{C}}, \mathsf{label}~\,({{\mathit{t}}_{{2}}^\ast}) \vdash {{\mathit{instr}}_{{2}}^\ast} : {{\mathit{t}}_{{1}}^\ast} \rightarrow ({{\mathit{x}}_{{2}}^\ast})~\,{{\mathit{t}}_{{2}}^\ast}
+{\mathit{C}}, \mathsf{label}~({{\mathit{t}}_{{2}}^\ast}) \vdash {{\mathit{instr}}_{{2}}^\ast} : {{\mathit{t}}_{{1}}^\ast}~{\rightarrow}_{{{\mathit{x}}_{{2}}^\ast}}\,{{\mathit{t}}_{{2}}^\ast}
 }{
-{\mathit{C}} \vdash \mathsf{if}~\,{\mathit{bt}}~\,{{\mathit{instr}}_{{1}}^\ast}~\,\mathsf{else}~\,{{\mathit{instr}}_{{2}}^\ast} : {{\mathit{t}}_{{1}}^\ast}~\,\mathsf{i{\scriptstyle32}} \rightarrow {{\mathit{t}}_{{2}}^\ast}
+{\mathit{C}} \vdash \mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_{{1}}^\ast}~\mathsf{else}~{{\mathit{instr}}_{{2}}^\ast} : {{\mathit{t}}_{{1}}^\ast}~\mathsf{i{\scriptstyle32}} \rightarrow {{\mathit{t}}_{{2}}^\ast}
 } \, {[\textsc{\scriptsize T{-}if}]}
 \qquad
 \end{array}
@@ -260,13 +252,13 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathrm{default}}~\,\mathsf{i{\scriptstyle32}} &=& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\,0) &  \\
-{\mathrm{default}}~\,\mathsf{i{\scriptstyle64}} &=& (\mathsf{i{\scriptstyle64}}.\mathsf{const}~\,0) &  \\
-{\mathrm{default}}~\,\mathsf{f{\scriptstyle32}} &=& (\mathsf{f{\scriptstyle32}}.\mathsf{const}~\,{+0}) &  \\
-{\mathrm{default}}~\,\mathsf{f{\scriptstyle64}} &=& (\mathsf{f{\scriptstyle64}}.\mathsf{const}~\,{+0}) &  \\
-{\mathrm{default}}~\,\mathsf{v{\scriptstyle128}} &=& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~\,0) &  \\
-{\mathrm{default}}~\,\mathsf{ref}~\,\mathsf{null}~\,{\mathit{ht}} &=& (\mathsf{ref.null}~\,{\mathit{ht}}) &  \\
-{\mathrm{default}}~\,\mathsf{ref}~\,\epsilon~\,{\mathit{ht}} &=& \epsilon &  \\
+{{\mathrm{default}}}_{\mathsf{i{\scriptstyle32}}} &=& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~0) &  \\
+{{\mathrm{default}}}_{\mathsf{i{\scriptstyle64}}} &=& (\mathsf{i{\scriptstyle64}}.\mathsf{const}~0) &  \\
+{{\mathrm{default}}}_{\mathsf{f{\scriptstyle32}}} &=& (\mathsf{f{\scriptstyle32}}.\mathsf{const}~{+0}) &  \\
+{{\mathrm{default}}}_{\mathsf{f{\scriptstyle64}}} &=& (\mathsf{f{\scriptstyle64}}.\mathsf{const}~{+0}) &  \\
+{{\mathrm{default}}}_{\mathsf{v{\scriptstyle128}}} &=& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~0) &  \\
+{{\mathrm{default}}}_{\mathsf{ref}~\mathsf{null}~{\mathit{ht}}} &=& (\mathsf{ref.null}~{\mathit{ht}}) &  \\
+{{\mathrm{default}}}_{\mathsf{ref}~\epsilon~{\mathit{ht}}} &=& \epsilon &  \\
 \end{array}
 $$
 
@@ -295,22 +287,22 @@ $$
 
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
-{[\textsc{\scriptsize E{-}block}]} \quad & {\mathit{z}} ; {{\mathit{val}}^{{\mathit{k}}}}~\,(\mathsf{block}~\,{\mathit{bt}}~\,{{\mathit{instr}}^\ast}) &\hookrightarrow& ({{\mathsf{label}}_{{\mathit{n}}}}{\{\epsilon\}}~\,({{\mathit{val}}^{{\mathit{k}}}}, {{\mathit{instr}}^\ast})) &\quad
+{[\textsc{\scriptsize E{-}block}]} \quad & {\mathit{z}} ; {{\mathit{val}}^{{\mathit{k}}}}~(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast}) &\hookrightarrow& ({{\mathsf{label}}_{{\mathit{n}}}}{\{\epsilon\}}~({{\mathit{val}}^{{\mathit{k}}}}, {{\mathit{instr}}^\ast})) &\quad
   \mbox{if}~{{\mathrm{blocktype}}}_{{\mathit{z}}}({\mathit{bt}}) = {{\mathit{t}}_{{1}}^{{\mathit{k}}}} \rightarrow {{\mathit{t}}_{{2}}^{{\mathit{n}}}} \\
-{[\textsc{\scriptsize E{-}loop}]} \quad & {\mathit{z}} ; {{\mathit{val}}^{{\mathit{k}}}}~\,(\mathsf{loop}~\,{\mathit{bt}}~\,{{\mathit{instr}}^\ast}) &\hookrightarrow& ({{\mathsf{label}}_{{\mathit{k}}}}{\{\mathsf{loop}~\,{\mathit{bt}}~\,{{\mathit{instr}}^\ast}\}}~\,({{\mathit{val}}^{{\mathit{k}}}}, {{\mathit{instr}}^\ast})) &\quad
+{[\textsc{\scriptsize E{-}loop}]} \quad & {\mathit{z}} ; {{\mathit{val}}^{{\mathit{k}}}}~(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast}) &\hookrightarrow& ({{\mathsf{label}}_{{\mathit{k}}}}{\{\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast}\}}~({{\mathit{val}}^{{\mathit{k}}}}, {{\mathit{instr}}^\ast})) &\quad
   \mbox{if}~{{\mathrm{blocktype}}}_{{\mathit{z}}}({\mathit{bt}}) = {{\mathit{t}}_{{1}}^{{\mathit{k}}}} \rightarrow {{\mathit{t}}_{{2}}^{{\mathit{n}}}} \\[0.8ex]
-{[\textsc{\scriptsize E{-}if{-}true}]} \quad & (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\,{\mathit{c}})~\,(\mathsf{if}~\,{\mathit{bt}}~\,{{\mathit{instr}}_{{1}}^\ast}~\,\mathsf{else}~\,{{\mathit{instr}}_{{2}}^\ast}) &\hookrightarrow& (\mathsf{block}~\,{\mathit{bt}}~\,{{\mathit{instr}}_{{1}}^\ast}) &\quad
+{[\textsc{\scriptsize E{-}if{-}true}]} \quad & (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{c}})~(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_{{1}}^\ast}~\mathsf{else}~{{\mathit{instr}}_{{2}}^\ast}) &\hookrightarrow& (\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_{{1}}^\ast}) &\quad
   \mbox{if}~{\mathit{c}} \neq 0 \\
-{[\textsc{\scriptsize E{-}if{-}false}]} \quad & (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\,{\mathit{c}})~\,(\mathsf{if}~\,{\mathit{bt}}~\,{{\mathit{instr}}_{{1}}^\ast}~\,\mathsf{else}~\,{{\mathit{instr}}_{{2}}^\ast}) &\hookrightarrow& (\mathsf{block}~\,{\mathit{bt}}~\,{{\mathit{instr}}_{{2}}^\ast}) &\quad
+{[\textsc{\scriptsize E{-}if{-}false}]} \quad & (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{c}})~(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_{{1}}^\ast}~\mathsf{else}~{{\mathit{instr}}_{{2}}^\ast}) &\hookrightarrow& (\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_{{2}}^\ast}) &\quad
   \mbox{if}~{\mathit{c}} = 0 \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
-{[\textsc{\scriptsize E{-}if{-}true}]} \quad & (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\,{\mathit{c}})~\,(\mathsf{if}~\,{\mathit{bt}}~\,{{\mathit{instr}}_{{1}}^\ast}~\,\mathsf{else}~\,{{\mathit{instr}}_{{2}}^\ast}) &\hookrightarrow& (\mathsf{block}~\,{\mathit{bt}}~\,{{\mathit{instr}}_{{1}}^\ast}) &\quad
+{[\textsc{\scriptsize E{-}if{-}true}]} \quad & (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{c}})~(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_{{1}}^\ast}~\mathsf{else}~{{\mathit{instr}}_{{2}}^\ast}) &\hookrightarrow& (\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_{{1}}^\ast}) &\quad
   \mbox{if}~{\mathit{c}} \neq 0 \\
-{[\textsc{\scriptsize E{-}if{-}false}]} \quad & (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\,{\mathit{c}})~\,(\mathsf{if}~\,{\mathit{bt}}~\,{{\mathit{instr}}_{{1}}^\ast}~\,\mathsf{else}~\,{{\mathit{instr}}_{{2}}^\ast}) &\hookrightarrow& (\mathsf{block}~\,{\mathit{bt}}~\,{{\mathit{instr}}_{{2}}^\ast}) &\quad
+{[\textsc{\scriptsize E{-}if{-}false}]} \quad & (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{c}})~(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_{{1}}^\ast}~\mathsf{else}~{{\mathit{instr}}_{{2}}^\ast}) &\hookrightarrow& (\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_{{2}}^\ast}) &\quad
   \mbox{if}~{\mathit{c}} = 0 \\
 \end{array}
 $$
@@ -391,10 +383,19 @@ warning: syntax `imm` was never spliced
 warning: syntax `import` was never spliced
 warning: syntax `init` was never spliced
 warning: syntax `inn` was never spliced
+warning: syntax `instr/parametric` was never spliced
+warning: syntax `instr/br` was never spliced
+warning: syntax `instr/call` was never spliced
 warning: syntax `instr/vec` was never spliced
 warning: syntax `instr/ref` was never spliced
-warning: syntax `instr/heap` was never spliced
+warning: syntax `instr/func` was never spliced
+warning: syntax `instr/i31` was never spliced
+warning: syntax `instr/struct` was never spliced
+warning: syntax `instr/array` was never spliced
+warning: syntax `instr/extern` was never spliced
 warning: syntax `instr/table` was never spliced
+warning: syntax `instr/elem` was never spliced
+warning: syntax `instr/data` was never spliced
 warning: syntax `instrtype` was never spliced
 warning: syntax `ishape` was never spliced
 warning: syntax `labelidx` was never spliced
@@ -428,6 +429,7 @@ warning: syntax `numtype` was never spliced
 warning: syntax `oktypeidx` was never spliced
 warning: syntax `oktypeidxnat` was never spliced
 warning: syntax `pack_` was never spliced
+warning: syntax `packsize` was never spliced
 warning: syntax `packtype` was never spliced
 warning: syntax `packval` was never spliced
 warning: syntax `pnn` was never spliced
@@ -502,6 +504,7 @@ warning: syntax `vvbinop` was never spliced
 warning: syntax `vvternop` was never spliced
 warning: syntax `vvtestop` was never spliced
 warning: syntax `vvunop` was never spliced
+warning: syntax `ww` was never spliced
 warning: syntax `zero` was never spliced
 warning: syntax `zval_` was never spliced
 warning: syntax `zval_` was never spliced
@@ -626,8 +629,7 @@ warning: grammar `BuN` was never spliced
 warning: grammar `Bvaltype` was never spliced
 warning: grammar `Bvec` was never spliced
 warning: grammar `Bvectype` was never spliced
-warning: rule `Blocktype_ok/void` was never spliced
-warning: rule `Blocktype_ok/result` was never spliced
+warning: rule `Blocktype_ok/valtype` was never spliced
 warning: rule `Blocktype_ok/typeidx` was never spliced
 warning: rule `Comptype_ok/struct` was never spliced
 warning: rule `Comptype_ok/array` was never spliced
@@ -697,9 +699,17 @@ warning: rule `Heaptype_sub/noextern` was never spliced
 warning: rule `Heaptype_sub/bot` was never spliced
 warning: rule `Import_ok` was never spliced
 warning: rule `Instr_const/const` was never spliced
-warning: rule `Instr_const/vvconst` was never spliced
+warning: rule `Instr_const/vconst` was never spliced
 warning: rule `Instr_const/ref.null` was never spliced
+warning: rule `Instr_const/ref.i31` was never spliced
 warning: rule `Instr_const/ref.func` was never spliced
+warning: rule `Instr_const/struct.new` was never spliced
+warning: rule `Instr_const/struct.new_default` was never spliced
+warning: rule `Instr_const/array.new` was never spliced
+warning: rule `Instr_const/array.new_default` was never spliced
+warning: rule `Instr_const/array.new_fixed` was never spliced
+warning: rule `Instr_const/any.convert_extern` was never spliced
+warning: rule `Instr_const/extern.convert_any` was never spliced
 warning: rule `Instr_const/global.get` was never spliced
 warning: rule `Instr_const/binop` was never spliced
 warning: rule `Instr_ok/select-expl` was never spliced
@@ -711,10 +721,10 @@ warning: rule `Instr_ok/br_on_null` was never spliced
 warning: rule `Instr_ok/br_on_non_null` was never spliced
 warning: rule `Instr_ok/br_on_cast` was never spliced
 warning: rule `Instr_ok/br_on_cast_fail` was never spliced
-warning: rule `Instr_ok/return` was never spliced
 warning: rule `Instr_ok/call` was never spliced
 warning: rule `Instr_ok/call_ref` was never spliced
 warning: rule `Instr_ok/call_indirect` was never spliced
+warning: rule `Instr_ok/return` was never spliced
 warning: rule `Instr_ok/return_call` was never spliced
 warning: rule `Instr_ok/return_call_ref` was never spliced
 warning: rule `Instr_ok/return_call_indirect` was never spliced
@@ -723,7 +733,6 @@ warning: rule `Instr_ok/unop` was never spliced
 warning: rule `Instr_ok/binop` was never spliced
 warning: rule `Instr_ok/testop` was never spliced
 warning: rule `Instr_ok/relop` was never spliced
-warning: rule `Instr_ok/reinterpret` was never spliced
 warning: rule `Instr_ok/ref.null` was never spliced
 warning: rule `Instr_ok/ref.func` was never spliced
 warning: rule `Instr_ok/ref.i31` was never spliced
@@ -773,6 +782,8 @@ warning: rule `Instr_ok/vextunop` was never spliced
 warning: rule `Instr_ok/vextbinop` was never spliced
 warning: rule `Instr_ok/vbitmask` was never spliced
 warning: rule `Instr_ok/local.get` was never spliced
+warning: rule `Instr_ok/local.set` was never spliced
+warning: rule `Instr_ok/local.tee` was never spliced
 warning: rule `Instr_ok/global.get` was never spliced
 warning: rule `Instr_ok/global.set` was never spliced
 warning: rule `Instr_ok/table.get` was never spliced
@@ -797,9 +808,6 @@ warning: rule `Instr_ok/vload-zero` was never spliced
 warning: rule `Instr_ok/vload_lane` was never spliced
 warning: rule `Instr_ok/vstore` was never spliced
 warning: rule `Instr_ok/vstore_lane` was never spliced
-warning: rule `Instrf_ok/instr` was never spliced
-warning: rule `Instrf_ok/local.set` was never spliced
-warning: rule `Instrf_ok/local.tee` was never spliced
 warning: rule `Instrs_ok/empty` was spliced more than once
 warning: rule `Instrs_ok/sub` was never spliced
 warning: rule `Instrs_ok/frame` was spliced more than once
@@ -1397,6 +1405,8 @@ warning: rule prose `valid/table.set` was never spliced
 warning: rule prose `valid/table.get` was never spliced
 warning: rule prose `valid/global.set` was never spliced
 warning: rule prose `valid/global.get` was never spliced
+warning: rule prose `valid/local.tee` was never spliced
+warning: rule prose `valid/local.set` was never spliced
 warning: rule prose `valid/local.get` was never spliced
 warning: rule prose `valid/vextbinop` was never spliced
 warning: rule prose `valid/vextunop` was never spliced
@@ -1446,7 +1456,6 @@ warning: rule prose `valid/ref.i31` was never spliced
 warning: rule prose `valid/ref.func` was never spliced
 warning: rule prose `valid/ref.null` was never spliced
 warning: rule prose `valid/cvtop` was never spliced
-warning: rule prose `valid/cvtop` was never spliced
 warning: rule prose `valid/relop` was never spliced
 warning: rule prose `valid/testop` was never spliced
 warning: rule prose `valid/binop` was never spliced
@@ -1455,10 +1464,10 @@ warning: rule prose `valid/const` was never spliced
 warning: rule prose `valid/return_call_indirect` was never spliced
 warning: rule prose `valid/return_call_ref` was never spliced
 warning: rule prose `valid/return_call` was never spliced
+warning: rule prose `valid/return` was never spliced
 warning: rule prose `valid/call_indirect` was never spliced
 warning: rule prose `valid/call_ref` was never spliced
 warning: rule prose `valid/call` was never spliced
-warning: rule prose `valid/return` was never spliced
 warning: rule prose `valid/br_on_cast_fail` was never spliced
 warning: rule prose `valid/br_on_cast` was never spliced
 warning: rule prose `valid/br_on_non_null` was never spliced
@@ -1471,8 +1480,8 @@ warning: rule prose `valid/loop` was never spliced
 warning: rule prose `valid/block` was never spliced
 warning: rule prose `valid/select` was never spliced
 warning: rule prose `valid/drop` was never spliced
-warning: rule prose `valid/nop` was never spliced
 warning: rule prose `valid/unreachable` was never spliced
+warning: rule prose `valid/nop` was never spliced
 warning: definition prose `E` was never spliced
 warning: definition prose `Ki` was never spliced
 warning: definition prose `M` was never spliced
@@ -1503,7 +1512,7 @@ warning: definition prose `cunpack` was never spliced
 warning: definition prose `cvtop` was never spliced
 warning: definition prose `data` was never spliced
 warning: definition prose `datainst` was never spliced
-warning: definition prose `default` was never spliced
+warning: definition prose `default_` was never spliced
 warning: definition prose `diffrt` was never spliced
 warning: definition prose `dim` was never spliced
 warning: definition prose `elem` was never spliced

@@ -23,48 +23,7 @@ let string_of_gramid id = id.it
 
 (* Operators *)
 
-let string_of_atom atom =
-  match atom.it with
-  | Atom atomid -> atomid
-  | Infinity -> "infinity"
-  | Bot -> "_|_"
-  | Top -> "^|^"
-  | Dot -> "."
-  | Dot2 -> ".."
-  | Dot3 -> "..."
-  | Semicolon -> ";"
-  | Backslash -> "\\"
-  | In -> "<-"
-  | Arrow -> "->"
-  | Arrow2 -> "`=>"
-  | Colon -> ":"
-  | Sub -> "<:"
-  | Sup -> ":>"
-  | Assign -> ":="
-  | Equal -> "="
-  | Equiv -> "=="
-  | Approx -> "~~"
-  | SqArrow -> "~>"
-  | SqArrowStar -> "~>*"
-  | Prec -> "<<"
-  | Succ -> ">>"
-  | Tilesturn -> "-|"
-  | Turnstile -> "|-"
-  | Quest -> "`?"
-  | Plus -> "`+"
-  | Star -> "`*"
-  | Comma -> "`,"
-  | Comp -> "++"
-  | Bar -> "`|"
-  | BigComp -> "(++)"
-  | BigAnd -> "(/\\)"
-  | BigOr -> "(\\/)"
-  | LParen -> "`("
-  | RParen -> "`)"
-  | LBrack -> "`["
-  | RBrack -> "`]"
-  | LBrace -> "`{"
-  | RBrace -> "`}"
+let string_of_atom = Il.Atom.string_of_atom
 
 let string_of_unop = function
   | NotOp -> "~"
@@ -172,6 +131,7 @@ and string_of_exp e =
   | NatE (DecOp, n) -> Z.to_string n
   | NatE (HexOp, n) -> "0x" ^ Z.format "%X" n
   | NatE (CharOp, n) -> "U+" ^ Z.format "%X" n
+  | NatE (AtomOp, n) -> "`" ^ Z.to_string n
   | TextE t -> "\"" ^ String.escaped t ^ "\""
   | UnE (op, e2) -> string_of_unop op ^ " " ^ string_of_exp e2
   | BinE (e1, op, e2) ->
@@ -249,6 +209,7 @@ and string_of_sym g =
   | NatG (DecOp, n) -> Z.to_string n
   | NatG (HexOp, n) -> "0x" ^ Z.format "%X" n
   | NatG (CharOp, n) -> "U+" ^ Z.format "%X" n
+  | NatG (AtomOp, n) -> "`" ^ Z.to_string n
   | TextG t -> "\"" ^ String.escaped t ^ "\""
   | EpsG -> "eps"
   | SeqG gs -> "{" ^ concat " " (map_filter_nl_list string_of_sym gs) ^ "}"

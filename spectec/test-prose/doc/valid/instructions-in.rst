@@ -58,8 +58,7 @@ $${rule-prose: valid/cvtop}
 \
 
 $${rule+: 
-  Instr_ok/reinterpret
-  Instr_ok/convert-*
+  Instr_ok/cvtop-*
 }
 
 Reference Instructions
@@ -489,25 +488,20 @@ $${rule: Instr_ok/local.get}
 
 .. _valid-local.set:
 
-LOCAL.SET
-^^^^^^^^^
 
-TODO (not found) 
+$${rule-prose: valid/local.set}
 
 \
 
-$${rule+: Instrf_ok/local.set}
+$${rule+: Instr_ok/local.set}
 
 .. _valid-local.tee:
 
-LOCAL.TEE
-^^^^^^^^^
-
-TODO (not found)
+$${rule-prose: valid/local.tee}
 
 \
 
-$${rule+: Instrf_ok/local.tee}
+$${rule+: Instr_ok/local.tee}
 
 .. _valid-global.get:
 
@@ -860,7 +854,6 @@ Instruction Sequences
 ~~~~~~~~~~~~~~~~~~~~~
 
 $${rule+:
-  Instrf_ok/instr
   Instrs_ok/*
 }
 

@@ -31,7 +31,7 @@
   externtype
 }
 
-##{syntax: {instr/control}}
+##{syntax: {instr/block}}
 
 ##{syntax: {instr/num instr/local instr/global instr/memory} expr}
 
@@ -56,12 +56,12 @@ An instruction sequence #{:instr*} is well-typed with an instruction type #{func
 ##{rule+: Instr_ok/if}
 
 
-##{rule-ignore: Instr_ok/convert-*}
+##{rule-ignore: Instr_ok/cvtop-*}
 
 
 \subsection*{Runtime}
 
-##{definition: default}
+##{definition: default_}
 
 ##{definition: {funcaddr funcinst} {func table}}
 
