@@ -216,9 +216,14 @@ and translate_exp exp =
     | [ []; []; [] ], [ e1; e2 ] ->
       tupE [ translate_exp e1; translate_exp e2 ] ~at:at
     | [ []; [{it = Il.Semicolon; _}]; [] ], [ e1; e2 ] -> tupE [ translate_exp e1; translate_exp e2 ] ~at:at
-    | [ []; [{it = (Il.Arrow | Il.ArrowSub); _}]; []; [] ], [ e1; e2; e3 ] -> infixE (translate_exp e1, "->", catE (translate_exp e2, translate_exp e3)) ~at:at
-    | [ []; [ atom ]; [] ], [ e1; e2 ] ->
-      infixE (translate_exp e1, Il.Print.string_of_atom atom, translate_exp e2) ~at:at
+    | [ []; [{it = Il.Arrow; _}]; [] ], [ e1; e2 ] ->
+      infixE (translate_exp e1, ArrowOp, translate_exp e2) ~at:at
+    | [ []; [{it = Il.Arrow; _}]; []; [] ], [ e1; e2; e3 ] ->
+      infixE (translate_exp e1, ArrowOp, catE (translate_exp e2, translate_exp e3)) ~at:at
+    | [ []; [{it = Il.ArrowSub; _}]; []; [] ], [ e1; e2; e3 ] ->
+      infixE (translate_exp e1, ArrowSubOp, catE (translate_exp e2, translate_exp e3)) ~at:at
+    | [ []; [{it = Il.Atom atom; note; _}]; [] ], [ e1; e2 ] ->
+      infixE (translate_exp e1, AtomOp (atom, !note), translate_exp e2) ~at:at
     | _ -> yetE (Il.Print.string_of_exp exp) ~at:at)
   | Il.UncaseE (e, op) -> (
     match op with

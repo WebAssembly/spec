@@ -46,9 +46,10 @@ let al_to_el_binop = function
 (* TODO hardcoded types for infixop atom *)
 let al_to_el_infixop op =
   let elatom, typ = match op with
-  | "->" -> Some Il.Atom.Arrow, ""
-  | "X" -> Some (Il.Atom.Atom "X"), "shape"
-  | _ -> None, ""
+  | Al.Ast.AtomOp (s, typ) ->
+      Some (Il.Atom.Atom s), typ
+  | Al.Ast.ArrowOp -> Some Il.Atom.Arrow, ""
+  | Al.Ast.ArrowSubOp -> Some Il.Atom.ArrowSub, ""
   in
   Option.map
     (fun elatom -> elatom $$ no_region % ref typ)

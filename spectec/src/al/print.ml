@@ -91,6 +91,11 @@ let string_of_binop = function
   | LeOp -> "≤"
   | GeOp -> "≥"
 
+let string_of_infix = function
+  | AtomOp (s, _) -> s
+  | ArrowOp -> "->"
+  | ArrowSubOp -> "->_"
+
 
 (* Iters *)
 
@@ -158,7 +163,7 @@ and string_of_expr expr =
   | VarE id -> id
   | SubE (id, _) -> id
   | IterE (e, _, iter) -> string_of_expr e ^ string_of_iter iter
-  | InfixE (e1, infix, e2) -> "(" ^ string_of_expr e1 ^ " " ^ infix ^ " " ^ string_of_expr e2 ^ ")"
+  | InfixE (e1, infix, e2) -> "(" ^ string_of_expr e1 ^ " " ^ string_of_infix infix ^ " " ^ string_of_expr e2 ^ ")"
   | CaseE ((("CONST"|"VCONST"), _), hd::tl) -> "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
   | CaseE ((s, _), []) -> s
   | CaseE ((s, _), el) -> "(" ^ s ^ " " ^ string_of_exprs " " el ^ ")"
@@ -462,7 +467,7 @@ and structured_string_of_expr expr =
     "InfixE ("
     ^ structured_string_of_expr e1
     ^ ", "
-    ^ infix
+    ^ string_of_infix infix
     ^ ", "
     ^ structured_string_of_expr e2
     ^ ")"
