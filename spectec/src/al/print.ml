@@ -222,6 +222,15 @@ let make_index depth =
   | 3 -> alp_idx ^ ")"
   | _ -> assert false
 
+(* Prefix for stack push/pop operations *)
+let string_of_stack_prefix expr =
+  match expr.it with
+  | ContE _
+  | LabelE _
+  | FrameE _ -> ""
+  | IterE _ -> "the values "
+  | _ -> "the value "
+
 let rec string_of_instr' depth instr =
   match instr.it with
   | IfI (e, il, []) ->
@@ -269,11 +278,11 @@ let rec string_of_instr' depth instr =
       (string_of_instrs' (depth + 1) il2)
   | AssertI e -> sprintf "%s Assert: Due to validation, %s." (make_index depth) (string_of_expr e)
   | PushI e ->
-    sprintf "%s Push %s to the stack." (make_index depth)
-      (string_of_expr e)
+    sprintf "%s Push %s%s to the stack." (make_index depth)
+      (string_of_stack_prefix e) (string_of_expr e)
   | PopI e ->
-    sprintf "%s Pop %s from the stack." (make_index depth)
-      (string_of_expr e)
+    sprintf "%s Pop %s%s from the stack." (make_index depth)
+      (string_of_stack_prefix e) (string_of_expr e)
   | PopAllI e ->
     sprintf "%s Pop all values %s from the stack." (make_index depth)
       (string_of_expr e)

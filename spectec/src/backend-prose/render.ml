@@ -43,8 +43,7 @@ let al_to_el_binop = function
   | Al.Ast.ExpOp -> Some El.Ast.ExpOp
   | _ -> None
 
-(* TODO hardcoded types for infixop atom,
-   *)
+(* TODO hardcoded types for infixop atom *)
 let al_to_el_infixop op =
   let elatom, typ = match op with
   | "->" -> Some Il.Atom.Arrow, ""
@@ -450,6 +449,15 @@ and render_prose_instrs env depth instrs =
       sinstrs ^ "\n\n" ^ repeat indent depth ^ render_prose_instr env depth i)
     "" instrs
 
+(* Prefix for stack push/pop operations *)
+let render_stack_prefix expr =
+  match expr.it with
+  | Al.Ast.ContE _
+  | Al.Ast.FrameE _
+  | Al.Ast.LabelE _ -> ""
+  | Al.Ast.IterE _ -> "the values "
+  | _ -> "the value "
+
 let rec render_al_instr env algoname index depth instr =
   match instr.it with
   | Al.Ast.IfI (c, il, []) ->
@@ -508,14 +516,11 @@ let rec render_al_instr env algoname index depth instr =
       sprintf "%s Assert: Due to %s, %s." (render_order index depth)
         vref (render_expr env c)
   | Al.Ast.PushI e ->
-      sprintf "%s Push %s to the stack." (render_order index depth)
-        (render_expr env e)
-  (* TODO hardcoded for PopI on label or frame by raw string *)
-  | Al.Ast.PopI ({ it = Al.Ast.VarE s; _ }) when s = "the label" || s = "the frame" ->
-      sprintf "%s Pop %s from the stack." (render_order index depth) s
+      sprintf "%s Push %s%s to the stack." (render_order index depth)
+        (render_stack_prefix e) (render_expr env e)
   | Al.Ast.PopI e ->
-      sprintf "%s Pop %s from the stack." (render_order index depth)
-        (render_expr env e)
+      sprintf "%s Pop %s%s from the stack." (render_order index depth)
+        (render_stack_prefix e) (render_expr env e)
   | Al.Ast.PopAllI e ->
       sprintf "%s Pop all values %s from the stack." (render_order index depth)
         (render_expr env e)
