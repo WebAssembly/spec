@@ -134,7 +134,7 @@ validation_of_MEMORY.GROW
 
 validation_of_LOAD nt (n, sx)? memop
 - |C.MEM| must be greater than 0.
-- ((sx? is ?())) and ((n? is ?())) are equivalent.
+- ((sx? is ?())) if and only if ((n? is ?())).
 - (2 ^ memop.ALIGN) must be less than or equal to ($size(nt) / 8).
 - If n is defined,
   - (2 ^ memop.ALIGN) must be less than or equal to (n / 8).
@@ -1510,7 +1510,7 @@ validation_of_DATA.DROP x
 
 validation_of_LOAD nt (n, sx)? memop
 - |C.MEM| must be greater than 0.
-- ((sx? is ?())) and ((n? is ?())) are equivalent.
+- ((sx? is ?())) if and only if ((n? is ?())).
 - (2 ^ memop.ALIGN) must be less than or equal to ($size(nt) / 8).
 - If n is defined,
   - (2 ^ memop.ALIGN) must be less than or equal to (n / 8).
@@ -3878,7 +3878,7 @@ validation_of_STRUCT.GET sx? x i
 - Let (STRUCT yt*) be $expanddt(C.TYPE[x]).
 - |yt*| must be greater than i.
 - Let (mut, zt) be yt*[i].
-- ((zt is $unpack(zt))) and ((sx? is ?())) are equivalent.
+- ((zt is $unpack(zt))) if and only if ((sx? is ?())).
 - The instruction is valid with type ([(REF (NULL ?(())) $idx(x))] -> [] ++ [$unpack(zt)]).
 
 validation_of_STRUCT.SET x i
@@ -3922,7 +3922,7 @@ validation_of_ARRAY.NEW_DATA x y
 validation_of_ARRAY.GET sx? x
 - |C.TYPE| must be greater than x.
 - Let (ARRAY (mut, zt)) be $expanddt(C.TYPE[x]).
-- ((zt is $unpack(zt))) and ((sx? is ?())) are equivalent.
+- ((zt is $unpack(zt))) if and only if ((sx? is ?())).
 - The instruction is valid with type ([(REF (NULL ?(())) $idx(x)), I32] -> [] ++ [$unpack(zt)]).
 
 validation_of_ARRAY.SET x
@@ -4140,7 +4140,7 @@ validation_of_DATA.DROP x
 
 validation_of_LOAD nt (n, sx)? x memop
 - |C.MEM| must be greater than x.
-- ((sx? is ?())) and ((n? is ?())) are equivalent.
+- ((sx? is ?())) if and only if ((n? is ?())).
 - (2 ^ memop.ALIGN) must be less than or equal to ($size(nt) / 8).
 - If n is defined,
   - (2 ^ memop.ALIGN) must be less than or equal to (n / 8).

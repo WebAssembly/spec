@@ -63,7 +63,7 @@ let rec string_of_instr = function
         (string_of_expr e2)
         (string_of_list indented_string_of_instr "" "\n" "" is)
   | EquivI (e1, e2) ->
-      sprintf "%s (%s) and (%s) are equivalent." (indent ())
+      sprintf "%s (%s) if and only if (%s)." (indent ())
         (string_of_expr e2)
         (string_of_expr e1)
   | YetI s -> indent () ^ " Yet: " ^ s

@@ -438,7 +438,7 @@ let rec render_prose_instr env depth = function
         (render_expr env e2)
         (render_prose_instrs env (depth + 1) is)
   | EquivI (c1, c2) ->
-      sprintf "* %s and %s are equivalent."
+      sprintf "* %s if and only if %s."
         (String.capitalize_ascii (render_expr env c1))
         (render_expr env c2)
   | YetI s ->
