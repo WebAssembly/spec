@@ -16,11 +16,11 @@ let empty = ""
 
 let error at msg step = raise (Exception.Error (at, msg, step))
 
-let error_expr expr msg =
-  error expr.at msg ("`" ^ structured_string_of_expr expr ^ "`")
+let fail_expr expr msg =
+  failwith ("on expr `" ^ structured_string_of_expr expr ^ "` " ^ msg)
 
-let error_path path msg =
-  error path.at msg ("`" ^ structured_string_of_path path ^ "`")
+let fail_path path msg =
+  failwith ("on path `" ^ structured_string_of_path path ^ "` " ^ msg)
 
 let try_with_error fname at stringifier f step =
   let prefix = if fname <> empty then fname ^ ": " else fname in
@@ -77,7 +77,7 @@ and access_path env base path =
     let i = eval_expr env e' |> al_to_int in
     begin try Array.get a i with
     | Invalid_argument _ ->
-      error_path path
+      fail_path path
         (sprintf "failed Array.get on base %s and index %s"
           (string_of_value base) (string_of_int i))
     end
@@ -91,7 +91,7 @@ and access_path env base path =
     | FrameV (_, StrV r) -> Record.find str r
     | StrV r -> Record.find str r
     | v ->
-      error_path path
+      fail_path path
         (sprintf "base %s is not a record" (string_of_value v))
     )
 
@@ -114,7 +114,7 @@ and replace_path env base path v_new =
       | FrameV (_, StrV r) -> r
       | StrV r -> r
       | v ->
-        error_path path
+        fail_path path
           (sprintf "base %s is not a record" (string_of_value v))
     in
     let r_new = Record.clone r in
@@ -145,7 +145,7 @@ and eval_expr env expr =
     | GtOp, v1, v2 -> boolV (v1 > v2)
     | LeOp, v1, v2 -> boolV (v1 <= v2)
     | GeOp, v1, v2 -> boolV (v1 >= v2)
-    | _ -> error_expr expr "type mismatch for binary operation"
+    | _ -> fail_expr expr "type mismatch for binary operation"
     )
   (* Function Call *)
   | CallE (fname, el) ->
@@ -197,17 +197,17 @@ and eval_expr env expr =
     | LabelV (v, _) -> v
     | FrameV (Some v, _) -> v
     | FrameV _ -> numV Z.zero
-    | _ -> error_expr expr "inner expr is not a context" (* Due to AL validation, unreachable *))
+    | _ -> fail_expr expr "inner expr is not a context" (* Due to AL validation, unreachable *))
   | FrameE (e_opt, e) ->
     let arity =
       match Option.map (eval_expr env) e_opt with
       | None | Some (NumV _) as arity -> arity
-      | _ -> error_expr expr "wrong arity of frame"
+      | _ -> fail_expr expr "wrong arity of frame"
     in
     let r =
       match eval_expr env e with
       | StrV _ as v -> v
-      | _ -> error_expr expr "inner expr is not a frame"
+      | _ -> fail_expr expr "inner expr is not a frame"
     in
     FrameV (arity, r)
   | GetCurFrameE -> WasmContext.get_current_frame ()
@@ -220,7 +220,7 @@ and eval_expr env expr =
   | ContE e ->
     (match eval_expr env e with
     | LabelV (_, vs) -> vs
-    | _ -> error_expr expr "inner expr is not a label")
+    | _ -> fail_expr expr "inner expr is not a label")
   | VarE "s" -> Store.get ()
   | VarE name -> lookup_env name env
   (* Optimized getter for simple IterE(VarE, ...) *)
@@ -275,7 +275,7 @@ and eval_expr env expr =
     | CaseV ("I8", [ lim ]) -> valid_lim (Z.of_int 0x10000) lim |> boolV
     (* valid_other *)
     | _ ->
-      error_expr expr "TODO: deferring validation to reference interpreter"
+      fail_expr expr "TODO: deferring validation to reference interpreter"
     )
   | HasTypeE (e, s) ->
     (* TODO: This shouldn't be hardcoded *)
@@ -329,7 +329,7 @@ and eval_expr env expr =
     | CaseV (pt, []) when List.mem pt pnn_types ->
       boolV (s = "pnn" || s = "imm" || s = "packtype" || s = "storagetype")
     | v ->
-      error_expr expr
+      fail_expr expr
         (sprintf "%s doesn't have type %s" (string_of_value v) s)
     )
   | MatchE (e1, e2) ->
@@ -337,7 +337,7 @@ and eval_expr env expr =
     let rt1 = e1 |> eval_expr env |> Construct.al_to_ref_type in
     let rt2 = e2 |> eval_expr env |> Construct.al_to_ref_type in
     boolV (Match.match_ref_type [] rt1 rt2)
-  | _ -> error_expr expr "cannot evaluate expr"
+  | _ -> fail_expr expr "cannot evaluate expr"
 
 
 (* Assignment *)
@@ -373,9 +373,9 @@ and assign lhs rhs env =
         assign expr length env, listV [||], Array.to_list !arr
       | Opt, OptV opt -> env, optV None, Option.to_list opt
       | ListN (_, Some _), ListV _ ->
-        error_expr lhs "invalid assignment: iter with index cannot be an assignment target"
+        fail_expr lhs "invalid assignment: iter with index cannot be an assignment target"
       | _, _ ->
-        error_expr lhs
+        fail_expr lhs
           (sprintf
             "invalid assignment: %s is not an iterable value" (string_of_value rhs)
           )
@@ -409,15 +409,15 @@ and assign lhs rhs env =
       | SubOp -> Z.add
       | MulOp -> Z.div
       | DivOp -> Z.mul
-      | ExpOp -> error_expr lhs "invalid assignment: ExpOp cannot be an assignment target"
-      | _ -> error_expr lhs "invalid assignment: logical binop cannot be an assignment target" in
+      | ExpOp -> fail_expr lhs "invalid assignment: ExpOp cannot be an assignment target"
+      | _ -> fail_expr lhs "invalid assignment: logical binop cannot be an assignment target" in
     let v = eval_expr env e2 |> al_to_z |> invop m |> numV in
     assign e1 v env
   | CatE _, ListV vs -> assign_split lhs !vs env
   | StrE r1, StrV r2 when has_same_keys r1 r2 ->
     Record.fold (fun k v acc -> (Record.find (string_of_kwd k) r2 |> assign v) acc) r1 env
   | _, _ ->
-    error_expr lhs
+    fail_expr lhs
       (sprintf "invalid assignment: on rhs %s" (string_of_value rhs))
 
 and assign_split lhs vs env =
@@ -432,16 +432,16 @@ and assign_split lhs vs env =
     in
     match get_fixed_length ep, get_fixed_length es with
     | None, None ->
-      error_expr lhs
+      fail_expr lhs
         "invalid assignment: non-deterministic pattern cannot be an assignment target"
     | Some l, None -> l, len - l
     | None, Some l -> len - l, l
     | Some l1, Some l2 -> l1, l2
   in
   if prefix_len < 0 || suffix_len < 0 then
-    error_expr lhs "invalid assignment: negative length cannot be an assignment target"
+    fail_expr lhs "invalid assignment: negative length cannot be an assignment target"
   else if prefix_len + suffix_len <> len then
-    error_expr lhs
+    fail_expr lhs
       (sprintf "invalid assignment: %s's length is not equal to lhs"
         (string_of_value (listV vs))
       )
