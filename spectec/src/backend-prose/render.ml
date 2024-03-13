@@ -43,7 +43,6 @@ let al_to_el_binop = function
   | Al.Ast.ExpOp -> Some El.Ast.ExpOp
   | _ -> None
 
-(* TODO hardcoded types for infixop atom *)
 let al_to_el_infixop op =
   let elatom, typ = match op with
   | Al.Ast.AtomOp (s, typ) ->
