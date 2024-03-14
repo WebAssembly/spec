@@ -964,7 +964,7 @@ let rule_to_tup rule =
   | Il.RuleD (_, _, _, exp, prems) ->
     match exp.it with
     | Il.TupE [ lhs; rhs ] -> lhs, rhs, prems
-    | _ -> error_exp rule "form of reduction rule"
+    | _ -> error_exp exp "form of reduction rule"
 
 
 (* group reduction rules that have same name *)
