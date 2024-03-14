@@ -3649,25 +3649,25 @@ watsup 0.4 generator
 == IL Validation after pass animate...
 == Translating to AL...
 == Prose Generation...
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 3
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
+6-typing.watsup:611.7-611.44: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABEL_context[l!`%`_labelidx.0]!`%`_resulttype.0)`
+6-typing.watsup:612.6-612.44: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABEL_context[l'!`%`_labelidx.0]!`%`_resulttype.0)`
+6-typing.watsup:629.6-629.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:630.6-630.34: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt)`
+6-typing.watsup:637.6-637.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:638.6-638.49: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, $diffrt(rt_1, rt_2), rt)`
+6-typing.watsup:654.6-654.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
+6-typing.watsup:667.6-667.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+6-typing.watsup:675.6-675.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+6-typing.watsup:682.6-682.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
+6-typing.watsup:686.6-686.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+6-typing.watsup:750.6-750.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
+6-typing.watsup:756.6-756.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
+6-typing.watsup:774.7-774.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
+6-typing.watsup:806.6-806.39: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEM_context[y!`%`_idx.0], rt)`
+6-typing.watsup:835.6-835.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
+6-typing.watsup:840.6-840.43: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEM_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
+6-typing.watsup:981.6-981.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:987.6-987.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 =================
  Generated prose
 =================
@@ -3718,8 +3718,8 @@ validation_of_BR_TABLE l* l'
   - |C.LABEL| must be greater than l.
 - |C.LABEL| must be greater than l'.
 - For all l in l*,
-  - Yet: TODO: prem_to_instrs 2
-- Yet: TODO: prem_to_instrs 2
+  - Yet: TODO: prem_to_instrs rule_sub
+- Yet: TODO: prem_to_instrs rule_sub
 - Under the context C, (t_1* ->_ [] ++ t_2*) must be valid.
 - The instruction is valid with type (t_1* ++ t* ->_ [] ++ t_2*).
 
@@ -3738,18 +3738,18 @@ validation_of_BR_ON_CAST l rt_1 rt_2
 - |C.LABEL| must be greater than l.
 - Under the context C, rt_1 must be valid.
 - Under the context C, rt_2 must be valid.
-- Yet: TODO: prem_to_instrs 2
+- Yet: TODO: prem_to_instrs rule_sub
 - Let t* ++ [rt] be C.LABEL[l].
-- Yet: TODO: prem_to_instrs 2
+- Yet: TODO: prem_to_instrs rule_sub
 - The instruction is valid with type (t* ++ [rt_1] ->_ [] ++ t* ++ [$diffrt(rt_1, rt_2)]).
 
 validation_of_BR_ON_CAST_FAIL l rt_1 rt_2
 - |C.LABEL| must be greater than l.
 - Under the context C, rt_1 must be valid.
 - Under the context C, rt_2 must be valid.
-- Yet: TODO: prem_to_instrs 2
+- Yet: TODO: prem_to_instrs rule_sub
 - Let t* ++ [rt] be C.LABEL[l].
-- Yet: TODO: prem_to_instrs 2
+- Yet: TODO: prem_to_instrs rule_sub
 - The instruction is valid with type (t* ++ [rt_1] ->_ [] ++ t* ++ [rt_2]).
 
 validation_of_CALL x
@@ -3767,7 +3767,7 @@ validation_of_CALL_INDIRECT x y
 - |C.TYPE| must be greater than y.
 - Let (lim, rt) be C.TABLE[x].
 - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPE[y]).
-- Yet: TODO: prem_to_instrs 2
+- Yet: TODO: prem_to_instrs rule_sub
 - The instruction is valid with type (t_1* ++ [I32] ->_ [] ++ t_2*).
 
 validation_of_RETURN
@@ -3779,7 +3779,7 @@ validation_of_RETURN_CALL x
 - |C.FUNC| must be greater than x.
 - Under the context C, (t_3* ->_ [] ++ t_4*) must be valid.
 - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.FUNC[x]).
-- Yet: TODO: prem_to_instrs 2
+- Yet: TODO: prem_to_instrs rule_sub
 - C.RETURN must be equal to ?(t'_2*).
 - The instruction is valid with type (t_3* ++ t_1* ->_ [] ++ t_4*).
 
@@ -3787,7 +3787,7 @@ validation_of_RETURN_CALL_REF ?(x)
 - |C.TYPE| must be greater than x.
 - Under the context C, (t_3* ->_ [] ++ t_4*) must be valid.
 - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPE[x]).
-- Yet: TODO: prem_to_instrs 2
+- Yet: TODO: prem_to_instrs rule_sub
 - C.RETURN must be equal to ?(t'_2*).
 - The instruction is valid with type (t_3* ++ t_1* ++ [(REF (NULL ?(())) $idx(x))] ->_ [] ++ t_4*).
 
@@ -3797,8 +3797,8 @@ validation_of_RETURN_CALL_INDIRECT x y
 - Under the context C, (t_3* ->_ [] ++ t_4*) must be valid.
 - Let (lim, rt) be C.TABLE[x].
 - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPE[y]).
-- Yet: TODO: prem_to_instrs 2
-- Yet: TODO: prem_to_instrs 2
+- Yet: TODO: prem_to_instrs rule_sub
+- Yet: TODO: prem_to_instrs rule_sub
 - C.RETURN must be equal to ?(t'_2*).
 - The instruction is valid with type (t_3* ++ t_1* ++ [I32] ->_ [] ++ t_4*).
 
@@ -3846,13 +3846,13 @@ validation_of_REF.EQ
 
 validation_of_REF.TEST rt
 - Under the context C, rt must be valid.
-- Yet: TODO: prem_to_instrs 2
+- Yet: TODO: prem_to_instrs rule_sub
 - Under the context C, rt' must be valid.
 - The instruction is valid with type ([rt'] ->_ [] ++ [I32]).
 
 validation_of_REF.CAST rt
 - Under the context C, rt must be valid.
-- Yet: TODO: prem_to_instrs 2
+- Yet: TODO: prem_to_instrs rule_sub
 - Under the context C, rt' must be valid.
 - The instruction is valid with type ([rt'] ->_ [] ++ [rt]).
 
@@ -3869,7 +3869,7 @@ validation_of_STRUCT.NEW_DEFAULT x
 - |C.TYPE| must be greater than x.
 - Let (STRUCT (mut, zt)*) be $expanddt(C.TYPE[x]).
 - |zt*| must be equal to |mut*|.
-- Yet: TODO: prem_to_intrs 3
+- Yet: TODO: prem_to_intrs iter
 - |zt*| must be equal to |val*|.
 - The instruction is valid with type ([] ->_ [] ++ [(REF (NULL ?()) $idx(x))]).
 
@@ -3908,7 +3908,7 @@ validation_of_ARRAY.NEW_ELEM x y
 - |C.TYPE| must be greater than x.
 - |C.ELEM| must be greater than y.
 - Let (ARRAY (mut, rt)) be $expanddt(C.TYPE[x]).
-- Yet: TODO: prem_to_instrs 2
+- Yet: TODO: prem_to_instrs rule_sub
 - The instruction is valid with type ([I32, I32] ->_ [] ++ [(REF (NULL ?()) $idx(x))]).
 
 validation_of_ARRAY.NEW_DATA x y
@@ -3944,14 +3944,14 @@ validation_of_ARRAY.COPY x_1 x_2
 - |C.TYPE| must be greater than x_1.
 - |C.TYPE| must be greater than x_2.
 - Let (ARRAY (mut, zt_2)) be $expanddt(C.TYPE[x_2]).
-- Yet: TODO: prem_to_instrs 2
+- Yet: TODO: prem_to_instrs rule_sub
 - $expanddt(C.TYPE[x_1]) must be equal to (ARRAY ((MUT ?(())), zt_1)).
 - The instruction is valid with type ([(REF (NULL ?(())) $idx(x_1)), I32, (REF (NULL ?(())) $idx(x_2)), I32, I32] ->_ [] ++ []).
 
 validation_of_ARRAY.INIT_ELEM x y
 - |C.TYPE| must be greater than x.
 - |C.ELEM| must be greater than y.
-- Yet: TODO: prem_to_instrs 2
+- Yet: TODO: prem_to_instrs rule_sub
 - $expanddt(C.TYPE[x]) must be equal to (ARRAY ((MUT ?(())), zt)).
 - The instruction is valid with type ([(REF (NULL ?(())) $idx(x)), I32, I32, I32] ->_ [] ++ []).
 
@@ -4088,7 +4088,7 @@ validation_of_TABLE.COPY x_1 x_2
 - |C.TABLE| must be greater than x_2.
 - Let (lim_1, rt_1) be C.TABLE[x_1].
 - Let (lim_2, rt_2) be C.TABLE[x_2].
-- Yet: TODO: prem_to_instrs 2
+- Yet: TODO: prem_to_instrs rule_sub
 - The instruction is valid with type ([I32, I32, I32] ->_ [] ++ []).
 
 validation_of_TABLE.INIT x y
@@ -4096,7 +4096,7 @@ validation_of_TABLE.INIT x y
 - |C.ELEM| must be greater than y.
 - Let rt_2 be C.ELEM[y].
 - Let (lim, rt_1) be C.TABLE[x].
-- Yet: TODO: prem_to_instrs 2
+- Yet: TODO: prem_to_instrs rule_sub
 - The instruction is valid with type ([I32, I32, I32] ->_ [] ++ []).
 
 validation_of_ELEM.DROP x
