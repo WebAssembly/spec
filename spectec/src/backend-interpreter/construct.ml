@@ -20,7 +20,7 @@ let error category msg =
 
 let error_value category v = error category ("`" ^ string_of_value v ^ "`")
 
-let error_values category vs = error category ("`[" ^ string_of_values ", " vs ^ "]")
+let error_values category vs = error category ("`[" ^ string_of_values ", " vs ^ "]`")
 
 (* Constant *)
 

@@ -210,7 +210,7 @@ module AlContext = struct
   let get_return_value = function
     | [ Return v ] -> Some v
     | [] -> None
-    | _ -> assert false
+    | _ -> failwith "AL context not in return"
 
   let rec decrease_depth = function
     | Wasm 1 :: t -> t
