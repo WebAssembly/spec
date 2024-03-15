@@ -62,7 +62,7 @@ The `name of the WebAssembly function` JS-API procedure is extended to return th
 
 ## Type builtins
 
-Type builtins could be an instance of the `WebAssembly.Type` interface provided by the [type-imports](https://github.com/webassembly/type-imports) proposal. The values contained in a type builtin would be specified with a predicate.
+Type builtins could be an instance of the `WebAssembly.Type` interface provided by the [type-imports](https://github.com/WebAssembly/proposal-type-imports) proposal. The values contained in a type builtin would be specified with a predicate.
 
 This proposal does not add any type builtins, as the design around type-imports is in flux.
 
