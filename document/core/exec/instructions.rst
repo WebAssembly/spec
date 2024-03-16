@@ -2803,13 +2803,13 @@ Control Instructions
 
     a. Let :math:`\catch_1` be the first :ref:`catch clause <syntax-catch>` in :math:`\catch^\ast` and :math:`{\catch'}^\ast` the remaining clauses.
 
-    b. If :math:`\catch_1` is of the form :math:`\CATCH~x~l` and the :ref:`exception address <syntax-exnaddr>` :math:`a` equals :math:`F.\AMODULE.\MITAGS[x]`, then:
+    b. If :math:`\catch_1` is of the form :math:`\CATCH~x~l` and the :ref:`tag address <syntax-tagaddr>` :math:`a` equals :math:`F.\AMODULE.\MITAGS[x]`, then:
 
        i. Push the values :math:`\X{exn}.\EIFIELDS` to the stack.
 
        ii. Execute the instruction :math:`\BR~l`.
 
-    c. Else if :math:`\catch_1` is of the form :math:`\CATCHREF~x~l` and the :ref:`exception address <syntax-exnaddr>` :math:`a` equals :math:`F.\AMODULE.\MITAGS[x]`, then:
+    c. Else if :math:`\catch_1` is of the form :math:`\CATCHREF~x~l` and the :ref:`tag address <syntax-tagaddr>` :math:`a` equals :math:`F.\AMODULE.\MITAGS[x]`, then:
 
        i. Push the values :math:`\X{exn}.\EIFIELDS` to the stack.
 
