@@ -35,5 +35,5 @@ $$
 # Preview
 
 ```sh
-$ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup)
+$ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup --latex)
 ```
