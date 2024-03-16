@@ -4,7 +4,7 @@ on:
   push:
     # Disable on fork
     # branches: [ main ]
-    branches: [ ]
+    branches: [ main-only-on-spec-repo ]
     paths: [ .github/**, document/** ]
 
   # Allows you to run this workflow manually from the Actions tab
