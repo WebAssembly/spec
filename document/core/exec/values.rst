@@ -83,6 +83,26 @@ The following auxiliary typing rules specify this typing relation relative to a 
      S \vdashval \REFEXTERNADDR~a : (\REF~\EXTERN)
    }
 
+Subsumption
+...........
+
+* The value must be valid with some value type :math:`t`.
+
+* The value type :math:`t` :ref:`matches <match-valtype>` another :ref:`valid <valid-valtype>` type :math:`t'`.
+
+* Then the value is valid with type :math:`t'`.
+
+.. math::
+   \frac{
+     S \vdashval \val : t
+     \qquad
+     \vdashvaltype t' \ok
+     \qquad
+     \vdashvaltypematch t \matchesvaltype t'
+   }{
+     S \vdashval \val : t'
+   }
+
 
 
 .. index:: external value, external type, validation, import, store

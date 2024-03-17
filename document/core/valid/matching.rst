@@ -54,7 +54,7 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
 
 * Either both :math:`\heaptype_1` and :math:`\heaptype_2` are the same.
 
-* Or :math:`\heaptype_1` is a :ref:`function type <syntax-functype>` and :math:`\heaptype_2` is :math:`FUNC`.
+* Or :math:`\heaptype_1` is a :ref:`function type <syntax-functype>` and :math:`\heaptype_2` is :math:`\FUNC`.
 
 * Or :math:`\heaptype_1` is a :ref:`function type <syntax-functype>` :math:`\functype_1` and :math:`\heaptype_2` is a :ref:`function type <syntax-functype>` :math:`\functype_2`, and :math:`\functype_1` :ref:`matches <match-functype>` :math:`\functype_2`.
 
