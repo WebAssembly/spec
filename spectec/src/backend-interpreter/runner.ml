@@ -6,6 +6,11 @@ open Construct
 open Util
 open Ds
 
+
+(* Errors *)
+
+let error_interpret at msg = Error.error at "interpreter" msg
+
 (* Result *)
 
 let success = 1, 1
@@ -99,6 +104,12 @@ let invoke module_name funcname args =
   let funcaddr = get_export_addr funcname module_name in
   Interpreter.invoke [funcaddr; al_of_list al_of_value args]
 
+let try_invoke module_name funcname args =
+  try invoke module_name funcname args
+  with Exception.Error (at, msg, step) ->
+    let msg' = msg ^ " (interpreting " ^ step ^ ")" in
+    error_interpret at msg'
+
 let get_global_value module_name globalname =
   Printf.eprintf "[Getting %s...]\n" globalname;
 
@@ -118,6 +129,12 @@ let instantiate module_ =
 
   Interpreter.instantiate [ al_module; listV_of_list externvals ]
 
+let try_instantiate module_ =
+  try instantiate module_
+  with Exception.Error (at, msg, step) ->
+    let msg' = msg ^ " (interpreting " ^ step ^ ")" in
+    error_interpret at msg'
+
 
 (** Wast runner **)
 
@@ -130,7 +147,7 @@ let module_of_def def =
 let run_action action =
   match action.it with
   | Invoke (var_opt, funcname, args) ->
-    invoke (Register.get_module_name var_opt) (Utf8.encode funcname) (List.map it args)
+    try_invoke (Register.get_module_name var_opt) (Utf8.encode funcname) (List.map it args)
   | Get (var_opt, globalname) ->
     get_global_value (Register.get_module_name var_opt) (Utf8.encode globalname)
 
@@ -149,7 +166,7 @@ let test_assertion assertion =
   )
   | AssertUninstantiable (def, re) -> (
     try
-      def |> module_of_def |> instantiate |> ignore;
+      def |> module_of_def |> try_instantiate |> ignore;
       Run.assert_message assertion.at "instantiation" "module instance" re;
       fail
     with Exception.Trap -> success
@@ -162,7 +179,7 @@ let run_command' command =
   | Module (var_opt, def) ->
     def
     |> module_of_def
-    |> instantiate
+    |> try_instantiate
     |> Register.add_with_var var_opt;
     success
   | Register (modulename, var_opt) ->
@@ -212,7 +229,7 @@ let run_wasm' args module_ =
 
   (* Instantiate *)
   module_
-  |> instantiate
+  |> try_instantiate
   |> Register.add_with_var None;
 
   (* TODO: Only Int32 arguments/results are acceptable *)
@@ -221,7 +238,7 @@ let run_wasm' args module_ =
     let make_value s = Value.Num (I32 (Int32.of_string s)) in
 
     (* Invoke *)
-    invoke (Register.get_module_name None) funcname (List.map make_value args')
+    try_invoke (Register.get_module_name None) funcname (List.map make_value args')
     (* Print invocation result *)
     |> al_to_list al_to_value
     |> Value.string_of_values

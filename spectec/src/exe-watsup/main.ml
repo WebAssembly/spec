@@ -277,10 +277,6 @@ let () =
     Error.print_error at msg';
     Debug_log.log_exn exn;
     exit 1
-  | Backend_interpreter.Exception.Error (at, msg, step) ->
-    let msg' = "interpreter error: " ^ msg ^ " (interpreting " ^ step ^ ")" in
-    Error.print_error at msg';
-    exit 1
   | exn ->
     flush_all ();
     prerr_endline
