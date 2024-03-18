@@ -194,7 +194,7 @@ def $lanes_(shape, vec_(V128)) : lane_($lanetype(shape))*
     hint(show $lanes_(%,%))
 
 def $invlanes_(shape, lane_($lanetype(shape))*) : vec_(V128)
-    hint(show $lanes^(-1)#_%#(%))
+    hint(show $lanes_(%)^(-1)#((%)))
 def $invlanes_(sh, c*) = vc  -- if c* = $lanes_(sh, vc)
 
 def $halfop(half, nat, nat) : nat
