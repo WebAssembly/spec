@@ -3666,8 +3666,8 @@ watsup 0.4 generator
 6-typing.watsup:806.6-806.39: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEM_context[y!`%`_idx.0], rt)`
 6-typing.watsup:835.6-835.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
 6-typing.watsup:840.6-840.43: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEM_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
-6-typing.watsup:981.6-981.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-6-typing.watsup:987.6-987.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:978.6-978.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:984.6-984.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 =================
  Generated prose
 =================
