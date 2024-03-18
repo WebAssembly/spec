@@ -149,7 +149,7 @@ Together this means that it's safe for users to request builtins while still pro
 
 Users may wish to detect if a specific builtin is available in their system.
 
-For this purpose, `WebAssembly.validate` is extended to take a list of builtins to enable, like compile does. After validating the module, the eager link checking that compile does is also performed. Users can inspect the result of validate on modules importing builtins to see if they are supported.
+For this purpose, `WebAssembly.validate` is extended to take a list of builtins to enable, like compile does. After validating the module, the eager link checking that compile does is also performed. Users can validate a module that deliberately imports a builtin operation with an incorrect signature and infer support for that particular builtin if validation reports a link error.
 
 ## Polyfilling
 
