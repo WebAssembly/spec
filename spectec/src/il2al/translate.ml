@@ -12,10 +12,10 @@ module Il = struct include Il include Ast include Print include Atom end
 
 (* Errors *)
 
-let error at msg = Error.error at "translation" msg
+let error at msg = Error.error at "prose translation" msg
 
 let error_exp exp typ =
-  error exp.at (sprintf "invalid %s: `%s`" typ (Il.Print.string_of_exp exp))
+  error exp.at (sprintf "unexpected %s: `%s`" typ (Il.Print.string_of_exp exp))
 
 (* Helpers *)
 
@@ -722,7 +722,7 @@ let rec kind_of_context e =
   | Il.CaseE ([[]; [{it = Il.Semicolon; _}]; []], e')
   | Il.ListE [ e' ]
   | Il.TupE [_ (* z *); e'] -> kind_of_context e'
-  | _ -> error e.at "cannot get context of expression"
+  | _ -> error e.at "cannot get a frame or label from lhs of the reduction rule"
 
 let in_same_context (lhs1, _, _) (lhs2, _, _) =
   kind_of_context lhs1 = kind_of_context lhs2
