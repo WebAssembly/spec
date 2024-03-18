@@ -48,10 +48,10 @@ let rec walk_expr f e =
       | AccE (e, p) -> AccE (new_ e, walk_path f p)
       | ExtE (e1, ps, e2, dir) -> ExtE (new_ e1, List.map (walk_path f) ps, new_ e2, dir)
       | UpdE (e1, ps, e2) -> UpdE (new_ e1, List.map (walk_path f) ps, new_ e2)
-      | CaseE (kwd, el) -> CaseE (kwd, List.map new_ el)
+      | CaseE (a, el) -> CaseE (a, List.map new_ el)
       | OptE e -> OptE (Option.map new_ e)
       | TupE el -> TupE (List.map new_ el)
-      | InfixE (e1, infix, e2) -> InfixE (new_ e1, infix, new_ e2)
+      | InfixE (e1, a, e2) -> InfixE (new_ e1, a, new_ e2)
       | ArityE e' -> ArityE (new_ e')
       | FrameE (e1_opt, e2) -> FrameE (Option.map new_ e1_opt, new_ e2)
       | LabelE (e1, e2) -> LabelE (new_ e1, new_ e2)
@@ -59,8 +59,8 @@ let rec walk_expr f e =
       | VarE id -> VarE id
       | SubE (id, t) -> SubE (id, t)
       | IterE (e, ids, iter) -> IterE (new_ e, ids, iter)
-      | ContextKindE (kwd, e) -> ContextKindE (kwd, new_ e)
-      | IsCaseOfE (e, s) -> IsCaseOfE (new_ e, s)
+      | ContextKindE (a, e) -> ContextKindE (a, new_ e)
+      | IsCaseOfE (e, a) -> IsCaseOfE (new_ e, a)
       | IsDefinedE e -> IsDefinedE (new_ e)
       | HasTypeE (e, t) -> HasTypeE(new_ e, t)
       | IsValidE e -> IsValidE (new_ e)
@@ -88,7 +88,7 @@ and walk_path f p =
     ( match (pre p).it with
     | IdxP e -> IdxP (walk_expr f e)
     | SliceP (e1, e2) -> SliceP (walk_expr f e1, walk_expr f e2)
-    | DotP (s, note) -> DotP (s, note) )
+    | DotP a -> DotP a )
   in
   let p = { p with it = p' } in
 
@@ -132,5 +132,5 @@ let rec walk_instr f (instr:instr) : instr list =
 and walk_instrs f = walk_instr f |> List.concat_map
 
 let walk f algo = match algo with
-  | RuleA (kwd, params, body) -> RuleA (kwd, params, walk_instrs f body)
+  | RuleA (a, params, body) -> RuleA (a, params, walk_instrs f body)
   | FuncA (id, params, body) -> FuncA (id, params, walk_instrs f body)

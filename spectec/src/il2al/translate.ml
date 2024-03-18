@@ -81,6 +81,8 @@ let wrap typ e = e $$ no_region % typ
 let top = Il.VarT ("TOP" $ no_region, []) $ no_region
 let hole = Il.TextE "_" |> wrap top
 
+(* `Il.atom` -> `atom` *) 
+let translate_atom atom = atom.it, !(atom.note)
 
 (* `Il.iter` -> `iter` *)
 let rec translate_iter = function
@@ -112,18 +114,18 @@ and translate_exp exp =
     let names = List.map (fun (id, _) -> id.it) ids in
     iterE (translate_exp inner_exp, names, translate_iter iter) ~at:at
   (* property access *)
-  | Il.DotE (inner_exp, {it = Atom p; note; _}) ->
-    accE (translate_exp inner_exp, dotP (p, !note)) ~at:at
+  | Il.DotE (inner_exp, ({it = Atom _; _} as atom)) ->
+    accE (translate_exp inner_exp, dotP (translate_atom atom)) ~at:at
   (* conacatenation of records *)
   | Il.CompE (inner_exp, { it = Il.StrE expfields; _ }) ->
     (* assumption: CompE is only used for prepending to validation context *)
     let nonempty e = (match e.it with ListE [] | OptE None -> false | _ -> true) in
     List.fold_left
       (fun acc extend_exp -> match extend_exp with
-      | {it = Il.Atom name; note; _}, fieldexp ->
+      | {it = Il.Atom _; _} as atom, fieldexp ->
         let extend_expr = translate_exp fieldexp in
         if nonempty extend_expr then
-          extE (acc, [ dotP (name, !note) ], extend_expr, Front) ~at:at
+          extE (acc, [ dotP (translate_atom atom) ], extend_expr, Front) ~at:at
         else
           acc
       | _ -> fail_on_exp exp "AL record expression")
@@ -178,9 +180,10 @@ and translate_exp exp =
   (* Record expression *)
   | Il.StrE expfields ->
     let f acc = function
-      | {it = Il.Atom name; note; _}, fieldexp ->
+      | {it = Il.Atom _; _} as atom, fieldexp ->
+        let atom = translate_atom atom in
         let expr = translate_exp fieldexp in
-        Record.add (name, !note) expr acc
+        Record.add atom expr acc
       | _ -> fail_on_exp exp "AL record expression"
     in
     let record = List.fold_left f Record.empty expfields in
@@ -195,35 +198,36 @@ and translate_exp exp =
     match (op, exps) with
     (* Constructor *)
     (* TODO: Need a better way to convert these CaseE into ConstructE *)
-    | [ [ {it = Il.Atom "MUT"; note; _} ]; [ {it = Il.Quest; _} ]; [] ],
+    | [ [ {it = Il.Atom "MUT"; _} as atom ]; [ {it = Il.Quest; _} ]; [] ],
       [ { it = Il.OptE (Some { it = Il.TupE []; _ }); _}; t ] ->
-      print_endline ("NOTE " ^ (!note));
-      tupE [ caseE (("MUT", "globaltype"), []); translate_exp t ] ~at:at
+      tupE [ caseE (translate_atom atom, []); translate_exp t ] ~at:at
     | [ [ {it = Il.Atom "MUT"; _} ]; [ {it = Il.Quest; _} ]; [] ],
       [ { it = Il.IterE ({ it = Il.TupE []; _ }, (Il.Opt, [])); _}; t ] ->
       tupE [ iterE (varE "mut", ["mut"], Opt); translate_exp t ] ~at:at
-    | [ []; [ {it = Il.Atom "I8"; note; _} ] ], el ->
-      caseE (("I8", !note), List.map translate_exp el) ~at:at
-    | [ [ {it = Il.Atom "NULL"; note; _} ]; [ {it = Il.Quest; _} ] ], el ->
-      caseE (("NULL", !note), List.map translate_exp el) ~at:at
-    | [ {it = Il.Atom name; note; _} ] :: ll, el
+    | [ []; [ {it = Il.Atom "I8"; _} as atom ] ], el ->
+      caseE (translate_atom atom, List.map translate_exp el) ~at:at
+    | [ [ {it = Il.Atom "NULL"; _} as atom ]; [ {it = Il.Quest; _} ] ], el ->
+      caseE (translate_atom atom, List.map translate_exp el) ~at:at
+    | [ {it = Il.Atom _; _} as atom ] :: ll, el
       when List.for_all (function ([] | [ {it = (Il.Star | Il.Quest); _} ]) -> true | _ -> false) ll ->
-      caseE ((name, !note), List.map translate_exp el) ~at:at
+      caseE (translate_atom atom, List.map translate_exp el) ~at:at
     | [ [{it = Il.LBrack; _}]; [{it = Il.Dot2; _}]; [{it = Il.RBrack; _}] ], [ e1; e2 ] ->
       tupE [ translate_exp e1; translate_exp e2 ] ~at:at
-    | ({it = Il.Atom cons; note; _}::_)::_, _ -> caseE ((cons, !note), translate_argexp e) ~at:at
+    | (({it = Il.Atom _; _} as atom)::_)::_, _ ->
+        caseE (translate_atom atom, translate_argexp e) ~at:at
     | [ []; [] ], [ e1 ] -> translate_exp e1
     | [ []; []; [] ], [ e1; e2 ] ->
       tupE [ translate_exp e1; translate_exp e2 ] ~at:at
-    | [ []; [{it = Il.Semicolon; _}]; [] ], [ e1; e2 ] -> tupE [ translate_exp e1; translate_exp e2 ] ~at:at
-    | [ []; [{it = Il.Arrow; _}]; [] ], [ e1; e2 ] ->
-      infixE (translate_exp e1, ArrowOp, translate_exp e2) ~at:at
-    | [ []; [{it = Il.Arrow; _}]; []; [] ], [ e1; e2; e3 ] ->
-      infixE (translate_exp e1, ArrowOp, catE (translate_exp e2, translate_exp e3)) ~at:at
-    | [ []; [{it = Il.ArrowSub; _}]; []; [] ], [ e1; e2; e3 ] ->
-      infixE (translate_exp e1, ArrowSubOp, catE (translate_exp e2, translate_exp e3)) ~at:at
-    | [ []; [{it = Il.Atom atom; note; _}]; [] ], [ e1; e2 ] ->
-      infixE (translate_exp e1, AtomOp (atom, !note), translate_exp e2) ~at:at
+    | [ []; [{it = Il.Semicolon; _}]; [] ], [ e1; e2 ] ->
+      tupE [ translate_exp e1; translate_exp e2 ] ~at:at
+    | [ []; [{it = Il.Arrow; _} as atom]; [] ], [ e1; e2 ] ->
+      infixE (translate_exp e1, translate_atom atom, translate_exp e2) ~at:at
+    | [ []; [{it = Il.Arrow; _} as atom]; []; [] ], [ e1; e2; e3 ] ->
+      infixE (translate_exp e1, translate_atom atom, catE (translate_exp e2, translate_exp e3)) ~at:at
+    | [ []; [{it = Il.ArrowSub; _} as atom]; []; [] ], [ e1; e2; e3 ] ->
+      infixE (translate_exp e1, translate_atom atom, catE (translate_exp e2, translate_exp e3)) ~at:at
+    | [ []; [{it = Il.Atom _; _} as atom]; [] ], [ e1; e2 ] ->
+      infixE (translate_exp e1, translate_atom atom, translate_exp e2) ~at:at
     | _ -> yetE (Il.Print.string_of_exp exp) ~at:at)
   | Il.UncaseE (e, op) -> (
     match op with
@@ -254,8 +258,8 @@ and translate_path path =
     | Il.RootP -> []
     | Il.IdxP (p, e) -> (translate_path' p) @ [ idxP (translate_exp e) ~at:at ]
     | Il.SliceP (p, e1, e2) -> (translate_path' p) @ [ sliceP (translate_exp e1, translate_exp e2) ~at:at ]
-    | Il.DotP (p, {it = Atom a; note; _}) ->
-      (translate_path' p) @ [ dotP (a, !note) ~at:at ]
+    | Il.DotP (p, ({it = Atom _; _} as atom)) ->
+      (translate_path' p) @ [ dotP (translate_atom atom) ~at:at ]
     | _ -> failwith "unreachable"
   in
   translate_path' path
@@ -327,13 +331,12 @@ let rec translate_rhs exp =
   | Il.IterE ({ it = SubE ({ it = VarE id; _ }, _, _); _}, (Il.List, _))
     when String.starts_with ~prefix:"instr" id.it ->
     [ executeseqI (translate_exp exp) ~at:at ]
-  | Il.IterE ({ it = CaseE ([{it = Atom id'; note; _}]::_, _); _ }, (Opt, [ (id, _) ]))
-    when id' = "CALL" ->
+  | Il.IterE ({ it = CaseE ([{it = Atom "CALL"; _} as atom]::_, _); _ }, (Opt, [ (id, _) ])) ->
     let new_name = varE (id.it ^ "_0") in
     [ ifI (isDefinedE (varE id.it),
       [
         letI (optE (Some new_name), varE id.it) ~at:at;
-        executeI (caseE ((id', !note), [ new_name ])) ~at:at
+        executeI (caseE (translate_atom atom, [ new_name ])) ~at:at
       ],
       []) ~at:at ]
   (* Push *)
@@ -355,7 +358,7 @@ let rec translate_rhs exp =
   | Il.ListE es -> List.concat_map translate_rhs es
   (* Frame *)
   | Il.CaseE (
-      [ { it = Il.Atom "FRAME_"; note; _ } ] :: _,
+      [ { it = Il.Atom "FRAME_"; _ } as atom ] :: _,
       { it =
         Il.TupE [
           { it = Il.VarE arity; _ };
@@ -367,11 +370,11 @@ let rec translate_rhs exp =
     ) ->
     [
       letI (varE "F", frameE (Some (varE arity.it), varE fid.it)) ~at:at;
-      enterI (varE "F", listE ([caseE (("FRAME_", !note), [])]), translate_rhs le) ~at:at;
+      enterI (varE "F", listE ([caseE (translate_atom atom, [])]), translate_rhs le) ~at:at;
     ]
   (* TODO: Label *)
   | Il.CaseE (
-      [ { it = Atom "LABEL_"; note; _ } ] :: _,
+      [ { it = Atom "LABEL_"; _ } as atom ] :: _,
       { it = Il.TupE [ arity; e1; e2 ]; _ }
     ) ->
     (
@@ -381,17 +384,17 @@ let rec translate_rhs exp =
     | Il.CatE (ve, ie) ->
       [
         letI (varE "L", le) ~at:at;
-        enterI (varE "L", catE (translate_exp ie, listE ([caseE (("LABEL_", !note), [])])), [pushI (translate_exp ve)]) ~at:at;
+        enterI (varE "L", catE (translate_exp ie, listE ([caseE (translate_atom atom, [])])), [pushI (translate_exp ve)]) ~at:at;
       ]
     | _ ->
       [
         letI (varE "L", le) ~at:at;
-        enterI (varE "L", catE(translate_exp e2, listE ([caseE (("LABEL_", !note), [])])), []) ~at:at;
+        enterI (varE "L", catE(translate_exp e2, listE ([caseE (translate_atom atom, [])])), []) ~at:at;
       ]
     )
   (* Execute instr *)
-  | Il.CaseE ([{it = Atom id; note; _}]::_, argexp) ->
-      [ executeI (caseE ((id, !note), translate_argexp argexp)) ~at:at ]
+  | Il.CaseE ([{it = Atom _; _} as atom]::_, argexp) ->
+      [ executeI (caseE (translate_atom atom, translate_argexp argexp)) ~at:at ]
   | Il.CaseE ([[]; [{it = Il.Semicolon; _}]; []], {it = TupE [ se; rhs ]; _}) -> (
     let push_instrs = translate_rhs rhs in
     let at = se.at in
@@ -702,8 +705,8 @@ let translate_helpers il =
 
 let rec kind_of_context e =
   match e.it with
-  | Il.CaseE ([{it = Il.Atom "FRAME_"; note; _}]::_, _) -> ("frame", !note)
-  | Il.CaseE ([{it = Il.Atom "LABEL_"; note; _}]::_, _) -> ("label", !note)
+  | Il.CaseE ([{it = Il.Atom "FRAME_"; _} as atom]::_, _) -> translate_atom atom 
+  | Il.CaseE ([{it = Il.Atom "LABEL_"; _} as atom]::_, _) -> translate_atom atom 
   | Il.CaseE ([[]; [{it = Il.Semicolon; _}]; []], e')
   | Il.ListE [ e' ]
   | Il.TupE [_ (* z *); e'] -> kind_of_context e'
@@ -914,9 +917,9 @@ and translate_rgroup (instr_name, rgroup) =
 
   let inner_params, instrs = translate_rgroup' context winstr instr_name rgroup in
 
-  let kwd =
+  let name =
     match winstr.it with
-    | Il.CaseE (({it = Il.Atom winstr_name; note; _}::_)::_, _) -> (winstr_name, !note)
+    | Il.CaseE ((({it = Il.Atom _; _} as atom)::_)::_, _) -> translate_atom atom
     | _ -> failwith "unreachable"
   in
   let al_params =
@@ -940,7 +943,7 @@ and translate_rgroup (instr_name, rgroup) =
     |> Transpile.enhance_readability
     |> Transpile.infer_assert
   in
-  RuleA (kwd, al_params', body)
+  RuleA (name, al_params', body)
 
 
 let rule_to_tup rule =

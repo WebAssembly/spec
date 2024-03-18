@@ -3,7 +3,6 @@ open Printf
 open Util
 open Source
 
-
 (* Helper functions *)
 
 let indent = "  "
@@ -26,7 +25,15 @@ let rec repeat str num =
 
 (* AL stringifier *)
 
-let string_of_kwd kwd = let name, _ = kwd in name
+(* Terminals *)
+
+let string_of_atom atom =
+  let atom', typ = atom in
+  let ilatom = atom' $$ (no_region, ref typ) in
+  Il.Atom.string_of_atom ilatom
+
+
+(* Directions *)
 
 let string_of_dir = function
   | Front -> "Front"
@@ -58,7 +65,8 @@ and string_of_value =
   | BoolV b -> string_of_bool b
   | TextV s -> s
   | TupV vl -> "(" ^ string_of_values ", " vl ^ ")"
-  | CaseV (("CONST" | "VCONST"), hd::tl) -> "(" ^ string_of_value hd ^ ".CONST " ^ string_of_values " " tl ^ ")"
+  | CaseV (("CONST"|"VCONST"), hd::tl) ->
+    "(" ^ string_of_value hd ^ ".CONST " ^ string_of_values " " tl ^ ")"
   | CaseV (s, []) -> s
   | CaseV (s, vl) -> "(" ^ s ^ " " ^ string_of_values " " vl ^ ")"
   | StrV r -> string_of_record r
@@ -91,11 +99,6 @@ let string_of_binop = function
   | LeOp -> "≤"
   | GeOp -> "≥"
 
-let string_of_infix = function
-  | AtomOp (s, _) -> s
-  | ArrowOp -> "->"
-  | ArrowSubOp -> "->_"
-
 
 (* Iters *)
 
@@ -114,7 +117,7 @@ and string_of_iters iters = List.map string_of_iter iters |> List.fold_left (^) 
 
 and string_of_record_expr r =
   Record.fold
-    (fun k v acc -> acc ^ string_of_kwd k ^ ": " ^ string_of_expr v ^ "; ")
+    (fun a v acc -> acc ^ string_of_atom a ^ ": " ^ string_of_expr v ^ "; ")
     r "{ "
   ^ "}"
 
@@ -122,8 +125,8 @@ and string_of_expr expr =
   match expr.it with
   | NumE i -> Z.to_string i
   | BoolE b -> string_of_bool b
-  | UnE (NotOp, { it = IsCaseOfE (e, kwd); _ }) ->
-    sprintf "%s is not of the case %s" (string_of_expr e) (string_of_kwd kwd)
+  | UnE (NotOp, { it = IsCaseOfE (e, a); _ }) ->
+    sprintf "%s is not of the case %s" (string_of_expr e) (string_of_atom a)
   | UnE (NotOp, { it = IsDefinedE e; _ }) ->
     sprintf "%s is not defined" (string_of_expr e)
   | UnE (NotOp, { it = IsValidE e; _ }) ->
@@ -163,15 +166,17 @@ and string_of_expr expr =
   | VarE id -> id
   | SubE (id, _) -> id
   | IterE (e, _, iter) -> string_of_expr e ^ string_of_iter iter
-  | InfixE (e1, infix, e2) -> "(" ^ string_of_expr e1 ^ " " ^ string_of_infix infix ^ " " ^ string_of_expr e2 ^ ")"
-  | CaseE ((("CONST"|"VCONST"), _), hd::tl) -> "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
-  | CaseE ((s, _), []) -> s
-  | CaseE ((s, _), el) -> "(" ^ s ^ " " ^ string_of_exprs " " el ^ ")"
+  | InfixE (e1, a, e2) -> "(" ^ string_of_expr e1 ^ " " ^ string_of_atom a ^ " " ^ string_of_expr e2 ^ ")"
+  | CaseE ((Il.Atom.Atom "CONST", _), hd::tl)
+  | CaseE ((Il.Atom.Atom "VCONST", _), hd::tl) ->
+    "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
+  | CaseE (a, []) -> string_of_atom a
+  | CaseE (a, el) -> "(" ^ string_of_atom a ^ " " ^ string_of_exprs " " el ^ ")"
   | OptE (Some e) -> "?(" ^ string_of_expr e ^ ")"
   | OptE None -> "?()"
-  | ContextKindE (kwd, e) -> sprintf "%s is %s" (string_of_expr e) (string_of_kwd kwd)
+  | ContextKindE (a, e) -> sprintf "%s is %s" (string_of_expr e) (string_of_atom a)
   | IsDefinedE e -> sprintf "%s is defined" (string_of_expr e)
-  | IsCaseOfE (e, kwd) -> sprintf "%s is of the case %s" (string_of_expr e) (string_of_kwd kwd)
+  | IsCaseOfE (e, a) -> sprintf "%s is of the case %s" (string_of_expr e) (string_of_atom a)
   | HasTypeE (e, t) -> sprintf "the type of %s is %s" (string_of_expr e) t
   | IsValidE e -> sprintf "%s is valid" (string_of_expr e)
   | TopLabelE -> "a label is now on the top of the stack"
@@ -195,7 +200,7 @@ and string_of_path path =
   | IdxP e -> sprintf "[%s]" (string_of_expr e)
   | SliceP (e1, e2) ->
     sprintf "[%s : %s]" (string_of_expr e1) (string_of_expr e2)
-  | DotP (s, _) -> sprintf ".%s" s
+  | DotP a -> sprintf ".%s" (string_of_atom a)
 
 and string_of_paths paths = List.map string_of_path paths |> List.fold_left (^) ""
 
@@ -327,8 +332,8 @@ let string_of_instr instr =
 let string_of_instrs = string_of_instrs' 0
 
 let string_of_algorithm = function
-  | RuleA (kwd, params, instrs) ->
-    "execution_of_" ^ string_of_kwd kwd
+  | RuleA (a, params, instrs) ->
+    "execution_of_" ^ string_of_atom a
     ^ List.fold_left
         (fun acc p -> acc ^ " " ^ string_of_expr p)
         "" params
@@ -346,8 +351,6 @@ let string_of_algorithm = function
 (* Wasm type *)
 
 (* Names *)
-
-let structured_string_of_kwd kwd = let name, note = kwd in sprintf "%s_%s" name note
 
 let structured_string_of_ids ids =
   "[" ^ String.concat ", " ids ^ "]"
@@ -385,7 +388,7 @@ let rec structured_string_of_iter = function
 
 and structured_string_of_record_expr r =
   Record.fold
-    (fun k v acc -> acc ^ structured_string_of_kwd k ^ ": " ^ string_of_expr v ^ "; ")
+    (fun a v acc -> acc ^ string_of_atom a ^ ": " ^ string_of_expr v ^ "; ")
     r "{ "
   ^ "}"
 
@@ -463,22 +466,22 @@ and structured_string_of_expr expr =
     ^ ", "
     ^ string_of_iter iter
     ^ ")"
-  | InfixE (e1, infix, e2) ->
+  | InfixE (e1, a, e2) ->
     "InfixE ("
     ^ structured_string_of_expr e1
     ^ ", "
-    ^ string_of_infix infix
+    ^ string_of_atom a 
     ^ ", "
     ^ structured_string_of_expr e2
     ^ ")"
-  | CaseE (kwd, el) ->
-    "CaseE (" ^ structured_string_of_kwd kwd
+  | CaseE (a, el) ->
+    "CaseE (" ^ string_of_atom a 
     ^ ", [" ^ structured_string_of_exprs el ^ "])"
   | OptE None -> "OptE"
   | OptE (Some e) -> "OptE (" ^ structured_string_of_expr e ^ ")"
-  | ContextKindE (kwd, e) -> sprintf "ContextKindE (%s, %s)" (structured_string_of_kwd kwd) (structured_string_of_expr e)
+  | ContextKindE (a, e) -> sprintf "ContextKindE (%s, %s)" (string_of_atom a) (structured_string_of_expr e)
   | IsDefinedE e -> "DefinedE (" ^ structured_string_of_expr e ^ ")"
-  | IsCaseOfE (e, kwd) -> "CaseOfE (" ^ structured_string_of_expr e ^ ", " ^ structured_string_of_kwd kwd ^ ")"
+  | IsCaseOfE (e, a) -> "CaseOfE (" ^ structured_string_of_expr e ^ ", " ^ string_of_atom a ^ ")"
   | HasTypeE (e, t) -> "HasTypeE (" ^ structured_string_of_expr e ^ ", " ^ t ^ ")"
   | IsValidE e -> "IsValidE (" ^ structured_string_of_expr e ^ ")"
   | TopLabelE -> "TopLabelE"
@@ -504,7 +507,7 @@ and structured_string_of_path path =
     sprintf "SliceP (%s,%s)"
       (structured_string_of_expr e1)
       (structured_string_of_expr e2)
-  | DotP (s, _) -> sprintf "DotP (%s)" s
+  | DotP a -> sprintf "DotP (%s)" (string_of_atom a)
 
 and structured_string_of_paths paths =
   List.map string_of_path paths |> List.fold_left (^) ""
@@ -584,8 +587,8 @@ let structured_string_of_instr = structured_string_of_instr' 0
 let structured_string_of_instrs = structured_string_of_instrs' 0
 
 let structured_string_of_algorithm = function
-  | RuleA (kwd, params, instrs) ->
-      "execution_of_" ^ structured_string_of_kwd kwd
+  | RuleA (a, params, instrs) ->
+      "execution_of_" ^ string_of_atom a
       ^ List.fold_left
           (fun acc p -> acc ^ " " ^ structured_string_of_expr p)
           "" params

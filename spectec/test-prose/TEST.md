@@ -1004,14 +1004,14 @@ execution_of_FRAME_
 7. Push the values val^n to the stack.
 
 execution_of_RETURN
-1. If the current context is frame, then:
+1. If the current context is FRAME_, then:
   a. Let F be the current frame.
   b. Let n be the arity of F.
   c. Pop the values val^n from the stack.
   d. Pop all values val'* from the stack.
   e. Exit current context.
   f. Push the values val^n to the stack.
-2. Else if the current context is label, then:
+2. Else if the current context is LABEL_, then:
   a. Pop all values val* from the stack.
   b. Exit current context.
   c. Push the values val* to the stack.
@@ -2944,14 +2944,14 @@ execution_of_FRAME_
 7. Push the values val^n to the stack.
 
 execution_of_RETURN
-1. If the current context is frame, then:
+1. If the current context is FRAME_, then:
   a. Let F be the current frame.
   b. Let n be the arity of F.
   c. Pop the values val^n from the stack.
   d. Pop all values val'* from the stack.
   e. Exit current context.
   f. Push the values val^n to the stack.
-2. Else if the current context is label, then:
+2. Else if the current context is LABEL_, then:
   a. Pop all values val* from the stack.
   b. Exit current context.
   c. Push the values val* to the stack.
@@ -5907,14 +5907,14 @@ execution_of_FRAME_
 7. Push the values val^n to the stack.
 
 execution_of_RETURN
-1. If the current context is frame, then:
+1. If the current context is FRAME_, then:
   a. Let F be the current frame.
   b. Let n be the arity of F.
   c. Pop the values val^n from the stack.
   d. Pop all values val'* from the stack.
   e. Exit current context.
   f. Push the values val^n to the stack.
-2. Else if the current context is label, then:
+2. Else if the current context is LABEL_, then:
   a. Pop all values val* from the stack.
   b. Exit current context.
   c. Push the values val* to the stack.
@@ -6262,12 +6262,12 @@ execution_of_RETURN_CALL x
 3. Execute the instruction (RETURN_CALL_REF ?()).
 
 execution_of_RETURN_CALL_REF x?
-1. If the current context is label, then:
+1. If the current context is LABEL_, then:
   a. Pop all values val* from the stack.
   b. Exit current context.
   c. Push the values val* to the stack.
   d. Execute the instruction (RETURN_CALL_REF x?).
-2. Else if the current context is frame, then:
+2. Else if the current context is FRAME_, then:
   a. Pop the value admin_u0 from the stack.
   b. Pop all values admin_u1* from the stack.
   c. Exit current context.

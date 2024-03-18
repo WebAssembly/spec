@@ -17,7 +17,7 @@ type instr =
 
 (* TODO: perhaps rename to avoid name clash *)
 type def =
-| Pred of Al.Ast.kwd * Al.Ast.expr list * instr list
+| Pred of Al.Ast.atom * Al.Ast.expr list * instr list
 | Algo of Al.Ast.algorithm
 
 type prose = def list

@@ -47,7 +47,7 @@ let macro_template = {|
 .. Type-setting of names
 .. X - (multi-letter) variables / non-terminals
 .. F - functions
-.. K - kwds / terminals
+.. K - atoms / terminals
 .. B - binary grammar non-terminals
 .. T - textual grammar non-terminals
 
@@ -82,27 +82,27 @@ let gen_macro_rule ?(note = "") env header font word =
   let rhs = gen_macro_rhs env header font word in
   sprintf ".. |%s| mathdef:: %s" lhs rhs
 
-let gen_macro_kwd env syntax kwd =
+let gen_macro_atom env syntax atom =
   let header = "syntax-" ^ syntax in
   let font = "K" in
-  gen_macro_rule ~note:syntax env header font kwd
+  gen_macro_rule ~note:syntax env header font atom
 
-let gen_macro_kwds env kwds =
+let gen_macro_atoms env atoms =
   Symbol.Map.fold
-    (fun syntax variants skwd ->
+    (fun syntax variants satom ->
       let terminals, _ = variants in
       let svariants = Symbol.Set.fold
-        (fun kwd svariants ->
-          let svariant = gen_macro_kwd env syntax kwd in
+        (fun atom svariants ->
+          let svariant = gen_macro_atom env syntax atom in
           svariants ^ svariant ^ "\n")
         terminals ""
       in
-      skwd
+      satom
       ^ ".. " ^ (String.uppercase_ascii syntax) ^ "\n"
       ^ ".. " ^ (String.make (String.length syntax) '-') ^ "\n"
       ^ svariants
       ^ "\n")
-    kwds ""
+    atoms ""
 
 let gen_macro_func env fname =
   let header = "def-" ^ fname in
@@ -117,13 +117,13 @@ let gen_macro_funcs env funcs =
     funcs ""
 
 let gen_macro' env (symbol: Symbol.env)  =
-  let kwds = Symbol.kwds symbol in
-  let skwd = gen_macro_kwds env kwds in
+  let atoms = Symbol.atoms symbol in
+  let satom = gen_macro_atoms env atoms in
   let funcs = Symbol.funcs symbol in
   let sfunc = gen_macro_funcs env funcs in
   macro_template
   ^ ".. syntax\n.. ------\n\n"
-  ^ skwd
+  ^ satom
   ^ ".. Functions\n.. ---------\n\n"
   ^ sfunc
 
@@ -177,8 +177,9 @@ let env inputs outputs =
 
 (* Macro generation *)
 
-let macro_kwd env kwd =
-  let variant, syntax = kwd in
+let macro_atom env atom =
+  let variant = Al.Print.string_of_atom atom in
+  let _, syntax = atom in
   let header = "syntax-" ^ syntax in
   let font = font_macro "K" in
   let with_macro = "\\" ^ (macroify ~note:syntax variant) in

@@ -31,6 +31,10 @@ let env config inputs outputs render_latex el prose : env =
 
 let (let*) = Option.bind
 
+let al_to_el_atom atom =
+  let atom', typ = atom in
+  atom' $$ (no_region, ref typ)
+
 let al_to_el_unop = function
   | Al.Ast.MinusOp -> Some El.Ast.MinusOp
   | _ -> None
@@ -42,21 +46,6 @@ let al_to_el_binop = function
   | Al.Ast.DivOp -> Some El.Ast.DivOp
   | Al.Ast.ExpOp -> Some El.Ast.ExpOp
   | _ -> None
-
-let al_to_el_infixop op =
-  let elatom, typ = match op with
-  | Al.Ast.AtomOp (s, typ) ->
-      Some (Il.Atom.Atom s), typ
-  | Al.Ast.ArrowOp -> Some Il.Atom.Arrow, ""
-  | Al.Ast.ArrowSubOp -> Some Il.Atom.ArrowSub, ""
-  in
-  Option.map
-    (fun elatom -> elatom $$ no_region % ref typ)
-    elatom
-
-let al_to_el_kwd (id, typ) = 
-  let elatom = Il.Atom.Atom id in
-  elatom $$ no_region % (ref typ)
 
 let rec al_to_el_iter iter = match iter with
   | Al.Ast.Opt -> Some El.Ast.Opt
@@ -77,9 +66,9 @@ and al_to_el_path pl =
           let* elel = al_to_el_expr el in
           let* eleh = al_to_el_expr eh in
           Some (El.Ast.SliceP (elp, elel, eleh))
-      | Al.Ast.DotP kwd ->
-          let elatom = al_to_el_kwd kwd in
-          Some (El.Ast.DotP (elp, elatom)))
+      | Al.Ast.DotP a ->
+          let ela = al_to_el_atom a in
+          Some (El.Ast.DotP (elp, ela)))
     in
     Option.map (fun elp' -> elp' $ no_region) elp'
   in
@@ -136,9 +125,9 @@ and al_to_el_expr expr =
             let* elel = al_to_el_expr el in
             let* eleh = al_to_el_expr eh in
             Some (El.Ast.SliceE (ele, elel, eleh))
-        | DotP kwd ->
-            let elatom = al_to_el_kwd kwd in
-            Some (El.Ast.DotE (ele, elatom)))
+        | DotP a ->
+            let ela = al_to_el_atom a in
+            Some (El.Ast.DotE (ele, ela)))
     | Al.Ast.UpdE (e1, pl, e2) ->
         let* ele1 = al_to_el_expr e1 in
         let* elp = al_to_el_path pl in
@@ -161,14 +150,14 @@ and al_to_el_expr expr =
         Some (El.Ast.IterE (ele, eliter))
     | Al.Ast.InfixE (e1, op, e2) ->
         let* ele1 = al_to_el_expr e1 in
-        let* elop = al_to_el_infixop op in
+        let elop = al_to_el_atom op in
         let* ele2 = al_to_el_expr e2 in
         Some (El.Ast.InfixE (ele1, elop, ele2))
-    | Al.Ast.CaseE (kwd, el) ->
-        let elatom = al_to_el_kwd kwd in
-        let ekwd = (El.Ast.AtomE elatom) $ no_region in
+    | Al.Ast.CaseE (a, el) ->
+        let ela = al_to_el_atom a in
+        let ela = (El.Ast.AtomE ela) $ no_region in
         let* elel = al_to_el_exprs el in
-        Some (El.Ast.SeqE ([ ekwd ] @ elel))
+        Some (El.Ast.SeqE ([ ela ] @ elel))
     | Al.Ast.OptE (Some e) ->
         let* ele = al_to_el_expr e in
         Some (ele.it)
@@ -187,11 +176,11 @@ and al_to_el_exprs exprs =
 
 and al_to_el_record record =
   Util.Record.fold
-    (fun kwd e expfield ->
+    (fun a e expfield ->
       let* expfield = expfield in
-      let elatom = al_to_el_kwd kwd in
       let* ele = al_to_el_expr e in
-      let elelem = El.Ast.Elem (elatom, ele) in
+      let ela = al_to_el_atom a in
+      let elelem = El.Ast.Elem (ela, ele) in
       Some (expfield @ [ elelem ]))
     record (Some [])
 
@@ -260,10 +249,10 @@ let render_al_binop = function
 
 (* Names *)
 
-let render_kwd env kwd =
-  let elatom = al_to_el_kwd kwd in
-  let satom = Backend_latex.Render.render_atom env.render_latex elatom in
-  render_math satom
+let render_atom env a =
+  let ela = al_to_el_atom a in
+  let sela = Backend_latex.Render.render_atom env.render_latex ela in
+  render_math sela 
 
 
 (* Expressions and Paths *)
@@ -290,10 +279,10 @@ let rec render_expr env expr = match al_to_el_expr expr with
 and render_expr' env expr =
   match expr.it with
   | Al.Ast.BoolE b -> string_of_bool b
-  | Al.Ast.UnE (NotOp, { it = Al.Ast.IsCaseOfE (e, kwd); _ }) ->
+  | Al.Ast.UnE (NotOp, { it = Al.Ast.IsCaseOfE (e, a); _ }) ->
       let se = render_expr env e in
-      let skwd = render_kwd env kwd in
-      sprintf "%s is not of the case %s" se skwd
+      let sa = render_atom env a in
+      sprintf "%s is not of the case %s" se sa
   | Al.Ast.UnE (NotOp, { it = Al.Ast.IsDefinedE e; _ }) ->
       let se = render_expr env e in
       sprintf "%s is not defined" se
@@ -351,17 +340,17 @@ and render_expr' env expr =
       let se1 = render_expr env e1 in
       let se2 = render_expr env e2 in
       sprintf "the label whose arity is %s and whose continuation is %s" se1 se2
-  | Al.Ast.ContextKindE (kwd, e) ->
-      let skwd = render_kwd env kwd in
+  | Al.Ast.ContextKindE (a, e) ->
+      let sa = render_atom env a in
       let se = render_expr env e in
-      sprintf "%s is %s" se skwd
+      sprintf "%s is %s" se sa
   | Al.Ast.IsDefinedE e ->
       let se = render_expr env e in
       sprintf "%s is defined" se
-  | Al.Ast.IsCaseOfE (e, kwd) ->
+  | Al.Ast.IsCaseOfE (e, a) ->
       let se = render_expr env e in
-      let skwd = render_kwd env kwd in
-      sprintf "%s is of the case %s" se skwd
+      let sa = render_atom env a in
+      sprintf "%s is of the case %s" se sa
   | Al.Ast.HasTypeE (e, t) ->
       let se = render_expr env e in
       sprintf "the type of %s is %s" se t
@@ -396,8 +385,8 @@ and render_path env path =
       let se1 = render_expr env e1 in
       let se2 = render_expr env e2 in
       sprintf "the slice from %s to %s" se1 se2 
-  | Al.Ast.DotP kwd ->
-      sprintf "the field %s" (render_kwd env kwd)
+  | Al.Ast.DotP a ->
+      sprintf "the field %s" (render_atom env a)
 
 and render_paths env paths =
   let spaths = List.map (render_path env) paths in
@@ -560,32 +549,32 @@ and render_al_instrs env algoname depth instrs =
 
 (* Prose *)
 
-let render_kwd_title env kwd params =
+let render_atom_title env name params =
   (* TODO a workaround, for algorithms named label or name
      that are defined as LABEL_ or FRAME_ in the dsl *)
-  let (name, syntax) = kwd in
-  let kwd =
-    if name = "LABEL" then ("LABEL_", syntax)
-    else if name = "FRAME" then ("FRAME_", syntax)
-    else kwd
+  let name', typ = name in 
+  let name' =
+    match name' with
+    | Il.Atom.Atom "label" -> Il.Atom.Atom "LABEL_"
+    | Il.Atom.Atom "frame" -> Il.Atom.Atom "FRAME_"
+    | Il.Atom.Atom s -> Il.Atom.Atom (String.uppercase_ascii s)
+    | _ -> name'
   in
-  render_expr env (Al.Ast.CaseE (kwd, params) $ no_region)
+  let name = (name', typ) in
+  render_expr env (Al.Ast.CaseE (name, params) $ no_region)
 
 let render_funcname_title env fname params =
   render_expr env (Al.Ast.CallE (fname, params) $ no_region)
 
 let render_pred env name params instrs =
-  let (pname, syntax) = name in
-  let kwd = (String.uppercase_ascii pname, syntax) in
-  let title = render_kwd_title env kwd params in
+  let title = render_atom_title env name params in
   title ^ "\n" ^
   String.make (String.length title) '.' ^ "\n" ^
   render_prose_instrs env 0 instrs
 
 let render_rule env name params instrs =
-  let (rname, syntax) = name in
-  let kwd = (String.uppercase_ascii rname, syntax) in
-  let title = render_kwd_title env kwd params in
+  let title = render_atom_title env name params in
+  let rname = Al.Print.string_of_atom name in
   title ^ "\n" ^
   String.make (String.length title) '.' ^ "\n" ^
   render_al_instrs env rname 0 instrs

@@ -47,7 +47,7 @@ let strE ?(at = no) r = StrE r |> mk_expr at
 let catE ?(at = no) (e1, e2) = CatE (e1, e2) |> mk_expr at
 let lenE ?(at = no) e = LenE e |> mk_expr at
 let tupE ?(at = no) el = TupE el |> mk_expr at
-let caseE ?(at = no) (kwd, el) = CaseE (kwd, el) |> mk_expr at
+let caseE ?(at = no) (a, el) = CaseE (a, el) |> mk_expr at
 let callE ?(at = no) (id, el) = CallE (id, el) |> mk_expr at
 let iterE ?(at = no) (e, idl, it) = IterE (e, idl, it) |> mk_expr at
 let optE ?(at = no) e_opt = OptE e_opt |> mk_expr at
@@ -60,9 +60,9 @@ let getCurFrameE ?(at = no) () = GetCurFrameE |> mk_expr at
 let getCurLabelE ?(at = no) () = GetCurLabelE |> mk_expr at
 let getCurContextE ?(at = no) () = GetCurContextE |> mk_expr at
 let contE ?(at = no) e = ContE e |> mk_expr at
-let isCaseOfE ?(at = no) (e, kwd) = IsCaseOfE (e, kwd) |> mk_expr at
+let isCaseOfE ?(at = no) (e, a) = IsCaseOfE (e, a) |> mk_expr at
 let isValidE ?(at = no) e = IsValidE e |> mk_expr at
-let contextKindE ?(at = no) (kwd, e) = ContextKindE (kwd, e) |> mk_expr at
+let contextKindE ?(at = no) (a, e) = ContextKindE (a, e) |> mk_expr at
 let isDefinedE ?(at = no) e = IsDefinedE e |> mk_expr at
 let matchE ?(at = no) (e1, e2) = MatchE (e1, e2) |> mk_expr at
 let hasTypeE ?(at = no) (e, ty) = HasTypeE (e, ty) |> mk_expr at
@@ -77,7 +77,7 @@ let mk_path at it = Util.Source.($) it at
 
 let idxP ?(at = no) e = IdxP e |> mk_path at
 let sliceP ?(at = no) (e1, e2) = SliceP (e1, e2) |> mk_path at
-let dotP ?(at = no) kwd = DotP kwd |> mk_path at
+let dotP ?(at = no) a = DotP a |> mk_path at
 
 let numV i = NumV i
 let numV_of_int i = Z.of_int i |> numV
@@ -152,7 +152,7 @@ let unwrap_listv_to_array (v: value): value array = !(unwrap_listv v)
 let unwrap_listv_to_list (v: value): value list = unwrap_listv_to_array v |> Array.to_list
 
 let get_name = function
-  | RuleA ((name, _), _, _) -> name
+  | RuleA (atom, _, _) -> Print.string_of_atom atom 
   | FuncA (name, _, _) -> name
 
 let get_param = function

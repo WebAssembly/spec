@@ -3,6 +3,8 @@ open Ast
 open Al_util
 open Util
 
+let atom_of_name name typ = Il.Atom.Atom name, typ
+
 let eval_expr =
   let instrs = iterE (varE "instr", ["instr"], List) in
   let result = varE "val" in
@@ -63,42 +65,42 @@ let call_ref =
   let instr = varE "instr" in
 
   RuleA (
-    ("CALL_REF", "admininstr"),
+    atom_of_name "CALL_REF" "admininstr",
     [ x ],
     [
       assertI (topValueE None);
       popI ref;
       ifI (
-        isCaseOfE (ref, ("REF.NULL", "admininstr")),
+        isCaseOfE (ref, atom_of_name "REF.NULL" "admininstr"),
         [ trapI () ],
         []
       );
-      assertI (isCaseOfE (ref, ("REF.FUNC_ADDR", "admininstr")));
-      letI (caseE (("REF.FUNC_ADDR", "admininstr"), [a]), ref);
+      assertI (isCaseOfE (ref, atom_of_name "REF.FUNC_ADDR" "admininstr"));
+      letI (caseE (atom_of_name "REF.FUNC_ADDR" "admininstr", [a]), ref);
       ifI (
         binE (LtOp, a, lenE (callE ("funcinst", []))),
         [ letI (fi, accE (callE ("funcinst", []), idxP a));
-          assertI (isCaseOfE (accE (fi, dotP ("CODE", "code")), ("FUNC", "func")));
-          letI (caseE (("FUNC", "func"), [y0 ; y1 ; iterE (instr, ["instr"], List)]), accE (fi, dotP ("CODE", "code")));
-          letI (iterE (caseE (("LOCAL","local"), [t]), ["t"], List), y1);
-          assertI (isCaseOfE (callE ("expanddt", [ accE (fi, dotP ("TYPE", "type")) ]), ("FUNC", "comptype")));
-          letI (caseE (("FUNC", "comptype"), [y0]), callE ("expanddt", [ accE (fi, dotP ("TYPE", "type")) ]));
-          letI (infixE (iterE (t1, ["t_1"], ListN (n, None)), ArrowOp, iterE (t2, ["t_2"], ListN (m, None))), y0);
+          assertI (isCaseOfE (accE (fi, dotP (atom_of_name "CODE" "code")), atom_of_name "FUNC" "func"));
+          letI (caseE (atom_of_name "FUNC" "func", [y0 ; y1 ; iterE (instr, ["instr"], List)]), accE (fi, dotP (atom_of_name "CODE" "code")));
+          letI (iterE (caseE (atom_of_name "LOCAL" "local", [t]), ["t"], List), y1);
+          assertI (isCaseOfE (callE ("expanddt", [ accE (fi, dotP (atom_of_name "TYPE" "type")) ]), atom_of_name "FUNC" "comptype"));
+          letI (caseE (atom_of_name "FUNC" "comptype", [y0]), callE ("expanddt", [ accE (fi, dotP (atom_of_name "TYPE" "type")) ]));
+          letI (infixE (iterE (t1, ["t_1"], ListN (n, None)), (Il.Atom.Arrow, ""), iterE (t2, ["t_2"], ListN (m, None))), y0);
           assertI (topValuesE n);
           popI (iterE (v, ["val"], ListN(n, None)));
           letI (f, strE (Record.empty
             |> Record.add
-              ("LOCAL", "frame")
+              (atom_of_name "LOCAL" "frame")
               (catE (iterE (optE (Some v), ["val"], ListN (n, None)), iterE (callE("default_", [t]), ["t"], List)))
             |> Record.add
-              ("MODULE", "frame")
-              (accE (fi, dotP ("MODULE", "module")))
+              (atom_of_name "MODULE" "frame")
+              (accE (fi, dotP (atom_of_name "MODULE" "module")))
           ));
           letI (ff, frameE (Some m, f));
-          enterI (ff, listE ([caseE (("FRAME_", "admininstr"), [])]),
+          enterI (ff, listE ([caseE (atom_of_name "FRAME_" "admininstr", [])]),
             [
             letI (ll, labelE (m, listE []));
-            enterI (ll, catE (iterE (instr, ["instr"], List), listE ([caseE (("LABEL_", "admininstr"), [])])), []);
+            enterI (ll, catE (iterE (instr, ["instr"], List), listE ([caseE (atom_of_name "LABEL_" "admininstr", [])])), []);
             ]
           );
         ], []);
@@ -135,7 +137,7 @@ let group_bytes_by =
   )
 
 let array_new_data =
-  let i32 = caseE (("I32", "numtype"), []) in
+  let i32 = caseE (atom_of_name "I32" "numtype", []) in
 
   let x = varE "x" in
   let y = varE "y" in
@@ -165,23 +167,23 @@ let array_new_data =
   let inverse_of_bytes_ = iterE (callE ("inverse_of_ibytes", [zsize; gb]), ["gb"], List) in
 
   RuleA (
-    ("ARRAY.NEW_DATA", "admininstr"),
+    atom_of_name "ARRAY.NEW_DATA" "admininstr",
     [x; y],
     [
       assertI (topValueE (Some i32));
-      popI (caseE (("CONST", "admininstr"), [i32; n]));
+      popI (caseE (atom_of_name "CONST" "admininstr", [i32; n]));
       assertI (topValueE (Some i32));
-      popI (caseE (("CONST", "admininstr"), [i32; i]));
+      popI (caseE (atom_of_name "CONST" "admininstr", [i32; i]));
       ifI (
-        isCaseOfE (expanddt_with_type, ("ARRAY", "comptype")),
+        isCaseOfE (expanddt_with_type, atom_of_name "ARRAY" "comptype"),
         [
-          letI (caseE (("ARRAY", "comptype"), [y_0]), expanddt_with_type);
+          letI (caseE (atom_of_name "ARRAY" "comptype", [y_0]), expanddt_with_type);
           letI (tupE [ mut; zt ], y_0);
           ifI (
             binE (
               GtOp,
               binE (AddOp, i, binE (DivOp, binE (MulOp, n, zsize), numE (Z.of_int 8))),
-              lenE (accE (callE ("data", [y]), dotP ("DATA", "datainst")))
+              lenE (accE (callE ("data", [y]), dotP (atom_of_name "DATA" "datainst")))
             ),
             [ trapI () ],
             []
@@ -190,14 +192,14 @@ let array_new_data =
           letI (
             bstar,
             accE (
-              accE (data, dotP ("DATA", "datainst")),
+              accE (data, dotP (atom_of_name "DATA" "datainst")),
               sliceP (i, binE (DivOp, binE (MulOp, n, zsize), numE (Z.of_int 8)))
             )
           );
           letI (gbstar, group_bytes_by);
           letI (cn, inverse_of_bytes_);
-          pushI (iterE (caseE (("CONST", "admininstr"), [cnn; c]), ["c"], ListN (n, None)));
-          executeI (caseE (("ARRAY.NEW_FIXED", "admininstr"), [x; n]));
+          pushI (iterE (caseE (atom_of_name "CONST" "admininstr", [cnn; c]), ["c"], ListN (n, None)));
+          executeI (caseE (atom_of_name "ARRAY.NEW_FIXED" "admininstr", [x; n]));
         ],
         []
       );
@@ -211,7 +213,7 @@ let return_instrs_of_instantiate config =
   [
     enterI (
       frameE (Some (numE Z.zero), frame),
-      listE ([ caseE (("FRAME_", "admininstr"), []) ]), rhs
+      listE ([ caseE (atom_of_name "FRAME_" "admininstr", []) ]), rhs
     );
     returnI (Some (tupE [ store; varE "mm" ]))
   ]
@@ -221,7 +223,7 @@ let return_instrs_of_invoke config =
     letI (varE "k", lenE (iterE (varE "t_2", ["t_2"], List)));
     enterI (
       frameE (Some (varE "k"), frame),
-      listE ([caseE (("FRAME_", "admininstr"), [])]), rhs
+      listE ([caseE (atom_of_name "FRAME_" "admininstr", [])]), rhs
     );
     popI (iterE (varE "val", ["val"], ListN (varE "k", None)));
     returnI (Some (iterE (varE "val", ["val"], ListN (varE "k", None))))

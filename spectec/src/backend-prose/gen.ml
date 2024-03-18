@@ -83,8 +83,8 @@ let vrule_group_to_prose ((_name, vrules): vrule_group) =
   let (winstr, t, prems, _tenv) = vrules |> List.hd in
 
   (* name *)
-  let kwd = match winstr.it with
-  | Ast.CaseE (({it = Il.Atom.Atom winstr_name; note; _}::_)::_, _) -> winstr_name, !note
+  let name = match winstr.it with
+  | Ast.CaseE (({it = (Il.Atom.Atom _) as atom'; note; _}::_)::_, _) -> atom', !note
   | _ -> failwith "unreachable"
   in
   (* params *)
@@ -93,7 +93,7 @@ let vrule_group_to_prose ((_name, vrules): vrule_group) =
   let body = (List.concat_map prem_to_instrs prems) @ [ IsValidI (Some (exp_to_expr t)) ] in
 
   (* Predicate *)
-  Pred (kwd, params, body)
+  Pred (name, params, body)
 
 let rec extract_vrules def =
   match def.it with

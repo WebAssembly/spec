@@ -349,9 +349,9 @@ let infer_case_assert instrs =
 
   let rec handle_cond c mt_then mt_else =
     match c.it with
-    | IsCaseOfE (e, kwd) ->
+    | IsCaseOfE (e, atom) ->
       let k = Print.string_of_expr e in
-      let v = One (fst kwd) in
+      let v = One (Print.string_of_atom atom) in
       let v_opt = Counter.find_opt k !case_count in
       let v' = if mt_else && match v_opt with None -> true | Some v' -> v = v' then v else Many in
       case_count := Counter.add k v' !case_count
