@@ -51,7 +51,7 @@ Where the underlying operators are non-deterministic, because they may return on
 1. Push the value :math:`t.\CONST~c` to the stack.
 
 .. note::
-   No formal reduction rule is required for this instruction, since |CONST| instructions already are :ref:`values <syntax-val>`.
+   No formal reduction rule is required for this instruction, since ${:CONST} instructions already are :ref:`values <syntax-val>`.
 
 
 .. _exec-unop:
@@ -72,6 +72,8 @@ Where the underlying operators are non-deterministic, because they may return on
 4. Else:
 
    a. Trap.
+
+$${rule: {Step_pure/unop-*}}
 
 .. math::
    \begin{array}{lcl@{\qquad}l}

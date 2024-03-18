@@ -269,7 +269,7 @@ Operations are performed point-wise on the values of each lane.
    as four ${:i32} values, packed into an ${:i128}.
    The bit width of the numeric type ${:t} times ${:N} always is ${:128}.
 
-Instructions prefixed with ${:V128} do not involve a specific interpretation, and treat the ${:V128} as an ${:i128} value or a vector of ${:128} individual bits.
+Instructions prefixed with ${:V128} do not involve a specific interpretation, and treat the ${:V128} as either an ${:i128} value or a vector of ${:128} individual bits.
 
 Vector instructions can be grouped into several subcategories:
 

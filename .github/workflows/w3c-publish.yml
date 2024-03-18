@@ -2,7 +2,9 @@ name: Publish to W3C TR space
 
 on:
   push:
-    branches: [ main ]
+    # Disable on fork
+    # branches: [ main ]
+    branches: [ main-only-on-spec-repo ]
     paths: [ .github/**, document/** ]
 
   # Allows you to run this workflow manually from the Actions tab

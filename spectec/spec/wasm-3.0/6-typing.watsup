@@ -922,9 +922,6 @@ rule Instr_ok/vextunop:
 rule Instr_ok/vextbinop:
   C |- VEXTBINOP sh sh vextbinop sx : V128 V128 -> V128
 
-rule Instr_ok/vbitmask:
-  C |- VBITMASK sh : V128 -> I32
-
 
 ;; Local instructions
 

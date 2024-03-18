@@ -780,7 +780,6 @@ warning: rule `Instr_ok/vcvtop` was never spliced
 warning: rule `Instr_ok/vnarrow` was never spliced
 warning: rule `Instr_ok/vextunop` was never spliced
 warning: rule `Instr_ok/vextbinop` was never spliced
-warning: rule `Instr_ok/vbitmask` was never spliced
 warning: rule `Instr_ok/local.get` was never spliced
 warning: rule `Instr_ok/local.set` was never spliced
 warning: rule `Instr_ok/local.tee` was never spliced
