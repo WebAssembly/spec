@@ -819,14 +819,14 @@ Reference Instructions
    S; F; (\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYNEWDATA~x~y) &\stepto& \TRAP
      \\&&
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft}^n \\
+      (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft} \\
       \land & s + n\cdot|\X{ft}|/8 > |S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA|)
      \end{array} \\
    \\[1ex]
    S; F; (\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYNEWDATA~x~y) &\stepto& (t.\CONST~c)^n~(\ARRAYNEWFIXED~x~n)
      \\&&
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft}^n \\
+      (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft} \\
       \land & t = \unpacktype(\X{ft}) \\
       \land & \concat((\bytes_{\X{ft}}(c))^n) = S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA[s \slice n\cdot|\X{ft}|/8] \\
      \end{array} \\
