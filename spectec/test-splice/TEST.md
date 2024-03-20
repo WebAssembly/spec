@@ -11,25 +11,25 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup -l --splice-latex -p spe
 == IL Validation after pass animate...
 == Translating to AL...
 == Prose Generation...
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 3
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
+../spec/wasm-3.0/6-typing.watsup:611.7-611.44: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABEL_context[l!`%`_labelidx.0]!`%`_resulttype.0)`
+../spec/wasm-3.0/6-typing.watsup:612.6-612.44: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABEL_context[l'!`%`_labelidx.0]!`%`_resulttype.0)`
+../spec/wasm-3.0/6-typing.watsup:629.6-629.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+../spec/wasm-3.0/6-typing.watsup:630.6-630.34: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt)`
+../spec/wasm-3.0/6-typing.watsup:637.6-637.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+../spec/wasm-3.0/6-typing.watsup:638.6-638.49: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, $diffrt(rt_1, rt_2), rt)`
+../spec/wasm-3.0/6-typing.watsup:654.6-654.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
+../spec/wasm-3.0/6-typing.watsup:667.6-667.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+../spec/wasm-3.0/6-typing.watsup:675.6-675.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+../spec/wasm-3.0/6-typing.watsup:682.6-682.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
+../spec/wasm-3.0/6-typing.watsup:686.6-686.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+../spec/wasm-3.0/6-typing.watsup:750.6-750.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
+../spec/wasm-3.0/6-typing.watsup:756.6-756.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
+../spec/wasm-3.0/6-typing.watsup:774.7-774.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
+../spec/wasm-3.0/6-typing.watsup:806.6-806.39: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEM_context[y!`%`_idx.0], rt)`
+../spec/wasm-3.0/6-typing.watsup:835.6-835.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
+../spec/wasm-3.0/6-typing.watsup:840.6-840.43: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEM_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
+../spec/wasm-3.0/6-typing.watsup:978.6-978.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+../spec/wasm-3.0/6-typing.watsup:984.6-984.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 == Splicing...
 \documentclass[a4paper]{scrartcl}
 

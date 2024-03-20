@@ -1,1 +1,1 @@
-val valid : Ast.script -> unit (* raises Source.Error *)
+val valid : Ast.script -> unit (* raises Error.Error *)

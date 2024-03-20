@@ -3,6 +3,8 @@ open Ast
 open Al_util
 open Util
 
+type config = expr * expr * instr list
+
 let atom_of_name name typ = Il.Atom.Atom name, typ
 
 let eval_expr =
@@ -254,10 +256,7 @@ let ref_type_of =
     else if match_heap_type noextern ht then
       CaseV ("REF", [ null; noextern])
     else
-      v
-      |> Print.string_of_value
-      |> Printf.sprintf "Invalid null reference: %s"
-      |> failwith
+      Numerics.error_typ_value "$ref_type_of" "null reference" v
   (* i31 *)
   | [CaseV ("REF.I31_NUM", [ _ ])] -> CaseV ("REF", [ nonull; nullary "I31"])
   (* host *)
@@ -272,4 +271,4 @@ let ref_type_of =
   (* extern *)
   (* TODO: check null *)
   | [CaseV ("REF.EXTERN", [ _ ])] -> CaseV ("REF", [ nonull; nullary "EXTERN"])
-  | _ -> failwith "Invalid arguments for $ref_type_of"
+  | vs -> Numerics.error_values "$ref_type_of" vs

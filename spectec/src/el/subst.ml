@@ -77,7 +77,7 @@ and subst_typ s t =
     | None -> VarT (id, List.map (subst_arg s) args)
     | Some t' ->
       if id'.it <> id.it then
-        Util.Source.error id.at "syntax" "identifer suffix encountered during substitution";
+        Util.Error.error id.at "syntax" "identifer suffix encountered during substitution";
       assert (args = []); t'.it  (* We do not support higher-order substitutions yet *)
     )
   | BoolT | NumT _ | TextT | AtomT _ -> t.it

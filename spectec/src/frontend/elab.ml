@@ -13,7 +13,9 @@ module Map = Map.Make (String)
 
 (* Errors *)
 
-let error at msg = Source.error at "type" msg
+exception Error = Error.Error
+
+let error at msg = Error.error at "type" msg
 
 let error_atom at atom t msg =
   error at (msg ^ " `" ^ string_of_atom atom ^ "` in type `" ^ string_of_typ t ^ "`")
