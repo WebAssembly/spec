@@ -16,7 +16,7 @@ open Il.Ast
 
 (* Errors *)
 
-let error at msg = Source.error at "side condition" msg
+let error at msg = Error.error at "side condition" msg
 
 module Env = Map.Make(String)
 

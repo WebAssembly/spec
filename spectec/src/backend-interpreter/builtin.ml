@@ -16,7 +16,6 @@ let f64_to_const f = CaseV ("CONST", [ nullary "F64"; Construct.al_of_float64 f 
 
 (* TODO: Refactor builtin call logic *)
 let builtin () =
-
   (* TODO : Change this into host fnuction instance, instead of current normal function instance *)
   let create_funcinst (name, type_tags) =
     let winstr_tag = String.uppercase_ascii name in
@@ -90,7 +89,7 @@ let builtin () =
     let addr =
       match Store.access kind with
       | ListV a -> Array.length !a |> Z.of_int
-      | _ -> failwith "Unreachable"
+      | _ -> assert false
     in
     let new_extern =
       StrV [ "NAME", ref (TextV name); "VALUE", ref (CaseV (kind, [ numV addr ])) ]
@@ -100,7 +99,7 @@ let builtin () =
 
     (match Store.access kind with
     | ListV a -> a := Array.append !a [|inst|]
-    | _ -> failwith "Invalid store field");
+    | _ -> assert false);
 
     new_extern :: extern in
 
@@ -137,14 +136,15 @@ let is_builtin = function
 let call name =
   let local =
     WasmContext.get_current_frame ()
-    |> unwrap_frame
+    |> unwrap_framev
     |> strv_access "LOCAL"
     |> listv_nth
   in
   let as_const ty = function
   | CaseV ("CONST", [ CaseV (ty', []) ; n ])
   | OptV (Some (CaseV ("CONST", [ CaseV (ty', []) ; n ]))) when ty = ty' -> n
-  | v -> failwith ("Not " ^ ty ^ ".CONST: " ^ string_of_value v) in
+  | v -> raise (Exception.InvalidArg ("Not " ^ ty ^ ".CONST: " ^ string_of_value v)) in
+
   match name with
   | "PRINT" -> print_endline "- print: ()"
   | "PRINT_I32" ->
@@ -179,5 +179,4 @@ let call name =
     let f64 = local 0 |> as_const "F64" |> al_to_float64 |> F64.to_string in
     let f64' = local 1 |> as_const "F64" |> al_to_float64 |> F64.to_string in
     Printf.printf "- print_f64_f64: %s %s\n" f64 f64'
-  | name ->
-    ("Invalid builtin function: " ^ name) |> failwith
+  | name -> raise (Exception.InvalidFunc ("Invalid builtin function: " ^ name))

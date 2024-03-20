@@ -155,14 +155,14 @@ module AlContext = struct
     (* Wasm context *)
     | Wasm of int
     (* Special context for enter/execute *)
-    | Enter of instr list * env
+    | Enter of string * instr list * env
     | Execute of value
     (* Return register *)
     | Return of value
 
   let al (name, il, env) = Al (name, il, env)
   let wasm n = Wasm n
-  let enter (il, env) = Enter (il, env)
+  let enter (name, il, env) = Enter (name, il, env)
   let execute v = Execute v
   let return v = Return v
 
@@ -189,28 +189,28 @@ module AlContext = struct
 
   let add_instrs il = function
     | Al (name, il', env) :: t -> Al (name, il @ il', env) :: t
-    | Enter (il', env) :: t -> Enter (il @ il', env) :: t
+    | Enter (name, il', env) :: t -> Enter (name, il @ il', env) :: t
     | _ -> failwith "Not in AL context"
 
   let get_env = function
     | Al (_, _, env) :: _ -> env
-    | Enter (_, env) :: _ -> env
+    | Enter (_, _, env) :: _ -> env
     | _ -> failwith "Not in AL context"
 
   let set_env env = function
-    | Al (name, instrs, _) :: t -> Al (name, instrs, env) :: t
-    | Enter (instrs, _) :: t -> Enter (instrs, env) :: t
+    | Al (name, il, _) :: t -> Al (name, il, env) :: t
+    | Enter (name, il, _) :: t -> Enter (name, il, env) :: t
     | _ -> failwith "Not in AL context"
 
   let update_env k v = function
     | Al (name, il, env) :: t -> Al (name, il, Env.add k v env) :: t
-    | Enter (instrs, env) :: t -> Enter (instrs, Env.add k v env) :: t
+    | Enter (name, il, env) :: t -> Enter (name, il, Env.add k v env) :: t
     | _ -> failwith "Not in AL context"
 
   let get_return_value = function
     | [ Return v ] -> Some v
     | [] -> None
-    | _ -> failwith "Unreachable"
+    | _ -> failwith "AL context not in return"
 
   let rec decrease_depth = function
     | Wasm 1 :: t -> t
@@ -225,7 +225,7 @@ end
 module WasmContext = struct
   type t = value * value list * value list
 
-  let top_level_context = TextV "TopLevelContexet", [], []
+  let top_level_context = TextV "TopLevelContext", [], []
   let context_stack: t list ref = ref [top_level_context]
 
   let get_context () =
@@ -332,7 +332,7 @@ end
 let init algos =
   (* Initialize info_map *)
   let init_info algo =
-    let algo_name = get_name algo in
+    let algo_name = name_of_algo algo in
     let config = {
       Walk.default_config with pre_instr =
         (fun i ->

@@ -44,14 +44,15 @@ type unop =
   | MinusOp  (* `-` *)
 
 type binop =
-  | ImplOp   (* `=>` *)
-  | EquivOp  (* `<=>` *)
+  (* arithmetic operation *)
   | AddOp    (* `+` *)
   | SubOp    (* `-` *)
   | MulOp    (* `*` *)
   | DivOp    (* `/` *)
   | ExpOp    (* `^` *)
-  (* compare operation *)
+  (* logical operation *)
+  | ImplOp   (* `=>` *)
+  | EquivOp  (* `<=>` *)
   | AndOp    (* `/\` *)
   | OrOp     (* `\/` *)
   | EqOp     (* `=` *)

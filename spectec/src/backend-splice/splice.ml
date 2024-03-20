@@ -31,17 +31,18 @@ let pos src =
 
 let region src = let pos = pos src in {left = pos; right = pos}
 
-let error src msg = Source.error (region src) "splicing" msg
+let error src msg = Error.error (region src) "splicing" msg
 
 let try_with_error src i f x =
-  try f x with Source.Error (at, msg) ->
+  try f x with Error.Error (at, msg) ->
     (* Translate relative positions *)
     let pos = pos {src with i} in
     let shift {line; column; _} =
       { file = src.file; line = line + pos.line - 1;
         column = if line = 1 then column + pos.column - 1 else column} in
     let at' = {left = shift at.left; right = shift at.right} in
-    raise (Source.Error (at', msg))
+Printexc.print_backtrace stdout;
+    raise (Error.Error (at', msg))
 
 
 (* Environment *)
@@ -330,7 +331,7 @@ let try_def_anchor env src r sort space1 space2 find mode : bool =
 let try_relid src : id option =
   let i = src.i in
   parse_space src;
-  let id = try parse_id src "relation" with Source.Error _ -> " " in
+  let id = try parse_id src "relation" with Error.Error _ -> " " in
   if id.[0] <> Char.lowercase_ascii id.[0] then
     let pos = pos {src with i} in
     let left = {file = src.file; line = pos.line; column = pos.column} in
@@ -382,7 +383,7 @@ let try_exp_anchor env src r : bool =
         let _ = elab_exp src i Frontend.Elab.elab_exp env exp typ in
         r := render_exp src i Backend_latex.Render.render_exp env exp;
         true
-      | exception Source.Error _ -> advn src (i0 - src.i); false
+      | exception Error.Error _ -> advn src (i0 - src.i); false
 
 let try_prose_anchor env src r sort space1 space2 find mode : bool =
   let b = try_string src (sort ^ ":") in

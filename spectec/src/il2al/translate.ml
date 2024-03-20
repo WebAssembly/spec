@@ -10,12 +10,14 @@ open Source
 module Il = struct include Il include Ast include Print include Atom end
 
 
-(* Helpers *)
+(* Errors *)
 
-let fail_on_exp exp typ_msg =
-  sprintf "Invalid expression `%s` to be %s."
-    (Il.Print.string_of_exp exp) typ_msg
-  |> failwith
+let error at msg = Error.error at "prose translation" msg
+
+let error_exp exp typ =
+  error exp.at (sprintf "unexpected %s: `%s`" typ (Il.Print.string_of_exp exp))
+
+(* Helpers *)
 
 let is_state expr = match expr.it with
   | Il.VarE z ->
@@ -65,15 +67,21 @@ let get_params winstr =
   match winstr.it with
   | Il.CaseE (_, { it = Il.TupE exps; _ }) -> exps
   | Il.CaseE (_, exp) -> [ exp ]
-  | _ -> fail_on_exp winstr "a valid wasm instruction"
+  | _ -> error winstr.at
+    (sprintf "cannot get params of wasm instruction `%s`" (Il.Print.string_of_exp winstr))
 
 let lhs_of_rgroup rgroup =
   let (lhs, _, _) = List.hd rgroup in
   lhs
 
 let name_of_rule rule =
-  let Il.RuleD (id1, _, _, _, _) = rule.it in
-  String.split_on_char '-' id1.it |> List.hd
+  match rule.it with
+  | Il.RuleD (id, _, _, _, _) ->
+    String.split_on_char '-' id.it |> List.hd
+
+let args_of_clause clause =
+  match clause.it with
+  | Il.DefD (_, args, _, _) -> args
 
 let upper = String.uppercase_ascii
 let wrap typ e = e $$ no_region % typ
@@ -126,7 +134,7 @@ and translate_exp exp =
           extE (acc, [ dotP (name, !note) ], extend_expr, Front) ~at:at
         else
           acc
-      | _ -> fail_on_exp exp "AL record expression")
+      | _ -> error_exp exp "AL record expression")
       (translate_exp inner_exp) expfields
   (* extension of record field *)
   | Il.ExtE (base, path, v) -> extE (translate_exp base, translate_path path, translate_exp v, Back) ~at:at
@@ -138,7 +146,7 @@ and translate_exp exp =
     let op = match op with
     | Il.NotOp -> NotOp
     | Il.MinusOp _ -> MinusOp
-    | _ -> fail_on_exp exp "AL unary expression"
+    | _ -> error_exp exp "AL unary expression"
     in
     unE (op, exp') ~at:at
   | Il.BinE (op, exp1, exp2) ->
@@ -181,7 +189,7 @@ and translate_exp exp =
       | {it = Il.Atom name; note; _}, fieldexp ->
         let expr = translate_exp fieldexp in
         Record.add (name, !note) expr acc
-      | _ -> fail_on_exp exp "AL record expression"
+      | _ -> error_exp exp "AL record expression"
     in
     let record = List.fold_left f Record.empty expfields in
     strE record ~at:at
@@ -256,7 +264,7 @@ and translate_path path =
     | Il.SliceP (p, e1, e2) -> (translate_path' p) @ [ sliceP (translate_exp e1, translate_exp e2) ~at:at ]
     | Il.DotP (p, {it = Atom a; note; _}) ->
       (translate_path' p) @ [ dotP (a, !note) ~at:at ]
-    | _ -> failwith "unreachable"
+    | _ -> assert false
   in
   translate_path' path
 
@@ -313,7 +321,8 @@ let is_unbound vars e =
 let get_unbound e =
   match e.it with
   | Il.IterE (_, (ListN ({ it = VarE id; _ }, _), _)) -> id.it
-  | _ -> failwith "Invalid deferred expression"
+  | _ -> error e.at
+    (sprintf "cannot get_unbound: not an iter expression `%s`" (Il.Print.string_of_exp e))
 
 
 let rec translate_rhs exp =
@@ -399,8 +408,8 @@ let rec translate_rhs exp =
     | Il.CaseE ([[]; [{it = Il.Semicolon; _}]; []], _)
     | Il.VarE _ -> push_instrs
     | Il.CallE (f, ae) -> push_instrs @ [ performI (f.it, translate_args ae) ~at:at ]
-    | _ -> failwith "Invalid new state" )
-  | _ -> fail_on_exp exp "AL rhs instructions"
+    | _ -> error_exp se "state expression" )
+  | _ -> error_exp exp "expression on rhs of reduction"
 
 
 let lhs_id_ref = ref 0
@@ -577,8 +586,8 @@ let translate_rulepr id exp =
   | "Reftype_sub", [_C; rt1; rt2] ->
     [ ifI (matchE (rt1, rt2) ~at:at, [], []) ~at:at ]
   | _ ->
-    prerr_endline (Il.Print.string_of_exp exp);
-    [ yetI ("TODO: Unsupported rule premise:" ^ id.it) ~at:at ]
+    print_yet exp.at "translate_rulepr" ("`" ^ Il.Print.string_of_exp exp ^ "`");
+    [ yetI ("TODO: translate_rulepr " ^ id.it) ~at:at ]
 
 let rec translate_iterpr pr (iter, ids) =
   let instrs = translate_prem pr in
@@ -630,36 +639,42 @@ let rec insert_instrs target il =
 let translate_prems =
   List.fold_right (fun prem il -> translate_prem prem |> insert_instrs il)
 
-
 let get_tup_exps c =
   match c.it with
   | Il.CaseE ([[]; [{it = Il.Semicolon; _}]; []], {it = TupE [ e1; e2 ]; _}) -> e1, e2
   | _ -> failwith "Invalid config"
 
+let split_config ce =
+  try
+    let state, e = get_tup_exps ce in
+    let sto, f = get_tup_exps state in
+    sto, f, e
+  with _ -> error ce.at
+    (sprintf "cannot split `%s` into store, frame and rhs" (Il.Print.string_of_exp ce))
 
 (* s; f; e -> `expr * expr * instr list` *)
-let translate_config config =
-  let state, e = get_tup_exps config in
-  let sto, f = get_tup_exps state in
+let translate_config ce =
+  let sto, f, e = split_config ce in
 
   if is_store sto && is_frame f then
     translate_exp sto, translate_exp f, translate_rhs e
   else
-    failwith "Invalid config"
+    error ce.at
+      (sprintf "cannot translate `%s` into store, frame and rhs" (Il.Print.string_of_exp ce))
 
 let translate_helper_body name clause =
-  let Il.DefD (_, _, re, prems) = clause.it in
-  (* TODO: Remove hack *)
-  let return_instrs =
-    if name = "instantiate" then
-      translate_config re |> return_instrs_of_instantiate
-    else if name = "invoke" then
-      translate_config re |> return_instrs_of_invoke
-    else
-      [ returnI (Some (translate_exp re)) ]
-  in
-  translate_prems prems return_instrs
-
+  match clause.it with
+  | Il.DefD (_, _, re, prems) ->
+    (* TODO: Remove hack *)
+    let return_instrs =
+      if name = "instantiate" then
+        translate_config re |> return_instrs_of_instantiate
+      else if name = "invoke" then
+        translate_config re |> return_instrs_of_invoke
+      else
+        [ returnI (Some (translate_exp re)) ]
+    in
+    translate_prems prems return_instrs
 
 (* Main translation for helper functions *)
 let translate_helper partial_funcs def =
@@ -667,7 +682,7 @@ let translate_helper partial_funcs def =
   | Il.DecD (id, _, _, clauses) when List.length clauses > 0 ->
     let name = id.it in
     let unified_clauses = Il2il.unify_defs clauses in
-    let Il.DefD (_, args, _, _) = List.hd unified_clauses |> it in
+    let args = List.hd unified_clauses |> args_of_clause in
     let params =
       args
       |> translate_args
@@ -707,7 +722,7 @@ let rec kind_of_context e =
   | Il.CaseE ([[]; [{it = Il.Semicolon; _}]; []], e')
   | Il.ListE [ e' ]
   | Il.TupE [_ (* z *); e'] -> kind_of_context e'
-  | _ -> "Could not get kind_of_context" ^ Il.Print.string_of_exp e |> failwith
+  | _ -> error e.at "cannot get a frame or label from lhs of the reduction rule"
 
 let in_same_context (lhs1, _, _) (lhs2, _, _) =
   kind_of_context lhs1 = kind_of_context lhs2
@@ -718,7 +733,7 @@ let group_contexts xs =
     match g1 with
     | [] -> [ x ] :: acc
     | [ g ] -> (x :: g) :: g2
-    | _ -> failwith "Impossible list_partiton_with: perhaps f is not equivalence relation"
+    | _ -> failwith "group_contexts: duplicate groups"
     ) [] xs |> List.rev
 
 let un_unify (lhs, rhs, prems) =
@@ -772,7 +787,7 @@ let translate_context_winstr winstr =
   match winstr.it with
   (* Frame *)
   | Il.CaseE ([{it = Il.Atom "FRAME_"; _}]::_, args) ->
-    ( match args.it with
+    (match args.it with
     | Il.TupE [arity; name; inner_exp] ->
       [
         letI (translate_exp name, getCurFrameE ()) ~at:at;
@@ -782,7 +797,8 @@ let translate_context_winstr winstr =
         insert_assert winstr;
         exitI () ~at:at
       ]
-    | _ -> failwith "Invalid frame")
+    | _ -> error_exp args "argument of frame"
+    )
   (* Label *)
   | Il.CaseE ([{it = Il.Atom "LABEL_"; _}]::_, { it = Il.TupE [ _n; _instrs; vals ]; _ }) ->
     [
@@ -828,7 +844,7 @@ let translate_context_rgroup lhss sub_algos inner_params =
         contextKindE (kind, getCurContextE ()),
         body,
         acc ) ]
-    | _ -> failwith "unreachable")
+    | _ -> assert false)
   lhss sub_algos []
 
 
@@ -898,9 +914,9 @@ let rec translate_rgroup' context winstr instr_name rgroup =
       let lhss = List.map (fun (_, g) -> lhs_of_rgroup g) unified_sub_groups in
       let sub_algos = List.map translate_rgroup unified_sub_groups in
       translate_context_rgroup lhss sub_algos inner_params
-
-      with _ -> [ yetI "TODO: It is likely that the value stack of two rules are different" ])
-    | _ -> [ yetI "TODO" ] in
+      with _ ->
+        [ yetI "TODO: It is likely that the value stack of two rules are different" ])
+    | _ -> [ yetI "TODO: translate_rgroup" ] in
   !inner_params, instrs
 
 
@@ -917,7 +933,7 @@ and translate_rgroup (instr_name, rgroup) =
   let kwd =
     match winstr.it with
     | Il.CaseE (({it = Il.Atom winstr_name; note; _}::_)::_, _) -> (winstr_name, !note)
-    | _ -> failwith "unreachable"
+    | _ -> assert false
   in
   let al_params =
     match inner_params with
@@ -944,10 +960,11 @@ and translate_rgroup (instr_name, rgroup) =
 
 
 let rule_to_tup rule =
-  let Il.RuleD (_, _, _, exp, prems) = rule.it in
-  match exp.it with
-  | Il.TupE [ lhs; rhs ] -> lhs, rhs, prems
-  | _ -> fail_on_exp exp "reduction rule"
+  match rule.it with
+  | Il.RuleD (_, _, _, exp, prems) ->
+    match exp.it with
+    | Il.TupE [ lhs; rhs ] -> lhs, rhs, prems
+    | _ -> error_exp exp "form of reduction rule"
 
 
 (* group reduction rules that have same name *)
@@ -965,8 +982,9 @@ let extract_rules def =
   match def.it with
   | Il.RelD (id, _, _, rules) when String.starts_with ~prefix:"Step" id.it ->
     let condition rule =
-      let Il.RuleD (id', _, _, _, _) = rule.it in
-      id.it <> "Steps" && id'.it <> "pure" && id'.it <> "read"
+      match rule.it with
+      | Il.RuleD (id', _, _, _, _) ->
+        id.it <> "Steps" && id'.it <> "pure" && id'.it <> "read"
     in
     List.filter condition rules
   | _ -> []

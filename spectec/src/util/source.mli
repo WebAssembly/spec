@@ -25,12 +25,3 @@ val (%) : region -> 'b -> region * 'b
 val it : ('a, 'b) note_phrase -> 'a
 val at : ('a, 'b) note_phrase -> region
 val note : ('a, 'b) note_phrase -> 'b
-
-(* Errors *)
-
-exception Error of region * string
-
-val error : region -> string -> string -> 'a
-
-val print_error : region -> string -> unit
-val print_warn : region -> string -> unit

@@ -28,7 +28,7 @@ open Il.Ast
 
 (* Errors *)
 
-let error at msg = Source.error at "subtype elimination" msg
+let error at msg = Error.error at "subtype elimination" msg
 
 (* Environment *)
 

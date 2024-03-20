@@ -64,7 +64,7 @@ let to_left_assoc_cat =
     | CatE (l, r) ->
       begin match r.it with
       | CatE (rl, rr) ->
-          { e with it = CatE (CatE (l, rl) $$ no_region % e.note, rr) } |> rotate_ccw
+        { e with it = CatE (CatE (l, rl) $$ no_region % e.note, rr) } |> rotate_ccw
       | _ -> e
       end
     | _ -> e
@@ -79,7 +79,7 @@ let to_right_assoc_cat =
     | CatE (l, r) ->
       begin match l.it with
       | CatE (ll, lr) ->
-          { e with it = CatE (ll, CatE (lr, r) $$ no_region% e.note) } |> rotate_cw
+        { e with it = CatE (ll, CatE (lr, r) $$ no_region% e.note) } |> rotate_cw
       | _ -> e
       end
     | _ -> e
@@ -169,7 +169,7 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
   in { e1 with it }
 
 and overlap_arg a1 a2 = if eq_arg a1 a2 then a1 else
-  ( match a1.it, a2.it with
+  (match a1.it, a2.it with
     | ExpA e1, ExpA e2 -> ExpA (overlap e1 e2)
     | TypA _, TypA _ -> a1.it
     | _, _ -> assert false
@@ -202,19 +202,19 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
     | CompE (e1, e1'), CompE (e2, e2')
     | CatE (e1, e1'), CatE (e2, e2') -> pairwise_concat (collect_unified e1 e2) (collect_unified e1' e2')
     | SliceE (e1, e1', e1''), SliceE (e2, e2', e2'') ->
-        pairwise_concat (pairwise_concat (collect_unified e1 e2) (collect_unified e1' e2')) (collect_unified e1'' e2'')
+      pairwise_concat (pairwise_concat (collect_unified e1 e2) (collect_unified e1' e2')) (collect_unified e1'' e2'')
     | StrE efs1, StrE efs2 ->
-        List.fold_left2 (fun acc (_, e1) (_, e2) -> pairwise_concat acc (collect_unified e1 e2)) ([], []) efs1 efs2
+      List.fold_left2 (fun acc (_, e1) (_, e2) -> pairwise_concat acc (collect_unified e1 e2)) ([], []) efs1 efs2
     | TupE es1, TupE es2
     | ListE es1, ListE es2 ->
-        List.fold_left2 (fun acc e1 e2 -> pairwise_concat acc (collect_unified e1 e2)) ([], []) es1 es2
+      List.fold_left2 (fun acc e1 e2 -> pairwise_concat acc (collect_unified e1 e2)) ([], []) es1 es2
     | CallE (_, as1), CallE (_, as2) -> collect_unified_args as1 as2
-    | _ -> failwith "Impossible collect_unified"
+    | _ -> Util.Error.error e.at "prose transformation" "cannot unify the expression with previous rule for the same instruction"
 
 and collect_unified_arg template a = if eq_arg template a then [], [] else match template.it, a.it with
   | ExpA template', ExpA e -> collect_unified template' e
   | TypA _, TypA _ -> [], []
-  | _ -> failwith "Impossible collect_unified_arg"
+  | _ -> Util.Error.error a.at "prose transformation" "cannot unify the argument"
 
 and collect_unified_args as1 as2 =
   List.fold_left2 (fun acc a1 a2 -> pairwise_concat acc (collect_unified_arg a1 a2)) ([], []) as1 as2
@@ -245,10 +245,11 @@ let unify_lhs (rname, rgroup) =
   rname, (rgroup |> List.map to_left_assoc |> unify_lhs' |> List.map to_right_assoc)
 
 let apply_template_to_def template def =
-  let DefD (binds, lhs, rhs, prems) = def.it in
-  let new_prems, new_binds = collect_unified_args template lhs in
-  let animated_prems = Animate.animate_prems Il.Free.(free_list free_arg template) new_prems in
-  DefD (binds @ new_binds, template, rhs, (animated_prems @ prems) |> prioritize_else) $ no_region
+  match def.it with
+  | DefD (binds, lhs, rhs, prems) ->
+    let new_prems, new_binds = collect_unified_args template lhs in
+    let animated_prems = Animate.animate_prems Il.Free.(free_list free_arg template) new_prems in
+    DefD (binds @ new_binds, template, rhs, (animated_prems @ prems) |> prioritize_else) $ no_region
 
 let unify_defs defs =
   init_unified_idx();

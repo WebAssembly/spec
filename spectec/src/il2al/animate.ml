@@ -138,7 +138,7 @@ let singletons = List.map wrap
 let group_arg e _ =
   match e.it with
   | CallE (_, args) -> List.map free_arg_list args
-  | _ -> failwith "Unreachable"
+  | _ -> assert false
 
 let large_enough_subsets xs =
   let yss = powset xs in
@@ -285,7 +285,7 @@ let rec animate_def d = match d.it with
     let new_clauses = List.map animate_clause clauses in
     DecD (id, t1, t2, new_clauses) $ d.at
   | RecD ds -> RecD (List.map animate_def ds) $ d.at
-  | _ -> d
+  | TypD _ | HintD _ -> d
 
 (* Main entry *)
 let transform (defs : script) =

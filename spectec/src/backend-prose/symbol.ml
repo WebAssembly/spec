@@ -3,6 +3,9 @@ open Util.Source
 module Set = Set.Make(String)
 module Map = Map.Make(String)
 
+let to_set l = List.fold_left (fun s e -> Set.add e s) Set.empty l
+
+
 (* Environment *)
 
 type env =
@@ -10,6 +13,7 @@ type env =
     kwds: (Set.t * Set.t) Map.t ref;
     funcs: Set.t ref;
   }
+
 
 (* Extracting Macro from DSL *)
 
@@ -32,30 +36,29 @@ let extract_typfield_kwd = function
     | _ -> None)
 
 let rec extract_typ_kwds typ =
-  match typ with
+  match typ.it with
   | El.Ast.AtomT atom -> (match atom.it with
     | Il.Atom.Atom id -> [ id ]
     | _ -> [])
-  | El.Ast.IterT (typ_inner, _) -> extract_typ_kwds typ_inner.it
+  | El.Ast.IterT (typ_inner, _) -> extract_typ_kwds typ_inner
   | El.Ast.StrT typfields -> List.filter_map extract_typfield_kwd typfields
   | El.Ast.CaseT (_, typs, typcases, _) ->
-      let ids = List.filter_map extract_typ_kwd typs in
-      let typcases = List.filter_map extract_typcase_kwd typcases in
-      ids @ typcases
-  | El.Ast.SeqT tl -> List.concat_map (fun t -> extract_typ_kwds t.it) tl
+    let ids = List.filter_map extract_typ_kwd typs in
+    let typcases = List.filter_map extract_typcase_kwd typcases in
+    ids @ typcases
+  | El.Ast.SeqT tl -> List.concat_map (fun t -> extract_typ_kwds t) tl
   | _ -> []
 
 let extract_syntax_kwds' def =
   match def.it with
   | El.Ast.TypD (id, subid, _, typ, _) ->
-      let topsyntax, syntax =
-        if subid.it = "" then (None, id.it)
-        else (Some id.it, id.it ^ "-" ^ subid.it)
-      in
-      let variants = extract_typ_kwds typ.it in
-      let variants = List.fold_left (fun acc child -> Set.add child acc) Set.empty variants in
-      let (terminals, nonterminals) = Set.partition (fun word -> String.uppercase_ascii word = word) variants in
-      Some (topsyntax, syntax, terminals, nonterminals)
+    let topsyntax, syntax =
+      if subid.it = "" then (None, id.it)
+      else (Some id.it, id.it ^ "-" ^ subid.it)
+    in
+    let variants = extract_typ_kwds typ |> to_set in
+    let (terminals, nonterminals) = Set.partition (fun word -> String.uppercase_ascii word = word) variants in
+    Some (topsyntax, syntax, terminals, nonterminals)
   | _ -> None
 
 let extract_syntax_kwds el =
@@ -65,20 +68,20 @@ let extract_syntax_kwds el =
           (* Update kwd mapping from syntax to terminals and nonterminals *)
           let terminals', nonterminals' =
             (match Map.find_opt syntax acc with
-            | Some (terminals', nonterminals') ->
-                (Set.union terminals terminals', Set.union nonterminals nonterminals')
+            | Some (s_terminals, s_nonterminals) ->
+              (Set.union terminals s_terminals, Set.union nonterminals s_nonterminals)
             | None -> (terminals, nonterminals))
           in
           let acc = Map.add syntax (terminals', nonterminals') acc in
           (* Add level of indirection for subid-ed grammer *)
           (match topsyntax with
           | Some topsyntax ->
-              let terminals, nonterminals =
-                (match Map.find_opt topsyntax acc with
-                | Some (terminals, nonterminals) -> (terminals, Set.add syntax nonterminals)
-                | None -> (Set.empty, Set.singleton syntax))
-              in
-              Map.add topsyntax (terminals, nonterminals) acc
+            let terminals'', nonterminals'' =
+              (match Map.find_opt topsyntax acc with
+              | Some (t_terminals, t_nonterminals) -> (t_terminals, Set.add syntax t_nonterminals)
+              | None -> (Set.empty, Set.singleton syntax))
+            in
+            Map.add topsyntax (terminals'', nonterminals'') acc
           | None -> acc)
       | _ -> acc)
     Map.empty el
@@ -90,7 +93,7 @@ let extract_func_kwds' def =
 
 let extract_func_kwds el =
   let funcs = List.concat_map extract_func_kwds' el in
-  List.fold_left (fun s acc -> Set.add acc s) Set.empty funcs
+  to_set funcs
 
 (* Environment Construction *)
 

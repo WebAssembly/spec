@@ -36,13 +36,13 @@ module AlContext : sig
     (* Wasm context *)
     | Wasm of int
     (* Special context for enter/execute *)
-    | Enter of instr list * env
+    | Enter of string * instr list * env
     | Execute of value
     (* Return register *)
     | Return of value
   val al : string * instr list * env -> mode
   val wasm : int -> mode
-  val enter : instr list * env -> mode
+  val enter : string * instr list * env -> mode
   val execute : value -> mode
   val return : value -> mode
   type t = mode list

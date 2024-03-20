@@ -6,7 +6,7 @@ let with_lexbuf name lexbuf start =
   try
     start Lexer.token lexbuf
   with Parser.Error ->
-    raise (Source.Error (Lexer.region lexbuf, "syntax error: unexpected token"))
+    raise (Error.Error (Lexer.region lexbuf, "syntax error: unexpected token"))
 
 let parse_typ s =
   let lexbuf = Lexing.from_string s in
@@ -27,4 +27,4 @@ let parse_file file =
       (fun () -> with_lexbuf file (Lexing.from_channel ic) Parser.script)
       ~finally:(fun () -> close_in ic)
   with Sys_error msg ->
-    raise (Source.Error (Source.region_of_file file, "i/o error: " ^ msg))
+    raise (Error.Error (Source.region_of_file file, "i/o error: " ^ msg))

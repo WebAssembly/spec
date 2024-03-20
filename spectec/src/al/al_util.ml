@@ -1,9 +1,11 @@
 open Ast
 open Util
+open Source
+
 
 (* Constructor Shorthands *)
 
-let no = Util.Source.no_region
+let no = no_region
 
 let _nid_count = ref 0
 let gen_nid () =
@@ -11,7 +13,7 @@ let gen_nid () =
   _nid_count := nid + 1;
   nid
 
-let mk_instr at it = Util.Source.($$) it (at, gen_nid())
+let mk_instr at it = it $$ (at, gen_nid())
 
 let ifI ?(at = no) (c, il1, il2) = IfI (c, il1, il2) |> mk_instr at
 let eitherI ?(at = no) (il1, il2) = EitherI (il1, il2) |> mk_instr at
@@ -99,25 +101,40 @@ let some x = caseV (x, [optV (Some (tupV []))])
 let none x = caseV (x, [optV None])
 
 
+(* Failures *)
+
+let fail_value msg v =
+  Print.string_of_value v
+  |> Printf.sprintf "%s: %s" msg
+  |> failwith
+
+let fail_expr msg e =
+  Print.string_of_expr e
+  |> Printf.sprintf "%s: %s" msg
+  |> failwith
+
+let print_yet at category msg =
+  (string_of_region at ^ ": ") ^ (category ^ ": Yet " ^ msg)
+  |> print_endline
+
 (* Helper functions *)
 
 let listv_map f = function
   | ListV arr_ref -> ListV (ref (Array.map f !arr_ref))
-  | _ -> failwith "Not a list"
-
+  | v -> fail_value "listv_map" v
 
 let listv_find f = function
   | ListV arr_ref -> Array.find_opt f !arr_ref |> Option.get
-  | _ -> failwith "Not a list"
+  | v -> fail_value "listv_find" v
 
 let listv_nth l n =
   match l with
   | ListV arr_ref -> Array.get !arr_ref n
-  | _ -> failwith "Not a list"
+  | v -> fail_value "listv_nth" v
 
 let strv_access field = function
   | StrV r -> Record.find field r
-  | _ -> failwith "Not a record"
+  | v -> fail_value "strv_access" v
 
 let map
   (destruct: value -> 'a)
@@ -133,65 +150,72 @@ let map2
   (v2: value): value =
     op (destruct v1) (destruct v2) |> construct
 
+let iter_type_of_value: value -> iter = function
+  | ListV _ -> List
+  | OptV _ -> Opt
+  | v -> fail_value "iter_type_of_value" v
+
 
 (* Destruct *)
 
-(* TODO: move to error file *)
-let fail ty v =
-  Print.string_of_value v
-  |> Printf.sprintf "Invalid %s: %s" ty
-  |> failwith
-
 let unwrap_optv: value -> value option = function
   | OptV opt -> opt
-  | v -> fail "OptV" v
+  | v -> fail_value "unwrap_optv" v
+
 let unwrap_listv: value -> value growable_array = function
   | ListV ga -> ga
-  | v -> fail "ListV" v
+  | v -> fail_value "unwrap_listv" v
+
 let unwrap_listv_to_array (v: value): value array = !(unwrap_listv v)
 let unwrap_listv_to_list (v: value): value list = unwrap_listv_to_array v |> Array.to_list
 
-let get_name = function
+let unwrap_textv: value -> string = function
+  | TextV str -> str
+  | v -> fail_value "unwrap_textv" v
+
+let unwrap_numv: value -> Z.t = function
+  | NumV i -> i
+  | v -> fail_value "unwrap_numv" v
+
+let unwrap_numv_to_int (v: value): int = unwrap_numv v |> Z.to_int
+
+let unwrap_boolv: value -> bool = function
+  | BoolV b -> b
+  | v -> fail_value "unwrap_boolv" v
+
+let unwrap_tupv: value -> value list = function
+  | TupV l -> l
+  | v -> fail_value "unwrap_tupv" v
+
+let unwrap_strv = function
+  | StrV r -> r
+  | v -> fail_value "unwrap_strv" v
+
+let unwrap_cate e =
+  match e.it with
+  | CatE (e1, e2) -> e1, e2
+  | _ -> fail_expr "unwrap_cate" e
+
+let name_of_algo = function
   | RuleA ((name, _), _, _) -> name
   | FuncA (name, _, _) -> name
 
-let get_param = function
+let params_of_algo = function
   | RuleA (_, params, _) -> params
   | FuncA (_, params, _) -> params
 
-let get_body = function
+let body_of_algo = function
   | RuleA (_, _, body) -> body
   | FuncA (_, _, body) -> body
 
-let unwrap_textv: value -> string = function
-  | TextV str -> str
-  | v -> fail "text" v
-let unwrap_numv: value -> Z.t = function
-  | NumV i -> i
-  | v -> fail "int64" v
-let unwrap_numv_to_int (v: value): int = unwrap_numv v |> Z.to_int
-let unwrap_boolv: value -> bool = function
-  | BoolV b -> b
-  | v -> fail "boolean" v
-let unwrap_tupv: value -> value list = function
-  | TupV l -> l
-  | v -> fail "tuple" v
-let casev_of_case = function
-  | CaseV (s, _) -> s
-  | v -> fail "case" v
-let casev_replace_nth_arg i v = function
-  | CaseV (s, args) -> CaseV (s, List.mapi (fun index e -> if index = i then v else e) args)
-  | v -> fail "case" v
-let casev_nth_arg n = function
-  | CaseV (_, l) when List.length l > n -> List.nth l n
-  | v -> fail "case" v
-let unwrap_strv = function
-  | StrV r -> r
-  | v -> fail "struct" v
+let args_of_casev = function
+  | CaseV (_, vl) -> vl
+  | v -> fail_value "args_of_casev" v
 
-let arity_of_frame: value -> value = function
+let arity_of_framev: value -> value = function
   | FrameV (Some v, _) -> v
-  | v -> fail "frame" v
-let unwrap_frame: value -> value = function
+  | v -> fail_value "arity_of_framev" v
+
+let unwrap_framev: value -> value = function
   | FrameV (_, v) -> v
-  | v -> fail "frame" v
+  | v -> fail_value "unwrap_framev" v
