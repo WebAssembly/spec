@@ -909,14 +909,14 @@ watsup 0.4 generator
 - 14/14 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/array_init_data.wast =====
-- Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:95.1-95.85 (Failure("Invalid assignment on value 0x63: CallE (packconst, [ VarE (zt), VarE (c) ]) @8-reduction.watsup:520.21-520.38"))
+- Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:95.1-95.85 (Util.Error.Error(_, "interpreter error: ARRAY.INIT_DATA: on expr `CallE (packconst, [ VarE (zt), VarE (c) ])` invalid assignment: on rhs 0x63 (interpreting LetI (CallE (packconst, [ VarE (zt), VarE (c) ]), CallE (inverse_of_zbytes, [ VarE (zt), AccE (AccE (CallE (data, [ VarE (y) ]), DotP (DATA)), SliceP (VarE (j),BinopE (/, CallE (zsize, [ VarE (zt) ]), 8))) ])))"))
 Result: 0 : [i32]
 Expect: 99 : [i32]
 - Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:97.1-97.70 (Error(_, "wrong return values"))
 Result: 0 : [i32]
 Expect: 100 : [i32]
 - Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:98.1-98.71 (Error(_, "wrong return values"))
-- Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:101.1-101.89 (Failure("Invalid assignment on value 0x6766: CallE (packconst, [ VarE (zt), VarE (c) ]) @8-reduction.watsup:520.21-520.38"))
+- Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:101.1-101.89 (Util.Error.Error(_, "interpreter error: ARRAY.INIT_DATA: on expr `CallE (packconst, [ VarE (zt), VarE (c) ])` invalid assignment: on rhs 0x6766 (interpreting LetI (CallE (packconst, [ VarE (zt), VarE (c) ]), CallE (inverse_of_zbytes, [ VarE (zt), AccE (AccE (CallE (data, [ VarE (y) ]), DotP (DATA)), SliceP (VarE (j),BinopE (/, CallE (zsize, [ VarE (zt) ]), 8))) ])))"))
 Result: 0 : [i32]
 Expect: 26_470 : [i32]
 - Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:103.1-103.78 (Error(_, "wrong return values"))
