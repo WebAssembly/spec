@@ -167,8 +167,7 @@ and string_of_expr expr =
   | SubE (id, _) -> id
   | IterE (e, _, iter) -> string_of_expr e ^ string_of_iter iter
   | InfixE (e1, a, e2) -> "(" ^ string_of_expr e1 ^ " " ^ string_of_atom a ^ " " ^ string_of_expr e2 ^ ")"
-  | CaseE ((Il.Atom.Atom "CONST", _), hd::tl)
-  | CaseE ((Il.Atom.Atom "VCONST", _), hd::tl) ->
+  | CaseE ((Il.Atom.Atom ("CONST" | "VCONST"), _), hd::tl) ->
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
   | CaseE (a, []) -> string_of_atom a
   | CaseE (a, el) -> "(" ^ string_of_atom a ^ " " ^ string_of_exprs " " el ^ ")"
