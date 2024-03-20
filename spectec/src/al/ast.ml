@@ -1,5 +1,10 @@
 open Util.Source
 
+(* Terminals *)
+
+type atom = atom' * string
+and atom' = Il.Atom.atom'
+
 (* Types *)
 
 type ty = string (* TODO *)
@@ -8,26 +13,21 @@ type ty = string (* TODO *)
 
 type id = string
 
-(* Identifiers derived from the syntax terminals defined in the DSL.
-   The second in the tuple denotes its IL-type (for disambiguation).*)
-type kwd = kwd' * string
-and kwd' = string
-
 (* Values *)
 
 type 'a growable_array = 'a array ref
 
 type ('a, 'b) record = ('a * 'b ref) list
 
-and store = (kwd', value) record
+and store = (atom, value) record
 
 and value =
   | NumV of Z.t                        (* number *)
   | BoolV of bool                      (* boolean *)
   | TextV of string                    (* string *)
   | ListV of value growable_array      (* list of values *)
-  | StrV of (kwd', value) record       (* key-value mapping *)
-  | CaseV of kwd' * value list         (* constructor *)
+  | StrV of (id, value) record         (* key-value mapping *)
+  | CaseV of id * value list           (* constructor *)
   | OptV of value option               (* optional value *)
   | TupV of value list                 (* tuple of values *)
   | FrameV of value option * value     (* TODO: desugar using CaseV? *)
@@ -62,11 +62,6 @@ type binop =
   | LeOp     (* `<=` *)
   | GeOp     (* `>=` *)
 
-type infixop =
-  | AtomOp of kwd
-  | ArrowOp
-  | ArrowSubOp
-
 (* Iteration *)
 
 type iter =
@@ -87,16 +82,16 @@ and expr' =
   | AccE of expr * path                 (* expr `[` path `]` *)
   | UpdE of expr * path list * expr     (* expr `[` path* `]` `:=` expr *)
   | ExtE of expr * path list * expr * extend_dir (* expr `[` path* `]` `:+` expr *)
-  | StrE of (kwd, expr) record          (* `{` (kwd `->` expr)* `}` *)
+  | StrE of (atom, expr) record         (* `{` (atom `->` expr)* `}` *)
   | CatE of expr * expr                 (* expr `++` expr *)
   | LenE of expr                        (* `|` expr `|` *)
   | TupE of expr list                   (* `(` (expr `,`)* `)` *)
-  | CaseE of kwd * expr list            (* kwd `(` expr* `)` -- MixE/CaseE *)
+  | CaseE of atom * expr list           (* atom `(` expr* `)` -- MixE/CaseE *)
   | CallE of id * expr list             (* id `(` expr* `)` *)
   | IterE of expr * id list * iter      (* expr (`{` id* `}`)* *)
   | OptE of expr option                 (* expr?  *)
   | ListE of expr list                  (* `[` expr* `]` *)
-  | InfixE of expr * infixop * expr      (* "expr infix expr" *) (* TODO: Remove InfixE using hint *)
+  | InfixE of expr * atom * expr        (* "expr infix expr" *) (* TODO: Remove InfixE using hint *)
   | ArityE of expr                      (* "the arity of expr" *)
   | FrameE of expr option * expr        (* "the activation of expr (with arity expr)?" *)
   | LabelE of expr * expr               (* "the label whose arity is expr and whose continuation is expr" *)
@@ -105,9 +100,9 @@ and expr' =
   | GetCurContextE                      (* "the current context" *)
   | ContE of expr                       (* "the continuation of expr" *)
   (* Conditions *)
-  | IsCaseOfE of expr * kwd             (* expr is of the case kwd *)
+  | IsCaseOfE of expr * atom            (* expr is of the case kwd *)
   | IsValidE of expr                    (* expr is valid *)
-  | ContextKindE of kwd * expr          (* TODO: desugar using IsCaseOf? *)
+  | ContextKindE of atom * expr         (* TODO: desugar using IsCaseOf? *)
   | IsDefinedE of expr                  (* expr is defined *)
   | MatchE of expr * expr               (* expr matches expr *)
   | HasTypeE of expr * ty               (* the type of expr is ty *)
@@ -124,7 +119,7 @@ and path = path' phrase
 and path' =
   | IdxP of expr                    (* `[` expr `]` *)
   | SliceP of expr * expr           (* `[` expr `:` expr `]` *)
-  | DotP of kwd                     (* `.` atom *)
+  | DotP of atom                    (* `.` atom *)
 
 (* Instructions *)
 
@@ -153,6 +148,6 @@ and instr' =
 
 (* Algorithms *)
 
-type algorithm =                          (* `algorithm` x`(`expr*`)` `{`instr*`}` *)
-  | RuleA of kwd * expr list * instr list (* reduction rule *)
-  | FuncA of id * expr list * instr list  (* helper function *)
+type algorithm =                           (* `algorithm` x`(`expr*`)` `{`instr*`}` *)
+  | RuleA of atom * expr list * instr list (* reduction rule *)
+  | FuncA of id * expr list * instr list   (* helper function *)

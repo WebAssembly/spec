@@ -1,7 +1,7 @@
 open Ast
 
 val string_of_list : ('a -> string) -> string -> 'a list -> string
-val string_of_kwd : kwd -> string
+val string_of_atom : atom -> string 
 val string_of_value : value -> string
 val string_of_values : string -> value list -> string
 val string_of_iter : iter -> string

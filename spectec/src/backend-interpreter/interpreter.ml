@@ -86,7 +86,8 @@ and access_path env base path =
     let i1 = eval_expr env e1 |> al_to_int in
     let i2 = eval_expr env e2 |> al_to_int in
     Array.sub a i1 i2 |> listV
-  | DotP (str, _) -> (
+  | DotP str -> (
+    let str = Print.string_of_atom str in
     match base with
     | FrameV (_, StrV r) -> Record.find str r
     | StrV r -> Record.find str r
@@ -108,7 +109,8 @@ and replace_path env base path v_new =
     let i2 = eval_expr env e2 |> al_to_int in
     Array.blit (unwrap_listv_to_array v_new) 0 a i1 i2;
     listV a
-  | DotP (str, _) ->
+  | DotP str ->
+    let str = Print.string_of_atom str in
     let r =
       match base with
       | FrameV (_, StrV r) -> r
@@ -163,7 +165,7 @@ and eval_expr env expr =
   | LenE e ->
     eval_expr env e |> unwrap_listv_to_array |> Array.length |> Z.of_int |> numV
   | StrE r ->
-    r |> Record.map string_of_kwd (eval_expr env) |> strV
+    r |> Record.map Print.string_of_atom (eval_expr env) |> strV
   | AccE (e, p) ->
     let base = eval_expr env e in
     access_path env base p
@@ -188,7 +190,7 @@ and eval_expr env expr =
       | path :: rest -> access_path env base path |> replace rest |> replace_path env base path
       | [] -> eval_expr env e2 in
     eval_expr env e1 |> replace ps
-  | CaseE ((tag, _), el) -> caseV (tag, List.map (eval_expr env) el)
+  | CaseE (tag, el) -> caseV (Print.string_of_atom tag, List.map (eval_expr env) el)
   | OptE opt -> Option.map (eval_expr env) opt |> optV
   | TupE el -> List.map (eval_expr env) el |> tupV
   (* Context *)
@@ -249,8 +251,8 @@ and eval_expr env expr =
   (* condition *)
   | ContextKindE ((kind, _), e) ->
     (match kind, eval_expr env e with
-    | "frame", FrameV _ -> boolV true
-    | "label", LabelV _ -> boolV true
+    | Il.Atom.Atom "FRAME_", FrameV _ -> boolV true
+    | Il.Atom.Atom "LABEL_", LabelV _ -> boolV true
     | _ -> boolV false)
   | IsDefinedE e ->
     e
@@ -258,7 +260,8 @@ and eval_expr env expr =
     |> unwrap_optv
     |> Option.is_some
     |> boolV
-  | IsCaseOfE (e, (expected_tag, _)) ->
+  | IsCaseOfE (e, expected_tag) ->
+    let expected_tag = Print.string_of_atom expected_tag in
     (match eval_expr env e with
     | CaseV (tag, _) -> boolV (expected_tag = tag)
     | _ -> boolV false)
@@ -343,7 +346,7 @@ and eval_expr env expr =
 (* Assignment *)
 
 and has_same_keys re rv =
-  let k1 = Record.keys re |> List.map string_of_kwd |> List.sort String.compare in
+  let k1 = Record.keys re |> List.map string_of_atom |> List.sort String.compare in
   let k2 = Record.keys rv |> List.sort String.compare in
   k1 = k2
 
@@ -397,8 +400,8 @@ and assign lhs rhs env =
   | ListE lhs_s, ListV rhs_s
     when List.length lhs_s = Array.length !rhs_s ->
     List.fold_right2 assign lhs_s (Array.to_list !rhs_s) env
-  | CaseE ((lhs_tag, _), lhs_s), CaseV (rhs_tag, rhs_s)
-    when lhs_tag = rhs_tag && List.length lhs_s = List.length rhs_s ->
+  | CaseE (lhs_tag, lhs_s), CaseV (rhs_tag, rhs_s)
+    when (Print.string_of_atom lhs_tag) = rhs_tag && List.length lhs_s = List.length rhs_s ->
     List.fold_right2 assign lhs_s rhs_s env
   | OptE (Some lhs), OptV (Some rhs) -> assign lhs rhs env
   (* Assumption: e1 is the assign target *)
@@ -415,7 +418,7 @@ and assign lhs rhs env =
     assign e1 v env
   | CatE _, ListV vs -> assign_split lhs !vs env
   | StrE r1, StrV r2 when has_same_keys r1 r2 ->
-    Record.fold (fun k v acc -> (Record.find (string_of_kwd k) r2 |> assign v) acc) r1 env
+    Record.fold (fun k v acc -> (Record.find (Print.string_of_atom k) r2 |> assign v) acc) r1 env
   | _, _ ->
     fail_expr lhs
       (sprintf "invalid assignment: on rhs %s" (string_of_value rhs))
@@ -552,7 +555,8 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     assert (Array.length a2 = i2);
     Array.blit a2 0 a1 i1 i2;
     ctx
-  | ReplaceI (r, { it = DotP (s, _); _ }, e) ->
+  | ReplaceI (r, { it = DotP s; _ }, e) ->
+    let s = Print.string_of_atom s in
     r
     |> eval_expr env
     |> unwrap_strv

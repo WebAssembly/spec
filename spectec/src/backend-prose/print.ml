@@ -75,8 +75,8 @@ and indented_string_of_instr i =
   result
 
 let string_of_def = function
-| Pred (name, params, instrs) ->
-    "validation_of_" ^ string_of_kwd name
+| Pred (a, params, instrs) ->
+    "validation_of_" ^ string_of_atom a
     ^ string_of_list string_of_expr " " " " "\n" params
     ^ string_of_list string_of_instr "" "\n" "\n" instrs
 | Algo algo -> string_of_algorithm algo
