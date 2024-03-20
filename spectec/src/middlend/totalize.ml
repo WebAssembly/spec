@@ -58,7 +58,7 @@ and t_typ' env = function
   | VarT (id, args) -> VarT (id, t_args env args)
   | (BoolT | NumT _ | TextT) as t -> t
   | TupT xts -> TupT (List.map (fun (id, t) -> (id, t_typ env t)) xts)
-  | IterT (t, iter) -> IterT (t_typ env t, iter)
+  | IterT (t, iter) -> IterT (t_typ env t, t_iter env iter)
 
 and t_deftyp env x = { x with it = t_deftyp' env x.it }
 
@@ -89,25 +89,25 @@ and t_exp' env = function
   | StrE fields -> StrE (List.map (fun (a, e) -> a, t_exp env e) fields)
   | DotE (e, a) -> DotE (t_exp env e, a)
   | CompE (exp1, exp2) -> CompE (t_exp env exp1, t_exp env exp2)
-  | LenE exp -> LenE exp
+  | LenE exp -> LenE (t_exp env exp)
   | TupE es -> TupE (List.map (t_exp env) es)
   | CallE (a, args) -> CallE (a, List.map (t_arg env) args)
   | IterE (e, iterexp) -> IterE (t_exp env e, t_iterexp env iterexp)
   | ProjE (e, i) -> ProjE (t_exp env e, i)
   | UncaseE (e, mixop) -> UncaseE (t_exp env e, mixop)
   | OptE None -> OptE None
-  | OptE (Some exp) -> OptE (Some exp)
+  | OptE (Some exp) -> OptE (Some (t_exp env exp))
   | TheE exp -> TheE exp
   | ListE es -> ListE (List.map (t_exp env) es)
   | CatE (exp1, exp2) -> CatE (t_exp env exp1, t_exp env exp2)
   | CaseE (mixop, e) -> CaseE (mixop, t_exp env e)
-  | SubE (e, t1, t2) -> SubE (e, t1, t2)
+  | SubE (exp, t1, t2) -> SubE (t_exp env exp, t_typ env t1, t_typ env t2)
 
 and t_iter env = function
   | ListN (e, id_opt) -> ListN (t_exp env e, id_opt)
   | i -> i
 
-and t_iterexp env (iter, vs) = (t_iter env iter, vs)
+and t_iterexp env (iter, xts) = (t_iter env iter, List.map (fun (x, t) -> x, t_typ env t) xts)
 
 and t_path' env = function
   | RootP -> RootP
@@ -119,12 +119,12 @@ and t_path env x = { x with it = t_path' env x.it; note = t_typ env x.note }
 
 and t_arg' env = function
   | ExpA exp -> ExpA (t_exp env exp)
-  | TypA t -> TypA t
+  | TypA t -> TypA (t_typ env t)
 
 and t_arg env x = { x with it = t_arg' env x.it }
 
 and t_bind' env = function
-  | ExpB (id, t, dim) -> ExpB (id, t_typ env t, dim)
+  | ExpB (id, t, dim) -> ExpB (id, t_typ env t, List.map (t_iter env) dim)
   | TypB id -> TypB id
 
 and t_bind env x = { x with it = t_bind' env x.it }

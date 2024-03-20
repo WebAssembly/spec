@@ -204,7 +204,7 @@ rule Step_pure/return-label:
 
 rule Step_pure/unop-val:
   (CONST nt c_1) (UNOP nt unop)  ~>  (CONST nt c)
-  -- if $unop(nt, unop, c_1) = c  ;; TODO
+  -- if $unop(nt, unop, c_1) = c  ;; TODO: set
 
 rule Step_pure/unop-trap:
   (CONST nt c_1) (UNOP nt unop)  ~>  TRAP
@@ -213,7 +213,7 @@ rule Step_pure/unop-trap:
 
 rule Step_pure/binop-val:
   (CONST nt c_1) (CONST nt c_2) (BINOP nt binop)  ~>  (CONST nt c)
-  -- if $binop(nt, binop, c_1, c_2) = c  ;; TODO
+  -- if $binop(nt, binop, c_1, c_2) = c  ;; TODO: set
 
 rule Step_pure/binop-trap:
   (CONST nt c_1) (CONST nt c_2) (BINOP nt binop)  ~>  TRAP
@@ -231,7 +231,7 @@ rule Step_pure/relop:
 
 rule Step_pure/cvtop-val:
   (CONST nt_1 c_1) (CVTOP nt_2 cvtop nt_1 sx?)  ~>  (CONST nt_2 c)
-  -- if $cvtop(nt_1, nt_2, cvtop, sx?, c_1) = c  ;; TODO
+  -- if $cvtop(nt_1, nt_2, cvtop, sx?, c_1) = c  ;; TODO: set
 
 rule Step_pure/cvtop-trap:
   (CONST nt_1 c_1) (CVTOP nt_2 cvtop nt_1 sx?)  ~>  TRAP
@@ -239,6 +239,9 @@ rule Step_pure/cvtop-trap:
 
 
 ;; Reference instructions
+
+rule Step_read/ref.null-idx:
+  z; (REF.NULL $($(_IDX x)))  ~>  (REF.NULL $type(z, x))
 
 rule Step_read/ref.func:
   z; (REF.FUNC x)  ~>  (REF.FUNC_ADDR $funcaddr(z)[x])
@@ -248,11 +251,11 @@ rule Step_pure/ref.i31:
 
 
 rule Step_pure/ref.is_null-true:
-  val REF.IS_NULL  ~>  (CONST I32 1)
-  -- if val = (REF.NULL ht)
+  ref REF.IS_NULL  ~>  (CONST I32 1)
+  -- if ref = (REF.NULL ht)
 
 rule Step_pure/ref.is_null-false:
-  val REF.IS_NULL  ~>  (CONST I32 0)
+  ref REF.IS_NULL  ~>  (CONST I32 0)
   -- otherwise
 
 
@@ -267,7 +270,7 @@ rule Step_pure/ref.as_non_null-addr:
 
 rule Step_pure/ref.eq-null:
   ref_1 ref_2 REF.EQ  ~>  (CONST I32 1)
-  -- if ref_1 = REF.NULL ht_1 /\ ref_2 = REF.NULL ht_2
+  -- if ref_1 = (REF.NULL ht_1) /\ ref_2 = (REF.NULL ht_2)
 
 rule Step_pure/ref.eq-true:
   ref_1 ref_2 REF.EQ  ~>  (CONST I32 1)
@@ -280,22 +283,24 @@ rule Step_pure/ref.eq-false:
 
 
 rule Step_read/ref.test-true:
-  z; ref (REF.TEST rt)  ~>  (CONST I32 1)
-  -- Ref_ok: $store(z) |- ref : rt'
-  -- Reftype_sub: {} |- rt' <: $inst_reftype($moduleinst(z), rt)
+  s; f; ref (REF.TEST rt)  ~>  (CONST I32 1)
+  ;; TODO: -- Ref_ok: s |- ref : $inst_reftype(f.MODULE, rt)
+  -- Ref_ok: s |- ref : rt'
+  -- Reftype_sub: {} |- rt' <: $inst_reftype(f.MODULE, rt)
 
 rule Step_read/ref.test-false:
-  z; ref (REF.TEST rt)  ~>  (CONST I32 0)
+  s; f; ref (REF.TEST rt)  ~>  (CONST I32 0)
   -- otherwise
 
 
 rule Step_read/ref.cast-succeed:
-  z; ref (REF.CAST rt)  ~>  ref
-  -- Ref_ok: $store(z) |- ref : rt'
-  -- Reftype_sub: {} |- rt' <: $inst_reftype($moduleinst(z), rt)
+  s; f; ref (REF.CAST rt)  ~>  ref
+  ;; TODO: -- Ref_ok: s |- ref : $inst_reftype(f.MODULE, rt)
+  -- Ref_ok: s |- ref : rt'
+  -- Reftype_sub: {} |- rt' <: $inst_reftype(f.MODULE, rt)
 
 rule Step_read/ref.cast-fail:
-  z; ref (REF.CAST rt)  ~>  TRAP
+  s; f; ref (REF.CAST rt)  ~>  TRAP
   -- otherwise
 
 
@@ -311,38 +316,37 @@ rule Step_pure/i31.get-num:
 ;; Structure instructions
 
 rule Step/struct.new:
-  z; val^n (STRUCT.NEW x)  ~>  $ext_structinst(z, si); (REF.STRUCT_ADDR $(|$structinst(z)|))
+  z; val^n (STRUCT.NEW x)  ~>  $ext_structinst(z, si); (REF.STRUCT_ADDR a)
   -- Expand: $type(z, x) ~~ STRUCT (mut zt)^n
-  -- if si = {TYPE $type(z, x), FIELD ($packval(zt, val))^n}
+  -- if a = |$structinst(z)|
+  -- if si = {TYPE $type(z, x), FIELD ($packfield(zt, val))^n}
 
 rule Step_read/struct.new_default:
   z; (STRUCT.NEW_DEFAULT x)  ~>  val* (STRUCT.NEW x)
   -- Expand: $type(z, x) ~~ STRUCT (mut zt)*
-  -- if ($default_($unpack(zt)) = val)*
+  -- (if $default_($unpack(zt)) = val)*
 
 
 rule Step_read/struct.get-null:
   z; (REF.NULL ht) (STRUCT.GET sx? x i)  ~>  TRAP
 
 rule Step_read/struct.get-struct:
-  z; (REF.STRUCT_ADDR a) (STRUCT.GET sx? x i)  ~>  $unpackval(zt*[i], sx?, si.FIELD[i])
-  -- if $structinst(z)[a] = si
-  -- Expand: si.TYPE ~~ STRUCT (mut zt)*
+  z; (REF.STRUCT_ADDR a) (STRUCT.GET sx? x i)  ~>  $unpackfield(zt*[i], sx?, $structinst(z)[a].FIELD[i])
+  -- Expand: $type(z, x) ~~ STRUCT (mut zt)*
 
 
 rule Step/struct.set-null:
   z; (REF.NULL ht) val (STRUCT.SET x i)  ~>  z; TRAP
 
 rule Step/struct.set-struct:
-  z; (REF.STRUCT_ADDR a) val (STRUCT.SET x i)  ~>  $with_struct(z, a, i, fv); eps
-  -- Expand: $structinst(z)[a].TYPE ~~ STRUCT (mut zt)*
-  -- if fv = $packval(zt*[i], val)
+  z; (REF.STRUCT_ADDR a) val (STRUCT.SET x i)  ~>  $with_struct(z, a, i, $packfield(zt*[i], val)); eps
+  -- Expand: $type(z, x) ~~ STRUCT (mut zt)*
 
 
 ;; Array instructions
 
-rule Step_read/array.new:
-  z; val (CONST I32 n) (ARRAY.NEW x)  ~>  val^n (ARRAY.NEW_FIXED x n)
+rule Step_pure/array.new:
+  val (CONST I32 n) (ARRAY.NEW x)  ~>  val^n (ARRAY.NEW_FIXED x n)
 
 rule Step_read/array.new_default:
   z; (CONST I32 n) (ARRAY.NEW_DEFAULT x)  ~>  val^n (ARRAY.NEW_FIXED x n)
@@ -350,9 +354,10 @@ rule Step_read/array.new_default:
   -- if $default_($unpack(zt)) = val
 
 rule Step/array.new_fixed:
-  z; val^n (ARRAY.NEW_FIXED x n)  ~>  $ext_arrayinst(z, ai); (REF.ARRAY_ADDR $(|$arrayinst(z)|))
+  z; val^n (ARRAY.NEW_FIXED x n)  ~>  $ext_arrayinst(z, ai); (REF.ARRAY_ADDR a)
   -- Expand: $type(z, x) ~~ ARRAY (mut zt)
-  -- if ai = {TYPE $type(z, x), FIELD ($packval(zt, val))^n}
+  -- if a = |$arrayinst(z)|
+  -- if ai = {TYPE $type(z, x), FIELD ($packfield(zt, val))^n}
 
 
 rule Step_read/array.new_elem-oob:
@@ -370,10 +375,9 @@ rule Step_read/array.new_data-oob:
   -- if $(i + n * $zsize(zt)/8 > |$data(z, y).DATA|)
 
 rule Step_read/array.new_data-num:
-  z; (CONST I32 i) (CONST I32 n) (ARRAY.NEW_DATA x y)  ~>  ($const(cnn, c))^n (ARRAY.NEW_FIXED x n)
+  z; (CONST I32 i) (CONST I32 n) (ARRAY.NEW_DATA x y)  ~>  ($const($cunpack(zt), c))^n (ARRAY.NEW_FIXED x n)
   -- Expand: $type(z, x) ~~ ARRAY (mut zt)
-  -- if cnn = $cunpack(zt)
-  -- if $concat_(byte, $cbytes(cnn, c)^n) = $data(z, y).DATA[i : n * $zsize(zt)/8]
+  -- if $concat_(byte, $zbytes(zt, $packconst(zt, c))^n) = $data(z, y).DATA[i : n * $zsize(zt)/8]
 
 
 rule Step_read/array.get-null:
@@ -384,9 +388,8 @@ rule Step_read/array.get-oob:
   -- if i >= |$arrayinst(z)[a].FIELD|
 
 rule Step_read/array.get-array:
-  z; (REF.ARRAY_ADDR a) (CONST I32 i) (ARRAY.GET sx? x)  ~>  $unpackval(zt, sx?, fv)
-  -- if fv = $arrayinst(z)[a].FIELD[i]
-  -- Expand: $arrayinst(z)[a].TYPE ~~ ARRAY (mut zt)
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) (ARRAY.GET sx? x)  ~>  $unpackfield(zt, sx?, $arrayinst(z)[a].FIELD[i])
+  -- Expand: $type(z, x) ~~ ARRAY (mut zt)
 
 
 rule Step/array.set-null:
@@ -397,17 +400,15 @@ rule Step/array.set-oob:
   -- if i >= |$arrayinst(z)[a].FIELD|
 
 rule Step/array.set-array:
-  z; (REF.ARRAY_ADDR a) (CONST I32 i) val (ARRAY.SET x)  ~>  $with_array(z, a, i, fv); eps
-  -- Expand: $arrayinst(z)[a].TYPE ~~ ARRAY (mut zt)
-  -- if fv = $packval(zt, val)
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) val (ARRAY.SET x)  ~>  $with_array(z, a, i, $packfield(zt, val)); eps
+  -- Expand: $type(z, x) ~~ ARRAY (mut zt)
 
 
 rule Step_read/array.len-null:
   z; (REF.NULL ht) ARRAY.LEN  ~>  TRAP
 
 rule Step_read/array.len-array:
-  z; (REF.ARRAY_ADDR a) ARRAY.LEN  ~>  (CONST I32 n)
-  -- if n = |$arrayinst(z)[a].FIELD|
+  z; (REF.ARRAY_ADDR a) ARRAY.LEN  ~>  (CONST I32 $(|$arrayinst(z)[a].FIELD|))
 
 
 rule Step_read/array.fill-null:
@@ -455,7 +456,7 @@ rule Step_read/array.copy-le:
     (REF.ARRAY_ADDR a_1) (CONST I32 $(i_1 + 1)) (REF.ARRAY_ADDR a_2) (CONST I32 $(i_2 + 1)) (CONST I32 $(n-1)) (ARRAY.COPY x_1 x_2)
   -- otherwise
   -- Expand: $type(z, x_2) ~~ ARRAY (mut zt_2)
-  -- if sx? = $sxfield(zt_2)
+  -- if sx? = $sx(zt_2)
   -- if i_1 <= i_2
 
 rule Step_read/array.copy-gt:
@@ -466,7 +467,7 @@ rule Step_read/array.copy-gt:
     (REF.ARRAY_ADDR a_1) (CONST I32 i_1) (REF.ARRAY_ADDR a_2) (CONST I32 i_2) (CONST I32 $(n-1)) (ARRAY.COPY x_1 x_2)
   -- otherwise
   -- Expand: $type(z, x_2) ~~ ARRAY (mut zt_2)
-  -- if sx? = $sxfield(zt_2)
+  -- if sx? = $sx(zt_2)
 
 
 rule Step_read/array.init_elem-null:
@@ -512,12 +513,11 @@ rule Step_read/array.init_data-zero:
 
 rule Step_read/array.init_data-num:
   z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 n) (ARRAY.INIT_DATA x y)  ~>
-    (REF.ARRAY_ADDR a) (CONST I32 i) $const(cnn, c) (ARRAY.SET x)
+    (REF.ARRAY_ADDR a) (CONST I32 i) $const($cunpack(zt), c) (ARRAY.SET x)
     (REF.ARRAY_ADDR a) (CONST I32 $(i + 1)) (CONST I32 $(j + $zsize(zt)/8)) (CONST I32 $(n-1)) (ARRAY.INIT_DATA x y)
   -- otherwise
   -- Expand: $type(z, x) ~~ ARRAY (mut zt)
-  -- if cnn = $cunpack(zt)
-  -- if $cbytes(cnn, c) = $data(z, y).DATA[j : $zsize(zt)/8]
+  -- if $zbytes(zt, $packconst(zt, c)) = $data(z, y).DATA[j : $zsize(zt)/8]
 
 
 ;; External reference instructions

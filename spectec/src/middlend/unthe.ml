@@ -205,16 +205,12 @@ let t_rule' = function
 
 let t_rule x = { x with it = t_rule' x.it }
 
-let t_rules = List.map t_rule
-
 let rec t_def' = function
   | RecD defs -> RecD (List.map t_def defs)
-  | RelD (id, mixop, typ, rules) ->
-    RelD (id, mixop, typ, t_rules rules)
+  | RelD (id, mixop, typ, rules) -> RelD (id, mixop, typ, List.map t_rule rules)
   | def -> def
 
 and t_def x = { x with it = t_def' x.it }
 
 let transform (defs : script) =
   List.map t_def defs
-

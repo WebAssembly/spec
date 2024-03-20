@@ -30,8 +30,8 @@ Because passes have dependencies, and because some flags enable multiple
 passers (--all-passes, some targets), we do _not_ want to use the order of
 flags on the command line.
 *)
-let _skip_passes = [ Sub ]
-let all_passes = [ Totalize; Unthe; Wild; Sideconditions; Animate ]
+let _skip_passes = [ Sub; Unthe ]  (* Not clear how to extend them to indexed types *)
+let all_passes = [ Totalize; Wild; Sideconditions; Animate ]
 
 type file_kind =
   | Spec

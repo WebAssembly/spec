@@ -15,13 +15,13 @@ def $invsigned(N, ii) = j       -- if $signed(N, j) = ii
 ;; TODO
 
 def $unop(valtype, unop_(valtype), val_(valtype)) : val_(valtype)*
-    hint(show %2#_%1#((%3)))
+    hint(show %2#$_(%1)#((%3)))
 def $binop(valtype, binop_(valtype), val_(valtype), val_(valtype)) : val_(valtype)*
-    hint(show %2#_%1#(%3, %4))
+    hint(show %2#$_(%1)#(%3, %4))
 def $testop(valtype, testop_(valtype), val_(valtype)) : val_(I32)
-    hint(show %2#_%1#((%3)))
+    hint(show %2#$_(%1)#((%3)))
 def $relop(valtype, relop_(valtype), val_(valtype), val_(valtype)) : val_(I32)
-    hint(show %2#_%1#(%3, %4))
+    hint(show %2#$_(%1)#(%3, %4))
 def $cvtop(valtype_1, valtype_2, cvtop, sx?, val_(valtype_1)) : val_(valtype_2)*
     hint(show %3#$_((%1,%2))^(%4)#((%5)))
 

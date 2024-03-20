@@ -132,13 +132,13 @@ let as_variant_typ phrase env dir t at : typcase list =
 
 let equiv_typ env t1 t2 at =
   if not (Eval.equiv_typ (to_eval_env env) t1 t2) then
-    error at ("expression's type `" ^ typ_string env t1 ^ "` " ^
-      "does not equal expected type `" ^ typ_string env t2 ^ "`")
+    error at ("expression's type " ^ typ_string env t1 ^ " " ^
+      "does not equal expected type " ^ typ_string env t2)
 
 let sub_typ env t1 t2 at =
   if not (Eval.sub_typ (to_eval_env env) t1 t2) then
-    error at ("expression's type `" ^ typ_string env t1 ^ "` " ^
-      "does not match expected supertype `" ^ typ_string env t2 ^ "`")
+    error at ("expression's type " ^ typ_string env t1 ^ " " ^
+      "does not match expected supertype " ^ typ_string env t2)
 
 
 (* Operators *)
@@ -326,6 +326,7 @@ and valid_exp env e t =
     (fun _ -> fmt "%s : %s == %s" (il_exp e) (il_typ e.note) (il_typ t))
     (Fun.const "ok")
   ) @@ fun _ ->
+try
   match e.it with
   | VarE id when id.it = "_" -> ()
   | VarE id ->
@@ -447,6 +448,9 @@ and valid_exp env e t =
     valid_exp env e1 t1;
     equiv_typ env t2 t e.at;
     sub_typ env t1 t2 e.at
+with exn ->
+  Printf.eprintf "[valid_exp] %s\n%!" (Debug.il_exp e);
+  raise exn
 
 
 and valid_expmix env mixop e (mixop', t) at =

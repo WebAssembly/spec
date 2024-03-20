@@ -71,14 +71,14 @@ def $eleminst((s; f)) = s.ELEM
 def $datainst((s; f)) = s.DATA
 def $moduleinst((s; f)) = f.MODULE
 
-def $type(state, typeidx) : functype        hint(show %.TYPE`[%])
-def $func(state, funcidx) : funcinst        hint(show %.FUNC#`[%])
-def $global(state, globalidx) : globalinst  hint(show %.GLOBAL#`[%])
-def $table(state, tableidx) : tableinst     hint(show %.TABLE#`[%])
-def $mem(state, memidx) : meminst           hint(show %.MEM#`[%])
-def $elem(state, tableidx) : eleminst       hint(show %.ELEM#`[%])
-def $data(state, dataidx) : datainst        hint(show %.DATA#`[%])
-def $local(state, localidx) : val           hint(show %.LOCAL#`[%])
+def $type(state, typeidx) : functype        hint(show %.TYPE[%])
+def $func(state, funcidx) : funcinst        hint(show %.FUNC[%])
+def $global(state, globalidx) : globalinst  hint(show %.GLOBAL[%])
+def $table(state, tableidx) : tableinst     hint(show %.TABLE[%])
+def $mem(state, memidx) : meminst           hint(show %.MEM[%])
+def $elem(state, tableidx) : eleminst       hint(show %.ELEM[%])
+def $data(state, dataidx) : datainst        hint(show %.DATA[%])
+def $local(state, localidx) : val           hint(show %.LOCAL[%])
 
 def $type((s; f), x) = f.MODULE.TYPE[x]
 def $func((s; f), x) = s.FUNC[f.MODULE.FUNC[x]]

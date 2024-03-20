@@ -621,15 +621,13 @@ and render_typ env t =
 
 and render_typfield env (atom, (t, prems), _hints) =
   render_fieldname env atom ^ "~" ^ render_typ env t ^
-  if prems = [] then "" else render_conditions env "&&&&" prems
+    render_conditions env "&&&" prems
 
 and render_typcase env (_atom, (t, prems), _hints) =
-  render_typ env t ^
-  if prems = [] then "" else render_conditions env "&&&&" prems
+  render_typ env t ^ render_conditions env "&&&" prems
 
 and render_typcon env ((t, prems), _hints) =
-  render_typ env t ^
-  if prems = [] then "" else render_conditions env "&&&&" prems
+  render_typ env t ^ render_conditions env "&&&" prems
 
 and render_typenum env (e, eo) =
   render_exp env e ^
@@ -812,15 +810,24 @@ and render_prem env prem =
 and word s = "\\mbox{" ^ s ^ "}"
 
 and render_conditions env tabs prems =
-  match filter_nl_list (function {it = VarPr _; _} -> false | _ -> true) prems with
-  | [] -> " & "
-  | [Elem {it = ElsePr; _}] -> " &\\quad\n  " ^ word "otherwise"
-  | (Elem {it = ElsePr; _})::prems ->
-    " &\\quad\n  " ^ word "otherwise, if" ^ "~" ^
-    concat_map_nl (" \\\\\n " ^ tabs ^ "\\quad {\\land}~") "" (render_prem env) prems
-  | prems ->
-    " &\\quad\n  " ^ word "if" ^ "~" ^
-    concat_map_nl (" \\\\\n " ^ tabs ^ "\\quad {\\land}~") "" (render_prem env) prems
+  let prems' = filter_nl_list (function {it = VarPr _; _} -> false | _ -> true) prems in
+  if prems' = [] then "" else
+  let prems'', start, tabs', begin_, end_ =
+    (* If premises start with an empty line, break and align below RHS. *)
+    match prems' with
+    | Nl::prems'' -> prems'', " \\\\\n " ^ tabs, tabs, "\\multicolumn{2}{l@{}}{\\qquad", "}"
+    | _ -> prems', " &\\quad\n  ", tabs ^ "&", "", ""
+  in
+  let prems''', first =
+    match prems'' with
+    | [Elem {it = ElsePr; _}] -> [], word "otherwise"
+    | (Elem {it = ElsePr; _})::prems''' -> prems''', word "otherwise, if" ^ "~"
+    | _ -> prems'', word "if" ^ "~"
+  in
+  start ^ begin_ ^ first ^
+    concat_map_nl (end_ ^ " \\\\\n " ^ tabs' ^ begin_ ^ "\\quad {\\land}~") ""
+      (render_prem env) prems''' ^
+  end_
 
 
 (* Grammars *)
@@ -866,7 +873,7 @@ and render_syms sep env gs =
 and render_prod env prod =
   let (g, e, prems) = prod.it in
   render_sym env g ^ " &\\Rightarrow& " ^ render_exp env e ^
-    if prems = [] then "" else render_conditions env "&&&&&&" prems
+    render_conditions env "&&&&&" prems
 
 and render_gram env gram =
   let (dots1, prods, dots2) = gram.it in
@@ -986,14 +993,14 @@ let render_reddef env d =
     in
     render_rule_deco env "" id1 id2 " \\quad " ^ "& " ^
       render_exp env e1 ^ " &" ^ render_atom env op ^ "& " ^
-        render_exp env e2 ^ render_conditions env "&&&&" prems
+        render_exp env e2 ^ render_conditions env "&&&" prems
   | _ -> failwith "render_reddef"
 
 let render_funcdef env d =
   match d.it with
   | DefD (id1, args, e, prems) ->
     render_exp env (CallE (id1, args) $ d.at) ^ " &=& " ^
-      render_exp env e ^ render_conditions env "&&&" prems
+      render_exp env e ^ render_conditions env "&&" prems
   | _ -> failwith "render_funcdef"
 
 let rec render_sep_defs ?(sep = " \\\\\n") ?(br = " \\\\[0.8ex]\n") f = function
@@ -1044,7 +1051,7 @@ let rec render_defs env = function
             (render_ruledef env) ds ^
         "\\end{array}"
       | Some ReductionRel ->
-        "\\begin{array}{@{}l@{}l" ^ sp ^ "c" ^ sp ^ "l@{}l@{}}\n" ^
+        "\\begin{array}{@{}l@{}r" ^ sp ^ "c" ^ sp ^ "l@{}l@{}}\n" ^
           render_sep_defs (render_reddef env) ds ^
         "\\end{array}"
       | None -> error d.at "unrecognized form of relation"

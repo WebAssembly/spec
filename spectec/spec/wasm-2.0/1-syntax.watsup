@@ -126,6 +126,9 @@ syntax numtype hint(desc "number type") =
 syntax vectype hint(desc "vector type") =
   | V128
 
+syntax consttype hint(desc "literal type") =
+  | numtype | vectype
+
 syntax reftype hint(desc "reference type") =
   | FUNCREF | EXTERNREF
 
@@ -147,7 +150,7 @@ syntax packtype hint(desc "packed type") = I8 | I16
 syntax lanetype hint(desc "lane type") = numtype | packtype
 
 syntax pnn hint(show I#n) = I8 | I16
-syntax lnn hint(show I#n) = numtype | pnn
+syntax lnn hint(show I#n) = inn | fnn | pnn
 syntax imm hint(show I#n) = inn | pnn
 
 

@@ -75,14 +75,6 @@ Where the underlying operators are non-deterministic, because they may return on
 
 $${rule: {Step_pure/unop-*}}
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   (t\K{.}\CONST~c_1)~t\K{.}\unop &\stepto& (t\K{.}\CONST~c)
-     & (\iff c \in \unopF_t(c_1)) \\
-   (t\K{.}\CONST~c_1)~t\K{.}\unop &\stepto& \TRAP
-     & (\iff \unopF_{t}(c_1) = \{\})
-   \end{array}
-
 
 .. _exec-binop:
 
@@ -105,13 +97,7 @@ $${rule: {Step_pure/unop-*}}
 
    a. Trap.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\binop &\stepto& (t\K{.}\CONST~c)
-     & (\iff c \in \binopF_t(c_1,c_2)) \\
-   (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\binop &\stepto& \TRAP
-     & (\iff \binopF_{t}(c_1,c_2) = \{\})
-   \end{array}
+$${rule: {Step_pure/binop-*}}
 
 
 .. _exec-testop:
@@ -127,11 +113,7 @@ $${rule: {Step_pure/unop-*}}
 
 4. Push the value :math:`\I32.\CONST~c` to the stack.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   (t\K{.}\CONST~c_1)~t\K{.}\testop &\stepto& (\I32\K{.}\CONST~c)
-     & (\iff c = \testopF_t(c_1)) \\
-   \end{array}
+$${rule: Step_pure/testop}
 
 
 .. _exec-relop:
@@ -149,11 +131,7 @@ $${rule: {Step_pure/unop-*}}
 
 5. Push the value :math:`\I32.\CONST~c` to the stack.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\relop &\stepto& (\I32\K{.}\CONST~c)
-     & (\iff c = \relopF_t(c_1,c_2)) \\
-   \end{array}
+$${rule: Step_pure/relop}
 
 
 .. _exec-cvtop:
@@ -175,13 +153,7 @@ $${rule: {Step_pure/unop-*}}
 
    a. Trap.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   (t_1\K{.}\CONST~c_1)~t_2\K{.}\cvtop\K{\_}t_1\K{\_}\sx^? &\stepto& (t_2\K{.}\CONST~c_2)
-     & (\iff c_2 \in \cvtop^{\sx^?}_{t_1,t_2}(c_1)) \\
-   (t_1\K{.}\CONST~c_1)~t_2\K{.}\cvtop\K{\_}t_1\K{\_}\sx^? &\stepto& \TRAP
-     & (\iff \cvtop^{\sx^?}_{t_1,t_2}(c_1) = \{\})
-   \end{array}
+$${rule: {Step_pure/cvtop-*}}
 
 
 .. index:: reference instructions, reference
@@ -205,11 +177,7 @@ Reference Instructions
 
 4. Push the value :math:`\REFNULL~\deftype` to the stack.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   F; (\REFNULL~x) &\stepto& F; (\REFNULL~\deftype)
-     & (\iff \deftype = F.\AMODULE.\MITYPES[x]) \\
-   \end{array}
+$${rule: {Step_read/ref.null-*}}
 
 .. note::
    No formal reduction rule is required for the case |REFNULL| |ABSHEAPTYPE|,
@@ -229,11 +197,7 @@ Reference Instructions
 
 4. Push the value :math:`\REFFUNCADDR~a` to the stack.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   F; (\REFFUNC~x) &\stepto& F; (\REFFUNCADDR~a)
-     & (\iff a = F.\AMODULE.\MIFUNCS[x]) \\
-   \end{array}
+$${rule: Step_read/ref.func}
 
 
 .. _exec-ref.is_null:
@@ -253,13 +217,7 @@ Reference Instructions
 
    a. Push the value :math:`\I32.\CONST~0` to the stack.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   \reff~\REFISNULL &\stepto& (\I32.\CONST~1)
-     & (\iff \reff = \REFNULL~\X{ht}) \\
-   \reff~\REFISNULL &\stepto& (\I32.\CONST~0)
-     & (\otherwise) \\
-   \end{array}
+$${rule: {Step_pure/ref.is_null-*}}
 
 
 .. _exec-ref.as_non_null:
@@ -277,13 +235,7 @@ Reference Instructions
 
 4. Push the value :math:`\reff` back to the stack.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   \reff~\REFASNONNULL &\stepto& \TRAP
-     & (\iff \reff = \REFNULL~\X{ht}) \\
-   \reff~\REFASNONNULL &\stepto& \reff
-     & (\otherwise) \\
-   \end{array}
+$${rule: {Step_pure/ref.as_non_null-*}}
 
 
 .. _exec-ref.eq:
@@ -305,15 +257,7 @@ Reference Instructions
 
    a. Push the value :math:`\I32.\CONST~0` to the stack.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   \reff_1~\reff_2~\REFEQ &\stepto& (\I32.\CONST~1)
-     & (\iff \reff_1 = (\REFNULL~\X{ht}_1) \land \reff_2 = (\REFNULL~\X{ht}_2)) \\
-   \reff_1~\reff_2~\REFEQ &\stepto& (\I32.\CONST~1)
-     & (\iff \reff_1 = \reff_2) \\
-   \reff_1~\reff_2~\REFEQ &\stepto& (\I32.\CONST~0)
-     & (\otherwise) \\
-   \end{array}
+$${rule: {Step_pure/ref.eq-*}}
 
 
 .. _exec-ref.test:
@@ -343,14 +287,7 @@ Reference Instructions
 
    a. Push the value :math:`\I32.\CONST~0` to the stack.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   S; F; \reff~(\REFTEST~\X{rt}) &\stepto& (\I32.\CONST~1)
-     & (\iff S \vdashval \reff : \X{rt}'
-        \land \vdashreftypematch \X{rt}' \matchesreftype \insttype_{F.\AMODULE}(\X{rt})) \\
-   S; F; \reff~(\REFTEST~\X{rt}) &\stepto& (\I32.\CONST~0)
-     & (\otherwise) \\
-   \end{array}
+$${rule: {Step_read/ref.test-*}}
 
 
 .. _exec-ref.cast:
@@ -380,14 +317,7 @@ Reference Instructions
 
    a. Trap.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   S; F; \reff~(\REFCAST~\X{rt}) &\stepto& \reff
-     & (\iff S \vdashval \reff : \X{rt}'
-        \land \vdashreftypematch \X{rt}' \matchesreftype \insttype_{F.\AMODULE}(\X{rt})) \\
-   S; F; \reff~(\REFCAST~\X{rt}) &\stepto& \TRAP
-     & (\otherwise) \\
-   \end{array}
+$${rule: {Step_read/ref.cast-*}}
 
 
 
@@ -404,10 +334,7 @@ Reference Instructions
 
 4. Push the reference value :math:`(\REFI31NUM~j)` to the stack.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   (\I32.\CONST~i)~\REFI31 &\stepto& (\REFI31NUM~\wrap_{32,31}(i))
-   \end{array}
+$${rule: {Step_pure/ref.i31}}
 
 
 .. _exec-i31.get_sx:
@@ -431,11 +358,7 @@ Reference Instructions
 
 7. Push the value :math:`\I32.\CONST~j` to the stack.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   (\REFI31NUM~i)~\I31GET\K{\_}\sx &\stepto& (\I32.\CONST~\extend^{\sx}_{31,32}(i)) \\
-   (\REFNULL~t)~\I31GET\K{\_}\sx &\stepto& \TRAP
-   \end{array}
+$${rule: {Step_pure/i31.get-*}}
 
 
 .. _exec-struct.new:
@@ -473,16 +396,7 @@ Reference Instructions
 
 14. Push the :ref:`structure reference <syntax-ref.struct>` :math:`\REFSTRUCTADDR~a` to the stack.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   S; F; \val^n~(\STRUCTNEW~x) &\stepto& S'; F; (\REFSTRUCTADDR~|S.\SSTRUCTS|)
-     \\&&
-     \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TSTRUCT~\X{ft}^n \\
-      \land & \X{si} = \{\SITYPE~F.\AMODULE.\MITYPES[x], \SIFIELDS~(\packval_{\X{ft}}(\val))^n\} \\
-      \land & S' = S \with \SSTRUCTS = S.\SSTRUCTS~\X{si})
-     \end{array} \\
-   \end{array}
+$${rule: {Step/struct.new}}
 
 
 .. _exec-struct.new_default:
@@ -512,26 +426,7 @@ Reference Instructions
 
 8. Execute the instruction :math:`(\STRUCTNEW~x)`.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   F; (\STRUCTNEWDEFAULT~x) &\stepto& (\default_{\unpacktype(\X{ft})}))^n~(\STRUCTNEW~x)
-     \\&&
-     \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TSTRUCT~\X{ft}^n)
-     \end{array} \\
-   \end{array}
-
-.. scratch
-   .. math::
-      \begin{array}{lcl@{\qquad}l}
-      S; F; (\STRUCTNEWDEFAULT~x) &\stepto& S'; F; (\REFSTRUCTADDR~|S.\SSTRUCTS|)
-        \\&&
-        \begin{array}[t]{@{}r@{~}l@{}}
-         (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TSTRUCT~\X{ft}^n \\
-         \land & \X{si} = \{\SITYPE~F.\AMODULE.\MITYPES[x], \SIFIELDS~(\packval_{\X{ft}}(\default_{\unpacktype(\X{ft})}))^n\} \\
-         \land & S' = S \with \SSTRUCTS = S.\SSTRUCTS~\X{si})
-        \end{array} \\
-      \end{array}
+$${rule: {Step_read/struct.new_default}}
 
 
 .. _exec-struct.get:
@@ -572,16 +467,7 @@ Reference Instructions
 
 15. Push the value :math:`\val` to the stack.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\REFSTRUCTADDR~a)~(\STRUCTGET\K{\_}\sx^?~x~y) &\stepto& \val
-     &
-     \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TSTRUCT~\X{ft}^n \\
-      \land & \val = \unpackval^{\sx^?}_{\X{ft}^n[y]}(S.\SSTRUCTS[a].\SIFIELDS[y]))
-     \end{array} \\
-   S; F; (\REFNULL~t)~(\STRUCTGET\K{\_}\sx^?~x~y) &\stepto& \TRAP
-   \end{array}
+$${rule: {Step_read/struct.get-*}}
 
 
 .. _exec-struct.set:
@@ -623,16 +509,7 @@ Reference Instructions
 
 16. Replace the :ref:`field value <syntax-fieldval>` :math:`S.\SSTRUCTS[a].\SIFIELDS[y]` with :math:`\fieldval`.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\REFSTRUCTADDR~a)~\val~(\STRUCTSET~x~y) &\stepto& S'; \epsilon
-     &
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TSTRUCT~\X{ft}^n \\
-      \land & S' = S \with \SSTRUCTS[a].\SIFIELDS[y] = \packval_{\X{ft}^n[y]}(\val))
-     \end{array} \\
-   S; F; (\REFNULL~t)~\val~(\STRUCTSET~x~y) &\stepto& \TRAP
-   \end{array}
+$${rule: {Step/struct.set-*}}
 
 
 .. _exec-array.new:
@@ -652,22 +529,7 @@ Reference Instructions
 
 6. Execute the instruction :math:`(\ARRAYNEWFIXED~x~n)`.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   \val~(\I32.\CONST~n)~(\ARRAYNEW~x) &\stepto& \val^n~(\ARRAYNEWFIXED~x~n)
-   \end{array}
-
-.. scratch
-   .. math::
-      \begin{array}{lcl@{\qquad}l}
-      S; F; \val~(\I32.\CONST~n)~(\ARRAYNEW~x) &\stepto& S'; F; (\REFARRAYADDR~|S.\SARRAYS|)
-        \\&&
-        \begin{array}[t]{@{}r@{~}l@{}}
-         (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft} \\
-         \land & \X{ai} = \{\AITYPE~F.\AMODULE.\MITYPES[x], \AIFIELDS~(\packval_{\X{ft}}(\val))^n\} \\
-         \land & S' = S \with \SARRAYS = S.\SARRAYS~\X{ai})
-        \end{array} \\
-      \end{array}
+$${rule: {Step_pure/array.new}}
 
 
 .. _exec-array.new_default:
@@ -697,26 +559,7 @@ Reference Instructions
 
 11. Execute the instruction :math:`(\ARRAYNEWFIXED~x~n)`.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   F; (\I32.\CONST~n)~(\ARRAYNEWDEFAULT~x) &\stepto& (\default_{\unpacktype(\X{ft}}))^n~(\ARRAYNEWFIXED~x~n)
-     \\&&
-     \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft})
-     \end{array} \\
-   \end{array}
-
-.. scratch
-   .. math::
-      \begin{array}{lcl@{\qquad}l}
-      S; F; (\I32.\CONST~n)~(\ARRAYNEWDEFAULT~x) &\stepto& S'; F; (\REFARRAYADDR~|S.\SARRAYS|)
-        \\&&
-        \begin{array}[t]{@{}r@{~}l@{}}
-         (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft} \\
-         \land & \X{ai} = \{\AITYPE~F.\AMODULE.\MITYPES[x], \AIFIELDS~(\packval_{\X{ft}}(\default_{\unpacktype(\X{ft}}))^n\} \\
-         \land & S' = S \with \SARRAYS = S.\SARRAYS~\X{ai})
-        \end{array} \\
-      \end{array}
+$${rule: {Step_read/array.new_default}}
 
 
 .. _exec-array.new_fixed:
@@ -752,16 +595,7 @@ Reference Instructions
 
 13. Push the :ref:`array reference <syntax-ref.array>` :math:`\REFARRAYADDR~a` to the stack.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   S; F; \val^n~(\ARRAYNEWFIXED~x~n) &\stepto& S'; F; (\REFARRAYADDR~|S.\SARRAYS|)
-     \\&&
-     \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft} \\
-      \land & \X{ai} = \{\AITYPE~F.\AMODULE.\MITYPES[x], \AIFIELDS~(\packval_{\X{ft}}(\val))^n\} \\
-      \land & S' = S \with \SARRAYS = S.\SARRAYS~\X{ai})
-     \end{array} \\
-   \end{array}
+$${rule: {Step/array.new_fixed}}
 
 
 .. _exec-array.new_data:
@@ -815,24 +649,7 @@ Reference Instructions
 
 19. Execute the instruction :math:`(\ARRAYNEWFIXED~x~n)`.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYNEWDATA~x~y) &\stepto& \TRAP
-     \\&&
-     \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft}^n \\
-      \land & s + n\cdot|\X{ft}|/8 > |S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA|)
-     \end{array} \\
-   \\[1ex]
-   S; F; (\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYNEWDATA~x~y) &\stepto& (t.\CONST~c)^n~(\ARRAYNEWFIXED~x~n)
-     \\&&
-     \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft}^n \\
-      \land & t = \unpacktype(\X{ft}) \\
-      \land & \concat((\bytes_{\X{ft}}(c))^n) = S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA[s \slice n\cdot|\X{ft}|/8] \\
-     \end{array} \\
-   \end{array}
+$${rule: {Step_read/array.new_data-*}}
 
 
 .. _exec-array.new_elem:
@@ -866,19 +683,7 @@ Reference Instructions
 
 12. Execute the instruction :math:`(\ARRAYNEWFIXED~x~n)`.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYNEWELEM~x~y) &\stepto& \TRAP
-     \\&&
-     (\iff s + n > |S.\SELEMS[F.\AMODULE.\MIELEMS[y]].\EIELEM|)
-   \\[1ex]
-   S; F; (\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYNEWELEM~x~y) &\stepto& \reff^n~(\ARRAYNEWFIXED~x~n)
-     \\&&
-     \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & \reff^n = S.\SELEMS[F.\AMODULE.\MIELEMS[y]].\EIELEM[s \slice n])
-     \end{array} \\
-   \end{array}
+$${rule: {Step_read/array.new_elem-*}}
 
 
 .. _exec-array.get:
@@ -925,22 +730,7 @@ Reference Instructions
 
 17. Push the value :math:`\val` to the stack.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~i)~(\ARRAYGET\K{\_}\sx^?~x) \stepto \TRAP
-   \\ \qquad
-    (\iff i \geq |\SARRAYS[a].\AIFIELDS|)
-   \\[1ex]
-   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~i)~(\ARRAYGET\K{\_}\sx^?~x) \stepto \val
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft} \\
-      \land & \val = \unpackval^{\sx^?}_{\X{ft}}(S.\SARRAYS[a].\AIFIELDS[i])) \\
-     \end{array}
-   \\[1ex]
-   S; F; (\REFNULL~t)~(\I32.\CONST~i)~(\ARRAYGET\K{\_}\sx^?~x) \stepto \TRAP
-   \end{array}
+$${rule: {Step_read/array.get-*}}
 
 
 .. _exec-array.set:
@@ -988,22 +778,7 @@ Reference Instructions
 
 18. Replace the :ref:`field value <syntax-fieldval>` :math:`S.\SARRAYS[a].\AIFIELDS[i]` with :math:`\fieldval`.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) \stepto \TRAP
-   \\ \qquad
-    (\iff i \geq |\SARRAYS[a].\AIFIELDS|)
-   \\[1ex]
-   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) \stepto S'; \epsilon
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft} \\
-      \land & S' = S \with \SARRAYS[a].\AIFIELDS[i] = \packval_{\X{ft}}(\val)) \\
-     \end{array}
-   \\[1ex]
-   S; F; (\REFNULL~t)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) \stepto \TRAP
-   \end{array}
+$${rule: {Step/array.set-*}}
 
 
 .. _exec-array.len:
@@ -1029,11 +804,7 @@ Reference Instructions
 
 8. Push the :ref:`value <syntax-val>` :math:`(\I32.\CONST~n)` to the stack.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   S; (\REFARRAYADDR~a)~\ARRAYLEN &\stepto& (\I32.\CONST~|S.\SARRAYS[a].\AIFIELDS|) \\
-   S; (\REFNULL~t)~\ARRAYLEN &\stepto& \TRAP
-   \end{array}
+$${rule: {Step_read/array.len-*}}
 
 
 .. _exec-array.fill:
@@ -1094,6 +865,8 @@ Reference Instructions
 23. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
 
 24. Execute the instruction :math:`\ARRAYFILL~x`.
+
+$${rule: {Step_read/array.fill-*}}
 
 .. math::
    ~\\[-1ex]
@@ -1245,6 +1018,8 @@ Reference Instructions
 
 30. Execute the instruction :math:`\ARRAYCOPY~x~y`.
 
+$${rule: {Step_read/array.copy-*}}
+
 .. math::
    ~\\[-1ex]
    \begin{array}{l}
@@ -1381,6 +1156,8 @@ Where:
 
 36. Execute the instruction :math:`\ARRAYINITDATA~x~y`.
 
+$${rule: {Step_read/array.init_data-*}}
+
 .. math::
    ~\\[-1ex]
    \begin{array}{l}
@@ -1488,6 +1265,8 @@ Where:
 
 31. Execute the instruction :math:`\ARRAYINITELEM~x~y`.
 
+$${rule: {Step_read/array.init_elem-*}}
+
 .. math::
    ~\\[-1ex]
    \begin{array}{l}
@@ -1538,6 +1317,8 @@ Where:
 
    c. Push the reference value :math:`\reff'` to the stack.
 
+$${rule: {Step_pure/any.convert_extern-*}}
+
 .. math::
    \begin{array}{lcl@{\qquad}l}
    (\REFNULL \X{ht})~\ANYCONVERTEXTERN &\stepto& (\REFNULL~\ANY) \\
@@ -1563,6 +1344,8 @@ Where:
    a. Let :math:`\reff'` be the reference value :math:`(\REFEXTERN~\reff)`.
 
    b. Push the reference value :math:`\reff'` to the stack.
+
+$${rule: {Step_pure/extern.convert_any-*}}
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
