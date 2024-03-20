@@ -54,10 +54,10 @@ prem_to_instr: Invalid prem 2
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{|\mathsf{i{\scriptstyle32}}|} &=& 32 &  \\
-{|\mathsf{i{\scriptstyle64}}|} &=& 64 &  \\
-{|\mathsf{f{\scriptstyle32}}|} &=& 32 &  \\
-{|\mathsf{f{\scriptstyle64}}|} &=& 64 &  \\
+{|\mathsf{i{\scriptstyle32}}|} &=& 32 \\
+{|\mathsf{i{\scriptstyle64}}|} &=& 64 \\
+{|\mathsf{f{\scriptstyle32}}|} &=& 32 \\
+{|\mathsf{f{\scriptstyle64}}|} &=& 64 \\
 \end{array}
 $$
 
@@ -252,22 +252,22 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathrm{default}}}_{\mathsf{i{\scriptstyle32}}} &=& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~0) &  \\
-{{\mathrm{default}}}_{\mathsf{i{\scriptstyle64}}} &=& (\mathsf{i{\scriptstyle64}}.\mathsf{const}~0) &  \\
-{{\mathrm{default}}}_{\mathsf{f{\scriptstyle32}}} &=& (\mathsf{f{\scriptstyle32}}.\mathsf{const}~{+0}) &  \\
-{{\mathrm{default}}}_{\mathsf{f{\scriptstyle64}}} &=& (\mathsf{f{\scriptstyle64}}.\mathsf{const}~{+0}) &  \\
-{{\mathrm{default}}}_{\mathsf{v{\scriptstyle128}}} &=& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~0) &  \\
-{{\mathrm{default}}}_{\mathsf{ref}~\mathsf{null}~{\mathit{ht}}} &=& (\mathsf{ref.null}~{\mathit{ht}}) &  \\
-{{\mathrm{default}}}_{\mathsf{ref}~\epsilon~{\mathit{ht}}} &=& \epsilon &  \\
+{{\mathrm{default}}}_{\mathsf{i{\scriptstyle32}}} &=& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~0) \\
+{{\mathrm{default}}}_{\mathsf{i{\scriptstyle64}}} &=& (\mathsf{i{\scriptstyle64}}.\mathsf{const}~0) \\
+{{\mathrm{default}}}_{\mathsf{f{\scriptstyle32}}} &=& (\mathsf{f{\scriptstyle32}}.\mathsf{const}~{+0}) \\
+{{\mathrm{default}}}_{\mathsf{f{\scriptstyle64}}} &=& (\mathsf{f{\scriptstyle64}}.\mathsf{const}~{+0}) \\
+{{\mathrm{default}}}_{\mathsf{v{\scriptstyle128}}} &=& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~0) \\
+{{\mathrm{default}}}_{\mathsf{ref}~\mathsf{null}~{\mathit{ht}}} &=& (\mathsf{ref.null}~{\mathit{ht}}) \\
+{{\mathrm{default}}}_{\mathsf{ref}~\epsilon~{\mathit{ht}}} &=& \epsilon \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-({\mathit{s}} ; {\mathit{f}}).\mathsf{module}.\mathsf{func} &=& {\mathit{f}}.\mathsf{module}.\mathsf{func} &  \\
-({\mathit{s}} ; {\mathit{f}}).\mathsf{func} &=& {\mathit{s}}.\mathsf{func} &  \\[0.8ex]
-{({\mathit{s}} ; {\mathit{f}}).\mathsf{func}}{{}[{\mathit{x}}]} &=& {\mathit{s}}.\mathsf{func}{}[{\mathit{f}}.\mathsf{module}.\mathsf{func}{}[{\mathit{x}}]] &  \\
-{({\mathit{s}} ; {\mathit{f}}).\mathsf{table}}{{}[{\mathit{x}}]} &=& {\mathit{s}}.\mathsf{table}{}[{\mathit{f}}.\mathsf{module}.\mathsf{table}{}[{\mathit{x}}]] &  \\
+({\mathit{s}} ; {\mathit{f}}).\mathsf{module}.\mathsf{func} &=& {\mathit{f}}.\mathsf{module}.\mathsf{func} \\
+({\mathit{s}} ; {\mathit{f}}).\mathsf{func} &=& {\mathit{s}}.\mathsf{func} \\[0.8ex]
+({\mathit{s}} ; {\mathit{f}}).\mathsf{func}{}[{\mathit{x}}] &=& {\mathit{s}}.\mathsf{func}{}[{\mathit{f}}.\mathsf{module}.\mathsf{func}{}[{\mathit{x}}]] \\
+({\mathit{s}} ; {\mathit{f}}).\mathsf{table}{}[{\mathit{x}}] &=& {\mathit{s}}.\mathsf{table}{}[{\mathit{f}}.\mathsf{module}.\mathsf{table}{}[{\mathit{x}}]] \\
 \end{array}
 $$
 
@@ -277,7 +277,7 @@ $$
 The relation ${\mathit{config}} \hookrightarrow {\mathit{config}}$ checks that a function type is well-formed.
 
 $$
-\begin{array}{@{}l@{}lcl@{}l@{}}
+\begin{array}{@{}l@{}rcl@{}l@{}}
 & {\mathit{z}} ; {{\mathit{instr}}^\ast} &\hookrightarrow& {\mathit{z}} ; {{\mathit{instr}'}^\ast} &\quad
   \mbox{if}~{{\mathit{instr}}^\ast} \hookrightarrow {{\mathit{instr}'}^\ast} \\[0.8ex]
 & {\mathit{z}} ; {{\mathit{instr}}^\ast} &\hookrightarrow& {\mathit{z}} ; {{\mathit{instr}'}^\ast} &\quad
@@ -286,7 +286,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}l@{}lcl@{}l@{}}
+\begin{array}{@{}l@{}rcl@{}l@{}}
 {[\textsc{\scriptsize E{-}block}]} \quad & {\mathit{z}} ; {{\mathit{val}}^{{\mathit{k}}}}~(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast}) &\hookrightarrow& ({{\mathsf{label}}_{{\mathit{n}}}}{\{\epsilon\}}~({{\mathit{val}}^{{\mathit{k}}}}, {{\mathit{instr}}^\ast})) &\quad
   \mbox{if}~{{\mathrm{blocktype}}}_{{\mathit{z}}}({\mathit{bt}}) = {{\mathit{t}}_{{1}}^{{\mathit{k}}}} \rightarrow {{\mathit{t}}_{{2}}^{{\mathit{n}}}} \\
 {[\textsc{\scriptsize E{-}loop}]} \quad & {\mathit{z}} ; {{\mathit{val}}^{{\mathit{k}}}}~(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast}) &\hookrightarrow& ({{\mathsf{label}}_{{\mathit{k}}}}{\{\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast}\}}~({{\mathit{val}}^{{\mathit{k}}}}, {{\mathit{instr}}^\ast})) &\quad
@@ -299,7 +299,7 @@ $$
 $$
 
 $$
-\begin{array}{@{}l@{}lcl@{}l@{}}
+\begin{array}{@{}l@{}rcl@{}l@{}}
 {[\textsc{\scriptsize E{-}if{-}true}]} \quad & (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{c}})~(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_{{1}}^\ast}~\mathsf{else}~{{\mathit{instr}}_{{2}}^\ast}) &\hookrightarrow& (\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_{{1}}^\ast}) &\quad
   \mbox{if}~{\mathit{c}} \neq 0 \\
 {[\textsc{\scriptsize E{-}if{-}false}]} \quad & (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{c}})~(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_{{1}}^\ast}~\mathsf{else}~{{\mathit{instr}}_{{2}}^\ast}) &\hookrightarrow& (\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_{{2}}^\ast}) &\quad
@@ -335,6 +335,7 @@ warning: syntax `cnn` was never spliced
 warning: syntax `code` was never spliced
 warning: syntax `comptype` was never spliced
 warning: syntax `config` was never spliced
+warning: syntax `consttype` was never spliced
 warning: syntax `context` was never spliced
 warning: syntax `cvtop` was never spliced
 warning: syntax `data` was never spliced
@@ -908,6 +909,7 @@ warning: rule `Step_pure/ref.eq-true` was never spliced
 warning: rule `Step_pure/ref.eq-false` was never spliced
 warning: rule `Step_pure/i31.get-null` was never spliced
 warning: rule `Step_pure/i31.get-num` was never spliced
+warning: rule `Step_pure/array.new` was never spliced
 warning: rule `Step_pure/extern.convert_any-null` was never spliced
 warning: rule `Step_pure/extern.convert_any-addr` was never spliced
 warning: rule `Step_pure/any.convert_extern-null` was never spliced
@@ -948,6 +950,7 @@ warning: rule `Step_read/return_call` was never spliced
 warning: rule `Step_read/return_call_ref-label` was never spliced
 warning: rule `Step_read/return_call_ref-frame-addr` was never spliced
 warning: rule `Step_read/return_call_ref-frame-null` was never spliced
+warning: rule `Step_read/ref.null-idx` was never spliced
 warning: rule `Step_read/ref.func` was never spliced
 warning: rule `Step_read/ref.test-true` was never spliced
 warning: rule `Step_read/ref.test-false` was never spliced
@@ -956,7 +959,6 @@ warning: rule `Step_read/ref.cast-fail` was never spliced
 warning: rule `Step_read/struct.new_default` was never spliced
 warning: rule `Step_read/struct.get-null` was never spliced
 warning: rule `Step_read/struct.get-struct` was never spliced
-warning: rule `Step_read/array.new` was never spliced
 warning: rule `Step_read/array.new_default` was never spliced
 warning: rule `Step_read/array.new_elem-oob` was never spliced
 warning: rule `Step_read/array.new_elem-alloc` was never spliced
@@ -1197,8 +1199,9 @@ warning: definition `moduleinst` was never spliced
 warning: definition `narrow` was never spliced
 warning: definition `nbytes` was never spliced
 warning: definition `nunpack` was never spliced
+warning: definition `packconst` was never spliced
+warning: definition `packfield` was never spliced
 warning: definition `packnum` was never spliced
-warning: definition `packval` was never spliced
 warning: definition `promote` was never spliced
 warning: definition `psize` was never spliced
 warning: definition `reinterpret` was never spliced
@@ -1238,7 +1241,7 @@ warning: definition `subst_typevar` was never spliced
 warning: definition `subst_valtype` was never spliced
 warning: definition `subst_vectype` was never spliced
 warning: definition `sum` was never spliced
-warning: definition `sxfield` was never spliced
+warning: definition `sx` was never spliced
 warning: definition `tableinst` was never spliced
 warning: definition `tablesxt` was never spliced
 warning: definition `tablesxv` was never spliced
@@ -1248,8 +1251,8 @@ warning: definition `trunc_sat` was never spliced
 warning: definition `type` was never spliced
 warning: definition `unop` was never spliced
 warning: definition `unpack` was never spliced
+warning: definition `unpackfield` was never spliced
 warning: definition `unpacknum` was never spliced
-warning: definition `unpackval` was never spliced
 warning: definition `unrolldt` was never spliced
 warning: definition `unrollht` was never spliced
 warning: definition `unrollrt` was never spliced
@@ -1321,12 +1324,12 @@ warning: rule prose `exec/array.get` was never spliced
 warning: rule prose `exec/array.new_data` was never spliced
 warning: rule prose `exec/array.new_elem` was never spliced
 warning: rule prose `exec/array.new_default` was never spliced
-warning: rule prose `exec/array.new` was never spliced
 warning: rule prose `exec/struct.get` was never spliced
 warning: rule prose `exec/struct.new_default` was never spliced
 warning: rule prose `exec/ref.cast` was never spliced
 warning: rule prose `exec/ref.test` was never spliced
 warning: rule prose `exec/ref.func` was never spliced
+warning: rule prose `exec/ref.null` was never spliced
 warning: rule prose `exec/return_call_ref` was never spliced
 warning: rule prose `exec/return_call` was never spliced
 warning: rule prose `exec/call_ref` was never spliced
@@ -1357,6 +1360,7 @@ warning: rule prose `exec/vvbinop` was never spliced
 warning: rule prose `exec/vvunop` was never spliced
 warning: rule prose `exec/any.convert_extern` was never spliced
 warning: rule prose `exec/extern.convert_any` was never spliced
+warning: rule prose `exec/array.new` was never spliced
 warning: rule prose `exec/i31.get` was never spliced
 warning: rule prose `exec/ref.eq` was never spliced
 warning: rule prose `exec/ref.as_non_null` was never spliced
@@ -1566,8 +1570,9 @@ warning: definition prose `memsxv` was never spliced
 warning: definition prose `min` was never spliced
 warning: definition prose `moduleinst` was never spliced
 warning: definition prose `nunpack` was never spliced
+warning: definition prose `packconst` was never spliced
+warning: definition prose `packfield` was never spliced
 warning: definition prose `packnum` was never spliced
-warning: definition prose `packval` was never spliced
 warning: definition prose `psize` was never spliced
 warning: definition prose `relop` was never spliced
 warning: definition prose `rolldt` was never spliced
@@ -1605,7 +1610,7 @@ warning: definition prose `subst_typevar` was never spliced
 warning: definition prose `subst_valtype` was never spliced
 warning: definition prose `subst_vectype` was never spliced
 warning: definition prose `sum` was never spliced
-warning: definition prose `sxfield` was never spliced
+warning: definition prose `sx` was never spliced
 warning: definition prose `table` was never spliced
 warning: definition prose `tableinst` was never spliced
 warning: definition prose `tablesxt` was never spliced
@@ -1614,8 +1619,8 @@ warning: definition prose `testop` was never spliced
 warning: definition prose `type` was never spliced
 warning: definition prose `unop` was never spliced
 warning: definition prose `unpack` was never spliced
+warning: definition prose `unpackfield` was never spliced
 warning: definition prose `unpacknum` was never spliced
-warning: definition prose `unpackval` was never spliced
 warning: definition prose `unrolldt` was never spliced
 warning: definition prose `unrollht` was never spliced
 warning: definition prose `unrollrt` was never spliced

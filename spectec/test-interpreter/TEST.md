@@ -909,7 +909,21 @@ watsup 0.4 generator
 - 14/14 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/gc/array_init_data.wast =====
-- 31/31 (100.00%)
+- Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:95.1-95.85 (Failure("Invalid assignment on value 0x63: CallE (packconst, [ VarE (zt), VarE (c) ]) @8-reduction.watsup:520.21-520.38"))
+Result: 0 : [i32]
+Expect: 99 : [i32]
+- Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:97.1-97.70 (Error(_, "wrong return values"))
+Result: 0 : [i32]
+Expect: 100 : [i32]
+- Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:98.1-98.71 (Error(_, "wrong return values"))
+- Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:101.1-101.89 (Failure("Invalid assignment on value 0x6766: CallE (packconst, [ VarE (zt), VarE (c) ]) @8-reduction.watsup:520.21-520.38"))
+Result: 0 : [i32]
+Expect: 26_470 : [i32]
+- Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:103.1-103.78 (Error(_, "wrong return values"))
+Result: 0 : [i32]
+Expect: 26_984 : [i32]
+- Test failed at ../../test-interpreter/spec-test-3/gc/array_init_data.wast:104.1-104.78 (Error(_, "wrong return values"))
+- 25/31 (80.65%)
 
 ===== ../../test-interpreter/spec-test-3/gc/array_init_elem.wast =====
 - 20/20 (100.00%)
@@ -1313,7 +1327,7 @@ watsup 0.4 generator
 ===== ../../test-interpreter/spec-test-3/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [45764/45764] (100.00%)
+Total [45758/45764] (99.99%)
 
 == Complete.
 ```

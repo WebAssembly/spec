@@ -29,14 +29,14 @@ def $default_(REF eps ht) = eps
 
 ;; Packed fields
 
-def $packval(storagetype, val) : fieldval         hint(show $pack_(%,%))
-def $unpackval(storagetype, sx?, fieldval) : val  hint(show $unpack_(%)^(%)#((%)))
+def $packfield(storagetype, val) : fieldval         hint(show $pack_(%,%))
+def $unpackfield(storagetype, sx?, fieldval) : val  hint(show $unpack_(%)^(%)#((%)))
 
-def $packval(t, val) = val
-def $packval(pt, CONST I32 i) = PACK pt $wrap(32, $psize(pt), i)
+def $packfield(t, val) = val
+def $packfield(pt, CONST I32 i) = PACK pt $wrap(32, $psize(pt), i)
 
-def $unpackval(t, eps, val) = val
-def $unpackval(pt, sx, PACK pt i) = CONST I32 $ext($psize(pt), 32, sx, i)
+def $unpackfield(t, eps, val) = val
+def $unpackfield(pt, sx, PACK pt i) = CONST I32 $ext($psize(pt), 32, sx, i)
 
 
 ;; Projections
@@ -99,14 +99,14 @@ def $structinst((s; f)) = s.STRUCT
 def $arrayinst((s; f)) = s.ARRAY
 def $moduleinst((s; f)) = f.MODULE
 
-def $type(state, typeidx) : deftype         hint(show %.TYPE`[%])
-def $func(state, funcidx) : funcinst        hint(show %.FUNC#`[%])
-def $global(state, globalidx) : globalinst  hint(show %.GLOBAL#`[%])
-def $table(state, tableidx) : tableinst     hint(show %.TABLE#`[%])
-def $mem(state, memidx) : meminst           hint(show %.MEM#`[%])
-def $elem(state, tableidx) : eleminst       hint(show %.ELEM#`[%])
-def $data(state, dataidx) : datainst        hint(show %.DATA#`[%])
-def $local(state, localidx) : val?          hint(show %.LOCAL#`[%])
+def $type(state, typeidx) : deftype         hint(show %.TYPE[%])
+def $func(state, funcidx) : funcinst        hint(show %.FUNC[%])
+def $global(state, globalidx) : globalinst  hint(show %.GLOBAL[%])
+def $table(state, tableidx) : tableinst     hint(show %.TABLE[%])
+def $mem(state, memidx) : meminst           hint(show %.MEM[%])
+def $elem(state, tableidx) : eleminst       hint(show %.ELEM[%])
+def $data(state, dataidx) : datainst        hint(show %.DATA[%])
+def $local(state, localidx) : val?          hint(show %.LOCAL[%])
 
 def $type((s; f), x) = f.MODULE.TYPE[x]
 def $func((s; f), x) = s.FUNC[f.MODULE.FUNC[x]]
@@ -129,7 +129,7 @@ def $with_meminst(state, memidx, meminst) : state           hint(show %[.MEM[%] 
 def $with_elem(state, elemidx, ref*) : state                hint(show %[.ELEM[%].ELEM = %])
 def $with_data(state, dataidx, byte*) : state               hint(show %[.DATA[%].DATA = %])
 def $with_struct(state, structaddr, nat, fieldval) : state  hint(show %[.STRUCT[%].FIELD[%] = %])
-def $with_array(state, arrayaddr, nat, fieldval) : state    hint(show %[.STRUCT[%].FIELD[%] = %])
+def $with_array(state, arrayaddr, nat, fieldval) : state    hint(show %[.ARRAY[%].FIELD[%] = %])
 
 def $with_local((s; f), x, v) = s; f[.LOCAL[x] = v]
 def $with_global((s; f), x, v) = s[.GLOBAL[f.MODULE.GLOBAL[x]].VALUE = v]; f

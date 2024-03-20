@@ -309,7 +309,7 @@ $${rule-prose: exec/array.new}
 
 \
 
-$${rule+: Step_read/array.new}
+$${rule+: Step_pure/array.new}
 
 .. _exec-array.new_default:
 

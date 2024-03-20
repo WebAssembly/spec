@@ -20,13 +20,13 @@ def $invsigned(N, i) = j        -- if $signed(N, j) = i
 ;; TODO
 
 def $unop(numtype, unop_(numtype), num_(numtype)) : num_(numtype)*
-    hint(show %2#_%1#((%3)))
+    hint(show %2#$_(%1)#((%3)))
 def $binop(numtype, binop_(numtype), num_(numtype), num_(numtype)) : num_(numtype)*
-    hint(show %2#_%1#(%3, %4))
+    hint(show %2#$_(%1)#(%3, %4))
 def $testop(numtype, testop_(numtype), num_(numtype)) : num_(I32)
-    hint(show %2#_%1#((%3)))
+    hint(show %2#$_(%1)#((%3)))
 def $relop(numtype, relop_(numtype), num_(numtype), num_(numtype)) : num_(I32)
-    hint(show %2#_%1#(%3, %4))
+    hint(show %2#$_(%1)#(%3, %4))
 def $cvtop(numtype_1, numtype_2, cvtop, sx?, num_(numtype_1)) : num_(numtype_2)*
     hint(show %3#$_((%1,%2))^(%4)#((%5)))
 
