@@ -191,6 +191,10 @@ def $packconst(storagetype, zval_($cunpack(storagetype))) : zval_(storagetype)
 def $packconst(consttype, c) = c
 def $packconst(packtype, c) = $packnum(packtype, c)
 
+def $unpackconst(storagetype, zval_(storagetype)) : zval_($cunpack(storagetype))
+def $unpackconst(consttype, c) = c
+def $unpackconst(packtype, c) = $unpacknum(packtype, c)
+
 
 ;; Vectors
 

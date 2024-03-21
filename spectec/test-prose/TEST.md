@@ -4942,6 +4942,13 @@ packconst stora_u0 c
 3. Let packtype be stora_u0.
 4. Return $packnum(packtype, c).
 
+unpackconst stora_u0 c
+1. If the type of stora_u0 is consttype, then:
+  a. Return c.
+2. Assert: Due to validation, the type of stora_u0 is packtype.
+3. Let packtype be stora_u0.
+4. Return $unpacknum(packtype, c).
+
 invlanes_ sh c*
 1. Let vc be $inverse_of_lanes_(sh, c*).
 2. Return vc.
@@ -6382,8 +6389,8 @@ execution_of_ARRAY.NEW_DATA x y
 7. Let (mut, zt) be y_0.
 8. If ((i + ((n · $zsize(zt)) / 8)) > |$data(y).DATA|), then:
   a. Trap.
-9. Let $zbytes(zt, $packconst(zt, c))^n be $inverse_of_concat_($data(y).DATA[i : ((n · $zsize(zt)) / 8)]).
-10. Push the values $const($cunpack(zt), c)^n to the stack.
+9. Let $zbytes(zt, c)^n be $inverse_of_concat_($data(y).DATA[i : ((n · $zsize(zt)) / 8)]).
+10. Push the values $const($cunpack(zt), $unpackconst(zt, c))^n to the stack.
 11. Execute the instruction (ARRAY.NEW_FIXED x n).
 
 execution_of_ARRAY.GET sx? x
@@ -6590,10 +6597,10 @@ execution_of_ARRAY.INIT_DATA x y
       a) Let (ARRAY y_0) be $expanddt($type(x)).
       b) Let (mut, zt) be y_0.
       c) Let (REF.ARRAY_ADDR a) be admin_u0.
-      d) Let $packconst(zt, c) be $inverse_of_zbytes(zt, $data(y).DATA[j : ($zsize(zt) / 8)]).
+      d) Let c be $inverse_of_zbytes(zt, $data(y).DATA[j : ($zsize(zt) / 8)]).
       e) Push the value (REF.ARRAY_ADDR a) to the stack.
       f) Push the value (I32.CONST i) to the stack.
-      g) Push the value $const($cunpack(zt), c) to the stack.
+      g) Push the value $const($cunpack(zt), $unpackconst(zt, c)) to the stack.
       h) Execute the instruction (ARRAY.SET x).
       i) Push the value (REF.ARRAY_ADDR a) to the stack.
       j) Push the value (I32.CONST (i + 1)) to the stack.

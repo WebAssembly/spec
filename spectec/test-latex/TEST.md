@@ -1228,6 +1228,13 @@ $$
 \end{array}
 $$
 
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{unpackconst}}({\mathit{consttype}}, {\mathit{c}}) &=& {\mathit{c}} \\
+{\mathrm{unpackconst}}({\mathit{packtype}}, {\mathit{c}}) &=& {{\mathrm{unpack}}}_{{\mathit{packtype}}}({\mathit{c}}) \\
+\end{array}
+$$
+
 \vspace{1ex}
 
 $$
@@ -5595,9 +5602,9 @@ $$
 {[\textsc{\scriptsize E{-}array.new\_data{-}oob}]} \quad & {\mathit{z}} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{n}})~(\mathsf{array.new\_data}~{\mathit{x}}~{\mathit{y}}) &\hookrightarrow& \mathsf{trap} &\quad
   \mbox{if}~{\mathit{z}}.\mathsf{type}{}[{\mathit{x}}] \approx \mathsf{array}~({\mathit{mut}}~{\mathit{zt}}) \\
  &&&&\quad {\land}~{\mathit{i}} + {\mathit{n}} \cdot {|{\mathit{zt}}|} / 8 > {|{\mathit{z}}.\mathsf{data}{}[{\mathit{y}}].\mathsf{data}|} \\
-{[\textsc{\scriptsize E{-}array.new\_data{-}num}]} \quad & {\mathit{z}} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{n}})~(\mathsf{array.new\_data}~{\mathit{x}}~{\mathit{y}}) &\hookrightarrow& {({\mathrm{unpack}}({\mathit{zt}}).\mathsf{const}~{\mathit{c}})^{{\mathit{n}}}}~(\mathsf{array.new\_fixed}~{\mathit{x}}~{\mathit{n}}) &\quad
+{[\textsc{\scriptsize E{-}array.new\_data{-}num}]} \quad & {\mathit{z}} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{n}})~(\mathsf{array.new\_data}~{\mathit{x}}~{\mathit{y}}) &\hookrightarrow& {({\mathrm{unpack}}({\mathit{zt}}).\mathsf{const}~{\mathrm{unpackconst}}({\mathit{zt}}, {\mathit{c}}))^{{\mathit{n}}}}~(\mathsf{array.new\_fixed}~{\mathit{x}}~{\mathit{n}}) &\quad
   \mbox{if}~{\mathit{z}}.\mathsf{type}{}[{\mathit{x}}] \approx \mathsf{array}~({\mathit{mut}}~{\mathit{zt}}) \\
- &&&&\quad {\land}~{\mathrm{concat}}({{{\mathrm{bytes}}}_{{\mathit{zt}}}({\mathrm{packconst}}({\mathit{zt}}, {\mathit{c}}))^{{\mathit{n}}}}) = {\mathit{z}}.\mathsf{data}{}[{\mathit{y}}].\mathsf{data}{}[{\mathit{i}} : {\mathit{n}} \cdot {|{\mathit{zt}}|} / 8] \\
+ &&&&\quad {\land}~{\mathrm{concat}}({{{\mathrm{bytes}}}_{{\mathit{zt}}}({\mathit{c}})^{{\mathit{n}}}}) = {\mathit{z}}.\mathsf{data}{}[{\mathit{y}}].\mathsf{data}{}[{\mathit{i}} : {\mathit{n}} \cdot {|{\mathit{zt}}|} / 8] \\
 \end{array}
 $$
 
@@ -5691,9 +5698,9 @@ $$
  &&&&\quad {\land}~{\mathit{j}} + {\mathit{n}} \cdot {|{\mathit{zt}}|} / 8 > {|{\mathit{z}}.\mathsf{data}{}[{\mathit{y}}].\mathsf{data}|} \\
 {[\textsc{\scriptsize E{-}array.init\_data{-}zero}]} \quad & {\mathit{z}} ; (\mathsf{ref.array}~{\mathit{a}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{j}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{n}})~(\mathsf{array.init\_data}~{\mathit{x}}~{\mathit{y}}) &\hookrightarrow& \epsilon &\quad
   \mbox{otherwise, if}~{\mathit{n}} = 0 \\
-{[\textsc{\scriptsize E{-}array.init\_data{-}num}]} \quad & {\mathit{z}} ; (\mathsf{ref.array}~{\mathit{a}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{j}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{n}})~(\mathsf{array.init\_data}~{\mathit{x}}~{\mathit{y}}) &\hookrightarrow& (\mathsf{ref.array}~{\mathit{a}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~{\mathrm{unpack}}({\mathit{zt}}).\mathsf{const}~{\mathit{c}}~(\mathsf{array.set}~{\mathit{x}})~(\mathsf{ref.array}~{\mathit{a}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}} + 1)~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{j}} + {|{\mathit{zt}}|} / 8)~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{n}} - 1)~(\mathsf{array.init\_data}~{\mathit{x}}~{\mathit{y}}) &\quad
+{[\textsc{\scriptsize E{-}array.init\_data{-}num}]} \quad & {\mathit{z}} ; (\mathsf{ref.array}~{\mathit{a}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{j}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{n}})~(\mathsf{array.init\_data}~{\mathit{x}}~{\mathit{y}}) &\hookrightarrow& (\mathsf{ref.array}~{\mathit{a}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~{\mathrm{unpack}}({\mathit{zt}}).\mathsf{const}~{\mathrm{unpackconst}}({\mathit{zt}}, {\mathit{c}})~(\mathsf{array.set}~{\mathit{x}})~(\mathsf{ref.array}~{\mathit{a}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}} + 1)~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{j}} + {|{\mathit{zt}}|} / 8)~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{n}} - 1)~(\mathsf{array.init\_data}~{\mathit{x}}~{\mathit{y}}) &\quad
   \mbox{otherwise, if}~{\mathit{z}}.\mathsf{type}{}[{\mathit{x}}] \approx \mathsf{array}~({\mathit{mut}}~{\mathit{zt}}) \\
- &&&&\quad {\land}~{{\mathrm{bytes}}}_{{\mathit{zt}}}({\mathrm{packconst}}({\mathit{zt}}, {\mathit{c}})) = {\mathit{z}}.\mathsf{data}{}[{\mathit{y}}].\mathsf{data}{}[{\mathit{j}} : {|{\mathit{zt}}|} / 8] \\
+ &&&&\quad {\land}~{{\mathrm{bytes}}}_{{\mathit{zt}}}({\mathit{c}}) = {\mathit{z}}.\mathsf{data}{}[{\mathit{y}}].\mathsf{data}{}[{\mathit{j}} : {|{\mathit{zt}}|} / 8] \\
 \end{array}
 $$
 

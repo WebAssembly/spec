@@ -1784,6 +1784,13 @@ def $packconst(storagetype : storagetype, zval_ : zval_(($cunpack(storagetype) :
   def $packconst{packtype : packtype, c : zval_(($cunpack((packtype : packtype <: storagetype)) : consttype <: storagetype))}((packtype : packtype <: storagetype), c) = $packnum((packtype : packtype <: lanetype), c)
 
 ;; 3-numerics.watsup
+def $unpackconst(storagetype : storagetype, zval_ : zval_(storagetype)) : zval_(($cunpack(storagetype) : consttype <: storagetype))
+  ;; 3-numerics.watsup
+  def $unpackconst{consttype : consttype, c : zval_((consttype : consttype <: storagetype))}((consttype : consttype <: storagetype), c) = c
+  ;; 3-numerics.watsup
+  def $unpackconst{packtype : packtype, c : zval_((packtype : packtype <: storagetype))}((packtype : packtype <: storagetype), c) = $unpacknum((packtype : packtype <: lanetype), c)
+
+;; 3-numerics.watsup
 def $lanes_(shape : shape, vec_ : vec_(V128_vnn)) : lane_($lanetype(shape))*
 
 ;; 3-numerics.watsup
@@ -4738,10 +4745,10 @@ relation Step_read: `%~>%`(config, admininstr*)
     -- if ((i + ((n * $zsize(zt)) / 8)) > |$data(z, y).DATA_datainst|)
 
   ;; 8-reduction.watsup
-  rule array.new_data-num{z : state, i : nat, n : n, x : idx, y : idx, zt : storagetype, c^n : zval_(($cunpack(zt) : consttype <: storagetype))^n, mut : mut}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr(I32_numtype, `%`_num_(n)) ARRAY.NEW_DATA_admininstr(x, y)]), ($const($cunpack(zt), c) : instr <: admininstr)^n{c : zval_(($cunpack(zt) : consttype <: storagetype))} :: [ARRAY.NEW_FIXED_admininstr(x, `%`_u32(n))])
+  rule array.new_data-num{z : state, i : nat, n : n, x : idx, y : idx, zt : storagetype, c^n : zval_(zt)^n, mut : mut}:
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr(I32_numtype, `%`_num_(n)) ARRAY.NEW_DATA_admininstr(x, y)]), ($const($cunpack(zt), $unpackconst(zt, c)) : instr <: admininstr)^n{c : zval_(zt)} :: [ARRAY.NEW_FIXED_admininstr(x, `%`_u32(n))])
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
-    -- if ($concat_(syntax byte, $zbytes(zt, $packconst(zt, c))^n{c : zval_(($cunpack(zt) : consttype <: storagetype))}) = $data(z, y).DATA_datainst[i : ((n * $zsize(zt)) / 8)])
+    -- if ($concat_(syntax byte, $zbytes(zt, c)^n{c : zval_(zt)}) = $data(z, y).DATA_datainst[i : ((n * $zsize(zt)) / 8)])
 
   ;; 8-reduction.watsup
   rule array.get-null{z : state, ht : heaptype, i : nat, sx? : sx?, x : idx}:
@@ -4872,11 +4879,11 @@ relation Step_read: `%~>%`(config, admininstr*)
     -- if (n = 0)
 
   ;; 8-reduction.watsup
-  rule array.init_data-num{z : state, a : addr, i : nat, j : nat, n : n, x : idx, y : idx, zt : storagetype, c : zval_(($cunpack(zt) : consttype <: storagetype)), mut : mut}:
-    `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr(I32_numtype, `%`_num_(j)) CONST_admininstr(I32_numtype, `%`_num_(n)) ARRAY.INIT_DATA_admininstr(x, y)]), [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_(i)) ($const($cunpack(zt), c) : instr <: admininstr) ARRAY.SET_admininstr(x) REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_((i + 1))) CONST_admininstr(I32_numtype, `%`_num_((j + ($zsize(zt) / 8)))) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) ARRAY.INIT_DATA_admininstr(x, y)])
+  rule array.init_data-num{z : state, a : addr, i : nat, j : nat, n : n, x : idx, y : idx, zt : storagetype, c : zval_(zt), mut : mut}:
+    `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr(I32_numtype, `%`_num_(j)) CONST_admininstr(I32_numtype, `%`_num_(n)) ARRAY.INIT_DATA_admininstr(x, y)]), [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_(i)) ($const($cunpack(zt), $unpackconst(zt, c)) : instr <: admininstr) ARRAY.SET_admininstr(x) REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_((i + 1))) CONST_admininstr(I32_numtype, `%`_num_((j + ($zsize(zt) / 8)))) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) ARRAY.INIT_DATA_admininstr(x, y)])
     -- otherwise
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
-    -- if ($zbytes(zt, $packconst(zt, c)) = $data(z, y).DATA_datainst[j : ($zsize(zt) / 8)])
+    -- if ($zbytes(zt, c) = $data(z, y).DATA_datainst[j : ($zsize(zt) / 8)])
 
   ;; 8-reduction.watsup
   rule local.get{z : state, x : idx, val : val}:
@@ -7310,6 +7317,13 @@ def $packconst(storagetype : storagetype, zval_ : zval_((!($cunpack(storagetype)
   def $packconst{consttype : consttype, c : zval_((!($cunpack((consttype : consttype <: storagetype))) : consttype <: storagetype))}((consttype : consttype <: storagetype), c) = c
   ;; 3-numerics.watsup
   def $packconst{packtype : packtype, c : zval_((!($cunpack((packtype : packtype <: storagetype))) : consttype <: storagetype))}((packtype : packtype <: storagetype), c) = $packnum((packtype : packtype <: lanetype), c)
+
+;; 3-numerics.watsup
+def $unpackconst(storagetype : storagetype, zval_ : zval_(storagetype)) : zval_((!($cunpack(storagetype)) : consttype <: storagetype))
+  ;; 3-numerics.watsup
+  def $unpackconst{consttype : consttype, c : zval_((consttype : consttype <: storagetype))}((consttype : consttype <: storagetype), c) = c
+  ;; 3-numerics.watsup
+  def $unpackconst{packtype : packtype, c : zval_((packtype : packtype <: storagetype))}((packtype : packtype <: storagetype), c) = $unpacknum((packtype : packtype <: lanetype), c)
 
 ;; 3-numerics.watsup
 def $lanes_(shape : shape, vec_ : vec_(V128_vnn)) : lane_($lanetype(shape))*
@@ -10268,10 +10282,10 @@ relation Step_read: `%~>%`(config, admininstr*)
     -- if ((i + ((n * $zsize(zt)) / 8)) > |$data(z, y).DATA_datainst|)
 
   ;; 8-reduction.watsup
-  rule array.new_data-num{z : state, i : nat, n : n, x : idx, y : idx, zt : storagetype, c^n : zval_((!($cunpack(zt)) : consttype <: storagetype))^n, mut : mut}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr(I32_numtype, `%`_num_(n)) ARRAY.NEW_DATA_admininstr(x, y)]), ($const(!($cunpack(zt)), c) : instr <: admininstr)^n{c : zval_((!($cunpack(zt)) : consttype <: storagetype))} :: [ARRAY.NEW_FIXED_admininstr(x, `%`_u32(n))])
+  rule array.new_data-num{z : state, i : nat, n : n, x : idx, y : idx, zt : storagetype, c^n : zval_(zt)^n, mut : mut}:
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr(I32_numtype, `%`_num_(n)) ARRAY.NEW_DATA_admininstr(x, y)]), ($const(!($cunpack(zt)), $unpackconst(zt, c)) : instr <: admininstr)^n{c : zval_(zt)} :: [ARRAY.NEW_FIXED_admininstr(x, `%`_u32(n))])
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
-    -- if ($concat_(syntax byte, $zbytes(zt, $packconst(zt, c))^n{c : zval_((!($cunpack(zt)) : consttype <: storagetype))}) = $data(z, y).DATA_datainst[i : ((n * $zsize(zt)) / 8)])
+    -- if ($concat_(syntax byte, $zbytes(zt, c)^n{c : zval_(zt)}) = $data(z, y).DATA_datainst[i : ((n * $zsize(zt)) / 8)])
 
   ;; 8-reduction.watsup
   rule array.get-null{z : state, ht : heaptype, i : nat, sx? : sx?, x : idx}:
@@ -10402,11 +10416,11 @@ relation Step_read: `%~>%`(config, admininstr*)
     -- if (n = 0)
 
   ;; 8-reduction.watsup
-  rule array.init_data-num{z : state, a : addr, i : nat, j : nat, n : n, x : idx, y : idx, zt : storagetype, c : zval_((!($cunpack(zt)) : consttype <: storagetype)), mut : mut}:
-    `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr(I32_numtype, `%`_num_(j)) CONST_admininstr(I32_numtype, `%`_num_(n)) ARRAY.INIT_DATA_admininstr(x, y)]), [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_(i)) ($const(!($cunpack(zt)), c) : instr <: admininstr) ARRAY.SET_admininstr(x) REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_((i + 1))) CONST_admininstr(I32_numtype, `%`_num_((j + ($zsize(zt) / 8)))) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) ARRAY.INIT_DATA_admininstr(x, y)])
+  rule array.init_data-num{z : state, a : addr, i : nat, j : nat, n : n, x : idx, y : idx, zt : storagetype, c : zval_(zt), mut : mut}:
+    `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr(I32_numtype, `%`_num_(j)) CONST_admininstr(I32_numtype, `%`_num_(n)) ARRAY.INIT_DATA_admininstr(x, y)]), [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_(i)) ($const(!($cunpack(zt)), $unpackconst(zt, c)) : instr <: admininstr) ARRAY.SET_admininstr(x) REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_((i + 1))) CONST_admininstr(I32_numtype, `%`_num_((j + ($zsize(zt) / 8)))) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) ARRAY.INIT_DATA_admininstr(x, y)])
     -- otherwise
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
-    -- if ($zbytes(zt, $packconst(zt, c)) = $data(z, y).DATA_datainst[j : ($zsize(zt) / 8)])
+    -- if ($zbytes(zt, c) = $data(z, y).DATA_datainst[j : ($zsize(zt) / 8)])
 
   ;; 8-reduction.watsup
   rule local.get{z : state, x : idx, val : val}:
@@ -12840,6 +12854,13 @@ def $packconst(storagetype : storagetype, zval_ : zval_((!($cunpack(storagetype)
   def $packconst{consttype : consttype, c : zval_((!($cunpack((consttype : consttype <: storagetype))) : consttype <: storagetype))}((consttype : consttype <: storagetype), c) = c
   ;; 3-numerics.watsup
   def $packconst{packtype : packtype, c : zval_((!($cunpack((packtype : packtype <: storagetype))) : consttype <: storagetype))}((packtype : packtype <: storagetype), c) = $packnum((packtype : packtype <: lanetype), c)
+
+;; 3-numerics.watsup
+def $unpackconst(storagetype : storagetype, zval_ : zval_(storagetype)) : zval_((!($cunpack(storagetype)) : consttype <: storagetype))
+  ;; 3-numerics.watsup
+  def $unpackconst{consttype : consttype, c : zval_((consttype : consttype <: storagetype))}((consttype : consttype <: storagetype), c) = c
+  ;; 3-numerics.watsup
+  def $unpackconst{packtype : packtype, c : zval_((packtype : packtype <: storagetype))}((packtype : packtype <: storagetype), c) = $unpacknum((packtype : packtype <: lanetype), c)
 
 ;; 3-numerics.watsup
 def $lanes_(shape : shape, vec_ : vec_(V128_vnn)) : lane_($lanetype(shape))*
@@ -15798,10 +15819,10 @@ relation Step_read: `%~>%`(config, admininstr*)
     -- if ((i + ((n * $zsize(zt)) / 8)) > |$data(z, y).DATA_datainst|)
 
   ;; 8-reduction.watsup
-  rule array.new_data-num{z : state, i : nat, n : n, x : idx, y : idx, zt : storagetype, c^n : zval_((!($cunpack(zt)) : consttype <: storagetype))^n, mut : mut}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr(I32_numtype, `%`_num_(n)) ARRAY.NEW_DATA_admininstr(x, y)]), ($const(!($cunpack(zt)), c) : instr <: admininstr)^n{c : zval_((!($cunpack(zt)) : consttype <: storagetype))} :: [ARRAY.NEW_FIXED_admininstr(x, `%`_u32(n))])
+  rule array.new_data-num{z : state, i : nat, n : n, x : idx, y : idx, zt : storagetype, c^n : zval_(zt)^n, mut : mut}:
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr(I32_numtype, `%`_num_(n)) ARRAY.NEW_DATA_admininstr(x, y)]), ($const(!($cunpack(zt)), $unpackconst(zt, c)) : instr <: admininstr)^n{c : zval_(zt)} :: [ARRAY.NEW_FIXED_admininstr(x, `%`_u32(n))])
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
-    -- if ($concat_(syntax byte, $zbytes(zt, $packconst(zt, c))^n{c : zval_((!($cunpack(zt)) : consttype <: storagetype))}) = $data(z, y).DATA_datainst[i : ((n * $zsize(zt)) / 8)])
+    -- if ($concat_(syntax byte, $zbytes(zt, c)^n{c : zval_(zt)}) = $data(z, y).DATA_datainst[i : ((n * $zsize(zt)) / 8)])
 
   ;; 8-reduction.watsup
   rule array.get-null{z : state, ht : heaptype, i : nat, sx? : sx?, x : idx}:
@@ -15932,11 +15953,11 @@ relation Step_read: `%~>%`(config, admininstr*)
     -- if (n = 0)
 
   ;; 8-reduction.watsup
-  rule array.init_data-num{z : state, a : addr, i : nat, j : nat, n : n, x : idx, y : idx, zt : storagetype, c : zval_((!($cunpack(zt)) : consttype <: storagetype)), mut : mut}:
-    `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr(I32_numtype, `%`_num_(j)) CONST_admininstr(I32_numtype, `%`_num_(n)) ARRAY.INIT_DATA_admininstr(x, y)]), [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_(i)) ($const(!($cunpack(zt)), c) : instr <: admininstr) ARRAY.SET_admininstr(x) REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_((i + 1))) CONST_admininstr(I32_numtype, `%`_num_((j + ($zsize(zt) / 8)))) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) ARRAY.INIT_DATA_admininstr(x, y)])
+  rule array.init_data-num{z : state, a : addr, i : nat, j : nat, n : n, x : idx, y : idx, zt : storagetype, c : zval_(zt), mut : mut}:
+    `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr(I32_numtype, `%`_num_(j)) CONST_admininstr(I32_numtype, `%`_num_(n)) ARRAY.INIT_DATA_admininstr(x, y)]), [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_(i)) ($const(!($cunpack(zt)), $unpackconst(zt, c)) : instr <: admininstr) ARRAY.SET_admininstr(x) REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_((i + 1))) CONST_admininstr(I32_numtype, `%`_num_((j + ($zsize(zt) / 8)))) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) ARRAY.INIT_DATA_admininstr(x, y)])
     -- otherwise
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
-    -- if ($zbytes(zt, $packconst(zt, c)) = $data(z, y).DATA_datainst[j : ($zsize(zt) / 8)])
+    -- if ($zbytes(zt, c) = $data(z, y).DATA_datainst[j : ($zsize(zt) / 8)])
 
   ;; 8-reduction.watsup
   rule local.get{z : state, x : idx, val : val}:
@@ -18370,6 +18391,13 @@ def $packconst(storagetype : storagetype, zval_ : zval_((!($cunpack(storagetype)
   def $packconst{consttype : consttype, c : zval_((!($cunpack((consttype : consttype <: storagetype))) : consttype <: storagetype))}((consttype : consttype <: storagetype), c) = c
   ;; 3-numerics.watsup
   def $packconst{packtype : packtype, c : zval_((!($cunpack((packtype : packtype <: storagetype))) : consttype <: storagetype))}((packtype : packtype <: storagetype), c) = $packnum((packtype : packtype <: lanetype), c)
+
+;; 3-numerics.watsup
+def $unpackconst(storagetype : storagetype, zval_ : zval_(storagetype)) : zval_((!($cunpack(storagetype)) : consttype <: storagetype))
+  ;; 3-numerics.watsup
+  def $unpackconst{consttype : consttype, c : zval_((consttype : consttype <: storagetype))}((consttype : consttype <: storagetype), c) = c
+  ;; 3-numerics.watsup
+  def $unpackconst{packtype : packtype, c : zval_((packtype : packtype <: storagetype))}((packtype : packtype <: storagetype), c) = $unpacknum((packtype : packtype <: lanetype), c)
 
 ;; 3-numerics.watsup
 def $lanes_(shape : shape, vec_ : vec_(V128_vnn)) : lane_($lanetype(shape))*
@@ -21459,11 +21487,11 @@ relation Step_read: `%~>%`(config, admininstr*)
     -- if ((i + ((n * $zsize(zt)) / 8)) > |$data(z, y).DATA_datainst|)
 
   ;; 8-reduction.watsup
-  rule array.new_data-num{z : state, i : nat, n : n, x : idx, y : idx, zt : storagetype, c^n : zval_((!($cunpack(zt)) : consttype <: storagetype))^n, mut : mut}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr(I32_numtype, `%`_num_(n)) ARRAY.NEW_DATA_admininstr(x, y)]), ($const(!($cunpack(zt)), c) : instr <: admininstr)^n{c : zval_((!($cunpack(zt)) : consttype <: storagetype))} :: [ARRAY.NEW_FIXED_admininstr(x, `%`_u32(n))])
-    -- (if ($cunpack(zt) =/= ?()))^n{c : zval_((!($cunpack(zt)) : consttype <: storagetype))}
+  rule array.new_data-num{z : state, i : nat, n : n, x : idx, y : idx, zt : storagetype, c^n : zval_(zt)^n, mut : mut}:
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr(I32_numtype, `%`_num_(n)) ARRAY.NEW_DATA_admininstr(x, y)]), ($const(!($cunpack(zt)), $unpackconst(zt, c)) : instr <: admininstr)^n{c : zval_(zt)} :: [ARRAY.NEW_FIXED_admininstr(x, `%`_u32(n))])
+    -- (if ($cunpack(zt) =/= ?()))^n{c : zval_(zt)}
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
-    -- if ($concat_(syntax byte, $zbytes(zt, $packconst(zt, c))^n{c : zval_((!($cunpack(zt)) : consttype <: storagetype))}) = $data(z, y).DATA_datainst[i : ((n * $zsize(zt)) / 8)])
+    -- if ($concat_(syntax byte, $zbytes(zt, c)^n{c : zval_(zt)}) = $data(z, y).DATA_datainst[i : ((n * $zsize(zt)) / 8)])
 
   ;; 8-reduction.watsup
   rule array.get-null{z : state, ht : heaptype, i : nat, sx? : sx?, x : idx}:
@@ -21604,12 +21632,12 @@ relation Step_read: `%~>%`(config, admininstr*)
     -- if (n = 0)
 
   ;; 8-reduction.watsup
-  rule array.init_data-num{z : state, a : addr, i : nat, j : nat, n : n, x : idx, y : idx, zt : storagetype, c : zval_((!($cunpack(zt)) : consttype <: storagetype)), mut : mut}:
-    `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr(I32_numtype, `%`_num_(j)) CONST_admininstr(I32_numtype, `%`_num_(n)) ARRAY.INIT_DATA_admininstr(x, y)]), [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_(i)) ($const(!($cunpack(zt)), c) : instr <: admininstr) ARRAY.SET_admininstr(x) REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_((i + 1))) CONST_admininstr(I32_numtype, `%`_num_((j + ($zsize(zt) / 8)))) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) ARRAY.INIT_DATA_admininstr(x, y)])
+  rule array.init_data-num{z : state, a : addr, i : nat, j : nat, n : n, x : idx, y : idx, zt : storagetype, c : zval_(zt), mut : mut}:
+    `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr(I32_numtype, `%`_num_(j)) CONST_admininstr(I32_numtype, `%`_num_(n)) ARRAY.INIT_DATA_admininstr(x, y)]), [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_(i)) ($const(!($cunpack(zt)), $unpackconst(zt, c)) : instr <: admininstr) ARRAY.SET_admininstr(x) REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_((i + 1))) CONST_admininstr(I32_numtype, `%`_num_((j + ($zsize(zt) / 8)))) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) ARRAY.INIT_DATA_admininstr(x, y)])
     -- if ($cunpack(zt) =/= ?())
     -- otherwise
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
-    -- if ($zbytes(zt, $packconst(zt, c)) = $data(z, y).DATA_datainst[j : ($zsize(zt) / 8)])
+    -- if ($zbytes(zt, c) = $data(z, y).DATA_datainst[j : ($zsize(zt) / 8)])
 
   ;; 8-reduction.watsup
   rule local.get{z : state, x : idx, val : val}:
@@ -24058,6 +24086,13 @@ def $packconst(storagetype : storagetype, zval_ : zval_((!($cunpack(storagetype)
   def $packconst{consttype : consttype, c : zval_((!($cunpack((consttype : consttype <: storagetype))) : consttype <: storagetype))}((consttype : consttype <: storagetype), c) = c
   ;; 3-numerics.watsup
   def $packconst{packtype : packtype, c : zval_((!($cunpack((packtype : packtype <: storagetype))) : consttype <: storagetype))}((packtype : packtype <: storagetype), c) = $packnum((packtype : packtype <: lanetype), c)
+
+;; 3-numerics.watsup
+def $unpackconst(storagetype : storagetype, zval_ : zval_(storagetype)) : zval_((!($cunpack(storagetype)) : consttype <: storagetype))
+  ;; 3-numerics.watsup
+  def $unpackconst{consttype : consttype, c : zval_((consttype : consttype <: storagetype))}((consttype : consttype <: storagetype), c) = c
+  ;; 3-numerics.watsup
+  def $unpackconst{packtype : packtype, c : zval_((packtype : packtype <: storagetype))}((packtype : packtype <: storagetype), c) = $unpacknum((packtype : packtype <: lanetype), c)
 
 ;; 3-numerics.watsup
 def $lanes_(shape : shape, vec_ : vec_(V128_vnn)) : lane_($lanetype(shape))*
@@ -27193,11 +27228,11 @@ relation Step_read: `%~>%`(config, admininstr*)
     -- if ((i + ((n * $zsize(zt)) / 8)) > |$data(z, y).DATA_datainst|)
 
   ;; 8-reduction.watsup
-  rule array.new_data-num{z : state, i : nat, n : n, x : idx, y : idx, zt : storagetype, c^n : zval_((!($cunpack(zt)) : consttype <: storagetype))^n, mut : mut}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr(I32_numtype, `%`_num_(n)) ARRAY.NEW_DATA_admininstr(x, y)]), ($const(!($cunpack(zt)), c) : instr <: admininstr)^n{c : zval_((!($cunpack(zt)) : consttype <: storagetype))} :: [ARRAY.NEW_FIXED_admininstr(x, `%`_u32(n))])
+  rule array.new_data-num{z : state, i : nat, n : n, x : idx, y : idx, zt : storagetype, c^n : zval_(zt)^n, mut : mut}:
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr(I32_numtype, `%`_num_(n)) ARRAY.NEW_DATA_admininstr(x, y)]), ($const(!($cunpack(zt)), $unpackconst(zt, c)) : instr <: admininstr)^n{c : zval_(zt)} :: [ARRAY.NEW_FIXED_admininstr(x, `%`_u32(n))])
     -- where ARRAY_comptype(`%%`_arraytype(mut, zt)) = $expanddt($type(z, x))
-    -- (if ($cunpack(zt) =/= ?()))^n{c : zval_((!($cunpack(zt)) : consttype <: storagetype))}
-    -- where $concat_(syntax byte, $zbytes(zt, $packconst(zt, c))^n{c : zval_((!($cunpack(zt)) : consttype <: storagetype))}) = $data(z, y).DATA_datainst[i : ((n * $zsize(zt)) / 8)]
+    -- (if ($cunpack(zt) =/= ?()))^n{c : zval_(zt)}
+    -- where $concat_(syntax byte, $zbytes(zt, c)^n{c : zval_(zt)}) = $data(z, y).DATA_datainst[i : ((n * $zsize(zt)) / 8)]
 
   ;; 8-reduction.watsup
   rule array.get-null{z : state, ht : heaptype, i : nat, sx? : sx?, x : idx}:
@@ -27338,12 +27373,12 @@ relation Step_read: `%~>%`(config, admininstr*)
     -- if (n = 0)
 
   ;; 8-reduction.watsup
-  rule array.init_data-num{z : state, a : addr, i : nat, j : nat, n : n, x : idx, y : idx, zt : storagetype, c : zval_((!($cunpack(zt)) : consttype <: storagetype)), mut : mut}:
-    `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr(I32_numtype, `%`_num_(j)) CONST_admininstr(I32_numtype, `%`_num_(n)) ARRAY.INIT_DATA_admininstr(x, y)]), [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_(i)) ($const(!($cunpack(zt)), c) : instr <: admininstr) ARRAY.SET_admininstr(x) REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_((i + 1))) CONST_admininstr(I32_numtype, `%`_num_((j + ($zsize(zt) / 8)))) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) ARRAY.INIT_DATA_admininstr(x, y)])
+  rule array.init_data-num{z : state, a : addr, i : nat, j : nat, n : n, x : idx, y : idx, zt : storagetype, c : zval_(zt), mut : mut}:
+    `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr(I32_numtype, `%`_num_(j)) CONST_admininstr(I32_numtype, `%`_num_(n)) ARRAY.INIT_DATA_admininstr(x, y)]), [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_(i)) ($const(!($cunpack(zt)), $unpackconst(zt, c)) : instr <: admininstr) ARRAY.SET_admininstr(x) REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, `%`_num_((i + 1))) CONST_admininstr(I32_numtype, `%`_num_((j + ($zsize(zt) / 8)))) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) ARRAY.INIT_DATA_admininstr(x, y)])
     -- otherwise
     -- where ARRAY_comptype(`%%`_arraytype(mut, zt)) = $expanddt($type(z, x))
     -- if ($cunpack(zt) =/= ?())
-    -- where $zbytes(zt, $packconst(zt, c)) = $data(z, y).DATA_datainst[j : ($zsize(zt) / 8)]
+    -- where $zbytes(zt, c) = $data(z, y).DATA_datainst[j : ($zsize(zt) / 8)]
 
   ;; 8-reduction.watsup
   rule local.get{z : state, x : idx, val : val}:

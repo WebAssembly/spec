@@ -1251,6 +1251,7 @@ warning: definition `trunc_sat` was never spliced
 warning: definition `type` was never spliced
 warning: definition `unop` was never spliced
 warning: definition `unpack` was never spliced
+warning: definition `unpackconst` was never spliced
 warning: definition `unpackfield` was never spliced
 warning: definition `unpacknum` was never spliced
 warning: definition `unrolldt` was never spliced
@@ -1619,6 +1620,7 @@ warning: definition prose `testop` was never spliced
 warning: definition prose `type` was never spliced
 warning: definition prose `unop` was never spliced
 warning: definition prose `unpack` was never spliced
+warning: definition prose `unpackconst` was never spliced
 warning: definition prose `unpackfield` was never spliced
 warning: definition prose `unpacknum` was never spliced
 warning: definition prose `unrolldt` was never spliced
