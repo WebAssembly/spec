@@ -14,7 +14,10 @@ import re
 xref_re = re.compile('\\\\xref\{([^}]*)\}\{([^}]*)\}', re.M)
 
 def html_hyperlink(file, id):
-  return '\\href{../%s.html#%s}' % (file, id.replace('_', '-'))
+  if "/" in file:
+    return '\\href{../../core/%s.html#%s}' % (file, id.replace('_', '-'))
+  else:
+    return '\\href{%s.html#%s}' % (file, id.replace('_', '-'))
 
 def html_transform_math_xref(node):
   new_text = xref_re.sub(lambda m: html_hyperlink(m.group(1), m.group(2)), node.astext())
@@ -25,7 +28,10 @@ def latex_hyperlink(file, id):
   id = text_type(id).translate(tex_replace_map).\
     encode('ascii', 'backslashreplace').decode('ascii').\
     replace('_', '-').replace('\\', '_')
-  return '\\hyperref[%s:%s]' % (file, id)
+  if "/" in file:
+    return '\\hyperref[Core-%s:%s]' % (file, id)
+  else:
+    return '\\hyperref[%s:%s]' % (file, id)
 
 def latex_transform_math_xref(node):
   new_text = xref_re.sub(lambda m: latex_hyperlink(m.group(1), m.group(2)), node.astext())

@@ -239,63 +239,6 @@ It may only be placed on a declaration that declares exactly one local.
    \end{array}
 
 
-.. index:: ! branch hints section, hint
-.. _binary-branchhintsec:
-
-Branch Hint Section
-~~~~~~~~~~~~~~~~~~~~
-
-The *branch hint section* is a :ref:`custom section <binary-customsec>` whose name string is :math:`\text{metadata.code.branch\_hint}`.
-The branch hints section should appear only once in a module, and only before the :ref:`code section <binary-codesec>`.
-
-The purpose of this section is to aid the compilation of conditional branch instructions, by providing a hint that a branch is very likely (or unlikely) to be taken.
-
-The section contains a vector of *function branch hints* each representing the branch hints for a single function.
-
-Each *function branch hints* structure consists of
-
-* the :ref:`function index <binary-funcidx>` of the function the hints are referring to,
-* a vector of *branch hint* for the function.
-
-Elements of the vector of *function branch hints* must appear in increasing function index order,
-and a function index can appear at most once.
-
-Each *branch hint* structure consists of
-
-* the |U32| byte offset of the hinted instruction from the beginning of the function body,
-* A |U32| with value '1',
-* a |U32| indicating the meaning of the hint:
-
-=====  ===========================================
-Value  Meaning                                    
-=====  ===========================================
- 0x00  branch likely not taken
- 0x01  branch likely taken
-=====  ===========================================
-
-Elements of the vector of *branch hint* must appear in increasing byte offset order,
-and a byte offset can appear at most once. A |BRIF| or |IF| instruction must be present
-in the code section at the specified offset.
-
-.. math::
-   \begin{array}{llcll}
-   \production{branch hint section} & \Bbranchhintsec &::=&
-     \Bsection_0(\Bbranchhintdata) \\
-   \production{branch hint data} & \Bbranchhintdata &::=&
-     n{:}\Bname & (\iff n = \text{metadata.code.branch\_hint}) \\ &&&
-     \Bvec(\Bfuncbranchhints) \\
-   \production{function branch hints} & \Bfuncbranchhints &::=&
-     fidx{:}\Bfuncidx~\Bvec(\Bbranchhint) \\
-   \production{branch hint} & \Bbranchhint &::=&
-     \X{instoff}{:}\Bu32 ~~ 1{:}\Bu32 ~~ \Bbranchhintkind \\
-   \production{branch hint kind} & \Bbranchhintkind &::=&
-     \hex{00} \\ &&|&
-     \hex{01} \\
-   \end{array}
-.. index:: ! custom annotation, custom section
-.. _text-customannot:
-
-
 Custom Annotations
 ~~~~~~~~~~~~~~~~~~
 
@@ -394,26 +337,3 @@ Their relative placement will depend on the placement directive given for the :m
       custom section "A"
       custom section "D"
 
-
-.. index:: ! branch hints annotation, hint
-.. _text-branchhintannot:
-
-Branch Hint Annotations
-~~~~~~~~~~~~~~~~~~~~~~~
-
-*Branch Hint annotations* are the textual analogue to the :ref:`branch hint section <binary-branchhintsec>` and provide a textual representation for it.
-Consequently, their id is :math:`\T{@metadata.code.branch\_hint}`.
-
-Branch hint annotations are allowed only on |BRIF| and |IF| instructions,
-and at most one branch hint annotation may be given per instruction.
-
-Branch hint annotations have the following format:
-
-.. math::
-   \begin{array}{llclll}
-   \production{branch hint annotation} & \Tbranchhintannot &::=&
-     \text{(@metadata.code.branch\_hint}~\Tbranchhintstr~\text{)} \\
-   \production{branch hint string} & \Tbranchhintstr &::=&
-     \text{"\backslash 00"} \\ &&|&
-     \text{"\backslash 01"} \\
-   \end{array}

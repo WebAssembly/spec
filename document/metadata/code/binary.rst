@@ -3,6 +3,8 @@
 Binary Format
 =============
 
+.. _binary-codemetadata:
+
 Code Metadata
 -------------
 
@@ -29,6 +31,8 @@ section of type *T*.
 Where *funcpos* is the byte offset of the annotation starting from the beginning of the function body, and *data* is a further payload, whose content depends on the type *T*.
 
 *code metadata function* entries must appear in order of increasing *function id*, and duplicate id values are not allowed. *code metadata item* entries must appear in order of increasing *instruction offset*, and duplicate offset values are not allowed.
+
+.. _binary-branchhints:
 
 Branch Hints
 ~~~~~~~~~~~~

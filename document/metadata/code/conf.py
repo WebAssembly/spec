@@ -19,6 +19,8 @@ import os
 import sys
 from datetime import date
 
+core_dir = os.path.abspath('../../core')
+sys.path.insert(0, core_dir)
 pwd = os.path.abspath('.')
 sys.path.insert(0, pwd)
 
@@ -294,7 +296,7 @@ latex_elements = {
 
    # Additional stuff for the LaTeX preamble.
    # Don't type-set cross references with emphasis.
-   'preamble': '\\renewcommand\\sphinxcrossref[1]{#1}\n',
+   'preamble': '\\renewcommand\\sphinxcrossref[1]{#1}\n\\externaldocument[Core-]{'+core_dir+'/_build/latex/WebAssembly}[https://webassembly.github.io//'+repo+'/core/_download/WebAssembly.pdf]\n',
 
    # Latex figure (float) alignment
   'figure_align': 'htbp',
@@ -303,7 +305,9 @@ latex_elements = {
    'fncychap': '\\usepackage[Sonny]{fncychap}',
 
    # Allow chapters to start on even pages
-   'extraclassoptions': 'openany'
+   'extraclassoptions': 'openany',
+
+   'extrapackages': '\\usepackage{xr-hyper}',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
@@ -489,6 +493,7 @@ epub_exclude_files = ['search.html']
 rst_prolog = """
 .. |issuelink| replace:: https://github.com/webassembly/""" + repo + """/issues/
 .. |pagelink| replace:: https://webassembly.github.io/""" + repo + """/core/
+.. include:: /""" + core_dir + """/util/macros.def
 .. include:: /""" + pwd + """/util/macros.def
 """
 

@@ -3,6 +3,8 @@
 Text Format
 ===========
 
+.. _text-codemetadata:
+
 Code Metadata
 -------------
 
@@ -15,6 +17,7 @@ attached to the first instruction that follows them.
    \production{code metadata annotation} & \Tcodemetadataannot(\B{T}) &::=&
      \text{(@metadata.code.T}~\X{data}{:}\B{T}~\text{)} \\
    \end{array}
+.. index:: ! code metadata annotation
 
 Where `T` is the type of the item, and `data` is a byte string containing the same
 payload as in the binary format.

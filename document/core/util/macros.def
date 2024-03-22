@@ -1271,14 +1271,6 @@
 .. |Bfuncnamesubsec| mathdef:: \xref{appendix/custom}{binary-funcnamesec}{\B{funcnamesubsec}}
 .. |Blocalnamesubsec| mathdef:: \xref{appendix/custom}{binary-localnamesec}{\B{localnamesubsec}}
 
-.. Branch Hints Section, non-terminals
-
-.. |Bbranchhintsec| mathdef:: \xref{appendix/custom}{binary-branchhintsec}{\B{branchhintsec}}
-.. |Bbranchhintdata| mathdef:: \xref{appendix/custom}{binary-branchhintsec}{\B{branchhintdata}}
-.. |Bfuncbranchhints| mathdef:: \xref{appendix/custom}{binary-branchhintssec}{\B{funcbranchhints}}
-.. |Bbranchhint| mathdef:: \xref{appendix/custom}{binary-branchhintsec}{\B{branchhint}}
-.. |Bbranchhintkind| mathdef:: \xref{appendix/custom}{binary-branchhintsec}{\B{branchhintkind}}
-
 .. Annotations
 .. -----------
 
@@ -1296,11 +1288,6 @@
 .. |Tfuncnameannot| mathdef:: \xref{appendix/custom}{text-funcnameannot}{\T{funcnameannot}}
 .. |Tparamnameannot| mathdef:: \xref{appendix/custom}{text-paramnameannot}{\T{paramnameannot}}
 .. |Tlocalnameannot| mathdef:: \xref{appendix/custom}{text-localnameannot}{\T{localnameannot}}
-
-.. Branch Hint annotations, non-terminals
-
-.. |Tbranchhintannot| mathdef:: \xref{appendix/custom}{text-branchhintannot}{\T{branchhintannot}}
-.. |Tbranchhintstr| mathdef:: \xref{appendix/custom}{text-branchhintannot}{\T{branchhintstr}}
 
 
 .. Embedding
