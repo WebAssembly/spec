@@ -5852,21 +5852,20 @@ execution_of_LABEL_
 3. Exit current context.
 4. Push the values val* to the stack.
 
-execution_of_BR n_u0
+execution_of_BR l
 1. Let L be the current label.
 2. Let n be the arity of L.
 3. Let instr'* be the continuation of L.
-4. Pop all values admin_u1* from the stack.
+4. Pop all values admin_u0* from the stack.
 5. Exit current context.
-6. If ((n_u0 is 0) and (|admin_u1*| ≥ n)), then:
-  a. Let val'* ++ val^n be admin_u1*.
+6. If ((l is 0) and (|admin_u0*| ≥ n)), then:
+  a. Let val'* ++ val^n be admin_u0*.
   b. Push the values val^n to the stack.
   c. Execute the sequence (instr'*).
-7. If (n_u0 ≥ 1), then:
-  a. Let l be (n_u0 - 1).
-  b. Let val* be admin_u1*.
-  c. Push the values val* to the stack.
-  d. Execute the instruction (BR l).
+7. If (l > 0), then:
+  a. Let val* be admin_u0*.
+  b. Push the values val* to the stack.
+  c. Execute the instruction (BR (l - 1)).
 
 execution_of_BR_IF l
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -6251,29 +6250,32 @@ execution_of_LOOP bt instr*
   a. Push the values val^k to the stack.
 
 execution_of_BR_ON_CAST l rt_1 rt_2
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value ref from the stack.
-3. Let rt be $ref_type_of(ref).
-4. If rt does not match $inst_reftype($moduleinst(), rt_2), then:
+1. Let f be the current frame.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value ref from the stack.
+4. Let rt be $ref_type_of(ref).
+5. If rt does not match $inst_reftype(f.MODULE, rt_2), then:
   a. Push the value ref to the stack.
-5. Else:
+6. Else:
   a. Push the value ref to the stack.
   b. Execute the instruction (BR l).
 
 execution_of_BR_ON_CAST_FAIL l rt_1 rt_2
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value ref from the stack.
-3. Let rt be $ref_type_of(ref).
-4. If rt matches $inst_reftype($moduleinst(), rt_2), then:
+1. Let f be the current frame.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value ref from the stack.
+4. Let rt be $ref_type_of(ref).
+5. If rt matches $inst_reftype(f.MODULE, rt_2), then:
   a. Push the value ref to the stack.
-5. Else:
+6. Else:
   a. Push the value ref to the stack.
   b. Execute the instruction (BR l).
 
 execution_of_CALL x
 1. Assert: Due to validation, (x < |$funcaddr()|).
-2. Push the value (REF.FUNC_ADDR $funcaddr()[x]) to the stack.
-3. Execute the instruction (CALL_REF ?()).
+2. Let a be $funcaddr()[x].
+3. Push the value (REF.FUNC_ADDR a) to the stack.
+4. Execute the instruction (CALL_REF ?()).
 
 execution_of_CALL_REF
 1. YetI: TODO: It is likely that the value stack of two rules are different.
@@ -6293,9 +6295,7 @@ execution_of_RETURN_CALL_REF x?
   a. Pop the value admin_u0 from the stack.
   b. Pop all values admin_u1* from the stack.
   c. Exit current context.
-  d. If admin_u0 is of the case REF.NULL, then:
-    1) Trap.
-  e. If admin_u0 is of the case REF.FUNC_ADDR, then:
+  d. If admin_u0 is of the case REF.FUNC_ADDR, then:
     1) Let (REF.FUNC_ADDR a) be admin_u0.
     2) If (a < |$funcinst()|), then:
       a) Assert: Due to validation, $expanddt($funcinst()[a].TYPE) is of the case FUNC.
@@ -6306,6 +6306,8 @@ execution_of_RETURN_CALL_REF x?
         2. Push the values val^n to the stack.
         3. Push the value (REF.FUNC_ADDR a) to the stack.
         4. Execute the instruction (CALL_REF x?).
+  e. If admin_u0 is of the case REF.NULL, then:
+    1) Trap.
 
 execution_of_REF.NULL (_IDX x)
 1. Push the value (REF.NULL $type(x)) to the stack.
@@ -6614,7 +6616,8 @@ execution_of_LOCAL.GET x
 3. Push the value val to the stack.
 
 execution_of_GLOBAL.GET x
-1. Push the value $global(x).VALUE to the stack.
+1. Let val be $global(x).VALUE.
+2. Push the value val to the stack.
 
 execution_of_TABLE.GET x
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -6774,7 +6777,7 @@ execution_of_VLOAD_LANE N x mo j
   d. Push the value (V128.CONST c) to the stack.
 
 execution_of_MEMORY.SIZE x
-1. Let ((n · 64) · $Ki()) be |$mem(x).DATA|.
+1. Let (n · (64 · $Ki())) be |$mem(x).DATA|.
 2. Push the value (I32.CONST n) to the stack.
 
 execution_of_MEMORY.FILL x

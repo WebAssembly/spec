@@ -7,6 +7,76 @@ Instructions
 WebAssembly computation is performed by executing individual :ref:`instructions <syntax-instr>`.
 
 
+.. index:: parametric instruction, value
+   pair: execution; instruction
+   single: abstract syntax; instruction
+.. _exec-instr-parametric:
+
+Parametric Instructions
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. _exec-nop:
+
+:math:`\NOP`
+............
+
+1. Do nothing.
+
+$${rule: {Step_pure/nop}}
+
+
+.. _exec-unreachable:
+
+:math:`\UNREACHABLE`
+....................
+
+1. Trap.
+
+$${rule: {Step_pure/unreachable}}
+
+
+.. _exec-drop:
+
+:math:`\DROP`
+.............
+
+1. Assert: due to :ref:`validation <valid-drop>`, a value is on the top of the stack.
+
+2. Pop the value :math:`\val` from the stack.
+
+$${rule: Step_pure/drop}
+
+
+.. _exec-select:
+
+:math:`\SELECT~(t^\ast)^?`
+..........................
+
+1. Assert: due to :ref:`validation <valid-select>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+
+2. Pop the value :math:`\I32.\CONST~c` from the stack.
+
+3. Assert: due to :ref:`validation <valid-select>`, two more values (of the same :ref:`value type <syntax-valtype>`) are on the top of the stack.
+
+4. Pop the value :math:`\val_2` from the stack.
+
+5. Pop the value :math:`\val_1` from the stack.
+
+6. If :math:`c` is not :math:`0`, then:
+
+   a. Push the value :math:`\val_1` back to the stack.
+
+7. Else:
+
+   a. Push the value :math:`\val_2` back to the stack.
+
+$${rule: {Step_pure/select-*}}
+
+.. note::
+   In future versions of WebAssembly, |SELECT| may allow more than one value per choice.
+
+
+
 .. index:: numeric instruction, determinism, trap, NaN, value, value type
    pair: execution; instruction
    single: abstract syntax; instruction
@@ -868,32 +938,6 @@ $${rule: {Step_read/array.len-*}}
 
 $${rule: {Step_read/array.fill-*}}
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   S; (\REFARRAYADDR~a)~(\I32.\CONST~d)~\val~(\I32.\CONST~n)~(\ARRAYFILL~x)
-     \quad\stepto\quad \TRAP
-     \\ \qquad
-     (\iff d + n > |S.\SARRAYS[a].\AIFIELDS|)
-   \\[1ex]
-   S; (\REFARRAYADDR~a)~(\I32.\CONST~d)~\val~(\I32.\CONST~0)~(\ARRAYFILL~x)
-     \quad\stepto\quad S; \epsilon
-     \\ \qquad
-     (\otherwise)
-   \\[1ex]
-   S; (\REFARRAYADDR~a)~(\I32.\CONST~d)~\val~(\I32.\CONST~n+1)~(\ARRAYFILL~x)
-     \quad\stepto
-     \\ \quad S;
-       \begin{array}[t]{@{}l@{}}
-       (\REFARRAYADDR~a)~(\I32.\CONST~d)~\val~(\ARRAYSET~x) \\
-       (\REFARRAYADDR~a)~(\I32.\CONST~d+1)~\val~(\I32.\CONST~n)~(\ARRAYFILL~x) \\
-       \end{array}
-     \\ \qquad
-     (\otherwise)
-   \\[1ex]
-   S; (\REFNULL~t)~(\I32.\CONST~d)~\val~(\I32.\CONST~n)~(\ARRAYFILL~x) \quad\stepto\quad \TRAP
-   \end{array}
-
 
 .. _exec-array.copy:
 
@@ -1020,57 +1064,11 @@ $${rule: {Step_read/array.fill-*}}
 
 $${rule: {Step_read/array.copy-*}}
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   S; F; (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y)
-     \quad\stepto\quad \TRAP
-     \\ \qquad
-     (\iff d + n > |S.\SARRAYS[a_1].\AIFIELDS| \vee s + n > |S.\SARRAYS[a_2].\AIFIELDS|)
-   \\[1ex]
-   S; F; (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\ARRAYCOPY~x~y)
-     \quad\stepto\quad S; \epsilon
-     \\ \qquad
-     (\otherwise)
-   \\[1ex]
-   S; F; (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\ARRAYCOPY~x~y)
-     \quad\stepto
-     \\ \quad
-       \begin{array}[t]{@{}l@{}}
-       (\REFARRAYADDR~a_1)~(\I32.\CONST~d) \\
-       (\REFARRAYADDR~a_2)~(\I32.\CONST~s)~\getfield(\X{st}) \\
-       (\ARRAYSET~x) \\
-       (\REFARRAYADDR~a_1)~(\I32.\CONST~d+1)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \\
-       \end{array}
-     \\ \qquad
-     (\otherwise, \iff d \leq s \land F.\AMODULE.\MITYPES[y] = \TARRAY~\mut~\X{st}) \\
-   \\[1ex]
-   S; F; (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\ARRAYCOPY~x~y)
-     \quad\stepto
-     \\ \quad
-       \begin{array}[t]{@{}l@{}}
-       (\REFARRAYADDR~a_1)~(\I32.\CONST~d+n) \\
-       (\REFARRAYADDR~a_2)~(\I32.\CONST~s+n)~\getfield(\X{st}) \\
-       (\ARRAYSET~x) \\
-       (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \\
-       \end{array}
-     \\ \qquad
-     (\otherwise, \iff d > s \land F.\AMODULE.\MITYPES[y] = \TARRAY~\mut~\X{st}) \\
-   \\[1ex]
-   S; F; (\REFNULL~t)~(\I32.\CONST~d)~\val~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \quad\stepto\quad \TRAP
-   \\[1ex]
-   S; F; \val~(\I32.\CONST~d)~(\REFNULL~t)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \quad\stepto\quad \TRAP
-   \end{array}
-
 Where:
 
-.. _aux-getfield:
+.. _aux-sx:
 
-.. math::
-   \begin{array}{lll}
-   \getfield(\valtype) &=& \ARRAYGET~y \\
-   \getfield(\packedtype) &=& \ARRAYGETU~y \\
-   \end{array}
+$${definition: sx}
 
 
 .. _exec-array.init_data:
@@ -1158,39 +1156,6 @@ Where:
 
 $${rule: {Step_read/array.init_data-*}}
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYINITDATA~x~y) \quad\stepto\quad \TRAP
-     \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & d + n > |S.\SARRAYS[a].\AIFIELDS| \\
-      \vee & (F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft} \land
-              s + n\cdot|\X{ft}|/8 > |S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA|))
-     \end{array}
-   \\[1ex]
-   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\ARRAYINITDATA~x~y)
-     \quad\stepto\quad S; F; \epsilon
-     \\ \qquad
-     (\otherwise)
-   \\[1ex]
-   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\ARRAYINITDATA~x~y)
-     \quad\stepto
-     \\ \quad S; F;
-     \begin{array}[t]{@{}l@{}}
-     (\REFARRAYADDR~a)~(\I32.\CONST~d)~(t.\CONST~c)~(\ARRAYSET~x) \\
-     (\REFARRAYADDR~a)~(\I32.\CONST~d+1)~(\I32.\CONST~s+|\X{ft}|/8)~(\I32.\CONST~n)~(\ARRAYINITDATA~x~y) \\
-     \end{array}
-     \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\otherwise, \iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft} \\
-      \land & t = \unpacktype(\X{ft}) \\
-      \land & \bytes_{\X{ft}}(c) = S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA[s \slice |\X{ft}|/8]
-     \end{array}
-   \\[1ex]
-   S; F; (\REFNULL~t)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYINITDATA~x~y) \quad\stepto\quad \TRAP
-   \end{array}
-
 
 .. _exec-array.init_elem:
 
@@ -1267,34 +1232,6 @@ $${rule: {Step_read/array.init_data-*}}
 
 $${rule: {Step_read/array.init_elem-*}}
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYINITELEM~x~y) \quad\stepto\quad \TRAP
-     \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & d + n > |S.\SARRAYS[a].\AIFIELDS| \\
-      \vee & s + n > |S.\SELEMS[F.\AMODULE.\MIELEMS[y]].\EIELEM|)
-     \end{array}
-   \\[1ex]
-   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\ARRAYINITELEM~x~y)
-     \quad\stepto\quad S; F; \epsilon
-     \\ \qquad
-     (\otherwise)
-   \\[1ex]
-   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\ARRAYINITELEM~x~y)
-     \quad\stepto
-     \\ \quad S; F;
-     \begin{array}[t]{@{}l@{}}
-     (\REFARRAYADDR~a)~(\I32.\CONST~d)~\REF~(\ARRAYSET~x) \\
-     (\REFARRAYADDR~a)~(\I32.\CONST~d+1)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\ARRAYINITELEM~x~y) \\
-     \end{array}
-     \\ \qquad
-     (\otherwise, \iff \REF = S.\SELEMS[F.\AMODULE.\MIELEMS[y]].\EIELEM[s])
-   \\[1ex]
-   S; F; (\REFNULL~t)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYINITELEM~x~y) \quad\stepto\quad \TRAP
-   \end{array}
-
 
 .. _exec-any.convert_extern:
 
@@ -1319,12 +1256,6 @@ $${rule: {Step_read/array.init_elem-*}}
 
 $${rule: {Step_pure/any.convert_extern-*}}
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   (\REFNULL \X{ht})~\ANYCONVERTEXTERN &\stepto& (\REFNULL~\ANY) \\
-   (\REFEXTERN~\reff)~\ANYCONVERTEXTERN &\stepto& \reff \\
-   \end{array}
-
 
 .. _exec-extern.convert_any:
 
@@ -1346,12 +1277,6 @@ $${rule: {Step_pure/any.convert_extern-*}}
    b. Push the reference value :math:`\reff'` to the stack.
 
 $${rule: {Step_pure/extern.convert_any-*}}
-
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   (\REFNULL \X{ht})~\EXTERNCONVERTANY &\stepto& (\REFNULL~\EXTERN) \\
-   \reff~\EXTERNCONVERTANY &\stepto& (\REFEXTERN~\reff) & (\iff \reff \neq (\REFNULL \X{ht})) \\
-   \end{array}
 
 
 
@@ -2111,64 +2036,6 @@ where:
    \end{array}
 
 
-.. index:: parametric instructions, value
-   pair: execution; instruction
-   single: abstract syntax; instruction
-.. _exec-instr-parametric:
-
-Parametric Instructions
-~~~~~~~~~~~~~~~~~~~~~~~
-
-.. _exec-drop:
-
-:math:`\DROP`
-.............
-
-1. Assert: due to :ref:`validation <valid-drop>`, a value is on the top of the stack.
-
-2. Pop the value :math:`\val` from the stack.
-
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   \val~~\DROP &\stepto& \epsilon
-   \end{array}
-
-
-.. _exec-select:
-
-:math:`\SELECT~(t^\ast)^?`
-..........................
-
-1. Assert: due to :ref:`validation <valid-select>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
-
-2. Pop the value :math:`\I32.\CONST~c` from the stack.
-
-3. Assert: due to :ref:`validation <valid-select>`, two more values (of the same :ref:`value type <syntax-valtype>`) are on the top of the stack.
-
-4. Pop the value :math:`\val_2` from the stack.
-
-5. Pop the value :math:`\val_1` from the stack.
-
-6. If :math:`c` is not :math:`0`, then:
-
-   a. Push the value :math:`\val_1` back to the stack.
-
-7. Else:
-
-   a. Push the value :math:`\val_2` back to the stack.
-
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   \val_1~\val_2~(\I32\K{.}\CONST~c)~(\SELECT~t^?) &\stepto& \val_1
-     & (\iff c \neq 0) \\
-   \val_1~\val_2~(\I32\K{.}\CONST~c)~(\SELECT~t^?) &\stepto& \val_2
-     & (\iff c = 0) \\
-   \end{array}
-
-.. note::
-   In future versions of WebAssembly, |SELECT| may allow more than one value per choice.
-
-
 .. index:: variable instructions, local index, global index, address, global address, global instance, store, frame, value
    pair: execution; instruction
    single: abstract syntax; instruction
@@ -2190,11 +2057,7 @@ Variable Instructions
 
 4. Push the value :math:`\val` to the stack.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   F; (\LOCALGET~x) &\stepto& F; \val
-     & (\iff F.\ALOCALS[x] = \val) \\
-   \end{array}
+$${rule: Step_read/local.get}
 
 
 .. _exec-local.set:
@@ -2212,11 +2075,7 @@ Variable Instructions
 
 5. Replace :math:`F.\ALOCALS[x]` with the value :math:`\val`.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   F; \val~(\LOCALSET~x) &\stepto& F'; \epsilon
-     & (\iff F' = F \with \ALOCALS[x] = \val) \\
-   \end{array}
+$${rule: Step/local.set}
 
 
 .. _exec-local.tee:
@@ -2234,10 +2093,7 @@ Variable Instructions
 
 5. :ref:`Execute <exec-local.set>` the instruction :math:`\LOCALSET~x`.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   \val~(\LOCALTEE~x) &\stepto& \val~\val~(\LOCALSET~x)
-   \end{array}
+$${rule: Step_pure/local.tee}
 
 
 .. _exec-global.get:
@@ -2259,14 +2115,7 @@ Variable Instructions
 
 7. Push the value :math:`\val` to the stack.
 
-.. math::
-   \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\GLOBALGET~x) &\stepto& S; F; \val
-   \end{array}
-   \\ \qquad
-     (\iff S.\SGLOBALS[F.\AMODULE.\MIGLOBALS[x]].\GIVALUE = \val) \\
-   \end{array}
+$${rule: Step_read/global.get}
 
 
 .. _exec-global.set:
@@ -2290,17 +2139,7 @@ Variable Instructions
 
 8. Replace :math:`\X{glob}.\GIVALUE` with the value :math:`\val`.
 
-.. math::
-   \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   S; F; \val~(\GLOBALSET~x) &\stepto& S'; F; \epsilon
-   \end{array}
-   \\ \qquad
-   (\iff S' = S \with \SGLOBALS[F.\AMODULE.\MIGLOBALS[x]].\GIVALUE = \val) \\
-   \end{array}
-
-.. note::
-   :ref:`Validation <valid-global.set>` ensures that the global is, in fact, marked as mutable.
+$${rule: Step/global.set}
 
 
 .. index:: table instruction, table index, store, frame, address, table address, table instance, element address, element instance, value, integer, limits, reference, reference type
@@ -2338,20 +2177,7 @@ Table Instructions
 
 10. Push the value :math:`\val` to the stack.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\TABLEGET~x) &\stepto& S; F; \val
-   \end{array}
-   \\ \qquad
-     (\iff S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM[i] = \val) \\
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\TABLEGET~x) &\stepto& S; F; \TRAP
-   \end{array}
-   \\ \qquad
-     (\otherwise) \\
-   \end{array}
+$${rule: {Step_read/table.get-*}}
 
 
 .. _exec-table.set:
@@ -2383,20 +2209,7 @@ Table Instructions
 
 11. Replace the element :math:`\X{tab}.\TIELEM[i]` with :math:`\val`.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~\val~(\TABLESET~x) &\stepto& S'; F; \epsilon
-   \end{array}
-   \\ \qquad
-     (\iff S' = S \with \STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM[i] = \val) \\
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~\val~(\TABLESET~x) &\stepto& S; F; \TRAP
-   \end{array}
-   \\ \qquad
-     (\otherwise) \\
-   \end{array}
+$${rule: {Step/table.set-*}}
 
 
 .. _exec-table.size:
@@ -2418,14 +2231,7 @@ Table Instructions
 
 7. Push the value :math:`\I32.\CONST~\X{sz}` to the stack.
 
-.. math::
-   \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\TABLESIZE~x) &\stepto& S; F; (\I32.\CONST~\X{sz})
-   \end{array}
-   \\ \qquad
-     (\iff |S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM| = \X{sz}) \\
-   \end{array}
+$${rule: Step_read/table.size}
 
 
 .. _exec-table.grow:
@@ -2469,23 +2275,7 @@ Table Instructions
 
    a. push the value :math:`\I32.\CONST~\X{err}` to the stack.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   S; F; \val~(\I32.\CONST~n)~(\TABLEGROW~x) &\stepto& S'; F; (\I32.\CONST~\X{sz})
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & F.\AMODULE.\MITABLES[x] = a \\
-     \wedge & \X{sz} = |S.\STABLES[a].\TIELEM| \\
-     \wedge & S' = S \with \STABLES[a] = \growtable(S.\STABLES[a], n, \val)) \\[1ex]
-     \end{array}
-   \\[1ex]
-   \begin{array}{lcl@{\qquad}l}
-   S; F; \val~(\I32.\CONST~n)~(\TABLEGROW~x) &\stepto& S; F; (\I32.\CONST~\signed_{32}^{-1}(-1))
-   \end{array}
-   \end{array}
+$${rule: {Step/table.grow-*}}
 
 .. note::
    The |TABLEGROW| instruction is non-deterministic.
@@ -2545,30 +2335,7 @@ Table Instructions
 
 19. Execute the instruction :math:`\TABLEFILL~x`.
 
-.. math::
-   \begin{array}{l}
-   S; F; (\I32.\CONST~i)~\val~(\I32.\CONST~n)~(\TABLEFILL~x)
-     \quad\stepto\quad S; F; \TRAP
-     \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & i + n > |S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM|) \\[1ex]
-     \end{array}
-   \\[1ex]
-   S; F; (\I32.\CONST~i)~\val~(\I32.\CONST~0)~(\TABLEFILL~x)
-     \quad\stepto\quad S; F; \epsilon
-     \\ \qquad
-     (\otherwise)
-   \\[1ex]
-   S; F; (\I32.\CONST~i)~\val~(\I32.\CONST~n+1)~(\TABLEFILL~x)
-     \quad\stepto
-     \\ \qquad S; F;
-       \begin{array}[t]{@{}l@{}}
-       (\I32.\CONST~i)~\val~(\TABLESET~x) \\
-       (\I32.\CONST~i+1)~\val~(\I32.\CONST~n)~(\TABLEFILL~x) \\
-       \end{array}
-     \\ \qquad
-     (\otherwise) \\
-   \end{array}
+$${rule: {Step_read/table.fill-*}}
 
 
 .. _exec-table.copy:
@@ -2654,42 +2421,7 @@ Table Instructions
 
 21. Execute the instruction :math:`\TABLECOPY~x~y`.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\TABLECOPY~x~y)
-     \quad\stepto\quad S; F; \TRAP
-     \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & s + n > |S.\STABLES[F.\AMODULE.\MITABLES[y]].\TIELEM| \\
-      \vee & d + n > |S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM|) \\[1ex]
-     \end{array}
-   \\[1ex]
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\TABLECOPY~x~y)
-     \quad\stepto\quad S; F; \epsilon
-     \\ \qquad
-     (\otherwise)
-   \\[1ex]
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\TABLECOPY~x~y)
-     \quad\stepto
-     \\ \qquad S; F;
-       \begin{array}[t]{@{}l@{}}
-       (\I32.\CONST~d)~(\I32.\CONST~s)~(\TABLEGET~y)~(\TABLESET~x) \\
-       (\I32.\CONST~d+1)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\TABLECOPY~x~y) \\
-       \end{array}
-     \\ \qquad
-     (\otherwise, \iff d \leq s)
-   \\[1ex]
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\TABLECOPY~x~y)
-     \quad\stepto
-     \\ \qquad S; F;
-       \begin{array}[t]{@{}l@{}}
-       (\I32.\CONST~d+n)~(\I32.\CONST~s+n)~(\TABLEGET~y)~(\TABLESET~x) \\
-       (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\TABLECOPY~x~y) \\
-       \end{array}
-     \\ \qquad
-     (\otherwise, \iff d > s) \\
-   \end{array}
+$${rule: {Step_read/table.copy-*}}
 
 
 .. _exec-table.init:
@@ -2755,32 +2487,7 @@ Table Instructions
 
 27. Execute the instruction :math:`\TABLEINIT~x~y`.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\TABLEINIT~x~y)
-     \quad\stepto\quad S; F; \TRAP
-     \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & s + n > |S.\SELEMS[F.\AMODULE.\MIELEMS[y]].\EIELEM| \\
-      \vee & d + n > |S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM|) \\[1ex]
-     \end{array}
-   \\[1ex]
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\TABLEINIT~x~y)
-     \quad\stepto\quad S; F; \epsilon
-     \\ \qquad
-     (\otherwise)
-   \\[1ex]
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\TABLEINIT~x~y)
-     \quad\stepto
-     \\ \qquad S; F;
-       \begin{array}[t]{@{}l@{}}
-       (\I32.\CONST~d)~\val~(\TABLESET~x) \\
-       (\I32.\CONST~d+1)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\TABLEINIT~x~y) \\
-       \end{array}
-     \\ \qquad
-     (\otherwise, \iff \val = S.\SELEMS[F.\AMODULE.\MIELEMS[y]].\EIELEM[s]) \\
-   \end{array}
+$${rule: {Step_read/table.init-*}}
 
 
 .. _exec-elem.drop:
@@ -2798,15 +2505,7 @@ Table Instructions
 
 5. Replace :math:`S.\SELEMS[a].\EIELEM` with :math:`\epsilon`.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\ELEMDROP~x) &\stepto& S'; F; \epsilon
-   \end{array}
-   \\ \qquad
-     (\iff S' = S \with \SELEMS[F.\AMODULE.\MIELEMS[x]].\EIELEM = \epsilon) \\
-   \end{array}
+$${rule: Step/elem.drop}
 
 
 .. index:: memory instruction, memory index, store, frame, address, memory address, memory instance, value, integer, limits, value type, bit width
@@ -2870,36 +2569,7 @@ Memory Instructions
 
 14. Push the value :math:`t.\CONST~c` to the stack.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(t.\LOAD~x~\memarg) &\stepto& S; F; (t.\CONST~c)
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + |t|/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA| \\
-     \wedge & \bytes_t(c) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA[\X{ea} \slice |t|/8]) \\[1ex]
-     \end{array}
-   \\[1ex]
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(t.\LOAD{N}\K{\_}\sx~x~\memarg) &\stepto&
-     S; F; (t.\CONST~\extend^{\sx}_{N,|t|}(n))
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA| \\
-     \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA[\X{ea} \slice N/8]) \\[1ex]
-     \end{array}
-   \\[1ex]
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(t.\LOAD({N}\K{\_}\sx)^?~x~\memarg) &\stepto& S; F; \TRAP
-   \end{array}
-   \\ \qquad
-     (\otherwise) \\
-   \end{array}
+$${rule: {Step_read/load-*}}
 
 
 .. _exec-load-extend:
@@ -3185,35 +2855,7 @@ Memory Instructions
 
 15. Replace the bytes :math:`\X{mem}.\MIDATA[\X{ea} \slice N/8]` with :math:`b^\ast`.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(t.\CONST~c)~(t.\STORE~x~\memarg) &\stepto& S'; F; \epsilon
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + |t|/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA| \\
-     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA[\X{ea} \slice |t|/8] = \bytes_t(c)) \\[1ex]
-     \end{array}
-   \\[1ex]
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(t.\CONST~c)~(t.\STORE{N}~x~\memarg) &\stepto& S'; F; \epsilon
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA| \\
-     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA[\X{ea} \slice N/8] = \bytes_{\iN}(\wrap_{|t|,N}(c)) \\[1ex]
-     \end{array}
-   \\[1ex]
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(t.\CONST~c)~(t.\STORE{N}^?~x~\memarg) &\stepto& S; F; \TRAP
-   \end{array}
-   \\ \qquad
-     (\otherwise) \\
-   \end{array}
+$${rule: {Step/store-*}}
 
 
 .. _exec-store-lane:
@@ -3294,14 +2936,7 @@ Memory Instructions
 
 7. Push the value :math:`\I32.\CONST~\X{sz}` to the stack.
 
-.. math::
-   \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\MEMORYSIZE~x) &\stepto& S; F; (\I32.\CONST~\X{sz})
-   \end{array}
-   \\ \qquad
-     (\iff |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA| = \X{sz}\cdot64\,\F{Ki}) \\
-   \end{array}
+$${rule: {Step_read/memory.size}}
 
 
 .. _exec-memory.grow:
@@ -3341,23 +2976,7 @@ Memory Instructions
 
    a. Push the value :math:`\I32.\CONST~\X{err}` to the stack.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~n)~(\MEMORYGROW~x) &\stepto& S'; F; (\I32.\CONST~\X{sz})
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & F.\AMODULE.\MIMEMS[x] = a \\
-     \wedge & \X{sz} = |S.\SMEMS[a].\MIDATA|/64\,\F{Ki} \\
-     \wedge & S' = S \with \SMEMS[a] = \growmem(S.\SMEMS[a], n)) \\[1ex]
-     \end{array}
-   \\[1ex]
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~n)~(\MEMORYGROW~x) &\stepto& S; F; (\I32.\CONST~\signed_{32}^{-1}(-1))
-   \end{array}
-   \end{array}
+$${rule: {Step/memory.grow-*}}
 
 .. note::
    The |MEMORYGROW| instruction is non-deterministic.
@@ -3419,29 +3038,7 @@ Memory Instructions
 
 21. Execute the instruction :math:`\MEMORYFILL~x`.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   S; F; (\I32.\CONST~d)~\val~(\I32.\CONST~n)~\MEMORYFILL~x
-     \quad\stepto\quad S; F; \TRAP
-     \\ \qquad
-     (\iff d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA|)
-   \\[1ex]
-   S; F; (\I32.\CONST~d)~\val~(\I32.\CONST~0)~\MEMORYFILL~x
-     \quad\stepto\quad S; F; \epsilon
-     \\ \qquad
-     (\otherwise)
-   \\[1ex]
-   S; F; (\I32.\CONST~d)~\val~(\I32.\CONST~n+1)~\MEMORYFILL~x
-     \quad\stepto
-     \\ \qquad S; F;
-       \begin{array}[t]{@{}l@{}}
-       (\I32.\CONST~d)~\val~(\I32\K{.}\STORE\K{8}~x~\{ \OFFSET~0, \ALIGN~0 \}) \\
-       (\I32.\CONST~d+1)~\val~(\I32.\CONST~n)~\MEMORYFILL~x \\
-       \end{array}
-     \\ \qquad
-     (\otherwise) \\
-   \end{array}
+$${rule: {Step_read/memory.fill-*}}
 
 
 .. _exec-memory.copy:
@@ -3527,46 +3124,7 @@ Memory Instructions
 
 21. Execute the instruction :math:`\MEMORYCOPY~x~y`.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~\MEMORYCOPY~x~y
-     \quad\stepto\quad S; F; \TRAP
-     \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA| \\
-      \vee & s + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[y]].\MIDATA|) \\[1ex]
-     \end{array}
-   \\[1ex]
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~\MEMORYCOPY~x~y
-     \quad\stepto\quad S; F; \epsilon
-     \\ \qquad
-     (\otherwise)
-   \\[1ex]
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~\MEMORYCOPY~x~y
-     \quad\stepto
-     \\ \qquad S; F;
-       \begin{array}[t]{@{}l@{}}
-       (\I32.\CONST~d) \\
-       (\I32.\CONST~s)~(\I32\K{.}\LOAD\K{8\_u}~y~\{ \OFFSET~0, \ALIGN~0 \}) \\
-       (\I32\K{.}\STORE\K{8}~x~\{ \OFFSET~0, \ALIGN~0 \}) \\
-       (\I32.\CONST~d+1)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~\MEMORYCOPY~x~y \\
-       \end{array}
-     \\ \qquad
-     (\otherwise, \iff d \leq s)
-   \\[1ex]
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~\MEMORYCOPY~x~y
-     \quad\stepto
-     \\ \qquad S; F;
-       \begin{array}[t]{@{}l@{}}
-       (\I32.\CONST~d+n) \\
-       (\I32.\CONST~s+n)~(\I32\K{.}\LOAD\K{8\_u}~y~\{ \OFFSET~0, \ALIGN~0 \}) \\
-       (\I32\K{.}\STORE\K{8}~x~\{ \OFFSET~0, \ALIGN~0 \}) \\
-       (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~\MEMORYCOPY~x~y \\
-       \end{array}
-     \\ \qquad
-     (\otherwise, \iff d > s) \\
-   \end{array}
+$${rule: {Step_read/memory.copy-*}}
 
 
 .. _exec-memory.init:
@@ -3632,32 +3190,7 @@ Memory Instructions
 
 27. Execute the instruction :math:`\MEMORYINIT~x~y`.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\MEMORYINIT~x~y)
-     \quad\stepto\quad S; F; \TRAP
-     \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & d + n > |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\DIDATA| \\
-      \vee & s + n > |S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\MIDATA|) \\[1ex]
-     \end{array}
-   \\[1ex]
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\MEMORYINIT~x~y)
-     \quad\stepto\quad S; F; \epsilon
-     \\ \qquad
-     (\otherwise)
-   \\[1ex]
-   S; F; (\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\MEMORYINIT~x~y)
-     \quad\stepto
-       \\ \qquad S; F;
-       \begin{array}[t]{@{}l@{}}
-       (\I32.\CONST~d)~(\I32.\CONST~b)~(\I32\K{.}\STORE\K{8}~x~\{ \OFFSET~0, \ALIGN~0 \}) \\
-       (\I32.\CONST~d+1)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\MEMORYINIT~x~y) \\
-       \end{array}
-     \\ \qquad
-     (\otherwise, \iff b = S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA[s]) \\
-   \end{array}
+$${rule: {Step_read/memory.init-*}}
 
 
 .. _exec-data.drop:
@@ -3675,15 +3208,7 @@ Memory Instructions
 
 5. Replace :math:`S.\SDATAS[a]` with the :ref:`data instance <syntax-datainst>` :math:`\{\DIDATA~\epsilon\}`.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\DATADROP~x) &\stepto& S'; F; \epsilon
-   \end{array}
-   \\ \qquad
-     (\iff S' = S \with \SDATAS[F.\AMODULE.\MIDATAS[x]] = \{ \DIDATA~\epsilon \}) \\
-   \end{array}
+$${rule: {Step/data.drop}}
 
 
 .. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, list, address, table address, table instance, store, frame
@@ -3694,32 +3219,6 @@ Memory Instructions
 
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
-
-.. _exec-nop:
-
-:math:`\NOP`
-............
-
-1. Do nothing.
-
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   \NOP &\stepto& \epsilon
-   \end{array}
-
-
-.. _exec-unreachable:
-
-:math:`\UNREACHABLE`
-....................
-
-1. Trap.
-
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   \UNREACHABLE &\stepto& \TRAP
-   \end{array}
-
 
 .. _exec-block:
 
@@ -3739,6 +3238,8 @@ Control Instructions
 6. Pop the values :math:`\val^m` from the stack.
 
 7. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\val^m~\instr^\ast` with label :math:`L`.
+
+$${rule: {Step_read/block}}
 
 .. math::
    ~\\[-1ex]
@@ -3768,6 +3269,8 @@ Control Instructions
 
 7. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\val^m~\instr^\ast` with label :math:`L`.
 
+$${rule: {Step_read/loop}}
+
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl}
@@ -3794,16 +3297,7 @@ Control Instructions
 
    a. Execute the block instruction :math:`\BLOCK~\blocktype~\instr_2^\ast~\END`.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{lcl}
-   (\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
-     \BLOCK~\X{bt}~\instr_1^\ast~\END
-     \\&&\quad (\iff c \neq 0) \\
-   (\I32.\CONST~c)~\IF~\X{bt}~\instr_1^\ast~\ELSE~\instr_2^\ast~\END &\stepto&
-     \BLOCK~\X{bt}~\instr_2^\ast~\END
-     \\&&\quad (\iff c = 0) \\
-   \end{array}
+$${rule: {Step_pure/if-*}}
 
 
 .. _exec-br:
@@ -3835,6 +3329,8 @@ Control Instructions
 
 8. Jump to the continuation of :math:`L`.
 
+$${rule: {Step_pure/br-*}}
+
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -3859,14 +3355,7 @@ Control Instructions
 
    a. Do nothing.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{lcl@{\qquad}l}
-   (\I32.\CONST~c)~(\BRIF~l) &\stepto& (\BR~l)
-     & (\iff c \neq 0) \\
-   (\I32.\CONST~c)~(\BRIF~l) &\stepto& \epsilon
-     & (\iff c = 0) \\
-   \end{array}
+$${rule: {Step_pure/br_if-*}}
 
 
 .. _exec-br_table:
@@ -3888,14 +3377,7 @@ Control Instructions
 
    a. :ref:`Execute <exec-br>` the instruction :math:`\BR~l_N`.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{lcl@{\qquad}l}
-   (\I32.\CONST~i)~(\BRTABLE~l^\ast~l_N) &\stepto& (\BR~l_i)
-     & (\iff l^\ast[i] = l_i) \\
-   (\I32.\CONST~i)~(\BRTABLE~l^\ast~l_N) &\stepto& (\BR~l_N)
-     & (\iff |l^\ast| \leq i) \\
-   \end{array}
+$${rule: {Step_pure/br_table-*}}
 
 
 .. _exec-br_on_null:
@@ -3915,13 +3397,7 @@ Control Instructions
 
    a. Push the value :math:`\reff` back to the stack.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   \reff~(\BRONNULL~l) &\stepto& (\BR~l)
-     & (\iff \reff = \REFNULL~\X{ht}) \\
-   \reff~(\BRONNULL~l) &\stepto& \reff
-     & (\otherwise) \\
-   \end{array}
+$${rule: {Step_pure/br_on_null-*}}
 
 
 .. _exec-br_on_non_null:
@@ -3943,13 +3419,7 @@ Control Instructions
 
    b. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l)`.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   \reff~(\BRONNONNULL~l) &\stepto& \epsilon
-     & (\iff \reff = \REFNULL~\X{ht}) \\
-   \reff~(\BRONNONNULL~l) &\stepto& \reff~(\BR~l)
-     & (\otherwise) \\
-   \end{array}
+$${rule: {Step_pure/br_on_non_null-*}}
 
 
 .. _exec-br_on_cast:
@@ -3977,14 +3447,7 @@ Control Instructions
 
    a. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l)`.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   S; F; \reff~(\BRONCAST~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff~(\BR~l)
-     & (\iff S \vdashval \reff : \X{rt}
-        \land \vdashreftypematch \X{rt} \matchesreftype \insttype_{F.\AMODULE}(\X{rt}_2)) \\
-   S; F; \reff~(\BRONCAST~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff
-     & (\otherwise) \\
-   \end{array}
+$${rule: {Step_read/br_on_cast-*}}
 
 
 .. _exec-br_on_cast_fail:
@@ -4012,14 +3475,7 @@ Control Instructions
 
    a. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l)`.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   S; F; \reff~(\BRONCASTFAIL~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff
-     & (\iff S \vdashval \reff : \X{rt}
-        \land \vdashreftypematch \X{rt} \matchesreftype \insttype_{F.\AMODULE}(\X{rt}_2)) \\
-   S; F; \reff~(\BRONCASTFAIL~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff~(\BR~l)
-     & (\otherwise) \\
-   \end{array}
+$${rule: {Step_read/br_on_cast_fail-*}}
 
 
 .. _exec-return:
@@ -4049,6 +3505,8 @@ Control Instructions
 
 10. Jump to the instruction after the original call that pushed the frame.
 
+$${rule: {Step_pure/return-frame}}
+
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -4069,11 +3527,7 @@ Control Instructions
 
 4. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   F; (\CALL~x) &\stepto& F; (\INVOKE~a)
-     & (\iff F.\AMODULE.\MIFUNCS[x] = a)
-   \end{array}
+$${rule: {Step_read/call}}
 
 
 .. _exec-call_ref:
@@ -4094,6 +3548,8 @@ Control Instructions
 5. Let :math:`\REFFUNCADDR~a` be the reference :math:`r`.
 
 6. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
+
+$${rule: {Step_read/call_ref-*}}
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
@@ -4151,25 +3607,7 @@ Control Instructions
 
 19. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\CALLINDIRECT~x~y) &\stepto& S; F; (\INVOKE~a)
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM[i] = \REFFUNCADDR~a \\
-     \wedge & S.\SFUNCS[a] = f \\
-     \wedge & S \vdashdeftypematch F.\AMODULE.\MITYPES[y] \matchesdeftype f.\FITYPE)
-     \end{array}
-   \\[1ex]
-   \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\CALLINDIRECT~x~y) &\stepto& S; F; \TRAP
-   \end{array}
-   \\ \qquad
-     (\otherwise)
-   \end{array}
+$${rule: {Step_pure/call_indirect}}
 
 
 .. _exec-return_call:
@@ -4187,6 +3625,7 @@ Control Instructions
 
 4. :ref:`Tail-invoke <exec-return-invoke>` the function instance at address :math:`a`.
 
+$${rule: {Step_read/return_call}}
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
@@ -4213,6 +3652,8 @@ Control Instructions
 5. Let :math:`\REFFUNCADDR~a` be the reference :math:`r`.
 
 6. :ref:`Tail-invoke <exec-return-invoke>` the function instance at address :math:`a`.
+
+$${rule: {Step_read/return_call_ref-*}}
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
@@ -4267,6 +3708,8 @@ Control Instructions
     a. Trap.
 
 17. :ref:`Tail-invoke <exec-return-invoke>` the function instance at address :math:`a`.
+
+$${rule: {Step_pure/return_call_indirect}}
 
 .. math::
    \begin{array}{lcl@{\qquad}l}

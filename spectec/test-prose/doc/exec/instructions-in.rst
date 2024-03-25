@@ -792,7 +792,7 @@ $${rule-prose: exec/call_indirect}
 
 \
 
-$${rule+: Step_pure/call_indirect-*}
+$${rule+: Step_pure/call_indirect}
 
 .. _exec-return_call:
 

@@ -620,14 +620,14 @@ and render_typ env t =
 
 
 and render_typfield env (atom, (t, prems), _hints) =
-  render_fieldname env atom ^ "~" ^ render_typ env t ^
-    render_conditions env "&&&" prems
+  render_fieldname env atom ^ "~" ^
+    render_conditions env (render_typ env t) "&&&" prems
 
 and render_typcase env (_atom, (t, prems), _hints) =
-  render_typ env t ^ render_conditions env "&&&" prems
+  render_conditions env (render_typ env t) "&&&" prems
 
 and render_typcon env ((t, prems), _hints) =
-  render_typ env t ^ render_conditions env "&&&" prems
+  render_conditions env (render_typ env t) "&&&" prems
 
 and render_typenum env (e, eo) =
   render_exp env e ^
@@ -671,6 +671,9 @@ and render_exp env e =
   | UnE (op, e2) -> "{" ^ render_unop op ^ render_exp env e2 ^ "}"
   | BinE (e1, ExpOp, ({it = ParenE (e2, _); _ } | e2)) ->
     "{" ^ render_exp env e1 ^ "^{" ^ render_exp env e2 ^ "}}"
+  | BinE (({it = NatE (DecOp, _); _} as e1), MulOp,
+      ({it = VarE _ | CallE (_, []) | ParenE _; _ } as e2)) ->
+    render_exp env e1 ^ " \\, " ^ render_exp env e2
   | BinE (e1, op, e2) ->
     render_exp env e1 ^ space render_binop op ^ render_exp env e2
   | CmpE (e1, op, e2) ->
@@ -756,17 +759,27 @@ and render_exps sep env es =
 
 and render_exp_seq env = function
   | [] -> ""
+  | es when (List.hd es).at.left.line < (Lib.List.last es).at.right.line ->
+    "\\begin{array}[t]{@{}l@{}} " ^ render_exp_seq' env es ^ " \\end{array}"
+  | es -> render_exp_seq' env es
+
+and render_exp_seq' env = function
+  | [] -> ""
   | e1::e2::es when chop_sub_exp e1 <> None ->
     (* Handle subscripting *)
     let s1 =
       "{" ^ render_exp env (Option.get (chop_sub_exp e1)) ^ "}_{" ^
         render_exps "," env (as_tup_exp e2) ^ "}"
     in
-    let s2 = render_exp_seq env es in
+    let s2 = render_exp_seq' env es in
     if s1 <> "" && s2 <> "" then s1 ^ "\\," ^ s2 else s1 ^ s2
+  | e1::e2::es when e1.at.right.line < e2.at.left.line ->
+    let s1 = render_exp env e1 in
+    let s2 = render_exp_seq' env (e2::es) in
+    s1 ^ " \\\\ " ^ s2
   | e1::es ->
     let s1 = render_exp env e1 in
-    let s2 = render_exp_seq env es in
+    let s2 = render_exp_seq' env es in
     if s1 <> "" && s2 <> "" then s1 ^ "~" ^ s2 else s1 ^ s2
 
 and render_expfield env (atom, e) =
@@ -809,14 +822,16 @@ and render_prem env prem =
 
 and word s = "\\mbox{" ^ s ^ "}"
 
-and render_conditions env tabs prems =
+and render_conditions env rhs tabs prems =
   let prems' = filter_nl_list (function {it = VarPr _; _} -> false | _ -> true) prems in
-  if prems' = [] then "" else
-  let prems'', start, tabs', begin_, end_ =
+  if prems' = [] then rhs else
+  let rhs', prems'', tabs', begin_, end_ =
     (* If premises start with an empty line, break and align below RHS. *)
     match prems' with
-    | Nl::prems'' -> prems'', " \\\\\n " ^ tabs, tabs, "\\multicolumn{2}{l@{}}{\\qquad", "}"
-    | _ -> prems', " &\\quad\n  ", tabs ^ "&", "", ""
+    | Nl::prems'' ->
+      "\\multicolumn{2}{l@{}}{ " ^ rhs ^ " } \\\\\n  " ^ tabs,
+      prems'', tabs, " \\multicolumn{2}{l@{}}{\\quad ", "}"
+    | _ -> rhs ^  "\n  &", prems', tabs ^ "&", "\\quad ", ""
   in
   let prems''', first =
     match prems'' with
@@ -824,8 +839,9 @@ and render_conditions env tabs prems =
     | (Elem {it = ElsePr; _})::prems''' -> prems''', word "otherwise, if" ^ "~"
     | _ -> prems'', word "if" ^ "~"
   in
-  start ^ begin_ ^ first ^
-    concat_map_nl (end_ ^ " \\\\\n " ^ tabs' ^ begin_ ^ "\\quad {\\land}~") ""
+  rhs' ^
+  begin_ ^ first ^
+    concat_map_nl (end_ ^ " \\\\\n  " ^ tabs' ^ begin_ ^ "{\\land}~") ""
       (render_prem env) prems''' ^
   end_
 
@@ -872,8 +888,8 @@ and render_syms sep env gs =
 
 and render_prod env prod =
   let (g, e, prems) = prod.it in
-  render_sym env g ^ " &\\Rightarrow& " ^ render_exp env e ^
-    render_conditions env "&&&&&" prems
+  render_sym env g ^ " &\\Rightarrow& " ^
+    render_conditions env (render_exp env e) "&&&&&" prems
 
 and render_gram env gram =
   let (dots1, prods, dots2) = gram.it in
@@ -993,14 +1009,14 @@ let render_reddef env d =
     in
     render_rule_deco env "" id1 id2 " \\quad " ^ "& " ^
       render_exp env e1 ^ " &" ^ render_atom env op ^ "& " ^
-        render_exp env e2 ^ render_conditions env "&&&" prems
+        render_conditions env (render_exp env e2) "&&&" prems
   | _ -> failwith "render_reddef"
 
 let render_funcdef env d =
   match d.it with
   | DefD (id1, args, e, prems) ->
     render_exp env (CallE (id1, args) $ d.at) ^ " &=& " ^
-      render_exp env e ^ render_conditions env "&&" prems
+      render_conditions env (render_exp env e) "&&" prems
   | _ -> failwith "render_funcdef"
 
 let rec render_sep_defs ?(sep = " \\\\\n") ?(br = " \\\\[0.8ex]\n") f = function

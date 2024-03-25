@@ -4288,12 +4288,14 @@ relation Step_pure: `%~>%`(admininstr*, admininstr*)
     `%~>%`([`LABEL_%{%}%`_admininstr(n, instr*{instr : instr}, (val : val <: admininstr)*{val : val})], (val : val <: admininstr)*{val : val})
 
   ;; 8-reduction.watsup
-  rule br-zero{n : n, instr'* : instr*, val'* : val*, val^n : val^n, instr* : instr*}:
-    `%~>%`([`LABEL_%{%}%`_admininstr(n, instr'*{instr' : instr}, (val' : val <: admininstr)*{val' : val} :: (val : val <: admininstr)^n{val : val} :: [BR_admininstr(`%`_labelidx(0))] :: (instr : instr <: admininstr)*{instr : instr})], (val : val <: admininstr)^n{val : val} :: (instr' : instr <: admininstr)*{instr' : instr})
+  rule br-zero{n : n, instr'* : instr*, val'* : val*, val^n : val^n, l : labelidx, instr* : instr*}:
+    `%~>%`([`LABEL_%{%}%`_admininstr(n, instr'*{instr' : instr}, (val' : val <: admininstr)*{val' : val} :: (val : val <: admininstr)^n{val : val} :: [BR_admininstr(l)] :: (instr : instr <: admininstr)*{instr : instr})], (val : val <: admininstr)^n{val : val} :: (instr' : instr <: admininstr)*{instr' : instr})
+    -- if (l = `%`_labelidx(0))
 
   ;; 8-reduction.watsup
   rule br-succ{n : n, instr'* : instr*, val* : val*, l : labelidx, instr* : instr*}:
-    `%~>%`([`LABEL_%{%}%`_admininstr(n, instr'*{instr' : instr}, (val : val <: admininstr)*{val : val} :: [BR_admininstr(`%`_labelidx((l!`%`_labelidx.0 + 1)))] :: (instr : instr <: admininstr)*{instr : instr})], (val : val <: admininstr)*{val : val} :: [BR_admininstr(l)])
+    `%~>%`([`LABEL_%{%}%`_admininstr(n, instr'*{instr' : instr}, (val : val <: admininstr)*{val : val} :: [BR_admininstr(l)] :: (instr : instr <: admininstr)*{instr : instr})], (val : val <: admininstr)*{val : val} :: [BR_admininstr(`%`_labelidx((l!`%`_labelidx.0 - 1)))])
+    -- if (l!`%`_labelidx.0 > 0)
 
   ;; 8-reduction.watsup
   rule br_if-true{c : num_(I32_numtype), l : labelidx}:
@@ -4336,7 +4338,7 @@ relation Step_pure: `%~>%`(admininstr*, admininstr*)
     -- otherwise
 
   ;; 8-reduction.watsup
-  rule call_indirect-call{x : idx, y : idx}:
+  rule call_indirect{x : idx, y : idx}:
     `%~>%`([CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`_nul(?(())), ($idx(y) : typevar <: heaptype))) CALL_REF_admininstr(?(y))])
 
   ;; 8-reduction.watsup
@@ -4623,30 +4625,31 @@ relation Step_read: `%~>%`(config, admininstr*)
     -- if ($blocktype(z, bt) = `%->%`_functype(`%`_resulttype(t_1^k{t_1 : valtype}), `%`_resulttype(t_2^n{t_2 : valtype})))
 
   ;; 8-reduction.watsup
-  rule br_on_cast-succeed{z : state, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype, rt : reftype}:
-    `%~>%`(`%;%`_config(z, [(ref : ref <: admininstr) BR_ON_CAST_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr) BR_admininstr(l)])
-    -- Ref_ok: `%|-%:%`($store(z), ref, rt)
-    -- Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype($moduleinst(z), rt_2))
+  rule br_on_cast-succeed{s : store, f : frame, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype, rt : reftype}:
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: admininstr) BR_ON_CAST_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr) BR_admininstr(l)])
+    -- Ref_ok: `%|-%:%`(s, ref, rt)
+    -- Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype(f.MODULE_frame, rt_2))
 
   ;; 8-reduction.watsup
-  rule br_on_cast-fail{z : state, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype}:
-    `%~>%`(`%;%`_config(z, [(ref : ref <: admininstr) BR_ON_CAST_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr)])
+  rule br_on_cast-fail{s : store, f : frame, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype}:
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: admininstr) BR_ON_CAST_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr)])
     -- otherwise
 
   ;; 8-reduction.watsup
-  rule br_on_cast_fail-succeed{z : state, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype, rt : reftype}:
-    `%~>%`(`%;%`_config(z, [(ref : ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr)])
-    -- Ref_ok: `%|-%:%`($store(z), ref, rt)
-    -- Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype($moduleinst(z), rt_2))
+  rule br_on_cast_fail-succeed{s : store, f : frame, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype, rt : reftype}:
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr)])
+    -- Ref_ok: `%|-%:%`(s, ref, rt)
+    -- Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype(f.MODULE_frame, rt_2))
 
   ;; 8-reduction.watsup
-  rule br_on_cast_fail-fail{z : state, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype}:
-    `%~>%`(`%;%`_config(z, [(ref : ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr) BR_admininstr(l)])
+  rule br_on_cast_fail-fail{s : store, f : frame, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype}:
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr) BR_admininstr(l)])
     -- otherwise
 
   ;; 8-reduction.watsup
-  rule call{z : state, x : idx}:
-    `%~>%`(`%;%`_config(z, [CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr($funcaddr(z)[x!`%`_idx.0]) CALL_REF_admininstr(?())])
+  rule call{z : state, x : idx, a : addr}:
+    `%~>%`(`%;%`_config(z, [CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(?())])
+    -- if ($funcaddr(z)[x!`%`_idx.0] = a)
 
   ;; 8-reduction.watsup
   rule call_ref-null{z : state, ht : heaptype, x? : idx?}:
@@ -4669,13 +4672,13 @@ relation Step_read: `%~>%`(config, admininstr*)
     `%~>%`(`%;%`_config(z, [`LABEL_%{%}%`_admininstr(k, instr'*{instr' : instr}, (val : val <: admininstr)*{val : val} :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})] :: (instr : instr <: admininstr)*{instr : instr})]), (val : val <: admininstr)*{val : val} :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})])
 
   ;; 8-reduction.watsup
+  rule return_call_ref-frame-null{z : state, k : nat, f : frame, val* : val*, ht : heaptype, x? : idx?, instr* : instr*}:
+    `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_admininstr(k, f, (val : val <: admininstr)*{val : val} :: [REF.NULL_admininstr(ht)] :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})] :: (instr : instr <: admininstr)*{instr : instr})]), [TRAP_admininstr])
+
+  ;; 8-reduction.watsup
   rule return_call_ref-frame-addr{z : state, k : nat, f : frame, val'* : val*, val^n : val^n, n : n, a : addr, x? : idx?, instr* : instr*, t_1^n : valtype^n, t_2^m : valtype^m, m : m}:
     `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_admininstr(k, f, (val' : val <: admininstr)*{val' : val} :: (val : val <: admininstr)^n{val : val} :: [REF.FUNC_ADDR_admininstr(a)] :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})] :: (instr : instr <: admininstr)*{instr : instr})]), (val : val <: admininstr)^n{val : val} :: [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(x?{x : typeidx})])
     -- Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1^n{t_1 : valtype}), `%`_resulttype(t_2^m{t_2 : valtype}))))
-
-  ;; 8-reduction.watsup
-  rule return_call_ref-frame-null{z : state, k : nat, f : frame, val* : val*, ht : heaptype, x? : idx?, instr* : instr*}:
-    `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_admininstr(k, f, (val : val <: admininstr)*{val : val} :: [REF.NULL_admininstr(ht)] :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})] :: (instr : instr <: admininstr)*{instr : instr})]), [TRAP_admininstr])
 
   ;; 8-reduction.watsup
   rule ref.null-idx{z : state, x : idx}:
@@ -4821,8 +4824,8 @@ relation Step_read: `%~>%`(config, admininstr*)
     `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, `%`_num_(i_1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, `%`_num_(i_2)) CONST_admininstr(I32_numtype, `%`_num_(n)) ARRAY.COPY_admininstr(x_1, x_2)]), [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, `%`_num_(i_1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, `%`_num_(i_2)) ARRAY.GET_admininstr(sx?{sx : sx}, x_2) ARRAY.SET_admininstr(x_1) REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, `%`_num_((i_1 + 1))) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, `%`_num_((i_2 + 1))) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) ARRAY.COPY_admininstr(x_1, x_2)])
     -- otherwise
     -- Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`_arraytype(mut, zt_2)))
-    -- if (sx?{sx : sx} = $sx(zt_2))
     -- if (i_1 <= i_2)
+    -- if (sx?{sx : sx} = $sx(zt_2))
 
   ;; 8-reduction.watsup
   rule array.copy-gt{z : state, a_1 : addr, i_1 : nat, a_2 : addr, i_2 : nat, n : n, x_1 : idx, x_2 : idx, sx? : sx?, mut : mut, zt_2 : storagetype}:
@@ -4891,8 +4894,9 @@ relation Step_read: `%~>%`(config, admininstr*)
     -- if ($local(z, x) = ?(val))
 
   ;; 8-reduction.watsup
-  rule global.get{z : state, x : idx}:
-    `%~>%`(`%;%`_config(z, [GLOBAL.GET_admininstr(x)]), [($global(z, x).VALUE_globalinst : val <: admininstr)])
+  rule global.get{z : state, x : idx, val : val}:
+    `%~>%`(`%;%`_config(z, [GLOBAL.GET_admininstr(x)]), [(val : val <: admininstr)])
+    -- if ($global(z, x).VALUE_globalinst = val)
 
   ;; 8-reduction.watsup
   rule table.get-oob{z : state, i : nat, x : idx}:
@@ -5045,7 +5049,7 @@ relation Step_read: `%~>%`(config, admininstr*)
   ;; 8-reduction.watsup
   rule memory.size{z : state, x : idx, n : n}:
     `%~>%`(`%;%`_config(z, [MEMORY.SIZE_admininstr(x)]), [CONST_admininstr(I32_numtype, `%`_num_(n))])
-    -- if (((n * 64) * $Ki) = |$mem(z, x).DATA_meminst|)
+    -- if ((n * (64 * $Ki)) = |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup
   rule memory.fill-oob{z : state, i : nat, val : val, n : n, x : idx}:
@@ -5133,8 +5137,7 @@ relation Step: `%~>%`(config, config)
   rule array.new_fixed{z : state, val^n : val^n, n : n, x : idx, ai : arrayinst, a : addr, mut : mut, zt : storagetype}:
     `%~>%`(`%;%`_config(z, (val : val <: admininstr)^n{val : val} :: [ARRAY.NEW_FIXED_admininstr(x, `%`_u32(n))]), `%;%`_config($ext_arrayinst(z, [ai]), [REF.ARRAY_ADDR_admininstr(a)]))
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
-    -- if (a = |$arrayinst(z)|)
-    -- if (ai = {TYPE $type(z, x), FIELD $packfield(zt, val)^n{val : val}})
+    -- if ((a = |$arrayinst(z)|) /\ (ai = {TYPE $type(z, x), FIELD $packfield(zt, val)^n{val : val}}))
 
   ;; 8-reduction.watsup
   rule array.set-null{z : state, ht : heaptype, i : nat, val : val, x : idx}:
@@ -9825,12 +9828,14 @@ relation Step_pure: `%~>%`(admininstr*, admininstr*)
     `%~>%`([`LABEL_%{%}%`_admininstr(n, instr*{instr : instr}, (val : val <: admininstr)*{val : val})], (val : val <: admininstr)*{val : val})
 
   ;; 8-reduction.watsup
-  rule br-zero{n : n, instr'* : instr*, val'* : val*, val^n : val^n, instr* : instr*}:
-    `%~>%`([`LABEL_%{%}%`_admininstr(n, instr'*{instr' : instr}, (val' : val <: admininstr)*{val' : val} :: (val : val <: admininstr)^n{val : val} :: [BR_admininstr(`%`_labelidx(0))] :: (instr : instr <: admininstr)*{instr : instr})], (val : val <: admininstr)^n{val : val} :: (instr' : instr <: admininstr)*{instr' : instr})
+  rule br-zero{n : n, instr'* : instr*, val'* : val*, val^n : val^n, l : labelidx, instr* : instr*}:
+    `%~>%`([`LABEL_%{%}%`_admininstr(n, instr'*{instr' : instr}, (val' : val <: admininstr)*{val' : val} :: (val : val <: admininstr)^n{val : val} :: [BR_admininstr(l)] :: (instr : instr <: admininstr)*{instr : instr})], (val : val <: admininstr)^n{val : val} :: (instr' : instr <: admininstr)*{instr' : instr})
+    -- if (l = `%`_labelidx(0))
 
   ;; 8-reduction.watsup
   rule br-succ{n : n, instr'* : instr*, val* : val*, l : labelidx, instr* : instr*}:
-    `%~>%`([`LABEL_%{%}%`_admininstr(n, instr'*{instr' : instr}, (val : val <: admininstr)*{val : val} :: [BR_admininstr(`%`_labelidx((l!`%`_labelidx.0 + 1)))] :: (instr : instr <: admininstr)*{instr : instr})], (val : val <: admininstr)*{val : val} :: [BR_admininstr(l)])
+    `%~>%`([`LABEL_%{%}%`_admininstr(n, instr'*{instr' : instr}, (val : val <: admininstr)*{val : val} :: [BR_admininstr(l)] :: (instr : instr <: admininstr)*{instr : instr})], (val : val <: admininstr)*{val : val} :: [BR_admininstr(`%`_labelidx((l!`%`_labelidx.0 - 1)))])
+    -- if (l!`%`_labelidx.0 > 0)
 
   ;; 8-reduction.watsup
   rule br_if-true{c : num_(I32_numtype), l : labelidx}:
@@ -9873,7 +9878,7 @@ relation Step_pure: `%~>%`(admininstr*, admininstr*)
     -- otherwise
 
   ;; 8-reduction.watsup
-  rule call_indirect-call{x : idx, y : idx}:
+  rule call_indirect{x : idx, y : idx}:
     `%~>%`([CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`_nul(?(())), ($idx(y) : typevar <: heaptype))) CALL_REF_admininstr(?(y))])
 
   ;; 8-reduction.watsup
@@ -10160,30 +10165,31 @@ relation Step_read: `%~>%`(config, admininstr*)
     -- if ($blocktype(z, bt) = `%->%`_functype(`%`_resulttype(t_1^k{t_1 : valtype}), `%`_resulttype(t_2^n{t_2 : valtype})))
 
   ;; 8-reduction.watsup
-  rule br_on_cast-succeed{z : state, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype, rt : reftype}:
-    `%~>%`(`%;%`_config(z, [(ref : ref <: admininstr) BR_ON_CAST_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr) BR_admininstr(l)])
-    -- Ref_ok: `%|-%:%`($store(z), ref, rt)
-    -- Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype($moduleinst(z), rt_2))
+  rule br_on_cast-succeed{s : store, f : frame, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype, rt : reftype}:
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: admininstr) BR_ON_CAST_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr) BR_admininstr(l)])
+    -- Ref_ok: `%|-%:%`(s, ref, rt)
+    -- Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype(f.MODULE_frame, rt_2))
 
   ;; 8-reduction.watsup
-  rule br_on_cast-fail{z : state, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype}:
-    `%~>%`(`%;%`_config(z, [(ref : ref <: admininstr) BR_ON_CAST_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr)])
+  rule br_on_cast-fail{s : store, f : frame, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype}:
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: admininstr) BR_ON_CAST_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr)])
     -- otherwise
 
   ;; 8-reduction.watsup
-  rule br_on_cast_fail-succeed{z : state, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype, rt : reftype}:
-    `%~>%`(`%;%`_config(z, [(ref : ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr)])
-    -- Ref_ok: `%|-%:%`($store(z), ref, rt)
-    -- Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype($moduleinst(z), rt_2))
+  rule br_on_cast_fail-succeed{s : store, f : frame, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype, rt : reftype}:
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr)])
+    -- Ref_ok: `%|-%:%`(s, ref, rt)
+    -- Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype(f.MODULE_frame, rt_2))
 
   ;; 8-reduction.watsup
-  rule br_on_cast_fail-fail{z : state, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype}:
-    `%~>%`(`%;%`_config(z, [(ref : ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr) BR_admininstr(l)])
+  rule br_on_cast_fail-fail{s : store, f : frame, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype}:
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr) BR_admininstr(l)])
     -- otherwise
 
   ;; 8-reduction.watsup
-  rule call{z : state, x : idx}:
-    `%~>%`(`%;%`_config(z, [CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr($funcaddr(z)[x!`%`_idx.0]) CALL_REF_admininstr(?())])
+  rule call{z : state, x : idx, a : addr}:
+    `%~>%`(`%;%`_config(z, [CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(?())])
+    -- if ($funcaddr(z)[x!`%`_idx.0] = a)
 
   ;; 8-reduction.watsup
   rule call_ref-null{z : state, ht : heaptype, x? : idx?}:
@@ -10206,13 +10212,13 @@ relation Step_read: `%~>%`(config, admininstr*)
     `%~>%`(`%;%`_config(z, [`LABEL_%{%}%`_admininstr(k, instr'*{instr' : instr}, (val : val <: admininstr)*{val : val} :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})] :: (instr : instr <: admininstr)*{instr : instr})]), (val : val <: admininstr)*{val : val} :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})])
 
   ;; 8-reduction.watsup
+  rule return_call_ref-frame-null{z : state, k : nat, f : frame, val* : val*, ht : heaptype, x? : idx?, instr* : instr*}:
+    `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_admininstr(k, f, (val : val <: admininstr)*{val : val} :: [REF.NULL_admininstr(ht)] :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})] :: (instr : instr <: admininstr)*{instr : instr})]), [TRAP_admininstr])
+
+  ;; 8-reduction.watsup
   rule return_call_ref-frame-addr{z : state, k : nat, f : frame, val'* : val*, val^n : val^n, n : n, a : addr, x? : idx?, instr* : instr*, t_1^n : valtype^n, t_2^m : valtype^m, m : m}:
     `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_admininstr(k, f, (val' : val <: admininstr)*{val' : val} :: (val : val <: admininstr)^n{val : val} :: [REF.FUNC_ADDR_admininstr(a)] :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})] :: (instr : instr <: admininstr)*{instr : instr})]), (val : val <: admininstr)^n{val : val} :: [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(x?{x : typeidx})])
     -- Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1^n{t_1 : valtype}), `%`_resulttype(t_2^m{t_2 : valtype}))))
-
-  ;; 8-reduction.watsup
-  rule return_call_ref-frame-null{z : state, k : nat, f : frame, val* : val*, ht : heaptype, x? : idx?, instr* : instr*}:
-    `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_admininstr(k, f, (val : val <: admininstr)*{val : val} :: [REF.NULL_admininstr(ht)] :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})] :: (instr : instr <: admininstr)*{instr : instr})]), [TRAP_admininstr])
 
   ;; 8-reduction.watsup
   rule ref.null-idx{z : state, x : idx}:
@@ -10358,8 +10364,8 @@ relation Step_read: `%~>%`(config, admininstr*)
     `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, `%`_num_(i_1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, `%`_num_(i_2)) CONST_admininstr(I32_numtype, `%`_num_(n)) ARRAY.COPY_admininstr(x_1, x_2)]), [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, `%`_num_(i_1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, `%`_num_(i_2)) ARRAY.GET_admininstr(sx?{sx : sx}, x_2) ARRAY.SET_admininstr(x_1) REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, `%`_num_((i_1 + 1))) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, `%`_num_((i_2 + 1))) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) ARRAY.COPY_admininstr(x_1, x_2)])
     -- otherwise
     -- Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`_arraytype(mut, zt_2)))
-    -- if (sx?{sx : sx} = $sx(zt_2))
     -- if (i_1 <= i_2)
+    -- if (sx?{sx : sx} = $sx(zt_2))
 
   ;; 8-reduction.watsup
   rule array.copy-gt{z : state, a_1 : addr, i_1 : nat, a_2 : addr, i_2 : nat, n : n, x_1 : idx, x_2 : idx, sx? : sx?, mut : mut, zt_2 : storagetype}:
@@ -10428,8 +10434,9 @@ relation Step_read: `%~>%`(config, admininstr*)
     -- if ($local(z, x) = ?(val))
 
   ;; 8-reduction.watsup
-  rule global.get{z : state, x : idx}:
-    `%~>%`(`%;%`_config(z, [GLOBAL.GET_admininstr(x)]), [($global(z, x).VALUE_globalinst : val <: admininstr)])
+  rule global.get{z : state, x : idx, val : val}:
+    `%~>%`(`%;%`_config(z, [GLOBAL.GET_admininstr(x)]), [(val : val <: admininstr)])
+    -- if ($global(z, x).VALUE_globalinst = val)
 
   ;; 8-reduction.watsup
   rule table.get-oob{z : state, i : nat, x : idx}:
@@ -10582,7 +10589,7 @@ relation Step_read: `%~>%`(config, admininstr*)
   ;; 8-reduction.watsup
   rule memory.size{z : state, x : idx, n : n}:
     `%~>%`(`%;%`_config(z, [MEMORY.SIZE_admininstr(x)]), [CONST_admininstr(I32_numtype, `%`_num_(n))])
-    -- if (((n * 64) * $Ki) = |$mem(z, x).DATA_meminst|)
+    -- if ((n * (64 * $Ki)) = |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup
   rule memory.fill-oob{z : state, i : nat, val : val, n : n, x : idx}:
@@ -10670,8 +10677,7 @@ relation Step: `%~>%`(config, config)
   rule array.new_fixed{z : state, val^n : val^n, n : n, x : idx, ai : arrayinst, a : addr, mut : mut, zt : storagetype}:
     `%~>%`(`%;%`_config(z, (val : val <: admininstr)^n{val : val} :: [ARRAY.NEW_FIXED_admininstr(x, `%`_u32(n))]), `%;%`_config($ext_arrayinst(z, [ai]), [REF.ARRAY_ADDR_admininstr(a)]))
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
-    -- if (a = |$arrayinst(z)|)
-    -- if (ai = {TYPE $type(z, x), FIELD $packfield(zt, val)^n{val : val}})
+    -- if ((a = |$arrayinst(z)|) /\ (ai = {TYPE $type(z, x), FIELD $packfield(zt, val)^n{val : val}}))
 
   ;; 8-reduction.watsup
   rule array.set-null{z : state, ht : heaptype, i : nat, val : val, x : idx}:
@@ -15362,12 +15368,14 @@ relation Step_pure: `%~>%`(admininstr*, admininstr*)
     `%~>%`([`LABEL_%{%}%`_admininstr(n, instr*{instr : instr}, (val : val <: admininstr)*{val : val})], (val : val <: admininstr)*{val : val})
 
   ;; 8-reduction.watsup
-  rule br-zero{n : n, instr'* : instr*, val'* : val*, val^n : val^n, instr* : instr*}:
-    `%~>%`([`LABEL_%{%}%`_admininstr(n, instr'*{instr' : instr}, (val' : val <: admininstr)*{val' : val} :: (val : val <: admininstr)^n{val : val} :: [BR_admininstr(`%`_labelidx(0))] :: (instr : instr <: admininstr)*{instr : instr})], (val : val <: admininstr)^n{val : val} :: (instr' : instr <: admininstr)*{instr' : instr})
+  rule br-zero{n : n, instr'* : instr*, val'* : val*, val^n : val^n, l : labelidx, instr* : instr*}:
+    `%~>%`([`LABEL_%{%}%`_admininstr(n, instr'*{instr' : instr}, (val' : val <: admininstr)*{val' : val} :: (val : val <: admininstr)^n{val : val} :: [BR_admininstr(l)] :: (instr : instr <: admininstr)*{instr : instr})], (val : val <: admininstr)^n{val : val} :: (instr' : instr <: admininstr)*{instr' : instr})
+    -- if (l = `%`_labelidx(0))
 
   ;; 8-reduction.watsup
   rule br-succ{n : n, instr'* : instr*, val* : val*, l : labelidx, instr* : instr*}:
-    `%~>%`([`LABEL_%{%}%`_admininstr(n, instr'*{instr' : instr}, (val : val <: admininstr)*{val : val} :: [BR_admininstr(`%`_labelidx((l!`%`_labelidx.0 + 1)))] :: (instr : instr <: admininstr)*{instr : instr})], (val : val <: admininstr)*{val : val} :: [BR_admininstr(l)])
+    `%~>%`([`LABEL_%{%}%`_admininstr(n, instr'*{instr' : instr}, (val : val <: admininstr)*{val : val} :: [BR_admininstr(l)] :: (instr : instr <: admininstr)*{instr : instr})], (val : val <: admininstr)*{val : val} :: [BR_admininstr(`%`_labelidx((l!`%`_labelidx.0 - 1)))])
+    -- if (l!`%`_labelidx.0 > 0)
 
   ;; 8-reduction.watsup
   rule br_if-true{c : num_(I32_numtype), l : labelidx}:
@@ -15410,7 +15418,7 @@ relation Step_pure: `%~>%`(admininstr*, admininstr*)
     -- otherwise
 
   ;; 8-reduction.watsup
-  rule call_indirect-call{x : idx, y : idx}:
+  rule call_indirect{x : idx, y : idx}:
     `%~>%`([CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`_nul(?(())), ($idx(y) : typevar <: heaptype))) CALL_REF_admininstr(?(y))])
 
   ;; 8-reduction.watsup
@@ -15697,30 +15705,31 @@ relation Step_read: `%~>%`(config, admininstr*)
     -- if ($blocktype(z, bt) = `%->%`_functype(`%`_resulttype(t_1^k{t_1 : valtype}), `%`_resulttype(t_2^n{t_2 : valtype})))
 
   ;; 8-reduction.watsup
-  rule br_on_cast-succeed{z : state, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype, rt : reftype}:
-    `%~>%`(`%;%`_config(z, [(ref : ref <: admininstr) BR_ON_CAST_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr) BR_admininstr(l)])
-    -- Ref_ok: `%|-%:%`($store(z), ref, rt)
-    -- Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype($moduleinst(z), rt_2))
+  rule br_on_cast-succeed{s : store, f : frame, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype, rt : reftype}:
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: admininstr) BR_ON_CAST_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr) BR_admininstr(l)])
+    -- Ref_ok: `%|-%:%`(s, ref, rt)
+    -- Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype(f.MODULE_frame, rt_2))
 
   ;; 8-reduction.watsup
-  rule br_on_cast-fail{z : state, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype}:
-    `%~>%`(`%;%`_config(z, [(ref : ref <: admininstr) BR_ON_CAST_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr)])
+  rule br_on_cast-fail{s : store, f : frame, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype}:
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: admininstr) BR_ON_CAST_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr)])
     -- otherwise
 
   ;; 8-reduction.watsup
-  rule br_on_cast_fail-succeed{z : state, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype, rt : reftype}:
-    `%~>%`(`%;%`_config(z, [(ref : ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr)])
-    -- Ref_ok: `%|-%:%`($store(z), ref, rt)
-    -- Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype($moduleinst(z), rt_2))
+  rule br_on_cast_fail-succeed{s : store, f : frame, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype, rt : reftype}:
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr)])
+    -- Ref_ok: `%|-%:%`(s, ref, rt)
+    -- Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype(f.MODULE_frame, rt_2))
 
   ;; 8-reduction.watsup
-  rule br_on_cast_fail-fail{z : state, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype}:
-    `%~>%`(`%;%`_config(z, [(ref : ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr) BR_admininstr(l)])
+  rule br_on_cast_fail-fail{s : store, f : frame, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype}:
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr) BR_admininstr(l)])
     -- otherwise
 
   ;; 8-reduction.watsup
-  rule call{z : state, x : idx}:
-    `%~>%`(`%;%`_config(z, [CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr($funcaddr(z)[x!`%`_idx.0]) CALL_REF_admininstr(?())])
+  rule call{z : state, x : idx, a : addr}:
+    `%~>%`(`%;%`_config(z, [CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(?())])
+    -- if ($funcaddr(z)[x!`%`_idx.0] = a)
 
   ;; 8-reduction.watsup
   rule call_ref-null{z : state, ht : heaptype, x? : idx?}:
@@ -15743,13 +15752,13 @@ relation Step_read: `%~>%`(config, admininstr*)
     `%~>%`(`%;%`_config(z, [`LABEL_%{%}%`_admininstr(k, instr'*{instr' : instr}, (val : val <: admininstr)*{val : val} :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})] :: (instr : instr <: admininstr)*{instr : instr})]), (val : val <: admininstr)*{val : val} :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})])
 
   ;; 8-reduction.watsup
+  rule return_call_ref-frame-null{z : state, k : nat, f : frame, val* : val*, ht : heaptype, x? : idx?, instr* : instr*}:
+    `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_admininstr(k, f, (val : val <: admininstr)*{val : val} :: [REF.NULL_admininstr(ht)] :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})] :: (instr : instr <: admininstr)*{instr : instr})]), [TRAP_admininstr])
+
+  ;; 8-reduction.watsup
   rule return_call_ref-frame-addr{z : state, k : nat, f : frame, val'* : val*, val^n : val^n, n : n, a : addr, x? : idx?, instr* : instr*, t_1^n : valtype^n, t_2^m : valtype^m, m : m}:
     `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_admininstr(k, f, (val' : val <: admininstr)*{val' : val} :: (val : val <: admininstr)^n{val : val} :: [REF.FUNC_ADDR_admininstr(a)] :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})] :: (instr : instr <: admininstr)*{instr : instr})]), (val : val <: admininstr)^n{val : val} :: [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(x?{x : typeidx})])
     -- Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1^n{t_1 : valtype}), `%`_resulttype(t_2^m{t_2 : valtype}))))
-
-  ;; 8-reduction.watsup
-  rule return_call_ref-frame-null{z : state, k : nat, f : frame, val* : val*, ht : heaptype, x? : idx?, instr* : instr*}:
-    `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_admininstr(k, f, (val : val <: admininstr)*{val : val} :: [REF.NULL_admininstr(ht)] :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})] :: (instr : instr <: admininstr)*{instr : instr})]), [TRAP_admininstr])
 
   ;; 8-reduction.watsup
   rule ref.null-idx{z : state, x : idx}:
@@ -15895,8 +15904,8 @@ relation Step_read: `%~>%`(config, admininstr*)
     `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, `%`_num_(i_1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, `%`_num_(i_2)) CONST_admininstr(I32_numtype, `%`_num_(n)) ARRAY.COPY_admininstr(x_1, x_2)]), [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, `%`_num_(i_1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, `%`_num_(i_2)) ARRAY.GET_admininstr(sx?{sx : sx}, x_2) ARRAY.SET_admininstr(x_1) REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, `%`_num_((i_1 + 1))) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, `%`_num_((i_2 + 1))) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) ARRAY.COPY_admininstr(x_1, x_2)])
     -- otherwise
     -- Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`_arraytype(mut, zt_2)))
-    -- if (sx?{sx : sx} = $sx(zt_2))
     -- if (i_1 <= i_2)
+    -- if (sx?{sx : sx} = $sx(zt_2))
 
   ;; 8-reduction.watsup
   rule array.copy-gt{z : state, a_1 : addr, i_1 : nat, a_2 : addr, i_2 : nat, n : n, x_1 : idx, x_2 : idx, sx? : sx?, mut : mut, zt_2 : storagetype}:
@@ -15965,8 +15974,9 @@ relation Step_read: `%~>%`(config, admininstr*)
     -- if ($local(z, x) = ?(val))
 
   ;; 8-reduction.watsup
-  rule global.get{z : state, x : idx}:
-    `%~>%`(`%;%`_config(z, [GLOBAL.GET_admininstr(x)]), [($global(z, x).VALUE_globalinst : val <: admininstr)])
+  rule global.get{z : state, x : idx, val : val}:
+    `%~>%`(`%;%`_config(z, [GLOBAL.GET_admininstr(x)]), [(val : val <: admininstr)])
+    -- if ($global(z, x).VALUE_globalinst = val)
 
   ;; 8-reduction.watsup
   rule table.get-oob{z : state, i : nat, x : idx}:
@@ -16119,7 +16129,7 @@ relation Step_read: `%~>%`(config, admininstr*)
   ;; 8-reduction.watsup
   rule memory.size{z : state, x : idx, n : n}:
     `%~>%`(`%;%`_config(z, [MEMORY.SIZE_admininstr(x)]), [CONST_admininstr(I32_numtype, `%`_num_(n))])
-    -- if (((n * 64) * $Ki) = |$mem(z, x).DATA_meminst|)
+    -- if ((n * (64 * $Ki)) = |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup
   rule memory.fill-oob{z : state, i : nat, val : val, n : n, x : idx}:
@@ -16207,8 +16217,7 @@ relation Step: `%~>%`(config, config)
   rule array.new_fixed{z : state, val^n : val^n, n : n, x : idx, ai : arrayinst, a : addr, mut : mut, zt : storagetype}:
     `%~>%`(`%;%`_config(z, (val : val <: admininstr)^n{val : val} :: [ARRAY.NEW_FIXED_admininstr(x, `%`_u32(n))]), `%;%`_config($ext_arrayinst(z, [ai]), [REF.ARRAY_ADDR_admininstr(a)]))
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
-    -- if (a = |$arrayinst(z)|)
-    -- if (ai = {TYPE $type(z, x), FIELD $packfield(zt, val)^n{val : val}})
+    -- if ((a = |$arrayinst(z)|) /\ (ai = {TYPE $type(z, x), FIELD $packfield(zt, val)^n{val : val}}))
 
   ;; 8-reduction.watsup
   rule array.set-null{z : state, ht : heaptype, i : nat, val : val, x : idx}:
@@ -21013,12 +21022,14 @@ relation Step_pure: `%~>%`(admininstr*, admininstr*)
     `%~>%`([`LABEL_%{%}%`_admininstr(n, instr*{instr : instr}, (val : val <: admininstr)*{val : val})], (val : val <: admininstr)*{val : val})
 
   ;; 8-reduction.watsup
-  rule br-zero{n : n, instr'* : instr*, val'* : val*, val^n : val^n, instr* : instr*}:
-    `%~>%`([`LABEL_%{%}%`_admininstr(n, instr'*{instr' : instr}, (val' : val <: admininstr)*{val' : val} :: (val : val <: admininstr)^n{val : val} :: [BR_admininstr(`%`_labelidx(0))] :: (instr : instr <: admininstr)*{instr : instr})], (val : val <: admininstr)^n{val : val} :: (instr' : instr <: admininstr)*{instr' : instr})
+  rule br-zero{n : n, instr'* : instr*, val'* : val*, val^n : val^n, l : labelidx, instr* : instr*}:
+    `%~>%`([`LABEL_%{%}%`_admininstr(n, instr'*{instr' : instr}, (val' : val <: admininstr)*{val' : val} :: (val : val <: admininstr)^n{val : val} :: [BR_admininstr(l)] :: (instr : instr <: admininstr)*{instr : instr})], (val : val <: admininstr)^n{val : val} :: (instr' : instr <: admininstr)*{instr' : instr})
+    -- if (l = `%`_labelidx(0))
 
   ;; 8-reduction.watsup
   rule br-succ{n : n, instr'* : instr*, val* : val*, l : labelidx, instr* : instr*}:
-    `%~>%`([`LABEL_%{%}%`_admininstr(n, instr'*{instr' : instr}, (val : val <: admininstr)*{val : val} :: [BR_admininstr(`%`_labelidx((l!`%`_labelidx.0 + 1)))] :: (instr : instr <: admininstr)*{instr : instr})], (val : val <: admininstr)*{val : val} :: [BR_admininstr(l)])
+    `%~>%`([`LABEL_%{%}%`_admininstr(n, instr'*{instr' : instr}, (val : val <: admininstr)*{val : val} :: [BR_admininstr(l)] :: (instr : instr <: admininstr)*{instr : instr})], (val : val <: admininstr)*{val : val} :: [BR_admininstr(`%`_labelidx((l!`%`_labelidx.0 - 1)))])
+    -- if (l!`%`_labelidx.0 > 0)
 
   ;; 8-reduction.watsup
   rule br_if-true{c : num_(I32_numtype), l : labelidx}:
@@ -21061,7 +21072,7 @@ relation Step_pure: `%~>%`(admininstr*, admininstr*)
     -- otherwise
 
   ;; 8-reduction.watsup
-  rule call_indirect-call{x : idx, y : idx}:
+  rule call_indirect{x : idx, y : idx}:
     `%~>%`([CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`_nul(?(())), ($idx(y) : typevar <: heaptype))) CALL_REF_admininstr(?(y))])
 
   ;; 8-reduction.watsup
@@ -21354,31 +21365,32 @@ relation Step_read: `%~>%`(config, admininstr*)
     -- if ($blocktype(z, bt) = `%->%`_functype(`%`_resulttype(t_1^k{t_1 : valtype}), `%`_resulttype(t_2^n{t_2 : valtype})))
 
   ;; 8-reduction.watsup
-  rule br_on_cast-succeed{z : state, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype, rt : reftype}:
-    `%~>%`(`%;%`_config(z, [(ref : ref <: admininstr) BR_ON_CAST_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr) BR_admininstr(l)])
-    -- Ref_ok: `%|-%:%`($store(z), ref, rt)
-    -- Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype($moduleinst(z), rt_2))
+  rule br_on_cast-succeed{s : store, f : frame, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype, rt : reftype}:
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: admininstr) BR_ON_CAST_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr) BR_admininstr(l)])
+    -- Ref_ok: `%|-%:%`(s, ref, rt)
+    -- Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype(f.MODULE_frame, rt_2))
 
   ;; 8-reduction.watsup
-  rule br_on_cast-fail{z : state, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype}:
-    `%~>%`(`%;%`_config(z, [(ref : ref <: admininstr) BR_ON_CAST_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr)])
+  rule br_on_cast-fail{s : store, f : frame, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype}:
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: admininstr) BR_ON_CAST_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr)])
     -- otherwise
 
   ;; 8-reduction.watsup
-  rule br_on_cast_fail-succeed{z : state, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype, rt : reftype}:
-    `%~>%`(`%;%`_config(z, [(ref : ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr)])
-    -- Ref_ok: `%|-%:%`($store(z), ref, rt)
-    -- Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype($moduleinst(z), rt_2))
+  rule br_on_cast_fail-succeed{s : store, f : frame, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype, rt : reftype}:
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr)])
+    -- Ref_ok: `%|-%:%`(s, ref, rt)
+    -- Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype(f.MODULE_frame, rt_2))
 
   ;; 8-reduction.watsup
-  rule br_on_cast_fail-fail{z : state, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype}:
-    `%~>%`(`%;%`_config(z, [(ref : ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr) BR_admininstr(l)])
+  rule br_on_cast_fail-fail{s : store, f : frame, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype}:
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr) BR_admininstr(l)])
     -- otherwise
 
   ;; 8-reduction.watsup
-  rule call{z : state, x : idx}:
-    `%~>%`(`%;%`_config(z, [CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr($funcaddr(z)[x!`%`_idx.0]) CALL_REF_admininstr(?())])
+  rule call{z : state, x : idx, a : addr}:
+    `%~>%`(`%;%`_config(z, [CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(?())])
     -- if (x!`%`_idx.0 < |$funcaddr(z)|)
+    -- if ($funcaddr(z)[x!`%`_idx.0] = a)
 
   ;; 8-reduction.watsup
   rule call_ref-null{z : state, ht : heaptype, x? : idx?}:
@@ -21403,14 +21415,14 @@ relation Step_read: `%~>%`(config, admininstr*)
     `%~>%`(`%;%`_config(z, [`LABEL_%{%}%`_admininstr(k, instr'*{instr' : instr}, (val : val <: admininstr)*{val : val} :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})] :: (instr : instr <: admininstr)*{instr : instr})]), (val : val <: admininstr)*{val : val} :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})])
 
   ;; 8-reduction.watsup
+  rule return_call_ref-frame-null{z : state, k : nat, f : frame, val* : val*, ht : heaptype, x? : idx?, instr* : instr*}:
+    `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_admininstr(k, f, (val : val <: admininstr)*{val : val} :: [REF.NULL_admininstr(ht)] :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})] :: (instr : instr <: admininstr)*{instr : instr})]), [TRAP_admininstr])
+
+  ;; 8-reduction.watsup
   rule return_call_ref-frame-addr{z : state, k : nat, f : frame, val'* : val*, val^n : val^n, n : n, a : addr, x? : idx?, instr* : instr*, t_1^n : valtype^n, t_2^m : valtype^m, m : m}:
     `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_admininstr(k, f, (val' : val <: admininstr)*{val' : val} :: (val : val <: admininstr)^n{val : val} :: [REF.FUNC_ADDR_admininstr(a)] :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})] :: (instr : instr <: admininstr)*{instr : instr})]), (val : val <: admininstr)^n{val : val} :: [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(x?{x : typeidx})])
     -- if (a < |$funcinst(z)|)
     -- Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1^n{t_1 : valtype}), `%`_resulttype(t_2^m{t_2 : valtype}))))
-
-  ;; 8-reduction.watsup
-  rule return_call_ref-frame-null{z : state, k : nat, f : frame, val* : val*, ht : heaptype, x? : idx?, instr* : instr*}:
-    `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_admininstr(k, f, (val : val <: admininstr)*{val : val} :: [REF.NULL_admininstr(ht)] :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})] :: (instr : instr <: admininstr)*{instr : instr})]), [TRAP_admininstr])
 
   ;; 8-reduction.watsup
   rule ref.null-idx{z : state, x : idx}:
@@ -21571,8 +21583,8 @@ relation Step_read: `%~>%`(config, admininstr*)
     `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, `%`_num_(i_1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, `%`_num_(i_2)) CONST_admininstr(I32_numtype, `%`_num_(n)) ARRAY.COPY_admininstr(x_1, x_2)]), [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, `%`_num_(i_1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, `%`_num_(i_2)) ARRAY.GET_admininstr(sx?{sx : sx}, x_2) ARRAY.SET_admininstr(x_1) REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, `%`_num_((i_1 + 1))) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, `%`_num_((i_2 + 1))) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) ARRAY.COPY_admininstr(x_1, x_2)])
     -- otherwise
     -- Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`_arraytype(mut, zt_2)))
-    -- if (sx?{sx : sx} = $sx(zt_2))
     -- if (i_1 <= i_2)
+    -- if (sx?{sx : sx} = $sx(zt_2))
 
   ;; 8-reduction.watsup
   rule array.copy-gt{z : state, a_1 : addr, i_1 : nat, a_2 : addr, i_2 : nat, n : n, x_1 : idx, x_2 : idx, sx? : sx?, mut : mut, zt_2 : storagetype}:
@@ -21645,8 +21657,9 @@ relation Step_read: `%~>%`(config, admininstr*)
     -- if ($local(z, x) = ?(val))
 
   ;; 8-reduction.watsup
-  rule global.get{z : state, x : idx}:
-    `%~>%`(`%;%`_config(z, [GLOBAL.GET_admininstr(x)]), [($global(z, x).VALUE_globalinst : val <: admininstr)])
+  rule global.get{z : state, x : idx, val : val}:
+    `%~>%`(`%;%`_config(z, [GLOBAL.GET_admininstr(x)]), [(val : val <: admininstr)])
+    -- if ($global(z, x).VALUE_globalinst = val)
 
   ;; 8-reduction.watsup
   rule table.get-oob{z : state, i : nat, x : idx}:
@@ -21800,7 +21813,7 @@ relation Step_read: `%~>%`(config, admininstr*)
   ;; 8-reduction.watsup
   rule memory.size{z : state, x : idx, n : n}:
     `%~>%`(`%;%`_config(z, [MEMORY.SIZE_admininstr(x)]), [CONST_admininstr(I32_numtype, `%`_num_(n))])
-    -- if (((n * 64) * $Ki) = |$mem(z, x).DATA_meminst|)
+    -- if ((n * (64 * $Ki)) = |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup
   rule memory.fill-oob{z : state, i : nat, val : val, n : n, x : idx}:
@@ -21891,8 +21904,7 @@ relation Step: `%~>%`(config, config)
   rule array.new_fixed{z : state, val^n : val^n, n : n, x : idx, ai : arrayinst, a : addr, mut : mut, zt : storagetype}:
     `%~>%`(`%;%`_config(z, (val : val <: admininstr)^n{val : val} :: [ARRAY.NEW_FIXED_admininstr(x, `%`_u32(n))]), `%;%`_config($ext_arrayinst(z, [ai]), [REF.ARRAY_ADDR_admininstr(a)]))
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
-    -- if (a = |$arrayinst(z)|)
-    -- if (ai = {TYPE $type(z, x), FIELD $packfield(zt, val)^n{val : val}})
+    -- if ((a = |$arrayinst(z)|) /\ (ai = {TYPE $type(z, x), FIELD $packfield(zt, val)^n{val : val}}))
 
   ;; 8-reduction.watsup
   rule array.set-null{z : state, ht : heaptype, i : nat, val : val, x : idx}:
@@ -26753,12 +26765,14 @@ relation Step_pure: `%~>%`(admininstr*, admininstr*)
     `%~>%`([`LABEL_%{%}%`_admininstr(n, instr*{instr : instr}, (val : val <: admininstr)*{val : val})], (val : val <: admininstr)*{val : val})
 
   ;; 8-reduction.watsup
-  rule br-zero{n : n, instr'* : instr*, val'* : val*, val^n : val^n, instr* : instr*}:
-    `%~>%`([`LABEL_%{%}%`_admininstr(n, instr'*{instr' : instr}, (val' : val <: admininstr)*{val' : val} :: (val : val <: admininstr)^n{val : val} :: [BR_admininstr(`%`_labelidx(0))] :: (instr : instr <: admininstr)*{instr : instr})], (val : val <: admininstr)^n{val : val} :: (instr' : instr <: admininstr)*{instr' : instr})
+  rule br-zero{n : n, instr'* : instr*, val'* : val*, val^n : val^n, l : labelidx, instr* : instr*}:
+    `%~>%`([`LABEL_%{%}%`_admininstr(n, instr'*{instr' : instr}, (val' : val <: admininstr)*{val' : val} :: (val : val <: admininstr)^n{val : val} :: [BR_admininstr(l)] :: (instr : instr <: admininstr)*{instr : instr})], (val : val <: admininstr)^n{val : val} :: (instr' : instr <: admininstr)*{instr' : instr})
+    -- if (l = `%`_labelidx(0))
 
   ;; 8-reduction.watsup
   rule br-succ{n : n, instr'* : instr*, val* : val*, l : labelidx, instr* : instr*}:
-    `%~>%`([`LABEL_%{%}%`_admininstr(n, instr'*{instr' : instr}, (val : val <: admininstr)*{val : val} :: [BR_admininstr(`%`_labelidx((l!`%`_labelidx.0 + 1)))] :: (instr : instr <: admininstr)*{instr : instr})], (val : val <: admininstr)*{val : val} :: [BR_admininstr(l)])
+    `%~>%`([`LABEL_%{%}%`_admininstr(n, instr'*{instr' : instr}, (val : val <: admininstr)*{val : val} :: [BR_admininstr(l)] :: (instr : instr <: admininstr)*{instr : instr})], (val : val <: admininstr)*{val : val} :: [BR_admininstr(`%`_labelidx((l!`%`_labelidx.0 - 1)))])
+    -- if (l!`%`_labelidx.0 > 0)
 
   ;; 8-reduction.watsup
   rule br_if-true{c : num_(I32_numtype), l : labelidx}:
@@ -26801,7 +26815,7 @@ relation Step_pure: `%~>%`(admininstr*, admininstr*)
     -- otherwise
 
   ;; 8-reduction.watsup
-  rule call_indirect-call{x : idx, y : idx}:
+  rule call_indirect{x : idx, y : idx}:
     `%~>%`([CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`_nul(?(())), ($idx(y) : typevar <: heaptype))) CALL_REF_admininstr(?(y))])
 
   ;; 8-reduction.watsup
@@ -27095,31 +27109,32 @@ relation Step_read: `%~>%`(config, admininstr*)
     -- where `%->%`_functype(`%`_resulttype(t_1^k{t_1 : valtype}), `%`_resulttype(t_2^n{t_2 : valtype})) = $blocktype(z, bt)
 
   ;; 8-reduction.watsup
-  rule br_on_cast-succeed{z : state, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype, rt : reftype}:
-    `%~>%`(`%;%`_config(z, [(ref : ref <: admininstr) BR_ON_CAST_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr) BR_admininstr(l)])
-    -- Ref_ok: `%|-%:%`($store(z), ref, rt)
-    -- Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype($moduleinst(z), rt_2))
+  rule br_on_cast-succeed{s : store, f : frame, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype, rt : reftype}:
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: admininstr) BR_ON_CAST_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr) BR_admininstr(l)])
+    -- Ref_ok: `%|-%:%`(s, ref, rt)
+    -- Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype(f.MODULE_frame, rt_2))
 
   ;; 8-reduction.watsup
-  rule br_on_cast-fail{z : state, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype}:
-    `%~>%`(`%;%`_config(z, [(ref : ref <: admininstr) BR_ON_CAST_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr)])
+  rule br_on_cast-fail{s : store, f : frame, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype}:
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: admininstr) BR_ON_CAST_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr)])
     -- otherwise
 
   ;; 8-reduction.watsup
-  rule br_on_cast_fail-succeed{z : state, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype, rt : reftype}:
-    `%~>%`(`%;%`_config(z, [(ref : ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr)])
-    -- Ref_ok: `%|-%:%`($store(z), ref, rt)
-    -- Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype($moduleinst(z), rt_2))
+  rule br_on_cast_fail-succeed{s : store, f : frame, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype, rt : reftype}:
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr)])
+    -- Ref_ok: `%|-%:%`(s, ref, rt)
+    -- Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype(f.MODULE_frame, rt_2))
 
   ;; 8-reduction.watsup
-  rule br_on_cast_fail-fail{z : state, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype}:
-    `%~>%`(`%;%`_config(z, [(ref : ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr) BR_admininstr(l)])
+  rule br_on_cast_fail-fail{s : store, f : frame, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype}:
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), [(ref : ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref : ref <: admininstr) BR_admininstr(l)])
     -- otherwise
 
   ;; 8-reduction.watsup
-  rule call{z : state, x : idx}:
-    `%~>%`(`%;%`_config(z, [CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr($funcaddr(z)[x!`%`_idx.0]) CALL_REF_admininstr(?())])
+  rule call{z : state, x : idx, a : addr}:
+    `%~>%`(`%;%`_config(z, [CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(?())])
     -- if (x!`%`_idx.0 < |$funcaddr(z)|)
+    -- where a = $funcaddr(z)[x!`%`_idx.0]
 
   ;; 8-reduction.watsup
   rule call_ref-null{z : state, ht : heaptype, x? : idx?}:
@@ -27144,14 +27159,14 @@ relation Step_read: `%~>%`(config, admininstr*)
     `%~>%`(`%;%`_config(z, [`LABEL_%{%}%`_admininstr(k, instr'*{instr' : instr}, (val : val <: admininstr)*{val : val} :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})] :: (instr : instr <: admininstr)*{instr : instr})]), (val : val <: admininstr)*{val : val} :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})])
 
   ;; 8-reduction.watsup
+  rule return_call_ref-frame-null{z : state, k : nat, f : frame, val* : val*, ht : heaptype, x? : idx?, instr* : instr*}:
+    `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_admininstr(k, f, (val : val <: admininstr)*{val : val} :: [REF.NULL_admininstr(ht)] :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})] :: (instr : instr <: admininstr)*{instr : instr})]), [TRAP_admininstr])
+
+  ;; 8-reduction.watsup
   rule return_call_ref-frame-addr{z : state, k : nat, f : frame, val'* : val*, val^n : val^n, n : n, a : addr, x? : idx?, instr* : instr*, t_1^n : valtype^n, t_2^m : valtype^m, m : m}:
     `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_admininstr(k, f, (val' : val <: admininstr)*{val' : val} :: (val : val <: admininstr)^n{val : val} :: [REF.FUNC_ADDR_admininstr(a)] :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})] :: (instr : instr <: admininstr)*{instr : instr})]), (val : val <: admininstr)^n{val : val} :: [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(x?{x : typeidx})])
     -- if (a < |$funcinst(z)|)
     -- where FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1^n{t_1 : valtype}), `%`_resulttype(t_2^m{t_2 : valtype}))) = $expanddt($funcinst(z)[a].TYPE_funcinst)
-
-  ;; 8-reduction.watsup
-  rule return_call_ref-frame-null{z : state, k : nat, f : frame, val* : val*, ht : heaptype, x? : idx?, instr* : instr*}:
-    `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_admininstr(k, f, (val : val <: admininstr)*{val : val} :: [REF.NULL_admininstr(ht)] :: [RETURN_CALL_REF_admininstr(x?{x : typeidx})] :: (instr : instr <: admininstr)*{instr : instr})]), [TRAP_admininstr])
 
   ;; 8-reduction.watsup
   rule ref.null-idx{z : state, x : idx}:
@@ -27386,8 +27401,9 @@ relation Step_read: `%~>%`(config, admininstr*)
     -- where ?(val) = $local(z, x)
 
   ;; 8-reduction.watsup
-  rule global.get{z : state, x : idx}:
-    `%~>%`(`%;%`_config(z, [GLOBAL.GET_admininstr(x)]), [($global(z, x).VALUE_globalinst : val <: admininstr)])
+  rule global.get{z : state, x : idx, val : val}:
+    `%~>%`(`%;%`_config(z, [GLOBAL.GET_admininstr(x)]), [(val : val <: admininstr)])
+    -- where val = $global(z, x).VALUE_globalinst
 
   ;; 8-reduction.watsup
   rule table.get-oob{z : state, i : nat, x : idx}:
@@ -27551,7 +27567,7 @@ relation Step_read: `%~>%`(config, admininstr*)
   ;; 8-reduction.watsup
   rule memory.size{z : state, x : idx, n : n}:
     `%~>%`(`%;%`_config(z, [MEMORY.SIZE_admininstr(x)]), [CONST_admininstr(I32_numtype, `%`_num_(n))])
-    -- where ((n * 64) * $Ki) = |$mem(z, x).DATA_meminst|
+    -- where (n * (64 * $Ki)) = |$mem(z, x).DATA_meminst|
 
   ;; 8-reduction.watsup
   rule memory.fill-oob{z : state, i : nat, val : val, n : n, x : idx}:
