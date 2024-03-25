@@ -296,7 +296,7 @@ latex_elements = {
 
    # Additional stuff for the LaTeX preamble.
    # Don't type-set cross references with emphasis.
-   'preamble': '\\renewcommand\\sphinxcrossref[1]{#1}\n\\externaldocument[Core-]{'+core_dir+'/_build/latex/WebAssembly}[https://webassembly.github.io//'+repo+'/core/_download/WebAssembly.pdf]\n',
+   'preamble': '\\renewcommand\\sphinxcrossref[1]{#1}\n\\externaldocument[Core-]{WebAssembly}[https://webassembly.github.io//'+repo+'/core/_download/WebAssembly.pdf]\n',
 
    # Latex figure (float) alignment
   'figure_align': 'htbp',

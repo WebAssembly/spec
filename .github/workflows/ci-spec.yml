@@ -72,6 +72,7 @@ jobs:
 
   build-code-metadata-spec:
     runs-on: ubuntu-latest
+    needs: [build-core-spec]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2

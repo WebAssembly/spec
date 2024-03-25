@@ -255,8 +255,15 @@ epub3:
 	@echo
 	@echo "Build finished. The epub3 file is in $(BUILDDIR)/epub3."
 
+
+.PHONY: latex-core-aux
+latex-core-aux:
+	(cd ../../core; make BUILDDIR=$(BUILDDIR) latexpdf)
+	mkdir -p $(BUILDDIR)/latex
+	cp ../../core/$(BUILDDIR)/latex/WebAssembly.aux $(BUILDDIR)/latex/
+
 .PHONY: latex
-latex:
+latex: latex-core-aux
 	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(BUILDDIR)/latex
 	@echo
 	@echo "Build finished; the LaTeX files are in $(BUILDDIR)/latex."
@@ -264,14 +271,14 @@ latex:
 	      "(use \`make latexpdf' here to do that automatically)."
 
 .PHONY: latexpdf
-latexpdf:
+latexpdf: latex-core-aux
 	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(BUILDDIR)/latex
 	@echo "Running LaTeX files through pdflatex..."
 	$(MAKE) -C $(BUILDDIR)/latex LATEXMKOPTS=" </dev/null" all-pdf >$(BUILDDIR)/latex/LOG 2>&1 || cat $(BUILDDIR)/latex/LOG
 	@echo "pdflatex finished; the PDF files are in $(BUILDDIR)/latex."
 
 .PHONY: latexpdfja
-latexpdfja:
+latexpdfja: latex-core-aux
 	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(BUILDDIR)/latex
 	@echo "Running LaTeX files through platex and dvipdfmx..."
 	$(MAKE) -C $(BUILDDIR)/latex all-pdf-ja
