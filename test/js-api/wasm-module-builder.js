@@ -100,6 +100,10 @@ let kWasmS128 = 0x7b;
 let kWasmAnyRef = 0x6f;
 let kWasmAnyFunc = 0x70;
 
+// Packed storage types
+let kWasmI8 = 0x78;
+let kWasmI16 = 0x77;
+
 let kExternalFunction = 0;
 let kExternalTable = 1;
 let kExternalMemory = 2;
