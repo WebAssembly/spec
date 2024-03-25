@@ -72,10 +72,10 @@ deploy:
 publish: clean all deploy
 
 .PHONY: publish-main
-publish-main: clean main bikeshed-keep deploy
+publish-main: clean main deploy
 
 .PHONY: all
-all:	pdf html bikeshed
+all:	pdf html
 
 .PHONY: main
 main:	pdf html
