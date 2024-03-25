@@ -42,12 +42,12 @@ let builtin () =
 
   let create_tableinst t elems = StrV [
     "TYPE", t |> ref;
-    "ELEM", elems |> ref
+    "REFS", elems |> ref
   ] in
 
   let create_meminst t bytes_ = StrV [
     "TYPE", t |> ref;
-    "DATA", bytes_ |> ref
+    "BYTES", bytes_ |> ref
   ] in
 
   (* Builtin functions *)
@@ -84,10 +84,12 @@ let builtin () =
 
   let append kind (name, inst) extern =
 
+    let kinds = kind ^ "S" in
+
     (* Generate ExternFunc *)
 
     let addr =
-      match Store.access kind with
+      match Store.access kinds with
       | ListV a -> Array.length !a |> Z.of_int
       | _ -> assert false
     in
@@ -97,7 +99,7 @@ let builtin () =
 
     (* Update Store *)
 
-    (match Store.access kind with
+    (match Store.access kinds with
     | ListV a -> a := Array.append !a [|inst|]
     | _ -> assert false);
 
@@ -119,13 +121,13 @@ let builtin () =
 
   let moduleinst =
     Record.empty
-    |> Record.add "FUNC" (listV [||])
-    |> Record.add "GLOBAL" (listV [||])
-    |> Record.add "TABLE" (listV [||])
-    |> Record.add "MEM" (listV [||])
-    |> Record.add "ELEM" (listV [||])
-    |> Record.add "DATA" (listV [||])
-    |> Record.add "EXPORT" (listV extern) in
+    |> Record.add "FUNCS" (listV [||])
+    |> Record.add "GLOBALS" (listV [||])
+    |> Record.add "TABLES" (listV [||])
+    |> Record.add "MEMS" (listV [||])
+    |> Record.add "ELEMS" (listV [||])
+    |> Record.add "DATAS" (listV [||])
+    |> Record.add "EXPORTS" (listV extern) in
 
   StrV moduleinst
 
@@ -137,7 +139,7 @@ let call name =
   let local =
     WasmContext.get_current_frame ()
     |> unwrap_framev
-    |> strv_access "LOCAL"
+    |> strv_access "LOCALS"
     |> listv_nth
   in
   let as_const ty = function

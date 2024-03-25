@@ -12,15 +12,15 @@ rule Ref_ok/i31:
 
 rule Ref_ok/struct:
   s |- REF.STRUCT_ADDR a : (REF eps dt)
-  -- if s.STRUCT[a].TYPE = dt
+  -- if s.STRUCTS[a].TYPE = dt
 
 rule Ref_ok/array:
   s |- REF.ARRAY_ADDR a : (REF eps dt)
-  -- if s.ARRAY[a].TYPE = dt
+  -- if s.ARRAYS[a].TYPE = dt
 
 rule Ref_ok/func:
   s |- REF.FUNC_ADDR a : (REF eps dt)
-  -- if s.FUNC[a].TYPE = dt
+  -- if s.FUNCS[a].TYPE = dt
 
 rule Ref_ok/host:
   s |- REF.HOST_ADDR a : (REF eps ANY)

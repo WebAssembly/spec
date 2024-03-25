@@ -3,8 +3,9 @@
 ;;
 
 syntax context hint(desc "context") =
-  { TYPE functype*, FUNC functype*, GLOBAL globaltype*, TABLE tabletype*, MEM memtype*,
-    LOCAL valtype*, LABEL resulttype*, RETURN resulttype? }
+  { TYPES functype*, FUNCS functype*, GLOBALS globaltype*,
+    TABLES tabletype*, MEMS memtype*,
+    LOCALS valtype*, LABELS resulttype*, RETURN resulttype? }
 
 var C : context
 
@@ -161,43 +162,43 @@ rule Instr_ok/select:
 
 rule Instr_ok/block:
   C |- BLOCK t? instr* : eps -> t?
-  -- Instrs_ok: C, LABEL (t?) |- instr* : eps -> t?
+  -- Instrs_ok: C, LABELS (t?) |- instr* : eps -> t?
 
 rule Instr_ok/loop:
   C |- LOOP t? instr* : eps -> t?
-  -- Instrs_ok: C, LABEL (eps) |- instr* : eps -> eps
+  -- Instrs_ok: C, LABELS (eps) |- instr* : eps -> eps
 
 rule Instr_ok/if:
   C |- IF t? instr_1* ELSE instr_2* : I32 -> t?
-  -- Instrs_ok: C, LABEL (t?) |- instr_1* : eps -> t?
-  -- Instrs_ok: C, LABEL (t?) |- instr_2* : eps -> t?
+  -- Instrs_ok: C, LABELS (t?) |- instr_1* : eps -> t?
+  -- Instrs_ok: C, LABELS (t?) |- instr_2* : eps -> t?
 
 
 ;; Branch instructions
 
 rule Instr_ok/br:
   C |- BR l : t_1* t? -> t_2*
-  -- if C.LABEL[l] = t?
+  -- if C.LABELS[l] = t?
 
 rule Instr_ok/br_if:
   C |- BR_IF l : t? I32 -> t?
-  -- if C.LABEL[l] = t?
+  -- if C.LABELS[l] = t?
 
 rule Instr_ok/br_table:
   C |- BR_TABLE l* l' : t_1* t? -> t_2*
-  -- if t? = C.LABEL[l']
-  -- if (t? = C.LABEL[l])*
+  -- if t? = C.LABELS[l']
+  -- if (t? = C.LABELS[l])*
 
 
 ;; Function instructions
 
 rule Instr_ok/call:
   C |- CALL x : t_1* -> t_2?
-  -- if C.FUNC[x] = t_1* -> t_2?
+  -- if C.FUNCS[x] = t_1* -> t_2?
 
 rule Instr_ok/call_indirect:
   C |- CALL_INDIRECT x : t_1* I32 -> t_2?
-  -- if C.TYPE[x] = t_1* -> t_2?
+  -- if C.TYPES[x] = t_1* -> t_2?
 
 rule Instr_ok/return:
   C |- RETURN : t_1* t? -> t_2*
@@ -238,48 +239,48 @@ rule Instr_ok/cvtop-convert-f:
 
 rule Instr_ok/local.get:
   C |- LOCAL.GET x : eps -> t
-  -- if C.LOCAL[x] = t
+  -- if C.LOCALS[x] = t
 
 rule Instr_ok/local.set:
   C |- LOCAL.SET x : t -> eps
-  -- if C.LOCAL[x] = t
+  -- if C.LOCALS[x] = t
 
 rule Instr_ok/local.tee:
   C |- LOCAL.TEE x : t -> t
-  -- if C.LOCAL[x] = t
+  -- if C.LOCALS[x] = t
 
 
 ;; Global instructions
 
 rule Instr_ok/global.get:
   C |- GLOBAL.GET x : eps -> t
-  -- if C.GLOBAL[x] = mut t
+  -- if C.GLOBALS[x] = mut t
 
 rule Instr_ok/global.set:
   C |- GLOBAL.SET x : t -> eps
-  -- if C.GLOBAL[x] = MUT t
+  -- if C.GLOBALS[x] = MUT t
 
 
 ;; Memory instructions
 
 rule Instr_ok/memory.size:
   C |- MEMORY.SIZE : eps -> I32
-  -- if C.MEM[0] = mt
+  -- if C.MEMS[0] = mt
 
 rule Instr_ok/memory.grow:
   C |- MEMORY.GROW : I32 -> I32
-  -- if C.MEM[0] = mt
+  -- if C.MEMS[0] = mt
 
 rule Instr_ok/load:
   C |- LOAD nt (n _ sx)? memop : I32 -> nt
-  -- if C.MEM[0] = mt
+  -- if C.MEMS[0] = mt
   -- if $(2^(memop.ALIGN) <= $size(nt)/8)
   -- if $(2^(memop.ALIGN) <= n/8 < $size(nt)/8)?
   -- if n? = eps \/ nt = inn
 
 rule Instr_ok/store:
   C |- STORE nt n? memop : I32 nt -> eps
-  -- if C.MEM[0] = mt
+  -- if C.MEMS[0] = mt
   -- if $(2^(memop.ALIGN) <= $size(nt)/8)
   -- if $(2^(memop.ALIGN) <= n/8 < $size(nt)/8)?
   -- if n? = eps \/ nt = inn
@@ -298,7 +299,7 @@ rule Instr_const/const:
 
 rule Instr_const/global.get:
   C |- (GLOBAL.GET x) CONST
-  -- if C.GLOBAL[x] = t
+  -- if C.GLOBALS[x] = t
 
 
 rule Expr_const: C |- instr* CONST
@@ -333,8 +334,8 @@ rule Type_ok:
 
 rule Func_ok:
   C |- FUNC x (LOCAL t)* expr : t_1* -> t_2?
-  -- if C.TYPE[x] = t_1* -> t_2?
-  -- Expr_ok: C, LOCAL t_1* t*, LABEL (t_2?), RETURN (t_2?) |- expr : t_2?
+  -- if C.TYPES[x] = t_1* -> t_2?
+  -- Expr_ok: C, LOCALS t_1* t*, LABELS (t_2?), RETURN (t_2?) |- expr : t_2?
 
 rule Global_ok:
   C |- GLOBAL gt expr : gt
@@ -353,19 +354,19 @@ rule Mem_ok:
 ;; TODO: check bounds
 rule Elem_ok:
   C |- ELEM expr x* : OK
-  -- if C.TABLE[0] = lim
+  -- if C.TABLES[0] = lim
   -- Expr_ok_const: C |- expr : I32 CONST
-  -- if (C.FUNC[x] = ft)*
+  -- if (C.FUNCS[x] = ft)*
 
 ;; TODO: check bounds
 rule Data_ok:
   C |- DATA expr b* : OK
-  -- if C.MEM[0] = lim
+  -- if C.MEMS[0] = lim
   -- Expr_ok_const: C |- expr : I32 CONST
 
 rule Start_ok:
   C |- START x : OK
-  -- if C.FUNC[x] = eps -> eps
+  -- if C.FUNCS[x] = eps -> eps
 
 
 ;; Module im/exports
@@ -385,19 +386,19 @@ rule Export_ok:
 
 rule Externidx_ok/func:
   C |- FUNC x : FUNC ft
-  -- if C.FUNC[x] = ft
+  -- if C.FUNCS[x] = ft
 
 rule Externidx_ok/global:
   C |- GLOBAL x : GLOBAL gt
-  -- if C.GLOBAL[x] = gt
+  -- if C.GLOBALS[x] = gt
 
 rule Externidx_ok/table:
   C |- TABLE x : TABLE tt
-  -- if C.TABLE[x] = tt
+  -- if C.TABLES[x] = tt
 
 rule Externidx_ok/mem:
   C |- MEM x : MEM mt
-  -- if C.MEM[x] = mt
+  -- if C.MEMS[x] = mt
 
 
 ;; Modules proper
@@ -407,7 +408,7 @@ relation Module_ok: |- module : OK      hint(show "T-module")
 rule Module_ok:
   |- MODULE type* import* func* global* table* mem* elem* data* start? export* : OK
   -- (Type_ok: |- type : ft')*
-  -- (Import_ok: {TYPE ft'*} |- import : ixt)*
+  -- (Import_ok: {TYPES ft'*} |- import : ixt)*
 
   -- (Global_ok: C' |- global : gt)*
   -- (Func_ok: C |- func : ft)*
@@ -423,9 +424,9 @@ rule Module_ok:
   -- if |mt*| <= 1
   ;; -- TODO: disjoint export names
 
-  -- if C = {TYPE ft'*, FUNC ift* ft*, GLOBAL igt* gt*, TABLE itt* tt*, MEM imt* mt*}
+  -- if C = {TYPES ft'*, FUNCS ift* ft*, GLOBALS igt* gt*, TABLES itt* tt*, MEMS imt* mt*}
 
-  -- if C' = {TYPE ft'*, FUNC ift* ft*, GLOBAL igt*}
+  -- if C' = {TYPES ft'*, FUNCS ift* ft*, GLOBALS igt*}
 
   -- if ift* = $funcsxt(ixt*)
   -- if igt* = $globalsxt(ixt*)

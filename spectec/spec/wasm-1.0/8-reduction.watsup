@@ -115,7 +115,7 @@ rule Step_read/call:
 
 rule Step_read/call_indirect-call:
   z; (CONST I32 i) (CALL_INDIRECT x)  ~>  (CALL_ADDR a)
-  -- if $table(z, 0).ELEM[i] = a
+  -- if $table(z, 0).REFS[i] = a
   -- if $type(z, x) = $funcinst(z)[a].TYPE
 
 rule Step_read/call_indirect-trap:
@@ -126,7 +126,7 @@ rule Step_read/call_addr:
   z; val^k (CALL_ADDR a)  ~>  (FRAME_ n `{f} (LABEL_ n `{eps} instr*))
   -- if $funcinst(z)[a] = {TYPE (t_1^k -> t_2^n), MODULE mm, CODE func}
   -- if func = FUNC x (LOCAL t)* instr*
-  -- if f = {LOCAL val^k ($default_(t))*, MODULE mm}
+  -- if f = {LOCALS val^k ($default_(t))*, MODULE mm}
 
 
 rule Step_pure/frame-vals:
@@ -202,24 +202,24 @@ rule Step/global.set:
 
 rule Step_read/load-num-trap:
   z; (CONST I32 i) (LOAD t mo)  ~>  TRAP
-  -- if $(i + mo.OFFSET + $size(t)/8 > |$mem(z, 0).DATA|)
+  -- if $(i + mo.OFFSET + $size(t)/8 > |$mem(z, 0).BYTES|)
 
 rule Step_read/load-num-val:
   z; (CONST I32 i) (LOAD t mo)  ~>  (CONST t c)
-  -- if $bytes(t, c) = $mem(z, 0).DATA[i + mo.OFFSET : $size(t)/8]
+  -- if $bytes(t, c) = $mem(z, 0).BYTES[i + mo.OFFSET : $size(t)/8]
 
 rule Step_read/load-pack-trap:
   z; (CONST I32 i) (LOAD inn (n _ sx) mo)  ~>  TRAP
-  -- if $(i + mo.OFFSET + n/8 > |$mem(z, 0).DATA|)
+  -- if $(i + mo.OFFSET + n/8 > |$mem(z, 0).BYTES|)
 
 rule Step_read/load-pack-val:
   z; (CONST I32 i) (LOAD inn (n _ sx) mo)  ~>  (CONST inn $ext(n, $size(inn), sx, c))
-  -- if $ibytes(n, c) = $mem(z, 0).DATA[i + mo.OFFSET : n/8]
+  -- if $ibytes(n, c) = $mem(z, 0).BYTES[i + mo.OFFSET : n/8]
 
 
 rule Step/store-num-trap:
   z; (CONST I32 i) (CONST t c) (STORE t mo)  ~>  z; TRAP
-  -- if $(i + mo.OFFSET + $size(t)/8) > |$mem(z, 0).DATA|
+  -- if $(i + mo.OFFSET + $size(t)/8) > |$mem(z, 0).BYTES|
 
 rule Step/store-num-val:
   z; (CONST I32 i) (CONST t c) (STORE t mo)  ~>  $with_mem(z, 0, $(i + mo.OFFSET), $($size(t)/8), b*); eps
@@ -227,7 +227,7 @@ rule Step/store-num-val:
 
 rule Step/store-pack-trap:
   z; (CONST I32 i) (CONST inn c) (STORE inn n mo)  ~>  z; TRAP
-  -- if $(i + mo.OFFSET + n/8) > |$mem(z, 0).DATA|
+  -- if $(i + mo.OFFSET + n/8) > |$mem(z, 0).BYTES|
 
 rule Step/store-pack-val:
   z; (CONST I32 i) (CONST inn c) (STORE inn n mo)  ~>  $with_mem(z, 0, $(i + mo.OFFSET), $(n/8), b*); eps
@@ -236,11 +236,11 @@ rule Step/store-pack-val:
 
 rule Step_read/memory.size:
   z; (MEMORY.SIZE)  ~>  (CONST I32 n)
-  -- if $(n * 64 * $Ki) = |$mem(z, 0).DATA|
+  -- if $(n * 64 * $Ki) = |$mem(z, 0).BYTES|
 
 
 rule Step/memory.grow-succeed:
-  z; (CONST I32 n) (MEMORY.GROW)  ~>  $with_meminst(z, 0, mi); (CONST I32 $(|$mem(z, 0).DATA| / (64 * $Ki)))
+  z; (CONST I32 n) (MEMORY.GROW)  ~>  $with_meminst(z, 0, mi); (CONST I32 $(|$mem(z, 0).BYTES| / (64 * $Ki)))
   -- if $growmemory($mem(z, 0), n) = mi
 
 rule Step/memory.grow-fail:

@@ -51,14 +51,14 @@ module Store = struct
   let init () =
     store :=
       Record.empty
-      |> Record.add "FUNC" (listV [||])
-      |> Record.add "GLOBAL" (listV [||])
-      |> Record.add "TABLE" (listV [||])
-      |> Record.add "MEM" (listV [||])
-      |> Record.add "ELEM" (listV [||])
-      |> Record.add "DATA" (listV [||])
-      |> Record.add "STRUCT" (listV [||])
-      |> Record.add "ARRAY" (listV [||])
+      |> Record.add "FUNCS" (listV [||])
+      |> Record.add "GLOBALS" (listV [||])
+      |> Record.add "TABLES" (listV [||])
+      |> Record.add "MEMS" (listV [||])
+      |> Record.add "ELEMS" (listV [||])
+      |> Record.add "DATAS" (listV [||])
+      |> Record.add "STRUCTS" (listV [||])
+      |> Record.add "ARRAYS" (listV [||])
 
   let get () = strV !store
 

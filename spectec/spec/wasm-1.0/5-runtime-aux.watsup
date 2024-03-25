@@ -50,51 +50,51 @@ def $store((s; f)) = s
 def $frame((s; f)) = f
 
 
-def $funcaddr(state) : funcaddr*      hint(show %.MODULE.FUNC)
-def $funcaddr((s; f)) = f.MODULE.FUNC
+def $funcaddr(state) : funcaddr*      hint(show %.MODULE.FUNCS)
+def $funcaddr((s; f)) = f.MODULE.FUNCS
 
-def $funcinst(state) : funcinst*      hint(show %.FUNC)
-def $globalinst(state) : globalinst*  hint(show %.GLOBAL)
-def $tableinst(state) : tableinst*    hint(show %.TABLE)
-def $meminst(state) : meminst*        hint(show %.MEM)
+def $funcinst(state) : funcinst*      hint(show %.FUNCS)
+def $globalinst(state) : globalinst*  hint(show %.GLOBALS)
+def $tableinst(state) : tableinst*    hint(show %.TABLES)
+def $meminst(state) : meminst*        hint(show %.MEMS)
 def $moduleinst(state) : moduleinst   hint(show %.MODULE)
 
-def $funcinst((s; f)) = s.FUNC
-def $globalinst((s; f)) = s.GLOBAL
-def $tableinst((s; f)) = s.TABLE
-def $meminst((s; f)) = s.MEM
+def $funcinst((s; f)) = s.FUNCS
+def $globalinst((s; f)) = s.GLOBALS
+def $tableinst((s; f)) = s.TABLES
+def $meminst((s; f)) = s.MEMS
 def $moduleinst((s; f)) = f.MODULE
 
-def $type(state, typeidx) : functype        hint(show %.TYPE[%])
-def $func(state, funcidx) : funcinst        hint(show %.FUNC[%])
-def $global(state, globalidx) : globalinst  hint(show %.GLOBAL[%])
-def $table(state, tableidx) : tableinst     hint(show %.TABLE[%])
-def $mem(state, memidx) : meminst           hint(show %.MEM[%])
-def $local(state, localidx) : val           hint(show %.LOCAL[%])
+def $type(state, typeidx) : functype        hint(show %.TYPES[%])
+def $func(state, funcidx) : funcinst        hint(show %.FUNCS[%])
+def $global(state, globalidx) : globalinst  hint(show %.GLOBALS[%])
+def $table(state, tableidx) : tableinst     hint(show %.TABLES[%])
+def $mem(state, memidx) : meminst           hint(show %.MEMS[%])
+def $local(state, localidx) : val           hint(show %.LOCALS[%])
 
-def $type((s; f), x) = f.MODULE.TYPE[x]
-def $func((s; f), x) = s.FUNC[f.MODULE.FUNC[x]]
-def $global((s; f), x) = s.GLOBAL[f.MODULE.GLOBAL[x]]
-def $table((s; f), x) = s.TABLE[f.MODULE.TABLE[x]]
-def $mem((s; f), x) = s.MEM[f.MODULE.MEM[x]]
-def $local((s; f), x) = f.LOCAL[x]
+def $type((s; f), x) = f.MODULE.TYPES[x]
+def $func((s; f), x) = s.FUNCS[f.MODULE.FUNCS[x]]
+def $global((s; f), x) = s.GLOBALS[f.MODULE.GLOBALS[x]]
+def $table((s; f), x) = s.TABLES[f.MODULE.TABLES[x]]
+def $mem((s; f), x) = s.MEMS[f.MODULE.MEMS[x]]
+def $local((s; f), x) = f.LOCALS[x]
 
 
 ;; Update
 
-def $with_local(state, localidx, val) : state               hint(show %[.LOCAL[%] = %])
-def $with_global(state, globalidx, val) : state             hint(show %[.GLOBAL[%].VALUE = %])
-def $with_table(state, tableidx, nat, funcaddr) : state     hint(show %[.TABLE[%].ELEM[%] = %])
-def $with_tableinst(state, tableidx, tableinst) : state     hint(show %[.TABLE[%] = %])
-def $with_mem(state, memidx, nat, nat, byte*) : state       hint(show %[.MEM[%].DATA[% : %] = %])
-def $with_meminst(state, memidx, meminst) : state           hint(show %[.MEM[%] = %])
+def $with_local(state, localidx, val) : state               hint(show %[.LOCALS[%] = %])
+def $with_global(state, globalidx, val) : state             hint(show %[.GLOBALS[%].VALUE = %])
+def $with_table(state, tableidx, nat, funcaddr) : state     hint(show %[.TABLES[%].REFS[%] = %])
+def $with_tableinst(state, tableidx, tableinst) : state     hint(show %[.TABLES[%] = %])
+def $with_mem(state, memidx, nat, nat, byte*) : state       hint(show %[.MEMS[%].BYTES[% : %] = %])
+def $with_meminst(state, memidx, meminst) : state           hint(show %[.MEMS[%] = %])
 
-def $with_local((s; f), x, v) = s; f[.LOCAL[x] = v]
-def $with_global((s; f), x, v) = s[.GLOBAL[f.MODULE.GLOBAL[x]].VALUE = v]; f
-def $with_table((s; f), x, i, a) = s[.TABLE[f.MODULE.TABLE[x]].ELEM[i] = a]; f
-def $with_tableinst((s; f), x, ti) = s[.TABLE[f.MODULE.TABLE[x]] = ti]; f
-def $with_mem((s; f), x, i, j, b*) = s[.MEM[f.MODULE.MEM[x]].DATA[i : j] = b*]; f
-def $with_meminst((s; f), x, mi) = s[.MEM[f.MODULE.MEM[x]] = mi]; f
+def $with_local((s; f), x, v) = s; f[.LOCALS[x] = v]
+def $with_global((s; f), x, v) = s[.GLOBALS[f.MODULE.GLOBALS[x]].VALUE = v]; f
+def $with_table((s; f), x, i, a) = s[.TABLES[f.MODULE.TABLES[x]].REFS[i] = a]; f
+def $with_tableinst((s; f), x, ti) = s[.TABLES[f.MODULE.TABLES[x]] = ti]; f
+def $with_mem((s; f), x, i, j, b*) = s[.MEMS[f.MODULE.MEMS[x]].BYTES[i : j] = b*]; f
+def $with_meminst((s; f), x, mi) = s[.MEMS[f.MODULE.MEMS[x]] = mi]; f
 
 
 ;; Growing
@@ -103,13 +103,13 @@ def $growtable(tableinst, nat) : tableinst  hint(partial)
 def $growmemory(meminst, nat) : meminst     hint(partial)
 
 def $growtable(ti, n) = ti'
-  -- if ti = { TYPE `[i .. j], ELEM a* }
+  -- if ti = { TYPE `[i .. j], REFS a* }
   -- if i' = $(|a*| + n)
-  -- if ti' = { TYPE `[i' .. j], ELEM a* eps^n }
+  -- if ti' = { TYPE `[i' .. j], REFS a* eps^n }
   -- if $(i' <= j)
 
 def $growmemory(mi, n) = mi'
-  -- if mi = { TYPE `[i .. j], DATA b* }
+  -- if mi = { TYPE `[i .. j], BYTES b* }
   -- if i' = $(|b*| / (64 * $Ki) + n)
-  -- if mi' = { TYPE `[i' .. j], DATA b* 0^(n * 64 * $Ki) }
+  -- if mi' = { TYPE `[i' .. j], BYTES b* 0^(n * $($(64 * $Ki))) }
   -- if $(i' <= j)

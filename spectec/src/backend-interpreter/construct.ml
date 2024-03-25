@@ -223,18 +223,18 @@ let rec al_to_field: value -> Aggr.field = function
   | v -> Aggr.ValField (ref (al_to_value v))
 
 and al_to_array: value -> Aggr.array = function
-  | StrV r when Record.mem "TYPE" r && Record.mem "FIELD" r ->
+  | StrV r when Record.mem "TYPE" r && Record.mem "FIELDS" r ->
     Aggr.Array (
       al_to_def_type (Record.find "TYPE" r),
-      al_to_list al_to_field (Record.find "FIELD" r)
+      al_to_list al_to_field (Record.find "FIELDS" r)
     )
   | v -> error_value "array" v
 
 and al_to_struct: value -> Aggr.struct_ = function
-  | StrV r when Record.mem "TYPE" r && Record.mem "FIELD" r ->
+  | StrV r when Record.mem "TYPE" r && Record.mem "FIELDS" r ->
     Aggr.Struct (
       al_to_def_type (Record.find "TYPE" r),
-      al_to_list al_to_field (Record.find "FIELD" r)
+      al_to_list al_to_field (Record.find "FIELDS" r)
     )
   | v -> error_value "struct" v
 
@@ -254,11 +254,11 @@ and al_to_ref: value -> ref_ = function
   | CaseV ("REF.HOST_ADDR", [ i32 ]) -> Script.HostRef (al_to_int32 i32)
   | CaseV ("REF.I31_NUM", [ i ]) -> I31.I31Ref (al_to_int i)
   | CaseV ("REF.STRUCT_ADDR", [ addr ]) ->
-    let struct_insts = Ds.Store.access "STRUCT" in
+    let struct_insts = Ds.Store.access "STRUCTS" in
     let struct_ = addr |> al_to_int |> listv_nth struct_insts |> al_to_struct in
     Aggr.StructRef struct_
   | CaseV ("REF.ARRAY_ADDR", [ addr ]) ->
-    let arr_insts = Ds.Store.access "ARRAY" in
+    let arr_insts = Ds.Store.access "ARRAYS" in
     let arr = addr |> al_to_int |> listv_nth arr_insts |> al_to_array in
     Aggr.ArrayRef arr
   | CaseV ("REF.EXTERN", [ r ]) -> Extern.ExternRef (al_to_ref r)

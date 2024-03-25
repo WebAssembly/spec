@@ -54,21 +54,21 @@ syntax globalinst hint(desc "global instance") =
     VALUE val }
 syntax tableinst hint(desc "table instance") =
   { TYPE tabletype,
-    ELEM (funcaddr?)* }
+    REFS (funcaddr?)* }
 syntax meminst hint(desc "memory instance") =
   { TYPE memtype,
-    DATA byte* }
+    BYTES byte* }
 syntax exportinst hint(desc "export instance") =
   { NAME name,
     VALUE externval }
 
 syntax moduleinst hint(desc "module instance") =
-  { TYPE functype*,
-    FUNC funcaddr*,
-    GLOBAL globaladdr*,
-    TABLE tableaddr*,
-    MEM memaddr*,
-    EXPORT exportinst* }
+  { TYPES functype*,
+    FUNCS funcaddr*,
+    GLOBALS globaladdr*,
+    TABLES tableaddr*,
+    MEMS memaddr*,
+    EXPORTS exportinst* }
 
 var mm : moduleinst
 var fi : funcinst
@@ -81,13 +81,13 @@ var xi : exportinst
 ;; Configurations proper
 
 syntax store hint(desc "store") =
-  { FUNC funcinst*,
-    GLOBAL globalinst*,
-    TABLE tableinst*,
-    MEM meminst* }
+  { FUNCS funcinst*,
+    GLOBALS globalinst*,
+    TABLES tableinst*,
+    MEMS meminst* }
 
 syntax frame hint(desc "frame") =
-  { LOCAL val*,
+  { LOCALS val*,
     MODULE moduleinst }
 
 syntax state hint(desc "state") = store; frame

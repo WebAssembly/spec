@@ -71,7 +71,7 @@ let print_runner_result name result =
 let get_export name modulename =
   modulename
   |> Register.find
-  |> strv_access "EXPORT"
+  |> strv_access "EXPORTS"
   |> listv_find
     (fun export -> al_to_string (strv_access "NAME" export) = name)
 
@@ -116,7 +116,7 @@ let get_global_value module_name globalname =
   let index = get_export_addr globalname module_name in
   index
   |> al_to_int
-  |> listv_nth (Store.access "GLOBAL")
+  |> listv_nth (Store.access "GLOBALS")
   |> strv_access "VALUE"
   |> Array.make 1
   |> listV

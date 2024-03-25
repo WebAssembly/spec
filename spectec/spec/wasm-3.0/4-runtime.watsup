@@ -78,15 +78,15 @@ syntax globalinst hint(desc "global instance") =
     VALUE val }
 syntax tableinst hint(desc "table instance") =
   { TYPE tabletype,
-    ELEM ref* }
+    REFS ref* }
 syntax meminst hint(desc "memory instance") =
   { TYPE memtype,
-    DATA byte* }
+    BYTES byte* }
 syntax eleminst hint(desc "element instance") =
   { TYPE elemtype,
-    ELEM ref* }
+    REFS ref* }
 syntax datainst hint(desc "data instance") =
-  { DATA byte* }
+  { BYTES byte* }
 syntax exportinst hint(desc "export instance") =
   { NAME name,
     VALUE externval }
@@ -97,20 +97,20 @@ syntax fieldval hint(desc "field value") =
   | val | packval
 syntax structinst hint(desc "structure instance") =
   { TYPE deftype,
-    FIELD fieldval* }
+    FIELDS fieldval* }
 syntax arrayinst hint(desc "array instance") =
   { TYPE deftype,
-    FIELD fieldval* }
+    FIELDS fieldval* }
 
 syntax moduleinst hint(desc "module instance") =
-  { TYPE deftype*,
-    FUNC funcaddr*,
-    GLOBAL globaladdr*,
-    TABLE tableaddr*,
-    MEM memaddr*,
-    ELEM elemaddr*,
-    DATA dataaddr*,
-    EXPORT exportinst* }
+  { TYPES deftype*,
+    FUNCS funcaddr*,
+    GLOBALS globaladdr*,
+    TABLES tableaddr*,
+    MEMS memaddr*,
+    ELEMS elemaddr*,
+    DATAS dataaddr*,
+    EXPORTS exportinst* }
 
 var mm : moduleinst
 var fi : funcinst
@@ -130,17 +130,17 @@ var pv : packval
 ;; Configurations proper
 
 syntax store hint(desc "store") =
-  { FUNC funcinst*,
-    GLOBAL globalinst*,
-    TABLE tableinst*,
-    MEM meminst*,
-    ELEM eleminst*,
-    DATA datainst*,
-    STRUCT structinst*,
-    ARRAY arrayinst* }
+  { FUNCS funcinst*,
+    GLOBALS globalinst*,
+    TABLES tableinst*,
+    MEMS meminst*,
+    ELEMS eleminst*,
+    DATAS datainst*,
+    STRUCTS structinst*,
+    ARRAYS arrayinst* }
 
 syntax frame hint(desc "frame") =
-  { LOCAL (val?)*,
+  { LOCALS (val?)*,
     MODULE moduleinst }
 
 syntax state hint(desc "state") = store; frame

@@ -92,7 +92,7 @@ let call_ref =
           popI (iterE (v, ["val"], ListN(n, None)));
           letI (f, strE (Record.empty
             |> Record.add
-              (atom_of_name "LOCAL" "frame")
+              (atom_of_name "LOCALS" "frame")
               (catE (iterE (optE (Some v), ["val"], ListN (n, None)), iterE (callE("default_", [t]), ["t"], List)))
             |> Record.add
               (atom_of_name "MODULE" "frame")
@@ -185,7 +185,7 @@ let array_new_data =
             binE (
               GtOp,
               binE (AddOp, i, binE (DivOp, binE (MulOp, n, zsize), numE (Z.of_int 8))),
-              lenE (accE (callE ("data", [y]), dotP (atom_of_name "DATA" "datainst")))
+              lenE (accE (callE ("data", [y]), dotP (atom_of_name "BYTES" "datainst")))
             ),
             [ trapI () ],
             []
@@ -194,7 +194,7 @@ let array_new_data =
           letI (
             bstar,
             accE (
-              accE (data, dotP (atom_of_name "DATA" "datainst")),
+              accE (data, dotP (atom_of_name "BYTES" "datainst")),
               sliceP (i, binE (DivOp, binE (MulOp, n, zsize), numE (Z.of_int 8)))
             )
           );
@@ -265,7 +265,7 @@ let ref_type_of =
   | [CaseV (name, [ NumV i ])]
   when String.starts_with ~prefix:"REF." name && String.ends_with ~suffix:"_ADDR" name ->
     let field_name = String.sub name 4 (String.length name - 9) in
-    let object_ = listv_nth (Ds.Store.access field_name) (Z.to_int i) in
+    let object_ = listv_nth (Ds.Store.access (field_name ^ "S")) (Z.to_int i) in
     let dt = strv_access "TYPE" object_ in
     CaseV ("REF", [ nonull; dt])
   (* extern *)
