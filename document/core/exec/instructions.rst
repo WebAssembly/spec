@@ -3241,14 +3241,6 @@ Control Instructions
 
 $${rule: {Step_read/block}}
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{lcl}
-   S; F; \val^m~\BLOCK~\X{bt}~\instr^\ast~\END &\stepto&
-     S; F; \LABEL_n\{\epsilon\}~\val^m~\instr^\ast~\END
-     \\&&\quad (\iff \fblocktype_{S;F}(\X{bt}) = [t_1^m] \to [t_2^n])
-   \end{array}
-
 
 .. _exec-loop:
 
@@ -3270,14 +3262,6 @@ $${rule: {Step_read/block}}
 7. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\val^m~\instr^\ast` with label :math:`L`.
 
 $${rule: {Step_read/loop}}
-
-.. math::
-   ~\\[-1ex]
-   \begin{array}{lcl}
-   S; F; \val^m~\LOOP~\X{bt}~\instr^\ast~\END &\stepto&
-     S; F; \LABEL_m\{\LOOP~\X{bt}~\instr^\ast~\END\}~\val^m~\instr^\ast~\END
-     \\&&\quad (\iff \fblocktype_{S;F}(\X{bt}) = [t_1^m] \to [t_2^n])
-   \end{array}
 
 
 .. _exec-if:
@@ -3330,12 +3314,6 @@ $${rule: {Step_pure/if-*}}
 8. Jump to the continuation of :math:`L`.
 
 $${rule: {Step_pure/br-*}}
-
-.. math::
-   ~\\[-1ex]
-   \begin{array}{lcl@{\qquad}l}
-   \LABEL_n\{\instr^\ast\}~\XB^l[\val^n~(\BR~l)]~\END &\stepto& \val^n~\instr^\ast
-   \end{array}
 
 
 .. _exec-br_if:
@@ -3505,13 +3483,7 @@ $${rule: {Step_read/br_on_cast_fail-*}}
 
 10. Jump to the instruction after the original call that pushed the frame.
 
-$${rule: {Step_pure/return-frame}}
-
-.. math::
-   ~\\[-1ex]
-   \begin{array}{lcl@{\qquad}l}
-   \FRAME_n\{F\}~B^\ast[\val^n~\RETURN]~\END &\stepto& \val^n
-   \end{array}
+$${rule: {Step_pure/return-*}}
 
 
 .. _exec-call:

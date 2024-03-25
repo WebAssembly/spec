@@ -4364,8 +4364,8 @@ relation Step_pure: `%~>%`(admininstr*, admininstr*)
     `%~>%`([`FRAME_%{%}%`_admininstr(n, f, (val' : val <: admininstr)*{val' : val} :: (val : val <: admininstr)^n{val : val} :: [RETURN_admininstr] :: (instr : instr <: admininstr)*{instr : instr})], (val : val <: admininstr)^n{val : val})
 
   ;; 8-reduction.watsup
-  rule return-label{k : nat, instr'* : instr*, val* : val*, instr* : instr*}:
-    `%~>%`([`LABEL_%{%}%`_admininstr(k, instr'*{instr' : instr}, (val : val <: admininstr)*{val : val} :: [RETURN_admininstr] :: (instr : instr <: admininstr)*{instr : instr})], (val : val <: admininstr)*{val : val} :: [RETURN_admininstr])
+  rule return-label{n : n, instr'* : instr*, val* : val*, instr* : instr*}:
+    `%~>%`([`LABEL_%{%}%`_admininstr(n, instr'*{instr' : instr}, (val : val <: admininstr)*{val : val} :: [RETURN_admininstr] :: (instr : instr <: admininstr)*{instr : instr})], (val : val <: admininstr)*{val : val} :: [RETURN_admininstr])
 
   ;; 8-reduction.watsup
   rule unop-val{nt : numtype, c_1 : num_(nt), unop : unop_(nt), c : num_(nt)}:
@@ -4625,14 +4625,14 @@ def $blocktype(state : state, blocktype : blocktype) : functype
 ;; 8-reduction.watsup
 relation Step_read: `%~>%`(config, admininstr*)
   ;; 8-reduction.watsup
-  rule block{z : state, val^k : val^k, k : nat, bt : blocktype, instr* : instr*, n : n, t_1^k : valtype^k, t_2^n : valtype^n}:
-    `%~>%`(`%;%`_config(z, (val : val <: admininstr)^k{val : val} :: [BLOCK_admininstr(bt, instr*{instr : instr})]), [`LABEL_%{%}%`_admininstr(n, [], (val : val <: admininstr)^k{val : val} :: (instr : instr <: admininstr)*{instr : instr})])
-    -- if ($blocktype(z, bt) = `%->%`_functype(`%`_resulttype(t_1^k{t_1 : valtype}), `%`_resulttype(t_2^n{t_2 : valtype})))
+  rule block{z : state, val^m : val^m, m : m, bt : blocktype, instr* : instr*, n : n, t_1^m : valtype^m, t_2^n : valtype^n}:
+    `%~>%`(`%;%`_config(z, (val : val <: admininstr)^m{val : val} :: [BLOCK_admininstr(bt, instr*{instr : instr})]), [`LABEL_%{%}%`_admininstr(n, [], (val : val <: admininstr)^m{val : val} :: (instr : instr <: admininstr)*{instr : instr})])
+    -- if ($blocktype(z, bt) = `%->%`_functype(`%`_resulttype(t_1^m{t_1 : valtype}), `%`_resulttype(t_2^n{t_2 : valtype})))
 
   ;; 8-reduction.watsup
-  rule loop{z : state, val^k : val^k, k : nat, bt : blocktype, instr* : instr*, t_1^k : valtype^k, t_2^n : valtype^n, n : n}:
-    `%~>%`(`%;%`_config(z, (val : val <: admininstr)^k{val : val} :: [LOOP_admininstr(bt, instr*{instr : instr})]), [`LABEL_%{%}%`_admininstr(k, [LOOP_instr(bt, instr*{instr : instr})], (val : val <: admininstr)^k{val : val} :: (instr : instr <: admininstr)*{instr : instr})])
-    -- if ($blocktype(z, bt) = `%->%`_functype(`%`_resulttype(t_1^k{t_1 : valtype}), `%`_resulttype(t_2^n{t_2 : valtype})))
+  rule loop{z : state, val^m : val^m, m : m, bt : blocktype, instr* : instr*, t_1^m : valtype^m, t_2^n : valtype^n, n : n}:
+    `%~>%`(`%;%`_config(z, (val : val <: admininstr)^m{val : val} :: [LOOP_admininstr(bt, instr*{instr : instr})]), [`LABEL_%{%}%`_admininstr(m, [LOOP_instr(bt, instr*{instr : instr})], (val : val <: admininstr)^m{val : val} :: (instr : instr <: admininstr)*{instr : instr})])
+    -- if ($blocktype(z, bt) = `%->%`_functype(`%`_resulttype(t_1^m{t_1 : valtype}), `%`_resulttype(t_2^n{t_2 : valtype})))
 
   ;; 8-reduction.watsup
   rule br_on_cast-succeed{s : store, f : frame, ref : ref, l : labelidx, rt_1 : reftype, rt_2 : reftype, rt : reftype}:

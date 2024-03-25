@@ -305,7 +305,10 @@ and expand_exp args i e =
   | HoleE `Rest ->
     let args' = try Lib.List.drop !i args with Failure _ -> raise Arity_mismatch in
     i := List.length args;
-    CallE ("" $ e.at, args')
+    SeqE (List.map (function
+      | {it = {contents = ExpA e}; _} -> e
+      | a -> CallE ("" $ a.at, [a]) $ a.at
+    ) args')
   | HoleE `None -> HoleE `None
   | FuseE (e1, e2) ->
     let e1' = expand_exp args i e1 in

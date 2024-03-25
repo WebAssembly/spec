@@ -6234,20 +6234,20 @@ execution_of_LOCAL.TEE x
 5. Execute the instruction (LOCAL.SET x).
 
 execution_of_BLOCK bt instr*
-1. Let (t_1^k -> t_2^n) be $blocktype(bt).
-2. Assert: Due to validation, there are at least k values on the top of the stack.
-3. Pop the values val^k from the stack.
+1. Let (t_1^m -> t_2^n) be $blocktype(bt).
+2. Assert: Due to validation, there are at least m values on the top of the stack.
+3. Pop the values val^m from the stack.
 4. Let L be the label_n{[]}.
 5. Enter L with label instr* ++ [LABEL_]:
-  a. Push the values val^k to the stack.
+  a. Push the values val^m to the stack.
 
 execution_of_LOOP bt instr*
-1. Let (t_1^k -> t_2^n) be $blocktype(bt).
-2. Assert: Due to validation, there are at least k values on the top of the stack.
-3. Pop the values val^k from the stack.
-4. Let L be the label_k{[(LOOP bt instr*)]}.
+1. Let (t_1^m -> t_2^n) be $blocktype(bt).
+2. Assert: Due to validation, there are at least m values on the top of the stack.
+3. Pop the values val^m from the stack.
+4. Let L be the label_m{[(LOOP bt instr*)]}.
 5. Enter L with label instr* ++ [LABEL_]:
-  a. Push the values val^k to the stack.
+  a. Push the values val^m to the stack.
 
 execution_of_BR_ON_CAST l rt_1 rt_2
 1. Let f be the current frame.

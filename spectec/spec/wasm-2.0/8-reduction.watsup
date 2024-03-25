@@ -142,7 +142,7 @@ rule Step_pure/return-frame:
   (FRAME_ n `{f} val'* val^n RETURN instr*)  ~>  val^n
 
 rule Step_pure/return-label:
-  (LABEL_ k `{instr'*} val* RETURN instr*)  ~>  val* RETURN
+  (LABEL_ n `{instr'*} val* RETURN instr*)  ~>  val* RETURN
 
 
 ;; Numeric instructions
