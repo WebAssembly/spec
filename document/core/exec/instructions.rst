@@ -3733,11 +3733,7 @@ When the end of a block is reached without a jump or trap aborting it, then the 
 
 5. Jump to the position after the |END| of the :ref:`structured control instruction <syntax-instr-control>` associated with the label :math:`L`.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{lcl@{\qquad}l}
-   \LABEL_n\{\instr^\ast\}~\val^\ast~\END &\stepto& \val^\ast
-   \end{array}
+$${rule: Step_pure/label-vals}
 
 .. note::
    This semantics also applies to the instruction sequence contained in a |LOOP| instruction.
@@ -3859,11 +3855,7 @@ When the end of a function is reached without a jump (i.e., |RETURN|) or trap ab
 
 8. Jump to the instruction after the original call.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{lcl@{\qquad}l}
-   \FRAME_n\{F\}~\val^n~\END &\stepto& \val^n
-   \end{array}
+$${rule: Step_pure/frame-vals}
 
 
 .. index:: host function, store
@@ -3941,6 +3933,8 @@ An :ref:`expression <syntax-expr>` is *evaluated* relative to a :ref:`current <e
 4. Pop the :ref:`value <syntax-val>` :math:`\val` from the stack.
 
 The value :math:`\val` is the result of the evaluation.
+
+$${rule: Eval_expr}
 
 .. math::
    S; F; \instr^\ast \stepto S'; F'; \instr'^\ast
