@@ -145,8 +145,8 @@ grammar Bcomptype : comptype =
   | 0x58 yt:Bfieldtype => ARRAY yt
 
 grammar Bsubtype : subtype =
-  | 0x50 x*:Bvec(Btypeidx) ct:Bcomptype => SUB x* ct
-  | 0x49 x*:Bvec(Btypeidx) ct:Bcomptype => SUB FINAL x* ct
+  | 0x50 x*:Bvec(Btypeidx) ct:Bcomptype => SUB $idx(x)* ct
+  | 0x49 x*:Bvec(Btypeidx) ct:Bcomptype => SUB FINAL $idx(x)* ct
   | ct:Bcomptype => SUB FINAL eps ct
 
 grammar Brectype : rectype =

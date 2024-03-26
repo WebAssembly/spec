@@ -225,7 +225,14 @@ $$
 \mathsf{func} ~|~ \mathsf{nofunc} \\ &&|&
 \mathsf{extern} ~|~ \mathsf{noextern} \\ &&|&
 \mathsf{bot} \\
-& {\mathit{heaptype}} &::=& {\mathit{absheaptype}} ~|~ {\mathit{typeidx}} ~|~ \dots \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+\mbox{(defined type)} & {\mathit{deftype}} &::=& {\mathit{rectype}} . {\mathit{nat}} \\
+& {\mathit{typeuse}} &::=& {\mathit{deftype}} ~|~ {\mathit{typeidx}} ~|~ \mathsf{rec}~{\mathit{n}} \\
+\mbox{(heap type)} & {\mathit{heaptype}} &::=& {\mathit{absheaptype}} ~|~ {\mathit{typeuse}} \\
 \mbox{(reference type)} & {\mathit{reftype}} &::=& \mathsf{ref}~{\mathit{nul}}~{\mathit{heaptype}} \\
 & {\mathit{valtype}} &::=& {\mathit{numtype}} ~|~ {\mathit{vectype}} ~|~ {\mathit{reftype}} ~|~ \mathsf{bot} \\
 & {\mathsf{i}}{{\mathit{n}}} &::=& \mathsf{i{\scriptstyle32}} ~|~ \mathsf{i{\scriptstyle64}} \\
@@ -262,10 +269,8 @@ $$
 \mbox{(composite type)} & {\mathit{comptype}} &::=& \mathsf{struct}~{\mathit{structtype}} \\ &&|&
 \mathsf{array}~{\mathit{arraytype}} \\ &&|&
 \mathsf{func}~{\mathit{functype}} \\
-& {\mathit{subtype}} &::=& \mathsf{sub}~{\mathit{fin}}~{{\mathit{typeidx}}^\ast}~{\mathit{comptype}} ~|~ \mathsf{sub}~{\mathit{fin}}~{{\mathit{heaptype}}^\ast}~{\mathit{comptype}} \\
+& {\mathit{subtype}} &::=& \mathsf{sub}~{\mathit{fin}}~{{\mathit{typeuse}}^\ast}~{\mathit{comptype}} \\
 \mbox{(recursive type)} & {\mathit{rectype}} &::=& \mathsf{rec}~{\mathit{list}}({\mathit{subtype}}) \\
-\mbox{(defined type)} & {\mathit{deftype}} &::=& {\mathit{rectype}} . {\mathit{nat}} \\
-& {\mathit{heaptype}} &::=& \dots ~|~ {\mathit{deftype}} ~|~ \mathsf{rec}~{\mathit{n}} \\
 \end{array}
 $$
 
@@ -488,11 +493,11 @@ $$
 \mathsf{br\_on\_cast}~{\mathit{labelidx}}~{\mathit{reftype}}~{\mathit{reftype}} \\ &&|&
 \mathsf{br\_on\_cast\_fail}~{\mathit{labelidx}}~{\mathit{reftype}}~{\mathit{reftype}} \\ &&|&
 \mathsf{call}~{\mathit{funcidx}} \\ &&|&
-\mathsf{call\_ref}~{{\mathit{typeidx}}^?} \\ &&|&
+\mathsf{call\_ref}~{\mathit{typeuse}} \\ &&|&
 \mathsf{call\_indirect}~{\mathit{tableidx}}~{\mathit{typeidx}} \\ &&|&
 \mathsf{return} \\ &&|&
 \mathsf{return\_call}~{\mathit{funcidx}} \\ &&|&
-\mathsf{return\_call\_ref}~{{\mathit{typeidx}}^?} \\ &&|&
+\mathsf{return\_call\_ref}~{\mathit{typeuse}} \\ &&|&
 \mathsf{return\_call\_indirect}~{\mathit{tableidx}}~{\mathit{typeidx}} \\ &&|&
 {\mathit{numtype}}.\mathsf{const}~{{\mathit{num}}}_{{\mathit{numtype}}} \\ &&|&
 {\mathit{numtype}} . {{\mathit{unop}}}_{{\mathit{numtype}}} \\ &&|&
@@ -832,125 +837,131 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {{\mathit{xx}}}{{}[\epsilon := \epsilon]} &=& {\mathit{xx}} \\
-{{\mathit{xx}}}{{}[{\mathit{xx}}_{{1}}~{{\mathit{xx}'}^\ast} := {\mathit{ht}}_{{1}}~{{\mathit{ht}'}^\ast}]} &=& {\mathit{ht}}_{{1}}
+{{\mathit{xx}}}{{}[{\mathit{xx}}_{{1}}~{{\mathit{xx}'}^\ast} := {\mathit{tu}}_{{1}}~{{\mathit{tu}'}^\ast}]} &=& {\mathit{tu}}_{{1}}
   &\quad \mbox{if}~{\mathit{xx}} = {\mathit{xx}}_{{1}} \\
-{{\mathit{xx}}}{{}[{\mathit{xx}}_{{1}}~{{\mathit{xx}'}^\ast} := {\mathit{ht}}_{{1}}~{{\mathit{ht}'}^\ast}]} &=& {{\mathit{xx}}}{{}[{{\mathit{xx}'}^\ast} := {{\mathit{ht}'}^\ast}]}
+{{\mathit{xx}}}{{}[{\mathit{xx}}_{{1}}~{{\mathit{xx}'}^\ast} := {\mathit{tu}}_{{1}}~{{\mathit{tu}'}^\ast}]} &=& {{\mathit{xx}}}{{}[{{\mathit{xx}'}^\ast} := {{\mathit{tu}'}^\ast}]}
   &\quad \mbox{otherwise} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathit{nt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& {\mathit{nt}} \\
+{{\mathit{xx}'}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& {{\mathit{xx}'}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} \\
+{{\mathit{dt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& {{\mathit{dt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathit{vt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& {\mathit{vt}} \\
+{{\mathit{nt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& {\mathit{nt}} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathit{xx}'}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& {{\mathit{xx}'}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} \\
-{{\mathit{dt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& {{\mathit{dt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} \\
-{{\mathit{ht}'}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& {\mathit{ht}'}
+{{\mathit{vt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& {\mathit{vt}} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\mathit{xx}'}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& {{\mathit{xx}'}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} \\
+{{\mathit{dt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& {{\mathit{dt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} \\
+{{\mathit{ht}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& {\mathit{ht}}
   &\quad \mbox{otherwise} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{(\mathsf{ref}~{\mathit{nul}}~{\mathit{ht}'})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& \mathsf{ref}~{\mathit{nul}}~{{\mathit{ht}'}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} \\
+{(\mathsf{ref}~{\mathit{nul}}~{\mathit{ht}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& \mathsf{ref}~{\mathit{nul}}~{{\mathit{ht}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathit{nt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& {{\mathit{nt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} \\
-{{\mathit{vt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& {{\mathit{vt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} \\
-{{\mathit{rt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& {{\mathit{rt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} \\
-{\mathsf{bot}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& \mathsf{bot} \\
+{{\mathit{nt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& {{\mathit{nt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} \\
+{{\mathit{vt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& {{\mathit{vt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} \\
+{{\mathit{rt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& {{\mathit{rt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} \\
+{\mathsf{bot}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& \mathsf{bot} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathit{pt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& {\mathit{pt}} \\
+{{\mathit{pt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& {\mathit{pt}} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathit{t}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& {{\mathit{t}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} \\
-{{\mathit{pt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& {{\mathit{pt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} \\
+{{\mathit{t}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& {{\mathit{t}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} \\
+{{\mathit{pt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& {{\mathit{pt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{({\mathit{mut}}~{\mathit{zt}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& {\mathit{mut}}~{{\mathit{zt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} \\
+{({\mathit{mut}}~{\mathit{zt}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& {\mathit{mut}}~{{\mathit{zt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{(\mathsf{struct}~{{\mathit{yt}}^\ast})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& \mathsf{struct}~{{{\mathit{yt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]}^\ast} \\
-{(\mathsf{array}~{\mathit{yt}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& \mathsf{array}~{{\mathit{yt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} \\
-{(\mathsf{func}~{\mathit{ft}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& \mathsf{func}~{{\mathit{ft}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} \\
+{(\mathsf{struct}~{{\mathit{yt}}^\ast})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& \mathsf{struct}~{{{\mathit{yt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]}^\ast} \\
+{(\mathsf{array}~{\mathit{yt}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& \mathsf{array}~{{\mathit{yt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} \\
+{(\mathsf{func}~{\mathit{ft}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& \mathsf{func}~{{\mathit{ft}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{(\mathsf{sub}~{\mathit{fin}}~{{\mathit{y}}^\ast}~{\mathit{ct}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& \mathsf{sub}~{\mathit{fin}}~{{{\mathit{y}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]}^\ast}~{{\mathit{ct}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} \\
-{(\mathsf{sub}~{\mathit{fin}}~{{\mathit{ht}'}^\ast}~{\mathit{ct}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& \mathsf{sub}~{\mathit{fin}}~{{{\mathit{ht}'}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]}^\ast}~{{\mathit{ct}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} \\
+{(\mathsf{sub}~{\mathit{fin}}~{{\mathit{tu}'}^\ast}~{\mathit{ct}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& \mathsf{sub}~{\mathit{fin}}~{{{\mathit{tu}'}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]}^\ast}~{{\mathit{ct}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{(\mathsf{rec}~{{\mathit{st}}^\ast})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& \mathsf{rec}~{{{\mathit{st}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]}^\ast} \\
+{(\mathsf{rec}~{{\mathit{st}}^\ast})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& \mathsf{rec}~{{{\mathit{st}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]}^\ast} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{({\mathit{qt}} . {\mathit{i}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& {{\mathit{qt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} . {\mathit{i}} \\
+{({\mathit{qt}} . {\mathit{i}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& {{\mathit{qt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} . {\mathit{i}} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{({\mathit{mut}}~{\mathit{t}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& {\mathit{mut}}~{{\mathit{t}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} \\
+{({\mathit{mut}}~{\mathit{t}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& {\mathit{mut}}~{{\mathit{t}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{({{\mathit{t}}_{{1}}^\ast} \rightarrow {{\mathit{t}}_{{2}}^\ast})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& {{{\mathit{t}}_{{1}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]}^\ast} \rightarrow {{{\mathit{t}}_{{2}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]}^\ast} \\
+{({{\mathit{t}}_{{1}}^\ast} \rightarrow {{\mathit{t}}_{{2}}^\ast})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& {{{\mathit{t}}_{{1}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]}^\ast} \rightarrow {{{\mathit{t}}_{{2}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]}^\ast} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{({\mathit{lim}}~\mathsf{i{\scriptstyle8}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& {\mathit{lim}}~\mathsf{i{\scriptstyle8}} \\
+{({\mathit{lim}}~\mathsf{i{\scriptstyle8}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& {\mathit{lim}}~\mathsf{i{\scriptstyle8}} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{({\mathit{lim}}~{\mathit{rt}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& {\mathit{lim}}~{{\mathit{rt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} \\
+{({\mathit{lim}}~{\mathit{rt}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& {\mathit{lim}}~{{\mathit{rt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{(\mathsf{func}~{\mathit{dt}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& \mathsf{func}~{{\mathit{dt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} \\
-{(\mathsf{global}~{\mathit{gt}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& \mathsf{global}~{{\mathit{gt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} \\
-{(\mathsf{table}~{\mathit{tt}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& \mathsf{table}~{{\mathit{tt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} \\
-{(\mathsf{mem}~{\mathit{mt}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& \mathsf{mem}~{{\mathit{mt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} \\
+{(\mathsf{func}~{\mathit{dt}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& \mathsf{func}~{{\mathit{dt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} \\
+{(\mathsf{global}~{\mathit{gt}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& \mathsf{global}~{{\mathit{gt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} \\
+{(\mathsf{table}~{\mathit{tt}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& \mathsf{table}~{{\mathit{tt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} \\
+{(\mathsf{mem}~{\mathit{mt}})}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} &=& \mathsf{mem}~{{\mathit{mt}}}{{}[{{\mathit{xx}}^\ast} := {{\mathit{tu}}^\ast}]} \\
 \end{array}
 $$
 
@@ -958,20 +969,20 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathit{rt}}}{{}[{ := }\;{{\mathit{ht}}^{{\mathit{n}}}}]} &=& {{\mathit{rt}}}{{}[{{\mathit{i}}^{{\mathit{i}}<{\mathit{n}}}} := {{\mathit{ht}}^{{\mathit{n}}}}]} \\
+{{\mathit{rt}}}{{}[{ := }\;{{\mathit{tu}}^{{\mathit{n}}}}]} &=& {{\mathit{rt}}}{{}[{{\mathit{i}}^{{\mathit{i}}<{\mathit{n}}}} := {{\mathit{tu}}^{{\mathit{n}}}}]} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathit{dt}}}{{}[{ := }\;{{\mathit{ht}}^{{\mathit{n}}}}]} &=& {{\mathit{dt}}}{{}[{{\mathit{i}}^{{\mathit{i}}<{\mathit{n}}}} := {{\mathit{ht}}^{{\mathit{n}}}}]} \\
+{{\mathit{dt}}}{{}[{ := }\;{{\mathit{tu}}^{{\mathit{n}}}}]} &=& {{\mathit{dt}}}{{}[{{\mathit{i}}^{{\mathit{i}}<{\mathit{n}}}} := {{\mathit{tu}}^{{\mathit{n}}}}]} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\epsilon}{{}[{ := }\;{{\mathit{ht}}^\ast}]} &=& \epsilon \\
-{{\mathit{dt}}_{{1}}~{{\mathit{dt}}^\ast}}{{}[{ := }\;{{\mathit{ht}}^\ast}]} &=& {{\mathit{dt}}_{{1}}}{{}[{ := }\;{{\mathit{ht}}^\ast}]}~{{{\mathit{dt}}^\ast}}{{}[{ := }\;{{\mathit{ht}}^\ast}]} \\
+{\epsilon}{{}[{ := }\;{{\mathit{tu}}^\ast}]} &=& \epsilon \\
+{{\mathit{dt}}_{{1}}~{{\mathit{dt}}^\ast}}{{}[{ := }\;{{\mathit{tu}}^\ast}]} &=& {{\mathit{dt}}_{{1}}}{{}[{ := }\;{{\mathit{tu}}^\ast}]}~{{{\mathit{dt}}^\ast}}{{}[{ := }\;{{\mathit{tu}}^\ast}]} \\
 \end{array}
 $$
 
@@ -1007,7 +1018,7 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {\mathrm{expand}}({\mathit{dt}}) &=& {\mathit{ct}}
-  &\quad \mbox{if}~{\mathrm{unroll}}({\mathit{dt}}) = \mathsf{sub}~{\mathit{fin}}~{{\mathit{ht}}^\ast}~{\mathit{ct}} \\
+  &\quad \mbox{if}~{\mathrm{unroll}}({\mathit{dt}}) = \mathsf{sub}~{\mathit{fin}}~{{\mathit{tu}}^\ast}~{\mathit{ct}} \\
 \end{array}
 $$
 
@@ -2307,18 +2318,18 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 \begin{array}{@{}c@{}}
-{|{{\mathit{heaptype}}^\ast}|} \leq 1
+{|{{\mathit{typeuse}}^\ast}|} \leq 1
  \qquad
-({\mathit{heaptype}} \prec {\mathit{x}}, {\mathit{i}})^\ast
+({\mathit{typeuse}} \prec {\mathit{x}}, {\mathit{i}})^\ast
  \qquad
-({{\mathrm{unroll}}}_{{\mathit{C}}}({\mathit{heaptype}}) = \mathsf{subd}~{{\mathit{heaptype}'}^\ast}~{\mathit{comptype}'})^\ast
+({{\mathrm{unroll}}}_{{\mathit{C}}}({\mathit{typeuse}}) = \mathsf{sub}~{{\mathit{typeuse}'}^\ast}~{\mathit{comptype}'})^\ast
  \\
 {\mathit{C}} \vdash {\mathit{comptype}} : \mathsf{ok}
  \qquad
 ({\mathit{C}} \vdash {\mathit{comptype}} \leq {\mathit{comptype}'})^\ast
 \end{array}
 }{
-{\mathit{C}} \vdash \mathsf{sub}~{\mathsf{final}^?}~{{\mathit{heaptype}}^\ast}~{\mathit{compttype}} : {\mathsf{ok}}{({\mathit{x}},\, {\mathit{i}})}
+{\mathit{C}} \vdash \mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{compttype}} : {\mathsf{ok}}{({\mathit{x}},\, {\mathit{i}})}
 } \, {[\textsc{\scriptsize K{-}sub2}]}
 \qquad
 \end{array}
@@ -2691,9 +2702,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathit{C}}.\mathsf{rec}{}[{\mathit{i}}] = \mathsf{sub}~{\mathit{fin}}~({{\mathit{ht}}_{{1}}^\ast}~{\mathit{ht}}~{{\mathit{ht}}_{{2}}^\ast})~{\mathit{ct}}
+{\mathit{C}}.\mathsf{rec}{}[{\mathit{i}}] = \mathsf{sub}~{\mathit{fin}}~({{\mathit{tu}}_{{1}}^\ast}~{\mathit{tu}}~{{\mathit{tu}}_{{2}}^\ast})~{\mathit{ct}}
 }{
-{\mathit{C}} \vdash \mathsf{rec}~{\mathit{i}} \leq {\mathit{ht}}
+{\mathit{C}} \vdash \mathsf{rec}~{\mathit{i}} \leq {\mathit{tu}}
 } \, {[\textsc{\scriptsize S{-}heap{-}rec}]}
 \qquad
 \end{array}
@@ -2966,9 +2977,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathrm{unroll}}({\mathit{deftype}}_{{1}}) = \mathsf{sub}~{\mathit{fin}}~({{\mathit{ht}}_{{1}}^\ast}~{\mathit{ht}}~{{\mathit{ht}}_{{2}}^\ast})~{\mathit{ct}}
+{\mathrm{unroll}}({\mathit{deftype}}_{{1}}) = \mathsf{sub}~{\mathit{fin}}~({{\mathit{tu}}_{{1}}^\ast}~{\mathit{tu}}~{{\mathit{tu}}_{{2}}^\ast})~{\mathit{ct}}
  \qquad
-{\mathit{C}} \vdash {\mathit{ht}} \leq {\mathit{deftype}}_{{2}}
+{\mathit{C}} \vdash {\mathit{tu}} \leq {\mathit{deftype}}_{{2}}
 }{
 {\mathit{C}} \vdash {\mathit{deftype}}_{{1}} \leq {\mathit{deftype}}_{{2}}
 } \, {[\textsc{\scriptsize S{-}def{-}super}]}
@@ -5342,10 +5353,10 @@ $$
 
 $$
 \begin{array}{@{}l@{}rcl@{}l@{}}
-{[\textsc{\scriptsize E{-}call}]} \quad & {\mathit{z}} ; (\mathsf{call}~{\mathit{x}}) &\hookrightarrow& (\mathsf{ref.func}~{\mathit{a}})~(\mathsf{call\_ref})
+{[\textsc{\scriptsize E{-}call}]} \quad & {\mathit{z}} ; (\mathsf{call}~{\mathit{x}}) &\hookrightarrow& (\mathsf{ref.func}~{\mathit{a}})~(\mathsf{call\_ref}~{\mathit{z}}.\mathsf{funcs}{}[{\mathit{a}}].\mathsf{type})
   &\quad \mbox{if}~{\mathit{z}}.\mathsf{module}.\mathsf{func}{}[{\mathit{x}}] = {\mathit{a}} \\
-{[\textsc{\scriptsize E{-}call\_ref{-}null}]} \quad & {\mathit{z}} ; (\mathsf{ref.null}~{\mathit{ht}})~(\mathsf{call\_ref}~{{\mathit{x}}^?}) &\hookrightarrow& \mathsf{trap} \\
-{[\textsc{\scriptsize E{-}call\_ref{-}func}]} \quad & {\mathit{z}} ; {{\mathit{val}}^{{\mathit{n}}}}~(\mathsf{ref.func}~{\mathit{a}})~(\mathsf{call\_ref}~{{\mathit{x}}^?}) &\hookrightarrow& \multicolumn{2}{l@{}}{ ({{\mathsf{frame}}_{{\mathit{m}}}}{\{{\mathit{f}}\}}~({{\mathsf{label}}_{{\mathit{m}}}}{\{\epsilon\}}~{{\mathit{instr}}^\ast})) } \\
+{[\textsc{\scriptsize E{-}call\_ref{-}null}]} \quad & {\mathit{z}} ; (\mathsf{ref.null}~{\mathit{ht}})~(\mathsf{call\_ref}~{\mathit{tu}}) &\hookrightarrow& \mathsf{trap} \\
+{[\textsc{\scriptsize E{-}call\_ref{-}func}]} \quad & {\mathit{z}} ; {{\mathit{val}}^{{\mathit{n}}}}~(\mathsf{ref.func}~{\mathit{a}})~(\mathsf{call\_ref}~{\mathit{tu}}) &\hookrightarrow& \multicolumn{2}{l@{}}{ ({{\mathsf{frame}}_{{\mathit{m}}}}{\{{\mathit{f}}\}}~({{\mathsf{label}}_{{\mathit{m}}}}{\{\epsilon\}}~{{\mathit{instr}}^\ast})) } \\
   &&& \multicolumn{2}{l@{}}{\quad \mbox{if}~{\mathit{z}}.\mathsf{funcs}{}[{\mathit{a}}] = {\mathit{fi}}} \\
   &&& \multicolumn{2}{l@{}}{\quad {\land}~{\mathit{fi}}.\mathsf{type} \approx \mathsf{func}~({{\mathit{t}}_{{1}}^{{\mathit{n}}}} \rightarrow {{\mathit{t}}_{{2}}^{{\mathit{m}}}})} \\
   &&& \multicolumn{2}{l@{}}{\quad {\land}~{\mathit{fi}}.\mathsf{code} = \mathsf{func}~{\mathit{y}}~{(\mathsf{local}~{\mathit{t}})^\ast}~({{\mathit{instr}}^\ast})} \\
@@ -5358,7 +5369,8 @@ $$
 
 $$
 \begin{array}{@{}l@{}rcl@{}l@{}}
-{[\textsc{\scriptsize E{-}return\_call}]} \quad & {\mathit{z}} ; (\mathsf{return\_call}~{\mathit{x}}) &\hookrightarrow& (\mathsf{ref.func}~{\mathit{z}}.\mathsf{module}.\mathsf{func}{}[{\mathit{x}}])~(\mathsf{return\_call\_ref}) \\
+{[\textsc{\scriptsize E{-}return\_call}]} \quad & {\mathit{z}} ; (\mathsf{return\_call}~{\mathit{x}}) &\hookrightarrow& (\mathsf{ref.func}~{\mathit{a}})~(\mathsf{return\_call\_ref}~{\mathit{z}}.\mathsf{funcs}{}[{\mathit{a}}].\mathsf{type})
+  &\quad \mbox{if}~{\mathit{z}}.\mathsf{module}.\mathsf{func}{}[{\mathit{x}}] = {\mathit{a}} \\
 \end{array}
 $$
 
@@ -5366,9 +5378,9 @@ $$
 
 $$
 \begin{array}{@{}l@{}rcl@{}l@{}}
-{[\textsc{\scriptsize E{-}return\_call\_ref{-}label}]} \quad & {\mathit{z}} ; ({{\mathsf{label}}_{{\mathit{k}}}}{\{{{\mathit{instr}'}^\ast}\}}~{{\mathit{val}}^\ast}~(\mathsf{return\_call\_ref}~{{\mathit{x}}^?})~{{\mathit{instr}}^\ast}) &\hookrightarrow& {{\mathit{val}}^\ast}~(\mathsf{return\_call\_ref}~{{\mathit{x}}^?}) \\
-{[\textsc{\scriptsize E{-}return\_call\_ref{-}frame{-}null}]} \quad & {\mathit{z}} ; ({{\mathsf{frame}}_{{\mathit{k}}}}{\{{\mathit{f}}\}}~{{\mathit{val}}^\ast}~(\mathsf{ref.null}~{\mathit{ht}})~(\mathsf{return\_call\_ref}~{{\mathit{x}}^?})~{{\mathit{instr}}^\ast}) &\hookrightarrow& \mathsf{trap} \\
-{[\textsc{\scriptsize E{-}return\_call\_ref{-}frame{-}addr}]} \quad & {\mathit{z}} ; ({{\mathsf{frame}}_{{\mathit{k}}}}{\{{\mathit{f}}\}}~{{\mathit{val}'}^\ast}~{{\mathit{val}}^{{\mathit{n}}}}~(\mathsf{ref.func}~{\mathit{a}})~(\mathsf{return\_call\_ref}~{{\mathit{x}}^?})~{{\mathit{instr}}^\ast}) &\hookrightarrow& {{\mathit{val}}^{{\mathit{n}}}}~(\mathsf{ref.func}~{\mathit{a}})~(\mathsf{call\_ref}~{{\mathit{x}}^?})
+{[\textsc{\scriptsize E{-}return\_call\_ref{-}label}]} \quad & {\mathit{z}} ; ({{\mathsf{label}}_{{\mathit{k}}}}{\{{{\mathit{instr}'}^\ast}\}}~{{\mathit{val}}^\ast}~(\mathsf{return\_call\_ref}~{\mathit{tu}})~{{\mathit{instr}}^\ast}) &\hookrightarrow& {{\mathit{val}}^\ast}~(\mathsf{return\_call\_ref}~{\mathit{tu}}) \\
+{[\textsc{\scriptsize E{-}return\_call\_ref{-}frame{-}null}]} \quad & {\mathit{z}} ; ({{\mathsf{frame}}_{{\mathit{k}}}}{\{{\mathit{f}}\}}~{{\mathit{val}}^\ast}~(\mathsf{ref.null}~{\mathit{ht}})~(\mathsf{return\_call\_ref}~{\mathit{tu}})~{{\mathit{instr}}^\ast}) &\hookrightarrow& \mathsf{trap} \\
+{[\textsc{\scriptsize E{-}return\_call\_ref{-}frame{-}addr}]} \quad & {\mathit{z}} ; ({{\mathsf{frame}}_{{\mathit{k}}}}{\{{\mathit{f}}\}}~{{\mathit{val}'}^\ast}~{{\mathit{val}}^{{\mathit{n}}}}~(\mathsf{ref.func}~{\mathit{a}})~(\mathsf{return\_call\_ref}~{\mathit{tu}})~{{\mathit{instr}}^\ast}) &\hookrightarrow& {{\mathit{val}}^{{\mathit{n}}}}~(\mathsf{ref.func}~{\mathit{a}})~(\mathsf{call\_ref}~{\mathit{tu}})
   &\quad \mbox{if}~{\mathit{z}}.\mathsf{funcs}{}[{\mathit{a}}].\mathsf{type} \approx \mathsf{func}~({{\mathit{t}}_{{1}}^{{\mathit{n}}}} \rightarrow {{\mathit{t}}_{{2}}^{{\mathit{m}}}}) \\
 \end{array}
 $$
@@ -6436,7 +6448,7 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathrm{invoke}}({\mathit{s}}, {\mathit{fa}}, {{\mathit{val}}^{{\mathit{n}}}}) &=& {\mathit{s}} ; {\mathit{f}} ; {{\mathit{val}}^{{\mathit{n}}}}~(\mathsf{ref.func}~{\mathit{fa}})~(\mathsf{call\_ref}~0)
+{\mathrm{invoke}}({\mathit{s}}, {\mathit{fa}}, {{\mathit{val}}^{{\mathit{n}}}}) &=& {\mathit{s}} ; {\mathit{f}} ; {{\mathit{val}}^{{\mathit{n}}}}~(\mathsf{ref.func}~{\mathit{fa}})~(\mathsf{call\_ref}~({\mathit{s}} ; {\mathit{f}}).\mathsf{funcs}{}[{\mathit{fa}}].\mathsf{type})
   &\quad \mbox{if}~{\mathit{f}} = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{module}~\{ \begin{array}[t]{@{}l@{}}
  \}\end{array} \}\end{array} \\

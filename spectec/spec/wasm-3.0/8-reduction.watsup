@@ -157,14 +157,14 @@ rule Step_read/br_on_cast_fail-fail:
 ;; Function instructions
 
 rule Step_read/call:
-  z; (CALL x)  ~>  (REF.FUNC_ADDR a) (CALL_REF)
+  z; (CALL x)  ~>  (REF.FUNC_ADDR a) (CALL_REF $funcinst(z)[a].TYPE)
   -- if $funcaddr(z)[x] = a
 
 rule Step_read/call_ref-null:
-  z; (REF.NULL ht) (CALL_REF x?)  ~>  TRAP
+  z; (REF.NULL ht) (CALL_REF tu)  ~>  TRAP
 
 rule Step_read/call_ref-func:
-  z; val^n (REF.FUNC_ADDR a) (CALL_REF x?)  ~>  (FRAME_ m `{f} (LABEL_ m `{eps} instr*))
+  z; val^n (REF.FUNC_ADDR a) (CALL_REF tu)  ~>  (FRAME_ m `{f} (LABEL_ m `{eps} instr*))
 
   -- if $funcinst(z)[a] = fi
   -- Expand: fi.TYPE ~~ FUNC (t_1^n -> t_2^m)
@@ -173,25 +173,26 @@ rule Step_read/call_ref-func:
 
 
 rule Step_read/return_call:
-  z; (RETURN_CALL x)  ~>  (REF.FUNC_ADDR $funcaddr(z)[x]) (RETURN_CALL_REF)
+  z; (RETURN_CALL x)  ~>  (REF.FUNC_ADDR a) (RETURN_CALL_REF $funcinst(z)[a].TYPE)
+  -- if $funcaddr(z)[x] = a
 
 
 rule Step_read/return_call_ref-label:
-  z; (LABEL_ k `{instr'*} val* (RETURN_CALL_REF x?) instr*)  ~>  val* (RETURN_CALL_REF x?)
+  z; (LABEL_ k `{instr'*} val* (RETURN_CALL_REF tu) instr*)  ~>  val* (RETURN_CALL_REF tu)
 
 rule Step_read/return_call_ref-frame-null:
-  z; (FRAME_ k `{f} val* (REF.NULL ht) (RETURN_CALL_REF x?) instr*)  ~>  TRAP
+  z; (FRAME_ k `{f} val* (REF.NULL ht) (RETURN_CALL_REF tu) instr*)  ~>  TRAP
 
 rule Step_read/return_call_ref-frame-addr:
-  z; (FRAME_ k `{f} val'* val^n (REF.FUNC_ADDR a) (RETURN_CALL_REF x?) instr*)  ~>  val^n (REF.FUNC_ADDR a) (CALL_REF x?)
+  z; (FRAME_ k `{f} val'* val^n (REF.FUNC_ADDR a) (RETURN_CALL_REF tu) instr*)  ~>  val^n (REF.FUNC_ADDR a) (CALL_REF tu)
   -- Expand: $funcinst(z)[a].TYPE ~~ FUNC (t_1^n -> t_2^m)
 
 
 rule Step_pure/call_indirect:
-  (CALL_INDIRECT x y)  ~>  (TABLE.GET x) (REF.CAST (REF NULL $idx(y))) (CALL_REF y)
+  (CALL_INDIRECT x y)  ~>  (TABLE.GET x) (REF.CAST (REF NULL $idx(y))) (CALL_REF $idx(y))
 
 rule Step_pure/return_call_indirect:
-  (RETURN_CALL_INDIRECT x y)  ~>  (TABLE.GET x) (REF.CAST (REF NULL $idx(y))) (RETURN_CALL_REF y)
+  (RETURN_CALL_INDIRECT x y)  ~>  (TABLE.GET x) (REF.CAST (REF NULL $idx(y))) (RETURN_CALL_REF $idx(y))
 
 
 rule Step_pure/frame-vals:
@@ -245,7 +246,7 @@ rule Step_pure/cvtop-trap:
 ;; Reference instructions
 
 rule Step_read/ref.null-idx:
-  z; (REF.NULL $($(_IDX x)))  ~>  (REF.NULL $type(z, x))
+  z; (REF.NULL $idx(x))  ~>  (REF.NULL $type(z, x))
 
 rule Step_read/ref.func:
   z; (REF.FUNC x)  ~>  (REF.FUNC_ADDR $funcaddr(z)[x])

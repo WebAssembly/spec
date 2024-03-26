@@ -3757,7 +3757,7 @@ validation_of_CALL x
 - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.FUNCS[x]).
 - The instruction is valid with type (t_1* ->_ [] ++ t_2*).
 
-validation_of_CALL_REF ?(x)
+validation_of_CALL_REF $idx(x)
 - |C.TYPES| must be greater than x.
 - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPES[x]).
 - The instruction is valid with type (t_1* ++ [(REF (NULL ?(())) $idx(x))] ->_ [] ++ t_2*).
@@ -3783,7 +3783,7 @@ validation_of_RETURN_CALL x
 - C.RETURN must be equal to ?(t'_2*).
 - The instruction is valid with type (t_3* ++ t_1* ->_ [] ++ t_4*).
 
-validation_of_RETURN_CALL_REF ?(x)
+validation_of_RETURN_CALL_REF $idx(x)
 - |C.TYPES| must be greater than x.
 - Under the context C, (t_3* ->_ [] ++ t_4*) must be valid.
 - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPES[x]).
@@ -4415,128 +4415,131 @@ diffrt (REF nul_1 ht_1) (REF (NULL _u0?) ht_2)
 idx x
 1. Return (_IDX x).
 
-subst_typevar xx typev_u0* heapt_u1*
-1. If ((typev_u0* is []) and (heapt_u1* is [])), then:
+subst_typevar xx typev_u0* typeu_u1*
+1. If ((typev_u0* is []) and (typeu_u1* is [])), then:
   a. Return xx.
-2. Assert: Due to validation, (|heapt_u1*| ≥ 1).
-3. Let [ht_1] ++ ht'* be heapt_u1*.
+2. Assert: Due to validation, (|typeu_u1*| ≥ 1).
+3. Let [tu_1] ++ tu'* be typeu_u1*.
 4. If (|typev_u0*| ≥ 1), then:
   a. Let [xx_1] ++ xx'* be typev_u0*.
   b. If (xx is xx_1), then:
-    1) Return ht_1.
-5. Let [ht_1] ++ ht'* be heapt_u1*.
+    1) Return tu_1.
+5. Let [tu_1] ++ tu'* be typeu_u1*.
 6. Assert: Due to validation, (|typev_u0*| ≥ 1).
 7. Let [xx_1] ++ xx'* be typev_u0*.
-8. Return $subst_typevar(xx, xx'*, ht'*).
+8. Return $subst_typevar(xx, xx'*, tu'*).
 
-subst_numtype nt xx* ht*
-1. Return nt.
-
-subst_vectype vt xx* ht*
-1. Return vt.
-
-subst_packtype pt xx* ht*
+subst_packtype pt xx* tu*
 1. Return pt.
 
-subst_heaptype heapt_u0 xx* ht*
+subst_numtype nt xx* tu*
+1. Return nt.
+
+subst_vectype vt xx* tu*
+1. Return vt.
+
+subst_typeuse typeu_u0 xx* tu*
+1. If the type of typeu_u0 is typevar, then:
+  a. Let xx' be typeu_u0.
+  b. Return $subst_typevar(xx', xx*, tu*).
+2. Assert: Due to validation, the type of typeu_u0 is deftype.
+3. Let dt be typeu_u0.
+4. Return $subst_deftype(dt, xx*, tu*).
+
+subst_heaptype heapt_u0 xx* tu*
 1. If the type of heapt_u0 is typevar, then:
   a. Let xx' be heapt_u0.
-  b. Return $subst_typevar(xx', xx*, ht*).
+  b. Return $subst_typevar(xx', xx*, tu*).
 2. If the type of heapt_u0 is deftype, then:
   a. Let dt be heapt_u0.
-  b. Return $subst_deftype(dt, xx*, ht*).
-3. Let ht' be heapt_u0.
-4. Return ht'.
+  b. Return $subst_deftype(dt, xx*, tu*).
+3. Let ht be heapt_u0.
+4. Return ht.
 
-subst_reftype (REF nul ht') xx* ht*
-1. Return (REF nul $subst_heaptype(ht', xx*, ht*)).
+subst_reftype (REF nul ht) xx* tu*
+1. Return (REF nul $subst_heaptype(ht, xx*, tu*)).
 
-subst_valtype valty_u0 xx* ht*
+subst_valtype valty_u0 xx* tu*
 1. If the type of valty_u0 is numtype, then:
   a. Let nt be valty_u0.
-  b. Return $subst_numtype(nt, xx*, ht*).
+  b. Return $subst_numtype(nt, xx*, tu*).
 2. If the type of valty_u0 is vectype, then:
   a. Let vt be valty_u0.
-  b. Return $subst_vectype(vt, xx*, ht*).
+  b. Return $subst_vectype(vt, xx*, tu*).
 3. If the type of valty_u0 is reftype, then:
   a. Let rt be valty_u0.
-  b. Return $subst_reftype(rt, xx*, ht*).
+  b. Return $subst_reftype(rt, xx*, tu*).
 4. Assert: Due to validation, (valty_u0 is BOT).
 5. Return BOT.
 
-subst_storagetype stora_u0 xx* ht*
+subst_storagetype stora_u0 xx* tu*
 1. If the type of stora_u0 is valtype, then:
   a. Let t be stora_u0.
-  b. Return $subst_valtype(t, xx*, ht*).
+  b. Return $subst_valtype(t, xx*, tu*).
 2. Assert: Due to validation, the type of stora_u0 is packtype.
 3. Let pt be stora_u0.
-4. Return $subst_packtype(pt, xx*, ht*).
+4. Return $subst_packtype(pt, xx*, tu*).
 
-subst_fieldtype (mut, zt) xx* ht*
-1. Return (mut, $subst_storagetype(zt, xx*, ht*)).
+subst_fieldtype (mut, zt) xx* tu*
+1. Return (mut, $subst_storagetype(zt, xx*, tu*)).
 
-subst_comptype compt_u0 xx* ht*
+subst_comptype compt_u0 xx* tu*
 1. If compt_u0 is of the case STRUCT, then:
   a. Let (STRUCT yt*) be compt_u0.
-  b. Return (STRUCT $subst_fieldtype(yt, xx*, ht*)*).
+  b. Return (STRUCT $subst_fieldtype(yt, xx*, tu*)*).
 2. If compt_u0 is of the case ARRAY, then:
   a. Let (ARRAY yt) be compt_u0.
-  b. Return (ARRAY $subst_fieldtype(yt, xx*, ht*)).
+  b. Return (ARRAY $subst_fieldtype(yt, xx*, tu*)).
 3. Assert: Due to validation, compt_u0 is of the case FUNC.
 4. Let (FUNC ft) be compt_u0.
-5. Return (FUNC $subst_functype(ft, xx*, ht*)).
+5. Return (FUNC $subst_functype(ft, xx*, tu*)).
 
-subst_subtype subty_u0 xx* ht*
-1. If subty_u0 is of the case SUB, then:
-  a. Let (SUB fin y* ct) be subty_u0.
-  b. Return (SUBD fin $subst_heaptype((_IDX y), xx*, ht*)* $subst_comptype(ct, xx*, ht*)).
-2. Assert: Due to validation, subty_u0 is of the case SUBD.
-3. Let (SUBD fin ht'* ct) be subty_u0.
-4. Return (SUBD fin $subst_heaptype(ht', xx*, ht*)* $subst_comptype(ct, xx*, ht*)).
+subst_subtype (SUB fin tu'* ct) xx* tu*
+1. Return (SUB fin $subst_typeuse(tu', xx*, tu*)* $subst_comptype(ct, xx*, tu*)).
 
-subst_rectype (REC st*) xx* ht*
-1. Return (REC $subst_subtype(st, xx*, ht*)*).
+subst_rectype (REC st*) xx* tu*
+1. Return (REC $subst_subtype(st, xx*, tu*)*).
 
-subst_deftype (DEF qt i) xx* ht*
-1. Return (DEF $subst_rectype(qt, xx*, ht*) i).
+subst_deftype (DEF qt i) xx* tu*
+1. Return (DEF $subst_rectype(qt, xx*, tu*) i).
 
-subst_functype (t_1* -> t_2*) xx* ht*
-1. Return ($subst_valtype(t_1, xx*, ht*)* -> $subst_valtype(t_2, xx*, ht*)*).
+subst_functype (t_1* -> t_2*) xx* tu*
+1. Return ($subst_valtype(t_1, xx*, tu*)* -> $subst_valtype(t_2, xx*, tu*)*).
 
-subst_globaltype (mut, t) xx* ht*
-1. Return (mut, $subst_valtype(t, xx*, ht*)).
+subst_globaltype (mut, t) xx* tu*
+1. Return (mut, $subst_valtype(t, xx*, tu*)).
 
-subst_tabletype (lim, rt) xx* ht*
-1. Return (lim, $subst_reftype(rt, xx*, ht*)).
+subst_tabletype (lim, rt) xx* tu*
+1. Return (lim, $subst_reftype(rt, xx*, tu*)).
 
-subst_memtype (I8 lim) xx* ht*
+subst_memtype (I8 lim) xx* tu*
 1. Return (I8 lim).
 
-subst_externtype exter_u0 xx* ht*
+subst_externtype exter_u0 xx* tu*
 1. If exter_u0 is of the case FUNC, then:
   a. Let (FUNC dt) be exter_u0.
-  b. Return (FUNC $subst_deftype(dt, xx*, ht*)).
+  b. Return (FUNC $subst_deftype(dt, xx*, tu*)).
 2. If exter_u0 is of the case GLOBAL, then:
   a. Let (GLOBAL gt) be exter_u0.
-  b. Return (GLOBAL $subst_globaltype(gt, xx*, ht*)).
+  b. Return (GLOBAL $subst_globaltype(gt, xx*, tu*)).
 3. If exter_u0 is of the case TABLE, then:
   a. Let (TABLE tt) be exter_u0.
-  b. Return (TABLE $subst_tabletype(tt, xx*, ht*)).
+  b. Return (TABLE $subst_tabletype(tt, xx*, tu*)).
 4. Assert: Due to validation, exter_u0 is of the case MEM.
 5. Let (MEM mt) be exter_u0.
-6. Return (MEM $subst_memtype(mt, xx*, ht*)).
+6. Return (MEM $subst_memtype(mt, xx*, tu*)).
 
-subst_all_reftype rt ht^n
-1. Return $subst_reftype(rt, $idx(i)^(i<n), ht^n).
+subst_all_reftype rt tu^n
+1. Return $subst_reftype(rt, $idx(i)^(i<n), tu^n).
 
-subst_all_deftype dt ht^n
-1. Return $subst_deftype(dt, $idx(i)^(i<n), ht^n).
+subst_all_deftype dt tu^n
+1. Return $subst_deftype(dt, $idx(i)^(i<n), tu^n).
 
-subst_all_deftypes defty_u0* ht*
+subst_all_deftypes defty_u0* tu*
 1. If (defty_u0* is []), then:
   a. Return [].
 2. Let [dt_1] ++ dt* be defty_u0*.
-3. Return [$subst_all_deftype(dt_1, ht*)] ++ $subst_all_deftypes(dt*, ht*).
+3. Return [$subst_all_deftype(dt_1, tu*)] ++ $subst_all_deftypes(dt*, tu*).
 
 rollrt x (REC st^n)
 1. Return (REC $subst_subtype(st, $idx((x + i))^(i<n), (REC i)^(i<n))^n).
@@ -4556,8 +4559,8 @@ unrolldt (DEF qt i)
 3. Return st*[i].
 
 expanddt dt
-1. Assert: Due to validation, $unrolldt(dt) is of the case SUBD.
-2. Let (SUBD fin ht* ct) be $unrolldt(dt).
+1. Assert: Due to validation, $unrolldt(dt) is of the case SUB.
+2. Let (SUB fin tu* ct) be $unrolldt(dt).
 3. Return ct.
 
 funcsxt exter_u0*
@@ -5549,14 +5552,14 @@ clostype C dt
 1. Let dt'* be $clostypes(C.TYPES).
 2. Return $subst_all_deftype(dt, dt'*).
 
-before heapt_u0 x i
-1. If the type of heapt_u0 is deftype, then:
+before typeu_u0 x i
+1. If the type of typeu_u0 is deftype, then:
   a. Return true.
-2. If heapt_u0 is of the case _IDX, then:
-  a. Let (_IDX typeidx) be heapt_u0.
+2. If typeu_u0 is of the case _IDX, then:
+  a. Let (_IDX typeidx) be typeu_u0.
   b. Return (typeidx < x).
-3. Assert: Due to validation, heapt_u0 is of the case REC.
-4. Let (REC j) be heapt_u0.
+3. Assert: Due to validation, typeu_u0 is of the case REC.
+4. Let (REC j) be typeu_u0.
 5. Return (j < i).
 
 unrollht C heapt_u0
@@ -5811,7 +5814,7 @@ invoke fa val^n
 7. Enter the activation of f with arity k with label [FRAME_]:
   a. Push the values val^n to the stack.
   b. Push the value (REF.FUNC_ADDR fa) to the stack.
-  c. Execute the instruction (CALL_REF ?(0)).
+  c. Execute the instruction (CALL_REF $funcinst()[fa].TYPE).
 8. Pop the values val^k from the stack.
 9. Return val^k.
 
@@ -5903,12 +5906,12 @@ execution_of_BR_ON_NON_NULL l
 execution_of_CALL_INDIRECT x y
 1. Execute the instruction (TABLE.GET x).
 2. Execute the instruction (REF.CAST (REF (NULL ?(())) $idx(y))).
-3. Execute the instruction (CALL_REF ?(y)).
+3. Execute the instruction (CALL_REF $idx(y)).
 
 execution_of_RETURN_CALL_INDIRECT x y
 1. Execute the instruction (TABLE.GET x).
 2. Execute the instruction (REF.CAST (REF (NULL ?(())) $idx(y))).
-3. Execute the instruction (RETURN_CALL_REF ?(y)).
+3. Execute the instruction (RETURN_CALL_REF $idx(y)).
 
 execution_of_FRAME_
 1. Let f be the current frame.
@@ -6274,23 +6277,26 @@ execution_of_BR_ON_CAST_FAIL l rt_1 rt_2
 execution_of_CALL x
 1. Assert: Due to validation, (x < |$funcaddr()|).
 2. Let a be $funcaddr()[x].
-3. Push the value (REF.FUNC_ADDR a) to the stack.
-4. Execute the instruction (CALL_REF ?()).
+3. Assert: Due to validation, (a < |$funcinst()|).
+4. Push the value (REF.FUNC_ADDR a) to the stack.
+5. Execute the instruction (CALL_REF $funcinst()[a].TYPE).
 
 execution_of_CALL_REF
 1. YetI: TODO: It is likely that the value stack of two rules are different.
 
 execution_of_RETURN_CALL x
 1. Assert: Due to validation, (x < |$funcaddr()|).
-2. Push the value (REF.FUNC_ADDR $funcaddr()[x]) to the stack.
-3. Execute the instruction (RETURN_CALL_REF ?()).
+2. Let a be $funcaddr()[x].
+3. Assert: Due to validation, (a < |$funcinst()|).
+4. Push the value (REF.FUNC_ADDR a) to the stack.
+5. Execute the instruction (RETURN_CALL_REF $funcinst()[a].TYPE).
 
-execution_of_RETURN_CALL_REF x?
+execution_of_RETURN_CALL_REF tu
 1. If the current context is LABEL_, then:
   a. Pop all values val* from the stack.
   b. Exit current context.
   c. Push the values val* to the stack.
-  d. Execute the instruction (RETURN_CALL_REF x?).
+  d. Execute the instruction (RETURN_CALL_REF tu).
 2. Else if the current context is FRAME_, then:
   a. Pop the value admin_u0 from the stack.
   b. Pop all values admin_u1* from the stack.
@@ -6305,11 +6311,11 @@ execution_of_RETURN_CALL_REF x?
         1. Let val'* ++ val^n be admin_u1*.
         2. Push the values val^n to the stack.
         3. Push the value (REF.FUNC_ADDR a) to the stack.
-        4. Execute the instruction (CALL_REF x?).
+        4. Execute the instruction (CALL_REF tu).
   e. If admin_u0 is of the case REF.NULL, then:
     1) Trap.
 
-execution_of_REF.NULL (_IDX x)
+execution_of_REF.NULL $idx(x)
 1. Push the value (REF.NULL $type(x)) to the stack.
 
 execution_of_REF.FUNC x

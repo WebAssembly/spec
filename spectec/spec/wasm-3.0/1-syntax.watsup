@@ -139,8 +139,18 @@ syntax absheaptype/syn hint(desc "abstract heap type") =
   | ...
 syntax absheaptype/sem =
   | ... | BOT
-syntax heaptype/syn hint(desc "heap type") =
-  | absheaptype | _IDX typeidx | ...
+
+syntax rectype hint(desc "recursive type")  ;; forward decl
+syntax deftype hint(desc "defined type") =
+  | DEF rectype nat hint(show %.%)
+
+syntax typeuse/syn hint(desc "type use") =
+  | _IDX typeidx | ...
+syntax typeuse/sem =
+  | ... | deftype | REC n
+
+syntax heaptype hint(desc "heap type") =
+  | absheaptype | typeuse
 
 syntax reftype hint(desc "reference type") =
   | REF nul heaptype
@@ -189,18 +199,10 @@ syntax comptype hint(desc "composite type") =
   | FUNC functype
 
 syntax subtype/syn hint(desc "sub type") =
-  | SUB fin typeidx* comptype | ...
-syntax subtype/sem =
-  | ... | SUBD fin heaptype* comptype  hint(show SUB % % %)
+  | SUB fin typeuse* comptype
 
 syntax rectype hint(desc "recursive type") =
   | REC list(subtype)
-
-syntax deftype hint(desc "defined type") =
-  | DEF rectype nat hint(show %.%)
-
-syntax heaptype/sem =
-  | ... | deftype | REC n
 
 
 ;; External types
@@ -247,6 +249,8 @@ var vt : vectype
 var xt : externtype
 var yt : fieldtype     ;; TODO: better choice?
 var zt : storagetype
+
+var tu : typeuse
 
 
 ;;
@@ -431,11 +435,11 @@ syntax instr/br hint(desc "branch instruction") = ...
 
 syntax instr/call hint(desc "function instruction") = ...
   | CALL funcidx
-  | CALL_REF typeidx?
+  | CALL_REF typeuse
   | CALL_INDIRECT tableidx typeidx
   | RETURN
   | RETURN_CALL funcidx
-  | RETURN_CALL_REF typeidx?
+  | RETURN_CALL_REF typeuse
   | RETURN_CALL_INDIRECT tableidx typeidx
   | ...
 

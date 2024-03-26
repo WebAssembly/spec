@@ -2,6 +2,7 @@ include Util.Debug_log
 
 open Print
 
+let il_atom = string_of_atom
 let il_mixop = string_of_mixop
 let il_iter = string_of_iter
 let il_typ = string_of_typ

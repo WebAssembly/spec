@@ -126,7 +126,7 @@ and al_to_str_type: value -> str_type = function
   | v -> error_value "str type" v
 
 and al_to_sub_type: value -> sub_type = function
-  | CaseV ("SUBD", [ fin; htl; st ]) ->
+  | CaseV ("SUB", [ fin; htl; st ]) ->
     SubT (al_to_final fin, al_to_list al_to_heap_type htl, al_to_str_type st)
   | v -> error_value "sub type" v
 
@@ -1099,7 +1099,7 @@ and al_of_str_type = function
 
 and al_of_sub_type = function
   | SubT (fin, htl, st) ->
-    CaseV ("SUBD", [ al_of_final fin; al_of_list al_of_heap_type htl; al_of_str_type st ])
+    CaseV ("SUB", [ al_of_final fin; al_of_list al_of_heap_type htl; al_of_str_type st ])
 
 and al_of_rec_type = function
   | RecT stl -> CaseV ("REC", [ al_of_list al_of_sub_type stl ])
@@ -1866,7 +1866,7 @@ let al_of_type ty =
 
     match sub_types with
     | [ subtype ] ->
-      let rt = subtype |> arg_of_case "SUBD" 2 |> arg_of_case "FUNC" 0 in
+      let rt = subtype |> arg_of_case "SUB" 2 |> arg_of_case "FUNC" 0 in
       CaseV ("TYPE", [ rt ])
     | _ -> failwith ("Rectype is not supported in Wasm " ^ (string_of_int !version))
 

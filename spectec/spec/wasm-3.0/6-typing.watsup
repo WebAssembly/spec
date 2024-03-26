@@ -156,15 +156,15 @@ rule Comptype_ok/func:
 
 
 rule Subtype_ok:
-  C |- SUB FINAL? typeidx* comptype : OK(x_0)
+  C |- SUB FINAL? $idx(typeidx)* comptype : OK(x_0)
   -- if |x*| <= 1
   -- (if x < x_0)*
-  -- (if $unrolldt(C.TYPES[x]) = SUB x'* comptype')*
+  -- (if $unrolldt(C.TYPES[x]) = SUB $idx(x')* comptype')*
 
   -- Comptype_ok: C |- comptype : OK
   -- (Comptype_sub: C |- comptype <: comptype')*
 
-def $before(heaptype, typeidx, nat) : bool   hint(show % << %,%)
+def $before(typeuse, typeidx, nat) : bool   hint(show % << %,%)
 def $before(deftype, x, i) = true
 def $before(_IDX typeidx, x, i) = typeidx < x
 def $before(REC j, x, i) = j < i
@@ -175,10 +175,10 @@ def $unrollht(C, _IDX typeidx) = $unrolldt(C.TYPES[typeidx])
 def $unrollht(C, REC i) = C.REC[i]
 
 rule Subtype_ok2:
-  C |- SUBD FINAL? heaptype* compttype : OK x i
-  -- if |heaptype*| <= 1
-  -- (if $before(heaptype, x, i))*
-  -- (if $unrollht(C, heaptype) = SUBD heaptype'* comptype')*
+  C |- SUB FINAL? typeuse* compttype : OK x i
+  -- if |typeuse*| <= 1
+  -- (if $before(typeuse, x, i))*
+  -- (if $unrollht(C, typeuse) = SUB typeuse'* comptype')*
 
   -- Comptype_ok: C |- comptype : OK
   -- (Comptype_sub: C |- comptype <: comptype')*
@@ -328,8 +328,8 @@ rule Heaptype_sub/typeidx-r:
   -- Heaptype_sub: C |- heaptype <: C.TYPES[typeidx]
 
 rule Heaptype_sub/rec:
-  C |- REC i <: ht
-  -- if C.REC[i] = SUBD fin (ht_1* ht ht_2*) ct
+  C |- REC i <: tu
+  -- if C.REC[i] = SUB fin (tu_1* tu tu_2*) ct
 
 rule Heaptype_sub/none:
   C |- NONE <: heaptype
@@ -440,8 +440,8 @@ rule Deftype_sub/refl:
 
 rule Deftype_sub/super:
   C |- deftype_1 <: deftype_2
-  -- if $unrolldt(deftype_1) = SUBD fin (ht_1* ht ht_2*) ct
-  -- Heaptype_sub: C |- ht <: deftype_2
+  -- if $unrolldt(deftype_1) = SUB fin (tu_1* tu tu_2*) ct
+  -- Heaptype_sub: C |- tu <: deftype_2
 
 
 ;; External types
@@ -645,7 +645,7 @@ rule Instr_ok/call:
   -- Expand: C.FUNCS[x] ~~ FUNC (t_1* -> t_2*)
 
 rule Instr_ok/call_ref:
-  C |- CALL_REF x : t_1* (REF NULL $idx(x)) -> t_2*
+  C |- CALL_REF $idx(x) : t_1* (REF NULL $idx(x)) -> t_2*
   -- Expand: C.TYPES[x] ~~ FUNC (t_1* -> t_2*)
 
 rule Instr_ok/call_indirect:
@@ -669,7 +669,7 @@ rule Instr_ok/return_call:
 
 ;; TODO: enable t_2* <: C.RETURN
 rule Instr_ok/return_call_ref:
-  C |- RETURN_CALL_REF x : t_3* t_1* (REF NULL $idx(x)) -> t_4*
+  C |- RETURN_CALL_REF $idx(x) : t_3* t_1* (REF NULL $idx(x)) -> t_4*
   -- Expand: C.TYPES[x] ~~ FUNC (t_1* -> t_2*)
   -- if C.RETURN = (t'_2*)
   -- Resulttype_sub: C |- t_2* <: t'_2*

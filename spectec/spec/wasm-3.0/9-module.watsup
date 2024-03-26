@@ -172,7 +172,7 @@ def $instantiate(s, module, externval*) = s'; f; instr_E* instr_D* (CALL x)?
 ;;
 
 def $invoke(store, funcaddr, val*) : config
-def $invoke(s, fa, val^n) = s; f; val^n (REF.FUNC_ADDR fa) (CALL_REF 0)
+def $invoke(s, fa, val^n) = s; f; val^n (REF.FUNC_ADDR fa) (CALL_REF $funcinst((s; f))[fa].TYPE)
   -- if f = { MODULE {} }
   -- if $funcinst((s; f))[fa].CODE = FUNC x local* expr
   -- Expand: s.FUNCS[fa].TYPE ~~ FUNC (t_1^n -> t_2*)

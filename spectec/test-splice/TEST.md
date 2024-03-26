@@ -375,8 +375,7 @@ warning: syntax `globaladdr` was never spliced
 warning: syntax `globalidx` was never spliced
 warning: syntax `globalinst` was never spliced
 warning: syntax `half` was never spliced
-warning: syntax `heaptype/syn` was never spliced
-warning: syntax `heaptype/sem` was never spliced
+warning: syntax `heaptype` was never spliced
 warning: syntax `hostaddr` was never spliced
 warning: syntax `iN` was never spliced
 warning: syntax `idx` was never spliced
@@ -459,7 +458,6 @@ warning: syntax `structaddr` was never spliced
 warning: syntax `structinst` was never spliced
 warning: syntax `structtype` was never spliced
 warning: syntax `subtype/syn` was never spliced
-warning: syntax `subtype/sem` was never spliced
 warning: syntax `sx` was never spliced
 warning: syntax `sym` was never spliced
 warning: syntax `symsplit/1` was never spliced
@@ -471,6 +469,8 @@ warning: syntax `tableinst` was never spliced
 warning: syntax `testop_` was never spliced
 warning: syntax `type` was never spliced
 warning: syntax `typeidx` was never spliced
+warning: syntax `typeuse/syn` was never spliced
+warning: syntax `typeuse/sem` was never spliced
 warning: syntax `typevar` was never spliced
 warning: syntax `u128` was never spliced
 warning: syntax `u16` was never spliced
@@ -1237,6 +1237,7 @@ warning: definition `subst_reftype` was never spliced
 warning: definition `subst_storagetype` was never spliced
 warning: definition `subst_subtype` was never spliced
 warning: definition `subst_tabletype` was never spliced
+warning: definition `subst_typeuse` was never spliced
 warning: definition `subst_typevar` was never spliced
 warning: definition `subst_valtype` was never spliced
 warning: definition `subst_vectype` was never spliced
@@ -1607,6 +1608,7 @@ warning: definition prose `subst_reftype` was never spliced
 warning: definition prose `subst_storagetype` was never spliced
 warning: definition prose `subst_subtype` was never spliced
 warning: definition prose `subst_tabletype` was never spliced
+warning: definition prose `subst_typeuse` was never spliced
 warning: definition prose `subst_typevar` was never spliced
 warning: definition prose `subst_valtype` was never spliced
 warning: definition prose `subst_vectype` was never spliced

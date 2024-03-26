@@ -607,9 +607,15 @@ and elab_typ_definition env tid t : Il.deftyp =
   | CaseT (dots1, ts, cases, _dots2) ->
     let cases0 =
       if dots1 = Dots then fst (as_variant_typid "own type" env tid []) else [] in
-    let casess = map_filter_nl_list (fun t -> as_variant_typ "parent type" env Infer t t.at) ts in
-    let cases' =
-      List.flatten (cases0 :: List.map fst casess @ [filter_nl cases]) in
+    let casess =
+      map_filter_nl_list (fun t ->
+        let cases, dots = as_variant_typ "parent type" env Infer t t.at in
+        if dots = Dots then
+          error t.at "cannot include incomplete syntax type";
+        cases
+      ) ts
+    in
+    let cases' = List.flatten (cases0 :: casess @ [filter_nl cases]) in
     let tcs' = List.map (elab_typcase env tid t.at) cases' in
     check_atoms "variant" "case" cases' t.at;
     Il.VariantT tcs'
