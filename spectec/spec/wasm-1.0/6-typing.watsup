@@ -409,25 +409,25 @@ rule Module_ok:
   |- MODULE type* import* func* global* table* mem* elem* data* start? export* : OK
   -- (Type_ok: |- type : ft')*
   -- (Import_ok: {TYPES ft'*} |- import : ixt)*
-
+  ----
   -- (Global_ok: C' |- global : gt)*
   -- (Func_ok: C |- func : ft)*
   -- (Table_ok: C |- table : tt)*
   -- (Mem_ok: C |- mem : mt)*
-
+  ----
   -- (Elem_ok: C |- elem : OK)*
   -- (Data_ok: C |- data : OK)*
   -- (Start_ok: C |- start : OK)?
   -- (Export_ok: C |- export : xt)*
-
+  ----
   -- if |tt*| <= 1
   -- if |mt*| <= 1
   ;; -- TODO: disjoint export names
-
+  ----
   -- if C = {TYPES ft'*, FUNCS ift* ft*, GLOBALS igt* gt*, TABLES itt* tt*, MEMS imt* mt*}
-
+  ----
   -- if C' = {TYPES ft'*, FUNCS ift* ft*, GLOBALS igt*}
-
+  ----
   -- if ift* = $funcsxt(ixt*)
   -- if igt* = $globalsxt(ixt*)
   -- if itt* = $tablesxt(ixt*)

@@ -829,10 +829,19 @@ and render_conditions env rhs tabs prems =
   let prems' = filter_nl_list (function {it = VarPr _; _} -> false | _ -> true) prems in
   if prems' = [] then rhs else
   let rhs', prems'', tabs', begin_, end_ =
-    (* If premises start with an empty line, break and align below RHS. *)
     match prems' with
+    | Nl::Nl::prems'' ->
+      (* If premises start with double empty line, break and align below LHS. *)
+      let tabs' = String.sub tabs 0 (max 0 (String.length tabs - 2)) in
+      let rhs' = if String.starts_with ~prefix:"\\\\" rhs then rhs else
+        "\\multicolumn{2}{l@{}}{ " ^ rhs ^ " }" in
+      rhs' ^ " \\\\\n  " ^ tabs',
+      prems'', tabs', " \\multicolumn{4}{@{}l@{}}{\\qquad\\quad ", "}"
+      (* If premises start with an empty line, break and align below RHS. *)
     | Nl::prems'' ->
-      "\\multicolumn{2}{l@{}}{ " ^ rhs ^ " } \\\\\n  " ^ tabs,
+      let rhs' = if String.starts_with ~prefix:"\\\\" rhs then rhs else
+        "\\multicolumn{2}{l@{}}{ " ^ rhs ^ " }" in
+      rhs' ^ " \\\\\n  " ^ tabs,
       prems'', tabs, " \\multicolumn{2}{l@{}}{\\quad ", "}"
     | _ -> rhs ^  "\n  &", prems', tabs ^ "&", "\\qquad ", ""
   in
@@ -1012,7 +1021,11 @@ let render_reddef env d =
     in
     render_rule_deco env "" id1 id2 " \\quad " ^ "& " ^
       render_exp env e1 ^ " &" ^ render_atom env op ^ "& " ^
-        render_conditions env (render_exp env e2) "&&&" prems
+        if e1.at.right.line = e2.at.left.line then
+          render_conditions env (render_exp env e2) "&&&" prems
+        else
+          render_conditions env ("\\\\\n  & \\multicolumn{3}{@{}l@{}}{\\qquad " ^
+            render_exp env e2 ^ " }") "&&&" prems
   | _ -> failwith "render_reddef"
 
 let render_funcdef env d =

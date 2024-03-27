@@ -189,6 +189,7 @@ nl_bar_list1(X, Y) :
 
 nl_dash_list(X) :
   | (* empty *) { [] }
+  | DASH DASH nl_dash_list(X) { Nl::$3 }
   | DASH X nl_dash_list(X) { (Elem $2)::$3 }
   | NL_NL_DASH X nl_dash_list(X) { Nl::(Elem $2)::$3 }
 
