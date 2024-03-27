@@ -505,6 +505,33 @@ let remove_state algo =
     | _ -> FuncA(name, params, body))
   | RuleA _ as a -> a
 
+let insert_state_binding algo =
+  let state_count = ref 0 in
+
+  let count_state e =
+    (match e.it with
+    | VarE "z" -> state_count := !state_count + 1
+    | _ -> ());
+    e
+  in
+
+  let walk_config =
+    {
+      Walk.default_config with
+      pre_expr = count_state;
+    }
+  in
+
+  match Walk.walk walk_config algo with
+  | FuncA (name, params, body) when !state_count > 0 ->
+      let body = (letI (varE "z", getCurStateE ())) :: body in
+      FuncA (name, params, body)
+  | RuleA (name, params, body) when !state_count > 0 ->
+      let body = (letI (varE "z", getCurStateE ())) :: body in
+      RuleA (name, params, body)
+  | algo -> algo
+
+
 (* Applied for reduction rules: infer assert from if *)
 let count_if instrs =
   let f instr =

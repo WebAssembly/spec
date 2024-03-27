@@ -143,6 +143,7 @@ and string_of_expr expr =
     sprintf "%s ++ %s" (string_of_expr e1) (string_of_expr e2)
   | LenE e -> sprintf "|%s|" (string_of_expr e)
   | ArityE e -> sprintf "the arity of %s" (string_of_expr e)
+  | GetCurStateE -> "the current state"
   | GetCurLabelE -> "the current label"
   | GetCurFrameE -> "the current frame"
   | GetCurContextE -> "the current context"
@@ -418,6 +419,7 @@ and structured_string_of_expr expr =
     ^ ")"
   | LenE e -> "LenE (" ^ structured_string_of_expr e ^ ")"
   | ArityE e -> "ArityE (" ^ structured_string_of_expr e ^ ")"
+  | GetCurStateE -> "GetCurStateE"
   | GetCurLabelE -> "GetCurLabelE"
   | GetCurFrameE -> "GetCurFrameE"
   | GetCurContextE -> "GetCurContextE"

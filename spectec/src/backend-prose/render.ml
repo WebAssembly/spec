@@ -329,6 +329,7 @@ and render_expr' env expr =
   | Al.Ast.ArityE e ->
     let se = render_expr env e in
     sprintf "the arity of %s" se
+  | Al.Ast.GetCurStateE -> "the current state"
   | Al.Ast.GetCurLabelE -> "the current label"
   | Al.Ast.GetCurFrameE -> "the current frame"
   | Al.Ast.GetCurContextE -> "the current context"

@@ -15,6 +15,7 @@ let rec free_expr expr =
   match expr.it with
   | NumE _
   | BoolE _
+  | GetCurStateE
   | GetCurLabelE
   | GetCurContextE
   | GetCurFrameE

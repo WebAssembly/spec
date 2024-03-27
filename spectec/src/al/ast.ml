@@ -95,6 +95,7 @@ and expr' =
   | ArityE of expr                      (* "the arity of expr" *)
   | FrameE of expr option * expr        (* "the activation of expr (with arity expr)?" *)
   | LabelE of expr * expr               (* "the label whose arity is expr and whose continuation is expr" *)
+  | GetCurStateE                        (* "the current state" *)
   | GetCurFrameE                        (* "the current frame" *)
   | GetCurLabelE                        (* "the current lbael" *)
   | GetCurContextE                      (* "the current context" *)

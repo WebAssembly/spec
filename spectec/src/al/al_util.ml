@@ -58,6 +58,7 @@ let infixE ?(at = no) (e1, infix, e2) = InfixE (e1, infix, e2) |> mk_expr at
 let arityE ?(at = no) e = ArityE e |> mk_expr at
 let frameE ?(at = no) (e_opt, e) = FrameE (e_opt, e) |> mk_expr at
 let labelE ?(at = no) (e1, e2) = LabelE (e1, e2) |> mk_expr at
+let getCurStateE ?(at = no) () = GetCurStateE |> mk_expr at
 let getCurFrameE ?(at = no) () = GetCurFrameE |> mk_expr at
 let getCurLabelE ?(at = no) () = GetCurLabelE |> mk_expr at
 let getCurContextE ?(at = no) () = GetCurContextE |> mk_expr at
