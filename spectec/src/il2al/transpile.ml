@@ -524,12 +524,12 @@ let insert_state_binding algo =
 
   match Walk.walk walk_config algo with
   | FuncA (name, params, body) when !state_count > 0 ->
-      let body = (letI (varE "z", getCurStateE ())) :: body in
-      FuncA (name, params, body)
+    let body = (letI (varE "z", getCurStateE ())) :: body in
+    FuncA (name, params, body)
   | RuleA (name, params, body) when !state_count > 0 ->
-      let body = (letI (varE "z", getCurStateE ())) :: body in
-      RuleA (name, params, body)
-  | algo -> algo
+    let body = (letI (varE "z", getCurStateE ())) :: body in
+    RuleA (name, params, body)
+  | _ -> algo
 
 
 (* Applied for reduction rules: infer assert from if *)
