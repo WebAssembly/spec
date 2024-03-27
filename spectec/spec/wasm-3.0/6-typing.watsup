@@ -328,8 +328,8 @@ rule Heaptype_sub/typeidx-r:
   -- Heaptype_sub: C |- heaptype <: C.TYPES[typeidx]
 
 rule Heaptype_sub/rec:
-  C |- REC i <: tu
-  -- if C.REC[i] = SUB fin (tu_1* tu tu_2*) ct
+  C |- REC i <: yy
+  -- if C.REC[i] = SUB fin (yy_1* yy yy_2*) ct
 
 rule Heaptype_sub/none:
   C |- NONE <: heaptype
@@ -440,8 +440,8 @@ rule Deftype_sub/refl:
 
 rule Deftype_sub/super:
   C |- deftype_1 <: deftype_2
-  -- if $unrolldt(deftype_1) = SUB fin (tu_1* tu tu_2*) ct
-  -- Heaptype_sub: C |- tu <: deftype_2
+  -- if $unrolldt(deftype_1) = SUB fin (yy_1* yy yy_2*) ct
+  -- Heaptype_sub: C |- yy <: deftype_2
 
 
 ;; External types
@@ -649,7 +649,7 @@ rule Instr_ok/call_ref:
   -- Expand: C.TYPES[x] ~~ FUNC (t_1* -> t_2*)
 
 rule Instr_ok/call_indirect:
-  C |- CALL_INDIRECT x y : t_1* I32 -> t_2*
+  C |- CALL_INDIRECT x $idx(y) : t_1* I32 -> t_2*
   -- if C.TABLES[x] = lim rt
   -- Reftype_sub: C |- rt <: (REF NULL FUNC)
   -- Expand: C.TYPES[y] ~~ FUNC (t_1* -> t_2*)
@@ -677,7 +677,7 @@ rule Instr_ok/return_call_ref:
 
 ;; TODO: enable t_2* <: C.RETURN
 rule Instr_ok/return_call_indirect:
-  C |- RETURN_CALL_INDIRECT x y : t_3* t_1* I32 -> t_4*
+  C |- RETURN_CALL_INDIRECT x $idx(y) : t_3* t_1* I32 -> t_4*
   -- if C.TABLES[x] = lim rt
   -- Reftype_sub: C |- rt <: (REF NULL FUNC)
 

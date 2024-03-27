@@ -171,7 +171,7 @@ grammar Bmemtype : memtype =
 
 
 grammar Bexterntype : externtype =
-  | 0x00 ct:Bcomptype => FUNC (DEF (REC (SUB FINAL eps ct)) 0)  ;; TODO: typeidx
+  | 0x00 x:Btypeidx => FUNC $idx(x)
   | 0x01 tt:Btabletype => TABLE tt
   | 0x02 mt:Bmemtype => MEM mt
   | 0x03 gt:Bglobaltype => GLOBAL gt
@@ -203,7 +203,9 @@ grammar Binstr/control : instr =
   | 0x0E l*:Bvec(Blabelidx) l_N:Blabelidx => BR_TABLE l* l_N
   | 0x0F => RETURN
   | 0x10 x:Bfuncidx => CALL x
-  | 0x11 y:Btypeidx x:Btableidx => CALL_INDIRECT x y
+  | 0x11 y:Btypeidx x:Btableidx => CALL_INDIRECT x $idx(y)
+  | 0x12 x:Bfuncidx => RETURN_CALL x
+  | 0x13 y:Btypeidx x:Btableidx => RETURN_CALL_INDIRECT x $idx(y)
   | ...
 
 
@@ -232,7 +234,6 @@ grammar Binstr/reference : instr = ...
   | 0xFB 24:Bu32 (nul_1, nul_2):Bcastop l:Blabelidx ht_1:Bheaptype ht_2:Bheaptype => BR_ON_CAST l (REF nul_1 ht_1) (REF nul_2 ht_2)
   | 0xFB 25:Bu32 (nul_1, nul_2):Bcastop l:Blabelidx ht_1:Bheaptype ht_2:Bheaptype => BR_ON_CAST_FAIL l (REF nul_1 ht_1) (REF nul_2 ht_2)
   | ...
-
 
 
 ;; Heap instructions
@@ -271,7 +272,7 @@ grammar Binstr/struct : instr = ...
 grammar Binstr/parametric : instr = ...
   | 0x1A => DROP
   | 0x1B => SELECT
-;;  | 0x1C t*:Bvec(Bvaltype) => SELECT (t*)    TODO
+  | 0x1C ts:Bvec(Bvaltype) => SELECT ts   ;; TODO: t*
   | ...
 
 
@@ -347,8 +348,8 @@ grammar Binstr/memory : instr = ...
 grammar Binstr/numeric-const : instr = ...
   | 0x41 n:Bu32 => CONST I32 n
   | 0x42 n:Bu64 => CONST I64 n
-;;  | 0x43 p:Bf32 => CONST F32 p    ;; TODO
-;;  | 0x44 p:Bf64 => CONST F64 p    ;; TODO
+  | 0x43 p:Bf32 => CONST F32 p
+  | 0x44 p:Bf64 => CONST F64 p
   | ...
 
 grammar Binstr/numeric-test-i32 : instr = ...

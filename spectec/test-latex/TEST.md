@@ -284,7 +284,7 @@ $$
 \mbox{(memory type)} & {\mathit{memtype}} &::=& {\mathit{limits}}~\mathsf{i{\scriptstyle8}} \\
 \mbox{(element type)} & {\mathit{elemtype}} &::=& {\mathit{reftype}} \\
 \mbox{(data type)} & {\mathit{datatype}} &::=& \mathsf{ok} \\
-\mbox{(external type)} & {\mathit{externtype}} &::=& \mathsf{func}~{\mathit{deftype}} ~|~ \mathsf{global}~{\mathit{globaltype}} ~|~ \mathsf{table}~{\mathit{tabletype}} ~|~ \mathsf{mem}~{\mathit{memtype}} \\
+\mbox{(external type)} & {\mathit{externtype}} &::=& \mathsf{func}~{\mathit{typeuse}} ~|~ \mathsf{global}~{\mathit{globaltype}} ~|~ \mathsf{table}~{\mathit{tabletype}} ~|~ \mathsf{mem}~{\mathit{memtype}} \\
 \end{array}
 $$
 
@@ -494,11 +494,11 @@ $$
 \mathsf{br\_on\_cast\_fail}~{\mathit{labelidx}}~{\mathit{reftype}}~{\mathit{reftype}} \\ &&|&
 \mathsf{call}~{\mathit{funcidx}} \\ &&|&
 \mathsf{call\_ref}~{\mathit{typeuse}} \\ &&|&
-\mathsf{call\_indirect}~{\mathit{tableidx}}~{\mathit{typeidx}} \\ &&|&
+\mathsf{call\_indirect}~{\mathit{tableidx}}~{\mathit{typeuse}} \\ &&|&
 \mathsf{return} \\ &&|&
 \mathsf{return\_call}~{\mathit{funcidx}} \\ &&|&
 \mathsf{return\_call\_ref}~{\mathit{typeuse}} \\ &&|&
-\mathsf{return\_call\_indirect}~{\mathit{tableidx}}~{\mathit{typeidx}} \\ &&|&
+\mathsf{return\_call\_indirect}~{\mathit{tableidx}}~{\mathit{typeuse}} \\ &&|&
 {\mathit{numtype}}.\mathsf{const}~{{\mathit{num}}}_{{\mathit{numtype}}} \\ &&|&
 {\mathit{numtype}} . {{\mathit{unop}}}_{{\mathit{numtype}}} \\ &&|&
 {\mathit{numtype}} . {{\mathit{binop}}}_{{\mathit{numtype}}} \\ &&|&
@@ -2702,9 +2702,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathit{C}}.\mathsf{rec}{}[{\mathit{i}}] = \mathsf{sub}~{\mathit{fin}}~({{\mathit{tu}}_{{1}}^\ast}~{\mathit{tu}}~{{\mathit{tu}}_{{2}}^\ast})~{\mathit{ct}}
+{\mathit{C}}.\mathsf{rec}{}[{\mathit{i}}] = \mathsf{sub}~{\mathit{fin}}~({{{\mathit{y}}}_{{1}}^\ast}~{{\mathit{y}}}~{{{\mathit{y}}}_{{2}}^\ast})~{\mathit{ct}}
 }{
-{\mathit{C}} \vdash \mathsf{rec}~{\mathit{i}} \leq {\mathit{tu}}
+{\mathit{C}} \vdash \mathsf{rec}~{\mathit{i}} \leq {{\mathit{y}}}
 } \, {[\textsc{\scriptsize S{-}heap{-}rec}]}
 \qquad
 \end{array}
@@ -2977,9 +2977,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathrm{unroll}}({\mathit{deftype}}_{{1}}) = \mathsf{sub}~{\mathit{fin}}~({{\mathit{tu}}_{{1}}^\ast}~{\mathit{tu}}~{{\mathit{tu}}_{{2}}^\ast})~{\mathit{ct}}
+{\mathrm{unroll}}({\mathit{deftype}}_{{1}}) = \mathsf{sub}~{\mathit{fin}}~({{{\mathit{y}}}_{{1}}^\ast}~{{\mathit{y}}}~{{{\mathit{y}}}_{{2}}^\ast})~{\mathit{ct}}
  \qquad
-{\mathit{C}} \vdash {\mathit{tu}} \leq {\mathit{deftype}}_{{2}}
+{\mathit{C}} \vdash {{\mathit{y}}} \leq {\mathit{deftype}}_{{2}}
 }{
 {\mathit{C}} \vdash {\mathit{deftype}}_{{1}} \leq {\mathit{deftype}}_{{2}}
 } \, {[\textsc{\scriptsize S{-}def{-}super}]}
@@ -5355,8 +5355,8 @@ $$
 \begin{array}{@{}l@{}rcl@{}l@{}}
 {[\textsc{\scriptsize E{-}call}]} \quad & {\mathit{z}} ; (\mathsf{call}~{\mathit{x}}) &\hookrightarrow& (\mathsf{ref.func}~{\mathit{a}})~(\mathsf{call\_ref}~{\mathit{z}}.\mathsf{funcs}{}[{\mathit{a}}].\mathsf{type})
   &\quad \mbox{if}~{\mathit{z}}.\mathsf{module}.\mathsf{func}{}[{\mathit{x}}] = {\mathit{a}} \\
-{[\textsc{\scriptsize E{-}call\_ref{-}null}]} \quad & {\mathit{z}} ; (\mathsf{ref.null}~{\mathit{ht}})~(\mathsf{call\_ref}~{\mathit{tu}}) &\hookrightarrow& \mathsf{trap} \\
-{[\textsc{\scriptsize E{-}call\_ref{-}func}]} \quad & {\mathit{z}} ; {{\mathit{val}}^{{\mathit{n}}}}~(\mathsf{ref.func}~{\mathit{a}})~(\mathsf{call\_ref}~{\mathit{tu}}) &\hookrightarrow& \multicolumn{2}{l@{}}{ ({{\mathsf{frame}}_{{\mathit{m}}}}{\{{\mathit{f}}\}}~({{\mathsf{label}}_{{\mathit{m}}}}{\{\epsilon\}}~{{\mathit{instr}}^\ast})) } \\
+{[\textsc{\scriptsize E{-}call\_ref{-}null}]} \quad & {\mathit{z}} ; (\mathsf{ref.null}~{\mathit{ht}})~(\mathsf{call\_ref}~{{\mathit{y}}}) &\hookrightarrow& \mathsf{trap} \\
+{[\textsc{\scriptsize E{-}call\_ref{-}func}]} \quad & {\mathit{z}} ; {{\mathit{val}}^{{\mathit{n}}}}~(\mathsf{ref.func}~{\mathit{a}})~(\mathsf{call\_ref}~{{\mathit{y}}}) &\hookrightarrow& \multicolumn{2}{l@{}}{ ({{\mathsf{frame}}_{{\mathit{m}}}}{\{{\mathit{f}}\}}~({{\mathsf{label}}_{{\mathit{m}}}}{\{\epsilon\}}~{{\mathit{instr}}^\ast})) } \\
   &&& \multicolumn{2}{l@{}}{\quad \mbox{if}~{\mathit{z}}.\mathsf{funcs}{}[{\mathit{a}}] = {\mathit{fi}}} \\
   &&& \multicolumn{2}{l@{}}{\quad {\land}~{\mathit{fi}}.\mathsf{type} \approx \mathsf{func}~({{\mathit{t}}_{{1}}^{{\mathit{n}}}} \rightarrow {{\mathit{t}}_{{2}}^{{\mathit{m}}}})} \\
   &&& \multicolumn{2}{l@{}}{\quad {\land}~{\mathit{fi}}.\mathsf{code} = \mathsf{func}~{\mathit{y}}~{(\mathsf{local}~{\mathit{t}})^\ast}~({{\mathit{instr}}^\ast})} \\
@@ -5378,9 +5378,9 @@ $$
 
 $$
 \begin{array}{@{}l@{}rcl@{}l@{}}
-{[\textsc{\scriptsize E{-}return\_call\_ref{-}label}]} \quad & {\mathit{z}} ; ({{\mathsf{label}}_{{\mathit{k}}}}{\{{{\mathit{instr}'}^\ast}\}}~{{\mathit{val}}^\ast}~(\mathsf{return\_call\_ref}~{\mathit{tu}})~{{\mathit{instr}}^\ast}) &\hookrightarrow& {{\mathit{val}}^\ast}~(\mathsf{return\_call\_ref}~{\mathit{tu}}) \\
-{[\textsc{\scriptsize E{-}return\_call\_ref{-}frame{-}null}]} \quad & {\mathit{z}} ; ({{\mathsf{frame}}_{{\mathit{k}}}}{\{{\mathit{f}}\}}~{{\mathit{val}}^\ast}~(\mathsf{ref.null}~{\mathit{ht}})~(\mathsf{return\_call\_ref}~{\mathit{tu}})~{{\mathit{instr}}^\ast}) &\hookrightarrow& \mathsf{trap} \\
-{[\textsc{\scriptsize E{-}return\_call\_ref{-}frame{-}addr}]} \quad & {\mathit{z}} ; ({{\mathsf{frame}}_{{\mathit{k}}}}{\{{\mathit{f}}\}}~{{\mathit{val}'}^\ast}~{{\mathit{val}}^{{\mathit{n}}}}~(\mathsf{ref.func}~{\mathit{a}})~(\mathsf{return\_call\_ref}~{\mathit{tu}})~{{\mathit{instr}}^\ast}) &\hookrightarrow& {{\mathit{val}}^{{\mathit{n}}}}~(\mathsf{ref.func}~{\mathit{a}})~(\mathsf{call\_ref}~{\mathit{tu}})
+{[\textsc{\scriptsize E{-}return\_call\_ref{-}label}]} \quad & {\mathit{z}} ; ({{\mathsf{label}}_{{\mathit{k}}}}{\{{{\mathit{instr}'}^\ast}\}}~{{\mathit{val}}^\ast}~(\mathsf{return\_call\_ref}~{{\mathit{y}}})~{{\mathit{instr}}^\ast}) &\hookrightarrow& {{\mathit{val}}^\ast}~(\mathsf{return\_call\_ref}~{{\mathit{y}}}) \\
+{[\textsc{\scriptsize E{-}return\_call\_ref{-}frame{-}null}]} \quad & {\mathit{z}} ; ({{\mathsf{frame}}_{{\mathit{k}}}}{\{{\mathit{f}}\}}~{{\mathit{val}}^\ast}~(\mathsf{ref.null}~{\mathit{ht}})~(\mathsf{return\_call\_ref}~{{\mathit{y}}})~{{\mathit{instr}}^\ast}) &\hookrightarrow& \mathsf{trap} \\
+{[\textsc{\scriptsize E{-}return\_call\_ref{-}frame{-}addr}]} \quad & {\mathit{z}} ; ({{\mathsf{frame}}_{{\mathit{k}}}}{\{{\mathit{f}}\}}~{{\mathit{val}'}^\ast}~{{\mathit{val}}^{{\mathit{n}}}}~(\mathsf{ref.func}~{\mathit{a}})~(\mathsf{return\_call\_ref}~{{\mathit{y}}})~{{\mathit{instr}}^\ast}) &\hookrightarrow& {{\mathit{val}}^{{\mathit{n}}}}~(\mathsf{ref.func}~{\mathit{a}})~(\mathsf{call\_ref}~{{\mathit{y}}})
   &\quad \mbox{if}~{\mathit{z}}.\mathsf{funcs}{}[{\mathit{a}}].\mathsf{type} \approx \mathsf{func}~({{\mathit{t}}_{{1}}^{{\mathit{n}}}} \rightarrow {{\mathit{t}}_{{2}}^{{\mathit{m}}}}) \\
 \end{array}
 $$
@@ -5389,8 +5389,8 @@ $$
 
 $$
 \begin{array}{@{}l@{}rcl@{}l@{}}
-{[\textsc{\scriptsize E{-}call\_indirect}]} \quad & (\mathsf{call\_indirect}~{\mathit{x}}~{\mathit{y}}) &\hookrightarrow& (\mathsf{table.get}~{\mathit{x}})~(\mathsf{ref.cast}~(\mathsf{ref}~\mathsf{null}~{\mathit{y}}))~(\mathsf{call\_ref}~{\mathit{y}}) \\
-{[\textsc{\scriptsize E{-}return\_call\_indirect}]} \quad & (\mathsf{return\_call\_indirect}~{\mathit{x}}~{\mathit{y}}) &\hookrightarrow& (\mathsf{table.get}~{\mathit{x}})~(\mathsf{ref.cast}~(\mathsf{ref}~\mathsf{null}~{\mathit{y}}))~(\mathsf{return\_call\_ref}~{\mathit{y}}) \\
+{[\textsc{\scriptsize E{-}call\_indirect}]} \quad & (\mathsf{call\_indirect}~{\mathit{x}}~{{\mathit{y}}}) &\hookrightarrow& (\mathsf{table.get}~{\mathit{x}})~(\mathsf{ref.cast}~(\mathsf{ref}~\mathsf{null}~{{\mathit{y}}}))~(\mathsf{call\_ref}~{{\mathit{y}}}) \\
+{[\textsc{\scriptsize E{-}return\_call\_indirect}]} \quad & (\mathsf{return\_call\_indirect}~{\mathit{x}}~{{\mathit{y}}}) &\hookrightarrow& (\mathsf{table.get}~{\mathit{x}})~(\mathsf{ref.cast}~(\mathsf{ref}~\mathsf{null}~{{\mathit{y}}}))~(\mathsf{return\_call\_ref}~{{\mathit{y}}}) \\
 \end{array}
 $$
 
@@ -6628,7 +6628,7 @@ $$
 
 $$
 \begin{array}{@{}l@{}rrlll@{}l@{}}
-& {\mathtt{externtype}} &::=& \mathtt{0x00}~{\mathit{ct}}{:}{\mathtt{comptype}} &\Rightarrow& \mathsf{func}~((\mathsf{rec}~(\mathsf{sub}~\mathsf{final}~\epsilon~{\mathit{ct}})) . 0) \\ &&|&
+& {\mathtt{externtype}} &::=& \mathtt{0x00}~{\mathit{x}}{:}{\mathtt{typeidx}} &\Rightarrow& \mathsf{func}~{\mathit{x}} \\ &&|&
 \mathtt{0x01}~{\mathit{tt}}{:}{\mathtt{tabletype}} &\Rightarrow& \mathsf{table}~{\mathit{tt}} \\ &&|&
 \mathtt{0x02}~{\mathit{mt}}{:}{\mathtt{memtype}} &\Rightarrow& \mathsf{mem}~{\mathit{mt}} \\ &&|&
 \mathtt{0x03}~{\mathit{gt}}{:}{\mathtt{globaltype}} &\Rightarrow& \mathsf{global}~{\mathit{gt}} \\
@@ -6664,6 +6664,8 @@ $$
 \mathtt{0x0F} &\Rightarrow& \mathsf{return} \\ &&|&
 \mathtt{0x10}~{\mathit{x}}{:}{\mathtt{funcidx}} &\Rightarrow& \mathsf{call}~{\mathit{x}} \\ &&|&
 \mathtt{0x11}~{\mathit{y}}{:}{\mathtt{typeidx}}~{\mathit{x}}{:}{\mathtt{tableidx}} &\Rightarrow& \mathsf{call\_indirect}~{\mathit{x}}~{\mathit{y}} \\ &&|&
+\mathtt{0x12}~{\mathit{x}}{:}{\mathtt{funcidx}} &\Rightarrow& \mathsf{return\_call}~{\mathit{x}} \\ &&|&
+\mathtt{0x13}~{\mathit{y}}{:}{\mathtt{typeidx}}~{\mathit{x}}{:}{\mathtt{tableidx}} &\Rightarrow& \mathsf{return\_call\_indirect}~{\mathit{x}}~{\mathit{y}} \\ &&|&
 \dots \\
 \end{array}
 $$
@@ -6741,6 +6743,7 @@ $$
 & {\mathtt{instr}} &::=& \dots \\ &&|&
 \mathtt{0x1A} &\Rightarrow& \mathsf{drop} \\ &&|&
 \mathtt{0x1B} &\Rightarrow& \mathsf{select} \\ &&|&
+\mathtt{0x1C}~{\mathit{ts}}{:}{\mathtt{vec}}({\mathtt{valtype}}) &\Rightarrow& \mathsf{select}~{\mathit{ts}} \\ &&|&
 \dots \\
 \end{array}
 $$
@@ -6833,6 +6836,8 @@ $$
 & {\mathtt{instr}} &::=& \dots \\ &&|&
 \mathtt{0x41}~{\mathit{n}}{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& \mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{n}} \\ &&|&
 \mathtt{0x42}~{\mathit{n}}{:}{\mathtt{u{\scriptstyle64}}} &\Rightarrow& \mathsf{i{\scriptstyle64}}.\mathsf{const}~{\mathit{n}} \\ &&|&
+\mathtt{0x43}~{\mathit{p}}{:}{\mathtt{f{\scriptstyle32}}} &\Rightarrow& \mathsf{f{\scriptstyle32}}.\mathsf{const}~{\mathit{p}} \\ &&|&
+\mathtt{0x44}~{\mathit{p}}{:}{\mathtt{f{\scriptstyle64}}} &\Rightarrow& \mathsf{f{\scriptstyle64}}.\mathsf{const}~{\mathit{p}} \\ &&|&
 \mathtt{0x45} &\Rightarrow& \mathsf{i{\scriptstyle32}} . \mathsf{eqz} \\ &&|&
 \mathtt{0x46} &\Rightarrow& \mathsf{i{\scriptstyle32}} . \mathsf{eq} \\ &&|&
 \mathtt{0x47} &\Rightarrow& \mathsf{i{\scriptstyle32}} . \mathsf{ne} \\ &&|&

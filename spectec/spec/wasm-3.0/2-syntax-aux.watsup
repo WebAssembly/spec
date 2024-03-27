@@ -129,6 +129,8 @@ def $diffrt((REF nul_1 ht_1), (REF eps ht_2)) = (REF nul_1 ht_1)
 
 syntax typevar = _IDX typeidx | REC nat
 var xx : typevar
+var yy : typeuse hint(show y)
+var tu : typeuse
 
 def $idx(typeidx) : typevar  hint(show %)
 def $idx(x) = _IDX x

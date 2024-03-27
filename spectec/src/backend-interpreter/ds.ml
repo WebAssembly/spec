@@ -82,9 +82,8 @@ let string_of_env env =
 let lookup_env key env =
   try Env.find key env
   with Not_found ->
-    Printf.sprintf "The key '%s' is not in the map: %s."
-      key (string_of_env env)
-    |> prerr_endline;
+    Printf.eprintf "The key '%s' is not in the map: %s.\n%!"
+      key (string_of_env env);
     raise Not_found
 
 

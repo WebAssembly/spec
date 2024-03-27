@@ -221,7 +221,7 @@ syntax elemtype hint(desc "element type") =
 syntax datatype hint(desc "data type") =
   OK
 syntax externtype hint(desc "external type") =
-  | FUNC deftype | GLOBAL globaltype | TABLE tabletype | MEM memtype
+  | FUNC typeuse | GLOBAL globaltype | TABLE tabletype | MEM memtype
 
 
 ;; Meta variables
@@ -249,8 +249,6 @@ var vt : vectype
 var xt : externtype
 var yt : fieldtype     ;; TODO: better choice?
 var zt : storagetype
-
-var tu : typeuse
 
 
 ;;
@@ -436,11 +434,11 @@ syntax instr/br hint(desc "branch instruction") = ...
 syntax instr/call hint(desc "function instruction") = ...
   | CALL funcidx
   | CALL_REF typeuse
-  | CALL_INDIRECT tableidx typeidx
+  | CALL_INDIRECT tableidx typeuse
   | RETURN
   | RETURN_CALL funcidx
   | RETURN_CALL_REF typeuse
-  | RETURN_CALL_INDIRECT tableidx typeidx
+  | RETURN_CALL_INDIRECT tableidx typeuse
   | ...
 
 syntax instr/num hint(desc "numeric instruction") = ...

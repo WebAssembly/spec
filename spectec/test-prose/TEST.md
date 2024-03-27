@@ -3762,7 +3762,7 @@ validation_of_CALL_REF $idx(x)
 - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPES[x]).
 - The instruction is valid with type (t_1* ++ [(REF (NULL ?(())) $idx(x))] ->_ [] ++ t_2*).
 
-validation_of_CALL_INDIRECT x y
+validation_of_CALL_INDIRECT x $idx(y)
 - |C.TABLES| must be greater than x.
 - |C.TYPES| must be greater than y.
 - Let (lim, rt) be C.TABLES[x].
@@ -3791,7 +3791,7 @@ validation_of_RETURN_CALL_REF $idx(x)
 - C.RETURN must be equal to ?(t'_2*).
 - The instruction is valid with type (t_3* ++ t_1* ++ [(REF (NULL ?(())) $idx(x))] ->_ [] ++ t_4*).
 
-validation_of_RETURN_CALL_INDIRECT x y
+validation_of_RETURN_CALL_INDIRECT x $idx(y)
 - |C.TABLES| must be greater than x.
 - |C.TYPES| must be greater than y.
 - Under the context C, (t_3* ->_ [] ++ t_4*) must be valid.
@@ -5903,15 +5903,15 @@ execution_of_BR_ON_NON_NULL l
   a. Push the value val to the stack.
   b. Execute the instruction (BR l).
 
-execution_of_CALL_INDIRECT x y
+execution_of_CALL_INDIRECT x yy
 1. Execute the instruction (TABLE.GET x).
-2. Execute the instruction (REF.CAST (REF (NULL ?(())) $idx(y))).
-3. Execute the instruction (CALL_REF $idx(y)).
+2. Execute the instruction (REF.CAST (REF (NULL ?(())) yy)).
+3. Execute the instruction (CALL_REF yy).
 
-execution_of_RETURN_CALL_INDIRECT x y
+execution_of_RETURN_CALL_INDIRECT x yy
 1. Execute the instruction (TABLE.GET x).
-2. Execute the instruction (REF.CAST (REF (NULL ?(())) $idx(y))).
-3. Execute the instruction (RETURN_CALL_REF $idx(y)).
+2. Execute the instruction (REF.CAST (REF (NULL ?(())) yy)).
+3. Execute the instruction (RETURN_CALL_REF yy).
 
 execution_of_FRAME_
 1. Let f be the current frame.
@@ -6291,12 +6291,12 @@ execution_of_RETURN_CALL x
 4. Push the value (REF.FUNC_ADDR a) to the stack.
 5. Execute the instruction (RETURN_CALL_REF $funcinst()[a].TYPE).
 
-execution_of_RETURN_CALL_REF tu
+execution_of_RETURN_CALL_REF yy
 1. If the current context is LABEL_, then:
   a. Pop all values val* from the stack.
   b. Exit current context.
   c. Push the values val* to the stack.
-  d. Execute the instruction (RETURN_CALL_REF tu).
+  d. Execute the instruction (RETURN_CALL_REF yy).
 2. Else if the current context is FRAME_, then:
   a. Pop the value admin_u0 from the stack.
   b. Pop all values admin_u1* from the stack.
@@ -6311,7 +6311,7 @@ execution_of_RETURN_CALL_REF tu
         1. Let val'* ++ val^n be admin_u1*.
         2. Push the values val^n to the stack.
         3. Push the value (REF.FUNC_ADDR a) to the stack.
-        4. Execute the instruction (CALL_REF tu).
+        4. Execute the instruction (CALL_REF yy).
   e. If admin_u0 is of the case REF.NULL, then:
     1) Trap.
 

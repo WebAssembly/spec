@@ -1593,10 +1593,11 @@ and elab_sym_list env = function
 
 and elab_prod env prod t =
   let (g, e, prems) = prod.it in
-  let _e' = elab_exp env e t in
-  let _prems' = concat_map_filter_nl_list (elab_prem env) prems in
-  ignore (elab_sym env g);
-  let free = Free.(diff (free_prod prod) (union (det_prod prod) (bound_env env))) in
+  let env' = local_env env in
+  let _prems' = concat_map_filter_nl_list (elab_prem env') prems in
+  let _g, env'' = elab_sym env' g in
+  let _e' = elab_exp env'' e t in
+  let free = Free.(diff (free_prod prod) (union (det_prod prod) (bound_env env''))) in
   if free <> Free.empty then
     error prod.at ("grammar rule contains indeterminate variable(s) `" ^
       String.concat "`, `" (Free.Set.elements free.varid) ^ "`")
