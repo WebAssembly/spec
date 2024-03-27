@@ -8,7 +8,7 @@ Binary Format
 Code Metadata
 -------------
 
-All code metadata items of a given format *T* are grouped under a custom section
+All code metadata items of a format named *T* are grouped under a custom section
 named *'metadata.code.T'*.
 The following parametrized grammar rules define the generic structure of a code metadata
 section of format *T*.
@@ -21,14 +21,14 @@ section of format *T*.
      n{:}\Bname & (\iff n = \text{metadata.code.T}) \\ &&&
      \Bvec(\Bcodemetadatafunc(\B{T})) \\
    \production{code metadata function} & \Bcodemetadatafunc(\B{T}) &::=&
-     fidx{:}\Bfuncidx~\Bvec(\Bcodemetadataitem(\B{T})) \\
+     x{:}\Bfuncidx~\Bvec(\Bcodemetadataitem(\B{T})) \\
    \production{code metadata item} & \Bcodemetadataitem(\B{T}) &::=&
-     \X{instoff}{:}\Bu32 ~~ \X{size}{:}\Bu32 & (\iff \X{size} = ||\B{T}||) \\ &&&
+     \X{off}{:}\Bu32 ~~ \X{size}{:}\Bu32 & (\iff \X{size} = ||\B{T}||) \\ &&&
       \X{data}{:}\B{T} \\
    \end{array}
 .. index:: ! code metadata section
 
-Where *funcpos* is the byte offset of the annotation starting from the beginning of the function body, and *data* is a further payload, whose content depends on the format *T*.
+Where :math:`\X{off}` is the byte offset of the annotation starting from the beginning of the function body, and :math:`\X{data}` is a further payload, whose content depends on the format :math:`T`.
 
 *code metadata function* entries must appear in order of increasing *function id*, and duplicate id values are not allowed. *code metadata item* entries must appear in order of increasing *instruction offset*, and duplicate offset values are not allowed.
 
@@ -46,7 +46,11 @@ with name *'metadata.code.branch_hint'*.
    \production{branch hint section} & \Bbranchhintsec &::=&
      \Bcodemetadatasec(\Bbranchhint) \\
    \production{branch hint} & \Bbranchhint &::=&
-     \hex{00} \\ &&|&
+     \Bunlikely \\ &&|&
+     \Blikely \\
+   \production{unlikely} & \Bunlikely &::=&
+     \hex{00} \\
+   \production{likely} & \Blikely &::=&
      \hex{01} \\
    \end{array}
 .. index:: ! branch hint section

@@ -19,6 +19,6 @@ attached to the first instruction that follows them.
    \end{array}
 .. index:: ! code metadata annotation
 
-Where `T` is the format of the item, and `data` is a byte string containing the same
+Where `T` is the format name of the item, and `data` is a byte string containing the same
 payload as in the binary format.
 

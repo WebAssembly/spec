@@ -20,15 +20,17 @@
 
 .. Code Metadata, non-terminals
 
-.. |Bcodemetadatasec| mathdef:: \xref{binary}{binary-codemetada}{\B{codemetadatasec}}
-.. |Bcodemetadata| mathdef:: \xref{binary}{binary-codemetada}{\B{codemetada}}
-.. |Bcodemetadatafunc| mathdef:: \xref{binary}{binary-codemetada}{\B{codemetadafunc}}
-.. |Bcodemetadataitem| mathdef:: \xref{binary}{binary-codemetada}{\B{codemetadataitem}}
+.. |Bcodemetadatasec| mathdef:: \xref{binary}{binary-codemetadata}{\B{codemetadatasec}}
+.. |Bcodemetadata| mathdef:: \xref{binary}{binary-codemetadata}{\B{codemetada}}
+.. |Bcodemetadatafunc| mathdef:: \xref{binary}{binary-codemetadata}{\B{codemetadafunc}}
+.. |Bcodemetadataitem| mathdef:: \xref{binary}{binary-codemetadata}{\B{codemetadataitem}}
 
 .. Branch Hints, non-terminals
 
 .. |Bbranchhintsec| mathdef:: \xref{binary}{binary-branchhints}{\B{branchhintsec}}
 .. |Bbranchhint| mathdef:: \xref{binary}{binary-branchhints}{\B{branchhint}}
+.. |Bunlikely| mathdef:: \xref{binary}{binary-branchhints}{\B{unlikely}}
+.. |Blikely| mathdef:: \xref{binary}{binary-branchhints}{\B{likely}}
 
 
 .. Text Format

@@ -64,7 +64,7 @@ project = u'WebAssembly-Metadata-Code'
 title = u'WebAssembly Code Metadata Specification'
 copyright = u'2024, WebAssembly Community Group'
 author = u'WebAssembly Community Group'
-editor = u'Andreas Rossberg (editor)'
+editor = u'Yuri Iozzelli (editor)'
 logo = 'static/webassembly.png'
 
 # The name of the GitHub repository this resides in

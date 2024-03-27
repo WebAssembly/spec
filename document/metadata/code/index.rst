@@ -3,7 +3,7 @@ WebAssembly Code Metadata
 
 .. only:: html
 
-   | Editor: Andreas Rossberg
+   | Editor: Yuri Iozzelli
 
    | Issue Tracker: |WasmIssues|
 
