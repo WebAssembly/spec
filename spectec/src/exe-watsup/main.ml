@@ -1,8 +1,6 @@
 open Util
 
-
 (* Configuration *)
-
 let name = "watsup"
 let version = "0.4"
 
@@ -199,7 +197,7 @@ let () =
       if !target = Check || !target = Latex || not (PS.mem Animate !selected_passes)
       then [] else (
         log "Translating to AL...";
-        (Il2al.Translate.translate il @ Backend_interpreter.Manual.manual_algos)
+        (Il2al.Translate.translate il @ Il2al.Manual.manual_algos)
       )
     in
 

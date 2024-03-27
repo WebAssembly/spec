@@ -1,9 +1,10 @@
 (library
   (name il2al)
-  (libraries backend_interpreter middlend util il al)
+  (libraries middlend util il al)
   (modules
     animate
     il2il
+    manual
     translate
     transpile
     free

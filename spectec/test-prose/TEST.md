@@ -630,80 +630,65 @@ memsxv exter_u0*
 4. Let [externval] ++ xv* be exter_u0*.
 5. Return $memsxv(xv*).
 
-store
-1. Return.
+store (s, f)
+1. Return s.
 
-frame
-1. Let f be the current frame.
-2. Return f.
+frame (s, f)
+1. Return f.
 
-funcaddr
-1. Let f be the current frame.
-2. Return f.MODULE.FUNCS.
+funcaddr (s, f)
+1. Return f.MODULE.FUNCS.
 
-funcinst
+funcinst (s, f)
 1. Return s.FUNCS.
 
-globalinst
+globalinst (s, f)
 1. Return s.GLOBALS.
 
-tableinst
+tableinst (s, f)
 1. Return s.TABLES.
 
-meminst
+meminst (s, f)
 1. Return s.MEMS.
 
-moduleinst
-1. Let f be the current frame.
-2. Return f.MODULE.
+moduleinst (s, f)
+1. Return f.MODULE.
 
-type x
-1. Let f be the current frame.
-2. Return f.MODULE.TYPES[x].
+type (s, f) x
+1. Return f.MODULE.TYPES[x].
 
-func x
-1. Let f be the current frame.
-2. Return s.FUNCS[f.MODULE.FUNCS[x]].
+func (s, f) x
+1. Return s.FUNCS[f.MODULE.FUNCS[x]].
 
-global x
-1. Let f be the current frame.
-2. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
+global (s, f) x
+1. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
 
-table x
-1. Let f be the current frame.
-2. Return s.TABLES[f.MODULE.TABLES[x]].
+table (s, f) x
+1. Return s.TABLES[f.MODULE.TABLES[x]].
 
-mem x
-1. Let f be the current frame.
-2. Return s.MEMS[f.MODULE.MEMS[x]].
+mem (s, f) x
+1. Return s.MEMS[f.MODULE.MEMS[x]].
 
-local x
-1. Let f be the current frame.
-2. Return f.LOCALS[x].
+local (s, f) x
+1. Return f.LOCALS[x].
 
-with_local x v
-1. Let f be the current frame.
-2. Replace f.LOCALS[x] with v.
+with_local (s, f) x v
+1. Return (s, f with .LOCALS[x] replaced by v).
 
-with_global x v
-1. Let f be the current frame.
-2. Replace s.GLOBALS[f.MODULE.GLOBALS[x]].VALUE with v.
+with_global (s, f) x v
+1. Return (s with .GLOBALS[f.MODULE.GLOBALS[x]].VALUE replaced by v, f).
 
-with_table x i a
-1. Let f be the current frame.
-2. Replace s.TABLES[f.MODULE.TABLES[x]].REFS[i] with ?(a).
+with_table (s, f) x i a
+1. Return (s with .TABLES[f.MODULE.TABLES[x]].REFS[i] replaced by ?(a), f).
 
-with_tableinst x ti
-1. Let f be the current frame.
-2. Replace s.TABLES[f.MODULE.TABLES[x]] with ti.
+with_tableinst (s, f) x ti
+1. Return (s with .TABLES[f.MODULE.TABLES[x]] replaced by ti, f).
 
-with_mem x i j b*
-1. Let f be the current frame.
-2. Replace s.MEMS[f.MODULE.MEMS[x]].BYTES[i : j] with b*.
+with_mem (s, f) x i j b*
+1. Return (s with .MEMS[f.MODULE.MEMS[x]].BYTES[i : j] replaced by b*, f).
 
-with_meminst x mi
-1. Let f be the current frame.
-2. Replace s.MEMS[f.MODULE.MEMS[x]] with mi.
+with_meminst (s, f) x mi
+1. Return (s with .MEMS[f.MODULE.MEMS[x]] replaced by mi, f).
 
 growtable ti n
 1. Let { TYPE: (i, j); REFS: ?(a)*; } be ti.
@@ -759,67 +744,59 @@ mems exter_u0*
 4. Let [externval] ++ externval'* be exter_u0*.
 5. Return $mems(externval'*).
 
-allocfunc mm func
+allocfunc s mm func
 1. Assert: Due to validation, func is of the case FUNC.
 2. Let (FUNC x local* expr) be func.
 3. Let fi be { TYPE: mm.TYPES[x]; MODULE: mm; CODE: func; }.
-4. Let a be |s.FUNCS|.
-5. Append fi to the s.FUNCS.
-6. Return a.
+4. Return (s with .FUNCS appended by [fi], |s.FUNCS|).
 
-allocfuncs mm func_u0*
+allocfuncs s mm func_u0*
 1. If (func_u0* is []), then:
-  a. Return [].
+  a. Return (s, []).
 2. Let [func] ++ func'* be func_u0*.
-3. Let fa be $allocfunc(mm, func).
-4. Let fa'* be $allocfuncs(mm, func'*).
-5. Return [fa] ++ fa'*.
+3. Let (s_1, fa) be $allocfunc(s, mm, func).
+4. Let (s_2, fa'*) be $allocfuncs(s_1, mm, func'*).
+5. Return (s_2, [fa] ++ fa'*).
 
-allocglobal globaltype val
+allocglobal s globaltype val
 1. Let gi be { TYPE: globaltype; VALUE: val; }.
-2. Let a be |s.GLOBALS|.
-3. Append gi to the s.GLOBALS.
-4. Return a.
+2. Return (s with .GLOBALS appended by [gi], |s.GLOBALS|).
 
-allocglobals globa_u0* val_u1*
+allocglobals s globa_u0* val_u1*
 1. If (globa_u0* is []), then:
   a. Assert: Due to validation, (val_u1* is []).
-  b. Return [].
+  b. Return (s, []).
 2. Else:
   a. Let [globaltype] ++ globaltype'* be globa_u0*.
   b. Assert: Due to validation, (|val_u1*| ≥ 1).
   c. Let [val] ++ val'* be val_u1*.
-  d. Let ga be $allocglobal(globaltype, val).
-  e. Let ga'* be $allocglobals(globaltype'*, val'*).
-  f. Return [ga] ++ ga'*.
+  d. Let (s_1, ga) be $allocglobal(s, globaltype, val).
+  e. Let (s_2, ga'*) be $allocglobals(s_1, globaltype'*, val'*).
+  f. Return (s_2, [ga] ++ ga'*).
 
-alloctable (i, j)
+alloctable s (i, j)
 1. Let ti be { TYPE: (i, j); REFS: ?()^i; }.
-2. Let a be |s.TABLES|.
-3. Append ti to the s.TABLES.
-4. Return a.
+2. Return (s with .TABLES appended by [ti], |s.TABLES|).
 
-alloctables table_u0*
+alloctables s table_u0*
 1. If (table_u0* is []), then:
-  a. Return [].
+  a. Return (s, []).
 2. Let [tabletype] ++ tabletype'* be table_u0*.
-3. Let ta be $alloctable(tabletype).
-4. Let ta'* be $alloctables(tabletype'*).
-5. Return [ta] ++ ta'*.
+3. Let (s_1, ta) be $alloctable(s, tabletype).
+4. Let (s_2, ta'*) be $alloctables(s_1, tabletype'*).
+5. Return (s_2, [ta] ++ ta'*).
 
-allocmem (i, j)
+allocmem s (i, j)
 1. Let mi be { TYPE: (i, j); BYTES: 0^(i · (64 · $Ki())); }.
-2. Let a be |s.MEMS|.
-3. Append mi to the s.MEMS.
-4. Return a.
+2. Return (s with .MEMS appended by [mi], |s.MEMS|).
 
-allocmems memty_u0*
+allocmems s memty_u0*
 1. If (memty_u0* is []), then:
-  a. Return [].
+  a. Return (s, []).
 2. Let [memtype] ++ memtype'* be memty_u0*.
-3. Let ma be $allocmem(memtype).
-4. Let ma'* be $allocmems(memtype'*).
-5. Return [ma] ++ ma'*.
+3. Let (s_1, ma) be $allocmem(s, memtype).
+4. Let (s_2, ma'*) be $allocmems(s_1, memtype'*).
+5. Return (s_2, [ma] ++ ma'*).
 
 instexport fa* ga* ta* ma* (EXPORT name exter_u0)
 1. If exter_u0 is of the case FUNC, then:
@@ -835,7 +812,7 @@ instexport fa* ga* ta* ma* (EXPORT name exter_u0)
 5. Let (MEM x) be exter_u0.
 6. Return { NAME: name; VALUE: (MEM ma*[x]); }.
 
-allocmodule module externval* val*
+allocmodule s module externval* val*
 1. Let fa_ex* be $funcs(externval*).
 2. Let ga_ex* be $globals(externval*).
 3. Let ma_ex* be $mems(externval*).
@@ -852,72 +829,73 @@ allocmodule module externval* val*
 14. Let ma* be (|s.MEMS| + i_mem)^(i_mem<n_mem).
 15. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
 16. Let mm be { TYPES: ft*; FUNCS: fa_ex* ++ fa*; GLOBALS: ga_ex* ++ ga*; TABLES: ta_ex* ++ ta*; MEMS: ma_ex* ++ ma*; EXPORTS: xi*; }.
-17. Let y_0 be $allocfuncs(mm, func^n_func).
+17. Let (s_1, y_0) be $allocfuncs(s, mm, func^n_func).
 18. Assert: Due to validation, (y_0 is fa*).
-19. Let y_0 be $allocglobals(globaltype^n_global, val*).
+19. Let (s_2, y_0) be $allocglobals(s_1, globaltype^n_global, val*).
 20. Assert: Due to validation, (y_0 is ga*).
-21. Let y_0 be $alloctables(tabletype^n_table).
+21. Let (s_3, y_0) be $alloctables(s_2, tabletype^n_table).
 22. Assert: Due to validation, (y_0 is ta*).
-23. Let y_0 be $allocmems(memtype^n_mem).
+23. Let (s_4, y_0) be $allocmems(s_3, memtype^n_mem).
 24. Assert: Due to validation, (y_0 is ma*).
-25. Return mm.
+25. Return (s_4, mm).
 
-initelem mm u32_u0* funca_u1*
+initelem s mm u32_u0* funca_u1*
 1. If ((u32_u0* is []) and (funca_u1* is [])), then:
-  a. Return.
+  a. Return s.
 2. Assert: Due to validation, (|funca_u1*| ≥ 1).
 3. Let [a*] ++ a'** be funca_u1*.
 4. Assert: Due to validation, (|u32_u0*| ≥ 1).
 5. Let [i] ++ i'* be u32_u0*.
-6. Replace s.TABLES[mm.TABLES[0]].REFS[i : |a*|] with ?(a)*.
-7. Perform $initelem(mm, i'*, a'**).
-8. Return.
+6. Let s_1 be s with .TABLES[mm.TABLES[0]].REFS[i : |a*|] replaced by ?(a)*.
+7. Let s_2 be $initelem(s_1, mm, i'*, a'**).
+8. Return s_2.
 
-initdata mm u32_u0* byte_u1*
+initdata s mm u32_u0* byte_u1*
 1. If ((u32_u0* is []) and (byte_u1* is [])), then:
-  a. Return.
+  a. Return s.
 2. Assert: Due to validation, (|byte_u1*| ≥ 1).
 3. Let [b*] ++ b'** be byte_u1*.
 4. Assert: Due to validation, (|u32_u0*| ≥ 1).
 5. Let [i] ++ i'* be u32_u0*.
-6. Replace s.MEMS[mm.MEMS[0]].BYTES[i : |b*|] with b*.
-7. Perform $initdata(mm, i'*, b'**).
-8. Return.
+6. Let s_1 be s with .MEMS[mm.MEMS[0]].BYTES[i : |b*|] replaced by b*.
+7. Let s_2 be $initdata(s_1, mm, i'*, b'**).
+8. Return s_2.
 
-instantiate module externval*
-1. Assert: Due to validation, module is of the case MODULE.
-2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
-3. Let (TYPE functype)* be type*.
-4. Let n_F be |func*|.
-5. Let (START x')? be start?.
-6. Let (DATA expr_D b*)* be data*.
-7. Let (ELEM expr_E x*)* be elem*.
-8. Let (GLOBAL globaltype expr_G)* be global*.
-9. Let mm_init be { TYPES: functype*; FUNCS: $funcs(externval*) ++ (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externval*); TABLES: []; MEMS: []; EXPORTS: []; }.
-10. Let f_init be { LOCALS: []; MODULE: mm_init; }.
-11. Let z be f_init.
-12. Push the activation of z to the stack.
-13. Let [(I32.CONST i_D)]* be $eval_expr(expr_D)*.
-14. Pop the activation of z from the stack.
-15. Push the activation of z to the stack.
-16. Let [(I32.CONST i_E)]* be $eval_expr(expr_E)*.
-17. Pop the activation of z from the stack.
-18. Push the activation of z to the stack.
-19. Let [val]* be $eval_expr(expr_G)*.
-20. Pop the activation of z from the stack.
-21. Let mm be $allocmodule(module, externval*, val*).
-22. Let f be { LOCALS: []; MODULE: mm; }.
-23. Perform $initelem(mm, i_E*, mm.FUNCS[x]**).
-24. Perform $initdata(mm, i_D*, b**).
-25. Enter the activation of f with arity 0 with label [FRAME_]:
+instantiate s module externval*
+1. Let z be the current state.
+2. Assert: Due to validation, module is of the case MODULE.
+3. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
+4. Let (TYPE functype)* be type*.
+5. Let n_F be |func*|.
+6. Let (START x')? be start?.
+7. Let (DATA expr_D b*)* be data*.
+8. Let (ELEM expr_E x*)* be elem*.
+9. Let (GLOBAL globaltype expr_G)* be global*.
+10. Let mm_init be { TYPES: functype*; FUNCS: $funcs(externval*) ++ (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externval*); TABLES: []; MEMS: []; EXPORTS: []; }.
+11. Let f_init be { LOCALS: []; MODULE: mm_init; }.
+12. Let z be (s, f_init).
+13. Push the activation of z to the stack.
+14. Let [(I32.CONST i_D)]* be $eval_expr(expr_D)*.
+15. Pop the activation of z from the stack.
+16. Push the activation of z to the stack.
+17. Let [(I32.CONST i_E)]* be $eval_expr(expr_E)*.
+18. Pop the activation of z from the stack.
+19. Push the activation of z to the stack.
+20. Let [val]* be $eval_expr(expr_G)*.
+21. Pop the activation of z from the stack.
+22. Let (s_1, mm) be $allocmodule(s, module, externval*, val*).
+23. Let f be { LOCALS: []; MODULE: mm; }.
+24. Let s_2 be $initelem(s_1, mm, i_E*, mm.FUNCS[x]**).
+25. Let s_3 be $initdata(s_2, mm, i_D*, b**).
+26. Enter the activation of f with arity 0 with label [FRAME_]:
   a. If x' is defined, then:
     1) Let ?(x'_0) be x'.
     2) Execute the instruction (CALL x'_0).
-26. Return mm.
+27. Return (s_3, mm).
 
-invoke fa val^n
+invoke s fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; EXPORTS: []; }; }.
-2. Let (t_1^n -> t_2*) be $funcinst()[fa].TYPE.
+2. Let (t_1^n -> t_2*) be $funcinst((s, f))[fa].TYPE.
 3. Let k be |t_2*|.
 4. Enter the activation of f with arity k with label [FRAME_]:
   a. Push the values val^n to the stack.
@@ -1080,109 +1058,120 @@ execution_of_LOOP t? instr*
 2. Enter L with label instr* ++ [LABEL_]:
 
 execution_of_CALL x
-1. Assert: Due to validation, (x < |$funcaddr()|).
-2. Execute the instruction (CALL_ADDR $funcaddr()[x]).
+1. Let z be the current state.
+2. Assert: Due to validation, (x < |$funcaddr(z)|).
+3. Execute the instruction (CALL_ADDR $funcaddr(z)[x]).
 
 execution_of_CALL_INDIRECT x
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST i) from the stack.
-3. If (i ≥ |$table(0).REFS|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST i) from the stack.
+4. If (i ≥ |$table(z, 0).REFS|), then:
   a. Trap.
-4. If $table(0).REFS[i] is not defined, then:
+5. If $table(z, 0).REFS[i] is not defined, then:
   a. Trap.
-5. Let ?(a) be $table(0).REFS[i].
-6. If (a ≥ |$funcinst()|), then:
+6. Let ?(a) be $table(z, 0).REFS[i].
+7. If (a ≥ |$funcinst(z)|), then:
   a. Trap.
-7. If ($type(x) is not $funcinst()[a].TYPE), then:
+8. If ($type(z, x) is not $funcinst(z)[a].TYPE), then:
   a. Trap.
-8. Execute the instruction (CALL_ADDR a).
+9. Execute the instruction (CALL_ADDR a).
 
 execution_of_CALL_ADDR a
-1. Assert: Due to validation, (a < |$funcinst()|).
-2. Let { TYPE: (t_1^k -> t_2^n); MODULE: mm; CODE: func; } be $funcinst()[a].
-3. Assert: Due to validation, there are at least k values on the top of the stack.
-4. Pop the values val^k from the stack.
-5. Assert: Due to validation, func is of the case FUNC.
-6. Let (FUNC x y_0 instr*) be func.
-7. Let (LOCAL t)* be y_0.
-8. Let f be { LOCALS: val^k ++ $default_(t)*; MODULE: mm; }.
-9. Let F be the activation of f with arity n.
-10. Enter F with label [FRAME_]:
+1. Let z be the current state.
+2. Assert: Due to validation, (a < |$funcinst(z)|).
+3. Let { TYPE: (t_1^k -> t_2^n); MODULE: mm; CODE: func; } be $funcinst(z)[a].
+4. Assert: Due to validation, there are at least k values on the top of the stack.
+5. Pop the values val^k from the stack.
+6. Assert: Due to validation, func is of the case FUNC.
+7. Let (FUNC x y_0 instr*) be func.
+8. Let (LOCAL t)* be y_0.
+9. Let f be { LOCALS: val^k ++ $default_(t)*; MODULE: mm; }.
+10. Let F be the activation of f with arity n.
+11. Enter F with label [FRAME_]:
   a. Let L be the label_n{[]}.
   b. Enter L with label instr* ++ [LABEL_]:
 
 execution_of_LOCAL.GET x
-1. Push the value $local(x) to the stack.
+1. Let z be the current state.
+2. Push the value $local(z, x) to the stack.
 
 execution_of_GLOBAL.GET x
-1. Push the value $global(x).VALUE to the stack.
+1. Let z be the current state.
+2. Push the value $global(z, x).VALUE to the stack.
 
 execution_of_LOAD valty_u0 ww_sx_u1? mo
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST i) from the stack.
-3. If ww_sx_u1? is not defined, then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST i) from the stack.
+4. If ww_sx_u1? is not defined, then:
   a. Let t be valty_u0.
-  b. If (((i + mo.OFFSET) + ($size(t) / 8)) > |$mem(0).BYTES|), then:
+  b. If (((i + mo.OFFSET) + ($size(t) / 8)) > |$mem(z, 0).BYTES|), then:
     1) Trap.
-  c. Let c be $inverse_of_bytes(t, $mem(0).BYTES[(i + mo.OFFSET) : ($size(t) / 8)]).
+  c. Let c be $inverse_of_bytes(t, $mem(z, 0).BYTES[(i + mo.OFFSET) : ($size(t) / 8)]).
   d. Push the value (t.CONST c) to the stack.
-4. If the type of valty_u0 is inn, then:
+5. If the type of valty_u0 is inn, then:
   a. If ww_sx_u1? is defined, then:
     1) Let ?(y_0) be ww_sx_u1?.
     2) Let (n, sx) be y_0.
-    3) If (((i + mo.OFFSET) + (n / 8)) > |$mem(0).BYTES|), then:
+    3) If (((i + mo.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
   b. Let inn be valty_u0.
   c. If ww_sx_u1? is defined, then:
     1) Let ?(y_0) be ww_sx_u1?.
     2) Let (n, sx) be y_0.
-    3) Let c be $inverse_of_ibytes(n, $mem(0).BYTES[(i + mo.OFFSET) : (n / 8)]).
+    3) Let c be $inverse_of_ibytes(n, $mem(z, 0).BYTES[(i + mo.OFFSET) : (n / 8)]).
     4) Push the value (inn.CONST $ext(n, $size(inn), sx, c)) to the stack.
 
 execution_of_MEMORY.SIZE
-1. Let ((n · 64) · $Ki()) be |$mem(0).BYTES|.
-2. Push the value (I32.CONST n) to the stack.
+1. Let z be the current state.
+2. Let ((n · 64) · $Ki()) be |$mem(z, 0).BYTES|.
+3. Push the value (I32.CONST n) to the stack.
 
 execution_of_LOCAL.SET x
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. Perform $with_local(x, val).
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value val from the stack.
+4. Perform $with_local(z, x, val).
 
 execution_of_GLOBAL.SET x
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. Perform $with_global(x, val).
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value val from the stack.
+4. Perform $with_global(z, x, val).
 
 execution_of_STORE valty_u1 ww_u2? mo
-1. Assert: Due to validation, a value of value type valty_u0 is on the top of the stack.
-2. Pop the value (valty_u0.CONST c) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i) from the stack.
-5. If ww_u2? is not defined, then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type valty_u0 is on the top of the stack.
+3. Pop the value (valty_u0.CONST c) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If ww_u2? is not defined, then:
   a. Let t be valty_u1.
-  b. If ((((i + mo.OFFSET) + ($size(t) / 8)) > |$mem(0).BYTES|) and (valty_u0 is t)), then:
+  b. If ((((i + mo.OFFSET) + ($size(t) / 8)) > |$mem(z, 0).BYTES|) and (valty_u0 is t)), then:
     1) Trap.
   c. If (valty_u0 is t), then:
     1) Let b* be $bytes(t, c).
-    2) Perform $with_mem(0, (i + mo.OFFSET), ($size(t) / 8), b*).
-6. Else:
+    2) Perform $with_mem(z, 0, (i + mo.OFFSET), ($size(t) / 8), b*).
+7. Else:
   a. Let ?(n) be ww_u2?.
   b. If the type of valty_u1 is inn, then:
     1) Let inn be valty_u1.
-    2) If ((((i + mo.OFFSET) + (n / 8)) > |$mem(0).BYTES|) and (valty_u0 is inn)), then:
+    2) If ((((i + mo.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|) and (valty_u0 is inn)), then:
       a) Trap.
     3) If (valty_u0 is inn), then:
       a) Let b* be $ibytes(n, $wrap($size(inn), n, c)).
-      b) Perform $with_mem(0, (i + mo.OFFSET), (n / 8), b*).
+      b) Perform $with_mem(z, 0, (i + mo.OFFSET), (n / 8), b*).
 
 execution_of_MEMORY.GROW
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Either:
-  a. Let mi be $growmemory($mem(0), n).
-  b. Push the value (I32.CONST (|$mem(0).BYTES| / (64 · $Ki()))) to the stack.
-  c. Perform $with_meminst(0, mi).
-4. Or:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Either:
+  a. Let mi be $growmemory($mem(z, 0), n).
+  b. Push the value (I32.CONST (|$mem(z, 0).BYTES| / (64 · $Ki()))) to the stack.
+  c. Perform $with_meminst(z, 0, mi).
+5. Or:
   a. Push the value (I32.CONST $invsigned(32, (- 1))) to the stack.
 
 eval_expr instr*
@@ -1191,14 +1180,15 @@ eval_expr instr*
 3. Return [val].
 
 execution_of_CALL_REF x
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value ref from the stack.
-3. If ref is of the case REF.NULL, then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value ref from the stack.
+4. If ref is of the case REF.NULL, then:
   a. Trap.
-4. Assert: Due to validation, ref is of the case REF.FUNC_ADDR.
-5. Let (REF.FUNC_ADDR a) be ref.
-6. If (a < |$funcinst()|), then:
-  a. Let fi be $funcinst()[a].
+5. Assert: Due to validation, ref is of the case REF.FUNC_ADDR.
+6. Let (REF.FUNC_ADDR a) be ref.
+7. If (a < |$funcinst(z)|), then:
+  a. Let fi be $funcinst(z)[a].
   b. Assert: Due to validation, fi.CODE is of the case FUNC.
   c. Let (FUNC y_0 y_1 instr*) be fi.CODE.
   d. Let (LOCAL t)* be y_1.
@@ -2500,102 +2490,83 @@ memsxv exter_u0*
 4. Let [externval] ++ xv* be exter_u0*.
 5. Return $memsxv(xv*).
 
-store
-1. Return.
+store (s, f)
+1. Return s.
 
-frame
-1. Let f be the current frame.
-2. Return f.
+frame (s, f)
+1. Return f.
 
-funcaddr
-1. Let f be the current frame.
-2. Return f.MODULE.FUNCS.
+funcaddr (s, f)
+1. Return f.MODULE.FUNCS.
 
-funcinst
+funcinst (s, f)
 1. Return s.FUNCS.
 
-globalinst
+globalinst (s, f)
 1. Return s.GLOBALS.
 
-tableinst
+tableinst (s, f)
 1. Return s.TABLES.
 
-meminst
+meminst (s, f)
 1. Return s.MEMS.
 
-eleminst
+eleminst (s, f)
 1. Return s.ELEMS.
 
-datainst
+datainst (s, f)
 1. Return s.DATAS.
 
-moduleinst
-1. Let f be the current frame.
-2. Return f.MODULE.
+moduleinst (s, f)
+1. Return f.MODULE.
 
-type x
-1. Let f be the current frame.
-2. Return f.MODULE.TYPES[x].
+type (s, f) x
+1. Return f.MODULE.TYPES[x].
 
-func x
-1. Let f be the current frame.
-2. Return s.FUNCS[f.MODULE.FUNCS[x]].
+func (s, f) x
+1. Return s.FUNCS[f.MODULE.FUNCS[x]].
 
-global x
-1. Let f be the current frame.
-2. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
+global (s, f) x
+1. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
 
-table x
-1. Let f be the current frame.
-2. Return s.TABLES[f.MODULE.TABLES[x]].
+table (s, f) x
+1. Return s.TABLES[f.MODULE.TABLES[x]].
 
-mem x
-1. Let f be the current frame.
-2. Return s.MEMS[f.MODULE.MEMS[x]].
+mem (s, f) x
+1. Return s.MEMS[f.MODULE.MEMS[x]].
 
-elem x
-1. Let f be the current frame.
-2. Return s.ELEMS[f.MODULE.ELEMS[x]].
+elem (s, f) x
+1. Return s.ELEMS[f.MODULE.ELEMS[x]].
 
-data x
-1. Let f be the current frame.
-2. Return s.DATAS[f.MODULE.DATAS[x]].
+data (s, f) x
+1. Return s.DATAS[f.MODULE.DATAS[x]].
 
-local x
-1. Let f be the current frame.
-2. Return f.LOCALS[x].
+local (s, f) x
+1. Return f.LOCALS[x].
 
-with_local x v
-1. Let f be the current frame.
-2. Replace f.LOCALS[x] with v.
+with_local (s, f) x v
+1. Return (s, f with .LOCALS[x] replaced by v).
 
-with_global x v
-1. Let f be the current frame.
-2. Replace s.GLOBALS[f.MODULE.GLOBALS[x]].VALUE with v.
+with_global (s, f) x v
+1. Return (s with .GLOBALS[f.MODULE.GLOBALS[x]].VALUE replaced by v, f).
 
-with_table x i r
-1. Let f be the current frame.
-2. Replace s.TABLES[f.MODULE.TABLES[x]].REFS[i] with r.
+with_table (s, f) x i r
+1. Return (s with .TABLES[f.MODULE.TABLES[x]].REFS[i] replaced by r, f).
 
-with_tableinst x ti
-1. Let f be the current frame.
-2. Replace s.TABLES[f.MODULE.TABLES[x]] with ti.
+with_tableinst (s, f) x ti
+1. Return (s with .TABLES[f.MODULE.TABLES[x]] replaced by ti, f).
 
-with_mem x i j b*
-1. Let f be the current frame.
-2. Replace s.MEMS[f.MODULE.MEMS[x]].BYTES[i : j] with b*.
+with_mem (s, f) x i j b*
+1. Return (s with .MEMS[f.MODULE.MEMS[x]].BYTES[i : j] replaced by b*, f).
 
-with_meminst x mi
-1. Let f be the current frame.
-2. Replace s.MEMS[f.MODULE.MEMS[x]] with mi.
+with_meminst (s, f) x mi
+1. Return (s with .MEMS[f.MODULE.MEMS[x]] replaced by mi, f).
 
-with_elem x r*
-1. Let f be the current frame.
-2. Replace s.ELEMS[f.MODULE.ELEMS[x]].REFS with r*.
+with_elem (s, f) x r*
+1. Return (s with .ELEMS[f.MODULE.ELEMS[x]].REFS replaced by r*, f).
 
-with_data x b*
-1. Let f be the current frame.
-2. Replace s.DATAS[f.MODULE.DATAS[x]].BYTES with b*.
+with_data (s, f) x b*
+1. Return (s with .DATAS[f.MODULE.DATAS[x]].BYTES replaced by b*, f).
 
 growtable ti n r
 1. Let { TYPE: ((i, j), rt); REFS: r'*; } be ti.
@@ -2611,17 +2582,18 @@ growmemory mi n
   a. Let mi' be { TYPE: (I8 (i', j)); BYTES: b* ++ 0^(n · (64 · $Ki())); }.
   b. Return mi'.
 
-blocktype block_u1
-1. If (block_u1 is (_RESULT ?())), then:
+blocktype z block_u1
+1. Let z be the current state.
+2. If (block_u1 is (_RESULT ?())), then:
   a. Return ([] -> []).
-2. If block_u1 is of the case _RESULT, then:
+3. If block_u1 is of the case _RESULT, then:
   a. Let (_RESULT y_0) be block_u1.
   b. If y_0 is defined, then:
     1) Let ?(t) be y_0.
     2) Return ([] -> [t]).
-3. Assert: Due to validation, block_u1 is of the case _IDX.
-4. Let (_IDX x) be block_u1.
-5. Return $type(x).
+4. Assert: Due to validation, block_u1 is of the case _IDX.
+5. Let (_IDX x) be block_u1.
+6. Return $type(z, x).
 
 funcs exter_u0*
 1. If (exter_u0* is []), then:
@@ -2663,98 +2635,86 @@ mems exter_u0*
 4. Let [externval] ++ externval'* be exter_u0*.
 5. Return $mems(externval'*).
 
-allocfunc mm func
+allocfunc s mm func
 1. Assert: Due to validation, func is of the case FUNC.
 2. Let (FUNC x local* expr) be func.
 3. Let fi be { TYPE: mm.TYPES[x]; MODULE: mm; CODE: func; }.
-4. Let a be |s.FUNCS|.
-5. Append fi to the s.FUNCS.
-6. Return a.
+4. Return (s with .FUNCS appended by [fi], |s.FUNCS|).
 
-allocfuncs mm func_u0*
+allocfuncs s mm func_u0*
 1. If (func_u0* is []), then:
-  a. Return [].
+  a. Return (s, []).
 2. Let [func] ++ func'* be func_u0*.
-3. Let fa be $allocfunc(mm, func).
-4. Let fa'* be $allocfuncs(mm, func'*).
-5. Return [fa] ++ fa'*.
+3. Let (s_1, fa) be $allocfunc(s, mm, func).
+4. Let (s_2, fa'*) be $allocfuncs(s_1, mm, func'*).
+5. Return (s_2, [fa] ++ fa'*).
 
-allocglobal globaltype val
+allocglobal s globaltype val
 1. Let gi be { TYPE: globaltype; VALUE: val; }.
-2. Let a be |s.GLOBALS|.
-3. Append gi to the s.GLOBALS.
-4. Return a.
+2. Return (s with .GLOBALS appended by [gi], |s.GLOBALS|).
 
-allocglobals globa_u0* val_u1*
+allocglobals s globa_u0* val_u1*
 1. If (globa_u0* is []), then:
   a. Assert: Due to validation, (val_u1* is []).
-  b. Return [].
+  b. Return (s, []).
 2. Else:
   a. Let [globaltype] ++ globaltype'* be globa_u0*.
   b. Assert: Due to validation, (|val_u1*| ≥ 1).
   c. Let [val] ++ val'* be val_u1*.
-  d. Let ga be $allocglobal(globaltype, val).
-  e. Let ga'* be $allocglobals(globaltype'*, val'*).
-  f. Return [ga] ++ ga'*.
+  d. Let (s_1, ga) be $allocglobal(s, globaltype, val).
+  e. Let (s_2, ga'*) be $allocglobals(s_1, globaltype'*, val'*).
+  f. Return (s_2, [ga] ++ ga'*).
 
-alloctable ((i, j), rt)
+alloctable s ((i, j), rt)
 1. Let ti be { TYPE: ((i, j), rt); REFS: (REF.NULL rt)^i; }.
-2. Let a be |s.TABLES|.
-3. Append ti to the s.TABLES.
-4. Return a.
+2. Return (s with .TABLES appended by [ti], |s.TABLES|).
 
-alloctables table_u0*
+alloctables s table_u0*
 1. If (table_u0* is []), then:
-  a. Return [].
+  a. Return (s, []).
 2. Let [tabletype] ++ tabletype'* be table_u0*.
-3. Let ta be $alloctable(tabletype).
-4. Let ta'* be $alloctables(tabletype'*).
-5. Return [ta] ++ ta'*.
+3. Let (s_1, ta) be $alloctable(s, tabletype).
+4. Let (s_2, ta'*) be $alloctables(s_1, tabletype'*).
+5. Return (s_2, [ta] ++ ta'*).
 
-allocmem (I8 (i, j))
+allocmem s (I8 (i, j))
 1. Let mi be { TYPE: (I8 (i, j)); BYTES: 0^(i · (64 · $Ki())); }.
-2. Let a be |s.MEMS|.
-3. Append mi to the s.MEMS.
-4. Return a.
+2. Return (s with .MEMS appended by [mi], |s.MEMS|).
 
-allocmems memty_u0*
+allocmems s memty_u0*
 1. If (memty_u0* is []), then:
-  a. Return [].
+  a. Return (s, []).
 2. Let [memtype] ++ memtype'* be memty_u0*.
-3. Let ma be $allocmem(memtype).
-4. Let ma'* be $allocmems(memtype'*).
-5. Return [ma] ++ ma'*.
+3. Let (s_1, ma) be $allocmem(s, memtype).
+4. Let (s_2, ma'*) be $allocmems(s_1, memtype'*).
+5. Return (s_2, [ma] ++ ma'*).
 
-allocelem rt ref*
+allocelem s rt ref*
 1. Let ei be { TYPE: rt; REFS: ref*; }.
-2. Let a be |s.ELEMS|.
-3. Append ei to the s.ELEMS.
-4. Return a.
+2. Return (s with .ELEMS appended by [ei], |s.ELEMS|).
 
-allocelems refty_u0* ref_u1*
+allocelems s refty_u0* ref_u1*
 1. If ((refty_u0* is []) and (ref_u1* is [])), then:
-  a. Return [].
+  a. Return (s, []).
 2. Assert: Due to validation, (|ref_u1*| ≥ 1).
 3. Let [ref*] ++ ref'** be ref_u1*.
 4. Assert: Due to validation, (|refty_u0*| ≥ 1).
 5. Let [rt] ++ rt'* be refty_u0*.
-6. Let ea be $allocelem(rt, ref*).
-7. Let ea'* be $allocelems(rt'*, ref'**).
-8. Return [ea] ++ ea'*.
+6. Let (s_1, ea) be $allocelem(s, rt, ref*).
+7. Let (s_2, ea'*) be $allocelems(s_2, rt'*, ref'**).
+8. Return (s_2, [ea] ++ ea'*).
 
-allocdata byte*
+allocdata s byte*
 1. Let di be { BYTES: byte*; }.
-2. Let a be |s.DATAS|.
-3. Append di to the s.DATAS.
-4. Return a.
+2. Return (s with .DATAS appended by [di], |s.DATAS|).
 
-allocdatas byte_u0*
+allocdatas s byte_u0*
 1. If (byte_u0* is []), then:
-  a. Return [].
+  a. Return (s, []).
 2. Let [byte*] ++ byte'** be byte_u0*.
-3. Let da be $allocdata(byte*).
-4. Let da'* be $allocdatas(byte'**).
-5. Return [da] ++ da'*.
+3. Let (s_1, da) be $allocdata(s, byte*).
+4. Let (s_2, da'*) be $allocdatas(s_1, byte'**).
+5. Return (s_2, [da] ++ da'*).
 
 instexport fa* ga* ta* ma* (EXPORT name exter_u0)
 1. If exter_u0 is of the case FUNC, then:
@@ -2770,7 +2730,7 @@ instexport fa* ga* ta* ma* (EXPORT name exter_u0)
 5. Let (MEM x) be exter_u0.
 6. Return { NAME: name; VALUE: (MEM ma*[x]); }.
 
-allocmodule module externval* val* ref**
+allocmodule s module externval* val* ref**
 1. Let fa_ex* be $funcs(externval*).
 2. Let ga_ex* be $globals(externval*).
 3. Let ma_ex* be $mems(externval*).
@@ -2791,19 +2751,19 @@ allocmodule module externval* val* ref**
 18. Let da* be (|s.DATAS| + i_data)^(i_data<n_data).
 19. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
 20. Let mm be { TYPES: ft*; FUNCS: fa_ex* ++ fa*; GLOBALS: ga_ex* ++ ga*; TABLES: ta_ex* ++ ta*; MEMS: ma_ex* ++ ma*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
-21. Let y_0 be $allocfuncs(mm, func^n_func).
+21. Let (s_1, y_0) be $allocfuncs(s, mm, func^n_func).
 22. Assert: Due to validation, (y_0 is fa*).
-23. Let y_0 be $allocglobals(globaltype^n_global, val*).
+23. Let (s_2, y_0) be $allocglobals(s_1, globaltype^n_global, val*).
 24. Assert: Due to validation, (y_0 is ga*).
-25. Let y_0 be $alloctables(tabletype^n_table).
+25. Let (s_3, y_0) be $alloctables(s_2, tabletype^n_table).
 26. Assert: Due to validation, (y_0 is ta*).
-27. Let y_0 be $allocmems(memtype^n_mem).
+27. Let (s_4, y_0) be $allocmems(s_3, memtype^n_mem).
 28. Assert: Due to validation, (y_0 is ma*).
-29. Let y_0 be $allocelems(rt^n_elem, ref**).
+29. Let (s_5, y_0) be $allocelems(s_4, rt^n_elem, ref**).
 30. Assert: Due to validation, (y_0 is ea*).
-31. Let y_0 be $allocdatas(byte*^n_data).
+31. Let (s_6, y_0) be $allocdatas(s_5, byte*^n_data).
 32. Assert: Due to validation, (y_0 is da*).
-33. Return mm.
+33. Return (s_6, mm).
 
 runelem (ELEM reftype expr* elemm_u0) i
 1. If (elemm_u0 is PASSIVE), then:
@@ -2824,40 +2784,41 @@ rundata (DATA byte* datam_u0) i
 5. Let n be |byte*|.
 6. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT i), (DATA.DROP i)].
 
-instantiate module externval*
-1. Assert: Due to validation, module is of the case MODULE.
-2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
-3. Let (TYPE functype)* be type*.
-4. Let n_D be |data*|.
-5. Let n_E be |elem*|.
-6. Let n_F be |func*|.
-7. Let (START x)? be start?.
-8. Let (GLOBAL globaltype expr_G)* be global*.
-9. Let (ELEM reftype expr_E* elemmode)* be elem*.
-10. Let instr_D* be $concat_($rundata(data*[j], j)^(j<n_D)).
-11. Let instr_E* be $concat_($runelem(elem*[i], i)^(i<n_E)).
-12. Let mm_init be { TYPES: functype*; FUNCS: $funcs(externval*) ++ (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externval*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
-13. Let f_init be { LOCALS: []; MODULE: mm_init; }.
-14. Let z be f_init.
-15. Push the activation of z to the stack.
-16. Let [val]* be $eval_expr(expr_G)*.
-17. Pop the activation of z from the stack.
-18. Push the activation of z to the stack.
-19. Let [ref]** be $eval_expr(expr_E)**.
-20. Pop the activation of z from the stack.
-21. Let mm be $allocmodule(module, externval*, val*, ref**).
-22. Let f be { LOCALS: []; MODULE: mm; }.
-23. Enter the activation of f with arity 0 with label [FRAME_]:
+instantiate s module externval*
+1. Let z be the current state.
+2. Assert: Due to validation, module is of the case MODULE.
+3. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
+4. Let (TYPE functype)* be type*.
+5. Let n_D be |data*|.
+6. Let n_E be |elem*|.
+7. Let n_F be |func*|.
+8. Let (START x)? be start?.
+9. Let (GLOBAL globaltype expr_G)* be global*.
+10. Let (ELEM reftype expr_E* elemmode)* be elem*.
+11. Let instr_D* be $concat_($rundata(data*[j], j)^(j<n_D)).
+12. Let instr_E* be $concat_($runelem(elem*[i], i)^(i<n_E)).
+13. Let mm_init be { TYPES: functype*; FUNCS: $funcs(externval*) ++ (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externval*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
+14. Let f_init be { LOCALS: []; MODULE: mm_init; }.
+15. Let z be (s, f_init).
+16. Push the activation of z to the stack.
+17. Let [val]* be $eval_expr(expr_G)*.
+18. Pop the activation of z from the stack.
+19. Push the activation of z to the stack.
+20. Let [ref]** be $eval_expr(expr_E)**.
+21. Pop the activation of z from the stack.
+22. Let (s', mm) be $allocmodule(s, module, externval*, val*, ref**).
+23. Let f be { LOCALS: []; MODULE: mm; }.
+24. Enter the activation of f with arity 0 with label [FRAME_]:
   a. Execute the sequence (instr_E*).
   b. Execute the sequence (instr_D*).
   c. If x is defined, then:
     1) Let ?(x_0) be x.
     2) Execute the instruction (CALL x_0).
-24. Return mm.
+25. Return (s', mm).
 
-invoke fa val^n
+invoke s fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
-2. Let (t_1^n -> t_2*) be $funcinst()[fa].TYPE.
+2. Let (t_1^n -> t_2*) be $funcinst((s, f))[fa].TYPE.
 3. Let k be |t_2*|.
 4. Enter the activation of f with arity k with label [FRAME_]:
   a. Push the values val^n to the stack.
@@ -3203,86 +3164,97 @@ execution_of_LOCAL.TEE x
 5. Execute the instruction (LOCAL.SET x).
 
 execution_of_BLOCK bt instr*
-1. Let (t_1^k -> t_2^n) be $blocktype(bt).
-2. Assert: Due to validation, there are at least k values on the top of the stack.
-3. Pop the values val^k from the stack.
-4. Let L be the label_n{[]}.
-5. Enter L with label instr* ++ [LABEL_]:
+1. Let z be the current state.
+2. Let (t_1^k -> t_2^n) be $blocktype(z, bt).
+3. Assert: Due to validation, there are at least k values on the top of the stack.
+4. Pop the values val^k from the stack.
+5. Let L be the label_n{[]}.
+6. Enter L with label instr* ++ [LABEL_]:
   a. Push the values val^k to the stack.
 
 execution_of_LOOP bt instr*
-1. Let (t_1^k -> t_2^n) be $blocktype(bt).
-2. Assert: Due to validation, there are at least k values on the top of the stack.
-3. Pop the values val^k from the stack.
-4. Let L be the label_k{[(LOOP bt instr*)]}.
-5. Enter L with label instr* ++ [LABEL_]:
+1. Let z be the current state.
+2. Let (t_1^k -> t_2^n) be $blocktype(z, bt).
+3. Assert: Due to validation, there are at least k values on the top of the stack.
+4. Pop the values val^k from the stack.
+5. Let L be the label_k{[(LOOP bt instr*)]}.
+6. Enter L with label instr* ++ [LABEL_]:
   a. Push the values val^k to the stack.
 
 execution_of_CALL x
-1. Assert: Due to validation, (x < |$funcaddr()|).
-2. Execute the instruction (CALL_ADDR $funcaddr()[x]).
+1. Let z be the current state.
+2. Assert: Due to validation, (x < |$funcaddr(z)|).
+3. Execute the instruction (CALL_ADDR $funcaddr(z)[x]).
 
 execution_of_CALL_INDIRECT x y
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST i) from the stack.
-3. If (i ≥ |$table(x).REFS|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST i) from the stack.
+4. If (i ≥ |$table(z, x).REFS|), then:
   a. Trap.
-4. If $table(x).REFS[i] is not of the case REF.FUNC_ADDR, then:
+5. If $table(z, x).REFS[i] is not of the case REF.FUNC_ADDR, then:
   a. Trap.
-5. Let (REF.FUNC_ADDR a) be $table(x).REFS[i].
-6. If (a ≥ |$funcinst()|), then:
+6. Let (REF.FUNC_ADDR a) be $table(z, x).REFS[i].
+7. If (a ≥ |$funcinst(z)|), then:
   a. Trap.
-7. If ($type(y) is not $funcinst()[a].TYPE), then:
+8. If ($type(z, y) is not $funcinst(z)[a].TYPE), then:
   a. Trap.
-8. Execute the instruction (CALL_ADDR a).
+9. Execute the instruction (CALL_ADDR a).
 
 execution_of_CALL_ADDR a
-1. Assert: Due to validation, (a < |$funcinst()|).
-2. Let { TYPE: (t_1^k -> t_2^n); MODULE: mm; CODE: func; } be $funcinst()[a].
-3. Assert: Due to validation, there are at least k values on the top of the stack.
-4. Pop the values val^k from the stack.
-5. Assert: Due to validation, func is of the case FUNC.
-6. Let (FUNC x y_0 instr*) be func.
-7. Let (LOCAL t)* be y_0.
-8. Let f be { LOCALS: val^k ++ $default_(t)*; MODULE: mm; }.
-9. Let F be the activation of f with arity n.
-10. Enter F with label [FRAME_]:
+1. Let z be the current state.
+2. Assert: Due to validation, (a < |$funcinst(z)|).
+3. Let { TYPE: (t_1^k -> t_2^n); MODULE: mm; CODE: func; } be $funcinst(z)[a].
+4. Assert: Due to validation, there are at least k values on the top of the stack.
+5. Pop the values val^k from the stack.
+6. Assert: Due to validation, func is of the case FUNC.
+7. Let (FUNC x y_0 instr*) be func.
+8. Let (LOCAL t)* be y_0.
+9. Let f be { LOCALS: val^k ++ $default_(t)*; MODULE: mm; }.
+10. Let F be the activation of f with arity n.
+11. Enter F with label [FRAME_]:
   a. Let L be the label_n{[]}.
   b. Enter L with label instr* ++ [LABEL_]:
 
 execution_of_REF.FUNC x
-1. Assert: Due to validation, (x < |$funcaddr()|).
-2. Push the value (REF.FUNC_ADDR $funcaddr()[x]) to the stack.
+1. Let z be the current state.
+2. Assert: Due to validation, (x < |$funcaddr(z)|).
+3. Push the value (REF.FUNC_ADDR $funcaddr(z)[x]) to the stack.
 
 execution_of_LOCAL.GET x
-1. Push the value $local(x) to the stack.
+1. Let z be the current state.
+2. Push the value $local(z, x) to the stack.
 
 execution_of_GLOBAL.GET x
-1. Push the value $global(x).VALUE to the stack.
+1. Let z be the current state.
+2. Push the value $global(z, x).VALUE to the stack.
 
 execution_of_TABLE.GET x
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST i) from the stack.
-3. If (i ≥ |$table(x).REFS|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST i) from the stack.
+4. If (i ≥ |$table(z, x).REFS|), then:
   a. Trap.
-4. Push the value $table(x).REFS[i] to the stack.
+5. Push the value $table(z, x).REFS[i] to the stack.
 
 execution_of_TABLE.SIZE x
-1. Let n be |$table(x).REFS|.
-2. Push the value (I32.CONST n) to the stack.
+1. Let z be the current state.
+2. Let n be |$table(z, x).REFS|.
+3. Push the value (I32.CONST n) to the stack.
 
 execution_of_TABLE.FILL x
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value val from the stack.
-5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-6. Pop the value (I32.CONST i) from the stack.
-7. If ((i + n) > |$table(x).REFS|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value is on the top of the stack.
+5. Pop the value val from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST i) from the stack.
+8. If ((i + n) > |$table(z, x).REFS|), then:
   a. Trap.
-8. If (n is 0), then:
+9. If (n is 0), then:
   a. Do nothing.
-9. Else:
+10. Else:
   a. Push the value (I32.CONST i) to the stack.
   b. Push the value val to the stack.
   c. Execute the instruction (TABLE.SET x).
@@ -3292,19 +3264,20 @@ execution_of_TABLE.FILL x
   g. Execute the instruction (TABLE.FILL x).
 
 execution_of_TABLE.COPY x y
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i) from the stack.
-5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-6. Pop the value (I32.CONST j) from the stack.
-7. If ((i + n) > |$table(y).REFS|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST j) from the stack.
+8. If ((i + n) > |$table(z, y).REFS|), then:
   a. Trap.
-8. If ((j + n) > |$table(x).REFS|), then:
+9. If ((j + n) > |$table(z, x).REFS|), then:
   a. Trap.
-9. If (n is 0), then:
+10. If (n is 0), then:
   a. Do nothing.
-10. Else:
+11. Else:
   a. If (j ≤ i), then:
     1) Push the value (I32.CONST j) to the stack.
     2) Push the value (I32.CONST i) to the stack.
@@ -3323,21 +3296,22 @@ execution_of_TABLE.COPY x y
   d. Execute the instruction (TABLE.COPY x y).
 
 execution_of_TABLE.INIT x y
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i) from the stack.
-5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-6. Pop the value (I32.CONST j) from the stack.
-7. If ((i + n) > |$elem(y).REFS|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST j) from the stack.
+8. If ((i + n) > |$elem(z, y).REFS|), then:
   a. Trap.
-8. If ((j + n) > |$table(x).REFS|), then:
+9. If ((j + n) > |$table(z, x).REFS|), then:
   a. Trap.
-9. If (n is 0), then:
+10. If (n is 0), then:
   a. Do nothing.
-10. Else if (i < |$elem(y).REFS|), then:
+11. Else if (i < |$elem(z, y).REFS|), then:
   a. Push the value (I32.CONST j) to the stack.
-  b. Push the value $elem(y).REFS[i] to the stack.
+  b. Push the value $elem(z, y).REFS[i] to the stack.
   c. Execute the instruction (TABLE.SET x).
   d. Push the value (I32.CONST (j + 1)) to the stack.
   e. Push the value (I32.CONST (i + 1)) to the stack.
@@ -3345,94 +3319,99 @@ execution_of_TABLE.INIT x y
   g. Execute the instruction (TABLE.INIT x y).
 
 execution_of_LOAD numty_u0 ww_sx_u1? mo
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST i) from the stack.
-3. If ww_sx_u1? is not defined, then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST i) from the stack.
+4. If ww_sx_u1? is not defined, then:
   a. Let nt be numty_u0.
-  b. If (((i + mo.OFFSET) + ($size(nt) / 8)) > |$mem(0).BYTES|), then:
+  b. If (((i + mo.OFFSET) + ($size(nt) / 8)) > |$mem(z, 0).BYTES|), then:
     1) Trap.
-  c. Let c be $inverse_of_nbytes(nt, $mem(0).BYTES[(i + mo.OFFSET) : ($size(nt) / 8)]).
+  c. Let c be $inverse_of_nbytes(nt, $mem(z, 0).BYTES[(i + mo.OFFSET) : ($size(nt) / 8)]).
   d. Push the value (nt.CONST c) to the stack.
-4. If the type of numty_u0 is inn, then:
+5. If the type of numty_u0 is inn, then:
   a. If ww_sx_u1? is defined, then:
     1) Let ?(y_0) be ww_sx_u1?.
     2) Let (n, sx) be y_0.
-    3) If (((i + mo.OFFSET) + (n / 8)) > |$mem(0).BYTES|), then:
+    3) If (((i + mo.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
   b. Let inn be numty_u0.
   c. If ww_sx_u1? is defined, then:
     1) Let ?(y_0) be ww_sx_u1?.
     2) Let (n, sx) be y_0.
-    3) Let c be $inverse_of_ibytes(n, $mem(0).BYTES[(i + mo.OFFSET) : (n / 8)]).
+    3) Let c be $inverse_of_ibytes(n, $mem(z, 0).BYTES[(i + mo.OFFSET) : (n / 8)]).
     4) Push the value (inn.CONST $ext(n, $size(inn), sx, c)) to the stack.
 
 execution_of_VLOAD vload_u0? mo
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST i) from the stack.
-3. If ((((i + mo.OFFSET) + ($size(V128) / 8)) > |$mem(0).BYTES|) and vload_u0? is not defined), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST i) from the stack.
+4. If ((((i + mo.OFFSET) + ($size(V128) / 8)) > |$mem(z, 0).BYTES|) and vload_u0? is not defined), then:
   a. Trap.
-4. If vload_u0? is not defined, then:
-  a. Let c be $inverse_of_vbytes(V128, $mem(0).BYTES[(i + mo.OFFSET) : ($size(V128) / 8)]).
+5. If vload_u0? is not defined, then:
+  a. Let c be $inverse_of_vbytes(V128, $mem(z, 0).BYTES[(i + mo.OFFSET) : ($size(V128) / 8)]).
   b. Push the value (V128.CONST c) to the stack.
-5. Else:
+6. Else:
   a. Let ?(y_0) be vload_u0?.
   b. If y_0 is of the case SHAPE, then:
     1) Let (SHAPE M N sx) be y_0.
-    2) If (((i + mo.OFFSET) + ((M · N) / 8)) > |$mem(0).BYTES|), then:
+    2) If (((i + mo.OFFSET) + ((M · N) / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
     3) If the type of $inverse_of_lsize((M · 2)) is imm, then:
       a) Let imm be $inverse_of_lsize((M · 2)).
-      b) Let j^N be $inverse_of_ibytes(M, $mem(0).BYTES[((i + mo.OFFSET) + ((k · M) / 8)) : (M / 8)])^(k<N).
+      b) Let j^N be $inverse_of_ibytes(M, $mem(z, 0).BYTES[((i + mo.OFFSET) + ((k · M) / 8)) : (M / 8)])^(k<N).
       c) Let c be $invlanes_((imm X N), $ext(M, $lsize(imm), sx, j)^N).
       d) Push the value (V128.CONST c) to the stack.
   c. If y_0 is of the case SPLAT, then:
     1) Let (SPLAT N) be y_0.
-    2) If (((i + mo.OFFSET) + (N / 8)) > |$mem(0).BYTES|), then:
+    2) If (((i + mo.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
     3) Let M be (128 / N).
     4) If the type of $inverse_of_lsize(N) is imm, then:
       a) Let imm be $inverse_of_lsize(N).
-      b) Let j be $inverse_of_ibytes(N, $mem(0).BYTES[(i + mo.OFFSET) : (N / 8)]).
+      b) Let j be $inverse_of_ibytes(N, $mem(z, 0).BYTES[(i + mo.OFFSET) : (N / 8)]).
       c) Let c be $invlanes_((imm X M), j^M).
       d) Push the value (V128.CONST c) to the stack.
   d. If y_0 is of the case ZERO, then:
     1) Let (ZERO N) be y_0.
-    2) If (((i + mo.OFFSET) + (N / 8)) > |$mem(0).BYTES|), then:
+    2) If (((i + mo.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
-    3) Let j be $inverse_of_ibytes(N, $mem(0).BYTES[(i + mo.OFFSET) : (N / 8)]).
+    3) Let j be $inverse_of_ibytes(N, $mem(z, 0).BYTES[(i + mo.OFFSET) : (N / 8)]).
     4) Let c be $ext(N, 128, U, j).
     5) Push the value (V128.CONST c) to the stack.
 
 execution_of_VLOAD_LANE N mo j
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i) from the stack.
-5. If (((i + mo.OFFSET) + (N / 8)) > |$mem(0).BYTES|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value (V128.CONST c_1) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If (((i + mo.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
   a. Trap.
-6. Let M be (128 / N).
-7. If the type of $inverse_of_lsize(N) is imm, then:
+7. Let M be (128 / N).
+8. If the type of $inverse_of_lsize(N) is imm, then:
   a. Let imm be $inverse_of_lsize(N).
-  b. Let k be $inverse_of_ibytes(N, $mem(0).BYTES[(i + mo.OFFSET) : (N / 8)]).
+  b. Let k be $inverse_of_ibytes(N, $mem(z, 0).BYTES[(i + mo.OFFSET) : (N / 8)]).
   c. Let c be $invlanes_((imm X M), $lanes_((imm X M), c_1) with [j] replaced by k).
   d. Push the value (V128.CONST c) to the stack.
 
 execution_of_MEMORY.SIZE
-1. Let ((n · 64) · $Ki()) be |$mem(0).BYTES|.
-2. Push the value (I32.CONST n) to the stack.
+1. Let z be the current state.
+2. Let ((n · 64) · $Ki()) be |$mem(z, 0).BYTES|.
+3. Push the value (I32.CONST n) to the stack.
 
 execution_of_MEMORY.FILL
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value val from the stack.
-5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-6. Pop the value (I32.CONST i) from the stack.
-7. If ((i + n) > |$mem(0).BYTES|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value is on the top of the stack.
+5. Pop the value val from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST i) from the stack.
+8. If ((i + n) > |$mem(z, 0).BYTES|), then:
   a. Trap.
-8. If (n is 0), then:
+9. If (n is 0), then:
   a. Do nothing.
-9. Else:
+10. Else:
   a. Push the value (I32.CONST i) to the stack.
   b. Push the value val to the stack.
   c. Execute the instruction (STORE I32 ?(8) $memop0()).
@@ -3442,19 +3421,20 @@ execution_of_MEMORY.FILL
   g. Execute the instruction MEMORY.FILL.
 
 execution_of_MEMORY.COPY
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i) from the stack.
-5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-6. Pop the value (I32.CONST j) from the stack.
-7. If ((i + n) > |$mem(0).BYTES|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST j) from the stack.
+8. If ((i + n) > |$mem(z, 0).BYTES|), then:
   a. Trap.
-8. If ((j + n) > |$mem(0).BYTES|), then:
+9. If ((j + n) > |$mem(z, 0).BYTES|), then:
   a. Trap.
-9. If (n is 0), then:
+10. If (n is 0), then:
   a. Do nothing.
-10. Else:
+11. Else:
   a. If (j ≤ i), then:
     1) Push the value (I32.CONST j) to the stack.
     2) Push the value (I32.CONST i) to the stack.
@@ -3473,21 +3453,22 @@ execution_of_MEMORY.COPY
   d. Execute the instruction MEMORY.COPY.
 
 execution_of_MEMORY.INIT x
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i) from the stack.
-5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-6. Pop the value (I32.CONST j) from the stack.
-7. If ((i + n) > |$data(x).BYTES|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST j) from the stack.
+8. If ((i + n) > |$data(z, x).BYTES|), then:
   a. Trap.
-8. If ((j + n) > |$mem(0).BYTES|), then:
+9. If ((j + n) > |$mem(z, 0).BYTES|), then:
   a. Trap.
-9. If (n is 0), then:
+10. If (n is 0), then:
   a. Do nothing.
-10. Else if (i < |$data(x).BYTES|), then:
+11. Else if (i < |$data(z, x).BYTES|), then:
   a. Push the value (I32.CONST j) to the stack.
-  b. Push the value (I32.CONST $data(x).BYTES[i]) to the stack.
+  b. Push the value (I32.CONST $data(z, x).BYTES[i]) to the stack.
   c. Execute the instruction (STORE I32 ?(8) $memop0()).
   d. Push the value (I32.CONST (j + 1)) to the stack.
   e. Push the value (I32.CONST (i + 1)) to the stack.
@@ -3495,97 +3476,107 @@ execution_of_MEMORY.INIT x
   g. Execute the instruction (MEMORY.INIT x).
 
 execution_of_LOCAL.SET x
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. Perform $with_local(x, val).
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value val from the stack.
+4. Perform $with_local(z, x, val).
 
 execution_of_GLOBAL.SET x
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. Perform $with_global(x, val).
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value val from the stack.
+4. Perform $with_global(z, x, val).
 
 execution_of_TABLE.SET x
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value ref from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i) from the stack.
-5. If (i ≥ |$table(x).REFS|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value ref from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If (i ≥ |$table(z, x).REFS|), then:
   a. Trap.
-6. Perform $with_table(x, i, ref).
+7. Perform $with_table(z, x, i, ref).
 
 execution_of_TABLE.GROW x
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value ref from the stack.
-5. Either:
-  a. Let ti be $growtable($table(x), n, ref).
-  b. Push the value (I32.CONST |$table(x).REFS|) to the stack.
-  c. Perform $with_tableinst(x, ti).
-6. Or:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value is on the top of the stack.
+5. Pop the value ref from the stack.
+6. Either:
+  a. Let ti be $growtable($table(z, x), n, ref).
+  b. Push the value (I32.CONST |$table(z, x).REFS|) to the stack.
+  c. Perform $with_tableinst(z, x, ti).
+7. Or:
   a. Push the value (I32.CONST $invsigned(32, (- 1))) to the stack.
 
 execution_of_ELEM.DROP x
-1. Perform $with_elem(x, []).
+1. Let z be the current state.
+2. Perform $with_elem(z, x, []).
 
 execution_of_STORE numty_u1 ww_u2? mo
-1. Assert: Due to validation, a value of value type numty_u0 is on the top of the stack.
-2. Pop the value (numty_u0.CONST c) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i) from the stack.
-5. If ww_u2? is not defined, then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type numty_u0 is on the top of the stack.
+3. Pop the value (numty_u0.CONST c) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If ww_u2? is not defined, then:
   a. Let nt be numty_u1.
-  b. If ((((i + mo.OFFSET) + ($size(nt) / 8)) > |$mem(0).BYTES|) and (numty_u0 is nt)), then:
+  b. If ((((i + mo.OFFSET) + ($size(nt) / 8)) > |$mem(z, 0).BYTES|) and (numty_u0 is nt)), then:
     1) Trap.
   c. If (numty_u0 is nt), then:
     1) Let b* be $nbytes(nt, c).
-    2) Perform $with_mem(0, (i + mo.OFFSET), ($size(nt) / 8), b*).
-6. Else:
+    2) Perform $with_mem(z, 0, (i + mo.OFFSET), ($size(nt) / 8), b*).
+7. Else:
   a. Let ?(n) be ww_u2?.
   b. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
-    2) If ((((i + mo.OFFSET) + (n / 8)) > |$mem(0).BYTES|) and (numty_u0 is inn)), then:
+    2) If ((((i + mo.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|) and (numty_u0 is inn)), then:
       a) Trap.
     3) If (numty_u0 is inn), then:
       a) Let b* be $ibytes(n, $wrap($size(inn), n, c)).
-      b) Perform $with_mem(0, (i + mo.OFFSET), (n / 8), b*).
+      b) Perform $with_mem(z, 0, (i + mo.OFFSET), (n / 8), b*).
 
 execution_of_VSTORE mo
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (V128.CONST c) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i) from the stack.
-5. If (((i + mo.OFFSET) + ($size(V128) / 8)) > |$mem(0).BYTES|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value (V128.CONST c) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If (((i + mo.OFFSET) + ($size(V128) / 8)) > |$mem(z, 0).BYTES|), then:
   a. Trap.
-6. Let b* be $vbytes(V128, c).
-7. Perform $with_mem(0, (i + mo.OFFSET), ($size(V128) / 8), b*).
+7. Let b* be $vbytes(V128, c).
+8. Perform $with_mem(z, 0, (i + mo.OFFSET), ($size(V128) / 8), b*).
 
 execution_of_VSTORE_LANE N mo j
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (V128.CONST c) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i) from the stack.
-5. If (((i + mo.OFFSET) + N) > |$mem(0).BYTES|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value (V128.CONST c) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If (((i + mo.OFFSET) + N) > |$mem(z, 0).BYTES|), then:
   a. Trap.
-6. Let M be (128 / N).
-7. If the type of $inverse_of_lsize(N) is imm, then:
+7. Let M be (128 / N).
+8. If the type of $inverse_of_lsize(N) is imm, then:
   a. Let imm be $inverse_of_lsize(N).
   b. If (j < |$lanes_((imm X M), c)|), then:
     1) Let b* be $ibytes(N, $lanes_((imm X M), c)[j]).
-    2) Perform $with_mem(0, (i + mo.OFFSET), (N / 8), b*).
+    2) Perform $with_mem(z, 0, (i + mo.OFFSET), (N / 8), b*).
 
 execution_of_MEMORY.GROW
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Either:
-  a. Let mi be $growmemory($mem(0), n).
-  b. Push the value (I32.CONST (|$mem(0).BYTES| / (64 · $Ki()))) to the stack.
-  c. Perform $with_meminst(0, mi).
-4. Or:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Either:
+  a. Let mi be $growmemory($mem(z, 0), n).
+  b. Push the value (I32.CONST (|$mem(z, 0).BYTES| / (64 · $Ki()))) to the stack.
+  c. Perform $with_meminst(z, 0, mi).
+5. Or:
   a. Push the value (I32.CONST $invsigned(32, (- 1))) to the stack.
 
 execution_of_DATA.DROP x
-1. Perform $with_data(x, []).
+1. Let z be the current state.
+2. Perform $with_data(z, x, []).
 
 eval_expr instr*
 1. Execute the sequence (instr*).
@@ -3593,14 +3584,15 @@ eval_expr instr*
 3. Return [val].
 
 execution_of_CALL_REF x
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value ref from the stack.
-3. If ref is of the case REF.NULL, then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value ref from the stack.
+4. If ref is of the case REF.NULL, then:
   a. Trap.
-4. Assert: Due to validation, ref is of the case REF.FUNC_ADDR.
-5. Let (REF.FUNC_ADDR a) be ref.
-6. If (a < |$funcinst()|), then:
-  a. Let fi be $funcinst()[a].
+5. Assert: Due to validation, ref is of the case REF.FUNC_ADDR.
+6. Let (REF.FUNC_ADDR a) be ref.
+7. If (a < |$funcinst(z)|), then:
+  a. Let fi be $funcinst(z)[a].
   b. Assert: Due to validation, fi.CODE is of the case FUNC.
   c. Let (FUNC y_0 y_1 instr*) be fi.CODE.
   d. Let (LOCAL t)* be y_1.
@@ -5398,122 +5390,101 @@ memsxv exter_u0*
 4. Let [externval] ++ xv* be exter_u0*.
 5. Return $memsxv(xv*).
 
-store
-1. Return.
+store (s, f)
+1. Return s.
 
-frame
-1. Let f be the current frame.
-2. Return f.
+frame (s, f)
+1. Return f.
 
-funcaddr
-1. Let f be the current frame.
-2. Return f.MODULE.FUNCS.
+funcaddr (s, f)
+1. Return f.MODULE.FUNCS.
 
-funcinst
+funcinst (s, f)
 1. Return s.FUNCS.
 
-globalinst
+globalinst (s, f)
 1. Return s.GLOBALS.
 
-tableinst
+tableinst (s, f)
 1. Return s.TABLES.
 
-meminst
+meminst (s, f)
 1. Return s.MEMS.
 
-eleminst
+eleminst (s, f)
 1. Return s.ELEMS.
 
-datainst
+datainst (s, f)
 1. Return s.DATAS.
 
-structinst
+structinst (s, f)
 1. Return s.STRUCTS.
 
-arrayinst
+arrayinst (s, f)
 1. Return s.ARRAYS.
 
-moduleinst
-1. Let f be the current frame.
-2. Return f.MODULE.
+moduleinst (s, f)
+1. Return f.MODULE.
 
-type x
-1. Let f be the current frame.
-2. Return f.MODULE.TYPES[x].
+type (s, f) x
+1. Return f.MODULE.TYPES[x].
 
-func x
-1. Let f be the current frame.
-2. Return s.FUNCS[f.MODULE.FUNCS[x]].
+func (s, f) x
+1. Return s.FUNCS[f.MODULE.FUNCS[x]].
 
-global x
-1. Let f be the current frame.
-2. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
+global (s, f) x
+1. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
 
-table x
-1. Let f be the current frame.
-2. Return s.TABLES[f.MODULE.TABLES[x]].
+table (s, f) x
+1. Return s.TABLES[f.MODULE.TABLES[x]].
 
-mem x
-1. Let f be the current frame.
-2. Return s.MEMS[f.MODULE.MEMS[x]].
+mem (s, f) x
+1. Return s.MEMS[f.MODULE.MEMS[x]].
 
-elem x
-1. Let f be the current frame.
-2. Return s.ELEMS[f.MODULE.ELEMS[x]].
+elem (s, f) x
+1. Return s.ELEMS[f.MODULE.ELEMS[x]].
 
-data x
-1. Let f be the current frame.
-2. Return s.DATAS[f.MODULE.DATAS[x]].
+data (s, f) x
+1. Return s.DATAS[f.MODULE.DATAS[x]].
 
-local x
-1. Let f be the current frame.
-2. Return f.LOCALS[x].
+local (s, f) x
+1. Return f.LOCALS[x].
 
-with_local x v
-1. Let f be the current frame.
-2. Replace f.LOCALS[x] with ?(v).
+with_local (s, f) x v
+1. Return (s, f with .LOCALS[x] replaced by ?(v)).
 
-with_global x v
-1. Let f be the current frame.
-2. Replace s.GLOBALS[f.MODULE.GLOBALS[x]].VALUE with v.
+with_global (s, f) x v
+1. Return (s with .GLOBALS[f.MODULE.GLOBALS[x]].VALUE replaced by v, f).
 
-with_table x i r
-1. Let f be the current frame.
-2. Replace s.TABLES[f.MODULE.TABLES[x]].REFS[i] with r.
+with_table (s, f) x i r
+1. Return (s with .TABLES[f.MODULE.TABLES[x]].REFS[i] replaced by r, f).
 
-with_tableinst x ti
-1. Let f be the current frame.
-2. Replace s.TABLES[f.MODULE.TABLES[x]] with ti.
+with_tableinst (s, f) x ti
+1. Return (s with .TABLES[f.MODULE.TABLES[x]] replaced by ti, f).
 
-with_mem x i j b*
-1. Let f be the current frame.
-2. Replace s.MEMS[f.MODULE.MEMS[x]].BYTES[i : j] with b*.
+with_mem (s, f) x i j b*
+1. Return (s with .MEMS[f.MODULE.MEMS[x]].BYTES[i : j] replaced by b*, f).
 
-with_meminst x mi
-1. Let f be the current frame.
-2. Replace s.MEMS[f.MODULE.MEMS[x]] with mi.
+with_meminst (s, f) x mi
+1. Return (s with .MEMS[f.MODULE.MEMS[x]] replaced by mi, f).
 
-with_elem x r*
-1. Let f be the current frame.
-2. Replace s.ELEMS[f.MODULE.ELEMS[x]].REFS with r*.
+with_elem (s, f) x r*
+1. Return (s with .ELEMS[f.MODULE.ELEMS[x]].REFS replaced by r*, f).
 
-with_data x b*
-1. Let f be the current frame.
-2. Replace s.DATAS[f.MODULE.DATAS[x]].BYTES with b*.
+with_data (s, f) x b*
+1. Return (s with .DATAS[f.MODULE.DATAS[x]].BYTES replaced by b*, f).
 
-with_struct a i fv
-1. Replace s.STRUCTS[a].FIELDS[i] with fv.
+with_struct (s, f) a i fv
+1. Return (s with .STRUCTS[a].FIELDS[i] replaced by fv, f).
 
-with_array a i fv
-1. Replace s.ARRAYS[a].FIELDS[i] with fv.
+with_array (s, f) a i fv
+1. Return (s with .ARRAYS[a].FIELDS[i] replaced by fv, f).
 
-ext_structinst si*
-1. Let f be the current frame.
-2. Return (s with .STRUCTS appended by si*, f).
+ext_structinst (s, f) si*
+1. Return (s with .STRUCTS appended by si*, f).
 
-ext_arrayinst ai*
-1. Let f be the current frame.
-2. Return (s with .ARRAYS appended by ai*, f).
+ext_arrayinst (s, f) ai*
+1. Return (s with .ARRAYS appended by ai*, f).
 
 growtable ti n r
 1. Let { TYPE: ((i, j), rt); REFS: r'*; } be ti.
@@ -5582,19 +5553,20 @@ in_numtype nt numty_u0*
 3. Let [nt_1] ++ nt'* be numty_u0*.
 4. Return ((nt is nt_1) or $in_numtype(nt, nt'*)).
 
-blocktype block_u1
-1. If (block_u1 is (_RESULT ?())), then:
+blocktype z block_u1
+1. Let z be the current state.
+2. If (block_u1 is (_RESULT ?())), then:
   a. Return ([] -> []).
-2. If block_u1 is of the case _RESULT, then:
+3. If block_u1 is of the case _RESULT, then:
   a. Let (_RESULT y_0) be block_u1.
   b. If y_0 is defined, then:
     1) Let ?(t) be y_0.
     2) Return ([] -> [t]).
-3. Assert: Due to validation, block_u1 is of the case _IDX.
-4. Let (_IDX x) be block_u1.
-5. Assert: Due to validation, $expanddt($type(x)) is of the case FUNC.
-6. Let (FUNC ft) be $expanddt($type(x)).
-7. Return ft.
+4. Assert: Due to validation, block_u1 is of the case _IDX.
+5. Let (_IDX x) be block_u1.
+6. Assert: Due to validation, $expanddt($type(z, x)) is of the case FUNC.
+7. Let (FUNC ft) be $expanddt($type(z, x)).
+8. Return ft.
 
 alloctypes type_u0*
 1. If (type_u0* is []), then:
@@ -5607,101 +5579,89 @@ alloctypes type_u0*
 7. Let deftype* be $subst_all_deftypes($rolldt(x, rectype), deftype'*).
 8. Return deftype'* ++ deftype*.
 
-allocfunc mm func
+allocfunc s mm func
 1. Assert: Due to validation, func is of the case FUNC.
 2. Let (FUNC x local* expr) be func.
 3. Let fi be { TYPE: mm.TYPES[x]; MODULE: mm; CODE: func; }.
-4. Let a be |s.FUNCS|.
-5. Append fi to the s.FUNCS.
-6. Return a.
+4. Return (s with .FUNCS appended by [fi], |s.FUNCS|).
 
-allocfuncs mm func_u0*
+allocfuncs s mm func_u0*
 1. If (func_u0* is []), then:
-  a. Return [].
+  a. Return (s, []).
 2. Let [func] ++ func'* be func_u0*.
-3. Let fa be $allocfunc(mm, func).
-4. Let fa'* be $allocfuncs(mm, func'*).
-5. Return [fa] ++ fa'*.
+3. Let (s_1, fa) be $allocfunc(s, mm, func).
+4. Let (s_2, fa'*) be $allocfuncs(s_1, mm, func'*).
+5. Return (s_2, [fa] ++ fa'*).
 
-allocglobal globaltype val
+allocglobal s globaltype val
 1. Let gi be { TYPE: globaltype; VALUE: val; }.
-2. Let a be |s.GLOBALS|.
-3. Append gi to the s.GLOBALS.
-4. Return a.
+2. Return (s with .GLOBALS appended by [gi], |s.GLOBALS|).
 
-allocglobals globa_u0* val_u1*
+allocglobals s globa_u0* val_u1*
 1. If (globa_u0* is []), then:
   a. Assert: Due to validation, (val_u1* is []).
-  b. Return [].
+  b. Return (s, []).
 2. Else:
   a. Let [globaltype] ++ globaltype'* be globa_u0*.
   b. Assert: Due to validation, (|val_u1*| ≥ 1).
   c. Let [val] ++ val'* be val_u1*.
-  d. Let ga be $allocglobal(globaltype, val).
-  e. Let ga'* be $allocglobals(globaltype'*, val'*).
-  f. Return [ga] ++ ga'*.
+  d. Let (s_1, ga) be $allocglobal(s, globaltype, val).
+  e. Let (s_2, ga'*) be $allocglobals(s_1, globaltype'*, val'*).
+  f. Return (s_2, [ga] ++ ga'*).
 
-alloctable ((i, j), rt) ref
+alloctable s ((i, j), rt) ref
 1. Let ti be { TYPE: ((i, j), rt); REFS: ref^i; }.
-2. Let a be |s.TABLES|.
-3. Append ti to the s.TABLES.
-4. Return a.
+2. Return (s with .TABLES appended by [ti], |s.TABLES|).
 
-alloctables table_u0* ref_u1*
+alloctables s table_u0* ref_u1*
 1. If ((table_u0* is []) and (ref_u1* is [])), then:
-  a. Return [].
+  a. Return (s, []).
 2. Assert: Due to validation, (|ref_u1*| ≥ 1).
 3. Let [ref] ++ ref'* be ref_u1*.
 4. Assert: Due to validation, (|table_u0*| ≥ 1).
 5. Let [tabletype] ++ tabletype'* be table_u0*.
-6. Let ta be $alloctable(tabletype, ref).
-7. Let ta'* be $alloctables(tabletype'*, ref'*).
-8. Return [ta] ++ ta'*.
+6. Let (s_1, ta) be $alloctable(s, tabletype, ref).
+7. Let (s_2, ta'*) be $alloctables(s_1, tabletype'*, ref'*).
+8. Return (s_2, [ta] ++ ta'*).
 
-allocmem (I8 (i, j))
+allocmem s (I8 (i, j))
 1. Let mi be { TYPE: (I8 (i, j)); BYTES: 0^(i · (64 · $Ki())); }.
-2. Let a be |s.MEMS|.
-3. Append mi to the s.MEMS.
-4. Return a.
+2. Return (s with .MEMS appended by [mi], |s.MEMS|).
 
-allocmems memty_u0*
+allocmems s memty_u0*
 1. If (memty_u0* is []), then:
-  a. Return [].
+  a. Return (s, []).
 2. Let [memtype] ++ memtype'* be memty_u0*.
-3. Let ma be $allocmem(memtype).
-4. Let ma'* be $allocmems(memtype'*).
-5. Return [ma] ++ ma'*.
+3. Let (s_1, ma) be $allocmem(s, memtype).
+4. Let (s_2, ma'*) be $allocmems(s_1, memtype'*).
+5. Return (s_2, [ma] ++ ma'*).
 
-allocelem rt ref*
+allocelem s rt ref*
 1. Let ei be { TYPE: rt; REFS: ref*; }.
-2. Let a be |s.ELEMS|.
-3. Append ei to the s.ELEMS.
-4. Return a.
+2. Return (s with .ELEMS appended by [ei], |s.ELEMS|).
 
-allocelems refty_u0* ref_u1*
+allocelems s refty_u0* ref_u1*
 1. If ((refty_u0* is []) and (ref_u1* is [])), then:
-  a. Return [].
+  a. Return (s, []).
 2. Assert: Due to validation, (|ref_u1*| ≥ 1).
 3. Let [ref*] ++ ref'** be ref_u1*.
 4. Assert: Due to validation, (|refty_u0*| ≥ 1).
 5. Let [rt] ++ rt'* be refty_u0*.
-6. Let ea be $allocelem(rt, ref*).
-7. Let ea'* be $allocelems(rt'*, ref'**).
-8. Return [ea] ++ ea'*.
+6. Let (s_1, ea) be $allocelem(s, rt, ref*).
+7. Let (s_2, ea'*) be $allocelems(s_2, rt'*, ref'**).
+8. Return (s_2, [ea] ++ ea'*).
 
-allocdata byte*
+allocdata s byte*
 1. Let di be { BYTES: byte*; }.
-2. Let a be |s.DATAS|.
-3. Append di to the s.DATAS.
-4. Return a.
+2. Return (s with .DATAS appended by [di], |s.DATAS|).
 
-allocdatas byte_u0*
+allocdatas s byte_u0*
 1. If (byte_u0* is []), then:
-  a. Return [].
+  a. Return (s, []).
 2. Let [byte*] ++ byte'** be byte_u0*.
-3. Let da be $allocdata(byte*).
-4. Let da'* be $allocdatas(byte'**).
-5. Return [da] ++ da'*.
+3. Let (s_1, da) be $allocdata(s, byte*).
+4. Let (s_2, da'*) be $allocdatas(s_1, byte'**).
+5. Return (s_2, [da] ++ da'*).
 
 instexport fa* ga* ta* ma* (EXPORT name exter_u0)
 1. If exter_u0 is of the case FUNC, then:
@@ -5717,7 +5677,7 @@ instexport fa* ga* ta* ma* (EXPORT name exter_u0)
 5. Let (MEM x) be exter_u0.
 6. Return { NAME: name; VALUE: (MEM ma*[x]); }.
 
-allocmodule module externval* val_g* ref_t* ref_e**
+allocmodule s module externval* val_g* ref_t* ref_e**
 1. Let fa_ex* be $funcsxv(externval*).
 2. Let ga_ex* be $globalsxv(externval*).
 3. Let ma_ex* be $memsxv(externval*).
@@ -5738,19 +5698,19 @@ allocmodule module externval* val_g* ref_t* ref_e**
 18. Let da* be (|s.DATAS| + i_d)^(i_d<n_d).
 19. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
 20. Let mm be { TYPES: dt*; FUNCS: fa_ex* ++ fa*; GLOBALS: ga_ex* ++ ga*; TABLES: ta_ex* ++ ta*; MEMS: ma_ex* ++ ma*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
-21. Let y_0 be $allocfuncs(mm, func^n_f).
+21. Let (s_1, y_0) be $allocfuncs(s, mm, func^n_f).
 22. Assert: Due to validation, (y_0 is fa*).
-23. Let y_0 be $allocglobals(globaltype^n_g, val_g*).
+23. Let (s_2, y_0) be $allocglobals(s_1, globaltype^n_g, val_g*).
 24. Assert: Due to validation, (y_0 is ga*).
-25. Let y_0 be $alloctables(tabletype^n_t, ref_t*).
+25. Let (s_3, y_0) be $alloctables(s_2, tabletype^n_t, ref_t*).
 26. Assert: Due to validation, (y_0 is ta*).
-27. Let y_0 be $allocmems(memtype^n_m).
+27. Let (s_4, y_0) be $allocmems(s_3, memtype^n_m).
 28. Assert: Due to validation, (y_0 is ma*).
-29. Let y_0 be $allocelems(reftype^n_e, ref_e**).
+29. Let (s_5, y_0) be $allocelems(s_4, reftype^n_e, ref_e**).
 30. Assert: Due to validation, (y_0 is ea*).
-31. Let y_0 be $allocdatas(byte*^n_d).
+31. Let (s_6, y_0) be $allocdatas(s_5, byte*^n_d).
 32. Assert: Due to validation, (y_0 is da*).
-33. Return mm.
+33. Return (s_6, mm).
 
 runelem (ELEM reftype expr* elemm_u0) y
 1. If (elemm_u0 is PASSIVE), then:
@@ -5768,45 +5728,46 @@ rundata (DATA byte* datam_u0) y
 3. Let (ACTIVE x instr*) be datam_u0.
 4. Return instr* ++ [(I32.CONST 0), (I32.CONST |byte*|), (MEMORY.INIT x y), (DATA.DROP y)].
 
-instantiate module externval*
-1. Assert: Due to validation, module is of the case MODULE.
-2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
-3. Let n_D be |data*|.
-4. Let n_E be |elem*|.
-5. Let n_F be |func*|.
-6. Let (START x)? be start?.
-7. Let (GLOBAL globaltype expr_G)* be global*.
-8. Let (TABLE tabletype expr_T)* be table*.
-9. Let (ELEM reftype expr_E* elemmode)* be elem*.
-10. Let instr_D* be $concat_($rundata(data*[j], j)^(j<n_D)).
-11. Let instr_E* be $concat_($runelem(elem*[i], i)^(i<n_E)).
-12. Let mm_init be { TYPES: $alloctypes(type*); FUNCS: $funcsxv(externval*) ++ (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globalsxv(externval*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
-13. Let z be { LOCALS: []; MODULE: mm_init; }.
-14. Push the activation of z to the stack.
-15. Let [val_G]* be $eval_expr(expr_G)*.
-16. Pop the activation of z from the stack.
-17. Push the activation of z to the stack.
-18. Let [ref_T]* be $eval_expr(expr_T)*.
-19. Pop the activation of z from the stack.
-20. Push the activation of z to the stack.
-21. Let [ref_E]** be $eval_expr(expr_E)**.
-22. Pop the activation of z from the stack.
-23. Let mm be $allocmodule(module, externval*, val_G*, ref_T*, ref_E**).
-24. Let f be { LOCALS: []; MODULE: mm; }.
-25. Enter the activation of f with arity 0 with label [FRAME_]:
+instantiate s module externval*
+1. Let z be the current state.
+2. Assert: Due to validation, module is of the case MODULE.
+3. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
+4. Let n_D be |data*|.
+5. Let n_E be |elem*|.
+6. Let n_F be |func*|.
+7. Let (START x)? be start?.
+8. Let (GLOBAL globaltype expr_G)* be global*.
+9. Let (TABLE tabletype expr_T)* be table*.
+10. Let (ELEM reftype expr_E* elemmode)* be elem*.
+11. Let instr_D* be $concat_($rundata(data*[j], j)^(j<n_D)).
+12. Let instr_E* be $concat_($runelem(elem*[i], i)^(i<n_E)).
+13. Let mm_init be { TYPES: $alloctypes(type*); FUNCS: $funcsxv(externval*) ++ (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globalsxv(externval*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
+14. Let z be (s, { LOCALS: []; MODULE: mm_init; }).
+15. Push the activation of z to the stack.
+16. Let [val_G]* be $eval_expr(expr_G)*.
+17. Pop the activation of z from the stack.
+18. Push the activation of z to the stack.
+19. Let [ref_T]* be $eval_expr(expr_T)*.
+20. Pop the activation of z from the stack.
+21. Push the activation of z to the stack.
+22. Let [ref_E]** be $eval_expr(expr_E)**.
+23. Pop the activation of z from the stack.
+24. Let (s', mm) be $allocmodule(s, module, externval*, val_G*, ref_T*, ref_E**).
+25. Let f be { LOCALS: []; MODULE: mm; }.
+26. Enter the activation of f with arity 0 with label [FRAME_]:
   a. Execute the sequence (instr_E*).
   b. Execute the sequence (instr_D*).
   c. If x is defined, then:
     1) Let ?(x_0) be x.
     2) Execute the instruction (CALL x_0).
-26. Return mm.
+27. Return (s', mm).
 
-invoke fa val^n
+invoke s fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
 2. Assert: Due to validation, $expanddt(s.FUNCS[fa].TYPE) is of the case FUNC.
 3. Let (FUNC y_0) be $expanddt(s.FUNCS[fa].TYPE).
 4. Let (t_1^n -> t_2*) be y_0.
-5. Assert: Due to validation, $funcinst()[fa].CODE is of the case FUNC.
+5. Assert: Due to validation, $funcinst((s, f))[fa].CODE is of the case FUNC.
 6. Let k be |t_2*|.
 7. Enter the activation of f with arity k with label [FRAME_]:
   a. Push the values val^n to the stack.
@@ -6234,19 +6195,21 @@ execution_of_LOCAL.TEE x
 5. Execute the instruction (LOCAL.SET x).
 
 execution_of_BLOCK bt instr*
-1. Let (t_1^m -> t_2^n) be $blocktype(bt).
-2. Assert: Due to validation, there are at least m values on the top of the stack.
-3. Pop the values val^m from the stack.
-4. Let L be the label_n{[]}.
-5. Enter L with label instr* ++ [LABEL_]:
+1. Let z be the current state.
+2. Let (t_1^m -> t_2^n) be $blocktype(z, bt).
+3. Assert: Due to validation, there are at least m values on the top of the stack.
+4. Pop the values val^m from the stack.
+5. Let L be the label_n{[]}.
+6. Enter L with label instr* ++ [LABEL_]:
   a. Push the values val^m to the stack.
 
 execution_of_LOOP bt instr*
-1. Let (t_1^m -> t_2^n) be $blocktype(bt).
-2. Assert: Due to validation, there are at least m values on the top of the stack.
-3. Pop the values val^m from the stack.
-4. Let L be the label_m{[(LOOP bt instr*)]}.
-5. Enter L with label instr* ++ [LABEL_]:
+1. Let z be the current state.
+2. Let (t_1^m -> t_2^n) be $blocktype(z, bt).
+3. Assert: Due to validation, there are at least m values on the top of the stack.
+4. Pop the values val^m from the stack.
+5. Let L be the label_m{[(LOOP bt instr*)]}.
+6. Enter L with label instr* ++ [LABEL_]:
   a. Push the values val^m to the stack.
 
 execution_of_BR_ON_CAST l rt_1 rt_2
@@ -6272,34 +6235,37 @@ execution_of_BR_ON_CAST_FAIL l rt_1 rt_2
   b. Execute the instruction (BR l).
 
 execution_of_CALL x
-1. Assert: Due to validation, (x < |$funcaddr()|).
-2. Let a be $funcaddr()[x].
-3. Push the value (REF.FUNC_ADDR a) to the stack.
-4. Execute the instruction (CALL_REF ?()).
+1. Let z be the current state.
+2. Assert: Due to validation, (x < |$funcaddr(z)|).
+3. Let a be $funcaddr(z)[x].
+4. Push the value (REF.FUNC_ADDR a) to the stack.
+5. Execute the instruction (CALL_REF ?()).
 
 execution_of_CALL_REF
 1. YetI: TODO: It is likely that the value stack of two rules are different.
 
 execution_of_RETURN_CALL x
-1. Assert: Due to validation, (x < |$funcaddr()|).
-2. Push the value (REF.FUNC_ADDR $funcaddr()[x]) to the stack.
-3. Execute the instruction (RETURN_CALL_REF ?()).
+1. Let z be the current state.
+2. Assert: Due to validation, (x < |$funcaddr(z)|).
+3. Push the value (REF.FUNC_ADDR $funcaddr(z)[x]) to the stack.
+4. Execute the instruction (RETURN_CALL_REF ?()).
 
 execution_of_RETURN_CALL_REF x?
-1. If the current context is LABEL_, then:
+1. Let z be the current state.
+2. If the current context is LABEL_, then:
   a. Pop all values val* from the stack.
   b. Exit current context.
   c. Push the values val* to the stack.
   d. Execute the instruction (RETURN_CALL_REF x?).
-2. Else if the current context is FRAME_, then:
+3. Else if the current context is FRAME_, then:
   a. Pop the value admin_u0 from the stack.
   b. Pop all values admin_u1* from the stack.
   c. Exit current context.
   d. If admin_u0 is of the case REF.FUNC_ADDR, then:
     1) Let (REF.FUNC_ADDR a) be admin_u0.
-    2) If (a < |$funcinst()|), then:
-      a) Assert: Due to validation, $expanddt($funcinst()[a].TYPE) is of the case FUNC.
-      b) Let (FUNC y_0) be $expanddt($funcinst()[a].TYPE).
+    2) If (a < |$funcinst(z)|), then:
+      a) Assert: Due to validation, $expanddt($funcinst(z)[a].TYPE) is of the case FUNC.
+      b) Let (FUNC y_0) be $expanddt($funcinst(z)[a].TYPE).
       c) Let (t_1^n -> t_2^m) be y_0.
       d) If (|admin_u1*| ≥ n), then:
         1. Let val'* ++ val^n be admin_u1*.
@@ -6310,11 +6276,13 @@ execution_of_RETURN_CALL_REF x?
     1) Trap.
 
 execution_of_REF.NULL (_IDX x)
-1. Push the value (REF.NULL $type(x)) to the stack.
+1. Let z be the current state.
+2. Push the value (REF.NULL $type(z, x)) to the stack.
 
 execution_of_REF.FUNC x
-1. Assert: Due to validation, (x < |$funcaddr()|).
-2. Push the value (REF.FUNC_ADDR $funcaddr()[x]) to the stack.
+1. Let z be the current state.
+2. Assert: Due to validation, (x < |$funcaddr(z)|).
+3. Push the value (REF.FUNC_ADDR $funcaddr(z)[x]) to the stack.
 
 execution_of_REF.TEST rt
 1. Let f be the current frame.
@@ -6336,108 +6304,116 @@ execution_of_REF.CAST rt
 6. Push the value ref to the stack.
 
 execution_of_STRUCT.NEW_DEFAULT x
-1. Assert: Due to validation, $expanddt($type(x)) is of the case STRUCT.
-2. Let (STRUCT y_0) be $expanddt($type(x)).
-3. Let (mut, zt)* be y_0.
-4. Assert: Due to validation, (|mut*| is |zt*|).
-5. Assert: Due to validation, $default_($unpack(zt)) is defined*.
-6. Let ?(val)* be $default_($unpack(zt))*.
-7. Assert: Due to validation, (|val*| is |zt*|).
-8. Push the values val* to the stack.
-9. Execute the instruction (STRUCT.NEW x).
+1. Let z be the current state.
+2. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
+3. Let (STRUCT y_0) be $expanddt($type(z, x)).
+4. Let (mut, zt)* be y_0.
+5. Assert: Due to validation, (|mut*| is |zt*|).
+6. Assert: Due to validation, $default_($unpack(zt)) is defined*.
+7. Let ?(val)* be $default_($unpack(zt))*.
+8. Assert: Due to validation, (|val*| is |zt*|).
+9. Push the values val* to the stack.
+10. Execute the instruction (STRUCT.NEW x).
 
 execution_of_STRUCT.GET sx? x i
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value admin_u0 from the stack.
-3. If admin_u0 is of the case REF.NULL, then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value admin_u0 from the stack.
+4. If admin_u0 is of the case REF.NULL, then:
   a. Trap.
-4. Assert: Due to validation, $expanddt($type(x)) is of the case STRUCT.
-5. Let (STRUCT y_0) be $expanddt($type(x)).
-6. Let (mut, zt)* be y_0.
-7. If admin_u0 is of the case REF.STRUCT_ADDR, then:
+5. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
+6. Let (STRUCT y_0) be $expanddt($type(z, x)).
+7. Let (mut, zt)* be y_0.
+8. If admin_u0 is of the case REF.STRUCT_ADDR, then:
   a. Let (REF.STRUCT_ADDR a) be admin_u0.
-  b. If ((i < |$structinst()[a].FIELDS|) and ((a < |$structinst()|) and ((|mut*| is |zt*|) and (i < |zt*|)))), then:
-    1) Push the value $unpackfield(zt*[i], sx?, $structinst()[a].FIELDS[i]) to the stack.
+  b. If ((i < |$structinst(z)[a].FIELDS|) and ((a < |$structinst(z)|) and ((|mut*| is |zt*|) and (i < |zt*|)))), then:
+    1) Push the value $unpackfield(zt*[i], sx?, $structinst(z)[a].FIELDS[i]) to the stack.
 
 execution_of_ARRAY.NEW_DEFAULT x
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, $expanddt($type(x)) is of the case ARRAY.
-4. Let (ARRAY y_0) be $expanddt($type(x)).
-5. Let (mut, zt) be y_0.
-6. Assert: Due to validation, $default_($unpack(zt)) is defined.
-7. Let ?(val) be $default_($unpack(zt)).
-8. Push the values val^n to the stack.
-9. Execute the instruction (ARRAY.NEW_FIXED x n).
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
+5. Let (ARRAY y_0) be $expanddt($type(z, x)).
+6. Let (mut, zt) be y_0.
+7. Assert: Due to validation, $default_($unpack(zt)) is defined.
+8. Let ?(val) be $default_($unpack(zt)).
+9. Push the values val^n to the stack.
+10. Execute the instruction (ARRAY.NEW_FIXED x n).
 
 execution_of_ARRAY.NEW_ELEM x y
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i) from the stack.
-5. If ((i + n) > |$elem(y).REFS|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If ((i + n) > |$elem(z, y).REFS|), then:
   a. Trap.
-6. Let ref^n be $elem(y).REFS[i : n].
-7. Push the values ref^n to the stack.
-8. Execute the instruction (ARRAY.NEW_FIXED x n).
+7. Let ref^n be $elem(z, y).REFS[i : n].
+8. Push the values ref^n to the stack.
+9. Execute the instruction (ARRAY.NEW_FIXED x n).
 
 execution_of_ARRAY.NEW_DATA x y
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i) from the stack.
-5. Assert: Due to validation, $expanddt($type(x)) is of the case ARRAY.
-6. Let (ARRAY y_0) be $expanddt($type(x)).
-7. Let (mut, zt) be y_0.
-8. If ((i + ((n · $zsize(zt)) / 8)) > |$data(y).BYTES|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
+7. Let (ARRAY y_0) be $expanddt($type(z, x)).
+8. Let (mut, zt) be y_0.
+9. If ((i + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
   a. Trap.
-9. Let $zbytes(zt, c)^n be $inverse_of_concat_($data(y).BYTES[i : ((n · $zsize(zt)) / 8)]).
-10. Push the values $const($cunpack(zt), $unpackconst(zt, c))^n to the stack.
-11. Execute the instruction (ARRAY.NEW_FIXED x n).
+10. Let $zbytes(zt, c)^n be $inverse_of_concat_($data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)]).
+11. Push the values $const($cunpack(zt), $unpackconst(zt, c))^n to the stack.
+12. Execute the instruction (ARRAY.NEW_FIXED x n).
 
 execution_of_ARRAY.GET sx? x
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST i) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value admin_u0 from the stack.
-5. If admin_u0 is of the case REF.NULL, then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST i) from the stack.
+4. Assert: Due to validation, a value is on the top of the stack.
+5. Pop the value admin_u0 from the stack.
+6. If admin_u0 is of the case REF.NULL, then:
   a. Trap.
-6. If admin_u0 is of the case REF.ARRAY_ADDR, then:
+7. If admin_u0 is of the case REF.ARRAY_ADDR, then:
   a. Let (REF.ARRAY_ADDR a) be admin_u0.
-  b. If ((a < |$arrayinst()|) and (i ≥ |$arrayinst()[a].FIELDS|)), then:
+  b. If ((a < |$arrayinst(z)|) and (i ≥ |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
-7. Assert: Due to validation, $expanddt($type(x)) is of the case ARRAY.
-8. Let (ARRAY y_0) be $expanddt($type(x)).
-9. Let (mut, zt) be y_0.
-10. If admin_u0 is of the case REF.ARRAY_ADDR, then:
+8. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
+9. Let (ARRAY y_0) be $expanddt($type(z, x)).
+10. Let (mut, zt) be y_0.
+11. If admin_u0 is of the case REF.ARRAY_ADDR, then:
   a. Let (REF.ARRAY_ADDR a) be admin_u0.
-  b. If ((i < |$arrayinst()[a].FIELDS|) and (a < |$arrayinst()|)), then:
-    1) Push the value $unpackfield(zt, sx?, $arrayinst()[a].FIELDS[i]) to the stack.
+  b. If ((i < |$arrayinst(z)[a].FIELDS|) and (a < |$arrayinst(z)|)), then:
+    1) Push the value $unpackfield(zt, sx?, $arrayinst(z)[a].FIELDS[i]) to the stack.
 
 execution_of_ARRAY.LEN
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value admin_u0 from the stack.
-3. If admin_u0 is of the case REF.NULL, then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value admin_u0 from the stack.
+4. If admin_u0 is of the case REF.NULL, then:
   a. Trap.
-4. If admin_u0 is of the case REF.ARRAY_ADDR, then:
+5. If admin_u0 is of the case REF.ARRAY_ADDR, then:
   a. Let (REF.ARRAY_ADDR a) be admin_u0.
-  b. If (a < |$arrayinst()|), then:
-    1) Push the value (I32.CONST |$arrayinst()[a].FIELDS|) to the stack.
+  b. If (a < |$arrayinst(z)|), then:
+    1) Push the value (I32.CONST |$arrayinst(z)[a].FIELDS|) to the stack.
 
 execution_of_ARRAY.FILL x
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value val from the stack.
-5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-6. Pop the value (I32.CONST i) from the stack.
-7. Assert: Due to validation, a value is on the top of the stack.
-8. Pop the value admin_u0 from the stack.
-9. If admin_u0 is of the case REF.NULL, then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value is on the top of the stack.
+5. Pop the value val from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST i) from the stack.
+8. Assert: Due to validation, a value is on the top of the stack.
+9. Pop the value admin_u0 from the stack.
+10. If admin_u0 is of the case REF.NULL, then:
   a. Trap.
-10. If admin_u0 is of the case REF.ARRAY_ADDR, then:
+11. If admin_u0 is of the case REF.ARRAY_ADDR, then:
   a. Let (REF.ARRAY_ADDR a) be admin_u0.
-  b. If ((a < |$arrayinst()|) and ((i + n) > |$arrayinst()[a].FIELDS|)), then:
+  b. If ((a < |$arrayinst(z)|) and ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
   c. If (n is 0), then:
     1) Do nothing.
@@ -6454,34 +6430,35 @@ execution_of_ARRAY.FILL x
     10) Execute the instruction (ARRAY.FILL x).
 
 execution_of_ARRAY.COPY x_1 x_2
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i_2) from the stack.
-5. Assert: Due to validation, a value is on the top of the stack.
-6. Pop the value admin_u1 from the stack.
-7. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-8. Pop the value (I32.CONST i_1) from the stack.
-9. Assert: Due to validation, a value is on the top of the stack.
-10. Pop the value admin_u0 from the stack.
-11. If (admin_u0 is of the case REF.NULL and the type of admin_u1 is ref), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i_2) from the stack.
+6. Assert: Due to validation, a value is on the top of the stack.
+7. Pop the value admin_u1 from the stack.
+8. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+9. Pop the value (I32.CONST i_1) from the stack.
+10. Assert: Due to validation, a value is on the top of the stack.
+11. Pop the value admin_u0 from the stack.
+12. If (admin_u0 is of the case REF.NULL and the type of admin_u1 is ref), then:
   a. Trap.
-12. If (admin_u1 is of the case REF.NULL and the type of admin_u0 is ref), then:
+13. If (admin_u1 is of the case REF.NULL and the type of admin_u0 is ref), then:
   a. Trap.
-13. If admin_u0 is of the case REF.ARRAY_ADDR, then:
+14. If admin_u0 is of the case REF.ARRAY_ADDR, then:
   a. Let (REF.ARRAY_ADDR a_1) be admin_u0.
   b. If admin_u1 is of the case REF.ARRAY_ADDR, then:
-    1) If ((a_1 < |$arrayinst()|) and ((i_1 + n) > |$arrayinst()[a_1].FIELDS|)), then:
+    1) If ((a_1 < |$arrayinst(z)|) and ((i_1 + n) > |$arrayinst(z)[a_1].FIELDS|)), then:
       a) Trap.
     2) Let (REF.ARRAY_ADDR a_2) be admin_u1.
-    3) If ((a_2 < |$arrayinst()|) and ((i_2 + n) > |$arrayinst()[a_2].FIELDS|)), then:
+    3) If ((a_2 < |$arrayinst(z)|) and ((i_2 + n) > |$arrayinst(z)[a_2].FIELDS|)), then:
       a) Trap.
   c. If (n is 0), then:
     1) If admin_u1 is of the case REF.ARRAY_ADDR, then:
       a) Do nothing.
   d. Else if (i_1 > i_2), then:
-    1) Assert: Due to validation, $expanddt($type(x_2)) is of the case ARRAY.
-    2) Let (ARRAY y_0) be $expanddt($type(x_2)).
+    1) Assert: Due to validation, $expanddt($type(z, x_2)) is of the case ARRAY.
+    2) Let (ARRAY y_0) be $expanddt($type(z, x_2)).
     3) Let (mut, zt_2) be y_0.
     4) Let (REF.ARRAY_ADDR a_1) be admin_u0.
     5) If admin_u1 is of the case REF.ARRAY_ADDR, then:
@@ -6500,8 +6477,8 @@ execution_of_ARRAY.COPY x_1 x_2
       m) Push the value (I32.CONST (n - 1)) to the stack.
       n) Execute the instruction (ARRAY.COPY x_1 x_2).
   e. Else:
-    1) Assert: Due to validation, $expanddt($type(x_2)) is of the case ARRAY.
-    2) Let (ARRAY y_0) be $expanddt($type(x_2)).
+    1) Assert: Due to validation, $expanddt($type(z, x_2)) is of the case ARRAY.
+    2) Let (ARRAY y_0) be $expanddt($type(z, x_2)).
     3) Let (mut, zt_2) be y_0.
     4) Let (REF.ARRAY_ADDR a_1) be admin_u0.
     5) If admin_u1 is of the case REF.ARRAY_ADDR, then:
@@ -6521,25 +6498,26 @@ execution_of_ARRAY.COPY x_1 x_2
       n) Execute the instruction (ARRAY.COPY x_1 x_2).
 
 execution_of_ARRAY.INIT_ELEM x y
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST j) from the stack.
-5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-6. Pop the value (I32.CONST i) from the stack.
-7. Assert: Due to validation, a value is on the top of the stack.
-8. Pop the value admin_u0 from the stack.
-9. If admin_u0 is of the case REF.NULL, then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST j) from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST i) from the stack.
+8. Assert: Due to validation, a value is on the top of the stack.
+9. Pop the value admin_u0 from the stack.
+10. If admin_u0 is of the case REF.NULL, then:
   a. Trap.
-10. If admin_u0 is of the case REF.ARRAY_ADDR, then:
+11. If admin_u0 is of the case REF.ARRAY_ADDR, then:
   a. Let (REF.ARRAY_ADDR a) be admin_u0.
-  b. If ((a < |$arrayinst()|) and ((i + n) > |$arrayinst()[a].FIELDS|)), then:
+  b. If ((a < |$arrayinst(z)|) and ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
-11. If ((j + n) > |$elem(y).REFS|), then:
+12. If ((j + n) > |$elem(z, y).REFS|), then:
   a. If admin_u0 is of the case REF.ARRAY_ADDR, then:
     1) Trap.
-  b. If ((n is 0) and (j < |$elem(y).REFS|)), then:
-    1) Let ref be $elem(y).REFS[j].
+  b. If ((n is 0) and (j < |$elem(z, y).REFS|)), then:
+    1) Let ref be $elem(z, y).REFS[j].
     2) If admin_u0 is of the case REF.ARRAY_ADDR, then:
       a) Let (REF.ARRAY_ADDR a) be admin_u0.
       b) Push the value (REF.ARRAY_ADDR a) to the stack.
@@ -6551,12 +6529,12 @@ execution_of_ARRAY.INIT_ELEM x y
       h) Push the value (I32.CONST (j + 1)) to the stack.
       i) Push the value (I32.CONST (n - 1)) to the stack.
       j) Execute the instruction (ARRAY.INIT_ELEM x y).
-12. Else if (n is 0), then:
+13. Else if (n is 0), then:
   a. If admin_u0 is of the case REF.ARRAY_ADDR, then:
     1) Do nothing.
-13. Else:
-  a. If (j < |$elem(y).REFS|), then:
-    1) Let ref be $elem(y).REFS[j].
+14. Else:
+  a. If (j < |$elem(z, y).REFS|), then:
+    1) Let ref be $elem(z, y).REFS[j].
     2) If admin_u0 is of the case REF.ARRAY_ADDR, then:
       a) Let (REF.ARRAY_ADDR a) be admin_u0.
       b) Push the value (REF.ARRAY_ADDR a) to the stack.
@@ -6570,36 +6548,37 @@ execution_of_ARRAY.INIT_ELEM x y
       j) Execute the instruction (ARRAY.INIT_ELEM x y).
 
 execution_of_ARRAY.INIT_DATA x y
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST j) from the stack.
-5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-6. Pop the value (I32.CONST i) from the stack.
-7. Assert: Due to validation, a value is on the top of the stack.
-8. Pop the value admin_u0 from the stack.
-9. If admin_u0 is of the case REF.NULL, then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST j) from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST i) from the stack.
+8. Assert: Due to validation, a value is on the top of the stack.
+9. Pop the value admin_u0 from the stack.
+10. If admin_u0 is of the case REF.NULL, then:
   a. Trap.
-10. If admin_u0 is of the case REF.ARRAY_ADDR, then:
+11. If admin_u0 is of the case REF.ARRAY_ADDR, then:
   a. Let (REF.ARRAY_ADDR a) be admin_u0.
-  b. If ((a < |$arrayinst()|) and ((i + n) > |$arrayinst()[a].FIELDS|)), then:
+  b. If ((a < |$arrayinst(z)|) and ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
-11. If $expanddt($type(x)) is not of the case ARRAY, then:
+12. If $expanddt($type(z, x)) is not of the case ARRAY, then:
   a. If ((n is 0) and admin_u0 is of the case REF.ARRAY_ADDR), then:
     1) Do nothing.
-12. Else:
-  a. Let (ARRAY y_0) be $expanddt($type(x)).
+13. Else:
+  a. Let (ARRAY y_0) be $expanddt($type(z, x)).
   b. Let (mut, zt) be y_0.
   c. If admin_u0 is of the case REF.ARRAY_ADDR, then:
-    1) If ((j + ((n · $zsize(zt)) / 8)) > |$data(y).BYTES|), then:
+    1) If ((j + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
       a) Trap.
     2) If (n is 0), then:
       a) Do nothing.
     3) Else:
-      a) Let (ARRAY y_0) be $expanddt($type(x)).
+      a) Let (ARRAY y_0) be $expanddt($type(z, x)).
       b) Let (mut, zt) be y_0.
       c) Let (REF.ARRAY_ADDR a) be admin_u0.
-      d) Let c be $inverse_of_zbytes(zt, $data(y).BYTES[j : ($zsize(zt) / 8)]).
+      d) Let c be $inverse_of_zbytes(zt, $data(z, y).BYTES[j : ($zsize(zt) / 8)]).
       e) Push the value (REF.ARRAY_ADDR a) to the stack.
       f) Push the value (I32.CONST i) to the stack.
       g) Push the value $const($cunpack(zt), $unpackconst(zt, c)) to the stack.
@@ -6611,37 +6590,42 @@ execution_of_ARRAY.INIT_DATA x y
       m) Execute the instruction (ARRAY.INIT_DATA x y).
 
 execution_of_LOCAL.GET x
-1. Assert: Due to validation, $local(x) is defined.
-2. Let ?(val) be $local(x).
-3. Push the value val to the stack.
+1. Let z be the current state.
+2. Assert: Due to validation, $local(z, x) is defined.
+3. Let ?(val) be $local(z, x).
+4. Push the value val to the stack.
 
 execution_of_GLOBAL.GET x
-1. Let val be $global(x).VALUE.
-2. Push the value val to the stack.
+1. Let z be the current state.
+2. Let val be $global(z, x).VALUE.
+3. Push the value val to the stack.
 
 execution_of_TABLE.GET x
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST i) from the stack.
-3. If (i ≥ |$table(x).REFS|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST i) from the stack.
+4. If (i ≥ |$table(z, x).REFS|), then:
   a. Trap.
-4. Push the value $table(x).REFS[i] to the stack.
+5. Push the value $table(z, x).REFS[i] to the stack.
 
 execution_of_TABLE.SIZE x
-1. Let n be |$table(x).REFS|.
-2. Push the value (I32.CONST n) to the stack.
+1. Let z be the current state.
+2. Let n be |$table(z, x).REFS|.
+3. Push the value (I32.CONST n) to the stack.
 
 execution_of_TABLE.FILL x
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value val from the stack.
-5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-6. Pop the value (I32.CONST i) from the stack.
-7. If ((i + n) > |$table(x).REFS|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value is on the top of the stack.
+5. Pop the value val from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST i) from the stack.
+8. If ((i + n) > |$table(z, x).REFS|), then:
   a. Trap.
-8. If (n is 0), then:
+9. If (n is 0), then:
   a. Do nothing.
-9. Else:
+10. Else:
   a. Push the value (I32.CONST i) to the stack.
   b. Push the value val to the stack.
   c. Execute the instruction (TABLE.SET x).
@@ -6651,19 +6635,20 @@ execution_of_TABLE.FILL x
   g. Execute the instruction (TABLE.FILL x).
 
 execution_of_TABLE.COPY x y
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i) from the stack.
-5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-6. Pop the value (I32.CONST j) from the stack.
-7. If ((i + n) > |$table(y).REFS|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST j) from the stack.
+8. If ((i + n) > |$table(z, y).REFS|), then:
   a. Trap.
-8. If ((j + n) > |$table(x).REFS|), then:
+9. If ((j + n) > |$table(z, x).REFS|), then:
   a. Trap.
-9. If (n is 0), then:
+10. If (n is 0), then:
   a. Do nothing.
-10. Else:
+11. Else:
   a. If (j ≤ i), then:
     1) Push the value (I32.CONST j) to the stack.
     2) Push the value (I32.CONST i) to the stack.
@@ -6682,21 +6667,22 @@ execution_of_TABLE.COPY x y
   d. Execute the instruction (TABLE.COPY x y).
 
 execution_of_TABLE.INIT x y
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i) from the stack.
-5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-6. Pop the value (I32.CONST j) from the stack.
-7. If ((i + n) > |$elem(y).REFS|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST j) from the stack.
+8. If ((i + n) > |$elem(z, y).REFS|), then:
   a. Trap.
-8. If ((j + n) > |$table(x).REFS|), then:
+9. If ((j + n) > |$table(z, x).REFS|), then:
   a. Trap.
-9. If (n is 0), then:
+10. If (n is 0), then:
   a. Do nothing.
-10. Else if (i < |$elem(y).REFS|), then:
+11. Else if (i < |$elem(z, y).REFS|), then:
   a. Push the value (I32.CONST j) to the stack.
-  b. Push the value $elem(y).REFS[i] to the stack.
+  b. Push the value $elem(z, y).REFS[i] to the stack.
   c. Execute the instruction (TABLE.SET x).
   d. Push the value (I32.CONST (j + 1)) to the stack.
   e. Push the value (I32.CONST (i + 1)) to the stack.
@@ -6704,94 +6690,99 @@ execution_of_TABLE.INIT x y
   g. Execute the instruction (TABLE.INIT x y).
 
 execution_of_LOAD numty_u0 ww_sx_u1? x mo
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST i) from the stack.
-3. If ww_sx_u1? is not defined, then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST i) from the stack.
+4. If ww_sx_u1? is not defined, then:
   a. Let nt be numty_u0.
-  b. If (((i + mo.OFFSET) + ($size(nt) / 8)) > |$mem(x).BYTES|), then:
+  b. If (((i + mo.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|), then:
     1) Trap.
-  c. Let c be $inverse_of_nbytes(nt, $mem(x).BYTES[(i + mo.OFFSET) : ($size(nt) / 8)]).
+  c. Let c be $inverse_of_nbytes(nt, $mem(z, x).BYTES[(i + mo.OFFSET) : ($size(nt) / 8)]).
   d. Push the value (nt.CONST c) to the stack.
-4. If the type of numty_u0 is inn, then:
+5. If the type of numty_u0 is inn, then:
   a. If ww_sx_u1? is defined, then:
     1) Let ?(y_0) be ww_sx_u1?.
     2) Let (n, sx) be y_0.
-    3) If (((i + mo.OFFSET) + (n / 8)) > |$mem(x).BYTES|), then:
+    3) If (((i + mo.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
   b. Let inn be numty_u0.
   c. If ww_sx_u1? is defined, then:
     1) Let ?(y_0) be ww_sx_u1?.
     2) Let (n, sx) be y_0.
-    3) Let c be $inverse_of_ibytes(n, $mem(x).BYTES[(i + mo.OFFSET) : (n / 8)]).
+    3) Let c be $inverse_of_ibytes(n, $mem(z, x).BYTES[(i + mo.OFFSET) : (n / 8)]).
     4) Push the value (inn.CONST $ext(n, $size(inn), sx, c)) to the stack.
 
 execution_of_VLOAD vload_u0? x mo
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST i) from the stack.
-3. If ((((i + mo.OFFSET) + ($vsize(V128) / 8)) > |$mem(x).BYTES|) and vload_u0? is not defined), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST i) from the stack.
+4. If ((((i + mo.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|) and vload_u0? is not defined), then:
   a. Trap.
-4. If vload_u0? is not defined, then:
-  a. Let c be $inverse_of_vbytes(V128, $mem(x).BYTES[(i + mo.OFFSET) : ($vsize(V128) / 8)]).
+5. If vload_u0? is not defined, then:
+  a. Let c be $inverse_of_vbytes(V128, $mem(z, x).BYTES[(i + mo.OFFSET) : ($vsize(V128) / 8)]).
   b. Push the value (V128.CONST c) to the stack.
-5. Else:
+6. Else:
   a. Let ?(y_0) be vload_u0?.
   b. If y_0 is of the case SHAPE, then:
     1) Let (SHAPE M N sx) be y_0.
-    2) If (((i + mo.OFFSET) + ((M · N) / 8)) > |$mem(x).BYTES|), then:
+    2) If (((i + mo.OFFSET) + ((M · N) / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
     3) If the type of $inverse_of_lsize((M · 2)) is imm, then:
       a) Let imm be $inverse_of_lsize((M · 2)).
-      b) Let j^N be $inverse_of_ibytes(M, $mem(x).BYTES[((i + mo.OFFSET) + ((k · M) / 8)) : (M / 8)])^(k<N).
+      b) Let j^N be $inverse_of_ibytes(M, $mem(z, x).BYTES[((i + mo.OFFSET) + ((k · M) / 8)) : (M / 8)])^(k<N).
       c) Let c be $invlanes_((imm X N), $ext(M, $lsize(imm), sx, j)^N).
       d) Push the value (V128.CONST c) to the stack.
   c. If y_0 is of the case SPLAT, then:
     1) Let (SPLAT N) be y_0.
-    2) If (((i + mo.OFFSET) + (N / 8)) > |$mem(x).BYTES|), then:
+    2) If (((i + mo.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
     3) Let M be (128 / N).
     4) If the type of $inverse_of_lsize(N) is imm, then:
       a) Let imm be $inverse_of_lsize(N).
-      b) Let j be $inverse_of_ibytes(N, $mem(x).BYTES[(i + mo.OFFSET) : (N / 8)]).
+      b) Let j be $inverse_of_ibytes(N, $mem(z, x).BYTES[(i + mo.OFFSET) : (N / 8)]).
       c) Let c be $invlanes_((imm X M), j^M).
       d) Push the value (V128.CONST c) to the stack.
   d. If y_0 is of the case ZERO, then:
     1) Let (ZERO N) be y_0.
-    2) If (((i + mo.OFFSET) + (N / 8)) > |$mem(x).BYTES|), then:
+    2) If (((i + mo.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
-    3) Let j be $inverse_of_ibytes(N, $mem(x).BYTES[(i + mo.OFFSET) : (N / 8)]).
+    3) Let j be $inverse_of_ibytes(N, $mem(z, x).BYTES[(i + mo.OFFSET) : (N / 8)]).
     4) Let c be $ext(N, 128, U, j).
     5) Push the value (V128.CONST c) to the stack.
 
 execution_of_VLOAD_LANE N x mo j
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i) from the stack.
-5. If (((i + mo.OFFSET) + (N / 8)) > |$mem(x).BYTES|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value (V128.CONST c_1) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If (((i + mo.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
   a. Trap.
-6. Let M be ($vsize(V128) / N).
-7. If the type of $inverse_of_lsize(N) is imm, then:
+7. Let M be ($vsize(V128) / N).
+8. If the type of $inverse_of_lsize(N) is imm, then:
   a. Let imm be $inverse_of_lsize(N).
-  b. Let k be $inverse_of_ibytes(N, $mem(x).BYTES[(i + mo.OFFSET) : (N / 8)]).
+  b. Let k be $inverse_of_ibytes(N, $mem(z, x).BYTES[(i + mo.OFFSET) : (N / 8)]).
   c. Let c be $invlanes_((imm X M), $lanes_((imm X M), c_1) with [j] replaced by k).
   d. Push the value (V128.CONST c) to the stack.
 
 execution_of_MEMORY.SIZE x
-1. Let (n · (64 · $Ki())) be |$mem(x).BYTES|.
-2. Push the value (I32.CONST n) to the stack.
+1. Let z be the current state.
+2. Let (n · (64 · $Ki())) be |$mem(z, x).BYTES|.
+3. Push the value (I32.CONST n) to the stack.
 
 execution_of_MEMORY.FILL x
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value val from the stack.
-5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-6. Pop the value (I32.CONST i) from the stack.
-7. If ((i + n) > |$mem(x).BYTES|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value is on the top of the stack.
+5. Pop the value val from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST i) from the stack.
+8. If ((i + n) > |$mem(z, x).BYTES|), then:
   a. Trap.
-8. If (n is 0), then:
+9. If (n is 0), then:
   a. Do nothing.
-9. Else:
+10. Else:
   a. Push the value (I32.CONST i) to the stack.
   b. Push the value val to the stack.
   c. Execute the instruction (STORE I32 ?(8) x $memop0()).
@@ -6801,19 +6792,20 @@ execution_of_MEMORY.FILL x
   g. Execute the instruction (MEMORY.FILL x).
 
 execution_of_MEMORY.COPY x_1 x_2
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i_2) from the stack.
-5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-6. Pop the value (I32.CONST i_1) from the stack.
-7. If ((i_1 + n) > |$mem(x_1).BYTES|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i_2) from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST i_1) from the stack.
+8. If ((i_1 + n) > |$mem(z, x_1).BYTES|), then:
   a. Trap.
-8. If ((i_2 + n) > |$mem(x_2).BYTES|), then:
+9. If ((i_2 + n) > |$mem(z, x_2).BYTES|), then:
   a. Trap.
-9. If (n is 0), then:
+10. If (n is 0), then:
   a. Do nothing.
-10. Else:
+11. Else:
   a. If (i_1 ≤ i_2), then:
     1) Push the value (I32.CONST i_1) to the stack.
     2) Push the value (I32.CONST i_2) to the stack.
@@ -6832,21 +6824,22 @@ execution_of_MEMORY.COPY x_1 x_2
   d. Execute the instruction (MEMORY.COPY x_1 x_2).
 
 execution_of_MEMORY.INIT x y
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i) from the stack.
-5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-6. Pop the value (I32.CONST j) from the stack.
-7. If ((i + n) > |$data(y).BYTES|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST j) from the stack.
+8. If ((i + n) > |$data(z, y).BYTES|), then:
   a. Trap.
-8. If ((j + n) > |$mem(x).BYTES|), then:
+9. If ((j + n) > |$mem(z, x).BYTES|), then:
   a. Trap.
-9. If (n is 0), then:
+10. If (n is 0), then:
   a. Do nothing.
-10. Else if (i < |$data(y).BYTES|), then:
+11. Else if (i < |$data(z, y).BYTES|), then:
   a. Push the value (I32.CONST j) to the stack.
-  b. Push the value (I32.CONST $data(y).BYTES[i]) to the stack.
+  b. Push the value (I32.CONST $data(z, y).BYTES[i]) to the stack.
   c. Execute the instruction (STORE I32 ?(8) x $memop0()).
   d. Push the value (I32.CONST (j + 1)) to the stack.
   e. Push the value (I32.CONST (i + 1)) to the stack.
@@ -6854,154 +6847,168 @@ execution_of_MEMORY.INIT x y
   g. Execute the instruction (MEMORY.INIT x y).
 
 execution_of_STRUCT.NEW x
-1. Let a be |$structinst()|.
-2. Assert: Due to validation, $expanddt($type(x)) is of the case STRUCT.
-3. Let (STRUCT y_0) be $expanddt($type(x)).
-4. Let (mut, zt)^n be y_0.
-5. Assert: Due to validation, there are at least n values on the top of the stack.
-6. Pop the values val^n from the stack.
-7. Let si be { TYPE: $type(x); FIELDS: $packfield(zt, val)^n; }.
-8. Push the value (REF.STRUCT_ADDR a) to the stack.
-9. Perform $ext_structinst([si]).
+1. Let z be the current state.
+2. Let a be |$structinst(z)|.
+3. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
+4. Let (STRUCT y_0) be $expanddt($type(z, x)).
+5. Let (mut, zt)^n be y_0.
+6. Assert: Due to validation, there are at least n values on the top of the stack.
+7. Pop the values val^n from the stack.
+8. Let si be { TYPE: $type(z, x); FIELDS: $packfield(zt, val)^n; }.
+9. Push the value (REF.STRUCT_ADDR a) to the stack.
+10. Perform $ext_structinst(z, [si]).
 
 execution_of_STRUCT.SET x i
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value admin_u0 from the stack.
-5. If admin_u0 is of the case REF.NULL, then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value val from the stack.
+4. Assert: Due to validation, a value is on the top of the stack.
+5. Pop the value admin_u0 from the stack.
+6. If admin_u0 is of the case REF.NULL, then:
   a. Trap.
-6. Assert: Due to validation, $expanddt($type(x)) is of the case STRUCT.
-7. Let (STRUCT y_0) be $expanddt($type(x)).
-8. Let (mut, zt)* be y_0.
-9. If admin_u0 is of the case REF.STRUCT_ADDR, then:
+7. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
+8. Let (STRUCT y_0) be $expanddt($type(z, x)).
+9. Let (mut, zt)* be y_0.
+10. If admin_u0 is of the case REF.STRUCT_ADDR, then:
   a. Let (REF.STRUCT_ADDR a) be admin_u0.
   b. If ((|mut*| is |zt*|) and (i < |zt*|)), then:
-    1) Perform $with_struct(a, i, $packfield(zt*[i], val)).
+    1) Perform $with_struct(z, a, i, $packfield(zt*[i], val)).
 
 execution_of_ARRAY.NEW_FIXED x n
-1. Assert: Due to validation, there are at least n values on the top of the stack.
-2. Pop the values val^n from the stack.
-3. Let a be |$arrayinst()|.
-4. Assert: Due to validation, $expanddt($type(x)) is of the case ARRAY.
-5. Let (ARRAY y_0) be $expanddt($type(x)).
-6. Let (mut, zt) be y_0.
-7. Let ai be { TYPE: $type(x); FIELDS: $packfield(zt, val)^n; }.
-8. Push the value (REF.ARRAY_ADDR a) to the stack.
-9. Perform $ext_arrayinst([ai]).
+1. Let z be the current state.
+2. Assert: Due to validation, there are at least n values on the top of the stack.
+3. Pop the values val^n from the stack.
+4. Let a be |$arrayinst(z)|.
+5. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
+6. Let (ARRAY y_0) be $expanddt($type(z, x)).
+7. Let (mut, zt) be y_0.
+8. Let ai be { TYPE: $type(z, x); FIELDS: $packfield(zt, val)^n; }.
+9. Push the value (REF.ARRAY_ADDR a) to the stack.
+10. Perform $ext_arrayinst(z, [ai]).
 
 execution_of_ARRAY.SET x
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i) from the stack.
-5. Assert: Due to validation, a value is on the top of the stack.
-6. Pop the value admin_u0 from the stack.
-7. If admin_u0 is of the case REF.NULL, then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value val from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. Assert: Due to validation, a value is on the top of the stack.
+7. Pop the value admin_u0 from the stack.
+8. If admin_u0 is of the case REF.NULL, then:
   a. Trap.
-8. If admin_u0 is of the case REF.ARRAY_ADDR, then:
+9. If admin_u0 is of the case REF.ARRAY_ADDR, then:
   a. Let (REF.ARRAY_ADDR a) be admin_u0.
-  b. If ((a < |$arrayinst()|) and (i ≥ |$arrayinst()[a].FIELDS|)), then:
+  b. If ((a < |$arrayinst(z)|) and (i ≥ |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
-9. Assert: Due to validation, $expanddt($type(x)) is of the case ARRAY.
-10. Let (ARRAY y_0) be $expanddt($type(x)).
-11. Let (mut, zt) be y_0.
-12. If admin_u0 is of the case REF.ARRAY_ADDR, then:
+10. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
+11. Let (ARRAY y_0) be $expanddt($type(z, x)).
+12. Let (mut, zt) be y_0.
+13. If admin_u0 is of the case REF.ARRAY_ADDR, then:
   a. Let (REF.ARRAY_ADDR a) be admin_u0.
-  b. Perform $with_array(a, i, $packfield(zt, val)).
+  b. Perform $with_array(z, a, i, $packfield(zt, val)).
 
 execution_of_LOCAL.SET x
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. Perform $with_local(x, val).
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value val from the stack.
+4. Perform $with_local(z, x, val).
 
 execution_of_GLOBAL.SET x
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. Perform $with_global(x, val).
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value val from the stack.
+4. Perform $with_global(z, x, val).
 
 execution_of_TABLE.SET x
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value ref from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i) from the stack.
-5. If (i ≥ |$table(x).REFS|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value ref from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If (i ≥ |$table(z, x).REFS|), then:
   a. Trap.
-6. Perform $with_table(x, i, ref).
+7. Perform $with_table(z, x, i, ref).
 
 execution_of_TABLE.GROW x
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value ref from the stack.
-5. Either:
-  a. Let ti be $growtable($table(x), n, ref).
-  b. Push the value (I32.CONST |$table(x).REFS|) to the stack.
-  c. Perform $with_tableinst(x, ti).
-6. Or:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value is on the top of the stack.
+5. Pop the value ref from the stack.
+6. Either:
+  a. Let ti be $growtable($table(z, x), n, ref).
+  b. Push the value (I32.CONST |$table(z, x).REFS|) to the stack.
+  c. Perform $with_tableinst(z, x, ti).
+7. Or:
   a. Push the value (I32.CONST $invsigned(32, (- 1))) to the stack.
 
 execution_of_ELEM.DROP x
-1. Perform $with_elem(x, []).
+1. Let z be the current state.
+2. Perform $with_elem(z, x, []).
 
 execution_of_STORE nt ww_u1? x mo
-1. Assert: Due to validation, a value of value type numty_u0 is on the top of the stack.
-2. Pop the value (numty_u0.CONST c) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i) from the stack.
-5. If (numty_u0 is nt), then:
-  a. If ((((i + mo.OFFSET) + ($size(nt) / 8)) > |$mem(x).BYTES|) and ww_u1? is not defined), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type numty_u0 is on the top of the stack.
+3. Pop the value (numty_u0.CONST c) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If (numty_u0 is nt), then:
+  a. If ((((i + mo.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|) and ww_u1? is not defined), then:
     1) Trap.
   b. If ww_u1? is not defined, then:
     1) Let b* be $nbytes(nt, c).
-    2) Perform $with_mem(x, (i + mo.OFFSET), ($size(nt) / 8), b*).
-6. If the type of numty_u0 is inn, then:
+    2) Perform $with_mem(z, x, (i + mo.OFFSET), ($size(nt) / 8), b*).
+7. If the type of numty_u0 is inn, then:
   a. If ww_u1? is defined, then:
     1) Let ?(n) be ww_u1?.
-    2) If (((i + mo.OFFSET) + (n / 8)) > |$mem(x).BYTES|), then:
+    2) If (((i + mo.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
   b. Let inn be numty_u0.
   c. If ww_u1? is defined, then:
     1) Let ?(n) be ww_u1?.
     2) Let b* be $ibytes(n, $wrap($size(inn), n, c)).
-    3) Perform $with_mem(x, (i + mo.OFFSET), (n / 8), b*).
+    3) Perform $with_mem(z, x, (i + mo.OFFSET), (n / 8), b*).
 
 execution_of_VSTORE x mo
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (V128.CONST c) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i) from the stack.
-5. If (((i + mo.OFFSET) + ($vsize(V128) / 8)) > |$mem(x).BYTES|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value (V128.CONST c) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If (((i + mo.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|), then:
   a. Trap.
-6. Let b* be $vbytes(V128, c).
-7. Perform $with_mem(x, (i + mo.OFFSET), ($vsize(V128) / 8), b*).
+7. Let b* be $vbytes(V128, c).
+8. Perform $with_mem(z, x, (i + mo.OFFSET), ($vsize(V128) / 8), b*).
 
 execution_of_VSTORE_LANE N x mo j
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (V128.CONST c) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i) from the stack.
-5. If (((i + mo.OFFSET) + N) > |$mem(x).BYTES|), then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value (V128.CONST c) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If (((i + mo.OFFSET) + N) > |$mem(z, x).BYTES|), then:
   a. Trap.
-6. Let M be (128 / N).
-7. If the type of $inverse_of_lsize(N) is imm, then:
+7. Let M be (128 / N).
+8. If the type of $inverse_of_lsize(N) is imm, then:
   a. Let imm be $inverse_of_lsize(N).
   b. If (j < |$lanes_((imm X M), c)|), then:
     1) Let b* be $ibytes(N, $lanes_((imm X M), c)[j]).
-    2) Perform $with_mem(x, (i + mo.OFFSET), (N / 8), b*).
+    2) Perform $with_mem(z, x, (i + mo.OFFSET), (N / 8), b*).
 
 execution_of_MEMORY.GROW x
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Either:
-  a. Let mi be $growmemory($mem(x), n).
-  b. Push the value (I32.CONST (|$mem(x).BYTES| / (64 · $Ki()))) to the stack.
-  c. Perform $with_meminst(x, mi).
-4. Or:
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Either:
+  a. Let mi be $growmemory($mem(z, x), n).
+  b. Push the value (I32.CONST (|$mem(z, x).BYTES| / (64 · $Ki()))) to the stack.
+  c. Perform $with_meminst(z, x, mi).
+5. Or:
   a. Push the value (I32.CONST $invsigned(32, (- 1))) to the stack.
 
 execution_of_DATA.DROP x
-1. Perform $with_data(x, []).
+1. Let z be the current state.
+2. Perform $with_data(z, x, []).
 
 eval_expr instr*
 1. Execute the sequence (instr*).
@@ -7009,14 +7016,15 @@ eval_expr instr*
 3. Return [val].
 
 execution_of_CALL_REF x
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value ref from the stack.
-3. If ref is of the case REF.NULL, then:
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value ref from the stack.
+4. If ref is of the case REF.NULL, then:
   a. Trap.
-4. Assert: Due to validation, ref is of the case REF.FUNC_ADDR.
-5. Let (REF.FUNC_ADDR a) be ref.
-6. If (a < |$funcinst()|), then:
-  a. Let fi be $funcinst()[a].
+5. Assert: Due to validation, ref is of the case REF.FUNC_ADDR.
+6. Let (REF.FUNC_ADDR a) be ref.
+7. If (a < |$funcinst(z)|), then:
+  a. Let fi be $funcinst(z)[a].
   b. Assert: Due to validation, fi.CODE is of the case FUNC.
   c. Let (FUNC y_0 y_1 instr*) be fi.CODE.
   d. Let (LOCAL t)* be y_1.
