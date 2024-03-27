@@ -52,6 +52,7 @@ let call_ref =
   let x = varE "x" in
   let ref = varE "ref" in
   let a = varE "a" in
+  let _z = varE "z" in
   let fi = varE "fi" in
   let y0 = varE "y_0" in
   let y1 = varE "y_1" in
@@ -80,8 +81,8 @@ let call_ref =
       assertI (isCaseOfE (ref, atom_of_name "REF.FUNC_ADDR" "admininstr"));
       letI (caseE (atom_of_name "REF.FUNC_ADDR" "admininstr", [a]), ref);
       ifI (
-        binE (LtOp, a, lenE (callE ("funcinst", []))),
-        [ letI (fi, accE (callE ("funcinst", []), idxP a));
+        binE (LtOp, a, lenE (callE ("funcinst", [ ]))),
+        [ letI (fi, accE (callE ("funcinst", [ ]), idxP a));
           assertI (isCaseOfE (accE (fi, dotP (atom_of_name "CODE" "code")), atom_of_name "FUNC" "func"));
           letI (caseE (atom_of_name "FUNC" "func", [y0 ; y1 ; iterE (instr, ["instr"], List)]), accE (fi, dotP (atom_of_name "CODE" "code")));
           letI (iterE (caseE (atom_of_name "LOCAL" "local", [t]), ["t"], List), y1);

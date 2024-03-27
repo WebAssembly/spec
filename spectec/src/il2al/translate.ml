@@ -697,7 +697,8 @@ let translate_helper partial_funcs def =
       blocks
       |> Transpile.merge_blocks
       |> Transpile.enhance_readability
-      |> if List.mem id partial_funcs then Fun.id else Transpile.ensure_return in
+      |> (if List.mem id partial_funcs then Fun.id else Transpile.ensure_return)
+      |> Transpile.flatten_if in
 
     Some (FuncA (name, params, body))
   | _ -> None
@@ -958,6 +959,7 @@ and translate_rgroup (instr_name, rgroup) =
     |> insert_nop
     |> Transpile.enhance_readability
     |> Transpile.infer_assert
+    |> Transpile.flatten_if
   in
   RuleA (name, al_params', body)
 

@@ -316,14 +316,6 @@ let rec remove_nop acc il = match il with
   | { it = NopI; _ } :: acc' -> remove_nop (i' :: acc') il'
   | _ -> remove_nop (i' :: acc) il'
 
-let flatten_if instr =
-  let at1 = instr.at in
-  match instr.it with
-  | IfI (e1, [ { it = IfI (e2, il1, il2); at = at2; _ }], []) ->
-    let at = over_region [ at1; at2 ] in
-    ifI (binE (AndOp, e1, e2) ~at:at, il1, il2) ~at:at1
-  | _ -> instr
-
 let simplify_record_concat expr =
   let expr' =
     match expr.it with
@@ -417,6 +409,23 @@ let rec enhance_readability instrs =
 
   if Eq.eq_instrs instrs instrs' then instrs else enhance_readability instrs'
 
+let flatten_if instrs =
+  let flatten_if' instr =
+    let at1 = instr.at in
+    match instr.it with
+    | IfI (e1, [ { it = IfI (e2, il1, il2); at = at2; _ }], []) ->
+      let at = over_region [ at1; at2 ] in
+      ifI (binE (AndOp, e1, e2) ~at:at, il1, il2) ~at:at1
+    | _ -> instr
+  in
+  let walk_config =
+    {
+      Walk.default_config with
+      post_instr = lift flatten_if';
+    } in
+  
+  Walk.walk_instrs walk_config instrs
+
 let rec mk_access ps base =
   match ps with
   | h :: t -> accE (base, h) |> mk_access t
@@ -483,8 +492,6 @@ let remove_state algo =
       {
         Walk.default_config with
         pre_instr = hide_state;
-        (* TODO: move `flaten_if` to enhance_readability *)
-        post_instr = lift flatten_if;
         pre_expr = hide_state_expr;
       }
   in
