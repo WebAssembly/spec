@@ -168,7 +168,7 @@ rule Step_read/call_ref-func:
 
   -- if $funcinst(z)[a] = fi
   -- Expand: fi.TYPE ~~ FUNC (t_1^n -> t_2^m)
-  -- if fi.CODE = FUNC y (LOCAL t)* (instr*)
+  -- if fi.CODE = FUNC x (LOCAL t)* (instr*)
   -- if f = {LOCALS val^n ($default_(t))*, MODULE fi.MODULE}
 
 

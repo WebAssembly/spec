@@ -3521,13 +3521,10 @@ $${rule: {Step_read/call}}
 
 6. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
 
-$${rule: {Step_read/call_ref-*}}
+$${rule: {Step_read/call_ref-null}}
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   F; (\REFFUNCADDR~a)~(\CALLREF~x) &\stepto& F; (\INVOKE~a) \\
-   F; (\REFNULL~\X{ht})~(\CALLREF~x) &\stepto& F; \TRAP \\
-   \end{array}
+.. note::
+   The formal rule for calling a non-null function reference is described :ref:`below <exec-invoke>`.
 
 
 .. _exec-call_indirect:
@@ -3730,8 +3727,8 @@ and returning from it.
 
 .. _exec-invoke:
 
-Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
-.................................................................
+Invocation of :ref:`function reference <syntax-ref.func>` :math:`(\REFFUNCADDR~a)`
+..................................................................................
 
 1. Assert: due to :ref:`validation <valid-call>`, :math:`S.\SFUNCS[a]` exists.
 
@@ -3755,59 +3752,10 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 11. :ref:`Enter <exec-instr-seq-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L`.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   S; \val^n~(\INVOKE~a) &\stepto& S; \FRAME_m\{F\}~\LABEL_m\{\}~\instr^\ast~\END~\END
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & S.\SFUNCS[a] = f \\
-     \wedge & \expanddt(f.\FITYPE) = \TFUNC~[t_1^n] \toF [t_2^m] \\
-     \wedge & f.\FICODE = \{ \FTYPE~x, \FLOCALS~\{\LTYPE~t\}^k, \FBODY~\instr^\ast~\END \} \\
-     \wedge & F = \{ \AMODULE~f.\FIMODULE, ~\ALOCALS~\val^n~(\default_t)^k \})
-     \end{array} \\
-   \end{array}
+$${rule: {Step_read/call_ref-func}}
 
 .. note::
    For non-defaultable types, the respective local is left uninitialized by these rules.
-
-
-.. _exec-return-invoke:
-
-Tail-invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
-......................................................................
-
-1. Assert: due to :ref:`validation <valid-call>`, :math:`S.\SFUNCS[a]` exists.
-
-2. Let :math:`\TFUNC~[t_1^n] \toF [t_2^m]` be the :ref:`composite type <syntax-comptype>` :math:`\expanddt(S.\SFUNCS[a].\FITYPE)`.
-
-3. Assert: due to :ref:`validation <valid-return_call>`, there are at least :math:`n` values on the top of the stack.
-
-4. Pop the results :math:`\val^n` from the stack.
-
-5. Assert: due to :ref:`validation <valid-return_call>`, the stack contains at least one :ref:`frame <syntax-frame>`.
-
-6. While the top of the stack is not a frame, do:
-
-   a. Pop the top element from the stack.
-
-7. Assert: the top of the stack is a frame.
-
-8. Pop the frame from the stack.
-
-9. Push :math:`\val^n` to the stack.
-
-10. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
-
-.. math::
-   ~\\[-1ex]
-   \begin{array}{lcl@{\qquad}l}
-    S; \FRAME_m\{F\}~B^\ast[\val^n~(\RETURNINVOKE~a)]~\END &\stepto&
-      \val^n~(\INVOKE~a)
-      & (\iff \expanddt(S.\SFUNCS[a].\FITYPE) = \TFUNC~[t_1^n] \toF [t_2^m])
-   \end{array}
 
 
 .. _exec-invoke-exit:
