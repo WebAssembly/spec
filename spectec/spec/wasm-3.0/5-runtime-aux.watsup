@@ -76,7 +76,7 @@ def $store((s; f)) = s
 def $frame((s; f)) = f
 
 
-def $funcaddr(state) : funcaddr*      hint(show %.MODULE.FUNC)
+def $funcaddr(state) : funcaddr*      hint(show %.MODULE.FUNCS)
 def $funcaddr((s; f)) = f.MODULE.FUNCS
 
 def $funcinst(state) : funcinst*      hint(show %.FUNCS)

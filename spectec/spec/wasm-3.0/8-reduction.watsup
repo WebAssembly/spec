@@ -185,6 +185,7 @@ rule Step_read/return_call_ref-frame-null:
 
 rule Step_read/return_call_ref-frame-addr:
   z; (FRAME_ k `{f} val'* val^n (REF.FUNC_ADDR a) (RETURN_CALL_REF yy) instr*)  ~>  val^n (REF.FUNC_ADDR a) (CALL_REF yy)
+
   -- Expand: $funcinst(z)[a].TYPE ~~ FUNC (t_1^n -> t_2^m)
 
 

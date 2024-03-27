@@ -3599,12 +3599,6 @@ $${rule: {Step_pure/call_indirect}}
 
 $${rule: {Step_read/return_call}}
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   (\RETURNCALL~x) &\stepto& (\RETURNINVOKE~a)
-     & (\iff (\CALL~x) \stepto (\INVOKE~a))
-   \end{array}
-
 
 .. _exec-return_call_ref:
 
@@ -3626,14 +3620,6 @@ $${rule: {Step_read/return_call}}
 6. :ref:`Tail-invoke <exec-return-invoke>` the function instance at address :math:`a`.
 
 $${rule: {Step_read/return_call_ref-*}}
-
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   \val~(\RETURNCALLREF~x) &\stepto& (\RETURNINVOKE~a)
-     & (\iff \val~(\CALLREF~x) \stepto (\INVOKE~a)) \\
-   \val~(\RETURNCALLREF~x) &\stepto& \TRAP
-     & (\iff \val~(\CALLREF~x) \stepto \TRAP) \\
-   \end{array}
 
 
 .. _exec-return_call_indirect:
@@ -3682,14 +3668,6 @@ $${rule: {Step_read/return_call_ref-*}}
 17. :ref:`Tail-invoke <exec-return-invoke>` the function instance at address :math:`a`.
 
 $${rule: {Step_pure/return_call_indirect}}
-
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   \val~(\RETURNCALLINDIRECT~x~y) &\stepto& (\RETURNINVOKE~a)
-     & (\iff \val~(\CALLINDIRECT~x~y) \stepto (\INVOKE~a)) \\
-   \val~(\RETURNCALLINDIRECT~x~y) &\stepto& \TRAP
-     & (\iff \val~(\CALLINDIRECT~x~y) \stepto \TRAP) \\
-   \end{array}
 
 
 .. index:: instruction, instruction sequence, block

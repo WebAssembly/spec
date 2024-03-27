@@ -834,7 +834,7 @@ and render_conditions env rhs tabs prems =
     | Nl::prems'' ->
       "\\multicolumn{2}{l@{}}{ " ^ rhs ^ " } \\\\\n  " ^ tabs,
       prems'', tabs, " \\multicolumn{2}{l@{}}{\\quad ", "}"
-    | _ -> rhs ^  "\n  &", prems', tabs ^ "&", "\\quad ", ""
+    | _ -> rhs ^  "\n  &", prems', tabs ^ "&", "\\qquad ", ""
   in
   let prems''', first =
     match prems'' with
