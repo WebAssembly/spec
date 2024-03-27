@@ -192,7 +192,7 @@ and al_to_el_record record =
 
 (* Helpers *)
 
-let indent = "   "
+let indent = "    "
 
 let rec repeat str num =
   if num = 0 then ""
