@@ -286,10 +286,7 @@ $${rule+: Step_read/struct.new_default}
 
 .. _exec-struct.get:
 
-STRUCT.GET
-^^^^^^^^^^
-
-TODO (too deeply nested)
+$${rule-prose: exec/struct.get}
 
 \
 
@@ -777,8 +774,7 @@ $${rule-prose: exec/call}
 
 $${rule: Step_read/call}
 
-CALL_REF
-^^^^^^^^
+.. _exec-call_ref:
 
 $${rule-prose: exec/call_ref}
 
@@ -802,10 +798,9 @@ $${rule-prose: exec/return_call}
 
 $${rule+: Step_read/return_call}
 
-RETURN_CALL_REF
-^^^^^^^^^^^^^^^
+.. _exec-return_call_ref:
 
-TODO (too deeply nested)
+$${rule-prose: exec/return_call_ref}
 
 \
 
