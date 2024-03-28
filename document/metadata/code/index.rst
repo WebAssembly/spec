@@ -11,6 +11,5 @@ WebAssembly Code Metadata
    :maxdepth: 1
 
    intro
-   syntax
    binary
    text
