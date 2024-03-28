@@ -158,7 +158,7 @@ rule Instrs_ok/seq:
 rule Instrs_ok/sub:
   C |- instr* : t'_1* -> t'_2*
   -- Instrs_ok: C |- instr* : t_1* -> t_2*
-
+  ----
   -- Resulttype_sub: |- t'_1* <: t_1*
   -- Resulttype_sub: |- t_2* <: t'_2*
 
@@ -647,25 +647,25 @@ rule Module_ok:
   |- MODULE type* import* func* global* table* mem* elem* data^n start? export* : OK
   -- (Type_ok: |- type : ft')*
   -- (Import_ok: {TYPES ft'*} |- import : ixt)*
-
+  ----
   -- (Global_ok: C' |- global : gt)*
   -- (Table_ok: C' |- table : tt)*
   -- (Mem_ok: C' |- mem : mt)*
-
+  ----
   -- (Elem_ok: C' |- elem : rt)*
   -- (Data_ok: C' |- data : OK)^n
-
+  ----
   -- (Func_ok: C |- func : ft)*
   -- (Start_ok: C |- start : OK)?
   -- (Export_ok: C |- export : xt)*
-
+  ----
   -- if |mt*| <= 1
   ;; -- TODO: disjoint export names
-
+  ----
   -- if C = {TYPES ft'*, FUNCS ift* ft*, GLOBALS igt* gt*, TABLES itt* tt*, MEMS imt* mt*, ELEMS rt*, DATAS OK^n}
-
+  ----
   -- if C' = {TYPES ft'*, FUNCS ift* ft*, GLOBALS igt*, TABLES itt* tt*, MEMS imt* mt*}
-
+  ----
   -- if ift* = $funcsxt(ixt*)
   -- if igt* = $globalsxt(ixt*)
   -- if itt* = $tablesxt(ixt*)

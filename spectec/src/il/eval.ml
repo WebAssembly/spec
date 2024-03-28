@@ -744,8 +744,8 @@ and sub_typ env t1 t2 =
         | None -> false
       ) tfs2
     | VariantT tcs1, VariantT tcs2 ->
-      List.for_all (fun (atom, (_binds1, t1, prems1), _) ->
-        match find_case tcs2 atom with
+      List.for_all (fun (mixop, (_binds1, t1, prems1), _) ->
+        match find_case tcs2 mixop with
         | Some (_binds2, t2, prems2) ->
           sub_typ env t1 t2 && equiv_list equiv_prem env prems1 prems2
         | None -> false

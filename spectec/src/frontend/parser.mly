@@ -114,7 +114,7 @@ let rec is_typcon t =
 
 %token LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE
 %token COLON SEMICOLON COMMA DOT DOTDOT DOTDOTDOT BAR BARBAR DASH BIGCOMP BIGAND BIGOR
-%token COMMA_NL NL_BAR NL_NL_DASH NL_NL_NL
+%token COMMA_NL NL_BAR NL_NL_NL
 %token EQ NE LT GT LE GE APPROX EQUIV ASSIGN SUB SUP EQDOT2
 %token NOT AND OR
 %token QUEST PLUS MINUS STAR SLASH BACKSLASH UP COMPOSE PLUSMINUS MINUSPLUS
@@ -189,8 +189,8 @@ nl_bar_list1(X, Y) :
 
 nl_dash_list(X) :
   | (* empty *) { [] }
+  | DASH DASH nl_dash_list(X) { Nl::$3 }
   | DASH X nl_dash_list(X) { (Elem $2)::$3 }
-  | NL_NL_DASH X nl_dash_list(X) { Nl::(Elem $2)::$3 }
 
 %inline dots :
   | DOTDOTDOT {}

@@ -121,7 +121,6 @@ rule after_nl = parse
 
 and after_nl_nl = parse
   | indent* "|"[' ''\t'] { NL_BAR }
-  | indent* "--" { NL_NL_DASH }
   | indent* '\n' { Lexing.new_line lexbuf; NL_NL_NL }
   | indent* line_comment '\n' { Lexing.new_line lexbuf; after_nl_nl lexbuf }
   | "" { token lexbuf }
@@ -149,8 +148,6 @@ and token = parse
 (*
   | line_comment? '\n' indent* "|"[' ''\t']
     { Lexing.new_line lexbuf; NL_BAR }
-  | line_comment? '\n' indent* '\n' (indent* line_comment '\n')* indent* "--"
-    { Lexing.new_line lexbuf; Lexing.new_line lexbuf; NL_NL_DASH }
   | line_comment? '\n' indent* '\n' indent* '\n'
     { Lexing.new_line lexbuf; Lexing.new_line lexbuf; Lexing.new_line lexbuf;
       NL_NL_NL }

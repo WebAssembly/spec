@@ -71,11 +71,12 @@ Conventions
 $${definition-ignore: vsize}
 
 
-.. index:: ! heap type, store, type index, ! abstract type, ! concrete type, ! unboxed scalar
+.. index:: ! heap type, store, type index, ! type use, ! abstract type, ! concrete type, ! unboxed scalar
    pair: abstract syntax; heap type
 .. _type-abstract:
 .. _type-concrete:
 .. _syntax-i31:
+.. _syntax-typeuse:
 .. _syntax-heaptype:
 
 Heap Types
@@ -91,7 +92,7 @@ There are three disjoint hierarchies of heap types:
 The values from the latter two hierarchies are interconvertible by ways of the ${instr: EXTERN.CONVERT_ANY} and ${instr: ANY.CONVERT_EXTERN} instructions.
 That is, both type hierarchies are inhabited by an isomorphic set of values, but may have different, incompatible representations in practice.
 
-$${syntax: {absheaptype/syn heaptype/syn}}
+$${syntax: {absheaptype/syn heaptype typeuse/syn}}
 
 A heap type is either *abstract* or *concrete*.
 
@@ -125,9 +126,10 @@ Their observable value range is limited to 31 bits.
    they can be used to form the types of all null :ref:`references <syntax-reftype>` in their respective hierarchy.
    For example, ${:(REF NULL NOFUNC)} is the generic type of a null reference compatible with all function reference types.
 
-A concrete heap type consists of a :ref:`type index <syntax-typeidx>` and classifies an object of the respective :ref:`type <syntax-type>` defined in a module.
+A concrete heap type consists of a *type use*, which is a :ref:`type index <syntax-typeidx>`.
+It classifies an object of the respective :ref:`type <syntax-type>` defined in a module.
 
-The syntax of heap types is :ref:`extended <syntax-heaptype-ext>` with additional forms for the purpose of specifying :ref:`validation <valid>` and :ref:`execution <exec>`.
+The syntax of abstract heap types and type uses is :ref:`extended <syntax-heaptype-ext>` with additional forms for the purpose of specifying :ref:`validation <valid>` and :ref:`execution <exec>`.
 
 
 .. index:: ! reference type, heap type, reference, table, function, function type, null

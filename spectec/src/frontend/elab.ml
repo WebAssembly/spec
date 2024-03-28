@@ -607,9 +607,15 @@ and elab_typ_definition env tid t : Il.deftyp =
   | CaseT (dots1, ts, cases, _dots2) ->
     let cases0 =
       if dots1 = Dots then fst (as_variant_typid "own type" env tid []) else [] in
-    let casess = map_filter_nl_list (fun t -> as_variant_typ "parent type" env Infer t t.at) ts in
-    let cases' =
-      List.flatten (cases0 :: List.map fst casess @ [filter_nl cases]) in
+    let casess =
+      map_filter_nl_list (fun t ->
+        let cases, dots = as_variant_typ "parent type" env Infer t t.at in
+        if dots = Dots then
+          error t.at "cannot include incomplete syntax type";
+        cases
+      ) ts
+    in
+    let cases' = List.flatten (cases0 :: casess @ [filter_nl cases]) in
     let tcs' = List.map (elab_typcase env tid t.at) cases' in
     check_atoms "variant" "case" cases' t.at;
     Il.VariantT tcs'
@@ -1587,10 +1593,11 @@ and elab_sym_list env = function
 
 and elab_prod env prod t =
   let (g, e, prems) = prod.it in
-  let _e' = elab_exp env e t in
-  let _prems' = concat_map_filter_nl_list (elab_prem env) prems in
-  ignore (elab_sym env g);
-  let free = Free.(diff (free_prod prod) (union (det_prod prod) (bound_env env))) in
+  let env' = local_env env in
+  let _prems' = concat_map_filter_nl_list (elab_prem env') prems in
+  let _g, env'' = elab_sym env' g in
+  let _e' = elab_exp env'' e t in
+  let free = Free.(diff (free_prod prod) (union (det_prod prod) (bound_env env''))) in
   if free <> Free.empty then
     error prod.at ("grammar rule contains indeterminate variable(s) `" ^
       String.concat "`, `" (Free.Set.elements free.varid) ^ "`")

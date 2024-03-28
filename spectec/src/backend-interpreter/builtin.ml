@@ -26,7 +26,7 @@ let builtin () =
     let dt =
       CaseV ("DEF", [
         CaseV ("REC", [
-          [| CaseV ("SUBD", [none "FINAL"; listV [||]; ftype]) |] |> listV
+          [| CaseV ("SUB", [none "FINAL"; listV [||]; ftype]) |] |> listV
         ]); numV Z.zero
       ]) in
     name, StrV [

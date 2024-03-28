@@ -255,6 +255,7 @@ premise ::=
   "if" exp                                                  side condition
   "otherwise"                                               fallback side condition
   "(" premise ")" iter*                                     iterated relational premise
+  "--"                                                      separator
 
 hint ::=
   "hint" "(" hintid exp ")"                                 hint

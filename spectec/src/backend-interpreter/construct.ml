@@ -126,7 +126,7 @@ and al_to_str_type: value -> str_type = function
   | v -> error_value "str type" v
 
 and al_to_sub_type: value -> sub_type = function
-  | CaseV ("SUBD", [ fin; htl; st ]) ->
+  | CaseV ("SUB", [ fin; htl; st ]) ->
     SubT (al_to_final fin, al_to_list al_to_heap_type htl, al_to_str_type st)
   | v -> error_value "sub type" v
 
@@ -137,6 +137,13 @@ and al_to_rec_type: value -> rec_type = function
 and al_to_def_type: value -> def_type = function
   | CaseV ("DEF", [ rt; i32 ]) -> DefT (al_to_rec_type rt, al_to_int32 i32)
   | v -> error_value "def type" v
+
+and al_to_typeuse: value -> idx = function
+  | v when !version <= 2 -> al_to_idx v
+  | CaseV ("_IDX", [ i32 ]) -> al_to_idx i32
+  | CaseV ("REC", _) -> 0l @@ no_region   (* dummy *)
+  | CaseV ("DEF", _) -> 0l @@ no_region   (* dummy *)
+  | v -> error_value "type use" v
 
 and al_to_heap_type: value -> heap_type = function
   | CaseV ("_IDX", [ i32 ]) -> VarHT (StatX (al_to_int32 i32))
@@ -820,13 +827,13 @@ and al_to_instr': value -> Ast.instr' = function
     BrOnCastFail (al_to_idx idx, al_to_ref_type rt1, al_to_ref_type rt2)
   | CaseV ("RETURN", []) -> Return
   | CaseV ("CALL", [ idx ]) -> Call (al_to_idx idx)
-  | CaseV ("CALL_REF", [ OptV (Some idx) ]) -> CallRef (al_to_idx idx)
-  | CaseV ("CALL_INDIRECT", [ idx1; idx2 ]) ->
-    CallIndirect (al_to_idx idx1, al_to_idx idx2)
+  | CaseV ("CALL_REF", [ typeuse ]) -> CallRef (al_to_typeuse typeuse)
+  | CaseV ("CALL_INDIRECT", [ idx1; typeuse2 ]) ->
+    CallIndirect (al_to_idx idx1, al_to_typeuse typeuse2)
   | CaseV ("RETURN_CALL", [ idx ]) -> ReturnCall (al_to_idx idx)
-  | CaseV ("RETURN_CALL_REF", [ OptV (Some idx) ]) -> ReturnCallRef (al_to_idx idx)
-  | CaseV ("RETURN_CALL_INDIRECT", [ idx1; idx2 ]) ->
-    ReturnCallIndirect (al_to_idx idx1, al_to_idx idx2)
+  | CaseV ("RETURN_CALL_REF", [ typeuse ]) -> ReturnCallRef (al_to_typeuse typeuse)
+  | CaseV ("RETURN_CALL_INDIRECT", [ idx1; typeuse2 ]) ->
+    ReturnCallIndirect (al_to_idx idx1, al_to_typeuse typeuse2)
   | CaseV ("LOAD", loadop) -> let idx, op = al_to_loadop loadop in Load (idx, op)
   | CaseV ("STORE", storeop) -> let idx, op = al_to_storeop storeop in Store (idx, op)
   | CaseV ("VLOAD", vloadop) -> let idx , op = al_to_vloadop vloadop in VecLoad (idx, op)
@@ -1099,13 +1106,17 @@ and al_of_str_type = function
 
 and al_of_sub_type = function
   | SubT (fin, htl, st) ->
-    CaseV ("SUBD", [ al_of_final fin; al_of_list al_of_heap_type htl; al_of_str_type st ])
+    CaseV ("SUB", [ al_of_final fin; al_of_list al_of_heap_type htl; al_of_str_type st ])
 
 and al_of_rec_type = function
   | RecT stl -> CaseV ("REC", [ al_of_list al_of_sub_type stl ])
 
 and al_of_def_type = function
   | DefT (rt, i) -> CaseV ("DEF", [al_of_rec_type rt; al_of_int32 i])
+
+and al_of_typeuse = function
+  | idx when !version <= 2 -> al_of_idx idx
+  | idx -> CaseV ("_IDX", [ al_of_idx idx ])
 
 and al_of_heap_type = function
   | VarHT (StatX i) -> CaseV ("_IDX", [ al_of_int32 i ])
@@ -1793,12 +1804,12 @@ let rec al_of_instr instr =
   | Call idx -> CaseV ("CALL", [ al_of_idx idx ])
   | CallRef idx -> CaseV ("CALL_REF", [ optV (Some (al_of_idx idx)) ])
   | CallIndirect (idx1, idx2) ->
-    let args = al_with_version [ 2; 3 ] al_of_idx idx1 @ [ al_of_idx idx2 ] in
+    let args = al_with_version [ 2; 3 ] al_of_idx idx1 @ [ al_of_typeuse idx2 ] in
     CaseV ("CALL_INDIRECT", args)
   | ReturnCall idx -> CaseV ("RETURN_CALL", [ al_of_idx idx ])
-  | ReturnCallRef idx -> CaseV ("RETURN_CALL_REF", [ optV (Some (al_of_idx idx)) ])
+  | ReturnCallRef idx -> CaseV ("RETURN_CALL_REF", [ optV (Some (al_of_typeuse idx)) ])
   | ReturnCallIndirect (idx1, idx2) ->
-    CaseV ("RETURN_CALL_INDIRECT", [ al_of_idx idx1; al_of_idx idx2 ])
+    CaseV ("RETURN_CALL_INDIRECT", [ al_of_idx idx1; al_of_typeuse idx2 ])
   | Load (idx, loadop) -> CaseV ("LOAD", al_of_loadop idx loadop)
   | Store (idx, storeop) -> CaseV ("STORE", al_of_storeop idx storeop)
   | VecLoad (idx, vloadop) -> CaseV ("VLOAD", al_of_vloadop idx vloadop)
@@ -1866,7 +1877,7 @@ let al_of_type ty =
 
     match sub_types with
     | [ subtype ] ->
-      let rt = subtype |> arg_of_case "SUBD" 2 |> arg_of_case "FUNC" 0 in
+      let rt = subtype |> arg_of_case "SUB" 2 |> arg_of_case "FUNC" 0 in
       CaseV ("TYPE", [ rt ])
     | _ -> failwith ("Rectype is not supported in Wasm " ^ (string_of_int !version))
 
