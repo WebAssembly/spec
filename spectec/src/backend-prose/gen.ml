@@ -141,7 +141,14 @@ let gen_validation_prose il =
   |> List.map vrule_group_to_prose
 
 (** Entry for generating execution prose **)
-let gen_execution_prose = List.map (fun algo -> Prose.Algo algo)
+let gen_execution_prose =
+  List.map
+    (fun algo ->
+      let algo = match algo with
+      | Al.Ast.RuleA _ -> Il2al.Transpile.insert_state_binding algo
+      | Al.Ast.FuncA _ -> Il2al.Transpile.remove_state algo
+      in
+      Prose.Algo algo)
 
 (** Main entry for generating prose **)
 let gen_prose il al =

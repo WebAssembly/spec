@@ -1,6 +1,6 @@
 (library
   (name backend_prose)
-  (libraries util el il backend_interpreter backend_latex il2al)
+  (libraries util el il il2al backend_latex backend_interpreter)
   (modules
     config
     prose

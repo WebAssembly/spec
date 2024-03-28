@@ -316,14 +316,6 @@ let rec remove_nop acc il = match il with
   | { it = NopI; _ } :: acc' -> remove_nop (i' :: acc') il'
   | _ -> remove_nop (i' :: acc) il'
 
-let flatten_if instr =
-  let at1 = instr.at in
-  match instr.it with
-  | IfI (e1, [ { it = IfI (e2, il1, il2); at = at2; _ }], []) ->
-    let at = over_region [ at1; at2 ] in
-    ifI (binE (AndOp, e1, e2) ~at:at, il1, il2) ~at:at1
-  | _ -> instr
-
 let simplify_record_concat expr =
   let expr' =
     match expr.it with
@@ -417,6 +409,23 @@ let rec enhance_readability instrs =
 
   if Eq.eq_instrs instrs instrs' then instrs else enhance_readability instrs'
 
+let flatten_if instrs =
+  let flatten_if' instr =
+    let at1 = instr.at in
+    match instr.it with
+    | IfI (e1, [ { it = IfI (e2, il1, il2); at = at2; _ }], []) ->
+      let at = over_region [ at1; at2 ] in
+      ifI (binE (AndOp, e1, e2) ~at:at, il1, il2) ~at:at1
+    | _ -> instr
+  in
+  let walk_config =
+    {
+      Walk.default_config with
+      post_instr = lift flatten_if';
+    } in
+  
+  Walk.walk_instrs walk_config instrs
+
 let rec mk_access ps base =
   match ps with
   | h :: t -> accE (base, h) |> mk_access t
@@ -483,8 +492,6 @@ let remove_state algo =
       {
         Walk.default_config with
         pre_instr = hide_state;
-        (* TODO: move `flaten_if` to enhance_readability *)
-        post_instr = lift flatten_if;
         pre_expr = hide_state_expr;
       }
   in
@@ -497,6 +504,33 @@ let remove_state algo =
         FuncA (name, tail, body)
     | _ -> FuncA(name, params, body))
   | RuleA _ as a -> a
+
+let insert_state_binding algo =
+  let state_count = ref 0 in
+
+  let count_state e =
+    (match e.it with
+    | VarE "z" -> state_count := !state_count + 1
+    | _ -> ());
+    e
+  in
+
+  let walk_config =
+    {
+      Walk.default_config with
+      pre_expr = count_state;
+    }
+  in
+
+  match Walk.walk walk_config algo with
+  | FuncA (name, params, body) when !state_count > 0 ->
+    let body = (letI (varE "z", getCurStateE ())) :: body in
+    FuncA (name, params, body)
+  | RuleA (name, params, body) when !state_count > 0 ->
+    let body = (letI (varE "z", getCurStateE ())) :: body in
+    RuleA (name, params, body)
+  | _ -> algo
+
 
 (* Applied for reduction rules: infer assert from if *)
 let count_if instrs =

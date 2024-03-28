@@ -3,7 +3,6 @@ open Ast
 open Free
 open Al_util
 open Printf
-open Backend_interpreter.Manual
 open Util
 open Source
 
@@ -671,9 +670,9 @@ let translate_helper_body name clause =
     (* TODO: Remove hack *)
     let return_instrs =
       if name = "instantiate" then
-        translate_config re |> return_instrs_of_instantiate
+        translate_config re |> Manual.return_instrs_of_instantiate
       else if name = "invoke" then
-        translate_config re |> return_instrs_of_invoke
+        translate_config re |> Manual.return_instrs_of_invoke
       else
         [ returnI (Some (translate_exp re)) ]
     in
@@ -697,7 +696,8 @@ let translate_helper partial_funcs def =
       blocks
       |> Transpile.merge_blocks
       |> Transpile.enhance_readability
-      |> if List.mem id partial_funcs then Fun.id else Transpile.ensure_return in
+      |> (if List.mem id partial_funcs then Fun.id else Transpile.ensure_return)
+      |> Transpile.flatten_if in
 
     Some (FuncA (name, params, body))
   | _ -> None
@@ -958,6 +958,7 @@ and translate_rgroup (instr_name, rgroup) =
     |> insert_nop
     |> Transpile.enhance_readability
     |> Transpile.infer_assert
+    |> Transpile.flatten_if
   in
   RuleA (name, al_params', body)
 
@@ -1008,8 +1009,4 @@ let translate_rules il =
 (* Entry *)
 let translate il =
   let il = List.concat_map flatten_rec il in
-  let algos = translate_helpers il @ translate_rules il in
-
-  (* Transpile *)
-  (* Can be turned off *)
-  List.map Transpile.remove_state algos
+  translate_helpers il @ translate_rules il

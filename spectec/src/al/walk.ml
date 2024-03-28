@@ -34,6 +34,7 @@ let rec walk_expr f e =
       match e.it with
       | NumE _
       | BoolE _
+      | GetCurStateE
       | GetCurFrameE
       | GetCurLabelE
       | GetCurContextE -> e.it

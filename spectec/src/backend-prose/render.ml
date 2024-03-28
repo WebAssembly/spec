@@ -163,7 +163,9 @@ and al_to_el_expr expr =
       let ela = al_to_el_atom a in
       let ela = (El.Ast.AtomE ela) $ no_region in
       let* elel = al_to_el_exprs el in
-      Some (El.Ast.SeqE ([ ela ] @ elel))
+      let ele = El.Ast.SeqE ([ ela ] @ elel) in
+      if List.length elel = 0 then Some ele
+      else Some (El.Ast.ParenE (ele $ no_region, false))
     | Al.Ast.OptE (Some e) ->
       let* ele = al_to_el_expr e in
       Some (ele.it)
@@ -270,13 +272,15 @@ let render_atom env a =
 
 (* Category 1 is translated to EL then rendered by the Latex backend *)
 
+let render_el_exp env exp =
+  (* embedded math blocks cannot have line-breaks *)
+  let newline = Str.regexp "\n" in
+  let sexp = Backend_latex.Render.render_exp env.render_latex exp in
+  let sexp = Str.global_replace newline "" sexp in
+  render_math sexp
+
 let rec render_expr env expr = match al_to_el_expr expr with
-  | Some exp ->
-    (* embedded math blocks cannot have line-breaks *)
-    let newline = Str.regexp "\n" in
-    let sexp = Backend_latex.Render.render_exp env.render_latex exp in
-    let sexp = Str.global_replace newline "" sexp in
-    render_math sexp
+  | Some exp -> render_el_exp env exp
   | None -> render_expr' env expr
 
 (* Categories 2 and 3 are rendered by the prose backend,
@@ -329,6 +333,7 @@ and render_expr' env expr =
   | Al.Ast.ArityE e ->
     let se = render_expr env e in
     sprintf "the arity of %s" se
+  | Al.Ast.GetCurStateE -> "the current state"
   | Al.Ast.GetCurLabelE -> "the current label"
   | Al.Ast.GetCurFrameE -> "the current frame"
   | Al.Ast.GetCurContextE -> "the current context"
@@ -567,7 +572,11 @@ let render_atom_title env name params =
     | _ -> name'
   in
   let name = (name', typ) in
-  render_expr env (Al.Ast.CaseE (name, params) $ no_region)
+  let expr = Al.Ast.CaseE (name, params) $ no_region in
+  match al_to_el_expr expr with
+  | Some ({ it = El.Ast.ParenE (exp, _); _ }) -> render_el_exp env exp
+  | Some exp -> render_el_exp env exp
+  | None -> render_expr' env expr
 
 let render_funcname_title env fname params =
   render_expr env (Al.Ast.CallE (fname, params) $ no_region)

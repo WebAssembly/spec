@@ -55,6 +55,7 @@ let rec eq_expr e1 e2 =
   | LabelE (e11, e12), LabelE (e21, e22) ->
       eq_expr e11 e21 &&
       eq_expr e12 e22
+  | GetCurStateE, GetCurStateE
   | GetCurFrameE, GetCurFrameE
   | GetCurLabelE, GetCurLabelE
   | GetCurContextE, GetCurContextE -> true

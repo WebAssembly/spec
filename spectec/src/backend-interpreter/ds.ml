@@ -331,6 +331,8 @@ end
 (* Initialization *)
 
 let init algos =
+  let algos = List.map Il2al.Transpile.remove_state algos in
+
   (* Initialize info_map *)
   let init_info algo =
     let algo_name = name_of_algo algo in
