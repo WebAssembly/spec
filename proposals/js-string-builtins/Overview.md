@@ -415,7 +415,7 @@ func length(string: externref) -> i32 {
 func concat(
   first: externref,
   second: externref
-) -> externref
+) -> (ref extern)
 {
   if (first === null ||
       typeof first !== "string")
