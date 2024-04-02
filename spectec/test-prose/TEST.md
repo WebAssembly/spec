@@ -1370,28 +1370,6 @@ validation_of_VVTERNOP V128 vvternop
 validation_of_VVTESTOP V128 vvtestop
 - The instruction is valid with type ([V128] -> [I32]).
 
-validation_of_VBITMASK sh
-- The instruction is valid with type ([V128] -> [I32]).
-
-validation_of_VSWIZZLE sh
-- The instruction is valid with type ([V128, V128] -> [V128]).
-
-validation_of_VSHUFFLE (imm X N) i*
-- For all i in i*,
-  - i must be less than (N · 2).
-- The instruction is valid with type ([V128, V128] -> [V128]).
-
-validation_of_VSPLAT (lnn X N)
-- The instruction is valid with type ([$unpack(lnn)] -> [V128]).
-
-validation_of_VEXTRACT_LANE (lnn X N) sx? i
-- i must be less than N.
-- The instruction is valid with type ([V128] -> [$unpack(lnn)]).
-
-validation_of_VREPLACE_LANE (lnn X N) i
-- i must be less than N.
-- The instruction is valid with type ([V128, $unpack(lnn)] -> [V128]).
-
 validation_of_VUNOP sh vunop_sh
 - The instruction is valid with type ([V128] -> [V128]).
 
@@ -1407,17 +1385,39 @@ validation_of_VRELOP sh vrelop_sh
 validation_of_VSHIFTOP sh vshiftop_sh
 - The instruction is valid with type ([V128, I32] -> [V128]).
 
-validation_of_VCVTOP sh vcvtop hf? sh sx? zero
-- The instruction is valid with type ([V128] -> [V128]).
+validation_of_VBITMASK sh
+- The instruction is valid with type ([V128] -> [I32]).
 
-validation_of_VNARROW sh sh sx
+validation_of_VSWIZZLE sh
 - The instruction is valid with type ([V128, V128] -> [V128]).
 
-validation_of_VEXTUNOP sh sh vextunop sx
+validation_of_VSHUFFLE sh i*
+- For all i in i*,
+  - i must be less than (2 · $dim(sh)).
+- The instruction is valid with type ([V128, V128] -> [V128]).
+
+validation_of_VSPLAT sh
+- The instruction is valid with type ([$shunpack(sh)] -> [V128]).
+
+validation_of_VEXTRACT_LANE sh sx? i
+- i must be less than $dim(sh).
+- The instruction is valid with type ([V128] -> [$shunpack(sh)]).
+
+validation_of_VREPLACE_LANE sh i
+- i must be less than $dim(sh).
+- The instruction is valid with type ([V128, $shunpack(sh)] -> [V128]).
+
+validation_of_VEXTUNOP sh_1 sh_2 vextunop sx
 - The instruction is valid with type ([V128] -> [V128]).
 
-validation_of_VEXTBINOP sh sh vextbinop sx
+validation_of_VEXTBINOP sh_1 sh_2 vextbinop sx
 - The instruction is valid with type ([V128, V128] -> [V128]).
+
+validation_of_VNARROW sh_1 sh_2 sx
+- The instruction is valid with type ([V128, V128] -> [V128]).
+
+validation_of_VCVTOP sh_1 vcvtop hf? sh_2 sx? zero?
+- The instruction is valid with type ([V128] -> [V128]).
 
 validation_of_LOCAL.GET x
 - |C.LOCALS| must be greater than x.
@@ -1670,6 +1670,12 @@ lsize lanet_u0
 lanetype (lnn X N)
 1. Return lnn.
 
+sizenn nt
+1. Return $size(nt).
+
+sizemm lt
+1. Return $lsize(lt).
+
 zero numty_u0
 1. If the type of numty_u0 is inn, then:
   a. Return 0.
@@ -1695,6 +1701,9 @@ unpack lanet_u0
   b. Return numtype.
 2. Assert: Due to validation, the type of lanet_u0 is packtype.
 3. Return I32.
+
+shunpack (lnn X N)
+1. Return $unpack(lnn).
 
 funcsxt exter_u0*
 1. If (exter_u0* is []), then:
@@ -3165,10 +3174,10 @@ execution_of_VNARROW (imm_2 X N_2) (imm_1 X N_1) sx
 9. Let c be $invlanes_((imm_2 X N_2), cj_1* ++ cj_2*).
 10. Push the value (V128.CONST c) to the stack.
 
-execution_of_VCVTOP (lanet_u2 X N_2) vcvtop half_u0? (lanet_u3 X N_1) sx_u1? (ZERO _u4?)
+execution_of_VCVTOP (lanet_u2 X N_2) vcvtop half_u0? (lanet_u3 X N_1) sx_u1? zero_u4?
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
-3. If (half_u0? is not defined and _u4? is not defined), then:
+3. If (half_u0? is not defined and zero_u4? is not defined), then:
   a. Let lnn_1 be lanet_u3.
   b. Let lnn_2 be lanet_u2.
   c. If sx_u1? is defined, then:
@@ -3176,7 +3185,7 @@ execution_of_VCVTOP (lanet_u2 X N_2) vcvtop half_u0? (lanet_u3 X N_1) sx_u1? (ZE
     2) Let c'* be $lanes_((lnn_1 X N_1), c_1).
     3) Let c be $invlanes_((lnn_2 X N_2), $vcvtop((lnn_1 X N_1), (lnn_2 X N_2), vcvtop, ?(sx), c')*).
     4) Push the value (V128.CONST c) to the stack.
-4. If (_u4? is not defined and half_u0? is defined), then:
+4. If (zero_u4? is not defined and half_u0? is defined), then:
   a. Let ?(hf) be half_u0?.
   b. Let lnn_1 be lanet_u3.
   c. Let lnn_2 be lanet_u2.
@@ -3184,7 +3193,7 @@ execution_of_VCVTOP (lanet_u2 X N_2) vcvtop half_u0? (lanet_u3 X N_1) sx_u1? (ZE
   e. Let ci* be $lanes_((lnn_1 X N_1), c_1)[$halfop(hf, 0, N_2) : N_2].
   f. Let c be $invlanes_((lnn_2 X N_2), $vcvtop((lnn_1 X N_1), (lnn_2 X N_2), vcvtop, sx?, ci)*).
   g. Push the value (V128.CONST c) to the stack.
-5. If (half_u0? is not defined and ((_u4? is ?(())) and the type of lanet_u3 is numtype)), then:
+5. If (half_u0? is not defined and ((zero_u4? is ?(ZERO)) and the type of lanet_u3 is numtype)), then:
   a. Let nt_1 be lanet_u3.
   b. If the type of lanet_u2 is numtype, then:
     1) Let nt_2 be lanet_u2.
@@ -3709,8 +3718,8 @@ watsup 0.4 generator
 6-typing.watsup:806.6-806.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
 6-typing.watsup:835.6-835.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
 6-typing.watsup:840.6-840.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
-6-typing.watsup:978.6-978.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-6-typing.watsup:984.6-984.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:977.6-977.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:983.6-983.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 =================
  Generated prose
 =================
@@ -4027,28 +4036,6 @@ validation_of_VVTERNOP V128 vvternop
 validation_of_VVTESTOP V128 vvtestop
 - The instruction is valid with type ([V128] ->_ [] ++ [I32]).
 
-validation_of_VBITMASK sh
-- The instruction is valid with type ([V128] ->_ [] ++ [I32]).
-
-validation_of_VSWIZZLE sh
-- The instruction is valid with type ([V128, V128] ->_ [] ++ [V128]).
-
-validation_of_VSHUFFLE (imm X N) i*
-- For all i in i*,
-  - i must be less than (N · 2).
-- The instruction is valid with type ([V128, V128] ->_ [] ++ [V128]).
-
-validation_of_VSPLAT (lnn X N)
-- The instruction is valid with type ([$lunpack(lnn)] ->_ [] ++ [V128]).
-
-validation_of_VEXTRACT_LANE (lnn X N) sx? i
-- i must be less than N.
-- The instruction is valid with type ([V128] ->_ [] ++ [$lunpack(lnn)]).
-
-validation_of_VREPLACE_LANE (lnn X N) i
-- i must be less than N.
-- The instruction is valid with type ([V128, $lunpack(lnn)] ->_ [] ++ [V128]).
-
 validation_of_VUNOP sh vunop_sh
 - The instruction is valid with type ([V128] ->_ [] ++ [V128]).
 
@@ -4064,17 +4051,39 @@ validation_of_VRELOP sh vrelop_sh
 validation_of_VSHIFTOP sh vshiftop_sh
 - The instruction is valid with type ([V128, I32] ->_ [] ++ [V128]).
 
-validation_of_VCVTOP sh vcvtop hf? sh sx? zero
-- The instruction is valid with type ([V128] ->_ [] ++ [V128]).
+validation_of_VBITMASK sh
+- The instruction is valid with type ([V128] ->_ [] ++ [I32]).
 
-validation_of_VNARROW sh sh sx
+validation_of_VSWIZZLE sh
 - The instruction is valid with type ([V128, V128] ->_ [] ++ [V128]).
 
-validation_of_VEXTUNOP sh sh vextunop sx
+validation_of_VSHUFFLE sh i*
+- For all i in i*,
+  - i must be less than (2 · $dim(sh)).
+- The instruction is valid with type ([V128, V128] ->_ [] ++ [V128]).
+
+validation_of_VSPLAT sh
+- The instruction is valid with type ([$shunpack(sh)] ->_ [] ++ [V128]).
+
+validation_of_VEXTRACT_LANE sh sx? i
+- i must be less than $dim(sh).
+- The instruction is valid with type ([V128] ->_ [] ++ [$shunpack(sh)]).
+
+validation_of_VREPLACE_LANE sh i
+- i must be less than $dim(sh).
+- The instruction is valid with type ([V128, $shunpack(sh)] ->_ [] ++ [V128]).
+
+validation_of_VEXTUNOP sh_1 sh_2 vextunop sx
 - The instruction is valid with type ([V128] ->_ [] ++ [V128]).
 
-validation_of_VEXTBINOP sh sh vextbinop sx
+validation_of_VEXTBINOP sh_1 sh_2 vextbinop sx
 - The instruction is valid with type ([V128, V128] ->_ [] ++ [V128]).
+
+validation_of_VNARROW sh_1 sh_2 sx
+- The instruction is valid with type ([V128, V128] ->_ [] ++ [V128]).
+
+validation_of_VCVTOP sh_1 vcvtop hf? sh_2 sx? zero?
+- The instruction is valid with type ([V128] ->_ [] ++ [V128]).
 
 validation_of_LOCAL.GET x
 - |C.LOCALS| must be greater than x.
@@ -4346,6 +4355,9 @@ lanetype (lnn X N)
 sizenn nt
 1. Return $size(nt).
 
+sizemm lt
+1. Return $lsize(lt).
+
 zero numty_u0
 1. If the type of numty_u0 is inn, then:
   a. Return 0.
@@ -4448,6 +4460,9 @@ const const_u0 c
 2. Assert: Due to validation, the type of const_u0 is vectype.
 3. Let vectype be const_u0.
 4. Return (vectype.CONST c).
+
+shunpack (lnn X N)
+1. Return $lunpack(lnn).
 
 diffrt (REF nul_1 ht_1) (REF (NULL _u0?) ht_2)
 1. If (_u0? is ?(())), then:
@@ -6234,23 +6249,23 @@ execution_of_VNARROW (imm_2 X N_2) (imm_1 X N_1) sx
 9. Let c be $invlanes_((imm_2 X N_2), cj_1* ++ cj_2*).
 10. Push the value (V128.CONST c) to the stack.
 
-execution_of_VCVTOP (lanet_u1 X N_2) vcvtop half_u0? (lanet_u2 X N_1) sx? (ZERO _u3?)
+execution_of_VCVTOP (lanet_u1 X N_2) vcvtop half_u0? (lanet_u2 X N_1) sx? zero_u3?
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
-3. If (half_u0? is not defined and _u3? is not defined), then:
+3. If (half_u0? is not defined and zero_u3? is not defined), then:
   a. Let lnn_1 be lanet_u2.
   b. Let lnn_2 be lanet_u1.
   c. Let c'* be $lanes_((lnn_1 X N_1), c_1).
   d. Let c be $invlanes_((lnn_2 X N_2), $vcvtop((lnn_1 X N_1), (lnn_2 X N_2), vcvtop, sx?, c')*).
   e. Push the value (V128.CONST c) to the stack.
-4. If (_u3? is not defined and half_u0? is defined), then:
+4. If (zero_u3? is not defined and half_u0? is defined), then:
   a. Let ?(hf) be half_u0?.
   b. Let lnn_1 be lanet_u2.
   c. Let lnn_2 be lanet_u1.
   d. Let ci* be $lanes_((lnn_1 X N_1), c_1)[$halfop(hf, 0, N_2) : N_2].
   e. Let c be $invlanes_((lnn_2 X N_2), $vcvtop((lnn_1 X N_1), (lnn_2 X N_2), vcvtop, sx?, ci)*).
   f. Push the value (V128.CONST c) to the stack.
-5. If (half_u0? is not defined and ((_u3? is ?(())) and the type of lanet_u2 is numtype)), then:
+5. If (half_u0? is not defined and ((zero_u3? is ?(ZERO)) and the type of lanet_u2 is numtype)), then:
   a. Let nt_1 be lanet_u2.
   b. If the type of lanet_u1 is numtype, then:
     1) Let nt_2 be lanet_u1.

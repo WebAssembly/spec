@@ -116,6 +116,9 @@ def $dim(lnn X N) = N
 ;;def $shsize(shape) : nat
 def $shsize(lnn X N) = $($lsize(lnn) * N)
 
+def $shunpack(shape) : numtype  hint(show $unpack(%))
+def $shunpack(lnn X N) = $lunpack(lnn)
+
 
 ;; Type difference
 

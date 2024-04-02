@@ -551,7 +551,7 @@ let al_to_special_vbinop = function
   | v -> error_value "special vbinop" v
 
 let al_to_int_vcvtop : value list -> V128Op.icvtop = function
-  | [ CaseV (op, []); OptV half; sh; OptV ext; CaseV ("ZERO", [OptV _]) ] as l -> (
+  | [ CaseV (op, []); OptV half; sh; OptV ext; OptV _zero ] as l -> (
     match op with
     | "EXTEND" -> (
       match half, ext with
@@ -574,7 +574,7 @@ let al_to_int_vcvtop : value list -> V128Op.icvtop = function
   | l -> error_values "integer vcvtop" l
 
 let al_to_float_vcvtop : value list -> V128Op.fcvtop = function
-  | [ CaseV (op, []); OptV _; _; OptV ext; CaseV ("ZERO", [OptV _]) ] as l -> (
+  | [ CaseV (op, []); OptV _half; _sh; OptV ext; OptV _zero ] as l -> (
     match op with
     | "DEMOTE" -> V128Op.DemoteZeroF64x2
     | "CONVERT" -> (
@@ -1486,12 +1486,12 @@ let al_of_int_vcvtop = function
   | V128Op.ExtendHighU -> Some (nullary "EXTEND", Some (nullary "HIGH"), None, Some (nullary "U"), None)
   | V128Op.TruncSatSF32x4 -> Some (nullary "TRUNC_SAT", None, Some (TupV [ nullary "F32"; numV four ]), Some (nullary "S"), None)
   | V128Op.TruncSatUF32x4 -> Some (nullary "TRUNC_SAT", None, Some (TupV [ nullary "F32"; numV four ]), Some (nullary "U"), None)
-  | V128Op.TruncSatSZeroF64x2 -> Some (nullary "TRUNC_SAT", None, Some (TupV [ nullary "F64"; numV two ]), Some (nullary "S"), Some (tupV []))
-  | V128Op.TruncSatUZeroF64x2 -> Some (nullary "TRUNC_SAT", None, Some (TupV [ nullary "F64"; numV two ]), Some (nullary "U"), Some (tupV []))
+  | V128Op.TruncSatSZeroF64x2 -> Some (nullary "TRUNC_SAT", None, Some (TupV [ nullary "F64"; numV two ]), Some (nullary "S"), Some (nullary "ZERO"))
+  | V128Op.TruncSatUZeroF64x2 -> Some (nullary "TRUNC_SAT", None, Some (TupV [ nullary "F64"; numV two ]), Some (nullary "U"), Some (nullary "ZERO"))
   | _ -> None
 
 let al_of_float32_vcvtop = function
-  | V128Op.DemoteZeroF64x2 -> Some (nullary "DEMOTE", None, Some (TupV [ nullary "F64"; numV two ]), None, Some (tupV []))
+  | V128Op.DemoteZeroF64x2 -> Some (nullary "DEMOTE", None, Some (TupV [ nullary "F64"; numV two ]), None, Some (nullary "ZERO"))
   | V128Op.ConvertSI32x4 -> Some (nullary "CONVERT", None, Some (TupV [ nullary "I32"; numV four ]), Some (nullary "S"), None)
   | V128Op.ConvertUI32x4 -> Some (nullary "CONVERT", None, Some (TupV [ nullary "I32"; numV four ]), Some (nullary "U"), None)
   | _ -> None
@@ -1512,7 +1512,7 @@ let al_of_vcvtop = function
           | Some _ -> error "al_of_vcvtop" empty
           | None -> TupV [ nullary "I8"; numV sixteen ]
         ) in
-        [ TupV [ nullary "I8"; numV sixteen ]; op'; optV half; sh; optV ext; CaseV ("ZERO", [OptV zero]) ]
+        [ TupV [ nullary "I8"; numV sixteen ]; op'; optV half; sh; optV ext; optV zero ]
       ) (al_of_int_vcvtop op)
     )
     | V128.I16x8 op -> (
@@ -1522,7 +1522,7 @@ let al_of_vcvtop = function
           | Some _ -> TupV [ nullary "I8"; numV sixteen ]
           | None -> TupV [ nullary "I16"; numV eight ]
         ) in
-        [ TupV [ nullary "I16"; numV eight ]; op'; optV half; sh; optV ext; CaseV ("ZERO", [OptV zero]) ]
+        [ TupV [ nullary "I16"; numV eight ]; op'; optV half; sh; optV ext; optV zero ]
       ) (al_of_int_vcvtop op)
     )
     | V128.I32x4 op -> (
@@ -1532,7 +1532,7 @@ let al_of_vcvtop = function
           | Some _ -> TupV [ nullary "I16"; numV eight ]
           | None -> TupV [ nullary "I32"; numV four ]
         ) in
-        [ TupV [ nullary "I32"; numV four ]; op'; optV half; sh; optV ext; CaseV ("ZERO", [OptV zero]) ]
+        [ TupV [ nullary "I32"; numV four ]; op'; optV half; sh; optV ext; optV zero ]
       ) (al_of_int_vcvtop op)
     )
     | V128.I64x2 op -> (
@@ -1542,7 +1542,7 @@ let al_of_vcvtop = function
           | Some _ -> TupV [ nullary "I32"; numV four ]
           | None -> TupV [ nullary "I64"; numV two ]
         ) in
-        [ TupV [ nullary "I64"; numV two ]; op'; optV half; sh; optV ext; CaseV ("ZERO", [OptV zero]) ]
+        [ TupV [ nullary "I64"; numV two ]; op'; optV half; sh; optV ext; optV zero ]
       ) (al_of_int_vcvtop op)
     )
     | V128.F32x4 op -> (
@@ -1552,7 +1552,7 @@ let al_of_vcvtop = function
           | Some _ -> error "al_of_vcvtop" empty
           | None -> TupV [ nullary "F32"; numV four ]
         ) in
-        [ TupV [ nullary "F32"; numV four ]; op'; optV half; sh; optV ext; CaseV ("ZERO", [OptV zero]) ]
+        [ TupV [ nullary "F32"; numV four ]; op'; optV half; sh; optV ext; optV zero ]
       ) (al_of_float32_vcvtop op)
     )
     | V128.F64x2 op -> (
@@ -1562,7 +1562,7 @@ let al_of_vcvtop = function
           | Some _ -> TupV [ nullary "F32"; numV four ]
           | None -> TupV [ nullary "F64"; numV two ]
         ) in
-        [ TupV [ nullary "F64"; numV two ]; op'; optV half; sh; optV ext; CaseV ("ZERO", [OptV zero]) ]
+        [ TupV [ nullary "F64"; numV two ]; op'; optV half; sh; optV ext; optV zero ]
       ) (al_of_float64_vcvtop op)
     )
   )

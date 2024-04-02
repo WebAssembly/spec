@@ -413,9 +413,9 @@ def $vcvtop(F64 X N_1, F32 X N_2, DEMOTE, sx?, f64) = f32
 def $vcvtop(F32 X N_1, F64 X N_2, PROMOTE, sx?, f32) = f64
     -- if f64 = $promote(32, 64, f32)
 
-def $vextunop(ishape_1, ishape_2, vextunop_(ishape_1, ishape_2), sx, vec_(V128)) : vec_(V128)
+def $vextunop(ishape_1, ishape_2, vextunop_(ishape_1), sx, vec_(V128)) : vec_(V128)
     hint(show %3#$_((%1,%2))^(%5)#((%6)))
-def $vextbinop(ishape_1, ishape_2, vextbinop_(ishape_1, ishape_2), sx, vec_(V128), vec_(V128)) : vec_(V128)
+def $vextbinop(ishape_1, ishape_2, vextbinop_(ishape_1), sx, vec_(V128), vec_(V128)) : vec_(V128)
     hint(show %3#$_((%1,%2))^(%5)#((%6,%7)))
 
 def $vextunop(inn_1 X N_1, inn_2 X N_2, EXTADD_PAIRWISE, sx, c_1) = c

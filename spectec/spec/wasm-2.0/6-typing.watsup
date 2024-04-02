@@ -294,7 +294,7 @@ rule Instr_ok/ref.is_null:
 
 ;; Vector instructions
 
-rule Instr_ok/vvconst:
+rule Instr_ok/vconst:
   C |- VCONST V128 c : eps -> V128
 
 rule Instr_ok/vvunop:
@@ -308,28 +308,6 @@ rule Instr_ok/vvternop:
 
 rule Instr_ok/vvtestop:
   C |- VVTESTOP V128 vvtestop : V128 -> I32
-
-rule Instr_ok/vbitmask:
-  C |- VBITMASK sh : V128 -> I32
-
-rule Instr_ok/vswizzle:
-  C |- VSWIZZLE sh : V128 V128 -> V128
-
-rule Instr_ok/vshuffle:
-  C |- VSHUFFLE (imm X N) i* : V128 V128 -> V128
-  -- (if $(i < N*2))*
-
-rule Instr_ok/vsplat:
-  C |- VSPLAT (lnn X N) : $unpack(lnn) -> V128
-
-;; TODO: This rule (or the abstract syntax) is too liberal, since some combinations are illegal
-rule Instr_ok/vextract_lane:
-  C |- VEXTRACT_LANE (lnn X N) sx? i : V128 -> $unpack(lnn)
-  -- if i < N
-
-rule Instr_ok/vreplace_lane:
-  C |- VREPLACE_LANE (lnn X N) i : V128 $unpack(lnn) -> V128
-  -- if i < N
 
 rule Instr_ok/vunop:
   C |- VUNOP sh vunop_sh : V128 -> V128
@@ -346,18 +324,39 @@ rule Instr_ok/vrelop:
 rule Instr_ok/vshiftop:
   C |- VSHIFTOP sh vshiftop_sh : V128 I32 -> V128
 
-;; TODO: This rule (or the abstract syntax) is too liberal, since many of the combinations are illegal
-rule Instr_ok/vcvtop:
-  C |- VCVTOP sh vcvtop hf? sh sx? zero : V128 -> V128
+rule Instr_ok/vbitmask:
+  C |- VBITMASK sh : V128 -> I32
 
-rule Instr_ok/vnarrow:
-  C |- VNARROW sh sh sx : V128 V128 -> V128
+rule Instr_ok/vswizzle:
+  C |- VSWIZZLE sh : V128 V128 -> V128
+
+rule Instr_ok/vshuffle:
+  C |- VSHUFFLE sh i* : V128 V128 -> V128
+  -- (if $(i < 2*$dim(sh)))*
+
+rule Instr_ok/vsplat:
+  C |- VSPLAT sh : $shunpack(sh) -> V128
+
+;; TODO: This rule (or the abstract syntax) is too liberal, since some combinations are illegal
+rule Instr_ok/vextract_lane:
+  C |- VEXTRACT_LANE sh sx? i : V128 -> $shunpack(sh)
+  -- if i < $dim(sh)
+
+rule Instr_ok/vreplace_lane:
+  C |- VREPLACE_LANE sh i : V128 $shunpack(sh) -> V128
+  -- if i < $dim(sh)
 
 rule Instr_ok/vextunop:
-  C |- VEXTUNOP sh sh vextunop sx : V128 -> V128
+  C |- VEXTUNOP sh_1 sh_2 vextunop sx : V128 -> V128
 
 rule Instr_ok/vextbinop:
-  C |- VEXTBINOP sh sh vextbinop sx : V128 V128 -> V128
+  C |- VEXTBINOP sh_1 sh_2 vextbinop sx : V128 V128 -> V128
+
+rule Instr_ok/vnarrow:
+  C |- VNARROW sh_1 sh_2 sx : V128 V128 -> V128
+
+rule Instr_ok/vcvtop:
+  C |- VCVTOP sh_1 vcvtop hf? sh_2 sx? zero? : V128 -> V128
 
 
 ;; Local instructions

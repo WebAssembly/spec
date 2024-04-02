@@ -106,25 +106,12 @@ Vector Instructions
 
 Vector instructions (also known as *SIMD* instructions, *single instruction multiple data*) provide basic operations over :ref:`values <syntax-value>` of :ref:`vector type <syntax-vectype>`.
 
-$${syntax: {packtype lanetype dim shape} half laneidx instr/vec}
+$${syntax: {packtype lanetype dim shape ishape} half laneidx instr/vec}
 
 $${syntax:
   vvunop vvbinop vvternop vvtestop
   vunop_ vbinop_ vtestop_ vrelop_ vshiftop_ vextunop_ vextbinop_
 }
-
-.. math::
-   \begin{array}{llrl}
-   \production{ishape} & \ishape &::=&
-     \K{i8x16} ~|~ \K{i16x8} ~|~ \K{i32x4} ~|~ \K{i64x2} \\
-   \production{fshape} & \fshape &::=&
-     \K{f32x4} ~|~ \K{f64x2} \\
-   \production{shape} & \shape &::=&
-     \ishape ~|~ \fshape \\
-   \production{half} & \half &::=&
-     \K{low} ~|~ \K{high} \\
-   \production{lane index} & \laneidx &::=& \u8 \\
-   \end{array}
 
 .. math::
    \begin{array}{llrl}
@@ -307,32 +294,6 @@ Conventions
 * The function ${:$lanetype(shape)} extracts the lane type of a shape.  ${definition-ignore: lanetype}
 
 * The function ${:$dim(shape)} extracts the dimension of a shape.  ${definition-ignore: dim}
-
-* Occasionally, it is convenient to group vector operators together according to the following grammar shorthands:
-
-  .. math::
-     \begin{array}{llrl}
-     \production{unary operator} & \vunop &::=&
-       \viunop ~|~
-       \vfunop ~|~
-       \VPOPCNT \\
-     \production{binary operator} & \vbinop &::=&
-       \vibinop ~|~ \vfbinop \\&&|&
-       \viminmaxop ~|~ \visatbinop \\&&|&
-       \VMUL ~|~
-       \AVGR\K{\_u} ~|~
-       \Q15MULRSAT\K{\_s} \\
-     \production{test operator} & \vtestop &::=&
-       \vitestop \\
-     \production{relational operator} & \vrelop &::=&
-       \virelop ~|~ \vfrelop \\
-     \production{conversion operator} & \vcvtop &::=&
-       \VEXTEND ~|~
-       \VTRUNC\K{\_sat} ~|~
-       \VCONVERT ~|~
-       \VDEMOTE ~|~
-       \VPROMOTE \\
-     \end{array}
 
 
 .. index:: ! reference instruction, reference, null, cast, heap type, reference type

@@ -693,29 +693,14 @@ $${rule: Instr_ok/extern.convert_any}
    single: abstract syntax; instruction
 
 .. _valid-instr-vec:
-.. _aux-unpacked:
+.. _aux-shunpack:
 
 Vector Instructions
 ~~~~~~~~~~~~~~~~~~~
 
-Vector instructions can have a prefix to describe the :ref:`shape <syntax-vec-shape>` of the operand. Packed numeric types, |I8| and |I16|, are not :ref:`value types <syntax-valtype>`. An auxiliary function maps such packed type shapes to value types:
+Vector instructions can have a prefix to describe the :ref:`shape <syntax-vec-shape>` of the operand. Packed numeric types, ${packtype:I8} and ${packtype:I16}, are not :ref:`value types <syntax-valtype>`. An auxiliary function maps such packed type shapes to value types:
 
-.. math::
-   \begin{array}{lll@{\qquad}l}
-   \unpacked(\K{i8x16}) &=& \I32 \\
-   \unpacked(\K{i16x8}) &=& \I32 \\
-   \unpacked(t\K{x}N) &=& t
-   \end{array}
-
-
-The following auxiliary function denotes the number of lanes in a vector shape, i.e., its *dimension*:
-
-.. _aux-dim:
-
-.. math::
-   \begin{array}{lll@{\qquad}l}
-   \dim(t\K{x}N) &=& N
-   \end{array}
+$${definition: shunpack}
 
 
 .. _valid-vconst:
@@ -725,11 +710,7 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
 
 * The instruction is valid with type :math:`[] \to [\V128]`.
 
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \V128\K{.}\VCONST~c : [] \to [\V128]
-   }
+$${rule: Instr_ok/vconst}
 
 
 .. _valid-vvunop:
@@ -739,11 +720,7 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
 
 * The instruction is valid with type :math:`[\V128] \to [\V128]`.
 
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \V128\K{.}\vvunop : [\V128] \to [\V128]
-   }
+$${rule: Instr_ok/vvunop}
 
 
 .. _valid-vvbinop:
@@ -753,12 +730,6 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \V128\K{.}\vvbinop : [\V128~\V128] \to [\V128]
-   }
-
 
 .. _valid-vvternop:
 
@@ -767,11 +738,7 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
 
 * The instruction is valid with type :math:`[\V128~\V128~\V128] \to [\V128]`.
 
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \V128\K{.}\vvternop : [\V128~\V128~\V128] \to [\V128]
-   }
+$${rule: Instr_ok/vvternop}
 
 
 .. _valid-vvtestop:
@@ -781,28 +748,82 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
 
 * The instruction is valid with type :math:`[\V128] \to [\I32]`.
 
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \V128\K{.}\vvtestop : [\V128] \to [\I32]
-   }
+$${rule: Instr_ok/vvtestop}
 
 
-.. _valid-vec-swizzle:
+
+
+.. _valid-vunop:
+
+:math:`\shape\K{.}\vunop`
+.........................
+
+* The instruction is valid with type :math:`[\V128] \to [\V128]`.
+
+$${rule: Instr_ok/vunop}
+
+
+.. _valid-vbinop:
+
+:math:`\shape\K{.}\vbinop`
+..........................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+$${rule: Instr_ok/vbinop}
+
+
+.. _valid-vtestop:
+
+:math:`\shape\K{.}\vtestop`
+...........................
+
+* The instruction is valid with type :math:`[\V128] \to [\I32]`.
+
+$${rule: Instr_ok/vtestop}
+
+
+.. _valid-vrelop:
+
+:math:`\shape\K{.}\vrelop`
+..........................
+
+* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
+
+$${rule: Instr_ok/vrelop}
+
+
+.. _valid-vshiftop:
+
+:math:`\ishape\K{.}\vishiftop`
+..............................
+
+* The instruction is valid with type :math:`[\V128~\I32] \to [\V128]`.
+
+$${rule: Instr_ok/vshiftop}
+
+
+.. _valid-vbitmask:
+
+:math:`\ishape\K{.}\BITMASK`
+............................
+
+* The instruction is valid with type :math:`[\V128] \to [\I32]`.
+
+$${rule: Instr_ok/vbitmask}
+
+
+.. _valid-vswizzle:
 
 :math:`\K{i8x16.}\SWIZZLE`
 ..........................
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \K{i8x16.}\SWIZZLE : [\V128~\V128] \to [\V128]
-   }
+$${rule: Instr_ok/vswizzle}
 
 
-.. _valid-vec-shuffle:
+.. _valid-vshuffle:
 
 :math:`\K{i8x16.}\SHUFFLE~\laneidx^{16}`
 ........................................
@@ -811,12 +832,7 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
-.. math::
-   \frac{
-     (\laneidx < 32)^{16}
-   }{
-     C \vdashinstr \K{i8x16.}\SHUFFLE~\laneidx^{16} : [\V128~\V128] \to [\V128]
-   }
+$${rule: Instr_ok/vshuffle}
 
 
 .. _valid-vec-splat:
@@ -828,11 +844,7 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
 
 * The instruction is valid with type :math:`[t] \to [\V128]`.
 
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \shape\K{.}\SPLAT : [\unpacked(\shape)] \to [\V128]
-   }
+$${rule: Instr_ok/vsplat}
 
 
 .. _valid-vec-extract_lane:
@@ -844,12 +856,7 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
 
 * The instruction is valid with type :math:`[\V128] \to [\unpacked(\shape)]`.
 
-.. math::
-   \frac{
-     \laneidx < \dim(\shape)
-   }{
-     C \vdashinstr t\K{x}N\K{.}\EXTRACTLANE\K{\_}\sx^?~\laneidx : [\V128] \to [\unpacked(\shape)]
-   }
+$${rule: Instr_ok/vextract_lane}
 
 
 .. _valid-vec-replace_lane:
@@ -863,82 +870,37 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
 
 * The instruction is valid with type :math:`[\V128~t] \to [\V128]`.
 
-.. math::
-   \frac{
-     \laneidx < \dim(\shape)
-   }{
-     C \vdashinstr \shape\K{.}\REPLACELANE~\laneidx : [\V128~\unpacked(\shape)] \to [\V128]
-   }
+$${rule: Instr_ok/vreplace_lane}
 
 
-.. _valid-vunop:
+.. _valid-vextunop:
 
-:math:`\shape\K{.}\vunop`
-.........................
+:math:`\ishape_1\K{.}\EXTADDPAIRWISE\K{\_}\ishape_2\K{\_}\sx`
+.............................................................
 
 * The instruction is valid with type :math:`[\V128] \to [\V128]`.
 
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \shape\K{.}\vunop : [\V128] \to [\V128]
-   }
+$${rule: Instr_ok/vextunop}
 
 
-.. _valid-vbinop:
+.. _valid-vextbinop:
 
-:math:`\shape\K{.}\vbinop`
-..........................
+:math:`\ishape_1\K{.}\EXTMUL\K{\_}\half\K{\_}\ishape_2\K{\_}\sx`
+................................................................
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \shape\K{.}\vbinop : [\V128~\V128] \to [\V128]
-   }
+$${rule: Instr_ok/vextbinop}
 
 
-.. _valid-vrelop:
+.. _valid-vnarrow:
 
-:math:`\shape\K{.}\vrelop`
-..........................
+:math:`\ishape_1\K{.}\NARROW\K{\_}\ishape_2\K{\_}\sx`
+.....................................................
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \shape\K{.}\vrelop : [\V128~\V128] \to [\V128]
-   }
-
-
-.. _valid-vishiftop:
-
-:math:`\ishape\K{.}\vishiftop`
-..............................
-
-* The instruction is valid with type :math:`[\V128~\I32] \to [\V128]`.
-
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \ishape\K{.}\vishiftop : [\V128~\I32] \to [\V128]
-   }
-
-
-.. _valid-vtestop:
-
-:math:`\shape\K{.}\vtestop`
-...........................
-
-* The instruction is valid with type :math:`[\V128] \to [\I32]`.
-
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \shape\K{.}\vtestop : [\V128] \to [\I32]
-   }
+$${rule: Instr_ok/vnarrow}
 
 
 .. _valid-vcvtop:
@@ -948,81 +910,7 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
 
 * The instruction is valid with type :math:`[\V128] \to [\V128]`.
 
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \shape\K{.}\vcvtop\K{\_}\half^?\K{\_}\shape\K{\_}\sx^?\K{\_zero}^? : [\V128] \to [\V128]
-   }
-
-
-.. _valid-vec-narrow:
-
-:math:`\ishape_1\K{.}\NARROW\K{\_}\ishape_2\K{\_}\sx`
-.....................................................
-
-* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
-
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \ishape_1\K{.}\NARROW\K{\_}\ishape_2\K{\_}\sx : [\V128~\V128] \to [\V128]
-   }
-
-
-.. _valid-vec-bitmask:
-
-:math:`\ishape\K{.}\BITMASK`
-............................
-
-* The instruction is valid with type :math:`[\V128] \to [\I32]`.
-
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \ishape\K{.}\BITMASK : [\V128] \to [\I32]
-   }
-
-
-.. _valid-vec-dot:
-
-:math:`\ishape_1\K{.}\DOT\K{\_}\ishape_2\K{\_s}`
-................................................
-
-* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
-
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \ishape_1\K{.}\DOT\K{\_}\ishape_2\K{\_s} : [\V128~\V128] \to [\V128]
-   }
-
-
-.. _valid-vec-extmul:
-
-:math:`\ishape_1\K{.}\EXTMUL\K{\_}\half\K{\_}\ishape_2\K{\_}\sx`
-................................................................
-
-* The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
-
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \ishape_1\K{.}\EXTMUL\K{\_}\half\K{\_}\ishape_2\K{\_}\sx : [\V128~\V128] \to [\V128]
-   }
-
-
-.. _valid-vec-extadd_pairwise:
-
-:math:`\ishape_1\K{.}\EXTADDPAIRWISE\K{\_}\ishape_2\K{\_}\sx`
-.............................................................
-
-* The instruction is valid with type :math:`[\V128] \to [\V128]`.
-
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \ishape_1\K{.}\EXTADDPAIRWISE\K{\_}\ishape_2\K{\_}\sx : [\V128] \to [\V128]
-   }
+$${rule: Instr_ok/vcvtop}
 
 
 .. index:: variable instructions, local index, global index, context
