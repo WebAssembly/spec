@@ -981,6 +981,7 @@
 .. |alloctable| mathdef:: \xref{exec/modules}{alloc-table}{\F{alloctable}}
 .. |allocmem| mathdef:: \xref{exec/modules}{alloc-mem}{\F{allocmem}}
 .. |alloctag| mathdef:: \xref{exec/modules}{alloc-tag}{\F{alloctag}}
+.. |allocexn| mathdef:: \xref{exec/modules}{alloc-exception}{\F{allocexn}}
 .. |allocglobal| mathdef:: \xref{exec/modules}{alloc-global}{\F{allocglobal}}
 .. |allocelem| mathdef:: \xref{exec/modules}{alloc-elem}{\F{allocelem}}
 .. |allocdata| mathdef:: \xref{exec/modules}{alloc-data}{\F{allocdata}}
@@ -1335,3 +1336,5 @@
 
 .. |error| mathdef:: \xref{appendix/embedding}{embed-error}{\X{error}}
 .. |ERROR| mathdef:: \xref{appendix/embedding}{embed-error}{\K{error}}
+.. |exception| mathdef:: \xref{appendix/embedding}{embed-error}{\X{exception}}
+.. |ETHROW| mathdef:: \xref{appendix/embedding}{embed-error}{\K{THROW}}
