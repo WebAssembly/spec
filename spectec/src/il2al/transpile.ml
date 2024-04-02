@@ -584,3 +584,20 @@ let contains_return il =
 (* If intrs contain a return statement, make sure that every path has return statement in the end *)
 let ensure_return il =
   if contains_return il then enforce_return il else il
+
+(* ExitI to PopI *)
+let exit_to_pop algo =
+  let exit_to_pop' instr =
+    match instr.it with
+    | ExitI -> popI (getCurContextE ()) ~at:instr.at
+    | _ -> instr
+  in
+
+  let walk_config =
+    {
+      Walk.default_config with
+      pre_instr = lift exit_to_pop';
+    }
+  in
+
+  Walk.walk walk_config algo

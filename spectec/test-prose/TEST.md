@@ -959,7 +959,7 @@ execution_of_IF t? instr_1* instr_2*
 execution_of_LABEL_
 1. Pop all values val* from the stack.
 2. Assert: Due to validation, a label is now on the top of the stack.
-3. Exit current context.
+3. Pop the current context from the stack.
 4. Push the values val* to the stack.
 
 execution_of_BR n_u0
@@ -967,7 +967,7 @@ execution_of_BR n_u0
 2. Let n be the arity of L.
 3. Let instr'* be the continuation of L.
 4. Pop all values admin_u1* from the stack.
-5. Exit current context.
+5. Pop the current context from the stack.
 6. If ((n_u0 is 0) and (|admin_u1*| ≥ n)), then:
   a. Let val'* ++ val^n be admin_u1*.
   b. Push the values val^n to the stack.
@@ -1000,7 +1000,7 @@ execution_of_FRAME_
 3. Assert: Due to validation, there are at least n values on the top of the stack.
 4. Pop the values val^n from the stack.
 5. Assert: Due to validation, a frame is now on the top of the stack.
-6. Exit current context.
+6. Pop the current context from the stack.
 7. Push the values val^n to the stack.
 
 execution_of_RETURN
@@ -1009,11 +1009,11 @@ execution_of_RETURN
   b. Let n be the arity of F.
   c. Pop the values val^n from the stack.
   d. Pop all values val'* from the stack.
-  e. Exit current context.
+  e. Pop the current context from the stack.
   f. Push the values val^n to the stack.
 2. Else if the current context is LABEL_, then:
   a. Pop all values val* from the stack.
-  b. Exit current context.
+  b. Pop the current context from the stack.
   c. Push the values val* to the stack.
   d. Execute the instruction RETURN.
 
@@ -2911,7 +2911,7 @@ execution_of_IF bt instr_1* instr_2*
 execution_of_LABEL_
 1. Pop all values val* from the stack.
 2. Assert: Due to validation, a label is now on the top of the stack.
-3. Exit current context.
+3. Pop the current context from the stack.
 4. Push the values val* to the stack.
 
 execution_of_BR n_u0
@@ -2919,7 +2919,7 @@ execution_of_BR n_u0
 2. Let n be the arity of L.
 3. Let instr'* be the continuation of L.
 4. Pop all values admin_u1* from the stack.
-5. Exit current context.
+5. Pop the current context from the stack.
 6. If ((n_u0 is 0) and (|admin_u1*| ≥ n)), then:
   a. Let val'* ++ val^n be admin_u1*.
   b. Push the values val^n to the stack.
@@ -2952,7 +2952,7 @@ execution_of_FRAME_
 3. Assert: Due to validation, there are at least n values on the top of the stack.
 4. Pop the values val^n from the stack.
 5. Assert: Due to validation, a frame is now on the top of the stack.
-6. Exit current context.
+6. Pop the current context from the stack.
 7. Push the values val^n to the stack.
 
 execution_of_RETURN
@@ -2961,11 +2961,11 @@ execution_of_RETURN
   b. Let n be the arity of F.
   c. Pop the values val^n from the stack.
   d. Pop all values val'* from the stack.
-  e. Exit current context.
+  e. Pop the current context from the stack.
   f. Push the values val^n to the stack.
 2. Else if the current context is LABEL_, then:
   a. Pop all values val* from the stack.
-  b. Exit current context.
+  b. Pop the current context from the stack.
   c. Push the values val* to the stack.
   d. Execute the instruction RETURN.
 
@@ -5895,7 +5895,7 @@ execution_of_IF bt instr_1* instr_2*
 execution_of_LABEL_
 1. Pop all values val* from the stack.
 2. Assert: Due to validation, a label is now on the top of the stack.
-3. Exit current context.
+3. Pop the current context from the stack.
 4. Push the values val* to the stack.
 
 execution_of_BR l
@@ -5903,7 +5903,7 @@ execution_of_BR l
 2. Let n be the arity of L.
 3. Let instr'* be the continuation of L.
 4. Pop all values admin_u0* from the stack.
-5. Exit current context.
+5. Pop the current context from the stack.
 6. If ((l is 0) and (|admin_u0*| ≥ n)), then:
   a. Let val'* ++ val^n be admin_u0*.
   b. Push the values val^n to the stack.
@@ -5962,7 +5962,7 @@ execution_of_FRAME_
 3. Assert: Due to validation, there are at least n values on the top of the stack.
 4. Pop the values val^n from the stack.
 5. Assert: Due to validation, a frame is now on the top of the stack.
-6. Exit current context.
+6. Pop the current context from the stack.
 7. Push the values val^n to the stack.
 
 execution_of_RETURN
@@ -5971,11 +5971,11 @@ execution_of_RETURN
   b. Let n be the arity of F.
   c. Pop the values val^n from the stack.
   d. Pop all values val'* from the stack.
-  e. Exit current context.
+  e. Pop the current context from the stack.
   f. Push the values val^n to the stack.
 2. Else if the current context is LABEL_, then:
   a. Pop all values val* from the stack.
-  b. Exit current context.
+  b. Pop the current context from the stack.
   c. Push the values val* to the stack.
   d. Execute the instruction RETURN.
 
@@ -6342,13 +6342,13 @@ execution_of_RETURN_CALL_REF yy
 1. Let z be the current state.
 2. If the current context is LABEL_, then:
   a. Pop all values val* from the stack.
-  b. Exit current context.
+  b. Pop the current context from the stack.
   c. Push the values val* to the stack.
   d. Execute the instruction (RETURN_CALL_REF yy).
 3. Else if the current context is FRAME_, then:
   a. Pop the value admin_u0 from the stack.
   b. Pop all values admin_u1* from the stack.
-  c. Exit current context.
+  c. Pop the current context from the stack.
   d. If admin_u0 is of the case REF.FUNC_ADDR, then:
     1) Let (REF.FUNC_ADDR a) be admin_u0.
     2) If (a < |$funcinst(z)|), then:

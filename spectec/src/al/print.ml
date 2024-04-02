@@ -235,6 +235,7 @@ let make_index depth =
 (* Prefix for stack push/pop operations *)
 let string_of_stack_prefix expr =
   match expr.it with
+  | GetCurContextE
   | ContE _
   | LabelE _
   | FrameE _ -> ""

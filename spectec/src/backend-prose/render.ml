@@ -446,6 +446,7 @@ and render_prose_instrs env depth instrs =
 (* Prefix for stack push/pop operations *)
 let render_stack_prefix expr =
   match expr.it with
+  | Al.Ast.GetCurContextE
   | Al.Ast.ContE _
   | Al.Ast.FrameE _
   | Al.Ast.LabelE _ -> ""

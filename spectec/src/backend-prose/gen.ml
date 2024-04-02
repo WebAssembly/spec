@@ -144,8 +144,10 @@ let gen_validation_prose il =
 let gen_execution_prose =
   List.map
     (fun algo ->
+      let algo = Il2al.Transpile.exit_to_pop algo in
       let algo = match algo with
-      | Al.Ast.RuleA _ -> Il2al.Transpile.insert_state_binding algo
+      | Al.Ast.RuleA _ ->
+          Il2al.Transpile.insert_state_binding algo
       | Al.Ast.FuncA _ -> Il2al.Transpile.remove_state algo
       in
       Prose.Algo algo)
