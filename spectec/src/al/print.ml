@@ -238,7 +238,8 @@ let string_of_stack_prefix expr =
   | GetCurContextE
   | ContE _
   | LabelE _
-  | FrameE _ -> ""
+  | FrameE _
+  | VarE ("F" | "L") -> ""
   | IterE _ -> "the values "
   | _ -> "the value "
 
@@ -305,7 +306,7 @@ let rec string_of_instr' depth instr =
   | ReturnI None -> sprintf "%s Return." (make_index depth)
   | ReturnI (Some e) -> sprintf "%s Return %s." (make_index depth) (string_of_expr e)
   | EnterI (e1, e2, il) ->
-    sprintf "%s Enter %s with label %s:%s" (make_index depth)
+    sprintf "%s Enter %s with label %s.%s" (make_index depth)
       (string_of_expr e1) (string_of_expr e2) (string_of_instrs' (depth + 1) il)
   | ExecuteI e ->
     sprintf "%s Execute the instruction %s." (make_index depth) (string_of_expr e)

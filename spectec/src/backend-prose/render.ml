@@ -449,7 +449,8 @@ let render_stack_prefix expr =
   | Al.Ast.GetCurContextE
   | Al.Ast.ContE _
   | Al.Ast.FrameE _
-  | Al.Ast.LabelE _ -> ""
+  | Al.Ast.LabelE _
+  | Al.Ast.VarE ("F" | "L") -> ""
   | Al.Ast.IterE _ -> "the values "
   | _ -> "the value "
 
@@ -528,7 +529,7 @@ let rec render_al_instr env algoname index depth instr =
     sprintf "%s Return%s." (render_order index depth)
       (render_opt " " (render_expr env) "" e_opt)
   | Al.Ast.EnterI (e1, e2, il) ->
-    sprintf "%s Enter %s with label %s:%s" (render_order index depth)
+    sprintf "%s Enter %s with label %s.%s" (render_order index depth)
       (render_expr env e1) (render_expr env e2)
       (render_al_instrs env algoname (depth + 1) il)
   | Al.Ast.ExecuteI e ->

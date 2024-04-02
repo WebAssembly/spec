@@ -8,3 +8,5 @@ val eq_paths : path list -> path list -> bool
 
 val eq_instr : instr -> instr -> bool
 val eq_instrs : instr list -> instr list -> bool
+
+val eq_algos : algorithm -> algorithm -> bool

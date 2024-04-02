@@ -6,7 +6,6 @@ open Util
 open Util.Source
 open Util.Record
 
-
 (* Helpers *)
 
 let (@@) (g: instr -> instr list) (f: instr -> instr list) (i: instr): instr list =
@@ -586,8 +585,8 @@ let ensure_return il =
   if contains_return il then enforce_return il else il
 
 (* ExitI to PopI *)
-let exit_to_pop algo =
-  let exit_to_pop' instr =
+let remove_exit algo =
+  let exit_to_pop instr =
     match instr.it with
     | ExitI -> popI (getCurContextE ()) ~at:instr.at
     | _ -> instr
@@ -596,8 +595,81 @@ let exit_to_pop algo =
   let walk_config =
     {
       Walk.default_config with
-      pre_instr = lift exit_to_pop';
+      pre_instr = lift exit_to_pop;
     }
   in
 
   Walk.walk walk_config algo
+
+(* EnterI on FrameE to PushI *)
+let remove_enter algo =
+  let enter_frame_to_push_then_pop instr =
+    match instr.it with
+    | EnterI (
+      ({ it = FrameE (Some e_arity, _); _ } as e_frame),
+      { it = ListE ([ { it = CaseE ((Il.Atom.Atom "FRAME_", _), []); _ } ]); _ },
+      il) ->
+        begin match e_arity.it with
+        | NumE z when Z.to_int z = 0 ->
+            pushI e_frame ~at:instr.at :: il @ [ popI e_frame ~at:instr.at ]
+        | _ -> 
+            let e_tmp = iterE (varE ("val"), [ "val" ], List) in
+            pushI e_frame ~at:instr.at :: il @ [
+              popallI e_tmp ~at:instr.at;
+              popI e_frame ~at:instr.at;
+              pushI e_tmp ~at:instr.at; ]
+        end
+    | EnterI (
+      ({ it = FrameE (None, _); _ } as e_frame),
+      { it = ListE ([ { it = CaseE ((Il.Atom.Atom "FRAME_", _), []); _ } ]); _ },
+      il) ->
+        pushI e_frame ~at:instr.at :: il @ [ popI e_frame ~at:instr.at ]
+    | _ -> [ instr ]
+  in
+  
+  let enter_frame_to_push instr =
+    match instr.it with
+    | EnterI (e_frame, { it = ListE ([ { it = CaseE ((Il.Atom.Atom "FRAME_", _), []); _ } ]); _ }, il) ->
+        pushI e_frame ~at:instr.at :: il
+    | _ -> [ instr ]
+  in
+
+  let enter_label_to_push instr =
+    match instr.it with
+    | EnterI (
+      e_label,
+      { it = CatE (e_instrs, { it = ListE ([ { it = CaseE ((Il.Atom.Atom "LABEL_", _), []); _ } ]); _ }); _ },
+      [ { it = PushI e_vals; _ } ]) ->
+        enterI (catE (e_vals, e_instrs), e_label, []) ~at:instr.at
+    | EnterI (
+      e_label,
+      { it = CatE (e_instrs, { it = ListE ([ { it = CaseE ((Il.Atom.Atom "LABEL_", _), []); _ } ]); _ }); _ },
+      []) ->
+        enterI (e_instrs, e_label, []) ~at:instr.at
+    | _ -> instr
+  in
+
+  let remove_enter' algo =
+    match algo with
+    | FuncA (name, params, body) ->
+        let walk_config =
+          {
+            Walk.default_config with
+            pre_instr = enter_frame_to_push_then_pop @@ (lift enter_label_to_push);
+          }
+        in
+        let body = Walk.walk_instrs walk_config body in
+        FuncA (name, params, body)
+    | RuleA (name, params, body) ->
+        let walk_config =
+          {
+            Walk.default_config with
+            pre_instr = enter_frame_to_push @@ (lift enter_label_to_push);
+          }
+        in
+        let body = Walk.walk_instrs walk_config body in
+        RuleA (name, params, body)
+  in
+
+  let algo' = remove_enter' algo in
+  if Eq.eq_algos algo algo' then algo else remove_enter' algo'

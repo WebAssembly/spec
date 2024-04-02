@@ -909,21 +909,25 @@ instantiate module externval*
 22. Let f be { LOCALS: []; MODULE: mm; }.
 23. Perform $initelem(mm, i_E*, mm.FUNCS[x]**).
 24. Perform $initdata(mm, i_D*, b**).
-25. Enter the activation of f with arity 0 with label [FRAME_]:
-  a. If x' is defined, then:
-    1) Let ?(x'_0) be x'.
-    2) Execute the instruction (CALL x'_0).
-26. Return mm.
+25. Push the activation of f with arity 0 to the stack.
+26. If x' is defined, then:
+  a. Let ?(x'_0) be x'.
+  b. Execute the instruction (CALL x'_0).
+27. Pop the activation of f with arity 0 from the stack.
+28. Return mm.
 
 invoke fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; EXPORTS: []; }; }.
 2. Let (t_1^n -> t_2*) be $funcinst()[fa].TYPE.
 3. Let k be |t_2*|.
-4. Enter the activation of f with arity k with label [FRAME_]:
-  a. Push the values val^n to the stack.
-  b. Execute the instruction (CALL_ADDR fa).
-5. Pop the values val^k from the stack.
-6. Return val^k.
+4. Push the activation of f with arity k to the stack.
+5. Push the values val^n to the stack.
+6. Execute the instruction (CALL_ADDR fa).
+7. Pop all values val* from the stack.
+8. Pop the activation of f with arity k from the stack.
+9. Push the values val* to the stack.
+10. Pop the values val^k from the stack.
+11. Return val^k.
 
 execution_of_UNREACHABLE
 1. Trap.
@@ -1073,11 +1077,11 @@ execution_of_BLOCK t? instr*
 2. Else:
   a. Let n be 1.
 3. Let L be the label_n{[]}.
-4. Enter L with label instr* ++ [LABEL_]:
+4. Enter instr* with label L.
 
 execution_of_LOOP t? instr*
 1. Let L be the label_0{[(LOOP t? instr*)]}.
-2. Enter L with label instr* ++ [LABEL_]:
+2. Enter instr* with label L.
 
 execution_of_CALL x
 1. Let z be the current state.
@@ -1110,9 +1114,9 @@ execution_of_CALL_ADDR a
 8. Let (LOCAL t)* be y_0.
 9. Let f be { LOCALS: val^k ++ $default_(t)*; MODULE: mm; }.
 10. Let F be the activation of f with arity n.
-11. Enter F with label [FRAME_]:
-  a. Let L be the label_n{[]}.
-  b. Enter L with label instr* ++ [LABEL_]:
+11. Push F to the stack.
+12. Let L be the label_n{[]}.
+13. Enter instr* with label L.
 
 execution_of_LOCAL.GET x
 1. Let z be the current state.
@@ -1221,9 +1225,9 @@ execution_of_CALL_REF x
   i. Pop the values val^n from the stack.
   j. Let f be { LOCALS: ?(val)^n ++ $default_(t)*; MODULE: fi.MODULE; }.
   k. Let F be the activation of f with arity m.
-  l. Enter F with label [FRAME_]:
-    1) Let L be the label_m{[]}.
-    2) Enter L with label instr* ++ [LABEL_]:
+  l. Push F to the stack.
+  m. Let L be the label_m{[]}.
+  n. Enter instr* with label L.
 
 group_bytes_by n byte*
 1. Let n' be |byte*|.
@@ -2859,23 +2863,27 @@ instantiate module externval*
 20. Pop the activation of z from the stack.
 21. Let mm be $allocmodule(module, externval*, val*, ref**).
 22. Let f be { LOCALS: []; MODULE: mm; }.
-23. Enter the activation of f with arity 0 with label [FRAME_]:
-  a. Execute the sequence (instr_E*).
-  b. Execute the sequence (instr_D*).
-  c. If x is defined, then:
-    1) Let ?(x_0) be x.
-    2) Execute the instruction (CALL x_0).
-24. Return mm.
+23. Push the activation of f with arity 0 to the stack.
+24. Execute the sequence (instr_E*).
+25. Execute the sequence (instr_D*).
+26. If x is defined, then:
+  a. Let ?(x_0) be x.
+  b. Execute the instruction (CALL x_0).
+27. Pop the activation of f with arity 0 from the stack.
+28. Return mm.
 
 invoke fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
 2. Let (t_1^n -> t_2*) be $funcinst()[fa].TYPE.
 3. Let k be |t_2*|.
-4. Enter the activation of f with arity k with label [FRAME_]:
-  a. Push the values val^n to the stack.
-  b. Execute the instruction (CALL_ADDR fa).
-5. Pop the values val^k from the stack.
-6. Return val^k.
+4. Push the activation of f with arity k to the stack.
+5. Push the values val^n to the stack.
+6. Execute the instruction (CALL_ADDR fa).
+7. Pop all values val* from the stack.
+8. Pop the activation of f with arity k from the stack.
+9. Push the values val* to the stack.
+10. Pop the values val^k from the stack.
+11. Return val^k.
 
 execution_of_UNREACHABLE
 1. Trap.
@@ -3220,8 +3228,7 @@ execution_of_BLOCK bt instr*
 3. Assert: Due to validation, there are at least k values on the top of the stack.
 4. Pop the values val^k from the stack.
 5. Let L be the label_n{[]}.
-6. Enter L with label instr* ++ [LABEL_]:
-  a. Push the values val^k to the stack.
+6. Enter val^k ++ instr* with label L.
 
 execution_of_LOOP bt instr*
 1. Let z be the current state.
@@ -3229,8 +3236,7 @@ execution_of_LOOP bt instr*
 3. Assert: Due to validation, there are at least k values on the top of the stack.
 4. Pop the values val^k from the stack.
 5. Let L be the label_k{[(LOOP bt instr*)]}.
-6. Enter L with label instr* ++ [LABEL_]:
-  a. Push the values val^k to the stack.
+6. Enter val^k ++ instr* with label L.
 
 execution_of_CALL x
 1. Let z be the current state.
@@ -3263,9 +3269,9 @@ execution_of_CALL_ADDR a
 8. Let (LOCAL t)* be y_0.
 9. Let f be { LOCALS: val^k ++ $default_(t)*; MODULE: mm; }.
 10. Let F be the activation of f with arity n.
-11. Enter F with label [FRAME_]:
-  a. Let L be the label_n{[]}.
-  b. Enter L with label instr* ++ [LABEL_]:
+11. Push F to the stack.
+12. Let L be the label_n{[]}.
+13. Enter instr* with label L.
 
 execution_of_REF.FUNC x
 1. Let z be the current state.
@@ -3654,9 +3660,9 @@ execution_of_CALL_REF x
   i. Pop the values val^n from the stack.
   j. Let f be { LOCALS: ?(val)^n ++ $default_(t)*; MODULE: fi.MODULE; }.
   k. Let F be the activation of f with arity m.
-  l. Enter F with label [FRAME_]:
-    1) Let L be the label_m{[]}.
-    2) Enter L with label instr* ++ [LABEL_]:
+  l. Push F to the stack.
+  m. Let L be the label_m{[]}.
+  n. Enter instr* with label L.
 
 group_bytes_by n byte*
 1. Let n' be |byte*|.
@@ -5839,13 +5845,14 @@ instantiate module externval*
 22. Pop the activation of z from the stack.
 23. Let mm be $allocmodule(module, externval*, val_G*, ref_T*, ref_E**).
 24. Let f be { LOCALS: []; MODULE: mm; }.
-25. Enter the activation of f with arity 0 with label [FRAME_]:
-  a. Execute the sequence (instr_E*).
-  b. Execute the sequence (instr_D*).
-  c. If x is defined, then:
-    1) Let ?(x_0) be x.
-    2) Execute the instruction (CALL x_0).
-26. Return mm.
+25. Push the activation of f with arity 0 to the stack.
+26. Execute the sequence (instr_E*).
+27. Execute the sequence (instr_D*).
+28. If x is defined, then:
+  a. Let ?(x_0) be x.
+  b. Execute the instruction (CALL x_0).
+29. Pop the activation of f with arity 0 from the stack.
+30. Return mm.
 
 invoke fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
@@ -5854,12 +5861,15 @@ invoke fa val^n
 4. Let (t_1^n -> t_2*) be y_0.
 5. Assert: Due to validation, $funcinst()[fa].CODE is of the case FUNC.
 6. Let k be |t_2*|.
-7. Enter the activation of f with arity k with label [FRAME_]:
-  a. Push the values val^n to the stack.
-  b. Push the value (REF.FUNC_ADDR fa) to the stack.
-  c. Execute the instruction (CALL_REF $funcinst()[fa].TYPE).
-8. Pop the values val^k from the stack.
-9. Return val^k.
+7. Push the activation of f with arity k to the stack.
+8. Push the values val^n to the stack.
+9. Push the value (REF.FUNC_ADDR fa) to the stack.
+10. Execute the instruction (CALL_REF $funcinst()[fa].TYPE).
+11. Pop all values val* from the stack.
+12. Pop the activation of f with arity k from the stack.
+13. Push the values val* to the stack.
+14. Pop the values val^k from the stack.
+15. Return val^k.
 
 execution_of_UNREACHABLE
 1. Trap.
@@ -6285,8 +6295,7 @@ execution_of_BLOCK bt instr*
 3. Assert: Due to validation, there are at least m values on the top of the stack.
 4. Pop the values val^m from the stack.
 5. Let L be the label_n{[]}.
-6. Enter L with label instr* ++ [LABEL_]:
-  a. Push the values val^m to the stack.
+6. Enter val^m ++ instr* with label L.
 
 execution_of_LOOP bt instr*
 1. Let z be the current state.
@@ -6294,8 +6303,7 @@ execution_of_LOOP bt instr*
 3. Assert: Due to validation, there are at least m values on the top of the stack.
 4. Pop the values val^m from the stack.
 5. Let L be the label_m{[(LOOP bt instr*)]}.
-6. Enter L with label instr* ++ [LABEL_]:
-  a. Push the values val^m to the stack.
+6. Enter val^m ++ instr* with label L.
 
 execution_of_BR_ON_CAST l rt_1 rt_2
 1. Let f be the current frame.
@@ -7123,9 +7131,9 @@ execution_of_CALL_REF x
   i. Pop the values val^n from the stack.
   j. Let f be { LOCALS: ?(val)^n ++ $default_(t)*; MODULE: fi.MODULE; }.
   k. Let F be the activation of f with arity m.
-  l. Enter F with label [FRAME_]:
-    1) Let L be the label_m{[]}.
-    2) Enter L with label instr* ++ [LABEL_]:
+  l. Push F to the stack.
+  m. Let L be the label_m{[]}.
+  n. Enter instr* with label L.
 
 group_bytes_by n byte*
 1. Let n' be |byte*|.

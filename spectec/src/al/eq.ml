@@ -157,3 +157,16 @@ and eq_instr i1 i2 =
 
 and eq_instrs il1 il2 =
   List.length il1 = List.length il2 && List.for_all2 eq_instr il1 il2
+
+
+let eq_algos al1 al2 =
+  match al1, al2 with
+  | RuleA (a1, el1, il1), RuleA (a2, el2, il2) ->
+    a1 = a2 &&
+    eq_exprs el1 el2 &&
+    eq_instrs il1 il2
+  | FuncA (i1, el1, il1), FuncA (i2, el2, il2) ->
+    i1 = i2 &&
+    eq_exprs el1 el2 &&
+    eq_instrs il1 il2
+  | _ -> false
