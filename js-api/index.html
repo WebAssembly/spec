@@ -4,9 +4,10 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <title>WebAssembly JavaScript Interface</title>
   <meta content="ED" name="w3c-status">
-  <meta content="Bikeshed version d5d58a306, updated Fri Jan 26 16:12:28 2024 -0800" name="generator">
+  <meta content="Bikeshed version d765c696b, updated Fri Mar 8 15:58:52 2024 -0800" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-2/" rel="canonical">
-  <meta content="1c5e5d178bd75c79b7a12881c529098beaee2a05" name="revision">
+  <meta content="a3a53beeabe2e310fbbdb2d6d22aded0f36b45a2" name="revision">
+  <meta content="dark light" name="color-scheme">
 <style>
 emu-const {
     font-family: serif;
@@ -715,11 +716,12 @@ var[data-var-color="5"] { background-color: #82DDFF; box-shadow: 0 0 0 2px #82DD
 var[data-var-color="6"] { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
 </style>
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
+  <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
  <body class="h-entry">
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-03-05">5 March 2024</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-04-02">2 April 2024</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -874,8 +876,8 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
    </ul>
    <h2 class="heading settled" data-level="4" id="webassembly-namespace"><span class="secno">4. </span><span class="content">The WebAssembly Namespace</span><a class="self-link" href="#webassembly-namespace"></a></h2>
 <pre class="idl highlight def"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-webassemblyinstantiatedsource"><code><c- g>WebAssemblyInstantiatedSource</c-></code></dfn> {
-    <c- b>required</c-> <a data-link-type="idl-name" href="#module" id="ref-for-module"><c- n>Module</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssemblyInstantiatedSource" data-dfn-type="dict-member" data-export data-type="Module " id="dom-webassemblyinstantiatedsource-module"><code><c- g>module</c-></code></dfn>;
-    <c- b>required</c-> <a data-link-type="idl-name" href="#instance" id="ref-for-instance"><c- n>Instance</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssemblyInstantiatedSource" data-dfn-type="dict-member" data-export data-type="Instance " id="dom-webassemblyinstantiatedsource-instance"><code><c- g>instance</c-></code></dfn>;
+    <c- b>required</c-> <a data-link-type="idl-name" href="#module" id="ref-for-module"><c- n>Module</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssemblyInstantiatedSource" data-dfn-type="dict-member" data-export data-type="Module" id="dom-webassemblyinstantiatedsource-module"><code><c- g>module</c-></code></dfn>;
+    <c- b>required</c-> <a data-link-type="idl-name" href="#instance" id="ref-for-instance"><c- n>Instance</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssemblyInstantiatedSource" data-dfn-type="dict-member" data-export data-type="Instance" id="dom-webassemblyinstantiatedsource-instance"><code><c- g>instance</c-></code></dfn>;
 };
 
 [Exposed=*]
@@ -1296,15 +1298,15 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
 };
 
 <c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-moduleexportdescriptor"><code><c- g>ModuleExportDescriptor</c-></code></dfn> {
-  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString"><c- b>USVString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="ModuleExportDescriptor" data-dfn-type="dict-member" data-export data-type="USVString " id="dom-moduleexportdescriptor-name"><code><c- g>name</c-></code></dfn>;
-  <c- b>required</c-> <a data-link-type="idl-name" href="#enumdef-importexportkind" id="ref-for-enumdef-importexportkind"><c- n>ImportExportKind</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="ModuleExportDescriptor" data-dfn-type="dict-member" data-export data-type="ImportExportKind " id="dom-moduleexportdescriptor-kind"><code><c- g>kind</c-></code></dfn>;
+  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString"><c- b>USVString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="ModuleExportDescriptor" data-dfn-type="dict-member" data-export data-type="USVString" id="dom-moduleexportdescriptor-name"><code><c- g>name</c-></code></dfn>;
+  <c- b>required</c-> <a data-link-type="idl-name" href="#enumdef-importexportkind" id="ref-for-enumdef-importexportkind"><c- n>ImportExportKind</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="ModuleExportDescriptor" data-dfn-type="dict-member" data-export data-type="ImportExportKind" id="dom-moduleexportdescriptor-kind"><code><c- g>kind</c-></code></dfn>;
   // Note: Other fields such as signature may be added in the future.
 };
 
 <c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-moduleimportdescriptor"><code><c- g>ModuleImportDescriptor</c-></code></dfn> {
-  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString①"><c- b>USVString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="ModuleImportDescriptor" data-dfn-type="dict-member" data-export data-type="USVString " id="dom-moduleimportdescriptor-module"><code><c- g>module</c-></code></dfn>;
-  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString②"><c- b>USVString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="ModuleImportDescriptor" data-dfn-type="dict-member" data-export data-type="USVString " id="dom-moduleimportdescriptor-name"><code><c- g>name</c-></code></dfn>;
-  <c- b>required</c-> <a data-link-type="idl-name" href="#enumdef-importexportkind" id="ref-for-enumdef-importexportkind①"><c- n>ImportExportKind</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="ModuleImportDescriptor" data-dfn-type="dict-member" data-export data-type="ImportExportKind " id="dom-moduleimportdescriptor-kind"><code><c- g>kind</c-></code></dfn>;
+  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString①"><c- b>USVString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="ModuleImportDescriptor" data-dfn-type="dict-member" data-export data-type="USVString" id="dom-moduleimportdescriptor-module"><code><c- g>module</c-></code></dfn>;
+  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString" id="ref-for-idl-USVString②"><c- b>USVString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="ModuleImportDescriptor" data-dfn-type="dict-member" data-export data-type="USVString" id="dom-moduleimportdescriptor-name"><code><c- g>name</c-></code></dfn>;
+  <c- b>required</c-> <a data-link-type="idl-name" href="#enumdef-importexportkind" id="ref-for-enumdef-importexportkind①"><c- n>ImportExportKind</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="ModuleImportDescriptor" data-dfn-type="dict-member" data-export data-type="ImportExportKind" id="dom-moduleimportdescriptor-kind"><code><c- g>kind</c-></code></dfn>;
 };
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#LegacyNamespace" id="ref-for-LegacyNamespace"><c- g>LegacyNamespace</c-></a>=<a data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly"><c- n>WebAssembly</c-></a>, Exposed=*]
@@ -1435,8 +1437,8 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
    <div class="algorithm" data-algorithm="exports" data-algorithm-for="Instance"> The getter of the <dfn class="dfn-paneled idl-code" data-dfn-for="Instance" data-dfn-type="attribute" data-export id="dom-instance-exports"><code>exports</code></dfn> attribute of <code class="idl"><a data-link-type="idl" href="#instance" id="ref-for-instance③">Instance</a></code> returns <strong>this</strong>.[[Exports]]. </div>
    <h3 class="heading settled" data-level="4.3" id="memories"><span class="secno">4.3. </span><span class="content">Memories</span><a class="self-link" href="#memories"></a></h3>
 <pre class="idl highlight def"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-memorydescriptor"><code><c- g>MemoryDescriptor</c-></code></dfn> {
-  <c- b>required</c-> [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange" id="ref-for-EnforceRange"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long" id="ref-for-idl-unsigned-long"><c- b>unsigned</c-> <c- b>long</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="MemoryDescriptor" data-dfn-type="dict-member" data-export data-type="[EnforceRange] unsigned long " id="dom-memorydescriptor-initial"><code><c- g>initial</c-></code></dfn>;
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange" id="ref-for-EnforceRange①"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long" id="ref-for-idl-unsigned-long①"><c- b>unsigned</c-> <c- b>long</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="MemoryDescriptor" data-dfn-type="dict-member" data-export data-type="unsigned long " id="dom-memorydescriptor-maximum"><code><c- g>maximum</c-></code></dfn>;
+  <c- b>required</c-> [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange" id="ref-for-EnforceRange"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long" id="ref-for-idl-unsigned-long"><c- b>unsigned</c-> <c- b>long</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="MemoryDescriptor" data-dfn-type="dict-member" data-export data-type="unsigned long" id="dom-memorydescriptor-initial"><code><c- g>initial</c-></code></dfn>;
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange" id="ref-for-EnforceRange①"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long" id="ref-for-idl-unsigned-long①"><c- b>unsigned</c-> <c- b>long</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="MemoryDescriptor" data-dfn-type="dict-member" data-export data-type="unsigned long" id="dom-memorydescriptor-maximum"><code><c- g>maximum</c-></code></dfn>;
 };
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#LegacyNamespace" id="ref-for-LegacyNamespace②"><c- g>LegacyNamespace</c-></a>=<a data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly②"><c- n>WebAssembly</c-></a>, Exposed=*]
@@ -1588,9 +1590,9 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
 };
 
 <c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-tabledescriptor"><code><c- g>TableDescriptor</c-></code></dfn> {
-  <c- b>required</c-> <a data-link-type="idl-name" href="#enumdef-tablekind" id="ref-for-enumdef-tablekind"><c- n>TableKind</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="TableDescriptor" data-dfn-type="dict-member" data-export data-type="TableKind " id="dom-tabledescriptor-element"><code><c- g>element</c-></code></dfn>;
-  <c- b>required</c-> [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange" id="ref-for-EnforceRange③"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long" id="ref-for-idl-unsigned-long④"><c- b>unsigned</c-> <c- b>long</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="TableDescriptor" data-dfn-type="dict-member" data-export data-type="[EnforceRange] unsigned long " id="dom-tabledescriptor-initial"><code><c- g>initial</c-></code></dfn>;
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange" id="ref-for-EnforceRange④"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long" id="ref-for-idl-unsigned-long⑤"><c- b>unsigned</c-> <c- b>long</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="TableDescriptor" data-dfn-type="dict-member" data-export data-type="unsigned long " id="dom-tabledescriptor-maximum"><code><c- g>maximum</c-></code></dfn>;
+  <c- b>required</c-> <a data-link-type="idl-name" href="#enumdef-tablekind" id="ref-for-enumdef-tablekind"><c- n>TableKind</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="TableDescriptor" data-dfn-type="dict-member" data-export data-type="TableKind" id="dom-tabledescriptor-element"><code><c- g>element</c-></code></dfn>;
+  <c- b>required</c-> [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange" id="ref-for-EnforceRange③"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long" id="ref-for-idl-unsigned-long④"><c- b>unsigned</c-> <c- b>long</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="TableDescriptor" data-dfn-type="dict-member" data-export data-type="unsigned long" id="dom-tabledescriptor-initial"><code><c- g>initial</c-></code></dfn>;
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange" id="ref-for-EnforceRange④"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long" id="ref-for-idl-unsigned-long⑤"><c- b>unsigned</c-> <c- b>long</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="TableDescriptor" data-dfn-type="dict-member" data-export data-type="unsigned long" id="dom-tabledescriptor-maximum"><code><c- g>maximum</c-></code></dfn>;
 };
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#LegacyNamespace" id="ref-for-LegacyNamespace③"><c- g>LegacyNamespace</c-></a>=<a data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly③"><c- n>WebAssembly</c-></a>, Exposed=*]
@@ -1780,8 +1782,8 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
 </pre>
    <p class="note" role="note"><span class="marker">Note:</span> this type may be extended with additional cases in future versions of WebAssembly.</p>
 <pre class="idl highlight def"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-globaldescriptor"><code><c- g>GlobalDescriptor</c-></code></dfn> {
-  <c- b>required</c-> <a data-link-type="idl-name" href="#enumdef-valuetype" id="ref-for-enumdef-valuetype"><c- n>ValueType</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="GlobalDescriptor" data-dfn-type="dict-member" data-export data-type="ValueType " id="dom-globaldescriptor-value"><code><c- g>value</c-></code></dfn>;
-  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean" id="ref-for-idl-boolean①"><c- b>boolean</c-></a> <dfn class="dfn-paneled idl-code" data-default="false" data-dfn-for="GlobalDescriptor" data-dfn-type="dict-member" data-export data-type="boolean " id="dom-globaldescriptor-mutable"><code><c- g>mutable</c-></code></dfn> = <c- b>false</c->;
+  <c- b>required</c-> <a data-link-type="idl-name" href="#enumdef-valuetype" id="ref-for-enumdef-valuetype"><c- n>ValueType</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="GlobalDescriptor" data-dfn-type="dict-member" data-export data-type="ValueType" id="dom-globaldescriptor-value"><code><c- g>value</c-></code></dfn>;
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean" id="ref-for-idl-boolean①"><c- b>boolean</c-></a> <dfn class="dfn-paneled idl-code" data-default="false" data-dfn-for="GlobalDescriptor" data-dfn-type="dict-member" data-export data-type="boolean" id="dom-globaldescriptor-mutable"><code><c- g>mutable</c-></code></dfn> = <c- b>false</c->;
 };
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#LegacyNamespace" id="ref-for-LegacyNamespace④"><c- g>LegacyNamespace</c-></a>=<a data-link-type="idl-name" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly④"><c- n>WebAssembly</c-></a>, Exposed=*]
@@ -2469,7 +2471,7 @@ In practice, an implementation may run out of resources for valid modules below 
     Implementers are encouraged to optimize. </p>
    </section>
   </div>
-<script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
+  <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
   <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
@@ -2840,8 +2842,8 @@ In practice, an implementation may run out of resources for valid modules below 
   </dl>
   <h2 class="no-num no-ref heading settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
 <pre class="idl highlight def"><c- b>dictionary</c-> <a href="#dictdef-webassemblyinstantiatedsource"><code><c- g>WebAssemblyInstantiatedSource</c-></code></a> {
-    <c- b>required</c-> <a data-link-type="idl-name" href="#module"><c- n>Module</c-></a> <a data-type="Module " href="#dom-webassemblyinstantiatedsource-module"><code><c- g>module</c-></code></a>;
-    <c- b>required</c-> <a data-link-type="idl-name" href="#instance"><c- n>Instance</c-></a> <a data-type="Instance " href="#dom-webassemblyinstantiatedsource-instance"><code><c- g>instance</c-></code></a>;
+    <c- b>required</c-> <a data-link-type="idl-name" href="#module"><c- n>Module</c-></a> <a data-type="Module" href="#dom-webassemblyinstantiatedsource-module"><code><c- g>module</c-></code></a>;
+    <c- b>required</c-> <a data-link-type="idl-name" href="#instance"><c- n>Instance</c-></a> <a data-type="Instance" href="#dom-webassemblyinstantiatedsource-instance"><code><c- g>instance</c-></code></a>;
 };
 
 [Exposed=*]
@@ -2864,15 +2866,15 @@ In practice, an implementation may run out of resources for valid modules below 
 };
 
 <c- b>dictionary</c-> <a href="#dictdef-moduleexportdescriptor"><code><c- g>ModuleExportDescriptor</c-></code></a> {
-  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString"><c- b>USVString</c-></a> <a data-type="USVString " href="#dom-moduleexportdescriptor-name"><code><c- g>name</c-></code></a>;
-  <c- b>required</c-> <a data-link-type="idl-name" href="#enumdef-importexportkind"><c- n>ImportExportKind</c-></a> <a data-type="ImportExportKind " href="#dom-moduleexportdescriptor-kind"><code><c- g>kind</c-></code></a>;
+  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString"><c- b>USVString</c-></a> <a data-type="USVString" href="#dom-moduleexportdescriptor-name"><code><c- g>name</c-></code></a>;
+  <c- b>required</c-> <a data-link-type="idl-name" href="#enumdef-importexportkind"><c- n>ImportExportKind</c-></a> <a data-type="ImportExportKind" href="#dom-moduleexportdescriptor-kind"><code><c- g>kind</c-></code></a>;
   // Note: Other fields such as signature may be added in the future.
 };
 
 <c- b>dictionary</c-> <a href="#dictdef-moduleimportdescriptor"><code><c- g>ModuleImportDescriptor</c-></code></a> {
-  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString"><c- b>USVString</c-></a> <a data-type="USVString " href="#dom-moduleimportdescriptor-module"><code><c- g>module</c-></code></a>;
-  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString"><c- b>USVString</c-></a> <a data-type="USVString " href="#dom-moduleimportdescriptor-name"><code><c- g>name</c-></code></a>;
-  <c- b>required</c-> <a data-link-type="idl-name" href="#enumdef-importexportkind"><c- n>ImportExportKind</c-></a> <a data-type="ImportExportKind " href="#dom-moduleimportdescriptor-kind"><code><c- g>kind</c-></code></a>;
+  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString"><c- b>USVString</c-></a> <a data-type="USVString" href="#dom-moduleimportdescriptor-module"><code><c- g>module</c-></code></a>;
+  <c- b>required</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-USVString"><c- b>USVString</c-></a> <a data-type="USVString" href="#dom-moduleimportdescriptor-name"><code><c- g>name</c-></code></a>;
+  <c- b>required</c-> <a data-link-type="idl-name" href="#enumdef-importexportkind"><c- n>ImportExportKind</c-></a> <a data-type="ImportExportKind" href="#dom-moduleimportdescriptor-kind"><code><c- g>kind</c-></code></a>;
 };
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#LegacyNamespace"><c- g>LegacyNamespace</c-></a>=<a data-link-type="idl-name" href="#namespacedef-webassembly"><c- n>WebAssembly</c-></a>, Exposed=*]
@@ -2890,8 +2892,8 @@ In practice, an implementation may run out of resources for valid modules below 
 };
 
 <c- b>dictionary</c-> <a href="#dictdef-memorydescriptor"><code><c- g>MemoryDescriptor</c-></code></a> {
-  <c- b>required</c-> [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long"><c- b>unsigned</c-> <c- b>long</c-></a> <a data-type="[EnforceRange] unsigned long " href="#dom-memorydescriptor-initial"><code><c- g>initial</c-></code></a>;
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long"><c- b>unsigned</c-> <c- b>long</c-></a> <a data-type="unsigned long " href="#dom-memorydescriptor-maximum"><code><c- g>maximum</c-></code></a>;
+  <c- b>required</c-> [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long"><c- b>unsigned</c-> <c- b>long</c-></a> <a data-type="unsigned long" href="#dom-memorydescriptor-initial"><code><c- g>initial</c-></code></a>;
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long"><c- b>unsigned</c-> <c- b>long</c-></a> <a data-type="unsigned long" href="#dom-memorydescriptor-maximum"><code><c- g>maximum</c-></code></a>;
 };
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#LegacyNamespace"><c- g>LegacyNamespace</c-></a>=<a data-link-type="idl-name" href="#namespacedef-webassembly"><c- n>WebAssembly</c-></a>, Exposed=*]
@@ -2909,9 +2911,9 @@ In practice, an implementation may run out of resources for valid modules below 
 };
 
 <c- b>dictionary</c-> <a href="#dictdef-tabledescriptor"><code><c- g>TableDescriptor</c-></code></a> {
-  <c- b>required</c-> <a data-link-type="idl-name" href="#enumdef-tablekind"><c- n>TableKind</c-></a> <a data-type="TableKind " href="#dom-tabledescriptor-element"><code><c- g>element</c-></code></a>;
-  <c- b>required</c-> [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long"><c- b>unsigned</c-> <c- b>long</c-></a> <a data-type="[EnforceRange] unsigned long " href="#dom-tabledescriptor-initial"><code><c- g>initial</c-></code></a>;
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long"><c- b>unsigned</c-> <c- b>long</c-></a> <a data-type="unsigned long " href="#dom-tabledescriptor-maximum"><code><c- g>maximum</c-></code></a>;
+  <c- b>required</c-> <a data-link-type="idl-name" href="#enumdef-tablekind"><c- n>TableKind</c-></a> <a data-type="TableKind" href="#dom-tabledescriptor-element"><code><c- g>element</c-></code></a>;
+  <c- b>required</c-> [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long"><c- b>unsigned</c-> <c- b>long</c-></a> <a data-type="unsigned long" href="#dom-tabledescriptor-initial"><code><c- g>initial</c-></code></a>;
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long"><c- b>unsigned</c-> <c- b>long</c-></a> <a data-type="unsigned long" href="#dom-tabledescriptor-maximum"><code><c- g>maximum</c-></code></a>;
 };
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#LegacyNamespace"><c- g>LegacyNamespace</c-></a>=<a data-link-type="idl-name" href="#namespacedef-webassembly"><c- n>WebAssembly</c-></a>, Exposed=*]
@@ -2934,8 +2936,8 @@ In practice, an implementation may run out of resources for valid modules below 
 };
 
 <c- b>dictionary</c-> <a href="#dictdef-globaldescriptor"><code><c- g>GlobalDescriptor</c-></code></a> {
-  <c- b>required</c-> <a data-link-type="idl-name" href="#enumdef-valuetype"><c- n>ValueType</c-></a> <a data-type="ValueType " href="#dom-globaldescriptor-value"><code><c- g>value</c-></code></a>;
-  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean"><c- b>boolean</c-></a> <a data-default="false" data-type="boolean " href="#dom-globaldescriptor-mutable"><code><c- g>mutable</c-></code></a> = <c- b>false</c->;
+  <c- b>required</c-> <a data-link-type="idl-name" href="#enumdef-valuetype"><c- n>ValueType</c-></a> <a data-type="ValueType" href="#dom-globaldescriptor-value"><code><c- g>value</c-></code></a>;
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean"><c- b>boolean</c-></a> <a data-default="false" data-type="boolean" href="#dom-globaldescriptor-mutable"><code><c- g>mutable</c-></code></a> = <c- b>false</c->;
 };
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#LegacyNamespace"><c- g>LegacyNamespace</c-></a>=<a data-link-type="idl-name" href="#namespacedef-webassembly"><c- n>WebAssembly</c-></a>, Exposed=*]
@@ -4298,7 +4300,7 @@ function findAlgoContainer(el) {
     return null;
 }
 function nameFromVar(el) {
-    return el.textContent.replace(/(\s|\xa0)+/, " ").trim();
+    return el.textContent.replace(/(\s|\xa0)+/g, " ").trim();
 }
 function colorCountsFromContainer(container) {
     const namesFromColor = Array.from({length:COLOR_COUNT}, x=>new Set());
