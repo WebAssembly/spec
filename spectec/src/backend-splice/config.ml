@@ -14,9 +14,6 @@ type config =
 
     (* Latex *)
     latex : Backend_latex.Config.t;
-
-    (* Prose *)
-    prose : Backend_prose.Config.t;
   }
 
 type t = config
@@ -27,7 +24,6 @@ let latex =
       {token = "##"; prefix = "$$\n"; suffix = "\n$$"; newline = true; indent = ""};
     ];
     latex = Backend_latex.Config.default;
-    prose = Backend_prose.Config.default;
   }
 
 let sphinx =
@@ -36,5 +32,4 @@ let sphinx =
       {token = "$$"; prefix = ".. math::\n"; suffix = ""; newline = true; indent = "   "};
     ];
     latex = Backend_latex.Config.default;
-    prose = Backend_prose.Config.default;
   }

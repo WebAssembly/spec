@@ -5,12 +5,10 @@ open Al.Ast
 
 type env
 
-val env : Config.t -> string list -> string list -> Backend_latex.Render.env -> El.Ast.script -> Prose.prose -> env
+val env : string list -> string list -> Backend_latex.Render.env -> El.Ast.script -> Prose.prose -> env
 
 
 (* Generators *)
-
-val gen_macro : env -> unit
 
 val render_expr : env -> expr -> string
 val render_al_instr : env -> id -> int ref -> int -> instr -> string

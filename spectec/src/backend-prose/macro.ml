@@ -1,28 +1,5 @@
-open Printf
-
 module Set = Set.Make(String)
 module Map = Map.Make(String)
-
-(* Helpers *)
-
-(* TODO a hack to remove . s in name, i.e., LOCAL.GET to LOCALGET,
-   such that it is macro-compatible *)
-let macroify ?(note = "") s =
-  let is_alphanumeric c = match c with
-    | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' -> true
-    | _ -> false
-  in
-  let del acc c =
-    if is_alphanumeric c then acc ^ (String.make 1 c)
-    else acc
-  in
-  String.fold_left del "" (s ^ "-" ^ note)
-
-let font_macro = function
-  | "X" -> "mathit"
-  | "F" -> "mathrm"
-  | "K" -> "mathsf"
-  | _ -> "mathtt"
 
 (* Environment *)
 
@@ -34,104 +11,6 @@ type env =
 (* Environment Lookup *)
 
 let find_section env s = Map.mem s !(env.sections)
-
-(* Macro Generation *)
-
-let macro_template = {|
-.. MATH MACROS
-
-
-.. Generic Stuff
-.. -------------
-
-.. Type-setting of names
-.. X - (multi-letter) variables / non-terminals
-.. F - functions
-.. K - atoms / terminals
-.. B - binary grammar non-terminals
-.. T - textual grammar non-terminals
-
-.. |X| mathdef:: \mathit
-.. |F| mathdef:: \mathrm
-.. |K| mathdef:: \mathsf
-.. |B| mathdef:: \mathtt
-.. |T| mathdef:: \mathtt
-
-|}
-
-let gen_macro_word s =
-  let s = if String.uppercase_ascii s = s then String.lowercase_ascii s else s in
-  let escape acc c =
-    if c = '.' then acc ^ "{.}"
-    else if c = '_' then acc ^ "\\_"
-    else acc ^ (String.make 1 c)
-  in
-  String.fold_left escape "" s
-
-let gen_macro_xref env header = match Map.find_opt header !(env.sections) with
-  | Some path -> sprintf "\\xref{%s}{%s}" path header
-  | None -> ""
-
-let gen_macro_rhs env header font word =
-  let xref = gen_macro_xref env header in
-  sprintf "%s{\\%s{%s}}"
-    xref font (gen_macro_word word)
-
-let gen_macro_rule ?(note = "") env header font word =
-  let lhs = macroify ~note:note word in
-  let rhs = gen_macro_rhs env header font word in
-  sprintf ".. |%s| mathdef:: %s" lhs rhs
-
-let gen_macro_atom env syntax atom =
-  let header = "syntax-" ^ syntax in
-  let font = "K" in
-  gen_macro_rule ~note:syntax env header font atom
-
-let gen_macro_atoms env atoms =
-  Symbol.Map.fold
-    (fun syntax variants satom ->
-      let terminals, _ = variants in
-      let svariants = Symbol.Set.fold
-        (fun atom svariants ->
-          let svariant = gen_macro_atom env syntax atom in
-          svariants ^ svariant ^ "\n")
-        terminals ""
-      in
-      satom
-      ^ ".. " ^ (String.uppercase_ascii syntax) ^ "\n"
-      ^ ".. " ^ (String.make (String.length syntax) '-') ^ "\n"
-      ^ svariants
-      ^ "\n")
-    atoms ""
-
-let gen_macro_func env fname =
-  let header = "def-" ^ fname in
-  let font = "F" in
-  gen_macro_rule env header font fname
-
-let gen_macro_funcs env funcs =
-  Symbol.Set.fold
-    (fun fname sfunc ->
-      let sword = gen_macro_func env fname in
-      sfunc ^ sword ^ "\n")
-    funcs ""
-
-let gen_macro' env (symbol: Symbol.env)  =
-  let atoms = Symbol.atoms symbol in
-  let satom = gen_macro_atoms env atoms in
-  let funcs = Symbol.funcs symbol in
-  let sfunc = gen_macro_funcs env funcs in
-  macro_template
-  ^ ".. syntax\n.. ------\n\n"
-  ^ satom
-  ^ ".. Functions\n.. ---------\n\n"
-  ^ sfunc
-
-let gen_macro env symbol =
-  let s = gen_macro' env symbol in
-  let oc = Out_channel.open_text "macros.def" in
-  Fun.protect (fun () -> Out_channel.output_string oc s)
-    ~finally:(fun () -> Out_channel.close oc)
 
 (* Parsing Sections from Splice Inputs and Outputs *)
 
@@ -173,22 +52,3 @@ let check_rst outputs =
 let env inputs outputs =
   let sections = if check_rst outputs then parse_section inputs outputs else Map.empty in
   { sections = ref sections; }
-
-
-(* Macro generation *)
-
-let macro_atom env atom =
-  let variant = Al.Print.string_of_atom atom in
-  let _, syntax = atom in
-  let header = "syntax-" ^ syntax in
-  let font = font_macro "K" in
-  let with_macro = "\\" ^ (macroify ~note:syntax variant) in
-  let without_macro = gen_macro_rhs env header font variant in
-  (with_macro, without_macro)
-
-let macro_func env fname =
-  let header = "def-" ^ fname in
-  let font = font_macro "F" in
-  let with_macro = "\\" ^ (macroify fname) in
-  let without_macro = gen_macro_rhs env header font fname in
-  (with_macro, without_macro)

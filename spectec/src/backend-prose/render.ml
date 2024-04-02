@@ -1,6 +1,5 @@
 open Prose
 open Printf
-open Config
 open Util.Source
 
 
@@ -16,21 +15,16 @@ module Map = Map.Make(String)
 
 type env =
   {
-    config: config;
     prose: prose;
     render_latex: Backend_latex.Render.env;
     symbol: Symbol.env;
     macro: Macro.env;
   }
 
-let gen_macro env =
-  if env.config.macros then
-    Macro.gen_macro env.macro env.symbol
-
-let env config inputs outputs render_latex el prose : env =
+let env inputs outputs render_latex el prose : env =
   let symbol = Symbol.env el in
   let macro = Macro.env inputs outputs in
-  let env = { config; prose; render_latex; symbol; macro; } in
+  let env = { prose; render_latex; symbol; macro; } in
   env
 
 (* Translation from Al exp to El exp *)
