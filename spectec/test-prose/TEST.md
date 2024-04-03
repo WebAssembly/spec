@@ -93,9 +93,9 @@ validation_of_TESTOP t testop_t
 validation_of_RELOP t relop_t
 - The instruction is valid with type ([t, t] -> [I32]).
 
-validation_of_CVTOP t_1 REINTERPRET t_2 ?()
-- $size(t_1) must be equal to $size(t_2).
-- The instruction is valid with type ([t_2] -> [t_1]).
+validation_of_CVTOP nt_1 nt_2 REINTERPRET ?()
+- $size(nt_1) must be equal to $size(nt_2).
+- The instruction is valid with type ([nt_2] -> [nt_1]).
 
 validation_of_LOCAL.GET x
 - |C.LOCALS| must be greater than x.
@@ -1051,7 +1051,7 @@ execution_of_RELOP t relop
 5. Let c be $relop(t, relop, c_1, c_2).
 6. Push the value (I32.CONST c) to the stack.
 
-execution_of_CVTOP t_2 cvtop t_1 sx?
+execution_of_CVTOP t_2 t_1 cvtop sx?
 1. Assert: Due to validation, a value of value type t_1 is on the top of the stack.
 2. Pop the value (t_1.CONST c_1) from the stack.
 3. If (|$cvtop(t_1, t_2, cvtop, sx?, c_1)| is 1), then:
@@ -1340,7 +1340,7 @@ validation_of_TESTOP nt testop_nt
 validation_of_RELOP nt relop_nt
 - The instruction is valid with type ([nt, nt] -> [I32]).
 
-validation_of_CVTOP nt_1 REINTERPRET nt_2 ?()
+validation_of_CVTOP nt_1 nt_2 REINTERPRET ?()
 - $size(nt_1) must be equal to $size(nt_2).
 - The instruction is valid with type ([nt_2] -> [nt_1]).
 
@@ -3012,7 +3012,7 @@ execution_of_RELOP nt relop
 5. Let c be $relop(nt, relop, c_1, c_2).
 6. Push the value (I32.CONST c) to the stack.
 
-execution_of_CVTOP nt_2 cvtop nt_1 sx?
+execution_of_CVTOP nt_2 nt_1 cvtop sx?
 1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
 2. Pop the value (nt_1.CONST c_1) from the stack.
 3. If (|$cvtop(nt_1, nt_2, cvtop, sx?, c_1)| is 1), then:
@@ -3712,14 +3712,14 @@ watsup 0.4 generator
 6-typing.watsup:675.6-675.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
 6-typing.watsup:682.6-682.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
 6-typing.watsup:686.6-686.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
-6-typing.watsup:750.6-750.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-6-typing.watsup:756.6-756.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-6-typing.watsup:774.7-774.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
-6-typing.watsup:806.6-806.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
-6-typing.watsup:835.6-835.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
-6-typing.watsup:840.6-840.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
-6-typing.watsup:977.6-977.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-6-typing.watsup:983.6-983.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:747.6-747.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
+6-typing.watsup:753.6-753.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
+6-typing.watsup:771.7-771.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
+6-typing.watsup:803.6-803.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
+6-typing.watsup:832.6-832.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
+6-typing.watsup:837.6-837.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
+6-typing.watsup:974.6-974.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:980.6-980.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 =================
  Generated prose
 =================
@@ -3869,7 +3869,7 @@ validation_of_TESTOP nt testop_nt
 validation_of_RELOP nt relop_nt
 - The instruction is valid with type ([nt, nt] ->_ [] ++ [I32]).
 
-validation_of_CVTOP nt_1 REINTERPRET nt_2 ?()
+validation_of_CVTOP nt_1 nt_2 REINTERPRET ?()
 - $size(nt_1) must be equal to $size(nt_2).
 - The instruction is valid with type ([nt_2] ->_ [] ++ [nt_1]).
 
@@ -4355,7 +4355,19 @@ lanetype (lnn X N)
 sizenn nt
 1. Return $size(nt).
 
+sizenn1 nt
+1. Return $size(nt).
+
+sizenn2 nt
+1. Return $size(nt).
+
 sizemm lt
+1. Return $lsize(lt).
+
+sizemm1 lt
+1. Return $lsize(lt).
+
+sizemm2 lt
 1. Return $lsize(lt).
 
 zero numty_u0
@@ -6028,7 +6040,7 @@ execution_of_RELOP nt relop
 5. Let c be $relop(nt, relop, c_1, c_2).
 6. Push the value (I32.CONST c) to the stack.
 
-execution_of_CVTOP nt_2 cvtop nt_1 sx?
+execution_of_CVTOP nt_2 nt_1 cvtop sx?
 1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
 2. Pop the value (nt_1.CONST c_1) from the stack.
 3. If (|$cvtop(nt_1, nt_2, cvtop, sx?, c_1)| is 1), then:

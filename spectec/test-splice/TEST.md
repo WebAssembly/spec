@@ -22,14 +22,14 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup -l --splice-latex -p spe
 ../spec/wasm-3.0/6-typing.watsup:675.6-675.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
 ../spec/wasm-3.0/6-typing.watsup:682.6-682.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
 ../spec/wasm-3.0/6-typing.watsup:686.6-686.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
-../spec/wasm-3.0/6-typing.watsup:750.6-750.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-../spec/wasm-3.0/6-typing.watsup:756.6-756.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-../spec/wasm-3.0/6-typing.watsup:774.7-774.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
-../spec/wasm-3.0/6-typing.watsup:806.6-806.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
-../spec/wasm-3.0/6-typing.watsup:835.6-835.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
-../spec/wasm-3.0/6-typing.watsup:840.6-840.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
-../spec/wasm-3.0/6-typing.watsup:977.6-977.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-../spec/wasm-3.0/6-typing.watsup:983.6-983.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+../spec/wasm-3.0/6-typing.watsup:747.6-747.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
+../spec/wasm-3.0/6-typing.watsup:753.6-753.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
+../spec/wasm-3.0/6-typing.watsup:771.7-771.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
+../spec/wasm-3.0/6-typing.watsup:803.6-803.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
+../spec/wasm-3.0/6-typing.watsup:832.6-832.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
+../spec/wasm-3.0/6-typing.watsup:837.6-837.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
+../spec/wasm-3.0/6-typing.watsup:974.6-974.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+../spec/wasm-3.0/6-typing.watsup:980.6-980.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 == Splicing...
 \documentclass[a4paper]{scrartcl}
 
@@ -91,7 +91,7 @@ $$
 {\mathit{numtype}} . {{\mathit{binop}}}_{{\mathit{numtype}}} \\ &&|&
 {\mathit{numtype}} . {{\mathit{testop}}}_{{\mathit{numtype}}} \\ &&|&
 {\mathit{numtype}} . {{\mathit{relop}}}_{{\mathit{numtype}}} \\ &&|&
-{\mathit{numtype}}_{{1}} . {{{{{\mathit{cvtop}}}{\mathsf{\_}}}{{\mathit{numtype}}_{{2}}}}{\mathsf{\_}}}{{{\mathit{sx}}^?}}
+{\mathit{numtype}}_{{1}} . {{{\mathit{cvtop}}}{\mathsf{\_}}}{{\mathit{numtype}}_{{2}}}
   &\qquad \mbox{if}~{\mathit{numtype}}_{{1}} \neq {\mathit{numtype}}_{{2}} \\ &&|&
 {{{{\mathit{numtype}}.\mathsf{extend}}{{\mathit{n}}}}{\mathsf{\_}}}{\mathsf{s}} \\ &&|&
 \mathsf{local.get}~{\mathit{localidx}} \\ &&|&
@@ -1218,7 +1218,11 @@ warning: definition `shunpack` was never spliced
 warning: definition `signed` was never spliced
 warning: definition `signif` was never spliced
 warning: definition `sizemm` was never spliced
+warning: definition `sizemm1` was never spliced
+warning: definition `sizemm2` was never spliced
 warning: definition `sizenn` was never spliced
+warning: definition `sizenn1` was never spliced
+warning: definition `sizenn2` was never spliced
 warning: definition `store` was never spliced
 warning: definition `structinst` was never spliced
 warning: definition `subst_all_deftype` was never spliced
@@ -1591,7 +1595,11 @@ warning: definition prose `signed` was never spliced
 warning: definition prose `signif` was never spliced
 warning: definition prose `size` was never spliced
 warning: definition prose `sizemm` was never spliced
+warning: definition prose `sizemm1` was never spliced
+warning: definition prose `sizemm2` was never spliced
 warning: definition prose `sizenn` was never spliced
+warning: definition prose `sizenn1` was never spliced
+warning: definition prose `sizenn2` was never spliced
 warning: definition prose `store` was never spliced
 warning: definition prose `structinst` was never spliced
 warning: definition prose `subst_all_deftype` was never spliced

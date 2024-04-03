@@ -169,11 +169,11 @@ rule Step_pure/relop:
 
 
 rule Step_pure/cvtop-val:
-  (CONST t_1 c_1) (CVTOP t_2 cvtop t_1 sx?)  ~>  (CONST t_2 c)
+  (CONST t_1 c_1) (CVTOP t_2 t_1 cvtop sx?)  ~>  (CONST t_2 c)
   -- if $cvtop(t_1, t_2, cvtop, sx?, c_1) = c  ;; TODO
 
 rule Step_pure/cvtop-trap:
-  (CONST t_1 c_1) (CVTOP t_2 cvtop t_1 sx?)  ~>  TRAP
+  (CONST t_1 c_1) (CVTOP t_2 t_1 cvtop sx?)  ~>  TRAP
   -- if $cvtop(t_1, t_2, cvtop, sx?, c_1) = eps  ;; TODO
 
 

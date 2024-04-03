@@ -707,15 +707,12 @@ rule Instr_ok/relop:
 
 ;; TODO: move side conditions to syntax
 rule Instr_ok/cvtop-reinterpret:
-  C |- CVTOP nt_1 REINTERPRET nt_2 : nt_2 -> nt_1
+  C |- CVTOP nt_1 nt_2 REINTERPRET : nt_2 -> nt_1
   -- if $size(nt_1) = $size(nt_2)
 
-rule Instr_ok/cvtop-convert-i:
-  C |- CVTOP inn_1 CONVERT inn_2 sx? : inn_2 -> inn_1
-  -- if sx? = eps <=> $size(inn_1) > $size(inn_2)
-
-rule Instr_ok/cvtop-convert-f:
-  C |- CVTOP fnn_1 CONVERT fnn_2 : fnn_2 -> fnn_1
+rule Instr_ok/cvtop-convert:
+  C |- CVTOP nt_1 nt_2 CONVERT sx? : nt_2 -> nt_1
+  -- if sx? = eps <=> nt_1 = inn_1 /\ nt_2 = inn_2 /\ $size(nt_1) > $size(nt_2) \/ nt_1 = fnn_1 /\ nt_2 = fnn_2
 
 
 ;; Reference instructions

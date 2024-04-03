@@ -265,11 +265,20 @@ def $lsize(lanetype) : nat     hint(show |%|)
 def $zsize(storagetype) : nat  hint(show |%|)
 def $lanetype(shape) : lanetype
 
-def $sizenn(numtype) : nat     hint(show n)
+;; TODO: get rid of these terrible hacks by defining $inn(nat) hint(show I#%)
+def $sizenn(numtype) : nat     hint(show n)  ;; HACK!
+def $sizenn1(numtype) : nat    hint(show n_1)  ;; HACK!
+def $sizenn2(numtype) : nat    hint(show n_2)  ;; HACK!
 def $sizenn(nt) = $size(nt)
+def $sizenn1(nt) = $size(nt)
+def $sizenn2(nt) = $size(nt)
 
-def $sizemm(lanetype) : nat    hint(show n)
+def $sizemm(lanetype) : nat    hint(show n)    ;; HACK!
+def $sizemm1(lanetype) : nat   hint(show n_1)  ;; HACK!
+def $sizemm2(lanetype) : nat   hint(show n_2)  ;; HACK!
 def $sizemm(lt) = $lsize(lt)
+def $sizemm1(lt) = $lsize(lt)
+def $sizemm2(lt) = $lsize(lt)
 
 syntax num_(numtype)
 syntax num_(inn) = iN($sizenn(inn))
@@ -455,7 +464,7 @@ syntax instr/num hint(desc "numeric instruction") = ...
   | BINOP numtype binop_(numtype)    hint(show %.%)
   | TESTOP numtype testop_(numtype)  hint(show %.%)
   | RELOP numtype relop_(numtype)    hint(show %.%)
-  | CVTOP numtype_1 cvtop numtype_2 sx?  hint(show %.%#_#%) hint(show %.%#_#%#_#%)
+  | CVTOP numtype_1 numtype_2 cvtop sx?  hint(show %1.%3#_#%2#_#%4) hint(show %1.%3#_#%2)
     -- if numtype_1 =/= numtype_2
   | EXTEND numtype n                 hint(show %.EXTEND#%#_#S)
   | ...
