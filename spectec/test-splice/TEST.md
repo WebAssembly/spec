@@ -918,26 +918,26 @@ warning: rule `Step_pure/vvunop` was never spliced
 warning: rule `Step_pure/vvbinop` was never spliced
 warning: rule `Step_pure/vvternop` was never spliced
 warning: rule `Step_pure/vvtestop` was never spliced
+warning: rule `Step_pure/vunop` was never spliced
+warning: rule `Step_pure/vbinop-val` was never spliced
+warning: rule `Step_pure/vbinop-trap` was never spliced
+warning: rule `Step_pure/vtestop-true` was never spliced
+warning: rule `Step_pure/vtestop-false` was never spliced
+warning: rule `Step_pure/vrelop` was never spliced
+warning: rule `Step_pure/vshiftop` was never spliced
+warning: rule `Step_pure/vbitmask` was never spliced
 warning: rule `Step_pure/vswizzle` was never spliced
 warning: rule `Step_pure/vshuffle` was never spliced
 warning: rule `Step_pure/vsplat` was never spliced
 warning: rule `Step_pure/vextract_lane-num` was never spliced
 warning: rule `Step_pure/vextract_lane-pack` was never spliced
 warning: rule `Step_pure/vreplace_lane` was never spliced
-warning: rule `Step_pure/vunop` was never spliced
-warning: rule `Step_pure/vbinop-val` was never spliced
-warning: rule `Step_pure/vbinop-trap` was never spliced
-warning: rule `Step_pure/vrelop` was never spliced
-warning: rule `Step_pure/vshiftop` was never spliced
-warning: rule `Step_pure/vtestop-true` was never spliced
-warning: rule `Step_pure/vtestop-false` was never spliced
-warning: rule `Step_pure/vbitmask` was never spliced
-warning: rule `Step_pure/vnarrow` was never spliced
-warning: rule `Step_pure/vcvtop-normal` was never spliced
-warning: rule `Step_pure/vcvtop-half` was never spliced
-warning: rule `Step_pure/vcvtop-zero` was never spliced
 warning: rule `Step_pure/vextunop` was never spliced
 warning: rule `Step_pure/vextbinop` was never spliced
+warning: rule `Step_pure/vnarrow` was never spliced
+warning: rule `Step_pure/vcvtop-full` was never spliced
+warning: rule `Step_pure/vcvtop-half` was never spliced
+warning: rule `Step_pure/vcvtop-zero` was never spliced
 warning: rule `Step_pure/local.tee` was never spliced
 warning: rule `Step_read/br_on_cast-succeed` was never spliced
 warning: rule `Step_read/br_on_cast-fail` was never spliced
@@ -1270,8 +1270,8 @@ warning: definition `vbytes` was never spliced
 warning: definition `vcvtop` was never spliced
 warning: definition `vextbinop` was never spliced
 warning: definition `vextunop` was never spliced
-warning: definition `vishiftop` was never spliced
 warning: definition `vrelop` was never spliced
+warning: definition `vshiftop` was never spliced
 warning: definition `vsize` was never spliced
 warning: definition `vunop` was never spliced
 warning: definition `vunpack` was never spliced
@@ -1347,21 +1347,21 @@ warning: rule prose `exec/br_on_cast` was never spliced
 warning: rule prose `exec/loop` was never spliced
 warning: rule prose `exec/block` was never spliced
 warning: rule prose `exec/local.tee` was never spliced
-warning: rule prose `exec/vextbinop` was never spliced
-warning: rule prose `exec/vextunop` was never spliced
 warning: rule prose `exec/vcvtop` was never spliced
 warning: rule prose `exec/vnarrow` was never spliced
-warning: rule prose `exec/vbitmask` was never spliced
-warning: rule prose `exec/vtestop` was never spliced
-warning: rule prose `exec/vshiftop` was never spliced
-warning: rule prose `exec/vrelop` was never spliced
-warning: rule prose `exec/vbinop` was never spliced
-warning: rule prose `exec/vunop` was never spliced
+warning: rule prose `exec/vextbinop` was never spliced
+warning: rule prose `exec/vextunop` was never spliced
 warning: rule prose `exec/vreplace_lane` was never spliced
 warning: rule prose `exec/vextract_lane` was never spliced
 warning: rule prose `exec/vsplat` was never spliced
 warning: rule prose `exec/vshuffle` was never spliced
 warning: rule prose `exec/vswizzle` was never spliced
+warning: rule prose `exec/vbitmask` was never spliced
+warning: rule prose `exec/vshiftop` was never spliced
+warning: rule prose `exec/vrelop` was never spliced
+warning: rule prose `exec/vtestop` was never spliced
+warning: rule prose `exec/vbinop` was never spliced
+warning: rule prose `exec/vunop` was never spliced
 warning: rule prose `exec/vvtestop` was never spliced
 warning: rule prose `exec/vvternop` was never spliced
 warning: rule prose `exec/vvbinop` was never spliced
@@ -1645,8 +1645,8 @@ warning: definition prose `vbinop` was never spliced
 warning: definition prose `vcvtop` was never spliced
 warning: definition prose `vextbinop` was never spliced
 warning: definition prose `vextunop` was never spliced
-warning: definition prose `vishiftop` was never spliced
 warning: definition prose `vrelop` was never spliced
+warning: definition prose `vshiftop` was never spliced
 warning: definition prose `vsize` was never spliced
 warning: definition prose `vunop` was never spliced
 warning: definition prose `vunpack` was never spliced

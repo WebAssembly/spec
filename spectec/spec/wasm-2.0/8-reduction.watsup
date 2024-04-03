@@ -202,56 +202,23 @@ rule Step_pure/ref.is_null-false:
 
 rule Step_pure/vvunop:
   (VCONST V128 c_1) (VVUNOP V128 vvunop)  ~>  (VCONST V128 c)
-  -- if $vvunop(V128, vvunop, c_1) = c ;; TODO
+  -- if c = $vvunop(V128, vvunop, c_1) ;; TODO
 
 
 rule Step_pure/vvbinop:
   (VCONST V128 c_1) (VCONST V128 c_2) (VVBINOP V128 vvbinop)  ~>  (VCONST V128 c)
-  -- if $vvbinop(V128, vvbinop, c_1, c_2) = c ;; TODO
+  -- if c = $vvbinop(V128, vvbinop, c_1, c_2) ;; TODO
 
 
 rule Step_pure/vvternop:
   (VCONST V128 c_1) (VCONST V128 c_2) (VCONST V128 c_3) (VVTERNOP V128 vvternop)  ~>  (VCONST V128 c)
-  -- if $vvternop(V128, vvternop, c_1, c_2, c_3) = c ;; TODO
+  ----
+  -- if c = $vvternop(V128, vvternop, c_1, c_2, c_3) ;; TODO
 
 
 rule Step_pure/vvtestop:
   (VCONST V128 c_1) (VVTESTOP V128 ANY_TRUE) ~> (CONST I32 c)
   -- if c = $ine($size(V128), c_1, 0)
-
-
-rule Step_pure/vswizzle:
-  (VCONST V128 c_1) (VCONST V128 c_2) (VSWIZZLE (inn X N)) ~> (VCONST V128 c')
-  -- var c : iN($size(inn))
-  -- if ci* = $lanes_(inn X N, c_2)
-  -- if c* = $lanes_(inn X N, c_1) 0^(256 - N)
-  -- if c' = $invlanes_(inn X N, c*[$(ci*[k])]^(k<N))
-
-
-rule Step_pure/vshuffle:
-  (VCONST V128 c_1) (VCONST V128 c_2) (VSHUFFLE (inn X N) i*) ~> (VCONST V128 c)
-  -- var c' : iN($size(inn))
-  -- if c'* = $lanes_(inn X N, c_1) $lanes_(inn X N, c_2)
-  -- if c = $invlanes_(inn X N, c'*[$(i*[k])]^(k<N))
-
-
-rule Step_pure/vsplat:
-  (CONST $unpack(lnn) c_1) (VSPLAT (lnn X N)) ~> (VCONST V128 c)
-  -- if c = $invlanes_(lnn X N, $packnum(lnn, c_1)^N)
-
-
-rule Step_pure/vextract_lane-num:
-  (VCONST V128 c_1) (VEXTRACT_LANE (nt X N) i) ~> (CONST nt c_2)
-  -- if c_2 = $lanes_(nt X N, c_1)[i]
-
-rule Step_pure/vextract_lane-pack:
-  (VCONST V128 c_1) (VEXTRACT_LANE (pt X N) sx i) ~> (CONST I32 c_2)
-  -- if c_2 = $ext($psize(pt), 32, sx, $lanes_(pt X N, c_1)[i])
-
-
-rule Step_pure/vreplace_lane:
-  (VCONST V128 c_1) (CONST $unpack(lnn) c_2) (VREPLACE_LANE (lnn X N) i) ~> (VCONST V128 c)
-  -- if c = $invlanes_(lnn X N, $lanes_(lnn X N, c_1)[[i] = $packnum(lnn, c_2)])
 
 
 rule Step_pure/vunop:
@@ -261,11 +228,22 @@ rule Step_pure/vunop:
 
 rule Step_pure/vbinop-val:
   (VCONST V128 c_1) (VCONST V128 c_2) (VBINOP sh vbinop)  ~>  (VCONST V128 c)
-  -- if $vbinop(sh, vbinop, c_1, c_2) = c
+  -- if $vbinop(sh, vbinop, c_1, c_2) = c  ;; TODO
 
 rule Step_pure/vbinop-trap:
   (VCONST V128 c_1) (VCONST V128 c_2) (VBINOP sh vbinop)  ~>  TRAP
   -- if $vbinop(sh, vbinop, c_1, c_2) = eps
+
+
+;; TODO: introduce $vitestop for uniformity
+rule Step_pure/vtestop-true:
+  (VCONST V128 c) (VTESTOP $($(imm X N)) ALL_TRUE) ~> (CONST I32 1)
+  -- if ci_1* = $lanes_(imm X N, c)
+  -- (if $(ci_1 =/= 0))*  ;; TODO: same line
+
+rule Step_pure/vtestop-false:
+  (VCONST V128 c) (VTESTOP $($(imm X N)) ALL_TRUE) ~> (CONST I32 0)
+  -- otherwise
 
 
 rule Step_pure/vrelop:
@@ -279,26 +257,60 @@ rule Step_pure/vrelop:
 
 
 rule Step_pure/vshiftop:
-  (VCONST V128 c_1) (CONST I32 n) (VSHIFTOP (imm X N) vshiftop) ~> (VCONST V128 c)
-  -- if ci* = $lanes_(imm X N, c_1)
-  -- if c = $invlanes_(imm X N, $vishiftop(imm X N, vshiftop, ci, n)*)
-
-
-;; TODO: introduce $vitestop for uniformity
-rule Step_pure/vtestop-true:
-  (VCONST V128 c) (VTESTOP (inn X N) ALL_TRUE) ~> (CONST I32 1)
-  -- if ci* = $lanes_(inn X N, c)
-  -- (if $(ci =/= 0))*
-
-rule Step_pure/vtestop-false:
-  (VCONST V128 c) (VTESTOP (inn X N) ALL_TRUE) ~> (CONST I32 0)
-  -- otherwise
+  (VCONST V128 c_1) (CONST I32 n) (VSHIFTOP $($(imm X N)) vshiftop) ~> (VCONST V128 c)
+  -- if c'* = $lanes_(imm X N, c_1)
+  -- if c = $invlanes_(imm X N, $vshiftop(imm X N, vshiftop, c', n)*)
 
 
 rule Step_pure/vbitmask:
-  (VCONST V128 c) (VBITMASK (imm X N)) ~> (CONST I32 i)
-  -- if ci* = $lanes_(imm X N, c)
-  -- if $ibits(32, i) = $ilt($lsize(imm), S, ci, 0)*
+  (VCONST V128 c) (VBITMASK (imm X N)) ~> (CONST I32 ci)
+  -- if ci_1* = $lanes_(imm X N, c)
+  -- if $ibits(32, ci) = $ilt($lsize(imm), S, ci_1, 0)*
+
+
+rule Step_pure/vswizzle:
+  (VCONST V128 c_1) (VCONST V128 c_2) (VSWIZZLE (pnn X N)) ~> (VCONST V128 c')
+  -- var c : iN($lsize(pnn))
+  -- if ci* = $lanes_(pnn X N, c_2)
+  -- if c* = $lanes_(pnn X N, c_1) 0^(256 - N)
+  -- if c' = $invlanes_(pnn X N, c*[$(ci*[k])]^(k<N))
+
+
+rule Step_pure/vshuffle:
+  (VCONST V128 c_1) (VCONST V128 c_2) (VSHUFFLE (pnn X N) i*) ~> (VCONST V128 c)
+  -- var c' : iN($lsize(pnn))
+  -- if c'* = $lanes_(pnn X N, c_1) $lanes_(pnn X N, c_2)
+  -- if c = $invlanes_(pnn X N, c'*[$(i*[k])]^(k<N))
+
+
+rule Step_pure/vsplat:
+  (CONST $unpack(lnn) c_1) (VSPLAT (lnn X N)) ~> (VCONST V128 c)
+  -- if c = $invlanes_(lnn X N, $packnum(lnn, c_1)^N)
+
+
+rule Step_pure/vextract_lane-num:
+  (VCONST V128 c_1) (VEXTRACT_LANE (nt X N) i) ~> (CONST nt c_2)
+  -- if c_2 = $lanes_(nt X N, c_1)[i]
+
+;; TODO : fshape
+rule Step_pure/vextract_lane-pack:
+  (VCONST V128 c_1) (VEXTRACT_LANE (pt X N) sx i) ~> (CONST I32 c_2)
+  -- if c_2 = $ext($psize(pt), 32, sx, $lanes_(pt X N, c_1)[i])
+
+
+rule Step_pure/vreplace_lane:
+  (VCONST V128 c_1) (CONST $unpack(lnn) c_2) (VREPLACE_LANE (lnn X N) i) ~> (VCONST V128 c)
+  -- if c = $invlanes_(lnn X N, $lanes_(lnn X N, c_1)[[i] = $packnum(lnn, c_2)])
+
+
+rule Step_pure/vextunop:
+  (VCONST V128 c_1) (VEXTUNOP sh_1 sh_2 vextunop sx) ~> (VCONST V128 c)
+  -- if $vextunop(sh_1, sh_2, vextunop, sx, c_1) = c
+
+
+rule Step_pure/vextbinop:
+  (VCONST V128 c_1) (VCONST V128 c_2) (VEXTBINOP sh_1 sh_2 vextbinop sx) ~> (VCONST V128 c)
+  -- if $vextbinop(sh_1, sh_2, vextbinop, sx, c_1, c_2) = c
 
 
 rule Step_pure/vnarrow:
@@ -310,7 +322,7 @@ rule Step_pure/vnarrow:
   -- if c = $invlanes_(imm_2 X N_2, cj_1* cj_2*)
 
 
-rule Step_pure/vcvtop-normal:
+rule Step_pure/vcvtop-full:
   (VCONST V128 c_1) (VCVTOP (lnn_2 X N_2) vcvtop eps (lnn_1 X N_1) sx) ~> (VCONST V128 c)
   -- if c'* = $lanes_(lnn_1 X N_1, c_1)
   -- if c = $invlanes_(lnn_2 X N_2, $vcvtop(lnn_1 X N_1, lnn_2 X N_2, vcvtop, sx, c')*)
@@ -325,16 +337,6 @@ rule Step_pure/vcvtop-zero:
   (VCONST V128 c_1) (VCVTOP (nt_2 X N_2) vcvtop eps (nt_1 X N_1) sx? ZERO) ~> (VCONST V128 c)
   -- if ci* = $lanes_(nt_1 X N_1, c_1)
   -- if c = $invlanes_(nt_2 X N_2, $vcvtop(nt_1 X N_1, nt_2 X N_2, vcvtop, sx?, ci)* $zero(nt_2)^N_1)
-
-
-rule Step_pure/vextunop:
-  (VCONST V128 c_1) (VEXTUNOP sh_1 sh_2 vextunop sx) ~> (VCONST V128 c)
-  -- if $vextunop(sh_1, sh_2, vextunop, sx, c_1) = c
-
-
-rule Step_pure/vextbinop:
-  (VCONST V128 c_1) (VCONST V128 c_2) (VEXTBINOP sh_1 sh_2 vextbinop sx) ~> (VCONST V128 c)
-  -- if $vextbinop(sh_1, sh_2, vextbinop, sx, c_1, c_2) = c
 
 
 ;; Local instructions

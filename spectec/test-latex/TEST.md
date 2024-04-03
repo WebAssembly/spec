@@ -1309,34 +1309,34 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathsf{not}}{\mathsf{\_}}~\mathsf{v{\scriptstyle128}}}{({\mathit{v{\scriptstyle128}}})} &=& {{\mathrm{inot}}}_{{|\mathsf{v{\scriptstyle128}}|}}({\mathit{v{\scriptstyle128}}}) \\
+{{\mathsf{not}}{{}_{\mathsf{v{\scriptstyle128}}}}}{({\mathit{v{\scriptstyle128}}})} &=& {{\mathrm{inot}}}_{{|\mathsf{v{\scriptstyle128}}|}}({\mathit{v{\scriptstyle128}}}) \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathsf{and}}{\mathsf{\_}}~\mathsf{v{\scriptstyle128}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {{\mathrm{iand}}}_{{|\mathsf{v{\scriptstyle128}}|}}({\mathit{v{\scriptstyle128}}}_{{1}}, {\mathit{v{\scriptstyle128}}}_{{2}}) \\
-{{\mathsf{andnot}}{\mathsf{\_}}~\mathsf{v{\scriptstyle128}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {{\mathrm{inot}}}_{{|\mathsf{v{\scriptstyle128}}|}}({\mathit{v{\scriptstyle128}}}_{{1}}, {\mathit{v{\scriptstyle128}}}_{{2}}) \\
-{{\mathsf{or}}{\mathsf{\_}}~\mathsf{v{\scriptstyle128}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {{\mathrm{ior}}}_{{|\mathsf{v{\scriptstyle128}}|}}({\mathit{v{\scriptstyle128}}}_{{1}}, {\mathit{v{\scriptstyle128}}}_{{2}}) \\
-{{\mathsf{xor}}{\mathsf{\_}}~\mathsf{v{\scriptstyle128}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {{\mathrm{ixor}}}_{{|\mathsf{v{\scriptstyle128}}|}}({\mathit{v{\scriptstyle128}}}_{{1}}, {\mathit{v{\scriptstyle128}}}_{{2}}) \\
+{{\mathsf{and}}{{}_{\mathsf{v{\scriptstyle128}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {{\mathrm{iand}}}_{{|\mathsf{v{\scriptstyle128}}|}}({\mathit{v{\scriptstyle128}}}_{{1}}, {\mathit{v{\scriptstyle128}}}_{{2}}) \\
+{{\mathsf{andnot}}{{}_{\mathsf{v{\scriptstyle128}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {{\mathrm{inot}}}_{{|\mathsf{v{\scriptstyle128}}|}}({\mathit{v{\scriptstyle128}}}_{{1}}, {\mathit{v{\scriptstyle128}}}_{{2}}) \\
+{{\mathsf{or}}{{}_{\mathsf{v{\scriptstyle128}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {{\mathrm{ior}}}_{{|\mathsf{v{\scriptstyle128}}|}}({\mathit{v{\scriptstyle128}}}_{{1}}, {\mathit{v{\scriptstyle128}}}_{{2}}) \\
+{{\mathsf{xor}}{{}_{\mathsf{v{\scriptstyle128}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {{\mathrm{ixor}}}_{{|\mathsf{v{\scriptstyle128}}|}}({\mathit{v{\scriptstyle128}}}_{{1}}, {\mathit{v{\scriptstyle128}}}_{{2}}) \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathsf{bitselect}}{\mathsf{\_}}~\mathsf{v{\scriptstyle128}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}},\, {\mathit{v{\scriptstyle128}}}_{{3}})} &=& {{\mathrm{ibitselect}}}_{{|\mathsf{v{\scriptstyle128}}|}}({\mathit{v{\scriptstyle128}}}_{{1}}, {\mathit{v{\scriptstyle128}}}_{{2}}, {\mathit{v{\scriptstyle128}}}_{{3}}) \\
+{{\mathsf{bitselect}}{{}_{\mathsf{v{\scriptstyle128}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}},\, {\mathit{v{\scriptstyle128}}}_{{3}})} &=& {{\mathrm{ibitselect}}}_{{|\mathsf{v{\scriptstyle128}}|}}({\mathit{v{\scriptstyle128}}}_{{1}}, {\mathit{v{\scriptstyle128}}}_{{2}}, {\mathit{v{\scriptstyle128}}}_{{3}}) \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathsf{abs}}{\mathsf{\_}}~{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{abs}}{{}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{\mathrm{iabs}}}_{{|{\mathsf{i}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}})^\ast})} \\
-{{\mathsf{neg}}{\mathsf{\_}}~{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{neg}}{{}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{\mathrm{ineg}}}_{{|{\mathsf{i}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}})^\ast})} \\
-{{\mathsf{popcnt}}{\mathsf{\_}}~{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{popcnt}}{{}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{\mathrm{ipopcnt}}}_{{|{\mathsf{i}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}})^\ast})} \\
 \end{array}
@@ -1344,39 +1344,39 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathsf{add}}{\mathsf{\_}}~{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{add}}{{}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{\mathrm{iadd}}}_{{|{\mathsf{i}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}}, {\mathit{lane}}_{{2}})^\ast})} \\
-{{\mathsf{sub}}{\mathsf{\_}}~{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{sub}}{{}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{\mathrm{isub}}}_{{|{\mathsf{i}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}}, {\mathit{lane}}_{{2}})^\ast})} \\
-{{{{\mathsf{min}}{\mathsf{\_}}}{{\mathit{sx}}}}{\mathsf{\_}}~{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{{{\mathsf{min}}{\mathsf{\_}}}{{\mathit{sx}}}}{{}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{\mathrm{imin}}({|{\mathsf{i}}{{\mathit{n}}}|}, {\mathit{sx}}, {\mathit{lane}}_{{1}}, {\mathit{lane}}_{{2}})^\ast})} \\
-{{{{\mathsf{max}}{\mathsf{\_}}}{{\mathit{sx}}}}{\mathsf{\_}}~{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{{{\mathsf{max}}{\mathsf{\_}}}{{\mathit{sx}}}}{{}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{\mathrm{imax}}({|{\mathsf{i}}{{\mathit{n}}}|}, {\mathit{sx}}, {\mathit{lane}}_{{1}}, {\mathit{lane}}_{{2}})^\ast})} \\
-{{{{\mathsf{add\_sat}}{\mathsf{\_}}}{{\mathit{sx}}}}{\mathsf{\_}}~{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{{{\mathsf{add\_sat}}{\mathsf{\_}}}{{\mathit{sx}}}}{{}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{{{\mathrm{iaddsat}}}_{{|{\mathsf{i}}{{\mathit{n}}}|}}^{{\mathit{sx}}}}}{({\mathit{lane}}_{{1}},\, {\mathit{lane}}_{{2}})}^\ast})} \\
-{{{{\mathsf{sub\_sat}}{\mathsf{\_}}}{{\mathit{sx}}}}{\mathsf{\_}}~{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{{{\mathsf{sub\_sat}}{\mathsf{\_}}}{{\mathit{sx}}}}{{}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{{{\mathrm{isubsat}}}_{{|{\mathsf{i}}{{\mathit{n}}}|}}^{{\mathit{sx}}}}}{({\mathit{lane}}_{{1}},\, {\mathit{lane}}_{{2}})}^\ast})} \\
-{{\mathsf{mul}}{\mathsf{\_}}~{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{mul}}{{}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{\mathrm{imul}}}_{{|{\mathsf{i}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}}, {\mathit{lane}}_{{2}})^\ast})} \\
-{{\mathsf{avgr\_u}}{\mathsf{\_}}~{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{avgr\_u}}{{}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{\mathrm{iavgr}}_{{\mathit{u}}}}_{{|{\mathsf{i}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}}, {\mathit{lane}}_{{2}})^\ast})} \\
-{{\mathsf{q{\scriptstyle15}mulr\_sat\_s}}{\mathsf{\_}}~{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{q{\scriptstyle15}mulr\_sat\_s}}{{}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{\mathrm{iq{\scriptstyle15}mulrsat}}_{{\mathit{s}}}}_{{|{\mathsf{i}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}}, {\mathit{lane}}_{{2}})^\ast})} \\
@@ -1385,32 +1385,32 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathsf{eq}}{\mathsf{\_}}~{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{eq}}{{}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{3}}^\ast} = {{{{{\mathrm{ext}}}_{1, {|{\mathsf{i}}{{\mathit{n}}}|}}^{\mathsf{s}}}}{({{\mathrm{ieq}}}_{{|{\mathsf{i}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}}, {\mathit{lane}}_{{2}}))}^\ast} \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{\mathit{lane}}_{{3}}^\ast})} \\
-{{\mathsf{ne}}{\mathsf{\_}}~{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{ne}}{{}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{3}}^\ast} = {{{{{\mathrm{ext}}}_{1, {|{\mathsf{i}}{{\mathit{n}}}|}}^{\mathsf{s}}}}{({{\mathrm{ine}}}_{{|{\mathsf{i}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}}, {\mathit{lane}}_{{2}}))}^\ast} \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{\mathit{lane}}_{{3}}^\ast})} \\
-{{{\mathsf{lt\_}}{{\mathit{sx}}}}{\mathsf{\_}}~{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{{\mathsf{lt\_}}{{\mathit{sx}}}}{{}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{3}}^\ast} = {{{{{\mathrm{ext}}}_{1, {|{\mathsf{i}}{{\mathit{n}}}|}}^{\mathsf{s}}}}{({{{{\mathrm{ilt}}}_{{|{\mathsf{i}}{{\mathit{n}}}|}}^{{\mathit{sx}}}}}{({\mathit{lane}}_{{1}},\, {\mathit{lane}}_{{2}})})}^\ast} \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{\mathit{lane}}_{{3}}^\ast})} \\
-{{{\mathsf{gt\_}}{{\mathit{sx}}}}{\mathsf{\_}}~{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{{\mathsf{gt\_}}{{\mathit{sx}}}}{{}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{3}}^\ast} = {{{{{\mathrm{ext}}}_{1, {|{\mathsf{i}}{{\mathit{n}}}|}}^{\mathsf{s}}}}{({{{{\mathrm{igt}}}_{{|{\mathsf{i}}{{\mathit{n}}}|}}^{{\mathit{sx}}}}}{({\mathit{lane}}_{{1}},\, {\mathit{lane}}_{{2}})})}^\ast} \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{\mathit{lane}}_{{3}}^\ast})} \\
-{{{\mathsf{le\_}}{{\mathit{sx}}}}{\mathsf{\_}}~{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{{\mathsf{le\_}}{{\mathit{sx}}}}{{}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{3}}^\ast} = {{{{{\mathrm{ext}}}_{1, {|{\mathsf{i}}{{\mathit{n}}}|}}^{\mathsf{s}}}}{({{{{\mathrm{ile}}}_{{|{\mathsf{i}}{{\mathit{n}}}|}}^{{\mathit{sx}}}}}{({\mathit{lane}}_{{1}},\, {\mathit{lane}}_{{2}})})}^\ast} \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{\mathit{lane}}_{{3}}^\ast})} \\
-{{{\mathsf{ge\_}}{{\mathit{sx}}}}{\mathsf{\_}}~{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{{\mathsf{ge\_}}{{\mathit{sx}}}}{{}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{3}}^\ast} = {{{{{\mathrm{ext}}}_{1, {|{\mathsf{i}}{{\mathit{n}}}|}}^{\mathsf{s}}}}{({{{{\mathrm{ige}}}_{{|{\mathsf{i}}{{\mathit{n}}}|}}^{{\mathit{sx}}}}}{({\mathit{lane}}_{{1}},\, {\mathit{lane}}_{{2}})})}^\ast} \\
@@ -1420,25 +1420,25 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathsf{abs}}{\mathsf{\_}}~{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{abs}}{{}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{\mathrm{fabs}}}_{{|{\mathsf{f}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}})^\ast})} \\
-{{\mathsf{neg}}{\mathsf{\_}}~{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{neg}}{{}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{\mathrm{fneg}}}_{{|{\mathsf{f}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}})^\ast})} \\
-{{\mathsf{sqrt}}{\mathsf{\_}}~{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{sqrt}}{{}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{\mathrm{fsqrt}}}_{{|{\mathsf{f}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}})^\ast})} \\
-{{\mathsf{ceil}}{\mathsf{\_}}~{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{ceil}}{{}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{\mathrm{fceil}}}_{{|{\mathsf{f}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}})^\ast})} \\
-{{\mathsf{floor}}{\mathsf{\_}}~{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{floor}}{{}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{\mathrm{ffloor}}}_{{|{\mathsf{f}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}})^\ast})} \\
-{{\mathsf{trunc}}{\mathsf{\_}}~{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{trunc}}{{}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{\mathrm{ftrunc}}}_{{|{\mathsf{f}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}})^\ast})} \\
-{{\mathsf{nearest}}{\mathsf{\_}}~{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{nearest}}{{}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{\mathrm{fnearest}}}_{{|{\mathsf{f}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}})^\ast})} \\
 \end{array}
@@ -1446,35 +1446,35 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathsf{add}}{\mathsf{\_}}~{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{add}}{{}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{\mathrm{fadd}}}_{{|{\mathsf{f}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}}, {\mathit{lane}}_{{2}})^\ast})} \\
-{{\mathsf{sub}}{\mathsf{\_}}~{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{sub}}{{}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{\mathrm{fsub}}}_{{|{\mathsf{f}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}}, {\mathit{lane}}_{{2}})^\ast})} \\
-{{\mathsf{mul}}{\mathsf{\_}}~{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{mul}}{{}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{\mathrm{fmul}}}_{{|{\mathsf{f}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}}, {\mathit{lane}}_{{2}})^\ast})} \\
-{{\mathsf{div}}{\mathsf{\_}}~{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{div}}{{}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{\mathrm{fdiv}}}_{{|{\mathsf{f}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}}, {\mathit{lane}}_{{2}})^\ast})} \\
-{{\mathsf{min}}{\mathsf{\_}}~{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{min}}{{}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{\mathrm{fmin}}}_{{|{\mathsf{f}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}}, {\mathit{lane}}_{{2}})^\ast})} \\
-{{\mathsf{max}}{\mathsf{\_}}~{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{max}}{{}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{\mathrm{fmax}}}_{{|{\mathsf{f}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}}, {\mathit{lane}}_{{2}})^\ast})} \\
-{{\mathsf{pmin}}{\mathsf{\_}}~{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{pmin}}{{}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{\mathrm{fpmin}}}_{{|{\mathsf{f}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}}, {\mathit{lane}}_{{2}})^\ast})} \\
-{{\mathsf{pmax}}{\mathsf{\_}}~{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{pmax}}{{}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{\mathrm{fpmax}}}_{{|{\mathsf{f}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}}, {\mathit{lane}}_{{2}})^\ast})} \\
@@ -1483,37 +1483,37 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathsf{eq}}{\mathsf{\_}}~{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{eq}}{{}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{3}}^\ast} = {{{{{\mathrm{ext}}}_{1, {|{\mathsf{f}}{{\mathit{n}}}|}}^{\mathsf{s}}}}{({{\mathrm{feq}}}_{{|{\mathsf{f}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}}, {\mathit{lane}}_{{2}}))}^\ast} \\
   &&&\qquad {\land}~{|{\mathsf{i}}{{\mathit{n}}}|} = {|{\mathsf{f}}{{\mathit{n}}}|} \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{\mathit{lane}}_{{3}}^\ast})} \\
-{{\mathsf{ne}}{\mathsf{\_}}~{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{ne}}{{}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{3}}^\ast} = {{{{{\mathrm{ext}}}_{1, {|{\mathsf{f}}{{\mathit{n}}}|}}^{\mathsf{s}}}}{({{\mathrm{fne}}}_{{|{\mathsf{f}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}}, {\mathit{lane}}_{{2}}))}^\ast} \\
   &&&\qquad {\land}~{|{\mathsf{i}}{{\mathit{n}}}|} = {|{\mathsf{f}}{{\mathit{n}}}|} \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{\mathit{lane}}_{{3}}^\ast})} \\
-{{\mathsf{lt}}{\mathsf{\_}}~{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{lt}}{{}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{3}}^\ast} = {{{{{\mathrm{ext}}}_{1, {|{\mathsf{f}}{{\mathit{n}}}|}}^{\mathsf{s}}}}{({{\mathrm{flt}}}_{{|{\mathsf{f}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}}, {\mathit{lane}}_{{2}}))}^\ast} \\
   &&&\qquad {\land}~{|{\mathsf{i}}{{\mathit{n}}}|} = {|{\mathsf{f}}{{\mathit{n}}}|} \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{\mathit{lane}}_{{3}}^\ast})} \\
-{{\mathsf{gt}}{\mathsf{\_}}~{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{gt}}{{}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{3}}^\ast} = {{{{{\mathrm{ext}}}_{1, {|{\mathsf{f}}{{\mathit{n}}}|}}^{\mathsf{s}}}}{({{\mathrm{fgt}}}_{{|{\mathsf{f}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}}, {\mathit{lane}}_{{2}}))}^\ast} \\
   &&&\qquad {\land}~{|{\mathsf{i}}{{\mathit{n}}}|} = {|{\mathsf{f}}{{\mathit{n}}}|} \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{\mathit{lane}}_{{3}}^\ast})} \\
-{{\mathsf{le}}{\mathsf{\_}}~{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{le}}{{}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{3}}^\ast} = {{{{{\mathrm{ext}}}_{1, {|{\mathsf{f}}{{\mathit{n}}}|}}^{\mathsf{s}}}}{({{\mathrm{fle}}}_{{|{\mathsf{f}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}}, {\mathit{lane}}_{{2}}))}^\ast} \\
   &&&\qquad {\land}~{|{\mathsf{i}}{{\mathit{n}}}|} = {|{\mathsf{f}}{{\mathit{n}}}|} \\
   &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{\mathit{lane}}_{{3}}^\ast})} \\
-{{\mathsf{ge}}{\mathsf{\_}}~{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
+{{\mathsf{ge}}{{}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{v{\scriptstyle128}}}_{{1}},\, {\mathit{v{\scriptstyle128}}}_{{2}})} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{1}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{2}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{v{\scriptstyle128}}}_{{2}}) \\
   &&&\qquad {\land}~{{\mathit{lane}}_{{3}}^\ast} = {{{{{\mathrm{ext}}}_{1, {|{\mathsf{f}}{{\mathit{n}}}|}}^{\mathsf{s}}}}{({{\mathrm{fge}}}_{{|{\mathsf{f}}{{\mathit{n}}}|}}({\mathit{lane}}_{{1}}, {\mathit{lane}}_{{2}}))}^\ast} \\
@@ -1530,14 +1530,14 @@ $$
   &\qquad \mbox{if}~{\mathit{i{\scriptstyle32}}} = {{{{\mathrm{ext}}}_{16, 32}^{{\mathit{sx}}}}}{({\mathit{i{\scriptstyle16}}})} \\
 {\mathrm{vcvtop}}({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}, {{\mathsf{i{\scriptstyle64}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}, \mathsf{extend}, {\mathit{sx}}, {\mathit{i{\scriptstyle32}}}) &=& {\mathit{i{\scriptstyle64}}}
   &\qquad \mbox{if}~{\mathit{i{\scriptstyle64}}} = {{{{\mathrm{ext}}}_{32, 64}^{{\mathit{sx}}}}}{({\mathit{i{\scriptstyle32}}})} \\
-{\mathrm{vcvtop}}({{\mathsf{f{\scriptstyle32}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}, {{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}, \mathsf{trunc\_sat}, {\mathit{sx}}, {\mathit{f{\scriptstyle32}}}) &=& {\mathit{i{\scriptstyle32}}}
-  &\qquad \mbox{if}~{\mathit{i{\scriptstyle32}}} = {{{{\mathrm{trunc}}_{{\mathit{sat}}}}_{32, 32}^{{\mathit{sx}}}}}{({\mathit{f{\scriptstyle32}}})} \\
-{\mathrm{vcvtop}}({{\mathsf{f{\scriptstyle64}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}, {{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}, \mathsf{trunc\_sat}, {\mathit{sx}}, {\mathit{f{\scriptstyle64}}}) &=& {\mathit{i{\scriptstyle32}}}
-  &\qquad \mbox{if}~{\mathit{i{\scriptstyle32}}} = {{{{\mathrm{trunc}}_{{\mathit{sat}}}}_{64, 32}^{{\mathit{sx}}}}}{({\mathit{f{\scriptstyle64}}})} \\
 {\mathrm{vcvtop}}({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}, {{\mathsf{f{\scriptstyle32}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}, \mathsf{convert}, {\mathit{sx}}, {\mathit{i{\scriptstyle32}}}) &=& {\mathit{f{\scriptstyle32}}}
   &\qquad \mbox{if}~{\mathit{f{\scriptstyle32}}} = {{{{\mathrm{convert}}}_{32, 32}^{{\mathit{sx}}}}}{({\mathit{i{\scriptstyle32}}})} \\
 {\mathrm{vcvtop}}({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}, {{\mathsf{f{\scriptstyle64}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}, \mathsf{convert}, {\mathit{sx}}, {\mathit{i{\scriptstyle32}}}) &=& {\mathit{f{\scriptstyle64}}}
   &\qquad \mbox{if}~{\mathit{f{\scriptstyle64}}} = {{{{\mathrm{convert}}}_{32, 64}^{{\mathit{sx}}}}}{({\mathit{i{\scriptstyle32}}})} \\
+{\mathrm{vcvtop}}({{\mathsf{f{\scriptstyle32}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}, {{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}, \mathsf{trunc\_sat}, {\mathit{sx}}, {\mathit{f{\scriptstyle32}}}) &=& {\mathit{i{\scriptstyle32}}}
+  &\qquad \mbox{if}~{\mathit{i{\scriptstyle32}}} = {{{{\mathrm{trunc}}_{{\mathit{sat}}}}_{32, 32}^{{\mathit{sx}}}}}{({\mathit{f{\scriptstyle32}}})} \\
+{\mathrm{vcvtop}}({{\mathsf{f{\scriptstyle64}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}, {{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}, \mathsf{trunc\_sat}, {\mathit{sx}}, {\mathit{f{\scriptstyle64}}}) &=& {\mathit{i{\scriptstyle32}}}
+  &\qquad \mbox{if}~{\mathit{i{\scriptstyle32}}} = {{{{\mathrm{trunc}}_{{\mathit{sat}}}}_{64, 32}^{{\mathit{sx}}}}}{({\mathit{f{\scriptstyle64}}})} \\
 {\mathrm{vcvtop}}({{\mathsf{f{\scriptstyle64}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}, {{\mathsf{f{\scriptstyle32}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}, \mathsf{demote}, {{\mathit{sx}}^?}, {\mathit{f{\scriptstyle64}}}) &=& {\mathit{f{\scriptstyle32}}}
   &\qquad \mbox{if}~{\mathit{f{\scriptstyle32}}} = {{{\mathrm{demote}}}_{64, 32}}{({\mathit{f{\scriptstyle64}}})} \\
 {\mathrm{vcvtop}}({{\mathsf{f{\scriptstyle32}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}, {{\mathsf{f{\scriptstyle64}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}, \mathsf{promote}, {{\mathit{sx}}^?}, {\mathit{f{\scriptstyle32}}}) &=& {\mathit{f{\scriptstyle64}}}
@@ -1570,8 +1570,8 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathsf{shl}}{\mathsf{\_}}~{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{lane}},\, {\mathit{n}})} &=& {{\mathrm{ishl}}}_{{|{\mathsf{i}}{{\mathit{n}}}|}}({\mathit{lane}}, {\mathit{n}}) \\
-{{{\mathsf{shr\_}}{{\mathit{sx}}}}{\mathsf{\_}}~{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{lane}},\, {\mathit{n}})} &=& {{{{\mathrm{ishr}}}_{{|{\mathsf{i}}{{\mathit{n}}}|}}^{{\mathit{sx}}}}}{({\mathit{lane}},\, {\mathit{n}})} \\
+{{\mathsf{shl}}{{}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{lane}},\, {\mathit{n}})} &=& {{\mathrm{ishl}}}_{{|{\mathsf{i}}{{\mathit{n}}}|}}({\mathit{lane}}, {\mathit{n}}) \\
+{{{\mathsf{shr\_}}{{\mathit{sx}}}}{{}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{lane}},\, {\mathit{n}})} &=& {{{{\mathrm{ishr}}}_{{|{\mathsf{i}}{{\mathit{n}}}|}}^{{\mathit{sx}}}}}{({\mathit{lane}},\, {\mathit{n}})} \\
 \end{array}
 $$
 
@@ -5780,7 +5780,7 @@ $$
 $$
 \begin{array}{@{}l@{}rcl@{}l@{}}
 {[\textsc{\scriptsize E{-}vvunop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{v{\scriptstyle128}} . {\mathit{vvunop}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})
-  &\qquad \mbox{if}~{{{\mathit{vvunop}}}{\mathsf{\_}}~\mathsf{v{\scriptstyle128}}}{({\mathit{c}}_{{1}})} = {\mathit{c}} \\
+  &\qquad \mbox{if}~{\mathit{c}} = {{{\mathit{vvunop}}}{{}_{\mathsf{v{\scriptstyle128}}}}}{({\mathit{c}}_{{1}})} \\
 \end{array}
 $$
 
@@ -5789,7 +5789,7 @@ $$
 $$
 \begin{array}{@{}l@{}rcl@{}l@{}}
 {[\textsc{\scriptsize E{-}vvbinop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{2}})~(\mathsf{v{\scriptstyle128}} . {\mathit{vvbinop}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})
-  &\qquad \mbox{if}~{{{\mathit{vvbinop}}}{\mathsf{\_}}~\mathsf{v{\scriptstyle128}}}{({\mathit{c}}_{{1}},\, {\mathit{c}}_{{2}})} = {\mathit{c}} \\
+  &\qquad \mbox{if}~{\mathit{c}} = {{{\mathit{vvbinop}}}{{}_{\mathsf{v{\scriptstyle128}}}}}{({\mathit{c}}_{{1}},\, {\mathit{c}}_{{2}})} \\
 \end{array}
 $$
 
@@ -5797,8 +5797,8 @@ $$
 
 $$
 \begin{array}{@{}l@{}rcl@{}l@{}}
-{[\textsc{\scriptsize E{-}vvternop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{2}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{3}})~(\mathsf{v{\scriptstyle128}} . {\mathit{vvternop}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})
-  &\qquad \mbox{if}~{{{\mathit{vvternop}}}{\mathsf{\_}}~\mathsf{v{\scriptstyle128}}}{({\mathit{c}}_{{1}},\, {\mathit{c}}_{{2}},\, {\mathit{c}}_{{3}})} = {\mathit{c}} \\
+{[\textsc{\scriptsize E{-}vvternop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{2}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{3}})~(\mathsf{v{\scriptstyle128}} . {\mathit{vvternop}}) &\hookrightarrow& \multicolumn{2}{l@{}}{ (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}) } \\
+  &&& \multicolumn{2}{l@{}}{\quad \mbox{if}~{\mathit{c}} = {{{\mathit{vvternop}}}{{}_{\mathsf{v{\scriptstyle128}}}}}{({\mathit{c}}_{{1}},\, {\mathit{c}}_{{2}},\, {\mathit{c}}_{{3}})}} \\
 \end{array}
 $$
 
@@ -5808,6 +5808,67 @@ $$
 \begin{array}{@{}l@{}rcl@{}l@{}}
 {[\textsc{\scriptsize E{-}vvtestop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{v{\scriptstyle128}} . \mathsf{any\_true}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{c}})
   &\qquad \mbox{if}~{\mathit{c}} = {{\mathrm{ine}}}_{{|\mathsf{v{\scriptstyle128}}|}}({\mathit{c}}_{{1}}, 0) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}rcl@{}l@{}}
+{[\textsc{\scriptsize E{-}vunop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~({\mathit{sh}} . {\mathit{vunop}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})
+  &\qquad \mbox{if}~{\mathit{c}} = {{{\mathit{vunop}}}{{}_{{\mathit{sh}}}}}{({\mathit{c}}_{{1}})} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}rcl@{}l@{}}
+{[\textsc{\scriptsize E{-}vbinop{-}val}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{2}})~({\mathit{sh}} . {\mathit{vbinop}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})
+  &\qquad \mbox{if}~{{{\mathit{vbinop}}}{{}_{{\mathit{sh}}}}}{({\mathit{c}}_{{1}},\, {\mathit{c}}_{{2}})} = {\mathit{c}} \\
+{[\textsc{\scriptsize E{-}vbinop{-}trap}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{2}})~({\mathit{sh}} . {\mathit{vbinop}}) &\hookrightarrow& \mathsf{trap}
+  &\qquad \mbox{if}~{{{\mathit{vbinop}}}{{}_{{\mathit{sh}}}}}{({\mathit{c}}_{{1}},\, {\mathit{c}}_{{2}})} = \epsilon \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}rcl@{}l@{}}
+{[\textsc{\scriptsize E{-}vtestop{-}true}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})~({{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}} . \mathsf{all\_true}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~1)
+  &\qquad \mbox{if}~{{\mathit{ci}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{c}}) \\
+  &&&&\qquad {\land}~({\mathit{ci}}_{{1}} \neq 0)^\ast \\
+{[\textsc{\scriptsize E{-}vtestop{-}false}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})~({{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}} . \mathsf{all\_true}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~0)
+  &\qquad \mbox{otherwise} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}rcl@{}l@{}}
+{[\textsc{\scriptsize E{-}vrelop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{2}})~({\mathit{sh}} . {\mathit{vrelop}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})
+  &\qquad \mbox{if}~{{{\mathit{vrelop}}}{{}_{{\mathit{sh}}}}}{({\mathit{c}}_{{1}},\, {\mathit{c}}_{{2}})} = {\mathit{c}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}rcl@{}l@{}}
+{[\textsc{\scriptsize E{-}vshiftop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{n}})~({{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}} . {\mathit{vshiftop}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})
+  &\qquad \mbox{if}~{{\mathit{c}'}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{c}}_{{1}}) \\
+  &&&&\qquad {\land}~{\mathit{c}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{{\mathit{vshiftop}}}{{}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}}}{({\mathit{c}'},\, {\mathit{n}})}^\ast})} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}rcl@{}l@{}}
+{[\textsc{\scriptsize E{-}vbitmask}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})~(({{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}).\mathsf{bitmask}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{ci}})
+  &\qquad \mbox{if}~{{\mathit{ci}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{c}}) \\
+  &&&&\qquad {\land}~{{\mathrm{bits}}}_{{\mathsf{i}}{32}}({\mathit{ci}}) = {{{{{\mathrm{ilt}}}_{{|{\mathsf{i}}{{\mathit{n}}}|}}^{\mathsf{s}}}}{({\mathit{ci}}_{{1}},\, 0)}^\ast} \\
 \end{array}
 $$
 
@@ -5865,8 +5926,8 @@ $$
 
 $$
 \begin{array}{@{}l@{}rcl@{}l@{}}
-{[\textsc{\scriptsize E{-}vunop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~({\mathit{sh}} . {\mathit{vunop}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})
-  &\qquad \mbox{if}~{\mathit{c}} = {{{\mathit{vunop}}}{\mathsf{\_}}~{\mathit{sh}}}{({\mathit{c}}_{{1}})} \\
+{[\textsc{\scriptsize E{-}vextunop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~({\mathit{sh}}_{{1}} . {{{{{\mathit{vextunop}}}{\mathsf{\_}}}{{\mathit{sh}}_{{2}}}}{\mathsf{\_}}}{{\mathit{sx}}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})
+  &\qquad \mbox{if}~{\mathrm{vextunop}}({\mathit{sh}}_{{1}}, {\mathit{sh}}_{{2}}, {\mathit{vextunop}}, {\mathit{sx}}, {\mathit{c}}_{{1}}) = {\mathit{c}} \\
 \end{array}
 $$
 
@@ -5874,51 +5935,8 @@ $$
 
 $$
 \begin{array}{@{}l@{}rcl@{}l@{}}
-{[\textsc{\scriptsize E{-}vbinop{-}val}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{2}})~({\mathit{sh}} . {\mathit{vbinop}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})
-  &\qquad \mbox{if}~{{{\mathit{vbinop}}}{\mathsf{\_}}~{\mathit{sh}}}{({\mathit{c}}_{{1}},\, {\mathit{c}}_{{2}})} = {\mathit{c}} \\
-{[\textsc{\scriptsize E{-}vbinop{-}trap}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{2}})~({\mathit{sh}} . {\mathit{vbinop}}) &\hookrightarrow& \mathsf{trap}
-  &\qquad \mbox{if}~{{{\mathit{vbinop}}}{\mathsf{\_}}~{\mathit{sh}}}{({\mathit{c}}_{{1}},\, {\mathit{c}}_{{2}})} = \epsilon \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}{@{}l@{}rcl@{}l@{}}
-{[\textsc{\scriptsize E{-}vrelop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{2}})~({\mathit{sh}} . {\mathit{vrelop}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})
-  &\qquad \mbox{if}~{{{\mathit{vrelop}}}{\mathsf{\_}}~{\mathit{sh}}}{({\mathit{c}}_{{1}},\, {\mathit{c}}_{{2}})} = {\mathit{c}} \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}{@{}l@{}rcl@{}l@{}}
-{[\textsc{\scriptsize E{-}vshiftop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{n}})~(({{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}) . {\mathit{vshiftop}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})
-  &\qquad \mbox{if}~{{\mathit{c}'}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{c}}_{{1}}) \\
-  &&&&\qquad {\land}~{\mathit{c}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}^{{-1}}}}{({{{{\mathit{vshiftop}}}{\mathsf{\_}}~{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}{({\mathit{c}'},\, {\mathit{n}})}^\ast})} \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}{@{}l@{}rcl@{}l@{}}
-{[\textsc{\scriptsize E{-}vtestop{-}true}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})~(({{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}) . \mathsf{all\_true}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~1)
-  &\qquad \mbox{if}~{{\mathit{ci}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{c}}) \\
-  &&&&\qquad {\land}~({\mathit{ci}}_{{1}} \neq 0)^\ast \\
-{[\textsc{\scriptsize E{-}vtestop{-}false}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})~(({{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}) . \mathsf{all\_true}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~0)
-  &\qquad \mbox{otherwise} \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}{@{}l@{}rcl@{}l@{}}
-{[\textsc{\scriptsize E{-}vbitmask}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})~(({{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}).\mathsf{bitmask}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{ci}})
-  &\qquad \mbox{if}~{{\mathit{ci}}_{{1}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}}({\mathit{c}}) \\
-  &&&&\qquad {\land}~{{\mathrm{bits}}}_{{\mathsf{i}}{32}}({\mathit{ci}}) = {{{{{\mathrm{ilt}}}_{{|{\mathsf{i}}{{\mathit{n}}}|}}^{\mathsf{s}}}}{({\mathit{ci}}_{{1}},\, 0)}^\ast} \\
+{[\textsc{\scriptsize E{-}vextbinop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{2}})~({\mathit{sh}}_{{1}} . {{{{{\mathit{vextbinop}}}{\mathsf{\_}}}{{\mathit{sh}}_{{2}}}}{\mathsf{\_}}}{{\mathit{sx}}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})
+  &\qquad \mbox{if}~{\mathrm{vextbinop}}({\mathit{sh}}_{{1}}, {\mathit{sh}}_{{2}}, {\mathit{vextbinop}}, {\mathit{sx}}, {\mathit{c}}_{{1}}, {\mathit{c}}_{{2}}) = {\mathit{c}} \\
 \end{array}
 $$
 
@@ -5939,7 +5957,7 @@ $$
 
 $$
 \begin{array}{@{}l@{}rcl@{}l@{}}
-{[\textsc{\scriptsize E{-}vcvtop{-}normal}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(({{{{\mathsf{i}}{{\mathit{n}}}}_{{2}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}) . {{{{{{{\mathit{vcvtop}}}{\mathsf{\_}}}{\epsilon}}{\mathsf{\_}}}{{{{{\mathsf{i}}{{\mathit{n}}}}_{{1}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}}}{\mathsf{\_}}}{{{\mathit{sx}}^?}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})
+{[\textsc{\scriptsize E{-}vcvtop{-}full}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(({{{{\mathsf{i}}{{\mathit{n}}}}_{{2}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}) . {{{{{{{\mathit{vcvtop}}}{\mathsf{\_}}}{\epsilon}}{\mathsf{\_}}}{{{{{\mathsf{i}}{{\mathit{n}}}}_{{1}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}}}{\mathsf{\_}}}{{{\mathit{sx}}^?}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})
   &\qquad \mbox{if}~{{\mathit{c}'}^\ast} = {{\mathrm{lanes}}}_{{{{{\mathsf{i}}{{\mathit{n}}}}_{{1}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}}({\mathit{c}}_{{1}}) \\
   &&&&\qquad {\land}~{\mathit{c}} = {{{{\mathrm{lanes}}}_{{{{{\mathsf{i}}{{\mathit{n}}}}_{{2}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}}^{{-1}}}}{({{\mathrm{vcvtop}}({{{{\mathsf{i}}{{\mathit{n}}}}_{{1}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}, {{{{\mathsf{i}}{{\mathit{n}}}}_{{2}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}, {\mathit{vcvtop}}, {{\mathit{sx}}^?}, {\mathit{c}'})^\ast})} \\
 \end{array}
@@ -5953,24 +5971,6 @@ $$
 {[\textsc{\scriptsize E{-}vcvtop{-}zero}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(({{{\mathit{nt}}_{{2}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}) . {{{{{{{{{\mathit{vcvtop}}}{\mathsf{\_}}}{\epsilon}}{\mathsf{\_}}}{{{{\mathit{nt}}_{{1}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}}}{\mathsf{\_}}}{{{\mathit{sx}}^?}}}{\mathsf{\_}}}{\mathsf{zero}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})
   &\qquad \mbox{if}~{{\mathit{ci}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathit{nt}}_{{1}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}}({\mathit{c}}_{{1}}) \\
   &&&&\qquad {\land}~{\mathit{c}} = {{{{\mathrm{lanes}}}_{{{{\mathit{nt}}_{{2}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}}^{{-1}}}}{({{\mathrm{vcvtop}}({{{\mathit{nt}}_{{1}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}, {{{\mathit{nt}}_{{2}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}, {\mathit{vcvtop}}, {{\mathit{sx}}^?}, {\mathit{ci}})^\ast}~{{\mathrm{zero}}({\mathit{nt}}_{{2}})^{{\mathit{N}}_{{1}}}})} \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}{@{}l@{}rcl@{}l@{}}
-{[\textsc{\scriptsize E{-}vextunop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~({\mathit{sh}}_{{1}} . {{{{{\mathit{vextunop}}}{\mathsf{\_}}}{{\mathit{sh}}_{{2}}}}{\mathsf{\_}}}{{\mathit{sx}}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})
-  &\qquad \mbox{if}~{\mathrm{vextunop}}({\mathit{sh}}_{{1}}, {\mathit{sh}}_{{2}}, {\mathit{vextunop}}, {\mathit{sx}}, {\mathit{c}}_{{1}}) = {\mathit{c}} \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}{@{}l@{}rcl@{}l@{}}
-{[\textsc{\scriptsize E{-}vextbinop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{2}})~({\mathit{sh}}_{{1}} . {{{{{\mathit{vextbinop}}}{\mathsf{\_}}}{{\mathit{sh}}_{{2}}}}{\mathsf{\_}}}{{\mathit{sx}}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})
-  &\qquad \mbox{if}~{\mathrm{vextbinop}}({\mathit{sh}}_{{1}}, {\mathit{sh}}_{{2}}, {\mathit{vextbinop}}, {\mathit{sx}}, {\mathit{c}}_{{1}}, {\mathit{c}}_{{2}}) = {\mathit{c}} \\
 \end{array}
 $$
 
