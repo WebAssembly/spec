@@ -915,8 +915,10 @@ rule Instr_ok/vextbinop:
 rule Instr_ok/vnarrow:
   C |- VNARROW sh_1 sh_2 sx : V128 V128 -> V128
 
+;; TODO: move constraint to syntax
 rule Instr_ok/vcvtop:
-  C |- VCVTOP sh_1 vcvtop hf? sh_2 sx? zero? : V128 -> V128
+  C |- VCVTOP sh_1 sh_2 vcvtop hf? sx? zero? : V128 -> V128
+  -- if sx? = eps <=> $lanetype(sh_1) = imm_1 /\ $lanetype(sh_2) = imm_2 /\ $lsize(imm_1) > $lsize(imm_2) \/ $lanetype(sh_1) = fnn_1 /\ $lanetype(sh_2) = fnn_2
 
 
 ;; Local instructions

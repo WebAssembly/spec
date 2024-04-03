@@ -688,19 +688,17 @@ rule Step_pure/vnarrow:
 
 
 rule Step_pure/vcvtop-full:
-  (VCONST V128 c_1) (VCVTOP (lnn_2 X N_2) vcvtop eps (lnn_1 X N_1) sx?) ~> (VCONST V128 c)
+  (VCONST V128 c_1) (VCVTOP (lnn_2 X N_2) (lnn_1 X N_1) vcvtop sx?) ~> (VCONST V128 c)
   -- if c'* = $lanes_(lnn_1 X N_1, c_1)
   -- if c = $invlanes_(lnn_2 X N_2, $vcvtop(lnn_1 X N_1, lnn_2 X N_2, vcvtop, sx?, c')*)
 
-var hf : half  ;; TODO: this declaration shouldn't be needed
 rule Step_pure/vcvtop-half:
-  (VCONST V128 c_1) (VCVTOP (lnn_2 X N_2) vcvtop hf (lnn_1 X N_1) sx?) ~> (VCONST V128 c)
-  -- if ci* = $lanes_(lnn_1 X N_1, c_1)[$halfop(hf, 0, N_2) : N_2]
+  (VCONST V128 c_1) (VCVTOP (lnn_2 X N_2) (lnn_1 X N_1) vcvtop half sx?) ~> (VCONST V128 c)
+  -- if ci* = $lanes_(lnn_1 X N_1, c_1)[$halfop(half, 0, N_2) : N_2]
   -- if c = $invlanes_(lnn_2 X N_2, $vcvtop(lnn_1 X N_1, lnn_2 X N_2, vcvtop, sx?, ci)*)
 
-;; TODO: change inn to nt 
 rule Step_pure/vcvtop-zero:
-  (VCONST V128 c_1) (VCVTOP (nt_2 X N_2) vcvtop eps (nt_1 X N_1) sx? ZERO) ~> (VCONST V128 c)
+  (VCONST V128 c_1) (VCVTOP (nt_2 X N_2) (nt_1 X N_1) vcvtop sx? ZERO) ~> (VCONST V128 c)
   -- if ci* = $lanes_(nt_1 X N_1, c_1)
   -- if c = $invlanes_(nt_2 X N_2, $vcvtop(nt_1 X N_1, nt_2 X N_2, vcvtop, sx?, ci)* $zero(nt_2)^N_1)
 

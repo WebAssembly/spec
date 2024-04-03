@@ -28,8 +28,8 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup -l --splice-latex -p spe
 ../spec/wasm-3.0/6-typing.watsup:803.6-803.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
 ../spec/wasm-3.0/6-typing.watsup:832.6-832.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
 ../spec/wasm-3.0/6-typing.watsup:837.6-837.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
-../spec/wasm-3.0/6-typing.watsup:974.6-974.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-../spec/wasm-3.0/6-typing.watsup:980.6-980.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+../spec/wasm-3.0/6-typing.watsup:976.6-976.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+../spec/wasm-3.0/6-typing.watsup:982.6-982.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 == Splicing...
 \documentclass[a4paper]{scrartcl}
 
@@ -375,6 +375,7 @@ warning: syntax `globaladdr` was never spliced
 warning: syntax `globalidx` was never spliced
 warning: syntax `globalinst` was never spliced
 warning: syntax `half` was never spliced
+warning: syntax `half_` was never spliced
 warning: syntax `heaptype` was never spliced
 warning: syntax `hostaddr` was never spliced
 warning: syntax `iN` was never spliced
@@ -487,7 +488,10 @@ warning: syntax `valtype/syn` was never spliced
 warning: syntax `valtype/sem` was never spliced
 warning: syntax `vbinop_` was never spliced
 warning: syntax `vbinop_` was never spliced
-warning: syntax `vcvtop` was never spliced
+warning: syntax `vcvtop_` was never spliced
+warning: syntax `vcvtop_` was never spliced
+warning: syntax `vcvtop_` was never spliced
+warning: syntax `vcvtop_` was never spliced
 warning: syntax `vec` was never spliced
 warning: syntax `vec_` was never spliced
 warning: syntax `vectype` was never spliced
@@ -506,7 +510,7 @@ warning: syntax `vvternop` was never spliced
 warning: syntax `vvtestop` was never spliced
 warning: syntax `vvunop` was never spliced
 warning: syntax `ww` was never spliced
-warning: syntax `zero` was never spliced
+warning: syntax `zero_` was never spliced
 warning: syntax `zval_` was never spliced
 warning: syntax `zval_` was never spliced
 warning: syntax `zval_` was never spliced

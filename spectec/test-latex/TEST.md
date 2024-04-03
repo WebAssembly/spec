@@ -469,7 +469,26 @@ $$
 {\mathsf{ge\_}}{{\mathit{sx}}}
   &\qquad \mbox{if}~{\mathit{n}} \neq \mathsf{{\scriptstyle64}} \lor {\mathit{sx}} = \mathsf{s} \\
 & {{\mathit{vrelop}}}_{{{{\mathsf{f}}{{\mathit{n}}}}{\mathsf{x}}}{{\mathit{N}}}} &::=& \mathsf{eq} ~|~ \mathsf{ne} ~|~ \mathsf{lt} ~|~ \mathsf{gt} ~|~ \mathsf{le} ~|~ \mathsf{ge} \\
-& {\mathit{vcvtop}} &::=& \mathsf{extend} ~|~ \mathsf{trunc\_sat} ~|~ \mathsf{convert} ~|~ \mathsf{demote} ~|~ \mathsf{promote} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+& {{\mathit{vcvtop}}}_{{{{{\mathsf{i}}{{\mathit{n}}}}_{{1}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}}({{{{\mathsf{i}}{{\mathit{n}}}}_{{2}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}) &::=& \mathsf{extend}
+  &\qquad \mbox{if}~{\mathit{n}}_{{2}} = 2 \cdot {\mathit{n}}_{{1}} \\
+& {{\mathit{vcvtop}}}_{{{{{\mathsf{i}}{{\mathit{n}}}}_{{1}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}}({{{{\mathsf{f}}{{\mathit{n}}}}_{{2}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}) &::=& \mathsf{convert}
+  &\qquad \mbox{if}~{\mathit{n}}_{{2}} \geq {\mathit{n}}_{{1}} = 32 \\
+& {{\mathit{vcvtop}}}_{{{{{\mathsf{f}}{{\mathit{n}}}}_{{1}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}}({{{{\mathsf{i}}{{\mathit{n}}}}_{{2}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}) &::=& \mathsf{trunc\_sat}
+  &\qquad \mbox{if}~{\mathit{n}}_{{1}} \geq {\mathit{n}}_{{2}} = 32 \\
+& {{\mathit{vcvtop}}}_{{{{{\mathsf{f}}{{\mathit{n}}}}_{{1}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}}({{{{\mathsf{f}}{{\mathit{n}}}}_{{2}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}) &::=& \mathsf{demote}
+  &\qquad \mbox{if}~{\mathit{n}}_{{1}} > {\mathit{n}}_{{2}} \\ &&|&
+\mathsf{promote}
+  &\qquad \mbox{if}~{\mathit{n}}_{{1}} < {\mathit{n}}_{{2}} \\
+\mbox{(lane part)} & {\mathit{half}} &::=& \mathsf{low} ~|~ \mathsf{high} \\
+& {{\mathit{half}}}_{{\mathit{shape}}_{{1}}}({\mathit{shape}}_{{2}}) &::=& {\mathit{half}}
+  &\qquad \mbox{if}~{\mathrm{lanetype}}({\mathit{shape}}_{{1}}) = {{\mathsf{i}}{{\mathit{n}}}}_{{1}} \land {\mathrm{lanetype}}({\mathit{shape}}_{{2}}) = {{\mathsf{i}}{{\mathit{n}}}}_{{2}} \lor {\mathrm{lanetype}}({\mathit{shape}}_{{2}}) = \mathsf{f{\scriptstyle64}} \land {|{\mathrm{lanetype}}({\mathit{shape}}_{{1}})|} = 32 \\
+& {{\mathit{zero}}}_{{\mathit{shape}}_{{1}}}({\mathit{shape}}_{{2}}) &::=& \mathsf{zero}
+  &\qquad \mbox{if}~{\mathrm{lanetype}}({\mathit{shape}}_{{1}}) = \mathsf{f{\scriptstyle64}} \land {|{\mathrm{lanetype}}({\mathit{shape}}_{{2}})|} = 32 \\
 \end{array}
 $$
 
@@ -546,10 +565,6 @@ $$
 {\mathit{numtype}}_{{1}} . {{{\mathit{cvtop}}}{\mathsf{\_}}}{{\mathit{numtype}}_{{2}}}
   &\qquad \mbox{if}~{\mathit{numtype}}_{{1}} \neq {\mathit{numtype}}_{{2}} \\ &&|&
 {{{{\mathit{numtype}}.\mathsf{extend}}{{\mathit{n}}}}{\mathsf{\_}}}{\mathsf{s}} \\ &&|&
-\dots \\
-\mbox{(lane part)} & {\mathit{half}} &::=& \mathsf{low} ~|~ \mathsf{high} \\
-& {\mathit{zero}} &::=& \mathsf{zero} \\
-\mbox{(instruction)} & {\mathit{instr}} &::=& \dots \\ &&|&
 {\mathit{vectype}}.\mathsf{const}~{{\mathit{vec}}}_{{\mathit{vectype}}} \\ &&|&
 {\mathit{vectype}} . {\mathit{vvunop}} \\ &&|&
 {\mathit{vectype}} . {\mathit{vvbinop}} \\ &&|&
@@ -575,7 +590,8 @@ $$
   &\qquad \mbox{if}~{|{\mathrm{lanetype}}({\mathit{ishape}}_{{1}})|} = 2 \cdot {|{\mathrm{lanetype}}({\mathit{ishape}}_{{2}})|} \\ &&|&
 {{{{{\mathit{ishape}}_{{1}}.\mathsf{narrow}}{\mathsf{\_}}}{{\mathit{ishape}}_{{2}}}}{\mathsf{\_}}}{{\mathit{sx}}}
   &\qquad \mbox{if}~{|{\mathrm{lanetype}}({\mathit{ishape}}_{{2}})|} = 2 \cdot {|{\mathrm{lanetype}}({\mathit{ishape}}_{{1}})|} \leq 32 \\ &&|&
-{\mathit{shape}} . {{{{{{{{{\mathit{vcvtop}}}{\mathsf{\_}}}{{{\mathit{half}}^?}}}{\mathsf{\_}}}{{\mathit{shape}}}}{\mathsf{\_}}}{{{\mathit{sx}}^?}}}{\mathsf{\_}}}{{{\mathit{zero}}^?}} \\ &&|&
+{\mathit{shape}}_{{1}} . {{{{\mathit{vcvtop}}}_{{\mathit{shape}}_{{2}}}({\mathit{shape}}_{{1}})}{\mathsf{\_}}}{{\mathit{shape}}_{{2}}}
+  &\qquad \mbox{if}~{\mathrm{lanetype}}({\mathit{shape}}_{{1}}) \neq {\mathrm{lanetype}}({\mathit{shape}}_{{2}}) \\ &&|&
 \mathsf{ref.null}~{\mathit{heaptype}} \\ &&|&
 \mathsf{ref.is\_null} \\ &&|&
 \mathsf{ref.as\_non\_null} \\ &&|&
@@ -4196,8 +4212,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
+{{\mathit{sx}}^?} = \epsilon \Leftrightarrow {\mathrm{lanetype}}({\mathit{sh}}_{{1}}) = {{\mathsf{i}}{{\mathit{n}}}}_{{1}} \land {\mathrm{lanetype}}({\mathit{sh}}_{{2}}) = {{\mathsf{i}}{{\mathit{n}}}}_{{2}} \land {|{{\mathsf{i}}{{\mathit{n}}}}_{{1}}|} > {|{{\mathsf{i}}{{\mathit{n}}}}_{{2}}|} \lor {\mathrm{lanetype}}({\mathit{sh}}_{{1}}) = {{\mathsf{f}}{{\mathit{n}}}}_{{1}} \land {\mathrm{lanetype}}({\mathit{sh}}_{{2}}) = {{\mathsf{f}}{{\mathit{n}}}}_{{2}}
 }{
-{\mathit{C}} \vdash {\mathit{sh}}_{{1}} . {{{{{{{{{\mathit{vcvtop}}}{\mathsf{\_}}}{{{\mathit{hf}}^?}}}{\mathsf{\_}}}{{\mathit{sh}}_{{2}}}}{\mathsf{\_}}}{{{\mathit{sx}}^?}}}{\mathsf{\_}}}{{{\mathit{zero}}^?}} : \mathsf{v{\scriptstyle128}} \rightarrow \mathsf{v{\scriptstyle128}}
+{\mathit{C}} \vdash {\mathit{sh}}_{{1}} . {{{\mathit{vcvtop}}}{\mathsf{\_}}}{{\mathit{sh}}_{{2}}} : \mathsf{v{\scriptstyle128}} \rightarrow \mathsf{v{\scriptstyle128}}
 } \, {[\textsc{\scriptsize T{-}vcvtop}]}
 \qquad
 \end{array}
@@ -5957,18 +5974,13 @@ $$
 
 $$
 \begin{array}{@{}l@{}rcl@{}l@{}}
-{[\textsc{\scriptsize E{-}vcvtop{-}full}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(({{{{\mathsf{i}}{{\mathit{n}}}}_{{2}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}) . {{{{{{{\mathit{vcvtop}}}{\mathsf{\_}}}{\epsilon}}{\mathsf{\_}}}{{{{{\mathsf{i}}{{\mathit{n}}}}_{{1}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}}}{\mathsf{\_}}}{{{\mathit{sx}}^?}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})
+{[\textsc{\scriptsize E{-}vcvtop{-}full}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(({{{{\mathsf{i}}{{\mathit{n}}}}_{{2}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}) . {{{\mathit{vcvtop}}}{\mathsf{\_}}}{{{{{\mathsf{i}}{{\mathit{n}}}}_{{1}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})
   &\qquad \mbox{if}~{{\mathit{c}'}^\ast} = {{\mathrm{lanes}}}_{{{{{\mathsf{i}}{{\mathit{n}}}}_{{1}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}}({\mathit{c}}_{{1}}) \\
   &&&&\qquad {\land}~{\mathit{c}} = {{{{\mathrm{lanes}}}_{{{{{\mathsf{i}}{{\mathit{n}}}}_{{2}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}}^{{-1}}}}{({{\mathrm{vcvtop}}({{{{\mathsf{i}}{{\mathit{n}}}}_{{1}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}, {{{{\mathsf{i}}{{\mathit{n}}}}_{{2}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}, {\mathit{vcvtop}}, {{\mathit{sx}}^?}, {\mathit{c}'})^\ast})} \\
-\end{array}
-$$
-
-$$
-\begin{array}{@{}l@{}rcl@{}l@{}}
-{[\textsc{\scriptsize E{-}vcvtop{-}half}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(({{{{\mathsf{i}}{{\mathit{n}}}}_{{2}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}) . {{{{{{{\mathit{vcvtop}}}{\mathsf{\_}}}{{\mathit{hf}}}}{\mathsf{\_}}}{{{{{\mathsf{i}}{{\mathit{n}}}}_{{1}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}}}{\mathsf{\_}}}{{{\mathit{sx}}^?}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})
-  &\qquad \mbox{if}~{{\mathit{ci}}^\ast} = {{\mathrm{lanes}}}_{{{{{\mathsf{i}}{{\mathit{n}}}}_{{1}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}}({\mathit{c}}_{{1}}){}[{\mathrm{halfop}}({\mathit{hf}}, 0, {\mathit{N}}_{{2}}) : {\mathit{N}}_{{2}}] \\
+{[\textsc{\scriptsize E{-}vcvtop{-}half}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(({{{{\mathsf{i}}{{\mathit{n}}}}_{{2}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}) . {{{\mathit{vcvtop}}}{\mathsf{\_}}}{{{{{\mathsf{i}}{{\mathit{n}}}}_{{1}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})
+  &\qquad \mbox{if}~{{\mathit{ci}}^\ast} = {{\mathrm{lanes}}}_{{{{{\mathsf{i}}{{\mathit{n}}}}_{{1}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}}({\mathit{c}}_{{1}}){}[{\mathrm{halfop}}({\mathit{half}}, 0, {\mathit{N}}_{{2}}) : {\mathit{N}}_{{2}}] \\
   &&&&\qquad {\land}~{\mathit{c}} = {{{{\mathrm{lanes}}}_{{{{{\mathsf{i}}{{\mathit{n}}}}_{{2}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}}^{{-1}}}}{({{\mathrm{vcvtop}}({{{{\mathsf{i}}{{\mathit{n}}}}_{{1}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}, {{{{\mathsf{i}}{{\mathit{n}}}}_{{2}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}, {\mathit{vcvtop}}, {{\mathit{sx}}^?}, {\mathit{ci}})^\ast})} \\
-{[\textsc{\scriptsize E{-}vcvtop{-}zero}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(({{{\mathit{nt}}_{{2}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}) . {{{{{{{{{\mathit{vcvtop}}}{\mathsf{\_}}}{\epsilon}}{\mathsf{\_}}}{{{{\mathit{nt}}_{{1}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}}}{\mathsf{\_}}}{{{\mathit{sx}}^?}}}{\mathsf{\_}}}{\mathsf{zero}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})
+{[\textsc{\scriptsize E{-}vcvtop{-}zero}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(({{{\mathit{nt}}_{{2}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}) . {{{\mathit{vcvtop}}}{\mathsf{\_}}}{{{{\mathit{nt}}_{{1}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})
   &\qquad \mbox{if}~{{\mathit{ci}}^\ast} = {{\mathrm{lanes}}}_{{{{\mathit{nt}}_{{1}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}}({\mathit{c}}_{{1}}) \\
   &&&&\qquad {\land}~{\mathit{c}} = {{{{\mathrm{lanes}}}_{{{{\mathit{nt}}_{{2}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}}^{{-1}}}}{({{\mathrm{vcvtop}}({{{\mathit{nt}}_{{1}}}{\mathsf{x}}}{{\mathit{N}}_{{1}}}, {{{\mathit{nt}}_{{2}}}{\mathsf{x}}}{{\mathit{N}}_{{2}}}, {\mathit{vcvtop}}, {{\mathit{sx}}^?}, {\mathit{ci}})^\ast}~{{\mathrm{zero}}({\mathit{nt}}_{{2}})^{{\mathit{N}}_{{1}}}})} \\
 \end{array}
@@ -7163,10 +7175,10 @@ $$
 \mathtt{0xFD}~132{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle16}}}{\mathsf{x}}}{8}).\mathsf{bitmask} \\ &&|&
 \mathtt{0xFD}~133{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& {{{{({{\mathsf{i{\scriptstyle16}}}{\mathsf{x}}}{8}).\mathsf{narrow}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}}}{\mathsf{\_}}}{\mathsf{s}} \\ &&|&
 \mathtt{0xFD}~134{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& {{{{({{\mathsf{i{\scriptstyle16}}}{\mathsf{x}}}{8}).\mathsf{narrow}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}}}{\mathsf{\_}}}{\mathsf{u}} \\ &&|&
-\mathtt{0xFD}~135{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle16}}}{\mathsf{x}}}{8}) . {{{{{{\mathsf{extend}}{\mathsf{\_}}}{\mathsf{low}}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle8}}}{\mathsf{x}}}{16}}}{\mathsf{\_}}}{\mathsf{s}} \\ &&|&
-\mathtt{0xFD}~136{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle16}}}{\mathsf{x}}}{8}) . {{{{{{\mathsf{extend}}{\mathsf{\_}}}{\mathsf{high}}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle8}}}{\mathsf{x}}}{16}}}{\mathsf{\_}}}{\mathsf{s}} \\ &&|&
-\mathtt{0xFD}~137{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle16}}}{\mathsf{x}}}{8}) . {{{{{{\mathsf{extend}}{\mathsf{\_}}}{\mathsf{low}}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle8}}}{\mathsf{x}}}{16}}}{\mathsf{\_}}}{\mathsf{u}} \\ &&|&
-\mathtt{0xFD}~138{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle16}}}{\mathsf{x}}}{8}) . {{{{{{\mathsf{extend}}{\mathsf{\_}}}{\mathsf{high}}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle8}}}{\mathsf{x}}}{16}}}{\mathsf{\_}}}{\mathsf{u}} \\ &&|&
+\mathtt{0xFD}~135{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle16}}}{\mathsf{x}}}{8}) . {{\mathsf{extend}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle8}}}{\mathsf{x}}}{16}} \\ &&|&
+\mathtt{0xFD}~136{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle16}}}{\mathsf{x}}}{8}) . {{\mathsf{extend}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle8}}}{\mathsf{x}}}{16}} \\ &&|&
+\mathtt{0xFD}~137{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle16}}}{\mathsf{x}}}{8}) . {{\mathsf{extend}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle8}}}{\mathsf{x}}}{16}} \\ &&|&
+\mathtt{0xFD}~138{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle16}}}{\mathsf{x}}}{8}) . {{\mathsf{extend}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle8}}}{\mathsf{x}}}{16}} \\ &&|&
 \mathtt{0xFD}~139{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle16}}}{\mathsf{x}}}{8}) . \mathsf{shl} \\ &&|&
 \mathtt{0xFD}~140{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle16}}}{\mathsf{x}}}{8}) . ({\mathsf{shr\_}}{\mathsf{s}}) \\ &&|&
 \mathtt{0xFD}~141{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle16}}}{\mathsf{x}}}{8}) . ({\mathsf{shr\_}}{\mathsf{u}}) \\ &&|&
@@ -7192,10 +7204,10 @@ $$
 \mathtt{0xFD}~161{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}) . \mathsf{neg} \\ &&|&
 \mathtt{0xFD}~163{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}) . \mathsf{all\_true} \\ &&|&
 \mathtt{0xFD}~164{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}).\mathsf{bitmask} \\ &&|&
-\mathtt{0xFD}~167{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}) . {{{{{{\mathsf{extend}}{\mathsf{\_}}}{\mathsf{low}}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle16}}}{\mathsf{x}}}{8}}}{\mathsf{\_}}}{\mathsf{s}} \\ &&|&
-\mathtt{0xFD}~168{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}) . {{{{{{\mathsf{extend}}{\mathsf{\_}}}{\mathsf{high}}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle16}}}{\mathsf{x}}}{8}}}{\mathsf{\_}}}{\mathsf{s}} \\ &&|&
-\mathtt{0xFD}~169{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}) . {{{{{{\mathsf{extend}}{\mathsf{\_}}}{\mathsf{low}}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle16}}}{\mathsf{x}}}{8}}}{\mathsf{\_}}}{\mathsf{u}} \\ &&|&
-\mathtt{0xFD}~170{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}) . {{{{{{\mathsf{extend}}{\mathsf{\_}}}{\mathsf{high}}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle16}}}{\mathsf{x}}}{8}}}{\mathsf{\_}}}{\mathsf{u}} \\ &&|&
+\mathtt{0xFD}~167{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}) . {{\mathsf{extend}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle16}}}{\mathsf{x}}}{8}} \\ &&|&
+\mathtt{0xFD}~168{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}) . {{\mathsf{extend}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle16}}}{\mathsf{x}}}{8}} \\ &&|&
+\mathtt{0xFD}~169{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}) . {{\mathsf{extend}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle16}}}{\mathsf{x}}}{8}} \\ &&|&
+\mathtt{0xFD}~170{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}) . {{\mathsf{extend}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle16}}}{\mathsf{x}}}{8}} \\ &&|&
 \mathtt{0xFD}~171{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}) . \mathsf{shl} \\ &&|&
 \mathtt{0xFD}~172{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}) . ({\mathsf{shr\_}}{\mathsf{s}}) \\ &&|&
 \mathtt{0xFD}~173{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}) . ({\mathsf{shr\_}}{\mathsf{u}}) \\ &&|&
@@ -7215,10 +7227,10 @@ $$
 \mathtt{0xFD}~193{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle64}}}{\mathsf{x}}}{2}) . \mathsf{neg} \\ &&|&
 \mathtt{0xFD}~195{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle64}}}{\mathsf{x}}}{2}) . \mathsf{all\_true} \\ &&|&
 \mathtt{0xFD}~196{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle64}}}{\mathsf{x}}}{2}).\mathsf{bitmask} \\ &&|&
-\mathtt{0xFD}~199{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle64}}}{\mathsf{x}}}{2}) . {{{{{{\mathsf{extend}}{\mathsf{\_}}}{\mathsf{low}}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}}}{\mathsf{\_}}}{\mathsf{s}} \\ &&|&
-\mathtt{0xFD}~200{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle64}}}{\mathsf{x}}}{2}) . {{{{{{\mathsf{extend}}{\mathsf{\_}}}{\mathsf{high}}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}}}{\mathsf{\_}}}{\mathsf{s}} \\ &&|&
-\mathtt{0xFD}~201{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle64}}}{\mathsf{x}}}{2}) . {{{{{{\mathsf{extend}}{\mathsf{\_}}}{\mathsf{low}}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}}}{\mathsf{\_}}}{\mathsf{u}} \\ &&|&
-\mathtt{0xFD}~202{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle64}}}{\mathsf{x}}}{2}) . {{{{{{\mathsf{extend}}{\mathsf{\_}}}{\mathsf{high}}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}}}{\mathsf{\_}}}{\mathsf{u}} \\ &&|&
+\mathtt{0xFD}~199{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle64}}}{\mathsf{x}}}{2}) . {{\mathsf{extend}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}} \\ &&|&
+\mathtt{0xFD}~200{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle64}}}{\mathsf{x}}}{2}) . {{\mathsf{extend}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}} \\ &&|&
+\mathtt{0xFD}~201{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle64}}}{\mathsf{x}}}{2}) . {{\mathsf{extend}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}} \\ &&|&
+\mathtt{0xFD}~202{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle64}}}{\mathsf{x}}}{2}) . {{\mathsf{extend}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}} \\ &&|&
 \mathtt{0xFD}~203{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle64}}}{\mathsf{x}}}{2}) . \mathsf{shl} \\ &&|&
 \mathtt{0xFD}~204{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle64}}}{\mathsf{x}}}{2}) . ({\mathsf{shr\_}}{\mathsf{s}}) \\ &&|&
 \mathtt{0xFD}~205{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle64}}}{\mathsf{x}}}{2}) . ({\mathsf{shr\_}}{\mathsf{u}}) \\ &&|&
@@ -7259,16 +7271,16 @@ $$
 \mathtt{0xFD}~245{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{f{\scriptstyle64}}}{\mathsf{x}}}{2}) . \mathsf{max} \\ &&|&
 \mathtt{0xFD}~246{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{f{\scriptstyle64}}}{\mathsf{x}}}{2}) . \mathsf{pmin} \\ &&|&
 \mathtt{0xFD}~247{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{f{\scriptstyle64}}}{\mathsf{x}}}{2}) . \mathsf{pmax} \\ &&|&
-\mathtt{0xFD}~248{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& \mathsf{vcvtop}~({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4})~\mathsf{trunc\_sat}~({{\mathsf{f{\scriptstyle32}}}{\mathsf{x}}}{4})~\mathsf{s} \\ &&|&
-\mathtt{0xFD}~249{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& \mathsf{vcvtop}~({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4})~\mathsf{trunc\_sat}~({{\mathsf{f{\scriptstyle32}}}{\mathsf{x}}}{4})~\mathsf{u} \\ &&|&
-\mathtt{0xFD}~250{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& \mathsf{vcvtop}~({{\mathsf{f{\scriptstyle32}}}{\mathsf{x}}}{4})~\mathsf{convert}~({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4})~\mathsf{s} \\ &&|&
-\mathtt{0xFD}~251{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& \mathsf{vcvtop}~({{\mathsf{f{\scriptstyle32}}}{\mathsf{x}}}{4})~\mathsf{convert}~({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4})~\mathsf{u} \\ &&|&
-\mathtt{0xFD}~252{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}) . {{{{{{\mathsf{trunc\_sat}}{\mathsf{\_}}}{{{\mathsf{f{\scriptstyle64}}}{\mathsf{x}}}{2}}}{\mathsf{\_}}}{\mathsf{s}}}{\mathsf{\_}}}{\mathsf{zero}} \\ &&|&
-\mathtt{0xFD}~253{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}) . {{{{{{\mathsf{trunc\_sat}}{\mathsf{\_}}}{{{\mathsf{f{\scriptstyle64}}}{\mathsf{x}}}{2}}}{\mathsf{\_}}}{\mathsf{u}}}{\mathsf{\_}}}{\mathsf{zero}} \\ &&|&
-\mathtt{0xFD}~254{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{f{\scriptstyle64}}}{\mathsf{x}}}{2}) . {{{{{{\mathsf{convert}}{\mathsf{\_}}}{\mathsf{low}}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}}}{\mathsf{\_}}}{\mathsf{s}} \\ &&|&
-\mathtt{0xFD}~255{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{f{\scriptstyle64}}}{\mathsf{x}}}{2}) . {{{{{{\mathsf{convert}}{\mathsf{\_}}}{\mathsf{low}}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}}}{\mathsf{\_}}}{\mathsf{u}} \\ &&|&
-\mathtt{0xFD}~94{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& \mathsf{vcvtop}~({{\mathsf{f{\scriptstyle32}}}{\mathsf{x}}}{4})~\mathsf{demote}~({{\mathsf{f{\scriptstyle64}}}{\mathsf{x}}}{2})~\mathsf{zero} \\ &&|&
-\mathtt{0xFD}~95{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& \mathsf{vcvtop}~({{\mathsf{f{\scriptstyle64}}}{\mathsf{x}}}{2})~\mathsf{promote}~\mathsf{low}~({{\mathsf{f{\scriptstyle32}}}{\mathsf{x}}}{4}) \\
+\mathtt{0xFD}~248{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}) . {{\mathsf{trunc\_sat}}{\mathsf{\_}}}{{{\mathsf{f{\scriptstyle32}}}{\mathsf{x}}}{4}} \\ &&|&
+\mathtt{0xFD}~249{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}) . {{\mathsf{trunc\_sat}}{\mathsf{\_}}}{{{\mathsf{f{\scriptstyle32}}}{\mathsf{x}}}{4}} \\ &&|&
+\mathtt{0xFD}~250{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{f{\scriptstyle32}}}{\mathsf{x}}}{4}) . {{\mathsf{convert}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}} \\ &&|&
+\mathtt{0xFD}~251{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{f{\scriptstyle32}}}{\mathsf{x}}}{4}) . {{\mathsf{convert}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}} \\ &&|&
+\mathtt{0xFD}~252{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}) . {{\mathsf{trunc\_sat}}{\mathsf{\_}}}{{{\mathsf{f{\scriptstyle64}}}{\mathsf{x}}}{2}} \\ &&|&
+\mathtt{0xFD}~253{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}) . {{\mathsf{trunc\_sat}}{\mathsf{\_}}}{{{\mathsf{f{\scriptstyle64}}}{\mathsf{x}}}{2}} \\ &&|&
+\mathtt{0xFD}~254{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{f{\scriptstyle64}}}{\mathsf{x}}}{2}) . {{\mathsf{convert}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}} \\ &&|&
+\mathtt{0xFD}~255{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{f{\scriptstyle64}}}{\mathsf{x}}}{2}) . {{\mathsf{convert}}{\mathsf{\_}}}{{{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{4}} \\ &&|&
+\mathtt{0xFD}~94{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{f{\scriptstyle32}}}{\mathsf{x}}}{4}) . {{\mathsf{demote}}{\mathsf{\_}}}{{{\mathsf{f{\scriptstyle64}}}{\mathsf{x}}}{2}} \\ &&|&
+\mathtt{0xFD}~95{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({{\mathsf{f{\scriptstyle64}}}{\mathsf{x}}}{2}) . {{\mathsf{promote}}{\mathsf{\_}}}{{{\mathsf{f{\scriptstyle32}}}{\mathsf{x}}}{4}} \\
 \end{array}
 $$
 
