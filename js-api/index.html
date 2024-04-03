@@ -6,7 +6,7 @@
   <meta content="ED" name="w3c-status">
   <meta content="Bikeshed version d765c696b, updated Fri Mar 8 15:58:52 2024 -0800" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-2/" rel="canonical">
-  <meta content="cd770402008fcb56b68f5be911848f3c6dd15bd3" name="revision">
+  <meta content="bc76fd79cfe61033d7f4ad4a7e8fc4f996dc5ba8" name="revision">
   <meta content="dark light" name="color-scheme">
 <style>
 emu-const {
@@ -1445,7 +1445,9 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="memory"><code><c- g>Memory</c-></code></dfn> {
   <a class="idl-code" data-link-type="constructor" href="#dom-memory-memory" id="ref-for-dom-memory-memory"><c- g>constructor</c-></a>(<a data-link-type="idl-name" href="#dictdef-memorydescriptor" id="ref-for-dictdef-memorydescriptor"><c- n>MemoryDescriptor</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="Memory/Memory(descriptor), Memory/constructor(descriptor)" data-dfn-type="argument" data-export id="dom-memory-memory-descriptor-descriptor"><code><c- g>descriptor</c-></code></dfn>);
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long" id="ref-for-idl-unsigned-long②"><c- b>unsigned</c-> <c- b>long</c-></a> <a class="idl-code" data-link-type="method" href="#dom-memory-grow" id="ref-for-dom-memory-grow"><c- g>grow</c-></a>([<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange" id="ref-for-EnforceRange②"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long" id="ref-for-idl-unsigned-long③"><c- b>unsigned</c-> <c- b>long</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="Memory/grow(delta)" data-dfn-type="argument" data-export id="dom-memory-grow-delta-delta"><code><c- g>delta</c-></code></dfn>);
-  <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects②"><c- b>ArrayBuffer</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="ArrayBuffer" href="#dom-memory-buffer" id="ref-for-dom-memory-buffer"><c- g>buffer</c-></a>;
+  <a class="idl-code" data-link-type="interface" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects②"><c- b>ArrayBuffer</c-></a> <a class="idl-code" data-link-type="method" href="#dom-memory-tofixedlengthbuffer" id="ref-for-dom-memory-tofixedlengthbuffer"><c- g>toFixedLengthBuffer</c-></a>();
+  <a class="idl-code" data-link-type="interface" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects③"><c- b>ArrayBuffer</c-></a> <a class="idl-code" data-link-type="method" href="#dom-memory-toresizablebuffer" id="ref-for-dom-memory-toresizablebuffer"><c- g>toResizableBuffer</c-></a>();
+  <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects④"><c- b>ArrayBuffer</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="ArrayBuffer" href="#dom-memory-buffer" id="ref-for-dom-memory-buffer"><c- g>buffer</c-></a>;
 };
 </pre>
    <p>A <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory③">Memory</a></code> object represents a single <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#memory-instances" id="ref-for-memory-instances①">memory instance</a> which can be simultaneously referenced by multiple <code class="idl"><a data-link-type="idl" href="#instance" id="ref-for-instance④">Instance</a></code> objects. Each <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory④">Memory</a></code> object has the following internal slots:</p>
@@ -1453,15 +1455,46 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
     <li data-md>
      <p>[[Memory]] : a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr" id="ref-for-syntax-memaddr①">memory address</a></p>
     <li data-md>
-     <p>[[BufferObject]] : an <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects③">ArrayBuffer</a></code> whose <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-data-blocks" id="ref-for-sec-data-blocks①">Data Block</a> is <a data-link-type="dfn" href="#identified-with" id="ref-for-identified-with">identified with</a> the above memory address</p>
+     <p>[[BufferObject]] : an <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects⑤">ArrayBuffer</a></code> whose <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-data-blocks" id="ref-for-sec-data-blocks①">Data Block</a> is <a data-link-type="dfn" href="#identified-with" id="ref-for-identified-with">identified with</a> the above memory address</p>
    </ul>
-   <div class="algorithm" data-algorithm="create a memory buffer">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-a-memory-buffer">create a memory buffer</dfn> from a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr" id="ref-for-syntax-memaddr②">memory address</a> <var>memaddr</var>, perform the following steps: 
+   <div class="algorithm" data-algorithm="create a fixed length memory buffer">
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-a-fixed-length-memory-buffer">create a fixed length memory buffer</dfn> from a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr" id="ref-for-syntax-memaddr②">memory address</a> <var>memaddr</var>, perform the following steps: 
     <ol>
      <li data-md>
       <p>Let <var>block</var> be a <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-data-blocks" id="ref-for-sec-data-blocks②">Data Block</a> which is <a data-link-type="dfn" href="#identified-with" id="ref-for-identified-with①">identified with</a> the underlying memory of <var>memaddr</var>.</p>
      <li data-md>
-      <p>Let <var>buffer</var> be a new <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects④">ArrayBuffer</a></code> whose [[ArrayBufferData]] is <var>block</var> and [[ArrayBufferByteLength]] is set to the length of <var>block</var>.</p>
+      <p>Let <var>buffer</var> be a new <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects⑥">ArrayBuffer</a></code> with the internal slots [[ArrayBufferData]], [[ArrayBufferByteLength]], and [[ArrayBufferDetachKey]].</p>
+     <li data-md>
+      <p>Set <var>buffer</var>.[[ArrayBufferData]] to <var>block</var>.</p>
+     <li data-md>
+      <p>Set <var>buffer</var>.[[ArrayBufferByteLength]] to the length of <var>block</var>.</p>
+     <li data-md>
+      <p>Set <var>buffer</var>.[[ArrayBufferDetachKey]] to "WebAssembly.Memory".</p>
+     <li data-md>
+      <p>Return <var>buffer</var>.</p>
+    </ol>
+   </div>
+   <div class="algorithm" data-algorithm="create a resizable memory buffer">
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-a-resizable-memory-buffer">create a resizable memory buffer</dfn> from a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr" id="ref-for-syntax-memaddr③">memory address</a> <var>memaddr</var> and a <var>maxsize</var>, perform the following steps: 
+    <ol>
+     <li data-md>
+      <p>Let <var>block</var> be a <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-data-blocks" id="ref-for-sec-data-blocks③">Data Block</a> which is <a data-link-type="dfn" href="#identified-with" id="ref-for-identified-with②">identified with</a> the underlying memory of <var>memaddr</var>.</p>
+     <li data-md>
+      <p>Let <var>length</var> be the length of <var>block</var>.</p>
+     <li data-md>
+      <p>If <var>maxsize</var> > (65536 × 65536),</p>
+      <ol>
+       <li data-md>
+        <p>Throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror">RangeError</a></code> exception.</p>
+      </ol>
+     <li data-md>
+      <p>Let <var>buffer</var> be a new <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects⑦">ArrayBuffer</a></code> with the internal slots [[ArrayBufferData]], [[ArrayBufferByteLength]], [[ArrayBufferMaxByteLength]], and [[ArrayBufferDetachKey]].</p>
+     <li data-md>
+      <p>Set <var>buffer</var>.[[ArrayBufferData]] to <var>block</var>.</p>
+     <li data-md>
+      <p>Set <var>buffer</var>.[[ArrayBufferByteLength]] to <var>length</var>.</p>
+     <li data-md>
+      <p>Set <var>buffer</var>.[[ArrayBufferMaxByteLength]] is <var>maxsize</var>.</p>
      <li data-md>
       <p>Set <var>buffer</var>.[[ArrayBufferDetachKey]] to "WebAssembly.Memory".</p>
      <li data-md>
@@ -1469,14 +1502,14 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
     </ol>
    </div>
    <div class="algorithm" data-algorithm="initialize a memory object">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="initialize-a-memory-object">initialize a memory object</dfn> <var>memory</var> from a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr" id="ref-for-syntax-memaddr③">memory address</a> <var>memaddr</var>, perform the following steps: 
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="initialize-a-memory-object">initialize a memory object</dfn> <var>memory</var> from a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr" id="ref-for-syntax-memaddr④">memory address</a> <var>memaddr</var>, perform the following steps: 
     <ol>
      <li data-md>
       <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent④">surrounding agent</a>'s associated <a data-link-type="dfn" href="#memory-object-cache" id="ref-for-memory-object-cache">Memory object cache</a>.</p>
      <li data-md>
       <p class="assertion">Assert: <var>map</var>[<var>memaddr</var>] doesn’t <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists">exist</a>.</p>
      <li data-md>
-      <p>Let <var>buffer</var> be the result of <a data-link-type="dfn" href="#create-a-memory-buffer" id="ref-for-create-a-memory-buffer">creating a memory buffer</a> from <var>memaddr</var>.</p>
+      <p>Let <var>buffer</var> be the result of <a data-link-type="dfn" href="#create-a-fixed-length-memory-buffer" id="ref-for-create-a-fixed-length-memory-buffer">creating a fixed length memory buffer</a> from <var>memaddr</var>.</p>
      <li data-md>
       <p>Set <var>memory</var>.[[Memory]] to <var>memaddr</var>.</p>
      <li data-md>
@@ -1486,7 +1519,7 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
     </ol>
    </div>
    <div class="algorithm" data-algorithm="create a memory object">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-a-memory-object">create a memory object</dfn> from a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr" id="ref-for-syntax-memaddr④">memory address</a> <var>memaddr</var>, perform the following steps: 
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-a-memory-object">create a memory object</dfn> from a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr" id="ref-for-syntax-memaddr⑤">memory address</a> <var>memaddr</var>, perform the following steps: 
     <ol>
      <li data-md>
       <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent⑤">surrounding agent</a>'s associated <a data-link-type="dfn" href="#memory-object-cache" id="ref-for-memory-object-cache①">Memory object cache</a>.</p>
@@ -1512,21 +1545,21 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
      <li data-md>
       <p>If <var>descriptor</var>["maximum"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists②">exists</a>, let <var>maximum</var> be <var>descriptor</var>["maximum"]; otherwise, let <var>maximum</var> be empty.</p>
      <li data-md>
-      <p>If <var>maximum</var> is not empty and <var>maximum</var> &lt; <var>initial</var>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror">RangeError</a></code> exception.</p>
+      <p>If <var>maximum</var> is not empty and <var>maximum</var> &lt; <var>initial</var>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror①">RangeError</a></code> exception.</p>
      <li data-md>
       <p>Let <var>memtype</var> be { min <var>initial</var>, max <var>maximum</var> }.</p>
      <li data-md>
       <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent⑥">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store④">associated store</a>.</p>
      <li data-md>
-      <p>Let (<var>store</var>, <var>memaddr</var>) be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-mem-alloc" id="ref-for-embed-mem-alloc">mem_alloc</a>(<var>store</var>, <var>memtype</var>). If allocation fails, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror①">RangeError</a></code> exception.</p>
+      <p>Let (<var>store</var>, <var>memaddr</var>) be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-mem-alloc" id="ref-for-embed-mem-alloc">mem_alloc</a>(<var>store</var>, <var>memtype</var>). If allocation fails, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror②">RangeError</a></code> exception.</p>
      <li data-md>
       <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent⑦">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑤">associated store</a> to <var>store</var>.</p>
      <li data-md>
       <p><a data-link-type="dfn" href="#initialize-a-memory-object" id="ref-for-initialize-a-memory-object①">Initialize</a> <strong>this</strong> from <var>memaddr</var>.</p>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="reset the Memory buffer">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="reset-the-memory-buffer">reset the Memory buffer</dfn> of <var>memaddr</var>, perform the following steps: 
+   <div class="algorithm" data-algorithm="refresh the Memory buffer">
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="refresh-the-memory-buffer">refresh the Memory buffer</dfn> of <var>memaddr</var>, perform the following steps: 
     <ol>
      <li data-md>
       <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent⑧">surrounding agent</a>'s associated <a data-link-type="dfn" href="#memory-object-cache" id="ref-for-memory-object-cache②">Memory object cache</a>.</p>
@@ -1535,32 +1568,55 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
      <li data-md>
       <p>Let <var>memory</var> be <var>map</var>[<var>memaddr</var>].</p>
      <li data-md>
-      <p>Perform <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/structured-data.html#sec-detacharraybuffer" id="ref-for-sec-detacharraybuffer">DetachArrayBuffer</a>(<var>memory</var>.[[BufferObject]], "WebAssembly.Memory").</p>
+      <p>Let <var>buffer</var> be <var>memory</var>.[[BufferObject]].</p>
      <li data-md>
-      <p>Let <var>buffer</var> be the result of <a data-link-type="dfn" href="#create-a-memory-buffer" id="ref-for-create-a-memory-buffer①">creating a memory buffer</a> from <var>memaddr</var>.</p>
+      <p>If <a data-link-type="dfn" href="https://tc39.es/proposal-resizablearraybuffer/#sec-isfixedarraybuffer" id="ref-for-sec-isfixedarraybuffer">IsFixedLengthArrayBuffer</a>(<var>buffer</var>) is true,</p>
+      <ol>
+       <li data-md>
+        <p>Perform <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/structured-data.html#sec-detacharraybuffer" id="ref-for-sec-detacharraybuffer">DetachArrayBuffer</a>(<var>buffer</var>, "WebAssembly.Memory").</p>
+       <li data-md>
+        <p>Let <var>buffer</var> be the result of <a data-link-type="dfn" href="#create-a-fixed-length-memory-buffer" id="ref-for-create-a-fixed-length-memory-buffer①">creating a fixed length memory buffer</a> from <var>memaddr</var>.</p>
+       <li data-md>
+        <p>Set <var>memory</var>.[[BufferObject]] to <var>buffer</var>.</p>
+      </ol>
      <li data-md>
-      <p>Set <var>memory</var>.[[BufferObject]] to <var>buffer</var>.</p>
+      <p>Otherwise,</p>
+      <ol>
+       <li data-md>
+        <p>Let <var>block</var> be a <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-data-blocks" id="ref-for-sec-data-blocks④">Data Block</a> which is <a data-link-type="dfn" href="#identified-with" id="ref-for-identified-with③">identified with</a> the underlying memory of <var>memaddr</var>.</p>
+       <li data-md>
+        <p>Set <var>buffer</var>.[[ArrayBufferData]] to <var>block</var>.</p>
+       <li data-md>
+        <p>Set <var>buffer</var>.[[ArrayBufferByteLength]] to the length of <var>block</var>.</p>
+      </ol>
+    </ol>
+   </div>
+   <div class="algorithm" data-algorithm="grow the memory buffer">
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="grow-the-memory-buffer">grow the memory buffer</dfn> associated with a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr" id="ref-for-syntax-memaddr⑥">memory address</a> <var>memaddr</var> by <var>delta</var>, perform the following steps: 
+    <ol>
+     <li data-md>
+      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent⑨">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑥">associated store</a>.</p>
+     <li data-md>
+      <p>Let <var>ret</var> be the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-mem-size" id="ref-for-embed-mem-size">mem_size</a>(<var>store</var>, <var>memaddr</var>).</p>
+     <li data-md>
+      <p>Let <var>store</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-mem-grow" id="ref-for-embed-mem-grow">mem_grow</a>(<var>store</var>, <var>memaddr</var>, <var>delta</var>).</p>
+     <li data-md>
+      <p>If <var>store</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error⑨">error</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror③">RangeError</a></code> exception.</p>
+     <li data-md>
+      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⓪">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑦">associated store</a> to <var>store</var>.</p>
+     <li data-md>
+      <p><a data-link-type="dfn" href="#refresh-the-memory-buffer" id="ref-for-refresh-the-memory-buffer">Refresh the memory buffer</a> of <var>memaddr</var>.</p>
+     <li data-md>
+      <p>Return <var>ret</var>.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="dom-Memory-grow">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Memory" data-dfn-type="method" data-export id="dom-memory-grow"><code>grow(<var>delta</var>)</code></dfn> method, when invoked, performs the following steps: 
     <ol>
      <li data-md>
-      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent⑨">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑥">associated store</a>.</p>
-     <li data-md>
       <p>Let <var>memaddr</var> be <strong>this</strong>.[[Memory]].</p>
      <li data-md>
-      <p>Let <var>ret</var> be the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-mem-size" id="ref-for-embed-mem-size">mem_size</a>(<var>store</var>, <var>memaddr</var>).</p>
-     <li data-md>
-      <p>Let <var>store</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-mem-grow" id="ref-for-embed-mem-grow">mem_grow</a>(<var>store</var>, <var>memaddr</var>, <var>delta</var>).</p>
-     <li data-md>
-      <p>If <var>store</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error⑨">error</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror②">RangeError</a></code> exception.</p>
-     <li data-md>
-      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⓪">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑦">associated store</a> to <var>store</var>.</p>
-     <li data-md>
-      <p><a data-link-type="dfn" href="#reset-the-memory-buffer" id="ref-for-reset-the-memory-buffer">Reset the memory buffer</a> of <var>memaddr</var>.</p>
-     <li data-md>
-      <p>Return <var>ret</var>.</p>
+      <p>Return the result of <a data-link-type="dfn" href="#grow-the-memory-buffer" id="ref-for-grow-the-memory-buffer">growing the memory buffer</a> associated with <var>memaddr</var> by <var>delta</var>.</p>
     </ol>
    </div>
    <p>Immediately after a WebAssembly <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/instructions.html#exec-memory-grow" id="ref-for-exec-memory-grow">memory.grow</a> instruction executes, perform the following steps:</p>
@@ -1576,11 +1632,105 @@ If this throws an exception, catch it, <a data-link-type="dfn" href="https://web
        <li data-md>
         <p>Let <var>memaddr</var> be the memory address <var>frame</var>.<a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-frame" id="ref-for-syntax-frame①">module</a>.<a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-moduleinst" id="ref-for-syntax-moduleinst①">memaddrs</a>[0].</p>
        <li data-md>
-        <p><a data-link-type="dfn" href="#reset-the-memory-buffer" id="ref-for-reset-the-memory-buffer①">Reset the memory buffer</a> of <var>memaddr</var>.</p>
+        <p><a data-link-type="dfn" href="#refresh-the-memory-buffer" id="ref-for-refresh-the-memory-buffer①">Refresh the memory buffer</a> of <var>memaddr</var>.</p>
       </ol>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="buffer" data-algorithm-for="Memory"> The getter of the <dfn class="dfn-paneled idl-code" data-dfn-for="Memory" data-dfn-type="attribute" data-export id="dom-memory-buffer"><code>buffer</code></dfn> attribute of <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory⑥">Memory</a></code> returns <strong>this</strong>.[[BufferObject]]. </div>
+   <div class="algorithm" data-algorithm="dom-Memory-toFixedLengthBuffer">
+     The <dfn class="dfn-paneled idl-code" data-dfn-for="Memory" data-dfn-type="method" data-export id="dom-memory-tofixedlengthbuffer"><code>toFixedLengthBuffer()</code></dfn> method, when invoked, performs the following steps: 
+    <ol>
+     <li data-md>
+      <p>Let <var>buffer</var> be <strong>this</strong>.[[BufferObject]].</p>
+     <li data-md>
+      <p>If <a data-link-type="dfn" href="https://tc39.es/proposal-resizablearraybuffer/#sec-isfixedarraybuffer" id="ref-for-sec-isfixedarraybuffer①">IsFixedLengthArrayBuffer</a>(<var>buffer</var>) is true, return <var>buffer</var>.</p>
+     <li data-md>
+      <p>Let <var>memaddr</var> be <strong>this</strong>.[[Memory]].</p>
+     <li data-md>
+      <p>Let <var>fixedBuffer</var> be the result of <a data-link-type="dfn" href="#create-a-fixed-length-memory-buffer" id="ref-for-create-a-fixed-length-memory-buffer②">creating a fixed length memory buffer</a> from <var>memaddr</var>.</p>
+     <li data-md>
+      <p>Perform <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑥">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/structured-data.html#sec-detacharraybuffer" id="ref-for-sec-detacharraybuffer①">DetachArrayBuffer</a>(<var>buffer</var>, "WebAssembly.Memory").</p>
+     <li data-md>
+      <p>Set <strong>this</strong>.[[BufferObject]] to <var>fixedBuffer</var>.</p>
+     <li data-md>
+      <p>Return <var>fixedBuffer</var>.</p>
+    </ol>
+   </div>
+   <div class="algorithm" data-algorithm="dom-Memory-toResizableBuffer">
+     The <dfn class="dfn-paneled idl-code" data-dfn-for="Memory" data-dfn-type="method" data-export id="dom-memory-toresizablebuffer"><code>toResizableBuffer()</code></dfn> method, when invoked, performs the following steps: 
+    <ol>
+     <li data-md>
+      <p>Let <var>buffer</var> be <strong>this</strong>.[[BufferObject]].</p>
+     <li data-md>
+      <p>If <a data-link-type="dfn" href="https://tc39.es/proposal-resizablearraybuffer/#sec-isfixedarraybuffer" id="ref-for-sec-isfixedarraybuffer②">IsFixedLengthArrayBuffer</a>(<var>buffer</var>) is false, return <var>buffer</var>.</p>
+     <li data-md>
+      <p>Let <var>memaddr</var> be <strong>this</strong>.[[Memory]].</p>
+     <li data-md>
+      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①①">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑧">associated store</a>.</p>
+     <li data-md>
+      <p>Let <var>memtype</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-mem-type" id="ref-for-embed-mem-type">mem_type</a>(<var>store</var>, <var>memaddr</var>).</p>
+     <li data-md>
+      <p>If <var>memtype</var> has a max,</p>
+      <ol>
+       <li data-md>
+        <p>Let <var>maxsize</var> be the max value in <var>memtype</var>.</p>
+      </ol>
+     <li data-md>
+      <p>Otherwise,</p>
+      <ol>
+       <li data-md>
+        <p>Let <var>maxsize</var> be 65536 × 65536.</p>
+      </ol>
+     <li data-md>
+      <p>Let <var>resizableBuffer</var> be the result of <a data-link-type="dfn" href="#create-a-resizable-memory-buffer" id="ref-for-create-a-resizable-memory-buffer">creating a resizable memory buffer</a> from <var>memaddr</var> and <var>maxsize</var>.</p>
+     <li data-md>
+      <p>Perform <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑦">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/structured-data.html#sec-detacharraybuffer" id="ref-for-sec-detacharraybuffer②">DetachArrayBuffer</a>(<var>buffer</var>, "WebAssembly.Memory").</p>
+     <li data-md>
+      <p>Set <strong>this</strong>.[[BufferObject]] to <var>resizableBuffer</var>.</p>
+     <li data-md>
+      <p>Return <var>resizableBuffer</var>.</p>
+    </ol>
+   </div>
+   <p><code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects⑧">ArrayBuffer</a></code> objects returned by a <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory⑥">Memory</a></code> object must have a size that is a multiple of a WebAssembly <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#page-size" id="ref-for-page-size">page size</a> (the constant 65536). For this reason <a data-link-type="dfn" href="https://tc39.es/proposal-resizablearraybuffer/#sec-hostresizearraybuffer" id="ref-for-sec-hostresizearraybuffer">HostResizeArrayBuffer</a> is redefined as follows.</p>
+   <div class="algorithm" data-algorithm="abstract operation HostResizeArrayBuffer">
+     The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="abstract-operation-hostresizearraybuffer">abstract operation <a data-link-type="dfn" href="https://tc39.es/proposal-resizablearraybuffer/#sec-hostresizearraybuffer" id="ref-for-sec-hostresizearraybuffer①">HostResizeArrayBuffer</a></dfn> takes arguments <var>buffer</var> (an <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects⑨">ArrayBuffer</a></code>) and <var>newLength</var>. It performs the following steps when called. 
+    <ol>
+     <li data-md>
+      <p>If <var>buffer</var>.[[ArrayBufferDetachKey]] is "WebAssembly.Memory",</p>
+      <ol>
+       <li data-md>
+        <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①②">surrounding agent</a>'s associated <a data-link-type="dfn" href="#memory-object-cache" id="ref-for-memory-object-cache③">Memory object cache</a>.</p>
+       <li data-md>
+        <p class="assertion">Assert: <var>buffer</var> is the [[BufferObject]] of exactly one value in <var>map</var>.</p>
+       <li data-md>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-iterate" id="ref-for-map-iterate">For each</a> <var>memaddr</var> → <var>mem</var> in <var>map</var>,</p>
+        <ol>
+         <li data-md>
+          <p>If <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-samevalue" id="ref-for-sec-samevalue">SameValue</a>(<var>mem</var>.[[BufferObject]], <var>buffer</var>) is true,</p>
+          <ol>
+           <li data-md>
+            <p class="assertion">Assert: <var>buffer</var>.[[ArrayBufferByteLength]] modulo 65536 is 0.</p>
+           <li data-md>
+            <p>Let <var>lengthDelta</var> be <var>newLength</var> - <var>buffer</var>.[[ArrayBufferByteLength]].</p>
+           <li data-md>
+            <p>If <var>lengthDelta</var> &lt; 0 or <var>lengthDelta</var> modulo 65536 is not 0,</p>
+            <ol>
+             <li data-md>
+              <p>Throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror④">RangeError</a></code> exception.</p>
+            </ol>
+           <li data-md>
+            <p>Let <var>delta</var> be <var>lengthDelta</var> ÷ 65536.</p>
+           <li data-md>
+            <p><a data-link-type="dfn" href="#grow-the-memory-buffer" id="ref-for-grow-the-memory-buffer①">Grow the memory buffer</a> associated with <var>memaddr</var> by <var>delta</var>.</p>
+          </ol>
+        </ol>
+       <li data-md>
+        <p>Return <emu-const>handled</emu-const>.</p>
+      </ol>
+     <li data-md>
+      <p>Otherwise, return <emu-const>unhandled</emu-const>.</p>
+    </ol>
+   </div>
+   <div class="algorithm" data-algorithm="buffer" data-algorithm-for="Memory"> The getter of the <dfn class="dfn-paneled idl-code" data-dfn-for="Memory" data-dfn-type="attribute" data-export id="dom-memory-buffer"><code>buffer</code></dfn> attribute of <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory⑦">Memory</a></code> returns <strong>this</strong>.[[BufferObject]]. </div>
    <h3 class="heading settled" data-level="4.4" id="tables"><span class="secno">4.4. </span><span class="content">Tables</span><a class="self-link" href="#tables"></a></h3>
 <pre class="idl highlight def"><c- b>enum</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="enum" data-export id="enumdef-tablekind"><code><c- g>TableKind</c-></code></dfn> {
   <dfn class="dfn-paneled idl-code" data-dfn-for="TableKind" data-dfn-type="enum-value" data-export id="dom-tablekind-externref"><code><c- s>"externref"</c-></code></dfn>,
@@ -1611,7 +1761,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="initialize-a-table-object">initialize a table object</dfn> <var>table</var> from a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-tableaddr" id="ref-for-syntax-tableaddr②">table address</a> <var>tableaddr</var>, perform the following steps: 
     <ol>
      <li data-md>
-      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①①">surrounding agent</a>'s associated <a data-link-type="dfn" href="#table-object-cache" id="ref-for-table-object-cache">Table object cache</a>.</p>
+      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①③">surrounding agent</a>'s associated <a data-link-type="dfn" href="#table-object-cache" id="ref-for-table-object-cache">Table object cache</a>.</p>
      <li data-md>
       <p class="assertion">Assert: <var>map</var>[<var>tableaddr</var>] doesn’t <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists④">exist</a>.</p>
      <li data-md>
@@ -1624,7 +1774,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-a-table-object">create a table object</dfn> from a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-tableaddr" id="ref-for-syntax-tableaddr③">table address</a> <var>tableaddr</var>, perform the following steps: 
     <ol>
      <li data-md>
-      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①②">surrounding agent</a>'s associated <a data-link-type="dfn" href="#table-object-cache" id="ref-for-table-object-cache①">Table object cache</a>.</p>
+      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①④">surrounding agent</a>'s associated <a data-link-type="dfn" href="#table-object-cache" id="ref-for-table-object-cache①">Table object cache</a>.</p>
      <li data-md>
       <p>If <var>map</var>[<var>tableaddr</var>] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑤">exists</a>,</p>
       <ol>
@@ -1655,7 +1805,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      <li data-md>
       <p>If <var>descriptor</var>["maximum"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑥">exists</a>, let <var>maximum</var> be <var>descriptor</var>["maximum"]; otherwise, let <var>maximum</var> be empty.</p>
      <li data-md>
-      <p>If <var>maximum</var> is not empty and <var>maximum</var> &lt; <var>initial</var>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror③">RangeError</a></code> exception.</p>
+      <p>If <var>maximum</var> is not empty and <var>maximum</var> &lt; <var>initial</var>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑤">RangeError</a></code> exception.</p>
      <li data-md>
       <p>If <var>value</var> is missing,</p>
       <ol>
@@ -1666,16 +1816,16 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
       <p>Otherwise,</p>
       <ol>
        <li data-md>
-        <p>Let <var>ref</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑥">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue①">ToWebAssemblyValue</a>(<var>value</var>, <var>elementType</var>).</p>
+        <p>Let <var>ref</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑧">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue①">ToWebAssemblyValue</a>(<var>value</var>, <var>elementType</var>).</p>
       </ol>
      <li data-md>
       <p>Let <var>type</var> be the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype">table type</a> {<a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype①">min</a> <var>initial</var>, <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype②">max</a> <var>maximum</var>} <var>elementType</var>.</p>
      <li data-md>
-      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①③">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑧">associated store</a>.</p>
+      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⑤">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑨">associated store</a>.</p>
      <li data-md>
       <p>Let (<var>store</var>, <var>tableaddr</var>) be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-table-alloc" id="ref-for-embed-table-alloc">table_alloc</a>(<var>store</var>, <var>type</var>, <var>ref</var>). </p>
      <li data-md>
-      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①④">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store⑨">associated store</a> to <var>store</var>.</p>
+      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⑥">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①⓪">associated store</a> to <var>store</var>.</p>
      <li data-md>
       <p><a data-link-type="dfn" href="#initialize-a-table-object" id="ref-for-initialize-a-table-object①">Initialize</a> <strong>this</strong> from <var>tableaddr</var>.</p>
     </ol>
@@ -1686,7 +1836,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      <li data-md>
       <p>Let <var>tableaddr</var> be <strong>this</strong>.[[Table]].</p>
      <li data-md>
-      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⑤">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①⓪">associated store</a>.</p>
+      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⑦">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①①">associated store</a>.</p>
      <li data-md>
       <p>Let <var>initialSize</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-table-size" id="ref-for-embed-table-size">table_size</a>(<var>store</var>, <var>tableaddr</var>).</p>
      <li data-md>
@@ -1701,15 +1851,15 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
       <p>Otherwise,</p>
       <ol>
        <li data-md>
-        <p>Let <var>ref</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑦">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue②">ToWebAssemblyValue</a>(<var>value</var>, <var>elementType</var>).</p>
+        <p>Let <var>ref</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑨">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue②">ToWebAssemblyValue</a>(<var>value</var>, <var>elementType</var>).</p>
       </ol>
      <li data-md>
       <p>Let <var>result</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-table-grow" id="ref-for-embed-table-grow">table_grow</a>(<var>store</var>, <var>tableaddr</var>, <var>delta</var>, <var>ref</var>).</p>
      <li data-md>
-      <p>If <var>result</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error①⓪">error</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror④">RangeError</a></code> exception.</p>
+      <p>If <var>result</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error①⓪">error</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑥">RangeError</a></code> exception.</p>
       <p class="note" role="note"><span class="marker">Note:</span> The above exception can happen due to either insufficient memory or an invalid size parameter.</p>
      <li data-md>
-      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⑥">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①①">associated store</a> to <var>result</var>.</p>
+      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⑧">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①②">associated store</a> to <var>result</var>.</p>
      <li data-md>
       <p>Return <var>initialSize</var>.</p>
     </ol>
@@ -1720,7 +1870,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      <li data-md>
       <p>Let <var>tableaddr</var> be <strong>this</strong>.[[Table]].</p>
      <li data-md>
-      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⑦">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①②">associated store</a>.</p>
+      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⑨">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①③">associated store</a>.</p>
      <li data-md>
       <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-table-size" id="ref-for-embed-table-size①">table_size</a>(<var>store</var>, <var>tableaddr</var>).</p>
     </ol>
@@ -1731,11 +1881,11 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      <li data-md>
       <p>Let <var>tableaddr</var> be <strong>this</strong>.[[Table]].</p>
      <li data-md>
-      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⑧">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①③">associated store</a>.</p>
+      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②⓪">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①④">associated store</a>.</p>
      <li data-md>
       <p>Let <var>result</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-table-read" id="ref-for-embed-table-read">table_read</a>(<var>store</var>, <var>tableaddr</var>, <var>index</var>).</p>
      <li data-md>
-      <p>If <var>result</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error①①">error</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑤">RangeError</a></code> exception.</p>
+      <p>If <var>result</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error①①">error</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑦">RangeError</a></code> exception.</p>
      <li data-md>
       <p>Return <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue">ToJSValue</a>(<var>result</var>).</p>
     </ol>
@@ -1757,16 +1907,16 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
       <p>Otherwise,</p>
       <ol>
        <li data-md>
-        <p>Let <var>ref</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑧">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue③">ToWebAssemblyValue</a>(<var>value</var>, <var>elementType</var>).</p>
+        <p>Let <var>ref</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⓪">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue③">ToWebAssemblyValue</a>(<var>value</var>, <var>elementType</var>).</p>
       </ol>
      <li data-md>
-      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⑨">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①④">associated store</a>.</p>
+      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②①">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①⑤">associated store</a>.</p>
      <li data-md>
       <p>Let <var>store</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-table-write" id="ref-for-embed-table-write">table_write</a>(<var>store</var>, <var>tableaddr</var>, <var>index</var>, <var>ref</var>).</p>
      <li data-md>
-      <p>If <var>store</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error①②">error</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑥">RangeError</a></code> exception.</p>
+      <p>If <var>store</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error①②">error</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑧">RangeError</a></code> exception.</p>
      <li data-md>
-      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②⓪">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①⑤">associated store</a> to <var>store</var>.</p>
+      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②②">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①⑥">associated store</a> to <var>store</var>.</p>
     </ol>
    </div>
    <h3 class="heading settled" data-level="4.5" id="globals"><span class="secno">4.5. </span><span class="content">Globals</span><a class="self-link" href="#globals"></a></h3>
@@ -1802,7 +1952,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="initialize-a-global-object">initialize a global object</dfn> <var>global</var> from a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-globaladdr" id="ref-for-syntax-globaladdr②">global address</a> <var>globaladdr</var>, perform the following steps: 
     <ol>
      <li data-md>
-      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②①">surrounding agent</a>'s associated <a data-link-type="dfn" href="#global-object-cache" id="ref-for-global-object-cache">Global object cache</a>.</p>
+      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②③">surrounding agent</a>'s associated <a data-link-type="dfn" href="#global-object-cache" id="ref-for-global-object-cache">Global object cache</a>.</p>
      <li data-md>
       <p class="assertion">Assert: <var>map</var>[<var>globaladdr</var>] doesn’t <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑦">exist</a>.</p>
      <li data-md>
@@ -1815,7 +1965,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-a-global-object">create a global object</dfn> from a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-globaladdr" id="ref-for-syntax-globaladdr③">global address</a> <var>globaladdr</var>, perform the following steps: 
     <ol>
      <li data-md>
-      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②②">surrounding agent</a>'s associated <a data-link-type="dfn" href="#global-object-cache" id="ref-for-global-object-cache①">Global object cache</a>.</p>
+      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②④">surrounding agent</a>'s associated <a data-link-type="dfn" href="#global-object-cache" id="ref-for-global-object-cache①">Global object cache</a>.</p>
      <li data-md>
       <p>If <var>map</var>[<var>globaladdr</var>] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑧">exists</a>,</p>
       <ol>
@@ -1898,11 +2048,11 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      <li data-md>
       <p>If <var>mutable</var> is true, let <var>globaltype</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-mut" id="ref-for-syntax-mut①">var</a> <var>valuetype</var>; otherwise, let <var>globaltype</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-mut" id="ref-for-syntax-mut②">const</a> <var>valuetype</var>.</p>
      <li data-md>
-      <p>Let <var>store</var> be the current agent’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①⑥">associated store</a>.</p>
+      <p>Let <var>store</var> be the current agent’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①⑦">associated store</a>.</p>
      <li data-md>
       <p>Let (<var>store</var>, <var>globaladdr</var>) be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-global-alloc" id="ref-for-embed-global-alloc①">global_alloc</a>(<var>store</var>, <var>globaltype</var>, <var>value</var>). </p>
      <li data-md>
-      <p>Set the current agent’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①⑦">associated store</a> to <var>store</var>.</p>
+      <p>Set the current agent’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①⑧">associated store</a> to <var>store</var>.</p>
      <li data-md>
       <p><a data-link-type="dfn" href="#initialize-a-global-object" id="ref-for-initialize-a-global-object①">Initialize</a> <strong>this</strong> from <var>globaladdr</var>.</p>
     </ol>
@@ -1911,7 +2061,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="getglobalvalue">GetGlobalValue</dfn>(<code class="idl"><a data-link-type="idl" href="#global" id="ref-for-global⑤">Global</a></code> <var>global</var>) performs the following steps: 
     <ol>
      <li data-md>
-      <p>Let <var>store</var> be the current agent’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①⑧">associated store</a>.</p>
+      <p>Let <var>store</var> be the current agent’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①⑨">associated store</a>.</p>
      <li data-md>
       <p>Let <var>globaladdr</var> be <var>global</var>.[[Global]].</p>
      <li data-md>
@@ -1933,7 +2083,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
     <p>The setter of the value attribute of <code class="idl"><a data-link-type="idl" href="#global" id="ref-for-global⑦">Global</a></code>, when invoked, performs the following steps:</p>
     <ol>
      <li data-md>
-      <p>Let <var>store</var> be the current agent’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①⑨">associated store</a>.</p>
+      <p>Let <var>store</var> be the current agent’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②⓪">associated store</a>.</p>
      <li data-md>
       <p>Let <var>globaladdr</var> be <strong>this</strong>.[[Global]].</p>
      <li data-md>
@@ -1947,9 +2097,9 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      <li data-md>
       <p>Let <var>store</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-global-write" id="ref-for-embed-global-write">global_write</a>(<var>store</var>, <var>globaladdr</var>, <var>value</var>).</p>
      <li data-md>
-      <p>If <var>store</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error①③">error</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑦">RangeError</a></code> exception.</p>
+      <p>If <var>store</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error①③">error</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑨">RangeError</a></code> exception.</p>
      <li data-md>
-      <p>Set the current agent’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②⓪">associated store</a> to <var>store</var>.</p>
+      <p>Set the current agent’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②①">associated store</a> to <var>store</var>.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="valueOf()" data-algorithm-for="Global">
@@ -1962,12 +2112,12 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
    <h3 class="heading settled" data-level="4.6" id="exported-function-exotic-objects"><span class="secno">4.6. </span><span class="content">Exported Functions</span><a class="self-link" href="#exported-function-exotic-objects"></a></h3>
    <p>A WebAssembly function is made available in JavaScript as an <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="exported-function">Exported Function</dfn>.
 Exported Functions are <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-built-in-function-objects" id="ref-for-sec-built-in-function-objects">Built-in Function Objects</a> which are not constructors, and which have a [[FunctionAddress]] internal slot.
-This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-funcaddr" id="ref-for-syntax-funcaddr①">function address</a> relative to the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②③">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②①">associated store</a>.</p>
+This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-funcaddr" id="ref-for-syntax-funcaddr①">function address</a> relative to the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②⑤">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②②">associated store</a>.</p>
    <div class="algorithm" data-algorithm="name of the WebAssembly function">
      The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="name-of-the-webassembly-function">name of the WebAssembly function</dfn> <var>funcaddr</var> is found by performing the following steps: 
     <ol>
      <li data-md>
-      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②④">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②②">associated store</a>.</p>
+      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②⑥">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②③">associated store</a>.</p>
      <li data-md>
       <p>Let <var>funcinst</var> be <var>store</var>.funcs[<var>funcaddr</var>].</p>
      <li data-md>
@@ -1989,14 +2139,14 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
         <p>Let <var>index</var> be the index of <var>moduleinst</var>.funcaddrs where <var>funcaddr</var> is found.</p>
       </ol>
      <li data-md>
-      <p>Return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑨">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tostring" id="ref-for-sec-tostring">ToString</a>(<var>index</var>).</p>
+      <p>Return <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①①">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tostring" id="ref-for-sec-tostring">ToString</a>(<var>index</var>).</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="a new Exported Function">
      To create <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="a-new-exported-function">a new Exported Function</dfn> from a WebAssembly <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-funcaddr" id="ref-for-syntax-funcaddr②">function address</a> <var>funcaddr</var>, perform the following steps: 
     <ol>
      <li data-md>
-      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②⑤">surrounding agent</a>'s associated <a data-link-type="dfn" href="#exported-function-cache" id="ref-for-exported-function-cache">Exported Function cache</a>.</p>
+      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②⑦">surrounding agent</a>'s associated <a data-link-type="dfn" href="#exported-function-cache" id="ref-for-exported-function-cache">Exported Function cache</a>.</p>
      <li data-md>
       <p>If <var>map</var>[<var>funcaddr</var>] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑨">exists</a>,</p>
       <ol>
@@ -2008,7 +2158,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md>
       <p>Let <var>realm</var> be the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm">current Realm</a>.</p>
      <li data-md>
-      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②⑥">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②③">associated store</a>.</p>
+      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②⑧">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②④">associated store</a>.</p>
      <li data-md>
       <p>Let <var>functype</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-func-type" id="ref-for-embed-func-type">func_type</a>(<var>store</var>, <var>funcaddr</var>).</p>
      <li data-md>
@@ -2018,7 +2168,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md>
       <p>Let <var>name</var> be the <a data-link-type="dfn" href="#name-of-the-webassembly-function" id="ref-for-name-of-the-webassembly-function">name of the WebAssembly function</a> <var>funcaddr</var>.</p>
      <li data-md>
-      <p>Let <var>function</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⓪">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-createbuiltinfunction" id="ref-for-sec-createbuiltinfunction">CreateBuiltinFunction</a>(<var>steps</var>, <var>arity</var>, <var>name</var>, « [[FunctionAddress]] », <var>realm</var>).</p>
+      <p>Let <var>function</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①②">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-createbuiltinfunction" id="ref-for-sec-createbuiltinfunction">CreateBuiltinFunction</a>(<var>steps</var>, <var>arity</var>, <var>name</var>, « [[FunctionAddress]] », <var>realm</var>).</p>
      <li data-md>
       <p>Set <var>function</var>.[[FunctionAddress]] to <var>funcaddr</var>.</p>
      <li data-md>
@@ -2031,7 +2181,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="call-an-exported-function">call an Exported Function</dfn> with <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-funcaddr" id="ref-for-syntax-funcaddr③">function address</a> <var>funcaddr</var> and a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①">list</a> of JavaScript arguments <var>argValues</var>, perform the following steps: 
     <ol>
      <li data-md>
-      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②⑦">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②④">associated store</a>.</p>
+      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②⑨">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②⑤">associated store</a>.</p>
      <li data-md>
       <p>Let <var>functype</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-func-type" id="ref-for-embed-func-type①">func_type</a>(<var>store</var>, <var>funcaddr</var>).</p>
      <li data-md>
@@ -2058,7 +2208,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md>
       <p>Let (<var>store</var>, <var>ret</var>) be the result of <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-func-invoke" id="ref-for-embed-func-invoke">func_invoke</a>(<var>store</var>, <var>funcaddr</var>, <var>args</var>).</p>
      <li data-md>
-      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②⑧">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②⑤">associated store</a> to <var>store</var>.</p>
+      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent③⓪">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②⑥">associated store</a> to <var>store</var>.</p>
      <li data-md>
       <p>If <var>ret</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error①④">error</a>, throw an exception. This exception should be a WebAssembly <code class="idl"><a data-link-type="idl" href="#exceptiondef-runtimeerror" id="ref-for-exceptiondef-runtimeerror①">RuntimeError</a></code> exception, unless otherwise indicated by <a href="#errors">the WebAssembly error mapping</a>.</p>
      <li data-md>
@@ -2098,25 +2248,25 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑦">For each</a> <var>arg</var> of <var>arguments</var>,</p>
       <ol>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append⑨">Append</a> <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①①">!</a> <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue④">ToJSValue</a>(<var>arg</var>) to <var>jsArguments</var>.</p>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append⑨">Append</a> <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①③">!</a> <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue④">ToJSValue</a>(<var>arg</var>) to <var>jsArguments</var>.</p>
       </ol>
      <li data-md>
-      <p>Let <var>ret</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①②">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-call" id="ref-for-sec-call">Call</a>(<var>func</var>, undefined, <var>jsArguments</var>).</p>
+      <p>Let <var>ret</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①④">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-call" id="ref-for-sec-call">Call</a>(<var>func</var>, undefined, <var>jsArguments</var>).</p>
      <li data-md>
       <p>Let <var>resultsSize</var> be <var>results</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size③">size</a>.</p>
      <li data-md>
       <p>If <var>resultsSize</var> is 0, return « ».</p>
      <li data-md>
-      <p>Otherwise, if <var>resultsSize</var> is 1, return « <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①③">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue⑧">ToWebAssemblyValue</a>(<var>ret</var>, <var>results</var>[0]) ».</p>
+      <p>Otherwise, if <var>resultsSize</var> is 1, return « <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑤">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue⑧">ToWebAssemblyValue</a>(<var>ret</var>, <var>results</var>[0]) ».</p>
      <li data-md>
       <p>Otherwise,</p>
       <ol>
        <li data-md>
-        <p>Let <var>method</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①④">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-getmethod" id="ref-for-sec-getmethod">GetMethod</a>(<var>ret</var>, <code class="idl"><a data-link-type="idl" href="https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-well-known-symbols" id="ref-for-sec-well-known-symbols">@@iterator</a></code>).</p>
+        <p>Let <var>method</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑥">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-getmethod" id="ref-for-sec-getmethod">GetMethod</a>(<var>ret</var>, <code class="idl"><a data-link-type="idl" href="https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-well-known-symbols" id="ref-for-sec-well-known-symbols">@@iterator</a></code>).</p>
        <li data-md>
         <p>If <var>method</var> is undefined, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-throw" id="ref-for-dfn-throw①">throw</a> a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑨">TypeError</a></code>.</p>
        <li data-md>
-        <p>Let <var>values</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑤">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-iteratortolist" id="ref-for-sec-iteratortolist">IteratorToList</a>(<a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑥">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-getiteratorfrommethod" id="ref-for-sec-getiteratorfrommethod">GetIteratorFromMethod</a>(<var>ret</var>, <var>method</var>)).</p>
+        <p>Let <var>values</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑦">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-iteratortolist" id="ref-for-sec-iteratortolist">IteratorToList</a>(<a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑧">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-getiteratorfrommethod" id="ref-for-sec-getiteratorfrommethod">GetIteratorFromMethod</a>(<var>ret</var>, <var>method</var>)).</p>
        <li data-md>
         <p>Let <var>wasmValues</var> be a new, empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list③">list</a>.</p>
        <li data-md>
@@ -2164,11 +2314,11 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
         <p>Otherwise, return <var>result</var>.[[Value]].</p>
       </ol>
      <li data-md>
-      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent②⑨">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②⑥">associated store</a>.</p>
+      <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent③①">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②⑦">associated store</a>.</p>
      <li data-md>
       <p>Let (<var>store</var>, <var>funcaddr</var>) be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-func-alloc" id="ref-for-embed-func-alloc">func_alloc</a>(<var>store</var>, <var>functype</var>, <var>hostfunc</var>).</p>
      <li data-md>
-      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent③⓪">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②⑦">associated store</a> to <var>store</var>.</p>
+      <p>Set the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent③②">surrounding agent</a>'s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store②⑧">associated store</a> to <var>store</var>.</p>
      <li data-md>
       <p>Return <var>funcaddr</var>.</p>
     </ol>
@@ -2221,7 +2371,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
     <p>For <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="retrieving-an-extern-value">retrieving an extern value</dfn> from an <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externaddr" id="ref-for-syntax-externaddr①">extern address</a> <var>externaddr</var>, perform the following steps:</p>
     <ol>
      <li data-md>
-      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent③①">surrounding agent</a>'s associated <a data-link-type="dfn" href="#extern-value-cache" id="ref-for-extern-value-cache">extern value cache</a>.</p>
+      <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent③③">surrounding agent</a>'s associated <a data-link-type="dfn" href="#extern-value-cache" id="ref-for-extern-value-cache">extern value cache</a>.</p>
      <li data-md>
       <p class="assertion">Assert: <var>map</var>[<var>externaddr</var>] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①⓪">exists</a>.</p>
      <li data-md>
@@ -2237,7 +2387,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
       <p>If <var>type</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype①⓪">i64</a>,</p>
       <ol>
        <li data-md>
-        <p>Let <var>i64</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑦">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tobigint64" id="ref-for-sec-tobigint64">ToBigInt64</a>(<var>v</var>).</p>
+        <p>Let <var>i64</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑨">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tobigint64" id="ref-for-sec-tobigint64">ToBigInt64</a>(<var>v</var>).</p>
        <li data-md>
         <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①⑦">i64.const</a> <var>i64</var>.</p>
       </ol>
@@ -2245,7 +2395,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
       <p>If <var>type</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype①①">i32</a>,</p>
       <ol>
        <li data-md>
-        <p>Let <var>i32</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑧">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-toint32" id="ref-for-sec-toint32">ToInt32</a>(<var>v</var>).</p>
+        <p>Let <var>i32</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②⓪">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-toint32" id="ref-for-sec-toint32">ToInt32</a>(<var>v</var>).</p>
        <li data-md>
         <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values①⑧">i32.const</a> <var>i32</var>.</p>
       </ol>
@@ -2253,7 +2403,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
       <p>If <var>type</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype①②">f32</a>,</p>
       <ol>
        <li data-md>
-        <p>Let <var>number</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑨">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tonumber" id="ref-for-sec-tonumber">ToNumber</a>(<var>v</var>).</p>
+        <p>Let <var>number</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②①">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tonumber" id="ref-for-sec-tonumber">ToNumber</a>(<var>v</var>).</p>
        <li data-md>
         <p>If <var>number</var> is <strong>NaN</strong>,</p>
         <ol>
@@ -2275,7 +2425,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
       <p>If <var>type</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype①③">f64</a>,</p>
       <ol>
        <li data-md>
-        <p>Let <var>number</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②⓪">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tonumber" id="ref-for-sec-tonumber①">ToNumber</a>(<var>v</var>).</p>
+        <p>Let <var>number</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②②">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tonumber" id="ref-for-sec-tonumber①">ToNumber</a>(<var>v</var>).</p>
        <li data-md>
         <p>If <var>number</var> is <strong>NaN</strong>,</p>
         <ol>
@@ -2323,7 +2473,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
           <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②③">ref.null</a> <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype⑨">externref</a>.</p>
         </ol>
        <li data-md>
-        <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent③②">surrounding agent</a>'s associated <a data-link-type="dfn" href="#extern-value-cache" id="ref-for-extern-value-cache①">extern value cache</a>.</p>
+        <p>Let <var>map</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent③④">surrounding agent</a>'s associated <a data-link-type="dfn" href="#extern-value-cache" id="ref-for-extern-value-cache①">extern value cache</a>.</p>
        <li data-md>
         <p>If a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externaddr" id="ref-for-syntax-externaddr②">extern address</a> <var>externaddr</var> exists such that <var>map</var>[<var>externaddr</var>] is the same as <var>v</var>,</p>
         <ol>
@@ -2354,12 +2504,12 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
        <li data-md>
         <p>Let <var>constructor</var> be a new object, implementing the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-nativeerror-object-structure" id="ref-for-sec-nativeerror-object-structure">NativeError Object Structure</a>, with <var>NativeError</var> set to <var>error</var>.</p>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②①">!</a> <a data-link-type="abstract-op">CreateMethodProperty</a>(<var>namespaceObject</var>, <var>error</var>, <var>constructor</var>).</p>
+        <p><a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②③">!</a> <a data-link-type="abstract-op">CreateMethodProperty</a>(<var>namespaceObject</var>, <var>error</var>, <var>constructor</var>).</p>
       </ol>
     </ol>
    </div>
    <p class="note" role="note"><span class="marker">Note:</span> This defines <code class="idl"><a data-link-type="idl" href="#exceptiondef-compileerror" id="ref-for-exceptiondef-compileerror②">CompileError</a></code>, <code class="idl"><a data-link-type="idl" href="#exceptiondef-linkerror" id="ref-for-exceptiondef-linkerror⑧">LinkError</a></code>, and <code class="idl"><a data-link-type="idl" href="#exceptiondef-runtimeerror" id="ref-for-exceptiondef-runtimeerror②">RuntimeError</a></code> classes on the <code class="idl"><a data-link-type="idl" href="#namespacedef-webassembly" id="ref-for-namespacedef-webassembly⑥">WebAssembly</a></code> namespace, which are produced by the APIs defined in this specification.
-They expose the same interface as native JavaScript errors like <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror①②">TypeError</a></code> and <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑧">RangeError</a></code>.</p>
+They expose the same interface as native JavaScript errors like <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror①②">TypeError</a></code> and <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror①⓪">RangeError</a></code>.</p>
    <p class="note" role="note"><span class="marker">Note:</span> It is not currently possible to define this behavior using Web IDL.</p>
    <h2 class="heading settled" data-level="5" id="errors"><span class="secno">5. </span><span class="content">Error Condition Mappings to JavaScript</span><a class="self-link" href="#errors"></a></h2>
    <p>Running WebAssembly programs encounter certain events which halt execution of the WebAssembly code.
@@ -2377,7 +2527,7 @@ general, prevent future execution.</p>
    <p>Whenever a stack overflow occurs in
 WebAssembly code, the same class of exception is thrown as for a stack overflow in
 JavaScript. The particular exception here is implementation-defined in both cases.</p>
-   <p class="note" role="note"><span class="marker">Note:</span> ECMAScript doesn’t specify any sort of behavior on stack overflow; implementations have been observed to throw <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑨">RangeError</a></code>, InternalError or Error. Any is valid here.</p>
+   <p class="note" role="note"><span class="marker">Note:</span> ECMAScript doesn’t specify any sort of behavior on stack overflow; implementations have been observed to throw <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror①①">RangeError</a></code>, InternalError or Error. Any is valid here.</p>
    <h3 class="heading settled" data-level="5.2" id="out-of-memory"><span class="secno">5.2. </span><span class="content">Out of Memory</span><a class="self-link" href="#out-of-memory"></a></h3>
    <p>Whenever validation, compilation or instantiation run out of memory, the
 same class of exception is thrown as for out of memory conditions in JavaScript.
@@ -2387,7 +2537,7 @@ The particular exception here is implementation-defined in both cases.</p>
     <a class="self-link" href="#issue-7eafcf54"></a> A failed allocation of a large table or memory may either result in 
     <ul>
      <li data-md>
-      <p>a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror①⓪">RangeError</a></code>, as specified in the <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory⑦">Memory</a></code> <code class="idl"><a data-link-type="idl" href="#dom-memory-grow" id="ref-for-dom-memory-grow①">grow()</a></code> and <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table⑥">Table</a></code> <code class="idl"><a data-link-type="idl" href="#dom-table-grow" id="ref-for-dom-table-grow①">grow()</a></code> operations</p>
+      <p>a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror①②">RangeError</a></code>, as specified in the <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory⑧">Memory</a></code> <code class="idl"><a data-link-type="idl" href="#dom-memory-grow" id="ref-for-dom-memory-grow①">grow()</a></code> and <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table⑥">Table</a></code> <code class="idl"><a data-link-type="idl" href="#dom-table-grow" id="ref-for-dom-table-grow①">grow()</a></code> operations</p>
      <li data-md>
       <p>returning -1 as the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/instructions.html#exec-memory-grow" id="ref-for-exec-memory-grow①">memory.grow</a> instruction</p>
      <li data-md>
@@ -2475,6 +2625,7 @@ In practice, an implementation may run out of resources for valid modules below 
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
   <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
+   <li><a href="#abstract-operation-hostresizearraybuffer">abstract operation HostResizeArrayBuffer</a><span>, in § 4.3</span>
    <li><a href="#a-new-exported-function">a new Exported Function</a><span>, in § 4.6</span>
    <li>
     "anyfunc"
@@ -2503,11 +2654,12 @@ In practice, an implementation may run out of resources for valid modules below 
    <li><a href="#dom-table-table">constructor(descriptor, value)</a><span>, in § 4.4</span>
    <li><a href="#dom-instance-instance">constructor(module)</a><span>, in § 4.2</span>
    <li><a href="#dom-instance-instance">constructor(module, importObject)</a><span>, in § 4.2</span>
+   <li><a href="#create-a-fixed-length-memory-buffer">create a fixed length memory buffer</a><span>, in § 4.3</span>
    <li><a href="#create-a-global-object">create a global object</a><span>, in § 4.5</span>
    <li><a href="#create-a-host-function">create a host function</a><span>, in § 4.6</span>
-   <li><a href="#create-a-memory-buffer">create a memory buffer</a><span>, in § 4.3</span>
    <li><a href="#create-a-memory-object">create a memory object</a><span>, in § 4.3</span>
    <li><a href="#create-an-exports-object">create an exports object</a><span>, in § 4</span>
+   <li><a href="#create-a-resizable-memory-buffer">create a resizable memory buffer</a><span>, in § 4.3</span>
    <li><a href="#create-a-table-object">create a table object</a><span>, in § 4.4</span>
    <li><a href="#dom-module-customsections">customSections(moduleObject, sectionName)</a><span>, in § 4.1</span>
    <li><a href="#defaultvalue">DefaultValue</a><span>, in § 4.5</span>
@@ -2541,6 +2693,7 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><a href="#dom-table-grow">method for Table</a><span>, in § 4.4</span>
     </ul>
    <li><a href="#dom-table-grow">grow(delta, value)</a><span>, in § 4.4</span>
+   <li><a href="#grow-the-memory-buffer">grow the memory buffer</a><span>, in § 4.3</span>
    <li><a href="#dom-valuetype-i32">"i32"</a><span>, in § 4.5</span>
    <li><a href="#dom-valuetype-i64">"i64"</a><span>, in § 4.5</span>
    <li><a href="#identified-with">identified with</a><span>, in § 3.1</span>
@@ -2605,7 +2758,7 @@ In practice, an implementation may run out of resources for valid modules below 
     </ul>
    <li><a href="#name-of-the-webassembly-function">name of the WebAssembly function</a><span>, in § 4.6</span>
    <li><a href="#read-the-imports">read the imports</a><span>, in § 4</span>
-   <li><a href="#reset-the-memory-buffer">reset the Memory buffer</a><span>, in § 4.3</span>
+   <li><a href="#refresh-the-memory-buffer">refresh the Memory buffer</a><span>, in § 4.3</span>
    <li><a href="#retrieving-an-extern-value">retrieving an extern value</a><span>, in § 4.6</span>
    <li><a href="#run-a-host-function">run a host function</a><span>, in § 4.6</span>
    <li><a href="#exceptiondef-runtimeerror">RuntimeError</a><span>, in § 4.7</span>
@@ -2619,7 +2772,9 @@ In practice, an implementation may run out of resources for valid modules below 
    <li><a href="#dom-table-table">Table(descriptor, value)</a><span>, in § 4.4</span>
    <li><a href="#enumdef-tablekind">TableKind</a><span>, in § 4.4</span>
    <li><a href="#table-object-cache">Table object cache</a><span>, in § 3.2</span>
+   <li><a href="#dom-memory-tofixedlengthbuffer">toFixedLengthBuffer()</a><span>, in § 4.3</span>
    <li><a href="#tojsvalue">ToJSValue</a><span>, in § 4.6</span>
+   <li><a href="#dom-memory-toresizablebuffer">toResizableBuffer()</a><span>, in § 4.3</span>
    <li><a href="#tovaluetype">ToValueType</a><span>, in § 4.5</span>
    <li><a href="#towebassemblyvalue">ToWebAssemblyValue</a><span>, in § 4.6</span>
    <li><a href="#dom-valuetype-v128">"v128"</a><span>, in § 4.5</span>
@@ -2669,6 +2824,7 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="b107f911">current realm</span>
      <li><span class="dfn-paneled" id="eca66c99">data block</span>
      <li><span class="dfn-paneled" id="f9dbc1a8">nativeerror object structure</span>
+     <li><span class="dfn-paneled" id="01d93e6a">samevalue</span>
      <li><span class="dfn-paneled" id="4ad913ae">surrounding agent</span>
      <li><span class="dfn-paneled" id="c4df1374">type</span>
      <li><span class="dfn-paneled" id="8b2a5c87">ℤ</span>
@@ -2698,11 +2854,18 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="53275e46">append</span>
      <li><span class="dfn-paneled" id="1243a891">exist</span>
      <li><span class="dfn-paneled" id="6b815fdd">is empty</span>
-     <li><span class="dfn-paneled" id="f02cd417">iterate</span>
+     <li><span class="dfn-paneled" id="f02cd417">iterate <small>(for list)</small></span>
+     <li><span class="dfn-paneled" id="efe8653e">iterate <small>(for map)</small></span>
      <li><span class="dfn-paneled" id="649608b9">list</span>
      <li><span class="dfn-paneled" id="84b454ff">ordered map</span>
      <li><span class="dfn-paneled" id="0e6b2056">set</span>
      <li><span class="dfn-paneled" id="0204d188">size</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[RESIZABLEARRAYBUFFER PROPOSAL]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="5f3abfd0">hostresizearraybuffer</span>
+     <li><span class="dfn-paneled" id="3ed14caf">isfixedlengtharraybuffer</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WEBASSEMBLY]</a> defines the following terms:
@@ -2747,6 +2910,7 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="aaa7a4ae">mem_alloc</span>
      <li><span class="dfn-paneled" id="84eac0df">mem_grow</span>
      <li><span class="dfn-paneled" id="161ae644">mem_size</span>
+     <li><span class="dfn-paneled" id="a93d50a7">mem_type</span>
      <li><span class="dfn-paneled" id="f06ddd8a">memaddrs</span>
      <li><span class="dfn-paneled" id="fbc61d3f">memory address</span>
      <li><span class="dfn-paneled" id="746f6bc3">memory instance</span>
@@ -2760,6 +2924,7 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="baaf40e3">module_instantiate</span>
      <li><span class="dfn-paneled" id="f3aaa883">module_validate</span>
      <li><span class="dfn-paneled" id="8047ff82">nan</span>
+     <li><span class="dfn-paneled" id="dce4d017">page size</span>
      <li><span class="dfn-paneled" id="339ed507">ref.extern</span>
      <li><span class="dfn-paneled" id="cdfd15a5">ref.func</span>
      <li><span class="dfn-paneled" id="c3871e59">ref.null</span>
@@ -2900,6 +3065,8 @@ In practice, an implementation may run out of resources for valid modules below 
 <c- b>interface</c-> <a href="#memory"><code><c- g>Memory</c-></code></a> {
   <a class="idl-code" data-link-type="constructor" href="#dom-memory-memory"><c- g>constructor</c-></a>(<a data-link-type="idl-name" href="#dictdef-memorydescriptor"><c- n>MemoryDescriptor</c-></a> <a href="#dom-memory-memory-descriptor-descriptor"><code><c- g>descriptor</c-></code></a>);
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long"><c- b>unsigned</c-> <c- b>long</c-></a> <a class="idl-code" data-link-type="method" href="#dom-memory-grow"><c- g>grow</c-></a>([<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#EnforceRange"><c- g>EnforceRange</c-></a>] <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long"><c- b>unsigned</c-> <c- b>long</c-></a> <a href="#dom-memory-grow-delta-delta"><code><c- g>delta</c-></code></a>);
+  <a class="idl-code" data-link-type="interface" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects"><c- b>ArrayBuffer</c-></a> <a class="idl-code" data-link-type="method" href="#dom-memory-tofixedlengthbuffer"><c- g>toFixedLengthBuffer</c-></a>();
+  <a class="idl-code" data-link-type="interface" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects"><c- b>ArrayBuffer</c-></a> <a class="idl-code" data-link-type="method" href="#dom-memory-toresizablebuffer"><c- g>toResizableBuffer</c-></a>();
   <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects"><c- b>ArrayBuffer</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="ArrayBuffer" href="#dom-memory-buffer"><c- g>buffer</c-></a>;
 };
 
@@ -3167,6 +3334,7 @@ function parseHTML(markup) {
 let dfnPanelData = {
 "0108e6a0": {"dfnID":"0108e6a0","dfnText":"i32","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-numtype"},{"id":"ref-for-syntax-numtype\u2460"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-syntax-numtype\u2461"},{"id":"ref-for-syntax-numtype\u2462"},{"id":"ref-for-syntax-numtype\u2463"},{"id":"ref-for-syntax-numtype\u2464"},{"id":"ref-for-syntax-numtype\u2465"},{"id":"ref-for-syntax-numtype\u2466"},{"id":"ref-for-syntax-numtype\u2467"},{"id":"ref-for-syntax-numtype\u2468"}],"title":"4.5. Globals"},{"refs":[{"id":"ref-for-syntax-numtype\u2460\u24ea"},{"id":"ref-for-syntax-numtype\u2460\u2460"},{"id":"ref-for-syntax-numtype\u2460\u2461"},{"id":"ref-for-syntax-numtype\u2460\u2462"}],"title":"4.6. Exported Functions"}],"url":"https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype"},
 "019e7aeb": {"dfnID":"019e7aeb","dfnText":"signif","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-float"},{"id":"ref-for-syntax-float\u2460"},{"id":"ref-for-syntax-float\u2461"},{"id":"ref-for-syntax-float\u2462"},{"id":"ref-for-syntax-float\u2463"},{"id":"ref-for-syntax-float\u2464"},{"id":"ref-for-syntax-float\u2465"},{"id":"ref-for-syntax-float\u2466"},{"id":"ref-for-syntax-float\u2467"},{"id":"ref-for-syntax-float\u2468"},{"id":"ref-for-syntax-float\u2460\u24ea"},{"id":"ref-for-syntax-float\u2460\u2460"}],"title":"4.6. Exported Functions"}],"url":"https://webassembly.github.io/spec/core/syntax/values.html#syntax-float"},
+"01d93e6a": {"dfnID":"01d93e6a","dfnText":"samevalue","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-samevalue"}],"title":"4.3. Memories"}],"url":"https://tc39.github.io/ecma262/#sec-samevalue"},
 "0204d188": {"dfnID":"0204d188","dfnText":"size","external":true,"refSections":[{"refs":[{"id":"ref-for-list-size"},{"id":"ref-for-list-size\u2460"},{"id":"ref-for-list-size\u2461"},{"id":"ref-for-list-size\u2462"},{"id":"ref-for-list-size\u2463"}],"title":"4.6. Exported Functions"}],"url":"https://infra.spec.whatwg.org/#list-size"},
 "048283eb": {"dfnID":"048283eb","dfnText":"address","external":true,"refSections":[{"refs":[{"id":"ref-for-addresses"}],"title":"3.2. WebAssembly JS Object Caches"}],"url":"https://webassembly.github.io/spec/core/exec/runtime.html#addresses"},
 "0656fbb6": {"dfnID":"0656fbb6","dfnText":"+\u221e","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-float"},{"id":"ref-for-syntax-float\u2460"},{"id":"ref-for-syntax-float\u2461"},{"id":"ref-for-syntax-float\u2462"},{"id":"ref-for-syntax-float\u2463"},{"id":"ref-for-syntax-float\u2464"},{"id":"ref-for-syntax-float\u2465"},{"id":"ref-for-syntax-float\u2466"},{"id":"ref-for-syntax-float\u2467"},{"id":"ref-for-syntax-float\u2468"},{"id":"ref-for-syntax-float\u2460\u24ea"},{"id":"ref-for-syntax-float\u2460\u2460"}],"title":"4.6. Exported Functions"}],"url":"https://webassembly.github.io/spec/core/syntax/values.html#syntax-float"},
@@ -3198,12 +3366,13 @@ let dfnPanelData = {
 "3b90bdcd": {"dfnID":"3b90bdcd","dfnText":"resolve","external":true,"refSections":[{"refs":[{"id":"ref-for-resolve"},{"id":"ref-for-resolve\u2460"},{"id":"ref-for-resolve\u2461"}],"title":"4. The WebAssembly Namespace"}],"url":"https://webidl.spec.whatwg.org/#resolve"},
 "3c380f81": {"dfnID":"3c380f81","dfnText":"module_decode","external":true,"refSections":[{"refs":[{"id":"ref-for-embed-module-decode"}],"title":"4. The WebAssembly Namespace"}],"url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-decode"},
 "3e180d35": {"dfnID":"3e180d35","dfnText":"associated realm","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-associated-realm"}],"title":"4.6. Exported Functions"}],"url":"https://webidl.spec.whatwg.org/#dfn-associated-realm"},
+"3ed14caf": {"dfnID":"3ed14caf","dfnText":"isfixedlengtharraybuffer","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-isfixedarraybuffer"},{"id":"ref-for-sec-isfixedarraybuffer\u2460"},{"id":"ref-for-sec-isfixedarraybuffer\u2461"}],"title":"4.3. Memories"}],"url":"https://tc39.es/proposal-resizablearraybuffer/#sec-isfixedarraybuffer"},
 "41c521da": {"dfnID":"41c521da","dfnText":"host function","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-hostfunc"}],"title":"4.6. Exported Functions"}],"url":"https://webassembly.github.io/spec/core/exec/runtime.html#syntax-hostfunc"},
-"43564950": {"dfnID":"43564950","dfnText":"RangeError","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-native-error-types-used-in-this-standard-rangeerror"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-rangeerror\u2460"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-rangeerror\u2461"}],"title":"4.3. Memories"},{"refs":[{"id":"ref-for-sec-native-error-types-used-in-this-standard-rangeerror\u2462"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-rangeerror\u2463"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-rangeerror\u2464"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-rangeerror\u2465"}],"title":"4.4. Tables"},{"refs":[{"id":"ref-for-sec-native-error-types-used-in-this-standard-rangeerror\u2466"}],"title":"4.5. Globals"},{"refs":[{"id":"ref-for-sec-native-error-types-used-in-this-standard-rangeerror\u2467"}],"title":"4.7. Error Objects"},{"refs":[{"id":"ref-for-sec-native-error-types-used-in-this-standard-rangeerror\u2468"}],"title":"5.1. Stack Overflow"},{"refs":[{"id":"ref-for-sec-native-error-types-used-in-this-standard-rangeerror\u2460\u24ea"}],"title":"5.2. Out of Memory"}],"url":"https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror"},
+"43564950": {"dfnID":"43564950","dfnText":"RangeError","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-native-error-types-used-in-this-standard-rangeerror"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-rangeerror\u2460"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-rangeerror\u2461"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-rangeerror\u2462"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-rangeerror\u2463"}],"title":"4.3. Memories"},{"refs":[{"id":"ref-for-sec-native-error-types-used-in-this-standard-rangeerror\u2464"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-rangeerror\u2465"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-rangeerror\u2466"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-rangeerror\u2467"}],"title":"4.4. Tables"},{"refs":[{"id":"ref-for-sec-native-error-types-used-in-this-standard-rangeerror\u2468"}],"title":"4.5. Globals"},{"refs":[{"id":"ref-for-sec-native-error-types-used-in-this-standard-rangeerror\u2460\u24ea"}],"title":"4.7. Error Objects"},{"refs":[{"id":"ref-for-sec-native-error-types-used-in-this-standard-rangeerror\u2460\u2460"}],"title":"5.1. Stack Overflow"},{"refs":[{"id":"ref-for-sec-native-error-types-used-in-this-standard-rangeerror\u2460\u2461"}],"title":"5.2. Out of Memory"}],"url":"https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror"},
 "43b980ff": {"dfnID":"43b980ff","dfnText":"valid","external":true,"refSections":[{"refs":[{"id":"ref-for-valid-module"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-valid-module\u2460"}],"title":"4.1. Modules"}],"url":"https://webassembly.github.io/spec/core/valid/modules.html#valid-module"},
 "486e6f39": {"dfnID":"486e6f39","dfnText":"func","external":true,"refSections":[{"refs":[{"id":"ref-for-external-types"},{"id":"ref-for-external-types\u2460"},{"id":"ref-for-external-types\u2461"},{"id":"ref-for-external-types\u2462"},{"id":"ref-for-external-types\u2463"},{"id":"ref-for-external-types\u2464"},{"id":"ref-for-external-types\u2465"},{"id":"ref-for-external-types\u2466"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-external-types\u2467"},{"id":"ref-for-external-types\u2468"},{"id":"ref-for-external-types\u2460\u24ea"},{"id":"ref-for-external-types\u2460\u2460"}],"title":"4.1. Modules"}],"url":"https://webassembly.github.io/spec/core/syntax/types.html#external-types"},
 "4a854a91": {"dfnID":"4a854a91","dfnText":"ToString","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-tostring"}],"title":"4.6. Exported Functions"}],"url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tostring"},
-"4ad913ae": {"dfnID":"4ad913ae","dfnText":"surrounding agent","external":true,"refSections":[{"refs":[{"id":"ref-for-surrounding-agent"},{"id":"ref-for-surrounding-agent\u2460"},{"id":"ref-for-surrounding-agent\u2461"},{"id":"ref-for-surrounding-agent\u2462"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-surrounding-agent\u2463"},{"id":"ref-for-surrounding-agent\u2464"},{"id":"ref-for-surrounding-agent\u2465"},{"id":"ref-for-surrounding-agent\u2466"},{"id":"ref-for-surrounding-agent\u2467"},{"id":"ref-for-surrounding-agent\u2468"},{"id":"ref-for-surrounding-agent\u2460\u24ea"}],"title":"4.3. Memories"},{"refs":[{"id":"ref-for-surrounding-agent\u2460\u2460"},{"id":"ref-for-surrounding-agent\u2460\u2461"},{"id":"ref-for-surrounding-agent\u2460\u2462"},{"id":"ref-for-surrounding-agent\u2460\u2463"},{"id":"ref-for-surrounding-agent\u2460\u2464"},{"id":"ref-for-surrounding-agent\u2460\u2465"},{"id":"ref-for-surrounding-agent\u2460\u2466"},{"id":"ref-for-surrounding-agent\u2460\u2467"},{"id":"ref-for-surrounding-agent\u2460\u2468"},{"id":"ref-for-surrounding-agent\u2461\u24ea"}],"title":"4.4. Tables"},{"refs":[{"id":"ref-for-surrounding-agent\u2461\u2460"},{"id":"ref-for-surrounding-agent\u2461\u2461"}],"title":"4.5. Globals"},{"refs":[{"id":"ref-for-surrounding-agent\u2461\u2462"},{"id":"ref-for-surrounding-agent\u2461\u2463"},{"id":"ref-for-surrounding-agent\u2461\u2464"},{"id":"ref-for-surrounding-agent\u2461\u2465"},{"id":"ref-for-surrounding-agent\u2461\u2466"},{"id":"ref-for-surrounding-agent\u2461\u2467"},{"id":"ref-for-surrounding-agent\u2461\u2468"},{"id":"ref-for-surrounding-agent\u2462\u24ea"},{"id":"ref-for-surrounding-agent\u2462\u2460"},{"id":"ref-for-surrounding-agent\u2462\u2461"}],"title":"4.6. Exported Functions"}],"url":"https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent"},
+"4ad913ae": {"dfnID":"4ad913ae","dfnText":"surrounding agent","external":true,"refSections":[{"refs":[{"id":"ref-for-surrounding-agent"},{"id":"ref-for-surrounding-agent\u2460"},{"id":"ref-for-surrounding-agent\u2461"},{"id":"ref-for-surrounding-agent\u2462"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-surrounding-agent\u2463"},{"id":"ref-for-surrounding-agent\u2464"},{"id":"ref-for-surrounding-agent\u2465"},{"id":"ref-for-surrounding-agent\u2466"},{"id":"ref-for-surrounding-agent\u2467"},{"id":"ref-for-surrounding-agent\u2468"},{"id":"ref-for-surrounding-agent\u2460\u24ea"},{"id":"ref-for-surrounding-agent\u2460\u2460"},{"id":"ref-for-surrounding-agent\u2460\u2461"}],"title":"4.3. Memories"},{"refs":[{"id":"ref-for-surrounding-agent\u2460\u2462"},{"id":"ref-for-surrounding-agent\u2460\u2463"},{"id":"ref-for-surrounding-agent\u2460\u2464"},{"id":"ref-for-surrounding-agent\u2460\u2465"},{"id":"ref-for-surrounding-agent\u2460\u2466"},{"id":"ref-for-surrounding-agent\u2460\u2467"},{"id":"ref-for-surrounding-agent\u2460\u2468"},{"id":"ref-for-surrounding-agent\u2461\u24ea"},{"id":"ref-for-surrounding-agent\u2461\u2460"},{"id":"ref-for-surrounding-agent\u2461\u2461"}],"title":"4.4. Tables"},{"refs":[{"id":"ref-for-surrounding-agent\u2461\u2462"},{"id":"ref-for-surrounding-agent\u2461\u2463"}],"title":"4.5. Globals"},{"refs":[{"id":"ref-for-surrounding-agent\u2461\u2464"},{"id":"ref-for-surrounding-agent\u2461\u2465"},{"id":"ref-for-surrounding-agent\u2461\u2466"},{"id":"ref-for-surrounding-agent\u2461\u2467"},{"id":"ref-for-surrounding-agent\u2461\u2468"},{"id":"ref-for-surrounding-agent\u2462\u24ea"},{"id":"ref-for-surrounding-agent\u2462\u2460"},{"id":"ref-for-surrounding-agent\u2462\u2461"},{"id":"ref-for-surrounding-agent\u2462\u2462"},{"id":"ref-for-surrounding-agent\u2462\u2463"}],"title":"4.6. Exported Functions"}],"url":"https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent"},
 "4c6c6f05": {"dfnID":"4c6c6f05","dfnText":"CreateArrayFromList","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-createarrayfromlist"}],"title":"4.6. Exported Functions"}],"url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-createarrayfromlist"},
 "4fc7e98f": {"dfnID":"4fc7e98f","dfnText":"global","external":true,"refSections":[{"refs":[{"id":"ref-for-external-types"},{"id":"ref-for-external-types\u2460"},{"id":"ref-for-external-types\u2461"},{"id":"ref-for-external-types\u2462"},{"id":"ref-for-external-types\u2463"},{"id":"ref-for-external-types\u2464"},{"id":"ref-for-external-types\u2465"},{"id":"ref-for-external-types\u2466"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-external-types\u2467"},{"id":"ref-for-external-types\u2468"},{"id":"ref-for-external-types\u2460\u24ea"},{"id":"ref-for-external-types\u2460\u2460"}],"title":"4.1. Modules"}],"url":"https://webassembly.github.io/spec/core/syntax/types.html#external-types"},
 "53275e46": {"dfnID":"53275e46","dfnText":"append","external":true,"refSections":[{"refs":[{"id":"ref-for-list-append"},{"id":"ref-for-list-append\u2460"},{"id":"ref-for-list-append\u2461"},{"id":"ref-for-list-append\u2462"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-list-append\u2463"},{"id":"ref-for-list-append\u2464"},{"id":"ref-for-list-append\u2465"}],"title":"4.1. Modules"},{"refs":[{"id":"ref-for-list-append\u2466"},{"id":"ref-for-list-append\u2467"},{"id":"ref-for-list-append\u2468"},{"id":"ref-for-list-append\u2460\u24ea"}],"title":"4.6. Exported Functions"}],"url":"https://infra.spec.whatwg.org/#list-append"},
@@ -3211,6 +3380,7 @@ let dfnPanelData = {
 "56f81a8e": {"dfnID":"56f81a8e","dfnText":"new","external":true,"refSections":[{"refs":[{"id":"ref-for-new"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-new\u2460"}],"title":"4.3. Memories"},{"refs":[{"id":"ref-for-new\u2461"}],"title":"4.4. Tables"},{"refs":[{"id":"ref-for-new\u2462"}],"title":"4.5. Globals"}],"url":"https://webidl.spec.whatwg.org/#new"},
 "58788f9d": {"dfnID":"58788f9d","dfnText":"TypeError","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-native-error-types-used-in-this-standard-typeerror"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2460"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2461"}],"title":"4.4. Tables"},{"refs":[{"id":"ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2462"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2463"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2464"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2465"}],"title":"4.5. Globals"},{"refs":[{"id":"ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2466"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2467"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2468"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2460\u24ea"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2460\u2460"}],"title":"4.6. Exported Functions"},{"refs":[{"id":"ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2460\u2461"}],"title":"4.7. Error Objects"}],"url":"https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror"},
 "5b7339ce": {"dfnID":"5b7339ce","dfnText":"GetMethod","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-getmethod"}],"title":"4.6. Exported Functions"}],"url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-getmethod"},
+"5f3abfd0": {"dfnID":"5f3abfd0","dfnText":"hostresizearraybuffer","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-hostresizearraybuffer"},{"id":"ref-for-sec-hostresizearraybuffer\u2460"}],"title":"4.3. Memories"}],"url":"https://tc39.es/proposal-resizablearraybuffer/#sec-hostresizearraybuffer"},
 "5f90bbfb": {"dfnID":"5f90bbfb","dfnText":"undefined","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-undefined"}],"title":"4.4. Tables"}],"url":"https://webidl.spec.whatwg.org/#idl-undefined"},
 "60e61e1a": {"dfnID":"60e61e1a","dfnText":"namespace object","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-namespace-object"},{"id":"ref-for-dfn-namespace-object\u2460"}],"title":"4.7. Error Objects"}],"url":"https://webidl.spec.whatwg.org/#dfn-namespace-object"},
 "649608b9": {"dfnID":"649608b9","dfnText":"list","external":true,"refSections":[{"refs":[{"id":"ref-for-list"}],"title":"2. Notation"},{"refs":[{"id":"ref-for-list\u2460"},{"id":"ref-for-list\u2461"},{"id":"ref-for-list\u2462"}],"title":"4.6. Exported Functions"}],"url":"https://infra.spec.whatwg.org/#list"},
@@ -3256,12 +3426,14 @@ let dfnPanelData = {
 "a6ac3d87": {"dfnID":"a6ac3d87","dfnText":"i32.const","external":true,"refSections":[{"refs":[{"id":"ref-for-values"}],"title":"4.3. Memories"},{"refs":[{"id":"ref-for-values\u2460"},{"id":"ref-for-values\u2461"},{"id":"ref-for-values\u2462"},{"id":"ref-for-values\u2463"},{"id":"ref-for-values\u2464"}],"title":"4.5. Globals"},{"refs":[{"id":"ref-for-values\u2465"},{"id":"ref-for-values\u2466"},{"id":"ref-for-values\u2467"},{"id":"ref-for-values\u2468"},{"id":"ref-for-values\u2460\u24ea"},{"id":"ref-for-values\u2460\u2460"},{"id":"ref-for-values\u2460\u2461"},{"id":"ref-for-values\u2460\u2462"},{"id":"ref-for-values\u2460\u2463"},{"id":"ref-for-values\u2460\u2464"},{"id":"ref-for-values\u2460\u2465"},{"id":"ref-for-values\u2460\u2466"},{"id":"ref-for-values\u2460\u2467"},{"id":"ref-for-values\u2460\u2468"},{"id":"ref-for-values\u2461\u24ea"},{"id":"ref-for-values\u2461\u2460"},{"id":"ref-for-values\u2461\u2461"},{"id":"ref-for-values\u2461\u2462"},{"id":"ref-for-values\u2461\u2463"},{"id":"ref-for-values\u2461\u2464"}],"title":"4.6. Exported Functions"}],"url":"https://webassembly.github.io/spec/core/exec/runtime.html#values"},
 "a72449dd": {"dfnID":"a72449dd","dfnText":"in parallel","external":true,"refSections":[{"refs":[{"id":"ref-for-in-parallel"},{"id":"ref-for-in-parallel\u2460"}],"title":"4. The WebAssembly Namespace"}],"url":"https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel"},
 "a7321e13": {"dfnID":"a7321e13","dfnText":"const","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-mut"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-syntax-mut\u2460"},{"id":"ref-for-syntax-mut\u2461"},{"id":"ref-for-syntax-mut\u2462"}],"title":"4.5. Globals"}],"url":"https://webassembly.github.io/spec/core/syntax/types.html#syntax-mut"},
+"a93d50a7": {"dfnID":"a93d50a7","dfnText":"mem_type","external":true,"refSections":[{"refs":[{"id":"ref-for-embed-mem-type"}],"title":"4.3. Memories"}],"url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-mem-type"},
 "aaa7a4ae": {"dfnID":"aaa7a4ae","dfnText":"mem_alloc","external":true,"refSections":[{"refs":[{"id":"ref-for-embed-mem-alloc"}],"title":"4.3. Memories"}],"url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-mem-alloc"},
 "aab848f2": {"dfnID":"aab848f2","dfnText":"table_size","external":true,"refSections":[{"refs":[{"id":"ref-for-embed-table-size"},{"id":"ref-for-embed-table-size\u2460"}],"title":"4.4. Tables"}],"url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-table-size"},
 "ab79fc0f": {"dfnID":"ab79fc0f","dfnText":"table_type","external":true,"refSections":[{"refs":[{"id":"ref-for-embed-table-type"},{"id":"ref-for-embed-table-type\u2460"}],"title":"4.4. Tables"}],"url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-table-type"},
 "abf85593": {"dfnID":"abf85593","dfnText":"Get","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-get-o-p"},{"id":"ref-for-sec-get-o-p\u2460"}],"title":"4. The WebAssembly Namespace"}],"url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-get-o-p"},
+"abstract-operation-hostresizearraybuffer": {"dfnID":"abstract-operation-hostresizearraybuffer","dfnText":"abstract operation HostResizeArrayBuffer","external":false,"refSections":[],"url":"#abstract-operation-hostresizearraybuffer"},
 "ae59bd82": {"dfnID":"ae59bd82","dfnText":"store","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-store"}],"title":"3.1. Interaction of the WebAssembly Store with JavaScript"}],"url":"https://webassembly.github.io/spec/core/exec/runtime.html#syntax-store"},
-"associated-store": {"dfnID":"associated-store","dfnText":"associated store","external":false,"refSections":[{"refs":[{"id":"ref-for-associated-store"},{"id":"ref-for-associated-store\u2460"},{"id":"ref-for-associated-store\u2461"},{"id":"ref-for-associated-store\u2462"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-associated-store\u2463"},{"id":"ref-for-associated-store\u2464"},{"id":"ref-for-associated-store\u2465"},{"id":"ref-for-associated-store\u2466"}],"title":"4.3. Memories"},{"refs":[{"id":"ref-for-associated-store\u2467"},{"id":"ref-for-associated-store\u2468"},{"id":"ref-for-associated-store\u2460\u24ea"},{"id":"ref-for-associated-store\u2460\u2460"},{"id":"ref-for-associated-store\u2460\u2461"},{"id":"ref-for-associated-store\u2460\u2462"},{"id":"ref-for-associated-store\u2460\u2463"},{"id":"ref-for-associated-store\u2460\u2464"}],"title":"4.4. Tables"},{"refs":[{"id":"ref-for-associated-store\u2460\u2465"},{"id":"ref-for-associated-store\u2460\u2466"},{"id":"ref-for-associated-store\u2460\u2467"},{"id":"ref-for-associated-store\u2460\u2468"},{"id":"ref-for-associated-store\u2461\u24ea"}],"title":"4.5. Globals"},{"refs":[{"id":"ref-for-associated-store\u2461\u2460"},{"id":"ref-for-associated-store\u2461\u2461"},{"id":"ref-for-associated-store\u2461\u2462"},{"id":"ref-for-associated-store\u2461\u2463"},{"id":"ref-for-associated-store\u2461\u2464"},{"id":"ref-for-associated-store\u2461\u2465"},{"id":"ref-for-associated-store\u2461\u2466"}],"title":"4.6. Exported Functions"}],"url":"#associated-store"},
+"associated-store": {"dfnID":"associated-store","dfnText":"associated store","external":false,"refSections":[{"refs":[{"id":"ref-for-associated-store"},{"id":"ref-for-associated-store\u2460"},{"id":"ref-for-associated-store\u2461"},{"id":"ref-for-associated-store\u2462"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-associated-store\u2463"},{"id":"ref-for-associated-store\u2464"},{"id":"ref-for-associated-store\u2465"},{"id":"ref-for-associated-store\u2466"},{"id":"ref-for-associated-store\u2467"}],"title":"4.3. Memories"},{"refs":[{"id":"ref-for-associated-store\u2468"},{"id":"ref-for-associated-store\u2460\u24ea"},{"id":"ref-for-associated-store\u2460\u2460"},{"id":"ref-for-associated-store\u2460\u2461"},{"id":"ref-for-associated-store\u2460\u2462"},{"id":"ref-for-associated-store\u2460\u2463"},{"id":"ref-for-associated-store\u2460\u2464"},{"id":"ref-for-associated-store\u2460\u2465"}],"title":"4.4. Tables"},{"refs":[{"id":"ref-for-associated-store\u2460\u2466"},{"id":"ref-for-associated-store\u2460\u2467"},{"id":"ref-for-associated-store\u2460\u2468"},{"id":"ref-for-associated-store\u2461\u24ea"},{"id":"ref-for-associated-store\u2461\u2460"}],"title":"4.5. Globals"},{"refs":[{"id":"ref-for-associated-store\u2461\u2461"},{"id":"ref-for-associated-store\u2461\u2462"},{"id":"ref-for-associated-store\u2461\u2463"},{"id":"ref-for-associated-store\u2461\u2464"},{"id":"ref-for-associated-store\u2461\u2465"},{"id":"ref-for-associated-store\u2461\u2466"},{"id":"ref-for-associated-store\u2461\u2467"}],"title":"4.6. Exported Functions"}],"url":"#associated-store"},
 "asynchronously-compile-a-webassembly-module": {"dfnID":"asynchronously-compile-a-webassembly-module","dfnText":"asynchronously compile a WebAssembly module","external":false,"refSections":[{"refs":[{"id":"ref-for-asynchronously-compile-a-webassembly-module"},{"id":"ref-for-asynchronously-compile-a-webassembly-module\u2460"}],"title":"4. The WebAssembly Namespace"}],"url":"#asynchronously-compile-a-webassembly-module"},
 "asynchronously-instantiate-a-webassembly-module": {"dfnID":"asynchronously-instantiate-a-webassembly-module","dfnText":"asynchronously instantiate a WebAssembly module","external":false,"refSections":[{"refs":[{"id":"ref-for-asynchronously-instantiate-a-webassembly-module"},{"id":"ref-for-asynchronously-instantiate-a-webassembly-module\u2460"}],"title":"4. The WebAssembly Namespace"}],"url":"#asynchronously-instantiate-a-webassembly-module"},
 "b0d7f3c3": {"dfnID":"b0d7f3c3","dfnText":"USVString","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-USVString"},{"id":"ref-for-idl-USVString\u2460"},{"id":"ref-for-idl-USVString\u2461"}],"title":"4.1. Modules"}],"url":"https://webidl.spec.whatwg.org/#idl-USVString"},
@@ -3286,27 +3458,29 @@ let dfnPanelData = {
 "c8c81d72": {"dfnID":"c8c81d72","dfnText":"external value","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-externval"},{"id":"ref-for-syntax-externval\u2460"},{"id":"ref-for-syntax-externval\u2461"},{"id":"ref-for-syntax-externval\u2462"},{"id":"ref-for-syntax-externval\u2463"},{"id":"ref-for-syntax-externval\u2464"},{"id":"ref-for-syntax-externval\u2465"},{"id":"ref-for-syntax-externval\u2466"},{"id":"ref-for-syntax-externval\u2467"},{"id":"ref-for-syntax-externval\u2468"},{"id":"ref-for-syntax-externval\u2460\u24ea"},{"id":"ref-for-syntax-externval\u2460\u2460"},{"id":"ref-for-syntax-externval\u2460\u2461"},{"id":"ref-for-syntax-externval\u2460\u2462"},{"id":"ref-for-syntax-externval\u2460\u2463"}],"title":"4. The WebAssembly Namespace"}],"url":"https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval"},
 "ca17d396": {"dfnID":"ca17d396","dfnText":"function address","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-funcaddr"}],"title":"3.2. WebAssembly JS Object Caches"},{"refs":[{"id":"ref-for-syntax-funcaddr\u2460"},{"id":"ref-for-syntax-funcaddr\u2461"},{"id":"ref-for-syntax-funcaddr\u2462"}],"title":"4.6. Exported Functions"}],"url":"https://webassembly.github.io/spec/core/exec/runtime.html#syntax-funcaddr"},
 "call-an-exported-function": {"dfnID":"call-an-exported-function","dfnText":"call an Exported Function","external":false,"refSections":[{"refs":[{"id":"ref-for-call-an-exported-function"},{"id":"ref-for-call-an-exported-function\u2460"}],"title":"4.6. Exported Functions"}],"url":"#call-an-exported-function"},
-"cd4b1dc4": {"dfnID":"cd4b1dc4","dfnText":"!","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464"}],"title":"4.3. Memories"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2465"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2467"}],"title":"4.4. Tables"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u24ea"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2465"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2467"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u24ea"}],"title":"4.6. Exported Functions"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2460"}],"title":"4.7. Error Objects"}],"url":"https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands"},
+"cd4b1dc4": {"dfnID":"cd4b1dc4","dfnText":"!","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2465"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2466"}],"title":"4.3. Memories"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2467"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u24ea"}],"title":"4.4. Tables"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2465"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2467"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u24ea"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2461"}],"title":"4.6. Exported Functions"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2462"}],"title":"4.7. Error Objects"}],"url":"https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands"},
 "cdfd15a5": {"dfnID":"cdfd15a5","dfnText":"ref.func","external":true,"refSections":[{"refs":[{"id":"ref-for-values"}],"title":"4.3. Memories"},{"refs":[{"id":"ref-for-values\u2460"},{"id":"ref-for-values\u2461"},{"id":"ref-for-values\u2462"},{"id":"ref-for-values\u2463"},{"id":"ref-for-values\u2464"}],"title":"4.5. Globals"},{"refs":[{"id":"ref-for-values\u2465"},{"id":"ref-for-values\u2466"},{"id":"ref-for-values\u2467"},{"id":"ref-for-values\u2468"},{"id":"ref-for-values\u2460\u24ea"},{"id":"ref-for-values\u2460\u2460"},{"id":"ref-for-values\u2460\u2461"},{"id":"ref-for-values\u2460\u2462"},{"id":"ref-for-values\u2460\u2463"},{"id":"ref-for-values\u2460\u2464"},{"id":"ref-for-values\u2460\u2465"},{"id":"ref-for-values\u2460\u2466"},{"id":"ref-for-values\u2460\u2467"},{"id":"ref-for-values\u2460\u2468"},{"id":"ref-for-values\u2461\u24ea"},{"id":"ref-for-values\u2461\u2460"},{"id":"ref-for-values\u2461\u2461"},{"id":"ref-for-values\u2461\u2462"},{"id":"ref-for-values\u2461\u2463"},{"id":"ref-for-values\u2461\u2464"}],"title":"4.6. Exported Functions"}],"url":"https://webassembly.github.io/spec/core/exec/runtime.html#values"},
 "compile-a-webassembly-module": {"dfnID":"compile-a-webassembly-module","dfnText":"compile a WebAssembly module","external":false,"refSections":[{"refs":[{"id":"ref-for-compile-a-webassembly-module"},{"id":"ref-for-compile-a-webassembly-module\u2460"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-compile-a-webassembly-module\u2461"}],"title":"4.1. Modules"}],"url":"#compile-a-webassembly-module"},
 "construct-a-webassembly-module-object": {"dfnID":"construct-a-webassembly-module-object","dfnText":"construct a WebAssembly module object","external":false,"refSections":[{"refs":[{"id":"ref-for-construct-a-webassembly-module-object"}],"title":"4. The WebAssembly Namespace"}],"url":"#construct-a-webassembly-module-object"},
+"create-a-fixed-length-memory-buffer": {"dfnID":"create-a-fixed-length-memory-buffer","dfnText":"create a fixed length memory buffer","external":false,"refSections":[{"refs":[{"id":"ref-for-create-a-fixed-length-memory-buffer"},{"id":"ref-for-create-a-fixed-length-memory-buffer\u2460"},{"id":"ref-for-create-a-fixed-length-memory-buffer\u2461"}],"title":"4.3. Memories"}],"url":"#create-a-fixed-length-memory-buffer"},
 "create-a-global-object": {"dfnID":"create-a-global-object","dfnText":"create a global object","external":false,"refSections":[{"refs":[{"id":"ref-for-create-a-global-object"}],"title":"4. The WebAssembly Namespace"}],"url":"#create-a-global-object"},
 "create-a-host-function": {"dfnID":"create-a-host-function","dfnText":"create a host function","external":false,"refSections":[{"refs":[{"id":"ref-for-create-a-host-function"}],"title":"4. The WebAssembly Namespace"}],"url":"#create-a-host-function"},
-"create-a-memory-buffer": {"dfnID":"create-a-memory-buffer","dfnText":"create a memory buffer","external":false,"refSections":[{"refs":[{"id":"ref-for-create-a-memory-buffer"},{"id":"ref-for-create-a-memory-buffer\u2460"}],"title":"4.3. Memories"}],"url":"#create-a-memory-buffer"},
 "create-a-memory-object": {"dfnID":"create-a-memory-object","dfnText":"create a memory object","external":false,"refSections":[{"refs":[{"id":"ref-for-create-a-memory-object"}],"title":"4. The WebAssembly Namespace"}],"url":"#create-a-memory-object"},
+"create-a-resizable-memory-buffer": {"dfnID":"create-a-resizable-memory-buffer","dfnText":"create a resizable memory buffer","external":false,"refSections":[{"refs":[{"id":"ref-for-create-a-resizable-memory-buffer"}],"title":"4.3. Memories"}],"url":"#create-a-resizable-memory-buffer"},
 "create-a-table-object": {"dfnID":"create-a-table-object","dfnText":"create a table object","external":false,"refSections":[{"refs":[{"id":"ref-for-create-a-table-object"}],"title":"4. The WebAssembly Namespace"}],"url":"#create-a-table-object"},
 "create-an-exports-object": {"dfnID":"create-an-exports-object","dfnText":"create an exports object","external":false,"refSections":[{"refs":[{"id":"ref-for-create-an-exports-object"}],"title":"4. The WebAssembly Namespace"}],"url":"#create-an-exports-object"},
 "d2c61922": {"dfnID":"d2c61922","dfnText":"CreateDataProperty","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-createdataproperty"}],"title":"4. The WebAssembly Namespace"}],"url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-createdataproperty"},
 "d39a7bec": {"dfnID":"d39a7bec","dfnText":"\u2212\u221e","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-float"},{"id":"ref-for-syntax-float\u2460"},{"id":"ref-for-syntax-float\u2461"},{"id":"ref-for-syntax-float\u2462"},{"id":"ref-for-syntax-float\u2463"},{"id":"ref-for-syntax-float\u2464"},{"id":"ref-for-syntax-float\u2465"},{"id":"ref-for-syntax-float\u2466"},{"id":"ref-for-syntax-float\u2467"},{"id":"ref-for-syntax-float\u2468"},{"id":"ref-for-syntax-float\u2460\u24ea"},{"id":"ref-for-syntax-float\u2460\u2460"}],"title":"4.6. Exported Functions"}],"url":"https://webassembly.github.io/spec/core/syntax/values.html#syntax-float"},
 "d5ac3b38": {"dfnID":"d5ac3b38","dfnText":"clean up after running a callback","external":true,"refSections":[{"refs":[{"id":"ref-for-clean-up-after-running-a-callback"}],"title":"4.6. Exported Functions"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#clean-up-after-running-a-callback"},
 "d5e3a033": {"dfnID":"d5e3a033","dfnText":"store_init","external":true,"refSections":[{"refs":[{"id":"ref-for-embed-store-init"}],"title":"3.1. Interaction of the WebAssembly Store with JavaScript"}],"url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-store-init"},
-"d7a47d32": {"dfnID":"d7a47d32","dfnText":"DetachArrayBuffer","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-detacharraybuffer"}],"title":"4.3. Memories"}],"url":"https://tc39.es/ecma262/multipage/structured-data.html#sec-detacharraybuffer"},
+"d7a47d32": {"dfnID":"d7a47d32","dfnText":"DetachArrayBuffer","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-detacharraybuffer"},{"id":"ref-for-sec-detacharraybuffer\u2460"},{"id":"ref-for-sec-detacharraybuffer\u2461"}],"title":"4.3. Memories"}],"url":"https://tc39.es/ecma262/multipage/structured-data.html#sec-detacharraybuffer"},
 "d7af7adc": {"dfnID":"d7af7adc","dfnText":"incumbent settings object","external":true,"refSections":[{"refs":[{"id":"ref-for-incumbent-settings-object"}],"title":"4.6. Exported Functions"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#incumbent-settings-object"},
 "d83ccb33": {"dfnID":"d83ccb33","dfnText":"GetIteratorFromMethod","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-getiteratorfrommethod"}],"title":"4.6. Exported Functions"}],"url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-getiteratorfrommethod"},
 "dab38636": {"dfnID":"dab38636","dfnText":"@@iterator","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-well-known-symbols"}],"title":"4.6. Exported Functions"}],"url":"https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-well-known-symbols"},
 "dacde8b5": {"dfnID":"dacde8b5","dfnText":"a new promise","external":true,"refSections":[{"refs":[{"id":"ref-for-a-new-promise"},{"id":"ref-for-a-new-promise\u2460"},{"id":"ref-for-a-new-promise\u2461"}],"title":"4. The WebAssembly Namespace"}],"url":"https://webidl.spec.whatwg.org/#a-new-promise"},
 "dc07163b": {"dfnID":"dc07163b","dfnText":"IsCallable","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-iscallable"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-sec-iscallable\u2460"},{"id":"ref-for-sec-iscallable\u2461"}],"title":"4.6. Exported Functions"}],"url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-iscallable"},
 "dc5b915f": {"dfnID":"dc5b915f","dfnText":"table address","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-tableaddr"}],"title":"3.2. WebAssembly JS Object Caches"},{"refs":[{"id":"ref-for-syntax-tableaddr\u2460"},{"id":"ref-for-syntax-tableaddr\u2461"},{"id":"ref-for-syntax-tableaddr\u2462"}],"title":"4.4. Tables"}],"url":"https://webassembly.github.io/spec/core/exec/runtime.html#syntax-tableaddr"},
+"dce4d017": {"dfnID":"dce4d017","dfnText":"page size","external":true,"refSections":[{"refs":[{"id":"ref-for-page-size"}],"title":"4.3. Memories"}],"url":"https://webassembly.github.io/spec/core/exec/runtime.html#page-size"},
 "defaultvalue": {"dfnID":"defaultvalue","dfnText":"DefaultValue","external":false,"refSections":[{"refs":[{"id":"ref-for-defaultvalue"},{"id":"ref-for-defaultvalue\u2460"},{"id":"ref-for-defaultvalue\u2461"}],"title":"4.4. Tables"},{"refs":[{"id":"ref-for-defaultvalue\u2462"}],"title":"4.5. Globals"}],"url":"#defaultvalue"},
 "dictdef-globaldescriptor": {"dfnID":"dictdef-globaldescriptor","dfnText":"GlobalDescriptor","external":false,"refSections":[{"refs":[{"id":"ref-for-dictdef-globaldescriptor"}],"title":"4.5. Globals"}],"url":"#dictdef-globaldescriptor"},
 "dictdef-memorydescriptor": {"dfnID":"dictdef-memorydescriptor","dfnText":"MemoryDescriptor","external":false,"refSections":[{"refs":[{"id":"ref-for-dictdef-memorydescriptor"}],"title":"4.3. Memories"}],"url":"#dictdef-memorydescriptor"},
@@ -3334,6 +3508,8 @@ let dfnPanelData = {
 "dom-memory-grow-delta-delta": {"dfnID":"dom-memory-grow-delta-delta","dfnText":"delta","external":false,"refSections":[],"url":"#dom-memory-grow-delta-delta"},
 "dom-memory-memory": {"dfnID":"dom-memory-memory","dfnText":"Memory(descriptor)","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-memory-memory"}],"title":"4.3. Memories"}],"url":"#dom-memory-memory"},
 "dom-memory-memory-descriptor-descriptor": {"dfnID":"dom-memory-memory-descriptor-descriptor","dfnText":"descriptor","external":false,"refSections":[],"url":"#dom-memory-memory-descriptor-descriptor"},
+"dom-memory-tofixedlengthbuffer": {"dfnID":"dom-memory-tofixedlengthbuffer","dfnText":"toFixedLengthBuffer()","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-memory-tofixedlengthbuffer"}],"title":"4.3. Memories"}],"url":"#dom-memory-tofixedlengthbuffer"},
+"dom-memory-toresizablebuffer": {"dfnID":"dom-memory-toresizablebuffer","dfnText":"toResizableBuffer()","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-memory-toresizablebuffer"}],"title":"4.3. Memories"}],"url":"#dom-memory-toresizablebuffer"},
 "dom-memorydescriptor-initial": {"dfnID":"dom-memorydescriptor-initial","dfnText":"initial","external":false,"refSections":[],"url":"#dom-memorydescriptor-initial"},
 "dom-memorydescriptor-maximum": {"dfnID":"dom-memorydescriptor-maximum","dfnText":"maximum","external":false,"refSections":[],"url":"#dom-memorydescriptor-maximum"},
 "dom-module-customsections": {"dfnID":"dom-module-customsections","dfnText":"customSections(moduleObject, sectionName)","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-module-customsections"}],"title":"4.1. Modules"}],"url":"#dom-module-customsections"},
@@ -3391,12 +3567,13 @@ let dfnPanelData = {
 "e4286588": {"dfnID":"e4286588","dfnText":"func_invoke","external":true,"refSections":[{"refs":[{"id":"ref-for-embed-func-invoke"}],"title":"4.6. Exported Functions"}],"url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-func-invoke"},
 "e8f0aed3": {"dfnID":"e8f0aed3","dfnText":"built-in function objects","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-built-in-function-objects"},{"id":"ref-for-sec-built-in-function-objects\u2460"}],"title":"4.6. Exported Functions"}],"url":"https://tc39.github.io/ecma262/#sec-built-in-function-objects"},
 "e97a9688": {"dfnID":"e97a9688","dfnText":"unsigned long","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-unsigned-long"},{"id":"ref-for-idl-unsigned-long\u2460"},{"id":"ref-for-idl-unsigned-long\u2461"},{"id":"ref-for-idl-unsigned-long\u2462"}],"title":"4.3. Memories"},{"refs":[{"id":"ref-for-idl-unsigned-long\u2463"},{"id":"ref-for-idl-unsigned-long\u2464"},{"id":"ref-for-idl-unsigned-long\u2465"},{"id":"ref-for-idl-unsigned-long\u2466"},{"id":"ref-for-idl-unsigned-long\u2467"},{"id":"ref-for-idl-unsigned-long\u2468"},{"id":"ref-for-idl-unsigned-long\u2460\u24ea"}],"title":"4.4. Tables"}],"url":"https://webidl.spec.whatwg.org/#idl-unsigned-long"},
-"ebb4ace3": {"dfnID":"ebb4ace3","dfnText":"?","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464"}],"title":"4.3. Memories"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2465"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2467"}],"title":"4.4. Tables"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u24ea"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2465"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2467"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u24ea"}],"title":"4.6. Exported Functions"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2460"}],"title":"4.7. Error Objects"}],"url":"https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands"},
+"ebb4ace3": {"dfnID":"ebb4ace3","dfnText":"?","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2465"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2466"}],"title":"4.3. Memories"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2467"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u24ea"}],"title":"4.4. Tables"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2465"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2467"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u24ea"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2461"}],"title":"4.6. Exported Functions"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2462"}],"title":"4.7. Error Objects"}],"url":"https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands"},
 "ebbbef34": {"dfnID":"ebbbef34","dfnText":"OrdinaryObjectCreate","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-ordinaryobjectcreate"}],"title":"4. The WebAssembly Namespace"}],"url":"https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-ordinaryobjectcreate"},
 "ec2020b1": {"dfnID":"ec2020b1","dfnText":"table_alloc","external":true,"refSections":[{"refs":[{"id":"ref-for-embed-table-alloc"}],"title":"4.4. Tables"}],"url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-table-alloc"},
-"eca66c99": {"dfnID":"eca66c99","dfnText":"data block","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-data-blocks"}],"title":"3.1. Interaction of the WebAssembly Store with JavaScript"},{"refs":[{"id":"ref-for-sec-data-blocks\u2460"},{"id":"ref-for-sec-data-blocks\u2461"}],"title":"4.3. Memories"}],"url":"https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-data-blocks"},
+"eca66c99": {"dfnID":"eca66c99","dfnText":"data block","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-data-blocks"}],"title":"3.1. Interaction of the WebAssembly Store with JavaScript"},{"refs":[{"id":"ref-for-sec-data-blocks\u2460"},{"id":"ref-for-sec-data-blocks\u2461"},{"id":"ref-for-sec-data-blocks\u2462"},{"id":"ref-for-sec-data-blocks\u2463"}],"title":"4.3. Memories"}],"url":"https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-data-blocks"},
 "ef3c2587": {"dfnID":"ef3c2587","dfnText":"externref","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-reftype"}],"title":"4.4. Tables"},{"refs":[{"id":"ref-for-syntax-reftype\u2460"},{"id":"ref-for-syntax-reftype\u2461"},{"id":"ref-for-syntax-reftype\u2462"},{"id":"ref-for-syntax-reftype\u2463"},{"id":"ref-for-syntax-reftype\u2464"}],"title":"4.5. Globals"},{"refs":[{"id":"ref-for-syntax-reftype\u2465"},{"id":"ref-for-syntax-reftype\u2466"},{"id":"ref-for-syntax-reftype\u2467"},{"id":"ref-for-syntax-reftype\u2468"}],"title":"4.6. Exported Functions"}],"url":"https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype"},
 "efd1ec5d": {"dfnID":"efd1ec5d","dfnText":"object","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-object"},{"id":"ref-for-idl-object\u2460"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-idl-object\u2461"},{"id":"ref-for-idl-object\u2462"}],"title":"4.2. Instances"}],"url":"https://webidl.spec.whatwg.org/#idl-object"},
+"efe8653e": {"dfnID":"efe8653e","dfnText":"iterate (for map)","external":true,"refSections":[{"refs":[{"id":"ref-for-map-iterate"}],"title":"4.3. Memories"}],"url":"https://infra.spec.whatwg.org/#map-iterate"},
 "enumdef-importexportkind": {"dfnID":"enumdef-importexportkind","dfnText":"ImportExportKind","external":false,"refSections":[{"refs":[{"id":"ref-for-enumdef-importexportkind"},{"id":"ref-for-enumdef-importexportkind\u2460"}],"title":"4.1. Modules"}],"url":"#enumdef-importexportkind"},
 "enumdef-tablekind": {"dfnID":"enumdef-tablekind","dfnText":"TableKind","external":false,"refSections":[{"refs":[{"id":"ref-for-enumdef-tablekind"}],"title":"4.4. Tables"}],"url":"#enumdef-tablekind"},
 "enumdef-valuetype": {"dfnID":"enumdef-valuetype","dfnText":"ValueType","external":false,"refSections":[{"refs":[{"id":"ref-for-enumdef-valuetype"}],"title":"4.5. Globals"}],"url":"#enumdef-valuetype"},
@@ -3406,25 +3583,26 @@ let dfnPanelData = {
 "exported-function": {"dfnID":"exported-function","dfnText":"Exported Function","external":false,"refSections":[{"refs":[{"id":"ref-for-exported-function"}],"title":"3.2. WebAssembly JS Object Caches"},{"refs":[{"id":"ref-for-exported-function\u2460"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-exported-function\u2461"}],"title":"4.6. Exported Functions"}],"url":"#exported-function"},
 "exported-function-cache": {"dfnID":"exported-function-cache","dfnText":"Exported Function cache","external":false,"refSections":[{"refs":[{"id":"ref-for-exported-function-cache"}],"title":"4.6. Exported Functions"}],"url":"#exported-function-cache"},
 "extern-value-cache": {"dfnID":"extern-value-cache","dfnText":"Extern value cache","external":false,"refSections":[{"refs":[{"id":"ref-for-extern-value-cache"},{"id":"ref-for-extern-value-cache\u2460"}],"title":"4.6. Exported Functions"}],"url":"#extern-value-cache"},
-"f02cd417": {"dfnID":"f02cd417","dfnText":"iterate","external":true,"refSections":[{"refs":[{"id":"ref-for-list-iterate"},{"id":"ref-for-list-iterate\u2460"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-list-iterate\u2461"},{"id":"ref-for-list-iterate\u2462"},{"id":"ref-for-list-iterate\u2463"}],"title":"4.1. Modules"},{"refs":[{"id":"ref-for-list-iterate\u2464"},{"id":"ref-for-list-iterate\u2465"},{"id":"ref-for-list-iterate\u2466"}],"title":"4.6. Exported Functions"},{"refs":[{"id":"ref-for-list-iterate\u2467"}],"title":"4.7. Error Objects"}],"url":"https://infra.spec.whatwg.org/#list-iterate"},
+"f02cd417": {"dfnID":"f02cd417","dfnText":"iterate (for list)","external":true,"refSections":[{"refs":[{"id":"ref-for-list-iterate"},{"id":"ref-for-list-iterate\u2460"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-list-iterate\u2461"},{"id":"ref-for-list-iterate\u2462"},{"id":"ref-for-list-iterate\u2463"}],"title":"4.1. Modules"},{"refs":[{"id":"ref-for-list-iterate\u2464"},{"id":"ref-for-list-iterate\u2465"},{"id":"ref-for-list-iterate\u2466"}],"title":"4.6. Exported Functions"},{"refs":[{"id":"ref-for-list-iterate\u2467"}],"title":"4.7. Error Objects"}],"url":"https://infra.spec.whatwg.org/#list-iterate"},
 "f06ddd8a": {"dfnID":"f06ddd8a","dfnText":"memaddrs","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-moduleinst"},{"id":"ref-for-syntax-moduleinst\u2460"}],"title":"4.3. Memories"}],"url":"https://webassembly.github.io/spec/core/exec/runtime.html#syntax-moduleinst"},
 "f0c8810c": {"dfnID":"f0c8810c","dfnText":"import","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-import"}],"title":"7. Security and Privacy Considerations"}],"url":"https://webassembly.github.io/spec/core/syntax/modules.html#syntax-import"},
 "f14ed351": {"dfnID":"f14ed351","dfnText":"upon rejection","external":true,"refSections":[{"refs":[{"id":"ref-for-upon-rejection"},{"id":"ref-for-upon-rejection\u2460"}],"title":"4. The WebAssembly Namespace"}],"url":"https://webidl.spec.whatwg.org/#upon-rejection"},
-"f17862f0": {"dfnID":"f17862f0","dfnText":"ArrayBuffer","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-arraybuffer-objects"},{"id":"ref-for-sec-arraybuffer-objects\u2460"}],"title":"4.1. Modules"},{"refs":[{"id":"ref-for-sec-arraybuffer-objects\u2461"},{"id":"ref-for-sec-arraybuffer-objects\u2462"},{"id":"ref-for-sec-arraybuffer-objects\u2463"}],"title":"4.3. Memories"}],"url":"https://tc39.github.io/ecma262/#sec-arraybuffer-objects"},
+"f17862f0": {"dfnID":"f17862f0","dfnText":"ArrayBuffer","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-arraybuffer-objects"},{"id":"ref-for-sec-arraybuffer-objects\u2460"}],"title":"4.1. Modules"},{"refs":[{"id":"ref-for-sec-arraybuffer-objects\u2461"},{"id":"ref-for-sec-arraybuffer-objects\u2462"},{"id":"ref-for-sec-arraybuffer-objects\u2463"},{"id":"ref-for-sec-arraybuffer-objects\u2464"},{"id":"ref-for-sec-arraybuffer-objects\u2465"},{"id":"ref-for-sec-arraybuffer-objects\u2466"},{"id":"ref-for-sec-arraybuffer-objects\u2467"},{"id":"ref-for-sec-arraybuffer-objects\u2468"}],"title":"4.3. Memories"}],"url":"https://tc39.github.io/ecma262/#sec-arraybuffer-objects"},
 "f256859a": {"dfnID":"f256859a","dfnText":"utf-8 decode without bom or fail","external":true,"refSections":[{"refs":[{"id":"ref-for-utf-8-decode-without-bom-or-fail"}],"title":"4.1. Modules"}],"url":"https://encoding.spec.whatwg.org/#utf-8-decode-without-bom-or-fail"},
 "f3aaa883": {"dfnID":"f3aaa883","dfnText":"module_validate","external":true,"refSections":[{"refs":[{"id":"ref-for-embed-module-validate"}],"title":"4. The WebAssembly Namespace"}],"url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-validate"},
 "f56c24ad": {"dfnID":"f56c24ad","dfnText":"imports","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-module"},{"id":"ref-for-syntax-module\u2460"}],"title":"4. The WebAssembly Namespace"}],"url":"https://webassembly.github.io/spec/core/syntax/modules.html#syntax-module"},
 "f98ab0c2": {"dfnID":"f98ab0c2","dfnText":"LegacyNamespace","external":true,"refSections":[{"refs":[{"id":"ref-for-LegacyNamespace"}],"title":"4.1. Modules"},{"refs":[{"id":"ref-for-LegacyNamespace\u2460"}],"title":"4.2. Instances"},{"refs":[{"id":"ref-for-LegacyNamespace\u2461"}],"title":"4.3. Memories"},{"refs":[{"id":"ref-for-LegacyNamespace\u2462"}],"title":"4.4. Tables"},{"refs":[{"id":"ref-for-LegacyNamespace\u2463"}],"title":"4.5. Globals"}],"url":"https://webidl.spec.whatwg.org/#LegacyNamespace"},
 "f9dbc1a8": {"dfnID":"f9dbc1a8","dfnText":"nativeerror object structure","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-nativeerror-object-structure"}],"title":"4.7. Error Objects"}],"url":"https://tc39.github.io/ecma262/#sec-nativeerror-object-structure"},
 "fa5c4242": {"dfnID":"fa5c4242","dfnText":"agent cluster","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-agent-clusters"}],"title":"3.1. Interaction of the WebAssembly Store with JavaScript"}],"url":"https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#sec-agent-clusters"},
-"fbc61d3f": {"dfnID":"fbc61d3f","dfnText":"memory address","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-memaddr"}],"title":"3.2. WebAssembly JS Object Caches"},{"refs":[{"id":"ref-for-syntax-memaddr\u2460"},{"id":"ref-for-syntax-memaddr\u2461"},{"id":"ref-for-syntax-memaddr\u2462"},{"id":"ref-for-syntax-memaddr\u2463"}],"title":"4.3. Memories"}],"url":"https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr"},
+"fbc61d3f": {"dfnID":"fbc61d3f","dfnText":"memory address","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-memaddr"}],"title":"3.2. WebAssembly JS Object Caches"},{"refs":[{"id":"ref-for-syntax-memaddr\u2460"},{"id":"ref-for-syntax-memaddr\u2461"},{"id":"ref-for-syntax-memaddr\u2462"},{"id":"ref-for-syntax-memaddr\u2463"},{"id":"ref-for-syntax-memaddr\u2464"},{"id":"ref-for-syntax-memaddr\u2465"}],"title":"4.3. Memories"}],"url":"https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr"},
 "fc0ee513": {"dfnID":"fc0ee513","dfnText":"global_alloc","external":true,"refSections":[{"refs":[{"id":"ref-for-embed-global-alloc"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-embed-global-alloc\u2460"}],"title":"4.5. Globals"}],"url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-global-alloc"},
 "fd73fa9f": {"dfnID":"fd73fa9f","dfnText":"signed_32","external":true,"refSections":[{"refs":[{"id":"ref-for-aux-signed"},{"id":"ref-for-aux-signed\u2460"}],"title":"4.6. Exported Functions"}],"url":"https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed"},
 "ffa3e8fc": {"dfnID":"ffa3e8fc","dfnText":"f64","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-numtype"},{"id":"ref-for-syntax-numtype\u2460"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-syntax-numtype\u2461"},{"id":"ref-for-syntax-numtype\u2462"},{"id":"ref-for-syntax-numtype\u2463"},{"id":"ref-for-syntax-numtype\u2464"},{"id":"ref-for-syntax-numtype\u2465"},{"id":"ref-for-syntax-numtype\u2466"},{"id":"ref-for-syntax-numtype\u2467"},{"id":"ref-for-syntax-numtype\u2468"}],"title":"4.5. Globals"},{"refs":[{"id":"ref-for-syntax-numtype\u2460\u24ea"},{"id":"ref-for-syntax-numtype\u2460\u2460"},{"id":"ref-for-syntax-numtype\u2460\u2461"},{"id":"ref-for-syntax-numtype\u2460\u2462"}],"title":"4.6. Exported Functions"}],"url":"https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype"},
 "getglobalvalue": {"dfnID":"getglobalvalue","dfnText":"GetGlobalValue","external":false,"refSections":[{"refs":[{"id":"ref-for-getglobalvalue"},{"id":"ref-for-getglobalvalue\u2460"}],"title":"4.5. Globals"}],"url":"#getglobalvalue"},
 "global": {"dfnID":"global","dfnText":"Global","external":false,"refSections":[{"refs":[{"id":"ref-for-global"}],"title":"3.2. WebAssembly JS Object Caches"},{"refs":[{"id":"ref-for-global\u2460"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-global\u2461"},{"id":"ref-for-global\u2462"},{"id":"ref-for-global\u2463"},{"id":"ref-for-global\u2464"},{"id":"ref-for-global\u2465"},{"id":"ref-for-global\u2466"}],"title":"4.5. Globals"}],"url":"#global"},
 "global-object-cache": {"dfnID":"global-object-cache","dfnText":"Global object cache","external":false,"refSections":[{"refs":[{"id":"ref-for-global-object-cache"},{"id":"ref-for-global-object-cache\u2460"}],"title":"4.5. Globals"}],"url":"#global-object-cache"},
-"identified-with": {"dfnID":"identified-with","dfnText":"identified with","external":false,"refSections":[{"refs":[{"id":"ref-for-identified-with"},{"id":"ref-for-identified-with\u2460"}],"title":"4.3. Memories"}],"url":"#identified-with"},
+"grow-the-memory-buffer": {"dfnID":"grow-the-memory-buffer","dfnText":"grow the memory buffer","external":false,"refSections":[{"refs":[{"id":"ref-for-grow-the-memory-buffer"},{"id":"ref-for-grow-the-memory-buffer\u2460"}],"title":"4.3. Memories"}],"url":"#grow-the-memory-buffer"},
+"identified-with": {"dfnID":"identified-with","dfnText":"identified with","external":false,"refSections":[{"refs":[{"id":"ref-for-identified-with"},{"id":"ref-for-identified-with\u2460"},{"id":"ref-for-identified-with\u2461"},{"id":"ref-for-identified-with\u2462"}],"title":"4.3. Memories"}],"url":"#identified-with"},
 "index-of-the-host-function": {"dfnID":"index-of-the-host-function","dfnText":"index of the host function","external":false,"refSections":[{"refs":[{"id":"ref-for-index-of-the-host-function"}],"title":"4.6. Exported Functions"}],"url":"#index-of-the-host-function"},
 "initialize-a-global-object": {"dfnID":"initialize-a-global-object","dfnText":"initialize a global object","external":false,"refSections":[{"refs":[{"id":"ref-for-initialize-a-global-object"},{"id":"ref-for-initialize-a-global-object\u2460"}],"title":"4.5. Globals"}],"url":"#initialize-a-global-object"},
 "initialize-a-memory-object": {"dfnID":"initialize-a-memory-object","dfnText":"initialize a memory object","external":false,"refSections":[{"refs":[{"id":"ref-for-initialize-a-memory-object"},{"id":"ref-for-initialize-a-memory-object\u2460"}],"title":"4.3. Memories"}],"url":"#initialize-a-memory-object"},
@@ -3433,13 +3611,13 @@ let dfnPanelData = {
 "instance": {"dfnID":"instance","dfnText":"Instance","external":false,"refSections":[{"refs":[{"id":"ref-for-instance"},{"id":"ref-for-instance\u2460"},{"id":"ref-for-instance\u2461"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-instance\u2462"}],"title":"4.2. Instances"},{"refs":[{"id":"ref-for-instance\u2463"}],"title":"4.3. Memories"},{"refs":[{"id":"ref-for-instance\u2464"}],"title":"4.4. Tables"},{"refs":[{"id":"ref-for-instance\u2465"}],"title":"4.5. Globals"}],"url":"#instance"},
 "instantiate-a-promise-of-a-module": {"dfnID":"instantiate-a-promise-of-a-module","dfnText":"instantiate a promise of a module","external":false,"refSections":[{"refs":[{"id":"ref-for-instantiate-a-promise-of-a-module"}],"title":"4. The WebAssembly Namespace"}],"url":"#instantiate-a-promise-of-a-module"},
 "instantiate-the-core-of-a-webassembly-module": {"dfnID":"instantiate-the-core-of-a-webassembly-module","dfnText":"instantiate the core of a WebAssembly module","external":false,"refSections":[{"refs":[{"id":"ref-for-instantiate-the-core-of-a-webassembly-module"},{"id":"ref-for-instantiate-the-core-of-a-webassembly-module\u2460"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-instantiate-the-core-of-a-webassembly-module\u2461"}],"title":"4.2. Instances"}],"url":"#instantiate-the-core-of-a-webassembly-module"},
-"memory": {"dfnID":"memory","dfnText":"Memory","external":false,"refSections":[{"refs":[{"id":"ref-for-memory"}],"title":"3.1. Interaction of the WebAssembly Store with JavaScript"},{"refs":[{"id":"ref-for-memory\u2460"}],"title":"3.2. WebAssembly JS Object Caches"},{"refs":[{"id":"ref-for-memory\u2461"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-memory\u2462"},{"id":"ref-for-memory\u2463"},{"id":"ref-for-memory\u2464"},{"id":"ref-for-memory\u2465"}],"title":"4.3. Memories"},{"refs":[{"id":"ref-for-memory\u2466"}],"title":"5.2. Out of Memory"}],"url":"#memory"},
-"memory-object-cache": {"dfnID":"memory-object-cache","dfnText":"Memory object cache","external":false,"refSections":[{"refs":[{"id":"ref-for-memory-object-cache"},{"id":"ref-for-memory-object-cache\u2460"},{"id":"ref-for-memory-object-cache\u2461"}],"title":"4.3. Memories"}],"url":"#memory-object-cache"},
+"memory": {"dfnID":"memory","dfnText":"Memory","external":false,"refSections":[{"refs":[{"id":"ref-for-memory"}],"title":"3.1. Interaction of the WebAssembly Store with JavaScript"},{"refs":[{"id":"ref-for-memory\u2460"}],"title":"3.2. WebAssembly JS Object Caches"},{"refs":[{"id":"ref-for-memory\u2461"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-memory\u2462"},{"id":"ref-for-memory\u2463"},{"id":"ref-for-memory\u2464"},{"id":"ref-for-memory\u2465"},{"id":"ref-for-memory\u2466"}],"title":"4.3. Memories"},{"refs":[{"id":"ref-for-memory\u2467"}],"title":"5.2. Out of Memory"}],"url":"#memory"},
+"memory-object-cache": {"dfnID":"memory-object-cache","dfnText":"Memory object cache","external":false,"refSections":[{"refs":[{"id":"ref-for-memory-object-cache"},{"id":"ref-for-memory-object-cache\u2460"},{"id":"ref-for-memory-object-cache\u2461"},{"id":"ref-for-memory-object-cache\u2462"}],"title":"4.3. Memories"}],"url":"#memory-object-cache"},
 "module": {"dfnID":"module","dfnText":"Module","external":false,"refSections":[{"refs":[{"id":"ref-for-module"},{"id":"ref-for-module\u2460"},{"id":"ref-for-module\u2461"},{"id":"ref-for-module\u2462"},{"id":"ref-for-module\u2463"},{"id":"ref-for-module\u2464"},{"id":"ref-for-module\u2465"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-module\u2466"},{"id":"ref-for-module\u2467"},{"id":"ref-for-module\u2468"}],"title":"4.1. Modules"},{"refs":[{"id":"ref-for-module\u2460\u24ea"}],"title":"4.2. Instances"}],"url":"#module"},
 "name-of-the-webassembly-function": {"dfnID":"name-of-the-webassembly-function","dfnText":"name of the WebAssembly function","external":false,"refSections":[{"refs":[{"id":"ref-for-name-of-the-webassembly-function"}],"title":"4.6. Exported Functions"}],"url":"#name-of-the-webassembly-function"},
 "namespacedef-webassembly": {"dfnID":"namespacedef-webassembly","dfnText":"WebAssembly","external":false,"refSections":[{"refs":[{"id":"ref-for-namespacedef-webassembly"}],"title":"4.1. Modules"},{"refs":[{"id":"ref-for-namespacedef-webassembly\u2460"}],"title":"4.2. Instances"},{"refs":[{"id":"ref-for-namespacedef-webassembly\u2461"}],"title":"4.3. Memories"},{"refs":[{"id":"ref-for-namespacedef-webassembly\u2462"}],"title":"4.4. Tables"},{"refs":[{"id":"ref-for-namespacedef-webassembly\u2463"}],"title":"4.5. Globals"},{"refs":[{"id":"ref-for-namespacedef-webassembly\u2464"},{"id":"ref-for-namespacedef-webassembly\u2465"}],"title":"4.7. Error Objects"}],"url":"#namespacedef-webassembly"},
 "read-the-imports": {"dfnID":"read-the-imports","dfnText":"read the imports","external":false,"refSections":[{"refs":[{"id":"ref-for-read-the-imports"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-read-the-imports\u2460"}],"title":"4.2. Instances"},{"refs":[{"id":"ref-for-read-the-imports\u2461"}],"title":"7. Security and Privacy Considerations"}],"url":"#read-the-imports"},
-"reset-the-memory-buffer": {"dfnID":"reset-the-memory-buffer","dfnText":"reset the Memory buffer","external":false,"refSections":[{"refs":[{"id":"ref-for-reset-the-memory-buffer"},{"id":"ref-for-reset-the-memory-buffer\u2460"}],"title":"4.3. Memories"}],"url":"#reset-the-memory-buffer"},
+"refresh-the-memory-buffer": {"dfnID":"refresh-the-memory-buffer","dfnText":"refresh the Memory buffer","external":false,"refSections":[{"refs":[{"id":"ref-for-refresh-the-memory-buffer"},{"id":"ref-for-refresh-the-memory-buffer\u2460"}],"title":"4.3. Memories"}],"url":"#refresh-the-memory-buffer"},
 "retrieving-an-extern-value": {"dfnID":"retrieving-an-extern-value","dfnText":"retrieving an extern value","external":false,"refSections":[{"refs":[{"id":"ref-for-retrieving-an-extern-value"}],"title":"4.6. Exported Functions"}],"url":"#retrieving-an-extern-value"},
 "run-a-host-function": {"dfnID":"run-a-host-function","dfnText":"run a host function","external":false,"refSections":[{"refs":[{"id":"ref-for-run-a-host-function"}],"title":"4.6. Exported Functions"}],"url":"#run-a-host-function"},
 "string-value-of-the-extern-type": {"dfnID":"string-value-of-the-extern-type","dfnText":"string value of the extern type","external":false,"refSections":[{"refs":[{"id":"ref-for-string-value-of-the-extern-type"},{"id":"ref-for-string-value-of-the-extern-type\u2460"}],"title":"4.1. Modules"}],"url":"#string-value-of-the-extern-type"},
@@ -3843,10 +4021,11 @@ let refsData = {
 "#call-an-exported-function": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"call an exported function","type":"dfn","url":"#call-an-exported-function"},
 "#compile-a-webassembly-module": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"compile a webassembly module","type":"dfn","url":"#compile-a-webassembly-module"},
 "#construct-a-webassembly-module-object": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"construct a webassembly module object","type":"dfn","url":"#construct-a-webassembly-module-object"},
+"#create-a-fixed-length-memory-buffer": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"create a fixed length memory buffer","type":"dfn","url":"#create-a-fixed-length-memory-buffer"},
 "#create-a-global-object": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"create a global object","type":"dfn","url":"#create-a-global-object"},
 "#create-a-host-function": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"create a host function","type":"dfn","url":"#create-a-host-function"},
-"#create-a-memory-buffer": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"create a memory buffer","type":"dfn","url":"#create-a-memory-buffer"},
 "#create-a-memory-object": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"create a memory object","type":"dfn","url":"#create-a-memory-object"},
+"#create-a-resizable-memory-buffer": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"create a resizable memory buffer","type":"dfn","url":"#create-a-resizable-memory-buffer"},
 "#create-a-table-object": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"create a table object","type":"dfn","url":"#create-a-table-object"},
 "#create-an-exports-object": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"create an exports object","type":"dfn","url":"#create-an-exports-object"},
 "#defaultvalue": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"defaultvalue","type":"dfn","url":"#defaultvalue"},
@@ -3864,6 +4043,8 @@ let refsData = {
 "#dom-memory-buffer": {"export":true,"for_":["Memory"],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"buffer","type":"attribute","url":"#dom-memory-buffer"},
 "#dom-memory-grow": {"export":true,"for_":["Memory"],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"grow(delta)","type":"method","url":"#dom-memory-grow"},
 "#dom-memory-memory": {"export":true,"for_":["Memory"],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"Memory(descriptor)","type":"constructor","url":"#dom-memory-memory"},
+"#dom-memory-tofixedlengthbuffer": {"export":true,"for_":["Memory"],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"toFixedLengthBuffer()","type":"method","url":"#dom-memory-tofixedlengthbuffer"},
+"#dom-memory-toresizablebuffer": {"export":true,"for_":["Memory"],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"toResizableBuffer()","type":"method","url":"#dom-memory-toresizablebuffer"},
 "#dom-module-customsections": {"export":true,"for_":["Module"],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"customSections(moduleObject, sectionName)","type":"method","url":"#dom-module-customsections"},
 "#dom-module-exports": {"export":true,"for_":["Module"],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"exports(moduleObject)","type":"method","url":"#dom-module-exports"},
 "#dom-module-imports": {"export":true,"for_":["Module"],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"imports(moduleObject)","type":"method","url":"#dom-module-imports"},
@@ -3896,6 +4077,7 @@ let refsData = {
 "#getglobalvalue": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"getglobalvalue","type":"dfn","url":"#getglobalvalue"},
 "#global": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"Global","type":"interface","url":"#global"},
 "#global-object-cache": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"global object cache","type":"dfn","url":"#global-object-cache"},
+"#grow-the-memory-buffer": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"grow the memory buffer","type":"dfn","url":"#grow-the-memory-buffer"},
 "#identified-with": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"identified with","type":"dfn","url":"#identified-with"},
 "#index-of-the-host-function": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"index of the host function","type":"dfn","url":"#index-of-the-host-function"},
 "#initialize-a-global-object": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"initialize a global object","type":"dfn","url":"#initialize-a-global-object"},
@@ -3911,7 +4093,7 @@ let refsData = {
 "#name-of-the-webassembly-function": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"name of the webassembly function","type":"dfn","url":"#name-of-the-webassembly-function"},
 "#namespacedef-webassembly": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"WebAssembly","type":"namespace","url":"#namespacedef-webassembly"},
 "#read-the-imports": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"read the imports","type":"dfn","url":"#read-the-imports"},
-"#reset-the-memory-buffer": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"reset the memory buffer","type":"dfn","url":"#reset-the-memory-buffer"},
+"#refresh-the-memory-buffer": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"refresh the memory buffer","type":"dfn","url":"#refresh-the-memory-buffer"},
 "#retrieving-an-extern-value": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"retrieving an extern value","type":"dfn","url":"#retrieving-an-extern-value"},
 "#run-a-host-function": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"run a host function","type":"dfn","url":"#run-a-host-function"},
 "#string-value-of-the-extern-type": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-js-api","spec":"wasm-js-api-2","status":"local","text":"string value of the extern type","type":"dfn","url":"#string-value-of-the-extern-type"},
@@ -3937,6 +4119,7 @@ let refsData = {
 "https://infra.spec.whatwg.org/#list-iterate": {"export":true,"for_":["list","set"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"iterate","type":"dfn","url":"https://infra.spec.whatwg.org/#list-iterate"},
 "https://infra.spec.whatwg.org/#list-size": {"export":true,"for_":["list","stack","queue","set"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"size","type":"dfn","url":"https://infra.spec.whatwg.org/#list-size"},
 "https://infra.spec.whatwg.org/#map-exists": {"export":true,"for_":["map"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"exist","type":"dfn","url":"https://infra.spec.whatwg.org/#map-exists"},
+"https://infra.spec.whatwg.org/#map-iterate": {"export":true,"for_":["map"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"iterate","type":"dfn","url":"https://infra.spec.whatwg.org/#map-iterate"},
 "https://infra.spec.whatwg.org/#map-set": {"export":true,"for_":["map"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"set","type":"dfn","url":"https://infra.spec.whatwg.org/#map-set"},
 "https://infra.spec.whatwg.org/#ordered-map": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"ordered map","type":"dfn","url":"https://infra.spec.whatwg.org/#ordered-map"},
 "https://tc39.es/ecma262/multipage/abstract-operations.html#sec-call": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"Call","type":"abstract-op","url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-call"},
@@ -3961,6 +4144,8 @@ let refsData = {
 "https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-ordinaryobjectcreate": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"OrdinaryObjectCreate","type":"abstract-op","url":"https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-ordinaryobjectcreate"},
 "https://tc39.es/ecma262/multipage/structured-data.html#sec-detacharraybuffer": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"DetachArrayBuffer","type":"abstract-op","url":"https://tc39.es/ecma262/multipage/structured-data.html#sec-detacharraybuffer"},
 "https://tc39.es/ecma262/multipage/structured-data.html#sec-numerictorawbytes": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"NumericToRawBytes","type":"abstract-op","url":"https://tc39.es/ecma262/multipage/structured-data.html#sec-numerictorawbytes"},
+"https://tc39.es/proposal-resizablearraybuffer/#sec-hostresizearraybuffer": {"export":true,"for_":[],"level":"","normative":true,"shortname":"resizablearraybuffer proposal","spec":"resizablearraybuffer proposal","status":"anchor-block","text":"hostresizearraybuffer","type":"dfn","url":"https://tc39.es/proposal-resizablearraybuffer/#sec-hostresizearraybuffer"},
+"https://tc39.es/proposal-resizablearraybuffer/#sec-isfixedarraybuffer": {"export":true,"for_":[],"level":"","normative":true,"shortname":"resizablearraybuffer proposal","spec":"resizablearraybuffer proposal","status":"anchor-block","text":"isfixedlengtharraybuffer","type":"dfn","url":"https://tc39.es/proposal-resizablearraybuffer/#sec-isfixedarraybuffer"},
 "https://tc39.github.io/ecma262/#current-realm": {"export":true,"for_":[],"level":"","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"anchor-block","text":"current realm","type":"dfn","url":"https://tc39.github.io/ecma262/#current-realm"},
 "https://tc39.github.io/ecma262/#sec-arraybuffer-objects": {"export":true,"for_":["ECMAScript"],"level":"","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"anchor-block","text":"ArrayBuffer","type":"interface","url":"https://tc39.github.io/ecma262/#sec-arraybuffer-objects"},
 "https://tc39.github.io/ecma262/#sec-built-in-function-objects": {"export":true,"for_":[],"level":"","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"anchor-block","text":"built-in function objects","type":"dfn","url":"https://tc39.github.io/ecma262/#sec-built-in-function-objects"},
@@ -3969,6 +4154,7 @@ let refsData = {
 "https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror": {"export":true,"for_":["ECMAScript"],"level":"","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"anchor-block","text":"TypeError","type":"exception","url":"https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror"},
 "https://tc39.github.io/ecma262/#sec-nativeerror-object-structure": {"export":true,"for_":[],"level":"","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"anchor-block","text":"nativeerror object structure","type":"dfn","url":"https://tc39.github.io/ecma262/#sec-nativeerror-object-structure"},
 "https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands": {"export":true,"for_":[],"level":"","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"anchor-block","text":"?","type":"dfn","url":"https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands"},
+"https://tc39.github.io/ecma262/#sec-samevalue": {"export":true,"for_":[],"level":"","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"anchor-block","text":"samevalue","type":"dfn","url":"https://tc39.github.io/ecma262/#sec-samevalue"},
 "https://tc39.github.io/ecma262/#ℤ": {"export":true,"for_":[],"level":"","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"anchor-block","text":"\u2124","type":"dfn","url":"https://tc39.github.io/ecma262/#\u2124"},
 "https://tc39.github.io/ecma262/#𝔽": {"export":true,"for_":[],"level":"","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"anchor-block","text":"\ud835\udd3d","type":"dfn","url":"https://tc39.github.io/ecma262/#\ud835\udd3d"},
 "https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error": {"export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"error","type":"dfn","url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error"},
@@ -3983,6 +4169,7 @@ let refsData = {
 "https://webassembly.github.io/spec/core/appendix/embedding.html#embed-mem-alloc": {"export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"mem_alloc","type":"dfn","url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-mem-alloc"},
 "https://webassembly.github.io/spec/core/appendix/embedding.html#embed-mem-grow": {"export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"mem_grow","type":"dfn","url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-mem-grow"},
 "https://webassembly.github.io/spec/core/appendix/embedding.html#embed-mem-size": {"export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"mem_size","type":"dfn","url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-mem-size"},
+"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-mem-type": {"export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"mem_type","type":"dfn","url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-mem-type"},
 "https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-decode": {"export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"module_decode","type":"dfn","url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-decode"},
 "https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-exports": {"export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"module_exports","type":"dfn","url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-exports"},
 "https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-imports": {"export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"module_imports","type":"dfn","url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-imports"},
@@ -4004,6 +4191,7 @@ let refsData = {
 "https://webassembly.github.io/spec/core/exec/runtime.html#addresses": {"export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"address","type":"dfn","url":"https://webassembly.github.io/spec/core/exec/runtime.html#addresses"},
 "https://webassembly.github.io/spec/core/exec/runtime.html#global-instances": {"export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"global instance","type":"dfn","url":"https://webassembly.github.io/spec/core/exec/runtime.html#global-instances"},
 "https://webassembly.github.io/spec/core/exec/runtime.html#memory-instances": {"export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"memory instance","type":"dfn","url":"https://webassembly.github.io/spec/core/exec/runtime.html#memory-instances"},
+"https://webassembly.github.io/spec/core/exec/runtime.html#page-size": {"export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"page size","type":"dfn","url":"https://webassembly.github.io/spec/core/exec/runtime.html#page-size"},
 "https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externaddr": {"export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"extern address","type":"dfn","url":"https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externaddr"},
 "https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval": {"export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"external value","type":"dfn","url":"https://webassembly.github.io/spec/core/exec/runtime.html#syntax-externval"},
 "https://webassembly.github.io/spec/core/exec/runtime.html#syntax-frame": {"export":true,"for_":["frame"],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"module","type":"dfn","url":"https://webassembly.github.io/spec/core/exec/runtime.html#syntax-frame"},
