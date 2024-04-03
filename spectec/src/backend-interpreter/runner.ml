@@ -11,6 +11,12 @@ open Ds
 
 let error_interpret at msg = Error.error at "interpreter" msg
 
+(* Logging *)
+
+let logging = ref false
+
+let log fmt = Printf.(if !logging then fprintf stderr fmt else ifprintf stderr fmt)
+
 (* Result *)
 
 let success = 1, 1
@@ -66,7 +72,7 @@ let print_runner_result name result =
     Printf.printf "Total [%d/%d] (%.2f%%)\n\n" num_success total percentage
   else
     Printf.printf "- %d/%d (%.2f%%)\n\n" num_success total percentage;
-  Printf.eprintf "%s took %f ms.\n" name (execution_time *. 1000.)
+  log "%s took %f ms.\n" name (execution_time *. 1000.)
 
 let get_export name modulename =
   modulename
@@ -99,7 +105,7 @@ let get_export_addr name modulename =
 (** Main functions **)
 
 let invoke module_name funcname args =
-  Printf.eprintf "[Invoking %s %s...]\n" funcname (Value.string_of_values args);
+  log "[Invoking %s %s...]\n" funcname (Value.string_of_values args);
 
   let funcaddr = get_export_addr funcname module_name in
   Interpreter.invoke [funcaddr; al_of_list al_of_value args]
@@ -111,7 +117,7 @@ let try_invoke module_name funcname args =
     error_interpret at msg'
 
 let get_global_value module_name globalname =
-  Printf.eprintf "[Getting %s...]\n" globalname;
+  log "[Getting %s...]\n" globalname;
 
   let index = get_export_addr globalname module_name in
   index
@@ -122,7 +128,7 @@ let get_global_value module_name globalname =
   |> listV
 
 let instantiate module_ =
-  Printf.eprintf "[Instantiating module...]\n";
+  log "[Instantiating module...]\n";
 
   let al_module = al_of_module module_ in
   let externvals = List.map get_externval module_.it.imports in
@@ -257,13 +263,13 @@ let run_wat = run_wasm
 
 let parse_file name parser_ file =
   Printf.printf "===== %s =====\n%!" name;
-  Printf.eprintf "===========================\n\n%s\n\n" name;
+  log "===========================\n\n%s\n\n" name;
 
   try
     parser_ file
   with e ->
     print_endline ("- Failed to parse " ^ name ^ "\n");
-    prerr_endline ("- Failed to parse " ^ name ^ "\n");
+    log ("- Failed to parse %s\n") name;
     num_parse_fail := !num_parse_fail + 1;
     raise e
 

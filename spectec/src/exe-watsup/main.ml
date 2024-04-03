@@ -37,7 +37,7 @@ type file_kind =
   | Output
 
 let target = ref Check
-let log = ref false        (* log execution steps *)
+let logging = ref false    (* log execution steps *)
 let in_place = ref false   (* splice patch files in place *)
 let dry = ref false        (* dry run for patching *)
 let warn_math = ref false  (* warn about unused or reused math splices *)
@@ -116,7 +116,8 @@ let argspec = Arg.align
   "-i", Arg.Set in_place, " Splice patch files in-place";
   "-d", Arg.Set dry, " Dry run (when -p) ";
   "-o", Arg.Unit (fun () -> file_kind := Output), " Output files";
-  "-l", Arg.Set log, " Log execution steps";
+  "-l", Arg.Set logging, " Log execution steps";
+  "-ll", Arg.Set Backend_interpreter.Runner.logging, " Log interpreter execution";
   "-w", Arg.Unit (fun () -> warn_math := true; warn_prose := true),
     " Warn about unused or multiply used splices";
   "--warn-math", Arg.Set warn_math,
@@ -152,7 +153,7 @@ let argspec = Arg.align
 
 (* Main *)
 
-let log s = if !log then Printf.printf "== %s\n%!" s
+let log s = if !logging then Printf.printf "== %s\n%!" s
 
 let () =
   Printexc.record_backtrace true;

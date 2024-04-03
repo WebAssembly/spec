@@ -116,7 +116,10 @@ let new_env () =
     defs = Map.empty;
   }
 
-let local_env env = {env with gvars = env.gvars; vars = env.vars; typs = env.typs}
+let local_env env =
+  {env with gvars = env.gvars; vars = env.vars; typs = env.typs}
+let promote_env env' env =
+  env.gvars <- env'.gvars; env.vars <- env'.vars; env.typs <- env'.typs
 
 let bound env' id = Map.mem id.it env'
 
@@ -983,7 +986,9 @@ and infer_exp' env e : Il.exp' * typ =
 
 and elab_exp env e t : Il.exp =
   try
-    let e' = elab_exp' env e t in
+    let env' = local_env env in
+    let e' = elab_exp' env' e t in
+    promote_env env' env;
     e' $$ e.at % elab_typ env t
   with Error _ when is_notation_typ env t ->
     Debug.(log_in_at "el.elab_exp" e.at
@@ -1230,8 +1235,10 @@ and elab_exp_notation' env tid e t : Il.exp list * Subst.t =
   (* Optional iterations may always be inlined, use backtracking *)
   | SeqE (e1::es2), SeqT (t1::ts2) when is_opt_notation_typ env t1 ->
     (try
-      let es1' = [cast_empty "omitted sequence tail" env t1 e.at (!!!env tid t1)] in
-      let es2', s2 = elab_exp_notation' env tid e (SeqT ts2 $ t.at) in
+      let env' = local_env env in
+      let es1' = [cast_empty "omitted sequence tail" env' t1 e.at (!!!env' tid t1)] in
+      let es2', s2 = elab_exp_notation' env' tid e (SeqT ts2 $ t.at) in
+      promote_env env' env;
       es1' @ es2', s2
     with Error _ ->
       Debug.(log_in_at "el.elab_exp_notation" e.at
@@ -1433,12 +1440,17 @@ and cast_exp' phrase env e' t1 t2 : Il.exp' =
     Il.CaseE (mixop2, tup_exp_bind' es'' e'.at)
   | ConT ((t11, _), _), t2' ->
     (try
-      match t2' with
-      | IterT (t21, Opt) ->
-        Il.OptE (Some (cast_exp phrase env e' t1 t21))
-      | IterT (t21, (List | List1)) ->
-        Il.ListE [cast_exp phrase env e' t1 t21]
-      | _ -> raise (Error (e'.at, ""))
+      let env' = local_env env in
+      let e' =
+        match t2' with
+        | IterT (t21, Opt) ->
+          Il.OptE (Some (cast_exp phrase env' e' t1 t21))
+        | IterT (t21, (List | List1)) ->
+          Il.ListE [cast_exp phrase env' e' t1 t21]
+        | _ -> raise (Error (e'.at, ""))
+      in
+      promote_env env' env;
+      e'
     with Error _ ->  (* backtrack *)
       Debug.(log_in_at "el.cast_exp" e'.at
         (fun _ -> fmt "%s <: %s  >>  (%s) <: (%s) = (%s) # backtrack 1" (el_typ t1) (el_typ t2)
@@ -1459,12 +1471,17 @@ and cast_exp' phrase env e' t1 t2 : Il.exp' =
     Il.CaseE (mixop, tup_exp_bind' [cast_exp phrase env e' t1 t211] e'.at)
   | RangeT _, t2' ->
     (try
-      match t2' with
-      | IterT (t21, Opt) ->
-        Il.OptE (Some (cast_exp phrase env e' t1 t21))
-      | IterT (t21, (List | List1)) ->
-        Il.ListE [cast_exp phrase env e' t1 t21]
-      | _ -> raise (Error (e'.at, ""))
+      let env' = local_env env in
+      let e' =
+        match t2' with
+        | IterT (t21, Opt) ->
+          Il.OptE (Some (cast_exp phrase env e' t1 t21))
+        | IterT (t21, (List | List1)) ->
+          Il.ListE [cast_exp phrase env e' t1 t21]
+        | _ -> raise (Error (e'.at, ""))
+      in
+      promote_env env' env;
+      e'
     with Error _ ->  (* backtrack *)
       Debug.(log_in_at "el.cast_exp" e'.at
         (fun _ -> fmt "%s <: %s  >>  (%s) <: (%s) = (%s) # backtrack 2" (el_typ t1) (el_typ t2)
