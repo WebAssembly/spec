@@ -3,6 +3,7 @@
 
 import os
 import sys
+import re
 
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -62,6 +63,28 @@ def Main():
       """<a class="reference external" href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a>""",
       "[[!IEEE-754-2019]]"
   )
+
+  # Fix this problem that causes an <a> element to be generated in the output
+  # as a child of another <a> element, and for which the HTML validator reports
+  # an error — which in turn causes the W3C pubrules checker to refuse to
+  # autopublish the resulting bikeshed output.
+  data = data.replace(
+      """\href{#binary-sint}{\href{#syntax-int}""",
+      """{\href{#syntax-int}""")
+
+  # Strip the entire <head> element from the the sphinx output — because it
+  # contains several <meta>, <script>, and <link> elements that are unnecessary
+  # in the bikeshed version and problematic in various ways but that otherwise
+  # get carried over into the resulting bikeshed output and then end up causing
+  # the W3C pubrules checker to refuse to autopublish that bikeshed output.
+  data = re.sub(r'.+?(<div class="toctree-wrapper compound">.+)',
+                r'<!doctype HTML>\n<meta charset="utf-8">\n<body>\1',
+                data, flags=re.DOTALL)
+
+  # Drop spurious navigation from footer.
+  data = re.sub(r'(.+?)<div class="clearer">.+',
+                r'\1',
+                data, flags=re.DOTALL)
 
   sys.stdout.write(data)
 

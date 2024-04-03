@@ -419,6 +419,7 @@ It filters out entries of a specific kind in an order-preserving fashion:
    pair: abstract syntax; frame
    pair: abstract syntax; label
 .. _syntax-frame:
+.. _syntax-framestate:
 .. _syntax-label:
 .. _frame:
 .. _label:
@@ -486,6 +487,8 @@ and a reference to the function's own :ref:`module instance <syntax-moduleinst>`
 .. math::
    \begin{array}{llll}
    \production{frame} & \frame &::=&
+     \FRAME_n\{ \framestate \} \\
+   \production{frame state} & \framestate &::=&
      \{ \ALOCALS~\val^\ast, \AMODULE~\moduleinst \} \\
    \end{array}
 
@@ -499,7 +502,7 @@ Conventions
 
 * The meta variable :math:`L` ranges over labels where clear from context.
 
-* The meta variable :math:`F` ranges over frames where clear from context.
+* The meta variable :math:`F` ranges over frame states where clear from context.
 
 * The following auxiliary definition takes a :ref:`block type <syntax-blocktype>` and looks up the :ref:`function type <syntax-functype>` that it denotes in the current frame:
 
@@ -534,7 +537,7 @@ In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-ca
      \REFEXTERNADDR~\externaddr \\ &&|&
      \INVOKE~\funcaddr \\ &&|&
      \LABEL_n\{\instr^\ast\}~\instr^\ast~\END \\ &&|&
-     \FRAME_n\{\frame\}~\instr^\ast~\END \\
+     \FRAME_n\{\framestate\}~\instr^\ast~\END \\
    \end{array}
 
 The |TRAP| instruction represents the occurrence of a trap.
@@ -618,14 +621,14 @@ Configurations
 A *configuration* consists of the current :ref:`store <syntax-store>` and an executing *thread*.
 
 A thread is a computation over :ref:`instructions <syntax-instr>`
-that operates relative to a current :ref:`frame <syntax-frame>` referring to the :ref:`module instance <syntax-moduleinst>` in which the computation runs, i.e., where the current function originates from.
+that operates relative to the state of a current :ref:`frame <syntax-framestate>` referring to the :ref:`module instance <syntax-moduleinst>` in which the computation runs, i.e., where the current function originates from.
 
 .. math::
    \begin{array}{llcl}
    \production{configuration} & \config &::=&
      \store; \thread \\
    \production{thread} & \thread &::=&
-     \frame; \instr^\ast \\
+     \framestate; \instr^\ast \\
    \end{array}
 
 .. note::

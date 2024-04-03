@@ -1,6 +1,6 @@
 # This Makefile uses dune but does not rely on ocamlfind or the Opam
 # package manager to build. However, Opam package management is available
-# optionally through the check/install/uninstall targets.
+# optionally through the install target.
 #
 # The $(JSLIB).js target requires Js_of_ocaml (using ocamlfind).
 #
@@ -9,80 +9,92 @@
 
 # Configuration
 
-NAME = wasm
-OPT =		$(NAME).exe
-ZIP =		$(NAME).zip
+NAME =		wasm
+LIB =		$(NAME)
 JSLIB =		wast.js
+ZIP =		$(NAME).zip
 
-BUILDDIR = _build/default
+BUILDDIR =	_build/default
 
 JS =		# set to JS shell command to run JS tests, empty to skip
 
 
 # Main targets
 
-.PHONY:		default opt jslib all zip smallint
+.PHONY:		default all ci jslib zip
 
-default:	$(OPT)
+default:	$(NAME)
+all:		default partest
+ci:		all jslib zip
+
 jslib:		$(JSLIB)
-all:		$(OPT) test
 zip:		$(ZIP)
-smallint:	smallint.exe
-ci:		all jslib
 
-# Building executable
-.PHONY:		$(NAME).exe
-$(NAME).exe:
-	rm -f $(NAME)
-	dune build $@
-	cp $(BUILDDIR)/$(OPT) $(NAME)
 
-.PHONY:		smallint.exe
-smallint.exe:
-	dune build $@
+# Building
 
-# Building JavaScript library
+.PHONY:		$(NAME) $(JSLIB)
 
-$(JSLIB):	$(BUILDDIR)/$(JSLIB)
-	cp $< $@
+$(NAME):
+	rm -f $@
+	dune build $@.exe
+	ln $(BUILDDIR)/$@.exe $@
 
-$(BUILDDIR)/$(JSLIB):
-	dune build $(JSLIB)
+$(JSLIB):
+	rm -f $@
+	dune build $(@:%.js=%.bc.js)
+	ln $(BUILDDIR)/$(@:%.js=%.bc.js) $@
 
-# Executing test suite
+
+# Unit tests
+
+UNITTESTDIR =	unittest
+UNITTESTFILES =	$(shell cd $(UNITTESTDIR) > /dev/null; ls *.ml)
+UNITTESTS =	$(UNITTESTFILES:%.ml=%)
+
+.PHONY: unittest
+
+unittest: $(UNITTESTS:%=unittest/%)
+
+unittest/%:
+	dune build $(@F).exe
+	dune exec ./$(@F).exe
+
+
+# Test suite
 
 TESTDIR =	../test/core
-# Skip _output directory, since that's a tmp directory, and list all other wast files.
-TESTFILES =	$(shell cd $(TESTDIR); ls *.wast; ls [a-z]*/*.wast)
+TESTFILES =	$(shell cd $(TESTDIR) > /dev/null; ls *.wast; ls [a-z]*/*.wast)
 TESTS =		$(TESTFILES:%.wast=%)
 
-.PHONY:		test partest dune-test
+.PHONY: test partest quiettest
 
-test:		$(OPT) smallint
-		$(TESTDIR)/run.py --wasm `pwd`/$(BUILDDIR)/$(OPT) $(if $(JS),--js '$(JS)',)
-		dune exec ./smallint.exe
+test: $(NAME) unittest
+	$(TESTDIR)/run.py --wasm `pwd`/$(NAME) $(if $(JS),--js '$(JS)',)
 
-test/%:		$(OPT)
-		$(TESTDIR)/run.py --wasm `pwd`/$(BUILDDIR)/$(OPT) $(if $(JS),--js '$(JS)',) $(TESTDIR)/$*.wast
+test/%: $(NAME)
+	$(TESTDIR)/run.py --wasm `pwd`/$(NAME) $(if $(JS),--js '$(JS)',) $(TESTDIR)/$*.wast
 
-run/%:		$(OPT)
-		./$(OPT) $(TESTDIR)/$*.wast
+run/%: $(NAME)
+	./$(NAME) $(TESTDIR)/$*.wast
 
-partest:	$(TESTS:%=quiettest/%)
-		@echo All tests passed.
+partest: $(NAME) unittest
+	make -j10 quiettest
 
-quiettest/%:	$(OPT)
-		@ ( \
-		  $(TESTDIR)/run.py 2>$(@F).out --wasm `pwd`/$(BUILDDIR)/$(OPT) $(if $(JS),--js '$(JS)',) $(TESTDIR)/$*.wast && \
-		  rm $(@F).out \
-		) || \
-		cat $(@F).out || rm $(@F).out || exit 1
+quiettest: $(TESTS:%=quiettest/%)
+	@echo All tests passed.
 
-smallinttest:	smallint
-	dune exec ./smallint.exe
+quiettest/%: $(NAME)
+	@ ( \
+	  $(TESTDIR)/run.py 2>$(@F).out --wasm `pwd`/$(NAME) $(if $(JS),--js '$(JS)',) $(TESTDIR)/$*.wast && \
+	  rm $(@F).out \
+	) || \
+	(cat $(@F).out && rm $(@F).out && exit 1)
 
-dunetest:
-	dune test
+
+# Packaging
+
+.PHONY: install
 
 install:
 	dune build -p $(NAME) @install
@@ -101,15 +113,16 @@ opam-release/%:
 	rm opam-$*.zip
 	@echo Created file ./opam, submit to github opam-repository/packages/wasm/wasm.$*/opam
 
-# Miscellaneous targets
-
-.PHONY:		clean
-
 $(ZIP):
 	git archive --format=zip --prefix=$(NAME)/ -o $@ HEAD
+
+
+# Cleanup
+
+.PHONY: clean distclean
 
 clean:
 	dune clean
 
 distclean: clean
-	rm -f $(NAME) $(JSLIB)
+	rm -f $(NAME) $(JSLIB) $(ZIP)

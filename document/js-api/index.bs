@@ -3,14 +3,16 @@ Title: WebAssembly JavaScript Interface
 Shortname: wasm-js-api
 Group: wasm
 Status: ED
+Issue Tracking: GitHub https://github.com/WebAssembly/spec/issues
 Level: 2
 TR: https://www.w3.org/TR/wasm-js-api-2/
 ED: https://webassembly.github.io/spec/js-api/
-Editor: Ms2ger, Igalia
+Editor: Ms2ger, w3cid 46309, Igalia
 Repository: WebAssembly/spec
 Markup Shorthands: css no, markdown yes
 Abstract: This document provides an explicit JavaScript API for interacting with WebAssembly.
 Prepare For TR: true
+Date: now
 </pre>
 
 <pre class='biblio'>
@@ -438,16 +440,6 @@ The verification of WebAssembly type requirements is deferred to the
                 If this throws an exception, catch it, [=reject=] |promise| with the exception, and terminate these substeps.
             1. [=Resolve=] |promise| with |instanceObject|.
     1. Return |promise|.
-</div>
-
-<div algorithm="instantiate">
-  To <dfn>synchronously instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
-    1. Let |module| be |moduleObject|.\[[Module]].
-    1. [=Read the imports=] of |module| with imports |importObject|, and let |imports| be the result.
-    1. [=Instantiate the core of a WebAssembly module=] |module| with |imports|, and let |instance| be the result.
-    1. Let |instanceObject| be a [=/new=] {{Instance}}.
-    1. [=initialize an instance object|Initialize=] |instanceObject| from |module| and |instance|.
-    1. Return |instanceObject|.
 </div>
 
 <div algorithm>
@@ -932,7 +924,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
 <div algorithm>
     To <dfn>create a global object</dfn> from a [=global address=] |globaladdr|, perform the following steps:
-    1. Let |map| be the current [=agent=]'s associated [=Global object cache=].
+    1. Let |map| be the [=surrounding agent=]'s associated [=Global object cache=].
     1. If |map|[|globaladdr|] [=map/exists=],
         1. Return |map|[|globaladdr|].
     1. Let |global| be a [=/new=] {{Global}}.
@@ -1099,7 +1091,7 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
     1. Otherwise,
         1. Let |method| be [=?=] [$GetMethod$](|ret|, {{@@iterator}}).
         1. If |method| is undefined, [=throw=] a {{TypeError}}.
-        1. Let |values| be [=?=] [$IterableToList$](|ret|, |method|).
+        1. Let |values| be [=?=] [$IteratorToList$]([=?=] [$GetIteratorFromMethod$](|ret|, |method|)).
         1. Let |wasmValues| be a new, empty [=list=].
         1. If |values|'s [=list/size=] is not |resultsSize|, throw a {{TypeError}} exception.
         1. For each |value| and |resultType| in |values| and |results|, paired linearly,

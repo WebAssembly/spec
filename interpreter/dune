@@ -6,7 +6,8 @@
  ; Wasm REPL every time in all the dependencies.
  ; We exclude the 'wast' module as it is only used for the JS build.
  ; 'smallint' is a separate test module.
- (modules :standard \ main wasm smallint wast))
+ (modules :standard \ main wasm smallint wast)
+ (libraries menhirLib))
 
 (executable
  (public_name wasm)
@@ -34,11 +35,6 @@
   (deps main/main.ml)
   (action (copy main/main.ml wasm.ml)))
 
-(rule
-  (targets wast.js)
-  (deps wast.bc.js)
-  (action (copy wast.bc.js wast.js)))
-
 (subdir
  text
  (rule
@@ -48,7 +44,7 @@
    (chdir
     %{workspace_root}
     (run %{bin:ocamllex} -ml -q -o %{target} %{deps}))))
- (ocamlyacc
+ (menhir
   (modules parser)))
 
 (env

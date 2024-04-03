@@ -12,10 +12,11 @@ import sys
 
 ownDir = os.path.dirname(os.path.abspath(sys.argv[0]))
 inputDir = ownDir
+interpDir = os.path.join(os.path.dirname(os.path.dirname(ownDir)), 'interpreter')
 outputDir = os.path.join(inputDir, "_output")
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--wasm", metavar="<wasm-command>", default=os.path.join(os.getcwd(), "wasm"))
+parser.add_argument("--wasm", metavar="<wasm-command>", default=os.path.join(interpDir, "wasm"))
 parser.add_argument("--js", metavar="<js-command>")
 parser.add_argument("--generate-js-only", action='store_true')
 parser.add_argument("--out", metavar="<out-dir>", default=outputDir)
@@ -112,7 +113,7 @@ class RunTests(unittest.TestCase):
 
 if __name__ == "__main__":
   if not os.path.exists(outputDir):
-    os.makedirs(outputDir)
+    os.makedirs(outputDir, exist_ok=True)
   for fileName in inputFiles:
     testName = 'test ' + os.path.basename(fileName)
     setattr(RunTests, testName, lambda self, file=fileName: self._runTestFile(file))

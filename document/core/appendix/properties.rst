@@ -362,10 +362,14 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * Let :math:`\reftype^\ast` be the concatenation of all :math:`\reftype_i` in order.
 
+* Let :math:`m` be the length of :math:`\moduleinst.\MIFUNCS`.
+
 * Let :math:`n` be the length of :math:`\moduleinst.\MIDATAS`.
 
+* Let :math:`x^\ast` be the sequence of :ref:`function indices <syntax-funcidx>` from :math:`0` to :math:`m-1`.
+
 * Then the module instance is valid with :ref:`context <context>`
-  :math:`\{\CTYPES~\functype^\ast,` :math:`\CFUNCS~{\functype'}^\ast,` :math:`\CTABLES~\tabletype^\ast,` :math:`\CMEMS~\memtype^\ast,` :math:`\CGLOBALS~\globaltype^\ast,` :math:`\CELEMS~\reftype^\ast,` :math:`\CDATAS~{\ok}^n\}`.
+  :math:`\{\CTYPES~\functype^\ast,` :math:`\CFUNCS~{\functype'}^\ast,` :math:`\CTABLES~\tabletype^\ast,` :math:`\CMEMS~\memtype^\ast,` :math:`\CGLOBALS~\globaltype^\ast,` :math:`\CELEMS~\reftype^\ast,` :math:`\CDATAS~{\ok}^n,` :math:`\CREFS~x^\ast\}`.
 
 .. math::
    ~\\[-1ex]
@@ -407,7 +411,8 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
          \CMEMS & \memtype^\ast, \\
          \CGLOBALS & \globaltype^\ast, \\
          \CELEMS & \reftype^\ast, \\
-         \CDATAS & {\ok}^n ~\}
+         \CDATAS & {\ok}^n, \\
+         \CREFS & 0 \dots (|\funcaddr^\ast|-1) ~\}
          \end{array}
        \end{array}
    }
@@ -665,9 +670,9 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 
 * For each :ref:`global instance <syntax-globalinst>` :math:`\globalinst_i` in the original :math:`S.\SGLOBALS`, the new global instance must be an :ref:`extension <extend-globalinst>` of the old.
 
-* For each :ref:`element instance <syntax-eleminst>` :math:`\eleminst_i` in the original :math:`S.\SELEMS`, the new global instance must be an :ref:`extension <extend-eleminst>` of the old.
+* For each :ref:`element instance <syntax-eleminst>` :math:`\eleminst_i` in the original :math:`S.\SELEMS`, the new element instance must be an :ref:`extension <extend-eleminst>` of the old.
 
-* For each :ref:`data instance <syntax-datainst>` :math:`\datainst_i` in the original :math:`S.\SDATAS`, the new global instance must be an :ref:`extension <extend-datainst>` of the old.
+* For each :ref:`data instance <syntax-datainst>` :math:`\datainst_i` in the original :math:`S.\SDATAS`, the new data instance must be an :ref:`extension <extend-datainst>` of the old.
 
 .. math::
    \frac{

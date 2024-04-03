@@ -853,6 +853,10 @@ Vector constant instructions have a mandatory :ref:`shape <syntax-vec-shape>` de
      \text{f32x4.abs} &\Rightarrow& \F32X4.\VABS\\ &&|&
      \text{f32x4.neg} &\Rightarrow& \F32X4.\VNEG\\ &&|&
      \text{f32x4.sqrt} &\Rightarrow& \F32X4.\VSQRT\\ &&|&
+     \text{f32x4.ceil} &\Rightarrow& \F32X4.\VCEIL\\ &&|&
+     \text{f32x4.floor} &\Rightarrow& \F32X4.\VFLOOR\\ &&|&
+     \text{f32x4.trunc} &\Rightarrow& \F32X4.\VTRUNC\\ &&|&
+     \text{f32x4.nearest} &\Rightarrow& \F32X4.\VNEAREST\\ &&|&
      \text{f32x4.add} &\Rightarrow& \F32X4.\VADD\\ &&|&
      \text{f32x4.sub} &\Rightarrow& \F32X4.\VSUB\\ &&|&
      \text{f32x4.mul} &\Rightarrow& \F32X4.\VMUL\\ &&|&
@@ -869,6 +873,10 @@ Vector constant instructions have a mandatory :ref:`shape <syntax-vec-shape>` de
      \text{f64x2.abs} &\Rightarrow& \F64X2.\VABS\\ &&|&
      \text{f64x2.neg} &\Rightarrow& \F64X2.\VNEG\\ &&|&
      \text{f64x2.sqrt} &\Rightarrow& \F64X2.\VSQRT\\ &&|&
+     \text{f64x2.ceil} &\Rightarrow& \F64X2.\VCEIL\\ &&|&
+     \text{f64x2.floor} &\Rightarrow& \F64X2.\VFLOOR\\ &&|&
+     \text{f64x2.trunc} &\Rightarrow& \F64X2.\VTRUNC\\ &&|&
+     \text{f64x2.nearest} &\Rightarrow& \F64X2.\VNEAREST\\ &&|&
      \text{f64x2.add} &\Rightarrow& \F64X2.\VADD\\ &&|&
      \text{f64x2.sub} &\Rightarrow& \F64X2.\VSUB\\ &&|&
      \text{f64x2.mul} &\Rightarrow& \F64X2.\VMUL\\ &&|&
@@ -913,7 +921,7 @@ Such a folded instruction can appear anywhere a regular instruction can.
 
 .. math::
    \begin{array}{lllll}
-   \production{instruction} & 
+   \production{instruction} &
      \text{(}~\Tplaininstr~~\Tfoldedinstr^\ast~\text{)}
        &\equiv\quad \Tfoldedinstr^\ast~~\Tplaininstr \\ &
      \text{(}~\text{block}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~\text{)}
