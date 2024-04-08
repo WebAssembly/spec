@@ -1085,10 +1085,10 @@ $${rule: {Step_pure/vtestop-*}}
 
 .. _exec-vrelop:
 
-:math:`t\K{x}N\K{.}\vrelop`
-...........................
+$${rule-prose: exec/vrelop}
 
-.. todo:: (*) Prose not spliced, for this seems to be WIP on @Andreas.
+.. todo::
+   Below is the actual prose.
 
 1. Assert: due to :ref:`validation <valid-vrelop>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
 
@@ -1123,10 +1123,10 @@ $${rule: {Step_pure/vrelop}}
 
 .. _exec-vshiftop:
 
-:math:`t\K{x}N\K{.}\vishiftop`
-..............................
+$${rule-prose: exec/vshiftop}
 
-.. todo:: (*) Prose not spliced, for this seems to be WIP on @Andreas.
+.. todo::
+   Below is the actual prose.
 
 1. Assert: due to :ref:`validation <valid-vishiftop>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
@@ -1161,10 +1161,10 @@ $${rule: {Step_pure/vshiftop}}
 
 .. _exec-vec-bitmask:
 
-:math:`t\K{x}N\K{.}\BITMASK`
-............................
+$${rule-prose: exec/vbitmask}
 
-.. todo:: (*) Prose not spliced, for this seems to be WIP on @Andreas.
+.. todo::
+   Below is the actual prose.
 
 1. Assert: due to :ref:`validation <valid-vec-bitmask>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
@@ -1194,10 +1194,10 @@ $${rule: {Step_pure/vbitmask}}
 
 .. _exec-vec-swizzle:
 
-:math:`\K{i8x16.}\SWIZZLE`
-..........................
+$${rule-prose: exec/vswizzle}
 
-.. todo:: (*) Prose not spliced, for this seems to be WIP on @Andreas.
+.. todo::
+   Below is the actual prose.
 
 1. Assert: due to :ref:`validation <valid-vbinop>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
 
@@ -1233,10 +1233,10 @@ $${rule: {Step_pure/vswizzle}}
 
 .. _exec-vec-shuffle:
 
-:math:`\K{i8x16.}\SHUFFLE~x^\ast`
-.................................
+$${rule-prose: exec/vshuffle}
 
-.. todo:: (*) Prose not spliced, for this seems to be WIP on @Andreas.
+.. todo::
+   Below is the actual prose.
 
 1. Assert: due to :ref:`validation <valid-vec-shuffle>`, two values of :ref:`value type <syntax-valtype>` |V128| are on the top of the stack.
 
@@ -1273,10 +1273,10 @@ $${rule: {Step_pure/vshuffle}}
 
 .. _exec-vec-splat:
 
-:math:`\shape\K{.}\SPLAT`
-.........................
+$${rule-prose: exec/vsplat}
 
-.. todo:: (*) Prose not spliced, for this seems to be WIP on @Andreas.
+.. todo::
+   Below is the actual prose.
 
 1. Let :math:`t` be the type :math:`\unpacked(\shape)`.
 
@@ -1303,10 +1303,10 @@ $${rule: {Step_pure/vsplat}}
 
 .. _exec-vec-extract_lane:
 
-:math:`t_1\K{x}N\K{.}\EXTRACTLANE\K{\_}\sx^?~x`
-...............................................
+$${rule-prose: exec/vextract_lane}
 
-.. todo:: (*) Prose not spliced, for this seems to be WIP on @Andreas.
+.. todo::
+   Below is the actual prose.
 
 1. Assert: due to :ref:`validation <valid-vec-extract_lane>`, :math:`x < N`.
 
@@ -1339,10 +1339,10 @@ $${rule: {Step_pure/vextract_lane-*}}
 
 .. _exec-vec-replace_lane:
 
-:math:`\shape\K{.}\REPLACELANE~x`
-.................................
+$${rule-prose: exec/vreplace_lane}
 
-.. todo:: (*) Prose not spliced, for this seems to be WIP on @Andreas.
+.. todo::
+   Below is the actual prose.
 
 1. Assert: due to :ref:`validation <valid-vec-replace_lane>`, :math:`x < \dim(\shape)`.
 
@@ -1379,10 +1379,10 @@ $${rule: {Step_pure/vreplace_lane}}
 
 .. _exec-vec-extadd_pairwise:
 
-:math:`t_2\K{x}N\K{.}\EXTADDPAIRWISE\_t_1\K{x}M\_\sx`
-.....................................................
+$${rule-prose: exec/vextunop}
 
-.. todo:: (*) Prose not spliced, for this seems to be WIP on @Andreas.
+.. todo::
+   Below is the actual prose.
 
 1. Assert: due to :ref:`syntax <syntax-instr-vec>`, :math:`N = M / 2`.
 
@@ -1418,10 +1418,10 @@ $${rule: {Step_pure/vextunop}}
 
 .. _exec-vec-extmul:
 
-:math:`t_2\K{x}N\K{.}\EXTMUL\K{\_}\half\K{\_}t_1\K{x}M\K{\_}\sx`
-................................................................
+$${rule-prose: exec/vextbinop}
 
-.. todo:: (*) Prose not spliced, for this seems to be WIP on @Andreas.
+.. todo::
+   Below is the actual prose.
 
 1. Assert: due to :ref:`syntax <syntax-instr-vec>`, :math:`N = M / 2`.
 
@@ -1524,10 +1524,10 @@ where:
 
 .. _exec-vec-narrow:
 
-:math:`t_2\K{x}N\K{.}\NARROW\K{\_}t_1\K{x}M\K{\_}\sx`
-.....................................................
+$${rule-prose: exec/vnarrow}
 
-.. todo:: (*) Prose not spliced, for this seems to be WIP on @Andreas.
+.. todo::
+   Below is the actual prose.
 
 1. Assert: due to :ref:`syntax <syntax-instr-vec>`, :math:`N = 2\cdot M`.
 
@@ -1572,7 +1572,7 @@ $${rule: {Step_pure/vnarrow}}
 :math:`t_2\K{x}N\K{.}\vcvtop\K{\_}t_1\K{x}M\K{\_}\sx`
 .....................................................
 
-.. todo:: (*) Prose not spliced, for this seems to be WIP on @Andreas.
+.. todo:: (*) Prose not spliced, for it has merged multiple rules for vcvtop into one algorithm.
 
 1. Assert: due to :ref:`syntax <syntax-instr-vec>`, :math:`N = M`.
 
@@ -1605,7 +1605,7 @@ $${rule: {Step_pure/vcvtop-full}}
 :math:`t_2\K{x}N\K{.}\vcvtop\K{\_}\half\K{\_}t_1\K{x}M\K{\_}\sx^?`
 ..................................................................
 
-.. todo:: (*) Prose not spliced, for this seems to be WIP on @Andreas.
+.. todo:: (*) Prose not spliced, for it has merged multiple rules for vcvtop into one algorithm.
 
 1. Assert: due to :ref:`syntax <syntax-instr-vec>`, :math:`N = M / 2`.
 
@@ -1654,7 +1654,7 @@ where:
 :math:`t_2\K{x}N\K{.}\vcvtop\K{\_}t_1\K{x}M\K{\_}\sx^?\K{\_zero}`
 .................................................................
 
-.. todo:: (*) Prose not spliced, for this seems to be WIP on @Andreas.
+.. todo:: (*) Prose not spliced, for it has merged multiple rules for vcvtop into one algorithm.
 
 1. Assert: due to :ref:`syntax <syntax-instr-vec>`, :math:`N = 2 \cdot M`.
 
