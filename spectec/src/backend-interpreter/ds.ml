@@ -264,9 +264,10 @@ module WasmContext = struct
     | Some (v, _, _) -> v
     | None -> failwith "Wasm context stack underflow"
 
-  let get_current_context () =
-    let ctx, _, _ = get_context () in
-    ctx
+  let get_top_context () =
+    let ctx, vs, _ = get_context () in
+    if List.length vs = 0 then Some ctx 
+    else None
 
   let get_current_frame () =
     let match_frame = function
@@ -279,11 +280,6 @@ module WasmContext = struct
       | LabelV _ -> true
       | _ -> false
     in get_value_with_condition match_label
-
-  let get_top_context () =
-    let ctx, vs, _ = get_context () in
-    if List.length vs = 0 then Some ctx 
-    else None
 
   let get_module_instance () =
     match get_current_frame () with
