@@ -13,3 +13,11 @@
   ACM-SIGPLAN Conference on Object-Oriented Programming, Systems, Language and Architectures (OOSPLA 2019)
 
   *Describes and formalises the extension of WebAssembly with threads and a suitable memory model.*
+
+* [Bringing the WebAssembly Standard up to Speed with SpecTec](pldi2024.pdf)
+
+  Dongjun Youn, Wonho Shin, Jaehyun Lee, Sukyoung Ryu, Joachim Breitner, Philippa Gardner, Sam Lindley, Matija Pretnar, Rao Xiaojia, Conrad Watt, Andreas Rossberg
+
+  ACM-SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2024)
+
+  *Describes the design and implementation of Wasm SpecTec.*
