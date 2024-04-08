@@ -280,6 +280,20 @@ let remove_dead_assignment il =
         | EnterI (e1, e2, il) ->
           let il', bounds = remove_dead_assignment' il ([], bounds) in
           enterI (e1, e2, il') ~at:at :: acc, bounds @ free_expr e1 @ free_expr e2
+        (* n in, Let val'* ++ val^n be val*. should be bound, not binding *)
+        | LetI ({ it = CatE (e11, e12) ; _ }, e2) ->
+          let bindings = free_expr e11 @ free_expr e12 in
+          let get_bounds_iters e =
+            match e.it with
+            | IterE (_, _, ListN (e_iter, _)) -> free_expr e_iter 
+            | _ -> IdSet.empty
+          in
+          let bounds_iters = (get_bounds_iters e11) @ (get_bounds_iters e12) in
+          let bindings = IdSet.diff bindings bounds_iters in
+          if IdSet.(is_empty (inter bindings bounds)) then
+            acc, bounds
+          else
+            (instr :: acc), (IdSet.diff bounds bindings) @ free_expr e2
         | LetI (e1, e2) ->
           let bindings = free_expr e1 in
           if IdSet.(is_empty (inter bindings bounds)) then
@@ -588,7 +602,10 @@ let ensure_return il =
 let remove_exit algo =
   let exit_to_pop instr =
     match instr.it with
-    | ExitI -> popI (getCurContextE ()) ~at:instr.at
+    | ExitI (Il.Atom.Atom "FRAME_", _) ->
+        popI (getCurFrameE ()) ~at:instr.at
+    | ExitI (Il.Atom.Atom "LABEL_", _) ->
+        popI (getCurLabelE ()) ~at:instr.at
     | _ -> instr
   in
 

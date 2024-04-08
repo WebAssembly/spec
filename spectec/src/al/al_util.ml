@@ -29,7 +29,7 @@ let returnI ?(at = no) e_opt = ReturnI e_opt |> mk_instr at
 let executeI ?(at = no) e = ExecuteI e |> mk_instr at
 let executeseqI ?(at = no) e = ExecuteSeqI e |> mk_instr at
 let performI ?(at = no) (id, el) = PerformI (id, el) |> mk_instr at
-let exitI ?(at = no) () = ExitI |> mk_instr at
+let exitI ?(at = no) a = ExitI a |> mk_instr at
 let replaceI ?(at = no) (e1, p, e2) = ReplaceI (e1, p, e2) |> mk_instr at
 let appendI ?(at = no) (e1, e2) = AppendI (e1, e2) |> mk_instr at
 let otherwiseI ?(at = no) il = OtherwiseI il |> mk_instr at

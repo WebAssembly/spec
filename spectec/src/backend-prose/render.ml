@@ -447,6 +447,8 @@ and render_prose_instrs env depth instrs =
 let render_stack_prefix expr =
   match expr.it with
   | Al.Ast.GetCurContextE
+  | Al.Ast.GetCurFrameE
+  | Al.Ast.GetCurLabelE
   | Al.Ast.ContE _
   | Al.Ast.FrameE _
   | Al.Ast.LabelE _
@@ -518,7 +520,7 @@ let rec render_al_instr env algoname index depth instr =
     sprintf "%s Pop %s%s from the stack." (render_order index depth)
       (render_stack_prefix e) (render_expr env e)
   | Al.Ast.PopAllI e ->
-    sprintf "%s Pop all values %s from the stack." (render_order index depth)
+    sprintf "%s Pop all values %s from the top of the stack." (render_order index depth)
       (render_expr env e)
   | Al.Ast.LetI (n, e) ->
     sprintf "%s Let %s be %s." (render_order index depth) (render_expr env n)
@@ -538,7 +540,8 @@ let rec render_al_instr env algoname index depth instr =
     sprintf "%s Execute the sequence %s." (render_order index depth) (render_expr env e)
   | Al.Ast.PerformI (n, es) ->
     sprintf "%s Perform %s." (render_order index depth) (render_expr env (Al.Ast.CallE (n, es) $ no_region))
-  | Al.Ast.ExitI -> render_order index depth ^ " Exit current context."
+  | Al.Ast.ExitI a ->
+    sprintf "%s Exit from %s." (render_order index depth) (render_atom env a)
   | Al.Ast.ReplaceI (e1, p, e2) ->
     sprintf "%s Replace %s with %s." (render_order index depth)
       (render_expr env (Al.Ast.AccE (e1, p) $ no_region)) (render_expr env e2)

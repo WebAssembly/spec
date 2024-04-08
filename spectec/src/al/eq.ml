@@ -143,7 +143,7 @@ and eq_instr i1 i2 =
   | PerformI (id1, el1), PerformI (id2, el2) ->
     id1 = id2 &&
     eq_exprs el1 el2
-  | ExitI, ExitI -> true
+  | ExitI a1, ExitI a2 -> a1 = a2
   | ReplaceI (e11, p1, e12), ReplaceI (e21, p2, e22) ->
     eq_expr e11 e21 &&
     eq_path p1 p2 &&

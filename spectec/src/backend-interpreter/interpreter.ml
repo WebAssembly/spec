@@ -254,6 +254,16 @@ and eval_expr env expr =
     | Il.Atom.Atom "FRAME_", FrameV _ -> boolV true
     | Il.Atom.Atom "LABEL_", LabelV _ -> boolV true
     | _ -> boolV false)
+  | TopFrameE ->
+    let ctx = WasmContext.get_top_context () in
+    (match ctx with
+    | Some (FrameV _) -> boolV true
+    | _ -> boolV false)
+  | TopLabelE ->
+    let ctx = WasmContext.get_top_context () in
+    (match ctx with
+    | Some (LabelV _) -> boolV true
+    | _ -> boolV false)
   | IsDefinedE e ->
     e
     |> eval_expr env
@@ -538,7 +548,7 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     let v2 = eval_expr env e2 in
     WasmContext.push_context (v1, [], unwrap_listv_to_list v2);
     AlContext.enter (fname, il, env) :: ctx
-  | ExitI ->
+  | ExitI _ ->
     WasmContext.pop_context () |> ignore;
     AlContext.decrease_depth ctx
   | ReplaceI (e1, { it = IdxP e2; _ }, e3) ->

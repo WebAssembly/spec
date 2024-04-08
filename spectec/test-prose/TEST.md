@@ -923,7 +923,7 @@ invoke fa val^n
 4. Push the activation of f with arity k to the stack.
 5. Push the values val^n to the stack.
 6. Execute the instruction (CALL_ADDR fa).
-7. Pop all values val* from the stack.
+7. Pop all values val* from the top of the stack.
 8. Pop the activation of f with arity k from the stack.
 9. Push the values val* to the stack.
 10. Pop the values val^k from the stack.
@@ -961,22 +961,23 @@ execution_of_IF t? instr_1* instr_2*
   a. Execute the instruction (BLOCK t? instr_2*).
 
 execution_of_LABEL_
-1. Pop all values val* from the stack.
+1. Pop all values val* from the top of the stack.
 2. Assert: Due to validation, a label is now on the top of the stack.
-3. Pop the current context from the stack.
+3. Pop the current label from the stack.
 4. Push the values val* to the stack.
 
 execution_of_BR n_u0
-1. Let L be the current label.
-2. Let n be the arity of L.
-3. Let instr'* be the continuation of L.
-4. Pop all values admin_u1* from the stack.
-5. Pop the current context from the stack.
-6. If ((n_u0 is 0) and (|admin_u1*| ≥ n)), then:
+1. Pop all values val* from the top of the stack.
+2. Let L be the current label.
+3. Let n be the arity of L.
+4. Let instr'* be the continuation of L.
+5. Pop the current label from the stack.
+6. Let admin_u1* be val*.
+7. If ((n_u0 is 0) and (|admin_u1*| ≥ n)), then:
   a. Let val'* ++ val^n be admin_u1*.
   b. Push the values val^n to the stack.
   c. Execute the sequence (instr'*).
-7. If (n_u0 ≥ 1), then:
+8. If (n_u0 ≥ 1), then:
   a. Let l be (n_u0 - 1).
   b. Let val* be admin_u1*.
   c. Push the values val* to the stack.
@@ -1004,22 +1005,21 @@ execution_of_FRAME_
 3. Assert: Due to validation, there are at least n values on the top of the stack.
 4. Pop the values val^n from the stack.
 5. Assert: Due to validation, a frame is now on the top of the stack.
-6. Pop the current context from the stack.
+6. Pop the current frame from the stack.
 7. Push the values val^n to the stack.
 
 execution_of_RETURN
-1. If the current context is FRAME_, then:
+1. Pop all values val* from the top of the stack.
+2. If a frame is now on the top of the stack, then:
   a. Let F be the current frame.
   b. Let n be the arity of F.
-  c. Pop the values val^n from the stack.
-  d. Pop all values val'* from the stack.
-  e. Pop the current context from the stack.
-  f. Push the values val^n to the stack.
-2. Else if the current context is LABEL_, then:
-  a. Pop all values val* from the stack.
-  b. Pop the current context from the stack.
-  c. Push the values val* to the stack.
-  d. Execute the instruction RETURN.
+  c. Pop the current frame from the stack.
+  d. Let val'* ++ val^n be val*.
+  e. Push the values val^n to the stack.
+3. Else if a label is now on the top of the stack, then:
+  a. Pop the current label from the stack.
+  b. Push the values val* to the stack.
+  c. Execute the instruction RETURN.
 
 execution_of_UNOP t unop
 1. Assert: Due to validation, a value of value type t is on the top of the stack.
@@ -2879,7 +2879,7 @@ invoke fa val^n
 4. Push the activation of f with arity k to the stack.
 5. Push the values val^n to the stack.
 6. Execute the instruction (CALL_ADDR fa).
-7. Pop all values val* from the stack.
+7. Pop all values val* from the top of the stack.
 8. Pop the activation of f with arity k from the stack.
 9. Push the values val* to the stack.
 10. Pop the values val^k from the stack.
@@ -2917,22 +2917,23 @@ execution_of_IF bt instr_1* instr_2*
   a. Execute the instruction (BLOCK bt instr_2*).
 
 execution_of_LABEL_
-1. Pop all values val* from the stack.
+1. Pop all values val* from the top of the stack.
 2. Assert: Due to validation, a label is now on the top of the stack.
-3. Pop the current context from the stack.
+3. Pop the current label from the stack.
 4. Push the values val* to the stack.
 
 execution_of_BR n_u0
-1. Let L be the current label.
-2. Let n be the arity of L.
-3. Let instr'* be the continuation of L.
-4. Pop all values admin_u1* from the stack.
-5. Pop the current context from the stack.
-6. If ((n_u0 is 0) and (|admin_u1*| ≥ n)), then:
+1. Pop all values val* from the top of the stack.
+2. Let L be the current label.
+3. Let n be the arity of L.
+4. Let instr'* be the continuation of L.
+5. Pop the current label from the stack.
+6. Let admin_u1* be val*.
+7. If ((n_u0 is 0) and (|admin_u1*| ≥ n)), then:
   a. Let val'* ++ val^n be admin_u1*.
   b. Push the values val^n to the stack.
   c. Execute the sequence (instr'*).
-7. If (n_u0 ≥ 1), then:
+8. If (n_u0 ≥ 1), then:
   a. Let l be (n_u0 - 1).
   b. Let val* be admin_u1*.
   c. Push the values val* to the stack.
@@ -2960,22 +2961,21 @@ execution_of_FRAME_
 3. Assert: Due to validation, there are at least n values on the top of the stack.
 4. Pop the values val^n from the stack.
 5. Assert: Due to validation, a frame is now on the top of the stack.
-6. Pop the current context from the stack.
+6. Pop the current frame from the stack.
 7. Push the values val^n to the stack.
 
 execution_of_RETURN
-1. If the current context is FRAME_, then:
+1. Pop all values val* from the top of the stack.
+2. If a frame is now on the top of the stack, then:
   a. Let F be the current frame.
   b. Let n be the arity of F.
-  c. Pop the values val^n from the stack.
-  d. Pop all values val'* from the stack.
-  e. Pop the current context from the stack.
-  f. Push the values val^n to the stack.
-2. Else if the current context is LABEL_, then:
-  a. Pop all values val* from the stack.
-  b. Pop the current context from the stack.
-  c. Push the values val* to the stack.
-  d. Execute the instruction RETURN.
+  c. Pop the current frame from the stack.
+  d. Let val'* ++ val^n be val*.
+  e. Push the values val^n to the stack.
+3. Else if a label is now on the top of the stack, then:
+  a. Pop the current label from the stack.
+  b. Push the values val* to the stack.
+  c. Execute the instruction RETURN.
 
 execution_of_UNOP nt unop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
@@ -5865,7 +5865,7 @@ invoke fa val^n
 8. Push the values val^n to the stack.
 9. Push the value (REF.FUNC_ADDR fa) to the stack.
 10. Execute the instruction (CALL_REF $funcinst()[fa].TYPE).
-11. Pop all values val* from the stack.
+11. Pop all values val* from the top of the stack.
 12. Pop the activation of f with arity k from the stack.
 13. Push the values val* to the stack.
 14. Pop the values val^k from the stack.
@@ -5903,22 +5903,23 @@ execution_of_IF bt instr_1* instr_2*
   a. Execute the instruction (BLOCK bt instr_2*).
 
 execution_of_LABEL_
-1. Pop all values val* from the stack.
+1. Pop all values val* from the top of the stack.
 2. Assert: Due to validation, a label is now on the top of the stack.
-3. Pop the current context from the stack.
+3. Pop the current label from the stack.
 4. Push the values val* to the stack.
 
 execution_of_BR l
-1. Let L be the current label.
-2. Let n be the arity of L.
-3. Let instr'* be the continuation of L.
-4. Pop all values admin_u0* from the stack.
-5. Pop the current context from the stack.
-6. If ((l is 0) and (|admin_u0*| ≥ n)), then:
+1. Pop all values val* from the top of the stack.
+2. Let L be the current label.
+3. Let n be the arity of L.
+4. Let instr'* be the continuation of L.
+5. Pop the current label from the stack.
+6. Let admin_u0* be val*.
+7. If ((l is 0) and (|admin_u0*| ≥ n)), then:
   a. Let val'* ++ val^n be admin_u0*.
   b. Push the values val^n to the stack.
   c. Execute the sequence (instr'*).
-7. If (l > 0), then:
+8. If (l > 0), then:
   a. Let val* be admin_u0*.
   b. Push the values val* to the stack.
   c. Execute the instruction (BR (l - 1)).
@@ -5972,22 +5973,21 @@ execution_of_FRAME_
 3. Assert: Due to validation, there are at least n values on the top of the stack.
 4. Pop the values val^n from the stack.
 5. Assert: Due to validation, a frame is now on the top of the stack.
-6. Pop the current context from the stack.
+6. Pop the current frame from the stack.
 7. Push the values val^n to the stack.
 
 execution_of_RETURN
-1. If the current context is FRAME_, then:
+1. Pop all values val* from the top of the stack.
+2. If a frame is now on the top of the stack, then:
   a. Let F be the current frame.
   b. Let n be the arity of F.
-  c. Pop the values val^n from the stack.
-  d. Pop all values val'* from the stack.
-  e. Pop the current context from the stack.
-  f. Push the values val^n to the stack.
-2. Else if the current context is LABEL_, then:
-  a. Pop all values val* from the stack.
-  b. Pop the current context from the stack.
-  c. Push the values val* to the stack.
-  d. Execute the instruction RETURN.
+  c. Pop the current frame from the stack.
+  d. Let val'* ++ val^n be val*.
+  e. Push the values val^n to the stack.
+3. Else if a label is now on the top of the stack, then:
+  a. Pop the current label from the stack.
+  b. Push the values val* to the stack.
+  c. Execute the instruction RETURN.
 
 execution_of_UNOP nt unop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
@@ -6348,16 +6348,15 @@ execution_of_RETURN_CALL x
 
 execution_of_RETURN_CALL_REF yy
 1. Let z be the current state.
-2. If the current context is LABEL_, then:
-  a. Pop all values val* from the stack.
-  b. Pop the current context from the stack.
-  c. Push the values val* to the stack.
-  d. Execute the instruction (RETURN_CALL_REF yy).
-3. Else if the current context is FRAME_, then:
-  a. Pop the value admin_u0 from the stack.
-  b. Pop all values admin_u1* from the stack.
-  c. Pop the current context from the stack.
-  d. If admin_u0 is of the case REF.FUNC_ADDR, then:
+2. Pop all values val* from the top of the stack.
+3. If a label is now on the top of the stack, then:
+  a. Pop the current label from the stack.
+  b. Push the values val* to the stack.
+  c. Execute the instruction (RETURN_CALL_REF yy).
+4. Else if a frame is now on the top of the stack, then:
+  a. Pop the current frame from the stack.
+  b. Let admin_u1* ++ admin_u0 be val*.
+  c. If admin_u0 is of the case REF.FUNC_ADDR, then:
     1) Let (REF.FUNC_ADDR a) be admin_u0.
     2) If (a < |$funcinst(z)|), then:
       a) Assert: Due to validation, $expanddt($funcinst(z)[a].TYPE) is of the case FUNC.
@@ -6368,7 +6367,7 @@ execution_of_RETURN_CALL_REF yy
         2. Push the values val^n to the stack.
         3. Push the value (REF.FUNC_ADDR a) to the stack.
         4. Execute the instruction (CALL_REF yy).
-  e. If admin_u0 is of the case REF.NULL, then:
+  d. If admin_u0 is of the case REF.NULL, then:
     1) Trap.
 
 execution_of_REF.NULL $idx(x)

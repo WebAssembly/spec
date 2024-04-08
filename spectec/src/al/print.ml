@@ -236,6 +236,8 @@ let make_index depth =
 let string_of_stack_prefix expr =
   match expr.it with
   | GetCurContextE
+  | GetCurFrameE
+  | GetCurLabelE
   | ContE _
   | LabelE _
   | FrameE _
@@ -296,7 +298,7 @@ let rec string_of_instr' depth instr =
     sprintf "%s Pop %s%s from the stack." (make_index depth)
       (string_of_stack_prefix e) (string_of_expr e)
   | PopAllI e ->
-    sprintf "%s Pop all values %s from the stack." (make_index depth)
+    sprintf "%s Pop all values %s from the top of the stack." (make_index depth)
       (string_of_expr e)
   | LetI (e1, e2) ->
     sprintf "%s Let %s be %s." (make_index depth) (string_of_expr e1)
@@ -314,7 +316,8 @@ let rec string_of_instr' depth instr =
     sprintf "%s Execute the sequence (%s)." (make_index depth) (string_of_expr e)
   | PerformI (id, el) ->
     sprintf "%s Perform %s." (make_index depth) (string_of_expr (CallE (id, el) $ instr.at))
-  | ExitI -> make_index depth ^ " Exit current context."
+  | ExitI a ->
+    sprintf "%s Exit from %s." (make_index depth) (string_of_atom a)
   | ReplaceI (e1, p, e2) ->
     sprintf "%s Replace %s%s with %s." (make_index depth)
       (string_of_expr e1) (string_of_path p) (string_of_expr e2)
@@ -564,7 +567,7 @@ let rec structured_string_of_instr' depth instr =
   | ExecuteI e -> "ExecuteI (" ^ structured_string_of_expr e ^ ")"
   | ExecuteSeqI e -> "ExecuteSeqI (" ^ structured_string_of_expr e ^ ")"
   | PerformI (id, el) -> "PerformI (" ^ id ^ ",[ " ^ structured_string_of_exprs el ^ " ])"
-  | ExitI -> "ExitI"
+  | ExitI a -> "ExitI (" ^ string_of_atom a ^ ")"
   | ReplaceI (e1, p, e2) ->
     "ReplaceI ("
     ^ structured_string_of_expr e1
