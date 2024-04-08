@@ -1416,7 +1416,7 @@ validation_of_VEXTBINOP sh_1 sh_2 vextbinop sx
 validation_of_VNARROW sh_1 sh_2 sx
 - The instruction is valid with type ([V128, V128] -> [V128]).
 
-validation_of_VCVTOP sh_1 vcvtop hf? sh_2 sx? zero?
+validation_of_VCVTOP sh_1 sh_2 vcvtop hf? sx? zero?
 - The instruction is valid with type ([V128] -> [V128]).
 
 validation_of_LOCAL.GET x
@@ -3189,7 +3189,7 @@ execution_of_VNARROW (imm_2 X N_2) (imm_1 X N_1) sx
 9. Let c be $invlanes_((imm_2 X N_2), cj_1* ++ cj_2*).
 10. Push the value (V128.CONST c) to the stack.
 
-execution_of_VCVTOP (lanet_u2 X N_2) vcvtop half_u0? (lanet_u3 X N_1) sx_u1? zero_u4?
+execution_of_VCVTOP (lanet_u2 X N_2) (lanet_u3 X N_1) vcvtop half_u0? sx_u1? zero_u4?
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. If (half_u0? is not defined and zero_u4? is not defined), then:

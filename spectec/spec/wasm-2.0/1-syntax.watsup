@@ -419,7 +419,7 @@ syntax instr/vec hint(desc "vector instruction") = ...
     ;; TODO: /\ (vextbinop =/= DOT \/ sx = S)
   | VNARROW ishape_1 ishape_2 sx        hint(show %.NARROW#_#%#_#%)
     -- if $($lsize($lanetype(ishape_2)) = 2*$lsize($lanetype(ishape_1)) <= 32)
-  | VCVTOP shape vcvtop half? shape sx? zero?
+  | VCVTOP shape shape vcvtop half? sx? zero?
     hint(show %.%#_#%#_#%#_#%) hint(show %.%#_#%#_#%#_#%) hint(show %.%#_#%#_#%#_#%#_#%)
     ;; TODO: missing constraints
   | ...
