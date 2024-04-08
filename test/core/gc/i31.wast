@@ -26,9 +26,7 @@
   )
 
   (func (export "set_global") (param i32)
-    local.get 0
-    ref.i31
-    global.set $m
+    (global.set $m (ref.i31 (local.get 0)))
   )
 )
 
@@ -71,39 +69,26 @@
   )
 
   (func (export "get") (param i32) (result i32)
-    local.get 0
-    table.get $table
-    i31.get_u
+    (i31.get_u (table.get $table (local.get 0)))
   )
 
   (func (export "grow") (param i32 i32) (result i32)
-    (ref.i31 (local.get 1))
-    local.get 0
-    table.grow $table
+    (table.grow $table (ref.i31 (local.get 1)) (local.get 0))
   )
 
   (func (export "fill") (param i32 i32 i32)
-    local.get 0
-    (ref.i31 (local.get 1))
-    local.get 2
-    table.fill $table
+    (table.fill $table (local.get 0) (ref.i31 (local.get 1)) (local.get 2))
   )
 
   (func (export "copy") (param i32 i32 i32)
-    local.get 0
-    local.get 1
-    local.get 2
-    table.copy $table $table
+    (table.copy $table $table (local.get 0) (local.get 1) (local.get 2))
   )
 
   (elem $elem i31ref (item (ref.i31 (i32.const 123)))
                      (item (ref.i31 (i32.const 456)))
                      (item (ref.i31 (i32.const 789))))
   (func (export "init") (param i32 i32 i32)
-    local.get 0
-    local.get 1
-    local.get 2
-    table.init $table $elem
+    (table.init $table $elem (local.get 0) (local.get 1) (local.get 2))
   )
 )
 
@@ -144,9 +129,7 @@
   (global $g (import "env" "g") i32)
   (table $t 3 3 (ref i31) (ref.i31 (global.get $g)))
   (func (export "get") (param i32) (result i32)
-    local.get 0
-    table.get $t
-    i31.get_u
+    (i31.get_u (local.get 0) (table.get $t))
   )
 )
 
@@ -158,8 +141,7 @@
   (global $g0 (import "env" "g") i32)
   (global $g1 i31ref (ref.i31 (global.get $g0)))
   (func (export "get") (result i32)
-    global.get $g1
-    i31.get_u
+    (i31.get_u (global.get $g1))
   )
 )
 
@@ -170,18 +152,12 @@
   (global $m (mut anyref) (ref.i31 (i32.const 5678)))
 
   (func (export "get_globals") (result i32 i32)
-    global.get $c
-    ref.cast i31ref
-    i31.get_u
-    global.get $m
-    ref.cast i31ref
-    i31.get_u
+    (i31.get_u (ref.cast i31ref (global.get $c)))
+    (i31.get_u (ref.cast i31ref (global.get $m)))
   )
 
   (func (export "set_global") (param i32)
-    local.get 0
-    ref.i31
-    global.set $m
+    (global.set $m (ref.i31 (local.get 0)))
   )
 )
 
@@ -200,40 +176,26 @@
   )
 
   (func (export "get") (param i32) (result i32)
-    local.get 0
-    table.get $table
-    ref.cast i31ref
-    i31.get_u
+    (i31.get_u (ref.cast i31ref (table.get $table (local.get 0))))
   )
 
   (func (export "grow") (param i32 i32) (result i32)
-    (ref.i31 (local.get 1))
-    local.get 0
-    table.grow $table
+    (table.grow $table (ref.i31 (local.get 1)) (local.get 0))
   )
 
   (func (export "fill") (param i32 i32 i32)
-    local.get 0
-    (ref.i31 (local.get 1))
-    local.get 2
-    table.fill $table
+    (table.fill $table (local.get 0) (ref.i31 (local.get 1)) (local.get 2))
   )
 
   (func (export "copy") (param i32 i32 i32)
-    local.get 0
-    local.get 1
-    local.get 2
-    table.copy $table $table
+    (table.copy $table $table (local.get 0) (local.get 1) (local.get 2))
   )
 
   (elem $elem i31ref (item (ref.i31 (i32.const 123)))
                      (item (ref.i31 (i32.const 456)))
                      (item (ref.i31 (i32.const 789))))
   (func (export "init") (param i32 i32 i32)
-    local.get 0
-    local.get 1
-    local.get 2
-    table.init $table $elem
+    (table.init $table $elem (local.get 0) (local.get 1) (local.get 2))
   )
 )
 
