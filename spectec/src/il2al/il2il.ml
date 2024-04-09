@@ -107,66 +107,72 @@ let _unified_idx = ref 0
 let init_unified_idx () = _unified_idx := 0
 let get_unified_idx () = let i = !_unified_idx in _unified_idx := (i+1); i
 let gen_new_unified ty = (type_to_id ty) ^ "_" ^ unified_prefix ^ (string_of_int (get_unified_idx())) $ no_region
-let to_iter e iterexp = IterE (e, iterexp)
 let is_unified_id id = String.split_on_char '_' id |> Util.Lib.List.last |> String.starts_with ~prefix:unified_prefix
 
 let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
-  let it =
-    match e1.it, e2.it with
-    | VarE id, _
-    | IterE ({ it = VarE id; _}, _) , _
-      when is_unified_id id.it -> e1.it
+  let replace_it it = { e1 with it = it } in
+  match e1.it, e2.it with
+    (* Already unified *)
+    | VarE id, _ when is_unified_id id.it ->
+      e1
+    | IterE ({ it = VarE id; _} as e, (iter, _)), _  when is_unified_id id.it ->
+      let t = overlap_typ e1.note e2.note in
+      let i = (iter, [(id, t)]) in
+      { e1 with it = IterE (e, i); note = t }
+    (* Not unified *)
     | UnE (unop1, e1), UnE (unop2, e2) when unop1 = unop2 ->
-      UnE (unop1, overlap e1 e2)
+      UnE (unop1, overlap e1 e2) |> replace_it
     | BinE (binop1, e1, e1'), BinE (binop2, e2, e2') when binop1 = binop2 ->
-      BinE (binop1, overlap e1 e2, overlap e1' e2')
+      BinE (binop1, overlap e1 e2, overlap e1' e2') |> replace_it
     | CmpE (cmpop1, e1, e1'), CmpE (cmpop2, e2, e2') when cmpop1 = cmpop2 ->
-      CmpE (cmpop1, overlap e1 e2, overlap e1' e2')
+      CmpE (cmpop1, overlap e1 e2, overlap e1' e2') |> replace_it
     | IdxE (e1, e1'), IdxE (e2, e2') ->
-      IdxE (overlap e1 e2, overlap e1' e2')
+      IdxE (overlap e1 e2, overlap e1' e2') |> replace_it
     | SliceE (e1, e1', e1''), SliceE (e2, e2', e2'') ->
-      SliceE (overlap e1 e2, overlap e1' e2', overlap e1'' e2'')
+      SliceE (overlap e1 e2, overlap e1' e2', overlap e1'' e2'') |> replace_it
     | UpdE (e1, path1, e1'), UpdE (e2, path2, e2') when eq_path path1 path2 ->
-      UpdE (overlap e1 e2, path1, overlap e1' e2')
+      UpdE (overlap e1 e2, path1, overlap e1' e2') |> replace_it
     | ExtE (e1, path1, e1'), ExtE (e2, path2, e2') when eq_path path1 path2 ->
-      ExtE (overlap e1 e2, path1, overlap e1' e2')
+      ExtE (overlap e1 e2, path1, overlap e1' e2') |> replace_it
     | StrE efs1, StrE efs2 when List.map fst efs1 = List.map fst efs2 ->
-      StrE (List.map2 (fun (a1, e1) (_, e2) -> (a1, overlap e1 e2)) efs1 efs2)
+      StrE (List.map2 (fun (a1, e1) (_, e2) -> (a1, overlap e1 e2)) efs1 efs2) |> replace_it
     | DotE (e1, atom1), DotE (e2, atom2) when eq_atom atom1 atom2 ->
-      DotE (overlap e1 e2, atom1)
+      DotE (overlap e1 e2, atom1) |> replace_it
     | CompE (e1, e1'), CompE (e2, e2') ->
-      CompE (overlap e1 e2, overlap e1' e2')
+      CompE (overlap e1 e2, overlap e1' e2') |> replace_it
     | LenE e1, LenE e2 ->
-      LenE (overlap e1 e2)
+      LenE (overlap e1 e2) |> replace_it
     | TupE es1, TupE es2 when List.length es1 = List.length es2 ->
-      TupE (List.map2 overlap es1 es2)
+      TupE (List.map2 overlap es1 es2) |> replace_it
     | CallE (id1, as1), CallE (id2, as2) when eq_id id1 id2 ->
-      CallE (id1, List.map2 overlap_arg as1 as2)
+      CallE (id1, List.map2 overlap_arg as1 as2) |> replace_it
     | IterE (e1, itere1), IterE (e2, itere2) when eq_iterexp itere1 itere2 ->
-      IterE (overlap e1 e2, itere1)
+      IterE (overlap e1 e2, itere1) |> replace_it
     | ProjE (e1, i1), ProjE (e2, i2) when i1 = i2 ->
-      ProjE (overlap e1 e2, i1)
+      ProjE (overlap e1 e2, i1) |> replace_it
     | UncaseE (e1, op1), UncaseE (e2, op2) when eq_mixop op1 op2 ->
-      UncaseE (overlap e1 e2, op1)
+      UncaseE (overlap e1 e2, op1) |> replace_it
     | OptE (Some e1), OptE (Some e2) ->
-      OptE (Some (overlap e1 e2))
+      OptE (Some (overlap e1 e2)) |> replace_it
     | TheE e1, TheE e2 ->
-      TheE (overlap e1 e2)
+      TheE (overlap e1 e2) |> replace_it
     | ListE es1, ListE es2 when List.length es1 = List.length es2 ->
-      ListE (List.map2 overlap es1 es2)
+      ListE (List.map2 overlap es1 es2) |> replace_it
     | CatE (e1, e1'), CatE (e2, e2') ->
-      CatE (overlap e1 e2, overlap e1' e2')
+      CatE (overlap e1 e2, overlap e1' e2') |> replace_it
     | CaseE (mixop1, e1), CaseE (mixop2, e2) when eq_mixop mixop1 mixop2 ->
-      CaseE (mixop1, overlap e1 e2)
+      CaseE (mixop1, overlap e1 e2) |> replace_it
     | SubE (e1, typ1, typ1'), SubE (e2, typ2, typ2') when eq_typ typ1 typ2 && eq_typ typ1' typ2' ->
-      SubE (overlap e1 e2, typ1, typ1')
+      SubE (overlap e1 e2, typ1, typ1') |> replace_it
     | _ ->
-      let ty = e1.note in
+      let ty = overlap_typ e1.note e2.note in
       let id = gen_new_unified ty in
-      match ty.it with
-      | IterT (ty, iter) -> to_iter (VarE id $$ no_region % ty) (iter, [(id, ty)])
-      | _ -> VarE id
-  in { e1 with it }
+      let it =
+        match ty.it with
+        | IterT (ty, iter) -> IterE (VarE id $$ no_region % ty, (iter, [(id, ty)]))
+        | _ -> VarE id
+      in
+      { e1 with it = it; note = ty }
 
 and overlap_arg a1 a2 = if eq_arg a1 a2 then a1 else
   (match a1.it, a2.it with
@@ -174,6 +180,17 @@ and overlap_arg a1 a2 = if eq_arg a1 a2 then a1 else
     | TypA _, TypA _ -> a1.it
     | _, _ -> assert false
   ) $ a1.at
+
+and overlap_typ t1 t2 = if eq_typ t1 t2 then t1 else
+  (match t1.it, t2.it with
+    | VarT (id1, args1), VarT (id2, args2) when id1 = id2 ->
+      VarT (id1, List.map2 overlap_arg args1 args2)
+    | TupT ets1, TupT ets2 when List.for_all2 (fun (e1, _) (e2, _) -> eq_exp e1 e2) ets1 ets2 ->
+      TupT (List.map2 (fun (e1, t1) (_, t2) -> (e1, overlap_typ t1 t2)) ets1 ets2)
+    | IterT (t1, iter1), IterT (t2, iter2) when eq_iter iter1 iter2 ->
+      IterT (overlap_typ t1 t2, iter1)
+    | _ -> assert false (* Unreachable due to IL validation *)
+  ) $ t1.at
 
 let pairwise_concat (a,b) (c,d) = (a@c, b@d)
 

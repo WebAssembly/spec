@@ -288,79 +288,79 @@ invsigned N ii
 1. Let j be $inverse_of_signed(N, ii).
 2. Return j.
 
-unop valty_u1 unop__u0 val__u2
+unop valty_u1 unop__u0 val__u3
 1. If (unop__u0 is CLZ), then:
-  a. Let iN be val__u2.
+  a. Let iN be val__u3.
   b. If the type of valty_u1 is inn, then:
     1) Let inn be valty_u1.
     2) Return [$iclz($size(inn), iN)].
 2. If (unop__u0 is CTZ), then:
-  a. Let iN be val__u2.
+  a. Let iN be val__u3.
   b. If the type of valty_u1 is inn, then:
     1) Let inn be valty_u1.
     2) Return [$ictz($size(inn), iN)].
 3. If (unop__u0 is POPCNT), then:
-  a. Let iN be val__u2.
+  a. Let iN be val__u3.
   b. If the type of valty_u1 is inn, then:
     1) Let inn be valty_u1.
     2) Return [$ipopcnt($size(inn), iN)].
 4. If (unop__u0 is ABS), then:
-  a. Let fN be val__u2.
+  a. Let fN be val__u3.
   b. If the type of valty_u1 is fnn, then:
     1) Let fnn be valty_u1.
     2) Return [$fabs($size(fnn), fN)].
 5. If (unop__u0 is NEG), then:
-  a. Let fN be val__u2.
+  a. Let fN be val__u3.
   b. If the type of valty_u1 is fnn, then:
     1) Let fnn be valty_u1.
     2) Return [$fneg($size(fnn), fN)].
 6. If (unop__u0 is SQRT), then:
-  a. Let fN be val__u2.
+  a. Let fN be val__u3.
   b. If the type of valty_u1 is fnn, then:
     1) Let fnn be valty_u1.
     2) Return [$fsqrt($size(fnn), fN)].
 7. If (unop__u0 is CEIL), then:
-  a. Let fN be val__u2.
+  a. Let fN be val__u3.
   b. If the type of valty_u1 is fnn, then:
     1) Let fnn be valty_u1.
     2) Return [$fceil($size(fnn), fN)].
 8. If (unop__u0 is FLOOR), then:
-  a. Let fN be val__u2.
+  a. Let fN be val__u3.
   b. If the type of valty_u1 is fnn, then:
     1) Let fnn be valty_u1.
     2) Return [$ffloor($size(fnn), fN)].
 9. If (unop__u0 is TRUNC), then:
-  a. Let fN be val__u2.
+  a. Let fN be val__u3.
   b. If the type of valty_u1 is fnn, then:
     1) Let fnn be valty_u1.
     2) Return [$ftrunc($size(fnn), fN)].
 10. Assert: Due to validation, (unop__u0 is NEAREST).
-11. Let fN be val__u2.
+11. Let fN be val__u3.
 12. Assert: Due to validation, the type of valty_u1 is fnn.
 13. Let fnn be valty_u1.
 14. Return [$fnearest($size(fnn), fN)].
 
-binop valty_u1 binop_u0 val__u2 val__u3
+binop valty_u1 binop_u0 val__u3 val__u5
 1. If (binop_u0 is ADD), then:
-  a. Let iN_1 be val__u2.
-  b. Let iN_2 be val__u3.
+  a. Let iN_1 be val__u3.
+  b. Let iN_2 be val__u5.
   c. If the type of valty_u1 is inn, then:
     1) Let inn be valty_u1.
     2) Return [$iadd($size(inn), iN_1, iN_2)].
 2. If (binop_u0 is SUB), then:
-  a. Let iN_1 be val__u2.
-  b. Let iN_2 be val__u3.
+  a. Let iN_1 be val__u3.
+  b. Let iN_2 be val__u5.
   c. If the type of valty_u1 is inn, then:
     1) Let inn be valty_u1.
     2) Return [$isub($size(inn), iN_1, iN_2)].
 3. If (binop_u0 is MUL), then:
-  a. Let iN_1 be val__u2.
-  b. Let iN_2 be val__u3.
+  a. Let iN_1 be val__u3.
+  b. Let iN_2 be val__u5.
   c. If the type of valty_u1 is inn, then:
     1) Let inn be valty_u1.
     2) Return [$imul($size(inn), iN_1, iN_2)].
-4. Let iN_1 be val__u2.
-5. Let iN_2 be val__u3.
+4. Let iN_1 be val__u3.
+5. Let iN_2 be val__u5.
 6. If the type of valty_u1 is inn, then:
   a. Let inn be valty_u1.
   b. If binop_u0 is of the case DIV, then:
@@ -370,87 +370,87 @@ binop valty_u1 binop_u0 val__u2 val__u3
     1) Let (REM sx) be binop_u0.
     2) Return [$irem($size(inn), sx, iN_1, iN_2)].
 7. If (binop_u0 is AND), then:
-  a. Let iN_1 be val__u2.
-  b. Let iN_2 be val__u3.
+  a. Let iN_1 be val__u3.
+  b. Let iN_2 be val__u5.
   c. If the type of valty_u1 is inn, then:
     1) Let inn be valty_u1.
     2) Return [$iand($size(inn), iN_1, iN_2)].
 8. If (binop_u0 is OR), then:
-  a. Let iN_1 be val__u2.
-  b. Let iN_2 be val__u3.
+  a. Let iN_1 be val__u3.
+  b. Let iN_2 be val__u5.
   c. If the type of valty_u1 is inn, then:
     1) Let inn be valty_u1.
     2) Return [$ior($size(inn), iN_1, iN_2)].
 9. If (binop_u0 is XOR), then:
-  a. Let iN_1 be val__u2.
-  b. Let iN_2 be val__u3.
+  a. Let iN_1 be val__u3.
+  b. Let iN_2 be val__u5.
   c. If the type of valty_u1 is inn, then:
     1) Let inn be valty_u1.
     2) Return [$ixor($size(inn), iN_1, iN_2)].
 10. If (binop_u0 is SHL), then:
-  a. Let iN_1 be val__u2.
-  b. Let iN_2 be val__u3.
+  a. Let iN_1 be val__u3.
+  b. Let iN_2 be val__u5.
   c. If the type of valty_u1 is inn, then:
     1) Let inn be valty_u1.
     2) Return [$ishl($size(inn), iN_1, iN_2)].
-11. Let iN_1 be val__u2.
-12. Let iN_2 be val__u3.
+11. Let iN_1 be val__u3.
+12. Let iN_2 be val__u5.
 13. If the type of valty_u1 is inn, then:
   a. Let inn be valty_u1.
   b. If binop_u0 is of the case SHR, then:
     1) Let (SHR sx) be binop_u0.
     2) Return [$ishr($size(inn), sx, iN_1, iN_2)].
 14. If (binop_u0 is ROTL), then:
-  a. Let iN_1 be val__u2.
-  b. Let iN_2 be val__u3.
+  a. Let iN_1 be val__u3.
+  b. Let iN_2 be val__u5.
   c. If the type of valty_u1 is inn, then:
     1) Let inn be valty_u1.
     2) Return [$irotl($size(inn), iN_1, iN_2)].
 15. If (binop_u0 is ROTR), then:
-  a. Let iN_1 be val__u2.
-  b. Let iN_2 be val__u3.
+  a. Let iN_1 be val__u3.
+  b. Let iN_2 be val__u5.
   c. If the type of valty_u1 is inn, then:
     1) Let inn be valty_u1.
     2) Return [$irotr($size(inn), iN_1, iN_2)].
 16. If (binop_u0 is ADD), then:
-  a. Let fN_1 be val__u2.
-  b. Let fN_2 be val__u3.
+  a. Let fN_1 be val__u3.
+  b. Let fN_2 be val__u5.
   c. If the type of valty_u1 is fnn, then:
     1) Let fnn be valty_u1.
     2) Return [$fadd($size(fnn), fN_1, fN_2)].
 17. If (binop_u0 is SUB), then:
-  a. Let fN_1 be val__u2.
-  b. Let fN_2 be val__u3.
+  a. Let fN_1 be val__u3.
+  b. Let fN_2 be val__u5.
   c. If the type of valty_u1 is fnn, then:
     1) Let fnn be valty_u1.
     2) Return [$fsub($size(fnn), fN_1, fN_2)].
 18. If (binop_u0 is MUL), then:
-  a. Let fN_1 be val__u2.
-  b. Let fN_2 be val__u3.
+  a. Let fN_1 be val__u3.
+  b. Let fN_2 be val__u5.
   c. If the type of valty_u1 is fnn, then:
     1) Let fnn be valty_u1.
     2) Return [$fmul($size(fnn), fN_1, fN_2)].
 19. If (binop_u0 is DIV), then:
-  a. Let fN_1 be val__u2.
-  b. Let fN_2 be val__u3.
+  a. Let fN_1 be val__u3.
+  b. Let fN_2 be val__u5.
   c. If the type of valty_u1 is fnn, then:
     1) Let fnn be valty_u1.
     2) Return [$fdiv($size(fnn), fN_1, fN_2)].
 20. If (binop_u0 is MIN), then:
-  a. Let fN_1 be val__u2.
-  b. Let fN_2 be val__u3.
+  a. Let fN_1 be val__u3.
+  b. Let fN_2 be val__u5.
   c. If the type of valty_u1 is fnn, then:
     1) Let fnn be valty_u1.
     2) Return [$fmin($size(fnn), fN_1, fN_2)].
 21. If (binop_u0 is MAX), then:
-  a. Let fN_1 be val__u2.
-  b. Let fN_2 be val__u3.
+  a. Let fN_1 be val__u3.
+  b. Let fN_2 be val__u5.
   c. If the type of valty_u1 is fnn, then:
     1) Let fnn be valty_u1.
     2) Return [$fmax($size(fnn), fN_1, fN_2)].
 22. Assert: Due to validation, (binop_u0 is COPYSIGN).
-23. Let fN_1 be val__u2.
-24. Let fN_2 be val__u3.
+23. Let fN_1 be val__u3.
+24. Let fN_2 be val__u5.
 25. Assert: Due to validation, the type of valty_u1 is fnn.
 26. Let fnn be valty_u1.
 27. Return [$fcopysign($size(fnn), fN_1, fN_2)].
@@ -458,21 +458,21 @@ binop valty_u1 binop_u0 val__u2 val__u3
 testop inn EQZ iN
 1. Return $ieqz($size(inn), iN).
 
-relop valty_u1 relop_u0 val__u2 val__u3
+relop valty_u1 relop_u0 val__u3 val__u5
 1. If (relop_u0 is EQ), then:
-  a. Let iN_1 be val__u2.
-  b. Let iN_2 be val__u3.
+  a. Let iN_1 be val__u3.
+  b. Let iN_2 be val__u5.
   c. If the type of valty_u1 is inn, then:
     1) Let inn be valty_u1.
     2) Return $ieq($size(inn), iN_1, iN_2).
 2. If (relop_u0 is NE), then:
-  a. Let iN_1 be val__u2.
-  b. Let iN_2 be val__u3.
+  a. Let iN_1 be val__u3.
+  b. Let iN_2 be val__u5.
   c. If the type of valty_u1 is inn, then:
     1) Let inn be valty_u1.
     2) Return $ine($size(inn), iN_1, iN_2).
-3. Let iN_1 be val__u2.
-4. Let iN_2 be val__u3.
+3. Let iN_1 be val__u3.
+4. Let iN_2 be val__u5.
 5. If the type of valty_u1 is inn, then:
   a. Let inn be valty_u1.
   b. If relop_u0 is of the case LT, then:
@@ -488,53 +488,53 @@ relop valty_u1 relop_u0 val__u2 val__u3
     1) Let (GE sx) be relop_u0.
     2) Return $ige($size(inn), sx, iN_1, iN_2).
 6. If (relop_u0 is EQ), then:
-  a. Let fN_1 be val__u2.
-  b. Let fN_2 be val__u3.
+  a. Let fN_1 be val__u3.
+  b. Let fN_2 be val__u5.
   c. If the type of valty_u1 is fnn, then:
     1) Let fnn be valty_u1.
     2) Return $feq($size(fnn), fN_1, fN_2).
 7. If (relop_u0 is NE), then:
-  a. Let fN_1 be val__u2.
-  b. Let fN_2 be val__u3.
+  a. Let fN_1 be val__u3.
+  b. Let fN_2 be val__u5.
   c. If the type of valty_u1 is fnn, then:
     1) Let fnn be valty_u1.
     2) Return $fne($size(fnn), fN_1, fN_2).
 8. If (relop_u0 is LT), then:
-  a. Let fN_1 be val__u2.
-  b. Let fN_2 be val__u3.
+  a. Let fN_1 be val__u3.
+  b. Let fN_2 be val__u5.
   c. If the type of valty_u1 is fnn, then:
     1) Let fnn be valty_u1.
     2) Return $flt($size(fnn), fN_1, fN_2).
 9. If (relop_u0 is GT), then:
-  a. Let fN_1 be val__u2.
-  b. Let fN_2 be val__u3.
+  a. Let fN_1 be val__u3.
+  b. Let fN_2 be val__u5.
   c. If the type of valty_u1 is fnn, then:
     1) Let fnn be valty_u1.
     2) Return $fgt($size(fnn), fN_1, fN_2).
 10. If (relop_u0 is LE), then:
-  a. Let fN_1 be val__u2.
-  b. Let fN_2 be val__u3.
+  a. Let fN_1 be val__u3.
+  b. Let fN_2 be val__u5.
   c. If the type of valty_u1 is fnn, then:
     1) Let fnn be valty_u1.
     2) Return $fle($size(fnn), fN_1, fN_2).
 11. Assert: Due to validation, (relop_u0 is GE).
-12. Let fN_1 be val__u2.
-13. Let fN_2 be val__u3.
+12. Let fN_1 be val__u3.
+13. Let fN_2 be val__u5.
 14. Assert: Due to validation, the type of valty_u1 is fnn.
 15. Let fnn be valty_u1.
 16. Return $fge($size(fnn), fN_1, fN_2).
 
-cvtop valty_u0 valty_u1 cvtop_u4 sx_u2? val__u3
-1. If ((valty_u0 is I32) and ((valty_u1 is I64) and (cvtop_u4 is CONVERT))), then:
-  a. Let iN be val__u3.
+cvtop valty_u0 valty_u1 cvtop_u5 sx_u2? val__u4
+1. If ((valty_u0 is I32) and ((valty_u1 is I64) and (cvtop_u5 is CONVERT))), then:
+  a. Let iN be val__u4.
   b. If sx_u2? is defined, then:
     1) Let ?(sx) be sx_u2?.
     2) Return [$ext(32, 64, sx, iN)].
-2. If ((valty_u0 is I64) and ((valty_u1 is I32) and (cvtop_u4 is CONVERT))), then:
-  a. Let iN be val__u3.
+2. If ((valty_u0 is I64) and ((valty_u1 is I32) and (cvtop_u5 is CONVERT))), then:
+  a. Let iN be val__u4.
   b. Return [$wrap(64, 32, iN)].
-3. If (cvtop_u4 is CONVERT), then:
-  a. Let fN be val__u3.
+3. If (cvtop_u5 is CONVERT), then:
+  a. Let fN be val__u4.
   b. If the type of valty_u0 is fnn, then:
     1) Let fnn be valty_u0.
     2) If the type of valty_u1 is inn, then:
@@ -542,29 +542,29 @@ cvtop valty_u0 valty_u1 cvtop_u4 sx_u2? val__u3
       b) If sx_u2? is defined, then:
         1. Let ?(sx) be sx_u2?.
         2. Return [$trunc($size(fnn), $size(inn), sx, fN)].
-4. If ((valty_u0 is F32) and ((valty_u1 is F64) and (cvtop_u4 is CONVERT))), then:
-  a. Let fN be val__u3.
+4. If ((valty_u0 is F32) and ((valty_u1 is F64) and (cvtop_u5 is CONVERT))), then:
+  a. Let fN be val__u4.
   b. Return [$promote(32, 64, fN)].
-5. If ((valty_u0 is F64) and ((valty_u1 is F32) and (cvtop_u4 is CONVERT))), then:
-  a. Let fN be val__u3.
+5. If ((valty_u0 is F64) and ((valty_u1 is F32) and (cvtop_u5 is CONVERT))), then:
+  a. Let fN be val__u4.
   b. Return [$demote(64, 32, fN)].
-6. If ((cvtop_u4 is CONVERT) and the type of valty_u1 is fnn), then:
+6. If ((cvtop_u5 is CONVERT) and the type of valty_u1 is fnn), then:
   a. Let fnn be valty_u1.
-  b. Let iN be val__u3.
+  b. Let iN be val__u4.
   c. If the type of valty_u0 is inn, then:
     1) Let inn be valty_u0.
     2) If sx_u2? is defined, then:
       a) Let ?(sx) be sx_u2?.
       b) Return [$convert($size(inn), $size(fnn), sx, iN)].
-7. Assert: Due to validation, (cvtop_u4 is REINTERPRET).
+7. Assert: Due to validation, (cvtop_u5 is REINTERPRET).
 8. If the type of valty_u1 is fnn, then:
   a. Let fnn be valty_u1.
-  b. Let iN be val__u3.
+  b. Let iN be val__u4.
   c. If the type of valty_u0 is inn, then:
     1) Let inn be valty_u0.
     2) If ($size(inn) is $size(fnn)), then:
       a) Return [$reinterpret(inn, fnn, iN)].
-9. Let fN be val__u3.
+9. Let fN be val__u4.
 10. Assert: Due to validation, the type of valty_u0 is fnn.
 11. Let fnn be valty_u0.
 12. Assert: Due to validation, the type of valty_u1 is inn.
@@ -1416,7 +1416,7 @@ validation_of_VEXTBINOP sh_1 sh_2 vextbinop sx
 validation_of_VNARROW sh_1 sh_2 sx
 - The instruction is valid with type ([V128, V128] -> [V128]).
 
-validation_of_VCVTOP sh_1 vcvtop hf? sh_2 sx? zero?
+validation_of_VCVTOP sh_1 sh_2 vcvtop hf? sx? zero?
 - The instruction is valid with type ([V128] -> [V128]).
 
 validation_of_LOCAL.GET x
@@ -1786,85 +1786,85 @@ invsigned N i
 1. Let j be $inverse_of_signed(N, i).
 2. Return j.
 
-unop numty_u1 unop__u0 num__u2
+unop numty_u1 unop__u0 num__u3
 1. If (unop__u0 is CLZ), then:
-  a. Let iN be num__u2.
+  a. Let iN be num__u3.
   b. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$iclz($size(inn), iN)].
 2. If (unop__u0 is CTZ), then:
-  a. Let iN be num__u2.
+  a. Let iN be num__u3.
   b. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$ictz($size(inn), iN)].
 3. If (unop__u0 is POPCNT), then:
-  a. Let iN be num__u2.
+  a. Let iN be num__u3.
   b. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$ipopcnt($size(inn), iN)].
 4. If unop__u0 is of the case EXTEND, then:
   a. Let (EXTEND N) be unop__u0.
-  b. Let iN be num__u2.
+  b. Let iN be num__u3.
   c. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$ext(N, $size(inn), S, $wrap($size(inn), N, iN))].
 5. If (unop__u0 is ABS), then:
-  a. Let fN be num__u2.
+  a. Let fN be num__u3.
   b. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return [$fabs($size(fnn), fN)].
 6. If (unop__u0 is NEG), then:
-  a. Let fN be num__u2.
+  a. Let fN be num__u3.
   b. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return [$fneg($size(fnn), fN)].
 7. If (unop__u0 is SQRT), then:
-  a. Let fN be num__u2.
+  a. Let fN be num__u3.
   b. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return [$fsqrt($size(fnn), fN)].
 8. If (unop__u0 is CEIL), then:
-  a. Let fN be num__u2.
+  a. Let fN be num__u3.
   b. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return [$fceil($size(fnn), fN)].
 9. If (unop__u0 is FLOOR), then:
-  a. Let fN be num__u2.
+  a. Let fN be num__u3.
   b. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return [$ffloor($size(fnn), fN)].
 10. If (unop__u0 is TRUNC), then:
-  a. Let fN be num__u2.
+  a. Let fN be num__u3.
   b. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return [$ftrunc($size(fnn), fN)].
 11. Assert: Due to validation, (unop__u0 is NEAREST).
-12. Let fN be num__u2.
+12. Let fN be num__u3.
 13. Assert: Due to validation, the type of numty_u1 is fnn.
 14. Let fnn be numty_u1.
 15. Return [$fnearest($size(fnn), fN)].
 
-binop numty_u1 binop_u0 num__u2 num__u3
+binop numty_u1 binop_u0 num__u3 num__u5
 1. If (binop_u0 is ADD), then:
-  a. Let iN_1 be num__u2.
-  b. Let iN_2 be num__u3.
+  a. Let iN_1 be num__u3.
+  b. Let iN_2 be num__u5.
   c. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$iadd($size(inn), iN_1, iN_2)].
 2. If (binop_u0 is SUB), then:
-  a. Let iN_1 be num__u2.
-  b. Let iN_2 be num__u3.
+  a. Let iN_1 be num__u3.
+  b. Let iN_2 be num__u5.
   c. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$isub($size(inn), iN_1, iN_2)].
 3. If (binop_u0 is MUL), then:
-  a. Let iN_1 be num__u2.
-  b. Let iN_2 be num__u3.
+  a. Let iN_1 be num__u3.
+  b. Let iN_2 be num__u5.
   c. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$imul($size(inn), iN_1, iN_2)].
-4. Let iN_1 be num__u2.
-5. Let iN_2 be num__u3.
+4. Let iN_1 be num__u3.
+5. Let iN_2 be num__u5.
 6. If the type of numty_u1 is inn, then:
   a. Let inn be numty_u1.
   b. If binop_u0 is of the case DIV, then:
@@ -1874,87 +1874,87 @@ binop numty_u1 binop_u0 num__u2 num__u3
     1) Let (REM sx) be binop_u0.
     2) Return [$irem($size(inn), sx, iN_1, iN_2)].
 7. If (binop_u0 is AND), then:
-  a. Let iN_1 be num__u2.
-  b. Let iN_2 be num__u3.
+  a. Let iN_1 be num__u3.
+  b. Let iN_2 be num__u5.
   c. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$iand($size(inn), iN_1, iN_2)].
 8. If (binop_u0 is OR), then:
-  a. Let iN_1 be num__u2.
-  b. Let iN_2 be num__u3.
+  a. Let iN_1 be num__u3.
+  b. Let iN_2 be num__u5.
   c. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$ior($size(inn), iN_1, iN_2)].
 9. If (binop_u0 is XOR), then:
-  a. Let iN_1 be num__u2.
-  b. Let iN_2 be num__u3.
+  a. Let iN_1 be num__u3.
+  b. Let iN_2 be num__u5.
   c. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$ixor($size(inn), iN_1, iN_2)].
 10. If (binop_u0 is SHL), then:
-  a. Let iN_1 be num__u2.
-  b. Let iN_2 be num__u3.
+  a. Let iN_1 be num__u3.
+  b. Let iN_2 be num__u5.
   c. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$ishl($size(inn), iN_1, iN_2)].
-11. Let iN_1 be num__u2.
-12. Let iN_2 be num__u3.
+11. Let iN_1 be num__u3.
+12. Let iN_2 be num__u5.
 13. If the type of numty_u1 is inn, then:
   a. Let inn be numty_u1.
   b. If binop_u0 is of the case SHR, then:
     1) Let (SHR sx) be binop_u0.
     2) Return [$ishr($size(inn), sx, iN_1, iN_2)].
 14. If (binop_u0 is ROTL), then:
-  a. Let iN_1 be num__u2.
-  b. Let iN_2 be num__u3.
+  a. Let iN_1 be num__u3.
+  b. Let iN_2 be num__u5.
   c. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$irotl($size(inn), iN_1, iN_2)].
 15. If (binop_u0 is ROTR), then:
-  a. Let iN_1 be num__u2.
-  b. Let iN_2 be num__u3.
+  a. Let iN_1 be num__u3.
+  b. Let iN_2 be num__u5.
   c. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$irotr($size(inn), iN_1, iN_2)].
 16. If (binop_u0 is ADD), then:
-  a. Let fN_1 be num__u2.
-  b. Let fN_2 be num__u3.
+  a. Let fN_1 be num__u3.
+  b. Let fN_2 be num__u5.
   c. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return [$fadd($size(fnn), fN_1, fN_2)].
 17. If (binop_u0 is SUB), then:
-  a. Let fN_1 be num__u2.
-  b. Let fN_2 be num__u3.
+  a. Let fN_1 be num__u3.
+  b. Let fN_2 be num__u5.
   c. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return [$fsub($size(fnn), fN_1, fN_2)].
 18. If (binop_u0 is MUL), then:
-  a. Let fN_1 be num__u2.
-  b. Let fN_2 be num__u3.
+  a. Let fN_1 be num__u3.
+  b. Let fN_2 be num__u5.
   c. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return [$fmul($size(fnn), fN_1, fN_2)].
 19. If (binop_u0 is DIV), then:
-  a. Let fN_1 be num__u2.
-  b. Let fN_2 be num__u3.
+  a. Let fN_1 be num__u3.
+  b. Let fN_2 be num__u5.
   c. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return [$fdiv($size(fnn), fN_1, fN_2)].
 20. If (binop_u0 is MIN), then:
-  a. Let fN_1 be num__u2.
-  b. Let fN_2 be num__u3.
+  a. Let fN_1 be num__u3.
+  b. Let fN_2 be num__u5.
   c. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return [$fmin($size(fnn), fN_1, fN_2)].
 21. If (binop_u0 is MAX), then:
-  a. Let fN_1 be num__u2.
-  b. Let fN_2 be num__u3.
+  a. Let fN_1 be num__u3.
+  b. Let fN_2 be num__u5.
   c. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return [$fmax($size(fnn), fN_1, fN_2)].
 22. Assert: Due to validation, (binop_u0 is COPYSIGN).
-23. Let fN_1 be num__u2.
-24. Let fN_2 be num__u3.
+23. Let fN_1 be num__u3.
+24. Let fN_2 be num__u5.
 25. Assert: Due to validation, the type of numty_u1 is fnn.
 26. Let fnn be numty_u1.
 27. Return [$fcopysign($size(fnn), fN_1, fN_2)].
@@ -1962,21 +1962,21 @@ binop numty_u1 binop_u0 num__u2 num__u3
 testop inn EQZ iN
 1. Return $ieqz($size(inn), iN).
 
-relop numty_u1 relop_u0 num__u2 num__u3
+relop numty_u1 relop_u0 num__u3 num__u5
 1. If (relop_u0 is EQ), then:
-  a. Let iN_1 be num__u2.
-  b. Let iN_2 be num__u3.
+  a. Let iN_1 be num__u3.
+  b. Let iN_2 be num__u5.
   c. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return $ieq($size(inn), iN_1, iN_2).
 2. If (relop_u0 is NE), then:
-  a. Let iN_1 be num__u2.
-  b. Let iN_2 be num__u3.
+  a. Let iN_1 be num__u3.
+  b. Let iN_2 be num__u5.
   c. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return $ine($size(inn), iN_1, iN_2).
-3. Let iN_1 be num__u2.
-4. Let iN_2 be num__u3.
+3. Let iN_1 be num__u3.
+4. Let iN_2 be num__u5.
 5. If the type of numty_u1 is inn, then:
   a. Let inn be numty_u1.
   b. If relop_u0 is of the case LT, then:
@@ -1992,53 +1992,53 @@ relop numty_u1 relop_u0 num__u2 num__u3
     1) Let (GE sx) be relop_u0.
     2) Return $ige($size(inn), sx, iN_1, iN_2).
 6. If (relop_u0 is EQ), then:
-  a. Let fN_1 be num__u2.
-  b. Let fN_2 be num__u3.
+  a. Let fN_1 be num__u3.
+  b. Let fN_2 be num__u5.
   c. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return $feq($size(fnn), fN_1, fN_2).
 7. If (relop_u0 is NE), then:
-  a. Let fN_1 be num__u2.
-  b. Let fN_2 be num__u3.
+  a. Let fN_1 be num__u3.
+  b. Let fN_2 be num__u5.
   c. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return $fne($size(fnn), fN_1, fN_2).
 8. If (relop_u0 is LT), then:
-  a. Let fN_1 be num__u2.
-  b. Let fN_2 be num__u3.
+  a. Let fN_1 be num__u3.
+  b. Let fN_2 be num__u5.
   c. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return $flt($size(fnn), fN_1, fN_2).
 9. If (relop_u0 is GT), then:
-  a. Let fN_1 be num__u2.
-  b. Let fN_2 be num__u3.
+  a. Let fN_1 be num__u3.
+  b. Let fN_2 be num__u5.
   c. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return $fgt($size(fnn), fN_1, fN_2).
 10. If (relop_u0 is LE), then:
-  a. Let fN_1 be num__u2.
-  b. Let fN_2 be num__u3.
+  a. Let fN_1 be num__u3.
+  b. Let fN_2 be num__u5.
   c. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return $fle($size(fnn), fN_1, fN_2).
 11. Assert: Due to validation, (relop_u0 is GE).
-12. Let fN_1 be num__u2.
-13. Let fN_2 be num__u3.
+12. Let fN_1 be num__u3.
+13. Let fN_2 be num__u5.
 14. Assert: Due to validation, the type of numty_u1 is fnn.
 15. Let fnn be numty_u1.
 16. Return $fge($size(fnn), fN_1, fN_2).
 
-cvtop numty_u0 numty_u1 cvtop_u4 sx_u2? num__u3
-1. If ((numty_u0 is I32) and ((numty_u1 is I64) and (cvtop_u4 is CONVERT))), then:
-  a. Let iN be num__u3.
+cvtop numty_u0 numty_u1 cvtop_u5 sx_u2? num__u4
+1. If ((numty_u0 is I32) and ((numty_u1 is I64) and (cvtop_u5 is CONVERT))), then:
+  a. Let iN be num__u4.
   b. If sx_u2? is defined, then:
     1) Let ?(sx) be sx_u2?.
     2) Return [$ext(32, 64, sx, iN)].
-2. If ((numty_u0 is I64) and ((numty_u1 is I32) and (cvtop_u4 is CONVERT))), then:
-  a. Let iN be num__u3.
+2. If ((numty_u0 is I64) and ((numty_u1 is I32) and (cvtop_u5 is CONVERT))), then:
+  a. Let iN be num__u4.
   b. Return [$wrap(64, 32, iN)].
-3. If (cvtop_u4 is CONVERT), then:
-  a. Let fN be num__u3.
+3. If (cvtop_u5 is CONVERT), then:
+  a. Let fN be num__u4.
   b. If the type of numty_u0 is fnn, then:
     1) Let fnn be numty_u0.
     2) If the type of numty_u1 is inn, then:
@@ -2046,8 +2046,8 @@ cvtop numty_u0 numty_u1 cvtop_u4 sx_u2? num__u3
       b) If sx_u2? is defined, then:
         1. Let ?(sx) be sx_u2?.
         2. Return [$trunc($size(fnn), $size(inn), sx, fN)].
-4. If (cvtop_u4 is CONVERT_SAT), then:
-  a. Let fN be num__u3.
+4. If (cvtop_u5 is CONVERT_SAT), then:
+  a. Let fN be num__u4.
   b. If the type of numty_u0 is fnn, then:
     1) Let fnn be numty_u0.
     2) If the type of numty_u1 is inn, then:
@@ -2055,16 +2055,16 @@ cvtop numty_u0 numty_u1 cvtop_u4 sx_u2? num__u3
       b) If sx_u2? is defined, then:
         1. Let ?(sx) be sx_u2?.
         2. Return [$trunc_sat($size(fnn), $size(inn), sx, fN)].
-5. If ((numty_u0 is F32) and ((numty_u1 is F64) and (cvtop_u4 is CONVERT))), then:
-  a. Let fN be num__u3.
+5. If ((numty_u0 is F32) and ((numty_u1 is F64) and (cvtop_u5 is CONVERT))), then:
+  a. Let fN be num__u4.
   b. Return [$promote(32, 64, fN)].
-6. If ((numty_u0 is F64) and ((numty_u1 is F32) and (cvtop_u4 is CONVERT))), then:
-  a. Let fN be num__u3.
+6. If ((numty_u0 is F64) and ((numty_u1 is F32) and (cvtop_u5 is CONVERT))), then:
+  a. Let fN be num__u4.
   b. Return [$demote(64, 32, fN)].
-7. Assert: Due to validation, (cvtop_u4 is CONVERT).
+7. Assert: Due to validation, (cvtop_u5 is CONVERT).
 8. If the type of numty_u1 is fnn, then:
   a. Let fnn be numty_u1.
-  b. Let iN be num__u3.
+  b. Let iN be num__u4.
   c. If the type of numty_u0 is inn, then:
     1) Let inn be numty_u0.
     2) If sx_u2? is defined, then:
@@ -2072,7 +2072,7 @@ cvtop numty_u0 numty_u1 cvtop_u4 sx_u2? num__u3
       b) Return [$convert($size(inn), $size(fnn), sx, iN)].
     3) If ($size(inn) is $size(fnn)), then:
       a) Return [$reinterpret(inn, fnn, iN)].
-9. Let fN be num__u3.
+9. Let fN be num__u4.
 10. Assert: Due to validation, the type of numty_u0 is fnn.
 11. Let fnn be numty_u0.
 12. Assert: Due to validation, the type of numty_u1 is inn.
@@ -2383,59 +2383,59 @@ vrelop (lanet_u1 X N) vrelo_u0 v128_1 v128_2
 16. Let v128 be $invlanes_((inn X N), lane_3*).
 17. Return v128.
 
-vcvtop (lanet_u0 X N_1) (lanet_u1 X N_2) vcvto_u3 sx_u4? lane__u2
-1. If ((lanet_u0 is I8) and ((lanet_u1 is I16) and (vcvto_u3 is EXTEND))), then:
-  a. Let i8 be lane__u2.
-  b. If sx_u4? is defined, then:
-    1) Let ?(sx) be sx_u4?.
+vcvtop (lanet_u0 X N_1) (lanet_u1 X N_2) vcvto_u4 sx_u5? lane__u3
+1. If ((lanet_u0 is I8) and ((lanet_u1 is I16) and (vcvto_u4 is EXTEND))), then:
+  a. Let i8 be lane__u3.
+  b. If sx_u5? is defined, then:
+    1) Let ?(sx) be sx_u5?.
     2) Let i16 be $ext(8, 16, sx, i8).
     3) Return i16.
-2. If ((lanet_u0 is I16) and ((lanet_u1 is I32) and (vcvto_u3 is EXTEND))), then:
-  a. Let i16 be lane__u2.
-  b. If sx_u4? is defined, then:
-    1) Let ?(sx) be sx_u4?.
+2. If ((lanet_u0 is I16) and ((lanet_u1 is I32) and (vcvto_u4 is EXTEND))), then:
+  a. Let i16 be lane__u3.
+  b. If sx_u5? is defined, then:
+    1) Let ?(sx) be sx_u5?.
     2) Let i32 be $ext(16, 32, sx, i16).
     3) Return i32.
 3. If (lanet_u0 is I32), then:
-  a. If ((lanet_u1 is I64) and (vcvto_u3 is EXTEND)), then:
-    1) Let i32 be lane__u2.
-    2) If sx_u4? is defined, then:
-      a) Let ?(sx) be sx_u4?.
+  a. If ((lanet_u1 is I64) and (vcvto_u4 is EXTEND)), then:
+    1) Let i32 be lane__u3.
+    2) If sx_u5? is defined, then:
+      a) Let ?(sx) be sx_u5?.
       b) Let i64 be $ext(32, 64, sx, i32).
       c) Return i64.
-  b. If ((lanet_u1 is F32) and (vcvto_u3 is CONVERT)), then:
-    1) Let i32 be lane__u2.
-    2) If sx_u4? is defined, then:
-      a) Let ?(sx) be sx_u4?.
+  b. If ((lanet_u1 is F32) and (vcvto_u4 is CONVERT)), then:
+    1) Let i32 be lane__u3.
+    2) If sx_u5? is defined, then:
+      a) Let ?(sx) be sx_u5?.
       b) Let f32 be $convert(32, 32, sx, i32).
       c) Return f32.
-  c. If ((lanet_u1 is F64) and (vcvto_u3 is CONVERT)), then:
-    1) Let i32 be lane__u2.
-    2) If sx_u4? is defined, then:
-      a) Let ?(sx) be sx_u4?.
+  c. If ((lanet_u1 is F64) and (vcvto_u4 is CONVERT)), then:
+    1) Let i32 be lane__u3.
+    2) If sx_u5? is defined, then:
+      a) Let ?(sx) be sx_u5?.
       b) Let f64 be $convert(32, 64, sx, i32).
       c) Return f64.
-4. If ((lanet_u0 is F32) and ((lanet_u1 is I32) and (vcvto_u3 is TRUNC_SAT))), then:
-  a. Let f32 be lane__u2.
-  b. If sx_u4? is defined, then:
-    1) Let ?(sx) be sx_u4?.
+4. If ((lanet_u0 is F32) and ((lanet_u1 is I32) and (vcvto_u4 is TRUNC_SAT))), then:
+  a. Let f32 be lane__u3.
+  b. If sx_u5? is defined, then:
+    1) Let ?(sx) be sx_u5?.
     2) Let i32 be $trunc_sat(32, 32, sx, f32).
     3) Return i32.
 5. If (lanet_u0 is F64), then:
-  a. If ((lanet_u1 is I32) and (vcvto_u3 is TRUNC_SAT)), then:
-    1) Let f64 be lane__u2.
-    2) If sx_u4? is defined, then:
-      a) Let ?(sx) be sx_u4?.
+  a. If ((lanet_u1 is I32) and (vcvto_u4 is TRUNC_SAT)), then:
+    1) Let f64 be lane__u3.
+    2) If sx_u5? is defined, then:
+      a) Let ?(sx) be sx_u5?.
       b) Let i32 be $trunc_sat(64, 32, sx, f64).
       c) Return i32.
-  b. If ((lanet_u1 is F32) and (vcvto_u3 is DEMOTE)), then:
-    1) Let f64 be lane__u2.
+  b. If ((lanet_u1 is F32) and (vcvto_u4 is DEMOTE)), then:
+    1) Let f64 be lane__u3.
     2) Let f32 be $demote(64, 32, f64).
     3) Return f32.
 6. Assert: Due to validation, (lanet_u0 is F32).
 7. Assert: Due to validation, (lanet_u1 is F64).
-8. Assert: Due to validation, (vcvto_u3 is PROMOTE).
-9. Let f32 be lane__u2.
+8. Assert: Due to validation, (vcvto_u4 is PROMOTE).
+9. Let f32 be lane__u3.
 10. Let f64 be $promote(32, 64, f32).
 11. Return f64.
 
@@ -3189,7 +3189,7 @@ execution_of_VNARROW (imm_2 X N_2) (imm_1 X N_1) sx
 9. Let c be $invlanes_((imm_2 X N_2), cj_1* ++ cj_2*).
 10. Push the value (V128.CONST c) to the stack.
 
-execution_of_VCVTOP (lanet_u2 X N_2) vcvtop half_u0? (lanet_u3 X N_1) sx_u1? zero_u4?
+execution_of_VCVTOP (lanet_u2 X N_2) (lanet_u3 X N_1) vcvtop half_u0? sx_u1? zero_u4?
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. If (half_u0? is not defined and zero_u4? is not defined), then:
@@ -3719,8 +3719,8 @@ watsup 0.4 generator
 6-typing.watsup:803.6-803.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
 6-typing.watsup:832.6-832.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
 6-typing.watsup:837.6-837.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
-6-typing.watsup:974.6-974.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-6-typing.watsup:980.6-980.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:976.6-976.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:982.6-982.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 =================
  Generated prose
 =================
@@ -4083,7 +4083,8 @@ validation_of_VEXTBINOP sh_1 sh_2 vextbinop sx
 validation_of_VNARROW sh_1 sh_2 sx
 - The instruction is valid with type ([V128, V128] ->_ [] ++ [V128]).
 
-validation_of_VCVTOP sh_1 vcvtop hf? sh_2 sx? zero?
+validation_of_VCVTOP sh_1 sh_2 vcvtop hf? sx? zero?
+- ((((($lanetype(sh_1) is imm_1) and ($lanetype(sh_2) is imm_2)) and ($lsize(imm_1) > $lsize(imm_2))) or (($lanetype(sh_1) is fnn_1) and ($lanetype(sh_2) is fnn_2)))) if and only if ((sx? is ?())).
 - The instruction is valid with type ([V128] ->_ [] ++ [V128]).
 
 validation_of_LOCAL.GET x
@@ -4688,85 +4689,85 @@ invsigned N i
 1. Let j be $inverse_of_signed(N, i).
 2. Return j.
 
-unop numty_u1 unop__u0 num__u2
+unop numty_u1 unop__u0 num__u3
 1. If (unop__u0 is CLZ), then:
-  a. Let iN be num__u2.
+  a. Let iN be num__u3.
   b. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$iclz($size(inn), iN)].
 2. If (unop__u0 is CTZ), then:
-  a. Let iN be num__u2.
+  a. Let iN be num__u3.
   b. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$ictz($size(inn), iN)].
 3. If (unop__u0 is POPCNT), then:
-  a. Let iN be num__u2.
+  a. Let iN be num__u3.
   b. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$ipopcnt($size(inn), iN)].
 4. If unop__u0 is of the case EXTEND, then:
   a. Let (EXTEND N) be unop__u0.
-  b. Let iN be num__u2.
+  b. Let iN be num__u3.
   c. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$ext(N, $size(inn), S, $wrap($size(inn), N, iN))].
 5. If (unop__u0 is ABS), then:
-  a. Let fN be num__u2.
+  a. Let fN be num__u3.
   b. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return [$fabs($size(fnn), fN)].
 6. If (unop__u0 is NEG), then:
-  a. Let fN be num__u2.
+  a. Let fN be num__u3.
   b. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return [$fneg($size(fnn), fN)].
 7. If (unop__u0 is SQRT), then:
-  a. Let fN be num__u2.
+  a. Let fN be num__u3.
   b. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return [$fsqrt($size(fnn), fN)].
 8. If (unop__u0 is CEIL), then:
-  a. Let fN be num__u2.
+  a. Let fN be num__u3.
   b. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return [$fceil($size(fnn), fN)].
 9. If (unop__u0 is FLOOR), then:
-  a. Let fN be num__u2.
+  a. Let fN be num__u3.
   b. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return [$ffloor($size(fnn), fN)].
 10. If (unop__u0 is TRUNC), then:
-  a. Let fN be num__u2.
+  a. Let fN be num__u3.
   b. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return [$ftrunc($size(fnn), fN)].
 11. Assert: Due to validation, (unop__u0 is NEAREST).
-12. Let fN be num__u2.
+12. Let fN be num__u3.
 13. Assert: Due to validation, the type of numty_u1 is fnn.
 14. Let fnn be numty_u1.
 15. Return [$fnearest($size(fnn), fN)].
 
-binop numty_u1 binop_u0 num__u2 num__u3
+binop numty_u1 binop_u0 num__u3 num__u5
 1. If (binop_u0 is ADD), then:
-  a. Let iN_1 be num__u2.
-  b. Let iN_2 be num__u3.
+  a. Let iN_1 be num__u3.
+  b. Let iN_2 be num__u5.
   c. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$iadd($size(inn), iN_1, iN_2)].
 2. If (binop_u0 is SUB), then:
-  a. Let iN_1 be num__u2.
-  b. Let iN_2 be num__u3.
+  a. Let iN_1 be num__u3.
+  b. Let iN_2 be num__u5.
   c. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$isub($size(inn), iN_1, iN_2)].
 3. If (binop_u0 is MUL), then:
-  a. Let iN_1 be num__u2.
-  b. Let iN_2 be num__u3.
+  a. Let iN_1 be num__u3.
+  b. Let iN_2 be num__u5.
   c. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$imul($size(inn), iN_1, iN_2)].
-4. Let iN_1 be num__u2.
-5. Let iN_2 be num__u3.
+4. Let iN_1 be num__u3.
+5. Let iN_2 be num__u5.
 6. If the type of numty_u1 is inn, then:
   a. Let inn be numty_u1.
   b. If binop_u0 is of the case DIV, then:
@@ -4776,87 +4777,87 @@ binop numty_u1 binop_u0 num__u2 num__u3
     1) Let (REM sx) be binop_u0.
     2) Return [$irem($size(inn), sx, iN_1, iN_2)].
 7. If (binop_u0 is AND), then:
-  a. Let iN_1 be num__u2.
-  b. Let iN_2 be num__u3.
+  a. Let iN_1 be num__u3.
+  b. Let iN_2 be num__u5.
   c. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$iand($size(inn), iN_1, iN_2)].
 8. If (binop_u0 is OR), then:
-  a. Let iN_1 be num__u2.
-  b. Let iN_2 be num__u3.
+  a. Let iN_1 be num__u3.
+  b. Let iN_2 be num__u5.
   c. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$ior($size(inn), iN_1, iN_2)].
 9. If (binop_u0 is XOR), then:
-  a. Let iN_1 be num__u2.
-  b. Let iN_2 be num__u3.
+  a. Let iN_1 be num__u3.
+  b. Let iN_2 be num__u5.
   c. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$ixor($size(inn), iN_1, iN_2)].
 10. If (binop_u0 is SHL), then:
-  a. Let iN_1 be num__u2.
-  b. Let iN_2 be num__u3.
+  a. Let iN_1 be num__u3.
+  b. Let iN_2 be num__u5.
   c. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$ishl($size(inn), iN_1, iN_2)].
-11. Let iN_1 be num__u2.
-12. Let iN_2 be num__u3.
+11. Let iN_1 be num__u3.
+12. Let iN_2 be num__u5.
 13. If the type of numty_u1 is inn, then:
   a. Let inn be numty_u1.
   b. If binop_u0 is of the case SHR, then:
     1) Let (SHR sx) be binop_u0.
     2) Return [$ishr($size(inn), sx, iN_1, iN_2)].
 14. If (binop_u0 is ROTL), then:
-  a. Let iN_1 be num__u2.
-  b. Let iN_2 be num__u3.
+  a. Let iN_1 be num__u3.
+  b. Let iN_2 be num__u5.
   c. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$irotl($size(inn), iN_1, iN_2)].
 15. If (binop_u0 is ROTR), then:
-  a. Let iN_1 be num__u2.
-  b. Let iN_2 be num__u3.
+  a. Let iN_1 be num__u3.
+  b. Let iN_2 be num__u5.
   c. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return [$irotr($size(inn), iN_1, iN_2)].
 16. If (binop_u0 is ADD), then:
-  a. Let fN_1 be num__u2.
-  b. Let fN_2 be num__u3.
+  a. Let fN_1 be num__u3.
+  b. Let fN_2 be num__u5.
   c. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return [$fadd($size(fnn), fN_1, fN_2)].
 17. If (binop_u0 is SUB), then:
-  a. Let fN_1 be num__u2.
-  b. Let fN_2 be num__u3.
+  a. Let fN_1 be num__u3.
+  b. Let fN_2 be num__u5.
   c. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return [$fsub($size(fnn), fN_1, fN_2)].
 18. If (binop_u0 is MUL), then:
-  a. Let fN_1 be num__u2.
-  b. Let fN_2 be num__u3.
+  a. Let fN_1 be num__u3.
+  b. Let fN_2 be num__u5.
   c. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return [$fmul($size(fnn), fN_1, fN_2)].
 19. If (binop_u0 is DIV), then:
-  a. Let fN_1 be num__u2.
-  b. Let fN_2 be num__u3.
+  a. Let fN_1 be num__u3.
+  b. Let fN_2 be num__u5.
   c. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return [$fdiv($size(fnn), fN_1, fN_2)].
 20. If (binop_u0 is MIN), then:
-  a. Let fN_1 be num__u2.
-  b. Let fN_2 be num__u3.
+  a. Let fN_1 be num__u3.
+  b. Let fN_2 be num__u5.
   c. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return [$fmin($size(fnn), fN_1, fN_2)].
 21. If (binop_u0 is MAX), then:
-  a. Let fN_1 be num__u2.
-  b. Let fN_2 be num__u3.
+  a. Let fN_1 be num__u3.
+  b. Let fN_2 be num__u5.
   c. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return [$fmax($size(fnn), fN_1, fN_2)].
 22. Assert: Due to validation, (binop_u0 is COPYSIGN).
-23. Let fN_1 be num__u2.
-24. Let fN_2 be num__u3.
+23. Let fN_1 be num__u3.
+24. Let fN_2 be num__u5.
 25. Assert: Due to validation, the type of numty_u1 is fnn.
 26. Let fnn be numty_u1.
 27. Return [$fcopysign($size(fnn), fN_1, fN_2)].
@@ -4864,21 +4865,21 @@ binop numty_u1 binop_u0 num__u2 num__u3
 testop inn EQZ iN
 1. Return $ieqz($size(inn), iN).
 
-relop numty_u1 relop_u0 num__u2 num__u3
+relop numty_u1 relop_u0 num__u3 num__u5
 1. If (relop_u0 is EQ), then:
-  a. Let iN_1 be num__u2.
-  b. Let iN_2 be num__u3.
+  a. Let iN_1 be num__u3.
+  b. Let iN_2 be num__u5.
   c. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return $ieq($size(inn), iN_1, iN_2).
 2. If (relop_u0 is NE), then:
-  a. Let iN_1 be num__u2.
-  b. Let iN_2 be num__u3.
+  a. Let iN_1 be num__u3.
+  b. Let iN_2 be num__u5.
   c. If the type of numty_u1 is inn, then:
     1) Let inn be numty_u1.
     2) Return $ine($size(inn), iN_1, iN_2).
-3. Let iN_1 be num__u2.
-4. Let iN_2 be num__u3.
+3. Let iN_1 be num__u3.
+4. Let iN_2 be num__u5.
 5. If the type of numty_u1 is inn, then:
   a. Let inn be numty_u1.
   b. If relop_u0 is of the case LT, then:
@@ -4894,53 +4895,53 @@ relop numty_u1 relop_u0 num__u2 num__u3
     1) Let (GE sx) be relop_u0.
     2) Return $ige($size(inn), sx, iN_1, iN_2).
 6. If (relop_u0 is EQ), then:
-  a. Let fN_1 be num__u2.
-  b. Let fN_2 be num__u3.
+  a. Let fN_1 be num__u3.
+  b. Let fN_2 be num__u5.
   c. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return $feq($size(fnn), fN_1, fN_2).
 7. If (relop_u0 is NE), then:
-  a. Let fN_1 be num__u2.
-  b. Let fN_2 be num__u3.
+  a. Let fN_1 be num__u3.
+  b. Let fN_2 be num__u5.
   c. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return $fne($size(fnn), fN_1, fN_2).
 8. If (relop_u0 is LT), then:
-  a. Let fN_1 be num__u2.
-  b. Let fN_2 be num__u3.
+  a. Let fN_1 be num__u3.
+  b. Let fN_2 be num__u5.
   c. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return $flt($size(fnn), fN_1, fN_2).
 9. If (relop_u0 is GT), then:
-  a. Let fN_1 be num__u2.
-  b. Let fN_2 be num__u3.
+  a. Let fN_1 be num__u3.
+  b. Let fN_2 be num__u5.
   c. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return $fgt($size(fnn), fN_1, fN_2).
 10. If (relop_u0 is LE), then:
-  a. Let fN_1 be num__u2.
-  b. Let fN_2 be num__u3.
+  a. Let fN_1 be num__u3.
+  b. Let fN_2 be num__u5.
   c. If the type of numty_u1 is fnn, then:
     1) Let fnn be numty_u1.
     2) Return $fle($size(fnn), fN_1, fN_2).
 11. Assert: Due to validation, (relop_u0 is GE).
-12. Let fN_1 be num__u2.
-13. Let fN_2 be num__u3.
+12. Let fN_1 be num__u3.
+13. Let fN_2 be num__u5.
 14. Assert: Due to validation, the type of numty_u1 is fnn.
 15. Let fnn be numty_u1.
 16. Return $fge($size(fnn), fN_1, fN_2).
 
-cvtop numty_u0 numty_u1 cvtop_u4 sx_u2? num__u3
-1. If ((numty_u0 is I32) and ((numty_u1 is I64) and (cvtop_u4 is CONVERT))), then:
-  a. Let iN be num__u3.
+cvtop numty_u0 numty_u1 cvtop_u5 sx_u2? num__u4
+1. If ((numty_u0 is I32) and ((numty_u1 is I64) and (cvtop_u5 is CONVERT))), then:
+  a. Let iN be num__u4.
   b. If sx_u2? is defined, then:
     1) Let ?(sx) be sx_u2?.
     2) Return [$ext(32, 64, sx, iN)].
-2. If ((numty_u0 is I64) and ((numty_u1 is I32) and (cvtop_u4 is CONVERT))), then:
-  a. Let iN be num__u3.
+2. If ((numty_u0 is I64) and ((numty_u1 is I32) and (cvtop_u5 is CONVERT))), then:
+  a. Let iN be num__u4.
   b. Return [$wrap(64, 32, iN)].
-3. If (cvtop_u4 is CONVERT), then:
-  a. Let fN be num__u3.
+3. If (cvtop_u5 is CONVERT), then:
+  a. Let fN be num__u4.
   b. If the type of numty_u0 is fnn, then:
     1) Let fnn be numty_u0.
     2) If the type of numty_u1 is inn, then:
@@ -4948,8 +4949,8 @@ cvtop numty_u0 numty_u1 cvtop_u4 sx_u2? num__u3
       b) If sx_u2? is defined, then:
         1. Let ?(sx) be sx_u2?.
         2. Return [$trunc($size(fnn), $size(inn), sx, fN)].
-4. If (cvtop_u4 is CONVERT_SAT), then:
-  a. Let fN be num__u3.
+4. If (cvtop_u5 is CONVERT_SAT), then:
+  a. Let fN be num__u4.
   b. If the type of numty_u0 is fnn, then:
     1) Let fnn be numty_u0.
     2) If the type of numty_u1 is inn, then:
@@ -4957,29 +4958,29 @@ cvtop numty_u0 numty_u1 cvtop_u4 sx_u2? num__u3
       b) If sx_u2? is defined, then:
         1. Let ?(sx) be sx_u2?.
         2. Return [$trunc_sat($size(fnn), $size(inn), sx, fN)].
-5. If ((numty_u0 is F32) and ((numty_u1 is F64) and (cvtop_u4 is CONVERT))), then:
-  a. Let fN be num__u3.
+5. If ((numty_u0 is F32) and ((numty_u1 is F64) and (cvtop_u5 is CONVERT))), then:
+  a. Let fN be num__u4.
   b. Return [$promote(32, 64, fN)].
-6. If ((numty_u0 is F64) and ((numty_u1 is F32) and (cvtop_u4 is CONVERT))), then:
-  a. Let fN be num__u3.
+6. If ((numty_u0 is F64) and ((numty_u1 is F32) and (cvtop_u5 is CONVERT))), then:
+  a. Let fN be num__u4.
   b. Return [$demote(64, 32, fN)].
-7. If ((cvtop_u4 is CONVERT) and the type of numty_u1 is fnn), then:
+7. If ((cvtop_u5 is CONVERT) and the type of numty_u1 is fnn), then:
   a. Let fnn be numty_u1.
-  b. Let iN be num__u3.
+  b. Let iN be num__u4.
   c. If the type of numty_u0 is inn, then:
     1) Let inn be numty_u0.
     2) If sx_u2? is defined, then:
       a) Let ?(sx) be sx_u2?.
       b) Return [$convert($size(inn), $size(fnn), sx, iN)].
-8. Assert: Due to validation, (cvtop_u4 is REINTERPRET).
+8. Assert: Due to validation, (cvtop_u5 is REINTERPRET).
 9. If the type of numty_u1 is fnn, then:
   a. Let fnn be numty_u1.
-  b. Let iN be num__u3.
+  b. Let iN be num__u4.
   c. If the type of numty_u0 is inn, then:
     1) Let inn be numty_u0.
     2) If ($size(inn) is $size(fnn)), then:
       a) Return [$reinterpret(inn, fnn, iN)].
-10. Let fN be num__u3.
+10. Let fN be num__u4.
 11. Assert: Due to validation, the type of numty_u0 is fnn.
 12. Let fnn be numty_u0.
 13. Assert: Due to validation, the type of numty_u1 is inn.
@@ -5304,59 +5305,59 @@ vrelop (lanet_u1 X N) vrelo_u0 v128_1 v128_2
 16. Let v128 be $invlanes_((inn X N), lane_3*).
 17. Return v128.
 
-vcvtop (lanet_u0 X N_1) (lanet_u1 X N_2) vcvto_u3 sx_u4? lane__u2
-1. If ((lanet_u0 is I8) and ((lanet_u1 is I16) and (vcvto_u3 is EXTEND))), then:
-  a. Let i8 be lane__u2.
-  b. If sx_u4? is defined, then:
-    1) Let ?(sx) be sx_u4?.
+vcvtop (lanet_u0 X N_1) (lanet_u1 X N_2) vcvto_u6 sx_u7? lane__u3
+1. If ((lanet_u0 is I8) and ((lanet_u1 is I16) and (vcvto_u6 is EXTEND))), then:
+  a. Let i8 be lane__u3.
+  b. If sx_u7? is defined, then:
+    1) Let ?(sx) be sx_u7?.
     2) Let i16 be $ext(8, 16, sx, i8).
     3) Return i16.
-2. If ((lanet_u0 is I16) and ((lanet_u1 is I32) and (vcvto_u3 is EXTEND))), then:
-  a. Let i16 be lane__u2.
-  b. If sx_u4? is defined, then:
-    1) Let ?(sx) be sx_u4?.
+2. If ((lanet_u0 is I16) and ((lanet_u1 is I32) and (vcvto_u6 is EXTEND))), then:
+  a. Let i16 be lane__u3.
+  b. If sx_u7? is defined, then:
+    1) Let ?(sx) be sx_u7?.
     2) Let i32 be $ext(16, 32, sx, i16).
     3) Return i32.
 3. If (lanet_u0 is I32), then:
-  a. If ((lanet_u1 is I64) and (vcvto_u3 is EXTEND)), then:
-    1) Let i32 be lane__u2.
-    2) If sx_u4? is defined, then:
-      a) Let ?(sx) be sx_u4?.
+  a. If ((lanet_u1 is I64) and (vcvto_u6 is EXTEND)), then:
+    1) Let i32 be lane__u3.
+    2) If sx_u7? is defined, then:
+      a) Let ?(sx) be sx_u7?.
       b) Let i64 be $ext(32, 64, sx, i32).
       c) Return i64.
-  b. If ((lanet_u1 is F32) and (vcvto_u3 is CONVERT)), then:
-    1) Let i32 be lane__u2.
-    2) If sx_u4? is defined, then:
-      a) Let ?(sx) be sx_u4?.
+  b. If ((lanet_u1 is F32) and (vcvto_u6 is CONVERT)), then:
+    1) Let i32 be lane__u3.
+    2) If sx_u7? is defined, then:
+      a) Let ?(sx) be sx_u7?.
       b) Let f32 be $convert(32, 32, sx, i32).
       c) Return f32.
-  c. If ((lanet_u1 is F64) and (vcvto_u3 is CONVERT)), then:
-    1) Let i32 be lane__u2.
-    2) If sx_u4? is defined, then:
-      a) Let ?(sx) be sx_u4?.
+  c. If ((lanet_u1 is F64) and (vcvto_u6 is CONVERT)), then:
+    1) Let i32 be lane__u3.
+    2) If sx_u7? is defined, then:
+      a) Let ?(sx) be sx_u7?.
       b) Let f64 be $convert(32, 64, sx, i32).
       c) Return f64.
-4. If ((lanet_u0 is F32) and ((lanet_u1 is I32) and (vcvto_u3 is TRUNC_SAT))), then:
-  a. Let f32 be lane__u2.
-  b. If sx_u4? is defined, then:
-    1) Let ?(sx) be sx_u4?.
+4. If ((lanet_u0 is F32) and ((lanet_u1 is I32) and (vcvto_u6 is TRUNC_SAT))), then:
+  a. Let f32 be lane__u3.
+  b. If sx_u7? is defined, then:
+    1) Let ?(sx) be sx_u7?.
     2) Let i32 be $trunc_sat(32, 32, sx, f32).
     3) Return i32.
 5. If (lanet_u0 is F64), then:
-  a. If ((lanet_u1 is I32) and (vcvto_u3 is TRUNC_SAT)), then:
-    1) Let f64 be lane__u2.
-    2) If sx_u4? is defined, then:
-      a) Let ?(sx) be sx_u4?.
+  a. If ((lanet_u1 is I32) and (vcvto_u6 is TRUNC_SAT)), then:
+    1) Let f64 be lane__u3.
+    2) If sx_u7? is defined, then:
+      a) Let ?(sx) be sx_u7?.
       b) Let i32 be $trunc_sat(64, 32, sx, f64).
       c) Return i32.
-  b. If ((lanet_u1 is F32) and (vcvto_u3 is DEMOTE)), then:
-    1) Let f64 be lane__u2.
+  b. If ((lanet_u1 is F32) and (vcvto_u6 is DEMOTE)), then:
+    1) Let f64 be lane__u3.
     2) Let f32 be $demote(64, 32, f64).
     3) Return f32.
 6. Assert: Due to validation, (lanet_u0 is F32).
 7. Assert: Due to validation, (lanet_u1 is F64).
-8. Assert: Due to validation, (vcvto_u3 is PROMOTE).
-9. Let f32 be lane__u2.
+8. Assert: Due to validation, (vcvto_u6 is PROMOTE).
+9. Let f32 be lane__u3.
 10. Let f64 be $promote(32, 64, f32).
 11. Return f64.
 
@@ -6277,23 +6278,23 @@ execution_of_VNARROW (imm_2 X N_2) (imm_1 X N_1) sx
 9. Let c be $invlanes_((imm_2 X N_2), cj_1* ++ cj_2*).
 10. Push the value (V128.CONST c) to the stack.
 
-execution_of_VCVTOP (lanet_u1 X N_2) vcvtop half_u0? (lanet_u2 X N_1) sx? zero_u3?
+execution_of_VCVTOP (lanet_u1 X N_2) (lanet_u2 X N_1) vcvtop half__u0? sx? zero__u7?
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
-3. If (half_u0? is not defined and zero_u3? is not defined), then:
+3. If (half__u0? is not defined and zero__u7? is not defined), then:
   a. Let lnn_1 be lanet_u2.
   b. Let lnn_2 be lanet_u1.
   c. Let c'* be $lanes_((lnn_1 X N_1), c_1).
   d. Let c be $invlanes_((lnn_2 X N_2), $vcvtop((lnn_1 X N_1), (lnn_2 X N_2), vcvtop, sx?, c')*).
   e. Push the value (V128.CONST c) to the stack.
-4. If (zero_u3? is not defined and half_u0? is defined), then:
-  a. Let ?(hf) be half_u0?.
+4. If (zero__u7? is not defined and half__u0? is defined), then:
+  a. Let ?(half) be half__u0?.
   b. Let lnn_1 be lanet_u2.
   c. Let lnn_2 be lanet_u1.
-  d. Let ci* be $lanes_((lnn_1 X N_1), c_1)[$halfop(hf, 0, N_2) : N_2].
+  d. Let ci* be $lanes_((lnn_1 X N_1), c_1)[$halfop(half, 0, N_2) : N_2].
   e. Let c be $invlanes_((lnn_2 X N_2), $vcvtop((lnn_1 X N_1), (lnn_2 X N_2), vcvtop, sx?, ci)*).
   f. Push the value (V128.CONST c) to the stack.
-5. If (half_u0? is not defined and ((zero_u3? is ?(ZERO)) and the type of lanet_u2 is numtype)), then:
+5. If (half__u0? is not defined and ((zero__u7? is ?(ZERO)) and the type of lanet_u2 is numtype)), then:
   a. Let nt_1 be lanet_u2.
   b. If the type of lanet_u1 is numtype, then:
     1) Let nt_2 be lanet_u1.
