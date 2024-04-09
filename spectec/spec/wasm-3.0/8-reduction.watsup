@@ -50,11 +50,11 @@ rule Step_pure/drop:
 
 
 rule Step_pure/select-true:
-  val_1 val_2 (CONST I32 c) (SELECT t*?)  ~>  val_1
+  val_1 val_2 (CONST I32 c) (SELECT (t*)?)  ~>  val_1
   -- if c =/= 0
 
 rule Step_pure/select-false:
-  val_1 val_2 (CONST I32 c) (SELECT t*?)  ~>  val_2
+  val_1 val_2 (CONST I32 c) (SELECT (t*)?)  ~>  val_2
   -- if c = 0
 
 

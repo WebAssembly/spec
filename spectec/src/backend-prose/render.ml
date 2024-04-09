@@ -147,6 +147,12 @@ and al_to_el_expr expr =
     | Al.Ast.IterE (e, _, iter) ->
       let* ele = al_to_el_expr e in
       let* eliter = al_to_el_iter iter in
+      let ele =
+        match ele.it with
+        | El.Ast.IterE (_, eliter2) when eliter2 <> eliter ->
+          El.Ast.ParenE (ele, false) $ ele.at
+        | _ -> ele
+      in
       Some (El.Ast.IterE (ele, eliter))
     | Al.Ast.InfixE (e1, op, e2) ->
       let* ele1 = al_to_el_expr e1 in

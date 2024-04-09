@@ -710,7 +710,7 @@ and render_exp env e =
     "\\begin{array}[t]{@{}l@{}}\n" ^
     concat_map_nl ",\\; " "\\\\\n  " (render_expfield env) efs ^ " \\}" ^
     "\\end{array}"
-  | DotE (e1, atom) -> render_exp env e1 ^ "." ^ render_fieldname env atom
+  | DotE (e1, atom) -> render_exp env e1 ^ "{.}" ^ render_fieldname env atom
   | CommaE (e1, e2) -> render_exp env e1 ^ ", " ^ render_exp env e2
   | CompE (e1, e2) -> render_exp env e1 ^ " \\oplus " ^ render_exp env e2
   | LenE e1 -> "{|" ^ render_exp env e1 ^ "|}"
