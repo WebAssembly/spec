@@ -10,3 +10,5 @@ val insert_state_binding : algorithm -> algorithm
 val remove_sub : expr -> expr
 val infer_assert : instr list -> instr list
 val ensure_return :  instr list -> instr list
+val remove_exit : algorithm -> algorithm
+val remove_enter : algorithm -> algorithm

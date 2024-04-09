@@ -118,7 +118,7 @@ let rec walk_instr f (instr:instr) : instr list =
       | ExecuteI e -> ExecuteI (new_e e)
       | ExecuteSeqI e -> ExecuteSeqI (new_e e)
       | PerformI (id, el) -> PerformI (id, List.map new_e el)
-      | ExitI -> ExitI
+      | ExitI _ -> i.it 
       | ReplaceI (e1, p, e2) -> ReplaceI (new_e e1, walk_path f p, new_e e2)
       | AppendI (e1, e2) -> AppendI (new_e e1, new_e e2)
       | YetI _ -> i.it in

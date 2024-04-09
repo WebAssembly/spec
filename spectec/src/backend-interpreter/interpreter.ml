@@ -218,7 +218,6 @@ and eval_expr env expr =
     let v2 = eval_expr env e2 in
     LabelV (v1, v2)
   | GetCurLabelE -> WasmContext.get_current_label ()
-  | GetCurContextE -> WasmContext.get_current_context ()
   | ContE e ->
     (match eval_expr env e with
     | LabelV (_, vs) -> vs
@@ -249,10 +248,15 @@ and eval_expr env expr =
     | l, _ -> listV_of_list l)
   | InfixE (e1, _, e2) -> TupV [ eval_expr env e1; eval_expr env e2 ]
   (* condition *)
-  | ContextKindE ((kind, _), e) ->
-    (match kind, eval_expr env e with
-    | Il.Atom.Atom "FRAME_", FrameV _ -> boolV true
-    | Il.Atom.Atom "LABEL_", LabelV _ -> boolV true
+  | TopFrameE ->
+    let ctx = WasmContext.get_top_context () in
+    (match ctx with
+    | Some (FrameV _) -> boolV true
+    | _ -> boolV false)
+  | TopLabelE ->
+    let ctx = WasmContext.get_top_context () in
+    (match ctx with
+    | Some (LabelV _) -> boolV true
     | _ -> boolV false)
   | IsDefinedE e ->
     e
@@ -538,7 +542,7 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     let v2 = eval_expr env e2 in
     WasmContext.push_context (v1, [], unwrap_listv_to_list v2);
     AlContext.enter (fname, il, env) :: ctx
-  | ExitI ->
+  | ExitI _ ->
     WasmContext.pop_context () |> ignore;
     AlContext.decrease_depth ctx
   | ReplaceI (e1, { it = IdxP e2; _ }, e3) ->
