@@ -119,7 +119,7 @@ jobs:
           name: code-metadata-rendered
           path: _output/metadata/code
       - name: Publish to GitHub Pages
-        if: github.ref == 'refs/heads/move-spec'
+        if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
         with:
           publish_dir: ./_output
