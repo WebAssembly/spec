@@ -789,7 +789,7 @@ let translate_context_winstr winstr =
   let at = winstr.at in
   match winstr.it with
   (* Frame *)
-  | Il.CaseE ([{it = Il.Atom "FRAME_"; _}]::_, args) ->
+  | Il.CaseE ([{it = Il.Atom "FRAME_"; _} as atom]::_, args) ->
     (match args.it with
     | Il.TupE [arity; name; inner_exp] ->
       [
@@ -798,58 +798,85 @@ let translate_context_winstr winstr =
         insert_assert inner_exp;
         popI (translate_exp inner_exp) ~at:at;
         insert_assert winstr;
-        exitI () ~at:at
+        exitI (translate_atom atom) ~at:at
       ]
     | _ -> error_exp args "argument of frame"
     )
   (* Label *)
-  | Il.CaseE ([{it = Il.Atom "LABEL_"; _}]::_, { it = Il.TupE [ _n; _instrs; vals ]; _ }) ->
+  | Il.CaseE ([{it = Il.Atom "LABEL_"; _} as atom]::_, { it = Il.TupE [ _n; _instrs; vals ]; _ }) ->
     [
       (* TODO: append Jump instr *)
       popallI (translate_exp vals) ~at:at;
       insert_assert winstr;
-      exitI () ~at:at
+      exitI (translate_atom atom) ~at:at
     ]
   | _ -> []
 
 let translate_context ctx vs =
   let at = ctx.at in
-  let first_vs, last_v = Util.Lib.List.split_last vs in
-  match ctx.it with
-  | Il.CaseE ([{it = Il.Atom "LABEL_"; _}]::_, { it = Il.TupE [ n; instrs; _hole ]; _ }) ->
-    [
-      letI (varE "L", getCurLabelE ()) ~at:at;
-      letI (translate_exp n, arityE (varE "L")) ~at:at;
-      letI (translate_exp instrs, contE (varE "L")) ~at:at;
-    ] @ List.map (fun v -> popI (translate_exp v) ~at:at) first_vs @
-    [
-      popallI (translate_exp last_v) ~at:at;
-      exitI () ~at:at
-    ]
-  | Il.CaseE ([{it = Il.Atom "FRAME_"; _}]::_, { it = Il.TupE [ n; _f; _hole ]; _ }) ->
-    [
-      letI (varE "F", getCurFrameE ()) ~at:at;
-      letI (translate_exp n, arityE (varE "F")) ~at:at;
-    ] @ List.map (fun v -> popI (translate_exp v)) first_vs @
-    [
-      popallI (translate_exp last_v) ~at:at;
-      exitI () ~at:at
-    ]
-  | _ -> [ yetI "TODO: translate_context" ~at:at ]
+  let e_vals = iterE (subE ("val", "val"), [ "val" ], List) in
+  let vs = List.rev vs in
+  let instr_popall = popallI e_vals in
+  let instr_pop_context =
+    match ctx.it with
+    | Il.CaseE ([{it = Il.Atom "LABEL_"; _} as atom]::_, { it = Il.TupE [ n; instrs; _hole ]; _ }) ->
+      [
+        letI (varE "L", getCurLabelE ()) ~at:at;
+        letI (translate_exp n, arityE (varE "L")) ~at:at;
+        letI (translate_exp instrs, contE (varE "L")) ~at:at;
+        exitI (translate_atom atom) ~at:at
+      ]
+    | Il.CaseE ([{it = Il.Atom "FRAME_"; _} as atom]::_, { it = Il.TupE [ n; _f; _hole ]; _ }) ->
+      [
+        letI (varE "F", getCurFrameE ()) ~at:at;
+        letI (translate_exp n, arityE (varE "F")) ~at:at;
+        exitI (translate_atom atom) ~at:at
+      ]
+    | _ -> [ yetI "TODO: translate_context" ~at:at ]
+  in
+  let instr_let =
+    match vs with
+    | v1 :: v2 :: vs ->
+        let e1 = translate_exp v1 in
+        let e2 = translate_exp v2 in
+        let e_vs = catE (e1, e2) in
+        let e =
+          List.fold_left
+            (fun e_vs v -> catE (e_vs, translate_exp v))
+            e_vs vs
+        in
+        [ letI (e, e_vals) ~at:at ]
+    | v :: [] ->
+        let e = translate_exp v in
+        if Eq.eq_expr e e_vals then []
+        else [ letI (e, e_vals) ~at:at ]
+    | _ -> []
+  in
+  instr_popall :: instr_pop_context @ instr_let
 
 let translate_context_rgroup lhss sub_algos inner_params =
-  List.fold_right2 (fun lhs algo acc ->
-    match algo with
-    | RuleA (_, params, body) ->
-      if Option.is_none !inner_params then inner_params := Some params;
-      let kind = kind_of_context lhs in
-      [ ifI (
-        contextKindE (kind, getCurContextE ()),
-        body,
-        acc ) ]
-    | _ -> assert false)
-  lhss sub_algos []
-
+  let e_vals = iterE (varE "val", [ "val" ], List) in
+  let instr_popall = popallI e_vals in
+  let instrs_context =
+    List.fold_right2 (fun lhs algo acc ->
+      match algo with
+      | RuleA (_, params, body) ->
+        (* Assume that each sub-algorithms are produced by translate_context,
+           i.e., they will always contain instr_popall as their first instruction. *)
+        assert(Eq.eq_instr (List.hd body) instr_popall);
+        if Option.is_none !inner_params then inner_params := Some params;
+        let e_cond =
+          begin match kind_of_context lhs with
+          | Il.Atom.Atom "FRAME_", _ -> topFrameE ()
+          | Il.Atom.Atom "LABEL_", _ -> topLabelE ()
+          | _ -> error lhs.at "the context is neither a frame nor a label"
+          end
+        in
+        [ ifI (e_cond, List.tl body, acc) ]
+      | _ -> assert false)
+    lhss sub_algos []
+  in
+  instr_popall :: instrs_context
 
 let rec split_lhs_stack' ?(note : Il.typ option) name stack ctxs instrs =
   let target = upper name in
