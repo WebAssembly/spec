@@ -2,7 +2,7 @@
 
 ```sh
 $ cd ../spec/wasm-3.0 && \
-> ../../src/exe-watsup/main.exe *.watsup -v -l --interpreter ../../test-interpreter/sample.wat addTwo 30 12 2> /dev/null
+> ../../src/exe-watsup/main.exe *.watsup -v -l --interpreter ../../test-interpreter/sample.wat addTwo 30 12 2>&1
 watsup 0.4 generator
 == Parsing...
 == Elaboration...
@@ -18,7 +18,7 @@ watsup 0.4 generator
 42
 == Complete.
 $ cd ../spec/wasm-3.0 && \
-> ../../src/exe-watsup/main.exe *.watsup -v -l --interpreter ../../test-interpreter/sample.wasm addTwo 40 2 2> /dev/null
+> ../../src/exe-watsup/main.exe *.watsup -v -l --interpreter ../../test-interpreter/sample.wasm addTwo 40 2 2>&1
 watsup 0.4 generator
 == Parsing...
 == Elaboration...
@@ -34,7 +34,7 @@ watsup 0.4 generator
 42
 == Complete.
 $ cd ../spec/wasm-3.0 && \
-> ../../src/exe-watsup/main.exe *.watsup -v -l --interpreter ../../test-interpreter/sample.wast 2> /dev/null
+> ../../src/exe-watsup/main.exe *.watsup -v -l --interpreter ../../test-interpreter/sample.wast 2>&1
 watsup 0.4 generator
 == Parsing...
 == Elaboration...
@@ -55,7 +55,7 @@ $ for v in 1 2 3; do ( \
 >   echo "Running test for Wasm $v.0..." && \
 >   cd ../spec/wasm-$v.0 && \
 >   ../../src/exe-watsup/main.exe *.watsup -v -l --test-version $v --interpreter ../../test-interpreter/spec-test-$v \
-> ) done 2>/dev/null
+> ) done 2>&1
 Running test for Wasm 1.0...
 watsup 0.4 generator
 == Parsing...

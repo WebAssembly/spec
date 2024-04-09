@@ -93,9 +93,9 @@ validation_of_TESTOP t testop_t
 validation_of_RELOP t relop_t
 - The instruction is valid with type ([t, t] -> [I32]).
 
-validation_of_CVTOP t_1 REINTERPRET t_2 ?()
-- $size(t_1) must be equal to $size(t_2).
-- The instruction is valid with type ([t_2] -> [t_1]).
+validation_of_CVTOP nt_1 nt_2 REINTERPRET ?()
+- $size(nt_1) must be equal to $size(nt_2).
+- The instruction is valid with type ([nt_2] -> [nt_1]).
 
 validation_of_LOCAL.GET x
 - |C.LOCALS| must be greater than x.
@@ -1055,7 +1055,7 @@ execution_of_RELOP t relop
 5. Let c be $relop(t, relop, c_1, c_2).
 6. Push the value (I32.CONST c) to the stack.
 
-execution_of_CVTOP t_2 cvtop t_1 sx?
+execution_of_CVTOP t_2 t_1 cvtop sx?
 1. Assert: Due to validation, a value of value type t_1 is on the top of the stack.
 2. Pop the value (t_1.CONST c_1) from the stack.
 3. If (|$cvtop(t_1, t_2, cvtop, sx?, c_1)| is 1), then:
@@ -1344,7 +1344,7 @@ validation_of_TESTOP nt testop_nt
 validation_of_RELOP nt relop_nt
 - The instruction is valid with type ([nt, nt] -> [I32]).
 
-validation_of_CVTOP nt_1 REINTERPRET nt_2 ?()
+validation_of_CVTOP nt_1 nt_2 REINTERPRET ?()
 - $size(nt_1) must be equal to $size(nt_2).
 - The instruction is valid with type ([nt_2] -> [nt_1]).
 
@@ -1374,28 +1374,6 @@ validation_of_VVTERNOP V128 vvternop
 validation_of_VVTESTOP V128 vvtestop
 - The instruction is valid with type ([V128] -> [I32]).
 
-validation_of_VBITMASK sh
-- The instruction is valid with type ([V128] -> [I32]).
-
-validation_of_VSWIZZLE sh
-- The instruction is valid with type ([V128, V128] -> [V128]).
-
-validation_of_VSHUFFLE (imm X N) i*
-- For all i in i*,
-  - i must be less than (N · 2).
-- The instruction is valid with type ([V128, V128] -> [V128]).
-
-validation_of_VSPLAT (lnn X N)
-- The instruction is valid with type ([$unpack(lnn)] -> [V128]).
-
-validation_of_VEXTRACT_LANE (lnn X N) sx? i
-- i must be less than N.
-- The instruction is valid with type ([V128] -> [$unpack(lnn)]).
-
-validation_of_VREPLACE_LANE (lnn X N) i
-- i must be less than N.
-- The instruction is valid with type ([V128, $unpack(lnn)] -> [V128]).
-
 validation_of_VUNOP sh vunop_sh
 - The instruction is valid with type ([V128] -> [V128]).
 
@@ -1411,17 +1389,39 @@ validation_of_VRELOP sh vrelop_sh
 validation_of_VSHIFTOP sh vshiftop_sh
 - The instruction is valid with type ([V128, I32] -> [V128]).
 
-validation_of_VCVTOP sh vcvtop hf? sh sx? zero
-- The instruction is valid with type ([V128] -> [V128]).
+validation_of_VBITMASK sh
+- The instruction is valid with type ([V128] -> [I32]).
 
-validation_of_VNARROW sh sh sx
+validation_of_VSWIZZLE sh
 - The instruction is valid with type ([V128, V128] -> [V128]).
 
-validation_of_VEXTUNOP sh sh vextunop sx
+validation_of_VSHUFFLE sh i*
+- For all i in i*,
+  - i must be less than (2 · $dim(sh)).
+- The instruction is valid with type ([V128, V128] -> [V128]).
+
+validation_of_VSPLAT sh
+- The instruction is valid with type ([$shunpack(sh)] -> [V128]).
+
+validation_of_VEXTRACT_LANE sh sx? i
+- i must be less than $dim(sh).
+- The instruction is valid with type ([V128] -> [$shunpack(sh)]).
+
+validation_of_VREPLACE_LANE sh i
+- i must be less than $dim(sh).
+- The instruction is valid with type ([V128, $shunpack(sh)] -> [V128]).
+
+validation_of_VEXTUNOP sh_1 sh_2 vextunop sx
 - The instruction is valid with type ([V128] -> [V128]).
 
-validation_of_VEXTBINOP sh sh vextbinop sx
+validation_of_VEXTBINOP sh_1 sh_2 vextbinop sx
 - The instruction is valid with type ([V128, V128] -> [V128]).
+
+validation_of_VNARROW sh_1 sh_2 sx
+- The instruction is valid with type ([V128, V128] -> [V128]).
+
+validation_of_VCVTOP sh_1 vcvtop hf? sh_2 sx? zero?
+- The instruction is valid with type ([V128] -> [V128]).
 
 validation_of_LOCAL.GET x
 - |C.LOCALS| must be greater than x.
@@ -1674,6 +1674,12 @@ lsize lanet_u0
 lanetype (lnn X N)
 1. Return lnn.
 
+sizenn nt
+1. Return $size(nt).
+
+sizemm lt
+1. Return $lsize(lt).
+
 zero numty_u0
 1. If the type of numty_u0 is inn, then:
   a. Return 0.
@@ -1699,6 +1705,9 @@ unpack lanet_u0
   b. Return numtype.
 2. Assert: Due to validation, the type of lanet_u0 is packtype.
 3. Return I32.
+
+shunpack (lnn X N)
+1. Return $unpack(lnn).
 
 funcsxt exter_u0*
 1. If (exter_u0* is []), then:
@@ -2391,47 +2400,48 @@ vcvtop (lanet_u0 X N_1) (lanet_u1 X N_2) vcvto_u3 sx_u4? lane__u2
     1) Let ?(sx) be sx_u4?.
     2) Let i32 be $ext(16, 32, sx, i16).
     3) Return i32.
-3. If ((lanet_u0 is I32) and ((lanet_u1 is I64) and (vcvto_u3 is EXTEND))), then:
-  a. Let i32 be lane__u2.
-  b. If sx_u4? is defined, then:
-    1) Let ?(sx) be sx_u4?.
-    2) Let i64 be $ext(32, 64, sx, i32).
-    3) Return i64.
+3. If (lanet_u0 is I32), then:
+  a. If ((lanet_u1 is I64) and (vcvto_u3 is EXTEND)), then:
+    1) Let i32 be lane__u2.
+    2) If sx_u4? is defined, then:
+      a) Let ?(sx) be sx_u4?.
+      b) Let i64 be $ext(32, 64, sx, i32).
+      c) Return i64.
+  b. If ((lanet_u1 is F32) and (vcvto_u3 is CONVERT)), then:
+    1) Let i32 be lane__u2.
+    2) If sx_u4? is defined, then:
+      a) Let ?(sx) be sx_u4?.
+      b) Let f32 be $convert(32, 32, sx, i32).
+      c) Return f32.
+  c. If ((lanet_u1 is F64) and (vcvto_u3 is CONVERT)), then:
+    1) Let i32 be lane__u2.
+    2) If sx_u4? is defined, then:
+      a) Let ?(sx) be sx_u4?.
+      b) Let f64 be $convert(32, 64, sx, i32).
+      c) Return f64.
 4. If ((lanet_u0 is F32) and ((lanet_u1 is I32) and (vcvto_u3 is TRUNC_SAT))), then:
   a. Let f32 be lane__u2.
   b. If sx_u4? is defined, then:
     1) Let ?(sx) be sx_u4?.
     2) Let i32 be $trunc_sat(32, 32, sx, f32).
     3) Return i32.
-5. If ((lanet_u0 is F64) and ((lanet_u1 is I32) and (vcvto_u3 is TRUNC_SAT))), then:
-  a. Let f64 be lane__u2.
-  b. If sx_u4? is defined, then:
-    1) Let ?(sx) be sx_u4?.
-    2) Let i32 be $trunc_sat(64, 32, sx, f64).
-    3) Return i32.
-6. If (lanet_u0 is I32), then:
-  a. If ((lanet_u1 is F32) and (vcvto_u3 is CONVERT)), then:
-    1) Let i32 be lane__u2.
+5. If (lanet_u0 is F64), then:
+  a. If ((lanet_u1 is I32) and (vcvto_u3 is TRUNC_SAT)), then:
+    1) Let f64 be lane__u2.
     2) If sx_u4? is defined, then:
       a) Let ?(sx) be sx_u4?.
-      b) Let f32 be $convert(32, 32, sx, i32).
-      c) Return f32.
-  b. If ((lanet_u1 is F64) and (vcvto_u3 is CONVERT)), then:
-    1) Let i32 be lane__u2.
-    2) If sx_u4? is defined, then:
-      a) Let ?(sx) be sx_u4?.
-      b) Let f64 be $convert(32, 64, sx, i32).
-      c) Return f64.
-7. If ((lanet_u0 is F64) and ((lanet_u1 is F32) and (vcvto_u3 is DEMOTE))), then:
-  a. Let f64 be lane__u2.
-  b. Let f32 be $demote(64, 32, f64).
-  c. Return f32.
-8. Assert: Due to validation, (lanet_u0 is F32).
-9. Assert: Due to validation, (lanet_u1 is F64).
-10. Assert: Due to validation, (vcvto_u3 is PROMOTE).
-11. Let f32 be lane__u2.
-12. Let f64 be $promote(32, 64, f32).
-13. Return f64.
+      b) Let i32 be $trunc_sat(64, 32, sx, f64).
+      c) Return i32.
+  b. If ((lanet_u1 is F32) and (vcvto_u3 is DEMOTE)), then:
+    1) Let f64 be lane__u2.
+    2) Let f32 be $demote(64, 32, f64).
+    3) Return f32.
+6. Assert: Due to validation, (lanet_u0 is F32).
+7. Assert: Due to validation, (lanet_u1 is F64).
+8. Assert: Due to validation, (vcvto_u3 is PROMOTE).
+9. Let f32 be lane__u2.
+10. Let f64 be $promote(32, 64, f32).
+11. Return f64.
 
 vextunop (inn_1 X N_1) (inn_2 X N_2) EXTADD_PAIRWISE sx c_1
 1. Let ci* be $lanes_((inn_2 X N_2), c_1).
@@ -2453,7 +2463,7 @@ vextbinop (inn_1 X N_1) (inn_2 X N_2) vextb_u0 sx c_1 c_2
 6. Let c be $invlanes_((inn_1 X N_1), $iadd($lsize(inn_1), cj_1, cj_2)*).
 7. Return c.
 
-vishiftop (imm X N) vshif_u0 lane n
+vshiftop (imm X N) vshif_u0 lane n
 1. If (vshif_u0 is SHL), then:
   a. Return $ishl($lsize(imm), lane, n).
 2. Assert: Due to validation, vshif_u0 is of the case SHR.
@@ -3011,7 +3021,7 @@ execution_of_RELOP nt relop
 5. Let c be $relop(nt, relop, c_1, c_2).
 6. Push the value (I32.CONST c) to the stack.
 
-execution_of_CVTOP nt_2 cvtop nt_1 sx?
+execution_of_CVTOP nt_2 nt_1 cvtop sx?
 1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
 2. Pop the value (nt_1.CONST c_1) from the stack.
 3. If (|$cvtop(nt_1, nt_2, cvtop, sx?, c_1)| is 1), then:
@@ -3058,27 +3068,77 @@ execution_of_VVTESTOP V128 ANY_TRUE
 3. Let c be $ine($size(V128), c_1, 0).
 4. Push the value (I32.CONST c) to the stack.
 
-execution_of_VSWIZZLE (inn X N)
+execution_of_VUNOP sh vunop
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value (V128.CONST c_1) from the stack.
+3. Let c be $vunop(sh, vunop, c_1).
+4. Push the value (V128.CONST c) to the stack.
+
+execution_of_VBINOP sh vbinop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c* be $lanes_((inn X N), c_1) ++ 0^(256 - N).
-6. Let ci* be $lanes_((inn X N), c_2).
+5. If (|$vbinop(sh, vbinop, c_1, c_2)| is 1), then:
+  a. Let [c] be $vbinop(sh, vbinop, c_1, c_2).
+  b. Push the value (V128.CONST c) to the stack.
+6. If ($vbinop(sh, vbinop, c_1, c_2) is []), then:
+  a. Trap.
+
+execution_of_VTESTOP (imm X N) ALL_TRUE
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value (V128.CONST c) from the stack.
+3. Let ci_1* be $lanes_((imm X N), c).
+4. If (ci_1 is not 0)*, then:
+  a. Push the value (I32.CONST 1) to the stack.
+5. Else:
+  a. Push the value (I32.CONST 0) to the stack.
+
+execution_of_VRELOP sh vrelop
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value (V128.CONST c_2) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop the value (V128.CONST c_1) from the stack.
+5. Let c be $vrelop(sh, vrelop, c_1, c_2).
+6. Push the value (V128.CONST c) to the stack.
+
+execution_of_VSHIFTOP (imm X N) vshiftop
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop the value (I32.CONST n) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop the value (V128.CONST c_1) from the stack.
+5. Let c'* be $lanes_((imm X N), c_1).
+6. Let c be $invlanes_((imm X N), $vshiftop((imm X N), vshiftop, c', n)*).
+7. Push the value (V128.CONST c) to the stack.
+
+execution_of_VBITMASK (imm X N)
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value (V128.CONST c) from the stack.
+3. Let ci_1* be $lanes_((imm X N), c).
+4. Let ci be $inverse_of_ibits(32, $ilt($lsize(imm), S, ci_1, 0)*).
+5. Push the value (I32.CONST ci) to the stack.
+
+execution_of_VSWIZZLE (pnn X N)
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value (V128.CONST c_2) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop the value (V128.CONST c_1) from the stack.
+5. Let c* be $lanes_((pnn X N), c_1) ++ 0^(256 - N).
+6. Let ci* be $lanes_((pnn X N), c_2).
 7. Assert: Due to validation, (ci*[k] < |c*|)^(k<N).
 8. Assert: Due to validation, (k < |ci*|)^(k<N).
-9. Let c' be $invlanes_((inn X N), c*[ci*[k]]^(k<N)).
+9. Let c' be $invlanes_((pnn X N), c*[ci*[k]]^(k<N)).
 10. Push the value (V128.CONST c') to the stack.
 
-execution_of_VSHUFFLE (inn X N) i*
+execution_of_VSHUFFLE (pnn X N) i*
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Assert: Due to validation, (k < |i*|)^(k<N).
-6. Let c'* be $lanes_((inn X N), c_1) ++ $lanes_((inn X N), c_2).
+6. Let c'* be $lanes_((pnn X N), c_1) ++ $lanes_((pnn X N), c_2).
 7. Assert: Due to validation, (i*[k] < |c'*|)^(k<N).
-8. Let c be $invlanes_((inn X N), c'*[i*[k]]^(k<N)).
+8. Let c be $invlanes_((pnn X N), c'*[i*[k]]^(k<N)).
 9. Push the value (V128.CONST c) to the stack.
 
 execution_of_VSPLAT (lnn X N)
@@ -3111,96 +3171,6 @@ execution_of_VREPLACE_LANE (lnn X N) i
 5. Let c be $invlanes_((lnn X N), $lanes_((lnn X N), c_1) with [i] replaced by $packnum(lnn, c_2)).
 6. Push the value (V128.CONST c) to the stack.
 
-execution_of_VUNOP sh vunop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. Let c be $vunop(sh, vunop, c_1).
-4. Push the value (V128.CONST c) to the stack.
-
-execution_of_VBINOP sh vbinop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. If (|$vbinop(sh, vbinop, c_1, c_2)| is 1), then:
-  a. Let [c] be $vbinop(sh, vbinop, c_1, c_2).
-  b. Push the value (V128.CONST c) to the stack.
-6. If ($vbinop(sh, vbinop, c_1, c_2) is []), then:
-  a. Trap.
-
-execution_of_VRELOP sh vrelop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c be $vrelop(sh, vrelop, c_1, c_2).
-6. Push the value (V128.CONST c) to the stack.
-
-execution_of_VSHIFTOP (imm X N) vshiftop
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let ci* be $lanes_((imm X N), c_1).
-6. Let c be $invlanes_((imm X N), $vishiftop((imm X N), vshiftop, ci, n)*).
-7. Push the value (V128.CONST c) to the stack.
-
-execution_of_VTESTOP (inn X N) ALL_TRUE
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (V128.CONST c) from the stack.
-3. Let ci* be $lanes_((inn X N), c).
-4. If (ci is not 0)*, then:
-  a. Push the value (I32.CONST 1) to the stack.
-5. Else:
-  a. Push the value (I32.CONST 0) to the stack.
-
-execution_of_VBITMASK (imm X N)
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (V128.CONST c) from the stack.
-3. Let ci* be $lanes_((imm X N), c).
-4. Let i be $inverse_of_ibits(32, $ilt($lsize(imm), S, ci, 0)*).
-5. Push the value (I32.CONST i) to the stack.
-
-execution_of_VNARROW (imm_2 X N_2) (imm_1 X N_1) sx
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let ci_1* be $lanes_((imm_1 X N_1), c_1).
-6. Let ci_2* be $lanes_((imm_1 X N_1), c_2).
-7. Let cj_1* be $narrow($lsize(imm_1), $lsize(imm_2), sx, ci_1)*.
-8. Let cj_2* be $narrow($lsize(imm_1), $lsize(imm_2), sx, ci_2)*.
-9. Let c be $invlanes_((imm_2 X N_2), cj_1* ++ cj_2*).
-10. Push the value (V128.CONST c) to the stack.
-
-execution_of_VCVTOP (lanet_u2 X N_2) vcvtop half_u0? (lanet_u3 X N_1) sx_u1? (ZERO _u4?)
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. If (half_u0? is not defined and _u4? is not defined), then:
-  a. Let lnn_1 be lanet_u3.
-  b. Let lnn_2 be lanet_u2.
-  c. If sx_u1? is defined, then:
-    1) Let ?(sx) be sx_u1?.
-    2) Let c'* be $lanes_((lnn_1 X N_1), c_1).
-    3) Let c be $invlanes_((lnn_2 X N_2), $vcvtop((lnn_1 X N_1), (lnn_2 X N_2), vcvtop, ?(sx), c')*).
-    4) Push the value (V128.CONST c) to the stack.
-4. If (_u4? is not defined and half_u0? is defined), then:
-  a. Let ?(hf) be half_u0?.
-  b. Let lnn_1 be lanet_u3.
-  c. Let lnn_2 be lanet_u2.
-  d. Let sx? be sx_u1?.
-  e. Let ci* be $lanes_((lnn_1 X N_1), c_1)[$halfop(hf, 0, N_2) : N_2].
-  f. Let c be $invlanes_((lnn_2 X N_2), $vcvtop((lnn_1 X N_1), (lnn_2 X N_2), vcvtop, sx?, ci)*).
-  g. Push the value (V128.CONST c) to the stack.
-5. If (half_u0? is not defined and ((_u4? is ?(())) and the type of lanet_u3 is numtype)), then:
-  a. Let nt_1 be lanet_u3.
-  b. If the type of lanet_u2 is numtype, then:
-    1) Let nt_2 be lanet_u2.
-    2) Let sx? be sx_u1?.
-    3) Let ci* be $lanes_((nt_1 X N_1), c_1).
-    4) Let c be $invlanes_((nt_2 X N_2), $vcvtop((nt_1 X N_1), (nt_2 X N_2), vcvtop, sx?, ci)* ++ $zero(nt_2)^N_1).
-    5) Push the value (V128.CONST c) to the stack.
-
 execution_of_VEXTUNOP sh_1 sh_2 vextunop sx
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
@@ -3214,6 +3184,46 @@ execution_of_VEXTBINOP sh_1 sh_2 vextbinop sx
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c be $vextbinop(sh_1, sh_2, vextbinop, sx, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
+
+execution_of_VNARROW (imm_2 X N_2) (imm_1 X N_1) sx
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value (V128.CONST c_2) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop the value (V128.CONST c_1) from the stack.
+5. Let ci_1* be $lanes_((imm_1 X N_1), c_1).
+6. Let ci_2* be $lanes_((imm_1 X N_1), c_2).
+7. Let cj_1* be $narrow($lsize(imm_1), $lsize(imm_2), sx, ci_1)*.
+8. Let cj_2* be $narrow($lsize(imm_1), $lsize(imm_2), sx, ci_2)*.
+9. Let c be $invlanes_((imm_2 X N_2), cj_1* ++ cj_2*).
+10. Push the value (V128.CONST c) to the stack.
+
+execution_of_VCVTOP (lanet_u2 X N_2) vcvtop half_u0? (lanet_u3 X N_1) sx_u1? zero_u4?
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value (V128.CONST c_1) from the stack.
+3. If (half_u0? is not defined and zero_u4? is not defined), then:
+  a. Let lnn_1 be lanet_u3.
+  b. Let lnn_2 be lanet_u2.
+  c. If sx_u1? is defined, then:
+    1) Let ?(sx) be sx_u1?.
+    2) Let c'* be $lanes_((lnn_1 X N_1), c_1).
+    3) Let c be $invlanes_((lnn_2 X N_2), $vcvtop((lnn_1 X N_1), (lnn_2 X N_2), vcvtop, ?(sx), c')*).
+    4) Push the value (V128.CONST c) to the stack.
+4. If (zero_u4? is not defined and half_u0? is defined), then:
+  a. Let ?(hf) be half_u0?.
+  b. Let lnn_1 be lanet_u3.
+  c. Let lnn_2 be lanet_u2.
+  d. Let sx? be sx_u1?.
+  e. Let ci* be $lanes_((lnn_1 X N_1), c_1)[$halfop(hf, 0, N_2) : N_2].
+  f. Let c be $invlanes_((lnn_2 X N_2), $vcvtop((lnn_1 X N_1), (lnn_2 X N_2), vcvtop, sx?, ci)*).
+  g. Push the value (V128.CONST c) to the stack.
+5. If (half_u0? is not defined and ((zero_u4? is ?(ZERO)) and the type of lanet_u3 is numtype)), then:
+  a. Let nt_1 be lanet_u3.
+  b. If the type of lanet_u2 is numtype, then:
+    1) Let nt_2 be lanet_u2.
+    2) Let sx? be sx_u1?.
+    3) Let ci* be $lanes_((nt_1 X N_1), c_1).
+    4) Let c be $invlanes_((nt_2 X N_2), $vcvtop((nt_1 X N_1), (nt_2 X N_2), vcvtop, sx?, ci)* ++ $zero(nt_2)^N_1).
+    5) Push the value (V128.CONST c) to the stack.
 
 execution_of_LOCAL.TEE x
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -3709,14 +3719,14 @@ watsup 0.4 generator
 6-typing.watsup:675.6-675.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
 6-typing.watsup:682.6-682.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
 6-typing.watsup:686.6-686.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
-6-typing.watsup:750.6-750.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-6-typing.watsup:756.6-756.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-6-typing.watsup:774.7-774.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
-6-typing.watsup:806.6-806.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
-6-typing.watsup:835.6-835.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
-6-typing.watsup:840.6-840.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
-6-typing.watsup:978.6-978.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-6-typing.watsup:984.6-984.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:747.6-747.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
+6-typing.watsup:753.6-753.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
+6-typing.watsup:771.7-771.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
+6-typing.watsup:803.6-803.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
+6-typing.watsup:832.6-832.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
+6-typing.watsup:837.6-837.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
+6-typing.watsup:974.6-974.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:980.6-980.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 =================
  Generated prose
 =================
@@ -3866,7 +3876,7 @@ validation_of_TESTOP nt testop_nt
 validation_of_RELOP nt relop_nt
 - The instruction is valid with type ([nt, nt] ->_ [] ++ [I32]).
 
-validation_of_CVTOP nt_1 REINTERPRET nt_2 ?()
+validation_of_CVTOP nt_1 nt_2 REINTERPRET ?()
 - $size(nt_1) must be equal to $size(nt_2).
 - The instruction is valid with type ([nt_2] ->_ [] ++ [nt_1]).
 
@@ -4033,28 +4043,6 @@ validation_of_VVTERNOP V128 vvternop
 validation_of_VVTESTOP V128 vvtestop
 - The instruction is valid with type ([V128] ->_ [] ++ [I32]).
 
-validation_of_VBITMASK sh
-- The instruction is valid with type ([V128] ->_ [] ++ [I32]).
-
-validation_of_VSWIZZLE sh
-- The instruction is valid with type ([V128, V128] ->_ [] ++ [V128]).
-
-validation_of_VSHUFFLE (imm X N) i*
-- For all i in i*,
-  - i must be less than (N · 2).
-- The instruction is valid with type ([V128, V128] ->_ [] ++ [V128]).
-
-validation_of_VSPLAT (lnn X N)
-- The instruction is valid with type ([$lunpack(lnn)] ->_ [] ++ [V128]).
-
-validation_of_VEXTRACT_LANE (lnn X N) sx? i
-- i must be less than N.
-- The instruction is valid with type ([V128] ->_ [] ++ [$lunpack(lnn)]).
-
-validation_of_VREPLACE_LANE (lnn X N) i
-- i must be less than N.
-- The instruction is valid with type ([V128, $lunpack(lnn)] ->_ [] ++ [V128]).
-
 validation_of_VUNOP sh vunop_sh
 - The instruction is valid with type ([V128] ->_ [] ++ [V128]).
 
@@ -4070,17 +4058,39 @@ validation_of_VRELOP sh vrelop_sh
 validation_of_VSHIFTOP sh vshiftop_sh
 - The instruction is valid with type ([V128, I32] ->_ [] ++ [V128]).
 
-validation_of_VCVTOP sh vcvtop hf? sh sx? zero
-- The instruction is valid with type ([V128] ->_ [] ++ [V128]).
+validation_of_VBITMASK sh
+- The instruction is valid with type ([V128] ->_ [] ++ [I32]).
 
-validation_of_VNARROW sh sh sx
+validation_of_VSWIZZLE sh
 - The instruction is valid with type ([V128, V128] ->_ [] ++ [V128]).
 
-validation_of_VEXTUNOP sh sh vextunop sx
+validation_of_VSHUFFLE sh i*
+- For all i in i*,
+  - i must be less than (2 · $dim(sh)).
+- The instruction is valid with type ([V128, V128] ->_ [] ++ [V128]).
+
+validation_of_VSPLAT sh
+- The instruction is valid with type ([$shunpack(sh)] ->_ [] ++ [V128]).
+
+validation_of_VEXTRACT_LANE sh sx? i
+- i must be less than $dim(sh).
+- The instruction is valid with type ([V128] ->_ [] ++ [$shunpack(sh)]).
+
+validation_of_VREPLACE_LANE sh i
+- i must be less than $dim(sh).
+- The instruction is valid with type ([V128, $shunpack(sh)] ->_ [] ++ [V128]).
+
+validation_of_VEXTUNOP sh_1 sh_2 vextunop sx
 - The instruction is valid with type ([V128] ->_ [] ++ [V128]).
 
-validation_of_VEXTBINOP sh sh vextbinop sx
+validation_of_VEXTBINOP sh_1 sh_2 vextbinop sx
 - The instruction is valid with type ([V128, V128] ->_ [] ++ [V128]).
+
+validation_of_VNARROW sh_1 sh_2 sx
+- The instruction is valid with type ([V128, V128] ->_ [] ++ [V128]).
+
+validation_of_VCVTOP sh_1 vcvtop hf? sh_2 sx? zero?
+- The instruction is valid with type ([V128] ->_ [] ++ [V128]).
 
 validation_of_LOCAL.GET x
 - |C.LOCALS| must be greater than x.
@@ -4352,6 +4362,21 @@ lanetype (lnn X N)
 sizenn nt
 1. Return $size(nt).
 
+sizenn1 nt
+1. Return $size(nt).
+
+sizenn2 nt
+1. Return $size(nt).
+
+sizemm lt
+1. Return $lsize(lt).
+
+sizemm1 lt
+1. Return $lsize(lt).
+
+sizemm2 lt
+1. Return $lsize(lt).
+
 zero numty_u0
 1. If the type of numty_u0 is inn, then:
   a. Return 0.
@@ -4454,6 +4479,9 @@ const const_u0 c
 2. Assert: Due to validation, the type of const_u0 is vectype.
 3. Let vectype be const_u0.
 4. Return (vectype.CONST c).
+
+shunpack (lnn X N)
+1. Return $lunpack(lnn).
 
 diffrt (REF nul_1 ht_1) (REF (NULL _u0?) ht_2)
 1. If (_u0? is ?(())), then:
@@ -5295,47 +5323,48 @@ vcvtop (lanet_u0 X N_1) (lanet_u1 X N_2) vcvto_u3 sx_u4? lane__u2
     1) Let ?(sx) be sx_u4?.
     2) Let i32 be $ext(16, 32, sx, i16).
     3) Return i32.
-3. If ((lanet_u0 is I32) and ((lanet_u1 is I64) and (vcvto_u3 is EXTEND))), then:
-  a. Let i32 be lane__u2.
-  b. If sx_u4? is defined, then:
-    1) Let ?(sx) be sx_u4?.
-    2) Let i64 be $ext(32, 64, sx, i32).
-    3) Return i64.
+3. If (lanet_u0 is I32), then:
+  a. If ((lanet_u1 is I64) and (vcvto_u3 is EXTEND)), then:
+    1) Let i32 be lane__u2.
+    2) If sx_u4? is defined, then:
+      a) Let ?(sx) be sx_u4?.
+      b) Let i64 be $ext(32, 64, sx, i32).
+      c) Return i64.
+  b. If ((lanet_u1 is F32) and (vcvto_u3 is CONVERT)), then:
+    1) Let i32 be lane__u2.
+    2) If sx_u4? is defined, then:
+      a) Let ?(sx) be sx_u4?.
+      b) Let f32 be $convert(32, 32, sx, i32).
+      c) Return f32.
+  c. If ((lanet_u1 is F64) and (vcvto_u3 is CONVERT)), then:
+    1) Let i32 be lane__u2.
+    2) If sx_u4? is defined, then:
+      a) Let ?(sx) be sx_u4?.
+      b) Let f64 be $convert(32, 64, sx, i32).
+      c) Return f64.
 4. If ((lanet_u0 is F32) and ((lanet_u1 is I32) and (vcvto_u3 is TRUNC_SAT))), then:
   a. Let f32 be lane__u2.
   b. If sx_u4? is defined, then:
     1) Let ?(sx) be sx_u4?.
     2) Let i32 be $trunc_sat(32, 32, sx, f32).
     3) Return i32.
-5. If ((lanet_u0 is F64) and ((lanet_u1 is I32) and (vcvto_u3 is TRUNC_SAT))), then:
-  a. Let f64 be lane__u2.
-  b. If sx_u4? is defined, then:
-    1) Let ?(sx) be sx_u4?.
-    2) Let i32 be $trunc_sat(64, 32, sx, f64).
-    3) Return i32.
-6. If (lanet_u0 is I32), then:
-  a. If ((lanet_u1 is F32) and (vcvto_u3 is CONVERT)), then:
-    1) Let i32 be lane__u2.
+5. If (lanet_u0 is F64), then:
+  a. If ((lanet_u1 is I32) and (vcvto_u3 is TRUNC_SAT)), then:
+    1) Let f64 be lane__u2.
     2) If sx_u4? is defined, then:
       a) Let ?(sx) be sx_u4?.
-      b) Let f32 be $convert(32, 32, sx, i32).
-      c) Return f32.
-  b. If ((lanet_u1 is F64) and (vcvto_u3 is CONVERT)), then:
-    1) Let i32 be lane__u2.
-    2) If sx_u4? is defined, then:
-      a) Let ?(sx) be sx_u4?.
-      b) Let f64 be $convert(32, 64, sx, i32).
-      c) Return f64.
-7. If ((lanet_u0 is F64) and ((lanet_u1 is F32) and (vcvto_u3 is DEMOTE))), then:
-  a. Let f64 be lane__u2.
-  b. Let f32 be $demote(64, 32, f64).
-  c. Return f32.
-8. Assert: Due to validation, (lanet_u0 is F32).
-9. Assert: Due to validation, (lanet_u1 is F64).
-10. Assert: Due to validation, (vcvto_u3 is PROMOTE).
-11. Let f32 be lane__u2.
-12. Let f64 be $promote(32, 64, f32).
-13. Return f64.
+      b) Let i32 be $trunc_sat(64, 32, sx, f64).
+      c) Return i32.
+  b. If ((lanet_u1 is F32) and (vcvto_u3 is DEMOTE)), then:
+    1) Let f64 be lane__u2.
+    2) Let f32 be $demote(64, 32, f64).
+    3) Return f32.
+6. Assert: Due to validation, (lanet_u0 is F32).
+7. Assert: Due to validation, (lanet_u1 is F64).
+8. Assert: Due to validation, (vcvto_u3 is PROMOTE).
+9. Let f32 be lane__u2.
+10. Let f64 be $promote(32, 64, f32).
+11. Return f64.
 
 vextunop (inn_1 X N_1) (inn_2 X N_2) EXTADD_PAIRWISE sx c_1
 1. Let ci* be $lanes_((inn_2 X N_2), c_1).
@@ -5357,7 +5386,7 @@ vextbinop (inn_1 X N_1) (inn_2 X N_2) vextb_u0 sx c_1 c_2
 6. Let c be $invlanes_((inn_1 X N_1), $iadd($lsize(inn_1), cj_1, cj_2)*).
 7. Return c.
 
-vishiftop (imm X N) vshif_u0 lane n
+vshiftop (imm X N) vshif_u0 lane n
 1. If (vshif_u0 is SHL), then:
   a. Return $ishl($lsize(imm), lane, n).
 2. Assert: Due to validation, vshif_u0 is of the case SHR.
@@ -6023,7 +6052,7 @@ execution_of_RELOP nt relop
 5. Let c be $relop(nt, relop, c_1, c_2).
 6. Push the value (I32.CONST c) to the stack.
 
-execution_of_CVTOP nt_2 cvtop nt_1 sx?
+execution_of_CVTOP nt_2 nt_1 cvtop sx?
 1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
 2. Pop the value (nt_1.CONST c_1) from the stack.
 3. If (|$cvtop(nt_1, nt_2, cvtop, sx?, c_1)| is 1), then:
@@ -6129,6 +6158,56 @@ execution_of_VVTESTOP V128 ANY_TRUE
 3. Let c be $ine($vsize(V128), c_1, 0).
 4. Push the value (I32.CONST c) to the stack.
 
+execution_of_VUNOP sh vunop
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value (V128.CONST c_1) from the stack.
+3. Let c be $vunop(sh, vunop, c_1).
+4. Push the value (V128.CONST c) to the stack.
+
+execution_of_VBINOP sh vbinop
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value (V128.CONST c_2) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop the value (V128.CONST c_1) from the stack.
+5. If (|$vbinop(sh, vbinop, c_1, c_2)| is 1), then:
+  a. Let [c] be $vbinop(sh, vbinop, c_1, c_2).
+  b. Push the value (V128.CONST c) to the stack.
+6. If ($vbinop(sh, vbinop, c_1, c_2) is []), then:
+  a. Trap.
+
+execution_of_VTESTOP (imm X N) ALL_TRUE
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value (V128.CONST c) from the stack.
+3. Let ci_1* be $lanes_((imm X N), c).
+4. If (ci_1 is not 0)*, then:
+  a. Push the value (I32.CONST 1) to the stack.
+5. Else:
+  a. Push the value (I32.CONST 0) to the stack.
+
+execution_of_VRELOP sh vrelop
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value (V128.CONST c_2) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop the value (V128.CONST c_1) from the stack.
+5. Let c be $vrelop(sh, vrelop, c_1, c_2).
+6. Push the value (V128.CONST c) to the stack.
+
+execution_of_VSHIFTOP (imm X N) vshiftop
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop the value (I32.CONST n) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop the value (V128.CONST c_1) from the stack.
+5. Let c'* be $lanes_((imm X N), c_1).
+6. Let c be $invlanes_((imm X N), $vshiftop((imm X N), vshiftop, c', n)*).
+7. Push the value (V128.CONST c) to the stack.
+
+execution_of_VBITMASK (imm X N)
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value (V128.CONST c) from the stack.
+3. Let ci_1* be $lanes_((imm X N), c).
+4. Let ci be $inverse_of_ibits(32, $ilt($lsize(imm), S, ci_1, 0)*).
+5. Push the value (I32.CONST ci) to the stack.
+
 execution_of_VSWIZZLE (pnn X N)
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
@@ -6182,92 +6261,6 @@ execution_of_VREPLACE_LANE (lnn X N) i
 5. Let c be $invlanes_((lnn X N), $lanes_((lnn X N), c_1) with [i] replaced by $packnum(lnn, c_2)).
 6. Push the value (V128.CONST c) to the stack.
 
-execution_of_VUNOP sh vunop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. Let c be $vunop(sh, vunop, c_1).
-4. Push the value (V128.CONST c) to the stack.
-
-execution_of_VBINOP sh vbinop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. If (|$vbinop(sh, vbinop, c_1, c_2)| is 1), then:
-  a. Let [c] be $vbinop(sh, vbinop, c_1, c_2).
-  b. Push the value (V128.CONST c) to the stack.
-6. If ($vbinop(sh, vbinop, c_1, c_2) is []), then:
-  a. Trap.
-
-execution_of_VRELOP sh vrelop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c be $vrelop(sh, vrelop, c_1, c_2).
-6. Push the value (V128.CONST c) to the stack.
-
-execution_of_VSHIFTOP (imm X N) vshiftop
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c'* be $lanes_((imm X N), c_1).
-6. Let c be $invlanes_((imm X N), $vishiftop((imm X N), vshiftop, c', n)*).
-7. Push the value (V128.CONST c) to the stack.
-
-execution_of_VTESTOP (imm X N) ALL_TRUE
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (V128.CONST c) from the stack.
-3. Let ci_1* be $lanes_((imm X N), c).
-4. If (ci_1 is not 0)*, then:
-  a. Push the value (I32.CONST 1) to the stack.
-5. Else:
-  a. Push the value (I32.CONST 0) to the stack.
-
-execution_of_VBITMASK (imm X N)
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (V128.CONST c) from the stack.
-3. Let ci_1* be $lanes_((imm X N), c).
-4. Let ci be $inverse_of_ibits(32, $ilt($lsize(imm), S, ci_1, 0)*).
-5. Push the value (I32.CONST ci) to the stack.
-
-execution_of_VNARROW (imm_2 X N_2) (imm_1 X N_1) sx
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let ci_1* be $lanes_((imm_1 X N_1), c_1).
-6. Let ci_2* be $lanes_((imm_1 X N_1), c_2).
-7. Let cj_1* be $narrow($lsize(imm_1), $lsize(imm_2), sx, ci_1)*.
-8. Let cj_2* be $narrow($lsize(imm_1), $lsize(imm_2), sx, ci_2)*.
-9. Let c be $invlanes_((imm_2 X N_2), cj_1* ++ cj_2*).
-10. Push the value (V128.CONST c) to the stack.
-
-execution_of_VCVTOP (lanet_u1 X N_2) vcvtop half_u0? (lanet_u2 X N_1) sx? (ZERO _u3?)
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. If (half_u0? is not defined and _u3? is not defined), then:
-  a. Let lnn_1 be lanet_u2.
-  b. Let lnn_2 be lanet_u1.
-  c. Let c'* be $lanes_((lnn_1 X N_1), c_1).
-  d. Let c be $invlanes_((lnn_2 X N_2), $vcvtop((lnn_1 X N_1), (lnn_2 X N_2), vcvtop, sx?, c')*).
-  e. Push the value (V128.CONST c) to the stack.
-4. If (_u3? is not defined and half_u0? is defined), then:
-  a. Let ?(hf) be half_u0?.
-  b. Let lnn_1 be lanet_u2.
-  c. Let lnn_2 be lanet_u1.
-  d. Let ci* be $lanes_((lnn_1 X N_1), c_1)[$halfop(hf, 0, N_2) : N_2].
-  e. Let c be $invlanes_((lnn_2 X N_2), $vcvtop((lnn_1 X N_1), (lnn_2 X N_2), vcvtop, sx?, ci)*).
-  f. Push the value (V128.CONST c) to the stack.
-5. If (half_u0? is not defined and ((_u3? is ?(())) and the type of lanet_u2 is numtype)), then:
-  a. Let nt_1 be lanet_u2.
-  b. If the type of lanet_u1 is numtype, then:
-    1) Let nt_2 be lanet_u1.
-    2) Let ci* be $lanes_((nt_1 X N_1), c_1).
-    3) Let c be $invlanes_((nt_2 X N_2), $vcvtop((nt_1 X N_1), (nt_2 X N_2), vcvtop, sx?, ci)* ++ $zero(nt_2)^N_1).
-    4) Push the value (V128.CONST c) to the stack.
-
 execution_of_VEXTUNOP sh_1 sh_2 vextunop sx
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
@@ -6281,6 +6274,42 @@ execution_of_VEXTBINOP sh_1 sh_2 vextbinop sx
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c be $vextbinop(sh_1, sh_2, vextbinop, sx, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
+
+execution_of_VNARROW (imm_2 X N_2) (imm_1 X N_1) sx
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value (V128.CONST c_2) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop the value (V128.CONST c_1) from the stack.
+5. Let ci_1* be $lanes_((imm_1 X N_1), c_1).
+6. Let ci_2* be $lanes_((imm_1 X N_1), c_2).
+7. Let cj_1* be $narrow($lsize(imm_1), $lsize(imm_2), sx, ci_1)*.
+8. Let cj_2* be $narrow($lsize(imm_1), $lsize(imm_2), sx, ci_2)*.
+9. Let c be $invlanes_((imm_2 X N_2), cj_1* ++ cj_2*).
+10. Push the value (V128.CONST c) to the stack.
+
+execution_of_VCVTOP (lanet_u1 X N_2) vcvtop half_u0? (lanet_u2 X N_1) sx? zero_u3?
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value (V128.CONST c_1) from the stack.
+3. If (half_u0? is not defined and zero_u3? is not defined), then:
+  a. Let lnn_1 be lanet_u2.
+  b. Let lnn_2 be lanet_u1.
+  c. Let c'* be $lanes_((lnn_1 X N_1), c_1).
+  d. Let c be $invlanes_((lnn_2 X N_2), $vcvtop((lnn_1 X N_1), (lnn_2 X N_2), vcvtop, sx?, c')*).
+  e. Push the value (V128.CONST c) to the stack.
+4. If (zero_u3? is not defined and half_u0? is defined), then:
+  a. Let ?(hf) be half_u0?.
+  b. Let lnn_1 be lanet_u2.
+  c. Let lnn_2 be lanet_u1.
+  d. Let ci* be $lanes_((lnn_1 X N_1), c_1)[$halfop(hf, 0, N_2) : N_2].
+  e. Let c be $invlanes_((lnn_2 X N_2), $vcvtop((lnn_1 X N_1), (lnn_2 X N_2), vcvtop, sx?, ci)*).
+  f. Push the value (V128.CONST c) to the stack.
+5. If (half_u0? is not defined and ((zero_u3? is ?(ZERO)) and the type of lanet_u2 is numtype)), then:
+  a. Let nt_1 be lanet_u2.
+  b. If the type of lanet_u1 is numtype, then:
+    1) Let nt_2 be lanet_u1.
+    2) Let ci* be $lanes_((nt_1 X N_1), c_1).
+    3) Let c be $invlanes_((nt_2 X N_2), $vcvtop((nt_1 X N_1), (nt_2 X N_2), vcvtop, sx?, ci)* ++ $zero(nt_2)^N_1).
+    4) Push the value (V128.CONST c) to the stack.
 
 execution_of_LOCAL.TEE x
 1. Assert: Due to validation, a value is on the top of the stack.

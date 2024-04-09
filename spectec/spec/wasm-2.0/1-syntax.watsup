@@ -206,9 +206,15 @@ def $psize(packtype) : nat    hint(show |%|)
 def $lsize(lanetype) : nat    hint(show |%|)
 def $lanetype(shape) : lanetype
 
+def $sizenn(numtype) : nat     hint(show n)
+def $sizenn(nt) = $size(nt)
+
+def $sizemm(lanetype) : nat    hint(show n)
+def $sizemm(lt) = $lsize(lt)
+
 syntax num_(numtype)
-syntax num_(inn) = iN($size(inn))
-syntax num_(fnn) = fN($size(fnn))
+syntax num_(inn) = iN($sizenn(inn))
+syntax num_(fnn) = fN($sizenn(fnn))
 
 syntax pack_(pnn) = iN($psize(pnn))
 
@@ -271,20 +277,21 @@ syntax vvternop = BITSELECT
 syntax vvtestop = ANY_TRUE
 
 syntax vunop_(shape)
-syntax vunop_(imm X N) = ABS | NEG | POPCNT -- if imm = I8
+syntax vunop_(imm X N) = ABS | NEG
+  | POPCNT -- if imm = I8
 syntax vunop_(fnn X N) = ABS | NEG | SQRT | CEIL | FLOOR | TRUNC | NEAREST
 
 syntax vbinop_(shape)
 syntax vbinop_(imm X N) =
   | ADD
   | SUB
-  | ADD_SAT sx hint(show ADD_SAT#_#sx)     -- if $lsize(imm) <= 16
-  | SUB_SAT sx hint(show SUB_SAT#_#sx)     -- if $lsize(imm) <= 16
-  | MUL                                    -- if $lsize(imm) >= 16
-  | AVGR_U                                 -- if $lsize(imm) <= 16
-  | Q15MULR_SAT_S                          -- if $lsize(imm) = 16
-  | MIN sx hint(show MIN#_#sx)             -- if $lsize(imm) <= 32
-  | MAX sx hint(show MAX#_#sx)             -- if $lsize(imm) <= 32
+  | ADD_SAT sx hint(show ADD_SAT#_#%)      -- if $sizemm(imm) <= `16
+  | SUB_SAT sx hint(show SUB_SAT#_#%)      -- if $sizemm(imm) <= `16
+  | MUL                                    -- if $sizemm(imm) >= `16
+  | AVGR_U                                 -- if $sizemm(imm) <= `16
+  | Q15MULR_SAT_S                          -- if $sizemm(imm) = `16
+  | MIN sx hint(show MIN#_#%)              -- if $sizemm(imm) <= `32
+  | MAX sx hint(show MAX#_#%)              -- if $sizemm(imm) <= `32
 syntax vbinop_(fnn X N) = ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX
 
 syntax vtestop_(shape)
@@ -292,7 +299,11 @@ syntax vtestop_(imm X N) = ALL_TRUE
 ;; syntax vtestop_(fnn X N) = |           ;; uninhabited
 
 syntax vrelop_(shape)
-syntax vrelop_(imm X N) = EQ | NE | LT sx | GT sx | LE sx | GE sx
+syntax vrelop_(imm X N) = EQ | NE
+  | LT sx  -- if $sizemm(imm) =/= `64 \/ sx = S
+  | GT sx  -- if $sizemm(imm) =/= `64 \/ sx = S
+  | LE sx  -- if $sizemm(imm) =/= `64 \/ sx = S
+  | GE sx  -- if $sizemm(imm) =/= `64 \/ sx = S
 syntax vrelop_(fnn X N) = EQ | NE | LT | GT | LE | GE
 
 syntax vcvtop = EXTEND | TRUNC_SAT | CONVERT | DEMOTE | PROMOTE
@@ -309,13 +320,13 @@ syntax vcvtop = EXTEND | TRUNC_SAT | CONVERT | DEMOTE | PROMOTE
 syntax vshiftop_(ishape)
 syntax vshiftop_(imm X N) = SHL | SHR sx
 
-syntax vextunop_(ishape_1, ishape_2)   hint(show vextunop_((%,%)))
-syntax vextunop_(imm_1 X N_1, imm_2 X N_2) =
-  | EXTADD_PAIRWISE  -- if 16 <= $lsize(imm_1) <= 32
-syntax vextbinop_(ishape_1, ishape_2)  hint(show vextbinop_((%,%)))
-syntax vextbinop_(imm_1 X N_1, imm_2 X N_2) =
-  | EXTMUL half                        hint(show EXTMUL#_#%)
-  | DOT              -- if $lsize(imm_1) = 32
+syntax vextunop_(ishape)
+syntax vextunop_(imm X N) =
+  | EXTADD_PAIRWISE  -- if `16 <= $sizemm(imm) <= `32
+syntax vextbinop_(ishape)
+syntax vextbinop_(imm X N) =
+  | EXTMUL half      hint(show EXTMUL#_#%)
+  | DOT              -- if $sizemm(imm) = `32
 
 
 ;; Memory operators
@@ -371,13 +382,13 @@ syntax instr/num hint(desc "numeric instruction") = ...
   | BINOP numtype binop_(numtype)    hint(show %.%)
   | TESTOP numtype testop_(numtype)  hint(show %.%)
   | RELOP numtype relop_(numtype)    hint(show %.%)
-  | CVTOP numtype_1 cvtop numtype_2 sx?  hint(show %.%#_#%) hint(show %.%#_#%#_#%)
+  | CVTOP numtype_1 numtype_2 cvtop sx?  hint(show %1.%3#_#%2#_#%4) hint(show %1.%3#_#%2)
     -- if numtype_1 =/= numtype_2
-  | EXTEND numtype N                 hint(show %.EXTEND#%#_S)
+  | EXTEND numtype n                 hint(show %.EXTEND#%#_#S)
   | ...
 
 syntax half hint(desc "lane part") = LOW | HIGH
-syntax zero = ZERO?
+syntax zero = ZERO  ;; TODO: inline
 
 syntax instr/vec hint(desc "vector instruction") = ...
   | VCONST vectype vec_(vectype)        hint(show %.CONST %)
@@ -385,6 +396,12 @@ syntax instr/vec hint(desc "vector instruction") = ...
   | VVBINOP vectype vvbinop             hint(show %.%)
   | VVTERNOP vectype vvternop           hint(show %.%)
   | VVTESTOP vectype vvtestop           hint(show %.%)
+  | VUNOP shape vunop_(shape)           hint(show %.%)
+  | VBINOP shape vbinop_(shape)         hint(show %.%)
+  | VTESTOP shape vtestop_(shape)       hint(show %.%)
+  | VRELOP shape vrelop_(shape)         hint(show %.%)
+  | VSHIFTOP ishape vshiftop_(ishape)   hint(show %.%)
+  | VBITMASK ishape                     hint(show %.BITMASK)
   | VSWIZZLE ishape                     hint(show %.SWIZZLE)
     -- if ishape = I8 X `16
   | VSHUFFLE ishape laneidx*            hint(show %.SHUFFLE %)
@@ -393,24 +410,19 @@ syntax instr/vec hint(desc "vector instruction") = ...
   | VEXTRACT_LANE shape sx? laneidx     hint(show %.EXTRACT_LANE_#% %)
     -- if $lanetype(shape) = numtype <=> sx? = eps
   | VREPLACE_LANE shape laneidx         hint(show %.REPLACE_LANE %)
-  | VUNOP shape vunop_(shape)           hint(show %.%)
-  | VBINOP shape vbinop_(shape)         hint(show %.%)
-  | VTESTOP shape vtestop_(shape)       hint(show %.%)
-  | VRELOP shape vrelop_(shape)         hint(show %.%)
-  | VSHIFTOP ishape vshiftop_(ishape)   hint(show %.%)
-  | VBITMASK ishape                     hint(show %.BITMASK)
-  | VCVTOP shape vcvtop half? shape sx? zero
-    hint(show %.%#_#%#_#%#_#%) hint(show %.%#_#%#_#%#_#%) hint(show %.%#_#%#_#%#_#%#_#%)
+  | VEXTUNOP ishape_1 ishape_2 vextunop_(ishape_1) sx
+    hint(show %1.%3#_#%2#_#%4)
+    -- if $($lsize($lanetype(ishape_1)) = 2*$lsize($lanetype(ishape_2)))
+  | VEXTBINOP ishape_1 ishape_2 vextbinop_(ishape_1) sx
+    hint(show %1.%3#_#%2#_#%4)
+    -- if $($lsize($lanetype(ishape_1)) = 2*$lsize($lanetype(ishape_2)))
+    ;; TODO: /\ (vextbinop =/= DOT \/ sx = S)
   | VNARROW ishape_1 ishape_2 sx        hint(show %.NARROW#_#%#_#%)
     -- if $($lsize($lanetype(ishape_2)) = 2*$lsize($lanetype(ishape_1)) <= 32)
-  | VEXTUNOP ishape_1 ishape_2 vextunop_(ishape_1, ishape_2) sx
-    hint(show %1.%3#_#%2#_#%4)
-    -- if $($lsize($lanetype(ishape_1)) = 2*$lsize($lanetype(ishape_2)))
-  | VEXTBINOP ishape_1 ishape_2 vextbinop_(ishape_1, ishape_2) sx
-    hint(show %1.%3#_#%2#_#%4)
-    -- if $($lsize($lanetype(ishape_1)) = 2*$lsize($lanetype(ishape_2)))
+  | VCVTOP shape vcvtop half? shape sx? zero?
+    hint(show %.%#_#%#_#%#_#%) hint(show %.%#_#%#_#%#_#%) hint(show %.%#_#%#_#%#_#%#_#%)
+    ;; TODO: missing constraints
   | ...
-;; TODO: check for missing constraints
 
 syntax instr/ref hint(desc "reference instruction") = ...
   | REF.NULL reftype

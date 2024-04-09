@@ -707,15 +707,12 @@ rule Instr_ok/relop:
 
 ;; TODO: move side conditions to syntax
 rule Instr_ok/cvtop-reinterpret:
-  C |- CVTOP nt_1 REINTERPRET nt_2 : nt_2 -> nt_1
+  C |- CVTOP nt_1 nt_2 REINTERPRET : nt_2 -> nt_1
   -- if $size(nt_1) = $size(nt_2)
 
-rule Instr_ok/cvtop-convert-i:
-  C |- CVTOP inn_1 CONVERT inn_2 sx? : inn_2 -> inn_1
-  -- if sx? = eps <=> $size(inn_1) > $size(inn_2)
-
-rule Instr_ok/cvtop-convert-f:
-  C |- CVTOP fnn_1 CONVERT fnn_2 : fnn_2 -> fnn_1
+rule Instr_ok/cvtop-convert:
+  C |- CVTOP nt_1 nt_2 CONVERT sx? : nt_2 -> nt_1
+  -- if sx? = eps <=> nt_1 = inn_1 /\ nt_2 = inn_2 /\ $size(nt_1) > $size(nt_2) \/ nt_1 = fnn_1 /\ nt_2 = fnn_2
 
 
 ;; Reference instructions
@@ -872,28 +869,6 @@ rule Instr_ok/vvternop:
 rule Instr_ok/vvtestop:
   C |- VVTESTOP V128 vvtestop : V128 -> I32
 
-rule Instr_ok/vbitmask:
-  C |- VBITMASK sh : V128 -> I32
-
-rule Instr_ok/vswizzle:
-  C |- VSWIZZLE sh : V128 V128 -> V128
-
-rule Instr_ok/vshuffle:
-  C |- VSHUFFLE (imm X N) i* : V128 V128 -> V128
-  -- (if $(i < N*2))*
-
-rule Instr_ok/vsplat:
-  C |- VSPLAT (lnn X N) : $lunpack(lnn) -> V128
-
-;; TODO: This rule (or the abstract syntax) is too liberal, since some combinations are illegal
-rule Instr_ok/vextract_lane:
-  C |- VEXTRACT_LANE (lnn X N) sx? i : V128 -> $lunpack(lnn)
-  -- if i < N
-
-rule Instr_ok/vreplace_lane:
-  C |- VREPLACE_LANE (lnn X N) i : V128 $lunpack(lnn) -> V128
-  -- if i < N
-
 rule Instr_ok/vunop:
   C |- VUNOP sh vunop_sh : V128 -> V128
 
@@ -909,18 +884,41 @@ rule Instr_ok/vrelop:
 rule Instr_ok/vshiftop:
   C |- VSHIFTOP sh vshiftop_sh : V128 I32 -> V128
 
-;; TODO: This rule (or the abstract syntax) is too liberal, since many of the combinations are illegal
-rule Instr_ok/vcvtop:
-  C |- VCVTOP sh vcvtop hf? sh sx? zero : V128 -> V128
+rule Instr_ok/vbitmask:
+  C |- VBITMASK sh : V128 -> I32
 
-rule Instr_ok/vnarrow:
-  C |- VNARROW sh sh sx : V128 V128 -> V128
+rule Instr_ok/vswizzle:
+  C |- VSWIZZLE sh : V128 V128 -> V128
+
+rule Instr_ok/vshuffle:
+  C |- VSHUFFLE sh i* : V128 V128 -> V128
+  -- (if $(i < 2*$dim(sh)))*
+
+rule Instr_ok/vsplat:
+  C |- VSPLAT sh : $shunpack(sh) -> V128
+
+;; TODO: This rule (or the abstract syntax) is too liberal, since some combinations are illegal
+rule Instr_ok/vextract_lane:
+  C |- VEXTRACT_LANE sh sx? i : V128 -> $shunpack(sh)
+  -- if i < $dim(sh)
+
+rule Instr_ok/vreplace_lane:
+  C |- VREPLACE_LANE sh i : V128 $shunpack(sh) -> V128
+  -- if i < $dim(sh)
 
 rule Instr_ok/vextunop:
-  C |- VEXTUNOP sh sh vextunop sx : V128 -> V128
+  C |- VEXTUNOP sh_1 sh_2 vextunop sx : V128 -> V128
 
 rule Instr_ok/vextbinop:
-  C |- VEXTBINOP sh sh vextbinop sx : V128 V128 -> V128
+  C |- VEXTBINOP sh_1 sh_2 vextbinop sx : V128 V128 -> V128
+
+rule Instr_ok/vnarrow:
+  C |- VNARROW sh_1 sh_2 sx : V128 V128 -> V128
+
+;; TODO: move constraint to syntax
+rule Instr_ok/vcvtop:
+  C |- VCVTOP sh_1 sh_2 vcvtop hf? sx? zero? : V128 -> V128
+  -- if sx? = eps <=> $lanetype(sh_1) = imm_1 /\ $lanetype(sh_2) = imm_2 /\ $lsize(imm_1) > $lsize(imm_2) \/ $lanetype(sh_1) = fnn_1 /\ $lanetype(sh_2) = fnn_2
 
 
 ;; Local instructions
