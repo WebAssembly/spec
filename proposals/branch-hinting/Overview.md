@@ -100,7 +100,7 @@ and a function index can appear at most once.
 
 Each *branch hint* structure consists of
 
-* the |U32| byte offset of the hinted instruction from the beginning of the function body,
+* the |U32| byte offset of the hinted instruction, relative to the beginning of the function locals declaration,
 * A |U32| with value `1`,
 * a |U32| indicating the meaning of the hint:
 

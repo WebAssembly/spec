@@ -32,7 +32,7 @@ section of format *T*.
    \end{array}
 .. index:: ! code metadata section
 
-Where :math:`\X{off}` is the byte offset of the annotation starting from the beginning of the function body, and :math:`\X{data}` is a further payload, whose content depends on the format :math:`T`.
+Where :math:`\X{off}` is the byte offset of the attached instruction, relative to the beginning of the |Bfunc| declaration, and :math:`\X{data}` is a further payload, whose content depends on the format :math:`T`.
 
 |Bcodemetadatafunc| entries must appear in order of increasing :math:`x`, and duplicate id values are not allowed. |Bcodemetadata| entries must appear in order of increasing :math:`\X{off}`, and duplicate offset values are not allowed.
 
