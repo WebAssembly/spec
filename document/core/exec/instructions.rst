@@ -2248,48 +2248,12 @@ Control Instructions
 
 $${rule-prose: exec/block}
 
-.. todo::
-   Below is the actual prose.
-   (8) PR#90 working on "Enter ..." prose.
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\fblocktype_{S;F}(\blocktype)` is defined.
-
-3. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`instruction type <syntax-instrtype>` :math:`\fblocktype_{S;F}(\blocktype)`.
-
-4. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the block.
-
-5. Assert: due to :ref:`validation <valid-block>`, there are at least :math:`m` values on the top of the stack.
-
-6. Pop the values :math:`\val^m` from the stack.
-
-7. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\val^m~\instr^\ast` with label :math:`L`.
-
 $${rule: {Step_read/block}}
 
 
 .. _exec-loop:
 
 $${rule-prose: exec/loop}
-
-.. todo::
-   Below is the actual prose.
-   (8) PR#90 working on "Enter ..." prose.
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\fblocktype_{S;F}(\blocktype)` is defined.
-
-3. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`instruction type <syntax-instrtype>` :math:`\fblocktype_{S;F}(\blocktype)`.
-
-4. Let :math:`L` be the label whose arity is :math:`m` and whose continuation is the start of the loop.
-
-5. Assert: due to :ref:`validation <valid-loop>`, there are at least :math:`m` values on the top of the stack.
-
-6. Pop the values :math:`\val^m` from the stack.
-
-7. :ref:`Enter <exec-instr-seq-enter>` the block :math:`\val^m~\instr^\ast` with label :math:`L`.
 
 $${rule: {Step_read/loop}}
 
@@ -2406,32 +2370,6 @@ $${rule: {Step_read/br_on_cast_fail-*}}
 
 $${rule-prose: exec/return}
 
-.. todo::
-   Below is the actual prose.
-   (10) If the "current context is ..." needs to be handled, either by SpecTec or manually, mentioned in PR#90.
-
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
-
-2. Let :math:`n` be the arity of :math:`F`.
-
-3. Assert: due to :ref:`validation <valid-return>`, there are at least :math:`n` values on the top of the stack.
-
-4. Pop the results :math:`\val^n` from the stack.
-
-5. Assert: due to :ref:`validation <valid-return>`, the stack contains at least one :ref:`frame <syntax-frame>`.
-
-6. While the top of the stack is not a frame, do:
-
-   a. Pop the top element from the stack.
-
-7. Assert: the top of the stack is the frame :math:`F`.
-
-8. Pop the frame from the stack.
-
-9. Push :math:`\val^n` to the stack.
-
-10. Jump to the instruction after the original call that pushed the frame.
-
 $${rule: {Step_pure/return-*}}
 
 
@@ -2536,7 +2474,8 @@ $${rule: {Step_read/return_call}}
 :math:`\RETURNCALLREF~x`
 ........................
 
-.. todo:: (*) Prose not spliced, Sphinx cannot build the document with deeply nested ordered list.
+.. todo::
+   (*) Prose not spliced, Sphinx cannot build the document with deeply nested ordered list. (mainly caused by spurious conditions that should be assertions)
 
 1. Assert: due to :ref:`validation <valid-return_call_ref>`, a :ref:`function reference <syntax-ref>` is on the top of the stack.
 
