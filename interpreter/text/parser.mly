@@ -1009,21 +1009,17 @@ module_ :
       $3, Textual (m, parse_annots m) @@ $sloc }
 
 inline_module :  /* Sugar */
-  | module_fields EOF
+  | module_fields
     { let m = $1 (empty_context ()) () @@ $sloc in
       (* Hack to handle annotations before first and after last token *)
-      (* Note: need EOF token here, since Menhir delivers a location
-       * with empty filename for $1 in case module_fields is empty! *)
-      let all = all_region (at $loc($2)).left.file in
+      let all = all_region (at $sloc).left.file in
       Textual (m, parse_annots Source.(m.it @@ all)) @@ $sloc }
 
 inline_module1 :  /* Sugar */
-  | module_fields1 EOF
+  | module_fields1
     { let m = $1 (empty_context ()) () @@ $sloc in
       (* Hack to handle annotations before first and after last token *)
-      (* Note: need EOF token here, since Menhir delivers a location
-       * with empty filename for $1 in case module_fields is empty! *)
-      let all = all_region (at $loc($2)).left.file in
+      let all = all_region (at $sloc).left.file in
       Textual (m, parse_annots Source.(m.it @@ all)) @@ $sloc }
 
 
@@ -1110,12 +1106,12 @@ result :
 
 script :
   | list(cmd) EOF { $1 }
-  | inline_module1 { [Module (None, $1) @@ $sloc] }  /* Sugar */
+  | inline_module1 EOF { [Module (None, $1) @@ $sloc] }  /* Sugar */
 
 script1 :
   | cmd { [$1] }
 
 module1 :
   | module_ EOF { $1 }
-  | inline_module { None, $1 }  /* Sugar */
+  | inline_module EOF { None, $1 }  /* Sugar */
 %%
