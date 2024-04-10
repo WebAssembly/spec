@@ -31,8 +31,11 @@ let reset () =
 let get_source () =
   Buffer.contents current_source
 
+let extend_source s =
+  Buffer.add_string current_source s
+
 let record annot =
-  let old = Lib.Option.get (NameMap.find_opt annot.it.name !current) [] in
+  let old = Option.value (NameMap.find_opt annot.it.name !current) ~default:[] in
   current := NameMap.add annot.it.name (annot::old) !current
 
 let is_contained r1 r2 = r1.left >= r2.left && r1.right <= r2.right

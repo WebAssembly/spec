@@ -195,3 +195,6 @@
   (func $s)
   ((@a) start (@a) $s (@a)) (@a)
 )
+
+(module quote "(@a) (func)")
+(module quote "(func) (@a)")

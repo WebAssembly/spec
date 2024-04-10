@@ -1,14 +1,15 @@
 (* Implements a wrapper library that allows the use of the reference
  * interpreter's encode/decode functionality in JavaScript.
  *)
+open Wasm
 open Js_of_ocaml
 
-let _ =
+let () =
   Js.export "WebAssemblyText"
     (object%js (_self)
 
       method encode (s : Js.js_string Js.t) : (Typed_array.arrayBuffer Js.t) =
-        let def = Parse.string_to_module (Js.to_string s) in
+        let _, def = Parse.Module.parse_string (Js.to_string s) in
         let bs =
           match def.Source.it with
           | Script.Textual (m, cs) -> Encode.encode_with_custom (m, cs)

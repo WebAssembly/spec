@@ -44,8 +44,8 @@ let spectest = {
   print_f64: console.log.bind(console),
   global_i32: 666,
   global_i64: 666n,
-  global_f32: 666,
-  global_f64: 666,
+  global_f32: 666.6,
+  global_f64: 666.6,
   table: new WebAssembly.Table({initial: 10, maximum: 20, element: 'anyfunc'}),
   memory: new WebAssembly.Memory({initial: 1, maximum: 2})
 };
@@ -532,9 +532,9 @@ let of_result res =
 let rec of_definition def =
   match def.it with
   | Textual (m, _) -> of_bytes (Encode.encode m)
-  | Encoded (_, bs) -> of_bytes bs
+  | Encoded (_, bs) -> of_bytes bs.it
   | Quoted (_, s) ->
-    try of_definition (Parse.string_to_module s)
+    try of_definition (snd (Parse.Module.parse_string ~offset:s.at s.it))
     with Parse.Syntax _ | Custom.Syntax _ -> of_bytes "<malformed quote>"
 
 let of_wrapper mods x_opt name wrap_action wrap_assertion at =
@@ -605,8 +605,9 @@ let of_command mods cmd =
     let rec unquote def =
       match def.it with
       | Textual (m, _) -> m
-      | Encoded (_, bs) -> Decode.decode "binary" bs
-      | Quoted (_, s) -> unquote (Parse.string_to_module s)
+      | Encoded (name, bs) -> Decode.decode name bs.it
+      | Quoted (_, s) ->
+        unquote (snd (Parse.Module.parse_string ~offset:s.at s.it))
     in bind mods x_opt (unquote def);
     "let " ^ current_var mods ^ " = instance(" ^ of_definition def ^ ");\n" ^
     (if x_opt = None then "" else

@@ -408,7 +408,7 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
    \frac{
      \laneidx < \dim(\shape)
    }{
-     C \vdashinstr t\K{x}N\K{.}\EXTRACTLANE\K{\_}\sx^?~\laneidx : [\V128] \to [\unpacked(\shape)]
+     C \vdashinstr \shape\K{.}\EXTRACTLANE\K{\_}\sx^?~\laneidx : [\V128] \to [\unpacked(\shape)]
    }
 
 
@@ -1412,17 +1412,22 @@ Control Instructions
 ...........................
 
 
-* The label :math:`C.\CLABELS[l_N]` must be defined in the context.
+* The :ref:`label <syntax-label>` :math:`C.\CLABELS[l_N]` must be defined in the context.
 
-* For all :math:`l_i` in :math:`l^\ast`,
+* For each :ref:`label <syntax-label>` :math:`l_i` in :math:`l^\ast`,
   the label :math:`C.\CLABELS[l_i]` must be defined in the context.
 
 * There must be a sequence :math:`t^\ast` of :ref:`operand types <syntax-opdtype>`, such that:
 
+  * The length of the sequence :math:`t^\ast` is the same as the length of the sequence :math:`C.\CLABELS[l_N]`.
+
   * For each :ref:`operand type <syntax-opdtype>` :math:`t_j` in :math:`t^\ast` and corresponding type :math:`t'_{Nj}` in :math:`C.\CLABELS[l_N]`, :math:`t_j` :ref:`matches <match-opdtype>` :math:`t'_{Nj}`.
 
-  * For all :math:`l_i` in :math:`l^\ast`,
-    and for each :ref:`operand type <syntax-opdtype>` :math:`t_j` in :math:`t^\ast` and corresponding type :math:`t'_{ij}` in :math:`C.\CLABELS[l_i]`, :math:`t_j` :ref:`matches <match-opdtype>` :math:`t'_{ij}`.
+  * For each :ref:`label <syntax-label>` :math:`l_i` in :math:`l^\ast`:
+
+    * The length of the sequence :math:`t^\ast` is the same as the length of the sequence :math:`C.\CLABELS[l_i]`.
+
+    * For each :ref:`operand type <syntax-opdtype>` :math:`t_j` in :math:`t^\ast` and corresponding type :math:`t'_{ij}` in :math:`C.\CLABELS[l_i]`, :math:`t_j` :ref:`matches <match-opdtype>` :math:`t'_{ij}`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast~t^\ast~\I32] \to [t_2^\ast]`, for any sequences of :ref:`operand types <syntax-opdtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
