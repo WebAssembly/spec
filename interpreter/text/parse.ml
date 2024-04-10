@@ -31,8 +31,6 @@ let make (type a) (start : _ -> _ -> a) : (module S with type t = a) =
       with
       | Parser.Error ->
         raise (Syntax (convert_pos buf, "unexpected token"))
-      | Syntax (region, s) when region <> Source.no_region ->
-        raise (Syntax (convert_pos buf, s))
 
     let parse_string s =
       parse "string" (Lexing.from_string ~with_positions:true s)
