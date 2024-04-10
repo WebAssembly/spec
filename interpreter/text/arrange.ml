@@ -683,22 +683,24 @@ let definition mode x_opt def =
       let rec unquote def =
         match def.it with
         | Textual (m, cs) -> m, cs
-        | Encoded (_, bs) -> Decode.decode_with_custom "" bs
-        | Quoted (_, s) -> unquote (Parse.string_to_module s)
+        | Encoded (name, bs) -> Decode.decode_with_custom name bs.it
+        | Quoted (_, s) ->
+          unquote (snd (Parse.Module.parse_string ~offset:s.at s.it))
       in module_with_var_opt x_opt (unquote def)
     | `Binary ->
       let rec unquote def =
         match def.it with
         | Textual (m, cs) -> Encode.encode_with_custom (m, cs)
-        | Encoded (_, bs) ->
-          Encode.encode_with_custom (Decode.decode_with_custom "" bs)
-        | Quoted (_, s) -> unquote (Parse.string_to_module s)
+        | Encoded (name, bs) ->
+          Encode.encode_with_custom (Decode.decode_with_custom name bs.it)
+        | Quoted (_, s) ->
+          unquote (snd (Parse.Module.parse_string ~offset:s.at s.it))
       in binary_module_with_var_opt x_opt (unquote def)
     | `Original ->
       match def.it with
       | Textual (m, cs) -> module_with_var_opt x_opt (m, cs)
-      | Encoded (_, bs) -> binary_module_with_var_opt x_opt bs
-      | Quoted (_, s) -> quoted_module_with_var_opt x_opt s
+      | Encoded (_, bs) -> binary_module_with_var_opt x_opt bs.it
+      | Quoted (_, s) -> quoted_module_with_var_opt x_opt s.it
   with Parse.Syntax _ ->
     quoted_module_with_var_opt x_opt "<invalid module>"
 

@@ -66,6 +66,8 @@ Extend the Appendix on the Custom Sections:
   ```
   If placement relative to an explicit section is used, then that section must exist in the encoding of the annotated module.
 
+  Custom section annotations that appear within module fields rather than as siblings of module fields may be ignored.
+
   As with any matter concerning annotations, it is up to implementations how they handle the case where an explicit custom section overlaps with individual annotations that are associated with the same custom section.
 
 

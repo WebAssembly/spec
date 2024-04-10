@@ -60,7 +60,7 @@ Each section consists of
 
 * a one-byte section *id*,
 * the |U32| *size* of the contents, in bytes,
-* the actual *contents*, whose structure is depended on the section id.
+* the actual *contents*, whose structure is dependent on the section id.
 
 Every section is optional; an omitted section is equivalent to the section being present with empty contents.
 
@@ -101,6 +101,9 @@ Id  Section
 11  :ref:`data section <binary-datasec>`           
 12  :ref:`data count section <binary-datacountsec>`
 ==  ===============================================
+
+.. note::
+   Section ids do not always correspond to the :ref:`order of sections <binary-module>` in the encoding of a module.
 
 
 .. index:: ! custom section

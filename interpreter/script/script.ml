@@ -8,8 +8,8 @@ type literal = Values.value Source.phrase
 type definition = definition' Source.phrase
 and definition' =
   | Textual of Ast.module_ * Custom.section list
-  | Encoded of string * string
-  | Quoted of string * string
+  | Encoded of string * string Source.phrase
+  | Quoted of string * string Source.phrase
 
 type action = action' Source.phrase
 and action' =
@@ -64,8 +64,6 @@ and meta' =
   | Script of var option * script
 
 and script = command list
-
-exception Syntax of Source.region * string
 
 
 let () =
