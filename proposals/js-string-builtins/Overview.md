@@ -171,11 +171,11 @@ The simplest way is to have a module import each string as an immutable global. 
 
 This proposal adds an extension to JS-API compile routine to support optimized 'imported string constants' to address this use-case.
 
-The `WebAssemblyCompileOptions` is extended with a `boolean importedStringConstants` flag. When this is set, the module may define imports of the form `(import "'" %stringConstant (global externref))`, and the JS-API will use the provided `%stringConstant%` import field name to be the value of the global. This allows for any UTF-8 string to be imported with minimal overhead.
+The `WebAssemblyCompileOptions` is extended with a `boolean importedStringConstants` flag. When this is set, the module may define imports of the form `(import "'" "%stringConstant%"" (global externref))`, and the JS-API will use the provided `%stringConstant%` import field name to be the value of the global. This allows for any UTF-8 string to be imported with minimal overhead.
 
 The string namespace is chosen to be the single quote ASCII character `'`. We may revise this to be a longer name before this proposal is finalized.
 
-All imports that reference this namespace must be globals of immutable externref. If they are not, an eager compile error is emitted.
+All imports that reference this namespace must be globals of type immutable externref. If they are not, an eager compile error is emitted.
 
 ## JS String Builtin API
 
