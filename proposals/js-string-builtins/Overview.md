@@ -163,6 +163,20 @@ JS Strings are semantically a sequence of 16-bit code units (referred to as char
 
 There is however, the Encoding API for `TextEncoder`/`TextDecoder` which can be used for UTF-8 support. However, this is technically a separate spec from JS and may not be available on all JS engines (in practice it's available widely). This proposal exposes UTF-8 data conversions using this API under separate `wasm:text-encoder` `wasm:text-decoder` interfaces which are available when the host implements these interfaces.
 
+## String constants
+
+String constants may be defined in JS and made available to wasm through a variety of means.
+
+The simplest way is to have a module import each string as an immutable global. This can work for small amounts of strings, but has a high cost for when the number of string constants is very large.
+
+This proposal adds an extension to JS-API compile routine to support optimized 'imported string constants' to address this use-case.
+
+The `WebAssemblyCompileOptions` is extended with a `boolean importedStringConstants` flag. When this is set, the module may define imports of the form `(import "'" %stringConstant (global externref))`, and the JS-API will use the provided `%stringConstant%` import field name to be the value of the global. This allows for any UTF-8 string to be imported with minimal overhead.
+
+The string namespace is chosen to be the single quote ASCII character `'`. We may revise this to be a longer name before this proposal is finalized.
+
+All imports that reference this namespace must be globals of immutable externref. If they are not, an eager compile error is emitted.
+
 ## JS String Builtin API
 
 The following is an initial set of function builtins for JavaScript String. The builtins are exposed under `wasm:js-string`.
@@ -717,43 +731,6 @@ func encodeStringToUTF8Array(
   return array;
 }
 ```
-
-## String constants
-
-This proposal does not add a way to defined string constants within a wasm module. Users are expected to define any string literals needed in a JS source file that their wasm module's can access using several methods.
-
-The first step is to define the string literals in a JS source. There are many ways to do this:
-  1. A JS array literal: `let strings = ["a", ...];`
-  2. JSON literal: `let strings = JSON.parse('["a", ...]')`
-    - This may be faster than a JS array literal for very large strings, due to the complexity of parsing JS vs. JSON.
-  3. Imported JSON file using fetch: `let strings = await fetch('strings.json').json();`
-    - This could allow you to run other startup logic or module compilation
-      while your strings are fetched, at the cost of managing asynchronicity.
-
-The second step is to access the string literals in wasm.
-
-The easiest way to do this is to import every string as a global: `(global (import "strings" "i") (ref extern))`. This has the advantage that string literals can be used in initializer expressions in the module using `global.get`. This approach may have some difficulty scaling to modules with many strings due to an implementation agreed-upon limit of 100,000 imports.
-
-To support large modules, this proposals adds a new static method: `WebAssembly.Struct.from` which constructs a struct from a JS iterable. The resulting struct can then be imported as a global and accessed using `struct.get`. This proposal also relaxes `struct.get` to be valid in a constant expression, as long as the reference type is non-nullable.
-
-### WebAssembly.Struct.from
-
-```webidl
-[LegacyNamespace=WebAssembly, Exposed=*]
-interface Struct {
-  static from(
-    string fieldType,
-    bool fieldMutable,
-    unsigned long fieldCount,
-    sequence<any> fieldValues);
-}
-```
-
-`Struct.from` creates a wasm struct using the `fieldType` and `fieldMutable` to create the field type, and then repeated `fieldCount` times. The initial values are taken from iterating over fieldValues.
-
-An alternative design could allow multiple different field types to be declared, but this would result in a very large type for the string constant use-case that would also make iterating over the values more difficult.
-
-This proposal does not change exported wasm GC structs to report `struct instanceof WebAssembly.Struct === true.` The intention is just to have an idiomatic name for this operation. If this is considered an issue, the method could be moved to the WebAssembly namespace and called `WebAssembly.structFrom`.
 
 ## Future extensions
 
