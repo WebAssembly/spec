@@ -961,7 +961,7 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
    \frac{
      \laneidx < \dim(\shape)
    }{
-     C \vdashinstr t\K{x}N\K{.}\EXTRACTLANE\K{\_}\sx^?~\laneidx : [\V128] \to [\unpacked(\shape)]
+     C \vdashinstr \shape\K{.}\EXTRACTLANE\K{\_}\sx^?~\laneidx : [\V128] \to [\unpacked(\shape)]
    }
 
 
