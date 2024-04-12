@@ -1880,7 +1880,7 @@ Most other vector instructions are defined in terms of numeric operators that ar
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~\V128\K{.}\vunop &\stepto& (\V128\K{.}\VCONST~c)
+   (\V128\K{.}\VCONST~c_1)~\shape\K{.}\vunop &\stepto& (\V128\K{.}\VCONST~c)
      & (\iff c = \vunop_{\shape}(c_1))
    \end{array}
 

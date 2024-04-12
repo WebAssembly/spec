@@ -61,6 +61,7 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         text: NativeError Object Structure; url: sec-nativeerror-object-structure
         text: 𝔽; url: #𝔽
         text: ℤ; url: #ℤ
+        text: SameValue; url: sec-samevalue
     type: abstract-op
         text: CreateMethodProperty; url: sec-createmethodproperty
 urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: dfn
@@ -128,6 +129,8 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: struct address; url: exec/runtime.html#syntax-structaddr
     text: array address; url: exec/runtime.html#syntax-arrayaddr
     text: host address; url: exec/runtime.html#syntax-hostaddr
+    text: extern address; url: exec/runtime.html#syntax-externaddr
+    text: page size; url: exec/runtime.html#page-size
     url: syntax/types.html#syntax-numtype
         text: i32
         text: i64
@@ -181,6 +184,11 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
 urlPrefix: https://heycam.github.io/webidl/; spec: WebIDL
     type: dfn
         text: create a namespace object; url: create-a-namespace-object
+urlPrefix: https://tc39.es/proposal-resizablearraybuffer/; spec: ResizableArrayBuffer proposal
+    type: dfn
+        text: handled; url: sec-hostresizearraybuffer
+        text: IsFixedLengthArrayBuffer; url: sec-isfixedarraybuffer
+        text: HostResizeArrayBuffer; url: sec-hostresizearraybuffer
 </pre>
 
 <pre class='link-defaults'>
@@ -618,6 +626,8 @@ dictionary MemoryDescriptor {
 interface Memory {
   constructor(MemoryDescriptor descriptor);
   unsigned long grow([EnforceRange] unsigned long delta);
+  ArrayBuffer toFixedLengthBuffer();
+  ArrayBuffer toResizableBuffer();
   readonly attribute ArrayBuffer buffer;
 };
 </pre>
@@ -630,10 +640,27 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     * \[[BufferObject]] : an {{ArrayBuffer}} whose [=Data Block=] is [=identified with=] the above memory address
 
 <div algorithm>
-    To <dfn>create a memory buffer</dfn> from a [=memory address=] |memaddr|, perform the following steps:
+    To <dfn>create a fixed length memory buffer</dfn> from a [=memory address=] |memaddr|, perform the following steps:
 
     1. Let |block| be a [=Data Block=] which is [=identified with=] the underlying memory of |memaddr|.
-    1. Let |buffer| be a new {{ArrayBuffer}} whose \[[ArrayBufferData]] is |block| and \[[ArrayBufferByteLength]] is set to the length of |block|.
+    1. Let |buffer| be a new {{ArrayBuffer}} with the internal slots \[[ArrayBufferData]], \[[ArrayBufferByteLength]], and \[[ArrayBufferDetachKey]].
+    1. Set |buffer|.\[[ArrayBufferData]] to |block|.
+    1. Set |buffer|.\[[ArrayBufferByteLength]] to the length of |block|.
+    1. Set |buffer|.\[[ArrayBufferDetachKey]] to "WebAssembly.Memory".
+    1. Return |buffer|.
+</div>
+
+<div algorithm>
+    To <dfn>create a resizable memory buffer</dfn> from a [=memory address=] |memaddr| and a |maxsize|, perform the following steps:
+
+    1. Let |block| be a [=Data Block=] which is [=identified with=] the underlying memory of |memaddr|.
+    1. Let |length| be the length of |block|.
+    1. If |maxsize| &gt; (65536 &times; 65536),
+        1. Throw a {{RangeError}} exception.
+    1. Let |buffer| be a new {{ArrayBuffer}} with the internal slots \[[ArrayBufferData]], \[[ArrayBufferByteLength]], \[[ArrayBufferMaxByteLength]], and \[[ArrayBufferDetachKey]].
+    1. Set |buffer|.\[[ArrayBufferData]] to |block|.
+    1. Set |buffer|.\[[ArrayBufferByteLength]] to |length|.
+    1. Set |buffer|.\[[ArrayBufferMaxByteLength]] is |maxsize|.
     1. Set |buffer|.\[[ArrayBufferDetachKey]] to "WebAssembly.Memory".
     1. Return |buffer|.
 </div>
@@ -642,7 +669,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     To <dfn>initialize a memory object</dfn> |memory| from a [=memory address=] |memaddr|, perform the following steps:
     1. Let |map| be the [=surrounding agent=]'s associated [=Memory object cache=].
     1. Assert: |map|[|memaddr|] doesn't [=map/exist=].
-    1. Let |buffer| be the result of [=create a memory buffer|creating a memory buffer=] from |memaddr|.
+    1. Let |buffer| be the result of [=create a fixed length memory buffer|creating a fixed length memory buffer=] from |memaddr|.
     1. Set |memory|.\[[Memory]] to |memaddr|.
     1. Set |memory|.\[[BufferObject]] to |buffer|.
     1. [=map/Set=] |map|[|memaddr|] to |memory|.
@@ -672,26 +699,38 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 </div>
 
 <div algorithm>
-    To <dfn>reset the Memory buffer</dfn> of |memaddr|, perform the following steps:
+    To <dfn>refresh the Memory buffer</dfn> of |memaddr|, perform the following steps:
 
     1. Let |map| be the [=surrounding agent=]'s associated [=Memory object cache=].
     1. Assert: |map|[|memaddr|] [=map/exists=].
     1. Let |memory| be |map|[|memaddr|].
-    1. Perform [=!=] [$DetachArrayBuffer$](|memory|.\[[BufferObject]], "WebAssembly.Memory").
-    1. Let |buffer| be the result of [=create a memory buffer|creating a memory buffer=] from |memaddr|.
-    1. Set |memory|.\[[BufferObject]] to |buffer|.
+    1. Let |buffer| be |memory|.\[[BufferObject]].
+    1. If [=IsFixedLengthArrayBuffer=](|buffer|) is true,
+        1. Perform [=!=] [$DetachArrayBuffer$](|buffer|, "WebAssembly.Memory").
+        1. Let |buffer| be the result of [=create a fixed length memory buffer|creating a fixed length memory buffer=] from |memaddr|.
+        1. Set |memory|.\[[BufferObject]] to |buffer|.
+    1. Otherwise,
+        1. Let |block| be a [=Data Block=] which is [=identified with=] the underlying memory of |memaddr|.
+        1. Set |buffer|.\[[ArrayBufferData]] to |block|.
+        1. Set |buffer|.\[[ArrayBufferByteLength]] to the length of |block|.
 </div>
 
-<div algorithm=dom-Memory-grow>
-    The <dfn method for="Memory">grow(|delta|)</dfn> method, when invoked, performs the following steps:
+<div algorithm>
+    To <dfn>grow the memory buffer</dfn> associated with a [=memory address=] |memaddr| by |delta|, perform the following steps:
+
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let |memaddr| be **this**.\[[Memory]].
     1. Let |ret| be the [=mem_size=](|store|, |memaddr|).
     1. Let |store| be [=mem_grow=](|store|, |memaddr|, |delta|).
     1. If |store| is [=error=], throw a {{RangeError}} exception.
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
-    1. [=Reset the memory buffer=] of |memaddr|.
+    1. [=Refresh the memory buffer=] of |memaddr|.
     1. Return |ret|.
+</div>
+
+<div algorithm=dom-Memory-grow>
+    The <dfn method for="Memory">grow(|delta|)</dfn> method, when invoked, performs the following steps:
+    1. Let |memaddr| be **this**.\[[Memory]].
+    1. Return the result of [=grow the memory buffer|growing the memory buffer=] associated with |memaddr| by |delta|.
 </div>
 
 Immediately after a WebAssembly [=memory.grow=] instruction executes, perform the following steps:
@@ -701,7 +740,55 @@ Immediately after a WebAssembly [=memory.grow=] instruction executes, perform th
         1. Let |frame| be the [=current frame=].
         1. Assert: due to validation, |frame|.[=frame/module=].[=moduleinst/memaddrs=][0] exists.
         1. Let |memaddr| be the memory address |frame|.[=frame/module=].[=moduleinst/memaddrs=][0].
-        1. [=Reset the memory buffer=] of |memaddr|.
+        1. [=Refresh the memory buffer=] of |memaddr|.
+</div>
+
+<div algorithm=dom-Memory-toFixedLengthBuffer>
+    The <dfn method for="Memory">toFixedLengthBuffer()</dfn> method, when invoked, performs the following steps:
+    1. Let |buffer| be **this**.\[[BufferObject]].
+    1. If [=IsFixedLengthArrayBuffer=](|buffer|) is true, return |buffer|.
+    1. Let |memaddr| be **this**.\[[Memory]].
+    1. Let |fixedBuffer| be the result of [=create a fixed length memory buffer|creating a fixed length memory buffer=] from |memaddr|.
+    1. Perform [=!=] [$DetachArrayBuffer$](|buffer|, "WebAssembly.Memory").
+    1. Set **this**.\[[BufferObject]] to |fixedBuffer|.
+    1. Return |fixedBuffer|.
+</div>
+
+<div algorithm=dom-Memory-toResizableBuffer>
+    The <dfn method for="Memory">toResizableBuffer()</dfn> method, when invoked, performs the following steps:
+    1. Let |buffer| be **this**.\[[BufferObject]].
+    1. If [=IsFixedLengthArrayBuffer=](|buffer|) is false, return |buffer|.
+    1. Let |memaddr| be **this**.\[[Memory]].
+    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
+    1. Let |memtype| be [=mem_type=](|store|, |memaddr|).
+    1. If |memtype| has a max,
+        1. Let |maxsize| be the max value in |memtype|.
+    1. Otherwise,
+        1. Let |maxsize| be 65536 &times; 65536.
+    1. Let |resizableBuffer| be the result of [=create a resizable memory buffer|creating a resizable memory buffer=] from |memaddr| and |maxsize|.
+    1. Perform [=!=] [$DetachArrayBuffer$](|buffer|, "WebAssembly.Memory").
+    1. Set **this**.\[[BufferObject]] to |resizableBuffer|.
+    1. Return |resizableBuffer|.
+</div>
+
+{{ArrayBuffer}} objects returned by a {{Memory}} object must have a size that is a multiple of a WebAssembly [=page size=] (the constant 65536). For this reason [=HostResizeArrayBuffer=] is redefined as follows.
+
+<div algorithm>
+    The <dfn>abstract operation [=HostResizeArrayBuffer=]</dfn> takes arguments |buffer| (an {{ArrayBuffer}}) and |newLength|. It performs the following steps when called.
+
+    1. If |buffer|.\[[ArrayBufferDetachKey]] is "WebAssembly.Memory",
+        1. Let |map| be the [=surrounding agent=]'s associated [=Memory object cache=].
+        1. Assert: |buffer| is the \[[BufferObject]] of exactly one value in |map|.
+        1. [=map/iterate|For each=] |memaddr| &rarr; |mem| in |map|,
+            1. If [=SameValue=](|mem|.\[[BufferObject]], |buffer|) is true,
+                1. Assert: |buffer|.\[[ArrayBufferByteLength]] modulo 65536 is 0.
+                1. Let |lengthDelta| be |newLength| - |buffer|.\[[ArrayBufferByteLength]].
+                1. If |lengthDelta| &lt; 0 or |lengthDelta| modulo 65536 is not 0,
+                    1. Throw a {{RangeError}} exception.
+                1. Let |delta| be |lengthDelta| &div; 65536.
+                1. [=Grow the memory buffer=] associated with |memaddr| by |delta|.
+         1. Return <emu-const>handled</emu-const>.
+    1. Otherwise, return <emu-const>unhandled</emu-const>.
 </div>
 
 <div algorithm>
