@@ -1065,7 +1065,7 @@ Reference Instructions
 
 12. Assert: due to :ref:`validation <valid-array.fill>`, the :ref:`array instance <syntax-arrayinst>` :math:`S.\SARRAYS[a]` exists.
 
-13. If :math:`d + n` is larger than or equal to the length of :math:`S.\SARRAYS[a].\AIFIELDS`, then:
+13. If :math:`d + n` is larger than the length of :math:`S.\SARRAYS[a].\AIFIELDS`, then:
 
     a. Trap.
 
@@ -1175,11 +1175,11 @@ Reference Instructions
 
 23. Assert: due to :ref:`validation <valid-array.copy>`, the :ref:`array instance <syntax-arrayinst>` :math:`S.\SARRAYS[a_2]` exists.
 
-24. If :math:`d + n` is larger than or equal to the length of :math:`S.\SARRAYS[a_1].\AIFIELDS`, then:
+24. If :math:`d + n` is larger than the length of :math:`S.\SARRAYS[a_1].\AIFIELDS`, then:
 
     a. Trap.
 
-25. If :math:`s + n` is larger than or equal to the length of :math:`S.\SARRAYS[a_2].\AIFIELDS`, then:
+25. If :math:`s + n` is larger than the length of :math:`S.\SARRAYS[a_2].\AIFIELDS`, then:
 
     a. Trap.
 
