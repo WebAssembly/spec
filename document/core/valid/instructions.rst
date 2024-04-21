@@ -379,7 +379,7 @@ Aggregate Reference Instructions
      \qquad
      \X{ft}^\ast[y] = \mut~\X{st}
      \qquad
-     \sx = \epsilon \Leftrightarrow \X{st} = \unpacktype(\X{st})
+     \sx^? = \epsilon \Leftrightarrow \X{st} = \unpacktype(\X{st})
    }{
      C \vdashinstr \STRUCTGET\K{\_}\sx^?~x~y : [(\REF~\NULL~x)] \to [\unpacktype(\X{st})]
    }
@@ -508,7 +508,7 @@ Aggregate Reference Instructions
      \qquad
      C \vdashreftypematch C.\CELEMS[y] \matchesreftype \X{rt}
    }{
-     C \vdashinstr \ARRAYNEWELEM~x~n : [\I32~\I32] \to [(\REF~x)]
+     C \vdashinstr \ARRAYNEWELEM~x~y : [\I32~\I32] \to [(\REF~x)]
    }
 
 
@@ -539,7 +539,7 @@ Aggregate Reference Instructions
      \qquad
      C.\CDATAS[y] = {\ok}
    }{
-     C \vdashinstr \ARRAYNEWDATA~x~n : [\I32~\I32] \to [(\REF~x)]
+     C \vdashinstr \ARRAYNEWDATA~x~y : [\I32~\I32] \to [(\REF~x)]
    }
 
 
@@ -566,7 +566,7 @@ Aggregate Reference Instructions
    \frac{
      \expanddt(C.\CTYPES[x]) = \TARRAY~(\mut~\X{st})
      \qquad
-     \sx = \epsilon \Leftrightarrow \X{st} = \unpacktype(\X{st})
+     \sx^? = \epsilon \Leftrightarrow \X{st} = \unpacktype(\X{st})
    }{
      C \vdashinstr \ARRAYGET\K{\_}\sx^?~x : [(\REF~\NULL~x)~\I32] \to [\unpacktype(\X{st})]
    }

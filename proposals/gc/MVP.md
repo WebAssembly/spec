@@ -466,7 +466,7 @@ Then, `$rttA` would carry supertype vector `[$rttA]`, `$rttB` has `[$rttA, $rttB
 Now consider a function that casts a `$B` to a `$C`:
 ```
 (func $castBtoC (param $x (ref $B)) (result (ref $C))
-  (ref.cast $C (local.get $x))
+  (ref.cast (ref $C) (local.get $x))
 )
 ```
 This can compile to machine code that (1) reads the RTT from `$x`, (2) checks that the length of its supertype table is >= 3, and (3) pointer-compares table[2] against `$rttC`.

@@ -118,6 +118,7 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: global_read; url: appendix/embedding.html#embed-global-read
     text: global_write; url: appendix/embedding.html#embed-global-write
     text: ref_type; url: appendix/embedding.html#embed-ref-type
+    text: val_default; url: appendix/embedding.html#embed-val-default
     text: match_valtype; url: appendix/embedding.html#embed-match-valtype
     text: error; url: appendix/embedding.html#embed-error
     text: store; url: exec/runtime.html#syntax-store
@@ -380,7 +381,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
                     1. Throw a {{LinkError}} exception.
                 1. If |valtype| is [=v128=],
                     1. Throw a {{LinkError}} exception.
-                1. Let |value| be [=ToWebAssemblyValue=](|v|, |valtype|).
+                1. Let |value| be [=ToWebAssemblyValue=](|v|, |valtype|). If this operation throws a {{TypeError}}, catch it, and throw a {{LinkError}} exception.
                 1. Let |store| be the [=surrounding agent=]'s [=associated store=].
                 1. Let (|store|, |globaladdr|) be [=global_alloc=](|store|, [=const=] |valtype|, |value|).
                 1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
@@ -853,6 +854,7 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
     1. If |maximum| is not empty and |maximum| &lt; |initial|, throw a {{RangeError}} exception.
     1. If |value| is missing,
         1. Let |ref| be [=DefaultValue=](|elementType|).
+        1. Assert: |ref| is not [=error=].
     1. Otherwise,
         1. Let |ref| be [=?=] [=ToWebAssemblyValue=](|value|, |elementType|).
     1. Let |type| be the [=table type=] {[=table type|min=] |initial|, [=table type|max=] |maximum|} |elementType|.
@@ -870,6 +872,7 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
     1. Let (<var ignore>limits</var>, |elementType|) be [=table_type=](|tableaddr|).
     1. If |value| is missing,
         1. Let |ref| be [=DefaultValue=](|elementType|).
+        1. If |ref| is [=error=], throw a {{TypeError}} exception.
     1. Otherwise,
         1. Let |ref| be [=?=] [=ToWebAssemblyValue=](|value|, |elementType|).
     1. Let |result| be [=table_grow=](|store|, |tableaddr|, |delta|, |ref|).
@@ -903,6 +906,7 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
     1. Let (<var ignore>limits</var>, |elementType|) be [=table_type=](|tableaddr|).
     1. If |value| is missing,
         1. Let |ref| be [=DefaultValue=](|elementType|).
+        1. If |ref| is [=error=], throw a {{TypeError}} exception.
     1. Otherwise,
         1. Let |ref| be [=?=] [=ToWebAssemblyValue=](|value|, |elementType|).
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
@@ -979,13 +983,8 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
 <div algorithm>
     The algorithm <dfn>DefaultValue</dfn>(|valuetype|) performs the following steps:
-    1. If |valuetype| equals [=i32=], return [=i32.const=] 0.
-    1. If |valuetype| equals [=i64=], return [=i64.const=] 0.
-    1. If |valuetype| equals [=f32=], return [=f32.const=] 0.
-    1. If |valuetype| equals [=f64=], return [=f64.const=] 0.
-    1. If |valuetype| equals [=funcref=], return [=ref.null=] [=funcref=].
     1. If |valuetype| equals [=externref=], return [=ToWebAssemblyValue=](undefined, |valuetype|).
-    1. Assert: This step is not reached.
+    1. Return [=val_default=](|valuetype|).
 </div>
 
 <div algorithm>
@@ -996,6 +995,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
         1. Throw a {{TypeError}} exception.
     1. If |v| is missing,
         1. Let |value| be [=DefaultValue=](|valuetype|).
+        1. Assert: |value| is not [=error=].
     1. Otherwise,
         1. Let |value| be [=ToWebAssemblyValue=](|v|, |valuetype|).
     1. If |mutable| is true, let |globaltype| be [=var=] |valuetype|; otherwise, let |globaltype| be [=const=] |valuetype|.

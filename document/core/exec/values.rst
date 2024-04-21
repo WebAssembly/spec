@@ -48,7 +48,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
 
 * The :ref:`heap type <syntax-heaptype>` must be :ref:`valid <valid-heaptype>` under the empty :ref:`context <context>`.
 
-* Then value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\NULL~t')`, where the :ref:`heap type <syntax-heaptype>` :math:`t'` that is the least type that :ref:`matches <match-heaptype>` :math:`t`.
+* Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\NULL~t')`, where the :ref:`heap type <syntax-heaptype>` :math:`t'` is the least type that :ref:`matches <match-heaptype>` :math:`t`.
 
 .. math::
    \frac{
