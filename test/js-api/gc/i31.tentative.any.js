@@ -11,7 +11,7 @@ setup(() => {
   builder
     .addFunction("makeI31", makeSig_r_x(i31Ref, kWasmI32))
     .addBody([kExprLocalGet, 0,
-              ...GCInstr(kExprI31New)])
+              ...GCInstr(kExprRefI31)])
     .exportFunc();
 
   builder
@@ -33,7 +33,7 @@ setup(() => {
     .exportFunc();
 
   builder
-    .addGlobal(i31NullableRef, true, [...wasmI32Const(0), ...GCInstr(kExprI31New)])
+    .addGlobal(i31NullableRef, true, [...wasmI32Const(0), ...GCInstr(kExprRefI31)])
   builder
     .addExportOfKind("i31Global", kExternalGlobal, 0);
 

@@ -819,14 +819,14 @@ Reference Instructions
    S; F; (\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYNEWDATA~x~y) &\stepto& \TRAP
      \\&&
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft}^n \\
+      (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft} \\
       \land & s + n\cdot|\X{ft}|/8 > |S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA|)
      \end{array} \\
    \\[1ex]
    S; F; (\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYNEWDATA~x~y) &\stepto& (t.\CONST~c)^n~(\ARRAYNEWFIXED~x~n)
      \\&&
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft}^n \\
+      (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft} \\
       \land & t = \unpacktype(\X{ft}) \\
       \land & \concat((\bytes_{\X{ft}}(c))^n) = S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA[s \slice n\cdot|\X{ft}|/8] \\
      \end{array} \\
@@ -1065,7 +1065,7 @@ Reference Instructions
 
 12. Assert: due to :ref:`validation <valid-array.fill>`, the :ref:`array instance <syntax-arrayinst>` :math:`S.\SARRAYS[a]` exists.
 
-13. If :math:`d + n` is larger than or equal to the length of :math:`S.\SARRAYS[a].\AIFIELDS`, then:
+13. If :math:`d + n` is larger than the length of :math:`S.\SARRAYS[a].\AIFIELDS`, then:
 
     a. Trap.
 
@@ -1102,13 +1102,13 @@ Reference Instructions
      (\iff d + n > |S.\SARRAYS[a].\AIFIELDS|)
    \\[1ex]
    S; (\REFARRAYADDR~a)~(\I32.\CONST~d)~\val~(\I32.\CONST~0)~(\ARRAYFILL~x)
-     \quad\stepto\quad S; \epsilon
+     \quad\stepto\quad \epsilon
      \\ \qquad
      (\otherwise)
    \\[1ex]
    S; (\REFARRAYADDR~a)~(\I32.\CONST~d)~\val~(\I32.\CONST~n+1)~(\ARRAYFILL~x)
      \quad\stepto
-     \\ \quad S;
+     \\ \quad
        \begin{array}[t]{@{}l@{}}
        (\REFARRAYADDR~a)~(\I32.\CONST~d)~\val~(\ARRAYSET~x) \\
        (\REFARRAYADDR~a)~(\I32.\CONST~d+1)~\val~(\I32.\CONST~n)~(\ARRAYFILL~x) \\
@@ -1175,11 +1175,11 @@ Reference Instructions
 
 23. Assert: due to :ref:`validation <valid-array.copy>`, the :ref:`array instance <syntax-arrayinst>` :math:`S.\SARRAYS[a_2]` exists.
 
-24. If :math:`d + n` is larger than or equal to the length of :math:`S.\SARRAYS[a_1].\AIFIELDS`, then:
+24. If :math:`d + n` is larger than the length of :math:`S.\SARRAYS[a_1].\AIFIELDS`, then:
 
     a. Trap.
 
-25. If :math:`s + n` is larger than or equal to the length of :math:`S.\SARRAYS[a_2].\AIFIELDS`, then:
+25. If :math:`s + n` is larger than the length of :math:`S.\SARRAYS[a_2].\AIFIELDS`, then:
 
     a. Trap.
 
@@ -1252,7 +1252,7 @@ Reference Instructions
      (\iff d + n > |S.\SARRAYS[a_1].\AIFIELDS| \vee s + n > |S.\SARRAYS[a_2].\AIFIELDS|)
    \\[1ex]
    S; F; (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\ARRAYCOPY~x~y)
-     \quad\stepto\quad S; \epsilon
+     \quad\stepto\quad \epsilon
      \\ \qquad
      (\otherwise)
    \\[1ex]
@@ -1391,13 +1391,13 @@ Where:
      \end{array}
    \\[1ex]
    S; F; (\REFARRAYADDR~a)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\ARRAYINITDATA~x~y)
-     \quad\stepto\quad S; F; \epsilon
+     \quad\stepto\quad \epsilon
      \\ \qquad
      (\otherwise)
    \\[1ex]
    S; F; (\REFARRAYADDR~a)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\ARRAYINITDATA~x~y)
      \quad\stepto
-     \\ \quad S; F;
+     \\ \quad
      \begin{array}[t]{@{}l@{}}
      (\REFARRAYADDR~a)~(\I32.\CONST~d)~(t.\CONST~c)~(\ARRAYSET~x) \\
      (\REFARRAYADDR~a)~(\I32.\CONST~d+1)~(\I32.\CONST~s+|\X{ft}|/8)~(\I32.\CONST~n)~(\ARRAYINITDATA~x~y) \\
@@ -1497,13 +1497,13 @@ Where:
      \end{array}
    \\[1ex]
    S; F; (\REFARRAYADDR~a)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\ARRAYINITELEM~x~y)
-     \quad\stepto\quad S; F; \epsilon
+     \quad\stepto\quad \epsilon
      \\ \qquad
      (\otherwise)
    \\[1ex]
    S; F; (\REFARRAYADDR~a)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\ARRAYINITELEM~x~y)
      \quad\stepto
-     \\ \quad S; F;
+     \\ \quad
      \begin{array}[t]{@{}l@{}}
      (\REFARRAYADDR~a)~(\I32.\CONST~d)~\REF~(\ARRAYSET~x) \\
      (\REFARRAYADDR~a)~(\I32.\CONST~d+1)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\ARRAYINITELEM~x~y) \\
@@ -1538,7 +1538,7 @@ Where:
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (\REFNULL \X{ht})~\ANYCONVERTEXTERN &\stepto& (\REFNULL~\ANY) \\
+   (\REFNULL~\X{ht})~\ANYCONVERTEXTERN &\stepto& (\REFNULL~\ANY) \\
    (\REFEXTERN~\reff)~\ANYCONVERTEXTERN &\stepto& \reff \\
    \end{array}
 
@@ -1564,8 +1564,8 @@ Where:
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (\REFNULL \X{ht})~\EXTERNCONVERTANY &\stepto& (\REFNULL~\EXTERN) \\
-   \reff~\EXTERNCONVERTANY &\stepto& (\REFEXTERN~\reff) & (\iff \reff \neq (\REFNULL \X{ht})) \\
+   (\REFNULL~\X{ht})~\EXTERNCONVERTANY &\stepto& (\REFNULL~\EXTERN) \\
+   \reff~\EXTERNCONVERTANY &\stepto& (\REFEXTERN~\reff) & (\iff \reff \neq (\REFNULL~\X{ht})) \\
    \end{array}
 
 
@@ -4376,8 +4376,8 @@ Control Instructions
 .. math::
    \begin{array}{lcl@{\qquad}l}
    S; F; \reff~(\BRONCAST~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff~(\BR~l)
-     & (\iff S \vdashval \reff : \X{rt}
-        \land \vdashreftypematch \X{rt} \matchesreftype \insttype_{F.\AMODULE}(\X{rt}_2)) \\
+     & (\iff S \vdashval \reff : \X{rt}}
+        \land {} \vdashreftypematch \X{rt} \matchesreftype \insttype_{F.\AMODULE}(\X{rt}_2)) \\
    S; F; \reff~(\BRONCAST~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff
      & (\otherwise) \\
    \end{array}
@@ -4412,7 +4412,7 @@ Control Instructions
    \begin{array}{lcl@{\qquad}l}
    S; F; \reff~(\BRONCASTFAIL~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff
      & (\iff S \vdashval \reff : \X{rt}
-        \land \vdashreftypematch \X{rt} \matchesreftype \insttype_{F.\AMODULE}(\X{rt}_2)) \\
+        \land {} \vdashreftypematch \X{rt} \matchesreftype \insttype_{F.\AMODULE}(\X{rt}_2)) \\
    S; F; \reff~(\BRONCASTFAIL~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff~(\BR~l)
      & (\otherwise) \\
    \end{array}
