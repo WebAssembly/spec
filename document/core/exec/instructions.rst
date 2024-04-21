@@ -4187,7 +4187,7 @@ Control Instructions
 .. math::
    \begin{array}{lcl@{\qquad}l}
    S; F; \reff~(\BRONCAST~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff~(\BR~l)
-     & (\iff S \vdashval \reff : \X{rt}}
+     & (\iff S \vdashval \reff : \X{rt}
         \land {} \vdashreftypematch \X{rt} \matchesreftype \insttype_{F.\AMODULE}(\X{rt}_2)) \\
    S; F; \reff~(\BRONCAST~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff
      & (\otherwise) \\
