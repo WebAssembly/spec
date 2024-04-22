@@ -631,14 +631,9 @@ func decodeStringFromUTF8Array(
 ///
 /// Traps if the length of the UTF-8 encoded string doesn't fit into an i32
 func measureStringAsUTF8(
-  string: externref,
-  start: i32
+  string: externref
 ) -> i32
 {
-  // NOTE: `start` is interpreted as a signed 32-bit integer when converted
-  // to a JS value using standard conversions. Reinterpret as unsigned here.
-  start >>>= 0;
-
   // Technically a partially redundant test, but want to be clear the null is
   // not allowed.
   if (string === null ||
