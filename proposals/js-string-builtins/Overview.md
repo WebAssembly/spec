@@ -632,6 +632,7 @@ func decodeStringFromUTF8Array(
 /// Traps if the length of the UTF-8 encoded string doesn't fit into an i32
 func measureStringAsUTF8(
   string: externref,
+  start: i32
 ) -> i32
 {
   // NOTE: `start` is interpreted as a signed 32-bit integer when converted
