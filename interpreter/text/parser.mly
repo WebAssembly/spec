@@ -1449,7 +1449,7 @@ result :
   | LPAR REF_STRUCT RPAR { RefResult (RefTypePat StructHT) @@ $sloc }
   | LPAR REF_ARRAY RPAR { RefResult (RefTypePat ArrayHT) @@ $sloc }
   | LPAR REF_FUNC RPAR { RefResult (RefTypePat FuncHT) @@ $sloc }
-/*| LPAR REF_EXN RPAR { RefResult (RefTypePat ExnRefType) @@ $sloc }*/
+  | LPAR REF_EXN RPAR { RefResult (RefTypePat ExnHT) @@ $sloc }
   | LPAR REF_EXTERN RPAR { RefResult (RefTypePat ExternHT) @@ $sloc }
   | LPAR REF_NULL RPAR { RefResult NullPat @@ $sloc }
   | LPAR VEC_CONST VEC_SHAPE list(numpat) RPAR
