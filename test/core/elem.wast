@@ -381,7 +381,7 @@
   "\04\04\01"                ;; Table section: 1 table
     "\70\00\01"              ;; Table 0: [1..] funcref
   "\09\0b\01"                ;; Elem section: 1 element segment
-    "\06\00\41\00\0b\70\01\d2\00\0b"  ;; Segment 0: (table 0) (i32.const 0) funcref (ref.null 0)
+    "\06\00\41\00\0b\70\01\d2\00\0b"  ;; Segment 0: (table 0) (i32.const 0) funcref (ref.func 0)
   "\0a\04\01"                ;; Code section: 1 function
     "\02\00\0b"              ;; Function 0: empty
 )
