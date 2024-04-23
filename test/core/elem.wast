@@ -242,6 +242,352 @@
 )
 
 
+;; Binary format variations
+
+(module
+  (func)
+  (table 1 funcref)
+  (elem (i32.const 0) func 0)
+)
+(module binary
+  "\00asm" "\01\00\00\00"    ;; Magic
+  "\01\04\01\60\00\00"       ;; Type section: 1 type
+  "\03\02\01\00"             ;; Function section: 1 function
+  "\04\04\01"                ;; Table section: 1 table
+    "\70\00\01"              ;; Table 0: [1..] funcref
+  "\09\07\01"                ;; Elem section: 1 element segment
+    "\00\41\00\0b\01\00"     ;; Segment 0: (i32.const 0) func 0
+  "\0a\04\01"                ;; Code section: 1 function
+    "\02\00\0b"              ;; Function 0: empty
+)
+
+(module
+  (func)
+  (table 1 funcref)
+  (elem func 0)
+)
+(module binary
+  "\00asm" "\01\00\00\00"    ;; Magic
+  "\01\04\01\60\00\00"       ;; Type section: 1 type
+  "\03\02\01\00"             ;; Function section: 1 function
+  "\04\04\01"                ;; Table section: 1 table
+    "\70\00\01"              ;; Table 0: [1..] funcref
+  "\09\05\01"                ;; Elem section: 1 element segment
+    "\01\00\01\00"           ;; Segment 0: func 0
+  "\0a\04\01"                ;; Code section: 1 function
+    "\02\00\0b"              ;; Function 0: empty
+)
+
+(module
+  (func)
+  (table 1 funcref)
+  (elem (table 0) (i32.const 0) func 0)
+)
+(module binary
+  "\00asm" "\01\00\00\00"    ;; Magic
+  "\01\04\01\60\00\00"       ;; Type section: 1 type
+  "\03\02\01\00"             ;; Function section: 1 function
+  "\04\04\01"                ;; Table section: 1 table
+    "\70\00\01"              ;; Table 0: [1..] funcref
+  "\09\09\01"                ;; Elem section: 1 element segment
+    "\02\00\41\00\0b\00\01\00"  ;; Segment 0: (table 0) (i32.const 0) func 0
+  "\0a\04\01"                ;; Code section: 1 function
+    "\02\00\0b"              ;; Function 0: empty
+)
+
+(module
+  (func)
+  (table 1 funcref)
+  (elem declare func 0)
+)
+(module binary
+  "\00asm" "\01\00\00\00"    ;; Magic
+  "\01\04\01\60\00\00"       ;; Type section: 1 type
+  "\03\02\01\00"             ;; Function section: 1 function
+  "\04\04\01"                ;; Table section: 1 table
+    "\70\00\01"              ;; Table 0: [1..] funcref
+  "\09\05\01"                ;; Elem section: 1 element segment
+    "\03\00\01\00"           ;; Segment 0: declare func 0
+  "\0a\04\01"                ;; Code section: 1 function
+    "\02\00\0b"              ;; Function 0: empty
+)
+
+(module
+  (func)
+  (table 1 funcref)
+  (elem (i32.const 0) (;;)(ref func) (ref.func 0))
+)
+(module binary
+  "\00asm" "\01\00\00\00"    ;; Magic
+  "\01\04\01\60\00\00"       ;; Type section: 1 type
+  "\03\02\01\00"             ;; Function section: 1 function
+  "\04\04\01"                ;; Table section: 1 table
+    "\70\00\01"              ;; Table 0: [1..] funcref
+  "\09\09\01"                ;; Elem section: 1 element segment
+    "\04\41\00\0b\01\d2\00\0b"  ;; Segment 0: (i32.const 0) (ref.func 0)
+  "\0a\04\01"                ;; Code section: 1 function
+    "\02\00\0b"              ;; Function 0: empty
+)
+(module
+  (func)
+  (table 1 funcref)
+  (elem (i32.const 0) funcref (ref.null func))
+)
+(module binary
+  "\00asm" "\01\00\00\00"    ;; Magic
+  "\01\04\01\60\00\00"       ;; Type section: 1 type
+  "\03\02\01\00"             ;; Function section: 1 function
+  "\04\04\01"                ;; Table section: 1 table
+    "\70\00\01"              ;; Table 0: [1..] funcref
+  "\09\09\01"                ;; Elem section: 1 element segment
+    "\04\41\00\0b\01\d0\70\0b"  ;; Segment 0: (i32.const 0) (ref.null func)
+  "\0a\04\01"                ;; Code section: 1 function
+    "\02\00\0b"              ;; Function 0: empty
+)
+
+(module
+  (func)
+  (table 1 funcref)
+  (elem (i32.const 0) funcref (ref.func 0))
+)
+(module binary
+  "\00asm" "\01\00\00\00"    ;; Magic
+  "\01\04\01\60\00\00"       ;; Type section: 1 type
+  "\03\02\01\00"             ;; Function section: 1 function
+  "\04\04\01"                ;; Table section: 1 table
+    "\70\00\01"              ;; Table 0: [1..] funcref
+  "\09\07\01"                ;; Elem section: 1 element segment
+    "\05\70\01\d2\00\0b"     ;; Segment 0: funcref (ref.func 0)
+  "\0a\04\01"                ;; Code section: 1 function
+    "\02\00\0b"              ;; Function 0: empty
+)
+(module
+  (func)
+  (table 1 funcref)
+  (elem (i32.const 0) funcref (ref.null func))
+)
+(module binary
+  "\00asm" "\01\00\00\00"    ;; Magic
+  "\01\04\01\60\00\00"       ;; Type section: 1 type
+  "\03\02\01\00"             ;; Function section: 1 function
+  "\04\04\01"                ;; Table section: 1 table
+    "\70\00\01"              ;; Table 0: [1..] funcref
+  "\09\07\01"                ;; Elem section: 1 element segment
+    "\05\70\01\d0\70\0b"     ;; Segment 0: funcref (ref.null func)
+  "\0a\04\01"                ;; Code section: 1 function
+    "\02\00\0b"              ;; Function 0: empty
+)
+
+(module
+  (func)
+  (table 1 funcref)
+  (elem (table 0) (i32.const 0) funcref (ref.func 0))
+)
+(module binary
+  "\00asm" "\01\00\00\00"    ;; Magic
+  "\01\04\01\60\00\00"       ;; Type section: 1 type
+  "\03\02\01\00"             ;; Function section: 1 function
+  "\04\04\01"                ;; Table section: 1 table
+    "\70\00\01"              ;; Table 0: [1..] funcref
+  "\09\0b\01"                ;; Elem section: 1 element segment
+    "\06\00\41\00\0b\70\01\d2\00\0b"  ;; Segment 0: (table 0) (i32.const 0) funcref (ref.func 0)
+  "\0a\04\01"                ;; Code section: 1 function
+    "\02\00\0b"              ;; Function 0: empty
+)
+(module
+  (func)
+  (table 1 funcref)
+  (elem (table 0) (i32.const 0) funcref (ref.null func))
+)
+(module binary
+  "\00asm" "\01\00\00\00"    ;; Magic
+  "\01\04\01\60\00\00"       ;; Type section: 1 type
+  "\03\02\01\00"             ;; Function section: 1 function
+  "\04\04\01"                ;; Table section: 1 table
+    "\70\00\01"              ;; Table 0: [1..] funcref
+  "\09\0b\01"                ;; Elem section: 1 element segment
+    "\06\00\41\00\0b\70\01\d0\70\0b"  ;; Segment 0: (table 0) (i32.const 0) funcref (ref.null func)
+  "\0a\04\01"                ;; Code section: 1 function
+    "\02\00\0b"              ;; Function 0: empty
+)
+
+(module
+  (func)
+  (table 1 funcref)
+  (elem declare funcref (ref.func 0))
+)
+(module binary
+  "\00asm" "\01\00\00\00"    ;; Magic
+  "\01\04\01\60\00\00"       ;; Type section: 1 type
+  "\03\02\01\00"             ;; Function section: 1 function
+  "\04\04\01"                ;; Table section: 1 table
+    "\70\00\01"              ;; Table 0: [1..] funcref
+  "\09\07\01"                ;; Elem section: 1 element segment
+    "\07\70\01\d2\00\0b"     ;; Segment 0: declare funcref (ref.func 0)
+  "\0a\04\01"                ;; Code section: 1 function
+    "\02\00\0b"              ;; Function 0: empty
+)
+(module
+  (func)
+  (table 1 funcref)
+  (elem declare funcref (ref.null func))
+)
+(module binary
+  "\00asm" "\01\00\00\00"    ;; Magic
+  "\01\04\01\60\00\00"       ;; Type section: 1 type
+  "\03\02\01\00"             ;; Function section: 1 function
+  "\04\04\01"                ;; Table section: 1 table
+    "\70\00\01"              ;; Table 0: [1..] funcref
+  "\09\07\01"                ;; Elem section: 1 element segment
+    "\07\70\01\d0\70\0b"     ;; Segment 0: declare funcref (ref.null func)
+  "\0a\04\01"                ;; Code section: 1 function
+    "\02\00\0b"              ;; Function 0: empty
+)
+
+
+(module
+  (func)
+  (table 1 (ref func) (ref.func 0))
+  (elem (i32.const 0) func 0)
+)
+(module binary
+  "\00asm" "\01\00\00\00"    ;; Magic
+  "\01\04\01\60\00\00"       ;; Type section: 1 type
+  "\03\02\01\00"             ;; Function section: 1 function
+  "\04\0a\01"                ;; Table section: 1 table
+    "\40\00\64\70\00\01\d2\00\0b"  ;; Table 0: [1..] (ref func) (ref.func 0)
+  "\09\07\01"                ;; Elem section: 1 element segment
+    "\00\41\00\0b\01\00"     ;; Segment 0: (i32.const 0) func 0
+  "\0a\04\01"                ;; Code section: 1 function
+    "\02\00\0b"              ;; Function 0: empty
+)
+
+(module
+  (func)
+  (table 1 (ref func) (ref.func 0))
+  (elem func 0)
+)
+(module binary
+  "\00asm" "\01\00\00\00"    ;; Magic
+  "\01\04\01\60\00\00"       ;; Type section: 1 type
+  "\03\02\01\00"             ;; Function section: 1 function
+  "\04\0a\01"                ;; Table section: 1 table
+    "\40\00\64\70\00\01\d2\00\0b"  ;; Table 0: [1..] (ref func) (ref.func 0)
+  "\09\05\01"                ;; Elem section: 1 element segment
+    "\01\00\01\00"           ;; Segment 0: func 0
+  "\0a\04\01"                ;; Code section: 1 function
+    "\02\00\0b"              ;; Function 0: empty
+)
+
+(module
+  (func)
+  (table 1 (ref func) (ref.func 0))
+  (elem (table 0) (i32.const 0) func 0)
+)
+(module binary
+  "\00asm" "\01\00\00\00"    ;; Magic
+  "\01\04\01\60\00\00"       ;; Type section: 1 type
+  "\03\02\01\00"             ;; Function section: 1 function
+  "\04\0a\01"                ;; Table section: 1 table
+    "\40\00\64\70\00\01\d2\00\0b"  ;; Table 0: [1..] (ref func) (ref.func 0)
+  "\09\09\01"                ;; Elem section: 1 element segment
+    "\02\00\41\00\0b\00\01\00"  ;; Segment 0: (table 0) (i32.const 0) func 0
+  "\0a\04\01"                ;; Code section: 1 function
+    "\02\00\0b"              ;; Function 0: empty
+)
+
+(module
+  (func)
+  (table 1 (ref func) (ref.func 0))
+  (elem declare func 0)
+)
+(module binary
+  "\00asm" "\01\00\00\00"    ;; Magic
+  "\01\04\01\60\00\00"       ;; Type section: 1 type
+  "\03\02\01\00"             ;; Function section: 1 function
+  "\04\0a\01"                ;; Table section: 1 table
+    "\40\00\64\70\00\01\d2\00\0b"  ;; Table 0: [1..] (ref func) (ref.func 0)
+  "\09\05\01"                ;; Elem section: 1 element segment
+    "\03\00\01\00"           ;; Segment 0: declare func 0
+  "\0a\04\01"                ;; Code section: 1 function
+    "\02\00\0b"              ;; Function 0: empty
+)
+
+(assert_invalid
+  (module
+    (func)
+    (table 1 (ref func) (ref.func 0))
+    (elem (i32.const 0) funcref (ref.func 0))
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module binary
+    "\00asm" "\01\00\00\00"    ;; Magic
+    "\01\04\01\60\00\00"       ;; Type section: 1 type
+    "\03\02\01\00"             ;; Function section: 1 function
+    "\04\0a\01"                ;; Table section: 1 table
+      "\40\00\64\70\00\01\d2\00\0b"  ;; Table 0: [1..] (ref func) (ref.func 0)
+    "\09\09\01"                ;; Elem section: 1 element segment
+      "\04\41\00\0b\01\d2\00\0b"  ;; Segment 0: (i32.const 0) (ref.func 0)
+    "\0a\04\01"                ;; Code section: 1 function
+      "\02\00\0b"              ;; Function 0: empty
+  )
+  "type mismatch"
+)
+
+(module
+  (func)
+  (table 1 (ref func) (ref.func 0))
+  (elem (ref func) (ref.func 0))
+)
+(module binary
+  "\00asm" "\01\00\00\00"    ;; Magic
+  "\01\04\01\60\00\00"       ;; Type section: 1 type
+  "\03\02\01\00"             ;; Function section: 1 function
+  "\04\0a\01"                ;; Table section: 1 table
+    "\40\00\64\70\00\01\d2\00\0b"  ;; Table 0: [1..] (ref func) (ref.func 0)
+  "\09\08\01"                ;; Elem section: 1 element segment
+    "\05\64\70\01\d2\00\0b"  ;; Segment 0: (ref func) (ref.func 0)
+  "\0a\04\01"                ;; Code section: 1 function
+    "\02\00\0b"              ;; Function 0: empty
+)
+
+(module
+  (func)
+  (table 1 (ref func) (ref.func 0))
+  (elem (table 0) (i32.const 0) (ref func) (ref.func 0))
+)
+(module binary
+  "\00asm" "\01\00\00\00"    ;; Magic
+  "\01\04\01\60\00\00"       ;; Type section: 1 type
+  "\03\02\01\00"             ;; Function section: 1 function
+  "\04\0a\01"                ;; Table section: 1 table
+    "\40\00\64\70\00\01\d2\00\0b"  ;; Table 0: [1..] (ref func) (ref.func 0)
+  "\09\0c\01"                ;; Elem section: 1 element segment
+    "\06\00\41\00\0b\64\70\01\d2\00\0b"  ;; Segment 0: (table 0) (i32.const 0) (ref func) (ref.func 0)
+  "\0a\04\01"                ;; Code section: 1 function
+    "\02\00\0b"              ;; Function 0: empty
+)
+
+(module
+  (func)
+  (table 1 (ref func) (ref.func 0))
+  (elem declare (ref func) (ref.func 0))
+)
+(module binary
+  "\00asm" "\01\00\00\00"    ;; Magic
+  "\01\04\01\60\00\00"       ;; Type section: 1 type
+  "\03\02\01\00"             ;; Function section: 1 function
+  "\04\0a\01"                ;; Table section: 1 table
+    "\40\00\64\70\00\01\d2\00\0b"  ;; Table 0: [1..] (ref func) (ref.func 0)
+  "\09\08\01"                ;; Elem section: 1 element segment
+    "\07\64\70\01\d2\00\0b"  ;; Segment 0: declare (ref func) (ref.func 0)
+  "\0a\04\01"                ;; Code section: 1 function
+    "\02\00\0b"              ;; Function 0: empty
+)
+
+
 ;; Invalid bounds for elements
 
 (assert_trap
