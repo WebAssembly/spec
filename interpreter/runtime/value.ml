@@ -93,22 +93,16 @@ let is_null_ref = function
 (* Typing *)
 
 let type_of_op = function
-  | I32 _ -> Types.I32T
-  | I64 _ -> Types.I64T
-  | F32 _ -> Types.F32T
-  | F64 _ -> Types.F64T
-
-let type_of_vecop = function
-  | V128 _ -> Types.V128T
-
-let type_of_num = function
   | I32 _ -> I32T
   | I64 _ -> I64T
   | F32 _ -> F32T
   | F64 _ -> F64T
 
-let type_of_vec = function
+let type_of_vecop = function
   | V128 _ -> V128T
+
+let type_of_num = type_of_op
+let type_of_vec = type_of_vecop
 
 let type_of_ref' = ref (function _ -> assert false)
 let type_of_ref = function
