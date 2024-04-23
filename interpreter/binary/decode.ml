@@ -1166,7 +1166,7 @@ let elem s =
   | 0x04l ->
     let emode = at active_zero s in
     let einit = vec const s in
-    {etype = (NoNull, FuncHT); einit; emode}
+    {etype = (Null, FuncHT); einit; emode}
   | 0x05l ->
     let emode = at passive s in
     let etype = ref_type s in

@@ -367,7 +367,7 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EDECLARATIVE \} \\
    \production{element kind} & \Belemkind &::=&
-     \hex{00} &\Rightarrow& \FUNCREF \\
+     \hex{00} &\Rightarrow& (\REF~\FUNC) \\
    \end{array}
 
 .. note::
