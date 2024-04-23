@@ -134,8 +134,8 @@
 )
 
 (assert_return (invoke "get" (i32.const 0)) (i32.const 42))
-(assert_return (invoke "get" (i32.const 0)) (i32.const 42))
-(assert_return (invoke "get" (i32.const 0)) (i32.const 42))
+(assert_return (invoke "get" (i32.const 1)) (i32.const 42))
+(assert_return (invoke "get" (i32.const 2)) (i32.const 42))
 
 (module $i31ref_of_global_global_initializer
   (global $g0 (import "env" "g") i32)
