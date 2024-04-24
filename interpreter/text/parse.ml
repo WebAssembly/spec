@@ -9,30 +9,19 @@ sig
   val parse_channel : in_channel -> t
 end
 
-let provider buf () =
-  let tok = Lexer.token buf in
-  let start = Lexing.lexeme_start_p buf in
-  let stop = Lexing.lexeme_end_p buf in
-  tok, start, stop
-
-let convert_pos buf =
-  { Source.left = Lexer.convert_pos buf.Lexing.lex_start_p;
-    Source.right = Lexer.convert_pos buf.Lexing.lex_curr_p
+let convert_pos lexbuf =
+  { Source.left = Lexer.convert_pos lexbuf.Lexing.lex_start_p;
+    Source.right = Lexer.convert_pos lexbuf.Lexing.lex_curr_p
   }
 
 let make (type a) (start : _ -> _ -> a) : (module S with type t = a) =
   (module struct
     type t = a
 
-    let parse name buf =
-      Lexing.set_filename buf name;
-      try
-        MenhirLib.Convert.Simplified.traditional2revised start (provider buf)
-      with
-      | Parser.Error ->
-        raise (Syntax (convert_pos buf, "unexpected token"))
-      | Syntax (region, s) when region <> Source.no_region ->
-        raise (Syntax (convert_pos buf, s))
+    let parse name lexbuf =
+      Lexing.set_filename lexbuf name;
+      try start Lexer.token lexbuf with Parser.Error ->
+        raise (Syntax (convert_pos lexbuf, "unexpected token"))
 
     let parse_string s =
       parse "string" (Lexing.from_string ~with_positions:true s)

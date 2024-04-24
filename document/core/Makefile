@@ -9,6 +9,8 @@ BUILDDIR      = _build
 STATICDIR     = _static
 DOWNLOADDIR   = _download
 NAME          = WebAssembly
+DECISION_URL  = https://github.com/WebAssembly/meetings/blob/main/main/2017/WG-12-06.md
+TAR           = tar
 
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
@@ -148,7 +150,7 @@ bikeshed: $(GENERATED)
 	@echo
 	@echo =========================================================================
 	mkdir -p $(BUILDDIR)/bikeshed_mathjax/
-	bikeshed spec index.bs $(BUILDDIR)/bikeshed_mathjax/index.html
+	bikeshed spec $(STATUS) index.bs $(BUILDDIR)/bikeshed_mathjax/index.html
 	mkdir -p $(BUILDDIR)/html/bikeshed/
 	(cd util/katex/ && yarn && yarn build && npm install --only=prod)
 	python3 util/mathjax2katex.py $(BUILDDIR)/bikeshed_mathjax/index.html \
@@ -163,9 +165,11 @@ bikeshed: $(GENERATED)
 	@echo "Build finished. The HTML page is in $(BUILDDIR)/html/bikeshed/."
 
 .PHONY: WD-tar
+# macOS tar has no “--transform” option (only GNU tar does), so on macOS,
+# do “brew install tar” & run “make” like this: “TAR=gtar make -e WD-tar”
 WD-tar: bikeshed
 	@echo "Building tar file..."
-	tar cvf \
+	$(TAR) cvf \
 		$(BUILDDIR)/WD.tar \
 		--transform='s|$(BUILDDIR)/html/bikeshed/||' \
 		--transform='s|index.html|Overview.html|' \
@@ -186,6 +190,20 @@ WD-echidna: WD-tar
 	curl 'https://labs.w3.org/echidna/api/request' \
 		--user '$(W3C_USERNAME):$(W3C_PASSWORD)' \
 		-F "tar=@$(BUILDDIR)/WD.tar" \
+		-F "decision=$(DECISION_URL)" | tee $(BUILDDIR)/WD-echidna-id.txt
+	@echo
+	@echo "Published working draft. Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"
+
+.PHONY: WD-echidna-CI
+WD-echidna-CI: WD-tar
+	@if [ -z $(W3C_ECHIDNA_TOKEN_CORE) ] || \
+			[ -z $(DECISION_URL) ] ; then \
+		echo "Must provide W3C_ECHIDNA_TOKEN_CORE and DECISION_URL environment variables"; \
+		exit 1; \
+	fi
+	curl 'https://labs.w3.org/echidna/api/request' \
+		-F "tar=@$(BUILDDIR)/WD.tar" \
+		-F "token=$(W3C_ECHIDNA_TOKEN_CORE)" \
 		-F "decision=$(DECISION_URL)" | tee $(BUILDDIR)/WD-echidna-id.txt
 	@echo
 	@echo "Published working draft. Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"
