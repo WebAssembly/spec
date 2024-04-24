@@ -6,6 +6,10 @@ This page describes a proposal to support linear memory of sizes larger than
 2<sup>32</sup> bits. It provides no new instructions, but instead extends the
 currently existing instructions to allow 64-bit indexes.
 
+In addition, in order to support source languages with 64-bit pointer width,
+this proposal also extends tables to allow 64-bit indexes.  This addition was
+made during phase 3 of the proposal and we refer to this addition as "table64".
+
 ### Implementation Status
 
 - spec interpreter: Done
@@ -15,6 +19,16 @@ currently existing instructions to allow 64-bit indexes.
 - wabt: [Done](https://github.com/WebAssembly/wabt/pull/1500)
 - binaryen: [Done](https://github.com/WebAssembly/binaryen/pull/3202)
 - emscripten: [Done](https://github.com/emscripten-core/emscripten/pull/17803)
+
+### Implementation Status (table64)
+
+- spec interpreter: -
+- v8/chrome: -
+- Firefox: -
+- Safari: -
+- wabt: -
+- binaryen: -
+- emscripten: -
 
 ## Motivation
 
@@ -52,11 +66,10 @@ have to support 32-bit memory addresses in their ABI.
   - `limits(iv) ::= {min iv, max iv?}`
   The parameter is omitted where it is immaterial.
 
-* The [table type][syntax tabletype] continues to use i32 indices
-  - `tabletype ::= limits(i32) elemtype`
-
-* The [memory type][syntax memtype] structure is extended to have an index type
+* The [memory type][syntax memtype] and [table type][syntax tabletype]
+  structures are extended to include an index type
   - `memtype ::= idxtype limits(type(iv))`
+  - `tabletype ::= idxtype limits(type(iv)) reftype`
   - where
     ```
     type(\i32) = \I32
@@ -65,7 +78,6 @@ have to support 32-bit memory addresses in their ABI.
 
 * The [memarg][syntax memarg] immediate is changed to allow a 64-bit offset
   - `memarg ::= {offset u64, align u32}`
-
 
 ### Validation
 
@@ -79,14 +91,15 @@ have to support 32-bit memory addresses in their ABI.
     ⊦ i64 : 2**48
     ```
 
-* [Memory page limits][valid limits] are classified by their index types
+* [Memory page limits][valid limits] and [Table entry limits][valid limits] are
+  classified by their respective index types
   - ```
     ⊦ it : k    n <= k    (m <= k)?    (n < m)?
     -------------------------------------------
     ⊦ { min n, max m? } : it
     ```
 
-* Memory types are validated accordingly:
+* Memory and Table types are validated accordingly:
   - ```
     ⊦ limits : it
     --------------
@@ -150,6 +163,56 @@ have to support 32-bit memory addresses in their ABI.
           C ⊦ memory.init : [it i32 i32] → []
       ```
   - (and similar for memory instructions from other proposals)
+
+* [Table instructions][valid tableinst] are changed to use the index type
+  - call_indirect x y
+    - ```
+        C.tables[x] = it limits t  C.types[y] = [t1*] → [t2*]
+      -------------------------------------------------------
+      C ⊦ call_indirect x y : [t1* it] → [t2*]
+      ```
+  - table.get x
+    - ```
+        C.tables[x] = it limits t
+      ------------------------------
+      C ⊦ table.get x : [it] → [t]
+      ```
+  - table.set x
+    - ```
+        C.tables[x] = it limits t
+      ------------------------------
+      C ⊦ table.set x : [it] → [t]
+      ```
+  - table.size x
+    - ```
+        C.tables[x] = it limits t
+      ------------------------------
+      C ⊦ table.size x : [] → [it]
+      ```
+  - table.grow x
+    - ```
+        C.tables[x] = it limits t
+      -------------------------------
+      C ⊦ table.grow x : [it] → [it]
+      ```
+  - table.fill x
+    - ```
+        C.tables[x] = it limits t
+      ----------------------------------
+      C ⊦ tables.fill x : [it t it] → []
+      ```
+  - table.copy x y
+    - ```
+          C.tables[x] = it limits t
+      ----------------------------------
+      C ⊦ table.copy x : [it it it] → []
+      ```
+  - table.init x y
+    - ```
+          C.tables[x] = it limits t   C.elems[y] = ok
+      -----------------------------------------------
+          C ⊦ table.init x y : [it i32 i32] → []
+      ```
 
 * The [SIMD proposal][simd] extends `t.load memarg` and `t.store memarg`
   above such that `t` may now also be `v128`, which accesses a 16-byte quantity
@@ -329,6 +392,7 @@ have to support 32-bit memory addresses in their ABI.
 [syntax memarg]: https://webassembly.github.io/spec/core/syntax/instructions.html#syntax-memarg
 [valid limits]: https://webassembly.github.io/spec/core/valid/types.html#limits
 [valid meminst]: https://webassembly.github.io/spec/core/valid/instructions.html#memory-instructions
+[valid tableinst]: https://webassembly.github.io/spec/core/valid/instructions.html#table-instructions
 [valid data]: https://webassembly.github.io/spec/core/valid/modules.html#data-segments
 [exec mem]: https://webassembly.github.io/spec/core/exec/runtime.html#memory-instances
 [exec meminst]: https://webassembly.github.io/spec/core/exec/instructions.html#memory-instructions
