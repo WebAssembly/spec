@@ -267,6 +267,8 @@ namespace WebAssembly {
 
     Promise&lt;Instance> instantiate(
         Module moduleObject, optional object importObject);
+
+    readonly attribute Tag JSTag;
 };
 </pre>
 
@@ -504,6 +506,11 @@ The verification of WebAssembly type requirements is deferred to the
 </div>
 
 Note: A follow-on streaming API is documented in the <a href="https://webassembly.github.io/spec/web-api/index.html">WebAssembly Web API</a>.
+
+The getter of the <dfn attribute for="WebAssembly">JSTag</dfn> attribute of the {{WebAssembly}} Namespace, when invoked, performs the following steps:
+    1. Let |JSTagAddr| be the result of [=get the JavaScript exception tag|getting the JavaScript exception tag=].
+    1. Let |JSTagObject| be the result of [=create a Tag object|creating a Tag object=] from |JSTagAddr|.
+    1. Return |JSTagObject|.
 
 <h3 id="modules">Modules</h3>
 
@@ -1306,6 +1313,9 @@ The <dfn constructor for=Exception
 lt="Exception(exceptionTag, payload, options)">new Exception(|exceptionTag|, |payload|, |options|)</dfn>
 constructor steps are:
 
+1. Let |JSTagAddr| be the result of [=get the JavaScript exception tag|getting the JavaScript exception tag=].
+1. If |exceptionTag|.\[[Address]] is equal to |JSTagAddr|,
+    1. Throw a {{TypeError}}.
 1. Let |store| be the [=surrounding agent=]'s [=associated store=].
 1. Let [|types|] → [] be [=tag_type=](|store|, |exceptionTag|.\[[Address]]).
 1. If |types|'s [=list/size=] is not |payload|'s [=list/size=],
