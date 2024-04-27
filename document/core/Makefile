@@ -98,7 +98,7 @@ GENERATED = appendix/index-instructions.rst
 	(cd `dirname $@`; ./`basename $^`)
 
 .PHONY: macrosok
-macrosok:
+macrosok:	$(GENERATED)
 	sh util/check_macros.sh
 
 .PHONY: pdf
