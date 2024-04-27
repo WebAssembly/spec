@@ -80,7 +80,7 @@ publish-main: clean main bikeshed-keep deploy
 all:	pdf html bikeshed
 
 .PHONY: main
-main:	pdf html
+main:	macrosok pdf html
 
 # Dirty hack to avoid rebuilding the Bikeshed version for every push.
 .PHONY: bikeshed-keep
@@ -96,6 +96,10 @@ GENERATED = appendix/index-instructions.rst
 
 %.rst: %.py
 	(cd `dirname $@`; ./`basename $^`)
+
+.PHONY: macrosok
+macrosok:
+	sh util/check_macros.sh
 
 .PHONY: pdf
 pdf:	$(GENERATED) latexpdf
