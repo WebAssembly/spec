@@ -1612,15 +1612,15 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-\mbox{(number)} & {\mathit{num}} &::=& {\mathit{numtype}}{.}\mathsf{const}~{{\mathit{num}}}_{{\mathit{numtype}}} \\
-\mbox{(vector)} & {\mathit{vec}} &::=& {\mathit{vectype}}{.}\mathsf{const}~{{\mathit{vec}}}_{{\mathit{vectype}}} \\
-\mbox{(address reference)} & {\mathit{addrref}} &::=& \mathsf{ref.i{\scriptstyle31}}~{\mathit{u{\scriptstyle31}}} \\ &&|&
+\mbox{(number value)} & {\mathit{num}} &::=& {\mathit{numtype}}{.}\mathsf{const}~{{\mathit{num}}}_{{\mathit{numtype}}} \\
+\mbox{(vector value)} & {\mathit{vec}} &::=& {\mathit{vectype}}{.}\mathsf{const}~{{\mathit{vec}}}_{{\mathit{vectype}}} \\
+\mbox{(address value)} & {\mathit{addrref}} &::=& \mathsf{ref.i{\scriptstyle31}}~{\mathit{u{\scriptstyle31}}} \\ &&|&
 \mathsf{ref.struct}~{\mathit{structaddr}} \\ &&|&
 \mathsf{ref.array}~{\mathit{arrayaddr}} \\ &&|&
 \mathsf{ref.func}~{\mathit{funcaddr}} \\ &&|&
 \mathsf{ref.host}~{\mathit{hostaddr}} \\ &&|&
 \mathsf{ref.extern}~{\mathit{addrref}} \\
-\mbox{(reference)} & {\mathit{ref}} &::=& {\mathit{addrref}} \\ &&|&
+\mbox{(reference value)} & {\mathit{ref}} &::=& {\mathit{addrref}} \\ &&|&
 \mathsf{ref.null}~{\mathit{heaptype}} \\
 \mbox{(value)} & {\mathit{val}} &::=& {\mathit{num}} ~|~ {\mathit{vec}} ~|~ {\mathit{ref}} \\
 \mbox{(result)} & {\mathit{result}} &::=& {{\mathit{val}}^\ast} ~|~ \mathsf{trap} \\
