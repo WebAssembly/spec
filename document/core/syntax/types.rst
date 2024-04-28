@@ -82,6 +82,7 @@ Conventions
 .. _type-concrete:
 .. _syntax-i31:
 .. _syntax-heaptype:
+.. _syntax-absheaptype:
 
 Heap Types
 ~~~~~~~~~~
@@ -290,11 +291,20 @@ Structures are heterogeneous, but require static indexing, while arrays need to 
    \end{array}
 
 .. _bitwidth-fieldtype:
+.. _aux-unpacktype:
 
 Conventions
 ...........
 
 * The notation :math:`|t|` for :ref:`bit width <bitwidth-valtype>` extends to packed types as well, that is, :math:`|\I8| = 8` and :math:`|\I16| = 16`.
+
+* The auxiliary function :math:`\unpacktype` maps a storage type to the :ref:`value type <syntax-valtype>` obtained when accessing a field:
+
+  .. math::
+     \begin{array}{lll}
+     \unpacktype(\valtype) &=& \valtype \\
+     \unpacktype(\packedtype) &=& \I32 \\
+     \end{array}
 
 
 .. index:: ! composite type, function type, aggreagate type, structure type, array type

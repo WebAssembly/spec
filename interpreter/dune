@@ -1,64 +1,56 @@
 (include_subdirs unqualified)
 
 (library
- (public_name wasm)
- ; The 'wasm' module shall not be part of the library, as it would start the
- ; Wasm REPL every time in all the dependencies.
- ; We exclude the 'wast' module as it is only used for the JS build.
- ; 'smallint' is a separate test module.
- (modules :standard \ main wasm smallint wast)
- (libraries menhirLib))
+  (public_name wasm)
+  (modules :standard \ main wasm wast smallint)
+)
 
 (executable
- (public_name wasm)
- (modules wasm)
- (libraries wasm)
- (flags
-  (-open Wasm)))
+  (public_name wasm)
+  (modules wasm)
+  (libraries wasm)
+  (flags (-open Wasm))
+)
 
 (executable
- (name smallint)
- (modules smallint)
- (libraries wasm)
- (flags
-  (-open Wasm)))
+  (name smallint)
+  (modules smallint)
+  (libraries wasm)
+  (flags (-open Wasm))
+)
 
 (executable
   (name wast)
   (modules wast)
   (modes js)
   (libraries js_of_ocaml wasm)
-  (preprocess (pps js_of_ocaml-ppx)))
+  (preprocess (pps js_of_ocaml-ppx))
+)
+
+(env (_ (flags (-w +a-4-27-42-44-45-70 -warn-error +a-3))))
+
+(subdir text
+  (ocamllex (modules lexer))
+  (menhir (modules parser))
+)
 
 (rule
   (targets wasm.ml)
   (deps main/main.ml)
-  (action (copy main/main.ml wasm.ml)))
-
-(subdir
- text
- (rule
-  (target lexer.ml)
-  (deps lexer.mll)
-  (action
-   (chdir
-    %{workspace_root}
-    (run %{bin:ocamllex} -ml -q -o %{target} %{deps}))))
- (menhir
-  (modules parser)))
-
-(env
- (_
-  (flags
-   (-w +a-4-27-42-44-45-70 -warn-error +a-3))))
+  (action (copy main/main.ml wasm.ml))
+)
 
 (rule
- (alias runtest)
- (deps
-  ./wasm.exe
-  ./smallint.exe
-  (source_tree ../test))
- (action
-  (progn
-   (run ../test/core/run.py --wasm ./wasm.exe)
-   (run ./smallint.exe))))
+  (alias runtest)
+  (deps
+    ./wasm.exe
+    ./smallint.exe
+    (source_tree ../test)
+  )
+  (action
+    (progn
+      (run ../test/core/run.py --wasm ./wasm.exe)
+      (run ./smallint.exe)
+    )
+  )
+)

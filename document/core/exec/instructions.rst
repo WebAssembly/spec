@@ -1776,7 +1776,7 @@ Most other vector instructions are defined in terms of numeric operators that ar
 :math:`\shape\K{.}\SPLAT`
 .........................
 
-1. Let :math:`t` be the type :math:`\unpacked(\shape)`.
+1. Let :math:`t` be the type :math:`\unpackshape(\shape)`.
 
 2. Assert: due to :ref:`validation <valid-vec-splat>`, a value of :ref:`value type <syntax-valtype>` :math:`t` is on the top of the stack.
 
@@ -1791,7 +1791,7 @@ Most other vector instructions are defined in terms of numeric operators that ar
 .. math::
    \begin{array}{lcl@{\qquad}l}
    (t\K{.}\CONST~c_1)~\shape\K{.}\SPLAT &\stepto& (\V128\K{.}\VCONST~c)
-     & (\iff t = \unpacked(\shape)
+     & (\iff t = \unpackshape(\shape)
        \wedge c = \lanes^{-1}_{\shape}(c_1^{\dim(\shape)}))
      \\
    \end{array}
@@ -1810,7 +1810,7 @@ Most other vector instructions are defined in terms of numeric operators that ar
 
 4. Let :math:`i^\ast` be the result of computing :math:`\lanes_{t_1\K{x}N}(c_1)`.
 
-5. Let :math:`t_2` be the type :math:`\unpacked(t_1\K{x}N)`.
+5. Let :math:`t_2` be the type :math:`\unpackshape(t_1\K{x}N)`.
 
 6. Let :math:`c_2` be the result of computing :math:`\extend^{sx^?}_{t_1,t_2}(i^\ast[x])`.
 
@@ -1823,7 +1823,7 @@ Most other vector instructions are defined in terms of numeric operators that ar
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & t_2 = \unpacked(t_1\K{x}N) \\
+      (\iff & t_2 = \unpackshape(t_1\K{x}N) \\
        \wedge & c_2 = \extend^{sx^?}_{t_1,t_2}(\lanes_{t_1\K{x}N}(c_1)[x]))
      \end{array}
    \end{array}
@@ -1836,7 +1836,7 @@ Most other vector instructions are defined in terms of numeric operators that ar
 
 1. Assert: due to :ref:`validation <valid-vec-replace_lane>`, :math:`x < \dim(\shape)`.
 
-2. Let :math:`t_2` be the type :math:`\unpacked(\shape)`.
+2. Let :math:`t_2` be the type :math:`\unpackshape(\shape)`.
 
 3. Assert: due to :ref:`validation <valid-vec-replace_lane>`, a value of :ref:`value type <syntax-valtype>` :math:`t_1` is on the top of the stack.
 
@@ -1880,7 +1880,7 @@ Most other vector instructions are defined in terms of numeric operators that ar
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~\V128\K{.}\vunop &\stepto& (\V128\K{.}\VCONST~c)
+   (\V128\K{.}\VCONST~c_1)~\shape\K{.}\vunop &\stepto& (\V128\K{.}\VCONST~c)
      & (\iff c = \vunop_{\shape}(c_1))
    \end{array}
 

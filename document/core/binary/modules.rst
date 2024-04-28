@@ -105,6 +105,9 @@ Id  Section
 12  :ref:`data count section <binary-datacountsec>`
 ==  ===============================================
 
+.. note::
+   Section ids do not always correspond to the :ref:`order of sections <binary-module>` in the encoding of a module.
+
 
 .. index:: ! custom section
    pair: binary format; custom section

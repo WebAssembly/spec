@@ -806,7 +806,7 @@ External Reference Instructions
    single: abstract syntax; instruction
 
 .. _valid-instr-vec:
-.. _aux-unpacked:
+.. _aux-unpackshape:
 
 Vector Instructions
 ~~~~~~~~~~~~~~~~~~~
@@ -815,9 +815,7 @@ Vector instructions can have a prefix to describe the :ref:`shape <syntax-vec-sh
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \unpacked(\K{i8x16}) &=& \I32 \\
-   \unpacked(\K{i16x8}) &=& \I32 \\
-   \unpacked(t\K{x}N) &=& t
+   \unpackshape(t\K{x}N) &=& \unpacktype(t)
    \end{array}
 
 
@@ -937,14 +935,14 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
 :math:`\shape\K{.}\SPLAT`
 .........................
 
-* Let :math:`t` be :math:`\unpacked(\shape)`.
+* Let :math:`t` be :math:`\unpackshape(\shape)`.
 
 * The instruction is valid with type :math:`[t] \to [\V128]`.
 
 .. math::
    \frac{
    }{
-     C \vdashinstr \shape\K{.}\SPLAT : [\unpacked(\shape)] \to [\V128]
+     C \vdashinstr \shape\K{.}\SPLAT : [\unpackshape(\shape)] \to [\V128]
    }
 
 
@@ -955,13 +953,13 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
 
 * The lane index :math:`\laneidx` must be smaller than :math:`\dim(\shape)`.
 
-* The instruction is valid with type :math:`[\V128] \to [\unpacked(\shape)]`.
+* The instruction is valid with type :math:`[\V128] \to [\unpackshape(\shape)]`.
 
 .. math::
    \frac{
      \laneidx < \dim(\shape)
    }{
-     C \vdashinstr t\K{x}N\K{.}\EXTRACTLANE\K{\_}\sx^?~\laneidx : [\V128] \to [\unpacked(\shape)]
+     C \vdashinstr \shape\K{.}\EXTRACTLANE\K{\_}\sx^?~\laneidx : [\V128] \to [\unpackshape(\shape)]
    }
 
 
@@ -972,7 +970,7 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
 
 * The lane index :math:`\laneidx` must be smaller than :math:`\dim(\shape)`.
 
-* Let :math:`t` be :math:`\unpacked(\shape)`.
+* Let :math:`t` be :math:`\unpackshape(\shape)`.
 
 * The instruction is valid with type :math:`[\V128~t] \to [\V128]`.
 
@@ -980,7 +978,7 @@ The following auxiliary function denotes the number of lanes in a vector shape, 
    \frac{
      \laneidx < \dim(\shape)
    }{
-     C \vdashinstr \shape\K{.}\REPLACELANE~\laneidx : [\V128~\unpacked(\shape)] \to [\V128]
+     C \vdashinstr \shape\K{.}\REPLACELANE~\laneidx : [\V128~\unpackshape(\shape)] \to [\V128]
    }
 
 
