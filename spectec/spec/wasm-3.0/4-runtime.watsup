@@ -41,7 +41,7 @@ syntax addrref hint(desc "address value") =
   | REF.FUNC_ADDR funcaddr               hint(show REF.FUNC %)
   | REF.HOST_ADDR hostaddr               hint(show REF.HOST %)
   | REF.EXTERN addrref
-syntax ref hint(desc "reference value") =
+syntax ref hint(desc "reference value") hint(macro "reff") =
   | addrref
   | REF.NULL heaptype
 syntax val hint(desc "value") =
@@ -161,8 +161,3 @@ syntax admininstr hint(show instr) hint(desc "administrative instruction") =
   | LABEL_ n `{instr*} admininstr* hint(show LABEL_%#% %%)
   | FRAME_ n `{frame} admininstr*  hint(show FRAME_%#% %%)
   | TRAP
-
-syntax E hint(desc "evaluation context") =
-  | _HOLE `[ _ ]
-  | _SEQ val* E instr*
-  | LABEL_ n `{instr*} E

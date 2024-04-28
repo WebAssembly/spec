@@ -712,7 +712,7 @@ rule Instr_ok/cvtop-reinterpret:
 
 rule Instr_ok/cvtop-convert:
   C |- CVTOP nt_1 nt_2 CONVERT sx? : nt_2 -> nt_1
-  -- if sx? = eps <=> nt_1 = inn_1 /\ nt_2 = inn_2 /\ $size(nt_1) > $size(nt_2) \/ nt_1 = fnn_1 /\ nt_2 = fnn_2
+  -- if sx? = eps <=> nt_1 = Inn_1 /\ nt_2 = Inn_2 /\ $size(nt_1) > $size(nt_2) \/ nt_1 = Fnn_1 /\ nt_2 = Fnn_2
 
 
 ;; Reference instructions
@@ -895,15 +895,15 @@ rule Instr_ok/vshuffle:
   -- (if $(i < 2*$dim(sh)))*
 
 rule Instr_ok/vsplat:
-  C |- VSPLAT sh : $shunpack(sh) -> V128
+  C |- VSPLAT sh : $unpackshape(sh) -> V128
 
 ;; TODO: This rule (or the abstract syntax) is too liberal, since some combinations are illegal
 rule Instr_ok/vextract_lane:
-  C |- VEXTRACT_LANE sh sx? i : V128 -> $shunpack(sh)
+  C |- VEXTRACT_LANE sh sx? i : V128 -> $unpackshape(sh)
   -- if i < $dim(sh)
 
 rule Instr_ok/vreplace_lane:
-  C |- VREPLACE_LANE sh i : V128 $shunpack(sh) -> V128
+  C |- VREPLACE_LANE sh i : V128 $unpackshape(sh) -> V128
   -- if i < $dim(sh)
 
 rule Instr_ok/vextunop:
@@ -918,7 +918,7 @@ rule Instr_ok/vnarrow:
 ;; TODO: move constraint to syntax
 rule Instr_ok/vcvtop:
   C |- VCVTOP sh_1 sh_2 vcvtop hf? sx? zero? : V128 -> V128
-  -- if sx? = eps <=> $lanetype(sh_1) = imm_1 /\ $lanetype(sh_2) = imm_2 /\ $lsize(imm_1) > $lsize(imm_2) \/ $lanetype(sh_1) = fnn_1 /\ $lanetype(sh_2) = fnn_2
+  -- if sx? = eps <=> $lanetype(sh_1) = imm_1 /\ $lanetype(sh_2) = imm_2 /\ $lsize(imm_1) > $lsize(imm_2) \/ $lanetype(sh_1) = Fnn_1 /\ $lanetype(sh_2) = Fnn_2
 
 
 ;; Local instructions
@@ -1015,49 +1015,49 @@ rule Instr_ok/data.drop:
   -- if C.DATAS[x] = OK
 
 rule Instr_ok/load:
-  C |- LOAD nt (n _ sx)? x memop : I32 -> nt
+  C |- LOAD nt (n _ sx)? x memarg : I32 -> nt
   -- if C.MEMS[x] = mt
-  -- if $(2^(memop.ALIGN) <= $size(nt)/8)
-  -- if $(2^(memop.ALIGN) <= n/8 < $size(nt)/8)?
-  -- if n? = eps \/ nt = inn
+  -- if $(2^(memarg.ALIGN) <= $size(nt)/8)
+  -- if $(2^(memarg.ALIGN) <= n/8 < $size(nt)/8)?
+  -- if n? = eps \/ nt = Inn
 
 rule Instr_ok/store:
-  C |- STORE nt n? x memop : I32 nt -> eps
+  C |- STORE nt n? x memarg : I32 nt -> eps
   -- if C.MEMS[x] = mt
-  -- if $(2^(memop.ALIGN) <= $size(nt)/8)
-  -- if $(2^(memop.ALIGN) <= n/8 < $size(nt)/8)?
-  -- if n? = eps \/ nt = inn
+  -- if $(2^(memarg.ALIGN) <= $size(nt)/8)
+  -- if $(2^(memarg.ALIGN) <= n/8 < $size(nt)/8)?
+  -- if n? = eps \/ nt = Inn
 
 rule Instr_ok/vload:
-  C |- VLOAD (SHAPE M X N sx) x memop : I32 -> V128
+  C |- VLOAD (SHAPE M X N sx) x memarg : I32 -> V128
   -- if C.MEMS[x] = mt
-  -- if $(2^(memop.ALIGN) <= M/8 * N)
+  -- if $(2^(memarg.ALIGN) <= M/8 * N)
 
 rule Instr_ok/vload-splat:
-  C |- VLOAD (SPLAT n) x memop : I32 -> V128
+  C |- VLOAD (SPLAT n) x memarg : I32 -> V128
   -- if C.MEMS[x] = mt
-  -- if $(2^(memop.ALIGN) <= n/8)
+  -- if $(2^(memarg.ALIGN) <= n/8)
 
 rule Instr_ok/vload-zero:
-  C |- VLOAD (ZERO n) x memop : I32 -> V128
+  C |- VLOAD (ZERO n) x memarg : I32 -> V128
   -- if C.MEMS[x] = mt
-  -- if $(2^(memop.ALIGN) < n/8)
+  -- if $(2^(memarg.ALIGN) < n/8)
 
 rule Instr_ok/vload_lane:
-  C |- VLOAD_LANE n x memop laneidx : I32 V128 -> V128
+  C |- VLOAD_LANE n x memarg laneidx : I32 V128 -> V128
   -- if C.MEMS[x] = mt
-  -- if $(2^(memop.ALIGN) < n/8)
+  -- if $(2^(memarg.ALIGN) < n/8)
   -- if $(laneidx < 128 / n)
 
 rule Instr_ok/vstore:
-  C |- VSTORE x memop : I32 V128 -> eps
+  C |- VSTORE x memarg : I32 V128 -> eps
   -- if C.MEMS[x] = mt
-  -- if $(2^(memop.ALIGN) <= $vsize(V128)/8)
+  -- if $(2^(memarg.ALIGN) <= $vsize(V128)/8)
 
 rule Instr_ok/vstore_lane:
-  C |- VSTORE_LANE n x memop laneidx : I32 V128 -> eps
+  C |- VSTORE_LANE n x memarg laneidx : I32 V128 -> eps
   -- if C.MEMS[x] = mt
-  -- if $(2^(memop.ALIGN) < n/8)
+  -- if $(2^(memarg.ALIGN) < n/8)
   -- if $(laneidx < 128 / n)
 
 
@@ -1119,9 +1119,9 @@ def $in_binop(nt, binop, epsilon) = false
 def $in_binop(nt, binop, (ibinop_1) ibinop'*) = binop = ibinop_1 \/ $in_binop(nt, binop, ibinop'*)
 
 rule Instr_const/binop:
-  C |- (BINOP inn binop) CONST
-  -- if $in_numtype(inn, I32 I64)
-  -- if $in_binop(inn, binop, ADD SUB MUL)
+  C |- (BINOP Inn binop) CONST
+  -- if $in_numtype(Inn, I32 I64)
+  -- if $in_binop(Inn, binop, ADD SUB MUL)
 
 
 rule Expr_const: C |- instr* CONST

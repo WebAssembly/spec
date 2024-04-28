@@ -244,7 +244,7 @@ $${rule: Comptype_ok/array}
    single: abstract syntax; value type
 .. _valid-fieldtype:
 .. _valid-storagetype:
-.. _valid-packedtype:
+.. _valid-packtype:
 
 Field Types
 ~~~~~~~~~~~
@@ -259,8 +259,8 @@ Field Types
 $${rule: Fieldtype_ok}
 
 
-:math:`\packedtype`
-...................
+:math:`\packtype`
+.................
 
 * The packed type is valid.
 

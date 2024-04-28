@@ -27,7 +27,7 @@ def $size(F32) = 32
 def $size(F64) = 64
 def $size(V128) = 128
 
-def $isize(inn) = $size(inn)
+def $isize(Inn) = $size(Inn)
 
 def $psize(I8) = 8
 def $psize(I16) = 16
@@ -46,16 +46,16 @@ def $unpack(packtype) = I32
 ;; Shapes
 
 ;;def $lanetype(shape) : lanetype
-def $lanetype(lnn X N) = lnn
+def $lanetype(Lnn X N) = Lnn
 
 ;;def $dim(shape) : nat
-def $dim(lnn X N) = N
+def $dim(Lnn X N) = N
 
 ;;def $shsize(shape) : nat
-def $shsize(lnn X N) = $($lsize(lnn) * N)
+def $shsize(Lnn X N) = $($lsize(Lnn) * N)
 
 def $shunpack(shape) : numtype  hint(show $unpack(%))
-def $shunpack(lnn X N) = $unpack(lnn)
+def $shunpack(Lnn X N) = $unpack(Lnn)
 
 
 ;; Projections
@@ -116,5 +116,5 @@ def $free_dataidx_funcs(func func'*) = $free_dataidx_func(func) $free_dataidx_fu
 
 ;; Shorthands for Instructions
 
-def $memop0 : memop  hint(show )
-def $memop0 = {ALIGN 0, OFFSET 0}
+def $memarg0 : memarg  hint(show )
+def $memarg0 = {ALIGN 0, OFFSET 0}

@@ -50,8 +50,8 @@ Similarly, :ref:`defined types <syntax-deftype>` :code:`def_type` can be represe
 
 .. code-block:: pseudo
 
-   type packed_type = I8 | I16
-   type field_type = Field(val : val_type | packed_type, mut : bool)
+   type pack_type = I8 | I16
+   type field_type = Field(val : val_type | pack_type, mut : bool)
 
    type struct_type = Struct(fields : list(field_type))
    type array_type = Array(fields : field_type)

@@ -161,7 +161,7 @@ Function Types
 .. _binary-arraytype:
 .. _binary-fieldtype:
 .. _binary-storagetype:
-.. _binary-packedtype:
+.. _binary-packtype:
 
 Aggregate Types
 ~~~~~~~~~~~~~~~
@@ -182,9 +182,9 @@ Aggregate Types
    \production{storage type} & \Bstoragetype &::=&
      t{:}\Bvaltype
        &\Rightarrow& t \\ &&|&
-     t{:}\Bpackedtype
+     t{:}\Bpacktype
        &\Rightarrow& t \\
-   \production{packed type} & \Bpackedtype &::=&
+   \production{packed type} & \Bpacktype &::=&
      \hex{78}
        &\Rightarrow& \I8 \\ &&|&
      \hex{77}

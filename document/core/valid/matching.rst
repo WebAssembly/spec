@@ -369,7 +369,7 @@ A :ref:`composite type <syntax-comptype>` :math:`\comptype_1` matches a type :ma
 .. index:: field type, storage type, value type, packed type, mutability
 .. _match-fieldtype:
 .. _match-storagetype:
-.. _match-packedtype:
+.. _match-packtype:
 
 Field Types
 ~~~~~~~~~~~
@@ -404,17 +404,17 @@ A :ref:`storage type <syntax-storagetype>` :math:`\storagetype_1` matches a type
 
 * Either :math:`\storagetype_1` is a :ref:`value type <syntax-valtype>` :math:`\valtype_1` and :math:`\storagetype_2` is a :ref:`value type <syntax-valtype>` :math:`\valtype_2` and :math:`\valtype_1` :ref:`matches <match-valtype>` :math:`\valtype_2`.
 
-* Or :math:`\storagetype_1` is a :ref:`packed type <syntax-packedtype>` :math:`\packedtype_1` and :math:`\storagetype_2` is a :ref:`packed type <syntax-packedtype>` :math:`\packedtype_2` and :math:`\packedtype_1` :ref:`matches <match-packedtype>` :math:`\packedtype_2`.
+* Or :math:`\storagetype_1` is a :ref:`packed type <syntax-packtype>` :math:`\packtype_1` and :math:`\storagetype_2` is a :ref:`packed type <syntax-packtype>` :math:`\packtype_2` and :math:`\packtype_1` :ref:`matches <match-packtype>` :math:`\packtype_2`.
 
-A :ref:`packed type <syntax-packedtype>` :math:`\packedtype_1` matches a type :math:`\packedtype_2` if and only if:
+A :ref:`packed type <syntax-packtype>` :math:`\packtype_1` matches a type :math:`\packtype_2` if and only if:
 
-* The :ref:`packed type <syntax-packedtype>` :math:`\packedtype_1` is the same as :math:`\packedtype_2`.
+* The :ref:`packed type <syntax-packtype>` :math:`\packtype_1` is the same as :math:`\packtype_2`.
 
 .. math::
    ~\\[-1ex]
    \frac{
    }{
-     C \vdashpackedtypematch \packedtype \matchespackedtype \packedtype
+     C \vdashpacktypematch \packtype \matchespacktype \packtype
    }
 
 

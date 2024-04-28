@@ -171,7 +171,7 @@ Multiple anonymous parameters or results may be combined into a single declarati
 .. _text-arraytype:
 .. _text-fieldtype:
 .. _text-storagetype:
-.. _text-packedtype:
+.. _text-packtype:
 
 Aggregate Types
 ~~~~~~~~~~~~~~~
@@ -195,9 +195,9 @@ Aggregate Types
    \production{storage type} & \Tstoragetype_I &::=&
      t{:}\Tvaltype_I
        &\Rightarrow& t \\ &&|&
-     t{:}\Tpackedtype
+     t{:}\Tpacktype
        &\Rightarrow& t \\
-   \production{packed type} & \Tpackedtype &::=&
+   \production{packed type} & \Tpacktype &::=&
      \text{i8}
        &\Rightarrow& \I8 \\ &&|&
      \text{i16}

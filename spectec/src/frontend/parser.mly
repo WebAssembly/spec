@@ -25,7 +25,7 @@ let positions_to_region position1 position2 =
 let at (l, r) = positions_to_region l r
 
 let ($) it pos = it $ at pos
-let ($$) it pos = it $$ at pos % ref ""
+let ($$) it pos = it $$ at pos % Il.Atom.info ""
 
 
 (* Conversions *)
@@ -221,7 +221,7 @@ defid : id { $1 $ $sloc } | IF { "if" $ $sloc }
 relid : id { $1 $ $sloc }
 gramid : id { $1 $ $sloc }
 hintid : id { $1 }
-fieldid : atomid_ { Il.Atom.Atom $1 $$ $sloc }
+fieldid : atomid_ { Il.Atom.Atom $1 $$ $sloc } | atom_escape { $1 $$ $sloc }
 dotid : DOTID { Il.Atom.Atom $1 $$ $sloc }
 
 atomid_lparen : UPID_LPAREN { $1 }
@@ -244,6 +244,8 @@ atom :
   | atom_ { $1 $$ $sloc }
 atom_ :
   | atomid { Il.Atom.Atom $1 }
+  | atom_escape { $1 }
+atom_escape :
   | TICK EQ { Il.Atom.Equal }
   | TICK QUEST { Il.Atom.Quest }
   | TICK PLUS { Il.Atom.Plus }

@@ -118,13 +118,13 @@ $${definition-prose: growtable}
 
 $${definition: growtable}
 
-.. _def-growmemory:
+.. _def-growmem:
 
-$${definition-prose: growmemory}
+$${definition-prose: growmem}
 
 \
 
-$${definition: growmemory}
+$${definition: growmem}
 
 .. _def-instexport:
 

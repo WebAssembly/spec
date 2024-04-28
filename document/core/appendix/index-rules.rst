@@ -18,7 +18,7 @@ Construct                                        Judgement
 :ref:`Heap type <valid-heaptype>`                :math:`C \vdashheaptype \heaptype \ok`
 :ref:`Reference type <valid-reftype>`            :math:`C \vdashreftype \reftype \ok`
 :ref:`Value type <valid-valtype>`                :math:`C \vdashvaltype \valtype \ok`
-:ref:`Packed type <valid-packedtype>`            :math:`C \vdashpackedtype \packedtype \ok`
+:ref:`Packed type <valid-packtype>`              :math:`C \vdashpacktype \packtype \ok`
 :ref:`Storage type <valid-storagetype>`          :math:`C \vdashstoragetype \storagetype \ok`
 :ref:`Field type <valid-fieldtype>`              :math:`C \vdashfieldtype \fieldtype \ok`
 :ref:`Result type <valid-resulttype>`            :math:`C \vdashresulttype \resulttype \ok`
@@ -77,7 +77,7 @@ Construct                                        Judgement
 ===============================================  ===============================================================================
 :ref:`Value <valid-val>`                         :math:`S \vdashval \val : \valtype`
 :ref:`Result <valid-result>`                     :math:`S \vdashresult \result : \resulttype`
-:ref:`Packed value <valid-packedval>`            :math:`S \vdashpackedval \packedval : \packedtype`
+:ref:`Packed value <valid-packval>`              :math:`S \vdashpackval \packval : \packtype`
 :ref:`Field value <valid-fieldval>`              :math:`S \vdashfieldval \fieldval : \storagetype`
 :ref:`External value <valid-externval>`          :math:`S \vdashexternval \externval : \externtype`
 :ref:`Function instance <valid-funcinst>`        :math:`S \vdashfuncinst \funcinst : \functype`
@@ -119,7 +119,7 @@ Construct                                        Judgement
 :ref:`Heap type <match-heaptype>`                :math:`C \vdashheaptypematch \heaptype_1 \matchesheaptype \heaptype_2`
 :ref:`Reference type <match-reftype>`            :math:`C \vdashreftypematch \reftype_1 \matchesreftype \reftype_2`
 :ref:`Value type <match-valtype>`                :math:`C \vdashvaltypematch \valtype_1 \matchesvaltype \valtype_2`
-:ref:`Packed type <match-packedtype>`            :math:`C \vdashpackedtypematch \packedtype_1 \matchespackedtype \packedtype_2`
+:ref:`Packed type <match-packtype>`              :math:`C \vdashpacktypematch \packtype_1 \matchespacktype \packtype_2`
 :ref:`Storage type <match-storagetype>`          :math:`C \vdashstoragetypematch \storagetype_1 \matchesstoragetype \storagetype_2`
 :ref:`Field type <match-fieldtype>`              :math:`C \vdashfieldtypematch \fieldtype_1 \matchesfieldtype \fieldtype_2`
 :ref:`Result type <match-resulttype>`            :math:`C \vdashresulttypematch \resulttype_1 \matchesresulttype \resulttype_2`

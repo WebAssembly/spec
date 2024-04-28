@@ -312,7 +312,7 @@ Aggregate Reference Instructions
 
   - Let :math:`\fieldtype_i` be :math:`\mut~\storagetype_i`.
 
-  - Let :math:`t_i` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\storagetype_i)`.
+  - Let :math:`t_i` be the :ref:`value type <syntax-valtype>` :math:`\unpack(\storagetype_i)`.
 
 * Let :math:`t^\ast` be the concatenation of all :math:`t_i`.
 
@@ -334,7 +334,7 @@ $${rule: Instr_ok/struct.new}
 
   - Let :math:`\fieldtype_i` be :math:`\mut~\storagetype_i`.
 
-  - Let :math:`t_i` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\storagetype_i)`.
+  - Let :math:`t_i` be the :ref:`value type <syntax-valtype>` :math:`\unpack(\storagetype_i)`.
 
   - The type :math:`t_i` must be defaultable.
 
@@ -358,9 +358,9 @@ $${rule: Instr_ok/struct.new_default}
 
 * Let the :ref:`field type <syntax-fieldtype>` :math:`\mut~\storagetype` be :math:`\fieldtype^\ast[y]`.
 
-* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\storagetype)`.
+* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpack(\storagetype)`.
 
-* The extension :math:`\sx` must be present if and only if :math:`\storagetype` is a :ref:`packed type <syntax-packedtype>`.
+* The extension :math:`\sx` must be present if and only if :math:`\storagetype` is a :ref:`packed type <syntax-packtype>`.
 
 * Then the instruction is valid with type :math:`[(\REF~\NULL~x)] \to [t]`.
 
@@ -380,7 +380,7 @@ $${rule: Instr_ok/struct.get}
 
 * The prefix :math:`\mut` must be :math:`\MVAR`.
 
-* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\storagetype)`.
+* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpack(\storagetype)`.
 
 * Then the instruction is valid with type :math:`[(\REF~\NULL~x)~t] \to []`.
 
@@ -398,7 +398,7 @@ $${rule: Instr_ok/struct.set}
 
 * Let :math:`\fieldtype` be :math:`\mut~\storagetype`.
 
-* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\storagetype)`.
+* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpack(\storagetype)`.
 
 * Then the instruction is valid with type :math:`[t~\I32] \to [(\REF~x)]`.
 
@@ -416,7 +416,7 @@ $${rule: Instr_ok/array.new}
 
 * Let :math:`\fieldtype` be :math:`\mut~\storagetype`.
 
-* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\storagetype)`.
+* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpack(\storagetype)`.
 
 * The type :math:`t` must be defaultable.
 
@@ -436,7 +436,7 @@ $${rule: Instr_ok/array.new_default}
 
 * Let :math:`\fieldtype` be :math:`\mut~\storagetype`.
 
-* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\storagetype)`.
+* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpack(\storagetype)`.
 
 * Then the instruction is valid with type :math:`[t^n] \to [(\REF~x)]`.
 
@@ -478,7 +478,7 @@ $${rule: Instr_ok/array.new_elem}
 
 * Let :math:`\fieldtype` be :math:`\mut~\storagetype`.
 
-* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\storagetype)`.
+* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpack(\storagetype)`.
 
 * The type :math:`t` must be a :ref:`numeric type <syntax-numtype>` or a :ref:`vector type <syntax-vectype>`.
 
@@ -502,9 +502,9 @@ $${rule: Instr_ok/array.new_data}
 
 * Let the :ref:`field type <syntax-fieldtype>` :math:`\mut~\storagetype` be :math:`\fieldtype`.
 
-* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\storagetype)`.
+* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpack(\storagetype)`.
 
-* The extension :math:`\sx` must be present if and only if :math:`\storagetype` is a :ref:`packed type <syntax-packedtype>`.
+* The extension :math:`\sx` must be present if and only if :math:`\storagetype` is a :ref:`packed type <syntax-packtype>`.
 
 * Then the instruction is valid with type :math:`[(\REF~\NULL~x)~\I32] \to [t]`.
 
@@ -524,7 +524,7 @@ $${rule: Instr_ok/array.get}
 
 * The prefix :math:`\mut` must be :math:`\MVAR`.
 
-* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\storagetype)`.
+* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpack(\storagetype)`.
 
 * Then the instruction is valid with type :math:`[(\REF~\NULL~x)~\I32~t] \to []`.
 
@@ -554,7 +554,7 @@ $${rule: Instr_ok/array.len}
 
 * The prefix :math:`\mut` must be :math:`\MVAR`.
 
-* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\storagetype)`.
+* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpack(\storagetype)`.
 
 * Then the instruction is valid with type :math:`[(\REF~\NULL~x)~\I32~t~\I32] \to []`.
 
@@ -626,7 +626,7 @@ $${rule: Instr_ok/array.init_elem}
 
 * The prefix :math:`\mut` must be :math:`\MVAR`.
 
-* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\storagetype)`.
+* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpack(\storagetype)`.
 
 * The :ref:`value type <syntax-valtype>` :math:`t` must be a :ref:`numeric type <syntax-numtype>` or a :ref:`vector type <syntax-vectype>`.
 
@@ -694,18 +694,13 @@ $${rule: Instr_ok/extern.convert_any}
 
 .. _valid-instr-vec:
 .. _aux-unpackshape:
-.. _aux-dim:
 
 Vector Instructions
 ~~~~~~~~~~~~~~~~~~~
 
-Vector instructions can have a prefix to describe the :ref:`shape <syntax-vec-shape>` of the operand. Packed numeric types, ${packtype:I8} and ${packtype:I16}, are not :ref:`value types <syntax-valtype>`. An auxiliary function maps such packed type shapes to value types:
+Vector instructions can have a prefix to describe the :ref:`shape <syntax-shape>` of the operand. Packed numeric types, ${packtype:I8} and ${packtype:I16}, are not :ref:`value types <syntax-valtype>`. An auxiliary function maps such packed type shapes to value types:
 
-$${definition: shunpack}
-
-The following auxiliary function denotes the number of lanes in a vector shape, i.e., its *dimension*:
-
-$${definition: dim}
+$${definition: unpackshape}
 
 
 .. _valid-vconst:
@@ -840,7 +835,7 @@ $${rule: Instr_ok/vswizzle}
 $${rule: Instr_ok/vshuffle}
 
 
-.. _valid-vec-splat:
+.. _valid-vsplat:
 
 :math:`\shape\K{.}\SPLAT`
 .........................
@@ -852,24 +847,26 @@ $${rule: Instr_ok/vshuffle}
 $${rule: Instr_ok/vsplat}
 
 
-.. _valid-vec-extract_lane:
+.. _valid-vextract_lane:
 
 :math:`\shape\K{.}\EXTRACTLANE\K{\_}\sx^?~\laneidx`
 ...................................................
 
-* The lane index :math:`\laneidx` must be smaller than :math:`\dim(\shape)`.
+* The lane index :math:`\laneidx` must be smaller than :math:`\shdim(\shape)`.
 
-* The instruction is valid with type :math:`[\V128] \to [\unpackshape(\shape)]`.
+* Let :math:`t` be :math:`\unpackshape(\shape)`.
+
+* The instruction is valid with type :math:`[\V128] \to [t]`.
 
 $${rule: Instr_ok/vextract_lane}
 
 
-.. _valid-vec-replace_lane:
+.. _valid-vreplace_lane:
 
 :math:`\shape\K{.}\REPLACELANE~\laneidx`
 ........................................
 
-* The lane index :math:`\laneidx` must be smaller than :math:`\dim(\shape)`.
+* The lane index :math:`\laneidx` must be smaller than :math:`\shdim(\shape)`.
 
 * Let :math:`t` be :math:`\unpackshape(\shape)`.
 
@@ -1223,7 +1220,7 @@ $${rule: Instr_ok/store}
    }
 
 
-.. _valid-load-extend:
+.. _valid-vload-ext:
 
 :math:`\K{v128.}\LOAD{N}\K{x}M\_\sx~x~\memarg`
 ..............................................
@@ -1244,7 +1241,7 @@ $${rule: Instr_ok/store}
    }
 
 
-.. _valid-load-splat:
+.. _valid-vload-splat:
 
 :math:`\K{v128.}\LOAD{N}\K{\_splat}~x~\memarg`
 ..............................................
@@ -1265,7 +1262,7 @@ $${rule: Instr_ok/store}
    }
 
 
-.. _valid-load-zero:
+.. _valid-vload-zero:
 
 :math:`\K{v128.}\LOAD{N}\K{\_zero}~x~\memarg`
 .............................................
@@ -1286,7 +1283,7 @@ $${rule: Instr_ok/store}
    }
 
 
-.. _valid-load-lane:
+.. _valid-vload-lane:
 
 :math:`\K{v128.}\LOAD{N}\K{\_lane}~x~\memarg~\laneidx`
 ......................................................
@@ -1311,7 +1308,7 @@ $${rule: Instr_ok/store}
    }
 
 
-.. _valid-store-lane:
+.. _valid-vstore-lane:
 
 :math:`\K{v128.}\STORE{N}\K{\_lane}~x~\memarg~\laneidx`
 .......................................................

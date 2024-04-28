@@ -281,14 +281,6 @@ $${syntax+:
   config
 }
 
-.. _syntax-E:
-.. _exec-runtime-evaluation-contexts:
-
-Evaluation Contexts
-~~~~~~~~~~~~~~~~~~~
-
-$${syntax: E}
-
 .. _exec-runtime-typing:
 
 Typing

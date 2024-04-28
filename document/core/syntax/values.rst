@@ -94,8 +94,8 @@ No distinction is made between signalling and quiet NaNs.
 
 $${syntax: {fN fNmag}}
 
-.. _aux-significand:
-.. _aux-exponent:
+.. _aux-signif:
+.. _aux-expon:
 
 where ${definition: M} and ${definition: E} with
 

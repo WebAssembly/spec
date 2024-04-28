@@ -11,6 +11,7 @@ val config : env -> Config.t
 
 val with_syntax_decoration : bool -> env -> env
 val with_rule_decoration : bool -> env -> env
+val without_macros : bool -> env -> env
 
 
 (* Generators *)

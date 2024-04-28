@@ -314,17 +314,18 @@ let rec parse_group_list env src space1 space2 find : El.Ast.def list list =
   in
   groups @ parse_group_list env src space1 space2 find
 
-type mode = Decorated | Undecorated | Ignored
-
-let try_def_anchor env src r sort space1 space2 find mode : bool =
+let try_def_anchor env src r sort space1 space2 find : bool =
   let b = try_string src (sort ^ ":") in
   if b then
   ( let groups = parse_group_list env src space1 space2 find in
     let defs = List.tl (List.concat_map ((@) [SepD $ no_region]) groups) in
-    if mode <> Ignored then
+    if not (String.ends_with ~suffix:"-ignore" sort) then
+      let decorated = String.ends_with ~suffix:"+" sort in
+      let unmacrofied = String.ends_with ~suffix:"-" sort in
       let env' = env.latex
-        |> Backend_latex.Render.with_syntax_decoration (mode = Decorated)
-        |> Backend_latex.Render.with_rule_decoration (mode = Decorated)
+        |> Backend_latex.Render.without_macros unmacrofied
+        |> Backend_latex.Render.with_syntax_decoration decorated
+        |> Backend_latex.Render.with_rule_decoration decorated
       in
       r := Backend_latex.Render.render_defs env' defs
   );
@@ -359,13 +360,19 @@ let elab_exp src i elaborator env exp typ =
   try_with_error src i (elaborator env.elab exp) typ
 
 let render_exp src i renderer env exp =
-  try_with_error src i renderer env.latex exp
+  try_with_error src i (renderer env) exp
 
 let try_exp_anchor env src r : bool =
   let i0 = src.i in
-  if try_string src ":" then (
+  if try_string src "-:" then (
     let exp = parse_exp src (i0 - 2) in
-    r := Backend_latex.Render.render_exp env.latex exp;
+    let env' = Backend_latex.Render.without_macros true env.latex in
+    r := render_exp src (i0 - 2) Backend_latex.Render.render_exp env' exp;
+    true
+  )
+  else if try_string src ":" then (
+    let exp = parse_exp src (i0 - 2) in
+    r := render_exp src (i0 - 2) Backend_latex.Render.render_exp env.latex exp;
     true
   )
   else
@@ -374,7 +381,7 @@ let try_exp_anchor env src r : bool =
       let i = src.i in
       let exp = parse_exp src (i0 - 2) in
       let _ = elab_exp src i Frontend.Elab.elab_rel env exp id in
-      r := render_exp src i Backend_latex.Render.render_exp env exp;
+      r := render_exp src i Backend_latex.Render.render_exp env.latex exp;
       true
     | Some _ -> advn src (i0 - src.i); false
     | None ->
@@ -383,11 +390,11 @@ let try_exp_anchor env src r : bool =
         let i = src.i in
         let exp = parse_exp src (i0 - 2) in
         let _ = elab_exp src i Frontend.Elab.elab_exp env exp typ in
-        r := render_exp src i Backend_latex.Render.render_exp env exp;
+        r := render_exp src i Backend_latex.Render.render_exp env.latex exp;
         true
       | exception Error.Error _ -> advn src (i0 - src.i); false
 
-let try_prose_anchor env src r sort space1 space2 find mode : bool =
+let try_prose_anchor env src r sort space1 space2 find : bool =
   let b = try_string src (sort ^ ":") in
   if b then (
     parse_space src;
@@ -395,7 +402,7 @@ let try_prose_anchor env src r sort space1 space2 find mode : bool =
     parse_space src;
     if not (try_string src "}") then
       error src "closing bracket `}` expected";
-    if mode <> Ignored then
+    if not (String.ends_with ~suffix:"-ignore" sort) then
       r := Backend_prose.Render.render_def env.prose algo
   );
   b
@@ -411,23 +418,28 @@ let splice_anchor env src splice_pos anchor buf =
   let r = ref "" in
   let prose = ref true in
   ignore (
-    try_prose_anchor env' src r "rule-prose" "prose relation" "rule" find_rule_prose Undecorated ||
-    try_prose_anchor env' src r "definition-prose" "prose definition" "" find_def_prose Undecorated ||
-    try_prose_anchor env' src r "rule-prose-ignore" "prose relation" "rule" find_rule_prose Ignored ||
-    try_prose_anchor env' src r "definition-prose-ignore" "prose definition" "" find_def_prose Ignored ||
+    try_prose_anchor env' src r "rule-prose" "prose relation" "rule" find_rule_prose ||
+    try_prose_anchor env' src r "definition-prose" "prose definition" "" find_def_prose ||
+    try_prose_anchor env' src r "rule-prose-ignore" "prose relation" "rule" find_rule_prose ||
+    try_prose_anchor env' src r "definition-prose-ignore" "prose definition" "" find_def_prose ||
     (prose := false; false) ||
-    try_def_anchor env' src r "syntax" "syntax" "fragment" find_syntax Undecorated ||
-    try_def_anchor env' src r "syntax+" "syntax" "fragment" find_syntax Decorated ||
-    try_def_anchor env' src r "grammar" "grammar" "fragment" find_grammar Undecorated ||
-    try_def_anchor env' src r "relation" "relation" "" find_relation Undecorated ||
-    try_def_anchor env' src r "rule" "relation" "rule" find_rule Undecorated ||
-    try_def_anchor env' src r "rule+" "relation" "rule" find_rule Decorated ||
-    try_def_anchor env' src r "definition" "definition" "" find_def Undecorated ||
-    try_def_anchor env' src r "syntax-ignore" "syntax" "fragment" find_syntax Ignored ||
-    try_def_anchor env' src r "grammar-ignore" "grammar" "fragment" find_grammar Ignored ||
-    try_def_anchor env' src r "relation-ignore" "relation" "" find_relation Ignored ||
-    try_def_anchor env' src r "rule-ignore" "relation" "rule" find_rule Ignored ||
-    try_def_anchor env' src r "definition-ignore" "definition" "" find_def Ignored ||
+    try_def_anchor env' src r "syntax" "syntax" "fragment" find_syntax ||
+    try_def_anchor env' src r "syntax+" "syntax" "fragment" find_syntax ||
+    try_def_anchor env' src r "syntax-" "syntax" "fragment" find_syntax ||
+    try_def_anchor env' src r "grammar" "grammar" "fragment" find_grammar ||
+    try_def_anchor env' src r "grammar-" "grammar" "fragment" find_grammar ||
+    try_def_anchor env' src r "relation" "relation" "" find_relation ||
+    try_def_anchor env' src r "relation-" "relation" "" find_relation ||
+    try_def_anchor env' src r "rule" "relation" "rule" find_rule ||
+    try_def_anchor env' src r "rule+" "relation" "rule" find_rule ||
+    try_def_anchor env' src r "rule-" "relation" "rule" find_rule ||
+    try_def_anchor env' src r "definition" "definition" "" find_def ||
+    try_def_anchor env' src r "definition-" "definition" "" find_def ||
+    try_def_anchor env' src r "syntax-ignore" "syntax" "fragment" find_syntax ||
+    try_def_anchor env' src r "grammar-ignore" "grammar" "fragment" find_grammar ||
+    try_def_anchor env' src r "relation-ignore" "relation" "" find_relation ||
+    try_def_anchor env' src r "rule-ignore" "relation" "rule" find_rule ||
+    try_def_anchor env' src r "definition-ignore" "definition" "" find_def ||
     try_exp_anchor env' src r ||
     error src "unknown anchor sort";
   );

@@ -1,6 +1,10 @@
 open Util.Source
 
-type atom = (atom', string ref) note_phrase
+type info = {mutable def : string; mutable case : string}
+
+let info def = {def; case = ""}
+
+type atom = (atom', info) note_phrase
 and atom' =
   | Atom of string               (* atomid *)
   | Infinity                     (* infinity *)
@@ -106,3 +110,52 @@ let string_of_mixop = function
       )
     in
     "`" ^ s ^ "`"
+
+
+let string_name_of_atom atom =
+  match atom.it with
+  | Atom id -> id
+  | Infinity -> "infinity"
+  | Bot -> "bot"
+  | Top -> "top"
+  | Dot -> "dot"
+  | Dot2 -> "dotdot"
+  | Dot3 -> "dotdotdot"
+  | Semicolon -> "semicolon"
+  | Backslash -> "backslash"
+  | In -> "in"
+  | Arrow -> "arrow"
+  | Arrow2 -> "darrow"
+  | ArrowSub -> "arrowsub"
+  | Arrow2Sub -> "darrowsub"
+  | Colon -> "colon"
+  | Sub -> "sub"
+  | Sup -> "sup"
+  | Assign -> "assign"
+  | Equal -> "eq"
+  | Equiv -> "equiv"
+  | Approx -> "approx"
+  | SqArrow -> "sqarrow"
+  | SqArrowStar -> "sqarrowstar"
+  | Prec -> "prec"
+  | Succ -> "succ"
+  | Tilesturn -> "dashv"
+  | Turnstile -> "vdash"
+  | Quest -> "quest"
+  | Plus -> "plus"
+  | Star -> "ast"
+  | Comma -> "comma"
+  | Comp -> "comp"
+  | Bar -> "bar"
+  | BigComp -> "bigcomp"
+  | BigAnd -> "bigand"
+  | BigOr -> "bigor"
+  | LParen -> "lparen"
+  | LBrack -> "lbrack"
+  | LBrace -> "lbrace"
+  | RParen -> "rparen"
+  | RBrack -> "rbrack"
+  | RBrace -> "rbrace"
+
+let string_name_of_mixop mixop =
+  String.concat "" (List.map string_name_of_atom mixop)

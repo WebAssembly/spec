@@ -30,7 +30,7 @@ syntax num hint(desc "number") =
   | CONST numtype num_(numtype)          hint(show %.CONST %)
 syntax vec hint(desc "vector") =
   | VCONST vectype vec_(vectype)         hint(show %.CONST %)
-syntax ref hint(desc "reference") =
+syntax ref hint(desc "reference") hint(macro "reff") =
   | REF.NULL reftype | REF.FUNC_ADDR funcaddr | REF.HOST_ADDR hostaddr
 syntax val hint(desc "value") =
   | num | vec | ref
@@ -133,8 +133,3 @@ syntax admininstr hint(show instr) hint(desc "administrative instruction") =
   | LABEL_ n `{instr*} admininstr* hint(show LABEL_%#% %%)
   | FRAME_ n `{frame} admininstr*  hint(show FRAME_%#% %%)
   | TRAP
-
-syntax E hint(desc "evaluation context") =
-  | _HOLE `[ _ ]
-  | _SEQ val* E instr*
-  | LABEL_ n `{instr*} E

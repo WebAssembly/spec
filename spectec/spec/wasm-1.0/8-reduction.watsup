@@ -201,37 +201,37 @@ rule Step/global.set:
 ;; Memory instructions
 
 rule Step_read/load-num-trap:
-  z; (CONST I32 i) (LOAD t mo)  ~>  TRAP
-  -- if $(i + mo.OFFSET + $size(t)/8 > |$mem(z, 0).BYTES|)
+  z; (CONST I32 i) (LOAD t ao)  ~>  TRAP
+  -- if $(i + ao.OFFSET + $size(t)/8 > |$mem(z, 0).BYTES|)
 
 rule Step_read/load-num-val:
-  z; (CONST I32 i) (LOAD t mo)  ~>  (CONST t c)
-  -- if $bytes(t, c) = $mem(z, 0).BYTES[i + mo.OFFSET : $size(t)/8]
+  z; (CONST I32 i) (LOAD t ao)  ~>  (CONST t c)
+  -- if $bytes(t, c) = $mem(z, 0).BYTES[i + ao.OFFSET : $size(t)/8]
 
 rule Step_read/load-pack-trap:
-  z; (CONST I32 i) (LOAD inn (n _ sx) mo)  ~>  TRAP
-  -- if $(i + mo.OFFSET + n/8 > |$mem(z, 0).BYTES|)
+  z; (CONST I32 i) (LOAD Inn (n _ sx) ao)  ~>  TRAP
+  -- if $(i + ao.OFFSET + n/8 > |$mem(z, 0).BYTES|)
 
 rule Step_read/load-pack-val:
-  z; (CONST I32 i) (LOAD inn (n _ sx) mo)  ~>  (CONST inn $ext(n, $size(inn), sx, c))
-  -- if $ibytes(n, c) = $mem(z, 0).BYTES[i + mo.OFFSET : n/8]
+  z; (CONST I32 i) (LOAD Inn (n _ sx) ao)  ~>  (CONST Inn $ext(n, $size(Inn), sx, c))
+  -- if $ibytes(n, c) = $mem(z, 0).BYTES[i + ao.OFFSET : n/8]
 
 
 rule Step/store-num-trap:
-  z; (CONST I32 i) (CONST t c) (STORE t mo)  ~>  z; TRAP
-  -- if $(i + mo.OFFSET + $size(t)/8) > |$mem(z, 0).BYTES|
+  z; (CONST I32 i) (CONST t c) (STORE t ao)  ~>  z; TRAP
+  -- if $(i + ao.OFFSET + $size(t)/8) > |$mem(z, 0).BYTES|
 
 rule Step/store-num-val:
-  z; (CONST I32 i) (CONST t c) (STORE t mo)  ~>  $with_mem(z, 0, $(i + mo.OFFSET), $($size(t)/8), b*); eps
+  z; (CONST I32 i) (CONST t c) (STORE t ao)  ~>  $with_mem(z, 0, $(i + ao.OFFSET), $($size(t)/8), b*); eps
   -- if b* = $bytes(t, c)
 
 rule Step/store-pack-trap:
-  z; (CONST I32 i) (CONST inn c) (STORE inn n mo)  ~>  z; TRAP
-  -- if $(i + mo.OFFSET + n/8) > |$mem(z, 0).BYTES|
+  z; (CONST I32 i) (CONST Inn c) (STORE Inn n ao)  ~>  z; TRAP
+  -- if $(i + ao.OFFSET + n/8) > |$mem(z, 0).BYTES|
 
 rule Step/store-pack-val:
-  z; (CONST I32 i) (CONST inn c) (STORE inn n mo)  ~>  $with_mem(z, 0, $(i + mo.OFFSET), $(n/8), b*); eps
-  -- if b* = $ibytes(n, $wrap($size(inn), n, c))
+  z; (CONST I32 i) (CONST Inn c) (STORE Inn n ao)  ~>  $with_mem(z, 0, $(i + ao.OFFSET), $(n/8), b*); eps
+  -- if b* = $ibytes(n, $wrap($size(Inn), n, c))
 
 
 rule Step_read/memory.size:

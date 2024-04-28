@@ -56,7 +56,7 @@ def $size(I64) = 64
 def $size(F32) = 32
 def $size(F64) = 64
 
-def $isize(inn) = $size(inn)
+def $isize(Inn) = $size(Inn)
 
 def $vsize(V128) = 128
 
@@ -77,7 +77,7 @@ def $lunpack(lanetype) : numtype  hint(show $unpack(%))
 def $lunpack(numtype) = numtype
 def $lunpack(packtype) = I32
 
-def $unpack(storagetype) : valtype  hint(show $unpack(%))
+def $unpack(storagetype) : valtype
 def $unpack(valtype) = valtype
 def $unpack(packtype) = I32
 
@@ -100,7 +100,7 @@ def $sx(packtype) = S
 
 ;; Const
 
-def $const(consttype, zval_(consttype)): instr  hint(show %.CONST %)
+def $const(consttype, lit_(consttype)): instr  hint(show %.CONST %)
 def $const(numtype, c) = (CONST numtype c)
 def $const(vectype, c) = (VCONST vectype c)
 
@@ -108,16 +108,16 @@ def $const(vectype, c) = (VCONST vectype c)
 ;; Shapes
 
 ;;def $lanetype(shape) : lanetype
-def $lanetype(lnn X N) = lnn
+def $lanetype(Lnn X N) = Lnn
 
 ;;def $dim(shape) : nat
-def $dim(lnn X N) = N
+def $dim(Lnn X N) = N
 
 ;;def $shsize(shape) : nat
-def $shsize(lnn X N) = $($lsize(lnn) * N)
+def $shsize(Lnn X N) = $($lsize(Lnn) * N)
 
-def $shunpack(shape) : numtype  hint(show $unpack(%))
-def $shunpack(lnn X N) = $lunpack(lnn)
+def $unpackshape(shape) : numtype  hint(show $unpack(%))
+def $unpackshape(Lnn X N) = $lunpack(Lnn)
 
 
 ;; Type difference
@@ -285,5 +285,5 @@ def $memsxt(externtype xt*) = $memsxt(xt*)  -- otherwise
 
 ;; Shorthands for Instructions
 
-def $memop0 : memop  hint(show )
-def $memop0 = {ALIGN 0, OFFSET 0}
+def $memarg0 : memarg  hint(show )
+def $memarg0 = {ALIGN 0, OFFSET 0}

@@ -639,7 +639,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 .. index:: field value, field type, validation, store, packed value, packed type
 .. _valid-fieldval:
-.. _valid-packedval:
+.. _valid-packval:
 
 :ref:`Field Values <syntax-fieldval>` :math:`\fieldval`
 .......................................................
@@ -650,16 +650,16 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
   - Then the field value is valid with :ref:`value type <syntax-valtype>` :math:`t`.
 
-* Else, :math:`\fieldval` is a :ref:`packed value <syntax-packedval>` :math:`\packedval`:
+* Else, :math:`\fieldval` is a :ref:`packed value <syntax-packval>` :math:`\packval`:
 
-  - Let :math:`\packedtype.\PACK~i` be the field value :math:`\fieldval`.
+  - Let :math:`\packtype.\PACK~i` be the field value :math:`\fieldval`.
 
-  - Then the field value is valid with :ref:`packed type <syntax-packedtype>` :math:`\packedtype`.
+  - Then the field value is valid with :ref:`packed type <syntax-packtype>` :math:`\packtype`.
 
 .. math::
    \frac{
    }{
-     S \vdashpackedval \X{pt}.\PACK~i : \X{pt}
+     S \vdashpackval \X{pt}.\PACK~i : \X{pt}
    }
 
 

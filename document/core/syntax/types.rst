@@ -182,6 +182,7 @@ Conventions
    pair: abstract syntax; value type
    pair: value; type
 .. _syntax-valtype:
+.. _syntax-consttype:
 
 Value Types
 ~~~~~~~~~~~
@@ -189,7 +190,7 @@ Value Types
 *Value types* classify the individual values that WebAssembly code can compute with and the values that a variable accepts.
 They are either :ref:`number types <syntax-numtype>`, :ref:`vector types <syntax-vectype>`, or :ref:`reference types <syntax-reftype>`.
 
-$${syntax: valtype/syn}
+$${syntax: {consttype valtype/syn}}
 
 The syntax of value types is :ref:`extended <syntax-valtype-ext>` with additional forms for the purpose of specifying :ref:`validation <valid>`.
 
@@ -239,7 +240,7 @@ $${syntax: functype}
 .. _syntax-arraytype:
 .. _syntax-fieldtype:
 .. _syntax-storagetype:
-.. _syntax-packedtype:
+.. _syntax-packtype:
 
 Aggregate Types
 ~~~~~~~~~~~~~~~
@@ -252,7 +253,7 @@ Structures are heterogeneous, but require static indexing, while arrays need to 
 $${syntax: {structtype arraytype fieldtype storagetype packtype}}
 
 .. _bitwidth-fieldtype:
-.. _aux-unpacktype:
+.. _aux-unpack:
 
 Conventions
 ...........
@@ -261,12 +262,12 @@ Conventions
 
 $${definition-ignore: psize}
 
-* The auxiliary function :math:`\unpacktype` maps a storage type to the :ref:`value type <syntax-valtype>` obtained when accessing a field:
+* The auxiliary function :math:`\unpack` maps a storage type to the :ref:`value type <syntax-valtype>` obtained when accessing a field:
 
   .. math::
      \begin{array}{lll}
-     \unpacktype(\valtype) &=& \valtype \\
-     \unpacktype(\packedtype) &=& \I32 \\
+     \unpack(\valtype) &=& \valtype \\
+     \unpack(\packtype) &=& \I32 \\
      \end{array}
 
 

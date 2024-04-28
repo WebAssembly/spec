@@ -312,11 +312,11 @@ and eval_expr env expr =
       boolV (s = "nul" || s = "ref" || s = "val")
     (* numtype *)
     | CaseV (nt, []) when List.mem nt inn_types ->
-      boolV (s = "inn" || s = "imm" || s = "numtype" || s = "valtype")
+      boolV (s = "Inn" || s = "Jnn" || s = "numtype" || s = "valtype")
     | CaseV (nt, []) when List.mem nt fnn_types ->
-      boolV (s = "fnn" || s = "numtype" || s = "valtype")
+      boolV (s = "Fnn" || s = "numtype" || s = "valtype")
     | CaseV (vt, []) when List.mem vt vnn_types ->
-      boolV (s = "vnn" || s = "vectype" || s = "valtype")
+      boolV (s = "Vnn" || s = "vectype" || s = "valtype")
     (* valtype *)
     | CaseV ("REF", _) ->
       boolV (s = "reftype" || s = "valtype")
@@ -334,7 +334,7 @@ and eval_expr env expr =
       boolV (s = "heaptype" || s = "typevar")
     (* packtype *)
     | CaseV (pt, []) when List.mem pt pnn_types ->
-      boolV (s = "pnn" || s = "imm" || s = "packtype" || s = "storagetype")
+      boolV (s = "Pnn" || s = "Jnn" || s = "packtype" || s = "storagetype")
     | v ->
       fail_expr expr
         (sprintf "%s doesn't have type %s" (string_of_value v) s)

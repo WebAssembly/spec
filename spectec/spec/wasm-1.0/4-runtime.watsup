@@ -108,8 +108,3 @@ syntax admininstr hint(show instr) hint(desc "administrative instruction") =
   | LABEL_ n `{instr*} admininstr* hint(show LABEL_%#% %%)
   | FRAME_ n `{frame} admininstr*  hint(show FRAME_%#% %%)
   | TRAP
-
-syntax E hint(desc "evaluation context") =
-  | _HOLE `[ _ ]
-  | _SEQ val* E instr*
-  | LABEL_ n `{instr*} E

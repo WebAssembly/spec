@@ -43,6 +43,14 @@ struct
 
 end
 
+module Char =
+struct
+  let is_digit_ascii c = '0' <= c && c <= '9'
+  let is_uppercase_ascii c = 'A' <= c && c <= 'Z'
+  let is_lowercase_ascii c = 'a' <= c && c <= 'z'
+  let is_letter_ascii c = is_uppercase_ascii c || is_lowercase_ascii c
+end
+
 module String =
 struct
   include String

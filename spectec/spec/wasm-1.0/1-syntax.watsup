@@ -104,8 +104,8 @@ var l : labelidx
 syntax valtype hint(desc "number type") =
   | I32 | I64 | F32 | F64
 
-syntax inn hint(show I#n) = I32 | I64
-syntax fnn hint(show F#n) = F32 | F64
+syntax Inn hint(show I#n) = I32 | I64
+syntax Fnn hint(show F#n) = F32 | F64
 
 var t : valtype
 
@@ -140,8 +140,8 @@ var xt : externtype
 def $size(valtype) : nat  hint(partial) hint(show |%|)
 
 syntax val_(valtype)
-syntax val_(inn) = iN($size(inn))
-syntax val_(fnn) = fN($size(fnn))
+syntax val_(Inn) = iN($size(Inn))
+syntax val_(Fnn) = fN($size(Fnn))
 
 
 ;; Operators
@@ -149,34 +149,34 @@ syntax val_(fnn) = fN($size(fnn))
 syntax sx hint(desc "signedness") = U | S
 
 syntax unop_(valtype)
-syntax unop_(inn) = CLZ | CTZ | POPCNT
-syntax unop_(fnn) = ABS | NEG | SQRT | CEIL | FLOOR | TRUNC | NEAREST
+syntax unop_(Inn) = CLZ | CTZ | POPCNT
+syntax unop_(Fnn) = ABS | NEG | SQRT | CEIL | FLOOR | TRUNC | NEAREST
 
 syntax binop_(valtype)
-syntax binop_(inn) =
+syntax binop_(Inn) =
   | ADD | SUB | MUL | DIV sx hint(show DIV_#%) | REM sx hint(show REM_#%)
   | AND | OR | XOR | SHL | SHR sx hint(show SHR_#%) | ROTL | ROTR
-syntax binop_(fnn) =
+syntax binop_(Fnn) =
   | ADD | SUB | MUL | DIV | MIN | MAX | COPYSIGN
 
 syntax testop_(valtype)
-syntax testop_(inn) = EQZ
-;; syntax testop_(fnn) = |      ;; uninhabited
+syntax testop_(Inn) = EQZ
+;; syntax testop_(Fnn) = |      ;; uninhabited
 
 syntax relop_(valtype)
-syntax relop_(inn) =
+syntax relop_(Inn) =
   | EQ | NE \
   | LT sx hint(show LT_#%) | GT sx hint(show GT_#%) \
   | LE sx hint(show LE_#%) | GE sx hint(show GE_#%)
-syntax relop_(fnn) =
+syntax relop_(Fnn) =
   | EQ | NE | LT | GT | LE | GE
 
 syntax cvtop = CONVERT | REINTERPRET
 
 
-syntax memop hint(desc "memory operator") = {ALIGN u32, OFFSET u32}
+syntax memarg hint(desc "memory argument") = {ALIGN u32, OFFSET u32}
 
-var mo:memop
+var ao : memarg
 
 
 ;; Instructions
@@ -231,14 +231,13 @@ syntax instr/global hint(desc "global instruction") = ...
   | GLOBAL.SET globalidx
   | ...
 
-syntax packsize hint(desc "pack size") = 8 | 16 | 32
-syntax ww hint(show w) = packsize
+syntax sz hint(desc "pack size") = `8 | `16 | `32 | `64
 
 syntax instr/memory hint(desc "memory instruction") = ...
-  | LOAD valtype (ww _ sx)? memop  hint(show %.LOAD % %)    hint(show %.LOAD#% % %)
-    -- (if valtype = inn /\ ww < $size(inn))?  ;; TODO: take size implicitly
-  | STORE valtype ww? memop        hint(show %.STORE % %)   hint(show %.STORE#% % %)
-    -- (if valtype = inn /\ ww < $size(inn))?  ;; TODO: take size implicitly
+  | LOAD valtype (sz _ sx)? memarg  hint(show %.LOAD % %)    hint(show %.LOAD#% % %)
+    -- (if valtype = Inn /\ sz < $size(Inn))?  ;; TODO: take size implicitly
+  | STORE valtype sz? memarg        hint(show %.STORE % %)   hint(show %.STORE#% % %)
+    -- (if valtype = Inn /\ sz < $size(Inn))?  ;; TODO: take size implicitly
   | MEMORY.SIZE
   | MEMORY.GROW
 

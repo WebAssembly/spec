@@ -12,6 +12,7 @@ Runtime Structure
 .. _syntax-num:
 .. _syntax-vec:
 .. _syntax-ref:
+.. _syntax-addrref:
 .. _syntax-ref.i31num:
 .. _syntax-ref.struct:
 .. _syntax-ref.array:
@@ -470,7 +471,7 @@ It filters out entries of a specific kind in an order-preserving fashion:
    pair: structure; instance
    pair: array; instance
 .. _syntax-fieldval:
-.. _syntax-packedval:
+.. _syntax-packval:
 .. _syntax-structinst:
 .. _syntax-arrayinst:
 .. _syntax-aggrinst:
@@ -489,14 +490,14 @@ Both record their respective :ref:`defined type <syntax-deftype>` and hold a lis
    \production{array instance} & \arrayinst &::=&
      \{ \AITYPE~\deftype, \AIFIELDS~\list(\fieldval) \} \\
    \production{field value} & \fieldval &::=&
-     \val ~|~ \packedval \\
-   \production{packed value} & \packedval &::=&
+     \val ~|~ \packval \\
+   \production{packed value} & \packval &::=&
      \I8PACK~\u8 ~|~ \I16PACK~\u16 \\
    \end{array}
 
 
-.. _aux-packval:
-.. _aux-unpackval:
+.. _aux-packfield:
+.. _aux-unpackfield:
 
 Conventions
 ...........
@@ -505,16 +506,16 @@ Conventions
 
   .. math::
      \begin{array}{@{}lcl}
-     \packval_{\valtype}(\val) &=& \val \\
-     \packval_{\packedtype}(\I32.\CONST~i) &=& \packedtype.\PACK~(\wrap_{32,|\packedtype|}(i))
+     \packfield_{\valtype}(\val) &=& \val \\
+     \packfield_{\packtype}(\I32.\CONST~i) &=& \packtype.\PACK~(\wrap_{32,|\packtype|}(i))
      \end{array}
 
 * The inverse conversion of a :ref:`field value <syntax-fieldval>` to a regular :ref:`value <syntax-val>` is defined as follows:
 
   .. math::
      \begin{array}{@{}lcl}
-     \unpackval_{\valtype}(\val) &=& \val \\
-     \unpackval^{\sx}_{\packedtype}(\packedtype.\PACK~i) &=& \I32.\CONST~(\extend^{\sx}_{|\packedtype|,32}(i))
+     \unpackfield_{\valtype}(\val) &=& \val \\
+     \unpackfield^{\sx}_{\packtype}(\packtype.\PACK~i) &=& \I32.\CONST~(\ext^{\sx}_{|\packtype|,32}(i))
      \end{array}
 
 

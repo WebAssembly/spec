@@ -20,6 +20,13 @@ type rel_sort = TypingRel | ReductionRel
 type env =
   { config : config;
     vars : Set.t ref;
+    macro_typ : exp list Map.t ref;
+    macro_gram : exp list Map.t ref;
+    macro_var : exp list Map.t ref;
+    macro_rel : exp list Map.t ref;
+    macro_def : exp list Map.t ref;
+    macro_case : exp list Map.t ref;
+    macro_field : exp list Map.t ref;
     show_typ : exp list Map.t ref;
     show_gram : exp list Map.t ref;
     show_var : exp list Map.t ref;
@@ -37,6 +44,13 @@ type env =
 let new_env config =
   { config;
     vars = ref Set.empty;
+    macro_typ = ref Map.empty;
+    macro_gram = ref Map.empty;
+    macro_var = ref Map.empty;
+    macro_rel = ref Map.empty;
+    macro_def = ref Map.empty;
+    macro_case = ref Map.empty;
+    macro_field = ref Map.empty;
     show_typ = ref Map.empty;
     show_gram = ref Map.empty;
     show_var = ref Map.empty;
@@ -51,8 +65,18 @@ let new_env config =
     current_rel = "";
   }
 
+let config env : Config.t =
+  env.config
+
+let env_with_config env config : env =
+  {env with config}
+
 let with_syntax_decoration b env = {env with deco_typ = b}
 let with_rule_decoration b env = {env with deco_rule = b}
+let without_macros b env =
+  if not b then env else
+  env_with_config env
+    {env.config with macros_for_atoms = false; macros_for_ids = false}
 
 
 let is_atom_typ t =
@@ -120,34 +144,56 @@ let env_hintdef env hd =
   | TypH (id1, id2, hints) ->
     let id = if id2.it = "" then id1.it else id1.it ^ "/" ^ id2.it in
     env_hints "desc" env.desc_typ id hints;
+    env_hints "macro" env.macro_typ id1.it hints;
+    env_hints "macro" env.macro_var id1.it hints;
     env_hints "show" env.show_typ id1.it hints;
     env_hints "show" env.show_var id1.it hints
   | GramH (id1, id2, hints) ->
     let id = if id2.it = "" then id1.it else id1.it ^ "/" ^ id2.it in
     env_hints "desc" env.desc_gram id hints;
+    env_hints "macro" env.macro_gram id hints;
     env_hints "show" env.show_gram id1.it hints
-  | RelH (id, hints) -> env_hints "show" env.show_rel id.it hints
-  | VarH (id, hints) -> env_hints "show" env.show_var id.it hints
-  | DecH (id, hints) -> env_hints "show" env.show_def id.it hints
+  | RelH (id, hints) ->
+    env_hints "macro" env.macro_rel id.it hints;
+    env_hints "show" env.show_rel id.it hints
+  | VarH (id, hints) ->
+    env_hints "macro" env.macro_var id.it hints;
+    env_hints "show" env.show_var id.it hints
+  | DecH (id, hints) ->
+    env_hints "macro" env.macro_def id.it hints;
+    env_hints "show" env.show_def id.it hints
+
+let env_macro map id =
+  let n = String.length id.it - 1 in
+  let id' = if id.it.[n] = '_' then String.sub id.it 0 n else id.it in
+  map := Map.add id' [TextE id' $ id.at] !map
 
 let env_def env d =
   match d.it with
   | FamD (id, _ps, hints) ->
     env.vars := Set.add id.it !(env.vars);
+    env_macro env.macro_typ id;
+    env_macro env.macro_var id;
     env_hintdef env (TypH (id, "" $ id.at, hints) $ d.at);
     env_hintdef env (VarH (id, hints) $ d.at)
   | TypD (id1, id2, _args, t, hints) ->
     env.vars := Set.add id1.it !(env.vars);
+    env_macro env.macro_typ id1;
+    env_macro env.macro_var id1;
     env_hintdef env (TypH (id1, id2, hints) $ d.at);
     env_hintdef env (VarH (id1, hints) $ d.at);
     env_typ env id1.it t
   | GramD (id1, id2, _ps, _t, _gram, hints) ->
+    env_macro env.macro_gram id1;
     env_hintdef env (GramH (id1, id2, hints) $ d.at)
-  | RelD (id, _t, hints) -> env_hintdef env (RelH (id, hints) $ d.at)
+  | RelD (id, _t, hints) ->
+    env_hintdef env (RelH (id, hints) $ d.at)
   | VarD (id, _t, hints) ->
     env.vars := Set.add id.it !(env.vars);
     env_hintdef env (VarH (id, hints) $ d.at)
-  | DecD (id, _as, _e, hints) -> env_hintdef env (DecH (id, hints) $ d.at)
+  | DecD (id, _as, _e, hints) ->
+    env_macro env.macro_def id;
+    env_hintdef env (DecH (id, hints) $ d.at)
   | RuleD _ | DefD _ | SepD -> ()
   | HintD hd -> env_hintdef env hd
 
@@ -155,12 +201,6 @@ let env config script : env =
   let env = new_env config in
   List.iter (env_def env) script;
   env
-
-let config env : Config.t =
-  env.config
-
-let env_with_config env config : env =
-  {env with config}
 
 
 (* Helpers *)
@@ -378,7 +418,7 @@ let render_expand render env (show : exp list Map.t ref) id args f =
 
 (* Same as render_expand, but with rendered id funnelled as argument 0 *)
 let render_expand_id render_id render_exp env show id args f =
-  let atom = Il.Atom.Atom (" " ^ render_id env id) $$ id.at % (ref "") in
+  let atom = Il.Atom.(Atom (" " ^ render_id env id) $$ id.at % info "") in
   let arg0 = arg_of_exp (AtomE atom $ id.at) in
   render_expand render_exp env show id (arg0::args) f
 
@@ -402,8 +442,8 @@ let render_apply render_id render_exp env show id args =
 
 (* Identifiers *)
 
-let is_digit c = '0' <= c && c <= '9'
-let is_upper c = 'A' <= c && c <= 'Z'
+let is_digit = Lib.Char.is_digit_ascii
+let is_upper = Lib.Char.is_uppercase_ascii
 let lower = String.lowercase_ascii
 
 let rec chop_tick id =
@@ -433,20 +473,27 @@ let id_style = function
   | `Atom -> "\\mathsf"
   | `Token -> "\\mathtt"
 
-let render_id' env style id note =
-  if env.config.macros_for_ids then
-    "\\" ^ id ^ note
-  else
-    id_style style ^ "{" ^ shrink_id id ^ "}"
+let render_id' env style id macro =
+  match macro with
+  | Some s when env.config.macros_for_ids -> "\\" ^ s
+  | _ ->
+(*
+if env.config.macros_for_ids && String.length id > 2 && (style = `Var || style = `Func) then
+Printf.printf "[id w/o macro] %s%s\n%!" (if style = `Func then "$" else "") id;
+*)
+    let id' = shrink_id id in
+    if style = `Var && String.length id' = 1 && Lib.Char.is_letter_ascii id'.[0]
+    then id'
+    else id_style style ^ "{" ^ id' ^ "}"
 
-let rec render_id_sub style show env first at = function
+let rec render_id_sub style show macro env first at = function
   | [] -> ""
-  | ""::ss -> render_id_sub style show env first at ss
+  | ""::ss -> render_id_sub style show macro env first at ss
   | s::ss when style = `Var && not first && is_upper s.[0] && not (Set.mem (chop_tick s) !(env.vars)) ->
-    render_id_sub `Atom show env first at (lower s :: ss)  (* subscripts may be atoms *)
-  | s1::""::ss -> render_id_sub style show env first at (s1::ss)
+    render_id_sub `Atom show macro env first at (lower s :: ss)  (* subscripts may be atoms *)
+  | s1::""::ss -> render_id_sub style show macro env first at (s1::ss)
   | s1::s2::ss when style = `Atom && is_upper s2.[0] ->
-    render_id_sub `Atom show env first at ((s1 ^ "_" ^ lower s2)::ss)
+    render_id_sub `Atom show macro env first at ((s1 ^ "_" ^ lower s2)::ss)
   | s::ss ->
     let rec find_ticks i =
       if i > 0 && s.[i - 1] = '\'' then find_ticks (i - 1) else i
@@ -457,24 +504,37 @@ let rec render_id_sub style show env first at = function
     let s'' =
       if String.for_all is_digit s' then s' else
       render_expand !render_exp_fwd env show
-        (s' $ at) [] (fun () -> render_id' env style s' "")
+        (s' $ at) [] (fun () ->
+          let macro =
+            match Map.find_opt s' !macro with
+            | Some ({it = TextE m; _}::_) -> Some m
+            | _ -> None
+          in render_id' env style s' macro)
     in
-    "{" ^ (if i = n then s'' else s'' ^ String.sub s i (n - i)) ^ "}" ^
-    (if ss = [] then "" else "_{" ^ render_id_sub `Var env.show_var env false at ss ^ "}")
+    let s''' = if i = n then s'' else s'' ^ String.sub s i (n - i) in
+    (if String.length s''' = 1 then s''' else "{" ^ s''' ^ "}") ^
+    match ss with
+    | [] -> ""
+    | [_] -> "_" ^ render_id_sub `Var env.show_var env.macro_var env false at ss
+    | _ -> "_{" ^ render_id_sub `Var env.show_var env.macro_var env false at ss ^ "}"
 
-and render_id style show env id =
-  render_id_sub style show env true id.at (String.split_on_char '_' id.it)
+and render_id style show macro env id =
+  render_id_sub style show macro env true id.at (String.split_on_char '_' id.it)
 
-let render_typid env id = render_id `Var env.show_typ env id
-let render_varid env id = render_id `Var env.show_var env id
-let render_defid env id = render_id `Func (ref Map.empty) env id
-let render_gramid env id = render_id `Token env.show_gram env
+let render_typid env id = render_id `Var env.show_typ env.macro_typ env id
+let render_varid env id = render_id `Var env.show_var env.macro_var env id
+let render_defid env id = render_id `Func (ref Map.empty) env.macro_def env id
+let render_gramid env id = render_id `Token env.show_gram env.macro_gram env
   (* TODO: HACK for now *)
   (let len = String.length id.it in
   if len > 1 && is_upper id.it.[0] then String.sub id.it 1 (len - 1) $ id.at else id)
 
 let render_atomid env id note =
-  render_id' env `Atom (quote_id (lower id)) note
+(*
+if note = "" then Printf.printf "[atom w/o macro] %s\n%!" id;
+*)
+  render_id' env `Atom (quote_id (lower id))
+    (if note = "" then None else Some (id ^ note))
 
 let render_ruleid env id1 id2 =
   let id1' =
@@ -497,62 +557,75 @@ let render_rule_deco env pre id1 id2 post =
 
 let render_atom env atom =
   let macros = env.config.macros_for_atoms in
+(*
+if macros && Il.Atom.string_of_atom atom = "I" then
+Printf.printf "[render I] def=`%s` case=`%s`\n%!" atom.note.Il.Atom.def atom.note.Il.Atom.case;
+*)
   let tid =
     if not macros then
       ""
-    else if !(atom.note) <> "" then
-      !(atom.note)
+    else if atom.note.Il.Atom.case <> "" then
+      atom.note.Il.Atom.case
     else
+      ""
+(*
       error atom.at
         ("cannot infer type of notation `" ^ El.Print.string_of_atom atom ^ "`")
+*)
   in
-  let s =
-    let open Il.Atom in
-    match atom.it with
-    | Atom id when id.[0] = '_' && id <> "_" -> ""
-    (* HACK: inject literal, already rendered stuff *)
-    | Atom id when id.[0] = ' ' -> String.sub id 1 (String.length id - 1)
-    | Atom id -> render_atomid env id tid
-    | Infinity -> "\\infty"
-    | Bot -> "\\bot"
-    | Top -> "\\top"
-    | Dot -> if macros then "\\dot" else "."
-    | Dot2 -> if macros then "\\dotdot" else ".."
-    | Dot3 -> "\\dots"
-    | Semicolon -> if macros then "\\semicolon" else ";"
-    | Backslash -> "\\setminus"
-    | In -> "\\in"
-    | Arrow | ArrowSub -> "\\rightarrow"
-    | Arrow2 | Arrow2Sub -> "\\Rightarrow"
-    | Colon -> if macros then "\\colon" else ":"
-    | Sub -> "\\leq"
-    | Sup -> "\\geq"
-    | Assign -> if macros then "\\assign" else ":="
-    | Equal -> "="
-    | Equiv -> "\\equiv"
-    | Approx -> "\\approx"
-    | SqArrow -> "\\hookrightarrow"
-    | SqArrowStar -> "\\hookrightarrow^\\ast"
-    | Prec -> "\\prec"
-    | Succ -> "\\succ"
-    | Tilesturn -> "\\dashv"
-    | Turnstile -> "\\vdash"
-    | Quest -> if macros then "\\quest" else "{}^?"
-    | Plus -> if macros then "\\plus" else "{}^+"
-    | Star -> if macros then "\\ast" else "{}^\\ast"
-    | Comma -> if macros then "\\comma" else ","
-    | Comp -> if macros then "\\compose" else "\\oplus"
-    | Bar -> "\\mid"
-    | BigComp -> if macros then "\\bigcompose" else "\\bigoplus"
-    | BigAnd -> "\\bigwedge"
-    | BigOr -> "\\bigvee"
-    | LParen -> if macros then "\\lparen" else "("
-    | RParen -> if macros then "\\rparen" else ")"
-    | LBrack -> if macros then "\\lbrack" else "{}["
-    | RBrack -> if macros then "\\rbrack" else "]"
-    | LBrace -> if macros then "\\lbrace" else "\\{"
-    | RBrace -> if macros then "\\rbrace" else "\\}"
-  in s ^ tid
+  let open Il.Atom in
+  match atom.it with
+  | Atom id when id.[0] = '_' && id <> "_" -> ""
+  (* HACK: inject literal, already rendered stuff *)
+  | Atom id when id.[0] = ' ' -> String.sub id 1 (String.length id - 1)
+  | Atom id -> render_atomid env id tid
+  | _ ->
+    let macro, nonmacro_opt =
+      match atom.it with
+      | Atom _ -> assert false
+      | Infinity -> "\\infty", None
+      | Bot -> "\\bot", None
+      | Top -> "\\top", None
+      | Dot -> "\\dot", Some "."
+      | Dot2 -> "\\dotdot", Some ".."
+      | Dot3 -> "\\dots", None
+      | Semicolon -> "\\semicolon", Some ";"
+      | Backslash -> "\\setminus", None
+      | In -> "\\in", None
+      | Arrow | ArrowSub -> "\\rightarrow", None
+      | Arrow2 | Arrow2Sub -> "\\Rightarrow", None
+      | Colon -> "\\colon", Some ":"
+      | Sub -> "\\leq", None
+      | Sup -> "\\geq", None
+      | Assign -> "\\assign", Some ":="
+      | Equal -> "\\equal", Some "="
+      | Equiv -> "\\equiv", None
+      | Approx -> "\\approx", None
+      | SqArrow -> "\\hookrightarrow", None
+      | SqArrowStar -> "\\hookrightarrowast", Some "\\hookrightarrow^\\ast"
+      | Prec -> "\\prec", None
+      | Succ -> "\\succ", None
+      | Tilesturn -> "\\dashv", None
+      | Turnstile -> "\\vdash", None
+      | Quest -> "\\quest", Some "{}^?"
+      | Plus -> "\\plus", Some "{}^+"
+      | Star -> "\\ast", Some "{}^\\ast"
+      | Comma -> "\\comma", Some ","
+      | Comp -> "\\oplus", None
+      | Bar -> "\\mid", None
+      | BigComp -> "\\bigoplus", None
+      | BigAnd -> "\\bigwedge", None
+      | BigOr -> "\\bigvee", None
+      | LParen -> "\\lparen", Some "("
+      | RParen -> "\\rparen", Some ")"
+      | LBrack -> "\\lbrack", Some "{}["
+      | RBrack -> "\\rbrack", Some "]"
+      | LBrace -> "\\lbrace", Some "\\{"
+      | RBrace -> "\\rbrace", Some "\\}"
+    in
+    let nonmacro = Option.value nonmacro_opt ~default:macro in
+    let macros = false in (* TODO *)
+    if macros then macro ^ tid else nonmacro
 
 let render_unop = function
   | NotOp -> "\\neg"
@@ -655,7 +728,7 @@ and render_exp env e =
   | VarE (id, args) ->
     render_apply render_varid render_exp env env.show_typ id args
   | BoolE b ->
-    render_atom env (Il.Atom.Atom (string_of_bool b) $$ e.at % ref "bool")
+    render_atom env (Il.Atom.(Atom (string_of_bool b) $$ e.at % info "bool"))
   | NatE (DecOp, n) -> Z.to_string n
   | NatE (HexOp, n) ->
     let fmt =
@@ -669,7 +742,7 @@ and render_exp env e =
       if n < Z.of_int 0x10000 then "%04X" else
       "%X"
     in "\\mathrm{U{+}" ^ Z.format fmt n ^ "}"
-  | NatE (AtomOp, n) -> render_atomid env (Z.to_string n) "nat"
+  | NatE (AtomOp, n) -> render_atomid (without_macros true env) (Z.to_string n) "nat"
   | TextE t -> "``" ^ t ^ "''"
   | UnE (op, e2) -> "{" ^ render_unop op ^ render_exp env e2 ^ "}"
   | BinE (e1, ExpOp, ({it = ParenE (e2, _); _ } | e2)) ->

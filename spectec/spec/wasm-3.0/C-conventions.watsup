@@ -4,25 +4,18 @@
 
 ;; Syntax notation
 
-syntax A = nat
-syntax B = nat
+syntax A hint(macro none) = nat
+syntax B hint(macro none) = nat
 
-syntax sym = _FIRST A_1 | _DOTS hint(show `...) | _LAST A_n
-syntax symsplit/1 hint(show sym) = _FIRST A_1 | ...
-syntax symsplit/2 hint(show sym) = ... | _LAST A_2
+syntax sym hint(macro none) = _FIRST A_1 | _DOTS hint(show `...) | _LAST A_n
+syntax symsplit/1 hint(show sym) hint(macro none) = _FIRST A_1 | ...
+syntax symsplit/2 hint(show sym) hint(macro none) = ... | _LAST A_2
 
-syntax recorddots hint(show `...) = `...
-syntax record hint(show r) =
+syntax recorddots hint(show !%) = ()
+syntax record hint(show r) hint(macro none) =
   { FIELD_1 A_1 hint(show FIELD_ 1), \
     FIELD_2 A_2 hint(show FIELD_ 2), \
-    DOTS recorddots hint(show !%) }
-
-syntax recordstar hint(show r) =
-  { FIELD_1 A_1* hint(show FIELD_ 1), \
-    FIELD_2 A_2* hint(show FIELD_ 2), \
-    DOTS recorddots hint(show !%) }
-
-syntax recordeq = recordstar `++ recordstar `= recordstar
+    `... recorddots }
 
 syntax pth = PTHSYNTAX hint(show (`[i] `| !%.FIELD)+)
 

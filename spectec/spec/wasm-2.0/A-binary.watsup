@@ -213,33 +213,33 @@ grammar Binstr/table : instr = ...
 
 ;; Memory instructions
 
-grammar Bmemop : memop =
+grammar Bmemarg : memarg =
   | n:Bu32 m:Bu32 => {ALIGN n, OFFSET m}
 
 grammar Binstr/memory : instr = ...
-  | 0x28 mo:Bmemop => LOAD I32 mo
-  | 0x29 mo:Bmemop => LOAD I64 mo
-  | 0x2A mo:Bmemop => LOAD F32 mo
-  | 0x2B mo:Bmemop => LOAD F64 mo
-  | 0x2C mo:Bmemop => LOAD I32 (8 _ S) mo
-  | 0x2D mo:Bmemop => LOAD I32 (8 _ U) mo
-  | 0x2E mo:Bmemop => LOAD I32 (16 _ S) mo
-  | 0x2F mo:Bmemop => LOAD I32 (16 _ U) mo
-  | 0x30 mo:Bmemop => LOAD I64 (8 _ S) mo
-  | 0x31 mo:Bmemop => LOAD I64 (8 _ U) mo
-  | 0x32 mo:Bmemop => LOAD I64 (16 _ S) mo
-  | 0x33 mo:Bmemop => LOAD I64 (16 _ U) mo
-  | 0x34 mo:Bmemop => LOAD I64 (32 _ S) mo
-  | 0x35 mo:Bmemop => LOAD I64 (32 _ U) mo
-  | 0x36 mo:Bmemop => STORE I32 mo
-  | 0x37 mo:Bmemop => STORE I64 mo
-  | 0x38 mo:Bmemop => STORE F32 mo
-  | 0x39 mo:Bmemop => STORE F64 mo
-  | 0x3A mo:Bmemop => STORE I32 8 mo
-  | 0x3B mo:Bmemop => STORE I32 16 mo
-  | 0x3C mo:Bmemop => STORE I64 8 mo
-  | 0x3D mo:Bmemop => STORE I64 16 mo
-  | 0x3E mo:Bmemop => STORE I64 32 mo
+  | 0x28 ao:Bmemarg => LOAD I32 ao
+  | 0x29 ao:Bmemarg => LOAD I64 ao
+  | 0x2A ao:Bmemarg => LOAD F32 ao
+  | 0x2B ao:Bmemarg => LOAD F64 ao
+  | 0x2C ao:Bmemarg => LOAD I32 (8 _ S) ao
+  | 0x2D ao:Bmemarg => LOAD I32 (8 _ U) ao
+  | 0x2E ao:Bmemarg => LOAD I32 (16 _ S) ao
+  | 0x2F ao:Bmemarg => LOAD I32 (16 _ U) ao
+  | 0x30 ao:Bmemarg => LOAD I64 (8 _ S) ao
+  | 0x31 ao:Bmemarg => LOAD I64 (8 _ U) ao
+  | 0x32 ao:Bmemarg => LOAD I64 (16 _ S) ao
+  | 0x33 ao:Bmemarg => LOAD I64 (16 _ U) ao
+  | 0x34 ao:Bmemarg => LOAD I64 (32 _ S) ao
+  | 0x35 ao:Bmemarg => LOAD I64 (32 _ U) ao
+  | 0x36 ao:Bmemarg => STORE I32 ao
+  | 0x37 ao:Bmemarg => STORE I64 ao
+  | 0x38 ao:Bmemarg => STORE F32 ao
+  | 0x39 ao:Bmemarg => STORE F64 ao
+  | 0x3A ao:Bmemarg => STORE I32 8 ao
+  | 0x3B ao:Bmemarg => STORE I32 16 ao
+  | 0x3C ao:Bmemarg => STORE I64 8 ao
+  | 0x3D ao:Bmemarg => STORE I64 16 ao
+  | 0x3E ao:Bmemarg => STORE I64 32 ao
   | 0x3F 0x00 => MEMORY.SIZE
   | 0x40 0x00 => MEMORY.GROW
   | 0xFC 8:Bu32 x:Bdataidx 0x00 => MEMORY.INIT x
@@ -443,28 +443,28 @@ grammar Blaneidx : laneidx =
   | l:Bbyte => l
 
 grammar Binstr/vector-memory : instr = ...
-  | 0xFD 0:Bu32 mo:Bmemop => VLOAD mo
-  | 0xFD 1:Bu32 mo:Bmemop => VLOAD (SHAPE 8 X 8 S) mo
-  | 0xFD 2:Bu32 mo:Bmemop => VLOAD (SHAPE 8 X 8 U) mo
-  | 0xFD 3:Bu32 mo:Bmemop => VLOAD (SHAPE 16 X 4 S) mo
-  | 0xFD 4:Bu32 mo:Bmemop => VLOAD (SHAPE 16 X 4 U) mo
-  | 0xFD 5:Bu32 mo:Bmemop => VLOAD (SHAPE 32 X 2 S) mo
-  | 0xFD 6:Bu32 mo:Bmemop => VLOAD (SHAPE 32 X 2 U) mo
-  | 0xFD 7:Bu32 mo:Bmemop => VLOAD (SPLAT 8) mo
-  | 0xFD 8:Bu32 mo:Bmemop => VLOAD (SPLAT 16) mo
-  | 0xFD 9:Bu32 mo:Bmemop => VLOAD (SPLAT 32) mo
-  | 0xFD 10:Bu32 mo:Bmemop => VLOAD (SPLAT 64) mo
-  | 0xFD 92:Bu32 mo:Bmemop => VLOAD (ZERO 32) mo
-  | 0xFD 92:Bu32 mo:Bmemop => VLOAD (ZERO 64) mo
-  | 0xFD 11:Bu32 mo:Bmemop => VSTORE mo
-  | 0xFD 84:Bu32 mo:Bmemop l:Blaneidx => VLOAD_LANE 8 mo l
-  | 0xFD 85:Bu32 mo:Bmemop l:Blaneidx => VLOAD_LANE 16 mo l
-  | 0xFD 86:Bu32 mo:Bmemop l:Blaneidx => VLOAD_LANE 32 mo l
-  | 0xFD 87:Bu32 mo:Bmemop l:Blaneidx => VLOAD_LANE 64 mo l
-  | 0xFD 88:Bu32 mo:Bmemop l:Blaneidx => VSTORE_LANE 8 mo l
-  | 0xFD 89:Bu32 mo:Bmemop l:Blaneidx => VSTORE_LANE 16 mo l
-  | 0xFD 90:Bu32 mo:Bmemop l:Blaneidx => VSTORE_LANE 32 mo l
-  | 0xFD 91:Bu32 mo:Bmemop l:Blaneidx => VSTORE_LANE 64 mo l
+  | 0xFD 0:Bu32 ao:Bmemarg => VLOAD ao
+  | 0xFD 1:Bu32 ao:Bmemarg => VLOAD (SHAPE 8 X 8 S) ao
+  | 0xFD 2:Bu32 ao:Bmemarg => VLOAD (SHAPE 8 X 8 U) ao
+  | 0xFD 3:Bu32 ao:Bmemarg => VLOAD (SHAPE 16 X 4 S) ao
+  | 0xFD 4:Bu32 ao:Bmemarg => VLOAD (SHAPE 16 X 4 U) ao
+  | 0xFD 5:Bu32 ao:Bmemarg => VLOAD (SHAPE 32 X 2 S) ao
+  | 0xFD 6:Bu32 ao:Bmemarg => VLOAD (SHAPE 32 X 2 U) ao
+  | 0xFD 7:Bu32 ao:Bmemarg => VLOAD (SPLAT 8) ao
+  | 0xFD 8:Bu32 ao:Bmemarg => VLOAD (SPLAT 16) ao
+  | 0xFD 9:Bu32 ao:Bmemarg => VLOAD (SPLAT 32) ao
+  | 0xFD 10:Bu32 ao:Bmemarg => VLOAD (SPLAT 64) ao
+  | 0xFD 92:Bu32 ao:Bmemarg => VLOAD (ZERO 32) ao
+  | 0xFD 92:Bu32 ao:Bmemarg => VLOAD (ZERO 64) ao
+  | 0xFD 11:Bu32 ao:Bmemarg => VSTORE ao
+  | 0xFD 84:Bu32 ao:Bmemarg l:Blaneidx => VLOAD_LANE 8 ao l
+  | 0xFD 85:Bu32 ao:Bmemarg l:Blaneidx => VLOAD_LANE 16 ao l
+  | 0xFD 86:Bu32 ao:Bmemarg l:Blaneidx => VLOAD_LANE 32 ao l
+  | 0xFD 87:Bu32 ao:Bmemarg l:Blaneidx => VLOAD_LANE 64 ao l
+  | 0xFD 88:Bu32 ao:Bmemarg l:Blaneidx => VSTORE_LANE 8 ao l
+  | 0xFD 89:Bu32 ao:Bmemarg l:Blaneidx => VSTORE_LANE 16 ao l
+  | 0xFD 90:Bu32 ao:Bmemarg l:Blaneidx => VSTORE_LANE 32 ao l
+  | 0xFD 91:Bu32 ao:Bmemarg l:Blaneidx => VSTORE_LANE 64 ao l
   | ...
 
 grammar Binstr/vector-const : instr = ...
@@ -751,10 +751,10 @@ grammar Bexpr : expr =
 
 ;; Sections
 
-var sz : nat
+var len : nat
 
 grammar Bsection_(N, grammar BX : en*) : en*  hint(desc "section") =
-  | N:Bbyte sz:Bu32 en*:BX => en*  -- if sz = ||BX||
+  | N:Bbyte len:Bu32 en*:BX => en*  -- if len = ||BX||
   | eps => eps
 
 
@@ -874,7 +874,7 @@ grammar Bfunc : code =
   | local**:Bvec(Blocals) expr:Bexpr => ($concat_(local, local**), expr)
 
 grammar Bcode : code =
-  | sz:Bu32 code:Bfunc => code  -- if sz = ||Bfunc||
+  | len:Bu32 code:Bfunc => code  -- if len = ||Bfunc||
 
 grammar Bcodesec : code* hint(desc "code section") =
   | code*:Bsection_(10, Bvec(Bcode)) => code*

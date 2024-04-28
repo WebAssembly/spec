@@ -6,8 +6,8 @@ Instructions
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-.. _syntax-inn:
-.. _syntax-fnn:
+.. _syntax-Inn:
+.. _syntax-Fnn:
 .. _syntax-sx:
 .. _syntax-instr-num:
 .. _syntax-unop:
@@ -16,8 +16,8 @@ Numeric Instructions
 .. _syntax-relop:
 
 $${syntax+: 
-  {inn
-  fnn}
+  {Inn
+  Fnn}
   sx
   instr/num
   {unop_
@@ -65,20 +65,20 @@ Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
 
 .. _syntax-instr-memory:
-.. _syntax-memop:
+.. _syntax-memarg:
 
 $${syntax+: 
   instr/memory instr/data
-  memop
+  memarg
 }
 
-.. _def-memop0:
+.. _def-memarg0:
 
-%{definition-prose: memop0}
+%{definition-prose: memarg0}
 
 \
 
-$${definition: memop0}
+$${definition: memarg0}
 
 .. _syntax-blocktype:
 .. _syntax-instr-control:

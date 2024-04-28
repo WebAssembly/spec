@@ -89,7 +89,7 @@ let top = Il.VarT ("TOP" $ no_region, []) $ no_region
 let hole = Il.TextE "_" |> wrap top
 
 (* `Il.atom` -> `atom` *) 
-let translate_atom atom = atom.it, !(atom.note)
+let translate_atom atom = atom.it, atom.note.Il.Atom.def
 
 (* `Il.iter` -> `iter` *)
 let rec translate_iter = function
@@ -883,7 +883,7 @@ let rec split_lhs_stack' ?(note : Il.typ option) name stack ctxs instrs =
   match stack with
   | [] ->
     let typ = Option.get note in
-    let tag = [[Il.Atom target $$ typ.at % ref "instr"]] in
+    let tag = [[Il.Atom target $$ typ.at % Il.Atom.info "instr"]] in
     let winstr = Il.CaseE (tag, Il.TupE [] |> wrap top) |> wrap typ in
     ctxs @ [ ([], instrs), None ], winstr
   | hd :: tl ->

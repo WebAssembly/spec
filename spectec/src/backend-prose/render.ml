@@ -33,7 +33,7 @@ let (let*) = Option.bind
 
 let al_to_el_atom atom =
   let atom', typ = atom in
-  atom' $$ (no_region, ref typ)
+  atom' $$ (no_region, Il.Atom.info typ)
 
 let al_to_el_unop = function
   | Al.Ast.MinusOp -> Some El.Ast.MinusOp
