@@ -27,7 +27,7 @@ A :ref:`number type <syntax-numtype>` :math:`\numtype_1` matches a :ref:`number 
 
 
 .. index:: vector type
-.. _match-vectortype:
+.. _match-vectype:
 
 Vector Types
 ~~~~~~~~~~~~

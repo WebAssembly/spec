@@ -101,7 +101,7 @@
 
 .. Notation for Sequences & Records
 
-.. |subst| mathdef:: \xref{syntax/conventions}{notation-subst}{\mathrel{\mathbf{:=}}}
+.. |subst| mathdef:: \xref{syntax/types}{notation-subst}{\mathrel{\mathbf{:=}}}
 .. |slice| mathdef:: \xref{syntax/conventions}{notation-slice}{\mathrel{\mathbf{:}}}
 .. |with| mathdef:: \xref{syntax/conventions}{notation-replace}{\mathrel{\mbox{with}}}
 .. |concat| mathdef:: \xref{syntax/conventions}{notation-concat}{\F{concat}}
@@ -185,8 +185,6 @@
 
 .. |BOT| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{bot}}
 
-.. |I8| mathdef:: \xref{exec/runtime}{syntax-storagetype}{\K{i8}}
-.. |I16| mathdef:: \xref{exec/runtime}{syntax-storagetype}{\K{i16}}
 .. |I32| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i32}}
 .. |I64| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i64}}
 .. |F32| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f32}}
@@ -551,9 +549,7 @@
 .. |vunop| mathdef:: \xref{syntax/instructions}{syntax-vunop}{\X{vunop}}
 .. |vbinop| mathdef:: \xref{syntax/instructions}{syntax-vbinop}{\X{vbinop}}
 .. |vrelop| mathdef:: \xref{syntax/instructions}{syntax-vrelop}{\X{vrelop}}
-.. |vternop| mathdef:: \xref{syntax/instructions}{syntax-vternop}{\X{vternop}}
 .. |vcvtop| mathdef:: \xref{syntax/instructions}{syntax-vcvtop}{\X{vcvtop}}
-.. |vextmul| mathdef:: \xref{syntax/instructions}{syntax-vextmul}{\X{vextmul}}
 
 .. |laneidx| mathdef:: \xref{syntax/instructions}{syntax-laneidx}{\X{laneidx}}
 .. |vvunop| mathdef:: \xref{syntax/instructions}{syntax-vvunop}{\X{vvunop}}
@@ -638,7 +634,6 @@
 .. |Bvaltype| mathdef:: \xref{binary/types}{binary-valtype}{\B{valtype}}
 .. |Bresulttype| mathdef:: \xref{binary/types}{binary-resulttype}{\B{resulttype}}
 .. |Bfunctype| mathdef:: \xref{binary/types}{binary-functype}{\B{functype}}
-.. |Bdeftype| mathdef:: \xref{binary/types}{binary-deftype}{\B{deftype}}
 .. |Bglobaltype| mathdef:: \xref{binary/types}{binary-globaltype}{\B{globaltype}}
 .. |Btabletype| mathdef:: \xref{binary/types}{binary-tabletype}{\B{tabletype}}
 .. |Bmemtype| mathdef:: \xref{binary/types}{binary-memtype}{\B{memtype}}
@@ -805,7 +800,6 @@
 .. |Treftype| mathdef:: \xref{text/types}{text-reftype}{\T{reftype}}
 .. |Tvaltype| mathdef:: \xref{text/types}{text-valtype}{\T{valtype}}
 .. |Tfunctype| mathdef:: \xref{text/types}{text-functype}{\T{functype}}
-.. |Tdeftype| mathdef:: \xref{text/types}{text-deftype}{\T{deftype}}
 
 .. |Tglobaltype| mathdef:: \xref{text/types}{text-globaltype}{\T{globaltype}}
 .. |Ttabletype| mathdef:: \xref{text/types}{text-tabletype}{\T{tabletype}}
@@ -828,19 +822,10 @@
 .. |Tlocalidx| mathdef:: \xref{text/modules}{text-localidx}{\T{localidx}}
 .. |Tlabelidx| mathdef:: \xref{text/modules}{text-labelidx}{\T{labelidx}}
 
-.. |Ttypebind| mathdef:: \xref{text/modules}{text-typebind}{\T{typebind}}
-.. |Tfuncbind| mathdef:: \xref{text/modules}{text-funcbind}{\T{funcbind}}
-.. |Ttablebind| mathdef:: \xref{text/modules}{text-tablebind}{\T{tablebind}}
-.. |Tmembind| mathdef:: \xref{text/modules}{text-membind}{\T{membind}}
-.. |Tglobalbind| mathdef:: \xref{text/modules}{text-globalbind}{\T{globalbind}}
-.. |Tlocalbind| mathdef:: \xref{text/modules}{text-localbind}{\T{localbind}}
-.. |Tlabelbind| mathdef:: \xref{text/modules}{text-labelbind}{\T{labelbind}}
-
 
 .. Modules, non-terminals
 
 .. |Tmodule| mathdef:: \xref{text/modules}{text-module}{\T{module}}
-.. |Tmodulebody| mathdef:: \xref{text/modules}{text-modulebody}{\T{modulebody}}
 .. |Tmodulefield| mathdef:: \xref{text/modules}{text-modulefield}{\T{modulefield}}
 .. |Ttype| mathdef:: \xref{text/modules}{text-typedef}{\T{type}}
 .. |Ttypeuse| mathdef:: \xref{text/modules}{text-typeuse}{\T{typeuse}}
@@ -856,7 +841,6 @@
 .. |Telemlist| mathdef:: \xref{text/modules}{text-elemlist}{\T{elemlist}}
 .. |Telemexpr| mathdef:: \xref{text/modules}{text-elemexpr}{\T{elemexpr}}
 .. |Ttableuse| mathdef:: \xref{text/modules}{text-tableuse}{\T{tableuse}}
-.. |Tcode| mathdef:: \xref{text/modules}{text-code}{\T{code}}
 .. |Tlocal| mathdef:: \xref{text/modules}{text-local}{\T{local}}
 .. |Tlocals| mathdef:: \xref{text/modules}{text-local}{\T{locals}}
 .. |Tdata| mathdef:: \xref{text/modules}{text-data}{\T{data}}
@@ -1013,7 +997,7 @@
 
 .. Notation
 
-.. |stepto| mathdef:: \xref{exec/conventions}{formal-notation}{\hookrightarrow}
+.. |stepto| mathdef:: \xref{exec/conventions}{exec-notation}{\hookrightarrow}
 .. |extendsto| mathdef:: \xref{appendix/properties}{extend}{\preceq}
 
 
@@ -1048,12 +1032,12 @@
 
 .. Address, meta functions
 
-.. |freefuncaddr| mathdef:: \xref{syntax/modules}{syntax-funcaddr}{\F{funcaddr}}
-.. |freetableaddr| mathdef:: \xref{syntax/modules}{syntax-tableaddr}{\F{tableaddr}}
-.. |freememaddr| mathdef:: \xref{syntax/modules}{syntax-memaddr}{\F{memaddr}}
-.. |freeglobaladdr| mathdef:: \xref{syntax/modules}{syntax-globaladdr}{\F{globaladdr}}
-.. |freeelemaddr| mathdef:: \xref{syntax/modules}{syntax-elemaddr}{\F{elemaddr}}
-.. |freedataaddr| mathdef:: \xref{syntax/modules}{syntax-dataaddr}{\F{dataaddr}}
+.. |freefuncaddr| mathdef:: \xref{exec/runtime}{syntax-funcaddr}{\F{funcaddr}}
+.. |freetableaddr| mathdef:: \xref{exec/runtime}{syntax-tableaddr}{\F{tableaddr}}
+.. |freememaddr| mathdef:: \xref{exec/runtime}{syntax-memaddr}{\F{memaddr}}
+.. |freeglobaladdr| mathdef:: \xref{exec/runtime}{syntax-globaladdr}{\F{globaladdr}}
+.. |freeelemaddr| mathdef:: \xref{exec/runtime}{syntax-elemaddr}{\F{elemaddr}}
+.. |freedataaddr| mathdef:: \xref{exec/runtime}{syntax-dataaddr}{\F{dataaddr}}
 
 
 .. Instances, terminals
@@ -1166,7 +1150,7 @@
 .. Values & Results, non-terminals
 
 .. |num| mathdef:: \xref{exec/runtime}{syntax-num}{\X{num}}
-.. |vecc| mathdef:: \xref{exec/runtime}{syntax-vec}{\X{vec}}
+.. |vecc| mathdef:: \xref{exec/runtime}{syntax-vecc}{\X{vec}}
 .. |reff| mathdef:: \xref{exec/runtime}{syntax-ref}{\X{ref}}
 .. |val| mathdef:: \xref{exec/runtime}{syntax-val}{\X{val}}
 .. |result| mathdef:: \xref{exec/runtime}{syntax-result}{\X{result}}
@@ -1229,10 +1213,10 @@
 .. |imins| mathdef:: \xref{exec/numerics}{op-imin_s}{\F{imin\_s}}
 .. |imaxu| mathdef:: \xref{exec/numerics}{op-imax_u}{\F{imax\_u}}
 .. |imaxs| mathdef:: \xref{exec/numerics}{op-imax_s}{\F{imax\_s}}
-.. |iaddsatu| mathdef:: \xref{exec/numerics}{op-iaddsat_u}{\F{iaddsat\_u}}
-.. |iaddsats| mathdef:: \xref{exec/numerics}{op-iaddsat_s}{\F{iaddsat\_s}}
-.. |isubsatu| mathdef:: \xref{exec/numerics}{op-isubsat_u}{\F{isubsat\_u}}
-.. |isubsats| mathdef:: \xref{exec/numerics}{op-isubsat_s}{\F{isubsat\_s}}
+.. |iaddsatu| mathdef:: \xref{exec/numerics}{op-iadd_sat_u}{\F{iadd\_sat\_u}}
+.. |iaddsats| mathdef:: \xref{exec/numerics}{op-iadd_sat_s}{\F{iadd\_sat\_s}}
+.. |isubsatu| mathdef:: \xref{exec/numerics}{op-isub_sat_u}{\F{isub\_sat\_u}}
+.. |isubsats| mathdef:: \xref{exec/numerics}{op-isub_sat_s}{\F{isub\_sat\_s}}
 .. |iavgru| mathdef:: \xref{exec/numerics}{op-iavgr_u}{\F{iavgr\_u}}
 .. |iq15mulrsats| mathdef:: \xref{exec/numerics}{op-iq15mulrsat_s}{\F{iq15mulrsat\_s}}
 
@@ -1316,7 +1300,7 @@
 
 .. |vdashadmininstr| mathdef:: \xref{appendix/properties}{valid-instr-admin}{\vdash}
 
-.. |vdashval| mathdef:: \xref{appendix/properties}{valid-val}{\vdash}
+.. |vdashval| mathdef:: \xref{exec/values}{valid-val}{\vdash}
 .. |vdashresult| mathdef:: \xref{appendix/properties}{valid-result}{\vdash}
 
 .. |vdashfuncinst| mathdef:: \xref{appendix/properties}{valid-funcinst}{\vdash}

@@ -540,6 +540,7 @@ Conventions
 .. _syntax-trap:
 .. _syntax-reffuncaddr:
 .. _syntax-invoke:
+.. _syntax-return_invoke:
 .. _syntax-instr-admin:
 
 Administrative Instructions

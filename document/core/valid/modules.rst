@@ -620,17 +620,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
   * The function  :math:`\functype_i` must be :ref:`valid <valid-functype>` under context :math:`C_i`.
 
-* Let :math:`C'` be the :ref:`context <context>` where:
-
-  * :math:`C'.\CGLOBALS` is the sequence :math:`\etglobals(\X{it}^\ast)`,
-
-  * :math:`C'.\CTYPES` is the same as :math:`C.\CTYPES`,
-
-  * :math:`C'.\CFUNCS` is the same as :math:`C.\CFUNCS`,
-
-  * :math:`C'.\CREFS` is the same as :math:`C.\CREFS`,
-
-  * all other fields are empty.
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, except that :math:`C'.\CGLOBALS` is just the sequence :math:`\etglobals(\X{it}^\ast)`.
 
 * Under the context :math:`C`:
 
@@ -718,7 +708,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
      \\
      C = \{ \CTYPES~\type^\ast, \CFUNCS~\X{ift}^\ast\,\X{ft}^\ast, \CTABLES~\X{itt}^\ast\,\X{tt}^\ast, \CMEMS~\X{imt}^\ast\,\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast\,\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~{\ok}^n, \CREFS~x^\ast \}
      \\
-     C' = \{ \CTYPES~\type^\ast, \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS) \}
+     C' = C \with \CGLOBALS = \X{igt}^\ast
      \qquad
      |C.\CMEMS| \leq 1
      \qquad
