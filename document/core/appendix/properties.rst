@@ -21,7 +21,7 @@ In order to state and prove soundness precisely, the typing rules must be extend
 
 
 .. index:: context, recursive type, recursive type index
-.. context-rec:
+.. _context-ext:
 
 Contexts
 ~~~~~~~~

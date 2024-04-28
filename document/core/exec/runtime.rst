@@ -572,7 +572,7 @@ Conventions
   .. math::
      \begin{array}{@{}lcl}
      \packval_{\valtype}(\val) &=& \val \\
-     \packval_{\packedtype}(\I32.\CONST~i) &=& \packedtype.\PACK~(\wrap_{32,|\packtype|}(i))
+     \packval_{\packedtype}(\I32.\CONST~i) &=& \packedtype.\PACK~(\wrap_{32,|\packedtype|}(i))
      \end{array}
 
 * The inverse conversion of a :ref:`field value <syntax-fieldval>` to a regular :ref:`value <syntax-val>` is defined as follows:
@@ -726,6 +726,7 @@ Conventions
    pair:: abstract syntax; administrative instruction
 .. _syntax-trap:
 .. _syntax-invoke:
+.. _syntax-return_invoke:
 .. _syntax-instr-admin:
 
 Administrative Instructions

@@ -303,6 +303,7 @@ In addition to field access written :math:`C.\K{field}` the following notation i
 
 .. index:: ! type closure
 .. _type-closure:
+.. _aux-clostype:
 
 Convention
 ..........
