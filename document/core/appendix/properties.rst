@@ -21,7 +21,7 @@ In order to state and prove soundness precisely, the typing rules must be extend
 
 
 .. index:: context, recursive type, recursive type index
-.. context-rec:
+.. _context-ext:
 
 Contexts
 ~~~~~~~~
@@ -717,10 +717,14 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 * Let :math:`\reftype^\ast` be the concatenation of all :math:`\reftype_i` in order.
 
+* Let :math:`m` be the length of :math:`\moduleinst.\MIFUNCS`.
+
 * Let :math:`n` be the length of :math:`\moduleinst.\MIDATAS`.
 
+* Let :math:`x^\ast` be the sequence of :ref:`function indices <syntax-funcidx>` from :math:`0` to :math:`m-1`.
+
 * Then the module instance is valid with :ref:`context <context>`
-  :math:`\{\CTYPES~\deftype^\ast,` :math:`\CFUNCS~\functype^\ast,` :math:`\CTABLES~\tabletype^\ast,` :math:`\CMEMS~\memtype^\ast,` :math:`\CGLOBALS~\globaltype^\ast,` :math:`\CELEMS~\reftype^\ast,` :math:`\CDATAS~{\ok}^n\}`.
+  :math:`\{\CTYPES~\deftype^\ast,` :math:`\CFUNCS~\functype^\ast,` :math:`\CTABLES~\tabletype^\ast,` :math:`\CMEMS~\memtype^\ast,` :math:`\CGLOBALS~\globaltype^\ast,` :math:`\CELEMS~\reftype^\ast,` :math:`\CDATAS~{\ok}^n,` :math:`\CREFS~x^\ast\}`.
 
 .. math::
    ~\\[-1ex]
@@ -762,7 +766,8 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
          \CMEMS & \memtype^\ast, \\
          \CGLOBALS & \globaltype^\ast, \\
          \CELEMS & \reftype^\ast, \\
-         \CDATAS & {\ok}^n ~\}
+         \CDATAS & {\ok}^n, \\
+         \CREFS & 0 \dots (|\funcaddr^\ast|-1) ~\}
          \end{array}
        \end{array}
    }

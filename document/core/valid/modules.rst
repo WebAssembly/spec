@@ -127,7 +127,7 @@ Locals
 
 * The :ref:`value type <syntax-valtype>` :math:`\valtype` must be :ref:`valid <valid-valtype>`.
 
-* If :math:`\valtype` is :ref:`defaultable <valid-defaultable>`, then:
+* If :math:`\valtype` is defaultable, then:
 
   * The local is valid with :ref:`local type <syntax-localtype>` :math:`\SET~\valtype`.
 
@@ -139,7 +139,7 @@ Locals
    \frac{
      C \vdashvaltype t \ok
      \qquad
-     C \vdashvaltypedefaultable t \defaultable
+     C \vdashvaltype t \mathrel{\mbox{defaultable}}
    }{
      C \vdashlocal \{ \LTYPE~t \} : \SET~t
    }

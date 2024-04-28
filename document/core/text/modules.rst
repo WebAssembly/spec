@@ -573,7 +573,7 @@ As another abbreviation, element segments may also be specified inline with :ref
    single: data; segment
 .. _text-datastring:
 .. _text-data:
-.. _test-memuse:
+.. _text-memuse:
 
 Data Segments
 ~~~~~~~~~~~~~

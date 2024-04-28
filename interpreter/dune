@@ -2,12 +2,7 @@
 
 (library
   (public_name wasm)
-  ; The 'wasm' module shall not be part of the library, as it would start the
-  ; Wasm REPL every time in all the dependencies.
-  ; We exclude the 'wast' module as it is only used for the JS build.
-  ; 'smallint' is a separate test module.
-  (modules :standard \ main wasm smallint wast)
-  (libraries menhirLib)
+  (modules :standard \ main wasm wast smallint)
 )
 
 (executable
@@ -32,26 +27,18 @@
   (preprocess (pps js_of_ocaml-ppx))
 )
 
+(env (_ (flags (-w +a-4-27-42-44-45-70 -warn-error +a-3))))
+
+(subdir text
+  (ocamllex (modules lexer))
+  (menhir (modules parser))
+)
+
 (rule
   (targets wasm.ml)
   (deps main/main.ml)
   (action (copy main/main.ml wasm.ml))
 )
-
-(subdir text
-  (rule
-    (target lexer.ml)
-    (deps lexer.mll)
-    (action
-      (chdir %{workspace_root}
-        (run %{bin:ocamllex} -ml -q -o %{target} %{deps})
-      )
-    )
-  )
-  (menhir (modules parser))
-)
-
-(env (_ (flags (-w +a-4-27-42-44-45-70 -warn-error +a-3))))
 
 (rule
   (alias runtest)

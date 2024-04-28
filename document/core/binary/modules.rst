@@ -344,7 +344,7 @@ It decodes into a list of :ref:`element segments <syntax-elem>` that represent t
    \production{element segment} & \Belem &::=&
      0{:}\Bu32~~e{:}\Bexpr~~y^\ast{:}\Blist(\Bfuncidx)
        &\Rightarrow& \\&&&\quad
-       \{ \ETYPE~(\REF~\NULL~\FUNC), \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
+       \{ \ETYPE~(\REF~\FUNC), \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
      1{:}\Bu32~~\X{et}:\Belemkind~~y^\ast{:}\Blist(\Bfuncidx)
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EPASSIVE \} \\ &&|&
@@ -367,7 +367,7 @@ It decodes into a list of :ref:`element segments <syntax-elem>` that represent t
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EDECLARATIVE \} \\
    \production{element kind} & \Belemkind &::=&
-     \hex{00} &\Rightarrow& \FUNCREF \\
+     \hex{00} &\Rightarrow& (\REF~\FUNC) \\
    \end{array}
 
 .. note::

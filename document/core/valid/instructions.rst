@@ -336,7 +336,7 @@ $${rule: Instr_ok/struct.new}
 
   - Let :math:`t_i` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\storagetype_i)`.
 
-  - The type :math:`t_i` must be :ref:`defaultable <valid-defaultable>`.
+  - The type :math:`t_i` must be defaultable.
 
 * Let :math:`t^\ast` be the concatenation of all :math:`t_i`.
 
@@ -418,7 +418,7 @@ $${rule: Instr_ok/array.new}
 
 * Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\storagetype)`.
 
-* The type :math:`t` must be :ref:`defaultable <valid-defaultable>`.
+* The type :math:`t` must be defaultable.
 
 * Then the instruction is valid with type :math:`[\I32] \to [(\REF~x)]`.
 
@@ -693,7 +693,8 @@ $${rule: Instr_ok/extern.convert_any}
    single: abstract syntax; instruction
 
 .. _valid-instr-vec:
-.. _aux-shunpack:
+.. _aux-unpackshape:
+.. _aux-dim:
 
 Vector Instructions
 ~~~~~~~~~~~~~~~~~~~
@@ -701,6 +702,10 @@ Vector Instructions
 Vector instructions can have a prefix to describe the :ref:`shape <syntax-vec-shape>` of the operand. Packed numeric types, ${packtype:I8} and ${packtype:I16}, are not :ref:`value types <syntax-valtype>`. An auxiliary function maps such packed type shapes to value types:
 
 $${definition: shunpack}
+
+The following auxiliary function denotes the number of lanes in a vector shape, i.e., its *dimension*:
+
+$${definition: dim}
 
 
 .. _valid-vconst:
@@ -840,7 +845,7 @@ $${rule: Instr_ok/vshuffle}
 :math:`\shape\K{.}\SPLAT`
 .........................
 
-* Let :math:`t` be :math:`\unpacked(\shape)`.
+* Let :math:`t` be :math:`\unpackshape(\shape)`.
 
 * The instruction is valid with type :math:`[t] \to [\V128]`.
 
@@ -854,7 +859,7 @@ $${rule: Instr_ok/vsplat}
 
 * The lane index :math:`\laneidx` must be smaller than :math:`\dim(\shape)`.
 
-* The instruction is valid with type :math:`[\V128] \to [\unpacked(\shape)]`.
+* The instruction is valid with type :math:`[\V128] \to [\unpackshape(\shape)]`.
 
 $${rule: Instr_ok/vextract_lane}
 
@@ -866,7 +871,7 @@ $${rule: Instr_ok/vextract_lane}
 
 * The lane index :math:`\laneidx` must be smaller than :math:`\dim(\shape)`.
 
-* Let :math:`t` be :math:`\unpacked(\shape)`.
+* Let :math:`t` be :math:`\unpackshape(\shape)`.
 
 * The instruction is valid with type :math:`[\V128~t] \to [\V128]`.
 

@@ -1022,7 +1022,7 @@ struct
       match emode.it with
       | Passive ->
         u32 0x01l; elem_kind etype; vec elem_index einit
-      | Active {index; offset} when index.it = 0l && is_elem_kind etype ->
+      | Active {index; offset} when index.it = 0l ->
         u32 0x00l; const offset; vec elem_index einit
       | Active {index; offset} ->
         u32 0x02l;
@@ -1033,7 +1033,7 @@ struct
       match emode.it with
       | Passive ->
         u32 0x05l; ref_type etype; vec const einit
-      | Active {index; offset} when index.it = 0l && is_elem_kind etype ->
+      | Active {index; offset} when index.it = 0l && etype = (Null, FuncHT) ->
         u32 0x04l; const offset; vec const einit
       | Active {index; offset} ->
         u32 0x06l; var index; const offset; ref_type etype; vec const einit

@@ -45,12 +45,13 @@ It may include a :ref:`value type <syntax-valtype>` determining the type of thes
 .. index:: ! numeric instruction, value, value type, integer, floating-point, two's complement
    pair: abstract syntax; instruction
 .. _syntax-sx:
-.. _syntax-num:
+.. _syntax-num_:
 .. _syntax-const:
 .. _syntax-unop:
 .. _syntax-binop:
 .. _syntax-testop:
 .. _syntax-relop:
+.. _syntax-cvtop:
 .. _syntax-instr-numeric:
 
 Numeric Instructions
@@ -96,9 +97,8 @@ For the other integer instructions, the use of two's complement for the signed i
 .. _syntax-vshiftop:
 .. _syntax-vunop:
 .. _syntax-vbinop:
-.. _syntax-visatbinop:
-.. _syntax-vfunop:
-.. _syntax-vfbinop:
+.. _syntax-vextbinop:
+.. _syntax-vcvtop:
 .. _syntax-instr-vec:
 
 Vector Instructions
@@ -281,12 +281,6 @@ Vector instructions can be grouped into several subcategories:
 Some vector instructions have a signedness annotation ${:sx} which distinguishes whether the elements in the operands are to be :ref:`interpreted <aux-signed>` as :ref:`unsigned <syntax-uint>` or :ref:`signed <syntax-sint>` integers.
 For the other vector instructions, the use of two's complement for the signed interpretation means that they behave the same regardless of signedness.
 
-
-.. _syntax-vunop:
-.. _syntax-vbinop:
-.. _syntax-vrelop:
-.. _syntax-vtestop:
-.. _syntax-vcvtop:
 
 Conventions
 ...........

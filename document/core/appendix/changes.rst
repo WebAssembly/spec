@@ -216,7 +216,7 @@ Added more precise types for references. [#proposal-typedref]_
 
 * Refined typing of :ref:`reference instruction <syntax-instr-ref>` |REFFUNC| with more precise result type
 
-* Refined typing of :ref:`local instructions <valid-instr-variable>` and :ref:`instruction sequences <valid-instr-seq>` to track the :ref:`initialization status <syntax-init>` of :ref:`locals <syntax-local>` with non-:ref:`defaultable <valid-defaultable>` type
+* Refined typing of :ref:`local instructions <valid-instr-variable>` and :ref:`instruction sequences <valid-instr-seq>` to track the :ref:`initialization status <syntax-init>` of :ref:`locals <syntax-local>` with non-defaultable type
 
 * Extended :ref:`table definitions <syntax-table>` with optional initializer expression
 

@@ -30,18 +30,18 @@ var aa : arrayaddr
 
 ;; Basic values
 
-syntax num hint(desc "number") =
+syntax num hint(desc "number value") =
   | CONST numtype num_(numtype)          hint(show %.CONST %)
-syntax vec hint(desc "vector") =
+syntax vec hint(desc "vector value") =
   | VCONST vectype vec_(vectype)         hint(show %.CONST %)
-syntax addrref hint(desc "address reference") =
+syntax addrref hint(desc "address value") =
   | REF.I31_NUM u31                      hint(show REF.I31 %)
   | REF.STRUCT_ADDR structaddr           hint(show REF.STRUCT %)
   | REF.ARRAY_ADDR arrayaddr             hint(show REF.ARRAY %)
   | REF.FUNC_ADDR funcaddr               hint(show REF.FUNC %)
   | REF.HOST_ADDR hostaddr               hint(show REF.HOST %)
   | REF.EXTERN addrref
-syntax ref hint(desc "reference") =
+syntax ref hint(desc "reference value") =
   | addrref
   | REF.NULL heaptype
 syntax val hint(desc "value") =

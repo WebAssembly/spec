@@ -54,7 +54,7 @@ publish-main: clean main bikeshed-keep deploy
 all:	pdf html bikeshed
 
 .PHONY: main
-main:	pdf html
+main:	macrosok pdf html
 
 
 ########################################
@@ -114,6 +114,9 @@ $(CTRLFILES:%=$(SPLICEDIR)/%): $(SPLICEDIR)/%: %
 
 ######
 
+.PHONY: macrosok
+macrosok:	$(GENERATED)
+	sh util/check_macros.sh
 
 # Dirty hack to avoid rebuilding the Bikeshed version for every push.
 .PHONY: bikeshed-keep
@@ -122,7 +125,6 @@ bikeshed-keep:
 	  wget -r -nH --cut-dirs=2 -P $(BUILDDIR)/html --no-check-certificate \
 	    https://webassembly.github.io/spec/core/bikeshed || \
 	  echo Downloaded Bikeshed.
-
 
 .PHONY: pdf pdf-nested
 pdf:	$(SPLICEDFILES)

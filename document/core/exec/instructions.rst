@@ -795,11 +795,11 @@ $${rule-prose: exec/array.copy}
 
 23. Assert: due to :ref:`validation <valid-array.copy>`, the :ref:`array instance <syntax-arrayinst>` :math:`S.\SARRAYS[a_2]` exists.
 
-24. If :math:`d + n` is larger than or equal to the length of :math:`S.\SARRAYS[a_1].\AIFIELDS`, then:
+24. If :math:`d + n` is larger than the length of :math:`S.\SARRAYS[a_1].\AIFIELDS`, then:
 
     a. Trap.
 
-25. If :math:`s + n` is larger than or equal to the length of :math:`S.\SARRAYS[a_2].\AIFIELDS`, then:
+25. If :math:`s + n` is larger than the length of :math:`S.\SARRAYS[a_2].\AIFIELDS`, then:
 
     a. Trap.
 
@@ -817,7 +817,7 @@ $${rule-prose: exec/array.copy}
 
     d. Push the value :math:`\I32.\CONST~s` to the stack.
 
-    e. Execute :math:`\getfield(\X{st})`.
+    e. Execute :math:`\F{getfield}(\X{st})`.
 
     f. Execute the instruction :math:`\ARRAYSET~x`.
 
@@ -847,7 +847,7 @@ $${rule-prose: exec/array.copy}
 
     f. Push the value :math:`\I32.\CONST~(s+n-1)` to the stack.
 
-    g. Execute :math:`\getfield(\X{st})`.
+    g. Execute :math:`\F{getfield}(\X{st})`.
 
     h. Execute the instruction :math:`\ARRAYSET~x`.
 
@@ -1278,7 +1278,7 @@ $${rule-prose: exec/vsplat}
 .. todo::
    Below is the actual prose.
 
-1. Let :math:`t` be the type :math:`\unpacked(\shape)`.
+1. Let :math:`t` be the type :math:`\unpackshape(\shape)`.
 
 2. Assert: due to :ref:`validation <valid-vec-splat>`, a value of :ref:`value type <syntax-valtype>` :math:`t` is on the top of the stack.
 
@@ -1295,7 +1295,7 @@ $${rule: {Step_pure/vsplat}}
 .. math::
    \begin{array}{lcl@{\qquad}l}
    (t\K{.}\CONST~c_1)~\shape\K{.}\SPLAT &\stepto& (\V128\K{.}\VCONST~c)
-     & (\iff t = \unpacked(\shape)
+     & (\iff t = \unpackshape(\shape)
        \wedge c = \lanes^{-1}_{\shape}(c_1^{\dim(\shape)}))
      \\
    \end{array}
@@ -1316,7 +1316,7 @@ $${rule-prose: exec/vextract_lane}
 
 4. Let :math:`i^\ast` be the result of computing :math:`\lanes_{t_1\K{x}N}(c_1)`.
 
-5. Let :math:`t_2` be the type :math:`\unpacked(t_1\K{x}N)`.
+5. Let :math:`t_2` be the type :math:`\unpackshape(t_1\K{x}N)`.
 
 6. Let :math:`c_2` be the result of computing :math:`\extend^{sx^?}_{t_1,t_2}(i^\ast[x])`.
 
@@ -1331,7 +1331,7 @@ $${rule: {Step_pure/vextract_lane-*}}
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & t_2 = \unpacked(t_1\K{x}N) \\
+      (\iff & t_2 = \unpackshape(t_1\K{x}N) \\
        \wedge & c_2 = \extend^{sx^?}_{t_1,t_2}(\lanes_{t_1\K{x}N}(c_1)[x]))
      \end{array}
    \end{array}
@@ -1346,7 +1346,7 @@ $${rule-prose: exec/vreplace_lane}
 
 1. Assert: due to :ref:`validation <valid-vec-replace_lane>`, :math:`x < \dim(\shape)`.
 
-2. Let :math:`t_2` be the type :math:`\unpacked(\shape)`.
+2. Let :math:`t_2` be the type :math:`\unpackshape(\shape)`.
 
 3. Assert: due to :ref:`validation <valid-vec-replace_lane>`, a value of :ref:`value type <syntax-valtype>` :math:`t_1` is on the top of the stack.
 
@@ -2489,7 +2489,7 @@ $${rule: {Step_read/return_call}}
 
 5. Let :math:`\REFFUNCADDR~a` be the reference :math:`r`.
 
-6. :ref:`Tail-invoke <exec-return-invoke>` the function instance at address :math:`a`.
+6. :ref:`Tail-invoke <exec-return_invoke>` the function instance at address :math:`a`.
 
 $${rule: {Step_read/return_call_ref-*}}
 
@@ -2540,7 +2540,7 @@ $${rule-prose: exec/return_call_indirect}
 
     a. Trap.
 
-17. :ref:`Tail-invoke <exec-return-invoke>` the function instance at address :math:`a`.
+17. :ref:`Tail-invoke <exec-return_invoke>` the function instance at address :math:`a`.
 
 $${rule: {Step_pure/return_call_indirect}}
 
