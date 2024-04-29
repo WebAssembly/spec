@@ -1002,22 +1002,29 @@ let rule_to_tup rule =
 let rec group_rules = function
   | [] -> []
   | h :: t ->
-    let name = name_of_rule h in
+    let (rel_id, rule) = h in
+    let name = name_of_rule rule in
     let t1, t2 =
-      List.partition (fun rule -> name_of_rule rule = name) t in
-    let grouped_rules = (h :: t1) |> List.map rule_to_tup in
-    (name, grouped_rules) :: group_rules t2
+      List.partition (fun (_, rule) -> name_of_rule rule = name) t in
+    let rules = rule :: List.map (fun (rel_id', rule') ->
+      if rel_id = rel_id' then rule' else
+        Util.Error.error rule'.at
+        "prose transformation"
+        "this reduction rule uses a different relation compared to the previous rules"
+    ) t1 in
+    let tups = List.map rule_to_tup rules in
+    (name, tups) :: group_rules t2
 
-(* extract rules except Steps/..., Step/pure and Step/read *)
+(* extract reduction rules for wasm instructions *)
 let extract_rules def =
   match def.it with
-  | Il.RelD (id, _, _, rules) when String.starts_with ~prefix:"Step" id.it ->
-    let condition rule =
+  | Il.RelD (id, _, _, rules) when List.mem id.it [ "Step"; "Step_read"; "Step_pure" ] ->
+    List.filter_map (fun rule ->
       match rule.it with
-      | Il.RuleD (id', _, _, _, _) ->
-        id.it <> "Steps" && id'.it <> "pure" && id'.it <> "read"
-    in
-    List.filter condition rules
+      | Il.RuleD (id', _, _, _, _) when List.mem id'.it [ "pure"; "read" ] ->
+        None
+      | _ -> Some (id, rule)
+    ) rules
   | _ -> []
 
 (* Translating reduction rules *)
