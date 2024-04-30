@@ -1173,30 +1173,6 @@ eval_expr instr*
 2. Pop the value val from the stack.
 3. Return [val].
 
-execution_of_CALL_REF x
-1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value ref from the stack.
-4. If ref is of the case REF.NULL, then:
-  a. Trap.
-5. Assert: Due to validation, ref is of the case REF.FUNC_ADDR.
-6. Let (REF.FUNC_ADDR a) be ref.
-7. If (a < |$funcinst(z)|), then:
-  a. Let fi be $funcinst(z)[a].
-  b. Assert: Due to validation, fi.CODE is of the case FUNC.
-  c. Let (FUNC y_0 y_1 instr*) be fi.CODE.
-  d. Let (LOCAL t)* be y_1.
-  e. Assert: Due to validation, $expanddt(fi.TYPE) is of the case FUNC.
-  f. Let (FUNC y_0) be $expanddt(fi.TYPE).
-  g. Let (t_1^n -> t_2^m) be y_0.
-  h. Assert: Due to validation, there are at least n values on the top of the stack.
-  i. Pop the values val^n from the stack.
-  j. Let f be { LOCALS: ?(val)^n ++ $default_(t)*; MODULE: fi.MODULE; }.
-  k. Let F be the activation of f with arity m.
-  l. Push F to the stack.
-  m. Let L be the label_m{[]}.
-  n. Enter instr* with label L.
-
 group_bytes_by n byte*
 1. Let n' be |byte*|.
 2. If (n' ≥ n), then:
@@ -3585,30 +3561,6 @@ eval_expr instr*
 1. Execute the sequence (instr*).
 2. Pop the value val from the stack.
 3. Return [val].
-
-execution_of_CALL_REF x
-1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value ref from the stack.
-4. If ref is of the case REF.NULL, then:
-  a. Trap.
-5. Assert: Due to validation, ref is of the case REF.FUNC_ADDR.
-6. Let (REF.FUNC_ADDR a) be ref.
-7. If (a < |$funcinst(z)|), then:
-  a. Let fi be $funcinst(z)[a].
-  b. Assert: Due to validation, fi.CODE is of the case FUNC.
-  c. Let (FUNC y_0 y_1 instr*) be fi.CODE.
-  d. Let (LOCAL t)* be y_1.
-  e. Assert: Due to validation, $expanddt(fi.TYPE) is of the case FUNC.
-  f. Let (FUNC y_0) be $expanddt(fi.TYPE).
-  g. Let (t_1^n -> t_2^m) be y_0.
-  h. Assert: Due to validation, there are at least n values on the top of the stack.
-  i. Pop the values val^n from the stack.
-  j. Let f be { LOCALS: ?(val)^n ++ $default_(t)*; MODULE: fi.MODULE; }.
-  k. Let F be the activation of f with arity m.
-  l. Push F to the stack.
-  m. Let L be the label_m{[]}.
-  n. Enter instr* with label L.
 
 group_bytes_by n byte*
 1. Let n' be |byte*|.
@@ -6269,8 +6221,29 @@ execution_of_CALL x
 5. Push the value (REF.FUNC_ADDR a) to the stack.
 6. Execute the instruction (CALL_REF $funcinst(z)[a].TYPE).
 
-execution_of_CALL_REF
-1. YetI: TODO: It is likely that the value stack of two rules are different.
+execution_of_CALL_REF yy
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value admin_u0 from the stack.
+4. If admin_u0 is of the case REF.NULL, then:
+  a. Trap.
+5. If admin_u0 is of the case REF.FUNC_ADDR, then:
+  a. Let (REF.FUNC_ADDR a) be admin_u0.
+  b. If (a < |$funcinst(z)|), then:
+    1) Let fi be $funcinst(z)[a].
+    2) Assert: Due to validation, fi.CODE is of the case FUNC.
+    3) Let (FUNC x y_0 instr*) be fi.CODE.
+    4) Let (LOCAL t)* be y_0.
+    5) Assert: Due to validation, $expanddt(fi.TYPE) is of the case FUNC.
+    6) Let (FUNC y_0) be $expanddt(fi.TYPE).
+    7) Let (t_1^n -> t_2^m) be y_0.
+    8) Assert: Due to validation, there are at least n values on the top of the stack.
+    9) Pop the values val^n from the stack.
+    10) Let f be { LOCALS: ?(val)^n ++ $default_(t)*; MODULE: fi.MODULE; }.
+    11) Let F be the activation of f with arity m.
+    12) Push F to the stack.
+    13) Let L be the label_m{[]}.
+    14) Enter instr* with label L.
 
 execution_of_RETURN_CALL x
 1. Let z be the current state.
@@ -7043,30 +7016,6 @@ eval_expr instr*
 1. Execute the sequence (instr*).
 2. Pop the value val from the stack.
 3. Return [val].
-
-execution_of_CALL_REF x
-1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value ref from the stack.
-4. If ref is of the case REF.NULL, then:
-  a. Trap.
-5. Assert: Due to validation, ref is of the case REF.FUNC_ADDR.
-6. Let (REF.FUNC_ADDR a) be ref.
-7. If (a < |$funcinst(z)|), then:
-  a. Let fi be $funcinst(z)[a].
-  b. Assert: Due to validation, fi.CODE is of the case FUNC.
-  c. Let (FUNC y_0 y_1 instr*) be fi.CODE.
-  d. Let (LOCAL t)* be y_1.
-  e. Assert: Due to validation, $expanddt(fi.TYPE) is of the case FUNC.
-  f. Let (FUNC y_0) be $expanddt(fi.TYPE).
-  g. Let (t_1^n -> t_2^m) be y_0.
-  h. Assert: Due to validation, there are at least n values on the top of the stack.
-  i. Pop the values val^n from the stack.
-  j. Let f be { LOCALS: ?(val)^n ++ $default_(t)*; MODULE: fi.MODULE; }.
-  k. Let F be the activation of f with arity m.
-  l. Push F to the stack.
-  m. Let L be the label_m{[]}.
-  n. Enter instr* with label L.
 
 group_bytes_by n byte*
 1. Let n' be |byte*|.

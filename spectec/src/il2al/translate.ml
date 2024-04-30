@@ -781,9 +781,15 @@ let translate_reduction deferred reduction =
   |> insert_deferred deferred
 
 
-let insert_pop_winstr vars = function
-  | h :: t when is_unbound vars h -> List.concat_map insert_pop t, Some h
-  | vs -> List.concat_map insert_pop vs, None
+let insert_pop_winstr vars es = match es with
+  | [] -> [], None
+  | _ ->
+    (* ASSUMPTION: The deferred pop is only possible at the bottom of the stack *)
+    let (hs, t) = Util.Lib.List.split_last es in
+    if is_unbound vars t then
+      List.concat_map insert_pop hs, Some t
+    else
+      List.concat_map insert_pop es, None
 
 let translate_context_winstr winstr =
   let at = winstr.at in

@@ -164,6 +164,9 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
       CaseE (mixop1, overlap e1 e2) |> replace_it
     | SubE (e1, typ1, typ1'), SubE (e2, typ2, typ2') when eq_typ typ1 typ2 && eq_typ typ1' typ2' ->
       SubE (overlap e1 e2, typ1, typ1') |> replace_it
+    (* HARDCODE: Unifying CatE with non-CatE *)
+    | CatE ({ it = IterE (_, (ListN _, _)); _ } as e1', _), _ -> overlap e1 { e2 with it = CatE (e1', e2) }
+    | _, CatE ({ it = IterE (_, (ListN _, _)); _ } as e2', _) -> overlap { e1 with it = CatE (e2', e1) } e2
     | _ ->
       let ty = overlap_typ e1.note e2.note in
       let id = gen_new_unified ty in
@@ -226,6 +229,8 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
     | ListE es1, ListE es2 ->
       List.fold_left2 (fun acc e1 e2 -> pairwise_concat acc (collect_unified e1 e2)) ([], []) es1 es2
     | CallE (_, as1), CallE (_, as2) -> collect_unified_args as1 as2
+    (* HARDCODE: Unifying CatE with non-CatE *)
+    | CatE (_, e1), _ -> collect_unified e1 e
     | _ -> Util.Error.error e.at "prose transformation" "cannot unify the expression with previous rule for the same instruction"
 
 and collect_unified_arg template a = if eq_arg template a then [], [] else match template.it, a.it with

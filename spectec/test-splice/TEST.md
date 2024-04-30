@@ -1294,7 +1294,6 @@ warning: definition `zbytes` was never spliced
 warning: definition `zero` was never spliced
 warning: definition `zsize` was never spliced
 warning: rule prose `exec/array.new_data` was never spliced
-warning: rule prose `exec/call_ref` was never spliced
 warning: rule prose `exec/data.drop` was never spliced
 warning: rule prose `exec/memory.grow` was never spliced
 warning: rule prose `exec/vstore_lane` was never spliced

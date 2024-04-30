@@ -1,7 +1,6 @@
 open Al
 open Ast
 open Al_util
-open Util
 
 type config = expr * expr * instr list
 
@@ -20,95 +19,6 @@ let eval_expr =
       returnI (Some (listE [ result ]))
     ]
   )
-
-(*
-execution_of_CALL_REF ?(x)
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop u_0 from the stack.
-3. If u_0 is of the case REF.NULL, then:
-  a. Trap.
-4. Assert: u_0 is of the case REF.FUNC_ADDR;
-4. Let (REF.FUNC_ADDR a) be u_0.
-5. If a < |$funcinst(z)|, then:
-  a. Let fi be $funcinst(z)[a].
-  b. Assert: fi.CODE is of the case FUNC;
-  1) Let (FUNC x' y_1 instr* ) be fi.CODE.
-  2) Let (LOCAL t)* be y_1.
-  3) Assert: $expanddt(fi.TYPE) is of the case FUNC;
-  a) Let (FUNC y_0) be $expanddt(fi.TYPE).
-  b) Let [t_1^n]->[t_2^m] be y_0.
-  c) Assert: Due to validation, there are at least n values on the top of the stack.
-  d) Pop val^n from the stack.
-  e) Let f be { LOCAL: ?(val)^n ++ $default_(t)*; MODULE: fi.MODULE; }.
-  f) Let F be the activation of f with arity m.
-  g) Enter F with label [FRAME_]:
-    1. Let L be the label_m{[]}.
-    2. Enter L with label instr* ++ [LABEL_]:
-
-*)
-
-let call_ref =
-  (* names *)
-  let x = varE "x" in
-  let ref = varE "ref" in
-  let a = varE "a" in
-  let z = varE "z" in
-  let fi = varE "fi" in
-  let y0 = varE "y_0" in
-  let y1 = varE "y_1" in
-  let t = varE "t" in
-  let t1 = varE "t_1" in
-  let t2 = varE "t_2" in
-  let n = varE "n" in
-  let m = varE "m" in
-  let v = varE "val" in
-  let f = varE "f" in
-  let ff = varE "F" in
-  let ll = varE "L" in
-  let instr = varE "instr" in
-
-  RuleA (
-    atom_of_name "CALL_REF" "admininstr",
-    [ x ],
-    [
-      assertI (topValueE None);
-      popI ref;
-      ifI (
-        isCaseOfE (ref, atom_of_name "REF.NULL" "admininstr"),
-        [ trapI () ],
-        []
-      );
-      assertI (isCaseOfE (ref, atom_of_name "REF.FUNC_ADDR" "admininstr"));
-      letI (caseE (atom_of_name "REF.FUNC_ADDR" "admininstr", [a]), ref);
-      ifI (
-        binE (LtOp, a, lenE (callE ("funcinst", [ z ]))),
-        [ letI (fi, accE (callE ("funcinst", [ z ]), idxP a));
-          assertI (isCaseOfE (accE (fi, dotP (atom_of_name "CODE" "code")), atom_of_name "FUNC" "func"));
-          letI (caseE (atom_of_name "FUNC" "func", [y0 ; y1 ; iterE (instr, ["instr"], List)]), accE (fi, dotP (atom_of_name "CODE" "code")));
-          letI (iterE (caseE (atom_of_name "LOCAL" "local", [t]), ["t"], List), y1);
-          assertI (isCaseOfE (callE ("expanddt", [ accE (fi, dotP (atom_of_name "TYPE" "type")) ]), atom_of_name "FUNC" "comptype"));
-          letI (caseE (atom_of_name "FUNC" "comptype", [y0]), callE ("expanddt", [ accE (fi, dotP (atom_of_name "TYPE" "type")) ]));
-          letI (infixE (iterE (t1, ["t_1"], ListN (n, None)), (Il.Atom.Arrow, ""), iterE (t2, ["t_2"], ListN (m, None))), y0);
-          assertI (topValuesE n);
-          popI (iterE (v, ["val"], ListN(n, None)));
-          letI (f, strE (Record.empty
-            |> Record.add
-              (atom_of_name "LOCALS" "frame")
-              (catE (iterE (optE (Some v), ["val"], ListN (n, None)), iterE (callE("default_", [t]), ["t"], List)))
-            |> Record.add
-              (atom_of_name "MODULE" "frame")
-              (accE (fi, dotP (atom_of_name "MODULE" "module")))
-          ));
-          letI (ff, frameE (Some m, f));
-          enterI (ff, listE ([caseE (atom_of_name "FRAME_" "admininstr", [])]),
-            [
-            letI (ll, labelE (m, listE []));
-            enterI (ll, catE (iterE (instr, ["instr"], List), listE ([caseE (atom_of_name "LABEL_" "admininstr", [])])), []);
-            ]
-          );
-        ], []);
-      ]
-    )
 
 (* Helper for the manual array_new.data algorithm *)
 
@@ -209,7 +119,7 @@ let array_new_data =
     ]
   )
 
-let manual_algos = [eval_expr; call_ref; group_bytes_by; array_new_data;]
+let manual_algos = [eval_expr; group_bytes_by; array_new_data;]
 
 let return_instrs_of_instantiate config =
   let store, frame, rhs = config in
