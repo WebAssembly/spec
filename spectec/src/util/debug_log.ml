@@ -14,8 +14,9 @@ let log_at (type a) label at (arg_f : unit -> string) (res_f : a -> string) (f :
   Printf.eprintf "[%s%s] %s\n%!" label ats arg;
   match f () with
   | exception exn ->
+    let bt = Printexc.get_raw_backtrace () in
     Printf.eprintf "[%s%s] %s => raise %s\n%!" label ats arg (Printexc.to_string exn);
-    raise exn
+    Printexc.raise_with_backtrace exn bt
   | x ->
     let res = res_f x in
     if res <> "" then Printf.eprintf "[%s%s] %s => %s\n%!" label ats arg res;

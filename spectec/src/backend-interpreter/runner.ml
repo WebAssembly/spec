@@ -265,10 +265,11 @@ let parse_file name parser_ file =
   try
     parser_ file
   with e ->
+    let bt = Printexc.get_raw_backtrace () in
     print_endline ("- Failed to parse " ^ name ^ "\n");
     log ("- Failed to parse %s\n") name;
     num_parse_fail := !num_parse_fail + 1;
-    raise e
+    Printexc.raise_with_backtrace e bt
 
 
 (** Runner **)

@@ -449,8 +449,9 @@ try
     equiv_typ env t2 t e.at;
     sub_typ env t1 t2 e.at
 with exn ->
+  let bt = Printexc.get_raw_backtrace () in
   Printf.eprintf "[valid_exp] %s\n%!" (Debug.il_exp e);
-  raise exn
+  Printexc.raise_with_backtrace exn bt
 
 
 and valid_expmix env mixop e (mixop', t) at =
