@@ -10,7 +10,7 @@ type func_type = FuncType of result_type * result_type
 
 type 'a limits = {min : 'a; max : 'a option}
 type mutability = Immutable | Mutable
-type table_type = TableType of Int32.t limits * ref_type
+type table_type = TableType of Int64.t limits * index_type * ref_type
 type memory_type = MemoryType of Int64.t limits * index_type
 type global_type = GlobalType of value_type * mutability
 type extern_type =
@@ -89,8 +89,8 @@ let match_limits ge lim1 lim2 =
 let match_func_type ft1 ft2 =
   ft1 = ft2
 
-let match_table_type (TableType (lim1, et1)) (TableType (lim2, et2)) =
-  et1 = et2 && match_limits I32.ge_u lim1 lim2
+let match_table_type (TableType (lim1, it1, et1)) (TableType (lim2, it2, et2)) =
+  it1 = it2 && et1 = et2 && match_limits I64.ge_u lim1 lim2
 
 let match_memory_type (MemoryType (lim1, it1)) (MemoryType (lim2, it2)) =
   it1 = it2 && match_limits I64.ge_u lim1 lim2
@@ -147,8 +147,10 @@ let string_of_memory_type = function
 
 
 let string_of_table_type = function
-  | TableType (lim, t) -> string_of_limits I32.to_string_u lim ^ " " ^
-                          string_of_ref_type t
+  | TableType (lim, it, t) ->
+    string_of_num_type (num_type_of_index_type it) ^
+    " " ^ string_of_limits I64.to_string_u lim ^
+    " " ^ string_of_ref_type t
 
 let string_of_global_type = function
   | GlobalType (t, Immutable) -> string_of_value_type t

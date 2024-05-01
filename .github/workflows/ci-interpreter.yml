@@ -31,4 +31,6 @@ jobs:
       - name: Build interpreter
         run: cd interpreter && opam exec make
       - name: Run tests
-        run: cd interpreter && opam exec make JS="node --experimental-wasm-memory64"  ci
+        # Re-enable the JS tests once table64 is available under node
+        #run: cd interpreter && opam exec make JS="node --experimental-wasm-memory64"  ci
+        run: cd interpreter && opam exec make ci

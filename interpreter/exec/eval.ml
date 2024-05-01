@@ -93,13 +93,13 @@ let local (frame : frame) x = lookup "local" frame.locals x
 
 let any_ref inst x i at =
   try Table.load (table inst x) i with Table.Bounds ->
-    Trap.error at ("undefined element " ^ Int32.to_string i)
+    Trap.error at ("undefined element " ^ Int64.to_string i)
 
 let func_ref inst x i at =
   match any_ref inst x i at with
   | FuncRef f -> f
-  | NullRef _ -> Trap.error at ("uninitialized element " ^ Int32.to_string i)
-  | _ -> Crash.error at ("type mismatch for element " ^ Int32.to_string i)
+  | NullRef _ -> Trap.error at ("uninitialized element " ^ Int64.to_string i)
+  | _ -> Crash.error at ("type mismatch for element " ^ Int64.to_string i)
 
 let func_type_of = function
   | Func.AstFunc (t, inst, f) -> t
@@ -140,12 +140,12 @@ let data_oob frame x i n =
     (Data.size (data frame.inst x))
 
 let table_oob frame x i n =
-  I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
-    (I64_convert.extend_i32_u (Table.size (table frame.inst x)))
+  I64.gt_u (I64.add (Table.index_of_num i) (Table.index_of_num n))
+    (Table.size (table frame.inst x))
 
 let elem_oob frame x i n =
-  I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
-    (I64_convert.extend_i32_u (Elem.size (elem frame.inst x)))
+  I64.gt_u (I64.add (Table.index_of_num i) (Table.index_of_num n))
+    (Elem.size (elem frame.inst x))
 
 let inc_address i at =
   match i with
@@ -206,7 +206,8 @@ let rec step (c : config) : config =
       | Call x, vs ->
         vs, [Invoke (func frame.inst x) @@ e.at]
 
-      | CallIndirect (x, y), Num (I32 i) :: vs ->
+      | CallIndirect (x, y), Num n :: vs ->
+        let i = Table.index_of_num n in
         let func = func_ref frame.inst x i e.at in
         if type_ frame.inst y <> Func.type_of func then
           vs, [Trapping "indirect call type mismatch" @@ e.at]
@@ -241,85 +242,96 @@ let rec step (c : config) : config =
         with Global.NotMutable -> Crash.error e.at "write to immutable global"
            | Global.Type -> Crash.error e.at "type mismatch at global write")
 
-      | TableGet x, Num (I32 i) :: vs' ->
+      | TableGet x, Num n :: vs' ->
+        let i = Table.index_of_num n in
         (try Ref (Table.load (table frame.inst x) i) :: vs', []
         with exn -> vs', [Trapping (table_error e.at exn) @@ e.at])
 
-      | TableSet x, Ref r :: Num (I32 i) :: vs' ->
+      | TableSet x, Ref r :: Num n :: vs' ->
+        let i = Table.index_of_num n in
         (try Table.store (table frame.inst x) i r; vs', []
         with exn -> vs', [Trapping (table_error e.at exn) @@ e.at])
 
       | TableSize x, vs ->
-        Num (I32 (Table.size (table frame.inst x))) :: vs, []
+        let tab = table frame.inst x in
+        value_of_index (Table.index_type_of tab) (Table.size (table frame.inst x)) :: vs, []
 
-      | TableGrow x, Num (I32 delta) :: Ref r :: vs' ->
+      | TableGrow x, Num delta :: Ref r :: vs' ->
         let tab = table frame.inst x in
         let old_size = Table.size tab in
         let result =
-          try Table.grow tab delta r; old_size
-          with Table.SizeOverflow | Table.SizeLimit | Table.OutOfMemory -> -1l
-        in Num (I32 result) :: vs', []
+          try Table.grow tab (Table.index_of_num delta) r; old_size
+          with Table.SizeOverflow | Table.SizeLimit | Table.OutOfMemory -> -1L
+        in (value_of_index (Table.index_type_of tab) result) :: vs', []
 
-      | TableFill x, Num (I32 n) :: Ref r :: Num (I32 i) :: vs' ->
+      | TableFill x, Num n :: Ref r :: Num i :: vs' ->
+        let n_64 = Table.index_of_num n in
         if table_oob frame x i n then
           vs', [Trapping (table_error e.at Table.Bounds) @@ e.at]
-        else if n = 0l then
+        else if n_64 = 0L then
           vs', []
         else
-          let _ = assert (I32.lt_u i 0xffff_ffffl) in
+          let i_64 = Table.index_of_num i in
+          let _ = assert (I64.lt_u i_64 0xffff_ffff_ffff_ffffL) in
           vs', List.map (at e.at) [
-            Plain (Const (I32 i @@ e.at));
+            Plain (Const (I64 i_64 @@ e.at));
             Refer r;
             Plain (TableSet x);
-            Plain (Const (I32 (I32.add i 1l) @@ e.at));
+            Plain (Const (I64 (I64.add i_64 1L) @@ e.at));
             Refer r;
-            Plain (Const (I32 (I32.sub n 1l) @@ e.at));
+            Plain (Const (I64 (I64.sub n_64 1L) @@ e.at));
             Plain (TableFill x);
           ]
 
-      | TableCopy (x, y), Num (I32 n) :: Num (I32 s) :: Num (I32 d) :: vs' ->
+      | TableCopy (x, y), Num n :: Num s :: Num d :: vs' ->
+        let n_64 = Table.index_of_num n in
+        let s_64 = Table.index_of_num s in
+        let d_64 = Table.index_of_num d in
         if table_oob frame x d n || table_oob frame y s n then
           vs', [Trapping (table_error e.at Table.Bounds) @@ e.at]
-        else if n = 0l then
+        else if n_64 = 0L then
           vs', []
-        else if I32.le_u d s then
+        else if I64.le_u d_64 s_64 then
           vs', List.map (at e.at) [
-            Plain (Const (I32 d @@ e.at));
-            Plain (Const (I32 s @@ e.at));
+            Plain (Const (I64 d_64 @@ e.at));
+            Plain (Const (I64 s_64 @@ e.at));
             Plain (TableGet y);
             Plain (TableSet x);
-            Plain (Const (I32 (I32.add d 1l) @@ e.at));
-            Plain (Const (I32 (I32.add s 1l) @@ e.at));
-            Plain (Const (I32 (I32.sub n 1l) @@ e.at));
+            Plain (Const (I64 (I64.add d_64 1L) @@ e.at));
+            Plain (Const (I64 (I64.add s_64 1L) @@ e.at));
+            Plain (Const (I64 (I64.sub n_64 1L) @@ e.at));
             Plain (TableCopy (x, y));
           ]
         else (* d > s *)
-          let n' = I32.sub n 1l in
+          let n' = I64.sub n_64 1L in
           vs', List.map (at e.at) [
-            Plain (Const (I32 (I32.add d n') @@ e.at));
-            Plain (Const (I32 (I32.add s n') @@ e.at));
+            Plain (Const (I64 (I64.add d_64 n') @@ e.at));
+            Plain (Const (I64 (I64.add s_64 n') @@ e.at));
             Plain (TableGet y);
             Plain (TableSet x);
-            Plain (Const (I32 d @@ e.at));
-            Plain (Const (I32 s @@ e.at));
-            Plain (Const (I32 n' @@ e.at));
+            Plain (Const (I64 d_64 @@ e.at));
+            Plain (Const (I64 s_64 @@ e.at));
+            Plain (Const (I64 n' @@ e.at));
             Plain (TableCopy (x, y));
           ]
 
-      | TableInit (x, y), Num (I32 n) :: Num (I32 s) :: Num (I32 d) :: vs' ->
+      | TableInit (x, y), Num n :: Num s :: Num d :: vs' ->
+        let n_64 = Table.index_of_num n in
         if table_oob frame x d n || elem_oob frame y s n then
           vs', [Trapping (table_error e.at Table.Bounds) @@ e.at]
-        else if n = 0l then
+        else if n_64 = 0L then
           vs', []
         else
+          let d_64 = Table.index_of_num d in
+          let s_64 = Table.index_of_num s in
           let seg = elem frame.inst y in
           vs', List.map (at e.at) [
-            Plain (Const (I32 d @@ e.at));
-            Refer (Elem.load seg s);
+            Plain (Const (I64 d_64 @@ e.at));
+            Refer (Elem.load seg s_64);
             Plain (TableSet x);
-            Plain (Const (I32 (I32.add d 1l) @@ e.at));
-            Plain (Const (I32 (I32.add s 1l) @@ e.at));
-            Plain (Const (I32 (I32.sub n 1l) @@ e.at));
+            Plain (Const (I64 (I64.add d_64 1L) @@ e.at));
+            Plain (Const (I64 (I64.add s_64 1L) @@ e.at));
+            Plain (Const (I64 (I64.sub n_64 1L) @@ e.at));
             Plain (TableInit (x, y));
           ]
 
@@ -411,7 +423,7 @@ let rec step (c : config) : config =
       | MemorySize, vs ->
         let mem = memory frame.inst (0l @@ e.at) in
 
-        Memory.value_of_address (Memory.index_of mem) (Memory.size mem) :: vs, []
+        value_of_index (Memory.index_type_of mem) (Memory.size mem) :: vs, []
 
       | MemoryGrow, Num delta :: vs' ->
         let mem = memory frame.inst (0l @@ e.at) in
@@ -419,7 +431,7 @@ let rec step (c : config) : config =
         let result =
           try Memory.grow mem (Memory.address_of_num delta); old_size
           with Memory.SizeOverflow | Memory.SizeLimit | Memory.OutOfMemory -> -1L
-        in (Memory.value_of_address (Memory.index_of mem) result) :: vs', []
+        in (value_of_index (Memory.index_type_of mem) result) :: vs', []
 
       | MemoryFill, Num n :: Num k :: Num i :: vs' ->
         let n_64 = Memory.address_of_num n in
@@ -709,7 +721,7 @@ let create_func (inst : module_inst) (f : func) : func_inst =
 
 let create_table (inst : module_inst) (tab : table) : table_inst =
   let {ttype} = tab.it in
-  let TableType (_lim, t) = ttype in
+  let TableType (_lim, _it, t) = ttype in
   Table.alloc ttype (NullRef t)
 
 let create_memory (inst : module_inst) (mem : memory) : memory_inst =

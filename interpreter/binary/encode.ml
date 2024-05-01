@@ -123,7 +123,7 @@ struct
     byte flags; vu min; opt vu max
 
   let table_type = function
-    | TableType (lim, t) -> ref_type t; limits u32 lim I32IndexType
+    | TableType (lim, it, t) -> ref_type t; limits u64 lim it
 
   let memory_type = function
     | MemoryType (lim, it) -> limits u64 lim it

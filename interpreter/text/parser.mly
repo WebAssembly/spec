@@ -206,12 +206,12 @@ let index_type_of_num_type t loc =
   match t with
   | I32Type -> I32IndexType
   | I64Type -> I64IndexType
-  | _ -> error (at loc) "illegal memory index type"
+  | _ -> error (at loc) "illegal index type"
 
 let index_type_of_value_type t loc =
   match t with
   | NumType t -> index_type_of_num_type t loc
-  | _ -> error (at loc) "illegal memory index type"
+  | _ -> error (at loc) "illegal index type"
 
 let memory_data init it c x at =
   let size = Int64.(div (add (of_int (String.length init)) 65535L) 65536L) in
@@ -220,6 +220,18 @@ let memory_data init it c x at =
     | I64IndexType -> i64_const (0L @@ at) in
   [{mtype = MemoryType ({min = size; max = Some size}, it)} @@ at],
   [{dinit = init; dmode = Active {index = x; offset = [instr @@ at] @@ at} @@ at} @@ at],
+  [], []
+
+let table_data init it t c x at =
+  let instr = match it with
+    | I32IndexType -> i32_const (0l @@ at)
+    | I64IndexType -> i64_const (0L @@ at) in
+  let einit = init c in
+  let size = Lib.List32.length einit in
+  let size64 = Int64.of_int32 size in
+  let emode = Active {index = x; offset = [instr @@ at] @@ at} @@ at in
+  [{ttype = TableType ({min = size64; max = Some size64}, it, t)} @@ at],
+  [{etype = t; einit; emode} @@ at],
   [], []
 
 %}
@@ -313,15 +325,12 @@ func_type_result :
     { $3 @ $5 }
 
 table_type :
-  | limits32 ref_type { TableType ($1, $2) }
+  | value_type limits64 ref_type { TableType ($2, index_type_of_value_type $1 $sloc, $3) }
+  | limits64 ref_type { TableType ($1, I32IndexType, $2) }
 
 memory_type :
   | value_type limits64 { MemoryType ($2, index_type_of_value_type $1 $sloc) }
   | limits64 { MemoryType ($1, I32IndexType) }
-
-limits32 :
-  | NAT { {min = nat32 $1 $loc($1); max = None} }
-  | NAT NAT { {min = nat32 $1 $loc($1); max = Some (nat32 $2 $loc($2))} }
 
 limits64 :
   | NAT { {min = nat64 $1 $loc($1); max = None} }
@@ -810,19 +819,15 @@ table_fields :
       let offset = [i32_const (0l @@ at) @@ at] @@ at in
       let einit = $4 c :: $5 c in
       let size = Lib.List32.length einit in
+      let size64 = Int64.of_int32 size in
       let emode = Active {index = x; offset} @@ at in
-      [{ttype = TableType ({min = size; max = Some size}, $1)} @@ at],
+      [{ttype = TableType ({min = size64; max = Some size64}, I32IndexType, $1)} @@ at],
       [{etype = $1; einit; emode} @@ at],
       [], [] }
   | ref_type LPAR ELEM elem_var_list RPAR  /* Sugar */
-    { fun c x at ->
-      let offset = [i32_const (0l @@ at) @@ at] @@ at in
-      let einit = $4 c in
-      let size = Lib.List32.length einit in
-      let emode = Active {index = x; offset} @@ at in
-      [{ttype = TableType ({min = size; max = Some size}, $1)} @@ at],
-      [{etype = FuncRefType; einit; emode} @@ at],
-      [], [] }
+    { table_data $4 I32IndexType FuncRefType }
+  | value_type ref_type LPAR ELEM elem_var_list RPAR  /* Sugar */
+    { table_data $5 (index_type_of_value_type $1 $sloc) FuncRefType }
 
 data :
   | LPAR DATA bind_var_opt string_list RPAR

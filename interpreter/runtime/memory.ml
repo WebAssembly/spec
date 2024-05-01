@@ -47,13 +47,8 @@ let size mem =
 let type_of mem =
   mem.ty
 
-let index_of mem =
+let index_type_of mem =
   let (MemoryType (_, it)) = type_of mem in it
-
-let value_of_address it x =
-  match it with
-  | I64IndexType -> Num (I64 x)
-  | I32IndexType -> Num (I32 (Int64.to_int32 x))
 
 let address_of_num x =
   match x with
@@ -74,7 +69,7 @@ let grow mem delta =
   if I64.gt_u old_size new_size then raise SizeOverflow else
   let lim' = {lim with min = new_size} in
   if not (valid_limits lim') then raise SizeLimit else
-  let after = create new_size (index_of mem) in
+  let after = create new_size (index_type_of mem) in
   let dim = Array1_64.dim mem.content in
   Array1.blit (Array1_64.sub mem.content 0L dim) (Array1_64.sub after 0L dim);
   mem.ty <- MemoryType (lim', it);

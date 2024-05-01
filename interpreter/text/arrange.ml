@@ -533,9 +533,9 @@ let func f =
 (* Tables & memories *)
 
 let table off i tab =
-  let {ttype = TableType (lim, t)} = tab.it in
-  Node ("table $" ^ nat (off + i) ^ " " ^ limits nat32 lim,
-    [atom ref_type t]
+  let {ttype = TableType (lim, it, t)} = tab.it in
+  Node ("table $" ^ nat (off + i) ^ " " ^ index_type it ^ " " ^
+        limits nat64 lim, [atom ref_type t]
   )
 
 let memory off i mem =

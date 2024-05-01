@@ -4,8 +4,8 @@ open Values
 type table
 type t = table
 
-type size = int32
-type index = int32
+type size = int64
+type index = int64
 type count = int32
 
 exception Type
@@ -16,7 +16,9 @@ exception OutOfMemory
 
 val alloc : table_type -> ref_ -> table (* raises Type, OutOfMemory *)
 val type_of : table -> table_type
+val index_type_of : table -> index_type
 val size : table -> size
+val index_of_num : num -> index
 val grow : table -> size -> ref_ -> unit
   (* raises SizeOverflow, SizeLimit, OutOfMemory *)
 

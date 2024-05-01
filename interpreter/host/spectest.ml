@@ -19,7 +19,10 @@ let global (GlobalType (t, _) as gt) =
   in Global.alloc gt v
 
 let table =
-  Table.alloc (TableType ({min = 10l; max = Some 20l}, FuncRefType))
+  Table.alloc (TableType ({min = 10L; max = Some 20L}, I32IndexType, FuncRefType))
+    (NullRef FuncRefType)
+let table64 =
+  Table.alloc (TableType ({min = 10L; max = Some 20L}, I64IndexType, FuncRefType))
     (NullRef FuncRefType)
 let memory = Memory.alloc (MemoryType ({min = 1L; max = Some 2L}, I32IndexType))
 let func f t = Func.alloc_host t (f t)
@@ -51,5 +54,6 @@ let lookup name t =
   | "global_f32", _ -> ExternGlobal (global (GlobalType (NumType F32Type, Immutable)))
   | "global_f64", _ -> ExternGlobal (global (GlobalType (NumType F64Type, Immutable)))
   | "table", _ -> ExternTable table
+  | "table64", _ -> ExternTable table64
   | "memory", _ -> ExternMemory memory
   | _ -> raise Not_found

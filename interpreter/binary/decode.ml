@@ -190,9 +190,8 @@ let limits uN s =
 
 let table_type s =
   let t = ref_type s in
-  let lim, is64 = limits u32 s in
-  require (not is64) s (pos s - 1) "tables cannot have 64-bit indices";
-  TableType (lim, t)
+  let lim, is64 = limits u64 s in
+  TableType (lim, (if is64 then I64IndexType else I32IndexType), t)
 
 let memory_type s =
   let lim, is64 = limits u64 s in

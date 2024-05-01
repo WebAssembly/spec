@@ -61,10 +61,15 @@
     )
   )
 
+  (table $t64 i64 funcref
+    (elem $const-i32)
+  )
+
   ;; Syntax
 
   (func
     (call_indirect (i32.const 0))
+    (call_indirect $t64 (i64.const 0))
     (call_indirect (param i64) (i64.const 0) (i32.const 0))
     (call_indirect (param i64) (param) (param f64 i32 i64)
       (i64.const 0) (f64.const 0) (i32.const 0) (i64.const 0) (i32.const 0)
@@ -93,6 +98,9 @@
 
   (func (export "type-i32") (result i32)
     (call_indirect (type $out-i32) (i32.const 0))
+  )
+  (func (export "type-i32-t64") (result i32)
+    (call_indirect $t64 (type $out-i32) (i64.const 0))
   )
   (func (export "type-i64") (result i64)
     (call_indirect (type $out-i64) (i32.const 1))
@@ -473,6 +481,8 @@
 (assert_return (invoke "type-f32") (f32.const 0xf32))
 (assert_return (invoke "type-f64") (f64.const 0xf64))
 (assert_return (invoke "type-f64-i32") (f64.const 0xf64) (i32.const 32))
+
+(assert_return (invoke "type-i32-t64") (i32.const 0x132))
 
 (assert_return (invoke "type-index") (i64.const 100))
 

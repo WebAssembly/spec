@@ -292,12 +292,12 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     ts1 --> ts2
 
   | CallIndirect (x, y) ->
-    let TableType (lim, t) = table c x in
+    let TableType (lim, it, t) = table c x in
     let FuncType (ts1, ts2) = type_ c y in
     require (t = FuncRefType) x.at
       ("type mismatch: instruction requires table of functions" ^
        " but table has " ^ string_of_ref_type t);
-    (ts1 @ [NumType I32Type]) --> ts2
+    (ts1 @ [value_type_of_index_type it]) --> ts2
 
   | LocalGet x ->
     [] --> [local c x]
@@ -318,35 +318,35 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     [t] --> []
 
   | TableGet x ->
-    let TableType (_lim, t) = table c x in
-    [NumType I32Type] --> [RefType t]
+    let TableType (_lim, it, t) = table c x in
+    [value_type_of_index_type it] --> [RefType t]
 
   | TableSet x ->
-    let TableType (_lim, t) = table c x in
-    [NumType I32Type; RefType t] --> []
+    let TableType (_lim, it, t) = table c x in
+    [value_type_of_index_type it; RefType t] --> []
 
   | TableSize x ->
     let _tt = table c x in
     [] --> [NumType I32Type]
 
   | TableGrow x ->
-    let TableType (_lim, t) = table c x in
+    let TableType (_lim, _it, t) = table c x in
     [RefType t; NumType I32Type] --> [NumType I32Type]
 
   | TableFill x ->
-    let TableType (_lim, t) = table c x in
+    let TableType (_lim, _it, t) = table c x in
     [NumType I32Type; RefType t; NumType I32Type] --> []
 
   | TableCopy (x, y) ->
-    let TableType (_lim1, t1) = table c x in
-    let TableType (_lim2, t2) = table c y in
+    let TableType (_lim1, _it, t1) = table c x in
+    let TableType (_lim2, _it, t2) = table c y in
     require (t1 = t2) x.at
       ("type mismatch: source element type " ^ string_of_ref_type t1 ^
        " does not match destination element type " ^ string_of_ref_type t2);
     [NumType I32Type; NumType I32Type; NumType I32Type] --> []
 
   | TableInit (x, y) ->
-    let TableType (_lim1, t1) = table c x in
+    let TableType (_lim1, _it, t1) = table c x in
     let t2 = elem c y in
     require (t1 = t2) x.at
       ("type mismatch: element segment's type " ^ string_of_ref_type t1 ^
@@ -571,9 +571,14 @@ let check_func_type (ft : func_type) at =
   List.iter (fun t -> check_value_type t at) ts2
 
 let check_table_type (tt : table_type) at =
-  let TableType (lim, t) = tt in
-  check_limits I32.le_u lim 0xffff_ffffl at "table size must be at most 2^32-1";
-  check_ref_type t at
+  let TableType (lim, it, t) = tt in
+  match it with
+  | I64IndexType ->
+    check_limits I64.le_u lim 0xffff_ffff_ffff_ffffL at
+      "table size must be at most 2^64-1"
+  | I32IndexType ->
+    check_limits I64.le_u lim 0xffff_ffffL at
+      "table size must be at most 2^32-1"
 
 let check_memory_type (mt : memory_type) at =
   let MemoryType (lim, it) = mt in
@@ -588,7 +593,6 @@ let check_memory_type (mt : memory_type) at =
 let check_global_type (gt : global_type) at =
   let GlobalType (t, mut) = gt in
   check_value_type t at
-
 
 let check_type (t : type_) =
   check_func_type t.it t.at
@@ -644,11 +648,11 @@ let check_elem_mode (c : context) (t : ref_type) (mode : segment_mode) =
   match mode.it with
   | Passive -> ()
   | Active {index; offset} ->
-    let TableType (_, et) = table c index in
+    let TableType (_, it, et) = table c index in
     require (t = et) mode.at
       ("type mismatch: element segment's type " ^ string_of_ref_type t ^
        " does not match table's element type " ^ string_of_ref_type et);
-    check_const c offset (NumType I32Type)
+    check_const c offset (value_type_of_index_type it)
   | Declarative -> ()
 
 let check_elem (c : context) (seg : elem_segment) =

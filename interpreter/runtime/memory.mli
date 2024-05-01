@@ -19,10 +19,9 @@ val page_size : int64
 
 val alloc : memory_type -> memory (* raises Type, SizeOverflow, OutOfMemory *)
 val type_of : memory -> memory_type
-val index_of : memory -> index_type
+val index_type_of : memory -> index_type
 val size : memory -> size
 val bound : memory -> address
-val value_of_address : index_type -> address -> value
 val address_of_value : value -> address
 val address_of_num : num -> address
 val grow : memory -> size -> unit

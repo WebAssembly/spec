@@ -151,6 +151,11 @@ let default_value = function
 
 let value_of_bool b = Num (I32 (if b then 1l else 0l))
 
+let value_of_index it x =
+  match it with
+  | I64IndexType -> Num (I64 x)
+  | I32IndexType -> Num (I32 (Int64.to_int32 x))
+
 let string_of_num = function
   | I32 i -> I32.to_string_s i
   | I64 i -> I64.to_string_s i
