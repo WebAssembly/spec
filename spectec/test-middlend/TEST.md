@@ -314,10 +314,10 @@ syntax valtype =
   | REF{nul : nul, heaptype : heaptype}(nul : nul, heaptype : heaptype)
   | BOT
 
-;; 1-syntax.watsup:168.1-169.16
+;; 1-syntax.watsup:190.1-191.16
 syntax resulttype = list(syntax valtype)
 
-;; 1-syntax.watsup:176.1-176.66
+;; 1-syntax.watsup:198.1-198.66
 syntax storagetype =
   | BOT
   | I32
@@ -329,31 +329,31 @@ syntax storagetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:189.1-190.18
+;; 1-syntax.watsup:211.1-212.18
 syntax fieldtype =
   | `%%`{mut : mut, storagetype : storagetype}(mut : mut, storagetype : storagetype)
 
-;; 1-syntax.watsup:192.1-192.70
+;; 1-syntax.watsup:214.1-214.70
 syntax functype =
   | `%->%`{resulttype : resulttype}(resulttype : resulttype, resulttype)
 
-;; 1-syntax.watsup:193.1-193.64
+;; 1-syntax.watsup:215.1-215.64
 syntax structtype = list(syntax fieldtype)
 
-;; 1-syntax.watsup:194.1-194.53
+;; 1-syntax.watsup:216.1-216.53
 syntax arraytype = fieldtype
 
-;; 1-syntax.watsup:196.1-199.42
+;; 1-syntax.watsup:218.1-221.42
 syntax comptype =
   | STRUCT{structtype : structtype}(structtype : structtype)
   | ARRAY{arraytype : arraytype}(arraytype : arraytype)
   | FUNC{functype : functype}(functype : functype)
 
-;; 1-syntax.watsup:201.1-202.49
+;; 1-syntax.watsup:223.1-224.49
 syntax subtype =
   | SUB{fin : fin, typeuse* : typeuse*, comptype : comptype}(fin : fin, typeuse*{typeuse : typeuse} : typeuse*, comptype : comptype)
 
-;; 1-syntax.watsup:204.1-205.49
+;; 1-syntax.watsup:226.1-227.49
 syntax rectype =
   | REC{list : list(syntax subtype)}(list : list(syntax subtype))
 }
@@ -387,6 +387,56 @@ syntax Cnn =
   | F32
   | F64
   | V128
+
+;; 1-syntax.watsup
+def $ANYREF : reftype
+  ;; 1-syntax.watsup
+  def $ANYREF = REF_reftype(`NULL%?`_nul(?(())), ANY_heaptype)
+
+;; 1-syntax.watsup
+def $EQREF : reftype
+  ;; 1-syntax.watsup
+  def $EQREF = REF_reftype(`NULL%?`_nul(?(())), EQ_heaptype)
+
+;; 1-syntax.watsup
+def $I31REF : reftype
+  ;; 1-syntax.watsup
+  def $I31REF = REF_reftype(`NULL%?`_nul(?(())), I31_heaptype)
+
+;; 1-syntax.watsup
+def $STRUCTREF : reftype
+  ;; 1-syntax.watsup
+  def $STRUCTREF = REF_reftype(`NULL%?`_nul(?(())), STRUCT_heaptype)
+
+;; 1-syntax.watsup
+def $ARRAYREF : reftype
+  ;; 1-syntax.watsup
+  def $ARRAYREF = REF_reftype(`NULL%?`_nul(?(())), ARRAY_heaptype)
+
+;; 1-syntax.watsup
+def $FUNCREF : reftype
+  ;; 1-syntax.watsup
+  def $FUNCREF = REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype)
+
+;; 1-syntax.watsup
+def $EXTERNREF : reftype
+  ;; 1-syntax.watsup
+  def $EXTERNREF = REF_reftype(`NULL%?`_nul(?(())), EXTERN_heaptype)
+
+;; 1-syntax.watsup
+def $NULLREF : reftype
+  ;; 1-syntax.watsup
+  def $NULLREF = REF_reftype(`NULL%?`_nul(?(())), NONE_heaptype)
+
+;; 1-syntax.watsup
+def $NULLFUNCREF : reftype
+  ;; 1-syntax.watsup
+  def $NULLFUNCREF = REF_reftype(`NULL%?`_nul(?(())), NOFUNC_heaptype)
+
+;; 1-syntax.watsup
+def $NULLEXTERNREF : reftype
+  ;; 1-syntax.watsup
+  def $NULLEXTERNREF = REF_reftype(`NULL%?`_nul(?(())), NOEXTERN_heaptype)
 
 ;; 1-syntax.watsup
 syntax packtype =
@@ -890,7 +940,7 @@ syntax sz =
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:615.1-616.22
+;; 1-syntax.watsup:637.1-638.22
 syntax instr =
   | NOP
   | UNREACHABLE
@@ -1405,7 +1455,7 @@ relation Expand: `%~~%`(deftype, comptype)
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:259.1-259.64
+;; 2-syntax-aux.watsup:259.1-259.84
 def $funcsxt(externtype*) : deftype*
   ;; 2-syntax-aux.watsup:264.1-264.24
   def $funcsxt([]) = []
@@ -1419,7 +1469,7 @@ def $funcsxt(externtype*) : deftype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:260.1-260.66
+;; 2-syntax-aux.watsup:260.1-260.84
 def $globalsxt(externtype*) : globaltype*
   ;; 2-syntax-aux.watsup:268.1-268.26
   def $globalsxt([]) = []
@@ -1433,7 +1483,7 @@ def $globalsxt(externtype*) : globaltype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:261.1-261.65
+;; 2-syntax-aux.watsup:261.1-261.84
 def $tablesxt(externtype*) : tabletype*
   ;; 2-syntax-aux.watsup:272.1-272.25
   def $tablesxt([]) = []
@@ -1447,7 +1497,7 @@ def $tablesxt(externtype*) : tabletype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:262.1-262.63
+;; 2-syntax-aux.watsup:262.1-262.84
 def $memsxt(externtype*) : memtype*
   ;; 2-syntax-aux.watsup:276.1-276.23
   def $memsxt([]) = []
@@ -5893,10 +5943,10 @@ syntax valtype =
   | REF{nul : nul, heaptype : heaptype}(nul : nul, heaptype : heaptype)
   | BOT
 
-;; 1-syntax.watsup:168.1-169.16
+;; 1-syntax.watsup:190.1-191.16
 syntax resulttype = list(syntax valtype)
 
-;; 1-syntax.watsup:176.1-176.66
+;; 1-syntax.watsup:198.1-198.66
 syntax storagetype =
   | BOT
   | I32
@@ -5908,31 +5958,31 @@ syntax storagetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:189.1-190.18
+;; 1-syntax.watsup:211.1-212.18
 syntax fieldtype =
   | `%%`{mut : mut, storagetype : storagetype}(mut : mut, storagetype : storagetype)
 
-;; 1-syntax.watsup:192.1-192.70
+;; 1-syntax.watsup:214.1-214.70
 syntax functype =
   | `%->%`{resulttype : resulttype}(resulttype : resulttype, resulttype)
 
-;; 1-syntax.watsup:193.1-193.64
+;; 1-syntax.watsup:215.1-215.64
 syntax structtype = list(syntax fieldtype)
 
-;; 1-syntax.watsup:194.1-194.53
+;; 1-syntax.watsup:216.1-216.53
 syntax arraytype = fieldtype
 
-;; 1-syntax.watsup:196.1-199.42
+;; 1-syntax.watsup:218.1-221.42
 syntax comptype =
   | STRUCT{structtype : structtype}(structtype : structtype)
   | ARRAY{arraytype : arraytype}(arraytype : arraytype)
   | FUNC{functype : functype}(functype : functype)
 
-;; 1-syntax.watsup:201.1-202.49
+;; 1-syntax.watsup:223.1-224.49
 syntax subtype =
   | SUB{fin : fin, typeuse* : typeuse*, comptype : comptype}(fin : fin, typeuse*{typeuse : typeuse} : typeuse*, comptype : comptype)
 
-;; 1-syntax.watsup:204.1-205.49
+;; 1-syntax.watsup:226.1-227.49
 syntax rectype =
   | REC{list : list(syntax subtype)}(list : list(syntax subtype))
 }
@@ -5966,6 +6016,56 @@ syntax Cnn =
   | F32
   | F64
   | V128
+
+;; 1-syntax.watsup
+def $ANYREF : reftype
+  ;; 1-syntax.watsup
+  def $ANYREF = REF_reftype(`NULL%?`_nul(?(())), ANY_heaptype)
+
+;; 1-syntax.watsup
+def $EQREF : reftype
+  ;; 1-syntax.watsup
+  def $EQREF = REF_reftype(`NULL%?`_nul(?(())), EQ_heaptype)
+
+;; 1-syntax.watsup
+def $I31REF : reftype
+  ;; 1-syntax.watsup
+  def $I31REF = REF_reftype(`NULL%?`_nul(?(())), I31_heaptype)
+
+;; 1-syntax.watsup
+def $STRUCTREF : reftype
+  ;; 1-syntax.watsup
+  def $STRUCTREF = REF_reftype(`NULL%?`_nul(?(())), STRUCT_heaptype)
+
+;; 1-syntax.watsup
+def $ARRAYREF : reftype
+  ;; 1-syntax.watsup
+  def $ARRAYREF = REF_reftype(`NULL%?`_nul(?(())), ARRAY_heaptype)
+
+;; 1-syntax.watsup
+def $FUNCREF : reftype
+  ;; 1-syntax.watsup
+  def $FUNCREF = REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype)
+
+;; 1-syntax.watsup
+def $EXTERNREF : reftype
+  ;; 1-syntax.watsup
+  def $EXTERNREF = REF_reftype(`NULL%?`_nul(?(())), EXTERN_heaptype)
+
+;; 1-syntax.watsup
+def $NULLREF : reftype
+  ;; 1-syntax.watsup
+  def $NULLREF = REF_reftype(`NULL%?`_nul(?(())), NONE_heaptype)
+
+;; 1-syntax.watsup
+def $NULLFUNCREF : reftype
+  ;; 1-syntax.watsup
+  def $NULLFUNCREF = REF_reftype(`NULL%?`_nul(?(())), NOFUNC_heaptype)
+
+;; 1-syntax.watsup
+def $NULLEXTERNREF : reftype
+  ;; 1-syntax.watsup
+  def $NULLEXTERNREF = REF_reftype(`NULL%?`_nul(?(())), NOEXTERN_heaptype)
 
 ;; 1-syntax.watsup
 syntax packtype =
@@ -6469,7 +6569,7 @@ syntax sz =
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:615.1-616.22
+;; 1-syntax.watsup:637.1-638.22
 syntax instr =
   | NOP
   | UNREACHABLE
@@ -6987,7 +7087,7 @@ relation Expand: `%~~%`(deftype, comptype)
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:259.1-259.64
+;; 2-syntax-aux.watsup:259.1-259.84
 def $funcsxt(externtype*) : deftype*
   ;; 2-syntax-aux.watsup:264.1-264.24
   def $funcsxt([]) = []
@@ -7001,7 +7101,7 @@ def $funcsxt(externtype*) : deftype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:260.1-260.66
+;; 2-syntax-aux.watsup:260.1-260.84
 def $globalsxt(externtype*) : globaltype*
   ;; 2-syntax-aux.watsup:268.1-268.26
   def $globalsxt([]) = []
@@ -7015,7 +7115,7 @@ def $globalsxt(externtype*) : globaltype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:261.1-261.65
+;; 2-syntax-aux.watsup:261.1-261.84
 def $tablesxt(externtype*) : tabletype*
   ;; 2-syntax-aux.watsup:272.1-272.25
   def $tablesxt([]) = []
@@ -7029,7 +7129,7 @@ def $tablesxt(externtype*) : tabletype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:262.1-262.63
+;; 2-syntax-aux.watsup:262.1-262.84
 def $memsxt(externtype*) : memtype*
   ;; 2-syntax-aux.watsup:276.1-276.23
   def $memsxt([]) = []
@@ -11477,10 +11577,10 @@ syntax valtype =
   | REF{nul : nul, heaptype : heaptype}(nul : nul, heaptype : heaptype)
   | BOT
 
-;; 1-syntax.watsup:168.1-169.16
+;; 1-syntax.watsup:190.1-191.16
 syntax resulttype = list(syntax valtype)
 
-;; 1-syntax.watsup:176.1-176.66
+;; 1-syntax.watsup:198.1-198.66
 syntax storagetype =
   | BOT
   | I32
@@ -11492,31 +11592,31 @@ syntax storagetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:189.1-190.18
+;; 1-syntax.watsup:211.1-212.18
 syntax fieldtype =
   | `%%`{mut : mut, storagetype : storagetype}(mut : mut, storagetype : storagetype)
 
-;; 1-syntax.watsup:192.1-192.70
+;; 1-syntax.watsup:214.1-214.70
 syntax functype =
   | `%->%`{resulttype : resulttype}(resulttype : resulttype, resulttype)
 
-;; 1-syntax.watsup:193.1-193.64
+;; 1-syntax.watsup:215.1-215.64
 syntax structtype = list(syntax fieldtype)
 
-;; 1-syntax.watsup:194.1-194.53
+;; 1-syntax.watsup:216.1-216.53
 syntax arraytype = fieldtype
 
-;; 1-syntax.watsup:196.1-199.42
+;; 1-syntax.watsup:218.1-221.42
 syntax comptype =
   | STRUCT{structtype : structtype}(structtype : structtype)
   | ARRAY{arraytype : arraytype}(arraytype : arraytype)
   | FUNC{functype : functype}(functype : functype)
 
-;; 1-syntax.watsup:201.1-202.49
+;; 1-syntax.watsup:223.1-224.49
 syntax subtype =
   | SUB{fin : fin, typeuse* : typeuse*, comptype : comptype}(fin : fin, typeuse*{typeuse : typeuse} : typeuse*, comptype : comptype)
 
-;; 1-syntax.watsup:204.1-205.49
+;; 1-syntax.watsup:226.1-227.49
 syntax rectype =
   | REC{list : list(syntax subtype)}(list : list(syntax subtype))
 }
@@ -11550,6 +11650,56 @@ syntax Cnn =
   | F32
   | F64
   | V128
+
+;; 1-syntax.watsup
+def $ANYREF : reftype
+  ;; 1-syntax.watsup
+  def $ANYREF = REF_reftype(`NULL%?`_nul(?(())), ANY_heaptype)
+
+;; 1-syntax.watsup
+def $EQREF : reftype
+  ;; 1-syntax.watsup
+  def $EQREF = REF_reftype(`NULL%?`_nul(?(())), EQ_heaptype)
+
+;; 1-syntax.watsup
+def $I31REF : reftype
+  ;; 1-syntax.watsup
+  def $I31REF = REF_reftype(`NULL%?`_nul(?(())), I31_heaptype)
+
+;; 1-syntax.watsup
+def $STRUCTREF : reftype
+  ;; 1-syntax.watsup
+  def $STRUCTREF = REF_reftype(`NULL%?`_nul(?(())), STRUCT_heaptype)
+
+;; 1-syntax.watsup
+def $ARRAYREF : reftype
+  ;; 1-syntax.watsup
+  def $ARRAYREF = REF_reftype(`NULL%?`_nul(?(())), ARRAY_heaptype)
+
+;; 1-syntax.watsup
+def $FUNCREF : reftype
+  ;; 1-syntax.watsup
+  def $FUNCREF = REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype)
+
+;; 1-syntax.watsup
+def $EXTERNREF : reftype
+  ;; 1-syntax.watsup
+  def $EXTERNREF = REF_reftype(`NULL%?`_nul(?(())), EXTERN_heaptype)
+
+;; 1-syntax.watsup
+def $NULLREF : reftype
+  ;; 1-syntax.watsup
+  def $NULLREF = REF_reftype(`NULL%?`_nul(?(())), NONE_heaptype)
+
+;; 1-syntax.watsup
+def $NULLFUNCREF : reftype
+  ;; 1-syntax.watsup
+  def $NULLFUNCREF = REF_reftype(`NULL%?`_nul(?(())), NOFUNC_heaptype)
+
+;; 1-syntax.watsup
+def $NULLEXTERNREF : reftype
+  ;; 1-syntax.watsup
+  def $NULLEXTERNREF = REF_reftype(`NULL%?`_nul(?(())), NOEXTERN_heaptype)
 
 ;; 1-syntax.watsup
 syntax packtype =
@@ -12053,7 +12203,7 @@ syntax sz =
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:615.1-616.22
+;; 1-syntax.watsup:637.1-638.22
 syntax instr =
   | NOP
   | UNREACHABLE
@@ -12571,7 +12721,7 @@ relation Expand: `%~~%`(deftype, comptype)
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:259.1-259.64
+;; 2-syntax-aux.watsup:259.1-259.84
 def $funcsxt(externtype*) : deftype*
   ;; 2-syntax-aux.watsup:264.1-264.24
   def $funcsxt([]) = []
@@ -12585,7 +12735,7 @@ def $funcsxt(externtype*) : deftype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:260.1-260.66
+;; 2-syntax-aux.watsup:260.1-260.84
 def $globalsxt(externtype*) : globaltype*
   ;; 2-syntax-aux.watsup:268.1-268.26
   def $globalsxt([]) = []
@@ -12599,7 +12749,7 @@ def $globalsxt(externtype*) : globaltype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:261.1-261.65
+;; 2-syntax-aux.watsup:261.1-261.84
 def $tablesxt(externtype*) : tabletype*
   ;; 2-syntax-aux.watsup:272.1-272.25
   def $tablesxt([]) = []
@@ -12613,7 +12763,7 @@ def $tablesxt(externtype*) : tabletype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:262.1-262.63
+;; 2-syntax-aux.watsup:262.1-262.84
 def $memsxt(externtype*) : memtype*
   ;; 2-syntax-aux.watsup:276.1-276.23
   def $memsxt([]) = []
@@ -17061,10 +17211,10 @@ syntax valtype =
   | REF{nul : nul, heaptype : heaptype}(nul : nul, heaptype : heaptype)
   | BOT
 
-;; 1-syntax.watsup:168.1-169.16
+;; 1-syntax.watsup:190.1-191.16
 syntax resulttype = list(syntax valtype)
 
-;; 1-syntax.watsup:176.1-176.66
+;; 1-syntax.watsup:198.1-198.66
 syntax storagetype =
   | BOT
   | I32
@@ -17076,31 +17226,31 @@ syntax storagetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:189.1-190.18
+;; 1-syntax.watsup:211.1-212.18
 syntax fieldtype =
   | `%%`{mut : mut, storagetype : storagetype}(mut : mut, storagetype : storagetype)
 
-;; 1-syntax.watsup:192.1-192.70
+;; 1-syntax.watsup:214.1-214.70
 syntax functype =
   | `%->%`{resulttype : resulttype}(resulttype : resulttype, resulttype)
 
-;; 1-syntax.watsup:193.1-193.64
+;; 1-syntax.watsup:215.1-215.64
 syntax structtype = list(syntax fieldtype)
 
-;; 1-syntax.watsup:194.1-194.53
+;; 1-syntax.watsup:216.1-216.53
 syntax arraytype = fieldtype
 
-;; 1-syntax.watsup:196.1-199.42
+;; 1-syntax.watsup:218.1-221.42
 syntax comptype =
   | STRUCT{structtype : structtype}(structtype : structtype)
   | ARRAY{arraytype : arraytype}(arraytype : arraytype)
   | FUNC{functype : functype}(functype : functype)
 
-;; 1-syntax.watsup:201.1-202.49
+;; 1-syntax.watsup:223.1-224.49
 syntax subtype =
   | SUB{fin : fin, typeuse* : typeuse*, comptype : comptype}(fin : fin, typeuse*{typeuse : typeuse} : typeuse*, comptype : comptype)
 
-;; 1-syntax.watsup:204.1-205.49
+;; 1-syntax.watsup:226.1-227.49
 syntax rectype =
   | REC{list : list(syntax subtype)}(list : list(syntax subtype))
 }
@@ -17134,6 +17284,56 @@ syntax Cnn =
   | F32
   | F64
   | V128
+
+;; 1-syntax.watsup
+def $ANYREF : reftype
+  ;; 1-syntax.watsup
+  def $ANYREF = REF_reftype(`NULL%?`_nul(?(())), ANY_heaptype)
+
+;; 1-syntax.watsup
+def $EQREF : reftype
+  ;; 1-syntax.watsup
+  def $EQREF = REF_reftype(`NULL%?`_nul(?(())), EQ_heaptype)
+
+;; 1-syntax.watsup
+def $I31REF : reftype
+  ;; 1-syntax.watsup
+  def $I31REF = REF_reftype(`NULL%?`_nul(?(())), I31_heaptype)
+
+;; 1-syntax.watsup
+def $STRUCTREF : reftype
+  ;; 1-syntax.watsup
+  def $STRUCTREF = REF_reftype(`NULL%?`_nul(?(())), STRUCT_heaptype)
+
+;; 1-syntax.watsup
+def $ARRAYREF : reftype
+  ;; 1-syntax.watsup
+  def $ARRAYREF = REF_reftype(`NULL%?`_nul(?(())), ARRAY_heaptype)
+
+;; 1-syntax.watsup
+def $FUNCREF : reftype
+  ;; 1-syntax.watsup
+  def $FUNCREF = REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype)
+
+;; 1-syntax.watsup
+def $EXTERNREF : reftype
+  ;; 1-syntax.watsup
+  def $EXTERNREF = REF_reftype(`NULL%?`_nul(?(())), EXTERN_heaptype)
+
+;; 1-syntax.watsup
+def $NULLREF : reftype
+  ;; 1-syntax.watsup
+  def $NULLREF = REF_reftype(`NULL%?`_nul(?(())), NONE_heaptype)
+
+;; 1-syntax.watsup
+def $NULLFUNCREF : reftype
+  ;; 1-syntax.watsup
+  def $NULLFUNCREF = REF_reftype(`NULL%?`_nul(?(())), NOFUNC_heaptype)
+
+;; 1-syntax.watsup
+def $NULLEXTERNREF : reftype
+  ;; 1-syntax.watsup
+  def $NULLEXTERNREF = REF_reftype(`NULL%?`_nul(?(())), NOEXTERN_heaptype)
 
 ;; 1-syntax.watsup
 syntax packtype =
@@ -17637,7 +17837,7 @@ syntax sz =
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:615.1-616.22
+;; 1-syntax.watsup:637.1-638.22
 syntax instr =
   | NOP
   | UNREACHABLE
@@ -18155,7 +18355,7 @@ relation Expand: `%~~%`(deftype, comptype)
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:259.1-259.64
+;; 2-syntax-aux.watsup:259.1-259.84
 def $funcsxt(externtype*) : deftype*
   ;; 2-syntax-aux.watsup:264.1-264.24
   def $funcsxt([]) = []
@@ -18169,7 +18369,7 @@ def $funcsxt(externtype*) : deftype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:260.1-260.66
+;; 2-syntax-aux.watsup:260.1-260.84
 def $globalsxt(externtype*) : globaltype*
   ;; 2-syntax-aux.watsup:268.1-268.26
   def $globalsxt([]) = []
@@ -18183,7 +18383,7 @@ def $globalsxt(externtype*) : globaltype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:261.1-261.65
+;; 2-syntax-aux.watsup:261.1-261.84
 def $tablesxt(externtype*) : tabletype*
   ;; 2-syntax-aux.watsup:272.1-272.25
   def $tablesxt([]) = []
@@ -18197,7 +18397,7 @@ def $tablesxt(externtype*) : tabletype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:262.1-262.63
+;; 2-syntax-aux.watsup:262.1-262.84
 def $memsxt(externtype*) : memtype*
   ;; 2-syntax-aux.watsup:276.1-276.23
   def $memsxt([]) = []
@@ -22804,10 +23004,10 @@ syntax valtype =
   | REF{nul : nul, heaptype : heaptype}(nul : nul, heaptype : heaptype)
   | BOT
 
-;; 1-syntax.watsup:168.1-169.16
+;; 1-syntax.watsup:190.1-191.16
 syntax resulttype = list(syntax valtype)
 
-;; 1-syntax.watsup:176.1-176.66
+;; 1-syntax.watsup:198.1-198.66
 syntax storagetype =
   | BOT
   | I32
@@ -22819,31 +23019,31 @@ syntax storagetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:189.1-190.18
+;; 1-syntax.watsup:211.1-212.18
 syntax fieldtype =
   | `%%`{mut : mut, storagetype : storagetype}(mut : mut, storagetype : storagetype)
 
-;; 1-syntax.watsup:192.1-192.70
+;; 1-syntax.watsup:214.1-214.70
 syntax functype =
   | `%->%`{resulttype : resulttype}(resulttype : resulttype, resulttype)
 
-;; 1-syntax.watsup:193.1-193.64
+;; 1-syntax.watsup:215.1-215.64
 syntax structtype = list(syntax fieldtype)
 
-;; 1-syntax.watsup:194.1-194.53
+;; 1-syntax.watsup:216.1-216.53
 syntax arraytype = fieldtype
 
-;; 1-syntax.watsup:196.1-199.42
+;; 1-syntax.watsup:218.1-221.42
 syntax comptype =
   | STRUCT{structtype : structtype}(structtype : structtype)
   | ARRAY{arraytype : arraytype}(arraytype : arraytype)
   | FUNC{functype : functype}(functype : functype)
 
-;; 1-syntax.watsup:201.1-202.49
+;; 1-syntax.watsup:223.1-224.49
 syntax subtype =
   | SUB{fin : fin, typeuse* : typeuse*, comptype : comptype}(fin : fin, typeuse*{typeuse : typeuse} : typeuse*, comptype : comptype)
 
-;; 1-syntax.watsup:204.1-205.49
+;; 1-syntax.watsup:226.1-227.49
 syntax rectype =
   | REC{list : list(syntax subtype)}(list : list(syntax subtype))
 }
@@ -22877,6 +23077,56 @@ syntax Cnn =
   | F32
   | F64
   | V128
+
+;; 1-syntax.watsup
+def $ANYREF : reftype
+  ;; 1-syntax.watsup
+  def $ANYREF = REF_reftype(`NULL%?`_nul(?(())), ANY_heaptype)
+
+;; 1-syntax.watsup
+def $EQREF : reftype
+  ;; 1-syntax.watsup
+  def $EQREF = REF_reftype(`NULL%?`_nul(?(())), EQ_heaptype)
+
+;; 1-syntax.watsup
+def $I31REF : reftype
+  ;; 1-syntax.watsup
+  def $I31REF = REF_reftype(`NULL%?`_nul(?(())), I31_heaptype)
+
+;; 1-syntax.watsup
+def $STRUCTREF : reftype
+  ;; 1-syntax.watsup
+  def $STRUCTREF = REF_reftype(`NULL%?`_nul(?(())), STRUCT_heaptype)
+
+;; 1-syntax.watsup
+def $ARRAYREF : reftype
+  ;; 1-syntax.watsup
+  def $ARRAYREF = REF_reftype(`NULL%?`_nul(?(())), ARRAY_heaptype)
+
+;; 1-syntax.watsup
+def $FUNCREF : reftype
+  ;; 1-syntax.watsup
+  def $FUNCREF = REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype)
+
+;; 1-syntax.watsup
+def $EXTERNREF : reftype
+  ;; 1-syntax.watsup
+  def $EXTERNREF = REF_reftype(`NULL%?`_nul(?(())), EXTERN_heaptype)
+
+;; 1-syntax.watsup
+def $NULLREF : reftype
+  ;; 1-syntax.watsup
+  def $NULLREF = REF_reftype(`NULL%?`_nul(?(())), NONE_heaptype)
+
+;; 1-syntax.watsup
+def $NULLFUNCREF : reftype
+  ;; 1-syntax.watsup
+  def $NULLFUNCREF = REF_reftype(`NULL%?`_nul(?(())), NOFUNC_heaptype)
+
+;; 1-syntax.watsup
+def $NULLEXTERNREF : reftype
+  ;; 1-syntax.watsup
+  def $NULLEXTERNREF = REF_reftype(`NULL%?`_nul(?(())), NOEXTERN_heaptype)
 
 ;; 1-syntax.watsup
 syntax packtype =
@@ -23380,7 +23630,7 @@ syntax sz =
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:615.1-616.22
+;; 1-syntax.watsup:637.1-638.22
 syntax instr =
   | NOP
   | UNREACHABLE
@@ -23898,7 +24148,7 @@ relation Expand: `%~~%`(deftype, comptype)
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:259.1-259.64
+;; 2-syntax-aux.watsup:259.1-259.84
 def $funcsxt(externtype*) : deftype*
   ;; 2-syntax-aux.watsup:264.1-264.24
   def $funcsxt([]) = []
@@ -23912,7 +24162,7 @@ def $funcsxt(externtype*) : deftype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:260.1-260.66
+;; 2-syntax-aux.watsup:260.1-260.84
 def $globalsxt(externtype*) : globaltype*
   ;; 2-syntax-aux.watsup:268.1-268.26
   def $globalsxt([]) = []
@@ -23926,7 +24176,7 @@ def $globalsxt(externtype*) : globaltype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:261.1-261.65
+;; 2-syntax-aux.watsup:261.1-261.84
 def $tablesxt(externtype*) : tabletype*
   ;; 2-syntax-aux.watsup:272.1-272.25
   def $tablesxt([]) = []
@@ -23940,7 +24190,7 @@ def $tablesxt(externtype*) : tabletype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:262.1-262.63
+;; 2-syntax-aux.watsup:262.1-262.84
 def $memsxt(externtype*) : memtype*
   ;; 2-syntax-aux.watsup:276.1-276.23
   def $memsxt([]) = []

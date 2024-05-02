@@ -1054,9 +1054,19 @@ warning: rule `Valtype_sub/ref` was never spliced
 warning: rule `Valtype_sub/bot` was never spliced
 warning: rule `Vectype_ok` was never spliced
 warning: rule `Vectype_sub` was never spliced
+warning: definition `ANYREF` was never spliced
+warning: definition `ARRAYREF` was never spliced
 warning: definition `E` was never spliced
+warning: definition `EQREF` was never spliced
+warning: definition `EXTERNREF` was never spliced
+warning: definition `FUNCREF` was never spliced
+warning: definition `I31REF` was never spliced
 warning: definition `Ki` was never spliced
 warning: definition `M` was never spliced
+warning: definition `NULLEXTERNREF` was never spliced
+warning: definition `NULLFUNCREF` was never spliced
+warning: definition `NULLREF` was never spliced
+warning: definition `STRUCTREF` was never spliced
 warning: definition `allocdata` was never spliced
 warning: definition `allocdatas` was never spliced
 warning: definition `allocelem` was never spliced
@@ -1492,9 +1502,19 @@ warning: rule prose `valid/select` was never spliced
 warning: rule prose `valid/drop` was never spliced
 warning: rule prose `valid/unreachable` was never spliced
 warning: rule prose `valid/nop` was never spliced
+warning: definition prose `ANYREF` was never spliced
+warning: definition prose `ARRAYREF` was never spliced
 warning: definition prose `E` was never spliced
+warning: definition prose `EQREF` was never spliced
+warning: definition prose `EXTERNREF` was never spliced
+warning: definition prose `FUNCREF` was never spliced
+warning: definition prose `I31REF` was never spliced
 warning: definition prose `Ki` was never spliced
 warning: definition prose `M` was never spliced
+warning: definition prose `NULLEXTERNREF` was never spliced
+warning: definition prose `NULLFUNCREF` was never spliced
+warning: definition prose `NULLREF` was never spliced
+warning: definition prose `STRUCTREF` was never spliced
 warning: definition prose `allocdata` was never spliced
 warning: definition prose `allocdatas` was never spliced
 warning: definition prose `allocelem` was never spliced

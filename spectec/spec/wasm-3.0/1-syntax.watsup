@@ -165,6 +165,28 @@ syntax Fnn hint(show F#n) = F32 | F64
 syntax Vnn hint(show V#n) = V128
 syntax Cnn hint(show t) = Inn | Fnn | Vnn
 
+def $ANYREF    : reftype hint(show ANYREF)
+def $EQREF     : reftype hint(show EQREF)
+def $I31REF    : reftype hint(show I31REF)
+def $STRUCTREF : reftype hint(show STRUCTREF)
+def $ARRAYREF  : reftype hint(show ARRAYREF)
+def $FUNCREF   : reftype hint(show FUNCREF)
+def $EXTERNREF : reftype hint(show EXTERNREF)
+def $NULLREF   : reftype hint(show NULLREF)
+def $NULLFUNCREF : reftype hint(show NULLFUNCREF)
+def $NULLEXTERNREF : reftype hint(show NULLEXTERNREF)
+
+def $ANYREF    = (REF NULL ANY)
+def $EQREF     = (REF NULL EQ)
+def $I31REF    = (REF NULL I31)
+def $STRUCTREF = (REF NULL STRUCT)
+def $ARRAYREF  = (REF NULL ARRAY)
+def $FUNCREF   = (REF NULL FUNC)
+def $EXTERNREF = (REF NULL EXTERN)
+def $NULLREF   = (REF NULL NONE)
+def $NULLFUNCREF = (REF NULL NOFUNC)
+def $NULLEXTERNREF = (REF NULL NOEXTERN)
+
 syntax resulttype hint(desc "result type") =
   list(valtype)
 

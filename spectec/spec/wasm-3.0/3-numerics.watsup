@@ -33,7 +33,7 @@ def $cvtop(numtype_1, numtype_2, cvtop, sx?, num_(numtype_1)) : num_(numtype_2)*
 def $wrap(M, N, iN(M)) : iN(N)                      hint(show $wrap_((%,%))#((%)))
 def $ext(M, N, sx, iN(M)) : iN(N)                   hint(show $ext_((%,%))^(%)#((%)))
 def $trunc(M, N, sx, fN(M)) : iN(N)                 hint(show $trunc_((%,%))^(%)#((%)))
-def $trunc_sat(M, N, sx, fN(M)) : iN(N)             hint(show $trunc_sat_((%,%))^(%)#((%)))
+def $trunc_sat(M, N, sx, fN(M)) : iN(N)             hint(show $trunc__sat_((%,%))^(%)#((%)))
 def $demote(M, N, fN(M)) : fN(N)                    hint(show $demote_((%,%))#((%)))
 def $promote(M, N, fN(M)) : fN(N)                   hint(show $promote_((%,%))#((%)))
 def $convert(M, N, sx, iN(M)) : fN(N)               hint(show $convert_((%,%))^(%)#((%)))
@@ -88,10 +88,12 @@ def $iabs(N, iN(N)) : iN(N)             hint(show $iabs_(%,%))
 def $ineg(N, iN(N)) : iN(N)             hint(show $ineg_(%,%))
 def $imin(N, sx, iN(N), iN(N)) : iN(N)  hint(show $imin_(%)^(%)%((%,%)))
 def $imax(N, sx, iN(N), iN(N)) : iN(N)  hint(show $imax_(%)^(%)%((%,%)))
+;; TODO: make add/sub_sat
 def $iaddsat(N, sx, iN(N), iN(N)) : iN(N)  hint(show $iaddsat_(%)^(%)#((%,%)))
 def $isubsat(N, sx, iN(N), iN(N)) : iN(N)  hint(show $isubsat_(%)^(%)#((%,%)))
-def $iavgr_u(N, iN(N), iN(N)) : iN(N)   hint(show $iavgr_u_(%,%,%))
-def $iq15mulrsat_s(N, iN(N), iN(N)) : iN(N) hint(show $iq15mulrsat_s_(%,%,%))
+;; TODO: make sx parameter
+def $iavgr_u(N, iN(N), iN(N)) : iN(N)   hint(show $iavgr__u_(%,%,%))
+def $iq15mulrsat_s(N, iN(N), iN(N)) : iN(N) hint(show $iq15mulrsat__s_(%,%,%))
 
 def $fadd(N, fN(N), fN(N)) : fN(N)      hint(show $fadd_(%,%,%))
 def $fsub(N, fN(N), fN(N)) : fN(N)      hint(show $fsub_(%,%,%))

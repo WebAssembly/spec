@@ -75,8 +75,7 @@ let with_syntax_decoration b env = {env with deco_typ = b}
 let with_rule_decoration b env = {env with deco_rule = b}
 let without_macros b env =
   if not b then env else
-  env_with_config env
-    {env.config with macros_for_atoms = false; macros_for_ids = false}
+  env_with_config env {env.config with macros_for_ids = false}
 
 
 let is_atom_typ t =
@@ -85,18 +84,31 @@ let is_atom_typ t =
   | _ -> false
 
 
+let ends_sub id = id <> "" && id.[String.length id - 1] = '_'
+let chop_sub id = String.sub id 0 (String.length id - 1)
+let split_sub id = if ends_sub id then chop_sub id, "_" else id, ""
+
+let ends_sub_atom atom = ends_sub (Il.Atom.string_of_atom atom)
+let chop_sub_atom atom =
+  (match atom.it with
+  | Il.Atom.Atom id -> Il.Atom.Atom (chop_sub id)
+  | Il.Atom.ArrowSub -> Il.Atom.Arrow
+  | Il.Atom.Arrow2Sub -> Il.Atom.Arrow2
+  | _ -> assert false
+  ) $$ atom.at % atom.note
+
 let typed_id id _id1 = id (* TODO ^ ":" ^ id1 *)
 
 let env_hints name map id hints =
   List.iter (fun {hintid; hintexp} ->
     if hintid.it = name then
-    let exps = match Map.find_opt id !map with Some exps -> exps | None -> [] in
-    map := Map.add id (hintexp::exps) !map
+    let exps = match Map.find_opt id.it !map with Some exps -> exps | None -> [] in
+    map := Map.add id.it (hintexp::exps) !map
   ) hints
 
 let env_atom map atom id1 hints =
   let id = El.Print.string_of_atom atom in
-  env_hints "show" map (typed_id id id1) hints
+  env_hints "show" map (typed_id id id1 $ atom.at) hints
 
 let env_typfield env id1 = function
   | Elem (atom, _, hints) -> env_atom env.show_field atom id1 hints
@@ -139,34 +151,32 @@ let env_typ env id1 t =
 let env_hintdef env hd =
   match hd.it with
   | AtomH (id, hints) ->
-    env_hints "show" env.show_field id.it hints;
-    env_hints "show" env.show_case id.it hints
+    env_hints "show" env.show_field id hints;
+    env_hints "show" env.show_case id hints
   | TypH (id1, id2, hints) ->
-    let id = if id2.it = "" then id1.it else id1.it ^ "/" ^ id2.it in
+    let id = if id2.it = "" then id1 else (id1.it ^ "/" ^ id2.it) $ id2.at in
     env_hints "desc" env.desc_typ id hints;
-    env_hints "macro" env.macro_typ id1.it hints;
-    env_hints "macro" env.macro_var id1.it hints;
-    env_hints "show" env.show_typ id1.it hints;
-    env_hints "show" env.show_var id1.it hints
+    env_hints "macro" env.macro_typ id1 hints;
+    env_hints "macro" env.macro_var id1 hints;
+    env_hints "show" env.show_typ id1 hints;
+    env_hints "show" env.show_var id1 hints
   | GramH (id1, id2, hints) ->
-    let id = if id2.it = "" then id1.it else id1.it ^ "/" ^ id2.it in
+    let id = if id2.it = "" then id1 else (id1.it ^ "/" ^ id2.it) $ id2.at in
     env_hints "desc" env.desc_gram id hints;
     env_hints "macro" env.macro_gram id hints;
-    env_hints "show" env.show_gram id1.it hints
+    env_hints "show" env.show_gram id1 hints
   | RelH (id, hints) ->
-    env_hints "macro" env.macro_rel id.it hints;
-    env_hints "show" env.show_rel id.it hints
+    env_hints "macro" env.macro_rel id hints;
+    env_hints "show" env.show_rel id hints
   | VarH (id, hints) ->
-    env_hints "macro" env.macro_var id.it hints;
-    env_hints "show" env.show_var id.it hints
+    env_hints "macro" env.macro_var id hints;
+    env_hints "show" env.show_var id hints
   | DecH (id, hints) ->
-    env_hints "macro" env.macro_def id.it hints;
-    env_hints "show" env.show_def id.it hints
+    env_hints "macro" env.macro_def id hints;
+    env_hints "show" env.show_def id hints
 
 let env_macro map id =
-  let n = String.length id.it - 1 in
-  let id' = if id.it.[n] = '_' then String.sub id.it 0 n else id.it in
-  map := Map.add id' [TextE id' $ id.at] !map
+  map := Map.add id.it [TextE "%" $ id.at] !map
 
 let env_def env d =
   match d.it with
@@ -261,6 +271,52 @@ let as_tup_arg a =
   | _ -> [a]
 
 
+(* Macro names *)
+
+let atom_macro atom =
+  let open Il.Atom in
+  match atom.it with
+  | Atom s -> s
+  | Infinity -> "infty"
+  | Bot -> "bot"
+  | Top -> "top"
+  | Dot -> "dot"
+  | Dot2 -> "dotdot"
+  | Dot3 -> "dots"
+  | Semicolon -> "semicolon"
+  | Backslash -> "setminus"
+  | In -> "in"
+  | Arrow | ArrowSub -> "rightarrow"
+  | Arrow2 | Arrow2Sub -> "Rightarrow"
+  | Colon -> "colon"
+  | Sub -> "leq"
+  | Sup -> "geq"
+  | Assign -> "assign"
+  | Equal -> "equal"
+  | Equiv -> "equiv"
+  | Approx -> "approx"
+  | SqArrow -> "hookrightarrow"
+  | SqArrowStar -> "hookrightarrowast"
+  | Prec -> "prec"
+  | Succ -> "succ"
+  | Tilesturn -> "dashv"
+  | Turnstile -> "vdash"
+  | Quest -> "quest"
+  | Plus -> "plus"
+  | Star -> "ast"
+  | Comma -> "comma"
+  | Comp -> "oplus"
+  | Bar -> "mid"
+  | BigComp -> "bigoplus"
+  | BigAnd -> "bigwedge"
+  | BigOr -> "bigvee"
+  | LParen -> "lparen"
+  | RParen -> "rparen"
+  | LBrack -> "lbrack"
+  | RBrack -> "rbrack"
+  | LBrace -> "lbrace"
+  | RBrace -> "rbrace"
+
 
 (* Show expansions *)
 
@@ -270,69 +326,103 @@ let render_exp_fwd = ref (fun _ -> assert false)
 let render_arg_fwd = ref (fun _ -> assert false)
 let render_args_fwd = ref (fun _ -> assert false)
 
-let rec expand_iter args i iter =
+let macro_template env macro name =
+  if not env.config.macros_for_ids then None else
+  match Map.find_opt name !macro with
+  | Some ({it = TextE s; _}::_) -> Some (String.split_on_char '%' s)
+  | _ ->
+(*
+Printf.printf "[macro not found %s]\n%!" name;
+Printf.printf "%s\n%!" (String.concat " " (List.map fst (Map.bindings !macro)));
+*)
+   None
+
+let expand_name mactempl id = String.concat id mactempl
+
+let expand_atom _map mactempl atom =
+  match mactempl with
+  | Some m when atom.it <> Il.Atom.Atom "_" ->
+    let name' = expand_name m (atom_macro atom) in
+    {atom with it = Il.Atom.Atom name'}
+  | _ -> atom
+
+let expand_id map mactempl id =
+  match mactempl with
+  | None -> id
+  | Some m ->
+    let name, sub = split_sub id.it in
+    let id' = {id with it = expand_name m name ^ sub} in
+    if not (Map.mem id'.it !map) then env_macro map id';
+    id'
+
+let rec expand_iter env mactempl args i iter =
   match iter with
   | Opt | List | List1 -> iter
-  | ListN (e, id_opt) -> ListN (expand_exp args i e, id_opt)
+  | ListN (e, id_opt) -> ListN (expand_exp env mactempl args i e, id_opt)
 
-and expand_exp args i e =
+and expand_exp env mactempl args i e =
   (match e.it with
-  | AtomE _ | BoolE _ | NatE _ | TextE _ | EpsE -> e.it
-  | VarE (id, args') -> VarE (id, List.map (expand_arg args i) args')
-  | UnE (op, e) -> UnE (op, expand_exp args i e)
+  | AtomE atom -> AtomE (expand_atom env.macro_case mactempl atom)
+  | BoolE _ | NatE _ | TextE _ | EpsE -> e.it
+  | VarE (id, args') ->
+    VarE (expand_id env.macro_var mactempl id,
+      List.map (expand_arg env mactempl args i) args')
+  | UnE (op, e) -> UnE (op, expand_exp env mactempl args i e)
   | BinE (e1, op, e2) ->
-    let e1' = expand_exp args i e1 in
-    let e2' = expand_exp args i e2 in
+    let e1' = expand_exp env mactempl args i e1 in
+    let e2' = expand_exp env mactempl args i e2 in
     BinE (e1', op, e2')
   | CmpE (e1, op, e2) ->
-    let e1' = expand_exp args i e1 in
-    let e2' = expand_exp args i e2 in
+    let e1' = expand_exp env mactempl args i e1 in
+    let e2' = expand_exp env mactempl args i e2 in
     CmpE (e1', op, e2')
-  | SeqE es -> SeqE (List.map (expand_exp args i) es)
+  | SeqE es -> SeqE (List.map (expand_exp env mactempl args i) es)
   | IdxE (e1, e2) ->
-    let e1' = expand_exp args i e1 in
-    let e2' = expand_exp args i e2 in
+    let e1' = expand_exp env mactempl args i e1 in
+    let e2' = expand_exp env mactempl args i e2 in
     IdxE (e1', e2')
   | SliceE (e1, e2, e3) ->
-    let e1' = expand_exp args i e1 in
-    let e2' = expand_exp args i e2 in
-    let e3' = expand_exp args i e3 in
+    let e1' = expand_exp env mactempl args i e1 in
+    let e2' = expand_exp env mactempl args i e2 in
+    let e3' = expand_exp env mactempl args i e3 in
     SliceE (e1', e2', e3')
   | UpdE (e1, p, e2) ->
-    let e1' = expand_exp args i e1 in
-    let p' = expand_path args i p in
-    let e2' = expand_exp args i e2 in
+    let e1' = expand_exp env mactempl args i e1 in
+    let p' = expand_path env mactempl args i p in
+    let e2' = expand_exp env mactempl args i e2 in
     UpdE (e1', p', e2')
   | ExtE (e1, p, e2) ->
-    let e1' = expand_exp args i e1 in
-    let p' = expand_path args i p in
-    let e2' = expand_exp args i e2 in
+    let e1' = expand_exp env mactempl args i e1 in
+    let p' = expand_path env mactempl args i p in
+    let e2' = expand_exp env mactempl args i e2 in
     ExtE (e1', p', e2')
-  | StrE efs -> StrE (map_nl_list (expand_expfield args i) efs)
-  | DotE (e, atom) -> DotE (expand_exp args i e, atom)
+  | StrE efs -> StrE (map_nl_list (expand_expfield env mactempl args i) efs)
+  | DotE (e, atom) -> DotE (expand_exp env mactempl args i e, atom)
   | CommaE (e1, e2) ->
-    let e1' = expand_exp args i e1 in
-    let e2' = expand_exp args i e2 in
+    let e1' = expand_exp env mactempl args i e1 in
+    let e2' = expand_exp env mactempl args i e2 in
     CommaE (e1', e2')
   | CompE (e1, e2) ->
-    let e1' = expand_exp args i e1 in
-    let e2' = expand_exp args i e2 in
+    let e1' = expand_exp env mactempl args i e1 in
+    let e2' = expand_exp env mactempl args i e2 in
     CompE (e1', e2')
-  | LenE e -> LenE (expand_exp args i e)
+  | LenE e -> LenE (expand_exp env mactempl args i e)
   | SizeE id -> SizeE id
-  | ParenE (e, b) -> ParenE (expand_exp args i e, b)
-  | TupE es -> TupE (List.map (expand_exp args i) es)
+  | ParenE (e, b) -> ParenE (expand_exp env mactempl args i e, b)
+  | TupE es -> TupE (List.map (expand_exp env mactempl args i) es)
   | InfixE (e1, atom, e2) ->
-    let e1' = expand_exp args i e1 in
-    let e2' = expand_exp args i e2 in
+    let e1' = expand_exp env mactempl args i e1 in
+    let e2' = expand_exp env mactempl args i e2 in
     InfixE (e1', atom, e2')
-  | BrackE (l, e1, r) -> BrackE (l, expand_exp args i e1, r)
-  | CallE (id, args') -> CallE (id, List.map (expand_arg args i) args')
+  | BrackE (l, e1, r) -> BrackE (l, expand_exp env mactempl args i e1, r)
+  | CallE (id, args') ->
+    CallE (expand_id env.macro_def mactempl id,
+      List.map (expand_arg env mactempl args i) args')
   | IterE (e1, iter) ->
-    let e1' = expand_exp args i e1 in
-    let iter' = expand_iter args i iter in
+    let e1' = expand_exp env mactempl args i e1 in
+    let iter' = expand_iter env mactempl args i iter in
     IterE (e1', iter')
-  | TypE (e1, t) -> TypE (expand_exp args i e1, t)
+  | TypE (e1, t) -> TypE (expand_exp env mactempl args i e1, t)
   | HoleE (`Num j) ->
     (match List.nth_opt args j with
     | None -> raise Arity_mismatch
@@ -341,7 +431,7 @@ and expand_exp args i e =
       | ExpA eJ -> eJ.it
       | _ -> CallE ("" $ e.at, [arg])
     )
-  | HoleE `Next -> (expand_exp args i (HoleE (`Num !i) $ e.at)).it
+  | HoleE `Next -> (expand_exp env mactempl args i (HoleE (`Num !i) $ e.at)).it
   | HoleE `Rest ->
     let args' = try Lib.List.drop !i args with Failure _ -> raise Arity_mismatch in
     i := List.length args;
@@ -351,62 +441,65 @@ and expand_exp args i e =
     ) args')
   | HoleE `None -> HoleE `None
   | FuseE (e1, e2) ->
-    let e1' = expand_exp args i e1 in
-    let e2' = expand_exp args i e2 in
+    let e1' = expand_exp env mactempl args i e1 in
+    let e2' = expand_exp env mactempl args i e2 in
     FuseE (e1', e2')
   ) $ e.at
 
-and expand_expfield args i (atom, e) =
-  (atom, expand_exp args i e)
+and expand_expfield env mactempl args i (atom, e) =
+  (expand_atom env.macro_field mactempl atom, expand_exp env mactempl args i e)
 
-and expand_path args i p =
+and expand_path env mactempl args i p =
   (match p.it with
   | RootP -> RootP
   | IdxP (p1, e1) ->
-    let p1' = expand_path args i p1 in
-    let e1' = expand_exp args i e1 in
+    let p1' = expand_path env mactempl args i p1 in
+    let e1' = expand_exp env mactempl args i e1 in
     IdxP (p1', e1')
   | SliceP (p1, e1, e2) ->
-    let p1' = expand_path args i p1 in
-    let e1' = expand_exp args i e1 in
-    let e2' = expand_exp args i e2 in
+    let p1' = expand_path env mactempl args i p1 in
+    let e1' = expand_exp env mactempl args i e1 in
+    let e2' = expand_exp env mactempl args i e2 in
     SliceP (p1', e1', e2')
-  | DotP (p1, atom) -> DotP (expand_path args i p1, atom)
+  | DotP (p1, atom) ->
+    DotP (expand_path env mactempl args i p1,
+      expand_atom env.macro_field mactempl atom)
   ) $ p.at
 
-and expand_arg args i a =
+and expand_arg env mactempl args i a =
   ref (match !(a.it) with
-  | ExpA e -> ExpA (expand_exp args i e)
+  | ExpA e -> ExpA (expand_exp env mactempl args i e)
   | a' -> a'
   ) $ a.at
-
-
-let ends_sub id = id <> "" && id.[String.length id - 1] = '_'
-let chop_sub id = String.sub id 0 (String.length id - 1)
-
-let ends_sub_atom atom = ends_sub (Il.Atom.string_of_atom atom)
-let chop_sub_atom atom =
-  (match atom.it with
-  | Il.Atom.Atom id -> Il.Atom.Atom (chop_sub id)
-  | Il.Atom.ArrowSub -> Il.Atom.Arrow
-  | Il.Atom.Arrow2Sub -> Il.Atom.Arrow2
-  | _ -> assert false
-  ) $$ atom.at % atom.note
 
 
 (* Attempt to show-expand the application `id(args)`, using the hints `show`,
  * and the function `render` for rendering the resulting expression.
  * If no hint can be found, fall back to the default of rendering `f`.
  *)
-let render_expand render env (show : exp list Map.t ref) id args f =
+let render_expand render env (show : exp list Map.t ref) macro id args f =
   match Map.find_opt id.it !show with
-  | None -> f ()
+  | None ->
+(*
+(if env.config.macros_for_ids then (
+Printf.printf "[expand not found %s]\n%!" id.it;
+Printf.printf "%s\n%!" (String.concat " " (List.map fst (Map.bindings !show)))
+));
+*)
+   f ()
   | Some showexps ->
+    let mactempl = macro_template env macro id.it in
     let rec attempt = function
       | [] -> f ()
       | showexp::showexps' ->
         try
-          let e = expand_exp args (ref 1) showexp in
+(*
+(if env.config.macros_for_ids then
+let m = match mactempl with None -> "-" | Some l -> String.concat "%" l in
+Printf.printf "[expand attempt %s %s] %s\n%!" id.it m (El.Print.string_of_exp showexp)
+);
+*)
+          let e = expand_exp env mactempl args (ref 1) showexp in
           (* Avoid cyclic expansion *)
           show := Map.remove id.it !show;
           Fun.protect (fun () -> render env e)
@@ -416,23 +509,19 @@ let render_expand render env (show : exp list Map.t ref) id args f =
            * e.g., using CONST for both instruction and relation. *)
     in attempt showexps
 
-(* Same as render_expand, but with rendered id funnelled as argument 0 *)
-let render_expand_id render_id render_exp env show id args f =
-  let atom = Il.Atom.(Atom (" " ^ render_id env id) $$ id.at % info "") in
-  let arg0 = arg_of_exp (AtomE atom $ id.at) in
-  render_expand render_exp env show id (arg0::args) f
-
 (* Render the application `id(args)`, using the hints `show`,
  * and the function `render_id`, `render_exp` for rendering the id and
  * possible show expansion results, respectively.
  *)
-let render_apply render_id render_exp env show id args =
-  render_expand_id render_id render_exp env show id args
+let render_apply render_id render_exp env show macro id args =
+  let atom = Il.Atom.(Atom (" " ^ render_id env id) $$ id.at % info "") in
+  let arg0 = arg_of_exp (AtomE atom $ id.at) in
+  render_expand render_exp env show macro id (arg0::args)
     (fun () ->
       match args with
       | arg::args when ends_sub id.it ->
         (* Handle subscripting *)
-        "{" ^ render_id env (chop_sub id.it $ id.at) ^
+        "{" ^ render_id env id ^
         "}_{" ^
           String.concat ", " (List.map (!render_arg_fwd env) (as_tup_arg arg)) ^
         "}" ^ !render_args_fwd env args
@@ -446,9 +535,12 @@ let is_digit = Lib.Char.is_digit_ascii
 let is_upper = Lib.Char.is_uppercase_ascii
 let lower = String.lowercase_ascii
 
-let rec chop_tick id =
-  if id.[String.length id - 1] <> '\'' then id else
-  chop_tick (String.sub id 0 (String.length id - 1))
+let split_ticks id =
+  let i = ref (String.length id) in
+  while !i > 0 && id.[!i - 1] = '\'' do decr i done;
+  String.sub id 0 !i, String.sub id !i (String.length id - !i)
+
+let chop_ticks id = fst (split_ticks id)
 
 let rec chop_sub_exp e =
   match e.it with
@@ -464,7 +556,7 @@ let rec chop_sub_exp e =
   | _ -> None
 
 let dash_id = Str.(global_replace (regexp "-") "{-}")
-let quote_id = Str.(global_replace (regexp "_") "\\_")
+let quote_id = Str.(global_replace (regexp "_+") "\\_")
 let shrink_id = Str.(global_replace (regexp "[0-9]+") "{\\\\scriptstyle\\0}")
 
 let id_style = function
@@ -473,59 +565,55 @@ let id_style = function
   | `Atom -> "\\mathsf"
   | `Token -> "\\mathtt"
 
-let render_id' env style id macro =
-  match macro with
-  | Some s when env.config.macros_for_ids -> "\\" ^ s
+let render_id' env style id mactempl =
+  match mactempl with
+  | Some m when env.config.macros_for_ids -> "\\" ^ expand_name m id
   | _ ->
 (*
 if env.config.macros_for_ids && String.length id > 2 && (style = `Var || style = `Func) then
-Printf.printf "[id w/o macro] %s%s\n%!" (if style = `Func then "$" else "") id;
+Printf.eprintf "[id w/o macro] %s%s\n%!" (if style = `Func then "$" else "") id;
 *)
-    let id' = shrink_id id in
+    let id' = shrink_id (quote_id id) in
     if style = `Var && String.length id' = 1 && Lib.Char.is_letter_ascii id'.[0]
     then id'
-    else id_style style ^ "{" ^ id' ^ "}"
+    else id_style style ^ "{" ^ (if style = `Atom then lower id' else id') ^ "}"
 
 let rec render_id_sub style show macro env first at = function
   | [] -> ""
   | ""::ss -> render_id_sub style show macro env first at ss
-  | s::ss when style = `Var && not first && is_upper s.[0] && not (Set.mem (chop_tick s) !(env.vars)) ->
+  | s::ss when style = `Var && not first && is_upper s.[0] && not (Set.mem (chop_ticks s) !(env.vars)) ->
     render_id_sub `Atom show macro env first at (lower s :: ss)  (* subscripts may be atoms *)
-  | s1::""::ss -> render_id_sub style show macro env first at (s1::ss)
+  | s1::""::[] -> render_id_sub style show macro env first at [s1 ^ "_"]
+  | s1::""::s2::ss ->
+    render_id_sub style show macro env first at ((s1 ^ "__" ^ s2)::ss)
   | s1::s2::ss when style = `Atom && is_upper s2.[0] ->
     render_id_sub `Atom show macro env first at ((s1 ^ "_" ^ lower s2)::ss)
   | s::ss ->
-    let rec find_ticks i =
-      if i > 0 && s.[i - 1] = '\'' then find_ticks (i - 1) else i
+    let s1, sub = split_sub s in
+    let s2, ticks = split_ticks s1 in
+    let s3 = s2 ^ sub in
+    let s4 =
+      if String.for_all is_digit s3 then s3 else
+      if not first then render_id' env style s2 None else
+      render_expand !render_exp_fwd env show macro
+        (s3 $ at) []
+        (fun () -> render_id' env style s2 (macro_template env macro s3))
     in
-    let n = String.length s in
-    let i = find_ticks n in
-    let s' = String.sub s 0 i in
-    let s'' =
-      if String.for_all is_digit s' then s' else
-      render_expand !render_exp_fwd env show
-        (s' $ at) [] (fun () ->
-          let macro =
-            match Map.find_opt s' !macro with
-            | Some ({it = TextE m; _}::_) -> Some m
-            | _ -> None
-          in render_id' env style s' macro)
-    in
-    let s''' = if i = n then s'' else s'' ^ String.sub s i (n - i) in
-    (if String.length s''' = 1 then s''' else "{" ^ s''' ^ "}") ^
+    let s5 = s4 ^ ticks in
+    (if String.length s5 = 1 then s5 else "{" ^ s5 ^ "}") ^
     match ss with
     | [] -> ""
-    | [_] -> "_" ^ render_id_sub `Var env.show_var env.macro_var env false at ss
-    | _ -> "_{" ^ render_id_sub `Var env.show_var env.macro_var env false at ss ^ "}"
+    | [_] -> "_" ^ render_id_sub `Var env.show_var (ref Map.empty) env false at ss
+    | _ -> "_{" ^ render_id_sub `Var env.show_var (ref Map.empty) env false at ss ^ "}"
 
 and render_id style show macro env id =
   render_id_sub style show macro env true id.at (String.split_on_char '_' id.it)
 
 let render_typid env id = render_id `Var env.show_typ env.macro_typ env id
 let render_varid env id = render_id `Var env.show_var env.macro_var env id
-let render_defid env id = render_id `Func (ref Map.empty) env.macro_def env id
+let render_defid env id = render_id `Func env.show_def env.macro_def env id
 let render_gramid env id = render_id `Token env.show_gram env.macro_gram env
-  (* TODO: HACK for now *)
+  (* TODO: HACK for now: if first char is upper, remove *)
   (let len = String.length id.it in
   if len > 1 && is_upper id.it.[0] then String.sub id.it 1 (len - 1) $ id.at else id)
 
@@ -533,8 +621,7 @@ let render_atomid env id note =
 (*
 if note = "" then Printf.printf "[atom w/o macro] %s\n%!" id;
 *)
-  render_id' env `Atom (quote_id (lower id))
-    (if note = "" then None else Some (id ^ note))
+  render_id' env `Atom id (if note = "" then None else Some [""; note])
 
 let render_ruleid env id1 id2 =
   let id1' =
@@ -556,7 +643,7 @@ let render_rule_deco env pre id1 id2 post =
 (* Operators *)
 
 let render_atom env atom =
-  let macros = env.config.macros_for_atoms in
+  let macros = env.config.macros_for_ids in
 (*
 if macros && Il.Atom.string_of_atom atom = "I" then
 Printf.printf "[render I] def=`%s` case=`%s`\n%!" atom.note.Il.Atom.def atom.note.Il.Atom.case;
@@ -579,53 +666,25 @@ Printf.printf "[render I] def=`%s` case=`%s`\n%!" atom.note.Il.Atom.def atom.not
   (* HACK: inject literal, already rendered stuff *)
   | Atom id when id.[0] = ' ' -> String.sub id 1 (String.length id - 1)
   | Atom id -> render_atomid env id tid
-  | _ ->
-    let macro, nonmacro_opt =
-      match atom.it with
-      | Atom _ -> assert false
-      | Infinity -> "\\infty", None
-      | Bot -> "\\bot", None
-      | Top -> "\\top", None
-      | Dot -> "\\dot", Some "."
-      | Dot2 -> "\\dotdot", Some ".."
-      | Dot3 -> "\\dots", None
-      | Semicolon -> "\\semicolon", Some ";"
-      | Backslash -> "\\setminus", None
-      | In -> "\\in", None
-      | Arrow | ArrowSub -> "\\rightarrow", None
-      | Arrow2 | Arrow2Sub -> "\\Rightarrow", None
-      | Colon -> "\\colon", Some ":"
-      | Sub -> "\\leq", None
-      | Sup -> "\\geq", None
-      | Assign -> "\\assign", Some ":="
-      | Equal -> "\\equal", Some "="
-      | Equiv -> "\\equiv", None
-      | Approx -> "\\approx", None
-      | SqArrow -> "\\hookrightarrow", None
-      | SqArrowStar -> "\\hookrightarrowast", Some "\\hookrightarrow^\\ast"
-      | Prec -> "\\prec", None
-      | Succ -> "\\succ", None
-      | Tilesturn -> "\\dashv", None
-      | Turnstile -> "\\vdash", None
-      | Quest -> "\\quest", Some "{}^?"
-      | Plus -> "\\plus", Some "{}^+"
-      | Star -> "\\ast", Some "{}^\\ast"
-      | Comma -> "\\comma", Some ","
-      | Comp -> "\\oplus", None
-      | Bar -> "\\mid", None
-      | BigComp -> "\\bigoplus", None
-      | BigAnd -> "\\bigwedge", None
-      | BigOr -> "\\bigvee", None
-      | LParen -> "\\lparen", Some "("
-      | RParen -> "\\rparen", Some ")"
-      | LBrack -> "\\lbrack", Some "{}["
-      | RBrack -> "\\rbrack", Some "]"
-      | LBrace -> "\\lbrace", Some "\\{"
-      | RBrace -> "\\rbrace", Some "\\}"
-    in
-    let nonmacro = Option.value nonmacro_opt ~default:macro in
-    let macros = false in (* TODO *)
-    if macros then macro ^ tid else nonmacro
+  | _ when false (* TODO: macros *) -> "\\" ^ atom_macro atom
+  | Dot -> "."
+  | Dot2 -> ".."
+  | Semicolon -> ";"
+  | Colon -> ":"
+  | Assign -> ":="
+  | Equal -> "="
+  | Quest -> "{}^?"
+  | Plus -> "{}^+"
+  | Star -> "{}^\\ast"
+  | Comma -> ","
+  | LParen -> "("
+  | RParen -> ")"
+  | LBrack -> "{}["
+  | RBrack -> "]"
+  | LBrace -> "\\{"
+  | RBrace -> "\\}"
+  | SqArrowStar -> "\\" ^ atom_macro {atom with it = SqArrow} ^ "^\\ast"
+  | _ -> "\\" ^ atom_macro atom
 
 let render_unop = function
   | NotOp -> "\\neg"
@@ -726,7 +785,7 @@ and render_exp env e =
   *)
   match e.it with
   | VarE (id, args) ->
-    render_apply render_varid render_exp env env.show_typ id args
+    render_apply render_varid render_exp env env.show_typ env.macro_typ id args
   | BoolE b ->
     render_atom env (Il.Atom.(Atom (string_of_bool b) $$ e.at % info "bool"))
   | NatE (DecOp, n) -> Z.to_string n
@@ -756,7 +815,7 @@ and render_exp env e =
     render_exp env e1 ^ space render_cmpop op ^ render_exp env e2
   | EpsE -> "\\epsilon"
   | AtomE atom ->
-    render_expand render_exp env env.show_case
+    render_expand render_exp env env.show_case env.macro_case
       (El.Print.string_of_atom atom $ e.at) [arg_of_exp e]
       (fun () -> render_atom env atom)
   | SeqE es ->
@@ -766,7 +825,7 @@ and render_exp env e =
       | _ -> "" $ e.at
     in
     let args = List.map arg_of_exp es in
-    render_expand render_exp env env.show_case id args
+    render_expand render_exp env env.show_case env.macro_case id args
       (fun () -> render_exp_seq env es)
   | IdxE (e1, e2) -> render_exp env e1 ^ "{}[" ^ render_exp env e2 ^ "]"
   | SliceE (e1, e2, e3) ->
@@ -797,7 +856,7 @@ and render_exp env e =
     let id = El.Print.string_of_atom atom $ atom.at in
     let e = AtomE atom $ atom.at in
     let args = List.map arg_of_exp (as_seq_exp e1 @ [e] @ as_seq_exp e2) in
-    render_expand render_exp env env.show_case id args
+    render_expand render_exp env env.show_case env.macro_case id args
       (fun () ->
         (match e1.it with
         | SeqE [] -> "{" ^ space (render_atom env) atom ^ "}\\;"
@@ -809,14 +868,14 @@ and render_exp env e =
     let el = AtomE l $ l.at in
     let er = AtomE r $ r.at in
     let args = List.map arg_of_exp ([el] @ as_seq_exp e1 @ [er]) in
-    render_expand render_exp env env.show_case id args
+    render_expand render_exp env env.show_case env.macro_case id args
       (fun () -> render_atom env l ^ render_exp env e1 ^ render_atom env r)
   | CallE (id, [arg]) when id.it = "" -> (* expansion result only *)
     render_arg env arg
   | CallE (id, args) when id.it = "" ->  (* expansion result only *)
     render_args env args
   | CallE (id, args) ->
-    render_apply render_defid render_exp env env.show_def id args
+    render_apply render_defid render_exp env env.show_def env.macro_def id args
   | IterE (e1, iter) -> "{" ^ render_exp env e1 ^ render_iter env iter ^ "}"
   | TypE ({it = VarE ({it = "_"; _}, []); _}, t) ->
     (* HACK for rendering shorthand parameters that have been turned into args
@@ -878,7 +937,7 @@ and render_fieldname env atom =
     (fun s -> s)
   ) @@ fun _ ->
   let e = AtomE atom $ atom.at in
-  render_expand render_exp env env.show_field
+  render_expand render_exp env env.show_field env.macro_field
     (El.Print.string_of_atom atom $ atom.at) [arg_of_exp e]
     (fun () -> render_atom env atom)
 
@@ -939,7 +998,8 @@ and render_exp_as_sym env e =
 and render_sym env g =
   match g.it with
   | VarG (id, args) ->
-    render_apply render_gramid render_exp_as_sym env env.show_gram id args
+    render_apply render_gramid render_exp_as_sym
+      env env.show_gram env.macro_def id args
   | NatG (DecOp, n) -> Z.to_string n
   | NatG (HexOp, n) ->
     let fmt =
@@ -1057,7 +1117,7 @@ let render_typdef env d =
   match d.it with
   | TypD (id1, _id2, args, t, _) ->
     render_typdeco env id1 ^
-    render_apply render_typid render_exp env env.show_typ id1 args ^
+    render_apply render_typid render_exp env env.show_typ env.macro_typ id1 args ^
     " &::=& " ^ render_typ env t
   | _ -> assert false
 
@@ -1065,7 +1125,8 @@ let render_gramdef env d =
   match d.it with
   | GramD (id1, _id2, ps, _t, gram, _) ->
     let args = List.map arg_of_param ps in
-    "& " ^ render_apply render_gramid render_exp_as_sym env env.show_gram id1 args ^
+    "& " ^ render_apply render_gramid render_exp_as_sym
+      env env.show_gram env.macro_gram id1 args ^
       " &::=& " ^ render_gram env gram
   | _ -> assert false
 

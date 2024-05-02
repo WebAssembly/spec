@@ -256,10 +256,10 @@ rule Expand: dt ~~ ct                          -- if $expanddt(dt) = ct
 ;; Projections
 
 ;; TODO: use built-in notation
-def $funcsxt(externtype*) : deftype*       hint(show $funcs(%))
-def $globalsxt(externtype*) : globaltype*  hint(show $globals(%))
-def $tablesxt(externtype*) : tabletype*    hint(show $tables(%))
-def $memsxt(externtype*) : memtype*        hint(show $mems(%))
+def $funcsxt(externtype*) : deftype*       hint(show $funcs(%))   hint(macro "%xt")
+def $globalsxt(externtype*) : globaltype*  hint(show $globals(%)) hint(macro "%xt")
+def $tablesxt(externtype*) : tabletype*    hint(show $tables(%))  hint(macro "%xt")
+def $memsxt(externtype*) : memtype*        hint(show $mems(%))    hint(macro "%xt")
 
 def $funcsxt(eps) = eps
 def $funcsxt((FUNC dt) xt*) = dt $funcsxt(xt*)

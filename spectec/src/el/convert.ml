@@ -24,6 +24,10 @@ let strip_var_suffix id =
   | None, Some n | Some n, None -> String.sub id.it 0 n $ id.at
   | Some n1, Some n2 -> String.sub id.it 0 (min n1 n2) $ id.at
 
+let strip_var_sub id =
+  if id.it = "" || id.it.[String.length id.it - 1] <> '_' then id else
+  String.sub id.it 0 (String.length id.it - 1) $ id.at
+
 
 let arg_of_exp e =
   ref (ExpA e) $ e.at

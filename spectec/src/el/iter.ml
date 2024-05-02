@@ -144,7 +144,7 @@ and exp e =
   | InfixE (e1, at1, e2) -> exp e1; atom at1; exp e2
   | BrackE (at1, e1, at2) -> atom at1; exp e1; atom at2
 
-and expfield (_, e) = exp e
+and expfield (at, e) = atom at; exp e
 
 and path p =
   visit_path p;

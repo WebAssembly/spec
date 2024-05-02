@@ -27,3 +27,4 @@ val pat_of_typ : typ -> exp
 val pats_of_typs : typ list -> exp list
 
 val strip_var_suffix : id -> id
+val strip_var_sub : id -> id

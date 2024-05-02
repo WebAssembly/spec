@@ -1697,7 +1697,7 @@ and elab_arg in_lhs env a p s : Il.arg option * Subst.subst =
   | TypA ({it = VarT (id', []); _} as t), TypP id when in_lhs = `Lhs ->
     let id'' = strip_var_suffix id' in
     env.typs <- bind "syntax type" env.typs id'' ([], Opaque);
-    env.gvars <- bind "variable" env.gvars id'' (VarT (id'', []) $ id''.at);
+    env.gvars <- bind "variable" env.gvars (strip_var_sub id'') (VarT (id'', []) $ id''.at);
     Some (Il.TypA (Il.VarT (id'', []) $ t.at) $ a.at), Subst.add_typid s id t
   | TypA t, TypP _ when in_lhs = `Lhs ->
     error t.at "misplaced syntax type"
@@ -1752,14 +1752,15 @@ let elab_params env ps : Il.param list =
     | ExpP (id, t) ->
       let t' = elab_typ env t in
       (* If a variable isn't globally declared, this is a local declaration. *)
-      if bound env.gvars (strip_var_suffix id) then (
-        let t2 = find "" env.gvars (strip_var_suffix id) in
+      let id' = strip_var_suffix id in
+      if bound env.gvars id' then (
+        let t2 = find "" env.gvars id' in
         if not (sub_typ env t t2) then
           error_typ2 env id.at "local variable" t t2 ", shadowing with different type"
       );
       (* Shadowing is allowed, but only with consistent type. *)
-      if bound env.vars (strip_var_suffix id) then (
-        let t2 = find "" env.vars (strip_var_suffix id) in
+      if bound env.vars id' then (
+        let t2 = find "" env.vars id' in
         if not (equiv_typ env t t2) then
           error_typ2 env id.at "local variable" t t2 ", shadowing with different type"
       )
@@ -1768,7 +1769,7 @@ let elab_params env ps : Il.param list =
       ps' @ [Il.ExpP (id, t') $ p.at]
     | TypP id ->
       env.typs <- bind "syntax type" env.typs id ([], Opaque);
-      env.gvars <- bind "variable" env.gvars id (VarT (id, []) $ id.at);
+      env.gvars <- bind "variable" env.gvars (strip_var_sub id) (VarT (id, []) $ id.at);
       ps' @ [Il.TypP id $ p.at]
     | GramP (id, t) ->
       (* Treat unbound type identifiers in t as implicitly bound. *)
@@ -1780,7 +1781,7 @@ let elab_params env ps : Il.param list =
           if id.it <> (strip_var_suffix id).it then
             error_id id "invalid identifer suffix in binding position";
           env.typs <- bind "syntax type" env.typs id ([], Opaque);
-          env.gvars <- bind "variable" env.gvars id (VarT (id, []) $ id.at);
+          env.gvars <- bind "variable" env.gvars (strip_var_sub id) (VarT (id, []) $ id.at);
         )
       ) free.typid;
       let _t' = elab_typ env t in
@@ -1800,7 +1801,7 @@ let infer_typdef env d =
     let _ps' = elab_params (local_env env) ps in
     env.typs <- bind "syntax type" env.typs id (ps, Family []);
     if ps = [] then  (* only types without parameters double as variables *)
-      env.gvars <- bind "variable" env.gvars id (VarT (id, []) $ id.at);
+      env.gvars <- bind "variable" env.gvars (strip_var_sub id) (VarT (id, []) $ id.at);
   | TypD (id1, _id2, as_, t, _hints) ->
     if bound env.typs id1 then (
       let _ps, k = find "syntax type" env.typs id1 in
@@ -1816,7 +1817,7 @@ let infer_typdef env d =
       let k = infer_typ_definition env' t in
       env.typs <- bind "syntax type" env.typs id1 (ps, k);
       if ps = [] then  (* only types without parameters double as variables *)
-        env.gvars <- bind "variable" env.gvars id1 (VarT (id1, []) $ id1.at);
+        env.gvars <- bind "variable" env.gvars (strip_var_sub id1) (VarT (id1, []) $ id1.at);
     )
   | VarD (id, t, _hints) ->
     (* This is to ensure that we get rebind errors in syntactic order. *)

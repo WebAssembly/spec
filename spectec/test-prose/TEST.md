@@ -4204,6 +4204,36 @@ utf8 char_u0*
 2. Let ch* be char_u0*.
 3. Return $concat_($utf8([ch])*).
 
+ANYREF
+1. Return (REF (NULL ?(())) ANY).
+
+EQREF
+1. Return (REF (NULL ?(())) EQ).
+
+I31REF
+1. Return (REF (NULL ?(())) I31).
+
+STRUCTREF
+1. Return (REF (NULL ?(())) STRUCT).
+
+ARRAYREF
+1. Return (REF (NULL ?(())) ARRAY).
+
+FUNCREF
+1. Return (REF (NULL ?(())) FUNC).
+
+EXTERNREF
+1. Return (REF (NULL ?(())) EXTERN).
+
+NULLREF
+1. Return (REF (NULL ?(())) NONE).
+
+NULLFUNCREF
+1. Return (REF (NULL ?(())) NOFUNC).
+
+NULLEXTERNREF
+1. Return (REF (NULL ?(())) NOEXTERN).
+
 size numty_u0
 1. If (numty_u0 is I32), then:
   a. Return 32.

@@ -28,6 +28,329 @@ $$
 \end{array}
 $$
 
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+& {\mathit{fii}} &::=& \mathsf{fii} \\
+& {\mathit{faa}} &::=& \mathsf{faa} \\
+& {\mathit{foo}} &::=& \mathsf{foo} \\
+& {\mathit{foobar}} &::=& \mathsf{bar} \\
+& {\mathit{fooboo}} &::=& \mathsf{boo} \\
+& {\mathit{fob}} &::=& \mathsf{baz} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{macros{\scriptstyle1}}} &=& 0
+  &\qquad \mbox{if}~{\mathit{fii}} = \mathsf{fii} \\
+  &&&\qquad {\land}~{\mathit{faa}} = \mathsf{faa} \\
+  &&&\qquad {\land}~{\mathit{foo}} = \mathsf{foo} \\
+  &&&\qquad {\land}~{\mathit{foobar}} = \mathsf{bar} \\
+  &&&\qquad {\land}~{\mathit{fooboo}} = \mathsf{boo} \\
+  &&&\qquad {\land}~{\mathit{fob}} = \mathsf{baz} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+& {{\mathit{ufii}}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ufii} \\
+& {{\mathit{ufaa}}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ufaa} \\
+& {{\mathit{ufoo}}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ufoo} \\
+& {{\mathit{ufoobar}}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ubar} \\
+& {{\mathit{ufooboo}}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{uboo} \\
+& {{\mathit{ufob}}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ubaz} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{macros{\scriptstyle2}}} &=& 0
+  &\qquad \mbox{if}~{\mathit{ufii}} = \mathsf{ufii} \\
+  &&&\qquad {\land}~{\mathit{ufaa}} = \mathsf{ufaa} \\
+  &&&\qquad {\land}~{\mathit{ufoo}} = \mathsf{ufoo} \\
+  &&&\qquad {\land}~{\mathit{ubar}} = \mathsf{ubar} \\
+  &&&\qquad {\land}~{\mathit{uboo}} = \mathsf{uboo} \\
+  &&&\qquad {\land}~{\mathit{ubaz}} = \mathsf{ubaz} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{fii}} &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{faa}} &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{foo}} &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathit{foobar}} &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathit{fooboo}} &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathit{fob}} &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\mathrm{ufii}}}_{x}(y) &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\mathrm{ufaa}}}_{x}(y) &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\mathrm{ufoo}}}_{x}(y) &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\mathit{ufoobar}}}_{x}(y) &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\mathit{ufooboo}}}_{x}(y) &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\mathit{ufob}}}_{x}(y) &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{foo\_bar}} &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{foo\_boo}} &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\mathrm{ufoo\_bar}}}_{x}(y) &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\mathrm{ufoo\_boo}}}_{x}(y) &=& 0 \\
+\end{array}
+$$
+
+
+```
+
+```sh
+$ (../src/exe-watsup/main.exe test.watsup --latex --latex-macros)
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{test}}_{{\mathit{sub}}_{{\mathsf{atom}}_{22}}}(n_{3_{{\mathsf{atom}}_y}}) &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\curried}}_{n_1}(n_2) &=& n_1 + n_2 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+& {\testfuse} &::=& {\mathsf{ab}}_{{\mathit{nat}}}\,{\mathit{nat}}~{\mathit{nat}} \\ &&|&
+{\mathsf{cd}}_{{\mathit{nat}}}\,{\mathit{nat}}~{\mathit{nat}} \\ &&|&
+{\mathsf{ef\_}}{{\mathit{nat}}}~{\mathit{nat}}~{\mathit{nat}} \\ &&|&
+{{\mathsf{gh}}_{{\mathit{nat}}}}{{\mathit{nat}}}~{\mathit{nat}} \\ &&|&
+{{\mathsf{ij}}_{{\mathit{nat}}}}{{\mathit{nat}}}~{\mathit{nat}} \\ &&|&
+{\mathsf{kl\_ab}}{{\mathit{nat}}}~{\mathit{nat}}~{\mathit{nat}} \\ &&|&
+{\mathsf{mn\_}}{\mathsf{ab}}~{\mathit{nat}}~{\mathit{nat}}~{\mathit{nat}} \\ &&|&
+{{\mathsf{op\_}}{\mathsf{ab}}}{{\mathit{nat}}}~{\mathit{nat}}~{\mathit{nat}} \\ &&|&
+{{\mathsf{qr}}_{{\mathit{nat}}}}{\mathsf{ab}}~{\mathit{nat}}~{\mathit{nat}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+& {\fii} &::=& \mathsf{fii} \\
+& {\faa} &::=& \mathsf{faa} \\
+& {\XfooYfooZ} &::=& \mathsf{foo} \\
+& {\foobar} &::=& \mathsf{bar} \\
+& {\fooboo} &::=& \mathsf{boo} \\
+& {\XfobYfobZ} &::=& \mathsf{baz} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\macros1} &=& 0
+  &\qquad \mbox{if}~{\fii} = \mathsf{fii} \\
+  &&&\qquad {\land}~{\faa} = \mathsf{faa} \\
+  &&&\qquad {\land}~{\XfooYfooZ} = \mathsf{foo} \\
+  &&&\qquad {\land}~{\foobar} = \mathsf{bar} \\
+  &&&\qquad {\land}~{\fooboo} = \mathsf{boo} \\
+  &&&\qquad {\land}~{\XfobYfobZ} = \mathsf{baz} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+& {{\ufii}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ufii} \\
+& {{\ufaa}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ufaa} \\
+& {{\XufooYufooZ}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ufoo} \\
+& {{\ufoobar}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ubar} \\
+& {{\ufooboo}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{uboo} \\
+& {{\XufobYufobZ}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ubaz} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\macros2} &=& 0
+  &\qquad \mbox{if}~{\mathit{ufii}} = \mathsf{ufii} \\
+  &&&\qquad {\land}~{\mathit{ufaa}} = \mathsf{ufaa} \\
+  &&&\qquad {\land}~{\mathit{ufoo}} = \mathsf{ufoo} \\
+  &&&\qquad {\land}~{\mathit{ubar}} = \mathsf{ubar} \\
+  &&&\qquad {\land}~{\mathit{uboo}} = \mathsf{uboo} \\
+  &&&\qquad {\land}~{\mathit{ubaz}} = \mathsf{ubaz} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\fii} &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\faa} &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\XfooYfooZ} &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\foobar} &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\fooboo} &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\XfobYfobZ} &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\ufii}}_{x}(y) &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\ufaa}}_{x}(y) &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\XufooYufooZ}}_{x}(y) &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\ufoobar}}_{x}(y) &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\ufooboo}}_{x}(y) &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\XufobYufobZ}}_{x}(y) &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\foo__bar} &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\foo__boo} &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\ufoo__bar}}_{x}(y) &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\ufoo__boo}}_{x}(y) &=& 0 \\
+\end{array}
+$$
+
 
 ```
 
@@ -239,6 +562,71 @@ $$
 & {\mathsf{f}}{n} &::=& \mathsf{f{\scriptstyle32}} ~|~ \mathsf{f{\scriptstyle64}} \\
 & {\mathsf{v}}{n} &::=& \mathsf{v{\scriptstyle128}} \\
 & t &::=& {\mathsf{i}}{n} ~|~ {\mathsf{f}}{n} ~|~ {\mathsf{v}}{n} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathsf{anyref} &=& (\mathsf{ref}~\mathsf{null}~\mathsf{any}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathsf{eqref} &=& (\mathsf{ref}~\mathsf{null}~\mathsf{eq}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathsf{i{\scriptstyle31}ref} &=& (\mathsf{ref}~\mathsf{null}~\mathsf{i{\scriptstyle31}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathsf{structref} &=& (\mathsf{ref}~\mathsf{null}~\mathsf{struct}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathsf{arrayref} &=& (\mathsf{ref}~\mathsf{null}~\mathsf{array}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathsf{funcref} &=& (\mathsf{ref}~\mathsf{null}~\mathsf{func}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathsf{externref} &=& (\mathsf{ref}~\mathsf{null}~\mathsf{extern}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathsf{nullref} &=& (\mathsf{ref}~\mathsf{null}~\mathsf{none}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathsf{nullfuncref} &=& (\mathsf{ref}~\mathsf{null}~\mathsf{nofunc}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathsf{nullexternref} &=& (\mathsf{ref}~\mathsf{null}~\mathsf{noextern}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
 \mbox{(result type)} & {\mathit{resulttype}} &::=& {\mathit{list}}({\mathit{valtype}}) \\
 \end{array}
 $$
@@ -1270,7 +1658,7 @@ $$
 {{\mathsf{convert}}{{{}_{\mathsf{i{\scriptstyle32}}, \mathsf{i{\scriptstyle64}}}^{{\mathit{sx}}}}}}{({\mathit{iN}})} &=& {{{{\mathrm{ext}}}_{32, 64}^{{\mathit{sx}}}}}{({\mathit{iN}})} \\
 {{\mathsf{convert}}{{{}_{\mathsf{i{\scriptstyle64}}, \mathsf{i{\scriptstyle32}}}^{{{\mathit{sx}}^?}}}}}{({\mathit{iN}})} &=& {{{\mathrm{wrap}}}_{64, 32}}{({\mathit{iN}})} \\
 {{\mathsf{convert}}{{{}_{{\mathsf{f}}{n}, {\mathsf{i}}{n}}^{{\mathit{sx}}}}}}{({\mathit{fN}})} &=& {{{{\mathrm{trunc}}}_{{|{\mathsf{f}}{n}|}, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{fN}})} \\
-{{\mathsf{convert\_sat}}{{{}_{{\mathsf{f}}{n}, {\mathsf{i}}{n}}^{{\mathit{sx}}}}}}{({\mathit{fN}})} &=& {{{{\mathrm{trunc}}_{\mathit{sat}}}_{{|{\mathsf{f}}{n}|}, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{fN}})} \\
+{{\mathsf{convert\_sat}}{{{}_{{\mathsf{f}}{n}, {\mathsf{i}}{n}}^{{\mathit{sx}}}}}}{({\mathit{fN}})} &=& {{{{\mathrm{trunc\_sat}}}_{{|{\mathsf{f}}{n}|}, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{fN}})} \\
 {{\mathsf{convert}}{{{}_{\mathsf{f{\scriptstyle32}}, \mathsf{f{\scriptstyle64}}}^{{{\mathit{sx}}^?}}}}}{({\mathit{fN}})} &=& {{{\mathrm{promote}}}_{32, 64}}{({\mathit{fN}})} \\
 {{\mathsf{convert}}{{{}_{\mathsf{f{\scriptstyle64}}, \mathsf{f{\scriptstyle32}}}^{{{\mathit{sx}}^?}}}}}{({\mathit{fN}})} &=& {{{\mathrm{demote}}}_{64, 32}}{({\mathit{fN}})} \\
 {{\mathsf{convert}}{{{}_{{\mathsf{i}}{n}, {\mathsf{f}}{n}}^{{\mathit{sx}}}}}}{({\mathit{iN}})} &=& {{{{\mathrm{convert}}}_{{|{\mathsf{i}}{n}|}, {|{\mathsf{f}}{n}|}}^{{\mathit{sx}}}}}{({\mathit{iN}})} \\
@@ -1395,11 +1783,11 @@ $$
 {{\mathsf{avgr\_u}}{{}_{{{{\mathsf{i}}{n}}{\mathsf{x}}}{N}}}}{({\mathit{v{\scriptstyle128}}}_1,\, {\mathit{v{\scriptstyle128}}}_2)} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_1^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}{\mathsf{x}}}{N}}({\mathit{v{\scriptstyle128}}}_1) \\
   &&&\qquad {\land}~{{\mathit{lane}}_2^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}{\mathsf{x}}}{N}}({\mathit{v{\scriptstyle128}}}_2) \\
-  &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}{\mathsf{x}}}{N}}^{{-1}}}}{({{{\mathrm{iavgr}}_u}_{{|{\mathsf{i}}{n}|}}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})} \\
+  &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}{\mathsf{x}}}{N}}^{{-1}}}}{({{{\mathrm{iavgr\_u}}}_{{|{\mathsf{i}}{n}|}}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})} \\
 {{\mathsf{q{\scriptstyle15}mulr\_sat\_s}}{{}_{{{{\mathsf{i}}{n}}{\mathsf{x}}}{N}}}}{({\mathit{v{\scriptstyle128}}}_1,\, {\mathit{v{\scriptstyle128}}}_2)} &=& {\mathit{v{\scriptstyle128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_1^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}{\mathsf{x}}}{N}}({\mathit{v{\scriptstyle128}}}_1) \\
   &&&\qquad {\land}~{{\mathit{lane}}_2^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}{\mathsf{x}}}{N}}({\mathit{v{\scriptstyle128}}}_2) \\
-  &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}{\mathsf{x}}}{N}}^{{-1}}}}{({{{\mathrm{iq{\scriptstyle15}mulrsat}}_s}_{{|{\mathsf{i}}{n}|}}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})} \\
+  &&&\qquad {\land}~{\mathit{v{\scriptstyle128}}} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}{\mathsf{x}}}{N}}^{{-1}}}}{({{{\mathrm{iq{\scriptstyle15}mulrsat\_s}}}_{{|{\mathsf{i}}{n}|}}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})} \\
 \end{array}
 $$
 
@@ -1555,9 +1943,9 @@ $$
 {\mathrm{vcvtop}}({{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{N_1}, {{\mathsf{f{\scriptstyle64}}}{\mathsf{x}}}{N_2}, \mathsf{convert}, {\mathit{sx}}, {\mathit{i{\scriptstyle32}}}) &=& {\mathit{f{\scriptstyle64}}}
   &\qquad \mbox{if}~{\mathit{f{\scriptstyle64}}} = {{{{\mathrm{convert}}}_{32, 64}^{{\mathit{sx}}}}}{({\mathit{i{\scriptstyle32}}})} \\
 {\mathrm{vcvtop}}({{\mathsf{f{\scriptstyle32}}}{\mathsf{x}}}{N_1}, {{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{N_2}, \mathsf{trunc\_sat}, {\mathit{sx}}, {\mathit{f{\scriptstyle32}}}) &=& {\mathit{i{\scriptstyle32}}}
-  &\qquad \mbox{if}~{\mathit{i{\scriptstyle32}}} = {{{{\mathrm{trunc}}_{\mathit{sat}}}_{32, 32}^{{\mathit{sx}}}}}{({\mathit{f{\scriptstyle32}}})} \\
+  &\qquad \mbox{if}~{\mathit{i{\scriptstyle32}}} = {{{{\mathrm{trunc\_sat}}}_{32, 32}^{{\mathit{sx}}}}}{({\mathit{f{\scriptstyle32}}})} \\
 {\mathrm{vcvtop}}({{\mathsf{f{\scriptstyle64}}}{\mathsf{x}}}{N_1}, {{\mathsf{i{\scriptstyle32}}}{\mathsf{x}}}{N_2}, \mathsf{trunc\_sat}, {\mathit{sx}}, {\mathit{f{\scriptstyle64}}}) &=& {\mathit{i{\scriptstyle32}}}
-  &\qquad \mbox{if}~{\mathit{i{\scriptstyle32}}} = {{{{\mathrm{trunc}}_{\mathit{sat}}}_{64, 32}^{{\mathit{sx}}}}}{({\mathit{f{\scriptstyle64}}})} \\
+  &\qquad \mbox{if}~{\mathit{i{\scriptstyle32}}} = {{{{\mathrm{trunc\_sat}}}_{64, 32}^{{\mathit{sx}}}}}{({\mathit{f{\scriptstyle64}}})} \\
 {\mathrm{vcvtop}}({{\mathsf{f{\scriptstyle64}}}{\mathsf{x}}}{N_1}, {{\mathsf{f{\scriptstyle32}}}{\mathsf{x}}}{N_2}, \mathsf{demote}, {{\mathit{sx}}^?}, {\mathit{f{\scriptstyle64}}}) &=& {\mathit{f{\scriptstyle32}}}
   &\qquad \mbox{if}~{\mathit{f{\scriptstyle32}}} = {{{\mathrm{demote}}}_{64, 32}}{({\mathit{f{\scriptstyle64}}})} \\
 {\mathrm{vcvtop}}({{\mathsf{f{\scriptstyle32}}}{\mathsf{x}}}{N_1}, {{\mathsf{f{\scriptstyle64}}}{\mathsf{x}}}{N_2}, \mathsf{promote}, {{\mathit{sx}}^?}, {\mathit{f{\scriptstyle32}}}) &=& {\mathit{f{\scriptstyle64}}}

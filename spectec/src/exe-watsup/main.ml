@@ -214,9 +214,11 @@ let () =
 
     | Latex ->
       log "Latex Generation...";
+      let config =
+        Backend_latex.Config.{default with macros_for_ids = !latex_macros} in
       (match !odsts with
-      | [] -> print_endline (Backend_latex.Gen.gen_string el)
-      | [odst] -> Backend_latex.Gen.gen_file odst el
+      | [] -> print_endline (Backend_latex.Gen.gen_string config el)
+      | [odst] -> Backend_latex.Gen.gen_file config odst el
       | _ ->
         prerr_endline "too many output file names";
         exit 2
@@ -258,8 +260,7 @@ let () =
       log "Splicing...";
       let config' =
         Backend_splice.Config.{config with latex = Backend_latex.Config.{config.latex with
-          macros_for_ids = !latex_macros;
-          macros_for_atoms = !latex_macros
+          macros_for_ids = !latex_macros
         }}
       in
       let env = Backend_splice.Splice.(env config' !pdsts !odsts elab_env el prose) in

@@ -157,25 +157,25 @@ Values of reference type can be stored in :ref:`tables <syntax-table>`.
 Conventions
 ...........
 
-* The reference type ${:ANYREF} is an abbreviation for ${reftype: (REF NULL ANY)}.
+* The reference type ${:$ANYREF} is an abbreviation for ${reftype: (REF NULL ANY)}.
 
-* The reference type ${:EQREF} is an abbreviation for ${reftype: (REF NULL EQ)}.
+* The reference type ${:$EQREF} is an abbreviation for ${reftype: (REF NULL EQ)}.
 
-* The reference type ${:I31REF} is an abbreviation for ${reftype: (REF NULL I31)}.
+* The reference type ${:$I31REF} is an abbreviation for ${reftype: (REF NULL I31)}.
 
-* The reference type ${:STRUCTREF} is an abbreviation for ${reftype: (REF NULL STRUCT)}.
+* The reference type ${:$STRUCTREF} is an abbreviation for ${reftype: (REF NULL STRUCT)}.
 
-* The reference type ${:ARRAYREF} is an abbreviation for ${reftype: (REF NULL ARRAY)}.
+* The reference type ${:$ARRAYREF} is an abbreviation for ${reftype: (REF NULL ARRAY)}.
 
-* The reference type ${:FUNCREF} is an abbreviation for ${reftype: (REF NULL FUNC)}.
+* The reference type ${:$FUNCREF} is an abbreviation for ${reftype: (REF NULL FUNC)}.
 
-* The reference type ${:EXTERNREF} is an abbreviation for ${reftype: (REF NULL EXTERN)}.
+* The reference type ${:$EXTERNREF} is an abbreviation for ${reftype: (REF NULL EXTERN)}.
 
-* The reference type ${:NULLREF} is an abbreviation for ${reftype: (REF NULL NONE)}.
+* The reference type ${:$NULLREF} is an abbreviation for ${reftype: (REF NULL NONE)}.
 
-* The reference type ${:NULLFUNCREF} is an abbreviation for ${reftype: (REF NULL NOFUNC)}.
+* The reference type ${:$NULLFUNCREF} is an abbreviation for ${reftype: (REF NULL NOFUNC)}.
 
-* The reference type ${:NULLEXTERNREF} is an abbreviation for ${reftype: (REF NULL NOEXTERN)}.
+* The reference type ${:$NULLEXTERNREF} is an abbreviation for ${reftype: (REF NULL NOEXTERN)}.
 
 
 .. index:: ! value type, number type, vector type, reference type
