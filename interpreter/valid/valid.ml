@@ -397,17 +397,17 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     [value_type_of_index_type it] --> [value_type_of_index_type it]
 
   | MemoryFill ->
-    ignore (memory c (0l @@ e.at));
-    [NumType I32Type; NumType I32Type; NumType I32Type] --> []
+    let MemoryType (_, it) = memory c (0l @@ e.at) in
+    [value_type_of_index_type it; NumType I32Type; value_type_of_index_type it] --> []
 
   | MemoryCopy ->
-    ignore (memory c (0l @@ e.at));
-    [NumType I32Type; NumType I32Type; NumType I32Type] --> []
+    let MemoryType (_, it) = memory c (0l @@ e.at) in
+    [value_type_of_index_type it; value_type_of_index_type it; value_type_of_index_type it] --> []
 
   | MemoryInit x ->
-    ignore (memory c (0l @@ e.at));
+    let MemoryType (_, it) = memory c (0l @@ e.at) in
     ignore (data c x);
-    [NumType I32Type; NumType I32Type; NumType I32Type] --> []
+    [value_type_of_index_type it; value_type_of_index_type it; value_type_of_index_type it] --> []
 
   | DataDrop x ->
     ignore (data c x);
