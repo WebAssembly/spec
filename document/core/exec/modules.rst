@@ -394,10 +394,10 @@ where:
    \moduleinst &=& \{~
      \begin{array}[t]{@{}l@{}}
      \MITYPES~\deftype^\ast, \\
-     \MIFUNCS~\evfuncs(\externval_{\F{im}}^\ast)~\funcaddr^\ast, \\
-     \MITABLES~\evtables(\externval_{\F{im}}^\ast)~\tableaddr^\ast, \\
-     \MIMEMS~\evmems(\externval_{\F{im}}^\ast)~\memaddr^\ast, \\
-     \MIGLOBALS~\evglobals(\externval_{\F{im}}^\ast)~\globaladdr^\ast, \\
+     \MIFUNCS~\funcsxv(\externval_{\F{im}}^\ast)~\funcaddr^\ast, \\
+     \MITABLES~\tablesxv(\externval_{\F{im}}^\ast)~\tableaddr^\ast, \\
+     \MIMEMS~\memsxv(\externval_{\F{im}}^\ast)~\memaddr^\ast, \\
+     \MIGLOBALS~\globalsxv(\externval_{\F{im}}^\ast)~\globaladdr^\ast, \\
      \MIELEMS~\elemaddr^\ast, \\
      \MIDATAS~\dataaddr^\ast, \\
      \MIEXPORTS~\exportinst^\ast ~\}
@@ -419,14 +419,14 @@ where:
      \allocdata^\ast(S_5, \data.\DINIT^\ast) \\
    \exportinst^\ast &=&
      \{ \EINAME~(\export.\ENAME), \EIVALUE~\externval_{\F{ex}} \}^\ast \\[1ex]
-   \evfuncs(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MIFUNCS[x])^\ast
-     \qquad~ (\where x^\ast = \edfuncs(\export^\ast)) \\
-   \evtables(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MITABLES[x])^\ast
-     \qquad (\where x^\ast = \edtables(\export^\ast)) \\
-   \evmems(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MIMEMS[x])^\ast
-     \qquad (\where x^\ast = \edmems(\export^\ast)) \\
-   \evglobals(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MIGLOBALS[x])^\ast
-     \qquad\!\!\! (\where x^\ast = \edglobals(\export^\ast)) \\
+   \funcsxv(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MIFUNCS[x])^\ast
+     \qquad~ (\where x^\ast = \funcsed(\export^\ast)) \\
+   \tablesxv(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MITABLES[x])^\ast
+     \qquad (\where x^\ast = \tablesed(\export^\ast)) \\
+   \memsxv(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MIMEMS[x])^\ast
+     \qquad (\where x^\ast = \memsed(\export^\ast)) \\
+   \globalsxv(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MIGLOBALS[x])^\ast
+     \qquad\!\!\! (\where x^\ast = \globalsed(\export^\ast)) \\
    \end{array}
 
 .. scratch

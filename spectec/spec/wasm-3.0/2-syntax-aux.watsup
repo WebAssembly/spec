@@ -231,11 +231,11 @@ def $subst_all_deftypes(dt_1 dt*, tu*) = $subst_all_deftype(dt_1, tu*) $subst_al
 
 ;; Rolling and Unrolling
 
-def $rollrt(typeidx, rectype) : rectype  hint(show $roll_(%, %))
-def $unrollrt(rectype) : rectype         hint(show $unroll(%))
-def $rolldt(typeidx, rectype) : deftype* hint(show $roll_(%, %))
-def $unrolldt(deftype) : subtype         hint(show $unroll(%))
-def $expanddt(deftype) : comptype        hint(show $expand(%))
+def $rollrt(typeidx, rectype) : rectype  hint(show $roll_(%, %)) hint(macro "rollrt")
+def $unrollrt(rectype) : rectype         hint(show $unroll(%))   hint(macro "unrollrt")
+def $rolldt(typeidx, rectype) : deftype* hint(show $roll_(%, %)) hint(macro "rolldt")
+def $unrolldt(deftype) : subtype         hint(show $unroll(%))   hint(macro "unrolldt")
+def $expanddt(deftype) : comptype        hint(show $expand(%))   hint(macro "expanddt")
 
 ;; TODO: in general, multi-dimensional use of dimensioned vars is ambiguous;
 ;; for example, x** with dimension x* could be x1 x2 x1 x2 of x1 x1 x2 x2.
@@ -256,10 +256,10 @@ rule Expand: dt ~~ ct                          -- if $expanddt(dt) = ct
 ;; Projections
 
 ;; TODO: use built-in notation
-def $funcsxt(externtype*) : deftype*       hint(show $funcs(%))   hint(macro "%xt")
-def $globalsxt(externtype*) : globaltype*  hint(show $globals(%)) hint(macro "%xt")
-def $tablesxt(externtype*) : tabletype*    hint(show $tables(%))  hint(macro "%xt")
-def $memsxt(externtype*) : memtype*        hint(show $mems(%))    hint(macro "%xt")
+def $funcsxt(externtype*) : deftype*       hint(show $funcs(%))   hint(macro "funcsxt")
+def $globalsxt(externtype*) : globaltype*  hint(show $globals(%)) hint(macro "globalsxt")
+def $tablesxt(externtype*) : tabletype*    hint(show $tables(%))  hint(macro "tablesxt")
+def $memsxt(externtype*) : memtype*        hint(show $mems(%))    hint(macro "memsxt")
 
 def $funcsxt(eps) = eps
 def $funcsxt((FUNC dt) xt*) = dt $funcsxt(xt*)

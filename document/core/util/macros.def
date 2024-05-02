@@ -218,12 +218,12 @@
 .. |NOFUNC| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{nofunc}}
 .. |NOEXTERN| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{noextern}}
 
-.. |I8X16| mathdef:: \xref{syntax/types}{syntax-shape}{\K{i8x16}}
-.. |I16X8| mathdef:: \xref{syntax/types}{syntax-shape}{\K{i16x8}}
-.. |I32X4| mathdef:: \xref{syntax/types}{syntax-shape}{\K{i32x4}}
-.. |I64X2| mathdef:: \xref{syntax/types}{syntax-shape}{\K{i64x2}}
-.. |F32X4| mathdef:: \xref{syntax/types}{syntax-shape}{\K{f32x4}}
-.. |F64X2| mathdef:: \xref{syntax/types}{syntax-shape}{\K{f64x2}}
+.. |I8X16| mathdef:: \xref{syntax/instructions}{syntax-shape}{\K{i8x16}}
+.. |I16X8| mathdef:: \xref{syntax/instructions}{syntax-shape}{\K{i16x8}}
+.. |I32X4| mathdef:: \xref{syntax/instructions}{syntax-shape}{\K{i32x4}}
+.. |I64X2| mathdef:: \xref{syntax/instructions}{syntax-shape}{\K{i64x2}}
+.. |F32X4| mathdef:: \xref{syntax/instructions}{syntax-shape}{\K{f32x4}}
+.. |F64X2| mathdef:: \xref{syntax/instructions}{syntax-shape}{\K{f64x2}}
 
 .. |REC| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{rec}}
 
@@ -299,10 +299,10 @@
 
 .. |unpack| mathdef:: \xref{syntax/types}{aux-unpack}{\F{unpack}}
 
-.. |etfuncs| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{funcs}}
-.. |ettables| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{tables}}
-.. |etmems| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{mems}}
-.. |etglobals| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{globals}}
+.. |funcsxt| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{funcs}}
+.. |tablesxt| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{tables}}
+.. |memsxt| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{mems}}
+.. |globalsxt| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{globals}}
 
 
 .. Indices, non-terminals
@@ -424,10 +424,10 @@
 
 .. Modules, meta functions
 
-.. |edfuncs| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\F{funcs}}
-.. |edtables| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\F{tables}}
-.. |edmems| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\F{mems}}
-.. |edglobals| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\F{globals}}
+.. |funcsed| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\F{funcs}}
+.. |tablesed| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\F{tables}}
+.. |memsed| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\F{mems}}
+.. |globalsed| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\F{globals}}
 
 
 .. Instructions, terminals
@@ -1286,10 +1286,10 @@
 
 .. Instances, meta functions
 
-.. |evfuncs| mathdef:: \xref{exec/runtime}{syntax-externval}{\F{funcs}}
-.. |evtables| mathdef:: \xref{exec/runtime}{syntax-externval}{\F{tables}}
-.. |evmems| mathdef:: \xref{exec/runtime}{syntax-externval}{\F{mems}}
-.. |evglobals| mathdef:: \xref{exec/runtime}{syntax-externval}{\F{globals}}
+.. |funcsxv| mathdef:: \xref{exec/runtime}{syntax-externval}{\F{funcs}}
+.. |tablesxv| mathdef:: \xref{exec/runtime}{syntax-externval}{\F{tables}}
+.. |memsxv| mathdef:: \xref{exec/runtime}{syntax-externval}{\F{mems}}
+.. |globalsxv| mathdef:: \xref{exec/runtime}{syntax-externval}{\F{globals}}
 
 
 .. Store, terminals
@@ -1355,6 +1355,9 @@
 .. Values, meta-functions
 
 .. |default| mathdef:: \xref{exec/runtime}{default-val}{\F{default}}
+
+.. |packnum| mathdef:: \xref{exec/numerics}{aux-packnum}{\F{pack}}
+.. |unpacknum| mathdef:: \xref{exec/numerics}{aux-unpacknum}{\F{unpack}}
 
 
 .. Fields, meta-functions

@@ -1455,7 +1455,7 @@ relation Expand: `%~~%`(deftype, comptype)
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:259.1-259.84
+;; 2-syntax-aux.watsup:259.1-259.88
 def $funcsxt(externtype*) : deftype*
   ;; 2-syntax-aux.watsup:264.1-264.24
   def $funcsxt([]) = []
@@ -1469,7 +1469,7 @@ def $funcsxt(externtype*) : deftype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:260.1-260.84
+;; 2-syntax-aux.watsup:260.1-260.90
 def $globalsxt(externtype*) : globaltype*
   ;; 2-syntax-aux.watsup:268.1-268.26
   def $globalsxt([]) = []
@@ -1483,7 +1483,7 @@ def $globalsxt(externtype*) : globaltype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:261.1-261.84
+;; 2-syntax-aux.watsup:261.1-261.89
 def $tablesxt(externtype*) : tabletype*
   ;; 2-syntax-aux.watsup:272.1-272.25
   def $tablesxt([]) = []
@@ -1497,7 +1497,7 @@ def $tablesxt(externtype*) : tabletype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:262.1-262.84
+;; 2-syntax-aux.watsup:262.1-262.87
 def $memsxt(externtype*) : memtype*
   ;; 2-syntax-aux.watsup:276.1-276.23
   def $memsxt([]) = []
@@ -2588,7 +2588,7 @@ def $unpackfield(storagetype : storagetype, sx?, fieldval : fieldval) : val
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:44.1-44.62
+;; 5-runtime-aux.watsup:44.1-44.86
 def $funcsxv(externval*) : funcaddr*
   ;; 5-runtime-aux.watsup:49.1-49.24
   def $funcsxv([]) = []
@@ -2602,7 +2602,7 @@ def $funcsxv(externval*) : funcaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:45.1-45.64
+;; 5-runtime-aux.watsup:45.1-45.89
 def $globalsxv(externval*) : globaladdr*
   ;; 5-runtime-aux.watsup:53.1-53.26
   def $globalsxv([]) = []
@@ -2616,7 +2616,7 @@ def $globalsxv(externval*) : globaladdr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:46.1-46.63
+;; 5-runtime-aux.watsup:46.1-46.88
 def $tablesxv(externval*) : tableaddr*
   ;; 5-runtime-aux.watsup:57.1-57.25
   def $tablesxv([]) = []
@@ -2630,7 +2630,7 @@ def $tablesxv(externval*) : tableaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:47.1-47.61
+;; 5-runtime-aux.watsup:47.1-47.85
 def $memsxv(externval*) : memaddr*
   ;; 5-runtime-aux.watsup:61.1-61.23
   def $memsxv([]) = []
@@ -7087,7 +7087,7 @@ relation Expand: `%~~%`(deftype, comptype)
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:259.1-259.84
+;; 2-syntax-aux.watsup:259.1-259.88
 def $funcsxt(externtype*) : deftype*
   ;; 2-syntax-aux.watsup:264.1-264.24
   def $funcsxt([]) = []
@@ -7101,7 +7101,7 @@ def $funcsxt(externtype*) : deftype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:260.1-260.84
+;; 2-syntax-aux.watsup:260.1-260.90
 def $globalsxt(externtype*) : globaltype*
   ;; 2-syntax-aux.watsup:268.1-268.26
   def $globalsxt([]) = []
@@ -7115,7 +7115,7 @@ def $globalsxt(externtype*) : globaltype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:261.1-261.84
+;; 2-syntax-aux.watsup:261.1-261.89
 def $tablesxt(externtype*) : tabletype*
   ;; 2-syntax-aux.watsup:272.1-272.25
   def $tablesxt([]) = []
@@ -7129,7 +7129,7 @@ def $tablesxt(externtype*) : tabletype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:262.1-262.84
+;; 2-syntax-aux.watsup:262.1-262.87
 def $memsxt(externtype*) : memtype*
   ;; 2-syntax-aux.watsup:276.1-276.23
   def $memsxt([]) = []
@@ -8220,7 +8220,7 @@ def $unpackfield(storagetype : storagetype, sx?, fieldval : fieldval) : val
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:44.1-44.62
+;; 5-runtime-aux.watsup:44.1-44.86
 def $funcsxv(externval*) : funcaddr*
   ;; 5-runtime-aux.watsup:49.1-49.24
   def $funcsxv([]) = []
@@ -8234,7 +8234,7 @@ def $funcsxv(externval*) : funcaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:45.1-45.64
+;; 5-runtime-aux.watsup:45.1-45.89
 def $globalsxv(externval*) : globaladdr*
   ;; 5-runtime-aux.watsup:53.1-53.26
   def $globalsxv([]) = []
@@ -8248,7 +8248,7 @@ def $globalsxv(externval*) : globaladdr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:46.1-46.63
+;; 5-runtime-aux.watsup:46.1-46.88
 def $tablesxv(externval*) : tableaddr*
   ;; 5-runtime-aux.watsup:57.1-57.25
   def $tablesxv([]) = []
@@ -8262,7 +8262,7 @@ def $tablesxv(externval*) : tableaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:47.1-47.61
+;; 5-runtime-aux.watsup:47.1-47.85
 def $memsxv(externval*) : memaddr*
   ;; 5-runtime-aux.watsup:61.1-61.23
   def $memsxv([]) = []
@@ -12721,7 +12721,7 @@ relation Expand: `%~~%`(deftype, comptype)
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:259.1-259.84
+;; 2-syntax-aux.watsup:259.1-259.88
 def $funcsxt(externtype*) : deftype*
   ;; 2-syntax-aux.watsup:264.1-264.24
   def $funcsxt([]) = []
@@ -12735,7 +12735,7 @@ def $funcsxt(externtype*) : deftype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:260.1-260.84
+;; 2-syntax-aux.watsup:260.1-260.90
 def $globalsxt(externtype*) : globaltype*
   ;; 2-syntax-aux.watsup:268.1-268.26
   def $globalsxt([]) = []
@@ -12749,7 +12749,7 @@ def $globalsxt(externtype*) : globaltype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:261.1-261.84
+;; 2-syntax-aux.watsup:261.1-261.89
 def $tablesxt(externtype*) : tabletype*
   ;; 2-syntax-aux.watsup:272.1-272.25
   def $tablesxt([]) = []
@@ -12763,7 +12763,7 @@ def $tablesxt(externtype*) : tabletype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:262.1-262.84
+;; 2-syntax-aux.watsup:262.1-262.87
 def $memsxt(externtype*) : memtype*
   ;; 2-syntax-aux.watsup:276.1-276.23
   def $memsxt([]) = []
@@ -13854,7 +13854,7 @@ def $unpackfield(storagetype : storagetype, sx?, fieldval : fieldval) : val
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:44.1-44.62
+;; 5-runtime-aux.watsup:44.1-44.86
 def $funcsxv(externval*) : funcaddr*
   ;; 5-runtime-aux.watsup:49.1-49.24
   def $funcsxv([]) = []
@@ -13868,7 +13868,7 @@ def $funcsxv(externval*) : funcaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:45.1-45.64
+;; 5-runtime-aux.watsup:45.1-45.89
 def $globalsxv(externval*) : globaladdr*
   ;; 5-runtime-aux.watsup:53.1-53.26
   def $globalsxv([]) = []
@@ -13882,7 +13882,7 @@ def $globalsxv(externval*) : globaladdr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:46.1-46.63
+;; 5-runtime-aux.watsup:46.1-46.88
 def $tablesxv(externval*) : tableaddr*
   ;; 5-runtime-aux.watsup:57.1-57.25
   def $tablesxv([]) = []
@@ -13896,7 +13896,7 @@ def $tablesxv(externval*) : tableaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:47.1-47.61
+;; 5-runtime-aux.watsup:47.1-47.85
 def $memsxv(externval*) : memaddr*
   ;; 5-runtime-aux.watsup:61.1-61.23
   def $memsxv([]) = []
@@ -18355,7 +18355,7 @@ relation Expand: `%~~%`(deftype, comptype)
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:259.1-259.84
+;; 2-syntax-aux.watsup:259.1-259.88
 def $funcsxt(externtype*) : deftype*
   ;; 2-syntax-aux.watsup:264.1-264.24
   def $funcsxt([]) = []
@@ -18369,7 +18369,7 @@ def $funcsxt(externtype*) : deftype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:260.1-260.84
+;; 2-syntax-aux.watsup:260.1-260.90
 def $globalsxt(externtype*) : globaltype*
   ;; 2-syntax-aux.watsup:268.1-268.26
   def $globalsxt([]) = []
@@ -18383,7 +18383,7 @@ def $globalsxt(externtype*) : globaltype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:261.1-261.84
+;; 2-syntax-aux.watsup:261.1-261.89
 def $tablesxt(externtype*) : tabletype*
   ;; 2-syntax-aux.watsup:272.1-272.25
   def $tablesxt([]) = []
@@ -18397,7 +18397,7 @@ def $tablesxt(externtype*) : tabletype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:262.1-262.84
+;; 2-syntax-aux.watsup:262.1-262.87
 def $memsxt(externtype*) : memtype*
   ;; 2-syntax-aux.watsup:276.1-276.23
   def $memsxt([]) = []
@@ -19488,7 +19488,7 @@ def $unpackfield(storagetype : storagetype, sx?, fieldval : fieldval) : val
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:44.1-44.62
+;; 5-runtime-aux.watsup:44.1-44.86
 def $funcsxv(externval*) : funcaddr*
   ;; 5-runtime-aux.watsup:49.1-49.24
   def $funcsxv([]) = []
@@ -19502,7 +19502,7 @@ def $funcsxv(externval*) : funcaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:45.1-45.64
+;; 5-runtime-aux.watsup:45.1-45.89
 def $globalsxv(externval*) : globaladdr*
   ;; 5-runtime-aux.watsup:53.1-53.26
   def $globalsxv([]) = []
@@ -19516,7 +19516,7 @@ def $globalsxv(externval*) : globaladdr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:46.1-46.63
+;; 5-runtime-aux.watsup:46.1-46.88
 def $tablesxv(externval*) : tableaddr*
   ;; 5-runtime-aux.watsup:57.1-57.25
   def $tablesxv([]) = []
@@ -19530,7 +19530,7 @@ def $tablesxv(externval*) : tableaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:47.1-47.61
+;; 5-runtime-aux.watsup:47.1-47.85
 def $memsxv(externval*) : memaddr*
   ;; 5-runtime-aux.watsup:61.1-61.23
   def $memsxv([]) = []
@@ -24148,7 +24148,7 @@ relation Expand: `%~~%`(deftype, comptype)
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:259.1-259.84
+;; 2-syntax-aux.watsup:259.1-259.88
 def $funcsxt(externtype*) : deftype*
   ;; 2-syntax-aux.watsup:264.1-264.24
   def $funcsxt([]) = []
@@ -24162,7 +24162,7 @@ def $funcsxt(externtype*) : deftype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:260.1-260.84
+;; 2-syntax-aux.watsup:260.1-260.90
 def $globalsxt(externtype*) : globaltype*
   ;; 2-syntax-aux.watsup:268.1-268.26
   def $globalsxt([]) = []
@@ -24176,7 +24176,7 @@ def $globalsxt(externtype*) : globaltype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:261.1-261.84
+;; 2-syntax-aux.watsup:261.1-261.89
 def $tablesxt(externtype*) : tabletype*
   ;; 2-syntax-aux.watsup:272.1-272.25
   def $tablesxt([]) = []
@@ -24190,7 +24190,7 @@ def $tablesxt(externtype*) : tabletype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:262.1-262.84
+;; 2-syntax-aux.watsup:262.1-262.87
 def $memsxt(externtype*) : memtype*
   ;; 2-syntax-aux.watsup:276.1-276.23
   def $memsxt([]) = []
@@ -25282,7 +25282,7 @@ def $unpackfield(storagetype : storagetype, sx?, fieldval : fieldval) : val
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:44.1-44.62
+;; 5-runtime-aux.watsup:44.1-44.86
 def $funcsxv(externval*) : funcaddr*
   ;; 5-runtime-aux.watsup:49.1-49.24
   def $funcsxv([]) = []
@@ -25296,7 +25296,7 @@ def $funcsxv(externval*) : funcaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:45.1-45.64
+;; 5-runtime-aux.watsup:45.1-45.89
 def $globalsxv(externval*) : globaladdr*
   ;; 5-runtime-aux.watsup:53.1-53.26
   def $globalsxv([]) = []
@@ -25310,7 +25310,7 @@ def $globalsxv(externval*) : globaladdr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:46.1-46.63
+;; 5-runtime-aux.watsup:46.1-46.88
 def $tablesxv(externval*) : tableaddr*
   ;; 5-runtime-aux.watsup:57.1-57.25
   def $tablesxv([]) = []
@@ -25324,7 +25324,7 @@ def $tablesxv(externval*) : tableaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:47.1-47.61
+;; 5-runtime-aux.watsup:47.1-47.85
 def $memsxv(externval*) : memaddr*
   ;; 5-runtime-aux.watsup:61.1-61.23
   def $memsxv([]) = []

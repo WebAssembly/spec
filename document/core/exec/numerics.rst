@@ -165,6 +165,8 @@ where :math:`M = \signif(N)` and :math:`E = \expon(N)`.
 
 .. index:: numeric vector, shape, lane
 .. _aux-lanes:
+.. _aux-packnum:
+.. _aux-unpacknum:
 .. _syntax-i128:
 
 Vectors
@@ -189,6 +191,8 @@ provided that :math:`N = |t|\cdot M`.
    \end{array}
 
 This function is a bijection on |IN|, hence it is invertible.
+
+.. todo:: pack/unpacknum
 
 
 .. index:: byte, little endian, memory

@@ -180,12 +180,12 @@ def $cvtop(Fnn, Inn, REINTERPRET, sx?, fN) = $reinterpret(Fnn, Inn, fN) -- if $s
 ;; Packed numbers
 
 def $lpacknum(lanetype, num_($lunpack(lanetype))) : lane_(lanetype)
-    hint(show $pack_(%,%))
+    hint(show $pack_(%,%)) hint(macro "packnum")
 def $lpacknum(numtype, c) = c
 def $lpacknum(packtype, c) = $wrap($size($lunpack(packtype)), $psize(packtype), c)
 
 def $lunpacknum(lanetype, lane_(lanetype)) : num_($lunpack(lanetype))
-    hint(show $unpack_(%,%))
+    hint(show $unpack_(%,%)) hint(macro "unpacknum")
 def $lunpacknum(numtype, c) = c
 def $lunpacknum(packtype, c) = $ext($psize(packtype), $size($lunpack(packtype)), U, c)
 

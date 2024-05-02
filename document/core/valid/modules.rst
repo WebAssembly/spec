@@ -681,16 +681,16 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
   * :math:`C.\CTYPES` is :math:`C_0.\CTYPES`,
 
-  * :math:`C.\CFUNCS` is :math:`\etfuncs(\X{it}^\ast)` concatenated with :math:`\X{dt}^\ast`,
+  * :math:`C.\CFUNCS` is :math:`\funcsxt(\X{it}^\ast)` concatenated with :math:`\X{dt}^\ast`,
     with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`defined types <syntax-deftype>` :math:`\X{dt}^\ast` as determined below,
 
-  * :math:`C.\CTABLES` is :math:`\ettables(\X{it}^\ast)` concatenated with :math:`\X{tt}^\ast`,
+  * :math:`C.\CTABLES` is :math:`\tablesxt(\X{it}^\ast)` concatenated with :math:`\X{tt}^\ast`,
     with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`table types <syntax-tabletype>` :math:`\X{tt}^\ast` as determined below,
 
-  * :math:`C.\CMEMS` is :math:`\etmems(\X{it}^\ast)` concatenated with :math:`\X{mt}^\ast`,
+  * :math:`C.\CMEMS` is :math:`\memsxt(\X{it}^\ast)` concatenated with :math:`\X{mt}^\ast`,
     with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`memory types <syntax-memtype>` :math:`\X{mt}^\ast` as determined below,
 
-  * :math:`C.\CGLOBALS` is :math:`\etglobals(\X{it}^\ast)` concatenated with :math:`\X{gt}^\ast`,
+  * :math:`C.\CGLOBALS` is :math:`\globalsxt(\X{it}^\ast)` concatenated with :math:`\X{gt}^\ast`,
     with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`global types <syntax-globaltype>` :math:`\X{gt}^\ast` as determined below,
 
   * :math:`C.\CELEMS` is :math:`{\X{rt}}^\ast` as determined below,
@@ -707,7 +707,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
 * Let :math:`C'` be the :ref:`context <context>` where:
 
-  * :math:`C'.\CGLOBALS` is the sequence :math:`\etglobals(\X{it}^\ast)`,
+  * :math:`C'.\CGLOBALS` is the sequence :math:`\globalsxt(\X{it}^\ast)`,
 
   * :math:`C'.\CTYPES` is the same as :math:`C.\CTYPES`,
 
@@ -792,13 +792,13 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
      \quad
      (C \vdashexport \export : \X{et})^\ast
      \\
-     \X{idt}^\ast = \etfuncs(\X{it}^\ast)
+     \X{idt}^\ast = \funcsxt(\X{it}^\ast)
      \qquad
-     \X{itt}^\ast = \ettables(\X{it}^\ast)
+     \X{itt}^\ast = \tablesxt(\X{it}^\ast)
      \qquad
-     \X{imt}^\ast = \etmems(\X{it}^\ast)
+     \X{imt}^\ast = \memsxt(\X{it}^\ast)
      \qquad
-     \X{igt}^\ast = \etglobals(\X{it}^\ast)
+     \X{igt}^\ast = \globalsxt(\X{it}^\ast)
      \\
      x^\ast = \freefuncidx(\module \with \MFUNCS = \epsilon \with \MSTART = \epsilon)
      \\

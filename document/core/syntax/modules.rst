@@ -362,13 +362,13 @@ Conventions
 
 The following auxiliary notation is defined for sequences of exports, filtering out indices of a specific kind in an order-preserving fashion:
 
-* :math:`\edfuncs(\export^\ast) = [\funcidx ~|~ \EDFUNC~\funcidx \in (\export.\EDESC)^\ast]`
+* :math:`\funcsed(\export^\ast) = [\funcidx ~|~ \EDFUNC~\funcidx \in (\export.\EDESC)^\ast]`
 
-* :math:`\edtables(\export^\ast) = [\tableidx ~|~ \EDTABLE~\tableidx \in (\export.\EDESC)^\ast]`
+* :math:`\tablesed(\export^\ast) = [\tableidx ~|~ \EDTABLE~\tableidx \in (\export.\EDESC)^\ast]`
 
-* :math:`\edmems(\export^\ast) = [\memidx ~|~ \EDMEM~\memidx \in (\export.\EDESC)^\ast]`
+* :math:`\memsed(\export^\ast) = [\memidx ~|~ \EDMEM~\memidx \in (\export.\EDESC)^\ast]`
 
-* :math:`\edglobals(\export^\ast) = [\globalidx ~|~ \EDGLOBAL~\globalidx \in (\export.\EDESC)^\ast]`
+* :math:`\globalsed(\export^\ast) = [\globalidx ~|~ \EDGLOBAL~\globalidx \in (\export.\EDESC)^\ast]`
 
 
 .. index:: ! import, name, function type, table type, memory type, global type, index, index space, type index, function index, table index, memory index, global index, function, table, memory, global, instantiation
