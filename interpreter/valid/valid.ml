@@ -326,32 +326,35 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
     [value_type_of_index_type it; RefType t] --> []
 
   | TableSize x ->
-    let _tt = table c x in
-    [] --> [NumType I32Type]
+    let TableType (_lim, it, _t) = table c x in
+    [] --> [value_type_of_index_type it]
 
   | TableGrow x ->
-    let TableType (_lim, _it, t) = table c x in
-    [RefType t; NumType I32Type] --> [NumType I32Type]
+    let TableType (_lim, it, t) = table c x in
+    [RefType t; value_type_of_index_type it] --> [value_type_of_index_type it]
 
   | TableFill x ->
-    let TableType (_lim, _it, t) = table c x in
-    [NumType I32Type; RefType t; NumType I32Type] --> []
+    let TableType (_lim, it, t) = table c x in
+    [value_type_of_index_type it; RefType t; value_type_of_index_type it] --> []
 
   | TableCopy (x, y) ->
-    let TableType (_lim1, _it, t1) = table c x in
-    let TableType (_lim2, _it, t2) = table c y in
+    let TableType (_lim1, it1, t1) = table c x in
+    let TableType (_lim2, it2, t2) = table c y in
     require (t1 = t2) x.at
       ("type mismatch: source element type " ^ string_of_ref_type t1 ^
        " does not match destination element type " ^ string_of_ref_type t2);
-    [NumType I32Type; NumType I32Type; NumType I32Type] --> []
+    require (it1 = it2) x.at
+      ("type mismatch: source index type " ^ string_of_index_type it1 ^
+       " does not match destination index type " ^ string_of_index_type it2);
+    [value_type_of_index_type it1; value_type_of_index_type it1; value_type_of_index_type it1] --> []
 
   | TableInit (x, y) ->
-    let TableType (_lim1, _it, t1) = table c x in
+    let TableType (_lim, it, t1) = table c x in
     let t2 = elem c y in
     require (t1 = t2) x.at
       ("type mismatch: element segment's type " ^ string_of_ref_type t1 ^
        " does not match table's element type " ^ string_of_ref_type t2);
-    [NumType I32Type; NumType I32Type; NumType I32Type] --> []
+    [value_type_of_index_type it; NumType I32Type; NumType I32Type] --> []
 
   | ElemDrop x ->
     ignore (elem c x);

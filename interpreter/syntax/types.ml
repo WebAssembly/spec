@@ -135,6 +135,8 @@ let string_of_value_types = function
   | [t] -> string_of_value_type t
   | ts -> "[" ^ String.concat " " (List.map string_of_value_type ts) ^ "]"
 
+let string_of_index_type t =
+  string_of_value_type (value_type_of_index_type t)
 
 let string_of_limits to_string {min; max} =
   to_string min ^

@@ -21,13 +21,11 @@
   (import "a" "ef4" (func (result i32)))    ;; index 4
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
-  (table $t64 i64 30 30 funcref)
+  (table $t2 i64 30 30 funcref)
   (elem (table $t0) (i32.const 2) func 3 1 4 1)
-  (elem (table $t64) (i64.const 2) func 3 1 4 1)
   (elem funcref
     (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
   (elem (table $t0) (i32.const 12) func 7 5 2 3 6)
-  (elem (table $t64) (i64.const 12) func 7 5 2 3 6)
   (elem funcref
     (ref.func 5) (ref.func 9) (ref.func 2) (ref.func 7) (ref.func 6))
   (func (result i32) (i32.const 5))  ;; index 5
@@ -36,13 +34,9 @@
   (func (result i32) (i32.const 8))
   (func (result i32) (i32.const 9))  ;; index 9
   (func (export "test")
-    (table.init $t0 2 (i32.const 7) (i32.const 0) (i32.const 4)))
-  (func (export "test-t64")
-    (table.init $t64 2 (i32.const 7) (i32.const 0) (i32.const 4)))
+    (table.init $t0 1 (i32.const 7) (i32.const 0) (i32.const 4)))
   (func (export "check") (param i32) (result i32)
     (call_indirect $t0 (type 0) (local.get 0)))
-  (func (export "check-t64") (param i64) (result i32)
-    (call_indirect $t64 (type 0) (local.get 0)))
 )
 
 (invoke "test")
@@ -77,38 +71,6 @@
 (assert_trap (invoke "check" (i32.const 28)) "uninitialized element")
 (assert_trap (invoke "check" (i32.const 29)) "uninitialized element")
 
-(invoke "test-t64")
-(assert_trap (invoke "check-t64" (i64.const 0)) "uninitialized element")
-(assert_trap (invoke "check-t64" (i64.const 1)) "uninitialized element")
-(assert_return (invoke "check-t64" (i64.const 2)) (i32.const 3))
-(assert_return (invoke "check-t64" (i64.const 3)) (i32.const 1))
-(assert_return (invoke "check-t64" (i64.const 4)) (i32.const 4))
-(assert_return (invoke "check-t64" (i64.const 5)) (i32.const 1))
-(assert_trap (invoke "check-t64" (i64.const 6)) "uninitialized element")
-(assert_return (invoke "check-t64" (i64.const 7)) (i32.const 2))
-(assert_return (invoke "check-t64" (i64.const 8)) (i32.const 7))
-(assert_return (invoke "check-t64" (i64.const 9)) (i32.const 1))
-(assert_return (invoke "check-t64" (i64.const 10)) (i32.const 8))
-(assert_trap (invoke "check-t64" (i64.const 11)) "uninitialized element")
-(assert_return (invoke "check-t64" (i64.const 12)) (i32.const 7))
-(assert_return (invoke "check-t64" (i64.const 13)) (i32.const 5))
-(assert_return (invoke "check-t64" (i64.const 14)) (i32.const 2))
-(assert_return (invoke "check-t64" (i64.const 15)) (i32.const 3))
-(assert_return (invoke "check-t64" (i64.const 16)) (i32.const 6))
-(assert_trap (invoke "check-t64" (i64.const 17)) "uninitialized element")
-(assert_trap (invoke "check-t64" (i64.const 18)) "uninitialized element")
-(assert_trap (invoke "check-t64" (i64.const 19)) "uninitialized element")
-(assert_trap (invoke "check-t64" (i64.const 20)) "uninitialized element")
-(assert_trap (invoke "check-t64" (i64.const 21)) "uninitialized element")
-(assert_trap (invoke "check-t64" (i64.const 22)) "uninitialized element")
-(assert_trap (invoke "check-t64" (i64.const 23)) "uninitialized element")
-(assert_trap (invoke "check-t64" (i64.const 24)) "uninitialized element")
-(assert_trap (invoke "check-t64" (i64.const 25)) "uninitialized element")
-(assert_trap (invoke "check-t64" (i64.const 26)) "uninitialized element")
-(assert_trap (invoke "check-t64" (i64.const 27)) "uninitialized element")
-(assert_trap (invoke "check-t64" (i64.const 28)) "uninitialized element")
-(assert_trap (invoke "check-t64" (i64.const 29)) "uninitialized element")
-
 (module
   (type (func (result i32)))  ;; type #0
   (import "a" "ef0" (func (result i32)))    ;; index 0
@@ -118,6 +80,7 @@
   (import "a" "ef4" (func (result i32)))    ;; index 4
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
+  (table $t2 i64 30 30 funcref)
   (elem (table $t0) (i32.const 2) func 3 1 4 1)
   (elem funcref
     (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
@@ -176,6 +139,7 @@
   (import "a" "ef4" (func (result i32)))    ;; index 4
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
+  (table $t2 i64 30 30 funcref)
   (elem (table $t0) (i32.const 2) func 3 1 4 1)
   (elem funcref
     (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
@@ -242,6 +206,7 @@
   (import "a" "ef4" (func (result i32)))    ;; index 4
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
+  (table $t2 i64 30 30 funcref)
   (elem (table $t1) (i32.const 2) func 3 1 4 1)
   (elem funcref
     (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
@@ -300,6 +265,7 @@
   (import "a" "ef4" (func (result i32)))    ;; index 4
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
+  (table $t2 i64 30 30 funcref)
   (elem (table $t1) (i32.const 2) func 3 1 4 1)
   (elem funcref
     (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
@@ -358,6 +324,7 @@
   (import "a" "ef4" (func (result i32)))    ;; index 4
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
+  (table $t2 i64 30 30 funcref)
   (elem (table $t1) (i32.const 2) func 3 1 4 1)
   (elem funcref
     (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
@@ -414,6 +381,191 @@
 (assert_trap (invoke "check" (i32.const 27)) "uninitialized element")
 (assert_trap (invoke "check" (i32.const 28)) "uninitialized element")
 (assert_trap (invoke "check" (i32.const 29)) "uninitialized element")
+
+(module
+  (type (func (result i32)))  ;; type #0
+  (import "a" "ef0" (func (result i32)))    ;; index 0
+  (import "a" "ef1" (func (result i32)))
+  (import "a" "ef2" (func (result i32)))
+  (import "a" "ef3" (func (result i32)))
+  (import "a" "ef4" (func (result i32)))    ;; index 4
+  (table $t0 30 30 funcref)
+  (table $t1 30 30 funcref)
+  (table $t2 i64 30 30 funcref)
+  (elem (table $t2) (i64.const 2) func 3 1 4 1)
+  (elem funcref
+    (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
+  (elem (table $t2) (i64.const 12) func 7 5 2 3 6)
+  (elem funcref
+    (ref.func 5) (ref.func 9) (ref.func 2) (ref.func 7) (ref.func 6))
+  (func (result i32) (i32.const 5))  ;; index 5
+  (func (result i32) (i32.const 6))
+  (func (result i32) (i32.const 7))
+  (func (result i32) (i32.const 8))
+  (func (result i32) (i32.const 9))  ;; index 9
+  (func (export "test")
+    (table.init $t2 1 (i64.const 7) (i32.const 0) (i32.const 4)))
+  (func (export "check") (param i64) (result i32)
+    (call_indirect $t2 (type 0) (local.get 0)))
+)
+
+(invoke "test")
+(assert_trap (invoke "check" (i64.const 0)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 1)) "uninitialized element")
+(assert_return (invoke "check" (i64.const 2)) (i32.const 3))
+(assert_return (invoke "check" (i64.const 3)) (i32.const 1))
+(assert_return (invoke "check" (i64.const 4)) (i32.const 4))
+(assert_return (invoke "check" (i64.const 5)) (i32.const 1))
+(assert_trap (invoke "check" (i64.const 6)) "uninitialized element")
+(assert_return (invoke "check" (i64.const 7)) (i32.const 2))
+(assert_return (invoke "check" (i64.const 8)) (i32.const 7))
+(assert_return (invoke "check" (i64.const 9)) (i32.const 1))
+(assert_return (invoke "check" (i64.const 10)) (i32.const 8))
+(assert_trap (invoke "check" (i64.const 11)) "uninitialized element")
+(assert_return (invoke "check" (i64.const 12)) (i32.const 7))
+(assert_return (invoke "check" (i64.const 13)) (i32.const 5))
+(assert_return (invoke "check" (i64.const 14)) (i32.const 2))
+(assert_return (invoke "check" (i64.const 15)) (i32.const 3))
+(assert_return (invoke "check" (i64.const 16)) (i32.const 6))
+(assert_trap (invoke "check" (i64.const 17)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 18)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 19)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 20)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 21)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 22)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 23)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 24)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 25)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 26)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 27)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 28)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 29)) "uninitialized element")
+
+(module
+  (type (func (result i32)))  ;; type #0
+  (import "a" "ef0" (func (result i32)))    ;; index 0
+  (import "a" "ef1" (func (result i32)))
+  (import "a" "ef2" (func (result i32)))
+  (import "a" "ef3" (func (result i32)))
+  (import "a" "ef4" (func (result i32)))    ;; index 4
+  (table $t0 30 30 funcref)
+  (table $t1 30 30 funcref)
+  (table $t2 i64 30 30 funcref)
+  (elem (table $t2) (i64.const 2) func 3 1 4 1)
+  (elem funcref
+    (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
+  (elem (table $t2) (i64.const 12) func 7 5 2 3 6)
+  (elem funcref
+    (ref.func 5) (ref.func 9) (ref.func 2) (ref.func 7) (ref.func 6))
+  (func (result i32) (i32.const 5))  ;; index 5
+  (func (result i32) (i32.const 6))
+  (func (result i32) (i32.const 7))
+  (func (result i32) (i32.const 8))
+  (func (result i32) (i32.const 9))  ;; index 9
+  (func (export "test")
+    (table.init $t2 3 (i64.const 15) (i32.const 1) (i32.const 3)))
+  (func (export "check") (param i64) (result i32)
+    (call_indirect $t2 (type 0) (local.get 0)))
+)
+
+(invoke "test")
+(assert_trap (invoke "check" (i64.const 0)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 1)) "uninitialized element")
+(assert_return (invoke "check" (i64.const 2)) (i32.const 3))
+(assert_return (invoke "check" (i64.const 3)) (i32.const 1))
+(assert_return (invoke "check" (i64.const 4)) (i32.const 4))
+(assert_return (invoke "check" (i64.const 5)) (i32.const 1))
+(assert_trap (invoke "check" (i64.const 6)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 7)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 8)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 9)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 10)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 11)) "uninitialized element")
+(assert_return (invoke "check" (i64.const 12)) (i32.const 7))
+(assert_return (invoke "check" (i64.const 13)) (i32.const 5))
+(assert_return (invoke "check" (i64.const 14)) (i32.const 2))
+(assert_return (invoke "check" (i64.const 15)) (i32.const 9))
+(assert_return (invoke "check" (i64.const 16)) (i32.const 2))
+(assert_return (invoke "check" (i64.const 17)) (i32.const 7))
+(assert_trap (invoke "check" (i64.const 18)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 19)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 20)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 21)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 22)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 23)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 24)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 25)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 26)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 27)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 28)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 29)) "uninitialized element")
+
+(module
+  (type (func (result i32)))  ;; type #0
+  (import "a" "ef0" (func (result i32)))    ;; index 0
+  (import "a" "ef1" (func (result i32)))
+  (import "a" "ef2" (func (result i32)))
+  (import "a" "ef3" (func (result i32)))
+  (import "a" "ef4" (func (result i32)))    ;; index 4
+  (table $t0 30 30 funcref)
+  (table $t1 30 30 funcref)
+  (table $t2 i64 30 30 funcref)
+  (elem (table $t2) (i64.const 2) func 3 1 4 1)
+  (elem funcref
+    (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
+  (elem (table $t2) (i64.const 12) func 7 5 2 3 6)
+  (elem funcref
+    (ref.func 5) (ref.func 9) (ref.func 2) (ref.func 7) (ref.func 6))
+  (func (result i32) (i32.const 5))  ;; index 5
+  (func (result i32) (i32.const 6))
+  (func (result i32) (i32.const 7))
+  (func (result i32) (i32.const 8))
+  (func (result i32) (i32.const 9))  ;; index 9
+  (func (export "test")
+    (table.init $t2 1 (i64.const 7) (i32.const 0) (i32.const 4))
+         (elem.drop 1)
+         (table.init $t2 3 (i64.const 15) (i32.const 1) (i32.const 3))
+         (elem.drop 3)
+         (table.copy $t2 2 (i64.const 20) (i64.const 15) (i64.const 5))
+         (table.copy $t2 2 (i64.const 21) (i64.const 29) (i64.const 1))
+         (table.copy $t2 2 (i64.const 24) (i64.const 10) (i64.const 1))
+         (table.copy $t2 2 (i64.const 13) (i64.const 11) (i64.const 4))
+         (table.copy $t2 2 (i64.const 19) (i64.const 20) (i64.const 5)))
+  (func (export "check") (param i64) (result i32)
+    (call_indirect $t2 (type 0) (local.get 0)))
+)
+
+(invoke "test")
+(assert_trap (invoke "check" (i64.const 0)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 1)) "uninitialized element")
+(assert_return (invoke "check" (i64.const 2)) (i32.const 3))
+(assert_return (invoke "check" (i64.const 3)) (i32.const 1))
+(assert_return (invoke "check" (i64.const 4)) (i32.const 4))
+(assert_return (invoke "check" (i64.const 5)) (i32.const 1))
+(assert_trap (invoke "check" (i64.const 6)) "uninitialized element")
+(assert_return (invoke "check" (i64.const 7)) (i32.const 2))
+(assert_return (invoke "check" (i64.const 8)) (i32.const 7))
+(assert_return (invoke "check" (i64.const 9)) (i32.const 1))
+(assert_return (invoke "check" (i64.const 10)) (i32.const 8))
+(assert_trap (invoke "check" (i64.const 11)) "uninitialized element")
+(assert_return (invoke "check" (i64.const 12)) (i32.const 7))
+(assert_trap (invoke "check" (i64.const 13)) "uninitialized element")
+(assert_return (invoke "check" (i64.const 14)) (i32.const 7))
+(assert_return (invoke "check" (i64.const 15)) (i32.const 5))
+(assert_return (invoke "check" (i64.const 16)) (i32.const 2))
+(assert_return (invoke "check" (i64.const 17)) (i32.const 7))
+(assert_trap (invoke "check" (i64.const 18)) "uninitialized element")
+(assert_return (invoke "check" (i64.const 19)) (i32.const 9))
+(assert_trap (invoke "check" (i64.const 20)) "uninitialized element")
+(assert_return (invoke "check" (i64.const 21)) (i32.const 7))
+(assert_trap (invoke "check" (i64.const 22)) "uninitialized element")
+(assert_return (invoke "check" (i64.const 23)) (i32.const 8))
+(assert_return (invoke "check" (i64.const 24)) (i32.const 8))
+(assert_trap (invoke "check" (i64.const 25)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 26)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 27)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 28)) "uninitialized element")
+(assert_trap (invoke "check" (i64.const 29)) "uninitialized element")
 (assert_invalid
   (module
     (func (export "test")
