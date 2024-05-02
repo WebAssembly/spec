@@ -1201,6 +1201,9 @@ warning: definition `lanetype` was never spliced
 warning: definition `local` was never spliced
 warning: definition `lpacknum` was never spliced
 warning: definition `lsize` was never spliced
+warning: definition `lsizenn` was never spliced
+warning: definition `lsizenn1` was never spliced
+warning: definition `lsizenn2` was never spliced
 warning: definition `lunpack` was never spliced
 warning: definition `lunpacknum` was never spliced
 warning: definition `mem` was never spliced
@@ -1228,9 +1231,6 @@ warning: definition `setminus1` was never spliced
 warning: definition `shsize` was never spliced
 warning: definition `signed` was never spliced
 warning: definition `signif` was never spliced
-warning: definition `sizemm` was never spliced
-warning: definition `sizemm1` was never spliced
-warning: definition `sizemm2` was never spliced
 warning: definition `sizenn` was never spliced
 warning: definition `sizenn1` was never spliced
 warning: definition `sizenn2` was never spliced
@@ -1591,6 +1591,9 @@ warning: definition prose `lanetype` was never spliced
 warning: definition prose `local` was never spliced
 warning: definition prose `lpacknum` was never spliced
 warning: definition prose `lsize` was never spliced
+warning: definition prose `lsizenn` was never spliced
+warning: definition prose `lsizenn1` was never spliced
+warning: definition prose `lsizenn2` was never spliced
 warning: definition prose `lunpack` was never spliced
 warning: definition prose `lunpacknum` was never spliced
 warning: definition prose `mem` was never spliced
@@ -1614,9 +1617,6 @@ warning: definition prose `shsize` was never spliced
 warning: definition prose `signed` was never spliced
 warning: definition prose `signif` was never spliced
 warning: definition prose `size` was never spliced
-warning: definition prose `sizemm` was never spliced
-warning: definition prose `sizemm1` was never spliced
-warning: definition prose `sizemm2` was never spliced
 warning: definition prose `sizenn` was never spliced
 warning: definition prose `sizenn1` was never spliced
 warning: definition prose `sizenn2` was never spliced

@@ -27,7 +27,7 @@ syntax testfuse =
 syntax fii = FII                                       ;; \fii
 syntax faa hint(macro "%") = FAA                       ;; \faa
 syntax foo hint(macro "X%Y%Z") = FOO                   ;; \XfooYfooZ
-syntax bar hint(show foobar) = BAR                     ;; \foobar
+syntax bar hint(show foobar) = BAR                     ;; \bar
 syntax boo hint(show fooboo) hint(macro "%") = BOO     ;; \fooboo
 syntax baz hint(show fob) hint(macro "X%Y%Z") = BAZ    ;; \XfobYfobZ
 
@@ -43,7 +43,7 @@ def $macros1 = 0
 syntax ufii_(nat_1, nat_2) = UFII                            ;; \ufii
 syntax ufaa_(nat_1, nat_2) hint(macro "%") = UFAA            ;; \ufaa
 syntax ufoo_(nat_1, nat_2) hint(macro "X%Y%Z") = UFOO        ;; \XufooYufooZ
-syntax ubar_(nat_1, nat_2) hint(show ufoobar_(%,%)) = UBAR   ;; \ufoobar
+syntax ubar_(nat_1, nat_2) hint(show ufoobar_(%,%)) = UBAR   ;; \ubar
 syntax uboo_(nat_1, nat_2) hint(show ufooboo_(%,%)) hint(macro "%") = UBOO   ;; \ufooboo
 syntax ubaz_(nat_1, nat_2) hint(show ufob_(%,%)) hint(macro "X%Y%Z") = UBAZ  ;; \XufobYufobZ
 
@@ -63,7 +63,7 @@ def $faa : nat hint(macro "%")                       ;; \faa
 def $faa = 0
 def $foo : nat hint(macro "X%Y%Z")                   ;; \XfooYfooZ
 def $foo = 0
-def $bar : nat hint(show foobar)                     ;; \foobar
+def $bar : nat hint(show foobar)                     ;; \bar
 def $bar = 0
 def $boo : nat hint(show fooboo) hint(macro "%")     ;; \fooboo
 def $boo = 0
@@ -76,19 +76,19 @@ def $ufaa_(nat_1, nat_2) : nat hint(macro "%")            ;; \ufaa
 def $ufaa_(x, y) = 0
 def $ufoo_(nat_1, nat_2) : nat hint(macro "X%Y%Z")        ;; \XufooYufooZ
 def $ufoo_(x, y) = 0
-def $ubar_(nat_1, nat_2) : nat hint(show ufoobar_(%,%))   ;; \ufoobar
+def $ubar_(nat_1, nat_2) : nat hint(show ufoobar_(%,%))   ;; \ubar
 def $ubar_(x, y) = 0
 def $uboo_(nat_1, nat_2) : nat hint(show ufooboo_(%,%)) hint(macro "%")   ;; \ufooboo
 def $uboo_(x, y) = 0
 def $ubaz_(nat_1, nat_2) : nat hint(show ufob_(%,%)) hint(macro "X%Y%Z")  ;; \XufobYufobZ
 def $ubaz_(x, y) = 0
 
-def $foo__bar : nat
+def $foo__bar : nat                                               ;; \foobar
 def $foo__bar = 0
-def $foo_boo : nat hint(show $foo__boo)
+def $foo_boo : nat hint(show $foo__boo)                           ;; \fooboo
 def $foo_boo = 0
 
-def $ufoo__bar_(nat_1, nat_2) : nat
+def $ufoo__bar_(nat_1, nat_2) : nat                               ;; \ufoobar
 def $ufoo__bar_(x, y) = 0
-def $ufoo_boo_(nat_1, nat_2) : nat hint(show $ufoo__boo_(%,%))
+def $ufoo_boo_(nat_1, nat_2) : nat hint(show $ufoo__boo_(%,%))    ;; \ufooboo
 def $ufoo_boo_(x, y) = 0

@@ -329,31 +329,31 @@ syntax storagetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:211.1-212.18
+;; 1-syntax.watsup:211.1-211.60
 syntax fieldtype =
   | `%%`{mut : mut, storagetype : storagetype}(mut : mut, storagetype : storagetype)
 
-;; 1-syntax.watsup:214.1-214.70
+;; 1-syntax.watsup:213.1-213.72
 syntax functype =
   | `%->%`{resulttype : resulttype}(resulttype : resulttype, resulttype)
 
-;; 1-syntax.watsup:215.1-215.64
+;; 1-syntax.watsup:214.1-214.64
 syntax structtype = list(syntax fieldtype)
 
-;; 1-syntax.watsup:216.1-216.53
+;; 1-syntax.watsup:215.1-215.54
 syntax arraytype = fieldtype
 
-;; 1-syntax.watsup:218.1-221.42
+;; 1-syntax.watsup:217.1-220.42
 syntax comptype =
   | STRUCT{structtype : structtype}(structtype : structtype)
   | ARRAY{arraytype : arraytype}(arraytype : arraytype)
   | FUNC{functype : functype}(functype : functype)
 
-;; 1-syntax.watsup:223.1-224.49
+;; 1-syntax.watsup:222.1-223.49
 syntax subtype =
   | SUB{fin : fin, typeuse* : typeuse*, comptype : comptype}(fin : fin, typeuse*{typeuse : typeuse} : typeuse*, comptype : comptype)
 
-;; 1-syntax.watsup:226.1-227.49
+;; 1-syntax.watsup:225.1-226.49
 syntax rectype =
   | REC{list : list(syntax subtype)}(list : list(syntax subtype))
 }
@@ -577,19 +577,19 @@ def $sizenn2(numtype : numtype) : nat
   def $sizenn2{nt : numtype}(nt) = $size(nt)
 
 ;; 1-syntax.watsup
-def $sizemm(lanetype : lanetype) : nat
+def $lsizenn(lanetype : lanetype) : nat
   ;; 1-syntax.watsup
-  def $sizemm{lt : lanetype}(lt) = $lsize(lt)
+  def $lsizenn{lt : lanetype}(lt) = $lsize(lt)
 
 ;; 1-syntax.watsup
-def $sizemm1(lanetype : lanetype) : nat
+def $lsizenn1(lanetype : lanetype) : nat
   ;; 1-syntax.watsup
-  def $sizemm1{lt : lanetype}(lt) = $lsize(lt)
+  def $lsizenn1{lt : lanetype}(lt) = $lsize(lt)
 
 ;; 1-syntax.watsup
-def $sizemm2(lanetype : lanetype) : nat
+def $lsizenn2(lanetype : lanetype) : nat
   ;; 1-syntax.watsup
-  def $sizemm2{lt : lanetype}(lt) = $lsize(lt)
+  def $lsizenn2{lt : lanetype}(lt) = $lsize(lt)
 
 ;; 1-syntax.watsup
 syntax num_(numtype : numtype)
@@ -798,19 +798,19 @@ syntax vbinop_(shape : shape)
   | ADD
   | SUB
   | ADD_SAT{sx : sx}(sx : sx)
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 16)
   | SUB_SAT{sx : sx}(sx : sx)
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 16)
   | MUL
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) >= 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) >= 16)
   | AVGR_U
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 16)
   | Q15MULR_SAT_S{Jnn : Jnn}
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) = 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) = 16)
   | MIN{sx : sx}(sx : sx)
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 32)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 32)
   | MAX{sx : sx}(sx : sx)
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 32)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 32)
 
 
   ;; 1-syntax.watsup
@@ -836,13 +836,13 @@ syntax vrelop_(shape : shape)
   | EQ
   | NE
   | LT{sx : sx}(sx : sx)
-    -- if (($sizemm((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
+    -- if (($lsizenn((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
   | GT{sx : sx}(sx : sx)
-    -- if (($sizemm((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
+    -- if (($lsizenn((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
   | LE{sx : sx}(sx : sx)
-    -- if (($sizemm((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
+    -- if (($lsizenn((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
   | GE{sx : sx}(sx : sx)
-    -- if (($sizemm((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
+    -- if (($lsizenn((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
 
 
   ;; 1-syntax.watsup
@@ -860,19 +860,19 @@ syntax vcvtop_(shape_1 : shape, shape_2 : shape)
   ;; 1-syntax.watsup
   syntax vcvtop_{Jnn_1 : Jnn, N_1 : N, Jnn_2 : Jnn, N_2 : N}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(N_2))) =
   | EXTEND{Jnn_2 : Jnn, Jnn_1 : Jnn}
-    -- if ($sizemm2((Jnn_2 : Jnn <: lanetype)) = (2 * $sizemm1((Jnn_1 : Jnn <: lanetype))))
+    -- if ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = (2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))))
 
 
   ;; 1-syntax.watsup
   syntax vcvtop_{Jnn_1 : Jnn, N_1 : N, Fnn_2 : Fnn, N_2 : N}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(N_2))) =
   | CONVERT
-    -- if (($sizenn2((Fnn_2 : Fnn <: numtype)) >= $sizemm1((Jnn_1 : Jnn <: lanetype))) /\ ($sizemm1((Jnn_1 : Jnn <: lanetype)) = 32))
+    -- if (($sizenn2((Fnn_2 : Fnn <: numtype)) >= $lsizenn1((Jnn_1 : Jnn <: lanetype))) /\ ($lsizenn1((Jnn_1 : Jnn <: lanetype)) = 32))
 
 
   ;; 1-syntax.watsup
   syntax vcvtop_{Fnn_1 : Fnn, N_1 : N, Jnn_2 : Jnn, N_2 : N}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(N_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(N_2))) =
   | TRUNC_SAT
-    -- if (($sizenn1((Fnn_1 : Fnn <: numtype)) >= $sizemm2((Jnn_2 : Jnn <: lanetype))) /\ ($sizemm2((Jnn_2 : Jnn <: lanetype)) = 32))
+    -- if (($sizenn1((Fnn_1 : Fnn <: numtype)) >= $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 32))
 
 
   ;; 1-syntax.watsup
@@ -906,13 +906,13 @@ syntax vshiftop_{Jnn : Jnn, N : N}(`%X%`_ishape(Jnn, `%`_dim(N))) =
 ;; 1-syntax.watsup
 syntax vextunop_{Jnn : Jnn, N : N}(`%X%`_ishape(Jnn, `%`_dim(N))) =
   | EXTADD_PAIRWISE
-    -- if ((16 <= $sizemm((Jnn : Jnn <: lanetype))) /\ ($sizemm((Jnn : Jnn <: lanetype)) <= 32))
+    -- if ((16 <= $lsizenn((Jnn : Jnn <: lanetype))) /\ ($lsizenn((Jnn : Jnn <: lanetype)) <= 32))
 
 ;; 1-syntax.watsup
 syntax vextbinop_{Jnn : Jnn, N : N}(`%X%`_ishape(Jnn, `%`_dim(N))) =
   | EXTMUL{half : half}(half : half)
   | DOT{Jnn : Jnn}
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) = 32)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) = 32)
 
 ;; 1-syntax.watsup
 syntax memarg =
@@ -940,7 +940,7 @@ syntax sz =
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:637.1-638.22
+;; 1-syntax.watsup:636.1-637.22
 syntax instr =
   | NOP
   | UNREACHABLE
@@ -1455,7 +1455,7 @@ relation Expand: `%~~%`(deftype, comptype)
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:259.1-259.88
+;; 2-syntax-aux.watsup:259.1-259.64
 def $funcsxt(externtype*) : deftype*
   ;; 2-syntax-aux.watsup:264.1-264.24
   def $funcsxt([]) = []
@@ -1469,7 +1469,7 @@ def $funcsxt(externtype*) : deftype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:260.1-260.90
+;; 2-syntax-aux.watsup:260.1-260.66
 def $globalsxt(externtype*) : globaltype*
   ;; 2-syntax-aux.watsup:268.1-268.26
   def $globalsxt([]) = []
@@ -1483,7 +1483,7 @@ def $globalsxt(externtype*) : globaltype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:261.1-261.89
+;; 2-syntax-aux.watsup:261.1-261.65
 def $tablesxt(externtype*) : tabletype*
   ;; 2-syntax-aux.watsup:272.1-272.25
   def $tablesxt([]) = []
@@ -1497,7 +1497,7 @@ def $tablesxt(externtype*) : tabletype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:262.1-262.87
+;; 2-syntax-aux.watsup:262.1-262.63
 def $memsxt(externtype*) : memtype*
   ;; 2-syntax-aux.watsup:276.1-276.23
   def $memsxt([]) = []
@@ -2588,7 +2588,7 @@ def $unpackfield(storagetype : storagetype, sx?, fieldval : fieldval) : val
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:44.1-44.86
+;; 5-runtime-aux.watsup:44.1-44.62
 def $funcsxv(externval*) : funcaddr*
   ;; 5-runtime-aux.watsup:49.1-49.24
   def $funcsxv([]) = []
@@ -2602,7 +2602,7 @@ def $funcsxv(externval*) : funcaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:45.1-45.89
+;; 5-runtime-aux.watsup:45.1-45.64
 def $globalsxv(externval*) : globaladdr*
   ;; 5-runtime-aux.watsup:53.1-53.26
   def $globalsxv([]) = []
@@ -2616,7 +2616,7 @@ def $globalsxv(externval*) : globaladdr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:46.1-46.88
+;; 5-runtime-aux.watsup:46.1-46.63
 def $tablesxv(externval*) : tableaddr*
   ;; 5-runtime-aux.watsup:57.1-57.25
   def $tablesxv([]) = []
@@ -2630,7 +2630,7 @@ def $tablesxv(externval*) : tableaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:47.1-47.85
+;; 5-runtime-aux.watsup:47.1-47.61
 def $memsxv(externval*) : memaddr*
   ;; 5-runtime-aux.watsup:61.1-61.23
   def $memsxv([]) = []
@@ -5958,31 +5958,31 @@ syntax storagetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:211.1-212.18
+;; 1-syntax.watsup:211.1-211.60
 syntax fieldtype =
   | `%%`{mut : mut, storagetype : storagetype}(mut : mut, storagetype : storagetype)
 
-;; 1-syntax.watsup:214.1-214.70
+;; 1-syntax.watsup:213.1-213.72
 syntax functype =
   | `%->%`{resulttype : resulttype}(resulttype : resulttype, resulttype)
 
-;; 1-syntax.watsup:215.1-215.64
+;; 1-syntax.watsup:214.1-214.64
 syntax structtype = list(syntax fieldtype)
 
-;; 1-syntax.watsup:216.1-216.53
+;; 1-syntax.watsup:215.1-215.54
 syntax arraytype = fieldtype
 
-;; 1-syntax.watsup:218.1-221.42
+;; 1-syntax.watsup:217.1-220.42
 syntax comptype =
   | STRUCT{structtype : structtype}(structtype : structtype)
   | ARRAY{arraytype : arraytype}(arraytype : arraytype)
   | FUNC{functype : functype}(functype : functype)
 
-;; 1-syntax.watsup:223.1-224.49
+;; 1-syntax.watsup:222.1-223.49
 syntax subtype =
   | SUB{fin : fin, typeuse* : typeuse*, comptype : comptype}(fin : fin, typeuse*{typeuse : typeuse} : typeuse*, comptype : comptype)
 
-;; 1-syntax.watsup:226.1-227.49
+;; 1-syntax.watsup:225.1-226.49
 syntax rectype =
   | REC{list : list(syntax subtype)}(list : list(syntax subtype))
 }
@@ -6206,19 +6206,19 @@ def $sizenn2(numtype : numtype) : nat
   def $sizenn2{nt : numtype}(nt) = $size(nt)
 
 ;; 1-syntax.watsup
-def $sizemm(lanetype : lanetype) : nat
+def $lsizenn(lanetype : lanetype) : nat
   ;; 1-syntax.watsup
-  def $sizemm{lt : lanetype}(lt) = $lsize(lt)
+  def $lsizenn{lt : lanetype}(lt) = $lsize(lt)
 
 ;; 1-syntax.watsup
-def $sizemm1(lanetype : lanetype) : nat
+def $lsizenn1(lanetype : lanetype) : nat
   ;; 1-syntax.watsup
-  def $sizemm1{lt : lanetype}(lt) = $lsize(lt)
+  def $lsizenn1{lt : lanetype}(lt) = $lsize(lt)
 
 ;; 1-syntax.watsup
-def $sizemm2(lanetype : lanetype) : nat
+def $lsizenn2(lanetype : lanetype) : nat
   ;; 1-syntax.watsup
-  def $sizemm2{lt : lanetype}(lt) = $lsize(lt)
+  def $lsizenn2{lt : lanetype}(lt) = $lsize(lt)
 
 ;; 1-syntax.watsup
 syntax num_(numtype : numtype)
@@ -6427,19 +6427,19 @@ syntax vbinop_(shape : shape)
   | ADD
   | SUB
   | ADD_SAT{sx : sx}(sx : sx)
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 16)
   | SUB_SAT{sx : sx}(sx : sx)
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 16)
   | MUL
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) >= 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) >= 16)
   | AVGR_U
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 16)
   | Q15MULR_SAT_S{Jnn : Jnn}
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) = 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) = 16)
   | MIN{sx : sx}(sx : sx)
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 32)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 32)
   | MAX{sx : sx}(sx : sx)
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 32)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 32)
 
 
   ;; 1-syntax.watsup
@@ -6465,13 +6465,13 @@ syntax vrelop_(shape : shape)
   | EQ
   | NE
   | LT{sx : sx}(sx : sx)
-    -- if (($sizemm((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
+    -- if (($lsizenn((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
   | GT{sx : sx}(sx : sx)
-    -- if (($sizemm((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
+    -- if (($lsizenn((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
   | LE{sx : sx}(sx : sx)
-    -- if (($sizemm((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
+    -- if (($lsizenn((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
   | GE{sx : sx}(sx : sx)
-    -- if (($sizemm((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
+    -- if (($lsizenn((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
 
 
   ;; 1-syntax.watsup
@@ -6489,19 +6489,19 @@ syntax vcvtop_(shape_1 : shape, shape_2 : shape)
   ;; 1-syntax.watsup
   syntax vcvtop_{Jnn_1 : Jnn, N_1 : N, Jnn_2 : Jnn, N_2 : N}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(N_2))) =
   | EXTEND{Jnn_2 : Jnn, Jnn_1 : Jnn}
-    -- if ($sizemm2((Jnn_2 : Jnn <: lanetype)) = (2 * $sizemm1((Jnn_1 : Jnn <: lanetype))))
+    -- if ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = (2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))))
 
 
   ;; 1-syntax.watsup
   syntax vcvtop_{Jnn_1 : Jnn, N_1 : N, Fnn_2 : Fnn, N_2 : N}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(N_2))) =
   | CONVERT
-    -- if (($sizenn2((Fnn_2 : Fnn <: numtype)) >= $sizemm1((Jnn_1 : Jnn <: lanetype))) /\ ($sizemm1((Jnn_1 : Jnn <: lanetype)) = 32))
+    -- if (($sizenn2((Fnn_2 : Fnn <: numtype)) >= $lsizenn1((Jnn_1 : Jnn <: lanetype))) /\ ($lsizenn1((Jnn_1 : Jnn <: lanetype)) = 32))
 
 
   ;; 1-syntax.watsup
   syntax vcvtop_{Fnn_1 : Fnn, N_1 : N, Jnn_2 : Jnn, N_2 : N}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(N_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(N_2))) =
   | TRUNC_SAT
-    -- if (($sizenn1((Fnn_1 : Fnn <: numtype)) >= $sizemm2((Jnn_2 : Jnn <: lanetype))) /\ ($sizemm2((Jnn_2 : Jnn <: lanetype)) = 32))
+    -- if (($sizenn1((Fnn_1 : Fnn <: numtype)) >= $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 32))
 
 
   ;; 1-syntax.watsup
@@ -6535,13 +6535,13 @@ syntax vshiftop_{Jnn : Jnn, N : N}(`%X%`_ishape(Jnn, `%`_dim(N))) =
 ;; 1-syntax.watsup
 syntax vextunop_{Jnn : Jnn, N : N}(`%X%`_ishape(Jnn, `%`_dim(N))) =
   | EXTADD_PAIRWISE
-    -- if ((16 <= $sizemm((Jnn : Jnn <: lanetype))) /\ ($sizemm((Jnn : Jnn <: lanetype)) <= 32))
+    -- if ((16 <= $lsizenn((Jnn : Jnn <: lanetype))) /\ ($lsizenn((Jnn : Jnn <: lanetype)) <= 32))
 
 ;; 1-syntax.watsup
 syntax vextbinop_{Jnn : Jnn, N : N}(`%X%`_ishape(Jnn, `%`_dim(N))) =
   | EXTMUL{half : half}(half : half)
   | DOT{Jnn : Jnn}
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) = 32)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) = 32)
 
 ;; 1-syntax.watsup
 syntax memarg =
@@ -6569,7 +6569,7 @@ syntax sz =
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:637.1-638.22
+;; 1-syntax.watsup:636.1-637.22
 syntax instr =
   | NOP
   | UNREACHABLE
@@ -7087,7 +7087,7 @@ relation Expand: `%~~%`(deftype, comptype)
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:259.1-259.88
+;; 2-syntax-aux.watsup:259.1-259.64
 def $funcsxt(externtype*) : deftype*
   ;; 2-syntax-aux.watsup:264.1-264.24
   def $funcsxt([]) = []
@@ -7101,7 +7101,7 @@ def $funcsxt(externtype*) : deftype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:260.1-260.90
+;; 2-syntax-aux.watsup:260.1-260.66
 def $globalsxt(externtype*) : globaltype*
   ;; 2-syntax-aux.watsup:268.1-268.26
   def $globalsxt([]) = []
@@ -7115,7 +7115,7 @@ def $globalsxt(externtype*) : globaltype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:261.1-261.89
+;; 2-syntax-aux.watsup:261.1-261.65
 def $tablesxt(externtype*) : tabletype*
   ;; 2-syntax-aux.watsup:272.1-272.25
   def $tablesxt([]) = []
@@ -7129,7 +7129,7 @@ def $tablesxt(externtype*) : tabletype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:262.1-262.87
+;; 2-syntax-aux.watsup:262.1-262.63
 def $memsxt(externtype*) : memtype*
   ;; 2-syntax-aux.watsup:276.1-276.23
   def $memsxt([]) = []
@@ -8220,7 +8220,7 @@ def $unpackfield(storagetype : storagetype, sx?, fieldval : fieldval) : val
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:44.1-44.86
+;; 5-runtime-aux.watsup:44.1-44.62
 def $funcsxv(externval*) : funcaddr*
   ;; 5-runtime-aux.watsup:49.1-49.24
   def $funcsxv([]) = []
@@ -8234,7 +8234,7 @@ def $funcsxv(externval*) : funcaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:45.1-45.89
+;; 5-runtime-aux.watsup:45.1-45.64
 def $globalsxv(externval*) : globaladdr*
   ;; 5-runtime-aux.watsup:53.1-53.26
   def $globalsxv([]) = []
@@ -8248,7 +8248,7 @@ def $globalsxv(externval*) : globaladdr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:46.1-46.88
+;; 5-runtime-aux.watsup:46.1-46.63
 def $tablesxv(externval*) : tableaddr*
   ;; 5-runtime-aux.watsup:57.1-57.25
   def $tablesxv([]) = []
@@ -8262,7 +8262,7 @@ def $tablesxv(externval*) : tableaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:47.1-47.85
+;; 5-runtime-aux.watsup:47.1-47.61
 def $memsxv(externval*) : memaddr*
   ;; 5-runtime-aux.watsup:61.1-61.23
   def $memsxv([]) = []
@@ -11592,31 +11592,31 @@ syntax storagetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:211.1-212.18
+;; 1-syntax.watsup:211.1-211.60
 syntax fieldtype =
   | `%%`{mut : mut, storagetype : storagetype}(mut : mut, storagetype : storagetype)
 
-;; 1-syntax.watsup:214.1-214.70
+;; 1-syntax.watsup:213.1-213.72
 syntax functype =
   | `%->%`{resulttype : resulttype}(resulttype : resulttype, resulttype)
 
-;; 1-syntax.watsup:215.1-215.64
+;; 1-syntax.watsup:214.1-214.64
 syntax structtype = list(syntax fieldtype)
 
-;; 1-syntax.watsup:216.1-216.53
+;; 1-syntax.watsup:215.1-215.54
 syntax arraytype = fieldtype
 
-;; 1-syntax.watsup:218.1-221.42
+;; 1-syntax.watsup:217.1-220.42
 syntax comptype =
   | STRUCT{structtype : structtype}(structtype : structtype)
   | ARRAY{arraytype : arraytype}(arraytype : arraytype)
   | FUNC{functype : functype}(functype : functype)
 
-;; 1-syntax.watsup:223.1-224.49
+;; 1-syntax.watsup:222.1-223.49
 syntax subtype =
   | SUB{fin : fin, typeuse* : typeuse*, comptype : comptype}(fin : fin, typeuse*{typeuse : typeuse} : typeuse*, comptype : comptype)
 
-;; 1-syntax.watsup:226.1-227.49
+;; 1-syntax.watsup:225.1-226.49
 syntax rectype =
   | REC{list : list(syntax subtype)}(list : list(syntax subtype))
 }
@@ -11840,19 +11840,19 @@ def $sizenn2(numtype : numtype) : nat
   def $sizenn2{nt : numtype}(nt) = $size(nt)
 
 ;; 1-syntax.watsup
-def $sizemm(lanetype : lanetype) : nat
+def $lsizenn(lanetype : lanetype) : nat
   ;; 1-syntax.watsup
-  def $sizemm{lt : lanetype}(lt) = $lsize(lt)
+  def $lsizenn{lt : lanetype}(lt) = $lsize(lt)
 
 ;; 1-syntax.watsup
-def $sizemm1(lanetype : lanetype) : nat
+def $lsizenn1(lanetype : lanetype) : nat
   ;; 1-syntax.watsup
-  def $sizemm1{lt : lanetype}(lt) = $lsize(lt)
+  def $lsizenn1{lt : lanetype}(lt) = $lsize(lt)
 
 ;; 1-syntax.watsup
-def $sizemm2(lanetype : lanetype) : nat
+def $lsizenn2(lanetype : lanetype) : nat
   ;; 1-syntax.watsup
-  def $sizemm2{lt : lanetype}(lt) = $lsize(lt)
+  def $lsizenn2{lt : lanetype}(lt) = $lsize(lt)
 
 ;; 1-syntax.watsup
 syntax num_(numtype : numtype)
@@ -12061,19 +12061,19 @@ syntax vbinop_(shape : shape)
   | ADD
   | SUB
   | ADD_SAT{sx : sx}(sx : sx)
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 16)
   | SUB_SAT{sx : sx}(sx : sx)
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 16)
   | MUL
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) >= 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) >= 16)
   | AVGR_U
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 16)
   | Q15MULR_SAT_S{Jnn : Jnn}
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) = 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) = 16)
   | MIN{sx : sx}(sx : sx)
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 32)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 32)
   | MAX{sx : sx}(sx : sx)
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 32)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 32)
 
 
   ;; 1-syntax.watsup
@@ -12099,13 +12099,13 @@ syntax vrelop_(shape : shape)
   | EQ
   | NE
   | LT{sx : sx}(sx : sx)
-    -- if (($sizemm((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
+    -- if (($lsizenn((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
   | GT{sx : sx}(sx : sx)
-    -- if (($sizemm((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
+    -- if (($lsizenn((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
   | LE{sx : sx}(sx : sx)
-    -- if (($sizemm((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
+    -- if (($lsizenn((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
   | GE{sx : sx}(sx : sx)
-    -- if (($sizemm((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
+    -- if (($lsizenn((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
 
 
   ;; 1-syntax.watsup
@@ -12123,19 +12123,19 @@ syntax vcvtop_(shape_1 : shape, shape_2 : shape)
   ;; 1-syntax.watsup
   syntax vcvtop_{Jnn_1 : Jnn, N_1 : N, Jnn_2 : Jnn, N_2 : N}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(N_2))) =
   | EXTEND{Jnn_2 : Jnn, Jnn_1 : Jnn}
-    -- if ($sizemm2((Jnn_2 : Jnn <: lanetype)) = (2 * $sizemm1((Jnn_1 : Jnn <: lanetype))))
+    -- if ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = (2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))))
 
 
   ;; 1-syntax.watsup
   syntax vcvtop_{Jnn_1 : Jnn, N_1 : N, Fnn_2 : Fnn, N_2 : N}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(N_2))) =
   | CONVERT
-    -- if (($sizenn2((Fnn_2 : Fnn <: numtype)) >= $sizemm1((Jnn_1 : Jnn <: lanetype))) /\ ($sizemm1((Jnn_1 : Jnn <: lanetype)) = 32))
+    -- if (($sizenn2((Fnn_2 : Fnn <: numtype)) >= $lsizenn1((Jnn_1 : Jnn <: lanetype))) /\ ($lsizenn1((Jnn_1 : Jnn <: lanetype)) = 32))
 
 
   ;; 1-syntax.watsup
   syntax vcvtop_{Fnn_1 : Fnn, N_1 : N, Jnn_2 : Jnn, N_2 : N}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(N_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(N_2))) =
   | TRUNC_SAT
-    -- if (($sizenn1((Fnn_1 : Fnn <: numtype)) >= $sizemm2((Jnn_2 : Jnn <: lanetype))) /\ ($sizemm2((Jnn_2 : Jnn <: lanetype)) = 32))
+    -- if (($sizenn1((Fnn_1 : Fnn <: numtype)) >= $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 32))
 
 
   ;; 1-syntax.watsup
@@ -12169,13 +12169,13 @@ syntax vshiftop_{Jnn : Jnn, N : N}(`%X%`_ishape(Jnn, `%`_dim(N))) =
 ;; 1-syntax.watsup
 syntax vextunop_{Jnn : Jnn, N : N}(`%X%`_ishape(Jnn, `%`_dim(N))) =
   | EXTADD_PAIRWISE
-    -- if ((16 <= $sizemm((Jnn : Jnn <: lanetype))) /\ ($sizemm((Jnn : Jnn <: lanetype)) <= 32))
+    -- if ((16 <= $lsizenn((Jnn : Jnn <: lanetype))) /\ ($lsizenn((Jnn : Jnn <: lanetype)) <= 32))
 
 ;; 1-syntax.watsup
 syntax vextbinop_{Jnn : Jnn, N : N}(`%X%`_ishape(Jnn, `%`_dim(N))) =
   | EXTMUL{half : half}(half : half)
   | DOT{Jnn : Jnn}
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) = 32)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) = 32)
 
 ;; 1-syntax.watsup
 syntax memarg =
@@ -12203,7 +12203,7 @@ syntax sz =
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:637.1-638.22
+;; 1-syntax.watsup:636.1-637.22
 syntax instr =
   | NOP
   | UNREACHABLE
@@ -12721,7 +12721,7 @@ relation Expand: `%~~%`(deftype, comptype)
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:259.1-259.88
+;; 2-syntax-aux.watsup:259.1-259.64
 def $funcsxt(externtype*) : deftype*
   ;; 2-syntax-aux.watsup:264.1-264.24
   def $funcsxt([]) = []
@@ -12735,7 +12735,7 @@ def $funcsxt(externtype*) : deftype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:260.1-260.90
+;; 2-syntax-aux.watsup:260.1-260.66
 def $globalsxt(externtype*) : globaltype*
   ;; 2-syntax-aux.watsup:268.1-268.26
   def $globalsxt([]) = []
@@ -12749,7 +12749,7 @@ def $globalsxt(externtype*) : globaltype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:261.1-261.89
+;; 2-syntax-aux.watsup:261.1-261.65
 def $tablesxt(externtype*) : tabletype*
   ;; 2-syntax-aux.watsup:272.1-272.25
   def $tablesxt([]) = []
@@ -12763,7 +12763,7 @@ def $tablesxt(externtype*) : tabletype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:262.1-262.87
+;; 2-syntax-aux.watsup:262.1-262.63
 def $memsxt(externtype*) : memtype*
   ;; 2-syntax-aux.watsup:276.1-276.23
   def $memsxt([]) = []
@@ -13854,7 +13854,7 @@ def $unpackfield(storagetype : storagetype, sx?, fieldval : fieldval) : val
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:44.1-44.86
+;; 5-runtime-aux.watsup:44.1-44.62
 def $funcsxv(externval*) : funcaddr*
   ;; 5-runtime-aux.watsup:49.1-49.24
   def $funcsxv([]) = []
@@ -13868,7 +13868,7 @@ def $funcsxv(externval*) : funcaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:45.1-45.89
+;; 5-runtime-aux.watsup:45.1-45.64
 def $globalsxv(externval*) : globaladdr*
   ;; 5-runtime-aux.watsup:53.1-53.26
   def $globalsxv([]) = []
@@ -13882,7 +13882,7 @@ def $globalsxv(externval*) : globaladdr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:46.1-46.88
+;; 5-runtime-aux.watsup:46.1-46.63
 def $tablesxv(externval*) : tableaddr*
   ;; 5-runtime-aux.watsup:57.1-57.25
   def $tablesxv([]) = []
@@ -13896,7 +13896,7 @@ def $tablesxv(externval*) : tableaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:47.1-47.85
+;; 5-runtime-aux.watsup:47.1-47.61
 def $memsxv(externval*) : memaddr*
   ;; 5-runtime-aux.watsup:61.1-61.23
   def $memsxv([]) = []
@@ -17226,31 +17226,31 @@ syntax storagetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:211.1-212.18
+;; 1-syntax.watsup:211.1-211.60
 syntax fieldtype =
   | `%%`{mut : mut, storagetype : storagetype}(mut : mut, storagetype : storagetype)
 
-;; 1-syntax.watsup:214.1-214.70
+;; 1-syntax.watsup:213.1-213.72
 syntax functype =
   | `%->%`{resulttype : resulttype}(resulttype : resulttype, resulttype)
 
-;; 1-syntax.watsup:215.1-215.64
+;; 1-syntax.watsup:214.1-214.64
 syntax structtype = list(syntax fieldtype)
 
-;; 1-syntax.watsup:216.1-216.53
+;; 1-syntax.watsup:215.1-215.54
 syntax arraytype = fieldtype
 
-;; 1-syntax.watsup:218.1-221.42
+;; 1-syntax.watsup:217.1-220.42
 syntax comptype =
   | STRUCT{structtype : structtype}(structtype : structtype)
   | ARRAY{arraytype : arraytype}(arraytype : arraytype)
   | FUNC{functype : functype}(functype : functype)
 
-;; 1-syntax.watsup:223.1-224.49
+;; 1-syntax.watsup:222.1-223.49
 syntax subtype =
   | SUB{fin : fin, typeuse* : typeuse*, comptype : comptype}(fin : fin, typeuse*{typeuse : typeuse} : typeuse*, comptype : comptype)
 
-;; 1-syntax.watsup:226.1-227.49
+;; 1-syntax.watsup:225.1-226.49
 syntax rectype =
   | REC{list : list(syntax subtype)}(list : list(syntax subtype))
 }
@@ -17474,19 +17474,19 @@ def $sizenn2(numtype : numtype) : nat
   def $sizenn2{nt : numtype}(nt) = $size(nt)
 
 ;; 1-syntax.watsup
-def $sizemm(lanetype : lanetype) : nat
+def $lsizenn(lanetype : lanetype) : nat
   ;; 1-syntax.watsup
-  def $sizemm{lt : lanetype}(lt) = $lsize(lt)
+  def $lsizenn{lt : lanetype}(lt) = $lsize(lt)
 
 ;; 1-syntax.watsup
-def $sizemm1(lanetype : lanetype) : nat
+def $lsizenn1(lanetype : lanetype) : nat
   ;; 1-syntax.watsup
-  def $sizemm1{lt : lanetype}(lt) = $lsize(lt)
+  def $lsizenn1{lt : lanetype}(lt) = $lsize(lt)
 
 ;; 1-syntax.watsup
-def $sizemm2(lanetype : lanetype) : nat
+def $lsizenn2(lanetype : lanetype) : nat
   ;; 1-syntax.watsup
-  def $sizemm2{lt : lanetype}(lt) = $lsize(lt)
+  def $lsizenn2{lt : lanetype}(lt) = $lsize(lt)
 
 ;; 1-syntax.watsup
 syntax num_(numtype : numtype)
@@ -17695,19 +17695,19 @@ syntax vbinop_(shape : shape)
   | ADD
   | SUB
   | ADD_SAT{sx : sx}(sx : sx)
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 16)
   | SUB_SAT{sx : sx}(sx : sx)
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 16)
   | MUL
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) >= 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) >= 16)
   | AVGR_U
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 16)
   | Q15MULR_SAT_S{Jnn : Jnn}
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) = 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) = 16)
   | MIN{sx : sx}(sx : sx)
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 32)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 32)
   | MAX{sx : sx}(sx : sx)
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 32)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 32)
 
 
   ;; 1-syntax.watsup
@@ -17733,13 +17733,13 @@ syntax vrelop_(shape : shape)
   | EQ
   | NE
   | LT{sx : sx}(sx : sx)
-    -- if (($sizemm((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
+    -- if (($lsizenn((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
   | GT{sx : sx}(sx : sx)
-    -- if (($sizemm((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
+    -- if (($lsizenn((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
   | LE{sx : sx}(sx : sx)
-    -- if (($sizemm((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
+    -- if (($lsizenn((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
   | GE{sx : sx}(sx : sx)
-    -- if (($sizemm((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
+    -- if (($lsizenn((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
 
 
   ;; 1-syntax.watsup
@@ -17757,19 +17757,19 @@ syntax vcvtop_(shape_1 : shape, shape_2 : shape)
   ;; 1-syntax.watsup
   syntax vcvtop_{Jnn_1 : Jnn, N_1 : N, Jnn_2 : Jnn, N_2 : N}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(N_2))) =
   | EXTEND{Jnn_2 : Jnn, Jnn_1 : Jnn}
-    -- if ($sizemm2((Jnn_2 : Jnn <: lanetype)) = (2 * $sizemm1((Jnn_1 : Jnn <: lanetype))))
+    -- if ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = (2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))))
 
 
   ;; 1-syntax.watsup
   syntax vcvtop_{Jnn_1 : Jnn, N_1 : N, Fnn_2 : Fnn, N_2 : N}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(N_2))) =
   | CONVERT
-    -- if (($sizenn2((Fnn_2 : Fnn <: numtype)) >= $sizemm1((Jnn_1 : Jnn <: lanetype))) /\ ($sizemm1((Jnn_1 : Jnn <: lanetype)) = 32))
+    -- if (($sizenn2((Fnn_2 : Fnn <: numtype)) >= $lsizenn1((Jnn_1 : Jnn <: lanetype))) /\ ($lsizenn1((Jnn_1 : Jnn <: lanetype)) = 32))
 
 
   ;; 1-syntax.watsup
   syntax vcvtop_{Fnn_1 : Fnn, N_1 : N, Jnn_2 : Jnn, N_2 : N}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(N_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(N_2))) =
   | TRUNC_SAT
-    -- if (($sizenn1((Fnn_1 : Fnn <: numtype)) >= $sizemm2((Jnn_2 : Jnn <: lanetype))) /\ ($sizemm2((Jnn_2 : Jnn <: lanetype)) = 32))
+    -- if (($sizenn1((Fnn_1 : Fnn <: numtype)) >= $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 32))
 
 
   ;; 1-syntax.watsup
@@ -17803,13 +17803,13 @@ syntax vshiftop_{Jnn : Jnn, N : N}(`%X%`_ishape(Jnn, `%`_dim(N))) =
 ;; 1-syntax.watsup
 syntax vextunop_{Jnn : Jnn, N : N}(`%X%`_ishape(Jnn, `%`_dim(N))) =
   | EXTADD_PAIRWISE
-    -- if ((16 <= $sizemm((Jnn : Jnn <: lanetype))) /\ ($sizemm((Jnn : Jnn <: lanetype)) <= 32))
+    -- if ((16 <= $lsizenn((Jnn : Jnn <: lanetype))) /\ ($lsizenn((Jnn : Jnn <: lanetype)) <= 32))
 
 ;; 1-syntax.watsup
 syntax vextbinop_{Jnn : Jnn, N : N}(`%X%`_ishape(Jnn, `%`_dim(N))) =
   | EXTMUL{half : half}(half : half)
   | DOT{Jnn : Jnn}
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) = 32)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) = 32)
 
 ;; 1-syntax.watsup
 syntax memarg =
@@ -17837,7 +17837,7 @@ syntax sz =
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:637.1-638.22
+;; 1-syntax.watsup:636.1-637.22
 syntax instr =
   | NOP
   | UNREACHABLE
@@ -18355,7 +18355,7 @@ relation Expand: `%~~%`(deftype, comptype)
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:259.1-259.88
+;; 2-syntax-aux.watsup:259.1-259.64
 def $funcsxt(externtype*) : deftype*
   ;; 2-syntax-aux.watsup:264.1-264.24
   def $funcsxt([]) = []
@@ -18369,7 +18369,7 @@ def $funcsxt(externtype*) : deftype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:260.1-260.90
+;; 2-syntax-aux.watsup:260.1-260.66
 def $globalsxt(externtype*) : globaltype*
   ;; 2-syntax-aux.watsup:268.1-268.26
   def $globalsxt([]) = []
@@ -18383,7 +18383,7 @@ def $globalsxt(externtype*) : globaltype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:261.1-261.89
+;; 2-syntax-aux.watsup:261.1-261.65
 def $tablesxt(externtype*) : tabletype*
   ;; 2-syntax-aux.watsup:272.1-272.25
   def $tablesxt([]) = []
@@ -18397,7 +18397,7 @@ def $tablesxt(externtype*) : tabletype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:262.1-262.87
+;; 2-syntax-aux.watsup:262.1-262.63
 def $memsxt(externtype*) : memtype*
   ;; 2-syntax-aux.watsup:276.1-276.23
   def $memsxt([]) = []
@@ -19488,7 +19488,7 @@ def $unpackfield(storagetype : storagetype, sx?, fieldval : fieldval) : val
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:44.1-44.86
+;; 5-runtime-aux.watsup:44.1-44.62
 def $funcsxv(externval*) : funcaddr*
   ;; 5-runtime-aux.watsup:49.1-49.24
   def $funcsxv([]) = []
@@ -19502,7 +19502,7 @@ def $funcsxv(externval*) : funcaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:45.1-45.89
+;; 5-runtime-aux.watsup:45.1-45.64
 def $globalsxv(externval*) : globaladdr*
   ;; 5-runtime-aux.watsup:53.1-53.26
   def $globalsxv([]) = []
@@ -19516,7 +19516,7 @@ def $globalsxv(externval*) : globaladdr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:46.1-46.88
+;; 5-runtime-aux.watsup:46.1-46.63
 def $tablesxv(externval*) : tableaddr*
   ;; 5-runtime-aux.watsup:57.1-57.25
   def $tablesxv([]) = []
@@ -19530,7 +19530,7 @@ def $tablesxv(externval*) : tableaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:47.1-47.85
+;; 5-runtime-aux.watsup:47.1-47.61
 def $memsxv(externval*) : memaddr*
   ;; 5-runtime-aux.watsup:61.1-61.23
   def $memsxv([]) = []
@@ -23019,31 +23019,31 @@ syntax storagetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:211.1-212.18
+;; 1-syntax.watsup:211.1-211.60
 syntax fieldtype =
   | `%%`{mut : mut, storagetype : storagetype}(mut : mut, storagetype : storagetype)
 
-;; 1-syntax.watsup:214.1-214.70
+;; 1-syntax.watsup:213.1-213.72
 syntax functype =
   | `%->%`{resulttype : resulttype}(resulttype : resulttype, resulttype)
 
-;; 1-syntax.watsup:215.1-215.64
+;; 1-syntax.watsup:214.1-214.64
 syntax structtype = list(syntax fieldtype)
 
-;; 1-syntax.watsup:216.1-216.53
+;; 1-syntax.watsup:215.1-215.54
 syntax arraytype = fieldtype
 
-;; 1-syntax.watsup:218.1-221.42
+;; 1-syntax.watsup:217.1-220.42
 syntax comptype =
   | STRUCT{structtype : structtype}(structtype : structtype)
   | ARRAY{arraytype : arraytype}(arraytype : arraytype)
   | FUNC{functype : functype}(functype : functype)
 
-;; 1-syntax.watsup:223.1-224.49
+;; 1-syntax.watsup:222.1-223.49
 syntax subtype =
   | SUB{fin : fin, typeuse* : typeuse*, comptype : comptype}(fin : fin, typeuse*{typeuse : typeuse} : typeuse*, comptype : comptype)
 
-;; 1-syntax.watsup:226.1-227.49
+;; 1-syntax.watsup:225.1-226.49
 syntax rectype =
   | REC{list : list(syntax subtype)}(list : list(syntax subtype))
 }
@@ -23267,19 +23267,19 @@ def $sizenn2(numtype : numtype) : nat
   def $sizenn2{nt : numtype}(nt) = $size(nt)
 
 ;; 1-syntax.watsup
-def $sizemm(lanetype : lanetype) : nat
+def $lsizenn(lanetype : lanetype) : nat
   ;; 1-syntax.watsup
-  def $sizemm{lt : lanetype}(lt) = $lsize(lt)
+  def $lsizenn{lt : lanetype}(lt) = $lsize(lt)
 
 ;; 1-syntax.watsup
-def $sizemm1(lanetype : lanetype) : nat
+def $lsizenn1(lanetype : lanetype) : nat
   ;; 1-syntax.watsup
-  def $sizemm1{lt : lanetype}(lt) = $lsize(lt)
+  def $lsizenn1{lt : lanetype}(lt) = $lsize(lt)
 
 ;; 1-syntax.watsup
-def $sizemm2(lanetype : lanetype) : nat
+def $lsizenn2(lanetype : lanetype) : nat
   ;; 1-syntax.watsup
-  def $sizemm2{lt : lanetype}(lt) = $lsize(lt)
+  def $lsizenn2{lt : lanetype}(lt) = $lsize(lt)
 
 ;; 1-syntax.watsup
 syntax num_(numtype : numtype)
@@ -23488,19 +23488,19 @@ syntax vbinop_(shape : shape)
   | ADD
   | SUB
   | ADD_SAT{sx : sx}(sx : sx)
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 16)
   | SUB_SAT{sx : sx}(sx : sx)
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 16)
   | MUL
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) >= 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) >= 16)
   | AVGR_U
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 16)
   | Q15MULR_SAT_S{Jnn : Jnn}
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) = 16)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) = 16)
   | MIN{sx : sx}(sx : sx)
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 32)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 32)
   | MAX{sx : sx}(sx : sx)
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) <= 32)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) <= 32)
 
 
   ;; 1-syntax.watsup
@@ -23526,13 +23526,13 @@ syntax vrelop_(shape : shape)
   | EQ
   | NE
   | LT{sx : sx}(sx : sx)
-    -- if (($sizemm((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
+    -- if (($lsizenn((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
   | GT{sx : sx}(sx : sx)
-    -- if (($sizemm((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
+    -- if (($lsizenn((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
   | LE{sx : sx}(sx : sx)
-    -- if (($sizemm((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
+    -- if (($lsizenn((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
   | GE{sx : sx}(sx : sx)
-    -- if (($sizemm((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
+    -- if (($lsizenn((Jnn : Jnn <: lanetype)) =/= 64) \/ (sx = S_sx))
 
 
   ;; 1-syntax.watsup
@@ -23550,19 +23550,19 @@ syntax vcvtop_(shape_1 : shape, shape_2 : shape)
   ;; 1-syntax.watsup
   syntax vcvtop_{Jnn_1 : Jnn, N_1 : N, Jnn_2 : Jnn, N_2 : N}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(N_2))) =
   | EXTEND{Jnn_2 : Jnn, Jnn_1 : Jnn}
-    -- if ($sizemm2((Jnn_2 : Jnn <: lanetype)) = (2 * $sizemm1((Jnn_1 : Jnn <: lanetype))))
+    -- if ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = (2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))))
 
 
   ;; 1-syntax.watsup
   syntax vcvtop_{Jnn_1 : Jnn, N_1 : N, Fnn_2 : Fnn, N_2 : N}(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1)), `%X%`_shape((Fnn_2 : Fnn <: lanetype), `%`_dim(N_2))) =
   | CONVERT
-    -- if (($sizenn2((Fnn_2 : Fnn <: numtype)) >= $sizemm1((Jnn_1 : Jnn <: lanetype))) /\ ($sizemm1((Jnn_1 : Jnn <: lanetype)) = 32))
+    -- if (($sizenn2((Fnn_2 : Fnn <: numtype)) >= $lsizenn1((Jnn_1 : Jnn <: lanetype))) /\ ($lsizenn1((Jnn_1 : Jnn <: lanetype)) = 32))
 
 
   ;; 1-syntax.watsup
   syntax vcvtop_{Fnn_1 : Fnn, N_1 : N, Jnn_2 : Jnn, N_2 : N}(`%X%`_shape((Fnn_1 : Fnn <: lanetype), `%`_dim(N_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(N_2))) =
   | TRUNC_SAT
-    -- if (($sizenn1((Fnn_1 : Fnn <: numtype)) >= $sizemm2((Jnn_2 : Jnn <: lanetype))) /\ ($sizemm2((Jnn_2 : Jnn <: lanetype)) = 32))
+    -- if (($sizenn1((Fnn_1 : Fnn <: numtype)) >= $lsizenn2((Jnn_2 : Jnn <: lanetype))) /\ ($lsizenn2((Jnn_2 : Jnn <: lanetype)) = 32))
 
 
   ;; 1-syntax.watsup
@@ -23596,13 +23596,13 @@ syntax vshiftop_{Jnn : Jnn, N : N}(`%X%`_ishape(Jnn, `%`_dim(N))) =
 ;; 1-syntax.watsup
 syntax vextunop_{Jnn : Jnn, N : N}(`%X%`_ishape(Jnn, `%`_dim(N))) =
   | EXTADD_PAIRWISE
-    -- if ((16 <= $sizemm((Jnn : Jnn <: lanetype))) /\ ($sizemm((Jnn : Jnn <: lanetype)) <= 32))
+    -- if ((16 <= $lsizenn((Jnn : Jnn <: lanetype))) /\ ($lsizenn((Jnn : Jnn <: lanetype)) <= 32))
 
 ;; 1-syntax.watsup
 syntax vextbinop_{Jnn : Jnn, N : N}(`%X%`_ishape(Jnn, `%`_dim(N))) =
   | EXTMUL{half : half}(half : half)
   | DOT{Jnn : Jnn}
-    -- if ($sizemm((Jnn : Jnn <: lanetype)) = 32)
+    -- if ($lsizenn((Jnn : Jnn <: lanetype)) = 32)
 
 ;; 1-syntax.watsup
 syntax memarg =
@@ -23630,7 +23630,7 @@ syntax sz =
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:637.1-638.22
+;; 1-syntax.watsup:636.1-637.22
 syntax instr =
   | NOP
   | UNREACHABLE
@@ -24148,7 +24148,7 @@ relation Expand: `%~~%`(deftype, comptype)
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:259.1-259.88
+;; 2-syntax-aux.watsup:259.1-259.64
 def $funcsxt(externtype*) : deftype*
   ;; 2-syntax-aux.watsup:264.1-264.24
   def $funcsxt([]) = []
@@ -24162,7 +24162,7 @@ def $funcsxt(externtype*) : deftype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:260.1-260.90
+;; 2-syntax-aux.watsup:260.1-260.66
 def $globalsxt(externtype*) : globaltype*
   ;; 2-syntax-aux.watsup:268.1-268.26
   def $globalsxt([]) = []
@@ -24176,7 +24176,7 @@ def $globalsxt(externtype*) : globaltype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:261.1-261.89
+;; 2-syntax-aux.watsup:261.1-261.65
 def $tablesxt(externtype*) : tabletype*
   ;; 2-syntax-aux.watsup:272.1-272.25
   def $tablesxt([]) = []
@@ -24190,7 +24190,7 @@ def $tablesxt(externtype*) : tabletype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:262.1-262.87
+;; 2-syntax-aux.watsup:262.1-262.63
 def $memsxt(externtype*) : memtype*
   ;; 2-syntax-aux.watsup:276.1-276.23
   def $memsxt([]) = []
@@ -25282,7 +25282,7 @@ def $unpackfield(storagetype : storagetype, sx?, fieldval : fieldval) : val
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:44.1-44.86
+;; 5-runtime-aux.watsup:44.1-44.62
 def $funcsxv(externval*) : funcaddr*
   ;; 5-runtime-aux.watsup:49.1-49.24
   def $funcsxv([]) = []
@@ -25296,7 +25296,7 @@ def $funcsxv(externval*) : funcaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:45.1-45.89
+;; 5-runtime-aux.watsup:45.1-45.64
 def $globalsxv(externval*) : globaladdr*
   ;; 5-runtime-aux.watsup:53.1-53.26
   def $globalsxv([]) = []
@@ -25310,7 +25310,7 @@ def $globalsxv(externval*) : globaladdr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:46.1-46.88
+;; 5-runtime-aux.watsup:46.1-46.63
 def $tablesxv(externval*) : tableaddr*
   ;; 5-runtime-aux.watsup:57.1-57.25
   def $tablesxv([]) = []
@@ -25324,7 +25324,7 @@ def $tablesxv(externval*) : tableaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:47.1-47.85
+;; 5-runtime-aux.watsup:47.1-47.61
 def $memsxv(externval*) : memaddr*
   ;; 5-runtime-aux.watsup:61.1-61.23
   def $memsxv([]) = []

@@ -15,11 +15,11 @@ syntax list(syntax X) = X*  -- if |X*| < $(2^32)
 syntax bit hint(desc "bit") = 0 | 1
 syntax byte hint(desc "byte") = 0x00 | ... | 0xFF
 
-syntax uN(N) hint(desc "unsigned integer") hint(show u#%) hint(macro "uN") =
+syntax uN(N) hint(desc "unsigned integer") hint(show u#%) =
   0 | ... | 2^N-1
-syntax sN(N) hint(desc "signed integer") hint(show s#%) hint(macro "sN") =
+syntax sN(N) hint(desc "signed integer") hint(show s#%) =
   -2^(N-1) | ... | -1 | 0 | +1 | ... | 2^(N-1)-1
-syntax iN(N) hint(desc "integer") hint(show i#%) hint(macro "iN") =
+syntax iN(N) hint(desc "integer") hint(show i#%) =
   uN(N)
 
 syntax u8 = uN(8)
@@ -49,7 +49,7 @@ def $M(N) = $signif(N)
 def $E(N) : nat hint(show `E) hint(macro none)
 def $E(N) = $expon(N)
 
-syntax fN(N) hint(desc "floating-point number") hint(show f#%) hint(macro "fN") =
+syntax fN(N) hint(desc "floating-point number") hint(show f#%) =
   | POS fNmag(N)  hint(show $(+%)) \
   | NEG fNmag(N)  hint(show $(-%))
 
@@ -74,7 +74,7 @@ def $canon_(N) = $(2^($signif(N)-1))
 
 ;; Vectors
 
-syntax vN(N) hint(desc "vector") hint(show v#%) hint(macro "vN") =
+syntax vN(N) hint(desc "vector") hint(show v#%) =
   iN(N)
 
 
@@ -160,9 +160,9 @@ syntax valtype/syn hint(desc "value type") =
 syntax valtype/sem =
   | ... | BOT
 
-syntax Inn hint(show I#n) = I32 | I64
-syntax Fnn hint(show F#n) = F32 | F64
-syntax Vnn hint(show V#n) = V128
+syntax Inn hint(show I#n) hint(macro none) = I32 | I64
+syntax Fnn hint(show F#n) hint(macro none) = F32 | F64
+syntax Vnn hint(show V#n) hint(macro none) = V128
 syntax Cnn hint(show t) = Inn | Fnn | Vnn
 
 def $ANYREF    : reftype hint(show ANYREF)
@@ -197,23 +197,22 @@ syntax packtype hint(desc "packed type") = I8 | I16
 syntax lanetype hint(desc "lane type") = numtype | packtype
 syntax storagetype hint(desc "storage type") = valtype | packtype
 
-syntax Pnn hint(show I#n) = I8 | I16
-syntax Jnn hint(show I#n) = Inn | Pnn
-syntax Lnn hint(show I#n) = Inn | Fnn | Pnn
+syntax Pnn hint(show I#n) hint(macro none) = I8 | I16
+syntax Jnn hint(show I#n) hint(macro none) = Inn | Pnn
+syntax Lnn hint(show I#n) hint(macro none) = Inn | Fnn | Pnn
 
 
 ;; Type definitions
 
 ;; TODO: inline
-syntax mut hint(show MUT?) hint(macro none) = MUT?
+syntax mut hint(show MUT?)   hint(macro none) = MUT?
 syntax fin hint(show FINAL?) hint(macro none) = FINAL?
 
-syntax fieldtype hint(desc "field type") =
-  mut storagetype
+syntax fieldtype  hint(desc "field type") = mut storagetype
 
-syntax functype hint(desc "function type") = resulttype -> resulttype
+syntax functype   hint(desc "function type") = resulttype -> resulttype
 syntax structtype hint(desc "structure type") = list(fieldtype)
-syntax arraytype hint(desc "array type") = fieldtype
+syntax arraytype  hint(desc "array type") = fieldtype
 
 syntax comptype hint(desc "composite type") =
   | STRUCT structtype hint(macro "TSTRUCT")
@@ -288,19 +287,19 @@ def $zsize(storagetype) : nat  hint(show |%|)
 def $lanetype(shape) : lanetype hint(macro "shlanetype")
 
 ;; TODO: get rid of these terrible hacks by defining $Inn(nat) hint(show I#%)
-def $sizenn(numtype) : nat     hint(show n)  ;; HACK!
-def $sizenn1(numtype) : nat    hint(show n_1)  ;; HACK!
-def $sizenn2(numtype) : nat    hint(show n_2)  ;; HACK!
+def $sizenn(numtype) : nat     hint(show n)   hint(macro none)  ;; HACK!
+def $sizenn1(numtype) : nat    hint(show n_1) hint(macro none)  ;; HACK!
+def $sizenn2(numtype) : nat    hint(show n_2) hint(macro none)  ;; HACK!
 def $sizenn(nt) = $size(nt)
 def $sizenn1(nt) = $size(nt)
 def $sizenn2(nt) = $size(nt)
 
-def $sizemm(lanetype) : nat    hint(show n)    ;; HACK!
-def $sizemm1(lanetype) : nat   hint(show n_1)  ;; HACK!
-def $sizemm2(lanetype) : nat   hint(show n_2)  ;; HACK!
-def $sizemm(lt) = $lsize(lt)
-def $sizemm1(lt) = $lsize(lt)
-def $sizemm2(lt) = $lsize(lt)
+def $lsizenn(lanetype) : nat   hint(show n)   hint(macro none)  ;; HACK!
+def $lsizenn1(lanetype) : nat  hint(show n_1) hint(macro none)  ;; HACK!
+def $lsizenn2(lanetype) : nat  hint(show n_2) hint(macro none)  ;; HACK!
+def $lsizenn(lt) = $lsize(lt)
+def $lsizenn1(lt) = $lsize(lt)
+def $lsizenn2(lt) = $lsize(lt)
 
 syntax num_(numtype)
 syntax num_(Inn) = iN($sizenn(Inn))
@@ -381,13 +380,13 @@ syntax vbinop_(shape)
 syntax vbinop_(Jnn X N) =
   | ADD
   | SUB
-  | ADD_SAT sx hint(show ADD_SAT#_#%)      -- if $sizemm(Jnn) <= `16
-  | SUB_SAT sx hint(show SUB_SAT#_#%)      -- if $sizemm(Jnn) <= `16
-  | MUL                                    -- if $sizemm(Jnn) >= `16
-  | AVGR_U                                 -- if $sizemm(Jnn) <= `16
-  | Q15MULR_SAT_S                          -- if $sizemm(Jnn) = `16
-  | MIN sx hint(show MIN#_#%)              -- if $sizemm(Jnn) <= `32
-  | MAX sx hint(show MAX#_#%)              -- if $sizemm(Jnn) <= `32
+  | ADD_SAT sx hint(show ADD_SAT#_#%)      -- if $lsizenn(Jnn) <= `16
+  | SUB_SAT sx hint(show SUB_SAT#_#%)      -- if $lsizenn(Jnn) <= `16
+  | MUL                                    -- if $lsizenn(Jnn) >= `16
+  | AVGR_U                                 -- if $lsizenn(Jnn) <= `16
+  | Q15MULR_SAT_S                          -- if $lsizenn(Jnn) = `16
+  | MIN sx hint(show MIN#_#%)              -- if $lsizenn(Jnn) <= `32
+  | MAX sx hint(show MAX#_#%)              -- if $lsizenn(Jnn) <= `32
 syntax vbinop_(Fnn X N) = ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX
 
 syntax vtestop_(shape)
@@ -396,19 +395,19 @@ syntax vtestop_(Jnn X N) = ALL_TRUE
 
 syntax vrelop_(shape)
 syntax vrelop_(Jnn X N) = EQ | NE
-  | LT sx  -- if $sizemm(Jnn) =/= `64 \/ sx = S
-  | GT sx  -- if $sizemm(Jnn) =/= `64 \/ sx = S
-  | LE sx  -- if $sizemm(Jnn) =/= `64 \/ sx = S
-  | GE sx  -- if $sizemm(Jnn) =/= `64 \/ sx = S
+  | LT sx  -- if $lsizenn(Jnn) =/= `64 \/ sx = S
+  | GT sx  -- if $lsizenn(Jnn) =/= `64 \/ sx = S
+  | LE sx  -- if $lsizenn(Jnn) =/= `64 \/ sx = S
+  | GE sx  -- if $lsizenn(Jnn) =/= `64 \/ sx = S
 syntax vrelop_(Fnn X N) = EQ | NE | LT | GT | LE | GE
 
 syntax vcvtop_(shape_1, shape_2)
 syntax vcvtop_(Jnn_1 X N_1, Jnn_2 X N_2) =
-  | EXTEND    -- if $sizemm2(Jnn_2) = $(2 * $sizemm1(Jnn_1))
+  | EXTEND    -- if $lsizenn2(Jnn_2) = $(2 * $lsizenn1(Jnn_1))
 syntax vcvtop_(Jnn_1 X N_1, Fnn_2 X N_2) =
-  | CONVERT   -- if $sizenn2(Fnn_2) >= $sizemm1(Jnn_1) = 32
+  | CONVERT   -- if $sizenn2(Fnn_2) >= $lsizenn1(Jnn_1) = 32
 syntax vcvtop_(Fnn_1 X N_1, Jnn_2 X N_2) =
-  | TRUNC_SAT -- if $sizenn1(Fnn_1) >= $sizemm2(Jnn_2) = 32
+  | TRUNC_SAT -- if $sizenn1(Fnn_1) >= $lsizenn2(Jnn_2) = 32
 syntax vcvtop_(Fnn_1 X N_1, Fnn_2 X N_2) =
   | DEMOTE    -- if $sizenn1(Fnn_1) > $sizenn2(Fnn_2)
   | PROMOTE   -- if $sizenn1(Fnn_1) < $sizenn2(Fnn_2)
@@ -436,11 +435,11 @@ syntax vshiftop_(Jnn X N) = SHL | SHR sx
 
 syntax vextunop_(ishape)
 syntax vextunop_(Jnn X N) =
-  | EXTADD_PAIRWISE  -- if `16 <= $sizemm(Jnn) <= `32
+  | EXTADD_PAIRWISE  -- if `16 <= $lsizenn(Jnn) <= `32
 syntax vextbinop_(ishape)
 syntax vextbinop_(Jnn X N) =
   | EXTMUL half      hint(show EXTMUL#_#%)
-  | DOT              -- if $sizemm(Jnn) = `32
+  | DOT              -- if $lsizenn(Jnn) = `32
 
 
 ;; Memory operators

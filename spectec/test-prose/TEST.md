@@ -4287,13 +4287,13 @@ sizenn1 nt
 sizenn2 nt
 1. Return $size(nt).
 
-sizemm lt
+lsizenn lt
 1. Return $lsize(lt).
 
-sizemm1 lt
+lsizenn1 lt
 1. Return $lsize(lt).
 
-sizemm2 lt
+lsizenn2 lt
 1. Return $lsize(lt).
 
 zero numty_u0

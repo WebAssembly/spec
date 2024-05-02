@@ -175,8 +175,10 @@ let env_hintdef env hd =
     env_hints "macro" env.macro_def id hints;
     env_hints "show" env.show_def id hints
 
+let macrofy_id = Str.(global_replace (regexp "_") "")
+
 let env_macro map id =
-  map := Map.add id.it [TextE "%" $ id.at] !map
+  map := Map.add id.it [TextE (macrofy_id id.it) $ id.at] !map
 
 let env_def env d =
   match d.it with

@@ -212,7 +212,7 @@ $$
 & {\fii} &::=& \mathsf{fii} \\
 & {\faa} &::=& \mathsf{faa} \\
 & {\XfooYfooZ} &::=& \mathsf{foo} \\
-& {\foobar} &::=& \mathsf{bar} \\
+& {{\bar}} &::=& \mathsf{bar} \\
 & {\fooboo} &::=& \mathsf{boo} \\
 & {\XfobYfobZ} &::=& \mathsf{baz} \\
 \end{array}
@@ -224,7 +224,7 @@ $$
   &\qquad \mbox{if}~{\fii} = \mathsf{fii} \\
   &&&\qquad {\land}~{\faa} = \mathsf{faa} \\
   &&&\qquad {\land}~{\XfooYfooZ} = \mathsf{foo} \\
-  &&&\qquad {\land}~{\foobar} = \mathsf{bar} \\
+  &&&\qquad {\land}~{{\bar}} = \mathsf{bar} \\
   &&&\qquad {\land}~{\fooboo} = \mathsf{boo} \\
   &&&\qquad {\land}~{\XfobYfobZ} = \mathsf{baz} \\
 \end{array}
@@ -235,7 +235,7 @@ $$
 & {{\ufii}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ufii} \\
 & {{\ufaa}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ufaa} \\
 & {{\XufooYufooZ}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ufoo} \\
-& {{\ufoobar}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ubar} \\
+& {{\ubar}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ubar} \\
 & {{\ufooboo}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{uboo} \\
 & {{\XufobYufobZ}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ubaz} \\
 \end{array}
@@ -275,7 +275,7 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\foobar} &=& 0 \\
+{{\bar}} &=& 0 \\
 \end{array}
 $$
 
@@ -311,7 +311,7 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\ufoobar}}_{x}(y) &=& 0 \\
+{{\ubar}}_{x}(y) &=& 0 \\
 \end{array}
 $$
 
@@ -329,25 +329,25 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\foo__bar} &=& 0 \\
+{\foobar} &=& 0 \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\foo__boo} &=& 0 \\
+{\fooboo} &=& 0 \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\ufoo__bar}}_{x}(y) &=& 0 \\
+{{\ufoobar}}_{x}(y) &=& 0 \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\ufoo__boo}}_{x}(y) &=& 0 \\
+{{\ufooboo}}_{x}(y) &=& 0 \\
 \end{array}
 $$
 
