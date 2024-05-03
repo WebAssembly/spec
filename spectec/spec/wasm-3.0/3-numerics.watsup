@@ -13,7 +13,7 @@ def $signed(N, nat) : int       hint(show $signed_(%,%))
 def $signed(N, i) = i           -- if $(0 <= 2^(N-1))
 def $signed(N, i) = $(i - 2^N)  -- if $(2^(N-1) <= i < 2^N)
 
-def $invsigned(N, int) : nat    hint(show $signed_(%)^(-1)#((%))) hint(macro "signed")
+def $invsigned(N, int) : nat    hint(show $signed_(%)^(-1)#((%)))
 def $invsigned(N, i) = j        -- if $signed(N, j) = i
 
 
@@ -41,14 +41,14 @@ def $narrow(M, N, sx, iN(M)) : iN(N)                hint(show $narrow_((%,%))^(%
 def $reinterpret(numtype_1, numtype_2, num_(numtype_1)) : num_(numtype_2)
     hint(show $reinterpret_((%,%))#(%))
 
-def $ibits(N, iN(N)) : bit*                         hint(show $bits_(I#%,%))  hint(macro "bits")
-def $fbits(N, fN(N)) : bit*                         hint(show $bits_(F#%,%))  hint(macro "bits")
-def $ibytes(N, iN(N)) : byte*                       hint(show $bytes_(I#%,%)) hint(macro "bytes")
-def $fbytes(N, fN(N)) : byte*                       hint(show $bytes_(F#%,%)) hint(macro "bytes")
-def $nbytes(numtype, num_(numtype)) : byte*         hint(show $bytes_(%,%))   hint(macro "bytes")
-def $vbytes(vectype, vec_(vectype)) : byte*         hint(show $bytes_(%,%))   hint(macro "bytes")
-def $zbytes(storagetype, lit_(storagetype)) : byte* hint(show $bytes_(%,%))   hint(macro "bytes")
-def $cbytes(Cnn, lit_(Cnn)) : byte*                 hint(show $bytes_(%,%))   hint(macro "bytes")
+def $ibits(N, iN(N)) : bit*                         hint(show $bits_(I#%,%))
+def $fbits(N, fN(N)) : bit*                         hint(show $bits_(F#%,%))
+def $ibytes(N, iN(N)) : byte*                       hint(show $bytes_(I#%,%))
+def $fbytes(N, fN(N)) : byte*                       hint(show $bytes_(F#%,%))
+def $nbytes(numtype, num_(numtype)) : byte*         hint(show $bytes_(%,%))
+def $vbytes(vectype, vec_(vectype)) : byte*         hint(show $bytes_(%,%))
+def $zbytes(storagetype, lit_(storagetype)) : byte* hint(show $bytes_(%,%))
+def $cbytes(Cnn, lit_(Cnn)) : byte*                 hint(show $bytes_(%,%))
 
 
 def $invibytes(N, byte*) : iN(N)
@@ -206,7 +206,7 @@ def $lanes_(shape, vec_(V128)) : lane_($lanetype(shape))*
     hint(show $lanes_(%,%))
 
 def $invlanes_(shape, lane_($lanetype(shape))*) : vec_(V128)
-    hint(show $lanes_(%)^(-1)#((%))) hint(macro "lanes")
+    hint(show $lanes_(%)^(-1)#((%)))
 def $invlanes_(sh, c*) = vc  -- if c* = $lanes_(sh, vc)
 
 def $half(half, nat, nat) : nat

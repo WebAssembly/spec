@@ -29,8 +29,8 @@ def $default_(REF eps ht) = eps
 
 ;; Packed fields
 
-def $packfield(storagetype, val) : fieldval         hint(show $pack_(%,%))
-def $unpackfield(storagetype, sx?, fieldval) : val  hint(show $unpack_(%)^(%)#((%)))
+def $packfield(storagetype, val) : fieldval         hint(show $pack_(%,%)) hint(macro "packfield")
+def $unpackfield(storagetype, sx?, fieldval) : val  hint(show $unpack_(%)^(%)#((%))) hint(macro "unpackfield")
 
 def $packfield(t, val) = val
 def $packfield(pt, CONST I32 i) = PACK pt $wrap(32, $psize(pt), i)
@@ -41,10 +41,10 @@ def $unpackfield(pt, sx, PACK pt i) = CONST I32 $ext($psize(pt), 32, sx, i)
 
 ;; Projections
 
-def $funcsxv(externval*) : funcaddr*     hint(show $funcs(%))
-def $globalsxv(externval*) : globaladdr* hint(show $globals(%))
-def $tablesxv(externval*) : tableaddr*   hint(show $tables(%))
-def $memsxv(externval*) : memaddr*       hint(show $mems(%))
+def $funcsxv(externval*) : funcaddr*     hint(show $funcs(%))   hint(macro "funcsxv")
+def $globalsxv(externval*) : globaladdr* hint(show $globals(%)) hint(macro "globalsxv")
+def $tablesxv(externval*) : tableaddr*   hint(show $tables(%))  hint(macro "tablesxv")
+def $memsxv(externval*) : memaddr*       hint(show $mems(%))    hint(macro "memsxv")
 
 def $funcsxv(eps) = eps
 def $funcsxv((FUNC fa) xv*) = fa $funcsxv(xv*)
