@@ -37,17 +37,17 @@ for ( const memtype of ['i32', 'i64'] ) {
            [e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 3,6,e,e,e, e,e,e,e,e, e,e,e,e,e]);
 
   // Passive init that overwrites all-zero entries
-  mem_test(`(memory.init 1 (${memtype}.const 7) (${memtype}.const 0) (${memtype}.const 4))`,
+  mem_test(`(memory.init 1 (${memtype}.const 7) (i32.const 0) (i32.const 4))`,
            [e,e,3,1,4, 1,e,2,7,1, 8,e,7,5,2, 3,6,e,e,e, e,e,e,e,e, e,e,e,e,e]);
 
   // Passive init that overwrites existing active-init-created entries
-  mem_test(`(memory.init 3 (${memtype}.const 15) (${memtype}.const 1) (${memtype}.const 3))`,
+  mem_test(`(memory.init 3 (${memtype}.const 15) (i32.const 1) (i32.const 3))`,
            [e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 9,2,7,e,e, e,e,e,e,e, e,e,e,e,e]);
 
   // Perform active and passive initialisation and then multiple copies
-  mem_test(`(memory.init 1 (${memtype}.const 7) (${memtype}.const 0) (${memtype}.const 4))
+  mem_test(`(memory.init 1 (${memtype}.const 7) (i32.const 0) (i32.const 4))
     (data.drop 1)
-    (memory.init 3 (${memtype}.const 15) (${memtype}.const 1) (${memtype}.const 3))
+    (memory.init 3 (${memtype}.const 15) (i32.const 1) (i32.const 3))
     (data.drop 3)
     (memory.copy (${memtype}.const 20) (${memtype}.const 15) (${memtype}.const 5))
     (memory.copy (${memtype}.const 21) (${memtype}.const 29) (${memtype}.const 1))
@@ -97,7 +97,7 @@ for ( const memtype of ['i32', 'i64'] ) {
   ${PREAMBLE}
   (func (export "test")
     (data.drop 0)
-    (memory.init 0 (${memtype}.const 1234) (${memtype}.const 1) (${memtype}.const 1))))
+    (memory.init 0 (${memtype}.const 1234) (i32.const 1) (i32.const 1))))
 (assert_trap (invoke "test") "out of bounds memory access")
 `);
 
@@ -107,7 +107,7 @@ for ( const memtype of ['i32', 'i64'] ) {
    (memory${decltype} 1)
    (data (${memtype}.const 0) "\\37")
    (func (export "test")
-     (memory.init 0 (${memtype}.const 1234) (${memtype}.const 1) (${memtype}.const 1))))
+     (memory.init 0 (${memtype}.const 1234) (i32.const 1) (i32.const 1))))
 (assert_trap (invoke "test") "out of bounds memory access")
 `);
 
@@ -116,7 +116,7 @@ for ( const memtype of ['i32', 'i64'] ) {
 `(assert_invalid
   (module
     (func (export "test")
-      (memory.init 1 (${memtype}.const 1234) (${memtype}.const 1) (${memtype}.const 1))))
+      (memory.init 1 (${memtype}.const 1234) (i32.const 1) (i32.const 1))))
   "unknown memory 0")
 `);
 
@@ -126,7 +126,7 @@ for ( const memtype of ['i32', 'i64'] ) {
   (module
     ${PREAMBLE}
     (func (export "test")
-      (memory.init 1 (${memtype}.const 1234) (${memtype}.const 1) (${memtype}.const 1))))
+      (memory.init 1 (${memtype}.const 1234) (i32.const 1) (i32.const 1))))
   "unknown data segment 1")
 `);
 
@@ -135,8 +135,8 @@ for ( const memtype of ['i32', 'i64'] ) {
 `(module
   ${PREAMBLE}
   (func (export "test")
-    (memory.init 0 (${memtype}.const 1) (${memtype}.const 0) (${memtype}.const 1))
-    (memory.init 0 (${memtype}.const 1) (${memtype}.const 0) (${memtype}.const 1))))
+    (memory.init 0 (${memtype}.const 1) (i32.const 0) (i32.const 1))
+    (memory.init 0 (${memtype}.const 1) (i32.const 0) (i32.const 1))))
 (invoke "test")
 `);
 
@@ -145,7 +145,7 @@ for ( const memtype of ['i32', 'i64'] ) {
 `(module
   ${PREAMBLE}
   (func (export "test")
-    (memory.init 0 (${memtype}.const 1234) (${memtype}.const 0) (${memtype}.const 5))))
+    (memory.init 0 (${memtype}.const 1234) (i32.const 0) (i32.const 5))))
 (assert_trap (invoke "test") "out of bounds memory access")
 `);
 
@@ -154,7 +154,7 @@ for ( const memtype of ['i32', 'i64'] ) {
 `(module
   ${PREAMBLE}
   (func (export "test")
-    (memory.init 0 (${memtype}.const 1234) (${memtype}.const 2) (${memtype}.const 3))))
+    (memory.init 0 (${memtype}.const 1234) (i32.const 2) (i32.const 3))))
 (assert_trap (invoke "test") "out of bounds memory access")
 `);
 
@@ -163,7 +163,7 @@ for ( const memtype of ['i32', 'i64'] ) {
 `(module
   ${PREAMBLE}
   (func (export "test")
-    (memory.init 0 (${memtype}.const 0xFFFE) (${memtype}.const 1) (${memtype}.const 3))))
+    (memory.init 0 (${memtype}.const 0xFFFE) (i32.const 1) (i32.const 3))))
 (assert_trap (invoke "test") "out of bounds memory access")
 `);
 
@@ -172,7 +172,7 @@ for ( const memtype of ['i32', 'i64'] ) {
 `(module
   ${PREAMBLE}
   (func (export "test")
-    (memory.init 0 (${memtype}.const 1234) (${memtype}.const 4) (${memtype}.const 0))))
+    (memory.init 0 (${memtype}.const 1234) (i32.const 4) (i32.const 0))))
 (assert_trap (invoke "test") "out of bounds memory access")
 `);
 
@@ -181,7 +181,7 @@ for ( const memtype of ['i32', 'i64'] ) {
 `(module
   ${PREAMBLE}
   (func (export "test")
-    (memory.init 0 (${memtype}.const 1234) (${memtype}.const 1) (${memtype}.const 0))))
+    (memory.init 0 (${memtype}.const 1234) (i32.const 1) (i32.const 0))))
 (invoke "test")
 `);
 
@@ -190,7 +190,7 @@ for ( const memtype of ['i32', 'i64'] ) {
 `(module
   ${PREAMBLE}
   (func (export "test")
-    (memory.init 0 (${memtype}.const 0x10001) (${memtype}.const 0) (${memtype}.const 0))))
+    (memory.init 0 (${memtype}.const 0x10001) (i32.const 0) (i32.const 0))))
 (assert_trap (invoke "test") "out of bounds memory access")
 `);
 
@@ -199,7 +199,7 @@ for ( const memtype of ['i32', 'i64'] ) {
 `(module
   ${PREAMBLE}
   (func (export "test")
-    (memory.init 0 (${memtype}.const 0x10000) (${memtype}.const 0) (${memtype}.const 0))))
+    (memory.init 0 (${memtype}.const 0x10000) (i32.const 0) (i32.const 0))))
 (invoke "test")
 `);
 
@@ -208,7 +208,7 @@ for ( const memtype of ['i32', 'i64'] ) {
 `(module
   ${PREAMBLE}
   (func (export "test")
-    (memory.init 0 (${memtype}.const 0x10000) (${memtype}.const 1) (${memtype}.const 0))))
+    (memory.init 0 (${memtype}.const 0x10000) (i32.const 1) (i32.const 0))))
 (invoke "test")
 `);
 
@@ -218,7 +218,7 @@ for ( const memtype of ['i32', 'i64'] ) {
 `(module
   ${PREAMBLE}
   (func (export "test")
-    (memory.init 0 (${memtype}.const 0x10001) (${memtype}.const 4) (${memtype}.const 0))))
+    (memory.init 0 (${memtype}.const 0x10001) (i32.const 4) (i32.const 0))))
 (assert_trap (invoke "test") "out of bounds memory access")
 `);
 
@@ -229,7 +229,7 @@ for ( const memtype of ['i32', 'i64'] ) {
       for (let ty1 of tys) {
       for (let ty2 of tys) {
       for (let ty3 of tys) {
-          if (ty1 == memtype && ty2 == memtype && ty3 == memtype)
+          if (ty1 == memtype && ty2 == 'i32' && ty3 == 'i32')
               continue;  // this is the only valid case
           print(
 `(assert_invalid
@@ -257,8 +257,8 @@ for ( const memtype of ['i32', 'i64'] ) {
   (memory${decltype} ${min} ${max} ${shared})
   (data "\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42\\42")
    ${checkRangeCode(memtype)}
-  (func (export "run") (param $offs ${memtype}) (param $len ${memtype})
-    (memory.init 0 (local.get $offs) (${memtype}.const 0) (local.get $len))))
+  (func (export "run") (param $offs ${memtype}) (param $len i32)
+    (memory.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
 `);
       // A fill writing past the end of the memory should throw *and* have filled
       // all the way up to the end.
@@ -267,7 +267,7 @@ for ( const memtype of ['i32', 'i64'] ) {
       // memory with as much data as was available.
       let offs = min*PAGESIZE - backup;
       print(
-`(assert_trap (invoke "run" (${memtype}.const ${offs}) (${memtype}.const ${write}))
+`(assert_trap (invoke "run" (${memtype}.const ${offs}) (i32.const ${write}))
               "out of bounds memory access")
 `);
       checkRange(memtype, 0, min, 0);
@@ -312,5 +312,5 @@ for ( const memtype of ['i32', 'i64'] ) {
   (data "") (data "") (data "") (data "") (data "") (data "") (data "") (data "")
   (data "") (data "") (data "") (data "") (data "") (data "") (data "") (data "")
   (data "")
-  (func (memory.init 64 (${memtype}.const 0) (${memtype}.const 0) (${memtype}.const 0))))`)
+  (func (memory.init 64 (${memtype}.const 0) (i32.const 0) (i32.const 0))))`)
 }

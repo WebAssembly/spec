@@ -1017,7 +1017,7 @@
   (data (i64.const 12) "\07\05\02\03\06")
   (data "\05\09\02\07\06")
   (func (export "test")
-    (memory.init 1 (i64.const 7) (i64.const 0) (i64.const 4)))
+    (memory.init 1 (i64.const 7) (i32.const 0) (i32.const 4)))
   (func (export "load8_u") (param i64) (result i32)
     (i32.load8_u (local.get 0))))
 
@@ -1061,7 +1061,7 @@
   (data (i64.const 12) "\07\05\02\03\06")
   (data "\05\09\02\07\06")
   (func (export "test")
-    (memory.init 3 (i64.const 15) (i64.const 1) (i64.const 3)))
+    (memory.init 3 (i64.const 15) (i32.const 1) (i32.const 3)))
   (func (export "load8_u") (param i64) (result i32)
     (i32.load8_u (local.get 0))))
 
@@ -1105,9 +1105,9 @@
   (data (i64.const 12) "\07\05\02\03\06")
   (data "\05\09\02\07\06")
   (func (export "test")
-    (memory.init 1 (i64.const 7) (i64.const 0) (i64.const 4))
+    (memory.init 1 (i64.const 7) (i32.const 0) (i32.const 4))
     (data.drop 1)
-    (memory.init 3 (i64.const 15) (i64.const 1) (i64.const 3))
+    (memory.init 3 (i64.const 15) (i32.const 1) (i32.const 3))
     (data.drop 3)
     (memory.copy (i64.const 20) (i64.const 15) (i64.const 5))
     (memory.copy (i64.const 21) (i64.const 29) (i64.const 1))
@@ -1176,20 +1176,20 @@
     (data "\37")
   (func (export "test")
     (data.drop 0)
-    (memory.init 0 (i64.const 1234) (i64.const 1) (i64.const 1))))
+    (memory.init 0 (i64.const 1234) (i32.const 1) (i32.const 1))))
 (assert_trap (invoke "test") "out of bounds memory access")
 
 (module
    (memory i64 1)
    (data (i64.const 0) "\37")
    (func (export "test")
-     (memory.init 0 (i64.const 1234) (i64.const 1) (i64.const 1))))
+     (memory.init 0 (i64.const 1234) (i32.const 1) (i32.const 1))))
 (assert_trap (invoke "test") "out of bounds memory access")
 
 (assert_invalid
   (module
     (func (export "test")
-      (memory.init 1 (i64.const 1234) (i64.const 1) (i64.const 1))))
+      (memory.init 1 (i64.const 1234) (i32.const 1) (i32.const 1))))
   "unknown memory 0")
 
 (assert_invalid
@@ -1197,78 +1197,78 @@
     (memory i64 1)
     (data "\37")
     (func (export "test")
-      (memory.init 1 (i64.const 1234) (i64.const 1) (i64.const 1))))
+      (memory.init 1 (i64.const 1234) (i32.const 1) (i32.const 1))))
   "unknown data segment 1")
 
 (module
   (memory i64 1)
     (data "\37")
   (func (export "test")
-    (memory.init 0 (i64.const 1) (i64.const 0) (i64.const 1))
-    (memory.init 0 (i64.const 1) (i64.const 0) (i64.const 1))))
+    (memory.init 0 (i64.const 1) (i32.const 0) (i32.const 1))
+    (memory.init 0 (i64.const 1) (i32.const 0) (i32.const 1))))
 (invoke "test")
 
 (module
   (memory i64 1)
     (data "\37")
   (func (export "test")
-    (memory.init 0 (i64.const 1234) (i64.const 0) (i64.const 5))))
+    (memory.init 0 (i64.const 1234) (i32.const 0) (i32.const 5))))
 (assert_trap (invoke "test") "out of bounds memory access")
 
 (module
   (memory i64 1)
     (data "\37")
   (func (export "test")
-    (memory.init 0 (i64.const 1234) (i64.const 2) (i64.const 3))))
+    (memory.init 0 (i64.const 1234) (i32.const 2) (i32.const 3))))
 (assert_trap (invoke "test") "out of bounds memory access")
 
 (module
   (memory i64 1)
     (data "\37")
   (func (export "test")
-    (memory.init 0 (i64.const 0xFFFE) (i64.const 1) (i64.const 3))))
+    (memory.init 0 (i64.const 0xFFFE) (i32.const 1) (i32.const 3))))
 (assert_trap (invoke "test") "out of bounds memory access")
 
 (module
   (memory i64 1)
     (data "\37")
   (func (export "test")
-    (memory.init 0 (i64.const 1234) (i64.const 4) (i64.const 0))))
+    (memory.init 0 (i64.const 1234) (i32.const 4) (i32.const 0))))
 (assert_trap (invoke "test") "out of bounds memory access")
 
 (module
   (memory i64 1)
     (data "\37")
   (func (export "test")
-    (memory.init 0 (i64.const 1234) (i64.const 1) (i64.const 0))))
+    (memory.init 0 (i64.const 1234) (i32.const 1) (i32.const 0))))
 (invoke "test")
 
 (module
   (memory i64 1)
     (data "\37")
   (func (export "test")
-    (memory.init 0 (i64.const 0x10001) (i64.const 0) (i64.const 0))))
+    (memory.init 0 (i64.const 0x10001) (i32.const 0) (i32.const 0))))
 (assert_trap (invoke "test") "out of bounds memory access")
 
 (module
   (memory i64 1)
     (data "\37")
   (func (export "test")
-    (memory.init 0 (i64.const 0x10000) (i64.const 0) (i64.const 0))))
+    (memory.init 0 (i64.const 0x10000) (i32.const 0) (i32.const 0))))
 (invoke "test")
 
 (module
   (memory i64 1)
     (data "\37")
   (func (export "test")
-    (memory.init 0 (i64.const 0x10000) (i64.const 1) (i64.const 0))))
+    (memory.init 0 (i64.const 0x10000) (i32.const 1) (i32.const 0))))
 (invoke "test")
 
 (module
   (memory i64 1)
     (data "\37")
   (func (export "test")
-    (memory.init 0 (i64.const 0x10001) (i64.const 4) (i64.const 0))))
+    (memory.init 0 (i64.const 0x10001) (i32.const 4) (i32.const 0))))
 (assert_trap (invoke "test") "out of bounds memory access")
 
 (assert_invalid
@@ -1532,14 +1532,6 @@
     (memory i64 1)
     (data "\37")
     (func (export "test")
-      (memory.init 0 (i64.const 1) (i32.const 1) (i32.const 1))))
-  "type mismatch")
-
-(assert_invalid
-  (module
-    (memory i64 1)
-    (data "\37")
-    (func (export "test")
       (memory.init 0 (i64.const 1) (i32.const 1) (f32.const 1))))
   "type mismatch")
 
@@ -1605,6 +1597,14 @@
     (data "\37")
     (func (export "test")
       (memory.init 0 (i64.const 1) (i64.const 1) (f32.const 1))))
+  "type mismatch")
+
+(assert_invalid
+  (module
+    (memory i64 1)
+    (data "\37")
+    (func (export "test")
+      (memory.init 0 (i64.const 1) (i64.const 1) (i64.const 1))))
   "type mismatch")
 
 (assert_invalid
@@ -1790,10 +1790,10 @@
           (br $cont))))
     (return (local.get $from)))
 
-  (func (export "run") (param $offs i64) (param $len i64)
-    (memory.init 0 (local.get $offs) (i64.const 0) (local.get $len))))
+  (func (export "run") (param $offs i64) (param $len i32)
+    (memory.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
 
-(assert_trap (invoke "run" (i64.const 65528) (i64.const 16))
+(assert_trap (invoke "run" (i64.const 65528) (i32.const 16))
               "out of bounds memory access")
 
 (assert_return (invoke "checkRange" (i64.const 0) (i64.const 1) (i32.const 0))
@@ -1813,10 +1813,10 @@
           (br $cont))))
     (return (local.get $from)))
 
-  (func (export "run") (param $offs i64) (param $len i64)
-    (memory.init 0 (local.get $offs) (i64.const 0) (local.get $len))))
+  (func (export "run") (param $offs i64) (param $len i32)
+    (memory.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
 
-(assert_trap (invoke "run" (i64.const 65527) (i64.const 16))
+(assert_trap (invoke "run" (i64.const 65527) (i32.const 16))
               "out of bounds memory access")
 
 (assert_return (invoke "checkRange" (i64.const 0) (i64.const 1) (i32.const 0))
@@ -1836,10 +1836,10 @@
           (br $cont))))
     (return (local.get $from)))
 
-  (func (export "run") (param $offs i64) (param $len i64)
-    (memory.init 0 (local.get $offs) (i64.const 0) (local.get $len))))
+  (func (export "run") (param $offs i64) (param $len i32)
+    (memory.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
 
-(assert_trap (invoke "run" (i64.const 65472) (i64.const 30))
+(assert_trap (invoke "run" (i64.const 65472) (i32.const 30))
               "out of bounds memory access")
 
 (assert_return (invoke "checkRange" (i64.const 0) (i64.const 1) (i32.const 0))
@@ -1859,10 +1859,10 @@
           (br $cont))))
     (return (local.get $from)))
 
-  (func (export "run") (param $offs i64) (param $len i64)
-    (memory.init 0 (local.get $offs) (i64.const 0) (local.get $len))))
+  (func (export "run") (param $offs i64) (param $len i32)
+    (memory.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
 
-(assert_trap (invoke "run" (i64.const 65473) (i64.const 31))
+(assert_trap (invoke "run" (i64.const 65473) (i32.const 31))
               "out of bounds memory access")
 
 (assert_return (invoke "checkRange" (i64.const 0) (i64.const 1) (i32.const 0))
@@ -1882,10 +1882,10 @@
           (br $cont))))
     (return (local.get $from)))
 
-  (func (export "run") (param $offs i64) (param $len i64)
-    (memory.init 0 (local.get $offs) (i64.const 0) (local.get $len))))
+  (func (export "run") (param $offs i64) (param $len i32)
+    (memory.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
 
-(assert_trap (invoke "run" (i64.const 65528) (i64.const 4294967040))
+(assert_trap (invoke "run" (i64.const 65528) (i32.const 4294967040))
               "out of bounds memory access")
 
 (assert_return (invoke "checkRange" (i64.const 0) (i64.const 1) (i32.const 0))
@@ -1905,10 +1905,10 @@
           (br $cont))))
     (return (local.get $from)))
 
-  (func (export "run") (param $offs i64) (param $len i64)
-    (memory.init 0 (local.get $offs) (i64.const 0) (local.get $len))))
+  (func (export "run") (param $offs i64) (param $len i32)
+    (memory.init 0 (local.get $offs) (i32.const 0) (local.get $len))))
 
-(assert_trap (invoke "run" (i64.const 0) (i64.const 4294967292))
+(assert_trap (invoke "run" (i64.const 0) (i32.const 4294967292))
               "out of bounds memory access")
 
 (assert_return (invoke "checkRange" (i64.const 0) (i64.const 1) (i32.const 0))
@@ -1927,4 +1927,4 @@
   (data "") (data "") (data "") (data "") (data "") (data "") (data "") (data "")
   (data "") (data "") (data "") (data "") (data "") (data "") (data "") (data "")
   (data "")
-  (func (memory.init 64 (i64.const 0) (i64.const 0) (i64.const 0))))
+  (func (memory.init 64 (i64.const 0) (i32.const 0) (i32.const 0))))

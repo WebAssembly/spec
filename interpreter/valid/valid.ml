@@ -407,7 +407,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
   | MemoryInit x ->
     let MemoryType (_, it) = memory c (0l @@ e.at) in
     ignore (data c x);
-    [value_type_of_index_type it; value_type_of_index_type it; value_type_of_index_type it] --> []
+    [value_type_of_index_type it; NumType I32Type; NumType I32Type] --> []
 
   | DataDrop x ->
     ignore (data c x);
