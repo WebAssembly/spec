@@ -95,7 +95,7 @@ ${syntax-ignore: recorddots}
 
 The following notation is adopted for manipulating such records:
 
-* ${-:r.FIELD} denotes the contents of the ${-:FIELD} component of ${-:r}.
+* ${-:r.FIELD} denotes the contents of the ${-:FIELD} component of ${:r}.
 
 * ${-:r[.FIELD = A]} denotes the same record as ${:r},
   except that the contents of the ${-:FIELD} component is replaced with ${:A}.

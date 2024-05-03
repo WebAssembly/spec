@@ -35,9 +35,11 @@ $$
 & {\mathit{fii}} &::=& \mathsf{fii} \\
 & {\mathit{faa}} &::=& \mathsf{faa} \\
 & {\mathit{foo}} &::=& \mathsf{foo} \\
+& {\mathit{fuu}} &::=& \mathsf{fuu} \\
 & {\mathit{foobar}} &::=& \mathsf{bar} \\
 & {\mathit{fooboo}} &::=& \mathsf{boo} \\
 & {\mathit{fob}} &::=& \mathsf{baz} \\
+& {\mathit{fib}} &::=& \mathsf{boi} \\
 \end{array}
 $$
 
@@ -47,9 +49,11 @@ $$
   &\qquad \mbox{if}~{\mathit{fii}} = \mathsf{fii} \\
   &&&\qquad {\land}~{\mathit{faa}} = \mathsf{faa} \\
   &&&\qquad {\land}~{\mathit{foo}} = \mathsf{foo} \\
+  &&&\qquad {\land}~{\mathit{fuu}} = \mathsf{fuu} \\
   &&&\qquad {\land}~{\mathit{foobar}} = \mathsf{bar} \\
   &&&\qquad {\land}~{\mathit{fooboo}} = \mathsf{boo} \\
   &&&\qquad {\land}~{\mathit{fob}} = \mathsf{baz} \\
+  &&&\qquad {\land}~{\mathit{fib}} = \mathsf{boi} \\
 \end{array}
 $$
 
@@ -58,9 +62,11 @@ $$
 & {{\mathit{ufii}}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ufii} \\
 & {{\mathit{ufaa}}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ufaa} \\
 & {{\mathit{ufoo}}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ufoo} \\
+& {{\mathit{ufuu}}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ufuu} \\
 & {{\mathit{ufoobar}}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ubar} \\
 & {{\mathit{ufooboo}}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{uboo} \\
 & {{\mathit{ufob}}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ubaz} \\
+& {{\mathit{ufib}}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{uboi} \\
 \end{array}
 $$
 
@@ -70,9 +76,11 @@ $$
   &\qquad \mbox{if}~{\mathit{ufii}} = \mathsf{ufii} \\
   &&&\qquad {\land}~{\mathit{ufaa}} = \mathsf{ufaa} \\
   &&&\qquad {\land}~{\mathit{ufoo}} = \mathsf{ufoo} \\
+  &&&\qquad {\land}~{\mathit{ufuu}} = \mathsf{ufuu} \\
   &&&\qquad {\land}~{\mathit{ubar}} = \mathsf{ubar} \\
   &&&\qquad {\land}~{\mathit{uboo}} = \mathsf{uboo} \\
   &&&\qquad {\land}~{\mathit{ubaz}} = \mathsf{ubaz} \\
+  &&&\qquad {\land}~{\mathit{uboi}} = \mathsf{uboi} \\
 \end{array}
 $$
 
@@ -98,6 +106,12 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
+{\mathrm{fuu}} &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
 {\mathit{foobar}} &=& 0 \\
 \end{array}
 $$
@@ -111,6 +125,12 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {\mathit{fob}} &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathit{fib}} &=& 0 \\
 \end{array}
 $$
 
@@ -134,6 +154,12 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
+{{\mathrm{ufuu}}}_{x}(y) &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
 {{\mathit{ufoobar}}}_{x}(y) &=& 0 \\
 \end{array}
 $$
@@ -147,6 +173,12 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {{\mathit{ufob}}}_{x}(y) &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\mathit{ufib}}}_{x}(y) &=& 0 \\
 \end{array}
 $$
 
@@ -212,9 +244,11 @@ $$
 & {\fii} &::=& \mathsf{fii} \\
 & {\faa} &::=& \mathsf{faa} \\
 & {\XfooYfooZ} &::=& \mathsf{foo} \\
+& {\mathit{fuu}} &::=& \mathsf{fuu} \\
 & {\foobar} &::=& \mathsf{bar} \\
 & {\fooboo} &::=& \mathsf{boo} \\
 & {\XfobYfobZ} &::=& \mathsf{baz} \\
+& {\mathit{fib}} &::=& \mathsf{boi} \\
 \end{array}
 $$
 
@@ -224,9 +258,11 @@ $$
   &\qquad \mbox{if}~{\fii} = \mathsf{fii} \\
   &&&\qquad {\land}~{\faa} = \mathsf{faa} \\
   &&&\qquad {\land}~{\XfooYfooZ} = \mathsf{foo} \\
+  &&&\qquad {\land}~{\mathit{fuu}} = \mathsf{fuu} \\
   &&&\qquad {\land}~{\foobar} = \mathsf{bar} \\
   &&&\qquad {\land}~{\fooboo} = \mathsf{boo} \\
   &&&\qquad {\land}~{\XfobYfobZ} = \mathsf{baz} \\
+  &&&\qquad {\land}~{\mathit{fib}} = \mathsf{boi} \\
 \end{array}
 $$
 
@@ -235,9 +271,11 @@ $$
 & {{\ufii}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ufii} \\
 & {{\ufaa}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ufaa} \\
 & {{\XufooYufooZ}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ufoo} \\
+& {{\mathit{ufuu}}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ufuu} \\
 & {{\ufoobar}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ubar} \\
 & {{\ufooboo}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{uboo} \\
 & {{\XufobYufobZ}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{ubaz} \\
+& {{\mathit{ufib}}}_{{\mathit{nat}}_1}({\mathit{nat}}_2) &::=& \mathsf{uboi} \\
 \end{array}
 $$
 
@@ -247,9 +285,11 @@ $$
   &\qquad \mbox{if}~{\mathit{ufii}} = \mathsf{ufii} \\
   &&&\qquad {\land}~{\mathit{ufaa}} = \mathsf{ufaa} \\
   &&&\qquad {\land}~{\mathit{ufoo}} = \mathsf{ufoo} \\
+  &&&\qquad {\land}~{\mathit{ufuu}} = \mathsf{ufuu} \\
   &&&\qquad {\land}~{\mathit{ubar}} = \mathsf{ubar} \\
   &&&\qquad {\land}~{\mathit{uboo}} = \mathsf{uboo} \\
   &&&\qquad {\land}~{\mathit{ubaz}} = \mathsf{ubaz} \\
+  &&&\qquad {\land}~{\mathit{uboi}} = \mathsf{uboi} \\
 \end{array}
 $$
 
@@ -275,6 +315,12 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
+{\mathrm{fuu}} &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
 {\foobar} &=& 0 \\
 \end{array}
 $$
@@ -288,6 +334,12 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {\XfobYfobZ} &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathit{fib}} &=& 0 \\
 \end{array}
 $$
 
@@ -311,6 +363,12 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
+{{\mathrm{ufuu}}}_{x}(y) &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
 {{\ufoobar}}_{x}(y) &=& 0 \\
 \end{array}
 $$
@@ -329,25 +387,31 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\foo__bar} &=& 0 \\
+{{\mathit{ufib}}}_{x}(y) &=& 0 \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\foo__boo} &=& 0 \\
+{\foobar} &=& 0 \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\ufoo__bar}}_{x}(y) &=& 0 \\
+{\fooboo} &=& 0 \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\ufoo__boo}}_{x}(y) &=& 0 \\
+{{\ufoobar}}_{x}(y) &=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\ufooboo}}_{x}(y) &=& 0 \\
 \end{array}
 $$
 
