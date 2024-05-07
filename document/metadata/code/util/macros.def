@@ -21,8 +21,8 @@
 .. Code Metadata, non-terminals
 
 .. |Bcodemetadatasec| mathdef:: \xref{binary}{binary-codemetadata}{\B{codemetadatasec}}
-.. |Bcodemetadata| mathdef:: \xref{binary}{binary-codemetadata}{\B{codemetada}}
-.. |Bcodemetadatafunc| mathdef:: \xref{binary}{binary-codemetadata}{\B{codemetadafunc}}
+.. |Bcodemetadata| mathdef:: \xref{binary}{binary-codemetadata}{\B{codemetadata}}
+.. |Bcodemetadatafunc| mathdef:: \xref{binary}{binary-codemetadata}{\B{codemetadatafunc}}
 .. |Bcodemetadataitem| mathdef:: \xref{binary}{binary-codemetadata}{\B{codemetadataitem}}
 
 .. Branch Hints, non-terminals
