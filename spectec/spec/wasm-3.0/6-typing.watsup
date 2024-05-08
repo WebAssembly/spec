@@ -9,14 +9,22 @@ syntax localtype hint(desc "local type") =
   init valtype
 
 syntax instrtype hint(desc "instruction type") =
-  resulttype ->_ localidx* resulttype  hint(show %0 `->_ %2 %3)
+  resulttype ->_ localidx* resulttype  hint(show %0 `->_ %2 %3) hint(macro "to")
 
 
 syntax context hint(desc "context") =
-  { TYPES deftype*, REC subtype*,
-    FUNCS deftype*, GLOBALS globaltype*, TABLES tabletype*, MEMS memtype*,
-    ELEMS elemtype*, DATAS datatype*,
-    LOCALS localtype*, LABELS resulttype*, RETURN resulttype? }
+  { TYPES deftype*, \
+    REC subtype*,
+    FUNCS deftype*, \
+    GLOBALS globaltype*, \
+    TABLES tabletype*, \
+    MEMS memtype*,
+    ELEMS elemtype*, \
+    DATAS datatype*,
+    LOCALS localtype*, \
+    LABELS resulttype*, \
+    RETURN resulttype?
+  }
 
 var C : context
 var lct : localtype  hint(show lt)
@@ -45,11 +53,11 @@ def $clostypes(dt* dt_N) = dt'* $subst_all_deftype(dt_N, dt'*)  -- if dt'* = $cl
 
 ;; Value types
 
-relation Numtype_ok: context |- numtype : OK        hint(show "K-num")
-relation Vectype_ok: context |- vectype : OK        hint(show "K-vec")
-relation Heaptype_ok: context |- heaptype : OK      hint(show "K-heap")
-relation Reftype_ok: context |- reftype : OK        hint(show "K-ref")
-relation Valtype_ok: context |- valtype : OK        hint(show "K-val")
+relation Numtype_ok: context |- numtype : OK    hint(show "K-num")  hint(macro "%numtype")
+relation Vectype_ok: context |- vectype : OK    hint(show "K-vec")  hint(macro "%vectype")
+relation Heaptype_ok: context |- heaptype : OK  hint(show "K-heap") hint(macro "%heaptype")
+relation Reftype_ok: context |- reftype : OK    hint(show "K-ref")  hint(macro "%reftype")
+relation Valtype_ok: context |- valtype : OK    hint(show "K-val")  hint(macro "%valtype")
 
 
 rule Numtype_ok:
@@ -91,8 +99,8 @@ rule Valtype_ok/bot:
 
 ;; Result and Instruction types
 
-relation Resulttype_ok: context |- resulttype : OK  hint(show "K-result")
-relation Instrtype_ok: context |- instrtype : OK    hint(show "K-instr")
+relation Resulttype_ok: context |- resulttype : OK  hint(show "K-result") hint(macro "%resulttype")
+relation Instrtype_ok: context |- instrtype : OK    hint(show "K-instr")  hint(macro "%instrtype")
 
 rule Resulttype_ok:
   C |- t* : OK
@@ -107,23 +115,23 @@ rule Instrtype_ok:
 
 ;; Type definitions
 
-syntax oktypeidx hint(show OK#((typeidx)))    = | OK typeidx      hint(show OK#(%))
-syntax oktypeidxnat hint(show OK#(typeidx,n)) = | OK typeidx nat  hint(show OK#(%, %))
+syntax oktypeidx hint(show OK#((typeidx)))    = | OK typeidx      hint(show OK#(%))    hint(macro "%subtype")
+syntax oktypeidxnat hint(show OK#(typeidx,n)) = | OK typeidx nat  hint(show OK#(%, %)) hint(macro "%subtypeext")
 
-relation Packtype_ok: context |- packtype : OK        hint(show "K-pack")
-relation Fieldtype_ok: context |- fieldtype : OK      hint(show "K-field")
-relation Storagetype_ok: context |- storagetype : OK  hint(show "K-storage")
-relation Comptype_ok: context |- comptype : OK        hint(show "K-comp")
-relation Functype_ok: context |- functype : OK        hint(show "K-func")
-relation Subtype_ok: context |- subtype : oktypeidx   hint(show "K-sub")
-relation Rectype_ok: context |- rectype : oktypeidx   hint(show "K-rect")
-relation Subtype_ok2: context |- subtype : oktypeidxnat hint(show "K-sub2")
-relation Rectype_ok2: context |- rectype : oktypeidxnat hint(show "K-rec2")
-relation Deftype_ok: context |- deftype : OK          hint(show "K-def")
+relation Packtype_ok: context |- packtype : OK          hint(show "K-pack")    hint(macro "%packtype")
+relation Fieldtype_ok: context |- fieldtype : OK        hint(show "K-field")   hint(macro "%fieldtype")
+relation Storagetype_ok: context |- storagetype : OK    hint(show "K-storage") hint(macro "%storagetype")
+relation Comptype_ok: context |- comptype : OK          hint(show "K-comp")    hint(macro "%comptype")
+relation Functype_ok: context |- functype : OK          hint(show "K-func")    hint(macro "%functype")
+relation Subtype_ok: context |- subtype : oktypeidx     hint(show "K-sub")     hint(macro "%subtype")
+relation Rectype_ok: context |- rectype : oktypeidx     hint(show "K-rect")    hint(macro "%rectype")
+relation Subtype_ok2: context |- subtype : oktypeidxnat hint(show "K-sub2")    hint(macro "%subtypeext")
+relation Rectype_ok2: context |- rectype : oktypeidxnat hint(show "K-rec2")    hint(macro "%rectypeext")
+relation Deftype_ok: context |- deftype : OK            hint(show "K-def")     hint(macro "%deftype")
 
 ;; Forward declaration
-relation Comptype_sub: context |- comptype <: comptype  hint(show "S-comp")
-relation Deftype_sub: context |- deftype <: deftype     hint(show "S-def")
+relation Comptype_sub: context |- comptype <: comptype  hint(show "S-comp")    hint(macro "%comptypematch")
+relation Deftype_sub: context |- deftype <: deftype     hint(show "S-def")     hint(macro "%deftypematch")
 
 
 rule Packtype_ok:
@@ -164,7 +172,7 @@ rule Subtype_ok:
   -- Comptype_ok: C |- comptype : OK
   -- (Comptype_sub: C |- comptype <: comptype')*
 
-def $before(typeuse, typeidx, nat) : bool   hint(show % << %,%)
+def $before(typeuse, typeidx, nat) : bool   hint(show % << %,%) hint(macro "before")
 def $before(deftype, x, i) = true
 def $before(_IDX typeidx, x, i) = typeidx < x
 def $before(REC j, x, i) = j < i
@@ -214,11 +222,11 @@ rule Deftype_ok:
 
 ;; External types
 
-relation Limits_ok: context |- limits : nat         hint(show "K-limits")
-relation Globaltype_ok: context |- globaltype : OK  hint(show "K-global")
-relation Tabletype_ok: context |- tabletype : OK    hint(show "K-table")
-relation Memtype_ok: context |- memtype : OK        hint(show "K-mem")
-relation Externtype_ok: context |- externtype : OK  hint(show "K-extern")
+relation Limits_ok: context |- limits : nat         hint(show "K-limits") hint(macro "%limits")
+relation Globaltype_ok: context |- globaltype : OK  hint(show "K-global") hint(macro "%globaltype")
+relation Tabletype_ok: context |- tabletype : OK    hint(show "K-table")  hint(macro "%tabletype")
+relation Memtype_ok: context |- memtype : OK        hint(show "K-mem")    hint(macro "%memtype")
+relation Externtype_ok: context |- externtype : OK  hint(show "K-extern") hint(macro "%externtype")
 
 
 rule Limits_ok:
@@ -269,11 +277,11 @@ rule Externtype_ok/mem:
 
 ;; Value types
 
-relation Numtype_sub: context |- numtype <: numtype        hint(show "S-num")
-relation Vectype_sub: context |- vectype <: vectype        hint(show "S-vec")
-relation Heaptype_sub: context |- heaptype <: heaptype     hint(show "S-heap")
-relation Reftype_sub: context |- reftype <: reftype        hint(show "S-ref")
-relation Valtype_sub: context |- valtype <: valtype        hint(show "S-val")
+relation Numtype_sub: context |- numtype <: numtype    hint(show "S-num")  hint(macro "%numtypematch")
+relation Vectype_sub: context |- vectype <: vectype    hint(show "S-vec")  hint(macro "%vectypematch")
+relation Heaptype_sub: context |- heaptype <: heaptype hint(show "S-heap") hint(macro "%heaptypematch")
+relation Reftype_sub: context |- reftype <: reftype    hint(show "S-ref")  hint(macro "%reftypematch")
+relation Valtype_sub: context |- valtype <: valtype    hint(show "S-val")  hint(macro "%valtypematch")
 
 rule Numtype_sub:
   C |- numtype <: numtype
@@ -374,8 +382,8 @@ rule Valtype_sub/bot:
 
 ;; Result and Instruction types
 
-relation Resulttype_sub: context |- valtype* <: valtype*   hint(show "S-result")
-relation Instrtype_sub: context |- instrtype <: instrtype  hint(show "S-instr")
+relation Resulttype_sub: context |- valtype* <: valtype*   hint(show "S-result") hint(macro "%resulttypematch")
+relation Instrtype_sub: context |- instrtype <: instrtype  hint(show "S-instr")  hint(macro "%instrtypematch")
 
 rule Resulttype_sub:
   C |- t_1* <: t_2*
@@ -391,12 +399,12 @@ rule Instrtype_sub:
 
 ;; Type definitions
 
-relation Packtype_sub: context |- packtype <: packtype               hint(show "S-pack")
-relation Storagetype_sub: context |- storagetype <: storagetype      hint(show "S-storage")
-relation Fieldtype_sub: context |- fieldtype <: fieldtype            hint(show "S-field")
-;;relation Comptype_sub: context |- comptype <: comptype             hint(show "S-comp")
-relation Functype_sub: context |- functype <: functype               hint(show "S-func")
-;;relation Deftype_sub: context |- deftype <: deftype                hint(show "S-def")
+relation Packtype_sub: context |- packtype <: packtype          hint(show "S-pack")    hint(macro "%packtypematch")
+relation Storagetype_sub: context |- storagetype <: storagetype hint(show "S-storage") hint(macro "%storagetypematch")
+relation Fieldtype_sub: context |- fieldtype <: fieldtype       hint(show "S-field")   hint(macro "%fieldtypematch")
+;;relation Comptype_sub: context |- comptype <: comptype        hint(show "S-comp")    hint(macro "%comptypematch")
+relation Functype_sub: context |- functype <: functype          hint(show "S-func")    hint(macro "%functypematch")
+;;relation Deftype_sub: context |- deftype <: deftype           hint(show "S-def")     hint(macro "%deftypematch")
 
 rule Packtype_sub:
   C |- packtype <: packtype
@@ -446,11 +454,11 @@ rule Deftype_sub/super:
 
 ;; External types
 
-relation Limits_sub: context |- limits <: limits             hint(show "S-limits")
-relation Globaltype_sub: context |- globaltype <: globaltype hint(show "S-global")
-relation Tabletype_sub: context |- tabletype <: tabletype    hint(show "S-table")
-relation Memtype_sub: context |- memtype <: memtype          hint(show "S-mem")
-relation Externtype_sub: context |- externtype <: externtype hint(show "S-extern")
+relation Limits_sub: context |- limits <: limits             hint(show "S-limits") hint(macro "%limitsmatch")
+relation Globaltype_sub: context |- globaltype <: globaltype hint(show "S-global") hint(macro "%globaltypematch")
+relation Tabletype_sub: context |- tabletype <: tabletype    hint(show "S-table")  hint(macro "%tabletypematch")
+relation Memtype_sub: context |- memtype <: memtype          hint(show "S-mem")    hint(macro "%memtypematch")
+relation Externtype_sub: context |- externtype <: externtype hint(show "S-extern") hint(macro "%externtypematch")
 
 
 rule Limits_sub:
@@ -503,9 +511,9 @@ rule Externtype_sub/mem:
 ;; Instructions
 ;;
 
-relation Instr_ok: context |- instr : instrtype     hint(show "T")
-relation Instrs_ok: context |- instr* : instrtype   hint(show "T-instr*")
-relation Expr_ok: context |- expr : resulttype      hint(show "T-expr")
+relation Instr_ok: context |- instr : instrtype     hint(show "T")        hint(macro "%instr")
+relation Instrs_ok: context |- instr* : instrtype   hint(show "T-instr*") hint(macro "%instrs")
+relation Expr_ok: context |- expr : resulttype      hint(show "T-expr")   hint(macro "%expr")
 
 
 ;; Expressions
@@ -567,7 +575,7 @@ rule Instr_ok/select-impl:
 
 ;; Block instructions
 
-relation Blocktype_ok: context |- blocktype : instrtype hint(show "K-block")
+relation Blocktype_ok: context |- blocktype : instrtype hint(show "K-block") hint(macro "%blocktype")
 
 rule Blocktype_ok/valtype:
   C |- _RESULT valtype? : eps -> valtype?
@@ -1065,9 +1073,9 @@ rule Instr_ok/vstore_lane:
 ;; Constant Expressions
 ;;
 
-relation Instr_const: context |- instr CONST             hint(show "C-instr")
-relation Expr_const: context |- expr CONST               hint(show "C-expr")
-relation Expr_ok_const: context |- expr : valtype CONST  hint(show "TC-expr")
+relation Instr_const: context |- instr CONST             hint(show "C-instr") hint(macro "%instrconst")
+relation Expr_const: context |- expr CONST               hint(show "C-expr")  hint(macro "%exprconst")
+relation Expr_ok_const: context |- expr : valtype CONST  hint(show "TC-expr") hint(macro "%exprokconst")
 
 rule Instr_const/const:
   C |- (CONST nt c_nt) CONST
@@ -1140,17 +1148,17 @@ rule Expr_ok_const:
 
 ;; Module definitions
 
-relation Type_ok: context |- type : deftype*         hint(show "T-type")
-relation Func_ok: context |- func : deftype          hint(show "T-func")
-relation Local_ok: context |- local : localtype      hint(show "T-local")
-relation Global_ok: context |- global : globaltype   hint(show "T-global")
-relation Table_ok: context |- table : tabletype      hint(show "T-table")
-relation Mem_ok: context |- mem : memtype            hint(show "T-mem")
-relation Elem_ok: context |- elem : reftype          hint(show "T-elem")
-relation Data_ok: context |- data : OK               hint(show "T-data")
-relation Elemmode_ok: context |- elemmode : reftype  hint(show "T-elemmode")
-relation Datamode_ok: context |- datamode : OK       hint(show "T-datamode")
-relation Start_ok: context |- start : OK             hint(show "T-start")
+relation Type_ok: context |- type : deftype*         hint(show "T-type")     hint(macro "%type")
+relation Func_ok: context |- func : deftype          hint(show "T-func")     hint(macro "%func")
+relation Local_ok: context |- local : localtype      hint(show "T-local")    hint(macro "%local")
+relation Global_ok: context |- global : globaltype   hint(show "T-global")   hint(macro "%global")
+relation Table_ok: context |- table : tabletype      hint(show "T-table")    hint(macro "%table")
+relation Mem_ok: context |- mem : memtype            hint(show "T-mem")      hint(macro "%mem")
+relation Elem_ok: context |- elem : reftype          hint(show "T-elem")     hint(macro "%elem")
+relation Data_ok: context |- data : datatype         hint(show "T-data")     hint(macro "%data")
+relation Elemmode_ok: context |- elemmode : reftype  hint(show "T-elemmode") hint(macro "%elemmode")
+relation Datamode_ok: context |- datamode : OK       hint(show "T-datamode") hint(macro "%datamode")
+relation Start_ok: context |- start : OK             hint(show "T-start")    hint(macro "%start")
 
 rule Type_ok:
   C |- TYPE rectype : dt*
@@ -1223,9 +1231,9 @@ rule Start_ok:
 
 ;; Module im/exports
 
-relation Import_ok: context |- import : externtype        hint(show "T-import")
-relation Export_ok: context |- export : externtype        hint(show "T-export")
-relation Externidx_ok: context |- externidx : externtype  hint(show "T-externidx")
+relation Import_ok: context |- import : externtype        hint(show "T-import")    hint(macro "%import")
+relation Export_ok: context |- export : externtype        hint(show "T-export")    hint(macro "%export")
+relation Externidx_ok: context |- externidx : externtype  hint(show "T-externidx") hint(macro "%externidx")
 
 rule Import_ok:
   C |- IMPORT name_1 name_2 xt : xt
@@ -1255,9 +1263,9 @@ rule Externidx_ok/mem:
 
 ;; Modules proper
 
-relation Module_ok: |- module : OK                    hint(show "T-module")
-relation Types_ok: context |- type* : deftype*        hint(show "T-types")
-relation Globals_ok: context |- global* : globaltype* hint(show "T-globals")
+relation Module_ok: |- module : OK                    hint(show "T-module")  hint(macro "%module")
+relation Types_ok: context |- type* : deftype*        hint(show "T-types")   hint(macro "%types")
+relation Globals_ok: context |- global* : globaltype* hint(show "T-globals") hint(macro "%globaltypes")
 
 ;; TODO: refs
 rule Module_ok:

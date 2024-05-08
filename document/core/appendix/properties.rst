@@ -171,7 +171,7 @@ Well-formedness for :ref:`extended type forms <type-ext>` is defined as follows.
      \\
      C \vdashcomptype \comptype \ok
      \qquad
-     (C \vdashcomptypematch \comptype \matchescomptype \comptype')^\ast
+     (C \vdashcomptypematch \comptype \subcomptypematch \comptype')^\ast
      \end{array}
    }{
      C \vdashsubtype \TSUB~\TFINAL^?~\X{ht}^\ast~\comptype ~{\ok}(x,i)
@@ -212,7 +212,7 @@ In a :ref:`rolled-up <aux-roll-rectype>` :ref:`recursive type <syntax-rectype>`,
    \frac{
      C.\CRECS[i] = \TSUB~\TFINAL^?~(\X{ht}_1^\ast~\X{ht}~\X{ht}_2^\ast)~\comptype
    }{
-     C \vdashheaptypematch \REC~i \matchesheaptype \X{ht}
+     C \vdashheaptypematch \REC~i \subheaptypematch \X{ht}
    }
 
 .. note::
@@ -390,7 +390,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
      \\
      C \vdashfunc \func : \functype'
      \qquad
-     C \vdashfunctypematch \functype' \matchesfunctype \functype
+     C \vdashfunctypematch \functype' \subfunctypematch \functype
      \end{array}
    }{
      S \vdashfuncinst \{\FITYPE~\functype, \FIMODULE~\moduleinst, \FICODE~\func\} : \functype
@@ -478,7 +478,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
      \qquad
      (S \vdash \reff : t')^n
      \qquad
-     (\vdashreftypematch t' \matchesvaltype t)^n
+     (\vdashreftypematch t' \subvaltypematch t)^n
    }{
      S \vdashtableinst \{ \TITYPE~(\limits~t), \TIELEM~\reff^n \} : \limits~t
    }
@@ -526,7 +526,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
      \qquad
      S \vdashval \val : t'
      \qquad
-     \vdashvaltypematch t' \matchesvaltype t
+     \vdashvaltypematch t' \subvaltypematch t
    }{
      S \vdashglobalinst \{ \GITYPE~(\mut~t), \GIVALUE~\val \} : \mut~t
    }
@@ -554,7 +554,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
      \qquad
      (S \vdashval \reff : t')^\ast
      \qquad
-     (\vdashreftypematch t' \matchesvaltype t)^\ast
+     (\vdashreftypematch t' \subvaltypematch t)^\ast
    }{
      S \vdasheleminst \{ \EITYPE~t, \EIELEM~\reff^\ast \} : t
    }
@@ -1394,7 +1394,7 @@ If an instruction sequence :math:`\instr^\ast` is :ref:`valid <valid-config>` wi
 then it is also valid with a possibly open instruction type :math:`\instrtype_{\min}` (i.e., :math:`C \vdashinstrseq \instr^\ast : \instrtype_{\min}`),
 such that for *every* closed type :math:`\instrtype'` with which :math:`\instr^\ast` is valid (i.e., for all :math:`C \vdashinstrseq \instr^\ast : \instrtype'`),
 there exists a substitution :math:`\sigma`,
-such that :math:`\sigma(\instrtype_{\min})` is a subtype of :math:`\instrtype'` (i.e., :math:`C \vdashinstrtypematch \sigma(\instrtype_{\min}) \matchesinstrtype \instrtype'`).
+such that :math:`\sigma(\instrtype_{\min})` is a subtype of :math:`\instrtype'` (i.e., :math:`C \vdashinstrtypematch \sigma(\instrtype_{\min}) \subinstrtypematch \instrtype'`).
 Furthermore, :math:`\instrtype_{\min}` is unique up to the choice of type variables.
 
 **Theorem (Closed Principal Forward Types).**
@@ -1417,11 +1417,11 @@ The :ref:`Principal Types <principality>` property depends on the existence of a
 For any two value types :math:`t_1` and :math:`t_2` that are :ref:`valid <valid-valtype>`
 (i.e., :math:`C \vdashvaltype t_1 \ok` and :math:`C \vdashvaltype t_2 \ok`),
 there exists a valid value type :math:`t` that is a subtype of both :math:`t_1` and :math:`t_2`
-(i.e., :math:`C \vdashvaltype t \ok` and :math:`C \vdashvaltypematch t \matchesvaltype t_1` and :math:`C \vdashvaltypematch t \matchesvaltype t_2`),
+(i.e., :math:`C \vdashvaltype t \ok` and :math:`C \vdashvaltypematch t \subvaltypematch t_1` and :math:`C \vdashvaltypematch t \subvaltypematch t_2`),
 such that *every* valid value type :math:`t'` that also is a subtype of both :math:`t_1` and :math:`t_2`
-(i.e., for all :math:`C \vdashvaltype t' \ok` and :math:`C \vdashvaltypematch t' \matchesvaltype t_1` and :math:`C \vdashvaltypematch t' \matchesvaltype t_2`),
+(i.e., for all :math:`C \vdashvaltype t' \ok` and :math:`C \vdashvaltypematch t' \subvaltypematch t_1` and :math:`C \vdashvaltypematch t' \subvaltypematch t_2`),
 is a subtype of :math:`t`
-(i.e., :math:`C \vdashvaltypematch t' \matchesvaltype t`).
+(i.e., :math:`C \vdashvaltypematch t' \subvaltypematch t`).
 
 .. note::
    The greatest lower bound of two types may be |BOT|.
@@ -1431,11 +1431,11 @@ Any two value types :math:`t_1` and :math:`t_2` that are :ref:`valid <valid-valt
 (i.e., :math:`C \vdashvaltype t_1 \ok` and :math:`C \vdashvaltype t_2 \ok`)
 either have no common supertype,
 or there exists a valid value type :math:`t` that is a supertype of both :math:`t_1` and :math:`t_2`
-(i.e., :math:`C \vdashvaltype t \ok` and :math:`C \vdashvaltypematch t_1 \matchesvaltype t` and :math:`C \vdashvaltypematch t_2 \matchesvaltype t`),
+(i.e., :math:`C \vdashvaltype t \ok` and :math:`C \vdashvaltypematch t_1 \subvaltypematch t` and :math:`C \vdashvaltypematch t_2 \subvaltypematch t`),
 such that *every* valid value type :math:`t'` that also is a supertype of both :math:`t_1` and :math:`t_2`
-(i.e., for all :math:`C \vdashvaltype t' \ok` and :math:`C \vdashvaltypematch t_1 \matchesvaltype t'` and :math:`C \vdashvaltypematch t_2 \matchesvaltype t'`),
+(i.e., for all :math:`C \vdashvaltype t' \ok` and :math:`C \vdashvaltypematch t_1 \subvaltypematch t'` and :math:`C \vdashvaltypematch t_2 \subvaltypematch t'`),
 is a supertype of :math:`t`
-(i.e., :math:`C \vdashvaltypematch t \matchesvaltype t'`).
+(i.e., :math:`C \vdashvaltypematch t \subvaltypematch t'`).
 
 .. note::
    If a top type was added to the type system,

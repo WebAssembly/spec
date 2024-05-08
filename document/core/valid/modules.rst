@@ -326,7 +326,7 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
      \qquad
      C \vdashelemmode \elemmode : t'
      \qquad
-     C \vdashreftypematch t \matchesreftype t'
+     C \vdashreftypematch t \subreftypematch t'
    }{
      C \vdashelem \{ \ETYPE~t, \EINIT~e^\ast, \EMODE~\elemmode \} : t
    }

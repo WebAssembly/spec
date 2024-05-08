@@ -112,50 +112,53 @@ let string_of_mixop = function
     "`" ^ s ^ "`"
 
 
-let string_name_of_atom atom =
+(* The following mostly correspond to Latex names except where noted;
+ * where noted, a respective macro is expected to be defined *)
+
+let name_of_atom atom =
   match atom.it with
-  | Atom id -> id
-  | Infinity -> "infinity"
+  | Atom s -> s
+  | Infinity -> "infty"
   | Bot -> "bot"
   | Top -> "top"
-  | Dot -> "dot"
-  | Dot2 -> "dotdot"
-  | Dot3 -> "dotdotdot"
-  | Semicolon -> "semicolon"
-  | Backslash -> "backslash"
+  | Dot -> "dot"                  (* Latex: . *)
+  | Dot2 -> "dotdot"              (* Latex: .. *)
+  | Dot3 -> "dots"
+  | Semicolon -> "semicolon"      (* Latex: ; *)
+  | Backslash -> "setminus"
   | In -> "in"
-  | Arrow -> "arrow"
-  | Arrow2 -> "darrow"
-  | ArrowSub -> "arrowsub"
-  | Arrow2Sub -> "darrowsub"
-  | Colon -> "colon"
-  | Sub -> "sub"
-  | Sup -> "sup"
-  | Assign -> "assign"
+  | Arrow -> "arrow"              (* Latex: \rightarrow *)
+  | Arrow2 -> "darrow"            (* Latex: \Rightarrow *)
+  | ArrowSub -> "arrowsub"        (* Latex: \rightarrow with subscript *)
+  | Arrow2Sub -> "darrowsub"      (* Latex: \Rightarrow with subscript *)
+  | Colon -> "colon"              (* Latex: : *)
+  | Sub -> "sub"                  (* Latex: \leq or <: *)
+  | Sup -> "sup"                  (* Latex: \geq or :> *)
+  | Assign -> "assign"            (* Latex: := *)
   | Equal -> "eq"
   | Equiv -> "equiv"
   | Approx -> "approx"
-  | SqArrow -> "sqarrow"
-  | SqArrowStar -> "sqarrowstar"
+  | SqArrow -> "sqarrow"          (* Latex: \hookrightarrow *)
+  | SqArrowStar -> "sqarrowstar"  (* Latex: \hookrightarrow^\ast *)
   | Prec -> "prec"
   | Succ -> "succ"
   | Tilesturn -> "dashv"
   | Turnstile -> "vdash"
-  | Quest -> "quest"
-  | Plus -> "plus"
+  | Quest -> "quest"              (* Latex: ? *)
+  | Plus -> "plus"                (* Latex: + *)
   | Star -> "ast"
-  | Comma -> "comma"
-  | Comp -> "comp"
-  | Bar -> "bar"
-  | BigComp -> "bigcomp"
+  | Comma -> "comma"              (* Latex: , *)
+  | Comp -> "comp"                (* Latex: \oplus *)
+  | Bar -> "bar"                  (* Latex: | *)
+  | BigComp -> "bigcomp"          (* Latex: \bigoplus *)
   | BigAnd -> "bigand"
   | BigOr -> "bigor"
-  | LParen -> "lparen"
+  | LParen -> "lparen"            (* Latex: brackets... *)
   | LBrack -> "lbrack"
   | LBrace -> "lbrace"
   | RParen -> "rparen"
   | RBrack -> "rbrack"
   | RBrace -> "rbrace"
 
-let string_name_of_mixop mixop =
-  String.concat "" (List.map string_name_of_atom mixop)
+let name_of_mixop mixop =
+  String.concat "" (List.map name_of_atom mixop)

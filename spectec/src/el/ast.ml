@@ -200,7 +200,7 @@ and prem' =
 
 and hintdef = hintdef' phrase
 and hintdef' =
-  | AtomH of id * hint list
+  | AtomH of id * atom * hint list
   | TypH of id * id * hint list
   | GramH of id * id * hint list
   | RelH of id * hint list

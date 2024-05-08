@@ -9,20 +9,22 @@ def $curried_(nat, nat) : nat
 def $curried_(n_1, n_2) = $(n_1 + n_2)
 
 syntax testfuse =
-  | AB_ nat nat nat
-  | CD nat nat nat  hint(show CD_% % %)
-  | EF nat nat nat  hint(show EF_#% % %)
-  | GH nat nat nat  hint(show GH_%#% %)
-  | IJ nat nat nat  hint(show IJ_%#% %)
-  | KL nat nat nat  hint(show KL_AB#% % %)
-  | MN nat nat nat  hint(show MN_#AB % % %)
-  | OP nat nat nat  hint(show OP_#AB#% % %)
-  | QR nat nat nat  hint(show QR_%#AB % %)
+  | AB_ nat nat nat                                    ;; {\AB}_{...} ... ...
+  | CD nat nat nat  hint(show CD_% % %)                ;; {\CD}_{...} ... ...
+  | EF nat nat nat  hint(show EF_#% % %)               ;; {\EF}{...} ... ...
+  | GH nat nat nat  hint(show GH_%#% %)                ;; {\GH}_{...}{...} ...
+  | IJ nat nat nat  hint(show IJ#_%#AB#% %)            ;; {\IJ}{\mathsf{\_}} {...}{\AB}{...} ...
+  | KL nat nat nat  hint(show KL_AB#% % %)             ;; {\KLAB}{...} ... ...
+  | MN nat nat nat  hint(show MN_#AB % % %)            ;; {\MN}{\AB} ... ... ...
+  | OP nat nat nat  hint(show OP_#AB#% % %)            ;; {\OP}{\AB}{...} ... ...
+  | QR nat nat nat  hint(show QR_%#AB % %)             ;; {\QR}_{...}{\AB} ... ...
 
 
 ;;
 ;; Macro hints
 ;;
+
+;; Syntax identifiers
 
 syntax fii = FII                                       ;; \fii
 syntax faa hint(macro "%") = FAA                       ;; \faa
@@ -64,6 +66,8 @@ def $macros2 = 0
   -- var ubaz : ubaz_(0,0) -- if ubaz = UBAZ
   -- var uboi : uboi_(0,0) -- if uboi = UBOI
 
+
+;; Definition identifiers
 
 def $fii : nat                                       ;; \fii
 def $fii = 0
@@ -108,3 +112,169 @@ def $ufoo__bar_(nat_1, nat_2) : nat                               ;; \ufoobar
 def $ufoo__bar_(x, y) = 0
 def $ufoo_boo_(nat_1, nat_2) : nat hint(show $ufoo__boo_(%,%))    ;; \ufooboo
 def $ufoo_boo_(x, y) = 0
+
+
+;; Case atoms
+
+syntax parent =
+  | AA                                                            ;; \AA
+  | AAX      hint(macro "%")                                      ;; \AAX
+  | AAY      hint(macro "x%y%z")                                  ;; \xAAYyAAYz
+  | AAZ      hint(macro none)                                     ;; \mathsf{aaz}
+  | BB       hint(show BBB)                                       ;; \BBB
+  | BBX      hint(show BBBX) hint(macro "%")                      ;; \BBBX
+  | BBY      hint(show BBBY) hint(macro "x%y%z")                  ;; \xBBBYyBBBYz
+  | BBZ      hint(show BBBZ) hint(macro none)                     ;; \mathsf{bbbz}
+  | CC  nat                                                       ;; \CC
+  | CCX nat  hint(macro "%")                                      ;; \CCX
+  | CCY nat  hint(macro "x%y%z")                                  ;; \xCCYyCCYz
+  | CCZ nat  hint(macro none)                                     ;; \mathsf{cc}
+  | DD  nat  hint(show DDD)                                       ;; \DDD
+  | DDX nat  hint(show DDDX) hint(macro "%")                      ;; \DDDX
+  | DDY nat  hint(show DDDY) hint(macro "x%y%z")                  ;; \xDDYyDDYz
+  | DDZ nat  hint(show DDDZ) hint(macro none)                     ;; \mathsf{dddz}
+  | EE  nat  hint(show %1#_#EA#%0)                                ;; {\mathit{nat}}\mathsf{\_}{\EA}{\EE}
+  | EEX nat  hint(show %1#_#EB#%0) hint(macro "%")                ;; {\mathit{nat}}\mathsf{\_}{\EB}{\EEX}
+  | EEY nat  hint(show %1#_#EC#%0) hint(macro "x%y%z")            ;; {\mathit{nat}}\mathsf{\_}{\xECyECz}{\xEEYyEEYz}
+  | EEZ nat  hint(show %1#_#ED#%0) hint(macro none)               ;; {\mathit{nat}}\mathsf{\_}{\mathsf{ed}}{\mathsf{eez}}
+
+def $parent(parent) : nat
+def $parent(AA) = 0
+def $parent(AAX) = 0
+def $parent(AAY) = 0
+def $parent(AAZ) = 0
+def $parent(BB) = 0
+def $parent(BBX) = 0
+def $parent(BBY) = 0
+def $parent(BBZ) = 0
+def $parent(CC n) = 0
+def $parent(CCX n) = 0
+def $parent(CCY n) = 0
+def $parent(CCZ n) = 0
+def $parent(DD n) = 0
+def $parent(DDX n) = 0
+def $parent(DDY n) = 0
+def $parent(DDZ n) = 0
+def $parent(EE n) = 0
+def $parent(EEX n) = 0
+def $parent(EEY n) = 0
+def $parent(EEZ n) = 0
+
+syntax parentimplicit(syntax t) hint(macro "%" "%impl") =
+  | PP                                                            ;; \PPimpl
+  | PPX hint(macro "%")                                           ;; \PPX
+  | PPY hint(macro "%x%")                                         ;; \PPYxPPY
+  | PPZ hint(macro none)                                          ;; \mathsf{ppz}
+  | QQ  hint(show QQQ)                                            ;; \QQQimpl
+  | QQX hint(show QQQX) hint(macro "%")                           ;; \QQQX
+  | QQY hint(show QQQY) hint(macro "%x%")                         ;; \QQQYxQQQY
+  | QQZ hint(show QQQZ) hint(macro none)                          ;; \mathsf{qqqz}
+  | RR t  hint(show %1#_#RA#%0)                                   ;; {\mathit{nat}}\mathsf{\_}{\RAimpl}{\RRimpl}
+  | RRX t hint(show %1#_#RB#%0) hint(macro "%")                   ;; {\mathit{nat}}\mathsf{\_}{\RB}{\RRX}
+  | RRY t hint(show %1#_#RC#%0) hint(macro "%x%")                 ;; {\mathit{nat}}\mathsf{\_}{\RCxRC}{\RRYxRRY}
+  | RRZ t hint(show %1#_#RD#%0) hint(macro none)                  ;; {\mathit{nat}}\mathsf{\_}{\mathsf{rd}}{\mathsf{rrz}}
+
+def $parentimpl(parentimplicit(text)) : nat
+def $parentimpl(PP) = 0
+def $parentimpl(PPX) = 0
+def $parentimpl(PPY) = 0
+def $parentimpl(PPZ) = 0
+def $parentimpl(QQ) = 0
+def $parentimpl(QQX) = 0
+def $parentimpl(QQY) = 0
+def $parentimpl(QQZ) = 0
+def $parentimpl(RR n) = 0
+def $parentimpl(RRX n) = 0
+def $parentimpl(RRY n) = 0
+def $parentimpl(RRZ n) = 0
+
+syntax indirect = parentimplicit(nat)
+
+def $indirect(indirect) : nat
+def $indirect(PP) = 0
+def $indirect(PPX) = 0
+def $indirect(PPY) = 0
+def $indirect(PPZ) = 0
+def $indirect(QQ) = 0
+def $indirect(QQX) = 0
+def $indirect(QQY) = 0
+def $indirect(QQZ) = 0
+def $indirect(RR n) = 0
+def $indirect(RRX n) = 0
+def $indirect(RRY n) = 0
+def $indirect(RRZ n) = 0
+
+syntax child = parent | indirect | ZZZ
+
+def $child(child) : nat
+def $child(AA) = 0
+def $child(AAX) = 0
+def $child(AAY) = 0
+def $child(AAZ) = 0
+def $child(BB) = 0
+def $child(BBX) = 0
+def $child(BBY) = 0
+def $child(BBZ) = 0
+def $child(CC n) = 0
+def $child(CCX n) = 0
+def $child(CCY n) = 0
+def $child(CCZ n) = 0
+def $child(DD n) = 0
+def $child(DDX n) = 0
+def $child(DDY n) = 0
+def $child(DDZ n) = 0
+def $child(EE n) = 0
+def $child(EEX n) = 0
+def $child(EEY n) = 0
+def $child(EEZ n) = 0
+def $child(PP) = 0
+def $child(PPX) = 0
+def $child(PPY) = 0
+def $child(PPZ) = 0
+def $child(QQ) = 0
+def $child(QQX) = 0
+def $child(QQY) = 0
+def $child(QQZ) = 0
+def $child(RR n) = 0
+def $child(RRX n) = 0
+def $child(RRY n) = 0
+def $child(RRZ n) = 0
+def $child(ZZZ) = 0
+
+syntax grandchild = child | ZZZZ
+
+def $grandchild(grandchild) : nat
+def $grandchild(AA) = 0
+def $grandchild(AAX) = 0
+def $grandchild(AAY) = 0
+def $grandchild(AAZ) = 0
+def $grandchild(BB) = 0
+def $grandchild(BBX) = 0
+def $grandchild(BBY) = 0
+def $grandchild(BBZ) = 0
+def $grandchild(CC n) = 0
+def $grandchild(CCX n) = 0
+def $grandchild(CCY n) = 0
+def $grandchild(CCZ n) = 0
+def $grandchild(DD n) = 0
+def $grandchild(DDX n) = 0
+def $grandchild(DDY n) = 0
+def $grandchild(DDZ n) = 0
+def $grandchild(EE n) = 0
+def $grandchild(EEX n) = 0
+def $grandchild(EEY n) = 0
+def $grandchild(EEZ n) = 0
+def $grandchild(PP) = 0
+def $grandchild(PPX) = 0
+def $grandchild(PPY) = 0
+def $grandchild(PPZ) = 0
+def $grandchild(QQ) = 0
+def $grandchild(QQX) = 0
+def $grandchild(QQY) = 0
+def $grandchild(QQZ) = 0
+def $grandchild(RR n) = 0
+def $grandchild(RRX n) = 0
+def $grandchild(RRY n) = 0
+def $grandchild(RRZ n) = 0
+def $grandchild(ZZZ) = 0
+def $grandchild(ZZZZ) = 0

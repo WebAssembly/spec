@@ -41,7 +41,7 @@ syntax addrref hint(desc "address value") =
   | REF.FUNC_ADDR funcaddr               hint(show REF.FUNC %)
   | REF.HOST_ADDR hostaddr               hint(show REF.HOST %)
   | REF.EXTERN addrref
-syntax ref hint(desc "reference value") hint(macro "reff") =
+syntax ref hint(desc "reference value")  hint(macro "reff") =
   | addrref
   | REF.NULL heaptype
 syntax val hint(desc "value") =

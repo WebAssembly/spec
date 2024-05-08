@@ -214,7 +214,7 @@ and params ps = list param ps
 
 let hintdef d =
   match d.it with
-  | AtomH (x, hs) -> varid x; hints hs
+  | AtomH (x, at, hs) -> varid x; atom at; hints hs
   | TypH (x1, x2, hs) -> typid x1; ruleid x2; hints hs
   | GramH (x1, x2, hs) -> gramid x1; ruleid x2; hints hs
   | RelH (x, hs) -> relid x; hints hs

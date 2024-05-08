@@ -800,8 +800,14 @@ def_ :
   | SYNTAX varid_bind ruleid_list hint*
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
       HintD (TypH ($2, id $ $loc($3), $4) $ $sloc) }
-  | SYNTAX varid_bind ruleid_list atomid hint*
-    { HintD (AtomH ($4 $ $loc($4), $5) $ $sloc) }
+  | SYNTAX varid_bind ruleid_list atom hint*
+    { HintD (AtomH ($2, $4, $5) $ $sloc) }
+  | SYNTAX varid_bind ruleid_list TICK LPAREN hint*
+    { HintD (AtomH ($2, Il.Atom.LParen $$ $loc($5), $6) $ $sloc) }
+  | SYNTAX varid_bind ruleid_list TICK LBRACK hint*
+    { HintD (AtomH ($2, Il.Atom.LBrack $$ $loc($5), $6) $ $sloc) }
+  | SYNTAX varid_bind ruleid_list TICK LBRACE hint*
+    { HintD (AtomH ($2, Il.Atom.LBrace $$ $loc($5), $6) $ $sloc) }
   | GRAMMAR varid_bind ruleid_list hint*
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
       HintD (GramH ($2, id $ $loc($3), $4) $ $sloc) }

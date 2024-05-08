@@ -56,7 +56,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
      \qquad
      t' \in \{\NONE, \NOFUNC, \NOEXTERN\}
      \qquad
-     \vdashheaptypematch t' \matchesheaptype t
+     \vdashheaptypematch t' \subheaptypematch t
    }{
      S \vdashval \REFNULL~t : (\REF~\NULL~t')
    }
@@ -181,7 +181,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
    \frac{
      S \vdashval \reff : \REF~\NULL^?~t
      \qquad
-     \vdashheaptypematch t \matchesheaptype \ANY
+     \vdashheaptypematch t \subheaptypematch \ANY
    }{
      S \vdashval \REFEXTERN~\reff : \REF~\NULL^?~\EXTERN
    }
@@ -201,7 +201,7 @@ Subsumption
      \qquad
      \vdashvaltype t' \ok
      \qquad
-     \vdashvaltypematch t \matchesvaltype t'
+     \vdashvaltypematch t \subvaltypematch t'
    }{
      S \vdashval \val : t'
    }
@@ -300,7 +300,7 @@ Subsumption
      \qquad
      \vdashexterntype \X{et'} \ok
      \qquad
-     \vdashexterntypematch \X{et} \matchesexterntype \X{et'}
+     \vdashexterntypematch \X{et} \subexterntypematch \X{et'}
    }{
      S \vdashexternval \externval : \X{et'}
    }

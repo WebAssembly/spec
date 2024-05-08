@@ -1037,34 +1037,6 @@
 .. Validation
 .. ----------
 
-.. Notation
-
-.. |ok| mathdef:: \mathrel{\mbox{ok}}
-.. |const| mathdef:: \xref{valid/instructions}{valid-constant}{\mathrel{\mbox{const}}}
-
-.. |matches| mathdef:: \leq
-.. |matchesnumtype| mathdef:: \xref{valid/matching}{match-numtype}{\leq}
-.. |matchesvectype| mathdef:: \xref{valid/matching}{match-vectype}{\leq}
-.. |matchesheaptype| mathdef:: \xref{valid/matching}{match-heaptype}{\leq}
-.. |matchesreftype| mathdef:: \xref{valid/matching}{match-reftype}{\leq}
-.. |matchesvaltype| mathdef:: \xref{valid/matching}{match-valtype}{\leq}
-.. |matchesresulttype| mathdef:: \xref{valid/matching}{match-resulttype}{\leq}
-.. |matchesinstrtype| mathdef:: \xref{valid/matching}{match-instrtype}{\leq}
-.. |matchesfunctype| mathdef:: \xref{valid/matching}{match-functype}{\leq}
-.. |matchesfieldtype| mathdef:: \xref{valid/matching}{match-fieldtype}{\leq}
-.. |matchesstoragetype| mathdef:: \xref{valid/matching}{match-storagetype}{\leq}
-.. |matchespacktype| mathdef:: \xref{valid/matching}{match-packtype}{\leq}
-.. |matchesstructtype| mathdef:: \xref{valid/matching}{match-structtype}{\leq}
-.. |matchesarraytype| mathdef:: \xref{valid/matching}{match-arraytype}{\leq}
-.. |matchescomptype| mathdef:: \xref{valid/matching}{match-comptype}{\leq}
-.. |matchesdeftype| mathdef:: \xref{valid/matching}{match-deftype}{\leq}
-.. |matchestabletype| mathdef:: \xref{valid/matching}{match-tabletype}{\leq}
-.. |matchesmemtype| mathdef:: \xref{valid/matching}{match-memtype}{\leq}
-.. |matchesglobaltype| mathdef:: \xref{valid/matching}{match-globaltype}{\leq}
-.. |matchesexterntype| mathdef:: \xref{valid/matching}{match-externtype}{\leq}
-.. |matcheslimits| mathdef:: \xref{valid/matching}{match-limits}{\leq}
-
-
 .. Meta functions
 
 .. |clostype| mathdef:: \xref{valid/conventions}{aux-clostype}{\K{clos}}
@@ -1104,7 +1076,9 @@
 .. |vdashpacktype| mathdef:: \xref{valid/types}{valid-packtype}{\vdash}
 .. |vdashstoragetype| mathdef:: \xref{valid/types}{valid-storagetype}{\vdash}
 .. |vdashsubtype| mathdef:: \xref{valid/types}{valid-subtype}{\vdash}
+.. |vdashsubtypeext| mathdef:: \xref{valid/types}{valid-subtype}{\vdash}
 .. |vdashrectype| mathdef:: \xref{valid/types}{valid-rectype}{\vdash}
+.. |vdashrectypeext| mathdef:: \xref{valid/types}{valid-rectype}{\vdash}
 .. |vdashtabletype| mathdef:: \xref{valid/types}{valid-tabletype}{\vdash}
 .. |vdashmemtype| mathdef:: \xref{valid/types}{valid-memtype}{\vdash}
 .. |vdashglobaltype| mathdef:: \xref{valid/types}{valid-globaltype}{\vdash}
@@ -1112,6 +1086,32 @@
 .. |vdashdeftype| mathdef:: \xref{valid/types}{valid-deftype}{\vdash}
 
 .. |vdashinstrtype| mathdef:: \xref{valid/types}{valid-instrtype}{\vdash}
+
+.. |OKnumtype| mathdef:: \xref{valid/types}{valid-numtype}{\K{OK}}
+.. |OKvectype| mathdef:: \xref{valid/types}{valid-vectype}{\K{OK}}
+.. |OKheaptype| mathdef:: \xref{valid/types}{valid-heaptype}{\K{OK}}
+.. |OKreftype| mathdef:: \xref{valid/types}{valid-reftype}{\K{OK}}
+.. |OKvaltype| mathdef:: \xref{valid/types}{valid-valtype}{\K{OK}}
+.. |OKresulttype| mathdef:: \xref{valid/types}{valid-resulttype}{\K{OK}}
+.. |OKfunctype| mathdef:: \xref{valid/types}{valid-functype}{\K{OK}}
+.. |OKstructtype| mathdef:: \xref{valid/types}{valid-structtype}{\K{OK}}
+.. |OKarraytype| mathdef:: \xref{valid/types}{valid-arraytype}{\K{OK}}
+.. |OKcomptype| mathdef:: \xref{valid/types}{valid-comptype}{\K{OK}}
+.. |OKfieldtype| mathdef:: \xref{valid/types}{valid-fieldtype}{\K{OK}}
+.. |OKpacktype| mathdef:: \xref{valid/types}{valid-packtype}{\K{OK}}
+.. |OKstoragetype| mathdef:: \xref{valid/types}{valid-storagetype}{\K{OK}}
+.. |OKsubtype| mathdef:: \xref{valid/types}{valid-subtype}{\K{OK}}
+.. |OKsubtypeext| mathdef:: \xref{valid/types}{valid-subtype}{\K{OK}}
+.. |OKrectype| mathdef:: \xref{valid/types}{valid-rectype}{\K{OK}}
+.. |OKrectypeext| mathdef:: \xref{valid/types}{valid-rectype}{\K{OK}}
+.. |OKdeftype| mathdef:: \xref{valid/types}{valid-deftype}{\K{OK}}
+.. |OKtabletype| mathdef:: \xref{valid/types}{valid-tabletype}{\K{OK}}
+.. |OKmemtype| mathdef:: \xref{valid/types}{valid-memtype}{\K{OK}}
+.. |OKglobaltype| mathdef:: \xref{valid/types}{valid-globaltype}{\K{OK}}
+.. |OKexterntype| mathdef:: \xref{valid/types}{valid-externtype}{\K{OK}}
+.. |OKlimits| mathdef:: \xref{valid/types}{valid-limits}{\K{OK}}
+
+.. |OKinstrtype| mathdef:: \xref{valid/types}{valid-instrtype}{\K{OK}}
 
 .. |vdashnumtypematch| mathdef:: \xref{valid/matching}{match-numtype}{\vdash}
 .. |vdashvectypematch| mathdef:: \xref{valid/matching}{match-vectype}{\vdash}
@@ -1134,11 +1134,37 @@
 .. |vdashexterntypematch| mathdef:: \xref{valid/matching}{match-externtype}{\vdash}
 .. |vdashlimitsmatch| mathdef:: \xref{valid/matching}{match-limits}{\vdash}
 
+.. |subnumtypematch| mathdef:: \xref{valid/matching}{match-numtype}{\leq}
+.. |subvectypematch| mathdef:: \xref{valid/matching}{match-vectype}{\leq}
+.. |subheaptypematch| mathdef:: \xref{valid/matching}{match-heaptype}{\leq}
+.. |subreftypematch| mathdef:: \xref{valid/matching}{match-reftype}{\leq}
+.. |subvaltypematch| mathdef:: \xref{valid/matching}{match-valtype}{\leq}
+.. |subresulttypematch| mathdef:: \xref{valid/matching}{match-resulttype}{\leq}
+.. |subinstrtypematch| mathdef:: \xref{valid/matching}{match-instrtype}{\leq}
+.. |subfunctypematch| mathdef:: \xref{valid/matching}{match-functype}{\leq}
+.. |subfieldtypematch| mathdef:: \xref{valid/matching}{match-fieldtype}{\leq}
+.. |substoragetypematch| mathdef:: \xref{valid/matching}{match-storagetype}{\leq}
+.. |subpacktypematch| mathdef:: \xref{valid/matching}{match-packtype}{\leq}
+.. |substructtypematch| mathdef:: \xref{valid/matching}{match-structtype}{\leq}
+.. |subarraytypematch| mathdef:: \xref{valid/matching}{match-arraytype}{\leq}
+.. |subcomptypematch| mathdef:: \xref{valid/matching}{match-comptype}{\leq}
+.. |subdeftypematch| mathdef:: \xref{valid/matching}{match-deftype}{\leq}
+.. |subtabletypematch| mathdef:: \xref{valid/matching}{match-tabletype}{\leq}
+.. |submemtypematch| mathdef:: \xref{valid/matching}{match-memtype}{\leq}
+.. |subglobaltypematch| mathdef:: \xref{valid/matching}{match-globaltype}{\leq}
+.. |subexterntypematch| mathdef:: \xref{valid/matching}{match-externtype}{\leq}
+.. |sublimitsmatch| mathdef:: \xref{valid/matching}{match-limits}{\leq}
+
 .. |vdashinstr| mathdef:: \xref{valid/instructions}{valid-instr}{\vdash}
-.. |vdashinstrseq| mathdef:: \xref{valid/instructions}{valid-instr-seq}{\vdash}
+.. |vdashinstrs| mathdef:: \xref{valid/instructions}{valid-instrs}{\vdash}
 .. |vdashexpr| mathdef:: \xref{valid/instructions}{valid-expr}{\vdash}
-.. |vdashexprconst| mathdef:: \xref{valid/instructions}{valid-constant}{\vdash}
-.. |vdashinstrconst| mathdef:: \xref{valid/instructions}{valid-constant}{\vdash}
+.. |vdashinstrconst| mathdef:: \xref{valid/instructions}{valid-const}{\vdash}
+.. |vdashexprconst| mathdef:: \xref{valid/instructions}{valid-const}{\vdash}
+.. |vdashexprokconst| mathdef:: \xref{valid/instructions}{valid-const}{\vdash}
+
+.. |CONSTinstrconst| mathdef:: \xref{valid/instructions}{valid-const}{\K{const}}
+.. |CONSTexprconst| mathdef:: \xref{valid/instructions}{valid-const}{\K{const}}
+.. |CONSTexprokconst| mathdef:: \xref{valid/instructions}{valid-const}{\K{const}}
 
 .. |vdashtypes| mathdef:: \xref{valid/modules}{valid-types}{\vdash}
 .. |vdashfunc| mathdef:: \xref{valid/modules}{valid-func}{\vdash}
@@ -1158,6 +1184,10 @@
 .. |vdashimportdesc| mathdef:: \xref{valid/modules}{valid-importdesc}{\vdash}
 .. |vdashmodule| mathdef:: \xref{valid/modules}{valid-module}{\vdash}
 
+.. |OKdatamode| mathdef:: \xref{valid/types}{valid-datamode}{\K{OK}}
+.. |OKstart| mathdef:: \xref{valid/types}{valid-start}{\K{OK}}
+.. |OKmodule| mathdef:: \xref{valid/types}{valid-module}{\K{OK}}
+
 .. |unpackshape| mathdef:: \xref{valid/instructions}{aux-unpackshape}{\F{unpack}}
 .. |shlanetype| mathdef:: \xref{syntax/instructions}{aux-lanetype}{\F{lanetype}}
 .. |shdim| mathdef:: \xref{syntax/instructions}{aux-dim}{\F{dim}}
@@ -1169,6 +1199,7 @@
 .. Notation
 
 .. |stepto| mathdef:: \xref{exec/conventions}{exec-notation}{\hookrightarrow}
+.. |steptostar| mathdef:: \xref{exec/conventions}{exec-notation}{\hookrightarrow^\ast}
 .. |extendsto| mathdef:: \xref{appendix/properties}{extend}{\preceq}
 
 

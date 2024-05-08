@@ -22,7 +22,7 @@ A :ref:`number type <syntax-numtype>` :math:`\numtype_1` matches a :ref:`number 
    ~\\[-1ex]
    \frac{
    }{
-     C \vdashnumtypematch \numtype \matchesnumtype \numtype
+     C \vdashnumtypematch \numtype \subnumtypematch \numtype
    }
 
 
@@ -40,7 +40,7 @@ A :ref:`vector type <syntax-vectype>` :math:`\vectype_1` matches a :ref:`vector 
    ~\\[-1ex]
    \frac{
    }{
-     C \vdashvectypematch \vectype \matchesvectype \vectype
+     C \vdashvectypematch \vectype \subvectypematch \vectype
    }
 
 
@@ -84,39 +84,39 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
    ~\\[-1ex]
    \frac{
    }{
-     C \vdashheaptypematch \heaptype \matchesheaptype \heaptype
+     C \vdashheaptypematch \heaptype \subheaptypematch \heaptype
    }
    \qquad
    \frac{
      C \vdashheaptype \heaptype' \ok
      \qquad
-     C \vdashheaptypematch \heaptype_1 \matchesheaptype \heaptype'
+     C \vdashheaptypematch \heaptype_1 \subheaptypematch \heaptype'
      \qquad
-     C \vdashheaptypematch \heaptype' \matchesheaptype \heaptype_2
+     C \vdashheaptypematch \heaptype' \subheaptypematch \heaptype_2
    }{
-     C \vdashheaptypematch \heaptype_1 \matchesheaptype \heaptype_2
+     C \vdashheaptypematch \heaptype_1 \subheaptypematch \heaptype_2
    }
 
 .. math::
    ~\\[-1ex]
    \frac{
    }{
-     C \vdashheaptypematch \EQT \matchesheaptype \ANY
+     C \vdashheaptypematch \EQT \subheaptypematch \ANY
    }
    \qquad
    \frac{
    }{
-     C \vdashheaptypematch \I31 \matchesheaptype \EQT
+     C \vdashheaptypematch \I31 \subheaptypematch \EQT
    }
    \qquad
    \frac{
    }{
-     C \vdashheaptypematch \STRUCT \matchesheaptype \EQT
+     C \vdashheaptypematch \STRUCT \subheaptypematch \EQT
    }
    \qquad
    \frac{
    }{
-     C \vdashheaptypematch \ARRAY \matchesheaptype \EQT
+     C \vdashheaptypematch \ARRAY \subheaptypematch \EQT
    }
 
 .. math::
@@ -124,60 +124,60 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
    \frac{
      \expanddt(\deftype) = \TSTRUCT~\X{st}
    }{
-     C \vdashheaptypematch \deftype \matchesheaptype \STRUCT
+     C \vdashheaptypematch \deftype \subheaptypematch \STRUCT
    }
    \qquad
    \frac{
      \expanddt(\deftype) = \TARRAY~\X{at}
    }{
-     C \vdashheaptypematch \deftype \matchesheaptype \ARRAY
+     C \vdashheaptypematch \deftype \subheaptypematch \ARRAY
    }
    \qquad
    \frac{
      \expanddt(\deftype) = \TFUNC~\X{ft}
    }{
-     C \vdashheaptypematch \deftype \matchesheaptype \FUNC
+     C \vdashheaptypematch \deftype \subheaptypematch \FUNC
    }
 
 .. math::
    ~\\[-1ex]
    \frac{
-     C \vdashheaptypematch C.\CTYPES[\typeidx_1] \matchesheaptype \heaptype_2
+     C \vdashheaptypematch C.\CTYPES[\typeidx_1] \subheaptypematch \heaptype_2
    }{
-     C \vdashheaptypematch \typeidx_1 \matchesheaptype \heaptype_2
+     C \vdashheaptypematch \typeidx_1 \subheaptypematch \heaptype_2
    }
    \qquad
    \frac{
-     C \vdashheaptypematch \heaptype_1 \matchesheaptype C.\CTYPES[\typeidx_2]
+     C \vdashheaptypematch \heaptype_1 \subheaptypematch C.\CTYPES[\typeidx_2]
    }{
-     C \vdashheaptypematch \heaptype_1 \matchesheaptype \typeidx_2
+     C \vdashheaptypematch \heaptype_1 \subheaptypematch \typeidx_2
    }
 
 .. math::
    ~\\[-1ex]
    \frac{
-     C \vdashheaptypematch \X{ht} \matchesheaptype \ANY
+     C \vdashheaptypematch \X{ht} \subheaptypematch \ANY
    }{
-     C \vdashheaptypematch \NONE \matchesheaptype \X{ht}
+     C \vdashheaptypematch \NONE \subheaptypematch \X{ht}
    }
    \qquad
    \frac{
-     C \vdashheaptypematch \X{ht} \matchesheaptype \FUNC
+     C \vdashheaptypematch \X{ht} \subheaptypematch \FUNC
    }{
-     C \vdashheaptypematch \NOFUNC \matchesheaptype \X{ht}
+     C \vdashheaptypematch \NOFUNC \subheaptypematch \X{ht}
    }
    \qquad
    \frac{
-     C \vdashheaptypematch \X{ht} \matchesheaptype \EXTERN
+     C \vdashheaptypematch \X{ht} \subheaptypematch \EXTERN
    }{
-     C \vdashheaptypematch \NOEXTERN \matchesheaptype \X{ht}
+     C \vdashheaptypematch \NOEXTERN \subheaptypematch \X{ht}
    }
 
 .. math::
    ~\\[-1ex]
    \frac{
    }{
-     C \vdashheaptypematch \BOTH \matchesheaptype \heaptype
+     C \vdashheaptypematch \BOTH \subheaptypematch \heaptype
    }
 
 
@@ -197,15 +197,15 @@ A :ref:`reference type <syntax-reftype>` :math:`\REF~\NULL_1^?~heaptype_1` match
 .. math::
    ~\\[-1ex]
    \frac{
-     C \vdashheaptypematch \heaptype_1 \matchesheaptype \heaptype_2
+     C \vdashheaptypematch \heaptype_1 \subheaptypematch \heaptype_2
    }{
-     C \vdashreftypematch \REF~\heaptype_1 \matchesreftype \REF~\heaptype_2
+     C \vdashreftypematch \REF~\heaptype_1 \subreftypematch \REF~\heaptype_2
    }
    \qquad
    \frac{
-     C \vdashheaptypematch \heaptype_1 \matchesheaptype \heaptype_2
+     C \vdashheaptypematch \heaptype_1 \subheaptypematch \heaptype_2
    }{
-     C \vdashreftypematch \REF~\NULL^?~\heaptype_1 \matchesreftype \REF~\NULL~\heaptype_2
+     C \vdashreftypematch \REF~\NULL^?~\heaptype_1 \subreftypematch \REF~\NULL~\heaptype_2
    }
 
 
@@ -227,7 +227,7 @@ A :ref:`value type <syntax-valtype>` :math:`\valtype_1` matches a :ref:`value ty
    ~\\[-1ex]
    \frac{
    }{
-     C \vdashvaltypematch \BOT \matchesvaltype \valtype
+     C \vdashvaltypematch \BOT \subvaltypematch \valtype
    }
 
 
@@ -245,9 +245,9 @@ That is, a :ref:`result type <syntax-resulttype>` :math:`[t_1^\ast]` matches a :
 .. math::
    ~\\[-1ex]
    \frac{
-     (C \vdashvaltypematch t_1 \matchesvaltype t_2)^\ast
+     (C \vdashvaltypematch t_1 \subvaltypematch t_2)^\ast
    }{
-     C \vdashresulttypematch [t_1^\ast] \matchesresulttype [t_2^\ast]
+     C \vdashresulttypematch [t_1^\ast] \subresulttypematch [t_2^\ast]
    }
 
 
@@ -272,16 +272,16 @@ An :ref:`instruction type <syntax-instrtype>` :math:`[t_{11}^\ast] \to_{x_1^\ast
    ~\\[-1ex]
    \frac{
      \begin{array}{@{}c@{\qquad}l@{}}
-     C \vdashresulttypematch [t_{21}^\ast] \matchesresulttype [t_{11}^\ast]
+     C \vdashresulttypematch [t_{21}^\ast] \subresulttypematch [t_{11}^\ast]
      &
      \{ x^\ast \} = \{ x_2^\ast \} \setminus \{ x_1^\ast \}
      \\
-     C \vdashresulttypematch [t_{12}^\ast] \matchesresulttype [t_{22}^\ast]
+     C \vdashresulttypematch [t_{12}^\ast] \subresulttypematch [t_{22}^\ast]
      &
      (C.\CLOCALS[x] = \SET~t_x)^\ast
      \end{array}
    }{
-     C \vdashinstrtypematch [t_{11}^\ast] \to_{x_1^\ast} [t_{12}^\ast] \matchesinstrtype [t^\ast~t_{21}^\ast] \to_{x_2^\ast} [t^\ast~t_{22}^\ast]
+     C \vdashinstrtypematch [t_{11}^\ast] \to_{x_1^\ast} [t_{12}^\ast] \subinstrtypematch [t^\ast~t_{21}^\ast] \to_{x_2^\ast} [t^\ast~t_{22}^\ast]
    }
 
 .. note::
@@ -307,11 +307,11 @@ A :ref:`function type <syntax-functype>` :math:`[t_{11}^\ast] \toF [t_{12}^\ast]
 .. math::
    ~\\[-1ex]
    \frac{
-     C \vdashresulttypematch [t_{21}^\ast] \matchesresulttype [t_{11}^\ast]
+     C \vdashresulttypematch [t_{21}^\ast] \subresulttypematch [t_{11}^\ast]
      \qquad
-     C \vdashresulttypematch [t_{12}^\ast] \matchesresulttype [t_{22}^\ast]
+     C \vdashresulttypematch [t_{12}^\ast] \subresulttypematch [t_{22}^\ast]
    }{
-     C \vdashfunctypematch [t_{11}^\ast] \toF [t_{12}^\ast] \matchesfunctype [t_{21}^\ast] \toF [t_{22}^\ast]
+     C \vdashfunctypematch [t_{11}^\ast] \toF [t_{12}^\ast] \subfunctypematch [t_{21}^\ast] \toF [t_{22}^\ast]
    }
 
 
@@ -344,25 +344,25 @@ A :ref:`composite type <syntax-comptype>` :math:`\comptype_1` matches a type :ma
 .. math::
    ~\\[-1ex]
    \frac{
-     C \vdashfunctypematch \functype_1 \matchesfunctype \functype_2
+     C \vdashfunctypematch \functype_1 \subfunctypematch \functype_2
    }{
-     C \vdashcomptypematch \TFUNC~\functype_1 \matchescomptype \TFUNC~\functype_2
+     C \vdashcomptypematch \TFUNC~\functype_1 \subcomptypematch \TFUNC~\functype_2
    }
 
 .. math::
    ~\\[-1ex]
    \frac{
-     (C \vdashfieldtypematch \fieldtype_1 \matchesfieldtype \fieldtype_2)^\ast
+     (C \vdashfieldtypematch \fieldtype_1 \subfieldtypematch \fieldtype_2)^\ast
    }{
-     C \vdashcomptypematch \TSTRUCT~\fieldtype_1^\ast~{\fieldtype'}_1^\ast \matchescomptype \TSTRUCT~\fieldtype_2^\ast
+     C \vdashcomptypematch \TSTRUCT~\fieldtype_1^\ast~{\fieldtype'}_1^\ast \subcomptypematch \TSTRUCT~\fieldtype_2^\ast
    }
 
 .. math::
    ~\\[-1ex]
    \frac{
-     C \vdashfieldtypematch \fieldtype_1 \matchesfieldtype \fieldtype_2
+     C \vdashfieldtypematch \fieldtype_1 \subfieldtypematch \fieldtype_2
    }{
-     C \vdashcomptypematch \TARRAY~\fieldtype_1 \matchescomptype \TARRAY~\fieldtype_2
+     C \vdashcomptypematch \TARRAY~\fieldtype_1 \subcomptypematch \TARRAY~\fieldtype_2
    }
 
 
@@ -385,19 +385,19 @@ A :ref:`field type <syntax-fieldtype>` :math:`\mut_1~\storagetype_1` matches a t
 .. math::
    ~\\[-1ex]
    \frac{
-     C \vdashstoragetypematch \storagetype_1 \matchesstoragetype \storagetype_2
+     C \vdashstoragetypematch \storagetype_1 \substoragetypematch \storagetype_2
    }{
-     C \vdashfieldtypematch \MCONST~\storagetype_1 \matchescomptype \MCONST~\storagetype_2
+     C \vdashfieldtypematch \MCONST~\storagetype_1 \subcomptypematch \MCONST~\storagetype_2
    }
    \qquad
    \frac{
      \begin{array}[b]{@{}c@{}}
-     C \vdashstoragetypematch \storagetype_1 \matchesstoragetype \storagetype_2
+     C \vdashstoragetypematch \storagetype_1 \substoragetypematch \storagetype_2
      \\
-     C \vdashstoragetypematch \storagetype_2 \matchesstoragetype \storagetype_1
+     C \vdashstoragetypematch \storagetype_2 \substoragetypematch \storagetype_1
      \end{array}
    }{
-     C \vdashfieldtypematch \MVAR~\storagetype_1 \matchescomptype \MVAR~\storagetype_2
+     C \vdashfieldtypematch \MVAR~\storagetype_1 \subcomptypematch \MVAR~\storagetype_2
    }
 
 A :ref:`storage type <syntax-storagetype>` :math:`\storagetype_1` matches a type :math:`\storagetype_2` if and only if:
@@ -414,7 +414,7 @@ A :ref:`packed type <syntax-packtype>` :math:`\packtype_1` matches a type :math:
    ~\\[-1ex]
    \frac{
    }{
-     C \vdashpacktypematch \packtype \matchespacktype \packtype
+     C \vdashpacktypematch \packtype \subpacktypematch \packtype
    }
 
 
@@ -440,7 +440,7 @@ A :ref:`defined type <syntax-deftype>` :math:`\deftype_1` matches a type :math:`
    \frac{
      \clostype_C(\deftype_1) = \clostype_C(\deftype_2)
    }{
-     C \vdashdeftypematch \deftype_1 \matchesdeftype \deftype_2
+     C \vdashdeftypematch \deftype_1 \subdeftypematch \deftype_2
    }
 
 .. math::
@@ -448,9 +448,9 @@ A :ref:`defined type <syntax-deftype>` :math:`\deftype_1` matches a type :math:`
    \frac{
      \unrolldt(\deftype_1) = \TSUB~\TFINAL^?~\heaptype^\ast~\comptype
      \qquad
-     C \vdashheaptypematch \heaptype^\ast[i] \matchesheaptype \deftype_2
+     C \vdashheaptypematch \heaptype^\ast[i] \subheaptypematch \deftype_2
    }{
-     C \vdashdeftypematch \deftype_1 \matchesdeftype \deftype_2
+     C \vdashdeftypematch \deftype_1 \subdeftypematch \deftype_2
    }
 
 .. note::
@@ -484,7 +484,7 @@ Limits
    \frac{
      n_1 \geq n_2
    }{
-     C \vdashlimitsmatch \{ \LMIN~n_1, \LMAX~m_1^? \} \matcheslimits \{ \LMIN~n_2, \LMAX~\epsilon \}
+     C \vdashlimitsmatch \{ \LMIN~n_1, \LMAX~m_1^? \} \sublimitsmatch \{ \LMIN~n_2, \LMAX~\epsilon \}
    }
    \quad
    \frac{
@@ -492,7 +492,7 @@ Limits
      \qquad
      m_1 \leq m_2
    }{
-     C \vdashlimitsmatch \{ \LMIN~n_1, \LMAX~m_1 \} \matcheslimits \{ \LMIN~n_2, \LMAX~m_2 \}
+     C \vdashlimitsmatch \{ \LMIN~n_1, \LMAX~m_1 \} \sublimitsmatch \{ \LMIN~n_2, \LMAX~m_2 \}
    }
 
 
@@ -511,13 +511,13 @@ A :ref:`table type <syntax-tabletype>` :math:`(\limits_1~\reftype_1)` matches :m
 .. math::
    ~\\[-1ex]
    \frac{
-     C \vdashlimitsmatch \limits_1 \matcheslimits \limits_2
+     C \vdashlimitsmatch \limits_1 \sublimitsmatch \limits_2
      \qquad
-     C \vdashreftypematch \reftype_1 \matchesreftype \reftype_2
+     C \vdashreftypematch \reftype_1 \subreftypematch \reftype_2
      \qquad
-     C \vdashreftypematch \reftype_2 \matchesreftype \reftype_1
+     C \vdashreftypematch \reftype_2 \subreftypematch \reftype_1
    }{
-     C \vdashtabletypematch \limits_1~\reftype_1 \matchestabletype \limits_2~\reftype_2
+     C \vdashtabletypematch \limits_1~\reftype_1 \subtabletypematch \limits_2~\reftype_2
    }
 
 
@@ -535,9 +535,9 @@ A :ref:`memory type <syntax-memtype>` :math:`\limits_1` matches :math:`\limits_2
 .. math::
    ~\\[-1ex]
    \frac{
-     C \vdashlimitsmatch \limits_1 \matcheslimits \limits_2
+     C \vdashlimitsmatch \limits_1 \sublimitsmatch \limits_2
    }{
-     C \vdashmemtypematch \limits_1 \matchesmemtype \limits_2
+     C \vdashmemtypematch \limits_1 \submemtypematch \limits_2
    }
 
 
@@ -556,17 +556,17 @@ A :ref:`global type <syntax-globaltype>` :math:`(\mut_1~t_1)` matches :math:`(\m
 .. math::
    ~\\[-1ex]
    \frac{
-     C \vdashvaltypematch t_1 \matchesvaltype t_2
+     C \vdashvaltypematch t_1 \subvaltypematch t_2
      \qquad
-     C \vdashvaltypematch t_2 \matchesvaltype t_1
+     C \vdashvaltypematch t_2 \subvaltypematch t_1
    }{
-     C \vdashglobaltypematch \MVAR~t_1 \matchesglobaltype \MVAR~t_2
+     C \vdashglobaltypematch \MVAR~t_1 \subglobaltypematch \MVAR~t_2
    }
    \qquad
    \frac{
-     C \vdashvaltypematch t_1 \matchesvaltype t_2
+     C \vdashvaltypematch t_1 \subvaltypematch t_2
    }{
-     C \vdashglobaltypematch \MCONST~t_1 \matchesglobaltype \MCONST~t_2
+     C \vdashglobaltypematch \MCONST~t_1 \subglobaltypematch \MCONST~t_2
    }
 
 
@@ -586,9 +586,9 @@ An :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\deftype_1` matches :
 .. math::
    ~\\[-1ex]
    \frac{
-     C \vdashdeftypematch \deftype_1 \matchesfunctype \deftype_2
+     C \vdashdeftypematch \deftype_1 \subfunctypematch \deftype_2
    }{
-     C \vdashexterntypematch \ETFUNC~\deftype_1 \matchesexterntype \ETFUNC~\deftype_2
+     C \vdashexterntypematch \ETFUNC~\deftype_1 \subexterntypematch \ETFUNC~\deftype_2
    }
 
 
@@ -602,9 +602,9 @@ An :ref:`external type <syntax-externtype>` :math:`\ETTABLE~\tabletype_1` matche
 .. math::
    ~\\[-1ex]
    \frac{
-     C \vdashtabletypematch \tabletype_1 \matchestabletype \tabletype_2
+     C \vdashtabletypematch \tabletype_1 \subtabletypematch \tabletype_2
    }{
-     C \vdashexterntypematch \ETTABLE~\tabletype_1 \matchesexterntype \ETTABLE~\tabletype_2
+     C \vdashexterntypematch \ETTABLE~\tabletype_1 \subexterntypematch \ETTABLE~\tabletype_2
    }
 
 
@@ -618,9 +618,9 @@ An :ref:`external type <syntax-externtype>` :math:`\ETMEM~\memtype_1` matches :m
 .. math::
    ~\\[-1ex]
    \frac{
-     C \vdashmemtypematch \memtype_1 \matchesmemtype \memtype_2
+     C \vdashmemtypematch \memtype_1 \submemtypematch \memtype_2
    }{
-     C \vdashexterntypematch \ETMEM~\memtype_1 \matchesexterntype \ETMEM~\memtype_2
+     C \vdashexterntypematch \ETMEM~\memtype_1 \subexterntypematch \ETMEM~\memtype_2
    }
 
 
@@ -634,7 +634,7 @@ An :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~\globaltype_1` matc
 .. math::
    ~\\[-1ex]
    \frac{
-     C \vdashglobaltypematch \globaltype_1 \matchesglobaltype \globaltype_2
+     C \vdashglobaltypematch \globaltype_1 \subglobaltypematch \globaltype_2
    }{
-     C \vdashexterntypematch \ETGLOBAL~\globaltype_1 \matchesexterntype \ETGLOBAL~\globaltype_2
+     C \vdashexterntypematch \ETGLOBAL~\globaltype_1 \subexterntypematch \ETGLOBAL~\globaltype_2
    }
