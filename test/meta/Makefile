@@ -1,7 +1,7 @@
 SHARED_MEM=false
 
 # SpiderMonkey shell
-JSSHELL=~/mozilla-central/js/src/build-debug/dist/bin/js -e 'const WITH_SHARED_MEMORY=$(SHARED_MEM);' -f common.js
+#JSSHELL=~/mozilla-central/js/src/build-debug/dist/bin/js -e 'const WITH_SHARED_MEMORY=$(SHARED_MEM);' -f common.js
 
 # Node.js
 JSSHELL=./noderun.sh $(SHARED_MEM)
