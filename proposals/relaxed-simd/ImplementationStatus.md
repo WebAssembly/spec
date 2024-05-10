@@ -19,9 +19,9 @@
 | `f32x4.relaxed_max`                   | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
 | `f64x2.relaxed_min`                   | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
 | `f64x2.relaxed_max`                   | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
-| `i16x8.relaxed_q15mulr_s`             | -mrelaxed-simd |                    |                    |
-| `i16x8.relaxed_dot_i8x16_i7x16_s`     | -mrelaxed-simd |                    |                    |
-| `i32x4.relaxed_dot_i8x16_i7x16_add_s` | -mrelaxed-simd |                    |                    |
+| `i16x8.relaxed_q15mulr_s`             | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
+| `i16x8.relaxed_dot_i8x16_i7x16_s`     | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
+| `i32x4.relaxed_dot_i8x16_i7x16_add_s` | -mrelaxed-simd | :heavy_check_mark: | :heavy_check_mark: |
 
 
 [1] Tip of tree LLVM as of 2021-10-28
