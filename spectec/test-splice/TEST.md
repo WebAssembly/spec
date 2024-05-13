@@ -87,11 +87,11 @@ $$
 \begin{array}{@{}l@{}rrl@{}l@{}}
 & {\mathit{instr}} &::=& \dots \\ &&|&
 {\mathit{numtype}}{.}\mathsf{const}~{{\mathit{num}}}_{{\mathit{numtype}}} \\ &&|&
-{\mathit{numtype}} . {{\mathit{unop}}}_{{\mathit{numtype}}} \\ &&|&
-{\mathit{numtype}} . {{\mathit{binop}}}_{{\mathit{numtype}}} \\ &&|&
-{\mathit{numtype}} . {{\mathit{testop}}}_{{\mathit{numtype}}} \\ &&|&
-{\mathit{numtype}} . {{\mathit{relop}}}_{{\mathit{numtype}}} \\ &&|&
-{\mathit{numtype}}_1 . {{{\mathit{cvtop}}}{\mathsf{\_}}}{{\mathit{numtype}}_2}
+{\mathit{numtype}} {.} {{\mathit{unop}}}_{{\mathit{numtype}}} \\ &&|&
+{\mathit{numtype}} {.} {{\mathit{binop}}}_{{\mathit{numtype}}} \\ &&|&
+{\mathit{numtype}} {.} {{\mathit{testop}}}_{{\mathit{numtype}}} \\ &&|&
+{\mathit{numtype}} {.} {{\mathit{relop}}}_{{\mathit{numtype}}} \\ &&|&
+{\mathit{numtype}}_1 {.} {{{\mathit{cvtop}}}{\mathsf{\_}}}{{\mathit{numtype}}_2}
   &\qquad \mbox{if}~{\mathit{numtype}}_1 \neq {\mathit{numtype}}_2 \\ &&|&
 {{{{\mathit{numtype}}{.}\mathsf{extend}}{n}}{\mathsf{\_}}}{\mathsf{s}} \\ &&|&
 \mathsf{local.get}~{\mathit{localidx}} \\ &&|&

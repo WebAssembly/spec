@@ -701,7 +701,7 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
         render_id' env `Atom (chop_sub (untyped_id id).it)
           (macro_template env env.macro_atom id.it)
       | Atom s -> render_id' env `Atom (chop_sub s) None
-      | Dot -> "."  (* TODO: {.} *)
+      | Dot -> "{.}"
       | Dot2 -> ".."
       | Semicolon -> ";"
       | Colon -> ":"
