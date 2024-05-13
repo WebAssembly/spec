@@ -235,3 +235,77 @@ let def d =
   | DefD (x, as_, e, prs) -> defid x; args as_; exp e; prems prs
   | HintD hd -> hintdef hd
 end
+
+
+(* Cloning *)
+
+let clone_note note = Il.Atom.{note with def = ""}
+let clone_atom atom = {atom with note = clone_note atom.note}
+
+let rec clone_iter = function
+  | ListN (e, ido) -> ListN (clone_exp e, ido)
+  | iter -> iter
+
+and clone_typ t =
+  (match t.it with
+  | VarT (id, args) -> VarT (id, List.map clone_arg args)
+  | (BoolT | NumT _ | TextT) as t' -> t'
+  | ParenT t1 -> ParenT (clone_typ t1)
+  | TupT ts -> TupT (List.map clone_typ ts)
+  | IterT (t1, iter) -> IterT (clone_typ t1, clone_iter iter) 
+  | AtomT atom -> AtomT (clone_atom atom)
+  | SeqT ts -> SeqT (List.map clone_typ ts)
+  | InfixT (t1, atom, t2) -> InfixT (clone_typ t1, clone_atom atom, clone_typ t2)
+  | BrackT (atom1, t1, atom2) -> BrackT (clone_atom atom1, clone_typ t1, clone_atom atom2)
+  | StrT _ | CaseT _ | ConT _ | RangeT _ -> assert false
+  ) $ t.at
+
+and clone_typcase (atom, (t, prs), hints) =
+  (clone_atom atom, (clone_typ t, prs), List.map clone_hint hints)
+
+and clone_exp e =
+  (match e.it with
+  | VarE (id, args) -> VarE (id, List.map clone_arg args)
+  | (BoolE _ | NatE _ | TextE _ | EpsE | SizeE _ | HoleE _) as e' -> e'
+  | AtomE atom -> AtomE (clone_atom atom)
+  | UnE (op, e1) -> UnE (op, clone_exp e1)
+  | BinE (e1, op, e2) -> BinE (clone_exp e1, op, clone_exp e2)
+  | CmpE (e1, op, e2) -> CmpE (clone_exp e1, op, clone_exp e2)
+  | SeqE es -> SeqE (List.map clone_exp es)
+  | IdxE (e1, e2) -> IdxE (clone_exp e1, clone_exp e2)
+  | SliceE (e1, e2, e3) -> SliceE (clone_exp e1, clone_exp e2, clone_exp e3)
+  | UpdE (e1, p, e2) -> UpdE (clone_exp e1, clone_path p, clone_exp e2)
+  | ExtE (e1, p, e2) -> ExtE (clone_exp e1, clone_path p, clone_exp e2)
+  | StrE efs -> StrE (Convert.map_nl_list clone_expfield efs)
+  | DotE (e1, atom) -> DotE (clone_exp e1, clone_atom atom)
+  | CommaE (e1, e2) -> CommaE (clone_exp e1, clone_exp e2)
+  | CompE (e1, e2) -> CompE (clone_exp e1, clone_exp e2)
+  | LenE e1 -> LenE (clone_exp e1)
+  | ParenE (e1, b) -> ParenE (clone_exp e1, b)
+  | TupE es -> TupE (List.map clone_exp es)
+  | InfixE (e1, atom, e2) -> InfixE (clone_exp e1, clone_atom atom, clone_exp e2)
+  | BrackE (atom1, e1, atom2) -> BrackE (clone_atom atom1, clone_exp e1, clone_atom atom2)
+  | CallE (id, args) -> CallE (id, List.map clone_arg args)
+  | IterE (e1, iter) -> IterE (clone_exp e1, clone_iter iter)
+  | TypE (e1, t) -> TypE (clone_exp e1, clone_typ t)
+  | FuseE (e1, e2) -> FuseE (clone_exp e1, clone_exp e2)
+  ) $ e.at
+
+and clone_expfield (atom, e) = (clone_atom atom, clone_exp e)
+
+and clone_path p =
+  (match p.it with
+  | RootP -> RootP
+  | IdxP (p1, e) -> IdxP (clone_path p1, clone_exp e)
+  | SliceP (p1, e1, e2) -> SliceP (clone_path p1, clone_exp e1, clone_exp e2)
+  | DotP (p1, atom) -> DotP (clone_path p1, clone_atom atom)
+  ) $ p.at
+
+and clone_arg a =
+  (match !(a.it) with
+  | ExpA e -> ExpA (clone_exp e)
+  | TypA t -> TypA (clone_typ t)
+  | GramA _ as a' -> a'
+  ) |> ref $ a.at
+
+and clone_hint hint = {hint with hintexp = clone_exp hint.hintexp}
