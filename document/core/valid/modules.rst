@@ -43,18 +43,18 @@ The sequence of :ref:`types <syntax-type>` defined in a module is validated incr
 .. math::
    \frac{
    }{
-     \{\} \vdashtypes \epsilon \ok
+     \{\} \vdashtypes \epsilon : \OKtypes
    }
 
 .. math::
    \frac{
-     C' \vdashtypes \type^\ast \ok
+     C' \vdashtypes \type^\ast : \OKtypes
      \qquad
      C = C' \with \CTYPES = C'.\CTYPES~\rolldt_{|C'.\CTYPES|}(\rectype)
      \qquad
-     C \vdashrectype \rectype ~{\ok}(|C'.\CTYPES|)
+     C \vdashrectype \rectype : {\OKrectype}(|C'.\CTYPES|)
    }{
-     C \vdashtypes \type^\ast~\rectype \ok
+     C \vdashtypes \type^\ast~\rectype : \OKtypes
    }
 
 .. note::
@@ -137,7 +137,7 @@ Locals
 
 .. math::
    \frac{
-     C \vdashvaltype t \ok
+     C \vdashvaltype t : \OKvaltype
      \qquad
      C \vdashvaltype t \mathrel{\mbox{defaultable}}
    }{
@@ -146,7 +146,7 @@ Locals
 
 .. math::
    \frac{
-     C \vdashvaltype t \ok
+     C \vdashvaltype t : \OKvaltype
    }{
      C \vdashlocal \{ \LTYPE~t \} : \UNSET~t
    }
@@ -180,13 +180,13 @@ Tables :math:`\table` are classified by :ref:`table types <syntax-tabletype>`.
 
 .. math::
    \frac{
-     C \vdashtabletype \tabletype \ok
+     C \vdashtabletype \tabletype : \OKtabletype
      \qquad
      \tabletype = \limits~t
      \qquad
      C \vdashexpr \expr : [t]
      \qquad
-     C \vdashexprconst \expr \const
+     C \vdashexprconst \expr \CONSTexprconst
    }{
      C \vdashtable \{ \TTYPE~\tabletype, \TINIT~\expr \} : \tabletype
    }
@@ -211,7 +211,7 @@ Memories :math:`\mem` are classified by :ref:`memory types <syntax-memtype>`.
 
 .. math::
    \frac{
-     C \vdashmemtype \memtype \ok
+     C \vdashmemtype \memtype : \OKmemtype
    }{
      C \vdashmem \{ \MTYPE~\memtype \} : \memtype
    }
@@ -244,11 +244,11 @@ Sequences of globals are handled incrementally, such that each definition has ac
 
 .. math::
    \frac{
-     C \vdashglobaltype \mut~t \ok
+     C \vdashglobaltype \mut~t : \OKglobaltype
      \qquad
      C \vdashexpr \expr : [t]
      \qquad
-     C \vdashexprconst \expr \const
+     C \vdashexprconst \expr \CONSTexprconst
    }{
      C \vdashglobal \{ \GTYPE~\mut~t, \GINIT~\expr \} : \mut~t
    }
@@ -318,11 +318,11 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
 
 .. math::
    \frac{
-     C \vdashreftype t \ok
+     C \vdashreftype t : \OKreftype
      \qquad
      (C \vdashexpr e : [t])^\ast
      \qquad
-     (C \vdashexprconst e \const)^\ast
+     (C \vdashexprconst e \CONSTexprconst)^\ast
      \qquad
      C \vdashelemmode \elemmode : t'
      \qquad
@@ -341,7 +341,7 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
 
 .. math::
    \frac{
-     C \vdashreftype \reftype \ok
+     C \vdashreftype \reftype : \OKreftype
    }{
      C \vdashelemmode \EPASSIVE : \reftype
    }
@@ -367,7 +367,7 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
      \\
      C \vdashexpr \expr : [\I32]
      \qquad
-     C \vdashexprconst \expr \const
+     C \vdashexprconst \expr \CONSTexprconst
      \end{array}
    }{
      C \vdashelemmode \EACTIVE~\{ \ETABLE~x, \EOFFSET~\expr \} : t
@@ -380,7 +380,7 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
 
 .. math::
    \frac{
-     C \vdashreftype \reftype \ok
+     C \vdashreftype \reftype : \OKreftype
    }{
      C \vdashelemmode \EDECLARATIVE : \reftype
    }
@@ -393,6 +393,7 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
    single: memory; data
    single: data; segment
 .. _valid-data:
+.. _syntax-datatype:
 
 Data Segments
 ~~~~~~~~~~~~~
@@ -400,7 +401,7 @@ Data Segments
 Data segments :math:`\data` are not classified by any type but merely checked for well-formedness.
 
 :math:`\{ \DINIT~b^\ast, \DMODE~\datamode \}`
-....................................................
+.............................................
 
 * The data mode :math:`\datamode` must be valid.
 
@@ -408,9 +409,9 @@ Data segments :math:`\data` are not classified by any type but merely checked fo
 
 .. math::
    \frac{
-     C \vdashdatamode \datamode \ok
+     C \vdashdatamode \datamode : \OKdatamode
    }{
-     C \vdashdata \{ \DINIT~b^\ast, \DMODE~\datamode \} \ok
+     C \vdashdata \{ \DINIT~b^\ast, \DMODE~\datamode \} : \OKdata
    }
 
 
@@ -424,7 +425,7 @@ Data segments :math:`\data` are not classified by any type but merely checked fo
 .. math::
    \frac{
    }{
-     C \vdashdatamode \DPASSIVE \ok
+     C \vdashdatamode \DPASSIVE : \OKdatamode
    }
 
 
@@ -445,9 +446,9 @@ Data segments :math:`\data` are not classified by any type but merely checked fo
      \qquad
      C \vdashexpr \expr : [\I32]
      \qquad
-     C \vdashexprconst \expr \const
+     C \vdashexprconst \expr \CONSTexprconst
    }{
-     C \vdashdatamode \DACTIVE~\{ \DMEM~x, \DOFFSET~\expr \} \ok
+     C \vdashdatamode \DACTIVE~\{ \DMEM~x, \DOFFSET~\expr \} : \OKdatamode
    }
 
 
@@ -475,7 +476,7 @@ Start function declarations :math:`\start` are not classified by any type.
    \frac{
      \expanddt(C.\CFUNCS[x]) = \TFUNC~[] \toF []
    }{
-     C \vdashstart \{ \SFUNC~x \} \ok
+     C \vdashstart \{ \SFUNC~x \} : \OKstart
    }
 
 
@@ -619,7 +620,7 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
 
 .. math::
    \frac{
-     C \vdashtable \tabletype \ok
+     C \vdashtable \tabletype : \OKtabletype
    }{
      C \vdashimportdesc \IDTABLE~\tabletype : \ETTABLE~\tabletype
    }
@@ -634,7 +635,7 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
 
 .. math::
    \frac{
-     C \vdashmemtype \memtype \ok
+     C \vdashmemtype \memtype : \OKmemtype
    }{
      C \vdashimportdesc \IDMEM~\memtype : \ETMEM~\memtype
    }
@@ -649,7 +650,7 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
 
 .. math::
    \frac{
-     C \vdashglobaltype \globaltype \ok
+     C \vdashglobaltype \globaltype : \OKglobaltype
    }{
      C \vdashimportdesc \IDGLOBAL~\globaltype : \ETGLOBAL~\globaltype
    }
@@ -695,7 +696,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
   * :math:`C.\CELEMS` is :math:`{\X{rt}}^\ast` as determined below,
 
-  * :math:`C.\CDATAS` is :math:`{\ok}^n`, where :math:`n` is the length of the list :math:`\module.\MDATAS`,
+  * :math:`C.\CDATAS` is :math:`{\X{ok}}^\ast` as determined below,
 
   * :math:`C.\CLOCALS` is empty,
 
@@ -740,7 +741,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
     the segment :math:`\elem_i` must be :ref:`valid <valid-elem>` with :ref:`reference type <syntax-reftype>` :math:`\X{rt}_i`.
 
   * For each :math:`\data_i` in :math:`\module.\MDATAS`,
-    the segment :math:`\data_i` must be :ref:`valid <valid-data>`.
+    the segment :math:`\data_i` must be :ref:`valid <valid-data>` with :ref:`data type <syntax-datatype>` :math:`\X{ok}_i`.
 
   * If :math:`\module.\MSTART` is non-empty,
     then :math:`\module.\MSTART` must be :ref:`valid <valid-start>`.
@@ -759,6 +760,8 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
 * Let :math:`\X{rt}^\ast` be the concatenation of the :ref:`reference types <syntax-reftype>` :math:`\X{rt}_i`, in index order.
 
+* Let :math:`\X{ok}^\ast` be the concatenation of the :ref:`data types <syntax-datatype>` :math:`\X{ok}_i`, in index order.
+
 * Let :math:`\X{it}^\ast` be the concatenation of :ref:`external types <syntax-externtype>` :math:`\X{it}_i` of the imports, in index order.
 
 * Let :math:`\X{et}^\ast` be the concatenation of :ref:`external types <syntax-externtype>` :math:`\X{et}_i` of the exports, in index order.
@@ -772,7 +775,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 .. math::
    \frac{
      \begin{array}{@{}c@{}}
-     C_0 \vdashtypes \type^\ast \ok
+     C_0 \vdashtypes \type^\ast : \OKtypes
      \quad
      C' \vdashglobals \global^\ast : \X{gt}^\ast
      \quad
@@ -784,9 +787,9 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
      \\
      (C \vdashelem \elem : \X{rt})^\ast
      \quad
-     (C \vdashdata \data \ok)^n
+     (C \vdashdata \data : \X{ok})^\ast
      \quad
-     (C \vdashstart \start \ok)^?
+     (C \vdashstart \start : \OKstart)^?
      \quad
      (C \vdashimport \import : \X{it})^\ast
      \quad
@@ -802,7 +805,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
      \\
      x^\ast = \freefuncidx(\module \with \MFUNCS = \epsilon \with \MSTART = \epsilon)
      \\
-     C = \{ \CTYPES~C_0.\CTYPES, \CFUNCS~\X{idt}^\ast\,\X{dt}^\ast, \CTABLES~\X{itt}^\ast\,\X{tt}^\ast, \CMEMS~\X{imt}^\ast\,\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast\,\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~{\ok}^n, \CREFS~x^\ast \}
+     C = \{ \CTYPES~C_0.\CTYPES, \CFUNCS~\X{idt}^\ast\,\X{dt}^\ast, \CTABLES~\X{itt}^\ast\,\X{tt}^\ast, \CMEMS~\X{imt}^\ast\,\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast\,\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~\X{ok}^\ast, \CREFS~x^\ast \}
      \\
      C' = \{ \CTYPES~C_0.\CTYPES, \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS) \}
      \qquad

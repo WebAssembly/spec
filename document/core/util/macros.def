@@ -276,6 +276,7 @@
 .. |globaltype| mathdef:: \xref{syntax/types}{syntax-globaltype}{\X{globaltype}}
 .. |tabletype| mathdef:: \xref{syntax/types}{syntax-tabletype}{\X{tabletype}}
 .. |memtype| mathdef:: \xref{syntax/types}{syntax-memtype}{\X{memtype}}
+.. |datatype| mathdef:: \xref{syntax/types}{syntax-datatype}{\X{datatype}}
 
 .. |limits| mathdef:: \xref{syntax/types}{syntax-limits}{\X{limits}}
 .. |mut| mathdef:: \xref{syntax/types}{syntax-mut}{\X{mut}}
@@ -486,12 +487,19 @@
 
 .. |LOAD| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{load}}
 .. |STORE| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{store}}
+.. |VLOAD| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{load}}
+.. |VSTORE| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{store}}
+.. |VLANE| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{lane}}
 .. |MEMORYSIZE| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{memory.size}}
 .. |MEMORYGROW| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{memory.grow}}
 .. |MEMORYFILL| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{memory.fill}}
 .. |MEMORYCOPY| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{memory.copy}}
 .. |MEMORYINIT| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{memory.init}}
 .. |DATADROP| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{data.drop}}
+
+.. |LX| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{x}}
+.. |LSPLAT| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{splat}}
+.. |LZERO| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{zero}}
 
 .. |REFNULL| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref.null}}
 .. |REFFUNC| mathdef:: \xref{syntax/instructions}{syntax-instr-ref}{\K{ref.func}}
@@ -566,6 +574,8 @@
 .. |COPYSIGN| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{copysign}}
 
 .. |CONVERT| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{convert}}
+.. |CONVERTSAT| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{convert\_sat}}
+.. |TRUNCSAT| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{trunc\_sat}}
 .. |EXTEND| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{extend}}
 .. |WRAP| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{wrap}}
 .. |PROMOTE| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{promote}}
@@ -573,17 +583,17 @@
 .. |REINTERPRET| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{reinterpret}}
 
 .. |VCONST| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{const}}
-.. |SHUFFLE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{shuffle}}
-.. |SWIZZLE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{swizzle}}
-.. |SPLAT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{splat}}
-.. |EXTRACTLANE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{extract\_lane}}
-.. |REPLACELANE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{replace\_lane}}
+.. |VSHUFFLE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{shuffle}}
+.. |VSWIZZLE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{swizzle}}
+.. |VSPLAT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{splat}}
+.. |VEXTRACTLANE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{extract\_lane}}
+.. |VREPLACELANE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{replace\_lane}}
 .. |VNOT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{not}}
 .. |VAND| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{and}}
 .. |VANDNOT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{andnot}}
 .. |VOR| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{or}}
 .. |VXOR| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{xor}}
-.. |BITSELECT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{bitselect}}
+.. |VBITSELECT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{bitselect}}
 .. |VEQ| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{eq}}
 .. |VNE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{ne}}
 .. |VLT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{lt}}
@@ -595,32 +605,39 @@
 .. |VCEIL| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{ceil}}
 .. |VFLOOR| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{floor}}
 .. |VTRUNC| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{trunc}}
+.. |VTRUNCSAT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{trunc\_sat}}
 .. |VNEAREST| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{nearest}}
 .. |VPOPCNT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{popcnt}}
-.. |ANYTRUE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{any\_true}}
-.. |ALLTRUE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{all\_true}}
-.. |BITMASK| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{bitmask}}
+.. |VANYTRUE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{any\_true}}
+.. |VALLTRUE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{all\_true}}
+.. |VBITMASK| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{bitmask}}
 .. |VSHL| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{shl}}
 .. |VSHR| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{shr}}
 .. |VSQRT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{sqrt}}
 .. |VADD| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{add}}
 .. |VSUB| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{sub}}
+.. |VADDSAT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{add\_sat}}
+.. |VSUBSAT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{sub\_sat}}
 .. |VMUL| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{mul}}
 .. |VDIV| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{div}}
 .. |VMIN| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{min}}
 .. |VMAX| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{max}}
 .. |VPMIN| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{pmin}}
 .. |VPMAX| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{pmax}}
-.. |NARROW| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{narrow}}
+.. |VNARROW| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{narrow}}
 .. |VEXTEND| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{extend}}
-.. |AVGR| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{avgr}}
-.. |DOT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{dot}}
-.. |EXTMUL| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{extmul}}
+.. |VAVGRU| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{avgr\_u}}
+.. |VDOT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{dot}}
+.. |VEXTMUL| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{extmul}}
 .. |VCONVERT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{convert}}
-.. |Q15MULRSAT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{q15mulr\_sat}}
-.. |EXTADDPAIRWISE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{extadd\_pairwise}}
+.. |VQ15MULRSATS| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{q15mulr\_sat\_s}}
+.. |VEXTADDPAIRWISE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{extadd\_pairwise}}
 .. |VDEMOTE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{demote}}
 .. |VPROMOTE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{promote}}
+
+.. |LOW| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{low}}
+.. |HIGH| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{high}}
+.. |ZERO| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{zero}}
 
 
 .. Instructions, non-terminals
@@ -1087,31 +1104,31 @@
 
 .. |vdashinstrtype| mathdef:: \xref{valid/types}{valid-instrtype}{\vdash}
 
-.. |OKnumtype| mathdef:: \xref{valid/types}{valid-numtype}{\K{OK}}
-.. |OKvectype| mathdef:: \xref{valid/types}{valid-vectype}{\K{OK}}
-.. |OKheaptype| mathdef:: \xref{valid/types}{valid-heaptype}{\K{OK}}
-.. |OKreftype| mathdef:: \xref{valid/types}{valid-reftype}{\K{OK}}
-.. |OKvaltype| mathdef:: \xref{valid/types}{valid-valtype}{\K{OK}}
-.. |OKresulttype| mathdef:: \xref{valid/types}{valid-resulttype}{\K{OK}}
-.. |OKfunctype| mathdef:: \xref{valid/types}{valid-functype}{\K{OK}}
-.. |OKstructtype| mathdef:: \xref{valid/types}{valid-structtype}{\K{OK}}
-.. |OKarraytype| mathdef:: \xref{valid/types}{valid-arraytype}{\K{OK}}
-.. |OKcomptype| mathdef:: \xref{valid/types}{valid-comptype}{\K{OK}}
-.. |OKfieldtype| mathdef:: \xref{valid/types}{valid-fieldtype}{\K{OK}}
-.. |OKpacktype| mathdef:: \xref{valid/types}{valid-packtype}{\K{OK}}
-.. |OKstoragetype| mathdef:: \xref{valid/types}{valid-storagetype}{\K{OK}}
-.. |OKsubtype| mathdef:: \xref{valid/types}{valid-subtype}{\K{OK}}
-.. |OKsubtypeext| mathdef:: \xref{valid/types}{valid-subtype}{\K{OK}}
-.. |OKrectype| mathdef:: \xref{valid/types}{valid-rectype}{\K{OK}}
-.. |OKrectypeext| mathdef:: \xref{valid/types}{valid-rectype}{\K{OK}}
-.. |OKdeftype| mathdef:: \xref{valid/types}{valid-deftype}{\K{OK}}
-.. |OKtabletype| mathdef:: \xref{valid/types}{valid-tabletype}{\K{OK}}
-.. |OKmemtype| mathdef:: \xref{valid/types}{valid-memtype}{\K{OK}}
-.. |OKglobaltype| mathdef:: \xref{valid/types}{valid-globaltype}{\K{OK}}
-.. |OKexterntype| mathdef:: \xref{valid/types}{valid-externtype}{\K{OK}}
-.. |OKlimits| mathdef:: \xref{valid/types}{valid-limits}{\K{OK}}
+.. |OKnumtype| mathdef:: \xref{valid/types}{valid-numtype}{\K{ok}}
+.. |OKvectype| mathdef:: \xref{valid/types}{valid-vectype}{\K{ok}}
+.. |OKheaptype| mathdef:: \xref{valid/types}{valid-heaptype}{\K{ok}}
+.. |OKreftype| mathdef:: \xref{valid/types}{valid-reftype}{\K{ok}}
+.. |OKvaltype| mathdef:: \xref{valid/types}{valid-valtype}{\K{ok}}
+.. |OKresulttype| mathdef:: \xref{valid/types}{valid-resulttype}{\K{ok}}
+.. |OKfunctype| mathdef:: \xref{valid/types}{valid-functype}{\K{ok}}
+.. |OKstructtype| mathdef:: \xref{valid/types}{valid-structtype}{\K{ok}}
+.. |OKarraytype| mathdef:: \xref{valid/types}{valid-arraytype}{\K{ok}}
+.. |OKcomptype| mathdef:: \xref{valid/types}{valid-comptype}{\K{ok}}
+.. |OKfieldtype| mathdef:: \xref{valid/types}{valid-fieldtype}{\K{ok}}
+.. |OKpacktype| mathdef:: \xref{valid/types}{valid-packtype}{\K{ok}}
+.. |OKstoragetype| mathdef:: \xref{valid/types}{valid-storagetype}{\K{ok}}
+.. |OKsubtype| mathdef:: \xref{valid/types}{valid-subtype}{\K{ok}}
+.. |OKsubtypeext| mathdef:: \xref{valid/types}{valid-subtype}{\K{ok}}
+.. |OKrectype| mathdef:: \xref{valid/types}{valid-rectype}{\K{ok}}
+.. |OKrectypeext| mathdef:: \xref{valid/types}{valid-rectype}{\K{ok}}
+.. |OKdeftype| mathdef:: \xref{valid/types}{valid-deftype}{\K{ok}}
+.. |OKtabletype| mathdef:: \xref{valid/types}{valid-tabletype}{\K{ok}}
+.. |OKmemtype| mathdef:: \xref{valid/types}{valid-memtype}{\K{ok}}
+.. |OKglobaltype| mathdef:: \xref{valid/types}{valid-globaltype}{\K{ok}}
+.. |OKexterntype| mathdef:: \xref{valid/types}{valid-externtype}{\K{ok}}
+.. |OKlimits| mathdef:: \xref{valid/types}{valid-limits}{\K{ok}}
 
-.. |OKinstrtype| mathdef:: \xref{valid/types}{valid-instrtype}{\K{OK}}
+.. |OKinstrtype| mathdef:: \xref{valid/types}{valid-instrtype}{\K{ok}}
 
 .. |vdashnumtypematch| mathdef:: \xref{valid/matching}{match-numtype}{\vdash}
 .. |vdashvectypematch| mathdef:: \xref{valid/matching}{match-vectype}{\vdash}
@@ -1184,9 +1201,12 @@
 .. |vdashimportdesc| mathdef:: \xref{valid/modules}{valid-importdesc}{\vdash}
 .. |vdashmodule| mathdef:: \xref{valid/modules}{valid-module}{\vdash}
 
-.. |OKdatamode| mathdef:: \xref{valid/types}{valid-datamode}{\K{OK}}
-.. |OKstart| mathdef:: \xref{valid/types}{valid-start}{\K{OK}}
-.. |OKmodule| mathdef:: \xref{valid/types}{valid-module}{\K{OK}}
+.. |OKelemmode| mathdef:: \xref{valid/types}{valid-elemmode}{\K{ok}}
+.. |OKdatamode| mathdef:: \xref{valid/types}{valid-datamode}{\K{ok}}
+.. |OKdata| mathdef:: \xref{valid/types}{valid-data}{\K{ok}}
+.. |OKstart| mathdef:: \xref{valid/types}{valid-start}{\K{ok}}
+.. |OKtypes| mathdef:: \xref{valid/types}{valid-types}{\K{ok}}
+.. |OKmodule| mathdef:: \xref{valid/types}{valid-module}{\K{ok}}
 
 .. |unpackshape| mathdef:: \xref{valid/instructions}{aux-unpackshape}{\F{unpack}}
 .. |shlanetype| mathdef:: \xref{syntax/instructions}{aux-lanetype}{\F{lanetype}}
@@ -1253,18 +1273,19 @@
 .. |FIHOSTCODE| mathdef:: \xref{exec/runtime}{syntax-funcinst}{\K{hostcode}}
 
 .. |TITYPE| mathdef:: \xref{exec/runtime}{syntax-tableinst}{\K{type}}
-.. |TIELEM| mathdef:: \xref{exec/runtime}{syntax-tableinst}{\K{elem}}
+.. |TIREFS| mathdef:: \xref{exec/runtime}{syntax-tableinst}{\K{elem}}
 
 .. |MITYPE| mathdef:: \xref{exec/runtime}{syntax-meminst}{\K{type}}
-.. |MIDATA| mathdef:: \xref{exec/runtime}{syntax-meminst}{\K{data}}
+.. |MIBYTES| mathdef:: \xref{exec/runtime}{syntax-meminst}{\K{data}}
 
 .. |GITYPE| mathdef:: \xref{exec/runtime}{syntax-globalinst}{\K{type}}
 .. |GIVALUE| mathdef:: \xref{exec/runtime}{syntax-globalinst}{\K{value}}
 
 .. |EITYPE| mathdef:: \xref{exec/runtime}{syntax-eleminst}{\K{type}}
-.. |EIELEM| mathdef:: \xref{exec/runtime}{syntax-eleminst}{\K{elem}}
+.. |EIREFS| mathdef:: \xref{exec/runtime}{syntax-eleminst}{\K{elem}}
 
-.. |DIDATA| mathdef:: \xref{exec/runtime}{syntax-datainst}{\K{data}}
+.. |DITYPE| mathdef:: \xref{exec/runtime}{syntax-datainst}{\K{data}}
+.. |DIBYTES| mathdef:: \xref{exec/runtime}{syntax-datainst}{\K{data}}
 
 .. |EINAME| mathdef:: \xref{exec/runtime}{syntax-exportinst}{\K{name}}
 .. |EIVALUE| mathdef:: \xref{exec/runtime}{syntax-exportinst}{\K{value}}
@@ -1293,6 +1314,33 @@
 .. |I8PACK| mathdef:: \xref{exec/runtime}{syntax-packval}{\K{i8.pack}}
 .. |I16PACK| mathdef:: \xref{exec/runtime}{syntax-packval}{\K{i16.pack}}
 
+.. |ZSTORE| mathdef:: \xref{exec/runtime}{syntax-store}{\K{store}}
+.. |ZFRAME| mathdef:: \xref{exec/runtime}{syntax-store}{\K{frame}}
+.. |ZTYPES| mathdef:: \xref{exec/runtime}{syntax-store}{\K{types}}
+.. |ZFUNCS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{funcs}}
+.. |ZGLOBALS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{globals}}
+.. |ZTABLES| mathdef:: \xref{exec/runtime}{syntax-store}{\K{tables}}
+.. |ZMEMS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{mems}}
+.. |ZELEMS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{elems}}
+.. |ZDATAS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{datas}}
+.. |ZSTRUCTS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{structs}}
+.. |ZARRAYS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{arrays}}
+.. |ZLOCALS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{locals}}
+
+.. |ZGGLOBALS| mathdef:: \ZGLOBALS
+.. |ZGVALUE| mathdef:: \GIVALUE
+.. |ZTTABLES| mathdef:: \ZTABLES
+.. |ZTREFS| mathdef:: \TIREFS
+.. |ZMMEMS| mathdef:: \ZMEMS
+.. |ZMBYTES| mathdef:: \MIBYTES
+.. |ZEELEMS| mathdef:: \ZELEMS
+.. |ZEREFS| mathdef:: \EIREFS
+.. |ZDDATAS| mathdef:: \ZDATAS
+.. |ZDBYTES| mathdef:: \DIBYTES
+.. |ZSSTRUCTS| mathdef:: \ZSTRUCTS
+.. |ZSFIELDS| mathdef:: \SIFIELDS
+.. |ZAARRAYS| mathdef:: \ZARRAYS
+.. |ZAFIELDS| mathdef:: \AIFIELDS
 
 .. Instances, non-terminals
 
@@ -1569,11 +1617,18 @@
 .. |vdashexportinst| mathdef:: \xref{appendix/properties}{valid-exportinst}{\vdash}
 .. |vdashmoduleinst| mathdef:: \xref{appendix/properties}{valid-moduleinst}{\vdash}
 
+.. |OKdatainst| mathdef:: \xref{appendix/properties}{valid-datainst}{\K{ok}}
+.. |OKstructinst| mathdef:: \xref{appendix/properties}{valid-structinst}{\K{ok}}
+.. |OKarrayinst| mathdef:: \xref{appendix/properties}{valid-arrayinst}{\K{ok}}
+.. |OKexportinst| mathdef:: \xref{appendix/properties}{valid-exportinst}{\K{ok}}
+
 .. |vdashcontext| mathdef:: \xref{appendix/properties}{valid-context}{\vdash}
 .. |vdashstore| mathdef:: \xref{appendix/properties}{valid-store}{\vdash}
 .. |vdashconfig| mathdef:: \xref{appendix/properties}{valid-config}{\vdash}
 .. |vdashthread| mathdef:: \xref{appendix/properties}{valid-thread}{\vdash}
 .. |vdashframe| mathdef:: \xref{appendix/properties}{valid-frame}{\vdash}
+
+.. |OKstore| mathdef:: \xref{appendix/properties}{valid-store}{\K{ok}}
 
 .. |vdashfuncinstextends| mathdef:: \xref{appendix/properties}{extend-funcinst}{\vdash}
 .. |vdashtableinstextends| mathdef:: \xref{appendix/properties}{extend-tableinst}{\vdash}

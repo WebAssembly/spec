@@ -587,11 +587,11 @@ $${rule-prose: exec/array.new_data}
 
 14. Let :math:`z` be the :ref:`bit width <bitwidth-fieldtype>` of :ref:`field type <syntax-fieldtype>` :math:`\X{ft}` divided by eight.
 
-15. If the sum of :math:`s` and :math:`n` times :math:`z` is larger than the length of :math:`\datainst.\DIDATA`, then:
+15. If the sum of :math:`s` and :math:`n` times :math:`z` is larger than the length of :math:`\datainst.\DIBYTES`, then:
 
     a. Trap.
 
-16. Let :math:`b^\ast` be the :ref:`byte <syntax-byte>` sequence :math:`\datainst.\DIDATA[s \slice n \cdot z]`.
+16. Let :math:`b^\ast` be the :ref:`byte <syntax-byte>` sequence :math:`\datainst.\DIBYTES[s \slice n \cdot z]`.
 
 17. Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpack(\X{ft})`.
 
@@ -923,7 +923,7 @@ $${rule-prose: exec/array.init_data}
 
 21. Let :math:`z` be the :ref:`bit width <bitwidth-fieldtype>` of :ref:`field type <syntax-fieldtype>` :math:`\X{ft}` divided by eight.
 
-22. If :math:`d + n` is larger than the length of :math:`S.\SARRAYS[a].\AIFIELDS`, or the sum of :math:`s` and :math:`n` times :math:`z` is larger than the length of :math:`\datainst.\DIDATA`, then:
+22. If :math:`d + n` is larger than the length of :math:`S.\SARRAYS[a].\AIFIELDS`, or the sum of :math:`s` and :math:`n` times :math:`z` is larger than the length of :math:`\datainst.\DIBYTES`, then:
 
     a. Trap.
 
@@ -931,7 +931,7 @@ $${rule-prose: exec/array.init_data}
 
     a. Return.
 
-24. Let :math:`b^\ast` be the :ref:`byte <syntax-byte>` sequence :math:`\datainst.\DIDATA[s \slice z]`.
+24. Let :math:`b^\ast` be the :ref:`byte <syntax-byte>` sequence :math:`\datainst.\DIBYTES[s \slice z]`.
 
 25. Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpack(\X{ft})`.
 
@@ -1184,7 +1184,7 @@ $${rule: {Step_pure/vbitmask}}
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c)~t\K{x}N\K{.}\BITMASK &\stepto& (\I32\K{.}\CONST~i)
+   (\V128\K{.}\VCONST~c)~t\K{x}N\K{.}\VBITMASK &\stepto& (\I32\K{.}\CONST~i)
      & (\iff i = \ibits_{32}^{-1}(\ilts_{|t|}(\lanes_{t\K{x}N}(c), 0^N)))
      \\
    \end{array}
@@ -1218,7 +1218,7 @@ $${rule: {Step_pure/vswizzle}}
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\I8X16\K{.}\SWIZZLE &\stepto& (\V128\K{.}\VCONST~c')
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\I8X16\K{.}\VSWIZZLE &\stepto& (\V128\K{.}\VCONST~c')
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
@@ -1259,7 +1259,7 @@ $${rule: {Step_pure/vshuffle}}
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~(\I8X16\K{.}\SHUFFLE~x^\ast) &\stepto& (\V128\K{.}\VCONST~c)
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~(\I8X16\K{.}\VSHUFFLE~x^\ast) &\stepto& (\V128\K{.}\VCONST~c)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
@@ -1292,7 +1292,7 @@ $${rule: {Step_pure/vsplat}}
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (t\K{.}\CONST~c_1)~\shape\K{.}\SPLAT &\stepto& (\V128\K{.}\VCONST~c)
+   (t\K{.}\CONST~c_1)~\shape\K{.}\VSPLAT &\stepto& (\V128\K{.}\VCONST~c)
      & (\iff t = \unpackshape(\shape)
        \wedge c = \lanes^{-1}_{\shape}(c_1^{\shdim(\shape)}))
      \\
@@ -1325,7 +1325,7 @@ $${rule: {Step_pure/vextract_lane-*}}
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(t_1\K{x}N\K{.}\EXTRACTLANE~x) &\stepto& (t_2\K{.}\CONST~c_2)
+   (\V128\K{.}\VCONST~c_1)~(t_1\K{x}N\K{.}\VEXTRACTLANE~x) &\stepto& (t_2\K{.}\CONST~c_2)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
@@ -1365,7 +1365,7 @@ $${rule: {Step_pure/vreplace_lane}}
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(t_2\K{.}\CONST~c_2)~(\shape\K{.}\REPLACELANE~x) &\stepto& (\V128\K{.}\VCONST~c)
+   (\V128\K{.}\VCONST~c_1)~(t_2\K{.}\CONST~c_2)~(\shape\K{.}\VREPLACELANE~x) &\stepto& (\V128\K{.}\VCONST~c)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
@@ -1403,7 +1403,7 @@ $${rule: {Step_pure/vextunop}}
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~t_2\K{x}N\K{.}\EXTADDPAIRWISE\_t_1\K{x}M\_\sx &\stepto& (\V128\K{.}\VCONST~c) \\
+   (\V128\K{.}\VCONST~c_1)~t_2\K{x}N\K{.}\VEXTADDPAIRWISE\_t_1\K{x}M\_\sx &\stepto& (\V128\K{.}\VCONST~c) \\
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
@@ -1459,7 +1459,7 @@ $${rule: {Step_pure/vextbinop}}
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~t_2\K{x}N\K{.}\EXTMUL\K{\_}\half\K{\_}t_1\K{x}M\_\sx &\stepto& (\V128\K{.}\VCONST~c) \\
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~t_2\K{x}N\K{.}\VEXTMUL\K{\_}\half\K{\_}t_1\K{x}M\_\sx &\stepto& (\V128\K{.}\VCONST~c) \\
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
@@ -1479,8 +1479,8 @@ where:
 
 .. _exec-vdot:
 
-:math:`\K{i32x4.}\DOT\K{\_i16x8\_s}`
-....................................
+:math:`\K{i32x4.}\VDOT\K{\_i16x8\_s}`
+.....................................
 
 .. todo:: (*) Prose not spliced, for this seems to be WIP on @Andreas.
 
@@ -1509,7 +1509,7 @@ where:
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\K{i32x4.}\DOT\K{\_i16x8\_s} &\stepto& (\V128\K{.}\VCONST~c) \\
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\K{i32x4.}\VDOT\K{\_i16x8\_s} &\stepto& (\V128\K{.}\VCONST~c) \\
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
@@ -1554,7 +1554,7 @@ $${rule: {Step_pure/vnarrow}}
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~t_2\K{x}N\K{.}\NARROW\_t_1\K{x}M\_\sx &\stepto& (\V128\K{.}\VCONST~c)
+   (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~t_2\K{x}N\K{.}\VNARROW\_t_1\K{x}M\_\sx &\stepto& (\V128\K{.}\VCONST~c)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
@@ -1846,11 +1846,11 @@ $${rule-prose: exec/load}
 
    a. Let :math:`N` be the :ref:`bit width <syntax-numtype>` :math:`|t|` of :ref:`number type <syntax-numtype>` :math:`t`.
 
-10. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
+10. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIBYTES`, then:
 
     a. Trap.
 
-11. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\MIDATA[\X{ea} \slice N/8]`.
+11. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\MIBYTES[\X{ea} \slice N/8]`.
 
 12. If :math:`N` and :math:`\sx` are part of the instruction, then:
 
@@ -1869,8 +1869,8 @@ $${rule: {Step_read/load-*}}
 
 .. _exec-vload-ext:
 
-:math:`\V128\K{.}\LOAD{M}\K{x}N\_\sx~x~\memarg`
-...............................................
+:math:`\V128\K{.}\VLOAD{M}\K{x}N\_\sx~x~\memarg`
+................................................
 
 .. todo:: (*) Rule and prose both not spliced.
 
@@ -1890,11 +1890,11 @@ $${rule: {Step_read/load-*}}
 
 8. Let :math:`\X{ea}` be the integer :math:`i + \memarg.\OFFSET`.
 
-9. If :math:`\X{ea} + M \cdot N /8` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
+9. If :math:`\X{ea} + M \cdot N /8` is larger than the length of :math:`\X{mem}.\MIBYTES`, then:
 
     a. Trap.
 
-10. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\MIDATA[\X{ea} \slice M \cdot N /8]`.
+10. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\MIBYTES[\X{ea} \slice M \cdot N /8]`.
 
 11. Let :math:`m_k` be the integer for which :math:`\bytes_{\iM}(m_k) = b^\ast[k \cdot M/8 \slice M/8]`.
 
@@ -1910,20 +1910,20 @@ $${rule: {Step_read/load-*}}
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\V128.\LOAD{M}\K{x}N\_\sx~x~\memarg) &\stepto&
+   S; F; (\I32.\CONST~i)~(\V128.\VLOAD{M}\K{x}N\_\sx~x~\memarg) &\stepto&
      S; F; (\V128.\CONST~c)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + M \cdot N / 8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA| \\
-     \wedge & \bytes_{\iM}(m_k) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA[\X{ea} + k \cdot M/8 \slice M/8]) \\
+     \wedge & \X{ea} + M \cdot N / 8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES| \\
+     \wedge & \bytes_{\iM}(m_k) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES[\X{ea} + k \cdot M/8 \slice M/8]) \\
      \wedge & W = M \cdot 2 \\
      \wedge & c = \lanes^{-1}_{\K{i}W\K{x}N}(\ext^{\sx}_{M,W}(m_0) \dots \ext^{\sx}_{M,W}(m_{N-1})))
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\V128.\LOAD{M}\K{x}N\K{\_}\sx~x~\memarg) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(\V128.\VLOAD{M}\K{x}N\K{\_}\sx~x~\memarg) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -1932,8 +1932,8 @@ $${rule: {Step_read/load-*}}
 
 .. _exec-vload-splat:
 
-:math:`\V128\K{.}\LOAD{N}\K{\_splat}~x~\memarg`
-...............................................
+:math:`\V128\K{.}\VLOAD{N}\K{\_splat}~x~\memarg`
+................................................
 
 .. todo:: (*) Rule and prose both not spliced.
 
@@ -1953,11 +1953,11 @@ $${rule: {Step_read/load-*}}
 
 8. Let :math:`\X{ea}` be the integer :math:`i + \memarg.\OFFSET`.
 
-9. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
+9. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIBYTES`, then:
 
     a. Trap.
 
-10. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\MIDATA[\X{ea} \slice N/8]`.
+10. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\MIBYTES[\X{ea} \slice N/8]`.
 
 11. Let :math:`n` be the integer for which :math:`\bytes_{\iN}(n) = b^\ast`.
 
@@ -1971,18 +1971,18 @@ $${rule: {Step_read/load-*}}
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\V128\K{.}\LOAD{N}\K{\_splat}~x~\memarg) &\stepto& S; F; (\V128.\CONST~c)
+   S; F; (\I32.\CONST~i)~(\V128\K{.}\VLOAD{N}\K{\_splat}~x~\memarg) &\stepto& S; F; (\V128.\CONST~c)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA| \\
-     \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA[\X{ea} \slice N/8] \\
+     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES| \\
+     \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES[\X{ea} \slice N/8] \\
      \wedge & c = \lanes^{-1}_{\IN\K{x}L}(n^L))
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\V128.\LOAD{N}\K{\_splat}~x~\memarg) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(\V128.\VLOAD{N}\K{\_splat}~x~\memarg) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -1991,8 +1991,8 @@ $${rule: {Step_read/load-*}}
 
 .. _exec-vload-zero:
 
-:math:`\V128\K{.}\LOAD{N}\K{\_zero}~x~\memarg`
-..............................................
+:math:`\V128\K{.}\VLOAD{N}\K{\_zero}~x~\memarg`
+...............................................
 
 .. todo:: (*) Rule and prose both not spliced.
 
@@ -2012,11 +2012,11 @@ $${rule: {Step_read/load-*}}
 
 8. Let :math:`\X{ea}` be the integer :math:`i + \memarg.\OFFSET`.
 
-9. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
+9. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIBYTES`, then:
 
     a. Trap.
 
-10. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\MIDATA[\X{ea} \slice N/8]`.
+10. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\MIBYTES[\X{ea} \slice N/8]`.
 
 11. Let :math:`n` be the integer for which :math:`\bytes_{\iN}(n) = b^\ast`.
 
@@ -2028,18 +2028,18 @@ $${rule: {Step_read/load-*}}
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\V128\K{.}\LOAD{N}\K{\_zero}~x~\memarg) &\stepto& S; F; (\V128.\CONST~c)
+   S; F; (\I32.\CONST~i)~(\V128\K{.}\VLOAD{N}\K{\_zero}~x~\memarg) &\stepto& S; F; (\V128.\CONST~c)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA| \\
-     \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA[\X{ea} \slice N/8]) \\
+     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES| \\
+     \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES[\X{ea} \slice N/8]) \\
      \wedge & c = \extu_{N,128}(n)
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\V128.\LOAD{N}\K{\_zero}~x~\memarg) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(\V128.\VLOAD{N}\K{\_zero}~x~\memarg) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -2048,8 +2048,8 @@ $${rule: {Step_read/load-*}}
 
 .. _exec-vload-lane:
 
-:math:`\V128\K{.}\LOAD{N}\K{\_lane}~x~\memarg~y`
-................................................
+:math:`\V128\K{.}\VLOAD{N}\K{\_lane}~x~\memarg~y`
+.................................................
 
 .. todo:: (*) Rule and prose both not spliced.
 
@@ -2073,11 +2073,11 @@ $${rule: {Step_read/load-*}}
 
 10. Let :math:`\X{ea}` be the integer :math:`i + \memarg.\OFFSET`.
 
-11. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
+11. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIBYTES`, then:
 
     a. Trap.
 
-12. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\MIDATA[\X{ea} \slice N/8]`.
+12. Let :math:`b^\ast` be the byte sequence :math:`\X{mem}.\MIBYTES[\X{ea} \slice N/8]`.
 
 13. Let :math:`r` be the constant for which :math:`\bytes_{\iN}(r) = b^\ast`.
 
@@ -2093,19 +2093,19 @@ $${rule: {Step_read/load-*}}
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\V128.\CONST~v)~(\V128\K{.}\LOAD{N}\K{\_lane}~x~\memarg~y) &\stepto& S; F; (\V128.\CONST~c)
+   S; F; (\I32.\CONST~i)~(\V128.\CONST~v)~(\V128\K{.}\VLOAD{N}\K{\_lane}~x~\memarg~y) &\stepto& S; F; (\V128.\CONST~c)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA| \\
-     \wedge & \bytes_{\iN}(r) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA[\X{ea} \slice N/8]) \\
+     \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES| \\
+     \wedge & \bytes_{\iN}(r) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES[\X{ea} \slice N/8]) \\
      \wedge & L = 128/N \\
      \wedge & c = \lanes^{-1}_{\IN\K{x}L}(\lanes_{\IN\K{x}L}(v) \with [y] = r))
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\V128.\CONST~v)~(\V128.\LOAD{N}\K{\_lane}~x~\memarg~y) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(\V128.\CONST~v)~(\V128.\VLOAD{N}\K{\_lane}~x~\memarg~y) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -2122,8 +2122,8 @@ $${rule: {Step/store-*}}
 
 .. _exec-vstore-lane:
 
-:math:`\V128\K{.}\STORE{N}\K{\_lane}~x~\memarg~y`
-.................................................
+:math:`\V128\K{.}\VSTORE{N}\K{\_lane}~x~\memarg~y`
+..................................................
 
 .. todo:: (*) Rule and prose both not spliced.
 
@@ -2147,7 +2147,7 @@ $${rule: {Step/store-*}}
 
 10. Let :math:`\X{ea}` be the integer :math:`i + \memarg.\OFFSET`.
 
-11. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIDATA`, then:
+11. If :math:`\X{ea} + N/8` is larger than the length of :math:`\X{mem}.\MIBYTES`, then:
 
     a. Trap.
 
@@ -2157,24 +2157,24 @@ $${rule: {Step/store-*}}
 
 14. Let :math:`b^\ast` be the result of computing :math:`\bytes_{\iN}(j^\ast[y])`.
 
-15. Replace the bytes :math:`\X{mem}.\MIDATA[\X{ea} \slice N/8]` with :math:`b^\ast`.
+15. Replace the bytes :math:`\X{mem}.\MIBYTES[\X{ea} \slice N/8]` with :math:`b^\ast`.
 
 .. math::
    ~\\[-1ex]
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\V128.\CONST~c)~(\V128.\STORE{N}\K{\_lane}~x~\memarg~y) &\stepto& S'; F; \epsilon
+   S; F; (\I32.\CONST~i)~(\V128.\CONST~c)~(\V128.\VSTORE{N}\K{\_lane}~x~\memarg~y) &\stepto& S'; F; \epsilon
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
-     \wedge & \X{ea} + N \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA| \\
+     \wedge & \X{ea} + N \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES| \\
      \wedge & L = 128/N \\
-     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[x]].\MIDATA[\X{ea} \slice N/8] = \bytes_{\iN}(\lanes_{\IN\K{x}L}(c)[y]))
+     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES[\X{ea} \slice N/8] = \bytes_{\iN}(\lanes_{\IN\K{x}L}(c)[y]))
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~i)~(\V128.\CONST~c)~(\V128.\STORE{N}\K{\_lane}~x~\memarg~y) &\stepto& S; F; \TRAP
+   S; F; (\I32.\CONST~i)~(\V128.\CONST~c)~(\V128.\VSTORE{N}\K{\_lane}~x~\memarg~y) &\stepto& S; F; \TRAP
    \end{array}
    \\ \qquad
      (\otherwise) \\
@@ -2431,11 +2431,11 @@ $${rule-prose: exec/call_indirect}
 
 9. Pop the value :math:`\I32.\CONST~i` from the stack.
 
-10. If :math:`i` is not smaller than the length of :math:`\X{tab}.\TIELEM`, then:
+10. If :math:`i` is not smaller than the length of :math:`\X{tab}.\TIREFS`, then:
 
     a. Trap.
 
-11. Let :math:`r` be the :ref:`reference <syntax-ref>` :math:`\X{tab}.\TIELEM[i]`.
+11. Let :math:`r` be the :ref:`reference <syntax-ref>` :math:`\X{tab}.\TIREFS[i]`.
 
 12. If :math:`r` is :math:`\REFNULL~\X{ht}`, then:
 
@@ -2518,15 +2518,15 @@ $${rule-prose: exec/return_call_indirect}
 
 9. Pop the value :math:`\I32.\CONST~i` from the stack.
 
-10. If :math:`i` is not smaller than the length of :math:`\X{tab}.\TIELEM`, then:
+10. If :math:`i` is not smaller than the length of :math:`\X{tab}.\TIREFS`, then:
 
     a. Trap.
 
-11. If :math:`\X{tab}.\TIELEM[i]` is uninitialized, then:
+11. If :math:`\X{tab}.\TIREFS[i]` is uninitialized, then:
 
     a. Trap.
 
-12. Let :math:`a` be the :ref:`function address <syntax-funcaddr>` :math:`\X{tab}.\TIELEM[i]`.
+12. Let :math:`a` be the :ref:`function address <syntax-funcaddr>` :math:`\X{tab}.\TIREFS[i]`.
 
 13. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`S.\SFUNCS[a]` exists.
 

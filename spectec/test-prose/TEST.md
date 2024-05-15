@@ -1180,17 +1180,18 @@ group_bytes_by n byte*
 3. Return [].
 
 execution_of_ARRAY.NEW_DATA x y
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i) from the stack.
-5. If $expanddt($type(x)) is of the case ARRAY, then:
-  a. Let (ARRAY y_0) be $expanddt($type(x)).
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If $expanddt($type(z, x)) is of the case ARRAY, then:
+  a. Let (ARRAY y_0) be $expanddt($type(z, x)).
   b. Let (mut, zt) be y_0.
-  c. If ((i + ((n · $zsize(zt)) / 8)) > |$data(y).BYTES|), then:
+  c. If ((i + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
     1) Trap.
   d. Let cnn be $cunpack(zt).
-  e. Let b* be $data(y).BYTES[i : ((n · $zsize(zt)) / 8)].
+  e. Let b* be $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)].
   f. Let gb* be $group_bytes_by(($zsize(zt) / 8), b*).
   g. Let c^n be $inverse_of_ibytes($zsize(zt), gb)*.
   h. Push the values (cnn.CONST c)^n to the stack.
@@ -1489,26 +1490,26 @@ validation_of_STORE nt n? memarg
 - Let mt be C.MEMS[0].
 - The instruction is valid with type ([I32, nt] -> []).
 
-validation_of_VLOAD ?((SHAPE M N sx)) memarg
+validation_of_VLOAD V128 ?((SHAPE M N sx)) memarg
 - |C.MEMS| must be greater than 0.
 - (2 ^ memarg.ALIGN) must be less than or equal to ((M / 8) · N).
 - Let mt be C.MEMS[0].
 - The instruction is valid with type ([I32] -> [V128]).
 
-validation_of_VLOAD_LANE n memarg laneidx
+validation_of_VLOAD_LANE V128 n memarg laneidx
 - |C.MEMS| must be greater than 0.
 - (2 ^ memarg.ALIGN) must be less than (n / 8).
 - laneidx must be less than (128 / n).
 - Let mt be C.MEMS[0].
 - The instruction is valid with type ([I32, V128] -> [V128]).
 
-validation_of_VSTORE memarg
+validation_of_VSTORE V128 memarg
 - |C.MEMS| must be greater than 0.
 - (2 ^ memarg.ALIGN) must be less than or equal to ($size(V128) / 8).
 - Let mt be C.MEMS[0].
 - The instruction is valid with type ([I32, V128] -> []).
 
-validation_of_VSTORE_LANE n memarg laneidx
+validation_of_VSTORE_LANE V128 n memarg laneidx
 - |C.MEMS| must be greater than 0.
 - (2 ^ memarg.ALIGN) must be less than (n / 8).
 - laneidx must be less than (128 / n).
@@ -3320,7 +3321,7 @@ execution_of_LOAD numty_u0 sz_sx_u1? ao
     3) Let c be $inverse_of_ibytes(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
     4) Push the value (Inn.CONST $ext(n, $size(Inn), sx, c)) to the stack.
 
-execution_of_VLOAD vload_u0? ao
+execution_of_VLOAD V128 vload_u0? ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
@@ -3358,7 +3359,7 @@ execution_of_VLOAD vload_u0? ao
     4) Let c be $ext(N, 128, U, j).
     5) Push the value (V128.CONST c) to the stack.
 
-execution_of_VLOAD_LANE N ao j
+execution_of_VLOAD_LANE V128 N ao j
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value (V128.CONST c_1) from the stack.
@@ -3516,7 +3517,7 @@ execution_of_STORE numty_u1 sz_u2? ao
       a) Let b* be $ibytes(n, $wrap($size(Inn), n, c)).
       b) Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
 
-execution_of_VSTORE ao
+execution_of_VSTORE V128 ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value (V128.CONST c) from the stack.
@@ -3527,7 +3528,7 @@ execution_of_VSTORE ao
 7. Let b* be $vbytes(V128, c).
 8. Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(V128) / 8), b*).
 
-execution_of_VSTORE_LANE N ao j
+execution_of_VSTORE_LANE V128 N ao j
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value (V128.CONST c) from the stack.
@@ -3569,17 +3570,18 @@ group_bytes_by n byte*
 3. Return [].
 
 execution_of_ARRAY.NEW_DATA x y
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i) from the stack.
-5. If $expanddt($type(x)) is of the case ARRAY, then:
-  a. Let (ARRAY y_0) be $expanddt($type(x)).
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If $expanddt($type(z, x)) is of the case ARRAY, then:
+  a. Let (ARRAY y_0) be $expanddt($type(z, x)).
   b. Let (mut, zt) be y_0.
-  c. If ((i + ((n · $zsize(zt)) / 8)) > |$data(y).BYTES|), then:
+  c. If ((i + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
     1) Trap.
   d. Let cnn be $cunpack(zt).
-  e. Let b* be $data(y).BYTES[i : ((n · $zsize(zt)) / 8)].
+  e. Let b* be $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)].
   f. Let gb* be $group_bytes_by(($zsize(zt) / 8), b*).
   g. Let c^n be $inverse_of_ibytes($zsize(zt), gb)*.
   h. Push the values (cnn.CONST c)^n to the stack.
@@ -4107,26 +4109,26 @@ validation_of_STORE nt n? x memarg
 - Let mt be C.MEMS[x].
 - The instruction is valid with type ([I32, nt] ->_ [] ++ []).
 
-validation_of_VLOAD ?((SHAPE M N sx)) x memarg
+validation_of_VLOAD V128 ?((SHAPE M N sx)) x memarg
 - |C.MEMS| must be greater than x.
 - (2 ^ memarg.ALIGN) must be less than or equal to ((M / 8) · N).
 - Let mt be C.MEMS[x].
 - The instruction is valid with type ([I32] ->_ [] ++ [V128]).
 
-validation_of_VLOAD_LANE n x memarg laneidx
+validation_of_VLOAD_LANE V128 n x memarg laneidx
 - |C.MEMS| must be greater than x.
 - (2 ^ memarg.ALIGN) must be less than (n / 8).
 - laneidx must be less than (128 / n).
 - Let mt be C.MEMS[x].
 - The instruction is valid with type ([I32, V128] ->_ [] ++ [V128]).
 
-validation_of_VSTORE x memarg
+validation_of_VSTORE V128 x memarg
 - |C.MEMS| must be greater than x.
 - (2 ^ memarg.ALIGN) must be less than or equal to ($vsize(V128) / 8).
 - Let mt be C.MEMS[x].
 - The instruction is valid with type ([I32, V128] ->_ [] ++ []).
 
-validation_of_VSTORE_LANE n x memarg laneidx
+validation_of_VSTORE_LANE V128 n x memarg laneidx
 - |C.MEMS| must be greater than x.
 - (2 ^ memarg.ALIGN) must be less than (n / 8).
 - laneidx must be less than (128 / n).
@@ -4350,6 +4352,18 @@ free_dataidx_funcs func_u0*
   a. Return [].
 2. Let [func] ++ func'* be func_u0*.
 3. Return $free_dataidx_func(func) ++ $free_dataidx_funcs(func'*).
+
+IN N_u0
+1. If (N_u0 is 32), then:
+  a. Return I32.
+2. Assert: Due to validation, (N_u0 is 64).
+3. Return I64.
+
+FN N_u0
+1. If (N_u0 is 32), then:
+  a. Return F32.
+2. Assert: Due to validation, (N_u0 is 64).
+3. Return F64.
 
 lunpack lanet_u0
 1. If the type of lanet_u0 is numtype, then:
@@ -6744,7 +6758,7 @@ execution_of_LOAD numty_u0 sz_sx_u1? x ao
     3) Let c be $inverse_of_ibytes(n, $mem(z, x).BYTES[(i + ao.OFFSET) : (n / 8)]).
     4) Push the value (Inn.CONST $ext(n, $size(Inn), sx, c)) to the stack.
 
-execution_of_VLOAD vload_u0? x ao
+execution_of_VLOAD V128 vload_u0? x ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
@@ -6782,7 +6796,7 @@ execution_of_VLOAD vload_u0? x ao
     4) Let c be $ext(N, 128, U, j).
     5) Push the value (V128.CONST c) to the stack.
 
-execution_of_VLOAD_LANE N x ao j
+execution_of_VLOAD_LANE V128 N x ao j
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value (V128.CONST c_1) from the stack.
@@ -7001,7 +7015,7 @@ execution_of_STORE nt sz_u1? x ao
     2) Let b* be $ibytes(n, $wrap($size(Inn), n, c)).
     3) Perform $with_mem(z, x, (i + ao.OFFSET), (n / 8), b*).
 
-execution_of_VSTORE x ao
+execution_of_VSTORE V128 x ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value (V128.CONST c) from the stack.
@@ -7012,7 +7026,7 @@ execution_of_VSTORE x ao
 7. Let b* be $vbytes(V128, c).
 8. Perform $with_mem(z, x, (i + ao.OFFSET), ($vsize(V128) / 8), b*).
 
-execution_of_VSTORE_LANE N x ao j
+execution_of_VSTORE_LANE V128 N x ao j
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value (V128.CONST c) from the stack.
@@ -7054,17 +7068,18 @@ group_bytes_by n byte*
 3. Return [].
 
 execution_of_ARRAY.NEW_DATA x y
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-4. Pop the value (I32.CONST i) from the stack.
-5. If $expanddt($type(x)) is of the case ARRAY, then:
-  a. Let (ARRAY y_0) be $expanddt($type(x)).
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If $expanddt($type(z, x)) is of the case ARRAY, then:
+  a. Let (ARRAY y_0) be $expanddt($type(z, x)).
   b. Let (mut, zt) be y_0.
-  c. If ((i + ((n · $zsize(zt)) / 8)) > |$data(y).BYTES|), then:
+  c. If ((i + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
     1) Trap.
   d. Let cnn be $cunpack(zt).
-  e. Let b* be $data(y).BYTES[i : ((n · $zsize(zt)) / 8)].
+  e. Let b* be $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)].
   f. Let gb* be $group_bytes_by(($zsize(zt) / 8), b*).
   g. Let c^n be $inverse_of_ibytes($zsize(zt), gb)*.
   h. Push the values (cnn.CONST c)^n to the stack.

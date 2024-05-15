@@ -52,7 +52,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
 
 .. math::
    \frac{
-     \vdashheaptype t \ok
+     \vdashheaptype t : \OKheaptype
      \qquad
      t' \in \{\NONE, \NOFUNC, \NOEXTERN\}
      \qquad
@@ -199,7 +199,7 @@ Subsumption
    \frac{
      S \vdashval \val : t
      \qquad
-     \vdashvaltype t' \ok
+     \vdashvaltype t' : \OKvaltype
      \qquad
      \vdashvaltypematch t \subvaltypematch t'
    }{
@@ -298,7 +298,7 @@ Subsumption
    \frac{
      S \vdashexternval \externval : \X{et}
      \qquad
-     \vdashexterntype \X{et'} \ok
+     \vdashexterntype \X{et'} : \OKexterntype
      \qquad
      \vdashexterntypematch \X{et} \subexterntypematch \X{et'}
    }{

@@ -532,14 +532,14 @@ whereas the actual opcode is encoded by a variable-length :ref:`unsigned integer
 .. math::
    \begin{array}{llclll}
    \production{instruction} & \Binstr &::=& \dots && \phantom{thisshouldbeenough} \\&&|&
-     \hex{FC}~~0{:}\Bu32 &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F32\K{\_s} \\ &&|&
-     \hex{FC}~~1{:}\Bu32 &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F32\K{\_u} \\ &&|&
-     \hex{FC}~~2{:}\Bu32 &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F64\K{\_s} \\ &&|&
-     \hex{FC}~~3{:}\Bu32 &\Rightarrow& \I32.\TRUNC\K{\_sat\_}\F64\K{\_u} \\ &&|&
-     \hex{FC}~~4{:}\Bu32 &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F32\K{\_s} \\ &&|&
-     \hex{FC}~~5{:}\Bu32 &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F32\K{\_u} \\ &&|&
-     \hex{FC}~~6{:}\Bu32 &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F64\K{\_s} \\ &&|&
-     \hex{FC}~~7{:}\Bu32 &\Rightarrow& \I64.\TRUNC\K{\_sat\_}\F64\K{\_u} \\
+     \hex{FC}~~0{:}\Bu32 &\Rightarrow& \I32.\TRUNCSAT\K{\_}\F32\K{\_s} \\ &&|&
+     \hex{FC}~~1{:}\Bu32 &\Rightarrow& \I32.\TRUNCSAT\K{\_}\F32\K{\_u} \\ &&|&
+     \hex{FC}~~2{:}\Bu32 &\Rightarrow& \I32.\TRUNCSAT\K{\_}\F64\K{\_s} \\ &&|&
+     \hex{FC}~~3{:}\Bu32 &\Rightarrow& \I32.\TRUNCSAT\K{\_}\F64\K{\_u} \\ &&|&
+     \hex{FC}~~4{:}\Bu32 &\Rightarrow& \I64.\TRUNCSAT\K{\_}\F32\K{\_s} \\ &&|&
+     \hex{FC}~~5{:}\Bu32 &\Rightarrow& \I64.\TRUNCSAT\K{\_}\F32\K{\_u} \\ &&|&
+     \hex{FC}~~6{:}\Bu32 &\Rightarrow& \I64.\TRUNCSAT\K{\_}\F64\K{\_s} \\ &&|&
+     \hex{FC}~~7{:}\Bu32 &\Rightarrow& \I64.\TRUNCSAT\K{\_}\F64\K{\_u} \\
    \end{array}
 
 
@@ -562,28 +562,28 @@ Vector loads and stores are followed by the encoding of their |memarg| immediate
    \production{lane index} & \Blaneidx &::=&
      l{:}\Bbyte &\Rightarrow& l \\
    \production{instruction} & \Binstr &::=& \dots \\&&|&
-     \hex{FD}~~0{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\LOAD~m \\ &&|&
-     \hex{FD}~~1{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\LOAD\K{8x8\_s}~m \\ &&|&
-     \hex{FD}~~2{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\LOAD\K{8x8\_u}~m \\ &&|&
-     \hex{FD}~~3{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\LOAD\K{16x4\_s}~m \\ &&|&
-     \hex{FD}~~4{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\LOAD\K{16x4\_u}~m \\ &&|&
-     \hex{FD}~~5{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\LOAD\K{32x2\_s}~m \\ &&|&
-     \hex{FD}~~6{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\LOAD\K{32x2\_u}~m \\ &&|&
-     \hex{FD}~~7{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\LOAD\K{8\_splat}~m \\ &&|&
-     \hex{FD}~~8{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\LOAD\K{16\_splat}~m \\ &&|&
-     \hex{FD}~~9{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\LOAD\K{32\_splat}~m \\ &&|&
-     \hex{FD}~~10{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\LOAD\K{64\_splat}~m \\ &&|&
-     \hex{FD}~~92{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\LOAD\K{32\_zero}~m \\ &&|&
-     \hex{FD}~~93{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\LOAD\K{64\_zero}~m \\ &&|&
-     \hex{FD}~~11{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\STORE~m \\ &&|&
-     \hex{FD}~~84{:}\Bu32~~m{:}\Bmemarg~l{:}\Blaneidx &\Rightarrow& \V128.\LOAD\K{8\_lane}~m~l \\ &&|&
-     \hex{FD}~~85{:}\Bu32~~m{:}\Bmemarg~l{:}\Blaneidx &\Rightarrow& \V128.\LOAD\K{16\_lane}~m~l \\ &&|&
-     \hex{FD}~~86{:}\Bu32~~m{:}\Bmemarg~l{:}\Blaneidx &\Rightarrow& \V128.\LOAD\K{32\_lane}~m~l \\ &&|&
-     \hex{FD}~~87{:}\Bu32~~m{:}\Bmemarg~l{:}\Blaneidx &\Rightarrow& \V128.\LOAD\K{64\_lane}~m~l \\ &&|&
-     \hex{FD}~~88{:}\Bu32~~m{:}\Bmemarg~l{:}\Blaneidx &\Rightarrow& \V128.\STORE\K{8\_lane}~m~l \\ &&|&
-     \hex{FD}~~89{:}\Bu32~~m{:}\Bmemarg~l{:}\Blaneidx &\Rightarrow& \V128.\STORE\K{16\_lane}~m~l \\ &&|&
-     \hex{FD}~~90{:}\Bu32~~m{:}\Bmemarg~l{:}\Blaneidx &\Rightarrow& \V128.\STORE\K{32\_lane}~m~l \\ &&|&
-     \hex{FD}~~91{:}\Bu32~~m{:}\Bmemarg~l{:}\Blaneidx &\Rightarrow& \V128.\STORE\K{64\_lane}~m~l \\
+     \hex{FD}~~0{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\VLOAD~m \\ &&|&
+     \hex{FD}~~1{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\VLOAD\K{8x8\_s}~m \\ &&|&
+     \hex{FD}~~2{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\VLOAD\K{8x8\_u}~m \\ &&|&
+     \hex{FD}~~3{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\VLOAD\K{16x4\_s}~m \\ &&|&
+     \hex{FD}~~4{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\VLOAD\K{16x4\_u}~m \\ &&|&
+     \hex{FD}~~5{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\VLOAD\K{32x2\_s}~m \\ &&|&
+     \hex{FD}~~6{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\VLOAD\K{32x2\_u}~m \\ &&|&
+     \hex{FD}~~7{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\VLOAD\K{8\_splat}~m \\ &&|&
+     \hex{FD}~~8{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\VLOAD\K{16\_splat}~m \\ &&|&
+     \hex{FD}~~9{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\VLOAD\K{32\_splat}~m \\ &&|&
+     \hex{FD}~~10{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\VLOAD\K{64\_splat}~m \\ &&|&
+     \hex{FD}~~92{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\VLOAD\K{32\_zero}~m \\ &&|&
+     \hex{FD}~~93{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\VLOAD\K{64\_zero}~m \\ &&|&
+     \hex{FD}~~11{:}\Bu32~~m{:}\Bmemarg &\Rightarrow& \V128.\VSTORE~m \\ &&|&
+     \hex{FD}~~84{:}\Bu32~~m{:}\Bmemarg~l{:}\Blaneidx &\Rightarrow& \V128.\VLOAD\K{8\_lane}~m~l \\ &&|&
+     \hex{FD}~~85{:}\Bu32~~m{:}\Bmemarg~l{:}\Blaneidx &\Rightarrow& \V128.\VLOAD\K{16\_lane}~m~l \\ &&|&
+     \hex{FD}~~86{:}\Bu32~~m{:}\Bmemarg~l{:}\Blaneidx &\Rightarrow& \V128.\VLOAD\K{32\_lane}~m~l \\ &&|&
+     \hex{FD}~~87{:}\Bu32~~m{:}\Bmemarg~l{:}\Blaneidx &\Rightarrow& \V128.\VLOAD\K{64\_lane}~m~l \\ &&|&
+     \hex{FD}~~88{:}\Bu32~~m{:}\Bmemarg~l{:}\Blaneidx &\Rightarrow& \V128.\VSTORE\K{8\_lane}~m~l \\ &&|&
+     \hex{FD}~~89{:}\Bu32~~m{:}\Bmemarg~l{:}\Blaneidx &\Rightarrow& \V128.\VSTORE\K{16\_lane}~m~l \\ &&|&
+     \hex{FD}~~90{:}\Bu32~~m{:}\Bmemarg~l{:}\Blaneidx &\Rightarrow& \V128.\VSTORE\K{32\_lane}~m~l \\ &&|&
+     \hex{FD}~~91{:}\Bu32~~m{:}\Bmemarg~l{:}\Blaneidx &\Rightarrow& \V128.\VSTORE\K{64\_lane}~m~l \\
    \end{array}
 
 The |VCONST| instruction is followed by 16 immediate bytes, which are converted into a |i128| in |littleendian| byte order:
@@ -597,33 +597,33 @@ The |VCONST| instruction is followed by 16 immediate bytes, which are converted 
 
 .. _binary-vternop:
 
-The |SHUFFLE| instruction is also followed by the encoding of 16 |laneidx| immediates.
+The |VSHUFFLE| instruction is also followed by the encoding of 16 |laneidx| immediates.
 
 .. math::
    \begin{array}{llclll}
    \production{instruction} & \Binstr &::=& \dots \\&&|&
-     \hex{FD}~~13{:}\Bu32~~(l{:}\Blaneidx)^{16} &\Rightarrow& \I8X16.\SHUFFLE~l^{16} \\
+     \hex{FD}~~13{:}\Bu32~~(l{:}\Blaneidx)^{16} &\Rightarrow& \I8X16.\VSHUFFLE~l^{16} \\
    \end{array}
 
-|EXTRACTLANE| and |REPLACELANE| instructions are followed by the encoding of a |laneidx| immediate.
+|VEXTRACTLANE| and |VREPLACELANE| instructions are followed by the encoding of a |laneidx| immediate.
 
 .. math::
    \begin{array}{llclll}
    \production{instruction} & \Binstr &::=& \dots \\&&|&
-     \hex{FD}~~21{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I8X16.\EXTRACTLANE\K{\_s}~l \\ &&|&
-     \hex{FD}~~22{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I8X16.\EXTRACTLANE\K{\_u}~l \\ &&|&
-     \hex{FD}~~23{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I8X16.\REPLACELANE~l \\ &&|&
-     \hex{FD}~~24{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I16X8.\EXTRACTLANE\K{\_s}~l \\ &&|&
-     \hex{FD}~~25{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I16X8.\EXTRACTLANE\K{\_u}~l \\ &&|&
-     \hex{FD}~~26{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I16X8.\REPLACELANE~l \\ &&|&
-     \hex{FD}~~27{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I32X4.\EXTRACTLANE~l \\ &&|&
-     \hex{FD}~~28{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I32X4.\REPLACELANE~l \\ &&|&
-     \hex{FD}~~29{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I64X2.\EXTRACTLANE~l \\ &&|&
-     \hex{FD}~~30{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I64X2.\REPLACELANE~l \\ &&|&
-     \hex{FD}~~31{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \F32X4.\EXTRACTLANE~l \\ &&|&
-     \hex{FD}~~32{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \F32X4.\REPLACELANE~l \\ &&|&
-     \hex{FD}~~33{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \F64X2.\EXTRACTLANE~l \\ &&|&
-     \hex{FD}~~34{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \F64X2.\REPLACELANE~l \\
+     \hex{FD}~~21{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I8X16.\VEXTRACTLANE\K{\_s}~l \\ &&|&
+     \hex{FD}~~22{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I8X16.\VEXTRACTLANE\K{\_u}~l \\ &&|&
+     \hex{FD}~~23{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I8X16.\VREPLACELANE~l \\ &&|&
+     \hex{FD}~~24{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I16X8.\VEXTRACTLANE\K{\_s}~l \\ &&|&
+     \hex{FD}~~25{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I16X8.\VEXTRACTLANE\K{\_u}~l \\ &&|&
+     \hex{FD}~~26{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I16X8.\VREPLACELANE~l \\ &&|&
+     \hex{FD}~~27{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I32X4.\VEXTRACTLANE~l \\ &&|&
+     \hex{FD}~~28{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I32X4.\VREPLACELANE~l \\ &&|&
+     \hex{FD}~~29{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I64X2.\VEXTRACTLANE~l \\ &&|&
+     \hex{FD}~~30{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \I64X2.\VREPLACELANE~l \\ &&|&
+     \hex{FD}~~31{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \F32X4.\VEXTRACTLANE~l \\ &&|&
+     \hex{FD}~~32{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \F32X4.\VREPLACELANE~l \\ &&|&
+     \hex{FD}~~33{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \F64X2.\VEXTRACTLANE~l \\ &&|&
+     \hex{FD}~~34{:}\Bu32~~l{:}\Blaneidx &\Rightarrow& \F64X2.\VREPLACELANE~l \\
    \end{array}
 
 All other vector instructions are plain opcodes without any immediates.
@@ -631,13 +631,13 @@ All other vector instructions are plain opcodes without any immediates.
 .. math::
    \begin{array}{llclll}
    \production{instruction} & \Binstr &::=& \dots && \phantom{vechaslongerinstructionnames} \\&&|&
-     \hex{FD}~~14{:}\Bu32 &\Rightarrow& \I8X16.\SWIZZLE \\ &&|&
-     \hex{FD}~~15{:}\Bu32 &\Rightarrow& \I8X16.\SPLAT \\ &&|&
-     \hex{FD}~~16{:}\Bu32 &\Rightarrow& \I16X8.\SPLAT \\ &&|&
-     \hex{FD}~~17{:}\Bu32 &\Rightarrow& \I32X4.\SPLAT \\ &&|&
-     \hex{FD}~~18{:}\Bu32 &\Rightarrow& \I64X2.\SPLAT \\ &&|&
-     \hex{FD}~~19{:}\Bu32 &\Rightarrow& \F32X4.\SPLAT \\ &&|&
-     \hex{FD}~~20{:}\Bu32 &\Rightarrow& \F64X2.\SPLAT \\
+     \hex{FD}~~14{:}\Bu32 &\Rightarrow& \I8X16.\VSWIZZLE \\ &&|&
+     \hex{FD}~~15{:}\Bu32 &\Rightarrow& \I8X16.\VSPLAT \\ &&|&
+     \hex{FD}~~16{:}\Bu32 &\Rightarrow& \I16X8.\VSPLAT \\ &&|&
+     \hex{FD}~~17{:}\Bu32 &\Rightarrow& \I32X4.\VSPLAT \\ &&|&
+     \hex{FD}~~18{:}\Bu32 &\Rightarrow& \I64X2.\VSPLAT \\ &&|&
+     \hex{FD}~~19{:}\Bu32 &\Rightarrow& \F32X4.\VSPLAT \\ &&|&
+     \hex{FD}~~20{:}\Bu32 &\Rightarrow& \F64X2.\VSPLAT \\
    \end{array}
 
 .. _binary-virelop:
@@ -734,8 +734,8 @@ All other vector instructions are plain opcodes without any immediates.
      \hex{FD}~~79{:}\Bu32 &\Rightarrow& \V128.\VANDNOT \\ &&|&
      \hex{FD}~~80{:}\Bu32 &\Rightarrow& \V128.\VOR \\ &&|&
      \hex{FD}~~81{:}\Bu32 &\Rightarrow& \V128.\VXOR \\ &&|&
-     \hex{FD}~~82{:}\Bu32 &\Rightarrow& \V128.\BITSELECT \\ &&|&
-     \hex{FD}~~83{:}\Bu32 &\Rightarrow& \V128.\ANYTRUE \\
+     \hex{FD}~~82{:}\Bu32 &\Rightarrow& \V128.\VBITSELECT \\ &&|&
+     \hex{FD}~~83{:}\Bu32 &\Rightarrow& \V128.\VANYTRUE \\
    \end{array}
 
 .. _binary-vitestop:
@@ -751,10 +751,10 @@ All other vector instructions are plain opcodes without any immediates.
      \hex{FD}~~96{:}\Bu32 &\Rightarrow& \I8X16.\VABS \\ &&|&
      \hex{FD}~~97{:}\Bu32 &\Rightarrow& \I8X16.\VNEG \\ &&|&
      \hex{FD}~~98{:}\Bu32 &\Rightarrow& \I8X16.\VPOPCNT \\ &&|&
-     \hex{FD}~~99{:}\Bu32 &\Rightarrow& \I8X16.\ALLTRUE \\ &&|&
-     \hex{FD}~~100{:}\Bu32 &\Rightarrow& \I8X16.\BITMASK \\ &&|&
-     \hex{FD}~~101{:}\Bu32 &\Rightarrow& \I8X16.\NARROW\K{\_i16x8\_s} \\ &&|&
-     \hex{FD}~~102{:}\Bu32 &\Rightarrow& \I8X16.\NARROW\K{\_i16x8\_u} \\ &&|&
+     \hex{FD}~~99{:}\Bu32 &\Rightarrow& \I8X16.\VALLTRUE \\ &&|&
+     \hex{FD}~~100{:}\Bu32 &\Rightarrow& \I8X16.\VBITMASK \\ &&|&
+     \hex{FD}~~101{:}\Bu32 &\Rightarrow& \I8X16.\VNARROW\K{\_i16x8\_s} \\ &&|&
+     \hex{FD}~~102{:}\Bu32 &\Rightarrow& \I8X16.\VNARROW\K{\_i16x8\_u} \\ &&|&
      \hex{FD}~~107{:}\Bu32 &\Rightarrow& \I8X16.\VSHL \\ &&|&
      \hex{FD}~~108{:}\Bu32 &\Rightarrow& \I8X16.\VSHR\K{\_s} \\ &&|&
      \hex{FD}~~109{:}\Bu32 &\Rightarrow& \I8X16.\VSHR\K{\_u} \\ &&|&
@@ -768,59 +768,59 @@ All other vector instructions are plain opcodes without any immediates.
      \hex{FD}~~119{:}\Bu32 &\Rightarrow& \I8X16.\VMIN\K{\_u} \\ &&|&
      \hex{FD}~~120{:}\Bu32 &\Rightarrow& \I8X16.\VMAX\K{\_s} \\ &&|&
      \hex{FD}~~121{:}\Bu32 &\Rightarrow& \I8X16.\VMAX\K{\_u} \\ &&|&
-     \hex{FD}~~123{:}\Bu32 &\Rightarrow& \I8X16.\AVGR\K{\_u} \\
+     \hex{FD}~~123{:}\Bu32 &\Rightarrow& \I8X16.\VAVGRU \\
    \end{array}
 
 .. math::
    \begin{array}{llclll}
    \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{vechaslongerinstructionnames} \\[-2ex] &&|&
-     \hex{FD}~~124{:}\Bu32 &\Rightarrow& \I16X8.\EXTADDPAIRWISE\K{\_i8x16\_s}\\ &&|&
-     \hex{FD}~~125{:}\Bu32 &\Rightarrow& \I16X8.\EXTADDPAIRWISE\K{\_i8x16\_u}\\ &&|&
+     \hex{FD}~~124{:}\Bu32 &\Rightarrow& \I16X8.\VEXTADDPAIRWISE\K{\_i8x16\_s}\\ &&|&
+     \hex{FD}~~125{:}\Bu32 &\Rightarrow& \I16X8.\VEXTADDPAIRWISE\K{\_i8x16\_u}\\ &&|&
      \hex{FD}~~128{:}\Bu32 &\Rightarrow& \I16X8.\VABS \\ &&|&
      \hex{FD}~~129{:}\Bu32 &\Rightarrow& \I16X8.\VNEG \\ &&|&
-     \hex{FD}~~130{:}\Bu32 &\Rightarrow& \I16X8.\Q15MULRSAT\K{\_s} \\ &&|&
-     \hex{FD}~~131{:}\Bu32 &\Rightarrow& \I16X8.\ALLTRUE \\ &&|&
-     \hex{FD}~~132{:}\Bu32 &\Rightarrow& \I16X8.\BITMASK \\ &&|&
-     \hex{FD}~~133{:}\Bu32 &\Rightarrow& \I16X8.\NARROW\K{\_i32x4\_s} \\ &&|&
-     \hex{FD}~~134{:}\Bu32 &\Rightarrow& \I16X8.\NARROW\K{\_i32x4\_u} \\ &&|&
-     \hex{FD}~~135{:}\Bu32 &\Rightarrow& \I16X8.\VEXTEND\K{\_low\_i8x16\_s} \\ &&|&
-     \hex{FD}~~136{:}\Bu32 &\Rightarrow& \I16X8.\VEXTEND\K{\_high\_i8x16\_s} \\ &&|&
-     \hex{FD}~~137{:}\Bu32 &\Rightarrow& \I16X8.\VEXTEND\K{\_low\_i8x16\_u} \\ &&|&
-     \hex{FD}~~138{:}\Bu32 &\Rightarrow& \I16X8.\VEXTEND\K{\_high\_i8x16\_u} \\ &&|&
+     \hex{FD}~~130{:}\Bu32 &\Rightarrow& \I16X8.\VQ15MULRSATS \\ &&|&
+     \hex{FD}~~131{:}\Bu32 &\Rightarrow& \I16X8.\VALLTRUE \\ &&|&
+     \hex{FD}~~132{:}\Bu32 &\Rightarrow& \I16X8.\VBITMASK \\ &&|&
+     \hex{FD}~~133{:}\Bu32 &\Rightarrow& \I16X8.\VNARROW\K{\_i32x4\_s} \\ &&|&
+     \hex{FD}~~134{:}\Bu32 &\Rightarrow& \I16X8.\VNARROW\K{\_i32x4\_u} \\ &&|&
+     \hex{FD}~~135{:}\Bu32 &\Rightarrow& \I16X8.\VEXTEND\K{\_}\LOW\K{\_i8x16\_s} \\ &&|&
+     \hex{FD}~~136{:}\Bu32 &\Rightarrow& \I16X8.\VEXTEND\K{\_}\HIGH\K{\_i8x16\_s} \\ &&|&
+     \hex{FD}~~137{:}\Bu32 &\Rightarrow& \I16X8.\VEXTEND\K{\_}\LOW\K{\_i8x16\_u} \\ &&|&
+     \hex{FD}~~138{:}\Bu32 &\Rightarrow& \I16X8.\VEXTEND\K{\_}\HIGH\K{\_i8x16\_u} \\ &&|&
      \hex{FD}~~139{:}\Bu32 &\Rightarrow& \I16X8.\VSHL \\ &&|&
      \hex{FD}~~140{:}\Bu32 &\Rightarrow& \I16X8.\VSHR\K{\_s} \\ &&|&
      \hex{FD}~~141{:}\Bu32 &\Rightarrow& \I16X8.\VSHR\K{\_u} \\ &&|&
      \hex{FD}~~142{:}\Bu32 &\Rightarrow& \I16X8.\VADD \\ &&|&
-     \hex{FD}~~143{:}\Bu32 &\Rightarrow& \I16X8.\VADD\K{\_sat\_s} \\ &&|&
-     \hex{FD}~~144{:}\Bu32 &\Rightarrow& \I16X8.\VADD\K{\_sat\_u} \\ &&|&
+     \hex{FD}~~143{:}\Bu32 &\Rightarrow& \I16X8.\VADDSAT\K{\_s} \\ &&|&
+     \hex{FD}~~144{:}\Bu32 &\Rightarrow& \I16X8.\VADDSAT\K{\_u} \\ &&|&
      \hex{FD}~~145{:}\Bu32 &\Rightarrow& \I16X8.\VSUB \\ &&|&
-     \hex{FD}~~146{:}\Bu32 &\Rightarrow& \I16X8.\VSUB\K{\_sat\_s} \\ &&|&
-     \hex{FD}~~147{:}\Bu32 &\Rightarrow& \I16X8.\VSUB\K{\_sat\_u} \\ &&|&
+     \hex{FD}~~146{:}\Bu32 &\Rightarrow& \I16X8.\VSUBSAT\K{\_s} \\ &&|&
+     \hex{FD}~~147{:}\Bu32 &\Rightarrow& \I16X8.\VSUBSAT\K{\_u} \\ &&|&
      \hex{FD}~~149{:}\Bu32 &\Rightarrow& \I16X8.\VMUL \\ &&|&
      \hex{FD}~~150{:}\Bu32 &\Rightarrow& \I16X8.\VMIN\K{\_s} \\ &&|&
      \hex{FD}~~151{:}\Bu32 &\Rightarrow& \I16X8.\VMIN\K{\_u} \\ &&|&
      \hex{FD}~~152{:}\Bu32 &\Rightarrow& \I16X8.\VMAX\K{\_s} \\ &&|&
      \hex{FD}~~153{:}\Bu32 &\Rightarrow& \I16X8.\VMAX\K{\_u} \\ &&|&
-     \hex{FD}~~155{:}\Bu32 &\Rightarrow& \I16X8.\AVGR\K{\_u} \\ &&|&
-     \hex{FD}~~156{:}\Bu32 &\Rightarrow& \I16X8.\EXTMUL\K{\_low\_i8x16\_s}\\ &&|&
-     \hex{FD}~~157{:}\Bu32 &\Rightarrow& \I16X8.\EXTMUL\K{\_high\_i8x16\_s}\\ &&|&
-     \hex{FD}~~158{:}\Bu32 &\Rightarrow& \I16X8.\EXTMUL\K{\_low\_i8x16\_u}\\ &&|&
-     \hex{FD}~~159{:}\Bu32 &\Rightarrow& \I16X8.\EXTMUL\K{\_high\_i8x16\_u}\\
+     \hex{FD}~~155{:}\Bu32 &\Rightarrow& \I16X8.\VAVGRU \\ &&|&
+     \hex{FD}~~156{:}\Bu32 &\Rightarrow& \I16X8.\VEXTMUL\K{\_}\LOW\K{\_i8x16\_s}\\ &&|&
+     \hex{FD}~~157{:}\Bu32 &\Rightarrow& \I16X8.\VEXTMUL\K{\_}\HIGH\K{\_i8x16\_s}\\ &&|&
+     \hex{FD}~~158{:}\Bu32 &\Rightarrow& \I16X8.\VEXTMUL\K{\_}\LOW\K{\_i8x16\_u}\\ &&|&
+     \hex{FD}~~159{:}\Bu32 &\Rightarrow& \I16X8.\VEXTMUL\K{\_}\HIGH\K{\_i8x16\_u}\\
    \end{array}
 
 .. math::
    \begin{array}{llclll}
    \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{vechaslongerinstructionnames} \\[-2ex] &&|&
-     \hex{FD}~~126{:}\Bu32 &\Rightarrow& \I32X4.\EXTADDPAIRWISE\K{\_i16x8\_s}\\ &&|&
-     \hex{FD}~~127{:}\Bu32 &\Rightarrow& \I32X4.\EXTADDPAIRWISE\K{\_i16x8\_u}\\ &&|&
+     \hex{FD}~~126{:}\Bu32 &\Rightarrow& \I32X4.\VEXTADDPAIRWISE\K{\_i16x8\_s}\\ &&|&
+     \hex{FD}~~127{:}\Bu32 &\Rightarrow& \I32X4.\VEXTADDPAIRWISE\K{\_i16x8\_u}\\ &&|&
      \hex{FD}~~160{:}\Bu32 &\Rightarrow& \I32X4.\VABS \\ &&|&
      \hex{FD}~~161{:}\Bu32 &\Rightarrow& \I32X4.\VNEG \\ &&|&
-     \hex{FD}~~163{:}\Bu32 &\Rightarrow& \I32X4.\ALLTRUE \\ &&|&
-     \hex{FD}~~164{:}\Bu32 &\Rightarrow& \I32X4.\BITMASK \\ &&|&
-     \hex{FD}~~167{:}\Bu32 &\Rightarrow& \I32X4.\VEXTEND\K{\_low\_i16x8\_s} \\ &&|&
-     \hex{FD}~~168{:}\Bu32 &\Rightarrow& \I32X4.\VEXTEND\K{\_high\_i16x8\_s} \\ &&|&
-     \hex{FD}~~169{:}\Bu32 &\Rightarrow& \I32X4.\VEXTEND\K{\_low\_i16x8\_u} \\ &&|&
-     \hex{FD}~~170{:}\Bu32 &\Rightarrow& \I32X4.\VEXTEND\K{\_high\_i16x8\_u} \\ &&|&
+     \hex{FD}~~163{:}\Bu32 &\Rightarrow& \I32X4.\VALLTRUE \\ &&|&
+     \hex{FD}~~164{:}\Bu32 &\Rightarrow& \I32X4.\VBITMASK \\ &&|&
+     \hex{FD}~~167{:}\Bu32 &\Rightarrow& \I32X4.\VEXTEND\K{\_}\LOW\K{\_i16x8\_s} \\ &&|&
+     \hex{FD}~~168{:}\Bu32 &\Rightarrow& \I32X4.\VEXTEND\K{\_}\HIGH\K{\_i16x8\_s} \\ &&|&
+     \hex{FD}~~169{:}\Bu32 &\Rightarrow& \I32X4.\VEXTEND\K{\_}\LOW\K{\_i16x8\_u} \\ &&|&
+     \hex{FD}~~170{:}\Bu32 &\Rightarrow& \I32X4.\VEXTEND\K{\_}\HIGH\K{\_i16x8\_u} \\ &&|&
      \hex{FD}~~171{:}\Bu32 &\Rightarrow& \I32X4.\VSHL \\ &&|&
      \hex{FD}~~172{:}\Bu32 &\Rightarrow& \I32X4.\VSHR\K{\_s} \\ &&|&
      \hex{FD}~~173{:}\Bu32 &\Rightarrow& \I32X4.\VSHR\K{\_u} \\ &&|&
@@ -831,11 +831,11 @@ All other vector instructions are plain opcodes without any immediates.
      \hex{FD}~~183{:}\Bu32 &\Rightarrow& \I32X4.\VMIN\K{\_u} \\ &&|&
      \hex{FD}~~184{:}\Bu32 &\Rightarrow& \I32X4.\VMAX\K{\_s} \\ &&|&
      \hex{FD}~~185{:}\Bu32 &\Rightarrow& \I32X4.\VMAX\K{\_u} \\ &&|&
-     \hex{FD}~~186{:}\Bu32 &\Rightarrow& \I32X4.\DOT\K{\_i16x8\_s}\\ &&|&
-     \hex{FD}~~188{:}\Bu32 &\Rightarrow& \I32X4.\EXTMUL\K{\_low\_i16x8\_s}\\ &&|&
-     \hex{FD}~~189{:}\Bu32 &\Rightarrow& \I32X4.\EXTMUL\K{\_high\_i16x8\_s}\\ &&|&
-     \hex{FD}~~190{:}\Bu32 &\Rightarrow& \I32X4.\EXTMUL\K{\_low\_i16x8\_u}\\ &&|&
-     \hex{FD}~~191{:}\Bu32 &\Rightarrow& \I32X4.\EXTMUL\K{\_high\_i16x8\_u}\\
+     \hex{FD}~~186{:}\Bu32 &\Rightarrow& \I32X4.\VDOT\K{\_i16x8\_s}\\ &&|&
+     \hex{FD}~~188{:}\Bu32 &\Rightarrow& \I32X4.\VEXTMUL\K{\_}\LOW\K{\_i16x8\_s}\\ &&|&
+     \hex{FD}~~189{:}\Bu32 &\Rightarrow& \I32X4.\VEXTMUL\K{\_}\HIGH\K{\_i16x8\_s}\\ &&|&
+     \hex{FD}~~190{:}\Bu32 &\Rightarrow& \I32X4.\VEXTMUL\K{\_}\LOW\K{\_i16x8\_u}\\ &&|&
+     \hex{FD}~~191{:}\Bu32 &\Rightarrow& \I32X4.\VEXTMUL\K{\_}\HIGH\K{\_i16x8\_u}\\
   \end{array}
 
 .. math::
@@ -843,22 +843,22 @@ All other vector instructions are plain opcodes without any immediates.
    \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{vechaslongerinstructionnames} \\[-2ex] &&|&
      \hex{FD}~~192{:}\Bu32 &\Rightarrow& \I64X2.\VABS \\ &&|&
      \hex{FD}~~193{:}\Bu32 &\Rightarrow& \I64X2.\VNEG \\ &&|&
-     \hex{FD}~~195{:}\Bu32 &\Rightarrow& \I64X2.\ALLTRUE \\ &&|&
-     \hex{FD}~~196{:}\Bu32 &\Rightarrow& \I64X2.\BITMASK \\ &&|&
-     \hex{FD}~~199{:}\Bu32 &\Rightarrow& \I64X2.\VEXTEND\K{\_low\_i32x4\_s} \\ &&|&
-     \hex{FD}~~200{:}\Bu32 &\Rightarrow& \I64X2.\VEXTEND\K{\_high\_i32x4\_s} \\ &&|&
-     \hex{FD}~~201{:}\Bu32 &\Rightarrow& \I64X2.\VEXTEND\K{\_low\_i32x4\_u} \\ &&|&
-     \hex{FD}~~202{:}\Bu32 &\Rightarrow& \I64X2.\VEXTEND\K{\_high\_i32x4\_u} \\ &&|&
+     \hex{FD}~~195{:}\Bu32 &\Rightarrow& \I64X2.\VALLTRUE \\ &&|&
+     \hex{FD}~~196{:}\Bu32 &\Rightarrow& \I64X2.\VBITMASK \\ &&|&
+     \hex{FD}~~199{:}\Bu32 &\Rightarrow& \I64X2.\VEXTEND\K{\_}\LOW\K{\_i32x4\_s} \\ &&|&
+     \hex{FD}~~200{:}\Bu32 &\Rightarrow& \I64X2.\VEXTEND\K{\_}\HIGH\K{\_i32x4\_s} \\ &&|&
+     \hex{FD}~~201{:}\Bu32 &\Rightarrow& \I64X2.\VEXTEND\K{\_}\LOW\K{\_i32x4\_u} \\ &&|&
+     \hex{FD}~~202{:}\Bu32 &\Rightarrow& \I64X2.\VEXTEND\K{\_}\HIGH\K{\_i32x4\_u} \\ &&|&
      \hex{FD}~~203{:}\Bu32 &\Rightarrow& \I64X2.\VSHL \\ &&|&
      \hex{FD}~~204{:}\Bu32 &\Rightarrow& \I64X2.\VSHR\K{\_s} \\ &&|&
      \hex{FD}~~205{:}\Bu32 &\Rightarrow& \I64X2.\VSHR\K{\_u} \\ &&|&
      \hex{FD}~~206{:}\Bu32 &\Rightarrow& \I64X2.\VADD \\ &&|&
      \hex{FD}~~209{:}\Bu32 &\Rightarrow& \I64X2.\VSUB \\ &&|&
      \hex{FD}~~213{:}\Bu32 &\Rightarrow& \I64X2.\VMUL \\ &&|&
-     \hex{FD}~~220{:}\Bu32 &\Rightarrow& \I64X2.\EXTMUL\K{\_low\_i32x4\_s}\\ &&|&
-     \hex{FD}~~221{:}\Bu32 &\Rightarrow& \I64X2.\EXTMUL\K{\_high\_i32x4\_s}\\ &&|&
-     \hex{FD}~~222{:}\Bu32 &\Rightarrow& \I64X2.\EXTMUL\K{\_low\_i32x4\_u}\\ &&|&
-     \hex{FD}~~223{:}\Bu32 &\Rightarrow& \I64X2.\EXTMUL\K{\_high\_i32x4\_u}\\
+     \hex{FD}~~220{:}\Bu32 &\Rightarrow& \I64X2.\VEXTMUL\K{\_}\LOW\K{\_i32x4\_s}\\ &&|&
+     \hex{FD}~~221{:}\Bu32 &\Rightarrow& \I64X2.\VEXTMUL\K{\_}\HIGH\K{\_i32x4\_s}\\ &&|&
+     \hex{FD}~~222{:}\Bu32 &\Rightarrow& \I64X2.\VEXTMUL\K{\_}\LOW\K{\_i32x4\_u}\\ &&|&
+     \hex{FD}~~223{:}\Bu32 &\Rightarrow& \I64X2.\VEXTMUL\K{\_}\HIGH\K{\_i32x4\_u}\\
   \end{array}
 
 .. _binary-vfunop:
@@ -907,16 +907,16 @@ All other vector instructions are plain opcodes without any immediates.
 .. math::
    \begin{array}{llclll}
    \phantom{\production{instruction}} & \phantom{\Binstr} &\phantom{::=}& \phantom{\dots} && \phantom{vechaslongerinstructionnames} \\[-2ex] &&|&
-     \hex{FD}~~248{:}\Bu32 &\Rightarrow& \I32X4.\TRUNC\K{\_sat\_f32x4\_s} \\ &&|&
-     \hex{FD}~~249{:}\Bu32 &\Rightarrow& \I32X4.\TRUNC\K{\_sat\_f32x4\_u} \\ &&|&
-     \hex{FD}~~250{:}\Bu32 &\Rightarrow& \F32X4.\CONVERT\K{\_i32x4\_s} \\ &&|&
-     \hex{FD}~~251{:}\Bu32 &\Rightarrow& \F32X4.\CONVERT\K{\_i32x4\_u} \\ &&|&
+     \hex{FD}~~248{:}\Bu32 &\Rightarrow& \I32X4.\VTRUNC\K{\_sat\_f32x4\_s} \\ &&|&
+     \hex{FD}~~249{:}\Bu32 &\Rightarrow& \I32X4.\VTRUNC\K{\_sat\_f32x4\_u} \\ &&|&
+     \hex{FD}~~250{:}\Bu32 &\Rightarrow& \F32X4.\VCONVERT\K{\_i32x4\_s} \\ &&|&
+     \hex{FD}~~251{:}\Bu32 &\Rightarrow& \F32X4.\VCONVERT\K{\_i32x4\_u} \\ &&|&
      \hex{FD}~~252{:}\Bu32 &\Rightarrow& \I32X4.\VTRUNC\K{\_sat\_f64x2\_s\_zero}\\ &&|&
      \hex{FD}~~253{:}\Bu32 &\Rightarrow& \I32X4.\VTRUNC\K{\_sat\_f64x2\_u\_zero}\\ &&|&
-     \hex{FD}~~254{:}\Bu32 &\Rightarrow& \F64X2.\VCONVERT\K{\_low\_i32x4\_s}\\  &&|&
-     \hex{FD}~~255{:}\Bu32 &\Rightarrow& \F64X2.\VCONVERT\K{\_low\_i32x4\_u}\\ &&|&
+     \hex{FD}~~254{:}\Bu32 &\Rightarrow& \F64X2.\VCONVERT\K{\_}\LOW\K{\_i32x4\_s}\\  &&|&
+     \hex{FD}~~255{:}\Bu32 &\Rightarrow& \F64X2.\VCONVERT\K{\_}\LOW\K{\_i32x4\_u}\\ &&|&
      \hex{FD}~~94{:}\Bu32 &\Rightarrow& \F32X4.\VDEMOTE\K{\_f64x2\_zero}\\ &&|&
-     \hex{FD}~~95{:}\Bu32 &\Rightarrow& \F64X2.\VPROMOTE\K{\_low\_f32x4}\\
+     \hex{FD}~~95{:}\Bu32 &\Rightarrow& \F64X2.\VPROMOTE\K{\_}\LOW\K{\_f32x4}\\
    \end{array}
 
 

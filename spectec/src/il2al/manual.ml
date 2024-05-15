@@ -54,6 +54,7 @@ let array_new_data =
 
   let x = varE "x" in
   let y = varE "y" in
+  let z = varE "z" in
 
   let n = varE "n" in
   let i = varE "i" in
@@ -71,11 +72,10 @@ let array_new_data =
   let gbstar = iterE (gb, ["gb"], List) in
   let cn = iterE (c, ["c"], ListN (n, None)) in
 
-  let expanddt_with_type = callE ("expanddt", [callE ("type", [x])]) in
+  let expanddt_with_type = callE ("expanddt", [callE ("type", [z; x])]) in
   let zsize = callE ("zsize", [zt]) in
   let cunpack = callE ("cunpack", [zt]) in
-  (* include z or not ??? *)
-  let data = callE ("data", [y]) in
+  let data = callE ("data", [z; y]) in
   let group_bytes_by = callE ("group_bytes_by", [binE (DivOp, zsize, numE (Z.of_int 8)); bstar]) in
   let inverse_of_bytes_ = iterE (callE ("inverse_of_ibytes", [zsize; gb]), ["gb"], List) in
 
@@ -96,7 +96,7 @@ let array_new_data =
             binE (
               GtOp,
               binE (AddOp, i, binE (DivOp, binE (MulOp, n, zsize), numE (Z.of_int 8))),
-              lenE (accE (callE ("data", [y]), dotP (atom_of_name "BYTES" "datainst")))
+              lenE (accE (callE ("data", [z; y]), dotP (atom_of_name "BYTES" "datainst")))
             ),
             [ trapI () ],
             []

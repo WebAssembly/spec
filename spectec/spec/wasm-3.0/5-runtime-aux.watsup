@@ -69,25 +69,25 @@ def $memsxv(externval xv*) = $memsxv(xv*)  -- otherwise
 
 ;; Short-hands
 
-def $store(state) : store             hint(show %.STORE)
-def $frame(state) : frame             hint(show %.FRAME)
+def $store(state) : store             hint(show %.STORE) hint(macro "Z%")
+def $frame(state) : frame             hint(show %.FRAME) hint(macro "Z%")
 
 def $store((s; f)) = s
 def $frame((s; f)) = f
 
 
-def $funcaddr(state) : funcaddr*      hint(show %.MODULE.FUNCS)
+def $funcaddr(state) : funcaddr*      hint(show %.MODULE.FUNCS) hint(macro "Z%")
 def $funcaddr((s; f)) = f.MODULE.FUNCS
 
-def $funcinst(state) : funcinst*      hint(show %.FUNCS)
-def $globalinst(state) : globalinst*  hint(show %.GLOBALS)
-def $tableinst(state) : tableinst*    hint(show %.TABLES)
-def $meminst(state) : meminst*        hint(show %.MEMS)
-def $eleminst(state) : eleminst*      hint(show %.ELEMS)
-def $datainst(state) : datainst*      hint(show %.DATAS)
-def $structinst(state) : structinst*  hint(show %.STRUCTS)
-def $arrayinst(state) : arrayinst*    hint(show %.ARRAYS)
-def $moduleinst(state) : moduleinst   hint(show %.MODULE)
+def $funcinst(state) : funcinst*      hint(show %.FUNCS)   hint(macro "Z%")
+def $globalinst(state) : globalinst*  hint(show %.GLOBALS) hint(macro "Z%")
+def $tableinst(state) : tableinst*    hint(show %.TABLES)  hint(macro "Z%")
+def $meminst(state) : meminst*        hint(show %.MEMS)    hint(macro "Z%")
+def $eleminst(state) : eleminst*      hint(show %.ELEMS)   hint(macro "Z%")
+def $datainst(state) : datainst*      hint(show %.DATAS)   hint(macro "Z%")
+def $structinst(state) : structinst*  hint(show %.STRUCTS) hint(macro "Z%")
+def $arrayinst(state) : arrayinst*    hint(show %.ARRAYS)  hint(macro "Z%")
+def $moduleinst(state) : moduleinst   hint(show %.MODULE)  hint(macro "Z%")
 
 def $funcinst((s; f)) = s.FUNCS
 def $globalinst((s; f)) = s.GLOBALS
@@ -99,14 +99,14 @@ def $structinst((s; f)) = s.STRUCTS
 def $arrayinst((s; f)) = s.ARRAYS
 def $moduleinst((s; f)) = f.MODULE
 
-def $type(state, typeidx) : deftype         hint(show %.TYPES[%])
-def $func(state, funcidx) : funcinst        hint(show %.FUNCS[%])
-def $global(state, globalidx) : globalinst  hint(show %.GLOBALS[%])
-def $table(state, tableidx) : tableinst     hint(show %.TABLES[%])
-def $mem(state, memidx) : meminst           hint(show %.MEMS[%])
-def $elem(state, tableidx) : eleminst       hint(show %.ELEMS[%])
-def $data(state, dataidx) : datainst        hint(show %.DATAS[%])
-def $local(state, localidx) : val?          hint(show %.LOCALS[%])
+def $type(state, typeidx) : deftype         hint(show %.TYPES[%])   hint(macro "Z%")
+def $func(state, funcidx) : funcinst        hint(show %.FUNCS[%])   hint(macro "Z%")
+def $global(state, globalidx) : globalinst  hint(show %.GLOBALS[%]) hint(macro "Z%")
+def $table(state, tableidx) : tableinst     hint(show %.TABLES[%])  hint(macro "Z%")
+def $mem(state, memidx) : meminst           hint(show %.MEMS[%])    hint(macro "Z%")
+def $elem(state, tableidx) : eleminst       hint(show %.ELEMS[%])   hint(macro "Z%")
+def $data(state, dataidx) : datainst        hint(show %.DATAS[%])   hint(macro "Z%")
+def $local(state, localidx) : val?          hint(show %.LOCALS[%])  hint(macro "Z%")
 
 def $type((s; f), x) = f.MODULE.TYPES[x]
 def $func((s; f), x) = s.FUNCS[f.MODULE.FUNCS[x]]
@@ -120,16 +120,16 @@ def $local((s; f), x) = f.LOCALS[x]
 
 ;; Update
 
-def $with_local(state, localidx, val) : state               hint(show %[.LOCALS[%] = %])
-def $with_global(state, globalidx, val) : state             hint(show %[.GLOBALS[%].VALUE = %])
-def $with_table(state, tableidx, nat, ref) : state          hint(show %[.TABLES[%].REFS[%] = %])
-def $with_tableinst(state, tableidx, tableinst) : state     hint(show %[.TABLES[%] = %])
-def $with_mem(state, memidx, nat, nat, byte*) : state       hint(show %[.MEMS[%].BYTES[% : %] = %])
-def $with_meminst(state, memidx, meminst) : state           hint(show %[.MEMS[%] = %])
-def $with_elem(state, elemidx, ref*) : state                hint(show %[.ELEMS[%].REFS = %])
-def $with_data(state, dataidx, byte*) : state               hint(show %[.DATAS[%].BYTES = %])
-def $with_struct(state, structaddr, nat, fieldval) : state  hint(show %[.STRUCTS[%].FIELDS[%] = %])
-def $with_array(state, arrayaddr, nat, fieldval) : state    hint(show %[.ARRAYS[%].FIELDS[%] = %])
+def $with_local(state, localidx, val) : state               hint(show %[.LOCALS[%] = %])            hint(macro "Z%")
+def $with_global(state, globalidx, val) : state             hint(show %[.GLOBALS[%].VALUE = %])     hint(macro "ZG%")
+def $with_table(state, tableidx, nat, ref) : state          hint(show %[.TABLES[%].REFS[%] = %])    hint(macro "ZT%")
+def $with_tableinst(state, tableidx, tableinst) : state     hint(show %[.TABLES[%] = %])            hint(macro "Z%")
+def $with_mem(state, memidx, nat, nat, byte*) : state       hint(show %[.MEMS[%].BYTES[% : %] = %]) hint(macro "ZM%")
+def $with_meminst(state, memidx, meminst) : state           hint(show %[.MEMS[%] = %])              hint(macro "Z%")
+def $with_elem(state, elemidx, ref*) : state                hint(show %[.ELEMS[%].REFS = %])        hint(macro "ZE%")
+def $with_data(state, dataidx, byte*) : state               hint(show %[.DATAS[%].BYTES = %])       hint(macro "ZD%")
+def $with_struct(state, structaddr, nat, fieldval) : state  hint(show %[.STRUCTS[%].FIELDS[%] = %]) hint(macro "ZS%")
+def $with_array(state, arrayaddr, nat, fieldval) : state    hint(show %[.ARRAYS[%].FIELDS[%] = %])  hint(macro "ZA%")
 
 def $with_local((s; f), x, v) = s; f[.LOCALS[x] = v]
 def $with_global((s; f), x, v) = s[.GLOBALS[f.MODULE.GLOBALS[x]].VALUE = v]; f
@@ -142,8 +142,8 @@ def $with_data((s; f), x, b*) = s[.DATAS[f.MODULE.DATAS[x]].BYTES = b*]; f
 def $with_struct((s; f), a, i, fv) = s[.STRUCTS[a].FIELDS[i] = fv]; f
 def $with_array((s; f), a, i, fv) = s[.ARRAYS[a].FIELDS[i] = fv]; f
 
-def $ext_structinst(state, structinst*) : state  hint(show %[.STRUCTS =.. %])
-def $ext_arrayinst(state, arrayinst*) : state    hint(show %[.ARRAYS =.. %])
+def $ext_structinst(state, structinst*) : state  hint(show %[.STRUCTS =.. %]) hint(macro "Z%")
+def $ext_arrayinst(state, arrayinst*) : state    hint(show %[.ARRAYS =.. %])  hint(macro "Z%")
 
 def $ext_structinst((s; f), si*) = s[.STRUCTS =.. si*]; f
 def $ext_arrayinst((s; f), ai*) = s[.ARRAYS =.. ai*]; f

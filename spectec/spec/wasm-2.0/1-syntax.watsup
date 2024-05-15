@@ -458,14 +458,14 @@ syntax instr/elem hint(desc "element instruction") = ...
 syntax sz hint(desc "pack size") = `8 | `16 | `32 | `64
 
 syntax instr/memory hint(desc "memory instruction") = ...
-  | LOAD numtype (sz _ sx)? memarg  hint(show %.LOAD % %)    hint(show %.LOAD#% % %)
+  | LOAD numtype (sz _ sx)? memarg             hint(show %.LOAD % %)    hint(show %.LOAD#% % %)
     -- (if numtype = Inn /\ sz < $size(Inn))?  ;; TODO: take size implicitly
-  | STORE numtype sz? memarg        hint(show %.STORE % %)   hint(show %.STORE#% % %)
+  | STORE numtype sz? memarg                   hint(show %.STORE % %)   hint(show %.STORE#% % %)
     -- (if numtype = Inn /\ sz < $size(Inn))?  ;; TODO: take size implicitly
-  | VLOAD vloadop? memarg           hint(show V128.LOAD % %) hint(show V128.LOAD#% % %)
-  | VLOAD_LANE sz memarg laneidx    hint(show V128.LOAD#%#_#LANE % % %)
-  | VSTORE memarg                   hint(show V128.STORE % %)
-  | VSTORE_LANE sz memarg laneidx   hint(show V128.STORE#%#_#LANE % % %)
+  | VLOAD vectype vloadop? memarg              hint(show %.LOAD % %) hint(show %.LOAD#% % %)
+  | VLOAD_LANE vectype sz memarg laneidx       hint(show %.LOAD#%#_#LANE % % %)
+  | VSTORE vectype memarg                      hint(show %.STORE % %)
+  | VSTORE_LANE vectype sz memarg laneidx      hint(show %.STORE#%#_#LANE % % %)
   | MEMORY.SIZE
   | MEMORY.GROW
   | MEMORY.FILL

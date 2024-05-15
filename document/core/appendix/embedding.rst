@@ -374,13 +374,13 @@ Tables
 
 1. Let :math:`\X{ti}` be the :ref:`table instance <syntax-tableinst>` :math:`\store.\STABLES[\tableaddr]`.
 
-2. If :math:`i` is larger than or equal to the length of :math:`\X{ti}.\TIELEM`, then return :math:`\ERROR`.
+2. If :math:`i` is larger than or equal to the length of :math:`\X{ti}.\TIREFS`, then return :math:`\ERROR`.
 
-3. Else, return the :ref:`reference value <syntax-ref>` :math:`\X{ti}.\TIELEM[i]`.
+3. Else, return the :ref:`reference value <syntax-ref>` :math:`\X{ti}.\TIREFS[i]`.
 
 .. math::
    \begin{array}{lclll}
-   \F{table\_read}(S, a, i) &=& r && (\iff S.\STABLES[a].\TIELEM[i] = r) \\
+   \F{table\_read}(S, a, i) &=& r && (\iff S.\STABLES[a].\TIREFS[i] = r) \\
    \F{table\_read}(S, a, i) &=& \ERROR && (\otherwise) \\
    \end{array}
 
@@ -392,15 +392,15 @@ Tables
 
 1. Let :math:`\X{ti}` be the :ref:`table instance <syntax-tableinst>` :math:`\store.\STABLES[\tableaddr]`.
 
-2. If :math:`i` is larger than or equal to the length of :math:`\X{ti}.\TIELEM`, then return :math:`\ERROR`.
+2. If :math:`i` is larger than or equal to the length of :math:`\X{ti}.\TIREFS`, then return :math:`\ERROR`.
 
-3. Replace :math:`\X{ti}.\TIELEM[i]` with the :ref:`reference value <syntax-ref>` :math:`\reff`.
+3. Replace :math:`\X{ti}.\TIREFS[i]` with the :ref:`reference value <syntax-ref>` :math:`\reff`.
 
 4. Return the updated store.
 
 .. math::
    \begin{array}{lclll}
-   \F{table\_write}(S, a, i, r) &=& S' && (\iff S' = S \with \STABLES[a].\TIELEM[i] = r) \\
+   \F{table\_write}(S, a, i, r) &=& S' && (\iff S' = S \with \STABLES[a].\TIREFS[i] = r) \\
    \F{table\_write}(S, a, i, r) &=& \ERROR && (\otherwise) \\
    \end{array}
 
@@ -410,13 +410,13 @@ Tables
 :math:`\F{table\_size}(\store, \tableaddr) : \u32`
 ..................................................
 
-1. Return the length of :math:`\store.\STABLES[\tableaddr].\TIELEM`.
+1. Return the length of :math:`\store.\STABLES[\tableaddr].\TIREFS`.
 
 .. math::
    ~ \\
    \begin{array}{lclll}
    \F{table\_size}(S, a) &=& n &&
-     (\iff |S.\STABLES[a].\TIELEM| = n) \\
+     (\iff |S.\STABLES[a].\TIREFS| = n) \\
    \end{array}
 
 
@@ -486,13 +486,13 @@ Memories
 
 1. Let :math:`\X{mi}` be the :ref:`memory instance <syntax-meminst>` :math:`\store.\SMEMS[\memaddr]`.
 
-2. If :math:`i` is larger than or equal to the length of :math:`\X{mi}.\MIDATA`, then return :math:`\ERROR`.
+2. If :math:`i` is larger than or equal to the length of :math:`\X{mi}.\MIBYTES`, then return :math:`\ERROR`.
 
-3. Else, return the  :ref:`byte <syntax-byte>` :math:`\X{mi}.\MIDATA[i]`.
+3. Else, return the  :ref:`byte <syntax-byte>` :math:`\X{mi}.\MIBYTES[i]`.
 
 .. math::
    \begin{array}{lclll}
-   \F{mem\_read}(S, a, i) &=& b && (\iff S.\SMEMS[a].\MIDATA[i] = b) \\
+   \F{mem\_read}(S, a, i) &=& b && (\iff S.\SMEMS[a].\MIBYTES[i] = b) \\
    \F{mem\_read}(S, a, i) &=& \ERROR && (\otherwise) \\
    \end{array}
 
@@ -504,15 +504,15 @@ Memories
 
 1. Let :math:`\X{mi}` be the :ref:`memory instance <syntax-meminst>` :math:`\store.\SMEMS[\memaddr]`.
 
-2. If :math:`\u32` is larger than or equal to the length of :math:`\X{mi}.\MIDATA`, then return :math:`\ERROR`.
+2. If :math:`\u32` is larger than or equal to the length of :math:`\X{mi}.\MIBYTES`, then return :math:`\ERROR`.
 
-3. Replace :math:`\X{mi}.\MIDATA[i]` with :math:`\byte`.
+3. Replace :math:`\X{mi}.\MIBYTES[i]` with :math:`\byte`.
 
 4. Return the updated store.
 
 .. math::
    \begin{array}{lclll}
-   \F{mem\_write}(S, a, i, b) &=& S' && (\iff S' = S \with \SMEMS[a].\MIDATA[i] = b) \\
+   \F{mem\_write}(S, a, i, b) &=& S' && (\iff S' = S \with \SMEMS[a].\MIBYTES[i] = b) \\
    \F{mem\_write}(S, a, i, b) &=& \ERROR && (\otherwise) \\
    \end{array}
 
@@ -522,13 +522,13 @@ Memories
 :math:`\F{mem\_size}(\store, \memaddr) : \u32`
 ..............................................
 
-1. Return the length of :math:`\store.\SMEMS[\memaddr].\MIDATA` divided by the :ref:`page size <page-size>`.
+1. Return the length of :math:`\store.\SMEMS[\memaddr].\MIBYTES` divided by the :ref:`page size <page-size>`.
 
 .. math::
    ~ \\
    \begin{array}{lclll}
    \F{mem\_size}(S, a) &=& n &&
-     (\iff |S.\SMEMS[a].\MIDATA| = n \cdot 64\,\F{Ki}) \\
+     (\iff |S.\SMEMS[a].\MIBYTES| = n \cdot 64\,\F{Ki}) \\
    \end{array}
 
 
@@ -689,7 +689,7 @@ Matching
 
 .. math::
    \begin{array}{lclll}
-   \F{match\_reftype}(t_1, t_2) &=& \TRUE && (\iff {} \vdashvaltypematch t_1 \matchesvaltype t_2) \\
+   \F{match\_reftype}(t_1, t_2) &=& \TRUE && (\iff {} \vdashvaltypematch t_1 \subvaltypematch t_2) \\
    \F{match\_reftype}(t_1, t_2) &=& \FALSE && (\otherwise) \\
    \end{array}
 
@@ -705,6 +705,6 @@ Matching
 
 .. math::
    \begin{array}{lclll}
-   \F{match\_externtype}(\X{et}_1, \X{et}_2) &=& \TRUE && (\iff {} \vdashexterntypematch \X{et}_1 \matchesexterntype \X{et}_2) \\
+   \F{match\_externtype}(\X{et}_1, \X{et}_2) &=& \TRUE && (\iff {} \vdashexterntypematch \X{et}_1 \subexterntypematch \X{et}_2) \\
    \F{match\_externtype}(\X{et}_1, \X{et}_2) &=& \FALSE && (\otherwise) \\
    \end{array}

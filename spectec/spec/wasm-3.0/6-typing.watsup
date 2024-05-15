@@ -12,7 +12,7 @@ syntax instrtype hint(desc "instruction type") =
   resulttype ->_ localidx* resulttype  hint(show %0 `->_ %2 %3) hint(macro "to")
 
 
-syntax context hint(desc "context") =
+syntax context hint(desc "context") hint(macro "C%") =
   { TYPES deftype*, \
     REC subtype*,
     FUNCS deftype*, \
@@ -1037,33 +1037,33 @@ rule Instr_ok/store:
   -- if n? = eps \/ nt = Inn
 
 rule Instr_ok/vload:
-  C |- VLOAD (SHAPE M X N sx) x memarg : I32 -> V128
+  C |- VLOAD V128 (SHAPE M X N sx) x memarg : I32 -> V128
   -- if C.MEMS[x] = mt
   -- if $(2^(memarg.ALIGN) <= M/8 * N)
 
 rule Instr_ok/vload-splat:
-  C |- VLOAD (SPLAT n) x memarg : I32 -> V128
+  C |- VLOAD V128 (SPLAT n) x memarg : I32 -> V128
   -- if C.MEMS[x] = mt
   -- if $(2^(memarg.ALIGN) <= n/8)
 
 rule Instr_ok/vload-zero:
-  C |- VLOAD (ZERO n) x memarg : I32 -> V128
+  C |- VLOAD V128 (ZERO n) x memarg : I32 -> V128
   -- if C.MEMS[x] = mt
   -- if $(2^(memarg.ALIGN) < n/8)
 
 rule Instr_ok/vload_lane:
-  C |- VLOAD_LANE n x memarg laneidx : I32 V128 -> V128
+  C |- VLOAD_LANE V128 n x memarg laneidx : I32 V128 -> V128
   -- if C.MEMS[x] = mt
   -- if $(2^(memarg.ALIGN) < n/8)
   -- if $(laneidx < 128 / n)
 
 rule Instr_ok/vstore:
-  C |- VSTORE x memarg : I32 V128 -> eps
+  C |- VSTORE V128 x memarg : I32 V128 -> eps
   -- if C.MEMS[x] = mt
   -- if $(2^(memarg.ALIGN) <= $vsize(V128)/8)
 
 rule Instr_ok/vstore_lane:
-  C |- VSTORE_LANE n x memarg laneidx : I32 V128 -> eps
+  C |- VSTORE_LANE V128 n x memarg laneidx : I32 V128 -> eps
   -- if C.MEMS[x] = mt
   -- if $(2^(memarg.ALIGN) < n/8)
   -- if $(laneidx < 128 / n)
@@ -1265,7 +1265,7 @@ rule Externidx_ok/mem:
 
 relation Module_ok: |- module : OK                    hint(show "T-module")  hint(macro "%module")
 relation Types_ok: context |- type* : deftype*        hint(show "T-types")   hint(macro "%types")
-relation Globals_ok: context |- global* : globaltype* hint(show "T-globals") hint(macro "%globaltypes")
+relation Globals_ok: context |- global* : globaltype* hint(show "T-globals") hint(macro "%globals")
 
 ;; TODO: refs
 rule Module_ok:

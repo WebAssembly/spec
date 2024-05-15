@@ -805,8 +805,8 @@ $${rule: Instr_ok/vshiftop}
 
 .. _valid-vbitmask:
 
-:math:`\ishape\K{.}\BITMASK`
-............................
+:math:`\ishape\K{.}\VBITMASK`
+.............................
 
 * The instruction is valid with type :math:`[\V128] \to [\I32]`.
 
@@ -815,8 +815,8 @@ $${rule: Instr_ok/vbitmask}
 
 .. _valid-vswizzle:
 
-:math:`\K{i8x16.}\SWIZZLE`
-..........................
+:math:`\K{i8x16.}\VSWIZZLE`
+...........................
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
@@ -825,8 +825,8 @@ $${rule: Instr_ok/vswizzle}
 
 .. _valid-vshuffle:
 
-:math:`\K{i8x16.}\SHUFFLE~\laneidx^{16}`
-........................................
+:math:`\K{i8x16.}\VSHUFFLE~\laneidx^{16}`
+.........................................
 
 * For all :math:`\laneidx_i`, in :math:`\laneidx^{16}`, :math:`\laneidx_i` must be smaller than :math:`32`.
 
@@ -837,8 +837,8 @@ $${rule: Instr_ok/vshuffle}
 
 .. _valid-vsplat:
 
-:math:`\shape\K{.}\SPLAT`
-.........................
+:math:`\shape\K{.}\VSPLAT`
+..........................
 
 * Let :math:`t` be :math:`\unpackshape(\shape)`.
 
@@ -849,8 +849,8 @@ $${rule: Instr_ok/vsplat}
 
 .. _valid-vextract_lane:
 
-:math:`\shape\K{.}\EXTRACTLANE\K{\_}\sx^?~\laneidx`
-...................................................
+:math:`\shape\K{.}\VEXTRACTLANE\K{\_}\sx^?~\laneidx`
+....................................................
 
 * The lane index :math:`\laneidx` must be smaller than :math:`\shdim(\shape)`.
 
@@ -863,8 +863,8 @@ $${rule: Instr_ok/vextract_lane}
 
 .. _valid-vreplace_lane:
 
-:math:`\shape\K{.}\REPLACELANE~\laneidx`
-........................................
+:math:`\shape\K{.}\VREPLACELANE~\laneidx`
+.........................................
 
 * The lane index :math:`\laneidx` must be smaller than :math:`\shdim(\shape)`.
 
@@ -877,8 +877,8 @@ $${rule: Instr_ok/vreplace_lane}
 
 .. _valid-vextunop:
 
-:math:`\ishape_1\K{.}\EXTADDPAIRWISE\K{\_}\ishape_2\K{\_}\sx`
-.............................................................
+:math:`\ishape_1\K{.}\VEXTADDPAIRWISE\K{\_}\ishape_2\K{\_}\sx`
+..............................................................
 
 * The instruction is valid with type :math:`[\V128] \to [\V128]`.
 
@@ -887,8 +887,8 @@ $${rule: Instr_ok/vextunop}
 
 .. _valid-vextbinop:
 
-:math:`\ishape_1\K{.}\EXTMUL\K{\_}\half\K{\_}\ishape_2\K{\_}\sx`
-................................................................
+:math:`\ishape_1\K{.}\VEXTMUL\K{\_}\half\K{\_}\ishape_2\K{\_}\sx`
+.................................................................
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
@@ -897,8 +897,8 @@ $${rule: Instr_ok/vextbinop}
 
 .. _valid-vnarrow:
 
-:math:`\ishape_1\K{.}\NARROW\K{\_}\ishape_2\K{\_}\sx`
-.....................................................
+:math:`\ishape_1\K{.}\VNARROW\K{\_}\ishape_2\K{\_}\sx`
+......................................................
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 

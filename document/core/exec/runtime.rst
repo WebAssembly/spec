@@ -317,7 +317,7 @@ It records its :ref:`type <syntax-tabletype>` and holds a list of :ref:`referenc
 .. math::
    \begin{array}{llll}
    \production{table instance} & \tableinst &::=&
-     \{ \TITYPE~\tabletype, \TIELEM~\list(\reff) \} \\
+     \{ \TITYPE~\tabletype, \TIREFS~\list(\reff) \} \\
    \end{array}
 
 Table elements can be mutated through :ref:`table instructions <syntax-instr-table>`, the execution of an active :ref:`element segment <syntax-elem>`, or by external means provided by the :ref:`embedder <embedder>`.
@@ -341,7 +341,7 @@ It records its :ref:`type <syntax-memtype>` and holds a list of :ref:`bytes <syn
 .. math::
    \begin{array}{llll}
    \production{memory instance} & \meminst &::=&
-     \{ \MITYPE~\memtype, \MIDATA~\list(\byte) \} \\
+     \{ \MITYPE~\memtype, \MIBYTES~\list(\byte) \} \\
    \end{array}
 
 The length of the list always is a multiple of the WebAssembly *page size*, which is defined to be the constant :math:`65536` -- abbreviated :math:`64\,\F{Ki}`.
@@ -387,7 +387,7 @@ It holds a list of references and their common :ref:`type <syntax-reftype>`.
 .. math::
   \begin{array}{llll}
   \production{element instance} & \eleminst &::=&
-    \{ \EITYPE~\reftype, \EIELEM~\list(\reff) \} \\
+    \{ \EITYPE~\reftype, \EIREFS~\list(\reff) \} \\
   \end{array}
 
 
@@ -405,7 +405,7 @@ It holds a list of :ref:`bytes <syntax-byte>`.
 .. math::
   \begin{array}{llll}
   \production{data instance} & \datainst &::=&
-    \{ \DIDATA~\list(\byte) \} \\
+    \{ \DIBYTES~\list(\byte) \} \\
   \end{array}
 
 

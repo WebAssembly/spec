@@ -50,10 +50,10 @@ syntax ufii_(nat_1, nat_2) = UFII                            ;; \ufii
 syntax ufaa_(nat_1, nat_2) hint(macro "%") = UFAA            ;; \ufaa
 syntax ufoo_(nat_1, nat_2) hint(macro "X%Y%Z") = UFOO        ;; \XufooYufooZ
 syntax ufuu_(nat_1, nat_2) hint(macro none) = UFUU           ;; \mathit{ufuu}
-syntax ubar_(nat_1, nat_2) hint(show ufoobar_(%,%)) = UBAR   ;; \ufoobar
-syntax uboo_(nat_1, nat_2) hint(show ufooboo_(%,%)) hint(macro "%") = UBOO  ;; \ufooboo
-syntax ubaz_(nat_1, nat_2) hint(show ufob_(%,%)) hint(macro "X%Y%Z") = UBAZ ;; \XufobYufobZ
-syntax uboi_(nat_1, nat_2) hint(show ufib_(%,%)) hint(macro none) = UBOI    ;; \mathit{ufib}
+syntax ubar_(nat_1, nat_2) hint(show ufoobar_(%,%,x)) = UBAR ;; \ufoobar
+syntax uboo_(nat_1, nat_2) hint(show ufooboo_(%,%,x)) hint(macro "%") = UBOO  ;; \ufooboo
+syntax ubaz_(nat_1, nat_2) hint(show ufob_(%,%,x)) hint(macro "X%Y%Z") = UBAZ ;; \XufobYufobZ
+syntax uboi_(nat_1, nat_2) hint(show ufib_(%,%,x)) hint(macro none) = UBOI    ;; \mathit{ufib}
 
 def $macros2 : nat
 def $macros2 = 0
@@ -94,13 +94,13 @@ def $ufoo_(nat_1, nat_2) : nat hint(macro "X%Y%Z")        ;; \XufooYufooZ
 def $ufoo_(x, y) = 0
 def $ufuu_(nat_1, nat_2) : nat hint(macro none)           ;; \mathrm{ufuu}
 def $ufuu_(x, y) = 0
-def $ubar_(nat_1, nat_2) : nat hint(show ufoobar_(%,%))   ;; \ufoobar
+def $ubar_(nat_1, nat_2) : nat hint(show ufoobar_(%,%,x)) ;; \ufoobar
 def $ubar_(x, y) = 0
-def $uboo_(nat_1, nat_2) : nat hint(show ufooboo_(%,%)) hint(macro "%")   ;; \ufooboo
+def $uboo_(nat_1, nat_2) : nat hint(show ufooboo_(%,%,x)) hint(macro "%")  ;; \ufooboo
 def $uboo_(x, y) = 0
-def $ubaz_(nat_1, nat_2) : nat hint(show ufob_(%,%)) hint(macro "X%Y%Z")  ;; \XufobYufobZ
+def $ubaz_(nat_1, nat_2) : nat hint(show ufob_(%,%,x)) hint(macro "X%Y%Z") ;; \XufobYufobZ
 def $ubaz_(x, y) = 0
-def $uboi_(nat_1, nat_2) : nat hint(show ufib_(%,%)) hint(macro none)     ;; \mathrm{fib}
+def $uboi_(nat_1, nat_2) : nat hint(show ufib_(%,%,x)) hint(macro none)    ;; \mathrm{fib}
 def $uboi_(x, y) = 0
 
 def $foo__bar : nat                                               ;; \foobar
@@ -110,7 +110,7 @@ def $foo_boo = 0
 
 def $ufoo__bar_(nat_1, nat_2) : nat                               ;; \ufoobar
 def $ufoo__bar_(x, y) = 0
-def $ufoo_boo_(nat_1, nat_2) : nat hint(show $ufoo__boo_(%,%))    ;; \ufooboo
+def $ufoo_boo_(nat_1, nat_2) : nat hint(show $ufoo__boo_(%,%,x))  ;; \ufooboo
 def $ufoo_boo_(x, y) = 0
 
 
@@ -133,10 +133,10 @@ syntax parent =
   | DDX nat  hint(show DDDX) hint(macro "%")                      ;; \DDDX
   | DDY nat  hint(show DDDY) hint(macro "x%y%z")                  ;; \xDDYyDDYz
   | DDZ nat  hint(show DDDZ) hint(macro none)                     ;; \mathsf{dddz}
-  | EE  nat  hint(show %1#_#EA#%0)                                ;; {\mathit{nat}}\mathsf{\_}{\EA}{\EE}
-  | EEX nat  hint(show %1#_#EB#%0) hint(macro "%")                ;; {\mathit{nat}}\mathsf{\_}{\EB}{\EEX}
-  | EEY nat  hint(show %1#_#EC#%0) hint(macro "x%y%z")            ;; {\mathit{nat}}\mathsf{\_}{\xECyECz}{\xEEYyEEYz}
-  | EEZ nat  hint(show %1#_#ED#%0) hint(macro none)               ;; {\mathit{nat}}\mathsf{\_}{\mathsf{ed}}{\mathsf{eez}}
+  | EE  nat  hint(show %1#_#EA#%0 x)                              ;; {\mathit{nat}}\mathsf{\_}{\EA}{\EE}
+  | EEX nat  hint(show %1#_#EB#%0 x) hint(macro "%")              ;; {\mathit{nat}}\mathsf{\_}{\EB}{\EEX}
+  | EEY nat  hint(show %1#_#EC#%0 x) hint(macro "x%y%z")          ;; {\mathit{nat}}\mathsf{\_}{\xECyECz}{\xEEYyEEYz}
+  | EEZ nat  hint(show %1#_#ED#%0 x) hint(macro none)             ;; {\mathit{nat}}\mathsf{\_}{\mathsf{ed}}{\mathsf{eez}}
 
 def $parent(parent) : nat
 def $parent(AA) = 0
@@ -169,10 +169,10 @@ syntax parentimplicit(syntax t) hint(macro "%" "%impl") =
   | QQX hint(show QQQX) hint(macro "%")                           ;; \QQQX
   | QQY hint(show QQQY) hint(macro "%x%")                         ;; \QQQYxQQQY
   | QQZ hint(show QQQZ) hint(macro none)                          ;; \mathsf{qqqz}
-  | RR t  hint(show %1#_#RA#%0)                                   ;; {\mathit{nat}}\mathsf{\_}{\RAimpl}{\RRimpl}
-  | RRX t hint(show %1#_#RB#%0) hint(macro "%")                   ;; {\mathit{nat}}\mathsf{\_}{\RB}{\RRX}
-  | RRY t hint(show %1#_#RC#%0) hint(macro "%x%")                 ;; {\mathit{nat}}\mathsf{\_}{\RCxRC}{\RRYxRRY}
-  | RRZ t hint(show %1#_#RD#%0) hint(macro none)                  ;; {\mathit{nat}}\mathsf{\_}{\mathsf{rd}}{\mathsf{rrz}}
+  | RR t  hint(show %1#_#RA#%0 x)                                 ;; {\mathit{nat}}\mathsf{\_}{\RAimpl}{\RRimpl}
+  | RRX t hint(show %1#_#RB#%0 x) hint(macro "%")                 ;; {\mathit{nat}}\mathsf{\_}{\RB}{\RRX}
+  | RRY t hint(show %1#_#RC#%0 x) hint(macro "%x%")               ;; {\mathit{nat}}\mathsf{\_}{\RCxRC}{\RRYxRRY}
+  | RRZ t hint(show %1#_#RD#%0 x) hint(macro none)                ;; {\mathit{nat}}\mathsf{\_}{\mathsf{rd}}{\mathsf{rrz}}
 
 def $parentimpl(parentimplicit(text)) : nat
 def $parentimpl(PP) = 0
@@ -204,7 +204,17 @@ def $indirect(RRX n) = 0
 def $indirect(RRY n) = 0
 def $indirect(RRZ n) = 0
 
-syntax child = parent | indirect | ZZZ
+syntax family(nat) hint(macro "%" "%family")
+syntax family(0) = FF                               ;; \FFfamily
+syntax family(1) = GG                               ;; \GGfamily
+syntax family(2) = HH hint(macro "x%y")             ;; \xHHy
+
+def $family(nat, family(nat)) : nat
+def $family(0, FF) = 0
+def $family(1, GG) = 0
+def $family(2, HH) = 0
+
+syntax child = parent | family(0) | indirect | ZZZ
 
 def $child(child) : nat
 def $child(AA) = 0
@@ -227,6 +237,7 @@ def $child(EE n) = 0
 def $child(EEX n) = 0
 def $child(EEY n) = 0
 def $child(EEZ n) = 0
+def $child(FF) = 0
 def $child(PP) = 0
 def $child(PPX) = 0
 def $child(PPY) = 0
@@ -264,6 +275,7 @@ def $grandchild(EE n) = 0
 def $grandchild(EEX n) = 0
 def $grandchild(EEY n) = 0
 def $grandchild(EEZ n) = 0
+def $grandchild(FF) = 0
 def $grandchild(PP) = 0
 def $grandchild(PPX) = 0
 def $grandchild(PPY) = 0
@@ -278,3 +290,32 @@ def $grandchild(RRY n) = 0
 def $grandchild(RRZ n) = 0
 def $grandchild(ZZZ) = 0
 def $grandchild(ZZZZ) = 0
+
+
+;; Relation atoms
+
+syntax C = {}
+
+relation Rok: C |- parent : OK
+relation Rsub: C |- parent <: parent
+relation Reval: parent; child ~> parent; child
+
+rule Rok: C |- AA : OK
+rule Rsub: C |- parent <: AA
+rule Reval: parent; child ~> AA; BB
+
+relation Rok_macro: C |- parent : OK                  hint(macro "%ok")
+relation Rsub_macro: C |- parent <: parent            hint(macro "%sub")
+relation Reval_macro: parent; child ~> parent; child  hint(macro "%eval")
+
+rule Rok_macro: C |- AA : OK
+rule Rsub_macro: C |- parent <: AA
+rule Reval_macro: parent; child ~> AA; BB
+
+relation Rok_nomacro: C |- parent : OK                  hint(macro none)
+relation Rsub_nomacro: C |- parent <: parent            hint(macro none)
+relation Reval_nomacro: parent; child ~> parent; child  hint(macro none)
+
+rule Rok_nomacro: C |- AA : OK
+rule Rsub_nomacro: C |- parent <: AA
+rule Reval_nomacro: parent; child ~> AA; BB

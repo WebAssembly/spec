@@ -31,15 +31,15 @@ var aa : arrayaddr
 ;; Basic values
 
 syntax num hint(desc "number value") =
-  | CONST numtype num_(numtype)          hint(show %.CONST %)
+  | CONST numtype num_(numtype)          hint(show %.CONST %%)
 syntax vec hint(desc "vector value") =
-  | VCONST vectype vec_(vectype)         hint(show %.CONST %)
+  | VCONST vectype vec_(vectype)         hint(show %.CONST %%)    hint(macro "VCONST")
 syntax addrref hint(desc "address value") =
-  | REF.I31_NUM u31                      hint(show REF.I31 %)
-  | REF.STRUCT_ADDR structaddr           hint(show REF.STRUCT %)
-  | REF.ARRAY_ADDR arrayaddr             hint(show REF.ARRAY %)
-  | REF.FUNC_ADDR funcaddr               hint(show REF.FUNC %)
-  | REF.HOST_ADDR hostaddr               hint(show REF.HOST %)
+  | REF.I31_NUM u31                      hint(show REF.I31 %%)    hint(macro "%NUM")
+  | REF.STRUCT_ADDR structaddr           hint(show REF.STRUCT %%) hint(macro "%ADDR")
+  | REF.ARRAY_ADDR arrayaddr             hint(show REF.ARRAY %%)  hint(macro "%ADDR")
+  | REF.FUNC_ADDR funcaddr               hint(show REF.FUNC %%)   hint(macro "%ADDR")
+  | REF.HOST_ADDR hostaddr               hint(show REF.HOST %%)   hint(macro "%ADDR")
   | REF.EXTERN addrref
 syntax ref hint(desc "reference value")  hint(macro "reff") =
   | addrref
@@ -57,7 +57,7 @@ var res : result
 
 ;; External values
 
-syntax externval hint(desc "external value") =
+syntax externval hint(desc "external value") hint(macro "EV%") =
   | FUNC funcaddr | GLOBAL globaladdr | TABLE tableaddr | MEM memaddr
 
 var xv : externval
@@ -69,25 +69,25 @@ var xv : externval
 
 ;; Instances
 
-syntax funcinst hint(desc "function instance") =
+syntax funcinst hint(desc "function instance") hint(macro "FI%") =
   { TYPE deftype,
     MODULE moduleinst,
     CODE func }
-syntax globalinst hint(desc "global instance") =
+syntax globalinst hint(desc "global instance") hint(macro "GI%") =
   { TYPE globaltype,
     VALUE val }
-syntax tableinst hint(desc "table instance") =
+syntax tableinst hint(desc "table instance") hint(macro "TI%") =
   { TYPE tabletype,
     REFS ref* }
-syntax meminst hint(desc "memory instance") =
+syntax meminst hint(desc "memory instance") hint(macro "MI%") =
   { TYPE memtype,
     BYTES byte* }
-syntax eleminst hint(desc "element instance") =
+syntax eleminst hint(desc "element instance") hint(macro "EI%") =
   { TYPE elemtype,
     REFS ref* }
-syntax datainst hint(desc "data instance") =
+syntax datainst hint(desc "data instance") hint(macro "DI%") =
   { BYTES byte* }
-syntax exportinst hint(desc "export instance") =
+syntax exportinst hint(desc "export instance") hint(macro "EI%") =
   { NAME name,
     VALUE externval }
 
@@ -95,14 +95,14 @@ syntax packval hint(desc "packed value") =
   | PACK packtype pack_(packtype)    hint(show %.PACK %)
 syntax fieldval hint(desc "field value") =
   | val | packval
-syntax structinst hint(desc "structure instance") =
+syntax structinst hint(desc "structure instance") hint(macro "SI%") =
   { TYPE deftype,
     FIELDS fieldval* }
-syntax arrayinst hint(desc "array instance") =
+syntax arrayinst hint(desc "array instance") hint(macro "AI%") =
   { TYPE deftype,
     FIELDS fieldval* }
 
-syntax moduleinst hint(desc "module instance") =
+syntax moduleinst hint(desc "module instance") hint(macro "MI%") =
   { TYPES deftype*,
     FUNCS funcaddr*,
     GLOBALS globaladdr*,
@@ -129,7 +129,7 @@ var pv : packval
 
 ;; Configurations proper
 
-syntax store hint(desc "store") =
+syntax store hint(desc "store") hint(macro "S%") =
   { FUNCS funcinst*,
     GLOBALS globalinst*,
     TABLES tableinst*,
@@ -139,7 +139,7 @@ syntax store hint(desc "store") =
     STRUCTS structinst*,
     ARRAYS arrayinst* }
 
-syntax frame hint(desc "frame") =
+syntax frame hint(desc "frame") hint(macro "F%") =
   { LOCALS (val?)*,
     MODULE moduleinst }
 

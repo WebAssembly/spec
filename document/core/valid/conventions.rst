@@ -254,7 +254,7 @@ which collects relevant information about the surrounding :ref:`module <syntax-m
 * *Memories*: the list of :ref:`memories <syntax-mem>` declared in the current module, represented by their :ref:`memory type <syntax-memtype>`.
 * *Globals*: the list of :ref:`globals <syntax-global>` declared in the current module, represented by their :ref:`global type <syntax-globaltype>`.
 * *Element Segments*: the list of :ref:`element segments <syntax-elem>` declared in the current module, represented by the elements' :ref:`reference type <syntax-reftype>`.
-* *Data Segments*: the list of :ref:`data segments <syntax-data>` declared in the current module, each represented by an |ok| entry.
+* *Data Segments*: the list of :ref:`data segments <syntax-data>` declared in the current module, each represented by an |OKdata| entry.
 * *Locals*: the list of :ref:`locals <syntax-local>` declared in the current :ref:`function <syntax-func>` (including parameters), represented by their :ref:`local type <syntax-localtype>`.
 * *Labels*: the stack of :ref:`labels <syntax-label>` accessible from the current position, represented by their :ref:`result type <syntax-resulttype>`.
 * *Return*: the return type of the current :ref:`function <syntax-func>`, represented as an optional :ref:`result type <syntax-resulttype>` that is absent when no return is allowed, as in free-standing expressions.
@@ -277,7 +277,7 @@ More concretely, contexts are defined as :ref:`records <notation-record>` :math:
         & \CMEMS & \memtype^\ast, \\
         & \CGLOBALS & \globaltype^\ast, \\
         & \CELEMS & \reftype^\ast, \\
-        & \CDATAS & {\ok}^\ast, \\
+        & \CDATAS & \datatype^\ast, \\
         & \CLOCALS & \localtype^\ast, \\
         & \CLABELS & \resulttype^\ast, \\
         & \CRETURN & \resulttype^?, \\

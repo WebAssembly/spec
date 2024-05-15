@@ -55,7 +55,7 @@ Well-formedness for :ref:`extended type forms <type-ext>` is defined as follows.
 .. math::
    \frac{
    }{
-     C \vdashheaptype \BOTH \ok
+     C \vdashheaptype \BOTH : \OKheaptype
    }
 
 :ref:`Heap Type <syntax-heaptype-ext>` :math:`\REC~i`
@@ -69,7 +69,7 @@ Well-formedness for :ref:`extended type forms <type-ext>` is defined as follows.
    \frac{
      C.\CRECS[i] = \subtype
    }{
-     C \vdashheaptype \REC~i \ok
+     C \vdashheaptype \REC~i : \OKheaptype
    }
 
 
@@ -83,7 +83,7 @@ Well-formedness for :ref:`extended type forms <type-ext>` is defined as follows.
 .. math::
    \frac{
    }{
-     C \vdashvaltype \BOT \ok
+     C \vdashvaltype \BOT : \OKvaltype
    }
 
 
@@ -102,23 +102,23 @@ Well-formedness for :ref:`extended type forms <type-ext>` is defined as follows.
 
 .. math::
    \frac{
-     C,\CRECS~\subtype^\ast \vdashrectype \TREC~\subtype^\ast ~{\ok}(x,0)
+     C,\CRECS~\subtype^\ast \vdashrectype \TREC~\subtype^\ast : {\OKrectype}(x,0)
    }{
-     C \vdashrectype \TREC~\subtype^\ast ~{\ok}(x)
+     C \vdashrectype \TREC~\subtype^\ast : {\OKrectype}(x)
    }
 
 .. math::
    \frac{
    }{
-     C \vdashrectype \TREC~\epsilon ~{\ok}(x,i)
+     C \vdashrectype \TREC~\epsilon : {\OKrectype}(x,i)
    }
    \qquad
    \frac{
-     C \vdashsubtype \subtype ~{\ok}(x,i)
+     C \vdashsubtype \subtype : {\OKsubtype}(x,i)
      \qquad
-     C \vdashrectype \TREC~{\subtype'}^\ast ~{\ok}(x+1,i+1)
+     C \vdashrectype \TREC~{\subtype'}^\ast : {\OKrectype}(x+1,i+1)
    }{
-     C \vdashrectype \TREC~\subtype~{\subtype'}^\ast ~{\ok}(x,i)
+     C \vdashrectype \TREC~\subtype~{\subtype'}^\ast : {\OKrectype}(x,i)
    }
 
 .. note::
@@ -169,12 +169,12 @@ Well-formedness for :ref:`extended type forms <type-ext>` is defined as follows.
      \qquad
      (\unrollht_{C}(\X{ht}) = \TSUB~{\X{ht}'}^\ast~\comptype')^\ast
      \\
-     C \vdashcomptype \comptype \ok
+     C \vdashcomptype \comptype : \OKcomptype
      \qquad
      (C \vdashcomptypematch \comptype \subcomptypematch \comptype')^\ast
      \end{array}
    }{
-     C \vdashsubtype \TSUB~\TFINAL^?~\X{ht}^\ast~\comptype ~{\ok}(x,i)
+     C \vdashsubtype \TSUB~\TFINAL^?~\X{ht}^\ast~\comptype : {\OKsubtype}(x,i)
    }
 
 .. _aux-unroll-heaptype:
@@ -253,7 +253,7 @@ Results
 
 .. math::
    \frac{
-     \vdashresulttype [t^\ast] \ok
+     \vdashresulttype [t^\ast] : \OKresulttype
    }{
      S \vdashresult \TRAP : [t^\ast]
    }
@@ -315,11 +315,11 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      \\
      (S \vdasheleminst \eleminst : \reftype)^\ast
      \qquad
-     (S \vdashdatainst \datainst \ok)^\ast
+     (S \vdashdatainst \datainst : \OKdatainst)^\ast
      \\
-     (S \vdashstructinst \structinst \ok)^\ast
+     (S \vdashstructinst \structinst : \OKstructinst)^\ast
      \qquad
-     (S \vdasharrayinst \arrayinst \ok)^\ast
+     (S \vdasharrayinst \arrayinst : \OKarrayinst)^\ast
      \\
      S = \{
        \begin{array}[t]{@{}l@{}}
@@ -342,7 +342,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      ((\REFARRAYADDR~a_{\F{a}}) \not\gg^+_S (\REFARRAYADDR~a_{\F{a}}))^\ast
      \end{array}
    }{
-     \vdashstore S \ok
+     \vdashstore S : \OKstore
    }
 
 .. index:: reachability
@@ -384,7 +384,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 .. math::
    \frac{
      \begin{array}{@{}c@{}}
-     \vdashfunctype \functype \ok
+     \vdashfunctype \functype : \OKfunctype
      \qquad
      S \vdashmoduleinst \moduleinst : C
      \\
@@ -422,12 +422,12 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 .. math::
    \frac{
      \begin{array}[b]{@{}l@{}}
-     \vdashfunctype [t_1^\ast] \toF [t_2^\ast] \ok \\
+     \vdashfunctype [t_1^\ast] \toF [t_2^\ast] : \OKfunctype \\
      \end{array}
      \quad
      \begin{array}[b]{@{}l@{}}
      \forall S_1, \val^\ast,~
-       {\vdashstore S_1 \ok} \wedge
+       {\vdashstore S_1 : \OKstore} \wedge
        {\vdashstoreextends S \extendsto S_1} \wedge
        {S_1 \vdashresult \val^\ast : [t_1^\ast]}
        \Longrightarrow {} \\ \qquad
@@ -435,7 +435,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
      \forall R \in \X{hf}(S_1; \val^\ast),~
        R = \bot \vee {} \\ \qquad\qquad
        \exists S_2, \result,~
-       {\vdashstore S_2 \ok} \wedge
+       {\vdashstore S_2 : \OKstore} \wedge
        {\vdashstoreextends S_1 \extendsto S_2} \wedge
        {S_2 \vdashresult \result : [t_2^\ast]} \wedge
        R = (S_2; \result)
@@ -455,7 +455,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 .. index:: table type, table instance, limits, function address
 .. _valid-tableinst:
 
-:ref:`Table Instances <syntax-tableinst>` :math:`\{ \TITYPE~(\limits~t), \TIELEM~\reff^\ast \}`
+:ref:`Table Instances <syntax-tableinst>` :math:`\{ \TITYPE~(\limits~t), \TIREFS~\reff^\ast \}`
 ...............................................................................................
 
 * The :ref:`table type <syntax-tabletype>` :math:`\limits~t` must be :ref:`valid <valid-tabletype>` under the empty :ref:`context <context>`.
@@ -472,7 +472,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 .. math::
    \frac{
-     \vdashtabletype \limits~t \ok
+     \vdashtabletype \limits~t : \OKtabletype
      \qquad
      n = \limits.\LMIN
      \qquad
@@ -480,15 +480,15 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
      \qquad
      (\vdashreftypematch t' \subvaltypematch t)^n
    }{
-     S \vdashtableinst \{ \TITYPE~(\limits~t), \TIELEM~\reff^n \} : \limits~t
+     S \vdashtableinst \{ \TITYPE~(\limits~t), \TIREFS~\reff^n \} : \limits~t
    }
 
 
 .. index:: memory type, memory instance, limits, byte
 .. _valid-meminst:
 
-:ref:`Memory Instances <syntax-meminst>` :math:`\{ \MITYPE~\limits, \MIDATA~b^\ast \}`
-......................................................................................
+:ref:`Memory Instances <syntax-meminst>` :math:`\{ \MITYPE~\limits, \MIBYTES~b^\ast \}`
+.......................................................................................
 
 * The :ref:`memory type <syntax-memtype>` :math:`\limits` must be :ref:`valid <valid-memtype>` under the empty :ref:`context <context>`.
 
@@ -498,11 +498,11 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 .. math::
    \frac{
-     \vdashmemtype \limits \ok
+     \vdashmemtype \limits : \OKmemtype
      \qquad
      n = \limits.\LMIN \cdot 64\,\F{Ki}
    }{
-     S \vdashmeminst \{ \MITYPE~\limits, \MIDATA~b^n \} : \limits
+     S \vdashmeminst \{ \MITYPE~\limits, \MIBYTES~b^n \} : \limits
    }
 
 
@@ -522,7 +522,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 .. math::
    \frac{
-     \vdashglobaltype \mut~t \ok
+     \vdashglobaltype \mut~t : \OKglobaltype
      \qquad
      S \vdashval \val : t'
      \qquad
@@ -535,7 +535,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 .. index:: element instance, reference
 .. _valid-eleminst:
 
-:ref:`Element Instances <syntax-eleminst>` :math:`\{ \EITYPE~t, \EIELEM~\reff^\ast \}`
+:ref:`Element Instances <syntax-eleminst>` :math:`\{ \EITYPE~t, \EIREFS~\reff^\ast \}`
 ......................................................................................
 
 * The :ref:`reference type <syntax-reftype>` :math:`t` must be :ref:`valid <valid-reftype>` under the empty :ref:`context <context>`.
@@ -550,28 +550,28 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 .. math::
    \frac{
-     \vdashreftype t \ok
+     \vdashreftype t : \OKreftype
      \qquad
      (S \vdashval \reff : t')^\ast
      \qquad
      (\vdashreftypematch t' \subvaltypematch t)^\ast
    }{
-     S \vdasheleminst \{ \EITYPE~t, \EIELEM~\reff^\ast \} : t
+     S \vdasheleminst \{ \EITYPE~t, \EIREFS~\reff^\ast \} : t
    }
 
 
 .. index:: data instance, byte
 .. _valid-datainst:
 
-:ref:`Data Instances <syntax-eleminst>` :math:`\{ \DIDATA~b^\ast \}`
-....................................................................
+:ref:`Data Instances <syntax-eleminst>` :math:`\{ \DIBYTES~b^\ast \}`
+.....................................................................
 
 * The data instance is valid.
 
 .. math::
    \frac{
    }{
-     S \vdashdatainst \{ \DIDATA~b^\ast \} \ok
+     S \vdashdatainst \{ \DIBYTES~b^\ast \} : \OKdatainst
    }
 
 
@@ -597,13 +597,13 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 .. math::
    \frac{
-     \vdashdeftype \X{dt} \ok
+     \vdashdeftype \X{dt} : \OKdeftype
      \qquad
      \expanddt(\X{dt}) = \TSTRUCT~(\mut~\X{st})^\ast
      \qquad
      (S \vdashfieldval \X{fv} : \X{st})^\ast
    }{
-     S \vdashstructinst \{ \SITYPE~\X{dt}, \SIFIELDS~\X{fv}^\ast \} \ok
+     S \vdashstructinst \{ \SITYPE~\X{dt}, \SIFIELDS~\X{fv}^\ast \} : \OKstructinst
    }
 
 
@@ -627,13 +627,13 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 .. math::
    \frac{
-     \vdashdeftype \X{dt} \ok
+     \vdashdeftype \X{dt} : \OKdeftype
      \qquad
      \expanddt(\X{dt}) = \TARRAY~(\mut~\X{st})
      \qquad
      (S \vdashfieldval \X{fv} : \X{st})^\ast
    }{
-     S \vdasharrayinst \{ \AITYPE~\X{dt}, \AIFIELDS~\X{fv}^\ast \} \ok
+     S \vdasharrayinst \{ \AITYPE~\X{dt}, \AIFIELDS~\X{fv}^\ast \} : \OKarrayinst
    }
 
 
@@ -677,7 +677,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
    \frac{
      S \vdashexternval \externval : \externtype
    }{
-     S \vdashexportinst \{ \EINAME~\name, \EIVALUE~\externval \} \ok
+     S \vdashexportinst \{ \EINAME~\name, \EIVALUE~\externval \} : \OKexportinst
    }
 
 
@@ -699,7 +699,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 * For each :ref:`element address <syntax-elemaddr>` :math:`\elemaddr_i` in :math:`\moduleinst.\MIELEMS`, the :ref:`element instance <syntax-eleminst>` :math:`S.\SELEMS[\elemaddr_i]` must be :ref:`valid <valid-eleminst>` with some :ref:`reference type <syntax-reftype>` :math:`\reftype_i`.
 
-* For each :ref:`data address <syntax-dataaddr>` :math:`\dataaddr_i` in :math:`\moduleinst.\MIDATAS`, the :ref:`data instance <syntax-datainst>` :math:`S.\SDATAS[\dataaddr_i]` must be :ref:`valid <valid-datainst>`.
+* For each :ref:`data address <syntax-dataaddr>` :math:`\dataaddr_i` in :math:`\moduleinst.\MIDATAS`, the :ref:`data instance <syntax-datainst>` :math:`S.\SDATAS[\dataaddr_i]` must be :ref:`valid <valid-datainst>` with :math:`\X{ok}_i`.
 
 * Each :ref:`export instance <syntax-exportinst>` :math:`\exportinst_i` in :math:`\moduleinst.\MIEXPORTS` must be :ref:`valid <valid-exportinst>`.
 
@@ -717,20 +717,20 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 * Let :math:`\reftype^\ast` be the concatenation of all :math:`\reftype_i` in order.
 
-* Let :math:`m` be the length of :math:`\moduleinst.\MIFUNCS`.
+* Let :math:`\X{ok}^\ast` be the concatenation of all :math:`\X{ok}_i` in order.
 
-* Let :math:`n` be the length of :math:`\moduleinst.\MIDATAS`.
+* Let :math:`m` be the length of :math:`\moduleinst.\MIFUNCS`.
 
 * Let :math:`x^\ast` be the sequence of :ref:`function indices <syntax-funcidx>` from :math:`0` to :math:`m-1`.
 
 * Then the module instance is valid with :ref:`context <context>`
-  :math:`\{\CTYPES~\deftype^\ast,` :math:`\CFUNCS~\functype^\ast,` :math:`\CTABLES~\tabletype^\ast,` :math:`\CMEMS~\memtype^\ast,` :math:`\CGLOBALS~\globaltype^\ast,` :math:`\CELEMS~\reftype^\ast,` :math:`\CDATAS~{\ok}^n,` :math:`\CREFS~x^\ast\}`.
+  :math:`\{\CTYPES~\deftype^\ast,` :math:`\CFUNCS~\functype^\ast,` :math:`\CTABLES~\tabletype^\ast,` :math:`\CMEMS~\memtype^\ast,` :math:`\CGLOBALS~\globaltype^\ast,` :math:`\CELEMS~\reftype^\ast,` :math:`\CDATAS~\X{ok}^\ast,` :math:`\CREFS~x^\ast\}`.
 
 .. math::
    ~\\[-1ex]
    \frac{
      \begin{array}{@{}c@{}}
-     (\vdashdeftype \deftype \ok)^\ast
+     (\vdashdeftype \deftype : \OKdeftype)^\ast
      \\
      (S \vdashexternval \EVFUNC~\funcaddr : \ETFUNC~\functype)^\ast
      \qquad
@@ -742,9 +742,9 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
      \\
      (S \vdasheleminst S.\SELEMS[\elemaddr] : \reftype)^\ast
      \qquad
-     (S \vdashdatainst S.\SDATAS[\dataaddr] \ok)^n
+     (S \vdashdatainst S.\SDATAS[\dataaddr] : \X{ok})^\ast
      \\
-     (S \vdashexportinst \exportinst \ok)^\ast
+     (S \vdashexportinst \exportinst : \OKexportinst)^\ast
      \qquad
      (\exportinst.\EINAME)^\ast ~\mbox{disjoint}
      \end{array}
@@ -757,7 +757,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
        \MIMEMS & \memaddr^\ast, \\
        \MIGLOBALS & \globaladdr^\ast, \\
        \MIELEMS & \elemaddr^\ast, \\
-       \MIDATAS & \dataaddr^n, \\
+       \MIDATAS & \dataaddr^\ast, \\
        \MIEXPORTS & \exportinst^\ast ~\} : \{
          \begin{array}[t]{@{}l@{~}l@{}}
          \CTYPES & \deftype^\ast, \\
@@ -766,7 +766,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
          \CMEMS & \memtype^\ast, \\
          \CGLOBALS & \globaltype^\ast, \\
          \CELEMS & \reftype^\ast, \\
-         \CDATAS & {\ok}^n, \\
+         \CDATAS & \X{ok}^\ast, \\
          \CREFS & 0 \dots (|\funcaddr^\ast|-1) ~\}
          \end{array}
        \end{array}
@@ -787,17 +787,17 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
        \begin{array}{@{}c@{}}
        x^n = 0 \dots (n-1)
        \qquad
-       (S; \{CTYPES~\functype^n[0 \slice x]\} \vdashfunctype \functype \ok)^n
+       (S; \{CTYPES~\functype^n[0 \slice x]\} \vdashfunctype \functype \OKfunctype)^n
        \\
-       (S; C \vdashfunctype \functype' \ok)^\ast
+       (S; C \vdashfunctype \functype' \OKfunctype)^\ast
        \qquad
-       (S; C \vdashtabletype \tabletype \ok)^\ast
+       (S; C \vdashtabletype \tabletype \OKtabletype)^\ast
        \\
-       (S; C \vdashmemtype \memtype \ok)^\ast
+       (S; C \vdashmemtype \memtype \OKmemtype)^\ast
        \qquad
-       (S; C \vdashglobaltype \globaltype \ok)^\ast
+       (S; C \vdashglobaltype \globaltype \OKglobaltype)^\ast
        \qquad
-       (S; C \vdashreftype \reftype \ok)^\ast
+       (S; C \vdashreftype \reftype \OKreftype)^\ast
        \\
        C = \{
          \begin{array}[t]{@{}l@{~}l@{}}
@@ -807,11 +807,11 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
          \CMEMS & \memtype^\ast, \\
          \CGLOBALS & \globaltype^\ast, \\
          \CELEMS & \reftype^\ast, \\
-         \CDATAS & {\ok}^\ast ~\}
+         \CDATAS & {\X{ok}}^\ast ~\}
          \end{array}
        \end{array}
      }{
-       S \vdashcontext C \ok
+       S \vdashcontext C \OKcontext
      }
 
   .. note::
@@ -849,7 +849,7 @@ Finally, :ref:`frames <syntax-frame>` are classified with *frame contexts*, whic
 
 .. math::
    \frac{
-     \vdashstore S \ok
+     \vdashstore S : \OKstore
      \qquad
      S; \epsilon \vdashthread T : [t^\ast]
    }{
@@ -878,7 +878,7 @@ Finally, :ref:`frames <syntax-frame>` are classified with *frame contexts*, whic
    \frac{
      S \vdashframe F : C
      \qquad
-     S; C,\CRETURN~\resulttype^? \vdashinstrseq \instr^\ast : [] \to [t^\ast]
+     S; C,\CRETURN~\resulttype^? \vdashinstrs \instr^\ast : [] \to [t^\ast]
    }{
      S; \resulttype^? \vdashthread F; \instr^\ast : [t^\ast]
    }
@@ -931,7 +931,7 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 .. math::
    \frac{
-     C \vdashinstrtype [t_1^\ast] \to [t_2^\ast] \ok
+     C \vdashinstrtype [t_1^\ast] \to [t_2^\ast] : \OKinstrtype
    }{
      S; C \vdashadmininstr \TRAP : [t_1^\ast] \to [t_2^\ast]
    }
@@ -989,9 +989,9 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 .. math::
    \frac{
-     S; C \vdashinstrseq \instr_0^\ast : [t_1^n] \to_{x^\ast} [t_2^*]
+     S; C \vdashinstrs \instr_0^\ast : [t_1^n] \to_{x^\ast} [t_2^*]
      \qquad
-     S; C,\CLABELS\,[t_1^n] \vdashinstrseq \instr^\ast : [] \to_{{x'}^\ast} [t_2^*]
+     S; C,\CLABELS\,[t_1^n] \vdashinstrs \instr^\ast : [] \to_{{x'}^\ast} [t_2^*]
    }{
      S; C \vdashadmininstr \LABEL_n\{\instr_0^\ast\}~\instr^\ast~\END : [] \to [t_2^*]
    }
@@ -1009,9 +1009,9 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 .. math::
    \frac{
-     C \vdashresulttype [t^n] \ok
+     C \vdashresulttype [t^n] : \OKresulttype
      \qquad
-     S; [t^n] \vdashinstrseq F; \instr^\ast : [t^n]
+     S; [t^n] \vdashinstrs F; \instr^\ast : [t^n]
    }{
      S; C \vdashadmininstr \FRAME_n\{F\}~\instr^\ast~\END : [] \to [t^n]
    }
@@ -1130,13 +1130,13 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 
 * The :ref:`table type <syntax-tabletype>` :math:`\tableinst.\TITYPE` must remain unchanged.
 
-* The length of :math:`\tableinst.\TIELEM` must not shrink.
+* The length of :math:`\tableinst.\TIREFS` must not shrink.
 
 .. math::
    \frac{
      n_1 \leq n_2
    }{
-     \vdashtableinstextends \{\TITYPE~\X{tt}, \TIELEM~(\X{fa}_1^?)^{n_1}\} \extendsto \{\TITYPE~\X{tt}, \TIELEM~(\X{fa}_2^?)^{n_2}\}
+     \vdashtableinstextends \{\TITYPE~\X{tt}, \TIREFS~(\X{fa}_1^?)^{n_1}\} \extendsto \{\TITYPE~\X{tt}, \TIREFS~(\X{fa}_2^?)^{n_2}\}
    }
 
 
@@ -1148,13 +1148,13 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 
 * The :ref:`memory type <syntax-memtype>` :math:`\meminst.\MITYPE` must remain unchanged.
 
-* The length of :math:`\meminst.\MIDATA` must not shrink.
+* The length of :math:`\meminst.\MIBYTES` must not shrink.
 
 .. math::
    \frac{
      n_1 \leq n_2
    }{
-     \vdashmeminstextends \{\MITYPE~\X{mt}, \MIDATA~b_1^{n_1}\} \extendsto \{\MITYPE~\X{mt}, \MIDATA~b_2^{n_2}\}
+     \vdashmeminstextends \{\MITYPE~\X{mt}, \MIBYTES~b_1^{n_1}\} \extendsto \{\MITYPE~\X{mt}, \MIBYTES~b_2^{n_2}\}
    }
 
 
@@ -1186,7 +1186,7 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 
 * The :ref:`reference type <syntax-reftype>` :math:`\eleminst.\EITYPE` must remain unchanged.
 
-* The list :math:`\eleminst.\EIELEM` must:
+* The list :math:`\eleminst.\EIREFS` must:
 
   * either remain unchanged,
 
@@ -1195,13 +1195,13 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 .. math::
    \frac{
    }{
-     \vdasheleminstextends \{\EITYPE~t, \EIELEM~a^\ast\} \extendsto \{\EITYPE~t, \EIELEM~a^\ast\}
+     \vdasheleminstextends \{\EITYPE~t, \EIREFS~a^\ast\} \extendsto \{\EITYPE~t, \EIREFS~a^\ast\}
    }
 
 .. math::
    \frac{
    }{
-     \vdasheleminstextends \{\EITYPE~t, \EIELEM~a^\ast\} \extendsto \{\EITYPE~t, \EIELEM~\epsilon\}
+     \vdasheleminstextends \{\EITYPE~t, \EIREFS~a^\ast\} \extendsto \{\EITYPE~t, \EIREFS~\epsilon\}
    }
 
 
@@ -1211,7 +1211,7 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 :ref:`Data Instance <syntax-datainst>` :math:`\datainst`
 ........................................................
 
-* The list :math:`\datainst.\DIDATA` must:
+* The list :math:`\datainst.\DIBYTES` must:
 
   * either remain unchanged,
 
@@ -1220,13 +1220,13 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 .. math::
    \frac{
    }{
-     \vdashdatainstextends \{\DIDATA~b^\ast\} \extendsto \{\DIDATA~b^\ast\}
+     \vdashdatainstextends \{\DIBYTES~b^\ast\} \extendsto \{\DIBYTES~b^\ast\}
    }
 
 .. math::
    \frac{
    }{
-     \vdashdatainstextends \{\DIDATA~b^\ast\} \extendsto \{\DIDATA~\epsilon\}
+     \vdashdatainstextends \{\DIBYTES~b^\ast\} \extendsto \{\DIBYTES~\epsilon\}
    }
 
 
@@ -1390,18 +1390,18 @@ A *type substitution* :math:`\sigma` is a finite mapping from type variables to 
 When applied to an open type, it replaces the type variables :math:`\alpha` from its domain with the respective :math:`\sigma(\alpha)`.
 
 **Theorem (Principal Types).**
-If an instruction sequence :math:`\instr^\ast` is :ref:`valid <valid-config>` with some closed :ref:`instruction type <syntax-instrtype>` :math:`\instrtype` (i.e., :math:`C \vdashinstrseq \instr^\ast : \instrtype`),
-then it is also valid with a possibly open instruction type :math:`\instrtype_{\min}` (i.e., :math:`C \vdashinstrseq \instr^\ast : \instrtype_{\min}`),
-such that for *every* closed type :math:`\instrtype'` with which :math:`\instr^\ast` is valid (i.e., for all :math:`C \vdashinstrseq \instr^\ast : \instrtype'`),
+If an instruction sequence :math:`\instr^\ast` is :ref:`valid <valid-config>` with some closed :ref:`instruction type <syntax-instrtype>` :math:`\instrtype` (i.e., :math:`C \vdashinstrs \instr^\ast : \instrtype`),
+then it is also valid with a possibly open instruction type :math:`\instrtype_{\min}` (i.e., :math:`C \vdashinstrs \instr^\ast : \instrtype_{\min}`),
+such that for *every* closed type :math:`\instrtype'` with which :math:`\instr^\ast` is valid (i.e., for all :math:`C \vdashinstrs \instr^\ast : \instrtype'`),
 there exists a substitution :math:`\sigma`,
 such that :math:`\sigma(\instrtype_{\min})` is a subtype of :math:`\instrtype'` (i.e., :math:`C \vdashinstrtypematch \sigma(\instrtype_{\min}) \subinstrtypematch \instrtype'`).
 Furthermore, :math:`\instrtype_{\min}` is unique up to the choice of type variables.
 
 **Theorem (Closed Principal Forward Types).**
-If closed input type :math:`[t_1^\ast]` is given and the instruction sequence :math:`\instr^\ast` is :ref:`valid <valid-config>` with :ref:`instruction type <syntax-instrtype>` :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]` (i.e., :math:`C \vdashinstrseq \instr^\ast : [t_1^\ast] \to_{x^\ast} [t_2^\ast]`),
-then it is also valid with instruction type :math:`[t_1^\ast] \to_{x^\ast} [\alpha_{\valtype^\ast}~t^\ast]` (i.e., :math:`C \vdashinstrseq \instr^\ast : [t_1^\ast] \to_{x^\ast} [\alpha_{\valtype^\ast}~t^\ast]`),
+If closed input type :math:`[t_1^\ast]` is given and the instruction sequence :math:`\instr^\ast` is :ref:`valid <valid-config>` with :ref:`instruction type <syntax-instrtype>` :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]` (i.e., :math:`C \vdashinstrs \instr^\ast : [t_1^\ast] \to_{x^\ast} [t_2^\ast]`),
+then it is also valid with instruction type :math:`[t_1^\ast] \to_{x^\ast} [\alpha_{\valtype^\ast}~t^\ast]` (i.e., :math:`C \vdashinstrs \instr^\ast : [t_1^\ast] \to_{x^\ast} [\alpha_{\valtype^\ast}~t^\ast]`),
 where all :math:`t^\ast` are closed,
-such that for *every* closed result type :math:`[{t'_2}^\ast]` with which :math:`\instr^\ast` is valid (i.e., for all :math:`C \vdashinstrseq \instr^\ast : [t_1^\ast] \to_{x^\ast} [{t'_2}^\ast]`),
+such that for *every* closed result type :math:`[{t'_2}^\ast]` with which :math:`\instr^\ast` is valid (i.e., for all :math:`C \vdashinstrs \instr^\ast : [t_1^\ast] \to_{x^\ast} [{t'_2}^\ast]`),
 there exists a substitution :math:`\sigma`,
 such that :math:`[{t'_2}^\ast] = [\sigma(\alpha_{\valtype^\ast})~t^\ast]`.
 
@@ -1415,11 +1415,11 @@ The :ref:`Principal Types <principality>` property depends on the existence of a
 
 **Theorem (Greatest Lower Bounds for Value Types).**
 For any two value types :math:`t_1` and :math:`t_2` that are :ref:`valid <valid-valtype>`
-(i.e., :math:`C \vdashvaltype t_1 \ok` and :math:`C \vdashvaltype t_2 \ok`),
+(i.e., :math:`C \vdashvaltype t_1 : \OKvaltype` and :math:`C \vdashvaltype t_2 : \OKvaltype`),
 there exists a valid value type :math:`t` that is a subtype of both :math:`t_1` and :math:`t_2`
-(i.e., :math:`C \vdashvaltype t \ok` and :math:`C \vdashvaltypematch t \subvaltypematch t_1` and :math:`C \vdashvaltypematch t \subvaltypematch t_2`),
+(i.e., :math:`C \vdashvaltype t : \OKvaltype` and :math:`C \vdashvaltypematch t \subvaltypematch t_1` and :math:`C \vdashvaltypematch t \subvaltypematch t_2`),
 such that *every* valid value type :math:`t'` that also is a subtype of both :math:`t_1` and :math:`t_2`
-(i.e., for all :math:`C \vdashvaltype t' \ok` and :math:`C \vdashvaltypematch t' \subvaltypematch t_1` and :math:`C \vdashvaltypematch t' \subvaltypematch t_2`),
+(i.e., for all :math:`C \vdashvaltype t' : \OKvaltype` and :math:`C \vdashvaltypematch t' \subvaltypematch t_1` and :math:`C \vdashvaltypematch t' \subvaltypematch t_2`),
 is a subtype of :math:`t`
 (i.e., :math:`C \vdashvaltypematch t' \subvaltypematch t`).
 
@@ -1428,12 +1428,12 @@ is a subtype of :math:`t`
 
 **Theorem (Conditional Least Upper Bounds for Value Types).**
 Any two value types :math:`t_1` and :math:`t_2` that are :ref:`valid <valid-valtype>`
-(i.e., :math:`C \vdashvaltype t_1 \ok` and :math:`C \vdashvaltype t_2 \ok`)
+(i.e., :math:`C \vdashvaltype t_1 : \OKvaltype` and :math:`C \vdashvaltype t_2 : \OKvaltype`)
 either have no common supertype,
 or there exists a valid value type :math:`t` that is a supertype of both :math:`t_1` and :math:`t_2`
-(i.e., :math:`C \vdashvaltype t \ok` and :math:`C \vdashvaltypematch t_1 \subvaltypematch t` and :math:`C \vdashvaltypematch t_2 \subvaltypematch t`),
+(i.e., :math:`C \vdashvaltype t : \OKvaltype` and :math:`C \vdashvaltypematch t_1 \subvaltypematch t` and :math:`C \vdashvaltypematch t_2 \subvaltypematch t`),
 such that *every* valid value type :math:`t'` that also is a supertype of both :math:`t_1` and :math:`t_2`
-(i.e., for all :math:`C \vdashvaltype t' \ok` and :math:`C \vdashvaltypematch t_1 \subvaltypematch t'` and :math:`C \vdashvaltypematch t_2 \subvaltypematch t'`),
+(i.e., for all :math:`C \vdashvaltype t' : \OKvaltype` and :math:`C \vdashvaltypematch t_1 \subvaltypematch t'` and :math:`C \vdashvaltypematch t_2 \subvaltypematch t'`),
 is a supertype of :math:`t`
 (i.e., :math:`C \vdashvaltypematch t \subvaltypematch t'`).
 
@@ -1467,8 +1467,8 @@ Compositionality
 :ref:`Valid <valid-instr-seq>` :ref:`instruction sequences <syntax-instr>` can be freely *composed*, as long as their types match up.
 
 **Theorem (Composition).**
-If two instruction sequences :math:`\instr_1^\ast` and :math:`\instr_2^\ast` are valid with types :math:`[t_1^\ast] \to_{x_1^\ast} [t^\ast]` and  :math:`[t^\ast] \to_{x_2^\ast} [t_2^\ast]`, respectively (i.e., :math:`C \vdashinstrseq \instr_1^\ast : [t_1^\ast] \to_{x_1^\ast} [t^\ast]` and :math:`C \vdashinstrseq \instr_1^\ast : [t^\ast] \to_{x_2^\ast} [t_2^\ast]`),
-then the concatenated instruction sequence :math:`(\instr_1^\ast\;\instr_2^\ast)` is valid with type :math:`[t_1^\ast] \to_{x_1^\ast\,x_2^\ast} [t_2^\ast]` (i.e., :math:`C \vdashinstrseq \instr_1^\ast\;\instr_2^\ast : [t_1^\ast] \to_{x_1^\ast\,x_2^\ast} [t_2^\ast]`).
+If two instruction sequences :math:`\instr_1^\ast` and :math:`\instr_2^\ast` are valid with types :math:`[t_1^\ast] \to_{x_1^\ast} [t^\ast]` and  :math:`[t^\ast] \to_{x_2^\ast} [t_2^\ast]`, respectively (i.e., :math:`C \vdashinstrs \instr_1^\ast : [t_1^\ast] \to_{x_1^\ast} [t^\ast]` and :math:`C \vdashinstrs \instr_1^\ast : [t^\ast] \to_{x_2^\ast} [t_2^\ast]`),
+then the concatenated instruction sequence :math:`(\instr_1^\ast\;\instr_2^\ast)` is valid with type :math:`[t_1^\ast] \to_{x_1^\ast\,x_2^\ast} [t_2^\ast]` (i.e., :math:`C \vdashinstrs \instr_1^\ast\;\instr_2^\ast : [t_1^\ast] \to_{x_1^\ast\,x_2^\ast} [t_2^\ast]`).
 
 .. note::
    More generally, instead of a shared type :math:`[t^\ast]`, it suffices if the output type of :math:`\instr_1^\ast` is a :ref:`subtype <match-resulttype>` of the input type of  :math:`\instr_1^\ast`,
@@ -1477,9 +1477,9 @@ then the concatenated instruction sequence :math:`(\instr_1^\ast\;\instr_2^\ast)
 Inversely, valid instruction sequences can also freely be *decomposed*, that is, splitting them anywhere produces two instruction sequences that are both :ref:`valid <valid-instr-seq>`.
 
 **Theorem (Decomposition).**
-If an instruction sequence :math:`\instr^\ast` that is valid with type :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]` (i.e., :math:`C \vdashinstrseq \instr^\ast : [t_1^\ast] \to_{x^\ast} [t_2^\ast]`)
+If an instruction sequence :math:`\instr^\ast` that is valid with type :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]` (i.e., :math:`C \vdashinstrs \instr^\ast : [t_1^\ast] \to_{x^\ast} [t_2^\ast]`)
 is split into two instruction sequences :math:`\instr_1^\ast` and :math:`\instr_2^\ast` at any point (i.e., :math:`\instr^\ast = \instr_1^\ast\;\instr_2^\ast`),
-then these are separately valid with some types :math:`[t_1^\ast] \to_{x_1^\ast} [t^\ast]` and  :math:`[t^\ast] \to_{x_2^\ast} [t_2^\ast]`, respectively (i.e., :math:`C \vdashinstrseq \instr_1^\ast : [t_1^\ast] \to_{x_1^\ast} [t^\ast]` and :math:`C \vdashinstrseq \instr_1^\ast : [t^\ast] \to_{x_2^\ast} [t_2^\ast]`),
+then these are separately valid with some types :math:`[t_1^\ast] \to_{x_1^\ast} [t^\ast]` and  :math:`[t^\ast] \to_{x_2^\ast} [t_2^\ast]`, respectively (i.e., :math:`C \vdashinstrs \instr_1^\ast : [t_1^\ast] \to_{x_1^\ast} [t^\ast]` and :math:`C \vdashinstrs \instr_1^\ast : [t^\ast] \to_{x_2^\ast} [t_2^\ast]`),
 where :math:`x^\ast = x_1^\ast\;x_2^\ast`.
 
 .. note::

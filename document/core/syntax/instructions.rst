@@ -125,15 +125,15 @@ $${syntax:
      \K{v128.}\vvbinop \\&&|&
      \K{v128.}\vvternop \\&&|&
      \K{v128.}\vvtestop \\&&|&
-     \K{i8x16.}\SHUFFLE~\laneidx^{16} \\&&|&
-     \K{i8x16.}\SWIZZLE \\&&|&
-     \shape\K{.}\SPLAT \\&&|&
-     \K{i8x16.}\EXTRACTLANE\K{\_}\sx~\laneidx ~|~
-     \K{i16x8.}\EXTRACTLANE\K{\_}\sx~\laneidx \\&&|&
-     \K{i32x4.}\EXTRACTLANE~\laneidx ~|~
-     \K{i64x2.}\EXTRACTLANE~\laneidx \\&&|&
-     \fshape\K{.}\EXTRACTLANE~\laneidx \\&&|&
-     \shape\K{.}\REPLACELANE~\laneidx \\&&|&
+     \K{i8x16.}\VSHUFFLE~\laneidx^{16} \\&&|&
+     \K{i8x16.}\VSWIZZLE \\&&|&
+     \shape\K{.}\VSPLAT \\&&|&
+     \K{i8x16.}\VEXTRACTLANE\K{\_}\sx~\laneidx ~|~
+     \K{i16x8.}\VEXTRACTLANE\K{\_}\sx~\laneidx \\&&|&
+     \K{i32x4.}\VEXTRACTLANE~\laneidx ~|~
+     \K{i64x2.}\VEXTRACTLANE~\laneidx \\&&|&
+     \fshape\K{.}\VEXTRACTLANE~\laneidx \\&&|&
+     \shape\K{.}\VREPLACELANE~\laneidx \\&&|&
      \K{i8x16}\K{.}\virelop ~|~
      \K{i16x8}\K{.}\virelop ~|~
      \K{i32x4}\K{.}\virelop \\&&|&
@@ -146,13 +146,13 @@ $${syntax:
      \fshape\K{.}\vfrelop \\&&|&
      \ishape\K{.}\viunop ~|~
      \K{i8x16.}\VPOPCNT \\&&|&
-     \K{i16x8.}\Q15MULRSAT\K{\_s} \\ &&|&
-     \K{i32x4.}\DOT\K{\_i16x8\_s} \\ &&|&
+     \K{i16x8.}\VQ15MULRSATS \\ &&|&
+     \K{i32x4.}\VDOT\K{\_i16x8\_s} \\ &&|&
      \fshape\K{.}\vfunop \\&&|&
      \ishape\K{.}\vitestop \\ &&|&
-     \ishape\K{.}\BITMASK \\ &&|&
-     \K{i8x16.}\NARROW\K{\_i16x8\_}\sx ~|~
-     \K{i16x8.}\NARROW\K{\_i32x4\_}\sx \\&&|&
+     \ishape\K{.}\VBITMASK \\ &&|&
+     \K{i8x16.}\VNARROW\K{\_i16x8\_}\sx ~|~
+     \K{i16x8.}\VNARROW\K{\_i32x4\_}\sx \\&&|&
      \K{i16x8.}\VEXTEND\K{\_}\half\K{\_i8x16\_}\sx ~|~
      \K{i32x4.}\VEXTEND\K{\_}\half\K{\_i16x8\_}\sx \\&&|&
      \K{i64x2.}\VEXTEND\K{\_}\half\K{\_i32x4\_}\sx \\&&|&
@@ -166,16 +166,16 @@ $${syntax:
      \K{i16x8.}\K{mul} ~|~
      \K{i32x4.}\K{mul} ~|~
      \K{i64x2.}\K{mul} \\&&|&
-     \K{i8x16.}\AVGR\K{\_u} ~|~
-     \K{i16x8.}\AVGR\K{\_u} \\&&|&
-     \K{i16x8.}\EXTMUL\K{\_}\half\K{\_i8x16\_}\sx ~|~
-     \K{i32x4.}\EXTMUL\K{\_}\half\K{\_i16x8\_}\sx ~|~
-     \K{i64x2.}\EXTMUL\K{\_}\half\K{\_i32x4\_}\sx \\ &&|&
-     \K{i16x8.}\EXTADDPAIRWISE\K{\_i8x16\_}\sx ~|~
-     \K{i32x4.}\EXTADDPAIRWISE\K{\_i16x8\_}\sx \\ &&|&
+     \K{i8x16.}\VAVGRU ~|~
+     \K{i16x8.}\VAVGRU \\&&|&
+     \K{i16x8.}\VEXTMUL\K{\_}\half\K{\_i8x16\_}\sx ~|~
+     \K{i32x4.}\VEXTMUL\K{\_}\half\K{\_i16x8\_}\sx ~|~
+     \K{i64x2.}\VEXTMUL\K{\_}\half\K{\_i32x4\_}\sx \\ &&|&
+     \K{i16x8.}\VEXTADDPAIRWISE\K{\_i8x16\_}\sx ~|~
+     \K{i32x4.}\VEXTADDPAIRWISE\K{\_i16x8\_}\sx \\ &&|&
      \fshape\K{.}\vfbinop \\&&|&
-     \K{i32x4.}\VTRUNC\K{\_sat\_f32x4\_}\sx ~|~
-     \K{i32x4.}\VTRUNC\K{\_sat\_f64x2\_}\sx\K{\_zero} \\&&|&
+     \K{i32x4.}\VTRUNCSAT\K{\_f32x4\_}\sx ~|~
+     \K{i32x4.}\VTRUNCSAT\K{\_f64x2\_}\sx\K{\_zero} \\&&|&
      \K{f32x4.}\VCONVERT\K{\_i32x4\_}\sx ~|~
      \K{f32x4.}\VDEMOTE\K{\_f64x2\_zero} \\&&|&
      \K{f64x2.}\VCONVERT\K{\_low\_i32x4\_}\sx ~|~

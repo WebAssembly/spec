@@ -158,9 +158,6 @@ let env_hintdef env hd =
 
 let env_atom env tid atom hints =
   map_cons tid.it atom env.atoms;
-(*
-  env_macro env.macro_atom (typed_id' atom tid.it $ atom.at);
-*)
   env_hintdef env (AtomH (tid, atom, hints) $ atom.at)
 
 let env_typfield env tid (atom, _, hints) = env_atom env tid atom hints
@@ -211,8 +208,8 @@ let env_def env d : (id * typ list) list =
     []
   | TypD (id1, id2, _args, t, hints) ->
     env.vars := Set.add id1.it !(env.vars);
-    env_macro env.macro_typ id1;
-    env_macro env.macro_var id1;
+    if not (Map.mem id1.it !(env.macro_typ)) then env_macro env.macro_typ id1;
+    if not (Map.mem id1.it !(env.macro_var)) then env_macro env.macro_var id1;
     env_hintdef env (TypH (id1, id2, hints) $ d.at);
     env_hintdef env (VarH (id1, hints) $ d.at);
     env_typ env id1 t
@@ -589,7 +586,7 @@ let lower = String.lowercase_ascii
 let dash_id = Str.(global_replace (regexp "-") "{-}")
 let quote_id = Str.(global_replace (regexp "_+") "\\_")
 let shrink_id = Str.(global_replace (regexp "[0-9]+") "{\\\\scriptstyle\\0}")
-let macrofy_id = Str.(global_replace (regexp "_") "")
+let macrofy_id = Str.(global_replace (regexp "[_.]") "")
 
 let id_style = function
   | `Var -> "\\mathit"
@@ -697,20 +694,21 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
       | Atom s when s.[0] = '_' -> ""
       (* HACK: inject literally, already rendered stuff *)
       | Atom s when s.[0] = ' ' -> String.sub s 1 (String.length s - 1)
+      (* HACK: for now, always keep this as non-macros *)
+      | Dot -> "{.}"
+      | Comma -> ","
+      | Semicolon -> ";"
+      | Colon -> ":"
       | _ when env.config.macros_for_ids && atom.note.def <> "" ->
         render_id' env `Atom (chop_sub (untyped_id id).it)
           (macro_template env env.macro_atom id.it)
       | Atom s -> render_id' env `Atom (chop_sub s) None
-      | Dot -> "{.}"
       | Dot2 -> ".."
-      | Semicolon -> ";"
-      | Colon -> ":"
       | Assign -> ":="
       | Equal -> "="
       | Quest -> "{}^?"
       | Plus -> "{}^+"
       | Star -> "{}^\\ast"
-      | Comma -> ","
       | LParen -> "("
       | RParen -> ")"
       | LBrack -> "{}["
@@ -829,6 +827,11 @@ Printf.eprintf "[is_atom_exp %s:X @ %s] false %s\n%!" (Source.string_of_region e
 false
   | _ -> false
 
+and flatten_fuse_exp_rev e =
+  match e.it with
+  | FuseE (e1, e2) -> e2 :: flatten_fuse_exp_rev e1
+  | _ -> [e]
+
 and render_exp env e =
   (*
   Printf.eprintf "[render_exp %s] %s\n%!"
@@ -922,7 +925,7 @@ Printf.eprintf "[render %s:X @ %s] try expansion\n%!" (Source.string_of_region e
     let er = AtomE r $ r.at in
     let args = List.map arg_of_exp ([el] @ as_seq_exp e1 @ [er]) in
     render_expand render_exp env env.show_atom env.macro_atom id args
-      (fun () -> render_atom env l ^ render_exp env e1 ^ render_atom env r)
+      (fun () -> render_atom env l ^ space (render_exp env) e1 ^ render_atom env r)
   | CallE (id, [arg]) when id.it = "" -> (* expansion result only *)
     render_arg env arg
   | CallE (id, args) when id.it = "" ->  (* expansion result only *)
@@ -936,9 +939,10 @@ Printf.eprintf "[render %s:X @ %s] try expansion\n%!" (Source.string_of_region e
     render_typ env t
   | TypE (e1, _) -> render_exp env e1
   | FuseE (e1, e2) ->
-    (* Hack for printing t.LOADn_sx *)
+    (* TODO: HACK for printing t.LOADn_sx (replace with invisible parens) *)
     let e2' = as_paren_exp (fuse_exp e2 true) in
-    "{" ^ render_exp env e1 ^ "}" ^ "{" ^ render_exp env e2' ^ "}"
+    let es = e2' :: flatten_fuse_exp_rev e1 in
+    String.concat "" (List.map (fun e -> "{" ^ render_exp env e ^ "}") (List.rev es))
   | HoleE `None -> ""
   | HoleE _ -> error e.at "misplaced hole"
 

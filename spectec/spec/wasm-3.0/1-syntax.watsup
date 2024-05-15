@@ -214,16 +214,16 @@ syntax functype   hint(desc "function type") = resulttype -> resulttype hint(mac
 syntax structtype hint(desc "structure type") = list(fieldtype)
 syntax arraytype  hint(desc "array type") = fieldtype
 
-syntax comptype hint(desc "composite type") =
-  | STRUCT structtype hint(macro "TSTRUCT")
-  | ARRAY arraytype   hint(macro "TARRAY")
-  | FUNC functype     hint(macro "TFUNC")
+syntax comptype hint(desc "composite type") hint(macro "%" "T%") =
+  | STRUCT structtype
+  | ARRAY arraytype
+  | FUNC functype
 
-syntax subtype/syn hint(desc "sub type") =
-  | SUB fin typeuse* comptype hint(macro "TSUB")
+syntax subtype/syn hint(desc "sub type") hint(macro "%" "T%") =
+  | SUB fin typeuse* comptype
 
-syntax rectype hint(desc "recursive type") =
-  | REC list(subtype)         hint(macro "TREC")
+syntax rectype hint(desc "recursive type") hint(macro "%" "T%") =
+  | REC list(subtype)
 
 
 ;; External types
@@ -240,8 +240,8 @@ syntax memtype hint(desc "memory type") =
 syntax elemtype hint(desc "element type") =
   reftype
 syntax datatype hint(desc "data type") =
-  OK
-syntax externtype hint(desc "external type") =
+  OK hint(macro "OKdata")
+syntax externtype hint(desc "external type") hint(macro "%" "ET%") =
   | FUNC typeuse | GLOBAL globaltype | TABLE tabletype | MEM memtype
 
 
@@ -337,7 +337,7 @@ syntax binop_(Inn) =
   | ADD | SUB | MUL | DIV sx hint(show DIV#_#%) | REM sx hint(show REM#_#%)
   | AND | OR | XOR | SHL | SHR sx hint(show SHR#_#%) | ROTL | ROTR
 syntax binop_(Fnn) =
-  | ADD | SUB | MUL | DIV | MIN | MAX | COPYSIGN
+  | ADD | SUB | MUL | DIV | MIN hint(macro "FMIN") | MAX hint(macro "FMAX") | COPYSIGN
 
 syntax testop_(numtype)
 syntax testop_(Inn) = EQZ
@@ -366,17 +366,17 @@ syntax pshape hint(desc "shape") = Pnn X dim      hint(show %0#X#%2)
 def $dim(shape) : dim     hint(macro "shdim")
 def $shsize(shape) : nat  hint(show |%|)
 
-syntax vvunop = NOT
-syntax vvbinop = AND | ANDNOT | OR | XOR
-syntax vvternop = BITSELECT
-syntax vvtestop = ANY_TRUE
+syntax vvunop hint(macro "%" "V%") = NOT
+syntax vvbinop hint(macro "%" "V%") = AND | ANDNOT | OR | XOR
+syntax vvternop hint(macro "%" "V%") = BITSELECT
+syntax vvtestop hint(macro "%" "V%") = ANY_TRUE
 
-syntax vunop_(shape)
+syntax vunop_(shape) hint(macro "%" "V%")
 syntax vunop_(Jnn X N) = ABS | NEG
   | POPCNT -- if Jnn = I8
 syntax vunop_(Fnn X N) = ABS | NEG | SQRT | CEIL | FLOOR | TRUNC | NEAREST
 
-syntax vbinop_(shape)
+syntax vbinop_(shape) hint(macro "%" "V%")
 syntax vbinop_(Jnn X N) =
   | ADD
   | SUB
@@ -389,19 +389,19 @@ syntax vbinop_(Jnn X N) =
   | MAX sx hint(show MAX#_#%)              -- if $lsizenn(Jnn) <= `32
 syntax vbinop_(Fnn X N) = ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX
 
-syntax vtestop_(shape)
+syntax vtestop_(shape) hint(macro "%" "V%")
 syntax vtestop_(Jnn X N) = ALL_TRUE
 ;; syntax vtestop_(Fnn X N) = |           ;; uninhabited
 
-syntax vrelop_(shape)
+syntax vrelop_(shape) hint(macro "%" "V%")
 syntax vrelop_(Jnn X N) = EQ | NE
-  | LT sx hint(show LT#_#sx)  -- if $lsizenn(Jnn) =/= `64 \/ sx = S
-  | GT sx hint(show GT#_#sx)  -- if $lsizenn(Jnn) =/= `64 \/ sx = S
-  | LE sx hint(show LE#_#sx)  -- if $lsizenn(Jnn) =/= `64 \/ sx = S
-  | GE sx hint(show GE#_#sx)  -- if $lsizenn(Jnn) =/= `64 \/ sx = S
+  | LT sx hint(show LT#_#%)  -- if $lsizenn(Jnn) =/= `64 \/ sx = S
+  | GT sx hint(show GT#_#%)  -- if $lsizenn(Jnn) =/= `64 \/ sx = S
+  | LE sx hint(show LE#_#%)  -- if $lsizenn(Jnn) =/= `64 \/ sx = S
+  | GE sx hint(show GE#_#%)  -- if $lsizenn(Jnn) =/= `64 \/ sx = S
 syntax vrelop_(Fnn X N) = EQ | NE | LT | GT | LE | GE
 
-syntax vcvtop_(shape_1, shape_2)
+syntax vcvtop_(shape_1, shape_2) hint(macro "%" "V%")
 syntax vcvtop_(Jnn_1 X N_1, Jnn_2 X N_2) =
   | EXTEND    -- if $lsizenn2(Jnn_2) = $(2 * $lsizenn1(Jnn_1))
 syntax vcvtop_(Jnn_1 X N_1, Fnn_2 X N_2) =
@@ -430,13 +430,13 @@ syntax zero_(shape_1, shape_2)
 syntax zero_(Fnn_1 X N_1, Lnn_2 X N_2) = ZERO -- if $(2 * $lsize(Lnn_2)) = $size(Fnn_1) = 64
 ;)
 
-syntax vshiftop_(ishape)
+syntax vshiftop_(ishape) hint(macro "%" "V%")
 syntax vshiftop_(Jnn X N) = SHL | SHR sx hint(show SHR#_#%)
 
-syntax vextunop_(ishape)
+syntax vextunop_(ishape) hint(macro "%" "V%")
 syntax vextunop_(Jnn X N) =
   | EXTADD_PAIRWISE  -- if `16 <= $lsizenn(Jnn) <= `32
-syntax vextbinop_(ishape)
+syntax vextbinop_(ishape) hint(macro "%" "V%")
 syntax vextbinop_(Jnn X N) =
   | EXTMUL half      hint(show EXTMUL#_#%)
   | DOT              -- if $lsizenn(Jnn) = `32
@@ -448,10 +448,10 @@ syntax memarg hint(desc "memory argument") = {ALIGN u32, OFFSET u32}
 
 var ao : memarg
 
-syntax vloadop =
-  | SHAPE nat X nat sx  hint(show %#X#%#_#%)
-  | SPLAT nat           hint(show %#_#SPLAT)
-  | ZERO nat            hint(show %#_#ZERO)
+syntax vloadop hint(macro "%" "L%") =
+  | SHAPE N X M sx  hint(show %1#X#%3#_#%4)
+  | SPLAT N         hint(show %#_#SPLAT)
+  | ZERO N          hint(show %#_#ZERO)
 
 
 ;;
@@ -618,14 +618,14 @@ syntax instr/elem hint(desc "element instruction") = ...
 syntax sz hint(desc "pack size") = `8 | `16 | `32 | `64
 
 syntax instr/memory hint(desc "memory instruction") = ...
-  | LOAD numtype (sz _ sx)? memidx memarg  hint(show %.LOAD % %)    hint(show %.LOAD#% % %)
-    -- (if numtype = Inn /\ sz < $size(Inn))?  ;; TODO: take size implicitly
-  | STORE numtype sz? memidx memarg        hint(show %.STORE % %)   hint(show %.STORE#% % %)
-    -- (if numtype = Inn /\ sz < $size(Inn))?  ;; TODO: take size implicitly
-  | VLOAD vloadop? memidx memarg           hint(show V128.LOAD % %) hint(show V128.LOAD#% % %)
-  | VLOAD_LANE sz memidx memarg laneidx    hint(show V128.LOAD#%#_#LANE % % %)
-  | VSTORE memidx memarg                   hint(show V128.STORE % %)
-  | VSTORE_LANE sz memidx memarg laneidx   hint(show V128.STORE#%#_#LANE % % %)
+  | LOAD numtype (sz _ sx)? memidx memarg          hint(show %.LOAD % %)    hint(show %.LOAD#% % %)
+    -- (if numtype = Inn /\ sz < $size(Inn))?      ;; TODO: take size implicitly
+  | STORE numtype sz? memidx memarg                hint(show %.STORE % %)   hint(show %.STORE#% % %)
+    -- (if numtype = Inn /\ sz < $size(Inn))?      ;; TODO: take size implicitly
+  | VLOAD vectype vloadop? memidx memarg           hint(show %.LOAD % %) hint(show %.LOAD#% % %) hint(macro "V%")
+  | VLOAD_LANE vectype sz memidx memarg laneidx    hint(show %.LOAD#%#_#LANE % % %) hint(macro "V%")
+  | VSTORE vectype memidx memarg                   hint(show %.STORE % %) hint(macro "V%")
+  | VSTORE_LANE vectype sz memidx memarg laneidx   hint(show %.STORE#%#_#LANE % % %) hint(macro "V%")
   | MEMORY.SIZE memidx
   | MEMORY.GROW memidx
   | MEMORY.FILL memidx
@@ -650,8 +650,8 @@ var e : expr
 ;; Modules
 ;;
 
-syntax elemmode = ACTIVE tableidx expr | PASSIVE | DECLARE
-syntax datamode = ACTIVE memidx expr | PASSIVE
+syntax elemmode hint(macro "E%") = ACTIVE tableidx expr | PASSIVE | DECLARE
+syntax datamode hint(macro "D%") = ACTIVE memidx expr | PASSIVE
 
 syntax type hint(desc "type definition") =
   TYPE rectype
@@ -672,7 +672,7 @@ syntax data hint(desc "memory segment") =
 syntax start hint(desc "start function") =
   START funcidx
 
-syntax externidx hint(desc "external index") =
+syntax externidx hint(desc "external index") hint(macro "EX%") =
   | FUNC funcidx | GLOBAL globalidx | TABLE tableidx | MEM memidx
 syntax export hint(desc "export") =
   EXPORT name externidx

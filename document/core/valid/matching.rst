@@ -88,7 +88,7 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
    }
    \qquad
    \frac{
-     C \vdashheaptype \heaptype' \ok
+     C \vdashheaptype \heaptype' : \OKheaptype
      \qquad
      C \vdashheaptypematch \heaptype_1 \subheaptypematch \heaptype'
      \qquad

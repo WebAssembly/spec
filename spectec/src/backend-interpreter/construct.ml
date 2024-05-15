@@ -749,16 +749,22 @@ let al_to_vloadop': value -> Pack.pack_size * Pack.vec_extension = function
     )
   | CaseV ("SPLAT", [ pack_size ]) -> al_to_pack_size pack_size, Pack.ExtSplat
   | CaseV ("ZERO", [ pack_size ]) -> al_to_pack_size pack_size, Pack.ExtZero
-  | v -> error_value "vloadop" v
+  | v -> error_value "vloadop'" v
 
-let al_to_vloadop: value list -> idx * vec_loadop = al_to_vmemop (al_to_opt al_to_vloadop')
+let al_to_vloadop: value list -> idx * vec_loadop = function
+  | _v128 :: vl -> al_to_vmemop (al_to_opt al_to_vloadop') vl
+  | vs -> error_value "vloadop" (TupV vs)
 
-let al_to_vstoreop = al_to_vmemop (fun _ -> ())
+let al_to_vstoreop = function
+  | _v128 :: vl -> al_to_vmemop (fun _ -> ()) vl
+  | vs -> error_value "vstoreop" (TupV vs)
 
-let al_to_vlaneop (vl: value list): idx * vec_laneop * int =
-  let h, t = Util.Lib.List.split_last vl in
-  let idx, op = al_to_vmemop al_to_pack_size h in
-  idx, op, al_to_int t
+let al_to_vlaneop: value list -> idx * vec_laneop * int = function
+  | _v128 :: vl ->
+    let h, t = Util.Lib.List.split_last vl in
+    let idx, op = al_to_vmemop al_to_pack_size h in
+    idx, op, al_to_int t
+  | vs -> error_value "vlaneop" (TupV vs)
 
 
 let rec al_to_instr (v: value): Ast.instr = al_to_phrase al_to_instr' v
@@ -836,7 +842,7 @@ and al_to_instr': value -> Ast.instr' = function
     ReturnCallIndirect (al_to_idx idx1, al_to_typeuse typeuse2)
   | CaseV ("LOAD", loadop) -> let idx, op = al_to_loadop loadop in Load (idx, op)
   | CaseV ("STORE", storeop) -> let idx, op = al_to_storeop storeop in Store (idx, op)
-  | CaseV ("VLOAD", vloadop) -> let idx , op = al_to_vloadop vloadop in VecLoad (idx, op)
+  | CaseV ("VLOAD", vloadop) -> let idx, op = al_to_vloadop vloadop in VecLoad (idx, op)
   | CaseV ("VLOAD_LANE", vlaneop) ->
     let idx, op, i = al_to_vlaneop vlaneop in VecLoadLane (idx, op, i)
   | CaseV ("VSTORE", vstoreop) -> let idx, op = al_to_vstoreop vstoreop in VecStore (idx, op)
@@ -1710,7 +1716,7 @@ let al_of_vloadop idx vloadop =
   ) |> Option.some |> optV
   | None -> OptV None in
 
-  [ vmemop ] @ al_of_memidx idx @ [ StrV str ]
+  [ al_of_vec_type V128T; vmemop ] @ al_of_memidx idx @ [ StrV str ]
 
 let al_of_vstoreop idx vstoreop =
   let str =
@@ -1719,7 +1725,7 @@ let al_of_vstoreop idx vstoreop =
     |> Record.add "OFFSET" (al_of_int32 vstoreop.offset)
   in
 
-  al_of_memidx idx @ [ StrV str; ]
+  [ al_of_vec_type V128T ] @ al_of_memidx idx @ [ StrV str; ]
 
 let al_of_vlaneop idx vlaneop laneidx =
   let pack_size = vlaneop.pack in
@@ -1730,7 +1736,7 @@ let al_of_vlaneop idx vlaneop laneidx =
     |> Record.add "OFFSET" (al_of_int32 vlaneop.offset)
   in
 
-  [ al_of_pack_size pack_size; ] @ al_of_memidx idx @ [ StrV str; al_of_int laneidx ]
+  [ al_of_vec_type V128T; al_of_pack_size pack_size ] @ al_of_memidx idx @ [ StrV str; al_of_int laneidx ]
 
 (* Construct instruction *)
 
