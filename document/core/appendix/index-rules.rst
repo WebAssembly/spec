@@ -46,7 +46,7 @@ Typing of Static Constructs
 Construct                                        Judgement
 ===============================================  =================================================================================
 :ref:`Instruction <valid-instr>`                 :math:`S;C \vdashinstr \instr : \functype`
-:ref:`Instruction sequence <valid-instr-seq>`    :math:`S;C \vdashinstrs \instr^\ast : \functype`
+:ref:`Instruction sequence <valid-instrs>`       :math:`S;C \vdashinstrs \instr^\ast : \functype`
 :ref:`Expression <valid-expr>`                   :math:`C \vdashexpr \expr : \resulttype`
 :ref:`Function <valid-func>`                     :math:`C \vdashfunc \func : \functype`
 :ref:`Local <valid-local>`                       :math:`C \vdashlocal \local : \localtype`

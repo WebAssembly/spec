@@ -665,7 +665,7 @@ It unifies the handling of different forms of calls.
 Analogously, |RETURNINVOKE| represents the imminent tail invocation of a function instance.
 
 The |LABEL| and |FRAME| instructions model :ref:`labels <syntax-label>` and :ref:`frames <syntax-frame>` :ref:`"on the stack" <exec-notation>`.
-Moreover, the administrative syntax maintains the nesting structure of the original :ref:`structured control instruction <syntax-instr-control>` or :ref:`function body <syntax-func>` and their :ref:`instruction sequences <syntax-instr-seq>` with an |END| marker.
+Moreover, the administrative syntax maintains the nesting structure of the original :ref:`structured control instruction <syntax-instr-control>` or :ref:`function body <syntax-func>` and their :ref:`instruction sequences <syntax-instrs>` with an |END| marker.
 That way, the end of the inner instruction sequence is known when part of an outer sequence.
 
 .. note::

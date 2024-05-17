@@ -2544,16 +2544,16 @@ $${rule: {Step_pure/return_call_indirect}}
 
 
 .. index:: instruction, instruction sequence, block
-.. _exec-instr-seq:
+.. _exec-instrs:
 
 Blocks
 ~~~~~~
 
-The following auxiliary rules define the semantics of executing an :ref:`instruction sequence <syntax-instr-seq>`
+The following auxiliary rules define the semantics of executing an :ref:`instruction sequence <syntax-instrs>`
 that forms a :ref:`block <exec-instr-control>`.
 
 
-.. _exec-instr-seq-enter:
+.. _exec-instrs-enter:
 
 Entering :math:`\instr^\ast` with label :math:`L`
 .................................................
@@ -2567,7 +2567,7 @@ Entering :math:`\instr^\ast` with label :math:`L`
    because the label :math:`L` is embedded in the :ref:`administrative instruction <syntax-instr-admin>` that structured control instructions reduce to directly.
 
 
-.. _exec-instr-seq-exit:
+.. _exec-instrs-exit:
 
 Exiting :math:`\instr^\ast` with label :math:`L`
 ................................................
@@ -2576,7 +2576,7 @@ When the end of a block is reached without a jump or trap aborting it, then the 
 
 1. Pop all values :math:`\val^\ast` from the top of the stack.
 
-2. Assert: due to :ref:`validation <valid-instr-seq>`, the label :math:`L` is now on the top of the stack.
+2. Assert: due to :ref:`validation <valid-instrs>`, the label :math:`L` is now on the top of the stack.
 
 3. Pop the label from the stack.
 
@@ -2626,7 +2626,7 @@ Invocation of :ref:`function reference <syntax-ref.func>` :math:`(\REFFUNCADDR~a
 
 10. Let :math:`L` be the :ref:`label <syntax-label>` whose arity is :math:`m` and whose continuation is the end of the function.
 
-11. :ref:`Enter <exec-instr-seq-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L`.
+11. :ref:`Enter <exec-instrs-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L`.
 
 $${rule: {Step_read/call_ref-func}}
 
@@ -2645,7 +2645,7 @@ When the end of a function is reached without a jump (i.e., |RETURN|) or trap ab
 
 2. Let :math:`n` be the arity of the activation of :math:`F`.
 
-3. Assert: due to :ref:`validation <valid-instr-seq>`, there are :math:`n` values on the top of the stack.
+3. Assert: due to :ref:`validation <valid-instrs>`, there are :math:`n` values on the top of the stack.
 
 4. Pop the results :math:`\val^n` from the stack.
 

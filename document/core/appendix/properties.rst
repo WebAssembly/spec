@@ -870,7 +870,7 @@ Finally, :ref:`frames <syntax-frame>` are classified with *frame contexts*, whic
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with |CRETURN| set to :math:`\resulttype^?`.
 
 * Under context :math:`C'`,
-  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with some type :math:`[] \to [t^\ast]`.
+  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instrs>` with some type :math:`[] \to [t^\ast]`.
 
 * Then the thread is valid with the :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`.
 
@@ -978,12 +978,12 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 :math:`\LABEL_n\{\instr_0^\ast\}~\instr^\ast~\END`
 ..................................................
 
-* The instruction sequence :math:`\instr_0^\ast` must be :ref:`valid <valid-instr-seq>` with some type :math:`[t_1^n] \to_{x^\ast} [t_2^*]`.
+* The instruction sequence :math:`\instr_0^\ast` must be :ref:`valid <valid-instrs>` with some type :math:`[t_1^n] \to_{x^\ast} [t_2^*]`.
 
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_1^n]` prepended to the |CLABELS| list.
 
 * Under context :math:`C'`,
-  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to_{{x'}^\ast} [t_2^*]`.
+  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instrs>` with type :math:`[] \to_{{x'}^\ast} [t_2^*]`.
 
 * Then the compound instruction is valid with type :math:`[] \to [t_2^*]`.
 
@@ -1464,7 +1464,7 @@ do not have common subtypes either (other than :math:`\BOT` or :math:`\REF~\BOT`
 Compositionality
 ~~~~~~~~~~~~~~~~
 
-:ref:`Valid <valid-instr-seq>` :ref:`instruction sequences <syntax-instr>` can be freely *composed*, as long as their types match up.
+:ref:`Valid <valid-instrs>` :ref:`instruction sequences <syntax-instr>` can be freely *composed*, as long as their types match up.
 
 **Theorem (Composition).**
 If two instruction sequences :math:`\instr_1^\ast` and :math:`\instr_2^\ast` are valid with types :math:`[t_1^\ast] \to_{x_1^\ast} [t^\ast]` and  :math:`[t^\ast] \to_{x_2^\ast} [t_2^\ast]`, respectively (i.e., :math:`C \vdashinstrs \instr_1^\ast : [t_1^\ast] \to_{x_1^\ast} [t^\ast]` and :math:`C \vdashinstrs \instr_1^\ast : [t^\ast] \to_{x_2^\ast} [t_2^\ast]`),
@@ -1474,7 +1474,7 @@ then the concatenated instruction sequence :math:`(\instr_1^\ast\;\instr_2^\ast)
    More generally, instead of a shared type :math:`[t^\ast]`, it suffices if the output type of :math:`\instr_1^\ast` is a :ref:`subtype <match-resulttype>` of the input type of  :math:`\instr_1^\ast`,
    since the subtype can always be weakened to its supertype by subsumption.
 
-Inversely, valid instruction sequences can also freely be *decomposed*, that is, splitting them anywhere produces two instruction sequences that are both :ref:`valid <valid-instr-seq>`.
+Inversely, valid instruction sequences can also freely be *decomposed*, that is, splitting them anywhere produces two instruction sequences that are both :ref:`valid <valid-instrs>`.
 
 **Theorem (Decomposition).**
 If an instruction sequence :math:`\instr^\ast` that is valid with type :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]` (i.e., :math:`C \vdashinstrs \instr^\ast : [t_1^\ast] \to_{x^\ast} [t_2^\ast]`)

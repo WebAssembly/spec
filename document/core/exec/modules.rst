@@ -561,7 +561,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
     a. Let :math:`n` be the length of the list :math:`\elem_i.\EINIT`.
 
-    b. :ref:`Execute <exec-instr-seq>` the instruction sequence :math:`\X{einstr}^\ast_i`.
+    b. :ref:`Execute <exec-instrs>` the instruction sequence :math:`\X{einstr}^\ast_i`.
 
     c. :ref:`Execute <exec-const>` the instruction :math:`\I32.\CONST~0`.
 
@@ -581,7 +581,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
     b. Let :math:`n` be the length of the list :math:`\data_i.\DINIT`.
 
-    c. :ref:`Execute <exec-instr-seq>` the instruction sequence :math:`\X{dinstr}^\ast_i`.
+    c. :ref:`Execute <exec-instrs>` the instruction sequence :math:`\X{dinstr}^\ast_i`.
 
     d. :ref:`Execute <exec-const>` the instruction :math:`\I32.\CONST~0`.
 

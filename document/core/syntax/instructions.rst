@@ -554,7 +554,7 @@ The ${:DATA.DROP} instruction prevents further use of a passive data segment. Th
 .. _syntax-return:
 .. _syntax-call:
 .. _syntax-call_indirect:
-.. _syntax-instr-seq:
+.. _syntax-instrs:
 .. _syntax-instr-control:
 
 Control Instructions

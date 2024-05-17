@@ -15,7 +15,7 @@ In most cases, this is empty.
    consuming two ${:I32} values and producing one.
    The instruction ${:LOCAL.SET x} has type ${instrtype: t ->_(x) eps}, provided ${:t} is the type declared for the local ${:x}.
 
-Typing extends to :ref:`instruction sequences <valid-instr-seq>` ${:instr*}.
+Typing extends to :ref:`instruction sequences <valid-instrs>` ${:instr*}.
 Such a sequence has an instruction type ${instrtype: t_1* ->_(x*) t_2*} if the accumulative effect of executing the instructions is consuming values of types ${:t_1*} off the operand stack, pushing new values of types ${:t_2*}, and setting all locals ${:x*}.
 
 .. _polymorphism:
@@ -1428,7 +1428,7 @@ Control Instructions
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` prepended to the |CLABELS| list.
 
 * Under context :math:`C'`,
-  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
+  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instrs>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 * Then the compound instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
@@ -1448,7 +1448,7 @@ $${rule: Instr_ok/block}
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_1^\ast]` prepended to the |CLABELS| list.
 
 * Under context :math:`C'`,
-  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
+  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instrs>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 * Then the compound instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
@@ -1468,10 +1468,10 @@ $${rule: Instr_ok/loop}
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` prepended to the |CLABELS| list.
 
 * Under context :math:`C'`,
-  the instruction sequence :math:`\instr_1^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
+  the instruction sequence :math:`\instr_1^\ast` must be :ref:`valid <valid-instrs>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 * Under context :math:`C'`,
-  the instruction sequence :math:`\instr_2^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
+  the instruction sequence :math:`\instr_2^\ast` must be :ref:`valid <valid-instrs>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 * Then the compound instruction is valid with type :math:`[t_1^\ast~\I32] \to [t_2^\ast]`.
 
@@ -1771,7 +1771,7 @@ $${rule: Instr_ok/return_call_indirect}
 
 
 .. index:: instruction, instruction sequence, local type
-.. _valid-instr-seq:
+.. _valid-instrs:
 
 Instruction Sequences
 ~~~~~~~~~~~~~~~~~~~~~
@@ -1849,7 +1849,7 @@ Expressions ${:expr} are classified by :ref:`result types <syntax-resulttype>` $
 :math:`\instr^\ast~\END`
 ........................
 
-* The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with :ref:`type <syntax-instrtype>` :math:`[] \to [t^\ast]`.
+* The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instrs>` with :ref:`type <syntax-instrtype>` :math:`[] \to [t^\ast]`.
 
 * Then the expression is valid with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`.
 

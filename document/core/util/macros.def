@@ -280,7 +280,7 @@
 .. |globaltype| mathdef:: \xref{syntax/types}{syntax-globaltype}{\X{globaltype}}
 .. |tabletype| mathdef:: \xref{syntax/types}{syntax-tabletype}{\X{tabletype}}
 .. |memtype| mathdef:: \xref{syntax/types}{syntax-memtype}{\X{memtype}}
-.. |datatype| mathdef:: \xref{syntax/types}{syntax-datatype}{\X{datatype}}
+.. |datatype| mathdef:: \xref{valid/modules}{syntax-datatype}{\X{datatype}}
 
 .. |limits| mathdef:: \xref{syntax/types}{syntax-limits}{\X{limits}}
 .. |mut| mathdef:: \xref{syntax/types}{syntax-mut}{\X{mut}}
@@ -1205,12 +1205,12 @@
 .. |vdashimportdesc| mathdef:: \xref{valid/modules}{valid-importdesc}{\vdash}
 .. |vdashmodule| mathdef:: \xref{valid/modules}{valid-module}{\vdash}
 
-.. |OKelemmode| mathdef:: \xref{valid/types}{valid-elemmode}{\K{ok}}
-.. |OKdatamode| mathdef:: \xref{valid/types}{valid-datamode}{\K{ok}}
-.. |OKdata| mathdef:: \xref{valid/types}{valid-data}{\K{ok}}
-.. |OKstart| mathdef:: \xref{valid/types}{valid-start}{\K{ok}}
-.. |OKtypes| mathdef:: \xref{valid/types}{valid-types}{\K{ok}}
-.. |OKmodule| mathdef:: \xref{valid/types}{valid-module}{\K{ok}}
+.. |OKelemmode| mathdef:: \xref{valid/modules}{valid-elemmode}{\K{ok}}
+.. |OKdatamode| mathdef:: \xref{valid/modules}{valid-datamode}{\K{ok}}
+.. |OKdata| mathdef:: \xref{valid/modules}{valid-data}{\K{ok}}
+.. |OKstart| mathdef:: \xref{valid/modules}{valid-start}{\K{ok}}
+.. |OKtypes| mathdef:: \xref{valid/modules}{valid-types}{\K{ok}}
+.. |OKmodule| mathdef:: \xref{valid/modules}{valid-module}{\K{ok}}
 
 .. |unpackshape| mathdef:: \xref{valid/instructions}{aux-unpackshape}{\F{unpack}}
 .. |shlanetype| mathdef:: \xref{syntax/instructions}{aux-lanetype}{\F{lanetype}}

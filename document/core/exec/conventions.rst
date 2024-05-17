@@ -47,9 +47,9 @@ The following conventions are adopted in stating these rules.
 * The execution of an instruction may also end in a *jump* to a designated target,
   which defines the next instruction to execute.
 
-* Execution can *enter* and *exit* :ref:`instruction sequences <syntax-instr-seq>` that form :ref:`blocks <syntax-instr-control>`.
+* Execution can *enter* and *exit* :ref:`instruction sequences <syntax-instrs>` that form :ref:`blocks <syntax-instr-control>`.
 
-* :ref:`Instruction sequences <syntax-instr-seq>` are implicitly executed in order, unless a trap or jump occurs.
+* :ref:`Instruction sequences <syntax-instrs>` are implicitly executed in order, unless a trap or jump occurs.
 
 * In various places the rules contain *assertions* expressing crucial invariants about the program state.
 
