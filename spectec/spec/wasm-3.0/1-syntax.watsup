@@ -228,7 +228,7 @@ syntax rectype hint(desc "recursive type") hint(macro "%" "T%") =
 
 ;; External types
 
-syntax limits hint(desc "limits") =
+syntax limits hint(desc "limits") hint(macro "%" "L%") =
   `[u32 .. u32]
 
 syntax globaltype hint(desc "global type") =
@@ -519,15 +519,15 @@ syntax instr/vec hint(desc "vector instruction") = ...
   | VTESTOP shape vtestop_(shape)       hint(show %.%)
   | VRELOP shape vrelop_(shape)         hint(show %.%)
   | VSHIFTOP ishape vshiftop_(ishape)   hint(show %.%)
-  | VBITMASK ishape                     hint(show %.BITMASK)
-  | VSWIZZLE ishape                     hint(show %.SWIZZLE)
+  | VBITMASK ishape                     hint(show %.BITMASK)   hint(macro "VBITMASK")
+  | VSWIZZLE ishape                     hint(show %.SWIZZLE)   hint(macro "VSWIZZLE")
     -- if ishape = I8 X `16
-  | VSHUFFLE ishape laneidx*            hint(show %.SHUFFLE %)
+  | VSHUFFLE ishape laneidx*            hint(show %.SHUFFLE %) hint(macro "VSHUFFLE")
     -- if ishape = I8 X `16 /\ |laneidx*| = 16
-  | VSPLAT shape                        hint(show %.SPLAT)
-  | VEXTRACT_LANE shape sx? laneidx     hint(show %.EXTRACT_LANE#_#% %)
+  | VSPLAT shape                        hint(show %.SPLAT)     hint(macro "VSPLAT")
+  | VEXTRACT_LANE shape sx? laneidx     hint(show %.EXTRACT_LANE#_#% %) hint(macro "VEXTRACT_LANE")
     -- if $lanetype(shape) = numtype <=> sx? = eps
-  | VREPLACE_LANE shape laneidx         hint(show %.REPLACE_LANE %)
+  | VREPLACE_LANE shape laneidx         hint(show %.REPLACE_LANE %)     hint(macro "VREPLACE_LANE")
   | VEXTUNOP ishape_1 ishape_2 vextunop_(ishape_1) sx
     hint(show %1.%3#_#%2#_#%4)
     -- if $($lsize($lanetype(ishape_1)) = 2*$lsize($lanetype(ishape_2)))
@@ -535,7 +535,7 @@ syntax instr/vec hint(desc "vector instruction") = ...
     hint(show %1.%3#_#%2#_#%4)
     -- if $($lsize($lanetype(ishape_1)) = 2*$lsize($lanetype(ishape_2)))
     ;; TODO: /\ (vextbinop =/= DOT \/ sx = S)
-  | VNARROW ishape_1 ishape_2 sx        hint(show %.NARROW#_#%#_#%)
+  | VNARROW ishape_1 ishape_2 sx        hint(show %.NARROW#_#%#_#%) hint(macro "VNARROW")
     -- if $($lsize($lanetype(ishape_2)) = 2*$lsize($lanetype(ishape_1)) <= 32)
   | VCVTOP shape_1 shape_2 vcvtop_(shape_2, shape_1) half_(shape_2, shape_1)? sx? zero_(shape_2, shape_1)?
     hint(show %1.%3#_#%4#_#%2#_#%5#_#%6)

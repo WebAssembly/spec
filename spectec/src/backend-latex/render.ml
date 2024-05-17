@@ -48,7 +48,6 @@ type env =
     desc_gram : exp list Map.t ref;
     deco_typ : bool;
     deco_rule : bool;
-    current_rel : string;
   }
 
 let new_env config =
@@ -71,7 +70,6 @@ let new_env config =
     desc_gram = ref Map.empty;
     deco_typ = false;
     deco_rule = false;
-    current_rel = "";
   }
 
 let config env : Config.t =
@@ -86,6 +84,15 @@ let without_macros b env =
   if not b then env else
   env_with_config env {env.config with macros_for_ids = false}
 
+let local_env env =
+  { env with
+    macro_typ = ref !(env.macro_typ);
+    macro_var = ref !(env.macro_var);
+    macro_def = ref !(env.macro_def);
+    macro_rel = ref !(env.macro_rel);
+    macro_gram = ref !(env.macro_gram);
+    macro_atom = ref !(env.macro_atom);
+  }
 
 let split_ticks id =
   let i = ref (String.length id) in
@@ -114,11 +121,9 @@ let untyped_id' id' =
   String.sub id' (i + 1) (String.length id' - i - 1)
 let untyped_id id = untyped_id' id.it $ id.at
 
-let is_atom_typ t =
-  match t.it with
-  | AtomT _ -> true
+let is_atom_typ = function
+  | {it = AtomT _; _} -> true
   | _ -> false
-
 
 let env_macro map id =
   map := Map.add id.it [TextE "%" $ id.at] !map
@@ -160,10 +165,27 @@ let env_atom env tid atom hints =
   map_cons tid.it atom env.atoms;
   env_hintdef env (AtomH (tid, atom, hints) $ atom.at)
 
-let env_typfield env tid (atom, _, hints) = env_atom env tid atom hints
-let env_typcase env tid (atom, _, hints) = env_atom env tid atom hints
+let env_typ env tid t hints =
+  let hints' = List.filter (fun {hintid; _} -> hintid.it = "macro") hints in
+  let module EnvIter =
+    El.Iter.Make(
+      struct
+        include El.Iter.Skip
+        let visit_atom atom = env_atom env tid atom hints'
+      end
+    )
+  in EnvIter.typ t
+
+let env_typfield env tid (atom, (t, _prems), hints) =
+  env_atom env tid atom hints;
+  env_typ env tid t hints
+
+let env_typcase env tid (atom, (t, _prems), hints) = 
+  env_atom env tid atom hints;
+  env_typ env tid t hints
 
 let env_typcon env tid ((t, _prems), hints) =
+  env_typ env tid t hints;
   match t.it with
   | AtomT atom
   | InfixT (_, atom, _)
@@ -176,13 +198,16 @@ let env_typcon env tid ((t, _prems), hints) =
     )
   | _ -> ()
 
-let env_typ env tid t : (id * typ list) list =
+let env_typdef env tid t : (id * typ list) list =
   map_append tid.it [] env.atoms;
   match t.it with
+  | VarT (id, _) ->
+    map_append tid.it (Map.find id.it !(env.atoms)) env.atoms;
+    [(tid, [t])]
   | StrT tfs ->
     iter_nl_list (env_typfield env tid) tfs; []
-  | CaseT (_, ts, tcases, _) ->
-    iter_nl_list (env_typcase env tid) tcases;
+  | CaseT (_, ts, tcs, _) ->
+    iter_nl_list (env_typcase env tid) tcs;
     iter_nl_list (fun t ->
       match t.it with
       | VarT (id, _) ->
@@ -190,11 +215,8 @@ let env_typ env tid t : (id * typ list) list =
       | _ -> ()
     ) ts;
     [(tid, filter_nl ts)]
-  | ConT tcon ->
-    env_typcon env tid tcon; []
-  | VarT (id, _) ->
-    map_append tid.it (Map.find id.it !(env.atoms)) env.atoms;
-    [(tid, [t])]
+  | ConT tc ->
+    env_typcon env tid tc; []
   | _ -> []
 
 let env_def env d : (id * typ list) list =
@@ -212,13 +234,14 @@ let env_def env d : (id * typ list) list =
     if not (Map.mem id1.it !(env.macro_var)) then env_macro env.macro_var id1;
     env_hintdef env (TypH (id1, id2, hints) $ d.at);
     env_hintdef env (VarH (id1, hints) $ d.at);
-    env_typ env id1 t
+    env_typdef env id1 t
   | GramD (id1, id2, _ps, _t, _gram, hints) ->
     env_macro env.macro_gram id1;
     env_hintdef env (GramH (id1, id2, hints) $ d.at);
     []
-  | RelD (id, _t, hints) ->
+  | RelD (id, t, hints) ->
     env_hintdef env (RelH (id, hints) $ d.at);
+    env_typ env id t hints;
     []
   | VarD (id, _t, hints) ->
     env.vars := Set.add id.it !(env.vars);
@@ -379,9 +402,22 @@ Printf.printf "%s\n%!" (String.concat " " (List.map fst (Map.bindings !macro)));
     None
 
 let expand_name templ name =
-  match templ with
-  | Some m -> String.concat name m
-  | _ -> name
+  let name', sub = split_sub name in
+  String.concat name' (Option.get templ) ^ sub
+
+let nonmacro_atom atom =
+  let open Atom in
+  match atom.it with
+  | Atom s -> s = "_"
+  | Dot
+  | Comma | Semicolon
+  | Colon | Equal
+  | Quest | Plus | Star
+  | LParen | RParen
+  | LBrack | RBrack
+  | LBrace | RBrace -> true
+  | _ -> false
+
 
 let expand_atom map templ atom =
 (*
@@ -389,18 +425,28 @@ Printf.eprintf "[expand_atom %s @ %s] def=%s templ=%s\n%!"
 (Atom.string_of_atom atom) (Source.string_of_region atom.at) atom.note.Atom.def
 (match templ with None -> "none" | Some xs -> String.concat "%" xs);
 *)
-  if atom.it = Atom.Atom "_" || templ = None then atom else
-  let name, sub = split_sub (Atom.name_of_atom atom) in
-  let name' = expand_name templ name ^ sub in
+  (* If expanding with macro template, then pre-macrofy atom name,
+   * since we will have lost the template context later on. *)
+  if templ = None || nonmacro_atom atom then atom else
+  let name' = expand_name templ (Atom.name_of_atom atom) in
   let atom' = {atom with it = Atom.Atom name'} in
-  if templ <> None && not (Map.mem name' !map) then
-    env_macro map (typed_id atom');
+  (* Record result as identity expansion, HACK: unless it exists already *)
+  if not (Map.mem name' !map) then env_macro map (typed_id atom');
   atom'
 
 let expand_id map templ id =
-  let name, sub = split_sub id.it in
-  let id' = {id with it = expand_name templ name ^ sub} in
-  if templ <> None && not (Map.mem id'.it !map) then env_macro map id';
+(*
+Printf.eprintf "[expand_id %s @ %s] templ=%s macro=%b => %s macro=%b\n%!"
+id.it (Source.string_of_region id.at)
+(match templ with None -> "none" | Some xs -> String.concat "%" xs)
+(Map.mem id.it !map) id'.it (Map.mem id'.it !map);
+*)
+  (* If expanding with macro template, then pre-macrofy id name,
+   * since we will have lost the template context later on. *)
+  if templ = None then id else
+  let id' = {id with it = expand_name templ id.it} in
+  (* Record result as identity expansion, HACK: unless it exists already *)
+  if not (Map.mem id'.it !map) then env_macro map id';
   id'
 
 let rec expand_iter env templ args i iter =
@@ -445,7 +491,8 @@ and expand_exp env templ args i e =
     let e2' = expand_exp env templ args i e2 in
     ExtE (e1', p', e2')
   | StrE efs -> StrE (map_nl_list (expand_expfield env templ args i) efs)
-  | DotE (e, atom) -> DotE (expand_exp env templ args i e, atom)
+  | DotE (e, atom) ->
+    DotE (expand_exp env templ args i e, expand_atom env.macro_atom templ atom)
   | CommaE (e1, e2) ->
     let e1' = expand_exp env templ args i e1 in
     let e2' = expand_exp env templ args i e2 in
@@ -461,8 +508,13 @@ and expand_exp env templ args i e =
   | InfixE (e1, atom, e2) ->
     let e1' = expand_exp env templ args i e1 in
     let e2' = expand_exp env templ args i e2 in
-    InfixE (e1', atom, e2')
-  | BrackE (l, e1, r) -> BrackE (l, expand_exp env templ args i e1, r)
+    InfixE (e1', expand_atom env.macro_atom templ atom, e2')
+  | BrackE (l, e1, r) ->
+    BrackE (
+      expand_atom env.macro_atom templ l,
+      expand_exp env templ args i e1,
+      expand_atom env.macro_atom templ r
+    )
   | CallE (id, args') ->
     CallE (expand_id env.macro_def templ id,
       List.map (expand_arg env templ args i) args')
@@ -547,10 +599,11 @@ let m = match templ with None -> "-" | Some l -> String.concat "%" l in
 Printf.printf "[expand attempt %s %s] %s\n%!" id.it m (El.Print.string_of_exp showexp)
 );
 *)
-          let e = expand_exp env templ args (ref 1) showexp in
+          let env' = local_env env in
+          let e = expand_exp env' templ args (ref 1) showexp in
           (* Avoid cyclic expansion *)
           show := Map.remove id.it !show;
-          Fun.protect (fun () -> render env e)
+          Fun.protect (fun () -> render env' e)
             ~finally:(fun () -> show := Map.add id.it showexps !show)
         with Arity_mismatch -> attempt showexps'
           (* HACK: Ignore arity mismatches, such that overloading notation works,
@@ -699,12 +752,6 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
       | Comma -> ","
       | Semicolon -> ";"
       | Colon -> ":"
-      | _ when env.config.macros_for_ids && atom.note.def <> "" ->
-        render_id' env `Atom (chop_sub (untyped_id id).it)
-          (macro_template env env.macro_atom id.it)
-      | Atom s -> render_id' env `Atom (chop_sub s) None
-      | Dot2 -> ".."
-      | Assign -> ":="
       | Equal -> "="
       | Quest -> "{}^?"
       | Plus -> "{}^+"
@@ -715,16 +762,26 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
       | RBrack -> "]"
       | LBrace -> "\\{"
       | RBrace -> "\\}"
-      | Arrow | ArrowSub -> "\\rightarrow"
-      | Arrow2 | Arrow2Sub -> "\\Rightarrow"
-      | Sub -> "\\leq"
-      | Sup -> "\\geq"
-      | SqArrow -> "\\hookrightarrow"
-      | SqArrowStar -> "\\hookrightarrow^\\ast"
-      | Comp -> "\\oplus"
-      | Bar -> "\\mid"
-      | BigComp -> "\\bigoplus"
-      | _ -> "\\" ^ Atom.name_of_atom atom
+      | _ ->
+        assert (not (nonmacro_atom atom));
+        match macro_template env env.macro_atom id.it with
+        | Some _ as templ when env.config.macros_for_ids && atom.note.def <> "" ->
+          render_id' env `Atom (chop_sub (untyped_id id).it) templ
+        | _ ->
+          match atom.it with
+          | Atom s -> render_id' env `Atom (chop_sub s) None
+          | Dot2 -> ".."
+          | Assign -> ":="
+          | Arrow | ArrowSub -> "\\rightarrow"
+          | Arrow2 | Arrow2Sub -> "\\Rightarrow"
+          | Sub -> "\\leq"
+          | Sup -> "\\geq"
+          | SqArrow -> "\\hookrightarrow"
+          | SqArrowStar -> "\\hookrightarrow^\\ast"
+          | Comp -> "\\oplus"
+          | Bar -> "\\mid"
+          | BigComp -> "\\bigoplus"
+          | _ -> "\\" ^ Atom.name_of_atom atom
     )
 
 
@@ -1001,7 +1058,7 @@ and render_fieldname env atom =
 and render_prem env prem =
   match prem.it with
   | VarPr _ -> assert false
-  | RulePr (id, e) -> render_exp {env with current_rel = id.it} e
+  | RulePr (_id, e) -> render_exp env e
   | IfPr e -> render_exp env e
   | ElsePr -> error prem.at "misplaced `otherwise` premise"
   | IterPr ({it = IterPr _; _} as prem', iter) ->
@@ -1193,7 +1250,7 @@ let render_ruledef env d =
       altern_map_nl " \\qquad\n" " \\\\\n" (suffix "\n" (render_prem env)) prems' ^
       (if has_nl prems then "\\end{array}\n" else "") ^
     "}{\n" ^
-      render_exp {env with current_rel = id1.it} e ^ "\n" ^
+      render_exp env e ^ "\n" ^
     "}" ^
     render_rule_deco env " \\, " id1 id2 ""
   | _ -> failwith "render_ruledef"
@@ -1258,10 +1315,8 @@ let rec render_defs env = function
       "\\begin{array}{@{}l@{}r" ^ sp ^ "r" ^ sp ^ "lll@{}l@{}}\n" ^
         render_sep_defs (render_gramdef env) ds' ^
       "\\end{array}"
-    | RelD (id, t, _hints) ->
-      "\\boxed{" ^
-        render_typ {env with current_rel = id.it} t ^
-      "}" ^
+    | RelD (_, t, _) ->
+      "\\boxed{" ^ render_typ env t ^ "}" ^
       (if ds' = [] then "" else " \\; " ^ render_defs env ds')
     | RuleD (_, _, e, _) ->
       (match classify_rel e with

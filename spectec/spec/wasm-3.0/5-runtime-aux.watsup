@@ -75,10 +75,7 @@ def $frame(state) : frame             hint(show %.FRAME) hint(macro "Z%")
 def $store((s; f)) = s
 def $frame((s; f)) = f
 
-
-def $funcaddr(state) : funcaddr*      hint(show %.MODULE.FUNCS) hint(macro "Z%")
-def $funcaddr((s; f)) = f.MODULE.FUNCS
-
+def $moduleinst(state) : moduleinst   hint(show %.MODULE)  hint(macro "Z%")
 def $funcinst(state) : funcinst*      hint(show %.FUNCS)   hint(macro "Z%")
 def $globalinst(state) : globalinst*  hint(show %.GLOBALS) hint(macro "Z%")
 def $tableinst(state) : tableinst*    hint(show %.TABLES)  hint(macro "Z%")
@@ -87,8 +84,8 @@ def $eleminst(state) : eleminst*      hint(show %.ELEMS)   hint(macro "Z%")
 def $datainst(state) : datainst*      hint(show %.DATAS)   hint(macro "Z%")
 def $structinst(state) : structinst*  hint(show %.STRUCTS) hint(macro "Z%")
 def $arrayinst(state) : arrayinst*    hint(show %.ARRAYS)  hint(macro "Z%")
-def $moduleinst(state) : moduleinst   hint(show %.MODULE)  hint(macro "Z%")
 
+def $moduleinst((s; f)) = f.MODULE
 def $funcinst((s; f)) = s.FUNCS
 def $globalinst((s; f)) = s.GLOBALS
 def $tableinst((s; f)) = s.TABLES
@@ -97,7 +94,6 @@ def $eleminst((s; f)) = s.ELEMS
 def $datainst((s; f)) = s.DATAS
 def $structinst((s; f)) = s.STRUCTS
 def $arrayinst((s; f)) = s.ARRAYS
-def $moduleinst((s; f)) = f.MODULE
 
 def $type(state, typeidx) : deftype         hint(show %.TYPES[%])   hint(macro "Z%")
 def $func(state, funcidx) : funcinst        hint(show %.FUNCS[%])   hint(macro "Z%")

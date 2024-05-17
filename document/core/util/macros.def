@@ -240,6 +240,10 @@
 .. |SET| mathdef:: \xref{valid/conventions}{syntax-init}{\K{set}}
 .. |UNSET| mathdef:: \xref{valid/conventions}{syntax-init}{\K{unset}}
 
+.. |Llbrack| mathdef:: \xref{syntax/types}{syntax-limits}{\[}
+.. |Lrbrack| mathdef:: \xref{syntax/types}{syntax-limits}{\]}
+.. |Ldotdot| mathdef:: \xref{syntax/types}{syntax-limits}{\,{..}\,}
+.. TODO: remove
 .. |LMIN| mathdef:: \xref{syntax/types}{syntax-limits}{\K{min}}
 .. |LMAX| mathdef:: \xref{syntax/types}{syntax-limits}{\K{max}}
 
@@ -1316,6 +1320,7 @@
 
 .. |ZSTORE| mathdef:: \xref{exec/runtime}{syntax-store}{\K{store}}
 .. |ZFRAME| mathdef:: \xref{exec/runtime}{syntax-store}{\K{frame}}
+.. |ZMODULE| mathdef:: \xref{exec/runtime}{syntax-store}{\K{module}}
 .. |ZTYPES| mathdef:: \xref{exec/runtime}{syntax-store}{\K{types}}
 .. |ZFUNCS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{funcs}}
 .. |ZGLOBALS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{globals}}

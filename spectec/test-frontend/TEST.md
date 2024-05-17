@@ -2676,9 +2676,9 @@ def $frame(state : state) : frame
   def $frame{s : store, f : frame}(`%;%`_state(s, f)) = f
 
 ;; 5-runtime-aux.watsup
-def $funcaddr(state : state) : funcaddr*
+def $moduleinst(state : state) : moduleinst
   ;; 5-runtime-aux.watsup
-  def $funcaddr{s : store, f : frame}(`%;%`_state(s, f)) = f.MODULE_frame.FUNCS_moduleinst
+  def $moduleinst{s : store, f : frame}(`%;%`_state(s, f)) = f.MODULE_frame
 
 ;; 5-runtime-aux.watsup
 def $funcinst(state : state) : funcinst*
@@ -2719,11 +2719,6 @@ def $structinst(state : state) : structinst*
 def $arrayinst(state : state) : arrayinst*
   ;; 5-runtime-aux.watsup
   def $arrayinst{s : store, f : frame}(`%;%`_state(s, f)) = s.ARRAYS_store
-
-;; 5-runtime-aux.watsup
-def $moduleinst(state : state) : moduleinst
-  ;; 5-runtime-aux.watsup
-  def $moduleinst{s : store, f : frame}(`%;%`_state(s, f)) = f.MODULE_frame
 
 ;; 5-runtime-aux.watsup
 def $type(state : state, typeidx : typeidx) : deftype
@@ -4779,7 +4774,7 @@ relation Step_read: `%~>%`(config, admininstr*)
   ;; 8-reduction.watsup
   rule call{z : state, x : idx, a : addr}:
     `%~>%`(`%;%`_config(z, [CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(($funcinst(z)[a].TYPE_funcinst : deftype <: typeuse))])
-    -- if ($funcaddr(z)[x!`%`_idx.0] = a)
+    -- if ($moduleinst(z).FUNCS_moduleinst[x!`%`_idx.0] = a)
 
   ;; 8-reduction.watsup
   rule call_ref-null{z : state, ht : heaptype, yy : typeuse}:
@@ -4796,7 +4791,7 @@ relation Step_read: `%~>%`(config, admininstr*)
   ;; 8-reduction.watsup
   rule return_call{z : state, x : idx, a : addr}:
     `%~>%`(`%;%`_config(z, [RETURN_CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr(a) RETURN_CALL_REF_admininstr(($funcinst(z)[a].TYPE_funcinst : deftype <: typeuse))])
-    -- if ($funcaddr(z)[x!`%`_idx.0] = a)
+    -- if ($moduleinst(z).FUNCS_moduleinst[x!`%`_idx.0] = a)
 
   ;; 8-reduction.watsup
   rule return_call_ref-label{z : state, k : nat, instr'* : instr*, val* : val*, yy : typeuse, instr* : instr*}:
@@ -4817,7 +4812,7 @@ relation Step_read: `%~>%`(config, admininstr*)
 
   ;; 8-reduction.watsup
   rule ref.func{z : state, x : idx}:
-    `%~>%`(`%;%`_config(z, [REF.FUNC_admininstr(x)]), [REF.FUNC_ADDR_admininstr($funcaddr(z)[x!`%`_idx.0])])
+    `%~>%`(`%;%`_config(z, [REF.FUNC_admininstr(x)]), [REF.FUNC_ADDR_admininstr($moduleinst(z).FUNCS_moduleinst[x!`%`_idx.0])])
 
   ;; 8-reduction.watsup
   rule ref.test-true{s : store, f : frame, ref : ref, rt : reftype, rt' : reftype}:

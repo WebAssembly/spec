@@ -264,7 +264,6 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-(s ; f){.}\mathsf{module}{.}\mathsf{funcs} &=& f{.}\mathsf{module}{.}\mathsf{funcs} \\
 (s ; f){.}\mathsf{funcs} &=& s{.}\mathsf{funcs} \\[0.8ex]
 (s ; f){.}\mathsf{funcs}{}[x] &=& s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]] \\
 (s ; f){.}\mathsf{tables}{}[x] &=& s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]] \\
@@ -1566,7 +1565,6 @@ warning: definition prose `free_dataidx_funcs` was never spliced
 warning: definition prose `free_dataidx_instr` was never spliced
 warning: definition prose `free_dataidx_instrs` was never spliced
 warning: definition prose `func` was never spliced
-warning: definition prose `funcaddr` was never spliced
 warning: definition prose `funcinst` was never spliced
 warning: definition prose `funcsxt` was never spliced
 warning: definition prose `funcsxv` was never spliced

@@ -192,19 +192,6 @@ $${definition-prose: invoke}
 
 $${definition: invoke}
 
-.. _exec-module-address-getters:
-
-Address Getters
-~~~~~~~~~~~~~~~
-
-.. _def-funcaddr:
-
-$${definition-prose: funcaddr}
-
-\
-
-$${definition: funcaddr}
-
 .. _exec-modules-getters:
 
 Getters

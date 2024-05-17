@@ -5386,9 +5386,9 @@ frame
 1. Let f be the current frame.
 2. Return f.
 
-funcaddr
+moduleinst
 1. Let f be the current frame.
-2. Return f.MODULE.FUNCS.
+2. Return f.MODULE.
 
 funcinst
 1. Return s.FUNCS.
@@ -5413,10 +5413,6 @@ structinst
 
 arrayinst
 1. Return s.ARRAYS.
-
-moduleinst
-1. Let f be the current frame.
-2. Return f.MODULE.
 
 type x
 1. Let f be the current frame.
@@ -6259,8 +6255,8 @@ execution_of_BR_ON_CAST_FAIL l rt_1 rt_2
 
 execution_of_CALL x
 1. Let z be the current state.
-2. Assert: Due to validation, (x < |$funcaddr(z)|).
-3. Let a be $funcaddr(z)[x].
+2. Assert: Due to validation, (x < |$moduleinst(z).FUNCS|).
+3. Let a be $moduleinst(z).FUNCS[x].
 4. Assert: Due to validation, (a < |$funcinst(z)|).
 5. Push the value (REF.FUNC_ADDR a) to the stack.
 6. Execute the instruction (CALL_REF $funcinst(z)[a].TYPE).
@@ -6291,8 +6287,8 @@ execution_of_CALL_REF yy
 
 execution_of_RETURN_CALL x
 1. Let z be the current state.
-2. Assert: Due to validation, (x < |$funcaddr(z)|).
-3. Let a be $funcaddr(z)[x].
+2. Assert: Due to validation, (x < |$moduleinst(z).FUNCS|).
+3. Let a be $moduleinst(z).FUNCS[x].
 4. Assert: Due to validation, (a < |$funcinst(z)|).
 5. Push the value (REF.FUNC_ADDR a) to the stack.
 6. Execute the instruction (RETURN_CALL_REF $funcinst(z)[a].TYPE).
@@ -6327,8 +6323,8 @@ execution_of_REF.NULL $idx(x)
 
 execution_of_REF.FUNC x
 1. Let z be the current state.
-2. Assert: Due to validation, (x < |$funcaddr(z)|).
-3. Push the value (REF.FUNC_ADDR $funcaddr(z)[x]) to the stack.
+2. Assert: Due to validation, (x < |$moduleinst(z).FUNCS|).
+3. Push the value (REF.FUNC_ADDR $moduleinst(z).FUNCS[x]) to the stack.
 
 execution_of_REF.TEST rt
 1. Let f be the current frame.

@@ -158,7 +158,7 @@ rule Step_read/br_on_cast_fail-fail:
 
 rule Step_read/call:
   z; (CALL x)  ~>  (REF.FUNC_ADDR a) (CALL_REF $funcinst(z)[a].TYPE)
-  -- if $funcaddr(z)[x] = a
+  -- if $moduleinst(z).FUNCS[x] = a
 
 rule Step_read/call_ref-null:
   z; (REF.NULL ht) (CALL_REF yy)  ~>  TRAP
@@ -174,7 +174,7 @@ rule Step_read/call_ref-func:
 
 rule Step_read/return_call:
   z; (RETURN_CALL x)  ~>  (REF.FUNC_ADDR a) (RETURN_CALL_REF $funcinst(z)[a].TYPE)
-  -- if $funcaddr(z)[x] = a
+  -- if $moduleinst(z).FUNCS[x] = a
 
 
 rule Step_read/return_call_ref-label:
@@ -250,7 +250,7 @@ rule Step_read/ref.null-idx:
   z; (REF.NULL $idx(x))  ~>  (REF.NULL $type(z, x))
 
 rule Step_read/ref.func:
-  z; (REF.FUNC x)  ~>  (REF.FUNC_ADDR $funcaddr(z)[x])
+  z; (REF.FUNC x)  ~>  (REF.FUNC_ADDR $moduleinst(z).FUNCS[x])
 
 rule Step_pure/ref.i31:
   (CONST I32 i) REF.I31  ~>  (REF.I31_NUM $wrap(32, 31, i))
