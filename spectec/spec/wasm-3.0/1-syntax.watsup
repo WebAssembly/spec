@@ -121,7 +121,7 @@ var x33 : s33 hint(show x)
 ;; Value types
 
 ;; TODO: inline
-syntax nul hint(show NULL?) hint(macro none) = NULL?
+syntax nul hint(show NULL?) hint(macro "%" "%") = NULL?
 
 syntax numtype hint(desc "number type") =
   | I32 | I64 | F32 | F64
@@ -205,8 +205,8 @@ syntax Lnn hint(show I#n) hint(macro none) = Inn | Fnn | Pnn
 ;; Type definitions
 
 ;; TODO: inline
-syntax mut hint(show MUT?)   hint(macro none) = MUT?
-syntax fin hint(show FINAL?) hint(macro none) = FINAL?
+syntax mut hint(show MUT?)   hint(macro "T%" "T%") = MUT?
+syntax fin hint(show FINAL?) hint(macro "T%" "T%") = FINAL?
 
 syntax fieldtype  hint(desc "field type") = mut storagetype
 
@@ -358,10 +358,10 @@ syntax cvtop = CONVERT | CONVERT_SAT | REINTERPRET
 ;; Vector operators
 
 syntax dim hint(desc "dimension") = `1 | `2 | `4 | `8 | `16
-syntax shape hint(desc "shape") = lanetype X dim  hint(show %0#X#%2)
-syntax ishape hint(desc "shape") = Jnn X dim      hint(show %0#X#%2)
-syntax fshape hint(desc "shape") = Fnn X dim      hint(show %0#X#%2)
-syntax pshape hint(desc "shape") = Pnn X dim      hint(show %0#X#%2)
+syntax shape hint(desc "shape") = lanetype X dim  hint(show %0#X#%2) hint(macro "%shape")
+syntax ishape hint(desc "shape") = Jnn X dim      hint(show %0#X#%2) hint(macro "%shape")
+syntax fshape hint(desc "shape") = Fnn X dim      hint(show %0#X#%2) hint(macro "%shape")
+syntax pshape hint(desc "shape") = Pnn X dim      hint(show %0#X#%2) hint(macro "%shape")
 
 def $dim(shape) : dim     hint(macro "shdim")
 def $shsize(shape) : nat  hint(show |%|)
@@ -449,7 +449,7 @@ syntax memarg hint(desc "memory argument") = {ALIGN u32, OFFSET u32}
 var ao : memarg
 
 syntax vloadop hint(macro "%" "L%") =
-  | SHAPE N X M sx  hint(show %1#X#%3#_#%4)
+  | SHAPE N X M sx  hint(show %1#X#%3#_#%4) hint(macro "%shape")
   | SPLAT N         hint(show %#_#SPLAT)
   | ZERO N          hint(show %#_#ZERO)
 

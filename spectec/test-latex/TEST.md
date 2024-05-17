@@ -428,6 +428,103 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
+& {\mathit{rec}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
+\mathsf{fa}~{{\mathit{nat}}^\ast},\; \\
+  \mathsf{fb}~{{\mathit{nat}}^\ast},\; \\
+  \mathsf{fc}~{{\mathit{nat}}^\ast},\; \\
+  \mathsf{fd}~{{\mathit{nat}}^\ast},\; \\
+  \mathsf{fee}~{{\mathit{nat}}^\ast},\; \\
+  \mathsf{fff}~{{\mathit{nat}}^\ast},\; \\
+  \mathsf{fgg}~{{\mathit{nat}}^\ast},\; \\
+  \mathsf{fhh}~{{\mathit{nat}}^\ast} \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{proj}}(r, 0) &=& r{.}\mathsf{fa} \\
+{\mathrm{proj}}(r, 1) &=& r{.}\mathsf{fb} \\
+{\mathrm{proj}}(r, 2) &=& r{.}\mathsf{fc} \\
+{\mathrm{proj}}(r, 3) &=& r{.}\mathsf{fd} \\
+{\mathrm{proj}}(r, 4) &=& r{.}\mathsf{fee} \\
+{\mathrm{proj}}(r, 5) &=& r{.}\mathsf{fff} \\
+{\mathrm{proj}}(r, 6) &=& r{.}\mathsf{fgg} \\
+{\mathrm{proj}}(r, 7) &=& r{.}\mathsf{fhh} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{upd}}(r, 0) &=& r{}[\mathsf{fa} = 0] \\
+{\mathrm{upd}}(r, 1) &=& r{}[\mathsf{fb} = 0] \\
+{\mathrm{upd}}(r, 2) &=& r{}[\mathsf{fc} = 0] \\
+{\mathrm{upd}}(r, 3) &=& r{}[\mathsf{fd} = 0] \\
+{\mathrm{upd}}(r, 4) &=& r{}[\mathsf{fee} = 0] \\
+{\mathrm{upd}}(r, 5) &=& r{}[\mathsf{fff} = 0] \\
+{\mathrm{upd}}(r, 6) &=& r{}[\mathsf{fgg} = 0] \\
+{\mathrm{upd}}(r, 7) &=& r{}[\mathsf{fhh} = 0] \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{ext}}(r, 0) &=& r{}[\mathsf{fa} = ..0] \\
+{\mathrm{ext}}(r, 1) &=& r{}[\mathsf{fb} = ..0] \\
+{\mathrm{ext}}(r, 2) &=& r{}[\mathsf{fc} = ..0] \\
+{\mathrm{ext}}(r, 3) &=& r{}[\mathsf{fd} = ..0] \\
+{\mathrm{ext}}(r, 4) &=& r{}[\mathsf{fee} = ..0] \\
+{\mathrm{ext}}(r, 5) &=& r{}[\mathsf{fff} = ..0] \\
+{\mathrm{ext}}(r, 6) &=& r{}[\mathsf{fgg} = ..0] \\
+{\mathrm{ext}}(r, 7) &=& r{}[\mathsf{fhh} = ..0] \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+& {\mathit{recimpl}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
+\mathsf{fia}~{{\mathit{nat}}^\ast},\; \\
+  \mathsf{fib}~{{\mathit{nat}}^\ast},\; \\
+  \mathsf{fic}~{{\mathit{nat}}^\ast},\; \\
+  \mathsf{fid}~{{\mathit{nat}}^\ast},\; \\
+  \mathsf{fiee}~{{\mathit{nat}}^\ast},\; \\
+  \mathsf{fiff}~{{\mathit{nat}}^\ast},\; \\
+  \mathsf{figg}~{{\mathit{nat}}^\ast},\; \\
+  \mathsf{fihh}~{{\mathit{nat}}^\ast} \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{rproj}}(r, 0) &=& r{.}\mathsf{fia} \\
+{\mathrm{rproj}}(r, 1) &=& r{.}\mathsf{fib} \\
+{\mathrm{rproj}}(r, 2) &=& r{.}\mathsf{fic} \\
+{\mathrm{rproj}}(r, 3) &=& r{.}\mathsf{fid} \\
+{\mathrm{rproj}}(r, 4) &=& r{.}\mathsf{fiee} \\
+{\mathrm{rproj}}(r, 5) &=& r{.}\mathsf{fiff} \\
+{\mathrm{rproj}}(r, 6) &=& r{.}\mathsf{figg} \\
+{\mathrm{rproj}}(r, 7) &=& r{.}\mathsf{fihh} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+& {\mathit{cona}} &::=& {\mathit{nat}}~\mathsf{coa}~{\mathit{nat}} \\
+& {\mathit{conb}} &::=& {\mathit{nat}}~\mathsf{cob}~{\mathit{nat}} \\
+& {\mathit{conc}} &::=& {\mathit{nat}}~\mathsf{coc}~{\mathit{nat}} \\
+& {\mathit{cond}} &::=& {\mathit{nat}}~\mathsf{cod}~{\mathit{nat}} \\
+& {\mathit{cone}} &::=& {\mathit{nat}}~\mathsf{coe}~{\mathit{nat}} \\
+& {\mathit{conf}} &::=& {\mathit{nat}}~\mathsf{cof}~{\mathit{nat}} \\
+& {\mathit{cong}} &::=& {\mathit{nat}}~\mathsf{cog}~{\mathit{nat}} \\
+& {\mathit{conh}} &::=& {\mathit{nat}}~\mathsf{coh}~{\mathit{nat}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
 & C &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
  \}\end{array} \\
 \end{array}
@@ -953,6 +1050,103 @@ $$
 {\grandchild}({n}{\mathsf{\_}}{\mathsf{rd}}{\mathsf{rrz}}~z) &=& 0 \\
 {\grandchild}(\ZZZ) &=& 0 \\
 {\grandchild}(\ZZZZ) &=& 0 \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+& {\rec} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
+\FA~{{\mathit{nat}}^\ast},\; \\
+  \FB~{{\mathit{nat}}^\ast},\; \\
+  \xFCyFCz~{{\mathit{nat}}^\ast},\; \\
+  \mathsf{fd}~{{\mathit{nat}}^\ast},\; \\
+  \FEE~{{\mathit{nat}}^\ast},\; \\
+  \FFF~{{\mathit{nat}}^\ast},\; \\
+  \xFGGyFGGz~{{\mathit{nat}}^\ast},\; \\
+  \mathsf{fhh}~{{\mathit{nat}}^\ast} \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\proj}(r, 0) &=& r{.}\FA \\
+{\proj}(r, 1) &=& r{.}\FB \\
+{\proj}(r, 2) &=& r{.}\xFCyFCz \\
+{\proj}(r, 3) &=& r{.}\mathsf{fd} \\
+{\proj}(r, 4) &=& r{.}\FEE \\
+{\proj}(r, 5) &=& r{.}\FFF \\
+{\proj}(r, 6) &=& r{.}\xFGGyFGGz \\
+{\proj}(r, 7) &=& r{.}\mathsf{fhh} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\upd}(r, 0) &=& r{}[\FA = 0] \\
+{\upd}(r, 1) &=& r{}[\FB = 0] \\
+{\upd}(r, 2) &=& r{}[\xFCyFCz = 0] \\
+{\upd}(r, 3) &=& r{}[\mathsf{fd} = 0] \\
+{\upd}(r, 4) &=& r{}[\FEE = 0] \\
+{\upd}(r, 5) &=& r{}[\FFF = 0] \\
+{\upd}(r, 6) &=& r{}[\xFGGyFGGz = 0] \\
+{\upd}(r, 7) &=& r{}[\mathsf{fhh} = 0] \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\ext}(r, 0) &=& r{}[\FA = ..0] \\
+{\ext}(r, 1) &=& r{}[\FB = ..0] \\
+{\ext}(r, 2) &=& r{}[\xFCyFCz = ..0] \\
+{\ext}(r, 3) &=& r{}[\mathsf{fd} = ..0] \\
+{\ext}(r, 4) &=& r{}[\FEE = ..0] \\
+{\ext}(r, 5) &=& r{}[\FFF = ..0] \\
+{\ext}(r, 6) &=& r{}[\xFGGyFGGz = ..0] \\
+{\ext}(r, 7) &=& r{}[\mathsf{fhh} = ..0] \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+& {\recimpl} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
+\RFIA~{{\mathit{nat}}^\ast},\; \\
+  \FIB~{{\mathit{nat}}^\ast},\; \\
+  \xFICyFICz~{{\mathit{nat}}^\ast},\; \\
+  \mathsf{fid}~{{\mathit{nat}}^\ast},\; \\
+  \RFIEE~{{\mathit{nat}}^\ast},\; \\
+  \FIFF~{{\mathit{nat}}^\ast},\; \\
+  \xFIGGyFIGGz~{{\mathit{nat}}^\ast},\; \\
+  \mathsf{fihh}~{{\mathit{nat}}^\ast} \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\rproj}(r, 0) &=& r{.}\RFIA \\
+{\rproj}(r, 1) &=& r{.}\FIB \\
+{\rproj}(r, 2) &=& r{.}\xFICyFICz \\
+{\rproj}(r, 3) &=& r{.}\mathsf{fid} \\
+{\rproj}(r, 4) &=& r{.}\RFIEE \\
+{\rproj}(r, 5) &=& r{.}\FIFF \\
+{\rproj}(r, 6) &=& r{.}\xFIGGyFIGGz \\
+{\rproj}(r, 7) &=& r{.}\mathsf{fihh} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+& {\cona} &::=& {\mathit{nat}}~\COA~{\mathit{nat}} \\
+& {\conb} &::=& {\mathit{nat}}~\COB~{\mathit{nat}} \\
+& {\conc} &::=& {\mathit{nat}}~\xCOCyCOCz~{\mathit{nat}} \\
+& {\cond} &::=& {\mathit{nat}}~\mathsf{cod}~{\mathit{nat}} \\
+& {\cone} &::=& {\mathit{nat}}~\COE~{\mathit{nat}} \\
+& {\conf} &::=& {\mathit{nat}}~\COF~{\mathit{nat}} \\
+& {\cong} &::=& {\mathit{nat}}~\xCOGyCOGz~{\mathit{nat}} \\
+& {\conh} &::=& {\mathit{nat}}~\mathsf{coh}~{\mathit{nat}} \\
 \end{array}
 $$
 
@@ -2180,7 +2374,7 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathrm{roll}}}_{x}({\mathit{qt}}) &=& {((\mathsf{rec}~{{\mathit{st}}^{n}}) {.} i)^{i<n}}
+{{{{\mathrm{roll}}}_{x}^\ast}}{{\mathit{qt}}} &=& {((\mathsf{rec}~{{\mathit{st}}^{n}}) {.} i)^{i<n}}
   &\qquad \mbox{if}~{{\mathrm{roll}}}_{x}({\mathit{qt}}) = \mathsf{rec}~{{\mathit{st}}^{n}} \\
 \end{array}
 $$
@@ -5895,7 +6089,7 @@ $$
 \frac{
 x = {|C{.}\mathsf{types}|}
  \qquad
-{{\mathit{dt}}^\ast} = {{\mathrm{roll}}}_{x}({\mathit{rectype}})
+{{\mathit{dt}}^\ast} = {{{{\mathrm{roll}}}_{x}^\ast}}{{\mathit{rectype}}}
  \qquad
 C{}[\mathsf{types} = ..{{\mathit{dt}}^\ast}] \vdash {\mathit{rectype}} : {\mathsf{ok}}{(x)}
 }{
@@ -7403,7 +7597,7 @@ $$
 {\mathrm{alloctypes}}({{\mathit{type}'}^\ast}~{\mathit{type}}) &=& {{\mathit{deftype}'}^\ast}~{{\mathit{deftype}}^\ast}
   &\qquad \mbox{if}~{{\mathit{deftype}'}^\ast} = {\mathrm{alloctypes}}({{\mathit{type}'}^\ast}) \\
   &&&\qquad {\land}~{\mathit{type}} = \mathsf{type}~{\mathit{rectype}} \\
-  &&&\qquad {\land}~{{\mathit{deftype}}^\ast} = {{{\mathrm{roll}}}_{x}({\mathit{rectype}})}{{}[ { := }\;{{\mathit{deftype}'}^\ast} ]} \\
+  &&&\qquad {\land}~{{\mathit{deftype}}^\ast} = {{{{{\mathrm{roll}}}_{x}^\ast}}{{\mathit{rectype}}}}{{}[ { := }\;{{\mathit{deftype}'}^\ast} ]} \\
   &&&\qquad {\land}~x = {|{{\mathit{deftype}'}^\ast}|} \\
 \end{array}
 $$

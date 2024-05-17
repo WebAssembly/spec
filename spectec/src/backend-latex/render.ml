@@ -162,8 +162,11 @@ let env_hintdef env hd =
     env_hints "show" env.show_def id hints
 
 let env_atom env tid atom hints =
-  map_cons tid.it atom env.atoms;
   env_hintdef env (AtomH (tid, atom, hints) $ atom.at)
+
+let env_atom_show env tid atom hints =
+  env_atom env tid atom
+    (List.filter (fun {hintid; _} -> hintid.it = "show") hints)
 
 let env_typ env tid t hints =
   let hints' = List.filter (fun {hintid; _} -> hintid.it = "macro") hints in
@@ -171,17 +174,20 @@ let env_typ env tid t hints =
     El.Iter.Make(
       struct
         include El.Iter.Skip
-        let visit_atom atom = env_atom env tid atom hints'
+        let visit_atom atom =
+          map_cons tid.it atom env.atoms;
+          env_atom env tid atom hints'
       end
     )
   in EnvIter.typ t
 
 let env_typfield env tid (atom, (t, _prems), hints) =
+  map_cons tid.it atom env.atoms;
   env_atom env tid atom hints;
   env_typ env tid t hints
 
 let env_typcase env tid (atom, (t, _prems), hints) = 
-  env_atom env tid atom hints;
+  env_atom_show env tid atom hints;
   env_typ env tid t hints
 
 let env_typcon env tid ((t, _prems), hints) =
@@ -190,23 +196,24 @@ let env_typcon env tid ((t, _prems), hints) =
   | AtomT atom
   | InfixT (_, atom, _)
   | BrackT (atom, _, _) ->
-    env_atom env tid atom hints
+    env_atom_show env tid atom hints
   | SeqT ts ->
     (match List.find_opt is_atom_typ ts with
-    | Some {it = AtomT atom; _} -> env_atom env tid atom hints
+    | Some {it = AtomT atom; _} -> env_atom_show env tid atom hints
     | _ -> ()
     )
   | _ -> ()
 
-let env_typdef env tid t : (id * typ list) list =
+let env_typdef env tid t : typ list option =
   map_append tid.it [] env.atoms;
   match t.it with
   | VarT (id, _) ->
     map_append tid.it (Map.find id.it !(env.atoms)) env.atoms;
-    [(tid, [t])]
+    Some [t]
   | StrT tfs ->
-    iter_nl_list (env_typfield env tid) tfs; []
-  | CaseT (_, ts, tcs, _) ->
+    iter_nl_list (env_typfield env tid) tfs;
+    Some []
+  | CaseT (dots1, ts, tcs, _) ->
     iter_nl_list (env_typcase env tid) tcs;
     iter_nl_list (fun t ->
       match t.it with
@@ -214,10 +221,12 @@ let env_typdef env tid t : (id * typ list) list =
         map_append tid.it (Map.find id.it !(env.atoms)) env.atoms
       | _ -> ()
     ) ts;
-    [(tid, filter_nl ts)]
+    if dots1 = Dots && ts = [] then None else Some (filter_nl ts)
   | ConT tc ->
-    env_typcon env tid tc; []
-  | _ -> []
+    env_typcon env tid tc;
+    Some []
+  | _ ->
+    Some []
 
 let env_def env d : (id * typ list) list =
   match d.it with
@@ -234,7 +243,10 @@ let env_def env d : (id * typ list) list =
     if not (Map.mem id1.it !(env.macro_var)) then env_macro env.macro_var id1;
     env_hintdef env (TypH (id1, id2, hints) $ d.at);
     env_hintdef env (VarH (id1, hints) $ d.at);
-    env_typdef env id1 t
+    (match env_typdef env id1 t with
+    | None -> []
+    | Some ts -> [(id1, ts)]
+    )
   | GramD (id1, id2, _ps, _t, _gram, hints) ->
     env_macro env.macro_gram id1;
     env_hintdef env (GramH (id1, id2, hints) $ d.at);
@@ -298,7 +310,9 @@ Printf.printf "\n[env inheritance]\n";
       | _ -> TextE "%" $ no_region
     in
     List.iter (fun atom ->
-      map_append (typed_id' atom tid.it) [e] env.macro_atom
+      let t_id = typed_id' atom tid.it in
+      if not (Map.mem t_id !(env.macro_atom)) then
+        map_append t_id [e] env.macro_atom
     ) (Map.find tid.it !(env.atoms));
   ) inherits;
 (*
@@ -648,6 +662,11 @@ let id_style = function
   | `Token -> "\\mathtt"
 
 let render_id' env style id templ =
+  El.Debug.(log "render.id"
+    (fun _ -> fmt "%s %s" id
+      ""(*mapping (fun xs -> string_of_int (List.length xs)) !(env.macro_atom)*))
+    (fun s -> s)
+  ) @@ fun _ ->
   assert (templ = None || env.config.macros_for_ids);
   if templ <> None then "\\" ^ macrofy_id (expand_name templ id) else
 (*
@@ -725,6 +744,11 @@ let render_rule_deco env pre id1 id2 post =
 
 
 let render_atom env atom =
+  El.Debug.(log "render.atom"
+    (fun _ -> fmt "%s %s" (el_atom atom)
+      ""(*mapping (fun xs -> string_of_int (List.length xs)) !(env.macro_atom)*))
+    (fun s -> s)
+  ) @@ fun _ ->
   let open Atom in
   let id = typed_id atom in
   let arg = arg_of_exp (AtomE atom $ atom.at) in
@@ -1049,7 +1073,7 @@ and render_fieldname env atom =
     (fun _ -> fmt "%s %s" (el_atom atom)
       (mapping (fun xs -> string_of_int (List.length xs)) !(env.show_atom)))
     (fun s -> s)
-  ) @@ fun _ -> 
+  ) @@ fun _ ->
   render_atom env atom
 
 

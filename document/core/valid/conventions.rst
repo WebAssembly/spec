@@ -175,7 +175,7 @@ These operations are extended to :ref:`defined types <syntax-deftype>` and defin
    & (\iff & i^\ast = 0 \cdots (|\subtype^\ast| - 1)) \\
    \unrollrt(\TREC~\subtype^\ast) &=& \TREC~(\subtype[(\REC~i)^\ast \subst ((\TREC~\subtype^\ast).i)^\ast])^\ast
    & (\iff & i^\ast = 0 \cdots (|\subtype^\ast| - 1)) \\[2ex]
-   \rolldt_{x}(\rectype) &=& ((\TREC~\subtype^\ast).i)^\ast
+   \rolldt_{x}^\ast(\rectype) &=& ((\TREC~\subtype^\ast).i)^\ast
    & (\iff & i^\ast = 0 \cdots (|\subtype^\ast| - 1) \\
    &&& \land & \rollrt_{x}(\rectype) = \TREC~\subtype^\ast) \\
    \unrolldt(\rectype.i) &=& \subtype^\ast[i]

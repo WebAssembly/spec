@@ -12,7 +12,7 @@ syntax instrtype hint(desc "instruction type") =
   resulttype ->_ localidx* resulttype  hint(show %0 `->_ %2 %3) hint(macro "to")
 
 
-syntax context hint(desc "context") hint(macro "C%") =
+syntax context hint(desc "context") hint(macro "%" "C%") =
   { TYPES deftype*, \
     REC subtype*,
     FUNCS deftype*, \

@@ -234,6 +234,8 @@
 .. |TREC| mathdef:: \xref{syntax/types}{syntax-rectype}{\K{rec}}
 .. |TFINAL| mathdef:: \xref{syntax/types}{syntax-subtype}{\K{final}}
 
+.. |TMUT| mathdef:: \xref{syntax/types}{syntax-mut}{\K{mut}}
+.. TODO : remove
 .. |MVAR| mathdef:: \xref{syntax/types}{syntax-mut}{\K{var}}
 .. |MCONST| mathdef:: \xref{syntax/types}{syntax-mut}{\K{const}}
 
@@ -297,9 +299,10 @@
 
 .. |rollrt| mathdef:: \xref{valid/conventions}{aux-roll-rectype}{\F{roll}}
 .. |unrollrt| mathdef:: \xref{valid/conventions}{aux-unroll-rectype}{\F{unroll}}
-.. |rolldt| mathdef:: \xref{valid/conventions}{aux-roll-deftype}{\F{roll}^\ast}
+.. |rolldt| mathdef:: \xref{valid/conventions}{aux-roll-deftype}{\F{roll}}
 .. |unrolldt| mathdef:: \xref{valid/conventions}{aux-unroll-deftype}{\F{unroll}}
 .. |expanddt| mathdef:: \xref{valid/conventions}{aux-expand-deftype}{\F{expand}}
+.. |approxexpanddt| mathdef:: \xref{valid/conventions}{aux-expand-deftype}{\approx}
 .. |unrollht| mathdef:: \xref{appendix/properties}{aux-unroll-heaptype}{\F{unroll}}
 
 .. |unpack| mathdef:: \xref{syntax/types}{aux-unpack}{\F{unpack}}
@@ -443,9 +446,6 @@
 .. |OFFSET| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{offset}}
 .. |ALIGN| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{align}}
 
-.. |Xishape| mathdef:: \xref{syntax/instructions}{syntax-shape}{\K{x}}
-.. |Xfshape| mathdef:: \xref{syntax/instructions}{syntax-shape}{\K{x}}
-.. |Xpshape| mathdef:: \xref{syntax/instructions}{syntax-shape}{\K{x}}
 .. |Xshape| mathdef:: \xref{syntax/instructions}{syntax-shape}{\K{x}}
 
 .. |UNREACHABLE| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{unreachable}}

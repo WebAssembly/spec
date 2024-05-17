@@ -292,6 +292,83 @@ def $grandchild(ZZZ) = 0
 def $grandchild(ZZZZ) = 0
 
 
+;; Field atoms
+
+syntax rec = {
+  FA nat*,                                     ;; \FA
+  FB nat*  hint(macro "%"),                    ;; \FB
+  FC nat*  hint(macro "x%y%z"),                ;; \xFCyFCz
+  FD nat*  hint(macro none),                   ;; \mathsf{fd}
+  FE nat*  hint(show FEE),                     ;; \FEE
+  FF nat*  hint(show FFF) hint(macro "%"),     ;; \FFF
+  FG nat*  hint(show FGG) hint(macro "x%y%z"), ;; \xFGGyFGGz
+  FH nat*  hint(show FHH) hint(macro none)     ;; \mathsf{fhh}
+}
+
+def $proj(rec, nat) : nat*
+def $proj(r, 0) = r.FA
+def $proj(r, 1) = r.FB
+def $proj(r, 2) = r.FC
+def $proj(r, 3) = r.FD
+def $proj(r, 4) = r.FE
+def $proj(r, 5) = r.FF
+def $proj(r, 6) = r.FG
+def $proj(r, 7) = r.FH
+
+def $upd(rec, nat) : rec
+def $upd(r, 0) = r[.FA = 0]
+def $upd(r, 1) = r[.FB = 0]
+def $upd(r, 2) = r[.FC = 0]
+def $upd(r, 3) = r[.FD = 0]
+def $upd(r, 4) = r[.FE = 0]
+def $upd(r, 5) = r[.FF = 0]
+def $upd(r, 6) = r[.FG = 0]
+def $upd(r, 7) = r[.FH = 0]
+
+def $ext(rec, nat) : rec
+def $ext(r, 0) = r[.FA =.. 0]
+def $ext(r, 1) = r[.FB =.. 0]
+def $ext(r, 2) = r[.FC =.. 0]
+def $ext(r, 3) = r[.FD =.. 0]
+def $ext(r, 4) = r[.FE =.. 0]
+def $ext(r, 5) = r[.FF =.. 0]
+def $ext(r, 6) = r[.FG =.. 0]
+def $ext(r, 7) = r[.FH =.. 0]
+
+syntax recimpl hint(macro "%" "R%") = {
+  FIA nat*,                                      ;; \RFIA
+  FIB nat*  hint(macro "%"),                     ;; \FIB
+  FIC nat*  hint(macro "x%y%z"),                 ;; \xFICyFICz
+  FID nat*  hint(macro none),                    ;; \mathsf{fid}
+  FIE nat*  hint(show FIEE),                     ;; \RFIEE
+  FIF nat*  hint(show FIFF) hint(macro "%"),     ;; \FIFF
+  FIG nat*  hint(show FIGG) hint(macro "x%y%z"), ;; \xFIGGyFIGGz
+  FIH nat*  hint(show FIHH) hint(macro none)     ;; \mathsf{fihh}
+}
+
+def $rproj(recimpl, nat) : nat*
+def $rproj(r, 0) = r.FIA
+def $rproj(r, 1) = r.FIB
+def $rproj(r, 2) = r.FIC
+def $rproj(r, 3) = r.FID
+def $rproj(r, 4) = r.FIE
+def $rproj(r, 5) = r.FIF
+def $rproj(r, 6) = r.FIG
+def $rproj(r, 7) = r.FIH
+
+
+;; Constructor atoms
+
+syntax cona = nat COA nat                            ;; \COA
+syntax conb hint(macro "%" "%") = nat COB nat        ;; \COB
+syntax conc hint(macro "%" "x%y%z") = nat COC nat    ;; \xCOCyCOCz
+syntax cond hint(macro "%" none) = nat COD nat       ;; \mathsf{COD}
+syntax cone hint(show %COOE%) = nat COE nat                            ;; \COE
+syntax conf hint(show %COOF%) hint(macro "%" "%") = nat COF nat        ;; \COF
+syntax cong hint(show %COOG%) hint(macro "%" "x%y%z") = nat COG nat    ;; \xCOGyCOGz
+syntax conh hint(show %COOH%) hint(macro "%" none) = nat COH nat       ;; \mathsf{COH}
+
+
 ;; Relation atoms
 
 syntax C = {}
