@@ -167,7 +167,7 @@
 .. |f32| mathdef:: \xref{syntax/values}{syntax-float}{\X{f\scriptstyle32}}
 .. |f64| mathdef:: \xref{syntax/values}{syntax-float}{\X{f\scriptstyle64}}
 
-.. |vNN| mathdef:: \xref{syntax/values}{syntax-vec}{\X{v}}
+.. |vNN| mathdef:: \xref{syntax/values}{syntax-vecnum}{\X{v}}
 
 .. |name| mathdef:: \xref{syntax/values}{syntax-name}{\X{name}}
 .. |char| mathdef:: \xref{syntax/values}{syntax-name}{\X{char}}
