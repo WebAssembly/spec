@@ -558,6 +558,7 @@ and expand_exp env templ args i e =
     let e1' = expand_exp env templ args i e1 in
     let e2' = expand_exp env templ args i e2 in
     FuseE (e1', e2')
+  | UnparenE e1 -> UnparenE (expand_exp env templ args i e1)
   ) $ e.at
 
 and expand_expfield env templ args i (atom, e) =
@@ -652,7 +653,7 @@ let lower = String.lowercase_ascii
 
 let dash_id = Str.(global_replace (regexp "-") "{-}")
 let quote_id = Str.(global_replace (regexp "_+") "\\_")
-let shrink_id = Str.(global_replace (regexp "[0-9]+") "{\\\\scriptstyle\\0}")
+let shrink_id = Str.(global_replace (regexp "[0-9A-Z]+") "{\\\\scriptstyle \\0}")
 let macrofy_id = Str.(global_replace (regexp "[_.]") "")
 
 let id_style = function
@@ -673,10 +674,16 @@ let render_id' env style id templ =
 if env.config.macros_for_ids && String.length id > 2 && (style = `Var || style = `Func) then
 Printf.eprintf "[id w/o macro] %s%s\n%!" (if style = `Func then "$" else "") id;
 *)
-  let id' = shrink_id (quote_id id) in
-  if style = `Var && String.length id' = 1 && Lib.Char.is_letter_ascii id'.[0]
-  then id'
-  else id_style style ^ "{" ^ (if style = `Atom then lower id' else id') ^ "}"
+  let id' = quote_id id in
+  let id'' =
+    match style with
+    | `Var | `Func -> shrink_id id'
+    | `Atom -> shrink_id (lower id')
+    | `Token -> id'
+  in
+  if style = `Var && String.length id'' = 1 && Lib.Char.is_letter_ascii id''.[0]
+  then id''
+  else id_style style ^ "{" ^ id'' ^ "}"
 
 let rec render_id_sub style show macro env first at = function
   | [] -> ""
@@ -1024,6 +1031,7 @@ Printf.eprintf "[render %s:X @ %s] try expansion\n%!" (Source.string_of_region e
     let e2' = as_paren_exp (fuse_exp e2 true) in
     let es = e2' :: flatten_fuse_exp_rev e1 in
     String.concat "" (List.map (fun e -> "{" ^ render_exp env e ^ "}") (List.rev es))
+  | UnparenE ({it = ParenE (e1, _); _} | e1) -> render_exp env e1
   | HoleE `None -> ""
   | HoleE _ -> error e.at "misplaced hole"
 
@@ -1162,6 +1170,7 @@ and render_sym env g =
   | AttrG (e, g1) -> render_exp env e ^ "{:}" ^ render_sym env g1
   | FuseG (g1, g2) ->
     "{" ^ render_sym env g1 ^ "}" ^ "{" ^ render_sym env g2 ^ "}"
+  | UnparenG ({it = ParenG g1; _} | g1) -> render_sym env g1
 
 and render_syms sep env gs =
   altern_map_nl sep " \\\\ &&&" (render_sym env) gs

@@ -150,7 +150,7 @@ and al_to_el_expr expr =
       let ele =
         match ele.it with
         | El.Ast.IterE (_, eliter2) when eliter2 <> eliter ->
-          El.Ast.ParenE (ele, false) $ ele.at
+          El.Ast.ParenE (ele, `Insig) $ ele.at
         | _ -> ele
       in
       Some (El.Ast.IterE (ele, eliter))
@@ -165,7 +165,7 @@ and al_to_el_expr expr =
       let* elel = al_to_el_exprs el in
       let ele = El.Ast.SeqE ([ ela ] @ elel) in
       if List.length elel = 0 then Some ele
-      else Some (El.Ast.ParenE (ele $ no_region, false))
+      else Some (El.Ast.ParenE (ele $ no_region, `Insig))
     | Al.Ast.OptE (Some e) ->
       let* ele = al_to_el_expr e in
       Some (ele.it)

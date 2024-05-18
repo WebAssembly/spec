@@ -139,6 +139,7 @@ and subst_exp s e =
   | TypE (e1, t) -> TypE (subst_exp s e1, subst_typ s t)
   | HoleE h -> HoleE h
   | FuseE (e1, e2) -> FuseE (subst_exp s e1, subst_exp s e2)
+  | UnparenE e1 -> UnparenE (subst_exp s e1)
   ) $ e.at
 
 and subst_expfield s (atom, e) = (atom, subst_exp s e)
@@ -185,6 +186,7 @@ and subst_sym s g =
   | ArithG e -> ArithG (subst_exp s e)
   | AttrG (e, g1) -> AttrG (subst_exp s e, subst_sym s g1)
   | FuseG (g1, g2) -> FuseG (subst_sym s g1, subst_sym s g2)
+  | UnparenG g1 -> UnparenG (subst_sym s g1)
   ) $ g.at
 
 (*

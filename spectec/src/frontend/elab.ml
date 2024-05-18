@@ -1001,6 +1001,7 @@ and infer_exp' env e : Il.exp' * typ =
     (elab_exp env e1 t).it, t
   | HoleE _ -> error e.at "misplaced hole"
   | FuseE _ -> error e.at "misplaced token concatenation"
+  | UnparenE _ -> error e.at "misplaced unparenthesize"
 
 
 and elab_exp env e t : Il.exp =
@@ -1105,7 +1106,7 @@ and elab_exp' env e t : Il.exp' =
   | SizeE _ ->
     let e', t' = infer_exp env e in
     cast_exp' "expansion length" env e' t' t
-  | ParenE (e1, true) when is_iter_typ env t ->
+  | ParenE (e1, `Sig) when is_iter_typ env t ->
     (* Significant parentheses indicate a singleton *)
     let t1, _iter = as_iter_typ "expression" env Check t e.at in
     let e1' = elab_exp env e1 t1 in
@@ -1156,7 +1157,8 @@ and elab_exp' env e t : Il.exp' =
     let e', t' = infer_exp env e in
     cast_exp' "type annotation" env e' t' t
   | HoleE _ -> error e.at "misplaced hole"
-  | FuseE _ -> error e.at "misplaced token fuse"
+  | FuseE _ -> error e.at "misplaced token concatenation"
+  | UnparenE _ -> error e.at "misplaced unparenthesize"
 
 and elab_expfields env tid efs tfs t0 at : Il.expfield list =
   Debug.(log_in_at "el.elab_expfields" at
@@ -1231,7 +1233,7 @@ and elab_exp_notation' env tid e t : Il.exp list * Subst.t =
     ignore (elab_atom atom tid);
     [], Subst.empty
   | InfixE (e1, atom, e2), InfixT (_, atom', _) when Il.Atom.sub atom' atom ->
-    let e21 = ParenE (SeqE [] $ e2.at, false) $ e2.at in
+    let e21 = ParenE (SeqE [] $ e2.at, `Insig) $ e2.at in
     elab_exp_notation' env tid
       (InfixE (e1, atom', SeqE [e21; e2] $ e2.at) $ e.at) t
   | InfixE (e1, atom, e2), InfixT (t1, atom', t2) ->
@@ -1270,7 +1272,7 @@ and elab_exp_notation' env tid e t : Il.exp list * Subst.t =
     )
   | SeqE ({it = AtomE atom; at; _}::es2), SeqT ({it = AtomT atom'; _}::_)
     when Il.Atom.sub atom' atom ->
-    let e21 = ParenE (SeqE [] $ at, false) $ at in
+    let e21 = ParenE (SeqE [] $ at, `Insig) $ at in
     elab_exp_notation' env tid (SeqE ((AtomE atom' $ at) :: e21 :: es2) $ e.at) t
   | SeqE (e1::es2), SeqT (t1::ts2) ->
     let es1', s1 = elab_exp_notation' env tid (unparen_exp e1) t1 in
@@ -1301,7 +1303,7 @@ and elab_exp_notation' env tid e t : Il.exp list * Subst.t =
     let iter1' = elab_iterexp env iter1 in
     [Il.IterE (tup_exp' es1' e1.at, iter1') $$ e.at % !!!env tid t], Subst.empty
   (* Significant parentheses indicate a singleton *)
-  | ParenE (e1, true), IterT (t1, iter) ->
+  | ParenE (e1, `Sig), IterT (t1, iter) ->
     let es', _s = elab_exp_notation' env tid e1 t1 in
     [lift_exp' (tup_exp' es' e.at) iter $$ e.at % elab_typ env t], Subst.empty
   (* Elimination forms are considered splices *)
@@ -1619,6 +1621,7 @@ and elab_sym env g : typ * env =
     let _e' = elab_exp env1 e t1 in
     TupT [] $ g.at, env
   | FuseG _ -> error g.at "misplaced token concatenation"
+  | UnparenG _ -> error g.at "misplaced token unparenthesize"
 
 and elab_sym_list env = function
   | [] -> [], env

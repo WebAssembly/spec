@@ -132,9 +132,7 @@ and check_exp env ctx e =
   | NatE _
   | TextE _
   | SizeE _
-  | EpsE
-  | HoleE _
-  | FuseE _ -> ()
+  | EpsE -> ()
   | UnE (_, e1)
   | DotE (e1, _)
   | LenE e1
@@ -165,6 +163,9 @@ and check_exp env ctx e =
   | IterE (e1, iter) ->
     check_iter env ctx iter;
     check_exp env (strip_index iter::ctx) e1
+  | HoleE _
+  | FuseE _
+  | UnparenE _ -> assert false
 
 and check_path env ctx p =
   match p.it with
@@ -189,8 +190,7 @@ and check_sym env ctx g =
   | EpsG -> ()
   | SeqG gs
   | AltG gs -> iter_nl_list (check_sym env ctx) gs
-  | RangeG (g1, g2)
-  | FuseG (g1, g2) ->
+  | RangeG (g1, g2) ->
     check_sym env ctx g1;
     check_sym env ctx g2
   | ParenG g1 ->
@@ -203,6 +203,8 @@ and check_sym env ctx g =
   | IterG (g1, iter) ->
     check_iter env ctx iter;
     check_sym env (strip_index iter::ctx) g1
+  | FuseG _
+  | UnparenG _ -> assert false
 
 and check_prod env ctx prod =
   let (g, e, prems) = prod.it in

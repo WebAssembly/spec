@@ -126,7 +126,7 @@ and exp e =
   | TextE s -> text s
   | EpsE | HoleE _ -> ()
   | UnE (op, e1) -> unop op; exp e1
-  | LenE e1 | ParenE (e1, _) -> exp e1
+  | LenE e1 | ParenE (e1, _) | UnparenE e1 -> exp e1
   | DotE (e1, at) -> exp e1; atom at
   | SizeE x -> gramid x
   | BinE (e1, op, e2) -> exp e1; binop op; exp e2
@@ -180,7 +180,7 @@ and sym g =
   | EpsG -> ()
   | SeqG gs | AltG gs -> nl_list sym gs
   | RangeG (g1, g2) | FuseG (g1, g2) -> sym g1; sym g2
-  | ParenG g1 -> sym g1
+  | ParenG g1 | UnparenG g1 -> sym g1
   | TupG gs -> list sym gs
   | IterG (g1, it) -> sym g1; iter it
   | ArithG e -> exp e
@@ -289,6 +289,7 @@ and clone_exp e =
   | IterE (e1, iter) -> IterE (clone_exp e1, clone_iter iter)
   | TypE (e1, t) -> TypE (clone_exp e1, clone_typ t)
   | FuseE (e1, e2) -> FuseE (clone_exp e1, clone_exp e2)
+  | UnparenE e1 -> UnparenE (clone_exp e1)
   ) $ e.at
 
 and clone_expfield (atom, e) = (clone_atom atom, clone_exp e)

@@ -206,6 +206,7 @@ and token = parse
   | "%%" { MULTIHOLE }
   | "!%" { NOTHING }
   | "#" { FUSE }
+  | "##" { FUSEFUSE }
 
   | "`" { TICK }
 

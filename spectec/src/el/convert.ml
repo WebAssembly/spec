@@ -81,7 +81,7 @@ let rec exp_of_typ t =
   (match t.it with
   | VarT (id, args) -> VarE (id, args)
   | BoolT | NumT _ | TextT -> VarE (varid_of_typ t, [])
-  | ParenT t1 -> ParenE (exp_of_typ t1, false)
+  | ParenT t1 -> ParenE (exp_of_typ t1, `Insig)
   | TupT ts -> TupE (List.map exp_of_typ ts)
   | IterT (t1, iter) -> IterE (exp_of_typ t1, iter)
   | StrT tfs -> StrE (map_nl_list expfield_of_typfield tfs)
@@ -111,7 +111,7 @@ let rec pat_of_typ' s t : exp option =
     Some (VarE (id, []) $ t.at)
   | ParenT t1 ->
     let* e1 = pat_of_typ' s t1 in
-    Some (ParenE (e1, false) $ t.at)
+    Some (ParenE (e1, `Insig) $ t.at)
   | TupT ts ->
     let* es = pats_of_typs' s ts in
     Some (TupE es $ t.at)
@@ -145,6 +145,7 @@ let rec sym_of_exp e =
   | IterE (e1, iter) -> IterG (sym_of_exp e1, iter)
   | TypE (e1, t) -> AttrG (e1, sym_of_exp (exp_of_typ t))
   | FuseE (e1, e2) -> FuseG (sym_of_exp e1, sym_of_exp e2)
+  | UnparenE e1 -> UnparenG (sym_of_exp e1)
   | _ -> ArithG e
   ) $ e.at
 
@@ -155,12 +156,13 @@ let rec exp_of_sym g =
   | TextG t -> TextE t
   | EpsG -> EpsE
   | SeqG gs -> SeqE (map_filter_nl_list exp_of_sym gs)
-  | ParenG g1 -> ParenE (exp_of_sym g1, false)
+  | ParenG g1 -> ParenE (exp_of_sym g1, `Insig)
   | TupG gs -> TupE (List.map exp_of_sym gs)
   | IterG (g1, iter) -> IterE (exp_of_sym g1, iter)
   | ArithG e -> e.it
   | AttrG (e, g2) -> TypE (e, typ_of_exp (exp_of_sym g2))
   | FuseG (g1, g2) -> FuseE (exp_of_sym g1, exp_of_sym g2)
+  | UnparenG g1 -> UnparenE (exp_of_sym g1)
   | _ -> error g.at "malformed expression"
   ) $ g.at
 

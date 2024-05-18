@@ -136,33 +136,38 @@
 .. |fX#1| mathdef:: {\X{f#1}}
 .. |vX#1| mathdef:: {\X{v#1}}
 
-.. |uN| mathdef:: \xref{syntax/values}{syntax-int}{\X{u}N}
-.. |uM| mathdef:: \xref{syntax/values}{syntax-int}{\X{u}M}
-.. |u1| mathdef:: \xref{syntax/values}{syntax-int}{\X{u1}}
-.. |u8| mathdef:: \xref{syntax/values}{syntax-int}{\X{u8}}
-.. |u16| mathdef:: \xref{syntax/values}{syntax-int}{\X{u16}}
-.. |u31| mathdef:: \xref{syntax/values}{syntax-int}{\X{u31}}
-.. |u32| mathdef:: \xref{syntax/values}{syntax-int}{\X{u32}}
-.. |u64| mathdef:: \xref{syntax/values}{syntax-int}{\X{u64}}
+.. |uNN| mathdef:: \xref{syntax/values}{syntax-int}{\X{u}}
+.. |uN| mathdef:: \xref{syntax/values}{syntax-int}{\X{u}\scriptstyle N}
+.. |u1| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle1}}
+.. |u8| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle8}}
+.. |u16| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle16}}
+.. |u31| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle31}}
+.. |u32| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle32}}
+.. |u64| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle64}}
 
-.. |sN| mathdef:: \xref{syntax/values}{syntax-int}{\X{s}N}
-.. |s8| mathdef:: \xref{syntax/values}{syntax-int}{\X{s8}}
-.. |s16| mathdef:: \xref{syntax/values}{syntax-int}{\X{s16}}
-.. |s32| mathdef:: \xref{syntax/values}{syntax-int}{\X{s32}}
-.. |s64| mathdef:: \xref{syntax/values}{syntax-int}{\X{s64}}
+.. |sNN| mathdef:: \xref{syntax/values}{syntax-int}{\X{s}}
+.. |sN| mathdef:: \xref{syntax/values}{syntax-int}{\X{s}\scriptstyle N}
+.. |s8| mathdef:: \xref{syntax/values}{syntax-int}{\X{s\scriptstyle8}}
+.. |s16| mathdef:: \xref{syntax/values}{syntax-int}{\X{s\scriptstyle16}}
+.. |s32| mathdef:: \xref{syntax/values}{syntax-int}{\X{s\scriptstyle32}}
+.. |s64| mathdef:: \xref{syntax/values}{syntax-int}{\X{s\scriptstyle64}}
 
-.. |iM| mathdef:: \xref{syntax/values}{syntax-int}{\X{i}M}
-.. |iN| mathdef:: \xref{syntax/values}{syntax-int}{\X{i}N}
-.. |i8| mathdef:: \xref{syntax/values}{syntax-int}{\X{i8}}
-.. |i16| mathdef:: \xref{syntax/values}{syntax-int}{\X{i16}}
-.. |i32| mathdef:: \xref{syntax/values}{syntax-int}{\X{i32}}
-.. |i64| mathdef:: \xref{syntax/values}{syntax-int}{\X{i64}}
-.. |i128| mathdef:: \xref{syntax/values}{syntax-int}{\X{i128}}
+.. |iNN| mathdef:: \xref{syntax/values}{syntax-int}{\X{i}}
+.. |iM| mathdef:: \xref{syntax/values}{syntax-int}{\X{i}\scriptstyle M}
+.. |iN| mathdef:: \xref{syntax/values}{syntax-int}{\X{i}\scriptstyle N}
+.. |i8| mathdef:: \xref{syntax/values}{syntax-int}{\X{i\scriptstyle8}}
+.. |i16| mathdef:: \xref{syntax/values}{syntax-int}{\X{i\scriptstyle16}}
+.. |i32| mathdef:: \xref{syntax/values}{syntax-int}{\X{i\scriptstyle32}}
+.. |i64| mathdef:: \xref{syntax/values}{syntax-int}{\X{i\scriptstyle64}}
+.. |i128| mathdef:: \xref{syntax/values}{syntax-int}{\X{i\scriptstyle128}}
 
-.. |fN| mathdef:: \xref{syntax/values}{syntax-float}{\X{f}N}
-.. |fNmag| mathdef:: \xref{syntax/values}{syntax-float}{\X{f}\X{Nmag}}
-.. |f32| mathdef:: \xref{syntax/values}{syntax-float}{\X{f32}}
-.. |f64| mathdef:: \xref{syntax/values}{syntax-float}{\X{f64}}
+.. |fNN| mathdef:: \xref{syntax/values}{syntax-float}{\X{f}}
+.. |fN| mathdef:: \xref{syntax/values}{syntax-float}{\X{f}\scriptstyle N}
+.. |fNmag| mathdef:: \xref{syntax/values}{syntax-float}{\X{f}\scriptstyle N\X{mag}}
+.. |f32| mathdef:: \xref{syntax/values}{syntax-float}{\X{f\scriptstyle32}}
+.. |f64| mathdef:: \xref{syntax/values}{syntax-float}{\X{f\scriptstyle64}}
+
+.. |vNN| mathdef:: \xref{syntax/values}{syntax-vec}{\X{v}}
 
 .. |name| mathdef:: \xref{syntax/values}{syntax-name}{\X{name}}
 .. |char| mathdef:: \xref{syntax/values}{syntax-name}{\X{char}}
@@ -183,20 +188,20 @@
 .. |BOTH| mathdef:: \xref{valid/conventions}{syntax-heaptype-ext}{\K{bot}}
 .. |BOT| mathdef:: \xref{valid/conventions}{syntax-valtype-ext}{\K{bot}}
 
-.. |I8| mathdef:: \xref{syntax/types}{syntax-storagetype}{\K{i8}}
-.. |I16| mathdef:: \xref{syntax/types}{syntax-storagetype}{\K{i16}}
-.. |I32| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{i32}}
-.. |I64| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{i64}}
-.. |F32| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{f32}}
-.. |F64| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{f64}}
-.. |V128| mathdef:: \xref{syntax/types}{syntax-vectype}{\K{v128}}
-.. |IN| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{i}N}
-.. |FN| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{f}N}
-.. |VN| mathdef:: \xref{syntax/types}{syntax-vectype}{\K{v}N}
+.. |I8| mathdef:: \xref{syntax/types}{syntax-storagetype}{\K{i\scriptstyle8}}
+.. |I16| mathdef:: \xref{syntax/types}{syntax-storagetype}{\K{i\scriptstyle16}}
+.. |I32| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{i\scriptstyle32}}
+.. |I64| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{i\scriptstyle64}}
+.. |F32| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{f\scriptstyle32}}
+.. |F64| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{f\scriptstyle64}}
+.. |V128| mathdef:: \xref{syntax/types}{syntax-vectype}{\K{v\scriptstyle128}}
+.. |IN| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{i}\scriptstyle N}
+.. |FN| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{f}\scriptstyle N}
+.. |VN| mathdef:: \xref{syntax/types}{syntax-vectype}{\K{v}\scriptstyle N}
 
 .. |ANYREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{anyref}}
 .. |EQREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{eqref}}
-.. |I31REF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{i31ref}}
+.. |I31REF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{i{\scriptstyle31}ref}}
 .. |STRUCTREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{structref}}
 .. |ARRAYREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{arrayref}}
 .. |FUNCREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{funcref}}
@@ -209,7 +214,7 @@
 
 .. |ANY| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{any}}
 .. |EQT| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{eq}}
-.. |I31| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{i31}}
+.. |I31| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{i\scriptstyle31}}
 .. |STRUCT| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{struct}}
 .. |ARRAY| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{array}}
 .. |FUNCT| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{func}}
@@ -218,12 +223,12 @@
 .. |NOFUNC| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{nofunc}}
 .. |NOEXTERN| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{noextern}}
 
-.. |I8X16| mathdef:: \xref{syntax/instructions}{syntax-shape}{\K{i8x16}}
-.. |I16X8| mathdef:: \xref{syntax/instructions}{syntax-shape}{\K{i16x8}}
-.. |I32X4| mathdef:: \xref{syntax/instructions}{syntax-shape}{\K{i32x4}}
-.. |I64X2| mathdef:: \xref{syntax/instructions}{syntax-shape}{\K{i64x2}}
-.. |F32X4| mathdef:: \xref{syntax/instructions}{syntax-shape}{\K{f32x4}}
-.. |F64X2| mathdef:: \xref{syntax/instructions}{syntax-shape}{\K{f64x2}}
+.. |I8X16| mathdef:: \xref{syntax/instructions}{syntax-shape}{\K{i{\scriptstyle8}x\scriptstyle16}}
+.. |I16X8| mathdef:: \xref{syntax/instructions}{syntax-shape}{\K{i{\scriptstyle16}x\scriptstyle8}}
+.. |I32X4| mathdef:: \xref{syntax/instructions}{syntax-shape}{\K{i{\scriptstyle32}x\scriptstyle4}}
+.. |I64X2| mathdef:: \xref{syntax/instructions}{syntax-shape}{\K{i{\scriptstyle64}x\scriptstyle2}}
+.. |F32X4| mathdef:: \xref{syntax/instructions}{syntax-shape}{\K{f{\scriptstyle32}x\scriptstyle4}}
+.. |F64X2| mathdef:: \xref{syntax/instructions}{syntax-shape}{\K{f{\scriptstyle64}x\scriptstyle2}}
 
 .. |REC| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{rec}}
 
@@ -440,8 +445,8 @@
 
 .. Instructions, terminals
 
-.. |S| mathdef:: \xref{syntax/instructions}{syntax-sx}{\K{S}}
-.. |U| mathdef:: \xref{syntax/instructions}{syntax-sx}{\K{U}}
+.. |S| mathdef:: \xref{syntax/instructions}{syntax-sx}{\K{s}}
+.. |U| mathdef:: \xref{syntax/instructions}{syntax-sx}{\K{u}}
 
 .. |OFFSET| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{offset}}
 .. |ALIGN| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{align}}
@@ -535,10 +540,10 @@
 .. |ARRAYINITDATA| mathdef:: \xref{syntax/instructions}{syntax-instr-array}{\K{array.init\_data}}
 .. |ARRAYINITELEM| mathdef:: \xref{syntax/instructions}{syntax-instr-array}{\K{array.init\_elem}}
 
-.. |REFI31| mathdef:: \xref{syntax/instructions}{syntax-instr-i31}{\K{ref.i31}}
-.. |I31GET| mathdef:: \xref{syntax/instructions}{syntax-instr-i31}{\K{i31.get}}
-.. |I31GETS| mathdef:: \xref{syntax/instructions}{syntax-instr-i31}{\K{i31.get\_s}}
-.. |I31GETU| mathdef:: \xref{syntax/instructions}{syntax-instr-i31}{\K{i31.get\_u}}
+.. |REFI31| mathdef:: \xref{syntax/instructions}{syntax-instr-i31}{\K{ref.i\scriptstyle31}}
+.. |I31GET| mathdef:: \xref{syntax/instructions}{syntax-instr-i31}{\K{i{\scriptstyle31}.get}}
+.. |I31GETS| mathdef:: \xref{syntax/instructions}{syntax-instr-i31}{\K{i{\scriptstyle31}.get\_s}}
+.. |I31GETU| mathdef:: \xref{syntax/instructions}{syntax-instr-i31}{\K{i{\scriptstyle31}.get\_u}}
 
 .. |ANYCONVERTEXTERN| mathdef:: \xref{syntax/instructions}{syntax-instr-extern}{\K{any.convert\_extern}}
 .. |EXTERNCONVERTANY| mathdef:: \xref{syntax/instructions}{syntax-instr-extern}{\K{extern.convert\_any}}
@@ -634,7 +639,7 @@
 .. |VDOT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{dot}}
 .. |VEXTMUL| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{extmul}}
 .. |VCONVERT| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{convert}}
-.. |VQ15MULRSATS| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{q15mulr\_sat\_s}}
+.. |VQ15MULRSATS| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{q{\scriptstyle15}mulr\_sat\_s}}
 .. |VEXTADDPAIRWISE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{extadd\_pairwise}}
 .. |VDEMOTE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{demote}}
 .. |VPROMOTE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{promote}}
@@ -734,24 +739,24 @@
 .. |BiX#1| mathdef:: {\B{i}#1}
 .. |BfX#1| mathdef:: {\B{f}#1}
 
-.. |BuN| mathdef:: \xref{binary/values}{binary-int}{\BuX{N}}
+.. |BuN| mathdef:: \xref{binary/values}{binary-int}{\BuX{\scriptstyle N}}
 .. |Bu1| mathdef:: \xref{binary/values}{binary-int}{\BuX{\B{1}}}
 .. |Bu8| mathdef:: \xref{binary/values}{binary-int}{\BuX{\B{8}}}
 .. |Bu16| mathdef:: \xref{binary/values}{binary-int}{\BuX{\B{16}}}
 .. |Bu32| mathdef:: \xref{binary/values}{binary-int}{\BuX{\B{32}}}
 .. |Bu64| mathdef:: \xref{binary/values}{binary-int}{\BuX{\B{64}}}
 
-.. |BsN| mathdef:: \xref{binary/values}{binary-int}{\BsX{N}}
+.. |BsN| mathdef:: \xref{binary/values}{binary-int}{\BsX{\scriptstyle N}}
 .. |Bs7| mathdef:: \xref{binary/values}{binary-int}{\BsX{\B{7}}}
 .. |Bs32| mathdef:: \xref{binary/values}{binary-int}{\BsX{\B{32}}}
 .. |Bs33| mathdef:: \xref{binary/values}{binary-int}{\BsX{\B{33}}}
 .. |Bs64| mathdef:: \xref{binary/values}{binary-int}{\BsX{\B{64}}}
 
-.. |BiN| mathdef:: \xref{binary/values}{binary-int}{\BiX{N}}
+.. |BiN| mathdef:: \xref{binary/values}{binary-int}{\BiX{\scriptstyle N}}
 .. |Bi32| mathdef:: \xref{binary/values}{binary-int}{\BiX{\B{32}}}
 .. |Bi64| mathdef:: \xref{binary/values}{binary-int}{\BiX{\B{64}}}
 
-.. |BfN| mathdef:: \xref{binary/values}{binary-float}{\BfX{N}}
+.. |BfN| mathdef:: \xref{binary/values}{binary-float}{\BfX{\scriptstyle N}}
 .. |Bf32| mathdef:: \xref{binary/values}{binary-float}{\BfX{\B{32}}}
 .. |Bf64| mathdef:: \xref{binary/values}{binary-float}{\BfX{\B{64}}}
 
@@ -760,7 +765,7 @@
 
 .. Values, meta functions
 
-.. |utf8| mathdef:: \xref{binary/values}{binary-utf8}{\F{utf8}}
+.. |utf8| mathdef:: \xref{binary/values}{binary-utf8}{\F{utf\scriptstyle8}}
 
 
 .. Types, non-terminals

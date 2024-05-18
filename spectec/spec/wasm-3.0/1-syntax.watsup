@@ -15,11 +15,11 @@ syntax list(syntax X) = X*  -- if |X*| < $(2^32)
 syntax bit hint(desc "bit") = 0 | 1
 syntax byte hint(desc "byte") = 0x00 | ... | 0xFF
 
-syntax uN(N) hint(desc "unsigned integer") hint(show u#%) hint(macro "uN") =
+syntax uN(N) hint(desc "unsigned integer") hint(show u#%) hint(macro "uNN") =
   0 | ... | 2^N-1
-syntax sN(N) hint(desc "signed integer") hint(show s#%) hint(macro "sN") =
+syntax sN(N) hint(desc "signed integer") hint(show s#%) hint(macro "sNN") =
   -2^(N-1) | ... | -1 | 0 | +1 | ... | 2^(N-1)-1
-syntax iN(N) hint(desc "integer") hint(show i#%) hint(macro "iN") =
+syntax iN(N) hint(desc "integer") hint(show i#%) hint(macro "iNN") =
   uN(N)
 
 syntax u8 = uN(8)
@@ -49,7 +49,7 @@ def $M(N) = $signif(N)
 def $E(N) : nat hint(show `E) hint(macro none)
 def $E(N) = $expon(N)
 
-syntax fN(N) hint(desc "floating-point number") hint(show f#%) hint(macro "fN") =
+syntax fN(N) hint(desc "floating-point number") hint(show f#%) hint(macro "fNN") =
   | POS fNmag(N)  hint(show $(+%)) \
   | NEG fNmag(N)  hint(show $(-%))
 
@@ -74,7 +74,7 @@ def $canon_(N) = $(2^($signif(N)-1))
 
 ;; Vectors
 
-syntax vN(N) hint(desc "vector") hint(show v#%) hint(macro "vN") =
+syntax vN(N) hint(desc "vector") hint(show v#%) hint(macro "vNN") =
   iN(N)
 
 
@@ -160,9 +160,9 @@ syntax valtype/syn hint(desc "value type") =
 syntax valtype/sem =
   | ... | BOT
 
-syntax Inn hint(show I#n) hint(macro none) = I32 | I64
-syntax Fnn hint(show F#n) hint(macro none) = F32 | F64
-syntax Vnn hint(show V#n) hint(macro none) = V128
+syntax Inn hint(show I#N) hint(macro none) = I32 | I64
+syntax Fnn hint(show F#N) hint(macro none) = F32 | F64
+syntax Vnn hint(show V#N) hint(macro none) = V128
 syntax Cnn hint(show t) = Inn | Fnn | Vnn
 
 def $ANYREF    : reftype hint(show ANYREF)
@@ -197,9 +197,9 @@ syntax packtype hint(desc "packed type") = I8 | I16
 syntax lanetype hint(desc "lane type") = numtype | packtype
 syntax storagetype hint(desc "storage type") = valtype | packtype
 
-syntax Pnn hint(show I#n) hint(macro none) = I8 | I16
-syntax Jnn hint(show I#n) hint(macro none) = Inn | Pnn
-syntax Lnn hint(show I#n) hint(macro none) = Inn | Fnn | Pnn
+syntax Pnn hint(show I#N) hint(macro none) = I8 | I16
+syntax Jnn hint(show I#N) hint(macro none) = Inn | Pnn
+syntax Lnn hint(show I#N) hint(macro none) = Inn | Fnn | Pnn
 
 
 ;; Type definitions
@@ -287,16 +287,16 @@ def $zsize(storagetype) : nat  hint(show |%|)
 def $lanetype(shape) : lanetype hint(macro "shlanetype")
 
 ;; TODO: get rid of these terrible hacks by defining $Inn(nat) hint(show I#%)
-def $sizenn(numtype) : nat     hint(show n)   hint(macro none)  ;; HACK!
-def $sizenn1(numtype) : nat    hint(show n_1) hint(macro none)  ;; HACK!
-def $sizenn2(numtype) : nat    hint(show n_2) hint(macro none)  ;; HACK!
+def $sizenn(numtype) : nat     hint(show N)   hint(macro none)  ;; HACK!
+def $sizenn1(numtype) : nat    hint(show N_1) hint(macro none)  ;; HACK!
+def $sizenn2(numtype) : nat    hint(show N_2) hint(macro none)  ;; HACK!
 def $sizenn(nt) = $size(nt)
 def $sizenn1(nt) = $size(nt)
 def $sizenn2(nt) = $size(nt)
 
-def $lsizenn(lanetype) : nat   hint(show n)   hint(macro none)  ;; HACK!
-def $lsizenn1(lanetype) : nat  hint(show n_1) hint(macro none)  ;; HACK!
-def $lsizenn2(lanetype) : nat  hint(show n_2) hint(macro none)  ;; HACK!
+def $lsizenn(lanetype) : nat   hint(show N)   hint(macro none)  ;; HACK!
+def $lsizenn1(lanetype) : nat  hint(show N_1) hint(macro none)  ;; HACK!
+def $lsizenn2(lanetype) : nat  hint(show N_2) hint(macro none)  ;; HACK!
 def $lsizenn(lt) = $lsize(lt)
 def $lsizenn1(lt) = $lsize(lt)
 def $lsizenn2(lt) = $lsize(lt)
@@ -372,12 +372,12 @@ syntax vvternop hint(macro "%" "V%") = BITSELECT
 syntax vvtestop hint(macro "%" "V%") = ANY_TRUE
 
 syntax vunop_(shape) hint(macro "%" "V%")
-syntax vunop_(Jnn X N) = ABS | NEG
-  | POPCNT -- if Jnn = I8
-syntax vunop_(Fnn X N) = ABS | NEG | SQRT | CEIL | FLOOR | TRUNC | NEAREST
+syntax vunop_(Jnn X M) = ABS | NEG
+  | POPCNT -- if $lsizenn(Jnn) = `8
+syntax vunop_(Fnn X M) = ABS | NEG | SQRT | CEIL | FLOOR | TRUNC | NEAREST
 
 syntax vbinop_(shape) hint(macro "%" "V%")
-syntax vbinop_(Jnn X N) =
+syntax vbinop_(Jnn X M) =
   | ADD
   | SUB
   | ADD_SAT sx hint(show ADD_SAT#_#%)      -- if $lsizenn(Jnn) <= `16
@@ -387,28 +387,28 @@ syntax vbinop_(Jnn X N) =
   | Q15MULR_SAT_S                          -- if $lsizenn(Jnn) = `16
   | MIN sx hint(show MIN#_#%)              -- if $lsizenn(Jnn) <= `32
   | MAX sx hint(show MAX#_#%)              -- if $lsizenn(Jnn) <= `32
-syntax vbinop_(Fnn X N) = ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX
+syntax vbinop_(Fnn X M) = ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX
 
 syntax vtestop_(shape) hint(macro "%" "V%")
-syntax vtestop_(Jnn X N) = ALL_TRUE
+syntax vtestop_(Jnn X M) = ALL_TRUE
 ;; syntax vtestop_(Fnn X N) = |           ;; uninhabited
 
 syntax vrelop_(shape) hint(macro "%" "V%")
-syntax vrelop_(Jnn X N) = EQ | NE
+syntax vrelop_(Jnn X M) = EQ | NE
   | LT sx hint(show LT#_#%)  -- if $lsizenn(Jnn) =/= `64 \/ sx = S
   | GT sx hint(show GT#_#%)  -- if $lsizenn(Jnn) =/= `64 \/ sx = S
   | LE sx hint(show LE#_#%)  -- if $lsizenn(Jnn) =/= `64 \/ sx = S
   | GE sx hint(show GE#_#%)  -- if $lsizenn(Jnn) =/= `64 \/ sx = S
-syntax vrelop_(Fnn X N) = EQ | NE | LT | GT | LE | GE
+syntax vrelop_(Fnn X M) = EQ | NE | LT | GT | LE | GE
 
-syntax vcvtop_(shape_1, shape_2) hint(macro "%" "V%")
-syntax vcvtop_(Jnn_1 X N_1, Jnn_2 X N_2) =
+syntax vcvtop_(shape_1, shape_2) hint(show vcvtop_((%,%))) hint(macro "%" "V%")
+syntax vcvtop_(Jnn_1 X M_1, Jnn_2 X M_2) =
   | EXTEND    -- if $lsizenn2(Jnn_2) = $(2 * $lsizenn1(Jnn_1))
-syntax vcvtop_(Jnn_1 X N_1, Fnn_2 X N_2) =
-  | CONVERT   -- if $sizenn2(Fnn_2) >= $lsizenn1(Jnn_1) = 32
-syntax vcvtop_(Fnn_1 X N_1, Jnn_2 X N_2) =
-  | TRUNC_SAT -- if $sizenn1(Fnn_1) >= $lsizenn2(Jnn_2) = 32
-syntax vcvtop_(Fnn_1 X N_1, Fnn_2 X N_2) =
+syntax vcvtop_(Jnn_1 X M_1, Fnn_2 X M_2) =
+  | CONVERT   -- if $sizenn2(Fnn_2) >= $lsizenn1(Jnn_1) = `32
+syntax vcvtop_(Fnn_1 X M_1, Jnn_2 X M_2) =
+  | TRUNC_SAT -- if $sizenn1(Fnn_1) >= $lsizenn2(Jnn_2) = `32
+syntax vcvtop_(Fnn_1 X M_1, Fnn_2 X M_2) =
   | DEMOTE    -- if $sizenn1(Fnn_1) > $sizenn2(Fnn_2)
   | PROMOTE   -- if $sizenn1(Fnn_1) < $sizenn2(Fnn_2)
 
@@ -416,28 +416,28 @@ syntax half hint(desc "lane part") = LOW | HIGH
 
 syntax half_(shape_1, shape_2) = half
   -- if $lanetype(shape_1) = imm_1 /\ $lanetype(shape_2) = imm_2
-     \/ $lanetype(shape_2) = F64 /\ $lsize($lanetype(shape_1)) = 32
+     \/ $lanetype(shape_2) = F64 /\ $lsize($lanetype(shape_1)) = `32
      ;; TODO: only allow LOW in latter case
 syntax zero_(shape_1, shape_2) = ZERO
-  -- if $lanetype(shape_1) = F64 /\ $lsize($lanetype(shape_2)) = 32
+  -- if $lanetype(shape_1) = F64 /\ $lsize($lanetype(shape_2)) = `32
 
 (;
 syntax half_(shape_1, shape_2)
-syntax half_(Jnn_1 X N_1, Jnn_2 X N_2) = half
-syntax half_(Lnn_1 X N_1, Fnn_2 X N_2) = LOW  -- if $(2 * $lsize(Lnn_1)) = $size(Fnn_2) = 64
+syntax half_(Jnn_1 X M_1, Jnn_2 X M_2) = half
+syntax half_(Lnn_1 X M_1, Fnn_2 X M_2) = LOW  -- if $(2 * $lsize(Lnn_1)) = $size(Fnn_2) = `64
 
 syntax zero_(shape_1, shape_2)
-syntax zero_(Fnn_1 X N_1, Lnn_2 X N_2) = ZERO -- if $(2 * $lsize(Lnn_2)) = $size(Fnn_1) = 64
+syntax zero_(Fnn_1 X M_1, Lnn_2 X M_2) = ZERO -- if $(2 * $lsize(Lnn_2)) = $size(Fnn_1) = `64
 ;)
 
 syntax vshiftop_(ishape) hint(macro "%" "V%")
-syntax vshiftop_(Jnn X N) = SHL | SHR sx hint(show SHR#_#%)
+syntax vshiftop_(Jnn X M) = SHL | SHR sx hint(show SHR#_#%)
 
 syntax vextunop_(ishape) hint(macro "%" "V%")
-syntax vextunop_(Jnn X N) =
+syntax vextunop_(Jnn X M) =
   | EXTADD_PAIRWISE  -- if `16 <= $lsizenn(Jnn) <= `32
 syntax vextbinop_(ishape) hint(macro "%" "V%")
-syntax vextbinop_(Jnn X N) =
+syntax vextbinop_(Jnn X M) =
   | EXTMUL half      hint(show EXTMUL#_#%)
   | DOT              -- if $lsizenn(Jnn) = `32
 
@@ -505,7 +505,7 @@ syntax instr/num hint(desc "numeric instruction") = ...
   | RELOP numtype relop_(numtype)    hint(show %.%)
   | CVTOP numtype_1 numtype_2 cvtop sx?  hint(show %1.%3#_#%2#_#%4) hint(show %1.%3#_#%2)
     -- if numtype_1 =/= numtype_2
-  | EXTEND numtype n                 hint(show %.EXTEND#%#_#S)
+  | EXTEND numtype N                 hint(show %.EXTEND#%#_#S)
   | ...
 
 syntax instr/vec hint(desc "vector instruction") = ...
@@ -514,35 +514,35 @@ syntax instr/vec hint(desc "vector instruction") = ...
   | VVBINOP vectype vvbinop             hint(show %.%)
   | VVTERNOP vectype vvternop           hint(show %.%)
   | VVTESTOP vectype vvtestop           hint(show %.%)
-  | VUNOP shape vunop_(shape)           hint(show %.%)
-  | VBINOP shape vbinop_(shape)         hint(show %.%)
-  | VTESTOP shape vtestop_(shape)       hint(show %.%)
-  | VRELOP shape vrelop_(shape)         hint(show %.%)
-  | VSHIFTOP ishape vshiftop_(ishape)   hint(show %.%)
-  | VBITMASK ishape                     hint(show %.BITMASK)   hint(macro "VBITMASK")
-  | VSWIZZLE ishape                     hint(show %.SWIZZLE)   hint(macro "VSWIZZLE")
+  | VUNOP shape vunop_(shape)           hint(show ##%.%)
+  | VBINOP shape vbinop_(shape)         hint(show ##%.%)
+  | VTESTOP shape vtestop_(shape)       hint(show ##%.%)
+  | VRELOP shape vrelop_(shape)         hint(show ##%.%)
+  | VSHIFTOP ishape vshiftop_(ishape)   hint(show ##%.%)
+  | VBITMASK ishape                     hint(show ##%.BITMASK)   hint(macro "VBITMASK")
+  | VSWIZZLE ishape                     hint(show ##%.SWIZZLE)   hint(macro "VSWIZZLE")
     -- if ishape = I8 X `16
-  | VSHUFFLE ishape laneidx*            hint(show %.SHUFFLE %) hint(macro "VSHUFFLE")
-    -- if ishape = I8 X `16 /\ |laneidx*| = 16
-  | VSPLAT shape                        hint(show %.SPLAT)     hint(macro "VSPLAT")
-  | VEXTRACT_LANE shape sx? laneidx     hint(show %.EXTRACT_LANE#_#% %) hint(macro "VEXTRACT_LANE")
-    -- if $lanetype(shape) = numtype <=> sx? = eps
-  | VREPLACE_LANE shape laneidx         hint(show %.REPLACE_LANE %)     hint(macro "VREPLACE_LANE")
+  | VSHUFFLE ishape laneidx*            hint(show ##%.SHUFFLE %) hint(macro "VSHUFFLE")
+    -- if ishape = I8 X `16 /\ |laneidx*| = `16
   | VEXTUNOP ishape_1 ishape_2 vextunop_(ishape_1) sx
-    hint(show %1.%3#_#%2#_#%4)
+    hint(show ##%1.%3#_# ##%2#_#%4)
     -- if $($lsize($lanetype(ishape_1)) = 2*$lsize($lanetype(ishape_2)))
   | VEXTBINOP ishape_1 ishape_2 vextbinop_(ishape_1) sx
-    hint(show %1.%3#_#%2#_#%4)
+    hint(show ##%1.%3#_# ##%2#_#%4)
     -- if $($lsize($lanetype(ishape_1)) = 2*$lsize($lanetype(ishape_2)))
     ;; TODO: /\ (vextbinop =/= DOT \/ sx = S)
-  | VNARROW ishape_1 ishape_2 sx        hint(show %.NARROW#_#%#_#%) hint(macro "VNARROW")
-    -- if $($lsize($lanetype(ishape_2)) = 2*$lsize($lanetype(ishape_1)) <= 32)
+  | VNARROW ishape_1 ishape_2 sx        hint(show ##%.NARROW#_# ##%#_#%) hint(macro "VNARROW")
+    -- if $($lsize($lanetype(ishape_2)) = 2*$lsize($lanetype(ishape_1)) <= `32)
   | VCVTOP shape_1 shape_2 vcvtop_(shape_2, shape_1) half_(shape_2, shape_1)? sx? zero_(shape_2, shape_1)?
-    hint(show %1.%3#_#%4#_#%2#_#%5#_#%6)
-    hint(show %1.%3#_#%4#_#%2#_#%5)   ;; TODO: this is wrong when half is present
-    hint(show %1.%3#_#%2#_#%4)        ;; TODO: this is wrong when half is absent
-    hint(show %1.%3#_#%2)
+    hint(show ##%1.%3#_#%4#_# ##%2#_#%5#_#%6)
+    hint(show ##%1.%3#_#%4#_# ##%2#_#%5)   ;; TODO: this is wrong when half is present
+    hint(show ##%1.%3#_# ##%2#_#%4)        ;; TODO: this is wrong when half is absent
+    hint(show ##%1.%3#_# ##%2)
     -- if $lanetype(shape_1) =/= $lanetype(shape_2)
+  | VSPLAT shape                        hint(show ##%.SPLAT)     hint(macro "VSPLAT")
+  | VEXTRACT_LANE shape sx? laneidx     hint(show ##%.EXTRACT_LANE#_#% %) hint(macro "VEXTRACT_LANE")
+    -- if $lanetype(shape) = numtype <=> sx? = eps
+  | VREPLACE_LANE shape laneidx         hint(show ##%.REPLACE_LANE %)     hint(macro "VREPLACE_LANE")
   | ...
 
 syntax instr/ref hint(desc "reference instruction") = ...
@@ -618,14 +618,14 @@ syntax instr/elem hint(desc "element instruction") = ...
 syntax sz hint(desc "pack size") = `8 | `16 | `32 | `64
 
 syntax instr/memory hint(desc "memory instruction") = ...
-  | LOAD numtype (sz _ sx)? memidx memarg          hint(show %.LOAD % %)    hint(show %.LOAD#% % %)
-    -- (if numtype = Inn /\ sz < $size(Inn))?      ;; TODO: take size implicitly
-  | STORE numtype sz? memidx memarg                hint(show %.STORE % %)   hint(show %.STORE#% % %)
-    -- (if numtype = Inn /\ sz < $size(Inn))?      ;; TODO: take size implicitly
-  | VLOAD vectype vloadop? memidx memarg           hint(show %.LOAD % %) hint(show %.LOAD#% % %) hint(macro "V%")
-  | VLOAD_LANE vectype sz memidx memarg laneidx    hint(show %.LOAD#%#_#LANE % % %) hint(macro "V%")
-  | VSTORE vectype memidx memarg                   hint(show %.STORE % %) hint(macro "V%")
-  | VSTORE_LANE vectype sz memidx memarg laneidx   hint(show %.STORE#%#_#LANE % % %) hint(macro "V%")
+  | LOAD numtype (N _ sx)? memidx memarg         hint(show %.LOAD % %) hint(show %.LOAD#% % %)
+    -- (if numtype = Inn /\ N < $size(Inn))?     ;; TODO: take size implicitly
+  | STORE numtype N? memidx memarg               hint(show %.STORE % %) hint(show %.STORE#% % %)
+    -- (if numtype = Inn /\ N < $size(Inn))?     ;; TODO: take size implicitly
+  | VLOAD vectype vloadop? memidx memarg         hint(show %.LOAD % %) hint(show %.LOAD# ##% % %) hint(macro "V%")
+  | VLOAD_LANE vectype N memidx memarg laneidx   hint(show %.LOAD#%#_#LANE % % %) hint(macro "V%")
+  | VSTORE vectype memidx memarg                 hint(show %.STORE % %) hint(macro "V%")
+  | VSTORE_LANE vectype N memidx memarg laneidx  hint(show %.STORE#%#_#LANE % % %) hint(macro "V%")
   | MEMORY.SIZE memidx
   | MEMORY.GROW memidx
   | MEMORY.FILL memidx

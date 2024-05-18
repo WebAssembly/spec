@@ -126,7 +126,7 @@ and free_exp e =
   | AtomE _ | BoolE _ | NatE _ | TextE _ | EpsE | HoleE _ ->
     empty
   | UnE (_, e1) | DotE (e1, _) | LenE e1
-  | ParenE (e1, _) | BrackE (_, e1, _) -> free_exp e1
+  | ParenE (e1, _) | BrackE (_, e1, _) | UnparenE e1 -> free_exp e1
   | SizeE id -> free_gramid id
   | BinE (e1, _, e2) | CmpE (e1, _, e2)
   | IdxE (e1, e2) | CommaE (e1, e2) | CompE (e1, e2)
@@ -173,7 +173,7 @@ and det_exp e =
   | UnE _ | BinE _ | CmpE _
   | IdxE _ | SliceE _ | UpdE _ | ExtE _ | CommaE _ | CompE _
   | DotE _ | LenE _ | SizeE _ -> idx_exp e
-  | HoleE _ | FuseE _ -> assert false
+  | HoleE _ | FuseE _ | UnparenE _ -> assert false
 
 and det_expfield (_, e) = det_exp e
 
@@ -219,7 +219,7 @@ and free_sym g =
   | NatG _ | TextG _ | EpsG -> empty
   | SeqG gs | AltG gs -> free_nl_list free_sym gs
   | RangeG (g1, g2) | FuseG (g1, g2) -> free_sym g1 + free_sym g2
-  | ParenG g1 -> free_sym g1
+  | ParenG g1 | UnparenG g1 -> free_sym g1
   | TupG gs -> free_list free_sym gs
   | IterG (g1, iter) -> free_sym g1 + free_iter iter
   | ArithG e -> free_exp e
@@ -229,12 +229,13 @@ and det_sym g =
   match g.it with
   | VarG _ | NatG _ | TextG _ | EpsG -> empty
   | SeqG gs | AltG gs -> free_nl_list det_sym gs
-  | RangeG (g1, g2) | FuseG (g1, g2) -> det_sym g1 + det_sym g2
+  | RangeG (g1, g2) -> det_sym g1 + det_sym g2
   | ParenG g1 -> det_sym g1
   | TupG gs -> free_list det_sym gs
   | IterG (g1, iter) -> det_sym g1 + det_iter iter
   | ArithG e -> det_exp e
   | AttrG (e, g1) -> det_exp e + det_sym g1
+  | FuseG _ | UnparenG _ -> assert false
 
 and free_prod prod =
   let (g, e, prems) = prod.it in

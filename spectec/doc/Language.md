@@ -151,6 +151,7 @@ exp ::=
   "$" "(" arith ")"                    escape to arithmetic syntax
   hole                                 hole (for syntax rewrites in hints)
   exp "#" exp                          token concatenation (for syntax rewrites in hints)
+  "##" exp                             remove possible parentheses (for syntax rewrites in hints)
 
 unop  ::= notop | "+" | "-"
 binop ::= logop | "+" | "-" | "*" | "/" | "^"

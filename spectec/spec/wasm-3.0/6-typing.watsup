@@ -878,19 +878,19 @@ rule Instr_ok/vvtestop:
   C |- VVTESTOP V128 vvtestop : V128 -> I32
 
 rule Instr_ok/vunop:
-  C |- VUNOP sh vunop_sh : V128 -> V128
+  C |- VUNOP sh vunop : V128 -> V128
 
 rule Instr_ok/vbinop:
-  C |- VBINOP sh vbinop_sh : V128 V128 -> V128
+  C |- VBINOP sh vbinop : V128 V128 -> V128
 
 rule Instr_ok/vtestop:
-  C |- VTESTOP sh vtestop_sh : V128 -> I32
+  C |- VTESTOP sh vtestop : V128 -> I32
 
 rule Instr_ok/vrelop:
-  C |- VRELOP sh vrelop_sh : V128 V128 -> V128
+  C |- VRELOP sh vrelop : V128 V128 -> V128
 
 rule Instr_ok/vshiftop:
-  C |- VSHIFTOP sh vshiftop_sh : V128 I32 -> V128
+  C |- VSHIFTOP sh vshiftop : V128 I32 -> V128
 
 rule Instr_ok/vbitmask:
   C |- VBITMASK sh : V128 -> I32

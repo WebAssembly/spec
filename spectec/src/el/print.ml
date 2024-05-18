@@ -156,7 +156,8 @@ and string_of_exp e =
   | CompE (e1, e2) -> string_of_exp e1 ^ " ++ " ^ string_of_exp e2
   | LenE e1 -> "|" ^ string_of_exp e1 ^ "|"
   | SizeE id -> "||" ^ string_of_gramid id ^ "||"
-  | ParenE (e, signif) -> "(" ^ string_of_exp e ^ ")" ^ (if signif then "!" else "")
+  | ParenE (e, signif) ->
+    "(" ^ string_of_exp e ^ ")" ^ (match signif with `Sig -> "!" | `Insig -> "")
   | TupE es -> "(" ^ string_of_exps ", " es ^ ")"
   | InfixE (e1, atom, e2) ->
     string_of_exp e1 ^ space string_of_atom atom ^ string_of_exp e2
@@ -170,6 +171,7 @@ and string_of_exp e =
   | HoleE `Rest -> "%%"
   | HoleE `None -> "!%"
   | FuseE (e1, e2) -> string_of_exp e1 ^ "#" ^ string_of_exp e2
+  | UnparenE e1 -> "##" ^ string_of_exp e1
 
 and string_of_exps sep es =
   concat sep (List.map string_of_exp es)
@@ -221,6 +223,7 @@ and string_of_sym g =
   | ArithG e -> string_of_exp e
   | AttrG (e, g1) -> string_of_exp e ^ ":" ^ string_of_sym g1
   | FuseG (g1, g2) -> string_of_sym g1 ^ "#" ^ string_of_sym g2
+  | UnparenG g1 -> "##" ^ string_of_sym g1
 
 and string_of_prod prod =
   let (g, e, prems) = prod.it in

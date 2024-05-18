@@ -68,7 +68,7 @@ let prec_of_exp = function  (* as far as iteration is concerned *)
   | AtomE _ | IdxE _ | SliceE _ | UpdE _ | ExtE _ | DotE _ | IterE _ -> Post
   | SeqE _ -> Seq
   | UnE _ | BinE _ | CmpE _ | InfixE _ | LenE _ | SizeE _
-  | CommaE _ | CompE _ | TypE _ | FuseE _ -> Op
+  | CommaE _ | CompE _ | TypE _ | FuseE _ | UnparenE _ -> Op
 
 (* Extra parentheses can be inserted to disambiguate the role of elements of
  * an iteration. For example, `( x* )` will be interpreted differently from `x*`
@@ -80,7 +80,8 @@ let prec_of_exp = function  (* as far as iteration is concerned *)
  * are assumed to have been inserted to express iteration injection.
  *)
 let signify_pars prec = function
-  | ParenE (exp, false) -> ParenE (exp, prec < prec_of_exp exp.it)
+  | ParenE (exp, `Insig) ->
+    ParenE (exp, if prec < prec_of_exp exp.it then `Sig else `Insig)
   | exp' -> exp'
 
 let is_post_exp e =
@@ -122,7 +123,7 @@ let rec is_typcon t =
 %token IN PREC SUCC TURNSTILE TILESTURN
 %token DOLLAR TICK
 %token BOT TOP
-%token HOLE MULTIHOLE NOTHING FUSE
+%token HOLE MULTIHOLE NOTHING FUSE FUSEFUSE
 %token<int> HOLEN
 %token BOOL NAT INT RAT REAL TEXT
 %token SYNTAX GRAMMAR RELATION RULE VAR DEF
@@ -168,9 +169,9 @@ let rec is_typcon t =
   | COMMA_NL {}
 
 tup_list(X) :
-  | (* empty *) { [], true }
-  | X { $1::[], false }
-  | X comma tup_list(X) { $1::(fst $3), true }
+  | (* empty *) { [], `Sig }
+  | X { $1::[], `Insig }
+  | X comma tup_list(X) { $1::(fst $3), `Sig }
 
 comma_list(X) :
   | tup_list(X) { fst $1 }
@@ -348,7 +349,7 @@ iter :
   | STAR { List }
   | UP arith_prim
     { match $2.it with
-      | ParenE ({it = CmpE({it = VarE (id, []); _}, LtOp, e); _}, false) ->
+      | ParenE ({it = CmpE({it = VarE (id, []); _}, LtOp, e); _}, `Insig) ->
         ListN (e, Some id)
       | _ -> ListN ($2, None)
     }
@@ -373,7 +374,7 @@ typ_post_ :
   | LPAREN tup_list(typ) RPAREN
     { match $2 with
       | [], _ -> ParenT (SeqT [] $ $sloc)
-      | [t], false -> ParenT t
+      | [t], `Insig -> ParenT t
       | ts, _ -> TupT ts }
   | typ_post iter { IterT ($1, $2) }
 
@@ -434,7 +435,7 @@ nottyp_prim_ :
   | LPAREN tup_list(nottyp) RPAREN
     { match $2 with
       | [], _ -> ParenT (SeqT [] $ $sloc)
-      | [t], false -> ParenT t
+      | [t], `Insig -> ParenT t
       | ts, _ -> TupT ts }
 
 nottyp_post : nottyp_post_ { $1 $ $sloc }
@@ -513,7 +514,7 @@ exp_hole_ :
   | MULTIHOLE { HoleE `Rest }
   | NOTHING { HoleE `None }
 
-(*exp_prim : exp_prim_ { $1 $ $sloc }*)
+exp_prim : exp_prim_ { $1 $ $sloc }
 exp_prim_ :
   | exp_lit_ { $1 }
   | exp_var_ { $1 }
@@ -523,8 +524,8 @@ exp_prim_ :
   | LBRACE comma_nl_list(fieldexp) RBRACE { StrE $2 }
   | LPAREN tup_list(exp_bin) RPAREN
     { match $2 with
-      | [], b -> ParenE (SeqE [] $ $sloc, b)
-      | [e], false -> ParenE (e, false)
+      | [], signif -> ParenE (SeqE [] $ $sloc, signif)
+      | [e], `Insig -> ParenE (e, `Insig)
       | es, _ -> TupE es }
   | TICK LPAREN exp RPAREN
     { BrackE (Il.Atom.LParen $$ $loc($2), $3, Il.Atom.RParen $$ $loc($4)) }
@@ -533,6 +534,7 @@ exp_prim_ :
   | TICK LBRACE exp RBRACE
     { BrackE (Il.Atom.LBrace $$ $loc($2), $3, Il.Atom.RBrace $$ $loc($4)) }
   | DOLLAR LPAREN arith RPAREN { $3.it }
+  | FUSEFUSE exp_prim { UnparenE $2 }
 
 exp_post : exp_post_ { $1 $ $sloc }
 exp_post_ :
@@ -551,7 +553,7 @@ exp_atom_ :
   | atomid_lparen exp RPAREN
     { SeqE [
         AtomE (Il.Atom.Atom $1 $$ $loc($1)) $ $loc($1);
-        ParenE ($2, false) $ $loc($2)
+        ParenE ($2, `Insig) $ $loc($2)
       ] }
 
 exp_seq : exp_seq_ { $1 $ $sloc }
@@ -597,7 +599,7 @@ arith_prim_ :
   | exp_var_ { $1 }
   | exp_call_ { $1 }
   | exp_hole_ { $1 }
-  | LPAREN arith RPAREN { ParenE ($2, false) }
+  | LPAREN arith RPAREN { ParenE ($2, `Insig) }
   | LPAREN arith_bin STAR RPAREN
     { (* HACK: to allow "(s*)" as arithmetic expression. *)
       if not (is_post_exp $2) then
@@ -707,7 +709,7 @@ sym_prim_ :
   | LPAREN tup_list(sym) RPAREN
     { match $2 with
       | [], _ -> ParenG (SeqG [] $ $sloc)
-      | [g], false -> ParenG g
+      | [g], `Insig -> ParenG g
       | gs, _ -> TupG gs }
   | DOLLAR LPAREN arith RPAREN { ArithG $3 }
 

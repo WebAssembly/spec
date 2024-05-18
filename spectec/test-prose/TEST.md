@@ -3933,19 +3933,19 @@ validation_of_VVTERNOP V128 vvternop
 validation_of_VVTESTOP V128 vvtestop
 - The instruction is valid with type ([V128] ->_ [] ++ [I32]).
 
-validation_of_VUNOP sh vunop_sh
+validation_of_VUNOP sh vunop
 - The instruction is valid with type ([V128] ->_ [] ++ [V128]).
 
-validation_of_VBINOP sh vbinop_sh
+validation_of_VBINOP sh vbinop
 - The instruction is valid with type ([V128, V128] ->_ [] ++ [V128]).
 
-validation_of_VTESTOP sh vtestop_sh
+validation_of_VTESTOP sh vtestop
 - The instruction is valid with type ([V128] ->_ [] ++ [I32]).
 
-validation_of_VRELOP sh vrelop_sh
+validation_of_VRELOP sh vrelop
 - The instruction is valid with type ([V128, V128] ->_ [] ++ [V128]).
 
-validation_of_VSHIFTOP sh vshiftop_sh
+validation_of_VSHIFTOP sh vshiftop
 - The instruction is valid with type ([V128, I32] ->_ [] ++ [V128]).
 
 validation_of_VBITMASK sh
@@ -6731,25 +6731,25 @@ execution_of_TABLE.INIT x y
   f. Push the value (I32.CONST (n - 1)) to the stack.
   g. Execute the instruction (TABLE.INIT x y).
 
-execution_of_LOAD numty_u0 sz_sx_u1? x ao
+execution_of_LOAD numty_u0 N_sx_u1? x ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
-4. If sz_sx_u1? is not defined, then:
+4. If N_sx_u1? is not defined, then:
   a. Let nt be numty_u0.
   b. If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|), then:
     1) Trap.
   c. Let c be $inverse_of_nbytes(nt, $mem(z, x).BYTES[(i + ao.OFFSET) : ($size(nt) / 8)]).
   d. Push the value (nt.CONST c) to the stack.
 5. If the type of numty_u0 is Inn, then:
-  a. If sz_sx_u1? is defined, then:
-    1) Let ?(y_0) be sz_sx_u1?.
+  a. If N_sx_u1? is defined, then:
+    1) Let ?(y_0) be N_sx_u1?.
     2) Let (n, sx) be y_0.
     3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
   b. Let Inn be numty_u0.
-  c. If sz_sx_u1? is defined, then:
-    1) Let ?(y_0) be sz_sx_u1?.
+  c. If N_sx_u1? is defined, then:
+    1) Let ?(y_0) be N_sx_u1?.
     2) Let (n, sx) be y_0.
     3) Let c be $inverse_of_ibytes(n, $mem(z, x).BYTES[(i + ao.OFFSET) : (n / 8)]).
     4) Push the value (Inn.CONST $ext(n, $size(Inn), sx, c)) to the stack.
@@ -6988,26 +6988,26 @@ execution_of_ELEM.DROP x
 1. Let z be the current state.
 2. Perform $with_elem(z, x, []).
 
-execution_of_STORE nt sz_u1? x ao
+execution_of_STORE nt N_u1? x ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type numty_u0 is on the top of the stack.
 3. Pop the value (numty_u0.CONST c) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
 6. If (numty_u0 is nt), then:
-  a. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|) and sz_u1? is not defined), then:
+  a. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|) and N_u1? is not defined), then:
     1) Trap.
-  b. If sz_u1? is not defined, then:
+  b. If N_u1? is not defined, then:
     1) Let b* be $nbytes(nt, c).
     2) Perform $with_mem(z, x, (i + ao.OFFSET), ($size(nt) / 8), b*).
 7. If the type of numty_u0 is Inn, then:
-  a. If sz_u1? is defined, then:
-    1) Let ?(n) be sz_u1?.
+  a. If N_u1? is defined, then:
+    1) Let ?(n) be N_u1?.
     2) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
   b. Let Inn be numty_u0.
-  c. If sz_u1? is defined, then:
-    1) Let ?(n) be sz_u1?.
+  c. If N_u1? is defined, then:
+    1) Let ?(n) be N_u1?.
     2) Let b* be $ibytes(n, $wrap($size(Inn), n, c)).
     3) Perform $with_mem(z, x, (i + ao.OFFSET), (n / 8), b*).
 

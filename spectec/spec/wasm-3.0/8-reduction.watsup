@@ -602,12 +602,12 @@ rule Step_pure/vbinop-trap:
 
 ;; TODO: introduce $vitestop for uniformity
 rule Step_pure/vtestop-true:
-  (VCONST V128 c) (VTESTOP $($(Jnn X N)) ALL_TRUE) ~> (CONST I32 1)
+  (VCONST V128 c) (VTESTOP (Jnn X N) ALL_TRUE) ~> (CONST I32 1)
   -- if ci_1* = $lanes_(Jnn X N, c)
   -- (if $(ci_1 =/= 0))*  ;; TODO: same line
 
 rule Step_pure/vtestop-false:
-  (VCONST V128 c) (VTESTOP $($(Jnn X N)) ALL_TRUE) ~> (CONST I32 0)
+  (VCONST V128 c) (VTESTOP (Jnn X N) ALL_TRUE) ~> (CONST I32 0)
   -- otherwise
 
 
@@ -622,7 +622,7 @@ rule Step_pure/vrelop:
 
 
 rule Step_pure/vshiftop:
-  (VCONST V128 c_1) (CONST I32 n) (VSHIFTOP $($(Jnn X N)) vshiftop) ~> (VCONST V128 c)
+  (VCONST V128 c_1) (CONST I32 n) (VSHIFTOP (Jnn X N) vshiftop) ~> (VCONST V128 c)
   -- if c'* = $lanes_(Jnn X N, c_1)
   -- if c = $invlanes_(Jnn X N, $vshiftop(Jnn X N, vshiftop, c', n)*)
 
