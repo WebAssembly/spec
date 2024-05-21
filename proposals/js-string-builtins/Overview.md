@@ -20,7 +20,7 @@ These two pieces in combination allow runtimes to reliably emit optimal code seq
 
 ## Do we need new Wasm builtin functions?
 
-It is already possible today to import JS builtin functions (such as [`String.prototoype.harCodeAt()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt)) from Wasm modules. Instead of defining new Wasm specific-builtins, we could just re-use those directly.
+It is already possible today to import JS builtin functions (such as [`String.prototoype.charCodeAt()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt)) from Wasm modules. Instead of defining new Wasm specific-builtins, we could just re-use those directly.
 
 There are several problems with this approach.
 
