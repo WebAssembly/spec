@@ -627,7 +627,10 @@ let custom m mnode (module S : Custom.Section) =
 
 let var_opt = function
   | None -> ""
-  | Some x -> " " ^ x.it
+  | Some x when
+    String.for_all (fun c -> Lib.Char.is_alphanum_ascii c || c = '_') x.it ->
+    " $" ^ x.it
+  | Some x -> " $" ^ name (Utf8.decode x.it)
 
 let module_with_var_opt x_opt (m, cs) =
   let fx = ref 0 in

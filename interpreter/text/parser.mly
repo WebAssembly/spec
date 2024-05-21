@@ -88,6 +88,11 @@ let nat32 s loc =
 let name s loc =
   try Utf8.decode s with Utf8.Utf8 -> error (at loc) "malformed UTF-8 encoding"
 
+let var s loc =
+  let r = at loc in
+  try ignore (Utf8.decode s); Source.(s @@ r)
+  with Utf8.Utf8 -> error r "malformed UTF-8 encoding"
+
 
 (* Symbolic variables *)
 
@@ -120,9 +125,24 @@ let force_locals (c : context) =
 let enter_func (c : context) =
   {c with labels = VarMap.empty; locals = empty ()}
 
+let print_char = function
+  | 0x09 -> "\\t"
+  | 0x0a -> "\\n"
+  | 0x22 -> "\\\""
+  | 0x5c -> "\\\\"
+  | c when 0x20 <= c && c < 0x7f -> String.make 1 (Char.chr c)
+  | c -> Printf.sprintf "\\u{%02x}" c
+
+let print x =
+  "$" ^
+  if String.for_all (fun c -> Lib.Char.is_alphanum_ascii c || c = '_') x.it
+  then x.it
+  else "\"" ^ String.concat "" (List.map print_char (Utf8.decode x.it)) ^ "\""
+
+
 let lookup category space x =
   try VarMap.find x.it space.map
-  with Not_found -> error x.at ("unknown " ^ category ^ " " ^ x.it)
+  with Not_found -> error x.at ("unknown " ^ category ^ " " ^ print x)
 
 let type_ (c : context) x = lookup "type" c.types.space x
 let func (c : context) x = lookup "function" c.funcs x
@@ -134,7 +154,7 @@ let elem (c : context) x = lookup "elem segment" c.elems x
 let data (c : context) x = lookup "data segment" c.datas x
 let label (c : context) x =
   try VarMap.find x.it c.labels
-  with Not_found -> error x.at ("unknown label " ^ x.it)
+  with Not_found -> error x.at ("unknown label " ^ print x)
 
 let func_type (c : context) x =
   try (Lib.List32.nth c.types.list x.it).it
@@ -151,7 +171,7 @@ let anon category space n =
 let bind category space x =
   let i = anon category space 1l in
   if VarMap.mem x.it space.map then
-    error x.at ("duplicate " ^ category ^ " " ^ x.it);
+    error x.at ("duplicate " ^ category ^ " " ^ print x);
   space.map <- VarMap.add x.it i space.map;
   i
 
@@ -336,8 +356,8 @@ num :
   | FLOAT { $1 @@ $sloc }
 
 var :
-  | NAT { let at = $sloc in fun c lookup -> nat32 $1 at @@ at }
-  | VAR { let at = $sloc in fun c lookup -> lookup c ($1 @@ at) @@ at }
+  | NAT { fun c lookup -> nat32 $1 $sloc @@ $sloc }
+  | VAR { fun c lookup -> lookup c (var $1 $sloc) @@ $sloc }
 
 var_list :
   | /* empty */ { fun c lookup -> [] }
@@ -348,7 +368,7 @@ bind_var_opt :
   | bind_var { fun c anon bind -> bind c $1 }  /* Sugar */
 
 bind_var :
-  | VAR { $1 @@ $sloc }
+  | VAR { var $1 $sloc }
 
 labeling_opt :
   | /* empty */
@@ -1001,7 +1021,7 @@ module_fields1 :
       {m with exports = $1 c :: m.exports} }
 
 module_var :
-  | VAR { $1 @@ $sloc }  /* Sugar */
+  | VAR { var $1 $sloc }  /* Sugar */
 
 module_ :
   | LPAR MODULE option(module_var) module_fields RPAR
@@ -1026,7 +1046,7 @@ inline_module1 :  /* Sugar */
 /* Scripts */
 
 script_var :
-  | VAR { $1 @@ $sloc }  /* Sugar */
+  | VAR { var $1 $sloc }  /* Sugar */
 
 script_module :
   | module_ { $1 }

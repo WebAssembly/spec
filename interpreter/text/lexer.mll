@@ -48,6 +48,11 @@ let string s =
   done;
   Buffer.contents b
 
+let annot_id lexbuf s =
+  let s' = string s in
+  if s' = "" then error lexbuf "empty annotation id";
+  try Utf8.decode s' with Utf8.Utf8 -> error lexbuf "malformed UTF-8 encoding"
+
 let opt = Lib.Option.get
 }
 
@@ -102,8 +107,7 @@ let float =
 let string = '"' character* '"'
 
 let idchar = letter | digit | '_' | symbol
-let name = idchar+
-let id = '$' name
+let id = idchar+
 
 let keyword = ['a'-'z'] (letter | digit | '_' | '.' | ':')+
 let reserved = (idchar | string)+ | ',' | ';' | '[' | ']' | '{' | '}'
@@ -699,13 +703,21 @@ rule token = parse
   | "offset="(nat as s) { OFFSET_EQ_NAT s }
   | "align="(nat as s) { ALIGN_EQ_NAT s }
 
-  | id as s { VAR s }
+  | '$'(id as s) { VAR s }
+  | '$'(string as s)
+    { let s' = string s in
+      if s' = "" then error lexbuf "empty identifier"; VAR s' }
+  | '$' { error lexbuf "empty identifier" }
 
-  | "(@"(name as n)
+  | "(@"(id as n)
     { let r = region lexbuf in
       let items = annot (Lexing.lexeme_start_p lexbuf) lexbuf in
       Annot.record (Annot.{name = Utf8.decode n; items} @@ r); token lexbuf }
-  | "(@" { error lexbuf "malformed annotation id" }
+  | "(@"(string as s)
+    { let r = region lexbuf in
+      let items = annot (Lexing.lexeme_start_p lexbuf) lexbuf in
+      Annot.record (Annot.{name = annot_id lexbuf s; items} @@ r); token lexbuf }
+  | "(@" { error lexbuf "empty annotation id" }
 
   | ";;"utf8_no_nl*eof { EOF }
   | ";;"utf8_no_nl*newline { Lexing.new_line lexbuf; token lexbuf }
@@ -726,10 +738,15 @@ and annot start = parse
     { let r = region lexbuf in
       let items = annot (Lexing.lexeme_start_p lexbuf) lexbuf in
       (Annot.Parens items @@ r) :: annot start lexbuf }
-  | "(@"(name as n)
+  | "(@"(id as n)
     { let r = region lexbuf in
       let items = annot (Lexing.lexeme_start_p lexbuf) lexbuf in
       let ann = Annot.{name = Utf8.decode n; items} @@ r in
+      (Annot.Annot ann @@ r) :: annot start lexbuf }
+  | "(@"(string as s)
+    { let r = region lexbuf in
+      let items = annot (Lexing.lexeme_start_p lexbuf) lexbuf in
+      let ann = Annot.{name = annot_id lexbuf s; items} @@ r in
       (Annot.Annot ann @@ r) :: annot start lexbuf }
 
   | nat as s
@@ -741,9 +758,15 @@ and annot start = parse
   | float as s
     { let r = region lexbuf in
       (Annot.Float s @@ r) :: annot start lexbuf }
-  | id as s
+  | '$'(id as s)
     { let r = region lexbuf in
       (Annot.Var s @@ r) :: annot start lexbuf }
+  | '$'(string as s)
+    { let r = region lexbuf in
+      let s' = string s in
+      if s' = "" then error lexbuf "empty identifier";
+      (Annot.Var s' @@ r) :: annot start lexbuf }
+  | '$' { error lexbuf "empty identifier" }
   | string as s
     { let r = region lexbuf in
       (Annot.String (string s) @@ r) :: annot start lexbuf }

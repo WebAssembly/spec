@@ -75,6 +75,15 @@ sig
   val is_power_of_two : int -> bool
 end
 
+module Char :
+sig
+  val is_digit_ascii : char -> bool
+  val is_uppercase_ascii : char -> bool
+  val is_lowercase_ascii : char -> bool
+  val is_letter_ascii : char -> bool
+  val is_alphanum_ascii : char -> bool
+end
+
 module String :
 sig
   val implode : char list -> string

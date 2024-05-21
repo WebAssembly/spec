@@ -135,7 +135,7 @@ The *look-ahead* restrictions on the productions for |Tblockchar| disambiguate t
 Annotations
 ~~~~~~~~~~~
 
-An *annotation* is a bracketed token sequence headed by an *annotation id* of the form :math:`\T{@id}`.
+An *annotation* is a bracketed token sequence headed by an *annotation id* of the form :math:`\text{@id}` or :math:`\text{@"..."}`.
 No :ref:`space <text-space>` is allowed between the opening parenthesis and this id.
 Annotations are intended to be used for third-party extensions;
 they can appear anywhere in a program but are ignored by the WebAssembly semantics itself, which treats them as :ref:`white space <text-space>`.
@@ -145,8 +145,10 @@ Annotations can contain other parenthesized token sequences (including nested an
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
-   \production{annot} & \Tannot &::=&
-     \text{(@}~\Tidchar^+ ~(\Tspace ~|~ \Ttoken)^\ast~\text{)} \\
+   \production{annotation} & \Tannot &::=&
+     \text{(@}~\Tannotid ~(\Tspace ~|~ \Ttoken)^\ast~\text{)} \\
+   \production{annotation identifier} & \Tannotid &::=&
+     \Tidchar^+ ~|~ \Tname \\
    \end{array}
 
 .. note::

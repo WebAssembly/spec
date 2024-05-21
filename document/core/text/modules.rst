@@ -679,28 +679,28 @@ The definition of the initial :ref:`identifier context <text-context>` :math:`I`
 
 .. math::
    \begin{array}{@{}lcl@{\qquad\qquad}l}
-   \F{idc}(\text{(}~\text{type}~\Tid^?~\X{ft}{:}\Tfunctype~\text{)}) &=&
-     \{\ITYPES~(\Tid^?), \ITYPEDEFS~\X{ft}\} \\
-   \F{idc}(\text{(}~\text{func}~\Tid^?~\dots~\text{)}) &=&
-     \{\IFUNCS~(\Tid^?)\} \\
-   \F{idc}(\text{(}~\text{table}~\Tid^?~\dots~\text{)}) &=&
-     \{\ITABLES~(\Tid^?)\} \\
-   \F{idc}(\text{(}~\text{memory}~\Tid^?~\dots~\text{)}) &=&
-     \{\IMEMS~(\Tid^?)\} \\
-   \F{idc}(\text{(}~\text{global}~\Tid^?~\dots~\text{)}) &=&
-     \{\IGLOBALS~(\Tid^?)\} \\
-   \F{idc}(\text{(}~\text{elem}~\Tid^?~\dots~\text{)}) &=&
-     \{\IELEM~(\Tid^?)\} \\
-   \F{idc}(\text{(}~\text{data}~\Tid^?~\dots~\text{)}) &=&
-     \{\IDATA~(\Tid^?)\} \\
-   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{func}~\Tid^?~\dots~\text{)}~\text{)}) &=&
-     \{\IFUNCS~(\Tid^?)\} \\
-   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{table}~\Tid^?~\dots~\text{)}~\text{)}) &=&
-     \{\ITABLES~(\Tid^?)\} \\
-   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{memory}~\Tid^?~\dots~\text{)}~\text{)}) &=&
-     \{\IMEMS~(\Tid^?)\} \\
-   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{global}~\Tid^?~\dots~\text{)}~\text{)}) &=&
-     \{\IGLOBALS~(\Tid^?)\} \\
+   \F{idc}(\text{(}~\text{type}~v^?{:}\Tid^?~\X{ft}{:}\Tfunctype~\text{)}) &=&
+     \{\ITYPES~(v^?), \ITYPEDEFS~\X{ft}\} \\
+   \F{idc}(\text{(}~\text{func}~v^?{:}\Tid^?~\dots~\text{)}) &=&
+     \{\IFUNCS~(v^?)\} \\
+   \F{idc}(\text{(}~\text{table}~v^?{:}\Tid^?~\dots~\text{)}) &=&
+     \{\ITABLES~(v^?)\} \\
+   \F{idc}(\text{(}~\text{memory}~v^?{:}\Tid^?~\dots~\text{)}) &=&
+     \{\IMEMS~(v^?)\} \\
+   \F{idc}(\text{(}~\text{global}~v^?{:}\Tid^?~\dots~\text{)}) &=&
+     \{\IGLOBALS~(v^?)\} \\
+   \F{idc}(\text{(}~\text{elem}~v^?{:}\Tid^?~\dots~\text{)}) &=&
+     \{\IELEM~(v^?)\} \\
+   \F{idc}(\text{(}~\text{data}~v^?{:}\Tid^?~\dots~\text{)}) &=&
+     \{\IDATA~(v^?)\} \\
+   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{func}~v^?{:}\Tid^?~\dots~\text{)}~\text{)}) &=&
+     \{\IFUNCS~(v^?)\} \\
+   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{table}~v^?{:}\Tid^?~\dots~\text{)}~\text{)}) &=&
+     \{\ITABLES~(v^?)\} \\
+   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{memory}~v^?{:}\Tid^?~\dots~\text{)}~\text{)}) &=&
+     \{\IMEMS~(v^?)\} \\
+   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{global}~v^?{:}\Tid^?~\dots~\text{)}~\text{)}) &=&
+     \{\IGLOBALS~(v^?)\} \\
    \F{idc}(\text{(}~\dots~\text{)}) &=&
      \{\} \\
    \end{array}

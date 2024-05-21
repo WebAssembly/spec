@@ -1,8 +1,11 @@
 (module
   (@a)
-
+  (@0)
   (@aas-3!@$d-@#4)
   (@@) (@$) (@+) (@0) (@.) (@!$@#$23414@#$)
+  (@"a")
+  (@" @ asd\2a 045 \" fdaf \t \u{45}")
+
   (@a x y z)
   (@a x-y $yz "aa" -2 0.3 0x3)
   (@a x-y$yz"aa"-2)
@@ -66,10 +69,14 @@
 
 (assert_malformed (module quote "( @a)") "unknown operator")
 
-(assert_malformed (module quote "(@)") "malformed annotation id")
-(assert_malformed (module quote "(@ )") "malformed annotation id")
-(assert_malformed (module quote "(@ x)") "malformed annotation id")
-(assert_malformed (module quote "(@(@a)x)") "malformed annotation id")
+(assert_malformed (module quote "(@)") "empty annotation id")
+(assert_malformed (module quote "(@ )") "empty annotation id")
+(assert_malformed (module quote "(@ x)") "empty annotation id")
+(assert_malformed (module quote "(@(@a)x)") "empty annotation id")
+(assert_malformed (module quote "(@\"\")") "empty annotation id")
+(assert_malformed (module quote "(@ \"a\")") "empty annotation id")
+(assert_malformed (module quote "(@\"\n\")") "empty annotation id")
+(assert_malformed (module quote "(@\"\\ef\")") "malformed UTF-8")
 
 (assert_malformed (module quote "(@x ") "unclosed annotation")
 (assert_malformed (module quote "(@x ()") "unclosed annotation")
@@ -85,8 +92,8 @@
 (assert_malformed (module quote "(@x \")") "unclosed string")
 
 (assert_malformed (module quote "((@a)@b)") "unknown operator")
-(assert_malformed (module quote "(func $(@a))") "unknown operator")
-(assert_malformed (module quote "(func $(@a)f)") "unknown operator")
+(assert_malformed (module quote "(func $(@a))") "empty identifier")
+(assert_malformed (module quote "(func $(@a)f)") "empty identifier")
 
 ((@a) module (@a) $m (@a) (@a)
   ((@a) import (@a) "spectest" (@a) "global_i32" (@a)

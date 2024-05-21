@@ -719,6 +719,7 @@
 .. |Tblockchar| mathdef:: \xref{text/lexical}{text-comment}{\T{blockchar}}
 
 .. |Tannot| mathdef:: \xref{text/lexical}{text-annot}{\T{annot}}
+.. |Tannotid| mathdef:: \xref{text/lexical}{text-annot}{\T{annotid}}
 .. |Tannottoken| mathdef:: \xref{text/lexical}{text-annot}{\T{annottoken}}
 
 

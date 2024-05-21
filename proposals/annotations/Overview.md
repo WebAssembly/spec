@@ -17,6 +17,8 @@ Solution
 
 * Neither the syntactic shape nor the semantics is prescribed by the Wasm specification, though the Appendix might include a description of optional support for name section annotations and generic custom sections.
 
+* As an aside, the syntax of symbolic identifiers is extended to allow arbitrary strings in the form `$"..."`.
+
 * This proposal only affects the text format, nothing else.
 
 
@@ -26,14 +28,22 @@ Extend the Text Format as follows:
 
 * Anywhere where white space is allowed, allow *annotations* of the following form:
   ```
-  annot ::= "(@"idchar+  annotelem* ")"
-  annotelem ::= keyword | reserved | uN | sN | fN | string | id | "(" annotelem* ")" | "(@"idchar+ annotelem* ")"
+  annot ::= "(@"annotid  annotelem* ")"
+  annotid ::= idchar+ | name
+  annotelem ::= keyword | reserved | uN | sN | fN | string | id | "(" annotelem* ")"
   ```
   In other words, an annotation can contain any sequence of tokens, as long as it is well-bracketed.
-  No white space is allowed as part of the initial `(@idchar+` delimiter.
+  No white space is allowed as part of the initial `(@annotid` delimiter.
 
-* The initial `idchar+` is meant to be an identifier categorising the extension, and plays a role similar to the name of a custom section.
+* The initial `annotid` is meant to be an identifier categorising the extension, and plays a role similar to the name of a custom section.
   By convention, annotations corresponding to a custom section should use the same id.
+
+* Extend the grammar of identifiers as follows:
+  ```
+  id ::= "$"idchar+ | "$"name
+  ```
+
+* Elaborate identifiers to their denotation as a name, treating the unquoted form as a shorthand for the name `"idchar+"`. In all places where identifiers are compared, compare the denotated names instead. In particular, change the identifier environment `I` to record names instead of identifiers.
 
 Extend the Appendix on the Custom Sections:
 
