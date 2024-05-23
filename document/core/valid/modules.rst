@@ -373,8 +373,8 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
      C \vdashelemmode \EACTIVE~\{ \ETABLE~x, \EOFFSET~\expr \} : t
    }
 
-:math:`\EDECLARATIVE`
-.....................
+:math:`\EDECLARE`
+.................
 
 * The element mode is valid with any :ref:`valid <valid-reftype>` :ref:`reference type <syntax-reftype>`.
 
@@ -382,7 +382,7 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
    \frac{
      C \vdashreftype \reftype : \OKreftype
    }{
-     C \vdashelemmode \EDECLARATIVE : \reftype
+     C \vdashelemmode \EDECLARE : \reftype
    }
 
 

@@ -39,7 +39,7 @@ rule Tabletype_ok:
   -- Limits_ok: |- limits : $(2^32-1)
 
 rule Memtype_ok:
-  |- limits I8 : OK
+  |- limits PAGE : OK
   -- Limits_ok: |- limits : $(2^16)
 
 
@@ -107,7 +107,7 @@ rule Tabletype_sub:
   -- Limits_sub: |- lim_1 <: lim_2
 
 rule Memtype_sub:
-  |- lim_1 I8 <: lim_2 I8
+  |- lim_1 PAGE <: lim_2 PAGE
   -- Limits_sub: |- lim_1 <: lim_2
 
 

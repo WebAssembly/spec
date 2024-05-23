@@ -312,22 +312,11 @@ Printf.printf "\n[env inheritance]\n";
     List.iter (fun atom ->
       let t_id = typed_id' atom tid.it in
       if not (Map.mem t_id !(env.macro_atom)) then
-        map_append t_id [e] env.macro_atom
+        map_append t_id [e] env.macro_atom;
+        (* TODO: do something for having macros on untyped splices *)
+(*      map_cons (typed_id' atom "") e env.macro_atom  (* for defaulting *) *)
     ) (Map.find tid.it !(env.atoms));
   ) inherits;
-(*
-  (* Add default atom hints last *)
-  Map.iter (fun tid atoms ->
-    let e =
-      match Map.find_opt tid !(env.macro_typ) with
-      | Some ({it = SeqE (_::e::_); _}::_) -> e
-      | _ -> TextE "%" $ no_region
-    in
-    List.iter (fun atom ->
-      map_append (typed_id' atom tid) [e] env.macro_atom
-    ) atoms
-  ) !(env.atoms);
-*)
 (*
 Printf.printf "\n[env show_atom]\n%s\n%!"
 (String.concat "\n" (List.map (fun (id, exps) -> id ^ " => " ^ String.concat " | " (List.map El.Print.string_of_exp exps)) (Map.bindings !(env.show_atom))));
@@ -654,6 +643,8 @@ let lower = String.lowercase_ascii
 let dash_id = Str.(global_replace (regexp "-") "{-}")
 let quote_id = Str.(global_replace (regexp "_+") "\\_")
 let shrink_id = Str.(global_replace (regexp "[0-9A-Z]+") "{\\\\scriptstyle \\0}")
+let rekernl_id = Str.(global_replace (regexp "\\([a-z]\\)[{]") "\\1{\\kern-0.1em")
+let rekernr_id = Str.(global_replace (regexp "[}]\\([a-z{]\\)") "\\kern-0.1em}\\1")
 let macrofy_id = Str.(global_replace (regexp "[_.]") "")
 
 let id_style = function
@@ -677,7 +668,7 @@ Printf.eprintf "[id w/o macro] %s%s\n%!" (if style = `Func then "$" else "") id;
   let id' = quote_id id in
   let id'' =
     match style with
-    | `Var | `Func -> shrink_id id'
+    | `Var | `Func -> rekernl_id (rekernr_id (shrink_id id'))
     | `Atom -> shrink_id (lower id')
     | `Token -> id'
   in
@@ -751,9 +742,10 @@ let render_rule_deco env pre id1 id2 post =
 
 
 let render_atom env atom =
-  El.Debug.(log "render.atom"
-    (fun _ -> fmt "%s %s" (el_atom atom)
-      ""(*mapping (fun xs -> string_of_int (List.length xs)) !(env.macro_atom)*))
+  El.Debug.(log_if "render.atom" (atom.it = Atom.Atom "CALL_INDIRECT")
+    (fun _ -> fmt "%s/%s %s" (el_atom atom) atom.note.def
+      (string_of_int (List.length (List.flatten (Option.to_list (Map.find_opt (typed_id atom).it !(env.macro_atom))))))
+      (*mapping (fun xs -> string_of_int (List.length xs)) !(env.macro_atom)*))
     (fun s -> s)
   ) @@ fun _ ->
   let open Atom in
@@ -796,7 +788,7 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
       | _ ->
         assert (not (nonmacro_atom atom));
         match macro_template env env.macro_atom id.it with
-        | Some _ as templ when env.config.macros_for_ids && atom.note.def <> "" ->
+        | Some _ as templ when env.config.macros_for_ids (*&& atom.note.def <> ""*) ->
           render_id' env `Atom (chop_sub (untyped_id id).it) templ
         | _ ->
           match atom.it with
@@ -1072,7 +1064,6 @@ and render_path env p =
   | IdxP (p1, e) -> render_path env p1 ^ "{}[" ^ render_exp env e ^ "]"
   | SliceP (p1, e1, e2) ->
     render_path env p1 ^ "{}[" ^ render_exp env e1 ^ " : " ^ render_exp env e2 ^ "]"
-  | DotP ({it = RootP; _}, atom) -> render_fieldname env atom
   | DotP (p1, atom) ->
     render_path env p1 ^ "{.}" ^ render_fieldname env atom
 

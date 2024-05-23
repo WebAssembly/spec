@@ -63,11 +63,11 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-\mbox{(limits)} & {\mathit{limits}} &::=& {}[ {\mathit{u{\scriptstyle 32}}} .. {\mathit{u{\scriptstyle 32}}} ] \\[0.8ex]
+\mbox{(limits)} & {\mathit{limits}} &::=& {}[ {\mathit{u{\kern-0.1em\scriptstyle 32}}} .. {\mathit{u{\kern-0.1em\scriptstyle 32}}} ] \\[0.8ex]
 \mbox{(global type)} & {\mathit{globaltype}} &::=& {\mathsf{mut}^?}~{\mathit{valtype}} \\
 \mbox{(function type)} & {\mathit{functype}} &::=& {\mathit{resulttype}} \rightarrow {\mathit{resulttype}} \\
 \mbox{(table type)} & {\mathit{tabletype}} &::=& {\mathit{limits}}~{\mathit{reftype}} \\
-\mbox{(memory type)} & {\mathit{memtype}} &::=& {\mathit{limits}}~\mathsf{i{\scriptstyle 8}} \\[0.8ex]
+\mbox{(memory type)} & {\mathit{memtype}} &::=& {\mathit{limits}}~\mathsf{page} \\[0.8ex]
 {} \\[-2ex]
 \mbox{(external type)} & {\mathit{externtype}} &::=& \mathsf{func}~{\mathit{typeuse}} ~|~ \mathsf{global}~{\mathit{globaltype}} ~|~ \mathsf{table}~{\mathit{tabletype}} ~|~ \mathsf{mem}~{\mathit{memtype}} \\
 \end{array}
@@ -93,20 +93,21 @@ $$
 {\mathit{numtype}} {.} {{\mathit{relop}}}_{{\mathit{numtype}}} \\ &&|&
 {\mathit{numtype}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{numtype}}_2}
   &\qquad \mbox{if}~{\mathit{numtype}}_1 \neq {\mathit{numtype}}_2 \\ &&|&
-{{\mathit{numtype}}{.}\mathsf{extend}}{{\mathit{{\scriptstyle N}}}}{\mathsf{\_}}{\mathsf{s}} \\ &&|&
+{{\mathit{numtype}}{.}\mathsf{extend}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{s}}
+  &\qquad \mbox{if}~{\mathit{numtype}} = {\mathsf{i}}{{\mathit{{\scriptstyle N}}}} \land {\mathit{sz}} < {\mathit{{\scriptstyle N}}} \\ &&|&
 \mathsf{local.get}~{\mathit{localidx}} \\ &&|&
 \mathsf{local.set}~{\mathit{localidx}} \\ &&|&
 \mathsf{local.tee}~{\mathit{localidx}} \\ &&|&
 \mathsf{global.get}~{\mathit{globalidx}} \\ &&|&
 \mathsf{global.set}~{\mathit{globalidx}} \\ &&|&
-{{\mathit{numtype}}{.}\mathsf{load}}{{({{\mathit{{\scriptstyle N}}}}{\mathsf{\_}}{{\mathit{sx}}})^?}}~{\mathit{memidx}}~{\mathit{memarg}}
-  &\qquad \mbox{if}~({\mathit{numtype}} = {\mathsf{i}}{{\mathit{{\scriptstyle N}}}} \land {\mathit{{\scriptstyle N}}} < {|{\mathsf{i}}{{\mathit{{\scriptstyle N}}}}|})^? \\ &&|&
-{{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{{\scriptstyle N}}}^?}}~{\mathit{memidx}}~{\mathit{memarg}}
-  &\qquad \mbox{if}~({\mathit{numtype}} = {\mathsf{i}}{{\mathit{{\scriptstyle N}}}} \land {\mathit{{\scriptstyle N}}} < {|{\mathsf{i}}{{\mathit{{\scriptstyle N}}}}|})^? \\ &&|&
+{{\mathit{numtype}}{.}\mathsf{load}}{{({{\mathit{sz}}}{\mathsf{\_}}{{\mathit{sx}}})^?}}~{\mathit{memidx}}~{\mathit{memarg}}
+  &\qquad \mbox{if}~({\mathit{numtype}} = {\mathsf{i}}{{\mathit{{\scriptstyle N}}}} \land {\mathit{sz}} < {|{\mathsf{i}}{{\mathit{{\scriptstyle N}}}}|})^? \\ &&|&
+{{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{memidx}}~{\mathit{memarg}}
+  &\qquad \mbox{if}~({\mathit{numtype}} = {\mathsf{i}}{{\mathit{{\scriptstyle N}}}} \land {\mathit{sz}} < {|{\mathsf{i}}{{\mathit{{\scriptstyle N}}}}|})^? \\ &&|&
 {{\mathit{vectype}}{.}\mathsf{load}}{{{\mathit{vloadop}}^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
-{{\mathit{vectype}}{.}\mathsf{load}}{{\mathit{{\scriptstyle N}}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\ &&|&
+{{\mathit{vectype}}{.}\mathsf{load}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\ &&|&
 {\mathit{vectype}}{.}\mathsf{store}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
-{{\mathit{vectype}}{.}\mathsf{store}}{{\mathit{{\scriptstyle N}}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\ &&|&
+{{\mathit{vectype}}{.}\mathsf{store}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\ &&|&
 \mathsf{memory.size}~{\mathit{memidx}} \\ &&|&
 \mathsf{memory.grow}~{\mathit{memidx}} \\ &&|&
 \mathsf{memory.fill}~{\mathit{memidx}} \\ &&|&
@@ -134,7 +135,7 @@ $$
  \qquad
 ({\mathit{{\scriptstyle C}}}{.}\mathsf{locals}{}[x_1] = {\mathit{init}}~t)^\ast
  \qquad
-{\mathit{{\scriptstyle C}}}{}[\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}] \vdash {{\mathit{instr}}_2^\ast} : {t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}
+{\mathit{{\scriptstyle C}}}{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}] \vdash {{\mathit{instr}}_2^\ast} : {t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}
 }{
 {\mathit{{\scriptstyle C}}} \vdash {\mathit{instr}}_1~{{\mathit{instr}}_2^\ast} : {t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}
 }
@@ -364,6 +365,7 @@ warning: syntax `f32` was never spliced
 warning: syntax `f64` was never spliced
 warning: syntax `fN` was never spliced
 warning: syntax `fNmag` was never spliced
+warning: syntax `fieldidx` was never spliced
 warning: syntax `fieldtype` was never spliced
 warning: syntax `fieldval` was never spliced
 warning: syntax `fin` was never spliced
@@ -437,7 +439,6 @@ warning: syntax `packtype` was never spliced
 warning: syntax `packval` was never spliced
 warning: syntax `pshape` was never spliced
 warning: syntax `pth` was never spliced
-warning: syntax `pthaux` was never spliced
 warning: syntax `record` was never spliced
 warning: syntax `recorddots` was never spliced
 warning: syntax `rectype` was never spliced
@@ -1098,6 +1099,11 @@ warning: definition `cunpack` was never spliced
 warning: definition `cunpacknum` was never spliced
 warning: definition `cvtop` was never spliced
 warning: definition `data` was never spliced
+warning: definition `dataidx_expr` was never spliced
+warning: definition `dataidx_func` was never spliced
+warning: definition `dataidx_funcs` was never spliced
+warning: definition `dataidx_instr` was never spliced
+warning: definition `dataidx_instrs` was never spliced
 warning: definition `datainst` was never spliced
 warning: definition `demote` was never spliced
 warning: definition `diffrt` was never spliced
@@ -1132,21 +1138,18 @@ warning: definition `fone` was never spliced
 warning: definition `fpmax` was never spliced
 warning: definition `fpmin` was never spliced
 warning: definition `frame` was never spliced
-warning: definition `free_dataidx_expr` was never spliced
-warning: definition `free_dataidx_func` was never spliced
-warning: definition `free_dataidx_funcs` was never spliced
-warning: definition `free_dataidx_instr` was never spliced
-warning: definition `free_dataidx_instrs` was never spliced
 warning: definition `fsqrt` was never spliced
 warning: definition `fsub` was never spliced
 warning: definition `ftrunc` was never spliced
 warning: definition `funcsxt` was never spliced
 warning: definition `funcsxv` was never spliced
+warning: definition `funcsxx` was never spliced
 warning: definition `fzero` was never spliced
 warning: definition `global` was never spliced
 warning: definition `globalinst` was never spliced
 warning: definition `globalsxt` was never spliced
 warning: definition `globalsxv` was never spliced
+warning: definition `globalsxx` was never spliced
 warning: definition `growmem` was never spliced
 warning: definition `growtable` was never spliced
 warning: definition `half` was never spliced
@@ -1212,6 +1215,7 @@ warning: definition `memarg0` was never spliced
 warning: definition `meminst` was never spliced
 warning: definition `memsxt` was never spliced
 warning: definition `memsxv` was never spliced
+warning: definition `memsxx` was never spliced
 warning: definition `min` was never spliced
 warning: definition `moduleinst` was never spliced
 warning: definition `narrow` was never spliced
@@ -1235,6 +1239,7 @@ warning: definition `signif` was never spliced
 warning: definition `sizenn` was never spliced
 warning: definition `sizenn1` was never spliced
 warning: definition `sizenn2` was never spliced
+warning: definition `skip` was never spliced
 warning: definition `store` was never spliced
 warning: definition `structinst` was never spliced
 warning: definition `subst_all_deftype` was never spliced
@@ -1264,6 +1269,7 @@ warning: definition `sx` was never spliced
 warning: definition `tableinst` was never spliced
 warning: definition `tablesxt` was never spliced
 warning: definition `tablesxv` was never spliced
+warning: definition `tablesxx` was never spliced
 warning: definition `testop` was never spliced
 warning: definition `trunc` was never spliced
 warning: definition `trunc_sat` was never spliced
@@ -1546,6 +1552,11 @@ warning: definition prose `cunpack` was never spliced
 warning: definition prose `cunpacknum` was never spliced
 warning: definition prose `cvtop` was never spliced
 warning: definition prose `data` was never spliced
+warning: definition prose `dataidx_expr` was never spliced
+warning: definition prose `dataidx_func` was never spliced
+warning: definition prose `dataidx_funcs` was never spliced
+warning: definition prose `dataidx_instr` was never spliced
+warning: definition prose `dataidx_instrs` was never spliced
 warning: definition prose `datainst` was never spliced
 warning: definition prose `default_` was never spliced
 warning: definition prose `diffrt` was never spliced
@@ -1559,20 +1570,17 @@ warning: definition prose `ext_arrayinst` was never spliced
 warning: definition prose `ext_structinst` was never spliced
 warning: definition prose `fone` was never spliced
 warning: definition prose `frame` was never spliced
-warning: definition prose `free_dataidx_expr` was never spliced
-warning: definition prose `free_dataidx_func` was never spliced
-warning: definition prose `free_dataidx_funcs` was never spliced
-warning: definition prose `free_dataidx_instr` was never spliced
-warning: definition prose `free_dataidx_instrs` was never spliced
 warning: definition prose `func` was never spliced
 warning: definition prose `funcinst` was never spliced
 warning: definition prose `funcsxt` was never spliced
 warning: definition prose `funcsxv` was never spliced
+warning: definition prose `funcsxx` was never spliced
 warning: definition prose `fzero` was never spliced
 warning: definition prose `global` was never spliced
 warning: definition prose `globalinst` was never spliced
 warning: definition prose `globalsxt` was never spliced
 warning: definition prose `globalsxv` was never spliced
+warning: definition prose `globalsxx` was never spliced
 warning: definition prose `group_bytes_by` was never spliced
 warning: definition prose `growmem` was never spliced
 warning: definition prose `growtable` was never spliced
@@ -1603,6 +1611,7 @@ warning: definition prose `memarg0` was never spliced
 warning: definition prose `meminst` was never spliced
 warning: definition prose `memsxt` was never spliced
 warning: definition prose `memsxv` was never spliced
+warning: definition prose `memsxx` was never spliced
 warning: definition prose `min` was never spliced
 warning: definition prose `moduleinst` was never spliced
 warning: definition prose `nunpack` was never spliced
@@ -1622,6 +1631,7 @@ warning: definition prose `size` was never spliced
 warning: definition prose `sizenn` was never spliced
 warning: definition prose `sizenn1` was never spliced
 warning: definition prose `sizenn2` was never spliced
+warning: definition prose `skip` was never spliced
 warning: definition prose `store` was never spliced
 warning: definition prose `structinst` was never spliced
 warning: definition prose `subst_all_deftype` was never spliced
@@ -1652,6 +1662,7 @@ warning: definition prose `table` was never spliced
 warning: definition prose `tableinst` was never spliced
 warning: definition prose `tablesxt` was never spliced
 warning: definition prose `tablesxv` was never spliced
+warning: definition prose `tablesxx` was never spliced
 warning: definition prose `testop` was never spliced
 warning: definition prose `type` was never spliced
 warning: definition prose `unop` was never spliced

@@ -12,16 +12,9 @@ syntax symsplit/1 hint(show sym) hint(macro none) = _FIRST A_1 | ...
 syntax symsplit/2 hint(show sym) hint(macro none) = ... | _LAST A_2
 
 syntax recorddots hint(show !%) = ()
-syntax record hint(show r) hint(macro none) =
+syntax record hint(show r) hint(macro none none) =
   { FIELD_1 A_1 hint(show FIELD_ 1), \
     FIELD_2 A_2 hint(show FIELD_ 2), \
     `... recorddots }
 
-syntax pth = PTHSYNTAX hint(show (`[i] `| !%.FIELD)+)
-
-syntax pthaux =
-  { PTH ()           hint(show pth),
-    I_PTH ()         hint(show `[i] pth),
-    FIELD_PTH ()     hint(show FIELD pth),
-    DOT_FIELD_PTH () hint(show !%.FIELD)
-  }
+syntax pth hint(macro none) = PTHSYNTAX hint(show (`[i] `| !%.FIELD)+)

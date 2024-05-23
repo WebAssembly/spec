@@ -353,7 +353,7 @@ It decodes into a list of :ref:`element segments <syntax-elem>` that represent t
        \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\ &&|&
      3{:}\Bu32~~\X{et}:\Belemkind~~y^\ast{:}\Blist(\Bfuncidx)
        &\Rightarrow& \\&&&\quad
-       \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EDECLARATIVE \} \\ &&|&
+       \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EDECLARE \} \\ &&|&
      4{:}\Bu32~~e{:}\Bexpr~~\X{el}^\ast{:}\Blist(\Bexpr)
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~(\REF~\NULL~\FUNC), \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
@@ -365,7 +365,7 @@ It decodes into a list of :ref:`element segments <syntax-elem>` that represent t
        \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\ &&|&
      7{:}\Bu32~~\X{et}:\Breftype~~\X{el}^\ast{:}\Blist(\Bexpr)
        &\Rightarrow& \\&&&\quad
-       \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EDECLARATIVE \} \\
+       \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EDECLARE \} \\
    \production{element kind} & \Belemkind &::=&
      \hex{00} &\Rightarrow& (\REF~\FUNC) \\
    \end{array}

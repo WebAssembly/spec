@@ -248,7 +248,7 @@ rule Tabletype_ok:
   -- Reftype_ok: C |- reftype : OK
 
 rule Memtype_ok:
-  C |- limits I8 : OK
+  C |- limits PAGE : OK
   -- Limits_ok: C |- limits : $(2^16)
 
 
@@ -485,7 +485,7 @@ rule Tabletype_sub:
   -- Reftype_sub: C |- rt_2 <: rt_1
 
 rule Memtype_sub:
-  C |- lim_1 I8 <: lim_2 I8
+  C |- lim_1 PAGE <: lim_2 PAGE
   -- Limits_sub: C |- lim_1 <: lim_2
 
 

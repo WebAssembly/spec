@@ -70,7 +70,7 @@ When dealing with syntactic constructs the following notation is also used:
 
 * ${:s[i : n]} denotes the sub-sequence ${:s[i]...s[i+n-1]} of a sequence ${:s}.
 
-* ${-:s[[i]=A]} denotes the same sequence as ${:s},
+* ${:s[[i]=A]} denotes the same sequence as ${:s},
   except that the ${:i}-th element is replaced with ${-:A}.
 
 * ${:s[[i : n] = A^n]} denotes the same sequence as ${:s},
@@ -88,41 +88,35 @@ Moreover, the following conventions are employed:
   This implicitly expresses a form of mapping syntactic constructions over a sequence.
 
 
-Productions of the following form are interpreted as *records* that map a fixed set of fields ${-:FIELD_ i} to "values" ${:A_i}, respectively:
+Productions of the following form are interpreted as *records* that map a fixed set of fields ${:FIELD_ i} to "values" ${:A_i}, respectively:
 
 $${syntax-: record}
 ${syntax-ignore: recorddots}
 
 The following notation is adopted for manipulating such records:
 
-* ${-:r.FIELD} denotes the contents of the ${-:FIELD} component of ${:r}.
+* ${:r.FIELD} denotes the contents of the ${:FIELD} component of ${:r}.
 
-* ${-:r[.FIELD = A]} denotes the same record as ${:r},
-  except that the contents of the ${-:FIELD} component is replaced with ${:A}.
+* ${:r[.FIELD = A]} denotes the same record as ${:r},
+  except that the contents of the ${:FIELD} component is replaced with ${:A}.
 
-* ${-:r[.FIELD =.. A^n]} denotes the same record as ${:r},
-  except that ${:A^n} is appended to the sequence of the ${-:FIELD} component,
-  i.e, it is short for ${-:r[.FIELD = r.FIELD A^n]}.
+* ${:r[.FIELD =.. A^n]} denotes the same record as ${:r},
+  except that ${:A^n} is appended to the sequence of the ${:FIELD} component,
+  i.e, it is short for ${:r[.FIELD = r.FIELD A^n]}.
 
 * ${:r_1++r_2} denotes the composition of two records with the same fields of sequences by appending each sequence point-wise:
 
-  $${-:
-    {FIELD_ 1 A_1*, FIELD_ 2 A_2*, `... !%} `++ \
-    {FIELD_ 1 B_1*, FIELD_ 2 B_2*, `... !%} `= \
-    {FIELD_ 1 A_1* B_1*, FIELD_ 2 A_2* B_2*, `... !%}
+  $${:
+    `{FIELD_ 1 A_1*, FIELD_ 2 A_2*, `...} ++ `{FIELD_ 1 B_1*, FIELD_ 2 B_2*, `...} = `{FIELD_ 1 A_1* B_1*, FIELD_ 2 A_2* B_2*, `...}
   }
 
 * ${:(++) r*} denotes the composition of a sequence of records, respectively; if the sequence is empty, then all fields of the resulting record are empty.
 
 The update notation for sequences and records generalizes recursively to nested components accessed by "paths" ${syntax-: pth}:
 
-* ${-:s[.I_PTH = A]} is short for ${-:s[[i] = (s[i][.PTH = A])]},
+* ${:s[$(`[i]#pth = A)]} is short for ${:s[[i] = s[i][pth = A]]},
 
-* ${-:r[.FIELD_PTH = A]} is short for ${-:r[.FIELD = (s.FIELD[.PTH = A])]},
-
-where ${-:r[.DOT_FIELD_PTH = A]} is shortened to ${-:r[.FIELD = A]}.
-
-${syntax-ignore: pthaux}
+* ${:r[$(!%.FIELD pth = A)]} is short for ${:r[.FIELD = r.FIELD[pth = A]]}.
 
 
 

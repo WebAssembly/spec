@@ -79,7 +79,7 @@ let builtin () =
   let memories = [
     "memory",
     listV zeros
-    |> create_meminst (CaseV ("I8", [ TupV [ numV Z.one; numV (Z.of_int 2) ] ]));
+    |> create_meminst (CaseV ("PAGE", [ TupV [ numV Z.one; numV (Z.of_int 2) ] ]));
   ] in
 
   let append kind (name, inst) extern =

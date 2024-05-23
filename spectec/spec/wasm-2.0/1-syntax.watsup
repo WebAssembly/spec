@@ -168,7 +168,7 @@ syntax functype hint(desc "function type") =
 syntax tabletype hint(desc "table type") =
   limits reftype
 syntax memtype hint(desc "memory type") =
-  limits I8
+  limits PAGE
 syntax elemtype hint(desc "element type") =
   reftype
 syntax datatype hint(desc "data type") =

@@ -279,7 +279,7 @@ and eval_expr env expr =
     (* valid_tabletype *)
     | TupV [ lim; _ ] -> valid_lim (Z.of_int 0xffffffff) lim |> boolV
     (* valid_memtype *)
-    | CaseV ("I8", [ lim ]) -> valid_lim (Z.of_int 0x10000) lim |> boolV
+    | CaseV ("PAGE", [ lim ]) -> valid_lim (Z.of_int 0x10000) lim |> boolV
     (* valid_other *)
     | _ ->
       fail_expr expr "TODO: deferring validation to reference interpreter"

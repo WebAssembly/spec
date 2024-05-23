@@ -67,6 +67,11 @@ def $concat_(syntax X, X**) : X*
   def $concat_{syntax X, w* : X*, w'** : X**}(syntax X, [w*{w : X}] :: w'*{w' : X}*{w' : X}) = w*{w : X} :: $concat_(syntax X, w'*{w' : X}*{w' : X})
 }
 
+;; 0-aux.watsup
+def $skip(syntax X, X : X) : X
+  ;; 0-aux.watsup
+  def $skip{syntax X, w : X}(syntax X, w) = w
+
 ;; 1-syntax.watsup
 syntax list{syntax X}(syntax X) =
   | `%`{X* : X*}(X*{X : X} : X*)
@@ -217,31 +222,34 @@ syntax idx = u32
 syntax laneidx = u8
 
 ;; 1-syntax.watsup
-syntax typeidx = idx
+syntax typeidx = u32
 
 ;; 1-syntax.watsup
-syntax funcidx = idx
+syntax funcidx = u32
 
 ;; 1-syntax.watsup
-syntax globalidx = idx
+syntax globalidx = u32
 
 ;; 1-syntax.watsup
-syntax tableidx = idx
+syntax tableidx = u32
 
 ;; 1-syntax.watsup
-syntax memidx = idx
+syntax memidx = u32
 
 ;; 1-syntax.watsup
-syntax elemidx = idx
+syntax elemidx = u32
 
 ;; 1-syntax.watsup
-syntax dataidx = idx
+syntax dataidx = u32
 
 ;; 1-syntax.watsup
-syntax labelidx = idx
+syntax labelidx = u32
 
 ;; 1-syntax.watsup
-syntax localidx = idx
+syntax localidx = u32
+
+;; 1-syntax.watsup
+syntax fieldidx = u32
 
 ;; 1-syntax.watsup
 syntax nul =
@@ -291,13 +299,13 @@ syntax fin =
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:149.1-150.26
+;; 1-syntax.watsup:150.1-151.26
 syntax typeuse =
   | _IDX{typeidx : typeidx}(typeidx : typeidx)
   | DEF{rectype : rectype}(rectype : rectype, nat)
   | REC{n : n}(n : n)
 
-;; 1-syntax.watsup:152.1-153.26
+;; 1-syntax.watsup:153.1-154.26
 syntax heaptype =
   | ANY
   | EQ
@@ -314,7 +322,7 @@ syntax heaptype =
   | REC{n : n}(n : n)
   | DEF{rectype : rectype}(rectype : rectype, nat)
 
-;; 1-syntax.watsup:160.1-161.14
+;; 1-syntax.watsup:161.1-162.14
 syntax valtype =
   | I32
   | I64
@@ -324,10 +332,10 @@ syntax valtype =
   | REF{nul : nul, heaptype : heaptype}(nul : nul, heaptype : heaptype)
   | BOT
 
-;; 1-syntax.watsup:190.1-191.16
+;; 1-syntax.watsup:191.1-192.16
 syntax resulttype = list(syntax valtype)
 
-;; 1-syntax.watsup:198.1-198.66
+;; 1-syntax.watsup:199.1-199.66
 syntax storagetype =
   | BOT
   | I32
@@ -339,31 +347,31 @@ syntax storagetype =
   | I8
   | I16
 
-;; 1-syntax.watsup:211.1-211.60
+;; 1-syntax.watsup:212.1-212.60
 syntax fieldtype =
   | `%%`{mut : mut, storagetype : storagetype}(mut : mut, storagetype : storagetype)
 
-;; 1-syntax.watsup:213.1-213.90
+;; 1-syntax.watsup:214.1-214.90
 syntax functype =
   | `%->%`{resulttype : resulttype}(resulttype : resulttype, resulttype)
 
-;; 1-syntax.watsup:214.1-214.64
+;; 1-syntax.watsup:215.1-215.64
 syntax structtype = list(syntax fieldtype)
 
-;; 1-syntax.watsup:215.1-215.54
+;; 1-syntax.watsup:216.1-216.54
 syntax arraytype = fieldtype
 
-;; 1-syntax.watsup:217.1-220.18
+;; 1-syntax.watsup:218.1-221.18
 syntax comptype =
   | STRUCT{structtype : structtype}(structtype : structtype)
   | ARRAY{arraytype : arraytype}(arraytype : arraytype)
   | FUNC{functype : functype}(functype : functype)
 
-;; 1-syntax.watsup:222.1-223.30
+;; 1-syntax.watsup:223.1-224.30
 syntax subtype =
   | SUB{fin : fin, typeuse* : typeuse*, comptype : comptype}(fin : fin, typeuse*{typeuse : typeuse} : typeuse*, comptype : comptype)
 
-;; 1-syntax.watsup:225.1-226.22
+;; 1-syntax.watsup:226.1-227.22
 syntax rectype =
   | REC{list : list(syntax subtype)}(list : list(syntax subtype))
 }
@@ -497,7 +505,7 @@ syntax tabletype =
 
 ;; 1-syntax.watsup
 syntax memtype =
-  | `%I8`{limits : limits}(limits : limits)
+  | `%PAGE`{limits : limits}(limits : limits)
 
 ;; 1-syntax.watsup
 syntax elemtype = reftype
@@ -651,6 +659,11 @@ def $zero(numtype : numtype) : num_(numtype)
   def $zero{Inn : Inn}((Inn : Inn <: numtype)) = `%`_num_(0)
   ;; 1-syntax.watsup
   def $zero{Fnn : Fnn}((Fnn : Fnn <: numtype)) = $fzero($size((Fnn : Fnn <: numtype)))
+
+;; 1-syntax.watsup
+syntax sz =
+  | `%`{i : nat}(i : nat)
+    -- if ((((i = 8) \/ (i = 16)) \/ (i = 32)) \/ (i = 64))
 
 ;; 1-syntax.watsup
 syntax sx =
@@ -933,9 +946,10 @@ syntax memarg =
 
 ;; 1-syntax.watsup
 syntax vloadop =
-  | `SHAPE%X%%`{N : N, M : M, sx : sx}(N : N, M : M, sx : sx)
-  | SPLAT{N : N}(N : N)
-  | ZERO{N : N}(N : N)
+  | `SHAPE%X%%`{sz : sz, M : M, sx : sx}(sz : sz, M : M, sx : sx)
+    -- if ((sz!`%`_sz.0 * M) = 64)
+  | SPLAT{sz : sz}(sz : sz)
+  | ZERO{sz : sz}(sz : sz)
 
 ;; 1-syntax.watsup
 syntax blocktype =
@@ -945,7 +959,7 @@ syntax blocktype =
 ;; 1-syntax.watsup
 rec {
 
-;; 1-syntax.watsup:636.1-637.22
+;; 1-syntax.watsup:639.1-640.22
 syntax instr =
   | NOP
   | UNREACHABLE
@@ -975,7 +989,8 @@ syntax instr =
   | RELOP{numtype : numtype, relop_ : relop_(numtype)}(numtype : numtype, relop_ : relop_(numtype))
   | CVTOP{numtype_1 : numtype, numtype_2 : numtype, cvtop : cvtop, sx? : sx?}(numtype_1 : numtype, numtype_2 : numtype, cvtop : cvtop, sx?{sx : sx} : sx?)
     -- if (numtype_1 =/= numtype_2)
-  | EXTEND{numtype : numtype, N : N}(numtype : numtype, N : N)
+  | EXTEND{numtype : numtype, sz : sz, Inn : Inn}(numtype : numtype, sz : sz)
+    -- if ((numtype = (Inn : Inn <: numtype)) /\ (sz!`%`_sz.0 < $sizenn((Inn : Inn <: numtype))))
   | VCONST{vectype : vectype, vec_ : vec_(vectype)}(vectype : vectype, vec_ : vec_(vectype))
   | VVUNOP{vectype : vectype, vvunop : vvunop}(vectype : vectype, vvunop : vvunop)
   | VVBINOP{vectype : vectype, vvbinop : vvbinop}(vectype : vectype, vvbinop : vvbinop)
@@ -1043,14 +1058,14 @@ syntax instr =
   | TABLE.COPY{tableidx : tableidx}(tableidx : tableidx, tableidx)
   | TABLE.INIT{tableidx : tableidx, elemidx : elemidx}(tableidx : tableidx, elemidx : elemidx)
   | ELEM.DROP{elemidx : elemidx}(elemidx : elemidx)
-  | `LOAD%(_)%?%%`{numtype : numtype, N? : N?, sx? : sx?, memidx : memidx, memarg : memarg, Inn? : Inn?}(numtype : numtype, (N, sx)?{N : N, sx : sx} : (N, sx)?, memidx : memidx, memarg : memarg)
-    -- (if ((numtype = (Inn : Inn <: numtype)) /\ (N < $size((Inn : Inn <: numtype)))))?{Inn : Inn, N : nat}
-  | STORE{numtype : numtype, N? : N?, memidx : memidx, memarg : memarg, Inn? : Inn?}(numtype : numtype, N?{N : N} : N?, memidx : memidx, memarg : memarg)
-    -- (if ((numtype = (Inn : Inn <: numtype)) /\ (N < $size((Inn : Inn <: numtype)))))?{Inn : Inn, N : nat}
+  | `LOAD%(_)%?%%`{numtype : numtype, sz? : sz?, sx? : sx?, memidx : memidx, memarg : memarg, Inn? : Inn?}(numtype : numtype, (sz, sx)?{sx : sx, sz : sz} : (sz, sx)?, memidx : memidx, memarg : memarg)
+    -- (if ((numtype = (Inn : Inn <: numtype)) /\ (sz!`%`_sz.0 < $size((Inn : Inn <: numtype)))))?{Inn : Inn, sz : sz}
+  | STORE{numtype : numtype, sz? : sz?, memidx : memidx, memarg : memarg, Inn? : Inn?}(numtype : numtype, sz?{sz : sz} : sz?, memidx : memidx, memarg : memarg)
+    -- (if ((numtype = (Inn : Inn <: numtype)) /\ (sz!`%`_sz.0 < $size((Inn : Inn <: numtype)))))?{Inn : Inn, sz : sz}
   | VLOAD{vectype : vectype, vloadop? : vloadop?, memidx : memidx, memarg : memarg}(vectype : vectype, vloadop?{vloadop : vloadop} : vloadop?, memidx : memidx, memarg : memarg)
-  | VLOAD_LANE{vectype : vectype, N : N, memidx : memidx, memarg : memarg, laneidx : laneidx}(vectype : vectype, N : N, memidx : memidx, memarg : memarg, laneidx : laneidx)
+  | VLOAD_LANE{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx)
   | VSTORE{vectype : vectype, memidx : memidx, memarg : memarg}(vectype : vectype, memidx : memidx, memarg : memarg)
-  | VSTORE_LANE{vectype : vectype, N : N, memidx : memidx, memarg : memarg, laneidx : laneidx}(vectype : vectype, N : N, memidx : memidx, memarg : memarg, laneidx : laneidx)
+  | VSTORE_LANE{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx)
   | MEMORY.SIZE{memidx : memidx}(memidx : memidx)
   | MEMORY.GROW{memidx : memidx}(memidx : memidx)
   | MEMORY.FILL{memidx : memidx}(memidx : memidx)
@@ -1058,11 +1073,6 @@ syntax instr =
   | MEMORY.INIT{memidx : memidx, dataidx : dataidx}(memidx : memidx, dataidx : dataidx)
   | DATA.DROP{dataidx : dataidx}(dataidx : dataidx)
 }
-
-;; 1-syntax.watsup
-syntax sz =
-  | `%`{i : nat}(i : nat)
-    -- if ((((i = 8) \/ (i = 16)) \/ (i = 32)) \/ (i = 64))
 
 ;; 1-syntax.watsup
 syntax expr = instr*
@@ -1160,44 +1170,44 @@ def $setminus(idx*, idx*) : idx*
 }
 
 ;; 2-syntax-aux.watsup
-def $free_dataidx_instr(instr : instr) : dataidx*
+def $dataidx_instr(instr : instr) : dataidx*
   ;; 2-syntax-aux.watsup
-  def $free_dataidx_instr{x : idx, y : idx}(MEMORY.INIT_instr(x, y)) = [y]
+  def $dataidx_instr{x : idx, y : idx}(MEMORY.INIT_instr(x, y)) = [y]
   ;; 2-syntax-aux.watsup
-  def $free_dataidx_instr{x : idx}(DATA.DROP_instr(x)) = [x]
+  def $dataidx_instr{x : idx}(DATA.DROP_instr(x)) = [x]
   ;; 2-syntax-aux.watsup
-  def $free_dataidx_instr{in : instr}(in) = []
+  def $dataidx_instr{in : instr}(in) = []
 
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:25.1-25.73
-def $free_dataidx_instrs(instr*) : dataidx*
-  ;; 2-syntax-aux.watsup:26.1-26.36
-  def $free_dataidx_instrs([]) = []
-  ;; 2-syntax-aux.watsup:27.1-27.99
-  def $free_dataidx_instrs{instr : instr, instr'* : instr*}([instr] :: instr'*{instr' : instr}) = $free_dataidx_instr(instr) :: $free_dataidx_instrs(instr'*{instr' : instr})
+;; 2-syntax-aux.watsup:25.1-25.63
+def $dataidx_instrs(instr*) : dataidx*
+  ;; 2-syntax-aux.watsup:26.1-26.31
+  def $dataidx_instrs([]) = []
+  ;; 2-syntax-aux.watsup:27.1-27.84
+  def $dataidx_instrs{instr : instr, instr'* : instr*}([instr] :: instr'*{instr' : instr}) = $dataidx_instr(instr) :: $dataidx_instrs(instr'*{instr' : instr})
 }
 
 ;; 2-syntax-aux.watsup
-def $free_dataidx_expr(expr : expr) : dataidx*
+def $dataidx_expr(expr : expr) : dataidx*
   ;; 2-syntax-aux.watsup
-  def $free_dataidx_expr{in* : instr*}(in*{in : instr}) = $free_dataidx_instrs(in*{in : instr})
+  def $dataidx_expr{in* : instr*}(in*{in : instr}) = $dataidx_instrs(in*{in : instr})
 
 ;; 2-syntax-aux.watsup
-def $free_dataidx_func(func : func) : dataidx*
+def $dataidx_func(func : func) : dataidx*
   ;; 2-syntax-aux.watsup
-  def $free_dataidx_func{x : idx, loc* : local*, e : expr}(FUNC_func(x, loc*{loc : local}, e)) = $free_dataidx_expr(e)
+  def $dataidx_func{x : idx, loc* : local*, e : expr}(FUNC_func(x, loc*{loc : local}, e)) = $dataidx_expr(e)
 
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:35.1-35.71
-def $free_dataidx_funcs(func*) : dataidx*
-  ;; 2-syntax-aux.watsup:36.1-36.35
-  def $free_dataidx_funcs([]) = []
-  ;; 2-syntax-aux.watsup:37.1-37.92
-  def $free_dataidx_funcs{func : func, func'* : func*}([func] :: func'*{func' : func}) = $free_dataidx_func(func) :: $free_dataidx_funcs(func'*{func' : func})
+;; 2-syntax-aux.watsup:35.1-35.61
+def $dataidx_funcs(func*) : dataidx*
+  ;; 2-syntax-aux.watsup:36.1-36.30
+  def $dataidx_funcs([]) = []
+  ;; 2-syntax-aux.watsup:37.1-37.77
+  def $dataidx_funcs{func : func, func'* : func*}([func] :: func'*{func' : func}) = $dataidx_func(func) :: $dataidx_funcs(func'*{func' : func})
 }
 
 ;; 2-syntax-aux.watsup
@@ -1291,29 +1301,29 @@ rec {
 ;; 2-syntax-aux.watsup:152.1-152.91
 def $subst_typevar(typevar : typevar, typevar*, typeuse*) : typeuse
   ;; 2-syntax-aux.watsup:178.1-178.38
-  def $subst_typevar{xx : typevar}(xx, [], []) = (xx : typevar <: typeuse)
+  def $subst_typevar{tv : typevar}(tv, [], []) = (tv : typevar <: typeuse)
   ;; 2-syntax-aux.watsup:179.1-179.95
-  def $subst_typevar{xx : typevar, xx_1 : typevar, xx'* : typevar*, tu_1 : typeuse, tu'* : typeuse*}(xx, [xx_1] :: xx'*{xx' : typevar}, [tu_1] :: tu'*{tu' : typeuse}) = tu_1
-    -- if (xx = xx_1)
+  def $subst_typevar{tv : typevar, tv_1 : typevar, tv'* : typevar*, tu_1 : typeuse, tu'* : typeuse*}(tv, [tv_1] :: tv'*{tv' : typevar}, [tu_1] :: tu'*{tu' : typeuse}) = tu_1
+    -- if (tv = tv_1)
   ;; 2-syntax-aux.watsup:180.1-180.92
-  def $subst_typevar{xx : typevar, xx_1 : typevar, xx'* : typevar*, tu_1 : typeuse, tu'* : typeuse*}(xx, [xx_1] :: xx'*{xx' : typevar}, [tu_1] :: tu'*{tu' : typeuse}) = $subst_typevar(xx, xx'*{xx' : typevar}, tu'*{tu' : typeuse})
+  def $subst_typevar{tv : typevar, tv_1 : typevar, tv'* : typevar*, tu_1 : typeuse, tu'* : typeuse*}(tv, [tv_1] :: tv'*{tv' : typevar}, [tu_1] :: tu'*{tu' : typeuse}) = $subst_typevar(tv, tv'*{tv' : typevar}, tu'*{tu' : typeuse})
     -- otherwise
 }
 
 ;; 2-syntax-aux.watsup
 def $subst_packtype(packtype : packtype, typevar*, typeuse*) : packtype
   ;; 2-syntax-aux.watsup
-  def $subst_packtype{pt : packtype, xx* : typevar*, tu* : typeuse*}(pt, xx*{xx : typevar}, tu*{tu : typeuse}) = pt
+  def $subst_packtype{pt : packtype, tv* : typevar*, tu* : typeuse*}(pt, tv*{tv : typevar}, tu*{tu : typeuse}) = pt
 
 ;; 2-syntax-aux.watsup
 def $subst_numtype(numtype : numtype, typevar*, typeuse*) : numtype
   ;; 2-syntax-aux.watsup
-  def $subst_numtype{nt : numtype, xx* : typevar*, tu* : typeuse*}(nt, xx*{xx : typevar}, tu*{tu : typeuse}) = nt
+  def $subst_numtype{nt : numtype, tv* : typevar*, tu* : typeuse*}(nt, tv*{tv : typevar}, tu*{tu : typeuse}) = nt
 
 ;; 2-syntax-aux.watsup
 def $subst_vectype(vectype : vectype, typevar*, typeuse*) : vectype
   ;; 2-syntax-aux.watsup
-  def $subst_vectype{vt : vectype, xx* : typevar*, tu* : typeuse*}(vt, xx*{xx : typevar}, tu*{tu : typeuse}) = vt
+  def $subst_vectype{vt : vectype, tv* : typevar*, tu* : typeuse*}(vt, tv*{tv : typevar}, tu*{tu : typeuse}) = vt
 
 ;; 2-syntax-aux.watsup
 rec {
@@ -1321,103 +1331,103 @@ rec {
 ;; 2-syntax-aux.watsup:153.1-153.91
 def $subst_typeuse(typeuse : typeuse, typevar*, typeuse*) : typeuse
   ;; 2-syntax-aux.watsup:182.1-182.66
-  def $subst_typeuse{xx' : typevar, xx* : typevar*, tu* : typeuse*}((xx' : typevar <: typeuse), xx*{xx : typevar}, tu*{tu : typeuse}) = $subst_typevar(xx', xx*{xx : typevar}, tu*{tu : typeuse})
+  def $subst_typeuse{tv' : typevar, tv* : typevar*, tu* : typeuse*}((tv' : typevar <: typeuse), tv*{tv : typevar}, tu*{tu : typeuse}) = $subst_typevar(tv', tv*{tv : typevar}, tu*{tu : typeuse})
   ;; 2-syntax-aux.watsup:183.1-183.64
-  def $subst_typeuse{dt : deftype, xx* : typevar*, tu* : typeuse*}((dt : deftype <: typeuse), xx*{xx : typevar}, tu*{tu : typeuse}) = ($subst_deftype(dt, xx*{xx : typevar}, tu*{tu : typeuse}) : deftype <: typeuse)
+  def $subst_typeuse{dt : deftype, tv* : typevar*, tu* : typeuse*}((dt : deftype <: typeuse), tv*{tv : typevar}, tu*{tu : typeuse}) = ($subst_deftype(dt, tv*{tv : typevar}, tu*{tu : typeuse}) : deftype <: typeuse)
 
 ;; 2-syntax-aux.watsup:157.1-157.91
 def $subst_heaptype(heaptype : heaptype, typevar*, typeuse*) : heaptype
   ;; 2-syntax-aux.watsup:188.1-188.67
-  def $subst_heaptype{xx' : typevar, xx* : typevar*, tu* : typeuse*}((xx' : typevar <: heaptype), xx*{xx : typevar}, tu*{tu : typeuse}) = ($subst_typevar(xx', xx*{xx : typevar}, tu*{tu : typeuse}) : typeuse <: heaptype)
+  def $subst_heaptype{tv' : typevar, tv* : typevar*, tu* : typeuse*}((tv' : typevar <: heaptype), tv*{tv : typevar}, tu*{tu : typeuse}) = ($subst_typevar(tv', tv*{tv : typevar}, tu*{tu : typeuse}) : typeuse <: heaptype)
   ;; 2-syntax-aux.watsup:189.1-189.65
-  def $subst_heaptype{dt : deftype, xx* : typevar*, tu* : typeuse*}((dt : deftype <: heaptype), xx*{xx : typevar}, tu*{tu : typeuse}) = ($subst_deftype(dt, xx*{xx : typevar}, tu*{tu : typeuse}) : deftype <: heaptype)
+  def $subst_heaptype{dt : deftype, tv* : typevar*, tu* : typeuse*}((dt : deftype <: heaptype), tv*{tv : typevar}, tu*{tu : typeuse}) = ($subst_deftype(dt, tv*{tv : typevar}, tu*{tu : typeuse}) : deftype <: heaptype)
   ;; 2-syntax-aux.watsup:190.1-190.53
-  def $subst_heaptype{ht : heaptype, xx* : typevar*, tu* : typeuse*}(ht, xx*{xx : typevar}, tu*{tu : typeuse}) = ht
+  def $subst_heaptype{ht : heaptype, tv* : typevar*, tu* : typeuse*}(ht, tv*{tv : typevar}, tu*{tu : typeuse}) = ht
     -- otherwise
 
 ;; 2-syntax-aux.watsup:158.1-158.91
 def $subst_reftype(reftype : reftype, typevar*, typeuse*) : reftype
   ;; 2-syntax-aux.watsup:192.1-192.83
-  def $subst_reftype{nul : nul, ht : heaptype, xx* : typevar*, tu* : typeuse*}(REF_reftype(nul, ht), xx*{xx : typevar}, tu*{tu : typeuse}) = REF_reftype(nul, $subst_heaptype(ht, xx*{xx : typevar}, tu*{tu : typeuse}))
+  def $subst_reftype{nul : nul, ht : heaptype, tv* : typevar*, tu* : typeuse*}(REF_reftype(nul, ht), tv*{tv : typevar}, tu*{tu : typeuse}) = REF_reftype(nul, $subst_heaptype(ht, tv*{tv : typevar}, tu*{tu : typeuse}))
 
 ;; 2-syntax-aux.watsup:159.1-159.91
 def $subst_valtype(valtype : valtype, typevar*, typeuse*) : valtype
   ;; 2-syntax-aux.watsup:194.1-194.64
-  def $subst_valtype{nt : numtype, xx* : typevar*, tu* : typeuse*}((nt : numtype <: valtype), xx*{xx : typevar}, tu*{tu : typeuse}) = ($subst_numtype(nt, xx*{xx : typevar}, tu*{tu : typeuse}) : numtype <: valtype)
+  def $subst_valtype{nt : numtype, tv* : typevar*, tu* : typeuse*}((nt : numtype <: valtype), tv*{tv : typevar}, tu*{tu : typeuse}) = ($subst_numtype(nt, tv*{tv : typevar}, tu*{tu : typeuse}) : numtype <: valtype)
   ;; 2-syntax-aux.watsup:195.1-195.64
-  def $subst_valtype{vt : vectype, xx* : typevar*, tu* : typeuse*}((vt : vectype <: valtype), xx*{xx : typevar}, tu*{tu : typeuse}) = ($subst_vectype(vt, xx*{xx : typevar}, tu*{tu : typeuse}) : vectype <: valtype)
+  def $subst_valtype{vt : vectype, tv* : typevar*, tu* : typeuse*}((vt : vectype <: valtype), tv*{tv : typevar}, tu*{tu : typeuse}) = ($subst_vectype(vt, tv*{tv : typevar}, tu*{tu : typeuse}) : vectype <: valtype)
   ;; 2-syntax-aux.watsup:196.1-196.64
-  def $subst_valtype{rt : reftype, xx* : typevar*, tu* : typeuse*}((rt : reftype <: valtype), xx*{xx : typevar}, tu*{tu : typeuse}) = ($subst_reftype(rt, xx*{xx : typevar}, tu*{tu : typeuse}) : reftype <: valtype)
+  def $subst_valtype{rt : reftype, tv* : typevar*, tu* : typeuse*}((rt : reftype <: valtype), tv*{tv : typevar}, tu*{tu : typeuse}) = ($subst_reftype(rt, tv*{tv : typevar}, tu*{tu : typeuse}) : reftype <: valtype)
   ;; 2-syntax-aux.watsup:197.1-197.40
-  def $subst_valtype{xx* : typevar*, tu* : typeuse*}(BOT_valtype, xx*{xx : typevar}, tu*{tu : typeuse}) = BOT_valtype
+  def $subst_valtype{tv* : typevar*, tu* : typeuse*}(BOT_valtype, tv*{tv : typevar}, tu*{tu : typeuse}) = BOT_valtype
 
 ;; 2-syntax-aux.watsup:162.1-162.91
 def $subst_storagetype(storagetype : storagetype, typevar*, typeuse*) : storagetype
   ;; 2-syntax-aux.watsup:201.1-201.66
-  def $subst_storagetype{t : valtype, xx* : typevar*, tu* : typeuse*}((t : valtype <: storagetype), xx*{xx : typevar}, tu*{tu : typeuse}) = ($subst_valtype(t, xx*{xx : typevar}, tu*{tu : typeuse}) : valtype <: storagetype)
+  def $subst_storagetype{t : valtype, tv* : typevar*, tu* : typeuse*}((t : valtype <: storagetype), tv*{tv : typevar}, tu*{tu : typeuse}) = ($subst_valtype(t, tv*{tv : typevar}, tu*{tu : typeuse}) : valtype <: storagetype)
   ;; 2-syntax-aux.watsup:202.1-202.69
-  def $subst_storagetype{pt : packtype, xx* : typevar*, tu* : typeuse*}((pt : packtype <: storagetype), xx*{xx : typevar}, tu*{tu : typeuse}) = ($subst_packtype(pt, xx*{xx : typevar}, tu*{tu : typeuse}) : packtype <: storagetype)
+  def $subst_storagetype{pt : packtype, tv* : typevar*, tu* : typeuse*}((pt : packtype <: storagetype), tv*{tv : typevar}, tu*{tu : typeuse}) = ($subst_packtype(pt, tv*{tv : typevar}, tu*{tu : typeuse}) : packtype <: storagetype)
 
 ;; 2-syntax-aux.watsup:163.1-163.91
 def $subst_fieldtype(fieldtype : fieldtype, typevar*, typeuse*) : fieldtype
   ;; 2-syntax-aux.watsup:204.1-204.80
-  def $subst_fieldtype{mut : mut, zt : storagetype, xx* : typevar*, tu* : typeuse*}(`%%`_fieldtype(mut, zt), xx*{xx : typevar}, tu*{tu : typeuse}) = `%%`_fieldtype(mut, $subst_storagetype(zt, xx*{xx : typevar}, tu*{tu : typeuse}))
+  def $subst_fieldtype{mut : mut, zt : storagetype, tv* : typevar*, tu* : typeuse*}(`%%`_fieldtype(mut, zt), tv*{tv : typevar}, tu*{tu : typeuse}) = `%%`_fieldtype(mut, $subst_storagetype(zt, tv*{tv : typevar}, tu*{tu : typeuse}))
 
 ;; 2-syntax-aux.watsup:165.1-165.91
 def $subst_comptype(comptype : comptype, typevar*, typeuse*) : comptype
   ;; 2-syntax-aux.watsup:206.1-206.85
-  def $subst_comptype{yt* : fieldtype*, xx* : typevar*, tu* : typeuse*}(STRUCT_comptype(`%`_structtype(yt*{yt : fieldtype})), xx*{xx : typevar}, tu*{tu : typeuse}) = STRUCT_comptype(`%`_structtype($subst_fieldtype(yt, xx*{xx : typevar}, tu*{tu : typeuse})*{yt : fieldtype}))
+  def $subst_comptype{yt* : fieldtype*, tv* : typevar*, tu* : typeuse*}(STRUCT_comptype(`%`_structtype(yt*{yt : fieldtype})), tv*{tv : typevar}, tu*{tu : typeuse}) = STRUCT_comptype(`%`_structtype($subst_fieldtype(yt, tv*{tv : typevar}, tu*{tu : typeuse})*{yt : fieldtype}))
   ;; 2-syntax-aux.watsup:207.1-207.81
-  def $subst_comptype{yt : fieldtype, xx* : typevar*, tu* : typeuse*}(ARRAY_comptype(yt), xx*{xx : typevar}, tu*{tu : typeuse}) = ARRAY_comptype($subst_fieldtype(yt, xx*{xx : typevar}, tu*{tu : typeuse}))
+  def $subst_comptype{yt : fieldtype, tv* : typevar*, tu* : typeuse*}(ARRAY_comptype(yt), tv*{tv : typevar}, tu*{tu : typeuse}) = ARRAY_comptype($subst_fieldtype(yt, tv*{tv : typevar}, tu*{tu : typeuse}))
   ;; 2-syntax-aux.watsup:208.1-208.78
-  def $subst_comptype{ft : functype, xx* : typevar*, tu* : typeuse*}(FUNC_comptype(ft), xx*{xx : typevar}, tu*{tu : typeuse}) = FUNC_comptype($subst_functype(ft, xx*{xx : typevar}, tu*{tu : typeuse}))
+  def $subst_comptype{ft : functype, tv* : typevar*, tu* : typeuse*}(FUNC_comptype(ft), tv*{tv : typevar}, tu*{tu : typeuse}) = FUNC_comptype($subst_functype(ft, tv*{tv : typevar}, tu*{tu : typeuse}))
 
 ;; 2-syntax-aux.watsup:166.1-166.91
 def $subst_subtype(subtype : subtype, typevar*, typeuse*) : subtype
   ;; 2-syntax-aux.watsup:210.1-211.71
-  def $subst_subtype{fin : fin, tu'* : typeuse*, ct : comptype, xx* : typevar*, tu* : typeuse*}(SUB_subtype(fin, tu'*{tu' : typeuse}, ct), xx*{xx : typevar}, tu*{tu : typeuse}) = SUB_subtype(fin, $subst_typeuse(tu', xx*{xx : typevar}, tu*{tu : typeuse})*{tu' : typeuse}, $subst_comptype(ct, xx*{xx : typevar}, tu*{tu : typeuse}))
+  def $subst_subtype{fin : fin, tu'* : typeuse*, ct : comptype, tv* : typevar*, tu* : typeuse*}(SUB_subtype(fin, tu'*{tu' : typeuse}, ct), tv*{tv : typevar}, tu*{tu : typeuse}) = SUB_subtype(fin, $subst_typeuse(tu', tv*{tv : typevar}, tu*{tu : typeuse})*{tu' : typeuse}, $subst_comptype(ct, tv*{tv : typevar}, tu*{tu : typeuse}))
 
 ;; 2-syntax-aux.watsup:167.1-167.91
 def $subst_rectype(rectype : rectype, typevar*, typeuse*) : rectype
   ;; 2-syntax-aux.watsup:213.1-213.76
-  def $subst_rectype{st* : subtype*, xx* : typevar*, tu* : typeuse*}(REC_rectype(`%`_list(st*{st : subtype})), xx*{xx : typevar}, tu*{tu : typeuse}) = REC_rectype(`%`_list($subst_subtype(st, xx*{xx : typevar}, tu*{tu : typeuse})*{st : subtype}))
+  def $subst_rectype{st* : subtype*, tv* : typevar*, tu* : typeuse*}(REC_rectype(`%`_list(st*{st : subtype})), tv*{tv : typevar}, tu*{tu : typeuse}) = REC_rectype(`%`_list($subst_subtype(st, tv*{tv : typevar}, tu*{tu : typeuse})*{st : subtype}))
 
 ;; 2-syntax-aux.watsup:168.1-168.91
 def $subst_deftype(deftype : deftype, typevar*, typeuse*) : deftype
   ;; 2-syntax-aux.watsup:215.1-215.78
-  def $subst_deftype{qt : rectype, i : nat, xx* : typevar*, tu* : typeuse*}(DEF_deftype(qt, i), xx*{xx : typevar}, tu*{tu : typeuse}) = DEF_deftype($subst_rectype(qt, xx*{xx : typevar}, tu*{tu : typeuse}), i)
+  def $subst_deftype{qt : rectype, i : nat, tv* : typevar*, tu* : typeuse*}(DEF_deftype(qt, i), tv*{tv : typevar}, tu*{tu : typeuse}) = DEF_deftype($subst_rectype(qt, tv*{tv : typevar}, tu*{tu : typeuse}), i)
 
 ;; 2-syntax-aux.watsup:171.1-171.91
 def $subst_functype(functype : functype, typevar*, typeuse*) : functype
   ;; 2-syntax-aux.watsup:218.1-218.113
-  def $subst_functype{t_1* : valtype*, t_2* : valtype*, xx* : typevar*, tu* : typeuse*}(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype})), xx*{xx : typevar}, tu*{tu : typeuse}) = `%->%`_functype(`%`_resulttype($subst_valtype(t_1, xx*{xx : typevar}, tu*{tu : typeuse})*{t_1 : valtype}), `%`_resulttype($subst_valtype(t_2, xx*{xx : typevar}, tu*{tu : typeuse})*{t_2 : valtype}))
+  def $subst_functype{t_1* : valtype*, t_2* : valtype*, tv* : typevar*, tu* : typeuse*}(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype})), tv*{tv : typevar}, tu*{tu : typeuse}) = `%->%`_functype(`%`_resulttype($subst_valtype(t_1, tv*{tv : typevar}, tu*{tu : typeuse})*{t_1 : valtype}), `%`_resulttype($subst_valtype(t_2, tv*{tv : typevar}, tu*{tu : typeuse})*{t_2 : valtype}))
 }
 
 ;; 2-syntax-aux.watsup
 def $subst_globaltype(globaltype : globaltype, typevar*, typeuse*) : globaltype
   ;; 2-syntax-aux.watsup
-  def $subst_globaltype{mut : mut, t : valtype, xx* : typevar*, tu* : typeuse*}(`%%`_globaltype(mut, t), xx*{xx : typevar}, tu*{tu : typeuse}) = `%%`_globaltype(mut, $subst_valtype(t, xx*{xx : typevar}, tu*{tu : typeuse}))
+  def $subst_globaltype{mut : mut, t : valtype, tv* : typevar*, tu* : typeuse*}(`%%`_globaltype(mut, t), tv*{tv : typevar}, tu*{tu : typeuse}) = `%%`_globaltype(mut, $subst_valtype(t, tv*{tv : typevar}, tu*{tu : typeuse}))
 
 ;; 2-syntax-aux.watsup
 def $subst_tabletype(tabletype : tabletype, typevar*, typeuse*) : tabletype
   ;; 2-syntax-aux.watsup
-  def $subst_tabletype{lim : limits, rt : reftype, xx* : typevar*, tu* : typeuse*}(`%%`_tabletype(lim, rt), xx*{xx : typevar}, tu*{tu : typeuse}) = `%%`_tabletype(lim, $subst_reftype(rt, xx*{xx : typevar}, tu*{tu : typeuse}))
+  def $subst_tabletype{lim : limits, rt : reftype, tv* : typevar*, tu* : typeuse*}(`%%`_tabletype(lim, rt), tv*{tv : typevar}, tu*{tu : typeuse}) = `%%`_tabletype(lim, $subst_reftype(rt, tv*{tv : typevar}, tu*{tu : typeuse}))
 
 ;; 2-syntax-aux.watsup
 def $subst_memtype(memtype : memtype, typevar*, typeuse*) : memtype
   ;; 2-syntax-aux.watsup
-  def $subst_memtype{lim : limits, xx* : typevar*, tu* : typeuse*}(`%I8`_memtype(lim), xx*{xx : typevar}, tu*{tu : typeuse}) = `%I8`_memtype(lim)
+  def $subst_memtype{lim : limits, tv* : typevar*, tu* : typeuse*}(`%PAGE`_memtype(lim), tv*{tv : typevar}, tu*{tu : typeuse}) = `%PAGE`_memtype(lim)
 
 ;; 2-syntax-aux.watsup
 def $subst_externtype(externtype : externtype, typevar*, typeuse*) : externtype
   ;; 2-syntax-aux.watsup
-  def $subst_externtype{dt : deftype, xx* : typevar*, tu* : typeuse*}(FUNC_externtype((dt : deftype <: typeuse)), xx*{xx : typevar}, tu*{tu : typeuse}) = FUNC_externtype(($subst_deftype(dt, xx*{xx : typevar}, tu*{tu : typeuse}) : deftype <: typeuse))
+  def $subst_externtype{dt : deftype, tv* : typevar*, tu* : typeuse*}(FUNC_externtype((dt : deftype <: typeuse)), tv*{tv : typevar}, tu*{tu : typeuse}) = FUNC_externtype(($subst_deftype(dt, tv*{tv : typevar}, tu*{tu : typeuse}) : deftype <: typeuse))
   ;; 2-syntax-aux.watsup
-  def $subst_externtype{gt : globaltype, xx* : typevar*, tu* : typeuse*}(GLOBAL_externtype(gt), xx*{xx : typevar}, tu*{tu : typeuse}) = GLOBAL_externtype($subst_globaltype(gt, xx*{xx : typevar}, tu*{tu : typeuse}))
+  def $subst_externtype{gt : globaltype, tv* : typevar*, tu* : typeuse*}(GLOBAL_externtype(gt), tv*{tv : typevar}, tu*{tu : typeuse}) = GLOBAL_externtype($subst_globaltype(gt, tv*{tv : typevar}, tu*{tu : typeuse}))
   ;; 2-syntax-aux.watsup
-  def $subst_externtype{tt : tabletype, xx* : typevar*, tu* : typeuse*}(TABLE_externtype(tt), xx*{xx : typevar}, tu*{tu : typeuse}) = TABLE_externtype($subst_tabletype(tt, xx*{xx : typevar}, tu*{tu : typeuse}))
+  def $subst_externtype{tt : tabletype, tv* : typevar*, tu* : typeuse*}(TABLE_externtype(tt), tv*{tv : typevar}, tu*{tu : typeuse}) = TABLE_externtype($subst_tabletype(tt, tv*{tv : typevar}, tu*{tu : typeuse}))
   ;; 2-syntax-aux.watsup
-  def $subst_externtype{mt : memtype, xx* : typevar*, tu* : typeuse*}(MEM_externtype(mt), xx*{xx : typevar}, tu*{tu : typeuse}) = MEM_externtype($subst_memtype(mt, xx*{xx : typevar}, tu*{tu : typeuse}))
+  def $subst_externtype{mt : memtype, tv* : typevar*, tu* : typeuse*}(MEM_externtype(mt), tv*{tv : typevar}, tu*{tu : typeuse}) = MEM_externtype($subst_memtype(mt, tv*{tv : typevar}, tu*{tu : typeuse}))
 
 ;; 2-syntax-aux.watsup
 def $subst_all_reftype(reftype : reftype, heaptype*) : reftype
@@ -1479,42 +1489,28 @@ relation Expand: `%~~%`(deftype, comptype)
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:267.1-267.88
-def $funcsxt(externtype*) : deftype*
-  ;; 2-syntax-aux.watsup:272.1-272.24
-  def $funcsxt([]) = []
-  ;; 2-syntax-aux.watsup:273.1-273.47
-  def $funcsxt{dt : deftype, xt* : externtype*}([FUNC_externtype((dt : deftype <: typeuse))] :: xt*{xt : externtype}) = [dt] :: $funcsxt(xt*{xt : externtype})
-  ;; 2-syntax-aux.watsup:274.1-274.59
-  def $funcsxt{externtype : externtype, xt* : externtype*}([externtype] :: xt*{xt : externtype}) = $funcsxt(xt*{xt : externtype})
+;; 2-syntax-aux.watsup:268.1-268.86
+def $funcsxx(externidx*) : typeidx*
+  ;; 2-syntax-aux.watsup:273.1-273.24
+  def $funcsxx([]) = []
+  ;; 2-syntax-aux.watsup:274.1-274.45
+  def $funcsxx{x : idx, xx* : externidx*}([FUNC_externidx(x)] :: xx*{xx : externidx}) = [x] :: $funcsxx(xx*{xx : externidx})
+  ;; 2-syntax-aux.watsup:275.1-275.58
+  def $funcsxx{externidx : externidx, xx* : externidx*}([externidx] :: xx*{xx : externidx}) = $funcsxx(xx*{xx : externidx})
     -- otherwise
 }
 
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:268.1-268.90
-def $globalsxt(externtype*) : globaltype*
-  ;; 2-syntax-aux.watsup:276.1-276.26
-  def $globalsxt([]) = []
-  ;; 2-syntax-aux.watsup:277.1-277.53
-  def $globalsxt{gt : globaltype, xt* : externtype*}([GLOBAL_externtype(gt)] :: xt*{xt : externtype}) = [gt] :: $globalsxt(xt*{xt : externtype})
-  ;; 2-syntax-aux.watsup:278.1-278.63
-  def $globalsxt{externtype : externtype, xt* : externtype*}([externtype] :: xt*{xt : externtype}) = $globalsxt(xt*{xt : externtype})
-    -- otherwise
-}
-
-;; 2-syntax-aux.watsup
-rec {
-
-;; 2-syntax-aux.watsup:269.1-269.89
-def $tablesxt(externtype*) : tabletype*
-  ;; 2-syntax-aux.watsup:280.1-280.25
-  def $tablesxt([]) = []
-  ;; 2-syntax-aux.watsup:281.1-281.50
-  def $tablesxt{tt : tabletype, xt* : externtype*}([TABLE_externtype(tt)] :: xt*{xt : externtype}) = [tt] :: $tablesxt(xt*{xt : externtype})
-  ;; 2-syntax-aux.watsup:282.1-282.61
-  def $tablesxt{externtype : externtype, xt* : externtype*}([externtype] :: xt*{xt : externtype}) = $tablesxt(xt*{xt : externtype})
+;; 2-syntax-aux.watsup:269.1-269.88
+def $globalsxx(externidx*) : globalidx*
+  ;; 2-syntax-aux.watsup:277.1-277.26
+  def $globalsxx([]) = []
+  ;; 2-syntax-aux.watsup:278.1-278.51
+  def $globalsxx{x : idx, xx* : externidx*}([GLOBAL_externidx(x)] :: xx*{xx : externidx}) = [x] :: $globalsxx(xx*{xx : externidx})
+  ;; 2-syntax-aux.watsup:279.1-279.62
+  def $globalsxx{externidx : externidx, xx* : externidx*}([externidx] :: xx*{xx : externidx}) = $globalsxx(xx*{xx : externidx})
     -- otherwise
 }
 
@@ -1522,12 +1518,82 @@ def $tablesxt(externtype*) : tabletype*
 rec {
 
 ;; 2-syntax-aux.watsup:270.1-270.87
+def $tablesxx(externidx*) : tableidx*
+  ;; 2-syntax-aux.watsup:281.1-281.25
+  def $tablesxx([]) = []
+  ;; 2-syntax-aux.watsup:282.1-282.48
+  def $tablesxx{x : idx, xx* : externidx*}([TABLE_externidx(x)] :: xx*{xx : externidx}) = [x] :: $tablesxx(xx*{xx : externidx})
+  ;; 2-syntax-aux.watsup:283.1-283.60
+  def $tablesxx{externidx : externidx, xx* : externidx*}([externidx] :: xx*{xx : externidx}) = $tablesxx(xx*{xx : externidx})
+    -- otherwise
+}
+
+;; 2-syntax-aux.watsup
+rec {
+
+;; 2-syntax-aux.watsup:271.1-271.85
+def $memsxx(externidx*) : memidx*
+  ;; 2-syntax-aux.watsup:285.1-285.23
+  def $memsxx([]) = []
+  ;; 2-syntax-aux.watsup:286.1-286.42
+  def $memsxx{x : idx, xx* : externidx*}([MEM_externidx(x)] :: xx*{xx : externidx}) = [x] :: $memsxx(xx*{xx : externidx})
+  ;; 2-syntax-aux.watsup:287.1-287.56
+  def $memsxx{externidx : externidx, xx* : externidx*}([externidx] :: xx*{xx : externidx}) = $memsxx(xx*{xx : externidx})
+    -- otherwise
+}
+
+;; 2-syntax-aux.watsup
+rec {
+
+;; 2-syntax-aux.watsup:290.1-290.88
+def $funcsxt(externtype*) : deftype*
+  ;; 2-syntax-aux.watsup:295.1-295.24
+  def $funcsxt([]) = []
+  ;; 2-syntax-aux.watsup:296.1-296.47
+  def $funcsxt{dt : deftype, xt* : externtype*}([FUNC_externtype((dt : deftype <: typeuse))] :: xt*{xt : externtype}) = [dt] :: $funcsxt(xt*{xt : externtype})
+  ;; 2-syntax-aux.watsup:297.1-297.59
+  def $funcsxt{externtype : externtype, xt* : externtype*}([externtype] :: xt*{xt : externtype}) = $funcsxt(xt*{xt : externtype})
+    -- otherwise
+}
+
+;; 2-syntax-aux.watsup
+rec {
+
+;; 2-syntax-aux.watsup:291.1-291.90
+def $globalsxt(externtype*) : globaltype*
+  ;; 2-syntax-aux.watsup:299.1-299.26
+  def $globalsxt([]) = []
+  ;; 2-syntax-aux.watsup:300.1-300.53
+  def $globalsxt{gt : globaltype, xt* : externtype*}([GLOBAL_externtype(gt)] :: xt*{xt : externtype}) = [gt] :: $globalsxt(xt*{xt : externtype})
+  ;; 2-syntax-aux.watsup:301.1-301.63
+  def $globalsxt{externtype : externtype, xt* : externtype*}([externtype] :: xt*{xt : externtype}) = $globalsxt(xt*{xt : externtype})
+    -- otherwise
+}
+
+;; 2-syntax-aux.watsup
+rec {
+
+;; 2-syntax-aux.watsup:292.1-292.89
+def $tablesxt(externtype*) : tabletype*
+  ;; 2-syntax-aux.watsup:303.1-303.25
+  def $tablesxt([]) = []
+  ;; 2-syntax-aux.watsup:304.1-304.50
+  def $tablesxt{tt : tabletype, xt* : externtype*}([TABLE_externtype(tt)] :: xt*{xt : externtype}) = [tt] :: $tablesxt(xt*{xt : externtype})
+  ;; 2-syntax-aux.watsup:305.1-305.61
+  def $tablesxt{externtype : externtype, xt* : externtype*}([externtype] :: xt*{xt : externtype}) = $tablesxt(xt*{xt : externtype})
+    -- otherwise
+}
+
+;; 2-syntax-aux.watsup
+rec {
+
+;; 2-syntax-aux.watsup:293.1-293.87
 def $memsxt(externtype*) : memtype*
-  ;; 2-syntax-aux.watsup:284.1-284.23
+  ;; 2-syntax-aux.watsup:307.1-307.23
   def $memsxt([]) = []
-  ;; 2-syntax-aux.watsup:285.1-285.44
+  ;; 2-syntax-aux.watsup:308.1-308.44
   def $memsxt{mt : memtype, xt* : externtype*}([MEM_externtype(mt)] :: xt*{xt : externtype}) = [mt] :: $memsxt(xt*{xt : externtype})
-  ;; 2-syntax-aux.watsup:286.1-286.57
+  ;; 2-syntax-aux.watsup:309.1-309.57
   def $memsxt{externtype : externtype, xt* : externtype*}([externtype] :: xt*{xt : externtype}) = $memsxt(xt*{xt : externtype})
     -- otherwise
 }
@@ -2475,7 +2541,8 @@ syntax admininstr =
   | RELOP{numtype : numtype, relop_ : relop_(numtype)}(numtype : numtype, relop_ : relop_(numtype))
   | CVTOP{numtype_1 : numtype, numtype_2 : numtype, cvtop : cvtop, sx? : sx?}(numtype_1 : numtype, numtype_2 : numtype, cvtop : cvtop, sx?{sx : sx} : sx?)
     -- if (numtype_1 =/= numtype_2)
-  | EXTEND{numtype : numtype, N : N}(numtype : numtype, N : N)
+  | EXTEND{numtype : numtype, sz : sz, Inn : Inn}(numtype : numtype, sz : sz)
+    -- if ((numtype = (Inn : Inn <: numtype)) /\ (sz!`%`_sz.0 < $sizenn((Inn : Inn <: numtype))))
   | VCONST{vectype : vectype, vec_ : vec_(vectype)}(vectype : vectype, vec_ : vec_(vectype))
   | VVUNOP{vectype : vectype, vvunop : vvunop}(vectype : vectype, vvunop : vvunop)
   | VVBINOP{vectype : vectype, vvbinop : vvbinop}(vectype : vectype, vvbinop : vvbinop)
@@ -2543,14 +2610,14 @@ syntax admininstr =
   | TABLE.COPY{tableidx : tableidx}(tableidx : tableidx, tableidx)
   | TABLE.INIT{tableidx : tableidx, elemidx : elemidx}(tableidx : tableidx, elemidx : elemidx)
   | ELEM.DROP{elemidx : elemidx}(elemidx : elemidx)
-  | `LOAD%(_)%?%%`{numtype : numtype, N? : N?, sx? : sx?, memidx : memidx, memarg : memarg, Inn? : Inn?}(numtype : numtype, (N, sx)?{N : N, sx : sx} : (N, sx)?, memidx : memidx, memarg : memarg)
-    -- (if ((numtype = (Inn : Inn <: numtype)) /\ (N < $size((Inn : Inn <: numtype)))))?{Inn : Inn, N : nat}
-  | STORE{numtype : numtype, N? : N?, memidx : memidx, memarg : memarg, Inn? : Inn?}(numtype : numtype, N?{N : N} : N?, memidx : memidx, memarg : memarg)
-    -- (if ((numtype = (Inn : Inn <: numtype)) /\ (N < $size((Inn : Inn <: numtype)))))?{Inn : Inn, N : nat}
+  | `LOAD%(_)%?%%`{numtype : numtype, sz? : sz?, sx? : sx?, memidx : memidx, memarg : memarg, Inn? : Inn?}(numtype : numtype, (sz, sx)?{sx : sx, sz : sz} : (sz, sx)?, memidx : memidx, memarg : memarg)
+    -- (if ((numtype = (Inn : Inn <: numtype)) /\ (sz!`%`_sz.0 < $size((Inn : Inn <: numtype)))))?{Inn : Inn, sz : sz}
+  | STORE{numtype : numtype, sz? : sz?, memidx : memidx, memarg : memarg, Inn? : Inn?}(numtype : numtype, sz?{sz : sz} : sz?, memidx : memidx, memarg : memarg)
+    -- (if ((numtype = (Inn : Inn <: numtype)) /\ (sz!`%`_sz.0 < $size((Inn : Inn <: numtype)))))?{Inn : Inn, sz : sz}
   | VLOAD{vectype : vectype, vloadop? : vloadop?, memidx : memidx, memarg : memarg}(vectype : vectype, vloadop?{vloadop : vloadop} : vloadop?, memidx : memidx, memarg : memarg)
-  | VLOAD_LANE{vectype : vectype, N : N, memidx : memidx, memarg : memarg, laneidx : laneidx}(vectype : vectype, N : N, memidx : memidx, memarg : memarg, laneidx : laneidx)
+  | VLOAD_LANE{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx)
   | VSTORE{vectype : vectype, memidx : memidx, memarg : memarg}(vectype : vectype, memidx : memidx, memarg : memarg)
-  | VSTORE_LANE{vectype : vectype, N : N, memidx : memidx, memarg : memarg, laneidx : laneidx}(vectype : vectype, N : N, memidx : memidx, memarg : memarg, laneidx : laneidx)
+  | VSTORE_LANE{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx)
   | MEMORY.SIZE{memidx : memidx}(memidx : memidx)
   | MEMORY.GROW{memidx : memidx}(memidx : memidx)
   | MEMORY.FILL{memidx : memidx}(memidx : memidx)
@@ -2833,9 +2900,9 @@ def $growtable(tableinst : tableinst, nat : nat, ref : ref) : tableinst
 def $growmem(meminst : meminst, nat : nat) : meminst
   ;; 5-runtime-aux.watsup
   def $growmem{mi : meminst, n : n, mi' : meminst, i : nat, j : nat, b* : byte*, i' : nat}(mi, n) = mi'
-    -- if (mi = {TYPE `%I8`_memtype(`[%..%]`_limits(`%`_u32(i), `%`_u32(j))), BYTES b*{b : byte}})
+    -- if (mi = {TYPE `%PAGE`_memtype(`[%..%]`_limits(`%`_u32(i), `%`_u32(j))), BYTES b*{b : byte}})
     -- if (i' = ((|b*{b : byte}| / (64 * $Ki)) + n))
-    -- if (mi' = {TYPE `%I8`_memtype(`[%..%]`_limits(`%`_u32(i'), `%`_u32(j))), BYTES b*{b : byte} :: `%`_byte(0)^(n * (64 * $Ki)){}})
+    -- if (mi' = {TYPE `%PAGE`_memtype(`[%..%]`_limits(`%`_u32(i'), `%`_u32(j))), BYTES b*{b : byte} :: `%`_byte(0)^(n * (64 * $Ki)){}})
     -- if (i' <= j)
 
 ;; 6-typing.watsup
@@ -3337,7 +3404,7 @@ relation Tabletype_ok: `%|-%:OK`(context, tabletype)
 relation Memtype_ok: `%|-%:OK`(context, memtype)
   ;; 6-typing.watsup
   rule _{C : context, limits : limits}:
-    `%|-%:OK`(C, `%I8`_memtype(limits))
+    `%|-%:OK`(C, `%PAGE`_memtype(limits))
     -- Limits_ok: `%|-%:%`(C, limits, (2 ^ 16))
 
 ;; 6-typing.watsup
@@ -3414,7 +3481,7 @@ relation Tabletype_sub: `%|-%<:%`(context, tabletype, tabletype)
 relation Memtype_sub: `%|-%<:%`(context, memtype, memtype)
   ;; 6-typing.watsup
   rule _{C : context, lim_1 : limits, lim_2 : limits}:
-    `%|-%<:%`(C, `%I8`_memtype(lim_1), `%I8`_memtype(lim_2))
+    `%|-%<:%`(C, `%PAGE`_memtype(lim_1), `%PAGE`_memtype(lim_2))
     -- Limits_sub: `%|-%<:%`(C, lim_1, lim_2)
 
 ;; 6-typing.watsup
@@ -3962,7 +4029,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
 
   ;; 6-typing.watsup:1025.1-1030.29
   rule load{C : context, nt : numtype, n? : n?, sx? : sx?, x : idx, memarg : memarg, mt : memtype, Inn : Inn}:
-    `%|-%:%`(C, `LOAD%(_)%?%%`_instr(nt, (n, sx)?{n : N, sx : sx}, x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([(nt : numtype <: valtype)])))
+    `%|-%:%`(C, `LOAD%(_)%?%%`_instr(nt, (`%`_sz(n), sx)?{n : nat, sx : sx}, x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([(nt : numtype <: valtype)])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ($size(nt) / 8))
     -- (if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (n / 8)) /\ ((n / 8) < ($size(nt) / 8))))?{n : nat}
@@ -3970,7 +4037,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
 
   ;; 6-typing.watsup:1032.1-1037.29
   rule store{C : context, nt : numtype, n? : n?, x : idx, memarg : memarg, mt : memtype, Inn : Inn}:
-    `%|-%:%`(C, STORE_instr(nt, n?{n : N}, x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype (nt : numtype <: valtype)]), [], `%`_resulttype([])))
+    `%|-%:%`(C, STORE_instr(nt, `%`_sz(n)?{n : nat}, x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype (nt : numtype <: valtype)]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ($size(nt) / 8))
     -- (if (((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (n / 8)) /\ ((n / 8) < ($size(nt) / 8))))?{n : nat}
@@ -3978,25 +4045,25 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
 
   ;; 6-typing.watsup:1039.1-1042.39
   rule vload{C : context, M : M, N : N, sx : sx, x : idx, memarg : memarg, mt : memtype}:
-    `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(`SHAPE%X%%`_vloadop(M, N, sx)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
+    `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(`SHAPE%X%%`_vloadop(`%`_sz(M), N, sx)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= ((M / 8) * N))
 
   ;; 6-typing.watsup:1044.1-1047.35
   rule vload-splat{C : context, n : n, x : idx, memarg : memarg, mt : memtype}:
-    `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(SPLAT_vloadop(n)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
+    `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(SPLAT_vloadop(`%`_sz(n))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (n / 8))
 
   ;; 6-typing.watsup:1049.1-1052.34
   rule vload-zero{C : context, n : n, x : idx, memarg : memarg, mt : memtype}:
-    `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(ZERO_vloadop(n)), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
+    `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(ZERO_vloadop(`%`_sz(n))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) < (n / 8))
 
   ;; 6-typing.watsup:1054.1-1058.29
   rule vload_lane{C : context, n : n, x : idx, memarg : memarg, laneidx : laneidx, mt : memtype}:
-    `%|-%:%`(C, VLOAD_LANE_instr(V128_vectype, n, x, memarg, laneidx), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
+    `%|-%:%`(C, VLOAD_LANE_instr(V128_vectype, `%`_sz(n), x, memarg, laneidx), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) < (n / 8))
     -- if (laneidx!`%`_laneidx.0 < (128 / n))
@@ -4009,7 +4076,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
 
   ;; 6-typing.watsup:1065.1-1069.29
   rule vstore_lane{C : context, n : n, x : idx, memarg : memarg, laneidx : laneidx, mt : memtype}:
-    `%|-%:%`(C, VSTORE_LANE_instr(V128_vectype, n, x, memarg, laneidx), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([])))
+    `%|-%:%`(C, VSTORE_LANE_instr(V128_vectype, `%`_sz(n), x, memarg, laneidx), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) < (n / 8))
     -- if (laneidx!`%`_laneidx.0 < (128 / n))
@@ -5104,12 +5171,12 @@ relation Step_read: `%~>%`(config, admininstr*)
 
   ;; 8-reduction.watsup
   rule load-pack-oob{z : state, i : nat, Inn : Inn, n : n, sx : sx, x : idx, ao : memarg}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) `LOAD%(_)%?%%`_admininstr((Inn : Inn <: numtype), ?((n, sx)), x, ao)]), [TRAP_admininstr])
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) `LOAD%(_)%?%%`_admininstr((Inn : Inn <: numtype), ?((`%`_sz(n), sx)), x, ao)]), [TRAP_admininstr])
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + (n / 8)) > |$mem(z, x).BYTES_meminst|)
 
   ;; 8-reduction.watsup
   rule load-pack-val{z : state, i : nat, Inn : Inn, n : n, sx : sx, x : idx, ao : memarg, c : iN(n)}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) `LOAD%(_)%?%%`_admininstr((Inn : Inn <: numtype), ?((n, sx)), x, ao)]), [CONST_admininstr((Inn : Inn <: numtype), $ext(n, $size((Inn : Inn <: numtype)), sx, c))])
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) `LOAD%(_)%?%%`_admininstr((Inn : Inn <: numtype), ?((`%`_sz(n), sx)), x, ao)]), [CONST_admininstr((Inn : Inn <: numtype), $ext(n, $size((Inn : Inn <: numtype)), sx, c))])
     -- if ($ibytes(n, c) = $mem(z, x).BYTES_meminst[(i + ao.OFFSET_memarg!`%`_u32.0) : (n / 8)])
 
   ;; 8-reduction.watsup
@@ -5124,24 +5191,24 @@ relation Step_read: `%~>%`(config, admininstr*)
 
   ;; 8-reduction.watsup
   rule vload-shape-oob{z : state, i : nat, M : M, N : N, sx : sx, x : idx, ao : memarg}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) VLOAD_admininstr(V128_vectype, ?(`SHAPE%X%%`_vloadop(M, N, sx)), x, ao)]), [TRAP_admininstr])
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) VLOAD_admininstr(V128_vectype, ?(`SHAPE%X%%`_vloadop(`%`_sz(M), N, sx)), x, ao)]), [TRAP_admininstr])
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + ((M * N) / 8)) > |$mem(z, x).BYTES_meminst|)
 
   ;; 8-reduction.watsup
   rule vload-shape-val{z : state, i : nat, M : M, N : N, sx : sx, x : idx, ao : memarg, c : vec_(V128_Vnn), j^N : nat^N, k^N : nat^N, Jnn : Jnn}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) VLOAD_admininstr(V128_vectype, ?(`SHAPE%X%%`_vloadop(M, N, sx)), x, ao)]), [VCONST_admininstr(V128_vectype, c)])
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) VLOAD_admininstr(V128_vectype, ?(`SHAPE%X%%`_vloadop(`%`_sz(M), N, sx)), x, ao)]), [VCONST_admininstr(V128_vectype, c)])
     -- (if ($ibytes(M, `%`_iN(j)) = $mem(z, x).BYTES_meminst[((i + ao.OFFSET_memarg!`%`_u32.0) + ((k * M) / 8)) : (M / 8)]))^(k<N){j : nat, k : nat}
     -- if ($lsize((Jnn : Jnn <: lanetype)) = (M * 2))
     -- if (c = $invlanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), $ext(M, $lsize((Jnn : Jnn <: lanetype)), sx, `%`_iN(j))^N{j : nat}))
 
   ;; 8-reduction.watsup
   rule vload-splat-oob{z : state, i : nat, N : N, x : idx, ao : memarg}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) VLOAD_admininstr(V128_vectype, ?(SPLAT_vloadop(N)), x, ao)]), [TRAP_admininstr])
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) VLOAD_admininstr(V128_vectype, ?(SPLAT_vloadop(`%`_sz(N))), x, ao)]), [TRAP_admininstr])
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + (N / 8)) > |$mem(z, x).BYTES_meminst|)
 
   ;; 8-reduction.watsup
   rule vload-splat-val{z : state, i : nat, N : N, x : idx, ao : memarg, c : vec_(V128_Vnn), j : nat, Jnn : Jnn, M : M}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) VLOAD_admininstr(V128_vectype, ?(SPLAT_vloadop(N)), x, ao)]), [VCONST_admininstr(V128_vectype, c)])
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) VLOAD_admininstr(V128_vectype, ?(SPLAT_vloadop(`%`_sz(N))), x, ao)]), [VCONST_admininstr(V128_vectype, c)])
     -- if ($ibytes(N, `%`_iN(j)) = $mem(z, x).BYTES_meminst[(i + ao.OFFSET_memarg!`%`_u32.0) : (N / 8)])
     -- if (N = $lsize((Jnn : Jnn <: lanetype)))
     -- if (M = (128 / N))
@@ -5149,23 +5216,23 @@ relation Step_read: `%~>%`(config, admininstr*)
 
   ;; 8-reduction.watsup
   rule vload-zero-oob{z : state, i : nat, N : N, x : idx, ao : memarg}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) VLOAD_admininstr(V128_vectype, ?(ZERO_vloadop(N)), x, ao)]), [TRAP_admininstr])
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) VLOAD_admininstr(V128_vectype, ?(ZERO_vloadop(`%`_sz(N))), x, ao)]), [TRAP_admininstr])
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + (N / 8)) > |$mem(z, x).BYTES_meminst|)
 
   ;; 8-reduction.watsup
   rule vload-zero-val{z : state, i : nat, N : N, x : idx, ao : memarg, c : vec_(V128_Vnn), j : nat}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) VLOAD_admininstr(V128_vectype, ?(ZERO_vloadop(N)), x, ao)]), [VCONST_admininstr(V128_vectype, c)])
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) VLOAD_admininstr(V128_vectype, ?(ZERO_vloadop(`%`_sz(N))), x, ao)]), [VCONST_admininstr(V128_vectype, c)])
     -- if ($ibytes(N, `%`_iN(j)) = $mem(z, x).BYTES_meminst[(i + ao.OFFSET_memarg!`%`_u32.0) : (N / 8)])
     -- if (c = $ext(N, 128, U_sx, `%`_iN(j)))
 
   ;; 8-reduction.watsup
   rule vload_lane-oob{z : state, i : nat, c_1 : vec_(V128_Vnn), N : N, x : idx, ao : memarg, j : nat}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) VCONST_admininstr(V128_vectype, c_1) VLOAD_LANE_admininstr(V128_vectype, N, x, ao, `%`_laneidx(j))]), [TRAP_admininstr])
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) VCONST_admininstr(V128_vectype, c_1) VLOAD_LANE_admininstr(V128_vectype, `%`_sz(N), x, ao, `%`_laneidx(j))]), [TRAP_admininstr])
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + (N / 8)) > |$mem(z, x).BYTES_meminst|)
 
   ;; 8-reduction.watsup
   rule vload_lane-val{z : state, i : nat, c_1 : vec_(V128_Vnn), N : N, x : idx, ao : memarg, j : nat, c : vec_(V128_Vnn), k : nat, Jnn : Jnn, M : M}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) VCONST_admininstr(V128_vectype, c_1) VLOAD_LANE_admininstr(V128_vectype, N, x, ao, `%`_laneidx(j))]), [VCONST_admininstr(V128_vectype, c)])
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) VCONST_admininstr(V128_vectype, c_1) VLOAD_LANE_admininstr(V128_vectype, `%`_sz(N), x, ao, `%`_laneidx(j))]), [VCONST_admininstr(V128_vectype, c)])
     -- if ($ibytes(N, `%`_iN(k)) = $mem(z, x).BYTES_meminst[(i + ao.OFFSET_memarg!`%`_u32.0) : (N / 8)])
     -- if (N = $lsize((Jnn : Jnn <: lanetype)))
     -- if (M = ($vsize(V128_vectype) / N))
@@ -5189,7 +5256,7 @@ relation Step_read: `%~>%`(config, admininstr*)
 
   ;; 8-reduction.watsup
   rule memory.fill-succ{z : state, i : nat, val : val, n : n, x : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) (val : val <: admininstr) CONST_admininstr(I32_numtype, `%`_num_(n)) MEMORY.FILL_admininstr(x)]), [CONST_admininstr(I32_numtype, `%`_num_(i)) (val : val <: admininstr) STORE_admininstr(I32_numtype, ?(8), x, $memarg0) CONST_admininstr(I32_numtype, `%`_num_((i + 1))) (val : val <: admininstr) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) MEMORY.FILL_admininstr(x)])
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) (val : val <: admininstr) CONST_admininstr(I32_numtype, `%`_num_(n)) MEMORY.FILL_admininstr(x)]), [CONST_admininstr(I32_numtype, `%`_num_(i)) (val : val <: admininstr) STORE_admininstr(I32_numtype, ?(`%`_sz(8)), x, $memarg0) CONST_admininstr(I32_numtype, `%`_num_((i + 1))) (val : val <: admininstr) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) MEMORY.FILL_admininstr(x)])
     -- otherwise
 
   ;; 8-reduction.watsup
@@ -5205,13 +5272,13 @@ relation Step_read: `%~>%`(config, admininstr*)
 
   ;; 8-reduction.watsup
   rule memory.copy-le{z : state, i_1 : nat, i_2 : nat, n : n, x_1 : idx, x_2 : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i_1)) CONST_admininstr(I32_numtype, `%`_num_(i_2)) CONST_admininstr(I32_numtype, `%`_num_(n)) MEMORY.COPY_admininstr(x_1, x_2)]), [CONST_admininstr(I32_numtype, `%`_num_(i_1)) CONST_admininstr(I32_numtype, `%`_num_(i_2)) `LOAD%(_)%?%%`_admininstr(I32_numtype, ?((8, U_sx)), x_2, $memarg0) STORE_admininstr(I32_numtype, ?(8), x_1, $memarg0) CONST_admininstr(I32_numtype, `%`_num_((i_1 + 1))) CONST_admininstr(I32_numtype, `%`_num_((i_2 + 1))) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) MEMORY.COPY_admininstr(x_1, x_2)])
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i_1)) CONST_admininstr(I32_numtype, `%`_num_(i_2)) CONST_admininstr(I32_numtype, `%`_num_(n)) MEMORY.COPY_admininstr(x_1, x_2)]), [CONST_admininstr(I32_numtype, `%`_num_(i_1)) CONST_admininstr(I32_numtype, `%`_num_(i_2)) `LOAD%(_)%?%%`_admininstr(I32_numtype, ?((`%`_sz(8), U_sx)), x_2, $memarg0) STORE_admininstr(I32_numtype, ?(`%`_sz(8)), x_1, $memarg0) CONST_admininstr(I32_numtype, `%`_num_((i_1 + 1))) CONST_admininstr(I32_numtype, `%`_num_((i_2 + 1))) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) MEMORY.COPY_admininstr(x_1, x_2)])
     -- otherwise
     -- if (i_1 <= i_2)
 
   ;; 8-reduction.watsup
   rule memory.copy-gt{z : state, i_1 : nat, i_2 : nat, n : n, x_1 : idx, x_2 : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i_1)) CONST_admininstr(I32_numtype, `%`_num_(i_2)) CONST_admininstr(I32_numtype, `%`_num_(n)) MEMORY.COPY_admininstr(x_1, x_2)]), [CONST_admininstr(I32_numtype, `%`_num_(((i_1 + n) - 1))) CONST_admininstr(I32_numtype, `%`_num_(((i_2 + n) - 1))) `LOAD%(_)%?%%`_admininstr(I32_numtype, ?((8, U_sx)), x_2, $memarg0) STORE_admininstr(I32_numtype, ?(8), x_1, $memarg0) CONST_admininstr(I32_numtype, `%`_num_(i_1)) CONST_admininstr(I32_numtype, `%`_num_(i_2)) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) MEMORY.COPY_admininstr(x_1, x_2)])
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i_1)) CONST_admininstr(I32_numtype, `%`_num_(i_2)) CONST_admininstr(I32_numtype, `%`_num_(n)) MEMORY.COPY_admininstr(x_1, x_2)]), [CONST_admininstr(I32_numtype, `%`_num_(((i_1 + n) - 1))) CONST_admininstr(I32_numtype, `%`_num_(((i_2 + n) - 1))) `LOAD%(_)%?%%`_admininstr(I32_numtype, ?((`%`_sz(8), U_sx)), x_2, $memarg0) STORE_admininstr(I32_numtype, ?(`%`_sz(8)), x_1, $memarg0) CONST_admininstr(I32_numtype, `%`_num_(i_1)) CONST_admininstr(I32_numtype, `%`_num_(i_2)) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) MEMORY.COPY_admininstr(x_1, x_2)])
     -- otherwise
 
   ;; 8-reduction.watsup
@@ -5227,7 +5294,7 @@ relation Step_read: `%~>%`(config, admininstr*)
 
   ;; 8-reduction.watsup
   rule memory.init-succ{z : state, j : nat, i : nat, n : n, x : idx, y : idx}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(j)) CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr(I32_numtype, `%`_num_(n)) MEMORY.INIT_admininstr(x, y)]), [CONST_admininstr(I32_numtype, `%`_num_(j)) CONST_admininstr(I32_numtype, `%`_num_($data(z, y).BYTES_datainst[i]!`%`_byte.0)) STORE_admininstr(I32_numtype, ?(8), x, $memarg0) CONST_admininstr(I32_numtype, `%`_num_((j + 1))) CONST_admininstr(I32_numtype, `%`_num_((i + 1))) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) MEMORY.INIT_admininstr(x, y)])
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(j)) CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr(I32_numtype, `%`_num_(n)) MEMORY.INIT_admininstr(x, y)]), [CONST_admininstr(I32_numtype, `%`_num_(j)) CONST_admininstr(I32_numtype, `%`_num_($data(z, y).BYTES_datainst[i]!`%`_byte.0)) STORE_admininstr(I32_numtype, ?(`%`_sz(8)), x, $memarg0) CONST_admininstr(I32_numtype, `%`_num_((j + 1))) CONST_admininstr(I32_numtype, `%`_num_((i + 1))) CONST_admininstr(I32_numtype, `%`_num_((n - 1))) MEMORY.INIT_admininstr(x, y)])
     -- otherwise
 
 ;; 8-reduction.watsup
@@ -5321,12 +5388,12 @@ relation Step: `%~>%`(config, config)
 
   ;; 8-reduction.watsup
   rule store-pack-oob{z : state, i : nat, Inn : Inn, c : num_((Inn : Inn <: numtype)), nt : numtype, n : n, x : idx, ao : memarg}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr((Inn : Inn <: numtype), c) STORE_admininstr(nt, ?(n), x, ao)]), `%;%`_config(z, [TRAP_admininstr]))
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr((Inn : Inn <: numtype), c) STORE_admininstr(nt, ?(`%`_sz(n)), x, ao)]), `%;%`_config(z, [TRAP_admininstr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + (n / 8)) > |$mem(z, x).BYTES_meminst|)
 
   ;; 8-reduction.watsup
   rule store-pack-val{z : state, i : nat, Inn : Inn, c : num_((Inn : Inn <: numtype)), nt : numtype, n : n, x : idx, ao : memarg, b* : byte*}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr((Inn : Inn <: numtype), c) STORE_admininstr(nt, ?(n), x, ao)]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), (n / 8), b*{b : byte}), []))
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) CONST_admininstr((Inn : Inn <: numtype), c) STORE_admininstr(nt, ?(`%`_sz(n)), x, ao)]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), (n / 8), b*{b : byte}), []))
     -- if (b*{b : byte} = $ibytes(n, $wrap($size((Inn : Inn <: numtype)), n, c)))
 
   ;; 8-reduction.watsup
@@ -5341,12 +5408,12 @@ relation Step: `%~>%`(config, config)
 
   ;; 8-reduction.watsup
   rule vstore_lane-oob{z : state, i : nat, c : vec_(V128_Vnn), N : N, x : idx, ao : memarg, j : nat}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) VCONST_admininstr(V128_vectype, c) VSTORE_LANE_admininstr(V128_vectype, N, x, ao, `%`_laneidx(j))]), `%;%`_config(z, [TRAP_admininstr]))
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) VCONST_admininstr(V128_vectype, c) VSTORE_LANE_admininstr(V128_vectype, `%`_sz(N), x, ao, `%`_laneidx(j))]), `%;%`_config(z, [TRAP_admininstr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + N) > |$mem(z, x).BYTES_meminst|)
 
   ;; 8-reduction.watsup
   rule vstore_lane-val{z : state, i : nat, c : vec_(V128_Vnn), N : N, x : idx, ao : memarg, j : nat, b* : byte*, Jnn : Jnn, M : M}:
-    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) VCONST_admininstr(V128_vectype, c) VSTORE_LANE_admininstr(V128_vectype, N, x, ao, `%`_laneidx(j))]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), (N / 8), b*{b : byte}), []))
+    `%~>%`(`%;%`_config(z, [CONST_admininstr(I32_numtype, `%`_num_(i)) VCONST_admininstr(V128_vectype, c) VSTORE_LANE_admininstr(V128_vectype, `%`_sz(N), x, ao, `%`_laneidx(j))]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), (N / 8), b*{b : byte}), []))
     -- if (N = $lsize((Jnn : Jnn <: lanetype)))
     -- if (M = (128 / N))
     -- if (b*{b : byte} = $ibytes(N, `%`_iN($lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c)[j]!`%`_lane_.0)))
@@ -5463,8 +5530,8 @@ def $alloctables(store : store, tabletype*, ref*) : (store, tableaddr*)
 ;; 9-module.watsup
 def $allocmem(store : store, memtype : memtype) : (store, memaddr)
   ;; 9-module.watsup
-  def $allocmem{s : store, i : nat, j : nat, mi : meminst}(s, `%I8`_memtype(`[%..%]`_limits(`%`_u32(i), `%`_u32(j)))) = (s[MEMS_store =.. [mi]], |s.MEMS_store|)
-    -- if (mi = {TYPE `%I8`_memtype(`[%..%]`_limits(`%`_u32(i), `%`_u32(j))), BYTES `%`_byte(0)^(i * (64 * $Ki)){}})
+  def $allocmem{s : store, i : nat, j : nat, mi : meminst}(s, `%PAGE`_memtype(`[%..%]`_limits(`%`_u32(i), `%`_u32(j)))) = (s[MEMS_store =.. [mi]], |s.MEMS_store|)
+    -- if (mi = {TYPE `%PAGE`_memtype(`[%..%]`_limits(`%`_u32(i), `%`_u32(j))), BYTES `%`_byte(0)^(i * (64 * $Ki)){}})
 
 ;; 9-module.watsup
 rec {
@@ -5640,15 +5707,6 @@ syntax record =
 ;; C-conventions.watsup
 syntax pth =
   | PTHSYNTAX
-
-;; C-conventions.watsup
-syntax pthaux =
-{
-  PTH (),
-  I_PTH (),
-  FIELD_PTH (),
-  DOT_FIELD_PTH ()
-}
 
 == IL Validation...
 == Complete.

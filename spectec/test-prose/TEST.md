@@ -2543,10 +2543,10 @@ growtable ti n r
   b. Return ti'.
 
 growmemory mi n
-1. Let { TYPE: (I8 (i, j)); BYTES: b*; } be mi.
+1. Let { TYPE: (PAGE (i, j)); BYTES: b*; } be mi.
 2. Let i' be ((|b*| / (64 · $Ki())) + n).
 3. If (i' ≤ j), then:
-  a. Let mi' be { TYPE: (I8 (i', j)); BYTES: b* ++ 0^(n · (64 · $Ki())); }.
+  a. Let mi' be { TYPE: (PAGE (i', j)); BYTES: b* ++ 0^(n · (64 · $Ki())); }.
   b. Return mi'.
 
 blocktype block_u1
@@ -2649,8 +2649,8 @@ alloctables table_u0*
 4. Let ta'* be $alloctables(tabletype'*).
 5. Return [ta] ++ ta'*.
 
-allocmem (I8 (i, j))
-1. Let mi be { TYPE: (I8 (i, j)); BYTES: 0^(i · (64 · $Ki())); }.
+allocmem (PAGE (i, j))
+1. Let mi be { TYPE: (PAGE (i, j)); BYTES: 0^(i · (64 · $Ki())); }.
 2. Let a be |s.MEMS|.
 3. Append mi to the s.MEMS.
 4. Return a.
@@ -4161,6 +4161,9 @@ concat_ X_u0*
 2. Let [w*] ++ w'** be X_u0*.
 3. Return w* ++ $concat_(w'**).
 
+skip w
+1. Return w.
+
 signif N_u0
 1. If (N_u0 is 32), then:
   a. Return 23.
@@ -4326,7 +4329,7 @@ setminus idx_u0* y*
 2. Let [x_1] ++ x* be idx_u0*.
 3. Return $setminus1(x_1, y*) ++ $setminus(x*, y*).
 
-free_dataidx_instr instr_u0
+dataidx_instr instr_u0
 1. If instr_u0 is of the case MEMORY.INIT, then:
   a. Let (MEMORY.INIT x y) be instr_u0.
   b. Return [y].
@@ -4335,23 +4338,23 @@ free_dataidx_instr instr_u0
   b. Return [x].
 3. Return [].
 
-free_dataidx_instrs instr_u0*
+dataidx_instrs instr_u0*
 1. If (instr_u0* is []), then:
   a. Return [].
 2. Let [instr] ++ instr'* be instr_u0*.
-3. Return $free_dataidx_instr(instr) ++ $free_dataidx_instrs(instr'*).
+3. Return $dataidx_instr(instr) ++ $dataidx_instrs(instr'*).
 
-free_dataidx_expr in*
-1. Return $free_dataidx_instrs(in*).
+dataidx_expr in*
+1. Return $dataidx_instrs(in*).
 
-free_dataidx_func (FUNC x loc* e)
-1. Return $free_dataidx_expr(e).
+dataidx_func (FUNC x loc* e)
+1. Return $dataidx_expr(e).
 
-free_dataidx_funcs func_u0*
+dataidx_funcs func_u0*
 1. If (func_u0* is []), then:
   a. Return [].
 2. Let [func] ++ func'* be func_u0*.
-3. Return $free_dataidx_func(func) ++ $free_dataidx_funcs(func'*).
+3. Return $dataidx_func(func) ++ $dataidx_funcs(func'*).
 
 IN N_u0
 1. If (N_u0 is 32), then:
@@ -4425,119 +4428,119 @@ diffrt (REF nul_1 ht_1) (REF (NULL _u0?) ht_2)
 idx x
 1. Return (_IDX x).
 
-subst_typevar xx typev_u0* typeu_u1*
+subst_typevar tv typev_u0* typeu_u1*
 1. If ((typev_u0* is []) and (typeu_u1* is [])), then:
-  a. Return xx.
+  a. Return tv.
 2. Assert: Due to validation, (|typeu_u1*| ≥ 1).
 3. Let [tu_1] ++ tu'* be typeu_u1*.
 4. If (|typev_u0*| ≥ 1), then:
-  a. Let [xx_1] ++ xx'* be typev_u0*.
-  b. If (xx is xx_1), then:
+  a. Let [tv_1] ++ tv'* be typev_u0*.
+  b. If (tv is tv_1), then:
     1) Return tu_1.
 5. Let [tu_1] ++ tu'* be typeu_u1*.
 6. Assert: Due to validation, (|typev_u0*| ≥ 1).
-7. Let [xx_1] ++ xx'* be typev_u0*.
-8. Return $subst_typevar(xx, xx'*, tu'*).
+7. Let [tv_1] ++ tv'* be typev_u0*.
+8. Return $subst_typevar(tv, tv'*, tu'*).
 
-subst_packtype pt xx* tu*
+subst_packtype pt tv* tu*
 1. Return pt.
 
-subst_numtype nt xx* tu*
+subst_numtype nt tv* tu*
 1. Return nt.
 
-subst_vectype vt xx* tu*
+subst_vectype vt tv* tu*
 1. Return vt.
 
-subst_typeuse typeu_u0 xx* tu*
+subst_typeuse typeu_u0 tv* tu*
 1. If the type of typeu_u0 is typevar, then:
-  a. Let xx' be typeu_u0.
-  b. Return $subst_typevar(xx', xx*, tu*).
+  a. Let tv' be typeu_u0.
+  b. Return $subst_typevar(tv', tv*, tu*).
 2. Assert: Due to validation, the type of typeu_u0 is deftype.
 3. Let dt be typeu_u0.
-4. Return $subst_deftype(dt, xx*, tu*).
+4. Return $subst_deftype(dt, tv*, tu*).
 
-subst_heaptype heapt_u0 xx* tu*
+subst_heaptype heapt_u0 tv* tu*
 1. If the type of heapt_u0 is typevar, then:
-  a. Let xx' be heapt_u0.
-  b. Return $subst_typevar(xx', xx*, tu*).
+  a. Let tv' be heapt_u0.
+  b. Return $subst_typevar(tv', tv*, tu*).
 2. If the type of heapt_u0 is deftype, then:
   a. Let dt be heapt_u0.
-  b. Return $subst_deftype(dt, xx*, tu*).
+  b. Return $subst_deftype(dt, tv*, tu*).
 3. Let ht be heapt_u0.
 4. Return ht.
 
-subst_reftype (REF nul ht) xx* tu*
-1. Return (REF nul $subst_heaptype(ht, xx*, tu*)).
+subst_reftype (REF nul ht) tv* tu*
+1. Return (REF nul $subst_heaptype(ht, tv*, tu*)).
 
-subst_valtype valty_u0 xx* tu*
+subst_valtype valty_u0 tv* tu*
 1. If the type of valty_u0 is numtype, then:
   a. Let nt be valty_u0.
-  b. Return $subst_numtype(nt, xx*, tu*).
+  b. Return $subst_numtype(nt, tv*, tu*).
 2. If the type of valty_u0 is vectype, then:
   a. Let vt be valty_u0.
-  b. Return $subst_vectype(vt, xx*, tu*).
+  b. Return $subst_vectype(vt, tv*, tu*).
 3. If the type of valty_u0 is reftype, then:
   a. Let rt be valty_u0.
-  b. Return $subst_reftype(rt, xx*, tu*).
+  b. Return $subst_reftype(rt, tv*, tu*).
 4. Assert: Due to validation, (valty_u0 is BOT).
 5. Return BOT.
 
-subst_storagetype stora_u0 xx* tu*
+subst_storagetype stora_u0 tv* tu*
 1. If the type of stora_u0 is valtype, then:
   a. Let t be stora_u0.
-  b. Return $subst_valtype(t, xx*, tu*).
+  b. Return $subst_valtype(t, tv*, tu*).
 2. Assert: Due to validation, the type of stora_u0 is packtype.
 3. Let pt be stora_u0.
-4. Return $subst_packtype(pt, xx*, tu*).
+4. Return $subst_packtype(pt, tv*, tu*).
 
-subst_fieldtype (mut, zt) xx* tu*
-1. Return (mut, $subst_storagetype(zt, xx*, tu*)).
+subst_fieldtype (mut, zt) tv* tu*
+1. Return (mut, $subst_storagetype(zt, tv*, tu*)).
 
-subst_comptype compt_u0 xx* tu*
+subst_comptype compt_u0 tv* tu*
 1. If compt_u0 is of the case STRUCT, then:
   a. Let (STRUCT yt*) be compt_u0.
-  b. Return (STRUCT $subst_fieldtype(yt, xx*, tu*)*).
+  b. Return (STRUCT $subst_fieldtype(yt, tv*, tu*)*).
 2. If compt_u0 is of the case ARRAY, then:
   a. Let (ARRAY yt) be compt_u0.
-  b. Return (ARRAY $subst_fieldtype(yt, xx*, tu*)).
+  b. Return (ARRAY $subst_fieldtype(yt, tv*, tu*)).
 3. Assert: Due to validation, compt_u0 is of the case FUNC.
 4. Let (FUNC ft) be compt_u0.
-5. Return (FUNC $subst_functype(ft, xx*, tu*)).
+5. Return (FUNC $subst_functype(ft, tv*, tu*)).
 
-subst_subtype (SUB fin tu'* ct) xx* tu*
-1. Return (SUB fin $subst_typeuse(tu', xx*, tu*)* $subst_comptype(ct, xx*, tu*)).
+subst_subtype (SUB fin tu'* ct) tv* tu*
+1. Return (SUB fin $subst_typeuse(tu', tv*, tu*)* $subst_comptype(ct, tv*, tu*)).
 
-subst_rectype (REC st*) xx* tu*
-1. Return (REC $subst_subtype(st, xx*, tu*)*).
+subst_rectype (REC st*) tv* tu*
+1. Return (REC $subst_subtype(st, tv*, tu*)*).
 
-subst_deftype (DEF qt i) xx* tu*
-1. Return (DEF $subst_rectype(qt, xx*, tu*) i).
+subst_deftype (DEF qt i) tv* tu*
+1. Return (DEF $subst_rectype(qt, tv*, tu*) i).
 
-subst_functype (t_1* -> t_2*) xx* tu*
-1. Return ($subst_valtype(t_1, xx*, tu*)* -> $subst_valtype(t_2, xx*, tu*)*).
+subst_functype (t_1* -> t_2*) tv* tu*
+1. Return ($subst_valtype(t_1, tv*, tu*)* -> $subst_valtype(t_2, tv*, tu*)*).
 
-subst_globaltype (mut, t) xx* tu*
-1. Return (mut, $subst_valtype(t, xx*, tu*)).
+subst_globaltype (mut, t) tv* tu*
+1. Return (mut, $subst_valtype(t, tv*, tu*)).
 
-subst_tabletype (lim, rt) xx* tu*
-1. Return (lim, $subst_reftype(rt, xx*, tu*)).
+subst_tabletype (lim, rt) tv* tu*
+1. Return (lim, $subst_reftype(rt, tv*, tu*)).
 
-subst_memtype (I8 lim) xx* tu*
-1. Return (I8 lim).
+subst_memtype (PAGE lim) tv* tu*
+1. Return (PAGE lim).
 
-subst_externtype exter_u0 xx* tu*
+subst_externtype exter_u0 tv* tu*
 1. If exter_u0 is of the case FUNC, then:
   a. Let (FUNC dt) be exter_u0.
-  b. Return (FUNC $subst_deftype(dt, xx*, tu*)).
+  b. Return (FUNC $subst_deftype(dt, tv*, tu*)).
 2. If exter_u0 is of the case GLOBAL, then:
   a. Let (GLOBAL gt) be exter_u0.
-  b. Return (GLOBAL $subst_globaltype(gt, xx*, tu*)).
+  b. Return (GLOBAL $subst_globaltype(gt, tv*, tu*)).
 3. If exter_u0 is of the case TABLE, then:
   a. Let (TABLE tt) be exter_u0.
-  b. Return (TABLE $subst_tabletype(tt, xx*, tu*)).
+  b. Return (TABLE $subst_tabletype(tt, tv*, tu*)).
 4. Assert: Due to validation, exter_u0 is of the case MEM.
 5. Let (MEM mt) be exter_u0.
-6. Return (MEM $subst_memtype(mt, xx*, tu*)).
+6. Return (MEM $subst_memtype(mt, tv*, tu*)).
 
 subst_all_reftype rt tu^n
 1. Return $subst_reftype(rt, $idx(i)^(i<n), tu^n).
@@ -4572,6 +4575,46 @@ expanddt dt
 1. Assert: Due to validation, $unrolldt(dt) is of the case SUB.
 2. Let (SUB fin tu* ct) be $unrolldt(dt).
 3. Return ct.
+
+funcsxx exter_u0*
+1. If (exter_u0* is []), then:
+  a. Return [].
+2. Let [y_0] ++ xx* be exter_u0*.
+3. If y_0 is of the case FUNC, then:
+  a. Let (FUNC x) be y_0.
+  b. Return [x] ++ $funcsxx(xx*).
+4. Let [externidx] ++ xx* be exter_u0*.
+5. Return $funcsxx(xx*).
+
+globalsxx exter_u0*
+1. If (exter_u0* is []), then:
+  a. Return [].
+2. Let [y_0] ++ xx* be exter_u0*.
+3. If y_0 is of the case GLOBAL, then:
+  a. Let (GLOBAL x) be y_0.
+  b. Return [x] ++ $globalsxx(xx*).
+4. Let [externidx] ++ xx* be exter_u0*.
+5. Return $globalsxx(xx*).
+
+tablesxx exter_u0*
+1. If (exter_u0* is []), then:
+  a. Return [].
+2. Let [y_0] ++ xx* be exter_u0*.
+3. If y_0 is of the case TABLE, then:
+  a. Let (TABLE x) be y_0.
+  b. Return [x] ++ $tablesxx(xx*).
+4. Let [externidx] ++ xx* be exter_u0*.
+5. Return $tablesxx(xx*).
+
+memsxx exter_u0*
+1. If (exter_u0* is []), then:
+  a. Return [].
+2. Let [y_0] ++ xx* be exter_u0*.
+3. If y_0 is of the case MEM, then:
+  a. Let (MEM x) be y_0.
+  b. Return [x] ++ $memsxx(xx*).
+4. Let [externidx] ++ xx* be exter_u0*.
+5. Return $memsxx(xx*).
 
 funcsxt exter_u0*
 1. If (exter_u0* is []), then:
@@ -5500,10 +5543,10 @@ growtable ti n r
   b. Return ti'.
 
 growmem mi n
-1. Let { TYPE: (I8 (i, j)); BYTES: b*; } be mi.
+1. Let { TYPE: (PAGE (i, j)); BYTES: b*; } be mi.
 2. Let i' be ((|b*| / (64 · $Ki())) + n).
 3. If (i' ≤ j), then:
-  a. Let mi' be { TYPE: (I8 (i', j)); BYTES: b* ++ 0^(n · (64 · $Ki())); }.
+  a. Let mi' be { TYPE: (PAGE (i', j)); BYTES: b* ++ 0^(n · (64 · $Ki())); }.
   b. Return mi'.
 
 with_locals C local_u0* local_u1*
@@ -5635,8 +5678,8 @@ alloctables table_u0* ref_u1*
 7. Let ta'* be $alloctables(tabletype'*, ref'*).
 8. Return [ta] ++ ta'*.
 
-allocmem (I8 (i, j))
-1. Let mi be { TYPE: (I8 (i, j)); BYTES: 0^(i · (64 · $Ki())); }.
+allocmem (PAGE (i, j))
+1. Let mi be { TYPE: (PAGE (i, j)); BYTES: 0^(i · (64 · $Ki())); }.
 2. Let a be |s.MEMS|.
 3. Append mi to the s.MEMS.
 4. Return a.
@@ -6731,25 +6774,25 @@ execution_of_TABLE.INIT x y
   f. Push the value (I32.CONST (n - 1)) to the stack.
   g. Execute the instruction (TABLE.INIT x y).
 
-execution_of_LOAD numty_u0 N_sx_u1? x ao
+execution_of_LOAD numty_u0 sz_sx_u1? x ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
-4. If N_sx_u1? is not defined, then:
+4. If sz_sx_u1? is not defined, then:
   a. Let nt be numty_u0.
   b. If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|), then:
     1) Trap.
   c. Let c be $inverse_of_nbytes(nt, $mem(z, x).BYTES[(i + ao.OFFSET) : ($size(nt) / 8)]).
   d. Push the value (nt.CONST c) to the stack.
 5. If the type of numty_u0 is Inn, then:
-  a. If N_sx_u1? is defined, then:
-    1) Let ?(y_0) be N_sx_u1?.
+  a. If sz_sx_u1? is defined, then:
+    1) Let ?(y_0) be sz_sx_u1?.
     2) Let (n, sx) be y_0.
     3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
   b. Let Inn be numty_u0.
-  c. If N_sx_u1? is defined, then:
-    1) Let ?(y_0) be N_sx_u1?.
+  c. If sz_sx_u1? is defined, then:
+    1) Let ?(y_0) be sz_sx_u1?.
     2) Let (n, sx) be y_0.
     3) Let c be $inverse_of_ibytes(n, $mem(z, x).BYTES[(i + ao.OFFSET) : (n / 8)]).
     4) Push the value (Inn.CONST $ext(n, $size(Inn), sx, c)) to the stack.
@@ -6988,26 +7031,26 @@ execution_of_ELEM.DROP x
 1. Let z be the current state.
 2. Perform $with_elem(z, x, []).
 
-execution_of_STORE nt N_u1? x ao
+execution_of_STORE nt sz_u1? x ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type numty_u0 is on the top of the stack.
 3. Pop the value (numty_u0.CONST c) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
 6. If (numty_u0 is nt), then:
-  a. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|) and N_u1? is not defined), then:
+  a. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|) and sz_u1? is not defined), then:
     1) Trap.
-  b. If N_u1? is not defined, then:
+  b. If sz_u1? is not defined, then:
     1) Let b* be $nbytes(nt, c).
     2) Perform $with_mem(z, x, (i + ao.OFFSET), ($size(nt) / 8), b*).
 7. If the type of numty_u0 is Inn, then:
-  a. If N_u1? is defined, then:
-    1) Let ?(n) be N_u1?.
+  a. If sz_u1? is defined, then:
+    1) Let ?(n) be sz_u1?.
     2) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
   b. Let Inn be numty_u0.
-  c. If N_u1? is defined, then:
-    1) Let ?(n) be N_u1?.
+  c. If sz_u1? is defined, then:
+    1) Let ?(n) be sz_u1?.
     2) Let b* be $ibytes(n, $wrap($size(Inn), n, c)).
     3) Perform $with_mem(z, x, (i + ao.OFFSET), (n / 8), b*).
 

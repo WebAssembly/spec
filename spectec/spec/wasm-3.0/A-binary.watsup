@@ -167,7 +167,7 @@ grammar Btabletype : tabletype =
   | rt:Breftype lim:Blimits => lim rt
 
 grammar Bmemtype : memtype =
-  | lim:Blimits => lim I8
+  | lim:Blimits => lim PAGE
 
 
 grammar Bexterntype : externtype =
@@ -1049,6 +1049,6 @@ grammar Bmodule : module =
     data^m:Bdatasec
     Bcustomsec* =>
       MODULE type* import* func^n global* table* mem* elem* data^m start* export*
-    -- if m'* = eps \/ $free_dataidx_funcs(func^n) = eps
+    -- if m'* = eps \/ $dataidx_funcs(func^n) = eps
     -- if m = $sum(m'*)
     -- if (func = FUNC typeidx local* expr)^n

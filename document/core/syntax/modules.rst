@@ -11,22 +11,9 @@ A module collects definitions for :ref:`types <syntax-type>`, :ref:`functions <s
 In addition, it can declare :ref:`imports <syntax-import>` and :ref:`exports <syntax-export>`
 and provide initialization in the form of :ref:`data <syntax-data>` and :ref:`element <syntax-elem>` segments, or a :ref:`start function <syntax-start>`.
 
-.. math::
-   \begin{array}{llrll}
-   \production{module} & \module &::=& \{ &
-     \MTYPES~\list(\rectype), \\&&&&
-     \MFUNCS~\list(\func), \\&&&&
-     \MTABLES~\list(\table), \\&&&&
-     \MMEMS~\list(\mem), \\&&&&
-     \MGLOBALS~\list(\global), \\&&&&
-     \MELEMS~\list(\elem), \\&&&&
-     \MDATAS~\list(\data), \\&&&&
-     \MSTART~\start^?, \\&&&&
-     \MIMPORTS~\list(\import), \\&&&&
-     \MEXPORTS~\list(\export) \quad\} \\
-   \end{array}
+$${syntax: module}
 
-Each of the lists -- and thus the entire module -- may be empty.
+Each of the lists --- and thus the entire module --- may be empty.
 
 
 .. index:: ! index, ! index space, ! type index, ! function index, ! table index, ! memory index, ! global index, ! local index, ! label index, ! element index, ! data index, ! field index, function, global, table, memory, element, data, local, parameter, import, field
@@ -68,19 +55,7 @@ Indices
 Definitions are referenced with zero-based *indices*.
 Each class of definition has its own *index space*, as distinguished by the following classes.
 
-.. math::
-   \begin{array}{llrl}
-   \production{type index} & \typeidx &::=& \u32 \\
-   \production{function index} & \funcidx &::=& \u32 \\
-   \production{table index} & \tableidx &::=& \u32 \\
-   \production{memory index} & \memidx &::=& \u32 \\
-   \production{global index} & \globalidx &::=& \u32 \\
-   \production{element index} & \elemidx &::=& \u32 \\
-   \production{data index} & \dataidx &::=& \u32 \\
-   \production{local index} & \localidx &::=& \u32 \\
-   \production{label index} & \labelidx &::=& \u32 \\
-   \production{field index} & \fieldidx &::=& \u32 \\
-   \end{array}
+$${syntax: {typeidx funcidx globalidx tableidx memidx elemidx dataidx labelidx localidx fieldidx}}
 
 The index space for :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>` and :ref:`globals <syntax-global>` includes respective :ref:`imports <syntax-import>` declared in the same module.
 The indices of these imports precede the indices of other definitions in the same index space.
@@ -109,14 +84,14 @@ Each :ref:`aggregate type <syntax-aggrtype>` provides an index space for its :re
 Conventions
 ...........
 
-* The meta variable :math:`l` ranges over label indices.
+* The meta variable ${:l} ranges over label indices.
 
-* The meta variables :math:`x, y` range over indices in any of the other index spaces.
+* The meta variables ${:x}, ${:y} range over indices in any of the other index spaces.
 
-* The notation :math:`\F{idx}(A)` denotes the set of indices from index space :math:`\X{idx}` occurring free in :math:`A`. Sometimes this set is reinterpreted as the :ref:`list <syntax-list>` of its elements.
+* For every index space ${-:abcidx}, the notation ${-:$abcidx(A)} denotes the set of indices from that index space occurring free in ${:A}. Sometimes this set is reinterpreted as the :ref:`list <syntax-list>` of its elements.
 
 .. note::
-   For example, if :math:`\instr^\ast` is :math:`(\DATADROP~x) (\MEMORYINIT~y)`, then :math:`\freedataidx(\instr^\ast) = \{x, y\}`, or equivalently, the list :math:`x~y`.
+   For example, if ${:instr*} is ${instr*: (DATA.DROP 1) (MEMORY.INIT 2 3)}, then ${:$dataidx_instrs(instr*) = 1 3}, or equivalently, the set ${:`{1, 3}}.
 
 
 .. index:: ! type definition, type index, function type, aggregate type
@@ -126,7 +101,7 @@ Conventions
 Types
 ~~~~~
 
-The |MTYPES| component of a module defines a list of :ref:`recursive types <syntax-rectype>`, each of consisting of a list of :ref:`sub types <syntax-subtype>` referenced by individual :ref:`type indices <syntax-typeidx>`.
+The ${:type} section of a module defines a list of :ref:`recursive types <syntax-rectype>`, each of consisting of a list of :ref:`sub types <syntax-subtype>` referenced by individual :ref:`type indices <syntax-typeidx>`.
 All :ref:`function <syntax-functype>` or :ref:`aggregate <syntax-aggrtype>` types used in a module must be defined in this component.
 
 
@@ -139,24 +114,19 @@ All :ref:`function <syntax-functype>` or :ref:`aggregate <syntax-aggrtype>` type
 Functions
 ~~~~~~~~~
 
-The |MFUNCS| component of a module defines a list of *functions* with the following structure:
+The ${:func} section of a module defines a list of *functions* with the following structure:
 
-.. math::
-   \begin{array}{llrl}
-   \production{function} & \func &::=&
-     \{ \FTYPE~\typeidx, \FLOCALS~\list(\local), \FBODY~\expr \} \\
-   \production{local} & \local &::=&
-     \{ \LTYPE~\valtype \} \\
-   \end{array}
+$${syntax: {func local}}
 
-The |FTYPE| of a function declares its signature by reference to a :ref:`type <syntax-type>` defined in the module.
+The :ref:`type index <syntax-typeidx>` of a function declares its signature by reference to a :ref:`function type <syntax-functype>` defined in the module.
 The parameters of the function are referenced through 0-based :ref:`local indices <syntax-localidx>` in the function's body; they are mutable.
 
-The |FLOCALS| declare a list of mutable local variables and their types.
+The locals declare a list of mutable local variables and their types.
 These variables are referenced through :ref:`local indices <syntax-localidx>` in the function's body.
 The index of the first local is the smallest index not referencing a parameter.
 
-The |FBODY| is an :ref:`instruction <syntax-expr>` sequence that upon termination must produce a stack matching the function type's :ref:`result type <syntax-resulttype>`.
+A function's :ref:`expression <syntax-expr>` is an :ref:`instruction <syntax-instr>` sequence that represents the body of the function.
+Upon termination it must produce a stack matching the function type's :ref:`result type <syntax-resulttype>`.
 
 Functions are referenced through :ref:`function indices <syntax-funcidx>`,
 starting with the smallest index not referencing a function :ref:`import <syntax-import>`.
@@ -169,23 +139,19 @@ starting with the smallest index not referencing a function :ref:`import <syntax
 Tables
 ~~~~~~
 
-The |MTABLES| component of a module defines a list of *tables* described by their :ref:`table type <syntax-tabletype>`:
+The ${:table} section of a module defines a list of *tables* described by their :ref:`table type <syntax-tabletype>`:
 
-.. math::
-   \begin{array}{llrl}
-   \production{table} & \table &::=&
-     \{ \TTYPE~\tabletype, \TINIT~\expr \} \\
-   \end{array}
+$${syntax: table}
 
-A table is an array of opaque values of a particular :ref:`reference type <syntax-reftype>`.
-Moreover, each table slot is initialized with the |TINIT| value given by a :ref:`constant <valid-constant>` initializer :ref:`expression <syntax-expr>`.
+A table is an array of opaque values of a particular :ref:`reference type <syntax-reftype>` that is specified by the :ref:`table type <syntax-tabletype>`.
+Each table slot is initialized with a value given by a :ref:`constant <valid-constant>` initializer :ref:`expression <syntax-expr>`.
 Tables can further be initialized through :ref:`element segments <syntax-elem>`.
 
-The |LMIN| size in the :ref:`limits <syntax-limits>` of the table type specifies the initial size of that table, while its |LMAX|, if present, restricts the size to which it can grow later.
+The minimum size in the :ref:`limits <syntax-limits>` of the table type specifies the initial size of that table, while its maximum restricts the size to which it can grow later.
 
 Tables are referenced through :ref:`table indices <syntax-tableidx>`,
 starting with the smallest index not referencing a table :ref:`import <syntax-import>`.
-Most constructs implicitly reference table index :math:`0`.
+Most constructs implicitly reference table index ${:0}.
 
 .. index:: ! memory, memory index, memory type, limits, page size, data, import
    pair: abstract syntax; memory
@@ -194,23 +160,19 @@ Most constructs implicitly reference table index :math:`0`.
 Memories
 ~~~~~~~~
 
-The |MMEMS| component of a module defines a list of *linear memories* (or *memories* for short) as described by their :ref:`memory type <syntax-memtype>`:
+The ${:mem} section of a module defines a list of *linear memories* (or *memories* for short) as described by their :ref:`memory type <syntax-memtype>`:
 
-.. math::
-   \begin{array}{llrl}
-   \production{memory} & \mem &::=&
-     \{ \MTYPE~\memtype \} \\
-   \end{array}
+$${syntax: mem}
 
 A memory is a list of raw uninterpreted bytes.
-The |LMIN| size in the :ref:`limits <syntax-limits>` of the memory type specifies the initial size of that memory, while its |LMAX|, if present, restricts the size to which it can grow later.
+The minimum size in the :ref:`limits <syntax-limits>` of its :ref:`memory type <syntax-memtype>` specifies the initial size of that memory, while its maximum, if present, restricts the size to which it can grow later.
 Both are in units of :ref:`page size <page-size>`.
 
 Memories can be initialized through :ref:`data segments <syntax-data>`.
 
 Memories are referenced through :ref:`memory indices <syntax-memidx>`,
 starting with the smallest index not referencing a memory :ref:`import <syntax-import>`.
-Most constructs implicitly reference memory index :math:`0`.
+Most constructs implicitly reference memory index ${:0}.
 
 
 .. index:: ! global, global index, global type, mutability, expression, constant, value, import
@@ -220,17 +182,13 @@ Most constructs implicitly reference memory index :math:`0`.
 Globals
 ~~~~~~~
 
-The |MGLOBALS| component of a module defines a list of *global variables* (or *globals* for short):
+The ${:global} section of a module defines a list of *global variables* (or *globals* for short):
 
-.. math::
-   \begin{array}{llrl}
-   \production{global} & \global &::=&
-     \{ \GTYPE~\globaltype, \GINIT~\expr \} \\
-   \end{array}
+$${syntax: global}
 
-Each global stores a single value of the given :ref:`global type <syntax-globaltype>`.
-Its |GTYPE| also specifies whether a global is immutable or mutable.
-Moreover, each global is initialized with an |GINIT| value given by a :ref:`constant <valid-constant>` initializer :ref:`expression <syntax-expr>`.
+Each global stores a single value of the type specified in the :ref:`global type <syntax-globaltype>`.
+It also specifies whether a global is immutable or mutable.
+Moreover, each global is initialized with a value given by a :ref:`constant <valid-constant>` initializer :ref:`expression <syntax-expr>`.
 
 Globals are referenced through :ref:`global indices <syntax-globalidx>`,
 starting with the smallest index not referencing a global :ref:`import <syntax-import>`.
@@ -248,27 +206,18 @@ starting with the smallest index not referencing a global :ref:`import <syntax-i
 Element Segments
 ~~~~~~~~~~~~~~~~
 
-The initial contents of a table is uninitialized. *Element segments* can be used to initialize a subrange of a table from a static :ref:`list <syntax-list>` of elements.
+The ${:elem} section of a module defines a list of *element segments*,
+which can be used to initialize a subrange of a table from a static :ref:`list <syntax-list>` of elements.
 
-The |MELEMS| component of a module defines a list of element segments.
+$${syntax: {elem elemmode}}
+
 Each element segment defines a :ref:`reference type <syntax-reftype>` and a corresponding list of :ref:`constant <valid-constant>` element :ref:`expressions <syntax-expr>`.
 
-Element segments have a mode that identifies them as either *passive*, *active*, or *declarative*.
-A passive element segment's elements can be copied to a table using the |TABLEINIT| instruction.
+Element segments have a mode that identifies them as either *active*, *passive*, or *declarative*.
+A passive element segment's elements can be copied to a table using the ${:TABLE.INIT} instruction.
 An active element segment copies its elements into a table during :ref:`instantiation <exec-instantiation>`, as specified by a :ref:`table index <syntax-tableidx>` and a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>` defining an offset into that table.
-A declarative element segment is not available at runtime but merely serves to forward-declare references that are formed in code with instructions like :math:`\REFFUNC`.
-
-.. math::
-   \begin{array}{llrl}
-   \production{element segment} & \elem &::=&
-     \{ \ETYPE~\reftype, \EINIT~\list(\expr), \EMODE~\elemmode \} \\
-   \production{element segment mode} & \elemmode &::=&
-     \EPASSIVE \\&&|&
-     \EACTIVE~\{ \ETABLE~\tableidx, \EOFFSET~\expr \} \\&&|&
-     \EDECLARATIVE \\
-   \end{array}
-
-The |EOFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>`.
+A declarative element segment is not available at runtime but merely serves to forward-declare references that are formed in code with instructions like ${:REF.FUNC}.
+The offset is given by another :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>`.
 
 Element segments are referenced through :ref:`element indices <syntax-elemidx>`.
 
@@ -283,28 +232,16 @@ Element segments are referenced through :ref:`element indices <syntax-elemidx>`.
 Data Segments
 ~~~~~~~~~~~~~
 
-The initial contents of a :ref:`memory <syntax-mem>` are zero bytes. *Data segments* can be used to initialize a range of memory from a static :ref:`list <syntax-list>` of :ref:`bytes <syntax-byte>`.
+The ${:data} section of a module defines a list of *data segments*,
+which can be used to initialize a range of memory from a static :ref:`list <syntax-list>` of :ref:`bytes <syntax-byte>`.
 
-The |MDATAS| component of a module defines a list of data segments.
+$${syntax: {data datamode}}
 
-Like element segments, data segments have a mode that identifies them as either *passive* or *active*.
-A passive data segment's contents can be copied into a memory using the |MEMORYINIT| instruction.
+Similar to element segments, data segments have a mode that identifies them as either *active* or *passive*.
+A passive data segment's contents can be copied into a memory using the ${:MEMORY.INIT} instruction.
 An active data segment copies its contents into a memory during :ref:`instantiation <exec-instantiation>`, as specified by a :ref:`memory index <syntax-memidx>` and a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>` defining an offset into that memory.
 
-.. math::
-   \begin{array}{llrl}
-   \production{data segment} & \data &::=&
-     \{ \DINIT~\list(\byte), \DMODE~\datamode \} \\
-   \production{data segment mode} & \datamode &::=&
-     \DPASSIVE \\&&|&
-     \DACTIVE~\{ \DMEM~\memidx, \DOFFSET~\expr \} \\
-   \end{array}
-
 Data segments are referenced through :ref:`data indices <syntax-dataidx>`.
-
-.. note::
-   In the current version of WebAssembly, at most one memory is allowed in a module.
-   Consequently, the only valid |memidx| is :math:`0`.
 
 
 .. index:: ! start function, function, function index, table, memory, instantiation
@@ -314,47 +251,36 @@ Data segments are referenced through :ref:`data indices <syntax-dataidx>`.
 Start Function
 ~~~~~~~~~~~~~~
 
-The |MSTART| component of a module declares the :ref:`function index <syntax-funcidx>` of a *start function* that is automatically invoked when the module is :ref:`instantiated <exec-instantiation>`, after :ref:`tables <syntax-table>` and :ref:`memories <syntax-mem>` have been initialized.
+The ${:start} section of a module declares the :ref:`function index <syntax-funcidx>` of a *start function* that is automatically invoked when the module is :ref:`instantiated <exec-instantiation>`, after :ref:`tables <syntax-table>` and :ref:`memories <syntax-mem>` have been initialized.
 
-.. math::
-   \begin{array}{llrl}
-   \production{start function} & \start &::=&
-     \{ \SFUNC~\funcidx \} \\
-   \end{array}
+$${syntax: start}
 
 .. note::
    The start function is intended for initializing the state of a module.
    The module and its exports are not accessible externally before this initialization has completed.
 
 
-.. index:: ! export, name, index, function index, table index, memory index, global index, function, table, memory, global, instantiation
+.. index:: ! export, name, index, external index, function index, table index, memory index, global index, function, table, memory, global, instantiation
    pair: abstract syntax; export
+   pair: abstract syntax; external index
    single: function; export
    single: table; export
    single: memory; export
    single: global; export
 .. _syntax-exportdesc:
 .. _syntax-export:
+.. _syntax-externidx:
 
 Exports
 ~~~~~~~
 
-The |MEXPORTS| component of a module defines a set of *exports* that become accessible to the host environment once the module has been :ref:`instantiated <exec-instantiation>`.
+The ${:export} section of a module defines a set of *exports* that become accessible to the host environment once the module has been :ref:`instantiated <exec-instantiation>`.
 
-.. math::
-   \begin{array}{llcl}
-   \production{export} & \export &::=&
-     \{ \ENAME~\name, \EDESC~\exportdesc \} \\
-   \production{export description} & \exportdesc &::=&
-     \EDFUNC~\funcidx \\&&|&
-     \EDTABLE~\tableidx \\&&|&
-     \EDMEM~\memidx \\&&|&
-     \EDGLOBAL~\globalidx \\
-   \end{array}
+$${syntax: export externidx}
 
 Each export is labeled by a unique :ref:`name <syntax-name>`.
 Exportable definitions are :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>`, and :ref:`globals <syntax-global>`,
-which are referenced through a respective descriptor.
+which are referenced through a respective index.
 
 
 Conventions
@@ -362,13 +288,7 @@ Conventions
 
 The following auxiliary notation is defined for sequences of exports, filtering out indices of a specific kind in an order-preserving fashion:
 
-* :math:`\funcsed(\export^\ast) = [\funcidx ~|~ \EDFUNC~\funcidx \in (\export.\EDESC)^\ast]`
-
-* :math:`\tablesed(\export^\ast) = [\tableidx ~|~ \EDTABLE~\tableidx \in (\export.\EDESC)^\ast]`
-
-* :math:`\memsed(\export^\ast) = [\memidx ~|~ \EDMEM~\memidx \in (\export.\EDESC)^\ast]`
-
-* :math:`\globalsed(\export^\ast) = [\globalidx ~|~ \EDGLOBAL~\globalidx \in (\export.\EDESC)^\ast]`
+$${definition: funcsxx tablesxx memsxx globalsxx}
 
 
 .. index:: ! import, name, function type, table type, memory type, global type, index, index space, type index, function index, table index, memory index, global index, function, table, memory, global, instantiation
@@ -383,20 +303,11 @@ The following auxiliary notation is defined for sequences of exports, filtering 
 Imports
 ~~~~~~~
 
-The |MIMPORTS| component of a module defines a set of *imports* that are required for :ref:`instantiation <exec-instantiation>`.
+The ${:import} section of a module defines a set of *imports* that are required for :ref:`instantiation <exec-instantiation>`.
 
-.. math::
-   \begin{array}{llrl}
-   \production{import} & \import &::=&
-     \{ \IMODULE~\name, \INAME~\name, \IDESC~\importdesc \} \\
-   \production{import description} & \importdesc &::=&
-     \IDFUNC~\typeidx \\&&|&
-     \IDTABLE~\tabletype \\&&|&
-     \IDMEM~\memtype \\&&|&
-     \IDGLOBAL~\globaltype \\
-   \end{array}
+$${syntax: import}
 
-Each import is labeled by a two-level :ref:`name <syntax-name>` space, consisting of a |IMODULE| name and a |INAME| for an entity within that module.
+Each import is labeled by a two-level :ref:`name <syntax-name>` space, consisting of a *module name* and an *item name* for an entity within that module.
 Importable definitions are :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>`, and :ref:`globals <syntax-global>`.
 Each import is specified by a descriptor with a respective type that a definition provided during instantiation is required to match.
 
@@ -405,7 +316,7 @@ In each index space, the indices of imports go before the first index of any def
 
 .. note::
    Unlike export names, import names are not necessarily unique.
-   It is possible to import the same |IMODULE|/|INAME| pair multiple times;
+   It is possible to import the same module/item name pair multiple times;
    such imports may even have different type descriptions, including different kinds of entities.
    A module with such imports can still be instantiated depending on the specifics of how an :ref:`embedder <embedder>` allows resolving and supplying imports.
    However, embedders are not required to support such overloading,

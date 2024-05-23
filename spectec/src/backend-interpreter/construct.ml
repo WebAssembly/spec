@@ -209,7 +209,7 @@ let al_to_table_type: value -> table_type = function
   | v -> error_value "table type" v
 
 let al_to_memory_type: value -> memory_type = function
-  | CaseV ("I8", [ limits ]) -> MemoryT (al_to_limits default_memory_max limits)
+  | CaseV ("PAGE", [ limits ]) -> MemoryT (al_to_limits default_memory_max limits)
   | v -> error_value "memory type" v
 
 
@@ -1173,7 +1173,7 @@ let al_of_table_type = function
   | TableT (limits, rt) -> tupV [ al_of_limits default_table_max limits; al_of_ref_type rt ]
 
 let al_of_memory_type = function
-  | MemoryT limits -> CaseV ("I8", [ al_of_limits default_memory_max limits ])
+  | MemoryT limits -> CaseV ("PAGE", [ al_of_limits default_memory_max limits ])
 
 (* Construct value *)
 
@@ -1913,7 +1913,7 @@ let al_of_memory memory =
   let arg = al_of_memory_type memory.it.mtype in
   let arg' =
     if !version = 1 then
-      arg_of_case "I8" 0 arg
+      arg_of_case "PAGE" 0 arg
     else arg
   in
   CaseV ("MEMORY", [ arg' ])

@@ -136,38 +136,38 @@
 .. |fX#1| mathdef:: {\X{f#1}}
 .. |vX#1| mathdef:: {\X{v#1}}
 
-.. |uNN| mathdef:: \xref{syntax/values}{syntax-int}{\X{u}}
-.. |uN| mathdef:: \xref{syntax/values}{syntax-int}{\X{u}\scriptstyle N}
-.. |u1| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle1}}
-.. |u8| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle8}}
-.. |u16| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle16}}
-.. |u31| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle31}}
-.. |u32| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle32}}
-.. |u64| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle64}}
+.. |uNN| mathdef:: \xref{syntax/values}{syntax-int}{\X{u}\kern-0.1em}
+.. |uN| mathdef:: \xref{syntax/values}{syntax-int}{\X{u}\scriptstyle\kern-0.1emN}
+.. |u1| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle\kern-0.1em1}}
+.. |u8| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle\kern-0.1em8}}
+.. |u16| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle\kern-0.1em16}}
+.. |u31| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle\kern-0.1em31}}
+.. |u32| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle\kern-0.1em32}}
+.. |u64| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle\kern-0.1em64}}
 
-.. |sNN| mathdef:: \xref{syntax/values}{syntax-int}{\X{s}}
-.. |sN| mathdef:: \xref{syntax/values}{syntax-int}{\X{s}\scriptstyle N}
-.. |s8| mathdef:: \xref{syntax/values}{syntax-int}{\X{s\scriptstyle8}}
-.. |s16| mathdef:: \xref{syntax/values}{syntax-int}{\X{s\scriptstyle16}}
-.. |s32| mathdef:: \xref{syntax/values}{syntax-int}{\X{s\scriptstyle32}}
-.. |s64| mathdef:: \xref{syntax/values}{syntax-int}{\X{s\scriptstyle64}}
+.. |sNN| mathdef:: \xref{syntax/values}{syntax-int}{\X{s}\kern-0.1em}
+.. |sN| mathdef:: \xref{syntax/values}{syntax-int}{\X{s}\scriptstyle\kern-0.1emN}
+.. |s8| mathdef:: \xref{syntax/values}{syntax-int}{\X{s\scriptstyle\kern-0.1em8}}
+.. |s16| mathdef:: \xref{syntax/values}{syntax-int}{\X{s\scriptstyle\kern-0.1em16}}
+.. |s32| mathdef:: \xref{syntax/values}{syntax-int}{\X{s\scriptstyle\kern-0.1em32}}
+.. |s64| mathdef:: \xref{syntax/values}{syntax-int}{\X{s\scriptstyle\kern-0.1em64}}
 
-.. |iNN| mathdef:: \xref{syntax/values}{syntax-int}{\X{i}}
-.. |iM| mathdef:: \xref{syntax/values}{syntax-int}{\X{i}\scriptstyle M}
-.. |iN| mathdef:: \xref{syntax/values}{syntax-int}{\X{i}\scriptstyle N}
-.. |i8| mathdef:: \xref{syntax/values}{syntax-int}{\X{i\scriptstyle8}}
-.. |i16| mathdef:: \xref{syntax/values}{syntax-int}{\X{i\scriptstyle16}}
-.. |i32| mathdef:: \xref{syntax/values}{syntax-int}{\X{i\scriptstyle32}}
-.. |i64| mathdef:: \xref{syntax/values}{syntax-int}{\X{i\scriptstyle64}}
-.. |i128| mathdef:: \xref{syntax/values}{syntax-int}{\X{i\scriptstyle128}}
+.. |iNN| mathdef:: \xref{syntax/values}{syntax-int}{\X{i}\kern-0.1em}
+.. |iM| mathdef:: \xref{syntax/values}{syntax-int}{\X{i}\scriptstyle\kern-0.1emM}
+.. |iN| mathdef:: \xref{syntax/values}{syntax-int}{\X{i}\scriptstyle\kern-0.1emN}
+.. |i8| mathdef:: \xref{syntax/values}{syntax-int}{\X{i\scriptstyle\kern-0.1em8}}
+.. |i16| mathdef:: \xref{syntax/values}{syntax-int}{\X{i\scriptstyle\kern-0.1em16}}
+.. |i32| mathdef:: \xref{syntax/values}{syntax-int}{\X{i\scriptstyle\kern-0.1em32}}
+.. |i64| mathdef:: \xref{syntax/values}{syntax-int}{\X{i\scriptstyle\kern-0.1em64}}
+.. |i128| mathdef:: \xref{syntax/values}{syntax-int}{\X{i\scriptstyle\kern-0.1em128}}
 
-.. |fNN| mathdef:: \xref{syntax/values}{syntax-float}{\X{f}}
-.. |fN| mathdef:: \xref{syntax/values}{syntax-float}{\X{f}\scriptstyle N}
-.. |fNmag| mathdef:: \xref{syntax/values}{syntax-float}{\X{f}\scriptstyle N\X{mag}}
-.. |f32| mathdef:: \xref{syntax/values}{syntax-float}{\X{f\scriptstyle32}}
-.. |f64| mathdef:: \xref{syntax/values}{syntax-float}{\X{f\scriptstyle64}}
+.. |fNN| mathdef:: \xref{syntax/values}{syntax-float}{\X{f}\kern-0.15em}
+.. |fN| mathdef:: \xref{syntax/values}{syntax-float}{\X{f}\scriptstyle\kern-0.15emN}
+.. |fNmag| mathdef:: \xref{syntax/values}{syntax-float}{\X{fmag}\scriptstyle\kern-0.1emN}
+.. |f32| mathdef:: \xref{syntax/values}{syntax-float}{\X{f\scriptstyle\kern-0.15em32}}
+.. |f64| mathdef:: \xref{syntax/values}{syntax-float}{\X{f\scriptstyle\kern-0.15em64}}
 
-.. |vNN| mathdef:: \xref{syntax/values}{syntax-vecnum}{\X{v}}
+.. |vNN| mathdef:: \xref{syntax/values}{syntax-vecnum}{\X{v}\kern-0.1em}
 
 .. |name| mathdef:: \xref{syntax/values}{syntax-name}{\X{name}}
 .. |char| mathdef:: \xref{syntax/values}{syntax-name}{\X{char}}
@@ -195,9 +195,9 @@
 .. |F32| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{f\scriptstyle32}}
 .. |F64| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{f\scriptstyle64}}
 .. |V128| mathdef:: \xref{syntax/types}{syntax-vectype}{\K{v\scriptstyle128}}
-.. |IN| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{i}\scriptstyle N}
-.. |FN| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{f}\scriptstyle N}
-.. |VN| mathdef:: \xref{syntax/types}{syntax-vectype}{\K{v}\scriptstyle N}
+.. |IN| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{i}\scriptstyle\kern-0.1emN}
+.. |FN| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{f}\scriptstyle\kern-0.1emN}
+.. |VN| mathdef:: \xref{syntax/types}{syntax-vectype}{\K{v}\scriptstyle\kern-0.1emN}
 
 .. |ANYREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{anyref}}
 .. |EQREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{eqref}}
@@ -253,6 +253,7 @@
 .. TODO: remove
 .. |LMIN| mathdef:: \xref{syntax/types}{syntax-limits}{\K{min}}
 .. |LMAX| mathdef:: \xref{syntax/types}{syntax-limits}{\K{max}}
+.. |PAGE| mathdef:: \xref{syntax/types}{syntax-memtype}{\K{page}}
 
 .. |ETFUNC| mathdef:: \xref{syntax/types}{syntax-externtype}{\K{func}}
 .. |ETTABLE| mathdef:: \xref{syntax/types}{syntax-externtype}{\K{table}}
@@ -331,6 +332,8 @@
 .. |labelidx| mathdef:: \xref{syntax/modules}{syntax-labelidx}{\X{labelidx}}
 .. |fieldidx| mathdef:: \xref{syntax/modules}{syntax-fieldidx}{\X{fieldidx}}
 
+.. |externidx| mathdef:: \xref{syntax/modules}{syntax-externidx}{\X{externidx}}
+
 
 .. Indices, meta functions
 
@@ -347,6 +350,8 @@
 
 .. Modules, terminals
 
+.. |MODULE| mathdef:: \xref{syntax/modules}{syntax-module}{\K{module}}
+.. TODO : remove the following
 .. |MTYPES| mathdef:: \xref{syntax/modules}{syntax-module}{\K{types}}
 .. |MFUNCS| mathdef:: \xref{syntax/modules}{syntax-module}{\K{funcs}}
 .. |MTABLES| mathdef:: \xref{syntax/modules}{syntax-module}{\K{tables}}
@@ -370,7 +375,7 @@
 .. |TTYPE| mathdef:: \xref{syntax/modules}{syntax-table}{\K{type}}
 .. |TINIT| mathdef:: \xref{syntax/modules}{syntax-table}{\K{init}}
 
-.. |MEM| mathdef:: \xref{syntax/modules}{syntax-mem}{\K{memory}}
+.. |MEMORY| mathdef:: \xref{syntax/modules}{syntax-mem}{\K{memory}}
 .. |MTYPE| mathdef:: \xref{syntax/modules}{syntax-mem}{\K{type}}
 
 .. |GLOBAL| mathdef:: \xref{syntax/modules}{syntax-global}{\K{global}}
@@ -383,7 +388,7 @@
 .. |EMODE| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{mode}}
 .. |EPASSIVE| mathdef:: \xref{syntax/modules}{syntax-elemmode}{\K{passive}}
 .. |EACTIVE| mathdef:: \xref{syntax/modules}{syntax-elemmode}{\K{active}}
-.. |EDECLARATIVE| mathdef:: \xref{syntax/modules}{syntax-elemmode}{\K{declarative}}
+.. |EDECLARE| mathdef:: \xref{syntax/modules}{syntax-elemmode}{\K{declare}}
 .. |ETABLE| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{table}}
 .. |EOFFSET| mathdef:: \xref{syntax/modules}{syntax-elem}{\K{offset}}
 
@@ -395,19 +400,29 @@
 .. |DMEM| mathdef:: \xref{syntax/modules}{syntax-data}{\K{memory}}
 .. |DOFFSET| mathdef:: \xref{syntax/modules}{syntax-data}{\K{offset}}
 
+.. |START| mathdef:: \xref{syntax/modules}{syntax-start}{\K{start}}
 .. |SFUNC| mathdef:: \xref{syntax/modules}{syntax-start}{\K{func}}
 
 .. |EXPORT| mathdef:: \xref{syntax/modules}{syntax-export}{\K{export}}
 .. |ENAME| mathdef:: \xref{syntax/modules}{syntax-export}{\K{name}}
+
+.. |EXFUNC| mathdef:: \xref{syntax/modules}{syntax-externidx}{\K{func}}
+.. |EXTABLE| mathdef:: \xref{syntax/modules}{syntax-externidx}{\K{table}}
+.. |EXMEM| mathdef:: \xref{syntax/modules}{syntax-externidx}{\K{memory}}
+.. |EXGLOBAL| mathdef:: \xref{syntax/modules}{syntax-externidx}{\K{global}}
+
+.. |IMPORT| mathdef:: \xref{syntax/modules}{syntax-import}{\K{import}}
+.. |IMODULE| mathdef:: \xref{syntax/modules}{syntax-import}{\K{module}}
+.. |INAME| mathdef:: \xref{syntax/modules}{syntax-import}{\K{name}}
+
+.. TODO remove below
+
 .. |EDESC| mathdef:: \xref{syntax/modules}{syntax-export}{\K{desc}}
 .. |EDFUNC| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\K{func}}
 .. |EDTABLE| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\K{table}}
 .. |EDMEM| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\K{mem}}
 .. |EDGLOBAL| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\K{global}}
 
-.. |IMPORT| mathdef:: \xref{syntax/modules}{syntax-import}{\K{import}}
-.. |IMODULE| mathdef:: \xref{syntax/modules}{syntax-import}{\K{module}}
-.. |INAME| mathdef:: \xref{syntax/modules}{syntax-import}{\K{name}}
 .. |IDESC| mathdef:: \xref{syntax/modules}{syntax-import}{\K{desc}}
 .. |IDFUNC| mathdef:: \xref{syntax/modules}{syntax-importdesc}{\K{func}}
 .. |IDTABLE| mathdef:: \xref{syntax/modules}{syntax-importdesc}{\K{table}}
@@ -437,10 +452,10 @@
 
 .. Modules, meta functions
 
-.. |funcsed| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\F{funcs}}
-.. |tablesed| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\F{tables}}
-.. |memsed| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\F{mems}}
-.. |globalsed| mathdef:: \xref{syntax/modules}{syntax-exportdesc}{\F{globals}}
+.. |funcsxx| mathdef:: \xref{syntax/modules}{syntax-externidx}{\F{funcs}}
+.. |tablesxx| mathdef:: \xref{syntax/modules}{syntax-externidx}{\F{tables}}
+.. |memsxx| mathdef:: \xref{syntax/modules}{syntax-externidx}{\F{mems}}
+.. |globalsxx| mathdef:: \xref{syntax/modules}{syntax-externidx}{\F{globals}}
 
 
 .. Instructions, terminals

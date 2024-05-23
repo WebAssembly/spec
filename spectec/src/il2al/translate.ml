@@ -211,7 +211,7 @@ and translate_exp exp =
     | [ [ {it = Il.Atom "MUT"; _} ]; [ {it = Il.Quest; _} ]; [] ],
       [ { it = Il.IterE ({ it = Il.TupE []; _ }, (Il.Opt, [])); _}; t ] ->
       tupE [ iterE (varE "mut", ["mut"], Opt); translate_exp t ] ~at:at
-    | [ []; [ {it = Il.Atom "I8"; _} as atom ] ], el ->
+    | [ []; [ {it = Il.Atom "PAGE"; _} as atom ] ], el ->
       caseE (translate_atom atom, List.map translate_exp el) ~at:at
     | [ [ {it = Il.Atom "NULL"; _} as atom ]; [ {it = Il.Quest; _} ] ], el ->
       caseE (translate_atom atom, List.map translate_exp el) ~at:at

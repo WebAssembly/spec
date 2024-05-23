@@ -128,7 +128,7 @@ grammar Btabletype : tabletype =
   | rt:Breftype lim:Blimits => lim rt
 
 grammar Bmemtype : memtype =
-  | lim:Blimits => lim I8
+  | lim:Blimits => lim PAGE
 
 
 grammar Bexterntype : externtype =

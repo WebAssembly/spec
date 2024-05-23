@@ -157,7 +157,7 @@ def $growtable(ti, n, r) = ti'
   -- if $(i' <= j)
 
 def $growmem(mi, n) = mi'
-  -- if mi = { TYPE (`[i .. j] I8), BYTES b* }
+  -- if mi = { TYPE (`[i .. j] PAGE), BYTES b* }
   -- if i' = $(|b*| / (64 * $Ki) + n)
-  -- if mi' = { TYPE (`[i' .. j] I8), BYTES b* 0^(n * $($(64 * $Ki))) }
+  -- if mi' = { TYPE (`[i' .. j] PAGE), BYTES b* 0^(n * $($(64 * $Ki))) }
   -- if $(i' <= j)

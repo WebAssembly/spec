@@ -65,8 +65,8 @@ def $alloctables(s, tabletype tabletype'*) = (s_2, ta ta'*)
   -- if (s_2, ta'*) = $alloctables(s_1, tabletype'*)
 
 def $allocmem(store, memtype) : (store, memaddr)
-def $allocmem(s, `[i .. j] I8) = (s[.MEMS =.. mi], |s.MEMS|)
-  -- if mi = { TYPE (`[i .. j] I8), BYTES 0^(i * $($(64 * $Ki))) }
+def $allocmem(s, `[i .. j] PAGE) = (s[.MEMS =.. mi], |s.MEMS|)
+  -- if mi = { TYPE (`[i .. j] PAGE), BYTES 0^(i * $($(64 * $Ki))) }
 
 def $allocmems(store, memtype*) : (store, memaddr*)
 def $allocmems(s, eps) = (s, eps)

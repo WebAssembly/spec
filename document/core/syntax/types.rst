@@ -96,39 +96,39 @@ That is, both type hierarchies are inhabited by an isomorphic set of values, but
 $${syntax: {absheaptype/syn heaptype typeuse/syn}}
 
 A heap type is either *abstract* or *concrete*.
+A concrete heap type consists of a *type use*, which is a :ref:`type index <syntax-typeidx>`.
+It classifies an object of the respective :ref:`type <syntax-type>` defined in a module.
+Abstract types are denoted by individual keywords.
 
-The abstract type ${:FUNC} denotes the common supertype of all :ref:`function types <syntax-functype>`, regardless of their concrete definition.
+The type ${:FUNC} denotes the common supertype of all :ref:`function types <syntax-functype>`, regardless of their concrete definition.
 Dually, the type ${:NOFUNC} denotes the common subtype of all :ref:`function types <syntax-functype>`, regardless of their concrete definition.
 This type has no values.
 
-The abstract type ${:EXTERN} denotes the common supertype of all external references received through the :ref:`embedder <embedder>`.
+The type ${:EXTERN} denotes the common supertype of all external references received through the :ref:`embedder <embedder>`.
 This type has no concrete subtypes.
 Dually, the type ${:NOEXTERN} denotes the common subtype of all forms of external references.
 This type has no values.
 
-The abstract type ${:ANY} denotes the common supertype of all aggregate types, as well as possibly abstract values produced by *internalizing* an external reference of type ${:EXTERN}.
+The type ${:ANY} denotes the common supertype of all aggregate types, as well as possibly abstract values produced by *internalizing* an external reference of type ${:EXTERN}.
 Dually, the type ${:NONE} denotes the common subtype of all forms of aggregate types.
 This type has no values.
 
-The abstract type ${:EQT} is a subtype of ${:ANY} that includes all types for which references can be compared, i.e., aggregate values and ${:I31}.
+The type ${:EQT} is a subtype of ${:ANY} that includes all types for which references can be compared, i.e., aggregate values and ${:I31}.
 
-The abstract types ${:STRUCT} and ${:ARRAY} denote the common supertypes of all :ref:`structure <syntax-structtype>` and :ref:`array <syntax-arraytype>` aggregates, respectively.
+The types ${:STRUCT} and ${:ARRAY} denote the common supertypes of all :ref:`structure <syntax-structtype>` and :ref:`array <syntax-arraytype>` aggregates, respectively.
 
-The abstract type ${:I31} denotes *unboxed scalars*, that is, integers injected into references.
+The type ${:I31} denotes *unboxed scalars*, that is, integers injected into references.
 Their observable value range is limited to 31 bits.
 
 .. note::
    An ${:I31} value is not actually allocated in the store,
    but represented in a way that allows them to be mixed with actual references into the store without ambiguity.
    Engines need to perform some form of *pointer tagging* to achieve this,
-   which is why 1 bit is reserved.
+   which is why one bit is reserved.
 
    Although the types ${:NONE}, ${:NOFUNC}, and ${:NOEXTERN} are not inhabited by any values,
    they can be used to form the types of all null :ref:`references <syntax-reftype>` in their respective hierarchy.
    For example, ${:(REF NULL NOFUNC)} is the generic type of a null reference compatible with all function reference types.
-
-A concrete heap type consists of a *type use*, which is a :ref:`type index <syntax-typeidx>`.
-It classifies an object of the respective :ref:`type <syntax-type>` defined in a module.
 
 The syntax of abstract heap types and type uses is :ref:`extended <syntax-heaptype-ext>` with additional forms for the purpose of specifying :ref:`validation <valid>` and :ref:`execution <exec>`.
 
@@ -316,7 +316,8 @@ Limits
 
 $${syntax: limits}
 
-If no maximum is given, the respective storage can grow to any size.
+.. scratch
+   If no maximum is given, then the respective storage can grow to any valid size.
 
 
 .. index:: ! memory type, limits, page size, memory

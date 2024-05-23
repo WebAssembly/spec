@@ -107,11 +107,11 @@ ${syntax-ignore: f32 f64}
 .. _arithmetic-nan:
 .. _aux-canon:
 
-A *canonical NaN* is a floating-point value ${:+-NAN($canon_(N))} where ${:$canon_(N)} is a payload whose most significant bit is ${:1} while all others are ${:0}:
+A *canonical NaN* is a floating-point value ${:+-NAN#(($canon_(N)))} where ${:$canon_(N)} is a payload whose most significant bit is ${:1} while all others are ${:0}:
 
 $${definition: canon_}
 
-An *arithmetic NaN* is a floating-point value ${:+-NAN(m)} with ${:m >= $canon_(N)}, such that the most significant bit is ${:1} while all others are arbitrary.
+An *arithmetic NaN* is a floating-point value ${:+-NAN#((m))} with ${:m >= $canon_(N)}, such that the most significant bit is ${:1} while all others are arbitrary.
 
 .. note::
    In the abstract syntax, subnormals are distinguished by the leading ${:0} of the significand. The exponent of subnormals has the same value as the smallest possible exponent of a normal number. Only in the :ref:`binary representation <binary-float>` the exponent of a subnormal is encoded differently than the exponent of any normal number.
@@ -123,7 +123,7 @@ Conventions
 
 * The meta variable ${:z} ranges over floating-point values where clear from context.
 
-* Where clear from context, shorthands like ${:$fone} or ${:$fzero} denote floating point values like ${:POS $($(NORM 1 0))} or ${:POS $($(SUBNORM 0))}.
+* Where clear from context, shorthands like ${:+1} denote floating point values like ${f64: POS $($(NORM 1 0))}.
 
 
 .. index:: ! numeric vector, integer, floating-point, lane, SIMD
