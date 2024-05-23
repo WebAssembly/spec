@@ -1,3 +1,11 @@
+This is written as an alternative to [V1 Proposal](Exceptions-v1.md) in the
+beginning of 2018 as the need for the first-class exception reference type was
+suggested. This was later slightly modified and became the basis of [V2
+Proposal](Exceptions-v2.md), which replaced the V1 Proposal in [Oct 2018 CG
+meeting](https://github.com/WebAssembly/meetings/blob/main/main/2018/TPAC.md#exception-handling-ben-titzer).
+
+---
+
 # Level 1 exception handling
 
 Level 1 of exception handling is the MVP (minimal viable proposal) for
@@ -9,10 +17,6 @@ levels, and either:
    constructs, thereby reducing code size.
 2. Allow performance improvements in the VM.
 3. Introduce additional new functionality not available in Level 1.
-
-This document supersedes the original [Exceptions Proposal].
-
-[Exceptions Proposal]: Exceptions-v1.md
 
 ## Overview
 

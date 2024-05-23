@@ -1,3 +1,8 @@
+This was written along with [Level 1 Proposal](Exceptions-v2-Level-1.md) in the
+beginning of 2018 for collecting ideas for future work.
+
+---
+
 # Exception Handling Level 1+N Extensions
 
 While the Level 1 Proposal establishes the minimum viable product (MVP) for

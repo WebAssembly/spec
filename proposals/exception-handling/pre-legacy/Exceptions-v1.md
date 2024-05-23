@@ -1,10 +1,8 @@
-THIS DOCUMENT IS OBSOLETE!
+This is the first version of the exception handling proposal, active from 2017
+to 2018 and superseded by [V2 proposal](Exceptions-v2.md) in [Oct 2018 CG
+meeting](https://github.com/WebAssembly/meetings/blob/main/main/2018/TPAC.md#exception-handling-ben-titzer).
 
-Please see The new [Level 1 MVP Proposal] instead.
-
-[Level 1 MVP Proposal]: Exceptions-v2-Level-1.md
-
-The original proposal is preserved here for reference.
+---
 
 # Exception handling
 
