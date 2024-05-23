@@ -1239,7 +1239,6 @@ warning: definition `signif` was never spliced
 warning: definition `sizenn` was never spliced
 warning: definition `sizenn1` was never spliced
 warning: definition `sizenn2` was never spliced
-warning: definition `skip` was never spliced
 warning: definition `store` was never spliced
 warning: definition `structinst` was never spliced
 warning: definition `subst_all_deftype` was never spliced
@@ -1631,7 +1630,6 @@ warning: definition prose `size` was never spliced
 warning: definition prose `sizenn` was never spliced
 warning: definition prose `sizenn1` was never spliced
 warning: definition prose `sizenn2` was never spliced
-warning: definition prose `skip` was never spliced
 warning: definition prose `store` was never spliced
 warning: definition prose `structinst` was never spliced
 warning: definition prose `subst_all_deftype` was never spliced

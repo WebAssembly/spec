@@ -1308,14 +1308,6 @@ $$
 \end{array}
 $$
 
-\vspace{1ex}
-
-$$
-\begin{array}{@{}lcl@{}l@{}}
- &=& w \\
-\end{array}
-$$
-
 $$
 \begin{array}{@{}lrrl@{}l@{}}
 & {\mathit{list}}({\mathit{{\scriptstyle X}}}) &::=& {{\mathit{{\scriptstyle X}}}^\ast}

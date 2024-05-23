@@ -4161,9 +4161,6 @@ concat_ X_u0*
 2. Let [w*] ++ w'** be X_u0*.
 3. Return w* ++ $concat_(w'**).
 
-skip w
-1. Return w.
-
 signif N_u0
 1. If (N_u0 is 32), then:
   a. Return 23.

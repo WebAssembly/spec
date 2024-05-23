@@ -57,11 +57,6 @@ def $concat_(syntax X, X**) : X*
   def $concat_{syntax X, w* : X*, w'** : X**}(syntax X, [w*{w : X}] :: w'*{w' : X}*{w' : X}) = w*{w : X} :: $concat_(syntax X, w'*{w' : X}*{w' : X})
 }
 
-;; 0-aux.watsup
-def $skip(syntax X, X : X) : X
-  ;; 0-aux.watsup
-  def $skip{syntax X, w : X}(syntax X, w) = w
-
 ;; 1-syntax.watsup
 syntax list{syntax X}(syntax X) =
   | `%`{X* : X*}(X*{X : X} : X*)
@@ -5752,11 +5747,6 @@ def $concat_(syntax X, X**) : X*
   ;; 0-aux.watsup:41.1-41.61
   def $concat_{syntax X, w* : X*, w'** : X**}(syntax X, [w*{w : X}] :: w'*{w' : X}*{w' : X}) = w*{w : X} :: $concat_(syntax X, w'*{w' : X}*{w' : X})
 }
-
-;; 0-aux.watsup
-def $skip(syntax X, X : X) : X
-  ;; 0-aux.watsup
-  def $skip{syntax X, w : X}(syntax X, w) = w
 
 ;; 1-syntax.watsup
 syntax list{syntax X}(syntax X) =
@@ -11454,11 +11444,6 @@ def $concat_(syntax X, X**) : X*
   def $concat_{syntax X, w* : X*, w'** : X**}(syntax X, [w*{w : X}] :: w'*{w' : X}*{w' : X}) = w*{w : X} :: $concat_(syntax X, w'*{w' : X}*{w' : X})
 }
 
-;; 0-aux.watsup
-def $skip(syntax X, X : X) : X
-  ;; 0-aux.watsup
-  def $skip{syntax X, w : X}(syntax X, w) = w
-
 ;; 1-syntax.watsup
 syntax list{syntax X}(syntax X) =
   | `%`{X* : X*}(X*{X : X} : X*)
@@ -17154,11 +17139,6 @@ def $concat_(syntax X, X**) : X*
   ;; 0-aux.watsup:41.1-41.61
   def $concat_{syntax X, w* : X*, w'** : X**}(syntax X, [w*{w : X}] :: w'*{w' : X}*{w' : X}) = w*{w : X} :: $concat_(syntax X, w'*{w' : X}*{w' : X})
 }
-
-;; 0-aux.watsup
-def $skip(syntax X, X : X) : X
-  ;; 0-aux.watsup
-  def $skip{syntax X, w : X}(syntax X, w) = w
 
 ;; 1-syntax.watsup
 syntax list{syntax X}(syntax X) =
@@ -23008,11 +22988,6 @@ def $concat_(syntax X, X**) : X*
   ;; 0-aux.watsup:41.1-41.61
   def $concat_{syntax X, w* : X*, w'** : X**}(syntax X, [w*{w : X}] :: w'*{w' : X}*{w' : X}) = w*{w : X} :: $concat_(syntax X, w'*{w' : X}*{w' : X})
 }
-
-;; 0-aux.watsup
-def $skip(syntax X, X : X) : X
-  ;; 0-aux.watsup
-  def $skip{syntax X, w : X}(syntax X, w) = w
 
 ;; 1-syntax.watsup
 syntax list{syntax X}(syntax X) =
