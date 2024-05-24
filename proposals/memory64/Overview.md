@@ -203,9 +203,9 @@ have to support 32-bit memory addresses in their ABI.
       ```
   - table.copy x y
     - ```
-          C.tables[x] = it limits t
-      ----------------------------------
-      C ⊦ table.copy x : [it it it] → []
+        C.tables[d] = iN limits t   C.tables[s] = iM limits t    K = min {N, M}
+      -----------------------------------------------------------------------------
+      C ⊦ table.copy d s : [iN iM iK] → []
       ```
   - table.init x y
     - ```

@@ -340,13 +340,11 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
   | TableCopy (x, y) ->
     let TableType (_lim1, it1, t1) = table c x in
     let TableType (_lim2, it2, t2) = table c y in
+    let it3 = min it1 it2 in
     require (t1 = t2) x.at
       ("type mismatch: source element type " ^ string_of_ref_type t1 ^
        " does not match destination element type " ^ string_of_ref_type t2);
-    require (it1 = it2) x.at
-      ("type mismatch: source index type " ^ string_of_index_type it1 ^
-       " does not match destination index type " ^ string_of_index_type it2);
-    [value_type_of_index_type it1; value_type_of_index_type it1; value_type_of_index_type it1] --> []
+    [value_type_of_index_type it1; value_type_of_index_type it2; value_type_of_index_type it3] --> []
 
   | TableInit (x, y) ->
     let TableType (_lim, it, t1) = table c x in

@@ -106,7 +106,6 @@ let match_extern_type et1 et2 =
   | ExternGlobalType gt1, ExternGlobalType gt2 -> match_global_type gt1 gt2
   | _, _ -> false
 
-
 (* String conversion *)
 
 let string_of_num_type = function
