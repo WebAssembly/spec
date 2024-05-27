@@ -44,17 +44,7 @@ By virtue of not being representable in either the :ref:`binary format <binary-v
 these forms cannot be used in a program;
 they only occur during :ref:`validation <valid>` or :ref:`execution <exec>`.
 
-.. math::
-   \begin{array}{llrl}
-   \production{value type} & \valtype &::=&
-     \dots ~|~ \BOT \\
-   \production{abstract heap type} & \absheaptype &::=&
-     \dots ~|~ \BOTH \\
-   \production{heap type} & \heaptype &::=&
-     \dots ~|~ \deftype ~|~ \REC~i \\
-   \production{sub types} & \subtype &::=&
-     \TSUB~\TFINAL^?~\heaptype^\ast~\comptype \\
-   \end{array}
+$${syntax: {valtype/sem absheaptype/sem typeuse/sem}}
 
 The unique :ref:`value type <syntax-valtype>` |BOT| is a *bottom type* that :ref:`matches <match-heaptype>` all value types.
 Similarly, |BOTH| is also used as a bottom type of all :ref:`heap types <syntax-heaptype>`.
@@ -65,15 +55,14 @@ Similarly, |BOTH| is also used as a bottom type of all :ref:`heap types <syntax-
    This ensures the existence of :ref:`principal types <principality>`,
    and thus a :ref:`validation algorithm <algo-valid>` without back tracking.
 
-A :ref:`concrete heap type <syntax-heaptype>` can consist of a :ref:`defined type <syntax-deftype>` directly.
-this occurs as the result of :ref:`substituting <notation-subst>` a :ref:`type index <syntax-typeidx>` with its definition.
+A :ref:`type use <syntax-typeuse>` can consist directly of a :ref:`defined type <syntax-deftype>`.
+This occurs as the result of :ref:`substituting <notation-subst>` a :ref:`type index <syntax-typeidx>` with its definition.
 
-A concrete heap type may also be a *recursive type index*.
-Such an index refers to the :math:`i`-th component of a surrounding :ref:`recursive type <syntax-rectype>`.
+A type use may also be a *recursive type index*.
+Such an index refers to the ${:i}-th component of a surrounding :ref:`recursive type <syntax-rectype>`.
 It occurs as the result of :ref:`rolling up <aux-roll-rectype>` the definition of a :ref:`recursive type <syntax-rectype>`.
 
-Finally, the representation of supertypes in a :ref:`sub type <syntax-subtype>` is generalized from mere :ref:`type indices <syntax-typeidx>` to :ref:`heap types <syntax-heaptype>`.
-They occur as :ref:`defined types <syntax-deftype>` or :ref:`recursive type indices <syntax-rectypeidx>` after :ref:`substituting <notation-subst>` type indices or :ref:`rolling up <aux-roll-rectype>` :ref:`recursive types <syntax-rectype>`.
+Both extensions affect the occurrence of type uses in concrete :ref:`heap types <syntax-heaptype>`, in :ref:`sub types <syntax-subtype>` and in :ref:`instructions <syntax-instr>`.
 
 .. note::
    It is an invariant of the semantics that sub types occur only in one of two forms:
@@ -92,16 +81,12 @@ i.e., all :ref:`type indices <syntax-typeidx>` have been :ref:`substituted <nota
 Convention
 ..........
 
-* The *difference* :math:`\X{rt}_1\reftypediff\X{rt}_2` between two :ref:`reference types <syntax-reftype>` is defined as follows:
+* The *difference* ${:$diffrt(rt_1, rt_2)} between two :ref:`reference types <syntax-reftype>` is defined as follows:
 
-  .. math::
-     \begin{array}{lll}
-     (\REF~\NULL_1^?~\X{ht}_1) \reftypediff (\REF~\NULL~\X{ht}_2) &=& (\REF~\X{ht}_1) \\
-     (\REF~\NULL_1^?~\X{ht}_1) \reftypediff (\REF~\X{ht}_2) &=& (\REF~\NULL_1^?~\X{ht}_1) \\
-     \end{array}
+  $${definition: diffrt}
 
 .. note::
-   This definition computes an approximation of the reference type that is inhabited by all values from :math:`\X{rt}_1` except those from :math:`\X{rt}_2`.
+   This definition computes an approximation of the reference type that is inhabited by all values from ${:rt_1} except those from ${:rt_2}.
    Since the type system does not have general union types,
    the defnition only affects the presence of null and cannot express the absence of other values.
 
@@ -116,11 +101,7 @@ Defined Types
 *Defined types* denote the individual types defined in a :ref:`module <syntax-module>`.
 Each such type is represented as a projection from the :ref:`recursive type <syntax-rectype>` group it originates from, indexed by its position in that group.
 
-.. math::
-   \begin{array}{llrl}
-   \production{defined type} & \deftype &::=&
-     \rectype.i \\
-   \end{array}
+$${syntax: deftype}
 
 Defined types do not occur in the :ref:`binary <binary>` or :ref:`text <text>` format,
 but are formed by :ref:`rolling up <aux-roll-deftype>` the :ref:`recursive types <syntax-reftype>` defined in a module.
@@ -135,11 +116,11 @@ It is hence an invariant of the semantics that all :ref:`recursive types <syntax
 Conventions
 ...........
 
-* :math:`t[x^\ast \subst \X{dt}^\ast]` denotes the parallel *substitution* of :ref:`type indices <syntax-typeidx>` :math:`x^\ast` with :ref:`defined types <syntax-deftype>` :math:`\X{dt}^\ast` in type :math:`t`, provided :math:`|x^\ast| = |\X{dt}^\ast|`.
+* ${:$subst_valtype(t, x*, dt*)} denotes the parallel *substitution* of :ref:`type indices <syntax-typeidx>` ${:x*} with :ref:`defined types <syntax-deftype>` ${:dt*} in type ${:t}, provided ${:|x*| = |dt*|}.
 
-* :math:`t[(\REC~i)^\ast \subst \X{dt}^\ast]` denotes the parallel *substitution* of :ref:`recursive type indices <syntax-rectypeidx>` :math:`(\REC~i)^\ast` with :ref:`defined types <syntax-deftype>` :math:`\X{dt}^\ast` in type :math:`t`, provided :math:`|(\REC~i)^\ast| = |\X{dt}^\ast|`.
+* ${:$subst_valtype(t, (REC i)*, dt*)} denotes the parallel substitution of :ref:`recursive type indices <syntax-rectypeidx>` ${:(REC i)*} with :ref:`defined types <syntax-deftype>` ${:dt*} in type ${:t}, provided ${:|(REC i)*| = |dt*|}.
 
-* :math:`t[\subst \X{dt}^\ast]` is shorthand for the substitution :math:`t[x^\ast \subst \X{dt}^\ast]`, where :math:`x^\ast = 0 \cdots (|\X{dt}^\ast| - 1)`.
+* ${:$subst_all_valtype(t, dt*)} is shorthand for the substitution ${:$subst_valtype(t, x*, dt*)}, where ${:x* = 0 `... $((|dt*| - 1))}.
 
 
 .. index:: recursive type, defined type, sub type, ! rolling, ! unrolling, ! expansion, type equivalence
@@ -169,25 +150,14 @@ The representation change is performed by two auxiliary operations on the syntax
 
 These operations are extended to :ref:`defined types <syntax-deftype>` and defined as follows:
 
-.. math::
-   \begin{array}{@{}l@{~}l@{~}l@{~}r@{~}l@{}}
-   \rollrt_{x}(\TREC~\subtype^\ast) &=& \TREC~(\subtype[(x + i)^\ast \subst (\REC~i)^\ast])^\ast
-   & (\iff & i^\ast = 0 \cdots (|\subtype^\ast| - 1)) \\
-   \unrollrt(\TREC~\subtype^\ast) &=& \TREC~(\subtype[(\REC~i)^\ast \subst ((\TREC~\subtype^\ast).i)^\ast])^\ast
-   & (\iff & i^\ast = 0 \cdots (|\subtype^\ast| - 1)) \\[2ex]
-   \rolldt_{x}^\ast(\rectype) &=& ((\TREC~\subtype^\ast).i)^\ast
-   & (\iff & i^\ast = 0 \cdots (|\subtype^\ast| - 1) \\
-   &&& \land & \rollrt_{x}(\rectype) = \TREC~\subtype^\ast) \\
-   \unrolldt(\rectype.i) &=& \subtype^\ast[i]
-   & (\iff & \unrollrt(\rectype) = \TREC~\subtype^\ast) \\
-   \end{array}
+$${definition: rollrt unrollrt rolldt unrolldt}
 
-In addition, the following auxiliary function denotes the *expansion* of a :ref:`defined type <syntax-deftype>`:
+In addition, the following auxiliary relation denotes the *expansion* of a :ref:`defined type <syntax-deftype>`:
 
-.. math::
-   \begin{array}{@{}llll@{}}
-   \expanddt(\deftype) &=& \comptype & (\iff \unrolldt(\deftype) = \TSUB~\TFINAL^?~\X{ht}^\ast~\comptype) \\
-   \end{array}
+$${rule: Expand}
+
+$${relation-ignore: Expand}
+$${definition-ignore: expanddt}
 
 
 .. index:: ! instruction type, value type, result type, instruction, local, local index
@@ -200,15 +170,11 @@ Instruction Types
 
 *Instruction types* classify the behaviour of :ref:`instructions <syntax-instr>` or instruction sequences, by describing how they manipulate the :ref:`operand stack <stack>` and the initialization status of :ref:`locals <syntax-local>`:
 
-.. math::
-   \begin{array}{llrl}
-   \production{instruction type} & \instrtype &::=&
-     \resulttype \to_{\localidx^\ast} \resulttype \\
-   \end{array}
+$${syntax: instrtype}
 
-An instruction type :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]` describes the required input stack with argument values of types :math:`t_1^\ast` that an instruction pops off
-and the provided output stack with result values of types :math:`t_2^\ast` that it pushes back.
-Moreover, it enumerates the :ref:`indices <syntax-localidx>` :math:`x^\ast` of locals that have been set by the instruction or sequence.
+An instruction type ${instrtype: t_1* ->_(x*) t_2*} describes the required input stack with argument values of types ${:t_1*} that an instruction pops off
+and the provided output stack with result values of types ${:t_2*} that it pushes back.
+Moreover, it enumerates the :ref:`indices <syntax-localidx>` ${:x*} of locals that have been set by the instruction or sequence.
 
 .. note::
    Instruction types are only used for :ref:`validation <valid>`,
@@ -226,13 +192,7 @@ Local Types
 
 *Local types* classify :ref:`locals <syntax-local>`, by describing their :ref:`value type <syntax-valtype>` as well as their *initialization status*:
 
-.. math::
-   \begin{array}{llrl}
-   \production{initialization status} & \init &::=&
-     \SET ~|~ \UNSET \\
-   \production{local type} & \localtype &::=&
-     \init~\valtype \\
-   \end{array}
+$${syntax: {localtype init}}
 
 .. note::
    Local types are only used for :ref:`validation <valid>`,
@@ -249,6 +209,7 @@ Validity of an individual definition is specified relative to a *context*,
 which collects relevant information about the surrounding :ref:`module <syntax-module>` and the definitions in scope:
 
 * *Types*: the list of :ref:`types <syntax-type>` defined in the current module.
+* *Recursive Types*: the list of :ref:`sub types <syntax-subtype>` in the current group of recursive types.
 * *Functions*: the list of :ref:`functions <syntax-func>` declared in the current module, represented by a :ref:`defined type <syntax-deftype>` that :ref:`expands <aux-expand-deftype>` to their :ref:`function type <syntax-functype>`.
 * *Tables*: the list of :ref:`tables <syntax-table>` declared in the current module, represented by their :ref:`table type <syntax-tabletype>`.
 * *Memories*: the list of :ref:`memories <syntax-mem>` declared in the current module, represented by their :ref:`memory type <syntax-memtype>`.
@@ -265,38 +226,22 @@ describing each defined entry in that space.
 Locals, labels and return type are only used for validating :ref:`instructions <syntax-instr>` in :ref:`function bodies <syntax-func>`, and are left empty elsewhere.
 The label stack is the only part of the context that changes as validation of an instruction sequence proceeds.
 
-More concretely, contexts are defined as :ref:`records <notation-record>` :math:`C` with abstract syntax:
+More concretely, contexts are defined as :ref:`records <notation-record>` ${:C} with abstract syntax:
 
-.. math::
-   \begin{array}{llll}
-   \production{context} & C &::=&
-     \begin{array}[t]{l@{~}ll}
-     \{ & \CTYPES & \deftype^\ast, \\
-        & \CFUNCS & \deftype^\ast, \\
-        & \CTABLES & \tabletype^\ast, \\
-        & \CMEMS & \memtype^\ast, \\
-        & \CGLOBALS & \globaltype^\ast, \\
-        & \CELEMS & \reftype^\ast, \\
-        & \CDATAS & \datatype^\ast, \\
-        & \CLOCALS & \localtype^\ast, \\
-        & \CLABELS & \resulttype^\ast, \\
-        & \CRETURN & \resulttype^?, \\
-        & \CREFS & \funcidx^\ast ~\} \\
-     \end{array} \\
-   \end{array}
+$${syntax: context}
 
 .. _notation-extend:
 
-In addition to field access written :math:`C.\K{field}` the following notation is adopted for manipulating contexts:
+In addition to field access written ${:C.FIELD}, the following notation is adopted for manipulating contexts:
 
 * When spelling out a context, empty fields are omitted.
 
-* :math:`C,\K{field}\,A^\ast` denotes the same context as :math:`C` but with the elements :math:`A^\ast` prepended to its :math:`\K{field}` component sequence.
+* ${:C, FIELD A*} denotes the same context as ${:C} but with the elements ${:A*} prepended to its ${:FIELD} component sequence.
 
 .. note::
-   :ref:`Indexing notation <notation-index>` like :math:`C.\CLABELS[i]` is used to look up indices in their respective :ref:`index space <syntax-index>` in the context.
-   Context extension notation :math:`C,\K{field}\,A` is primarily used to locally extend *relative* index spaces, such as :ref:`label indices <syntax-labelidx>`.
-   Accordingly, the notation is defined to append at the *front* of the respective sequence, introducing a new relative index :math:`0` and shifting the existing ones.
+   :ref:`Indexing notation <notation-index>` like ${resulttype: C.LABELS[i]} is used to look up indices in their respective :ref:`index space <syntax-index>` in the context.
+   Context extension notation ${:C, FIELD A} is primarily used to locally extend *relative* index spaces, such as :ref:`label indices <syntax-labelidx>`.
+   Accordingly, the notation is defined to append at the *front* of the respective sequence, introducing a new relative index ${:0} and shifting the existing ones.
 
 
 .. index:: ! type closure
@@ -306,14 +251,9 @@ In addition to field access written :math:`C.\K{field}` the following notation i
 Convention
 ..........
 
-Any form of :ref:`type <syntax-type>` can be *closed* to bring it into :ref:`closed <type-closed>` form relative to a :ref:`context <context>` it is :ref:`valid <valid-type>` in by :ref:`substituting <notation-subst>` each :ref:`type index <syntax-typeidx>` :math:`x` occurring in it with the corresponding :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]`, after first closing the the types in :math:`C.\CTYPES` themselves.
+A :ref:`defined type <syntax-deftype>` can be *closed* to bring it into :ref:`closed <type-closed>` form relative to a :ref:`context <context>` it is :ref:`valid <valid-type>` in by :ref:`substituting <notation-subst>` each :ref:`type index <syntax-typeidx>` ${:x} occurring in it with its own corresponding :ref:`defined type <syntax-deftype>` ${deftype: C.TYPES[x]}, after first closing the the types in ${deftype*: C.TYPES} themselves.
 
-.. math::
-   \begin{array}{@{}lcll@{}}
-   \clostype_C(t) &=& t[\subst \clostype^\ast(C.\CTYPES)] \\[2ex]
-   \clostype^\ast(\epsilon) &=& \epsilon \\
-   \clostype^\ast(\X{dt}^\ast~\X{dt}_N) &=& {\X{dt}'}^\ast~\X{dt}_N[\subst {\X{dt}'}^\ast] & (\iff {\X{dt}'}^\ast = \clostype^\ast(\X{dt}^\ast)) \\
-   \end{array}
+$${definition: clostype clostypes}
 
 
 .. _valid-notation-textual:
@@ -326,21 +266,21 @@ The rules not only state constraints defining when a phrase is valid,
 they also classify it with a type.
 The following conventions are adopted in stating these rules.
 
-* A phrase :math:`A` is said to be "valid with type :math:`T`"
+* A phrase ${:A} is said to be "valid with type ${:T}"
   if and only if all constraints expressed by the respective rules are met.
-  The form of :math:`T` depends on what :math:`A` is.
+  The form of ${:T} depends on the syntactic class of ${:A}.
 
   .. note::
-     For example, if :math:`A` is a :ref:`function <syntax-func>`,
-     then  :math:`T` is a :ref:`function type <syntax-functype>`;
-     for an :math:`A` that is a :ref:`global <syntax-global>`,
-     :math:`T` is a :ref:`global type <syntax-globaltype>`;
+     For example, if ${:A} is a :ref:`function <syntax-func>`,
+     then ${:T} is a :ref:`function type <syntax-functype>`;
+     for an ${:A} that is a :ref:`global <syntax-global>`,
+     ${:T} is a :ref:`global type <syntax-globaltype>`;
      and so on.
 
-* The rules implicitly assume a given :ref:`context <context>` :math:`C`.
+* The rules implicitly assume a given :ref:`context <context>` ${:C}.
 
-* In some places, this context is locally extended to a context :math:`C'` with additional entries.
-  The formulation "Under context :math:`C'`, ... *statement* ..." is adopted to express that the following statement must apply under the assumptions embodied in the extended context.
+* In some places, this context is locally extended to a context ${:C'} with additional entries.
+  The formulation "Under context ${:C'}, ... *statement* ..." is adopted to express that the following statement must apply under the assumptions embodied in the extended context.
 
 
 .. index:: ! typing rules
@@ -353,71 +293,53 @@ Formal Notation
    This section gives a brief explanation of the notation for specifying typing rules formally.
    For the interested reader, a more thorough introduction can be found in respective text books. [#cite-tapl]_
 
-The proposition that a phrase :math:`A` has a respective type :math:`T` is written :math:`A : T`.
-In general, however, typing is dependent on a context :math:`C`.
-To express this explicitly, the complete form is a *judgement* :math:`C \vdash A : T`,
-which says that :math:`A : T` holds under the assumptions encoded in :math:`C`.
+The proposition that a phrase ${:A} has a respective type ${:T} is written ${:A `: T}.
+In general, however, typing is dependent on a context ${:C}.
+To express this explicitly, the complete form is a *judgement* ${:C `|- A `: T},
+which says that ${:A `: T} holds under the assumptions encoded in ${:C}.
 
 The formal typing rules use a standard approach for specifying type systems, rendering them into *deduction rules*.
 Every rule has the following general form:
 
-.. math::
-   \frac{
-     \X{premise}_1 \qquad \X{premise}_2 \qquad \dots \qquad \X{premise}_n
-   }{
-     \X{conclusion}
-   }
+$${rule: Scheme}
+$${relation-ignore: Scheme}
 
 Such a rule is read as a big implication: if all premises hold, then the conclusion holds.
 Some rules have no premises; they are *axioms* whose conclusion holds unconditionally.
-The conclusion always is a judgment :math:`C \vdash A : T`,
-and there is one respective rule for each relevant construct :math:`A` of the abstract syntax.
+The conclusion always is a judgment ${:C `|- A `: T},
+and there is one respective rule for each relevant construct ${:A} of the abstract syntax.
 
 .. note::
-   For example, the typing rule for the :math:`\I32.\ADD` instruction can be given as an axiom:
+   For example, the typing rule for the ${instr: BINOP I32 ADD} instruction can be given as an axiom:
 
-   .. math::
-      \frac{
-      }{
-        C \vdash \I32.\ADD : [\I32~\I32] \to [\I32]
-      }
+   $${rule: InstrScheme/i32.add}
 
-   The instruction is always valid with type :math:`[\I32~\I32] \to [\I32]`
-   (saying that it consumes two |I32| values and produces one),
+   The instruction is always valid with type ${instrtype: I32 I32 -> I32}
+   (saying that it consumes two ${numtype: I32} values and produces one),
    independent of any side conditions.
 
-   An instruction like |LOCALGET| can be typed as follows:
+   An instruction like |GLOBALGET| can be typed as follows:
 
-   .. math::
-      \frac{
-        C.\CGLOBALS[x] = \mut~t
-      }{
-        C \vdash \GLOBALGET~x : [] \to [t]
-      }
+   $${rule: InstrScheme/global.get}
 
-   Here, the premise enforces that the immediate :ref:`global index <syntax-globalidx>` :math:`x` exists in the context.
-   The instruction produces a value of its respective type :math:`t`
+   Here, the premise enforces that the immediate :ref:`global index <syntax-globalidx>` ${:x} exists in the context.
+   The instruction produces a value of its respective type ${:t}
    (and does not consume any values).
-   If :math:`C.\CGLOBALS[x]` does not exist then the premise does not hold,
+   If ${globaltype: C.GLOBALS[x]} does not exist then the premise does not hold,
    and the instruction is ill-typed.
 
    Finally, a :ref:`structured <syntax-instr-control>` instruction requires
    a recursive rule, where the premise is itself a typing judgement:
 
-   .. math::
-      \frac{
-        C \vdash \blocktype : [t_1^\ast] \to [t_2^\ast]
-        \qquad
-        C,\LABEL\,[t_2^\ast] \vdash \instr^\ast : [t_1^\ast] \to [t_2^\ast]
-      }{
-        C \vdash \BLOCK~\blocktype~\instr^\ast~\END : [t_1^\ast] \to [t_2^\ast]
-      }
+   $${rule: InstrScheme/block}
 
    A |BLOCK| instruction is only valid when the instruction sequence in its body is.
-   Moreover, the result type must match the block's annotation :math:`\blocktype`.
+   Moreover, the result type must match the block's annotation ${:blocktype}.
    If so, then the |BLOCK| instruction has the same type as the body.
    Inside the body an additional label of the corresponding result type is available,
-   which is expressed by extending the context :math:`C` with the additional label information for the premise.
+   which is expressed by extending the context ${:C} with the additional label information for the premise.
+
+$${relation-ignore: InstrScheme}
 
 
 .. [#cite-pldi2017]

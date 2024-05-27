@@ -18,3 +18,33 @@ syntax record hint(show r) hint(macro none none) =
     `... recorddots }
 
 syntax pth hint(macro none) = PTHSYNTAX hint(show (`[i] `| !%.FIELD)+)
+
+
+;; Validation notation
+
+syntax T hint(macro none) = nat
+
+relation Premise: nat
+relation Premisedots: `... hint(macro none)
+relation Scheme: nat
+
+rule Scheme:
+  conclusion
+  -- Premise: premise_1
+  -- Premise: premise_2
+  -- Premisedots: `...
+  -- Premise: premise_n
+
+relation InstrScheme: context |- instr* : functype hint(macro none)
+
+rule InstrScheme/i32.add:
+  C |- BINOP I32 ADD : I32 I32 -> I32
+
+rule InstrScheme/global.get:
+  C |- GLOBAL.GET x : eps -> t
+  -- if C.GLOBALS[x] = mut t
+
+rule InstrScheme/block:
+  C |- BLOCK blocktype instr* : t_1* -> t_2*
+  -- Blocktype_ok: C |- blocktype : t_1* -> t_2*
+  -- InstrScheme: C, LABELS (t_2*) |- instr* : t_1* -> t_2*

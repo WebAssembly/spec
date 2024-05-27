@@ -296,11 +296,9 @@ Recursive Types
 *Recursive types* denote a group of mutually recursive :ref:`composite types <syntax-comptype>`, each of which can optionally declare a list of :ref:`type indices <syntax-typeidx>` of supertypes that it :ref:`matches <match-comptype>`.
 Each type can also be declared *final*, preventing further subtyping.
 
-$${syntax: {rectype subtype/syn}}
+$${syntax: {rectype subtype}}
 
 In a :ref:`module <syntax-module>`, each member of a recursive type is assigned a separate :ref:`type index <syntax-typeidx>`.
-
-The syntax of sub types is :ref:`generalized <syntax-heaptype-ext>` for the purpose of specifying :ref:`validation <valid>` and :ref:`execution <exec>`.
 
 
 .. index:: ! limits, memory type, table type

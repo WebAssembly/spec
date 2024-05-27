@@ -3638,25 +3638,25 @@ watsup 0.4 generator
 8-reduction.watsup:226.12-226.36: translate_rulepr: Yet `(`%;%`_config(z, (instr : instr <: admininstr)*{instr : instr}), `%;%`_config(z', (instr' : instr <: admininstr)*{instr' : instr}))`
 8-reduction.watsup:230.12-230.44: translate_rulepr: Yet `(`%;%`_config(`%;%`_state(s, f'), (instr : instr <: admininstr)*{instr : instr}), `%;%`_config(`%;%`_state(s', f'), (instr' : instr <: admininstr)*{instr' : instr}))`
 == Prose Generation...
-6-typing.watsup:619.7-619.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0)`
-6-typing.watsup:620.6-620.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l'!`%`_labelidx.0]!`%`_resulttype.0)`
-6-typing.watsup:637.6-637.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-6-typing.watsup:638.6-638.34: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt)`
-6-typing.watsup:645.6-645.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-6-typing.watsup:646.6-646.49: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, $diffrt(rt_1, rt_2), rt)`
-6-typing.watsup:662.6-662.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
-6-typing.watsup:675.6-675.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
-6-typing.watsup:683.6-683.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
-6-typing.watsup:690.6-690.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
-6-typing.watsup:694.6-694.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
-6-typing.watsup:755.6-755.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-6-typing.watsup:761.6-761.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-6-typing.watsup:779.7-779.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
-6-typing.watsup:811.6-811.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
-6-typing.watsup:840.6-840.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
-6-typing.watsup:845.6-845.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
-6-typing.watsup:984.6-984.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-6-typing.watsup:990.6-990.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:620.7-620.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0)`
+6-typing.watsup:621.6-621.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l'!`%`_labelidx.0]!`%`_resulttype.0)`
+6-typing.watsup:638.6-638.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:639.6-639.34: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt)`
+6-typing.watsup:646.6-646.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:647.6-647.49: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, $diffrt(rt_1, rt_2), rt)`
+6-typing.watsup:663.6-663.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
+6-typing.watsup:676.6-676.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+6-typing.watsup:684.6-684.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+6-typing.watsup:691.6-691.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
+6-typing.watsup:695.6-695.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+6-typing.watsup:756.6-756.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
+6-typing.watsup:762.6-762.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
+6-typing.watsup:780.7-780.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
+6-typing.watsup:812.6-812.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
+6-typing.watsup:841.6-841.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
+6-typing.watsup:846.6-846.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
+6-typing.watsup:985.6-985.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:991.6-991.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 =================
  Generated prose
 =================
@@ -4456,11 +4456,11 @@ const const_u0 c
 unpackshape (Lnn X N)
 1. Return $lunpack(Lnn).
 
-diffrt (REF nul_1 ht_1) (REF (NULL _u0?) ht_2)
+diffrt (REF nul1 ht_1) (REF (NULL _u0?) ht_2)
 1. If (_u0? is ?(())), then:
   a. Return (REF (NULL ?()) ht_1).
 2. Assert: Due to validation, _u0? is not defined.
-3. Return (REF nul_1 ht_1).
+3. Return (REF nul1 ht_1).
 
 idx x
 1. Return (_IDX x).
@@ -4579,6 +4579,9 @@ subst_externtype exter_u0 tv* tu*
 5. Let (MEM mt) be exter_u0.
 6. Return (MEM $subst_memtype(mt, tv*, tu*)).
 
+subst_all_valtype t tu^n
+1. Return $subst_valtype(t, $idx(i)^(i<n), tu^n).
+
 subst_all_reftype rt tu^n
 1. Return $subst_reftype(rt, $idx(i)^(i<n), tu^n).
 
@@ -4591,27 +4594,30 @@ subst_all_deftypes defty_u0* tu*
 2. Let [dt_1] ++ dt* be defty_u0*.
 3. Return [$subst_all_deftype(dt_1, tu*)] ++ $subst_all_deftypes(dt*, tu*).
 
-rollrt x (REC st^n)
-1. Return (REC $subst_subtype(st, $idx((x + i))^(i<n), (REC i)^(i<n))^n).
+rollrt x rectype
+1. Assert: Due to validation, rectype is of the case REC.
+2. Let (REC subtype^n) be rectype.
+3. Return (REC $subst_subtype(subtype, $idx((x + i))^(i<n), (REC i)^(i<n))^n).
 
-unrollrt (REC st^n)
-1. Let qt be (REC st^n).
-2. Return (REC $subst_subtype(st, (REC i)^(i<n), (DEF qt i)^(i<n))^n).
+unrollrt rectype
+1. Assert: Due to validation, rectype is of the case REC.
+2. Let (REC subtype^n) be rectype.
+3. Return (REC $subst_subtype(subtype, (REC i)^(i<n), (DEF rectype i)^(i<n))^n).
 
-rolldt x qt
-1. Assert: Due to validation, $rollrt(x, qt) is of the case REC.
-2. Let (REC st^n) be $rollrt(x, qt).
-3. Return (DEF (REC st^n) i)^(i<n).
+rolldt x rectype
+1. Assert: Due to validation, $rollrt(x, rectype) is of the case REC.
+2. Let (REC subtype^n) be $rollrt(x, rectype).
+3. Return (DEF (REC subtype^n) i)^(i<n).
 
-unrolldt (DEF qt i)
-1. Assert: Due to validation, $unrollrt(qt) is of the case REC.
-2. Let (REC st*) be $unrollrt(qt).
-3. Return st*[i].
+unrolldt (DEF rectype i)
+1. Assert: Due to validation, $unrollrt(rectype) is of the case REC.
+2. Let (REC subtype*) be $unrollrt(rectype).
+3. Return subtype*[i].
 
-expanddt dt
-1. Assert: Due to validation, $unrolldt(dt) is of the case SUB.
-2. Let (SUB fin tu* ct) be $unrolldt(dt).
-3. Return ct.
+expanddt deftype
+1. Assert: Due to validation, $unrolldt(deftype) is of the case SUB.
+2. Let (SUB fin typeuse* comptype) be $unrolldt(deftype).
+3. Return comptype.
 
 funcsxx exter_u0*
 1. If (exter_u0* is []), then:
@@ -5625,7 +5631,7 @@ unrollht C heapt_u0
   b. Return $unrolldt(C.TYPES[typeidx]).
 3. Assert: Due to validation, heapt_u0 is of the case REC.
 4. Let (REC i) be heapt_u0.
-5. Return C.REC[i].
+5. Return C.RECS[i].
 
 in_binop nt binop binop_u0*
 1. Return false.

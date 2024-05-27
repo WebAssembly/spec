@@ -123,6 +123,9 @@ var x33 : s33 hint(show x)
 
 ;; TODO: inline
 syntax nul hint(show NULL?) hint(macro "%" "%") = NULL?
+;; HACK
+syntax nul1 hint(show NULL#$_(1)?) hint(macro "%" "%") = NULL?
+syntax nul2 hint(show NULL#$_(2)?) hint(macro "%" "%") = NULL?
 
 syntax numtype hint(desc "number type") =
   | I32 | I64 | F32 | F64
@@ -143,7 +146,7 @@ syntax absheaptype/sem =
 
 syntax rectype hint(desc "recursive type")  ;; forward decl
 syntax deftype hint(desc "defined type") =
-  | DEF rectype nat hint(show %.%)
+  | DEF rectype n hint(show %.%)
 
 syntax typeuse/syn hint(desc "type use") =
   | _IDX typeidx | ...
@@ -220,7 +223,7 @@ syntax comptype hint(desc "composite type") hint(macro "%" "T%") =
   | ARRAY arraytype
   | FUNC functype
 
-syntax subtype/syn hint(desc "sub type") hint(macro "%" "T%") =
+syntax subtype hint(desc "sub type") hint(macro "%" "T%") =
   | SUB fin typeuse* comptype
 
 syntax rectype hint(desc "recursive type") hint(macro "%" "T%") =
@@ -240,8 +243,8 @@ syntax memtype hint(desc "memory type") =
   limits PAGE
 syntax elemtype hint(desc "element type") =
   reftype
-syntax datatype hint(desc "data type") =
-  OK hint(macro "OKdata")
+syntax datatype hint(desc "data type") hint(show OK) hint(macro "%data" "%data") =
+  OK
 syntax externtype hint(desc "external type") hint(macro "%" "ET%") =
   | FUNC typeuse | GLOBAL globaltype | TABLE tabletype | MEM memtype
 

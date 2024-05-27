@@ -8,21 +8,22 @@ syntax init hint(desc "initialization status") =
 syntax localtype hint(desc "local type") =
   init valtype
 
+;; TODO: fix rendering
 syntax instrtype hint(desc "instruction type") =
   resulttype ->_ localidx* resulttype  hint(show %0 `->_ %2 %3) hint(macro "to")
 
 
 syntax context hint(desc "context") hint(macro "%" "C%") =
-  { TYPES deftype*, \
-    REC subtype*,
-    FUNCS deftype*, \
-    GLOBALS globaltype*, \
-    TABLES tabletype*, \
+  { TYPES deftype*,
+    RECS subtype*,
+    FUNCS deftype*,
+    GLOBALS globaltype*,
+    TABLES tabletype*,
     MEMS memtype*,
-    ELEMS elemtype*, \
+    ELEMS reftype*,
     DATAS datatype*,
-    LOCALS localtype*, \
-    LABELS resulttype*, \
+    LOCALS localtype*,
+    LABELS resulttype*,
     RETURN resulttype?
   }
 
@@ -31,15 +32,15 @@ var lct : localtype  hint(show lt)
 var it : instrtype
 
 
-;; TODO: is there a way to show this as %[.LOCAL[%]*=%*] ?
+;; TODO: is there a way to show this as %[.LOCAL[%]* = %*] ?
 def $with_locals(context, localidx*, localtype*) : context  hint(show %[.LOCAL[%]=%])
 
 def $with_locals(C, eps, eps) = C
 def $with_locals(C, x_1 x*, lct_1 lct*) = $with_locals(C[.LOCALS[x_1] = lct_1], x*, lct*)
 
 
-def $clostype(context, deftype) : deftype  hint(show $clos_%(%))
-def $clostypes(deftype*) : deftype*        hint(show $clos`*(%))
+def $clostype(context, deftype) : deftype  hint(show $clos_(%,%)) hint(macro "clostype")
+def $clostypes(deftype*) : deftype*        hint(show $clos*#((%))) hint(macro "clostype")
 
 def $clostype(C, dt) = $subst_all_deftype(dt, dt'*) -- if dt'* = $clostypes(C.TYPES)
 
@@ -75,7 +76,7 @@ rule Heaptype_ok/typeidx:
 
 rule Heaptype_ok/rec:
   C |- REC i : OK
-  -- if C.REC[i] = st
+  -- if C.RECS[i] = st
 
 rule Reftype_ok:
   C |- REF NULL? heaptype : OK
@@ -180,7 +181,7 @@ def $before(REC j, x, i) = j < i
 def $unrollht(context, heaptype) : subtype  hint(show $unroll_(%,%))
 def $unrollht(C, deftype) = $unrolldt(deftype)
 def $unrollht(C, _IDX typeidx) = $unrolldt(C.TYPES[typeidx])
-def $unrollht(C, REC i) = C.REC[i]
+def $unrollht(C, REC i) = C.RECS[i]
 
 rule Subtype_ok2:
   C |- SUB FINAL? typeuse* compttype : OK x i
@@ -202,7 +203,7 @@ rule Rectype_ok/cons:
 
 rule Rectype_ok/rec2:
   C |- REC subtype* : OK(x)
-  -- Rectype_ok2: C, REC subtype* |- REC subtype* : OK x 0
+  -- Rectype_ok2: C, RECS subtype* |- REC subtype* : OK x 0
 
 rule Rectype_ok2/empty:
   C |- REC eps : OK x i
@@ -337,7 +338,7 @@ rule Heaptype_sub/typeidx-r:
 
 rule Heaptype_sub/rec:
   C |- REC i <: yy
-  -- if C.REC[i] = SUB fin (yy_1* yy yy_2*) ct
+  -- if C.RECS[i] = SUB fin (yy_1* yy yy_2*) ct
 
 rule Heaptype_sub/none:
   C |- NONE <: heaptype

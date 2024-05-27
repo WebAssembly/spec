@@ -1344,7 +1344,7 @@ let rec render_defs env = function
       (if ds' = [] then "" else " \\; " ^ render_defs env ds')
     | RuleD (_, _, e, _) ->
       (match classify_rel e with
-      | Some TypingRel ->
+      | Some TypingRel | None ->
         "\\begin{array}{@{}c@{}}\\displaystyle\n" ^
           render_sep_defs ~sep:"\n\\qquad\n" ~br:"\n\\\\[3ex]\\displaystyle\n"
             (render_ruledef env) ds ^
@@ -1353,7 +1353,6 @@ let rec render_defs env = function
         "\\begin{array}{@{}l@{}r" ^ sp ^ "c" ^ sp ^ "l@{}l@{}}\n" ^
           render_sep_defs (render_reddef env) ds ^
         "\\end{array}"
-      | None -> error d.at "unrecognized form of relation"
       )
     | DefD _ ->
       "\\begin{array}{@{}l" ^ sp ^ "c" ^ sp ^ "l@{}l@{}}\n" ^
@@ -1416,14 +1415,13 @@ let rec render_script env = function
       render_script env ds
     | RuleD (id1, _, e, _) ->
       (match classify_rel e with
-      | Some TypingRel ->
+      | Some TypingRel | None ->
         "$$\n" ^ render_def env d ^ "\n$$\n\n" ^
         render_script env ds
       | Some ReductionRel ->
         let reddefs, ds' = split_reddefs id1.it [d] ds in
         "$$\n" ^ render_defs env reddefs ^ "\n$$\n\n" ^
         render_script env ds'
-      | None -> error d.at "unrecognized form of relation"
       )
     | DefD (id, _, _, _) ->
       let funcdefs, ds' = split_funcdefs id.it [d] ds in

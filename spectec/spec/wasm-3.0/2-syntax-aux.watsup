@@ -132,8 +132,8 @@ def $unpackshape(Lnn X N) = $lunpack(Lnn)
 
 def $diffrt(reftype, reftype) : reftype  hint(show %\%)
 
-def $diffrt((REF nul_1 ht_1), (REF NULL ht_2)) = (REF eps ht_1)
-def $diffrt((REF nul_1 ht_1), (REF eps ht_2)) = (REF nul_1 ht_1)
+def $diffrt((REF nul1 ht_1), (REF NULL ht_2)) = (REF ht_1)
+def $diffrt((REF nul1 ht_1), (REF ht_2)) = (REF nul1 ht_1)
 
 
 ;; Injection
@@ -149,30 +149,30 @@ def $idx(x) = _IDX x
 
 ;; Substitution
 
-def $subst_typevar(typevar, typevar*, typeuse*) : typeuse             hint(show %#`[%:=%])
-def $subst_typeuse(typeuse, typevar*, typeuse*) : typeuse             hint(show %#`[%:=%])
+def $subst_typevar(typevar, typevar*, typeuse*) : typeuse             hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_typeuse(typeuse, typevar*, typeuse*) : typeuse             hint(show %#`[%:=%]) hint(macro "%subst")
 
-def $subst_numtype(numtype, typevar*, typeuse*) : numtype             hint(show %#`[%:=%])
-def $subst_vectype(vectype, typevar*, typeuse*) : vectype             hint(show %#`[%:=%])
-def $subst_heaptype(heaptype, typevar*, typeuse*) : heaptype          hint(show %#`[%:=%])
-def $subst_reftype(reftype, typevar*, typeuse*) : reftype             hint(show %#`[%:=%])
-def $subst_valtype(valtype, typevar*, typeuse*) : valtype             hint(show %#`[%:=%])
+def $subst_numtype(numtype, typevar*, typeuse*) : numtype             hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_vectype(vectype, typevar*, typeuse*) : vectype             hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_heaptype(heaptype, typevar*, typeuse*) : heaptype          hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_reftype(reftype, typevar*, typeuse*) : reftype             hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_valtype(valtype, typevar*, typeuse*) : valtype             hint(show %#`[%:=%]) hint(macro "%subst")
 
-def $subst_packtype(packtype, typevar*, typeuse*) : packtype          hint(show %#`[%:=%])
-def $subst_storagetype(storagetype, typevar*, typeuse*) : storagetype hint(show %#`[%:=%])
-def $subst_fieldtype(fieldtype, typevar*, typeuse*) : fieldtype       hint(show %#`[%:=%])
+def $subst_packtype(packtype, typevar*, typeuse*) : packtype          hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_storagetype(storagetype, typevar*, typeuse*) : storagetype hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_fieldtype(fieldtype, typevar*, typeuse*) : fieldtype       hint(show %#`[%:=%]) hint(macro "%subst")
 
-def $subst_comptype(comptype, typevar*, typeuse*) : comptype          hint(show %#`[%:=%])
-def $subst_subtype(subtype, typevar*, typeuse*) : subtype             hint(show %#`[%:=%])
-def $subst_rectype(rectype, typevar*, typeuse*) : rectype             hint(show %#`[%:=%])
-def $subst_deftype(deftype, typevar*, typeuse*) : deftype             hint(show %#`[%:=%])
+def $subst_comptype(comptype, typevar*, typeuse*) : comptype          hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_subtype(subtype, typevar*, typeuse*) : subtype             hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_rectype(rectype, typevar*, typeuse*) : rectype             hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_deftype(deftype, typevar*, typeuse*) : deftype             hint(show %#`[%:=%]) hint(macro "%subst")
 
-def $subst_globaltype(globaltype, typevar*, typeuse*) : globaltype    hint(show %#`[%:=%])
-def $subst_functype(functype, typevar*, typeuse*) : functype          hint(show %#`[%:=%])
-def $subst_tabletype(tabletype, typevar*, typeuse*) : tabletype       hint(show %#`[%:=%])
-def $subst_memtype(memtype, typevar*, typeuse*) : memtype             hint(show %#`[%:=%])
+def $subst_globaltype(globaltype, typevar*, typeuse*) : globaltype    hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_functype(functype, typevar*, typeuse*) : functype          hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_tabletype(tabletype, typevar*, typeuse*) : tabletype       hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_memtype(memtype, typevar*, typeuse*) : memtype             hint(show %#`[%:=%]) hint(macro "%subst")
 
-def $subst_externtype(externtype, typevar*, typeuse*) : externtype    hint(show %#`[%:=%])
+def $subst_externtype(externtype, typevar*, typeuse*) : externtype    hint(show %#`[%:=%]) hint(macro "%subst")
 
 
 def $subst_typevar(tv, eps, eps) = tv
@@ -225,13 +225,15 @@ def $subst_externtype((TABLE tt), tv*, tu*) = TABLE $subst_tabletype(tt, tv*, tu
 def $subst_externtype((MEM mt), tv*, tu*) = MEM $subst_memtype(mt, tv*, tu*)
 
 
-def $subst_all_reftype(reftype, heaptype*) : reftype  hint(show %#`[:=%])
-def $subst_all_deftype(deftype, heaptype*) : deftype  hint(show %#`[:=%])
+def $subst_all_valtype(valtype, heaptype*) : valtype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_reftype(reftype, heaptype*) : reftype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_deftype(deftype, heaptype*) : deftype  hint(show %#`[:=%]) hint(macro "%subst")
 
+def $subst_all_valtype(t, tu^n) = $subst_valtype(t, $idx(i)^(i<n), tu^n)
 def $subst_all_reftype(rt, tu^n) = $subst_reftype(rt, $idx(i)^(i<n), tu^n)
 def $subst_all_deftype(dt, tu^n) = $subst_deftype(dt, $idx(i)^(i<n), tu^n)
 
-def $subst_all_deftypes(deftype*, heaptype*) : deftype*  hint(show %#`[:=%])
+def $subst_all_deftypes(deftype*, heaptype*) : deftype*  hint(show %#`[:=%]) hint(macro "%subst")
 
 def $subst_all_deftypes(eps, tu*) = eps
 def $subst_all_deftypes(dt_1 dt*, tu*) = $subst_all_deftype(dt_1, tu*) $subst_all_deftypes(dt*, tu*)
@@ -241,24 +243,25 @@ def $subst_all_deftypes(dt_1 dt*, tu*) = $subst_all_deftype(dt_1, tu*) $subst_al
 
 def $rollrt(typeidx, rectype) : rectype  hint(show $roll_(%, %))   hint(macro "rollrt")
 def $unrollrt(rectype) : rectype         hint(show $unroll(%))     hint(macro "unrollrt")
-def $rolldt(typeidx, rectype) : deftype* hint(show $roll_(%)*#(%)) hint(macro "rolldt")
+def $rolldt(typeidx, rectype) : deftype* hint(show $roll_(%)*#((%))) hint(macro "rolldt")
 def $unrolldt(deftype) : subtype         hint(show $unroll(%))     hint(macro "unrolldt")
 def $expanddt(deftype) : comptype        hint(show $expand(%))     hint(macro "expanddt")
 
 ;; TODO: in general, multi-dimensional use of dimensioned vars is ambiguous;
 ;; for example, x** with dimension x* could be x1 x2 x1 x2 of x1 x1 x2 x2.
 ;; For now, we avoid to reuse the dimension var in exact same form
-def $rollrt(x, REC st^n) = REC ($subst_subtype(st, ($idx($(x + i)))^(i<n), (REC i)^(i<n)))^n
-def $unrollrt(REC st^n) = REC ($subst_subtype(st, (REC i)^(i<n), (DEF qt i)^(i<n)))^n
-  -- if qt = REC st^n
+def $rollrt(x, rectype) = REC ($subst_subtype(subtype, ($idx($(x + i)))^(i<n), (REC i)^(i<n)))^n
+  -- if rectype = REC subtype^n
+def $unrollrt(rectype) = REC ($subst_subtype(subtype, (REC i)^(i<n), (DEF rectype i)^(i<n)))^n
+  -- if rectype = REC subtype^n
 
-def $rolldt(x, qt) = (DEF (REC st^n) i)^(i<n)  -- if $rollrt(x, qt) = REC st^n
-def $unrolldt(DEF qt i) = st*[i]               -- if $unrollrt(qt) = REC st*
+def $rolldt(x, rectype) = (DEF (REC subtype^n) i)^(i<n)  -- if $rollrt(x, rectype) = REC subtype^n
+def $unrolldt(DEF rectype i) = subtype*[i]               -- if $unrollrt(rectype) = REC subtype*
 
-def $expanddt(dt) = ct                         -- if $unrolldt(dt) = SUB fin tu* ct
+def $expanddt(deftype) = comptype              -- if $unrolldt(deftype) = SUB fin typeuse* comptype
 
 relation Expand: deftype ~~ comptype hint(macro "%expanddt")
-rule Expand: dt ~~ ct                          -- if $expanddt(dt) = ct
+rule Expand: deftype ~~ comptype               -- if $unrolldt(deftype) = SUB fin typeuse* comptype
 
 
 ;; Projections

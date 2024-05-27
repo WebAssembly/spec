@@ -318,6 +318,10 @@
 .. |memsxt| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{mems}}
 .. |globalsxt| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{globals}}
 
+.. |assignsubst| mathdef:: \xref{valid/conventions}{notation-subst}{\mathrel{:=}}
+.. |lbracksubst| mathdef:: \xref{valid/conventions}{notation-subst}{{[}}
+.. |rbracksubst| mathdef:: \xref{valid/conventions}{notation-subst}{{]}}
+
 
 .. Indices, non-terminals
 
@@ -1084,6 +1088,9 @@
 
 
 .. Contexts
+
+.. |context| mathdef:: \xref{valid/conventions}{context}{\X{context}}
+.. |C| mathdef:: \xref{valid/conventions}{context}{C}
 
 .. |CTYPES| mathdef:: \xref{valid/conventions}{context}{\K{types}}
 .. |CFUNCS| mathdef:: \xref{valid/conventions}{context}{\K{funcs}}
