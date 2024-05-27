@@ -16,6 +16,8 @@ watsup 0.4 generator
 == Running pass animate...
 == IL Validation after pass animate...
 == Translating to AL...
+8-reduction.watsup:159.12-159.36: translate_rulepr: Yet `(`%;%`_config(z, (instr : instr <: admininstr)*{instr : instr}), `%;%`_config(z', (instr' : instr <: admininstr)*{instr' : instr}))`
+8-reduction.watsup:163.12-163.44: translate_rulepr: Yet `(`%;%`_config(`%;%`_state(s, f'), (instr : instr <: admininstr)*{instr : instr}), `%;%`_config(`%;%`_state(s', f'), (instr' : instr <: admininstr)*{instr' : instr}))`
 == Prose Generation...
 =================
  Generated prose
@@ -989,6 +991,9 @@ execution_of_RETURN
   b. Push the values val* to the stack.
   c. Execute the instruction RETURN.
 
+execution_of_TRAP
+1. YetI: TODO: It is likely that the value stack of two rules are different.
+
 execution_of_UNOP t unop
 1. Assert: Due to validation, a value of value type t is on the top of the stack.
 2. Pop the value (t.CONST c_1) from the stack.
@@ -1122,6 +1127,20 @@ execution_of_MEMORY.SIZE
 2. Let ((n · 64) · $Ki()) be |$mem(z, 0).BYTES|.
 3. Push the value (I32.CONST n) to the stack.
 
+execution_of_CTXT
+1. Pop all values val* from the top of the stack.
+2. YetI: TODO: translate_context.
+3. If admin_u1 is of the case LABEL_, then:
+  a. Let (LABEL_ n instr_0* instr*) be admin_u1.
+  b. YetI: TODO: translate_rulepr Step.
+  c. Let L be the label_n{instr_0*}.
+  d. Enter instr'* with label L.
+4. YetI: TODO: translate_rulepr Step.
+5. If admin_u1 is of the case FRAME_, then:
+  a. Let (FRAME_ n y_0 instr*) be admin_u1.
+  b. If (y_0 is f'), then:
+    1) Execute the instruction (FRAME_ n f' instr'*).
+
 execution_of_LOCAL.SET x
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
@@ -1207,6 +1226,8 @@ watsup 0.4 generator
 == Running pass animate...
 == IL Validation after pass animate...
 == Translating to AL...
+8-reduction.watsup:165.12-165.36: translate_rulepr: Yet `(`%;%`_config(z, (instr : instr <: admininstr)*{instr : instr}), `%;%`_config(z', (instr' : instr <: admininstr)*{instr' : instr}))`
+8-reduction.watsup:169.12-169.44: translate_rulepr: Yet `(`%;%`_config(`%;%`_state(s, f'), (instr : instr <: admininstr)*{instr : instr}), `%;%`_config(`%;%`_state(s', f'), (instr' : instr <: admininstr)*{instr' : instr}))`
 == Prose Generation...
 =================
  Generated prose
@@ -2899,6 +2920,9 @@ execution_of_RETURN
   b. Push the values val* to the stack.
   c. Execute the instruction RETURN.
 
+execution_of_TRAP
+1. YetI: TODO: It is likely that the value stack of two rules are different.
+
 execution_of_UNOP nt unop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop the value (nt.CONST c_1) from the stack.
@@ -3455,6 +3479,20 @@ execution_of_MEMORY.INIT x
   f. Push the value (I32.CONST (n - 1)) to the stack.
   g. Execute the instruction (MEMORY.INIT x).
 
+execution_of_CTXT
+1. Pop all values val* from the top of the stack.
+2. YetI: TODO: translate_context.
+3. If admin_u1 is of the case LABEL_, then:
+  a. Let (LABEL_ n instr_0* instr*) be admin_u1.
+  b. YetI: TODO: translate_rulepr Step.
+  c. Let L be the label_n{instr_0*}.
+  d. Enter instr'* with label L.
+4. YetI: TODO: translate_rulepr Step.
+5. If admin_u1 is of the case FRAME_, then:
+  a. Let (FRAME_ n y_0 instr*) be admin_u1.
+  b. If (y_0 is f'), then:
+    1) Execute the instruction (FRAME_ n f' instr'*).
+
 execution_of_LOCAL.SET x
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
@@ -3597,6 +3635,8 @@ watsup 0.4 generator
 == Running pass animate...
 == IL Validation after pass animate...
 == Translating to AL...
+8-reduction.watsup:226.12-226.36: translate_rulepr: Yet `(`%;%`_config(z, (instr : instr <: admininstr)*{instr : instr}), `%;%`_config(z', (instr' : instr <: admininstr)*{instr' : instr}))`
+8-reduction.watsup:230.12-230.44: translate_rulepr: Yet `(`%;%`_config(`%;%`_state(s, f'), (instr : instr <: admininstr)*{instr : instr}), `%;%`_config(`%;%`_state(s', f'), (instr' : instr <: admininstr)*{instr' : instr}))`
 == Prose Generation...
 6-typing.watsup:619.7-619.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0)`
 6-typing.watsup:620.6-620.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l'!`%`_labelidx.0]!`%`_resulttype.0)`
@@ -5954,6 +5994,9 @@ execution_of_RETURN
   b. Push the values val* to the stack.
   c. Execute the instruction RETURN.
 
+execution_of_TRAP
+1. YetI: TODO: It is likely that the value stack of two rules are different.
+
 execution_of_UNOP nt unop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop the value (nt.CONST c_1) from the stack.
@@ -6927,6 +6970,20 @@ execution_of_MEMORY.INIT x y
   e. Push the value (I32.CONST (i + 1)) to the stack.
   f. Push the value (I32.CONST (n - 1)) to the stack.
   g. Execute the instruction (MEMORY.INIT x y).
+
+execution_of_CTXT
+1. Pop all values val* from the top of the stack.
+2. YetI: TODO: translate_context.
+3. If admin_u1 is of the case LABEL_, then:
+  a. Let (LABEL_ n instr_0* instr*) be admin_u1.
+  b. YetI: TODO: translate_rulepr Step.
+  c. Let L be the label_n{instr_0*}.
+  d. Enter instr'* with label L.
+4. YetI: TODO: translate_rulepr Step.
+5. If admin_u1 is of the case FRAME_, then:
+  a. Let (FRAME_ n y_0 instr*) be admin_u1.
+  b. If (y_0 is f'), then:
+    1) Execute the instruction (FRAME_ n f' instr'*).
 
 execution_of_STRUCT.NEW x
 1. Let z be the current state.

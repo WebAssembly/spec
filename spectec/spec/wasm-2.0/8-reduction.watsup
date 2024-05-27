@@ -145,6 +145,30 @@ rule Step_pure/return-label:
   (LABEL_ n `{instr'*} val* RETURN instr*)  ~>  val* RETURN
 
 
+;; Traps
+
+rule Step_pure/trap-vals:
+  val* TRAP instr*  ~>  TRAP
+  -- if val* =/= eps \/ instr* =/= eps
+
+rule Step_pure/trap-label:
+  (LABEL_ n `{instr'*} TRAP)  ~>  TRAP
+
+rule Step_pure/trap-frame:
+  (FRAME_ n `{f} TRAP)  ~>  TRAP
+
+
+;; Context
+
+rule Step/ctxt-label:
+  z; (LABEL_ n `{instr_0*} instr*)  ~>  z'; (LABEL_ n `{instr_0*} instr'*)
+  -- Step: z; instr* ~> z'; instr'*
+
+rule Step/ctxt-frame:
+  s; f; (FRAME_ n `{f'} instr*)  ~>  s'; f; (FRAME_ n `{f'} instr'*)
+  -- Step: s; f'; instr* ~> s'; f'; instr'*
+
+
 ;; Numeric instructions
 
 rule Step_pure/unop-val:

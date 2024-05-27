@@ -6800,6 +6800,28 @@ $$
 
 $$
 \begin{array}{@{}l@{}rcl@{}l@{}}
+{[\textsc{\scriptsize E{-}trap{-}vals}]} \quad & {{\mathit{val}}^\ast}~\mathsf{trap}~{{\mathit{instr}}^\ast} &\hookrightarrow& \mathsf{trap}
+  &\qquad \mbox{if}~{{\mathit{val}}^\ast} \neq \epsilon \lor {{\mathit{instr}}^\ast} \neq \epsilon \\
+{[\textsc{\scriptsize E{-}trap{-}label}]} \quad & ({{\mathsf{label}}_{n}}{\{ {{\mathit{instr}'}^\ast} \}}~\mathsf{trap}) &\hookrightarrow& \mathsf{trap} \\
+{[\textsc{\scriptsize E{-}trap{-}frame}]} \quad & ({{\mathsf{frame}}_{n}}{\{ f \}}~\mathsf{trap}) &\hookrightarrow& \mathsf{trap} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}rcl@{}l@{}}
+{[\textsc{\scriptsize E{-}ctxt{-}label}]} \quad & z ; ({{\mathsf{label}}_{n}}{\{ {{\mathit{instr}}_0^\ast} \}}~{{\mathit{instr}}^\ast}) &\hookrightarrow& {z'} ; ({{\mathsf{label}}_{n}}{\{ {{\mathit{instr}}_0^\ast} \}}~{{\mathit{instr}'}^\ast})
+  &\qquad \mbox{if}~z ; {{\mathit{instr}}^\ast} \hookrightarrow {z'} ; {{\mathit{instr}'}^\ast} \\
+{[\textsc{\scriptsize E{-}ctxt{-}frame}]} \quad & s ; f ; ({{\mathsf{frame}}_{n}}{\{ {f'} \}}~{{\mathit{instr}}^\ast}) &\hookrightarrow& {s'} ; f ; ({{\mathsf{frame}}_{n}}{\{ {f'} \}}~{{\mathit{instr}'}^\ast})
+  &\qquad \mbox{if}~s ; {f'} ; {{\mathit{instr}}^\ast} \hookrightarrow {s'} ; {f'} ; {{\mathit{instr}'}^\ast} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}rcl@{}l@{}}
 {[\textsc{\scriptsize E{-}unop{-}val}]} \quad & ({\mathit{nt}}{.}\mathsf{const}~c_1)~({\mathit{nt}} {.} {\mathit{unop}}) &\hookrightarrow& ({\mathit{nt}}{.}\mathsf{const}~c)
   &\qquad \mbox{if}~{{\mathit{unop}}}{{}_{{\mathit{nt}}}}{(c_1)} = c \\
 {[\textsc{\scriptsize E{-}unop{-}trap}]} \quad & ({\mathit{nt}}{.}\mathsf{const}~c_1)~({\mathit{nt}} {.} {\mathit{unop}}) &\hookrightarrow& \mathsf{trap}

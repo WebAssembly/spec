@@ -10,6 +10,8 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup -l --splice-latex -p spe
 == Running pass animate...
 == IL Validation after pass animate...
 == Translating to AL...
+../spec/wasm-3.0/8-reduction.watsup:226.12-226.36: translate_rulepr: Yet `(`%;%`_config(z, (instr : instr <: admininstr)*{instr : instr}), `%;%`_config(z', (instr' : instr <: admininstr)*{instr' : instr}))`
+../spec/wasm-3.0/8-reduction.watsup:230.12-230.44: translate_rulepr: Yet `(`%;%`_config(`%;%`_state(s, f'), (instr : instr <: admininstr)*{instr : instr}), `%;%`_config(`%;%`_state(s', f'), (instr' : instr <: admininstr)*{instr' : instr}))`
 == Prose Generation...
 ../spec/wasm-3.0/6-typing.watsup:619.7-619.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0)`
 ../spec/wasm-3.0/6-typing.watsup:620.6-620.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l'!`%`_labelidx.0]!`%`_resulttype.0)`
@@ -843,6 +845,8 @@ warning: rule `Reftype_sub/null` was never spliced
 warning: rule `Resulttype_ok` was never spliced
 warning: rule `Resulttype_sub` was never spliced
 warning: rule `Start_ok` was never spliced
+warning: rule `Step/ctxt-label` was never spliced
+warning: rule `Step/ctxt-frame` was never spliced
 warning: rule `Step/struct.new` was never spliced
 warning: rule `Step/struct.set-null` was never spliced
 warning: rule `Step/struct.set-struct` was never spliced
@@ -891,6 +895,9 @@ warning: rule `Step_pure/return_call_indirect` was never spliced
 warning: rule `Step_pure/frame-vals` was never spliced
 warning: rule `Step_pure/return-frame` was never spliced
 warning: rule `Step_pure/return-label` was never spliced
+warning: rule `Step_pure/trap-vals` was never spliced
+warning: rule `Step_pure/trap-label` was never spliced
+warning: rule `Step_pure/trap-frame` was never spliced
 warning: rule `Step_pure/unop-val` was never spliced
 warning: rule `Step_pure/unop-trap` was never spliced
 warning: rule `Step_pure/binop-val` was never spliced
@@ -1324,6 +1331,7 @@ warning: rule prose `exec/array.set` was never spliced
 warning: rule prose `exec/array.new_fixed` was never spliced
 warning: rule prose `exec/struct.set` was never spliced
 warning: rule prose `exec/struct.new` was never spliced
+warning: rule prose `exec/ctxt` was never spliced
 warning: rule prose `exec/memory.init` was never spliced
 warning: rule prose `exec/memory.copy` was never spliced
 warning: rule prose `exec/memory.fill` was never spliced
@@ -1394,6 +1402,7 @@ warning: rule prose `exec/relop` was never spliced
 warning: rule prose `exec/testop` was never spliced
 warning: rule prose `exec/binop` was never spliced
 warning: rule prose `exec/unop` was never spliced
+warning: rule prose `exec/trap` was never spliced
 warning: rule prose `exec/return` was never spliced
 warning: rule prose `exec/frame` was never spliced
 warning: rule prose `exec/return_call_indirect` was never spliced
