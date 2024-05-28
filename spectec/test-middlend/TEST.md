@@ -4259,35 +4259,36 @@ relation Func_ok: `%|-%:%`(context, func, deftype)
 ;; 6-typing.watsup
 relation Global_ok: `%|-%:%`(context, global, globaltype)
   ;; 6-typing.watsup
-  rule _{C : context, gt : globaltype, expr : expr, mut : mut, t : valtype}:
-    `%|-%:%`(C, GLOBAL_global(gt, expr), gt)
+  rule _{C : context, globaltype : globaltype, expr : expr, gt : globaltype, mut : mut, t : valtype}:
+    `%|-%:%`(C, GLOBAL_global(globaltype, expr), globaltype)
     -- Globaltype_ok: `%|-%:OK`(C, gt)
-    -- if (gt = `%%`_globaltype(mut, t))
+    -- if (globaltype = `%%`_globaltype(mut, t))
     -- Expr_ok_const: `%|-%:%CONST`(C, expr, t)
 
 ;; 6-typing.watsup
 relation Table_ok: `%|-%:%`(context, table, tabletype)
   ;; 6-typing.watsup
-  rule _{C : context, tt : tabletype, expr : expr, limits : limits, rt : reftype}:
-    `%|-%:%`(C, TABLE_table(tt, expr), tt)
+  rule _{C : context, tabletype : tabletype, expr : expr, tt : tabletype, lim : limits, rt : reftype}:
+    `%|-%:%`(C, TABLE_table(tabletype, expr), tabletype)
     -- Tabletype_ok: `%|-%:OK`(C, tt)
-    -- if (tt = `%%`_tabletype(limits, rt))
+    -- if (tabletype = `%%`_tabletype(lim, rt))
     -- Expr_ok_const: `%|-%:%CONST`(C, expr, (rt : reftype <: valtype))
 
 ;; 6-typing.watsup
 relation Mem_ok: `%|-%:%`(context, mem, memtype)
   ;; 6-typing.watsup
-  rule _{C : context, mt : memtype}:
-    `%|-%:%`(C, MEMORY_mem(mt), mt)
-    -- Memtype_ok: `%|-%:OK`(C, mt)
+  rule _{C : context, memtype : memtype}:
+    `%|-%:%`(C, MEMORY_mem(memtype), memtype)
+    -- Memtype_ok: `%|-%:OK`(C, memtype)
 
 ;; 6-typing.watsup
 relation Elemmode_ok: `%|-%:%`(context, elemmode, reftype)
   ;; 6-typing.watsup
-  rule active{C : context, x : idx, expr : expr, rt : reftype, lim : limits}:
+  rule active{C : context, x : idx, expr : expr, rt : reftype, lim : limits, rt' : reftype}:
     `%|-%:%`(C, ACTIVE_elemmode(x, expr), rt)
-    -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
-    -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
+    -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt'))
+    -- Reftype_sub: `%|-%<:%`(C, rt, rt')
+    -- Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype)
 
   ;; 6-typing.watsup
   rule passive{C : context, rt : reftype}:
@@ -4300,10 +4301,11 @@ relation Elemmode_ok: `%|-%:%`(context, elemmode, reftype)
 ;; 6-typing.watsup
 relation Elem_ok: `%|-%:%`(context, elem, reftype)
   ;; 6-typing.watsup
-  rule _{C : context, rt : reftype, expr* : expr*, elemmode : elemmode}:
-    `%|-%:%`(C, ELEM_elem(rt, expr*{expr : expr}, elemmode), rt)
-    -- (Expr_ok_const: `%|-%:%CONST`(C, expr, (rt : reftype <: valtype)))*{expr : expr}
-    -- Elemmode_ok: `%|-%:%`(C, elemmode, rt)
+  rule _{C : context, reftype : reftype, expr* : expr*, elemmode : elemmode}:
+    `%|-%:%`(C, ELEM_elem(reftype, expr*{expr : expr}, elemmode), reftype)
+    -- Reftype_ok: `%|-%:OK`(C, reftype)
+    -- (Expr_ok_const: `%|-%:%CONST`(C, expr, (reftype : reftype <: valtype)))*{expr : expr}
+    -- Elemmode_ok: `%|-%:%`(C, elemmode, reftype)
 
 ;; 6-typing.watsup
 relation Datamode_ok: `%|-%:OK`(context, datamode)
@@ -4311,7 +4313,7 @@ relation Datamode_ok: `%|-%:OK`(context, datamode)
   rule active{C : context, x : idx, expr : expr, mt : memtype}:
     `%|-%:OK`(C, ACTIVE_datamode(x, expr))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
+    -- Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype)
 
   ;; 6-typing.watsup
   rule passive{C : context}:
@@ -4368,15 +4370,19 @@ relation Export_ok: `%|-%:%`(context, export, externtype)
     -- Externidx_ok: `%|-%:%`(C, externidx, xt)
 
 ;; 6-typing.watsup
+syntax moduletype =
+  | `%->%`{externtype* : externtype*}(externtype*{externtype : externtype} : externtype*, externtype*)
+
+;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1298.1-1298.100
+;; 6-typing.watsup:1302.1-1302.100
 relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
-  ;; 6-typing.watsup:1335.1-1336.17
+  ;; 6-typing.watsup:1339.1-1340.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1338.1-1341.55
+  ;; 6-typing.watsup:1342.1-1345.55
   rule cons{C : context, global_1 : global, global : global, gt_1 : globaltype, gt* : globaltype*}:
     `%|-%:%`(C, [global_1] :: global*{}, [gt_1] :: gt*{gt : globaltype})
     -- Global_ok: `%|-%:%`(C, global, gt_1)
@@ -4386,40 +4392,40 @@ relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1297.1-1297.98
+;; 6-typing.watsup:1301.1-1301.98
 relation Types_ok: `%|-%:%`(context, type*, deftype*)
-  ;; 6-typing.watsup:1327.1-1328.17
+  ;; 6-typing.watsup:1331.1-1332.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1330.1-1333.50
-  rule cons{C : context, type_1 : type, type* : type*, dt_1 : deftype, dt* : deftype*}:
-    `%|-%:%`(C, [type_1] :: type*{type : type}, dt_1*{} :: dt*{dt : deftype})
-    -- Type_ok: `%|-%:%`(C, type_1, [dt_1])
-    -- Types_ok: `%|-%:%`(C[TYPES_context =.. dt_1*{}], type*{type : type}, dt*{dt : deftype})
+  ;; 6-typing.watsup:1334.1-1337.50
+  rule cons{C : context, type_1 : type, type* : type*, dt_1* : deftype*, dt* : deftype*}:
+    `%|-%:%`(C, [type_1] :: type*{type : type}, dt_1*{dt_1 : deftype} :: dt*{dt : deftype})
+    -- Type_ok: `%|-%:%`(C, type_1, dt_1*{dt_1 : deftype})
+    -- Types_ok: `%|-%:%`(C[TYPES_context =.. dt_1*{dt_1 : deftype}], type*{type : type}, dt*{dt : deftype})
 }
 
 ;; 6-typing.watsup
-relation Module_ok: `|-%:OK`(module)
+relation Module_ok: `|-%:%`(module, moduletype)
   ;; 6-typing.watsup
-  rule _{type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data^n : data^n, n : n, start? : start?, export* : export*, dt'* : deftype*, ixt* : externtype*, C' : context, gt* : globaltype*, tt* : tabletype*, mt* : memtype*, C : context, dt* : deftype*, rt* : reftype*, xt* : externtype*, idt* : deftype*, igt* : globaltype*, itt* : tabletype*, imt* : memtype*}:
-    `|-%:OK`(MODULE_module(type*{type : type}, import*{import : import}, func*{func : func}, global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data^n{data : data}, start?{start : start}, export*{export : export}))
+  rule _{type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start? : start?, export* : export*, xt_I* : externtype*, xt_E* : externtype*, dt'* : deftype*, C' : context, gt* : globaltype*, tt* : tabletype*, mt* : memtype*, C : context, dt* : deftype*, rt* : reftype*, ok* : datatype*, dt_I* : deftype*, gt_I* : globaltype*, tt_I* : tabletype*, mt_I* : memtype*}:
+    `|-%:%`(MODULE_module(type*{type : type}, import*{import : import}, func*{func : func}, global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data}, start?{start : start}, export*{export : export}), `%->%`_moduletype(xt_I*{xt_I : externtype}, xt_E*{xt_E : externtype}))
     -- Types_ok: `%|-%:%`({TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()}, type*{type : type}, dt'*{dt' : deftype})
-    -- (Import_ok: `%|-%:%`({TYPES dt'*{dt' : deftype}, RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()}, import, ixt))*{import : import, ixt : externtype}
+    -- (Import_ok: `%|-%:%`({TYPES dt'*{dt' : deftype}, RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()}, import, xt_I))*{import : import, xt_I : externtype}
     -- Globals_ok: `%|-%:%`(C', global*{global : global}, gt*{gt : globaltype})
     -- (Table_ok: `%|-%:%`(C', table, tt))*{table : table, tt : tabletype}
     -- (Mem_ok: `%|-%:%`(C', mem, mt))*{mem : mem, mt : memtype}
     -- (Func_ok: `%|-%:%`(C, func, dt))*{dt : deftype, func : func}
     -- (Elem_ok: `%|-%:%`(C, elem, rt))*{elem : elem, rt : reftype}
-    -- (Data_ok: `%|-%:%`(C, data, OK_datatype))^n{data : data}
+    -- (Data_ok: `%|-%:%`(C, data, ok))*{data : data, ok : datatype}
     -- (Start_ok: `%|-%:OK`(C, start))?{start : start}
-    -- (Export_ok: `%|-%:%`(C, export, xt))*{export : export, xt : externtype}
-    -- if (C = {TYPES dt'*{dt' : deftype}, RECS [], FUNCS idt*{idt : deftype} :: dt*{dt : deftype}, GLOBALS igt*{igt : globaltype} :: gt*{gt : globaltype}, TABLES itt*{itt : tabletype} :: tt*{tt : tabletype}, MEMS imt*{imt : memtype} :: mt*{mt : memtype}, ELEMS rt*{rt : reftype}, DATAS OK_datatype^n{}, LOCALS [], LABELS [], RETURN ?()})
-    -- if (C' = {TYPES dt'*{dt' : deftype}, RECS [], FUNCS idt*{idt : deftype} :: dt*{dt : deftype}, GLOBALS igt*{igt : globaltype}, TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()})
-    -- if (idt*{idt : deftype} = $funcsxt(ixt*{ixt : externtype}))
-    -- if (igt*{igt : globaltype} = $globalsxt(ixt*{ixt : externtype}))
-    -- if (itt*{itt : tabletype} = $tablesxt(ixt*{ixt : externtype}))
-    -- if (imt*{imt : memtype} = $memsxt(ixt*{ixt : externtype}))
+    -- (Export_ok: `%|-%:%`(C, export, xt_E))*{export : export, xt_E : externtype}
+    -- if (C = {TYPES dt'*{dt' : deftype}, RECS [], FUNCS dt_I*{dt_I : deftype} :: dt*{dt : deftype}, GLOBALS gt_I*{gt_I : globaltype} :: gt*{gt : globaltype}, TABLES tt_I*{tt_I : tabletype} :: tt*{tt : tabletype}, MEMS mt_I*{mt_I : memtype} :: mt*{mt : memtype}, ELEMS rt*{rt : reftype}, DATAS ok*{ok : datatype}, LOCALS [], LABELS [], RETURN ?()})
+    -- if (C' = {TYPES dt'*{dt' : deftype}, RECS [], FUNCS dt_I*{dt_I : deftype} :: dt*{dt : deftype}, GLOBALS gt_I*{gt_I : globaltype}, TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()})
+    -- if (dt_I*{dt_I : deftype} = $funcsxt(xt_I*{xt_I : externtype}))
+    -- if (gt_I*{gt_I : globaltype} = $globalsxt(xt_I*{xt_I : externtype}))
+    -- if (tt_I*{tt_I : tabletype} = $tablesxt(xt_I*{xt_I : externtype}))
+    -- if (mt_I*{mt_I : memtype} = $memsxt(xt_I*{xt_I : externtype}))
 
 ;; 7-runtime-typing.watsup
 relation Ref_ok: `%|-%:%`(store, ref, reftype)
@@ -10050,35 +10056,36 @@ relation Func_ok: `%|-%:%`(context, func, deftype)
 ;; 6-typing.watsup
 relation Global_ok: `%|-%:%`(context, global, globaltype)
   ;; 6-typing.watsup
-  rule _{C : context, gt : globaltype, expr : expr, mut : mut, t : valtype}:
-    `%|-%:%`(C, GLOBAL_global(gt, expr), gt)
+  rule _{C : context, globaltype : globaltype, expr : expr, gt : globaltype, mut : mut, t : valtype}:
+    `%|-%:%`(C, GLOBAL_global(globaltype, expr), globaltype)
     -- Globaltype_ok: `%|-%:OK`(C, gt)
-    -- if (gt = `%%`_globaltype(mut, t))
+    -- if (globaltype = `%%`_globaltype(mut, t))
     -- Expr_ok_const: `%|-%:%CONST`(C, expr, t)
 
 ;; 6-typing.watsup
 relation Table_ok: `%|-%:%`(context, table, tabletype)
   ;; 6-typing.watsup
-  rule _{C : context, tt : tabletype, expr : expr, limits : limits, rt : reftype}:
-    `%|-%:%`(C, TABLE_table(tt, expr), tt)
+  rule _{C : context, tabletype : tabletype, expr : expr, tt : tabletype, lim : limits, rt : reftype}:
+    `%|-%:%`(C, TABLE_table(tabletype, expr), tabletype)
     -- Tabletype_ok: `%|-%:OK`(C, tt)
-    -- if (tt = `%%`_tabletype(limits, rt))
+    -- if (tabletype = `%%`_tabletype(lim, rt))
     -- Expr_ok_const: `%|-%:%CONST`(C, expr, (rt : reftype <: valtype))
 
 ;; 6-typing.watsup
 relation Mem_ok: `%|-%:%`(context, mem, memtype)
   ;; 6-typing.watsup
-  rule _{C : context, mt : memtype}:
-    `%|-%:%`(C, MEMORY_mem(mt), mt)
-    -- Memtype_ok: `%|-%:OK`(C, mt)
+  rule _{C : context, memtype : memtype}:
+    `%|-%:%`(C, MEMORY_mem(memtype), memtype)
+    -- Memtype_ok: `%|-%:OK`(C, memtype)
 
 ;; 6-typing.watsup
 relation Elemmode_ok: `%|-%:%`(context, elemmode, reftype)
   ;; 6-typing.watsup
-  rule active{C : context, x : idx, expr : expr, rt : reftype, lim : limits}:
+  rule active{C : context, x : idx, expr : expr, rt : reftype, lim : limits, rt' : reftype}:
     `%|-%:%`(C, ACTIVE_elemmode(x, expr), rt)
-    -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
-    -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
+    -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt'))
+    -- Reftype_sub: `%|-%<:%`(C, rt, rt')
+    -- Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype)
 
   ;; 6-typing.watsup
   rule passive{C : context, rt : reftype}:
@@ -10091,10 +10098,11 @@ relation Elemmode_ok: `%|-%:%`(context, elemmode, reftype)
 ;; 6-typing.watsup
 relation Elem_ok: `%|-%:%`(context, elem, reftype)
   ;; 6-typing.watsup
-  rule _{C : context, rt : reftype, expr* : expr*, elemmode : elemmode}:
-    `%|-%:%`(C, ELEM_elem(rt, expr*{expr : expr}, elemmode), rt)
-    -- (Expr_ok_const: `%|-%:%CONST`(C, expr, (rt : reftype <: valtype)))*{expr : expr}
-    -- Elemmode_ok: `%|-%:%`(C, elemmode, rt)
+  rule _{C : context, reftype : reftype, expr* : expr*, elemmode : elemmode}:
+    `%|-%:%`(C, ELEM_elem(reftype, expr*{expr : expr}, elemmode), reftype)
+    -- Reftype_ok: `%|-%:OK`(C, reftype)
+    -- (Expr_ok_const: `%|-%:%CONST`(C, expr, (reftype : reftype <: valtype)))*{expr : expr}
+    -- Elemmode_ok: `%|-%:%`(C, elemmode, reftype)
 
 ;; 6-typing.watsup
 relation Datamode_ok: `%|-%:OK`(context, datamode)
@@ -10102,7 +10110,7 @@ relation Datamode_ok: `%|-%:OK`(context, datamode)
   rule active{C : context, x : idx, expr : expr, mt : memtype}:
     `%|-%:OK`(C, ACTIVE_datamode(x, expr))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
+    -- Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype)
 
   ;; 6-typing.watsup
   rule passive{C : context}:
@@ -10159,15 +10167,19 @@ relation Export_ok: `%|-%:%`(context, export, externtype)
     -- Externidx_ok: `%|-%:%`(C, externidx, xt)
 
 ;; 6-typing.watsup
+syntax moduletype =
+  | `%->%`{externtype* : externtype*}(externtype*{externtype : externtype} : externtype*, externtype*)
+
+;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1298.1-1298.100
+;; 6-typing.watsup:1302.1-1302.100
 relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
-  ;; 6-typing.watsup:1335.1-1336.17
+  ;; 6-typing.watsup:1339.1-1340.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1338.1-1341.55
+  ;; 6-typing.watsup:1342.1-1345.55
   rule cons{C : context, global_1 : global, global : global, gt_1 : globaltype, gt* : globaltype*}:
     `%|-%:%`(C, [global_1] :: global*{}, [gt_1] :: gt*{gt : globaltype})
     -- Global_ok: `%|-%:%`(C, global, gt_1)
@@ -10177,40 +10189,40 @@ relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1297.1-1297.98
+;; 6-typing.watsup:1301.1-1301.98
 relation Types_ok: `%|-%:%`(context, type*, deftype*)
-  ;; 6-typing.watsup:1327.1-1328.17
+  ;; 6-typing.watsup:1331.1-1332.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1330.1-1333.50
-  rule cons{C : context, type_1 : type, type* : type*, dt_1 : deftype, dt* : deftype*}:
-    `%|-%:%`(C, [type_1] :: type*{type : type}, dt_1*{} :: dt*{dt : deftype})
-    -- Type_ok: `%|-%:%`(C, type_1, [dt_1])
-    -- Types_ok: `%|-%:%`(C[TYPES_context =.. dt_1*{}], type*{type : type}, dt*{dt : deftype})
+  ;; 6-typing.watsup:1334.1-1337.50
+  rule cons{C : context, type_1 : type, type* : type*, dt_1* : deftype*, dt* : deftype*}:
+    `%|-%:%`(C, [type_1] :: type*{type : type}, dt_1*{dt_1 : deftype} :: dt*{dt : deftype})
+    -- Type_ok: `%|-%:%`(C, type_1, dt_1*{dt_1 : deftype})
+    -- Types_ok: `%|-%:%`(C[TYPES_context =.. dt_1*{dt_1 : deftype}], type*{type : type}, dt*{dt : deftype})
 }
 
 ;; 6-typing.watsup
-relation Module_ok: `|-%:OK`(module)
+relation Module_ok: `|-%:%`(module, moduletype)
   ;; 6-typing.watsup
-  rule _{type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data^n : data^n, n : n, start? : start?, export* : export*, dt'* : deftype*, ixt* : externtype*, C' : context, gt* : globaltype*, tt* : tabletype*, mt* : memtype*, C : context, dt* : deftype*, rt* : reftype*, xt* : externtype*, idt* : deftype*, igt* : globaltype*, itt* : tabletype*, imt* : memtype*}:
-    `|-%:OK`(MODULE_module(type*{type : type}, import*{import : import}, func*{func : func}, global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data^n{data : data}, start?{start : start}, export*{export : export}))
+  rule _{type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start? : start?, export* : export*, xt_I* : externtype*, xt_E* : externtype*, dt'* : deftype*, C' : context, gt* : globaltype*, tt* : tabletype*, mt* : memtype*, C : context, dt* : deftype*, rt* : reftype*, ok* : datatype*, dt_I* : deftype*, gt_I* : globaltype*, tt_I* : tabletype*, mt_I* : memtype*}:
+    `|-%:%`(MODULE_module(type*{type : type}, import*{import : import}, func*{func : func}, global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data}, start?{start : start}, export*{export : export}), `%->%`_moduletype(xt_I*{xt_I : externtype}, xt_E*{xt_E : externtype}))
     -- Types_ok: `%|-%:%`({TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()}, type*{type : type}, dt'*{dt' : deftype})
-    -- (Import_ok: `%|-%:%`({TYPES dt'*{dt' : deftype}, RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()}, import, ixt))*{import : import, ixt : externtype}
+    -- (Import_ok: `%|-%:%`({TYPES dt'*{dt' : deftype}, RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()}, import, xt_I))*{import : import, xt_I : externtype}
     -- Globals_ok: `%|-%:%`(C', global*{global : global}, gt*{gt : globaltype})
     -- (Table_ok: `%|-%:%`(C', table, tt))*{table : table, tt : tabletype}
     -- (Mem_ok: `%|-%:%`(C', mem, mt))*{mem : mem, mt : memtype}
     -- (Func_ok: `%|-%:%`(C, func, dt))*{dt : deftype, func : func}
     -- (Elem_ok: `%|-%:%`(C, elem, rt))*{elem : elem, rt : reftype}
-    -- (Data_ok: `%|-%:%`(C, data, OK_datatype))^n{data : data}
+    -- (Data_ok: `%|-%:%`(C, data, ok))*{data : data, ok : datatype}
     -- (Start_ok: `%|-%:OK`(C, start))?{start : start}
-    -- (Export_ok: `%|-%:%`(C, export, xt))*{export : export, xt : externtype}
-    -- if (C = {TYPES dt'*{dt' : deftype}, RECS [], FUNCS idt*{idt : deftype} :: dt*{dt : deftype}, GLOBALS igt*{igt : globaltype} :: gt*{gt : globaltype}, TABLES itt*{itt : tabletype} :: tt*{tt : tabletype}, MEMS imt*{imt : memtype} :: mt*{mt : memtype}, ELEMS rt*{rt : reftype}, DATAS OK_datatype^n{}, LOCALS [], LABELS [], RETURN ?()})
-    -- if (C' = {TYPES dt'*{dt' : deftype}, RECS [], FUNCS idt*{idt : deftype} :: dt*{dt : deftype}, GLOBALS igt*{igt : globaltype}, TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()})
-    -- if (idt*{idt : deftype} = $funcsxt(ixt*{ixt : externtype}))
-    -- if (igt*{igt : globaltype} = $globalsxt(ixt*{ixt : externtype}))
-    -- if (itt*{itt : tabletype} = $tablesxt(ixt*{ixt : externtype}))
-    -- if (imt*{imt : memtype} = $memsxt(ixt*{ixt : externtype}))
+    -- (Export_ok: `%|-%:%`(C, export, xt_E))*{export : export, xt_E : externtype}
+    -- if (C = {TYPES dt'*{dt' : deftype}, RECS [], FUNCS dt_I*{dt_I : deftype} :: dt*{dt : deftype}, GLOBALS gt_I*{gt_I : globaltype} :: gt*{gt : globaltype}, TABLES tt_I*{tt_I : tabletype} :: tt*{tt : tabletype}, MEMS mt_I*{mt_I : memtype} :: mt*{mt : memtype}, ELEMS rt*{rt : reftype}, DATAS ok*{ok : datatype}, LOCALS [], LABELS [], RETURN ?()})
+    -- if (C' = {TYPES dt'*{dt' : deftype}, RECS [], FUNCS dt_I*{dt_I : deftype} :: dt*{dt : deftype}, GLOBALS gt_I*{gt_I : globaltype}, TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()})
+    -- if (dt_I*{dt_I : deftype} = $funcsxt(xt_I*{xt_I : externtype}))
+    -- if (gt_I*{gt_I : globaltype} = $globalsxt(xt_I*{xt_I : externtype}))
+    -- if (tt_I*{tt_I : tabletype} = $tablesxt(xt_I*{xt_I : externtype}))
+    -- if (mt_I*{mt_I : memtype} = $memsxt(xt_I*{xt_I : externtype}))
 
 ;; 7-runtime-typing.watsup
 relation Ref_ok: `%|-%:%`(store, ref, reftype)
@@ -15841,35 +15853,36 @@ relation Func_ok: `%|-%:%`(context, func, deftype)
 ;; 6-typing.watsup
 relation Global_ok: `%|-%:%`(context, global, globaltype)
   ;; 6-typing.watsup
-  rule _{C : context, gt : globaltype, expr : expr, mut : mut, t : valtype}:
-    `%|-%:%`(C, GLOBAL_global(gt, expr), gt)
+  rule _{C : context, globaltype : globaltype, expr : expr, gt : globaltype, mut : mut, t : valtype}:
+    `%|-%:%`(C, GLOBAL_global(globaltype, expr), globaltype)
     -- Globaltype_ok: `%|-%:OK`(C, gt)
-    -- if (gt = `%%`_globaltype(mut, t))
+    -- if (globaltype = `%%`_globaltype(mut, t))
     -- Expr_ok_const: `%|-%:%CONST`(C, expr, t)
 
 ;; 6-typing.watsup
 relation Table_ok: `%|-%:%`(context, table, tabletype)
   ;; 6-typing.watsup
-  rule _{C : context, tt : tabletype, expr : expr, limits : limits, rt : reftype}:
-    `%|-%:%`(C, TABLE_table(tt, expr), tt)
+  rule _{C : context, tabletype : tabletype, expr : expr, tt : tabletype, lim : limits, rt : reftype}:
+    `%|-%:%`(C, TABLE_table(tabletype, expr), tabletype)
     -- Tabletype_ok: `%|-%:OK`(C, tt)
-    -- if (tt = `%%`_tabletype(limits, rt))
+    -- if (tabletype = `%%`_tabletype(lim, rt))
     -- Expr_ok_const: `%|-%:%CONST`(C, expr, (rt : reftype <: valtype))
 
 ;; 6-typing.watsup
 relation Mem_ok: `%|-%:%`(context, mem, memtype)
   ;; 6-typing.watsup
-  rule _{C : context, mt : memtype}:
-    `%|-%:%`(C, MEMORY_mem(mt), mt)
-    -- Memtype_ok: `%|-%:OK`(C, mt)
+  rule _{C : context, memtype : memtype}:
+    `%|-%:%`(C, MEMORY_mem(memtype), memtype)
+    -- Memtype_ok: `%|-%:OK`(C, memtype)
 
 ;; 6-typing.watsup
 relation Elemmode_ok: `%|-%:%`(context, elemmode, reftype)
   ;; 6-typing.watsup
-  rule active{C : context, x : idx, expr : expr, rt : reftype, lim : limits}:
+  rule active{C : context, x : idx, expr : expr, rt : reftype, lim : limits, rt' : reftype}:
     `%|-%:%`(C, ACTIVE_elemmode(x, expr), rt)
-    -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
-    -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
+    -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt'))
+    -- Reftype_sub: `%|-%<:%`(C, rt, rt')
+    -- Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype)
 
   ;; 6-typing.watsup
   rule passive{C : context, rt : reftype}:
@@ -15882,10 +15895,11 @@ relation Elemmode_ok: `%|-%:%`(context, elemmode, reftype)
 ;; 6-typing.watsup
 relation Elem_ok: `%|-%:%`(context, elem, reftype)
   ;; 6-typing.watsup
-  rule _{C : context, rt : reftype, expr* : expr*, elemmode : elemmode}:
-    `%|-%:%`(C, ELEM_elem(rt, expr*{expr : expr}, elemmode), rt)
-    -- (Expr_ok_const: `%|-%:%CONST`(C, expr, (rt : reftype <: valtype)))*{expr : expr}
-    -- Elemmode_ok: `%|-%:%`(C, elemmode, rt)
+  rule _{C : context, reftype : reftype, expr* : expr*, elemmode : elemmode}:
+    `%|-%:%`(C, ELEM_elem(reftype, expr*{expr : expr}, elemmode), reftype)
+    -- Reftype_ok: `%|-%:OK`(C, reftype)
+    -- (Expr_ok_const: `%|-%:%CONST`(C, expr, (reftype : reftype <: valtype)))*{expr : expr}
+    -- Elemmode_ok: `%|-%:%`(C, elemmode, reftype)
 
 ;; 6-typing.watsup
 relation Datamode_ok: `%|-%:OK`(context, datamode)
@@ -15893,7 +15907,7 @@ relation Datamode_ok: `%|-%:OK`(context, datamode)
   rule active{C : context, x : idx, expr : expr, mt : memtype}:
     `%|-%:OK`(C, ACTIVE_datamode(x, expr))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
+    -- Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype)
 
   ;; 6-typing.watsup
   rule passive{C : context}:
@@ -15950,15 +15964,19 @@ relation Export_ok: `%|-%:%`(context, export, externtype)
     -- Externidx_ok: `%|-%:%`(C, externidx, xt)
 
 ;; 6-typing.watsup
+syntax moduletype =
+  | `%->%`{externtype* : externtype*}(externtype*{externtype : externtype} : externtype*, externtype*)
+
+;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1298.1-1298.100
+;; 6-typing.watsup:1302.1-1302.100
 relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
-  ;; 6-typing.watsup:1335.1-1336.17
+  ;; 6-typing.watsup:1339.1-1340.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1338.1-1341.55
+  ;; 6-typing.watsup:1342.1-1345.55
   rule cons{C : context, global_1 : global, global : global, gt_1 : globaltype, gt* : globaltype*}:
     `%|-%:%`(C, [global_1] :: global*{}, [gt_1] :: gt*{gt : globaltype})
     -- Global_ok: `%|-%:%`(C, global, gt_1)
@@ -15968,40 +15986,40 @@ relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1297.1-1297.98
+;; 6-typing.watsup:1301.1-1301.98
 relation Types_ok: `%|-%:%`(context, type*, deftype*)
-  ;; 6-typing.watsup:1327.1-1328.17
+  ;; 6-typing.watsup:1331.1-1332.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1330.1-1333.50
-  rule cons{C : context, type_1 : type, type* : type*, dt_1 : deftype, dt* : deftype*}:
-    `%|-%:%`(C, [type_1] :: type*{type : type}, dt_1*{} :: dt*{dt : deftype})
-    -- Type_ok: `%|-%:%`(C, type_1, [dt_1])
-    -- Types_ok: `%|-%:%`(C[TYPES_context =.. dt_1*{}], type*{type : type}, dt*{dt : deftype})
+  ;; 6-typing.watsup:1334.1-1337.50
+  rule cons{C : context, type_1 : type, type* : type*, dt_1* : deftype*, dt* : deftype*}:
+    `%|-%:%`(C, [type_1] :: type*{type : type}, dt_1*{dt_1 : deftype} :: dt*{dt : deftype})
+    -- Type_ok: `%|-%:%`(C, type_1, dt_1*{dt_1 : deftype})
+    -- Types_ok: `%|-%:%`(C[TYPES_context =.. dt_1*{dt_1 : deftype}], type*{type : type}, dt*{dt : deftype})
 }
 
 ;; 6-typing.watsup
-relation Module_ok: `|-%:OK`(module)
+relation Module_ok: `|-%:%`(module, moduletype)
   ;; 6-typing.watsup
-  rule _{type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data^n : data^n, n : n, start? : start?, export* : export*, dt'* : deftype*, ixt* : externtype*, C' : context, gt* : globaltype*, tt* : tabletype*, mt* : memtype*, C : context, dt* : deftype*, rt* : reftype*, xt* : externtype*, idt* : deftype*, igt* : globaltype*, itt* : tabletype*, imt* : memtype*}:
-    `|-%:OK`(MODULE_module(type*{type : type}, import*{import : import}, func*{func : func}, global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data^n{data : data}, start?{start : start}, export*{export : export}))
+  rule _{type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start? : start?, export* : export*, xt_I* : externtype*, xt_E* : externtype*, dt'* : deftype*, C' : context, gt* : globaltype*, tt* : tabletype*, mt* : memtype*, C : context, dt* : deftype*, rt* : reftype*, ok* : datatype*, dt_I* : deftype*, gt_I* : globaltype*, tt_I* : tabletype*, mt_I* : memtype*}:
+    `|-%:%`(MODULE_module(type*{type : type}, import*{import : import}, func*{func : func}, global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data}, start?{start : start}, export*{export : export}), `%->%`_moduletype(xt_I*{xt_I : externtype}, xt_E*{xt_E : externtype}))
     -- Types_ok: `%|-%:%`({TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()}, type*{type : type}, dt'*{dt' : deftype})
-    -- (Import_ok: `%|-%:%`({TYPES dt'*{dt' : deftype}, RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()}, import, ixt))*{import : import, ixt : externtype}
+    -- (Import_ok: `%|-%:%`({TYPES dt'*{dt' : deftype}, RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()}, import, xt_I))*{import : import, xt_I : externtype}
     -- Globals_ok: `%|-%:%`(C', global*{global : global}, gt*{gt : globaltype})
     -- (Table_ok: `%|-%:%`(C', table, tt))*{table : table, tt : tabletype}
     -- (Mem_ok: `%|-%:%`(C', mem, mt))*{mem : mem, mt : memtype}
     -- (Func_ok: `%|-%:%`(C, func, dt))*{dt : deftype, func : func}
     -- (Elem_ok: `%|-%:%`(C, elem, rt))*{elem : elem, rt : reftype}
-    -- (Data_ok: `%|-%:%`(C, data, OK_datatype))^n{data : data}
+    -- (Data_ok: `%|-%:%`(C, data, ok))*{data : data, ok : datatype}
     -- (Start_ok: `%|-%:OK`(C, start))?{start : start}
-    -- (Export_ok: `%|-%:%`(C, export, xt))*{export : export, xt : externtype}
-    -- if (C = {TYPES dt'*{dt' : deftype}, RECS [], FUNCS idt*{idt : deftype} :: dt*{dt : deftype}, GLOBALS igt*{igt : globaltype} :: gt*{gt : globaltype}, TABLES itt*{itt : tabletype} :: tt*{tt : tabletype}, MEMS imt*{imt : memtype} :: mt*{mt : memtype}, ELEMS rt*{rt : reftype}, DATAS OK_datatype^n{}, LOCALS [], LABELS [], RETURN ?()})
-    -- if (C' = {TYPES dt'*{dt' : deftype}, RECS [], FUNCS idt*{idt : deftype} :: dt*{dt : deftype}, GLOBALS igt*{igt : globaltype}, TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()})
-    -- if (idt*{idt : deftype} = $funcsxt(ixt*{ixt : externtype}))
-    -- if (igt*{igt : globaltype} = $globalsxt(ixt*{ixt : externtype}))
-    -- if (itt*{itt : tabletype} = $tablesxt(ixt*{ixt : externtype}))
-    -- if (imt*{imt : memtype} = $memsxt(ixt*{ixt : externtype}))
+    -- (Export_ok: `%|-%:%`(C, export, xt_E))*{export : export, xt_E : externtype}
+    -- if (C = {TYPES dt'*{dt' : deftype}, RECS [], FUNCS dt_I*{dt_I : deftype} :: dt*{dt : deftype}, GLOBALS gt_I*{gt_I : globaltype} :: gt*{gt : globaltype}, TABLES tt_I*{tt_I : tabletype} :: tt*{tt : tabletype}, MEMS mt_I*{mt_I : memtype} :: mt*{mt : memtype}, ELEMS rt*{rt : reftype}, DATAS ok*{ok : datatype}, LOCALS [], LABELS [], RETURN ?()})
+    -- if (C' = {TYPES dt'*{dt' : deftype}, RECS [], FUNCS dt_I*{dt_I : deftype} :: dt*{dt : deftype}, GLOBALS gt_I*{gt_I : globaltype}, TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()})
+    -- if (dt_I*{dt_I : deftype} = $funcsxt(xt_I*{xt_I : externtype}))
+    -- if (gt_I*{gt_I : globaltype} = $globalsxt(xt_I*{xt_I : externtype}))
+    -- if (tt_I*{tt_I : tabletype} = $tablesxt(xt_I*{xt_I : externtype}))
+    -- if (mt_I*{mt_I : memtype} = $memsxt(xt_I*{xt_I : externtype}))
 
 ;; 7-runtime-typing.watsup
 relation Ref_ok: `%|-%:%`(store, ref, reftype)
@@ -21732,36 +21750,37 @@ relation Func_ok: `%|-%:%`(context, func, deftype)
 ;; 6-typing.watsup
 relation Global_ok: `%|-%:%`(context, global, globaltype)
   ;; 6-typing.watsup
-  rule _{C : context, gt : globaltype, expr : expr, mut : mut, t : valtype}:
-    `%|-%:%`(C, GLOBAL_global(gt, expr), gt)
+  rule _{C : context, globaltype : globaltype, expr : expr, gt : globaltype, mut : mut, t : valtype}:
+    `%|-%:%`(C, GLOBAL_global(globaltype, expr), globaltype)
     -- Globaltype_ok: `%|-%:OK`(C, gt)
-    -- if (gt = `%%`_globaltype(mut, t))
+    -- if (globaltype = `%%`_globaltype(mut, t))
     -- Expr_ok_const: `%|-%:%CONST`(C, expr, t)
 
 ;; 6-typing.watsup
 relation Table_ok: `%|-%:%`(context, table, tabletype)
   ;; 6-typing.watsup
-  rule _{C : context, tt : tabletype, expr : expr, limits : limits, rt : reftype}:
-    `%|-%:%`(C, TABLE_table(tt, expr), tt)
+  rule _{C : context, tabletype : tabletype, expr : expr, tt : tabletype, lim : limits, rt : reftype}:
+    `%|-%:%`(C, TABLE_table(tabletype, expr), tabletype)
     -- Tabletype_ok: `%|-%:OK`(C, tt)
-    -- if (tt = `%%`_tabletype(limits, rt))
+    -- if (tabletype = `%%`_tabletype(lim, rt))
     -- Expr_ok_const: `%|-%:%CONST`(C, expr, (rt : reftype <: valtype))
 
 ;; 6-typing.watsup
 relation Mem_ok: `%|-%:%`(context, mem, memtype)
   ;; 6-typing.watsup
-  rule _{C : context, mt : memtype}:
-    `%|-%:%`(C, MEMORY_mem(mt), mt)
-    -- Memtype_ok: `%|-%:OK`(C, mt)
+  rule _{C : context, memtype : memtype}:
+    `%|-%:%`(C, MEMORY_mem(memtype), memtype)
+    -- Memtype_ok: `%|-%:OK`(C, memtype)
 
 ;; 6-typing.watsup
 relation Elemmode_ok: `%|-%:%`(context, elemmode, reftype)
   ;; 6-typing.watsup
-  rule active{C : context, x : idx, expr : expr, rt : reftype, lim : limits}:
+  rule active{C : context, x : idx, expr : expr, rt : reftype, lim : limits, rt' : reftype}:
     `%|-%:%`(C, ACTIVE_elemmode(x, expr), rt)
     -- if (x!`%`_idx.0 < |C.TABLES_context|)
-    -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt))
-    -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
+    -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt'))
+    -- Reftype_sub: `%|-%<:%`(C, rt, rt')
+    -- Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype)
 
   ;; 6-typing.watsup
   rule passive{C : context, rt : reftype}:
@@ -21774,10 +21793,11 @@ relation Elemmode_ok: `%|-%:%`(context, elemmode, reftype)
 ;; 6-typing.watsup
 relation Elem_ok: `%|-%:%`(context, elem, reftype)
   ;; 6-typing.watsup
-  rule _{C : context, rt : reftype, expr* : expr*, elemmode : elemmode}:
-    `%|-%:%`(C, ELEM_elem(rt, expr*{expr : expr}, elemmode), rt)
-    -- (Expr_ok_const: `%|-%:%CONST`(C, expr, (rt : reftype <: valtype)))*{expr : expr}
-    -- Elemmode_ok: `%|-%:%`(C, elemmode, rt)
+  rule _{C : context, reftype : reftype, expr* : expr*, elemmode : elemmode}:
+    `%|-%:%`(C, ELEM_elem(reftype, expr*{expr : expr}, elemmode), reftype)
+    -- Reftype_ok: `%|-%:OK`(C, reftype)
+    -- (Expr_ok_const: `%|-%:%CONST`(C, expr, (reftype : reftype <: valtype)))*{expr : expr}
+    -- Elemmode_ok: `%|-%:%`(C, elemmode, reftype)
 
 ;; 6-typing.watsup
 relation Datamode_ok: `%|-%:OK`(context, datamode)
@@ -21786,7 +21806,7 @@ relation Datamode_ok: `%|-%:OK`(context, datamode)
     `%|-%:OK`(C, ACTIVE_datamode(x, expr))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
+    -- Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype)
 
   ;; 6-typing.watsup
   rule passive{C : context}:
@@ -21848,15 +21868,19 @@ relation Export_ok: `%|-%:%`(context, export, externtype)
     -- Externidx_ok: `%|-%:%`(C, externidx, xt)
 
 ;; 6-typing.watsup
+syntax moduletype =
+  | `%->%`{externtype* : externtype*}(externtype*{externtype : externtype} : externtype*, externtype*)
+
+;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1298.1-1298.100
+;; 6-typing.watsup:1302.1-1302.100
 relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
-  ;; 6-typing.watsup:1335.1-1336.17
+  ;; 6-typing.watsup:1339.1-1340.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1338.1-1341.55
+  ;; 6-typing.watsup:1342.1-1345.55
   rule cons{C : context, global_1 : global, global : global, gt_1 : globaltype, gt* : globaltype*}:
     `%|-%:%`(C, [global_1] :: global*{}, [gt_1] :: gt*{gt : globaltype})
     -- Global_ok: `%|-%:%`(C, global, gt_1)
@@ -21866,46 +21890,47 @@ relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1297.1-1297.98
+;; 6-typing.watsup:1301.1-1301.98
 relation Types_ok: `%|-%:%`(context, type*, deftype*)
-  ;; 6-typing.watsup:1327.1-1328.17
+  ;; 6-typing.watsup:1331.1-1332.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1330.1-1333.50
-  rule cons{C : context, type_1 : type, type* : type*, dt_1 : deftype, dt* : deftype*}:
-    `%|-%:%`(C, [type_1] :: type*{type : type}, dt_1*{} :: dt*{dt : deftype})
-    -- Type_ok: `%|-%:%`(C, type_1, [dt_1])
-    -- Types_ok: `%|-%:%`(C[TYPES_context =.. dt_1*{}], type*{type : type}, dt*{dt : deftype})
+  ;; 6-typing.watsup:1334.1-1337.50
+  rule cons{C : context, type_1 : type, type* : type*, dt_1* : deftype*, dt* : deftype*}:
+    `%|-%:%`(C, [type_1] :: type*{type : type}, dt_1*{dt_1 : deftype} :: dt*{dt : deftype})
+    -- Type_ok: `%|-%:%`(C, type_1, dt_1*{dt_1 : deftype})
+    -- Types_ok: `%|-%:%`(C[TYPES_context =.. dt_1*{dt_1 : deftype}], type*{type : type}, dt*{dt : deftype})
 }
 
 ;; 6-typing.watsup
-relation Module_ok: `|-%:OK`(module)
+relation Module_ok: `|-%:%`(module, moduletype)
   ;; 6-typing.watsup
-  rule _{type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data^n : data^n, n : n, start? : start?, export* : export*, dt'* : deftype*, ixt* : externtype*, C' : context, gt* : globaltype*, tt* : tabletype*, mt* : memtype*, C : context, dt* : deftype*, rt* : reftype*, xt* : externtype*, idt* : deftype*, igt* : globaltype*, itt* : tabletype*, imt* : memtype*}:
-    `|-%:OK`(MODULE_module(type*{type : type}, import*{import : import}, func*{func : func}, global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data^n{data : data}, start?{start : start}, export*{export : export}))
-    -- if (|import*{import : import}| = |ixt*{ixt : externtype}|)
+  rule _{type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start? : start?, export* : export*, xt_I* : externtype*, xt_E* : externtype*, dt'* : deftype*, C' : context, gt* : globaltype*, tt* : tabletype*, mt* : memtype*, C : context, dt* : deftype*, rt* : reftype*, ok* : datatype*, dt_I* : deftype*, gt_I* : globaltype*, tt_I* : tabletype*, mt_I* : memtype*}:
+    `|-%:%`(MODULE_module(type*{type : type}, import*{import : import}, func*{func : func}, global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data}, start?{start : start}, export*{export : export}), `%->%`_moduletype(xt_I*{xt_I : externtype}, xt_E*{xt_E : externtype}))
+    -- if (|import*{import : import}| = |xt_I*{xt_I : externtype}|)
     -- if (|table*{table : table}| = |tt*{tt : tabletype}|)
     -- if (|mem*{mem : mem}| = |mt*{mt : memtype}|)
     -- if (|dt*{dt : deftype}| = |func*{func : func}|)
     -- if (|elem*{elem : elem}| = |rt*{rt : reftype}|)
-    -- if (|export*{export : export}| = |xt*{xt : externtype}|)
+    -- if (|data*{data : data}| = |ok*{ok : datatype}|)
+    -- if (|export*{export : export}| = |xt_E*{xt_E : externtype}|)
     -- Types_ok: `%|-%:%`({TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()}, type*{type : type}, dt'*{dt' : deftype})
-    -- (Import_ok: `%|-%:%`({TYPES dt'*{dt' : deftype}, RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()}, import, ixt))*{import : import, ixt : externtype}
+    -- (Import_ok: `%|-%:%`({TYPES dt'*{dt' : deftype}, RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()}, import, xt_I))*{import : import, xt_I : externtype}
     -- Globals_ok: `%|-%:%`(C', global*{global : global}, gt*{gt : globaltype})
     -- (Table_ok: `%|-%:%`(C', table, tt))*{table : table, tt : tabletype}
     -- (Mem_ok: `%|-%:%`(C', mem, mt))*{mem : mem, mt : memtype}
     -- (Func_ok: `%|-%:%`(C, func, dt))*{dt : deftype, func : func}
     -- (Elem_ok: `%|-%:%`(C, elem, rt))*{elem : elem, rt : reftype}
-    -- (Data_ok: `%|-%:%`(C, data, OK_datatype))^n{data : data}
+    -- (Data_ok: `%|-%:%`(C, data, ok))*{data : data, ok : datatype}
     -- (Start_ok: `%|-%:OK`(C, start))?{start : start}
-    -- (Export_ok: `%|-%:%`(C, export, xt))*{export : export, xt : externtype}
-    -- if (C = {TYPES dt'*{dt' : deftype}, RECS [], FUNCS idt*{idt : deftype} :: dt*{dt : deftype}, GLOBALS igt*{igt : globaltype} :: gt*{gt : globaltype}, TABLES itt*{itt : tabletype} :: tt*{tt : tabletype}, MEMS imt*{imt : memtype} :: mt*{mt : memtype}, ELEMS rt*{rt : reftype}, DATAS OK_datatype^n{}, LOCALS [], LABELS [], RETURN ?()})
-    -- if (C' = {TYPES dt'*{dt' : deftype}, RECS [], FUNCS idt*{idt : deftype} :: dt*{dt : deftype}, GLOBALS igt*{igt : globaltype}, TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()})
-    -- if (idt*{idt : deftype} = $funcsxt(ixt*{ixt : externtype}))
-    -- if (igt*{igt : globaltype} = $globalsxt(ixt*{ixt : externtype}))
-    -- if (itt*{itt : tabletype} = $tablesxt(ixt*{ixt : externtype}))
-    -- if (imt*{imt : memtype} = $memsxt(ixt*{ixt : externtype}))
+    -- (Export_ok: `%|-%:%`(C, export, xt_E))*{export : export, xt_E : externtype}
+    -- if (C = {TYPES dt'*{dt' : deftype}, RECS [], FUNCS dt_I*{dt_I : deftype} :: dt*{dt : deftype}, GLOBALS gt_I*{gt_I : globaltype} :: gt*{gt : globaltype}, TABLES tt_I*{tt_I : tabletype} :: tt*{tt : tabletype}, MEMS mt_I*{mt_I : memtype} :: mt*{mt : memtype}, ELEMS rt*{rt : reftype}, DATAS ok*{ok : datatype}, LOCALS [], LABELS [], RETURN ?()})
+    -- if (C' = {TYPES dt'*{dt' : deftype}, RECS [], FUNCS dt_I*{dt_I : deftype} :: dt*{dt : deftype}, GLOBALS gt_I*{gt_I : globaltype}, TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()})
+    -- if (dt_I*{dt_I : deftype} = $funcsxt(xt_I*{xt_I : externtype}))
+    -- if (gt_I*{gt_I : globaltype} = $globalsxt(xt_I*{xt_I : externtype}))
+    -- if (tt_I*{tt_I : tabletype} = $tablesxt(xt_I*{xt_I : externtype}))
+    -- if (mt_I*{mt_I : memtype} = $memsxt(xt_I*{xt_I : externtype}))
 
 ;; 7-runtime-typing.watsup
 relation Ref_ok: `%|-%:%`(store, ref, reftype)
@@ -27712,36 +27737,37 @@ relation Func_ok: `%|-%:%`(context, func, deftype)
 ;; 6-typing.watsup
 relation Global_ok: `%|-%:%`(context, global, globaltype)
   ;; 6-typing.watsup
-  rule _{C : context, gt : globaltype, expr : expr, mut : mut, t : valtype}:
-    `%|-%:%`(C, GLOBAL_global(gt, expr), gt)
+  rule _{C : context, globaltype : globaltype, expr : expr, gt : globaltype, mut : mut, t : valtype}:
+    `%|-%:%`(C, GLOBAL_global(globaltype, expr), globaltype)
     -- Globaltype_ok: `%|-%:OK`(C, gt)
-    -- where `%%`_globaltype(mut, t) = gt
+    -- where `%%`_globaltype(mut, t) = globaltype
     -- Expr_ok_const: `%|-%:%CONST`(C, expr, t)
 
 ;; 6-typing.watsup
 relation Table_ok: `%|-%:%`(context, table, tabletype)
   ;; 6-typing.watsup
-  rule _{C : context, tt : tabletype, expr : expr, limits : limits, rt : reftype}:
-    `%|-%:%`(C, TABLE_table(tt, expr), tt)
+  rule _{C : context, tabletype : tabletype, expr : expr, tt : tabletype, lim : limits, rt : reftype}:
+    `%|-%:%`(C, TABLE_table(tabletype, expr), tabletype)
     -- Tabletype_ok: `%|-%:OK`(C, tt)
-    -- where `%%`_tabletype(limits, rt) = tt
+    -- where `%%`_tabletype(lim, rt) = tabletype
     -- Expr_ok_const: `%|-%:%CONST`(C, expr, (rt : reftype <: valtype))
 
 ;; 6-typing.watsup
 relation Mem_ok: `%|-%:%`(context, mem, memtype)
   ;; 6-typing.watsup
-  rule _{C : context, mt : memtype}:
-    `%|-%:%`(C, MEMORY_mem(mt), mt)
-    -- Memtype_ok: `%|-%:OK`(C, mt)
+  rule _{C : context, memtype : memtype}:
+    `%|-%:%`(C, MEMORY_mem(memtype), memtype)
+    -- Memtype_ok: `%|-%:OK`(C, memtype)
 
 ;; 6-typing.watsup
 relation Elemmode_ok: `%|-%:%`(context, elemmode, reftype)
   ;; 6-typing.watsup
-  rule active{C : context, x : idx, expr : expr, rt : reftype, lim : limits}:
+  rule active{C : context, x : idx, expr : expr, rt : reftype, lim : limits, rt' : reftype}:
     `%|-%:%`(C, ACTIVE_elemmode(x, expr), rt)
     -- if (x!`%`_idx.0 < |C.TABLES_context|)
-    -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
-    -- where `%%`_tabletype(lim, rt) = C.TABLES_context[x!`%`_idx.0]
+    -- Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype)
+    -- if (C.TABLES_context[x!`%`_idx.0] = `%%`_tabletype(lim, rt'))
+    -- Reftype_sub: `%|-%<:%`(C, rt, rt')
 
   ;; 6-typing.watsup
   rule passive{C : context, rt : reftype}:
@@ -27754,10 +27780,11 @@ relation Elemmode_ok: `%|-%:%`(context, elemmode, reftype)
 ;; 6-typing.watsup
 relation Elem_ok: `%|-%:%`(context, elem, reftype)
   ;; 6-typing.watsup
-  rule _{C : context, rt : reftype, expr* : expr*, elemmode : elemmode}:
-    `%|-%:%`(C, ELEM_elem(rt, expr*{expr : expr}, elemmode), rt)
-    -- (Expr_ok_const: `%|-%:%CONST`(C, expr, (rt : reftype <: valtype)))*{expr : expr}
-    -- Elemmode_ok: `%|-%:%`(C, elemmode, rt)
+  rule _{C : context, reftype : reftype, expr* : expr*, elemmode : elemmode}:
+    `%|-%:%`(C, ELEM_elem(reftype, expr*{expr : expr}, elemmode), reftype)
+    -- Reftype_ok: `%|-%:OK`(C, reftype)
+    -- (Expr_ok_const: `%|-%:%CONST`(C, expr, (reftype : reftype <: valtype)))*{expr : expr}
+    -- Elemmode_ok: `%|-%:%`(C, elemmode, reftype)
 
 ;; 6-typing.watsup
 relation Datamode_ok: `%|-%:OK`(context, datamode)
@@ -27766,7 +27793,7 @@ relation Datamode_ok: `%|-%:OK`(context, datamode)
     `%|-%:OK`(C, ACTIVE_datamode(x, expr))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
+    -- Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype)
 
   ;; 6-typing.watsup
   rule passive{C : context}:
@@ -27828,15 +27855,19 @@ relation Export_ok: `%|-%:%`(context, export, externtype)
     -- Externidx_ok: `%|-%:%`(C, externidx, xt)
 
 ;; 6-typing.watsup
+syntax moduletype =
+  | `%->%`{externtype* : externtype*}(externtype*{externtype : externtype} : externtype*, externtype*)
+
+;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1298.1-1298.100
+;; 6-typing.watsup:1302.1-1302.100
 relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
-  ;; 6-typing.watsup:1335.1-1336.17
+  ;; 6-typing.watsup:1339.1-1340.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1338.1-1341.55
+  ;; 6-typing.watsup:1342.1-1345.55
   rule cons{C : context, global_1 : global, global : global, gt_1 : globaltype, gt* : globaltype*}:
     `%|-%:%`(C, [global_1] :: global*{}, [gt_1] :: gt*{gt : globaltype})
     -- Global_ok: `%|-%:%`(C, global, gt_1)
@@ -27846,46 +27877,47 @@ relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1297.1-1297.98
+;; 6-typing.watsup:1301.1-1301.98
 relation Types_ok: `%|-%:%`(context, type*, deftype*)
-  ;; 6-typing.watsup:1327.1-1328.17
+  ;; 6-typing.watsup:1331.1-1332.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1330.1-1333.50
-  rule cons{C : context, type_1 : type, type* : type*, dt_1 : deftype, dt* : deftype*}:
-    `%|-%:%`(C, [type_1] :: type*{type : type}, dt_1*{} :: dt*{dt : deftype})
-    -- Type_ok: `%|-%:%`(C, type_1, [dt_1])
-    -- Types_ok: `%|-%:%`(C[TYPES_context =.. dt_1*{}], type*{type : type}, dt*{dt : deftype})
+  ;; 6-typing.watsup:1334.1-1337.50
+  rule cons{C : context, type_1 : type, type* : type*, dt_1* : deftype*, dt* : deftype*}:
+    `%|-%:%`(C, [type_1] :: type*{type : type}, dt_1*{dt_1 : deftype} :: dt*{dt : deftype})
+    -- Type_ok: `%|-%:%`(C, type_1, dt_1*{dt_1 : deftype})
+    -- Types_ok: `%|-%:%`(C[TYPES_context =.. dt_1*{dt_1 : deftype}], type*{type : type}, dt*{dt : deftype})
 }
 
 ;; 6-typing.watsup
-relation Module_ok: `|-%:OK`(module)
+relation Module_ok: `|-%:%`(module, moduletype)
   ;; 6-typing.watsup
-  rule _{type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data^n : data^n, n : n, start? : start?, export* : export*, dt'* : deftype*, ixt* : externtype*, C' : context, gt* : globaltype*, tt* : tabletype*, mt* : memtype*, C : context, dt* : deftype*, rt* : reftype*, xt* : externtype*, idt* : deftype*, igt* : globaltype*, itt* : tabletype*, imt* : memtype*}:
-    `|-%:OK`(MODULE_module(type*{type : type}, import*{import : import}, func*{func : func}, global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data^n{data : data}, start?{start : start}, export*{export : export}))
-    -- if (|import*{import : import}| = |ixt*{ixt : externtype}|)
+  rule _{type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start? : start?, export* : export*, xt_I* : externtype*, xt_E* : externtype*, dt'* : deftype*, C' : context, gt* : globaltype*, tt* : tabletype*, mt* : memtype*, C : context, dt* : deftype*, rt* : reftype*, ok* : datatype*, dt_I* : deftype*, gt_I* : globaltype*, tt_I* : tabletype*, mt_I* : memtype*}:
+    `|-%:%`(MODULE_module(type*{type : type}, import*{import : import}, func*{func : func}, global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data}, start?{start : start}, export*{export : export}), `%->%`_moduletype(xt_I*{xt_I : externtype}, xt_E*{xt_E : externtype}))
+    -- if (|import*{import : import}| = |xt_I*{xt_I : externtype}|)
     -- if (|table*{table : table}| = |tt*{tt : tabletype}|)
     -- if (|mem*{mem : mem}| = |mt*{mt : memtype}|)
     -- if (|dt*{dt : deftype}| = |func*{func : func}|)
     -- if (|elem*{elem : elem}| = |rt*{rt : reftype}|)
-    -- if (|export*{export : export}| = |xt*{xt : externtype}|)
+    -- if (|data*{data : data}| = |ok*{ok : datatype}|)
+    -- if (|export*{export : export}| = |xt_E*{xt_E : externtype}|)
     -- Types_ok: `%|-%:%`({TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()}, type*{type : type}, dt'*{dt' : deftype})
-    -- (Import_ok: `%|-%:%`({TYPES dt'*{dt' : deftype}, RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()}, import, ixt))*{import : import, ixt : externtype}
+    -- (Import_ok: `%|-%:%`({TYPES dt'*{dt' : deftype}, RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()}, import, xt_I))*{import : import, xt_I : externtype}
     -- Globals_ok: `%|-%:%`(C', global*{global : global}, gt*{gt : globaltype})
     -- (Table_ok: `%|-%:%`(C', table, tt))*{table : table, tt : tabletype}
     -- (Mem_ok: `%|-%:%`(C', mem, mt))*{mem : mem, mt : memtype}
     -- (Func_ok: `%|-%:%`(C, func, dt))*{dt : deftype, func : func}
     -- (Elem_ok: `%|-%:%`(C, elem, rt))*{elem : elem, rt : reftype}
-    -- (Data_ok: `%|-%:%`(C, data, OK_datatype))^n{data : data}
+    -- (Data_ok: `%|-%:%`(C, data, ok))*{data : data, ok : datatype}
     -- (Start_ok: `%|-%:OK`(C, start))?{start : start}
-    -- (Export_ok: `%|-%:%`(C, export, xt))*{export : export, xt : externtype}
-    -- if (C = {TYPES dt'*{dt' : deftype}, RECS [], FUNCS idt*{idt : deftype} :: dt*{dt : deftype}, GLOBALS igt*{igt : globaltype} :: gt*{gt : globaltype}, TABLES itt*{itt : tabletype} :: tt*{tt : tabletype}, MEMS imt*{imt : memtype} :: mt*{mt : memtype}, ELEMS rt*{rt : reftype}, DATAS OK_datatype^n{}, LOCALS [], LABELS [], RETURN ?()})
-    -- if (C' = {TYPES dt'*{dt' : deftype}, RECS [], FUNCS idt*{idt : deftype} :: dt*{dt : deftype}, GLOBALS igt*{igt : globaltype}, TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()})
-    -- if (idt*{idt : deftype} = $funcsxt(ixt*{ixt : externtype}))
-    -- if (igt*{igt : globaltype} = $globalsxt(ixt*{ixt : externtype}))
-    -- if (itt*{itt : tabletype} = $tablesxt(ixt*{ixt : externtype}))
-    -- if (imt*{imt : memtype} = $memsxt(ixt*{ixt : externtype}))
+    -- (Export_ok: `%|-%:%`(C, export, xt_E))*{export : export, xt_E : externtype}
+    -- if (C = {TYPES dt'*{dt' : deftype}, RECS [], FUNCS dt_I*{dt_I : deftype} :: dt*{dt : deftype}, GLOBALS gt_I*{gt_I : globaltype} :: gt*{gt : globaltype}, TABLES tt_I*{tt_I : tabletype} :: tt*{tt : tabletype}, MEMS mt_I*{mt_I : memtype} :: mt*{mt : memtype}, ELEMS rt*{rt : reftype}, DATAS ok*{ok : datatype}, LOCALS [], LABELS [], RETURN ?()})
+    -- if (C' = {TYPES dt'*{dt' : deftype}, RECS [], FUNCS dt_I*{dt_I : deftype} :: dt*{dt : deftype}, GLOBALS gt_I*{gt_I : globaltype}, TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()})
+    -- if (dt_I*{dt_I : deftype} = $funcsxt(xt_I*{xt_I : externtype}))
+    -- if (gt_I*{gt_I : globaltype} = $globalsxt(xt_I*{xt_I : externtype}))
+    -- if (tt_I*{tt_I : tabletype} = $tablesxt(xt_I*{xt_I : externtype}))
+    -- if (mt_I*{mt_I : memtype} = $memsxt(xt_I*{xt_I : externtype}))
 
 ;; 7-runtime-typing.watsup
 relation Ref_ok: `%|-%:%`(store, ref, reftype)

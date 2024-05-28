@@ -1211,25 +1211,26 @@ rule Func_ok:
   -- Expr_ok: C, LOCALS (SET t_1)* lct*, LABELS (t_2*), RETURN (t_2*) |- expr : t_2*
 
 rule Global_ok:
-  C |- GLOBAL gt expr : gt
+  C |- GLOBAL globaltype expr : globaltype
   -- Globaltype_ok: C |- gt : OK
-  -- if gt = mut t
+  -- if globaltype = mut t
   -- Expr_ok_const: C |- expr : t CONST
 
 rule Table_ok:
-  C |- TABLE tt expr : tt
+  C |- TABLE tabletype expr : tabletype
   -- Tabletype_ok: C |- tt : OK
-  -- if tt = limits rt
+  -- if tabletype = lim rt
   -- Expr_ok_const: C |- expr : rt CONST
 
 rule Mem_ok:
-  C |- MEMORY mt : mt
-  -- Memtype_ok: C |- mt : OK
+  C |- MEMORY memtype : memtype
+  -- Memtype_ok: C |- memtype : OK
 
 rule Elem_ok:
-  C |- ELEM rt expr* elemmode : rt
-  -- (Expr_ok_const: C |- expr : rt CONST)*
-  -- Elemmode_ok: C |- elemmode : rt
+  C |- ELEM reftype expr* elemmode : reftype
+  -- Reftype_ok: C |- reftype : OK
+  -- (Expr_ok_const: C |- expr : reftype CONST)*
+  -- Elemmode_ok: C |- elemmode : reftype
 
 rule Data_ok:
   C |- DATA b* datamode : OK
@@ -1237,8 +1238,9 @@ rule Data_ok:
 
 rule Elemmode_ok/active:
   C |- ACTIVE x expr : rt
-  -- if C.TABLES[x] = lim rt
-  -- (Expr_ok_const: C |- expr : I32 CONST)*
+  -- if C.TABLES[x] = lim rt'
+  -- Reftype_sub: C |- rt <: rt'
+  -- Expr_ok_const: C |- expr : I32 CONST
 
 rule Elemmode_ok/passive:
   C |- PASSIVE : rt
@@ -1249,7 +1251,7 @@ rule Elemmode_ok/declare:
 rule Datamode_ok/active:
   C |- ACTIVE x expr : OK
   -- if C.MEMS[x] = mt
-  -- (Expr_ok_const: C |- expr : I32 CONST)*
+  -- Expr_ok_const: C |- expr : I32 CONST
 
 rule Datamode_ok/passive:
   C |- PASSIVE : OK
@@ -1293,15 +1295,17 @@ rule Externidx_ok/mem:
 
 ;; Modules proper
 
-relation Module_ok: |- module : OK                    hint(show "T-module")  hint(macro "%module")
+syntax moduletype hint(desc "module type") = externtype* -> externtype* hint(macro "toM")
+
+relation Module_ok: |- module : moduletype            hint(show "T-module")  hint(macro "%module")
 relation Types_ok: context |- type* : deftype*        hint(show "T-types")   hint(macro "%types")
 relation Globals_ok: context |- global* : globaltype* hint(show "T-globals") hint(macro "%globals")
 
 ;; TODO: refs
 rule Module_ok:
-  |- MODULE type* import* func* global* table* mem* elem* data^n start? export* : OK
+  |- MODULE type* import* func* global* table* mem* elem* data* start? export* : xt_I* -> xt_E*
   -- Types_ok: {} |- type* : dt'*
-  -- (Import_ok: {TYPES dt'*} |- import : ixt)*
+  -- (Import_ok: {TYPES dt'*} |- import : xt_I)*
   ----
   -- Globals_ok: C' |- global* : gt*
   -- (Table_ok: C' |- table : tt)*
@@ -1309,19 +1313,19 @@ rule Module_ok:
   -- (Func_ok: C |- func : dt)*
   ----
   -- (Elem_ok: C |- elem : rt)*
-  -- (Data_ok: C |- data : OK)^n
+  -- (Data_ok: C |- data : ok)*
   -- (Start_ok: C |- start : OK)?
-  -- (Export_ok: C |- export : xt)*
+  -- (Export_ok: C |- export : xt_E)*
   ;; -- TODO: disjoint export names
   ----
-  -- if C = {TYPES dt'*, FUNCS idt* dt*, GLOBALS igt* gt*, TABLES itt* tt*, MEMS imt* mt*, ELEMS rt*, DATAS OK^n}
+  -- if C = {TYPES dt'*, FUNCS dt_I* dt*, GLOBALS gt_I* gt*, TABLES tt_I* tt*, MEMS mt_I* mt*, ELEMS rt*, DATAS ok*}
   ----
-  -- if C' = {TYPES dt'*, FUNCS idt* dt*, GLOBALS igt*}
+  -- if C' = {TYPES dt'*, FUNCS dt_I* dt*, GLOBALS gt_I*}
   ----
-  -- if idt* = $funcsxt(ixt*)
-  -- if igt* = $globalsxt(ixt*)
-  -- if itt* = $tablesxt(ixt*)
-  -- if imt* = $memsxt(ixt*)
+  -- if dt_I* = $funcsxt(xt_I*)
+  -- if gt_I* = $globalsxt(xt_I*)
+  -- if tt_I* = $tablesxt(xt_I*)
+  -- if mt_I* = $memsxt(xt_I*)
 
 
 rule Types_ok/empty:
@@ -1329,7 +1333,7 @@ rule Types_ok/empty:
 
 rule Types_ok/cons:
   C |- type_1 type* : dt_1* dt*
-  -- Type_ok: C |- type_1 : dt_1
+  -- Type_ok: C |- type_1 : dt_1*
   -- Types_ok: C[.TYPES =.. dt_1*] |- type* : dt*
 
 rule Globals_ok/empty:

@@ -6229,11 +6229,11 @@ $$
 \frac{
 C \vdash {\mathit{gt}} : \mathsf{ok}
  \qquad
-{\mathit{gt}} = {\mathsf{mut}^?}~t
+{\mathit{globaltype}} = {\mathsf{mut}^?}~t
  \qquad
 C \vdash {\mathit{expr}} : t~\mathsf{const}
 }{
-C \vdash \mathsf{global}~{\mathit{gt}}~{\mathit{expr}} : {\mathit{gt}}
+C \vdash \mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}} : {\mathit{globaltype}}
 } \, {[\textsc{\scriptsize T{-}global}]}
 \qquad
 \end{array}
@@ -6244,11 +6244,11 @@ $$
 \frac{
 C \vdash {\mathit{tt}} : \mathsf{ok}
  \qquad
-{\mathit{tt}} = {\mathit{limits}}~{\mathit{rt}}
+{\mathit{tabletype}} = {\mathit{lim}}~{\mathit{rt}}
  \qquad
 C \vdash {\mathit{expr}} : {\mathit{rt}}~\mathsf{const}
 }{
-C \vdash \mathsf{table}~{\mathit{tt}}~{\mathit{expr}} : {\mathit{tt}}
+C \vdash \mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}} : {\mathit{tabletype}}
 } \, {[\textsc{\scriptsize T{-}table}]}
 \qquad
 \end{array}
@@ -6257,9 +6257,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{mt}} : \mathsf{ok}
+C \vdash {\mathit{memtype}} : \mathsf{ok}
 }{
-C \vdash \mathsf{memory}~{\mathit{mt}} : {\mathit{mt}}
+C \vdash \mathsf{memory}~{\mathit{memtype}} : {\mathit{memtype}}
 } \, {[\textsc{\scriptsize T{-}mem}]}
 \qquad
 \end{array}
@@ -6268,11 +6268,13 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-(C \vdash {\mathit{expr}} : {\mathit{rt}}~\mathsf{const})^\ast
+C \vdash {\mathit{reftype}} : \mathsf{ok}
  \qquad
-C \vdash {\mathit{elemmode}} : {\mathit{rt}}
+(C \vdash {\mathit{expr}} : {\mathit{reftype}}~\mathsf{const})^\ast
+ \qquad
+C \vdash {\mathit{elemmode}} : {\mathit{reftype}}
 }{
-C \vdash \mathsf{elem}~{\mathit{rt}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}} : {\mathit{rt}}
+C \vdash \mathsf{elem}~{\mathit{reftype}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}} : {\mathit{reftype}}
 } \, {[\textsc{\scriptsize T{-}elem}]}
 \qquad
 \end{array}
@@ -6292,9 +6294,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{tables}{}[x] = {\mathit{lim}}~{\mathit{rt}}
+C{.}\mathsf{tables}{}[x] = {\mathit{lim}}~{\mathit{rt}'}
  \qquad
-(C \vdash {\mathit{expr}} : \mathsf{i{\scriptstyle 32}}~\mathsf{const})^\ast
+C \vdash {\mathit{rt}} \leq {\mathit{rt}'}
+ \qquad
+C \vdash {\mathit{expr}} : \mathsf{i{\scriptstyle 32}}~\mathsf{const}
 }{
 C \vdash \mathsf{active}~x~{\mathit{expr}} : {\mathit{rt}}
 } \, {[\textsc{\scriptsize T{-}elemmode{-}active}]}
@@ -6327,7 +6331,7 @@ $$
 \frac{
 C{.}\mathsf{mems}{}[x] = {\mathit{mt}}
  \qquad
-(C \vdash {\mathit{expr}} : \mathsf{i{\scriptstyle 32}}~\mathsf{const})^\ast
+C \vdash {\mathit{expr}} : \mathsf{i{\scriptstyle 32}}~\mathsf{const}
 }{
 C \vdash \mathsf{active}~x~{\mathit{expr}} : \mathsf{ok}
 } \, {[\textsc{\scriptsize T{-}datamode{-}active}]}
@@ -6434,7 +6438,13 @@ $$
 
 \vspace{1ex}
 
-$\boxed{{ \vdash }\;{\mathit{module}} : \mathsf{ok}}$
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+\mbox{(module type)} & {\mathit{moduletype}} &::=& {{\mathit{externtype}}^\ast} \rightarrow {{\mathit{externtype}}^\ast} \\
+\end{array}
+$$
+
+$\boxed{{ \vdash }\;{\mathit{module}} : {\mathit{moduletype}}}$
 
 $\boxed{{\mathit{context}} \vdash {{\mathit{type}}^\ast} : {{\mathit{deftype}}^\ast}}$
 
@@ -6448,7 +6458,7 @@ $$
  \}\end{array} \vdash {{\mathit{type}}^\ast} : {{\mathit{dt}'}^\ast}
  \qquad
 (\{ \begin{array}[t]{@{}l@{}}
-\mathsf{types}~{{\mathit{dt}'}^\ast} \}\end{array} \vdash {\mathit{import}} : {\mathit{ixt}})^\ast
+\mathsf{types}~{{\mathit{dt}'}^\ast} \}\end{array} \vdash {\mathit{import}} : {\mathit{xt}}_{\mathsf{i}})^\ast
  \\
 {C'} \vdash {{\mathit{global}}^\ast} : {{\mathit{gt}}^\ast}
  \qquad
@@ -6460,28 +6470,28 @@ $$
  \\
 (C \vdash {\mathit{elem}} : {\mathit{rt}})^\ast
  \qquad
-(C \vdash {\mathit{data}} : \mathsf{ok})^{n}
+(C \vdash {\mathit{data}} : {\mathit{ok}})^\ast
  \qquad
 (C \vdash {\mathit{start}} : \mathsf{ok})^?
  \qquad
-(C \vdash {\mathit{export}} : {\mathit{xt}})^\ast
+(C \vdash {\mathit{export}} : {\mathit{xt}}_{\mathsf{e}})^\ast
  \\
 C = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{funcs}~{{\mathit{idt}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{itt}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{imt}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{elems}~{{\mathit{rt}}^\ast},\; \mathsf{datas}~{\mathsf{ok}^{n}} \}\end{array}
+\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{elems}~{{\mathit{rt}}^\ast},\; \mathsf{datas}~{{\mathit{ok}}^\ast} \}\end{array}
  \\
 {C'} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{funcs}~{{\mathit{idt}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{igt}}^\ast} \}\end{array}
+\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast} \}\end{array}
  \\
-{{\mathit{idt}}^\ast} = {\mathrm{funcs}}({{\mathit{ixt}}^\ast})
+{{\mathit{dt}}_{\mathsf{i}}^\ast} = {\mathrm{funcs}}({{\mathit{xt}}_{\mathsf{i}}^\ast})
  \qquad
-{{\mathit{igt}}^\ast} = {\mathrm{globals}}({{\mathit{ixt}}^\ast})
+{{\mathit{gt}}_{\mathsf{i}}^\ast} = {\mathrm{globals}}({{\mathit{xt}}_{\mathsf{i}}^\ast})
  \qquad
-{{\mathit{itt}}^\ast} = {\mathrm{tables}}({{\mathit{ixt}}^\ast})
+{{\mathit{tt}}_{\mathsf{i}}^\ast} = {\mathrm{tables}}({{\mathit{xt}}_{\mathsf{i}}^\ast})
  \qquad
-{{\mathit{imt}}^\ast} = {\mathrm{mems}}({{\mathit{ixt}}^\ast})
+{{\mathit{mt}}_{\mathsf{i}}^\ast} = {\mathrm{mems}}({{\mathit{xt}}_{\mathsf{i}}^\ast})
 \end{array}
 }{
-{ \vdash }\;\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^{n}}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast} : \mathsf{ok}
+{ \vdash }\;\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast} : {{\mathit{xt}}_{\mathsf{i}}^\ast} \rightarrow {{\mathit{xt}}_{\mathsf{e}}^\ast}
 } \, {[\textsc{\scriptsize T{-}module}]}
 \qquad
 \end{array}
@@ -6502,7 +6512,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{type}}_1 : {\mathit{dt}}_1
+C \vdash {\mathit{type}}_1 : {{\mathit{dt}}_1^\ast}
  \qquad
 C{}[{.}\mathsf{types} = ..{{\mathit{dt}}_1^\ast}] \vdash {{\mathit{type}}^\ast} : {{\mathit{dt}}^\ast}
 }{

@@ -96,13 +96,16 @@ Conventions
 
 .. index:: ! type definition, type index, function type, aggregate type
    pair: abstract syntax; type definition
+.. _syntax-type:
 .. _syntax-typedef:
 
 Types
 ~~~~~
 
-The ${:type} section of a module defines a list of :ref:`recursive types <syntax-rectype>`, each of consisting of a list of :ref:`sub types <syntax-subtype>` referenced by individual :ref:`type indices <syntax-typeidx>`.
-All :ref:`function <syntax-functype>` or :ref:`aggregate <syntax-aggrtype>` types used in a module must be defined in this component.
+The ${:type} section of a module defines a list of :ref:`recursive types <syntax-rectype>`, each consisting of a list of :ref:`sub types <syntax-subtype>` referenced by individual :ref:`type indices <syntax-typeidx>`.
+All :ref:`function <syntax-functype>` or :ref:`aggregate <syntax-aggrtype>` types used in a module must be defined in this section.
+
+$${syntax: type}
 
 
 .. index:: ! function, ! local, function index, local index, type index, value type, expression, import

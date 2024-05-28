@@ -8,12 +8,19 @@ Furthermore, most definitions are themselves classified with a suitable type.
 .. index:: type, type index, defined type, recursive type
    pair: abstract syntax; type
    single: abstract syntax; type
+.. _valid-type:
 .. _valid-types:
 
 Types
 ~~~~~
 
-The sequence of :ref:`types <syntax-type>` defined in a module is validated incrementally, yielding a suitable :ref:`context <context>`.
+The sequence of :ref:`types <syntax-type>` defined in a module is validated incrementally, yielding a sequence of :ref:`defined types <syntax-deftype>` representing them individually.
+
+:math:`\type`
+.............
+
+$${rule: Type_ok}
+
 
 :math:`\type^\ast`
 ..................
@@ -40,37 +47,18 @@ The sequence of :ref:`types <syntax-type>` defined in a module is validated incr
 
   * Then the type sequence is valid.
 
-.. math::
-   \frac{
-   }{
-     \{\} \vdashtypes \epsilon : \OKtypes
-   }
-
-.. math::
-   \frac{
-     C' \vdashtypes \type^\ast : \OKtypes
-     \qquad
-     C = C' \with \CTYPES = C'.\CTYPES~\rolldt_{|C'.\CTYPES|}^\ast(\rectype)
-     \qquad
-     C \vdashrectype \rectype : {\OKrectype}(|C'.\CTYPES|)
-   }{
-     C \vdashtypes \type^\ast~\rectype : \OKtypes
-   }
-
-.. note::
-   Despite the appearance, the context :math:`C` is effectively an _output_ of this judgement.
+$${rule: Types_ok/*}
 
 
 .. index:: function, local, function index, local index, type index, function type, value type, local type, expression, import
    pair: abstract syntax; function
    single: abstract syntax; function
-.. _valid-local:
 .. _valid-func:
 
 Functions
 ~~~~~~~~~
 
-Functions :math:`\func` are classified by :ref:`defined types <syntax-deftype>` that :ref:`expand <aux-expand-deftype>` to :ref:`function types <syntax-functype>` of the form :math:`\TFUNC~[t_1^\ast] \toF [t_2^\ast]`.
+Functions ${:func} are classified by :ref:`defined types <syntax-deftype>` that :ref:`expand <aux-expand-deftype>` to :ref:`function types <syntax-functype>` of the form ${comptype: FUNC (t_1* -> t_2*)}.
 
 
 :math:`\{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\expr \}`
@@ -82,7 +70,7 @@ Functions :math:`\func` are classified by :ref:`defined types <syntax-deftype>` 
 
 * For each local declared by a :ref:`value type <syntax-valtype>` :math:`t` in :math:`t^\ast`:
 
-  * The local for type :math:`t` must be :ref:`valid <valid-localtype>` with :ref:`local type <syntax-localtype>` :math:`\localtype_i`.
+  * The local for type :math:`t` must be :ref:`valid <valid-local>` with :ref:`local type <syntax-localtype>` :math:`\localtype_i`.
 
 * Let :math:`\localtype^\ast` be the concatenation of all :math:`\localtype_i`.
 
@@ -100,27 +88,18 @@ Functions :math:`\func` are classified by :ref:`defined types <syntax-deftype>` 
 
 * Then the function definition is valid with type :math:`C.\CTYPES[x]`.
 
-.. math::
-   \frac{
-     \expanddt(C.\CTYPES[x]) = \TFUNC~[t_1^\ast] \toF [t_2^\ast]
-     \qquad
-     (C \vdashlocal \{\LTYPE~t\} : \init~t)^\ast
-     \qquad
-     C,\CLOCALS\,(\SET~t_1)^\ast~(\init~t)^\ast,\CLABELS~[t_2^\ast],\CRETURN~[t_2^\ast] \vdashexpr \expr : [t_2^\ast]
-   }{
-     C \vdashfunc \{ \FTYPE~x, \FLOCALS~\{\LTYPE~t\}^\ast, \FBODY~\expr \} : C.\CTYPES[x]
-   }
+$${rule: Func_ok Local_ok}
 
 
 .. index:: local, local type, value type
    pair: validation; local
    single: abstract syntax; local
-.. _valid-localtype:
+.. _valid-local:
 
 Locals
 ~~~~~~
 
-:ref:`Locals <syntax-local>` are classified with :ref:`local types <syntax-localtype>`.
+Locals ${:local} are classified with :ref:`local types <syntax-localtype>`.
 
 :math:`\{ \LTYPE~\valtype \}`
 .............................
@@ -135,21 +114,7 @@ Locals
 
   * The local is valid with :ref:`local type <syntax-localtype>` :math:`\UNSET~\valtype`.
 
-.. math::
-   \frac{
-     C \vdashvaltype t : \OKvaltype
-     \qquad
-     C \vdashvaltype t \mathrel{\mbox{defaultable}}
-   }{
-     C \vdashlocal \{ \LTYPE~t \} : \SET~t
-   }
-
-.. math::
-   \frac{
-     C \vdashvaltype t : \OKvaltype
-   }{
-     C \vdashlocal \{ \LTYPE~t \} : \UNSET~t
-   }
+$${rule: Local_ok/*}
 
 .. note::
    For cases where both rules are applicable, the former yields the more permissable type.
@@ -163,7 +128,7 @@ Locals
 Tables
 ~~~~~~
 
-Tables :math:`\table` are classified by :ref:`table types <syntax-tabletype>`.
+Tables ${:table} are classified by :ref:`table types <syntax-tabletype>`.
 
 :math:`\{ \TTYPE~\tabletype, \TINIT~\expr \}`
 .............................................
@@ -178,18 +143,7 @@ Tables :math:`\table` are classified by :ref:`table types <syntax-tabletype>`.
 
 * Then the table definition is valid with type :math:`\tabletype`.
 
-.. math::
-   \frac{
-     C \vdashtabletype \tabletype : \OKtabletype
-     \qquad
-     \tabletype = \limits~t
-     \qquad
-     C \vdashexpr \expr : [t]
-     \qquad
-     C \vdashexprconst \expr \CONSTexprconst
-   }{
-     C \vdashtable \{ \TTYPE~\tabletype, \TINIT~\expr \} : \tabletype
-   }
+$${rule: Table_ok}
 
 
 .. index:: memory, memory type
@@ -200,7 +154,7 @@ Tables :math:`\table` are classified by :ref:`table types <syntax-tabletype>`.
 Memories
 ~~~~~~~~
 
-Memories :math:`\mem` are classified by :ref:`memory types <syntax-memtype>`.
+Memories ${:mem} are classified by :ref:`memory types <syntax-memtype>`.
 
 :math:`\{ \MTYPE~\memtype \}`
 .............................
@@ -209,12 +163,7 @@ Memories :math:`\mem` are classified by :ref:`memory types <syntax-memtype>`.
 
 * Then the memory definition is valid with type :math:`\memtype`.
 
-.. math::
-   \frac{
-     C \vdashmemtype \memtype : \OKmemtype
-   }{
-     C \vdashmem \{ \MTYPE~\memtype \} : \memtype
-   }
+$${rule: Mem_ok}
 
 
 .. index:: global, global type, expression, constant
@@ -226,7 +175,7 @@ Memories :math:`\mem` are classified by :ref:`memory types <syntax-memtype>`.
 Globals
 ~~~~~~~
 
-Globals :math:`\global` are classified by :ref:`global types <syntax-globaltype>` of the form :math:`\mut~t`.
+Globals ${:global} are classified by :ref:`global types <syntax-globaltype>`.
 
 Sequences of globals are handled incrementally, such that each definition has access to previous definitions.
 
@@ -242,16 +191,7 @@ Sequences of globals are handled incrementally, such that each definition has ac
 
 * Then the global definition is valid with type :math:`\mut~t`.
 
-.. math::
-   \frac{
-     C \vdashglobaltype \mut~t : \OKglobaltype
-     \qquad
-     C \vdashexpr \expr : [t]
-     \qquad
-     C \vdashexprconst \expr \CONSTexprconst
-   }{
-     C \vdashglobal \{ \GTYPE~\mut~t, \GINIT~\expr \} : \mut~t
-   }
+$${rule: Global_ok}
 
 
 :math:`\global^\ast`
@@ -269,21 +209,7 @@ Sequences of globals are handled incrementally, such that each definition has ac
 
   * Then the sequence is valid with the sequence of :ref:`global types <syntax-globaltype>` consisting of :math:`\X{gt}_1` prepended to :math:`\X{gt}^\ast`.
 
-.. math::
-   ~\\
-   \frac{
-   }{
-     C \vdashglobals \epsilon : \epsilon
-   }
-   \qquad
-   \frac{
-     C \vdashglobal \global_1 : \X{gt}_1
-     \qquad
-     C \compose \{\CGLOBALS~\X{gt}_1\} \vdashglobals \global^\ast : \X{gt}^\ast
-   }{
-     C \vdashglobals \global_1~\global^\ast : \X{gt}_1~\X{gt}^\ast
-   }
-
+$${rule: Globals_ok/*}
 
 
 .. index:: element, table, table index, expression, constant, function index
@@ -296,7 +222,7 @@ Sequences of globals are handled incrementally, such that each definition has ac
 Element Segments
 ~~~~~~~~~~~~~~~~
 
-Element segments :math:`\elem` are classified by the :ref:`reference type <syntax-reftype>` of their elements.
+Element segments ${:elem} are classified by the :ref:`reference type <syntax-reftype>` of their elements.
 
 :math:`\{ \ETYPE~t, \EINIT~e^\ast, \EMODE~\elemmode \}`
 .......................................................
@@ -315,21 +241,7 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
 
 * Then the element segment is valid with :ref:`reference type <syntax-reftype>` :math:`t`.
 
-
-.. math::
-   \frac{
-     C \vdashreftype t : \OKreftype
-     \qquad
-     (C \vdashexpr e : [t])^\ast
-     \qquad
-     (C \vdashexprconst e \CONSTexprconst)^\ast
-     \qquad
-     C \vdashelemmode \elemmode : t'
-     \qquad
-     C \vdashreftypematch t \subreftypematch t'
-   }{
-     C \vdashelem \{ \ETYPE~t, \EINIT~e^\ast, \EMODE~\elemmode \} : t
-   }
+$${rule: Elem_ok}
 
 
 .. _valid-elemmode:
@@ -339,12 +251,7 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
 
 * The element mode is valid with any :ref:`valid <valid-reftype>` :ref:`reference type <syntax-reftype>`.
 
-.. math::
-   \frac{
-     C \vdashreftype \reftype : \OKreftype
-   }{
-     C \vdashelemmode \EPASSIVE : \reftype
-   }
+$${rule: Elemmode_ok/passive}
 
 
 :math:`\EACTIVE~\{ \ETABLE~x, \EOFFSET~\expr \}`
@@ -360,31 +267,14 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
 
 * Then the element mode is valid with :ref:`reference type <syntax-reftype>` :math:`t`.
 
-.. math::
-   \frac{
-     \begin{array}{@{}c@{}}
-     C.\CTABLES[x] = \limits~t
-     \\
-     C \vdashexpr \expr : [\I32]
-     \qquad
-     C \vdashexprconst \expr \CONSTexprconst
-     \end{array}
-   }{
-     C \vdashelemmode \EACTIVE~\{ \ETABLE~x, \EOFFSET~\expr \} : t
-   }
+$${rule: Elemmode_ok/active}
 
 :math:`\EDECLARE`
 .................
 
 * The element mode is valid with any :ref:`valid <valid-reftype>` :ref:`reference type <syntax-reftype>`.
 
-.. math::
-   \frac{
-     C \vdashreftype \reftype : \OKreftype
-   }{
-     C \vdashelemmode \EDECLARE : \reftype
-   }
-
+$${rule: Elemmode_ok/declare}
 
 
 .. index:: data, memory, memory index, expression, constant, byte
@@ -398,7 +288,7 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
 Data Segments
 ~~~~~~~~~~~~~
 
-Data segments :math:`\data` are not classified by any type but merely checked for well-formedness.
+Data segments ${:data} are not classified by any type but merely checked for well-formedness.
 
 :math:`\{ \DINIT~b^\ast, \DMODE~\datamode \}`
 .............................................
@@ -407,12 +297,7 @@ Data segments :math:`\data` are not classified by any type but merely checked fo
 
 * Then the data segment is valid.
 
-.. math::
-   \frac{
-     C \vdashdatamode \datamode : \OKdatamode
-   }{
-     C \vdashdata \{ \DINIT~b^\ast, \DMODE~\datamode \} : \OKdata
-   }
+$${rule: Data_ok}
 
 
 .. _valid-datamode:
@@ -422,11 +307,7 @@ Data segments :math:`\data` are not classified by any type but merely checked fo
 
 * The data mode is valid.
 
-.. math::
-   \frac{
-   }{
-     C \vdashdatamode \DPASSIVE : \OKdatamode
-   }
+$${rule: Datamode_ok/passive}
 
 
 :math:`\DACTIVE~\{ \DMEM~x, \DOFFSET~\expr \}`
@@ -440,16 +321,7 @@ Data segments :math:`\data` are not classified by any type but merely checked fo
 
 * Then the data mode is valid.
 
-.. math::
-   \frac{
-     C.\CMEMS[x] = \limits
-     \qquad
-     C \vdashexpr \expr : [\I32]
-     \qquad
-     C \vdashexprconst \expr \CONSTexprconst
-   }{
-     C \vdashdatamode \DACTIVE~\{ \DMEM~x, \DOFFSET~\expr \} : \OKdatamode
-   }
+$${rule: Datamode_ok/active}
 
 
 .. index:: start function, function index
@@ -460,7 +332,7 @@ Data segments :math:`\data` are not classified by any type but merely checked fo
 Start Function
 ~~~~~~~~~~~~~~
 
-Start function declarations :math:`\start` are not classified by any type.
+Start function declarations ${:start} are not classified by any type.
 
 :math:`\{ \SFUNC~x \}`
 ......................
@@ -471,13 +343,7 @@ Start function declarations :math:`\start` are not classified by any type.
 
 * Then the start function is valid.
 
-
-.. math::
-   \frac{
-     \expanddt(C.\CFUNCS[x]) = \TFUNC~[] \toF []
-   }{
-     C \vdashstart \{ \SFUNC~x \} : \OKstart
-   }
+$${rule: Start_ok}
 
 
 .. index:: export, name, index, function index, table index, memory index, global index
@@ -485,11 +351,12 @@ Start function declarations :math:`\start` are not classified by any type.
    single: abstract syntax; export
 .. _valid-exportdesc:
 .. _valid-export:
+.. _valid-externidx:
 
 Exports
 ~~~~~~~
 
-Exports :math:`\export` and export descriptions :math:`\exportdesc` are classified by their :ref:`external type <syntax-externtype>`.
+Exports ${:export} are classified by their :ref:`external type <syntax-externtype>`.
 
 
 :math:`\{ \ENAME~\name, \EDESC~\exportdesc \}`
@@ -499,12 +366,7 @@ Exports :math:`\export` and export descriptions :math:`\exportdesc` are classifi
 
 * Then the export is valid with :ref:`external type <syntax-externtype>` :math:`\externtype`.
 
-.. math::
-   \frac{
-     C \vdashexportdesc \exportdesc : \externtype
-   }{
-     C \vdashexport \{ \ENAME~\name, \EDESC~\exportdesc \} : \externtype
-   }
+$${rule: Export_ok}
 
 
 :math:`\EDFUNC~x`
@@ -516,12 +378,7 @@ Exports :math:`\export` and export descriptions :math:`\exportdesc` are classifi
 
 * Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\X{dt}`.
 
-.. math::
-   \frac{
-     C.\CFUNCS[x] = \X{dt}
-   }{
-     C \vdashexportdesc \EDFUNC~x : \ETFUNC~\X{dt}
-   }
+$${rule: Externidx_ok/func}
 
 
 :math:`\EDTABLE~x`
@@ -531,12 +388,7 @@ Exports :math:`\export` and export descriptions :math:`\exportdesc` are classifi
 
 * Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\ETTABLE~C.\CTABLES[x]`.
 
-.. math::
-   \frac{
-     C.\CTABLES[x] = \tabletype
-   }{
-     C \vdashexportdesc \EDTABLE~x : \ETTABLE~\tabletype
-   }
+$${rule: Externidx_ok/table}
 
 
 :math:`\EDMEM~x`
@@ -546,12 +398,7 @@ Exports :math:`\export` and export descriptions :math:`\exportdesc` are classifi
 
 * Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\ETMEM~C.\CMEMS[x]`.
 
-.. math::
-   \frac{
-     C.\CMEMS[x] = \memtype
-   }{
-     C \vdashexportdesc \EDMEM~x : \ETMEM~\memtype
-   }
+$${rule: Externidx_ok/mem}
 
 
 :math:`\EDGLOBAL~x`
@@ -561,12 +408,8 @@ Exports :math:`\export` and export descriptions :math:`\exportdesc` are classifi
 
 * Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~C.\CGLOBALS[x]`.
 
-.. math::
-   \frac{
-     C.\CGLOBALS[x] = \globaltype
-   }{
-     C \vdashexportdesc \EDGLOBAL~x : \ETGLOBAL~\globaltype
-   }
+$${rule: Externidx_ok/global}
+
 
 
 .. index:: import, name, function type, table type, memory type, global type
@@ -578,7 +421,7 @@ Exports :math:`\export` and export descriptions :math:`\exportdesc` are classifi
 Imports
 ~~~~~~~
 
-Imports :math:`\import` and import descriptions :math:`\importdesc` are classified by :ref:`external types <syntax-externtype>`.
+Imports ${:import} are classified by :ref:`external types <syntax-externtype>`.
 
 
 :math:`\{ \IMODULE~\name_1, \INAME~\name_2, \IDESC~\importdesc \}`
@@ -588,72 +431,7 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
 
 * Then the import is valid with type :math:`\externtype`.
 
-.. math::
-   \frac{
-     C \vdashimportdesc \importdesc : \externtype
-   }{
-     C \vdashimport \{ \IMODULE~\name_1, \INAME~\name_2, \IDESC~\importdesc \} : \externtype
-   }
-
-
-:math:`\IDFUNC~x`
-.................
-
-* The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must be a :ref:`function type <syntax-functype>`.
-
-* Then the import description is valid with type :math:`\ETFUNC~C.\CTYPES[x]`.
-
-.. math::
-   \frac{
-     \expanddt(C.\CTYPES[x]) = \TFUNC~\functype
-   }{
-     C \vdashimportdesc \IDFUNC~x : \ETFUNC~C.\CTYPES[x]
-   }
-
-
-:math:`\IDTABLE~\tabletype`
-...........................
-
-* The table type :math:`\tabletype` must be :ref:`valid <valid-tabletype>`.
-
-* Then the import description is valid with type :math:`\ETTABLE~\tabletype`.
-
-.. math::
-   \frac{
-     C \vdashtable \tabletype : \OKtabletype
-   }{
-     C \vdashimportdesc \IDTABLE~\tabletype : \ETTABLE~\tabletype
-   }
-
-
-:math:`\IDMEM~\memtype`
-.......................
-
-* The memory type :math:`\memtype` must be :ref:`valid <valid-memtype>`.
-
-* Then the import description is valid with type :math:`\ETMEM~\memtype`.
-
-.. math::
-   \frac{
-     C \vdashmemtype \memtype : \OKmemtype
-   }{
-     C \vdashimportdesc \IDMEM~\memtype : \ETMEM~\memtype
-   }
-
-
-:math:`\IDGLOBAL~\globaltype`
-.............................
-
-* The global type :math:`\globaltype` must be :ref:`valid <valid-globaltype>`.
-
-* Then the import description is valid with type :math:`\ETGLOBAL~\globaltype`.
-
-.. math::
-   \frac{
-     C \vdashglobaltype \globaltype : \OKglobaltype
-   }{
-     C \vdashimportdesc \IDGLOBAL~\globaltype : \ETGLOBAL~\globaltype
-   }
+$${rule: Import_ok}
 
 
 .. index:: module, type definition, function type, function, table, memory, global, element, data, start function, import, export, context
@@ -669,7 +447,7 @@ Modules are classified by their mapping from the :ref:`external types <syntax-ex
 A module is entirely *closed*,
 that is, its components can only refer to definitions that appear in the module itself.
 Consequently, no initial :ref:`context <context>` is required.
-Instead, the context :math:`C` for validation of the module's content is constructed from the definitions in the module.
+Instead, the :ref:`context <context>` ${:C} for validation of the module's content is constructed from the definitions in the module.
 
 The :ref:`external types <syntax-externtype>` classifying a module may contain free :ref:`type indices <syntax-typeidx>` that refer to types defined within the module.
 
@@ -772,70 +550,17 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
 * Then the module is valid with :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast \to \X{et}^\ast`.
 
-.. math::
-   \frac{
-     \begin{array}{@{}c@{}}
-     C_0 \vdashtypes \type^\ast : \OKtypes
-     \quad
-     C' \vdashglobals \global^\ast : \X{gt}^\ast
-     \quad
-     (C' \vdashtable \table : \X{tt})^\ast
-     \quad
-     (C' \vdashmem \mem : \X{mt})^\ast
-     \quad
-     (C \vdashfunc \func : \X{dt})^\ast
-     \\
-     (C \vdashelem \elem : \X{rt})^\ast
-     \quad
-     (C \vdashdata \data : \X{ok})^\ast
-     \quad
-     (C \vdashstart \start : \OKstart)^?
-     \quad
-     (C \vdashimport \import : \X{it})^\ast
-     \quad
-     (C \vdashexport \export : \X{et})^\ast
-     \\
-     \X{idt}^\ast = \funcsxt(\X{it}^\ast)
-     \qquad
-     \X{itt}^\ast = \tablesxt(\X{it}^\ast)
-     \qquad
-     \X{imt}^\ast = \memsxt(\X{it}^\ast)
-     \qquad
-     \X{igt}^\ast = \globalsxt(\X{it}^\ast)
-     \\
-     x^\ast = \freefuncidx(\module \with \MFUNCS = \epsilon \with \MSTART = \epsilon)
-     \\
-     C = \{ \CTYPES~C_0.\CTYPES, \CFUNCS~\X{idt}^\ast\,\X{dt}^\ast, \CTABLES~\X{itt}^\ast\,\X{tt}^\ast, \CMEMS~\X{imt}^\ast\,\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast\,\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~\X{ok}^\ast, \CREFS~x^\ast \}
-     \\
-     C' = \{ \CTYPES~C_0.\CTYPES, \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS) \}
-     \qquad
-     (\export.\ENAME)^\ast ~\F{disjoint}
-     \\
-     \module = \{
-       \begin{array}[t]{@{}l@{}}
-         \MTYPES~\type^\ast,
-         \MFUNCS~\func^\ast,
-         \MTABLES~\table^\ast,
-         \MMEMS~\mem^\ast,
-         \MGLOBALS~\global^\ast, \\
-         \MELEMS~\elem^\ast,
-         \MDATAS~\data^n,
-         \MSTART~\start^?,
-         \MIMPORTS~\import^\ast,
-         \MEXPORTS~\export^\ast \}
-       \end{array}
-     \end{array}
-   }{
-     \vdashmodule \module : \X{it}^\ast \to \X{et}^\ast
-   }
+$${rule: Module_ok}
+
+.. todo:: Check refs; check export names
 
 .. note::
    All functions in a module are mutually recursive.
-   Consequently, the definition of the :ref:`context <context>` :math:`C` in this rule is recursive:
+   Consequently, the definition of the :ref:`context <context>` ${:C} in this rule is recursive:
    it depends on the outcome of validation of the function, table, memory, and global definitions contained in the module,
-   which itself depends on :math:`C`.
+   which itself depends on ${:C}.
    However, this recursion is just a specification device.
-   All types needed to construct :math:`C` can easily be determined from a simple pre-pass over the module that does not perform any actual validation.
+   All types needed to construct ${:C} can easily be determined from a simple pre-pass over the module that does not perform any actual validation.
 
    Globals, however, are not recursive but evaluated sequentially, such that each :ref:`constant expressions <valid-const>` only has access to imported or previously defined globals.
 

@@ -582,7 +582,7 @@ rule Data_ok:
 rule Elemmode_ok/active:
   C |- ACTIVE x expr : rt
   -- if C.TABLES[x] = lim rt
-  -- (Expr_ok_const: C |- expr : I32 CONST)*
+  -- Expr_ok_const: C |- expr : I32 CONST
 
 rule Elemmode_ok/passive:
   C |- PASSIVE : rt
@@ -593,7 +593,7 @@ rule Elemmode_ok/declare:
 rule Datamode_ok/active:
   C |- ACTIVE 0 expr : OK
   -- if C.MEMS[0] = mt
-  -- (Expr_ok_const: C |- expr : I32 CONST)*
+  -- Expr_ok_const: C |- expr : I32 CONST
 
 rule Datamode_ok/passive:
   C |- PASSIVE : OK

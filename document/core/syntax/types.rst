@@ -1,6 +1,5 @@
 .. index:: ! type, validation, instantiation, execution
    pair: abstract syntax; type
-.. _syntax-type:
 
 Types
 -----

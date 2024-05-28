@@ -184,6 +184,7 @@
 
 .. |toF| mathdef:: \xref{syntax/types}{syntax-functype}{\rightarrow}
 .. |to| mathdef:: \mathrel{\xref{valid/conventions}{syntax-instrtype}{\rightarrow}}
+.. |toM| mathdef:: \mathrel{\xref{valid/modules}{syntax-moduletype}{\rightarrow}}
 
 .. |BOTH| mathdef:: \xref{valid/conventions}{syntax-heaptype-ext}{\K{bot}}
 .. |BOT| mathdef:: \xref{valid/conventions}{syntax-valtype-ext}{\K{bot}}
@@ -297,6 +298,7 @@
 .. |instrtype| mathdef:: \xref{valid/conventions}{syntax-instrtype}{\X{instrtype}}
 .. |localtype| mathdef:: \xref{valid/conventions}{syntax-localtype}{\X{localtype}}
 .. |externtype| mathdef:: \xref{syntax/types}{syntax-externtype}{\X{externtype}}
+.. |moduletype| mathdef:: \xref{syntax/types}{syntax-moduletype}{\X{moduletype}}
 
 
 .. Types, meta functions
@@ -367,8 +369,9 @@
 .. |MELEMS| mathdef:: \xref{syntax/modules}{syntax-module}{\K{elems}}
 .. |MSTART| mathdef:: \xref{syntax/modules}{syntax-module}{\K{start}}
 
+.. |TYPE| mathdef:: \xref{syntax/modules}{syntax-type}{\K{type}}
 .. |FUNC| mathdef:: \xref{syntax/modules}{syntax-func}{\K{func}}
-.. |LOCAL| mathdef:: \xref{syntax/modules}{syntax-func}{\K{local}}
+.. |LOCAL| mathdef:: \xref{syntax/modules}{syntax-local}{\K{local}}
 .. |FTYPE| mathdef:: \xref{syntax/modules}{syntax-func}{\K{type}}
 .. |FLOCALS| mathdef:: \xref{syntax/modules}{syntax-func}{\K{locals}}
 .. |FBODY| mathdef:: \xref{syntax/modules}{syntax-func}{\K{body}}
@@ -1214,6 +1217,9 @@
 .. |CONSTexprconst| mathdef:: \xref{valid/instructions}{valid-const}{\K{const}}
 .. |CONSTexprokconst| mathdef:: \xref{valid/instructions}{valid-const}{\K{const}}
 
+.. |vdashexternidx| mathdef:: \xref{valid/modules}{valid-exxternidx}{\vdash}
+
+.. |vdashtype| mathdef:: \xref{valid/modules}{valid-type}{\vdash}
 .. |vdashtypes| mathdef:: \xref{valid/modules}{valid-types}{\vdash}
 .. |vdashfunc| mathdef:: \xref{valid/modules}{valid-func}{\vdash}
 .. |vdashlocal| mathdef:: \xref{valid/modules}{valid-local}{\vdash}

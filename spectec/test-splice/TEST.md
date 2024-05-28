@@ -427,6 +427,7 @@ warning: syntax `memidxop` was never spliced
 warning: syntax `meminst` was never spliced
 warning: syntax `module` was never spliced
 warning: syntax `moduleinst` was never spliced
+warning: syntax `moduletype` was never spliced
 warning: syntax `mut` was never spliced
 warning: syntax `n` was never spliced
 warning: syntax `name` was never spliced

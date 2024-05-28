@@ -1,5 +1,3 @@
-.. _valid-type:
-
 Types
 -----
 
