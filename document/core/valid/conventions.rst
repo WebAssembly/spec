@@ -46,8 +46,8 @@ they only occur during :ref:`validation <valid>` or :ref:`execution <exec>`.
 
 $${syntax: {valtype/sem absheaptype/sem typeuse/sem}}
 
-The unique :ref:`value type <syntax-valtype>` |BOT| is a *bottom type* that :ref:`matches <match-heaptype>` all value types.
-Similarly, |BOTH| is also used as a bottom type of all :ref:`heap types <syntax-heaptype>`.
+The unique :ref:`value type <syntax-valtype>` ${valtype:BOT} is a *bottom type* that :ref:`matches <match-valtype>` all value types.
+Similarly, ${heaptype:BOT} is also used as a bottom type of all :ref:`heap types <syntax-heaptype>`.
 
 .. note::
    No validation rule uses bottom types explicitly,
@@ -215,7 +215,7 @@ which collects relevant information about the surrounding :ref:`module <syntax-m
 * *Memories*: the list of :ref:`memories <syntax-mem>` declared in the current module, represented by their :ref:`memory type <syntax-memtype>`.
 * *Globals*: the list of :ref:`globals <syntax-global>` declared in the current module, represented by their :ref:`global type <syntax-globaltype>`.
 * *Element Segments*: the list of :ref:`element segments <syntax-elem>` declared in the current module, represented by the elements' :ref:`reference type <syntax-reftype>`.
-* *Data Segments*: the list of :ref:`data segments <syntax-data>` declared in the current module, each represented by an |OKdata| entry.
+* *Data Segments*: the list of :ref:`data segments <syntax-data>` declared in the current module, each represented by an ${datatype: OK} entry.
 * *Locals*: the list of :ref:`locals <syntax-local>` declared in the current :ref:`function <syntax-func>` (including parameters), represented by their :ref:`local type <syntax-localtype>`.
 * *Labels*: the stack of :ref:`labels <syntax-label>` accessible from the current position, represented by their :ref:`result type <syntax-resulttype>`.
 * *Return*: the return type of the current :ref:`function <syntax-func>`, represented as an optional :ref:`result type <syntax-resulttype>` that is absent when no return is allowed, as in free-standing expressions.
@@ -318,7 +318,7 @@ and there is one respective rule for each relevant construct ${:A} of the abstra
    (saying that it consumes two ${numtype: I32} values and produces one),
    independent of any side conditions.
 
-   An instruction like |GLOBALGET| can be typed as follows:
+   An instruction like ${:GLOBAL.GET} can be typed as follows:
 
    $${rule: InstrScheme/global.get}
 
@@ -333,9 +333,9 @@ and there is one respective rule for each relevant construct ${:A} of the abstra
 
    $${rule: InstrScheme/block}
 
-   A |BLOCK| instruction is only valid when the instruction sequence in its body is.
+   A ${:BLOCK} instruction is only valid when the instruction sequence in its body is.
    Moreover, the result type must match the block's annotation ${:blocktype}.
-   If so, then the |BLOCK| instruction has the same type as the body.
+   If so, then the ${:BLOCK} instruction has the same type as the body.
    Inside the body an additional label of the corresponding result type is available,
    which is expressed by extending the context ${:C} with the additional label information for the premise.
 
