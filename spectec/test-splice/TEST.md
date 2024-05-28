@@ -96,16 +96,16 @@ $$
 {\mathit{numtype}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{numtype}}_2}
   &\qquad \mbox{if}~{\mathit{numtype}}_1 \neq {\mathit{numtype}}_2 \\ &&|&
 {{\mathit{numtype}}{.}\mathsf{extend}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{s}}
-  &\qquad \mbox{if}~{\mathit{numtype}} = {\mathsf{i}}{{\mathit{{\scriptstyle N}}}} \land {\mathit{sz}} < {\mathit{{\scriptstyle N}}} \\ &&|&
+  &\qquad \mbox{if}~{\mathit{numtype}} = {\mathsf{i}}{N} \land {\mathit{sz}} < N \\ &&|&
 \mathsf{local.get}~{\mathit{localidx}} \\ &&|&
 \mathsf{local.set}~{\mathit{localidx}} \\ &&|&
 \mathsf{local.tee}~{\mathit{localidx}} \\ &&|&
 \mathsf{global.get}~{\mathit{globalidx}} \\ &&|&
 \mathsf{global.set}~{\mathit{globalidx}} \\ &&|&
 {{\mathit{numtype}}{.}\mathsf{load}}{{({{\mathit{sz}}}{\mathsf{\_}}{{\mathit{sx}}})^?}}~{\mathit{memidx}}~{\mathit{memarg}}
-  &\qquad \mbox{if}~({\mathit{numtype}} = {\mathsf{i}}{{\mathit{{\scriptstyle N}}}} \land {\mathit{sz}} < {|{\mathsf{i}}{{\mathit{{\scriptstyle N}}}}|})^? \\ &&|&
+  &\qquad \mbox{if}~({\mathit{numtype}} = {\mathsf{i}}{N} \land {\mathit{sz}} < {|{\mathsf{i}}{N}|})^? \\ &&|&
 {{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{memidx}}~{\mathit{memarg}}
-  &\qquad \mbox{if}~({\mathit{numtype}} = {\mathsf{i}}{{\mathit{{\scriptstyle N}}}} \land {\mathit{sz}} < {|{\mathsf{i}}{{\mathit{{\scriptstyle N}}}}|})^? \\ &&|&
+  &\qquad \mbox{if}~({\mathit{numtype}} = {\mathsf{i}}{N} \land {\mathit{sz}} < {|{\mathsf{i}}{N}|})^? \\ &&|&
 {{\mathit{vectype}}{.}\mathsf{load}}{{{\mathit{vloadop}}^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
 {{\mathit{vectype}}{.}\mathsf{load}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\ &&|&
 {\mathit{vectype}}{.}\mathsf{store}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
@@ -129,25 +129,25 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 }{
-{\mathit{{\scriptstyle C}}} \vdash \epsilon : \epsilon \rightarrow \epsilon
+C \vdash \epsilon : \epsilon \rightarrow \epsilon
 }
 \qquad
 \frac{
-{\mathit{{\scriptstyle C}}} \vdash {\mathit{instr}}_1 : {t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}
+C \vdash {\mathit{instr}}_1 : {t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}
  \qquad
-({\mathit{{\scriptstyle C}}}{.}\mathsf{locals}{}[x_1] = {\mathit{init}}~t)^\ast
+(C{.}\mathsf{locals}{}[x_1] = {\mathit{init}}~t)^\ast
  \qquad
-{\mathit{{\scriptstyle C}}}{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}] \vdash {{\mathit{instr}}_2^\ast} : {t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}
+C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}] \vdash {{\mathit{instr}}_2^\ast} : {t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}
 }{
-{\mathit{{\scriptstyle C}}} \vdash {\mathit{instr}}_1~{{\mathit{instr}}_2^\ast} : {t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}
+C \vdash {\mathit{instr}}_1~{{\mathit{instr}}_2^\ast} : {t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}
 }
 \\[3ex]\displaystyle
 \frac{
-{\mathit{{\scriptstyle C}}} \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}
+C \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}
  \qquad
-{\mathit{{\scriptstyle C}}} \vdash {t^\ast} : \mathsf{ok}
+C \vdash {t^\ast} : \mathsf{ok}
 }{
-{\mathit{{\scriptstyle C}}} \vdash {{\mathit{instr}}^\ast} : ({t^\ast}~{t_1^\ast})~{\rightarrow}_{{x^\ast}}\,({t^\ast}~{t_2^\ast})
+C \vdash {{\mathit{instr}}^\ast} : ({t^\ast}~{t_1^\ast})~{\rightarrow}_{{x^\ast}}\,({t^\ast}~{t_2^\ast})
 }
 \qquad
 \end{array}
@@ -157,28 +157,28 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 }{
-{\mathit{{\scriptstyle C}}} \vdash \epsilon : \epsilon \rightarrow \epsilon
+C \vdash \epsilon : \epsilon \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}instr*{-}empty}]}
 \qquad
 \frac{
-{\mathit{{\scriptstyle C}}} \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}
+C \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}
  \qquad
-{\mathit{{\scriptstyle C}}} \vdash {t^\ast} : \mathsf{ok}
+C \vdash {t^\ast} : \mathsf{ok}
 }{
-{\mathit{{\scriptstyle C}}} \vdash {{\mathit{instr}}^\ast} : ({t^\ast}~{t_1^\ast})~{\rightarrow}_{{x^\ast}}\,({t^\ast}~{t_2^\ast})
+C \vdash {{\mathit{instr}}^\ast} : ({t^\ast}~{t_1^\ast})~{\rightarrow}_{{x^\ast}}\,({t^\ast}~{t_2^\ast})
 } \, {[\textsc{\scriptsize T{-}instr*{-}frame}]}
 \\[3ex]\displaystyle
 \frac{
 }{
-{\mathit{{\scriptstyle C}}} \vdash \epsilon : \epsilon \rightarrow \epsilon
+C \vdash \epsilon : \epsilon \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}instr*{-}empty}]}
 \qquad
 \frac{
-{\mathit{{\scriptstyle C}}} \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}
+C \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}
  \qquad
-{\mathit{{\scriptstyle C}}} \vdash {t^\ast} : \mathsf{ok}
+C \vdash {t^\ast} : \mathsf{ok}
 }{
-{\mathit{{\scriptstyle C}}} \vdash {{\mathit{instr}}^\ast} : ({t^\ast}~{t_1^\ast})~{\rightarrow}_{{x^\ast}}\,({t^\ast}~{t_2^\ast})
+C \vdash {{\mathit{instr}}^\ast} : ({t^\ast}~{t_1^\ast})~{\rightarrow}_{{x^\ast}}\,({t^\ast}~{t_2^\ast})
 } \, {[\textsc{\scriptsize T{-}instr*{-}frame}]}
 \qquad
 \end{array}
@@ -187,20 +187,20 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathit{{\scriptstyle C}}} \vdash {t_1^\ast} \rightarrow {t_2^\ast} : \mathsf{ok}
+C \vdash {t_1^\ast} \rightarrow {t_2^\ast} : \mathsf{ok}
 }{
-{\mathit{{\scriptstyle C}}} \vdash \mathsf{unreachable} : {t_1^\ast} \rightarrow {t_2^\ast}
+C \vdash \mathsf{unreachable} : {t_1^\ast} \rightarrow {t_2^\ast}
 }
 \qquad
 \frac{
 }{
-{\mathit{{\scriptstyle C}}} \vdash \mathsf{nop} : \epsilon \rightarrow \epsilon
+C \vdash \mathsf{nop} : \epsilon \rightarrow \epsilon
 }
 \qquad
 \frac{
-{\mathit{{\scriptstyle C}}} \vdash t : \mathsf{ok}
+C \vdash t : \mathsf{ok}
 }{
-{\mathit{{\scriptstyle C}}} \vdash \mathsf{drop} : t \rightarrow \epsilon
+C \vdash \mathsf{drop} : t \rightarrow \epsilon
 }
 \qquad
 \end{array}
@@ -209,11 +209,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathit{{\scriptstyle C}}} \vdash {\mathit{bt}} : {t_1^\ast} \rightarrow {t_2^\ast}
+C \vdash {\mathit{bt}} : {t_1^\ast} \rightarrow {t_2^\ast}
  \qquad
-{\mathit{{\scriptstyle C}}}, \mathsf{labels}~({t_2^\ast}) \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}
+C, \mathsf{labels}~({t_2^\ast}) \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}
 }{
-{\mathit{{\scriptstyle C}}} \vdash \mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow {t_2^\ast}
+C \vdash \mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow {t_2^\ast}
 } \, {[\textsc{\scriptsize T{-}block}]}
 \qquad
 \end{array}
@@ -222,11 +222,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathit{{\scriptstyle C}}} \vdash {\mathit{bt}} : {t_1^\ast} \rightarrow {t_2^\ast}
+C \vdash {\mathit{bt}} : {t_1^\ast} \rightarrow {t_2^\ast}
  \qquad
-{\mathit{{\scriptstyle C}}}, \mathsf{labels}~({t_1^\ast}) \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}
+C, \mathsf{labels}~({t_1^\ast}) \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}
 }{
-{\mathit{{\scriptstyle C}}} \vdash \mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow {t_2^\ast}
+C \vdash \mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow {t_2^\ast}
 } \, {[\textsc{\scriptsize T{-}loop}]}
 \qquad
 \end{array}
@@ -235,13 +235,13 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathit{{\scriptstyle C}}} \vdash {\mathit{bt}} : {t_1^\ast} \rightarrow {t_2^\ast}
+C \vdash {\mathit{bt}} : {t_1^\ast} \rightarrow {t_2^\ast}
  \qquad
-{\mathit{{\scriptstyle C}}}, \mathsf{labels}~({t_2^\ast}) \vdash {{\mathit{instr}}_1^\ast} : {t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}
+C, \mathsf{labels}~({t_2^\ast}) \vdash {{\mathit{instr}}_1^\ast} : {t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}
  \qquad
-{\mathit{{\scriptstyle C}}}, \mathsf{labels}~({t_2^\ast}) \vdash {{\mathit{instr}}_2^\ast} : {t_1^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_2^\ast}
+C, \mathsf{labels}~({t_2^\ast}) \vdash {{\mathit{instr}}_2^\ast} : {t_1^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_2^\ast}
 }{
-{\mathit{{\scriptstyle C}}} \vdash \mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast} : {t_1^\ast}~\mathsf{i{\scriptstyle 32}} \rightarrow {t_2^\ast}
+C \vdash \mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast} : {t_1^\ast}~\mathsf{i{\scriptstyle 32}} \rightarrow {t_2^\ast}
 } \, {[\textsc{\scriptsize T{-}if}]}
 \qquad
 \end{array}

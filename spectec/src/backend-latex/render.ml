@@ -642,7 +642,7 @@ let lower = String.lowercase_ascii
 
 let dash_id = Str.(global_replace (regexp "-") "{-}")
 let quote_id = Str.(global_replace (regexp "_+") "\\_")
-let shrink_id = Str.(global_replace (regexp "[0-9A-Z]+") "{\\\\scriptstyle \\0}")
+let shrink_id = Str.(global_replace (regexp "[0-9]+") "{\\\\scriptstyle \\0}")
 let rekernl_id = Str.(global_replace (regexp "\\([a-z]\\)[{]") "\\1{\\kern-0.1em")
 let rekernr_id = Str.(global_replace (regexp "[}]\\([a-z{]\\)") "\\kern-0.1em}\\1")
 let macrofy_id = Str.(global_replace (regexp "[_.]") "")
@@ -667,6 +667,7 @@ Printf.eprintf "[id w/o macro] %s%s\n%!" (if style = `Func then "$" else "") id;
 *)
   let id' = quote_id id in
   let id'' =
+    (* TODO: provide a way to selectively shrink uppercase vars, esp after # *)
     match style with
     | `Var | `Func -> rekernl_id (rekernr_id (shrink_id id'))
     | `Atom -> shrink_id (lower id')
