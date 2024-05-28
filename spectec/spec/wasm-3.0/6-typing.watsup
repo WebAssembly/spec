@@ -314,15 +314,15 @@ rule Heaptype_sub/array-eq:
 
 rule Heaptype_sub/struct:
   C |- deftype <: STRUCT
-  -- Expand: deftype ~~ STRUCT yt*
+  -- Expand: deftype ~~ STRUCT fieldtype*
 
 rule Heaptype_sub/array:
   C |- deftype <: ARRAY
-  -- Expand: deftype ~~ ARRAY yt
+  -- Expand: deftype ~~ ARRAY fieldtype
 
 rule Heaptype_sub/func:
   C |- deftype <: FUNC
-  -- Expand: deftype ~~ FUNC ft
+  -- Expand: deftype ~~ FUNC functype
 
 rule Heaptype_sub/def:
   C |- deftype_1 <: deftype_2
@@ -337,8 +337,8 @@ rule Heaptype_sub/typeidx-r:
   -- Heaptype_sub: C |- heaptype <: C.TYPES[typeidx]
 
 rule Heaptype_sub/rec:
-  C |- REC i <: yy
-  -- if C.RECS[i] = SUB fin (yy_1* yy yy_2*) ct
+  C |- REC i <: typeuse*[j]
+  -- if C.RECS[i] = SUB fin typeuse* ct
 
 rule Heaptype_sub/none:
   C |- NONE <: heaptype
@@ -395,7 +395,7 @@ rule Instrtype_sub:
   -- Resulttype_sub: C |- t_21* <: t_11*
   -- Resulttype_sub: C |- t_12* <: t_22*
   -- if x* = $setminus(x_2*, x_1*)
-  -- if (C.LOCALS[x] = SET t)*
+  -- (if C.LOCALS[x] = SET t)*
 
 
 ;; Type definitions
@@ -449,8 +449,8 @@ rule Deftype_sub/refl:
 
 rule Deftype_sub/super:
   C |- deftype_1 <: deftype_2
-  -- if $unrolldt(deftype_1) = SUB fin (yy_1* yy yy_2*) ct
-  -- Heaptype_sub: C |- yy <: deftype_2
+  -- if $unrolldt(deftype_1) = SUB fin typeuse* ct
+  -- Heaptype_sub: C |- typeuse*[i] <: deftype_2
 
 
 ;; External types
@@ -463,48 +463,50 @@ relation Externtype_sub: context |- externtype <: externtype hint(show "S-extern
 
 
 rule Limits_sub:
-  C |- `[n_11 .. n_12] <: `[n_21 .. n_22]
-  -- if n_11 >= n_21
-  -- if n_12 <= n_22
+  C |- `[n_1 .. m_1] <: `[n_2 .. m_2]
+  -- if n_1 >= n_2
+  -- if m_1 <= m_2
 
 rule Functype_sub:
-  C |- ft <: ft
+  C |- t_11* -> t_12* <: t_21* -> t_22*
+  -- Resulttype_sub: C |- t_21* <: t_11*
+  -- Resulttype_sub: C |- t_12* <: t_22*
 
 rule Globaltype_sub/const:
-  C |- t_1 <: t_2
-  -- Valtype_sub: C |- t_1 <: t_2
+  C |- valtype_1 <: valtype_2
+  -- Valtype_sub: C |- valtype_1 <: valtype_2
 
 rule Globaltype_sub/var:
-  C |- MUT t_1 <: MUT t_2
-  -- Valtype_sub: C |- t_1 <: t_2
-  -- Valtype_sub: C |- t_2 <: t_1
+  C |- MUT valtype_1 <: MUT valtype_2
+  -- Valtype_sub: C |- valtype_1 <: valtype_2
+  -- Valtype_sub: C |- valtype_2 <: valtype_1
 
 rule Tabletype_sub:
-  C |- lim_1 rt_1 <: lim_2 rt_2
-  -- Limits_sub: C |- lim_1 <: lim_2
-  -- Reftype_sub: C |- rt_1 <: rt_2
-  -- Reftype_sub: C |- rt_2 <: rt_1
+  C |- limits_1 reftype_1 <: limits_2 reftype_2
+  -- Limits_sub: C |- limits_1 <: limits_2
+  -- Reftype_sub: C |- reftype_1 <: reftype_2
+  -- Reftype_sub: C |- reftype_2 <: reftype_1
 
 rule Memtype_sub:
-  C |- lim_1 PAGE <: lim_2 PAGE
-  -- Limits_sub: C |- lim_1 <: lim_2
+  C |- limits_1 PAGE <: limits_2 PAGE
+  -- Limits_sub: C |- limits_1 <: limits_2
 
 
 rule Externtype_sub/func:
-  C |- FUNC dt_1 <: FUNC dt_2
-  -- Deftype_sub: C |- dt_1 <: dt_2
+  C |- FUNC deftype_1 <: FUNC deftype_2
+  -- Deftype_sub: C |- deftype_1 <: deftype_2
 
 rule Externtype_sub/global:
-  C |- GLOBAL gt_1 <: GLOBAL gt_2
-  -- Globaltype_sub: C |- gt_1 <: gt_2
+  C |- GLOBAL globaltype_1 <: GLOBAL globaltype_2
+  -- Globaltype_sub: C |- globaltype_1 <: globaltype_2
 
 rule Externtype_sub/table:
-  C |- TABLE tt_1 <: TABLE tt_2
-  -- Tabletype_sub: C |- tt_1 <: tt_2
+  C |- TABLE tabletype_1 <: TABLE tabletype_2
+  -- Tabletype_sub: C |- tabletype_1 <: tabletype_2
 
 rule Externtype_sub/mem:
-  C |- MEM mt_1 <: MEM mt_2
-  -- Memtype_sub: C |- mt_1 <: mt_2
+  C |- MEM memtype_1 <: MEM memtype_2
+  -- Memtype_sub: C |- memtype_1 <: memtype_2
 
 
 

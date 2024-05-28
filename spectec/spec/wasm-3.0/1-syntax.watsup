@@ -210,6 +210,9 @@ syntax Lnn hint(show I#N) hint(macro none) = Inn | Fnn | Pnn
 
 ;; TODO: inline
 syntax mut hint(show MUT?)   hint(macro "T%" "T%") = MUT?
+;; HACK
+syntax mut1 hint(show MUT#$_(1)?) hint(macro "T%" "T%") = MUT?
+syntax mut2 hint(show MUT#$_(2)?) hint(macro "T%" "T%") = MUT?
 syntax fin hint(show FINAL?) hint(macro "T%" "T%") = FINAL?
 
 syntax fieldtype  hint(desc "field type") = mut storagetype

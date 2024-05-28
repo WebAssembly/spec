@@ -102,6 +102,7 @@ let split_ticks id =
 let chop_ticks id = fst (split_ticks id)
 
 let ends_sub id = id <> "" && id.[String.length id - 1] = '_'
+let all_sub id = String.for_all ((=) '_') id
 let split_sub id =
   if ends_sub id then String.sub id 0 (String.length id - 1), "_" else id, ""
 let chop_sub id = fst (split_sub id)
@@ -446,7 +447,7 @@ id.it (Source.string_of_region id.at)
 *)
   (* If expanding with macro template, then pre-macrofy id name,
    * since we will have lost the template context later on. *)
-  if templ = None then id else
+  if templ = None || all_sub id.it then id else
   let id' = {id with it = expand_name templ id.it} in
   (* Record result as identity expansion, HACK: unless it exists already *)
   if not (Map.mem id'.it !map) then env_macro map id';
@@ -660,7 +661,9 @@ let render_id' env style id templ =
     (fun s -> s)
   ) @@ fun _ ->
   assert (templ = None || env.config.macros_for_ids);
-  if templ <> None then "\\" ^ macrofy_id (expand_name templ id) else
+  if templ <> None && not (all_sub id) then
+    "\\" ^ macrofy_id (expand_name templ id)
+  else
 (*
 if env.config.macros_for_ids && String.length id > 2 && (style = `Var || style = `Func) then
 Printf.eprintf "[id w/o macro] %s%s\n%!" (if style = `Func then "$" else "") id;

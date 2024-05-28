@@ -3638,25 +3638,25 @@ watsup 0.4 generator
 8-reduction.watsup:226.12-226.36: translate_rulepr: Yet `(`%;%`_config(z, (instr : instr <: admininstr)*{instr : instr}), `%;%`_config(z', (instr' : instr <: admininstr)*{instr' : instr}))`
 8-reduction.watsup:230.12-230.44: translate_rulepr: Yet `(`%;%`_config(`%;%`_state(s, f'), (instr : instr <: admininstr)*{instr : instr}), `%;%`_config(`%;%`_state(s', f'), (instr' : instr <: admininstr)*{instr' : instr}))`
 == Prose Generation...
-6-typing.watsup:620.7-620.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0)`
-6-typing.watsup:621.6-621.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l'!`%`_labelidx.0]!`%`_resulttype.0)`
-6-typing.watsup:638.6-638.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-6-typing.watsup:639.6-639.34: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt)`
-6-typing.watsup:646.6-646.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-6-typing.watsup:647.6-647.49: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, $diffrt(rt_1, rt_2), rt)`
-6-typing.watsup:663.6-663.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
-6-typing.watsup:676.6-676.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
-6-typing.watsup:684.6-684.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
-6-typing.watsup:691.6-691.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
-6-typing.watsup:695.6-695.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
-6-typing.watsup:756.6-756.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-6-typing.watsup:762.6-762.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-6-typing.watsup:780.7-780.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
-6-typing.watsup:812.6-812.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
-6-typing.watsup:841.6-841.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
-6-typing.watsup:846.6-846.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
-6-typing.watsup:985.6-985.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-6-typing.watsup:991.6-991.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:622.7-622.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0)`
+6-typing.watsup:623.6-623.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l'!`%`_labelidx.0]!`%`_resulttype.0)`
+6-typing.watsup:640.6-640.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:641.6-641.34: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt)`
+6-typing.watsup:648.6-648.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:649.6-649.49: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, $diffrt(rt_1, rt_2), rt)`
+6-typing.watsup:665.6-665.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
+6-typing.watsup:678.6-678.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+6-typing.watsup:686.6-686.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+6-typing.watsup:693.6-693.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
+6-typing.watsup:697.6-697.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+6-typing.watsup:758.6-758.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
+6-typing.watsup:764.6-764.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
+6-typing.watsup:782.7-782.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
+6-typing.watsup:814.6-814.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
+6-typing.watsup:843.6-843.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
+6-typing.watsup:848.6-848.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
+6-typing.watsup:987.6-987.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:993.6-993.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 =================
  Generated prose
 =================

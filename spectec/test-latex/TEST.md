@@ -1556,6 +1556,8 @@ $$
 $$
 \begin{array}{@{}lrrl@{}l@{}}
 & {\mathsf{mut}^?} &::=& {\mathsf{mut}^?} \\
+& {\mathsf{mut}}{{{}_{1}^?}} &::=& {\mathsf{mut}^?} \\
+& {\mathsf{mut}}{{{}_{2}^?}} &::=& {\mathsf{mut}^?} \\
 & {\mathsf{final}^?} &::=& {\mathsf{final}^?} \\
 \mbox{(field type)} & {\mathit{fieldtype}} &::=& {\mathsf{mut}^?}~{\mathit{storagetype}} \\
 \mbox{(function type)} & {\mathit{functype}} &::=& {\mathit{resulttype}} \rightarrow {\mathit{resulttype}} \\
@@ -4053,7 +4055,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathit{deftype}} \approx \mathsf{struct}~{{\mathit{yt}}^\ast}
+{\mathit{deftype}} \approx \mathsf{struct}~{{\mathit{fieldtype}}^\ast}
 }{
 C \vdash {\mathit{deftype}} \leq \mathsf{struct}
 } \, {[\textsc{\scriptsize S{-}heap{-}struct}]}
@@ -4064,7 +4066,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathit{deftype}} \approx \mathsf{array}~{\mathit{yt}}
+{\mathit{deftype}} \approx \mathsf{array}~{\mathit{fieldtype}}
 }{
 C \vdash {\mathit{deftype}} \leq \mathsf{array}
 } \, {[\textsc{\scriptsize S{-}heap{-}array}]}
@@ -4075,7 +4077,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathit{deftype}} \approx \mathsf{func}~{\mathit{ft}}
+{\mathit{deftype}} \approx \mathsf{func}~{\mathit{functype}}
 }{
 C \vdash {\mathit{deftype}} \leq \mathsf{func}
 } \, {[\textsc{\scriptsize S{-}heap{-}func}]}
@@ -4119,9 +4121,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{recs}{}[i] = \mathsf{sub}~{\mathsf{final}^?}~({y_1^\ast}~y~{y_2^\ast})~{\mathit{ct}}
+C{.}\mathsf{recs}{}[i] = \mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}}
 }{
-C \vdash \mathsf{rec}~i \leq y
+C \vdash \mathsf{rec}~i \leq {{\mathit{typeuse}}^\ast}{}[j]
 } \, {[\textsc{\scriptsize S{-}heap{-}rec}]}
 \qquad
 \end{array}
@@ -4265,7 +4267,7 @@ C \vdash {t_{12}^\ast} \leq {t_{22}^\ast}
  \qquad
 {x^\ast} = {x_2^\ast} \setminus {x_1^\ast}
  \qquad
-((C{.}\mathsf{locals}{}[x] = \mathsf{set}~t))^\ast
+(C{.}\mathsf{locals}{}[x] = \mathsf{set}~t)^\ast
 }{
 C \vdash {t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\ast} \leq {t_{21}^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_{22}^\ast}
 } \, {[\textsc{\scriptsize S{-}instr}]}
@@ -4394,9 +4396,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathrm{unroll}}({\mathit{deftype}}_1) = \mathsf{sub}~{\mathsf{final}^?}~({y_1^\ast}~y~{y_2^\ast})~{\mathit{ct}}
+{\mathrm{unroll}}({\mathit{deftype}}_1) = \mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{ct}}
  \qquad
-C \vdash y \leq {\mathit{deftype}}_2
+C \vdash {{\mathit{typeuse}}^\ast}{}[i] \leq {\mathit{deftype}}_2
 }{
 C \vdash {\mathit{deftype}}_1 \leq {\mathit{deftype}}_2
 } \, {[\textsc{\scriptsize S{-}def{-}super}]}
@@ -4421,11 +4423,11 @@ $\boxed{{\mathit{context}} \vdash {\mathit{externtype}} \leq {\mathit{externtype
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-n_{11} \geq n_{21}
+n_1 \geq n_2
  \qquad
-n_{12} \leq n_{22}
+m_1 \leq m_2
 }{
-C \vdash {}[ n_{11} .. n_{12} ] \leq {}[ n_{21} .. n_{22} ]
+C \vdash {}[ n_1 .. m_1 ] \leq {}[ n_2 .. m_2 ]
 } \, {[\textsc{\scriptsize S{-}limits}]}
 \qquad
 \end{array}
@@ -4434,8 +4436,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
+C \vdash {t_{21}^\ast} \leq {t_{11}^\ast}
+ \qquad
+C \vdash {t_{12}^\ast} \leq {t_{22}^\ast}
 }{
-C \vdash {\mathit{ft}} \leq {\mathit{ft}}
+C \vdash {t_{11}^\ast} \rightarrow {t_{12}^\ast} \leq {t_{21}^\ast} \rightarrow {t_{22}^\ast}
 } \, {[\textsc{\scriptsize S{-}func}]}
 \qquad
 \end{array}
@@ -4444,9 +4449,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash t_1 \leq t_2
+C \vdash {\mathit{valtype}}_1 \leq {\mathit{valtype}}_2
 }{
-C \vdash t_1 \leq t_2
+C \vdash {\mathit{valtype}}_1 \leq {\mathit{valtype}}_2
 } \, {[\textsc{\scriptsize S{-}global{-}const}]}
 \qquad
 \end{array}
@@ -4455,11 +4460,11 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash t_1 \leq t_2
+C \vdash {\mathit{valtype}}_1 \leq {\mathit{valtype}}_2
  \qquad
-C \vdash t_2 \leq t_1
+C \vdash {\mathit{valtype}}_2 \leq {\mathit{valtype}}_1
 }{
-C \vdash \mathsf{mut}~t_1 \leq \mathsf{mut}~t_2
+C \vdash \mathsf{mut}~{\mathit{valtype}}_1 \leq \mathsf{mut}~{\mathit{valtype}}_2
 } \, {[\textsc{\scriptsize S{-}global{-}var}]}
 \qquad
 \end{array}
@@ -4468,13 +4473,13 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{lim}}_1 \leq {\mathit{lim}}_2
+C \vdash {\mathit{limits}}_1 \leq {\mathit{limits}}_2
  \qquad
-C \vdash {\mathit{rt}}_1 \leq {\mathit{rt}}_2
+C \vdash {\mathit{reftype}}_1 \leq {\mathit{reftype}}_2
  \qquad
-C \vdash {\mathit{rt}}_2 \leq {\mathit{rt}}_1
+C \vdash {\mathit{reftype}}_2 \leq {\mathit{reftype}}_1
 }{
-C \vdash {\mathit{lim}}_1~{\mathit{rt}}_1 \leq {\mathit{lim}}_2~{\mathit{rt}}_2
+C \vdash {\mathit{limits}}_1~{\mathit{reftype}}_1 \leq {\mathit{limits}}_2~{\mathit{reftype}}_2
 } \, {[\textsc{\scriptsize S{-}table}]}
 \qquad
 \end{array}
@@ -4483,9 +4488,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{lim}}_1 \leq {\mathit{lim}}_2
+C \vdash {\mathit{limits}}_1 \leq {\mathit{limits}}_2
 }{
-C \vdash {\mathit{lim}}_1~\mathsf{page} \leq {\mathit{lim}}_2~\mathsf{page}
+C \vdash {\mathit{limits}}_1~\mathsf{page} \leq {\mathit{limits}}_2~\mathsf{page}
 } \, {[\textsc{\scriptsize S{-}mem}]}
 \qquad
 \end{array}
@@ -4496,9 +4501,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{dt}}_1 \leq {\mathit{dt}}_2
+C \vdash {\mathit{deftype}}_1 \leq {\mathit{deftype}}_2
 }{
-C \vdash \mathsf{func}~{\mathit{dt}}_1 \leq \mathsf{func}~{\mathit{dt}}_2
+C \vdash \mathsf{func}~{\mathit{deftype}}_1 \leq \mathsf{func}~{\mathit{deftype}}_2
 } \, {[\textsc{\scriptsize S{-}extern{-}func}]}
 \qquad
 \end{array}
@@ -4507,9 +4512,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{gt}}_1 \leq {\mathit{gt}}_2
+C \vdash {\mathit{globaltype}}_1 \leq {\mathit{globaltype}}_2
 }{
-C \vdash \mathsf{global}~{\mathit{gt}}_1 \leq \mathsf{global}~{\mathit{gt}}_2
+C \vdash \mathsf{global}~{\mathit{globaltype}}_1 \leq \mathsf{global}~{\mathit{globaltype}}_2
 } \, {[\textsc{\scriptsize S{-}extern{-}global}]}
 \qquad
 \end{array}
@@ -4518,9 +4523,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{tt}}_1 \leq {\mathit{tt}}_2
+C \vdash {\mathit{tabletype}}_1 \leq {\mathit{tabletype}}_2
 }{
-C \vdash \mathsf{table}~{\mathit{tt}}_1 \leq \mathsf{table}~{\mathit{tt}}_2
+C \vdash \mathsf{table}~{\mathit{tabletype}}_1 \leq \mathsf{table}~{\mathit{tabletype}}_2
 } \, {[\textsc{\scriptsize S{-}extern{-}table}]}
 \qquad
 \end{array}
@@ -4529,9 +4534,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{mt}}_1 \leq {\mathit{mt}}_2
+C \vdash {\mathit{memtype}}_1 \leq {\mathit{memtype}}_2
 }{
-C \vdash \mathsf{mem}~{\mathit{mt}}_1 \leq \mathsf{mem}~{\mathit{mt}}_2
+C \vdash \mathsf{mem}~{\mathit{memtype}}_1 \leq \mathsf{mem}~{\mathit{memtype}}_2
 } \, {[\textsc{\scriptsize S{-}extern{-}mem}]}
 \qquad
 \end{array}

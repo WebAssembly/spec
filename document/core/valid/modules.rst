@@ -438,6 +438,7 @@ $${rule: Import_ok}
    pair: validation; module
    single: abstract syntax; module
 .. _valid-module:
+.. _syntax-moduletype:
 
 Modules
 ~~~~~~~

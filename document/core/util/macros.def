@@ -290,6 +290,7 @@
 .. |tabletype| mathdef:: \xref{syntax/types}{syntax-tabletype}{\X{tabletype}}
 .. |memtype| mathdef:: \xref{syntax/types}{syntax-memtype}{\X{memtype}}
 .. |datatype| mathdef:: \xref{valid/modules}{syntax-datatype}{\X{datatype}}
+.. |externtype| mathdef:: \xref{syntax/types}{syntax-externtype}{\X{externtype}}
 
 .. |limits| mathdef:: \xref{syntax/types}{syntax-limits}{\X{limits}}
 .. |mut| mathdef:: \xref{syntax/types}{syntax-mut}{\X{mut}}
@@ -297,8 +298,7 @@
 
 .. |instrtype| mathdef:: \xref{valid/conventions}{syntax-instrtype}{\X{instrtype}}
 .. |localtype| mathdef:: \xref{valid/conventions}{syntax-localtype}{\X{localtype}}
-.. |externtype| mathdef:: \xref{syntax/types}{syntax-externtype}{\X{externtype}}
-.. |moduletype| mathdef:: \xref{syntax/types}{syntax-moduletype}{\X{moduletype}}
+.. |moduletype| mathdef:: \xref{valid/modules}{syntax-moduletype}{\X{moduletype}}
 
 
 .. Types, meta functions
@@ -1217,7 +1217,7 @@
 .. |CONSTexprconst| mathdef:: \xref{valid/instructions}{valid-const}{\K{const}}
 .. |CONSTexprokconst| mathdef:: \xref{valid/instructions}{valid-const}{\K{const}}
 
-.. |vdashexternidx| mathdef:: \xref{valid/modules}{valid-exxternidx}{\vdash}
+.. |vdashexternidx| mathdef:: \xref{valid/modules}{valid-externidx}{\vdash}
 
 .. |vdashtype| mathdef:: \xref{valid/modules}{valid-type}{\vdash}
 .. |vdashtypes| mathdef:: \xref{valid/modules}{valid-types}{\vdash}
@@ -1233,6 +1233,7 @@
 .. |vdashdatamode| mathdef:: \xref{valid/modules}{valid-datamode}{\vdash}
 .. |vdashstart| mathdef:: \xref{valid/modules}{valid-start}{\vdash}
 .. |vdashexport| mathdef:: \xref{valid/modules}{valid-export}{\vdash}
+.. |vdashexternidx| mathdef:: \xref{valid/modules}{valid-externidx}{\vdash}
 .. |vdashexportdesc| mathdef:: \xref{valid/modules}{valid-exportdesc}{\vdash}
 .. |vdashimport| mathdef:: \xref{valid/modules}{valid-import}{\vdash}
 .. |vdashimportdesc| mathdef:: \xref{valid/modules}{valid-importdesc}{\vdash}
