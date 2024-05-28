@@ -22,13 +22,13 @@ made during phase 3 of the proposal and we refer to this addition as "table64".
 
 ### Implementation Status (table64)
 
-- spec interpreter: -
-- v8/chrome: -
-- Firefox: -
+- spec interpreter: [Done](https://github.com/WebAssembly/table64/53)
+- v8/chrome: [WIP](https://g-issues.chromium.org/issues/338024338)
+- Firefox: [WIP](https://g-issues.chromium.org/issues/338024338)
 - Safari: -
-- wabt: -
-- binaryen: -
-- emscripten: -
+- wabt: Done
+- binaryen: Done
+- emscripten: Done
 
 ## Motivation
 
