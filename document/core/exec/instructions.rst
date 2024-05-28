@@ -1817,8 +1817,9 @@ Memory Instructions
    However, it may be substantially slower on some hardware.
 
 
-.. _exec-load:
-.. _exec-loadn:
+.. _exec-load-val:
+.. _exec-load-pack:
+.. _exec-vload-val:
 
 $${rule-prose: exec/load}
 
@@ -1828,15 +1829,15 @@ $${rule-prose: exec/load}
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-loadn>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
+2. Assert: due to :ref:`validation <valid-load-pack>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
 
 3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[x]`.
 
-4. Assert: due to :ref:`validation <valid-loadn>`, :math:`S.\SMEMS[a]` exists.
+4. Assert: due to :ref:`validation <valid-load-pack>`, :math:`S.\SMEMS[a]` exists.
 
 5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[a]`.
 
-6. Assert: due to :ref:`validation <valid-loadn>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+6. Assert: due to :ref:`validation <valid-load-pack>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
 7. Pop the value :math:`\I32.\CONST~i` from the stack.
 
@@ -1867,7 +1868,7 @@ $${rule-prose: exec/load}
 $${rule: {Step_read/load-*}}
 
 
-.. _exec-vload-ext:
+.. _exec-vload-pack:
 
 :math:`\V128\K{.}\VLOAD{M}\K{x}N\_\sx~x~\memarg`
 ................................................
@@ -1876,15 +1877,15 @@ $${rule: {Step_read/load-*}}
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-vload-ext>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
+2. Assert: due to :ref:`validation <valid-vload-pack>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
 
 3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[x]`.
 
-4. Assert: due to :ref:`validation <valid-vload-ext>`, :math:`S.\SMEMS[a]` exists.
+4. Assert: due to :ref:`validation <valid-vload-pack>`, :math:`S.\SMEMS[a]` exists.
 
 5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[a]`.
 
-6. Assert: due to :ref:`validation <valid-vload-ext>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+6. Assert: due to :ref:`validation <valid-vload-pack>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
 7. Pop the value :math:`\I32.\CONST~i` from the stack.
 
@@ -2046,7 +2047,7 @@ $${rule: {Step_read/load-*}}
    \end{array}
 
 
-.. _exec-vload-lane:
+.. _exec-vload_lane:
 
 :math:`\V128\K{.}\VLOAD{N}\K{\_lane}~x~\memarg~y`
 .................................................
@@ -2055,19 +2056,19 @@ $${rule: {Step_read/load-*}}
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-vload-lane>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
+2. Assert: due to :ref:`validation <valid-vload_lane>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
 
 3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[x]`.
 
-4. Assert: due to :ref:`validation <valid-vload-lane>`, :math:`S.\SMEMS[a]` exists.
+4. Assert: due to :ref:`validation <valid-vload_lane>`, :math:`S.\SMEMS[a]` exists.
 
 5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[a]`.
 
-6. Assert: due to :ref:`validation <valid-vload-lane>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
+6. Assert: due to :ref:`validation <valid-vload_lane>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
 7. Pop the value :math:`\V128.\CONST~v` from the stack.
 
-8. Assert: due to :ref:`validation <valid-vload-lane>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+8. Assert: due to :ref:`validation <valid-vload_lane>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
 9. Pop the value :math:`\I32.\CONST~i` from the stack.
 
@@ -2112,15 +2113,16 @@ $${rule: {Step_read/load-*}}
    \end{array}
 
 
-.. _exec-store:
-.. _exec-storen:
+.. _exec-store-val:
+.. _exec-store-pack:
+.. _exec-vstore:
 
 $${rule-prose: exec/store}
 
 $${rule: {Step/store-*}}
 
 
-.. _exec-vstore-lane:
+.. _exec-vstore_lane:
 
 :math:`\V128\K{.}\VSTORE{N}\K{\_lane}~x~\memarg~y`
 ..................................................
@@ -2129,19 +2131,19 @@ $${rule: {Step/store-*}}
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-vstore-lane>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
+2. Assert: due to :ref:`validation <valid-vstore_lane>`, :math:`F.\AMODULE.\MIMEMS[x]` exists.
 
 3. Let :math:`a` be the :ref:`memory address <syntax-memaddr>` :math:`F.\AMODULE.\MIMEMS[x]`.
 
-4. Assert: due to :ref:`validation <valid-storen>`, :math:`S.\SMEMS[a]` exists.
+4. Assert: due to :ref:`validation <valid-store-pack>`, :math:`S.\SMEMS[a]` exists.
 
 5. Let :math:`\X{mem}` be the :ref:`memory instance <syntax-meminst>` :math:`S.\SMEMS[a]`.
 
-6. Assert: due to :ref:`validation <valid-vstore-lane>`, a value of :ref:`value type <syntax-valtype>` :math:`\V128` is on the top of the stack.
+6. Assert: due to :ref:`validation <valid-vstore_lane>`, a value of :ref:`value type <syntax-valtype>` :math:`\V128` is on the top of the stack.
 
 7. Pop the value :math:`\V128.\CONST~c` from the stack.
 
-8. Assert: due to :ref:`validation <valid-vstore-lane>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
+8. Assert: due to :ref:`validation <valid-vstore_lane>`, a value of :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
 9. Pop the value :math:`\I32.\CONST~i` from the stack.
 

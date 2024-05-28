@@ -1023,40 +1023,69 @@ rule Instr_ok/data.drop:
   C |- DATA.DROP x : eps -> eps
   -- if C.DATAS[x] = OK
 
+(;
 rule Instr_ok/load:
-  C |- LOAD nt (n _ sx)? x memarg : I32 -> nt
+  C |- LOAD nt (N _ sx)? x memarg : I32 -> nt
   -- if C.MEMS[x] = mt
   -- if $(2^(memarg.ALIGN) <= $size(nt)/8)
-  -- if $(2^(memarg.ALIGN) <= n/8 < $size(nt)/8)?
-  -- if n? = eps \/ nt = Inn
+  -- if $(2^(memarg.ALIGN) <= N/8 < $size(nt)/8)?
+  -- if N? = eps \/ nt = Inn
+;)
 
+rule Instr_ok/load-val:
+  C |- LOAD nt x memarg : I32 -> nt
+  -- if C.MEMS[x] = mt
+  -- if $(2^(memarg.ALIGN) <= $size(nt)/8)
+
+rule Instr_ok/load-pack:
+  C |- LOAD Inn (M _ sx) x memarg : I32 -> Inn
+  -- if C.MEMS[x] = mt
+  -- if $(2^(memarg.ALIGN) <= M/8)
+
+(;
 rule Instr_ok/store:
-  C |- STORE nt n? x memarg : I32 nt -> eps
+  C |- STORE nt N? x memarg : I32 nt -> eps
   -- if C.MEMS[x] = mt
   -- if $(2^(memarg.ALIGN) <= $size(nt)/8)
-  -- if $(2^(memarg.ALIGN) <= n/8 < $size(nt)/8)?
-  -- if n? = eps \/ nt = Inn
+  -- if $(2^(memarg.ALIGN) <= N/8 < $size(nt)/8)?
+  -- if N? = eps \/ nt = Inn
+;)
 
-rule Instr_ok/vload:
+rule Instr_ok/store-val:
+  C |- STORE nt x memarg : I32 nt -> eps
+  -- if C.MEMS[x] = mt
+  -- if $(2^(memarg.ALIGN) <= $size(nt)/8)
+
+rule Instr_ok/store-pack:
+  C |- STORE Inn M x memarg : I32 Inn -> eps
+  -- if C.MEMS[x] = mt
+  -- if $(2^(memarg.ALIGN) <= M/8)
+
+rule Instr_ok/vload-val:
+  C |- VLOAD V128 x memarg : I32 -> V128
+  -- if C.MEMS[x] = mt
+  -- if $(2^(memarg.ALIGN) <= $vsize(V128)/8)
+
+rule Instr_ok/vload-pack:
   C |- VLOAD V128 (SHAPE M X N sx) x memarg : I32 -> V128
   -- if C.MEMS[x] = mt
   -- if $(2^(memarg.ALIGN) <= M/8 * N)
 
 rule Instr_ok/vload-splat:
-  C |- VLOAD V128 (SPLAT n) x memarg : I32 -> V128
+  C |- VLOAD V128 (SPLAT N) x memarg : I32 -> V128
   -- if C.MEMS[x] = mt
-  -- if $(2^(memarg.ALIGN) <= n/8)
+  -- if $(2^(memarg.ALIGN) <= N/8)
 
 rule Instr_ok/vload-zero:
-  C |- VLOAD V128 (ZERO n) x memarg : I32 -> V128
+  C |- VLOAD V128 (ZERO N) x memarg : I32 -> V128
   -- if C.MEMS[x] = mt
-  -- if $(2^(memarg.ALIGN) < n/8)
+  -- if $(2^(memarg.ALIGN) < N/8)
 
 rule Instr_ok/vload_lane:
-  C |- VLOAD_LANE V128 n x memarg laneidx : I32 V128 -> V128
+  C |- VLOAD_LANE V128 N x memarg i : I32 V128 -> V128
   -- if C.MEMS[x] = mt
-  -- if $(2^(memarg.ALIGN) < n/8)
-  -- if $(laneidx < 128 / n)
+  -- if $(2^(memarg.ALIGN) < N/8)
+  -- if $(i < 128/N)
 
 rule Instr_ok/vstore:
   C |- VSTORE V128 x memarg : I32 V128 -> eps
@@ -1064,10 +1093,10 @@ rule Instr_ok/vstore:
   -- if $(2^(memarg.ALIGN) <= $vsize(V128)/8)
 
 rule Instr_ok/vstore_lane:
-  C |- VSTORE_LANE V128 n x memarg laneidx : I32 V128 -> eps
+  C |- VSTORE_LANE V128 N x memarg i : I32 V128 -> eps
   -- if C.MEMS[x] = mt
-  -- if $(2^(memarg.ALIGN) < n/8)
-  -- if $(laneidx < 128 / n)
+  -- if $(2^(memarg.ALIGN) < N/8)
+  -- if $(i < 128/N)
 
 
 ;;

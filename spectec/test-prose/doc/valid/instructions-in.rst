@@ -597,7 +597,8 @@ $${rule-prose: valid/load}
 
 \
 
-$${rule: Instr_ok/load}
+$${rule: Instr_ok/load-val}
+$${rule: Instr_ok/load-pack}
 
 .. _valid-store:
 
@@ -605,7 +606,8 @@ $${rule-prose: valid/store}
 
 \
 
-$${rule: Instr_ok/store}
+$${rule: Instr_ok/store-val}
+$${rule: Instr_ok/store-pack}
 
 .. _valid-vload:
 
@@ -613,7 +615,8 @@ $${rule-prose: valid/vload}
 
 \
 
-$${rule: Instr_ok/vload}
+$${rule: Instr_ok/vload-val}
+$${rule: Instr_ok/vload-pack}
 $${rule: Instr_ok/vload-splat}
 $${rule: Instr_ok/vload-zero}
 

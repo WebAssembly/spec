@@ -1134,7 +1134,7 @@ $${rule: Instr_ok/elem.drop}
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
 
-.. _valid-load:
+.. _valid-load-val:
 
 :math:`t\K{.}\LOAD~x~\memarg`
 .............................
@@ -1145,19 +1145,10 @@ Memory Instructions
 
 * Then the instruction is valid with type :math:`[\I32] \to [t]`.
 
-$${rule: Instr_ok/load}
-
-.. math::
-   \frac{
-     C.\CMEMS[x] = \memtype
-     \qquad
-     2^{\memarg.\ALIGN} \leq |t|/8
-   }{
-     C \vdashinstr t\K{.load}~x~\memarg : [\I32] \to [t]
-   }
+$${rule: Instr_ok/load-val}
 
 
-.. _valid-loadn:
+.. _valid-load-pack:
 
 :math:`t\K{.}\LOAD{N}\K{\_}\sx~x~\memarg`
 .........................................
@@ -1168,15 +1159,10 @@ $${rule: Instr_ok/load}
 
 * Then the instruction is valid with type :math:`[\I32] \to [t]`.
 
-.. math::
-   \frac{
-     C.\CMEMS[x] = \memtype
-     \qquad
-     2^{\memarg.\ALIGN} \leq N/8
-   }{
-     C \vdashinstr t\K{.load}N\K{\_}\sx~x~\memarg : [\I32] \to [t]
-   }
+$${rule: Instr_ok/load-pack}
 
+
+.. _valid-store-val:
 
 :math:`t\K{.}\STORE~x~\memarg`
 ..............................
@@ -1187,19 +1173,10 @@ $${rule: Instr_ok/load}
 
 * Then the instruction is valid with type :math:`[\I32~t] \to []`.
 
-$${rule: Instr_ok/store}
-
-.. math::
-   \frac{
-     C.\CMEMS[x] = \memtype
-     \qquad
-     2^{\memarg.\ALIGN} \leq |t|/8
-   }{
-     C \vdashinstr t\K{.store}~x~\memarg : [\I32~t] \to []
-   }
+$${rule: Instr_ok/store-val}
 
 
-.. _valid-storen:
+.. _valid-store-pack:
 
 :math:`t\K{.}\STORE{N}~x~\memarg`
 .................................
@@ -1210,17 +1187,24 @@ $${rule: Instr_ok/store}
 
 * Then the instruction is valid with type :math:`[\I32~t] \to []`.
 
-.. math::
-   \frac{
-     C.\CMEMS[x] = \memtype
-     \qquad
-     2^{\memarg.\ALIGN} \leq N/8
-   }{
-     C \vdashinstr t\K{.store}N~x~\memarg : [\I32~t] \to []
-   }
+$${rule: Instr_ok/store-pack}
 
 
-.. _valid-vload-ext:
+.. _valid-vload-val:
+
+:math:`\K{v128.}\K{.}\LOAD~x~\memarg`
+.....................................
+
+* The memory :math:`C.\CMEMS[x]` must be defined in the context.
+
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-numtype>` of :math:`t` divided by :math:`8`.
+
+* Then the instruction is valid with type :math:`[\I32] \to [t]`.
+
+$${rule: Instr_ok/vload-val}
+
+
+.. _valid-vload-pack:
 
 :math:`\K{v128.}\LOAD{N}\K{x}M\_\sx~x~\memarg`
 ..............................................
@@ -1231,14 +1215,7 @@ $${rule: Instr_ok/store}
 
 * Then the instruction is valid with type :math:`[\I32] \to [\V128]`.
 
-.. math::
-   \frac{
-     C.\CMEMS[x] = \memtype
-     \qquad
-     2^{\memarg.\ALIGN} \leq N/8 \cdot M
-   }{
-     C \vdashinstr \K{v128.}\LOAD{N}\K{x}M\_\sx~x~\memarg : [\I32] \to [\V128]
-   }
+$${rule: Instr_ok/vload-pack}
 
 
 .. _valid-vload-splat:
@@ -1252,14 +1229,7 @@ $${rule: Instr_ok/store}
 
 * Then the instruction is valid with type :math:`[\I32] \to [\V128]`.
 
-.. math::
-   \frac{
-     C.\CMEMS[x] = \memtype
-     \qquad
-     2^{\memarg.\ALIGN} \leq N/8
-   }{
-     C \vdashinstr \K{v128.}\LOAD{N}\K{\_splat}~x~\memarg : [\I32] \to [\V128]
-   }
+$${rule: Instr_ok/vload-splat}
 
 
 .. _valid-vload-zero:
@@ -1273,17 +1243,10 @@ $${rule: Instr_ok/store}
 
 * Then the instruction is valid with type :math:`[\I32] \to [\V128]`.
 
-.. math::
-   \frac{
-     C.\CMEMS[x] = \memtype
-     \qquad
-     2^{\memarg.\ALIGN} \leq N/8
-   }{
-     C \vdashinstr \K{v128.}\LOAD{N}\K{\_zero}~x~\memarg : [\I32] \to [\V128]
-   }
+$${rule: Instr_ok/vload-zero}
 
 
-.. _valid-vload-lane:
+.. _valid-vload_lane:
 
 :math:`\K{v128.}\LOAD{N}\K{\_lane}~x~\memarg~\laneidx`
 ......................................................
@@ -1296,19 +1259,24 @@ $${rule: Instr_ok/store}
 
 * Then the instruction is valid with type :math:`[\I32~\V128] \to [\V128]`.
 
-.. math::
-   \frac{
-     C.\CMEMS[x] = \memtype
-     \qquad
-     2^{\memarg.\ALIGN} < N/8
-     \qquad
-     \laneidx < 128/N
-   }{
-     C \vdashinstr \K{v128.}\LOAD{N}\K{\_lane}~x~\memarg~\laneidx : [\I32~\V128] \to [\V128]
-   }
+$${rule: Instr_ok/vload_lane}
 
 
-.. _valid-vstore-lane:
+.. _valid-vstore:
+
+:math:`\K{v128.}\STORE~x~\memarg`
+.................................
+
+* The memory :math:`C.\CMEMS[x]` must be defined in the context.
+
+* The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than the :ref:`bit width <syntax-numtype>` of :math:`t` divided by :math:`8`.
+
+* Then the instruction is valid with type :math:`[\I32~t] \to []`.
+
+$${rule: Instr_ok/vstore}
+
+
+.. _valid-vstore_lane:
 
 :math:`\K{v128.}\STORE{N}\K{\_lane}~x~\memarg~\laneidx`
 .......................................................
@@ -1321,16 +1289,7 @@ $${rule: Instr_ok/store}
 
 * Then the instruction is valid with type :math:`[\I32~\V128] \to [\V128]`.
 
-.. math::
-   \frac{
-     C.\CMEMS[x] = \memtype
-     \qquad
-     2^{\memarg.\ALIGN} < N/8
-     \qquad
-     \laneidx < 128/N
-   }{
-     C \vdashinstr \K{v128.}\STORE{N}\K{\_lane}~x~\memarg~\laneidx : [\I32~\V128] \to []
-   }
+$${rule: Instr_ok/vstore_lane}
 
 
 .. _valid-memory.size:
@@ -1698,7 +1657,7 @@ $${rule: Instr_ok/return}
 .. note::
    The ${:RETURN} instruction is :ref:`stack-polymorphic <polymorphism>`.
 
-   ${:C.RETURN} is absent (set to ${:eps}) when validating an :ref:`expression <valid-expr>` that is not a function body.
+   ${resulttype?: C.RETURN} is absent (set to ${:eps}) when validating an :ref:`expression <valid-expr>` that is not a function body.
    This differs from it being set to the empty result type ${:(eps)},
    which is the case for functions not returning anything.
 

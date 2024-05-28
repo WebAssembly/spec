@@ -5811,13 +5811,22 @@ $$
 {\mathit{{\scriptstyle C}}}{.}\mathsf{mems}{}[x] = {\mathit{mt}}
  \qquad
 {2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq {|{\mathit{nt}}|} / 8
- \qquad
-({2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq n / 8 < {|{\mathit{nt}}|} / 8)^?
- \qquad
-{n^?} = \epsilon \lor {\mathit{nt}} = {\mathsf{i}}{{\mathit{{\scriptstyle N}}}}
 }{
-{\mathit{{\scriptstyle C}}} \vdash {{\mathit{nt}}{.}\mathsf{load}}{{({n}{\mathsf{\_}}{{\mathit{sx}}})^?}}~x~{\mathit{memarg}} : \mathsf{i{\scriptstyle 32}} \rightarrow {\mathit{nt}}
-} \, {[\textsc{\scriptsize T{-}load}]}
+{\mathit{{\scriptstyle C}}} \vdash {\mathit{nt}}{.}\mathsf{load}~x~{\mathit{memarg}} : \mathsf{i{\scriptstyle 32}} \rightarrow {\mathit{nt}}
+} \, {[\textsc{\scriptsize T{-}load{-}val}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{\mathit{{\scriptstyle C}}}{.}\mathsf{mems}{}[x] = {\mathit{mt}}
+ \qquad
+{2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq {\mathit{{\scriptstyle M}}} / 8
+}{
+{\mathit{{\scriptstyle C}}} \vdash {{\mathsf{i}}{{\mathit{{\scriptstyle N}}}}{.}\mathsf{load}}{{{\mathit{{\scriptstyle M}}}}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{memarg}} : \mathsf{i{\scriptstyle 32}} \rightarrow {\mathsf{i}}{{\mathit{{\scriptstyle N}}}}
+} \, {[\textsc{\scriptsize T{-}load{-}pack}]}
 \qquad
 \end{array}
 $$
@@ -5828,13 +5837,35 @@ $$
 {\mathit{{\scriptstyle C}}}{.}\mathsf{mems}{}[x] = {\mathit{mt}}
  \qquad
 {2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq {|{\mathit{nt}}|} / 8
- \qquad
-({2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq n / 8 < {|{\mathit{nt}}|} / 8)^?
- \qquad
-{n^?} = \epsilon \lor {\mathit{nt}} = {\mathsf{i}}{{\mathit{{\scriptstyle N}}}}
 }{
-{\mathit{{\scriptstyle C}}} \vdash {{\mathit{nt}}{.}\mathsf{store}}{{n^?}}~x~{\mathit{memarg}} : \mathsf{i{\scriptstyle 32}}~{\mathit{nt}} \rightarrow \epsilon
-} \, {[\textsc{\scriptsize T{-}store}]}
+{\mathit{{\scriptstyle C}}} \vdash {\mathit{nt}}{.}\mathsf{store}~x~{\mathit{memarg}} : \mathsf{i{\scriptstyle 32}}~{\mathit{nt}} \rightarrow \epsilon
+} \, {[\textsc{\scriptsize T{-}store{-}val}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{\mathit{{\scriptstyle C}}}{.}\mathsf{mems}{}[x] = {\mathit{mt}}
+ \qquad
+{2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq {\mathit{{\scriptstyle M}}} / 8
+}{
+{\mathit{{\scriptstyle C}}} \vdash {{\mathsf{i}}{{\mathit{{\scriptstyle N}}}}{.}\mathsf{store}}{{\mathit{{\scriptstyle M}}}}~x~{\mathit{memarg}} : \mathsf{i{\scriptstyle 32}}~{\mathsf{i}}{{\mathit{{\scriptstyle N}}}} \rightarrow \epsilon
+} \, {[\textsc{\scriptsize T{-}store{-}pack}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{\mathit{{\scriptstyle C}}}{.}\mathsf{mems}{}[x] = {\mathit{mt}}
+ \qquad
+{2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq {|\mathsf{v{\scriptstyle 128}}|} / 8
+}{
+{\mathit{{\scriptstyle C}}} \vdash \mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~x~{\mathit{memarg}} : \mathsf{i{\scriptstyle 32}} \rightarrow \mathsf{v{\scriptstyle 128}}
+} \, {[\textsc{\scriptsize T{-}vload{-}val}]}
 \qquad
 \end{array}
 $$
@@ -5847,7 +5878,7 @@ $$
 {2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq {\mathit{{\scriptstyle M}}} / 8 \cdot {\mathit{{\scriptstyle N}}}
 }{
 {\mathit{{\scriptstyle C}}} \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{{\scriptstyle M}}}}{\mathsf{x}}{{\mathit{{\scriptstyle N}}}}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{memarg}} : \mathsf{i{\scriptstyle 32}} \rightarrow \mathsf{v{\scriptstyle 128}}
-} \, {[\textsc{\scriptsize T{-}vload}]}
+} \, {[\textsc{\scriptsize T{-}vload{-}pack}]}
 \qquad
 \end{array}
 $$
@@ -5857,9 +5888,9 @@ $$
 \frac{
 {\mathit{{\scriptstyle C}}}{.}\mathsf{mems}{}[x] = {\mathit{mt}}
  \qquad
-{2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq n / 8
+{2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq {\mathit{{\scriptstyle N}}} / 8
 }{
-{\mathit{{\scriptstyle C}}} \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{n}{\mathsf{\_}}{\mathsf{splat}}}~x~{\mathit{memarg}} : \mathsf{i{\scriptstyle 32}} \rightarrow \mathsf{v{\scriptstyle 128}}
+{\mathit{{\scriptstyle C}}} \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{{\scriptstyle N}}}}{\mathsf{\_}}{\mathsf{splat}}}~x~{\mathit{memarg}} : \mathsf{i{\scriptstyle 32}} \rightarrow \mathsf{v{\scriptstyle 128}}
 } \, {[\textsc{\scriptsize T{-}vload{-}splat}]}
 \qquad
 \end{array}
@@ -5870,9 +5901,9 @@ $$
 \frac{
 {\mathit{{\scriptstyle C}}}{.}\mathsf{mems}{}[x] = {\mathit{mt}}
  \qquad
-{2^{{\mathit{memarg}}{.}\mathsf{align}}} < n / 8
+{2^{{\mathit{memarg}}{.}\mathsf{align}}} < {\mathit{{\scriptstyle N}}} / 8
 }{
-{\mathit{{\scriptstyle C}}} \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{n}{\mathsf{\_}}{\mathsf{zero}}}~x~{\mathit{memarg}} : \mathsf{i{\scriptstyle 32}} \rightarrow \mathsf{v{\scriptstyle 128}}
+{\mathit{{\scriptstyle C}}} \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{{\scriptstyle N}}}}{\mathsf{\_}}{\mathsf{zero}}}~x~{\mathit{memarg}} : \mathsf{i{\scriptstyle 32}} \rightarrow \mathsf{v{\scriptstyle 128}}
 } \, {[\textsc{\scriptsize T{-}vload{-}zero}]}
 \qquad
 \end{array}
@@ -5883,11 +5914,11 @@ $$
 \frac{
 {\mathit{{\scriptstyle C}}}{.}\mathsf{mems}{}[x] = {\mathit{mt}}
  \qquad
-{2^{{\mathit{memarg}}{.}\mathsf{align}}} < n / 8
+{2^{{\mathit{memarg}}{.}\mathsf{align}}} < {\mathit{{\scriptstyle N}}} / 8
  \qquad
-{\mathit{laneidx}} < 128 / n
+i < 128 / {\mathit{{\scriptstyle N}}}
 }{
-{\mathit{{\scriptstyle C}}} \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{n}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~{\mathit{laneidx}} : \mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}} \rightarrow \mathsf{v{\scriptstyle 128}}
+{\mathit{{\scriptstyle C}}} \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{\mathit{{\scriptstyle N}}}}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i : \mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}} \rightarrow \mathsf{v{\scriptstyle 128}}
 } \, {[\textsc{\scriptsize T{-}vload\_lane}]}
 \qquad
 \end{array}
@@ -5911,11 +5942,11 @@ $$
 \frac{
 {\mathit{{\scriptstyle C}}}{.}\mathsf{mems}{}[x] = {\mathit{mt}}
  \qquad
-{2^{{\mathit{memarg}}{.}\mathsf{align}}} < n / 8
+{2^{{\mathit{memarg}}{.}\mathsf{align}}} < {\mathit{{\scriptstyle N}}} / 8
  \qquad
-{\mathit{laneidx}} < 128 / n
+i < 128 / {\mathit{{\scriptstyle N}}}
 }{
-{\mathit{{\scriptstyle C}}} \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{n}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~{\mathit{laneidx}} : \mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}} \rightarrow \epsilon
+{\mathit{{\scriptstyle C}}} \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{{\mathit{{\scriptstyle N}}}}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i : \mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}} \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}vstore\_lane}]}
 \qquad
 \end{array}

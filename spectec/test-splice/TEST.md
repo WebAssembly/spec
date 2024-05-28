@@ -808,9 +808,12 @@ warning: rule `Instr_ok/memory.fill` was never spliced
 warning: rule `Instr_ok/memory.copy` was never spliced
 warning: rule `Instr_ok/memory.init` was never spliced
 warning: rule `Instr_ok/data.drop` was never spliced
-warning: rule `Instr_ok/load` was never spliced
-warning: rule `Instr_ok/store` was never spliced
-warning: rule `Instr_ok/vload` was never spliced
+warning: rule `Instr_ok/load-val` was never spliced
+warning: rule `Instr_ok/load-pack` was never spliced
+warning: rule `Instr_ok/store-val` was never spliced
+warning: rule `Instr_ok/store-pack` was never spliced
+warning: rule `Instr_ok/vload-val` was never spliced
+warning: rule `Instr_ok/vload-pack` was never spliced
 warning: rule `Instr_ok/vload-splat` was never spliced
 warning: rule `Instr_ok/vload-zero` was never spliced
 warning: rule `Instr_ok/vload_lane` was never spliced
