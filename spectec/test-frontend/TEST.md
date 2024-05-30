@@ -5778,26 +5778,26 @@ syntax pth =
 syntax T = nat
 
 ;; C-conventions.watsup
-relation Premise: `%`(nat)
+relation NotationTypingPremise: `%`(nat)
 
 ;; C-conventions.watsup
-relation Premisedots: `...`
+relation NotationTypingPremisedots: `...`
 
 ;; C-conventions.watsup
-relation Scheme: `%`(nat)
+relation NotationTypingScheme: `%`(nat)
   ;; C-conventions.watsup
   rule _{conclusion : nat, premise_1 : nat, premise_2 : nat, premise_n : nat}:
     `%`(conclusion)
-    -- Premise: `%`(premise_1)
-    -- Premise: `%`(premise_2)
-    -- Premisedots: `...`
-    -- Premise: `%`(premise_n)
+    -- NotationTypingPremise: `%`(premise_1)
+    -- NotationTypingPremise: `%`(premise_2)
+    -- NotationTypingPremisedots: `...`
+    -- NotationTypingPremise: `%`(premise_n)
 
 ;; C-conventions.watsup
 rec {
 
-;; C-conventions.watsup:38.1-38.68
-relation InstrScheme: `%|-%:%`(context, instr*, functype)
+;; C-conventions.watsup:38.1-38.82
+relation NotationTypingInstrScheme: `%|-%:%`(context, instr*, functype)
   ;; C-conventions.watsup:40.1-41.38
   rule i32.add{C : context}:
     `%|-%:%`(C, [BINOP_instr(I32_numtype, ADD_binop_)], `%->%`_functype(`%`_resulttype([I32_valtype I32_valtype]), `%`_resulttype([I32_valtype])))
@@ -5807,12 +5807,26 @@ relation InstrScheme: `%|-%:%`(context, instr*, functype)
     `%|-%:%`(C, [GLOBAL.GET_instr(x)], `%->%`_functype(`%`_resulttype([]), `%`_resulttype([t])))
     -- if (C.GLOBALS_context[x!`%`_idx.0] = `%%`_globaltype(mut, t))
 
-  ;; C-conventions.watsup:47.1-50.60
+  ;; C-conventions.watsup:47.1-50.74
   rule block{C : context, blocktype : blocktype, instr* : instr*, t_1* : valtype*, t_2* : valtype*}:
     `%|-%:%`(C, [BLOCK_instr(blocktype, instr*{instr : instr})], `%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype})))
     -- Blocktype_ok: `%|-%:%`(C, blocktype, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), [], `%`_resulttype(t_2*{t_2 : valtype})))
-    -- InstrScheme: `%|-%:%`(C ++ {TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [`%`_resulttype(t_2*{t_2 : valtype})], RETURN ?()}, instr*{instr : instr}, `%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype})))
+    -- NotationTypingInstrScheme: `%|-%:%`(C ++ {TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [`%`_resulttype(t_2*{t_2 : valtype})], RETURN ?()}, instr*{instr : instr}, `%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype})))
 }
+
+;; C-conventions.watsup
+relation NotationReduct: `~>%`(instr*)
+  ;; C-conventions.watsup
+  rule 2{q_1 : num_(F64_numtype), q_4 : num_(F64_numtype), q_3 : num_(F64_numtype)}:
+    `~>%`([CONST_instr(F64_numtype, q_1) CONST_instr(F64_numtype, q_4) CONST_instr(F64_numtype, q_3) BINOP_instr(F64_numtype, ADD_binop_) BINOP_instr(F64_numtype, MUL_binop_)])
+
+  ;; C-conventions.watsup
+  rule 3{q_1 : num_(F64_numtype), q_5 : num_(F64_numtype)}:
+    `~>%`([CONST_instr(F64_numtype, q_1) CONST_instr(F64_numtype, q_5) BINOP_instr(F64_numtype, MUL_binop_)])
+
+  ;; C-conventions.watsup
+  rule 4{q_6 : num_(F64_numtype)}:
+    `~>%`([CONST_instr(F64_numtype, q_6)])
 
 == IL Validation...
 == Complete.

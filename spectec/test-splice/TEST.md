@@ -707,9 +707,6 @@ warning: rule `Heaptype_sub/nofunc` was never spliced
 warning: rule `Heaptype_sub/noextern` was never spliced
 warning: rule `Heaptype_sub/bot` was never spliced
 warning: rule `Import_ok` was never spliced
-warning: rule `InstrScheme/i32.add` was never spliced
-warning: rule `InstrScheme/global.get` was never spliced
-warning: rule `InstrScheme/block` was never spliced
 warning: rule `Instr_const/const` was never spliced
 warning: rule `Instr_const/vconst` was never spliced
 warning: rule `Instr_const/ref.null` was never spliced
@@ -835,6 +832,13 @@ warning: rule `Mem_ok` was never spliced
 warning: rule `Memtype_ok` was never spliced
 warning: rule `Memtype_sub` was never spliced
 warning: rule `Module_ok` was never spliced
+warning: rule `NotationReduct/2` was never spliced
+warning: rule `NotationReduct/3` was never spliced
+warning: rule `NotationReduct/4` was never spliced
+warning: rule `NotationTypingInstrScheme/i32.add` was never spliced
+warning: rule `NotationTypingInstrScheme/global.get` was never spliced
+warning: rule `NotationTypingInstrScheme/block` was never spliced
+warning: rule `NotationTypingScheme` was never spliced
 warning: rule `Numtype_ok` was never spliced
 warning: rule `Numtype_sub` was never spliced
 warning: rule `Packtype_ok` was never spliced
@@ -856,7 +860,6 @@ warning: rule `Reftype_sub/nonnull` was never spliced
 warning: rule `Reftype_sub/null` was never spliced
 warning: rule `Resulttype_ok` was never spliced
 warning: rule `Resulttype_sub` was never spliced
-warning: rule `Scheme` was never spliced
 warning: rule `Start_ok` was never spliced
 warning: rule `Step/ctxt-label` was never spliced
 warning: rule `Step/ctxt-frame` was never spliced

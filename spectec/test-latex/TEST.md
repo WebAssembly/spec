@@ -8915,7 +8915,7 @@ $$
 {\mathit{premise}}_n
 }{
 {\mathit{conclusion}}
-} \, {[\textsc{\scriptsize Scheme}]}
+} \, {[\textsc{\scriptsize NotationTypingScheme}]}
 \qquad
 \end{array}
 $$
@@ -8927,7 +8927,7 @@ $$
 \frac{
 }{
 C \vdash \mathsf{i{\scriptstyle 32}} {.} \mathsf{add} : \mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 32}} \rightarrow \mathsf{i{\scriptstyle 32}}
-} \, {[\textsc{\scriptsize InstrScheme{-}i32.add}]}
+} \, {[\textsc{\scriptsize NotationTypingInstrScheme{-}i32.add}]}
 \qquad
 \end{array}
 $$
@@ -8938,7 +8938,7 @@ $$
 C{.}\mathsf{globals}{}[x] = {\mathsf{mut}^?}~t
 }{
 C \vdash \mathsf{global.get}~x : \epsilon \rightarrow t
-} \, {[\textsc{\scriptsize InstrScheme{-}global.get}]}
+} \, {[\textsc{\scriptsize NotationTypingInstrScheme{-}global.get}]}
 \qquad
 \end{array}
 $$
@@ -8951,8 +8951,20 @@ C \vdash {\mathit{blocktype}} : {t_1^\ast} \rightarrow {t_2^\ast}
 C, \mathsf{labels}~({t_2^\ast}) \vdash {{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow {t_2^\ast}
 }{
 C \vdash \mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow {t_2^\ast}
-} \, {[\textsc{\scriptsize InstrScheme{-}block}]}
+} \, {[\textsc{\scriptsize NotationTypingInstrScheme{-}block}]}
 \qquad
+\end{array}
+$$
+
+\vspace{1ex}
+
+$\boxed{{ \hookrightarrow }\;{{\mathit{instr}}^\ast}}$
+
+$$
+\begin{array}{@{}l@{}rcl@{}l@{}}
+{[\textsc{\scriptsize NotationReduct{-}2}]} \quad &  &\hookrightarrow& (\mathsf{f{\scriptstyle 64}}{.}\mathsf{const}~q_1)~(\mathsf{f{\scriptstyle 64}}{.}\mathsf{const}~q_4)~(\mathsf{f{\scriptstyle 64}}{.}\mathsf{const}~q_3)~\mathsf{f{\scriptstyle 64}} {.} \mathsf{add}~\mathsf{f{\scriptstyle 64}} {.} \mathsf{mul} \\
+{[\textsc{\scriptsize NotationReduct{-}3}]} \quad &  &\hookrightarrow& (\mathsf{f{\scriptstyle 64}}{.}\mathsf{const}~q_1)~(\mathsf{f{\scriptstyle 64}}{.}\mathsf{const}~q_5)~\mathsf{f{\scriptstyle 64}} {.} \mathsf{mul} \\
+{[\textsc{\scriptsize NotationReduct{-}4}]} \quad &  &\hookrightarrow& (\mathsf{f{\scriptstyle 64}}{.}\mathsf{const}~q_6) \\
 \end{array}
 $$
 
