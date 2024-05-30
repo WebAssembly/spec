@@ -59,22 +59,16 @@ have to support 32-bit memory addresses in their ABI.
 
 ### Structure
 
+* The [limits][syntax limits] structure is changed to use `u64`
+￼  - `limits ::= {min u64, max u64?}`
+
 * A new `idxtype` can be either `i32` or `i64`
   - `idxtype ::= i32 | i64`
 
-* The [limits][syntax limits] structure is parameterised by index syntax
-  - `limits(iv) ::= {min iv, max iv?}`
-  The parameter is omitted where it is immaterial.
-
 * The [memory type][syntax memtype] and [table type][syntax tabletype]
   structures are extended to include an index type
-  - `memtype ::= idxtype limits(type(iv))`
-  - `tabletype ::= idxtype limits(type(iv)) reftype`
-  - where
-    ```
-    type(\i32) = \I32
-    type(\i64) = \I64
-    ```
+  - `memtype ::= idxtype limits`
+  - `tabletype ::= idxtype limits reftype`
 
 * The [memarg][syntax memarg] immediate is changed to allow a 64-bit offset
   - `memarg ::= {offset u64, align u32}`
