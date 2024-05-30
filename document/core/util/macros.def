@@ -1233,7 +1233,6 @@
 .. |vdashdatamode| mathdef:: \xref{valid/modules}{valid-datamode}{\vdash}
 .. |vdashstart| mathdef:: \xref{valid/modules}{valid-start}{\vdash}
 .. |vdashexport| mathdef:: \xref{valid/modules}{valid-export}{\vdash}
-.. |vdashexternidx| mathdef:: \xref{valid/modules}{valid-externidx}{\vdash}
 .. |vdashexportdesc| mathdef:: \xref{valid/modules}{valid-exportdesc}{\vdash}
 .. |vdashimport| mathdef:: \xref{valid/modules}{valid-import}{\vdash}
 .. |vdashimportdesc| mathdef:: \xref{valid/modules}{valid-importdesc}{\vdash}

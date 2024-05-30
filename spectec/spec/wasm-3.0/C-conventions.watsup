@@ -24,27 +24,41 @@ syntax pth hint(macro none) = PTHSYNTAX hint(show (`[i] `| !%.FIELD)+)
 
 syntax T hint(macro none) = nat
 
-relation Premise: nat
-relation Premisedots: `... hint(macro none)
-relation Scheme: nat
+relation NotationTypingPremise: nat
+relation NotationTypingPremisedots: `... hint(macro none)
+relation NotationTypingScheme: nat
 
-rule Scheme:
+rule NotationTypingScheme:
   conclusion
-  -- Premise: premise_1
-  -- Premise: premise_2
-  -- Premisedots: `...
-  -- Premise: premise_n
+  -- NotationTypingPremise: premise_1
+  -- NotationTypingPremise: premise_2
+  -- NotationTypingPremisedots: `...
+  -- NotationTypingPremise: premise_n
 
-relation InstrScheme: context |- instr* : functype hint(macro none)
+relation NotationTypingInstrScheme: context |- instr* : functype hint(macro none)
 
-rule InstrScheme/i32.add:
+rule NotationTypingInstrScheme/i32.add:
   C |- BINOP I32 ADD : I32 I32 -> I32
 
-rule InstrScheme/global.get:
+rule NotationTypingInstrScheme/global.get:
   C |- GLOBAL.GET x : eps -> t
   -- if C.GLOBALS[x] = mut t
 
-rule InstrScheme/block:
+rule NotationTypingInstrScheme/block:
   C |- BLOCK blocktype instr* : t_1* -> t_2*
   -- Blocktype_ok: C |- blocktype : t_1* -> t_2*
-  -- InstrScheme: C, LABELS (t_2*) |- instr* : t_1* -> t_2*
+  -- NotationTypingInstrScheme: C, LABELS (t_2*) |- instr* : t_1* -> t_2*
+
+
+;; Execution notation
+
+relation NotationReduct: ~> instr*
+
+rule NotationReduct/2:
+  ~> (CONST F64 q_1) (CONST F64 q_4) (CONST F64 q_3) $($(BINOP F64 ADD)) $($(BINOP F64 MUL))
+
+rule NotationReduct/3:
+  ~> (CONST F64 q_1) (CONST F64 q_5) $($(BINOP F64 MUL))
+
+rule NotationReduct/4:
+  ~> (CONST F64 q_6)

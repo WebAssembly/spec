@@ -301,8 +301,8 @@ which says that ${:A `: T} holds under the assumptions encoded in ${:C}.
 The formal typing rules use a standard approach for specifying type systems, rendering them into *deduction rules*.
 Every rule has the following general form:
 
-$${rule: Scheme}
-$${relation-ignore: Scheme}
+$${rule: NotationTypingScheme}
+$${relation-ignore: NotationTypingScheme}
 
 Such a rule is read as a big implication: if all premises hold, then the conclusion holds.
 Some rules have no premises; they are *axioms* whose conclusion holds unconditionally.
@@ -312,7 +312,7 @@ and there is one respective rule for each relevant construct ${:A} of the abstra
 .. note::
    For example, the typing rule for the ${instr: BINOP I32 ADD} instruction can be given as an axiom:
 
-   $${rule: InstrScheme/i32.add}
+   $${rule: NotationTypingInstrScheme/i32.add}
 
    The instruction is always valid with type ${instrtype: I32 I32 -> I32}
    (saying that it consumes two ${numtype: I32} values and produces one),
@@ -320,7 +320,7 @@ and there is one respective rule for each relevant construct ${:A} of the abstra
 
    An instruction like ${:GLOBAL.GET} can be typed as follows:
 
-   $${rule: InstrScheme/global.get}
+   $${rule: NotationTypingInstrScheme/global.get}
 
    Here, the premise enforces that the immediate :ref:`global index <syntax-globalidx>` ${:x} exists in the context.
    The instruction produces a value of its respective type ${:t}
@@ -331,7 +331,7 @@ and there is one respective rule for each relevant construct ${:A} of the abstra
    Finally, a :ref:`structured <syntax-instr-control>` instruction requires
    a recursive rule, where the premise is itself a typing judgement:
 
-   $${rule: InstrScheme/block}
+   $${rule: NotationTypingInstrScheme/block}
 
    A ${:BLOCK} instruction is only valid when the instruction sequence in its body is.
    Moreover, the result type must match the block's annotation ${:blocktype}.
@@ -339,7 +339,7 @@ and there is one respective rule for each relevant construct ${:A} of the abstra
    Inside the body an additional label of the corresponding result type is available,
    which is expressed by extending the context ${:C} with the additional label information for the premise.
 
-$${relation-ignore: InstrScheme}
+$${relation-ignore: NotationTypingInstrScheme}
 
 
 .. [#cite-pldi2017]
