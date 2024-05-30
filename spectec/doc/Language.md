@@ -154,7 +154,7 @@ exp ::=
   "##" exp                             remove possible parentheses (for syntax rewrites in hints)
 
 unop  ::= notop | "+" | "-"
-binop ::= logop | "+" | "-" | "*" | "/" | "^"
+binop ::= logop | "+" | "-" | "*" | "/" | "\" | "^"
 arith ::=
   varid                                meta variable
   atom                                 token

@@ -830,6 +830,7 @@ let render_binop = function
   | SubOp -> "-"
   | MulOp -> "\\cdot"
   | DivOp -> "/"
+  | ModOp -> "\\mathbin{mod}"
   | ExpOp -> assert false
 
 let render_cmpop = function

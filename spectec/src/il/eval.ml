@@ -160,6 +160,9 @@ and reduce_exp env e : exp =
     | DivOp _, NatE n1, NatE n2 -> NatE Z.(n1 / n2) $> e
     | DivOp _, NatE z0, _ when z0 = Z.zero -> e1'
     | DivOp _, _, NatE z1 when z1 = Z.one -> e1'
+    | ModOp _, NatE n1, NatE n2 -> NatE Z.(rem n1 n2) $> e
+    | ModOp _, NatE z0, _ when z0 = Z.zero -> e1'
+    | ModOp _, _, NatE z1 when z1 = Z.one -> NatE Z.zero $> e
     | ExpOp _, NatE n1, NatE n2 -> NatE Z.(n1 ** to_int n2) $> e
     | ExpOp _, NatE z01, _ when z01 = Z.zero || z01 = Z.one -> e1'
     | ExpOp _, _, NatE z0 when z0 = Z.zero -> NatE Z.one $> e

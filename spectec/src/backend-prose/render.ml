@@ -44,6 +44,7 @@ let al_to_el_binop = function
   | Al.Ast.SubOp -> Some El.Ast.SubOp
   | Al.Ast.MulOp -> Some El.Ast.MulOp
   | Al.Ast.DivOp -> Some El.Ast.DivOp
+  | Al.Ast.ModOp -> Some El.Ast.ModOp
   | Al.Ast.ExpOp -> Some El.Ast.ExpOp
   | _ -> None
 
@@ -247,6 +248,7 @@ let render_al_binop = function
   | Al.Ast.SubOp -> "minus"
   | Al.Ast.MulOp -> "multiplied by"
   | Al.Ast.DivOp -> "divided by"
+  | Al.Ast.ModOp -> "modulo"
   | Al.Ast.ExpOp -> "to the power of"
   | Al.Ast.EqOp -> "is"
   | Al.Ast.NeOp -> "is not"

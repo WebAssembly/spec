@@ -136,6 +136,7 @@ and eval_expr env expr =
     | SubOp, NumV i1, NumV i2 -> Z.sub i1 i2 |> numV
     | MulOp, NumV i1, NumV i2 -> Z.mul i1 i2 |> numV
     | DivOp, NumV i1, NumV i2 -> Z.div i1 i2 |> numV
+    | ModOp, NumV i1, NumV i2 -> Z.rem i1 i2 |> numV
     | ExpOp, NumV i1, NumV i2 -> Z.pow i1 (Z.to_int i2) |> numV
     | AndOp, BoolV b1, BoolV b2 -> boolV (b1 && b2)
     | OrOp, BoolV b1, BoolV b2 -> boolV (b1 || b2)

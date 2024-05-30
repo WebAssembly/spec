@@ -293,6 +293,7 @@ check_atom :
   | MINUS { SubOp }
   | STAR { MulOp }
   | SLASH { DivOp }
+  | BACKSLASH { ModOp }
 
 %inline cmpop :
   | EQ { EqOp }

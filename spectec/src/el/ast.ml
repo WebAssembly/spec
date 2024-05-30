@@ -86,6 +86,7 @@ and binop =
   | SubOp  (* `-` *)
   | MulOp  (* `*` *)
   | DivOp  (* `/` *)
+  | ModOp  (* `\` *)
   | ExpOp  (* `^` *)
 
 and cmpop =

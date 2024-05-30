@@ -159,6 +159,7 @@ and translate_exp exp =
       | Il.SubOp _ -> SubOp
       | Il.MulOp _ -> MulOp
       | Il.DivOp _ -> DivOp
+      | Il.ModOp _ -> ModOp
       | Il.ExpOp _ -> ExpOp
       | Il.AndOp -> AndOp
       | Il.OrOp -> OrOp

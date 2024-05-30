@@ -49,6 +49,7 @@ type binop =
   | SubOp    (* `-` *)
   | MulOp    (* `*` *)
   | DivOp    (* `/` *)
+  | ModOp    (* `\` *)
   | ExpOp    (* `^` *)
   (* logical operation *)
   | ImplOp   (* `=>` *)

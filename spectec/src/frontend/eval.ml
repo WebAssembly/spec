@@ -174,6 +174,9 @@ and reduce_exp env e : exp =
     | DivOp, NatE (op, n1), NatE (_, n2) -> NatE (op, Z.(n1 / n2)) $ e.at
     | DivOp, NatE (_, z0), _ when z0 = Z.zero -> e1'
     | DivOp, _, NatE (_, z1) when z1 = Z.one -> e1'
+    | ModOp, NatE (op, n1), NatE (_, n2) -> NatE (op, Z.rem n1 n2) $ e.at
+    | ModOp, NatE (_, z0), _ when z0 = Z.zero -> e1'
+    | ModOp, _, NatE (op, z1) when z1 = Z.one -> NatE (op, Z.zero) $ e.at
     | ExpOp, NatE (op, n1), NatE (_, n2) -> NatE (op, Z.(n1 ** to_int n2)) $ e.at
     | ExpOp, NatE (_, z01), _ when z01 = Z.zero || z01 = Z.one -> e1'
     | ExpOp, _, NatE (op, z0) when z0 = Z.zero -> NatE (op, Z.one) $ e.at

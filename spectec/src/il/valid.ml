@@ -149,7 +149,7 @@ let infer_unop = function
 
 let infer_binop = function
   | AndOp | OrOp | ImplOp | EquivOp -> BoolT, BoolT, BoolT
-  | AddOp t | SubOp t | MulOp t | DivOp t -> NumT t, NumT t, NumT t
+  | AddOp t | SubOp t | MulOp t | DivOp t | ModOp t -> NumT t, NumT t, NumT t
   | ExpOp t -> NumT t, NumT NatT, NumT t
 
 let infer_cmpop = function

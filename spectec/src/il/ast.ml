@@ -67,6 +67,7 @@ and binop =
   | SubOp of numtyp  (* `-` *)
   | MulOp of numtyp  (* `*` *)
   | DivOp of numtyp  (* `/` *)
+  | ModOp of numtyp  (* `\` *)
   | ExpOp of numtyp  (* `^` *)
 
 and cmpop =

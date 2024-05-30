@@ -511,6 +511,7 @@ let infer_binop' = function
   | SubOp -> infer_numop (fun t -> Il.SubOp t) numtyps
   | MulOp -> infer_numop (fun t -> Il.MulOp t) numtyps
   | DivOp -> infer_numop (fun t -> Il.DivOp t) numtyps
+  | ModOp -> infer_numop (fun t -> Il.ModOp t) numtyps
   | ExpOp -> infer_numop (fun t -> Il.ExpOp t) numtyps
 
 let infer_cmpop' = function

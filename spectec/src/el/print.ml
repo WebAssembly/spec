@@ -41,6 +41,7 @@ let string_of_binop = function
   | SubOp -> "-"
   | MulOp -> "*"
   | DivOp -> "/"
+  | ModOp -> "\\"
   | ExpOp -> "^"
 
 let string_of_cmpop = function

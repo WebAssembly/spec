@@ -91,6 +91,7 @@ let string_of_binop = function
   | SubOp -> "-"
   | MulOp -> "·"
   | DivOp -> "/"
+  | ModOp -> "\\"
   | ExpOp -> "^"
   | EqOp -> "is"
   | NeOp -> "is not"
