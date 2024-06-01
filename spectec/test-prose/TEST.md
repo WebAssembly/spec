@@ -3635,8 +3635,8 @@ watsup 0.4 generator
 == Running pass animate...
 == IL Validation after pass animate...
 == Translating to AL...
-8-reduction.watsup:226.12-226.36: translate_rulepr: Yet `(`%;%`_config(z, (instr : instr <: admininstr)*{instr : instr}), `%;%`_config(z', (instr' : instr <: admininstr)*{instr' : instr}))`
-8-reduction.watsup:230.12-230.44: translate_rulepr: Yet `(`%;%`_config(`%;%`_state(s, f'), (instr : instr <: admininstr)*{instr : instr}), `%;%`_config(`%;%`_state(s', f'), (instr' : instr <: admininstr)*{instr' : instr}))`
+8-reduction.watsup:226.12-226.36: translate_rulepr: Yet `(`%;%`_config(z, instr*{instr : instr}), `%;%`_config(z', instr'*{instr' : instr}))`
+8-reduction.watsup:230.12-230.44: translate_rulepr: Yet `(`%;%`_config(`%;%`_state(s, f'), instr*{instr : instr}), `%;%`_config(`%;%`_state(s', f'), instr'*{instr' : instr}))`
 == Prose Generation...
 6-typing.watsup:622.7-622.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0)`
 6-typing.watsup:623.6-623.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l'!`%`_labelidx.0]!`%`_resulttype.0)`
@@ -4319,6 +4319,9 @@ sizenn1 nt
 
 sizenn2 nt
 1. Return $size(nt).
+
+psizenn pt
+1. Return $psize(pt).
 
 lsizenn lt
 1. Return $lsize(lt).
@@ -5375,46 +5378,45 @@ inst_reftype mm rt
 2. Return $subst_all_reftype(rt, dt*).
 
 default_ valty_u0
-1. If (valty_u0 is I32), then:
-  a. Return ?((I32.CONST 0)).
-2. If (valty_u0 is I64), then:
-  a. Return ?((I64.CONST 0)).
-3. If (valty_u0 is F32), then:
-  a. Return ?((F32.CONST $fzero(32))).
-4. If (valty_u0 is F64), then:
-  a. Return ?((F64.CONST $fzero(64))).
-5. If (valty_u0 is V128), then:
-  a. Return ?((V128.CONST 0)).
-6. Assert: Due to validation, valty_u0 is of the case REF.
-7. Let (REF y_0 ht) be valty_u0.
-8. If (y_0 is (NULL ?(()))), then:
+1. If the type of valty_u0 is Inn, then:
+  a. Let Inn be valty_u0.
+  b. Return ?((Inn.CONST 0)).
+2. If the type of valty_u0 is Fnn, then:
+  a. Let Fnn be valty_u0.
+  b. Return ?((Fnn.CONST $fzero($size(Fnn)))).
+3. If the type of valty_u0 is Vnn, then:
+  a. Let Vnn be valty_u0.
+  b. Return ?((Vnn.CONST 0)).
+4. Assert: Due to validation, valty_u0 is of the case REF.
+5. Let (REF y_0 ht) be valty_u0.
+6. If (y_0 is (NULL ?(()))), then:
   a. Return ?((REF.NULL ht)).
-9. Assert: Due to validation, (y_0 is (NULL ?())).
-10. Return ?().
+7. Assert: Due to validation, (y_0 is (NULL ?())).
+8. Return ?().
 
 packfield stora_u0 val_u1
-1. If the type of stora_u0 is valtype, then:
-  a. Let val be val_u1.
-  b. Return val.
-2. Assert: Due to validation, val_u1 is of the case CONST.
-3. Let (y_0.CONST i) be val_u1.
-4. Assert: Due to validation, (y_0 is I32).
-5. Assert: Due to validation, the type of stora_u0 is packtype.
-6. Let pt be stora_u0.
-7. Return (PACK pt $wrap(32, $psize(pt), i)).
+1. Let val be val_u1.
+2. If the type of stora_u0 is valtype, then:
+  a. Return val.
+3. Assert: Due to validation, val_u1 is of the case CONST.
+4. Let (y_0.CONST i) be val_u1.
+5. Assert: Due to validation, (y_0 is I32).
+6. Assert: Due to validation, the type of stora_u0 is packtype.
+7. Let packtype be stora_u0.
+8. Return (PACK packtype $wrap(32, $psize(packtype), i)).
 
 unpackfield stora_u0 sx_u1? field_u2
 1. If sx_u1? is not defined, then:
-  a. Assert: Due to validation, the type of stora_u0 is valtype.
-  b. Assert: Due to validation, the type of field_u2 is val.
-  c. Let val be field_u2.
+  a. Assert: Due to validation, the type of field_u2 is val.
+  b. Let val be field_u2.
+  c. Assert: Due to validation, the type of stora_u0 is valtype.
   d. Return val.
 2. Else:
   a. Let ?(sx) be sx_u1?.
   b. Assert: Due to validation, field_u2 is of the case PACK.
-  c. Let (PACK pt i) be field_u2.
-  d. Assert: Due to validation, (stora_u0 is pt).
-  e. Return (I32.CONST $ext($psize(pt), 32, sx, i)).
+  c. Let (PACK packtype i) be field_u2.
+  d. Assert: Due to validation, (stora_u0 is packtype).
+  e. Return (I32.CONST $ext($psize(packtype), 32, sx, i)).
 
 funcsxv exter_u0*
 1. If (exter_u0* is []), then:
@@ -5636,19 +5638,19 @@ in_numtype nt numty_u0*
 3. Let [nt_1] ++ nt'* be numty_u0*.
 4. Return ((nt is nt_1) or $in_numtype(nt, nt'*)).
 
-blocktype block_u1
-1. If (block_u1 is (_RESULT ?())), then:
-  a. Return ([] -> []).
-2. If block_u1 is of the case _RESULT, then:
-  a. Let (_RESULT y_0) be block_u1.
+blocktype_ block_u0
+1. If block_u0 is of the case _IDX, then:
+  a. Let (_IDX x) be block_u0.
+  b. Assert: Due to validation, $expanddt($type(x)) is of the case FUNC.
+  c. Let (FUNC ft) be $expanddt($type(x)).
+  d. Return ft.
+2. If block_u0 is of the case _RESULT, then:
+  a. Let (_RESULT y_0) be block_u0.
   b. If y_0 is defined, then:
     1) Let ?(t) be y_0.
     2) Return ([] -> [t]).
-3. Assert: Due to validation, block_u1 is of the case _IDX.
-4. Let (_IDX x) be block_u1.
-5. Assert: Due to validation, $expanddt($type(x)) is of the case FUNC.
-6. Let (FUNC ft) be $expanddt($type(x)).
-7. Return ft.
+3. Assert: Due to validation, (block_u0 is (_RESULT ?())).
+4. Return ([] -> []).
 
 alloctypes type_u0*
 1. If (type_u0* is []), then:
@@ -5916,13 +5918,13 @@ execution_of_BR l
 3. Let n be the arity of L.
 4. Let instr'* be the continuation of L.
 5. Pop the current label from the stack.
-6. Let admin_u0* be val*.
-7. If ((l is 0) and (|admin_u0*| ≥ n)), then:
-  a. Let val'* ++ val^n be admin_u0*.
+6. Let instr_u0* be val*.
+7. If ((l is 0) and (|instr_u0*| ≥ n)), then:
+  a. Let val'* ++ val^n be instr_u0*.
   b. Push the values val^n to the stack.
   c. Execute the sequence (instr'*).
 8. If (l > 0), then:
-  a. Let val* be admin_u0*.
+  a. Let val* be instr_u0*.
   b. Push the values val* to the stack.
   c. Execute the instruction (BR (l - 1)).
 
@@ -6071,11 +6073,11 @@ execution_of_REF.EQ
 
 execution_of_I31.GET sx
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value admin_u0 from the stack.
-3. If admin_u0 is of the case REF.NULL, then:
+2. Pop the value instr_u0 from the stack.
+3. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
-4. If admin_u0 is of the case REF.I31_NUM, then:
-  a. Let (REF.I31_NUM i) be admin_u0.
+4. If instr_u0 is of the case REF.I31_NUM, then:
+  a. Let (REF.I31_NUM i) be instr_u0.
   b. Push the value (I32.CONST $ext(31, 32, sx, i)) to the stack.
 
 execution_of_ARRAY.NEW x
@@ -6088,20 +6090,20 @@ execution_of_ARRAY.NEW x
 
 execution_of_EXTERN.CONVERT_ANY
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value admin_u0 from the stack.
-3. If admin_u0 is of the case REF.NULL, then:
+2. Pop the value instr_u0 from the stack.
+3. If instr_u0 is of the case REF.NULL, then:
   a. Push the value (REF.NULL EXTERN) to the stack.
-4. If the type of admin_u0 is addrref, then:
-  a. Let addrref be admin_u0.
+4. If the type of instr_u0 is addrref, then:
+  a. Let addrref be instr_u0.
   b. Push the value (REF.EXTERN addrref) to the stack.
 
 execution_of_ANY.CONVERT_EXTERN
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value admin_u0 from the stack.
-3. If admin_u0 is of the case REF.NULL, then:
+2. Pop the value instr_u0 from the stack.
+3. If instr_u0 is of the case REF.NULL, then:
   a. Push the value (REF.NULL ANY) to the stack.
-4. If admin_u0 is of the case REF.EXTERN, then:
-  a. Let (REF.EXTERN addrref) be admin_u0.
+4. If instr_u0 is of the case REF.EXTERN, then:
+  a. Let (REF.EXTERN addrref) be instr_u0.
   b. Push the value addrref to the stack.
 
 execution_of_VVUNOP V128 vvunop
@@ -6297,7 +6299,7 @@ execution_of_LOCAL.TEE x
 
 execution_of_BLOCK bt instr*
 1. Let z be the current state.
-2. Let (t_1^m -> t_2^n) be $blocktype(z, bt).
+2. Let (t_1^m -> t_2^n) be $blocktype_(z, bt).
 3. Assert: Due to validation, there are at least m values on the top of the stack.
 4. Pop the values val^m from the stack.
 5. Let L be the label_n{[]}.
@@ -6305,7 +6307,7 @@ execution_of_BLOCK bt instr*
 
 execution_of_LOOP bt instr*
 1. Let z be the current state.
-2. Let (t_1^m -> t_2^n) be $blocktype(z, bt).
+2. Let (t_1^m -> t_2^n) be $blocktype_(z, bt).
 3. Assert: Due to validation, there are at least m values on the top of the stack.
 4. Pop the values val^m from the stack.
 5. Let L be the label_m{[(LOOP bt instr*)]}.
@@ -6344,11 +6346,11 @@ execution_of_CALL x
 execution_of_CALL_REF yy
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value admin_u0 from the stack.
-4. If admin_u0 is of the case REF.NULL, then:
+3. Pop the value instr_u0 from the stack.
+4. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
-5. If admin_u0 is of the case REF.FUNC_ADDR, then:
-  a. Let (REF.FUNC_ADDR a) be admin_u0.
+5. If instr_u0 is of the case REF.FUNC_ADDR, then:
+  a. Let (REF.FUNC_ADDR a) be instr_u0.
   b. If (a < |$funcinst(z)|), then:
     1) Let fi be $funcinst(z)[a].
     2) Assert: Due to validation, fi.CODE is of the case FUNC.
@@ -6382,19 +6384,19 @@ execution_of_RETURN_CALL_REF yy
   c. Execute the instruction (RETURN_CALL_REF yy).
 4. Else if a frame is now on the top of the stack, then:
   a. Pop the current frame from the stack.
-  b. Let admin_u1* ++ admin_u0 be val*.
-  c. If admin_u0 is of the case REF.FUNC_ADDR, then:
-    1) Let (REF.FUNC_ADDR a) be admin_u0.
+  b. Let instr_u1* ++ instr_u0 be val*.
+  c. If instr_u0 is of the case REF.FUNC_ADDR, then:
+    1) Let (REF.FUNC_ADDR a) be instr_u0.
     2) If (a < |$funcinst(z)|), then:
       a) Assert: Due to validation, $expanddt($funcinst(z)[a].TYPE) is of the case FUNC.
       b) Let (FUNC y_0) be $expanddt($funcinst(z)[a].TYPE).
       c) Let (t_1^n -> t_2^m) be y_0.
-      d) If (|admin_u1*| ≥ n), then:
-        1. Let val'* ++ val^n be admin_u1*.
+      d) If (|instr_u1*| ≥ n), then:
+        1. Let val'* ++ val^n be instr_u1*.
         2. Push the values val^n to the stack.
         3. Push the value (REF.FUNC_ADDR a) to the stack.
         4. Execute the instruction (CALL_REF yy).
-  d. If admin_u0 is of the case REF.NULL, then:
+  d. If instr_u0 is of the case REF.NULL, then:
     1) Trap.
 
 execution_of_REF.NULL $idx(x)
@@ -6440,14 +6442,14 @@ execution_of_STRUCT.NEW_DEFAULT x
 execution_of_STRUCT.GET sx? x i
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value admin_u0 from the stack.
-4. If admin_u0 is of the case REF.NULL, then:
+3. Pop the value instr_u0 from the stack.
+4. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
 5. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
 6. Let (STRUCT y_0) be $expanddt($type(z, x)).
 7. Let (mut, zt)* be y_0.
-8. If admin_u0 is of the case REF.STRUCT_ADDR, then:
-  a. Let (REF.STRUCT_ADDR a) be admin_u0.
+8. If instr_u0 is of the case REF.STRUCT_ADDR, then:
+  a. Let (REF.STRUCT_ADDR a) be instr_u0.
   b. If ((i < |$structinst(z)[a].FIELDS|) and ((a < |$structinst(z)|) and ((|mut*| is |zt*|) and (i < |zt*|)))), then:
     1) Push the value $unpackfield(zt*[i], sx?, $structinst(z)[a].FIELDS[i]) to the stack.
 
@@ -6495,29 +6497,29 @@ execution_of_ARRAY.GET sx? x
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
 4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value admin_u0 from the stack.
-6. If admin_u0 is of the case REF.NULL, then:
+5. Pop the value instr_u0 from the stack.
+6. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
-7. If admin_u0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be admin_u0.
+7. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be instr_u0.
   b. If ((a < |$arrayinst(z)|) and (i ≥ |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
 8. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
 9. Let (ARRAY y_0) be $expanddt($type(z, x)).
 10. Let (mut, zt) be y_0.
-11. If admin_u0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be admin_u0.
+11. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be instr_u0.
   b. If ((i < |$arrayinst(z)[a].FIELDS|) and (a < |$arrayinst(z)|)), then:
     1) Push the value $unpackfield(zt, sx?, $arrayinst(z)[a].FIELDS[i]) to the stack.
 
 execution_of_ARRAY.LEN
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value admin_u0 from the stack.
-4. If admin_u0 is of the case REF.NULL, then:
+3. Pop the value instr_u0 from the stack.
+4. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
-5. If admin_u0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be admin_u0.
+5. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be instr_u0.
   b. If (a < |$arrayinst(z)|), then:
     1) Push the value (I32.CONST |$arrayinst(z)[a].FIELDS|) to the stack.
 
@@ -6530,17 +6532,17 @@ execution_of_ARRAY.FILL x
 6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST i) from the stack.
 8. Assert: Due to validation, a value is on the top of the stack.
-9. Pop the value admin_u0 from the stack.
-10. If admin_u0 is of the case REF.NULL, then:
+9. Pop the value instr_u0 from the stack.
+10. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
-11. If admin_u0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be admin_u0.
+11. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be instr_u0.
   b. If ((a < |$arrayinst(z)|) and ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
   c. If (n is 0), then:
     1) Do nothing.
   d. Else:
-    1) Let (REF.ARRAY_ADDR a) be admin_u0.
+    1) Let (REF.ARRAY_ADDR a) be instr_u0.
     2) Push the value (REF.ARRAY_ADDR a) to the stack.
     3) Push the value (I32.CONST i) to the stack.
     4) Push the value val to the stack.
@@ -6558,33 +6560,33 @@ execution_of_ARRAY.COPY x_1 x_2
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i_2) from the stack.
 6. Assert: Due to validation, a value is on the top of the stack.
-7. Pop the value admin_u1 from the stack.
+7. Pop the value instr_u1 from the stack.
 8. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 9. Pop the value (I32.CONST i_1) from the stack.
 10. Assert: Due to validation, a value is on the top of the stack.
-11. Pop the value admin_u0 from the stack.
-12. If (admin_u0 is of the case REF.NULL and the type of admin_u1 is ref), then:
+11. Pop the value instr_u0 from the stack.
+12. If (instr_u0 is of the case REF.NULL and the type of instr_u1 is ref), then:
   a. Trap.
-13. If (admin_u1 is of the case REF.NULL and the type of admin_u0 is ref), then:
+13. If (instr_u1 is of the case REF.NULL and the type of instr_u0 is ref), then:
   a. Trap.
-14. If admin_u0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a_1) be admin_u0.
-  b. If admin_u1 is of the case REF.ARRAY_ADDR, then:
+14. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a_1) be instr_u0.
+  b. If instr_u1 is of the case REF.ARRAY_ADDR, then:
     1) If ((a_1 < |$arrayinst(z)|) and ((i_1 + n) > |$arrayinst(z)[a_1].FIELDS|)), then:
       a) Trap.
-    2) Let (REF.ARRAY_ADDR a_2) be admin_u1.
+    2) Let (REF.ARRAY_ADDR a_2) be instr_u1.
     3) If ((a_2 < |$arrayinst(z)|) and ((i_2 + n) > |$arrayinst(z)[a_2].FIELDS|)), then:
       a) Trap.
   c. If (n is 0), then:
-    1) If admin_u1 is of the case REF.ARRAY_ADDR, then:
+    1) If instr_u1 is of the case REF.ARRAY_ADDR, then:
       a) Do nothing.
   d. Else if (i_1 > i_2), then:
     1) Assert: Due to validation, $expanddt($type(z, x_2)) is of the case ARRAY.
     2) Let (ARRAY y_0) be $expanddt($type(z, x_2)).
     3) Let (mut, zt_2) be y_0.
-    4) Let (REF.ARRAY_ADDR a_1) be admin_u0.
-    5) If admin_u1 is of the case REF.ARRAY_ADDR, then:
-      a) Let (REF.ARRAY_ADDR a_2) be admin_u1.
+    4) Let (REF.ARRAY_ADDR a_1) be instr_u0.
+    5) If instr_u1 is of the case REF.ARRAY_ADDR, then:
+      a) Let (REF.ARRAY_ADDR a_2) be instr_u1.
       b) Let sx? be $sx(zt_2).
       c) Push the value (REF.ARRAY_ADDR a_1) to the stack.
       d) Push the value (I32.CONST ((i_1 + n) - 1)) to the stack.
@@ -6602,9 +6604,9 @@ execution_of_ARRAY.COPY x_1 x_2
     1) Assert: Due to validation, $expanddt($type(z, x_2)) is of the case ARRAY.
     2) Let (ARRAY y_0) be $expanddt($type(z, x_2)).
     3) Let (mut, zt_2) be y_0.
-    4) Let (REF.ARRAY_ADDR a_1) be admin_u0.
-    5) If admin_u1 is of the case REF.ARRAY_ADDR, then:
-      a) Let (REF.ARRAY_ADDR a_2) be admin_u1.
+    4) Let (REF.ARRAY_ADDR a_1) be instr_u0.
+    5) If instr_u1 is of the case REF.ARRAY_ADDR, then:
+      a) Let (REF.ARRAY_ADDR a_2) be instr_u1.
       b) Let sx? be $sx(zt_2).
       c) Push the value (REF.ARRAY_ADDR a_1) to the stack.
       d) Push the value (I32.CONST i_1) to the stack.
@@ -6628,20 +6630,20 @@ execution_of_ARRAY.INIT_ELEM x y
 6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST i) from the stack.
 8. Assert: Due to validation, a value is on the top of the stack.
-9. Pop the value admin_u0 from the stack.
-10. If admin_u0 is of the case REF.NULL, then:
+9. Pop the value instr_u0 from the stack.
+10. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
-11. If admin_u0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be admin_u0.
+11. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be instr_u0.
   b. If ((a < |$arrayinst(z)|) and ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
 12. If ((j + n) > |$elem(z, y).REFS|), then:
-  a. If admin_u0 is of the case REF.ARRAY_ADDR, then:
+  a. If instr_u0 is of the case REF.ARRAY_ADDR, then:
     1) Trap.
   b. If ((n is 0) and (j < |$elem(z, y).REFS|)), then:
     1) Let ref be $elem(z, y).REFS[j].
-    2) If admin_u0 is of the case REF.ARRAY_ADDR, then:
-      a) Let (REF.ARRAY_ADDR a) be admin_u0.
+    2) If instr_u0 is of the case REF.ARRAY_ADDR, then:
+      a) Let (REF.ARRAY_ADDR a) be instr_u0.
       b) Push the value (REF.ARRAY_ADDR a) to the stack.
       c) Push the value (I32.CONST i) to the stack.
       d) Push the value ref to the stack.
@@ -6652,13 +6654,13 @@ execution_of_ARRAY.INIT_ELEM x y
       i) Push the value (I32.CONST (n - 1)) to the stack.
       j) Execute the instruction (ARRAY.INIT_ELEM x y).
 13. Else if (n is 0), then:
-  a. If admin_u0 is of the case REF.ARRAY_ADDR, then:
+  a. If instr_u0 is of the case REF.ARRAY_ADDR, then:
     1) Do nothing.
 14. Else:
   a. If (j < |$elem(z, y).REFS|), then:
     1) Let ref be $elem(z, y).REFS[j].
-    2) If admin_u0 is of the case REF.ARRAY_ADDR, then:
-      a) Let (REF.ARRAY_ADDR a) be admin_u0.
+    2) If instr_u0 is of the case REF.ARRAY_ADDR, then:
+      a) Let (REF.ARRAY_ADDR a) be instr_u0.
       b) Push the value (REF.ARRAY_ADDR a) to the stack.
       c) Push the value (I32.CONST i) to the stack.
       d) Push the value ref to the stack.
@@ -6678,20 +6680,20 @@ execution_of_ARRAY.INIT_DATA x y
 6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 7. Pop the value (I32.CONST i) from the stack.
 8. Assert: Due to validation, a value is on the top of the stack.
-9. Pop the value admin_u0 from the stack.
-10. If admin_u0 is of the case REF.NULL, then:
+9. Pop the value instr_u0 from the stack.
+10. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
-11. If admin_u0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be admin_u0.
+11. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be instr_u0.
   b. If ((a < |$arrayinst(z)|) and ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
 12. If $expanddt($type(z, x)) is not of the case ARRAY, then:
-  a. If ((n is 0) and admin_u0 is of the case REF.ARRAY_ADDR), then:
+  a. If ((n is 0) and instr_u0 is of the case REF.ARRAY_ADDR), then:
     1) Do nothing.
 13. Else:
   a. Let (ARRAY y_0) be $expanddt($type(z, x)).
   b. Let (mut, zt) be y_0.
-  c. If admin_u0 is of the case REF.ARRAY_ADDR, then:
+  c. If instr_u0 is of the case REF.ARRAY_ADDR, then:
     1) If ((j + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
       a) Trap.
     2) If (n is 0), then:
@@ -6699,7 +6701,7 @@ execution_of_ARRAY.INIT_DATA x y
     3) Else:
       a) Let (ARRAY y_0) be $expanddt($type(z, x)).
       b) Let (mut, zt) be y_0.
-      c) Let (REF.ARRAY_ADDR a) be admin_u0.
+      c) Let (REF.ARRAY_ADDR a) be instr_u0.
       d) Let c be $inverse_of_zbytes(zt, $data(z, y).BYTES[j : ($zsize(zt) / 8)]).
       e) Push the value (REF.ARRAY_ADDR a) to the stack.
       f) Push the value (I32.CONST i) to the stack.
@@ -6971,14 +6973,14 @@ execution_of_MEMORY.INIT x y
 execution_of_CTXT
 1. Pop all values val* from the top of the stack.
 2. YetI: TODO: translate_context.
-3. If admin_u1 is of the case LABEL_, then:
-  a. Let (LABEL_ n instr_0* instr*) be admin_u1.
+3. If instr_u1 is of the case LABEL_, then:
+  a. Let (LABEL_ n instr_0* instr*) be instr_u1.
   b. YetI: TODO: translate_rulepr Step.
   c. Let L be the label_n{instr_0*}.
   d. Enter instr'* with label L.
 4. YetI: TODO: translate_rulepr Step.
-5. If admin_u1 is of the case FRAME_, then:
-  a. Let (FRAME_ n y_0 instr*) be admin_u1.
+5. If instr_u1 is of the case FRAME_, then:
+  a. Let (FRAME_ n y_0 instr*) be instr_u1.
   b. If (y_0 is f'), then:
     1) Execute the instruction (FRAME_ n f' instr'*).
 
@@ -6999,14 +7001,14 @@ execution_of_STRUCT.SET x i
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value val from the stack.
 4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value admin_u0 from the stack.
-6. If admin_u0 is of the case REF.NULL, then:
+5. Pop the value instr_u0 from the stack.
+6. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
 7. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
 8. Let (STRUCT y_0) be $expanddt($type(z, x)).
 9. Let (mut, zt)* be y_0.
-10. If admin_u0 is of the case REF.STRUCT_ADDR, then:
-  a. Let (REF.STRUCT_ADDR a) be admin_u0.
+10. If instr_u0 is of the case REF.STRUCT_ADDR, then:
+  a. Let (REF.STRUCT_ADDR a) be instr_u0.
   b. If ((|mut*| is |zt*|) and (i < |zt*|)), then:
     1) Perform $with_struct(z, a, i, $packfield(zt*[i], val)).
 
@@ -7029,18 +7031,18 @@ execution_of_ARRAY.SET x
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
 6. Assert: Due to validation, a value is on the top of the stack.
-7. Pop the value admin_u0 from the stack.
-8. If admin_u0 is of the case REF.NULL, then:
+7. Pop the value instr_u0 from the stack.
+8. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
-9. If admin_u0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be admin_u0.
+9. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be instr_u0.
   b. If ((a < |$arrayinst(z)|) and (i ≥ |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
 10. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
 11. Let (ARRAY y_0) be $expanddt($type(z, x)).
 12. Let (mut, zt) be y_0.
-13. If admin_u0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be admin_u0.
+13. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be instr_u0.
   b. Perform $with_array(z, a, i, $packfield(zt, val)).
 
 execution_of_LOCAL.SET x

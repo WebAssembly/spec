@@ -99,7 +99,8 @@ and a sequence of ${:CONST} instructions can be interpreted as an operand "stack
 
 :ref:`Labels <label>` and :ref:`frames <frame>` are similarly :ref:`defined <syntax-instr-admin>` to be part of an instruction sequence.
 
-The order of reduction is determined by the definition of an appropriate :ref:`evaluation context <syntax-ctxt-eval>`.
+The order of reduction is determined by the details of the reduction rules.
+Usually, the left-most instruction that is not a constant will be the subject of the next reduction *step*.
 
 Reduction *terminates* when no more reduction rules are applicable.
 :ref:`Soundness <soundness>` of the WebAssembly :ref:`type system <type-system>` guarantees that this is only the case when the original instruction sequence has either been reduced to a sequence of ${:CONST} instructions, which can be interpreted as the :ref:`values <syntax-val>` of the resulting operand stack,

@@ -289,7 +289,8 @@
 .. |globaltype| mathdef:: \xref{syntax/types}{syntax-globaltype}{\X{globaltype}}
 .. |tabletype| mathdef:: \xref{syntax/types}{syntax-tabletype}{\X{tabletype}}
 .. |memtype| mathdef:: \xref{syntax/types}{syntax-memtype}{\X{memtype}}
-.. |datatype| mathdef:: \xref{valid/modules}{syntax-datatype}{\X{datatype}}
+.. |elemtype| mathdef:: \xref{syntax/types}{syntax-elemtype}{\X{elemtype}}
+.. |datatype| mathdef:: \xref{syntax/types}{syntax-datatype}{\X{datatype}}
 .. |externtype| mathdef:: \xref{syntax/types}{syntax-externtype}{\X{externtype}}
 
 .. |limits| mathdef:: \xref{syntax/types}{syntax-limits}{\X{limits}}
@@ -1307,7 +1308,8 @@
 .. |FITYPE| mathdef:: \xref{exec/runtime}{syntax-funcinst}{\K{type}}
 .. |FIMODULE| mathdef:: \xref{exec/runtime}{syntax-funcinst}{\K{module}}
 .. |FICODE| mathdef:: \xref{exec/runtime}{syntax-funcinst}{\K{code}}
-.. |FIHOSTCODE| mathdef:: \xref{exec/runtime}{syntax-funcinst}{\K{hostcode}}
+.. |FIHOSTFUNC| mathdef:: \xref{exec/runtime}{syntax-funcinst}{\K{hostfunc}}
+.. |FIdots| mathdef:: \dots
 
 .. |TITYPE| mathdef:: \xref{exec/runtime}{syntax-tableinst}{\K{type}}
 .. |TIREFS| mathdef:: \xref{exec/runtime}{syntax-tableinst}{\K{elem}}
@@ -1384,10 +1386,12 @@
 
 .. |fieldval| mathdef:: \xref{exec/runtime}{syntax-fieldval}{\X{fieldval}}
 .. |packval| mathdef:: \xref{exec/runtime}{syntax-packval}{\X{packval}}
+.. |pack| mathdef:: \xref{exec/runtime}{syntax-pack}{\X{pack}}
 
 .. |externval| mathdef:: \xref{exec/runtime}{syntax-externval}{\X{externval}}
 
 .. |moduleinst| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\X{moduleinst}}
+.. |funccode| mathdef:: \xref{exec/runtime}{syntax-funcinst}{\X{code}}
 .. |funcinst| mathdef:: \xref{exec/runtime}{syntax-funcinst}{\X{funcinst}}
 .. |tableinst| mathdef:: \xref{exec/runtime}{syntax-tableinst}{\X{tableinst}}
 .. |meminst| mathdef:: \xref{exec/runtime}{syntax-meminst}{\X{meminst}}
@@ -1423,6 +1427,7 @@
 .. Store, non-terminals
 
 .. |store| mathdef:: \xref{exec/runtime}{syntax-store}{\X{store}}
+.. |state| mathdef:: \xref{exec/runtime}{syntax-state}{\X{state}}
 
 
 .. Stack, terminals
@@ -1438,12 +1443,12 @@
 
 .. |label| mathdef:: \xref{exec/runtime}{syntax-label}{\X{label}}
 .. |frame| mathdef:: \xref{exec/runtime}{syntax-frame}{\X{frame}}
-.. |framestate| mathdef:: \xref{exec/runtime}{syntax-framestate}{\X{framestate}}
+.. |callframe| mathdef:: \xref{exec/runtime}{syntax-callframe}{\X{callframe}}
 
 
 .. Stack, meta functions
 
-.. |fblocktype| mathdef:: \xref{exec/runtime}{aux-fblocktype}{\F{instrtype}}
+.. |fblocktype| mathdef:: \xref{exec/runtime}{aux-blocktype}{\F{instrtype}}
 
 
 .. Administrative Instructions, terminals
@@ -1455,8 +1460,10 @@
 .. |REFHOSTADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}host}}
 .. |REFEXTERN| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}extern}}
 .. |TRAP| mathdef:: \xref{exec/runtime}{syntax-trap}{\K{trap}}
-.. |INVOKE| mathdef:: \xref{exec/runtime}{syntax-invoke}{\K{invoke}}
-.. |RETURNINVOKE| mathdef:: \xref{exec/runtime}{syntax-return_invoke}{\K{return\_invoke}}
+
+.. TODO remove these
+.. |INVOKE| mathdef:: \xref{exec/instructions}{exec-invoke}{\K{invoke}}
+.. |RETURNINVOKE| mathdef:: \xref{exec/instructions}{exec-invoke}{\K{return\_invoke}}
 
 
 .. Values & Results, non-terminals
@@ -1481,11 +1488,6 @@
 
 .. |packfield| mathdef:: \xref{exec/runtime}{aux-packfield}{\F{pack}}
 .. |unpackfield| mathdef:: \xref{exec/runtime}{aux-unpackfield}{\F{unpack}}
-
-
-.. Administrative Instructions, non-terminals
-
-.. |XB| mathdef:: \xref{exec/runtime}{syntax-ctxt-block}{B}
 
 
 .. Configurations, non-terminals

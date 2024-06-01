@@ -53,7 +53,7 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 
 2. Let :math:`a` be the first free :ref:`function address <syntax-funcaddr>` in :math:`S`.
 
-3. Let :math:`\funcinst` be the :ref:`function instance <syntax-funcinst>` :math:`\{ \FITYPE~\deftype, \FIHOSTCODE~\hostfunc \}`.
+3. Let :math:`\funcinst` be the :ref:`function instance <syntax-funcinst>` :math:`\{ \FITYPE~\deftype, \FIHOSTFUNC~\hostfunc \}`.
 
 4. Append :math:`\funcinst` to the |SFUNCS| of :math:`S`.
 
@@ -65,7 +65,7 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
    \allochostfunc(S, \deftype, \hostfunc) &=& S', \funcaddr \\[1ex]
    \mbox{where:} \hfill \\
    \funcaddr &=& |S.\SFUNCS| \\
-   \funcinst &=& \{ \FITYPE~\deftype, \FIHOSTCODE~\hostfunc \} \\
+   \funcinst &=& \{ \FITYPE~\deftype, \FIHOSTFUNC~\hostfunc \} \\
    S' &=& S \compose \{\SFUNCS~\funcinst\} \\
    \end{array}
 

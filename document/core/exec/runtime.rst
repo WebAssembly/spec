@@ -20,6 +20,7 @@ Runtime Structure
 .. _syntax-ref.extern:
 .. _syntax-val:
 .. _syntax-null:
+.. _syntax-pack:
 
 Values
 ~~~~~~
@@ -28,7 +29,7 @@ WebAssembly computations manipulate *values* of either the four basic :ref:`numb
 
 In most places of the semantics, values of different types can occur.
 In order to avoid ambiguities, values are therefore represented with an abstract syntax that makes their type explicit.
-It is convenient to reuse the same notation as for the |CONST| :ref:`instructions <syntax-const>` and |REFNULL| producing them.
+It is convenient to reuse the same notation as for the ${:CONST} :ref:`instructions <syntax-const>` and ${:REF.NULL} producing them.
 
 References other than null are represented with additional :ref:`administrative instructions <syntax-instr-admin>`.
 They either are *scalar references*, containing a 31-bit :ref:`integer <syntax-int>`,
@@ -38,49 +39,24 @@ They either are *scalar references*, containing a 31-bit :ref:`integer <syntax-i
 or *host references* pointing to an uninterpreted form of :ref:`host address <syntax-hostaddr>` defined by the :ref:`embedder <embedder>`.
 Any of the aformentioned references can furthermore be wrapped up as an *external reference*.
 
-.. math::
-   \begin{array}{llcl}
-   \production{number} & \num &::=&
-     \I32.\CONST~\i32 \\&&|&
-     \I64.\CONST~\i64 \\&&|&
-     \F32.\CONST~\f32 \\&&|&
-     \F64.\CONST~\f64 \\
-   \production{vector} & \vec &::=&
-     \V128.\CONST~\i128 \\
-   \production{reference} & \reff &::=&
-     \REFNULL~(\absheaptype~|~\deftype) \\&&|&
-     \REFI31NUM~\u31 \\&&|&
-     \REFSTRUCTADDR~\structaddr \\&&|&
-     \REFARRAYADDR~\arrayaddr \\&&|&
-     \REFFUNCADDR~\funcaddr \\&&|&
-     \REFHOSTADDR~\hostaddr \\&&|&
-     \REFEXTERN~\reff \\
-   \production{value} & \val &::=&
-     \num ~|~ \vec ~|~ \reff \\
-   \end{array}
+$${syntax: val num vec ref addrref}
 
 .. note::
-   Future versions of WebAssembly may add additional forms of reference.
+   Future versions of WebAssembly may add additional forms of values.
 
 .. _default-val:
 
 :ref:`Value types <syntax-valtype>` can have an associated *default value*;
-it is the respective value :math:`0` for :ref:`number types <syntax-numtype>`, :math:`0` for :ref:`vector types <syntax-vectype>`, and null for nullable :ref:`reference types <syntax-reftype>`.
-For other references, no default value is defined, :math:`\default_t` hence is an optional value :math:`\val^?`.
+it is the respective value ${:0} for :ref:`number types <syntax-numtype>`, ${:0} for :ref:`vector types <syntax-vectype>`, and null for nullable :ref:`reference types <syntax-reftype>`.
+For other references, no default value is defined, ${:$default_(t)} hence is an optional value ${:val?}.
 
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   \default_t &=& t{.}\CONST~0 & (\iff t = \numtype) \\
-   \default_t &=& t{.}\CONST~0 & (\iff t = \vectype) \\
-   \default_t &=& \REFNULL~t & (\iff t = (\REF~\NULL~\heaptype)) \\
-   \default_t &=& \epsilon & (\iff t = (\REF~\heaptype)) \\
-   \end{array}
+$${definition: default_}
 
 
 Convention
 ..........
 
-* The meta variable :math:`r` ranges over reference values where clear from context.
+* The meta variable ${ref: r} ranges over reference values where clear from context.
 
 
 .. index:: ! result, value, trap
@@ -93,12 +69,7 @@ Results
 A *result* is the outcome of a computation.
 It is either a sequence of :ref:`values <syntax-val>` or a :ref:`trap <syntax-trap>`.
 
-.. math::
-   \begin{array}{llcl}
-   \production{result} & \result &::=&
-     \val^\ast \\&&|&
-     \TRAP
-   \end{array}
+$${syntax: result}
 
 
 .. index:: ! store, type instance, function instance, table instance, memory instance, global instance, module, allocation, structure instance, array instance
@@ -116,20 +87,7 @@ It is an invariant of the semantics that no element or data instance is :ref:`ad
 
 Syntactically, the store is defined as a :ref:`record <notation-record>` listing the existing instances of each category:
 
-.. math::
-   \begin{array}{llll}
-   \production{store} & \store &::=& \{~
-     \begin{array}[t]{l@{~}ll}
-     \SFUNCS & \funcinst^\ast, \\
-     \STABLES & \tableinst^\ast, \\
-     \SMEMS & \meminst^\ast, \\
-     \SGLOBALS & \globalinst^\ast, \\
-     \SELEMS & \eleminst^\ast, \\
-     \SDATAS & \datainst^\ast, \\
-     \SSTRUCTS & \structinst^\ast, \\
-     \SARRAYS & \arrayinst^\ast ~\}
-     \end{array}
-   \end{array}
+$${syntax: store}
 
 .. [#gc]
    In practice, implementations may apply techniques like garbage collection to remove objects from the store that are no longer referenced.
@@ -140,7 +98,7 @@ Syntactically, the store is defined as a :ref:`record <notation-record>` listing
 Convention
 ..........
 
-* The meta variable :math:`S` ranges over stores where clear from context.
+* The meta variable ${store: s} ranges over stores where clear from context.
 
 
 .. index:: ! address, store, function instance, table instance, memory instance, global instance, element instance, data instance, structure instance, array instance, embedder, host
@@ -180,29 +138,7 @@ Addresses
 These are simply indices into the respective store component.
 In addition, an :ref:`embedder <embedder>` may supply an uninterpreted set of *host addresses*.
 
-.. math::
-   \begin{array}{llll}
-   \production{address} & \addr &::=&
-     0 ~|~ 1 ~|~ 2 ~|~ \dots \\
-   \production{function address} & \funcaddr &::=&
-     \addr \\
-   \production{table address} & \tableaddr &::=&
-     \addr \\
-   \production{memory address} & \memaddr &::=&
-     \addr \\
-   \production{global address} & \globaladdr &::=&
-     \addr \\
-   \production{element address} & \elemaddr &::=&
-     \addr \\
-   \production{data address} & \dataaddr &::=&
-     \addr \\
-   \production{structure address} & \structaddr &::=&
-     \addr \\
-   \production{array address} & \arrayaddr &::=&
-     \addr \\
-   \production{host address} & \hostaddr &::=&
-     \addr \\
-   \end{array}
+$${syntax: {addr funcaddr tableaddr memaddr globaladdr elemaddr dataaddr structaddr arrayaddr hostaddr}}
 
 An :ref:`embedder <embedder>` may assign identity to :ref:`exported <syntax-export>` store objects corresponding to their addresses,
 even where this identity is not observable from within WebAssembly code itself
@@ -234,7 +170,7 @@ even where this identity is not observable from within WebAssembly code itself
 Conventions
 ...........
 
-* The notation :math:`\F{addr}(A)` denotes the set of addresses from address space :math:`\X{addr}` occurring free in :math:`A`. We sometimes reinterpret this set as the :ref:`list <syntax-list>` of its elements.
+* The notation ${:$addr(A)} denotes the set of addresses from address space ${:addr} occurring free in ${:A}. We sometimes reinterpret this set as the :ref:`list <syntax-list>` of its elements.
 
 
 
@@ -250,20 +186,7 @@ A *module instance* is the runtime representation of a :ref:`module <syntax-modu
 It is created by :ref:`instantiating <exec-instantiation>` a module,
 and collects runtime representations of all entities that are imported, defined, or exported by the module.
 
-.. math::
-   \begin{array}{llll}
-   \production{module instance} & \moduleinst &::=& \{
-     \begin{array}[t]{l@{~}ll}
-     \MITYPES & \deftype^\ast, \\
-     \MIFUNCS & \funcaddr^\ast, \\
-     \MITABLES & \tableaddr^\ast, \\
-     \MIMEMS & \memaddr^\ast, \\
-     \MIGLOBALS & \globaladdr^\ast, \\
-     \MIELEMS & \elemaddr^\ast, \\
-     \MIDATAS & \dataaddr^\ast, \\
-     \MIEXPORTS & \exportinst^\ast ~\} \\
-     \end{array}
-   \end{array}
+$${syntax: moduleinst}
 
 Each component references runtime instances corresponding to respective declarations from the original module -- whether imported or defined -- in the order of their static :ref:`indices <syntax-index>`.
 :ref:`Function instances <syntax-funcinst>`, :ref:`table instances <syntax-tableinst>`, :ref:`memory instances <syntax-meminst>`, and :ref:`global instances <syntax-globalinst>` are referenced with an indirection through their respective :ref:`addresses <syntax-addr>` in the :ref:`store <syntax-store>`.
@@ -284,13 +207,7 @@ A *function instance* is the runtime representation of a :ref:`function <syntax-
 It effectively is a *closure* of the original function over the runtime :ref:`module instance <syntax-moduleinst>` of its originating :ref:`module <syntax-module>`.
 The module instance is used to resolve references to other definitions during execution of the function.
 
-.. math::
-   \begin{array}{llll}
-   \production{function instance} & \funcinst &::=&
-     \{ \FITYPE~\deftype, \FIMODULE~\moduleinst, \FICODE~\func \} \\ &&|&
-     \{ \FITYPE~\deftype, \FIHOSTCODE~\hostfunc \} \\
-   \production{host function} & \hostfunc &::=& \dots \\
-   \end{array}
+$${syntax: {funcinst funccode}}
 
 A *host function* is a function expressed outside WebAssembly but passed to a :ref:`module <syntax-module>` as an :ref:`import <syntax-import>`.
 The definition and behavior of host functions are outside the scope of this specification.
@@ -314,16 +231,12 @@ Table Instances
 A *table instance* is the runtime representation of a :ref:`table <syntax-table>`.
 It records its :ref:`type <syntax-tabletype>` and holds a list of :ref:`reference values <syntax-ref>`.
 
-.. math::
-   \begin{array}{llll}
-   \production{table instance} & \tableinst &::=&
-     \{ \TITYPE~\tabletype, \TIREFS~\list(\reff) \} \\
-   \end{array}
+$${syntax: tableinst}
 
 Table elements can be mutated through :ref:`table instructions <syntax-instr-table>`, the execution of an active :ref:`element segment <syntax-elem>`, or by external means provided by the :ref:`embedder <embedder>`.
 
-It is an invariant of the semantics that all table elements have a type :ref:`matching <match-reftype>` the element type of :math:`\tabletype`.
-It also is an invariant that the length of the element list never exceeds the maximum size of :math:`\tabletype`, if present.
+It is an invariant of the semantics that all table elements have a type :ref:`matching <match-reftype>` the element type of ${:tabletype}.
+It also is an invariant that the length of the element list never exceeds the maximum size of ${:tabletype}, if present.
 
 
 .. index:: ! memory instance, memory, byte, ! page size, memory type, embedder, data segment, instruction
@@ -338,17 +251,13 @@ Memory Instances
 A *memory instance* is the runtime representation of a linear :ref:`memory <syntax-mem>`.
 It records its :ref:`type <syntax-memtype>` and holds a list of :ref:`bytes <syntax-byte>`.
 
-.. math::
-   \begin{array}{llll}
-   \production{memory instance} & \meminst &::=&
-     \{ \MITYPE~\memtype, \MIBYTES~\list(\byte) \} \\
-   \end{array}
+$${syntax: meminst}
 
-The length of the list always is a multiple of the WebAssembly *page size*, which is defined to be the constant :math:`65536` -- abbreviated :math:`64\,\F{Ki}`.
+The length of the list always is a multiple of the WebAssembly *page size*, which is defined to be the constant ${:65536} -- abbreviated ${:64*$Ki}.
 
 The bytes can be mutated through :ref:`memory instructions <syntax-instr-memory>`, the execution of an active :ref:`data segment <syntax-data>`, or by external means provided by the :ref:`embedder <embedder>`.
 
-It is an invariant of the semantics that the length of the byte list, divided by page size, never exceeds the maximum size of :math:`\memtype`, if present.
+It is an invariant of the semantics that the length of the byte list, divided by page size, never exceeds the maximum size of ${:memtype}.
 
 
 .. index:: ! global instance, global, value, mutability, instruction, embedder
@@ -362,15 +271,11 @@ Global Instances
 A *global instance* is the runtime representation of a :ref:`global <syntax-global>` variable.
 It records its :ref:`type <syntax-globaltype>` and holds an individual :ref:`value <syntax-val>`.
 
-.. math::
-   \begin{array}{llll}
-   \production{global instance} & \globalinst &::=&
-     \{ \GITYPE~\globaltype, \GIVALUE~\val \} \\
-   \end{array}
+$${syntax: globalinst}
 
 The value of mutable globals can be mutated through :ref:`variable instructions <syntax-instr-variable>` or by external means provided by the :ref:`embedder <embedder>`.
 
-It is an invariant of the semantics that the value has a type :ref:`matching <match-valtype>` the :ref:`value type <syntax-valtype>` of :math:`\globaltype`.
+It is an invariant of the semantics that the value has a type :ref:`matching <match-valtype>` the :ref:`value type <syntax-valtype>` of ${:globaltype}.
 
 
 .. index:: ! element instance, element segment, embedder, element expression
@@ -384,11 +289,7 @@ Element Instances
 An *element instance* is the runtime representation of an :ref:`element segment <syntax-elem>`.
 It holds a list of references and their common :ref:`type <syntax-reftype>`.
 
-.. math::
-  \begin{array}{llll}
-  \production{element instance} & \eleminst &::=&
-    \{ \EITYPE~\reftype, \EIREFS~\list(\reff) \} \\
-  \end{array}
+$${syntax: eleminst}
 
 
 .. index:: ! data instance, data segment, embedder, byte
@@ -402,11 +303,7 @@ Data Instances
 An *data instance* is the runtime representation of a :ref:`data segment <syntax-data>`.
 It holds a list of :ref:`bytes <syntax-byte>`.
 
-.. math::
-  \begin{array}{llll}
-  \production{data instance} & \datainst &::=&
-    \{ \DIBYTES~\list(\byte) \} \\
-  \end{array}
+$${syntax: datainst}
 
 
 .. index:: ! export instance, export, name, external value
@@ -420,11 +317,7 @@ Export Instances
 An *export instance* is the runtime representation of an :ref:`export <syntax-export>`.
 It defines the export's :ref:`name <syntax-name>` and the associated :ref:`external value <syntax-externval>`.
 
-.. math::
-   \begin{array}{llll}
-   \production{export instance} & \exportinst &::=&
-     \{ \EINAME~\name, \EIVALUE~\externval \} \\
-   \end{array}
+$${syntax: exportinst}
 
 
 .. index:: ! external value, function address, table address, memory address, global address, store, function, table, memory, global, instruction type
@@ -438,14 +331,7 @@ External Values
 An *external value* is the runtime representation of an entity that can be imported or exported.
 It is an :ref:`address <syntax-addr>` denoting either a :ref:`function instance <syntax-funcinst>`, :ref:`table instance <syntax-tableinst>`, :ref:`memory instance <syntax-meminst>`, or :ref:`global instances <syntax-globalinst>` in the shared :ref:`store <syntax-store>`.
 
-.. math::
-   \begin{array}{llcl}
-   \production{external value} & \externval &::=&
-     \EVFUNC~\funcaddr \\&&|&
-     \EVTABLE~\tableaddr \\&&|&
-     \EVMEM~\memaddr \\&&|&
-     \EVGLOBAL~\globaladdr \\
-   \end{array}
+$${syntax: externval}
 
 
 Conventions
@@ -454,13 +340,7 @@ Conventions
 The following auxiliary notation is defined for sequences of external values.
 It filters out entries of a specific kind in an order-preserving fashion:
 
-* :math:`\funcsxv(\externval^\ast) = [\funcaddr ~|~ (\EVFUNC~\funcaddr) \in \externval^\ast]`
-
-* :math:`\tablesxv(\externval^\ast) = [\tableaddr ~|~ (\EVTABLE~\tableaddr) \in \externval^\ast]`
-
-* :math:`\memsxv(\externval^\ast) = [\memaddr ~|~ (\EVMEM~\memaddr) \in \externval^\ast]`
-
-* :math:`\globalsxv(\externval^\ast) = [\globaladdr ~|~ (\EVGLOBAL~\globaladdr) \in \externval^\ast]`
+$${definition: funcsxv tablesxv memsxv globalsxv}
 
 
 .. index:: ! structure instance, ! array instance, structure type, array type, defined type, ! field value, ! packed value
@@ -483,17 +363,7 @@ A *structure instance* is the runtime representation of a heap object allocated 
 Likewise, an *array instance* is the runtime representation of a heap object allocated from an :ref:`array type <syntax-arraytype>`.
 Both record their respective :ref:`defined type <syntax-deftype>` and hold a list of the values of their *fields*.
 
-.. math::
-   \begin{array}{llcl}
-   \production{structure instance} & \structinst &::=&
-     \{ \SITYPE~\deftype, \SIFIELDS~\list(\fieldval) \} \\
-   \production{array instance} & \arrayinst &::=&
-     \{ \AITYPE~\deftype, \AIFIELDS~\list(\fieldval) \} \\
-   \production{field value} & \fieldval &::=&
-     \val ~|~ \packval \\
-   \production{packed value} & \packval &::=&
-     \I8PACK~\u8 ~|~ \I16PACK~\u16 \\
-   \end{array}
+$${syntax: {structinst arrayinst fieldval packval}}
 
 
 .. _aux-packfield:
@@ -504,26 +374,18 @@ Conventions
 
 * Conversion of a regular :ref:`value <syntax-val>` to a :ref:`field value <syntax-fieldval>` is defined as follows:
 
-  .. math::
-     \begin{array}{@{}lcl}
-     \packfield_{\valtype}(\val) &=& \val \\
-     \packfield_{\packtype}(\I32.\CONST~i) &=& \packtype.\PACK~(\wrap_{32,|\packtype|}(i))
-     \end{array}
+  $${definition: packfield}
 
 * The inverse conversion of a :ref:`field value <syntax-fieldval>` to a regular :ref:`value <syntax-val>` is defined as follows:
 
-  .. math::
-     \begin{array}{@{}lcl}
-     \unpackfield_{\valtype}(\val) &=& \val \\
-     \unpackfield^{\sx}_{\packtype}(\packtype.\PACK~i) &=& \I32.\CONST~(\ext^{\sx}_{|\packtype|,32}(i))
-     \end{array}
+  $${definition: unpackfield}
 
 
-.. index:: ! stack, ! frame, ! label, instruction, store, activation, function, call, local, module instance
+.. index:: ! stack, ! frame, ! label, instruction, store, activation, function, call, ! call frame, local, module instance
    pair: abstract syntax; frame
    pair: abstract syntax; label
 .. _syntax-frame:
-.. _syntax-framestate:
+.. _syntax-callframe:
 .. _syntax-label:
 .. _frame:
 .. _label:
@@ -539,7 +401,7 @@ The stack contains three kinds of entries:
 
 * *Labels*: active :ref:`structured control instructions <syntax-instr-control>` that can be targeted by branches.
 
-* *Activations*: the *call frames* of active :ref:`function <syntax-func>` calls.
+* *Frames*: the *call frames* of active :ref:`function <syntax-func>` calls.
 
 These entries can occur on the stack in any order during the execution of a program.
 Stack entries are described by abstract syntax as follows.
@@ -557,73 +419,54 @@ Values are represented by :ref:`themselves <syntax-val>`.
 Labels
 ......
 
-Labels carry an argument arity :math:`n` and their associated branch *target*, which is expressed syntactically as an :ref:`instruction <syntax-instr>` sequence:
+Labels carry an argument arity ${:n} and their associated branch *target*, which is expressed syntactically as an :ref:`instruction <syntax-instr>` sequence:
 
-.. math::
-   \begin{array}{llll}
-   \production{label} & \label &::=&
-     \LABEL_n\{\instr^\ast\} \\
-   \end{array}
+$${syntax: label}
 
-Intuitively, :math:`\instr^\ast` is the *continuation* to execute when the branch is taken, in place of the original control construct.
+Intuitively, ${:instr*} is the *continuation* to execute when the branch is taken, in place of the original control construct.
 
 .. note::
    For example, a loop label has the form
 
-   .. math::
-      \LABEL_n\{\LOOP~\dots~\END\}
+   $${label: LABEL_ n `{(LOOP bt $instrdots)}}
 
    When performing a branch to this label, this executes the loop, effectively restarting it from the beginning.
    Conversely, a simple block label has the form
 
-   .. math::
-      \LABEL_n\{\epsilon\}
+   $${label: LABEL_ n `{eps}}
 
    When branching, the empty continuation ends the targeted block, such that execution can proceed with consecutive instructions.
 
-Activation Frames
-.................
+Call Frames
+...........
 
-Activation frames carry the return arity :math:`n` of the respective function,
+Call frames carry the return arity ${:n} of the respective function,
 hold the values of its :ref:`locals <syntax-local>` (including arguments) in the order corresponding to their static :ref:`local indices <syntax-localidx>`,
 and a reference to the function's own :ref:`module instance <syntax-moduleinst>`:
 
-.. math::
-   \begin{array}{llll}
-   \production{frame} & \frame &::=&
-     \FRAME_n\{ \framestate \} \\
-   \production{frame state} & \framestate &::=&
-     \{ \ALOCALS~(\val^?)^\ast, \AMODULE~\moduleinst \} \\
-   \end{array}
+$${syntax: {callframe frame}}
 
 Locals may be uninitialized, in which case they are empty.
 Locals are mutated by respective :ref:`variable instructions <syntax-instr-variable>`.
 
 
-.. _aux-fblocktype:
+.. _aux-blocktype:
 
 Conventions
 ...........
 
-* The meta variable :math:`L` ranges over labels where clear from context.
+* The meta variable ${:L} ranges over labels where clear from context.
 
-* The meta variable :math:`F` ranges over frame states where clear from context.
+* The meta variable ${:f} ranges over frame states where clear from context.
 
 * The following auxiliary definition takes a :ref:`block type <syntax-blocktype>` and looks up the :ref:`instruction type <syntax-instrtype>` that it denotes in the current frame:
 
-.. math::
-   \begin{array}{llll}
-   \fblocktype_{S;F}(\typeidx) &=& \functype & (\iff \expanddt(F.\AMODULE.\MITYPES[\typeidx]) = \TFUNC~\functype) \\
-   \fblocktype_{S;F}([\valtype^?]) &=& [] \to [\valtype^?] \\
-   \end{array}
+  $${definition: blocktype_}
 
 
 .. index:: ! administrative instructions, function, function instance, function address, label, frame, instruction, trap, call, memory, memory instance, table, table instance, element, data, segment
    pair:: abstract syntax; administrative instruction
 .. _syntax-trap:
-.. _syntax-reffuncaddr:
-.. _syntax-invoke:
-.. _syntax-return_invoke:
 .. _syntax-instr-admin:
 
 Administrative Instructions
@@ -634,165 +477,61 @@ Administrative Instructions
 
 In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-call>`, and :ref:`control instructions <syntax-instr-control>`, the syntax of instructions is extended to include the following *administrative instructions*:
 
-.. math::
-   \begin{array}{llcl}
-   \production{administrative instruction} & \instr &::=&
-     \dots \\ &&|&
-     \TRAP \\ &&|&
-     \REFI31NUM~\u31 \\&&|&
-     \REFSTRUCTADDR~\structaddr \\&&|&
-     \REFARRAYADDR~\arrayaddr \\&&|&
-     \REFFUNCADDR~\funcaddr \\&&|&
-     \REFHOSTADDR~\hostaddr \\&&|&
-     \REFEXTERN~\reff \\&&|&
-     \INVOKE~\funcaddr \\ &&|&
-     \RETURNINVOKE~\funcaddr \\ &&|&
-     \LABEL_n\{\instr^\ast\}~\instr^\ast~\END \\ &&|&
-     \FRAME_n\{\framestate\}~\instr^\ast~\END \\
-   \end{array}
+$${syntax: {instr/admin}}
 
-The |TRAP| instruction represents the occurrence of a trap.
-Traps are bubbled up through nested instruction sequences, ultimately reducing the entire program to a single |TRAP| instruction, signalling abrupt termination.
+An :ref:`address reference <syntax-addrref>` represents an allocated :ref:`reference <syntax-ref>` value of respective form :ref:`"on the stack" <exec-notation>`.
 
-The |REFI31NUM| instruction represents :ref:`unboxed scalar <syntax-ref.i31>` reference values,
-|REFSTRUCTADDR| and |REFARRAYADDR| represent :ref:`structure <syntax-ref.struct>` and :ref:`array <syntax-ref.array>` reference values, respectively,
-and |REFFUNCADDR| instruction represents :ref:`function reference <syntax-ref.func>` values.
-Similarly, |REFHOSTADDR| represents :ref:`host references <syntax-ref.host>`
-and |REFEXTERN| represents any externalized reference.
+The ${:LABEL} and ${:FRAME} instructions model :ref:`labels <syntax-label>` and :ref:`frames <syntax-frame>` :ref:`"on the stack" <exec-notation>`.
+Moreover, the administrative syntax maintains the nesting structure of the original :ref:`structured control instruction <syntax-instr-control>` or :ref:`function body <syntax-func>` and their :ref:`instruction sequences <syntax-instrs>`.
 
-The |INVOKE| instruction represents the imminent invocation of a :ref:`function instance <syntax-funcinst>`, identified by its :ref:`address <syntax-funcaddr>`.
-It unifies the handling of different forms of calls.
-Analogously, |RETURNINVOKE| represents the imminent tail invocation of a function instance.
-
-The |LABEL| and |FRAME| instructions model :ref:`labels <syntax-label>` and :ref:`frames <syntax-frame>` :ref:`"on the stack" <exec-notation>`.
-Moreover, the administrative syntax maintains the nesting structure of the original :ref:`structured control instruction <syntax-instr-control>` or :ref:`function body <syntax-func>` and their :ref:`instruction sequences <syntax-instrs>` with an |END| marker.
-That way, the end of the inner instruction sequence is known when part of an outer sequence.
+The ${:TRAP} instruction represents the occurrence of a trap.
+Traps are bubbled up through nested instruction sequences, ultimately reducing the entire program to a single ${:TRAP} instruction, signalling abrupt termination.
 
 .. note::
-   For example, the :ref:`reduction rule <exec-block>` for |BLOCK| is:
+   For example, the :ref:`reduction rule <exec-block>` for ${:BLOCK} is:
 
-   .. math::
-      \BLOCK~[t^n]~\instr^\ast~\END \quad\stepto\quad
-      \LABEL_n\{\epsilon\}~\instr^\ast~\END
+   $${Step_pure: (BLOCK bt instr*) ~> (LABEL_ n `{eps} instr*)}
 
-   This replaces the block with a label instruction,
+   if the :ref:`block type <syntax-blocktype>` ${:bt} denotes a :ref:`function type <syntax-functype>` ${functype: t_1^m -> t_2^n},
+   such that ${:n} is the block's result arity.
+   This rule replaces the block with a label instruction,
    which can be interpreted as "pushing" the label on the stack.
-   When |END| is reached, i.e., the inner instruction sequence has been reduced to the empty sequence -- or rather, a sequence of :math:`n` |CONST| instructions representing the resulting values -- then the |LABEL| instruction is eliminated courtesy of its own :ref:`reduction rule <exec-label>`:
+   When its end is reached, i.e., the inner instruction sequence has been reduced to the empty sequence -- or rather, a sequence of ${:n} :ref:`values <syntax-val>` representing the results -- then the ${:LABEL} instruction is eliminated courtesy of its own :ref:`reduction rule <exec-label>`:
 
-   .. math::
-      \LABEL_m\{\instr^\ast\}~\val^n~\END \quad\stepto\quad \val^n
+   $${Step_pure: (LABEL_ n `{instr*} val*) ~> val*}
 
    This can be interpreted as removing the label from the stack and only leaving the locally accumulated operand values.
-
-.. commented out
-   Both rules can be seen in concert in the following example:
-
-   .. math::
-      \begin{array}{@{}ll}
-      & (\F32.\CONST~1)~\BLOCK~[]~(\F32.\CONST~2)~\F32.\NEG~\END~\F32.\ADD \\
-      \stepto & (\F32.\CONST~1)~\LABEL_0\{\}~(\F32.\CONST~2)~\F32.\NEG~\END~\F32.\ADD \\
-      \stepto & (\F32.\CONST~1)~\LABEL_0\{\}~(\F32.\CONST~{-}2)~\END~\F32.\ADD \\
-      \stepto & (\F32.\CONST~1)~(\F32.\CONST~{-}2)~\F32.\ADD \\
-      \stepto & (\F32.\CONST~{-}1) \\
-      \end{array}
+   Validation guarantees that ${:n} matches the number ${:|val*|} of resulting values at this point.
 
 
-.. index:: ! block context, instruction, branch
-.. _syntax-ctxt-block:
-
-Block Contexts
-..............
-
-In order to specify the reduction of :ref:`branches <syntax-instr-control>`, the following syntax of *block contexts* is defined, indexed by the count :math:`k` of labels surrounding a *hole* :math:`[\_]` that marks the place where the next step of computation is taking place:
-
-.. math::
-   \begin{array}{llll}
-   \production{block contexts} & \XB^0 &::=&
-     \val^\ast~[\_]~\instr^\ast \\
-   \production{block contexts} & \XB^{k+1} &::=&
-     \val^\ast~\LABEL_n\{\instr^\ast\}~\XB^k~\END~\instr^\ast \\
-   \end{array}
-
-This definition allows to index active labels surrounding a :ref:`branch <syntax-br>` or :ref:`return <syntax-return>` instruction.
-
-.. note::
-   For example, the :ref:`reduction <exec-br>` of a simple branch can be defined as follows:
-
-   .. math::
-      \LABEL_0\{\instr^\ast\}~\XB^l[\BR~l]~\END \quad\stepto\quad \instr^\ast
-
-   Here, the hole :math:`[\_]` of the context is instantiated with a branch instruction.
-   When a branch occurs,
-   this rule replaces the targeted label and associated instruction sequence with the label's continuation.
-   The selected label is identified through the :ref:`label index <syntax-labelidx>` :math:`l`, which corresponds to the number of surrounding |LABEL| instructions that must be hopped over -- which is exactly the count encoded in the index of a block context.
-
-
-.. index:: ! configuration, ! thread, store, frame, instruction, module instruction
+.. index:: ! configuration, !state, ! thread, store, frame, instruction, module instruction
+.. _syntax-state:
 .. _syntax-thread:
 .. _syntax-config:
 
 Configurations
 ..............
 
-A *configuration* consists of the current :ref:`store <syntax-store>` and an executing *thread*.
+A *configuration* describes the current computation.
+It consists of the computations's *state* and the sequence of :ref:`instructions <syntax-instr>` left to execute.
+The state in turn consists of a global :ref:`store <syntax-store>` and a current :ref:`frame <syntax-frame>` referring to the :ref:`module instance <syntax-moduleinst>` in which the computation runs, i.e., where the current function originates from.
 
-A thread is a computation over :ref:`instructions <syntax-instr>`
-that operates relative to the state of a current :ref:`frame <syntax-framestate>` referring to the :ref:`module instance <syntax-moduleinst>` in which the computation runs, i.e., where the current function originates from.
+$${syntax: config state}
 
-.. math::
-   \begin{array}{llcl}
-   \production{configuration} & \config &::=&
-     \store; \thread \\
-   \production{thread} & \thread &::=&
-     \framestate; \instr^\ast \\
-   \end{array}
+.. old
+   A *configuration* consists of the current :ref:`store <syntax-store>` and an executing *thread*.
+
+   A thread is a computation over :ref:`instructions <syntax-instr>`
+   that operates relative to the state of a current :ref:`frame <syntax-frame>` referring to the :ref:`module instance <syntax-moduleinst>` in which the computation runs, i.e., where the current function originates from.
+
+   .. math::
+      \begin{array}{llcl}
+      \production{configuration} & \config &::=&
+        \store; \thread \\
+      \production{thread} & \thread &::=&
+        \frame; \instr^\ast \\
+      \end{array}
 
 .. note::
    The current version of WebAssembly is single-threaded,
    but configurations with multiple threads may be supported in the future.
-
-
-.. index:: ! evaluation context, instruction, trap, label, frame, value
-.. _syntax-ctxt-eval:
-
-Evaluation Contexts
-...................
-
-Finally, the following definition of *evaluation context* and associated structural rules enable reduction inside instruction sequences and administrative forms as well as the propagation of traps:
-
-.. math::
-   \begin{array}{llll}
-   \production{evaluation contexts} & E &::=&
-     [\_] ~|~
-     \val^\ast~E~\instr^\ast ~|~
-     \LABEL_n\{\instr^\ast\}~E~\END \\
-   \end{array}
-
-.. math::
-   \begin{array}{rcl}
-   S; F; E[\instr^\ast] &\stepto& S'; F'; E[{\instr'}^\ast] \\
-     && (\iff S; F; \instr^\ast \stepto S'; F'; {\instr'}^\ast) \\
-   S; F; \FRAME_n\{F'\}~\instr^\ast~\END &\stepto& S'; F; \FRAME_n\{F''\}~\instr'^\ast~\END \\
-     && (\iff S; F'; \instr^\ast \stepto S'; F''; {\instr'}^\ast) \\[1ex]
-   S; F; E[\TRAP] &\stepto& S; F; \TRAP
-     \qquad (\iff E \neq [\_]) \\
-   S; F; \FRAME_n\{F'\}~\TRAP~\END &\stepto& S; F; \TRAP \\
-   \end{array}
-
-Reduction terminates when a thread's instruction sequence has been reduced to a :ref:`result <syntax-result>`,
-that is, either a sequence of :ref:`values <syntax-val>` or to a |TRAP|.
-
-.. note::
-   The restriction on evaluation contexts rules out contexts like :math:`[\_]` and :math:`\epsilon~[\_]~\epsilon` for which :math:`E[\TRAP] = \TRAP`.
-
-   For an example of reduction under evaluation contexts, consider the following instruction sequence.
-
-   .. math::
-       (\F64.\CONST~x_1)~(\F64.\CONST~x_2)~\F64.\NEG~(\F64.\CONST~x_3)~\F64.\ADD~\F64.\MUL
-
-   This can be decomposed into :math:`E[(\F64.\CONST~x_2)~\F64.\NEG]` where
-
-   .. math::
-      E = (\F64.\CONST~x_1)~[\_]~(\F64.\CONST~x_3)~\F64.\ADD~\F64.\MUL
-
-   Moreover, this is the *only* possible choice of evaluation context where the contents of the hole matches the left-hand side of a reduction rule.

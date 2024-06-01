@@ -273,7 +273,8 @@ let env_hints_inherit env map tid tid' =
   List.iter (fun atom ->
     Option.iter (fun es ->
 (*
-Printf.printf "%s = %s => %s\n%!"
+if atom.it = Atom.Atom "REF.STRUCT_ADDR" && map == env.macro_atom then
+Printf.printf "[inherit] %s = %s => %s\n%!"
 (typed_id' atom tid.it) (typed_id' atom tid'.it) (String.concat " | " (List.map El.Print.string_of_exp es));
 *)
       map_append (typed_id' atom tid.it) es map
@@ -303,8 +304,10 @@ Printf.printf "\n[env inheritance]\n";
         env_hints_inherit env env.macro_atom tid id;
         env_hints_inherit env env.show_atom tid id
       | _ -> ()
-    ) ts;
-    (* Add default atom hints last *)
+    ) ts
+  ) inherits;
+  (* Add default atom hints last *)
+  List.iter (fun (tid, _ts) ->
     let e =
       match Map.find_opt tid.it !(env.macro_typ) with
       | Some ({it = SeqE (_::e::_); _}::_) -> e
@@ -313,6 +316,12 @@ Printf.printf "\n[env inheritance]\n";
     List.iter (fun atom ->
       let t_id = typed_id' atom tid.it in
       if not (Map.mem t_id !(env.macro_atom)) then
+(*
+if atom.it = Atom.Atom "REF.STRUCT_ADDR" then
+begin
+(Printf.printf "[default] %s => %s\n%!"
+t_id (El.Print.string_of_exp e);
+*)
         map_append t_id [e] env.macro_atom;
         (* TODO: do something for having macros on untyped splices *)
 (*      map_cons (typed_id' atom "") e env.macro_atom  (* for defaulting *) *)
@@ -718,7 +727,15 @@ let rec render_id_sub style show macro env first at = function
     | _ -> "_{" ^ render_id_sub `Var env.show_var (ref Map.empty) env false at ss ^ "}"
 
 and render_id style show macro env id =
-  render_id_sub style show macro env true id.at (String.split_on_char '_' id.it)
+  match id.it with
+  | "bool" -> "\\mathbb{B}"
+  | "nat" -> "\\mathbb{N}"
+  | "int" -> "\\mathbb{Z}"
+  | "rat" -> "\\mathbb{Q}"
+  | "real" -> "\\mathbb{R}"
+  | "text" -> "\\mathbb{T}"
+  | _ ->
+    render_id_sub style show macro env true id.at (String.split_on_char '_' id.it)
 
 let render_typid env id = render_id `Var env.show_typ env.macro_typ env id
 let render_varid env id = render_id `Var env.show_var env.macro_var env id

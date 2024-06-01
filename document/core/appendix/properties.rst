@@ -400,7 +400,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 .. index:: function type, function instance, host function
 .. _valid-hostfuncinst:
 
-:ref:`Host Function Instances <syntax-funcinst>` :math:`\{\FITYPE~\functype, \FIHOSTCODE~\X{hf}\}`
+:ref:`Host Function Instances <syntax-funcinst>` :math:`\{\FITYPE~\functype, \FIHOSTFUNC~\X{hf}\}`
 ..................................................................................................
 
 * The :ref:`function type <syntax-functype>` :math:`\functype` must be :ref:`valid <valid-functype>` under an empty :ref:`context <context>`.
@@ -441,7 +441,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
        R = (S_2; \result)
      \end{array}
    }{
-     S \vdashfuncinst \{\FITYPE~[t_1^\ast] \to [t_2^\ast], \FIHOSTCODE~\X{hf}\} : [t_1^\ast] \to [t_2^\ast]
+     S \vdashfuncinst \{\FITYPE~[t_1^\ast] \to [t_2^\ast], \FIHOSTFUNC~\X{hf}\} : [t_1^\ast] \to [t_2^\ast]
    }
 
 .. note::

@@ -18,13 +18,11 @@ def $inst_reftype(mm, rt) = $subst_all_reftype(rt, dt*)
 
 def $default_(valtype) : val?
 
-def $default_(I32) = (CONST I32 0)
-def $default_(I64) = (CONST I64 0)
-def $default_(F32) = (CONST F32 $fzero(32))
-def $default_(F64) = (CONST F64 $fzero(64))
-def $default_(V128) = (VCONST V128 0)
+def $default_(Inn) = (CONST Inn 0)
+def $default_(Fnn) = (CONST Fnn $fzero($size(Fnn)))
+def $default_(Vnn) = (VCONST Vnn 0)
 def $default_(REF NULL ht) = (REF.NULL ht)
-def $default_(REF eps ht) = eps
+def $default_(REF ht) = eps
 
 
 ;; Packed fields
@@ -32,11 +30,11 @@ def $default_(REF eps ht) = eps
 def $packfield(storagetype, val) : fieldval         hint(show $pack_(%,%)) hint(macro "packfield")
 def $unpackfield(storagetype, sx?, fieldval) : val  hint(show $unpack_(%)^(%)#((%))) hint(macro "unpackfield")
 
-def $packfield(t, val) = val
-def $packfield(pt, CONST I32 i) = PACK pt $wrap(32, $psize(pt), i)
+def $packfield(valtype, val) = val
+def $packfield(packtype, CONST I32 i) = PACK packtype $wrap(32, $psize(packtype), i)
 
-def $unpackfield(t, eps, val) = val
-def $unpackfield(pt, sx, PACK pt i) = CONST I32 $ext($psize(pt), 32, sx, i)
+def $unpackfield(valtype, eps, val) = val
+def $unpackfield(packtype, sx, PACK packtype i) = CONST I32 $ext($psize(packtype), 32, sx, i)
 
 
 ;; Projections

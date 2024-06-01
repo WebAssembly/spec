@@ -2,10 +2,10 @@
 ;; Configurations
 ;;
 
-relation Step: config ~> config                 hint(show "E") hint(macro "stepto")
-relation Step_pure: admininstr* ~> admininstr*  hint(show "E") hint(macro "stepto")
-relation Step_read: config ~> admininstr*       hint(show "E") hint(macro "stepto")
-relation Steps: config ~>* config               hint(show "E") hint(macro "steptostar")
+relation Step: config ~> config       hint(show "E") hint(macro "stepto")
+relation Step_pure: instr* ~> instr*  hint(show "E") hint(macro "stepto")
+relation Step_read: config ~> instr*  hint(show "E") hint(macro "stepto")
+relation Steps: config ~>* config     hint(show "E") hint(macro "steptostar")
 
 rule Step/pure:
   z; instr*  ~>  z; instr'*
@@ -16,12 +16,12 @@ rule Step/read:
   -- Step_read: z; instr* ~> instr'*
 
 rule Steps/refl:
-  z; admininstr* ~>* z; admininstr*
+  z; instr* ~>* z; instr*
 
 rule Steps/trans:
-  z; admininstr*  ~>*  z''; admininstr''*
-  -- Step: z; admininstr*  ~>  z'; admininstr'*
-  -- Steps: z'; admininstr'  ~>*  z''; admininstr''*
+  z; instr*  ~>*  z''; instr''*
+  -- Step: z; instr*  ~>  z'; instr'*
+  -- Steps: z'; instr'  ~>*  z''; instr''*
 
 
 ;; Expressions
@@ -60,18 +60,18 @@ rule Step_pure/select-false:
 
 ;; Block instructions
 
-def $blocktype(state, blocktype) : functype  hint(show $blocktype_(%,%))
-def $blocktype(z, _RESULT eps) = eps -> eps
-def $blocktype(z, _RESULT t) = eps -> t
-def $blocktype(z, _IDX x) = ft  -- Expand: $type(z, x) ~~ FUNC ft
+def $blocktype_(state, blocktype) : functype hint(macro "fblocktype")
+def $blocktype_(z, _IDX x) = ft  -- Expand: $type(z, x) ~~ FUNC ft
+def $blocktype_(z, _RESULT t) = eps -> t
+def $blocktype_(z, _RESULT eps) = eps -> eps  ;; TODO: merge into t? case
 
 rule Step_read/block:
   z; val^m (BLOCK bt instr*)  ~>  (LABEL_ n `{eps} val^m instr*)
-  -- if $blocktype(z, bt) = t_1^m -> t_2^n
+  -- if $blocktype_(z, bt) = t_1^m -> t_2^n
 
 rule Step_read/loop:
   z; val^m (LOOP bt instr*)  ~>  (LABEL_ m `{LOOP bt instr*} val^m instr*)
-  -- if $blocktype(z, bt) = t_1^m -> t_2^n
+  -- if $blocktype_(z, bt) = t_1^m -> t_2^n
 
 rule Step_pure/if-true:
   (CONST I32 c) (IF bt instr_1* ELSE instr_2*)  ~>  (BLOCK bt instr_1*)

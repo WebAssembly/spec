@@ -2685,7 +2685,7 @@ Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all d
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & S.\SFUNCS[a] = \{ \FITYPE~\deftype, \FIHOSTCODE~\X{hf} \} \\
+     (\iff & S.\SFUNCS[a] = \{ \FITYPE~\deftype, \FIHOSTFUNC~\X{hf} \} \\
      \wedge & \expanddt(\deftype) = \TFUNC~[t_1^n] \toF [t_2^m] \\
      \wedge & (S'; \result) \in \X{hf}(S; \val^n)) \\
      \end{array} \\
@@ -2694,7 +2694,7 @@ Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all d
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & S.\SFUNCS[a] = \{ \FITYPE~\deftype, \FIHOSTCODE~\X{hf} \} \\
+     (\iff & S.\SFUNCS[a] = \{ \FITYPE~\deftype, \FIHOSTFUNC~\X{hf} \} \\
      \wedge & \expanddt(\deftype) = \TFUNC~[t_1^n] \toF [t_2^m] \\
      \wedge & \bot \in \X{hf}(S; \val^n)) \\
      \end{array} \\

@@ -267,7 +267,7 @@ $${syntax: frame}
 Administrative Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-$${syntax: admininstr}
+$${syntax: instr/admin}
 
 .. _syntax-state:
 .. _syntax-config:

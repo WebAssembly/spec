@@ -672,11 +672,11 @@ $${rule: Step_pure/unreachable}
 
 .. _def-blocktype:
 
-$${definition-prose: blocktype}
+$${definition-prose: blocktype_}
 
 \
 
-$${definition: blocktype}
+$${definition: blocktype_}
 
 .. _exec-block:
 

@@ -2,7 +2,7 @@
 ;; Addresses
 ;;
 
-syntax addr hint(desc "address") = nat
+syntax addr hint(desc "address") = nat  ;; TODO: 0 | 1 | 2 | ...
 syntax funcaddr hint(desc "function address") = addr
 syntax globaladdr hint(desc "global address") = addr
 syntax tableaddr hint(desc "table address") = addr
@@ -69,38 +69,32 @@ var xv : externval
 
 ;; Instances
 
+syntax funccode hint(show code) hint(macro "funccode") =
+  func | HOSTFUNC `... hint(macro "FI%")
+
 syntax funcinst hint(desc "function instance") hint(macro "%" "FI%") =
-  { TYPE deftype,
-    MODULE moduleinst,
-    CODE func }
+  { TYPE deftype, MODULE moduleinst, CODE funccode }
 syntax globalinst hint(desc "global instance") hint(macro "%" "GI%") =
-  { TYPE globaltype,
-    VALUE val }
+  { TYPE globaltype, VALUE val }
 syntax tableinst hint(desc "table instance") hint(macro "%" "TI%") =
-  { TYPE tabletype,
-    REFS ref* }
+  { TYPE tabletype, REFS ref* }
 syntax meminst hint(desc "memory instance") hint(macro "%" "MI%") =
-  { TYPE memtype,
-    BYTES byte* }
+  { TYPE memtype, BYTES byte* }
 syntax eleminst hint(desc "element instance") hint(macro "%" "EI%") =
-  { TYPE elemtype,
-    REFS ref* }
+  { TYPE elemtype, REFS ref* }
 syntax datainst hint(desc "data instance") hint(macro "%" "DI%") =
   { BYTES byte* }
 syntax exportinst hint(desc "export instance") hint(macro "%" "EI%") =
-  { NAME name,
-    VALUE externval }
+  { NAME name, VALUE externval }
 
 syntax packval hint(desc "packed value") =
-  | PACK packtype pack_(packtype)    hint(show %.PACK %)
+  | PACK packtype iN($psizenn(packtype))    hint(show %.PACK %)
 syntax fieldval hint(desc "field value") =
   | val | packval
 syntax structinst hint(desc "structure instance") hint(macro "%" "SI%") =
-  { TYPE deftype,
-    FIELDS fieldval* }
+  { TYPE deftype, FIELDS fieldval* }
 syntax arrayinst hint(desc "array instance") hint(macro "%" "AI%") =
-  { TYPE deftype,
-    FIELDS fieldval* }
+  { TYPE deftype, FIELDS fieldval* }
 
 syntax moduleinst hint(desc "module instance") hint(macro "%" "MI%") =
   { TYPES deftype*,
@@ -140,11 +134,10 @@ syntax store hint(desc "store") hint(macro "%" "S%") =
     ARRAYS arrayinst* }
 
 syntax frame hint(desc "frame") hint(macro "%" "A%") =
-  { LOCALS (val?)*,
-    MODULE moduleinst }
+  { LOCALS (val?)*, MODULE moduleinst }
 
 syntax state hint(desc "state") = store; frame
-syntax config hint(desc "configuration") = state; admininstr*
+syntax config hint(desc "configuration") = state; instr*
 
 var s : store
 var f : frame
@@ -155,9 +148,9 @@ var z : state
 ;; Administrative Instructions
 ;;
 
-syntax admininstr hint(show instr) hint(desc "administrative instruction") =
-  | instr
+syntax instr/admin hint(desc "administrative instruction") =
+  | ...
   | addrref
-  | LABEL_ n `{instr*} admininstr* hint(show LABEL_%#% %%)
-  | FRAME_ n `{frame} admininstr*  hint(show FRAME_%#% %%)
+  | LABEL_ n `{instr*} instr*  hint(show LABEL_%#% %%)
+  | FRAME_ n `{frame} instr*   hint(show FRAME_%#% %%)
   | TRAP

@@ -246,7 +246,7 @@ syntax memtype hint(desc "memory type") =
   limits PAGE
 syntax elemtype hint(desc "element type") =
   reftype
-syntax datatype hint(desc "data type") hint(show OK) hint(macro "%data" "%data") =
+syntax datatype hint(desc "data type") hint(macro "%" "%data") =
   OK
 syntax externtype hint(desc "external type") hint(macro "%" "ET%") =
   | FUNC typeuse | GLOBAL globaltype | TABLE tabletype | MEM memtype
@@ -301,6 +301,9 @@ def $sizenn(nt) = $size(nt)
 def $sizenn1(nt) = $size(nt)
 def $sizenn2(nt) = $size(nt)
 
+def $psizenn(packtype) : nat   hint(show N)   hint(macro none)  ;; HACK!
+def $psizenn(pt) = $psize(pt)
+
 def $lsizenn(lanetype) : nat   hint(show N)   hint(macro none)  ;; HACK!
 def $lsizenn1(lanetype) : nat  hint(show N_1) hint(macro none)  ;; HACK!
 def $lsizenn2(lanetype) : nat  hint(show N_2) hint(macro none)  ;; HACK!
@@ -312,7 +315,7 @@ syntax num_(numtype)
 syntax num_(Inn) = iN($sizenn(Inn))
 syntax num_(Fnn) = fN($sizenn(Fnn))
 
-syntax pack_(Pnn) = iN($psize(Pnn))
+syntax pack_(Pnn) = iN($psizenn(Pnn))
 
 syntax lane_(lanetype)
 syntax lane_(numtype) = num_(numtype)
@@ -644,6 +647,7 @@ syntax instr/memory hint(desc "memory instruction") = ...
 
 syntax instr/data hint(desc "data instruction") = ...
   | DATA.DROP dataidx
+  | ...
 
 
 syntax expr hint(desc "expression") =

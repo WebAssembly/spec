@@ -367,6 +367,33 @@ Global Types
 $${syntax: globaltype}
 
 
+.. index:: ! element type, reference type, table, element
+   pair: abstract syntax; element type
+   pair: element; type
+.. _syntax-elemtype:
+
+Element Types
+~~~~~~~~~~~~~
+
+*Element types* classify :ref:`element segments <syntax-elem>` by a :ref:`reference type <syntax-reftype>` of its elements.
+
+$${syntax: elemtype}
+
+
+.. index:: ! data type, memory
+   pair: abstract syntax; data type
+   pair: data; type
+.. _syntax-datatype:
+
+Data Types
+~~~~~~~~~~
+
+*Data types* classify :ref:`data segments <syntax-elem>`.
+Since the contents of a data segment requires no further classification, they merely consist of a universal marker ${:OK} indicating well-formedness.
+
+$${syntax: datatype}
+
+
 .. index:: ! external type, defined type, function type, table type, memory type, global type, import, external value
    pair: abstract syntax; external type
    pair: external; type

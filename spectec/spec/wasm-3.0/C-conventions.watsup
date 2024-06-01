@@ -62,3 +62,13 @@ rule NotationReduct/3:
 
 rule NotationReduct/4:
   ~> (CONST F64 q_6)
+
+
+;; Frames and Labels
+
+def $instrdots : instr* hint(show `...)
+
+syntax label hint(desc "label") = LABEL_ n `{instr*}  hint(show LABEL_%#%)
+syntax callframe hint(desc "call frame") = FRAME_ n `{frame}   hint(show FRAME_%#%)
+
+var L : label

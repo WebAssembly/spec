@@ -16,15 +16,15 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& {\mathit{testfuse}} &::=& {\mathsf{ab}}_{{\mathit{nat}}}\,{\mathit{nat}}~{\mathit{nat}} \\ &&|&
-{\mathsf{cd}}_{{\mathit{nat}}}\,{\mathit{nat}}~{\mathit{nat}} \\ &&|&
-{\mathsf{ef}}{{\mathit{nat}}}~{\mathit{nat}}~{\mathit{nat}} \\ &&|&
-{{\mathsf{gh}}_{{\mathit{nat}}}}{{\mathit{nat}}}~{\mathit{nat}} \\ &&|&
-{{\mathsf{ij}}{\mathsf{\_}}~{\mathit{nat}}}{\mathsf{ab}}{{\mathit{nat}}}~{\mathit{nat}} \\ &&|&
-{\mathsf{kl\_ab}}{{\mathit{nat}}}~{\mathit{nat}}~{\mathit{nat}} \\ &&|&
-{\mathsf{mn}}{\mathsf{ab}}~{\mathit{nat}}~{\mathit{nat}}~{\mathit{nat}} \\ &&|&
-{\mathsf{op}}{\mathsf{ab}}{{\mathit{nat}}}~{\mathit{nat}}~{\mathit{nat}} \\ &&|&
-{{\mathsf{qr}}_{{\mathit{nat}}}}{\mathsf{ab}}~{\mathit{nat}}~{\mathit{nat}} \\
+& {\mathit{testfuse}} &::=& {\mathsf{ab}}_{\mathbb{N}}\,\mathbb{N}~\mathbb{N} \\ &&|&
+{\mathsf{cd}}_{\mathbb{N}}\,\mathbb{N}~\mathbb{N} \\ &&|&
+{\mathsf{ef}}{\mathbb{N}}~\mathbb{N}~\mathbb{N} \\ &&|&
+{{\mathsf{gh}}_{\mathbb{N}}}{\mathbb{N}}~\mathbb{N} \\ &&|&
+{{\mathsf{ij}}{\mathsf{\_}}~\mathbb{N}}{\mathsf{ab}}{\mathbb{N}}~\mathbb{N} \\ &&|&
+{\mathsf{kl\_ab}}{\mathbb{N}}~\mathbb{N}~\mathbb{N} \\ &&|&
+{\mathsf{mn}}{\mathsf{ab}}~\mathbb{N}~\mathbb{N}~\mathbb{N} \\ &&|&
+{\mathsf{op}}{\mathsf{ab}}{\mathbb{N}}~\mathbb{N}~\mathbb{N} \\ &&|&
+{{\mathsf{qr}}_{\mathbb{N}}}{\mathsf{ab}}~\mathbb{N}~\mathbb{N} \\
 \end{array}
 $$
 
@@ -220,18 +220,18 @@ $$
 \mathsf{bbbx} \\ &&|&
 \mathsf{bbby} \\ &&|&
 \mathsf{bbbz} \\ &&|&
-\mathsf{cc}~{\mathit{nat}}~\mathsf{cccc} \\ &&|&
-\mathsf{ccx}~{\mathit{nat}}~\mathsf{ccxx} \\ &&|&
-\mathsf{ccy}~{\mathit{nat}}~\mathsf{ccyy} \\ &&|&
-\mathsf{ccz}~{\mathit{nat}}~\mathsf{cczz} \\ &&|&
-\mathsf{ddd}~{\mathit{nat}}~{\mathit{child}}~{\mathrm{foo}}~{\mathrm{fuu}}~{\mathrm{fiz}} \\ &&|&
-\mathsf{dddx}~{\mathit{nat}}~{\mathit{child}} \\ &&|&
-\mathsf{dddy}~{\mathit{nat}}~{\mathit{child}} \\ &&|&
-\mathsf{dddz}~{\mathit{nat}}~{\mathit{child}} \\ &&|&
-{{\mathit{nat}}}{\mathsf{\_}}{\mathsf{ea}}{\mathsf{ee}}~z \\ &&|&
-{{\mathit{nat}}}{\mathsf{\_}}{\mathsf{eb}}{\mathsf{eex}}~z \\ &&|&
-{{\mathit{nat}}}{\mathsf{\_}}{\mathsf{ec}}{\mathsf{eey}}~z \\ &&|&
-{{\mathit{nat}}}{\mathsf{\_}}{\mathsf{ed}}{\mathsf{eez}}~z \\
+\mathsf{cc}~\mathbb{N}~\mathsf{cccc} \\ &&|&
+\mathsf{ccx}~\mathbb{N}~\mathsf{ccxx} \\ &&|&
+\mathsf{ccy}~\mathbb{N}~\mathsf{ccyy} \\ &&|&
+\mathsf{ccz}~\mathbb{N}~\mathsf{cczz} \\ &&|&
+\mathsf{ddd}~\mathbb{N}~{\mathit{child}}~{\mathrm{foo}}~{\mathrm{fuu}}~{\mathrm{fiz}} \\ &&|&
+\mathsf{dddx}~\mathbb{N}~{\mathit{child}} \\ &&|&
+\mathsf{dddy}~\mathbb{N}~{\mathit{child}} \\ &&|&
+\mathsf{dddz}~\mathbb{N}~{\mathit{child}} \\ &&|&
+{\mathbb{N}}{\mathsf{\_}}{\mathsf{ea}}{\mathsf{ee}}~z \\ &&|&
+{\mathbb{N}}{\mathsf{\_}}{\mathsf{eb}}{\mathsf{eex}}~z \\ &&|&
+{\mathbb{N}}{\mathsf{\_}}{\mathsf{ec}}{\mathsf{eey}}~z \\ &&|&
+{\mathbb{N}}{\mathsf{\_}}{\mathsf{ed}}{\mathsf{eez}}~z \\
 \end{array}
 $$
 
@@ -296,7 +296,7 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& {\mathit{indirect}} &::=& {\mathit{parentimplicit}}({\mathit{nat}}) \\
+& {\mathit{indirect}} &::=& {\mathit{parentimplicit}}(\mathbb{N}) \\
 \end{array}
 $$
 
@@ -429,14 +429,14 @@ $$
 $$
 \begin{array}{@{}lrrl@{}l@{}}
 & {\mathit{rec}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{fa}~{{\mathit{nat}}^\ast},\; \\
-  \mathsf{fb}~{{\mathit{nat}}^\ast},\; \\
-  \mathsf{fc}~{{\mathit{nat}}^\ast},\; \\
-  \mathsf{fd}~{{\mathit{nat}}^\ast},\; \\
-  \mathsf{fee}~{{\mathit{nat}}^\ast},\; \\
-  \mathsf{fff}~{{\mathit{nat}}^\ast},\; \\
-  \mathsf{fgg}~{{\mathit{nat}}^\ast},\; \\
-  \mathsf{fhh}~{{\mathit{nat}}^\ast} \}\end{array} \\
+\mathsf{fa}~{\mathbb{N}^\ast},\; \\
+  \mathsf{fb}~{\mathbb{N}^\ast},\; \\
+  \mathsf{fc}~{\mathbb{N}^\ast},\; \\
+  \mathsf{fd}~{\mathbb{N}^\ast},\; \\
+  \mathsf{fee}~{\mathbb{N}^\ast},\; \\
+  \mathsf{fff}~{\mathbb{N}^\ast},\; \\
+  \mathsf{fgg}~{\mathbb{N}^\ast},\; \\
+  \mathsf{fhh}~{\mathbb{N}^\ast} \}\end{array} \\
 \end{array}
 $$
 
@@ -482,14 +482,14 @@ $$
 $$
 \begin{array}{@{}lrrl@{}l@{}}
 & {\mathit{recimpl}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{fia}~{{\mathit{nat}}^\ast},\; \\
-  \mathsf{fib}~{{\mathit{nat}}^\ast},\; \\
-  \mathsf{fic}~{{\mathit{nat}}^\ast},\; \\
-  \mathsf{fid}~{{\mathit{nat}}^\ast},\; \\
-  \mathsf{fiee}~{{\mathit{nat}}^\ast},\; \\
-  \mathsf{fiff}~{{\mathit{nat}}^\ast},\; \\
-  \mathsf{figg}~{{\mathit{nat}}^\ast},\; \\
-  \mathsf{fihh}~{{\mathit{nat}}^\ast} \}\end{array} \\
+\mathsf{fia}~{\mathbb{N}^\ast},\; \\
+  \mathsf{fib}~{\mathbb{N}^\ast},\; \\
+  \mathsf{fic}~{\mathbb{N}^\ast},\; \\
+  \mathsf{fid}~{\mathbb{N}^\ast},\; \\
+  \mathsf{fiee}~{\mathbb{N}^\ast},\; \\
+  \mathsf{fiff}~{\mathbb{N}^\ast},\; \\
+  \mathsf{figg}~{\mathbb{N}^\ast},\; \\
+  \mathsf{fihh}~{\mathbb{N}^\ast} \}\end{array} \\
 \end{array}
 $$
 
@@ -510,14 +510,14 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& {\mathit{cona}} &::=& {\mathit{nat}}~\mathsf{coa}~{\mathit{nat}} \\
-& {\mathit{conb}} &::=& {\mathit{nat}}~\mathsf{cob}~{\mathit{nat}} \\
-& {\mathit{conc}} &::=& {\mathit{nat}}~\mathsf{coc}~{\mathit{nat}} \\
-& {\mathit{cond}} &::=& {\mathit{nat}}~\mathsf{cod}~{\mathit{nat}} \\
-& {\mathit{cone}} &::=& {\mathit{nat}}~\mathsf{coe}~{\mathit{nat}} \\
-& {\mathit{conf}} &::=& {\mathit{nat}}~\mathsf{cof}~{\mathit{nat}} \\
-& {\mathit{cong}} &::=& {\mathit{nat}}~\mathsf{cog}~{\mathit{nat}} \\
-& {\mathit{conh}} &::=& {\mathit{nat}}~\mathsf{coh}~{\mathit{nat}} \\
+& {\mathit{cona}} &::=& \mathbb{N}~\mathsf{coa}~\mathbb{N} \\
+& {\mathit{conb}} &::=& \mathbb{N}~\mathsf{cob}~\mathbb{N} \\
+& {\mathit{conc}} &::=& \mathbb{N}~\mathsf{coc}~\mathbb{N} \\
+& {\mathit{cond}} &::=& \mathbb{N}~\mathsf{cod}~\mathbb{N} \\
+& {\mathit{cone}} &::=& \mathbb{N}~\mathsf{coe}~\mathbb{N} \\
+& {\mathit{conf}} &::=& \mathbb{N}~\mathsf{cof}~\mathbb{N} \\
+& {\mathit{cong}} &::=& \mathbb{N}~\mathsf{cog}~\mathbb{N} \\
+& {\mathit{conh}} &::=& \mathbb{N}~\mathsf{coh}~\mathbb{N} \\
 \end{array}
 $$
 
@@ -645,15 +645,15 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& {\testfuse} &::=& {\AB}_{{\mathit{nat}}}\,{\mathit{nat}}~{\mathit{nat}} \\ &&|&
-{\CD}_{{\mathit{nat}}}\,{\mathit{nat}}~{\mathit{nat}} \\ &&|&
-{\EF}{{\mathit{nat}}}~{\mathit{nat}}~{\mathit{nat}} \\ &&|&
-{{\GH}_{{\mathit{nat}}}}{{\mathit{nat}}}~{\mathit{nat}} \\ &&|&
-{{\IJ}{\mathsf{\_}}~{\mathit{nat}}}{\AB}{{\mathit{nat}}}~{\mathit{nat}} \\ &&|&
-{\KLAB}{{\mathit{nat}}}~{\mathit{nat}}~{\mathit{nat}} \\ &&|&
-{\MN}{\AB}~{\mathit{nat}}~{\mathit{nat}}~{\mathit{nat}} \\ &&|&
-{\OP}{\AB}{{\mathit{nat}}}~{\mathit{nat}}~{\mathit{nat}} \\ &&|&
-{{\QR}_{{\mathit{nat}}}}{\AB}~{\mathit{nat}}~{\mathit{nat}} \\
+& {\testfuse} &::=& {\AB}_{\mathbb{N}}\,\mathbb{N}~\mathbb{N} \\ &&|&
+{\CD}_{\mathbb{N}}\,\mathbb{N}~\mathbb{N} \\ &&|&
+{\EF}{\mathbb{N}}~\mathbb{N}~\mathbb{N} \\ &&|&
+{{\GH}_{\mathbb{N}}}{\mathbb{N}}~\mathbb{N} \\ &&|&
+{{\IJ}{\mathsf{\_}}~\mathbb{N}}{\AB}{\mathbb{N}}~\mathbb{N} \\ &&|&
+{\KLAB}{\mathbb{N}}~\mathbb{N}~\mathbb{N} \\ &&|&
+{\MN}{\AB}~\mathbb{N}~\mathbb{N}~\mathbb{N} \\ &&|&
+{\OP}{\AB}{\mathbb{N}}~\mathbb{N}~\mathbb{N} \\ &&|&
+{{\QR}_{\mathbb{N}}}{\AB}~\mathbb{N}~\mathbb{N} \\
 \end{array}
 $$
 
@@ -849,18 +849,18 @@ $$
 \BBBX \\ &&|&
 \xBBBYyBBBYz \\ &&|&
 \mathsf{bbbz} \\ &&|&
-\CC~{\mathit{nat}}~\CCCC \\ &&|&
-\CCX~{\mathit{nat}}~\CCXX \\ &&|&
-\xCCYyCCYz~{\mathit{nat}}~\xCCYYyCCYYz \\ &&|&
-\mathsf{ccz}~{\mathit{nat}}~\mathsf{cczz} \\ &&|&
-\DDD~{\mathit{nat}}~{\child}~{\XfooYfooZ}~{\mathrm{fuu}}~{\fiz} \\ &&|&
-\DDDX~{\mathit{nat}}~{\child} \\ &&|&
-\xDDDYyDDDYz~{\mathit{nat}}~{\xchildychildz} \\ &&|&
-\mathsf{dddz}~{\mathit{nat}}~{\child} \\ &&|&
-{{\mathit{nat}}}{\mathsf{\_}}{\EA}{\EE}~{\z} \\ &&|&
-{{\mathit{nat}}}{\mathsf{\_}}{\EB}{\EEX}~{\z} \\ &&|&
-{{\mathit{nat}}}{\mathsf{\_}}{\xECyECz}{\xEEYyEEYz}~{\xzyzz} \\ &&|&
-{{\mathit{nat}}}{\mathsf{\_}}{\mathsf{ed}}{\mathsf{eez}}~z \\
+\CC~\mathbb{N}~\CCCC \\ &&|&
+\CCX~\mathbb{N}~\CCXX \\ &&|&
+\xCCYyCCYz~\mathbb{N}~\xCCYYyCCYYz \\ &&|&
+\mathsf{ccz}~\mathbb{N}~\mathsf{cczz} \\ &&|&
+\DDD~\mathbb{N}~{\child}~{\XfooYfooZ}~{\mathrm{fuu}}~{\fiz} \\ &&|&
+\DDDX~\mathbb{N}~{\child} \\ &&|&
+\xDDDYyDDDYz~\mathbb{N}~{\xchildychildz} \\ &&|&
+\mathsf{dddz}~\mathbb{N}~{\child} \\ &&|&
+{\mathbb{N}}{\mathsf{\_}}{\EA}{\EE}~{\z} \\ &&|&
+{\mathbb{N}}{\mathsf{\_}}{\EB}{\EEX}~{\z} \\ &&|&
+{\mathbb{N}}{\mathsf{\_}}{\xECyECz}{\xEEYyEEYz}~{\xzyzz} \\ &&|&
+{\mathbb{N}}{\mathsf{\_}}{\mathsf{ed}}{\mathsf{eez}}~z \\
 \end{array}
 $$
 
@@ -891,15 +891,15 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& {\parentimplicit}(t) &::=& \PPimpl \\ &&|&
+& {\parentimplicit}(t) &::=& \PP \\ &&|&
 \PPX \\ &&|&
 \PPYxPPY \\ &&|&
 \mathsf{ppz} \\ &&|&
-\QQQimpl \\ &&|&
+\QQQ \\ &&|&
 \QQQX \\ &&|&
 \QQQYxQQQY \\ &&|&
 \mathsf{qqqz} \\ &&|&
-{t}{\mathsf{\_}}{\RAimpl}{\RRimpl}~{\zimpl} \\ &&|&
+{t}{\mathsf{\_}}{\RA}{\RR}~{\z} \\ &&|&
 {t}{\mathsf{\_}}{\RB}{\RRX}~{\z} \\ &&|&
 {t}{\mathsf{\_}}{\RCxRC}{\RRYxRRY}~{\zxz} \\ &&|&
 {t}{\mathsf{\_}}{\mathsf{rd}}{\mathsf{rrz}}~z \\
@@ -925,7 +925,7 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& {\indirect} &::=& {\parentimplicit}({\mathit{nat}}) \\
+& {\indirect} &::=& {\parentimplicit}(\mathbb{N}) \\
 \end{array}
 $$
 
@@ -948,7 +948,7 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& {\family}(0) &::=& \FFfamily \\
+& {\family}(0) &::=& \FF \\
 & {\family}(1) &::=& \GGfamily \\
 & {\family}(2) &::=& \xHHy \\
 \end{array}
@@ -990,16 +990,16 @@ $$
 {\child}({n}{\mathsf{\_}}{\EB}{\EEX}~{\z}) &=& 0 \\
 {\child}({n}{\mathsf{\_}}{\xECyECz}{\xEEYyEEYz}~{\xzyzz}) &=& 0 \\
 {\child}({n}{\mathsf{\_}}{\mathsf{ed}}{\mathsf{eez}}~z) &=& 0 \\
-{\child}(\FFfamily) &=& 0 \\
-{\child}(\PPimpl) &=& 0 \\
+{\child}(\FF) &=& 0 \\
+{\child}(\PP) &=& 0 \\
 {\child}(\PPX) &=& 0 \\
 {\child}(\PPYxPPY) &=& 0 \\
 {\child}(\mathsf{ppz}) &=& 0 \\
-{\child}(\QQQimpl) &=& 0 \\
+{\child}(\QQQ) &=& 0 \\
 {\child}(\QQQX) &=& 0 \\
 {\child}(\QQQYxQQQY) &=& 0 \\
 {\child}(\mathsf{qqqz}) &=& 0 \\
-{\child}({n}{\mathsf{\_}}{\RAimpl}{\RRimpl}~{\zimpl}) &=& 0 \\
+{\child}({n}{\mathsf{\_}}{\RA}{\RR}~{\z}) &=& 0 \\
 {\child}({n}{\mathsf{\_}}{\RB}{\RRX}~{\z}) &=& 0 \\
 {\child}({n}{\mathsf{\_}}{\RCxRC}{\RRYxRRY}~{\zxz}) &=& 0 \\
 {\child}({n}{\mathsf{\_}}{\mathsf{rd}}{\mathsf{rrz}}~z) &=& 0 \\
@@ -1035,16 +1035,16 @@ $$
 {\grandchild}({n}{\mathsf{\_}}{\EB}{\EEX}~{\z}) &=& 0 \\
 {\grandchild}({n}{\mathsf{\_}}{\xECyECz}{\xEEYyEEYz}~{\xzyzz}) &=& 0 \\
 {\grandchild}({n}{\mathsf{\_}}{\mathsf{ed}}{\mathsf{eez}}~z) &=& 0 \\
-{\grandchild}(\FFfamily) &=& 0 \\
-{\grandchild}(\PPimpl) &=& 0 \\
+{\grandchild}(\FF) &=& 0 \\
+{\grandchild}(\PP) &=& 0 \\
 {\grandchild}(\PPX) &=& 0 \\
 {\grandchild}(\PPYxPPY) &=& 0 \\
 {\grandchild}(\mathsf{ppz}) &=& 0 \\
-{\grandchild}(\QQQimpl) &=& 0 \\
+{\grandchild}(\QQQ) &=& 0 \\
 {\grandchild}(\QQQX) &=& 0 \\
 {\grandchild}(\QQQYxQQQY) &=& 0 \\
 {\grandchild}(\mathsf{qqqz}) &=& 0 \\
-{\grandchild}({n}{\mathsf{\_}}{\RAimpl}{\RRimpl}~{\zimpl}) &=& 0 \\
+{\grandchild}({n}{\mathsf{\_}}{\RA}{\RR}~{\z}) &=& 0 \\
 {\grandchild}({n}{\mathsf{\_}}{\RB}{\RRX}~{\z}) &=& 0 \\
 {\grandchild}({n}{\mathsf{\_}}{\RCxRC}{\RRYxRRY}~{\zxz}) &=& 0 \\
 {\grandchild}({n}{\mathsf{\_}}{\mathsf{rd}}{\mathsf{rrz}}~z) &=& 0 \\
@@ -1058,14 +1058,14 @@ $$
 $$
 \begin{array}{@{}lrrl@{}l@{}}
 & {\rec} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
-\FA~{{\mathit{nat}}^\ast},\; \\
-  \FB~{{\mathit{nat}}^\ast},\; \\
-  \xFCyFCz~{{\mathit{nat}}^\ast},\; \\
-  \mathsf{fd}~{{\mathit{nat}}^\ast},\; \\
-  \FEE~{{\mathit{nat}}^\ast},\; \\
-  \FFF~{{\mathit{nat}}^\ast},\; \\
-  \xFGGyFGGz~{{\mathit{nat}}^\ast},\; \\
-  \mathsf{fhh}~{{\mathit{nat}}^\ast} \}\end{array} \\
+\FA~{\mathbb{N}^\ast},\; \\
+  \FB~{\mathbb{N}^\ast},\; \\
+  \xFCyFCz~{\mathbb{N}^\ast},\; \\
+  \mathsf{fd}~{\mathbb{N}^\ast},\; \\
+  \FEE~{\mathbb{N}^\ast},\; \\
+  \FFF~{\mathbb{N}^\ast},\; \\
+  \xFGGyFGGz~{\mathbb{N}^\ast},\; \\
+  \mathsf{fhh}~{\mathbb{N}^\ast} \}\end{array} \\
 \end{array}
 $$
 
@@ -1111,14 +1111,14 @@ $$
 $$
 \begin{array}{@{}lrrl@{}l@{}}
 & {\recimpl} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
-\RFIA~{{\mathit{nat}}^\ast},\; \\
-  \FIB~{{\mathit{nat}}^\ast},\; \\
-  \xFICyFICz~{{\mathit{nat}}^\ast},\; \\
-  \mathsf{fid}~{{\mathit{nat}}^\ast},\; \\
-  \RFIEE~{{\mathit{nat}}^\ast},\; \\
-  \FIFF~{{\mathit{nat}}^\ast},\; \\
-  \xFIGGyFIGGz~{{\mathit{nat}}^\ast},\; \\
-  \mathsf{fihh}~{{\mathit{nat}}^\ast} \}\end{array} \\
+\RFIA~{\mathbb{N}^\ast},\; \\
+  \FIB~{\mathbb{N}^\ast},\; \\
+  \xFICyFICz~{\mathbb{N}^\ast},\; \\
+  \mathsf{fid}~{\mathbb{N}^\ast},\; \\
+  \RFIEE~{\mathbb{N}^\ast},\; \\
+  \FIFF~{\mathbb{N}^\ast},\; \\
+  \xFIGGyFIGGz~{\mathbb{N}^\ast},\; \\
+  \mathsf{fihh}~{\mathbb{N}^\ast} \}\end{array} \\
 \end{array}
 $$
 
@@ -1139,14 +1139,14 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& {\cona} &::=& {\mathit{nat}}~\COA~{\mathit{nat}} \\
-& {\conb} &::=& {\mathit{nat}}~\COB~{\mathit{nat}} \\
-& {\conc} &::=& {\mathit{nat}}~\xCOCyCOCz~{\mathit{nat}} \\
-& {\cond} &::=& {\mathit{nat}}~\mathsf{cod}~{\mathit{nat}} \\
-& {\cone} &::=& {\mathit{nat}}~\COE~{\mathit{nat}} \\
-& {\conf} &::=& {\mathit{nat}}~\COF~{\mathit{nat}} \\
-& {\cong} &::=& {\mathit{nat}}~\xCOGyCOGz~{\mathit{nat}} \\
-& {\conh} &::=& {\mathit{nat}}~\mathsf{coh}~{\mathit{nat}} \\
+& {\cona} &::=& \mathbb{N}~\COA~\mathbb{N} \\
+& {\conb} &::=& \mathbb{N}~\COB~\mathbb{N} \\
+& {\conc} &::=& \mathbb{N}~\xCOCyCOCz~\mathbb{N} \\
+& {\cond} &::=& \mathbb{N}~\mathsf{cod}~\mathbb{N} \\
+& {\cone} &::=& \mathbb{N}~\COE~\mathbb{N} \\
+& {\conf} &::=& \mathbb{N}~\COF~\mathbb{N} \\
+& {\cong} &::=& \mathbb{N}~\xCOGyCOGz~\mathbb{N} \\
+& {\conh} &::=& \mathbb{N}~\mathsf{coh}~\mathbb{N} \\
 \end{array}
 $$
 
@@ -1267,10 +1267,10 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup --latex)
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& N &::=& {\mathit{nat}} \\
-& M &::=& {\mathit{nat}} \\
-& n &::=& {\mathit{nat}} \\
-& m &::=& {\mathit{nat}} \\
+& N &::=& \mathbb{N} \\
+& M &::=& \mathbb{N} \\
+& n &::=& \mathbb{N} \\
+& m &::=& \mathbb{N} \\
 \end{array}
 $$
 
@@ -1580,7 +1580,7 @@ $$
 \mbox{(table type)} & {\mathit{tabletype}} &::=& {\mathit{limits}}~{\mathit{reftype}} \\
 \mbox{(memory type)} & {\mathit{memtype}} &::=& {\mathit{limits}}~\mathsf{page} \\
 \mbox{(element type)} & {\mathit{elemtype}} &::=& {\mathit{reftype}} \\
-\mbox{(data type)} & \mathsf{ok} &::=& \mathsf{ok} \\
+\mbox{(data type)} & {\mathit{datatype}} &::=& \mathsf{ok} \\
 \mbox{(external type)} & {\mathit{externtype}} &::=& \mathsf{func}~{\mathit{typeuse}} ~|~ \mathsf{global}~{\mathit{globaltype}} ~|~ \mathsf{table}~{\mathit{tabletype}} ~|~ \mathsf{mem}~{\mathit{memtype}} \\
 \end{array}
 $$
@@ -1611,6 +1611,12 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
+N &=& {|{\mathit{pt}}|} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
 N &=& {|{\mathit{lt}}|} \\
 \end{array}
 $$
@@ -1631,7 +1637,7 @@ $$
 \begin{array}{@{}lrrl@{}l@{}}
 & {{\mathit{num}}}_{{\mathsf{i}}{N}} &::=& {i}{N} \\
 & {{\mathit{num}}}_{{\mathsf{f}}{N}} &::=& {f}{N} \\
-& {{\mathit{pack}}}_{{\mathsf{i}}{N}} &::=& {i}{{|{\mathsf{i}}{N}|}} \\
+& {{\mathit{pack}}}_{{\mathsf{i}}{N}} &::=& {i}{N} \\
 \end{array}
 $$
 
@@ -1950,7 +1956,8 @@ $$
 \mathsf{memory.fill}~{\mathit{memidx}} \\ &&|&
 \mathsf{memory.copy}~{\mathit{memidx}}~{\mathit{memidx}} \\ &&|&
 \mathsf{memory.init}~{\mathit{memidx}}~{\mathit{dataidx}} \\ &&|&
-\mathsf{data.drop}~{\mathit{dataidx}} \\
+\mathsf{data.drop}~{\mathit{dataidx}} \\ &&|&
+\dots \\
 \end{array}
 $$
 
@@ -2196,7 +2203,7 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& {\mathit{typevar}} &::=& {\mathit{typeidx}} ~|~ \mathsf{rec}~{\mathit{nat}} \\
+& {\mathit{typevar}} &::=& {\mathit{typeidx}} ~|~ \mathsf{rec}~\mathbb{N} \\
 \end{array}
 $$
 
@@ -2955,7 +2962,7 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-\mbox{(address)} & {\mathit{addr}} &::=& {\mathit{nat}} \\
+\mbox{(address)} & {\mathit{addr}} &::=& \mathbb{N} \\
 \mbox{(function address)} & {\mathit{funcaddr}} &::=& {\mathit{addr}} \\
 \mbox{(global address)} & {\mathit{globaladdr}} &::=& {\mathit{addr}} \\
 \mbox{(table address)} & {\mathit{tableaddr}} &::=& {\mathit{addr}} \\
@@ -3003,35 +3010,27 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
+& {\mathit{code}} &::=& {\mathit{func}} ~|~ \mathsf{hostfunc}~\dots \\
 \mbox{(function instance)} & {\mathit{funcinst}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{type}~{\mathit{deftype}},\; \\
-  \mathsf{module}~{\mathit{moduleinst}},\; \\
-  \mathsf{code}~{\mathit{func}} \}\end{array} \\
+\mathsf{type}~{\mathit{deftype}},\; \mathsf{module}~{\mathit{moduleinst}},\; \mathsf{code}~{\mathit{code}} \}\end{array} \\
 \mbox{(global instance)} & {\mathit{globalinst}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{type}~{\mathit{globaltype}},\; \\
-  \mathsf{value}~{\mathit{val}} \}\end{array} \\
+\mathsf{type}~{\mathit{globaltype}},\; \mathsf{value}~{\mathit{val}} \}\end{array} \\
 \mbox{(table instance)} & {\mathit{tableinst}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{type}~{\mathit{tabletype}},\; \\
-  \mathsf{refs}~{{\mathit{ref}}^\ast} \}\end{array} \\
+\mathsf{type}~{\mathit{tabletype}},\; \mathsf{refs}~{{\mathit{ref}}^\ast} \}\end{array} \\
 \mbox{(memory instance)} & {\mathit{meminst}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{type}~{\mathit{memtype}},\; \\
-  \mathsf{bytes}~{{\mathit{byte}}^\ast} \}\end{array} \\
+\mathsf{type}~{\mathit{memtype}},\; \mathsf{bytes}~{{\mathit{byte}}^\ast} \}\end{array} \\
 \mbox{(element instance)} & {\mathit{eleminst}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{type}~{\mathit{elemtype}},\; \\
-  \mathsf{refs}~{{\mathit{ref}}^\ast} \}\end{array} \\
+\mathsf{type}~{\mathit{elemtype}},\; \mathsf{refs}~{{\mathit{ref}}^\ast} \}\end{array} \\
 \mbox{(data instance)} & {\mathit{datainst}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
 \mathsf{bytes}~{{\mathit{byte}}^\ast} \}\end{array} \\
 \mbox{(export instance)} & {\mathit{exportinst}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{name}~{\mathit{name}},\; \\
-  \mathsf{value}~{\mathit{externval}} \}\end{array} \\
-\mbox{(packed value)} & {\mathit{packval}} &::=& {\mathit{packtype}}{.}\mathsf{pack}~{{\mathit{pack}}}_{{\mathit{packtype}}} \\
+\mathsf{name}~{\mathit{name}},\; \mathsf{value}~{\mathit{externval}} \}\end{array} \\
+\mbox{(packed value)} & {\mathit{packval}} &::=& {\mathit{packtype}}{.}\mathsf{pack}~{i}{N} \\
 \mbox{(field value)} & {\mathit{fieldval}} &::=& {\mathit{val}} ~|~ {\mathit{packval}} \\
 \mbox{(structure instance)} & {\mathit{structinst}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{type}~{\mathit{deftype}},\; \\
-  \mathsf{fields}~{{\mathit{fieldval}}^\ast} \}\end{array} \\
+\mathsf{type}~{\mathit{deftype}},\; \mathsf{fields}~{{\mathit{fieldval}}^\ast} \}\end{array} \\
 \mbox{(array instance)} & {\mathit{arrayinst}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{type}~{\mathit{deftype}},\; \\
-  \mathsf{fields}~{{\mathit{fieldval}}^\ast} \}\end{array} \\
+\mathsf{type}~{\mathit{deftype}},\; \mathsf{fields}~{{\mathit{fieldval}}^\ast} \}\end{array} \\
 \mbox{(module instance)} & {\mathit{moduleinst}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
 \mathsf{types}~{{\mathit{deftype}}^\ast},\; \\
   \mathsf{funcs}~{{\mathit{funcaddr}}^\ast},\; \\
@@ -3058,8 +3057,7 @@ $$
   \mathsf{structs}~{{\mathit{structinst}}^\ast},\; \\
   \mathsf{arrays}~{{\mathit{arrayinst}}^\ast} \}\end{array} \\
 \mbox{(frame)} & {\mathit{frame}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{locals}~{({{\mathit{val}}^?})^\ast},\; \\
-  \mathsf{module}~{\mathit{moduleinst}} \}\end{array} \\
+\mathsf{locals}~{({{\mathit{val}}^?})^\ast},\; \mathsf{module}~{\mathit{moduleinst}} \}\end{array} \\
 \mbox{(state)} & {\mathit{state}} &::=& {\mathit{store}} ; {\mathit{frame}} \\
 \mbox{(configuration)} & {\mathit{config}} &::=& {\mathit{state}} ; {{\mathit{instr}}^\ast} \\
 \end{array}
@@ -3069,7 +3067,7 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-\mbox{(administrative instruction)} & {\mathit{instr}} &::=& {\mathit{instr}} \\ &&|&
+\mbox{(instruction)} & {\mathit{instr}} &::=& \dots \\ &&|&
 {\mathit{addrref}} \\ &&|&
 {{\mathsf{label}}_{n}}{\{ {{\mathit{instr}}^\ast} \}}~{{\mathit{instr}}^\ast} \\ &&|&
 {{\mathsf{frame}}_{n}}{\{ {\mathit{frame}} \}}~{{\mathit{instr}}^\ast} \\ &&|&
@@ -3092,13 +3090,11 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathrm{default}}}_{\mathsf{i{\scriptstyle 32}}} &=& (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0) \\
-{{\mathrm{default}}}_{\mathsf{i{\scriptstyle 64}}} &=& (\mathsf{i{\scriptstyle 64}}{.}\mathsf{const}~0) \\
-{{\mathrm{default}}}_{\mathsf{f{\scriptstyle 32}}} &=& (\mathsf{f{\scriptstyle 32}}{.}\mathsf{const}~{+0}) \\
-{{\mathrm{default}}}_{\mathsf{f{\scriptstyle 64}}} &=& (\mathsf{f{\scriptstyle 64}}{.}\mathsf{const}~{+0}) \\
-{{\mathrm{default}}}_{\mathsf{v{\scriptstyle 128}}} &=& (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~0) \\
+{{\mathrm{default}}}_{{\mathsf{i}}{N}} &=& ({\mathsf{i}}{N}{.}\mathsf{const}~0) \\
+{{\mathrm{default}}}_{{\mathsf{f}}{N}} &=& ({\mathsf{f}}{N}{.}\mathsf{const}~{+0}) \\
+{{\mathrm{default}}}_{{\mathsf{v}}{N}} &=& ({\mathsf{v}}{N}{.}\mathsf{const}~0) \\
 {{\mathrm{default}}}_{\mathsf{ref}~\mathsf{null}~{\mathit{ht}}} &=& (\mathsf{ref.null}~{\mathit{ht}}) \\
-{{\mathrm{default}}}_{\mathsf{ref}~\epsilon~{\mathit{ht}}} &=& \epsilon \\
+{{\mathrm{default}}}_{\mathsf{ref}~{\mathit{ht}}} &=& \epsilon \\
 \end{array}
 $$
 
@@ -3106,15 +3102,15 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathrm{pack}}}_{t}({\mathit{val}}) &=& {\mathit{val}} \\
-{{\mathrm{pack}}}_{{\mathit{pt}}}(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i) &=& {\mathit{pt}}{.}\mathsf{pack}~{{{\mathrm{wrap}}}_{32, {|{\mathit{pt}}|}}}{(i)} \\
+{{\mathrm{pack}}}_{{\mathit{valtype}}}({\mathit{val}}) &=& {\mathit{val}} \\
+{{\mathrm{pack}}}_{{\mathit{packtype}}}(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i) &=& {\mathit{packtype}}{.}\mathsf{pack}~{{{\mathrm{wrap}}}_{32, {|{\mathit{packtype}}|}}}{(i)} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{{{\mathrm{unpack}}}_{t}^{\epsilon}}}{({\mathit{val}})} &=& {\mathit{val}} \\
-{{{{\mathrm{unpack}}}_{{\mathit{pt}}}^{{\mathit{sx}}}}}{({\mathit{pt}}{.}\mathsf{pack}~i)} &=& \mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{ext}}}_{{|{\mathit{pt}}|}, 32}^{{\mathit{sx}}}}}{(i)} \\
+{{{{\mathrm{unpack}}}_{{\mathit{valtype}}}^{\epsilon}}}{({\mathit{val}})} &=& {\mathit{val}} \\
+{{{{\mathrm{unpack}}}_{{\mathit{packtype}}}^{{\mathit{sx}}}}}{({\mathit{packtype}}{.}\mathsf{pack}~i)} &=& \mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{ext}}}_{{|{\mathit{packtype}}|}, 32}^{{\mathit{sx}}}}}{(i)} \\
 \end{array}
 $$
 
@@ -3393,8 +3389,8 @@ $$
   \mathsf{globals}~{{\mathit{globaltype}}^\ast},\; \\
   \mathsf{tables}~{{\mathit{tabletype}}^\ast},\; \\
   \mathsf{mems}~{{\mathit{memtype}}^\ast},\; \\
-  \mathsf{elems}~{{\mathit{reftype}}^\ast},\; \\
-  \mathsf{datas}~{\mathsf{ok}^\ast},\; \\
+  \mathsf{elems}~{{\mathit{elemtype}}^\ast},\; \\
+  \mathsf{datas}~{{\mathit{datatype}}^\ast},\; \\
   \mathsf{locals}~{{\mathit{localtype}}^\ast},\; \\
   \mathsf{labels}~{{\mathit{resulttype}}^\ast},\; \\
   \mathsf{return}~{{\mathit{resulttype}}^?} \}\end{array} \\
@@ -3586,7 +3582,7 @@ $$
 $$
 \begin{array}{@{}lrrl@{}l@{}}
 & {\mathsf{ok}}{({\mathit{typeidx}})} &::=& {\mathsf{ok}}{{\mathit{typeidx}}} \\
-& {\mathsf{ok}}{({\mathit{typeidx}},\, n)} &::=& {\mathsf{ok}}{({\mathit{typeidx}},\, {\mathit{nat}})} \\
+& {\mathsf{ok}}{({\mathit{typeidx}},\, n)} &::=& {\mathsf{ok}}{({\mathit{typeidx}},\, \mathbb{N})} \\
 \end{array}
 $$
 
@@ -3832,7 +3828,7 @@ $$
 
 \vspace{1ex}
 
-$\boxed{{\mathit{context}} \vdash {\mathit{limits}} : {\mathit{nat}}}$
+$\boxed{{\mathit{context}} \vdash {\mathit{limits}} : \mathbb{N}}$
 
 $\boxed{{\mathit{context}} \vdash {\mathit{globaltype}} : \mathsf{ok}}$
 
@@ -6167,13 +6163,13 @@ $\boxed{{\mathit{context}} \vdash {\mathit{table}} : {\mathit{tabletype}}}$
 
 $\boxed{{\mathit{context}} \vdash {\mathit{mem}} : {\mathit{memtype}}}$
 
-$\boxed{{\mathit{context}} \vdash {\mathit{elem}} : {\mathit{reftype}}}$
+$\boxed{{\mathit{context}} \vdash {\mathit{elem}} : {\mathit{elemtype}}}$
 
-$\boxed{{\mathit{context}} \vdash {\mathit{data}} : \mathsf{ok}}$
+$\boxed{{\mathit{context}} \vdash {\mathit{data}} : {\mathit{datatype}}}$
 
-$\boxed{{\mathit{context}} \vdash {\mathit{elemmode}} : {\mathit{reftype}}}$
+$\boxed{{\mathit{context}} \vdash {\mathit{elemmode}} : {\mathit{elemtype}}}$
 
-$\boxed{{\mathit{context}} \vdash {\mathit{datamode}} : \mathsf{ok}}$
+$\boxed{{\mathit{context}} \vdash {\mathit{datamode}} : {\mathit{datatype}}}$
 
 $\boxed{{\mathit{context}} \vdash {\mathit{start}} : \mathsf{ok}}$
 
@@ -6273,13 +6269,13 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{reftype}} : \mathsf{ok}
+C \vdash {\mathit{elemtype}} : \mathsf{ok}
  \qquad
-(C \vdash {\mathit{expr}} : {\mathit{reftype}}~\mathsf{const})^\ast
+(C \vdash {\mathit{expr}} : {\mathit{elemtype}}~\mathsf{const})^\ast
  \qquad
-C \vdash {\mathit{elemmode}} : {\mathit{reftype}}
+C \vdash {\mathit{elemmode}} : {\mathit{elemtype}}
 }{
-C \vdash \mathsf{elem}~{\mathit{reftype}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}} : {\mathit{reftype}}
+C \vdash \mathsf{elem}~{\mathit{elemtype}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}} : {\mathit{elemtype}}
 } \, {[\textsc{\scriptsize T{-}elem}]}
 \qquad
 \end{array}
@@ -6645,9 +6641,9 @@ $$
 $$
 \begin{array}{@{}l@{}rcl@{}l@{}}
 {[\textsc{\scriptsize E{-}refl}]} \quad & z ; {{\mathit{instr}}^\ast} &\hookrightarrow^\ast& z ; {{\mathit{instr}}^\ast} \\
-{[\textsc{\scriptsize E{-}trans}]} \quad & z ; {{\mathit{instr}}^\ast} &\hookrightarrow^\ast& {z''} ; {{{\mathit{instr}}''}^\ast}
-  &\qquad \mbox{if}~z ; {{\mathit{instr}}^\ast} \hookrightarrow {z'} ; {{{\mathit{instr}}'}^\ast} \\
-  &&&&\qquad {\land}~{z'} ; {{\mathit{instr}}'} \hookrightarrow^\ast {z''} ; {{{\mathit{instr}}''}^\ast} \\
+{[\textsc{\scriptsize E{-}trans}]} \quad & z ; {{\mathit{instr}}^\ast} &\hookrightarrow^\ast& {z''} ; {{\mathit{instr}''}^\ast}
+  &\qquad \mbox{if}~z ; {{\mathit{instr}}^\ast} \hookrightarrow {z'} ; {{\mathit{instr}'}^\ast} \\
+  &&&&\qquad {\land}~{z'} ; {\mathit{instr}'} \hookrightarrow^\ast {z''} ; {{\mathit{instr}''}^\ast} \\
 \end{array}
 $$
 
@@ -6689,10 +6685,10 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathrm{blocktype}}}_{z}(\epsilon) &=& \epsilon \rightarrow \epsilon \\
-{{\mathrm{blocktype}}}_{z}(t) &=& \epsilon \rightarrow t \\
 {{\mathrm{blocktype}}}_{z}(x) &=& {\mathit{ft}}
   &\qquad \mbox{if}~z{.}\mathsf{types}{}[x] \approx \mathsf{func}~{\mathit{ft}} \\
+{{\mathrm{blocktype}}}_{z}(t) &=& \epsilon \rightarrow t \\
+{{\mathrm{blocktype}}}_{z}(\epsilon) &=& \epsilon \rightarrow \epsilon \\
 \end{array}
 $$
 
@@ -8878,8 +8874,8 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& A &::=& {\mathit{nat}} \\
-& B &::=& {\mathit{nat}} \\
+& A &::=& \mathbb{N} \\
+& B &::=& \mathbb{N} \\
 & {\mathit{sym}} &::=& A_1 ~|~ \dots ~|~ A_n \\
 & {\mathit{sym}} &::=& A_1 ~|~ A_2 \\
 &  &::=& () \\
@@ -8893,15 +8889,15 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& T &::=& {\mathit{nat}} \\
+& T &::=& \mathbb{N} \\
 \end{array}
 $$
 
-$\boxed{{\mathit{nat}}}$
+$\boxed{\mathbb{N}}$
 
 $\boxed{\dots}$
 
-$\boxed{{\mathit{nat}}}$
+$\boxed{\mathbb{N}}$
 
 $$
 \begin{array}{@{}c@{}}\displaystyle
@@ -8965,6 +8961,15 @@ $$
 {[\textsc{\scriptsize NotationReduct{-}2}]} \quad &  &\hookrightarrow& (\mathsf{f{\scriptstyle 64}}{.}\mathsf{const}~q_1)~(\mathsf{f{\scriptstyle 64}}{.}\mathsf{const}~q_4)~(\mathsf{f{\scriptstyle 64}}{.}\mathsf{const}~q_3)~\mathsf{f{\scriptstyle 64}} {.} \mathsf{add}~\mathsf{f{\scriptstyle 64}} {.} \mathsf{mul} \\
 {[\textsc{\scriptsize NotationReduct{-}3}]} \quad &  &\hookrightarrow& (\mathsf{f{\scriptstyle 64}}{.}\mathsf{const}~q_1)~(\mathsf{f{\scriptstyle 64}}{.}\mathsf{const}~q_5)~\mathsf{f{\scriptstyle 64}} {.} \mathsf{mul} \\
 {[\textsc{\scriptsize NotationReduct{-}4}]} \quad &  &\hookrightarrow& (\mathsf{f{\scriptstyle 64}}{.}\mathsf{const}~q_6) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+\mbox{(label)} & {\mathit{label}} &::=& {{\mathsf{label}}_{n}}{\{ {{\mathit{instr}}^\ast} \}} \\
+\mbox{(call frame)} & {\mathit{callframe}} &::=& {{\mathsf{frame}}_{n}}{\{ {\mathit{frame}} \}} \\
 \end{array}
 $$
 

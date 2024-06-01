@@ -10,8 +10,8 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup -l --splice-latex -p spe
 == Running pass animate...
 == IL Validation after pass animate...
 == Translating to AL...
-../spec/wasm-3.0/8-reduction.watsup:226.12-226.36: translate_rulepr: Yet `(`%;%`_config(z, (instr : instr <: admininstr)*{instr : instr}), `%;%`_config(z', (instr' : instr <: admininstr)*{instr' : instr}))`
-../spec/wasm-3.0/8-reduction.watsup:230.12-230.44: translate_rulepr: Yet `(`%;%`_config(`%;%`_state(s, f'), (instr : instr <: admininstr)*{instr : instr}), `%;%`_config(`%;%`_state(s', f'), (instr' : instr <: admininstr)*{instr' : instr}))`
+../spec/wasm-3.0/8-reduction.watsup:226.12-226.36: translate_rulepr: Yet `(`%;%`_config(z, instr*{instr : instr}), `%;%`_config(z', instr'*{instr' : instr}))`
+../spec/wasm-3.0/8-reduction.watsup:230.12-230.44: translate_rulepr: Yet `(`%;%`_config(`%;%`_state(s, f'), instr*{instr : instr}), `%;%`_config(`%;%`_state(s', f'), instr'*{instr' : instr}))`
 == Prose Generation...
 ../spec/wasm-3.0/6-typing.watsup:622.7-622.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0)`
 ../spec/wasm-3.0/6-typing.watsup:623.6-623.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l'!`%`_labelidx.0]!`%`_resulttype.0)`
@@ -255,13 +255,11 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathrm{default}}}_{\mathsf{i{\scriptstyle 32}}} &=& (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0) \\
-{{\mathrm{default}}}_{\mathsf{i{\scriptstyle 64}}} &=& (\mathsf{i{\scriptstyle 64}}{.}\mathsf{const}~0) \\
-{{\mathrm{default}}}_{\mathsf{f{\scriptstyle 32}}} &=& (\mathsf{f{\scriptstyle 32}}{.}\mathsf{const}~{+0}) \\
-{{\mathrm{default}}}_{\mathsf{f{\scriptstyle 64}}} &=& (\mathsf{f{\scriptstyle 64}}{.}\mathsf{const}~{+0}) \\
-{{\mathrm{default}}}_{\mathsf{v{\scriptstyle 128}}} &=& (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~0) \\
+{{\mathrm{default}}}_{{\mathsf{i}}{N}} &=& ({\mathsf{i}}{N}{.}\mathsf{const}~0) \\
+{{\mathrm{default}}}_{{\mathsf{f}}{N}} &=& ({\mathsf{f}}{N}{.}\mathsf{const}~{+0}) \\
+{{\mathrm{default}}}_{{\mathsf{v}}{N}} &=& ({\mathsf{v}}{N}{.}\mathsf{const}~0) \\
 {{\mathrm{default}}}_{\mathsf{ref}~\mathsf{null}~{\mathit{ht}}} &=& (\mathsf{ref.null}~{\mathit{ht}}) \\
-{{\mathrm{default}}}_{\mathsf{ref}~\epsilon~{\mathit{ht}}} &=& \epsilon \\
+{{\mathrm{default}}}_{\mathsf{ref}~{\mathit{ht}}} &=& \epsilon \\
 \end{array}
 $$
 
@@ -329,7 +327,6 @@ warning: syntax `absheaptype/syn` was never spliced
 warning: syntax `absheaptype/sem` was never spliced
 warning: syntax `addr` was never spliced
 warning: syntax `addrref` was never spliced
-warning: syntax `admininstr` was never spliced
 warning: syntax `arrayaddr` was never spliced
 warning: syntax `arrayinst` was never spliced
 warning: syntax `arraytype` was never spliced
@@ -338,6 +335,7 @@ warning: syntax `binop_` was never spliced
 warning: syntax `bit` was never spliced
 warning: syntax `blocktype` was never spliced
 warning: syntax `byte` was never spliced
+warning: syntax `callframe` was never spliced
 warning: syntax `castop` was never spliced
 warning: syntax `char` was never spliced
 warning: syntax `code` was never spliced
@@ -376,6 +374,7 @@ warning: syntax `frame` was never spliced
 warning: syntax `fshape` was never spliced
 warning: syntax `func` was never spliced
 warning: syntax `funcaddr` was never spliced
+warning: syntax `funccode` was never spliced
 warning: syntax `funcidx` was never spliced
 warning: syntax `funcinst` was never spliced
 warning: syntax `global` was never spliced
@@ -403,8 +402,10 @@ warning: syntax `instr/extern` was never spliced
 warning: syntax `instr/table` was never spliced
 warning: syntax `instr/elem` was never spliced
 warning: syntax `instr/data` was never spliced
+warning: syntax `instr/admin` was never spliced
 warning: syntax `instrtype` was never spliced
 warning: syntax `ishape` was never spliced
+warning: syntax `label` was never spliced
 warning: syntax `labelidx` was never spliced
 warning: syntax `lane_` was never spliced
 warning: syntax `lane_` was never spliced
@@ -1109,7 +1110,7 @@ warning: definition `alloctypes` was never spliced
 warning: definition `arrayinst` was never spliced
 warning: definition `before` was never spliced
 warning: definition `binop` was never spliced
-warning: definition `blocktype` was never spliced
+warning: definition `blocktype_` was never spliced
 warning: definition `canon_` was never spliced
 warning: definition `cbytes` was never spliced
 warning: definition `clostype` was never spliced
@@ -1206,6 +1207,7 @@ warning: definition `inot` was never spliced
 warning: definition `inst_reftype` was never spliced
 warning: definition `instantiate` was never spliced
 warning: definition `instexport` was never spliced
+warning: definition `instrdots` was never spliced
 warning: definition `invfbytes` was never spliced
 warning: definition `invibytes` was never spliced
 warning: definition `invlanes_` was never spliced
@@ -1247,6 +1249,7 @@ warning: definition `nunpack` was never spliced
 warning: definition `packfield` was never spliced
 warning: definition `promote` was never spliced
 warning: definition `psize` was never spliced
+warning: definition `psizenn` was never spliced
 warning: definition `reinterpret` was never spliced
 warning: definition `relop` was never spliced
 warning: definition `rolldt` was never spliced
@@ -1566,7 +1569,7 @@ warning: definition prose `alloctypes` was never spliced
 warning: definition prose `arrayinst` was never spliced
 warning: definition prose `before` was never spliced
 warning: definition prose `binop` was never spliced
-warning: definition prose `blocktype` was never spliced
+warning: definition prose `blocktype_` was never spliced
 warning: definition prose `canon_` was never spliced
 warning: definition prose `clostype` was never spliced
 warning: definition prose `clostypes` was never spliced
@@ -1642,6 +1645,7 @@ warning: definition prose `moduleinst` was never spliced
 warning: definition prose `nunpack` was never spliced
 warning: definition prose `packfield` was never spliced
 warning: definition prose `psize` was never spliced
+warning: definition prose `psizenn` was never spliced
 warning: definition prose `relop` was never spliced
 warning: definition prose `rolldt` was never spliced
 warning: definition prose `rollrt` was never spliced

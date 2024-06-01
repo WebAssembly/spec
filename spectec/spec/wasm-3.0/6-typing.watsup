@@ -20,7 +20,7 @@ syntax context hint(desc "context") hint(macro "%" "C%") =
     GLOBALS globaltype*,
     TABLES tabletype*,
     MEMS memtype*,
-    ELEMS reftype*,
+    ELEMS elemtype*,
     DATAS datatype*,
     LOCALS localtype*,
     LABELS resulttype*,
@@ -1186,10 +1186,10 @@ relation Local_ok: context |- local : localtype      hint(show "T-local")    hin
 relation Global_ok: context |- global : globaltype   hint(show "T-global")   hint(macro "%global")
 relation Table_ok: context |- table : tabletype      hint(show "T-table")    hint(macro "%table")
 relation Mem_ok: context |- mem : memtype            hint(show "T-mem")      hint(macro "%mem")
-relation Elem_ok: context |- elem : reftype          hint(show "T-elem")     hint(macro "%elem")
+relation Elem_ok: context |- elem : elemtype         hint(show "T-elem")     hint(macro "%elem")
 relation Data_ok: context |- data : datatype         hint(show "T-data")     hint(macro "%data")
-relation Elemmode_ok: context |- elemmode : reftype  hint(show "T-elemmode") hint(macro "%elemmode")
-relation Datamode_ok: context |- datamode : OK       hint(show "T-datamode") hint(macro "%datamode")
+relation Elemmode_ok: context |- elemmode : elemtype hint(show "T-elemmode") hint(macro "%elemmode")
+relation Datamode_ok: context |- datamode : datatype hint(show "T-datamode") hint(macro "%datamode")
 relation Start_ok: context |- start : OK             hint(show "T-start")    hint(macro "%start")
 
 rule Type_ok:
@@ -1229,10 +1229,10 @@ rule Mem_ok:
   -- Memtype_ok: C |- memtype : OK
 
 rule Elem_ok:
-  C |- ELEM reftype expr* elemmode : reftype
-  -- Reftype_ok: C |- reftype : OK
-  -- (Expr_ok_const: C |- expr : reftype CONST)*
-  -- Elemmode_ok: C |- elemmode : reftype
+  C |- ELEM elemtype expr* elemmode : elemtype
+  -- Reftype_ok: C |- elemtype : OK
+  -- (Expr_ok_const: C |- expr : elemtype CONST)*
+  -- Elemmode_ok: C |- elemmode : elemtype
 
 rule Data_ok:
   C |- DATA b* datamode : OK

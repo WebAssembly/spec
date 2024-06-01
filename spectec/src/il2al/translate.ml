@@ -349,7 +349,7 @@ let rec translate_rhs exp =
       ],
       []) ~at:at ]
   (* Push *)
-  | Il.SubE _ | IterE _ -> [ pushI (translate_exp exp) ~at:at ]
+  | Il.SubE _ | CallE _ | IterE _ -> [ pushI (translate_exp exp) ~at:at ]
   | Il.CaseE ([{it = Atom id; _}]::_, _) when List.mem id [
       (* TODO: Consider automating this *)
       "CONST";

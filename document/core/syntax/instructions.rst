@@ -13,9 +13,11 @@ In addition to dynamic operands from the stack, some instructions also have stat
 typically :ref:`indices <syntax-index>` or type annotations,
 which are part of the instruction itself.
 
-Some instructions are :ref:`structured <syntax-instr-control>` in that they bracket nested sequences of instructions.
+Some instructions are :ref:`structured <syntax-instr-control>` in that they contain nested sequences of instructions.
 
 The following sections group instructions into a number of different categories.
+
+The syntax of instruction is further :ref:`extended <syntax-instr-admin>` with additional forms for the purpose of specifying :ref:`execution <exec>`.
 
 
 .. index:: ! parametric instruction, value type

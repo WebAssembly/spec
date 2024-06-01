@@ -283,7 +283,6 @@ $${rule: Elemmode_ok/declare}
    single: memory; data
    single: data; segment
 .. _valid-data:
-.. _syntax-datatype:
 
 Data Segments
 ~~~~~~~~~~~~~
