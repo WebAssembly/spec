@@ -2539,10 +2539,16 @@ syntax config =
   | `%;%`{state : state, instr* : instr*}(state : state, instr*{instr : instr} : instr*)
 
 ;; 5-runtime-aux.watsup
+def $inst_valtype(moduleinst : moduleinst, valtype : valtype) : valtype
+  ;; 5-runtime-aux.watsup
+  def $inst_valtype{moduleinst : moduleinst, t : valtype, dt* : deftype*}(moduleinst, t) = $subst_all_valtype(t, (dt : deftype <: heaptype)*{dt : deftype})
+    -- if (dt*{dt : deftype} = moduleinst.TYPES_moduleinst)
+
+;; 5-runtime-aux.watsup
 def $inst_reftype(moduleinst : moduleinst, reftype : reftype) : reftype
   ;; 5-runtime-aux.watsup
-  def $inst_reftype{mm : moduleinst, rt : reftype, dt* : deftype*}(mm, rt) = $subst_all_reftype(rt, (dt : deftype <: heaptype)*{dt : deftype})
-    -- if (dt*{dt : deftype} = mm.TYPES_moduleinst)
+  def $inst_reftype{moduleinst : moduleinst, rt : reftype, dt* : deftype*}(moduleinst, rt) = $subst_all_reftype(rt, (dt : deftype <: heaptype)*{dt : deftype})
+    -- if (dt*{dt : deftype} = moduleinst.TYPES_moduleinst)
 
 ;; 5-runtime-aux.watsup
 def $default_(valtype : valtype) : val?
@@ -2574,13 +2580,13 @@ def $unpackfield(storagetype : storagetype, sx?, fieldval : fieldval) : val
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:42.1-42.86
+;; 5-runtime-aux.watsup:46.1-46.86
 def $funcsxv(externval*) : funcaddr*
-  ;; 5-runtime-aux.watsup:47.1-47.24
+  ;; 5-runtime-aux.watsup:51.1-51.24
   def $funcsxv([]) = []
-  ;; 5-runtime-aux.watsup:48.1-48.47
+  ;; 5-runtime-aux.watsup:52.1-52.47
   def $funcsxv{fa : funcaddr, xv* : externval*}([FUNC_externval(fa)] :: xv*{xv : externval}) = [fa] :: $funcsxv(xv*{xv : externval})
-  ;; 5-runtime-aux.watsup:49.1-49.58
+  ;; 5-runtime-aux.watsup:53.1-53.58
   def $funcsxv{externval : externval, xv* : externval*}([externval] :: xv*{xv : externval}) = $funcsxv(xv*{xv : externval})
     -- otherwise
 }
@@ -2588,13 +2594,13 @@ def $funcsxv(externval*) : funcaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:43.1-43.88
+;; 5-runtime-aux.watsup:47.1-47.88
 def $globalsxv(externval*) : globaladdr*
-  ;; 5-runtime-aux.watsup:51.1-51.26
+  ;; 5-runtime-aux.watsup:55.1-55.26
   def $globalsxv([]) = []
-  ;; 5-runtime-aux.watsup:52.1-52.53
+  ;; 5-runtime-aux.watsup:56.1-56.53
   def $globalsxv{ga : globaladdr, xv* : externval*}([GLOBAL_externval(ga)] :: xv*{xv : externval}) = [ga] :: $globalsxv(xv*{xv : externval})
-  ;; 5-runtime-aux.watsup:53.1-53.62
+  ;; 5-runtime-aux.watsup:57.1-57.62
   def $globalsxv{externval : externval, xv* : externval*}([externval] :: xv*{xv : externval}) = $globalsxv(xv*{xv : externval})
     -- otherwise
 }
@@ -2602,13 +2608,13 @@ def $globalsxv(externval*) : globaladdr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:44.1-44.87
+;; 5-runtime-aux.watsup:48.1-48.87
 def $tablesxv(externval*) : tableaddr*
-  ;; 5-runtime-aux.watsup:55.1-55.25
+  ;; 5-runtime-aux.watsup:59.1-59.25
   def $tablesxv([]) = []
-  ;; 5-runtime-aux.watsup:56.1-56.50
+  ;; 5-runtime-aux.watsup:60.1-60.50
   def $tablesxv{ta : tableaddr, xv* : externval*}([TABLE_externval(ta)] :: xv*{xv : externval}) = [ta] :: $tablesxv(xv*{xv : externval})
-  ;; 5-runtime-aux.watsup:57.1-57.60
+  ;; 5-runtime-aux.watsup:61.1-61.60
   def $tablesxv{externval : externval, xv* : externval*}([externval] :: xv*{xv : externval}) = $tablesxv(xv*{xv : externval})
     -- otherwise
 }
@@ -2616,13 +2622,13 @@ def $tablesxv(externval*) : tableaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:45.1-45.85
+;; 5-runtime-aux.watsup:49.1-49.85
 def $memsxv(externval*) : memaddr*
-  ;; 5-runtime-aux.watsup:59.1-59.23
+  ;; 5-runtime-aux.watsup:63.1-63.23
   def $memsxv([]) = []
-  ;; 5-runtime-aux.watsup:60.1-60.44
+  ;; 5-runtime-aux.watsup:64.1-64.44
   def $memsxv{ma : memaddr, xv* : externval*}([MEM_externval(ma)] :: xv*{xv : externval}) = [ma] :: $memsxv(xv*{xv : externval})
-  ;; 5-runtime-aux.watsup:61.1-61.56
+  ;; 5-runtime-aux.watsup:65.1-65.56
   def $memsxv{externval : externval, xv* : externval*}([externval] :: xv*{xv : externval}) = $memsxv(xv*{xv : externval})
     -- otherwise
 }
@@ -8257,10 +8263,16 @@ syntax config =
   | `%;%`{state : state, instr* : instr*}(state : state, instr*{instr : instr} : instr*)
 
 ;; 5-runtime-aux.watsup
+def $inst_valtype(moduleinst : moduleinst, valtype : valtype) : valtype
+  ;; 5-runtime-aux.watsup
+  def $inst_valtype{moduleinst : moduleinst, t : valtype, dt* : deftype*}(moduleinst, t) = $subst_all_valtype(t, (dt : deftype <: heaptype)*{dt : deftype})
+    -- if (dt*{dt : deftype} = moduleinst.TYPES_moduleinst)
+
+;; 5-runtime-aux.watsup
 def $inst_reftype(moduleinst : moduleinst, reftype : reftype) : reftype
   ;; 5-runtime-aux.watsup
-  def $inst_reftype{mm : moduleinst, rt : reftype, dt* : deftype*}(mm, rt) = $subst_all_reftype(rt, (dt : deftype <: heaptype)*{dt : deftype})
-    -- if (dt*{dt : deftype} = mm.TYPES_moduleinst)
+  def $inst_reftype{moduleinst : moduleinst, rt : reftype, dt* : deftype*}(moduleinst, rt) = $subst_all_reftype(rt, (dt : deftype <: heaptype)*{dt : deftype})
+    -- if (dt*{dt : deftype} = moduleinst.TYPES_moduleinst)
 
 ;; 5-runtime-aux.watsup
 def $default_(valtype : valtype) : val?
@@ -8292,13 +8304,13 @@ def $unpackfield(storagetype : storagetype, sx?, fieldval : fieldval) : val
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:42.1-42.86
+;; 5-runtime-aux.watsup:46.1-46.86
 def $funcsxv(externval*) : funcaddr*
-  ;; 5-runtime-aux.watsup:47.1-47.24
+  ;; 5-runtime-aux.watsup:51.1-51.24
   def $funcsxv([]) = []
-  ;; 5-runtime-aux.watsup:48.1-48.47
+  ;; 5-runtime-aux.watsup:52.1-52.47
   def $funcsxv{fa : funcaddr, xv* : externval*}([FUNC_externval(fa)] :: xv*{xv : externval}) = [fa] :: $funcsxv(xv*{xv : externval})
-  ;; 5-runtime-aux.watsup:49.1-49.58
+  ;; 5-runtime-aux.watsup:53.1-53.58
   def $funcsxv{externval : externval, xv* : externval*}([externval] :: xv*{xv : externval}) = $funcsxv(xv*{xv : externval})
     -- otherwise
 }
@@ -8306,13 +8318,13 @@ def $funcsxv(externval*) : funcaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:43.1-43.88
+;; 5-runtime-aux.watsup:47.1-47.88
 def $globalsxv(externval*) : globaladdr*
-  ;; 5-runtime-aux.watsup:51.1-51.26
+  ;; 5-runtime-aux.watsup:55.1-55.26
   def $globalsxv([]) = []
-  ;; 5-runtime-aux.watsup:52.1-52.53
+  ;; 5-runtime-aux.watsup:56.1-56.53
   def $globalsxv{ga : globaladdr, xv* : externval*}([GLOBAL_externval(ga)] :: xv*{xv : externval}) = [ga] :: $globalsxv(xv*{xv : externval})
-  ;; 5-runtime-aux.watsup:53.1-53.62
+  ;; 5-runtime-aux.watsup:57.1-57.62
   def $globalsxv{externval : externval, xv* : externval*}([externval] :: xv*{xv : externval}) = $globalsxv(xv*{xv : externval})
     -- otherwise
 }
@@ -8320,13 +8332,13 @@ def $globalsxv(externval*) : globaladdr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:44.1-44.87
+;; 5-runtime-aux.watsup:48.1-48.87
 def $tablesxv(externval*) : tableaddr*
-  ;; 5-runtime-aux.watsup:55.1-55.25
+  ;; 5-runtime-aux.watsup:59.1-59.25
   def $tablesxv([]) = []
-  ;; 5-runtime-aux.watsup:56.1-56.50
+  ;; 5-runtime-aux.watsup:60.1-60.50
   def $tablesxv{ta : tableaddr, xv* : externval*}([TABLE_externval(ta)] :: xv*{xv : externval}) = [ta] :: $tablesxv(xv*{xv : externval})
-  ;; 5-runtime-aux.watsup:57.1-57.60
+  ;; 5-runtime-aux.watsup:61.1-61.60
   def $tablesxv{externval : externval, xv* : externval*}([externval] :: xv*{xv : externval}) = $tablesxv(xv*{xv : externval})
     -- otherwise
 }
@@ -8334,13 +8346,13 @@ def $tablesxv(externval*) : tableaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:45.1-45.85
+;; 5-runtime-aux.watsup:49.1-49.85
 def $memsxv(externval*) : memaddr*
-  ;; 5-runtime-aux.watsup:59.1-59.23
+  ;; 5-runtime-aux.watsup:63.1-63.23
   def $memsxv([]) = []
-  ;; 5-runtime-aux.watsup:60.1-60.44
+  ;; 5-runtime-aux.watsup:64.1-64.44
   def $memsxv{ma : memaddr, xv* : externval*}([MEM_externval(ma)] :: xv*{xv : externval}) = [ma] :: $memsxv(xv*{xv : externval})
-  ;; 5-runtime-aux.watsup:61.1-61.56
+  ;; 5-runtime-aux.watsup:65.1-65.56
   def $memsxv{externval : externval, xv* : externval*}([externval] :: xv*{xv : externval}) = $memsxv(xv*{xv : externval})
     -- otherwise
 }
@@ -13977,10 +13989,16 @@ syntax config =
   | `%;%`{state : state, instr* : instr*}(state : state, instr*{instr : instr} : instr*)
 
 ;; 5-runtime-aux.watsup
+def $inst_valtype(moduleinst : moduleinst, valtype : valtype) : valtype
+  ;; 5-runtime-aux.watsup
+  def $inst_valtype{moduleinst : moduleinst, t : valtype, dt* : deftype*}(moduleinst, t) = $subst_all_valtype(t, (dt : deftype <: heaptype)*{dt : deftype})
+    -- if (dt*{dt : deftype} = moduleinst.TYPES_moduleinst)
+
+;; 5-runtime-aux.watsup
 def $inst_reftype(moduleinst : moduleinst, reftype : reftype) : reftype
   ;; 5-runtime-aux.watsup
-  def $inst_reftype{mm : moduleinst, rt : reftype, dt* : deftype*}(mm, rt) = $subst_all_reftype(rt, (dt : deftype <: heaptype)*{dt : deftype})
-    -- if (dt*{dt : deftype} = mm.TYPES_moduleinst)
+  def $inst_reftype{moduleinst : moduleinst, rt : reftype, dt* : deftype*}(moduleinst, rt) = $subst_all_reftype(rt, (dt : deftype <: heaptype)*{dt : deftype})
+    -- if (dt*{dt : deftype} = moduleinst.TYPES_moduleinst)
 
 ;; 5-runtime-aux.watsup
 def $default_(valtype : valtype) : val?
@@ -14012,13 +14030,13 @@ def $unpackfield(storagetype : storagetype, sx?, fieldval : fieldval) : val
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:42.1-42.86
+;; 5-runtime-aux.watsup:46.1-46.86
 def $funcsxv(externval*) : funcaddr*
-  ;; 5-runtime-aux.watsup:47.1-47.24
+  ;; 5-runtime-aux.watsup:51.1-51.24
   def $funcsxv([]) = []
-  ;; 5-runtime-aux.watsup:48.1-48.47
+  ;; 5-runtime-aux.watsup:52.1-52.47
   def $funcsxv{fa : funcaddr, xv* : externval*}([FUNC_externval(fa)] :: xv*{xv : externval}) = [fa] :: $funcsxv(xv*{xv : externval})
-  ;; 5-runtime-aux.watsup:49.1-49.58
+  ;; 5-runtime-aux.watsup:53.1-53.58
   def $funcsxv{externval : externval, xv* : externval*}([externval] :: xv*{xv : externval}) = $funcsxv(xv*{xv : externval})
     -- otherwise
 }
@@ -14026,13 +14044,13 @@ def $funcsxv(externval*) : funcaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:43.1-43.88
+;; 5-runtime-aux.watsup:47.1-47.88
 def $globalsxv(externval*) : globaladdr*
-  ;; 5-runtime-aux.watsup:51.1-51.26
+  ;; 5-runtime-aux.watsup:55.1-55.26
   def $globalsxv([]) = []
-  ;; 5-runtime-aux.watsup:52.1-52.53
+  ;; 5-runtime-aux.watsup:56.1-56.53
   def $globalsxv{ga : globaladdr, xv* : externval*}([GLOBAL_externval(ga)] :: xv*{xv : externval}) = [ga] :: $globalsxv(xv*{xv : externval})
-  ;; 5-runtime-aux.watsup:53.1-53.62
+  ;; 5-runtime-aux.watsup:57.1-57.62
   def $globalsxv{externval : externval, xv* : externval*}([externval] :: xv*{xv : externval}) = $globalsxv(xv*{xv : externval})
     -- otherwise
 }
@@ -14040,13 +14058,13 @@ def $globalsxv(externval*) : globaladdr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:44.1-44.87
+;; 5-runtime-aux.watsup:48.1-48.87
 def $tablesxv(externval*) : tableaddr*
-  ;; 5-runtime-aux.watsup:55.1-55.25
+  ;; 5-runtime-aux.watsup:59.1-59.25
   def $tablesxv([]) = []
-  ;; 5-runtime-aux.watsup:56.1-56.50
+  ;; 5-runtime-aux.watsup:60.1-60.50
   def $tablesxv{ta : tableaddr, xv* : externval*}([TABLE_externval(ta)] :: xv*{xv : externval}) = [ta] :: $tablesxv(xv*{xv : externval})
-  ;; 5-runtime-aux.watsup:57.1-57.60
+  ;; 5-runtime-aux.watsup:61.1-61.60
   def $tablesxv{externval : externval, xv* : externval*}([externval] :: xv*{xv : externval}) = $tablesxv(xv*{xv : externval})
     -- otherwise
 }
@@ -14054,13 +14072,13 @@ def $tablesxv(externval*) : tableaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:45.1-45.85
+;; 5-runtime-aux.watsup:49.1-49.85
 def $memsxv(externval*) : memaddr*
-  ;; 5-runtime-aux.watsup:59.1-59.23
+  ;; 5-runtime-aux.watsup:63.1-63.23
   def $memsxv([]) = []
-  ;; 5-runtime-aux.watsup:60.1-60.44
+  ;; 5-runtime-aux.watsup:64.1-64.44
   def $memsxv{ma : memaddr, xv* : externval*}([MEM_externval(ma)] :: xv*{xv : externval}) = [ma] :: $memsxv(xv*{xv : externval})
-  ;; 5-runtime-aux.watsup:61.1-61.56
+  ;; 5-runtime-aux.watsup:65.1-65.56
   def $memsxv{externval : externval, xv* : externval*}([externval] :: xv*{xv : externval}) = $memsxv(xv*{xv : externval})
     -- otherwise
 }
@@ -19697,10 +19715,16 @@ syntax config =
   | `%;%`{state : state, instr* : instr*}(state : state, instr*{instr : instr} : instr*)
 
 ;; 5-runtime-aux.watsup
+def $inst_valtype(moduleinst : moduleinst, valtype : valtype) : valtype
+  ;; 5-runtime-aux.watsup
+  def $inst_valtype{moduleinst : moduleinst, t : valtype, dt* : deftype*}(moduleinst, t) = $subst_all_valtype(t, (dt : deftype <: heaptype)*{dt : deftype})
+    -- if (dt*{dt : deftype} = moduleinst.TYPES_moduleinst)
+
+;; 5-runtime-aux.watsup
 def $inst_reftype(moduleinst : moduleinst, reftype : reftype) : reftype
   ;; 5-runtime-aux.watsup
-  def $inst_reftype{mm : moduleinst, rt : reftype, dt* : deftype*}(mm, rt) = $subst_all_reftype(rt, (dt : deftype <: heaptype)*{dt : deftype})
-    -- if (dt*{dt : deftype} = mm.TYPES_moduleinst)
+  def $inst_reftype{moduleinst : moduleinst, rt : reftype, dt* : deftype*}(moduleinst, rt) = $subst_all_reftype(rt, (dt : deftype <: heaptype)*{dt : deftype})
+    -- if (dt*{dt : deftype} = moduleinst.TYPES_moduleinst)
 
 ;; 5-runtime-aux.watsup
 def $default_(valtype : valtype) : val?
@@ -19732,13 +19756,13 @@ def $unpackfield(storagetype : storagetype, sx?, fieldval : fieldval) : val
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:42.1-42.86
+;; 5-runtime-aux.watsup:46.1-46.86
 def $funcsxv(externval*) : funcaddr*
-  ;; 5-runtime-aux.watsup:47.1-47.24
+  ;; 5-runtime-aux.watsup:51.1-51.24
   def $funcsxv([]) = []
-  ;; 5-runtime-aux.watsup:48.1-48.47
+  ;; 5-runtime-aux.watsup:52.1-52.47
   def $funcsxv{fa : funcaddr, xv* : externval*}([FUNC_externval(fa)] :: xv*{xv : externval}) = [fa] :: $funcsxv(xv*{xv : externval})
-  ;; 5-runtime-aux.watsup:49.1-49.58
+  ;; 5-runtime-aux.watsup:53.1-53.58
   def $funcsxv{externval : externval, xv* : externval*}([externval] :: xv*{xv : externval}) = $funcsxv(xv*{xv : externval})
     -- otherwise
 }
@@ -19746,13 +19770,13 @@ def $funcsxv(externval*) : funcaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:43.1-43.88
+;; 5-runtime-aux.watsup:47.1-47.88
 def $globalsxv(externval*) : globaladdr*
-  ;; 5-runtime-aux.watsup:51.1-51.26
+  ;; 5-runtime-aux.watsup:55.1-55.26
   def $globalsxv([]) = []
-  ;; 5-runtime-aux.watsup:52.1-52.53
+  ;; 5-runtime-aux.watsup:56.1-56.53
   def $globalsxv{ga : globaladdr, xv* : externval*}([GLOBAL_externval(ga)] :: xv*{xv : externval}) = [ga] :: $globalsxv(xv*{xv : externval})
-  ;; 5-runtime-aux.watsup:53.1-53.62
+  ;; 5-runtime-aux.watsup:57.1-57.62
   def $globalsxv{externval : externval, xv* : externval*}([externval] :: xv*{xv : externval}) = $globalsxv(xv*{xv : externval})
     -- otherwise
 }
@@ -19760,13 +19784,13 @@ def $globalsxv(externval*) : globaladdr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:44.1-44.87
+;; 5-runtime-aux.watsup:48.1-48.87
 def $tablesxv(externval*) : tableaddr*
-  ;; 5-runtime-aux.watsup:55.1-55.25
+  ;; 5-runtime-aux.watsup:59.1-59.25
   def $tablesxv([]) = []
-  ;; 5-runtime-aux.watsup:56.1-56.50
+  ;; 5-runtime-aux.watsup:60.1-60.50
   def $tablesxv{ta : tableaddr, xv* : externval*}([TABLE_externval(ta)] :: xv*{xv : externval}) = [ta] :: $tablesxv(xv*{xv : externval})
-  ;; 5-runtime-aux.watsup:57.1-57.60
+  ;; 5-runtime-aux.watsup:61.1-61.60
   def $tablesxv{externval : externval, xv* : externval*}([externval] :: xv*{xv : externval}) = $tablesxv(xv*{xv : externval})
     -- otherwise
 }
@@ -19774,13 +19798,13 @@ def $tablesxv(externval*) : tableaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:45.1-45.85
+;; 5-runtime-aux.watsup:49.1-49.85
 def $memsxv(externval*) : memaddr*
-  ;; 5-runtime-aux.watsup:59.1-59.23
+  ;; 5-runtime-aux.watsup:63.1-63.23
   def $memsxv([]) = []
-  ;; 5-runtime-aux.watsup:60.1-60.44
+  ;; 5-runtime-aux.watsup:64.1-64.44
   def $memsxv{ma : memaddr, xv* : externval*}([MEM_externval(ma)] :: xv*{xv : externval}) = [ma] :: $memsxv(xv*{xv : externval})
-  ;; 5-runtime-aux.watsup:61.1-61.56
+  ;; 5-runtime-aux.watsup:65.1-65.56
   def $memsxv{externval : externval, xv* : externval*}([externval] :: xv*{xv : externval}) = $memsxv(xv*{xv : externval})
     -- otherwise
 }
@@ -25583,10 +25607,16 @@ syntax config =
   | `%;%`{state : state, instr* : instr*}(state : state, instr*{instr : instr} : instr*)
 
 ;; 5-runtime-aux.watsup
+def $inst_valtype(moduleinst : moduleinst, valtype : valtype) : valtype
+  ;; 5-runtime-aux.watsup
+  def $inst_valtype{moduleinst : moduleinst, t : valtype, dt* : deftype*}(moduleinst, t) = $subst_all_valtype(t, (dt : deftype <: heaptype)*{dt : deftype})
+    -- where dt*{dt : deftype} = moduleinst.TYPES_moduleinst
+
+;; 5-runtime-aux.watsup
 def $inst_reftype(moduleinst : moduleinst, reftype : reftype) : reftype
   ;; 5-runtime-aux.watsup
-  def $inst_reftype{mm : moduleinst, rt : reftype, dt* : deftype*}(mm, rt) = $subst_all_reftype(rt, (dt : deftype <: heaptype)*{dt : deftype})
-    -- where dt*{dt : deftype} = mm.TYPES_moduleinst
+  def $inst_reftype{moduleinst : moduleinst, rt : reftype, dt* : deftype*}(moduleinst, rt) = $subst_all_reftype(rt, (dt : deftype <: heaptype)*{dt : deftype})
+    -- where dt*{dt : deftype} = moduleinst.TYPES_moduleinst
 
 ;; 5-runtime-aux.watsup
 def $default_(valtype : valtype) : val?
@@ -25618,13 +25648,13 @@ def $unpackfield(storagetype : storagetype, sx?, fieldval : fieldval) : val
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:42.1-42.86
+;; 5-runtime-aux.watsup:46.1-46.86
 def $funcsxv(externval*) : funcaddr*
-  ;; 5-runtime-aux.watsup:47.1-47.24
+  ;; 5-runtime-aux.watsup:51.1-51.24
   def $funcsxv([]) = []
-  ;; 5-runtime-aux.watsup:48.1-48.47
+  ;; 5-runtime-aux.watsup:52.1-52.47
   def $funcsxv{fa : funcaddr, xv* : externval*}([FUNC_externval(fa)] :: xv*{xv : externval}) = [fa] :: $funcsxv(xv*{xv : externval})
-  ;; 5-runtime-aux.watsup:49.1-49.58
+  ;; 5-runtime-aux.watsup:53.1-53.58
   def $funcsxv{externval : externval, xv* : externval*}([externval] :: xv*{xv : externval}) = $funcsxv(xv*{xv : externval})
     -- otherwise
 }
@@ -25632,13 +25662,13 @@ def $funcsxv(externval*) : funcaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:43.1-43.88
+;; 5-runtime-aux.watsup:47.1-47.88
 def $globalsxv(externval*) : globaladdr*
-  ;; 5-runtime-aux.watsup:51.1-51.26
+  ;; 5-runtime-aux.watsup:55.1-55.26
   def $globalsxv([]) = []
-  ;; 5-runtime-aux.watsup:52.1-52.53
+  ;; 5-runtime-aux.watsup:56.1-56.53
   def $globalsxv{ga : globaladdr, xv* : externval*}([GLOBAL_externval(ga)] :: xv*{xv : externval}) = [ga] :: $globalsxv(xv*{xv : externval})
-  ;; 5-runtime-aux.watsup:53.1-53.62
+  ;; 5-runtime-aux.watsup:57.1-57.62
   def $globalsxv{externval : externval, xv* : externval*}([externval] :: xv*{xv : externval}) = $globalsxv(xv*{xv : externval})
     -- otherwise
 }
@@ -25646,13 +25676,13 @@ def $globalsxv(externval*) : globaladdr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:44.1-44.87
+;; 5-runtime-aux.watsup:48.1-48.87
 def $tablesxv(externval*) : tableaddr*
-  ;; 5-runtime-aux.watsup:55.1-55.25
+  ;; 5-runtime-aux.watsup:59.1-59.25
   def $tablesxv([]) = []
-  ;; 5-runtime-aux.watsup:56.1-56.50
+  ;; 5-runtime-aux.watsup:60.1-60.50
   def $tablesxv{ta : tableaddr, xv* : externval*}([TABLE_externval(ta)] :: xv*{xv : externval}) = [ta] :: $tablesxv(xv*{xv : externval})
-  ;; 5-runtime-aux.watsup:57.1-57.60
+  ;; 5-runtime-aux.watsup:61.1-61.60
   def $tablesxv{externval : externval, xv* : externval*}([externval] :: xv*{xv : externval}) = $tablesxv(xv*{xv : externval})
     -- otherwise
 }
@@ -25660,13 +25690,13 @@ def $tablesxv(externval*) : tableaddr*
 ;; 5-runtime-aux.watsup
 rec {
 
-;; 5-runtime-aux.watsup:45.1-45.85
+;; 5-runtime-aux.watsup:49.1-49.85
 def $memsxv(externval*) : memaddr*
-  ;; 5-runtime-aux.watsup:59.1-59.23
+  ;; 5-runtime-aux.watsup:63.1-63.23
   def $memsxv([]) = []
-  ;; 5-runtime-aux.watsup:60.1-60.44
+  ;; 5-runtime-aux.watsup:64.1-64.44
   def $memsxv{ma : memaddr, xv* : externval*}([MEM_externval(ma)] :: xv*{xv : externval}) = [ma] :: $memsxv(xv*{xv : externval})
-  ;; 5-runtime-aux.watsup:61.1-61.56
+  ;; 5-runtime-aux.watsup:65.1-65.56
   def $memsxv{externval : externval, xv* : externval*}([externval] :: xv*{xv : externval}) = $memsxv(xv*{xv : externval})
     -- otherwise
 }

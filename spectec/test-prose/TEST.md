@@ -5373,8 +5373,12 @@ vshiftop (Jnn X N) vshif_u0 lane n
 3. Let (SHR sx) be vshif_u0.
 4. Return $ishr($lsize(Jnn), sx, lane, n).
 
-inst_reftype mm rt
-1. Let dt* be mm.TYPES.
+inst_valtype moduleinst t
+1. Let dt* be moduleinst.TYPES.
+2. Return $subst_all_valtype(t, dt*).
+
+inst_reftype moduleinst rt
+1. Let dt* be moduleinst.TYPES.
 2. Return $subst_all_reftype(rt, dt*).
 
 default_ valty_u0

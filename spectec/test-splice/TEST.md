@@ -1205,6 +1205,7 @@ warning: definition `ine` was never spliced
 warning: definition `ineg` was never spliced
 warning: definition `inot` was never spliced
 warning: definition `inst_reftype` was never spliced
+warning: definition `inst_valtype` was never spliced
 warning: definition `instantiate` was never spliced
 warning: definition `instexport` was never spliced
 warning: definition `instrdots` was never spliced
@@ -1617,6 +1618,7 @@ warning: definition prose `idx` was never spliced
 warning: definition prose `in_binop` was never spliced
 warning: definition prose `in_numtype` was never spliced
 warning: definition prose `inst_reftype` was never spliced
+warning: definition prose `inst_valtype` was never spliced
 warning: definition prose `instantiate` was never spliced
 warning: definition prose `instexport` was never spliced
 warning: definition prose `invfbytes` was never spliced
