@@ -25,8 +25,5 @@ Any form of :ref:`type <syntax-type>` can be *instantiated* into a :ref:`closed 
 $${definition: inst_valtype}
 $${definition-ignore: inst_reftype}
 
-.. math::
-   \insttype_{\moduleinst}(t) = t[\subst \moduleinst.\MITYPES]
-
 .. note::
    This is the runtime equivalent to :ref:`type closure <type-closure>`.
