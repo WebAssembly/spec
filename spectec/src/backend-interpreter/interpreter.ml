@@ -369,34 +369,41 @@ and merge env acc =
 
 and assign lhs rhs env =
   match lhs.it, rhs with
-  | VarE name, v -> Env.add name v env
-  | IterE ({ it = VarE n; _ }, _, List), ListV _ -> (* Optimized assign for simple IterE(VarE, ...) *)
-    Env.add n rhs env
+  | IterE ({ it = VarE name; _ }, _, (List|List1)), ListV _
+  | VarE name, _ -> Env.add name rhs env
   | IterE (e, ids, iter), _ ->
-    let new_env, default_rhs, rhs_list =
-      match iter, rhs with
-      | (List | List1), ListV arr -> env, listV [||], Array.to_list !arr
-      | ListN (expr, None), ListV arr ->
-        let length = Array.length !arr |> Z.of_int |> numV in
-        assign expr length env, listV [||], Array.to_list !arr
-      | Opt, OptV opt -> env, optV None, Option.to_list opt
-      | ListN (_, Some _), ListV _ ->
-        fail_expr lhs "invalid assignment: iter with index cannot be an assignment target"
-      | _, _ ->
+    (* Convert rhs to iterable list *)
+    let rhs_default, rhs_iter =
+      match rhs with
+      | OptV opt -> optV None, Option.to_list opt
+      | ListV arr -> empty_list, Array.to_list !arr
+      | _ -> 
         fail_expr lhs
           (sprintf
             "invalid assignment: %s is not an iterable value" (string_of_value rhs)
           )
     in
 
-    let envs = List.map (fun v -> assign e v Env.empty) rhs_list in
+    (* Assign length variable *)
+    let env_with_length =
+      match iter with
+      | ListN (expr, opt) ->
+        if Option.is_some opt then
+          fail_expr lhs "invalid assignment: iter with index cannot be an assignment target"
+        else
+          let length = numV_of_int (List.length rhs_iter) in
+          assign expr length env
+      | _ -> env
+    in
 
+    (* Assign iter variable *)
     ids
-    |> List.map (fun n -> n, default_rhs)
+    |> List.map (fun n -> n, rhs_default)
     |> List.to_seq
     |> Env.of_seq
-    |> List.fold_right merge envs
-    |> Env.union (fun _ _ v -> Some v) new_env
+    |> List.fold_right merge
+      (List.map (fun v -> assign e v Env.empty) rhs_iter)
+    |> Env.union (fun _ _ v -> Some v) env_with_length
   | InfixE (lhs1, _, lhs2), TupV [rhs1; rhs2] ->
     env |> assign lhs1 rhs1 |> assign lhs2 rhs2
   | TupE lhs_s, TupV rhs_s

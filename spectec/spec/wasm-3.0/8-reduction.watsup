@@ -62,8 +62,7 @@ rule Step_pure/select-false:
 
 def $blocktype_(state, blocktype) : functype hint(macro "fblocktype")
 def $blocktype_(z, _IDX x) = ft  -- Expand: $type(z, x) ~~ FUNC ft
-def $blocktype_(z, _RESULT t) = eps -> t
-def $blocktype_(z, _RESULT eps) = eps -> eps  ;; TODO: merge into t? case
+def $blocktype_(z, _RESULT t?) = eps -> t?
 
 rule Step_read/block:
   z; val^m (BLOCK bt instr*)  ~>  (LABEL_ n `{eps} val^m instr*)

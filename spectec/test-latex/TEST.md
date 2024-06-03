@@ -6694,8 +6694,7 @@ $$
 \begin{array}{@{}lcl@{}l@{}}
 {{\mathrm{blocktype}}}_{z}(x) &=& {\mathit{ft}}
   &\qquad \mbox{if}~z{.}\mathsf{types}{}[x] \approx \mathsf{func}~{\mathit{ft}} \\
-{{\mathrm{blocktype}}}_{z}(t) &=& \epsilon \rightarrow t \\
-{{\mathrm{blocktype}}}_{z}(\epsilon) &=& \epsilon \rightarrow \epsilon \\
+{{\mathrm{blocktype}}}_{z}({t^?}) &=& \epsilon \rightarrow {t^?} \\
 \end{array}
 $$
 
