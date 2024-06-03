@@ -147,12 +147,6 @@ let elem_oob frame x i n =
   I64.gt_u (I64.add (Table.index_of_num i) (Table.index_of_num n))
     (Elem.size (elem frame.inst x))
 
-let inc_address i at =
-  match i with
-  | I32 x -> (I32 (I32.add x 1l) @@ at)
-  | I64 x -> (I64 (I64.add x 1L) @@ at)
-  | _ -> Crash.error at ("bad address type")
-
 let rec step (c : config) : config =
   let {frame; code = vs, es; _} = c in
   let e = List.hd es in
@@ -440,12 +434,13 @@ let rec step (c : config) : config =
         else if n_64 = 0L then
           vs', []
         else
+          let i_64 = Memory.address_of_num i in
           vs', List.map (at e.at) [
             Plain (Const (i @@ e.at));
             Plain (Const (k @@ e.at));
             Plain (Store
               {ty = I32Type; align = 0; offset = 0L; pack = Some Pack8});
-            Plain (Const (inc_address i e.at));
+            Plain (Const (I64 (I64.add i_64 1L) @@ e.at));
             Plain (Const (k @@ e.at));
             Plain (Const (I64 (I64.sub n_64 1L) @@ e.at));
             Plain (MemoryFill);
