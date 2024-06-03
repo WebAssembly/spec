@@ -325,14 +325,14 @@ func_type_result :
     { $3 @ $5 }
 
 table_type :
-  | value_type limits64 ref_type { TableType ($2, index_type_of_value_type $1 $sloc, $3) }
-  | limits64 ref_type { TableType ($1, I32IndexType, $2) }
+  | value_type limits ref_type { TableType ($2, index_type_of_value_type $1 $sloc, $3) }
+  | limits ref_type { TableType ($1, I32IndexType, $2) }
 
 memory_type :
-  | value_type limits64 { MemoryType ($2, index_type_of_value_type $1 $sloc) }
-  | limits64 { MemoryType ($1, I32IndexType) }
+  | value_type limits { MemoryType ($2, index_type_of_value_type $1 $sloc) }
+  | limits { MemoryType ($1, I32IndexType) }
 
-limits64 :
+limits :
   | NAT { {min = nat64 $1 $loc($1); max = None} }
   | NAT NAT { {min = nat64 $1 $loc($1); max = Some (nat64 $2 $loc($2))} }
 
