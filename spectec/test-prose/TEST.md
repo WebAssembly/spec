@@ -3635,8 +3635,8 @@ watsup 0.4 generator
 == Running pass animate...
 == IL Validation after pass animate...
 == Translating to AL...
-8-reduction.watsup:226.12-226.36: translate_rulepr: Yet `(`%;%`_config(z, instr*{instr : instr}), `%;%`_config(z', instr'*{instr' : instr}))`
-8-reduction.watsup:230.12-230.44: translate_rulepr: Yet `(`%;%`_config(`%;%`_state(s, f'), instr*{instr : instr}), `%;%`_config(`%;%`_state(s', f'), instr'*{instr' : instr}))`
+8-reduction.watsup:225.12-225.36: translate_rulepr: Yet `(`%;%`_config(z, instr*{instr : instr}), `%;%`_config(z', instr'*{instr' : instr}))`
+8-reduction.watsup:229.12-229.44: translate_rulepr: Yet `(`%;%`_config(`%;%`_state(s, f'), instr*{instr : instr}), `%;%`_config(`%;%`_state(s', f'), instr'*{instr' : instr}))`
 == Prose Generation...
 6-typing.watsup:622.7-622.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0)`
 6-typing.watsup:623.6-623.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l'!`%`_labelidx.0]!`%`_resulttype.0)`
@@ -5644,13 +5644,9 @@ blocktype_ block_u0
   b. Assert: Due to validation, $expanddt($type(x)) is of the case FUNC.
   c. Let (FUNC ft) be $expanddt($type(x)).
   d. Return ft.
-2. If block_u0 is of the case _RESULT, then:
-  a. Let (_RESULT y_0) be block_u0.
-  b. If y_0 is defined, then:
-    1) Let ?(t) be y_0.
-    2) Return ([] -> [t]).
-3. Assert: Due to validation, (block_u0 is (_RESULT ?())).
-4. Return ([] -> []).
+2. Assert: Due to validation, block_u0 is of the case _RESULT.
+3. Let (_RESULT t?) be block_u0.
+4. Return ([] -> t?).
 
 alloctypes type_u0*
 1. If (type_u0* is []), then:
