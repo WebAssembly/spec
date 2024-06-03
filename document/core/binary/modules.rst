@@ -9,7 +9,7 @@ except that :ref:`function definitions <syntax-func>` are split into two section
    This separation enables *parallel* and *streaming* compilation of the functions in a module.
 
 
-.. index:: index, type index, function index, table index, memory index, global index, element index, data index, local index, label index
+.. index:: index, type index, function index, table index, memory index, global index, element index, data index, local index, label index, field index
    pair: binary format; type index
    pair: binary format; function index
    pair: binary format; table index
@@ -19,6 +19,7 @@ except that :ref:`function definitions <syntax-func>` are split into two section
    pair: binary format; data index
    pair: binary format; local index
    pair: binary format; label index
+   pair: binary format; field index
 .. _binary-typeidx:
 .. _binary-funcidx:
 .. _binary-tableidx:
@@ -28,6 +29,7 @@ except that :ref:`function definitions <syntax-func>` are split into two section
 .. _binary-dataidx:
 .. _binary-localidx:
 .. _binary-labelidx:
+.. _binary-fieldidx:
 .. _binary-index:
 
 Indices
@@ -46,6 +48,7 @@ All :ref:`indices <syntax-index>` are encoded with their respective value.
    \production{data index} & \Bdataidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{local index} & \Blocalidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{label index} & \Blabelidx &::=& l{:}\Bu32 &\Rightarrow& l \\
+   \production{field index} & \Bfieldidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \end{array}
 
 
@@ -130,7 +133,7 @@ Their contents consist of a :ref:`name <syntax-name>` further identifying the cu
    If an implementation interprets the data of a custom section, then errors in that data, or the placement of the section, must not invalidate the module.
 
 
-.. index:: ! type section, type definition
+.. index:: ! type section, type definition, recursive type
    pair: binary format; type section
    pair: section; type
 .. _binary-typedef:
@@ -140,12 +143,12 @@ Type Section
 ~~~~~~~~~~~~
 
 The *type section* has the id 1.
-It decodes into a vector of :ref:`function types <syntax-functype>` that represent the |MTYPES| component of a :ref:`module <syntax-module>`.
+It decodes into a vector of :ref:`recursive types <syntax-rectype>` that represent the |MTYPES| component of a :ref:`module <syntax-module>`.
 
 .. math::
    \begin{array}{llclll}
    \production{type section} & \Btypesec &::=&
-     \X{ft}^\ast{:\,}\Bsection_1(\Bvec(\Bfunctype)) &\Rightarrow& \X{ft}^\ast \\
+     \X{rt}^\ast{:\,}\Bsection_1(\Bvec(\Brectype)) &\Rightarrow& \X{rt}^\ast \\
    \end{array}
 
 
@@ -213,8 +216,17 @@ It decodes into a vector of :ref:`tables <syntax-table>` that represent the |MTA
    \production{table section} & \Btablesec &::=&
      \X{tab}^\ast{:}\Bsection_4(\Bvec(\Btable)) &\Rightarrow& \X{tab}^\ast \\
    \production{table} & \Btable &::=&
-     \X{tt}{:}\Btabletype &\Rightarrow& \{ \TTYPE~\X{tt} \} \\
+     \X{tt}{:}\Btabletype
+       &\Rightarrow& \{ \TTYPE~\X{tt}, \TINIT~(\REFNULL~\X{ht}) \}
+         \qquad \iff \X{tt} = \limits~(\REF~\NULL^?~\X{ht}) \\ &&|&
+     \hex{40}~~\hex{00}~~\X{tt}{:}\Btabletype~~e{:}\Bexpr
+       &\Rightarrow& \{ \TTYPE~\X{tt}, \TINIT~e \} \\
    \end{array}
+
+.. note::
+   The encoding of a table type cannot start with byte :math:`\hex{40}`,
+   hence decoding is unambiguous.
+   The zero byte following it is reserved for future extensions.
 
 
 .. index:: ! memory section, memory, memory type
@@ -332,7 +344,7 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
    \production{element segment} & \Belem &::=&
      0{:}\Bu32~~e{:}\Bexpr~~y^\ast{:}\Bvec(\Bfuncidx)
        &\Rightarrow& \\&&&\quad
-       \{ \ETYPE~\FUNCREF, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
+       \{ \ETYPE~(\REF~\FUNC), \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
      1{:}\Bu32~~\X{et}:\Belemkind~~y^\ast{:}\Bvec(\Bfuncidx)
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EPASSIVE \} \\ &&|&
@@ -344,7 +356,7 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
        \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EDECLARATIVE \} \\ &&|&
      4{:}\Bu32~~e{:}\Bexpr~~\X{el}^\ast{:}\Bvec(\Bexpr)
        &\Rightarrow& \\&&&\quad
-       \{ \ETYPE~\FUNCREF, \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
+       \{ \ETYPE~(\REF~\FUNC), \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
      5{:}\Bu32~~\X{et}:\Breftype~~\X{el}^\ast{:}\Bvec(\Bexpr)
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EPASSIVE \} \\ &&|&
@@ -355,7 +367,7 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EDECLARATIVE \} \\
    \production{element kind} & \Belemkind &::=&
-     \hex{00} &\Rightarrow& \FUNCREF \\
+     \hex{00} &\Rightarrow& (\REF~\FUNC) \\
    \end{array}
 
 .. note::
@@ -408,15 +420,15 @@ denoting *count* locals of the same value type.
      \X{size}{:}\Bu32~~\X{code}{:}\Bfunc
        &\Rightarrow& \X{code} & (\iff \X{size} = ||\Bfunc||) \\
    \production{function} & \Bfunc &::=&
-     (t^\ast)^\ast{:}\Bvec(\Blocals)~~e{:}\Bexpr
-       &\Rightarrow& \concat((t^\ast)^\ast), e
-         & (\iff |\concat((t^\ast)^\ast)| < 2^{32}) \\
+     (\local^\ast)^\ast{:}\Bvec(\Blocals)~~e{:}\Bexpr
+       &\Rightarrow& \concat((\local^\ast)^\ast), e
+         & (\iff |\concat((\local^\ast)^\ast)| < 2^{32}) \\
    \production{locals} & \Blocals &::=&
-     n{:}\Bu32~~t{:}\Bvaltype &\Rightarrow& t^n \\
+     n{:}\Bu32~~t{:}\Bvaltype &\Rightarrow& \{ \LTYPE~t \}^n \\
    \end{array}
 
 Here, :math:`\X{code}` ranges over pairs :math:`(\valtype^\ast, \expr)`.
-The meta function :math:`\concat((t^\ast)^\ast)` concatenates all sequences :math:`t_i^\ast` in :math:`(t^\ast)^\ast`.
+The meta function :math:`\concat((\local^\ast)^\ast)` concatenates all sequences :math:`\local_i^\ast` in :math:`(\local^\ast)^\ast`.
 Any code for which the length of the resulting sequence is out of bounds of the maximum size of a :ref:`vector <syntax-vec>` is malformed.
 
 .. note::
@@ -519,7 +531,7 @@ Furthermore, it must be present if any :ref:`data index <syntax-dataidx>` occurs
      \Bmagic \\ &&&
      \Bversion \\ &&&
      \Bcustomsec^\ast \\ &&&
-     \functype^\ast{:\,}\Btypesec \\ &&&
+     \rectype^\ast{:\,}\Btypesec \\ &&&
      \Bcustomsec^\ast \\ &&&
      \import^\ast{:\,}\Bimportsec \\ &&&
      \Bcustomsec^\ast \\ &&&
@@ -545,7 +557,7 @@ Furthermore, it must be present if any :ref:`data index <syntax-dataidx>` occurs
      \Bcustomsec^\ast
      \quad\Rightarrow\quad \{~
        \begin{array}[t]{@{}l@{}}
-       \MTYPES~\functype^\ast, \\
+       \MTYPES~\rectype^\ast, \\
        \MFUNCS~\func^n, \\
        \MTABLES~\table^\ast, \\
        \MMEMS~\mem^\ast, \\

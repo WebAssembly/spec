@@ -1,9 +1,460 @@
+.. _valid-type:
+
 Types
 -----
 
-Most :ref:`types <syntax-type>` are universally valid.
-However, restrictions apply to :ref:`limits <syntax-limits>`, which must be checked during validation.
+Simple :ref:`types <syntax-type>`, such as :ref:`number types <syntax-numtype>` are universally valid.
+However, restrictions apply to most other types, such as :ref:`reference types <syntax-reftype>`, :ref:`function types <syntax-functype>`, as well as the :ref:`limits <syntax-limits>` of :ref:`table types <syntax-tabletype>` and :ref:`memory types <syntax-memtype>`, which must be checked during validation.
+
 Moreover, :ref:`block types <syntax-blocktype>` are converted to plain :ref:`function types <syntax-functype>` for ease of processing.
+
+
+.. index:: number type
+   pair: validation; number type
+   single: abstract syntax; number type
+.. _valid-numtype:
+
+Number Types
+~~~~~~~~~~~~
+
+:ref:`Number types <syntax-numtype>` are always valid.
+
+.. math::
+   \frac{
+   }{
+     C \vdashnumtype \numtype \ok
+   }
+
+
+.. index:: vector type
+   pair: validation; vector type
+   single: abstract syntax; vector type
+.. _valid-vectype:
+
+Vector Types
+~~~~~~~~~~~~
+
+:ref:`Vector types <syntax-vectype>` are always valid.
+
+.. math::
+   \frac{
+   }{
+     C \vdashvectype \vectype \ok
+   }
+
+
+.. index:: heap type, type identifier
+   pair: validation; heap type
+   single: abstract syntax; heap type
+.. _valid-heaptype:
+
+Heap Types
+~~~~~~~~~~
+
+Concrete :ref:`Heap types <syntax-heaptype>` are only valid when the :ref:`type index <syntax-typeidx>` is.
+
+:math:`\absheaptype`
+....................
+
+* The heap type is valid.
+
+.. math::
+   \frac{
+   }{
+     C \vdashheaptype \absheaptype \ok
+   }
+
+:math:`\typeidx`
+................
+
+* The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
+
+* Then the heap type is valid.
+
+.. math::
+   \frac{
+     C.\CTYPES[\typeidx] = \deftype
+   }{
+     C \vdashheaptype \typeidx \ok
+   }
+
+
+.. index:: reference type, heap type
+   pair: validation; reference type
+   single: abstract syntax; reference type
+.. _valid-reftype:
+
+Reference Types
+~~~~~~~~~~~~~~~
+
+:ref:`Reference types <syntax-reftype>` are valid when the referenced :ref:`heap type <syntax-heaptype>` is.
+
+:math:`\REF~\NULL^?~\heaptype`
+..............................
+
+* The heap type :math:`\heaptype` must be :ref:`valid <valid-heaptype>`.
+
+* Then the reference type is valid.
+
+.. math::
+   \frac{
+     C \vdashreftype \heaptype \ok
+   }{
+     C \vdashreftype \REF~\NULL^?~\heaptype \ok
+   }
+
+
+.. index:: value type, reference type, number type, vector type
+   pair: validation; value type
+   single: abstract syntax; value type
+.. _valid-valtype:
+
+Value Types
+~~~~~~~~~~~
+
+Valid :ref:`value types <syntax-valtype>` are either valid :ref:`number types <valid-numtype>`, valid :ref:`vector types <valid-vectype>`, or valid :ref:`reference types <valid-reftype>`.
+
+
+.. index:: block type, instruction type
+   pair: validation; block type
+   single: abstract syntax; block type
+.. _valid-blocktype:
+
+Block Types
+~~~~~~~~~~~
+
+:ref:`Block types <syntax-blocktype>` may be expressed in one of two forms, both of which are converted to :ref:`instruction types <syntax-instrtype>` by the following rules.
+
+:math:`\typeidx`
+................
+
+* The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
+
+* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CFUNCS[\typeidx]` must be a :ref:`function type <syntax-functype>` :math:`\TFUNC~[t_1^\ast] \toF [t_2^\ast]`.
+
+* Then the block type is valid as :ref:`instruction type <syntax-instrtype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
+
+.. math::
+   \frac{
+     \expanddt(C.\CTYPES[\typeidx]) = \TFUNC~[t_1^\ast] \toF [t_2^\ast]
+   }{
+     C \vdashblocktype \typeidx : [t_1^\ast] \to [t_2^\ast]
+   }
+
+
+:math:`[\valtype^?]`
+....................
+
+* The value type :math:`\valtype` must either be absent, or :ref:`valid <valid-valtype>`.
+
+* Then the block type is valid as :ref:`instruction type <syntax-instrtype>` :math:`[] \to [\valtype^?]`.
+
+.. math::
+   \frac{
+     (C \vdashvaltype \valtype \ok)^?
+   }{
+     C \vdashblocktype [\valtype^?] : [] \to [\valtype^?]
+   }
+
+
+.. index:: result type, value type
+   pair: validation; result type
+   single: abstract syntax; result type
+.. _valid-resulttype:
+
+Result Types
+~~~~~~~~~~~~
+
+:math:`[t^\ast]`
+................
+
+* Each :ref:`value type <syntax-valtype>` :math:`t_i` in the type sequence :math:`t^\ast` must be :ref:`valid <valid-valtype>`.
+
+* Then the result type is valid.
+
+.. math::
+   \frac{
+     (C \vdashvaltype t \ok)^\ast
+   }{
+     C \vdashresulttype [t^\ast] \ok
+   }
+
+
+.. index:: instruction type
+   pair: validation; instruction type
+   single: abstract syntax; instruction type
+.. _valid-instrtype:
+
+Instruction Types
+~~~~~~~~~~~~~~~~~
+
+:math:`[t_1^\ast] \rightarrow_{x^\ast} [t_2^\ast]`
+..................................................
+
+* The :ref:`result type <syntax-resulttype>` :math:`[t_1^\ast]` must be :ref:`valid <valid-resulttype>`.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` must be :ref:`valid <valid-resulttype>`.
+
+* Each :ref:`local index <syntax-localidx>` :math:`x_i` in :math:`x^\ast` must be defined in the context.
+
+* Then the instruction type is valid.
+
+.. math::
+   \frac{
+     C \vdashvaltype [t_1^\ast] \ok
+     \qquad
+     C \vdashvaltype [t_2^\ast] \ok
+     \qquad
+     (C.\CLOCALS[x] = \localtype)^\ast
+   }{
+     C \vdashfunctype [t_1^\ast] \to_{x^\ast} [t_2^\ast] \ok
+   }
+
+
+.. index:: function type
+   pair: validation; function type
+   single: abstract syntax; function type
+.. _valid-functype:
+
+Function Types
+~~~~~~~~~~~~~~
+
+:math:`[t_1^\ast] \toF [t_2^\ast]`
+..................................
+
+* The :ref:`result type <syntax-resulttype>` :math:`[t_1^\ast]` must be :ref:`valid <valid-resulttype>`.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` must be :ref:`valid <valid-resulttype>`.
+
+* Then the function type is valid.
+
+.. math::
+   \frac{
+     C \vdashvaltype [t_1^\ast] \ok
+     \qquad
+     C \vdashvaltype [t_2^\ast] \ok
+   }{
+     C \vdashfunctype [t_1^\ast] \toF [t_2^\ast] \ok
+   }
+
+
+.. index:: composite type, function type, aggregate type, structure type, array type, field type
+   pair: validation; composite type
+   pair: validation; aggregate type
+   pair: validation; structure type
+   pair: validation; array type
+   single: abstract syntax; composite type
+   single: abstract syntax; function type
+   single: abstract syntax; structure type
+   single: abstract syntax; array type
+   single: abstract syntax; field type
+.. _valid-comptype:
+.. _valid-aggrtype:
+.. _valid-structtype:
+.. _valid-arraytype:
+
+Composite Types
+~~~~~~~~~~~~~~~
+
+:math:`\TFUNC~\functype`
+........................
+
+* The :ref:`function type <syntax-functype>` :math:`\functype` must be :ref:`valid <valid-functype>`.
+
+* Then the composite type is valid.
+
+.. math::
+   \frac{
+     C \vdashfunctype \functype \ok
+   }{
+     C \vdashcomptype \TFUNC~\functype \ok
+   }
+
+:math:`\TSTRUCT~\fieldtype^\ast`
+................................
+
+* For each :ref:`field type <syntax-fieldtype>` :math:`\fieldtype_i` in :math:`\fieldtype^\ast`:
+
+  * The :ref:`field type <syntax-fieldtype>` :math:`\fieldtype_i` must be :ref:`valid <valid-fieldtype>`.
+
+* Then the composite type is valid.
+
+.. math::
+   \frac{
+     (C \vdashfieldtype \X{ft} \ok)^\ast
+   }{
+     C \vdashcomptype \TSTRUCT~\X{ft}^\ast \ok
+   }
+
+:math:`\TARRAY~\fieldtype`
+..........................
+
+* The :ref:`field type <syntax-fieldtype>` :math:`\fieldtype` must be :ref:`valid <valid-fieldtype>`.
+
+* Then the composite type is valid.
+
+.. math::
+   \frac{
+     C \vdashfieldtype \X{ft} \ok
+   }{
+     C \vdashcomptype \TARRAY~\X{ft} \ok
+   }
+
+
+.. index:: field type, storage type, packed type, value type, mutability
+   pair: validation; field type
+   pair: validation; storage type
+   pair: validation; packed type
+   single: abstract syntax; field type
+   single: abstract syntax; storage type
+   single: abstract syntax; packed type
+   single: abstract syntax; value type
+.. _valid-fieldtype:
+.. _valid-storagetype:
+.. _valid-packedtype:
+
+Field Types
+~~~~~~~~~~~
+
+:math:`\mut~\storagetype`
+.........................
+
+* The :ref:`storage type <syntax-storagetype>` :math:`\storagetype` must be :ref:`valid <valid-storagetype>`.
+
+* Then the field type is valid.
+
+.. math::
+   \frac{
+     C \vdashstoragetype \X{st} \ok
+   }{
+     C \vdashfieldtype \mut~\X{st} \ok
+   }
+
+:math:`\packedtype`
+...................
+
+* The packed type is valid.
+
+.. math::
+   \frac{
+   }{
+     C \vdashpackedtype \packedtype \ok
+   }
+
+
+.. index:: recursive type, sub type, composite type, final, subtyping
+   pair: abstract syntax; recursive type
+   pair: abstract syntax; sub type
+.. _valid-rectype:
+.. _valid-subtype:
+
+Recursive Types
+~~~~~~~~~~~~~~~
+
+:ref:`Recursive types <syntax-rectype>` are validated for a specific :ref:`type index <syntax-typeidx>` that denotes the index of the type defined by the recursive group.
+
+:math:`\TREC~\subtype^\ast`
+...........................
+
+* Either the sequence :math:`\subtype^\ast` is empty.
+
+* Or:
+
+  * The first :ref:`sub type <syntax-subtype>` of the sequence :math:`\subtype^\ast` must be :ref:`valid <valid-subtype>` for the :ref:`type index <syntax-typeidx>` :math:`x`.
+
+  * The remaining sequence :math:`\subtype^\ast` must be :ref:`valid <valid-rectype>` for the :ref:`type index <syntax-typeidx>` :math:`x + 1`.
+
+* Then the recursive type is valid for the :ref:`type index <syntax-typeidx>` :math:`x`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashrectype \TREC~\epsilon ~{\ok}(x)
+   }
+   \qquad
+   \frac{
+     C \vdashsubtype \subtype ~{\ok}(x)
+     \qquad
+     C \vdashrectype \TREC~{\subtype'}^\ast ~{\ok}(x + 1)
+   }{
+     C \vdashrectype \TREC~\subtype~{\subtype'}^\ast ~{\ok}(x)
+   }
+
+:math:`\TSUB~\TFINAL^?~y^\ast~\comptype`
+........................................
+
+* The :ref:`composite type <syntax-comptype>` :math:`\comptype` must be :ref:`valid <valid-comptype>`.
+
+* The sequence :math:`y^\ast` may be no longer than :math:`1`.
+
+* For every :ref:`type index <syntax-typeidx>` :math:`y_i` in :math:`y^\ast`:
+
+  * The :ref:`type index <syntax-typeidx>` :math:`y_i` must be smaller than :math:`x`.
+
+  * The :ref:`type index <syntax-typeidx>` :math:`y_i` must exist in the context :math:`C`.
+
+  * Let :math:`\subtype_i` be the :ref:`unrolling <aux-unroll-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[y_i]`.
+
+  * The :ref:`sub type <syntax-subtype>` :math:`\subtype_i` must not contain :math:`\TFINAL`.
+
+  * Let :math:`\comptype'_i` be the :ref:`composite type <syntax-comptype>` in :math:`\subtype_i`.
+
+  * The :ref:`composite type <syntax-comptype>` :math:`\comptype` must :ref:`match <match-comptype>` :math:`\comptype'_i`.
+
+* Then the sub type is valid for the :ref:`type index <syntax-typeidx>` :math:`x`.
+
+.. math::
+   \frac{
+     \begin{array}{@{}c@{}}
+     |y^\ast| \leq 1
+     \qquad
+     (y < x)^\ast
+     \qquad
+     (\unrolldt(C.\CTYPES[y]) = \TSUB~{y'}^\ast~\comptype')^\ast
+     \\
+     C \vdashcomptype \comptype \ok
+     \qquad
+     (C \vdashcomptypematch \comptype \matchescomptype \comptype')^\ast
+     \end{array}
+   }{
+     C \vdashsubtype \TSUB~\TFINAL^?~y^\ast~\comptype ~{\ok}(x)
+   }
+
+.. note::
+   The side condition on the index ensures that a declared supertype is a previously defined types,
+   preventing cyclic subtype hierarchies.
+
+   Future versions of WebAssembly may allow more than one supertype.
+
+
+.. index:: defined type, recursive type, unroll, expand
+   pair: abstract syntax; defined type
+.. _valid-deftype:
+
+Defined Types
+~~~~~~~~~~~~~
+
+:math:`\rectype.i`
+..................
+
+* The :ref:`recursive type <syntax-rectype>` :math:`\rectype` must be :ref:`valid <valid-rectype>` for some :ref:`type index <syntax-typeidx>` :math:`x`.
+
+* Let :math:`\TREC~\subtype^\ast` be the :ref:`defined type <syntax-rectype>` :math:`\rectype`.
+
+* The number :math:`i` must be smaller than the length of the sequence :math:`\subtype^\ast` of :ref:`sub types <syntax-subtype>`.
+
+* Then the defined type is valid.
+
+.. math::
+   \frac{
+     C \vdashrectype \rectype ~{\ok}(x)
+     \qquad
+     \rectype = \TREC~\subtype^n
+     \qquad
+     i < n
+   }{
+     C \vdashdeftype \rectype.i \ok
+   }
 
 
 .. index:: limits
@@ -37,66 +488,7 @@ Limits
      \qquad
      (n \leq m)^?
    }{
-     \vdashlimits \{ \LMIN~n, \LMAX~m^? \} : k
-   }
-
-
-.. index:: block type
-   pair: validation; block type
-   single: abstract syntax; block type
-.. _valid-blocktype:
-
-Block Types
-~~~~~~~~~~~
-
-:ref:`Block types <syntax-blocktype>` may be expressed in one of two forms, both of which are converted to plain :ref:`function types <syntax-functype>` by the following rules.
-
-:math:`\typeidx`
-................
-
-* The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
-
-* Then the block type is valid as :ref:`function type <syntax-functype>` :math:`C.\CTYPES[\typeidx]`.
-
-.. math::
-   \frac{
-     C.\CTYPES[\typeidx] = \functype
-   }{
-     C \vdashblocktype \typeidx : \functype
-   }
-
-
-:math:`[\valtype^?]`
-....................
-
-* The block type is valid as :ref:`function type <syntax-functype>` :math:`[] \to [\valtype^?]`.
-
-.. math::
-   \frac{
-   }{
-     C \vdashblocktype [\valtype^?] : [] \to [\valtype^?]
-   }
-
-
-.. index:: function type
-   pair: validation; function type
-   single: abstract syntax; function type
-.. _valid-functype:
-
-Function Types
-~~~~~~~~~~~~~~
-
-:ref:`Function types <syntax-functype>` are always valid.
-
-:math:`[t_1^n] \to [t_2^m]`
-...........................
-
-* The function type is valid.
-
-.. math::
-   \frac{
-   }{
-     \vdashfunctype [t_1^\ast] \to [t_2^\ast] \ok
+     C \vdashlimits \{ \LMIN~n, \LMAX~m^? \} : k
    }
 
 
@@ -113,13 +505,17 @@ Table Types
 
 * The limits :math:`\limits` must be :ref:`valid <valid-limits>` within range :math:`2^{32}-1`.
 
+* The reference type :math:`\reftype` must be :ref:`valid <valid-reftype>`.
+
 * Then the table type is valid.
 
 .. math::
    \frac{
-     \vdashlimits \limits : 2^{32} - 1
+     C \vdashlimits \limits : 2^{32} - 1
+     \qquad
+     C \vdashreftype \reftype \ok
    }{
-     \vdashtabletype \limits~\reftype \ok
+     C \vdashtabletype \limits~\reftype \ok
    }
 
 
@@ -140,9 +536,9 @@ Memory Types
 
 .. math::
    \frac{
-     \vdashlimits \limits : 2^{16}
+     C \vdashlimits \limits : 2^{16}
    }{
-     \vdashmemtype \limits \ok
+     C \vdashmemtype \limits \ok
    }
 
 
@@ -157,12 +553,15 @@ Global Types
 :math:`\mut~\valtype`
 .....................
 
-* The global type is valid.
+* The value type :math:`\valtype` must be :ref:`valid <valid-valtype>`.
+
+* Then the global type is valid.
 
 .. math::
    \frac{
+     C \vdashreftype \valtype \ok
    }{
-     \vdashglobaltype \mut~\valtype \ok
+     C \vdashglobaltype \mut~\valtype \ok
    }
 
 
@@ -174,18 +573,22 @@ Global Types
 External Types
 ~~~~~~~~~~~~~~
 
-:math:`\ETFUNC~\functype`
-.........................
+:math:`\ETFUNC~\deftype`
+........................
 
-* The :ref:`function type <syntax-functype>` :math:`\functype` must be :ref:`valid <valid-functype>`.
+* The :ref:`defined type <syntax-deftype>` :math:`\deftype` must be :ref:`valid <valid-deftype>`.
+
+* The :ref:`defined type <syntax-deftype>` :math:`\deftype` must be a :ref:`function type <syntax-functype>`.
 
 * Then the external type is valid.
 
 .. math::
    \frac{
-     \vdashfunctype \functype \ok
+     C \vdashdeftype \deftype \ok
+     \qquad
+     \expanddt(\deftype) = \TFUNC~\functype
    }{
-     \vdashexterntype \ETFUNC~\functype \ok
+     C \vdashexterntype \ETFUNC~\deftype
    }
 
 :math:`\ETTABLE~\tabletype`
@@ -197,9 +600,9 @@ External Types
 
 .. math::
    \frac{
-     \vdashtabletype \tabletype \ok
+     C \vdashtabletype \tabletype \ok
    }{
-     \vdashexterntype \ETTABLE~\tabletype \ok
+     C \vdashexterntype \ETTABLE~\tabletype \ok
    }
 
 :math:`\ETMEM~\memtype`
@@ -211,9 +614,9 @@ External Types
 
 .. math::
    \frac{
-     \vdashmemtype \memtype \ok
+     C \vdashmemtype \memtype \ok
    }{
-     \vdashexterntype \ETMEM~\memtype \ok
+     C \vdashexterntype \ETMEM~\memtype \ok
    }
 
 :math:`\ETGLOBAL~\globaltype`
@@ -225,131 +628,46 @@ External Types
 
 .. math::
    \frac{
-     \vdashglobaltype \globaltype \ok
+     C \vdashglobaltype \globaltype \ok
    }{
-     \vdashexterntype \ETGLOBAL~\globaltype \ok
+     C \vdashexterntype \ETGLOBAL~\globaltype \ok
    }
 
 
-.. index:: ! matching, external type
-.. _exec-import:
-.. _match:
+.. index:: value type, ! defaultable, number type, vector type, reference type, table type
+.. _valid-defaultable:
 
-Import Subtyping
-~~~~~~~~~~~~~~~~
+Defaultable Types
+~~~~~~~~~~~~~~~~~
 
-When :ref:`instantiating <exec-module>` a module,
-:ref:`external values <syntax-externval>` must be provided whose :ref:`types <valid-externval>` are *matched* against the respective :ref:`external types <syntax-externtype>` classifying each import.
-In some cases, this allows for a simple form of subtyping (written ":math:`\matchesexterntype`" formally), as defined here.
+A type is *defaultable* if it has a :ref:`default value <default-val>` for initialization.
 
+Value Types
+...........
 
-.. index:: limits
-.. _match-limits:
+* A defaultable :ref:`value type <syntax-valtype>` :math:`t` must be:
 
-Limits
-......
+  - either a :ref:`number type <syntax-numtype>`,
 
-:ref:`Limits <syntax-limits>` :math:`\{ \LMIN~n_1, \LMAX~m_1^? \}` match limits :math:`\{ \LMIN~n_2, \LMAX~m_2^? \}` if and only if:
+  - or a :ref:`vector type <syntax-vectype>`,
 
-* :math:`n_1` is larger than or equal to :math:`n_2`.
+  - or a :ref:`nullable reference type <syntax-numtype>`.
 
-* Either:
-
-  * :math:`m_2^?` is empty.
-
-* Or:
-
-  * Both :math:`m_1^?` and :math:`m_2^?` are non-empty.
-
-  * :math:`m_1` is smaller than or equal to :math:`m_2`.
-
-.. math::
-   ~\\[-1ex]
-   \frac{
-     n_1 \geq n_2
-   }{
-     \vdashlimitsmatch \{ \LMIN~n_1, \LMAX~m_1^? \} \matcheslimits \{ \LMIN~n_2, \LMAX~\epsilon \}
-   }
-   \quad
-   \frac{
-     n_1 \geq n_2
-     \qquad
-     m_1 \leq m_2
-   }{
-     \vdashlimitsmatch \{ \LMIN~n_1, \LMAX~m_1 \} \matcheslimits \{ \LMIN~n_2, \LMAX~m_2 \}
-   }
-
-.. _match-externtype:
-
-.. index:: function type
-.. _match-functype:
-
-Functions
-.........
-
-An :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\functype_1` matches :math:`\ETFUNC~\functype_2` if and only if:
-
-* Both :math:`\functype_1` and :math:`\functype_2` are the same.
-
-.. math::
-   ~\\[-1ex]
-   \frac{
-   }{
-     \vdashexterntypematch \ETFUNC~\functype \matchesexterntype \ETFUNC~\functype
-   }
-
-
-.. index:: table type, limits, element type
-.. _match-tabletype:
-
-Tables
-......
-
-An :ref:`external type <syntax-externtype>` :math:`\ETTABLE~(\limits_1~\reftype_1)` matches :math:`\ETTABLE~(\limits_2~\reftype_2)` if and only if:
-
-* Limits :math:`\limits_1` :ref:`match <match-limits>` :math:`\limits_2`.
-
-* Both :math:`\reftype_1` and :math:`\reftype_2` are the same.
 
 .. math::
    \frac{
-     \vdashlimitsmatch \limits_1 \matcheslimits \limits_2
    }{
-     \vdashexterntypematch \ETTABLE~(\limits_1~\reftype) \matchesexterntype \ETTABLE~(\limits_2~\reftype)
+     C \vdashvaltypedefaultable \numtype \defaultable
    }
-
-
-.. index:: memory type, limits
-.. _match-memtype:
-
-Memories
-........
-
-An :ref:`external type <syntax-externtype>` :math:`\ETMEM~\limits_1` matches :math:`\ETMEM~\limits_2` if and only if:
-
-* Limits :math:`\limits_1` :ref:`match <match-limits>` :math:`\limits_2`.
 
 .. math::
    \frac{
-     \vdashlimitsmatch \limits_1 \matcheslimits \limits_2
    }{
-     \vdashexterntypematch \ETMEM~\limits_1 \matchesexterntype \ETMEM~\limits_2
+     C \vdashvaltypedefaultable \vectype \defaultable
    }
 
-
-.. index:: global type, value type, mutability
-.. _match-globaltype:
-
-Globals
-.......
-
-An :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~\globaltype_1` matches :math:`\ETGLOBAL~\globaltype_2` if and only if:
-
-* Both :math:`\globaltype_1` and :math:`\globaltype_2` are the same.
-
 .. math::
-   ~\\[-1ex]
    \frac{
    }{
-     \vdashexterntypematch \ETGLOBAL~\globaltype \matchesexterntype \ETGLOBAL~\globaltype
+     C \vdashvaltypedefaultable (\REF~\NULL~\heaptype) \defaultable
    }

@@ -1,9 +1,9 @@
 type var = string Source.phrase
 
-type Values.ref_ += ExternRef of int32
-type num = Values.num Source.phrase
-type ref_ = Values.ref_ Source.phrase
-type literal = Values.value Source.phrase
+type Value.ref_ += HostRef of int32
+type num = Value.num Source.phrase
+type ref_ = Value.ref_ Source.phrase
+type literal = Value.t Source.phrase
 
 type definition = definition' Source.phrase
 and definition' =
@@ -17,7 +17,7 @@ and action' =
   | Get of var option * Ast.name
 
 type nanop = nanop' Source.phrase
-and nanop' = (Lib.void, Lib.void, nan, nan) Values.op
+and nanop' = (Lib.void, Lib.void, nan, nan) Value.op
 and nan = CanonicalNan | ArithmeticNan
 
 type num_pat =
@@ -25,11 +25,12 @@ type num_pat =
   | NanPat of nanop
 
 type vec_pat =
-  | VecPat of (V128.shape * num_pat list) Values.vecop
+  | VecPat of (V128.shape * num_pat list) Value.vecop
 
 type ref_pat =
   | RefPat of ref_
-  | RefTypePat of Types.ref_type
+  | RefTypePat of Types.heap_type
+  | NullPat
 
 type result = result' Source.phrase
 and result' =
@@ -65,20 +66,20 @@ and script = command list
 
 
 let () =
-  let type_of_ref' = !Values.type_of_ref' in
-  Values.type_of_ref' := function
-    | ExternRef _ -> Types.ExternRefType
+  let type_of_ref' = !Value.type_of_ref' in
+  Value.type_of_ref' := function
+    | HostRef _ -> Types.AnyHT
     | r -> type_of_ref' r
 
 let () =
-  let string_of_ref' = !Values.string_of_ref' in
-  Values.string_of_ref' := function
-    | ExternRef n -> "ref " ^ Int32.to_string n
+  let string_of_ref' = !Value.string_of_ref' in
+  Value.string_of_ref' := function
+    | HostRef n -> "(host " ^ Int32.to_string n ^ ")"
     | r -> string_of_ref' r
 
 let () =
-  let eq_ref' = !Values.eq_ref' in
-  Values.eq_ref' := fun r1 r2 ->
+  let eq_ref' = !Value.eq_ref' in
+  Value.eq_ref' := fun r1 r2 ->
     match r1, r2 with
-    | ExternRef n1, ExternRef n2 -> n1 = n2
+    | HostRef n1, HostRef n2 -> n1 = n2
     | _, _ -> eq_ref' r1 r2

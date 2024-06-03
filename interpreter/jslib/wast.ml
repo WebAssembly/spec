@@ -12,7 +12,7 @@ let () =
         let _, def = Parse.Module.parse_string (Js.to_string s) in
         let bs =
           match def.Source.it with
-          | Script.Textual m -> (Encode.encode m)
+          | Script.Textual m -> Encode.encode m
           | Script.Encoded (_, bs) -> bs
           | Script.Quoted (_, _) -> failwith "Unsupported" in
         let buf = new%js Typed_array.arrayBuffer (String.length bs) in

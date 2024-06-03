@@ -903,7 +903,7 @@
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "malformed memop flags"
+  "malformed memop alignment"
 )
 
 ;; 32-bit out of range
@@ -922,7 +922,7 @@
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "malformed memop flags"
+  "malformed memop alignment"
 )
 
 ;; Signed 64-bit overflow
@@ -941,11 +941,11 @@
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "malformed memop flags"
+  "malformed memop alignment"
 )
 
 ;; Unsigned 64-bit overflow
-(assert_malformed
+(assert_invalid
   (module binary 
     "\00asm" "\01\00\00\00"
     "\01\04\01\60\00\00"       ;; Type section: 1 type
@@ -956,15 +956,15 @@
     ;; function 0
     "\08\00"
     "\41\00"                   ;; i32.const 0
-    "\28\40\00"                ;; i32.load offset=0 align=2**64
+    "\28\40\00"                ;; i32.load offset=0 align=2**64 (parsed as align=0, memidx present)
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "malformed memop flags"
+  "type mismatch"
 )
 
 ;; 64-bit out of range
-(assert_malformed
+(assert_invalid
   (module binary 
     "\00asm" "\01\00\00\00"
     "\01\04\01\60\00\00"       ;; Type section: 1 type
@@ -975,9 +975,9 @@
     ;; function 0
     "\08\00"
     "\41\00"                   ;; i32.const 0
-    "\28\41\00"                ;; i32.load offset=0 align=2**65
+    "\28\41\00"                ;; i32.load offset=0 align=2**65 (parsed as align=1, memidx present)
     "\1a"                      ;; drop
     "\0b"                      ;; end
   )
-  "malformed memop flags"
+  "type mismatch"
 )

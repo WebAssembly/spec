@@ -24,6 +24,19 @@ Hence, these syntactic classes can also be interpreted as types.
 For numeric parameters, notation like :math:`n:\u32` is used to specify a symbolic name in addition to the respective value range.
 
 
+.. _embed-bool:
+
+Booleans
+~~~~~~~~
+
+Interface operation that are predicates return Boolean values:
+
+.. math::
+   \begin{array}{llll}
+   \production{Boolean} & \bool &::=& \FALSE ~|~ \TRUE \\
+   \end{array}
+
+
 .. _embed-error:
 
 Errors
@@ -80,7 +93,6 @@ Store
    \end{array}
 
 
-
 .. index:: module
 .. _embed-module:
 
@@ -133,7 +145,7 @@ Modules
 
 .. math::
    \begin{array}{lclll}
-   \F{module\_validate}(m) &=& \epsilon && (\iff {} \vdashmodule m : \externtype^\ast \to {\externtype'}^\ast) \\
+   \F{module\_validate}(m) &=& \epsilon && (\iff {} \vdashmodule m : \externtype^\ast \rightarrow {\externtype'}^\ast) \\
    \F{module\_validate}(m) &=& \ERROR && (\otherwise) \\
    \end{array}
 
@@ -168,7 +180,7 @@ Modules
 :math:`\F{module\_imports}(\module) : (\name, \name, \externtype)^\ast`
 .......................................................................
 
-1. Pre-condition: :math:`\module` is :ref:`valid <valid-module>` with external import types :math:`\externtype^\ast` and external export types :math:`{\externtype'}^\ast`.
+1. Pre-condition: :math:`\module` is :ref:`valid <valid-module>` with the external import types :math:`\externtype^\ast` and external export types :math:`{\externtype'}^\ast`.
 
 2. Let :math:`\import^\ast` be the :ref:`imports <syntax-import>` :math:`\module.\MIMPORTS`.
 
@@ -180,13 +192,13 @@ Modules
 
 5. Return the concatenation of all :math:`\X{result}_i`, in index order.
 
-6. Post-condition: each :math:`\externtype_i` is :ref:`valid <valid-externtype>`.
+6. Post-condition: each :math:`\externtype_i` is :ref:`valid <valid-externtype>` under the empty :ref:`context <context>`.
 
 .. math::
    ~ \\
    \begin{array}{lclll}
    \F{module\_imports}(m) &=& (\X{im}.\IMODULE, \X{im}.\INAME, \externtype)^\ast \\
-     && \qquad (\iff \X{im}^\ast = m.\MIMPORTS \wedge {} \vdashmodule m : \externtype^\ast \to {\externtype'}^\ast) \\
+     && \qquad (\iff \X{im}^\ast = m.\MIMPORTS \wedge {} \vdashmodule m : \externtype^\ast \rightarrow {\externtype'}^\ast) \\
    \end{array}
 
 
@@ -196,7 +208,7 @@ Modules
 :math:`\F{module\_exports}(\module) : (\name, \externtype)^\ast`
 ................................................................
 
-1. Pre-condition: :math:`\module` is :ref:`valid <valid-module>` with external import types :math:`\externtype^\ast` and external export types :math:`{\externtype'}^\ast`.
+1. Pre-condition: :math:`\module` is :ref:`valid <valid-module>` with the external import types :math:`\externtype^\ast` and external export types :math:`{\externtype'}^\ast`.
 
 2. Let :math:`\export^\ast` be the :ref:`exports <syntax-export>` :math:`\module.\MEXPORTS`.
 
@@ -208,13 +220,13 @@ Modules
 
 5. Return the concatenation of all :math:`\X{result}_i`, in index order.
 
-6. Post-condition: each :math:`\externtype'_i` is :ref:`valid <valid-externtype>`.
+6. Post-condition: each :math:`\externtype'_i` is :ref:`valid <valid-externtype>` under the empty :ref:`context <context>`.
 
 .. math::
    ~ \\
    \begin{array}{lclll}
    \F{module\_exports}(m) &=& (\X{ex}.\ENAME, \externtype')^\ast \\
-     && \qquad (\iff \X{ex}^\ast = m.\MEXPORTS \wedge {} \vdashmodule m : \externtype^\ast \to {\externtype'}^\ast) \\
+     && \qquad (\iff \X{ex}^\ast = m.\MEXPORTS \wedge {} \vdashmodule m : \externtype^\ast \rightarrow {\externtype'}^\ast) \\
    \end{array}
 
 
@@ -258,7 +270,7 @@ Functions
 :math:`\F{func\_alloc}(\store, \functype, \hostfunc) : (\store, \funcaddr)`
 ...........................................................................
 
-1. Pre-condition: :math:`\functype` is :ref:`valid <valid-functype>`.
+1. Pre-condition: the :math:`\functype` is :ref:`valid <valid-functype>` under the empty :ref:`context <context>`.
 
 2. Let :math:`\funcaddr` be the result of :ref:`allocating a host function <alloc-func>` in :math:`\store` with :ref:`function type <syntax-functype>` :math:`\functype` and host function code :math:`\hostfunc`.
 
@@ -266,7 +278,7 @@ Functions
 
 .. math::
    \begin{array}{lclll}
-   \F{func\_alloc}(S, \X{ft}, \X{code}) &=& (S', \X{a}) && (\iff \allochostfunc(S, \X{ft}, \X{code}) = S', \X{a}) \\
+   \F{func\_alloc}(S, \X{ta}, \X{code}) &=& (S', \X{a}) && (\iff \allochostfunc(S, \X{ta}, \X{code}) = S', \X{a}) \\
    \end{array}
 
 .. note::
@@ -280,9 +292,11 @@ Functions
 :math:`\F{func\_type}(\store, \funcaddr) : \functype`
 .....................................................
 
-1. Return :math:`S.\SFUNCS[a].\FITYPE`.
+1. Let :math:`\functype` be the :ref:`function type <syntax-functype>` :math:`S.\SFUNCS[a].\FITYPE`.
 
-2. Post-condition: the returned :ref:`function type <syntax-functype>` is :ref:`valid <valid-functype>`.
+2. Return :math:`\functype`.
+
+3. Post-condition: the returned :ref:`function type <syntax-functype>` is :ref:`valid <valid-functype>`.
 
 .. math::
    \begin{array}{lclll}
@@ -326,7 +340,7 @@ Tables
 :math:`\F{table\_alloc}(\store, \tabletype, \reff) : (\store, \tableaddr)`
 ..........................................................................
 
-1. Pre-condition: :math:`\tabletype` is :ref:`valid <valid-tabletype>`.
+1. Pre-condition: the :math:`\tabletype` is :ref:`valid <valid-tabletype>` under the empty :ref:`context <context>`.
 
 2. Let :math:`\tableaddr` be the result of :ref:`allocating a table <alloc-table>` in :math:`\store` with :ref:`table type <syntax-tabletype>` :math:`\tabletype` and initialization value :math:`\reff`.
 
@@ -345,7 +359,7 @@ Tables
 
 1. Return :math:`S.\STABLES[a].\TITYPE`.
 
-2. Post-condition: the returned :ref:`table type <syntax-tabletype>` is :ref:`valid <valid-tabletype>`.
+2. Post-condition: the returned :ref:`table type <syntax-tabletype>` is :ref:`valid <valid-tabletype>` under the empty :ref:`context <context>`.
 
 .. math::
    \begin{array}{lclll}
@@ -438,7 +452,7 @@ Memories
 :math:`\F{mem\_alloc}(\store, \memtype) : (\store, \memaddr)`
 ................................................................
 
-1. Pre-condition: :math:`\memtype` is :ref:`valid <valid-memtype>`.
+1. Pre-condition: the :math:`\memtype` is :ref:`valid <valid-memtype>` under the empty :ref:`context <context>`.
 
 2. Let :math:`\memaddr` be the result of :ref:`allocating a memory <alloc-mem>` in :math:`\store` with :ref:`memory type <syntax-memtype>` :math:`\memtype`.
 
@@ -457,7 +471,7 @@ Memories
 
 1. Return :math:`S.\SMEMS[a].\MITYPE`.
 
-2. Post-condition: the returned :ref:`memory type <syntax-memtype>` is :ref:`valid <valid-memtype>`.
+2. Post-condition: the returned :ref:`memory type <syntax-memtype>` is :ref:`valid <valid-memtype>` under the empty :ref:`context <context>`.
 
 .. math::
    \begin{array}{lclll}
@@ -551,7 +565,7 @@ Globals
 :math:`\F{global\_alloc}(\store, \globaltype, \val) : (\store, \globaladdr)`
 ............................................................................
 
-1. Pre-condition: :math:`\globaltype` is :ref:`valid <valid-globaltype>`.
+1. Pre-condition: the :math:`\globaltype` is :ref:`valid <valid-globaltype>` under the empty :ref:`context <context>`.
 
 2. Let :math:`\globaladdr` be the result of :ref:`allocating a global <alloc-global>` in :math:`\store` with :ref:`global type <syntax-globaltype>` :math:`\globaltype` and initialization value :math:`\val`.
 
@@ -570,7 +584,7 @@ Globals
 
 1. Return :math:`S.\SGLOBALS[a].\GITYPE`.
 
-2. Post-condition: the returned :ref:`global type <syntax-globaltype>` is :ref:`valid <valid-globaltype>`.
+2. Post-condition: the returned :ref:`global type <syntax-globaltype>` is :ref:`valid <valid-globaltype>` under the empty :ref:`context <context>`.
 
 .. math::
    \begin{array}{lclll}
@@ -613,4 +627,84 @@ Globals
    \begin{array}{lclll}
    \F{global\_write}(S, a, v) &=& S' && (\iff S.\SGLOBALS[a].\GITYPE = \MVAR~t \wedge S' = S \with \SGLOBALS[a].\GIVALUE = v) \\
    \F{global\_write}(S, a, v) &=& \ERROR && (\otherwise) \\
+   \end{array}
+
+
+.. index:: reference, reference type, value type, value
+.. _embed-ref-type:
+.. _embed-val-default:
+
+Values
+~~~~~~
+
+:math:`\F{ref\_type}(\store, \reff) : \reftype`
+...............................................
+
+1. Pre-condition: the :ref:`reference <syntax-ref>` :math:`\reff` is :ref:`valid <valid-val>` under store :math:`S`.
+
+2. Return the :ref:`reference type <syntax-reftype>` :math:`t` with which :math:`\reff` is valid.
+
+3. Post-condition: the returned :ref:`reference type <syntax-reftype>` is :ref:`valid <valid-reftype>` under the empty :ref:`context <context>`.
+
+.. math::
+   \begin{array}{lclll}
+   \F{ref\_type}(S, r) &=& t && (\iff S \vdashval r : t) \\
+   \end{array}
+
+.. note::
+   In future versions of WebAssembly,
+   not all references may carry precise type information at run time.
+   In such cases, this function may return a less precise supertype.
+
+
+:math:`\F{val\_default}(\valtype) : \val`
+...............................................
+
+1. If :math:`\default_{valtype}` is not defined, then return :math:`\ERROR`.
+
+1. Else, return the :ref:`value <syntax-val>` :math:`\default_{valtype}`.
+
+.. math::
+   \begin{array}{lclll}
+   \F{val\_default}(t) &=& v && (\iff \default_t = v) \\
+   \F{val\_default}(t) &=& \ERROR && (\iff \default_t = \epsilon) \\
+   \end{array}
+
+
+.. index:: value type, external type, subtyping
+.. _embed-match-valtype:
+.. _embed-match-externtype:
+
+Matching
+~~~~~~~~
+
+:math:`\F{match\_valtype}(\valtype_1, \valtype_2) : \bool`
+..........................................................
+
+1. Pre-condition: the :ref:`value types <syntax-valtype>` :math:`\valtype_1` and :math:`\valtype_2` are :ref:`valid <valid-valtype>` under the empty :ref:`context <context>`.
+
+2. If :math:`\valtype_1` :ref:`matches <match-valtype>` :math:`\valtype_2`, then return :math:`\TRUE`.
+
+3. Else, return :math:`\FALSE`.
+
+.. math::
+   \begin{array}{lclll}
+   \F{match\_reftype}(t_1, t_2) &=& \TRUE && (\iff {} \vdashvaltypematch t_1 \matchesvaltype t_2) \\
+   \F{match\_reftype}(t_1, t_2) &=& \FALSE && (\otherwise) \\
+   \end{array}
+
+
+:math:`\F{match\_externtype}(\externtype_1, \externtype_2) : \bool`
+...................................................................
+
+1. Pre-condition: the :ref:`extern types <syntax-externtype>` :math:`\externtype_1` and :math:`\externtype_2` are :ref:`valid <valid-externtype>` under the empty :ref:`context <context>`.
+
+2. If :math:`\externtype_1` :ref:`matches <match-externtype>` :math:`\externtype_2`, then return :math:`\TRUE`.
+
+3. Else, return :math:`\FALSE`.
+
+.. math::
+   \begin{array}{lclll}
+   \F{match\_externtype}(\X{et}_1, \X{et}_2) &=& \TRUE && (\iff {} \vdashexterntypematch \X{et}_1 \matchesexterntype \X{et}_2) \\
+   \F{match\_externtype}(\X{et}_1, \X{et}_2) &=& \FALSE && (\otherwise) \\
    \end{array}

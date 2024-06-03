@@ -1,5 +1,5 @@
 open Types
-open Values
+open Value
 
 type size = int64
 type index = int64
@@ -28,7 +28,8 @@ let create size r =
   try Lib.Array64.make size r
   with Out_of_memory | Invalid_argument _ -> raise OutOfMemory
 
-let alloc (TableType (lim, it, _) as ty) r =
+let alloc (TableT (lim, it, t) as ty) r =
+  assert Free.((ref_type t).types = Set.empty);
   if not (valid_limits lim) then raise Type;
   {ty; content = create lim.min r}
 
@@ -39,7 +40,7 @@ let type_of tab =
   tab.ty
 
 let index_type_of tab =
-  let (TableType (_, it, _)) = type_of tab in it
+  let (TableT (_, it, _)) = type_of tab in it
 
 let index_of_num x =
   match x with
@@ -48,7 +49,7 @@ let index_of_num x =
   | _ -> raise Type
 
 let grow tab delta r =
-  let TableType (lim, it, t) = tab.ty in
+  let TableT (lim, it, t) = tab.ty in
   assert (lim.min = size tab);
   let old_size = lim.min in
   let new_size = Int64.add old_size delta in
@@ -58,7 +59,7 @@ let grow tab delta r =
   if not (valid_limits lim') then raise SizeLimit else
   let after = create new_size r in
   Array.blit tab.content 0 after 0 (Array.length tab.content);
-  tab.ty <- TableType (lim', it, t);
+  tab.ty <- TableT (lim', it, t);
   tab.content <- after
 
 let load tab i =
@@ -66,8 +67,8 @@ let load tab i =
   Lib.Array64.get tab.content i
 
 let store tab i r =
-  let TableType (_lim, _it, t) = tab.ty in
-  if type_of_ref r <> t then raise Type;
+  let TableT (_lim, _it, t) = tab.ty in
+  if not (Match.match_ref_type [] (type_of_ref r) t) then raise Type;
   if i < 0L || i >= Lib.Array64.length tab.content then raise Bounds;
   Lib.Array64.set tab.content i r
 

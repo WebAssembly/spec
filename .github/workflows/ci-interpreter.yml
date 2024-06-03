@@ -21,7 +21,7 @@ jobs:
       - name: Setup OCaml
         uses: ocaml/setup-ocaml@v2
         with:
-          ocaml-compiler: 4.12.x
+          ocaml-compiler: 4.14.x
       - name: Setup OCaml tools
         run: opam install --yes ocamlfind.1.9.5 js_of_ocaml.4.0.0 js_of_ocaml-ppx.4.0.0
       - name: Setup Node.js
@@ -31,6 +31,6 @@ jobs:
       - name: Build interpreter
         run: cd interpreter && opam exec make
       - name: Run tests
-        # Re-enable the JS tests once table64 is available under node
-        #run: cd interpreter && opam exec make JS="node --experimental-wasm-memory64"  ci
+        # TODO: reactiate node once it supports all of Wasm 3.0
+        # run: cd interpreter && opam exec make JS=node ci
         run: cd interpreter && opam exec make ci

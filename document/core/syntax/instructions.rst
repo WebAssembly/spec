@@ -39,7 +39,7 @@ Numeric instructions provide basic operations over numeric :ref:`values <syntax-
 These operations closely match respective operations available in hardware.
 
 .. math::
-   \begin{array}{llcl}
+   \begin{array}{llrl}
    \production{width} & \X{nn}, \X{mm} &::=&
      \K{32} ~|~ \K{64} \\
    \production{signedness} & \sx &::=&
@@ -151,7 +151,7 @@ Conventions
 Occasionally, it is convenient to group operators together according to the following grammar shorthands:
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{unary operator} & \unop &::=&
      \iunop ~|~
      \funop ~|~
@@ -198,7 +198,7 @@ Vector Instructions
 Vector instructions (also known as *SIMD* instructions, *single instruction multiple data*) provide basic operations over :ref:`values <syntax-value>` of :ref:`vector type <syntax-vectype>`.
 
 .. math::
-   \begin{array}{llcl}
+   \begin{array}{llrl}
    \production{ishape} & \ishape &::=&
      \K{i8x16} ~|~ \K{i16x8} ~|~ \K{i32x4} ~|~ \K{i64x2} \\
    \production{fshape} & \fshape &::=&
@@ -211,7 +211,7 @@ Vector instructions (also known as *SIMD* instructions, *single instruction mult
    \end{array}
 
 .. math::
-   \begin{array}{llcl}
+   \begin{array}{llrl}
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \K{v128.}\VCONST~\i128 \\&&|&
@@ -278,7 +278,7 @@ Vector instructions (also known as *SIMD* instructions, *single instruction mult
    \end{array}
 
 .. math::
-   \begin{array}{llcl}
+   \begin{array}{llrl}
    \production{vector bitwise unary operator} & \vvunop &::=&
      \K{not} \\
    \production{vector bitwise binary operator} & \vvbinop &::=&
@@ -351,7 +351,7 @@ Operations are performed point-wise on the values of each lane.
 .. note::
    For example, the shape :math:`\K{i32x4}` interprets the operand
    as four |i32| values, packed into an |i128|.
-   The bitwidth of the numeric type :math:`t` times :math:`N` always is 128.
+   The bit width of the numeric type :math:`t` times :math:`N` always is 128.
 
 Instructions prefixed with :math:`\K{v128}` do not involve a specific interpretation, and treat the |V128| as an |i128| value or a vector of 128 individual bits.
 
@@ -391,7 +391,7 @@ Conventions
 Occasionally, it is convenient to group operators together according to the following grammar shorthands:
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{unary operator} & \vunop &::=&
      \viunop ~|~
      \vfunop ~|~
@@ -415,11 +415,15 @@ Occasionally, it is convenient to group operators together according to the foll
    \end{array}
 
 
-.. index:: ! reference instruction, reference, null
+.. index:: ! reference instruction, reference, null, cast, heap type, reference type
    pair: abstract syntax; instruction
 .. _syntax-ref.null:
-.. _syntax-ref.is_null:
 .. _syntax-ref.func:
+.. _syntax-ref.is_null:
+.. _syntax-ref.as_non_null:
+.. _syntax-ref.eq:
+.. _syntax-ref.test:
+.. _syntax-ref.cast:
 .. _syntax-instr-ref:
 
 Reference Instructions
@@ -428,16 +432,114 @@ Reference Instructions
 Instructions in this group are concerned with accessing :ref:`references <syntax-reftype>`.
 
 .. math::
-   \begin{array}{llcl}
+   \begin{array}{llrl}
    \production{instruction} & \instr &::=&
      \dots \\&&|&
-     \REFNULL~\reftype \\&&|&
+     \REFNULL~\heaptype \\&&|&
+     \REFFUNC~\funcidx \\&&|&
      \REFISNULL \\&&|&
-     \REFFUNC~\funcidx \\
+     \REFASNONNULL \\&&|&
+     \REFEQ \\&&|&
+     \REFTEST~\reftype \\&&|&
+     \REFCAST~\reftype \\
    \end{array}
 
-These instructions produce a null value, check for a null value, or produce a reference to a given function, respectively.
+The |REFNULL| and |REFFUNC| instructions produce a :ref:`null <syntax-null>` value or a reference to a given function, respectively.
 
+The instruction |REFISNULL| checks for null,
+while |REFASNONNULL| converts a :ref:`nullable <syntax-reftype>` to a non-null one, and :ref:`traps <trap>` if it encounters null.
+
+The |REFEQ| compares two references.
+
+The instructions |REFTEST| and |REFCAST| test the :ref:`dynamic type <type-inst>` of a reference operand.
+The former merely returns the result of the test,
+while the latter performs a downcast and :ref:`traps <trap>` if the operand's type does not match.
+
+.. note::
+   The |BRONCAST| and |BRONCASTFAIL| instructions provides versions of the latter that branch depending on the success of the downcast instead of trapping.
+
+
+.. index:: reference instruction, reference, null, heap type, reference type
+   pair: abstract syntax; instruction
+
+.. _syntax-struct.new:
+.. _syntax-struct.new_default:
+.. _syntax-struct.get:
+.. _syntax-struct.get_s:
+.. _syntax-struct.get_u:
+.. _syntax-struct.set:
+.. _syntax-array.new:
+.. _syntax-array.new_default:
+.. _syntax-array.new_fixed:
+.. _syntax-array.new_data:
+.. _syntax-array.new_elem:
+.. _syntax-array.get:
+.. _syntax-array.get_s:
+.. _syntax-array.get_u:
+.. _syntax-array.set:
+.. _syntax-array.len:
+.. _syntax-array.fill:
+.. _syntax-array.copy:
+.. _syntax-array.init_data:
+.. _syntax-array.init_elem:
+.. _syntax-ref.i31:
+.. _syntax-i31.get_s:
+.. _syntax-i31.get_u:
+.. _syntax-any.convert_extern:
+.. _syntax-extern.convert_any:
+.. _syntax-instr-struct:
+.. _syntax-instr-array:
+.. _syntax-instr-i31:
+.. _syntax-instr-extern:
+
+Aggregate Instructions
+~~~~~~~~~~~~~~~~~~~~~~
+
+Instructions in this group are concerned with creating and accessing :ref:`references <syntax-reftype>` to :ref:`aggregate <syntax-aggrtype>` types.
+
+.. math::
+   \begin{array}{llrl}
+   \production{instruction} & \instr &::=&
+     \dots \\&&|&
+     \STRUCTNEW~\typeidx \\&&|&
+     \STRUCTNEWDEFAULT~\typeidx \\&&|&
+     \STRUCTGET~\typeidx~\fieldidx \\&&|&
+     \STRUCTGET\K{\_}\sx~\typeidx~\fieldidx \\&&|&
+     \STRUCTSET~\typeidx~\fieldidx \\&&|&
+     \ARRAYNEW~\typeidx \\&&|&
+     \ARRAYNEWFIXED~\typeidx~\u32 \\&&|&
+     \ARRAYNEWDEFAULT~\typeidx \\&&|&
+     \ARRAYNEWDATA~\typeidx~\dataidx \\&&|&
+     \ARRAYNEWELEM~\typeidx~\elemidx \\&&|&
+     \ARRAYGET~\typeidx \\&&|&
+     \ARRAYGET\K{\_}\sx~\typeidx \\&&|&
+     \ARRAYSET~\typeidx \\&&|&
+     \ARRAYLEN \\&&|&
+     \ARRAYFILL~\typeidx \\&&|&
+     \ARRAYCOPY~\typeidx~\typeidx \\&&|&
+     \ARRAYINITDATA~\typeidx~\dataidx \\&&|&
+     \ARRAYINITELEM~\typeidx~\elemidx \\&&|&
+     \REFI31 \\&&|&
+     \I31GET\K{\_}\sx \\&&|&
+     \ANYCONVERTEXTERN \\&&|&
+     \EXTERNCONVERTANY \\
+   \end{array}
+
+The instructions |STRUCTNEW| and |STRUCTNEWDEFAULT| allocate a new :ref:`structure <syntax-structtype>`, initializing them either with operands or with default values.
+The remaining instructions on structs access individual fields,
+allowing for different sign extension modes in the case of :ref:`packed <syntax-packedtype>` storage types.
+
+Similarly, :ref:`arrays <syntax-arraytype>` can be allocated either with an explicit initialization operand or a default value.
+Furthermore, |ARRAYNEWFIXED| allocates an array with statically fixed size,
+and |ARRAYNEWDATA| and |ARRAYNEWELEM| allocate an array and initialize it from a :ref:`data <syntax-data>` or :ref:`element <syntax-elem>` segment, respectively.
+|ARRAYGET|, |ARRAYGETS|, |ARRAYGETU|, and |ARRAYSET| access individual slots,
+again allowing for different sign extension modes in the case of a :ref:`packed <syntax-packedtype>` storage type.
+|ARRAYLEN| produces the length of an array.
+|ARRAYFILL| fills a specified slice of an array with a given value and |ARRAYCOPY|, |ARRAYINITDATA|, and |ARRAYINITELEM| copy elements to a specified slice of an array from a given array, data segment, or element segment, respectively.
+
+The instructions |REFI31| and :math:`\I31GET\K{\_}\sx` convert between type |I31| and an unboxed :ref:`scalar <syntax-i31>`.
+
+The instructions |ANYCONVERTEXTERN| and |EXTERNCONVERTANY| allow lossless conversion between references represented as type :math:`(\REF~\NULL~\EXTERN)`| and as :math:`(\REF~\NULL~\ANY)`.
 
 .. index:: ! parametric instruction, value type
    pair: abstract syntax; instruction
@@ -449,7 +551,7 @@ Parametric Instructions
 Instructions in this group can operate on operands of any :ref:`value type <syntax-valtype>`.
 
 .. math::
-   \begin{array}{llcl}
+   \begin{array}{llrl}
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \DROP \\&&|&
@@ -475,7 +577,7 @@ Variable Instructions
 Variable instructions are concerned with access to :ref:`local <syntax-local>` or :ref:`global <syntax-global>` variables.
 
 .. math::
-   \begin{array}{llcl}
+   \begin{array}{llrl}
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \LOCALGET~\localidx \\&&|&
@@ -504,7 +606,7 @@ Table Instructions
 Instructions in this group are concerned with tables :ref:`table <syntax-table>`.
 
 .. math::
-   \begin{array}{llcl}
+   \begin{array}{llrl}
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \TABLEGET~\tableidx \\&&|&
@@ -546,43 +648,44 @@ Memory Instructions
 Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
 
 .. math::
-   \begin{array}{llcl}
+   \begin{array}{llrl}
    \production{memory immediate} & \memarg &::=&
      \{ \OFFSET~\u32, \ALIGN~\u32 \} \\
    \production{lane width} & \X{ww} &::=&
      8 ~|~ 16 ~|~ 32 ~|~ 64 \\
    \production{instruction} & \instr &::=&
      \dots \\&&|&
-     \K{i}\X{nn}\K{.}\LOAD~\memarg ~|~
-     \K{f}\X{nn}\K{.}\LOAD~\memarg ~|~
-     \K{v128.}\LOAD~\memarg \\&&|&
-     \K{i}\X{nn}\K{.}\STORE~\memarg ~|~
-     \K{f}\X{nn}\K{.}\STORE~\memarg ~|~
-     \K{v128.}\STORE~\memarg \\&&|&
-     \K{i}\X{nn}\K{.}\LOAD\K{8\_}\sx~\memarg ~|~
-     \K{i}\X{nn}\K{.}\LOAD\K{16\_}\sx~\memarg ~|~
-     \K{i64.}\LOAD\K{32\_}\sx~\memarg \\&&|&
-     \K{i}\X{nn}\K{.}\STORE\K{8}~\memarg ~|~
-     \K{i}\X{nn}\K{.}\STORE\K{16}~\memarg ~|~
-     \K{i64.}\STORE\K{32}~\memarg \\&&|&
-     \K{v128.}\LOAD\K{8x8\_}\sx~\memarg ~|~
-     \K{v128.}\LOAD\K{16x4\_}\sx~\memarg ~|~
-     \K{v128.}\LOAD\K{32x2\_}\sx~\memarg \\&&|&
-     \K{v128.}\LOAD\K{32\_zero}~\memarg ~|~
-     \K{v128.}\LOAD\K{64\_zero}~\memarg \\&&|&
-     \K{v128.}\LOAD\X{ww}\K{\_splat}~\memarg \\&&|&
-     \K{v128.}\LOAD\X{ww}\K{\_lane}~\memarg~\laneidx ~|~
-     \K{v128.}\STORE\X{ww}\K{\_lane}~\memarg~\laneidx \\&&|&
-     \MEMORYSIZE \\&&|&
-     \MEMORYGROW \\&&|&
-     \MEMORYFILL \\&&|&
-     \MEMORYCOPY \\&&|&
-     \MEMORYINIT~\dataidx \\&&|&
+     \K{i}\X{nn}\K{.}\LOAD~\memidx~\memarg ~|~
+     \K{f}\X{nn}\K{.}\LOAD~\memidx~\memarg \\&&|&
+     \K{v128.}\LOAD~\memidx~\memarg \\&&|&
+     \K{i}\X{nn}\K{.}\STORE~\memidx~\memarg ~|~
+     \K{f}\X{nn}\K{.}\STORE~\memidx~\memarg \\&&|&
+     \K{v128.}\STORE~\memidx~\memarg \\&&|&
+     \K{i}\X{nn}\K{.}\LOAD\K{8\_}\sx~\memidx~\memarg ~|~
+     \K{i}\X{nn}\K{.}\LOAD\K{16\_}\sx~\memidx~\memarg ~|~
+     \K{i64.}\LOAD\K{32\_}\sx~\memidx~\memarg \\&&|&
+     \K{v128.}\LOAD\K{8x8\_}\sx~\memidx~\memarg ~|~
+     \K{v128.}\LOAD\K{16x4\_}\sx~\memidx~\memarg ~|~
+     \K{v128.}\LOAD\K{32x2\_}\sx~\memidx~\memarg \\&&|&
+     \K{v128.}\LOAD\K{32\_zero}~\memidx~\memarg ~|~
+     \K{v128.}\LOAD\K{64\_zero}~\memidx~\memarg \\&&|&
+     \K{v128.}\LOAD\X{ww}\K{\_splat}~\memidx~\memarg \\&&|&
+     \K{v128.}\LOAD\X{ww}\K{\_lane}~\memidx~\memarg~\laneidx ~|~
+     \K{i}\X{nn}\K{.}\STORE\K{8}~\memidx~\memarg ~|~
+     \K{i}\X{nn}\K{.}\STORE\K{16}~\memidx~\memarg ~|~
+     \K{i64.}\STORE\K{32}~\memidx~\memarg \\&&|&
+     \K{v128.}\STORE\X{ww}\K{\_lane}~\memidx~\memarg~\laneidx \\&&|&
+     \MEMORYSIZE~\memidx \\&&|&
+     \MEMORYGROW~\memidx \\&&|&
+     \MEMORYFILL~\memidx \\&&|&
+     \MEMORYCOPY~\memidx~\memidx \\&&|&
+     \MEMORYINIT~\memidx~\dataidx \\&&|&
      \DATADROP~\dataidx \\
    \end{array}
 
-Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`number types <syntax-numtype>`.
-They all take a *memory immediate* |memarg| that contains an address *offset* and the expected *alignment* (expressed as the exponent of a power of 2).
+Memory is accessed with |LOAD| and |STORE| instructions for the different :ref:`number types <syntax-numtype>` and `vector types <syntax-vectype>`.
+They all take a :ref:`memory index <syntax-memidx>` and a *memory immediate* |memarg| that contains an address *offset* and the expected *alignment* (expressed as the exponent of a power of 2).
+
 Integer loads and stores can optionally specify a *storage size* that is smaller than the :ref:`bit width <syntax-numtype>` of the respective value type.
 In the case of loads, a sign extension mode |sx| is then required to select appropriate behavior.
 
@@ -597,21 +700,14 @@ A :ref:`trap <trap>` results if any of the accessed memory bytes lies outside th
    Future versions of WebAssembly might provide memory instructions with 64 bit address ranges.
 
 The |MEMORYSIZE| instruction returns the current size of a memory.
-The |MEMORYGROW| instruction grows memory by a given delta and returns the previous size, or :math:`-1` if enough memory cannot be allocated.
+The |MEMORYGROW| instruction grows a memory by a given delta and returns the previous size, or :math:`-1` if enough memory cannot be allocated.
 Both instructions operate in units of :ref:`page size <page-size>`.
-
-The |MEMORYFILL| instruction sets all values in a region to a given byte.
-The |MEMORYCOPY| instruction copies data from a source memory region to a possibly overlapping destination region.
+The |MEMORYFILL| instruction sets all values in a region of a memory to a given byte.
+The |MEMORYCOPY| instruction copies data from a source memory region to a possibly overlapping destination region in another or the same memory; the first index denotes the destination.
 The |MEMORYINIT| instruction copies data from a :ref:`passive data segment <syntax-data>` into a memory.
 The |DATADROP| instruction prevents further use of a passive data segment. This instruction is intended to be used as an optimization hint. After a data segment is dropped its data can no longer be retrieved, so the memory used by this segment may be freed.
 
-.. note::
-   In the current version of WebAssembly,
-   all memory instructions implicitly operate on :ref:`memory <syntax-mem>` :ref:`index <syntax-memidx>` :math:`0`.
-   This restriction may be lifted in future versions.
-
-
-.. index:: ! control instruction, ! structured control, ! label, ! block, ! block type, ! branch, ! unwinding, stack type, label index, function index, type index, vector, trap, function, table, function type, value type, type index
+.. index:: ! control instruction, ! structured control, ! label, ! block, ! block type, ! branch, ! unwinding, result type, label index, function index, type index, vector, trap, function, table, function type, value type, type index
    pair: abstract syntax; instruction
    pair: abstract syntax; block type
    pair: block; type
@@ -624,6 +720,10 @@ The |DATADROP| instruction prevents further use of a passive data segment. This 
 .. _syntax-br:
 .. _syntax-br_if:
 .. _syntax-br_table:
+.. _syntax-br_on_null:
+.. _syntax-br_on_non_null:
+.. _syntax-br_on_cast:
+.. _syntax-br_on_cast_fail:
 .. _syntax-return:
 .. _syntax-call:
 .. _syntax-call_indirect:
@@ -636,7 +736,7 @@ Control Instructions
 Instructions in this group affect the flow of control.
 
 .. math::
-   \begin{array}{llcl}
+   \begin{array}{llrl}
    \production{block type} & \blocktype &::=&
      \typeidx ~|~ \valtype^? \\
    \production{instruction} & \instr &::=&
@@ -649,9 +749,17 @@ Instructions in this group affect the flow of control.
      \BR~\labelidx \\&&|&
      \BRIF~\labelidx \\&&|&
      \BRTABLE~\vec(\labelidx)~\labelidx \\&&|&
+     \BRONNULL~\labelidx \\&&|&
+     \BRONNONNULL~\labelidx \\&&|&
+     \BRONCAST~\labelidx~\reftype~\reftype \\&&|&
+     \BRONCASTFAIL~\labelidx~\reftype~\reftype \\&&|&
      \RETURN \\&&|&
      \CALL~\funcidx \\&&|&
-     \CALLINDIRECT~\tableidx~\typeidx \\
+     \CALLREF~\typeidx \\&&|&
+     \CALLINDIRECT~\tableidx~\typeidx \\&&|&
+     \RETURNCALL~\funcidx \\&&|&
+     \RETURNCALLREF~\funcidx \\&&|&
+     \RETURNCALLINDIRECT~\tableidx~\typeidx \\
    \end{array}
 
 The |NOP| instruction does nothing.
@@ -663,7 +771,7 @@ They bracket nested sequences of instructions, called *blocks*, terminated with,
 As the grammar prescribes, they must be well-nested.
 
 A structured instruction can consume *input* and produce *output* on the operand stack according to its annotated *block type*.
-It is given either as a :ref:`type index <syntax-funcidx>` that refers to a suitable :ref:`function type <syntax-functype>`, or as an optional :ref:`value type <syntax-valtype>` inline, which is a shorthand for the function type :math:`[] \to [\valtype^?]`.
+It is given either as a :ref:`type index <syntax-funcidx>` that refers to a suitable :ref:`function type <syntax-functype>` reinterpreted as an :ref:`instruction type <syntax-instrtype>`, or as an optional :ref:`value type <syntax-valtype>` inline, which is a shorthand for the instruction type :math:`[] \to [\valtype^?]`.
 
 Each structured control instruction introduces an implicit *label*.
 Labels are targets for branch instructions that reference them with :ref:`label indices <syntax-labelidx>`.
@@ -687,6 +795,9 @@ Branch instructions come in several flavors:
 |BR| performs an unconditional branch,
 |BRIF| performs a conditional branch,
 and |BRTABLE| performs an indirect branch through an operand indexing into the label vector that is an immediate to the instruction, or to a default target if the operand is out of bounds.
+The |BRONNULL| and |BRONNONNULL| instructions check whether a reference operand is :ref:`null <syntax-null>` and branch if that is the case or not the case, respectively.
+Similarly, |BRONCAST| and |BRONCASTFAIL| attempt a downcast on a reference operand and branch if that succeeds, or fails, respectively.
+
 The |RETURN| instruction is a shortcut for an unconditional branch to the outermost block, which implicitly is the body of the current function.
 Taking a branch *unwinds* the operand stack up to the height where the targeted structured control instruction was entered.
 However, branches may additionally consume operands themselves, which they push back on the operand stack after unwinding.
@@ -694,9 +805,14 @@ Forward branches require operands according to the output of the targeted block'
 Backward branches require operands according to the input of the targeted block's type, i.e., represent the values consumed by the restarted block.
 
 The |CALL| instruction invokes another :ref:`function <syntax-func>`, consuming the necessary arguments from the stack and returning the result values of the call.
-The |CALLINDIRECT| instruction calls a function indirectly through an operand indexing into a :ref:`table <syntax-table>` that is denoted by a :ref:`table index <syntax-tableidx>` and must have type |FUNCREF|.
+The |CALLREF| instruction invokes a function indirectly through a :ref:`function reference <syntax-reftype>` operand.
+The |CALLINDIRECT| instruction calls a function indirectly through an operand indexing into a :ref:`table <syntax-table>` that is denoted by a :ref:`table index <syntax-tableidx>` and must contain :ref:`function references <syntax-reftype>`.
 Since it may contain functions of heterogeneous type,
 the callee is dynamically checked against the :ref:`function type <syntax-functype>` indexed by the instruction's second immediate, and the call is aborted with a :ref:`trap <trap>` if it does not match.
+
+The |RETURNCALL|, |RETURNCALLREF|, and |RETURNCALLINDIRECT| instructions are *tail-call* variants of the previous ones.
+That is, they first return from the current function before actually performing the respective call.
+It is guaranteed that no sequence of nested calls using only these instructions can cause resource exhaustion due to hitting an :ref:`implementation's limit <impl-exec>` on the number of active calls.
 
 
 .. index:: ! expression, constant, global, offset, element, data, instruction
@@ -710,7 +826,7 @@ Expressions
 :ref:`Function <syntax-func>` bodies, initialization values for :ref:`globals <syntax-global>`, elements and offsets of :ref:`element <syntax-elem>` segments, and offsets of :ref:`data <syntax-data>` segments are given as expressions, which are sequences of :ref:`instructions <syntax-instr>` terminated by an |END| marker.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{expression} & \expr &::=&
      \instr^\ast~\END \\
    \end{array}
