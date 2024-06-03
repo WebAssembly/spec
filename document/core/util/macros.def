@@ -1267,16 +1267,19 @@
 
 .. |alloctype| mathdef:: \xref{exec/modules}{alloc-type}{\F{alloctype}}
 .. |allocfunc| mathdef:: \xref{exec/modules}{alloc-func}{\F{allocfunc}}
-.. |allochostfunc| mathdef:: \xref{exec/modules}{alloc-hostfunc}{\F{allochostfunc}}
 .. |alloctable| mathdef:: \xref{exec/modules}{alloc-table}{\F{alloctable}}
 .. |allocmem| mathdef:: \xref{exec/modules}{alloc-mem}{\F{allocmem}}
 .. |allocglobal| mathdef:: \xref{exec/modules}{alloc-global}{\F{allocglobal}}
 .. |allocelem| mathdef:: \xref{exec/modules}{alloc-elem}{\F{allocelem}}
 .. |allocdata| mathdef:: \xref{exec/modules}{alloc-data}{\F{allocdata}}
+.. |allocexport| mathdef:: \xref{exec/modules}{alloc-export}{\F{allocexport}}
 .. |allocmodule| mathdef:: \xref{exec/modules}{alloc-module}{\F{allocmodule}}
 
 .. |growtable| mathdef:: \xref{exec/modules}{grow-table}{\F{growtable}}
 .. |growmem| mathdef:: \xref{exec/modules}{grow-mem}{\F{growmem}}
+
+.. HACK !
+.. |mm| mathdef:: \X{mm}
 
 
 .. Addresses, non-terminals
@@ -1627,6 +1630,9 @@
 
 .. |instantiate| mathdef:: \xref{exec/modules}{exec-instantiation}{\F{instantiate}}
 .. |invoke| mathdef:: \xref{exec/modules}{exec-invocation}{\F{invoke}}
+
+.. |runelem| mathdef:: \xref{exec/modules}{aux-runelem}{\F{runelem}}
+.. |rundata| mathdef:: \xref{exec/modules}{aux-rundata}{\F{rundata}}
 
 
 .. Judgements

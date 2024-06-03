@@ -277,6 +277,7 @@ var vt : vectype
 var xt : externtype
 var yt : fieldtype     ;; TODO: better choice?
 var zt : storagetype
+var ok : datatype
 
 
 ;;

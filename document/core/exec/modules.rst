@@ -10,7 +10,7 @@ For modules, the execution semantics primarily defines :ref:`instantiation <exec
 Allocation
 ~~~~~~~~~~
 
-New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, and :ref:`globals <syntax-globalinst>` are *allocated* in a :ref:`store <syntax-store>` :math:`S`, as defined by the following auxiliary functions.
+New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, and :ref:`globals <syntax-globalinst>` are *allocated* in a :ref:`store <syntax-store>` ${:s}, as defined by the following auxiliary functions.
 
 
 .. index:: function, function instance, function address, module instance, function type
@@ -31,43 +31,7 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 
 7. Return :math:`a`.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{rlll}
-   \allocfunc(S, \func, \moduleinst) &=& S', \funcaddr \\[1ex]
-   \mbox{where:} \hfill \\
-   \deftype &=& \moduleinst.\MITYPES[\func.\FTYPE] \\
-   \funcaddr &=& |S.\SFUNCS| \\
-   \funcinst &=& \{ \FITYPE~\deftype, \FIMODULE~\moduleinst, \FICODE~\func \} \\
-   S' &=& S \compose \{\SFUNCS~\funcinst\} \\
-   \end{array}
-
-
-.. index:: host function, function instance, function address, function type
-.. _alloc-hostfunc:
-
-:ref:`Host Functions <syntax-hostfunc>`
-.......................................
-
-1. Let :math:`\hostfunc` be the :ref:`host function <syntax-hostfunc>` to allocate and :math:`\deftype` its :ref:`defined type <syntax-functype>`.
-
-2. Let :math:`a` be the first free :ref:`function address <syntax-funcaddr>` in :math:`S`.
-
-3. Let :math:`\funcinst` be the :ref:`function instance <syntax-funcinst>` :math:`\{ \FITYPE~\deftype, \FIHOSTFUNC~\hostfunc \}`.
-
-4. Append :math:`\funcinst` to the |SFUNCS| of :math:`S`.
-
-5. Return :math:`a`.
-
-.. math::
-   ~\\[-1ex]
-   \begin{array}{rlll}
-   \allochostfunc(S, \deftype, \hostfunc) &=& S', \funcaddr \\[1ex]
-   \mbox{where:} \hfill \\
-   \funcaddr &=& |S.\SFUNCS| \\
-   \funcinst &=& \{ \FITYPE~\deftype, \FIHOSTFUNC~\hostfunc \} \\
-   S' &=& S \compose \{\SFUNCS~\funcinst\} \\
-   \end{array}
+$${definition: allocfunc}
 
 .. note::
    Host functions are never allocated by the WebAssembly semantics itself,
@@ -92,15 +56,7 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 
 6. Return :math:`a`.
 
-.. math::
-   \begin{array}{rlll}
-   \alloctable(S, \tabletype, \reff) &=& S', \tableaddr \\[1ex]
-   \mbox{where:} \hfill \\
-   \tabletype &=& \{\LMIN~n, \LMAX~m^?\}~\reftype \\
-   \tableaddr &=& |S.\STABLES| \\
-   \tableinst &=& \{ \TITYPE~\tabletype, \TIREFS~\reff^n \} \\
-   S' &=& S \compose \{\STABLES~\tableinst\} \\
-   \end{array}
+$${definition: alloctable}
 
 
 .. index:: memory, memory instance, memory address, memory type, limits, byte
@@ -121,15 +77,7 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 
 6. Return :math:`a`.
 
-.. math::
-   \begin{array}{rlll}
-   \allocmem(S, \memtype) &=& S', \memaddr \\[1ex]
-   \mbox{where:} \hfill \\
-   \memtype &=& \{\LMIN~n, \LMAX~m^?\} \\
-   \memaddr &=& |S.\SMEMS| \\
-   \meminst &=& \{ \MITYPE~\memtype, \MIBYTES~(\hex{00})^{n \cdot 64\,\F{Ki}} \} \\
-   S' &=& S \compose \{\SMEMS~\meminst\} \\
-   \end{array}
+$${definition: allocmem}
 
 
 .. index:: global, global instance, global address, global type, value type, mutability, value
@@ -148,14 +96,7 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 
 5. Return :math:`a`.
 
-.. math::
-   \begin{array}{rlll}
-   \allocglobal(S, \globaltype, \val) &=& S', \globaladdr \\[1ex]
-   \mbox{where:} \hfill \\
-   \globaladdr &=& |S.\SGLOBALS| \\
-   \globalinst &=& \{ \GITYPE~\globaltype, \GIVALUE~\val \} \\
-   S' &=& S \compose \{\SGLOBALS~\globalinst\} \\
-   \end{array}
+$${definition: allocglobal}
 
 
 .. index:: element, element instance, element address
@@ -174,14 +115,7 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 
 5. Return :math:`a`.
 
-.. math::
-  \begin{array}{rlll}
-  \allocelem(S, \reftype, \reff^\ast) &=& S', \elemaddr \\[1ex]
-  \mbox{where:} \hfill \\
-  \elemaddr &=& |S.\SELEMS| \\
-  \eleminst &=& \{ \EITYPE~\reftype, \EIREFS~\reff^\ast \} \\
-  S' &=& S \compose \{\SELEMS~\eleminst\} \\
-  \end{array}
+$${definition: allocelem}
 
 
 .. index:: data, data instance, data address
@@ -200,14 +134,7 @@ New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tablei
 
 5. Return :math:`a`.
 
-.. math::
-  \begin{array}{rlll}
-  \allocdata(S, b^\ast) &=& S', \dataaddr \\[1ex]
-  \mbox{where:} \hfill \\
-  \dataaddr &=& |S.\SDATAS| \\
-  \datainst &=& \{ \DIBYTES~b^\ast \} \\
-  S' &=& S \compose \{\SDATAS~\datainst\} \\
-  \end{array}
+$${definition: allocdata}
 
 
 .. index:: table, table instance, table address, grow, limits
@@ -231,6 +158,8 @@ Growing :ref:`tables <syntax-tableinst>`
 7. Append :math:`\reff^n` to :math:`\tableinst.\TIREFS`.
 
 8. Set :math:`\tableinst.\TITYPE` to the :ref:`table type <syntax-tabletype>` :math:`\limits'~t`.
+
+$${definition: growtable}
 
 .. math::
    \begin{array}{rllll}
@@ -269,6 +198,8 @@ Growing :ref:`memories <syntax-meminst>`
 8. Append :math:`n` times :math:`64\,\F{Ki}` :ref:`bytes <syntax-byte>` with value :math:`\hex{00}` to :math:`\meminst.\MIBYTES`.
 
 9. Set :math:`\meminst.\MITYPE` to the :ref:`memory type <syntax-memtype>` :math:`\limits'`.
+
+$${definition: growmem}
 
 .. math::
    \begin{array}{rllll}
@@ -375,6 +306,8 @@ and list of :ref:`reference <syntax-ref>` lists for the module's :ref:`element s
 23. Return :math:`\moduleinst`.
 
 
+$${definition: allocmodule}
+
 .. math::
    ~\\
    \begin{array}{rlll}
@@ -440,6 +373,9 @@ where:
    \end{array}
 
 Here, the notation :math:`\F{allocx}^\ast` is shorthand for multiple :ref:`allocations <alloc>` of object kind :math:`X`, defined as follows:
+
+$${definition: allocXs}
+$${definition-ignore: allocfuncs allocglobals alloctables allocmems allocelems allocdatas}
 
 .. math::
    \begin{array}{rlll}
@@ -602,6 +538,8 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 17. Pop the frame :math:`F` from the stack.
 
 
+$${definition: instantiate}
+
 .. math::
    ~\\
    \begin{array}{@{}rcll}
@@ -630,6 +568,11 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
    \end{array}
 
 where:
+
+.. _aux-runelem:
+.. _aux-rundata:
+
+$${definition: runelem rundata}
 
 .. math::
    \begin{array}{@{}l}
@@ -712,6 +655,8 @@ Once the function has returned, the following steps are executed:
 4. Pop the frame :math:`F` from the stack.
 
 The values :math:`\val_{\F{res}}^m` are returned as the results of the invocation.
+
+$${definition: invoke}
 
 .. math::
    ~\\[-1ex]

@@ -278,7 +278,7 @@ Functions
 
 .. math::
    \begin{array}{lclll}
-   \F{func\_alloc}(S, \X{ta}, \X{code}) &=& (S', \X{a}) && (\iff \allochostfunc(S, \X{ta}, \X{code}) = S', \X{a}) \\
+   \F{func\_alloc}(S, \X{ta}, \X{code}) &=& (S', \X{a}) && (\iff \allocfunc(S, \{\}, \X{ta}, \X{code}) = S', \X{a}) \\
    \end{array}
 
 .. note::

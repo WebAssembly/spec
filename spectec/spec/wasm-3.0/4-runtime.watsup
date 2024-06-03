@@ -69,8 +69,8 @@ var xv : externval
 
 ;; Instances
 
-syntax funccode hint(show code) hint(macro "funccode") =
-  func | HOSTFUNC `... hint(macro "FI%")
+syntax hostfunc hint(desc "host function") hint(macro "%" "FI%") = `...
+syntax funccode hint(show code) hint(macro "funccode") = func | hostfunc
 
 syntax funcinst hint(desc "function instance") hint(macro "%" "FI%") =
   { TYPE deftype, MODULE moduleinst, CODE funccode }

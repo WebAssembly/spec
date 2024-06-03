@@ -72,3 +72,13 @@ syntax label hint(desc "label") = LABEL_ n `{instr*}  hint(show LABEL_%#%)
 syntax callframe hint(desc "call frame") = FRAME_ n `{frame}   hint(show FRAME_%#%)
 
 var L : label
+
+
+;; Allocation
+
+def $allocX(syntax X, syntax Y, store, X, Y) : (store, addr) hint(macro none)
+def $allocXs(syntax X, syntax Y, store, X*, Y*) : (store, addr*) hint(show $allocX*#((%3, %4, %5))) hint(macro none)
+def $allocXs(syntax X, syntax Y, s, eps, eps) = (s, eps)
+def $allocXs(syntax X, syntax Y, s, X X'*, Y Y'*) = (s_2, a a'*)
+  -- if (s_1, a) = $allocX(syntax X, syntax Y, s, X, Y)
+  -- if (s_2, a'*) = $allocXs(syntax X, syntax Y, s_1, X'*, Y'*)

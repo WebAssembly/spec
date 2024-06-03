@@ -126,13 +126,13 @@ $${definition-prose: growmem}
 
 $${definition: growmem}
 
-.. _def-instexport:
+.. _def-allocexport:
 
-$${definition-prose: instexport}
+$${definition-prose: allocexport}
 
 \
 
-$${definition: instexport}
+$${definition: allocexport}
 
 .. _def-allocmodule:
 
