@@ -10,28 +10,28 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup -l --splice-latex -p spe
 == Running pass animate...
 == IL Validation after pass animate...
 == Translating to AL...
-../spec/wasm-3.0/8-reduction.watsup:225.12-225.36: translate_rulepr: Yet `(`%;%`_config(z, instr*{instr : instr}), `%;%`_config(z', instr'*{instr' : instr}))`
-../spec/wasm-3.0/8-reduction.watsup:229.12-229.44: translate_rulepr: Yet `(`%;%`_config(`%;%`_state(s, f'), instr*{instr : instr}), `%;%`_config(`%;%`_state(s', f'), instr'*{instr' : instr}))`
+../spec/wasm-3.0/8-reduction.watsup:227.12-227.36: translate_rulepr: Yet `(`%;%`_config(z, instr*{instr : instr}), `%;%`_config(z', instr'*{instr' : instr}))`
+../spec/wasm-3.0/8-reduction.watsup:231.12-231.44: translate_rulepr: Yet `(`%;%`_config(`%;%`_state(s, f'), instr*{instr : instr}), `%;%`_config(`%;%`_state(s', f'), instr'*{instr' : instr}))`
 == Prose Generation...
-../spec/wasm-3.0/6-typing.watsup:622.7-622.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0)`
-../spec/wasm-3.0/6-typing.watsup:623.6-623.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l'!`%`_labelidx.0]!`%`_resulttype.0)`
-../spec/wasm-3.0/6-typing.watsup:640.6-640.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-../spec/wasm-3.0/6-typing.watsup:641.6-641.34: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt)`
-../spec/wasm-3.0/6-typing.watsup:648.6-648.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-../spec/wasm-3.0/6-typing.watsup:649.6-649.49: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, $diffrt(rt_1, rt_2), rt)`
-../spec/wasm-3.0/6-typing.watsup:665.6-665.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
-../spec/wasm-3.0/6-typing.watsup:678.6-678.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
-../spec/wasm-3.0/6-typing.watsup:686.6-686.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
-../spec/wasm-3.0/6-typing.watsup:693.6-693.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
-../spec/wasm-3.0/6-typing.watsup:697.6-697.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
-../spec/wasm-3.0/6-typing.watsup:758.6-758.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-../spec/wasm-3.0/6-typing.watsup:764.6-764.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-../spec/wasm-3.0/6-typing.watsup:782.7-782.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
-../spec/wasm-3.0/6-typing.watsup:814.6-814.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
-../spec/wasm-3.0/6-typing.watsup:843.6-843.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
-../spec/wasm-3.0/6-typing.watsup:848.6-848.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
-../spec/wasm-3.0/6-typing.watsup:987.6-987.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-../spec/wasm-3.0/6-typing.watsup:993.6-993.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+../spec/wasm-3.0/6-typing.watsup:627.7-627.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0)`
+../spec/wasm-3.0/6-typing.watsup:628.6-628.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l'!`%`_labelidx.0]!`%`_resulttype.0)`
+../spec/wasm-3.0/6-typing.watsup:645.6-645.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+../spec/wasm-3.0/6-typing.watsup:646.6-646.34: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt)`
+../spec/wasm-3.0/6-typing.watsup:653.6-653.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+../spec/wasm-3.0/6-typing.watsup:654.6-654.49: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, $diffrt(rt_1, rt_2), rt)`
+../spec/wasm-3.0/6-typing.watsup:670.6-670.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
+../spec/wasm-3.0/6-typing.watsup:683.6-683.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+../spec/wasm-3.0/6-typing.watsup:691.6-691.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+../spec/wasm-3.0/6-typing.watsup:698.6-698.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
+../spec/wasm-3.0/6-typing.watsup:702.6-702.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+../spec/wasm-3.0/6-typing.watsup:763.6-763.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
+../spec/wasm-3.0/6-typing.watsup:769.6-769.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
+../spec/wasm-3.0/6-typing.watsup:787.7-787.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
+../spec/wasm-3.0/6-typing.watsup:819.6-819.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
+../spec/wasm-3.0/6-typing.watsup:848.6-848.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
+../spec/wasm-3.0/6-typing.watsup:853.6-853.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
+../spec/wasm-3.0/6-typing.watsup:992.6-992.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+../spec/wasm-3.0/6-typing.watsup:998.6-998.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 == Splicing...
 \documentclass[a4paper]{scrartcl}
 
@@ -676,6 +676,11 @@ warning: rule `Externtype_sub/func` was never spliced
 warning: rule `Externtype_sub/global` was never spliced
 warning: rule `Externtype_sub/table` was never spliced
 warning: rule `Externtype_sub/mem` was never spliced
+warning: rule `Externval_type/func` was never spliced
+warning: rule `Externval_type/global` was never spliced
+warning: rule `Externval_type/table` was never spliced
+warning: rule `Externval_type/mem` was never spliced
+warning: rule `Externval_type/sub` was never spliced
 warning: rule `Fieldtype_ok` was never spliced
 warning: rule `Fieldtype_sub/const` was never spliced
 warning: rule `Fieldtype_sub/var` was never spliced
@@ -841,7 +846,7 @@ warning: rule `NotationTypingInstrScheme/i32.add` was never spliced
 warning: rule `NotationTypingInstrScheme/global.get` was never spliced
 warning: rule `NotationTypingInstrScheme/block` was never spliced
 warning: rule `NotationTypingScheme` was never spliced
-warning: rule `Num_ok` was never spliced
+warning: rule `Num_type` was never spliced
 warning: rule `Numtype_ok` was never spliced
 warning: rule `Numtype_sub` was never spliced
 warning: rule `Packtype_ok` was never spliced
@@ -851,13 +856,14 @@ warning: rule `Rectype_ok/cons` was never spliced
 warning: rule `Rectype_ok/rec2` was never spliced
 warning: rule `Rectype_ok2/empty` was never spliced
 warning: rule `Rectype_ok2/cons` was never spliced
-warning: rule `Ref_ok/null` was never spliced
-warning: rule `Ref_ok/i31` was never spliced
-warning: rule `Ref_ok/struct` was never spliced
-warning: rule `Ref_ok/array` was never spliced
-warning: rule `Ref_ok/func` was never spliced
-warning: rule `Ref_ok/host` was never spliced
-warning: rule `Ref_ok/extern` was never spliced
+warning: rule `Ref_type/null` was never spliced
+warning: rule `Ref_type/i31` was never spliced
+warning: rule `Ref_type/struct` was never spliced
+warning: rule `Ref_type/array` was never spliced
+warning: rule `Ref_type/func` was never spliced
+warning: rule `Ref_type/host` was never spliced
+warning: rule `Ref_type/extern` was never spliced
+warning: rule `Ref_type/sub` was never spliced
 warning: rule `Reftype_ok` was never spliced
 warning: rule `Reftype_sub/nonnull` was never spliced
 warning: rule `Reftype_sub/null` was never spliced
@@ -1070,9 +1076,9 @@ warning: rule `Tabletype_sub` was never spliced
 warning: rule `Type_ok` was never spliced
 warning: rule `Types_ok/empty` was never spliced
 warning: rule `Types_ok/cons` was never spliced
-warning: rule `Val_ok/num` was never spliced
-warning: rule `Val_ok/vec` was never spliced
-warning: rule `Val_ok/ref` was never spliced
+warning: rule `Val_type/num` was never spliced
+warning: rule `Val_type/vec` was never spliced
+warning: rule `Val_type/ref` was never spliced
 warning: rule `Valtype_ok/num` was never spliced
 warning: rule `Valtype_ok/vec` was never spliced
 warning: rule `Valtype_ok/ref` was never spliced
@@ -1081,7 +1087,7 @@ warning: rule `Valtype_sub/num` was never spliced
 warning: rule `Valtype_sub/vec` was never spliced
 warning: rule `Valtype_sub/ref` was never spliced
 warning: rule `Valtype_sub/bot` was never spliced
-warning: rule `Vec_ok` was never spliced
+warning: rule `Vec_type` was never spliced
 warning: rule `Vectype_ok` was never spliced
 warning: rule `Vectype_sub` was never spliced
 warning: definition `ANYREF` was never spliced
@@ -1106,6 +1112,7 @@ warning: definition `allocdatas` was never spliced
 warning: definition `allocelem` was never spliced
 warning: definition `allocelems` was never spliced
 warning: definition `allocexport` was never spliced
+warning: definition `allocexports` was never spliced
 warning: definition `allocfunc` was never spliced
 warning: definition `allocfuncs` was never spliced
 warning: definition `allocglobal` was never spliced
@@ -1122,8 +1129,10 @@ warning: definition `binop` was never spliced
 warning: definition `blocktype_` was never spliced
 warning: definition `canon_` was never spliced
 warning: definition `cbytes` was never spliced
-warning: definition `clostype` was never spliced
-warning: definition `clostypes` was never spliced
+warning: definition `clos_deftype` was never spliced
+warning: definition `clos_deftypes` was never spliced
+warning: definition `clos_moduletype` was never spliced
+warning: definition `clos_valtype` was never spliced
 warning: definition `concat_` was never spliced
 warning: definition `const` was never spliced
 warning: definition `convert` was never spliced
@@ -1278,6 +1287,7 @@ warning: definition `store` was never spliced
 warning: definition `structinst` was never spliced
 warning: definition `subst_all_deftype` was never spliced
 warning: definition `subst_all_deftypes` was never spliced
+warning: definition `subst_all_moduletype` was never spliced
 warning: definition `subst_all_reftype` was never spliced
 warning: definition `subst_all_valtype` was never spliced
 warning: definition `subst_comptype` was never spliced
@@ -1288,6 +1298,7 @@ warning: definition `subst_functype` was never spliced
 warning: definition `subst_globaltype` was never spliced
 warning: definition `subst_heaptype` was never spliced
 warning: definition `subst_memtype` was never spliced
+warning: definition `subst_moduletype` was never spliced
 warning: definition `subst_numtype` was never spliced
 warning: definition `subst_packtype` was never spliced
 warning: definition `subst_rectype` was never spliced
@@ -1567,6 +1578,7 @@ warning: definition prose `allocdatas` was never spliced
 warning: definition prose `allocelem` was never spliced
 warning: definition prose `allocelems` was never spliced
 warning: definition prose `allocexport` was never spliced
+warning: definition prose `allocexports` was never spliced
 warning: definition prose `allocfunc` was never spliced
 warning: definition prose `allocfuncs` was never spliced
 warning: definition prose `allocglobal` was never spliced
@@ -1582,8 +1594,10 @@ warning: definition prose `before` was never spliced
 warning: definition prose `binop` was never spliced
 warning: definition prose `blocktype_` was never spliced
 warning: definition prose `canon_` was never spliced
-warning: definition prose `clostype` was never spliced
-warning: definition prose `clostypes` was never spliced
+warning: definition prose `clos_deftype` was never spliced
+warning: definition prose `clos_deftypes` was never spliced
+warning: definition prose `clos_moduletype` was never spliced
+warning: definition prose `clos_valtype` was never spliced
 warning: definition prose `concat_` was never spliced
 warning: definition prose `const` was never spliced
 warning: definition prose `cpacknum` was never spliced
@@ -1675,6 +1689,7 @@ warning: definition prose `store` was never spliced
 warning: definition prose `structinst` was never spliced
 warning: definition prose `subst_all_deftype` was never spliced
 warning: definition prose `subst_all_deftypes` was never spliced
+warning: definition prose `subst_all_moduletype` was never spliced
 warning: definition prose `subst_all_reftype` was never spliced
 warning: definition prose `subst_all_valtype` was never spliced
 warning: definition prose `subst_comptype` was never spliced
@@ -1685,6 +1700,7 @@ warning: definition prose `subst_functype` was never spliced
 warning: definition prose `subst_globaltype` was never spliced
 warning: definition prose `subst_heaptype` was never spliced
 warning: definition prose `subst_memtype` was never spliced
+warning: definition prose `subst_moduletype` was never spliced
 warning: definition prose `subst_numtype` was never spliced
 warning: definition prose `subst_packtype` was never spliced
 warning: definition prose `subst_rectype` was never spliced

@@ -39,12 +39,15 @@ def $with_locals(C, eps, eps) = C
 def $with_locals(C, x_1 x*, lct_1 lct*) = $with_locals(C[.LOCALS[x_1] = lct_1], x*, lct*)
 
 
-def $clos_moduletype(context, moduletype) : moduletype  hint(show $clos_(%,%)) hint(macro "clostype")
+def $clos_valtype(context, valtype) : valtype  hint(show $clos_(%,%)) hint(macro "clostype")
 def $clos_deftype(context, deftype) : deftype  hint(show $clos_(%,%)) hint(macro "clostype")
+def $clos_moduletype(context, moduletype) : moduletype  hint(show $clos_(%,%)) hint(macro "clostype")
 def $clos_deftypes(deftype*) : deftype*        hint(show $clos*#((%))) hint(macro "clostype")
 
-def $clos_moduletype(C, mmt) = $subst_all_moduletype(mmt, dt'*) -- if dt'* = $clos_deftypes(C.TYPES)
+;; TODO: inline dt*
+def $clos_valtype(C, t) = $subst_all_valtype(t, dt*) -- if dt* = $clos_deftypes(C.TYPES)
 def $clos_deftype(C, dt) = $subst_all_deftype(dt, dt'*) -- if dt'* = $clos_deftypes(C.TYPES)
+def $clos_moduletype(C, mmt) = $subst_all_moduletype(mmt, dt*) -- if dt* = $clos_deftypes(C.TYPES)
 
 def $clos_deftypes(eps) = eps
 def $clos_deftypes(dt* dt_n) = dt'* $subst_all_deftype(dt_n, dt'*)  -- if dt'* = $clos_deftypes(dt*)

@@ -82,3 +82,23 @@ def $allocXs(syntax X, syntax Y, s, eps, eps) = (s, eps)
 def $allocXs(syntax X, syntax Y, s, X X'*, Y Y'*) = (s_2, a a'*)
   -- if (s_1, a) = $allocX(syntax X, syntax Y, s, X, Y)
   -- if (s_2, a'*) = $allocXs(syntax X, syntax Y, s_1, X'*, Y'*)
+
+(;
+def $detstores(store, store*) : store hint(show %)  ;; HACK!
+def $detaddrs(addr, addr*) : addr hint(show %)      ;; HACK!
+def $allocX2(syntax X, syntax Y, store, X, Y) : (store, addr) hint(show $allocX(%3, %4, %5)) hint(macro none)
+def $allocXs2(syntax X, syntax Y, store, X*, Y*) : (store, addr*) hint(show $allocX*#((%3, %4, %5))) hint(macro none)
+def $allocXs2(syntax X, syntax Y, s*[0], X^n, Y^n) = (s*[n], a^n)
+  -- if ($detstores(s*[i+1], s*), $detaddrs(a^n[i], a^n)) = $allocX2(syntax X, syntax Y, s*[i], X^n[i], Y^n[i])
+;)
+(;
+.. math::
+   \begin{array}{rlll}
+   \alloctype^\ast(\rectype^n) = \deftype^\ast \\[1ex]
+   \mbox{where for all $i < n$:} \hfill \\
+   \rectype^n[i] &=& \REC~\subtype_i^{m_i} \\
+   \deftype^\ast[x_i \slice m_i] &=& \rolldt_{x_i}^\ast(\REC~\subtype_i^{m_i})[\subst \deftype^\ast[0 \slice x_i]] \\
+   x_{i+1} &=& x_i + m_i \\
+   x_n &=& |\deftype^\ast| \\
+   \end{array}
+;)

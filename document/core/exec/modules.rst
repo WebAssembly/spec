@@ -137,17 +137,6 @@ $${definition: allocelem}
 $${definition: allocdata}
 
 
-.. index:: export, export instance, module instance, extern index
-.. _alloc-export:
-
-:ref:`Exports <syntax-exportinst>`
-..................................
-
-.. todo:: prose
-
-$${definition: allocexport}
-
-
 .. index:: table, table instance, table address, grow, limits
 .. _grow-table:
 
@@ -293,83 +282,10 @@ and list of :ref:`reference <syntax-ref>` lists for the module's :ref:`element s
 
 $${definition: allocmodule}
 
-.. math::
-   ~\\
-   \begin{array}{rlll}
-   \allocmodule(S, \module, \externval_{\F{im}}^\ast, \val_{\F{g}}^\ast, \reff_{\F{t}}^\ast, (\reff_{\F{e}}^\ast)^\ast) &=& S', \moduleinst
-   \end{array}
-
-where:
-
-.. math::
-   \begin{array}{@{}rlll@{}}
-   \table^\ast &=& \module.\MTABLES \\
-   \mem^\ast &=& \module.\MMEMS \\
-   \global^\ast &=& \module.\MGLOBALS \\
-   \elem^\ast &=& \module.\MELEMS \\
-   \data^\ast &=& \module.\MDATAS \\
-   \export^\ast &=& \module.\MEXPORTS \\[1ex]
-   \moduleinst &=& \{~
-     \begin{array}[t]{@{}l@{}}
-     \MITYPES~\deftype^\ast, \\
-     \MIFUNCS~\funcsxv(\externval_{\F{im}}^\ast)~\funcaddr^\ast, \\
-     \MITABLES~\tablesxv(\externval_{\F{im}}^\ast)~\tableaddr^\ast, \\
-     \MIMEMS~\memsxv(\externval_{\F{im}}^\ast)~\memaddr^\ast, \\
-     \MIGLOBALS~\globalsxv(\externval_{\F{im}}^\ast)~\globaladdr^\ast, \\
-     \MIELEMS~\elemaddr^\ast, \\
-     \MIDATAS~\dataaddr^\ast, \\
-     \MIEXPORTS~\exportinst^\ast ~\}
-     \end{array} \\[1ex]
-   \deftype^\ast &=&
-     \alloctype^\ast(\module.\MTYPES) \\
-   S_1, \funcaddr^\ast &=&
-     \allocfunc^\ast(S, \module.\MFUNCS, \moduleinst) \\
-   S_2, \tableaddr^\ast &=&
-     \alloctable^\ast(S_1, \insttype_{\moduleinst}(\table.\TTYPE)^\ast, \reff_{\F{t}}^\ast)
-     \quad (\where (\table.\TTYPE)^\ast = (\limits~t)^\ast) \\
-   S_3, \memaddr^\ast &=&
-     \allocmem^\ast(S_2, \insttype_{\moduleinst}(\mem.\MTYPE)^\ast) \\
-   S_4, \globaladdr^\ast &=&
-     \allocglobal^\ast(S_3, \insttype_{\moduleinst}(\global.\GTYPE)^\ast, \val_{\F{g}}^\ast) \\
-   S_5, \elemaddr^\ast &=&
-     \allocelem^\ast(S_4, \insttype_{\moduleinst}(\elem.\ETYPE)^\ast, (\reff_{\F{e}}^\ast)^\ast) \\
-   S', \dataaddr^\ast &=&
-     \allocdata^\ast(S_5, \data.\DINIT^\ast) \\
-   \exportinst^\ast &=&
-     \{ \EINAME~(\export.\ENAME), \EIVALUE~\externval_{\F{ex}} \}^\ast \\[1ex]
-   \funcsxv(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MIFUNCS[x])^\ast
-     \qquad~ (\where x^\ast = \funcsxx(\export^\ast)) \\
-   \tablesxv(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MITABLES[x])^\ast
-     \qquad (\where x^\ast = \tablesxx(\export^\ast)) \\
-   \memsxv(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MIMEMS[x])^\ast
-     \qquad (\where x^\ast = \memsxx(\export^\ast)) \\
-   \globalsxv(\externval_{\F{ex}}^\ast) &=& (\moduleinst.\MIGLOBALS[x])^\ast
-     \qquad\!\!\! (\where x^\ast = \globalsxx(\export^\ast)) \\
-   \end{array}
-
-.. scratch
-   Here, in slight abuse of notation, :math:(`\F{allocxyz}(S, \dots))^\ast` is taken to express multiple allocations with the updates to the store :math:`S` being threaded through, i.e.,
-
-  .. math::
-   \begin{array}{rlll}
-   (\F{allocxyz}^\ast(S_0, \dots))^n &=& S_n, a^n \\[1ex]
-   \mbox{where for all $i < n$:} \hfill \\
-   S_{i+1}, a^n[i] &=& \F{allocxyz}(S_i, \dots)
-   \end{array}
-
 Here, the notation :math:`\F{allocx}^\ast` is shorthand for multiple :ref:`allocations <alloc>` of object kind :math:`X`, defined as follows:
 
 $${definition: allocXs}
 $${definition-ignore: allocfuncs allocglobals alloctables allocmems allocelems allocdatas}
-
-.. math::
-   \begin{array}{rlll}
-   \F{allocx}^\ast(S_0, X^n, \dots) &=& S_n, a^n \\[1ex]
-   \mbox{where for all $i < n$:} \hfill \\
-   S_{i+1}, a^n[i] &=& \F{allocx}(S_i, X^n[i], \dots)
-   \end{array}
-
-Moreover, if the dots ${:`...} are a sequence ${:A^n} (as for functions), then the elements of this sequence are passed to the allocation function pointwise.
 
 For types, however, allocation is defined in terms of :ref:`rolling <aux-roll-rectype>` and :ref:`substitution <notation-subst>` of all preceding types to produce a list of :ref:`closed <type-closed>` :ref:`defined types <syntax-deftype>`:
 
@@ -377,29 +293,16 @@ For types, however, allocation is defined in terms of :ref:`rolling <aux-roll-re
 
 $${definition: alloctypes}
 
-.. math::
-   \begin{array}{rlll}
-   \alloctype^\ast(\rectype^n) = \deftype^\ast \\[1ex]
-   \mbox{where for all $i < n$:} \hfill \\
-   \rectype^n[i] &=& \REC~\subtype_i^{m_i} \\
-   \deftype^\ast[x_i \slice m_i] &=& \rolldt_{x_i}^\ast(\REC~\subtype_i^{m_i})[\subst \deftype^\ast[0 \slice x_i]] \\
-   x_{i+1} &=& x_i + m_i \\
-   x_n &=& |\deftype^\ast| \\
-   \end{array}
+Finally, export instances are produced with the help of the following definition:
 
+.. _alloc-export:
 
-.. scratch
-   \begin{array}{rlll}
-   \alloctype^\ast(\epsilon) = \epsilon \\
-   \alloctype^\ast(\rectype^\ast~\rectype') = \deftype^\ast~{\deftype'}^\ast \\[1ex]
-   \mbox{where:} \hfill \\
-   \deftype^\ast &=& \alloctype^\ast(\reftype^\ast) \\
-   {\deftype'}^\ast &=& \rolldt_{|\deftype^\ast|}^\ast(\rectype)[\subst \deftype^\ast) \\
-   \end{array}
+$${definition: {allocexports allocexport}}
 
 .. note::
    The definition of module allocation is mutually recursive with the allocation of its associated functions, because the resulting module instance is passed to the allocators as an argument, in order to form the necessary closures.
    In an implementation, this recursion is easily unraveled by mutating one or the other in a secondary step.
+
 
 
 .. index:: ! instantiation, module, instance, store, trap

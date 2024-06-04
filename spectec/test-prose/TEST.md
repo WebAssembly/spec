@@ -3635,28 +3635,28 @@ watsup 0.4 generator
 == Running pass animate...
 == IL Validation after pass animate...
 == Translating to AL...
-8-reduction.watsup:225.12-225.36: translate_rulepr: Yet `(`%;%`_config(z, instr*{instr : instr}), `%;%`_config(z', instr'*{instr' : instr}))`
-8-reduction.watsup:229.12-229.44: translate_rulepr: Yet `(`%;%`_config(`%;%`_state(s, f'), instr*{instr : instr}), `%;%`_config(`%;%`_state(s', f'), instr'*{instr' : instr}))`
+8-reduction.watsup:227.12-227.36: translate_rulepr: Yet `(`%;%`_config(z, instr*{instr : instr}), `%;%`_config(z', instr'*{instr' : instr}))`
+8-reduction.watsup:231.12-231.44: translate_rulepr: Yet `(`%;%`_config(`%;%`_state(s, f'), instr*{instr : instr}), `%;%`_config(`%;%`_state(s', f'), instr'*{instr' : instr}))`
 == Prose Generation...
-6-typing.watsup:622.7-622.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0)`
-6-typing.watsup:623.6-623.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l'!`%`_labelidx.0]!`%`_resulttype.0)`
-6-typing.watsup:640.6-640.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-6-typing.watsup:641.6-641.34: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt)`
-6-typing.watsup:648.6-648.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-6-typing.watsup:649.6-649.49: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, $diffrt(rt_1, rt_2), rt)`
-6-typing.watsup:665.6-665.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
-6-typing.watsup:678.6-678.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
-6-typing.watsup:686.6-686.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
-6-typing.watsup:693.6-693.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
-6-typing.watsup:697.6-697.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
-6-typing.watsup:758.6-758.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-6-typing.watsup:764.6-764.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-6-typing.watsup:782.7-782.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
-6-typing.watsup:814.6-814.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
-6-typing.watsup:843.6-843.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
-6-typing.watsup:848.6-848.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
-6-typing.watsup:987.6-987.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-6-typing.watsup:993.6-993.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:627.7-627.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0)`
+6-typing.watsup:628.6-628.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l'!`%`_labelidx.0]!`%`_resulttype.0)`
+6-typing.watsup:645.6-645.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:646.6-646.34: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt)`
+6-typing.watsup:653.6-653.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:654.6-654.49: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, $diffrt(rt_1, rt_2), rt)`
+6-typing.watsup:670.6-670.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
+6-typing.watsup:683.6-683.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+6-typing.watsup:691.6-691.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+6-typing.watsup:698.6-698.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
+6-typing.watsup:702.6-702.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+6-typing.watsup:763.6-763.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
+6-typing.watsup:769.6-769.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
+6-typing.watsup:787.7-787.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
+6-typing.watsup:819.6-819.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
+6-typing.watsup:848.6-848.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
+6-typing.watsup:853.6-853.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
+6-typing.watsup:992.6-992.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:998.6-998.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 =================
  Generated prose
 =================
@@ -4573,6 +4573,9 @@ subst_externtype exter_u0 tv* tu*
 5. Let (MEM mt) be exter_u0.
 6. Return (MEM $subst_memtype(mt, tv*, tu*)).
 
+subst_moduletype (xt_1* -> xt_2*) tv* tu*
+1. Return ($subst_externtype(xt_1, tv*, tu*)* -> $subst_externtype(xt_2, tv*, tu*)*).
+
 subst_all_valtype t tu^n
 1. Return $subst_valtype(t, $idx(i)^(i<n), tu^n).
 
@@ -4581,6 +4584,9 @@ subst_all_reftype rt tu^n
 
 subst_all_deftype dt tu^n
 1. Return $subst_deftype(dt, $idx(i)^(i<n), tu^n).
+
+subst_all_moduletype mmt tu^n
+1. Return $subst_moduletype(mmt, $idx(i)^(i<n), tu^n).
 
 subst_all_deftypes defty_u0* tu*
 1. If (defty_u0* is []), then:
@@ -5598,16 +5604,24 @@ with_locals C local_u0* local_u1*
 5. Let [x_1] ++ x* be local_u0*.
 6. Return $with_locals(C with .LOCALS[x_1] replaced by lct_1, x*, lct*).
 
-clostypes defty_u0*
+clos_deftypes defty_u0*
 1. If (defty_u0* is []), then:
   a. Return [].
 2. Let dt* ++ [dt_n] be defty_u0*.
-3. Let dt'* be $clostypes(dt*).
+3. Let dt'* be $clos_deftypes(dt*).
 4. Return dt'* ++ [$subst_all_deftype(dt_n, dt'*)].
 
-clostype C dt
-1. Let dt'* be $clostypes(C.TYPES).
+clos_valtype C t
+1. Let dt* be $clos_deftypes(C.TYPES).
+2. Return $subst_all_valtype(t, dt*).
+
+clos_deftype C dt
+1. Let dt'* be $clos_deftypes(C.TYPES).
 2. Return $subst_all_deftype(dt, dt'*).
+
+clos_moduletype C mmt
+1. Let dt* be $clos_deftypes(C.TYPES).
+2. Return $subst_all_moduletype(mmt, dt*).
 
 before typeu_u0 x i
 1. If the type of typeu_u0 is deftype, then:
@@ -5767,19 +5781,22 @@ allocdatas datat_u0* byte_u1*
 7. Let da'* be $allocdatas(ok'*, b'**).
 8. Return [da] ++ da'*.
 
-allocexport mm (EXPORT name exter_u0)
+allocexport moduleinst (EXPORT name exter_u0)
 1. If exter_u0 is of the case FUNC, then:
   a. Let (FUNC x) be exter_u0.
-  b. Return { NAME: name; VALUE: (FUNC mm.FUNCS[x]); }.
+  b. Return { NAME: name; VALUE: (FUNC moduleinst.FUNCS[x]); }.
 2. If exter_u0 is of the case GLOBAL, then:
   a. Let (GLOBAL x) be exter_u0.
-  b. Return { NAME: name; VALUE: (GLOBAL mm.GLOBALS[x]); }.
+  b. Return { NAME: name; VALUE: (GLOBAL moduleinst.GLOBALS[x]); }.
 3. If exter_u0 is of the case TABLE, then:
   a. Let (TABLE x) be exter_u0.
-  b. Return { NAME: name; VALUE: (TABLE mm.TABLES[x]); }.
+  b. Return { NAME: name; VALUE: (TABLE moduleinst.TABLES[x]); }.
 4. Assert: Due to validation, exter_u0 is of the case MEM.
 5. Let (MEM x) be exter_u0.
-6. Return { NAME: name; VALUE: (MEM mm.MEMS[x]); }.
+6. Return { NAME: name; VALUE: (MEM moduleinst.MEMS[x]); }.
+
+allocexports moduleinst export*
+1. Return $allocexport(moduleinst, export)*.
 
 allocmodule module externval* val_G* ref_T* ref_E**
 1. Let fa_I* be $funcsxv(externval*).
@@ -5801,9 +5818,9 @@ allocmodule module externval* val_G* ref_T* ref_E**
 17. Let (TABLE tabletype expr_T)* be table*.
 18. Let (ELEM elemtype expr_E* elemmode)* be elem*.
 19. Let (FUNC x local* expr_F)* be func*.
-20. Let xi* be $allocexport({ TYPES: []; FUNCS: fa_I* ++ fa*; GLOBALS: ga_I* ++ ga*; TABLES: ta_I* ++ ta*; MEMS: ma_I* ++ ma*; ELEMS: []; DATAS: []; EXPORTS: []; }, export)*.
-21. Let mm be { TYPES: dt*; FUNCS: fa_I* ++ fa*; GLOBALS: ga_I* ++ ga*; TABLES: ta_I* ++ ta*; MEMS: ma_I* ++ ma*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
-22. Let y_0 be $allocfuncs(dt*[x]*, (FUNC x local* expr_F)*, mm^|func*|).
+20. Let xi* be $allocexports({ TYPES: []; FUNCS: fa_I* ++ fa*; GLOBALS: ga_I* ++ ga*; TABLES: ta_I* ++ ta*; MEMS: ma_I* ++ ma*; ELEMS: []; DATAS: []; EXPORTS: []; }, export*).
+21. Let moduleinst be { TYPES: dt*; FUNCS: fa_I* ++ fa*; GLOBALS: ga_I* ++ ga*; TABLES: ta_I* ++ ta*; MEMS: ma_I* ++ ma*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
+22. Let y_0 be $allocfuncs(dt*[x]*, (FUNC x local* expr_F)*, moduleinst^|func*|).
 23. Assert: Due to validation, (y_0 is fa*).
 24. Let y_0 be $allocglobals(globaltype*, val_G*).
 25. Assert: Due to validation, (y_0 is ga*).
@@ -5815,7 +5832,7 @@ allocmodule module externval* val_G* ref_T* ref_E**
 31. Assert: Due to validation, (y_0 is ea*).
 32. Let y_0 be $allocdatas(OK^|data*|, byte**).
 33. Assert: Due to validation, (y_0 is da*).
-34. Return mm.
+34. Return moduleinst.
 
 runelem_ x (ELEM rt e^n elemm_u0)
 1. If (elemm_u0 is PASSIVE), then:
@@ -5839,11 +5856,11 @@ instantiate module externval*
 3. Let instr_D* be $concat_($rundata_(i_D, data*[i_D])^(i_D<|data*|)).
 4. Let instr_E* be $concat_($runelem_(i_E, elem*[i_E])^(i_E<|elem*|)).
 5. Let (START x)? be start?.
-6. Let mm_0 be { TYPES: $alloctypes(type*); FUNCS: $funcsxv(externval*) ++ (|s.FUNCS| + i_F)^(i_F<|func*|); GLOBALS: $globalsxv(externval*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
+6. Let moduleinst_0 be { TYPES: $alloctypes(type*); FUNCS: $funcsxv(externval*) ++ (|s.FUNCS| + i_F)^(i_F<|func*|); GLOBALS: $globalsxv(externval*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
 7. Let (GLOBAL globaltype expr_G)* be global*.
 8. Let (TABLE tabletype expr_T)* be table*.
 9. Let (ELEM reftype expr_E* elemmode)* be elem*.
-10. Let z be { LOCALS: []; MODULE: mm_0; }.
+10. Let z be { LOCALS: []; MODULE: moduleinst_0; }.
 11. Push the activation of z to the stack.
 12. Let [val_G]* be $eval_expr(expr_G)*.
 13. Pop the activation of z from the stack.

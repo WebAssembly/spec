@@ -251,9 +251,9 @@ In addition to field access written ${:C.FIELD}, the following notation is adopt
 Convention
 ..........
 
-A :ref:`defined type <syntax-deftype>` can be *closed* to bring it into :ref:`closed <type-closed>` form relative to a :ref:`context <context>` it is :ref:`valid <valid-type>` in by :ref:`substituting <notation-subst>` each :ref:`type index <syntax-typeidx>` ${:x} occurring in it with its own corresponding :ref:`defined type <syntax-deftype>` ${deftype: C.TYPES[x]}, after first closing the the types in ${deftype*: C.TYPES} themselves.
+A type of any shape can be *closed* to bring it into :ref:`closed <type-closed>` form relative to a :ref:`context <context>` it is :ref:`valid <valid-type>` in by :ref:`substituting <notation-subst>` each :ref:`type index <syntax-typeidx>` ${:x} occurring in it with its own corresponding :ref:`defined type <syntax-deftype>` ${deftype: C.TYPES[x]}, after first closing the the types in ${deftype*: C.TYPES} themselves.
 
-$${definition: clostype clostypes}
+$${definition: clos_valtype clos_deftypes}
 
 
 .. _valid-notation-textual:

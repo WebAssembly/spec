@@ -78,17 +78,20 @@ def $allocdatas(s, ok ok'*, (b*) (b'*)*) = (s_2, da da'*)
   -- if (s_1, da) = $allocdata(s, ok, b*)
   -- if (s_2, da'*) = $allocdatas(s_1, ok'*, (b'*)*)
 
-def $allocexport(moduleinst, export) : exportinst hint(show $allocexport(mm, %2))  ;; HACK !
-def $allocexport(mm, EXPORT name (FUNC x)) = { NAME name, VALUE (FUNC mm.FUNCS[x]) }
-def $allocexport(mm, EXPORT name (GLOBAL x)) = { NAME name, VALUE (GLOBAL mm.GLOBALS[x]) }
-def $allocexport(mm, EXPORT name (TABLE x)) = { NAME name, VALUE (TABLE mm.TABLES[x]) }
-def $allocexport(mm, EXPORT name (MEM x)) = { NAME name, VALUE (MEM mm.MEMS[x]) }
+def $allocexport(moduleinst, export) : exportinst hint(show $allocexport(moduleinst, %2))  ;; HACK !
+def $allocexport(moduleinst, EXPORT name (FUNC x)) = { NAME name, VALUE (FUNC moduleinst.FUNCS[x]) }
+def $allocexport(moduleinst, EXPORT name (GLOBAL x)) = { NAME name, VALUE (GLOBAL moduleinst.GLOBALS[x]) }
+def $allocexport(moduleinst, EXPORT name (TABLE x)) = { NAME name, VALUE (TABLE moduleinst.TABLES[x]) }
+def $allocexport(moduleinst, EXPORT name (MEM x)) = { NAME name, VALUE (MEM moduleinst.MEMS[x]) }
+
+def $allocexports(moduleinst, export*) : exportinst* hint(show $allocexport*#(%,%))
+def $allocexports(moduleinst, export*) = $allocexport(moduleinst, export)*
 
 
 ;; Modules
 
 def $allocmodule(store, module, externval*, val*, ref*, (ref*)*) : (store, moduleinst)
-def $allocmodule(s, module, externval*, val_G*, ref_T*, (ref_E*)*) = (s_6, mm)
+def $allocmodule(s, module, externval*, val_G*, ref_T*, (ref_E*)*) = (s_6, moduleinst)
   ---- ----
   -- if module = MODULE type* import* func* global* table* mem* elem* data* start? export*
   -- if func* = (FUNC x local* expr_F)*
@@ -97,27 +100,28 @@ def $allocmodule(s, module, externval*, val_G*, ref_T*, (ref_E*)*) = (s_6, mm)
   -- if mem* = (MEMORY memtype)*
   -- if elem* = (ELEM elemtype expr_E* elemmode)*
   -- if data* = (DATA byte* datamode)*
-  ;; TODO: get rid of these
+  ;; TODO: inline these
   -- if fa_I* = $funcsxv(externval*)
   -- if ga_I* = $globalsxv(externval*)
   -- if ta_I* = $tablesxv(externval*)
   -- if ma_I* = $memsxv(externval*)
-  -- if fa* = $(|s.FUNCS|+i_F)^(i_F<|func*|)
-  -- if ga* = $(|s.GLOBALS|+i_G)^(i_G<|global*|)
-  -- if ta* = $(|s.TABLES|+i_T)^(i_T<|table*|)
-  -- if ma* = $(|s.MEMS|+i_M)^(i_M<|mem*|)
-  -- if ea* = $(|s.ELEMS|+i_E)^(i_E<|elem*|)
-  -- if da* = $(|s.DATAS|+i_D)^(i_D<|data*|)
+  ;; TODO: get rid of these
+  -- if fa* = ($(|s.FUNCS|+i_F))^(i_F<|func*|)
+  -- if ga* = ($(|s.GLOBALS|+i_G))^(i_G<|global*|)
+  -- if ta* = ($(|s.TABLES|+i_T))^(i_T<|table*|)
+  -- if ma* = ($(|s.MEMS|+i_M))^(i_M<|mem*|)
+  -- if ea* = ($(|s.ELEMS|+i_E))^(i_E<|elem*|)
+  -- if da* = ($(|s.DATAS|+i_D))^(i_D<|data*|)
   -- if dt* = $alloctypes(type*)
-  -- if (s_1, fa*) = $allocfuncs(s, dt*[x]*, (FUNC x local* expr_F)*, mm^(|func*|))
+  -- if (s_1, fa*) = $allocfuncs(s, dt*[x]*, (FUNC x local* expr_F)*, moduleinst^(|func*|))
   -- if (s_2, ga*) = $allocglobals(s_1, globaltype*, val_G*)
   -- if (s_3, ta*) = $alloctables(s_2, tabletype*, ref_T*)
   -- if (s_4, ma*) = $allocmems(s_3, memtype*)
   -- if (s_5, ea*) = $allocelems(s_4, elemtype*, (ref_E*)*)
   -- if (s_6, da*) = $allocdatas(s_5, OK^(|data*|), (byte*)*)
-  ;; TODO: use mm here and remove hack above
-  -- if xi* = $allocexport({FUNCS fa_I* fa*, GLOBALS ga_I* ga*, TABLES ta_I* ta*, MEMS ma_I* ma*}, export)*
-  -- if mm = {
+  ;; TODO: use moduleinst here and remove hack above
+  -- if xi* = $allocexports({FUNCS fa_I* fa*, GLOBALS ga_I* ga*, TABLES ta_I* ta*, MEMS ma_I* ma*}, export*)
+  -- if moduleinst = {
       TYPES dt*,
       FUNCS fa_I* fa*, \
       GLOBALS ga_I* ga*,
@@ -166,6 +170,7 @@ def $instantiate(s, module, externval*) = s'; f; instr_E* instr_D* (CALL x)?
   -- (Eval_expr : z; expr_G ~>* z; val_G)*
   -- (Eval_expr : z; expr_T ~>* z; ref_T)*
   -- (Eval_expr : z; expr_E ~>* z; ref_E)**
+  ;; TODO: rename mm to moduleinst (causes stack overflow in interpreter!)
   -- if (s', mm) = $allocmodule(s, module, externval*, val_G*, ref_T*, (ref_E*)*)
   -- if f = {MODULE mm}  ;; TODO: inline
   -- if instr_E* = $concat_(instr, $runelem_(i_E, elem*[i_E])^(i_E<|elem*|))
