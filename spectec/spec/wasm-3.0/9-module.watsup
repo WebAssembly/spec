@@ -149,7 +149,7 @@ def $rundata_(x, DATA b^n (ACTIVE y instr*)) =
   instr* (CONST I32 0) (CONST I32 n) (MEMORY.INIT y x) (DATA.DROP x)
 
 def $instantiate(store, module, externval*) : config
-def $instantiate(s, module, externval*) = s'; f; instr_E* instr_D* (CALL x)?
+def $instantiate(s, module, externval*) = s'; f; instr_E* instr_D* instr_S?
   ---- ----
   ;; TODO: -- Module_ok: |- module : xt_I* -> xt_E*
   ;; TODO: -- (Externval_type: s |- externval : xt_I)*
@@ -175,7 +175,7 @@ def $instantiate(s, module, externval*) = s'; f; instr_E* instr_D* (CALL x)?
   -- if f = {MODULE mm}  ;; TODO: inline
   -- if instr_E* = $concat_(instr, $runelem_(i_E, elem*[i_E])^(i_E<|elem*|))
   -- if instr_D* = $concat_(instr, $rundata_(i_D, data*[i_D])^(i_D<|data*|))
-  ;;-- if instr_S? = (CALL x)?  ;; TODO: use above
+  -- if instr_S? = (CALL x)?
 
 
 ;;
