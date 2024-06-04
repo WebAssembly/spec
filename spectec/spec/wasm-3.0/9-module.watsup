@@ -160,7 +160,7 @@ def $instantiate(s, module, externval*) = s'; f; instr_E* instr_D* (CALL x)?
   -- if elem* = (ELEM reftype expr_E* elemmode)*
   -- if data* = (DATA byte* datamode)*
   -- if start? = (START x)?
-  ;; TODO: avoid this HACK and use mm directly, or built it fully incrementally
+  ;; TODO: avoid this HACK and use moduleinst directly, or built it fully incrementally
   -- if moduleinst_0 = {
       TYPES $alloctypes(type*),
       FUNCS $funcsxv(externval*) ($(|s.FUNCS|+i_F))^(i_F<|func*|),
@@ -170,9 +170,8 @@ def $instantiate(s, module, externval*) = s'; f; instr_E* instr_D* (CALL x)?
   -- (Eval_expr : z; expr_G ~>* z; val_G)*
   -- (Eval_expr : z; expr_T ~>* z; ref_T)*
   -- (Eval_expr : z; expr_E ~>* z; ref_E)**
-  ;; TODO: rename mm to moduleinst (causes stack overflow in interpreter!)
-  -- if (s', mm) = $allocmodule(s, module, externval*, val_G*, ref_T*, (ref_E*)*)
-  -- if f = {MODULE mm}  ;; TODO: inline
+  -- if (s', moduleinst) = $allocmodule(s, module, externval*, val_G*, ref_T*, (ref_E*)*)
+  -- if f = {MODULE moduleinst}  ;; TODO: inline
   -- if instr_E* = $concat_(instr, $runelem_(i_E, elem*[i_E])^(i_E<|elem*|))
   -- if instr_D* = $concat_(instr, $rundata_(i_D, data*[i_D])^(i_D<|data*|))
   ;;-- if instr_S? = (CALL x)?  ;; TODO: use above
