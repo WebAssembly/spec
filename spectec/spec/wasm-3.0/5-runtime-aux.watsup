@@ -152,14 +152,12 @@ def $ext_arrayinst((s; f), ai*) = s[.ARRAYS =.. ai*]; f
 def $growtable(tableinst, nat, ref) : tableinst hint(partial)
 def $growmem(meminst, nat) : meminst            hint(partial)
 
-def $growtable(ti, n, r) = ti'
-  -- if ti = { TYPE (`[i .. j] rt), REFS r'* }
-  -- if i' = $(|r'*| + n)
-  -- if ti' = { TYPE (`[i' .. j] rt), REFS r'* r^n }
-  -- if $(i' <= j)
+def $growtable(tableinst, n, r) = tableinst'
+  -- if tableinst = { TYPE (`[i .. j] rt), REFS r'* }
+  -- if tableinst' = { TYPE (`[i' .. j] rt), REFS r'* r^n }
+  -- if $(i' = |r'*| + n <= j)
 
-def $growmem(mi, n) = mi'
-  -- if mi = { TYPE (`[i .. j] PAGE), BYTES b* }
-  -- if i' = $(|b*| / (64 * $Ki) + n)
-  -- if mi' = { TYPE (`[i' .. j] PAGE), BYTES b* 0^(n * $($(64 * $Ki))) }
-  -- if $(i' <= j)
+def $growmem(meminst, n) = meminst'
+  -- if meminst = { TYPE (`[i .. j] PAGE), BYTES b* }
+  -- if meminst' = { TYPE (`[i' .. j] PAGE), BYTES b* (0x00)^(n * $($(64 * $Ki))) }
+  -- if $(i' = |b*| / (64 * $Ki) + n <= j)

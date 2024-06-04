@@ -173,6 +173,7 @@ def $subst_tabletype(tabletype, typevar*, typeuse*) : tabletype       hint(show 
 def $subst_memtype(memtype, typevar*, typeuse*) : memtype             hint(show %#`[%:=%]) hint(macro "%subst")
 
 def $subst_externtype(externtype, typevar*, typeuse*) : externtype    hint(show %#`[%:=%]) hint(macro "%subst")
+def $subst_moduletype(moduletype, typevar*, typeuse*) : moduletype    hint(show %#`[%:=%]) hint(macro "%subst")
 
 
 def $subst_typevar(tv, eps, eps) = tv
@@ -224,17 +225,20 @@ def $subst_externtype((GLOBAL gt), tv*, tu*) = GLOBAL $subst_globaltype(gt, tv*,
 def $subst_externtype((TABLE tt), tv*, tu*) = TABLE $subst_tabletype(tt, tv*, tu*)
 def $subst_externtype((MEM mt), tv*, tu*) = MEM $subst_memtype(mt, tv*, tu*)
 
+def $subst_moduletype(xt_1* -> xt_2*, tv*, tu*) = $subst_externtype(xt_1, tv*, tu*)* -> $subst_externtype(xt_2, tv*, tu*)*
+
 
 def $subst_all_valtype(valtype, heaptype*) : valtype  hint(show %#`[:=%]) hint(macro "%subst")
 def $subst_all_reftype(reftype, heaptype*) : reftype  hint(show %#`[:=%]) hint(macro "%subst")
 def $subst_all_deftype(deftype, heaptype*) : deftype  hint(show %#`[:=%]) hint(macro "%subst")
+def $subst_all_moduletype(moduletype, heaptype*) : moduletype  hint(show %#`[:=%]) hint(macro "%subst")
 
 def $subst_all_valtype(t, tu^n) = $subst_valtype(t, $idx(i)^(i<n), tu^n)
 def $subst_all_reftype(rt, tu^n) = $subst_reftype(rt, $idx(i)^(i<n), tu^n)
 def $subst_all_deftype(dt, tu^n) = $subst_deftype(dt, $idx(i)^(i<n), tu^n)
+def $subst_all_moduletype(mmt, tu^n) = $subst_moduletype(mmt, $idx(i)^(i<n), tu^n)
 
 def $subst_all_deftypes(deftype*, heaptype*) : deftype*  hint(show %#`[:=%]) hint(macro "%subst")
-
 def $subst_all_deftypes(eps, tu*) = eps
 def $subst_all_deftypes(dt_1 dt*, tu*) = $subst_all_deftype(dt_1, tu*) $subst_all_deftypes(dt*, tu*)
 

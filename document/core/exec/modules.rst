@@ -137,6 +137,17 @@ $${definition: allocelem}
 $${definition: allocdata}
 
 
+.. index:: export, export instance, module instance, extern index
+.. _alloc-export:
+
+:ref:`Exports <syntax-exportinst>`
+..................................
+
+.. todo:: prose
+
+$${definition: allocexport}
+
+
 .. index:: table, table instance, table address, grow, limits
 .. _grow-table:
 
@@ -160,19 +171,6 @@ Growing :ref:`tables <syntax-tableinst>`
 8. Set :math:`\tableinst.\TITYPE` to the :ref:`table type <syntax-tabletype>` :math:`\limits'~t`.
 
 $${definition: growtable}
-
-.. math::
-   \begin{array}{rllll}
-   \growtable(\tableinst, n, \reff) &=& \tableinst \with \TITYPE = \limits'~t \with \TIREFS = \tableinst.\TIREFS~\reff^n \\
-     && (
-       \begin{array}[t]{@{}r@{~}l@{}}
-       \iff & \X{len} = n + |\tableinst.\TIREFS| \\
-       \wedge & \X{len} < 2^{32} \\
-       \wedge & \limits~t = \tableinst.\TITYPE \\
-       \wedge & \limits' = \limits \with \LMIN = \X{len} \\
-       \wedge & \vdashlimits \limits' : \OKlimits) \\
-       \end{array} \\
-   \end{array}
 
 
 .. index:: memory, memory instance, memory address, grow, limits
@@ -200,19 +198,6 @@ Growing :ref:`memories <syntax-meminst>`
 9. Set :math:`\meminst.\MITYPE` to the :ref:`memory type <syntax-memtype>` :math:`\limits'`.
 
 $${definition: growmem}
-
-.. math::
-   \begin{array}{rllll}
-   \growmem(\meminst, n) &=& \meminst \with \MITYPE = \limits' \with \MIBYTES = \meminst.\MIBYTES~(\hex{00})^{n \cdot 64\,\F{Ki}} \\
-     && (
-       \begin{array}[t]{@{}r@{~}l@{}}
-       \iff & \X{len} = n + |\meminst.\MIBYTES| / 64\,\F{Ki} \\
-       \wedge & \X{len} \leq 2^{16} \\
-       \wedge & \limits = \meminst.\MITYPE \\
-       \wedge & \limits' = \limits \with \LMIN = \X{len} \\
-       \wedge & \vdashlimits \limits' : \OKlimits) \\
-       \end{array} \\
-   \end{array}
 
 
 .. index:: module, module instance, function instance, table instance, memory instance, global instance, export instance, function address, table address, memory address, global address, function index, table index, memory index, global index, type, function, table, memory, global, import, export, external value, external type, matching
@@ -384,11 +369,13 @@ $${definition-ignore: allocfuncs allocglobals alloctables allocmems allocelems a
    S_{i+1}, a^n[i] &=& \F{allocx}(S_i, X^n[i], \dots)
    \end{array}
 
-Moreover, if the dots :math:`\dots` are a sequence :math:`A^n` (as for globals or tables), then the elements of this sequence are passed to the allocation function pointwise.
+Moreover, if the dots ${:`...} are a sequence ${:A^n} (as for functions), then the elements of this sequence are passed to the allocation function pointwise.
 
 For types, however, allocation is defined in terms of :ref:`rolling <aux-roll-rectype>` and :ref:`substitution <notation-subst>` of all preceding types to produce a list of :ref:`closed <type-closed>` :ref:`defined types <syntax-deftype>`:
 
 .. _alloc-type:
+
+$${definition: alloctypes}
 
 .. math::
    \begin{array}{rlll}
@@ -411,7 +398,7 @@ For types, however, allocation is defined in terms of :ref:`rolling <aux-roll-re
    \end{array}
 
 .. note::
-   The definition of module allocation is mutually recursive with the allocation of its associated functions, because the resulting module instance :math:`\moduleinst` is passed to the allocators as an argument, in order to form the necessary closures.
+   The definition of module allocation is mutually recursive with the allocation of its associated functions, because the resulting module instance is passed to the allocators as an argument, in order to form the necessary closures.
    In an implementation, this recursion is easily unraveled by mutating one or the other in a secondary step.
 
 
@@ -422,7 +409,7 @@ For types, however, allocation is defined in terms of :ref:`rolling <aux-roll-re
 Instantiation
 ~~~~~~~~~~~~~
 
-Given a :ref:`store <syntax-store>` :math:`S`, a :ref:`module <syntax-module>` :math:`\module` is instantiated with a list of :ref:`external values <syntax-externval>` :math:`\externval^n` supplying the required imports as follows.
+Given a :ref:`store <syntax-store>` ${:s}, a ${:module} is instantiated with a list of :ref:`external values <syntax-externval>` ${:externval*} supplying the required imports as follows.
 
 Instantiation checks that the module is :ref:`valid <valid>` and the provided imports :ref:`match <match-externtype>` the declared types,
 and may *fail* with an error otherwise.
@@ -540,60 +527,21 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
 $${definition: instantiate}
 
-.. math::
-   ~\\
-   \begin{array}{@{}rcll}
-   \instantiate(S, \module, \externval^k) &=& S'; F;
-     \begin{array}[t]{@{}l@{}}
-     \F{runelem}_0(\elem^n[0])~\dots~\F{runelem}_{n-1}(\elem^n[n-1]) \\
-     \F{rundata}_0(\data^m[0])~\dots~\F{rundata}_{m-1}(\data^m[m-1]) \\
-     (\CALL~\start.\SFUNC)^? \\
-     \end{array} \\
-   &(\iff
-     & \vdashmodule \module : \externtype_{\F{im}}^k \rightarrow \externtype_{\F{ex}}^\ast \\
-     &\wedge& (S' \vdashexternval \externval : \externtype)^k \\
-     &\wedge& (S' \vdashexterntypematch \externtype \subexterntypematch \insttype_{\moduleinst}(\externtype_{\F{im}}))^k \\[1ex]
-     &\wedge& \module.\MGLOBALS = \global^\ast \\
-     &\wedge& \module.\MELEMS = \elem^n \\
-     &\wedge& \module.\MDATAS = \data^m \\
-     &\wedge& \module.\MSTART = \start^? \\
-     &\wedge& (\expr_{\F{g}} = \global.\GINIT)^\ast \\
-     &\wedge& (\expr_{\F{t}} = \table.\GINIT)^\ast \\
-     &\wedge& (\expr_{\F{e}}^\ast = \elem.\EINIT)^n \\[1ex]
-     &\wedge& S', \moduleinst = \allocmodule(S, \module, \externval^k, \val^\ast, (\reff^\ast)^n) \\
-     &\wedge& F = \{ \AMODULE~\moduleinst, \ALOCALS~\epsilon \} \\[1ex]
-     &\wedge& (S'; F; \expr_{\F{g}} \stepto^\ast S'; F; \val_{\F{g}}~\END)^\ast \\
-     &\wedge& (S'; F; \expr_{\F{t}} \stepto^\ast S'; F; \reff_{\F{t}}~\END)^\ast \\
-     &\wedge& ((S'; F; \expr_{\F{e}} \stepto^\ast S'; F; \reff_{\F{e}}~\END)^\ast)^n) \\
-   \end{array}
-
 where:
 
 .. _aux-runelem:
 .. _aux-rundata:
 
-$${definition: runelem rundata}
-
-.. math::
-   \begin{array}{@{}l}
-   \F{runelem}_i(\{\ETYPE~\X{et}, \EINIT~\expr^n, \EMODE~\EPASSIVE\}) \quad=\quad \epsilon \\
-   \F{runelem}_i(\{\ETYPE~\X{et}, \EINIT~\expr^n, \EMODE~\EACTIVE \{\ETABLE~x, \EOFFSET~\instr^\ast~\END\}\}) \quad=\\ \qquad
-     \instr^\ast~(\I32.\CONST~0)~(\I32.\CONST~n)~(\TABLEINIT~x~i)~(\ELEMDROP~i) \\
-   \F{runelem}_i(\{\ETYPE~\X{et}, \EINIT~\expr^n, \EMODE~\EDECLARE\}) \quad=\\ \qquad
-     (\ELEMDROP~i) \\[1ex]
-   \F{rundata}_i(\{\DINIT~b^n, \DMODE~\DPASSIVE\}) \quad=\\ \qquad \epsilon \\
-   \F{rundata}_i(\{\DINIT~b^n, \DMODE~\DACTIVE \{\DMEM~0, \DOFFSET~\instr^\ast~\END\}\}) \quad=\\ \qquad
-     \instr^\ast~(\I32.\CONST~0)~(\I32.\CONST~n)~(\MEMORYINIT~i)~(\DATADROP~i) \\
-   \end{array}
+$${definition: runelem_ rundata_}
 
 .. note::
    Checking import types assumes that the :ref:`module instance <syntax-moduleinst>` has already been :ref:`allocated <alloc-module>` to compute the respective :ref:`closed <type-closed>` :ref:`defined types <syntax-deftype>`.
    However, this forward reference merely is a way to simplify the specification.
    In practice, implementations will likely allocate or canonicalize types beforehand, when *compiling* a module, in a stage before instantiation and before imports are checked.
 
-   Similarly, module :ref:`allocation <alloc-module>` and the :ref:`evaluation <exec-expr>` of :ref:`global <syntax-global>` and :ref:`table <syntax-table>` initializers as well as :ref:`element segments <syntax-elem>` are mutually recursive because the global initialization :ref:`values <syntax-val>` :math:`\val_{\F{g}}^\ast`, :math:`\reff_{\F{t}}`, and element segment contents :math:`(\reff^\ast)^\ast` are passed to the module allocator while depending on the module instance :math:`\moduleinst` and store :math:`S'` returned by allocation.
+   Similarly, module :ref:`allocation <alloc-module>` and the :ref:`evaluation <exec-expr>` of :ref:`global <syntax-global>` and :ref:`table <syntax-table>` initializers as well as :ref:`element segments <syntax-elem>` are mutually recursive because the global initialization :ref:`values <syntax-val>` ${:val_G*}, ${:ref_T}, and element segment contents ${:ref_E**} are passed to the module allocator while depending on the module instance ${:moduleinst} and store ${:s'} returned by allocation.
    Again, this recursion is just a specification device.
-   In practice, the initialization values can :ref:`be determined <exec-initvals>` beforehand by staging module allocation such that first, the module's own :ref:`function instances <syntax-funcinst>` are pre-allocated in the store, then the initializer expressions are evaluated in order, allocating globals on the way, then the rest of the module instance is allocated, and finally the new function instances' :math:`\AMODULE` fields are set to that module instance.
+   In practice, the initialization values can :ref:`be determined <exec-initvals>` beforehand by staging module allocation such that first, the module's own :ref:`function instances <syntax-funcinst>` are pre-allocated in the store, then the initializer expressions are evaluated in order, allocating globals on the way, then the rest of the module instance is allocated, and finally the new function instances' ${:MODULE} fields are set to that module instance.
    This is possible because :ref:`validation <valid-module>` ensures that initialization expressions cannot actually call a function, only take their reference.
 
    All failure conditions are checked before any observable mutation of the store takes place.
@@ -609,7 +557,7 @@ $${definition: runelem rundata}
 Invocation
 ~~~~~~~~~~
 
-Once a :ref:`module <syntax-module>` has been :ref:`instantiated <exec-instantiation>`, any exported function can be *invoked* externally via its :ref:`function address <syntax-funcaddr>` :math:`\funcaddr` in the :ref:`store <syntax-store>` :math:`S` and an appropriate list :math:`\val^\ast` of argument :ref:`values <syntax-val>`.
+Once a :ref:`module <syntax-module>` has been :ref:`instantiated <exec-instantiation>`, any exported function can be *invoked* externally via its :ref:`function address <syntax-funcaddr>` ${:funcaddr} in the :ref:`store <syntax-store>` ${:s} and an appropriate list ${:val*} of argument :ref:`values <syntax-val>`.
 
 Invocation may *fail* with an error if the arguments do not fit the :ref:`function type <syntax-functype>`.
 Invocation can also result in a :ref:`trap <trap>`.
@@ -654,15 +602,6 @@ Once the function has returned, the following steps are executed:
 
 4. Pop the frame :math:`F` from the stack.
 
-The values :math:`\val_{\F{res}}^m` are returned as the results of the invocation.
+The values ${:val_RES^m} are returned as the results of the invocation.
 
 $${definition: invoke}
-
-.. math::
-   ~\\[-1ex]
-   \begin{array}{@{}lcl}
-   \invoke(S, \funcaddr, \val^n) &=& S; F; \val^n~(\INVOKE~\funcaddr) \\
-     &(\iff & \expanddt(S.\SFUNCS[\funcaddr].\FITYPE) = \TFUNC~[t_1^n] \toF [t_2^m] \\
-     &\wedge& (S \vdashval \val : t_1)^n \\
-     &\wedge& F = \{ \AMODULE~\{\}, \ALOCALS~\epsilon \}) \\
-   \end{array}

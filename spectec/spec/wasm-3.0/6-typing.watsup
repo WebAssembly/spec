@@ -39,13 +39,15 @@ def $with_locals(C, eps, eps) = C
 def $with_locals(C, x_1 x*, lct_1 lct*) = $with_locals(C[.LOCALS[x_1] = lct_1], x*, lct*)
 
 
-def $clostype(context, deftype) : deftype  hint(show $clos_(%,%)) hint(macro "clostype")
-def $clostypes(deftype*) : deftype*        hint(show $clos*#((%))) hint(macro "clostype")
+def $clos_moduletype(context, moduletype) : moduletype  hint(show $clos_(%,%)) hint(macro "clostype")
+def $clos_deftype(context, deftype) : deftype  hint(show $clos_(%,%)) hint(macro "clostype")
+def $clos_deftypes(deftype*) : deftype*        hint(show $clos*#((%))) hint(macro "clostype")
 
-def $clostype(C, dt) = $subst_all_deftype(dt, dt'*) -- if dt'* = $clostypes(C.TYPES)
+def $clos_moduletype(C, mmt) = $subst_all_moduletype(mmt, dt'*) -- if dt'* = $clos_deftypes(C.TYPES)
+def $clos_deftype(C, dt) = $subst_all_deftype(dt, dt'*) -- if dt'* = $clos_deftypes(C.TYPES)
 
-def $clostypes(eps) = eps
-def $clostypes(dt* dt_N) = dt'* $subst_all_deftype(dt_N, dt'*)  -- if dt'* = $clostypes(dt*)
+def $clos_deftypes(eps) = eps
+def $clos_deftypes(dt* dt_n) = dt'* $subst_all_deftype(dt_n, dt'*)  -- if dt'* = $clos_deftypes(dt*)
 
 
 ;;
@@ -445,7 +447,7 @@ rule Comptype_sub/func:
 
 rule Deftype_sub/refl:
   C |- deftype_1 <: deftype_2
-  -- if $clostype(C, deftype_1) = $clostype(C, deftype_2)
+  -- if $clos_deftype(C, deftype_1) = $clos_deftype(C, deftype_2)
 
 rule Deftype_sub/super:
   C |- deftype_1 <: deftype_2
@@ -1297,15 +1299,13 @@ rule Externidx_ok/mem:
 
 ;; Modules proper
 
-syntax moduletype hint(desc "module type") = externtype* -> externtype* hint(macro "toM")
-
 relation Module_ok: |- module : moduletype            hint(show "T-module")  hint(macro "%module")
 relation Types_ok: context |- type* : deftype*        hint(show "T-types")   hint(macro "%types")
 relation Globals_ok: context |- global* : globaltype* hint(show "T-globals") hint(macro "%globals")
 
 ;; TODO: refs
 rule Module_ok:
-  |- MODULE type* import* func* global* table* mem* elem* data* start? export* : xt_I* -> xt_E*
+  |- MODULE type* import* func* global* table* mem* elem* data* start? export* : $clos_moduletype(C, xt_I* -> xt_E*)
   -- Types_ok: {} |- type* : dt'*
   -- (Import_ok: {TYPES dt'*} |- import : xt_I)*
   ----

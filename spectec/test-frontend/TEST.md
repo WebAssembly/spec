@@ -2450,9 +2450,13 @@ syntax result =
   | TRAP
 
 ;; 4-runtime.watsup
+syntax hostfunc =
+  | `...`
+
+;; 4-runtime.watsup
 syntax funccode =
   | FUNC{typeidx : typeidx, local* : local*, expr : expr}(typeidx : typeidx, local*{local : local} : local*, expr : expr)
-  | `HOSTFUNC...`
+  | `...`
 
 ;; 4-runtime.watsup
 syntax funcinst =
@@ -2801,20 +2805,18 @@ def $ext_arrayinst(state : state, arrayinst*) : state
 ;; 5-runtime-aux.watsup
 def $growtable(tableinst : tableinst, nat : nat, ref : ref) : tableinst
   ;; 5-runtime-aux.watsup
-  def $growtable{ti : tableinst, n : n, r : ref, ti' : tableinst, i : nat, j : nat, rt : reftype, r'* : ref*, i' : nat}(ti, n, r) = ti'
-    -- if (ti = {TYPE `%%`_tabletype(`[%..%]`_limits(`%`_u32(i), `%`_u32(j)), rt), REFS r'*{r' : ref}})
-    -- if (i' = (|r'*{r' : ref}| + n))
-    -- if (ti' = {TYPE `%%`_tabletype(`[%..%]`_limits(`%`_u32(i'), `%`_u32(j)), rt), REFS r'*{r' : ref} :: r^n{}})
-    -- if (i' <= j)
+  def $growtable{tableinst : tableinst, n : n, r : ref, tableinst' : tableinst, i : nat, j : nat, rt : reftype, r'* : ref*, i' : nat}(tableinst, n, r) = tableinst'
+    -- if (tableinst = {TYPE `%%`_tabletype(`[%..%]`_limits(`%`_u32(i), `%`_u32(j)), rt), REFS r'*{r' : ref}})
+    -- if (tableinst' = {TYPE `%%`_tabletype(`[%..%]`_limits(`%`_u32(i'), `%`_u32(j)), rt), REFS r'*{r' : ref} :: r^n{}})
+    -- if ((i' = (|r'*{r' : ref}| + n)) /\ ((|r'*{r' : ref}| + n) <= j))
 
 ;; 5-runtime-aux.watsup
 def $growmem(meminst : meminst, nat : nat) : meminst
   ;; 5-runtime-aux.watsup
-  def $growmem{mi : meminst, n : n, mi' : meminst, i : nat, j : nat, b* : byte*, i' : nat}(mi, n) = mi'
-    -- if (mi = {TYPE `%PAGE`_memtype(`[%..%]`_limits(`%`_u32(i), `%`_u32(j))), BYTES b*{b : byte}})
-    -- if (i' = ((|b*{b : byte}| / (64 * $Ki)) + n))
-    -- if (mi' = {TYPE `%PAGE`_memtype(`[%..%]`_limits(`%`_u32(i'), `%`_u32(j))), BYTES b*{b : byte} :: `%`_byte(0)^(n * (64 * $Ki)){}})
-    -- if (i' <= j)
+  def $growmem{meminst : meminst, n : n, meminst' : meminst, i : nat, j : nat, b* : byte*, i' : nat}(meminst, n) = meminst'
+    -- if (meminst = {TYPE `%PAGE`_memtype(`[%..%]`_limits(`%`_u32(i), `%`_u32(j))), BYTES b*{b : byte}})
+    -- if (meminst' = {TYPE `%PAGE`_memtype(`[%..%]`_limits(`%`_u32(i'), `%`_u32(j))), BYTES b*{b : byte} :: `%`_byte(0)^(n * (64 * $Ki)){}})
+    -- if ((i' = ((|b*{b : byte}| / (64 * $Ki)) + n)) /\ (((|b*{b : byte}| / (64 * $Ki)) + n) <= j))
 
 ;; 6-typing.watsup
 syntax init =
@@ -2864,7 +2866,7 @@ def $clostypes(deftype*) : deftype*
   ;; 6-typing.watsup:47.1-47.26
   def $clostypes([]) = []
   ;; 6-typing.watsup:48.1-48.93
-  def $clostypes{dt* : deftype*, dt_N : deftype, dt'* : deftype*}(dt*{dt : deftype} :: [dt_N]) = dt'*{dt' : deftype} :: [$subst_all_deftype(dt_N, (dt' : deftype <: heaptype)*{dt' : deftype})]
+  def $clostypes{dt* : deftype*, dt_n : deftype, dt'* : deftype*}(dt*{dt : deftype} :: [dt_n]) = dt'*{dt' : deftype} :: [$subst_all_deftype(dt_n, (dt' : deftype <: heaptype)*{dt' : deftype})]
     -- if (dt'*{dt' : deftype} = $clostypes(dt*{dt : deftype}))
 }
 
@@ -3286,7 +3288,7 @@ relation Rectype_ok: `%|-%:%`(context, rectype, oktypeidx)
   ;; 6-typing.watsup:204.1-206.60
   rule rec2{C : context, subtype* : subtype*, x : idx}:
     `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype : subtype})), OK_oktypeidx(x))
-    -- Rectype_ok2: `%|-%:%`(C ++ {TYPES [], RECS subtype*{subtype : subtype}, FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()}, REC_rectype(`%`_list(subtype*{subtype : subtype})), OK_oktypeidxnat(x, 0))
+    -- Rectype_ok2: `%|-%:%`({TYPES [], RECS subtype*{subtype : subtype}, FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?()} ++ C, REC_rectype(`%`_list(subtype*{subtype : subtype})), OK_oktypeidxnat(x, 0))
 }
 
 ;; 6-typing.watsup
@@ -3466,20 +3468,20 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
   rule block{C : context, bt : blocktype, instr* : instr*, t_1* : valtype*, t_2* : valtype*, x* : idx*}:
     `%|-%:%`(C, BLOCK_instr(bt, instr*{instr : instr}), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), [], `%`_resulttype(t_2*{t_2 : valtype})))
     -- Blocktype_ok: `%|-%:%`(C, bt, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), [], `%`_resulttype(t_2*{t_2 : valtype})))
-    -- Instrs_ok: `%|-%:%`(C ++ {TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [`%`_resulttype(t_2*{t_2 : valtype})], RETURN ?()}, instr*{instr : instr}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x*{x : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
+    -- Instrs_ok: `%|-%:%`({TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [`%`_resulttype(t_2*{t_2 : valtype})], RETURN ?()} ++ C, instr*{instr : instr}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x*{x : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
 
   ;; 6-typing.watsup:597.1-600.63
   rule loop{C : context, bt : blocktype, instr* : instr*, t_1* : valtype*, t_2* : valtype*, x* : idx*}:
     `%|-%:%`(C, LOOP_instr(bt, instr*{instr : instr}), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), [], `%`_resulttype(t_2*{t_2 : valtype})))
     -- Blocktype_ok: `%|-%:%`(C, bt, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), [], `%`_resulttype(t_2*{t_2 : valtype})))
-    -- Instrs_ok: `%|-%:%`(C ++ {TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [`%`_resulttype(t_1*{t_1 : valtype})], RETURN ?()}, instr*{instr : instr}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x*{x : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
+    -- Instrs_ok: `%|-%:%`({TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [`%`_resulttype(t_1*{t_1 : valtype})], RETURN ?()} ++ C, instr*{instr : instr}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x*{x : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
 
   ;; 6-typing.watsup:602.1-606.67
   rule if{C : context, bt : blocktype, instr_1* : instr*, instr_2* : instr*, t_1* : valtype*, t_2* : valtype*, x_1* : idx*, x_2* : idx*}:
     `%|-%:%`(C, `IF%%ELSE%`_instr(bt, instr_1*{instr_1 : instr}, instr_2*{instr_2 : instr}), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype} :: [I32_valtype]), [], `%`_resulttype(t_2*{t_2 : valtype})))
     -- Blocktype_ok: `%|-%:%`(C, bt, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), [], `%`_resulttype(t_2*{t_2 : valtype})))
-    -- Instrs_ok: `%|-%:%`(C ++ {TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [`%`_resulttype(t_2*{t_2 : valtype})], RETURN ?()}, instr_1*{instr_1 : instr}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x_1*{x_1 : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
-    -- Instrs_ok: `%|-%:%`(C ++ {TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [`%`_resulttype(t_2*{t_2 : valtype})], RETURN ?()}, instr_2*{instr_2 : instr}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x_2*{x_2 : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
+    -- Instrs_ok: `%|-%:%`({TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [`%`_resulttype(t_2*{t_2 : valtype})], RETURN ?()} ++ C, instr_1*{instr_1 : instr}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x_1*{x_1 : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
+    -- Instrs_ok: `%|-%:%`({TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [`%`_resulttype(t_2*{t_2 : valtype})], RETURN ?()} ++ C, instr_2*{instr_2 : instr}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x_2*{x_2 : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
 
   ;; 6-typing.watsup:611.1-614.42
   rule br{C : context, l : labelidx, t_1* : valtype*, t* : valtype*, t_2* : valtype*}:
@@ -4168,7 +4170,7 @@ relation Func_ok: `%|-%:%`(context, func, deftype)
     `%|-%:%`(C, FUNC_func(x, local*{local : local}, expr), C.TYPES_context[x!`%`_idx.0])
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype}))))
     -- (Local_ok: `%|-%:%`(C, local, lct))*{lct : localtype, local : local}
-    -- Expr_ok: `%|-%:%`(C ++ {TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS `%%`_localtype(SET_init, t_1)*{t_1 : valtype} :: lct*{lct : localtype}, LABELS [], RETURN ?()} ++ {TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [`%`_resulttype(t_2*{t_2 : valtype})], RETURN ?()} ++ {TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(`%`_resulttype(t_2*{t_2 : valtype}))}, expr, `%`_resulttype(t_2*{t_2 : valtype}))
+    -- Expr_ok: `%|-%:%`({TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(`%`_resulttype(t_2*{t_2 : valtype}))} ++ {TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [`%`_resulttype(t_2*{t_2 : valtype})], RETURN ?()} ++ {TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS `%%`_localtype(SET_init, t_1)*{t_1 : valtype} :: lct*{lct : localtype}, LABELS [], RETURN ?()} ++ C, expr, `%`_resulttype(t_2*{t_2 : valtype}))
 
 ;; 6-typing.watsup
 relation Global_ok: `%|-%:%`(context, global, globaltype)
@@ -4342,6 +4344,18 @@ relation Module_ok: `|-%:%`(module, moduletype)
     -- if (mt_I*{mt_I : memtype} = $memsxt(xt_I*{xt_I : externtype}))
 
 ;; 7-runtime-typing.watsup
+relation Num_ok: `%|-%:%`(store, num, numtype)
+  ;; 7-runtime-typing.watsup
+  rule _{s : store, nt : numtype, c : num_(nt)}:
+    `%|-%:%`(s, CONST_num(nt, c), nt)
+
+;; 7-runtime-typing.watsup
+relation Vec_ok: `%|-%:%`(store, vec, vectype)
+  ;; 7-runtime-typing.watsup
+  rule _{s : store, vt : vectype, c : vec_(vt)}:
+    `%|-%:%`(s, VCONST_vec(vt, c), vt)
+
+;; 7-runtime-typing.watsup
 relation Ref_ok: `%|-%:%`(store, ref, reftype)
   ;; 7-runtime-typing.watsup
   rule null{s : store, ht : heaptype}:
@@ -4373,6 +4387,23 @@ relation Ref_ok: `%|-%:%`(store, ref, reftype)
   ;; 7-runtime-typing.watsup
   rule extern{s : store, addrref : addrref}:
     `%|-%:%`(s, REF.EXTERN_ref(addrref), REF_reftype(`NULL%?`_nul(?()), EXTERN_heaptype))
+
+;; 7-runtime-typing.watsup
+relation Val_ok: `%|-%:%`(store, val, valtype)
+  ;; 7-runtime-typing.watsup
+  rule num{s : store, num : num, nt : numtype}:
+    `%|-%:%`(s, (num : num <: val), (nt : numtype <: valtype))
+    -- Num_ok: `%|-%:%`(s, num, nt)
+
+  ;; 7-runtime-typing.watsup
+  rule vec{s : store, vec : vec, vt : vectype}:
+    `%|-%:%`(s, (vec : vec <: val), (vt : vectype <: valtype))
+    -- Vec_ok: `%|-%:%`(s, vec, vt)
+
+  ;; 7-runtime-typing.watsup
+  rule ref{s : store, ref : ref, rt : reftype}:
+    `%|-%:%`(s, (ref : ref <: val), (rt : reftype <: valtype))
+    -- Ref_ok: `%|-%:%`(s, ref, rt)
 
 ;; 8-reduction.watsup
 relation Step_pure: `%~>%`(instr*, instr*)
@@ -5415,7 +5446,7 @@ relation Eval_expr: `%;%~>*%;%`(state, expr, state, val*)
 ;; 9-module.watsup
 rec {
 
-;; 9-module.watsup:7.1-7.34
+;; 9-module.watsup:7.1-7.63
 def $alloctypes(type*) : deftype*
   ;; 9-module.watsup:8.1-8.27
   def $alloctypes([]) = []
@@ -5428,39 +5459,38 @@ def $alloctypes(type*) : deftype*
 }
 
 ;; 9-module.watsup
-def $allocfunc(store : store, moduleinst : moduleinst, func : func) : (store, funcaddr)
+def $allocfunc(store : store, deftype : deftype, funccode : funccode, moduleinst : moduleinst) : (store, funcaddr)
   ;; 9-module.watsup
-  def $allocfunc{s : store, mm : moduleinst, func : func, fi : funcinst, x : idx, local* : local*, expr : expr}(s, mm, func) = (s[FUNCS_store =.. [fi]], |s.FUNCS_store|)
-    -- if (func = FUNC_func(x, local*{local : local}, expr))
-    -- if (fi = {TYPE mm.TYPES_moduleinst[x!`%`_idx.0], MODULE mm, CODE (func : func <: funccode)})
+  def $allocfunc{s : store, deftype : deftype, funccode : funccode, moduleinst : moduleinst, funcinst : funcinst}(s, deftype, funccode, moduleinst) = (s ++ {FUNCS [funcinst], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], STRUCTS [], ARRAYS []}, |s.FUNCS_store|)
+    -- if (funcinst = {TYPE deftype, MODULE moduleinst, CODE funccode})
 
 ;; 9-module.watsup
 rec {
 
-;; 9-module.watsup:20.1-20.63
-def $allocfuncs(store : store, moduleinst : moduleinst, func*) : (store, funcaddr*)
-  ;; 9-module.watsup:21.1-21.39
-  def $allocfuncs{s : store, mm : moduleinst}(s, mm, []) = (s, [])
-  ;; 9-module.watsup:22.1-24.51
-  def $allocfuncs{s : store, mm : moduleinst, func : func, func'* : func*, s_2 : store, fa : funcaddr, fa'* : funcaddr*, s_1 : store}(s, mm, [func] :: func'*{func' : func}) = (s_2, [fa] :: fa'*{fa' : funcaddr})
-    -- if ((s_1, fa) = $allocfunc(s, mm, func))
-    -- if ((s_2, fa'*{fa' : funcaddr}) = $allocfuncs(s_1, mm, func'*{func' : func}))
+;; 9-module.watsup:20.1-20.113
+def $allocfuncs(store : store, deftype*, funccode*, moduleinst*) : (store, funcaddr*)
+  ;; 9-module.watsup:21.1-21.45
+  def $allocfuncs{s : store}(s, [], [], []) = (s, [])
+  ;; 9-module.watsup:22.1-24.63
+  def $allocfuncs{s : store, dt : deftype, dt'* : deftype*, funccode : funccode, funccode'* : funccode*, mm : moduleinst, mm'* : moduleinst*, s_2 : store, fa : funcaddr, fa'* : funcaddr*, s_1 : store}(s, [dt] :: dt'*{dt' : deftype}, [funccode] :: funccode'*{funccode' : funccode}, [mm] :: mm'*{mm' : moduleinst}) = (s_2, [fa] :: fa'*{fa' : funcaddr})
+    -- if ((s_1, fa) = $allocfunc(s, dt, funccode, mm))
+    -- if ((s_2, fa'*{fa' : funcaddr}) = $allocfuncs(s_1, dt'*{dt' : deftype}, funccode'*{funccode' : funccode}, mm'*{mm' : moduleinst}))
 }
 
 ;; 9-module.watsup
 def $allocglobal(store : store, globaltype : globaltype, val : val) : (store, globaladdr)
   ;; 9-module.watsup
-  def $allocglobal{s : store, globaltype : globaltype, val : val, gi : globalinst}(s, globaltype, val) = (s[GLOBALS_store =.. [gi]], |s.GLOBALS_store|)
-    -- if (gi = {TYPE globaltype, VALUE val})
+  def $allocglobal{s : store, globaltype : globaltype, val : val, globalinst : globalinst}(s, globaltype, val) = (s ++ {FUNCS [], GLOBALS [globalinst], TABLES [], MEMS [], ELEMS [], DATAS [], STRUCTS [], ARRAYS []}, |s.GLOBALS_store|)
+    -- if (globalinst = {TYPE globaltype, VALUE val})
 
 ;; 9-module.watsup
 rec {
 
-;; 9-module.watsup:30.1-30.67
+;; 9-module.watsup:31.1-31.102
 def $allocglobals(store : store, globaltype*, val*) : (store, globaladdr*)
-  ;; 9-module.watsup:31.1-31.42
+  ;; 9-module.watsup:32.1-32.42
   def $allocglobals{s : store}(s, [], []) = (s, [])
-  ;; 9-module.watsup:32.1-34.62
+  ;; 9-module.watsup:33.1-35.62
   def $allocglobals{s : store, globaltype : globaltype, globaltype'* : globaltype*, val : val, val'* : val*, s_2 : store, ga : globaladdr, ga'* : globaladdr*, s_1 : store}(s, [globaltype] :: globaltype'*{globaltype' : globaltype}, [val] :: val'*{val' : val}) = (s_2, [ga] :: ga'*{ga' : globaladdr})
     -- if ((s_1, ga) = $allocglobal(s, globaltype, val))
     -- if ((s_2, ga'*{ga' : globaladdr}) = $allocglobals(s_1, globaltype'*{globaltype' : globaltype}, val'*{val' : val}))
@@ -5469,17 +5499,17 @@ def $allocglobals(store : store, globaltype*, val*) : (store, globaladdr*)
 ;; 9-module.watsup
 def $alloctable(store : store, tabletype : tabletype, ref : ref) : (store, tableaddr)
   ;; 9-module.watsup
-  def $alloctable{s : store, i : nat, j : nat, rt : reftype, ref : ref, ti : tableinst}(s, `%%`_tabletype(`[%..%]`_limits(`%`_u32(i), `%`_u32(j)), rt), ref) = (s[TABLES_store =.. [ti]], |s.TABLES_store|)
-    -- if (ti = {TYPE `%%`_tabletype(`[%..%]`_limits(`%`_u32(i), `%`_u32(j)), rt), REFS ref^i{}})
+  def $alloctable{s : store, i : nat, j : nat, rt : reftype, ref : ref, tableinst : tableinst}(s, `%%`_tabletype(`[%..%]`_limits(`%`_u32(i), `%`_u32(j)), rt), ref) = (s ++ {FUNCS [], GLOBALS [], TABLES [tableinst], MEMS [], ELEMS [], DATAS [], STRUCTS [], ARRAYS []}, |s.TABLES_store|)
+    -- if (tableinst = {TYPE `%%`_tabletype(`[%..%]`_limits(`%`_u32(i), `%`_u32(j)), rt), REFS ref^i{}})
 
 ;; 9-module.watsup
 rec {
 
-;; 9-module.watsup:40.1-40.64
+;; 9-module.watsup:42.1-42.98
 def $alloctables(store : store, tabletype*, ref*) : (store, tableaddr*)
-  ;; 9-module.watsup:41.1-41.41
+  ;; 9-module.watsup:43.1-43.41
   def $alloctables{s : store}(s, [], []) = (s, [])
-  ;; 9-module.watsup:42.1-44.60
+  ;; 9-module.watsup:44.1-46.60
   def $alloctables{s : store, tabletype : tabletype, tabletype'* : tabletype*, ref : ref, ref'* : ref*, s_2 : store, ta : tableaddr, ta'* : tableaddr*, s_1 : store}(s, [tabletype] :: tabletype'*{tabletype' : tabletype}, [ref] :: ref'*{ref' : ref}) = (s_2, [ta] :: ta'*{ta' : tableaddr})
     -- if ((s_1, ta) = $alloctable(s, tabletype, ref))
     -- if ((s_2, ta'*{ta' : tableaddr}) = $alloctables(s_1, tabletype'*{tabletype' : tabletype}, ref'*{ref' : ref}))
@@ -5488,141 +5518,143 @@ def $alloctables(store : store, tabletype*, ref*) : (store, tableaddr*)
 ;; 9-module.watsup
 def $allocmem(store : store, memtype : memtype) : (store, memaddr)
   ;; 9-module.watsup
-  def $allocmem{s : store, i : nat, j : nat, mi : meminst}(s, `%PAGE`_memtype(`[%..%]`_limits(`%`_u32(i), `%`_u32(j)))) = (s[MEMS_store =.. [mi]], |s.MEMS_store|)
-    -- if (mi = {TYPE `%PAGE`_memtype(`[%..%]`_limits(`%`_u32(i), `%`_u32(j))), BYTES `%`_byte(0)^(i * (64 * $Ki)){}})
+  def $allocmem{s : store, i : nat, j : nat, meminst : meminst}(s, `%PAGE`_memtype(`[%..%]`_limits(`%`_u32(i), `%`_u32(j)))) = (s ++ {FUNCS [], GLOBALS [], TABLES [], MEMS [meminst], ELEMS [], DATAS [], STRUCTS [], ARRAYS []}, |s.MEMS_store|)
+    -- if (meminst = {TYPE `%PAGE`_memtype(`[%..%]`_limits(`%`_u32(i), `%`_u32(j))), BYTES `%`_byte(0)^(i * (64 * $Ki)){}})
 
 ;; 9-module.watsup
 rec {
 
-;; 9-module.watsup:50.1-50.52
+;; 9-module.watsup:53.1-53.82
 def $allocmems(store : store, memtype*) : (store, memaddr*)
-  ;; 9-module.watsup:51.1-51.34
+  ;; 9-module.watsup:54.1-54.34
   def $allocmems{s : store}(s, []) = (s, [])
-  ;; 9-module.watsup:52.1-54.49
+  ;; 9-module.watsup:55.1-57.49
   def $allocmems{s : store, memtype : memtype, memtype'* : memtype*, s_2 : store, ma : memaddr, ma'* : memaddr*, s_1 : store}(s, [memtype] :: memtype'*{memtype' : memtype}) = (s_2, [ma] :: ma'*{ma' : memaddr})
     -- if ((s_1, ma) = $allocmem(s, memtype))
     -- if ((s_2, ma'*{ma' : memaddr}) = $allocmems(s_1, memtype'*{memtype' : memtype}))
 }
 
 ;; 9-module.watsup
-def $allocelem(store : store, reftype : reftype, ref*) : (store, elemaddr)
+def $allocelem(store : store, elemtype : elemtype, ref*) : (store, elemaddr)
   ;; 9-module.watsup
-  def $allocelem{s : store, rt : reftype, ref* : ref*, ei : eleminst}(s, rt, ref*{ref : ref}) = (s[ELEMS_store =.. [ei]], |s.ELEMS_store|)
-    -- if (ei = {TYPE rt, REFS ref*{ref : ref}})
+  def $allocelem{s : store, elemtype : elemtype, ref* : ref*, eleminst : eleminst}(s, elemtype, ref*{ref : ref}) = (s ++ {FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [eleminst], DATAS [], STRUCTS [], ARRAYS []}, |s.ELEMS_store|)
+    -- if (eleminst = {TYPE elemtype, REFS ref*{ref : ref}})
 
 ;; 9-module.watsup
 rec {
 
-;; 9-module.watsup:60.1-60.63
-def $allocelems(store : store, reftype*, ref**) : (store, elemaddr*)
-  ;; 9-module.watsup:61.1-61.40
+;; 9-module.watsup:64.1-64.97
+def $allocelems(store : store, elemtype*, ref**) : (store, elemaddr*)
+  ;; 9-module.watsup:65.1-65.40
   def $allocelems{s : store}(s, [], []) = (s, [])
-  ;; 9-module.watsup:62.1-64.55
-  def $allocelems{s : store, rt : reftype, rt'* : reftype*, ref* : ref*, ref'** : ref**, s_2 : store, ea : elemaddr, ea'* : elemaddr*, s_1 : store}(s, [rt] :: rt'*{rt' : reftype}, [ref*{ref : ref}] :: ref'*{ref' : ref}*{ref' : ref}) = (s_2, [ea] :: ea'*{ea' : elemaddr})
+  ;; 9-module.watsup:66.1-68.55
+  def $allocelems{s : store, rt : reftype, rt'* : reftype*, ref* : ref*, ref'** : ref**, s_2 : store, ea : elemaddr, ea'* : elemaddr*, s_1 : store}(s, [rt] :: rt'*{rt' : elemtype}, [ref*{ref : ref}] :: ref'*{ref' : ref}*{ref' : ref}) = (s_2, [ea] :: ea'*{ea' : elemaddr})
     -- if ((s_1, ea) = $allocelem(s, rt, ref*{ref : ref}))
-    -- if ((s_2, ea'*{ea' : elemaddr}) = $allocelems(s_2, rt'*{rt' : reftype}, ref'*{ref' : ref}*{ref' : ref}))
+    -- if ((s_2, ea'*{ea' : elemaddr}) = $allocelems(s_2, rt'*{rt' : elemtype}, ref'*{ref' : ref}*{ref' : ref}))
 }
 
 ;; 9-module.watsup
-def $allocdata(store : store, byte*) : (store, dataaddr)
+def $allocdata(store : store, datatype : datatype, byte*) : (store, dataaddr)
   ;; 9-module.watsup
-  def $allocdata{s : store, byte* : byte*, di : datainst}(s, byte*{byte : byte}) = (s[DATAS_store =.. [di]], |s.DATAS_store|)
-    -- if (di = {BYTES byte*{byte : byte}})
+  def $allocdata{s : store, byte* : byte*, datainst : datainst}(s, OK_datatype, byte*{byte : byte}) = (s ++ {FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [datainst], STRUCTS [], ARRAYS []}, |s.DATAS_store|)
+    -- if (datainst = {BYTES byte*{byte : byte}})
 
 ;; 9-module.watsup
 rec {
 
-;; 9-module.watsup:70.1-70.54
-def $allocdatas(store : store, byte**) : (store, dataaddr*)
-  ;; 9-module.watsup:71.1-71.35
-  def $allocdatas{s : store}(s, []) = (s, [])
-  ;; 9-module.watsup:72.1-74.50
-  def $allocdatas{s : store, byte* : byte*, byte'** : byte**, s_2 : store, da : dataaddr, da'* : dataaddr*, s_1 : store}(s, [byte*{byte : byte}] :: byte'*{byte' : byte}*{byte' : byte}) = (s_2, [da] :: da'*{da' : dataaddr})
-    -- if ((s_1, da) = $allocdata(s, byte*{byte : byte}))
-    -- if ((s_2, da'*{da' : dataaddr}) = $allocdatas(s_1, byte'*{byte' : byte}*{byte' : byte}))
+;; 9-module.watsup:75.1-75.98
+def $allocdatas(store : store, datatype*, byte**) : (store, dataaddr*)
+  ;; 9-module.watsup:76.1-76.40
+  def $allocdatas{s : store}(s, [], []) = (s, [])
+  ;; 9-module.watsup:77.1-79.53
+  def $allocdatas{s : store, ok : datatype, ok'* : datatype*, b* : byte*, b'** : byte**, s_2 : store, da : dataaddr, da'* : dataaddr*, s_1 : store}(s, [ok] :: ok'*{ok' : datatype}, [b*{b : byte}] :: b'*{b' : byte}*{b' : byte}) = (s_2, [da] :: da'*{da' : dataaddr})
+    -- if ((s_1, da) = $allocdata(s, ok, b*{b : byte}))
+    -- if ((s_2, da'*{da' : dataaddr}) = $allocdatas(s_1, ok'*{ok' : datatype}, b'*{b' : byte}*{b' : byte}))
 }
 
 ;; 9-module.watsup
-def $instexport(funcaddr*, globaladdr*, tableaddr*, memaddr*, export : export) : exportinst
+def $allocexport(moduleinst : moduleinst, export : export) : exportinst
   ;; 9-module.watsup
-  def $instexport{fa* : funcaddr*, ga* : globaladdr*, ta* : tableaddr*, ma* : memaddr*, name : name, x : idx}(fa*{fa : funcaddr}, ga*{ga : globaladdr}, ta*{ta : tableaddr}, ma*{ma : memaddr}, EXPORT_export(name, FUNC_externidx(x))) = {NAME name, VALUE FUNC_externval(fa*{fa : funcaddr}[x!`%`_idx.0])}
+  def $allocexport{mm : moduleinst, name : name, x : idx}(mm, EXPORT_export(name, FUNC_externidx(x))) = {NAME name, VALUE FUNC_externval(mm.FUNCS_moduleinst[x!`%`_idx.0])}
   ;; 9-module.watsup
-  def $instexport{fa* : funcaddr*, ga* : globaladdr*, ta* : tableaddr*, ma* : memaddr*, name : name, x : idx}(fa*{fa : funcaddr}, ga*{ga : globaladdr}, ta*{ta : tableaddr}, ma*{ma : memaddr}, EXPORT_export(name, GLOBAL_externidx(x))) = {NAME name, VALUE GLOBAL_externval(ga*{ga : globaladdr}[x!`%`_idx.0])}
+  def $allocexport{mm : moduleinst, name : name, x : idx}(mm, EXPORT_export(name, GLOBAL_externidx(x))) = {NAME name, VALUE GLOBAL_externval(mm.GLOBALS_moduleinst[x!`%`_idx.0])}
   ;; 9-module.watsup
-  def $instexport{fa* : funcaddr*, ga* : globaladdr*, ta* : tableaddr*, ma* : memaddr*, name : name, x : idx}(fa*{fa : funcaddr}, ga*{ga : globaladdr}, ta*{ta : tableaddr}, ma*{ma : memaddr}, EXPORT_export(name, TABLE_externidx(x))) = {NAME name, VALUE TABLE_externval(ta*{ta : tableaddr}[x!`%`_idx.0])}
+  def $allocexport{mm : moduleinst, name : name, x : idx}(mm, EXPORT_export(name, TABLE_externidx(x))) = {NAME name, VALUE TABLE_externval(mm.TABLES_moduleinst[x!`%`_idx.0])}
   ;; 9-module.watsup
-  def $instexport{fa* : funcaddr*, ga* : globaladdr*, ta* : tableaddr*, ma* : memaddr*, name : name, x : idx}(fa*{fa : funcaddr}, ga*{ga : globaladdr}, ta*{ta : tableaddr}, ma*{ma : memaddr}, EXPORT_export(name, MEM_externidx(x))) = {NAME name, VALUE MEM_externval(ma*{ma : memaddr}[x!`%`_idx.0])}
+  def $allocexport{mm : moduleinst, name : name, x : idx}(mm, EXPORT_export(name, MEM_externidx(x))) = {NAME name, VALUE MEM_externval(mm.MEMS_moduleinst[x!`%`_idx.0])}
 
 ;; 9-module.watsup
 def $allocmodule(store : store, module : module, externval*, val*, ref*, ref**) : (store, moduleinst)
   ;; 9-module.watsup
-  def $allocmodule{s : store, module : module, externval* : externval*, val_g* : val*, ref_t* : ref*, ref_e** : ref**, s_6 : store, mm : moduleinst, type* : type*, import* : import*, func^n_f : func^n_f, n_f : n, globaltype^n_g : globaltype^n_g, expr_g^n_g : expr^n_g, n_g : n, tabletype^n_t : tabletype^n_t, expr_t^n_t : expr^n_t, n_t : n, memtype^n_m : memtype^n_m, n_m : n, reftype^n_e : reftype^n_e, expr_e*^n_e : expr*^n_e, elemmode^n_e : elemmode^n_e, n_e : n, byte*^n_d : byte*^n_d, datamode^n_d : datamode^n_d, n_d : n, start? : start?, export* : export*, fa_ex* : funcaddr*, ga_ex* : globaladdr*, ta_ex* : tableaddr*, ma_ex* : memaddr*, fa* : funcaddr*, i_f^n_f : nat^n_f, ga* : globaladdr*, i_g^n_g : nat^n_g, ta* : tableaddr*, i_t^n_t : nat^n_t, ma* : memaddr*, i_m^n_m : nat^n_m, ea* : elemaddr*, i_e^n_e : nat^n_e, da* : dataaddr*, i_d^n_d : nat^n_d, xi* : exportinst*, dt* : deftype*, s_1 : store, s_2 : store, s_3 : store, s_4 : store, s_5 : store}(s, module, externval*{externval : externval}, val_g*{val_g : val}, ref_t*{ref_t : ref}, ref_e*{ref_e : ref}*{ref_e : ref}) = (s_6, mm)
-    -- if (module = MODULE_module(type*{type : type}, import*{import : import}, func^n_f{func : func}, GLOBAL_global(globaltype, expr_g)^n_g{expr_g : expr, globaltype : globaltype}, TABLE_table(tabletype, expr_t)^n_t{expr_t : expr, tabletype : tabletype}, MEMORY_mem(memtype)^n_m{memtype : memtype}, ELEM_elem(reftype, expr_e*{expr_e : expr}, elemmode)^n_e{elemmode : elemmode, expr_e : expr, reftype : reftype}, DATA_data(byte*{byte : byte}, datamode)^n_d{byte : byte, datamode : datamode}, start?{start : start}, export*{export : export}))
-    -- if (fa_ex*{fa_ex : funcaddr} = $funcsxv(externval*{externval : externval}))
-    -- if (ga_ex*{ga_ex : globaladdr} = $globalsxv(externval*{externval : externval}))
-    -- if (ta_ex*{ta_ex : tableaddr} = $tablesxv(externval*{externval : externval}))
-    -- if (ma_ex*{ma_ex : memaddr} = $memsxv(externval*{externval : externval}))
-    -- if (fa*{fa : funcaddr} = (|s.FUNCS_store| + i_f)^(i_f<n_f){i_f : nat})
-    -- if (ga*{ga : globaladdr} = (|s.GLOBALS_store| + i_g)^(i_g<n_g){i_g : nat})
-    -- if (ta*{ta : tableaddr} = (|s.TABLES_store| + i_t)^(i_t<n_t){i_t : nat})
-    -- if (ma*{ma : memaddr} = (|s.MEMS_store| + i_m)^(i_m<n_m){i_m : nat})
-    -- if (ea*{ea : elemaddr} = (|s.ELEMS_store| + i_e)^(i_e<n_e){i_e : nat})
-    -- if (da*{da : dataaddr} = (|s.DATAS_store| + i_d)^(i_d<n_d){i_d : nat})
-    -- if (xi*{xi : exportinst} = $instexport(fa_ex*{fa_ex : funcaddr} :: fa*{fa : funcaddr}, ga_ex*{ga_ex : globaladdr} :: ga*{ga : globaladdr}, ta_ex*{ta_ex : tableaddr} :: ta*{ta : tableaddr}, ma_ex*{ma_ex : memaddr} :: ma*{ma : memaddr}, export)*{export : export})
-    -- if (mm = {TYPES dt*{dt : deftype}, FUNCS fa_ex*{fa_ex : funcaddr} :: fa*{fa : funcaddr}, GLOBALS ga_ex*{ga_ex : globaladdr} :: ga*{ga : globaladdr}, TABLES ta_ex*{ta_ex : tableaddr} :: ta*{ta : tableaddr}, MEMS ma_ex*{ma_ex : memaddr} :: ma*{ma : memaddr}, ELEMS ea*{ea : elemaddr}, DATAS da*{da : dataaddr}, EXPORTS xi*{xi : exportinst}})
+  def $allocmodule{s : store, module : module, externval* : externval*, val_G* : val*, ref_T* : ref*, ref_E** : ref**, s_6 : store, mm : moduleinst, type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start? : start?, export* : export*, x* : idx*, local** : local**, expr_F* : expr*, globaltype* : globaltype*, expr_G* : expr*, tabletype* : tabletype*, expr_T* : expr*, memtype* : memtype*, elemtype* : elemtype*, expr_E** : expr**, elemmode* : elemmode*, byte** : byte**, datamode* : datamode*, fa_I* : funcaddr*, ga_I* : globaladdr*, ta_I* : tableaddr*, ma_I* : memaddr*, fa* : funcaddr*, i_F^|func*{func : func}| : nat^|func*{func : func}|, ga* : globaladdr*, i_G^|global*{global : global}| : nat^|global*{global : global}|, ta* : tableaddr*, i_T^|table*{table : table}| : nat^|table*{table : table}|, ma* : memaddr*, i_M^|mem*{mem : mem}| : nat^|mem*{mem : mem}|, ea* : elemaddr*, i_E^|elem*{elem : elem}| : nat^|elem*{elem : elem}|, da* : dataaddr*, i_D^|data*{data : data}| : nat^|data*{data : data}|, dt* : deftype*, s_1 : store, s_2 : store, s_3 : store, s_4 : store, s_5 : store, xi* : exportinst*}(s, module, externval*{externval : externval}, val_G*{val_G : val}, ref_T*{ref_T : ref}, ref_E*{ref_E : ref}*{ref_E : ref}) = (s_6, mm)
+    -- if (module = MODULE_module(type*{type : type}, import*{import : import}, func*{func : func}, global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data}, start?{start : start}, export*{export : export}))
+    -- if (func*{func : func} = FUNC_func(x, local*{local : local}, expr_F)*{expr_F : expr, local : local, x : typeidx})
+    -- if (global*{global : global} = GLOBAL_global(globaltype, expr_G)*{expr_G : expr, globaltype : globaltype})
+    -- if (table*{table : table} = TABLE_table(tabletype, expr_T)*{expr_T : expr, tabletype : tabletype})
+    -- if (mem*{mem : mem} = MEMORY_mem(memtype)*{memtype : memtype})
+    -- if (elem*{elem : elem} = ELEM_elem(elemtype, expr_E*{expr_E : expr}, elemmode)*{elemmode : elemmode, elemtype : reftype, expr_E : expr})
+    -- if (data*{data : data} = DATA_data(byte*{byte : byte}, datamode)*{byte : byte, datamode : datamode})
+    -- if (fa_I*{fa_I : funcaddr} = $funcsxv(externval*{externval : externval}))
+    -- if (ga_I*{ga_I : globaladdr} = $globalsxv(externval*{externval : externval}))
+    -- if (ta_I*{ta_I : tableaddr} = $tablesxv(externval*{externval : externval}))
+    -- if (ma_I*{ma_I : memaddr} = $memsxv(externval*{externval : externval}))
+    -- if (fa*{fa : funcaddr} = (|s.FUNCS_store| + i_F)^(i_F<|func*{func : func}|){i_F : nat})
+    -- if (ga*{ga : globaladdr} = (|s.GLOBALS_store| + i_G)^(i_G<|global*{global : global}|){i_G : nat})
+    -- if (ta*{ta : tableaddr} = (|s.TABLES_store| + i_T)^(i_T<|table*{table : table}|){i_T : nat})
+    -- if (ma*{ma : memaddr} = (|s.MEMS_store| + i_M)^(i_M<|mem*{mem : mem}|){i_M : nat})
+    -- if (ea*{ea : elemaddr} = (|s.ELEMS_store| + i_E)^(i_E<|elem*{elem : elem}|){i_E : nat})
+    -- if (da*{da : dataaddr} = (|s.DATAS_store| + i_D)^(i_D<|data*{data : data}|){i_D : nat})
     -- if (dt*{dt : deftype} = $alloctypes(type*{type : type}))
-    -- if ((s_1, fa*{fa : funcaddr}) = $allocfuncs(s, mm, func^n_f{func : func}))
-    -- if ((s_2, ga*{ga : globaladdr}) = $allocglobals(s_1, globaltype^n_g{globaltype : globaltype}, val_g*{val_g : val}))
-    -- if ((s_3, ta*{ta : tableaddr}) = $alloctables(s_2, tabletype^n_t{tabletype : tabletype}, ref_t*{ref_t : ref}))
-    -- if ((s_4, ma*{ma : memaddr}) = $allocmems(s_3, memtype^n_m{memtype : memtype}))
-    -- if ((s_5, ea*{ea : elemaddr}) = $allocelems(s_4, reftype^n_e{reftype : reftype}, ref_e*{ref_e : ref}*{ref_e : ref}))
-    -- if ((s_6, da*{da : dataaddr}) = $allocdatas(s_5, byte*{byte : byte}^n_d{byte : byte}))
+    -- if ((s_1, fa*{fa : funcaddr}) = $allocfuncs(s, dt*{dt : deftype}[x!`%`_idx.0]*{x : idx}, FUNC_funccode(x, local*{local : local}, expr_F)*{expr_F : expr, local : local, x : typeidx}, mm^|func*{func : func}|{}))
+    -- if ((s_2, ga*{ga : globaladdr}) = $allocglobals(s_1, globaltype*{globaltype : globaltype}, val_G*{val_G : val}))
+    -- if ((s_3, ta*{ta : tableaddr}) = $alloctables(s_2, tabletype*{tabletype : tabletype}, ref_T*{ref_T : ref}))
+    -- if ((s_4, ma*{ma : memaddr}) = $allocmems(s_3, memtype*{memtype : memtype}))
+    -- if ((s_5, ea*{ea : elemaddr}) = $allocelems(s_4, elemtype*{elemtype : elemtype}, ref_E*{ref_E : ref}*{ref_E : ref}))
+    -- if ((s_6, da*{da : dataaddr}) = $allocdatas(s_5, OK_datatype^|data*{data : data}|{}, byte*{byte : byte}*{byte : byte}))
+    -- if (xi*{xi : exportinst} = $allocexport({TYPES [], FUNCS fa_I*{fa_I : funcaddr} :: fa*{fa : funcaddr}, GLOBALS ga_I*{ga_I : globaladdr} :: ga*{ga : globaladdr}, TABLES ta_I*{ta_I : tableaddr} :: ta*{ta : tableaddr}, MEMS ma_I*{ma_I : memaddr} :: ma*{ma : memaddr}, ELEMS [], DATAS [], EXPORTS []}, export)*{export : export})
+    -- if (mm = {TYPES dt*{dt : deftype}, FUNCS fa_I*{fa_I : funcaddr} :: fa*{fa : funcaddr}, GLOBALS ga_I*{ga_I : globaladdr} :: ga*{ga : globaladdr}, TABLES ta_I*{ta_I : tableaddr} :: ta*{ta : tableaddr}, MEMS ma_I*{ma_I : memaddr} :: ma*{ma : memaddr}, ELEMS ea*{ea : elemaddr}, DATAS da*{da : dataaddr}, EXPORTS xi*{xi : exportinst}})
 
 ;; 9-module.watsup
-def $runelem(elem : elem, idx : idx) : instr*
+def $runelem_(elemidx : elemidx, elem : elem) : instr*
   ;; 9-module.watsup
-  def $runelem{reftype : reftype, expr* : expr*, y : idx}(ELEM_elem(reftype, expr*{expr : expr}, PASSIVE_elemmode), y) = []
+  def $runelem_{x : idx, rt : reftype, e^n : expr^n, n : n}(x, ELEM_elem(rt, e^n{e : expr}, PASSIVE_elemmode)) = []
   ;; 9-module.watsup
-  def $runelem{reftype : reftype, expr* : expr*, y : idx}(ELEM_elem(reftype, expr*{expr : expr}, DECLARE_elemmode), y) = [ELEM.DROP_instr(y)]
+  def $runelem_{x : idx, rt : reftype, e^n : expr^n, n : n}(x, ELEM_elem(rt, e^n{e : expr}, DECLARE_elemmode)) = [ELEM.DROP_instr(x)]
   ;; 9-module.watsup
-  def $runelem{reftype : reftype, expr* : expr*, x : idx, instr* : instr*, y : idx}(ELEM_elem(reftype, expr*{expr : expr}, ACTIVE_elemmode(x, instr*{instr : instr})), y) = instr*{instr : instr} :: [CONST_instr(I32_numtype, `%`_num_(0)) CONST_instr(I32_numtype, `%`_num_(|expr*{expr : expr}|)) TABLE.INIT_instr(x, y) ELEM.DROP_instr(y)]
+  def $runelem_{x : idx, rt : reftype, e^n : expr^n, n : n, y : idx, instr* : instr*}(x, ELEM_elem(rt, e^n{e : expr}, ACTIVE_elemmode(y, instr*{instr : instr}))) = instr*{instr : instr} :: [CONST_instr(I32_numtype, `%`_num_(0)) CONST_instr(I32_numtype, `%`_num_(n)) TABLE.INIT_instr(y, x) ELEM.DROP_instr(x)]
 
 ;; 9-module.watsup
-def $rundata(data : data, idx : idx) : instr*
+def $rundata_(dataidx : dataidx, data : data) : instr*
   ;; 9-module.watsup
-  def $rundata{byte* : byte*, y : idx}(DATA_data(byte*{byte : byte}, PASSIVE_datamode), y) = []
+  def $rundata_{x : idx, b^n : byte^n, n : n}(x, DATA_data(b^n{b : byte}, PASSIVE_datamode)) = []
   ;; 9-module.watsup
-  def $rundata{byte* : byte*, x : idx, instr* : instr*, y : idx}(DATA_data(byte*{byte : byte}, ACTIVE_datamode(x, instr*{instr : instr})), y) = instr*{instr : instr} :: [CONST_instr(I32_numtype, `%`_num_(0)) CONST_instr(I32_numtype, `%`_num_(|byte*{byte : byte}|)) MEMORY.INIT_instr(x, y) DATA.DROP_instr(y)]
+  def $rundata_{x : idx, b^n : byte^n, n : n, y : idx, instr* : instr*}(x, DATA_data(b^n{b : byte}, ACTIVE_datamode(y, instr*{instr : instr}))) = instr*{instr : instr} :: [CONST_instr(I32_numtype, `%`_num_(0)) CONST_instr(I32_numtype, `%`_num_(n)) MEMORY.INIT_instr(y, x) DATA.DROP_instr(x)]
 
 ;; 9-module.watsup
 def $instantiate(store : store, module : module, externval*) : config
   ;; 9-module.watsup
-  def $instantiate{s : store, module : module, externval* : externval*, s' : store, f : frame, instr_E* : instr*, instr_D* : instr*, x? : idx?, type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start? : start?, export* : export*, globaltype* : globaltype*, expr_G* : expr*, tabletype* : tabletype*, expr_T* : expr*, reftype* : reftype*, expr_E** : expr**, elemmode* : elemmode*, n_F : n, n_E : n, n_D : n, mm_init : moduleinst, i_F^n_F : nat^n_F, z : state, val_G* : val*, ref_T* : ref*, ref_E** : ref**, mm : moduleinst, i^n_E : nat^n_E, j^n_D : nat^n_D}(s, module, externval*{externval : externval}) = `%;%`_config(`%;%`_state(s', f), instr_E*{instr_E : instr} :: instr_D*{instr_D : instr} :: CALL_instr(x)?{x : funcidx})
+  def $instantiate{s : store, module : module, externval* : externval*, s' : store, f : frame, instr_E* : instr*, instr_D* : instr*, x? : idx?, type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start? : start?, export* : export*, globaltype* : globaltype*, expr_G* : expr*, tabletype* : tabletype*, expr_T* : expr*, reftype* : reftype*, expr_E** : expr**, elemmode* : elemmode*, mm_0 : moduleinst, i_F^|func*{func : func}| : nat^|func*{func : func}|, z : state, val_G* : val*, ref_T* : ref*, ref_E** : ref**, mm : moduleinst, i_E^|elem*{elem : elem}| : nat^|elem*{elem : elem}|, i_D^|data*{data : data}| : nat^|data*{data : data}|}(s, module, externval*{externval : externval}) = `%;%`_config(`%;%`_state(s', f), instr_E*{instr_E : instr} :: instr_D*{instr_D : instr} :: CALL_instr(x)?{x : funcidx})
     -- if (module = MODULE_module(type*{type : type}, import*{import : import}, func*{func : func}, global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data}, start?{start : start}, export*{export : export}))
     -- if (global*{global : global} = GLOBAL_global(globaltype, expr_G)*{expr_G : expr, globaltype : globaltype})
     -- if (table*{table : table} = TABLE_table(tabletype, expr_T)*{expr_T : expr, tabletype : tabletype})
     -- if (elem*{elem : elem} = ELEM_elem(reftype, expr_E*{expr_E : expr}, elemmode)*{elemmode : elemmode, expr_E : expr, reftype : reftype})
     -- if (start?{start : start} = START_start(x)?{x : funcidx})
-    -- if (n_F = |func*{func : func}|)
-    -- if (n_E = |elem*{elem : elem}|)
-    -- if (n_D = |data*{data : data}|)
-    -- if (mm_init = {TYPES $alloctypes(type*{type : type}), FUNCS $funcsxv(externval*{externval : externval}) :: (|s.FUNCS_store| + i_F)^(i_F<n_F){i_F : nat}, GLOBALS $globalsxv(externval*{externval : externval}), TABLES [], MEMS [], ELEMS [], DATAS [], EXPORTS []})
-    -- if (z = `%;%`_state(s, {LOCALS [], MODULE mm_init}))
+    -- if (mm_0 = {TYPES $alloctypes(type*{type : type}), FUNCS $funcsxv(externval*{externval : externval}) :: (|s.FUNCS_store| + i_F)^(i_F<|func*{func : func}|){i_F : nat}, GLOBALS $globalsxv(externval*{externval : externval}), TABLES [], MEMS [], ELEMS [], DATAS [], EXPORTS []})
+    -- if (z = `%;%`_state(s, {LOCALS [], MODULE mm_0}))
     -- (Eval_expr: `%;%~>*%;%`(z, expr_G, z, [val_G]))*{expr_G : expr, val_G : val}
     -- (Eval_expr: `%;%~>*%;%`(z, expr_T, z, [(ref_T : ref <: val)]))*{expr_T : expr, ref_T : ref}
     -- (Eval_expr: `%;%~>*%;%`(z, expr_E, z, [(ref_E : ref <: val)]))*{expr_E : expr, ref_E : ref}*{expr_E : expr, ref_E : ref}
     -- if ((s', mm) = $allocmodule(s, module, externval*{externval : externval}, val_G*{val_G : val}, ref_T*{ref_T : ref}, ref_E*{ref_E : ref}*{ref_E : ref}))
     -- if (f = {LOCALS [], MODULE mm})
-    -- if (instr_E*{instr_E : instr} = $concat_(syntax instr, $runelem(elem*{elem : elem}[i], `%`_idx(i))^(i<n_E){i : nat}))
-    -- if (instr_D*{instr_D : instr} = $concat_(syntax instr, $rundata(data*{data : data}[j], `%`_idx(j))^(j<n_D){j : nat}))
+    -- if (instr_E*{instr_E : instr} = $concat_(syntax instr, $runelem_(`%`_elemidx(i_E), elem*{elem : elem}[i_E])^(i_E<|elem*{elem : elem}|){i_E : nat}))
+    -- if (instr_D*{instr_D : instr} = $concat_(syntax instr, $rundata_(`%`_dataidx(i_D), data*{data : data}[i_D])^(i_D<|data*{data : data}|){i_D : nat}))
 
 ;; 9-module.watsup
 def $invoke(store : store, funcaddr : funcaddr, val*) : config
   ;; 9-module.watsup
-  def $invoke{s : store, fa : funcaddr, val^n : val^n, n : n, f : frame, x : idx, local* : local*, expr : expr, t_1^n : valtype^n, t_2* : valtype*}(s, fa, val^n{val : val}) = `%;%`_config(`%;%`_state(s, f), (val : val <: instr)^n{val : val} :: [REF.FUNC_ADDR_instr(fa) CALL_REF_instr(($funcinst(`%;%`_state(s, f))[fa].TYPE_funcinst : deftype <: typeuse))])
+  def $invoke{s : store, funcaddr : funcaddr, val* : val*, f : frame, t_1* : valtype*, t_2* : valtype*}(s, funcaddr, val*{val : val}) = `%;%`_config(`%;%`_state(s, f), (val : val <: instr)*{val : val} :: [REF.FUNC_ADDR_instr(funcaddr) CALL_REF_instr((s.FUNCS_store[funcaddr].TYPE_funcinst : deftype <: typeuse))])
+    -- Expand: `%~~%`(s.FUNCS_store[funcaddr].TYPE_funcinst, FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype}))))
     -- if (f = {LOCALS [], MODULE {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], EXPORTS []}})
-    -- if ($funcinst(`%;%`_state(s, f))[fa].CODE_funcinst = FUNC_funccode(x, local*{local : local}, expr))
-    -- Expand: `%~~%`(s.FUNCS_store[fa].TYPE_funcinst, FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1^n{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype}))))
 
 ;; A-binary.watsup
 syntax castop = (nul, nul)
@@ -5703,7 +5735,7 @@ relation NotationTypingInstrScheme: `%|-%:%`(context, instr*, functype)
   rule block{C : context, blocktype : blocktype, instr* : instr*, t_1* : valtype*, t_2* : valtype*}:
     `%|-%:%`(C, [BLOCK_instr(blocktype, instr*{instr : instr})], `%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype})))
     -- Blocktype_ok: `%|-%:%`(C, blocktype, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), [], `%`_resulttype(t_2*{t_2 : valtype})))
-    -- NotationTypingInstrScheme: `%|-%:%`(C ++ {TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [`%`_resulttype(t_2*{t_2 : valtype})], RETURN ?()}, instr*{instr : instr}, `%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype})))
+    -- NotationTypingInstrScheme: `%|-%:%`({TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [`%`_resulttype(t_2*{t_2 : valtype})], RETURN ?()} ++ C, instr*{instr : instr}, `%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype})))
 }
 
 ;; C-conventions.watsup
@@ -5730,6 +5762,22 @@ syntax label =
 ;; C-conventions.watsup
 syntax callframe =
   | `FRAME_%{%}`{n : n, frame : frame}(n : n, frame : frame)
+
+;; C-conventions.watsup
+def $allocX(syntax X, syntax Y, store : store, X : X, Y : Y) : (store, addr)
+
+;; C-conventions.watsup
+rec {
+
+;; C-conventions.watsup:80.1-80.117
+def $allocXs(syntax X, syntax Y, store : store, X*, Y*) : (store, addr*)
+  ;; C-conventions.watsup:81.1-81.57
+  def $allocXs{syntax X, syntax Y, s : store}(syntax X, syntax Y, s, [], []) = (s, [])
+  ;; C-conventions.watsup:82.1-84.65
+  def $allocXs{syntax X, syntax Y, s : store, X : X, X'* : X*, Y : Y, Y'* : Y*, s_2 : store, a : addr, a'* : addr*, s_1 : store}(syntax X, syntax Y, s, [X] :: X'*{X' : X}, [Y] :: Y'*{Y' : Y}) = (s_2, [a] :: a'*{a' : addr})
+    -- if ((s_1, a) = $allocX(syntax X, syntax Y, s, X, Y))
+    -- if ((s_2, a'*{a' : addr}) = $allocXs(syntax X, syntax Y, s_1, X'*{X' : X}, Y'*{Y' : Y}))
+}
 
 == IL Validation...
 == Complete.

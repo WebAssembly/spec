@@ -1338,12 +1338,12 @@
 .. |EVGLOBAL| mathdef:: \xref{exec/runtime}{syntax-externval}{\K{global}}
 
 .. |MITYPES| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{types}}
-.. |MIFUNCS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{funcaddrs}}
-.. |MITABLES| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{tableaddrs}}
-.. |MIMEMS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{memaddrs}}
-.. |MIGLOBALS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{globaladdrs}}
-.. |MIELEMS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{elemaddrs}}
-.. |MIDATAS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{dataaddrs}}
+.. |MIFUNCS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{funcs}}
+.. |MITABLES| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{tables}}
+.. |MIMEMS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{mems}}
+.. |MIGLOBALS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{globals}}
+.. |MIELEMS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{elems}}
+.. |MIDATAS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{datas}}
 .. |MIEXPORTS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{exports}}
 
 .. |SITYPE| mathdef:: \xref{exec/runtime}{syntax-structinst}{\K{type}}

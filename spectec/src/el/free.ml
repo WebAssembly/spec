@@ -158,7 +158,7 @@ and det_exp e =
   | ParenE (e1, _) | BrackE (_, e1, _) -> det_exp e1
   (* We consider arithmetic expressions determinate,
    * since we sometimes need to use invertible formulas. *)
-  | BinE (e1, (AddOp | SubOp | MulOp | DivOp | ExpOp), e2)
+  | BinE (e1, (AddOp | SubOp | MulOp | DivOp | ModOp | ExpOp), e2)
   | InfixE (e1, _, e2) -> det_exp e1 + det_exp e2
   | SeqE es | TupE es -> free_list det_exp es
   | StrE efs -> free_nl_list det_expfield efs

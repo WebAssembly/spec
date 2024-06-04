@@ -99,8 +99,6 @@ let split_ticks id =
   while !i > 0 && id.[!i - 1] = '\'' do decr i done;
   String.sub id 0 !i, String.sub id !i (String.length id - !i)
 
-let chop_ticks id = fst (split_ticks id)
-
 let ends_sub id = id <> "" && id.[String.length id - 1] = '_'
 let all_sub id = String.for_all ((=) '_') id
 let split_sub id =
@@ -694,8 +692,7 @@ let rec render_id_sub style show macro env first at = function
   | ""::ss ->
     (* Ignore leading underscores *)
     render_id_sub style show macro env first at ss
-  | s::ss when style = `Var &&
-      not first && is_upper s.[0] && not (Set.mem (chop_ticks s) !(env.vars)) ->
+  | s::ss when style = `Var && not first && is_upper s.[0] ->
     (* In vars, underscore renders subscripts; subscripts may be atoms *)
     render_id_sub `Atom show (ref Map.empty) env first at (lower s :: ss)
   | s1::""::[] ->

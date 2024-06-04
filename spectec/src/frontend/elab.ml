@@ -698,7 +698,7 @@ and elab_typfield env tid at ((atom, (t, prems), hints) as tf) : Il.typfield =
   if free <> Free.empty then
     error at ("type case contains indeterminate variable(s) `" ^
       String.concat "`, `" (Free.Set.elements free.varid) ^ "`");
-  let acc_bs', (module Arg : Iter.Arg) = make_binds_iter_arg env' det dims in
+  let acc_bs', (module Arg : Iter.Arg) = make_binds_iter_arg env' det dims dims' in
   let module Acc = Iter.Make(Arg) in
   List.iter Acc.exp es;
   Acc.prems prems;
@@ -722,7 +722,7 @@ and elab_typcase env tid at ((_atom, (t, prems), hints) as tc) : Il.typcase =
   if free <> Free.empty then
     error at ("type case contains indeterminate variable(s) `" ^
       String.concat "`, `" (Free.Set.elements free.varid) ^ "`");
-  let acc_bs', (module Arg : Iter.Arg) = make_binds_iter_arg env' det dims in
+  let acc_bs', (module Arg : Iter.Arg) = make_binds_iter_arg env' det dims dims' in
   let module Acc = Iter.Make(Arg) in
   List.iter Acc.exp es;
   Acc.prems prems;
@@ -746,7 +746,7 @@ and elab_typcon env tid at (((t, prems), hints) as tc) : Il.typcase =
   if free <> Free.empty then
     error at ("type constraint contains indeterminate variable(s) `" ^
       String.concat "`, `" (Free.Set.elements free.varid) ^ "`");
-  let acc_bs', (module Arg : Iter.Arg) = make_binds_iter_arg env' det dims in
+  let acc_bs', (module Arg : Iter.Arg) = make_binds_iter_arg env' det dims dims' in
   let module Acc = Iter.Make(Arg) in
   List.iter Acc.exp es;
   Acc.prems prems;
@@ -963,7 +963,7 @@ and infer_exp' env e : Il.exp' * typ =
       let _t2 = find_field tfs atom at t1 in
       let e2 = match es2 with [e2] -> e2 | _ -> SeqE es2 $ e2.at in
       let e2' = elab_exp env (StrE [Elem (atom, e2)] $ e2.at) t1 in
-      Il.CompE (e1', e2'), t1
+      Il.CompE (e2', e1'), t1
     | _ -> failwith "unimplemented: infer CommaE"
     )
   | CompE (e1, e2) ->
@@ -1093,7 +1093,7 @@ and elab_exp' env e t : Il.exp' =
       let _t2 = find_field tfs atom at t in
       let e2 = match es2 with [e2] -> e2 | _ -> SeqE es2 $ e2.at in
       let e2' = elab_exp env (StrE [Elem (atom, e2)] $ e2.at) t in
-      Il.CompE (e1', e2')
+      Il.CompE (e2', e1')
     | _ -> failwith "unimplemented: check CommaE"
     )
   | CompE (e1, e2) ->
@@ -1649,7 +1649,7 @@ and elab_gram env gram t =
 
 (* Definitions *)
 
-and make_binds_iter_arg env free dims : Il.bind list ref * (module Iter.Arg) =
+and make_binds_iter_arg env free dims dims' : Il.bind list ref * (module Iter.Arg) =
   let module Arg =
     struct
       include Iter.Skip
@@ -1678,7 +1678,8 @@ and make_binds_iter_arg env free dims : Il.bind list ref * (module Iter.Arg) =
               ", which only occur(s) to its right; try to reorder parameters or premises");
           let t' = elab_typ env t in
           let ctx = List.map (elab_iter env) (Dim.Env.find id.it dims) in
-          acc := !acc @ [Il.ExpB (id, t', ctx) $ id.at];
+          let ctx' = List.map (Dim.annot_iter dims') ctx in
+          acc := !acc @ [Il.ExpB (id, t', ctx') $ id.at];
           left := Free.{!left with varid = Set.remove id.it !left.varid};
         )
 
@@ -1870,19 +1871,21 @@ let elab_hintdef _env hd : Il.def list =
     []
 
 
-let infer_binds env env' dims d : Il.bind list =
+let infer_binds env env' dims dims' d : Il.bind list =
   let det = Free.det_def d in
   let free = Free.(diff (free_def d) (union det (bound_env env))) in
   if free <> Free.empty then
     error d.at ("definition contains indeterminate variable(s) `" ^
       String.concat "`, `" (Free.Set.elements free.varid) ^ "`");
-  let acc_bs', (module Arg : Iter.Arg) = make_binds_iter_arg env' det dims in
+  let acc_bs', (module Arg : Iter.Arg) = make_binds_iter_arg env' det dims dims' in
   let module Acc = Iter.Make(Arg) in
   Acc.def d;
   !acc_bs'
 
 let infer_no_binds env d =
-  let bs' = infer_binds env env (Dim.check_def d) d in
+  let dims = Dim.check_def d in
+  let dims' = Dim.Env.map (List.map (elab_iter env)) dims in
+  let bs' = infer_binds env env dims dims' d in
   assert (bs' = [])
 
 
@@ -1902,7 +1905,8 @@ let elab_def env d : Il.def list =
     let as', _s = elab_args `Lhs env' as_ ps1 d.at in
     let dt' = elab_typ_definition env' id1 t in
     let dims = Dim.check_def d in
-    let bs' = infer_binds env env' dims d in
+    let dims' = Dim.Env.map (List.map (elab_iter env')) dims in
+    let bs' = infer_binds env env' dims dims' d in
     let inst' = Il.InstD (bs', as', dt') $ d.at in
     let k1', closed =
       match k1, t.it with
@@ -1954,7 +1958,7 @@ let elab_def env d : Il.def list =
     let es' = List.map (Dim.annot_exp dims') (fst (elab_exp_notation' env' id1 e t)) in
     let prems' = List.map (Dim.annot_prem dims')
       (concat_map_filter_nl_list (elab_prem env') prems) in
-    let bs' = infer_binds env env' dims d in
+    let bs' = infer_binds env env' dims dims' d in
     let rule' = Il.RuleD (id2, bs', mixop, tup_exp' es' e.at, prems') $ d.at in
     env.rels <- rebind "relation" env.rels id1 (t, rules' @ [rule']);
     []
@@ -1981,7 +1985,7 @@ let elab_def env d : Il.def list =
     let e' = Dim.annot_exp dims' (elab_exp env' e (Subst.subst_typ s t)) in
     let prems' = List.map (Dim.annot_prem dims')
       (concat_map_filter_nl_list (elab_prem env') prems) in
-    let bs' = infer_binds env env' dims d in
+    let bs' = infer_binds env env' dims dims' d in
     let clause' = Il.DefD (bs', as', e', prems') $ d.at in
     env.defs <- rebind "definition" env.defs id (ps, t, clauses' @ [(d, clause')]);
     []

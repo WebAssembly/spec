@@ -317,18 +317,18 @@ Contexts
 
 $${syntax: context}
 
-.. _def-clostype:
+.. _def-clos_deftype:
 
-$${definition-prose: clostype}
-
-\
-
-$${definition: clostype}
-
-.. _def-clostypes:
-
-$${definition-prose: clostypes}
+$${definition-prose: clos_deftype}
 
 \
 
-$${definition: clostypes}
+$${definition: clos_deftype}
+
+.. _def-clos_deftypes:
+
+$${definition-prose: clos_deftypes}
+
+\
+
+$${definition: clos_deftypes}

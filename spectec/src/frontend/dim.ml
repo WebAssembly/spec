@@ -75,8 +75,8 @@ let rec check_iter env ctx iter =
   match iter with
   | Opt | List | List1 -> ()
   | ListN (e, id_opt) ->
-    Option.iter (fun id -> check_varid env [strip_index iter] id) id_opt;
-    check_exp env ctx e
+    check_exp env ctx e;
+    Option.iter (fun id -> check_varid env [strip_index iter] id) id_opt
 
 and check_typ env ctx t =
   match t.it with
@@ -300,17 +300,25 @@ let strip_index = function
   | ListN (e, Some _) -> ListN (e, None)
   | iter -> iter
 
-let rec annot_iter env iter : Il.Ast.iter * occur * occur =
+let rec annot_iter env iter : Il.Ast.iter * (occur * occur) =
   match iter with
-  | Opt | List | List1 -> iter, Env.empty, Env.empty
+  | Opt | List | List1 -> iter, Env.(empty, empty)
   | ListN (e, id_opt) ->
     let e', occur1 = annot_exp env e in
     let occur2 =
       match id_opt with
       | None -> Env.empty
-      | Some id -> Env.singleton id.it (NumT NatT $ id.at, Env.find id.it env)
+      | Some id ->
+        let iterexps', occurs =
+          List.split
+            (List.map (fun iter' -> annot_iterexp env occur1 (iter', []) e.at)
+              (Env.find id.it env))
+        in
+        List.fold_left union
+          (Env.singleton id.it (NumT NatT $ id.at, List.map fst iterexps'))
+          occurs
     in
-    ListN (e', id_opt), occur1, occur2
+    ListN (e', id_opt), (occur1, occur2)
 
 and annot_exp env e : Il.Ast.exp * occur =
   Il.Debug.(log_in "el.annot_exp" (fun _ -> il_exp e));
@@ -426,13 +434,13 @@ and annot_path env p : Il.Ast.path * occur =
 
 and annot_iterexp env occur1 (iter, bs) at : Il.Ast.iterexp * occur =
   assert (bs = []);
-  let iter', occur2, occur3 = annot_iter env iter in
+  let iter', (occur2, occur3) = annot_iter env iter in
   let occur1' =
     Env.filter_map (fun _ (t, iters) ->
       match iters with
       | [] -> None
       | iter1::iters' ->
-        assert (Il.Eq.eq_iter (strip_index iter) iter1); Some (t, iters')
+        assert (Il.Eq.eq_iter (strip_index iter') iter1); Some (t, iters')
     ) (union occur1 occur3)
   in
   let bs' = List.map (fun (x, (t, _)) -> x $ at, t) (Env.bindings occur1') in
@@ -474,6 +482,7 @@ let annot_top annot_x env x =
   assert (Env.for_all (fun _ (_t, ctx) -> ctx = []) occurs);
   x'
 
+let annot_iter = annot_top (fun env x -> let x', (y, _) = annot_iter env x in x', y)
 let annot_exp = annot_top annot_exp
 let annot_arg = annot_top annot_arg
 let annot_prem = annot_top annot_prem

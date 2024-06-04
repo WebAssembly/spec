@@ -125,7 +125,20 @@ and translate_exp exp =
     accE (translate_exp inner_exp, dotP (translate_atom atom)) ~at:at
   (* conacatenation of records *)
   | Il.CompE (inner_exp, { it = Il.StrE expfields; _ }) ->
-    (* assumption: CompE is only used for prepending to validation context *)
+    (* assumption: CompE is only used with at least one literal *)
+    let nonempty e = (match e.it with ListE [] | OptE None -> false | _ -> true) in
+    List.fold_left
+      (fun acc extend_exp -> match extend_exp with
+      | {it = Il.Atom _; _} as atom, fieldexp ->
+        let extend_expr = translate_exp fieldexp in
+        if nonempty extend_expr then
+          extE (acc, [ dotP (translate_atom atom) ], extend_expr, Back) ~at:at
+        else
+          acc
+      | _ -> error_exp exp "AL record expression")
+      (translate_exp inner_exp) expfields
+  | Il.CompE ({ it = Il.StrE expfields; _ }, inner_exp) ->
+    (* assumption: CompE is only used with at least one literal *)
     let nonempty e = (match e.it with ListE [] | OptE None -> false | _ -> true) in
     List.fold_left
       (fun acc extend_exp -> match extend_exp with
@@ -584,7 +597,7 @@ let translate_rulepr id exp =
       letI (rhs, callE ("eval_expr", [ lhs ])) ~at:at;
       popI (frameE (None, z));
     ]
-  | "Ref_ok", [_s; ref; rt] ->
+  | "Ref_type", [_s; ref; rt] ->
     [ letI (rt, callE ("ref_type_of", [ ref ]) ~at:at) ~at:at ]
   | "Reftype_sub", [_C; rt1; rt2] ->
     [ ifI (matchE (rt1, rt2) ~at:at, [], []) ~at:at ]

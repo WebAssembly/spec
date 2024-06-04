@@ -2,28 +2,84 @@
 ;; Typing values
 ;;
 
-relation Ref_ok: store |- ref : reftype
+relation Num_type: store |- num : numtype
+relation Vec_type: store |- vec : vectype
+relation Ref_type: store |- ref : reftype
+relation Val_type: store |- val : valtype
 
-rule Ref_ok/null:
+rule Num_type:
+  s |- CONST nt c : nt
+
+rule Vec_type:
+  s |- VCONST vt c : vt
+
+
+rule Ref_type/null:
   s |- REF.NULL ht : (REF NULL ht)
 
-rule Ref_ok/i31:
+rule Ref_type/i31:
   s |- REF.I31_NUM i : (REF eps I31)
 
-rule Ref_ok/struct:
+rule Ref_type/struct:
   s |- REF.STRUCT_ADDR a : (REF eps dt)
   -- if s.STRUCTS[a].TYPE = dt
 
-rule Ref_ok/array:
+rule Ref_type/array:
   s |- REF.ARRAY_ADDR a : (REF eps dt)
   -- if s.ARRAYS[a].TYPE = dt
 
-rule Ref_ok/func:
+rule Ref_type/func:
   s |- REF.FUNC_ADDR a : (REF eps dt)
   -- if s.FUNCS[a].TYPE = dt
 
-rule Ref_ok/host:
+rule Ref_type/host:
   s |- REF.HOST_ADDR a : (REF eps ANY)
 
-rule Ref_ok/extern:
+rule Ref_type/extern:
   s |- REF.EXTERN addrref : (REF eps EXTERN)
+
+rule Ref_type/sub:
+  s |- ref : rt
+  -- Ref_type: s |- ref : rt'
+  -- Reftype_sub: {} |- rt' <: rt
+
+
+rule Val_type/num:
+  s |- num : nt
+  -- Num_type: s |- num : nt
+
+rule Val_type/vec:
+  s |- vec : vt
+  -- Vec_type: s |- vec : vt
+
+rule Val_type/ref:
+  s |- ref : rt
+  -- Ref_type: s |- ref : rt
+
+
+;;
+;; Typing external values
+;;
+
+relation Externval_type: store |- externval : externtype
+
+rule Externval_type/func:
+  s |- FUNC a : FUNC funcinst.TYPE
+  -- if s.FUNCS[a] = funcinst
+
+rule Externval_type/global:
+  s |- GLOBAL a : GLOBAL globalinst.TYPE
+  -- if s.GLOBALS[a] = globalinst
+
+rule Externval_type/table:
+  s |- TABLE a : TABLE tableinst.TYPE
+  -- if s.TABLES[a] = tableinst
+
+rule Externval_type/mem:
+  s |- MEM a : MEM meminst.TYPE
+  -- if s.MEMS[a] = meminst
+
+rule Externval_type/sub:
+  s |- externval : xt
+  -- Externval_type: s |- externval : xt'
+  -- Externtype_sub: {} |- xt' <: xt

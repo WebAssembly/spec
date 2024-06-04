@@ -385,6 +385,7 @@ warning: syntax `half` was never spliced
 warning: syntax `half_` was never spliced
 warning: syntax `heaptype` was never spliced
 warning: syntax `hostaddr` was never spliced
+warning: syntax `hostfunc` was never spliced
 warning: syntax `iN` was never spliced
 warning: syntax `idx` was never spliced
 warning: syntax `import` was never spliced
@@ -840,6 +841,7 @@ warning: rule `NotationTypingInstrScheme/i32.add` was never spliced
 warning: rule `NotationTypingInstrScheme/global.get` was never spliced
 warning: rule `NotationTypingInstrScheme/block` was never spliced
 warning: rule `NotationTypingScheme` was never spliced
+warning: rule `Num_ok` was never spliced
 warning: rule `Numtype_ok` was never spliced
 warning: rule `Numtype_sub` was never spliced
 warning: rule `Packtype_ok` was never spliced
@@ -1068,6 +1070,9 @@ warning: rule `Tabletype_sub` was never spliced
 warning: rule `Type_ok` was never spliced
 warning: rule `Types_ok/empty` was never spliced
 warning: rule `Types_ok/cons` was never spliced
+warning: rule `Val_ok/num` was never spliced
+warning: rule `Val_ok/vec` was never spliced
+warning: rule `Val_ok/ref` was never spliced
 warning: rule `Valtype_ok/num` was never spliced
 warning: rule `Valtype_ok/vec` was never spliced
 warning: rule `Valtype_ok/ref` was never spliced
@@ -1076,6 +1081,7 @@ warning: rule `Valtype_sub/num` was never spliced
 warning: rule `Valtype_sub/vec` was never spliced
 warning: rule `Valtype_sub/ref` was never spliced
 warning: rule `Valtype_sub/bot` was never spliced
+warning: rule `Vec_ok` was never spliced
 warning: rule `Vectype_ok` was never spliced
 warning: rule `Vectype_sub` was never spliced
 warning: definition `ANYREF` was never spliced
@@ -1093,10 +1099,13 @@ warning: definition `NULLEXTERNREF` was never spliced
 warning: definition `NULLFUNCREF` was never spliced
 warning: definition `NULLREF` was never spliced
 warning: definition `STRUCTREF` was never spliced
+warning: definition `allocX` was never spliced
+warning: definition `allocXs` was never spliced
 warning: definition `allocdata` was never spliced
 warning: definition `allocdatas` was never spliced
 warning: definition `allocelem` was never spliced
 warning: definition `allocelems` was never spliced
+warning: definition `allocexport` was never spliced
 warning: definition `allocfunc` was never spliced
 warning: definition `allocfuncs` was never spliced
 warning: definition `allocglobal` was never spliced
@@ -1207,7 +1216,6 @@ warning: definition `inot` was never spliced
 warning: definition `inst_reftype` was never spliced
 warning: definition `inst_valtype` was never spliced
 warning: definition `instantiate` was never spliced
-warning: definition `instexport` was never spliced
 warning: definition `instrdots` was never spliced
 warning: definition `invfbytes` was never spliced
 warning: definition `invibytes` was never spliced
@@ -1255,8 +1263,8 @@ warning: definition `reinterpret` was never spliced
 warning: definition `relop` was never spliced
 warning: definition `rolldt` was never spliced
 warning: definition `rollrt` was never spliced
-warning: definition `rundata` was never spliced
-warning: definition `runelem` was never spliced
+warning: definition `rundata_` was never spliced
+warning: definition `runelem_` was never spliced
 warning: definition `s33_to_u32` was never spliced
 warning: definition `setminus` was never spliced
 warning: definition `setminus1` was never spliced
@@ -1553,10 +1561,12 @@ warning: definition prose `NULLEXTERNREF` was never spliced
 warning: definition prose `NULLFUNCREF` was never spliced
 warning: definition prose `NULLREF` was never spliced
 warning: definition prose `STRUCTREF` was never spliced
+warning: definition prose `allocXs` was never spliced
 warning: definition prose `allocdata` was never spliced
 warning: definition prose `allocdatas` was never spliced
 warning: definition prose `allocelem` was never spliced
 warning: definition prose `allocelems` was never spliced
+warning: definition prose `allocexport` was never spliced
 warning: definition prose `allocfunc` was never spliced
 warning: definition prose `allocfuncs` was never spliced
 warning: definition prose `allocglobal` was never spliced
@@ -1620,7 +1630,6 @@ warning: definition prose `in_numtype` was never spliced
 warning: definition prose `inst_reftype` was never spliced
 warning: definition prose `inst_valtype` was never spliced
 warning: definition prose `instantiate` was never spliced
-warning: definition prose `instexport` was never spliced
 warning: definition prose `invfbytes` was never spliced
 warning: definition prose `invibytes` was never spliced
 warning: definition prose `invlanes_` was never spliced
@@ -1651,8 +1660,8 @@ warning: definition prose `psizenn` was never spliced
 warning: definition prose `relop` was never spliced
 warning: definition prose `rolldt` was never spliced
 warning: definition prose `rollrt` was never spliced
-warning: definition prose `rundata` was never spliced
-warning: definition prose `runelem` was never spliced
+warning: definition prose `rundata_` was never spliced
+warning: definition prose `runelem_` was never spliced
 warning: definition prose `setminus` was never spliced
 warning: definition prose `setminus1` was never spliced
 warning: definition prose `shsize` was never spliced

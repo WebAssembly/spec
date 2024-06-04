@@ -303,5 +303,5 @@ $${definition-prose: frame}
 $${definition: frame}
 
 $${rule+:
-  Ref_ok/*
+  Ref_type/*
 }

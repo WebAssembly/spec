@@ -251,6 +251,8 @@ syntax datatype hint(desc "data type") hint(macro "%" "%data") =
 syntax externtype hint(desc "external type") hint(macro "%" "ET%") =
   | FUNC typeuse | GLOBAL globaltype | TABLE tabletype | MEM memtype
 
+syntax moduletype hint(desc "module type") = externtype* -> externtype* hint(macro "toM")
+
 
 ;; Meta variables
 

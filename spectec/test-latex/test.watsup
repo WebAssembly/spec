@@ -2,8 +2,12 @@
 ;; Identifier notation
 ;;
 
-def $test_sub_ATOM_22(nat) : nat
-def $test_sub_ATOM_22(n_3_ATOM_y) = 0
+var XYZ : nat
+
+def $test_sub_ATOM_22(nat) : nat                       ;; {\rm test}_{{\it sub}_{{\sf ATOM}_{22}}}
+def $test_sub_ATOM_22(n_1_xyz_y) = 0                   ;; n_{1_{{\it xyz}_y}}
+def $test_sub_ATOM_22(n_2_XYZ_y) = 0                   ;; n_{2_{{\sf xyz}_y}}
+def $test_sub_ATOM_22(n_3_ATOM_y) = 0                  ;; n_{3_{{\sf atom}_y}}
 
 def $curried_(nat, nat) : nat
 def $curried_(n_1, n_2) = $(n_1 + n_2)

@@ -5575,19 +5575,19 @@ ext_arrayinst ai*
 1. Let f be the current frame.
 2. Return (s with .ARRAYS appended by ai*, f).
 
-growtable ti n r
-1. Let { TYPE: ((i, j), rt); REFS: r'*; } be ti.
-2. Let i' be (|r'*| + n).
-3. If (i' ≤ j), then:
-  a. Let ti' be { TYPE: ((i', j), rt); REFS: r'* ++ r^n; }.
-  b. Return ti'.
+growtable tableinst n r
+1. Let { TYPE: ((i, j), rt); REFS: r'*; } be tableinst.
+2. If ((|r'*| + n) ≤ j), then:
+  a. Let i' be (|r'*| + n).
+  b. Let tableinst' be { TYPE: ((i', j), rt); REFS: r'* ++ r^n; }.
+  c. Return tableinst'.
 
-growmem mi n
-1. Let { TYPE: (PAGE (i, j)); BYTES: b*; } be mi.
-2. Let i' be ((|b*| / (64 · $Ki())) + n).
-3. If (i' ≤ j), then:
-  a. Let mi' be { TYPE: (PAGE (i', j)); BYTES: b* ++ 0^(n · (64 · $Ki())); }.
-  b. Return mi'.
+growmem meminst n
+1. Let { TYPE: (PAGE (i, j)); BYTES: b*; } be meminst.
+2. If (((|b*| / (64 · $Ki())) + n) ≤ j), then:
+  a. Let i' be ((|b*| / (64 · $Ki())) + n).
+  b. Let meminst' be { TYPE: (PAGE (i', j)); BYTES: b* ++ 0^(n · (64 · $Ki())); }.
+  c. Return meminst'.
 
 with_locals C local_u0* local_u1*
 1. If ((local_u0* is []) and (local_u1* is [])), then:
@@ -5601,9 +5601,9 @@ with_locals C local_u0* local_u1*
 clostypes defty_u0*
 1. If (defty_u0* is []), then:
   a. Return [].
-2. Let dt* ++ [dt_N] be defty_u0*.
+2. Let dt* ++ [dt_n] be defty_u0*.
 3. Let dt'* be $clostypes(dt*).
-4. Return dt'* ++ [$subst_all_deftype(dt_N, dt'*)].
+4. Return dt'* ++ [$subst_all_deftype(dt_n, dt'*)].
 
 clostype C dt
 1. Let dt'* be $clostypes(C.TYPES).
@@ -5663,26 +5663,31 @@ alloctypes type_u0*
 7. Let deftype* be $subst_all_deftypes($rolldt(x, rectype), deftype'*).
 8. Return deftype'* ++ deftype*.
 
-allocfunc mm func
-1. Assert: Due to validation, func is of the case FUNC.
-2. Let (FUNC x local* expr) be func.
-3. Let fi be { TYPE: mm.TYPES[x]; MODULE: mm; CODE: func; }.
-4. Let a be |s.FUNCS|.
-5. Append fi to the s.FUNCS.
-6. Return a.
+allocfunc deftype funccode moduleinst
+1. Let funcinst be { TYPE: deftype; MODULE: moduleinst; CODE: funccode; }.
+2. Let a be |s.FUNCS|.
+3. Append funcinst to the s.FUNCS.
+4. Return a.
 
-allocfuncs mm func_u0*
-1. If (func_u0* is []), then:
-  a. Return [].
-2. Let [func] ++ func'* be func_u0*.
-3. Let fa be $allocfunc(mm, func).
-4. Let fa'* be $allocfuncs(mm, func'*).
-5. Return [fa] ++ fa'*.
+allocfuncs defty_u0* funcc_u1* modul_u2*
+1. If (defty_u0* is []), then:
+  a. Assert: Due to validation, (funcc_u1* is []).
+  b. Assert: Due to validation, (modul_u2* is []).
+  c. Return [].
+2. Else:
+  a. Let [dt] ++ dt'* be defty_u0*.
+  b. Assert: Due to validation, (|funcc_u1*| ≥ 1).
+  c. Let [funccode] ++ funccode'* be funcc_u1*.
+  d. Assert: Due to validation, (|modul_u2*| ≥ 1).
+  e. Let [mm] ++ mm'* be modul_u2*.
+  f. Let fa be $allocfunc(dt, funccode, mm).
+  g. Let fa'* be $allocfuncs(dt'*, funccode'*, mm'*).
+  h. Return [fa] ++ fa'*.
 
 allocglobal globaltype val
-1. Let gi be { TYPE: globaltype; VALUE: val; }.
+1. Let globalinst be { TYPE: globaltype; VALUE: val; }.
 2. Let a be |s.GLOBALS|.
-3. Append gi to the s.GLOBALS.
+3. Append globalinst to the s.GLOBALS.
 4. Return a.
 
 allocglobals globa_u0* val_u1*
@@ -5698,9 +5703,9 @@ allocglobals globa_u0* val_u1*
   f. Return [ga] ++ ga'*.
 
 alloctable ((i, j), rt) ref
-1. Let ti be { TYPE: ((i, j), rt); REFS: ref^i; }.
+1. Let tableinst be { TYPE: ((i, j), rt); REFS: ref^i; }.
 2. Let a be |s.TABLES|.
-3. Append ti to the s.TABLES.
+3. Append tableinst to the s.TABLES.
 4. Return a.
 
 alloctables table_u0* ref_u1*
@@ -5715,9 +5720,9 @@ alloctables table_u0* ref_u1*
 8. Return [ta] ++ ta'*.
 
 allocmem (PAGE (i, j))
-1. Let mi be { TYPE: (PAGE (i, j)); BYTES: 0^(i · (64 · $Ki())); }.
+1. Let meminst be { TYPE: (PAGE (i, j)); BYTES: 0^(i · (64 · $Ki())); }.
 2. Let a be |s.MEMS|.
-3. Append mi to the s.MEMS.
+3. Append meminst to the s.MEMS.
 4. Return a.
 
 allocmems memty_u0*
@@ -5728,152 +5733,164 @@ allocmems memty_u0*
 4. Let ma'* be $allocmems(memtype'*).
 5. Return [ma] ++ ma'*.
 
-allocelem rt ref*
-1. Let ei be { TYPE: rt; REFS: ref*; }.
+allocelem elemtype ref*
+1. Let eleminst be { TYPE: elemtype; REFS: ref*; }.
 2. Let a be |s.ELEMS|.
-3. Append ei to the s.ELEMS.
+3. Append eleminst to the s.ELEMS.
 4. Return a.
 
-allocelems refty_u0* ref_u1*
-1. If ((refty_u0* is []) and (ref_u1* is [])), then:
+allocelems elemt_u0* ref_u1*
+1. If ((elemt_u0* is []) and (ref_u1* is [])), then:
   a. Return [].
 2. Assert: Due to validation, (|ref_u1*| ≥ 1).
 3. Let [ref*] ++ ref'** be ref_u1*.
-4. Assert: Due to validation, (|refty_u0*| ≥ 1).
-5. Let [rt] ++ rt'* be refty_u0*.
+4. Assert: Due to validation, (|elemt_u0*| ≥ 1).
+5. Let [rt] ++ rt'* be elemt_u0*.
 6. Let ea be $allocelem(rt, ref*).
 7. Let ea'* be $allocelems(rt'*, ref'**).
 8. Return [ea] ++ ea'*.
 
-allocdata byte*
-1. Let di be { BYTES: byte*; }.
+allocdata OK byte*
+1. Let datainst be { BYTES: byte*; }.
 2. Let a be |s.DATAS|.
-3. Append di to the s.DATAS.
+3. Append datainst to the s.DATAS.
 4. Return a.
 
-allocdatas byte_u0*
-1. If (byte_u0* is []), then:
+allocdatas datat_u0* byte_u1*
+1. If ((datat_u0* is []) and (byte_u1* is [])), then:
   a. Return [].
-2. Let [byte*] ++ byte'** be byte_u0*.
-3. Let da be $allocdata(byte*).
-4. Let da'* be $allocdatas(byte'**).
-5. Return [da] ++ da'*.
+2. Assert: Due to validation, (|byte_u1*| ≥ 1).
+3. Let [b*] ++ b'** be byte_u1*.
+4. Assert: Due to validation, (|datat_u0*| ≥ 1).
+5. Let [ok] ++ ok'* be datat_u0*.
+6. Let da be $allocdata(ok, b*).
+7. Let da'* be $allocdatas(ok'*, b'**).
+8. Return [da] ++ da'*.
 
-instexport fa* ga* ta* ma* (EXPORT name exter_u0)
+allocexport mm (EXPORT name exter_u0)
 1. If exter_u0 is of the case FUNC, then:
   a. Let (FUNC x) be exter_u0.
-  b. Return { NAME: name; VALUE: (FUNC fa*[x]); }.
+  b. Return { NAME: name; VALUE: (FUNC mm.FUNCS[x]); }.
 2. If exter_u0 is of the case GLOBAL, then:
   a. Let (GLOBAL x) be exter_u0.
-  b. Return { NAME: name; VALUE: (GLOBAL ga*[x]); }.
+  b. Return { NAME: name; VALUE: (GLOBAL mm.GLOBALS[x]); }.
 3. If exter_u0 is of the case TABLE, then:
   a. Let (TABLE x) be exter_u0.
-  b. Return { NAME: name; VALUE: (TABLE ta*[x]); }.
+  b. Return { NAME: name; VALUE: (TABLE mm.TABLES[x]); }.
 4. Assert: Due to validation, exter_u0 is of the case MEM.
 5. Let (MEM x) be exter_u0.
-6. Return { NAME: name; VALUE: (MEM ma*[x]); }.
+6. Return { NAME: name; VALUE: (MEM mm.MEMS[x]); }.
 
-allocmodule module externval* val_g* ref_t* ref_e**
-1. Let fa_ex* be $funcsxv(externval*).
-2. Let ga_ex* be $globalsxv(externval*).
-3. Let ma_ex* be $memsxv(externval*).
-4. Let ta_ex* be $tablesxv(externval*).
+allocmodule module externval* val_G* ref_T* ref_E**
+1. Let fa_I* be $funcsxv(externval*).
+2. Let ga_I* be $globalsxv(externval*).
+3. Let ma_I* be $memsxv(externval*).
+4. Let ta_I* be $tablesxv(externval*).
 5. Assert: Due to validation, module is of the case MODULE.
-6. Let (MODULE type* import* func^n_f y_0 y_1 y_2 y_3 y_4 start? export*) be module.
-7. Let (DATA byte* datamode)^n_d be y_4.
-8. Let (ELEM reftype expr_e* elemmode)^n_e be y_3.
-9. Let (MEMORY memtype)^n_m be y_2.
-10. Let (TABLE tabletype expr_t)^n_t be y_1.
-11. Let (GLOBAL globaltype expr_g)^n_g be y_0.
-12. Let dt* be $alloctypes(type*).
-13. Let fa* be (|s.FUNCS| + i_f)^(i_f<n_f).
-14. Let ga* be (|s.GLOBALS| + i_g)^(i_g<n_g).
-15. Let ta* be (|s.TABLES| + i_t)^(i_t<n_t).
-16. Let ma* be (|s.MEMS| + i_m)^(i_m<n_m).
-17. Let ea* be (|s.ELEMS| + i_e)^(i_e<n_e).
-18. Let da* be (|s.DATAS| + i_d)^(i_d<n_d).
-19. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
-20. Let mm be { TYPES: dt*; FUNCS: fa_ex* ++ fa*; GLOBALS: ga_ex* ++ ga*; TABLES: ta_ex* ++ ta*; MEMS: ma_ex* ++ ma*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
-21. Let y_0 be $allocfuncs(mm, func^n_f).
-22. Assert: Due to validation, (y_0 is fa*).
-23. Let y_0 be $allocglobals(globaltype^n_g, val_g*).
-24. Assert: Due to validation, (y_0 is ga*).
-25. Let y_0 be $alloctables(tabletype^n_t, ref_t*).
-26. Assert: Due to validation, (y_0 is ta*).
-27. Let y_0 be $allocmems(memtype^n_m).
-28. Assert: Due to validation, (y_0 is ma*).
-29. Let y_0 be $allocelems(reftype^n_e, ref_e**).
-30. Assert: Due to validation, (y_0 is ea*).
-31. Let y_0 be $allocdatas(byte*^n_d).
-32. Assert: Due to validation, (y_0 is da*).
-33. Return mm.
+6. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
+7. Let fa* be (|s.FUNCS| + i_F)^(i_F<|func*|).
+8. Let ga* be (|s.GLOBALS| + i_G)^(i_G<|global*|).
+9. Let ta* be (|s.TABLES| + i_T)^(i_T<|table*|).
+10. Let ma* be (|s.MEMS| + i_M)^(i_M<|mem*|).
+11. Let ea* be (|s.ELEMS| + i_E)^(i_E<|elem*|).
+12. Let da* be (|s.DATAS| + i_D)^(i_D<|data*|).
+13. Let (MEMORY memtype)* be mem*.
+14. Let dt* be $alloctypes(type*).
+15. Let (DATA byte* datamode)* be data*.
+16. Let (GLOBAL globaltype expr_G)* be global*.
+17. Let (TABLE tabletype expr_T)* be table*.
+18. Let (ELEM elemtype expr_E* elemmode)* be elem*.
+19. Let (FUNC x local* expr_F)* be func*.
+20. Let xi* be $allocexport({ TYPES: []; FUNCS: fa_I* ++ fa*; GLOBALS: ga_I* ++ ga*; TABLES: ta_I* ++ ta*; MEMS: ma_I* ++ ma*; ELEMS: []; DATAS: []; EXPORTS: []; }, export)*.
+21. Let mm be { TYPES: dt*; FUNCS: fa_I* ++ fa*; GLOBALS: ga_I* ++ ga*; TABLES: ta_I* ++ ta*; MEMS: ma_I* ++ ma*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
+22. Let y_0 be $allocfuncs(dt*[x]*, (FUNC x local* expr_F)*, mm^|func*|).
+23. Assert: Due to validation, (y_0 is fa*).
+24. Let y_0 be $allocglobals(globaltype*, val_G*).
+25. Assert: Due to validation, (y_0 is ga*).
+26. Let y_0 be $alloctables(tabletype*, ref_T*).
+27. Assert: Due to validation, (y_0 is ta*).
+28. Let y_0 be $allocmems(memtype*).
+29. Assert: Due to validation, (y_0 is ma*).
+30. Let y_0 be $allocelems(elemtype*, ref_E**).
+31. Assert: Due to validation, (y_0 is ea*).
+32. Let y_0 be $allocdatas(OK^|data*|, byte**).
+33. Assert: Due to validation, (y_0 is da*).
+34. Return mm.
 
-runelem (ELEM reftype expr* elemm_u0) y
+runelem_ x (ELEM rt e^n elemm_u0)
 1. If (elemm_u0 is PASSIVE), then:
   a. Return [].
 2. If (elemm_u0 is DECLARE), then:
-  a. Return [(ELEM.DROP y)].
+  a. Return [(ELEM.DROP x)].
 3. Assert: Due to validation, elemm_u0 is of the case ACTIVE.
-4. Let (ACTIVE x instr*) be elemm_u0.
-5. Return instr* ++ [(I32.CONST 0), (I32.CONST |expr*|), (TABLE.INIT x y), (ELEM.DROP y)].
+4. Let (ACTIVE y instr*) be elemm_u0.
+5. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (TABLE.INIT y x), (ELEM.DROP x)].
 
-rundata (DATA byte* datam_u0) y
+rundata_ x (DATA b^n datam_u0)
 1. If (datam_u0 is PASSIVE), then:
   a. Return [].
 2. Assert: Due to validation, datam_u0 is of the case ACTIVE.
-3. Let (ACTIVE x instr*) be datam_u0.
-4. Return instr* ++ [(I32.CONST 0), (I32.CONST |byte*|), (MEMORY.INIT x y), (DATA.DROP y)].
+3. Let (ACTIVE y instr*) be datam_u0.
+4. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT y x), (DATA.DROP x)].
 
 instantiate module externval*
 1. Assert: Due to validation, module is of the case MODULE.
 2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
-3. Let n_D be |data*|.
-4. Let n_E be |elem*|.
-5. Let n_F be |func*|.
-6. Let (START x)? be start?.
+3. Let instr_D* be $concat_($rundata_(i_D, data*[i_D])^(i_D<|data*|)).
+4. Let instr_E* be $concat_($runelem_(i_E, elem*[i_E])^(i_E<|elem*|)).
+5. Let (START x)? be start?.
+6. Let mm_0 be { TYPES: $alloctypes(type*); FUNCS: $funcsxv(externval*) ++ (|s.FUNCS| + i_F)^(i_F<|func*|); GLOBALS: $globalsxv(externval*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
 7. Let (GLOBAL globaltype expr_G)* be global*.
 8. Let (TABLE tabletype expr_T)* be table*.
 9. Let (ELEM reftype expr_E* elemmode)* be elem*.
-10. Let instr_D* be $concat_($rundata(data*[j], j)^(j<n_D)).
-11. Let instr_E* be $concat_($runelem(elem*[i], i)^(i<n_E)).
-12. Let mm_init be { TYPES: $alloctypes(type*); FUNCS: $funcsxv(externval*) ++ (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globalsxv(externval*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
-13. Let z be { LOCALS: []; MODULE: mm_init; }.
+10. Let z be { LOCALS: []; MODULE: mm_0; }.
+11. Push the activation of z to the stack.
+12. Let [val_G]* be $eval_expr(expr_G)*.
+13. Pop the activation of z from the stack.
 14. Push the activation of z to the stack.
-15. Let [val_G]* be $eval_expr(expr_G)*.
+15. Let [ref_T]* be $eval_expr(expr_T)*.
 16. Pop the activation of z from the stack.
 17. Push the activation of z to the stack.
-18. Let [ref_T]* be $eval_expr(expr_T)*.
+18. Let [ref_E]** be $eval_expr(expr_E)**.
 19. Pop the activation of z from the stack.
-20. Push the activation of z to the stack.
-21. Let [ref_E]** be $eval_expr(expr_E)**.
-22. Pop the activation of z from the stack.
-23. Let mm be $allocmodule(module, externval*, val_G*, ref_T*, ref_E**).
-24. Let f be { LOCALS: []; MODULE: mm; }.
-25. Push the activation of f with arity 0 to the stack.
-26. Execute the sequence (instr_E*).
-27. Execute the sequence (instr_D*).
-28. If x is defined, then:
+20. Let mm be $allocmodule(module, externval*, val_G*, ref_T*, ref_E**).
+21. Let f be { LOCALS: []; MODULE: mm; }.
+22. Push the activation of f with arity 0 to the stack.
+23. Execute the sequence (instr_E*).
+24. Execute the sequence (instr_D*).
+25. If x is defined, then:
   a. Let ?(x_0) be x.
   b. Execute the instruction (CALL x_0).
-29. Pop the activation of f with arity 0 from the stack.
-30. Return mm.
+26. Pop the activation of f with arity 0 from the stack.
+27. Return mm.
 
-invoke fa val^n
+invoke funcaddr val*
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
-2. Assert: Due to validation, $expanddt(s.FUNCS[fa].TYPE) is of the case FUNC.
-3. Let (FUNC y_0) be $expanddt(s.FUNCS[fa].TYPE).
-4. Let (t_1^n -> t_2*) be y_0.
-5. Assert: Due to validation, $funcinst()[fa].CODE is of the case FUNC.
-6. Let k be |t_2*|.
-7. Push the activation of f with arity k to the stack.
-8. Push the values val^n to the stack.
-9. Push the value (REF.FUNC_ADDR fa) to the stack.
-10. Execute the instruction (CALL_REF $funcinst()[fa].TYPE).
-11. Pop all values val* from the top of the stack.
-12. Pop the activation of f with arity k from the stack.
-13. Push the values val* to the stack.
-14. Pop the values val^k from the stack.
-15. Return val^k.
+2. Assert: Due to validation, $expanddt(s.FUNCS[funcaddr].TYPE) is of the case FUNC.
+3. Let (FUNC y_0) be $expanddt(s.FUNCS[funcaddr].TYPE).
+4. Let (t_1* -> t_2*) be y_0.
+5. Let k be |t_2*|.
+6. Push the activation of f with arity k to the stack.
+7. Push the values val* to the stack.
+8. Push the value (REF.FUNC_ADDR funcaddr) to the stack.
+9. Execute the instruction (CALL_REF s.FUNCS[funcaddr].TYPE).
+10. Pop all values val* from the top of the stack.
+11. Pop the activation of f with arity k from the stack.
+12. Push the values val* to the stack.
+13. Pop the values val^k from the stack.
+14. Return val^k.
+
+allocXs X_u0* Y_u1*
+1. If (X_u0* is []), then:
+  a. Assert: Due to validation, (Y_u1* is []).
+  b. Return [].
+2. Else:
+  a. Let [X] ++ X'* be X_u0*.
+  b. Assert: Due to validation, (|Y_u1*| ≥ 1).
+  c. Let [Y] ++ Y'* be Y_u1*.
+  d. Let a be $allocX(X, Y).
+  e. Let a'* be $allocXs(X'*, Y'*).
+  f. Return [a] ++ a'*.
 
 execution_of_UNREACHABLE
 1. Trap.

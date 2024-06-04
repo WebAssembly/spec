@@ -191,7 +191,8 @@ let rec valid_iter env iter =
     if not Eq.(eq_list eq_iter dim [ListN (e, None)]) then
       error e.at ("use of iterated variable `" ^
         id.it ^ String.concat "" (List.map string_of_iter dim) ^
-        "` outside suitable iteraton context")
+        "` outside suitable iteraton context, expected `" ^
+        id.it ^ string_of_iter (ListN (e, None)) ^ "`")
 
 
 (* Types *)
