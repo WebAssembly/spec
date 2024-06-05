@@ -884,7 +884,7 @@ instantiate module externval*
   a. Let ?(instr_0) be (CALL x')?.
   b. Execute the instruction instr_0.
 27. Pop the activation of f with arity 0 from the stack.
-28. Return moduleinst.
+28. Return f.MODULE.
 
 invoke fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; EXPORTS: []; }; }.
@@ -2813,7 +2813,7 @@ instantiate module externval*
   a. Let ?(instr_0) be (CALL x)?.
   b. Execute the instruction instr_0.
 27. Pop the activation of f with arity 0 from the stack.
-28. Return moduleinst.
+28. Return f.MODULE.
 
 invoke fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
@@ -5880,7 +5880,7 @@ instantiate module externval*
   a. Let ?(instr_0) be instr_S?.
   b. Execute the instruction instr_0.
 27. Pop the activation of f with arity 0 from the stack.
-28. Return moduleinst.
+28. Return f.MODULE.
 
 invoke funcaddr val*
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
