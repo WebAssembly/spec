@@ -5692,7 +5692,7 @@ def $rundata_(dataidx : dataidx, data : data) : instr*
 ;; 9-module.watsup
 def $instantiate(store : store, module : module, externval*) : config
   ;; 9-module.watsup
-  def $instantiate{s : store, module : module, externval* : externval*, s' : store, f : frame, instr_E* : instr*, instr_D* : instr*, x? : idx?, type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start? : start?, export* : export*, globaltype* : globaltype*, expr_G* : expr*, tabletype* : tabletype*, expr_T* : expr*, reftype* : reftype*, expr_E** : expr**, elemmode* : elemmode*, byte** : byte**, datamode* : datamode*, moduleinst_0 : moduleinst, i_F^|func*{func : func}| : nat^|func*{func : func}|, z : state, val_G* : val*, ref_T* : ref*, ref_E** : ref**, moduleinst : moduleinst, i_E^|elem*{elem : elem}| : nat^|elem*{elem : elem}|, i_D^|data*{data : data}| : nat^|data*{data : data}|}(s, module, externval*{externval : externval}) = `%;%`_config(`%;%`_state(s', f), instr_E*{instr_E : instr} :: instr_D*{instr_D : instr} :: CALL_instr(x)?{x : funcidx})
+  def $instantiate{s : store, module : module, externval* : externval*, s' : store, f : frame, instr_E* : instr*, instr_D* : instr*, instr_S? : instr?, type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start? : start?, export* : export*, globaltype* : globaltype*, expr_G* : expr*, tabletype* : tabletype*, expr_T* : expr*, reftype* : reftype*, expr_E** : expr**, elemmode* : elemmode*, byte** : byte**, datamode* : datamode*, x? : idx?, moduleinst_0 : moduleinst, i_F^|func*{func : func}| : nat^|func*{func : func}|, z : state, val_G* : val*, ref_T* : ref*, ref_E** : ref**, moduleinst : moduleinst, i_E^|elem*{elem : elem}| : nat^|elem*{elem : elem}|, i_D^|data*{data : data}| : nat^|data*{data : data}|}(s, module, externval*{externval : externval}) = `%;%`_config(`%;%`_state(s', f), instr_E*{instr_E : instr} :: instr_D*{instr_D : instr} :: instr_S?{instr_S : instr})
     -- if (module = MODULE_module(type*{type : type}, import*{import : import}, func*{func : func}, global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data}, start?{start : start}, export*{export : export}))
     -- if (global*{global : global} = GLOBAL_global(globaltype, expr_G)*{expr_G : expr, globaltype : globaltype})
     -- if (table*{table : table} = TABLE_table(tabletype, expr_T)*{expr_T : expr, tabletype : tabletype})
@@ -5708,6 +5708,7 @@ def $instantiate(store : store, module : module, externval*) : config
     -- if (f = {LOCALS [], MODULE moduleinst})
     -- if (instr_E*{instr_E : instr} = $concat_(syntax instr, $runelem_(`%`_elemidx(i_E), elem*{elem : elem}[i_E])^(i_E<|elem*{elem : elem}|){i_E : nat}))
     -- if (instr_D*{instr_D : instr} = $concat_(syntax instr, $rundata_(`%`_dataidx(i_D), data*{data : data}[i_D])^(i_D<|data*{data : data}|){i_D : nat}))
+    -- if (instr_S?{instr_S : instr} = CALL_instr(x)?{x : funcidx})
 
 ;; 9-module.watsup
 def $invoke(store : store, funcaddr : funcaddr, val*) : config
@@ -11534,7 +11535,7 @@ def $rundata_(dataidx : dataidx, data : data) : instr*
 ;; 9-module.watsup
 def $instantiate(store : store, module : module, externval*) : config
   ;; 9-module.watsup
-  def $instantiate{s : store, module : module, externval* : externval*, s' : store, f : frame, instr_E* : instr*, instr_D* : instr*, x? : idx?, type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start? : start?, export* : export*, globaltype* : globaltype*, expr_G* : expr*, tabletype* : tabletype*, expr_T* : expr*, reftype* : reftype*, expr_E** : expr**, elemmode* : elemmode*, byte** : byte**, datamode* : datamode*, moduleinst_0 : moduleinst, i_F^|func*{func : func}| : nat^|func*{func : func}|, z : state, val_G* : val*, ref_T* : ref*, ref_E** : ref**, moduleinst : moduleinst, i_E^|elem*{elem : elem}| : nat^|elem*{elem : elem}|, i_D^|data*{data : data}| : nat^|data*{data : data}|}(s, module, externval*{externval : externval}) = `%;%`_config(`%;%`_state(s', f), instr_E*{instr_E : instr} :: instr_D*{instr_D : instr} :: CALL_instr(x)?{x : funcidx})
+  def $instantiate{s : store, module : module, externval* : externval*, s' : store, f : frame, instr_E* : instr*, instr_D* : instr*, instr_S? : instr?, type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start? : start?, export* : export*, globaltype* : globaltype*, expr_G* : expr*, tabletype* : tabletype*, expr_T* : expr*, reftype* : reftype*, expr_E** : expr**, elemmode* : elemmode*, byte** : byte**, datamode* : datamode*, x? : idx?, moduleinst_0 : moduleinst, i_F^|func*{func : func}| : nat^|func*{func : func}|, z : state, val_G* : val*, ref_T* : ref*, ref_E** : ref**, moduleinst : moduleinst, i_E^|elem*{elem : elem}| : nat^|elem*{elem : elem}|, i_D^|data*{data : data}| : nat^|data*{data : data}|}(s, module, externval*{externval : externval}) = `%;%`_config(`%;%`_state(s', f), instr_E*{instr_E : instr} :: instr_D*{instr_D : instr} :: instr_S?{instr_S : instr})
     -- if (module = MODULE_module(type*{type : type}, import*{import : import}, func*{func : func}, global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data}, start?{start : start}, export*{export : export}))
     -- if (global*{global : global} = GLOBAL_global(globaltype, expr_G)*{expr_G : expr, globaltype : globaltype})
     -- if (table*{table : table} = TABLE_table(tabletype, expr_T)*{expr_T : expr, tabletype : tabletype})
@@ -11550,6 +11551,7 @@ def $instantiate(store : store, module : module, externval*) : config
     -- if (f = {LOCALS [], MODULE moduleinst})
     -- if (instr_E*{instr_E : instr} = $concat_(syntax instr, $runelem_(`%`_elemidx(i_E), elem*{elem : elem}[i_E])^(i_E<|elem*{elem : elem}|){i_E : nat}))
     -- if (instr_D*{instr_D : instr} = $concat_(syntax instr, $rundata_(`%`_dataidx(i_D), data*{data : data}[i_D])^(i_D<|data*{data : data}|){i_D : nat}))
+    -- if (instr_S?{instr_S : instr} = CALL_instr(x)?{x : funcidx})
 
 ;; 9-module.watsup
 def $invoke(store : store, funcaddr : funcaddr, val*) : config
@@ -17376,7 +17378,7 @@ def $rundata_(dataidx : dataidx, data : data) : instr*
 ;; 9-module.watsup
 def $instantiate(store : store, module : module, externval*) : config
   ;; 9-module.watsup
-  def $instantiate{s : store, module : module, externval* : externval*, s' : store, f : frame, instr_E* : instr*, instr_D* : instr*, x? : idx?, type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start? : start?, export* : export*, globaltype* : globaltype*, expr_G* : expr*, tabletype* : tabletype*, expr_T* : expr*, reftype* : reftype*, expr_E** : expr**, elemmode* : elemmode*, byte** : byte**, datamode* : datamode*, moduleinst_0 : moduleinst, i_F^|func*{func : func}| : nat^|func*{func : func}|, z : state, val_G* : val*, ref_T* : ref*, ref_E** : ref**, moduleinst : moduleinst, i_E^|elem*{elem : elem}| : nat^|elem*{elem : elem}|, i_D^|data*{data : data}| : nat^|data*{data : data}|}(s, module, externval*{externval : externval}) = `%;%`_config(`%;%`_state(s', f), instr_E*{instr_E : instr} :: instr_D*{instr_D : instr} :: CALL_instr(x)?{x : funcidx})
+  def $instantiate{s : store, module : module, externval* : externval*, s' : store, f : frame, instr_E* : instr*, instr_D* : instr*, instr_S? : instr?, type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start? : start?, export* : export*, globaltype* : globaltype*, expr_G* : expr*, tabletype* : tabletype*, expr_T* : expr*, reftype* : reftype*, expr_E** : expr**, elemmode* : elemmode*, byte** : byte**, datamode* : datamode*, x? : idx?, moduleinst_0 : moduleinst, i_F^|func*{func : func}| : nat^|func*{func : func}|, z : state, val_G* : val*, ref_T* : ref*, ref_E** : ref**, moduleinst : moduleinst, i_E^|elem*{elem : elem}| : nat^|elem*{elem : elem}|, i_D^|data*{data : data}| : nat^|data*{data : data}|}(s, module, externval*{externval : externval}) = `%;%`_config(`%;%`_state(s', f), instr_E*{instr_E : instr} :: instr_D*{instr_D : instr} :: instr_S?{instr_S : instr})
     -- if (module = MODULE_module(type*{type : type}, import*{import : import}, func*{func : func}, global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data}, start?{start : start}, export*{export : export}))
     -- if (global*{global : global} = GLOBAL_global(globaltype, expr_G)*{expr_G : expr, globaltype : globaltype})
     -- if (table*{table : table} = TABLE_table(tabletype, expr_T)*{expr_T : expr, tabletype : tabletype})
@@ -17392,6 +17394,7 @@ def $instantiate(store : store, module : module, externval*) : config
     -- if (f = {LOCALS [], MODULE moduleinst})
     -- if (instr_E*{instr_E : instr} = $concat_(syntax instr, $runelem_(`%`_elemidx(i_E), elem*{elem : elem}[i_E])^(i_E<|elem*{elem : elem}|){i_E : nat}))
     -- if (instr_D*{instr_D : instr} = $concat_(syntax instr, $rundata_(`%`_dataidx(i_D), data*{data : data}[i_D])^(i_D<|data*{data : data}|){i_D : nat}))
+    -- if (instr_S?{instr_S : instr} = CALL_instr(x)?{x : funcidx})
 
 ;; 9-module.watsup
 def $invoke(store : store, funcaddr : funcaddr, val*) : config
@@ -23380,7 +23383,7 @@ def $rundata_(dataidx : dataidx, data : data) : instr*
 ;; 9-module.watsup
 def $instantiate(store : store, module : module, externval*) : config
   ;; 9-module.watsup
-  def $instantiate{s : store, module : module, externval* : externval*, s' : store, f : frame, instr_E* : instr*, instr_D* : instr*, x? : idx?, type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start? : start?, export* : export*, globaltype* : globaltype*, expr_G* : expr*, tabletype* : tabletype*, expr_T* : expr*, reftype* : reftype*, expr_E** : expr**, elemmode* : elemmode*, byte** : byte**, datamode* : datamode*, moduleinst_0 : moduleinst, i_F^|func*{func : func}| : nat^|func*{func : func}|, z : state, val_G* : val*, ref_T* : ref*, ref_E** : ref**, moduleinst : moduleinst, i_E^|elem*{elem : elem}| : nat^|elem*{elem : elem}|, i_D^|data*{data : data}| : nat^|data*{data : data}|}(s, module, externval*{externval : externval}) = `%;%`_config(`%;%`_state(s', f), instr_E*{instr_E : instr} :: instr_D*{instr_D : instr} :: CALL_instr(x)?{x : funcidx})
+  def $instantiate{s : store, module : module, externval* : externval*, s' : store, f : frame, instr_E* : instr*, instr_D* : instr*, instr_S? : instr?, type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start? : start?, export* : export*, globaltype* : globaltype*, expr_G* : expr*, tabletype* : tabletype*, expr_T* : expr*, reftype* : reftype*, expr_E** : expr**, elemmode* : elemmode*, byte** : byte**, datamode* : datamode*, x? : idx?, moduleinst_0 : moduleinst, i_F^|func*{func : func}| : nat^|func*{func : func}|, z : state, val_G* : val*, ref_T* : ref*, ref_E** : ref**, moduleinst : moduleinst, i_E^|elem*{elem : elem}| : nat^|elem*{elem : elem}|, i_D^|data*{data : data}| : nat^|data*{data : data}|}(s, module, externval*{externval : externval}) = `%;%`_config(`%;%`_state(s', f), instr_E*{instr_E : instr} :: instr_D*{instr_D : instr} :: instr_S?{instr_S : instr})
     -- if (module = MODULE_module(type*{type : type}, import*{import : import}, func*{func : func}, global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data}, start?{start : start}, export*{export : export}))
     -- if (global*{global : global} = GLOBAL_global(globaltype, expr_G)*{expr_G : expr, globaltype : globaltype})
     -- if (table*{table : table} = TABLE_table(tabletype, expr_T)*{expr_T : expr, tabletype : tabletype})
@@ -23396,6 +23399,7 @@ def $instantiate(store : store, module : module, externval*) : config
     -- if (f = {LOCALS [], MODULE moduleinst})
     -- if (instr_E*{instr_E : instr} = $concat_(syntax instr, $runelem_(`%`_elemidx(i_E), elem*{elem : elem}[i_E])^(i_E<|elem*{elem : elem}|){i_E : nat}))
     -- if (instr_D*{instr_D : instr} = $concat_(syntax instr, $rundata_(`%`_dataidx(i_D), data*{data : data}[i_D])^(i_D<|data*{data : data}|){i_D : nat}))
+    -- if (instr_S?{instr_S : instr} = CALL_instr(x)?{x : funcidx})
 
 ;; 9-module.watsup
 def $invoke(store : store, funcaddr : funcaddr, val*) : config
@@ -29448,7 +29452,7 @@ def $rundata_(dataidx : dataidx, data : data) : instr*
 ;; 9-module.watsup
 def $instantiate(store : store, module : module, externval*) : config
   ;; 9-module.watsup
-  def $instantiate{s : store, module : module, externval* : externval*, s' : store, f : frame, instr_E* : instr*, instr_D* : instr*, x? : idx?, type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start? : start?, export* : export*, globaltype* : globaltype*, expr_G* : expr*, tabletype* : tabletype*, expr_T* : expr*, reftype* : reftype*, expr_E** : expr**, elemmode* : elemmode*, byte** : byte**, datamode* : datamode*, moduleinst_0 : moduleinst, i_F^|func*{func : func}| : nat^|func*{func : func}|, z : state, val_G* : val*, ref_T* : ref*, ref_E** : ref**, moduleinst : moduleinst, i_E^|elem*{elem : elem}| : nat^|elem*{elem : elem}|, i_D^|data*{data : data}| : nat^|data*{data : data}|}(s, module, externval*{externval : externval}) = `%;%`_config(`%;%`_state(s', f), instr_E*{instr_E : instr} :: instr_D*{instr_D : instr} :: CALL_instr(x)?{x : funcidx})
+  def $instantiate{s : store, module : module, externval* : externval*, s' : store, f : frame, instr_E* : instr*, instr_D* : instr*, instr_S? : instr?, type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start? : start?, export* : export*, globaltype* : globaltype*, expr_G* : expr*, tabletype* : tabletype*, expr_T* : expr*, reftype* : reftype*, expr_E** : expr**, elemmode* : elemmode*, byte** : byte**, datamode* : datamode*, x? : idx?, moduleinst_0 : moduleinst, i_F^|func*{func : func}| : nat^|func*{func : func}|, z : state, val_G* : val*, ref_T* : ref*, ref_E** : ref**, moduleinst : moduleinst, i_E^|elem*{elem : elem}| : nat^|elem*{elem : elem}|, i_D^|data*{data : data}| : nat^|data*{data : data}|}(s, module, externval*{externval : externval}) = `%;%`_config(`%;%`_state(s', f), instr_E*{instr_E : instr} :: instr_D*{instr_D : instr} :: instr_S?{instr_S : instr})
     -- where MODULE_module(type*{type : type}, import*{import : import}, func*{func : func}, global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data}, start?{start : start}, export*{export : export}) = module
     -- where instr_D*{instr_D : instr} = $concat_(syntax instr, $rundata_(`%`_dataidx(i_D), data*{data : data}[i_D])^(i_D<|data*{data : data}|){i_D : nat})
     -- where instr_E*{instr_E : instr} = $concat_(syntax instr, $runelem_(`%`_elemidx(i_E), elem*{elem : elem}[i_E])^(i_E<|elem*{elem : elem}|){i_E : nat})
@@ -29458,6 +29462,7 @@ def $instantiate(store : store, module : module, externval*) : config
     -- where GLOBAL_global(globaltype, expr_G)*{expr_G : expr, globaltype : globaltype} = global*{global : global}
     -- where TABLE_table(tabletype, expr_T)*{expr_T : expr, tabletype : tabletype} = table*{table : table}
     -- where ELEM_elem(reftype, expr_E*{expr_E : expr}, elemmode)*{elemmode : elemmode, expr_E : expr, reftype : reftype} = elem*{elem : elem}
+    -- where instr_S?{instr_S : instr} = CALL_instr(x)?{x : funcidx}
     -- where z = `%;%`_state(s, {LOCALS [], MODULE moduleinst_0})
     -- (Eval_expr: `%;%~>*%;%`(z, expr_G, z, [val_G]))*{expr_G : expr, val_G : val}
     -- (Eval_expr: `%;%~>*%;%`(z, expr_T, z, [(ref_T : ref <: val)]))*{expr_T : expr, ref_T : ref}

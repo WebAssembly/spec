@@ -8078,7 +8078,7 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathrm{instantiate}}(s, {\mathit{module}}, {{\mathit{externval}}^\ast}) &=& \multicolumn{2}{l@{}}{ {s'} ; f ; {{\mathit{instr}}_{\mathsf{e}}^\ast}~{{\mathit{instr}}_{\mathsf{d}}^\ast}~{(\mathsf{call}~x)^?} } \\
+{\mathrm{instantiate}}(s, {\mathit{module}}, {{\mathit{externval}}^\ast}) &=& \multicolumn{2}{l@{}}{ {s'} ; f ; {{\mathit{instr}}_{\mathsf{e}}^\ast}~{{\mathit{instr}}_{\mathsf{d}}^\ast}~{{\mathit{instr}}_{\mathsf{s}}^?} } \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad \mbox{if}~{\mathit{module}} = \mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast}} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{global}}^\ast} = {(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{table}}^\ast} = {(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}}_{\mathsf{t}})^\ast}} \\
@@ -8099,6 +8099,7 @@ $$
 \mathsf{module}~{\mathit{moduleinst}} \}\end{array}} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{instr}}_{\mathsf{e}}^\ast} = {\mathrm{concat}}({{{\mathrm{runelem}}}_{i_{\mathsf{e}}}({{\mathit{elem}}^\ast}{}[i_{\mathsf{e}}])^{i_{\mathsf{e}}<{|{{\mathit{elem}}^\ast}|}}})} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{instr}}_{\mathsf{d}}^\ast} = {\mathrm{concat}}({{{\mathrm{rundata}}}_{i_{\mathsf{d}}}({{\mathit{data}}^\ast}{}[i_{\mathsf{d}}])^{i_{\mathsf{d}}<{|{{\mathit{data}}^\ast}|}}})} \\
+   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{instr}}_{\mathsf{s}}^?} = {(\mathsf{call}~x)^?}} \\
 \end{array}
 $$
 
