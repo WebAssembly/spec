@@ -77,17 +77,17 @@ $$
 
 $$
 \begin{array}{@{}l@{}rrl@{}l@{}}
-& {\mathit{instr}} &::=& \dots \\ &&|&
+& {\mathit{instr}} &::=& \ldots \\ &&|&
 \mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast} \\ &&|&
 \mathsf{loop}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast} \\ &&|&
 \mathsf{if}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast}~\mathsf{else}~{{\mathit{instr}}^\ast} \\ &&|&
-\dots \\
+\ldots \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}l@{}rrl@{}l@{}}
-& {\mathit{instr}} &::=& \dots \\ &&|&
+& {\mathit{instr}} &::=& \ldots \\ &&|&
 {\mathit{numtype}}{.}\mathsf{const}~{{\mathit{num}}}_{{\mathit{numtype}}} \\ &&|&
 {\mathit{numtype}} {.} {{\mathit{unop}}}_{{\mathit{numtype}}} \\ &&|&
 {\mathit{numtype}} {.} {{\mathit{binop}}}_{{\mathit{numtype}}} \\ &&|&
@@ -102,7 +102,7 @@ $$
 \mathsf{local.tee}~{\mathit{localidx}} \\ &&|&
 \mathsf{global.get}~{\mathit{globalidx}} \\ &&|&
 \mathsf{global.set}~{\mathit{globalidx}} \\ &&|&
-{{\mathit{numtype}}{.}\mathsf{load}}{{({{\mathit{sz}}}{\mathsf{\_}}{{\mathit{sx}}})^?}}~{\mathit{memidx}}~{\mathit{memarg}}
+{{\mathit{numtype}}{.}\mathsf{load}}{{({\mathit{sz}}~\mathsf{\_}~{\mathit{sx}})^?}}~{\mathit{memidx}}~{\mathit{memarg}}
   &\qquad \mbox{if}~({\mathit{numtype}} = {\mathsf{i}}{N} \land {\mathit{sz}} < {|{\mathsf{i}}{N}|})^? \\ &&|&
 {{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{memidx}}~{\mathit{memarg}}
   &\qquad \mbox{if}~({\mathit{numtype}} = {\mathsf{i}}{N} \land {\mathit{sz}} < {|{\mathsf{i}}{N}|})^? \\ &&|&
@@ -115,7 +115,7 @@ $$
 \mathsf{memory.fill}~{\mathit{memidx}} \\ &&|&
 \mathsf{memory.copy}~{\mathit{memidx}}~{\mathit{memidx}} \\ &&|&
 \mathsf{memory.init}~{\mathit{memidx}}~{\mathit{dataidx}} \\ &&|&
-\dots \\[0.8ex]
+\ldots \\[0.8ex]
 & {\mathit{expr}} &::=& {{\mathit{instr}}^\ast} \\
 \end{array}
 $$
@@ -133,21 +133,21 @@ C \vdash \epsilon : \epsilon \rightarrow \epsilon
 }
 \qquad
 \frac{
-C \vdash {\mathit{instr}}_1 : {t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}
+C \vdash {\mathit{instr}}_1 : {t_1^\ast}~{\rightarrow}_{({x_1^\ast})}\,{t_2^\ast}
  \qquad
 (C{.}\mathsf{locals}{}[x_1] = {\mathit{init}}~t)^\ast
  \qquad
-C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}] \vdash {{\mathit{instr}}_2^\ast} : {t_2^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_3^\ast}
+C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}] \vdash {{\mathit{instr}}_2^\ast} : {t_2^\ast}~{\rightarrow}_{({x_2^\ast})}\,{t_3^\ast}
 }{
-C \vdash {\mathit{instr}}_1~{{\mathit{instr}}_2^\ast} : {t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}
+C \vdash {\mathit{instr}}_1~{{\mathit{instr}}_2^\ast} : {t_1^\ast}~{\rightarrow}_{({x_1^\ast}~{x_2^\ast})}\,{t_3^\ast}
 }
 \\[3ex]\displaystyle
 \frac{
-C \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}
+C \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{({x^\ast})}\,{t_2^\ast}
  \qquad
 C \vdash {t^\ast} : \mathsf{ok}
 }{
-C \vdash {{\mathit{instr}}^\ast} : ({t^\ast}~{t_1^\ast})~{\rightarrow}_{{x^\ast}}\,({t^\ast}~{t_2^\ast})
+C \vdash {{\mathit{instr}}^\ast} : ({t^\ast}~{t_1^\ast})~{\rightarrow}_{({x^\ast})}\,({t^\ast}~{t_2^\ast})
 }
 \qquad
 \end{array}
@@ -161,11 +161,11 @@ C \vdash \epsilon : \epsilon \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}instr*{-}empty}]}
 \qquad
 \frac{
-C \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}
+C \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{({x^\ast})}\,{t_2^\ast}
  \qquad
 C \vdash {t^\ast} : \mathsf{ok}
 }{
-C \vdash {{\mathit{instr}}^\ast} : ({t^\ast}~{t_1^\ast})~{\rightarrow}_{{x^\ast}}\,({t^\ast}~{t_2^\ast})
+C \vdash {{\mathit{instr}}^\ast} : ({t^\ast}~{t_1^\ast})~{\rightarrow}_{({x^\ast})}\,({t^\ast}~{t_2^\ast})
 } \, {[\textsc{\scriptsize T{-}instr*{-}frame}]}
 \\[3ex]\displaystyle
 \frac{
@@ -174,11 +174,11 @@ C \vdash \epsilon : \epsilon \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}instr*{-}empty}]}
 \qquad
 \frac{
-C \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}
+C \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{({x^\ast})}\,{t_2^\ast}
  \qquad
 C \vdash {t^\ast} : \mathsf{ok}
 }{
-C \vdash {{\mathit{instr}}^\ast} : ({t^\ast}~{t_1^\ast})~{\rightarrow}_{{x^\ast}}\,({t^\ast}~{t_2^\ast})
+C \vdash {{\mathit{instr}}^\ast} : ({t^\ast}~{t_1^\ast})~{\rightarrow}_{({x^\ast})}\,({t^\ast}~{t_2^\ast})
 } \, {[\textsc{\scriptsize T{-}instr*{-}frame}]}
 \qquad
 \end{array}
@@ -211,7 +211,7 @@ $$
 \frac{
 C \vdash {\mathit{bt}} : {t_1^\ast} \rightarrow {t_2^\ast}
  \qquad
-C, \mathsf{labels}~({t_2^\ast}) \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}
+C, \mathsf{labels}~({t_2^\ast}) \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{({x^\ast})}\,{t_2^\ast}
 }{
 C \vdash \mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow {t_2^\ast}
 } \, {[\textsc{\scriptsize T{-}block}]}
@@ -224,7 +224,7 @@ $$
 \frac{
 C \vdash {\mathit{bt}} : {t_1^\ast} \rightarrow {t_2^\ast}
  \qquad
-C, \mathsf{labels}~({t_1^\ast}) \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}
+C, \mathsf{labels}~({t_1^\ast}) \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{({x^\ast})}\,{t_2^\ast}
 }{
 C \vdash \mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow {t_2^\ast}
 } \, {[\textsc{\scriptsize T{-}loop}]}
@@ -237,9 +237,9 @@ $$
 \frac{
 C \vdash {\mathit{bt}} : {t_1^\ast} \rightarrow {t_2^\ast}
  \qquad
-C, \mathsf{labels}~({t_2^\ast}) \vdash {{\mathit{instr}}_1^\ast} : {t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}
+C, \mathsf{labels}~({t_2^\ast}) \vdash {{\mathit{instr}}_1^\ast} : {t_1^\ast}~{\rightarrow}_{({x_1^\ast})}\,{t_2^\ast}
  \qquad
-C, \mathsf{labels}~({t_2^\ast}) \vdash {{\mathit{instr}}_2^\ast} : {t_1^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_2^\ast}
+C, \mathsf{labels}~({t_2^\ast}) \vdash {{\mathit{instr}}_2^\ast} : {t_1^\ast}~{\rightarrow}_{({x_2^\ast})}\,{t_2^\ast}
 }{
 C \vdash \mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast} : {t_1^\ast}~\mathsf{i{\scriptstyle 32}} \rightarrow {t_2^\ast}
 } \, {[\textsc{\scriptsize T{-}if}]}
@@ -582,29 +582,30 @@ warning: grammar `Binstr/numeric-un-f64` was never spliced
 warning: grammar `Binstr/numeric-bin-f64` was never spliced
 warning: grammar `Binstr/numeric-cvt` was never spliced
 warning: grammar `Binstr/numeric-extend` was never spliced
-warning: grammar `Binstr/vector-memory` was never spliced
-warning: grammar `Binstr/vector-const` was never spliced
-warning: grammar `Binstr/vector-shuffle` was never spliced
-warning: grammar `Binstr/vector-lanes` was never spliced
-warning: grammar `Binstr/vector-swizzle` was never spliced
-warning: grammar `Binstr/vector-splat` was never spliced
-warning: grammar `Binstr/vector-rel-i8x16` was never spliced
-warning: grammar `Binstr/vector-rel-i16x8` was never spliced
-warning: grammar `Binstr/vector-rel-i32x4` was never spliced
-warning: grammar `Binstr/vector-rel-i64x2` was never spliced
-warning: grammar `Binstr/vector-rel-f32x4` was never spliced
-warning: grammar `Binstr/vector-rel-f64x2` was never spliced
-warning: grammar `Binstr/vector-vv` was never spliced
-warning: grammar `Binstr/vector-v-i8x16` was never spliced
-warning: grammar `Binstr/vector-v-i16x8` was never spliced
-warning: grammar `Binstr/vector-v-i32x4` was never spliced
-warning: grammar `Binstr/vector-v-i64x2` was never spliced
-warning: grammar `Binstr/vector-v-f32x4` was never spliced
-warning: grammar `Binstr/vector-v-f64x2` was never spliced
-warning: grammar `Binstr/vector-cvt` was never spliced
+warning: grammar `Binstr/vec-memory` was never spliced
+warning: grammar `Binstr/vec-const` was never spliced
+warning: grammar `Binstr/vec-shuffle` was never spliced
+warning: grammar `Binstr/vec-lanes` was never spliced
+warning: grammar `Binstr/vec-swizzle` was never spliced
+warning: grammar `Binstr/vec-splat` was never spliced
+warning: grammar `Binstr/vec-rel-i8x16` was never spliced
+warning: grammar `Binstr/vec-rel-i16x8` was never spliced
+warning: grammar `Binstr/vec-rel-i32x4` was never spliced
+warning: grammar `Binstr/vec-rel-i64x2` was never spliced
+warning: grammar `Binstr/vec-rel-f32x4` was never spliced
+warning: grammar `Binstr/vec-rel-f64x2` was never spliced
+warning: grammar `Binstr/vec-vv` was never spliced
+warning: grammar `Binstr/vec-v-i8x16` was never spliced
+warning: grammar `Binstr/vec-v-i16x8` was never spliced
+warning: grammar `Binstr/vec-v-i32x4` was never spliced
+warning: grammar `Binstr/vec-v-i64x2` was never spliced
+warning: grammar `Binstr/vec-v-f32x4` was never spliced
+warning: grammar `Binstr/vec-v-f64x2` was never spliced
+warning: grammar `Binstr/vec-cvt` was never spliced
 warning: grammar `Blabelidx` was never spliced
 warning: grammar `Blaneidx` was never spliced
 warning: grammar `Blimits` was never spliced
+warning: grammar `Blist` was never spliced
 warning: grammar `Blocalidx` was never spliced
 warning: grammar `Blocals` was never spliced
 warning: grammar `Bmem` was never spliced
@@ -627,6 +628,7 @@ warning: grammar `Bstart` was never spliced
 warning: grammar `Bstartsec` was never spliced
 warning: grammar `Bstoragetype` was never spliced
 warning: grammar `Bsubtype` was never spliced
+warning: grammar `Bsym` was never spliced
 warning: grammar `Btable` was never spliced
 warning: grammar `Btableidx` was never spliced
 warning: grammar `Btablesec` was never spliced
@@ -634,11 +636,11 @@ warning: grammar `Btabletype` was never spliced
 warning: grammar `Btype` was never spliced
 warning: grammar `Btypeidx` was never spliced
 warning: grammar `Btypesec` was never spliced
+warning: grammar `Btypewriter` was never spliced
 warning: grammar `Bu32` was never spliced
 warning: grammar `Bu64` was never spliced
 warning: grammar `BuN` was never spliced
 warning: grammar `Bvaltype` was never spliced
-warning: grammar `Bvec` was never spliced
 warning: grammar `Bvectype` was never spliced
 warning: rule `Blocktype_ok/valtype` was never spliced
 warning: rule `Blocktype_ok/typeidx` was never spliced
@@ -1135,6 +1137,7 @@ warning: definition `clos_moduletype` was never spliced
 warning: definition `clos_valtype` was never spliced
 warning: definition `concat_` was never spliced
 warning: definition `const` was never spliced
+warning: definition `cont` was never spliced
 warning: definition `convert` was never spliced
 warning: definition `cpacknum` was never spliced
 warning: definition `cunpack` was never spliced
@@ -1312,6 +1315,7 @@ warning: definition `subst_valtype` was never spliced
 warning: definition `subst_vectype` was never spliced
 warning: definition `sum` was never spliced
 warning: definition `sx` was never spliced
+warning: definition `symdots` was never spliced
 warning: definition `tableinst` was never spliced
 warning: definition `tablesxt` was never spliced
 warning: definition `tablesxv` was never spliced
@@ -1600,6 +1604,7 @@ warning: definition prose `clos_moduletype` was never spliced
 warning: definition prose `clos_valtype` was never spliced
 warning: definition prose `concat_` was never spliced
 warning: definition prose `const` was never spliced
+warning: definition prose `cont` was never spliced
 warning: definition prose `cpacknum` was never spliced
 warning: definition prose `cunpack` was never spliced
 warning: definition prose `cunpacknum` was never spliced

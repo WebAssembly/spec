@@ -2,9 +2,9 @@
 ;; Auxiliaries
 ;;
 
-;; Vectors
+;; Lists
 
-grammar Bvec(grammar BX : el) : el* =
+grammar Blist(grammar BX : el) : el* =
   | n:Bu32 (el:BX)^n => el^n
 
 
@@ -17,20 +17,20 @@ grammar Bvec(grammar BX : el) : el* =
 
 grammar Bbyte : byte = b:0x00 | ... | b:0xFF => b
 
-grammar BuN(N) : uN(N) hint(show Bu#%) =
+grammar BuN(N) : uN(N) hint(show `Bu#%) hint(macro "BuNX") =
   | n:Bbyte                 => n                       -- if $(n < 2^7 /\ n < 2^N)
   | n:Bbyte m:BuN(($(N-7))) => $(2^7 * m + (n - 2^7))  -- if $(n >= 2^7 /\ N > 7)
 
-grammar BsN(N) : sN(N) hint(show Bs#%) =
+grammar BsN(N) : sN(N) hint(show `Bs#%) hint(macro "BsNX") =
   | n:Bbyte                 => n                       -- if $(n < 2^6 /\ n < 2^(N-1))
   | n:Bbyte                 => $(n - 2^7)              -- if $(2^6 <= n < 2^7 /\ n >= 2^7 - 2^(N-1))
   | n:Bbyte i:BuN(($(N-7))) => $(2^7 * i + (n - 2^7))  -- if $(n >= 2^7 /\ N > 7)
 
-grammar BiN(N) : iN(N) hint(show Bi#%) =
+grammar BiN(N) : iN(N) hint(show `Bi#%) hint(macro "BiNX") =
   | i:BsN(N)                => $invsigned(N, i)
 
 
-grammar BfN(N) : fN(N) hint(show Bf#%) =
+grammar BfN(N) : fN(N) hint(show `Bf#%) hint(macro "BfNX") =
   | b*:Bbyte^(N/8)  => $invfbytes(N, b*)
 
 
@@ -46,15 +46,26 @@ grammar Bf64 : f64 = p:BfN(64) => p
 
 var ch : char
 
+def $cont(byte) : nat hint(macro none)
+def $cont(b) = $(b - 0x80) -- if (0x80 < b < 0xC0)
+
 ;; def $utf8(char*) : byte*
-def $utf8(ch) = b  -- if ch < U+0080 /\ ch = b
-def $utf8(ch) = b_1 b_2  -- if U+0080 <= ch < U+0800 /\ ch = $(2^6*(b_1 - 0xC0) + (b_2 - 0x80))
-def $utf8(ch) = b_1 b_2 b_3  -- if (U+0800 <= ch < U+D800 \/ U+E000 <= ch < U+10000) /\ ch = $(2^12*(b_1 - 0xE0) + 2^6*(b_2 - 0x80) + (b_3 - 0x80))
-def $utf8(ch) = b_1 b_2 b_3 b_4  -- if (U+10000 <= ch < U+11000) /\ ch = $(2^18*(b_1 - 0xF0) + 2^12*(b_2 - 0x80) + 2^6*(b_3 - 0x80) + (b_4 - 0x80))
 def $utf8(ch*) = $concat_(byte, $utf8(ch)*)
+def $utf8(ch) = b
+  -- if ch < U+0080
+  -- if ch = b
+def $utf8(ch) = b_1 b_2
+  -- if U+0080 <= ch < U+0800
+  -- if ch = $(2^6*(b_1 - 0xC0) + $cont(b_2))
+def $utf8(ch) = b_1 b_2 b_3
+  -- if U+0800 <= ch < U+D800 \/ U+E000 <= ch < U+10000
+  -- if ch = $(2^12*(b_1 - 0xE0) + 2^6*$cont(b_2) + $cont(b_3))
+def $utf8(ch) = b_1 b_2 b_3 b_4
+  -- if U+10000 <= ch < U+11000
+  -- if ch = $(2^18*(b_1 - 0xF0) + 2^12*$cont(b_2) + 2^6*$cont(b_3) + $cont(b_4))
 
 grammar Bname : name =
-  | b*:Bvec(Bbyte) => name  -- if $utf8(name) = b*
+  | b*:Blist(Bbyte) => name  -- if $utf8(name) = b*
 
 
 ;; Indices
@@ -83,33 +94,33 @@ grammar Bexternidx : externidx =
 ;; Value types
 
 grammar Bnumtype : numtype =
-  | 0x7F => I32
-  | 0x7E => I64
-  | 0x7D => F32
   | 0x7C => F64
+  | 0x7D => F32
+  | 0x7E => I64
+  | 0x7F => I32
 
 grammar Bvectype : vectype =
   | 0x7B => V128
 
 grammar Babsheaptype : heaptype =
-  | 0x73 => NOFUNC
-  | 0x72 => NOEXTERN
-  | 0x71 => NONE
-  | 0x70 => FUNC
-  | 0x6F => EXTERN
-  | 0x6E => ANY
-  | 0x6D => EQ
-  | 0x6C => I31
-  | 0x6B => STRUCT
   | 0x6A => ARRAY
+  | 0x6B => STRUCT
+  | 0x6C => I31
+  | 0x6D => EQ
+  | 0x6E => ANY
+  | 0x6F => EXTERN
+  | 0x70 => FUNC
+  | 0x71 => NONE
+  | 0x72 => NOEXTERN
+  | 0x73 => NOFUNC
 
 grammar Bheaptype : heaptype =
   | ht:Babsheaptype => ht
   | x33:Bs33 => _IDX $s33_to_u32(x33)  -- if x33 >= 0
 
 grammar Breftype : reftype =
-  | 0x64 ht:Bheaptype => REF ht
   | 0x63 ht:Bheaptype => REF NULL ht
+  | 0x64 ht:Bheaptype => REF ht
   | ht:Babsheaptype => REF NULL ht
 
 grammar Bvaltype : valtype =
@@ -119,7 +130,7 @@ grammar Bvaltype : valtype =
 
 
 grammar Bresulttype : resulttype =
-  | t*:Bvec(Bvaltype) => t*
+  | t*:Blist(Bvaltype) => t*
 
 
 ;; Type definitions
@@ -129,8 +140,8 @@ grammar Bmut : mut =
   | 0x01 => MUT
 
 grammar Bpacktype : packtype =
-  | 0x78 => I8
   | 0x77 => I16
+  | 0x78 => I8
 
 grammar Bstoragetype : storagetype =
   | t:Bvaltype => t
@@ -140,17 +151,17 @@ grammar Bfieldtype : fieldtype =
   | zt:Bstoragetype mut:Bmut => mut zt
 
 grammar Bcomptype : comptype =
+  | 0x5E yt:Bfieldtype => ARRAY yt
+  | 0x5F yt*:Blist(Bfieldtype) => STRUCT yt*
   | 0x60 t_1*:Bresulttype t_2*:Bresulttype => FUNC (t_1* -> t_2*)
-  | 0x59 yt*:Bvec(Bfieldtype) => STRUCT yt*
-  | 0x58 yt:Bfieldtype => ARRAY yt
 
 grammar Bsubtype : subtype =
-  | 0x50 x*:Bvec(Btypeidx) ct:Bcomptype => SUB $idx(x)* ct
-  | 0x49 x*:Bvec(Btypeidx) ct:Bcomptype => SUB FINAL $idx(x)* ct
+  | 0x4F x*:Blist(Btypeidx) ct:Bcomptype => SUB FINAL $idx(x)* ct
+  | 0x50 x*:Blist(Btypeidx) ct:Bcomptype => SUB $idx(x)* ct
   | ct:Bcomptype => SUB FINAL eps ct
 
 grammar Brectype : rectype =
-  | 0x48 st*:Bvec(Bsubtype) => REC st*
+  | 0x4E st*:Blist(Bsubtype) => REC st*
   | st:Bsubtype => REC st
 
 
@@ -202,7 +213,7 @@ grammar Binstr/control : instr =
   | 0x04 bt:Bblocktype (in_1:Binstr)* 0x05 (in_2:Binstr)* 0x0B => IF bt in_1* ELSE in_2*
   | 0x0C l:Blabelidx => BR l
   | 0x0D l:Blabelidx => BR_IF l
-  | 0x0E l*:Bvec(Blabelidx) l_n:Blabelidx => BR_TABLE l* l_n
+  | 0x0E l*:Blist(Blabelidx) l_n:Blabelidx => BR_TABLE l* l_n
   | 0x0F => RETURN
   | 0x10 x:Bfuncidx => CALL x
   | 0x11 y:Btypeidx x:Btableidx => CALL_INDIRECT x $idx(y)
@@ -274,7 +285,7 @@ grammar Binstr/struct : instr = ...
 grammar Binstr/parametric : instr = ...
   | 0x1A => DROP
   | 0x1B => SELECT
-  | 0x1C ts:Bvec(Bvaltype) => SELECT ts   ;; TODO: t*
+  | 0x1C ts:Blist(Bvaltype) => SELECT ts   ;; TODO: t*
   | ...
 
 
@@ -537,7 +548,7 @@ grammar Binstr/numeric-extend : instr = ...
 grammar Blaneidx : laneidx =
   | l:Bbyte => l
 
-grammar Binstr/vector-memory : instr = ...
+grammar Binstr/vec-memory : instr = ...
   | 0xFD 0:Bu32 (x,ao):Bmemarg => VLOAD V128 x ao
   | 0xFD 1:Bu32 (x,ao):Bmemarg => VLOAD V128 (SHAPE 8 X 8 S) x ao
   | 0xFD 2:Bu32 (x,ao):Bmemarg => VLOAD V128 (SHAPE 8 X 8 U) x ao
@@ -562,15 +573,15 @@ grammar Binstr/vector-memory : instr = ...
   | 0xFD 91:Bu32 (x,ao):Bmemarg l:Blaneidx => VSTORE_LANE V128 64 x ao l
   | ...
 
-grammar Binstr/vector-const : instr = ...
+grammar Binstr/vec-const : instr = ...
   | 0xFD 12:Bu32 (b:Bbyte)^16 => VCONST V128 b' -- if $ibytes(128, b') = b
   | ...
 
-grammar Binstr/vector-shuffle : instr = ...
+grammar Binstr/vec-shuffle : instr = ...
   | 0xFD 13:Bu32 (l:Blaneidx)^16 => VSHUFFLE (I8 X 16) l
   | ...
 
-grammar Binstr/vector-lanes : instr = ...
+grammar Binstr/vec-lanes : instr = ...
   | 0xFD 21:Bu32 l:Blaneidx => VEXTRACT_LANE (I8 X 16) S l
   | 0xFD 22:Bu32 l:Blaneidx => VEXTRACT_LANE (I8 X 16) U l
   | 0xFD 23:Bu32 l:Blaneidx => VREPLACE_LANE (I8 X 16) l
@@ -587,11 +598,11 @@ grammar Binstr/vector-lanes : instr = ...
   | 0xFD 34:Bu32 l:Blaneidx => VREPLACE_LANE (F64 X 2) l
   | ...
 
-grammar Binstr/vector-swizzle : instr = ...
+grammar Binstr/vec-swizzle : instr = ...
   | 0xFD 14:Bu32 => VSWIZZLE (I8 X 16)
   | ...
 
-grammar Binstr/vector-splat : instr = ...
+grammar Binstr/vec-splat : instr = ...
   | 0xFD 15:Bu32 => VSPLAT (I8 X 16)
   | 0xFD 16:Bu32 => VSPLAT (I16 X 8)
   | 0xFD 17:Bu32 => VSPLAT (I32 X 4)
@@ -600,7 +611,7 @@ grammar Binstr/vector-splat : instr = ...
   | 0xFD 20:Bu32 => VSPLAT (F64 X 2)
   | ...
 
-grammar Binstr/vector-rel-i8x16 : instr = ...
+grammar Binstr/vec-rel-i8x16 : instr = ...
   | 0xFD 35:Bu32 => VRELOP (I8 X 16) EQ
   | 0xFD 36:Bu32 => VRELOP (I8 X 16) NE
   | 0xFD 37:Bu32 => VRELOP (I8 X 16) (LT S)
@@ -613,7 +624,7 @@ grammar Binstr/vector-rel-i8x16 : instr = ...
   | 0xFD 44:Bu32 => VRELOP (I8 X 16) (GE U)
   | ...
 
-grammar Binstr/vector-rel-i16x8 : instr = ...
+grammar Binstr/vec-rel-i16x8 : instr = ...
   | 0xFD 45:Bu32 => VRELOP (I16 X 8) EQ
   | 0xFD 46:Bu32 => VRELOP (I16 X 8) NE
   | 0xFD 47:Bu32 => VRELOP (I16 X 8) (LT S)
@@ -626,7 +637,7 @@ grammar Binstr/vector-rel-i16x8 : instr = ...
   | 0xFD 54:Bu32 => VRELOP (I16 X 8) (GE U)
   | ...
 
-grammar Binstr/vector-rel-i32x4 : instr = ...
+grammar Binstr/vec-rel-i32x4 : instr = ...
   | 0xFD 55:Bu32 => VRELOP (I32 X 4) EQ
   | 0xFD 56:Bu32 => VRELOP (I32 X 4) NE
   | 0xFD 57:Bu32 => VRELOP (I32 X 4) (LT S)
@@ -639,7 +650,7 @@ grammar Binstr/vector-rel-i32x4 : instr = ...
   | 0xFD 64:Bu32 => VRELOP (I32 X 4) (GE U)
   | ...
 
-grammar Binstr/vector-rel-i64x2 : instr = ...
+grammar Binstr/vec-rel-i64x2 : instr = ...
   | 0xFD 214:Bu32 => VRELOP (I64 X 2) EQ
   | 0xFD 215:Bu32 => VRELOP (I64 X 2) NE
   | 0xFD 216:Bu32 => VRELOP (I64 X 2) (LT S)
@@ -648,7 +659,7 @@ grammar Binstr/vector-rel-i64x2 : instr = ...
   | 0xFD 219:Bu32 => VRELOP (I64 X 2) (GE S)
   | ...
 
-grammar Binstr/vector-rel-f32x4 : instr = ...
+grammar Binstr/vec-rel-f32x4 : instr = ...
   | 0xFD 65:Bu32 => VRELOP (F32 X 4) EQ
   | 0xFD 66:Bu32 => VRELOP (F32 X 4) NE
   | 0xFD 67:Bu32 => VRELOP (F32 X 4) LT
@@ -657,7 +668,7 @@ grammar Binstr/vector-rel-f32x4 : instr = ...
   | 0xFD 70:Bu32 => VRELOP (F32 X 4) GE
   | ...
 
-grammar Binstr/vector-rel-f64x2 : instr = ...
+grammar Binstr/vec-rel-f64x2 : instr = ...
   | 0xFD 71:Bu32 => VRELOP (F64 X 2) EQ
   | 0xFD 72:Bu32 => VRELOP (F64 X 2) NE
   | 0xFD 73:Bu32 => VRELOP (F64 X 2) LT
@@ -666,7 +677,7 @@ grammar Binstr/vector-rel-f64x2 : instr = ...
   | 0xFD 76:Bu32 => VRELOP (F64 X 2) GE
   | ...
 
-grammar Binstr/vector-vv : instr = ...
+grammar Binstr/vec-vv : instr = ...
   | 0xFD 77:Bu32 => VVUNOP V128 NOT
   | 0xFD 78:Bu32 => VVBINOP V128 AND
   | 0xFD 79:Bu32 => VVBINOP V128 ANDNOT
@@ -676,7 +687,7 @@ grammar Binstr/vector-vv : instr = ...
   | 0xFD 83:Bu32 => VVTESTOP V128 ANY_TRUE
   | ...
 
-grammar Binstr/vector-v-i8x16 : instr = ...
+grammar Binstr/vec-v-i8x16 : instr = ...
   | 0xFD 96:Bu32 => VUNOP (I8 X 16) ABS
   | 0xFD 97:Bu32 => VUNOP (I8 X 16) NEG
   | 0xFD 98:Bu32 => VUNOP (I8 X 16) POPCNT
@@ -700,7 +711,7 @@ grammar Binstr/vector-v-i8x16 : instr = ...
   | 0xFD 123:Bu32 => VBINOP (I8 X 16) AVGR_U
   | ...
 
-grammar Binstr/vector-v-i16x8 : instr = ...
+grammar Binstr/vec-v-i16x8 : instr = ...
   | 0xFD 124:Bu32 => VEXTUNOP (I16 X 8) (I8 X 16) EXTADD_PAIRWISE S
   | 0xFD 125:Bu32 => VEXTUNOP (I16 X 8) (I8 X 16) EXTADD_PAIRWISE U
   | 0xFD 128:Bu32 => VUNOP (I16 X 8) ABS
@@ -735,7 +746,7 @@ grammar Binstr/vector-v-i16x8 : instr = ...
   | 0xFD 159:Bu32 => VEXTBINOP (I16 X 8) (I8 X 16) (EXTMUL HIGH) U
   | ...
 
-grammar Binstr/vector-v-i32x4 : instr = ...
+grammar Binstr/vec-v-i32x4 : instr = ...
   | 0xFD 126:Bu32 => VEXTUNOP (I32 X 4) (I16 X 8) EXTADD_PAIRWISE S
   | 0xFD 127:Bu32 => VEXTUNOP (I32 X 4) (I16 X 8) EXTADD_PAIRWISE U
   | 0xFD 160:Bu32 => VUNOP (I32 X 4) ABS
@@ -763,7 +774,7 @@ grammar Binstr/vector-v-i32x4 : instr = ...
   | 0xFD 191:Bu32 => VEXTBINOP (I32 X 4) (I16 X 8) (EXTMUL HIGH) U
   | ...
 
-grammar Binstr/vector-v-i64x2 : instr = ...
+grammar Binstr/vec-v-i64x2 : instr = ...
   | 0xFD 192:Bu32 => VUNOP (I64 X 2) ABS
   | 0xFD 193:Bu32 => VUNOP (I64 X 2) NEG
   | 0xFD 195:Bu32 => VTESTOP (I64 X 2) ALL_TRUE
@@ -784,7 +795,7 @@ grammar Binstr/vector-v-i64x2 : instr = ...
   | 0xFD 223:Bu32 => VEXTBINOP (I64 X 2) (I32 X 4) (EXTMUL HIGH) U
   | ...
 
-grammar Binstr/vector-v-f32x4 : instr = ...
+grammar Binstr/vec-v-f32x4 : instr = ...
   | 0xFD 103:Bu32 => VUNOP (F32 X 4) CEIL
   | 0xFD 104:Bu32 => VUNOP (F32 X 4) FLOOR
   | 0xFD 105:Bu32 => VUNOP (F32 X 4) TRUNC
@@ -802,7 +813,7 @@ grammar Binstr/vector-v-f32x4 : instr = ...
   | 0xFD 235:Bu32 => VBINOP (F32 X 4) PMAX
   | ...
 
-grammar Binstr/vector-v-f64x2 : instr = ...
+grammar Binstr/vec-v-f64x2 : instr = ...
   | 0xFD 116:Bu32 => VUNOP (F64 X 2) CEIL
   | 0xFD 117:Bu32 => VUNOP (F64 X 2) FLOOR
   | 0xFD 122:Bu32 => VUNOP (F64 X 2) TRUNC
@@ -820,7 +831,7 @@ grammar Binstr/vector-v-f64x2 : instr = ...
   | 0xFD 247:Bu32 => VBINOP (F64 X 2) PMAX
   | ...
 
-grammar Binstr/vector-cvt : instr = ...
+grammar Binstr/vec-cvt : instr = ...
   | 0xFD 248:Bu32 => VCVTOP (I32 X 4) (F32 X 4) TRUNC_SAT S
   | 0xFD 249:Bu32 => VCVTOP (I32 X 4) (F32 X 4) TRUNC_SAT U
   | 0xFD 250:Bu32 => VCVTOP (F32 X 4) (I32 X 4) CONVERT S
@@ -868,7 +879,7 @@ grammar Btype : type =
   | qt:Brectype => TYPE qt
 
 grammar Btypesec : type* hint(desc "type section") =
-  | ty*:Bsection_(1, Bvec(Btype)) => ty*
+  | ty*:Bsection_(1, Blist(Btype)) => ty*
 
 
 ;; Import section
@@ -877,13 +888,13 @@ grammar Bimport : import =
   | nm_1:Bname nm_2:Bname xt:Bexterntype => IMPORT nm_1 nm_2 xt
 
 grammar Bimportsec : import* hint(desc "import section") =
-  | im*:Bsection_(2, Bvec(Bimport)) => im*
+  | im*:Bsection_(2, Blist(Bimport)) => im*
 
 
 ;; Function section
 
 grammar Bfuncsec : typeidx* hint(desc "function section") =
-  | x*:Bsection_(3, Bvec(Btypeidx)) => x*
+  | x*:Bsection_(3, Blist(Btypeidx)) => x*
 
 
 ;; Table section
@@ -892,7 +903,7 @@ grammar Btable : table =
   | tt:Btabletype e:Bexpr => TABLE tt e
 
 grammar Btablesec : table* hint(desc "table section") =
-  | tab*:Bsection_(4, Bvec(Btable)) => tab*
+  | tab*:Bsection_(4, Blist(Btable)) => tab*
 
 
 ;; Memory section
@@ -901,7 +912,7 @@ grammar Bmem : mem =
   | mt:Bmemtype => MEMORY mt
 
 grammar Bmemsec : mem* hint(desc "memory section") =
-  | mem*:Bsection_(5, Bvec(Bmem)) => mem*
+  | mem*:Bsection_(5, Blist(Bmem)) => mem*
 
 
 ;; Global section
@@ -910,7 +921,7 @@ grammar Bglobal : global =
   | gt:Bglobaltype e:Bexpr => GLOBAL gt e
 
 grammar Bglobalsec : global* hint(desc "global section") =
-  | glob*:Bsection_(6, Bvec(Bglobal)) => glob*
+  | glob*:Bsection_(6, Blist(Bglobal)) => glob*
 
 
 ;; Export section
@@ -919,7 +930,7 @@ grammar Bexport : export =
   | nm:Bname ux:Bexternidx => EXPORT nm ux
 
 grammar Bexportsec : export* hint(desc "export section") =
-  | ex*:Bsection_(7, Bvec(Bexport)) => ex*
+  | ex*:Bsection_(7, Blist(Bexport)) => ex*
 
 
 ;; Start section
@@ -937,25 +948,25 @@ grammar Belemkind : reftype hint(desc "element kind") =
   | 0x00 => REF NULL FUNC
 
 grammar Belem : elem =
-  | 0:Bu32 e_o:Bexpr y*:Bvec(Bfuncidx) =>
+  | 0:Bu32 e_o:Bexpr y*:Blist(Bfuncidx) =>
       ELEM (REF NULL FUNC) (REF.FUNC y)* (ACTIVE 0 e_o)
-  | 1:Bu32 rt:Belemkind y*:Bvec(Bfuncidx) =>
+  | 1:Bu32 rt:Belemkind y*:Blist(Bfuncidx) =>
       ELEM rt (REF.FUNC y)* PASSIVE
-  | 2:Bu32 x:Btableidx expr:Bexpr rt:Belemkind y*:Bvec(Bfuncidx) =>
+  | 2:Bu32 x:Btableidx expr:Bexpr rt:Belemkind y*:Blist(Bfuncidx) =>
       ELEM rt (REF.FUNC y)* (ACTIVE x expr)
-  | 3:Bu32 rt:Belemkind y*:Bvec(Bfuncidx) =>
+  | 3:Bu32 rt:Belemkind y*:Blist(Bfuncidx) =>
       ELEM rt (REF.FUNC y)* DECLARE
-  | 4:Bu32 e_o:Bexpr e*:Bvec(Bexpr) =>
+  | 4:Bu32 e_o:Bexpr e*:Blist(Bexpr) =>
       ELEM (REF NULL FUNC) e* (ACTIVE 0 e_o)
-  | 5:Bu32 rt:Breftype e*:Bvec(Bexpr) =>
+  | 5:Bu32 rt:Breftype e*:Blist(Bexpr) =>
       ELEM rt e* PASSIVE
-  | 6:Bu32 x:Btableidx expr:Bexpr e*:Bvec(Bexpr) =>
+  | 6:Bu32 x:Btableidx expr:Bexpr e*:Blist(Bexpr) =>
       ELEM (REF NULL FUNC) e* (ACTIVE x expr)
-  | 7:Bu32 rt:Breftype e*:Bvec(Bexpr) =>
+  | 7:Bu32 rt:Breftype e*:Blist(Bexpr) =>
       ELEM rt e* DECLARE
 
 grammar Belemsec : elem* hint(desc "element section") =
-  | elem*:Bsection_(9, Bvec(Belem)) => elem*
+  | elem*:Bsection_(9, Blist(Belem)) => elem*
 
 
 ;; Code section
@@ -966,24 +977,24 @@ grammar Blocals : local* hint(desc "local") =
   | n:Bu32 t:Bvaltype => (LOCAL t)^n
 
 grammar Bfunc : code =
-  | local**:Bvec(Blocals) expr:Bexpr => ($concat_(local, local**), expr)
+  | local**:Blist(Blocals) expr:Bexpr => ($concat_(local, local**), expr)
 
 grammar Bcode : code =
   | len:Bu32 code:Bfunc => code  -- if len = ||Bfunc||
 
 grammar Bcodesec : code* hint(desc "code section") =
-  | code*:Bsection_(10, Bvec(Bcode)) => code*
+  | code*:Bsection_(10, Blist(Bcode)) => code*
 
 
 ;; Data section
 
 grammar Bdata : data =
-  | 0:Bu32 e:Bexpr b*:Bvec(Bbyte) => DATA b* (ACTIVE 0 e)
-  | 1:Bu32 b*:Bvec(Bbyte) => DATA b* PASSIVE
-  | 2:Bu32 x:Bmemidx e:Bexpr b*:Bvec(Bbyte) => DATA b* (ACTIVE x e)
+  | 0:Bu32 e:Bexpr b*:Blist(Bbyte) => DATA b* (ACTIVE 0 e)
+  | 1:Bu32 b*:Blist(Bbyte) => DATA b* PASSIVE
+  | 2:Bu32 x:Bmemidx e:Bexpr b*:Blist(Bbyte) => DATA b* (ACTIVE x e)
 
 grammar Bdatasec : data* hint(desc "data section") =
-  | data*:Bsection_(11, Bvec(Bdata)) => data*
+  | data*:Bsection_(11, Blist(Bdata)) => data*
 
 
 ;; Data count section

@@ -136,7 +136,7 @@
 .. |fX#1| mathdef:: {\X{f#1}}
 .. |vX#1| mathdef:: {\X{v#1}}
 
-.. |uNN| mathdef:: \xref{syntax/values}{syntax-int}{\X{u}\kern-0.1em}
+.. |uNX| mathdef:: \xref{syntax/values}{syntax-int}{\X{u}\kern-0.1em}
 .. |uN| mathdef:: \xref{syntax/values}{syntax-int}{\X{u}\scriptstyle\kern-0.1emN}
 .. |u1| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle\kern-0.1em1}}
 .. |u8| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle\kern-0.1em8}}
@@ -145,14 +145,14 @@
 .. |u32| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle\kern-0.1em32}}
 .. |u64| mathdef:: \xref{syntax/values}{syntax-int}{\X{u\scriptstyle\kern-0.1em64}}
 
-.. |sNN| mathdef:: \xref{syntax/values}{syntax-int}{\X{s}\kern-0.1em}
+.. |sNX| mathdef:: \xref{syntax/values}{syntax-int}{\X{s}\kern-0.1em}
 .. |sN| mathdef:: \xref{syntax/values}{syntax-int}{\X{s}\scriptstyle\kern-0.1emN}
 .. |s8| mathdef:: \xref{syntax/values}{syntax-int}{\X{s\scriptstyle\kern-0.1em8}}
 .. |s16| mathdef:: \xref{syntax/values}{syntax-int}{\X{s\scriptstyle\kern-0.1em16}}
 .. |s32| mathdef:: \xref{syntax/values}{syntax-int}{\X{s\scriptstyle\kern-0.1em32}}
 .. |s64| mathdef:: \xref{syntax/values}{syntax-int}{\X{s\scriptstyle\kern-0.1em64}}
 
-.. |iNN| mathdef:: \xref{syntax/values}{syntax-int}{\X{i}\kern-0.1em}
+.. |iNX| mathdef:: \xref{syntax/values}{syntax-int}{\X{i}\kern-0.1em}
 .. |iM| mathdef:: \xref{syntax/values}{syntax-int}{\X{i}\scriptstyle\kern-0.1emM}
 .. |iN| mathdef:: \xref{syntax/values}{syntax-int}{\X{i}\scriptstyle\kern-0.1emN}
 .. |i8| mathdef:: \xref{syntax/values}{syntax-int}{\X{i\scriptstyle\kern-0.1em8}}
@@ -161,13 +161,13 @@
 .. |i64| mathdef:: \xref{syntax/values}{syntax-int}{\X{i\scriptstyle\kern-0.1em64}}
 .. |i128| mathdef:: \xref{syntax/values}{syntax-int}{\X{i\scriptstyle\kern-0.1em128}}
 
-.. |fNN| mathdef:: \xref{syntax/values}{syntax-float}{\X{f}\kern-0.15em}
+.. |fNX| mathdef:: \xref{syntax/values}{syntax-float}{\X{f}\kern-0.15em}
 .. |fN| mathdef:: \xref{syntax/values}{syntax-float}{\X{f}\scriptstyle\kern-0.15emN}
 .. |fNmag| mathdef:: \xref{syntax/values}{syntax-float}{\X{fmag}\scriptstyle\kern-0.1emN}
 .. |f32| mathdef:: \xref{syntax/values}{syntax-float}{\X{f\scriptstyle\kern-0.15em32}}
 .. |f64| mathdef:: \xref{syntax/values}{syntax-float}{\X{f\scriptstyle\kern-0.15em64}}
 
-.. |vNN| mathdef:: \xref{syntax/values}{syntax-vecnum}{\X{v}\kern-0.1em}
+.. |vNX| mathdef:: \xref{syntax/values}{syntax-vecnum}{\X{v}\kern-0.1em}
 
 .. |name| mathdef:: \xref{syntax/values}{syntax-name}{\X{name}}
 .. |char| mathdef:: \xref{syntax/values}{syntax-name}{\X{char}}
@@ -762,6 +762,7 @@
 .. |BiX#1| mathdef:: {\B{i}#1}
 .. |BfX#1| mathdef:: {\B{f}#1}
 
+.. |BuNX| mathdef:: \xref{binary/values}{binary-int}{\BuX{}}
 .. |BuN| mathdef:: \xref{binary/values}{binary-int}{\BuX{\scriptstyle N}}
 .. |Bu1| mathdef:: \xref{binary/values}{binary-int}{\BuX{\B{1}}}
 .. |Bu8| mathdef:: \xref{binary/values}{binary-int}{\BuX{\B{8}}}
@@ -769,16 +770,19 @@
 .. |Bu32| mathdef:: \xref{binary/values}{binary-int}{\BuX{\B{32}}}
 .. |Bu64| mathdef:: \xref{binary/values}{binary-int}{\BuX{\B{64}}}
 
+.. |BsNX| mathdef:: \xref{binary/values}{binary-int}{\BsX{}}
 .. |BsN| mathdef:: \xref{binary/values}{binary-int}{\BsX{\scriptstyle N}}
 .. |Bs7| mathdef:: \xref{binary/values}{binary-int}{\BsX{\B{7}}}
 .. |Bs32| mathdef:: \xref{binary/values}{binary-int}{\BsX{\B{32}}}
 .. |Bs33| mathdef:: \xref{binary/values}{binary-int}{\BsX{\B{33}}}
 .. |Bs64| mathdef:: \xref{binary/values}{binary-int}{\BsX{\B{64}}}
 
+.. |BiNX| mathdef:: \xref{binary/values}{binary-int}{\BiX{}}
 .. |BiN| mathdef:: \xref{binary/values}{binary-int}{\BiX{\scriptstyle N}}
 .. |Bi32| mathdef:: \xref{binary/values}{binary-int}{\BiX{\B{32}}}
 .. |Bi64| mathdef:: \xref{binary/values}{binary-int}{\BiX{\B{64}}}
 
+.. |BfNX| mathdef:: \xref{binary/values}{binary-float}{\BfX{}}
 .. |BfN| mathdef:: \xref{binary/values}{binary-float}{\BfX{\scriptstyle N}}
 .. |Bf32| mathdef:: \xref{binary/values}{binary-float}{\BfX{\B{32}}}
 .. |Bf64| mathdef:: \xref{binary/values}{binary-float}{\BfX{\B{64}}}

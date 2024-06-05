@@ -62,13 +62,14 @@ let check_varid_bind id =
 
 type prec = Op | Seq | Post | Prim
 
-let prec_of_exp = function  (* as far as iteration is concerned *)
+let rec prec_of_exp = function  (* as far as iteration is concerned *)
   | VarE _ | BoolE _ | NatE _ | TextE _ | EpsE | StrE _
   | ParenE _ | TupE _ | BrackE _ | CallE _ | HoleE _ -> Prim
   | AtomE _ | IdxE _ | SliceE _ | UpdE _ | ExtE _ | DotE _ | IterE _ -> Post
   | SeqE _ -> Seq
   | UnE _ | BinE _ | CmpE _ | InfixE _ | LenE _ | SizeE _
   | CommaE _ | CompE _ | TypE _ | FuseE _ | UnparenE _ -> Op
+  | ArithE e -> prec_of_exp e.it
 
 (* Extra parentheses can be inserted to disambiguate the role of elements of
  * an iteration. For example, `( x* )` will be interpreted differently from `x*`
@@ -150,10 +151,11 @@ let rec is_typcon t =
 %left PLUS MINUS COMPOSE
 %left STAR SLASH BACKSLASH
 
-%start script typ_eof exp_eof check_atom
+%start script typ_eof exp_eof sym_eof check_atom
 %type<El.Ast.script> script
 %type<El.Ast.typ> typ_eof
 %type<El.Ast.exp> exp_eof
+%type<El.Ast.sym> sym_eof
 %type<bool> check_atom
 
 %%
@@ -844,5 +846,8 @@ typ_eof :
 
 exp_eof :
   | exp EOF { $1 }
+
+sym_eof :
+  | sym EOF { $1 }
 
 %%

@@ -137,6 +137,7 @@ and subst_exp s e =
   | CallE (id, args) -> CallE (id, subst_list subst_arg s args)
   | IterE (e1, iter) -> IterE (subst_exp s e1, subst_iter s iter)
   | TypE (e1, t) -> TypE (subst_exp s e1, subst_typ s t)
+  | ArithE e1 -> ArithE (subst_exp s e1)
   | HoleE h -> HoleE h
   | FuseE (e1, e2) -> FuseE (subst_exp s e1, subst_exp s e2)
   | UnparenE e1 -> UnparenE (subst_exp s e1)

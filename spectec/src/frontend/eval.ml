@@ -267,7 +267,7 @@ and reduce_exp env e : exp =
     | SeqE es -> NatE (DecOp, Z.of_int (List.length es))
     | _ -> LenE e1'
     ) $ e.at
-  | ParenE (e1, _) | TypE (e1, _) -> reduce_exp env e1
+  | ParenE (e1, _) | ArithE e1 | TypE (e1, _) -> reduce_exp env e1
   | TupE es -> TupE (List.map (reduce_exp env) es) $ e.at
   | InfixE (e1, atom, e2) ->
     let e1' = reduce_exp env e1 in

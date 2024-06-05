@@ -174,25 +174,35 @@ syntax char =
   | `%`{i : nat}(i : nat)
     -- if (((i >= 0) /\ (i <= 55295)) \/ ((i >= 57344) /\ (i <= 1114111)))
 
+;; A-binary.watsup
+def $cont(byte : byte) : nat
+  ;; A-binary.watsup
+  def $cont{b : byte}(b) = (b!`%`_byte.0 - 128)
+    -- if ((128 < b!`%`_byte.0) /\ (b!`%`_byte.0 < 192))
+
 ;; 1-syntax.watsup
 rec {
 
 ;; 1-syntax.watsup:87.1-87.25
 def $utf8(char*) : byte*
-  ;; A-binary.watsup:50.1-50.47
-  def $utf8{ch : char, b : byte}([ch]) = [b]
-    -- if ((ch!`%`_char.0 < 128) /\ (ch = `%`_char(b!`%`_byte.0)))
-  ;; A-binary.watsup:51.1-51.96
-  def $utf8{ch : char, b_1 : byte, b_2 : byte}([ch]) = [b_1 b_2]
-    -- if (((128 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 2048)) /\ (ch = `%`_char((((2 ^ 6) * (b_1!`%`_byte.0 - 192)) + (b_2!`%`_byte.0 - 128)))))
-  ;; A-binary.watsup:52.1-52.148
-  def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte}([ch]) = [b_1 b_2 b_3]
-    -- if ((((2048 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 55296)) \/ ((57344 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 65536))) /\ (ch = `%`_char(((((2 ^ 12) * (b_1!`%`_byte.0 - 224)) + ((2 ^ 6) * (b_2!`%`_byte.0 - 128))) + (b_3!`%`_byte.0 - 128)))))
-  ;; A-binary.watsup:53.1-53.148
-  def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte, b_4 : byte}([ch]) = [b_1 b_2 b_3 b_4]
-    -- if (((65536 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 69632)) /\ (ch = `%`_char((((((2 ^ 18) * (b_1!`%`_byte.0 - 240)) + ((2 ^ 12) * (b_2!`%`_byte.0 - 128))) + ((2 ^ 6) * (b_3!`%`_byte.0 - 128))) + (b_4!`%`_byte.0 - 128)))))
-  ;; A-binary.watsup:54.1-54.44
+  ;; A-binary.watsup:53.1-53.44
   def $utf8{ch* : char*}(ch*{ch : char}) = $concat_(syntax byte, $utf8([ch])*{ch : char})
+  ;; A-binary.watsup:54.1-56.15
+  def $utf8{ch : char, b : byte}([ch]) = [b]
+    -- if (ch!`%`_char.0 < 128)
+    -- if (ch = `%`_char(b!`%`_byte.0))
+  ;; A-binary.watsup:57.1-59.46
+  def $utf8{ch : char, b_1 : byte, b_2 : byte}([ch]) = [b_1 b_2]
+    -- if ((128 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 2048))
+    -- if (ch = `%`_char((((2 ^ 6) * (b_1!`%`_byte.0 - 192)) + $cont(b_2))))
+  ;; A-binary.watsup:60.1-62.64
+  def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte}([ch]) = [b_1 b_2 b_3]
+    -- if (((2048 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 55296)) \/ ((57344 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 65536)))
+    -- if (ch = `%`_char(((((2 ^ 12) * (b_1!`%`_byte.0 - 224)) + ((2 ^ 6) * $cont(b_2))) + $cont(b_3))))
+  ;; A-binary.watsup:63.1-65.82
+  def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte, b_4 : byte}([ch]) = [b_1 b_2 b_3 b_4]
+    -- if ((65536 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 69632))
+    -- if (ch = `%`_char((((((2 ^ 18) * (b_1!`%`_byte.0 - 240)) + ((2 ^ 12) * $cont(b_2))) + ((2 ^ 6) * $cont(b_3))) + $cont(b_4))))
 }
 
 ;; 1-syntax.watsup
@@ -5840,6 +5850,9 @@ def $allocXs(syntax X, syntax Y, store : store, X*, Y*) : (store, addr*)
     -- if ((s_2, a'*{a' : addr}) = $allocXs(syntax X, syntax Y, s_1, X'*{X' : X}, Y'*{Y' : Y}))
 }
 
+;; C-conventions.watsup
+def $symdots : A
+
 == IL Validation...
 == Running pass totalize...
 
@@ -6012,25 +6025,35 @@ syntax char =
   | `%`{i : nat}(i : nat)
     -- if (((i >= 0) /\ (i <= 55295)) \/ ((i >= 57344) /\ (i <= 1114111)))
 
+;; A-binary.watsup
+def $cont(byte : byte) : nat
+  ;; A-binary.watsup
+  def $cont{b : byte}(b) = (b!`%`_byte.0 - 128)
+    -- if ((128 < b!`%`_byte.0) /\ (b!`%`_byte.0 < 192))
+
 ;; 1-syntax.watsup
 rec {
 
 ;; 1-syntax.watsup:87.1-87.25
 def $utf8(char*) : byte*
-  ;; A-binary.watsup:50.1-50.47
-  def $utf8{ch : char, b : byte}([ch]) = [b]
-    -- if ((ch!`%`_char.0 < 128) /\ (ch = `%`_char(b!`%`_byte.0)))
-  ;; A-binary.watsup:51.1-51.96
-  def $utf8{ch : char, b_1 : byte, b_2 : byte}([ch]) = [b_1 b_2]
-    -- if (((128 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 2048)) /\ (ch = `%`_char((((2 ^ 6) * (b_1!`%`_byte.0 - 192)) + (b_2!`%`_byte.0 - 128)))))
-  ;; A-binary.watsup:52.1-52.148
-  def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte}([ch]) = [b_1 b_2 b_3]
-    -- if ((((2048 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 55296)) \/ ((57344 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 65536))) /\ (ch = `%`_char(((((2 ^ 12) * (b_1!`%`_byte.0 - 224)) + ((2 ^ 6) * (b_2!`%`_byte.0 - 128))) + (b_3!`%`_byte.0 - 128)))))
-  ;; A-binary.watsup:53.1-53.148
-  def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte, b_4 : byte}([ch]) = [b_1 b_2 b_3 b_4]
-    -- if (((65536 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 69632)) /\ (ch = `%`_char((((((2 ^ 18) * (b_1!`%`_byte.0 - 240)) + ((2 ^ 12) * (b_2!`%`_byte.0 - 128))) + ((2 ^ 6) * (b_3!`%`_byte.0 - 128))) + (b_4!`%`_byte.0 - 128)))))
-  ;; A-binary.watsup:54.1-54.44
+  ;; A-binary.watsup:53.1-53.44
   def $utf8{ch* : char*}(ch*{ch : char}) = $concat_(syntax byte, $utf8([ch])*{ch : char})
+  ;; A-binary.watsup:54.1-56.15
+  def $utf8{ch : char, b : byte}([ch]) = [b]
+    -- if (ch!`%`_char.0 < 128)
+    -- if (ch = `%`_char(b!`%`_byte.0))
+  ;; A-binary.watsup:57.1-59.46
+  def $utf8{ch : char, b_1 : byte, b_2 : byte}([ch]) = [b_1 b_2]
+    -- if ((128 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 2048))
+    -- if (ch = `%`_char((((2 ^ 6) * (b_1!`%`_byte.0 - 192)) + $cont(b_2))))
+  ;; A-binary.watsup:60.1-62.64
+  def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte}([ch]) = [b_1 b_2 b_3]
+    -- if (((2048 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 55296)) \/ ((57344 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 65536)))
+    -- if (ch = `%`_char(((((2 ^ 12) * (b_1!`%`_byte.0 - 224)) + ((2 ^ 6) * $cont(b_2))) + $cont(b_3))))
+  ;; A-binary.watsup:63.1-65.82
+  def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte, b_4 : byte}([ch]) = [b_1 b_2 b_3 b_4]
+    -- if ((65536 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 69632))
+    -- if (ch = `%`_char((((((2 ^ 18) * (b_1!`%`_byte.0 - 240)) + ((2 ^ 12) * $cont(b_2))) + ((2 ^ 6) * $cont(b_3))) + $cont(b_4))))
 }
 
 ;; 1-syntax.watsup
@@ -11683,6 +11706,9 @@ def $allocXs(syntax X, syntax Y, store : store, X*, Y*) : (store, addr*)
     -- if ((s_2, a'*{a' : addr}) = $allocXs(syntax X, syntax Y, s_1, X'*{X' : X}, Y'*{Y' : Y}))
 }
 
+;; C-conventions.watsup
+def $symdots : A
+
 == IL Validation after pass totalize...
 == Running pass wildcards...
 
@@ -11855,25 +11881,35 @@ syntax char =
   | `%`{i : nat}(i : nat)
     -- if (((i >= 0) /\ (i <= 55295)) \/ ((i >= 57344) /\ (i <= 1114111)))
 
+;; A-binary.watsup
+def $cont(byte : byte) : nat
+  ;; A-binary.watsup
+  def $cont{b : byte}(b) = (b!`%`_byte.0 - 128)
+    -- if ((128 < b!`%`_byte.0) /\ (b!`%`_byte.0 < 192))
+
 ;; 1-syntax.watsup
 rec {
 
 ;; 1-syntax.watsup:87.1-87.25
 def $utf8(char*) : byte*
-  ;; A-binary.watsup:50.1-50.47
-  def $utf8{ch : char, b : byte}([ch]) = [b]
-    -- if ((ch!`%`_char.0 < 128) /\ (ch = `%`_char(b!`%`_byte.0)))
-  ;; A-binary.watsup:51.1-51.96
-  def $utf8{ch : char, b_1 : byte, b_2 : byte}([ch]) = [b_1 b_2]
-    -- if (((128 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 2048)) /\ (ch = `%`_char((((2 ^ 6) * (b_1!`%`_byte.0 - 192)) + (b_2!`%`_byte.0 - 128)))))
-  ;; A-binary.watsup:52.1-52.148
-  def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte}([ch]) = [b_1 b_2 b_3]
-    -- if ((((2048 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 55296)) \/ ((57344 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 65536))) /\ (ch = `%`_char(((((2 ^ 12) * (b_1!`%`_byte.0 - 224)) + ((2 ^ 6) * (b_2!`%`_byte.0 - 128))) + (b_3!`%`_byte.0 - 128)))))
-  ;; A-binary.watsup:53.1-53.148
-  def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte, b_4 : byte}([ch]) = [b_1 b_2 b_3 b_4]
-    -- if (((65536 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 69632)) /\ (ch = `%`_char((((((2 ^ 18) * (b_1!`%`_byte.0 - 240)) + ((2 ^ 12) * (b_2!`%`_byte.0 - 128))) + ((2 ^ 6) * (b_3!`%`_byte.0 - 128))) + (b_4!`%`_byte.0 - 128)))))
-  ;; A-binary.watsup:54.1-54.44
+  ;; A-binary.watsup:53.1-53.44
   def $utf8{ch* : char*}(ch*{ch : char}) = $concat_(syntax byte, $utf8([ch])*{ch : char})
+  ;; A-binary.watsup:54.1-56.15
+  def $utf8{ch : char, b : byte}([ch]) = [b]
+    -- if (ch!`%`_char.0 < 128)
+    -- if (ch = `%`_char(b!`%`_byte.0))
+  ;; A-binary.watsup:57.1-59.46
+  def $utf8{ch : char, b_1 : byte, b_2 : byte}([ch]) = [b_1 b_2]
+    -- if ((128 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 2048))
+    -- if (ch = `%`_char((((2 ^ 6) * (b_1!`%`_byte.0 - 192)) + $cont(b_2))))
+  ;; A-binary.watsup:60.1-62.64
+  def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte}([ch]) = [b_1 b_2 b_3]
+    -- if (((2048 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 55296)) \/ ((57344 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 65536)))
+    -- if (ch = `%`_char(((((2 ^ 12) * (b_1!`%`_byte.0 - 224)) + ((2 ^ 6) * $cont(b_2))) + $cont(b_3))))
+  ;; A-binary.watsup:63.1-65.82
+  def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte, b_4 : byte}([ch]) = [b_1 b_2 b_3 b_4]
+    -- if ((65536 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 69632))
+    -- if (ch = `%`_char((((((2 ^ 18) * (b_1!`%`_byte.0 - 240)) + ((2 ^ 12) * $cont(b_2))) + ((2 ^ 6) * $cont(b_3))) + $cont(b_4))))
 }
 
 ;; 1-syntax.watsup
@@ -17526,6 +17562,9 @@ def $allocXs(syntax X, syntax Y, store : store, X*, Y*) : (store, addr*)
     -- if ((s_2, a'*{a' : addr}) = $allocXs(syntax X, syntax Y, s_1, X'*{X' : X}, Y'*{Y' : Y}))
 }
 
+;; C-conventions.watsup
+def $symdots : A
+
 == IL Validation after pass wildcards...
 == Running pass sideconditions...
 
@@ -17698,25 +17737,35 @@ syntax char =
   | `%`{i : nat}(i : nat)
     -- if (((i >= 0) /\ (i <= 55295)) \/ ((i >= 57344) /\ (i <= 1114111)))
 
+;; A-binary.watsup
+def $cont(byte : byte) : nat
+  ;; A-binary.watsup
+  def $cont{b : byte}(b) = (b!`%`_byte.0 - 128)
+    -- if ((128 < b!`%`_byte.0) /\ (b!`%`_byte.0 < 192))
+
 ;; 1-syntax.watsup
 rec {
 
 ;; 1-syntax.watsup:87.1-87.25
 def $utf8(char*) : byte*
-  ;; A-binary.watsup:50.1-50.47
-  def $utf8{ch : char, b : byte}([ch]) = [b]
-    -- if ((ch!`%`_char.0 < 128) /\ (ch = `%`_char(b!`%`_byte.0)))
-  ;; A-binary.watsup:51.1-51.96
-  def $utf8{ch : char, b_1 : byte, b_2 : byte}([ch]) = [b_1 b_2]
-    -- if (((128 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 2048)) /\ (ch = `%`_char((((2 ^ 6) * (b_1!`%`_byte.0 - 192)) + (b_2!`%`_byte.0 - 128)))))
-  ;; A-binary.watsup:52.1-52.148
-  def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte}([ch]) = [b_1 b_2 b_3]
-    -- if ((((2048 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 55296)) \/ ((57344 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 65536))) /\ (ch = `%`_char(((((2 ^ 12) * (b_1!`%`_byte.0 - 224)) + ((2 ^ 6) * (b_2!`%`_byte.0 - 128))) + (b_3!`%`_byte.0 - 128)))))
-  ;; A-binary.watsup:53.1-53.148
-  def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte, b_4 : byte}([ch]) = [b_1 b_2 b_3 b_4]
-    -- if (((65536 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 69632)) /\ (ch = `%`_char((((((2 ^ 18) * (b_1!`%`_byte.0 - 240)) + ((2 ^ 12) * (b_2!`%`_byte.0 - 128))) + ((2 ^ 6) * (b_3!`%`_byte.0 - 128))) + (b_4!`%`_byte.0 - 128)))))
-  ;; A-binary.watsup:54.1-54.44
+  ;; A-binary.watsup:53.1-53.44
   def $utf8{ch* : char*}(ch*{ch : char}) = $concat_(syntax byte, $utf8([ch])*{ch : char})
+  ;; A-binary.watsup:54.1-56.15
+  def $utf8{ch : char, b : byte}([ch]) = [b]
+    -- if (ch!`%`_char.0 < 128)
+    -- if (ch = `%`_char(b!`%`_byte.0))
+  ;; A-binary.watsup:57.1-59.46
+  def $utf8{ch : char, b_1 : byte, b_2 : byte}([ch]) = [b_1 b_2]
+    -- if ((128 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 2048))
+    -- if (ch = `%`_char((((2 ^ 6) * (b_1!`%`_byte.0 - 192)) + $cont(b_2))))
+  ;; A-binary.watsup:60.1-62.64
+  def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte}([ch]) = [b_1 b_2 b_3]
+    -- if (((2048 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 55296)) \/ ((57344 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 65536)))
+    -- if (ch = `%`_char(((((2 ^ 12) * (b_1!`%`_byte.0 - 224)) + ((2 ^ 6) * $cont(b_2))) + $cont(b_3))))
+  ;; A-binary.watsup:63.1-65.82
+  def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte, b_4 : byte}([ch]) = [b_1 b_2 b_3 b_4]
+    -- if ((65536 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 69632))
+    -- if (ch = `%`_char((((((2 ^ 18) * (b_1!`%`_byte.0 - 240)) + ((2 ^ 12) * $cont(b_2))) + ((2 ^ 6) * $cont(b_3))) + $cont(b_4))))
 }
 
 ;; 1-syntax.watsup
@@ -23532,6 +23581,9 @@ def $allocXs(syntax X, syntax Y, store : store, X*, Y*) : (store, addr*)
     -- if ((s_2, a'*{a' : addr}) = $allocXs(syntax X, syntax Y, s_1, X'*{X' : X}, Y'*{Y' : Y}))
 }
 
+;; C-conventions.watsup
+def $symdots : A
+
 == IL Validation after pass sideconditions...
 == Running pass animate...
 
@@ -23704,31 +23756,38 @@ syntax char =
   | `%`{i : nat}(i : nat)
     -- if (((i >= 0) /\ (i <= 55295)) \/ ((i >= 57344) /\ (i <= 1114111)))
 
+;; A-binary.watsup
+def $cont(byte : byte) : nat
+  ;; A-binary.watsup
+  def $cont{b : byte}(b) = (b!`%`_byte.0 - 128)
+    -- if (128 < b!`%`_byte.0)
+    -- if (b!`%`_byte.0 < 192)
+
 ;; 1-syntax.watsup
 rec {
 
 ;; 1-syntax.watsup:87.1-87.25
 def $utf8(char*) : byte*
-  ;; A-binary.watsup:50.1-50.47
+  ;; A-binary.watsup:53.1-53.44
+  def $utf8{ch* : char*}(ch*{ch : char}) = $concat_(syntax byte, $utf8([ch])*{ch : char})
+  ;; A-binary.watsup:54.1-56.15
   def $utf8{ch : char, b : byte}([ch]) = [b]
     -- if (ch!`%`_char.0 < 128)
     -- where `%`_char(b!`%`_byte.0) = ch
-  ;; A-binary.watsup:51.1-51.96
+  ;; A-binary.watsup:57.1-59.46
   def $utf8{ch : char, b_1 : byte, b_2 : byte}([ch]) = [b_1 b_2]
     -- if (128 <= ch!`%`_char.0)
     -- if (ch!`%`_char.0 < 2048)
-    -- where `%`_char((((2 ^ 6) * (b_1!`%`_byte.0 - 192)) + (b_2!`%`_byte.0 - 128))) = ch
-  ;; A-binary.watsup:52.1-52.148
+    -- where `%`_char((((2 ^ 6) * (b_1!`%`_byte.0 - 192)) + $cont(b_2))) = ch
+  ;; A-binary.watsup:60.1-62.64
   def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte}([ch]) = [b_1 b_2 b_3]
     -- if (((2048 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 55296)) \/ ((57344 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 65536)))
-    -- where `%`_char(((((2 ^ 12) * (b_1!`%`_byte.0 - 224)) + ((2 ^ 6) * (b_2!`%`_byte.0 - 128))) + (b_3!`%`_byte.0 - 128))) = ch
-  ;; A-binary.watsup:53.1-53.148
+    -- where `%`_char(((((2 ^ 12) * (b_1!`%`_byte.0 - 224)) + ((2 ^ 6) * $cont(b_2))) + $cont(b_3))) = ch
+  ;; A-binary.watsup:63.1-65.82
   def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte, b_4 : byte}([ch]) = [b_1 b_2 b_3 b_4]
     -- if (65536 <= ch!`%`_char.0)
     -- if (ch!`%`_char.0 < 69632)
-    -- where `%`_char((((((2 ^ 18) * (b_1!`%`_byte.0 - 240)) + ((2 ^ 12) * (b_2!`%`_byte.0 - 128))) + ((2 ^ 6) * (b_3!`%`_byte.0 - 128))) + (b_4!`%`_byte.0 - 128))) = ch
-  ;; A-binary.watsup:54.1-54.44
-  def $utf8{ch* : char*}(ch*{ch : char}) = $concat_(syntax byte, $utf8([ch])*{ch : char})
+    -- where `%`_char((((((2 ^ 18) * (b_1!`%`_byte.0 - 240)) + ((2 ^ 12) * $cont(b_2))) + ((2 ^ 6) * $cont(b_3))) + $cont(b_4))) = ch
 }
 
 ;; 1-syntax.watsup
@@ -29600,6 +29659,9 @@ def $allocXs(syntax X, syntax Y, store : store, X*, Y*) : (store, addr*)
     -- where (s_1, a) = $allocX(syntax X, syntax Y, s, X, Y)
     -- where (s_2, a'*{a' : addr}) = $allocXs(syntax X, syntax Y, s_1, X'*{X' : X}, Y'*{Y' : Y})
 }
+
+;; C-conventions.watsup
+def $symdots : A
 
 == IL Validation after pass animate...
 == Complete.

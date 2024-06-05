@@ -123,7 +123,7 @@ let name_of_atom atom =
   | Top -> "top"
   | Dot -> "dot"                  (* Latex: . *)
   | Dot2 -> "dotdot"              (* Latex: .. *)
-  | Dot3 -> "dots"
+  | Dot3 -> "dots"                (* Latex: \ldots *)
   | Semicolon -> "semicolon"      (* Latex: ; *)
   | Backslash -> "setminus"
   | In -> "in"

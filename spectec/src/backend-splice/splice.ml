@@ -356,11 +356,16 @@ let parse_typ src : typ =
 let parse_exp src i0 : exp =
   run_parser (parse_to_anchor_end i0 0) Frontend.Parse.parse_exp src
 
+let parse_sym src i0 : sym =
+  run_parser (parse_to_anchor_end i0 0) Frontend.Parse.parse_sym src
+
 let elab_exp src i elaborator env exp typ =
   try_with_error src i (elaborator env.elab exp) typ
 
 let render_exp src i renderer env exp =
   try_with_error src i (renderer env) exp
+
+let render_sym = render_exp
 
 let try_exp_anchor env src r : bool =
   let i0 = src.i in
@@ -393,6 +398,15 @@ let try_exp_anchor env src r : bool =
         r := render_exp src i Backend_latex.Render.render_exp env.latex exp;
         true
       | exception Error.Error _ -> advn src (i0 - src.i); false
+
+let try_sym_anchor env src r sort : bool =
+  let i0 = src.i in
+  let b = try_string src (sort ^ ":") in
+  if b then (
+    let sym = parse_sym src (i0 - 2) in
+    r := render_sym src (i0 - 2) Backend_latex.Render.render_sym env.latex sym;
+  );
+  b
 
 let try_prose_anchor env src r sort space1 space2 find : bool =
   let b = try_string src (sort ^ ":") in
@@ -440,6 +454,7 @@ let splice_anchor env src splice_pos anchor buf =
     try_def_anchor env' src r "relation-ignore" "relation" "" find_relation ||
     try_def_anchor env' src r "rule-ignore" "relation" "rule" find_rule ||
     try_def_anchor env' src r "definition-ignore" "definition" "" find_def ||
+    try_sym_anchor env' src r "grammar-case" ||
     try_exp_anchor env' src r ||
     error src "unknown anchor sort";
   );

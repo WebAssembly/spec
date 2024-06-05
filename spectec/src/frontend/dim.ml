@@ -138,7 +138,8 @@ and check_exp env ctx e =
   | LenE e1
   | ParenE (e1, _)
   | BrackE (_, e1, _)
-  | TypE (e1, _) -> check_exp env ctx e1
+  | TypE (e1, _)
+  | ArithE e1 -> check_exp env ctx e1
   | BinE (e1, _, e2)
   | CmpE (e1, _, e2)
   | IdxE (e1, e2)

@@ -51,8 +51,8 @@ def $zbytes(storagetype, lit_(storagetype)) : byte* hint(show $bytes_(%,%))
 def $cbytes(Cnn, lit_(Cnn)) : byte*                 hint(show $bytes_(%,%))
 
 
-def $invibytes(N, byte*) : iN(N)
-def $invfbytes(N, byte*) : fN(N)
+def $invibytes(N, byte*) : iN(N) hint(show $bytes_(%)^(-1)#((%)))
+def $invfbytes(N, byte*) : fN(N) hint(show $bytes_(%)^(-1)#((%)))
 
 def $invibytes(N, b*) = n  -- if $ibytes(N, n) = b*
 def $invfbytes(N, b*) = p  -- if $fbytes(N, p) = b*

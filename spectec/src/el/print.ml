@@ -167,6 +167,7 @@ and string_of_exp e =
   | CallE (id, args) -> string_of_defid id ^ string_of_args args
   | IterE (e1, iter) -> string_of_exp e1 ^ string_of_iter iter
   | TypE (e1, t) -> string_of_exp e1 ^ " : " ^ string_of_typ t
+  | ArithE e1 -> "$(" ^ string_of_exp e1 ^ ")"
   | HoleE (`Num i) -> "%" ^ string_of_int i
   | HoleE `Next -> "%"
   | HoleE `Rest -> "%%"

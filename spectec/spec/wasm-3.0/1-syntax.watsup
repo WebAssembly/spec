@@ -15,11 +15,11 @@ syntax list(syntax X) = X*  -- if |X*| < $(2^32)
 syntax bit hint(desc "bit") = 0 | 1
 syntax byte hint(desc "byte") = 0x00 | ... | 0xFF
 
-syntax uN(N) hint(desc "unsigned integer") hint(show u#%) hint(macro "uNN") =
+syntax uN(N) hint(desc "unsigned integer") hint(show u#%) hint(macro "uNX") =
   0 | ... | 2^N-1
-syntax sN(N) hint(desc "signed integer") hint(show s#%) hint(macro "sNN") =
+syntax sN(N) hint(desc "signed integer") hint(show s#%) hint(macro "sNX") =
   -2^(N-1) | ... | -1 | 0 | +1 | ... | 2^(N-1)-1
-syntax iN(N) hint(desc "integer") hint(show i#%) hint(macro "iNN") =
+syntax iN(N) hint(desc "integer") hint(show i#%) hint(macro "iNX") =
   uN(N)
 
 syntax u8 = uN(8)
@@ -49,7 +49,7 @@ def $M(N) = $signif(N)
 def $E(N) : nat hint(show `E) hint(macro none)
 def $E(N) = $expon(N)
 
-syntax fN(N) hint(desc "floating-point number") hint(show f#%) hint(macro "fNN") =
+syntax fN(N) hint(desc "floating-point number") hint(show f#%) hint(macro "fNX") =
   | POS fNmag(N)  hint(show $(+%)) \
   | NEG fNmag(N)  hint(show $(-%))
 
@@ -74,7 +74,7 @@ def $canon_(N) = $(2^($signif(N)-1))
 
 ;; Vectors
 
-syntax vN(N) hint(desc "vector") hint(show v#%) hint(macro "vNN") =
+syntax vN(N) hint(desc "vector") hint(show v#%) hint(macro "vNX") =
   iN(N)
 
 

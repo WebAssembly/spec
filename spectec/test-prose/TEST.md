@@ -4219,23 +4219,30 @@ fone N
 canon_ N
 1. Return (2 ^ ($signif(N) - 1)).
 
+cont b
+1. Assert: Due to validation, (128 < b).
+2. Assert: Due to validation, (b < 192).
+3. Return (b - 128).
+
 utf8 char_u0*
-1. If (|char_u0*| is 1), then:
-  a. Let [ch] be char_u0*.
-  b. If (ch < 128), then:
-    1) Let b be ch.
-    2) Return [b].
-  c. If ((128 ≤ ch) and ((ch < 2048) and (ch ≥ (b_2 - 128)))), then:
-    1) Let ((2 ^ 6) · (b_1 - 192)) be (ch - (b_2 - 128)).
-    2) Return [b_1, b_2].
-  d. If ((((2048 ≤ ch) and (ch < 55296)) or ((57344 ≤ ch) and (ch < 65536))) and (ch ≥ (b_3 - 128))), then:
-    1) Let (((2 ^ 12) · (b_1 - 224)) + ((2 ^ 6) · (b_2 - 128))) be (ch - (b_3 - 128)).
-    2) Return [b_1, b_2, b_3].
-  e. If ((65536 ≤ ch) and ((ch < 69632) and (ch ≥ (b_4 - 128)))), then:
-    1) Let ((((2 ^ 18) · (b_1 - 240)) + ((2 ^ 12) · (b_2 - 128))) + ((2 ^ 6) · (b_3 - 128))) be (ch - (b_4 - 128)).
-    2) Return [b_1, b_2, b_3, b_4].
-2. Let ch* be char_u0*.
-3. Return $concat_($utf8([ch])*).
+1. Let ch* be char_u0*.
+2. Return $concat_($utf8([ch])*).
+3. Assert: Due to validation, (|char_u0*| is 1).
+4. Let [ch] be char_u0*.
+5. If (ch < 128), then:
+  a. Let b be ch.
+  b. Return [b].
+6. If ((128 ≤ ch) and ((ch < 2048) and (ch ≥ $cont(b_2)))), then:
+  a. Let ((2 ^ 6) · (b_1 - 192)) be (ch - $cont(b_2)).
+  b. Return [b_1, b_2].
+7. If ((((2048 ≤ ch) and (ch < 55296)) or ((57344 ≤ ch) and (ch < 65536))) and (ch ≥ $cont(b_3))), then:
+  a. Let (((2 ^ 12) · (b_1 - 224)) + ((2 ^ 6) · $cont(b_2))) be (ch - $cont(b_3)).
+  b. Return [b_1, b_2, b_3].
+8. Assert: Due to validation, (65536 ≤ ch).
+9. Assert: Due to validation, (ch < 69632).
+10. Assert: Due to validation, (ch ≥ $cont(b_4)).
+11. Let ((((2 ^ 18) · (b_1 - 240)) + ((2 ^ 12) · $cont(b_2))) + ((2 ^ 6) · $cont(b_3))) be (ch - $cont(b_4)).
+12. Return [b_1, b_2, b_3, b_4].
 
 ANYREF
 1. Return (REF (NULL ?(())) ANY).

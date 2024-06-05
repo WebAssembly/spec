@@ -15,13 +15,7 @@ Bytes
 
 :ref:`Bytes <syntax-byte>` encode themselves.
 
-.. math::
-   \begin{array}{llcll@{\qquad}l}
-   \production{byte} & \Bbyte &::=&
-     \hex{00} &\Rightarrow& \hex{00} \\ &&|&&
-     \dots \\ &&|&
-     \hex{FF} &\Rightarrow& \hex{FF} \\
-   \end{array}
+$${grammar: Bbyte}
 
 
 .. index:: integer, unsigned integer, signed integer, uninterpreted integer, LEB128, two's complement
@@ -39,46 +33,29 @@ Integers
 All :ref:`integers <syntax-int>` are encoded using the |LEB128|_ variable-length integer encoding, in either unsigned or signed variant.
 
 :ref:`Unsigned integers <syntax-uint>` are encoded in |UnsignedLEB128|_ format.
-As an additional constraint, the total number of bytes encoding a value of type :math:`\uN` must not exceed :math:`\F{ceil}(N/7)` bytes.
+As an additional constraint, the total number of bytes encoding a ${:uN(N)} value must not exceed ${:$ceil($(N/7))} bytes.
 
-.. math::
-   \begin{array}{llclll@{\qquad}l}
-   \production{unsigned integer} & \BuN &::=&
-     n{:}\Bbyte &\Rightarrow& n & (\iff n < 2^7 \wedge n < 2^N) \\ &&|&
-     n{:}\Bbyte~~m{:}\BuX{(N\B{-7})} &\Rightarrow&
-       2^7\cdot m + (n-2^7) & (\iff n \geq 2^7 \wedge N > 7) \\
-   \end{array}
+$${grammar: BuN}
 
 :ref:`Signed integers <syntax-sint>` are encoded in |SignedLEB128|_ format, which uses a two's complement representation.
-As an additional constraint, the total number of bytes encoding a value of type :math:`\sN` must not exceed :math:`\F{ceil}(N/7)` bytes.
+As an additional constraint, the total number of bytes encoding an ${:sN(N)} value must not exceed ${:$ceil($(N/7))} bytes.
 
-.. math::
-   \begin{array}{llclll@{\qquad}l}
-   \production{signed integer} & \BsN &::=&
-     n{:}\Bbyte &\Rightarrow& n & (\iff n < 2^6 \wedge n < 2^{N-1}) \\ &&|&
-     n{:}\Bbyte &\Rightarrow& n-2^7 & (\iff 2^6 \leq n < 2^7 \wedge n \geq 2^7-2^{N-1}) \\ &&|&
-     n{:}\Bbyte~~m{:}\BsX{(N\B{-7})} &\Rightarrow&
-       2^7\cdot m + (n-2^7) & (\iff n \geq 2^7 \wedge N > 7) \\
-   \end{array}
+$${grammar: BsN}
 
 :ref:`Uninterpreted integers <syntax-int>` are encoded as signed integers.
 
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \production{uninterpreted integer} & \BiN &::=&
-     n{:}\BsN &\Rightarrow& i & (\iff n = \signed_N(i))
-   \end{array}
+$${grammar: BiN}
 
 .. note::
-   The side conditions :math:`N > 7` in the productions for non-terminal bytes of the :math:`\uX{}` and :math:`\sX{}` encodings restrict the encoding's length.
+   The side conditions ${:$(N>7)} in the productions for non-terminal bytes of the ${:uN(N)} and ${:sN(N)} encodings restrict the encoding's length.
    However, "trailing zeros" are still allowed within these bounds.
-   For example, :math:`\hex{03}` and :math:`\hex{83}~\hex{00}` are both well-formed encodings for the value :math:`3` as a |u8|.
-   Similarly, either of :math:`\hex{7e}` and :math:`\hex{FE}~\hex{7F}` and :math:`\hex{FE}~\hex{FF}~\hex{7F}` are well-formed encodings of the value :math:`-2` as a |s16|.
+   For example, ${:0x03} and ${:0x83 0x00} are both well-formed encodings for the value ${:3} as a ${:u8}.
+   Similarly, either of ${:0x7E} and ${:0xFE 0x7F} and ${:0xFE 0xFF 0x7F} are well-formed encodings of the value ${:$(-2)} as an ${:s16}.
 
-   The side conditions on the value :math:`n` of terminal bytes further enforce that
-   any unused bits in these bytes must be :math:`0` for positive values and :math:`1` for negative ones.
-   For example, :math:`\hex{83}~\hex{10}` is malformed as a |u8| encoding.
-   Similarly, both :math:`\hex{83}~\hex{3E}` and :math:`\hex{FF}~\hex{7B}` are malformed as |s8| encodings.
+   The side conditions on the value ${:n} of terminal bytes further enforce that
+   any unused bits in these bytes must be ${:0} for positive values and ${:1} for negative ones.
+   For example, ${:0x83 0x10} is malformed as a ${:u8} encoding.
+   Similarly, both ${:0x83 0x3E} and ${:0xFF 0x7B} are malformed as ${:s8} encodings.
 
 
 .. index:: floating-point number, little endian
@@ -90,11 +67,7 @@ Floating-Point
 
 :ref:`Floating-point <syntax-float>` values are encoded directly by their |IEEE754|_ (Section 3.4) bit pattern in |LittleEndian|_ byte order:
 
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \production{floating-point value} & \BfN &::=&
-     b^\ast{:\,}\Bbyte^{N/8} &\Rightarrow& \bytes_{\fN}^{-1}(b^\ast) \\
-   \end{array}
+$${grammar: BfN}
 
 
 .. index:: name, byte, Unicode, ! UTF-8
@@ -107,42 +80,13 @@ Names
 
 :ref:`Names <syntax-name>` are encoded as a :ref:`list <binary-list>` of bytes containing the |Unicode|_ (Section 3.9) UTF-8 encoding of the name's character sequence.
 
-.. math::
-   \begin{array}{llclllll}
-   \production{name} & \Bname &::=&
-     b^\ast{:}\Blist(\Bbyte) &\Rightarrow& \name
-       && (\iff \utf8(\name) = b^\ast) \\
-   \end{array}
+$${grammar: Bname}
 
-The auxiliary |utf8| function expressing this encoding is defined as follows:
+The auxiliary ${:$utf8} function expressing this encoding is defined as follows:
 
-.. math::
-   \begin{array}{@{}l@{}}
-   \begin{array}{@{}lcl@{\qquad}l@{}}
-   \utf8(c^\ast) &=& (\utf8(c))^\ast \\[1ex]
-   \utf8(c) &=& b &
-     (\begin{array}[t]{@{}c@{~}l@{}}
-      \iff & c < \unicode{80} \\
-      \wedge & c = b) \\
-      \end{array} \\
-   \utf8(c) &=& b_1~b_2 &
-     (\begin{array}[t]{@{}c@{~}l@{}}
-      \iff & \unicode{80} \leq c < \unicode{800} \\
-      \wedge & c = 2^6(b_1-\hex{C0})+(b_2-\hex{80})) \\
-      \end{array} \\
-   \utf8(c) &=& b_1~b_2~b_3 &
-     (\begin{array}[t]{@{}c@{~}l@{}}
-      \iff & \unicode{800} \leq c < \unicode{D800} \vee \unicode{E000} \leq c < \unicode{10000} \\
-      \wedge & c = 2^{12}(b_1-\hex{E0})+2^6(b_2-\hex{80})+(b_3-\hex{80})) \\
-      \end{array} \\
-   \utf8(c) &=& b_1~b_2~b_3~b_4 &
-     (\begin{array}[t]{@{}c@{~}l@{}}
-      \iff & \unicode{10000} \leq c < \unicode{110000} \\
-      \wedge & c = 2^{18}(b_1-\hex{F0})+2^{12}(b_2-\hex{80})+2^6(b_3-\hex{80})+(b_4-\hex{80})) \\
-      \end{array} \\
-   \end{array} \\
-   \where b_2, b_3, b_4 < \hex{C0} \\
-   \end{array}
+$${definition: utf8}
+
+where ${definition: cont}
 
 .. note::
    Unlike in some other formats, name strings are not 0-terminated.

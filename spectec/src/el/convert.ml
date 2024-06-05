@@ -146,6 +146,7 @@ let rec sym_of_exp e =
   | TypE (e1, t) -> AttrG (e1, sym_of_exp (exp_of_typ t))
   | FuseE (e1, e2) -> FuseG (sym_of_exp e1, sym_of_exp e2)
   | UnparenE e1 -> UnparenG (sym_of_exp e1)
+  | ArithE e -> ArithG e
   | _ -> ArithG e
   ) $ e.at
 
@@ -159,7 +160,7 @@ let rec exp_of_sym g =
   | ParenG g1 -> ParenE (exp_of_sym g1, `Insig)
   | TupG gs -> TupE (List.map exp_of_sym gs)
   | IterG (g1, iter) -> IterE (exp_of_sym g1, iter)
-  | ArithG e -> e.it
+  | ArithG e -> ArithE e
   | AttrG (e, g2) -> TypE (e, typ_of_exp (exp_of_sym g2))
   | FuseG (g1, g2) -> FuseE (exp_of_sym g1, exp_of_sym g2)
   | UnparenG g1 -> UnparenE (exp_of_sym g1)
@@ -192,7 +193,7 @@ let param_of_arg a =
 
 let arg_of_param p =
   (match p.it with
-  | ExpP (id, t) -> ExpA (TypE (VarE (id, []) $ id.at, t) $ p.at)
+  | ExpP (id, _t) -> ExpA ((*TypE ( *)VarE (id, []) $ id.at(*, t) $ p.at*))
   | TypP id -> TypA (VarT (id, []) $ id.at)
   | GramP (id, _t) -> GramA (VarG (id, []) $ id.at)
   ) |> ref $ p.at

@@ -843,7 +843,7 @@ and must_elab_exp env e =
   match e.it with
   | VarE (id, _) -> not (bound env.vars id || bound env.gvars (strip_var_suffix id))
   | AtomE _ | BrackE _ | InfixE _ | EpsE | SeqE _ | StrE _ -> true
-  | ParenE (e1, _) | IterE (e1, _) -> must_elab_exp env e1
+  | ParenE (e1, _) | IterE (e1, _) | ArithE e1 -> must_elab_exp env e1
   | TupE es -> List.exists (must_elab_exp env) es
   | _ -> false
 
@@ -978,7 +978,7 @@ and infer_exp' env e : Il.exp' * typ =
   | SizeE id ->
     let _ = find "grammar" env.syms id in
     Il.NatE Z.zero, NumT NatT $ e.at
-  | ParenE (e1, _) ->
+  | ParenE (e1, _) | ArithE e1 ->
     infer_exp' env e1
   | TupE es ->
     let es', ts = List.split (List.map (infer_exp env) es) in
@@ -1112,7 +1112,7 @@ and elab_exp' env e t : Il.exp' =
     let t1, _iter = as_iter_typ "expression" env Check t e.at in
     let e1' = elab_exp env e1 t1 in
     cast_exp' "expression" env e1' t1 t
-  | ParenE (e1, _) ->
+  | ParenE (e1, _) | ArithE e1 ->
     elab_exp' env e1 t
   | TupE es ->
     let ts = as_tup_typ "tuple" env Check t e.at in
@@ -1316,7 +1316,8 @@ and elab_exp_notation' env tid e t : Il.exp list * Subst.t =
     let es', _s = elab_exp_notation' env tid e t1 in
     [lift_exp' (tup_exp' es' e.at) iter $$ e.at % !!!env tid t], Subst.empty
 
-  | ParenE (e1, _), _ ->
+  | ParenE (e1, _), _
+  | ArithE e1, _ ->
     elab_exp_notation' env tid e1 t
   | _, ParenT t1 ->
     elab_exp_notation' env tid e t1

@@ -126,7 +126,7 @@ and exp e =
   | TextE s -> text s
   | EpsE | HoleE _ -> ()
   | UnE (op, e1) -> unop op; exp e1
-  | LenE e1 | ParenE (e1, _) | UnparenE e1 -> exp e1
+  | LenE e1 | ArithE e1 | ParenE (e1, _) | UnparenE e1 -> exp e1
   | DotE (e1, at) -> exp e1; atom at
   | SizeE x -> gramid x
   | BinE (e1, op, e2) -> exp e1; binop op; exp e2
@@ -288,6 +288,7 @@ and clone_exp e =
   | CallE (id, args) -> CallE (id, List.map clone_arg args)
   | IterE (e1, iter) -> IterE (clone_exp e1, clone_iter iter)
   | TypE (e1, t) -> TypE (clone_exp e1, clone_typ t)
+  | ArithE e1 -> ArithE (clone_exp e1)
   | FuseE (e1, e2) -> FuseE (clone_exp e1, clone_exp e2)
   | UnparenE e1 -> UnparenE (clone_exp e1)
   ) $ e.at

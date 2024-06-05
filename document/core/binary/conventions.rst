@@ -39,24 +39,24 @@ Grammar
 
 The following conventions are adopted in defining grammar rules for the binary format.
 They mirror the conventions used for :ref:`abstract syntax <grammar>`.
-In order to distinguish symbols of the binary syntax from symbols of the abstract syntax, :math:`\mathtt{typewriter}` font is adopted for the former.
+In order to distinguish symbols of the binary syntax from symbols of the abstract syntax, ${grammar-case: Btypewriter} font is adopted for the former.
 
-* Terminal symbols are :ref:`bytes <syntax-byte>` expressed in hexadecimal notation: :math:`\hex{0F}`.
+* Terminal symbols are :ref:`bytes <syntax-byte>` expressed in hexadecimal notation: ${grammar-case: 0x0F}.
 
-* Nonterminal symbols are written in typewriter font: :math:`\B{valtype}, \B{instr}`.
+* Nonterminal symbols are written in typewriter font: ${grammar-case: Bvaltype}, ${grammar-case: Binstr}.
 
-* :math:`B^n` is a sequence of :math:`n\geq 0` iterations  of :math:`B`.
+* ${grammar-case: $(B)^n} is a sequence of ${:n>=0} iterations of ${:B}.
 
-* :math:`B^\ast` is a possibly empty sequence of iterations of :math:`B`.
-  (This is a shorthand for :math:`B^n` used where :math:`n` is not relevant.)
+* ${grammar-case: $(B)*} is a possibly empty sequence of iterations of ${:B}.
+  (This is a shorthand for ${:B^n} used where ${:n} is not relevant.)
 
-* :math:`B^?` is an optional occurrence of :math:`B`.
-  (This is a shorthand for :math:`B^n` where :math:`n \leq 1`.)
+* ${grammar-case: $(B)?} is an optional occurrence of ${:B}.
+  (This is a shorthand for ${:B^n} where ${:n<=1}.)
 
-* :math:`x{:}B` denotes the same language as the nonterminal :math:`B`, but also binds the variable :math:`x` to the attribute synthesized for :math:`B`.
-  A pattern may also be used instead of a variable, e.g., :math:`7{:}B`.
+* ${grammar-case: x:$(B)} denotes the same language as the nonterminal ${:B}, but also binds the variable ${:x} to the attribute synthesized for ${:B}.
+  A pattern may also be used instead of a variable, e.g., ${grammar-case: 7:$(B)}.
 
-* Productions are written :math:`\B{sym} ::= B_1 \Rightarrow A_1 ~|~ \dots ~|~ B_n \Rightarrow A_n`, where each :math:`A_i` is the attribute that is synthesized for :math:`\B{sym}` in the given case, usually from attribute variables bound in :math:`B_i`.
+* Productions are written ${grammar: Bsym}, where each ${:A_i} is the attribute that is synthesized for ${grammar-case: Bsym} in the given case, usually from attribute variables bound in ${:B_i}.
 
 * Some productions are augmented by side conditions in parentheses, which restrict the applicability of the production. They provide a shorthand for a combinatorial expansion of the production into many separate cases.
 
@@ -66,31 +66,19 @@ In order to distinguish symbols of the binary syntax from symbols of the abstrac
 .. note::
    For example, the :ref:`binary grammar <binary-numtype>` for :ref:`number types <syntax-numtype>` is given as follows:
 
-   .. math::
-     \begin{array}{llcll@{\qquad\qquad}l}
-     \production{number types} & \Bnumtype &::=&
-       \hex{7F} &\Rightarrow& \I32 \\ &&|&
-       \hex{7E} &\Rightarrow& \I64 \\ &&|&
-       \hex{7D} &\Rightarrow& \F32 \\ &&|&
-       \hex{7C} &\Rightarrow& \F64 \\
-     \end{array}
+   $${grammar: Bnumtype}
 
-   Consequently, the byte :math:`\hex{7F}` encodes the type |I32|,
-   :math:`\hex{7E}` encodes the type |I64|, and so forth.
+   Consequently, the byte ${grammar-case: 0x7F} encodes the type ${numtype:I32},
+   ${grammar-case: 0x7E} encodes the type ${numtype: I64}, and so forth.
    No other byte value is allowed as the encoding of a number type.
 
    The :ref:`binary grammar <binary-limits>` for :ref:`limits <syntax-limits>` is defined as follows:   
 
-   .. math::
-      \begin{array}{llclll}
-      \production{limits} & \Blimits &::=&
-        \hex{00}~~n{:}\Bu32 &\Rightarrow& \{ \LMIN~n, \LMAX~\epsilon \} \\ &&|&
-        \hex{01}~~n{:}\Bu32~~m{:}\Bu32 &\Rightarrow& \{ \LMIN~n, \LMAX~m \} \\
-      \end{array}
+   $${grammar: Blimits}
 
-   That is, a limits pair is encoded as either the byte :math:`\hex{00}` followed by the encoding of a |U32| value,
-   or the byte :math:`\hex{01}` followed by two such encodings. 
-   The variables :math:`n` and :math:`m` name the attributes of the respective |Bu32| nonterminals, which in this case are the actual :ref:`unsigned integers <syntax-uint>` those decode into.
+   That is, a limits pair is encoded as either the byte ${:0x00} followed by the encoding of a ${:u32} value,
+   or the byte ${grammar-case: 0x01} followed by two such encodings. 
+   The variables ${:n} and ${:m} name the attributes of the respective ${grammar-case: Bu32} nonterminals, which in this case are the actual :ref:`unsigned integers <syntax-uint>` those decode into.
    The attribute of the complete production then is the abstract syntax for the limit, expressed in terms of the former values.
 
 
@@ -101,9 +89,9 @@ Auxiliary Notation
 
 When dealing with binary encodings the following notation is also used:
 
-* :math:`\epsilon` denotes the empty byte sequence.
+* ${grammar-case: eps} denotes the empty byte sequence.
 
-* :math:`||B||` is the length of the byte sequence generated from the production :math:`B` in a derivation.
+* ${:||B||} is the length of the byte sequence generated from the production ${grammar-case: B} in a derivation.
 
 
 .. index:: list
@@ -113,10 +101,6 @@ When dealing with binary encodings the following notation is also used:
 Lists
 ~~~~~
 
-:ref:`Lists <syntax-list>` are encoded with their |Bu32| length followed by the encoding of their element sequence.
+:ref:`Lists <syntax-list>` are encoded with their ${grammar-case:Bu32} length followed by the encoding of their element sequence.
 
-.. math::
-   \begin{array}{llclll@{\qquad\qquad}l}
-   \production{list} & \Blist(\B{B}) &::=&
-     n{:}\Bu32~~(x{:}\B{B})^n &\Rightarrow& x^n \\
-   \end{array}
+$${grammar: Blist}
