@@ -482,6 +482,11 @@ enum ImportExportKind {
   "global"
 };
 
+enum IndexType {
+  "i32",
+  "i64",
+};
+
 dictionary ModuleExportDescriptor {
   required USVString name;
   required ImportExportKind kind;
@@ -584,15 +589,10 @@ Note: The use of this synchronous API is discouraged, as some implementations so
 <h3 id="memories">Memories</h3>
 
 <pre class="idl">
-enum MemoryIndexType {
-  "i32",
-  "i64",
-};
-
 dictionary MemoryDescriptor {
   required [EnforceRange] unsigned long initial;
   [EnforceRange] unsigned long maximum;
-  MemoryIndexType index;
+  IndexType index;
 };
 
 [LegacyNamespace=WebAssembly, Exposed=*]
@@ -783,6 +783,7 @@ dictionary TableDescriptor {
   required TableKind element;
   required [EnforceRange] unsigned long initial;
   [EnforceRange] unsigned long maximum;
+  IndexType index;
 };
 
 [LegacyNamespace=WebAssembly, Exposed=*]
@@ -829,7 +830,8 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
         1. Let |ref| be [=DefaultValue=](|elementType|).
     1. Otherwise,
         1. Let |ref| be [=?=] [=ToWebAssemblyValue=](|value|, |elementType|).
-    1. Let |type| be the [=table type=] {[=table type|min=] |initial|, [=table type|max=] |maximum|} |elementType|.
+    1. If |descriptior|["index"] [=map/exists=], let |index| be |descriptor|["index"]; otherwise, let |index| be "i32".
+    1. Let |type| be the [=table type=] [=table type|index=] |index| {[=table type|min=] |initial|, [=table type|max=] |maximum|} [=table type|refType=] |elementType|.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|store|, |tableaddr|) be [=table_alloc=](|store|, |type|, |ref|). <!-- TODO(littledan): Report allocation failure https://github.com/WebAssembly/spec/issues/584 -->
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.

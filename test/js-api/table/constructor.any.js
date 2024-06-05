@@ -157,6 +157,16 @@ test(() => {
         },
       };
     },
+
+    get index() {
+      order.push("index");
+      return {
+        valueOf() {
+          order.push("index valueOf");
+          return "i32";
+        },
+      };
+    },
   });
 
   assert_array_equals(order, [
@@ -166,6 +176,8 @@ test(() => {
     "initial valueOf",
     "maximum",
     "maximum valueOf",
+    "index",
+    "index valueOf",
   ]);
 }, "Order of evaluation for descriptor");
 
@@ -206,3 +218,24 @@ test(() => {
   assert_throws_js(TypeError, () => new WebAssembly.Table(argument, "cannot be used as a wasm function"));
   assert_throws_js(TypeError, () => new WebAssembly.Table(argument, 37));
 }, "initialize anyfunc table with a bad default value");
+
+test(() => {
+  const argument = { "element": "i32", "initial": 3, "index": "i32" };
+  const table = new WebAssembly.Table(argument);
+  // Once this is merged with the type reflection proposal we should check the
+  // index type of `table`.
+  assert_equals(table.length, 3);
+}, "Table with i32 index constructor");
+
+test(() => {
+  const argument = { "element": "i32", "initial": 3, "index": "i64" };
+  const table = new WebAssembly.Table(argument);
+  // Once this is merged with the type reflection proposal we should check the
+  // index type of `table`.
+  assert_equals(table.length, 3);
+}, "Table with i64 index constructor");
+
+test(() => {
+  const argument = { "element": "i32", "initial": 3, "index": "unknown" };
+  assert_throws_js(TypeError, () => new WebAssembly.Table(argument));
+}, "Unknown table index");
