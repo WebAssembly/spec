@@ -19,9 +19,9 @@ def $allocfunc(s, deftype, funccode, moduleinst) = (s ++ {FUNCS funcinst}, |s.FU
 
 def $allocfuncs(store, deftype*, funccode*, moduleinst*) : (store, funcaddr*) hint(show $allocfunc*#((%,%,%,%)))
 def $allocfuncs(s, eps, eps, eps) = (s, eps)
-def $allocfuncs(s, dt dt'*, funccode funccode'*, mm mm'*) = (s_2, fa fa'*)
-  -- if (s_1, fa) = $allocfunc(s, dt, funccode, mm)
-  -- if (s_2, fa'*) = $allocfuncs(s_1, dt'*, funccode'*, mm'*)
+def $allocfuncs(s, dt dt'*, funccode funccode'*, moduleinst moduleinst'*) = (s_2, fa fa'*)
+  -- if (s_1, fa) = $allocfunc(s, dt, funccode, moduleinst)
+  -- if (s_2, fa'*) = $allocfuncs(s_1, dt'*, funccode'*, moduleinst'*)
 
 def $allocglobal(store, globaltype, val) : (store, globaladdr)
 def $allocglobal(s, globaltype, val) = (s ++ {GLOBALS globalinst}, |s.GLOBALS|)

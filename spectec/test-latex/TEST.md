@@ -7904,9 +7904,9 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {{{\mathrm{allocfunc}}^\ast}}{(s,\, \epsilon,\, \epsilon,\, \epsilon)} &=& (s,\, \epsilon) \\
-{{{\mathrm{allocfunc}}^\ast}}{(s,\, {\mathit{dt}}~{{\mathit{dt}'}^\ast},\, {\mathit{code}}~{{{\mathit{code}}'}^\ast},\, {\mathit{mm}}~{{\mathit{mm}'}^\ast})} &=& (s_2,\, {\mathit{fa}}~{{\mathit{fa}'}^\ast})
-  &\qquad \mbox{if}~(s_1,\, {\mathit{fa}}) = {\mathrm{allocfunc}}(s, {\mathit{dt}}, {\mathit{code}}, {\mathit{mm}}) \\
-  &&&\qquad {\land}~(s_2,\, {{\mathit{fa}'}^\ast}) = {{{\mathrm{allocfunc}}^\ast}}{(s_1,\, {{\mathit{dt}'}^\ast},\, {{{\mathit{code}}'}^\ast},\, {{\mathit{mm}'}^\ast})} \\
+{{{\mathrm{allocfunc}}^\ast}}{(s,\, {\mathit{dt}}~{{\mathit{dt}'}^\ast},\, {\mathit{code}}~{{{\mathit{code}}'}^\ast},\, {\mathit{moduleinst}}~{{\mathit{moduleinst}'}^\ast})} &=& (s_2,\, {\mathit{fa}}~{{\mathit{fa}'}^\ast})
+  &\qquad \mbox{if}~(s_1,\, {\mathit{fa}}) = {\mathrm{allocfunc}}(s, {\mathit{dt}}, {\mathit{code}}, {\mathit{moduleinst}}) \\
+  &&&\qquad {\land}~(s_2,\, {{\mathit{fa}'}^\ast}) = {{{\mathrm{allocfunc}}^\ast}}{(s_1,\, {{\mathit{dt}'}^\ast},\, {{{\mathit{code}}'}^\ast},\, {{\mathit{moduleinst}'}^\ast})} \\
 \end{array}
 $$
 
@@ -8094,9 +8094,9 @@ $$
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~(z ; {\mathit{expr}}_{\mathsf{g}} \hookrightarrow^\ast z ; {\mathit{val}}_{\mathsf{g}})^\ast} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~(z ; {\mathit{expr}}_{\mathsf{t}} \hookrightarrow^\ast z ; {\mathit{ref}}_{\mathsf{t}})^\ast} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{(z ; {\mathit{expr}}_{\mathsf{e}} \hookrightarrow^\ast z ; {\mathit{ref}}_{\mathsf{e}})^\ast}^\ast} \\
-   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~({s'},\, {\mathit{mm}}) = {\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externval}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {({{\mathit{ref}}_{\mathsf{e}}^\ast})^\ast})} \\
+   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~({s'},\, {\mathit{moduleinst}}) = {\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externval}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {({{\mathit{ref}}_{\mathsf{e}}^\ast})^\ast})} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~f = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{module}~{\mathit{mm}} \}\end{array}} \\
+\mathsf{module}~{\mathit{moduleinst}} \}\end{array}} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{instr}}_{\mathsf{e}}^\ast} = {\mathrm{concat}}({{{\mathrm{runelem}}}_{i_{\mathsf{e}}}({{\mathit{elem}}^\ast}{}[i_{\mathsf{e}}])^{i_{\mathsf{e}}<{|{{\mathit{elem}}^\ast}|}}})} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{instr}}_{\mathsf{d}}^\ast} = {\mathrm{concat}}({{{\mathrm{rundata}}}_{i_{\mathsf{d}}}({{\mathit{data}}^\ast}{}[i_{\mathsf{d}}])^{i_{\mathsf{d}}<{|{{\mathit{data}}^\ast}|}}})} \\
 \end{array}

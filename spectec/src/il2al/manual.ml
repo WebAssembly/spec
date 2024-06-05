@@ -128,7 +128,7 @@ let return_instrs_of_instantiate config =
       frameE (Some (numE Z.zero), frame),
       listE ([ caseE (atom_of_name "FRAME_" "admininstr", []) ]), rhs
     );
-    returnI (Some (tupE [ store; varE "mm" ]))
+    returnI (Some (tupE [ store; varE "moduleinst" ]))
   ]
 let return_instrs_of_invoke config =
   let _, frame, rhs = config in
