@@ -880,9 +880,9 @@ instantiate module externval*
 23. Perform $initelem(mm, i_E*, mm.FUNCS[x]**).
 24. Perform $initdata(mm, i_D*, b**).
 25. Push the activation of f with arity 0 to the stack.
-26. If x' is defined, then:
-  a. Let ?(x'_0) be x'.
-  b. Execute the instruction (CALL x'_0).
+26. If (CALL x')? is defined, then:
+  a. Let ?(instr_0) be (CALL x')?.
+  b. Execute the instruction instr_0.
 27. Pop the activation of f with arity 0 from the stack.
 28. Return mm.
 
@@ -2809,9 +2809,9 @@ instantiate module externval*
 23. Push the activation of f with arity 0 to the stack.
 24. Execute the sequence (instr_E*).
 25. Execute the sequence (instr_D*).
-26. If x is defined, then:
-  a. Let ?(x_0) be x.
-  b. Execute the instruction (CALL x_0).
+26. If (CALL x)? is defined, then:
+  a. Let ?(instr_0) be (CALL x)?.
+  b. Execute the instruction instr_0.
 27. Pop the activation of f with arity 0 from the stack.
 28. Return mm.
 
@@ -5860,26 +5860,27 @@ instantiate module externval*
 7. Let (GLOBAL globaltype expr_G)* be global*.
 8. Let (TABLE tabletype expr_T)* be table*.
 9. Let (ELEM reftype expr_E* elemmode)* be elem*.
-10. Let z be { LOCALS: []; MODULE: moduleinst_0; }.
-11. Push the activation of z to the stack.
-12. Let [val_G]* be $eval_expr(expr_G)*.
-13. Pop the activation of z from the stack.
-14. Push the activation of z to the stack.
-15. Let [ref_T]* be $eval_expr(expr_T)*.
-16. Pop the activation of z from the stack.
-17. Push the activation of z to the stack.
-18. Let [ref_E]** be $eval_expr(expr_E)**.
-19. Pop the activation of z from the stack.
-20. Let mm be $allocmodule(module, externval*, val_G*, ref_T*, ref_E**).
-21. Let f be { LOCALS: []; MODULE: mm; }.
-22. Push the activation of f with arity 0 to the stack.
-23. Execute the sequence (instr_E*).
-24. Execute the sequence (instr_D*).
-25. If x is defined, then:
-  a. Let ?(x_0) be x.
-  b. Execute the instruction (CALL x_0).
-26. Pop the activation of f with arity 0 from the stack.
-27. Return mm.
+10. Let instr_S? be (CALL x)?.
+11. Let z be { LOCALS: []; MODULE: moduleinst_0; }.
+12. Push the activation of z to the stack.
+13. Let [val_G]* be $eval_expr(expr_G)*.
+14. Pop the activation of z from the stack.
+15. Push the activation of z to the stack.
+16. Let [ref_T]* be $eval_expr(expr_T)*.
+17. Pop the activation of z from the stack.
+18. Push the activation of z to the stack.
+19. Let [ref_E]** be $eval_expr(expr_E)**.
+20. Pop the activation of z from the stack.
+21. Let mm be $allocmodule(module, externval*, val_G*, ref_T*, ref_E**).
+22. Let f be { LOCALS: []; MODULE: mm; }.
+23. Push the activation of f with arity 0 to the stack.
+24. Execute the sequence (instr_E*).
+25. Execute the sequence (instr_D*).
+26. If instr_S? is defined, then:
+  a. Let ?(instr_0) be instr_S?.
+  b. Execute the instruction instr_0.
+27. Pop the activation of f with arity 0 from the stack.
+28. Return mm.
 
 invoke funcaddr val*
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.

@@ -349,18 +349,21 @@ let rec translate_rhs exp =
   | Il.CaseE ([{it = Atom "TRAP"; _}]::_, _) -> [ trapI () ~at:at ]
   (* Execute instrs
    * TODO: doing this based on variable name is too ad-hoc. Need smarter way. *)
-  | Il.IterE ({ it = VarE id; _ }, (Il.List, _))
-  | Il.IterE ({ it = SubE ({ it = VarE id; _ }, _, _); _}, (Il.List, _))
+  | Il.IterE ({ it = VarE id; _ }, (List, _))
+  | Il.IterE ({ it = SubE ({ it = VarE id; _ }, _, _); _}, (List, _))
     when String.starts_with ~prefix:"instr" id.it ->
-    [ executeseqI (translate_exp exp) ~at:at ]
-  | Il.IterE ({ it = CaseE ([{it = Atom "CALL"; _} as atom]::_, _); _ }, (Opt, [ (id, _) ])) ->
-    let new_name = varE (id.it ^ "_0") in
-    [ ifI (isDefinedE (varE id.it),
-      [
-        letI (optE (Some new_name), varE id.it) ~at:at;
-        executeI (caseE (translate_atom atom, [ new_name ])) ~at:at
-      ],
-      []) ~at:at ]
+      [executeseqI (translate_exp exp) ~at:at ]
+  | Il.VarE id | Il.SubE ({ it = VarE id; _ }, _, _)
+    when String.starts_with ~prefix:"instr" id.it ->
+      [ executeI (translate_exp exp) ~at:at ]
+  | Il.IterE (_, (Opt, _)) ->
+      (* TODO: need AL expression for unwrapping option *)
+    let tmp_name = varE "instr_0" in
+    [ ifI (
+      isDefinedE (translate_exp exp),
+      [ letI (optE (Some tmp_name), translate_exp exp) ~at:at; executeI tmp_name ],
+      []
+    ) ~at:at ]
   (* Push *)
   | Il.SubE _ | CallE _ | IterE _ -> [ pushI (translate_exp exp) ~at:at ]
   | Il.CaseE ([{it = Atom id; _}]::_, _) when List.mem id [
