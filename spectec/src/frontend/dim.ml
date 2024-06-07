@@ -166,7 +166,8 @@ and check_exp env ctx e =
     check_exp env (strip_index iter::ctx) e1
   | HoleE _
   | FuseE _
-  | UnparenE _ -> assert false
+  | UnparenE _
+  | LatexE _ -> assert false
 
 and check_path env ctx p =
   match p.it with

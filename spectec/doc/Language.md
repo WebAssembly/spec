@@ -152,6 +152,7 @@ exp ::=
   hole                                 hole (for syntax rewrites in hints)
   exp "#" exp                          token concatenation (for syntax rewrites in hints)
   "##" exp                             remove possible parentheses (for syntax rewrites in hints)
+  "latex" "(" text* ")"                literal latex (for syntax rewrites)
 
 unop  ::= notop | "+" | "-"
 binop ::= logop | "+" | "-" | "*" | "/" | "\" | "^"

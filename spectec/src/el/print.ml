@@ -174,6 +174,7 @@ and string_of_exp e =
   | HoleE `None -> "!%"
   | FuseE (e1, e2) -> string_of_exp e1 ^ "#" ^ string_of_exp e2
   | UnparenE e1 -> "##" ^ string_of_exp e1
+  | LatexE s -> "latex(" ^ String.escaped s ^ ")"
 
 and string_of_exps sep es =
   concat sep (List.map string_of_exp es)

@@ -130,6 +130,7 @@ and exp' =
   | HoleE of [`Num of int | `Next | `Rest | `None]  (* `%N` or `%` or `%%` or `!%` *)
   | FuseE of exp * exp           (* exp `#` exp *)
   | UnparenE of exp              (* `##` exp *)
+  | LatexE of string             (* `latex` `(` `"..."` `)` *)
 
 and expfield = atom * exp        (* atom exp *)
 

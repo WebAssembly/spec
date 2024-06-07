@@ -447,7 +447,7 @@ Printf.eprintf "[expand_atom %s @ %s] def=%s templ=%s\n%!"
 (Atom.string_of_atom atom) (Source.string_of_region atom.at) atom.note.Atom.def
 (match templ with None -> "none" | Some xs -> String.concat "%" xs);
 *)
-  (* If expanding with macro template, then pre-macrofy atom name,
+  (* When expanding with macro template, then pre-macrofy atom name,
    * since we will have lost the template context later on. *)
   if ctxt.templ = None || nonmacro_atom atom then atom else
   let name' = expand_name ctxt.templ (Atom.name_of_atom atom) in
@@ -457,7 +457,7 @@ Printf.eprintf "[expand_atom %s @ %s] def=%s templ=%s\n%!"
   atom'
 
 let expand_id _env (ctxt : ctxt) id =
-  (* If expanding with macro template, then pre-macrofy id name,
+  (* When expanding with macro template, then pre-macrofy id name,
    * since we will have lost the template context later on. *)
   if ctxt.templ = None || all_sub id.it then id else
   let id' = {id with it = expand_name ctxt.templ id.it} in
@@ -593,7 +593,8 @@ and expand_exp env ctxt e =
         Source.(ArithE e $ e.at)
       | a -> CallE ("" $ a.at, [a]) $ a.at
     ) args)
-  | HoleE `None -> HoleE `None
+  | HoleE `None ->
+    HoleE `None
   | FuseE (e1, e2) ->
     let e1' = expand_exp env ctxt e1 in
     let e2' = expand_exp env ctxt e2 in
@@ -601,6 +602,8 @@ and expand_exp env ctxt e =
   | UnparenE e1 ->
     let e1' = expand_exp env ctxt e1 in
     UnparenE e1'
+  | LatexE s ->
+    LatexE s
   ) $ e.at
 
 and expand_expfield env ctxt (atom, e) =
@@ -633,11 +636,11 @@ and expand_arg env ctxt a =
   ) $ a.at
 
 
-(* Attempt to show-expand the application `id(args)`, using the hints `show`,
+(* Attempt to expand the application `id(args)`, using the hints `show`,
  * and the function `render` for rendering the resulting expression.
  * If no hint can be found, fall back to the default of rendering `f`.
  *)
-let render_expand render env (show : exp list Map.t ref) macro id args f =
+let render_expand render env (show : hints ref) macro id args f =
   match Map.find_opt id.it !show with
   | None ->
 (*
@@ -675,9 +678,8 @@ Printf.printf "[expand attempt %s %s] %s\n%!" id.it m (El.Print.string_of_exp sh
  * possible show expansion results, respectively.
  *)
 let render_apply render_id render_exp env show macro id args =
-  (* HACK: leading space indicates prerendered literal *)
-  let atom = Atom.(Atom (" " ^ render_id env id) $$ id.at % info "") in
-  let arg0 = arg_of_exp (AtomE atom $ id.at) in
+  (* Pre-render id here, since we cannot distinguish it from other id classes later. *)
+  let arg0 = arg_of_exp (LatexE (render_id env id) $ id.at) in
   render_expand render_exp env show macro id (arg0::args)
     (fun () ->
       match args with
@@ -837,8 +839,6 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
       match atom.it with
       | Atom "_" -> render_id' env `Atom "_" None
       | Atom s when s.[0] = '_' -> ""
-      (* HACK: inject literally, already rendered stuff *)
-      | Atom s when s.[0] = ' ' -> String.sub s 1 (String.length s - 1)
       (* Always keep punctuation as non-macros *)
       | Dot -> "{.}"
       | Comma -> ","
@@ -1098,6 +1098,7 @@ Printf.eprintf "[render %s:X @ %s] try expansion\n%!" (Source.string_of_region e
   | UnparenE ({it = ParenE (e1, _); _} | e1) -> render_exp env e1
   | HoleE `None -> ""
   | HoleE _ -> error e.at "misplaced hole"
+  | LatexE s -> s
 
 and render_exps sep env es =
   concat sep (List.filter ((<>) "") (List.map (render_exp env) es))

@@ -68,7 +68,7 @@ let rec prec_of_exp = function  (* as far as iteration is concerned *)
   | AtomE _ | IdxE _ | SliceE _ | UpdE _ | ExtE _ | DotE _ | IterE _ -> Post
   | SeqE _ -> Seq
   | UnE _ | BinE _ | CmpE _ | InfixE _ | LenE _ | SizeE _
-  | CommaE _ | CompE _ | TypE _ | FuseE _ | UnparenE _ -> Op
+  | CommaE _ | CompE _ | TypE _ | FuseE _ | UnparenE _ | LatexE _ -> Op
   | ArithE e -> prec_of_exp e.it
 
 (* Extra parentheses can be inserted to disambiguate the role of elements of
@@ -124,7 +124,7 @@ let rec is_typcon t =
 %token IN PREC SUCC TURNSTILE TILESTURN
 %token DOLLAR TICK
 %token BOT TOP
-%token HOLE MULTIHOLE NOTHING FUSE FUSEFUSE
+%token HOLE MULTIHOLE NOTHING FUSE FUSEFUSE LATEX
 %token<int> HOLEN
 %token BOOL NAT INT RAT REAL TEXT
 %token SYNTAX GRAMMAR RELATION RULE VAR DEF
@@ -516,6 +516,7 @@ exp_hole_ :
   | HOLE { HoleE `Next }
   | MULTIHOLE { HoleE `Rest }
   | NOTHING { HoleE `None }
+  | LATEX LPAREN list(TEXTLIT) RPAREN { LatexE (String.concat " " $3) }
 
 exp_prim : exp_prim_ { $1 $ $sloc }
 exp_prim_ :

@@ -141,6 +141,7 @@ and subst_exp s e =
   | HoleE h -> HoleE h
   | FuseE (e1, e2) -> FuseE (subst_exp s e1, subst_exp s e2)
   | UnparenE e1 -> UnparenE (subst_exp s e1)
+  | LatexE s -> LatexE s
   ) $ e.at
 
 and subst_expfield s (atom, e) = (atom, subst_exp s e)

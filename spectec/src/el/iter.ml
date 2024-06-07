@@ -124,7 +124,7 @@ and exp e =
   | BoolE b -> bool b
   | NatE (op, n) -> natop op; nat n
   | TextE s -> text s
-  | EpsE | HoleE _ -> ()
+  | EpsE | HoleE _ | LatexE _ -> ()
   | UnE (op, e1) -> unop op; exp e1
   | LenE e1 | ArithE e1 | ParenE (e1, _) | UnparenE e1 -> exp e1
   | DotE (e1, at) -> exp e1; atom at
@@ -291,6 +291,7 @@ and clone_exp e =
   | ArithE e1 -> ArithE (clone_exp e1)
   | FuseE (e1, e2) -> FuseE (clone_exp e1, clone_exp e2)
   | UnparenE e1 -> UnparenE (clone_exp e1)
+  | LatexE s -> LatexE s
   ) $ e.at
 
 and clone_expfield (atom, e) = (clone_atom atom, clone_exp e)

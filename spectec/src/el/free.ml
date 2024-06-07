@@ -123,7 +123,7 @@ and det_typcon ((t, prems), _) = det_typ t + det_prems prems
 and free_exp e =
   match e.it with
   | VarE (id, as_) -> free_varid id + free_list free_arg as_
-  | AtomE _ | BoolE _ | NatE _ | TextE _ | EpsE | HoleE _ ->
+  | AtomE _ | BoolE _ | NatE _ | TextE _ | EpsE | HoleE _ | LatexE _ ->
     empty
   | UnE (_, e1) | DotE (e1, _) | LenE e1
   | ParenE (e1, _) | BrackE (_, e1, _) | ArithE e1 | UnparenE e1 -> free_exp e1
@@ -173,7 +173,7 @@ and det_exp e =
   | UnE _ | BinE _ | CmpE _
   | IdxE _ | SliceE _ | UpdE _ | ExtE _ | CommaE _ | CompE _
   | DotE _ | LenE _ | SizeE _ -> idx_exp e
-  | HoleE _ | FuseE _ | UnparenE _ -> assert false
+  | HoleE _ | FuseE _ | UnparenE _ | LatexE _ -> assert false
 
 and det_expfield (_, e) = det_exp e
 
@@ -207,7 +207,7 @@ and det_cond_exp e =
   | UnE (NotOp, e1) -> det_cond_exp e1
   | BinE (e1, (AndOp | OrOp | EquivOp | ImplOp), e2) -> det_cond_exp e1 + det_cond_exp e2
   | CmpE (e1, EqOp, e2) -> det_exp e1 + det_exp e2
-  | ParenE (e1, _) -> det_cond_exp e1
+  | ParenE (e1, _) | ArithE e1 -> det_cond_exp e1
   | _ -> empty
 
 
