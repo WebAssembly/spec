@@ -97,11 +97,11 @@ $$
   &\qquad \mbox{if}~{\mathit{numtype}}_1 \neq {\mathit{numtype}}_2 \\ &&|&
 {{\mathit{numtype}}{.}\mathsf{extend}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{s}}
   &\qquad \mbox{if}~{\mathit{numtype}} = {\mathsf{i}}{N} \land {\mathit{sz}} < N \\ &&|&
-\mathsf{local.get}~{\mathit{localidx}} \\ &&|&
-\mathsf{local.set}~{\mathit{localidx}} \\ &&|&
-\mathsf{local.tee}~{\mathit{localidx}} \\ &&|&
-\mathsf{global.get}~{\mathit{globalidx}} \\ &&|&
-\mathsf{global.set}~{\mathit{globalidx}} \\ &&|&
+\mathsf{local{.}get}~{\mathit{localidx}} \\ &&|&
+\mathsf{local{.}set}~{\mathit{localidx}} \\ &&|&
+\mathsf{local{.}tee}~{\mathit{localidx}} \\ &&|&
+\mathsf{global{.}get}~{\mathit{globalidx}} \\ &&|&
+\mathsf{global{.}set}~{\mathit{globalidx}} \\ &&|&
 {{\mathit{numtype}}{.}\mathsf{load}}{{({\mathit{sz}}~\mathsf{\_}~{\mathit{sx}})^?}}~{\mathit{memidx}}~{\mathit{memarg}}
   &\qquad \mbox{if}~({\mathit{numtype}} = {\mathsf{i}}{N} \land {\mathit{sz}} < {|{\mathsf{i}}{N}|})^? \\ &&|&
 {{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{memidx}}~{\mathit{memarg}}
@@ -110,11 +110,11 @@ $$
 {{\mathit{vectype}}{.}\mathsf{load}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\ &&|&
 {\mathit{vectype}}{.}\mathsf{store}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
 {{\mathit{vectype}}{.}\mathsf{store}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\ &&|&
-\mathsf{memory.size}~{\mathit{memidx}} \\ &&|&
-\mathsf{memory.grow}~{\mathit{memidx}} \\ &&|&
-\mathsf{memory.fill}~{\mathit{memidx}} \\ &&|&
-\mathsf{memory.copy}~{\mathit{memidx}}~{\mathit{memidx}} \\ &&|&
-\mathsf{memory.init}~{\mathit{memidx}}~{\mathit{dataidx}} \\ &&|&
+\mathsf{memory{.}size}~{\mathit{memidx}} \\ &&|&
+\mathsf{memory{.}grow}~{\mathit{memidx}} \\ &&|&
+\mathsf{memory{.}fill}~{\mathit{memidx}} \\ &&|&
+\mathsf{memory{.}copy}~{\mathit{memidx}}~{\mathit{memidx}} \\ &&|&
+\mathsf{memory{.}init}~{\mathit{memidx}}~{\mathit{dataidx}} \\ &&|&
 \ldots \\[0.8ex]
 & {\mathit{expr}} &::=& {{\mathit{instr}}^\ast} \\
 \end{array}
@@ -258,7 +258,7 @@ $$
 {{\mathrm{default}}}_{{\mathsf{i}}{N}} &=& ({\mathsf{i}}{N}{.}\mathsf{const}~0) \\
 {{\mathrm{default}}}_{{\mathsf{f}}{N}} &=& ({\mathsf{f}}{N}{.}\mathsf{const}~{+0}) \\
 {{\mathrm{default}}}_{{\mathsf{v}}{N}} &=& ({\mathsf{v}}{N}{.}\mathsf{const}~0) \\
-{{\mathrm{default}}}_{\mathsf{ref}~\mathsf{null}~{\mathit{ht}}} &=& (\mathsf{ref.null}~{\mathit{ht}}) \\
+{{\mathrm{default}}}_{\mathsf{ref}~\mathsf{null}~{\mathit{ht}}} &=& (\mathsf{ref{.}null}~{\mathit{ht}}) \\
 {{\mathrm{default}}}_{\mathsf{ref}~{\mathit{ht}}} &=& \epsilon \\
 \end{array}
 $$
