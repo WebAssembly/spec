@@ -195,7 +195,7 @@ and al_to_el_record record =
 
 (* Helpers *)
 
-let indent = "    "
+let indent = "   "
 
 let rec repeat str num =
   if num = 0 then ""
@@ -215,8 +215,8 @@ let render_opt prefix stringifier suffix = function
 let render_order index depth =
   index := !index + 1;
 
-  let num_idx = string_of_int !index in
-  let alp_idx = Char.escaped (Char.chr (96 + !index)) in
+  let num_idx = if !index = 1 then string_of_int !index else "#" in
+  let alp_idx = if !index = 1 then Char.escaped (Char.chr (96 + !index)) else "#" in
 
   match depth mod 4 with
   | 0 -> num_idx ^ "."

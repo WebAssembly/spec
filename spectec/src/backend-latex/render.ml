@@ -655,6 +655,7 @@ let lower = String.lowercase_ascii
 let dash_id = Str.(global_replace (regexp "-") "{-}")
 let quote_id = Str.(global_replace (regexp "_+") "\\_")
 let shrink_id = Str.(global_replace (regexp "[0-9]+") "{\\\\scriptstyle \\0}")
+let rekerni_id = Str.(global_replace (regexp "[.]") "{.}")
 let rekernl_id = Str.(global_replace (regexp "\\([a-z]\\)[{]") "\\1{\\kern-0.1em")
 let rekernr_id = Str.(global_replace (regexp "[}]\\([a-z{]\\)") "\\kern-0.1em}\\1")
 let macrofy_id = Str.(global_replace (regexp "[_.]") "")
@@ -684,7 +685,7 @@ Printf.eprintf "[id w/o macro] %s%s\n%!" (if style = `Func then "$" else "") id;
     (* TODO: provide a way to selectively shrink uppercase vars, esp after # *)
     match style with
     | `Var | `Func -> rekernl_id (rekernr_id (shrink_id id'))
-    | `Atom -> shrink_id (lower id')
+    | `Atom -> rekerni_id (shrink_id (lower id'))
     | `Token ->
       (* HACK for now: if first char is upper, remove *)
       if String.length id' > 1 && is_upper id'.[0]
@@ -793,7 +794,7 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
       | Atom s when s.[0] = '_' -> ""
       (* HACK: inject literally, already rendered stuff *)
       | Atom s when s.[0] = ' ' -> String.sub s 1 (String.length s - 1)
-      (* HACK: for now, always keep this as non-macros *)
+      (* Always keep punctuation as non-macros *)
       | Dot -> "{.}"
       | Comma -> ","
       | Semicolon -> ";"
@@ -1048,6 +1049,7 @@ Printf.eprintf "[render %s:X @ %s] try expansion\n%!" (Source.string_of_region e
     let e2' = as_paren_exp (fuse_exp e2 true) in
     let es = e2' :: flatten_fuse_exp_rev e1 in
     String.concat "" (List.map (fun e -> "{" ^ render_exp env e ^ "}") (List.rev es))
+  | UnparenE {it = ArithE e1; _} -> render_exp env (UnparenE e1 $ e.at)
   | UnparenE ({it = ParenE (e1, _); _} | e1) -> render_exp env e1
   | HoleE `None -> ""
   | HoleE _ -> error e.at "misplaced hole"
@@ -1175,7 +1177,7 @@ and render_sym env g =
   | NatG (AtomOp, n) -> "\\mathtt{" ^ Z.to_string n ^ "}"
   | TextG t -> "`" ^ t ^ "'"
   | EpsG -> "\\epsilon"
-  | SeqG gs -> render_syms "~" env gs
+  | SeqG gs -> render_syms "~~" env gs
   | AltG gs -> render_syms " ~|~ " env gs
   | RangeG (g1, g2) ->
     render_sym env g1 ^ " ~|~ \\ldots ~|~ " ^ render_sym env g2
@@ -1189,7 +1191,7 @@ and render_sym env g =
   | UnparenG ({it = ParenG g1; _} | g1) -> render_sym env g1
 
 and render_syms sep env gs =
-  altern_map_nl sep " \\\\ &&&" (render_sym env) gs
+  altern_map_nl sep " \\\\ &&&\\quad " (render_sym env) gs
 
 and render_prod arrow env prod =
   let (g, e, prems) = prod.it in
