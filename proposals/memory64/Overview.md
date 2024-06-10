@@ -175,7 +175,7 @@ have to support 32-bit memory addresses in their ABI.
     - ```
         C.tables[x] = it limits t
       ------------------------------
-      C ⊦ table.set x : [it] → [t]
+      C ⊦ table.set x : [it t] → []
       ```
   - table.size x
     - ```
@@ -187,7 +187,7 @@ have to support 32-bit memory addresses in their ABI.
     - ```
         C.tables[x] = it limits t
       -------------------------------
-      C ⊦ table.grow x : [it] → [it]
+      C ⊦ table.grow x : [t it] → [it]
       ```
   - table.fill x
     - ```
