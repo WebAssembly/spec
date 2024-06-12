@@ -1058,7 +1058,7 @@ Printf.eprintf "[render %s:X @ %s] try expansion\n%!" (Source.string_of_region e
     when render_atom env atom = "" ->
     render_exp env e1
   | ParenE (e1, _) -> "(" ^ render_exp env e1 ^ ")"
-  | TupE es -> "(" ^ render_exps ",\\, " env es ^ ")"
+  | TupE es -> "(" ^ render_exps ", " env es ^ ")"
   | InfixE (e1, atom, e2) ->
     let id = typed_id atom in
     let e = AtomE atom $ atom.at in

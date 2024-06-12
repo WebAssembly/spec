@@ -45,7 +45,7 @@ $${rule-prose: exec/select}
 $${rule: {Step_pure/select-*}}
 
 .. note::
-   In future versions of WebAssembly, |SELECT| may allow more than one value per choice.
+   In future versions of WebAssembly, ${:SELECT} may allow more than one value per choice.
 
 
 .. index:: numeric instruction, determinism, trap, NaN, value, value type

@@ -4931,16 +4931,16 @@ relop numty_u1 relop_u0 num__u3 num__u5
 13. Let fN_2 be num__u5.
 14. Return $fge($size(Fnn), fN_1, fN_2).
 
-cvtop numty_u0 numty_u1 cvtop_u5 sx_u2? num__u4
-1. If ((numty_u0 is I32) and ((numty_u1 is I64) and (cvtop_u5 is CONVERT))), then:
+cvtop numty_u0 numty_u1 cvtop_u7 sx_u2? num__u4
+1. If ((numty_u0 is I32) and ((numty_u1 is I64) and (cvtop_u7 is CONVERT))), then:
   a. Let iN be num__u4.
   b. If sx_u2? is defined, then:
     1) Let ?(sx) be sx_u2?.
     2) Return [$ext(32, 64, sx, iN)].
-2. If ((numty_u0 is I64) and ((numty_u1 is I32) and (cvtop_u5 is CONVERT))), then:
+2. If ((numty_u0 is I64) and ((numty_u1 is I32) and (cvtop_u7 is CONVERT))), then:
   a. Let iN be num__u4.
   b. Return [$wrap(64, 32, iN)].
-3. If ((cvtop_u5 is CONVERT) and the type of numty_u0 is Fnn), then:
+3. If ((cvtop_u7 is CONVERT) and the type of numty_u0 is Fnn), then:
   a. Let Fnn be numty_u0.
   b. If the type of numty_u1 is Inn, then:
     1) Let Inn be numty_u1.
@@ -4948,7 +4948,7 @@ cvtop numty_u0 numty_u1 cvtop_u5 sx_u2? num__u4
     3) If sx_u2? is defined, then:
       a) Let ?(sx) be sx_u2?.
       b) Return [$trunc($size(Fnn), $size(Inn), sx, fN)].
-4. If ((cvtop_u5 is CONVERT_SAT) and the type of numty_u0 is Fnn), then:
+4. If ((cvtop_u7 is CONVERT_SAT) and the type of numty_u0 is Fnn), then:
   a. Let Fnn be numty_u0.
   b. If the type of numty_u1 is Inn, then:
     1) Let Inn be numty_u1.
@@ -4956,13 +4956,13 @@ cvtop numty_u0 numty_u1 cvtop_u5 sx_u2? num__u4
     3) If sx_u2? is defined, then:
       a) Let ?(sx) be sx_u2?.
       b) Return [$trunc_sat($size(Fnn), $size(Inn), sx, fN)].
-5. If ((numty_u0 is F32) and ((numty_u1 is F64) and (cvtop_u5 is CONVERT))), then:
+5. If ((numty_u0 is F32) and ((numty_u1 is F64) and (cvtop_u7 is CONVERT))), then:
   a. Let fN be num__u4.
   b. Return [$promote(32, 64, fN)].
-6. If ((numty_u0 is F64) and ((numty_u1 is F32) and (cvtop_u5 is CONVERT))), then:
+6. If ((numty_u0 is F64) and ((numty_u1 is F32) and (cvtop_u7 is CONVERT))), then:
   a. Let fN be num__u4.
   b. Return [$demote(64, 32, fN)].
-7. If ((cvtop_u5 is CONVERT) and the type of numty_u1 is Fnn), then:
+7. If ((cvtop_u7 is CONVERT) and the type of numty_u1 is Fnn), then:
   a. Let Fnn be numty_u1.
   b. If the type of numty_u0 is Inn, then:
     1) Let Inn be numty_u0.
@@ -4970,7 +4970,7 @@ cvtop numty_u0 numty_u1 cvtop_u5 sx_u2? num__u4
     3) If sx_u2? is defined, then:
       a) Let ?(sx) be sx_u2?.
       b) Return [$convert($size(Inn), $size(Fnn), sx, iN)].
-8. Assert: Due to validation, (cvtop_u5 is REINTERPRET).
+8. Assert: Due to validation, (cvtop_u7 is REINTERPRET).
 9. If the type of numty_u1 is Fnn, then:
   a. Let Fnn be numty_u1.
   b. If the type of numty_u0 is Inn, then:
@@ -6855,25 +6855,25 @@ execution_of_TABLE.INIT x y
   f. Push the value (I32.CONST (n - 1)) to the stack.
   g. Execute the instruction (TABLE.INIT x y).
 
-execution_of_LOAD numty_u0 sz_sx_u1? x ao
+execution_of_LOAD numty_u0 loado_u2? x ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
-4. If sz_sx_u1? is not defined, then:
+4. If loado_u2? is not defined, then:
   a. Let nt be numty_u0.
   b. If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|), then:
     1) Trap.
   c. Let c be $inverse_of_nbytes(nt, $mem(z, x).BYTES[(i + ao.OFFSET) : ($size(nt) / 8)]).
   d. Push the value (nt.CONST c) to the stack.
 5. If the type of numty_u0 is Inn, then:
-  a. If sz_sx_u1? is defined, then:
-    1) Let ?(y_0) be sz_sx_u1?.
+  a. If loado_u2? is defined, then:
+    1) Let ?(y_0) be loado_u2?.
     2) Let (n, sx) be y_0.
     3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
   b. Let Inn be numty_u0.
-  c. If sz_sx_u1? is defined, then:
-    1) Let ?(y_0) be sz_sx_u1?.
+  c. If loado_u2? is defined, then:
+    1) Let ?(y_0) be loado_u2?.
     2) Let (n, sx) be y_0.
     3) Let c be $inverse_of_ibytes(n, $mem(z, x).BYTES[(i + ao.OFFSET) : (n / 8)]).
     4) Push the value (Inn.CONST $ext(n, $size(Inn), sx, c)) to the stack.

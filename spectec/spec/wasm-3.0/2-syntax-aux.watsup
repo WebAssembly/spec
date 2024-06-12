@@ -70,11 +70,11 @@ def $zsize(numtype) = $size(numtype)
 def $zsize(vectype) = $vsize(vectype)
 def $zsize(packtype) = $psize(packtype)
 
-def $IN(N) : numtype  hint(show I#%) hint(macro "numtype")
+def $IN(N) : numtype  hint(show I#%) hint(macro "INX")
 def $IN(32) = I32
 def $IN(64) = I64
 
-def $FN(N) : numtype  hint(show F#%) hint(macro "numtype")
+def $FN(N) : numtype  hint(show F#%) hint(macro "FNX")
 def $FN(32) = F32
 def $FN(64) = F64
 

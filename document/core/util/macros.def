@@ -196,8 +196,11 @@
 .. |F32| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{f\scriptstyle32}}
 .. |F64| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{f\scriptstyle64}}
 .. |V128| mathdef:: \xref{syntax/types}{syntax-vectype}{\K{v\scriptstyle128}}
+.. |INX| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{i}}
 .. |IN| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{i}\scriptstyle\kern-0.1emN}
+.. |FNX| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{f}}
 .. |FN| mathdef:: \xref{syntax/types}{syntax-numtype}{\K{f}\scriptstyle\kern-0.1emN}
+.. |VNX| mathdef:: \xref{syntax/types}{syntax-vectype}{\K{v}}
 .. |VN| mathdef:: \xref{syntax/types}{syntax-vectype}{\K{v}\scriptstyle\kern-0.1emN}
 
 .. |ANYREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{anyref}}
@@ -730,11 +733,13 @@
 .. |viminmaxop| mathdef:: \xref{syntax/instructions}{syntax-vbinop}{\X{viminmaxop}}
 .. |visatbinop| mathdef:: \xref{syntax/instructions}{syntax-vbinop}{\X{visatbinop}}
 
+.. |loadop| mathdef:: \xref{syntax/instructions}{syntax-loadop}{\X{loadop}}
 .. |vloadop| mathdef:: \xref{syntax/instructions}{syntax-vloadop}{\X{vloadop}}
 
 .. |sx| mathdef:: \xref{syntax/instructions}{syntax-sx}{\X{sx}}
 .. |sz| mathdef:: \xref{syntax/instructions}{syntax-sz}{\X{sz}}
 .. |half| mathdef:: \xref{syntax/instructions}{syntax-half}{\X{half}}
+.. |zero| mathdef:: \xref{syntax/instructions}{syntax-zero}{\X{zero}}
 .. |memarg| mathdef:: \xref{syntax/instructions}{syntax-memarg}{\X{memarg}}
 .. |laneidx| mathdef:: \xref{syntax/instructions}{syntax-laneidx}{\X{laneidx}}
 
@@ -880,7 +885,7 @@
 
 .. |Bmemarg| mathdef:: \xref{binary/instructions}{binary-memarg}{\B{memarg}}
 .. |Bblocktype| mathdef:: \xref{binary/instructions}{binary-blocktype}{\B{blocktype}}
-.. |Bcastflags| mathdef:: \xref{binary/instructions}{binary-castflags}{\B{castflags}}
+.. |Bcastop| mathdef:: \xref{binary/instructions}{binary-castop}{\B{castop}}
 
 .. |Binstr| mathdef:: \xref{binary/instructions}{binary-instr}{\B{instr}}
 .. |Bexpr| mathdef:: \xref{binary/instructions}{binary-expr}{\B{expr}}

@@ -93,20 +93,16 @@ $$
 {\mathit{numtype}} {.} {{\mathit{binop}}}_{{\mathit{numtype}}} \\ &&|&
 {\mathit{numtype}} {.} {{\mathit{testop}}}_{{\mathit{numtype}}} \\ &&|&
 {\mathit{numtype}} {.} {{\mathit{relop}}}_{{\mathit{numtype}}} \\ &&|&
-{\mathit{numtype}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{numtype}}_2}
+{\mathit{numtype}}_1 {.} {{{\mathit{cvtop}}}_{{\mathit{numtype}}_2}({\mathit{numtype}}_1)}{\mathsf{\_}}{{\mathit{numtype}}_2}{\mathsf{\_}}{{{\mathit{sx}}^?}}
   &\qquad \mbox{if}~{\mathit{numtype}}_1 \neq {\mathit{numtype}}_2 \\ &&|&
-{{\mathit{numtype}}{.}\mathsf{extend}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{s}}
-  &\qquad \mbox{if}~{\mathit{numtype}} = {\mathsf{i}}{N} \land {\mathit{sz}} < N \\ &&|&
 \mathsf{local{.}get}~{\mathit{localidx}} \\ &&|&
 \mathsf{local{.}set}~{\mathit{localidx}} \\ &&|&
 \mathsf{local{.}tee}~{\mathit{localidx}} \\ &&|&
 \mathsf{global{.}get}~{\mathit{globalidx}} \\ &&|&
 \mathsf{global{.}set}~{\mathit{globalidx}} \\ &&|&
-{{\mathit{numtype}}{.}\mathsf{load}}{{({\mathit{sz}}~\mathsf{\_}~{\mathit{sx}})^?}}~{\mathit{memidx}}~{\mathit{memarg}}
-  &\qquad \mbox{if}~({\mathit{numtype}} = {\mathsf{i}}{N} \land {\mathit{sz}} < {|{\mathsf{i}}{N}|})^? \\ &&|&
-{{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{memidx}}~{\mathit{memarg}}
-  &\qquad \mbox{if}~({\mathit{numtype}} = {\mathsf{i}}{N} \land {\mathit{sz}} < {|{\mathsf{i}}{N}|})^? \\ &&|&
-{{\mathit{vectype}}{.}\mathsf{load}}{{{\mathit{vloadop}}^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
+{{\mathit{numtype}}{.}\mathsf{load}}{{{{\mathit{loadop}}}_{{\mathit{numtype}}}^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
+{{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
+{{\mathit{vectype}}{.}\mathsf{load}}{{{{\mathit{vloadop}}}_{{\mathit{vectype}}}^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
 {{\mathit{vectype}}{.}\mathsf{load}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\ &&|&
 {\mathit{vectype}}{.}\mathsf{store}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
 {{\mathit{vectype}}{.}\mathsf{store}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\ &&|&
@@ -343,7 +339,7 @@ warning: syntax `comptype` was never spliced
 warning: syntax `config` was never spliced
 warning: syntax `consttype` was never spliced
 warning: syntax `context` was never spliced
-warning: syntax `cvtop` was never spliced
+warning: syntax `cvtop_` was never spliced
 warning: syntax `data` was never spliced
 warning: syntax `dataaddr` was never spliced
 warning: syntax `dataidx` was never spliced
@@ -417,6 +413,7 @@ warning: syntax `list` was never spliced
 warning: syntax `lit_` was never spliced
 warning: syntax `lit_` was never spliced
 warning: syntax `lit_` was never spliced
+warning: syntax `loadop_` was never spliced
 warning: syntax `local` was never spliced
 warning: syntax `localidx` was never spliced
 warning: syntax `localtype` was never spliced
@@ -508,7 +505,7 @@ warning: syntax `vec_` was never spliced
 warning: syntax `vectype` was never spliced
 warning: syntax `vextbinop_` was never spliced
 warning: syntax `vextunop_` was never spliced
-warning: syntax `vloadop` was never spliced
+warning: syntax `vloadop_` was never spliced
 warning: syntax `vrelop_` was never spliced
 warning: syntax `vrelop_` was never spliced
 warning: syntax `vshiftop_` was never spliced
@@ -559,48 +556,86 @@ warning: grammar `BiN` was never spliced
 warning: grammar `Bimport` was never spliced
 warning: grammar `Bimportsec` was never spliced
 warning: grammar `Binstr/control` was never spliced
-warning: grammar `Binstr/reference` was never spliced
+warning: grammar `Binstr/ref` was never spliced
 warning: grammar `Binstr/struct` was never spliced
+warning: grammar `Binstr/array` was never spliced
+warning: grammar `Binstr/cast` was never spliced
+warning: grammar `Binstr/extern` was never spliced
+warning: grammar `Binstr/i31` was never spliced
 warning: grammar `Binstr/parametric` was never spliced
-warning: grammar `Binstr/variable` was never spliced
+warning: grammar `Binstr/local` was never spliced
+warning: grammar `Binstr/global` was never spliced
 warning: grammar `Binstr/table` was never spliced
 warning: grammar `Binstr/memory` was never spliced
-warning: grammar `Binstr/numeric-const` was never spliced
-warning: grammar `Binstr/numeric-test-i32` was never spliced
-warning: grammar `Binstr/numeric-rel-i32` was never spliced
-warning: grammar `Binstr/numeric-test-i64` was never spliced
-warning: grammar `Binstr/numeric-rel-i64` was never spliced
-warning: grammar `Binstr/numeric-rel-f32` was never spliced
-warning: grammar `Binstr/numeric-rel-f64` was never spliced
-warning: grammar `Binstr/numeric-un-i32` was never spliced
-warning: grammar `Binstr/numeric-bin-i32` was never spliced
-warning: grammar `Binstr/numeric-un-i64` was never spliced
-warning: grammar `Binstr/numeric-bin-i64` was never spliced
-warning: grammar `Binstr/numeric-un-f32` was never spliced
-warning: grammar `Binstr/numeric-bin-f32` was never spliced
-warning: grammar `Binstr/numeric-un-f64` was never spliced
-warning: grammar `Binstr/numeric-bin-f64` was never spliced
-warning: grammar `Binstr/numeric-cvt` was never spliced
-warning: grammar `Binstr/numeric-extend` was never spliced
+warning: grammar `Binstr/num-const` was never spliced
+warning: grammar `Binstr/num-test-i32` was never spliced
+warning: grammar `Binstr/num-rel-i32` was never spliced
+warning: grammar `Binstr/num-test-i64` was never spliced
+warning: grammar `Binstr/num-rel-i64` was never spliced
+warning: grammar `Binstr/num-rel-f32` was never spliced
+warning: grammar `Binstr/num-rel-f64` was never spliced
+warning: grammar `Binstr/num-un-i32` was never spliced
+warning: grammar `Binstr/num-bin-i32` was never spliced
+warning: grammar `Binstr/num-un-i64` was never spliced
+warning: grammar `Binstr/num-un-ext-i32` was never spliced
+warning: grammar `Binstr/num-un-ext-i64` was never spliced
+warning: grammar `Binstr/num-bin-i64` was never spliced
+warning: grammar `Binstr/num-un-f32` was never spliced
+warning: grammar `Binstr/num-bin-f32` was never spliced
+warning: grammar `Binstr/num-un-f64` was never spliced
+warning: grammar `Binstr/num-bin-f64` was never spliced
+warning: grammar `Binstr/num-cvt` was never spliced
+warning: grammar `Binstr/num-cvt-sat` was never spliced
 warning: grammar `Binstr/vec-memory` was never spliced
 warning: grammar `Binstr/vec-const` was never spliced
 warning: grammar `Binstr/vec-shuffle` was never spliced
-warning: grammar `Binstr/vec-lanes` was never spliced
-warning: grammar `Binstr/vec-swizzle` was never spliced
 warning: grammar `Binstr/vec-splat` was never spliced
+warning: grammar `Binstr/vec-lane` was never spliced
 warning: grammar `Binstr/vec-rel-i8x16` was never spliced
 warning: grammar `Binstr/vec-rel-i16x8` was never spliced
 warning: grammar `Binstr/vec-rel-i32x4` was never spliced
-warning: grammar `Binstr/vec-rel-i64x2` was never spliced
 warning: grammar `Binstr/vec-rel-f32x4` was never spliced
 warning: grammar `Binstr/vec-rel-f64x2` was never spliced
-warning: grammar `Binstr/vec-vv` was never spliced
-warning: grammar `Binstr/vec-v-i8x16` was never spliced
-warning: grammar `Binstr/vec-v-i16x8` was never spliced
-warning: grammar `Binstr/vec-v-i32x4` was never spliced
-warning: grammar `Binstr/vec-v-i64x2` was never spliced
-warning: grammar `Binstr/vec-v-f32x4` was never spliced
-warning: grammar `Binstr/vec-v-f64x2` was never spliced
+warning: grammar `Binstr/vec-un-v128` was never spliced
+warning: grammar `Binstr/vec-bin-v128` was never spliced
+warning: grammar `Binstr/vec-tern-v128` was never spliced
+warning: grammar `Binstr/vec-test-v128` was never spliced
+warning: grammar `Binstr/vec-un-i8x16` was never spliced
+warning: grammar `Binstr/vec-test-i8x16` was never spliced
+warning: grammar `Binstr/vec-bitmask-i8x16` was never spliced
+warning: grammar `Binstr/vec-narrow-i8x16` was never spliced
+warning: grammar `Binstr/vec-shift-i8x16` was never spliced
+warning: grammar `Binstr/vec-bin-i8x16` was never spliced
+warning: grammar `Binstr/vec-extun-i16x8` was never spliced
+warning: grammar `Binstr/vec-un-i16x8` was never spliced
+warning: grammar `Binstr/vec-bin-i16x8` was never spliced
+warning: grammar `Binstr/vec-test-i16x8` was never spliced
+warning: grammar `Binstr/vec-bitmask-i16x8` was never spliced
+warning: grammar `Binstr/vec-narrow-i16x8` was never spliced
+warning: grammar `Binstr/vec-ext-i16x8` was never spliced
+warning: grammar `Binstr/vec-shift-i16x8` was never spliced
+warning: grammar `Binstr/vec-bin-i16x8` was never spliced
+warning: grammar `Binstr/vec-extbin-i16x8` was never spliced
+warning: grammar `Binstr/vec-extun-i32x4` was never spliced
+warning: grammar `Binstr/vec-un-i32x4` was never spliced
+warning: grammar `Binstr/vec-test-i32x4` was never spliced
+warning: grammar `Binstr/vec-bitmask-i32x4` was never spliced
+warning: grammar `Binstr/vec-ext-i32x4` was never spliced
+warning: grammar `Binstr/vec-shift-i32x4` was never spliced
+warning: grammar `Binstr/vec-bin-i32x4` was never spliced
+warning: grammar `Binstr/vec-extbin-i32x4` was never spliced
+warning: grammar `Binstr/vec-un-i64x2` was never spliced
+warning: grammar `Binstr/vec-test-i64x2` was never spliced
+warning: grammar `Binstr/vec-bitmask-i64x2` was never spliced
+warning: grammar `Binstr/vec-ext-i64x2` was never spliced
+warning: grammar `Binstr/vec-shift-i64x2` was never spliced
+warning: grammar `Binstr/vec-bin-i64x2` was never spliced
+warning: grammar `Binstr/vec-rel-i64x2` was never spliced
+warning: grammar `Binstr/vec-extbin-i64x2` was never spliced
+warning: grammar `Binstr/vec-un-f32x4` was never spliced
+warning: grammar `Binstr/vec-bin-f32x4` was never spliced
+warning: grammar `Binstr/vec-un-f64x2` was never spliced
+warning: grammar `Binstr/vec-bin-f64x2` was never spliced
 warning: grammar `Binstr/vec-cvt` was never spliced
 warning: grammar `Blabelidx` was never spliced
 warning: grammar `Blaneidx` was never spliced
