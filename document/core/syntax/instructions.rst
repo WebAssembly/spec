@@ -93,6 +93,7 @@ For the other integer instructions, the use of two's complement for the signed i
 .. _syntax-dim:
 .. _syntax-shape:
 .. _syntax-half:
+.. _syntax-zero:
 .. _syntax-vvunop:
 .. _syntax-vvbinop:
 .. _syntax-vvternop:
