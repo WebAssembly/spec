@@ -1249,7 +1249,8 @@ and render_prod arrow env prod =
 
 and render_gram arrow env gram =
   let (dots1, prods, dots2) = gram.it in
-  altern_map_nl " ~|~ " " \\\\ &&|&\n" Fun.id
+  altern_map_nl (if env.config.display then " \\\\ &&|&\n" else " ~|~ ")
+    " \\\\ &&|&\n" Fun.id
     ( render_dots dots1 @
       map_nl_list (render_prod arrow env) prods @
       render_dots dots2
@@ -1337,7 +1338,7 @@ let render_gramdef env d =
   | GramD (id1, _id2, ps, _t, gram, _hints) ->
     let args = List.map arg_of_param ps in
     let arrow =
-      if env.config.display && has_nl (let _, prods, _ = gram.it in prods)
+      if env.config.display
       then "&\\quad\\Rightarrow&\\quad"
       else "~\\Rightarrow~"
     in
@@ -1413,12 +1414,16 @@ let rec render_defs env = function
     match d.it with
     | TypD _ ->
       let ds' = merge_typdefs ds in
+      if List.length ds' > 1 && not env.config.display then
+        error d.at "cannot render multiple syntax types in line";
       let deco = if env.deco_typ then "l" ^ sp else "l@{}" in
       "\\begin{array}{@{}" ^ deco ^ "r" ^ sp ^ "r" ^ sp ^ "l@{}l@{}}\n" ^
         render_sep_defs (render_typdef env) ds' ^
       "\\end{array}"
     | GramD _ ->
       let ds' = merge_gramdefs ds in
+      if List.length ds' > 1 && not env.config.display then
+        error d.at "cannot render multiple grammars in line";
       "\\begin{array}{@{}l@{}r" ^ sp ^ "r" ^ sp ^ "l@{}l@{}l@{}l@{}}\n" ^
         render_sep_defs (render_gramdef env) ds' ^
       "\\end{array}"
