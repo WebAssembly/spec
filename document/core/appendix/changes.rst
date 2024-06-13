@@ -99,7 +99,7 @@ Added instructions that modify ranges of memory or table entries. [#proposal-ref
 
 * New :ref:`passive <syntax-elemmode>` form of :ref:`element segment <syntax-elem>`
 
-* New :ref:`data count section <binary-datacountsec>` in binary format
+* New :ref:`data count section <binary-datacntsec>` in binary format
 
 * Active data and element segments boundaries are no longer checked at compile time but may trap instead
 

@@ -824,6 +824,7 @@
 .. |Bmemtype| mathdef:: \xref{binary/types}{binary-memtype}{\B{memtype}}
 .. |Blimits| mathdef:: \xref{binary/types}{binary-limits}{\B{limits}}
 .. |Bmut| mathdef:: \xref{binary/types}{binary-mut}{\B{mut}}
+.. |Bexterntype| mathdef:: \xref{binary/types}{binary-externtype}{\B{externtype}}
 
 
 .. Indices, non-terminals
@@ -839,6 +840,8 @@
 .. |Blocalidx| mathdef:: \xref{binary/modules}{binary-localidx}{\B{localidx}}
 .. |Blabelidx| mathdef:: \xref{binary/modules}{binary-labelidx}{\B{labelidx}}
 .. |Bfieldidx| mathdef:: \xref{binary/modules}{binary-fieldidx}{\B{fieldidx}}
+
+.. |Bexternidx| mathdef:: \xref{binary/modules}{binary-externidx}{\B{externidx}}
 
 
 .. Modules, non-terminals
@@ -860,10 +863,10 @@
 .. |Belemsec| mathdef:: \xref{binary/modules}{binary-elemsec}{\B{elemsec}}
 .. |Bdatasec| mathdef:: \xref{binary/modules}{binary-datasec}{\B{datasec}}
 .. |Bstartsec| mathdef:: \xref{binary/modules}{binary-startsec}{\B{startsec}}
-.. |Bdatacountsec| mathdef:: \xref{binary/modules}{binary-datacountsec}{\B{datacountsec}}
+.. |Bdatacntsec| mathdef:: \xref{binary/modules}{binary-datacntsec}{\B{datacntsec}}
 
 .. |Bcustom| mathdef:: \xref{binary/modules}{binary-customsec}{\B{custom}}
-.. |Btype| mathdef:: \xref{binary/modules}{binary-typedef}{\B{type}}
+.. |Btype| mathdef:: \xref{binary/modules}{binary-type}{\B{type}}
 .. |Bfunc| mathdef:: \xref{binary/modules}{binary-func}{\B{func}}
 .. |Btable| mathdef:: \xref{binary/modules}{binary-table}{\B{table}}
 .. |Bmem| mathdef:: \xref{binary/modules}{binary-mem}{\B{mem}}
@@ -879,6 +882,7 @@
 .. |Blocals| mathdef:: \xref{binary/modules}{binary-local}{\B{locals}}
 .. |Bdata| mathdef:: \xref{binary/modules}{binary-data}{\B{data}}
 .. |Bstart| mathdef:: \xref{binary/modules}{binary-start}{\B{start}}
+.. |Bdatacnt| mathdef:: \xref{binary/modules}{binary-datacnt}{\B{datacnt}}
 
 
 .. Instructions, non-terminals

@@ -78,7 +78,7 @@ grammar Bmemidx : memidx = x:Bu32 => x
 grammar Belemidx : elemidx = x:Bu32 => x
 grammar Bdataidx : dataidx = x:Bu32 => x
 grammar Blocalidx : localidx = x:Bu32 => x
-grammar Blabelidx : labelidx = x:Bu32 => x
+grammar Blabelidx : labelidx = l:Bu32 => l
 
 grammar Bexternidx : externidx =
   | 0x00 x:Bfuncidx => FUNC x
@@ -1031,7 +1031,8 @@ grammar Bfuncsec : typeidx* hint(desc "function section") =
 ;; Table section
 
 grammar Btable : table =
-  | tt:Btabletype e:Bexpr => TABLE tt e
+  | tt:Btabletype => TABLE tt (REF.NULL ht)  -- if tt = lim (REF NULL? ht)
+  | 0x40 0x00 tt:Btabletype e:Bexpr => TABLE tt e
 
 grammar Btablesec : table* hint(desc "table section") =
   | tab*:Bsection_(4, Blist(Btable)) => tab*
@@ -1058,7 +1059,7 @@ grammar Bglobalsec : global* hint(desc "global section") =
 ;; Export section
 
 grammar Bexport : export =
-  | nm:Bname ux:Bexternidx => EXPORT nm ux
+  | nm:Bname xx:Bexternidx => EXPORT nm xx
 
 grammar Bexportsec : export* hint(desc "export section") =
   | ex*:Bsection_(7, Blist(Bexport)) => ex*
@@ -1080,19 +1081,19 @@ grammar Belemkind : reftype hint(desc "element kind") =
 
 grammar Belem : elem =
   | 0:Bu32 e_o:Bexpr y*:Blist(Bfuncidx) =>
-      ELEM (REF NULL FUNC) (REF.FUNC y)* (ACTIVE 0 e_o)
+      ELEM (REF FUNC) (REF.FUNC y)* (ACTIVE 0 e_o)
   | 1:Bu32 rt:Belemkind y*:Blist(Bfuncidx) =>
       ELEM rt (REF.FUNC y)* PASSIVE
-  | 2:Bu32 x:Btableidx expr:Bexpr rt:Belemkind y*:Blist(Bfuncidx) =>
-      ELEM rt (REF.FUNC y)* (ACTIVE x expr)
+  | 2:Bu32 x:Btableidx e:Bexpr rt:Belemkind y*:Blist(Bfuncidx) =>
+      ELEM rt (REF.FUNC y)* (ACTIVE x e)
   | 3:Bu32 rt:Belemkind y*:Blist(Bfuncidx) =>
       ELEM rt (REF.FUNC y)* DECLARE
-  | 4:Bu32 e_o:Bexpr e*:Blist(Bexpr) =>
-      ELEM (REF NULL FUNC) e* (ACTIVE 0 e_o)
+  | 4:Bu32 e_O:Bexpr e*:Blist(Bexpr) =>
+      ELEM (REF NULL FUNC) e* (ACTIVE 0 e_O)
   | 5:Bu32 rt:Breftype e*:Blist(Bexpr) =>
       ELEM rt e* PASSIVE
-  | 6:Bu32 x:Btableidx expr:Bexpr e*:Blist(Bexpr) =>
-      ELEM (REF NULL FUNC) e* (ACTIVE x expr)
+  | 6:Bu32 x:Btableidx e_O:Bexpr e*:Blist(Bexpr) =>
+      ELEM (REF NULL FUNC) e* (ACTIVE x e_O)
   | 7:Bu32 rt:Breftype e*:Blist(Bexpr) =>
       ELEM rt e* DECLARE
 
@@ -1102,13 +1103,14 @@ grammar Belemsec : elem* hint(desc "element section") =
 
 ;; Code section
 
-syntax code = (local*, expr)
+syntax code hint(macro none) = (local*, expr)
 
 grammar Blocals : local* hint(desc "local") =
   | n:Bu32 t:Bvaltype => (LOCAL t)^n
 
 grammar Bfunc : code =
-  | local**:Blist(Blocals) expr:Bexpr => ($concat_(local, local**), expr)
+  | loc**:Blist(Blocals) e:Bexpr => ($concat_(local, loc**), e)
+    -- if $(|$concat_(local, loc**)| < 2^32)
 
 grammar Bcode : code =
   | len:Bu32 code:Bfunc => code  -- if len = ||Bfunc||
@@ -1139,8 +1141,11 @@ grammar Bdatacntsec : u32* hint(desc "data count section") =
 
 ;; Modules
 
+grammar Bmagic : () = 0x00 0x61 0x73 0x6D => ()
+grammar Bversion : () = 0x01 0x00 0x00 0x00 => ()
 grammar Bmodule : module =
-  | 0x00 0x61 0x73 0x6D 1:Bu32
+  | Bmagic
+    Bversion
     Bcustomsec*
 
 

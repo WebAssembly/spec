@@ -1241,8 +1241,11 @@ and render_syms sep env gs =
 
 and render_prod arrow env prod =
   let (g, e, prems) = prod.it in
-  render_sym env g ^ " " ^ arrow ^ " " ^
-    render_conditions env (render_exp env e) "&&&&&" prems
+  match e.it, prems with
+  | (TupE [] | ParenE ({it = SeqE []; _}, _)), [] -> render_sym env g
+  | _ ->
+    render_sym env g ^ " " ^ arrow ^ " " ^
+      render_conditions env (render_exp env e) "&&&&&" prems
 
 and render_gram arrow env gram =
   let (dots1, prods, dots2) = gram.it in
@@ -1323,7 +1326,7 @@ let render_typdeco env id =
 
 let render_typdef env d =
   match d.it with
-  | TypD (id1, _id2, args, t, _) ->
+  | TypD (id1, _id2, args, t, _hints) ->
     render_typdeco env id1 ^
     render_apply render_typid render_exp env env.show_typ env.macro_typ id1 args ^
     " &::=& " ^ render_typ env t
@@ -1331,9 +1334,13 @@ let render_typdef env d =
 
 let render_gramdef env d =
   match d.it with
-  | GramD (id1, _id2, ps, _t, ({it = (_, prods, _); _} as gram), _) ->
+  | GramD (id1, _id2, ps, _t, gram, _hints) ->
     let args = List.map arg_of_param ps in
-    let arrow = if has_nl prods then "&\\quad\\Rightarrow&\\quad" else "~\\Rightarrow~" in
+    let arrow =
+      if env.config.display && has_nl (let _, prods, _ = gram.it in prods)
+      then "&\\quad\\Rightarrow&\\quad"
+      else "~\\Rightarrow~"
+    in
     "& " ^ render_apply render_gramid render_exp_as_sym
       env env.show_gram env.macro_gram id1 args ^
       " &::=& " ^ render_gram arrow env gram

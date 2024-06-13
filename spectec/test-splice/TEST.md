@@ -643,6 +643,7 @@ warning: grammar `Blimits` was never spliced
 warning: grammar `Blist` was never spliced
 warning: grammar `Blocalidx` was never spliced
 warning: grammar `Blocals` was never spliced
+warning: grammar `Bmagic` was never spliced
 warning: grammar `Bmem` was never spliced
 warning: grammar `Bmemarg` was never spliced
 warning: grammar `Bmemidx` was never spliced
@@ -677,6 +678,7 @@ warning: grammar `Bu64` was never spliced
 warning: grammar `BuN` was never spliced
 warning: grammar `Bvaltype` was never spliced
 warning: grammar `Bvectype` was never spliced
+warning: grammar `Bversion` was never spliced
 warning: rule `Blocktype_ok/valtype` was never spliced
 warning: rule `Blocktype_ok/typeidx` was never spliced
 warning: rule `Comptype_ok/struct` was never spliced

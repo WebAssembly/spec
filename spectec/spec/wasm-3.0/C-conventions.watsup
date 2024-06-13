@@ -109,5 +109,4 @@ def $allocXs2(syntax X, syntax Y, s*[0], X^n, Y^n) = (s*[n], a^n)
 grammar Btypewriter : () hint(macro none) = 0x00 => ()
 
 def $symdots : A hint(show `...) hint(macro none)
-grammar Bsym : A hint(macro none) =
-  $(B_1) => A_1 | $($symdots) | $(B_n) => A_n
+grammar Bsym : A hint(macro none) = $(B_1) => A_1 | $($symdots) | $(B_n) => A_n

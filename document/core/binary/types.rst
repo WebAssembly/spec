@@ -1,6 +1,5 @@
 .. index:: type
    pair: binary format; type
-.. _binary-type:
 
 Types
 -----
@@ -181,3 +180,15 @@ Global Types
 :ref:`Global types <syntax-globaltype>` are encoded by their :ref:`value type <binary-valtype>` and a flag for their :ref:`mutability <syntax-mut>`.
 
 $${grammar: Bglobaltype}
+
+
+.. index:: external type
+   pair: binary format; external type
+.. _binary-externtype:
+
+External Types
+~~~~~~~~~~~~~~
+
+:ref:`External types <syntax-externtype>` are encoded by a distiguishing byte followed by an encoding of the respective form of type.
+
+$${grammar: Bexterntype}
