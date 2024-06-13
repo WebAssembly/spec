@@ -383,61 +383,6 @@ Furthermore, it must be present if any :ref:`data index <syntax-dataidx>` occurs
 
 $${grammar: {Bmagic Bversion Bmodule}}
 
-.. math::
-   \begin{array}{llcllll}
-   \production{magic} & \Bmagic &::=&
-     \hex{00}~\hex{61}~\hex{73}~\hex{6D} \\
-   \production{version} & \Bversion &::=&
-     \hex{01}~\hex{00}~\hex{00}~\hex{00} \\
-   \production{module} & \Bmodule &::=&
-     \Bmagic \\ &&&
-     \Bversion \\ &&&
-     \Bcustomsec^\ast \\ &&&
-     \rectype^\ast{:\,}\Btypesec \\ &&&
-     \Bcustomsec^\ast \\ &&&
-     \import^\ast{:\,}\Bimportsec \\ &&&
-     \Bcustomsec^\ast \\ &&&
-     \typeidx^n{:\,}\Bfuncsec \\ &&&
-     \Bcustomsec^\ast \\ &&&
-     \table^\ast{:\,}\Btablesec \\ &&&
-     \Bcustomsec^\ast \\ &&&
-     \mem^\ast{:\,}\Bmemsec \\ &&&
-     \Bcustomsec^\ast \\ &&&
-     \global^\ast{:\,}\Bglobalsec \\ &&&
-     \Bcustomsec^\ast \\ &&&
-     \export^\ast{:\,}\Bexportsec \\ &&&
-     \Bcustomsec^\ast \\ &&&
-     \start^?{:\,}\Bstartsec \\ &&&
-     \Bcustomsec^\ast \\ &&&
-     \elem^\ast{:\,}\Belemsec \\ &&&
-     \Bcustomsec^\ast \\ &&&
-     m^?{:\,}\Bdatacntsec \\ &&&
-     \Bcustomsec^\ast \\ &&&
-     \X{code}^n{:\,}\Bcodesec \\ &&&
-     \Bcustomsec^\ast \\ &&&
-     \data^m{:\,}\Bdatasec \\ &&&
-     \Bcustomsec^\ast
-     \quad\Rightarrow\quad \{~
-       \begin{array}[t]{@{}l@{}}
-       \MTYPES~\rectype^\ast, \\
-       \MFUNCS~\func^n, \\
-       \MTABLES~\table^\ast, \\
-       \MMEMS~\mem^\ast, \\
-       \MGLOBALS~\global^\ast, \\
-       \MELEMS~\elem^\ast, \\
-       \MDATAS~\data^m, \\
-       \MSTART~\start^?, \\
-       \MIMPORTS~\import^\ast, \\
-       \MEXPORTS~\export^\ast ~\} \\
-       \end{array} \\ &&&
-     (\iff m^? \neq \epsilon \vee \freedataidx(\X{code}^n) = \emptyset) \\
-   \end{array}
-
-where for each :math:`t_i^\ast, e_i` in :math:`\X{code}^n`,
-
-.. math::
-   \func^n[i] = \{ \FTYPE~\typeidx^n[i], \FLOCALS~t_i^\ast, \FBODY~e_i \} \\
-
 .. note::
    The version of the WebAssembly binary format may increase in the future
    if backward-incompatible changes have to be made to the format.

@@ -1237,7 +1237,7 @@ and render_sym env g =
   | UnparenG ({it = ParenG g1; _} | g1) -> render_sym env g1
 
 and render_syms sep env gs =
-  altern_map_nl sep " \\\\ &&&\\quad " (render_sym env) gs
+  altern_map_nl sep " \\\\ &&& " (render_sym env) gs
 
 and render_prod arrow env prod =
   let (g, e, prems) = prod.it in
@@ -1245,7 +1245,11 @@ and render_prod arrow env prod =
   | (TupE [] | ParenE ({it = SeqE []; _}, _)), [] -> render_sym env g
   | _ ->
     render_sym env g ^ " " ^ arrow ^ " " ^
-      render_conditions env (render_exp env e) "&&&&&" prems
+      if g.at.right.line = e.at.left.line then
+        render_conditions env (render_exp env e) "&&&&&" prems
+      else
+        render_conditions env ("\\\\\n  &&& \\multicolumn{3}{@{}l@{}}{\\qquad " ^
+          render_exp env e ^ " }") "&&&&&" prems
 
 and render_gram arrow env gram =
   let (dots1, prods, dots2) = gram.it in

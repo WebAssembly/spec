@@ -17,22 +17,22 @@ def $setminus1(x, y_1 y*) = $setminus1(x, y*)  -- otherwise
 
 ;; Free indices
 
-def $dataidx_instr(instr) : dataidx*  hint(show $dataidx(%))
+def $dataidx_instr(instr) : dataidx*  hint(show $dataidx(%)) hint(macro "freedataidx")
 def $dataidx_instr(MEMORY.INIT x y) = y
 def $dataidx_instr(DATA.DROP x) = x
 def $dataidx_instr(in) = eps
 
-def $dataidx_instrs(instr*) : dataidx*  hint(show $dataidx(%))
+def $dataidx_instrs(instr*) : dataidx*  hint(show $dataidx(%)) hint(macro "freedataidx")
 def $dataidx_instrs(eps) = eps
 def $dataidx_instrs(instr instr'*) = $dataidx_instr(instr) $dataidx_instrs(instr'*)
 
-def $dataidx_expr(expr) : dataidx*  hint(show $dataidx(%))
+def $dataidx_expr(expr) : dataidx*  hint(show $dataidx(%)) hint(macro "freedataidx")
 def $dataidx_expr(in*) = $dataidx_instrs(in*)
 
-def $dataidx_func(func) : dataidx*  hint(show $dataidx(%))
+def $dataidx_func(func) : dataidx*  hint(show $dataidx(%)) hint(macro "freedataidx")
 def $dataidx_func(FUNC x loc* e) = $dataidx_expr(e)
 
-def $dataidx_funcs(func*) : dataidx*  hint(show $dataidx(%))
+def $dataidx_funcs(func*) : dataidx*  hint(show $dataidx(%)) hint(macro "freedataidx")
 def $dataidx_funcs(eps) = eps
 def $dataidx_funcs(func func'*) = $dataidx_func(func) $dataidx_funcs(func'*)
 

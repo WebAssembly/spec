@@ -8330,7 +8330,7 @@ $$
 \mathtt{0x02}~~{\mathit{bt}}{:}{\mathtt{blocktype}}~~{({\mathit{in}}{:}{\mathtt{instr}})^\ast}~~\mathtt{0x0B} &\quad\Rightarrow&\quad \mathsf{block}~{\mathit{bt}}~{{\mathit{in}}^\ast} \\ &&|&
 \mathtt{0x03}~~{\mathit{bt}}{:}{\mathtt{blocktype}}~~{({\mathit{in}}{:}{\mathtt{instr}})^\ast}~~\mathtt{0x0B} &\quad\Rightarrow&\quad \mathsf{loop}~{\mathit{bt}}~{{\mathit{in}}^\ast} \\ &&|&
 \mathtt{0x04}~~{\mathit{bt}}{:}{\mathtt{blocktype}}~~{({\mathit{in}}{:}{\mathtt{instr}})^\ast}~~\mathtt{0x0B} &\quad\Rightarrow&\quad \mathsf{if}~{\mathit{bt}}~{{\mathit{in}}^\ast}~\mathsf{else}~\epsilon \\ &&|&
-\mathtt{0x04}~~{\mathit{bt}}{:}{\mathtt{blocktype}}~~{({\mathit{in}}_1{:}{\mathtt{instr}})^\ast} \\ &&&\quad \mathtt{0x05}~~{({\mathit{in}}_2{:}{\mathtt{instr}})^\ast}~~\mathtt{0x0B} &\quad\Rightarrow&\quad \mathsf{if}~{\mathit{bt}}~{{\mathit{in}}_1^\ast}~\mathsf{else}~{{\mathit{in}}_2^\ast} \\ &&|&
+\mathtt{0x04}~~{\mathit{bt}}{:}{\mathtt{blocktype}}~~{({\mathit{in}}_1{:}{\mathtt{instr}})^\ast} \\ &&& \mathtt{0x05}~~{({\mathit{in}}_2{:}{\mathtt{instr}})^\ast}~~\mathtt{0x0B} &\quad\Rightarrow&\quad \mathsf{if}~{\mathit{bt}}~{{\mathit{in}}_1^\ast}~\mathsf{else}~{{\mathit{in}}_2^\ast} \\ &&|&
 \mathtt{0x0C}~~l{:}{\mathtt{labelidx}} &\quad\Rightarrow&\quad \mathsf{br}~l \\ &&|&
 \mathtt{0x0D}~~l{:}{\mathtt{labelidx}} &\quad\Rightarrow&\quad \mathsf{br\_if}~l \\ &&|&
 \mathtt{0x0E}~~{l^\ast}{:}{\mathtt{list}}({\mathtt{labelidx}})~~l_n{:}{\mathtt{labelidx}} &\quad\Rightarrow&\quad \mathsf{br\_table}~{l^\ast}~l_n \\ &&|&
@@ -8389,8 +8389,8 @@ $$
 \mathtt{0xFB}~~21{:}{\mathtt{u32}}~~{\mathit{ht}}{:}{\mathtt{heaptype}} &\quad\Rightarrow&\quad \mathsf{ref{.}test}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}}) \\ &&|&
 \mathtt{0xFB}~~22{:}{\mathtt{u32}}~~{\mathit{ht}}{:}{\mathtt{heaptype}} &\quad\Rightarrow&\quad \mathsf{ref{.}cast}~(\mathsf{ref}~{\mathit{ht}}) \\ &&|&
 \mathtt{0xFB}~~23{:}{\mathtt{u32}}~~{\mathit{ht}}{:}{\mathtt{heaptype}} &\quad\Rightarrow&\quad \mathsf{ref{.}cast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}}) \\ &&|&
-\mathtt{0xFB}~~24{:}{\mathtt{u32}}~~({\mathsf{null}}{{{}_{1}^?}}, {\mathsf{null}}{{{}_{2}^?}}){:}{\mathtt{castop}} \\ &&&\quad l{:}{\mathtt{labelidx}}~~{\mathit{ht}}_1{:}{\mathtt{heaptype}}~~{\mathit{ht}}_2{:}{\mathtt{heaptype}} &\quad\Rightarrow&\quad \mathsf{br\_on\_cast}~l~(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1)~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~{\mathit{ht}}_2) \\ &&|&
-\mathtt{0xFB}~~25{:}{\mathtt{u32}}~~({\mathsf{null}}{{{}_{1}^?}}, {\mathsf{null}}{{{}_{2}^?}}){:}{\mathtt{castop}} \\ &&&\quad l{:}{\mathtt{labelidx}}~~{\mathit{ht}}_1{:}{\mathtt{heaptype}}~~{\mathit{ht}}_2{:}{\mathtt{heaptype}} &\quad\Rightarrow&\quad \mathsf{br\_on\_cast\_fail}~l~(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1)~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~{\mathit{ht}}_2) \\ &&|&
+\mathtt{0xFB}~~24{:}{\mathtt{u32}}~~({\mathsf{null}}{{{}_{1}^?}}, {\mathsf{null}}{{{}_{2}^?}}){:}{\mathtt{castop}} \\ &&& l{:}{\mathtt{labelidx}}~~{\mathit{ht}}_1{:}{\mathtt{heaptype}}~~{\mathit{ht}}_2{:}{\mathtt{heaptype}} &\quad\Rightarrow&\quad \mathsf{br\_on\_cast}~l~(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1)~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~{\mathit{ht}}_2) \\ &&|&
+\mathtt{0xFB}~~25{:}{\mathtt{u32}}~~({\mathsf{null}}{{{}_{1}^?}}, {\mathsf{null}}{{{}_{2}^?}}){:}{\mathtt{castop}} \\ &&& l{:}{\mathtt{labelidx}}~~{\mathit{ht}}_1{:}{\mathtt{heaptype}}~~{\mathit{ht}}_2{:}{\mathtt{heaptype}} &\quad\Rightarrow&\quad \mathsf{br\_on\_cast\_fail}~l~(\mathsf{ref}~{\mathsf{null}}{{{}_{1}^?}}~{\mathit{ht}}_1)~(\mathsf{ref}~{\mathsf{null}}{{{}_{2}^?}}~{\mathit{ht}}_2) \\ &&|&
 \mathtt{0xFB}~~26{:}{\mathtt{u32}} &\quad\Rightarrow&\quad \mathsf{any{.}convert\_extern} \\ &&|&
 \mathtt{0xFB}~~27{:}{\mathtt{u32}} &\quad\Rightarrow&\quad \mathsf{extern{.}convert\_any} \\ &&|&
 \mathtt{0xFB}~~28{:}{\mathtt{u32}} &\quad\Rightarrow&\quad \mathsf{ref{.}i{\scriptstyle 31}} \\ &&|&
@@ -9003,14 +9003,22 @@ $$
 $$
 \begin{array}{@{}l@{}rrl@{}l@{}l@{}l@{}}
 & {\mathtt{elemkind}} &::=& \mathtt{0x00} &\quad\Rightarrow&\quad \mathsf{ref}~\mathsf{null}~\mathsf{func} \\
-& {\mathtt{elem}} &::=& 0{:}{\mathtt{u32}}~~e_o{:}{\mathtt{expr}}~~{y^\ast}{:}{\mathtt{list}}({\mathtt{funcidx}}) &\quad\Rightarrow&\quad \mathsf{elem}~(\mathsf{ref}~\mathsf{func})~{(\mathsf{ref{.}func}~y)^\ast}~(\mathsf{active}~0~e_o) \\ &&|&
-1{:}{\mathtt{u32}}~~{\mathit{rt}}{:}{\mathtt{elemkind}}~~{y^\ast}{:}{\mathtt{list}}({\mathtt{funcidx}}) &\quad\Rightarrow&\quad \mathsf{elem}~{\mathit{rt}}~{(\mathsf{ref{.}func}~y)^\ast}~\mathsf{passive} \\ &&|&
-2{:}{\mathtt{u32}}~~x{:}{\mathtt{tableidx}}~~e{:}{\mathtt{expr}}~~{\mathit{rt}}{:}{\mathtt{elemkind}}~~{y^\ast}{:}{\mathtt{list}}({\mathtt{funcidx}}) &\quad\Rightarrow&\quad \mathsf{elem}~{\mathit{rt}}~{(\mathsf{ref{.}func}~y)^\ast}~(\mathsf{active}~x~e) \\ &&|&
-3{:}{\mathtt{u32}}~~{\mathit{rt}}{:}{\mathtt{elemkind}}~~{y^\ast}{:}{\mathtt{list}}({\mathtt{funcidx}}) &\quad\Rightarrow&\quad \mathsf{elem}~{\mathit{rt}}~{(\mathsf{ref{.}func}~y)^\ast}~\mathsf{declare} \\ &&|&
-4{:}{\mathtt{u32}}~~e_{\mathsf{o}}{:}{\mathtt{expr}}~~{e^\ast}{:}{\mathtt{list}}({\mathtt{expr}}) &\quad\Rightarrow&\quad \mathsf{elem}~(\mathsf{ref}~\mathsf{null}~\mathsf{func})~{e^\ast}~(\mathsf{active}~0~e_{\mathsf{o}}) \\ &&|&
-5{:}{\mathtt{u32}}~~{\mathit{rt}}{:}{\mathtt{reftype}}~~{e^\ast}{:}{\mathtt{list}}({\mathtt{expr}}) &\quad\Rightarrow&\quad \mathsf{elem}~{\mathit{rt}}~{e^\ast}~\mathsf{passive} \\ &&|&
-6{:}{\mathtt{u32}}~~x{:}{\mathtt{tableidx}}~~e_{\mathsf{o}}{:}{\mathtt{expr}}~~{e^\ast}{:}{\mathtt{list}}({\mathtt{expr}}) &\quad\Rightarrow&\quad \mathsf{elem}~(\mathsf{ref}~\mathsf{null}~\mathsf{func})~{e^\ast}~(\mathsf{active}~x~e_{\mathsf{o}}) \\ &&|&
-7{:}{\mathtt{u32}}~~{\mathit{rt}}{:}{\mathtt{reftype}}~~{e^\ast}{:}{\mathtt{list}}({\mathtt{expr}}) &\quad\Rightarrow&\quad \mathsf{elem}~{\mathit{rt}}~{e^\ast}~\mathsf{declare} \\
+& {\mathtt{elem}} &::=& 0{:}{\mathtt{u32}}~~e_o{:}{\mathtt{expr}}~~{y^\ast}{:}{\mathtt{list}}({\mathtt{funcidx}}) &\quad\Rightarrow&\quad \\
+  &&& \multicolumn{3}{@{}l@{}}{\qquad \mathsf{elem}~(\mathsf{ref}~\mathsf{func})~{(\mathsf{ref{.}func}~y)^\ast}~(\mathsf{active}~0~e_o) } \\ &&|&
+1{:}{\mathtt{u32}}~~{\mathit{rt}}{:}{\mathtt{elemkind}}~~{y^\ast}{:}{\mathtt{list}}({\mathtt{funcidx}}) &\quad\Rightarrow&\quad \\
+  &&& \multicolumn{3}{@{}l@{}}{\qquad \mathsf{elem}~{\mathit{rt}}~{(\mathsf{ref{.}func}~y)^\ast}~\mathsf{passive} } \\ &&|&
+2{:}{\mathtt{u32}}~~x{:}{\mathtt{tableidx}}~~e{:}{\mathtt{expr}}~~{\mathit{rt}}{:}{\mathtt{elemkind}}~~{y^\ast}{:}{\mathtt{list}}({\mathtt{funcidx}}) &\quad\Rightarrow&\quad \\
+  &&& \multicolumn{3}{@{}l@{}}{\qquad \mathsf{elem}~{\mathit{rt}}~{(\mathsf{ref{.}func}~y)^\ast}~(\mathsf{active}~x~e) } \\ &&|&
+3{:}{\mathtt{u32}}~~{\mathit{rt}}{:}{\mathtt{elemkind}}~~{y^\ast}{:}{\mathtt{list}}({\mathtt{funcidx}}) &\quad\Rightarrow&\quad \\
+  &&& \multicolumn{3}{@{}l@{}}{\qquad \mathsf{elem}~{\mathit{rt}}~{(\mathsf{ref{.}func}~y)^\ast}~\mathsf{declare} } \\ &&|&
+4{:}{\mathtt{u32}}~~e_{\mathsf{o}}{:}{\mathtt{expr}}~~{e^\ast}{:}{\mathtt{list}}({\mathtt{expr}}) &\quad\Rightarrow&\quad \\
+  &&& \multicolumn{3}{@{}l@{}}{\qquad \mathsf{elem}~(\mathsf{ref}~\mathsf{null}~\mathsf{func})~{e^\ast}~(\mathsf{active}~0~e_{\mathsf{o}}) } \\ &&|&
+5{:}{\mathtt{u32}}~~{\mathit{rt}}{:}{\mathtt{reftype}}~~{e^\ast}{:}{\mathtt{list}}({\mathtt{expr}}) &\quad\Rightarrow&\quad \\
+  &&& \multicolumn{3}{@{}l@{}}{\qquad \mathsf{elem}~{\mathit{rt}}~{e^\ast}~\mathsf{passive} } \\ &&|&
+6{:}{\mathtt{u32}}~~x{:}{\mathtt{tableidx}}~~e_{\mathsf{o}}{:}{\mathtt{expr}}~~{e^\ast}{:}{\mathtt{list}}({\mathtt{expr}}) &\quad\Rightarrow&\quad \\
+  &&& \multicolumn{3}{@{}l@{}}{\qquad \mathsf{elem}~(\mathsf{ref}~\mathsf{null}~\mathsf{func})~{e^\ast}~(\mathsf{active}~x~e_{\mathsf{o}}) } \\ &&|&
+7{:}{\mathtt{u32}}~~{\mathit{rt}}{:}{\mathtt{reftype}}~~{e^\ast}{:}{\mathtt{list}}({\mathtt{expr}}) &\quad\Rightarrow&\quad \\
+  &&& \multicolumn{3}{@{}l@{}}{\qquad \mathsf{elem}~{\mathit{rt}}~{e^\ast}~\mathsf{declare} } \\
 & {\mathtt{elemsec}} &::=& {{\mathit{elem}}^\ast}{:}{{\mathtt{section}}}_{9}({\mathtt{list}}({\mathtt{elem}})) &\quad\Rightarrow&\quad {{\mathit{elem}}^\ast} \\
 \end{array}
 $$
@@ -9060,10 +9068,11 @@ $$
 \begin{array}{@{}l@{}rrl@{}l@{}l@{}l@{}}
 & {\mathtt{magic}} &::=& \mathtt{0x00}~~\mathtt{0x61}~~\mathtt{0x73}~~\mathtt{0x6D} \\
 & {\mathtt{version}} &::=& \mathtt{0x01}~~\mathtt{0x00}~~\mathtt{0x00}~~\mathtt{0x00} \\
-& {\mathtt{module}} &::=& {\mathtt{magic}}~~{\mathtt{version}}~~{{\mathtt{customsec}}^\ast} \\ &&&\quad {{\mathit{type}}^\ast}{:}{\mathtt{typesec}}~~{{\mathtt{customsec}}^\ast} \\ &&&\quad {{\mathit{import}}^\ast}{:}{\mathtt{importsec}}~~{{\mathtt{customsec}}^\ast} \\ &&&\quad {{\mathit{typeidx}}^{n}}{:}{\mathtt{funcsec}}~~{{\mathtt{customsec}}^\ast} \\ &&&\quad {{\mathit{table}}^\ast}{:}{\mathtt{tablesec}}~~{{\mathtt{customsec}}^\ast} \\ &&&\quad {{\mathit{mem}}^\ast}{:}{\mathtt{memsec}}~~{{\mathtt{customsec}}^\ast} \\ &&&\quad {{\mathit{global}}^\ast}{:}{\mathtt{globalsec}}~~{{\mathtt{customsec}}^\ast} \\ &&&\quad {{\mathit{export}}^\ast}{:}{\mathtt{exportsec}}~~{{\mathtt{customsec}}^\ast} \\ &&&\quad {{\mathit{start}}^\ast}{:}{\mathtt{startsec}}~~{{\mathtt{customsec}}^\ast} \\ &&&\quad {{\mathit{elem}}^\ast}{:}{\mathtt{elemsec}}~~{{\mathtt{customsec}}^\ast} \\ &&&\quad {{m'}^\ast}{:}{\mathtt{datacntsec}}~~{{\mathtt{customsec}}^\ast} \\ &&&\quad {({{\mathit{local}}^\ast}, {\mathit{expr}})^{n}}{:}{\mathtt{codesec}}~~{{\mathtt{customsec}}^\ast} \\ &&&\quad {{\mathit{data}}^{m}}{:}{\mathtt{datasec}}~~{{\mathtt{customsec}}^\ast} &\quad\Rightarrow&\quad \mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^{n}}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^{m}}~{{\mathit{start}}^\ast}~{{\mathit{export}}^\ast}
-  &\qquad \mbox{if}~{{m'}^\ast} = \epsilon \lor {\mathrm{dataidx}}({{\mathit{func}}^{n}}) = \epsilon \\
-  &&&&&&\qquad {\land}~m = {\mathrm{sum}}({{m'}^\ast}) \\
-  &&&&&&\qquad {\land}~(({\mathit{func}} = \mathsf{func}~{\mathit{typeidx}}~{{\mathit{local}}^\ast}~{\mathit{expr}}))^{n} \\
+& {\mathtt{module}} &::=& {\mathtt{magic}}~~{\mathtt{version}} \\ &&& {{\mathtt{customsec}}^\ast}~~{{\mathit{type}}^\ast}{:}{\mathtt{typesec}} \\ &&& {{\mathtt{customsec}}^\ast}~~{{\mathit{import}}^\ast}{:}{\mathtt{importsec}} \\ &&& {{\mathtt{customsec}}^\ast}~~{{\mathit{typeidx}}^{n}}{:}{\mathtt{funcsec}} \\ &&& {{\mathtt{customsec}}^\ast}~~{{\mathit{table}}^\ast}{:}{\mathtt{tablesec}} \\ &&& {{\mathtt{customsec}}^\ast}~~{{\mathit{mem}}^\ast}{:}{\mathtt{memsec}} \\ &&& {{\mathtt{customsec}}^\ast}~~{{\mathit{global}}^\ast}{:}{\mathtt{globalsec}} \\ &&& {{\mathtt{customsec}}^\ast}~~{{\mathit{export}}^\ast}{:}{\mathtt{exportsec}} \\ &&& {{\mathtt{customsec}}^\ast}~~{{\mathit{start}}^\ast}{:}{\mathtt{startsec}} \\ &&& {{\mathtt{customsec}}^\ast}~~{{\mathit{elem}}^\ast}{:}{\mathtt{elemsec}} \\ &&& {{\mathtt{customsec}}^\ast}~~{{m'}^\ast}{:}{\mathtt{datacntsec}} \\ &&& {{\mathtt{customsec}}^\ast}~~{({{\mathit{local}}^\ast}, {\mathit{expr}})^{n}}{:}{\mathtt{codesec}} \\ &&& {{\mathtt{customsec}}^\ast}~~{{\mathit{data}}^{m}}{:}{\mathtt{datasec}} \\ &&& {{\mathtt{customsec}}^\ast} &\quad\Rightarrow&\quad \\
+  &&& \multicolumn{3}{@{}l@{}}{\qquad \mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^{n}}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^{m}}~{{\mathit{start}}^\ast}~{{\mathit{export}}^\ast} } \\
+  &&&&& \multicolumn{2}{l@{}}{\quad \mbox{if}~{{m'}^\ast} \neq \epsilon \lor {\mathrm{dataidx}}({{\mathit{func}}^{n}}) = \epsilon} \\
+  &&&&& \multicolumn{2}{l@{}}{\quad {\land}~m = {\mathrm{sum}}({{m'}^\ast})} \\
+  &&&&& \multicolumn{2}{l@{}}{\quad {\land}~({\mathit{func}} = \mathsf{func}~{\mathit{typeidx}}~{{\mathit{local}}^\ast}~{\mathit{expr}})^{n}} \\
 \end{array}
 $$
 

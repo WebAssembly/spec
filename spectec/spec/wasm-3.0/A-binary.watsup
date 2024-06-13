@@ -1067,6 +1067,7 @@ grammar Bexportsec : export* hint(desc "export section") =
 
 ;; Start section
 
+;; TODO: should return start?
 grammar Bstart : start* =
   | x:Bfuncidx => (START x)
 
@@ -1132,6 +1133,7 @@ grammar Bdatasec : data* hint(desc "data section") =
 
 ;; Data count section
 
+;; TODO: should return u32?
 grammar Bdatacnt : u32* hint(desc "data count") =
   | n:Bu32 => n
 
@@ -1141,61 +1143,65 @@ grammar Bdatacntsec : u32* hint(desc "data count section") =
 
 ;; Modules
 
+;; TODO: avoid double empty lines
 grammar Bmagic : () = 0x00 0x61 0x73 0x6D => ()
 grammar Bversion : () = 0x01 0x00 0x00 0x00 => ()
 grammar Bmodule : module =
   | Bmagic
     Bversion
+
+
     Bcustomsec*
-
-
     type*:Btypesec
+
+
     Bcustomsec*
-
-
     import*:Bimportsec
+
+
     Bcustomsec*
-
-
     typeidx^n:Bfuncsec
+
+
     Bcustomsec*
-
-
     table*:Btablesec
+
+
     Bcustomsec*
-
-
     mem*:Bmemsec
+
+
     Bcustomsec*
-
-
     global*:Bglobalsec
+
+
     Bcustomsec*
-
-
     export*:Bexportsec
+
+
     Bcustomsec*
-
-
     start*:Bstartsec
+
+
     Bcustomsec*
-
-
     elem*:Belemsec
+
+
     Bcustomsec*
+    m'*:Bdatacntsec  ;; TODO: should be m'?
 
 
-    m'*:Bdatacntsec
     Bcustomsec*
-
-
     (local*, expr)^n:Bcodesec
+
+
     Bcustomsec*
-
-
     data^m:Bdatasec
+
+
     Bcustomsec* =>
       MODULE type* import* func^n global* table* mem* elem* data^m start* export*
-    -- if m'* = eps \/ $dataidx_funcs(func^n) = eps
+    ----
+    -- if m'* =/= eps \/ $dataidx_funcs(func^n) = eps
     -- if m = $sum(m'*)
-    -- if (func = FUNC typeidx local* expr)^n
+    -- (if func = FUNC typeidx local* expr)^n

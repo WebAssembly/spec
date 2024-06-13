@@ -1331,7 +1331,7 @@
 .. |TIREFS| mathdef:: \xref{exec/runtime}{syntax-tableinst}{\K{elem}}
 
 .. |MITYPE| mathdef:: \xref{exec/runtime}{syntax-meminst}{\K{type}}
-.. |MIBYTES| mathdef:: \xref{exec/runtime}{syntax-meminst}{\K{data}}
+.. |MIBYTES| mathdef:: \xref{exec/runtime}{syntax-meminst}{\K{bytes}}
 
 .. |GITYPE| mathdef:: \xref{exec/runtime}{syntax-globalinst}{\K{type}}
 .. |GIVALUE| mathdef:: \xref{exec/runtime}{syntax-globalinst}{\K{value}}
@@ -1340,7 +1340,7 @@
 .. |EIREFS| mathdef:: \xref{exec/runtime}{syntax-eleminst}{\K{elem}}
 
 .. |DITYPE| mathdef:: \xref{exec/runtime}{syntax-datainst}{\K{data}}
-.. |DIBYTES| mathdef:: \xref{exec/runtime}{syntax-datainst}{\K{data}}
+.. |DIBYTES| mathdef:: \xref{exec/runtime}{syntax-datainst}{\K{bytes}}
 
 .. |EINAME| mathdef:: \xref{exec/runtime}{syntax-exportinst}{\K{name}}
 .. |EIVALUE| mathdef:: \xref{exec/runtime}{syntax-exportinst}{\K{value}}
