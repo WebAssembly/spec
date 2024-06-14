@@ -23,8 +23,8 @@ made during phase 3 of the proposal and we refer to this addition as "table64".
 ### Implementation Status (table64)
 
 - spec interpreter: [Done](https://github.com/WebAssembly/table64/53)
-- v8/chrome: [WIP](https://g-issues.chromium.org/issues/338024338)
-- Firefox: [WIP](https://g-issues.chromium.org/issues/338024338)
+- v8/chrome: [WIP](https://issues.chromium.org/issues/338024338)
+- Firefox: [WIP](https://bugzilla.mozilla.org/show_bug.cgi?id=1893643)
 - Safari: -
 - wabt: Done
 - binaryen: Done
