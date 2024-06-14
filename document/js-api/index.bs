@@ -1322,6 +1322,8 @@ constructor steps are:
     1. Throw a {{TypeError}}.
 1. Let |wasmPayload| be « ».
 1. [=list/iterate|For each=] |value| and |resultType| of |payload| and |types|, paired linearly,
+    1. If |resultType| is [=v128=] or [=exnref=],
+        1. Throw a {{TypeError}}.
     1. [=list/Append=] [=?=] [=ToWebAssemblyValue=](|value|, |resultType|) to |wasmPayload|.
 1. Let (|store|, |exceptionAddr|) be [=exn_alloc=](|store|, |exceptionTag|.\[[Address]], |wasmPayload|)
 1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
@@ -1341,6 +1343,9 @@ The <dfn method for="Exception">getArg(|index|)</dfn> method steps are:
 1. Assert: |tagaddr| is equal to **this**.\[[Type]].
 1. If |index| ≥ |payload|'s [=list/size=],
     1. Throw a {{RangeError}}.
+1. Let [|types|] → [] be [=tag_type=](|store|, |tagaddr|).
+1. If |types|[|index|] is [=v128=] or [=exnref=],
+    1. Throw a {{TypeError}}.
 1. Return [=ToJSValue=](|payload|[|index|]).
 
 </div>
