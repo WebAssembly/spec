@@ -460,12 +460,7 @@ let elab_hint tid mixop {hintid; hintexp} : Il.hint =
     )
   in
   IterAtoms.exp hintexp;
-  let ss =
-    match hintexp.it with
-    | SeqE es -> List.map Print.string_of_exp es
-    | _ -> [Print.string_of_exp hintexp]
-  in
-  {Il.hintid; Il.hintexp = ss}
+  {Il.hintid; Il.hintexp}
 
 let elab_hints tid mixop = List.map (elab_hint tid mixop)
 

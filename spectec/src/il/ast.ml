@@ -170,7 +170,7 @@ and hintdef' =
   | RelH of id * hint list
   | DecH of id * hint list
 
-and hint = {hintid : id; hintexp : string list}       (* hint *)
+and hint = {hintid : id; hintexp : El.Ast.exp}        (* hint *)
 
 
 (* Scripts *)
