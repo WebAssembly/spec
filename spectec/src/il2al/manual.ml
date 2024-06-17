@@ -5,7 +5,7 @@ open Al_util
 
 type config = expr * expr * instr list
 
-let atom_of_name name typ = Il.Atom.Atom name, typ
+let atom_of_name name typ = El.Atom.Atom name, typ
 
 let eval_expr =
   let instrs = iterE (varE "instr", ["instr"], List) in

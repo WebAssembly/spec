@@ -33,7 +33,7 @@ let (let*) = Option.bind
 
 let al_to_el_atom atom =
   let atom', typ = atom in
-  atom' $$ (no_region, Il.Atom.info typ)
+  atom' $$ (no_region, El.Atom.info typ)
 
 let al_to_el_unop = function
   | Al.Ast.MinusOp -> Some El.Ast.MinusOp
@@ -573,9 +573,9 @@ let render_atom_title env name params =
   let name', typ = name in 
   let name' =
     match name' with
-    | Il.Atom.Atom "label" -> Il.Atom.Atom "LABEL_"
-    | Il.Atom.Atom "frame" -> Il.Atom.Atom "FRAME_"
-    | Il.Atom.Atom s -> Il.Atom.Atom (String.uppercase_ascii s)
+    | El.Atom.Atom "label" -> El.Atom.Atom "LABEL_"
+    | El.Atom.Atom "frame" -> El.Atom.Atom "FRAME_"
+    | El.Atom.Atom s -> El.Atom.Atom (String.uppercase_ascii s)
     | _ -> name'
   in
   let name = (name', typ) in

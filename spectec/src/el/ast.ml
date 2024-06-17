@@ -15,7 +15,7 @@ type 'a nl_list = 'a nl_elem list
 type nat = Z.t
 type text = string
 type id = string phrase
-type atom = Il.Atom.atom
+type atom = Atom.atom
 
 
 (* Iteration *)
@@ -130,7 +130,7 @@ and exp' =
   | HoleE of [`Num of int | `Next | `Rest | `None]  (* `%N` or `%` or `%%` or `!%` *)
   | FuseE of exp * exp           (* exp `#` exp *)
   | UnparenE of exp              (* `##` exp *)
-  | LatexE of string             (* `latex` `(` `"..."` `)` *)
+  | LatexE of string             (* `latex` `(` `"..."`* `)` *)
 
 and expfield = atom * exp        (* atom exp *)
 

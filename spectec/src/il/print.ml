@@ -39,8 +39,8 @@ let string_of_cmpop = function
   | LeOp _ -> "<="
   | GeOp _ -> ">="
 
-let string_of_atom = Atom.string_of_atom
-let string_of_mixop = Atom.string_of_mixop
+let string_of_atom = El.Atom.to_string
+let string_of_mixop = Mixop.to_string
 
 
 (* Types *)

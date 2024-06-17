@@ -4,7 +4,7 @@ open El.Ast
 open El.Convert
 open Config
 
-module Atom = Il.Atom
+module Atom = El.Atom
 
 
 (* Errors *)
@@ -55,7 +55,7 @@ let chop_sub id = fst (split_sub id)
 let rec ends_sub_exp e =
   match e.it with
   | VarE (id, []) -> ends_sub id.it
-  | AtomE atom -> atom.it <> Atom.Atom "_" && ends_sub (Atom.string_of_atom atom)
+  | AtomE atom -> atom.it <> Atom.Atom "_" && ends_sub (Atom.to_string atom)
   | FuseE (_e1, e2) -> ends_sub_exp e2
   | _ -> false
 
@@ -170,7 +170,7 @@ let local_env env =
   }
 
 
-let typed_id' atom def = def ^ ":" ^ (Atom.name_of_atom atom)
+let typed_id' atom def = def ^ ":" ^ (Atom.name atom)
 let typed_id atom = typed_id' atom atom.note.Atom.def $ atom.at
 let untyped_id' id' =
   let i = String.rindex id' ':' in
@@ -444,13 +444,13 @@ let nonmacro_atom atom =
 let expand_atom env (ctxt : ctxt) atom =
 (*
 Printf.eprintf "[expand_atom %s @ %s] def=%s templ=%s\n%!"
-(Atom.string_of_atom atom) (Source.string_of_region atom.at) atom.note.Atom.def
+(Atom.to_string atom) (Source.string_of_region atom.at) atom.note.Atom.def
 (match templ with None -> "none" | Some xs -> String.concat "%" xs);
 *)
   (* When expanding with macro template, then pre-macrofy atom name,
    * since we will have lost the template context later on. *)
   if ctxt.templ = None || nonmacro_atom atom then atom else
-  let name' = expand_name ctxt.templ (Atom.name_of_atom atom) in
+  let name' = expand_name ctxt.templ (Atom.name atom) in
   let atom' = {atom with it = Atom.Atom name'} in
   (* Record result as identity expansion, HACK: unless it exists already *)
   if not (Map.mem name' !(env.macro_atom)) then env_macro env.macro_atom (typed_id atom');
@@ -827,7 +827,7 @@ let render_atom env atom =
 (*
 if env.config.macros_for_ids then
 Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
-(Atom.string_of_atom atom) (Source.string_of_region atom.at) id.it atom.note.Atom.def
+(Atom.to_string atom) (Source.string_of_region atom.at) id.it atom.note.Atom.def
 (String.concat "%" (List.concat (Option.to_list (macro_template env env.macro_atom id.it))))
 ""(*(String.concat " " (List.map fst (Map.bindings !(env.macro_atom))))*);
 *)
@@ -874,7 +874,7 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
           | Comp -> "\\oplus"
           | Bar -> "\\mid"
           | BigComp -> "\\bigoplus"
-          | _ -> "\\" ^ Atom.name_of_atom atom
+          | _ -> "\\" ^ Atom.name atom
     )
 
 

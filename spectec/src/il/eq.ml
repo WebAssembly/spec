@@ -1,6 +1,8 @@
 open Util.Source
 open Ast
 
+module Atom = El.Atom
+
 
 (* Helpers *)
 
@@ -22,10 +24,10 @@ let eq_id i1 i2 =
   i1.it = i2.it
 
 let eq_atom atom1 atom2 =
-  atom1.it = atom2.it
+  Atom.eq atom1 atom2
 
 let eq_mixop op1 op2 =
-  eq_list (eq_list eq_atom) op1 op2
+  Mixop.eq op1 op2
 
 
 (* Iteration *)

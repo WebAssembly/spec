@@ -95,7 +95,7 @@ let vrule_group_to_prose ((_name, vrules): vrule_group) =
 
   (* name *)
   let name = match winstr.it with
-  | Ast.CaseE (({it = (Il.Atom.Atom _) as atom'; note; _}::_)::_, _) -> atom', note.def
+  | Ast.CaseE (({it = (El.Atom.Atom _) as atom'; note; _}::_)::_, _) -> atom', note.def
   | _ -> assert false
   in
   (* params *)

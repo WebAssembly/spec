@@ -9,8 +9,8 @@ open Util.Source
 type nat = Z.t
 type text = string
 type id = string phrase
-type atom = Atom.atom
-type mixop = Atom.mixop
+type atom = El.Atom.atom
+type mixop = Mixop.mixop
 
 
 (* Iteration *)

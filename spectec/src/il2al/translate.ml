@@ -6,7 +6,14 @@ open Printf
 open Util
 open Source
 
-module Il = struct include Il include Ast include Print include Atom end
+module Il =
+struct
+  module Atom = El.Atom
+  include Il
+  include Ast
+  include Print
+  include Atom
+end
 
 
 (* Errors *)

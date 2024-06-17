@@ -3,7 +3,7 @@ open Util.Source
 (* Terminals *)
 
 type atom = atom' * string
-and atom' = Il.Atom.atom'
+and atom' = El.Atom.atom'
 
 (* Types *)
 

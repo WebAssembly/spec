@@ -23,7 +23,7 @@ let string_of_gramid id = id.it
 
 (* Operators *)
 
-let string_of_atom = Il.Atom.string_of_atom
+let string_of_atom = Atom.to_string
 
 let string_of_unop = function
   | NotOp -> "~"

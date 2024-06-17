@@ -3,6 +3,8 @@ open Util
 open Source
 open El.Ast
 
+module Atom = El.Atom
+
 
 (* Errors *)
 
@@ -25,7 +27,7 @@ let positions_to_region position1 position2 =
 let at (l, r) = positions_to_region l r
 
 let ($) it pos = it $ at pos
-let ($$) it pos = it $$ at pos % Il.Atom.info ""
+let ($$) it pos = it $$ at pos % Atom.info ""
 
 
 (* Conversions *)
@@ -224,8 +226,8 @@ defid : id { $1 $ $sloc } | IF { "if" $ $sloc }
 relid : id { $1 $ $sloc }
 gramid : id { $1 $ $sloc }
 hintid : id { $1 }
-fieldid : atomid_ { Il.Atom.Atom $1 $$ $sloc } | atom_escape { $1 $$ $sloc }
-dotid : DOTID { Il.Atom.Atom $1 $$ $sloc }
+fieldid : atomid_ { Atom.Atom $1 $$ $sloc } | atom_escape { $1 $$ $sloc }
+dotid : DOTID { Atom.Atom $1 $$ $sloc }
 
 atomid_lparen : UPID_LPAREN { $1 }
 varid_lparen : LOID_LPAREN { $1 $ $sloc }
@@ -246,22 +248,22 @@ atomid : atomid_ { $1 } | atomid DOTID { $1 ^ "." ^ $2 }
 atom :
   | atom_ { $1 $$ $sloc }
 atom_ :
-  | atomid { Il.Atom.Atom $1 }
+  | atomid { Atom.Atom $1 }
   | atom_escape { $1 }
 atom_escape :
-  | TICK EQ { Il.Atom.Equal }
-  | TICK QUEST { Il.Atom.Quest }
-  | TICK PLUS { Il.Atom.Plus }
-  | TICK STAR { Il.Atom.Star }
-  | TICK BAR { Il.Atom.Bar }
-  | TICK COMPOSE { Il.Atom.Comp }
-  | TICK COMMA { Il.Atom.Comma }
-  | TICK ARROW2 { Il.Atom.Arrow2 }
+  | TICK EQ { Atom.Equal }
+  | TICK QUEST { Atom.Quest }
+  | TICK PLUS { Atom.Plus }
+  | TICK STAR { Atom.Star }
+  | TICK BAR { Atom.Bar }
+  | TICK COMPOSE { Atom.Comp }
+  | TICK COMMA { Atom.Comma }
+  | TICK ARROW2 { Atom.Arrow2 }
   | TICK infixop_ { $2 }
   | TICK relop_ { $2 }
-  | BOT { Il.Atom.Bot }
-  | TOP { Il.Atom.Top }
-  | INFINITY { Il.Atom.Infinity }
+  | BOT { Atom.Bot }
+  | TOP { Atom.Top }
+  | INFINITY { Atom.Infinity }
 
 varid_bind_with_suffix :
   | varid { $1 }
@@ -314,34 +316,34 @@ check_atom :
 %inline infixop :
   | infixop_ { $1 $$ $sloc }
 %inline infixop_ :
-  | DOT { Il.Atom.Dot }
-  | DOTDOT { Il.Atom.Dot2 }
-  | DOTDOTDOT { Il.Atom.Dot3 }
-  | SEMICOLON { Il.Atom.Semicolon }
-  | BACKSLASH { Il.Atom.Backslash }
-  | ARROW { Il.Atom.Arrow }
-  | ARROWSUB { Il.Atom.ArrowSub }
-  | ARROW2SUB { Il.Atom.Arrow2Sub }
-  | BIGCOMP { Il.Atom.BigComp }
-  | BIGAND { Il.Atom.BigAnd }
-  | BIGOR { Il.Atom.BigOr }
+  | DOT { Atom.Dot }
+  | DOTDOT { Atom.Dot2 }
+  | DOTDOTDOT { Atom.Dot3 }
+  | SEMICOLON { Atom.Semicolon }
+  | BACKSLASH { Atom.Backslash }
+  | ARROW { Atom.Arrow }
+  | ARROWSUB { Atom.ArrowSub }
+  | ARROW2SUB { Atom.Arrow2Sub }
+  | BIGCOMP { Atom.BigComp }
+  | BIGAND { Atom.BigAnd }
+  | BIGOR { Atom.BigOr }
 
 %inline relop :
   | relop_ { $1 $$ $sloc }
 %inline relop_ :
-  | COLON { Il.Atom.Colon }
-  | SUB { Il.Atom.Sub }
-  | SUP { Il.Atom.Sup }
-  | ASSIGN { Il.Atom.Assign }
-  | EQUIV { Il.Atom.Equiv }
-  | APPROX { Il.Atom.Approx }
-  | SQARROW { Il.Atom.SqArrow }
-  | SQARROWSTAR { Il.Atom.SqArrowStar }
-  | PREC { Il.Atom.Prec }
-  | SUCC { Il.Atom.Succ }
-  | TILESTURN { Il.Atom.Tilesturn }
-  | TURNSTILE { Il.Atom.Turnstile }
-  | IN { Il.Atom.In }
+  | COLON { Atom.Colon }
+  | SUB { Atom.Sub }
+  | SUP { Atom.Sup }
+  | ASSIGN { Atom.Assign }
+  | EQUIV { Atom.Equiv }
+  | APPROX { Atom.Approx }
+  | SQARROW { Atom.SqArrow }
+  | SQARROWSTAR { Atom.SqArrowStar }
+  | PREC { Atom.Prec }
+  | SUCC { Atom.Succ }
+  | TILESTURN { Atom.Tilesturn }
+  | TURNSTILE { Atom.Turnstile }
+  | IN { Atom.In }
 
 
 (* Iteration *)
@@ -426,15 +428,15 @@ nottyp_prim_ :
   | atom { AtomT $1 }
   | atomid_lparen nottyp RPAREN
     { SeqT [
-        AtomT (Il.Atom.Atom $1 $$ $loc($1)) $ $loc($1);
+        AtomT (Atom.Atom $1 $$ $loc($1)) $ $loc($1);
         ParenT $2 $ $loc($2)
       ] }
   | TICK LPAREN nottyp RPAREN
-    { BrackT (Il.Atom.LParen $$ $loc($2), $3, Il.Atom.RParen $$ $loc($4)) }
+    { BrackT (Atom.LParen $$ $loc($2), $3, Atom.RParen $$ $loc($4)) }
   | TICK LBRACK nottyp RBRACK
-    { BrackT (Il.Atom.LBrack $$ $loc($2), $3, Il.Atom.RBrack $$ $loc($4)) }
+    { BrackT (Atom.LBrack $$ $loc($2), $3, Atom.RBrack $$ $loc($4)) }
   | TICK LBRACE nottyp RBRACE
-    { BrackT (Il.Atom.LBrace $$ $loc($2), $3, Il.Atom.RBrace $$ $loc($4)) }
+    { BrackT (Atom.LBrace $$ $loc($2), $3, Atom.RBrace $$ $loc($4)) }
   | LPAREN tup_list(nottyp) RPAREN
     { match $2 with
       | [], _ -> ParenT (SeqT [] $ $sloc)
@@ -532,11 +534,11 @@ exp_prim_ :
       | [e], `Insig -> ParenE (e, `Insig)
       | es, _ -> TupE es }
   | TICK LPAREN exp RPAREN
-    { BrackE (Il.Atom.LParen $$ $loc($2), $3, Il.Atom.RParen $$ $loc($4)) }
+    { BrackE (Atom.LParen $$ $loc($2), $3, Atom.RParen $$ $loc($4)) }
   | TICK LBRACK exp RBRACK
-    { BrackE (Il.Atom.LBrack $$ $loc($2), $3, Il.Atom.RBrack $$ $loc($4)) }
+    { BrackE (Atom.LBrack $$ $loc($2), $3, Atom.RBrack $$ $loc($4)) }
   | TICK LBRACE exp RBRACE
-    { BrackE (Il.Atom.LBrace $$ $loc($2), $3, Il.Atom.RBrace $$ $loc($4)) }
+    { BrackE (Atom.LBrace $$ $loc($2), $3, Atom.RBrace $$ $loc($4)) }
   | DOLLAR LPAREN arith RPAREN { $3.it }
   | FUSEFUSE exp_prim { UnparenE $2 }
 
@@ -556,7 +558,7 @@ exp_atom_ :
   | atom { AtomE $1 }
   | atomid_lparen exp RPAREN
     { SeqE [
-        AtomE (Il.Atom.Atom $1 $$ $loc($1)) $ $loc($1);
+        AtomE (Atom.Atom $1 $$ $loc($1)) $ $loc($1);
         ParenE ($2, `Insig) $ $loc($2)
       ] }
 
@@ -809,11 +811,11 @@ def_ :
   | SYNTAX varid_bind ruleid_list atom hint*
     { HintD (AtomH ($2, $4, $5) $ $sloc) }
   | SYNTAX varid_bind ruleid_list TICK LPAREN hint*
-    { HintD (AtomH ($2, Il.Atom.LParen $$ $loc($5), $6) $ $sloc) }
+    { HintD (AtomH ($2, Atom.LParen $$ $loc($5), $6) $ $sloc) }
   | SYNTAX varid_bind ruleid_list TICK LBRACK hint*
-    { HintD (AtomH ($2, Il.Atom.LBrack $$ $loc($5), $6) $ $sloc) }
+    { HintD (AtomH ($2, Atom.LBrack $$ $loc($5), $6) $ $sloc) }
   | SYNTAX varid_bind ruleid_list TICK LBRACE hint*
-    { HintD (AtomH ($2, Il.Atom.LBrace $$ $loc($5), $6) $ $sloc) }
+    { HintD (AtomH ($2, Atom.LBrace $$ $loc($5), $6) $ $sloc) }
   | GRAMMAR varid_bind ruleid_list hint*
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
       HintD (GramH ($2, id $ $loc($3), $4) $ $sloc) }

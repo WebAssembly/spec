@@ -112,12 +112,12 @@ let normalize_id id =
 let env_prose env prose =
   match prose with
   | Pred ((id, typ), _, _) ->
-    let id = Il.Atom.string_of_atom (id $$ (no_region, ref typ)) in
+    let id = El.Atom.to_string (id $$ (no_region, ref typ)) in
     let relation = Map.find valid_id env.rel_prose in
     let ralgos = (normalize_id id, prose, ref 0) :: relation.ralgos in
     env.rel_prose <- Map.add valid_id {ralgos} env.rel_prose
   | Algo (Al.Ast.RuleA ((id, typ), _, _)) ->
-    let id = Il.Atom.string_of_atom (id $$ (no_region, ref typ)) in
+    let id = El.Atom.to_string (id $$ (no_region, ref typ)) in
     let relation = Map.find exec_id env.rel_prose in
     let ralgos = (normalize_id id, prose, ref 0) :: relation.ralgos in
     env.rel_prose <- Map.add exec_id {ralgos} env.rel_prose

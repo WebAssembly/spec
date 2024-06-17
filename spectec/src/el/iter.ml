@@ -239,7 +239,7 @@ end
 
 (* Cloning *)
 
-let clone_note note = Il.Atom.{note with def = ""}
+let clone_note note = Atom.{note with def = ""}
 let clone_atom atom = {atom with note = clone_note atom.note}
 
 let rec clone_iter = function

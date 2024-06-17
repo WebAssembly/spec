@@ -46,8 +46,12 @@ and atom' =
   | LBrack | RBrack              (* ``[` `]` *)
   | LBrace | RBrace              (* ``{` `}` *)
 
-type mixop = atom list list
 
+let eq atom1 atom2 =
+  atom1.it = atom2.it
+
+let compare atom1 atom2 =
+  compare atom1.it atom2.it
 
 let sub atom1 atom2 =
   match atom1.it, atom2.it with
@@ -56,7 +60,7 @@ let sub atom1 atom2 =
   | _, _ -> false
 
 
-let string_of_atom atom =
+let to_string atom =
   match atom.it with
   | Atom id -> id
   | Infinity -> "infinity"
@@ -101,21 +105,11 @@ let string_of_atom atom =
   | RBrack -> "]"
   | RBrace -> "}"
 
-let string_of_mixop = function
-  | [{it = Atom a; _}]::tail when List.for_all ((=) []) tail -> a
-  | mixop ->
-    let s =
-      String.concat "%" (List.map (
-        fun atoms -> String.concat "" (List.map string_of_atom atoms)) mixop
-      )
-    in
-    "`" ^ s ^ "`"
-
 
 (* The following mostly correspond to Latex names except where noted;
  * where noted, a respective macro is expected to be defined *)
 
-let name_of_atom atom =
+let name atom =
   match atom.it with
   | Atom s -> s
   | Infinity -> "infty"
@@ -159,6 +153,3 @@ let name_of_atom atom =
   | RParen -> "rparen"
   | RBrack -> "rbrack"
   | RBrace -> "rbrace"
-
-let name_of_mixop mixop =
-  String.concat "" (List.map name_of_atom mixop)

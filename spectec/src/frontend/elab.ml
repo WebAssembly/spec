@@ -5,7 +5,7 @@ open Ast
 open Convert
 open Print
 
-module Atom = Il.Atom
+module Atom = El.Atom
 module Il = struct include Il include Ast end
 
 module Set = Free.Set
@@ -144,17 +144,17 @@ let rebind _space env' id t =
   Map.add id.it (id.at, t) env'
 
 let find_field fs atom at t =
-  match List.find_opt (fun (atom', _, _) -> atom'.it = atom.it) fs with
+  match List.find_opt (fun (atom', _, _) -> Atom.eq atom' atom) fs with
   | Some (_, x, _) -> x
   | None -> error_atom at atom t "unbound field"
 
 let find_case cases atom at t =
-  match List.find_opt (fun (atom', _, _) -> atom'.it = atom.it) cases with
+  match List.find_opt (fun (atom', _, _) -> Atom.eq atom' atom) cases with
   | Some (_, x, _) -> x
   | None -> error_atom at atom t "unknown case"
 
 let find_case_sub cases atom at t =
-  match List.find_opt (fun (atom', _, _) -> atom'.it = atom.it || Il.Atom.sub atom' atom) cases with
+  match List.find_opt (fun (atom', _, _) -> Atom.eq atom' atom || Atom.sub atom' atom) cases with
   | Some (_, x, _) -> x
   | None -> error_atom at atom t "unknown case"
 
@@ -455,7 +455,7 @@ let elab_hint tid mixop {hintid; hintexp} : Il.hint =
           assert (valid_tid tid);
           assert (atom.note.Atom.def = "");
           atom.note.Atom.def <- tid.it;
-          atom.note.Atom.case <- Atom.name_of_mixop mixop
+          atom.note.Atom.case <- Il.Mixop.name mixop
       end
     )
   in
@@ -813,8 +813,8 @@ and elab_typ_notation env tid t : Il.mixop * Il.typ list * typ list =
       ts1', ts1
   | ParenT t1 ->
     let mixop1, ts1', ts1 = elab_typ_notation env tid t1 in
-    let l = Il.Atom.LParen $$ t.at % Atom.info tid.it in
-    let r = Il.Atom.RParen $$ t.at % Atom.info tid.it in
+    let l = Atom.LParen $$ t.at % Atom.info tid.it in
+    let r = Atom.RParen $$ t.at % Atom.info tid.it in
     merge_mixop (merge_mixop [[l]] mixop1) [[r]], ts1', ts1
   | IterT (t1, iter) ->
     (match iter with
@@ -825,7 +825,7 @@ and elab_typ_notation env tid t : Il.mixop * Il.typ list * typ list =
       let tit = IterT (tup_typ ts1 t1.at, iter) $ t.at in
       let t' = Il.IterT (tup_typ' ts1' t1.at, iter') $ t.at in
       let op =
-        Il.Atom.(match iter with Opt -> Quest | _ -> Star) $$ t.at % Atom.info tid.it in
+        Atom.(match iter with Opt -> Quest | _ -> Star) $$ t.at % Atom.info tid.it in
       (if mixop1 = [[]; []] then mixop1 else [List.flatten mixop1] @ [[op]]),
       [t'], [tit]
     )
@@ -1235,7 +1235,7 @@ and elab_exp_notation' env tid e t : Il.exp list * Subst.t =
     if atom.it <> atom'.it then error_typ env e.at "atom" t;
     ignore (elab_atom atom tid);
     [], Subst.empty
-  | InfixE (e1, atom, e2), InfixT (_, atom', _) when Il.Atom.sub atom' atom ->
+  | InfixE (e1, atom, e2), InfixT (_, atom', _) when Atom.sub atom' atom ->
     let e21 = ParenE (SeqE [] $ e2.at, `Insig) $ e2.at in
     elab_exp_notation' env tid
       (InfixE (e1, atom', SeqE [e21; e2] $ e2.at) $ e.at) t
@@ -1274,7 +1274,7 @@ and elab_exp_notation' env tid e t : Il.exp list * Subst.t =
       es1' @ es2', Subst.union s2 s2
     )
   | SeqE ({it = AtomE atom; at; _}::es2), SeqT ({it = AtomT atom'; _}::_)
-    when Il.Atom.sub atom' atom ->
+    when Atom.sub atom' atom ->
     let e21 = ParenE (SeqE [] $ at, `Insig) $ at in
     elab_exp_notation' env tid (SeqE ((AtomE atom' $ at) :: e21 :: es2) $ e.at) t
   | SeqE (e1::es2), SeqT (t1::ts2) ->
