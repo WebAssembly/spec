@@ -83,11 +83,11 @@
 
 (assert_invalid
   (module (memory 1) (global i32 (i32.const 0)) (data (global.get 0) "a"))
-  "unknown global"
+  "const expression required"
 )
 (assert_invalid
   (module (memory 1) (global $g i32 (i32.const 0)) (data (global.get $g) "a"))
-  "unknown global"
+  "const expression required"
 )
 
 
