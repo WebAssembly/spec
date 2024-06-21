@@ -123,7 +123,7 @@ catch_ref tag label
 catch_all label
 catch_all_ref label
 ```
-All forms have a label which is branched to when an exception is cought (see
+All forms have a label which is branched to when an exception is caught (see
 below). The former two forms have an exception tag associated with it that
 identifies what exceptions it will catch. The latter two forms catch any
 exception, so that they can be used to define a _default_ handler.
