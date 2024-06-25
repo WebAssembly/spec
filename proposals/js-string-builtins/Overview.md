@@ -84,7 +84,7 @@ The full extension to the JS-API WebIDL is:
 
 ```idl
 dictionary WebAssemblyCompileOptions {
-    optional record<USVString, USVString> builtins;
+    optional sequence<USVString> builtins;
 }
 
 [LegacyNamespace=WebAssembly, Exposed=*]
