@@ -35,7 +35,7 @@ test(() => {
   builder
     .addFunction("catch_js_tag_rethrow", kSig_v_v)
     .addBody([
-      kExprTry, kWasmStmt,
+      kExprTry, kWasmVoid,
         kExprCallFunction, throwJSTagExnIndex,
       kExprCatch, jsTagIndex,
         kExprDrop,
@@ -49,7 +49,7 @@ test(() => {
   builder
     .addFunction("catch_wasm_tag_rethrow", kSig_v_v)
     .addBody([
-      kExprTry, kWasmStmt,
+      kExprTry, kWasmVoid,
         kExprCallFunction, throwWasmTagExnIndex,
       kExprCatch, wasmTagIndex,
         kExprDrop,
@@ -63,7 +63,7 @@ test(() => {
   builder
     .addFunction("catch_all_js_tag_rethrow", kSig_v_v)
     .addBody([
-      kExprTry, kWasmStmt,
+      kExprTry, kWasmVoid,
         kExprCallFunction, throwJSTagExnIndex,
       kExprCatchAll,
         kExprRethrow, 0x00,
@@ -76,7 +76,7 @@ test(() => {
   builder
     .addFunction("catch_all_wasm_tag_rethrow", kSig_v_v)
     .addBody([
-      kExprTry, kWasmStmt,
+      kExprTry, kWasmVoid,
         kExprCallFunction, throwWasmTagExnIndex,
       kExprCatchAll,
         kExprRethrow, 0x00,
@@ -103,7 +103,7 @@ test(() => {
   builder
     .addFunction("catch_js_tag_throw_payload", kSig_v_v)
     .addBody([
-      kExprTry, kWasmStmt,
+      kExprTry, kWasmVoid,
         kExprCallFunction, throwJSTagExnIndex,
       kExprCatch, jsTagIndex,
         kExprThrow, jsTagIndex,

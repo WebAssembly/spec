@@ -76,7 +76,7 @@ promise_test(async () => {
   const tagIndex= builder.addTag(kSig_v_r);
   builder.addFunction("catch_exception", kSig_r_v)
     .addBody([
-      kExprTry, kWasmStmt,
+      kExprTry, kWasmVoid,
         kExprCallFunction, fnIndex,
       kExprCatch, tagIndex,
         kExprReturn,
@@ -100,7 +100,7 @@ promise_test(async () => {
   const fnIndex = builder.addImport("module", "fn", kSig_v_v);
   builder.addFunction("catch_and_rethrow", kSig_r_v)
     .addBody([
-      kExprTry, kWasmStmt,
+      kExprTry, kWasmVoid,
         kExprCallFunction, fnIndex,
       kExprCatchAll,
         kExprRethrow, 0x00,
