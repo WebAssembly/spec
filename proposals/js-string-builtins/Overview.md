@@ -84,7 +84,7 @@ The full extension to the JS-API WebIDL is:
 
 ```idl
 dictionary WebAssemblyCompileOptions {
-    optional sequence<USVString> builtins;
+    optional record<USVString, USVString> builtins;
 }
 
 [LegacyNamespace=WebAssembly, Exposed=*]
@@ -173,11 +173,41 @@ The simplest way is to have a module import each string as an immutable global. 
 
 This proposal adds an extension to the JS-API compile routine to support optimized 'imported string constants' to address this use-case.
 
-The `WebAssemblyCompileOptions` dictionary is extended with a `boolean importedStringConstants` flag. When this is set, the module may define imports of the form `(import "'" "%stringConstant%"" (global externref))`, and the JS-API will use the provided `%stringConstant%` import field name to be the value of the global. This allows for any UTF-8 string to be imported with minimal overhead.
+The `WebAssemblyCompileOptions` dictionary is extended with a `USVString? importedStringConstants` flag.
 
-This works by having the JS-API create a `(global (ref extern))` for each string constant, and provide that as the import value to the module. The [normal import checking for globals](https://webassembly.github.io/gc/core/valid/matching.html#match-globaltype) is performed, which allows for a user to specify either nullable or non-nullable externref, as long as the import global type is immutable. This check is eager, resulting in a compile error if it fails.
+```
+partial dictionary WebAssemblyCompileOptions {
+    USVString? importedStringConstants;
+}
+```
 
-The string namespace is chosen to be the single quote ASCII character `'`. This is to reduce binary size impact. We may revise this to be a longer name before this proposal is finalized, if we can mitigate the binary size increase.
+When this is set to a non-null value, the module may import globals of the form `(import "%importedStringConstants%" "%stringConstant%"" (global ...))`, and the JS-API will use the provided `%stringConstant%` import field name to be the value of the global. This allows for any UTF-8 string to be imported with minimal overhead.
+
+### Example
+
+```wasm
+(module
+  (global (import "strings" "my string constant") (ref extern))
+  (export "constant" (global 0))
+)
+```
+
+```js
+let instance = WebAssembly.instantiate(bytes, {importedStringConstants: "strings"});
+
+// The global is automatically populated with the string constant
+assertEq(instance.exports.constant.value, "my string constant");
+```
+
+### Details
+
+When `importedStringConstants` is non-null, the specified string becomes the `imported string namespace`.
+
+During the ['compile a module'](https://webassembly.github.io/spec/js-api/index.html#compile-a-webassembly-module) step of the JS-API, the imports of the module are examined to see which refer to the imported string namespace. If an import refers to the imported string namespace, then the import type is [matched](https://webassembly.github.io/spec/core/valid/types.html#globals) against an extern type of `(global (ref extern))`. If an import fails to match, then 'compile a module' fails. The resulting module is associated with the imported string namespace for use during instantiation.
+
+During the ['read the imports'](https://webassembly.github.io/spec/js-api/index.html#read-the-imports) step of the JS-API, if the module has an imported string namespace, then every import that refers to this namespace has a global created to hold the string constant specified in the import field. This global is added to the imports object.
+
+When the imports object is used during ['instantiate a module'](https://webassembly.github.io/spec/js-api/index.html#instantiate-the-core-of-a-webassembly-module), these implicitly created globals should never cause a link error due to the eager matching done in 'compile a module'.
 
 ## JS String Builtin API
 
