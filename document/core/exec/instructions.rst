@@ -1217,13 +1217,13 @@ Reference Instructions
 
     a. Push the value :math:`\REFARRAYADDR~a_1` to the stack.
 
-    b. Assert: due to the earlier check against the memory size, :math:`d+n-1 < 2^{32}`.
+    b. Assert: due to the earlier check against the array size, :math:`d+n-1 < 2^{32}`.
 
     c. Push the value :math:`\I32.\CONST~(d+n-1)` to the stack.
 
     d. Push the value :math:`\REFARRAYADDR~a_2` to the stack.
 
-    e. Assert: due to the earlier check against the memory size, :math:`s+n-1 < 2^{32}`.
+    e. Assert: due to the earlier check against the array size, :math:`s+n-1 < 2^{32}`.
 
     f. Push the value :math:`\I32.\CONST~(s+n-1)` to the stack.
 
