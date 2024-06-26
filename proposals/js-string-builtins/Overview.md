@@ -205,7 +205,7 @@ When `importedStringConstants` is non-null, the specified string becomes the `im
 
 During the ['compile a module'](https://webassembly.github.io/spec/js-api/index.html#compile-a-webassembly-module) step of the JS-API, the imports of the module are examined to see which refer to the imported string namespace. If an import refers to the imported string namespace, then the import type is [matched](https://webassembly.github.io/spec/core/valid/types.html#globals) against an extern type of `(global (ref extern))`. If an import fails to match, then 'compile a module' fails. The resulting module is associated with the imported string namespace for use during instantiation.
 
-During the ['read the imports'](https://webassembly.github.io/spec/js-api/index.html#read-the-imports) step of the JS-API, if the module has an imported string namespace, then every import that refers to this namespace has a global created to hold the string constant specified in the import field. This global is added to the imports object.
+During the ['read the imports'](https://webassembly.github.io/spec/js-api/index.html#read-the-imports) step of the JS-API, if the module has an imported string namespace, then every import that refers to this namespace has a global created to hold the string constant specified in the import field. This global is added to the imports object. If all imports in a module are from the imported string namespace, no import object needs to be provided.
 
 When the imports object is used during ['instantiate a module'](https://webassembly.github.io/spec/js-api/index.html#instantiate-the-core-of-a-webassembly-module), these implicitly created globals should never cause a link error due to the eager matching done in 'compile a module'.
 
