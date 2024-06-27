@@ -3638,25 +3638,25 @@ watsup 0.4 generator
 8-reduction.watsup:227.12-227.36: translate_rulepr: Yet `(`%;%`_config(z, instr*{instr : instr}), `%;%`_config(z', instr'*{instr' : instr}))`
 8-reduction.watsup:231.12-231.44: translate_rulepr: Yet `(`%;%`_config(`%;%`_state(s, f'), instr*{instr : instr}), `%;%`_config(`%;%`_state(s', f'), instr'*{instr' : instr}))`
 == Prose Generation...
-6-typing.watsup:627.7-627.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0)`
-6-typing.watsup:628.6-628.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l'!`%`_labelidx.0]!`%`_resulttype.0)`
-6-typing.watsup:645.6-645.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-6-typing.watsup:646.6-646.34: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt)`
-6-typing.watsup:653.6-653.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-6-typing.watsup:654.6-654.49: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, $diffrt(rt_1, rt_2), rt)`
-6-typing.watsup:670.6-670.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
-6-typing.watsup:683.6-683.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
-6-typing.watsup:691.6-691.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
-6-typing.watsup:698.6-698.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
-6-typing.watsup:702.6-702.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
-6-typing.watsup:763.6-763.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-6-typing.watsup:769.6-769.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-6-typing.watsup:787.7-787.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
-6-typing.watsup:819.6-819.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
-6-typing.watsup:848.6-848.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
-6-typing.watsup:853.6-853.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
-6-typing.watsup:992.6-992.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-6-typing.watsup:998.6-998.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:628.7-628.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0)`
+6-typing.watsup:629.6-629.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l'!`%`_labelidx.0]!`%`_resulttype.0)`
+6-typing.watsup:646.6-646.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:647.6-647.34: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt)`
+6-typing.watsup:654.6-654.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:655.6-655.49: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, $diffrt(rt_1, rt_2), rt)`
+6-typing.watsup:671.6-671.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
+6-typing.watsup:684.6-684.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+6-typing.watsup:692.6-692.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+6-typing.watsup:699.6-699.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
+6-typing.watsup:703.6-703.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+6-typing.watsup:764.6-764.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
+6-typing.watsup:770.6-770.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
+6-typing.watsup:788.7-788.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
+6-typing.watsup:820.6-820.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
+6-typing.watsup:849.6-849.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
+6-typing.watsup:854.6-854.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
+6-typing.watsup:993.6-993.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:999.6-999.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 =================
  Generated prose
 =================
@@ -3817,6 +3817,7 @@ validation_of_REF.NULL ht
 validation_of_REF.FUNC x
 - |C.FUNCS| must be greater than x.
 - Let dt be C.FUNCS[x].
+- Let x_1* ++ [x] ++ x_2* be C.REFS.
 - The instruction is valid with type ([] ->_ [] ++ [(REF (NULL ?()) dt)]).
 
 validation_of_REF.I31
@@ -4367,33 +4368,6 @@ setminus idx_u0* y*
 2. Let [x_1] ++ x* be idx_u0*.
 3. Return $setminus1(x_1, y*) ++ $setminus(x*, y*).
 
-dataidx_instr instr_u0
-1. If instr_u0 is of the case MEMORY.INIT, then:
-  a. Let (MEMORY.INIT x y) be instr_u0.
-  b. Return [y].
-2. If instr_u0 is of the case DATA.DROP, then:
-  a. Let (DATA.DROP x) be instr_u0.
-  b. Return [x].
-3. Return [].
-
-dataidx_instrs instr_u0*
-1. If (instr_u0* is []), then:
-  a. Return [].
-2. Let [instr] ++ instr'* be instr_u0*.
-3. Return $dataidx_instr(instr) ++ $dataidx_instrs(instr'*).
-
-dataidx_expr in*
-1. Return $dataidx_instrs(in*).
-
-dataidx_func (FUNC x loc* e)
-1. Return $dataidx_expr(e).
-
-dataidx_funcs func_u0*
-1. If (func_u0* is []), then:
-  a. Return [].
-2. Let [func] ++ func'* be func_u0*.
-3. Return $dataidx_func(func) ++ $dataidx_funcs(func'*).
-
 IN N_u0
 1. If (N_u0 is 32), then:
   a. Return I32.
@@ -4465,6 +4439,538 @@ diffrt (REF nul1 ht_1) (REF (NULL _u0?) ht_2)
 
 idx x
 1. Return (_IDX x).
+
+free_opt free_u0?
+1. If free_u0? is not defined, then:
+  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+2. Let ?(free) be free_u0?.
+3. Return free.
+
+free_list free_u0*
+1. If (free_u0* is []), then:
+  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+2. Return YetE (free ++ $free_list(free'*{free' : free})).
+
+free_typeidx typeidx
+1. Return { TYPES: [typeidx]; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+
+free_funcidx funcidx
+1. Return { TYPES: []; FUNCS: [funcidx]; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+
+free_globalidx globalidx
+1. Return { TYPES: []; FUNCS: []; GLOBALS: [globalidx]; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+
+free_tableidx tableidx
+1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: [tableidx]; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+
+free_memidx memidx
+1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: [memidx]; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+
+free_elemidx elemidx
+1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: [elemidx]; DATAS: []; LOCALS: []; LABELS: []; }.
+
+free_dataidx dataidx
+1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: [dataidx]; LOCALS: []; LABELS: []; }.
+
+free_localidx localidx
+1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: [localidx]; LABELS: []; }.
+
+free_labelidx labelidx
+1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: [labelidx]; }.
+
+free_externidx exter_u0
+1. If exter_u0 is of the case FUNC, then:
+  a. Let (FUNC funcidx) be exter_u0.
+  b. Return $free_funcidx(funcidx).
+2. If exter_u0 is of the case GLOBAL, then:
+  a. Let (GLOBAL globalidx) be exter_u0.
+  b. Return $free_globalidx(globalidx).
+3. If exter_u0 is of the case TABLE, then:
+  a. Let (TABLE tableidx) be exter_u0.
+  b. Return $free_tableidx(tableidx).
+4. Assert: Due to validation, exter_u0 is of the case MEM.
+5. Let (MEM memidx) be exter_u0.
+6. Return $free_memidx(memidx).
+
+free_numtype numtype
+1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+
+free_packtype packtype
+1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+
+free_lanetype lanet_u0
+1. If the type of lanet_u0 is numtype, then:
+  a. Let numtype be lanet_u0.
+  b. Return $free_numtype(numtype).
+2. Assert: Due to validation, the type of lanet_u0 is packtype.
+3. Let packtype be lanet_u0.
+4. Return $free_packtype(packtype).
+
+free_vectype vectype
+1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+
+free_consttype const_u0
+1. If the type of const_u0 is numtype, then:
+  a. Let numtype be const_u0.
+  b. Return $free_numtype(numtype).
+2. Assert: Due to validation, the type of const_u0 is vectype.
+3. Let vectype be const_u0.
+4. Return $free_vectype(vectype).
+
+free_absheaptype absheaptype
+1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+
+free_rectype (REC subtype*)
+1. Return $free_list($free_subtype(subtype)*).
+
+free_deftype (DEF rectype n)
+1. Return $free_rectype(rectype).
+
+free_typeuse typeu_u0
+1. If typeu_u0 is of the case _IDX, then:
+  a. Let (_IDX typeidx) be typeu_u0.
+  b. Return $free_typeidx(typeidx).
+2. If typeu_u0 is of the case REC, then:
+  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+3. Assert: Due to validation, the type of typeu_u0 is deftype.
+4. Let deftype be typeu_u0.
+5. Return $free_deftype(deftype).
+
+free_heaptype heapt_u0
+1. If the type of heapt_u0 is absheaptype, then:
+  a. Let absheaptype be heapt_u0.
+  b. Return $free_absheaptype(absheaptype).
+2. Assert: Due to validation, the type of heapt_u0 is typeuse.
+3. Let typeuse be heapt_u0.
+4. Return $free_typeuse(typeuse).
+
+free_reftype (REF nul heaptype)
+1. Return $free_heaptype(heaptype).
+
+free_valtype valty_u0
+1. If the type of valty_u0 is numtype, then:
+  a. Let numtype be valty_u0.
+  b. Return $free_numtype(numtype).
+2. If the type of valty_u0 is vectype, then:
+  a. Let vectype be valty_u0.
+  b. Return $free_vectype(vectype).
+3. If the type of valty_u0 is reftype, then:
+  a. Let reftype be valty_u0.
+  b. Return $free_reftype(reftype).
+4. Assert: Due to validation, (valty_u0 is BOT).
+5. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+
+free_resulttype valtype*
+1. Return $free_list($free_valtype(valtype)*).
+
+free_storagetype stora_u0
+1. If the type of stora_u0 is valtype, then:
+  a. Let valtype be stora_u0.
+  b. Return $free_valtype(valtype).
+2. Assert: Due to validation, the type of stora_u0 is packtype.
+3. Let packtype be stora_u0.
+4. Return $free_packtype(packtype).
+
+free_fieldtype (mut, storagetype)
+1. Return $free_storagetype(storagetype).
+
+free_functype (resulttype_1 -> resulttype_2)
+1. Return YetE ($free_resulttype(resulttype_1) ++ $free_resulttype(resulttype_2)).
+
+free_structtype fieldtype*
+1. Return $free_list($free_fieldtype(fieldtype)*).
+
+free_arraytype fieldtype
+1. Return $free_fieldtype(fieldtype).
+
+free_comptype compt_u0
+1. If compt_u0 is of the case STRUCT, then:
+  a. Let (STRUCT structtype) be compt_u0.
+  b. Return $free_structtype(structtype).
+2. If compt_u0 is of the case ARRAY, then:
+  a. Let (ARRAY arraytype) be compt_u0.
+  b. Return $free_arraytype(arraytype).
+3. Assert: Due to validation, compt_u0 is of the case FUNC.
+4. Let (FUNC functype) be compt_u0.
+5. Return $free_functype(functype).
+
+free_subtype (SUB fin typeuse* comptype)
+1. Return YetE ($free_list($free_typeuse(typeuse)*{typeuse : typeuse}) ++ $free_comptype(comptype)).
+
+free_globaltype (mut, valtype)
+1. Return $free_valtype(valtype).
+
+free_tabletype (limits, reftype)
+1. Return $free_reftype(reftype).
+
+free_memtype (PAGE limits)
+1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+
+free_elemtype reftype
+1. Return $free_reftype(reftype).
+
+free_datatype OK
+1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+
+free_externtype exter_u0
+1. If exter_u0 is of the case FUNC, then:
+  a. Let (FUNC typeuse) be exter_u0.
+  b. Return $free_typeuse(typeuse).
+2. If exter_u0 is of the case GLOBAL, then:
+  a. Let (GLOBAL globaltype) be exter_u0.
+  b. Return $free_globaltype(globaltype).
+3. If exter_u0 is of the case TABLE, then:
+  a. Let (TABLE tabletype) be exter_u0.
+  b. Return $free_tabletype(tabletype).
+4. Assert: Due to validation, exter_u0 is of the case MEM.
+5. Let (MEM memtype) be exter_u0.
+6. Return $free_memtype(memtype).
+
+free_moduletype (externtype_1* -> externtype_2*)
+1. Return YetE ($free_list($free_externtype(externtype_1)*{externtype_1 : externtype}) ++ $free_list($free_externtype(externtype_2)*{externtype_2 : externtype})).
+
+free_blocktype block_u0
+1. If block_u0 is of the case _RESULT, then:
+  a. Let (_RESULT valtype?) be block_u0.
+  b. Return $free_opt($free_valtype(valtype)?).
+2. Assert: Due to validation, block_u0 is of the case _IDX.
+3. Let (_IDX funcidx) be block_u0.
+4. Return $free_funcidx(funcidx).
+
+free_shape (lanetype X dim)
+1. Return $free_lanetype(lanetype).
+
+shift_labelidxs label_u0*
+1. If (label_u0* is []), then:
+  a. Return [].
+2. Let [y_0] ++ labelidx'* be label_u0*.
+3. If (y_0 is 0), then:
+  a. Return $shift_labelidxs(labelidx'*).
+4. Let [labelidx] ++ labelidx'* be label_u0*.
+5. Return [(labelidx - 1)] ++ $shift_labelidxs(labelidx'*).
+
+free_block instr*
+1. Let free be $free_list($free_instr(instr)*).
+2. Return free with .LABELS replaced by $shift_labelidxs(free.LABELS).
+
+free_instr instr_u0
+1. If (instr_u0 is NOP), then:
+  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+2. If (instr_u0 is UNREACHABLE), then:
+  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+3. If (instr_u0 is DROP), then:
+  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+4. If instr_u0 is of the case SELECT, then:
+  a. Let (SELECT valtype*?) be instr_u0.
+  b. Return $free_opt($free_list($free_valtype(valtype)*)?).
+5. If instr_u0 is of the case BLOCK, then:
+  a. Return YetE ($free_blocktype(blocktype) ++ $free_block(instr*{instr : instr})).
+6. If instr_u0 is of the case LOOP, then:
+  a. Return YetE ($free_blocktype(blocktype) ++ $free_block(instr*{instr : instr})).
+7. If instr_u0 is of the case IF, then:
+  a. Return YetE ($free_blocktype(blocktype) ++ $free_block(instr_1*{instr_1 : instr}) ++ $free_block(instr_2*{instr_2 : instr})).
+8. If instr_u0 is of the case BR, then:
+  a. Let (BR labelidx) be instr_u0.
+  b. Return $free_labelidx(labelidx).
+9. If instr_u0 is of the case BR_IF, then:
+  a. Let (BR_IF labelidx) be instr_u0.
+  b. Return $free_labelidx(labelidx).
+10. If instr_u0 is of the case BR_TABLE, then:
+  a. Return YetE ($free_list($free_labelidx(labelidx)*{}) ++ $free_labelidx(labelidx)).
+11. If instr_u0 is of the case BR_ON_NULL, then:
+  a. Let (BR_ON_NULL labelidx) be instr_u0.
+  b. Return $free_labelidx(labelidx).
+12. If instr_u0 is of the case BR_ON_NON_NULL, then:
+  a. Let (BR_ON_NON_NULL labelidx) be instr_u0.
+  b. Return $free_labelidx(labelidx).
+13. If instr_u0 is of the case BR_ON_CAST, then:
+  a. Return YetE ($free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2)).
+14. If instr_u0 is of the case BR_ON_CAST_FAIL, then:
+  a. Return YetE ($free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2)).
+15. If instr_u0 is of the case CALL, then:
+  a. Let (CALL funcidx) be instr_u0.
+  b. Return $free_funcidx(funcidx).
+16. If instr_u0 is of the case CALL_REF, then:
+  a. Let (CALL_REF typeuse) be instr_u0.
+  b. Return $free_typeuse(typeuse).
+17. If instr_u0 is of the case CALL_INDIRECT, then:
+  a. Return YetE ($free_tableidx(tableidx) ++ $free_typeuse(typeuse)).
+18. If (instr_u0 is RETURN), then:
+  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+19. If instr_u0 is of the case RETURN_CALL, then:
+  a. Let (RETURN_CALL funcidx) be instr_u0.
+  b. Return $free_funcidx(funcidx).
+20. If instr_u0 is of the case RETURN_CALL_REF, then:
+  a. Let (RETURN_CALL_REF typeuse) be instr_u0.
+  b. Return $free_typeuse(typeuse).
+21. If instr_u0 is of the case RETURN_CALL_INDIRECT, then:
+  a. Return YetE ($free_tableidx(tableidx) ++ $free_typeuse(typeuse)).
+22. If instr_u0 is of the case CONST, then:
+  a. Let (numtype.CONST numlit) be instr_u0.
+  b. Return $free_numtype(numtype).
+23. If instr_u0 is of the case UNOP, then:
+  a. Let (UNOP numtype unop) be instr_u0.
+  b. Return $free_numtype(numtype).
+24. If instr_u0 is of the case BINOP, then:
+  a. Let (BINOP numtype binop) be instr_u0.
+  b. Return $free_numtype(numtype).
+25. If instr_u0 is of the case TESTOP, then:
+  a. Let (TESTOP numtype testop) be instr_u0.
+  b. Return $free_numtype(numtype).
+26. If instr_u0 is of the case RELOP, then:
+  a. Let (RELOP numtype relop) be instr_u0.
+  b. Return $free_numtype(numtype).
+27. If instr_u0 is of the case CVTOP, then:
+  a. Return YetE ($free_numtype(numtype_1) ++ $free_numtype(numtype_2)).
+28. If instr_u0 is of the case VCONST, then:
+  a. Let (vectype.CONST veclit) be instr_u0.
+  b. Return $free_vectype(vectype).
+29. If instr_u0 is of the case VVUNOP, then:
+  a. Let (VVUNOP vectype vvunop) be instr_u0.
+  b. Return $free_vectype(vectype).
+30. If instr_u0 is of the case VVBINOP, then:
+  a. Let (VVBINOP vectype vvbinop) be instr_u0.
+  b. Return $free_vectype(vectype).
+31. If instr_u0 is of the case VVTERNOP, then:
+  a. Let (VVTERNOP vectype vvternop) be instr_u0.
+  b. Return $free_vectype(vectype).
+32. If instr_u0 is of the case VVTESTOP, then:
+  a. Let (VVTESTOP vectype vvtestop) be instr_u0.
+  b. Return $free_vectype(vectype).
+33. If instr_u0 is of the case VUNOP, then:
+  a. Let (VUNOP shape vunop) be instr_u0.
+  b. Return $free_shape(shape).
+34. If instr_u0 is of the case VBINOP, then:
+  a. Let (VBINOP shape vbinop) be instr_u0.
+  b. Return $free_shape(shape).
+35. If instr_u0 is of the case VTESTOP, then:
+  a. Let (VTESTOP shape vtestop) be instr_u0.
+  b. Return $free_shape(shape).
+36. If instr_u0 is of the case VRELOP, then:
+  a. Let (VRELOP shape vrelop) be instr_u0.
+  b. Return $free_shape(shape).
+37. If instr_u0 is of the case VSHIFTOP, then:
+  a. Let (VSHIFTOP ishape vshiftop) be instr_u0.
+  b. Return $free_shape(ishape).
+38. If instr_u0 is of the case VBITMASK, then:
+  a. Let (VBITMASK ishape) be instr_u0.
+  b. Return $free_shape(ishape).
+39. If instr_u0 is of the case VSWIZZLE, then:
+  a. Let (VSWIZZLE ishape) be instr_u0.
+  b. Return $free_shape(ishape).
+40. If instr_u0 is of the case VSHUFFLE, then:
+  a. Let (VSHUFFLE ishape laneidx*) be instr_u0.
+  b. Return $free_shape(ishape).
+41. If instr_u0 is of the case VEXTUNOP, then:
+  a. Return YetE ($free_shape((ishape_1 : ishape <: shape)) ++ $free_shape((ishape_2 : ishape <: shape))).
+42. If instr_u0 is of the case VEXTBINOP, then:
+  a. Return YetE ($free_shape((ishape_1 : ishape <: shape)) ++ $free_shape((ishape_2 : ishape <: shape))).
+43. If instr_u0 is of the case VNARROW, then:
+  a. Return YetE ($free_shape((ishape_1 : ishape <: shape)) ++ $free_shape((ishape_2 : ishape <: shape))).
+44. If instr_u0 is of the case VCVTOP, then:
+  a. Return YetE ($free_shape(shape_1) ++ $free_shape(shape_2)).
+45. If instr_u0 is of the case VSPLAT, then:
+  a. Let (VSPLAT shape) be instr_u0.
+  b. Return $free_shape(shape).
+46. If instr_u0 is of the case VEXTRACT_LANE, then:
+  a. Let (VEXTRACT_LANE shape sx? laneidx) be instr_u0.
+  b. Return $free_shape(shape).
+47. If instr_u0 is of the case VREPLACE_LANE, then:
+  a. Let (VREPLACE_LANE shape laneidx) be instr_u0.
+  b. Return $free_shape(shape).
+48. If instr_u0 is of the case REF.NULL, then:
+  a. Let (REF.NULL heaptype) be instr_u0.
+  b. Return $free_heaptype(heaptype).
+49. If (instr_u0 is REF.IS_NULL), then:
+  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+50. If (instr_u0 is REF.AS_NON_NULL), then:
+  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+51. If (instr_u0 is REF.EQ), then:
+  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+52. If instr_u0 is of the case REF.TEST, then:
+  a. Let (REF.TEST reftype) be instr_u0.
+  b. Return $free_reftype(reftype).
+53. If instr_u0 is of the case REF.CAST, then:
+  a. Let (REF.CAST reftype) be instr_u0.
+  b. Return $free_reftype(reftype).
+54. If instr_u0 is of the case REF.FUNC, then:
+  a. Let (REF.FUNC funcidx) be instr_u0.
+  b. Return $free_funcidx(funcidx).
+55. If (instr_u0 is REF.I31), then:
+  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+56. If instr_u0 is of the case I31.GET, then:
+  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+57. If instr_u0 is of the case STRUCT.NEW, then:
+  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+58. If instr_u0 is of the case STRUCT.NEW_DEFAULT, then:
+  a. Let (STRUCT.NEW_DEFAULT typeidx) be instr_u0.
+  b. Return $free_typeidx(typeidx).
+59. If instr_u0 is of the case STRUCT.GET, then:
+  a. Let (STRUCT.GET sx? typeidx u32) be instr_u0.
+  b. Return $free_typeidx(typeidx).
+60. If instr_u0 is of the case STRUCT.SET, then:
+  a. Let (STRUCT.SET typeidx u32) be instr_u0.
+  b. Return $free_typeidx(typeidx).
+61. If instr_u0 is of the case ARRAY.NEW, then:
+  a. Let (ARRAY.NEW typeidx) be instr_u0.
+  b. Return $free_typeidx(typeidx).
+62. If instr_u0 is of the case ARRAY.NEW_DEFAULT, then:
+  a. Let (ARRAY.NEW_DEFAULT typeidx) be instr_u0.
+  b. Return $free_typeidx(typeidx).
+63. If instr_u0 is of the case ARRAY.NEW_FIXED, then:
+  a. Let (ARRAY.NEW_FIXED typeidx u32) be instr_u0.
+  b. Return $free_typeidx(typeidx).
+64. If instr_u0 is of the case ARRAY.NEW_DATA, then:
+  a. Return YetE ($free_typeidx(typeidx) ++ $free_dataidx(dataidx)).
+65. If instr_u0 is of the case ARRAY.NEW_ELEM, then:
+  a. Return YetE ($free_typeidx(typeidx) ++ $free_elemidx(elemidx)).
+66. If instr_u0 is of the case ARRAY.GET, then:
+  a. Let (ARRAY.GET sx? typeidx) be instr_u0.
+  b. Return $free_typeidx(typeidx).
+67. If instr_u0 is of the case ARRAY.SET, then:
+  a. Let (ARRAY.SET typeidx) be instr_u0.
+  b. Return $free_typeidx(typeidx).
+68. If (instr_u0 is ARRAY.LEN), then:
+  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+69. If instr_u0 is of the case ARRAY.FILL, then:
+  a. Let (ARRAY.FILL typeidx) be instr_u0.
+  b. Return $free_typeidx(typeidx).
+70. If instr_u0 is of the case ARRAY.COPY, then:
+  a. Return YetE ($free_typeidx(typeidx_1) ++ $free_typeidx(typeidx_2)).
+71. If instr_u0 is of the case ARRAY.INIT_DATA, then:
+  a. Return YetE ($free_typeidx(typeidx) ++ $free_dataidx(dataidx)).
+72. If instr_u0 is of the case ARRAY.INIT_ELEM, then:
+  a. Return YetE ($free_typeidx(typeidx) ++ $free_elemidx(elemidx)).
+73. If (instr_u0 is EXTERN.CONVERT_ANY), then:
+  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+74. If (instr_u0 is ANY.CONVERT_EXTERN), then:
+  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+75. If instr_u0 is of the case LOCAL.GET, then:
+  a. Let (LOCAL.GET localidx) be instr_u0.
+  b. Return $free_localidx(localidx).
+76. If instr_u0 is of the case LOCAL.SET, then:
+  a. Let (LOCAL.SET localidx) be instr_u0.
+  b. Return $free_localidx(localidx).
+77. If instr_u0 is of the case LOCAL.TEE, then:
+  a. Let (LOCAL.TEE localidx) be instr_u0.
+  b. Return $free_localidx(localidx).
+78. If instr_u0 is of the case GLOBAL.GET, then:
+  a. Let (GLOBAL.GET globalidx) be instr_u0.
+  b. Return $free_globalidx(globalidx).
+79. If instr_u0 is of the case GLOBAL.SET, then:
+  a. Let (GLOBAL.SET globalidx) be instr_u0.
+  b. Return $free_globalidx(globalidx).
+80. If instr_u0 is of the case TABLE.GET, then:
+  a. Let (TABLE.GET tableidx) be instr_u0.
+  b. Return $free_tableidx(tableidx).
+81. If instr_u0 is of the case TABLE.SET, then:
+  a. Let (TABLE.SET tableidx) be instr_u0.
+  b. Return $free_tableidx(tableidx).
+82. If instr_u0 is of the case TABLE.SIZE, then:
+  a. Let (TABLE.SIZE tableidx) be instr_u0.
+  b. Return $free_tableidx(tableidx).
+83. If instr_u0 is of the case TABLE.GROW, then:
+  a. Let (TABLE.GROW tableidx) be instr_u0.
+  b. Return $free_tableidx(tableidx).
+84. If instr_u0 is of the case TABLE.FILL, then:
+  a. Let (TABLE.FILL tableidx) be instr_u0.
+  b. Return $free_tableidx(tableidx).
+85. If instr_u0 is of the case TABLE.COPY, then:
+  a. Return YetE ($free_tableidx(tableidx_1) ++ $free_tableidx(tableidx_2)).
+86. If instr_u0 is of the case TABLE.INIT, then:
+  a. Return YetE ($free_tableidx(tableidx) ++ $free_elemidx(elemidx)).
+87. If instr_u0 is of the case ELEM.DROP, then:
+  a. Let (ELEM.DROP elemidx) be instr_u0.
+  b. Return $free_elemidx(elemidx).
+88. If instr_u0 is of the case LOAD, then:
+  a. Let (LOAD numtype y_0 memidx memarg) be instr_u0.
+  b. If y_0 is defined, then:
+    1) Return YetE ($free_numtype(numtype) ++ $free_memidx(memidx)).
+89. If instr_u0 is of the case STORE, then:
+  a. Return YetE ($free_numtype(numtype) ++ $free_memidx(memidx)).
+90. If instr_u0 is of the case VLOAD, then:
+  a. Return YetE ($free_vectype(vectype) ++ $free_memidx(memidx)).
+91. If instr_u0 is of the case VLOAD_LANE, then:
+  a. Return YetE ($free_vectype(vectype) ++ $free_memidx(memidx)).
+92. If instr_u0 is of the case VSTORE, then:
+  a. Return YetE ($free_vectype(vectype) ++ $free_memidx(memidx)).
+93. If instr_u0 is of the case VSTORE_LANE, then:
+  a. Return YetE ($free_vectype(vectype) ++ $free_memidx(memidx)).
+94. If instr_u0 is of the case MEMORY.SIZE, then:
+  a. Let (MEMORY.SIZE memidx) be instr_u0.
+  b. Return $free_memidx(memidx).
+95. If instr_u0 is of the case MEMORY.GROW, then:
+  a. Let (MEMORY.GROW memidx) be instr_u0.
+  b. Return $free_memidx(memidx).
+96. If instr_u0 is of the case MEMORY.FILL, then:
+  a. Let (MEMORY.FILL memidx) be instr_u0.
+  b. Return $free_memidx(memidx).
+97. If instr_u0 is of the case MEMORY.COPY, then:
+  a. Return YetE ($free_memidx(memidx_1) ++ $free_memidx(memidx_2)).
+98. If instr_u0 is of the case MEMORY.INIT, then:
+  a. Return YetE ($free_memidx(memidx) ++ $free_dataidx(dataidx)).
+99. Assert: Due to validation, instr_u0 is of the case DATA.DROP.
+100. Let (DATA.DROP dataidx) be instr_u0.
+101. Return $free_dataidx(dataidx).
+
+free_expr instr*
+1. Return $free_list($free_instr(instr)*).
+
+free_type (TYPE rectype)
+1. Return $free_rectype(rectype).
+
+free_local (LOCAL t)
+1. Return $free_valtype(t).
+
+free_func (FUNC typeidx local* expr)
+1. Return YetE ($free_typeidx(typeidx) ++ $free_list($free_local(local)*{local : local}) ++ $free_block(expr)[LOCALS_free = []]).
+
+free_global (GLOBAL globaltype expr)
+1. Return YetE ($free_globaltype(globaltype) ++ $free_expr(expr)).
+
+free_table (TABLE tabletype expr)
+1. Return YetE ($free_tabletype(tabletype) ++ $free_expr(expr)).
+
+free_mem (MEMORY memtype)
+1. Return $free_memtype(memtype).
+
+free_elemmode elemm_u0
+1. If elemm_u0 is of the case ACTIVE, then:
+  a. Return YetE ($free_tableidx(tableidx) ++ $free_expr(expr)).
+2. If (elemm_u0 is PASSIVE), then:
+  a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+3. Assert: Due to validation, (elemm_u0 is DECLARE).
+4. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+
+free_datamode datam_u0
+1. If datam_u0 is of the case ACTIVE, then:
+  a. Return YetE ($free_memidx(memidx) ++ $free_expr(expr)).
+2. Assert: Due to validation, (datam_u0 is PASSIVE).
+3. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+
+free_elem (ELEM reftype expr* elemmode)
+1. Return YetE ($free_reftype(reftype) ++ $free_list($free_expr(expr)*{expr : expr}) ++ $free_elemmode(elemmode)).
+
+free_data (DATA byte* datamode)
+1. Return $free_datamode(datamode).
+
+free_start (START funcidx)
+1. Return $free_funcidx(funcidx).
+
+free_export (EXPORT name externidx)
+1. Return $free_externidx(externidx).
+
+free_import (IMPORT name_1 name_2 externtype)
+1. Return $free_externtype(externtype).
+
+free_module (MODULE type* import* func* global* table* mem* elem* data* start* export*)
+1. Return YetE ($free_list($free_type(type)*{type : type}) ++ $free_list($free_import(import)*{import : import}) ++ $free_list($free_func(func)*{func : func}) ++ $free_list($free_global(global)*{global : global}) ++ $free_list($free_table(table)*{table : table}) ++ $free_list($free_mem(mem)*{mem : mem}) ++ $free_list($free_elem(elem)*{elem : elem}) ++ $free_list($free_data(data)*{data : data}) ++ $free_list($free_start(start)*{start : start}) ++ $free_list($free_export(export)*{export : export})).
+
+funcidx_module module
+1. Return $free_module(module).FUNCS.
+
+dataidx_funcs func*
+1. Return $free_list($free_func(func)*).DATAS.
 
 subst_typevar tv typev_u0* typeu_u1*
 1. If ((typev_u0* is []) and (typeu_u1* is [])), then:
@@ -5662,6 +6168,9 @@ in_numtype nt numty_u0*
 2. Assert: Due to validation, (|numty_u0*| ≥ 1).
 3. Let [nt_1] ++ nt'* be numty_u0*.
 4. Return ((nt is nt_1) or $in_numtype(nt, nt'*)).
+
+funcidx_nonfuncs YetE (`%%%%%`_nonfuncs(global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data}))
+1. Return $funcidx_module((MODULE [] [] [] global* table* mem* elem* data* [] [])).
 
 blocktype_ block_u0
 1. If block_u0 is of the case _IDX, then:

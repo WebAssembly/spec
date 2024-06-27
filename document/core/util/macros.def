@@ -331,6 +331,7 @@
 
 .. Indices, non-terminals
 
+.. |idx| mathdef:: \xref{syntax/modules}{syntax-idx}{\X{idx}}
 .. |typeidx| mathdef:: \xref{syntax/modules}{syntax-typeidx}{\X{typeidx}}
 .. |funcidx| mathdef:: \xref{syntax/modules}{syntax-funcidx}{\X{funcidx}}
 .. |tableidx| mathdef:: \xref{syntax/modules}{syntax-tableidx}{\X{tableidx}}

@@ -1430,16 +1430,16 @@ $$
 \begin{array}{@{}lrrl@{}l@{}}
 \mbox{(index)} & {\mathit{idx}} &::=& {\mathit{u{\kern-0.1em\scriptstyle 32}}} \\
 \mbox{(lane index)} & {\mathit{laneidx}} &::=& {\mathit{u{\kern-0.1em\scriptstyle 8}}} \\
-\mbox{(type index)} & {\mathit{typeidx}} &::=& {\mathit{u{\kern-0.1em\scriptstyle 32}}} \\
-\mbox{(function index)} & {\mathit{funcidx}} &::=& {\mathit{u{\kern-0.1em\scriptstyle 32}}} \\
-\mbox{(global index)} & {\mathit{globalidx}} &::=& {\mathit{u{\kern-0.1em\scriptstyle 32}}} \\
-\mbox{(table index)} & {\mathit{tableidx}} &::=& {\mathit{u{\kern-0.1em\scriptstyle 32}}} \\
-\mbox{(memory index)} & {\mathit{memidx}} &::=& {\mathit{u{\kern-0.1em\scriptstyle 32}}} \\
-\mbox{(elem index)} & {\mathit{elemidx}} &::=& {\mathit{u{\kern-0.1em\scriptstyle 32}}} \\
-\mbox{(data index)} & {\mathit{dataidx}} &::=& {\mathit{u{\kern-0.1em\scriptstyle 32}}} \\
-\mbox{(label index)} & {\mathit{labelidx}} &::=& {\mathit{u{\kern-0.1em\scriptstyle 32}}} \\
-\mbox{(local index)} & {\mathit{localidx}} &::=& {\mathit{u{\kern-0.1em\scriptstyle 32}}} \\
-\mbox{(field index)} & {\mathit{fieldidx}} &::=& {\mathit{u{\kern-0.1em\scriptstyle 32}}} \\
+\mbox{(type index)} & {\mathit{typeidx}} &::=& {\mathit{idx}} \\
+\mbox{(function index)} & {\mathit{funcidx}} &::=& {\mathit{idx}} \\
+\mbox{(global index)} & {\mathit{globalidx}} &::=& {\mathit{idx}} \\
+\mbox{(table index)} & {\mathit{tableidx}} &::=& {\mathit{idx}} \\
+\mbox{(memory index)} & {\mathit{memidx}} &::=& {\mathit{idx}} \\
+\mbox{(elem index)} & {\mathit{elemidx}} &::=& {\mathit{idx}} \\
+\mbox{(data index)} & {\mathit{dataidx}} &::=& {\mathit{idx}} \\
+\mbox{(label index)} & {\mathit{labelidx}} &::=& {\mathit{idx}} \\
+\mbox{(local index)} & {\mathit{localidx}} &::=& {\mathit{idx}} \\
+\mbox{(field index)} & {\mathit{fieldidx}} &::=& {\mathit{idx}} \\
 \end{array}
 $$
 
@@ -2023,42 +2023,6 @@ $$
 
 \vspace{1ex}
 
-$$
-\begin{array}{@{}lcl@{}l@{}}
-{\mathrm{dataidx}}(\mathsf{memory{.}init}~x~y) &=& y \\
-{\mathrm{dataidx}}(\mathsf{data{.}drop}~x) &=& x \\
-{\mathrm{dataidx}}({\mathit{in}}) &=& \epsilon \\
-\end{array}
-$$
-
-$$
-\begin{array}{@{}lcl@{}l@{}}
-{\mathrm{dataidx}}(\epsilon) &=& \epsilon \\
-{\mathrm{dataidx}}({\mathit{instr}}~{{\mathit{instr}'}^\ast}) &=& {\mathrm{dataidx}}({\mathit{instr}})~{\mathrm{dataidx}}({{\mathit{instr}'}^\ast}) \\
-\end{array}
-$$
-
-$$
-\begin{array}{@{}lcl@{}l@{}}
-{\mathrm{dataidx}}({{\mathit{in}}^\ast}) &=& {\mathrm{dataidx}}({{\mathit{in}}^\ast}) \\
-\end{array}
-$$
-
-$$
-\begin{array}{@{}lcl@{}l@{}}
-{\mathrm{dataidx}}(\mathsf{func}~x~{{\mathit{loc}}^\ast}~e) &=& {\mathrm{dataidx}}(e) \\
-\end{array}
-$$
-
-$$
-\begin{array}{@{}lcl@{}l@{}}
-{\mathrm{dataidx}}(\epsilon) &=& \epsilon \\
-{\mathrm{dataidx}}({\mathit{func}}~{{\mathit{func}'}^\ast}) &=& {\mathrm{dataidx}}({\mathit{func}})~{\mathrm{dataidx}}({{\mathit{func}'}^\ast}) \\
-\end{array}
-$$
-
-\vspace{1ex}
-
 \vspace{1ex}
 
 \vspace{1ex}
@@ -2219,6 +2183,564 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 x &=& x \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+& {\mathit{free}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
+\mathsf{types}~{{\mathit{typeidx}}^\ast},\; \\
+  \mathsf{funcs}~{{\mathit{funcidx}}^\ast},\; \\
+  \mathsf{globals}~{{\mathit{globalidx}}^\ast},\; \\
+  \mathsf{tables}~{{\mathit{tableidx}}^\ast},\; \\
+  \mathsf{mems}~{{\mathit{memidx}}^\ast},\; \\
+  \mathsf{elems}~{{\mathit{elemidx}}^\ast},\; \\
+  \mathsf{datas}~{{\mathit{dataidx}}^\ast},\; \\
+  \mathsf{locals}~{{\mathit{localidx}}^\ast},\; \\
+  \mathsf{labels}~{{\mathit{labelidx}}^\ast} \}\end{array} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{opt}}(\epsilon) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+{\mathrm{free}}_{\mathit{opt}}({\mathit{free}}) &=& {\mathit{free}} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{list}}(\epsilon) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+{\mathrm{free}}_{\mathit{list}}({\mathit{free}}~{{\mathit{free}'}^\ast}) &=& {\mathit{free}} \oplus {\mathrm{free}}_{\mathit{list}}({{\mathit{free}'}^\ast}) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) &=& \{ \begin{array}[t]{@{}l@{}}
+\mathsf{types}~{\mathit{typeidx}} \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}}) &=& \{ \begin{array}[t]{@{}l@{}}
+\mathsf{funcs}~{\mathit{funcidx}} \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{globalidx}}({\mathit{globalidx}}) &=& \{ \begin{array}[t]{@{}l@{}}
+\mathsf{globals}~{\mathit{globalidx}} \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}}) &=& \{ \begin{array}[t]{@{}l@{}}
+\mathsf{tables}~{\mathit{tableidx}} \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}}) &=& \{ \begin{array}[t]{@{}l@{}}
+\mathsf{mems}~{\mathit{memidx}} \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{elemidx}}({\mathit{elemidx}}) &=& \{ \begin{array}[t]{@{}l@{}}
+\mathsf{elems}~{\mathit{elemidx}} \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{dataidx}}({\mathit{dataidx}}) &=& \{ \begin{array}[t]{@{}l@{}}
+\mathsf{datas}~{\mathit{dataidx}} \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{localidx}}({\mathit{localidx}}) &=& \{ \begin{array}[t]{@{}l@{}}
+\mathsf{locals}~{\mathit{localidx}} \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}}) &=& \{ \begin{array}[t]{@{}l@{}}
+\mathsf{labels}~{\mathit{labelidx}} \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{externidx}}(\mathsf{func}~{\mathit{funcidx}}) &=& {\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}}) \\
+{\mathrm{free}}_{\mathit{externidx}}(\mathsf{global}~{\mathit{globalidx}}) &=& {\mathrm{free}}_{\mathit{globalidx}}({\mathit{globalidx}}) \\
+{\mathrm{free}}_{\mathit{externidx}}(\mathsf{table}~{\mathit{tableidx}}) &=& {\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}}) \\
+{\mathrm{free}}_{\mathit{externidx}}(\mathsf{mem}~{\mathit{memidx}}) &=& {\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}}) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}}) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{packtype}}({\mathit{packtype}}) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{lanetype}}({\mathit{numtype}}) &=& {\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}}) \\
+{\mathrm{free}}_{\mathit{lanetype}}({\mathit{packtype}}) &=& {\mathrm{free}}_{\mathit{packtype}}({\mathit{packtype}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}}) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{consttype}}({\mathit{numtype}}) &=& {\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}}) \\
+{\mathrm{free}}_{\mathit{consttype}}({\mathit{vectype}}) &=& {\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{absheaptype}}({\mathit{absheaptype}}) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{deftype}}({\mathit{rectype}} {.} n) &=& {\mathrm{free}}_{\mathit{rectype}}({\mathit{rectype}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeidx}}) &=& {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) \\
+{\mathrm{free}}_{\mathit{typeuse}}(\mathsf{rec}~n) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+{\mathrm{free}}_{\mathit{typeuse}}({\mathit{deftype}}) &=& {\mathrm{free}}_{\mathit{deftype}}({\mathit{deftype}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{heaptype}}({\mathit{absheaptype}}) &=& {\mathrm{free}}_{\mathit{absheaptype}}({\mathit{absheaptype}}) \\
+{\mathrm{free}}_{\mathit{heaptype}}({\mathit{typeuse}}) &=& {\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{reftype}}(\mathsf{ref}~{\mathsf{null}^?}~{\mathit{heaptype}}) &=& {\mathrm{free}}_{\mathit{heaptype}}({\mathit{heaptype}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{valtype}}({\mathit{numtype}}) &=& {\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}}) \\
+{\mathrm{free}}_{\mathit{valtype}}({\mathit{vectype}}) &=& {\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}}) \\
+{\mathrm{free}}_{\mathit{valtype}}({\mathit{reftype}}) &=& {\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}}) \\
+{\mathrm{free}}_{\mathit{valtype}}(\mathsf{bot}) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{resulttype}}({{\mathit{valtype}}^\ast}) &=& {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})^\ast}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{storagetype}}({\mathit{valtype}}) &=& {\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}}) \\
+{\mathrm{free}}_{\mathit{storagetype}}({\mathit{packtype}}) &=& {\mathrm{free}}_{\mathit{packtype}}({\mathit{packtype}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{fieldtype}}({\mathsf{mut}^?}~{\mathit{storagetype}}) &=& {\mathrm{free}}_{\mathit{storagetype}}({\mathit{storagetype}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{functype}}({\mathit{resulttype}}_1 \rightarrow {\mathit{resulttype}}_2) &=& {\mathrm{free}}_{\mathit{resulttype}}({\mathit{resulttype}}_1) \oplus {\mathrm{free}}_{\mathit{resulttype}}({\mathit{resulttype}}_2) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{structtype}}({{\mathit{fieldtype}}^\ast}) &=& {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{fieldtype}}({\mathit{fieldtype}})^\ast}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{arraytype}}({\mathit{fieldtype}}) &=& {\mathrm{free}}_{\mathit{fieldtype}}({\mathit{fieldtype}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{comptype}}(\mathsf{struct}~{\mathit{structtype}}) &=& {\mathrm{free}}_{\mathit{structtype}}({\mathit{structtype}}) \\
+{\mathrm{free}}_{\mathit{comptype}}(\mathsf{array}~{\mathit{arraytype}}) &=& {\mathrm{free}}_{\mathit{arraytype}}({\mathit{arraytype}}) \\
+{\mathrm{free}}_{\mathit{comptype}}(\mathsf{func}~{\mathit{functype}}) &=& {\mathrm{free}}_{\mathit{functype}}({\mathit{functype}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{subtype}}(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~{\mathit{comptype}}) &=& {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}})^\ast}) \oplus {\mathrm{free}}_{\mathit{comptype}}({\mathit{comptype}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{rectype}}(\mathsf{rec}~{{\mathit{subtype}}^\ast}) &=& {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{subtype}}({\mathit{subtype}})^\ast}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{globaltype}}({\mathsf{mut}^?}~{\mathit{valtype}}) &=& {\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{tabletype}}({\mathit{limits}}~{\mathit{reftype}}) &=& {\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{memtype}}({\mathit{limits}}~\mathsf{page}) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{elemtype}}({\mathit{reftype}}) &=& {\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{datatype}}(\mathsf{ok}) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{externtype}}(\mathsf{func}~{\mathit{typeuse}}) &=& {\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}}) \\
+{\mathrm{free}}_{\mathit{externtype}}(\mathsf{global}~{\mathit{globaltype}}) &=& {\mathrm{free}}_{\mathit{globaltype}}({\mathit{globaltype}}) \\
+{\mathrm{free}}_{\mathit{externtype}}(\mathsf{table}~{\mathit{tabletype}}) &=& {\mathrm{free}}_{\mathit{tabletype}}({\mathit{tabletype}}) \\
+{\mathrm{free}}_{\mathit{externtype}}(\mathsf{mem}~{\mathit{memtype}}) &=& {\mathrm{free}}_{\mathit{memtype}}({\mathit{memtype}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{moduletype}}({{\mathit{externtype}}_1^\ast} \rightarrow {{\mathit{externtype}}_2^\ast}) &=& {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{externtype}}({\mathit{externtype}}_1)^\ast}) \oplus {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{externtype}}({\mathit{externtype}}_2)^\ast}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{blocktype}}({{\mathit{valtype}}^?}) &=& {\mathrm{free}}_{\mathit{opt}}({{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})^?}) \\
+{\mathrm{free}}_{\mathit{blocktype}}({\mathit{funcidx}}) &=& {\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}}) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{shape}}({{\mathit{lanetype}}}{\mathsf{x}}{{\mathit{dim}}}) &=& {\mathrm{free}}_{\mathit{lanetype}}({\mathit{lanetype}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{nop}) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{unreachable}) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{drop}) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{select}~{({{\mathit{valtype}}^\ast})^?}) &=& {\mathrm{free}}_{\mathit{opt}}({{\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{valtype}}({\mathit{valtype}})^\ast})^?}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast}) &=& {\mathrm{free}}_{\mathit{blocktype}}({\mathit{blocktype}}) \oplus {\mathrm{free}}_{\mathit{block}}({{\mathit{instr}}^\ast}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{loop}~{\mathit{blocktype}}~{{\mathit{instr}}^\ast}) &=& {\mathrm{free}}_{\mathit{blocktype}}({\mathit{blocktype}}) \oplus {\mathrm{free}}_{\mathit{block}}({{\mathit{instr}}^\ast}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{if}~{\mathit{blocktype}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast}) &=& {\mathrm{free}}_{\mathit{blocktype}}({\mathit{blocktype}}) \oplus {\mathrm{free}}_{\mathit{block}}({{\mathit{instr}}_1^\ast}) \oplus {\mathrm{free}}_{\mathit{block}}({{\mathit{instr}}_2^\ast}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{br}~{\mathit{labelidx}}) &=& {\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{br\_if}~{\mathit{labelidx}}) &=& {\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{br\_table}~{{\mathit{labelidx}}^\ast}~{\mathit{labelidx}'}) &=& {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}})^\ast}) \oplus {\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{br\_on\_null}~{\mathit{labelidx}}) &=& {\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{br\_on\_non\_null}~{\mathit{labelidx}}) &=& {\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{br\_on\_cast}~{\mathit{labelidx}}~{\mathit{reftype}}_1~{\mathit{reftype}}_2) &=& {\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}}) \oplus {\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}}_1) \oplus {\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}}_2) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{br\_on\_cast\_fail}~{\mathit{labelidx}}~{\mathit{reftype}}_1~{\mathit{reftype}}_2) &=& {\mathrm{free}}_{\mathit{labelidx}}({\mathit{labelidx}}) \oplus {\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}}_1) \oplus {\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}}_2) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{call}~{\mathit{funcidx}}) &=& {\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{call\_ref}~{\mathit{typeuse}}) &=& {\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{call\_indirect}~{\mathit{tableidx}}~{\mathit{typeuse}}) &=& {\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}}) \oplus {\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{return}) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{return\_call}~{\mathit{funcidx}}) &=& {\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{return\_call\_ref}~{\mathit{typeuse}}) &=& {\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{return\_call\_indirect}~{\mathit{tableidx}}~{\mathit{typeuse}}) &=& {\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}}) \oplus {\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{numtype}}{.}\mathsf{const}~{\mathit{numlit}}) &=& {\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{numtype}} {.} {\mathit{unop}}) &=& {\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{numtype}} {.} {\mathit{binop}}) &=& {\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{numtype}} {.} {\mathit{testop}}) &=& {\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{numtype}} {.} {\mathit{relop}}) &=& {\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{numtype}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{numtype}}_2}{\mathsf{\_}}{{{\mathit{sx}}^?}}) &=& {\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}}_1) \oplus {\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}}_2) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{vectype}}{.}\mathsf{const}~{\mathit{veclit}}) &=& {\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{vectype}} {.} {\mathit{vvunop}}) &=& {\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{vectype}} {.} {\mathit{vvbinop}}) &=& {\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{vectype}} {.} {\mathit{vvternop}}) &=& {\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{vectype}} {.} {\mathit{vvtestop}}) &=& {\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{shape}} {.} {\mathit{vunop}}) &=& {\mathrm{free}}_{\mathit{shape}}({\mathit{shape}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{shape}} {.} {\mathit{vbinop}}) &=& {\mathrm{free}}_{\mathit{shape}}({\mathit{shape}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{shape}} {.} {\mathit{vtestop}}) &=& {\mathrm{free}}_{\mathit{shape}}({\mathit{shape}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{shape}} {.} {\mathit{vrelop}}) &=& {\mathrm{free}}_{\mathit{shape}}({\mathit{shape}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{ishape}} {.} {\mathit{vshiftop}}) &=& {\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{ishape}}{.}\mathsf{bitmask}) &=& {\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{ishape}}{.}\mathsf{swizzle}) &=& {\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{ishape}}{.}\mathsf{shuffle}~{{\mathit{laneidx}}^\ast}) &=& {\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{ishape}}_1 {.} {{\mathit{vextunop}}}{\mathsf{\_}}{{\mathit{ishape}}_2}{\mathsf{\_}}{{\mathit{sx}}}) &=& {\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}}_1) \oplus {\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}}_2) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{ishape}}_1 {.} {{\mathit{vextbinop}}}{\mathsf{\_}}{{\mathit{ishape}}_2}{\mathsf{\_}}{{\mathit{sx}}}) &=& {\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}}_1) \oplus {\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}}_2) \\
+{\mathrm{free}}_{\mathit{instr}}({{\mathit{ishape}}_1{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathit{ishape}}_2}{\mathsf{\_}}{{\mathit{sx}}}) &=& {\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}}_1) \oplus {\mathrm{free}}_{\mathit{shape}}({\mathit{ishape}}_2) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{shape}}_1 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{sx}}^?}}{\mathsf{\_}}{{\mathit{shape}}_2}{\mathsf{\_}}{{{\mathit{half}}^?}}) &=& {\mathrm{free}}_{\mathit{shape}}({\mathit{shape}}_1) \oplus {\mathrm{free}}_{\mathit{shape}}({\mathit{shape}}_2) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{shape}}{.}\mathsf{splat}) &=& {\mathrm{free}}_{\mathit{shape}}({\mathit{shape}}) \\
+{\mathrm{free}}_{\mathit{instr}}({{\mathit{shape}}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{laneidx}}) &=& {\mathrm{free}}_{\mathit{shape}}({\mathit{shape}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{shape}}{.}\mathsf{replace\_lane}~{\mathit{laneidx}}) &=& {\mathrm{free}}_{\mathit{shape}}({\mathit{shape}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{ref{.}null}~{\mathit{heaptype}}) &=& {\mathrm{free}}_{\mathit{heaptype}}({\mathit{heaptype}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{ref{.}is\_null}) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{ref{.}as\_non\_null}) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{ref{.}eq}) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{ref{.}test}~{\mathit{reftype}}) &=& {\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{ref{.}cast}~{\mathit{reftype}}) &=& {\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{ref{.}func}~{\mathit{funcidx}}) &=& {\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{ref{.}i{\scriptstyle 31}}) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+{\mathrm{free}}_{\mathit{instr}}({\mathsf{i{\scriptstyle 31}{.}get}}{\mathsf{\_}}{{\mathit{sx}}}) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{struct{.}new}~{\mathit{typeidx}}) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{struct{.}new\_default}~{\mathit{typeidx}}) &=& {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{typeidx}}~{\mathit{u{\kern-0.1em\scriptstyle 32}}}) &=& {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{struct{.}set}~{\mathit{typeidx}}~{\mathit{u{\kern-0.1em\scriptstyle 32}}}) &=& {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{array{.}new}~{\mathit{typeidx}}) &=& {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{array{.}new\_default}~{\mathit{typeidx}}) &=& {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{array{.}new\_fixed}~{\mathit{typeidx}}~{\mathit{u{\kern-0.1em\scriptstyle 32}}}) &=& {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{array{.}new\_data}~{\mathit{typeidx}}~{\mathit{dataidx}}) &=& {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) \oplus {\mathrm{free}}_{\mathit{dataidx}}({\mathit{dataidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{array{.}new\_elem}~{\mathit{typeidx}}~{\mathit{elemidx}}) &=& {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) \oplus {\mathrm{free}}_{\mathit{elemidx}}({\mathit{elemidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{typeidx}}) &=& {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{array{.}set}~{\mathit{typeidx}}) &=& {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{array{.}len}) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{array{.}fill}~{\mathit{typeidx}}) &=& {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{array{.}copy}~{\mathit{typeidx}}_1~{\mathit{typeidx}}_2) &=& {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}_1) \oplus {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}_2) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{array{.}init\_data}~{\mathit{typeidx}}~{\mathit{dataidx}}) &=& {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) \oplus {\mathrm{free}}_{\mathit{dataidx}}({\mathit{dataidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{array{.}init\_elem}~{\mathit{typeidx}}~{\mathit{elemidx}}) &=& {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) \oplus {\mathrm{free}}_{\mathit{elemidx}}({\mathit{elemidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{extern{.}convert\_any}) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{any{.}convert\_extern}) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{local{.}get}~{\mathit{localidx}}) &=& {\mathrm{free}}_{\mathit{localidx}}({\mathit{localidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{local{.}set}~{\mathit{localidx}}) &=& {\mathrm{free}}_{\mathit{localidx}}({\mathit{localidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{local{.}tee}~{\mathit{localidx}}) &=& {\mathrm{free}}_{\mathit{localidx}}({\mathit{localidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{global{.}get}~{\mathit{globalidx}}) &=& {\mathrm{free}}_{\mathit{globalidx}}({\mathit{globalidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{global{.}set}~{\mathit{globalidx}}) &=& {\mathrm{free}}_{\mathit{globalidx}}({\mathit{globalidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{table{.}get}~{\mathit{tableidx}}) &=& {\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{table{.}set}~{\mathit{tableidx}}) &=& {\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{table{.}size}~{\mathit{tableidx}}) &=& {\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{table{.}grow}~{\mathit{tableidx}}) &=& {\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{table{.}fill}~{\mathit{tableidx}}) &=& {\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{table{.}copy}~{\mathit{tableidx}}_1~{\mathit{tableidx}}_2) &=& {\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}}_1) \oplus {\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}}_2) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{table{.}init}~{\mathit{tableidx}}~{\mathit{elemidx}}) &=& {\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}}) \oplus {\mathrm{free}}_{\mathit{elemidx}}({\mathit{elemidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{elem{.}drop}~{\mathit{elemidx}}) &=& {\mathrm{free}}_{\mathit{elemidx}}({\mathit{elemidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}({{\mathit{numtype}}{.}\mathsf{load}}{{\mathit{loadop}}}~{\mathit{memidx}}~{\mathit{memarg}}) &=& {\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}}) \oplus {\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}({{\mathit{numtype}}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{memidx}}~{\mathit{memarg}}) &=& {\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}}) \oplus {\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}({{\mathit{vectype}}{.}\mathsf{load}}{{{\mathit{vloadop}}^?}}~{\mathit{memidx}}~{\mathit{memarg}}) &=& {\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}}) \oplus {\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}({{\mathit{vectype}}{.}\mathsf{load}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}}) &=& {\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}}) \oplus {\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}({\mathit{vectype}}{.}\mathsf{store}~{\mathit{memidx}}~{\mathit{memarg}}) &=& {\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}}) \oplus {\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}({{\mathit{vectype}}{.}\mathsf{store}}{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}}) &=& {\mathrm{free}}_{\mathit{vectype}}({\mathit{vectype}}) \oplus {\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{memory{.}size}~{\mathit{memidx}}) &=& {\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{memory{.}grow}~{\mathit{memidx}}) &=& {\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{memory{.}fill}~{\mathit{memidx}}) &=& {\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{memory{.}copy}~{\mathit{memidx}}_1~{\mathit{memidx}}_2) &=& {\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}}_1) \oplus {\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}}_2) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{memory{.}init}~{\mathit{memidx}}~{\mathit{dataidx}}) &=& {\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}}) \oplus {\mathrm{free}}_{\mathit{dataidx}}({\mathit{dataidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{data{.}drop}~{\mathit{dataidx}}) &=& {\mathrm{free}}_{\mathit{dataidx}}({\mathit{dataidx}}) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{shift}}_{\mathit{labelidxs}}(\epsilon) &=& \epsilon \\
+{\mathrm{shift}}_{\mathit{labelidxs}}(0~{{\mathit{labelidx}'}^\ast}) &=& {\mathrm{shift}}_{\mathit{labelidxs}}({{\mathit{labelidx}'}^\ast}) \\
+{\mathrm{shift}}_{\mathit{labelidxs}}({\mathit{labelidx}}~{{\mathit{labelidx}'}^\ast}) &=& ({\mathit{labelidx}} - 1)~{\mathrm{shift}}_{\mathit{labelidxs}}({{\mathit{labelidx}'}^\ast}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{block}}({{\mathit{instr}}^\ast}) &=& {\mathit{free}}{}[{.}\mathsf{labels} = {\mathrm{shift}}_{\mathit{labelidxs}}({\mathit{free}}{.}\mathsf{labels})]
+  &\qquad \mbox{if}~{\mathit{free}} = {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{instr}}({\mathit{instr}})^\ast}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{expr}}({{\mathit{instr}}^\ast}) &=& {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{instr}}({\mathit{instr}})^\ast}) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{type}}(\mathsf{type}~{\mathit{rectype}}) &=& {\mathrm{free}}_{\mathit{rectype}}({\mathit{rectype}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{local}}(\mathsf{local}~t) &=& {\mathrm{free}}_{\mathit{valtype}}(t) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{func}}(\mathsf{func}~{\mathit{typeidx}}~{{\mathit{local}}^\ast}~{\mathit{expr}}) &=& {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) \oplus {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{local}}({\mathit{local}})^\ast}) \oplus {\mathrm{free}}_{\mathit{block}}({\mathit{expr}}){}[{.}\mathsf{locals} = \epsilon] \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{global}}(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}) &=& {\mathrm{free}}_{\mathit{globaltype}}({\mathit{globaltype}}) \oplus {\mathrm{free}}_{\mathit{expr}}({\mathit{expr}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{table}}(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}}) &=& {\mathrm{free}}_{\mathit{tabletype}}({\mathit{tabletype}}) \oplus {\mathrm{free}}_{\mathit{expr}}({\mathit{expr}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{mem}}(\mathsf{memory}~{\mathit{memtype}}) &=& {\mathrm{free}}_{\mathit{memtype}}({\mathit{memtype}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{elemmode}}(\mathsf{active}~{\mathit{tableidx}}~{\mathit{expr}}) &=& {\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}}) \oplus {\mathrm{free}}_{\mathit{expr}}({\mathit{expr}}) \\
+{\mathrm{free}}_{\mathit{elemmode}}(\mathsf{passive}) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+{\mathrm{free}}_{\mathit{elemmode}}(\mathsf{declare}) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{datamode}}(\mathsf{active}~{\mathit{memidx}}~{\mathit{expr}}) &=& {\mathrm{free}}_{\mathit{memidx}}({\mathit{memidx}}) \oplus {\mathrm{free}}_{\mathit{expr}}({\mathit{expr}}) \\
+{\mathrm{free}}_{\mathit{datamode}}(\mathsf{passive}) &=& \{ \begin{array}[t]{@{}l@{}}
+ \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{elem}}(\mathsf{elem}~{\mathit{reftype}}~{{\mathit{expr}}^\ast}~{\mathit{elemmode}}) &=& {\mathrm{free}}_{\mathit{reftype}}({\mathit{reftype}}) \oplus {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{expr}}({\mathit{expr}})^\ast}) \oplus {\mathrm{free}}_{\mathit{elemmode}}({\mathit{elemmode}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{data}}(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}}) &=& {\mathrm{free}}_{\mathit{datamode}}({\mathit{datamode}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{start}}(\mathsf{start}~{\mathit{funcidx}}) &=& {\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{export}}(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}}) &=& {\mathrm{free}}_{\mathit{externidx}}({\mathit{externidx}}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{import}}(\mathsf{import}~{\mathit{name}}_1~{\mathit{name}}_2~{\mathit{externtype}}) &=& {\mathrm{free}}_{\mathit{externtype}}({\mathit{externtype}}) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{free}}_{\mathit{module}}(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^\ast}~{{\mathit{export}}^\ast}) &=& {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{type}}({\mathit{type}})^\ast}) \oplus {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{import}}({\mathit{import}})^\ast}) \oplus {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{func}}({\mathit{func}})^\ast}) \oplus {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{global}}({\mathit{global}})^\ast}) \oplus {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{table}}({\mathit{table}})^\ast}) \oplus {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{mem}}({\mathit{mem}})^\ast}) \oplus {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{elem}}({\mathit{elem}})^\ast}) \oplus {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{data}}({\mathit{data}})^\ast}) \oplus {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{start}}({\mathit{start}})^\ast}) \oplus {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{export}}({\mathit{export}})^\ast}) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{funcidx}}({\mathit{module}}) &=& {\mathrm{free}}_{\mathit{module}}({\mathit{module}}){.}\mathsf{funcs} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{dataidx}}({{\mathit{func}}^\ast}) &=& {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{func}}({\mathit{func}})^\ast}){.}\mathsf{datas} \\
 \end{array}
 $$
 
@@ -3420,7 +3942,8 @@ $$
   \mathsf{datas}~{{\mathit{datatype}}^\ast},\; \\
   \mathsf{locals}~{{\mathit{localtype}}^\ast},\; \\
   \mathsf{labels}~{{\mathit{resulttype}}^\ast},\; \\
-  \mathsf{return}~{{\mathit{resulttype}}^?} \}\end{array} \\
+  \mathsf{return}~{{\mathit{resulttype}}^?},\; \\
+  \mathsf{refs}~{{\mathit{funcidx}}^\ast} \}\end{array} \\
 \end{array}
 $$
 
@@ -5091,6 +5614,8 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 C{.}\mathsf{funcs}{}[x] = {\mathit{dt}}
+ \qquad
+C{.}\mathsf{refs} = {x_1^\ast}~x~{x_2^\ast}
 }{
 C \vdash \mathsf{ref{.}func}~x : \epsilon \rightarrow (\mathsf{ref}~{\mathit{dt}})
 } \, {[\textsc{\scriptsize T{-}ref.func}]}
@@ -6487,6 +7012,18 @@ $\boxed{{\mathit{context}} \vdash {{\mathit{type}}^\ast} : {{\mathit{deftype}}^\
 $\boxed{{\mathit{context}} \vdash {{\mathit{global}}^\ast} : {{\mathit{globaltype}}^\ast}}$
 
 $$
+\begin{array}{@{}lrrl@{}l@{}}
+& {\mathit{nonfuncs}} &::=& {{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}) &=& {\mathrm{funcidx}}(\mathsf{module}~\epsilon~\epsilon~\epsilon~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~\epsilon~\epsilon) \\
+\end{array}
+$$
+
+$$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 \begin{array}{@{}c@{}}
@@ -6513,10 +7050,12 @@ $$
 (C \vdash {\mathit{export}} : {\mathit{xt}}_{\mathsf{e}})^\ast
  \\
 C = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{elems}~{{\mathit{rt}}^\ast},\; \mathsf{datas}~{{\mathit{ok}}^\ast} \}\end{array}
+\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{elems}~{{\mathit{rt}}^\ast},\; \mathsf{datas}~{{\mathit{ok}}^\ast},\; \mathsf{refs}~{x^\ast} \}\end{array}
  \\
 {C'} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast} \}\end{array}
+\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\; \mathsf{refs}~{x^\ast} \}\end{array}
+ \qquad
+{x^\ast} = {\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast})
  \\
 {{\mathit{dt}}_{\mathsf{i}}^\ast} = {\mathrm{funcs}}({{\mathit{xt}}_{\mathsf{i}}^\ast})
  \qquad

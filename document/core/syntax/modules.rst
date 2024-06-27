@@ -37,6 +37,7 @@ Each of the lists --- and thus the entire module --- may be empty.
    pair: local; index
    pair: label; index
    pair: field; index
+.. _syntax-idx:
 .. _syntax-typeidx:
 .. _syntax-funcidx:
 .. _syntax-tableidx:
@@ -69,6 +70,13 @@ Label indices reference :ref:`structured control instructions <syntax-instr-cont
 Each :ref:`aggregate type <syntax-aggrtype>` provides an index space for its :ref:`fields <syntax-fieldtype>`.
 
 
+Conventions
+...........
+
+* The meta variable ${:l} ranges over label indices.
+
+* The meta variables ${:x}, ${:y} range over indices in any of the other index spaces.
+
 .. _free-typeidx:
 .. _free-funcidx:
 .. _free-tableidx:
@@ -80,13 +88,6 @@ Each :ref:`aggregate type <syntax-aggrtype>` provides an index space for its :re
 .. _free-labelidx:
 .. _free-fieldidx:
 .. _free-index:
-
-Conventions
-...........
-
-* The meta variable ${:l} ranges over label indices.
-
-* The meta variables ${:x}, ${:y} range over indices in any of the other index spaces.
 
 * For every index space ${-:abcidx}, the notation ${-:$abcidx(A)} denotes the set of indices from that index space occurring free in ${:A}. Sometimes this set is reinterpreted as the :ref:`list <syntax-list>` of its elements.
 

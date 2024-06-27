@@ -24,7 +24,8 @@ syntax context hint(desc "context") hint(macro "%" "C%") =
     DATAS datatype*,
     LOCALS localtype*,
     LABELS resulttype*,
-    RETURN resulttype?
+    RETURN resulttype?,
+    REFS funcidx*
   }
 
 var C : context
@@ -737,10 +738,10 @@ rule Instr_ok/ref.null:
   C |- REF.NULL ht : eps -> (REF NULL ht)
   -- Heaptype_ok: C |- ht : OK
 
-;; TODO: check C.refs
 rule Instr_ok/ref.func:
   C |- REF.FUNC x : eps -> (REF dt)
   -- if C.FUNCS[x] = dt
+  -- if C.REFS = x_1* x x_2*  ;; TODO: use elementof
 
 rule Instr_ok/ref.i31:
   C |- REF.I31 : I32 -> (REF I31)
@@ -1306,7 +1307,11 @@ relation Module_ok: |- module : moduletype            hint(show "T-module")  hin
 relation Types_ok: context |- type* : deftype*        hint(show "T-types")   hint(macro "%types")
 relation Globals_ok: context |- global* : globaltype* hint(show "T-globals") hint(macro "%globals")
 
-;; TODO: refs
+;; HACK for notation
+syntax nonfuncs = global* table* mem* elem* data*
+def $funcidx_nonfuncs(nonfuncs) : funcidx*  hint(show $funcidx(%)) hint(macro "freefuncidx")
+def $funcidx_nonfuncs(global* table* mem* elem* data*) = $funcidx_module(MODULE eps eps eps global* table* mem* elem* data* eps eps)
+
 rule Module_ok:
   |- MODULE type* import* func* global* table* mem* elem* data* start? export* : $clos_moduletype(C, xt_I* -> xt_E*)
   -- Types_ok: {} |- type* : dt'*
@@ -1323,9 +1328,10 @@ rule Module_ok:
   -- (Export_ok: C |- export : xt_E)*
   ;; -- TODO: disjoint export names
   ----
-  -- if C = {TYPES dt'*, FUNCS dt_I* dt*, GLOBALS gt_I* gt*, TABLES tt_I* tt*, MEMS mt_I* mt*, ELEMS rt*, DATAS ok*}
+  -- if C = {TYPES dt'*, FUNCS dt_I* dt*, GLOBALS gt_I* gt*, TABLES tt_I* tt*, MEMS mt_I* mt*, ELEMS rt*, DATAS ok*, REFS x*}
   ----
-  -- if C' = {TYPES dt'*, FUNCS dt_I* dt*, GLOBALS gt_I*}
+  -- if C' = {TYPES dt'*, FUNCS dt_I* dt*, GLOBALS gt_I*, REFS x*}
+  -- if x* = $funcidx_nonfuncs(global* table* mem* elem* data*)
   ----
   -- if dt_I* = $funcsxt(xt_I*)
   -- if gt_I* = $globalsxt(xt_I*)

@@ -98,16 +98,16 @@ var nm : name
 syntax idx hint(desc "index") = u32
 syntax laneidx hint(desc "lane index") = u8
 
-syntax typeidx hint(desc "type index") = u32
-syntax funcidx hint(desc "function index") = u32
-syntax globalidx hint(desc "global index") = u32
-syntax tableidx hint(desc "table index") = u32
-syntax memidx hint(desc "memory index") = u32
-syntax elemidx hint(desc "elem index") = u32
-syntax dataidx hint(desc "data index") = u32
-syntax labelidx hint(desc "label index") = u32
-syntax localidx hint(desc "local index") = u32
-syntax fieldidx hint(desc "field index") = u32
+syntax typeidx hint(desc "type index") = idx
+syntax funcidx hint(desc "function index") = idx
+syntax globalidx hint(desc "global index") = idx
+syntax tableidx hint(desc "table index") = idx
+syntax memidx hint(desc "memory index") = idx
+syntax elemidx hint(desc "elem index") = idx
+syntax dataidx hint(desc "data index") = idx
+syntax labelidx hint(desc "label index") = idx
+syntax localidx hint(desc "local index") = idx
+syntax fieldidx hint(desc "field index") = idx
 
 var x : idx
 var y : idx
