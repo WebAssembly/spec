@@ -682,7 +682,6 @@ rule Step_pure/vextract_lane-num:
   (VCONST V128 c_1) (VEXTRACT_LANE (nt X N) i) ~> (CONST nt c_2)
   -- if c_2 = $lanes_(nt X N, c_1)[i]
 
-;; TODO(?, ?): fshape
 rule Step_pure/vextract_lane-pack:
   (VCONST V128 c_1) (VEXTRACT_LANE (pt X N) sx i) ~> (CONST I32 c_2)
   -- if c_2 = $ext($psize(pt), 32, sx, $lanes_(pt X N, c_1)[i])

@@ -88,10 +88,10 @@ def $iabs(N, iN(N)) : iN(N)             hint(show $iabs_(%,%))
 def $ineg(N, iN(N)) : iN(N)             hint(show $ineg_(%,%))
 def $imin(N, sx, iN(N), iN(N)) : iN(N)  hint(show $imin_(%)^(%)%((%,%)))
 def $imax(N, sx, iN(N), iN(N)) : iN(N)  hint(show $imax_(%)^(%)%((%,%)))
-;; TODO(?, ?): make add/sub_sat
+;; TODO(1, rossberg): rename to add/sub_sat to match mnemonic
 def $iaddsat(N, sx, iN(N), iN(N)) : iN(N)  hint(show $iaddsat_(%)^(%)#((%,%)))
 def $isubsat(N, sx, iN(N), iN(N)) : iN(N)  hint(show $isubsat_(%)^(%)#((%,%)))
-;; TODO(?, ?): make sx parameter
+;; TODO(3, rossberg): make sx parameter
 def $iavgr_u(N, iN(N), iN(N)) : iN(N)   hint(show $iavgr__u_(%,%,%))
 def $iq15mulrsat_s(N, iN(N), iN(N)) : iN(N) hint(show $iq15mulrsat__s_(%,%,%))
 
