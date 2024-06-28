@@ -7,7 +7,7 @@
 def $inst_valtype(moduleinst, valtype) : valtype  hint(show $inst_(%,%)) hint(macro "insttype")
 def $inst_reftype(moduleinst, reftype) : reftype  hint(show $inst_(%,%)) hint(macro "insttype")
 
-;; TODO: make inlining moduleinst.TYPES work
+;; TODO(3, rossberg): make inlining moduleinst.TYPES work
 def $inst_valtype(moduleinst, t) = $subst_all_valtype(t, dt*)
   -- if dt* = moduleinst.TYPES
 def $inst_reftype(moduleinst, rt) = $subst_all_reftype(rt, dt*)

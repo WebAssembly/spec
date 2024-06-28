@@ -643,8 +643,8 @@ def $rolldt(typeidx, rectype) : deftype* hint(show $roll_(%)*#((%))) hint(macro 
 def $unrolldt(deftype) : subtype         hint(show $unroll(%))     hint(macro "unrolldt")
 def $expanddt(deftype) : comptype        hint(show $expand(%))     hint(macro "expanddt")
 
-;; TODO: in general, multi-dimensional use of dimensioned vars is ambiguous;
-;; for example, x** with dimension x* could be x1 x2 x1 x2 of x1 x1 x2 x2.
+;; TODO(3, rossberg): in general, multi-dimensional use of dimensioned vars is ambiguous;
+;; for example, x** with dimension x* could be x1 x2 x1 x2 or x1 x1 x2 x2.
 ;; For now, we avoid to reuse the dimension var in exact same form
 def $rollrt(x, rectype) = REC ($subst_subtype(subtype, ($idx($(x + i)))^(i<n), (REC i)^(i<n)))^n
   -- if rectype = REC subtype^n
@@ -662,7 +662,7 @@ rule Expand: deftype ~~ comptype               -- if $unrolldt(deftype) = SUB fi
 
 ;; Projections
 
-;; TODO: use built-in notation
+;; TODO(2, rossberg): add built-in notation for comprehensions
 
 def $funcsxx(externidx*) : typeidx*      hint(show $funcs(%))   hint(macro "funcsxx")
 def $globalsxx(externidx*) : globalidx*  hint(show $globals(%)) hint(macro "globalsxx")

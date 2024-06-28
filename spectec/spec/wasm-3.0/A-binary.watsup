@@ -192,8 +192,6 @@ grammar Bexterntype : externtype =
 ;; Instructions
 ;;
 
-;; TODO: turn numbers N into `N
-
 ;; Block types
 
 grammar Bblocktype : blocktype =
@@ -211,7 +209,7 @@ grammar Binstr/control : instr =
   | 0x03 bt:Bblocktype (in:Binstr)* 0x0B => LOOP bt in*
   | 0x04 bt:Bblocktype (in:Binstr)* 0x0B => IF bt in* ELSE eps
   | 0x04 bt:Bblocktype (in_1:Binstr)*
-    ;; TODO: do not require 2 empty lines
+    ;; TODO(2, rossberg): do not require 2 empty lines
 
 
     0x05 (in_2:Binstr)* 0x0B => IF bt in_1* ELSE in_2*
@@ -278,12 +276,12 @@ grammar Binstr/cast : instr = ...
   | 0xFB 22:Bu32 ht:Bheaptype => REF.CAST (REF ht)
   | 0xFB 23:Bu32 ht:Bheaptype => REF.CAST (REF NULL ht)
   | 0xFB 24:Bu32 (nul1, nul2):Bcastop
-    ;; TODO: do not require 2 empty lines
+    ;; TODO(2, rossberg): do not require 2 empty lines
 
 
     l:Blabelidx ht_1:Bheaptype ht_2:Bheaptype => BR_ON_CAST l (REF nul1 ht_1) (REF nul2 ht_2)
   | 0xFB 25:Bu32 (nul1, nul2):Bcastop
-    ;; TODO: do not require 2 empty lines
+    ;; TODO(2, rossberg): do not require 2 empty lines
 
 
     l:Blabelidx ht_1:Bheaptype ht_2:Bheaptype => BR_ON_CAST_FAIL l (REF nul1 ht_1) (REF nul2 ht_2)
@@ -306,7 +304,7 @@ grammar Binstr/i31 : instr = ...
 grammar Binstr/parametric : instr = ...
   | 0x1A => DROP
   | 0x1B => SELECT
-  | 0x1C ts:Blist(Bvaltype) => SELECT ts   ;; TODO: t*
+  | 0x1C ts:Blist(Bvaltype) => SELECT ts   ;; TODO(3, rossberg): enable t*
   | ...
 
 
@@ -1067,7 +1065,7 @@ grammar Bexportsec : export* hint(desc "export section") =
 
 ;; Start section
 
-;; TODO: should return start?
+;; TODO(1, rossberg): should return start?
 grammar Bstart : start* =
   | x:Bfuncidx => (START x)
 
@@ -1133,7 +1131,7 @@ grammar Bdatasec : data* hint(desc "data section") =
 
 ;; Data count section
 
-;; TODO: should return u32?
+;; TODO(1, rossberg): should return u32?
 grammar Bdatacnt : u32* hint(desc "data count") =
   | n:Bu32 => n
 
@@ -1143,7 +1141,7 @@ grammar Bdatacntsec : u32* hint(desc "data count section") =
 
 ;; Modules
 
-;; TODO: avoid double empty lines
+;; TODO(2, rossberg): avoid double empty lines
 grammar Bmagic : () = 0x00 0x61 0x73 0x6D => ()
 grammar Bversion : () = 0x01 0x00 0x00 0x00 => ()
 grammar Bmodule : module =
@@ -1188,7 +1186,7 @@ grammar Bmodule : module =
 
 
     Bcustomsec*
-    m'*:Bdatacntsec  ;; TODO: should be m'?
+    m'*:Bdatacntsec  ;; TODO(1, rossberg): should be m'?
 
 
     Bcustomsec*

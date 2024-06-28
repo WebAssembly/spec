@@ -87,7 +87,7 @@ rule Step_pure/label-vals:
 
 ;; Branch instructions
 
-;; TODO: may want a label context instead of bubbling up
+;; TODO(4, rossberg): may want a label context instead of bubbling up
 rule Step_pure/br-zero:
   (LABEL_ n `{instr'*} val'* val^n (BR l) instr*)  ~>  val^n instr'*
   -- if l = 0
@@ -135,7 +135,7 @@ rule Step_pure/br_on_non_null-addr:
 
 rule Step_read/br_on_cast-succeed:
   s; f; ref (BR_ON_CAST l rt_1 rt_2)  ~>  ref (BR l)
-  ;; TODO: -- Ref_type: s |- ref : $inst_reftype(f.MODULE, rt_2)
+  ;; TODO(3, rossberg): -- Ref_type: s |- ref : $inst_reftype(f.MODULE, rt_2)
   -- Ref_type: s |- ref : rt
   -- Reftype_sub: {} |- rt <: $inst_reftype(f.MODULE, rt_2)
 
@@ -146,7 +146,7 @@ rule Step_read/br_on_cast-fail:
 
 rule Step_read/br_on_cast_fail-succeed:
   s; f; ref (BR_ON_CAST_FAIL l rt_1 rt_2)  ~>  ref
-  ;; TODO: -- Ref_type: s |- ref : $inst_reftype(f.MODULE, rt_2)
+  ;; TODO(3, rossberg): -- Ref_type: s |- ref : $inst_reftype(f.MODULE, rt_2)
   -- Ref_type: s |- ref : rt
   -- Reftype_sub: {} |- rt <: $inst_reftype(f.MODULE, rt_2)
 
@@ -235,20 +235,20 @@ rule Step/ctxt-frame:
 
 rule Step_pure/unop-val:
   (CONST nt c_1) (UNOP nt unop)  ~>  (CONST nt c)
-  -- if $unop(nt, unop, c_1) = c  ;; TODO: set
+  -- if $unop(nt, unop, c_1) = c  ;; TODO(1, rossberg): nondet
 
 rule Step_pure/unop-trap:
   (CONST nt c_1) (UNOP nt unop)  ~>  TRAP
-  -- if $unop(nt, unop, c_1) = eps  ;; TODO
+  -- if $unop(nt, unop, c_1) = eps
 
 
 rule Step_pure/binop-val:
   (CONST nt c_1) (CONST nt c_2) (BINOP nt binop)  ~>  (CONST nt c)
-  -- if $binop(nt, binop, c_1, c_2) = c  ;; TODO: set
+  -- if $binop(nt, binop, c_1, c_2) = c  ;; TODO(1, rossberg): nondet
 
 rule Step_pure/binop-trap:
   (CONST nt c_1) (CONST nt c_2) (BINOP nt binop)  ~>  TRAP
-  -- if $binop(nt, binop, c_1, c_2) = eps  ;; TODO
+  -- if $binop(nt, binop, c_1, c_2) = eps
 
 
 rule Step_pure/testop:
@@ -262,11 +262,11 @@ rule Step_pure/relop:
 
 rule Step_pure/cvtop-val:
   (CONST nt_1 c_1) (CVTOP nt_2 nt_1 cvtop sx?)  ~>  (CONST nt_2 c)
-  -- if $cvtop(nt_1, nt_2, cvtop, sx?, c_1) = c  ;; TODO: set
+  -- if $cvtop(nt_1, nt_2, cvtop, sx?, c_1) = c  ;; TODO(1, rossberg): nondet
 
 rule Step_pure/cvtop-trap:
   (CONST nt_1 c_1) (CVTOP nt_2 nt_1 cvtop sx?)  ~>  TRAP
-  -- if $cvtop(nt_1, nt_2, cvtop, sx?, c_1) = eps  ;; TODO
+  -- if $cvtop(nt_1, nt_2, cvtop, sx?, c_1) = eps
 
 
 ;; Reference instructions
@@ -315,7 +315,7 @@ rule Step_pure/ref.eq-false:
 
 rule Step_read/ref.test-true:
   s; f; ref (REF.TEST rt)  ~>  (CONST I32 1)
-  ;; TODO: -- Ref_type: s |- ref : $inst_reftype(f.MODULE, rt)
+  ;; TODO(3, rossberg): -- Ref_type: s |- ref : $inst_reftype(f.MODULE, rt)
   -- Ref_type: s |- ref : rt'
   -- Reftype_sub: {} |- rt' <: $inst_reftype(f.MODULE, rt)
 
@@ -326,7 +326,7 @@ rule Step_read/ref.test-false:
 
 rule Step_read/ref.cast-succeed:
   s; f; ref (REF.CAST rt)  ~>  ref
-  ;; TODO: -- Ref_type: s |- ref : $inst_reftype(f.MODULE, rt)
+  ;; TODO(3, rossberg): -- Ref_type: s |- ref : $inst_reftype(f.MODULE, rt)
   -- Ref_type: s |- ref : rt'
   -- Reftype_sub: {} |- rt' <: $inst_reftype(f.MODULE, rt)
 
@@ -408,7 +408,7 @@ rule Step_read/array.new_data-oob:
   -- Expand: $type(z, x) ~~ ARRAY (mut zt)
   -- if $(i + n * $zsize(zt)/8 > |$data(z, y).BYTES|)
 
-;; TODO: outline Cnn = $cunpack(zt)
+;; TODO(2, rossberg): outline Cnn = $cunpack(zt)
 rule Step_read/array.new_data-num:
   z; (CONST I32 i) (CONST I32 n) (ARRAY.NEW_DATA x y)  ~>  ($const($cunpack(zt), $cunpacknum(zt, c)))^n (ARRAY.NEW_FIXED x n)
   ----
@@ -561,7 +561,7 @@ rule Step_read/array.init_data-zero:
   -- otherwise
   -- if n = 0
 
-;; TODO: outline Cnn = $cunpack(zt)
+;; TODO(2, rossberg): outline Cnn = $cunpack(zt)
 rule Step_read/array.init_data-num:
   z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 n) (ARRAY.INIT_DATA x y)  ~>
     (REF.ARRAY_ADDR a) (CONST I32 i) ($const($cunpack(zt), $cunpacknum(zt, c))) (ARRAY.SET x)
@@ -592,7 +592,7 @@ rule Step_pure/any.convert_extern-addr:
 
 rule Step_pure/vvunop:
   (VCONST V128 c_1) (VVUNOP V128 vvunop)  ~>  (VCONST V128 c)
-  -- if c = $vvunop(V128, vvunop, c_1) ;; TODO
+  -- if c = $vvunop(V128, vvunop, c_1) ;; TODO(1, rossberg): nondet
 
 
 rule Step_pure/vvbinop:
@@ -603,7 +603,7 @@ rule Step_pure/vvbinop:
 rule Step_pure/vvternop:
   (VCONST V128 c_1) (VCONST V128 c_2) (VCONST V128 c_3) (VVTERNOP V128 vvternop)  ~>  (VCONST V128 c)
   ----
-  -- if c = $vvternop(V128, vvternop, c_1, c_2, c_3) ;; TODO
+  -- if c = $vvternop(V128, vvternop, c_1, c_2, c_3) ;; TODO(1, rossberg): nondet
 
 
 rule Step_pure/vvtestop:
@@ -618,18 +618,18 @@ rule Step_pure/vunop:
 
 rule Step_pure/vbinop-val:
   (VCONST V128 c_1) (VCONST V128 c_2) (VBINOP sh vbinop)  ~>  (VCONST V128 c)
-  -- if $vbinop(sh, vbinop, c_1, c_2) = c  ;; TODO
+  -- if $vbinop(sh, vbinop, c_1, c_2) = c ;; TODO(1, rossberg): nondet
 
 rule Step_pure/vbinop-trap:
   (VCONST V128 c_1) (VCONST V128 c_2) (VBINOP sh vbinop)  ~>  TRAP
   -- if $vbinop(sh, vbinop, c_1, c_2) = eps
 
 
-;; TODO: introduce $vitestop for uniformity
+;; TODO(2, rossberg): introduce $vitestop for uniformity
 rule Step_pure/vtestop-true:
   (VCONST V128 c) (VTESTOP (Jnn X N) ALL_TRUE) ~> (CONST I32 1)
   -- if ci_1* = $lanes_(Jnn X N, c)
-  -- (if $(ci_1 =/= 0))*  ;; TODO: same line
+  -- (if $(ci_1 =/= 0))*  ;; TODO(3, rossberg): enable same line
 
 rule Step_pure/vtestop-false:
   (VCONST V128 c) (VTESTOP (Jnn X N) ALL_TRUE) ~> (CONST I32 0)
@@ -639,7 +639,7 @@ rule Step_pure/vtestop-false:
 rule Step_pure/vrelop:
   (VCONST V128 c_1) (VCONST V128 c_2) (VRELOP sh vrelop)  ~>  (VCONST V128 c)
   -- if $vrelop(sh, vrelop, c_1, c_2) = c
-(; TODO: this should be implemented at the same level as other pointwise ops
+(; TODO(3, rossberg): this should be implemented at the same level as other pointwise ops
   -- if c'_1* = $lanes_(Lnn X N, c_1)
   -- if c'_2* = $lanes_(Lnn X N, c_2)
   -- if c = $invlanes_($IN($lsize(Lnn)) X N, $ext(1, $lsize(Lnn), S, $vrelop(Lnn X N, vrelop, c'_1, c'_2))*)
@@ -682,7 +682,7 @@ rule Step_pure/vextract_lane-num:
   (VCONST V128 c_1) (VEXTRACT_LANE (nt X N) i) ~> (CONST nt c_2)
   -- if c_2 = $lanes_(nt X N, c_1)[i]
 
-;; TODO : fshape
+;; TODO(?, ?): fshape
 rule Step_pure/vextract_lane-pack:
   (VCONST V128 c_1) (VEXTRACT_LANE (pt X N) sx i) ~> (CONST I32 c_2)
   -- if c_2 = $ext($psize(pt), 32, sx, $lanes_(pt X N, c_1)[i])
@@ -772,7 +772,7 @@ rule Step/table.set-val:
 
 rule Step_read/table.size:
   z; (TABLE.SIZE x)  ~>  (CONST I32 n)
-  -- if |$table(z, x).REFS| = n  ;; TODO: inline this
+  -- if |$table(z, x).REFS| = n  ;; TODO(2, rossberg): inline this?
 
 
 rule Step/table.grow-succeed:
@@ -883,7 +883,7 @@ rule Step_read/vload-shape-oob:
 rule Step_read/vload-shape-val:
   z; (CONST I32 i) (VLOAD V128 (SHAPE M X N sx) x ao)  ~>  (VCONST V128 c)
   -- (if $ibytes(M, j) = $mem(z, x).BYTES[i + ao.OFFSET + k * M/8 : M/8])^(k<N)
-  -- if $lsize(Jnn) = $(M * 2)  ;; TODO: relate implicitly
+  -- if $lsize(Jnn) = $(M * 2)  ;; TODO(0, rossberg): fix overload of N, relate implicitly
   -- if c = $invlanes_(Jnn X N, $ext(M, $lsize(Jnn), sx, j)^N)
 
 
@@ -894,7 +894,7 @@ rule Step_read/vload-splat-oob:
 rule Step_read/vload-splat-val:
   z; (CONST I32 i) (VLOAD V128 (SPLAT N) x ao)  ~>  (VCONST V128 c)
   -- if $ibytes(N, j) = $mem(z, x).BYTES[i + ao.OFFSET : N/8]
-  -- if N = $lsize(Jnn)  ;; TODO: relate implicitly
+  -- if N = $lsize(Jnn)  ;; TODO(2, rossberg): relate implicitly
   -- if M = $(128/N)
   -- if c = $invlanes_(Jnn X M, j^M)
 
@@ -916,7 +916,7 @@ rule Step_read/vload_lane-oob:
 rule Step_read/vload_lane-val:
   z; (CONST I32 i) (VCONST V128 c_1) (VLOAD_LANE V128 N x ao j)  ~>  (VCONST V128 c)
   -- if $ibytes(N, k) = $mem(z, x).BYTES[i + ao.OFFSET : N/8]
-  -- if N = $lsize(Jnn)  ;; TODO: relate implicitly
+  -- if N = $lsize(Jnn)  ;; TODO(2, rossberg): relate implicitly
   -- if M = $($vsize(V128)/N)
   -- if c = $invlanes_(Jnn X M, $lanes_(Jnn X M, c_1)[[j] = k])
 
@@ -929,7 +929,7 @@ rule Step/store-num-oob:
 rule Step/store-num-val:
   z; (CONST I32 i) (CONST nt c) (STORE nt x ao)  ~>  $with_mem(z, x, $(i + ao.OFFSET), $($size(nt)/8), b*); eps
   ----
-  ;; TODO: -- otherwise
+  ;; TODO(3, rossberg): enable otherwise?
   -- if b* = $nbytes(nt, c)
 
 rule Step/store-pack-oob:
@@ -940,7 +940,7 @@ rule Step/store-pack-oob:
 rule Step/store-pack-val:
   z; (CONST I32 i) (CONST Inn c) (STORE nt n x ao)  ~>  $with_mem(z, x, $(i + ao.OFFSET), $(n/8), b*); eps
   ----
-  ;; TODO: -- otherwise
+  ;; TODO(3, rossberg): enable otherwise?
   -- if b* = $ibytes(n, $wrap($size(Inn), n, c))
 
 rule Step/vstore-oob:
@@ -958,7 +958,7 @@ rule Step/vstore_lane-oob:
 
 rule Step/vstore_lane-val:
   z; (CONST I32 i) (VCONST V128 c) (VSTORE_LANE V128 N x ao j)  ~>  $with_mem(z, x, $(i + ao.OFFSET), $(N/8), b*); eps
-  -- if N = $lsize(Jnn)  ;; TODO: relate implicitly
+  -- if N = $lsize(Jnn)  ;; TODO(2, rossberg): relate implicitly
   -- if M = $(128/N)
   -- if b* = $ibytes(N, $lanes_(Jnn X M, c)[j])
 

@@ -2,7 +2,7 @@
 ;; Lists
 ;;
 
-;; TODO: enable writing X^n
+;; TODO(2, rossberg): enable writing X^n
 syntax list(syntax X) = X*  -- if |X*| < $(2^32)
 
 
@@ -121,7 +121,7 @@ var x33 : s33 hint(show x)
 
 ;; Value types
 
-;; TODO: inline
+;; TODO(3, rossberg): add ability to do this inline
 syntax nul hint(show NULL?) hint(macro "%" "%") = NULL?
 ;; HACK
 syntax nul1 hint(show NULL#$_(1)?) hint(macro "%" "%") = NULL?
@@ -208,7 +208,7 @@ syntax Lnn hint(show I#N) hint(macro none) = Inn | Fnn | Pnn
 
 ;; Type definitions
 
-;; TODO: inline
+;; TODO(3, rossberg): add ability to do this inline
 syntax mut hint(show MUT?)   hint(macro "T%" "T%") = MUT?
 ;; HACK
 syntax mut1 hint(show MUT#$_(1)?) hint(macro "T%" "T%") = MUT?
@@ -271,13 +271,12 @@ var lt : lanetype
 var mt : memtype
 var nt : numtype
 var pt : packtype
-var qt : rectype       ;; TODO: better choice?
 var rt : reftype
 var st : subtype
 var tt : tabletype
 var vt : vectype
 var xt : externtype
-var yt : fieldtype     ;; TODO: better choice?
+var yt : fieldtype
 var zt : storagetype
 var ok : datatype
 
@@ -296,7 +295,7 @@ def $lsize(lanetype) : nat     hint(show |%|)
 def $zsize(storagetype) : nat  hint(show |%|)
 def $lanetype(shape) : lanetype hint(macro "shlanetype")
 
-;; TODO: get rid of these terrible hacks by defining $Inn(nat) hint(show I#%)
+;; TODO(2, rossberg): get rid of these terrible hacks by defining $Inn(nat) hint(show I#%)
 def $sizenn(numtype) : nat     hint(show N)   hint(macro none)  ;; HACK!
 def $sizenn1(numtype) : nat    hint(show N_1) hint(macro none)  ;; HACK!
 def $sizenn2(numtype) : nat    hint(show N_2) hint(macro none)  ;; HACK!
@@ -420,7 +419,7 @@ syntax vrelop_(Fnn X M) = EQ | NE | LT | GT | LE | GE
 syntax vcvtop_(shape_1, shape_2) hint(show vcvtop_((%,%))) hint(macro "%" "V%")
 syntax vcvtop_(Jnn_1 X M_1, Jnn_2 X M_2) =
   | EXTEND    -- if $lsizenn2(Jnn_2) = $(2 * $lsizenn1(Jnn_1))
-  ;; TODO: turn back into VEXTEND
+  ;; TODO(1, rossberg): turn back into VEXTEND
 syntax vcvtop_(Jnn_1 X M_1, Fnn_2 X M_2) =
   | CONVERT   -- if $sizenn2(Fnn_2) >= $lsizenn1(Jnn_1) = `32
 syntax vcvtop_(Fnn_1 X M_1, Jnn_2 X M_2) =
@@ -434,7 +433,7 @@ syntax half hint(desc "lane part") = LOW | HIGH
 syntax half_(shape_1, shape_2) = half
   -- if $lanetype(shape_1) = imm_1 /\ $lanetype(shape_2) = imm_2
      \/ $lanetype(shape_2) = F64 /\ $lsize($lanetype(shape_1)) = `32
-     ;; TODO: only allow LOW in latter case
+     ;; TODO(1, rossberg): only allow LOW in latter case
 syntax zero_(shape_1, shape_2) = ZERO
   -- if $lanetype(shape_1) = F64 /\ $lsize($lanetype(shape_2)) = `32
 
@@ -527,7 +526,7 @@ syntax instr/num hint(desc "numeric instruction") = ...
   | RELOP numtype relop_(numtype)    hint(show %.##%)
   | CVTOP numtype_1 numtype_2 cvtop_(numtype_2, numtype_1) sx?  hint(show %1.%3#_#%2) hint(show %1.%3#_#%2#_#%4)
     -- if numtype_1 =/= numtype_2
-    ;; TODO: constrain sx? or move it into cvtop
+    ;; TODO(1, rossberg): constrain sx? or move it into cvtop
   | ...
 
 syntax instr/vec hint(desc "vector instruction") = ...
@@ -546,22 +545,22 @@ syntax instr/vec hint(desc "vector instruction") = ...
     -- if ishape = I8 X `16
   | VSHUFFLE ishape laneidx*            hint(show ##%.SHUFFLE %) hint(macro "VSHUFFLE")
     -- if ishape = I8 X `16 /\ |laneidx*| = `16
-    ;; TODO: allow ^16 in type
+    ;; TODO(3, rossberg): enable ^16 in type
   | VEXTUNOP ishape_1 ishape_2 vextunop_(ishape_1) sx
     hint(show ##%1.##%3#_# ##%2#_#%4)
     -- if $($lsize($lanetype(ishape_1)) = 2*$lsize($lanetype(ishape_2)))
   | VEXTBINOP ishape_1 ishape_2 vextbinop_(ishape_1) sx
     hint(show ##%1.##%3#_# ##%2#_#%4)
     -- if $($lsize($lanetype(ishape_1)) = 2*$lsize($lanetype(ishape_2)))
-    ;; TODO: /\ (vextbinop =/= DOT \/ sx = S)
+    ;; TODO(1, rossberg): /\ (vextbinop =/= DOT \/ sx = S)
   | VNARROW ishape_1 ishape_2 sx        hint(show ##%.NARROW#_# ##%#_#%) hint(macro "VNARROW")
     -- if $($lsize($lanetype(ishape_2)) = 2*$lsize($lanetype(ishape_1)) <= `32)
   | VCVTOP shape_1 shape_2 vcvtop_(shape_2, shape_1) half_(shape_2, shape_1)? sx? zero_(shape_2, shape_1)?
     hint(show ##%1.%3#_# ##%2)
-    hint(show ##%1.%3#_# ##%2#_#%4)        ;; TODO: this is wrong when half is absent
-    hint(show ##%1.%3#_#%5#_# ##%2#_#%4)   ;; TODO: this is wrong when half is present
+    hint(show ##%1.%3#_# ##%2#_#%4)        ;; TODO(2, rossberg): this is wrong when half is absent
+    hint(show ##%1.%3#_#%5#_# ##%2#_#%4)   ;; TODO(2, rossberg): this is wrong when half is present
     -- if $lanetype(shape_1) =/= $lanetype(shape_2)
-    ;; TODO: constrain sx? or move it into vcvtop
+    ;; TODO(1, rossberg): constrain sx? or move it into vcvtop
   | VSPLAT shape                        hint(show ##%.SPLAT) hint(macro "VSPLAT")
   | VEXTRACT_LANE shape sx? laneidx     hint(show ##%.EXTRACT_LANE %) hint(show ##%.EXTRACT_LANE#_#% %) hint(macro "VEXTRACT_LANE")
     -- if $lanetype(shape) = numtype <=> sx? = eps

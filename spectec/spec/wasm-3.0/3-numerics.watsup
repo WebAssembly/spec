@@ -17,7 +17,7 @@ def $invsigned(N, int) : nat    hint(show $signed_(%)^(-1)#((%)))
 def $invsigned(N, i) = j        -- if $signed(N, j) = i
 
 
-;; TODO
+;; TODO(3, all): implement numerics internally
 
 def $unop(numtype, unop_(numtype), num_(numtype)) : num_(numtype)*
     hint(show %2#$_(%1)#((%3)))
@@ -88,10 +88,10 @@ def $iabs(N, iN(N)) : iN(N)             hint(show $iabs_(%,%))
 def $ineg(N, iN(N)) : iN(N)             hint(show $ineg_(%,%))
 def $imin(N, sx, iN(N), iN(N)) : iN(N)  hint(show $imin_(%)^(%)%((%,%)))
 def $imax(N, sx, iN(N), iN(N)) : iN(N)  hint(show $imax_(%)^(%)%((%,%)))
-;; TODO: make add/sub_sat
+;; TODO(?, ?): make add/sub_sat
 def $iaddsat(N, sx, iN(N), iN(N)) : iN(N)  hint(show $iaddsat_(%)^(%)#((%,%)))
 def $isubsat(N, sx, iN(N), iN(N)) : iN(N)  hint(show $isubsat_(%)^(%)#((%,%)))
-;; TODO: make sx parameter
+;; TODO(?, ?): make sx parameter
 def $iavgr_u(N, iN(N), iN(N)) : iN(N)   hint(show $iavgr__u_(%,%,%))
 def $iq15mulrsat_s(N, iN(N), iN(N)) : iN(N) hint(show $iq15mulrsat__s_(%,%,%))
 
@@ -213,7 +213,7 @@ def $half(half, nat, nat) : nat
 def $half(LOW, i, j) = i
 def $half(HIGH, i, j) = j
 
-;; TODO: return lists for nondeterminism
+;; TODO(1, rossberg): return lists for nondeterminism
 def $vvunop(vectype, vvunop, vec_(vectype)) : vec_(vectype)
     hint(show %2#$_(%1)#((%3)))
 def $vvbinop(vectype, vvbinop, vec_(vectype), vec_(vectype)) : vec_(vectype)
@@ -228,7 +228,7 @@ def $vvbinop(V128, OR, v128_1, v128_2) = $ior($vsize(V128), v128_1, v128_2)
 def $vvbinop(V128, XOR, v128_1, v128_2) = $ixor($vsize(V128), v128_1, v128_2)
 def $vvternop(V128, BITSELECT, v128_1, v128_2, v128_3) = $ibitselect($vsize(V128), v128_1, v128_2, v128_3)
 
-;; TODO: rename these to mapunop etc?
+;; TODO(2, rossberg): rename these to mapunop etc?
 def $vunop(shape, vunop_(shape), vec_(V128)) : vec_(V128)
     hint(show %2#$_(%1)#((%3)))
 def $vbinop(shape, vbinop_(shape), vec_(V128), vec_(V128)) : vec_(V128)*
@@ -452,7 +452,7 @@ def $vextbinop(Inn_1 X N_1, Inn_2 X N_2, DOT, sx, c_1, c_2) = c
   -- if $concat_(iN($lsize(Inn_1)), (cj_1 cj_2)*) = $imul($lsize(Inn_1), $ext($lsize(Inn_2), $lsize(Inn_1), S, ci_1), $ext($lsize(Inn_2), $lsize(Inn_1), S, ci_2))*
   -- if c = $invlanes_(Inn_1 X N_1, $iadd($lsize(Inn_1), cj_1, cj_2)*)
 
-;; TODO: refactor for consistency?
+;; TODO(3, rossberg): refactor for consistency?
 def $vshiftop(ishape, vshiftop_(ishape), lane_($lanetype(ishape)), u32) : lane_($lanetype(ishape))
     hint(show %2#$_(%1)#(%3, %4))
 

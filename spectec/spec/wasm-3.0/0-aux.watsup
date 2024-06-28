@@ -29,13 +29,14 @@ def $min(0, j) = 0
 def $min(i, 0) = 0
 def $min($(i+1), $(j+1)) = $min(i, j)
 
-def $sum(nat*) : nat  ;; TODO: hint
+def $sum(nat*) : nat  ;; TODO(2, rossberg): hint to use sigma?
 def $sum(eps) = 0
 def $sum(n n'*) = $(n + $sum(n'*))
 
 
 ;; General sequence functions
 
+;; TODO(3, rossberg): replace with big (++)
 def $concat_(syntax X, (X*)*) : X*  hint(show $concat(%2))
 def $concat_(syntax X, eps) = eps
 def $concat_(syntax X, (w*) (w'*)*) = w* $concat_(X, (w'*)*)

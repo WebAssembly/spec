@@ -8,7 +8,7 @@ syntax init hint(desc "initialization status") =
 syntax localtype hint(desc "local type") =
   init valtype
 
-;; TODO: fix rendering
+;; TODO(1, rossberg): fix rendering of subscript
 syntax instrtype hint(desc "instruction type") =
   resulttype ->_ localidx* resulttype  hint(show %0 `->_ %2 %3) hint(macro "to")
 
@@ -33,7 +33,7 @@ var lct : localtype  hint(show lt)
 var it : instrtype
 
 
-;; TODO: is there a way to show this as %[.LOCAL[%]* = %*] ?
+;; TODO(3, rossberg): is there a way to show this as %[.LOCAL[%]* = %*] ?
 def $with_locals(context, localidx*, localtype*) : context  hint(show %[.LOCAL[%]=%])
 
 def $with_locals(C, eps, eps) = C
@@ -45,7 +45,7 @@ def $clos_deftype(context, deftype) : deftype  hint(show $clos_(%,%)) hint(macro
 def $clos_moduletype(context, moduletype) : moduletype  hint(show $clos_(%,%)) hint(macro "clostype")
 def $clos_deftypes(deftype*) : deftype*        hint(show $clos*#((%))) hint(macro "clostype")
 
-;; TODO: inline dt*
+;; TODO(3, rossberg): enable inlining dt*
 def $clos_valtype(C, t) = $subst_all_valtype(t, dt*) -- if dt* = $clos_deftypes(C.TYPES)
 def $clos_deftype(C, dt) = $subst_all_deftype(dt, dt'*) -- if dt'* = $clos_deftypes(C.TYPES)
 def $clos_moduletype(C, mmt) = $subst_all_moduletype(mmt, dt*) -- if dt* = $clos_deftypes(C.TYPES)
@@ -537,7 +537,7 @@ rule Expr_ok:
 rule Instrs_ok/empty:
   C |- eps : eps -> eps
 
-;; TODO: enable x_1*#x_2*
+;; TODO(3, rossberg): enable x_1*#x_2* to avoid space
 rule Instrs_ok/seq:
   C |- instr_1 instr_2* : t_1* ->_(x_1* x_2*) t_3*
   -- Instr_ok: C |- instr_1 : t_1* ->_(x_1*) t_2*
@@ -550,7 +550,7 @@ rule Instrs_ok/sub:
   -- Instrtype_sub: C |- it <: it'
   -- Instrtype_ok: C |- it' : OK
 
-;; TODO: allow omitting parens
+;; TODO(3, rossberg): allow omitting parens
 rule Instrs_ok/frame:
   C |- instr* : (t* t_1*) ->_(x*) (t* t_2*)
   -- Instrs_ok: C |- instr* : t_1* ->_(x*) t_2*
@@ -676,7 +676,7 @@ rule Instr_ok/return:
   -- if C.RETURN = (t*)
   -- Instrtype_ok: C |- t_1* -> t_2* : OK
 
-;; TODO: enable t_2* <: C.RETURN
+;; TODO(3, rossberg): enable t_2* <: C.RETURN
 rule Instr_ok/return_call:
   C |- RETURN_CALL x : t_3* t_1* -> t_4*
   -- Expand: C.FUNCS[x] ~~ FUNC (t_1* -> t_2*)
@@ -684,7 +684,7 @@ rule Instr_ok/return_call:
   -- Resulttype_sub: C |- t_2* <: t'_2*
   -- Instrtype_ok: C |- t_3* -> t_4* : OK
 
-;; TODO: enable t_2* <: C.RETURN
+;; TODO(3, rossberg): enable t_2* <: C.RETURN
 rule Instr_ok/return_call_ref:
   C |- RETURN_CALL_REF $idx(x) : t_3* t_1* (REF NULL $idx(x)) -> t_4*
   -- Expand: C.TYPES[x] ~~ FUNC (t_1* -> t_2*)
@@ -692,7 +692,7 @@ rule Instr_ok/return_call_ref:
   -- Resulttype_sub: C |- t_2* <: t'_2*
   -- Instrtype_ok: C |- t_3* -> t_4* : OK
 
-;; TODO: enable t_2* <: C.RETURN
+;; TODO(3, rossberg): enable t_2* <: C.RETURN
 rule Instr_ok/return_call_indirect:
   C |- RETURN_CALL_INDIRECT x $idx(y) : t_3* t_1* I32 -> t_4*
   -- if C.TABLES[x] = lim rt
@@ -722,7 +722,7 @@ rule Instr_ok/relop:
   C |- RELOP nt relop_nt : nt nt -> I32
 
 
-;; TODO: move side conditions to syntax
+;; TODO(1, rossberg): move side conditions to syntax
 rule Instr_ok/cvtop-reinterpret:
   C |- CVTOP nt_1 nt_2 REINTERPRET : nt_2 -> nt_1
   -- if $size(nt_1) = $size(nt_2)
@@ -741,7 +741,7 @@ rule Instr_ok/ref.null:
 rule Instr_ok/ref.func:
   C |- REF.FUNC x : eps -> (REF dt)
   -- if C.FUNCS[x] = dt
-  -- if C.REFS = x_1* x x_2*  ;; TODO: use elementof
+  -- if C.REFS = x_1* x x_2*  ;; TODO(2, rossberg): use elementof
 
 rule Instr_ok/ref.i31:
   C |- REF.I31 : I32 -> (REF I31)
@@ -914,7 +914,7 @@ rule Instr_ok/vshuffle:
 rule Instr_ok/vsplat:
   C |- VSPLAT sh : $unpackshape(sh) -> V128
 
-;; TODO: This rule (or the abstract syntax) is too liberal, since some combinations are illegal
+;; TODO(1, rossberg): This rule (or the abstract syntax) is too liberal, since some combinations are illegal
 rule Instr_ok/vextract_lane:
   C |- VEXTRACT_LANE sh sx? i : V128 -> $unpackshape(sh)
   -- if i < $dim(sh)
@@ -932,7 +932,7 @@ rule Instr_ok/vextbinop:
 rule Instr_ok/vnarrow:
   C |- VNARROW sh_1 sh_2 sx : V128 V128 -> V128
 
-;; TODO: move constraint to syntax
+;; TODO(1, rossberg): move constraint to syntax
 rule Instr_ok/vcvtop:
   C |- VCVTOP sh_1 sh_2 vcvtop hf? sx? zero? : V128 -> V128
   -- if sx? = eps <=> $lanetype(sh_1) = imm_1 /\ $lanetype(sh_2) = imm_2 /\ $lsize(imm_1) > $lsize(imm_2) \/ $lanetype(sh_1) = Fnn_1 /\ $lanetype(sh_2) = Fnn_2
@@ -1155,7 +1155,7 @@ rule Instr_const/global.get:
   C |- (GLOBAL.GET x) CONST
   -- if C.GLOBALS[x] = t
 
-;; TODO: built in elemof
+;; TODO(2, rossberg): built in elemof
 def $in_numtype(numtype, numtype*) : bool    hint(show % <- %)
 def $in_numtype(nt, epsilon) = false
 def $in_numtype(nt, nt_1 nt'*) = nt = nt_1 \/ $in_numtype(nt, nt'*)
@@ -1326,7 +1326,7 @@ rule Module_ok:
   -- (Data_ok: C |- data : ok)*
   -- (Start_ok: C |- start : OK)?
   -- (Export_ok: C |- export : xt_E)*
-  ;; -- TODO: disjoint export names
+  ;; -- TODO(1, rossberg): disjoint export names
   ----
   -- if C = {TYPES dt'*, FUNCS dt_I* dt*, GLOBALS gt_I* gt*, TABLES tt_I* tt*, MEMS mt_I* mt*, ELEMS rt*, DATAS ok*, REFS x*}
   ----

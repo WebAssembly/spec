@@ -59,11 +59,11 @@ def $sum(nat*) : nat
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:39.1-39.59
+;; 0-aux.watsup:40.1-40.59
 def $concat_(syntax X, X**) : X*
-  ;; 0-aux.watsup:40.1-40.34
+  ;; 0-aux.watsup:41.1-41.34
   def $concat_{syntax X}(syntax X, []) = []
-  ;; 0-aux.watsup:41.1-41.61
+  ;; 0-aux.watsup:42.1-42.61
   def $concat_{syntax X, w* : X*, w'** : X**}(syntax X, [w*{w : X}] :: w'*{w' : X}*{w' : X}) = w*{w : X} :: $concat_(syntax X, w'*{w' : X}*{w' : X})
 }
 
