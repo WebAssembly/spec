@@ -1187,7 +1187,7 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
 
 </div>
 
-<h3 id="tags">Tags</h3>
+<h3 id="exceptions">Exceptions</h3>
 
 <h4 id="exceptions-types">Exception types</h4>
 
