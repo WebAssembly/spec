@@ -94,7 +94,7 @@ A :ref:`reference type <syntax-reftype>` ${reftype: REF nul1 heaptype_1} matches
 
 * :math:`\NULL_1` is absent or :math:`\NULL_2` is present.
 
-$${rule: Reftype_sub/*}
+$${rule: {Reftype_sub/*}}
 
 
 .. index:: value type, number type, reference type
@@ -197,7 +197,7 @@ A :ref:`composite type <syntax-comptype>` ${:comptype_1} matches a type ${:compt
 
   * The :ref:`field type <syntax-fieldtype>` :math:`\fieldtype_1` :ref:`matches <match-fieldtype>` :math:`\fieldtype_2`.
 
-$${rule: Comptype_sub/*}
+$${rule: {Comptype_sub/*}}
 
 
 .. index:: field type, storage type, value type, packed type, mutability
@@ -216,7 +216,8 @@ A :ref:`field type <syntax-fieldtype>` ${fieldtype: (mut1 storagetype_1)} matche
 
 * Or both :math:`\mut_1` and :math:`\mut_2` are :math:`\MVAR` and :math:`\storagetype_2` :ref:`matches <match-storagetype>` :math:`\storagetype_1` as well.
 
-$${rule: Fieldtype_sub/*}
+$${rule: {Fieldtype_sub/*}}
+
 
 A :ref:`storage type <syntax-storagetype>` :math:`\storagetype_1` matches a type :math:`\storagetype_2` if and only if:
 
@@ -320,7 +321,7 @@ A :ref:`global type <syntax-globaltype>` ${globaltype: (mut1 valtype_1)} matches
 
 * Or both :math:`\mut_1` and :math:`\mut_2` are |MCONST| and :math:`t_1` :ref:`matches <match-valtype>` :math:`t_2`.
 
-$${rule: Globaltype_sub/*}
+$${rule: {Globaltype_sub/*}}
 
 
 .. index:: external type, function type, table type, memory type, global type

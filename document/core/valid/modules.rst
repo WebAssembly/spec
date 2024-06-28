@@ -47,7 +47,7 @@ $${rule: Type_ok}
 
   * Then the type sequence is valid.
 
-$${rule: Types_ok/*}
+$${rule: {Types_ok/*}}
 
 
 .. index:: function, local, function index, local index, type index, function type, value type, local type, expression, import
@@ -88,7 +88,7 @@ Functions ${:func} are classified by :ref:`defined types <syntax-deftype>` that 
 
 * Then the function definition is valid with type :math:`C.\CTYPES[x]`.
 
-$${rule: Func_ok Local_ok}
+$${rule: Func_ok}
 
 
 .. index:: local, local type, value type
@@ -114,7 +114,7 @@ Locals ${:local} are classified with :ref:`local types <syntax-localtype>`.
 
   * The local is valid with :ref:`local type <syntax-localtype>` :math:`\UNSET~\valtype`.
 
-$${rule: Local_ok/*}
+$${rule: {Local_ok/*}}
 
 .. note::
    For cases where both rules are applicable, the former yields the more permissable type.
@@ -209,7 +209,7 @@ $${rule: Global_ok}
 
   * Then the sequence is valid with the sequence of :ref:`global types <syntax-globaltype>` consisting of :math:`\X{gt}_1` prepended to :math:`\X{gt}^\ast`.
 
-$${rule: Globals_ok/*}
+$${rule: {Globals_ok/*}}
 
 
 .. index:: element, table, table index, expression, constant, function index

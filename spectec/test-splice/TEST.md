@@ -155,7 +155,7 @@ $$
 }{
 C \vdash \epsilon : \epsilon \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}instr*{-}empty}]}
-\qquad
+\\[3ex]\displaystyle
 \frac{
 C \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{({x^\ast})}\,{t_2^\ast}
  \qquad
@@ -297,7 +297,7 @@ $$
 $$
 \begin{array}{@{}l@{}rcl@{}l@{}}
 {[\textsc{\scriptsize E{-}if{-}true}]} \quad & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)~(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast}) &\hookrightarrow& (\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast})
-  &\qquad \mbox{if}~c \neq 0 \\
+  &\qquad \mbox{if}~c \neq 0 \\[0.8ex]
 {[\textsc{\scriptsize E{-}if{-}false}]} \quad & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)~(\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast}) &\hookrightarrow& (\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_2^\ast})
   &\qquad \mbox{if}~c = 0 \\
 \end{array}
