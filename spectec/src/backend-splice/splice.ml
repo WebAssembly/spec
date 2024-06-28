@@ -196,19 +196,21 @@ let find_entry space src id1 id2 entries =
     error src ("duplicate " ^ space ^ " identifier `" ^ id1 ^ "/" ^ id2 ^ "`")
 *)
 
+let ungroup = List.map (fun x -> [x])
+
 let find_syntax env src id1 id2 =
   match Map.find_opt id1 env.syn with
   | None -> error src ("unknown syntax identifier `" ^ id1 ^ "`")
   | Some syntax ->
     let defs = find_entries "syntax" src id1 id2 syntax.sfragments in
-    if id2 = "" then [defs] else List.map (fun def -> [def]) defs
+    if id2 = "" then [defs] else ungroup defs
 
 let find_grammar env src id1 id2 =
   match Map.find_opt id1 env.gram with
   | None -> error src ("unknown grammar identifier `" ^ id1 ^ "`")
   | Some grammar ->
     let defs = find_entries "grammar" src id1 id2 grammar.gfragments in
-    if id2 = "" then [defs] else List.map (fun def -> [def]) defs
+    if id2 = "" then [defs] else ungroup defs
 
 let find_relation env src id1 id2 =
   find_nosub "relation" src id1 id2;
@@ -219,7 +221,7 @@ let find_relation env src id1 id2 =
 let find_rule env src id1 id2 =
   match Map.find_opt id1 env.rel with
   | None -> error src ("unknown relation identifier `" ^ id1 ^ "`")
-  | Some relation -> [find_entries "rule" src id1 id2 relation.rules]
+  | Some relation -> ungroup (find_entries "rule" src id1 id2 relation.rules)
 
 let find_def env src id1 id2 =
   find_nosub "definition" src id1 id2;
