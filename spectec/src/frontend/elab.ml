@@ -240,7 +240,7 @@ let rec arg_subst s ps args =
     in arg_subst s' ps' as'
   | _, _ -> assert false
 
-(* TODO: eliminate, replace expansion with reduction *)
+(* TODO(4, rossberg): eliminate, replace expansion with reduction *)
 let aliased dt' =
   match dt'.it with
   | Il.AliasT _ -> `Alias
@@ -249,7 +249,7 @@ let aliased_inst inst' =
   let Il.InstD (_, _, dt') = inst'.it in
   aliased dt'
 
-(* TODO: replace with reduce_typ *)
+(* TODO(4, rossberg): replace with reduce_typ *)
 let as_defined_typid' env id args at : typ' * [`Alias | `NoAlias] =
   match find "syntax type" env.typs (strip_var_suffix id) with
   | ps, Defined (t, dt') ->
@@ -290,7 +290,7 @@ let rec expand' env = function
 
 let expand env t = expand' env t.it
 
-(* Expand all but the last alias. TODO: remove *)
+(* Expand all but the last alias. TODO(4, rossberg): remove *)
 exception Last
 let rec expand_nondef' env t =
   match t.it with
@@ -318,7 +318,7 @@ let expand_def env t =
 let rec expand_id env t =
   match (expand_nondef env t).it with
   | VarT (id, _) -> strip_var_suffix id
-  | IterT (t1, _) -> expand_id env t1  (* TODO: this shouldn't be needed, but goes along with the as_*_typ functions unrolling iterations *)
+  | IterT (t1, _) -> expand_id env t1  (* TODO(4, rossberg): this shouldn't be needed, but goes along with the as_*_typ functions unrolling iterations *)
   | _ -> "" $ no_region
 
 let rec expand_iter_notation env t =
@@ -584,7 +584,7 @@ let rec elab_iter env iter : Il.iter =
   | ListN (e, id_opt) ->
     Option.iter (fun id ->
       let e' = elab_exp env (VarE (id, []) $ id.at) (NumT NatT $ id.at) in
-      (* TODO: extend IL to allow arbitrary pattern exps *)
+      (* TODO(4, rossberg): extend IL to allow arbitrary pattern exps *)
       match e'.it with
       | Il.VarE _ -> ()
       | _ -> error_typ env id.at "iteration variable" (NumT NatT $ id.at)
@@ -952,7 +952,7 @@ and infer_exp' env e : Il.exp' * typ =
   | CommaE (e1, e2) ->
     let e1', t1 = infer_exp env e1 in
     let tfs = as_struct_typ "expression" env Infer t1 e1.at in
-    (* TODO: this is a bit of a hack *)
+    (* TODO(4, rossberg): this is a bit of a hack, can we avoid it? *)
     (match e2.it with
     | SeqE ({it = AtomE atom; at; _} :: es2) ->
       let _t2 = find_field tfs atom at t1 in
@@ -1083,7 +1083,7 @@ and elab_exp' env e t : Il.exp' =
   | CommaE (e1, e2) ->
     let e1' = elab_exp env e1 t in
     let tfs = as_struct_typ "expression" env Check t e1.at in
-    (* TODO: this is a bit of a hack *)
+    (* TODO(4, rossberg): this is a bit of a hack, can we avoid it? *)
     (match e2.it with
     | SeqE ({it = AtomE atom; at; _} :: es2) ->
       let _t2 = find_field tfs atom at t in
@@ -1308,7 +1308,7 @@ and elab_exp_notation' env tid e t : Il.exp list * Subst.t =
   | (IdxE _ | SliceE _ | UpdE _ | ExtE _ | DotE _ | CallE _), IterT _ ->
     [elab_exp env e t], Subst.empty
   (* All other expressions are considered splices *)
-  (* TODO: can't they be splices, too? *)
+  (* TODO(4, rossberg): can't they be splices, too? *)
   | _, IterT (t1, iter) ->
     let es', _s = elab_exp_notation' env tid e t1 in
     [lift_exp' (tup_exp' es' e.at) iter $$ e.at % !!!env tid t], Subst.empty
@@ -2088,7 +2088,7 @@ let check_recursion ds' =
       error (List.hd ds').at (" " ^ string_of_region d'.at ^
         ": invalid recursion between definitions of different sort")
   ) ds'
-  (* TODO: check that notations are non-recursive and defs are inductive? *)
+  (* TODO(4, rossberg): check that notations are non-recursive and defs are inductive? *)
 
 let recursify_defs ds' : Il.def list =
   let open Il.Free in

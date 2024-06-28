@@ -381,7 +381,7 @@ begin
 t_id (El.Print.string_of_exp e);
 *)
         map_append t_id [e] env.macro_atom;
-        (* TODO: do something for having macros on untyped splices *)
+        (* TODO(4, rossberg): do something for having macros on untyped splices *)
 (*      map_cons (typed_id' atom "") e env.macro_atom  (* for defaulting *) *)
     ) (Map.find tid.it !(env.atoms));
   ) inherits;
@@ -729,7 +729,7 @@ Printf.eprintf "[id w/o macro] %s%s\n%!" (if style = `Func then "$" else "") id;
 *)
   let id' = quote_id id in
   let id'' =
-    (* TODO: provide a way to selectively shrink uppercase vars, esp after # *)
+    (* TODO(3, rossberg): provide a way to selectively shrink uppercase vars, esp after # *)
     match style with
     | `Var | `Func -> rekernl_id (rekernr_id (shrink_id id'))
     | `Atom -> rekerni_id (shrink_id (lower id'))
@@ -1090,7 +1090,7 @@ Printf.eprintf "[render %s:X @ %s] try expansion\n%!" (Source.string_of_region e
     render_typ env t
   | TypE (e1, _) | ArithE e1 -> render_exp env e1
   | FuseE (e1, e2) ->
-    (* TODO: HACK for printing t.LOADn_sx (replace with invisible parens) *)
+    (* TODO(2, rossberg): HACK for printing t.LOADn_sx (replace with invisible parens) *)
     let e2' = as_paren_exp (fuse_exp e2 true) in
     let es = e2' :: flatten_fuse_exp_rev e1 in
     String.concat "" (List.map (fun e -> "{" ^ render_exp env e ^ "}") (List.rev es))

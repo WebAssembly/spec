@@ -233,7 +233,7 @@ and reduce_exp env e : exp =
   | CompE (e1, e2) ->
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
-    (* TODO *)
+    (* TODO(2, rossberg): implement *)
     (match e1'.it, e2'.it with
     | _ -> CompE (e1', e2') $> e
     )
@@ -434,11 +434,11 @@ and reduce_prem env prem : bool option =
   | ElsePr -> Some true
   | LetPr (e1, e2, _ids) ->
     (match match_exp env Subst.empty e2 e1 with
-    | Some _ -> Some true  (* TODO: need to keep substitution? *)
+    | Some _ -> Some true  (* TODO(2, rossberg): need to keep substitution? *)
     | None -> None
     | exception Irred -> None
     )
-  | IterPr (_prem, _iter) -> None  (* TODO *)
+  | IterPr (_prem, _iter) -> None  (* TODO(3, rossberg): reduce? *)
 
 
 (* Matching *)
@@ -638,7 +638,7 @@ and eta_iter_exp env e : exp * iterexp =
   match (reduce_typ env e.note).it with
   | IterT (t, Opt) -> reduce_exp env (TheE e $$ e.at % t), (Opt, [])
   | IterT (t, List) ->
-    let id = "_i_" $ e.at in  (* TODO: this is unbound now *)
+    let id = "_i_" $ e.at in  (* TODO(2, rossberg): this is unbound now *)
     let len = reduce_exp env (LenE e $$ e.at % (NumT NatT $ e.at)) in
     IdxE (e, VarE id $$ e.at % (NumT NatT $ e.at)) $$ e.at % t,
     (ListN (len, Some id), [(id, t)])
@@ -667,7 +667,7 @@ and equiv_typ env t1 t2 =
     let t1' = reduce_typ env t1 in
     let t2' = reduce_typ env t2 in
     (t1 <> t1' || t2 <> t2') && equiv_typ env t1' t2' ||
-    Eq.eq_deftyp (reduce_typdef env t1') (reduce_typdef env t2')  (* TODO *)
+    Eq.eq_deftyp (reduce_typdef env t1') (reduce_typdef env t2')  (* TODO(3, rossberg): be more expressive *)
   | VarT _, _ ->
     let t1' = reduce_typ env t1 in
     t1 <> t1' && equiv_typ env t1' t2
@@ -712,7 +712,7 @@ and equiv_exp env e1 e2 =
   Debug.(log "il.equiv_exp"
     (fun _ -> fmt "%s == %s" (il_exp e1) (il_exp e2)) Bool.to_string
   ) @@ fun _ ->
-  (* TODO: this does not reduce inner type arguments *)
+  (* TODO(3, rossberg): this does not reduce inner type arguments *)
   Eq.eq_exp (reduce_exp env e1) (reduce_exp env e2)
 
 and equiv_arg env a1 a2 =

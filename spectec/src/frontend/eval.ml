@@ -70,7 +70,7 @@ let rec reduce_typ env t : typ =
     let id' = El.Convert.strip_var_suffix id in
     (match reduce_typ_app env id args' t.at (Map.find id'.it env.typs) with
     | Some t' ->
-(* TODO: reenable?
+(* TODO(2, rossberg): reenable?
       if id'.it <> id.it then
         Error.error id.at "syntax" "identifer suffix encountered during reduction";
 *)
@@ -80,7 +80,7 @@ let rec reduce_typ env t : typ =
   | ParenT t1 -> reduce_typ env t1
   | CaseT (dots1, ts, tcs, _dots2) ->
     assert (dots1 = NoDots);
-(* TODO: unclosed case types are not checked early enough for this
+(* TODO(3, rossberg): unclosed case types are not checked early enough for this
     assert (dots2 = NoDots);
 *)
     let tcs' = Convert.concat_map_nl_list (reduce_casetyp env) ts in
@@ -250,14 +250,14 @@ and reduce_exp env e : exp =
   | CommaE (e1, e2) ->
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
-    (* TODO *)
+    (* TODO(2, rossberg): implement *)
     (match e1'.it, e2'.it with
     | _ -> CommaE (e1', e2') $ e.at
     )
   | CompE (e1, e2) ->
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
-    (* TODO *)
+    (* TODO(2, rossberg): implement *)
     (match e1'.it, e2'.it with
     | _ -> CompE (e1', e2') $ e.at
     )
@@ -287,7 +287,7 @@ and reduce_exp env e : exp =
     )
   | IterE (e1, iter) ->
     let e1' = reduce_exp env e1 in
-    IterE (e1', iter) $ e.at  (* TODO *)
+    IterE (e1', iter) $ e.at  (* TODO(2, rossberg): simplify? *)
   | HoleE _ | FuseE _ | UnparenE _ | LatexE _ -> assert false
 
 and reduce_expfield env (atom, e) : expfield = (atom, reduce_exp env e)
@@ -372,7 +372,7 @@ and reduce_prem env prem : bool option =
     | BoolE b -> Some b
     | _ -> None
     )
-  | IterPr (_prem, _iter) -> None  (* TODO *)
+  | IterPr (_prem, _iter) -> None  (* TODO(2, rossberg): implement *)
 
 
 (* Matching *)
@@ -462,7 +462,7 @@ and match_exp env s e1 e2 : subst option =
       match Map.find_opt id.it env.vars with
       | None ->
         (* Implicitly bound *)
-        Map.find_opt (El.Convert.strip_var_suffix id).it env.vars  (* TODO: should be gvars *)
+        Map.find_opt (El.Convert.strip_var_suffix id).it env.vars  (* TODO(2, rossberg): should be gvars *)
       | some -> some
     in
     if
@@ -660,7 +660,7 @@ and equiv_exp env e1 e2 =
   Debug.(log "el.equiv_exp"
     (fun _ -> fmt "%s == %s" (el_exp e1) (el_exp e2)) Bool.to_string
   ) @@ fun _ ->
-  (* TODO: this does not reduce inner type arguments *)
+  (* TODO(3, rossberg): this does not reduce inner type arguments *)
   Eq.eq_exp (reduce_exp env e1) (reduce_exp env e2)
 
 and equiv_arg env a1 a2 =
@@ -795,7 +795,7 @@ and atoms xs =
 and unordered s1 s2 = not Set.(subset s1 s2 || subset s2 s1)
 
 and disj_exp env e1 e2 =
-  (* TODO: this does not reduce inner type arguments *)
+  (* TODO(3, rossberg): this does not reduce inner type arguments *)
   let e1' = reduce_exp env e1 in
   let e2' = reduce_exp env e2 in
   is_normal_exp e1' && is_normal_exp e2' && not (Eq.eq_exp e1' e2')

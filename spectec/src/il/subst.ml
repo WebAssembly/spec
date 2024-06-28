@@ -136,7 +136,7 @@ and subst_path s p =
   ) $$ p.at % subst_typ s p.note
 
 and subst_iterexp s (iter, bs) =
-  (* TODO: This is assuming expressions in s are closed. *)
+  (* TODO(3, rossberg): This is assuming expressions in s are closed, is that okay? *)
   subst_iter s iter,
   List.map (fun (id, t) ->
     let id' =
@@ -144,7 +144,7 @@ and subst_iterexp s (iter, bs) =
       | None -> id
       | Some {it = VarE id'; _} -> id'
       | Some _ ->
-        id  (* TODO: would need to update bind list; change bs to proper bindings *)
+        id  (* TODO(3, rossberg): would need to update bind list; change bs to proper bindings *)
     in (id', subst_typ s t)
   ) bs
 (*

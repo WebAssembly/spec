@@ -34,7 +34,7 @@ let new_env () =
 
 let local_env env = {env with vars = env.vars; typs = env.typs}
 
-(* TODO: avoid repeated copying of environment *)
+(* TODO(3, rossberg): avoid repeated copying of environment *)
 let to_eval_env env =
   let vars = Env.map (fun (t, _iters) -> t) env.vars in
   let typs = Env.map (fun (_ps, insts) -> insts) env.typs in
@@ -47,7 +47,7 @@ let find space env' id =
   | Some t -> t
 
 let bind _space env' id t =
-(* TODO
+(* TODO(3, rossberg): reenable
   if Env.mem id.it env' then
     error id.at ("duplicate declaration for " ^ space ^ " `" ^ id.it ^ "`")
   else

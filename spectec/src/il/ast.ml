@@ -1,9 +1,6 @@
 open Util.Source
 
 
-(* TODO: annotate types on nodes *)
-
-
 (* Terminals *)
 
 type nat = Z.t

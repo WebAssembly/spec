@@ -192,7 +192,7 @@ let find_entry space src id1 id2 entries =
   | defs ->
     Printf.eprintf "warning: %s `%s/%s` has multiple definitions\n%!" space id1 id2;
     List.hd defs
-(* TODO: this should be an error
+(* TODO(2, rossberg): this should be an error, once the last hard-coded prose rule is gone
     error src ("duplicate " ^ space ^ " identifier `" ^ id1 ^ "/" ^ id2 ^ "`")
 *)
 
