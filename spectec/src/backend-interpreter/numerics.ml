@@ -1071,6 +1071,11 @@ let inverse_of_lsize : numerics =
       | vs -> error_values "inverse_of_lsize" vs
       );
   }
+let inverse_of_lsizenn : numerics =
+  {
+    name = "inverse_of_lsizenn";
+    f = inverse_of_lsize.f;
+  }
 
 let rec inverse_of_concat_helper = function
   | a :: b :: l ->
@@ -1175,6 +1180,7 @@ let numerics_list : numerics list = [
   inverse_of_lanes;
   inverse_of_isize;
   inverse_of_lsize;
+  inverse_of_lsizenn;
   inverse_of_ibits;
 ]
 

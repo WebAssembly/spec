@@ -875,15 +875,16 @@ rule Step_read/vload-val:
   -- if $vbytes(V128, c) = $mem(z, x).BYTES[i + ao.OFFSET : $vsize(V128)/8]
 
 
-rule Step_read/vload-shape-oob:
-  z; (CONST I32 i) (VLOAD V128 (SHAPE M X N sx) x ao)  ~>  TRAP
-  -- if $(i + ao.OFFSET + M * N/8) > |$mem(z, x).BYTES|
+rule Step_read/vload-pack-oob:
+  z; (CONST I32 i) (VLOAD V128 (SHAPE M X K sx) x ao)  ~>  TRAP
+  -- if $(i + ao.OFFSET + M * K/8) > |$mem(z, x).BYTES|
 
-rule Step_read/vload-shape-val:
-  z; (CONST I32 i) (VLOAD V128 (SHAPE M X N sx) x ao)  ~>  (VCONST V128 c)
-  -- (if $ibytes(M, j) = $mem(z, x).BYTES[i + ao.OFFSET + k * M/8 : M/8])^(k<N)
-  -- if $lsize(Jnn) = $(M * 2)  ;; TODO(0, rossberg): fix overload of N, relate implicitly
-  -- if c = $invlanes_(Jnn X N, $ext(M, $lsize(Jnn), sx, j)^N)
+rule Step_read/vload-pack-val:
+  z; (CONST I32 i) (VLOAD V128 (SHAPE M X K sx) x ao)  ~>  (VCONST V128 c)
+  ---- ----
+  -- (if $ibytes(M, j) = $mem(z, x).BYTES[i + ao.OFFSET + k * M/8 : M/8])^(k<K)
+  -- if c = $invlanes_(Jnn X K, $ext(M, $lsizenn(Jnn), sx, j)^K)
+     /\ $lsizenn(Jnn) = $(M * 2)
 
 
 rule Step_read/vload-splat-oob:
@@ -892,6 +893,7 @@ rule Step_read/vload-splat-oob:
 
 rule Step_read/vload-splat-val:
   z; (CONST I32 i) (VLOAD V128 (SPLAT N) x ao)  ~>  (VCONST V128 c)
+  ----
   -- if $ibytes(N, j) = $mem(z, x).BYTES[i + ao.OFFSET : N/8]
   -- if N = $lsize(Jnn)  ;; TODO(2, rossberg): relate implicitly
   -- if M = $(128/N)
@@ -904,6 +906,7 @@ rule Step_read/vload-zero-oob:
 
 rule Step_read/vload-zero-val:
   z; (CONST I32 i) (VLOAD V128 (ZERO N) x ao)  ~>  (VCONST V128 c)
+  ----
   -- if $ibytes(N, j) = $mem(z, x).BYTES[i + ao.OFFSET : N/8]
   -- if c = $ext(N, 128, U, j)
 
@@ -914,6 +917,7 @@ rule Step_read/vload_lane-oob:
 
 rule Step_read/vload_lane-val:
   z; (CONST I32 i) (VCONST V128 c_1) (VLOAD_LANE V128 N x ao j)  ~>  (VCONST V128 c)
+  ----
   -- if $ibytes(N, k) = $mem(z, x).BYTES[i + ao.OFFSET : N/8]
   -- if N = $lsize(Jnn)  ;; TODO(2, rossberg): relate implicitly
   -- if M = $($vsize(V128)/N)

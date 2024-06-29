@@ -10,6 +10,7 @@ var k : nat
 
 syntax N hint(macro none) = nat  ;; hack
 syntax M hint(macro none) = nat  ;; hack
+syntax K hint(macro none) = nat  ;; hack
 syntax n hint(macro none) = nat  ;; hack
 syntax m hint(macro none) = nat  ;; hack
 

@@ -313,6 +313,7 @@ warning: syntax `Cnn` was never spliced
 warning: syntax `Fnn` was never spliced
 warning: syntax `Inn` was never spliced
 warning: syntax `Jnn` was never spliced
+warning: syntax `K` was never spliced
 warning: syntax `Lnn` was never spliced
 warning: syntax `M` was never spliced
 warning: syntax `N` was never spliced
@@ -1084,8 +1085,8 @@ warning: rule `Step_read/load-pack-oob` was never spliced
 warning: rule `Step_read/load-pack-val` was never spliced
 warning: rule `Step_read/vload-oob` was never spliced
 warning: rule `Step_read/vload-val` was never spliced
-warning: rule `Step_read/vload-shape-oob` was never spliced
-warning: rule `Step_read/vload-shape-val` was never spliced
+warning: rule `Step_read/vload-pack-oob` was never spliced
+warning: rule `Step_read/vload-pack-val` was never spliced
 warning: rule `Step_read/vload-splat-oob` was never spliced
 warning: rule `Step_read/vload-splat-val` was never spliced
 warning: rule `Step_read/vload-zero-oob` was never spliced

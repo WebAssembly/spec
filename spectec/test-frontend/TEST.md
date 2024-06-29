@@ -22,6 +22,9 @@ syntax N = nat
 syntax M = nat
 
 ;; 0-aux.watsup
+syntax K = nat
+
+;; 0-aux.watsup
 syntax n = nat
 
 ;; 0-aux.watsup
@@ -35,35 +38,35 @@ def $Ki : nat
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:27.1-27.25
+;; 0-aux.watsup:28.1-28.25
 def $min(nat : nat, nat : nat) : nat
-  ;; 0-aux.watsup:28.1-28.19
-  def $min{j : nat}(0, j) = 0
   ;; 0-aux.watsup:29.1-29.19
+  def $min{j : nat}(0, j) = 0
+  ;; 0-aux.watsup:30.1-30.19
   def $min{i : nat}(i, 0) = 0
-  ;; 0-aux.watsup:30.1-30.38
+  ;; 0-aux.watsup:31.1-31.38
   def $min{i : nat, j : nat}((i + 1), (j + 1)) = $min(i, j)
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:32.1-32.21
+;; 0-aux.watsup:33.1-33.21
 def $sum(nat*) : nat
-  ;; 0-aux.watsup:33.1-33.18
+  ;; 0-aux.watsup:34.1-34.18
   def $sum([]) = 0
-  ;; 0-aux.watsup:34.1-34.35
+  ;; 0-aux.watsup:35.1-35.35
   def $sum{n : n, n'* : n*}([n] :: n'*{n' : nat}) = (n + $sum(n'*{n' : nat}))
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:40.1-40.59
+;; 0-aux.watsup:41.1-41.59
 def $concat_(syntax X, X**) : X*
-  ;; 0-aux.watsup:41.1-41.34
+  ;; 0-aux.watsup:42.1-42.34
   def $concat_{syntax X}(syntax X, []) = []
-  ;; 0-aux.watsup:42.1-42.61
+  ;; 0-aux.watsup:43.1-43.61
   def $concat_{syntax X, w* : X*, w'** : X**}(syntax X, [w*{w : X}] :: w'*{w' : X}*{w' : X}) = w*{w : X} :: $concat_(syntax X, w'*{w' : X}*{w' : X})
 }
 
@@ -5797,16 +5800,15 @@ relation Step_read: `%~>%`(config, instr*)
     -- if ($vbytes(V128_vectype, c) = $mem(z, x).BYTES_meminst[(i + ao.OFFSET_memarg!`%`_u32.0) : ($vsize(V128_vectype) / 8)])
 
   ;; 8-reduction.watsup
-  rule vload-shape-oob{z : state, i : nat, M : M, N : N, sx : sx, x : idx, ao : memarg}:
-    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VLOAD_instr(V128_vectype, ?(`SHAPE%X%%`_vloadop_(`%`_sz(M), N, sx)), x, ao)]), [TRAP_instr])
-    -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + ((M * N) / 8)) > |$mem(z, x).BYTES_meminst|)
+  rule vload-pack-oob{z : state, i : nat, M : M, K : K, sx : sx, x : idx, ao : memarg}:
+    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VLOAD_instr(V128_vectype, ?(`SHAPE%X%%`_vloadop_(`%`_sz(M), K, sx)), x, ao)]), [TRAP_instr])
+    -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + ((M * K) / 8)) > |$mem(z, x).BYTES_meminst|)
 
   ;; 8-reduction.watsup
-  rule vload-shape-val{z : state, i : nat, M : M, N : N, sx : sx, x : idx, ao : memarg, c : vec_(V128_Vnn), j^N : nat^N, k^N : nat^N, Jnn : Jnn}:
-    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VLOAD_instr(V128_vectype, ?(`SHAPE%X%%`_vloadop_(`%`_sz(M), N, sx)), x, ao)]), [VCONST_instr(V128_vectype, c)])
-    -- (if ($ibytes(M, `%`_iN(j)) = $mem(z, x).BYTES_meminst[((i + ao.OFFSET_memarg!`%`_u32.0) + ((k * M) / 8)) : (M / 8)]))^(k<N){j : nat, k : nat}
-    -- if ($lsize((Jnn : Jnn <: lanetype)) = (M * 2))
-    -- if (c = $invlanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), $ext(M, $lsize((Jnn : Jnn <: lanetype)), sx, `%`_iN(j))^N{j : nat}))
+  rule vload-pack-val{z : state, i : nat, M : M, K : K, sx : sx, x : idx, ao : memarg, c : vec_(V128_Vnn), j^K : nat^K, k^K : nat^K, Jnn : Jnn}:
+    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VLOAD_instr(V128_vectype, ?(`SHAPE%X%%`_vloadop_(`%`_sz(M), K, sx)), x, ao)]), [VCONST_instr(V128_vectype, c)])
+    -- (if ($ibytes(M, `%`_iN(j)) = $mem(z, x).BYTES_meminst[((i + ao.OFFSET_memarg!`%`_u32.0) + ((k * M) / 8)) : (M / 8)]))^(k<K){j : nat, k : nat}
+    -- if ((c = $invlanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(K)), $ext(M, $lsizenn((Jnn : Jnn <: lanetype)), sx, `%`_iN(j))^K{j : nat})) /\ ($lsizenn((Jnn : Jnn <: lanetype)) = (M * 2)))
 
   ;; 8-reduction.watsup
   rule vload-splat-oob{z : state, i : nat, N : N, x : idx, ao : memarg}:
@@ -5996,58 +5998,58 @@ relation Step: `%~>%`(config, config)
   rule elem.drop{z : state, x : idx}:
     `%~>%`(`%;%`_config(z, [ELEM.DROP_instr(x)]), `%;%`_config($with_elem(z, x, []), []))
 
-  ;; 8-reduction.watsup:923.1-926.60
+  ;; 8-reduction.watsup:927.1-930.60
   rule store-num-oob{z : state, i : nat, nt : numtype, c : num_(nt), x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr(nt, c) STORE_instr(nt, ?(), x, ao)]), `%;%`_config(z, [TRAP_instr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + ($size(nt) / 8)) > |$mem(z, x).BYTES_meminst|)
 
-  ;; 8-reduction.watsup:928.1-932.28
+  ;; 8-reduction.watsup:932.1-936.28
   rule store-num-val{z : state, i : nat, nt : numtype, c : num_(nt), x : idx, ao : memarg, b* : byte*}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr(nt, c) STORE_instr(nt, ?(), x, ao)]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), ($size(nt) / 8), b*{b : byte}), []))
     -- if (b*{b : byte} = $nbytes(nt, c))
 
-  ;; 8-reduction.watsup:934.1-937.52
+  ;; 8-reduction.watsup:938.1-941.52
   rule store-pack-oob{z : state, i : nat, Inn : Inn, c : num_((Inn : Inn <: numtype)), nt : numtype, n : n, x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr((Inn : Inn <: numtype), c) STORE_instr(nt, ?(`%`_sz(n)), x, ao)]), `%;%`_config(z, [TRAP_instr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + (n / 8)) > |$mem(z, x).BYTES_meminst|)
 
-  ;; 8-reduction.watsup:939.1-943.49
+  ;; 8-reduction.watsup:943.1-947.49
   rule store-pack-val{z : state, i : nat, Inn : Inn, c : num_((Inn : Inn <: numtype)), nt : numtype, n : n, x : idx, ao : memarg, b* : byte*}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr((Inn : Inn <: numtype), c) STORE_instr(nt, ?(`%`_sz(n)), x, ao)]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), (n / 8), b*{b : byte}), []))
     -- if (b*{b : byte} = $ibytes(n, $wrap($size((Inn : Inn <: numtype)), n, c)))
 
-  ;; 8-reduction.watsup:945.1-947.63
+  ;; 8-reduction.watsup:949.1-951.63
   rule vstore-oob{z : state, i : nat, c : vec_(V128_Vnn), x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VCONST_instr(V128_vectype, c) VSTORE_instr(V128_vectype, x, ao)]), `%;%`_config(z, [TRAP_instr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + ($vsize(V128_vectype) / 8)) > |$mem(z, x).BYTES_meminst|)
 
-  ;; 8-reduction.watsup:949.1-951.30
+  ;; 8-reduction.watsup:953.1-955.30
   rule vstore-val{z : state, i : nat, c : vec_(V128_Vnn), x : idx, ao : memarg, b* : byte*}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VCONST_instr(V128_vectype, c) VSTORE_instr(V128_vectype, x, ao)]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), ($vsize(V128_vectype) / 8), b*{b : byte}), []))
     -- if (b*{b : byte} = $vbytes(V128_vectype, c))
 
-  ;; 8-reduction.watsup:954.1-956.50
+  ;; 8-reduction.watsup:958.1-960.50
   rule vstore_lane-oob{z : state, i : nat, c : vec_(V128_Vnn), N : N, x : idx, ao : memarg, j : nat}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VCONST_instr(V128_vectype, c) VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, ao, `%`_laneidx(j))]), `%;%`_config(z, [TRAP_instr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + N) > |$mem(z, x).BYTES_meminst|)
 
-  ;; 8-reduction.watsup:958.1-962.48
+  ;; 8-reduction.watsup:962.1-966.48
   rule vstore_lane-val{z : state, i : nat, c : vec_(V128_Vnn), N : N, x : idx, ao : memarg, j : nat, b* : byte*, Jnn : Jnn, M : M}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VCONST_instr(V128_vectype, c) VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, ao, `%`_laneidx(j))]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), (N / 8), b*{b : byte}), []))
     -- if (N = $lsize((Jnn : Jnn <: lanetype)))
     -- if (M = (128 / N))
     -- if (b*{b : byte} = $ibytes(N, `%`_iN($lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c)[j]!`%`_lane_.0)))
 
-  ;; 8-reduction.watsup:970.1-973.37
+  ;; 8-reduction.watsup:974.1-977.37
   rule memory.grow-succeed{z : state, n : n, x : idx, mi : meminst}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(n)) MEMORY.GROW_instr(x)]), `%;%`_config($with_meminst(z, x, mi), [CONST_instr(I32_numtype, `%`_num_((|$mem(z, x).BYTES_meminst| / (64 * $Ki))))]))
     -- if (mi = $growmem($mem(z, x), n))
 
-  ;; 8-reduction.watsup:975.1-976.77
+  ;; 8-reduction.watsup:979.1-980.77
   rule memory.grow-fail{z : state, n : n, x : idx}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(n)) MEMORY.GROW_instr(x)]), `%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_($invsigned(32, - (1 : nat <: int))))]))
 
-  ;; 8-reduction.watsup:1036.1-1037.51
+  ;; 8-reduction.watsup:1040.1-1041.51
   rule data.drop{z : state, x : idx}:
     `%~>%`(`%;%`_config(z, [DATA.DROP_instr(x)]), `%;%`_config($with_data(z, x, []), []))
 }

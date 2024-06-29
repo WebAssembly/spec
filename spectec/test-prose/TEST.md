@@ -7399,13 +7399,13 @@ execution_of_VLOAD V128 vload_u0? x ao
 6. Else:
   a. Let ?(y_0) be vload_u0?.
   b. If y_0 is of the case SHAPE, then:
-    1) Let (SHAPE M N sx) be y_0.
-    2) If (((i + ao.OFFSET) + ((M · N) / 8)) > |$mem(z, x).BYTES|), then:
+    1) Let (SHAPE M K sx) be y_0.
+    2) If (((i + ao.OFFSET) + ((M · K) / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
-    3) If the type of $inverse_of_lsize((M · 2)) is Jnn, then:
-      a) Let Jnn be $inverse_of_lsize((M · 2)).
-      b) Let j^N be $inverse_of_ibytes(M, $mem(z, x).BYTES[((i + ao.OFFSET) + ((k · M) / 8)) : (M / 8)])^(k<N).
-      c) Let c be $invlanes_((Jnn X N), $ext(M, $lsize(Jnn), sx, j)^N).
+    3) If the type of $inverse_of_lsizenn((M · 2)) is Jnn, then:
+      a) Let Jnn be $inverse_of_lsizenn((M · 2)).
+      b) Let j^K be $inverse_of_ibytes(M, $mem(z, x).BYTES[((i + ao.OFFSET) + ((k · M) / 8)) : (M / 8)])^(k<K).
+      c) Let c be $invlanes_((Jnn X K), $ext(M, $lsizenn(Jnn), sx, j)^K).
       d) Push the value (V128.CONST c) to the stack.
   c. If y_0 is of the case SPLAT, then:
     1) Let (SPLAT N) be y_0.

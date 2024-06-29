@@ -1273,6 +1273,7 @@ $$
 \begin{array}{@{}lrrl@{}l@{}}
 & N &::=& \mathbb{N} \\
 & M &::=& \mathbb{N} \\
+& K &::=& \mathbb{N} \\
 & n &::=& \mathbb{N} \\
 & m &::=& \mathbb{N} \\
 \end{array}
@@ -8269,12 +8270,11 @@ $$
 
 $$
 \begin{array}{@{}l@{}rcl@{}l@{}}
-{[\textsc{\scriptsize E{-}vload{-}shape{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{ao}}) &\hookrightarrow& \mathsf{trap}
-  &\qquad \mbox{if}~i + {\mathit{ao}}{.}\mathsf{offset} + M \cdot N / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
-{[\textsc{\scriptsize E{-}vload{-}shape{-}val}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{ao}}) &\hookrightarrow& (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)
-  &\qquad \mbox{if}~({{\mathrm{bytes}}}_{{\mathsf{i}}{M}}(j) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8])^{k<N} \\
-  &&&&\qquad {\land}~{|{\mathsf{i}}{N}|} = M \cdot 2 \\
-  &&&&\qquad {\land}~c = {{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{N}}^{{-1}}}}{({{{{{\mathrm{ext}}}_{M, {|{\mathsf{i}}{N}|}}^{{\mathit{sx}}}}}{(j)}^{N}})} \\
+{[\textsc{\scriptsize E{-}vload{-}pack{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\mathsf{x}}{K}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{ao}}) &\hookrightarrow& \mathsf{trap}
+  &\qquad \mbox{if}~i + {\mathit{ao}}{.}\mathsf{offset} + M \cdot K / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
+{[\textsc{\scriptsize E{-}vload{-}pack{-}val}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{M}{\mathsf{x}}{K}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{ao}}) &\hookrightarrow& \multicolumn{2}{l@{}}{ (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c) } \\
+  & \multicolumn{4}{@{}l@{}}{\qquad\quad \mbox{if}~({{\mathrm{bytes}}}_{{\mathsf{i}}{M}}(j) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8])^{k<K}} \\
+  & \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~c = {{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{K}}^{{-1}}}}{({{{{{\mathrm{ext}}}_{M, N}^{{\mathit{sx}}}}}{(j)}^{K}})} \land N = M \cdot 2} \\
 \end{array}
 $$
 
@@ -8284,11 +8284,11 @@ $$
 \begin{array}{@{}l@{}rcl@{}l@{}}
 {[\textsc{\scriptsize E{-}vload{-}splat{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{splat}}}~x~{\mathit{ao}}) &\hookrightarrow& \mathsf{trap}
   &\qquad \mbox{if}~i + {\mathit{ao}}{.}\mathsf{offset} + N / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
-{[\textsc{\scriptsize E{-}vload{-}splat{-}val}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{splat}}}~x~{\mathit{ao}}) &\hookrightarrow& (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)
-  &\qquad \mbox{if}~{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8] \\
-  &&&&\qquad {\land}~N = {|{\mathsf{i}}{N}|} \\
-  &&&&\qquad {\land}~M = 128 / N \\
-  &&&&\qquad {\land}~c = {{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({j^{M}})} \\
+{[\textsc{\scriptsize E{-}vload{-}splat{-}val}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{splat}}}~x~{\mathit{ao}}) &\hookrightarrow& \multicolumn{2}{l@{}}{ (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c) } \\
+  &&& \multicolumn{2}{l@{}}{\quad \mbox{if}~{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]} \\
+  &&& \multicolumn{2}{l@{}}{\quad {\land}~N = {|{\mathsf{i}}{N}|}} \\
+  &&& \multicolumn{2}{l@{}}{\quad {\land}~M = 128 / N} \\
+  &&& \multicolumn{2}{l@{}}{\quad {\land}~c = {{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({j^{M}})}} \\
 \end{array}
 $$
 
@@ -8298,9 +8298,9 @@ $$
 \begin{array}{@{}l@{}rcl@{}l@{}}
 {[\textsc{\scriptsize E{-}vload{-}zero{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{zero}}}~x~{\mathit{ao}}) &\hookrightarrow& \mathsf{trap}
   &\qquad \mbox{if}~i + {\mathit{ao}}{.}\mathsf{offset} + N / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
-{[\textsc{\scriptsize E{-}vload{-}zero{-}val}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{zero}}}~x~{\mathit{ao}}) &\hookrightarrow& (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)
-  &\qquad \mbox{if}~{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8] \\
-  &&&&\qquad {\land}~c = {{{{\mathrm{ext}}}_{N, 128}^{\mathsf{u}}}}{(j)} \\
+{[\textsc{\scriptsize E{-}vload{-}zero{-}val}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{zero}}}~x~{\mathit{ao}}) &\hookrightarrow& \multicolumn{2}{l@{}}{ (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c) } \\
+  &&& \multicolumn{2}{l@{}}{\quad \mbox{if}~{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]} \\
+  &&& \multicolumn{2}{l@{}}{\quad {\land}~c = {{{{\mathrm{ext}}}_{N, 128}^{\mathsf{u}}}}{(j)}} \\
 \end{array}
 $$
 
@@ -8310,11 +8310,11 @@ $$
 \begin{array}{@{}l@{}rcl@{}l@{}}
 {[\textsc{\scriptsize E{-}vload\_lane{-}oob}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~j) &\hookrightarrow& \mathsf{trap}
   &\qquad \mbox{if}~i + {\mathit{ao}}{.}\mathsf{offset} + N / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
-{[\textsc{\scriptsize E{-}vload\_lane{-}val}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~j) &\hookrightarrow& (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)
-  &\qquad \mbox{if}~{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(k) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8] \\
-  &&&&\qquad {\land}~N = {|{\mathsf{i}}{N}|} \\
-  &&&&\qquad {\land}~M = {|\mathsf{v{\scriptstyle 128}}|} / N \\
-  &&&&\qquad {\land}~c = {{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c_1){}[{}[j] = k])} \\
+{[\textsc{\scriptsize E{-}vload\_lane{-}val}]} \quad & z ; (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~j) &\hookrightarrow& \multicolumn{2}{l@{}}{ (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c) } \\
+  &&& \multicolumn{2}{l@{}}{\quad \mbox{if}~{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(k) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]} \\
+  &&& \multicolumn{2}{l@{}}{\quad {\land}~N = {|{\mathsf{i}}{N}|}} \\
+  &&& \multicolumn{2}{l@{}}{\quad {\land}~M = {|\mathsf{v{\scriptstyle 128}}|} / N} \\
+  &&& \multicolumn{2}{l@{}}{\quad {\land}~c = {{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}^{{-1}}}}{({{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c_1){}[{}[j] = k])}} \\
 \end{array}
 $$
 
