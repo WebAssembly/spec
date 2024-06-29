@@ -202,12 +202,14 @@ and arg a =
   | ExpA e -> exp e
   | TypA t -> typ t
   | GramA g -> sym g
+  | DefA x -> defid x
 
 and param p =
   match p.it with
   | ExpP (x, t) -> varid x; typ t
   | TypP x -> typid x
   | GramP (x, t) -> gramid x; typ t
+  | DefP (x, ps, t) -> defid x; params ps; typ t
 
 and args as_ = list arg as_
 and params ps = list param ps
@@ -309,6 +311,7 @@ and clone_arg a =
   | ExpA e -> ExpA (clone_exp e)
   | TypA t -> TypA (clone_typ t)
   | GramA _ as a' -> a'
+  | DefA _ as a' -> a'
   ) |> ref $ a.at
 
 and clone_hint hint = {hint with hintexp = clone_exp hint.hintexp}

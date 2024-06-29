@@ -276,7 +276,8 @@ and translate_argexp exp =
 and translate_args args = List.concat_map ( fun arg ->
   match arg.it with
   | Il.ExpA el -> [ translate_exp el ]
-  | Il.TypA _ -> [] ) args
+  | Il.TypA _ -> []
+  | Il.DefA _ -> [] (* TODO: handle functions *) ) args
 
 (* `Il.path` -> `path list` *)
 and translate_path path =

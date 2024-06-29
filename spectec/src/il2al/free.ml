@@ -11,6 +11,7 @@ include Il.Free
 let empty =
   {typid = Set.empty; relid = Set.empty; varid = Set.empty; defid = Set.empty}
 let free_varid id = {empty with varid = Set.singleton id.it}
+let free_defid id = {empty with defid = Set.singleton id.it}
 
 let rec free_exp ignore_listN e =
   let f = free_exp ignore_listN in
@@ -45,6 +46,7 @@ and free_arg ignore_listN arg =
   match arg.it with
   | ExpA e -> f e
   | TypA _ -> empty
+  | DefA id -> free_defid id
 
 and free_path ignore_listN p =
   let f = free_exp ignore_listN in

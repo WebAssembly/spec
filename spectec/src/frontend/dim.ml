@@ -233,8 +233,9 @@ and check_arg env ctx a =
   | ExpA e -> check_exp env ctx e
   | TypA t -> check_typ env ctx t
   | GramA g -> check_sym env ctx g
+  | DefA _id -> ()
 
-let check_param env ctx p =
+and check_param env ctx p =
   match p.it with
   | ExpP (id, t) ->
     check_varid env ctx id;
@@ -242,6 +243,9 @@ let check_param env ctx p =
   | TypP id -> check_typid env ctx id
   | GramP (id, t) ->
     check_gramid env ctx id;
+    check_typ env ctx t
+  | DefP (_id, ps, t) ->
+    List.iter (check_param env ctx) ps;
     check_typ env ctx t
 
 let check_def d : env =
@@ -455,6 +459,7 @@ and annot_arg env a : Il.Ast.arg * occur =
       let e', occur1 = annot_exp env e in
       ExpA e', occur1
     | TypA t -> TypA t, Env.empty
+    | DefA id -> DefA id, Env.empty
   in {a with it}, occur
 
 and annot_prem env prem : Il.Ast.prem * occur =

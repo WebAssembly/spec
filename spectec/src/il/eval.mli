@@ -14,6 +14,7 @@ val reduce_typ : env -> typ -> typ
 val reduce_typdef : env -> typ -> deftyp
 val reduce_arg : env -> arg -> arg
 
+val equiv_functyp : env -> param list * typ -> param list * typ -> bool
 val equiv_typ : env -> typ -> typ -> bool
 val sub_typ : env -> typ -> typ -> bool
 

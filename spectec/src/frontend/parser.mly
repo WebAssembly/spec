@@ -509,6 +509,7 @@ exp_var_ :
   | REAL { VarE ("real" $ $sloc, []) }
   | TEXT { VarE ("text" $ $sloc, []) }
 
+exp_call : exp_call_ { $1 $ $sloc }
 exp_call_ :
   | DOLLAR defid { CallE ($2, []) }
   | DOLLAR defid_lparen comma_list(arg) RPAREN { CallE ($2, $3) }
@@ -760,6 +761,9 @@ arg_ :
   | SYNTAX typ { TypA $2 }
   | SYNTAX atomid_ { Id.make_var $2; TypA (VarT ($2 $ $loc($2), []) $ $loc($2)) }
   | GRAMMAR sym { GramA $2 }
+  | DEF DOLLAR defid { DefA $3 }
+  (* HACK for representing def parameters as args *)
+  | DEF exp_call COLON typ { ExpA (TypE ($2, $4) $ $sloc) }
 
 param : param_ { $1 $ $sloc }
 param_ :
@@ -770,6 +774,10 @@ param_ :
       in ExpP (id, $1) }
   | SYNTAX varid_bind { TypP $2 }
   | GRAMMAR gramid COLON typ { GramP ($2, $4) }
+  | DEF DOLLAR defid COLON typ
+    { DefP ($3, [], $5) }
+  | DEF DOLLAR defid_lparen enter_scope comma_list(param) RPAREN COLON typ exit_scope
+    { DefP ($3, $5, $8) }
 
 
 def : def_ { $1 $ $sloc }

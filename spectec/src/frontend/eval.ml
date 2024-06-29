@@ -335,6 +335,7 @@ and reduce_arg env a : arg =
   | ExpA e -> ref (ExpA (reduce_exp env e)) $ a.at
   | TypA _t -> a  (* types are reduced on demand *)
   | GramA _g -> a
+  | DefA _id -> a
 
 and reduce_exp_call env id args at = function
   | [] ->
@@ -608,6 +609,9 @@ and match_arg env s a1 a2 : subst option =
   | ExpA e1, ExpA e2 -> match_exp env s e1 e2
   | TypA t1, TypA t2 -> match_typ env s t1 t2
   | GramA g1, GramA g2 -> match_sym env s g1 g2
+  | DefA id1, DefA id2 ->
+    if id2.it = "_" then Some s else
+    Some (Subst.add_defid s id2 id1)
   | _, _ -> assert false
 
 
@@ -676,7 +680,32 @@ and equiv_arg env a1 a2 =
   | ExpA e1, ExpA e2 -> equiv_exp env e1 e2
   | TypA t1, TypA t2 -> equiv_typ env t1 t2
   | GramA g1, GramA g2 -> Eq.eq_sym g1 g2
+  | DefA id1, DefA id2 -> id1.it = id2.it
   | _, _ -> false
+
+
+and equiv_functyp env (ps1, t1) (ps2, t2) =
+  List.length ps1 = List.length ps2 &&
+  match equiv_params env ps1 ps2 with
+  | None -> false
+  | Some s -> equiv_typ env t1 (Subst.subst_typ s t2)
+
+and equiv_params env ps1 ps2 =
+  List.fold_left2 (fun s_opt p1 p2 ->
+    let* s = s_opt in
+    match p1.it, (Subst.subst_param s p2).it with
+    | ExpP (id1, t1), ExpP (id2, t2) ->
+      if not (equiv_typ env t1 t2) then None else
+      Some (Subst.add_varid s id2 (VarE (id1, []) $ p1.at))
+    | TypP _, TypP _ -> Some s
+    | GramP (id1, t1), GramP (id2, t2) ->
+      if not (equiv_typ env t1 t2) then None else
+      Some (Subst.add_gramid s id2 (VarG (id1, []) $ p1.at))
+    | DefP (id1, ps1, t1), DefP (id2, ps2, t2) ->
+      if not (equiv_functyp env (ps1, t1) (ps2, t2)) then None else
+      Some (Subst.add_defid s id2 id1)
+    | _, _ -> None
+  ) (Some Subst.empty) ps1 ps2
 
 
 (* Subtyping *)
@@ -804,5 +833,6 @@ and disj_arg env a1 a2 =
   match !(a1.it), !(a2.it) with
   | ExpA e1, ExpA e2 -> disj_exp env e1 e2
   | TypA t1, TypA t2 -> disj_typ env t1 t2
-  | GramA g1, GramA g2 -> not (Eq.eq_sym g1 g2)
+  | GramA _, GramA _ -> false
+  | DefA _, DefA _ -> false
   | _, _ -> false

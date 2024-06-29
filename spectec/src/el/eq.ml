@@ -165,6 +165,7 @@ and eq_arg a1 a2 =
   | ExpA e1, ExpA e2 -> eq_exp e1 e2
   | TypA t1, TypA t2 -> eq_typ t1 t2
   | GramA g1, GramA g2 -> eq_sym g1 g2
+  | DefA id1, DefA id2 -> eq_id id1 id2
   | _, _ -> false
 
 and eq_param p1 p2 =
@@ -172,4 +173,6 @@ and eq_param p1 p2 =
   | ExpP (id1, t1), ExpP (id2, t2) -> eq_id id1 id2 && eq_typ t1 t2
   | TypP id1, TypP id2 -> eq_id id1 id2
   | GramP (id1, t1), GramP (id2, t2) -> eq_id id1 id2 && eq_typ t1 t2
+  | DefP (id1, ps1, t1), DefP (id2, ps2, t2) ->
+    eq_id id1 id2 && eq_list eq_param ps1 ps2 && eq_typ t1 t2
   | _, _ -> false

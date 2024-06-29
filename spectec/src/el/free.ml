@@ -73,6 +73,7 @@ let free_defid id = {empty with defid = Set.singleton id.it}
 let bound_typid id = if id.it = "_" then empty else free_typid id
 let bound_gramid id = if id.it = "_" then empty else free_gramid id
 let bound_varid id = if id.it = "_" then empty else free_varid id
+let bound_defid id = if id.it = "_" then empty else free_defid id
 
 
 (* Iterations *)
@@ -280,30 +281,35 @@ and free_arg a =
   | ExpA e -> free_exp e
   | TypA t -> free_typ t
   | GramA g -> free_sym g
+  | DefA id -> free_defid id
 
 and det_arg a =
   match !(a.it) with
   | ExpA e -> det_exp e
   | TypA t -> free_typ t  (* must be an id *)
   | GramA g -> free_sym g (* must be an id *)
+  | DefA id -> free_defid id
 
 and idx_arg a =
   match !(a.it) with
   | ExpA e -> idx_exp e
   | TypA _ -> empty
   | GramA _ -> empty
+  | DefA _ -> empty
 
 and free_param p =
   match p.it with
   | ExpP (_, t) -> free_typ t
   | TypP _ -> empty
   | GramP (_, t) -> free_typ t
+  | DefP (_, ps, t) -> free_params ps + free_typ t - bound_params ps
 
 and bound_param p =
   match p.it with
   | ExpP (id, _) -> bound_varid id
   | TypP id -> bound_typid id
   | GramP (id, _) -> bound_gramid id
+  | DefP (id, _, _) -> bound_defid id
 
 and free_args as_ = free_list free_arg as_
 and det_args as_ = free_list det_arg as_

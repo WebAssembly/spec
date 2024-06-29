@@ -200,6 +200,7 @@ and string_of_arg a =
   match a.it with
   | ExpA e -> string_of_exp e
   | TypA t -> "syntax " ^ string_of_typ t
+  | DefA id -> "def $" ^ id.it
 
 and string_of_args = function
   | [] -> ""
@@ -211,17 +212,19 @@ and string_of_bind bind =
     let dim = String.concat "" (List.map string_of_iter iters) in
     id.it ^ dim ^ " : " ^ string_of_typ t ^ dim
   | TypB id -> "syntax " ^ id.it
+  | DefB (id, ps, t) -> "def $" ^ id.it ^ string_of_params ps ^ " : " ^ string_of_typ t
 
 and string_of_binds = function
   | [] -> ""
   | bs -> "{" ^ concat ", " (List.map string_of_bind bs) ^ "}"
 
-let string_of_param p =
+and string_of_param p =
   match p.it with
   | ExpP (id, t) -> (if id.it = "_" then "" else id.it ^ " : ") ^ string_of_typ t
   | TypP id -> "syntax " ^ id.it
+  | DefP (id, ps, t) -> "def $" ^ id.it ^ string_of_params ps ^ " : " ^ string_of_typ t
 
-let string_of_params = function
+and string_of_params = function
   | [] -> ""
   | ps -> "(" ^ concat ", " (List.map string_of_param ps) ^ ")"
 

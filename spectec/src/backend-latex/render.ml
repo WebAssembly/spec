@@ -1268,6 +1268,7 @@ and render_arg env arg =
   | ExpA e -> render_exp env e
   | TypA t -> render_typ env t
   | GramA g -> render_sym env g
+  | DefA id -> render_defid env id
 
 and render_args env args =
   match List.map (render_arg env) args with
@@ -1279,6 +1280,7 @@ let render_param env p =
   | ExpP (id, t) -> if id.it = "_" then render_typ env t else render_varid env id
   | TypP id -> render_typid env id
   | GramP (id, _t) -> render_gramid env id
+  | DefP (id, _ps, _t) -> render_defid env id
 
 let _render_params env = function
   | [] -> ""

@@ -122,16 +122,19 @@ and arg = arg' phrase
 and arg' =
   | ExpA of exp                                       (* exp *)
   | TypA of typ                                       (* `syntax` typ *)
+  | DefA of id                                        (* `def` defid *)
 
 and bind = bind' phrase
 and bind' =
   | ExpB of id * typ * iter list
   | TypB of id
+  | DefB of id * param list * typ
 
 and param = param' phrase
 and param' =
   | ExpP of id * typ                                  (* varid `:` typ *)
   | TypP of id                                        (* `syntax` varid *)
+  | DefP of id * param list * typ                     (* `def` defid params `:` typ *)
 
 and def = def' phrase
 and def' =

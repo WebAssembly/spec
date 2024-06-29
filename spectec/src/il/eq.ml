@@ -131,4 +131,5 @@ and eq_arg a1 a2 =
   match a1.it, a2.it with
   | ExpA e1, ExpA e2 -> eq_exp e1 e2
   | TypA t1, TypA t2 -> eq_typ t1 t2
+  | DefA id1, DefA id2 -> eq_id id1 id2
   | _, _ -> false

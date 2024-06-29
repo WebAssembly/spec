@@ -247,18 +247,20 @@ and string_of_arg a =
   | ExpA e -> string_of_exp e
   | TypA t -> "syntax " ^ string_of_typ t
   | GramA g -> "grammar " ^ string_of_sym g
+  | DefA id -> "def " ^ string_of_defid id
 
 and string_of_args = function
   | [] -> ""
   | args -> "(" ^ concat ", " (List.map string_of_arg args) ^ ")"
 
-let string_of_param p =
+let rec string_of_param p =
   match p.it with
   | ExpP (id, t) -> (if id.it = "_" then "" else string_of_varid id ^ " : ") ^ string_of_typ t
   | TypP id -> "syntax " ^ string_of_typid id
   | GramP (id, t) -> "grammar " ^ string_of_gramid id ^ " : " ^ string_of_typ t
+  | DefP (id, ps, t) -> "def " ^ string_of_defid id ^ string_of_params ps ^ " : " ^ string_of_typ t
 
-let string_of_params = function
+and string_of_params = function
   | [] -> ""
   | ps -> "(" ^ concat ", " (List.map string_of_param ps) ^ ")"
 

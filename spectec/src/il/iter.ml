@@ -167,16 +167,19 @@ and arg a =
   match a.it with
   | ExpA e -> exp e
   | TypA t -> typ t
+  | DefA x -> defid x
 
 and bind b =
   match b.it with
   | ExpB (id, t, its) -> varid id; typ t; list iter its
   | TypB id -> typid id
+  | DefB (id, ps, t) -> defid id; params ps; typ t
 
 and param p =
   match p.it with
   | ExpP (x, t) -> varid x; typ t
   | TypP x -> typid x
+  | DefP (x, ps, t) -> defid x; params ps; typ t
 
 and args as_ = list arg as_
 and binds bs = list bind bs

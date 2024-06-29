@@ -175,12 +175,14 @@ and param' =
   | ExpP of id * typ                         (* varid `:` typ *)
   | TypP of id                               (* `syntax` varid *)
   | GramP of id * typ                        (* `grammar` gramid `:` typ *)
+  | DefP of id * param list * typ            (* `def` `$` defid params `:` typ *)
 
 and arg = arg' ref phrase
 and arg' =
   | ExpA of exp                              (* exp *)
   | TypA of typ                              (* `syntax` typ *)
   | GramA of sym                             (* `grammar` sym *)
+  | DefA of id                               (* `def` defid *)
 
 and def = def' phrase
 and def' =

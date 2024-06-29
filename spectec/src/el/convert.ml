@@ -173,13 +173,15 @@ let exp_of_arg a =
   | ExpA e -> e
   | _ -> error a.at "malformed expression"
 
-let param_of_arg a =
+let rec param_of_arg a =
   (match !(a.it) with
   | ExpA e ->
     (match e.it with
     | TypE ({it = VarE (id, []); _}, t) -> ExpP (id, t)
     | VarE (id, args) ->
       ExpP (id, typ_of_exp (VarE (strip_var_suffix id, args) $ e.at))
+    | TypE ({it = CallE (id, as_); _}, t) ->
+      DefP (id, List.map param_of_arg as_, t)
     | _ -> ExpP ("_" $ e.at, typ_of_exp e)
     )
   | TypA {it = VarT (id, []); _} ->
@@ -188,7 +190,7 @@ let param_of_arg a =
     TypP id
   | GramA {it = AttrG ({it = VarE (id, []); _}, g); _} ->
     GramP (id, typ_of_exp (exp_of_sym g))
-  | _ -> error a.at "malformed grammar"
+  | _ -> error a.at "malformed parameter"
   ) $ a.at
 
 let arg_of_param p =
@@ -196,4 +198,5 @@ let arg_of_param p =
   | ExpP (id, _t) -> ExpA ((*TypE ( *)VarE (id, []) $ id.at(*, t) $ p.at*))
   | TypP id -> TypA (VarT (id, []) $ id.at)
   | GramP (id, _t) -> GramA (VarG (id, []) $ id.at)
+  | DefP (id, _params, _t) -> DefA id
   ) |> ref $ p.at

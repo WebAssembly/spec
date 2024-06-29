@@ -1670,7 +1670,7 @@ and make_binds_iter_arg env free dims dims' : Il.bind list ref * (module Iter.Ar
           let fwd = Free.(inter (free_typ t) !left) in
           if fwd <> Free.empty then
             error id.at ("the type of `" ^ id.it ^ "` depends on " ^
-              ( Free.Set.(elements fwd.typid @ elements fwd.gramid @ elements fwd.varid) |>
+              ( Free.Set.(elements fwd.typid @ elements fwd.gramid @ elements fwd.varid @ elements fwd.defid) |>
                 List.map (fun id -> "`" ^ id ^ "`") |>
                 String.concat ", " ) ^
               ", which only occur(s) to its right; try to reorder parameters or premises");
@@ -1688,11 +1688,29 @@ and make_binds_iter_arg env free dims dims' : Il.bind list ref * (module Iter.Ar
           let fwd = Free.(inter free' !left) in
           if fwd <> Free.empty then
             error id.at ("the type of `" ^ id.it ^ "` depends on " ^
-              ( Free.Set.(elements fwd.typid @ elements fwd.gramid @ elements fwd.varid) |>
+              ( Free.Set.(elements fwd.typid @ elements fwd.gramid @ elements fwd.varid @ elements fwd.defid) |>
                 List.map (fun id -> "`" ^ id ^ "`") |>
                 String.concat ", " ) ^
               ", which only occur(s) to its right; try to reorder parameters or premises");
           left := Free.{!left with varid = Set.remove id.it !left.gramid};
+        )
+
+      let visit_defid id =
+        if Free.Set.mem id.it !left.defid then (
+          let ps, t, _ = find "definition" env.defs id in
+          let env' = local_env env in
+          let ps' = elab_params env' ps in
+          let t' = elab_typ env' t in
+          let free' = Free.(union (free_params ps) (diff (free_typ t) (bound_params ps))) in
+          let fwd = Free.(inter free' !left) in
+          if fwd <> Free.empty then
+            error id.at ("the type of `" ^ (spaceid "definition" id).it ^ "` depends on " ^
+              ( Free.Set.(elements fwd.typid @ elements fwd.gramid @ elements fwd.varid @ elements fwd.defid) |>
+                List.map (fun id -> "`" ^ id ^ "`") |>
+                String.concat ", " ) ^
+              ", which only occur(s) to its right; try to reorder parameters or premises");
+          acc := !acc @ [Il.DefB (id, ps', t') $ id.at];
+          left := Free.{!left with defid = Set.remove id.it !left.defid};
         )
     end
   in Arg.acc, (module Arg)
@@ -1700,8 +1718,8 @@ and make_binds_iter_arg env free dims dims' : Il.bind list ref * (module Iter.Ar
 and elab_arg in_lhs env a p s : Il.arg option * Subst.subst =
   (match !(a.it), p.it with  (* HACK: handle shorthands *)
   | ExpA e, TypP _ -> a.it := TypA (typ_of_exp e)
-  | ExpA e, GramP _ ->
-   a.it := GramA (sym_of_exp e)
+  | ExpA e, GramP _ -> a.it := GramA (sym_of_exp e)
+  | ExpA {it = CallE (id, []); _}, DefP _ -> a.it := DefA id
   | _, _ -> ()
   );
   match !(a.it), (Subst.subst_param s p).it with
@@ -1727,13 +1745,26 @@ and elab_arg in_lhs env a p s : Il.arg option * Subst.subst =
       error_typ2 env a.at "argument" t' t "";
     (* Grammar args are erased *)
     None, Subst.add_gramid s' id g
+  | DefA id, DefP (id', ps', t') when in_lhs = `Lhs ->
+    env.defs <- bind "definition" env.defs id (ps', t', []);
+    Some (Il.DefA id $ a.at), Subst.add_defid s id' id
+  | DefA id, DefP (id', ps', t') ->
+    let ps, t, _ = find "definition" env.defs id in
+    if not (Eval.equiv_functyp (to_eval_env env) (ps, t) (ps', t')) then
+      error a.at ("type mismatch in function argument, expected `" ^
+        (spaceid "definition" id').it ^ Print.(string_of_params ps' ^ " : " ^ string_of_typ t') ^
+        "` but got `" ^
+        (spaceid "definition" id).it ^ Print.(string_of_params ps ^ " : " ^ string_of_typ t ^ "`")
+      );
+    Some (Il.DefA id $ a.at), Subst.add_defid s id id'
   | _, _ ->
     error a.at "sort mismatch for argument"
 
 and elab_args in_lhs env as_ ps at : Il.arg list * Subst.subst =
-  Debug.(log_in_at "el.elab_args" at
-    (fun _ -> fmt "%s : %s" (list el_arg as_) (list el_param ps))
-  );
+  Debug.(log_at "el.elab_args" at
+    (fun _ -> fmt "(%s) : (%s)" (list el_arg as_) (list el_param ps))
+    (fun (r, _) -> fmt "(%s)" (list il_arg r))
+  ) @@ fun _ ->
   elab_args' in_lhs env as_ ps [] Subst.empty at
 
 and elab_args' in_lhs env as_ ps aos' s at : Il.arg list * Subst.subst =
@@ -1760,7 +1791,7 @@ and subst_implicit env s t t' : Subst.subst =
     | _ -> s
   in inst s t t'
 
-let elab_params env ps : Il.param list =
+and elab_params env ps : Il.param list =
   List.fold_left (fun ps' p ->
     match p.it with
     | ExpP (id, t) ->
@@ -1800,6 +1831,12 @@ let elab_params env ps : Il.param list =
       ) free.typid;
       let _t' = elab_typ env t in
       ps'  (* Grammar parameters are erased *)
+    | DefP (id, ps, t) ->
+      let env' = local_env env in
+      let ps'' = elab_params env' ps in
+      let t' = elab_typ env' t in
+      env.defs <- bind "definition" env.defs id (ps, t, []);
+      ps' @ [Il.DefP (id, ps'', t') $ p.at]
   ) [] ps
 
 

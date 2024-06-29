@@ -228,12 +228,14 @@ arg ::=
   exp
   "syntax" typ
   "grammar" sym
+  "def" defid
 
 params ::= ("(" list(param ",") ")")?
 param ::=
   (varid ":") typ
   "syntax" synid
   "grammar" gramid ":" typ
+  "def" "$" defid params ":" typ
 
 def ::=
   "syntax" varid params hint*                               syntax declaration

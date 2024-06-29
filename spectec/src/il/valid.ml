@@ -32,7 +32,7 @@ let new_env () =
     defs = Env.empty;
   }
 
-let local_env env = {env with vars = env.vars; typs = env.typs}
+let local_env env = {env with vars = env.vars; typs = env.typs; defs = env.defs}
 
 (* TODO(3, rossberg): avoid repeated copying of environment *)
 let to_eval_env env =
@@ -554,10 +554,17 @@ and valid_arg env a p s =
   Debug.(log_at "il.valid_arg" a.at
     (fun _ -> fmt "%s : %s" (il_arg a) (il_param p)) (Fun.const "ok")
   ) @@ fun _ ->
-  match a.it, p.it with
-  | ExpA e, ExpP (id, t) -> valid_exp env e (Subst.subst_typ s t); Subst.add_varid s id e
+  match a.it, (Subst.subst_param s p).it with
+  | ExpA e, ExpP (id, t) -> valid_exp env e t; Subst.add_varid s id e
   | TypA t, TypP id -> valid_typ env t; Subst.add_typid s id t
-  | _, _ -> error a.at "sort mismatch for argument"
+  | DefA id, DefP (id', ps', t') ->
+    let ps, t, _ = find "function" env.defs id in
+    if not (Eval.equiv_functyp (to_eval_env env) (ps, t) (ps', t')) then
+      error a.at "type mismatch in function argument";
+    Subst.add_defid s id id'
+  | _, _ ->
+    error a.at ("sort mismatch for argument, expected `" ^
+      Print.string_of_param p ^ "`, got `" ^ Print.string_of_arg a ^ "`")
 
 and valid_args env as_ ps s at : Subst.t =
   Debug.(log_if "il.valid_args" (as_ <> [] || ps <> [])
@@ -578,14 +585,24 @@ and valid_bind env b =
     env.vars <- bind "variable" env.vars id (t, dim)
   | TypB id ->
     env.typs <- bind "syntax" env.typs id ([], [])
+  | DefB (id, ps, t) ->
+    let env' = local_env env in
+    List.iter (valid_param env') ps;
+    valid_typ env' t;
+    env.defs <- bind "definition" env.defs id (ps, t, [])
 
-let valid_param env p =
+and valid_param env p =
   match p.it with
   | ExpP (id, t) ->
     valid_typ env t;
     env.vars <- bind "variable" env.vars id (t, [])
   | TypP id ->
     env.typs <- bind "syntax" env.typs id ([], [])
+  | DefP (id, ps, t) ->
+    let env' = local_env env in
+    List.iter (valid_param env') ps;
+    valid_typ env' t;
+    env.defs <- bind "definition" env.defs id (ps, t, [])
 
 let valid_inst env ps inst =
   Debug.(log_in "il.valid_inst" line);
