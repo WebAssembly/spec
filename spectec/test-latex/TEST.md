@@ -2085,6 +2085,15 @@ $$
 \end{array}
 $$
 
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathsf{i}}{8} &=& \mathsf{i{\scriptstyle 8}} \\
+{\mathsf{i}}{16} &=& \mathsf{i{\scriptstyle 16}} \\
+{\mathsf{i}}{32} &=& \mathsf{i{\scriptstyle 32}} \\
+{\mathsf{i}}{64} &=& \mathsf{i{\scriptstyle 64}} \\
+\end{array}
+$$
+
 \vspace{1ex}
 
 $$

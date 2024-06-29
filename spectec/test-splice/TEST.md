@@ -1141,6 +1141,7 @@ warning: definition `FN` was never spliced
 warning: definition `FUNCREF` was never spliced
 warning: definition `I31REF` was never spliced
 warning: definition `IN` was never spliced
+warning: definition `JN` was never spliced
 warning: definition `Ki` was never spliced
 warning: definition `M` was never spliced
 warning: definition `NULLEXTERNREF` was never spliced
@@ -1667,6 +1668,7 @@ warning: definition prose `FN` was never spliced
 warning: definition prose `FUNCREF` was never spliced
 warning: definition prose `I31REF` was never spliced
 warning: definition prose `IN` was never spliced
+warning: definition prose `JN` was never spliced
 warning: definition prose `Ki` was never spliced
 warning: definition prose `M` was never spliced
 warning: definition prose `NULLEXTERNREF` was never spliced

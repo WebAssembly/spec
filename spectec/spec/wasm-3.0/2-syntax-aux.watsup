@@ -48,13 +48,19 @@ def $zsize(numtype) = $size(numtype)
 def $zsize(vectype) = $vsize(vectype)
 def $zsize(packtype) = $psize(packtype)
 
-def $IN(N) : numtype  hint(show I#%) hint(macro "INX")
+def $IN(N) : Inn  hint(show I#%) hint(macro "INX")
 def $IN(32) = I32
 def $IN(64) = I64
 
-def $FN(N) : numtype  hint(show F#%) hint(macro "FNX")
+def $FN(N) : Fnn  hint(show F#%) hint(macro "FNX")
 def $FN(32) = F32
 def $FN(64) = F64
+
+def $JN(N) : Jnn  hint(show I#%) hint(macro "INX")
+def $JN(8) = I8
+def $JN(16) = I16
+def $JN(32) = I32
+def $JN(64) = I64
 
 
 ;; Unpacking

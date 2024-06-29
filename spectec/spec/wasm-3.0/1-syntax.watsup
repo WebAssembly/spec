@@ -419,7 +419,6 @@ syntax vrelop_(Fnn X M) = EQ | NE | LT | GT | LE | GE
 syntax vcvtop_(shape_1, shape_2) hint(show vcvtop_((%,%))) hint(macro "%" "V%")
 syntax vcvtop_(Jnn_1 X M_1, Jnn_2 X M_2) =
   | EXTEND    -- if $lsizenn2(Jnn_2) = $(2 * $lsizenn1(Jnn_1))
-  ;; TODO(1, rossberg): turn back into VEXTEND
 syntax vcvtop_(Jnn_1 X M_1, Fnn_2 X M_2) =
   | CONVERT   -- if $sizenn2(Fnn_2) >= $lsizenn1(Jnn_1) = `32
 syntax vcvtop_(Fnn_1 X M_1, Jnn_2 X M_2) =

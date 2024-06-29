@@ -4380,6 +4380,16 @@ FN N_u0
 2. Assert: Due to validation, (N_u0 is 64).
 3. Return F64.
 
+JN N_u0
+1. If (N_u0 is 8), then:
+  a. Return I8.
+2. If (N_u0 is 16), then:
+  a. Return I16.
+3. If (N_u0 is 32), then:
+  a. Return I32.
+4. Assert: Due to validation, (N_u0 is 64).
+5. Return I64.
+
 lunpack lanet_u0
 1. If the type of lanet_u0 is numtype, then:
   a. Let numtype be lanet_u0.
