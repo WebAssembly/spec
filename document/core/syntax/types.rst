@@ -349,6 +349,39 @@ In a :ref:`module <syntax-module>`, each member of a recursive type is assigned 
 The syntax of sub types is :ref:`generalized <syntax-heaptype-ext>` for the purpose of specifying :ref:`validation <valid>` and :ref:`execution <exec>`.
 
 
+.. _index:: ! index type
+   pair: abstract syntax; index type
+   single: memory; index type
+   single: table; index type
+.. _syntax-idxtype:
+
+Index Type
+~~~~~~~~~~
+
+*Index types* classify the values that can be used to index into
+:ref:`memories <syntax-mem>` and :ref:`tables <syntax-table>`.
+
+.. math::
+   \begin{array}{llll}
+   \production{index type} & \idxtype &::=&
+     \I32 ~|~ \I64 \\
+   \end{array}
+
+.. _aux-idxtype-min:
+
+Conventions
+...........
+
+The *minimum* of two index types is defined as |I32| if either of the types are
+|I32|, and |I64| otherwise.
+
+.. math::
+   \begin{array}{llll}
+   \itmin(\I64, \I64) &=& \I64 \\
+   \itmin(\X{it}_1, \X{it}_2) &=& \I32 & (\otherwise) \\
+   \end{array}
+
+
 .. index:: ! limits, memory type, table type
    pair: abstract syntax; limits
    single: memory; limits
@@ -363,7 +396,7 @@ Limits
 .. math::
    \begin{array}{llrl}
    \production{limits} & \limits &::=&
-     \{ \LMIN~\u32, \LMAX~\u32^? \} \\
+     \{ \LMIN~\u64, \LMAX~\u64^? \} \\
    \end{array}
 
 If no maximum is given, the respective storage can grow to any size.
@@ -383,7 +416,7 @@ Memory Types
 .. math::
    \begin{array}{llrl}
    \production{memory type} & \memtype &::=&
-     \limits \\
+     ~\idxtype~\limits \\
    \end{array}
 
 The limits constrain the minimum and optionally the maximum size of a memory.
@@ -404,7 +437,7 @@ Table Types
 .. math::
    \begin{array}{llrl}
    \production{table type} & \tabletype &::=&
-     \limits~\reftype \\
+     ~\idxtype~\limits ~\reftype \\
    \end{array}
 
 Like memories, tables are constrained by limits for their minimum and optionally maximum size.

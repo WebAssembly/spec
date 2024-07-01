@@ -249,13 +249,15 @@ Additional shorthands are recognized for unary recursions and sub types without 
 Limits
 ~~~~~~
 
-:ref:`Limits <syntax-limits>` are encoded with a preceding flag indicating whether a maximum is present.
+:ref:`Limits <syntax-limits>` are encoded with a preceding flag indicating whether a maximum is present, and the corresponsing index type.
 
 .. math::
    \begin{array}{llclll}
    \production{limits} & \Blimits &::=&
-     \hex{00}~~n{:}\Bu32 &\Rightarrow& \{ \LMIN~n, \LMAX~\epsilon \} \\ &&|&
-     \hex{01}~~n{:}\Bu32~~m{:}\Bu32 &\Rightarrow& \{ \LMIN~n, \LMAX~m \} \\
+     \hex{00}~~n{:}\Bu64 &\Rightarrow& (\I32, \{ \LMIN~n, \LMAX~\epsilon \}) \\ &&|&
+     \hex{01}~~n{:}\Bu64~~m{:}\Bu64 &\Rightarrow& (\I32, \{ \LMIN~n, \LMAX~m \}) \\ &&|&
+     \hex{04}~~n{:}\Bu64 &\Rightarrow& (\I64, \{ \LMIN~n, \LMAX~\epsilon \}) \\ &&|&
+     \hex{05}~~n{:}\Bu64~~m{:}\Bu64 &\Rightarrow& (\I64, \{ \LMIN~n, \LMAX~m \})
    \end{array}
 
 
@@ -271,7 +273,7 @@ Memory Types
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{memory type} & \Bmemtype &::=&
-     \X{lim}{:}\Blimits &\Rightarrow& \X{lim} \\
+     (\X{it}, \X{lim}){:}\Blimits &\Rightarrow& \X{it}~~\X{lim} \\
    \end{array}
 
 
@@ -287,7 +289,7 @@ Table Types
 .. math::
    \begin{array}{llclll}
    \production{table type} & \Btabletype &::=&
-     \X{et}{:}\Breftype~~\X{lim}{:}\Blimits &\Rightarrow& \X{lim}~\X{et} \\
+     \X{et}{:}\Breftype~~(\X{it}, \X{lim}){:}\Blimits &\Rightarrow& \X{it}~~\X{lim}~\X{et} \\
    \end{array}
 
 

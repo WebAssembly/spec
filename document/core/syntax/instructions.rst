@@ -650,7 +650,7 @@ Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
 .. math::
    \begin{array}{llrl}
    \production{memory immediate} & \memarg &::=&
-     \{ \OFFSET~\u32, \ALIGN~\u32 \} \\
+     \{ \OFFSET~\u64, \ALIGN~\u32 \} \\
    \production{lane width} & \X{ww} &::=&
      8 ~|~ 16 ~|~ 32 ~|~ 64 \\
    \production{instruction} & \instr &::=&
@@ -695,9 +695,6 @@ Alternatively, vector loads can perform a *splat*, such that only a single lane 
 The static address offset is added to the dynamic address operand, yielding a 33 bit *effective address* that is the zero-based index at which the memory is accessed.
 All values are read and written in |LittleEndian|_ byte order.
 A :ref:`trap <trap>` results if any of the accessed memory bytes lies outside the address range implied by the memory's current size.
-
-.. note::
-   Future versions of WebAssembly might provide memory instructions with 64 bit address ranges.
 
 The |MEMORYSIZE| instruction returns the current size of a memory.
 The |MEMORYGROW| instruction grows a memory by a given delta and returns the previous size, or :math:`-1` if enough memory cannot be allocated.
