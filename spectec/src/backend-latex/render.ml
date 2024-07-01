@@ -1009,7 +1009,7 @@ and render_exp env e =
   | NatE (AtomOp, n) ->
     let atom = {it = Atom.Atom (Z.to_string n); at = e.at; note = Atom.info "nat"} in
     render_atom (without_macros true env) atom
-  | TextE t -> "``" ^ t ^ "''"
+  | TextE t -> "\\mbox{\\tt`" ^ t ^ "'}"
   | UnE (op, e2) -> "{" ^ render_unop op ^ render_exp env e2 ^ "}"
   | BinE (e1, ExpOp, ({it = ParenE (e2, _); _ } | e2)) ->
     "{" ^ render_exp env e1 ^ "^{" ^ render_exp env e2 ^ "}}"

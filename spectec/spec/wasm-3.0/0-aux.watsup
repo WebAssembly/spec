@@ -30,7 +30,7 @@ def $min(0, j) = 0
 def $min(i, 0) = 0
 def $min($(i+1), $(j+1)) = $min(i, j)
 
-def $sum(nat*) : nat  ;; TODO(2, rossberg): hint to use sigma?
+def $sum(nat*) : nat  hint(show %latex("\\Sigma\\,")#%)
 def $sum(eps) = 0
 def $sum(n n'*) = $(n + $sum(n'*))
 

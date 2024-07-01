@@ -152,7 +152,6 @@ exp ::=
   hole                                 hole (for syntax rewrites in hints)
   exp "#" exp                          token concatenation (for syntax rewrites in hints)
   "##" exp                             remove possible parentheses (for syntax rewrites in hints)
-  "latex" "(" text* ")"                literal latex (for syntax rewrites)
 
 unop  ::= notop | "+" | "-"
 binop ::= logop | "+" | "-" | "*" | "/" | "\" | "^"
@@ -181,6 +180,7 @@ hole ::=
   "%"digit*                            use numbered operand
   "%%"                                 use all operands
   "!%"                                 empty expression
+  "%latex" "(" text* ")"               literal latex
 ```
 
 The various meta notations for lists, records, and tuples mirror the syntactic conventions defined in the Wasm spec.

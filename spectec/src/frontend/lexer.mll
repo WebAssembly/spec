@@ -207,6 +207,7 @@ and token = parse
   | "!%" { NOTHING }
   | "#" { FUSE }
   | "##" { FUSEFUSE }
+  | "%latex" { LATEX }
 
   | "`" { TICK }
 
@@ -227,7 +228,6 @@ and token = parse
   | "if" { IF }
   | "otherwise" { OTHERWISE }
   | "hint(" { HINT_LPAREN }
-  | "latex" { LATEX }
 
   | "eps" { EPS }
   | "true" { BOOLLIT true }
