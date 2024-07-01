@@ -51,7 +51,7 @@ def $min(nat : nat, nat : nat) : nat
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:33.1-33.21
+;; 0-aux.watsup:33.1-33.56
 def $sum(nat*) : nat
   ;; 0-aux.watsup:34.1-34.18
   def $sum([]) = 0

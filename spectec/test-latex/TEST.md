@@ -1299,8 +1299,8 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathrm{sum}}(\epsilon) &=& 0 \\
-{\mathrm{sum}}(n~{{n'}^\ast}) &=& n + {\mathrm{sum}}({{n'}^\ast}) \\
+{\Sigma\,}{\epsilon} &=& 0 \\
+{\Sigma\,}{n~{{n'}^\ast}} &=& n + {\Sigma\,}{{{n'}^\ast}} \\
 \end{array}
 $$
 
@@ -9619,7 +9619,7 @@ $$
 & {\mathtt{module}} &::=& {\mathtt{magic}}~~{\mathtt{version}} \\ &&& {{\mathtt{customsec}}^\ast}~~{{\mathit{type}}^\ast}{:}{\mathtt{typesec}} \\ &&& {{\mathtt{customsec}}^\ast}~~{{\mathit{import}}^\ast}{:}{\mathtt{importsec}} \\ &&& {{\mathtt{customsec}}^\ast}~~{{\mathit{typeidx}}^{n}}{:}{\mathtt{funcsec}} \\ &&& {{\mathtt{customsec}}^\ast}~~{{\mathit{table}}^\ast}{:}{\mathtt{tablesec}} \\ &&& {{\mathtt{customsec}}^\ast}~~{{\mathit{mem}}^\ast}{:}{\mathtt{memsec}} \\ &&& {{\mathtt{customsec}}^\ast}~~{{\mathit{global}}^\ast}{:}{\mathtt{globalsec}} \\ &&& {{\mathtt{customsec}}^\ast}~~{{\mathit{export}}^\ast}{:}{\mathtt{exportsec}} \\ &&& {{\mathtt{customsec}}^\ast}~~{{\mathit{start}}^\ast}{:}{\mathtt{startsec}} \\ &&& {{\mathtt{customsec}}^\ast}~~{{\mathit{elem}}^\ast}{:}{\mathtt{elemsec}} \\ &&& {{\mathtt{customsec}}^\ast}~~{{m'}^\ast}{:}{\mathtt{datacntsec}} \\ &&& {{\mathtt{customsec}}^\ast}~~{({{\mathit{local}}^\ast}, {\mathit{expr}})^{n}}{:}{\mathtt{codesec}} \\ &&& {{\mathtt{customsec}}^\ast}~~{{\mathit{data}}^{m}}{:}{\mathtt{datasec}} \\ &&& {{\mathtt{customsec}}^\ast} &\quad\Rightarrow&\quad \\
   &&& \multicolumn{3}{@{}l@{}}{\qquad \mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^{n}}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^{m}}~{{\mathit{start}}^\ast}~{{\mathit{export}}^\ast} } \\
   &&&&& \multicolumn{2}{l@{}}{\quad \mbox{if}~{{m'}^\ast} \neq \epsilon \lor {\mathrm{dataidx}}({{\mathit{func}}^{n}}) = \epsilon} \\
-  &&&&& \multicolumn{2}{l@{}}{\quad {\land}~m = {\mathrm{sum}}({{m'}^\ast})} \\
+  &&&&& \multicolumn{2}{l@{}}{\quad {\land}~m = {\Sigma\,}{{{m'}^\ast}}} \\
   &&&&& \multicolumn{2}{l@{}}{\quad {\land}~({\mathit{func}} = \mathsf{func}~{\mathit{typeidx}}~{{\mathit{local}}^\ast}~{\mathit{expr}})^{n}} \\
 \end{array}
 $$
