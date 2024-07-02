@@ -202,6 +202,7 @@ let run_command command =
     | e ->
       print_endline ("- Test failed at " ^ string_of_region command.at ^
         " (" ^ Printexc.to_string e ^ ")");
+      Printexc.print_backtrace stdout;
       fail
   in
   result, Sys.time () -. start_time

@@ -464,6 +464,9 @@ and valid_expmix env mixop e (mixop', t) at =
   valid_exp env e t
 
 and valid_tup_exp env s es ets =
+  Debug.(log_in "il.valid_tup_exp"
+    (fun _ -> fmt "(%s) : (%s)[%s]" (list il_exp es) (list il_typ (List.map snd ets)) (il_subst s))
+  );
   match es, ets with
   | e1::es', (e2, t)::ets' ->
     valid_exp env e1 (Subst.subst_typ s t);

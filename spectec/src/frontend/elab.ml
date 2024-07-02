@@ -118,9 +118,9 @@ let new_env () =
   }
 
 let local_env env =
-  {env with gvars = env.gvars; vars = env.vars; typs = env.typs}
+  {env with gvars = env.gvars; vars = env.vars; typs = env.typs; defs = env.defs}
 let promote_env env' env =
-  env.gvars <- env'.gvars; env.vars <- env'.vars; env.typs <- env'.typs
+  env.gvars <- env'.gvars; env.vars <- env'.vars; env.typs <- env'.typs; env.defs <- env'.defs
 
 let bound env' id = Map.mem id.it env'
 
@@ -134,13 +134,13 @@ let find space env' id =
 let bind space env' id t =
   if id.it = "_" then
     env'
-  else if Map.mem id.it env' then
+  else if bound env' id then
     error_id (spaceid space id) ("duplicate declaration for " ^ space)
   else
     Map.add id.it (id.at, t) env'
 
 let rebind _space env' id t =
-  assert (Map.mem id.it env');
+  assert (bound env' id);
   Map.add id.it (id.at, t) env'
 
 let find_field fs atom at t =
@@ -688,7 +688,7 @@ and elab_typfield env tid at ((atom, (t, prems), hints) as tf) : Il.typfield =
   let es' = List.map (Dim.annot_exp dims') (List.map2 (elab_exp env') es ts) in
   let prems' = List.map (Dim.annot_prem dims')
     (concat_map_filter_nl_list (elab_prem env') prems) in
-  let det = Free.(union (free_list det_exp es) (det_prems prems)) in
+  let det = Free.(diff (union (free_list det_exp es) (det_prems prems)) (bound_env env)) in
   let free = Free.(diff (free_typfield tf) (union det (bound_env env))) in
   if free <> Free.empty then
     error at ("type case contains indeterminate variable(s) `" ^
@@ -712,7 +712,7 @@ and elab_typcase env tid at ((_atom, (t, prems), hints) as tc) : Il.typcase =
   let es' = List.map (Dim.annot_exp dims') (List.map2 (elab_exp env') es ts) in
   let prems' = List.map (Dim.annot_prem dims')
     (concat_map_filter_nl_list (elab_prem env') prems) in
-  let det = Free.(union (free_list det_exp es) (det_prems prems)) in
+  let det = Free.(diff (union (free_list det_exp es) (det_prems prems)) (bound_env env)) in
   let free = Free.(diff (free_typcase tc) (union det (bound_env env))) in
   if free <> Free.empty then
     error at ("type case contains indeterminate variable(s) `" ^
@@ -736,7 +736,7 @@ and elab_typcon env tid at (((t, prems), hints) as tc) : Il.typcase =
   let es' = List.map (Dim.annot_exp dims') (List.map2 (elab_exp env') es ts) in
   let prems' = List.map (Dim.annot_prem dims')
     (concat_map_filter_nl_list (elab_prem env') prems) in
-  let det = Free.(union (free_list det_exp es) (det_prems prems)) in
+  let det = Free.(diff (union (free_list det_exp es) (det_prems prems)) (bound_env env)) in
   let free = Free.(diff (free_typcon tc) (union det (bound_env env))) in
   if free <> Free.empty then
     error at ("type constraint contains indeterminate variable(s) `" ^
@@ -1021,7 +1021,7 @@ and elab_exp' env e t : Il.exp' =
   match e.it with
   | VarE (id, []) when id.it = "_" ->
     Il.VarE id
-  | VarE (id, []) when not (Map.mem id.it env.vars) ->
+  | VarE (id, []) when not (bound env.vars id) ->
     if bound env.gvars (strip_var_suffix id) then
       (* Variable type must be consistent with possible type hint. *)
       let t' = find "" env.gvars (strip_var_suffix id) in
@@ -1907,6 +1907,13 @@ let elab_hintdef _env hd : Il.def list =
 
 
 let infer_binds env env' dims dims' d : Il.bind list =
+  Debug.(log_in_at "el.infer_binds" d.at
+    (fun _ ->
+      Map.fold (fun id _ ids ->
+        if Map.mem id env.vars then ids else id::ids
+      ) env'.vars [] |> List.rev |> String.concat " "
+    )
+  );
   let det = Free.det_def d in
   let free = Free.(diff (free_def d) (union det (bound_env env))) in
   if free <> Free.empty then

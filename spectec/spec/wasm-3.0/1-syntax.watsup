@@ -364,10 +364,11 @@ syntax relop_(Inn) =
 syntax relop_(Fnn) =
   | EQ | NE | LT | GT | LE | GE
 
-syntax cvtop_(numtype_1, numtype_2) =
+syntax cvtop_(numtype_1, numtype_2) hint(show cvtop_((%,%)))
+syntax cvtop_(nt_1, nt_2) =
   | CONVERT
-  | CONVERT_SAT  -- if numtype_1 = Inn /\ numtype_2 = Fnn
-  | REINTERPRET  -- if $size(numtype_1) =/= $size(numtype_2)
+  | CONVERT_SAT  -- if nt_1 = Inn /\ nt_2 = Fnn
+  | REINTERPRET  -- if $size(nt_1) = $size(nt_2)
 
 
 ;; Vector operators
@@ -427,34 +428,24 @@ syntax vcvtop_(Fnn_1 X M_1, Fnn_2 X M_2) =
   | DEMOTE    -- if $sizenn1(Fnn_1) > $sizenn2(Fnn_2)
   | PROMOTE   -- if $sizenn1(Fnn_1) < $sizenn2(Fnn_2)
 
-syntax half hint(desc "lane part") = LOW | HIGH
+syntax half_(shape_1, shape_2) hint(show half_((%,%)))
+syntax half_(Jnn_1 X M_1, Jnn_2 X M_2) = LOW | HIGH  -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn1(Jnn_2)
+syntax half_(Lnn_1 X M_1, Fnn_2 X M_2) = LOW         -- if $(2 * $lsizenn1(Lnn_1)) = $sizenn1(Fnn_2) = `64
 
-syntax half_(shape_1, shape_2) = half
-  -- if $lanetype(shape_1) = imm_1 /\ $lanetype(shape_2) = imm_2
-     \/ $lanetype(shape_2) = F64 /\ $lsize($lanetype(shape_1)) = `32
-     ;; TODO(1, rossberg): only allow LOW in latter case
-syntax zero_(shape_1, shape_2) = ZERO
-  -- if $lanetype(shape_1) = F64 /\ $lsize($lanetype(shape_2)) = `32
-
-(;
-syntax half_(shape_1, shape_2)
-syntax half_(Jnn_1 X M_1, Jnn_2 X M_2) = half
-syntax half_(Lnn_1 X M_1, Fnn_2 X M_2) = LOW  -- if $(2 * $lsize(Lnn_1)) = $size(Fnn_2) = `64
-
-syntax zero_(shape_1, shape_2)
-syntax zero_(Fnn_1 X M_1, Lnn_2 X M_2) = ZERO -- if $(2 * $lsize(Lnn_2)) = $size(Fnn_1) = `64
-;)
+syntax zero_(shape_1, shape_2) hint(show zero_((%,%)))
+syntax zero_(Fnn_1 X M_1, Lnn_2 X M_2) = ZERO -- if $(2 * $lsizenn2(Lnn_2)) = $sizenn1(Fnn_1) = `64
 
 syntax vshiftop_(ishape) hint(macro "%" "V%")
 syntax vshiftop_(Jnn X M) = SHL | SHR sx hint(show SHR#_#%)
 
-syntax vextunop_(ishape) hint(macro "%" "V%")
-syntax vextunop_(Jnn X M) =
-  | EXTADD_PAIRWISE  -- if `16 <= $lsizenn(Jnn) <= `32
-syntax vextbinop_(ishape) hint(macro "%" "V%")
-syntax vextbinop_(Jnn X M) =
-  | EXTMUL half      hint(show EXTMUL#_#%)
-  | DOT              -- if $lsizenn(Jnn) = `32
+syntax vextunop_(ishape_1, ishape_2) hint(show vextunop_((%,%))) hint(macro "%" "V%")
+syntax vextunop_(Jnn_1 X M_1, Jnn_2 X M_2) =
+  | EXTADD_PAIRWISE  -- if 16 <= $(2 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2) <= `32
+
+syntax vextbinop_(ishape_1, ishape_2) hint(show vextbinop_((%,%))) hint(macro "%" "V%")
+syntax vextbinop_(Jnn_1 X M_1, Jnn_2 X M_2) =
+  | EXTMUL half_(Jnn_1 X M_1, Jnn_2 X M_2) hint(show EXTMUL#_#%) -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2) >= `16
+  | DOT                                                          -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2) = `32
 
 
 ;; Memory operators
@@ -545,10 +536,10 @@ syntax instr/vec hint(desc "vector instruction") = ...
   | VSHUFFLE ishape laneidx*            hint(show ##%.SHUFFLE %) hint(macro "VSHUFFLE")
     -- if ishape = I8 X `16 /\ |laneidx*| = `16
     ;; TODO(3, rossberg): enable ^16 in type
-  | VEXTUNOP ishape_1 ishape_2 vextunop_(ishape_1) sx
+  | VEXTUNOP ishape_1 ishape_2 vextunop_(ishape_2, ishape_1) sx
     hint(show ##%1.##%3#_# ##%2#_#%4)
     -- if $($lsize($lanetype(ishape_1)) = 2*$lsize($lanetype(ishape_2)))
-  | VEXTBINOP ishape_1 ishape_2 vextbinop_(ishape_1) sx
+  | VEXTBINOP ishape_1 ishape_2 vextbinop_(ishape_2, ishape_1) sx
     hint(show ##%1.##%3#_# ##%2#_#%4)
     -- if $($lsize($lanetype(ishape_1)) = 2*$lsize($lanetype(ishape_2)))
     ;; TODO(1, rossberg): /\ (vextbinop =/= DOT \/ sx = S)
@@ -559,7 +550,7 @@ syntax instr/vec hint(desc "vector instruction") = ...
     hint(show ##%1.%3#_# ##%2#_#%4)        ;; TODO(2, rossberg): this is wrong when half is absent
     hint(show ##%1.%3#_#%5#_# ##%2#_#%4)   ;; TODO(2, rossberg): this is wrong when half is present
     -- if $lanetype(shape_1) =/= $lanetype(shape_2)
-    ;; TODO(1, rossberg): constrain sx? or move it into vcvtop
+    -- if sx? =/= eps <=> $lanetype(shape_1) = Jnn_1 /\ $lanetype(shape_2) = Jnn_2 /\ $lsizenn1(Jnn_1) > $lsizenn2(Jnn_2)
   | VSPLAT shape                        hint(show ##%.SPLAT) hint(macro "VSPLAT")
   | VEXTRACT_LANE shape sx? laneidx     hint(show ##%.EXTRACT_LANE %) hint(show ##%.EXTRACT_LANE#_#% %) hint(macro "VEXTRACT_LANE")
     -- if $lanetype(shape) = numtype <=> sx? = eps
