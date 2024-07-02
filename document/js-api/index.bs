@@ -590,15 +590,15 @@ Note: The use of this synchronous API is discouraged, as some implementations so
 
 <pre class="idl">
 dictionary MemoryDescriptor {
-  required [EnforceRange] unsigned long initial;
-  [EnforceRange] unsigned long maximum;
+  required [EnforceRange] unsigned long long initial;
+  [EnforceRange] unsigned long long maximum;
   IndexType index;
 };
 
 [LegacyNamespace=WebAssembly, Exposed=*]
 interface Memory {
   constructor(MemoryDescriptor descriptor);
-  unsigned long grow([EnforceRange] unsigned long delta);
+  unsigned long grow([EnforceRange] unsigned long long delta);
   ArrayBuffer toFixedLengthBuffer();
   ArrayBuffer toResizableBuffer();
   readonly attribute ArrayBuffer buffer;
@@ -781,17 +781,17 @@ enum TableKind {
 
 dictionary TableDescriptor {
   required TableKind element;
-  required [EnforceRange] unsigned long initial;
-  [EnforceRange] unsigned long maximum;
+  required [EnforceRange] unsigned long long initial;
+  [EnforceRange] unsigned long long maximum;
   IndexType index;
 };
 
 [LegacyNamespace=WebAssembly, Exposed=*]
 interface Table {
   constructor(TableDescriptor descriptor, optional any value);
-  unsigned long grow([EnforceRange] unsigned long delta, optional any value);
-  any get([EnforceRange] unsigned long index);
-  undefined set([EnforceRange] unsigned long index, optional any value);
+  unsigned long long grow([EnforceRange] unsigned long long delta, optional any value);
+  any get([EnforceRange] unsigned long long index);
+  undefined set([EnforceRange] unsigned long long index, optional any value);
   readonly attribute unsigned long length;
 };
 </pre>
