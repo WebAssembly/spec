@@ -6,7 +6,7 @@
   <meta content="ED" name="w3c-status">
   <meta content="Bikeshed version a1dabb26c, updated Mon Jun 17 15:00:44 2024 -0700" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-2/" rel="canonical">
-  <meta content="2e6b1288ce080fe10292bdf9a20cbcc976033319" name="revision">
+  <meta content="d73ac324e6ace2a190bf9a1af4ebd1638dd26d48" name="revision">
   <meta content="dark light" name="color-scheme">
 <style>
 emu-const {
@@ -721,7 +721,7 @@ var[data-var-color="6"] { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBC
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-06-26">26 June 2024</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-07-02">2 July 2024</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -2262,7 +2262,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
       <p>Otherwise,</p>
       <ol>
        <li data-md>
-        <p>Let <var>method</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑥">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-getmethod" id="ref-for-sec-getmethod">GetMethod</a>(<var>ret</var>, <code class="idl"><a data-link-type="idl" href="https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-well-known-symbols" id="ref-for-sec-well-known-symbols">@@iterator</a></code>).</p>
+        <p>Let <var>method</var> be <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑥">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-getmethod" id="ref-for-sec-getmethod">GetMethod</a>(<var>ret</var>, <code class="idl"><a data-link-type="idl">@@iterator</a></code>).</p>
        <li data-md>
         <p>If <var>method</var> is undefined, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-throw" id="ref-for-dfn-throw①">throw</a> a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑨">TypeError</a></code>.</p>
        <li data-md>
@@ -2797,7 +2797,6 @@ In practice, an implementation may run out of resources for valid modules below 
     <ul>
      <li><span class="dfn-paneled" id="cd4b1dc4">!</span>
      <li><span class="dfn-paneled" id="ebb4ace3">?</span>
-     <li><span class="dfn-paneled" id="dab38636">@@iterator</span>
      <li><span class="dfn-paneled" id="f17862f0">ArrayBuffer</span>
      <li><span class="dfn-paneled" id="81131be0">Call</span>
      <li><span class="dfn-paneled" id="4c6c6f05">CreateArrayFromList</span>
@@ -3476,7 +3475,6 @@ let dfnPanelData = {
 "d7a47d32": {"dfnID":"d7a47d32","dfnText":"DetachArrayBuffer","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-detacharraybuffer"},{"id":"ref-for-sec-detacharraybuffer\u2460"},{"id":"ref-for-sec-detacharraybuffer\u2461"}],"title":"4.3. Memories"}],"url":"https://tc39.es/ecma262/multipage/structured-data.html#sec-detacharraybuffer"},
 "d7af7adc": {"dfnID":"d7af7adc","dfnText":"incumbent settings object","external":true,"refSections":[{"refs":[{"id":"ref-for-incumbent-settings-object"}],"title":"4.6. Exported Functions"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#incumbent-settings-object"},
 "d83ccb33": {"dfnID":"d83ccb33","dfnText":"GetIteratorFromMethod","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-getiteratorfrommethod"}],"title":"4.6. Exported Functions"}],"url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-getiteratorfrommethod"},
-"dab38636": {"dfnID":"dab38636","dfnText":"@@iterator","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-well-known-symbols"}],"title":"4.6. Exported Functions"}],"url":"https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-well-known-symbols"},
 "dacde8b5": {"dfnID":"dacde8b5","dfnText":"a new promise","external":true,"refSections":[{"refs":[{"id":"ref-for-a-new-promise"},{"id":"ref-for-a-new-promise\u2460"},{"id":"ref-for-a-new-promise\u2461"}],"title":"4. The WebAssembly Namespace"}],"url":"https://webidl.spec.whatwg.org/#a-new-promise"},
 "dc07163b": {"dfnID":"dc07163b","dfnText":"IsCallable","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-iscallable"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-sec-iscallable\u2460"},{"id":"ref-for-sec-iscallable\u2461"}],"title":"4.6. Exported Functions"}],"url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-iscallable"},
 "dc5b915f": {"dfnID":"dc5b915f","dfnText":"table address","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-tableaddr"}],"title":"3.2. WebAssembly JS Object Caches"},{"refs":[{"id":"ref-for-syntax-tableaddr\u2460"},{"id":"ref-for-syntax-tableaddr\u2461"},{"id":"ref-for-syntax-tableaddr\u2462"}],"title":"4.4. Tables"}],"url":"https://webassembly.github.io/spec/core/exec/runtime.html#syntax-tableaddr"},
@@ -4136,7 +4134,6 @@ let refsData = {
 "https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tonumber": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"ToNumber","type":"abstract-op","url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tonumber"},
 "https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tostring": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"ToString","type":"abstract-op","url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tostring"},
 "https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-data-blocks": {"export":true,"for_":["ECMAScript"],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"data block","type":"dfn","url":"https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-data-blocks"},
-"https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-well-known-symbols": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"@@iterator","type":"const","url":"https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-well-known-symbols"},
 "https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#agent": {"export":true,"for_":["ECMAScript"],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"agent","type":"dfn","url":"https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#agent"},
 "https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#sec-agent-clusters": {"export":true,"for_":["ECMAScript"],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"agent cluster","type":"dfn","url":"https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#sec-agent-clusters"},
 "https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent": {"export":true,"for_":["ECMAScript"],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"surrounding agent","type":"dfn","url":"https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent"},
