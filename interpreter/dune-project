@@ -1,18 +1,15 @@
 (lang dune 2.9)
 
 (name wasm)
+(license Apache-2.0)
+(source (github WebAssembly/spec))
+
+(authors "Andreas Rossberg <rossberg@mpi-sws.org")
+(maintainers "Andreas Rossberg <rossberg@mpi-sws.org")
 
 (generate_opam_files true)
 (using menhir 2.1)
 (implicit_transitive_deps false)
-
-(license Apache-2.0)
-
-(source
-  (github WebAssembly/spec))
-
-(authors "Andreas Rossberg <rossberg@mpi-sws.org")
-(maintainers "Andreas Rossberg <rossberg@mpi-sws.org")
 
 (package
   (name wasm)
@@ -20,4 +17,6 @@
   (tags (wasm webassembly spec interpreter))
   (depends
     (ocaml (>= 4.12))
-    (menhir (>= 20220210))))
+    (menhir (>= 20220210))
+  )
+)

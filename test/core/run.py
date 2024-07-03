@@ -23,6 +23,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--wasm", metavar="<wasm-command>", default=os.path.join(interpDir, "wasm"))
 parser.add_argument("--js", metavar="<js-command>")
 parser.add_argument("--generate-js-only", action='store_true')
+parser.add_argument("--failfast", action='store_true')
 parser.add_argument("--out", metavar="<out-dir>", default=outputDir)
 parser.add_argument("--opts", metavar="<options>", default=opts)
 parser.add_argument("file", nargs='*')
@@ -122,4 +123,4 @@ if __name__ == "__main__":
   for fileName in inputFiles:
     testName = 'test ' + os.path.basename(fileName)
     setattr(RunTests, testName, lambda self, file=fileName: self._runTestFile(file))
-  unittest.main()
+  unittest.main(failfast=arguments.failfast)

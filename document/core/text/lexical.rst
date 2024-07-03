@@ -71,8 +71,9 @@ Any token that does not fall into any of the other categories is considered *res
 
 .. index:: ! white space, character, ASCII
    single: text format; white space
-.. _text-format:
 .. _text-space:
+.. _text-format:
+.. _text-newline:
 
 White Space
 ~~~~~~~~~~~

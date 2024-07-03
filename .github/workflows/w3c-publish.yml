@@ -10,6 +10,7 @@ on:
 
 jobs:
   publish-to-w3c-TR:
+    if: github.repository == 'WebAssembly/spec'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo

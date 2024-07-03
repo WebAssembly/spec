@@ -220,7 +220,7 @@ let zero s = expect 0x00 s "zero byte expected"
 
 let memop s =
   let align = u32 s in
-  require (I32.le_u align 32l) s (pos s - 1) "malformed memop flags";
+  require (I32.lt_u align 32l) s (pos s - 1) "malformed memop flags";
   let offset = u32 s in
   Int32.to_int align, offset
 
