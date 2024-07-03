@@ -3833,7 +3833,7 @@ Memory Instructions
 
 20. Push the value :math:`\I32.\CONST~b` to the stack.
 
-21. Execute the instruction :math:`\I32\K{.}\STORE\K{8}~\{ \OFFSET~0, \ALIGN~0 \}`.
+21. Execute the instruction :math:`\I32\K{.}\STORE\K{8}~x~\{ \OFFSET~0, \ALIGN~0 \}`.
 
 22. Assert: due to the earlier check against the memory size, :math:`d+1 < 2^{32}`.
 
