@@ -973,19 +973,19 @@ let id s =
   let bo = peek s in
   Lib.Option.map
     (function
-    | 0 -> `CustomSection
-    | 1 -> `TypeSection
-    | 2 -> `ImportSection
-    | 3 -> `FuncSection
-    | 4 -> `TableSection
-    | 5 -> `MemorySection
-    | 6 -> `GlobalSection
-    | 7 -> `ExportSection
-    | 8 -> `StartSection
-    | 9 -> `ElemSection
-    | 10 -> `CodeSection
-    | 11 -> `DataSection
-    | 12 -> `DataCountSection
+    | 0 -> Custom.Custom
+    | 1 -> Custom.Type
+    | 2 -> Custom.Import
+    | 3 -> Custom.Func
+    | 4 -> Custom.Table
+    | 5 -> Custom.Memory
+    | 6 -> Custom.Global
+    | 7 -> Custom.Export
+    | 8 -> Custom.Start
+    | 9 -> Custom.Elem
+    | 10 -> Custom.Code
+    | 11 -> Custom.Data
+    | 12 -> Custom.DataCount
     | _ -> error s (pos s) "malformed section id"
     ) bo
 
@@ -1003,7 +1003,7 @@ let section tag f default s =
 let type_ s = at rec_type s
 
 let type_section s =
-  section `TypeSection (vec type_) [] s
+  section Custom.Type (vec type_) [] s
 
 
 (* Import section *)
@@ -1023,13 +1023,13 @@ let import s =
   {module_name; item_name; idesc}
 
 let import_section s =
-  section `ImportSection (vec (at import)) [] s
+  section Custom.Import (vec (at import)) [] s
 
 
 (* Function section *)
 
 let func_section s =
-  section `FuncSection (vec (at var)) [] s
+  section Custom.Func (vec (at var)) [] s
 
 
 (* Table section *)
@@ -1051,7 +1051,7 @@ let table s =
   ] s
 
 let table_section s =
-  section `TableSection (vec (at table)) [] s
+  section Custom.Table (vec (at table)) [] s
 
 
 (* Memory section *)
@@ -1061,7 +1061,7 @@ let memory s =
   {mtype}
 
 let memory_section s =
-  section `MemorySection (vec (at memory)) [] s
+  section Custom.Memory (vec (at memory)) [] s
 
 
 (* Global section *)
@@ -1072,7 +1072,7 @@ let global s =
   {gtype; ginit}
 
 let global_section s =
-  section `GlobalSection (vec (at global)) [] s
+  section Custom.Global (vec (at global)) [] s
 
 
 (* Export section *)
@@ -1091,7 +1091,7 @@ let export s =
   {name; edesc}
 
 let export_section s =
-  section `ExportSection (vec (at export)) [] s
+  section Custom.Export (vec (at export)) [] s
 
 
 (* Start section *)
@@ -1101,7 +1101,7 @@ let start s =
   {sfunc}
 
 let start_section s =
-  section `StartSection (opt (at start) true) None s
+  section Custom.Start (opt (at start) true) None s
 
 
 (* Code section *)
@@ -1113,7 +1113,7 @@ let code _ s =
   {locals; body; ftype = -1l @@ no_region}
 
 let code_section s =
-  section `CodeSection (vec (at (sized code))) [] s
+  section Custom.Code (vec (at (sized code))) [] s
 
 
 (* Element section *)
@@ -1186,7 +1186,7 @@ let elem s =
   | _ -> error s (pos s - 1) "malformed elements segment kind"
 
 let elem_section s =
-  section `ElemSection (vec (at elem)) [] s
+  section Custom.Elem (vec (at elem)) [] s
 
 
 (* Data section *)
@@ -1208,7 +1208,7 @@ let data s =
   | _ -> error s (pos s - 1) "malformed data segment kind"
 
 let data_section s =
-  section `DataSection (vec (at data)) [] s
+  section Custom.Data (vec (at data)) [] s
 
 
 (* DataCount section *)
@@ -1217,62 +1217,64 @@ let data_count s =
   Some (u32 s)
 
 let data_count_section s =
-  section `DataCountSection data_count None s
+  section Custom.DataCount data_count None s
 
 
 (* Custom section *)
 
-let custom size s =
+let custom place size s =
   let start = pos s in
-  let id = name s in
-  let bs = get_string (size - (pos s - start)) s in
-  Some (id, bs)
+  let name = name s in
+  let content = get_string (size - (pos s - start)) s in
+  Custom.{name; content; place}
 
-let custom_section s =
-  section_with_size `CustomSection custom None s
+let some_custom place size s =
+  Some (at (custom place size) s)
 
-let non_custom_section s =
-  match id s with
-  | None | Some `CustomSection -> None
-  | _ -> skip 1 s; sized skip s; Some ()
+let custom_section place s =
+  section_with_size Custom.Custom (some_custom place) None s
 
 
 (* Modules *)
 
-let rec iterate f s = if f s <> None then iterate f s
+let rec iterate f s =
+  match f s with
+  | None -> []
+  | Some x -> x :: iterate f s
 
 let magic = 0x6d736100l
 
 let module_ s =
+  let open Custom in
   let header = word32 s in
   require (header = magic) s 0 "magic header not detected";
   let version = word32 s in
   require (version = Encode.version) s 4 "unknown binary version";
-  iterate custom_section s;
+  let customs = iterate (custom_section (Before Type)) s in
   let types = type_section s in
-  iterate custom_section s;
+  let customs = customs @ iterate (custom_section (After Type)) s in
   let imports = import_section s in
-  iterate custom_section s;
+  let customs = customs @ iterate (custom_section (After Import)) s in
   let func_types = func_section s in
-  iterate custom_section s;
+  let customs = customs @ iterate (custom_section (After Func)) s in
   let tables = table_section s in
-  iterate custom_section s;
+  let customs = customs @ iterate (custom_section (After Table)) s in
   let memories = memory_section s in
-  iterate custom_section s;
+  let customs = customs @ iterate (custom_section (After Memory)) s in
   let globals = global_section s in
-  iterate custom_section s;
+  let customs = customs @ iterate (custom_section (After Global)) s in
   let exports = export_section s in
-  iterate custom_section s;
+  let customs = customs @ iterate (custom_section (After Export)) s in
   let start = start_section s in
-  iterate custom_section s;
+  let customs = customs @ iterate (custom_section (After Start)) s in
   let elems = elem_section s in
-  iterate custom_section s;
+  let customs = customs @ iterate (custom_section (After Elem)) s in
   let data_count = data_count_section s in
-  iterate custom_section s;
+  let customs = customs @ iterate (custom_section (After DataCount)) s in
   let func_bodies = code_section s in
-  iterate custom_section s;
+  let customs = customs @ iterate (custom_section (After Code)) s in
   let datas = data_section s in
-  iterate custom_section s;
+  let customs = customs @ iterate (custom_section (After Data)) s in
   require (pos s = len s) s (len s) "unexpected content after last section";
   require (List.length func_types = List.length func_bodies)
     s (len s) "function and code section have inconsistent lengths";
@@ -1282,23 +1284,37 @@ let module_ s =
     List.for_all Free.(fun f -> (func f).datas = Set.empty) func_bodies)
     s (len s) "data count section required";
   let funcs =
-    List.map2 (fun t f -> {f.it with ftype = t} @@ f.at) func_types func_bodies
-  in {types; tables; memories; globals; funcs; imports; exports; elems; datas; start}
+    List.map2 Source.(fun t f -> {f.it with ftype = t} @@ f.at)
+      func_types func_bodies
+  in
+  {types; tables; memories; globals; funcs; imports; exports; elems; datas; start},
+  customs
 
 
-let decode name bs = at module_ (stream name bs)
+let decode_custom m bs custom =
+  let open Source in
+  let Custom.{name; content; place} = custom.it in
+  match Custom.handler name, Custom.handler (Utf8.decode "custom") with
+  | Some (module Handler), _ ->
+    let fmt = Handler.decode m bs custom in
+    let module S = struct module Handler = Handler let it = fmt end in
+    [(module S : Custom.Section)]
+  | None, Some (module Handler') ->
+    let fmt = Handler'.decode m bs custom in
+    let module S = struct module Handler = Handler' let it = fmt end in
+    [(module S : Custom.Section)]
+  | None, None ->
+    if !Flags.custom_reject then
+      raise (Custom.Code (custom.at,
+        "unknown custom section \"" ^ Utf8.encode name ^ "\""))
+    else
+      []
 
-let all_custom tag s =
-  let header = word32 s in
-  require (header = magic) s 0 "magic header not detected";
-  let version = word32 s in
-  require (version = Encode.version) s 4 "unknown binary version";
-  let rec collect () =
-    iterate non_custom_section s;
-    match custom_section s with
-    | None -> []
-    | Some (n, s) when n = tag -> s :: collect ()
-    | Some _ -> collect ()
-  in collect ()
+let decode_with_custom name bs =
+  let m_cs = at module_ (stream name bs) in
+  let open Source in
+  let m', cs = m_cs.it in
+  let m = m' @@ m_cs.at in
+  m, List.flatten (List.map (decode_custom m bs) cs)
 
-let decode_custom tag name bs = all_custom tag (stream name bs)
+let decode name bs = fst (decode_with_custom name bs)

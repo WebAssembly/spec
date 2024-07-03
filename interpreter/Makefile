@@ -24,7 +24,8 @@ JS =		# set to JS shell command to run JS tests, empty to skip
 .PHONY:		default all ci jslib zip
 
 default:	$(NAME)
-all:		default partest
+all:		default alltest
+alltest:	unittest partest custompartest
 ci:		all jslib zip
 
 jslib:		$(JSLIB)
@@ -59,9 +60,10 @@ unittest: $(UNITTESTS:%=unittest/%)
 unittest/%:
 	dune build $(@F).exe
 	dune exec ./$(@F).exe
+	@echo All unit tests passed.
 
 
-# Test suite
+# Core test suite
 
 TESTDIR =	../test/core
 TESTFILES =	$(shell cd $(TESTDIR) > /dev/null; ls *.wast; ls [a-z]*/*.wast)
@@ -69,7 +71,7 @@ TESTS =		$(TESTFILES:%.wast=%)
 
 .PHONY: test partest quiettest
 
-test: $(NAME) unittest
+test: $(NAME)
 	$(TESTDIR)/run.py --wasm `pwd`/$(NAME) $(if $(JS),--js '$(JS)',)
 
 test/%: $(NAME)
@@ -78,7 +80,7 @@ test/%: $(NAME)
 run/%: $(NAME)
 	./$(NAME) $(TESTDIR)/$*.wast
 
-partest: $(NAME) unittest
+partest: $(NAME)
 	make -j10 quiettest
 
 quiettest: $(TESTS:%=quiettest/%)
@@ -90,6 +92,36 @@ quiettest/%: $(NAME)
 	  rm $(@F).out \
 	) || \
 	(cat $(@F).out && rm $(@F).out && exit 1)
+
+
+# Custom test suite
+
+CUSTOMTESTDIR =	../test/custom
+CUSTOMTESTDIRS =	$(shell cd $(CUSTOMTESTDIR); ls -d [a-z]*)
+CUSTOMTESTFILES =	$(shell cd $(CUSTOMTESTDIR); ls [a-z]*/*.wast)
+CUSTOMTESTS =		$(CUSTOMTESTFILES:%.wast=%)
+CUSTOMOPTS = -c custom $(CUSTOMTESTDIRS:%=-c %)
+
+.PHONY:		customtest custompartest customquiettest
+
+customtest:		$(NAME)
+		$(TESTDIR)/run.py --wasm `pwd`/$(NAME) --opts '$(CUSTOMOPTS)' $(if $(JS),--js '$(JS)',) $(CUSTOMTESTFILES:%=$(CUSTOMTESTDIR)/%)
+
+customtest/%:		$(NAME)
+		$(TESTDIR)/run.py --wasm `pwd`/$(NAME) --opts '$(CUSTOMOPTS) ' $(if $(JS),--js '$(JS)',) $(CUSTOMTESTDIR)/$*.wast
+
+customrun/%:		$(NAME)
+		./$(NAME) $(CUSTOMOPTS) $(CUSTOMTESTDIR)/$*.wast
+
+custompartest: 	$(CUSTOMTESTS:%=customquiettest/%)
+		@echo All custom tests passed.
+
+customquiettest/%:	$(NAME)
+		@ ( \
+		  $(TESTDIR)/run.py 2>$(@F).out --wasm `pwd`/$(NAME) --opts '$(CUSTOMOPTS)' $(if $(JS),--js '$(JS)',) $(CUSTOMTESTDIR)/$*.wast && \
+		  rm $(@F).out \
+		) || \
+		cat $(@F).out || rm $(@F).out || exit 1
 
 
 # Packaging
