@@ -150,7 +150,7 @@ It consists of an :ref:`indirect name map <binary-indirectnamemap>` assigning lo
 .. _binary-typenamesec:
 
 Type Names
-..............
+..........
 
 The *type name subsection* has the id 4.
 It consists of a :ref:`name map <binary-namemap>` assigning type names to :ref:`type indices <syntax-typeidx>`.
@@ -295,7 +295,7 @@ directly after the :math:`\text{type}` keyword, or if present, after the followi
 Field Names
 ...........
 
-A *field name annotation* must be placed on the :ref:`field <text-field>` of a :ref:`structure type <text-structtype>`,
+A *field name annotation* must be placed on the field of a :ref:`structure type <text-structtype>`,
 directly after the :math:`\text{field}` keyword, or if present, after the following field :ref:`identifier <text-id>`.
 It may only be placed on a declaration that declares exactly one field.
 

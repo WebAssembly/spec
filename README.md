@@ -1,16 +1,5 @@
-[![CI for specs](https://github.com/WebAssembly/annotations/actions/workflows/ci-spec.yml/badge.svg)](https://github.com/WebAssembly/annotations/actions/workflows/ci-spec.yml)
-[![CI for interpreter & tests](https://github.com/WebAssembly/annotations/actions/workflows/ci-interpreter.yml/badge.svg)](https://github.com/WebAssembly/annotations/actions/workflows/ci-interpreter.yml)
-
-# Custom Annotations Proposal for WebAssembly
-
-This repository is a clone of [github.com/WebAssembly/spec/](https://github.com/WebAssembly/spec/).
-It is meant for discussion, prototype specification and implementation of a proposal to add support for custom annotations to the WebAssembly text format.
-
-See the [overview](proposals/annotations/Overview.md) for a summary of the proposal.
-
-See draft spec at [webassembly.github.io/annotations](https://webassembly.github.io/annotations/).
-
-Original `README` from upstream repository follows...
+[![CI for specs](https://github.com/WebAssembly/spec/actions/workflows/ci-spec.yml/badge.svg)](https://github.com/WebAssembly/spec/actions/workflows/ci-spec.yml)
+[![CI for interpreter & tests](https://github.com/WebAssembly/spec/actions/workflows/ci-interpreter.yml/badge.svg)](https://github.com/WebAssembly/spec/actions/workflows/ci-interpreter.yml)
 
 # spec
 

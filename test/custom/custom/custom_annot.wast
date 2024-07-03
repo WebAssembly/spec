@@ -43,7 +43,7 @@
 )
 
 
-;; Malformed placement 
+;; Malformed placement
 
 (assert_malformed_custom
   (module quote "(@custom \"bla\" here)")

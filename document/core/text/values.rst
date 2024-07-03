@@ -248,7 +248,7 @@ Symbolic *identifiers* that stand in lieu of indices start with :math:`\text{\$}
    \end{array}
 
 .. note::
-   The value of an identifier character is its the Unicode codepoint denoting it.
+   The value of an identifier character is the Unicode codepoint denoting it.
 
 .. _text-id-fresh:
 
