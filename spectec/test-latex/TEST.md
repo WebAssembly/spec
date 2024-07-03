@@ -6537,7 +6537,7 @@ $$
 \frac{
 C{.}\mathsf{mems}{}[x] = {\mathit{mt}}
  \qquad
-{2^{{\mathit{memarg}}{.}\mathsf{align}}} < N / 8
+{2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq N / 8
  \qquad
 i < 128 / N
 }{

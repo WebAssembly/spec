@@ -1101,7 +1101,7 @@ rule Instr_ok/vstore:
 rule Instr_ok/vstore_lane:
   C |- VSTORE_LANE V128 N x memarg i : I32 V128 -> eps
   -- if C.MEMS[x] = mt
-  -- if $(2^(memarg.ALIGN) < N/8)
+  -- if $(2^(memarg.ALIGN) <= N/8)
   -- if $(i < 128/N)
 
 

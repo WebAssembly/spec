@@ -935,6 +935,10 @@
 .. |Tlinechar| mathdef:: \xref{text/lexical}{text-comment}{\T{linechar}}
 .. |Tblockchar| mathdef:: \xref{text/lexical}{text-comment}{\T{blockchar}}
 
+.. |Tannot| mathdef:: \xref{text/lexical}{text-annot}{\T{annot}}
+.. |Tannotid| mathdef:: \xref{text/lexical}{text-annot}{\T{annotid}}
+.. |Tannottoken| mathdef:: \xref{text/lexical}{text-annot}{\T{annottoken}}
+
 
 .. Values, non-terminals
 
@@ -1720,6 +1724,27 @@
 .. |Blocalnamesubsec| mathdef:: \xref{appendix/custom}{binary-localnamesec}{\B{localnamesubsec}}
 .. |Btypenamesubsec| mathdef:: \xref{appendix/custom}{binary-typenamesec}{\B{typenamesubsec}}
 .. |Bfieldnamesubsec| mathdef:: \xref{appendix/custom}{binary-fieldnamesec}{\B{fieldnamesubsec}}
+
+
+.. Annotations
+.. -----------
+
+.. Custom annotations, non-terminals
+
+.. |Tcustomannot| mathdef:: \xref{appendix/custom}{text-customannot}{\T{customannot}}
+.. |Tcustomplace| mathdef:: \xref{appendix/custom}{text-customannot}{\T{customplace}}
+.. |Tsec| mathdef:: \xref{appendix/custom}{text-customannot}{\T{sec}}
+
+
+.. Name annotations, non-terminals
+
+.. |Tnameannot| mathdef:: \xref{appendix/custom}{text-nameannot}{\T{nameannot}}
+.. |Tmodulenameannot| mathdef:: \xref{appendix/custom}{text-modulenameannot}{\T{modulenameannot}}
+.. |Tfuncnameannot| mathdef:: \xref{appendix/custom}{text-funcnameannot}{\T{funcnameannot}}
+.. |Tparamnameannot| mathdef:: \xref{appendix/custom}{text-paramnameannot}{\T{paramnameannot}}
+.. |Tlocalnameannot| mathdef:: \xref{appendix/custom}{text-localnameannot}{\T{localnameannot}}
+.. |Ttypenameannot| mathdef:: \xref{appendix/custom}{text-typenameannot}{\T{typenameannot}}
+.. |Tfieldnameannot| mathdef:: \xref{appendix/custom}{text-fieldnameannot}{\T{fieldnameannot}}
 
 
 .. Embedding

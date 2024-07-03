@@ -474,12 +474,12 @@ rule Instr_ok/vload-splat:
 rule Instr_ok/vload-zero:
   C |- VLOAD V128 (ZERO n) memarg : I32 -> V128
   -- if C.MEMS[0] = mt
-  -- if $(2^(memarg.ALIGN) < n/8)
+  -- if $(2^(memarg.ALIGN) <= n/8)
 
 rule Instr_ok/vload_lane:
   C |- VLOAD_LANE V128 n memarg laneidx : I32 V128 -> V128
   -- if C.MEMS[0] = mt
-  -- if $(2^(memarg.ALIGN) < n/8)
+  -- if $(2^(memarg.ALIGN) <= n/8)
   -- if $(laneidx < 128 / n)
 
 rule Instr_ok/vstore:
@@ -490,7 +490,7 @@ rule Instr_ok/vstore:
 rule Instr_ok/vstore_lane:
   C |- VSTORE_LANE V128 n memarg laneidx : I32 V128 -> eps
   -- if C.MEMS[0] = mt
-  -- if $(2^(memarg.ALIGN) < n/8)
+  -- if $(2^(memarg.ALIGN) <= n/8)
   -- if $(laneidx < 128 / n)
 
 

@@ -176,6 +176,12 @@ function assert_invalid(bytes) {
 
 const assert_malformed = assert_invalid;
 
+function assert_invalid_custom(bytes) {
+  module(bytes);
+}
+
+const assert_malformed_custom = assert_invalid_custom;
+
 function instance(bytes, imports, valid = true) {
   const test = valid
     ? "Test that WebAssembly instantiation succeeds"
