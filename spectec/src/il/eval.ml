@@ -506,7 +506,7 @@ and match_exp' env s e1 e2 : subst option =
     (fun r -> fmt "%s" (opt il_subst r))
   ) @@ fun _ ->
   assert (Eq.eq_exp e1 (reduce_exp env e1));
-  if Eq.eq_exp e1 e2 then Some Subst.empty else  (* HACK around subtype elim pass introducing calls on LHS's *)
+  if Eq.eq_exp e1 e2 then Some s else  (* HACK around subtype elim pass introducing calls on LHS's *)
   match e1.it, (reduce_exp env (Subst.subst_exp s e2)).it with
   | _, VarE id when Subst.mem_varid s id ->
     (* A pattern variable already in the substitution is non-linear *)

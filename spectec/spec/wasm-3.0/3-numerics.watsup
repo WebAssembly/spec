@@ -209,9 +209,11 @@ def $invlanes_(shape, lane_($lanetype(shape))*) : vec_(V128)
     hint(show $lanes_(%)^(-1)#((%)))
 def $invlanes_(sh, c*) = vc  -- if c* = $lanes_(sh, vc)
 
-def $half(half, nat, nat) : nat
-def $half(LOW, i, j) = i
-def $half(HIGH, i, j) = j
+;; TODO(3, rossberg): somehow enable merging cases
+def $half(shape_1, shape_2, half_(shape_1, shape_2), nat, nat) : nat hint(show $half(%3,%4,%5))
+def $half(Jnn_1 X M_1, Jnn_2 X M_2, LOW, i, j) = i
+def $half(Jnn_1 X M_1, Jnn_2 X M_2, HIGH, i, j) = j
+def $half(Lnn_1 X M_1, Fnn_2 X M_2, LOW, i, j) = i
 
 ;; TODO(1, rossberg): return lists for nondeterminism
 def $vvunop(vectype, vvunop, vec_(vectype)) : vec_(vectype)
@@ -427,30 +429,30 @@ def $vcvtop(F64 X N_1, F32 X N_2, DEMOTE, sx?, f64) = f32
 def $vcvtop(F32 X N_1, F64 X N_2, PROMOTE, sx?, f32) = f64
     -- if f64 = $promote(32, 64, f32)
 
-def $vextunop(ishape_1, ishape_2, vextunop_(ishape_1), sx, vec_(V128)) : vec_(V128)
+def $vextunop(ishape_1, ishape_2, vextunop_(ishape_1, ishape_2), sx, vec_(V128)) : vec_(V128)
     hint(show %3#$_((%1,%2))^(%5)#((%6)))
-def $vextbinop(ishape_1, ishape_2, vextbinop_(ishape_1), sx, vec_(V128), vec_(V128)) : vec_(V128)
+def $vextbinop(ishape_1, ishape_2, vextbinop_(ishape_1, ishape_2), sx, vec_(V128), vec_(V128)) : vec_(V128)
     hint(show %3#$_((%1,%2))^(%5)#((%6,%7)))
 
-def $vextunop(Inn_1 X N_1, Inn_2 X N_2, EXTADD_PAIRWISE, sx, c_1) = c
-  -- var cj_1 : iN($lsize(Inn_1))
-  -- var cj_2 : iN($lsize(Inn_1))
-  -- if ci* = $lanes_(Inn_2 X N_2, c_1)
-  -- if $concat_(iN($lsize(Inn_1)), (cj_1 cj_2)*) = $ext($lsize(Inn_2), $lsize(Inn_1), sx, ci)*
-  -- if c = $invlanes_(Inn_1 X N_1, $iadd($lsize(Inn_1), cj_1, cj_2)*)
+def $vextunop(Jnn_1 X N_1, Jnn_2 X N_2, EXTADD_PAIRWISE, sx, c_1) = c
+  -- var cj_1 : iN($lsize(Jnn_2))
+  -- var cj_2 : iN($lsize(Jnn_2))
+  -- if ci* = $lanes_(Jnn_1 X N_1, c_1)
+  -- if $concat_(iN($lsize(Jnn_2)), (cj_1 cj_2)*) = $ext($lsize(Jnn_1), $lsize(Jnn_2), sx, ci)*
+  -- if c = $invlanes_(Jnn_2 X N_2, $iadd($lsize(Jnn_2), cj_1, cj_2)*)
 
-def $vextbinop(Inn_1 X N_1, Inn_2 X N_2, EXTMUL hf, sx, c_1, c_2) = c
-  -- if ci_1* = $lanes_(Inn_2 X N_2, c_1)[$half(hf, 0, N_1) : N_1]
-  -- if ci_2* = $lanes_(Inn_2 X N_2, c_2)[$half(hf, 0, N_1) : N_1]
-  -- if c = $invlanes_(Inn_1 X N_1, $imul($lsize(Inn_1), $ext($lsize(Inn_2), $lsize(Inn_1), sx, ci_1), $ext($lsize(Inn_2), $lsize(Inn_1), sx, ci_2))*)
+def $vextbinop(Jnn_1 X N_1, Jnn_2 X N_2, EXTMUL half, sx, c_1, c_2) = c
+  -- if ci_1* = $lanes_(Jnn_1 X N_1, c_1)[$half(Jnn_1 X N_1, Jnn_2 X N_2, half, 0, N_2) : N_2]
+  -- if ci_2* = $lanes_(Jnn_1 X N_1, c_2)[$half(Jnn_1 X N_1, Jnn_2 X N_2, half, 0, N_2) : N_2]
+  -- if c = $invlanes_(Jnn_2 X N_2, $imul($lsize(Jnn_2), $ext($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1), $ext($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2))*)
 
-def $vextbinop(Inn_1 X N_1, Inn_2 X N_2, DOT, sx, c_1, c_2) = c
-  -- var cj_1 : iN($lsize(Inn_1))
-  -- var cj_2 : iN($lsize(Inn_1))
-  -- if ci_1* = $lanes_(Inn_2 X N_2, c_1)
-  -- if ci_2* = $lanes_(Inn_2 X N_2, c_2)
-  -- if $concat_(iN($lsize(Inn_1)), (cj_1 cj_2)*) = $imul($lsize(Inn_1), $ext($lsize(Inn_2), $lsize(Inn_1), S, ci_1), $ext($lsize(Inn_2), $lsize(Inn_1), S, ci_2))*
-  -- if c = $invlanes_(Inn_1 X N_1, $iadd($lsize(Inn_1), cj_1, cj_2)*)
+def $vextbinop(Jnn_1 X N_1, Jnn_2 X N_2, DOT, sx, c_1, c_2) = c
+  -- var cj_1 : iN($lsize(Jnn_2))
+  -- var cj_2 : iN($lsize(Jnn_2))
+  -- if ci_1* = $lanes_(Jnn_1 X N_1, c_1)
+  -- if ci_2* = $lanes_(Jnn_1 X N_1, c_2)
+  -- if $concat_(iN($lsize(Jnn_2)), (cj_1 cj_2)*) = $imul($lsize(Jnn_2), $ext($lsize(Jnn_1), $lsize(Jnn_2), S, ci_1), $ext($lsize(Jnn_1), $lsize(Jnn_2), S, ci_2))*
+  -- if c = $invlanes_(Jnn_2 X N_2, $iadd($lsize(Jnn_2), cj_1, cj_2)*)
 
 ;; TODO(3, rossberg): refactor for consistency?
 def $vshiftop(ishape, vshiftop_(ishape), lane_($lanetype(ishape)), u32) : lane_($lanetype(ishape))
