@@ -46,6 +46,7 @@ Typed references have no canonical default value, because they cannot be null. T
 The function `$hof` takes a function pointer as parameter, and is invoked by `$caller`, passing `$inc` as argument:
 ```wasm
 (type $i32-i32 (func (param i32) (result i32)))
+(elem declare funcref (ref.func $inc))
 
 (func $hof (param $f (ref $i32-i32)) (result i32)
   (i32.add (i32.const 10) (call_ref $i32-i32 (i32.const 42) (local.get $f)))
