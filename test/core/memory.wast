@@ -237,3 +237,28 @@
   "(import \"\" \"\" (memory $foo 1))"
   "(import \"\" \"\" (memory $foo 1))")
   "duplicate memory")
+
+;; Test that exporting random globals does not change a memory's semantics.
+
+(module
+  (memory (export "memory") 1 1)
+
+  ;; These should not change the behavior of memory accesses.
+  (global (export "__data_end") i32 (i32.const 10000))
+  (global (export "__stack_top") i32 (i32.const 10000))
+  (global (export "__heap_base") i32 (i32.const 10000))
+
+  (func (export "load") (param i32) (result i32)
+    (i32.load8_u (local.get 0))
+  )
+)
+
+;; None of these memory accesses should trap.
+(assert_return (invoke "load" (i32.const 0)) (i32.const 0))
+(assert_return (invoke "load" (i32.const 10000)) (i32.const 0))
+(assert_return (invoke "load" (i32.const 20000)) (i32.const 0))
+(assert_return (invoke "load" (i32.const 30000)) (i32.const 0))
+(assert_return (invoke "load" (i32.const 40000)) (i32.const 0))
+(assert_return (invoke "load" (i32.const 50000)) (i32.const 0))
+(assert_return (invoke "load" (i32.const 60000)) (i32.const 0))
+(assert_return (invoke "load" (i32.const 65535)) (i32.const 0))

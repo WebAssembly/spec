@@ -1660,7 +1660,7 @@ Memory Instructions
    \frac{
      C.\CMEMS[x] = \memtype
      \qquad
-     2^{\memarg.\ALIGN} < N/8
+     2^{\memarg.\ALIGN} \leq N/8
      \qquad
      \laneidx < 128/N
    }{
@@ -1685,7 +1685,7 @@ Memory Instructions
    \frac{
      C.\CMEMS[x] = \memtype
      \qquad
-     2^{\memarg.\ALIGN} < N/8
+     2^{\memarg.\ALIGN} \leq N/8
      \qquad
      \laneidx < 128/N
    }{
