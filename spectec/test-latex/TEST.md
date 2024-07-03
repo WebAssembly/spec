@@ -6478,7 +6478,7 @@ $$
 \frac{
 C{.}\mathsf{mems}{}[x] = {\mathit{mt}}
  \qquad
-{2^{{\mathit{memarg}}{.}\mathsf{align}}} < N / 8
+{2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq N / 8
 }{
 C \vdash {\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{N}{\mathsf{\_}}{\mathsf{zero}}}~x~{\mathit{memarg}} : \mathsf{i{\scriptstyle 32}} \rightarrow \mathsf{v{\scriptstyle 128}}
 } \, {[\textsc{\scriptsize T{-}vload{-}zero}]}
@@ -6491,7 +6491,7 @@ $$
 \frac{
 C{.}\mathsf{mems}{}[x] = {\mathit{mt}}
  \qquad
-{2^{{\mathit{memarg}}{.}\mathsf{align}}} < N / 8
+{2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq N / 8
  \qquad
 i < 128 / N
 }{
@@ -6519,7 +6519,7 @@ $$
 \frac{
 C{.}\mathsf{mems}{}[x] = {\mathit{mt}}
  \qquad
-{2^{{\mathit{memarg}}{.}\mathsf{align}}} < N / 8
+{2^{{\mathit{memarg}}{.}\mathsf{align}}} \leq N / 8
  \qquad
 i < 128 / N
 }{

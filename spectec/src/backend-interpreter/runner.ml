@@ -93,7 +93,7 @@ let get_externval import =
 
 let textual_to_module textual =
   match (snd textual).it with
-  | Script.Textual m -> m
+  | Script.Textual (m, _) -> m
   | _ -> assert false
 
 let get_export_addr name modulename =
@@ -139,9 +139,9 @@ let instantiate module_ =
 
 let module_of_def def =
   match def.it with
-  | Textual m -> m
-  | Encoded (name, bs) -> Decode.decode name bs
-  | Quoted (_, s) -> Parse.Module.parse_string s |> textual_to_module
+  | Textual (m, _) -> m
+  | Encoded (name, bs) -> Decode.decode name bs.it
+  | Quoted (_, s) -> Parse.Module.parse_string s.it |> textual_to_module
 
 let run_action action =
   match action.it with

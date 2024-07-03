@@ -1519,7 +1519,7 @@ validation_of_VLOAD V128 ?((SHAPE M N sx)) memarg
 
 validation_of_VLOAD_LANE V128 n memarg laneidx
 - |C.MEMS| must be greater than 0.
-- (2 ^ memarg.ALIGN) must be less than (n / 8).
+- (2 ^ memarg.ALIGN) must be less than or equal to (n / 8).
 - laneidx must be less than (128 / n).
 - Let mt be C.MEMS[0].
 - The instruction is valid with type ([I32, V128] -> [V128]).
@@ -1532,7 +1532,7 @@ validation_of_VSTORE V128 memarg
 
 validation_of_VSTORE_LANE V128 n memarg laneidx
 - |C.MEMS| must be greater than 0.
-- (2 ^ memarg.ALIGN) must be less than (n / 8).
+- (2 ^ memarg.ALIGN) must be less than or equal to (n / 8).
 - laneidx must be less than (128 / n).
 - Let mt be C.MEMS[0].
 - The instruction is valid with type ([I32, V128] -> []).
@@ -4149,7 +4149,7 @@ validation_of_VLOAD V128 ?() x memarg
 
 validation_of_VLOAD_LANE V128 N x memarg i
 - |C.MEMS| must be greater than x.
-- (2 ^ memarg.ALIGN) must be less than (N / 8).
+- (2 ^ memarg.ALIGN) must be less than or equal to (N / 8).
 - i must be less than (128 / N).
 - Let mt be C.MEMS[x].
 - The instruction is valid with type ([I32, V128] ->_ [] ++ [V128]).
@@ -4162,7 +4162,7 @@ validation_of_VSTORE V128 x memarg
 
 validation_of_VSTORE_LANE V128 N x memarg i
 - |C.MEMS| must be greater than x.
-- (2 ^ memarg.ALIGN) must be less than (N / 8).
+- (2 ^ memarg.ALIGN) must be less than or equal to (N / 8).
 - i must be less than (128 / N).
 - Let mt be C.MEMS[x].
 - The instruction is valid with type ([I32, V128] ->_ [] ++ []).

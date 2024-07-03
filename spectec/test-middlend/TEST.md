@@ -4572,17 +4572,17 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
 
-  ;; 6-typing.watsup:1087.1-1090.34
+  ;; 6-typing.watsup:1087.1-1090.35
   rule vload-zero{C : context, N : N, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(N))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) < (N / 8))
+    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
 
   ;; 6-typing.watsup:1092.1-1096.21
   rule vload_lane{C : context, N : N, x : idx, memarg : memarg, i : nat, mt : memtype}:
     `%|-%:%`(C, VLOAD_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) < (N / 8))
+    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
     -- if (i < (128 / N))
 
   ;; 6-typing.watsup:1098.1-1101.46
@@ -4595,7 +4595,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
   rule vstore_lane{C : context, N : N, x : idx, memarg : memarg, i : nat, mt : memtype}:
     `%|-%:%`(C, VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) < (N / 8))
+    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
     -- if (i < (128 / N))
 
 ;; 6-typing.watsup:524.1-524.96
@@ -10999,17 +10999,17 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
 
-  ;; 6-typing.watsup:1087.1-1090.34
+  ;; 6-typing.watsup:1087.1-1090.35
   rule vload-zero{C : context, N : N, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(N))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) < (N / 8))
+    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
 
   ;; 6-typing.watsup:1092.1-1096.21
   rule vload_lane{C : context, N : N, x : idx, memarg : memarg, i : nat, mt : memtype}:
     `%|-%:%`(C, VLOAD_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) < (N / 8))
+    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
     -- if (i < (128 / N))
 
   ;; 6-typing.watsup:1098.1-1101.46
@@ -11022,7 +11022,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
   rule vstore_lane{C : context, N : N, x : idx, memarg : memarg, i : nat, mt : memtype}:
     `%|-%:%`(C, VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) < (N / 8))
+    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
     -- if (i < (128 / N))
 
 ;; 6-typing.watsup:524.1-524.96
@@ -17426,17 +17426,17 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
 
-  ;; 6-typing.watsup:1087.1-1090.34
+  ;; 6-typing.watsup:1087.1-1090.35
   rule vload-zero{C : context, N : N, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(N))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) < (N / 8))
+    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
 
   ;; 6-typing.watsup:1092.1-1096.21
   rule vload_lane{C : context, N : N, x : idx, memarg : memarg, i : nat, mt : memtype}:
     `%|-%:%`(C, VLOAD_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) < (N / 8))
+    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
     -- if (i < (128 / N))
 
   ;; 6-typing.watsup:1098.1-1101.46
@@ -17449,7 +17449,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
   rule vstore_lane{C : context, N : N, x : idx, memarg : memarg, i : nat, mt : memtype}:
     `%|-%:%`(C, VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([])))
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) < (N / 8))
+    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
     -- if (i < (128 / N))
 
 ;; 6-typing.watsup:524.1-524.96
@@ -23945,19 +23945,19 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
 
-  ;; 6-typing.watsup:1087.1-1090.34
+  ;; 6-typing.watsup:1087.1-1090.35
   rule vload-zero{C : context, N : N, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(N))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) < (N / 8))
+    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
 
   ;; 6-typing.watsup:1092.1-1096.21
   rule vload_lane{C : context, N : N, x : idx, memarg : memarg, i : nat, mt : memtype}:
     `%|-%:%`(C, VLOAD_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) < (N / 8))
+    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
     -- if (i < (128 / N))
 
   ;; 6-typing.watsup:1098.1-1101.46
@@ -23972,7 +23972,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     `%|-%:%`(C, VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) < (N / 8))
+    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
     -- if (i < (128 / N))
 
 ;; 6-typing.watsup:524.1-524.96
@@ -30567,18 +30567,18 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
     -- where mt = C.MEMS_context[x!`%`_idx.0]
 
-  ;; 6-typing.watsup:1087.1-1090.34
+  ;; 6-typing.watsup:1087.1-1090.35
   rule vload-zero{C : context, N : N, x : idx, memarg : memarg, mt : memtype}:
     `%|-%:%`(C, VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(N))), x, memarg), `%->_%%`_instrtype(`%`_resulttype([I32_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) < (N / 8))
+    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
     -- where mt = C.MEMS_context[x!`%`_idx.0]
 
   ;; 6-typing.watsup:1092.1-1096.21
   rule vload_lane{C : context, N : N, x : idx, memarg : memarg, i : nat, mt : memtype}:
     `%|-%:%`(C, VLOAD_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([V128_valtype])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) < (N / 8))
+    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
     -- if (i < (128 / N))
     -- where mt = C.MEMS_context[x!`%`_idx.0]
 
@@ -30593,7 +30593,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
   rule vstore_lane{C : context, N : N, x : idx, memarg : memarg, i : nat, mt : memtype}:
     `%|-%:%`(C, VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, memarg, `%`_laneidx(i)), `%->_%%`_instrtype(`%`_resulttype([I32_valtype V128_valtype]), [], `%`_resulttype([])))
     -- if (x!`%`_idx.0 < |C.MEMS_context|)
-    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) < (N / 8))
+    -- if ((2 ^ memarg.ALIGN_memarg!`%`_u32.0) <= (N / 8))
     -- if (i < (128 / N))
     -- where mt = C.MEMS_context[x!`%`_idx.0]
 
