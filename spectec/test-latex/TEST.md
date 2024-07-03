@@ -6688,14 +6688,14 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathit{nt}} \in {\mathit{epsilon}} &=& \mathsf{false} \\
+{\mathit{nt}} \in \epsilon &=& \mathsf{false} \\
 {\mathit{nt}} \in {\mathit{nt}}_1~{{\mathit{nt}'}^\ast} &=& {\mathit{nt}} = {\mathit{nt}}_1 \lor {\mathit{nt}} \in {{\mathit{nt}'}^\ast} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathit{binop}} \in {\mathit{epsilon}} &=& \mathsf{false} \\
+{\mathit{binop}} \in \epsilon &=& \mathsf{false} \\
 {\mathit{binop}} \in ({\mathit{ibinop}}_1)~{{\mathit{ibinop}'}^\ast} &=& {\mathit{binop}} = {\mathit{ibinop}}_1 \lor {\mathit{binop}} \in {{\mathit{ibinop}'}^\ast} \\
 \end{array}
 $$

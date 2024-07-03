@@ -1028,6 +1028,11 @@ and elab_exp' env e t : Il.exp' =
       env.vars <- bind "variable" env.vars id t';
       let e' = elab_exp env e t' in
       cast_exp' "variable" env e' t' t
+    else if is_iter_typ env t then
+      (* Never infer an iteration type for a variable *)
+      let t1, iter = as_iter_typ "" env Check t e.at in
+      let e' = elab_exp env e t1 in
+      lift_exp' e' iter
     else (
       env.vars <- bind "variable" env.vars id t;
       Il.VarE id
