@@ -238,6 +238,10 @@
       )
     )
   )
+
+  (func (export "try-with-param")
+    (i32.const 0) (try_table (param i32) (drop))
+  )
 )
 
 (assert_return (invoke "simple-throw-catch" (i32.const 0)) (i32.const 23))
@@ -293,6 +297,8 @@
 
 (assert_exception (invoke "return-call-in-try-catch"))
 (assert_exception (invoke "return-call-indirect-in-try-catch"))
+
+(assert_return (invoke "try-with-param"))
 
 (module
   (func $imported-throw (import "test" "throw"))

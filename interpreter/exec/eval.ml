@@ -244,7 +244,7 @@ let rec step (c : config) : config =
         let n1 = Lib.List32.length ts1 in
         let n2 = Lib.List32.length ts2 in
         let args, vs' = take n1 vs e.at, drop n1 vs e.at in
-        vs', [Handler (n2, cs, (args, [Label (n2, [], ([], List.map plain es')) @@ e.at])) @@ e.at]
+        vs', [Handler (n2, cs, ([], [Label (n2, [], (args, List.map plain es')) @@ e.at])) @@ e.at]
 
       | Drop, v :: vs' ->
         vs', []
