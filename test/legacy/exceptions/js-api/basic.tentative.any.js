@@ -73,7 +73,7 @@ promise_test(async () => {
 promise_test(async () => {
   const builder = new WasmModuleBuilder();
   const fnIndex = builder.addImport("module", "fn", kSig_v_v);
-  const tagIndex= builder.addTag(kSig_v_r);
+  const tagIndex = builder.addTag(kSig_v_r);
   builder.addFunction("catch_exception", kSig_r_v)
     .addBody([
       kExprTry, kWasmVoid,

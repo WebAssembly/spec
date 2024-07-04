@@ -22,6 +22,9 @@ test(() => {
   let wasmTagExnSamePayload = null;
   let wasmTagExnDiffPayload = null;
 
+  const kSig_ie_v = makeSig([], [kWasmI32, kExnRefCode]);
+  const sig_ie_v = builder.addType(kSig_ie_v);
+
   const imports = {
     module: {
       throwJSTagExn: function() { throw jsTagExn; },
@@ -31,55 +34,73 @@ test(() => {
   };
 
   // Call a JS function that throws an exception using a JS-defined tag, catches
-  // it with a 'catch' instruction, and rethrows it.
+  // it with a 'catch_ref' instruction, and rethrows it.
   builder
-    .addFunction("catch_js_tag_rethrow", kSig_v_v)
+    .addFunction("catch_ref_js_tag_throw_ref", kSig_v_v)
     .addBody([
-      kExprTry, kWasmVoid,
-        kExprCallFunction, throwJSTagExnIndex,
-      kExprCatch, jsTagIndex,
-        kExprDrop,
-        kExprRethrow, 0x00,
+      kExprBlock, kWasmVoid,
+        kExprBlock, sig_ie_v,
+          kExprTryTable, kWasmVoid, 1,
+            kCatchRef, jsTagIndex, 0,
+            kExprCallFunction, throwJSTagExnIndex,
+          kExprEnd,
+          kExprBr, 1,
+        kExprEnd,
+        kExprThrowRef,
       kExprEnd
     ])
     .exportFunc();
 
   // Call a JS function that throws an exception using a Wasm-defined tag,
-  // catches it with a 'catch' instruction, and rethrows it.
+  // catches it with a 'catch_ref' instruction, and rethrows it.
   builder
-    .addFunction("catch_wasm_tag_rethrow", kSig_v_v)
+    .addFunction("catch_ref_wasm_tag_throw_ref", kSig_v_v)
     .addBody([
-      kExprTry, kWasmVoid,
-        kExprCallFunction, throwWasmTagExnIndex,
-      kExprCatch, wasmTagIndex,
-        kExprDrop,
-        kExprRethrow, 0x00,
+      kExprBlock, kWasmVoid,
+        kExprBlock, sig_ie_v,
+          kExprTryTable, kWasmVoid, 1,
+            kCatchRef, wasmTagIndex, 0,
+            kExprCallFunction, throwWasmTagExnIndex,
+          kExprEnd,
+          kExprBr, 1,
+        kExprEnd,
+        kExprThrowRef,
       kExprEnd
     ])
     .exportFunc();
 
   // Call a JS function that throws an exception using a JS-defined tag, catches
-  // it with a 'catch_all' instruction, and rethrows it.
+  // it with a 'catch_all_ref' instruction, and rethrows it.
   builder
-    .addFunction("catch_all_js_tag_rethrow", kSig_v_v)
+    .addFunction("catch_all_ref_js_tag_throw_ref", kSig_v_v)
     .addBody([
-      kExprTry, kWasmVoid,
-        kExprCallFunction, throwJSTagExnIndex,
-      kExprCatchAll,
-        kExprRethrow, 0x00,
+      kExprBlock, kWasmVoid,
+        kExprBlock, kExnRefCode,
+          kExprTryTable, kWasmVoid, 1,
+            kCatchAllRef, 0,
+            kExprCallFunction, throwJSTagExnIndex,
+          kExprEnd,
+          kExprBr, 1,
+        kExprEnd,
+        kExprThrowRef,
       kExprEnd
     ])
     .exportFunc();
 
   // Call a JS function that throws an exception using a Wasm-defined tag,
-  // catches it with a 'catch_all' instruction, and rethrows it.
+  // catches it with a 'catch_all_ref' instruction, and rethrows it.
   builder
-    .addFunction("catch_all_wasm_tag_rethrow", kSig_v_v)
+    .addFunction("catch_all_ref_wasm_tag_throw_ref", kSig_v_v)
     .addBody([
-      kExprTry, kWasmVoid,
-        kExprCallFunction, throwWasmTagExnIndex,
-      kExprCatchAll,
-        kExprRethrow, 0x00,
+      kExprBlock, kWasmVoid,
+        kExprBlock, kExnRefCode,
+          kExprTryTable, kWasmVoid, 1,
+            kCatchAllRef, 0,
+            kExprCallFunction, throwWasmTagExnIndex,
+          kExprEnd,
+          kExprBr, 1,
+        kExprEnd,
+        kExprThrowRef,
       kExprEnd
     ])
     .exportFunc();
@@ -89,12 +110,17 @@ test(() => {
   builder
     .addFunction("catch_js_tag_return_payload", kSig_i_v)
     .addBody([
-      kExprTry, kWasmI32,
-        kExprCallFunction, throwJSTagExnIndex,
-        kExprI32Const, 0x00,
-      kExprCatch, jsTagIndex,
+      kExprBlock, kWasmVoid,
+        kExprBlock, kWasmI32,
+          kExprTryTable, kWasmVoid, 1,
+            kCatchNoRef, jsTagIndex, 0,
+            kExprCallFunction, throwJSTagExnIndex,
+          kExprEnd,
+          kExprBr, 1,
+        kExprEnd,
         kExprReturn,
-      kExprEnd
+      kExprEnd,
+      kExprI32Const, 0
     ])
     .exportFunc();
 
@@ -103,9 +129,14 @@ test(() => {
   builder
     .addFunction("catch_js_tag_throw_payload", kSig_v_v)
     .addBody([
-      kExprTry, kWasmVoid,
-        kExprCallFunction, throwJSTagExnIndex,
-      kExprCatch, jsTagIndex,
+      kExprBlock, kWasmVoid,
+        kExprBlock, kWasmI32,
+          kExprTryTable, kWasmVoid, 1,
+            kCatchNoRef, jsTagIndex, 0,
+            kExprCallFunction, throwJSTagExnIndex,
+          kExprEnd,
+          kExprBr, 1,
+        kExprEnd,
         kExprThrow, jsTagIndex,
       kExprEnd
     ])
@@ -117,7 +148,7 @@ test(() => {
     // The exception object's identity should be preserved across 'rethrow's in
     // Wasm code. Do tests with a tag defined in JS.
     try {
-      result.instance.exports.catch_js_tag_rethrow();
+      result.instance.exports.catch_ref_js_tag_throw_ref();
     } catch (e) {
       assert_equals(e, jsTagExn);
       // Even if they have the same payload, they are different objects, so they
@@ -126,7 +157,7 @@ test(() => {
       assert_not_equals(e, jsTagExnDiffPayload);
     }
     try {
-      result.instance.exports.catch_all_js_tag_rethrow();
+      result.instance.exports.catch_all_ref_js_tag_throw_ref();
     } catch (e) {
       assert_equals(e, jsTagExn);
       assert_not_equals(e, jsTagExnSamePayload);
@@ -139,14 +170,14 @@ test(() => {
     wasmTagExnSamePayload = new WebAssembly.Exception(wasmTag, [42]);
     wasmTagExnDiffPayload = new WebAssembly.Exception(wasmTag, [53]);
     try {
-      result.instance.exports.catch_wasm_tag_rethrow();
+      result.instance.exports.catch_ref_wasm_tag_throw_ref();
     } catch (e) {
       assert_equals(e, wasmTagExn);
       assert_not_equals(e, wasmTagExnSamePayload);
       assert_not_equals(e, wasmTagExnDiffPayload);
     }
     try {
-      result.instance.exports.catch_all_wasm_tag_rethrow();
+      result.instance.exports.catch_all_ref_wasm_tag_throw_ref();
     } catch (e) {
       assert_equals(e, wasmTagExn);
       assert_not_equals(e, wasmTagExnSamePayload);
