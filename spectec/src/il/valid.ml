@@ -127,6 +127,14 @@ let as_variant_typ phrase env dir t at : typcase list =
   | VariantT tcs -> tcs
   | _ -> as_error at phrase dir t "| ..."
 
+let rec as_comp_typ phrase env dir t at =
+  match expand_typdef env t with
+  | AliasT {it = IterT _; _} -> ()
+  | StructT tfs ->
+    List.iter (fun (_, (_, t, _), _) -> as_comp_typ phrase env dir t at) tfs
+  | _ ->
+    error at (phrase ^ "'s type `" ^ string_of_typ t ^ "` is not composable")
+
 
 (* Type Equivalence and Subtyping *)
 
@@ -389,7 +397,7 @@ try
     let _binds, t', _prems = find_field tfs atom e1.at in
     equiv_typ env t' t e.at
   | CompE (e1, e2) ->
-    let _ = as_struct_typ "record" env Check t e.at in
+    let _ = as_comp_typ "expression" env Check t e.at in
     valid_exp env e1 t;
     valid_exp env e2 t
   | LenE e1 ->

@@ -244,23 +244,44 @@ and reduce_exp env e : exp =
     let e1' = reduce_exp env e1 in
     (match e1'.it with
     | StrE efs ->
-      snd (Option.get (El.Convert.find_nl_list (fun (atomN, _) -> atomN = atom) efs))
+      snd (Option.get (El.Convert.find_nl_list (fun (atomN, _) -> Atom.eq atomN atom) efs))
     | _ -> DotE (e1', atom) $ e.at
     )
   | CommaE (e1, e2) ->
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
-    (* TODO(2, rossberg): implement *)
-    (match e1'.it, e2'.it with
+    (match e2'.it with
+    | SeqE ({it = AtomE atom; _} :: es2') ->
+      let e21' = match es2' with [e21'] -> e21' | _ -> SeqE es2' $ e2.at in
+      reduce_exp env (CompE (e1', StrE [Elem (atom, e21')] $ e2.at) $ e.at)
     | _ -> CommaE (e1', e2') $ e.at
     )
   | CompE (e1, e2) ->
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
-    (* TODO(2, rossberg): implement *)
     (match e1'.it, e2'.it with
-    | _ -> CompE (e1', e2') $ e.at
-    )
+    | SeqE es1, SeqE es2 -> SeqE (es1 @ es2)
+    | SeqE [], _ -> e2'.it
+    | _, SeqE [] -> e1'.it
+    | StrE efs1, StrE efs2 ->
+      let rec merge efs1 efs2 =
+        match efs1, efs2 with
+        | [], _ -> efs2
+        | _, [] -> efs1
+        | Nl::efs1', _ -> merge efs1' efs2
+        | _, Nl::efs2' -> merge efs1 efs2'
+        | Elem (atom1, e1) :: efs1', Elem (atom2, e2) :: efs2' ->
+          (* Assume that both lists are sorted in same order *)
+          if Atom.eq atom1 atom2 then
+            let e' = reduce_exp env (CompE (e1, e2) $ e.at) in
+            Elem (atom1, e') :: merge efs1' efs2'
+          else if El.Convert.exists_nl_list (fun (atom, _) -> Atom.eq atom atom2) efs1 then
+            Elem (atom1, e1) :: merge efs1' efs2
+          else
+            Elem (atom2, e2) :: merge efs1 efs2'
+      in StrE (merge efs1 efs2)
+    | _ -> CompE (e1', e2')
+    ) $ e.at
   | LenE e1 ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with

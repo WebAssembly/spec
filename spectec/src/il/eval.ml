@@ -227,16 +227,24 @@ and reduce_exp env e : exp =
   | DotE (e1, atom) ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with
-    | StrE efs -> snd (List.find (fun (atomN, _) -> Eq.eq_atom atomN atom) efs)
+    | StrE efs -> snd (List.find (fun (atomN, _) -> El.Atom.eq atomN atom) efs)
     | _ -> DotE (e1', atom) $> e
     )
   | CompE (e1, e2) ->
+    (* TODO(4, rossberg): avoid overlap with CatE? *)
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
-    (* TODO(2, rossberg): implement *)
     (match e1'.it, e2'.it with
-    | _ -> CompE (e1', e2') $> e
-    )
+    | ListE es1, ListE es2 -> ListE (es1 @ es2)
+    | OptE None, _ -> e2'.it
+    | _, OptE None -> e1'.it
+    | StrE efs1, StrE efs2 ->
+      let merge (atom1, e1) (atom2, e2) =
+        assert (El.Atom.eq atom1 atom2);
+        (atom1, reduce_exp env (CompE (e1, e2) $> e1))
+      in StrE (List.map2 merge efs1 efs2)
+    | _ -> CompE (e1', e2')
+    ) $> e
   | LenE e1 ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with

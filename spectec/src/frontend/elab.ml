@@ -399,6 +399,24 @@ let as_struct_typ phrase env dir t at : typfield list =
   | VarT (id, args) -> as_struct_typid' phrase env id args at
   | _ -> error_dir_typ env at phrase dir t "{...}"
 
+let rec as_comp_typid' phrase env dir id args at =
+  match as_defined_typid' env id args at with
+  | VarT (id', args'), `Alias -> as_comp_typid' phrase env dir id' args' at
+  | IterT _, _ -> ()
+  | StrT tfs, _ ->
+    Convert.iter_nl_list (fun (_, (t, _), _) ->
+      as_comp_typ phrase env dir t at) tfs
+  | _ ->
+    error at (phrase ^ "'s type `" ^ string_of_typ (VarT (id, args) $ id.at) ^
+      "` is not composable")
+
+and as_comp_typ phrase env dir t at =
+  match expand env t with
+  | VarT (id, args) -> as_comp_typid' phrase env dir id args at
+  | IterT _ -> ()
+  | _ ->
+    error at (phrase ^ "'s type `" ^ string_of_typ t ^ "` is not composable")
+
 let rec as_variant_typid' phrase env id args at : typcase list * dots =
   match as_defined_typid' env id args at with
   | VarT (id', args'), `Alias -> as_variant_typid' phrase env id' args' at
@@ -952,6 +970,7 @@ and infer_exp' env e : Il.exp' * typ =
   | CommaE (e1, e2) ->
     let e1', t1 = infer_exp env e1 in
     let tfs = as_struct_typ "expression" env Infer t1 e1.at in
+    let _ = as_comp_typ "expression" env Infer t1 e.at in
     (* TODO(4, rossberg): this is a bit of a hack, can we avoid it? *)
     (match e2.it with
     | SeqE ({it = AtomE atom; at; _} :: es2) ->
@@ -959,11 +978,11 @@ and infer_exp' env e : Il.exp' * typ =
       let e2 = match es2 with [e2] -> e2 | _ -> SeqE es2 $ e2.at in
       let e2' = elab_exp env (StrE [Elem (atom, e2)] $ e2.at) t1 in
       Il.CompE (e2', e1'), t1
-    | _ -> failwith "unimplemented: infer CommaE"
+    | _ -> error e.at "malformed comma operator"
     )
   | CompE (e1, e2) ->
     let e1', t1 = infer_exp env e1 in
-    let _ = as_struct_typ "record" env Infer t1 e.at in
+    let _ = as_comp_typ "expression" env Infer t1 e.at in
     let e2' = elab_exp env e2 t1 in
     Il.CompE (e1', e2'), t1
   | LenE e1 ->
@@ -1088,6 +1107,7 @@ and elab_exp' env e t : Il.exp' =
   | CommaE (e1, e2) ->
     let e1' = elab_exp env e1 t in
     let tfs = as_struct_typ "expression" env Check t e1.at in
+    let _ = as_comp_typ "expression" env Check t e.at in
     (* TODO(4, rossberg): this is a bit of a hack, can we avoid it? *)
     (match e2.it with
     | SeqE ({it = AtomE atom; at; _} :: es2) ->
@@ -1095,10 +1115,10 @@ and elab_exp' env e t : Il.exp' =
       let e2 = match es2 with [e2] -> e2 | _ -> SeqE es2 $ e2.at in
       let e2' = elab_exp env (StrE [Elem (atom, e2)] $ e2.at) t in
       Il.CompE (e2', e1')
-    | _ -> failwith "unimplemented: check CommaE"
+    | _ -> error e.at "malformed comma operator"
     )
   | CompE (e1, e2) ->
-    let _ = as_struct_typ "record" env Check t e.at in
+    let _ = as_comp_typ "expression" env Check t e.at in
     let e1' = elab_exp env e1 t in
     let e2' = elab_exp env e2 t in
     Il.CompE (e1', e2')
