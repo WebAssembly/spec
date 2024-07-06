@@ -56,6 +56,8 @@ let rec if_expr_to_instrs e =
       | _ -> print_yet_exp e "if_expr_to_instrs"; YetI (Il.Print.string_of_exp e) ]
   | Ast.BinE (Ast.EquivOp, e1, e2) ->
       [ EquivI (exp_to_expr e1, exp_to_expr e2) ]
+  | Ast.MemE (e1, e2) ->
+      [ MemI (exp_to_expr e1, exp_to_expr e2) ]
   | _ -> print_yet_exp e "if_expr_to_instrs"; [ YetI (Il.Print.string_of_exp e) ]
 
 let rec prem_to_instrs prem = match prem.it with

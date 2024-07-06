@@ -131,7 +131,7 @@ and exp e =
   | SizeE x -> gramid x
   | BinE (e1, op, e2) -> exp e1; binop op; exp e2
   | CmpE (e1, op, e2) -> exp e1; cmpop op; exp e2
-  | IdxE (e1, e2) | CommaE (e1, e2) | CompE (e1, e2)
+  | IdxE (e1, e2) | CommaE (e1, e2) | CompE (e1, e2) | MemE (e1, e2)
   | FuseE (e1, e2) -> exp e1; exp e2
   | SliceE (e1, e2, e3) -> exp e1; exp e2; exp e3
   | SeqE es | TupE es -> list exp es
@@ -282,6 +282,7 @@ and clone_exp e =
   | DotE (e1, atom) -> DotE (clone_exp e1, clone_atom atom)
   | CommaE (e1, e2) -> CommaE (clone_exp e1, clone_exp e2)
   | CompE (e1, e2) -> CompE (clone_exp e1, clone_exp e2)
+  | MemE (e1, e2) -> MemE (clone_exp e1, clone_exp e2)
   | LenE e1 -> LenE (clone_exp e1)
   | ParenE (e1, b) -> ParenE (clone_exp e1, b)
   | TupE es -> TupE (List.map clone_exp es)

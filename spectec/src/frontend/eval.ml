@@ -282,6 +282,20 @@ and reduce_exp env e : exp =
       in StrE (merge efs1 efs2)
     | _ -> CompE (e1', e2')
     ) $ e.at
+  | MemE (e1, e2) ->
+    let e1' = reduce_exp env e1 in
+    let e2' = reduce_exp env e2 in
+    (match e2'.it with
+    | SeqE [] -> BoolE false $ e.at
+    | SeqE (e21'::es2') ->
+      reduce_exp env (BinE (
+        CmpE (e1', EqOp, e21') $ e.at,
+        OrOp,
+        MemE (e1', SeqE es2' $ e2.at) $ e.at
+      ) $ e.at)
+    | _ when is_normal_exp e2' -> reduce_exp env (CmpE (e1', EqOp, e2') $ e.at)
+    | _ -> MemE (e1', e2') $ e.at
+    )
   | LenE e1 ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with

@@ -4210,11 +4210,11 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     `%|-%:%`(C, REF.NULL_instr(ht), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([REF_valtype(`NULL%?`_nul(?(())), ht)])))
     -- Heaptype_ok: `%|-%:OK`(C, ht)
 
-  ;; 6-typing.watsup:741.1-744.29
-  rule ref.func{C : context, x : idx, dt : deftype, x_1* : idx*, x_2* : idx*}:
+  ;; 6-typing.watsup:741.1-744.20
+  rule ref.func{C : context, x : idx, dt : deftype}:
     `%|-%:%`(C, REF.FUNC_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([REF_valtype(`NULL%?`_nul(?()), (dt : deftype <: heaptype))])))
     -- if (C.FUNCS_context[x!`%`_idx.0] = dt)
-    -- if (C.REFS_context = x_1*{x_1 : funcidx} :: [x] :: x_2*{x_2 : funcidx})
+    -- if x <- C.REFS_context
 
   ;; 6-typing.watsup:746.1-747.34
   rule ref.i31{C : context}:
@@ -4641,28 +4641,6 @@ relation Expr_ok: `%|-%:%`(context, expr, resulttype)
     -- Instrs_ok: `%|-%:%`(C, instr*{instr : instr}, `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype(t*{t : valtype})))
 
 ;; 6-typing.watsup
-rec {
-
-;; 6-typing.watsup:1161.1-1161.86
-def $in_binop(numtype : numtype, binop_ : binop_(numtype), binop_(numtype)*) : bool
-  ;; 6-typing.watsup:1162.1-1162.38
-  def $in_binop{nt : numtype, binop : binop_(nt)}(nt, binop, []) = false
-  ;; 6-typing.watsup:1163.1-1163.99
-  def $in_binop{nt : numtype, binop : binop_(nt), ibinop_1 : binop_(nt), ibinop'* : binop_(nt)*}(nt, binop, [ibinop_1] :: ibinop'*{ibinop' : binop_(nt)}) = ((binop = ibinop_1) \/ $in_binop(nt, binop, ibinop'*{ibinop' : binop_(nt)}))
-}
-
-;; 6-typing.watsup
-rec {
-
-;; 6-typing.watsup:1157.1-1157.63
-def $in_numtype(numtype : numtype, numtype*) : bool
-  ;; 6-typing.watsup:1158.1-1158.33
-  def $in_numtype{nt : numtype}(nt, []) = false
-  ;; 6-typing.watsup:1159.1-1159.68
-  def $in_numtype{nt : numtype, nt_1 : numtype, nt'* : numtype*}(nt, [nt_1] :: nt'*{nt' : numtype}) = ((nt = nt_1) \/ $in_numtype(nt, nt'*{nt' : numtype}))
-}
-
-;; 6-typing.watsup
 relation Instr_const: `%|-%CONST`(context, instr)
   ;; 6-typing.watsup
   rule const{C : context, nt : numtype, c_nt : num_(nt)}:
@@ -4720,8 +4698,8 @@ relation Instr_const: `%|-%CONST`(context, instr)
   ;; 6-typing.watsup
   rule binop{C : context, Inn : Inn, binop : binop_((Inn : Inn <: numtype))}:
     `%|-%CONST`(C, BINOP_instr((Inn : Inn <: numtype), binop))
-    -- if $in_numtype((Inn : Inn <: numtype), [I32_numtype I64_numtype])
-    -- if $in_binop((Inn : Inn <: numtype), binop, [ADD_binop_ SUB_binop_ MUL_binop_])
+    -- if Inn <- [I32_Inn I64_Inn]
+    -- if binop <- [ADD_binop_ SUB_binop_ MUL_binop_]
 
 ;; 6-typing.watsup
 relation Expr_const: `%|-%CONST`(context, expr)
@@ -4884,13 +4862,13 @@ relation Export_ok: `%|-%:%`(context, export, externtype)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1306.1-1306.100
+;; 6-typing.watsup:1297.1-1297.100
 relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
-  ;; 6-typing.watsup:1348.1-1349.17
+  ;; 6-typing.watsup:1339.1-1340.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1351.1-1354.55
+  ;; 6-typing.watsup:1342.1-1345.55
   rule cons{C : context, global_1 : global, global : global, gt_1 : globaltype, gt* : globaltype*}:
     `%|-%:%`(C, [global_1] :: global*{}, [gt_1] :: gt*{gt : globaltype})
     -- Global_ok: `%|-%:%`(C, global, gt_1)
@@ -4900,13 +4878,13 @@ relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1305.1-1305.98
+;; 6-typing.watsup:1296.1-1296.98
 relation Types_ok: `%|-%:%`(context, type*, deftype*)
-  ;; 6-typing.watsup:1340.1-1341.17
+  ;; 6-typing.watsup:1331.1-1332.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1343.1-1346.50
+  ;; 6-typing.watsup:1334.1-1337.50
   rule cons{C : context, type_1 : type, type* : type*, dt_1* : deftype*, dt* : deftype*}:
     `%|-%:%`(C, [type_1] :: type*{type : type}, dt_1*{dt_1 : deftype} :: dt*{dt : deftype})
     -- Type_ok: `%|-%:%`(C, type_1, dt_1*{dt_1 : deftype})
@@ -10645,11 +10623,11 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     `%|-%:%`(C, REF.NULL_instr(ht), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([REF_valtype(`NULL%?`_nul(?(())), ht)])))
     -- Heaptype_ok: `%|-%:OK`(C, ht)
 
-  ;; 6-typing.watsup:741.1-744.29
-  rule ref.func{C : context, x : idx, dt : deftype, x_1* : idx*, x_2* : idx*}:
+  ;; 6-typing.watsup:741.1-744.20
+  rule ref.func{C : context, x : idx, dt : deftype}:
     `%|-%:%`(C, REF.FUNC_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([REF_valtype(`NULL%?`_nul(?()), (dt : deftype <: heaptype))])))
     -- if (C.FUNCS_context[x!`%`_idx.0] = dt)
-    -- if (C.REFS_context = x_1*{x_1 : funcidx} :: [x] :: x_2*{x_2 : funcidx})
+    -- if x <- C.REFS_context
 
   ;; 6-typing.watsup:746.1-747.34
   rule ref.i31{C : context}:
@@ -11076,28 +11054,6 @@ relation Expr_ok: `%|-%:%`(context, expr, resulttype)
     -- Instrs_ok: `%|-%:%`(C, instr*{instr : instr}, `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype(t*{t : valtype})))
 
 ;; 6-typing.watsup
-rec {
-
-;; 6-typing.watsup:1161.1-1161.86
-def $in_binop(numtype : numtype, binop_ : binop_(numtype), binop_(numtype)*) : bool
-  ;; 6-typing.watsup:1162.1-1162.38
-  def $in_binop{nt : numtype, binop : binop_(nt)}(nt, binop, []) = false
-  ;; 6-typing.watsup:1163.1-1163.99
-  def $in_binop{nt : numtype, binop : binop_(nt), ibinop_1 : binop_(nt), ibinop'* : binop_(nt)*}(nt, binop, [ibinop_1] :: ibinop'*{ibinop' : binop_(nt)}) = ((binop = ibinop_1) \/ $in_binop(nt, binop, ibinop'*{ibinop' : binop_(nt)}))
-}
-
-;; 6-typing.watsup
-rec {
-
-;; 6-typing.watsup:1157.1-1157.63
-def $in_numtype(numtype : numtype, numtype*) : bool
-  ;; 6-typing.watsup:1158.1-1158.33
-  def $in_numtype{nt : numtype}(nt, []) = false
-  ;; 6-typing.watsup:1159.1-1159.68
-  def $in_numtype{nt : numtype, nt_1 : numtype, nt'* : numtype*}(nt, [nt_1] :: nt'*{nt' : numtype}) = ((nt = nt_1) \/ $in_numtype(nt, nt'*{nt' : numtype}))
-}
-
-;; 6-typing.watsup
 relation Instr_const: `%|-%CONST`(context, instr)
   ;; 6-typing.watsup
   rule const{C : context, nt : numtype, c_nt : num_(nt)}:
@@ -11155,8 +11111,8 @@ relation Instr_const: `%|-%CONST`(context, instr)
   ;; 6-typing.watsup
   rule binop{C : context, Inn : Inn, binop : binop_((Inn : Inn <: numtype))}:
     `%|-%CONST`(C, BINOP_instr((Inn : Inn <: numtype), binop))
-    -- if $in_numtype((Inn : Inn <: numtype), [I32_numtype I64_numtype])
-    -- if $in_binop((Inn : Inn <: numtype), binop, [ADD_binop_ SUB_binop_ MUL_binop_])
+    -- if Inn <- [I32_Inn I64_Inn]
+    -- if binop <- [ADD_binop_ SUB_binop_ MUL_binop_]
 
 ;; 6-typing.watsup
 relation Expr_const: `%|-%CONST`(context, expr)
@@ -11319,13 +11275,13 @@ relation Export_ok: `%|-%:%`(context, export, externtype)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1306.1-1306.100
+;; 6-typing.watsup:1297.1-1297.100
 relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
-  ;; 6-typing.watsup:1348.1-1349.17
+  ;; 6-typing.watsup:1339.1-1340.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1351.1-1354.55
+  ;; 6-typing.watsup:1342.1-1345.55
   rule cons{C : context, global_1 : global, global : global, gt_1 : globaltype, gt* : globaltype*}:
     `%|-%:%`(C, [global_1] :: global*{}, [gt_1] :: gt*{gt : globaltype})
     -- Global_ok: `%|-%:%`(C, global, gt_1)
@@ -11335,13 +11291,13 @@ relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1305.1-1305.98
+;; 6-typing.watsup:1296.1-1296.98
 relation Types_ok: `%|-%:%`(context, type*, deftype*)
-  ;; 6-typing.watsup:1340.1-1341.17
+  ;; 6-typing.watsup:1331.1-1332.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1343.1-1346.50
+  ;; 6-typing.watsup:1334.1-1337.50
   rule cons{C : context, type_1 : type, type* : type*, dt_1* : deftype*, dt* : deftype*}:
     `%|-%:%`(C, [type_1] :: type*{type : type}, dt_1*{dt_1 : deftype} :: dt*{dt : deftype})
     -- Type_ok: `%|-%:%`(C, type_1, dt_1*{dt_1 : deftype})
@@ -17080,11 +17036,11 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     `%|-%:%`(C, REF.NULL_instr(ht), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([REF_valtype(`NULL%?`_nul(?(())), ht)])))
     -- Heaptype_ok: `%|-%:OK`(C, ht)
 
-  ;; 6-typing.watsup:741.1-744.29
-  rule ref.func{C : context, x : idx, dt : deftype, x_1* : idx*, x_2* : idx*}:
+  ;; 6-typing.watsup:741.1-744.20
+  rule ref.func{C : context, x : idx, dt : deftype}:
     `%|-%:%`(C, REF.FUNC_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([REF_valtype(`NULL%?`_nul(?()), (dt : deftype <: heaptype))])))
     -- if (C.FUNCS_context[x!`%`_idx.0] = dt)
-    -- if (C.REFS_context = x_1*{x_1 : funcidx} :: [x] :: x_2*{x_2 : funcidx})
+    -- if x <- C.REFS_context
 
   ;; 6-typing.watsup:746.1-747.34
   rule ref.i31{C : context}:
@@ -17511,28 +17467,6 @@ relation Expr_ok: `%|-%:%`(context, expr, resulttype)
     -- Instrs_ok: `%|-%:%`(C, instr*{instr : instr}, `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype(t*{t : valtype})))
 
 ;; 6-typing.watsup
-rec {
-
-;; 6-typing.watsup:1161.1-1161.86
-def $in_binop(numtype : numtype, binop_ : binop_(numtype), binop_(numtype)*) : bool
-  ;; 6-typing.watsup:1162.1-1162.38
-  def $in_binop{nt : numtype, binop : binop_(nt)}(nt, binop, []) = false
-  ;; 6-typing.watsup:1163.1-1163.99
-  def $in_binop{nt : numtype, binop : binop_(nt), ibinop_1 : binop_(nt), ibinop'* : binop_(nt)*}(nt, binop, [ibinop_1] :: ibinop'*{ibinop' : binop_(nt)}) = ((binop = ibinop_1) \/ $in_binop(nt, binop, ibinop'*{ibinop' : binop_(nt)}))
-}
-
-;; 6-typing.watsup
-rec {
-
-;; 6-typing.watsup:1157.1-1157.63
-def $in_numtype(numtype : numtype, numtype*) : bool
-  ;; 6-typing.watsup:1158.1-1158.33
-  def $in_numtype{nt : numtype}(nt, []) = false
-  ;; 6-typing.watsup:1159.1-1159.68
-  def $in_numtype{nt : numtype, nt_1 : numtype, nt'* : numtype*}(nt, [nt_1] :: nt'*{nt' : numtype}) = ((nt = nt_1) \/ $in_numtype(nt, nt'*{nt' : numtype}))
-}
-
-;; 6-typing.watsup
 relation Instr_const: `%|-%CONST`(context, instr)
   ;; 6-typing.watsup
   rule const{C : context, nt : numtype, c_nt : num_(nt)}:
@@ -17590,8 +17524,8 @@ relation Instr_const: `%|-%CONST`(context, instr)
   ;; 6-typing.watsup
   rule binop{C : context, Inn : Inn, binop : binop_((Inn : Inn <: numtype))}:
     `%|-%CONST`(C, BINOP_instr((Inn : Inn <: numtype), binop))
-    -- if $in_numtype((Inn : Inn <: numtype), [I32_numtype I64_numtype])
-    -- if $in_binop((Inn : Inn <: numtype), binop, [ADD_binop_ SUB_binop_ MUL_binop_])
+    -- if Inn <- [I32_Inn I64_Inn]
+    -- if binop <- [ADD_binop_ SUB_binop_ MUL_binop_]
 
 ;; 6-typing.watsup
 relation Expr_const: `%|-%CONST`(context, expr)
@@ -17754,13 +17688,13 @@ relation Export_ok: `%|-%:%`(context, export, externtype)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1306.1-1306.100
+;; 6-typing.watsup:1297.1-1297.100
 relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
-  ;; 6-typing.watsup:1348.1-1349.17
+  ;; 6-typing.watsup:1339.1-1340.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1351.1-1354.55
+  ;; 6-typing.watsup:1342.1-1345.55
   rule cons{C : context, global_1 : global, global : global, gt_1 : globaltype, gt* : globaltype*}:
     `%|-%:%`(C, [global_1] :: global*{}, [gt_1] :: gt*{gt : globaltype})
     -- Global_ok: `%|-%:%`(C, global, gt_1)
@@ -17770,13 +17704,13 @@ relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1305.1-1305.98
+;; 6-typing.watsup:1296.1-1296.98
 relation Types_ok: `%|-%:%`(context, type*, deftype*)
-  ;; 6-typing.watsup:1340.1-1341.17
+  ;; 6-typing.watsup:1331.1-1332.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1343.1-1346.50
+  ;; 6-typing.watsup:1334.1-1337.50
   rule cons{C : context, type_1 : type, type* : type*, dt_1* : deftype*, dt* : deftype*}:
     `%|-%:%`(C, [type_1] :: type*{type : type}, dt_1*{dt_1 : deftype} :: dt*{dt : deftype})
     -- Type_ok: `%|-%:%`(C, type_1, dt_1*{dt_1 : deftype})
@@ -23550,12 +23484,12 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     `%|-%:%`(C, REF.NULL_instr(ht), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([REF_valtype(`NULL%?`_nul(?(())), ht)])))
     -- Heaptype_ok: `%|-%:OK`(C, ht)
 
-  ;; 6-typing.watsup:741.1-744.29
-  rule ref.func{C : context, x : idx, dt : deftype, x_1* : idx*, x_2* : idx*}:
+  ;; 6-typing.watsup:741.1-744.20
+  rule ref.func{C : context, x : idx, dt : deftype}:
     `%|-%:%`(C, REF.FUNC_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([REF_valtype(`NULL%?`_nul(?()), (dt : deftype <: heaptype))])))
     -- if (x!`%`_idx.0 < |C.FUNCS_context|)
     -- if (C.FUNCS_context[x!`%`_idx.0] = dt)
-    -- if (C.REFS_context = x_1*{x_1 : funcidx} :: [x] :: x_2*{x_2 : funcidx})
+    -- if x <- C.REFS_context
 
   ;; 6-typing.watsup:746.1-747.34
   rule ref.i31{C : context}:
@@ -24045,28 +23979,6 @@ relation Expr_ok: `%|-%:%`(context, expr, resulttype)
     -- Instrs_ok: `%|-%:%`(C, instr*{instr : instr}, `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype(t*{t : valtype})))
 
 ;; 6-typing.watsup
-rec {
-
-;; 6-typing.watsup:1161.1-1161.86
-def $in_binop(numtype : numtype, binop_ : binop_(numtype), binop_(numtype)*) : bool
-  ;; 6-typing.watsup:1162.1-1162.38
-  def $in_binop{nt : numtype, binop : binop_(nt)}(nt, binop, []) = false
-  ;; 6-typing.watsup:1163.1-1163.99
-  def $in_binop{nt : numtype, binop : binop_(nt), ibinop_1 : binop_(nt), ibinop'* : binop_(nt)*}(nt, binop, [ibinop_1] :: ibinop'*{ibinop' : binop_(nt)}) = ((binop = ibinop_1) \/ $in_binop(nt, binop, ibinop'*{ibinop' : binop_(nt)}))
-}
-
-;; 6-typing.watsup
-rec {
-
-;; 6-typing.watsup:1157.1-1157.63
-def $in_numtype(numtype : numtype, numtype*) : bool
-  ;; 6-typing.watsup:1158.1-1158.33
-  def $in_numtype{nt : numtype}(nt, []) = false
-  ;; 6-typing.watsup:1159.1-1159.68
-  def $in_numtype{nt : numtype, nt_1 : numtype, nt'* : numtype*}(nt, [nt_1] :: nt'*{nt' : numtype}) = ((nt = nt_1) \/ $in_numtype(nt, nt'*{nt' : numtype}))
-}
-
-;; 6-typing.watsup
 relation Instr_const: `%|-%CONST`(context, instr)
   ;; 6-typing.watsup
   rule const{C : context, nt : numtype, c_nt : num_(nt)}:
@@ -24125,8 +24037,8 @@ relation Instr_const: `%|-%CONST`(context, instr)
   ;; 6-typing.watsup
   rule binop{C : context, Inn : Inn, binop : binop_((Inn : Inn <: numtype))}:
     `%|-%CONST`(C, BINOP_instr((Inn : Inn <: numtype), binop))
-    -- if $in_numtype((Inn : Inn <: numtype), [I32_numtype I64_numtype])
-    -- if $in_binop((Inn : Inn <: numtype), binop, [ADD_binop_ SUB_binop_ MUL_binop_])
+    -- if Inn <- [I32_Inn I64_Inn]
+    -- if binop <- [ADD_binop_ SUB_binop_ MUL_binop_]
 
 ;; 6-typing.watsup
 relation Expr_const: `%|-%CONST`(context, expr)
@@ -24298,13 +24210,13 @@ relation Export_ok: `%|-%:%`(context, export, externtype)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1306.1-1306.100
+;; 6-typing.watsup:1297.1-1297.100
 relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
-  ;; 6-typing.watsup:1348.1-1349.17
+  ;; 6-typing.watsup:1339.1-1340.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1351.1-1354.55
+  ;; 6-typing.watsup:1342.1-1345.55
   rule cons{C : context, global_1 : global, global : global, gt_1 : globaltype, gt* : globaltype*}:
     `%|-%:%`(C, [global_1] :: global*{}, [gt_1] :: gt*{gt : globaltype})
     -- Global_ok: `%|-%:%`(C, global, gt_1)
@@ -24314,13 +24226,13 @@ relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1305.1-1305.98
+;; 6-typing.watsup:1296.1-1296.98
 relation Types_ok: `%|-%:%`(context, type*, deftype*)
-  ;; 6-typing.watsup:1340.1-1341.17
+  ;; 6-typing.watsup:1331.1-1332.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1343.1-1346.50
+  ;; 6-typing.watsup:1334.1-1337.50
   rule cons{C : context, type_1 : type, type* : type*, dt_1* : deftype*, dt* : deftype*}:
     `%|-%:%`(C, [type_1] :: type*{type : type}, dt_1*{dt_1 : deftype} :: dt*{dt : deftype})
     -- Type_ok: `%|-%:%`(C, type_1, dt_1*{dt_1 : deftype})
@@ -30162,12 +30074,12 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     `%|-%:%`(C, REF.NULL_instr(ht), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([REF_valtype(`NULL%?`_nul(?(())), ht)])))
     -- Heaptype_ok: `%|-%:OK`(C, ht)
 
-  ;; 6-typing.watsup:741.1-744.29
-  rule ref.func{C : context, x : idx, dt : deftype, x_1* : idx*, x_2* : idx*}:
+  ;; 6-typing.watsup:741.1-744.20
+  rule ref.func{C : context, x : idx, dt : deftype}:
     `%|-%:%`(C, REF.FUNC_instr(x), `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype([REF_valtype(`NULL%?`_nul(?()), (dt : deftype <: heaptype))])))
     -- if (x!`%`_idx.0 < |C.FUNCS_context|)
+    -- if x <- C.REFS_context
     -- where dt = C.FUNCS_context[x!`%`_idx.0]
-    -- where x_1*{x_1 : funcidx} :: [x] :: x_2*{x_2 : funcidx} = C.REFS_context
 
   ;; 6-typing.watsup:746.1-747.34
   rule ref.i31{C : context}:
@@ -30675,28 +30587,6 @@ relation Expr_ok: `%|-%:%`(context, expr, resulttype)
     -- Instrs_ok: `%|-%:%`(C, instr*{instr : instr}, `%->_%%`_instrtype(`%`_resulttype([]), [], `%`_resulttype(t*{t : valtype})))
 
 ;; 6-typing.watsup
-rec {
-
-;; 6-typing.watsup:1161.1-1161.86
-def $in_binop(numtype : numtype, binop_ : binop_(numtype), binop_(numtype)*) : bool
-  ;; 6-typing.watsup:1162.1-1162.38
-  def $in_binop{nt : numtype, binop : binop_(nt)}(nt, binop, []) = false
-  ;; 6-typing.watsup:1163.1-1163.99
-  def $in_binop{nt : numtype, binop : binop_(nt), ibinop_1 : binop_(nt), ibinop'* : binop_(nt)*}(nt, binop, [ibinop_1] :: ibinop'*{ibinop' : binop_(nt)}) = ((binop = ibinop_1) \/ $in_binop(nt, binop, ibinop'*{ibinop' : binop_(nt)}))
-}
-
-;; 6-typing.watsup
-rec {
-
-;; 6-typing.watsup:1157.1-1157.63
-def $in_numtype(numtype : numtype, numtype*) : bool
-  ;; 6-typing.watsup:1158.1-1158.33
-  def $in_numtype{nt : numtype}(nt, []) = false
-  ;; 6-typing.watsup:1159.1-1159.68
-  def $in_numtype{nt : numtype, nt_1 : numtype, nt'* : numtype*}(nt, [nt_1] :: nt'*{nt' : numtype}) = ((nt = nt_1) \/ $in_numtype(nt, nt'*{nt' : numtype}))
-}
-
-;; 6-typing.watsup
 relation Instr_const: `%|-%CONST`(context, instr)
   ;; 6-typing.watsup
   rule const{C : context, nt : numtype, c_nt : num_(nt)}:
@@ -30755,8 +30645,8 @@ relation Instr_const: `%|-%CONST`(context, instr)
   ;; 6-typing.watsup
   rule binop{C : context, Inn : Inn, binop : binop_((Inn : Inn <: numtype))}:
     `%|-%CONST`(C, BINOP_instr((Inn : Inn <: numtype), binop))
-    -- if $in_numtype((Inn : Inn <: numtype), [I32_numtype I64_numtype])
-    -- if $in_binop((Inn : Inn <: numtype), binop, [ADD_binop_ SUB_binop_ MUL_binop_])
+    -- if Inn <- [I32_Inn I64_Inn]
+    -- if binop <- [ADD_binop_ SUB_binop_ MUL_binop_]
 
 ;; 6-typing.watsup
 relation Expr_const: `%|-%CONST`(context, expr)
@@ -30928,13 +30818,13 @@ relation Export_ok: `%|-%:%`(context, export, externtype)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1306.1-1306.100
+;; 6-typing.watsup:1297.1-1297.100
 relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
-  ;; 6-typing.watsup:1348.1-1349.17
+  ;; 6-typing.watsup:1339.1-1340.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1351.1-1354.55
+  ;; 6-typing.watsup:1342.1-1345.55
   rule cons{C : context, global_1 : global, global : global, gt_1 : globaltype, gt* : globaltype*}:
     `%|-%:%`(C, [global_1] :: global*{}, [gt_1] :: gt*{gt : globaltype})
     -- Global_ok: `%|-%:%`(C, global, gt_1)
@@ -30944,13 +30834,13 @@ relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
 ;; 6-typing.watsup
 rec {
 
-;; 6-typing.watsup:1305.1-1305.98
+;; 6-typing.watsup:1296.1-1296.98
 relation Types_ok: `%|-%:%`(context, type*, deftype*)
-  ;; 6-typing.watsup:1340.1-1341.17
+  ;; 6-typing.watsup:1331.1-1332.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1343.1-1346.50
+  ;; 6-typing.watsup:1334.1-1337.50
   rule cons{C : context, type_1 : type, type* : type*, dt_1* : deftype*, dt* : deftype*}:
     `%|-%:%`(C, [type_1] :: type*{type : type}, dt_1*{dt_1 : deftype} :: dt*{dt : deftype})
     -- Type_ok: `%|-%:%`(C, type_1, dt_1*{dt_1 : deftype})

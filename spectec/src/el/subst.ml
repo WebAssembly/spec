@@ -138,6 +138,7 @@ and subst_exp s e =
   | DotE (e1, atom) -> DotE (subst_exp s e1, atom)
   | CommaE (e1, e2) -> CommaE (subst_exp s e1, subst_exp s e2)
   | CompE (e1, e2) -> CompE (subst_exp s e1, subst_exp s e2)
+  | MemE (e1, e2) -> MemE (subst_exp s e1, subst_exp s e2)
   | LenE e1 -> LenE (subst_exp s e1)
   | SizeE id -> SizeE (subst_gramid s id)
   | ParenE (e1, b) -> ParenE (subst_exp s e1, b)

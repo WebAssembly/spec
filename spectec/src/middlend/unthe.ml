@@ -136,6 +136,7 @@ and t_exp' n e : eqns * exp' =
   | IdxE (exp1, exp2) -> t_ee n (exp1, exp2) (fun (e1', e2') -> IdxE (e1', e2'))
   | CompE (exp1, exp2) -> t_ee n (exp1, exp2) (fun (e1', e2') -> CompE (e1', e2'))
   | CatE (exp1, exp2) -> t_ee n (exp1, exp2) (fun (e1', e2') -> CatE (e1', e2'))
+  | MemE (exp1, exp2) -> t_ee n (exp1, exp2) (fun (e1', e2') -> MemE (e1', e2'))
 
   | SliceE (exp1, exp2, exp3) -> t_eee n (exp1, exp2, exp3) (fun (e1', e2', e3') -> SliceE (e1', e2', e3'))
 

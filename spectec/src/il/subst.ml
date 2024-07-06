@@ -118,6 +118,7 @@ and subst_exp s e =
   | StrE efs -> StrE (subst_list subst_expfield s efs)
   | DotE (e1, atom) -> DotE (subst_exp s e1, atom)
   | CompE (e1, e2) -> CompE (subst_exp s e1, subst_exp s e2)
+  | MemE (e1, e2) -> MemE (subst_exp s e1, subst_exp s e2)
   | LenE e1 -> LenE (subst_exp s e1)
   | TupE es -> TupE (subst_list subst_exp s es)
   | CallE (id, as_) -> CallE (subst_defid s id, subst_args s as_)

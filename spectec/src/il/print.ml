@@ -134,6 +134,7 @@ and string_of_exp e =
   | DotE (e1, atom) ->
     string_of_exp e1 ^ "." ^ string_of_mixop [[atom]] ^ "_" ^ string_of_typ_name e1.note
   | CompE (e1, e2) -> string_of_exp e1 ^ " ++ " ^ string_of_exp e2
+  | MemE (e1, e2) -> string_of_exp e1 ^ " <- " ^ string_of_exp e2
   | LenE e1 -> "|" ^ string_of_exp e1 ^ "|"
   | TupE es -> "(" ^ string_of_exps ", " es ^ ")"
   | CallE (id, as1) -> "$" ^ id.it ^ string_of_args as1

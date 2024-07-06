@@ -5644,7 +5644,7 @@ $$
 \frac{
 C{.}\mathsf{funcs}{}[x] = {\mathit{dt}}
  \qquad
-C{.}\mathsf{refs} = {x_1^\ast}~x~{x_2^\ast}
+x \in C{.}\mathsf{refs}
 }{
 C \vdash \mathsf{ref{.}func}~x : \epsilon \rightarrow (\mathsf{ref}~{\mathit{dt}})
 } \, {[\textsc{\scriptsize T{-}ref.func}]}
@@ -6683,20 +6683,6 @@ C{.}\mathsf{globals}{}[x] = t
 C \vdash (\mathsf{global{.}get}~x)~\mathsf{const}
 } \, {[\textsc{\scriptsize C{-}instr{-}global.get}]}
 \qquad
-\end{array}
-$$
-
-$$
-\begin{array}{@{}lcl@{}l@{}}
-{\mathit{nt}} \in \epsilon &=& \mathsf{false} \\
-{\mathit{nt}} \in {\mathit{nt}}_1~{{\mathit{nt}'}^\ast} &=& {\mathit{nt}} = {\mathit{nt}}_1 \lor {\mathit{nt}} \in {{\mathit{nt}'}^\ast} \\
-\end{array}
-$$
-
-$$
-\begin{array}{@{}lcl@{}l@{}}
-{\mathit{binop}} \in \epsilon &=& \mathsf{false} \\
-{\mathit{binop}} \in ({\mathit{ibinop}}_1)~{{\mathit{ibinop}'}^\ast} &=& {\mathit{binop}} = {\mathit{ibinop}}_1 \lor {\mathit{binop}} \in {{\mathit{ibinop}'}^\ast} \\
 \end{array}
 $$
 

@@ -3816,8 +3816,8 @@ validation_of_REF.NULL ht
 
 validation_of_REF.FUNC x
 - |C.FUNCS| must be greater than x.
+- x must be contained in C.REFS.
 - Let dt be C.FUNCS[x].
-- Let x_1* ++ [x] ++ x_2* be C.REFS.
 - The instruction is valid with type ([] ->_ [] ++ [(REF (NULL ?()) dt)]).
 
 validation_of_REF.I31
@@ -6168,18 +6168,6 @@ unrollht C heapt_u0
 3. Assert: Due to validation, heapt_u0 is of the case REC.
 4. Let (REC i) be heapt_u0.
 5. Return C.RECS[i].
-
-in_binop nt binop binop_u0*
-1. If (binop_u0* is []), then:
-  a. Return false.
-2. Let [ibinop_1] ++ ibinop'* be binop_u0*.
-3. Return ((binop is ibinop_1) or $in_binop(nt, binop, ibinop'*)).
-
-in_numtype nt numty_u0*
-1. If (numty_u0* is []), then:
-  a. Return false.
-2. Let [nt_1] ++ nt'* be numty_u0*.
-3. Return ((nt is nt_1) or $in_numtype(nt, nt'*)).
 
 funcidx_nonfuncs YetE (`%%%%%`_nonfuncs(global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data}))
 1. Return $funcidx_module((MODULE [] [] [] global* table* mem* elem* data* [] [])).

@@ -245,6 +245,19 @@ and reduce_exp env e : exp =
       in StrE (List.map2 merge efs1 efs2)
     | _ -> CompE (e1', e2')
     ) $> e
+  | MemE (e1, e2) ->
+    let e1' = reduce_exp env e1 in
+    let e2' = reduce_exp env e2 in
+    (match e2'.it with
+    | OptE None | ListE [] -> BoolE false $> e
+    | OptE (Some e21') -> reduce_exp env (CmpE (EqOp, e1', e21') $> e)
+    | ListE (e21'::es2') ->
+      reduce_exp env (BinE (OrOp,
+        CmpE (EqOp, e1', e21') $> e,
+        MemE (e1', ListE es2' $> e2) $> e
+      ) $> e)
+    | _ -> MemE (e1', e2') $> e
+    )
   | LenE e1 ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with

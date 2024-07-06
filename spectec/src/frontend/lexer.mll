@@ -184,7 +184,7 @@ and token = parse
   | "+-" { PLUSMINUS }
   | "-+" { MINUSPLUS }
 
-  | "<-" { IN }
+  | "<-" { MEM }
   | "->" { ARROW }
   | "=>" { ARROW2 }
   | "->_" { ARROWSUB }

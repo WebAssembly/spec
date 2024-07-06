@@ -127,7 +127,7 @@ and exp e =
   | OptE eo -> opt exp eo
   | StrE efs -> list expfield efs
   | DotE (e1, at) -> exp e1; atom at
-  | CompE (e1, e2) | CatE (e1, e2) | IdxE (e1, e2) -> exp e1; exp e2
+  | CompE (e1, e2) | MemE (e1, e2) | CatE (e1, e2) | IdxE (e1, e2) -> exp e1; exp e2
   | SliceE (e1, e2, e3) -> exp e1; exp e2; exp e3
   | UpdE (e1, p, e2) | ExtE (e1, p, e2) -> exp e1; path p; exp e2
   | CallE (x, as_) -> defid x; args as_

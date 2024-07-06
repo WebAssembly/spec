@@ -145,6 +145,8 @@ and string_of_expr expr =
   | CallE (id, el) -> sprintf "$%s(%s)" id (string_of_exprs ", " el)
   | CatE (e1, e2) ->
     sprintf "%s ++ %s" (string_of_expr e1) (string_of_expr e2)
+  | MemE (e1, e2) ->
+    sprintf "%s <- %s" (string_of_expr e1) (string_of_expr e2)
   | LenE e -> sprintf "|%s|" (string_of_expr e)
   | ArityE e -> sprintf "the arity of %s" (string_of_expr e)
   | GetCurStateE -> "the current state"
@@ -422,6 +424,12 @@ and structured_string_of_expr expr =
   | CallE (id, el) -> "CallE (" ^ id ^ ", [ " ^ structured_string_of_exprs el ^ " ])"
   | CatE (e1, e2) ->
     "CatE ("
+    ^ structured_string_of_expr e1
+    ^ ", "
+    ^ structured_string_of_expr e2
+    ^ ")"
+  | MemE (e1, e2) ->
+    "MemE ("
     ^ structured_string_of_expr e1
     ^ ", "
     ^ structured_string_of_expr e2

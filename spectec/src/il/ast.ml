@@ -94,6 +94,7 @@ and exp' =
   | DotE of exp * atom           (* exp.atom *)
   | CompE of exp * exp           (* exp @ exp *)
   | ListE of exp list            (* [exp ... exp] *)
+  | MemE of exp * exp            (* exp `<-` exp *)
   | LenE of exp                  (* |exp| *)
   | CatE of exp * exp            (* exp :: exp *)
   | IdxE of exp * exp            (* exp[exp]` *)

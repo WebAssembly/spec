@@ -200,6 +200,11 @@ and translate_exp exp =
       | Il.GeOp _ -> GeOp
     in
     binE (compare_op, lhs, rhs) ~at:at
+  (* Set operation *)
+  | Il.MemE (exp1, exp2) ->
+    let lhs = translate_exp exp1 in
+    let rhs = translate_exp exp2 in
+    memE (lhs, rhs) ~at:at
   (* Tuple *)
   | Il.TupE [e] -> translate_exp e
   | Il.TupE exps -> tupE (List.map translate_exp exps) ~at:at

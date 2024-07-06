@@ -117,6 +117,7 @@ and exp' =
   | DotE of exp * atom           (* exp `.` atom *)
   | CommaE of exp * exp          (* exp `,` exp *)
   | CompE of exp * exp           (* exp `++` exp *)
+  | MemE of exp * exp            (* exp `<-` exp *)
   | LenE of exp                  (* `|` exp `|` *)
   | SizeE of id                  (* `||` exp `||` *)
   | ParenE of exp * [`Sig | `Insig]  (* `(` exp `)` *)

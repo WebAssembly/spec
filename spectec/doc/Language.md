@@ -138,6 +138,7 @@ exp ::=
   exp "." atom                         record access
   exp "," exp                          record extension
   exp "++" exp                         list and record composition
+  exp "<-" exp                         list membership
   "|" exp "|"                          list length
   "||" gramid "||"                     expansion length
   "(" list(exp, ",") ")"               parentheses or tupling

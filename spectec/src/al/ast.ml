@@ -85,6 +85,7 @@ and expr' =
   | ExtE of expr * path list * expr * extend_dir (* expr `[` path* `]` `:+` expr *)
   | StrE of (atom, expr) record         (* `{` (atom `->` expr)* `}` *)
   | CatE of expr * expr                 (* expr `++` expr *)
+  | MemE of expr * expr                 (* expr `<-` expr *)
   | LenE of expr                        (* `|` expr `|` *)
   | TupE of expr list                   (* `(` (expr `,`)* `)` *)
   | CaseE of atom * expr list           (* atom `(` expr* `)` -- MixE/CaseE *)

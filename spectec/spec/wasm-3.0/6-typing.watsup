@@ -741,7 +741,7 @@ rule Instr_ok/ref.null:
 rule Instr_ok/ref.func:
   C |- REF.FUNC x : eps -> (REF dt)
   -- if C.FUNCS[x] = dt
-  -- if C.REFS = x_1* x x_2*  ;; TODO(2, rossberg): use elementof
+  -- if x <- C.REFS
 
 rule Instr_ok/ref.i31:
   C |- REF.I31 : I32 -> (REF I31)
@@ -1153,19 +1153,10 @@ rule Instr_const/global.get:
   C |- (GLOBAL.GET x) CONST
   -- if C.GLOBALS[x] = t
 
-;; TODO(2, rossberg): built in elemof
-def $in_numtype(numtype, numtype*) : bool    hint(show % <- %)
-def $in_numtype(nt, eps) = false
-def $in_numtype(nt, nt_1 nt'*) = nt = nt_1 \/ $in_numtype(nt, nt'*)
-
-def $in_binop(numtype, binop_(numtype), binop_(numtype)*) : bool  hint(show %2 <- %3)
-def $in_binop(nt, binop, eps) = false
-def $in_binop(nt, binop, (ibinop_1) ibinop'*) = binop = ibinop_1 \/ $in_binop(nt, binop, ibinop'*)
-
 rule Instr_const/binop:
   C |- (BINOP Inn binop) CONST
-  -- if $in_numtype(Inn, I32 I64)
-  -- if $in_binop(Inn, binop, ADD SUB MUL)
+  -- if Inn <- I32 I64
+  -- if binop <- ADD SUB MUL
 
 
 rule Expr_const: C |- instr* CONST

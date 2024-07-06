@@ -417,6 +417,10 @@ let rec render_prose_instr env depth = function
       (String.capitalize_ascii (render_expr env e1))
       (render_prose_cmpop cmpop)
       (render_expr env e2)
+  | MemI (e1, e2) ->
+    sprintf "* %s must be contained in %s."
+      (String.capitalize_ascii (render_expr env e1))
+      (render_expr env e2)
   | MustValidI (e1, e2, e3) ->
     sprintf "* Under the context %s, %s must be valid%s."
       (render_expr env e1)

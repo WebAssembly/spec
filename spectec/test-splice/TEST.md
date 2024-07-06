@@ -1317,8 +1317,6 @@ warning: definition `ilt` was never spliced
 warning: definition `imax` was never spliced
 warning: definition `imin` was never spliced
 warning: definition `imul` was never spliced
-warning: definition `in_binop` was never spliced
-warning: definition `in_numtype` was never spliced
 warning: definition `ine` was never spliced
 warning: definition `ineg` was never spliced
 warning: definition `inot` was never spliced
@@ -1799,8 +1797,6 @@ warning: definition prose `growmem` was never spliced
 warning: definition prose `growtable` was never spliced
 warning: definition prose `half` was never spliced
 warning: definition prose `idx` was never spliced
-warning: definition prose `in_binop` was never spliced
-warning: definition prose `in_numtype` was never spliced
 warning: definition prose `inst_reftype` was never spliced
 warning: definition prose `inst_valtype` was never spliced
 warning: definition prose `instantiate` was never spliced

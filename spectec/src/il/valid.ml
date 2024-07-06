@@ -287,7 +287,7 @@ and infer_exp env e : typ =
   | TextE _ -> TextT $ e.at
   | UnE (op, _) -> let _t1, t' = infer_unop op in t' $ e.at
   | BinE (op, _, _) -> let _t1, _t2, t' = infer_binop op in t' $ e.at
-  | CmpE _ -> BoolT $ e.at
+  | CmpE _ | MemE _ -> BoolT $ e.at
   | IdxE (e1, _) -> as_list_typ "expression" env Infer (infer_exp env e1) e1.at
   | SliceE (e1, _, _)
   | UpdE (e1, _, _)
@@ -400,6 +400,11 @@ try
     let _ = as_comp_typ "expression" env Check t e.at in
     valid_exp env e1 t;
     valid_exp env e2 t
+  | MemE (e1, e2) ->
+    let t1 = infer_exp env e1 in
+    valid_exp env e1 t1;
+    valid_exp env e2 (IterT (t1, List) $ e2.at);
+    equiv_typ env (BoolT $ e.at) t e.at
   | LenE e1 ->
     let t1 = infer_exp env e1 in
     let _typ11 = as_list_typ "expression" env Infer t1 e1.at in

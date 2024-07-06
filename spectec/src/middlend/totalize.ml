@@ -100,6 +100,7 @@ and t_exp' env = function
   | TheE exp -> TheE exp
   | ListE es -> ListE (List.map (t_exp env) es)
   | CatE (exp1, exp2) -> CatE (t_exp env exp1, t_exp env exp2)
+  | MemE (exp1, exp2) -> MemE (t_exp env exp1, t_exp env exp2)
   | CaseE (mixop, e) -> CaseE (mixop, t_exp env e)
   | SubE (exp, t1, t2) -> SubE (t_exp env exp, t_typ env t1, t_typ env t2)
 

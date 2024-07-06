@@ -985,6 +985,10 @@ and infer_exp' env e : Il.exp' * typ =
     let _ = as_comp_typ "expression" env Infer t1 e.at in
     let e2' = elab_exp env e2 t1 in
     Il.CompE (e1', e2'), t1
+  | MemE (e1, e2) ->
+    let e1', t1 = infer_exp env e1 in
+    let e2' = elab_exp env e2 (IterT (t1, List) $ e2.at) in
+    Il.MemE (e1', e2'), BoolT $ e.at
   | LenE e1 ->
     let e1', t1 = infer_exp env e1 in
     let _t11 = as_list_typ "expression" env Infer t1 e1.at in
@@ -1122,6 +1126,9 @@ and elab_exp' env e t : Il.exp' =
     let e1' = elab_exp env e1 t in
     let e2' = elab_exp env e2 t in
     Il.CompE (e1', e2')
+  | MemE _ ->
+    let e', t' = infer_exp env e in
+    cast_exp' "element operator" env e' t' t
   | LenE _ ->
     let e', t' = infer_exp env e in
     cast_exp' "list length" env e' t' t

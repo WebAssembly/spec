@@ -130,7 +130,7 @@ and free_exp e =
   | ParenE (e1, _) | BrackE (_, e1, _) | ArithE e1 | UnparenE e1 -> free_exp e1
   | SizeE id -> free_gramid id
   | BinE (e1, _, e2) | CmpE (e1, _, e2)
-  | IdxE (e1, e2) | CommaE (e1, e2) | CompE (e1, e2)
+  | IdxE (e1, e2) | CommaE (e1, e2) | CompE (e1, e2) | MemE (e1, e2)
   | InfixE (e1, _, e2) | FuseE (e1, e2) -> free_exp e1 + free_exp e2
   | SliceE (e1, e2, e3) -> free_exp e1 + free_exp e2 + free_exp e3
   | SeqE es | TupE es -> free_list free_exp es
@@ -172,7 +172,7 @@ and det_exp e =
   | TypE (e1, _) -> det_exp e1
   | AtomE _ | BoolE _ | NatE _ | TextE _ | EpsE -> empty
   | UnE _ | BinE _ | CmpE _
-  | IdxE _ | SliceE _ | UpdE _ | ExtE _ | CommaE _ | CompE _
+  | IdxE _ | SliceE _ | UpdE _ | ExtE _ | CommaE _ | CompE _ | MemE _
   | DotE _ | LenE _ | SizeE _ -> idx_exp e
   | HoleE _ | FuseE _ | UnparenE _ | LatexE _ -> assert false
 

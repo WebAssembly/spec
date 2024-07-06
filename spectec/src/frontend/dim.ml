@@ -145,6 +145,7 @@ and check_exp env ctx e =
   | IdxE (e1, e2)
   | CommaE (e1, e2)
   | CompE (e1, e2)
+  | MemE (e1, e2)
   | InfixE (e1, _, e2) ->
     check_exp env ctx e1;
     check_exp env ctx e2
@@ -404,6 +405,10 @@ and annot_exp env e : Il.Ast.exp * occur =
     | ListE es ->
       let es', occurs = List.split (List.map (annot_exp env) es) in
       ListE es', List.fold_left union Env.empty occurs
+    | MemE (e1, e2) ->
+      let e1', occur1 = annot_exp env e1 in
+      let e2', occur2 = annot_exp env e2 in
+      MemE (e1', e2'), union occur1 occur2
     | CatE (e1, e2) ->
       let e1', occur1 = annot_exp env e1 in
       let e2', occur2 = annot_exp env e2 in

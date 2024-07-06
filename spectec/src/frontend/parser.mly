@@ -69,7 +69,7 @@ let rec prec_of_exp = function  (* as far as iteration is concerned *)
   | ParenE _ | TupE _ | BrackE _ | CallE _ | HoleE _ -> Prim
   | AtomE _ | IdxE _ | SliceE _ | UpdE _ | ExtE _ | DotE _ | IterE _ -> Post
   | SeqE _ -> Seq
-  | UnE _ | BinE _ | CmpE _ | InfixE _ | LenE _ | SizeE _
+  | UnE _ | BinE _ | CmpE _ | MemE _ | InfixE _ | LenE _ | SizeE _
   | CommaE _ | CompE _ | TypE _ | FuseE _ | UnparenE _ | LatexE _ -> Op
   | ArithE e -> prec_of_exp e.it
 
@@ -123,7 +123,7 @@ let rec is_typcon t =
 %token NOT AND OR
 %token QUEST PLUS MINUS STAR SLASH BACKSLASH UP COMPOSE PLUSMINUS MINUSPLUS
 %token ARROW ARROW2 ARROWSUB ARROW2SUB DARROW2 SQARROW SQARROWSTAR
-%token IN PREC SUCC TURNSTILE TILESTURN
+%token MEM PREC SUCC TURNSTILE TILESTURN
 %token DOLLAR TICK
 %token BOT TOP
 %token HOLE MULTIHOLE NOTHING FUSE FUSEFUSE LATEX
@@ -146,7 +146,7 @@ let rec is_typcon t =
 %right SQARROW SQARROWSTAR PREC SUCC BIGCOMP BIGAND BIGOR
 %left COLON SUB SUP ASSIGN EQUIV APPROX
 %left COMMA COMMA_NL
-%right EQ NE LT GT LE GE IN
+%right EQ NE LT GT LE GE MEM
 %right ARROW ARROWSUB
 %left SEMICOLON
 %left DOT DOTDOT DOTDOTDOT
@@ -252,6 +252,7 @@ atom_ :
   | atom_escape { $1 }
 atom_escape :
   | TICK EQ { Atom.Equal }
+  | TICK MEM { Atom.Mem }
   | TICK QUEST { Atom.Quest }
   | TICK PLUS { Atom.Plus }
   | TICK STAR { Atom.Star }
@@ -343,7 +344,6 @@ check_atom :
   | SUCC { Atom.Succ }
   | TILESTURN { Atom.Tilesturn }
   | TURNSTILE { Atom.Turnstile }
-  | IN { Atom.In }
 
 
 (* Iteration *)
@@ -583,6 +583,7 @@ exp_bin_ :
   | exp_bin COMPOSE exp_bin { CompE ($1, $3) }
   | exp_bin infixop exp_bin { InfixE ($1, $2, $3) }
   | exp_bin cmpop exp_bin { CmpE ($1, $2, $3) }
+  | exp_bin MEM exp_bin { MemE ($1, $3) }
   | exp_bin boolop exp_bin { BinE ($1, $2, $3) }
 
 exp_rel : exp_rel_ { $1 $ $sloc }
@@ -647,6 +648,7 @@ arith_bin_ :
   | arith_un_ { $1 }
   | arith_bin binop arith_bin { BinE ($1, $2, $3) }
   | arith_bin cmpop arith_bin { CmpE ($1, $2, $3) }
+  | arith_bin MEM arith_bin { MemE ($1, $3) }
   | arith_bin boolop arith_bin { BinE ($1, $2, $3) }
 
 arith : arith_bin { $1 }

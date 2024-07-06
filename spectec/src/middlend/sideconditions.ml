@@ -88,6 +88,7 @@ let rec t_exp env e : prem list =
   | CmpE (_, exp1, exp2)
   | IdxE (exp1, exp2)
   | CompE (exp1, exp2)
+  | MemE (exp1, exp2)
   | CatE (exp1, exp2)
   -> t_exp env exp1 @ t_exp env exp2
   | SliceE (exp1, exp2, exp3)
