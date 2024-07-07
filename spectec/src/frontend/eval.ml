@@ -116,11 +116,19 @@ and reduce_typ_app env id args at = function
 
 (* Expression Reduction *)
 
+and is_head_normal_exp e =
+  match e.it with
+  | AtomE _ | BoolE _ | NatE _ | TextE _ | UnE (MinusOp, {it = NatE _; _})
+  | SeqE _ | TupE _ | InfixE _ | BrackE _ | StrE _ -> true
+  | _ -> false
+
 and is_normal_exp e =
   match e.it with
-  | AtomE _ | BoolE _ | NatE _ | TextE _ | SeqE _
-  | UnE (MinusOp, {it = NatE _; _})
-  | StrE _ | TupE _ | InfixE _ | BrackE _ -> true
+  | AtomE _ | BoolE _ | NatE _ | TextE _ | UnE (MinusOp, {it = NatE _; _}) -> true
+  | SeqE es | TupE es -> List.for_all is_normal_exp es
+  | BrackE (_, e, _) -> is_normal_exp e
+  | InfixE (e1, _, e2) -> is_normal_exp e1 && is_normal_exp e2
+  | StrE efs -> Convert.forall_nl_list (fun (_, e) -> is_normal_exp e) efs
   | _ -> false
 
 and reduce_exp env e : exp =
@@ -187,8 +195,10 @@ and reduce_exp env e : exp =
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
     (match op, e1'.it, e2'.it with
-    | EqOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE (Eq.eq_exp e1' e2')
-    | NeOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE (not (Eq.eq_exp e1' e2'))
+    | EqOp, _, _ when Eq.eq_exp e1' e2' -> BoolE true
+    | EqOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE false
+    | NeOp, _, _ when Eq.eq_exp e1' e2' -> BoolE false
+    | NeOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE true
     | LtOp, NatE (_, n1), NatE (_, n2) -> BoolE (n1 < n2)
     | LtOp, UnE (MinusOp, {it = NatE (_, n1); _}), UnE (MinusOp, {it = NatE (_, n2); _}) -> BoolE (n2 < n1)
     | LtOp, UnE (MinusOp, {it = NatE _; _}), NatE _ -> BoolE true
@@ -286,16 +296,11 @@ and reduce_exp env e : exp =
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
     (match e2'.it with
-    | SeqE [] -> BoolE false $ e.at
-    | SeqE (e21'::es2') ->
-      reduce_exp env (BinE (
-        CmpE (e1', EqOp, e21') $ e.at,
-        OrOp,
-        MemE (e1', SeqE es2' $ e2.at) $ e.at
-      ) $ e.at)
-    | _ when is_normal_exp e2' -> reduce_exp env (CmpE (e1', EqOp, e2') $ e.at)
-    | _ -> MemE (e1', e2') $ e.at
-    )
+    | SeqE [] -> BoolE false
+    | SeqE es2' when List.exists (Eq.eq_exp e1') es2' -> BoolE true
+    | SeqE es2' when is_normal_exp e1' && List.for_all is_normal_exp es2' -> BoolE false
+    | _ -> MemE (e1', e2')
+    ) $ e.at
   | LenE e1 ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with
@@ -488,7 +493,7 @@ and match_exp env s e1 e2 : subst option =
     let e2' = Subst.subst_exp s e2 in
     if equiv_exp env e1 e2' then
       Some s
-    else if is_normal_exp e1 && is_normal_exp e2' then
+    else if is_head_normal_exp e1 && is_head_normal_exp e2' then
       None
     else
       raise Irred
@@ -585,7 +590,7 @@ and match_exp env s e1 e2 : subst option =
     let* s' = match_exp env s e11 e21 in match_iter env s' iter1 iter2
   | (HoleE _ | FuseE _ | UnparenE _), _
   | _, (HoleE _ | FuseE _ | UnparenE _) -> assert false
-  | _, _ when is_normal_exp e1 -> None
+  | _, _ when is_head_normal_exp e1 -> None
   | _, _ -> raise Irred
 
 and match_expfield env s (atom1, e1) (atom2, e2) =

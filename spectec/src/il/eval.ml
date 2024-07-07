@@ -102,11 +102,20 @@ and reduce_typ_app' env id args at = function
 
 (* Expression Reduction *)
 
+and is_head_normal_exp e =
+  match e.it with
+  | BoolE _ | NatE _ | TextE _ | UnE (MinusOp _, {it = NatE _; _})
+  | OptE _ | ListE _ | TupE _ | CaseE _ | StrE _ -> true
+  | SubE (e, _, _) -> is_head_normal_exp e
+  | _ -> false
+
 and is_normal_exp e =
   match e.it with
-  | BoolE _ | NatE _ | TextE _ | ListE _ | OptE _
-  | UnE (MinusOp _, {it = NatE _; _})
-  | StrE _ | TupE _ | CaseE _ -> true
+  | BoolE _ | NatE _ | TextE _ | UnE (MinusOp _, {it = NatE _; _}) -> true
+  | ListE es | TupE es -> List.for_all is_normal_exp es
+  | OptE None -> true
+  | OptE (Some e) | CaseE (_, e) | SubE (e, _, _) -> is_normal_exp e
+  | StrE efs -> List.for_all (fun (_, e) -> is_normal_exp e) efs
   | _ -> false
 
 and reduce_exp env e : exp =
@@ -173,8 +182,10 @@ and reduce_exp env e : exp =
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
     (match op, e1'.it, e2'.it with
-    | EqOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE (Eq.eq_exp e1' e2')
-    | NeOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE (not (Eq.eq_exp e1' e2'))
+    | EqOp, _, _ when Eq.eq_exp e1' e2' -> BoolE true
+    | EqOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE false
+    | NeOp, _, _ when Eq.eq_exp e1' e2' -> BoolE false
+    | NeOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE true
     | LtOp _, NatE n1, NatE n2 -> BoolE (n1 < n2)
     | LtOp _, UnE (MinusOp _, {it = NatE n1; _}), UnE (MinusOp _, {it = NatE n2; _}) -> BoolE (n2 < n1)
     | LtOp _, UnE (MinusOp _, {it = NatE _; _}), NatE _ -> BoolE true
@@ -249,15 +260,14 @@ and reduce_exp env e : exp =
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
     (match e2'.it with
-    | OptE None | ListE [] -> BoolE false $> e
-    | OptE (Some e21') -> reduce_exp env (CmpE (EqOp, e1', e21') $> e)
-    | ListE (e21'::es2') ->
-      reduce_exp env (BinE (OrOp,
-        CmpE (EqOp, e1', e21') $> e,
-        MemE (e1', ListE es2' $> e2) $> e
-      ) $> e)
-    | _ -> MemE (e1', e2') $> e
-    )
+    | OptE None -> BoolE false
+    | OptE (Some e2') when Eq.eq_exp e1' e2' -> BoolE true
+    | OptE (Some e2') when is_normal_exp e1' && is_normal_exp e2' -> BoolE false
+    | ListE [] -> BoolE false
+    | ListE es2' when List.exists (Eq.eq_exp e1') es2' -> BoolE true
+    | ListE es2' when is_normal_exp e1' && List.for_all is_normal_exp es2' -> BoolE false
+    | _ -> MemE (e1', e2')
+    ) $> e
   | LenE e1 ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with
@@ -355,7 +365,7 @@ and reduce_exp env e : exp =
         )
       | _ -> SubE (e1', t1', t2') $> e
       )
-    | _ when is_normal_exp e1' ->
+    | _ when is_head_normal_exp e1' ->
       {e1' with note = e.note}
     | _ -> SubE (e1', t1', t2') $> e
     )
@@ -607,7 +617,7 @@ and match_exp' env s e1 e2 : subst option =
   | _, SubE (e21, t21, _t22) ->
     if sub_typ env e1.note t21 then
       match_exp' env s (reduce_exp env (SubE (e1, e1.note, t21) $> e21)) e21
-    else if is_normal_exp e1 then
+    else if is_head_normal_exp e1 then
       let t21' = reduce_typ env t21 in
       if
         match e1.it, t21'.it with
@@ -629,7 +639,7 @@ and match_exp' env s e1 e2 : subst option =
       then match_exp' env s {e1 with note = t21} e21
       else None
     else raise Irred
-  | _, _ when is_normal_exp e1 -> None
+  | _, _ when is_head_normal_exp e1 -> None
   | _, _ ->
     raise Irred
 
