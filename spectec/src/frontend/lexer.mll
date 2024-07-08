@@ -169,7 +169,7 @@ and token = parse
   | "~" { NOT }
   | "/\\" { AND }
   | "\\/" { OR }
-  | "(++)" { BIGCOMP }
+  | "(++)" { BIGCAT }
   | "(/\\)" { BIGAND }
   | "(\\/)" { BIGOR }
 
@@ -180,7 +180,7 @@ and token = parse
   | "/" { SLASH }
   | "\\" { BACKSLASH }
   | "^" { UP }
-  | "++" { COMPOSE }
+  | "++" { CAT }
   | "+-" { PLUSMINUS }
   | "-+" { MINUSPLUS }
 

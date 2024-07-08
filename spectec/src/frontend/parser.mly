@@ -117,11 +117,11 @@ let rec is_typcon t =
 %}
 
 %token LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE
-%token COLON SEMICOLON COMMA DOT DOTDOT DOTDOTDOT BAR BARBAR DASH BIGCOMP BIGAND BIGOR
+%token COLON SEMICOLON COMMA DOT DOTDOT DOTDOTDOT BAR BARBAR DASH BIGCAT BIGAND BIGOR
 %token COMMA_NL NL_BAR NL_NL_NL
 %token EQ NE LT GT LE GE APPROX EQUIV ASSIGN SUB SUP EQDOT2
 %token NOT AND OR
-%token QUEST PLUS MINUS STAR SLASH BACKSLASH UP COMPOSE PLUSMINUS MINUSPLUS
+%token QUEST PLUS MINUS STAR SLASH BACKSLASH UP CAT PLUSMINUS MINUSPLUS
 %token ARROW ARROW2 ARROWSUB ARROW2SUB DARROW2 SQARROW SQARROWSTAR
 %token MEM PREC SUCC TURNSTILE TILESTURN
 %token DOLLAR TICK
@@ -143,14 +143,14 @@ let rec is_typcon t =
 %left AND
 %nonassoc TURNSTILE
 %nonassoc TILESTURN
-%right SQARROW SQARROWSTAR PREC SUCC BIGCOMP BIGAND BIGOR
+%right SQARROW SQARROWSTAR PREC SUCC BIGCAT BIGAND BIGOR
 %left COLON SUB SUP ASSIGN EQUIV APPROX
 %left COMMA COMMA_NL
 %right EQ NE LT GT LE GE MEM
 %right ARROW ARROWSUB
 %left SEMICOLON
 %left DOT DOTDOT DOTDOTDOT
-%left PLUS MINUS COMPOSE
+%left PLUS MINUS CAT
 %left STAR SLASH BACKSLASH
 
 %start script typ_eof exp_eof sym_eof check_atom
@@ -257,7 +257,7 @@ atom_escape :
   | TICK PLUS { Atom.Plus }
   | TICK STAR { Atom.Star }
   | TICK BAR { Atom.Bar }
-  | TICK COMPOSE { Atom.Comp }
+  | TICK CAT { Atom.Comp }
   | TICK COMMA { Atom.Comma }
   | TICK ARROW2 { Atom.Arrow2 }
   | TICK infixop_ { $2 }
@@ -325,7 +325,7 @@ check_atom :
   | ARROW { Atom.Arrow }
   | ARROWSUB { Atom.ArrowSub }
   | ARROW2SUB { Atom.Arrow2Sub }
-  | BIGCOMP { Atom.BigComp }
+  | BIGCAT { Atom.BigComp }
   | BIGAND { Atom.BigAnd }
   | BIGOR { Atom.BigOr }
 
@@ -580,7 +580,7 @@ exp_un_ :
 exp_bin : exp_bin_ { $1 $ $sloc }
 exp_bin_ :
   | exp_un_ { $1 }
-  | exp_bin COMPOSE exp_bin { CompE ($1, $3) }
+  | exp_bin CAT exp_bin { CompE ($1, $3) }
   | exp_bin infixop exp_bin { InfixE ($1, $2, $3) }
   | exp_bin cmpop exp_bin { CmpE ($1, $2, $3) }
   | exp_bin MEM exp_bin { MemE ($1, $3) }
