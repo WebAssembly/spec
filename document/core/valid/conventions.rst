@@ -234,8 +234,6 @@ $${syntax: context}
 
 In addition to field access written ${:C.FIELD}, the following notation is adopted for manipulating contexts:
 
-* When spelling out a context, empty fields are omitted.
-
 * ${:C, FIELD A*} denotes the same context as ${:C} but with the elements ${:A*} prepended to its ${:FIELD} component sequence.
 
 .. note::
