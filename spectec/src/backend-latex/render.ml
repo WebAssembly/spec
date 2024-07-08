@@ -531,10 +531,10 @@ and expand_exp env ctxt e =
     let e1' = expand_exp env ctxt e1 in
     let e2' = expand_exp env ctxt e2 in
     CommaE (e1', e2')
-  | CompE (e1, e2) ->
+  | CatE (e1, e2) ->
     let e1' = expand_exp env ctxt e1 in
     let e2' = expand_exp env ctxt e2 in
-    CompE (e1', e2')
+    CatE (e1', e2')
   | MemE (e1, e2) ->
     let e1' = expand_exp env ctxt e1 in
     let e2' = expand_exp env ctxt e2 in
@@ -875,9 +875,8 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
           | Sup -> "\\geq"
           | SqArrow -> "\\hookrightarrow"
           | SqArrowStar -> "\\hookrightarrow^\\ast"
-          | Comp -> "\\oplus"
+          | Cat -> "\\oplus"
           | Bar -> "\\mid"
-          | BigComp -> "\\bigoplus"
           | _ -> "\\" ^ Atom.name atom
     )
 
@@ -1055,7 +1054,7 @@ Printf.eprintf "[render %s:X @ %s] try expansion\n%!" (Source.string_of_region e
     "\\end{array}"
   | DotE (e1, atom) -> render_exp env e1 ^ "{.}" ^ render_fieldname env atom
   | CommaE (e1, e2) -> render_exp env e1 ^ ", " ^ render_exp env e2
-  | CompE (e1, e2) -> render_exp env e1 ^ " \\oplus " ^ render_exp env e2
+  | CatE (e1, e2) -> render_exp env e1 ^ " \\oplus " ^ render_exp env e2
   | MemE (e1, e2) -> render_exp env e1 ^ " \\in " ^ render_exp env e2
   | LenE e1 -> "{|" ^ render_exp env e1 ^ "|}"
   | SizeE id -> "||" ^ render_gramid env id ^ "||"

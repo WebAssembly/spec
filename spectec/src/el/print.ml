@@ -154,7 +154,7 @@ and string_of_exp e =
   | StrE efs -> "{" ^ concat ", " (map_filter_nl_list string_of_expfield efs) ^ "}"
   | DotE (e1, atom) -> string_of_exp e1 ^ "." ^ string_of_atom atom
   | CommaE (e1, e2) -> string_of_exp e1 ^ ", " ^ string_of_exp e2
-  | CompE (e1, e2) -> string_of_exp e1 ^ " ++ " ^ string_of_exp e2
+  | CatE (e1, e2) -> string_of_exp e1 ^ " ++ " ^ string_of_exp e2
   | MemE (e1, e2) -> string_of_exp e1 ^ " <- " ^ string_of_exp e2
   | LenE e1 -> "|" ^ string_of_exp e1 ^ "|"
   | SizeE id -> "||" ^ string_of_gramid id ^ "||"

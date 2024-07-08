@@ -37,11 +37,8 @@ and atom' =
   | Plus                         (* ``+` *)
   | Star                         (* ``*` *)
   | Comma                        (* ``,` *)
-  | Comp                         (* ``++` *)
+  | Cat                          (* ``++` *)
   | Bar                          (* ``|` *)
-  | BigComp                      (* `(++)` *)
-  | BigAnd                       (* `(/\)` *)
-  | BigOr                        (* `(\/)` *)
   | LParen | RParen              (* ``(` `)` *)
   | LBrack | RBrack              (* ``[` `]` *)
   | LBrace | RBrace              (* ``{` `}` *)
@@ -93,11 +90,8 @@ let to_string atom =
   | Plus -> "+"
   | Star -> "*"
   | Comma -> ","
-  | Comp -> "++"
+  | Cat -> "++"
   | Bar -> "|"
-  | BigComp -> "(++)"
-  | BigAnd -> "(/\\)"
-  | BigOr -> "(\\/)"
   | LParen -> "("
   | LBrack -> "["
   | LBrace -> "{"
@@ -142,11 +136,8 @@ let name atom =
   | Plus -> "plus"                (* Latex: + *)
   | Star -> "ast"
   | Comma -> "comma"              (* Latex: , *)
-  | Comp -> "comp"                (* Latex: \oplus *)
+  | Cat -> "cat"                  (* Latex: \oplus *)
   | Bar -> "bar"                  (* Latex: | *)
-  | BigComp -> "bigcomp"          (* Latex: \bigoplus *)
-  | BigAnd -> "bigand"
-  | BigOr -> "bigor"
   | LParen -> "lparen"            (* Latex: brackets... *)
   | LBrack -> "lbrack"
   | LBrace -> "lbrace"

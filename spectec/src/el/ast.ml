@@ -116,7 +116,7 @@ and exp' =
   | StrE of expfield nl_list     (* `{` list(expfield, `,`) `}` *)
   | DotE of exp * atom           (* exp `.` atom *)
   | CommaE of exp * exp          (* exp `,` exp *)
-  | CompE of exp * exp           (* exp `++` exp *)
+  | CatE of exp * exp            (* exp `++` exp *)
   | MemE of exp * exp            (* exp `<-` exp *)
   | LenE of exp                  (* `|` exp `|` *)
   | SizeE of id                  (* `||` exp `||` *)

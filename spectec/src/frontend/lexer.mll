@@ -169,9 +169,6 @@ and token = parse
   | "~" { NOT }
   | "/\\" { AND }
   | "\\/" { OR }
-  | "(++)" { BIGCAT }
-  | "(/\\)" { BIGAND }
-  | "(\\/)" { BIGOR }
 
   | "?" { QUEST }
   | "+" { PLUS }

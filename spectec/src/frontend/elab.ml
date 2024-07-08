@@ -980,11 +980,11 @@ and infer_exp' env e : Il.exp' * typ =
       Il.CompE (e2', e1'), t1
     | _ -> error e.at "malformed comma operator"
     )
-  | CompE (e1, e2) ->
+  | CatE (e1, e2) ->
     let e1', t1 = infer_exp env e1 in
     let _ = as_comp_typ "expression" env Infer t1 e.at in
     let e2' = elab_exp env e2 t1 in
-    Il.CompE (e1', e2'), t1
+    (if is_iter_typ env t1 then Il.CatE (e1', e2') else Il.CompE (e1', e2')), t1
   | MemE (e1, e2) ->
     let e1', t1 = infer_exp env e1 in
     let e2' = elab_exp env e2 (IterT (t1, List) $ e2.at) in
@@ -1121,11 +1121,11 @@ and elab_exp' env e t : Il.exp' =
       Il.CompE (e2', e1')
     | _ -> error e.at "malformed comma operator"
     )
-  | CompE (e1, e2) ->
+  | CatE (e1, e2) ->
     let _ = as_comp_typ "expression" env Check t e.at in
     let e1' = elab_exp env e1 t in
     let e2' = elab_exp env e2 t in
-    Il.CompE (e1', e2')
+    if is_iter_typ env t then Il.CatE (e1', e2') else Il.CompE (e1', e2')
   | MemE _ ->
     let e', t' = infer_exp env e in
     cast_exp' "element operator" env e' t' t

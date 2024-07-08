@@ -90,7 +90,7 @@ and eq_exp e1 e2 =
   | UnparenE e11, UnparenE e21 -> eq_exp e11 e21
   | IdxE (e11, e12), IdxE (e21, e22)
   | CommaE (e11, e12), CommaE (e21, e22)
-  | CompE (e11, e12), CompE (e21, e22)
+  | CatE (e11, e12), CatE (e21, e22)
   | MemE (e11, e12), MemE (e21, e22)
   | FuseE (e11, e12), FuseE (e21, e22) -> eq_exp e11 e21 && eq_exp e12 e22
   | SliceE (e11, e12, e13), SliceE (e21, e22, e23) ->

@@ -144,7 +144,7 @@ and check_exp env ctx e =
   | CmpE (e1, _, e2)
   | IdxE (e1, e2)
   | CommaE (e1, e2)
-  | CompE (e1, e2)
+  | CatE (e1, e2)
   | MemE (e1, e2)
   | InfixE (e1, _, e2) ->
     check_exp env ctx e1;

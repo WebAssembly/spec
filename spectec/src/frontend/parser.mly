@@ -70,7 +70,7 @@ let rec prec_of_exp = function  (* as far as iteration is concerned *)
   | AtomE _ | IdxE _ | SliceE _ | UpdE _ | ExtE _ | DotE _ | IterE _ -> Post
   | SeqE _ -> Seq
   | UnE _ | BinE _ | CmpE _ | MemE _ | InfixE _ | LenE _ | SizeE _
-  | CommaE _ | CompE _ | TypE _ | FuseE _ | UnparenE _ | LatexE _ -> Op
+  | CommaE _ | CatE _ | TypE _ | FuseE _ | UnparenE _ | LatexE _ -> Op
   | ArithE e -> prec_of_exp e.it
 
 (* Extra parentheses can be inserted to disambiguate the role of elements of
@@ -117,7 +117,7 @@ let rec is_typcon t =
 %}
 
 %token LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE
-%token COLON SEMICOLON COMMA DOT DOTDOT DOTDOTDOT BAR BARBAR DASH BIGCAT BIGAND BIGOR
+%token COLON SEMICOLON COMMA DOT DOTDOT DOTDOTDOT BAR BARBAR DASH
 %token COMMA_NL NL_BAR NL_NL_NL
 %token EQ NE LT GT LE GE APPROX EQUIV ASSIGN SUB SUP EQDOT2
 %token NOT AND OR
@@ -143,7 +143,7 @@ let rec is_typcon t =
 %left AND
 %nonassoc TURNSTILE
 %nonassoc TILESTURN
-%right SQARROW SQARROWSTAR PREC SUCC BIGCAT BIGAND BIGOR
+%right SQARROW SQARROWSTAR PREC SUCC
 %left COLON SUB SUP ASSIGN EQUIV APPROX
 %left COMMA COMMA_NL
 %right EQ NE LT GT LE GE MEM
@@ -257,7 +257,7 @@ atom_escape :
   | TICK PLUS { Atom.Plus }
   | TICK STAR { Atom.Star }
   | TICK BAR { Atom.Bar }
-  | TICK CAT { Atom.Comp }
+  | TICK CAT { Atom.Cat }
   | TICK COMMA { Atom.Comma }
   | TICK ARROW2 { Atom.Arrow2 }
   | TICK infixop_ { $2 }
@@ -325,9 +325,6 @@ check_atom :
   | ARROW { Atom.Arrow }
   | ARROWSUB { Atom.ArrowSub }
   | ARROW2SUB { Atom.Arrow2Sub }
-  | BIGCAT { Atom.BigComp }
-  | BIGAND { Atom.BigAnd }
-  | BIGOR { Atom.BigOr }
 
 %inline relop :
   | relop_ { $1 $$ $sloc }
@@ -580,9 +577,9 @@ exp_un_ :
 exp_bin : exp_bin_ { $1 $ $sloc }
 exp_bin_ :
   | exp_un_ { $1 }
-  | exp_bin CAT exp_bin { CompE ($1, $3) }
   | exp_bin infixop exp_bin { InfixE ($1, $2, $3) }
   | exp_bin cmpop exp_bin { CmpE ($1, $2, $3) }
+  | exp_bin CAT exp_bin { CatE ($1, $3) }
   | exp_bin MEM exp_bin { MemE ($1, $3) }
   | exp_bin boolop exp_bin { BinE ($1, $2, $3) }
 
@@ -648,6 +645,7 @@ arith_bin_ :
   | arith_un_ { $1 }
   | arith_bin binop arith_bin { BinE ($1, $2, $3) }
   | arith_bin cmpop arith_bin { CmpE ($1, $2, $3) }
+  | arith_bin CAT arith_bin { CatE ($1, $3) }
   | arith_bin MEM arith_bin { MemE ($1, $3) }
   | arith_bin boolop arith_bin { BinE ($1, $2, $3) }
 
