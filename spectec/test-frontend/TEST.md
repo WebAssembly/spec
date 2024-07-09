@@ -70,6 +70,17 @@ def $concat_(syntax X, X**) : X*
   def $concat_{syntax X, w* : X*, w'** : X**}(syntax X, [w*{w : X}] :: w'*{w' : X}*{w' : X}) = w*{w : X} :: $concat_(syntax X, w'*{w' : X}*{w' : X})
 }
 
+;; 0-aux.watsup
+rec {
+
+;; 0-aux.watsup:44.1-44.78
+def $disjoint_(syntax X, X*) : bool
+  ;; 0-aux.watsup:45.1-45.37
+  def $disjoint_{syntax X}(syntax X, []) = true
+  ;; 0-aux.watsup:46.1-46.68
+  def $disjoint_{syntax X, w : X, w'* : X*}(syntax X, [w] :: w'*{w' : X}) = (~ w <- w'*{w' : X} /\ $disjoint_(syntax X, w'*{w' : X}))
+}
+
 ;; 1-syntax.watsup
 syntax list{syntax X}(syntax X) =
   | `%`{X* : X*}(X*{X : X} : X*)
@@ -4863,10 +4874,10 @@ relation Externidx_ok: `%|-%:%`(context, externidx, externtype)
     -- if (C.MEMS_context[x!`%`_idx.0] = mt)
 
 ;; 6-typing.watsup
-relation Export_ok: `%|-%:%`(context, export, externtype)
+relation Export_ok: `%|-%:%%`(context, export, name, externtype)
   ;; 6-typing.watsup
   rule _{C : context, name : name, externidx : externidx, xt : externtype}:
-    `%|-%:%`(C, EXPORT_export(name, externidx), xt)
+    `%|-%:%%`(C, EXPORT_export(name, externidx), name, xt)
     -- Externidx_ok: `%|-%:%`(C, externidx, xt)
 
 ;; 6-typing.watsup
@@ -4913,7 +4924,7 @@ def $funcidx_nonfuncs(nonfuncs : nonfuncs) : funcidx*
 ;; 6-typing.watsup
 relation Module_ok: `|-%:%`(module, moduletype)
   ;; 6-typing.watsup
-  rule _{type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start? : start?, export* : export*, C : context, xt_I* : externtype*, xt_E* : externtype*, dt'* : deftype*, C' : context, gt* : globaltype*, tt* : tabletype*, mt* : memtype*, dt* : deftype*, rt* : reftype*, ok* : datatype*, dt_I* : deftype*, gt_I* : globaltype*, tt_I* : tabletype*, mt_I* : memtype*, x* : idx*}:
+  rule _{type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start? : start?, export* : export*, C : context, xt_I* : externtype*, xt_E* : externtype*, dt'* : deftype*, C' : context, gt* : globaltype*, tt* : tabletype*, mt* : memtype*, dt* : deftype*, rt* : reftype*, ok* : datatype*, nm* : name*, dt_I* : deftype*, gt_I* : globaltype*, tt_I* : tabletype*, mt_I* : memtype*, x* : idx*}:
     `|-%:%`(MODULE_module(type*{type : type}, import*{import : import}, func*{func : func}, global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data}, start?{start : start}, export*{export : export}), $clos_moduletype(C, `%->%`_moduletype(xt_I*{xt_I : externtype}, xt_E*{xt_E : externtype})))
     -- Types_ok: `%|-%:%`({TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, type*{type : type}, dt'*{dt' : deftype})
     -- (Import_ok: `%|-%:%`({TYPES dt'*{dt' : deftype}, RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, import, xt_I))*{import : import, xt_I : externtype}
@@ -4924,7 +4935,8 @@ relation Module_ok: `|-%:%`(module, moduletype)
     -- (Elem_ok: `%|-%:%`(C, elem, rt))*{elem : elem, rt : elemtype}
     -- (Data_ok: `%|-%:%`(C, data, ok))*{data : data, ok : datatype}
     -- (Start_ok: `%|-%:OK`(C, start))?{start : start}
-    -- (Export_ok: `%|-%:%`(C, export, xt_E))*{export : export, xt_E : externtype}
+    -- (Export_ok: `%|-%:%%`(C, export, nm, xt_E))*{export : export, nm : name, xt_E : externtype}
+    -- if $disjoint_(syntax name, nm*{nm : name})
     -- if (C = {TYPES dt'*{dt' : deftype}, RECS [], FUNCS dt_I*{dt_I : deftype} :: dt*{dt : deftype}, GLOBALS gt_I*{gt_I : globaltype} :: gt*{gt : globaltype}, TABLES tt_I*{tt_I : tabletype} :: tt*{tt : tabletype}, MEMS mt_I*{mt_I : memtype} :: mt*{mt : memtype}, ELEMS rt*{rt : elemtype}, DATAS ok*{ok : datatype}, LOCALS [], LABELS [], RETURN ?(), REFS x*{x : funcidx}})
     -- if (C' = {TYPES dt'*{dt' : deftype}, RECS [], FUNCS dt_I*{dt_I : deftype} :: dt*{dt : deftype}, GLOBALS gt_I*{gt_I : globaltype}, TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS x*{x : funcidx}})
     -- if (x*{x : idx} = $funcidx_nonfuncs(`%%%%%`_nonfuncs(global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data})))

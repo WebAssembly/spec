@@ -1194,6 +1194,7 @@ warning: definition `datainst` was never spliced
 warning: definition `demote` was never spliced
 warning: definition `diffrt` was never spliced
 warning: definition `dim` was never spliced
+warning: definition `disjoint_` was never spliced
 warning: definition `elem` was never spliced
 warning: definition `eleminst` was never spliced
 warning: definition `expanddt` was never spliced
@@ -1716,6 +1717,7 @@ warning: definition prose `datainst` was never spliced
 warning: definition prose `default_` was never spliced
 warning: definition prose `diffrt` was never spliced
 warning: definition prose `dim` was never spliced
+warning: definition prose `disjoint_` was never spliced
 warning: definition prose `elem` was never spliced
 warning: definition prose `eleminst` was never spliced
 warning: definition prose `eval_expr` was never spliced

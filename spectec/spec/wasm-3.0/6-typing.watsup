@@ -1260,7 +1260,7 @@ rule Start_ok:
 ;; Module im/exports
 
 relation Import_ok: context |- import : externtype        hint(show "T-import")    hint(macro "%import")
-relation Export_ok: context |- export : externtype        hint(show "T-export")    hint(macro "%export")
+relation Export_ok: context |- export : name externtype   hint(show "T-export")    hint(macro "%export")
 relation Externidx_ok: context |- externidx : externtype  hint(show "T-externidx") hint(macro "%externidx")
 
 rule Import_ok:
@@ -1268,7 +1268,7 @@ rule Import_ok:
   -- Externtype_ok: C |- xt : OK
 
 rule Export_ok:
-  C |- EXPORT name externidx : xt
+  C |- EXPORT name externidx : name xt
   -- Externidx_ok: C |- externidx : xt
 
 
@@ -1313,8 +1313,8 @@ rule Module_ok:
   -- (Elem_ok: C |- elem : rt)*
   -- (Data_ok: C |- data : ok)*
   -- (Start_ok: C |- start : OK)?
-  -- (Export_ok: C |- export : xt_E)*
-  ;; -- TODO(1, rossberg): disjoint export names
+  -- (Export_ok: C |- export : nm xt_E)*
+  -- if $disjoint_(name, nm*)
   ----
   -- if C = {TYPES dt'*, FUNCS dt_I* dt*, GLOBALS gt_I* gt*, TABLES tt_I* tt*, MEMS mt_I* mt*, ELEMS rt*, DATAS ok*, REFS x*}
   ----

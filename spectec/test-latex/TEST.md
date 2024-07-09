@@ -1618,6 +1618,13 @@ $$
 $$
 
 $$
+\begin{array}{@{}lcl@{}l@{}}
+\epsilon~{\mathrm{disjoint}} &=& \mathsf{true} \\
+w~{{w'}^\ast}~{\mathrm{disjoint}} &=& {\neg(w \in {{w'}^\ast})} \land {{w'}^\ast}~{\mathrm{disjoint}} \\
+\end{array}
+$$
+
+$$
 \begin{array}{@{}lrrl@{}l@{}}
 & {\mathit{list}}(X) &::=& {X^\ast}
   &\qquad \mbox{if}~{|{X^\ast}|} < {2^{32}} \\
@@ -7255,7 +7262,7 @@ $$
 
 $\boxed{{\mathit{context}} \vdash {\mathit{import}} : {\mathit{externtype}}}$
 
-$\boxed{{\mathit{context}} \vdash {\mathit{export}} : {\mathit{externtype}}}$
+$\boxed{{\mathit{context}} \vdash {\mathit{export}} : {\mathit{name}}~{\mathit{externtype}}}$
 
 $\boxed{{\mathit{context}} \vdash {\mathit{externidx}} : {\mathit{externtype}}}$
 
@@ -7275,7 +7282,7 @@ $$
 \frac{
 C \vdash {\mathit{externidx}} : {\mathit{xt}}
 }{
-C \vdash \mathsf{export}~{\mathit{name}}~{\mathit{externidx}} : {\mathit{xt}}
+C \vdash \mathsf{export}~{\mathit{name}}~{\mathit{externidx}} : {\mathit{name}}~{\mathit{xt}}
 } \, {[\textsc{\scriptsize T{-}export}]}
 \qquad
 \end{array}
@@ -7371,7 +7378,9 @@ $$
  \qquad
 (C \vdash {\mathit{start}} : \mathsf{ok})^?
  \qquad
-(C \vdash {\mathit{export}} : {\mathit{xt}}_{\mathsf{e}})^\ast
+(C \vdash {\mathit{export}} : {\mathit{nm}}~{\mathit{xt}}_{\mathsf{e}})^\ast
+ \qquad
+{{\mathit{nm}}^\ast}~{\mathrm{disjoint}}
  \\
 C = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{elems}~{{\mathit{rt}}^\ast},\; \mathsf{datas}~{{\mathit{ok}}^\ast},\; \mathsf{refs}~{x^\ast} \}\end{array}

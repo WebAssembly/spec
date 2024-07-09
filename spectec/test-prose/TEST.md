@@ -4192,6 +4192,12 @@ concat_ X_u0*
 2. Let [w*] ++ w'** be X_u0*.
 3. Return w* ++ $concat_(w'**).
 
+disjoint_ X_u0*
+1. If (X_u0* is []), then:
+  a. Return true.
+2. Let [w] ++ w'* be X_u0*.
+3. Return (not w <- w'* and $disjoint_(w'*)).
+
 signif N_u0
 1. If (N_u0 is 32), then:
   a. Return 23.
