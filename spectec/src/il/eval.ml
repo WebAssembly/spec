@@ -247,8 +247,8 @@ and reduce_exp env e : exp =
     let e2' = reduce_exp env e2 in
     (match e1'.it, e2'.it with
     | ListE es1, ListE es2 -> ListE (es1 @ es2)
-    | OptE None, _ -> e2'.it
-    | _, OptE None -> e1'.it
+    | OptE None, OptE _ -> e2'.it
+    | OptE _, OptE None -> e1'.it
     | StrE efs1, StrE efs2 ->
       let merge (atom1, e1) (atom2, e2) =
         assert (El.Atom.eq atom1 atom2);
@@ -332,6 +332,8 @@ and reduce_exp env e : exp =
     let e2' = reduce_exp env e2 in
     (match e1'.it, e2'.it with
     | ListE es1, ListE es2 -> ListE (es1 @ es2)
+    | OptE None, OptE _ -> e2'.it
+    | OptE _, OptE None -> e1'.it
     | _ -> CatE (e1', e2')
     ) $> e
   | CaseE (op, e1) -> CaseE (op, reduce_exp env e1) $> e

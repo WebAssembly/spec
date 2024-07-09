@@ -140,11 +140,11 @@ def $with_data((s; f), x, b*) = s[.DATAS[f.MODULE.DATAS[x]].BYTES = b*]; f
 def $with_struct((s; f), a, i, fv) = s[.STRUCTS[a].FIELDS[i] = fv]; f
 def $with_array((s; f), a, i, fv) = s[.ARRAYS[a].FIELDS[i] = fv]; f
 
-def $ext_structinst(state, structinst*) : state  hint(show %[.STRUCTS =.. %]) hint(macro "Z%")
-def $ext_arrayinst(state, arrayinst*) : state    hint(show %[.ARRAYS =.. %])  hint(macro "Z%")
+def $ext_structinst(state, structinst*) : state  hint(show %[.STRUCTS =++ %]) hint(macro "Z%")
+def $ext_arrayinst(state, arrayinst*) : state    hint(show %[.ARRAYS =++ %])  hint(macro "Z%")
 
-def $ext_structinst((s; f), si*) = s[.STRUCTS =.. si*]; f
-def $ext_arrayinst((s; f), ai*) = s[.ARRAYS =.. ai*]; f
+def $ext_structinst((s; f), si*) = s[.STRUCTS =++ si*]; f
+def $ext_arrayinst((s; f), ai*) = s[.ARRAYS =++ ai*]; f
 
 
 ;; Growing

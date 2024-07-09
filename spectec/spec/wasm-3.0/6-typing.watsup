@@ -1191,7 +1191,7 @@ rule Type_ok:
   C |- TYPE rectype : dt*
   -- if x = |C.TYPES|
   -- if dt* = $rolldt(x, rectype)
-  -- Rectype_ok: C[.TYPES =.. dt*] |- rectype : OK(x)
+  -- Rectype_ok: C ++ {TYPES dt*} |- rectype : OK(x)
 
 rule Local_ok/set:
   C |- LOCAL t : SET t
@@ -1334,7 +1334,7 @@ rule Types_ok/empty:
 rule Types_ok/cons:
   C |- type_1 type* : dt_1* dt*
   -- Type_ok: C |- type_1 : dt_1*
-  -- Types_ok: C[.TYPES =.. dt_1*] |- type* : dt*
+  -- Types_ok: C ++ {TYPES dt_1*} |- type* : dt*
 
 rule Globals_ok/empty:
   C |- eps : eps
@@ -1342,4 +1342,4 @@ rule Globals_ok/empty:
 rule Globals_ok/cons:
   C |- global_1 global* : gt_1 gt*
   -- Global_ok: C |- global : gt_1
-  -- Globals_ok: C[.GLOBALS =.. gt_1] |- global* : gt*
+  -- Globals_ok: C ++ {GLOBALS gt_1} |- global* : gt*

@@ -129,7 +129,7 @@ and string_of_exp e =
       "[" ^ string_of_path p ^ " = " ^ string_of_exp e2 ^ "]"
   | ExtE (e1, p, e2) ->
     string_of_exp e1 ^
-      "[" ^ string_of_path p ^ " =.. " ^ string_of_exp e2 ^ "]"
+      "[" ^ string_of_path p ^ " =++ " ^ string_of_exp e2 ^ "]"
   | StrE efs -> "{" ^ concat ", " (List.map string_of_expfield efs) ^ "}"
   | DotE (e1, atom) ->
     string_of_exp e1 ^ "." ^ string_of_mixop [[atom]] ^ "_" ^ string_of_typ_name e1.note

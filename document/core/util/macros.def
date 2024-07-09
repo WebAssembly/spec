@@ -104,7 +104,9 @@
 .. |subst| mathdef:: \xref{valid/conventions}{notation-subst}{\mathrel{\mathbf{:=}}}
 .. |slice| mathdef:: \xref{syntax/conventions}{notation-slice}{\mathrel{\mathbf{:}}}
 .. |with| mathdef:: \xref{syntax/conventions}{notation-replace}{\mathrel{\mbox{with}}}
-.. |concat| mathdef:: \xref{syntax/conventions}{notation-concat}{\F{concat}}
+.. |cat| mathdef:: \xref{syntax/conventions}{notation-concat}{\oplus}
+.. |bigcat| mathdef:: \xref{syntax/conventions}{notation-concat}{\bigoplus}
+.. |concat| mathdef:: \xref{syntax/conventions}{notation-concat}{\bigoplus}
 .. |compose| mathdef:: \xref{syntax/conventions}{notation-compose}{\oplus}
 .. |bigcompose| mathdef:: \xref{syntax/conventions}{notation-compose}{\bigoplus}
 

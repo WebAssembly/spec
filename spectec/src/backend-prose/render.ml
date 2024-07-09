@@ -243,7 +243,7 @@ let render_al_binop = function
   | Al.Ast.AndOp -> "and"
   | Al.Ast.OrOp -> "or"
   | Al.Ast.ImplOp -> "implies"
-  | Al.Ast.EquivOp -> "is equivanlent to"
+  | Al.Ast.EquivOp -> "is equivalent to"
   | Al.Ast.AddOp -> "plus"
   | Al.Ast.SubOp -> "minus"
   | Al.Ast.MulOp -> "multiplied by"

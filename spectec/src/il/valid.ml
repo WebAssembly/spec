@@ -305,8 +305,9 @@ and infer_exp env e : typ =
     let s = valid_args env as_ ps Subst.empty e.at in
     Subst.subst_typ s t
   | IterE (e1, iter) ->
+    let env' = valid_iterexp env iter in
     let iter' = match fst iter with ListN _ -> List | iter' -> iter' in
-    IterT (infer_exp env e1, iter') $ e.at
+    IterT (infer_exp env' e1, iter') $ e.at
   | ProjE (e1, i) ->
     let t1 = infer_exp env e1 in
     let ets = as_tup_typ "expression" env Infer t1 e1.at in
@@ -361,8 +362,7 @@ try
     let t' =
       match infer_cmpop op with
       | Some t' -> t' $ e.at
-      | None -> try infer_exp env e1 with
-        | _ -> infer_exp env e2
+      | None -> try infer_exp env e1 with _ -> infer_exp env e2
     in
     valid_exp env e1 t';
     valid_exp env e2 t';

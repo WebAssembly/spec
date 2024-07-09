@@ -133,7 +133,7 @@ exp ::=
   exp "[" arith "]"                    list indexing
   exp "[" arith ":" arith "]"          list slicing
   exp "[" path "=" exp "]"             list update
-  exp "[" path "=.." exp "]"           list extension
+  exp "[" path "=++" exp "]"           list extension
   "{" list(atom exp, ",") "}"          record
   exp "." atom                         record access
   exp "," exp                          record extension

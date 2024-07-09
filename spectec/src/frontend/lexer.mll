@@ -164,11 +164,16 @@ and token = parse
   | ":>" { SUP }
   | ":=" { ASSIGN }
   | "==" { EQUIV }
-  | "=.." { EQDOT2 }
+  | "=++" { EQCAT }
 
   | "~" { NOT }
   | "/\\" { AND }
   | "\\/" { OR }
+  | "(/\\)" { BIGAND }
+  | "(\\/)" { BIGOR }
+  | "(+)" { BIGADD }
+  | "(*)" { BIGMUL }
+  | "(++)" { BIGCAT }
 
   | "?" { QUEST }
   | "+" { PLUS }

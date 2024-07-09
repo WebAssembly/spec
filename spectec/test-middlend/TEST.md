@@ -52,11 +52,11 @@ def $sum(nat*) : nat
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:41.1-41.59
+;; 0-aux.watsup:40.1-40.55
 def $concat_(syntax X, X**) : X*
-  ;; 0-aux.watsup:42.1-42.34
+  ;; 0-aux.watsup:41.1-41.34
   def $concat_{syntax X}(syntax X, []) = []
-  ;; 0-aux.watsup:43.1-43.61
+  ;; 0-aux.watsup:42.1-42.61
   def $concat_{syntax X, w* : X*, w'** : X**}(syntax X, [w*{w : X}] :: w'*{w' : X}*{w' : X}) = w*{w : X} :: $concat_(syntax X, w'*{w' : X}*{w' : X})
 }
 
@@ -3378,12 +3378,12 @@ def $with_array(state : state, arrayaddr : arrayaddr, nat : nat, fieldval : fiel
 ;; 5-runtime-aux.watsup
 def $ext_structinst(state : state, structinst*) : state
   ;; 5-runtime-aux.watsup
-  def $ext_structinst{s : store, f : frame, si* : structinst*}(`%;%`_state(s, f), si*{si : structinst}) = `%;%`_state(s[STRUCTS_store =.. si*{si : structinst}], f)
+  def $ext_structinst{s : store, f : frame, si* : structinst*}(`%;%`_state(s, f), si*{si : structinst}) = `%;%`_state(s[STRUCTS_store =++ si*{si : structinst}], f)
 
 ;; 5-runtime-aux.watsup
 def $ext_arrayinst(state : state, arrayinst*) : state
   ;; 5-runtime-aux.watsup
-  def $ext_arrayinst{s : store, f : frame, ai* : arrayinst*}(`%;%`_state(s, f), ai*{ai : arrayinst}) = `%;%`_state(s[ARRAYS_store =.. ai*{ai : arrayinst}], f)
+  def $ext_arrayinst{s : store, f : frame, ai* : arrayinst*}(`%;%`_state(s, f), ai*{ai : arrayinst}) = `%;%`_state(s[ARRAYS_store =++ ai*{ai : arrayinst}], f)
 
 ;; 5-runtime-aux.watsup
 def $growtable(tableinst : tableinst, nat : nat, ref : ref) : tableinst
@@ -4723,7 +4723,7 @@ relation Type_ok: `%|-%:%`(context, type, deftype*)
     `%|-%:%`(C, TYPE_type(rectype), dt*{dt : deftype})
     -- if (x = `%`_idx(|C.TYPES_context|))
     -- if (dt*{dt : deftype} = $rolldt(x, rectype))
-    -- Rectype_ok: `%|-%:%`(C[TYPES_context =.. dt*{dt : deftype}], rectype, OK_oktypeidx(x))
+    -- Rectype_ok: `%|-%:%`(C ++ {TYPES dt*{dt : deftype}, RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, rectype, OK_oktypeidx(x))
 
 ;; 6-typing.watsup
 relation Local_ok: `%|-%:%`(context, local, localtype)
@@ -4868,11 +4868,11 @@ relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1342.1-1345.55
+  ;; 6-typing.watsup:1342.1-1345.54
   rule cons{C : context, global_1 : global, global : global, gt_1 : globaltype, gt* : globaltype*}:
     `%|-%:%`(C, [global_1] :: global*{}, [gt_1] :: gt*{gt : globaltype})
     -- Global_ok: `%|-%:%`(C, global, gt_1)
-    -- Globals_ok: `%|-%:%`(C[GLOBALS_context =.. [gt_1]], global*{}, gt*{gt : globaltype})
+    -- Globals_ok: `%|-%:%`(C ++ {TYPES [], RECS [], FUNCS [], GLOBALS [gt_1], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, global*{}, gt*{gt : globaltype})
 }
 
 ;; 6-typing.watsup
@@ -4884,11 +4884,11 @@ relation Types_ok: `%|-%:%`(context, type*, deftype*)
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1334.1-1337.50
+  ;; 6-typing.watsup:1334.1-1337.49
   rule cons{C : context, type_1 : type, type* : type*, dt_1* : deftype*, dt* : deftype*}:
     `%|-%:%`(C, [type_1] :: type*{type : type}, dt_1*{dt_1 : deftype} :: dt*{dt : deftype})
     -- Type_ok: `%|-%:%`(C, type_1, dt_1*{dt_1 : deftype})
-    -- Types_ok: `%|-%:%`(C[TYPES_context =.. dt_1*{dt_1 : deftype}], type*{type : type}, dt*{dt : deftype})
+    -- Types_ok: `%|-%:%`(C ++ {TYPES dt_1*{dt_1 : deftype}, RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, type*{type : type}, dt*{dt : deftype})
 }
 
 ;; 6-typing.watsup
@@ -6460,11 +6460,11 @@ def $sum(nat*) : nat
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:41.1-41.59
+;; 0-aux.watsup:40.1-40.55
 def $concat_(syntax X, X**) : X*
-  ;; 0-aux.watsup:42.1-42.34
+  ;; 0-aux.watsup:41.1-41.34
   def $concat_{syntax X}(syntax X, []) = []
-  ;; 0-aux.watsup:43.1-43.61
+  ;; 0-aux.watsup:42.1-42.61
   def $concat_{syntax X, w* : X*, w'** : X**}(syntax X, [w*{w : X}] :: w'*{w' : X}*{w' : X}) = w*{w : X} :: $concat_(syntax X, w'*{w' : X}*{w' : X})
 }
 
@@ -9789,12 +9789,12 @@ def $with_array(state : state, arrayaddr : arrayaddr, nat : nat, fieldval : fiel
 ;; 5-runtime-aux.watsup
 def $ext_structinst(state : state, structinst*) : state
   ;; 5-runtime-aux.watsup
-  def $ext_structinst{s : store, f : frame, si* : structinst*}(`%;%`_state(s, f), si*{si : structinst}) = `%;%`_state(s[STRUCTS_store =.. si*{si : structinst}], f)
+  def $ext_structinst{s : store, f : frame, si* : structinst*}(`%;%`_state(s, f), si*{si : structinst}) = `%;%`_state(s[STRUCTS_store =++ si*{si : structinst}], f)
 
 ;; 5-runtime-aux.watsup
 def $ext_arrayinst(state : state, arrayinst*) : state
   ;; 5-runtime-aux.watsup
-  def $ext_arrayinst{s : store, f : frame, ai* : arrayinst*}(`%;%`_state(s, f), ai*{ai : arrayinst}) = `%;%`_state(s[ARRAYS_store =.. ai*{ai : arrayinst}], f)
+  def $ext_arrayinst{s : store, f : frame, ai* : arrayinst*}(`%;%`_state(s, f), ai*{ai : arrayinst}) = `%;%`_state(s[ARRAYS_store =++ ai*{ai : arrayinst}], f)
 
 ;; 5-runtime-aux.watsup
 def $growtable(tableinst : tableinst, nat : nat, ref : ref) : tableinst?
@@ -11136,7 +11136,7 @@ relation Type_ok: `%|-%:%`(context, type, deftype*)
     `%|-%:%`(C, TYPE_type(rectype), dt*{dt : deftype})
     -- if (x = `%`_idx(|C.TYPES_context|))
     -- if (dt*{dt : deftype} = $rolldt(x, rectype))
-    -- Rectype_ok: `%|-%:%`(C[TYPES_context =.. dt*{dt : deftype}], rectype, OK_oktypeidx(x))
+    -- Rectype_ok: `%|-%:%`(C ++ {TYPES dt*{dt : deftype}, RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, rectype, OK_oktypeidx(x))
 
 ;; 6-typing.watsup
 relation Local_ok: `%|-%:%`(context, local, localtype)
@@ -11281,11 +11281,11 @@ relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1342.1-1345.55
+  ;; 6-typing.watsup:1342.1-1345.54
   rule cons{C : context, global_1 : global, global : global, gt_1 : globaltype, gt* : globaltype*}:
     `%|-%:%`(C, [global_1] :: global*{}, [gt_1] :: gt*{gt : globaltype})
     -- Global_ok: `%|-%:%`(C, global, gt_1)
-    -- Globals_ok: `%|-%:%`(C[GLOBALS_context =.. [gt_1]], global*{}, gt*{gt : globaltype})
+    -- Globals_ok: `%|-%:%`(C ++ {TYPES [], RECS [], FUNCS [], GLOBALS [gt_1], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, global*{}, gt*{gt : globaltype})
 }
 
 ;; 6-typing.watsup
@@ -11297,11 +11297,11 @@ relation Types_ok: `%|-%:%`(context, type*, deftype*)
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1334.1-1337.50
+  ;; 6-typing.watsup:1334.1-1337.49
   rule cons{C : context, type_1 : type, type* : type*, dt_1* : deftype*, dt* : deftype*}:
     `%|-%:%`(C, [type_1] :: type*{type : type}, dt_1*{dt_1 : deftype} :: dt*{dt : deftype})
     -- Type_ok: `%|-%:%`(C, type_1, dt_1*{dt_1 : deftype})
-    -- Types_ok: `%|-%:%`(C[TYPES_context =.. dt_1*{dt_1 : deftype}], type*{type : type}, dt*{dt : deftype})
+    -- Types_ok: `%|-%:%`(C ++ {TYPES dt_1*{dt_1 : deftype}, RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, type*{type : type}, dt*{dt : deftype})
 }
 
 ;; 6-typing.watsup
@@ -12873,11 +12873,11 @@ def $sum(nat*) : nat
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:41.1-41.59
+;; 0-aux.watsup:40.1-40.55
 def $concat_(syntax X, X**) : X*
-  ;; 0-aux.watsup:42.1-42.34
+  ;; 0-aux.watsup:41.1-41.34
   def $concat_{syntax X}(syntax X, []) = []
-  ;; 0-aux.watsup:43.1-43.61
+  ;; 0-aux.watsup:42.1-42.61
   def $concat_{syntax X, w* : X*, w'** : X**}(syntax X, [w*{w : X}] :: w'*{w' : X}*{w' : X}) = w*{w : X} :: $concat_(syntax X, w'*{w' : X}*{w' : X})
 }
 
@@ -16202,12 +16202,12 @@ def $with_array(state : state, arrayaddr : arrayaddr, nat : nat, fieldval : fiel
 ;; 5-runtime-aux.watsup
 def $ext_structinst(state : state, structinst*) : state
   ;; 5-runtime-aux.watsup
-  def $ext_structinst{s : store, f : frame, si* : structinst*}(`%;%`_state(s, f), si*{si : structinst}) = `%;%`_state(s[STRUCTS_store =.. si*{si : structinst}], f)
+  def $ext_structinst{s : store, f : frame, si* : structinst*}(`%;%`_state(s, f), si*{si : structinst}) = `%;%`_state(s[STRUCTS_store =++ si*{si : structinst}], f)
 
 ;; 5-runtime-aux.watsup
 def $ext_arrayinst(state : state, arrayinst*) : state
   ;; 5-runtime-aux.watsup
-  def $ext_arrayinst{s : store, f : frame, ai* : arrayinst*}(`%;%`_state(s, f), ai*{ai : arrayinst}) = `%;%`_state(s[ARRAYS_store =.. ai*{ai : arrayinst}], f)
+  def $ext_arrayinst{s : store, f : frame, ai* : arrayinst*}(`%;%`_state(s, f), ai*{ai : arrayinst}) = `%;%`_state(s[ARRAYS_store =++ ai*{ai : arrayinst}], f)
 
 ;; 5-runtime-aux.watsup
 def $growtable(tableinst : tableinst, nat : nat, ref : ref) : tableinst?
@@ -17549,7 +17549,7 @@ relation Type_ok: `%|-%:%`(context, type, deftype*)
     `%|-%:%`(C, TYPE_type(rectype), dt*{dt : deftype})
     -- if (x = `%`_idx(|C.TYPES_context|))
     -- if (dt*{dt : deftype} = $rolldt(x, rectype))
-    -- Rectype_ok: `%|-%:%`(C[TYPES_context =.. dt*{dt : deftype}], rectype, OK_oktypeidx(x))
+    -- Rectype_ok: `%|-%:%`(C ++ {TYPES dt*{dt : deftype}, RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, rectype, OK_oktypeidx(x))
 
 ;; 6-typing.watsup
 relation Local_ok: `%|-%:%`(context, local, localtype)
@@ -17694,11 +17694,11 @@ relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1342.1-1345.55
+  ;; 6-typing.watsup:1342.1-1345.54
   rule cons{C : context, global_1 : global, global : global, gt_1 : globaltype, gt* : globaltype*}:
     `%|-%:%`(C, [global_1] :: global*{}, [gt_1] :: gt*{gt : globaltype})
     -- Global_ok: `%|-%:%`(C, global, gt_1)
-    -- Globals_ok: `%|-%:%`(C[GLOBALS_context =.. [gt_1]], global*{}, gt*{gt : globaltype})
+    -- Globals_ok: `%|-%:%`(C ++ {TYPES [], RECS [], FUNCS [], GLOBALS [gt_1], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, global*{}, gt*{gt : globaltype})
 }
 
 ;; 6-typing.watsup
@@ -17710,11 +17710,11 @@ relation Types_ok: `%|-%:%`(context, type*, deftype*)
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1334.1-1337.50
+  ;; 6-typing.watsup:1334.1-1337.49
   rule cons{C : context, type_1 : type, type* : type*, dt_1* : deftype*, dt* : deftype*}:
     `%|-%:%`(C, [type_1] :: type*{type : type}, dt_1*{dt_1 : deftype} :: dt*{dt : deftype})
     -- Type_ok: `%|-%:%`(C, type_1, dt_1*{dt_1 : deftype})
-    -- Types_ok: `%|-%:%`(C[TYPES_context =.. dt_1*{dt_1 : deftype}], type*{type : type}, dt*{dt : deftype})
+    -- Types_ok: `%|-%:%`(C ++ {TYPES dt_1*{dt_1 : deftype}, RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, type*{type : type}, dt*{dt : deftype})
 }
 
 ;; 6-typing.watsup
@@ -19286,11 +19286,11 @@ def $sum(nat*) : nat
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:41.1-41.59
+;; 0-aux.watsup:40.1-40.55
 def $concat_(syntax X, X**) : X*
-  ;; 0-aux.watsup:42.1-42.34
+  ;; 0-aux.watsup:41.1-41.34
   def $concat_{syntax X}(syntax X, []) = []
-  ;; 0-aux.watsup:43.1-43.61
+  ;; 0-aux.watsup:42.1-42.61
   def $concat_{syntax X, w* : X*, w'** : X**}(syntax X, [w*{w : X}] :: w'*{w' : X}*{w' : X}) = w*{w : X} :: $concat_(syntax X, w'*{w' : X}*{w' : X})
 }
 
@@ -22615,12 +22615,12 @@ def $with_array(state : state, arrayaddr : arrayaddr, nat : nat, fieldval : fiel
 ;; 5-runtime-aux.watsup
 def $ext_structinst(state : state, structinst*) : state
   ;; 5-runtime-aux.watsup
-  def $ext_structinst{s : store, f : frame, si* : structinst*}(`%;%`_state(s, f), si*{si : structinst}) = `%;%`_state(s[STRUCTS_store =.. si*{si : structinst}], f)
+  def $ext_structinst{s : store, f : frame, si* : structinst*}(`%;%`_state(s, f), si*{si : structinst}) = `%;%`_state(s[STRUCTS_store =++ si*{si : structinst}], f)
 
 ;; 5-runtime-aux.watsup
 def $ext_arrayinst(state : state, arrayinst*) : state
   ;; 5-runtime-aux.watsup
-  def $ext_arrayinst{s : store, f : frame, ai* : arrayinst*}(`%;%`_state(s, f), ai*{ai : arrayinst}) = `%;%`_state(s[ARRAYS_store =.. ai*{ai : arrayinst}], f)
+  def $ext_arrayinst{s : store, f : frame, ai* : arrayinst*}(`%;%`_state(s, f), ai*{ai : arrayinst}) = `%;%`_state(s[ARRAYS_store =++ ai*{ai : arrayinst}], f)
 
 ;; 5-runtime-aux.watsup
 def $growtable(tableinst : tableinst, nat : nat, ref : ref) : tableinst?
@@ -24062,7 +24062,7 @@ relation Type_ok: `%|-%:%`(context, type, deftype*)
     `%|-%:%`(C, TYPE_type(rectype), dt*{dt : deftype})
     -- if (x = `%`_idx(|C.TYPES_context|))
     -- if (dt*{dt : deftype} = $rolldt(x, rectype))
-    -- Rectype_ok: `%|-%:%`(C[TYPES_context =.. dt*{dt : deftype}], rectype, OK_oktypeidx(x))
+    -- Rectype_ok: `%|-%:%`(C ++ {TYPES dt*{dt : deftype}, RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, rectype, OK_oktypeidx(x))
 
 ;; 6-typing.watsup
 relation Local_ok: `%|-%:%`(context, local, localtype)
@@ -24216,11 +24216,11 @@ relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1342.1-1345.55
+  ;; 6-typing.watsup:1342.1-1345.54
   rule cons{C : context, global_1 : global, global : global, gt_1 : globaltype, gt* : globaltype*}:
     `%|-%:%`(C, [global_1] :: global*{}, [gt_1] :: gt*{gt : globaltype})
     -- Global_ok: `%|-%:%`(C, global, gt_1)
-    -- Globals_ok: `%|-%:%`(C[GLOBALS_context =.. [gt_1]], global*{}, gt*{gt : globaltype})
+    -- Globals_ok: `%|-%:%`(C ++ {TYPES [], RECS [], FUNCS [], GLOBALS [gt_1], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, global*{}, gt*{gt : globaltype})
 }
 
 ;; 6-typing.watsup
@@ -24232,11 +24232,11 @@ relation Types_ok: `%|-%:%`(context, type*, deftype*)
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1334.1-1337.50
+  ;; 6-typing.watsup:1334.1-1337.49
   rule cons{C : context, type_1 : type, type* : type*, dt_1* : deftype*, dt* : deftype*}:
     `%|-%:%`(C, [type_1] :: type*{type : type}, dt_1*{dt_1 : deftype} :: dt*{dt : deftype})
     -- Type_ok: `%|-%:%`(C, type_1, dt_1*{dt_1 : deftype})
-    -- Types_ok: `%|-%:%`(C[TYPES_context =.. dt_1*{dt_1 : deftype}], type*{type : type}, dt*{dt : deftype})
+    -- Types_ok: `%|-%:%`(C ++ {TYPES dt_1*{dt_1 : deftype}, RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, type*{type : type}, dt*{dt : deftype})
 }
 
 ;; 6-typing.watsup
@@ -25862,11 +25862,11 @@ def $sum(nat*) : nat
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:41.1-41.59
+;; 0-aux.watsup:40.1-40.55
 def $concat_(syntax X, X**) : X*
-  ;; 0-aux.watsup:42.1-42.34
+  ;; 0-aux.watsup:41.1-41.34
   def $concat_{syntax X}(syntax X, []) = []
-  ;; 0-aux.watsup:43.1-43.61
+  ;; 0-aux.watsup:42.1-42.61
   def $concat_{syntax X, w* : X*, w'** : X**}(syntax X, [w*{w : X}] :: w'*{w' : X}*{w' : X}) = w*{w : X} :: $concat_(syntax X, w'*{w' : X}*{w' : X})
 }
 
@@ -29195,12 +29195,12 @@ def $with_array(state : state, arrayaddr : arrayaddr, nat : nat, fieldval : fiel
 ;; 5-runtime-aux.watsup
 def $ext_structinst(state : state, structinst*) : state
   ;; 5-runtime-aux.watsup
-  def $ext_structinst{s : store, f : frame, si* : structinst*}(`%;%`_state(s, f), si*{si : structinst}) = `%;%`_state(s[STRUCTS_store =.. si*{si : structinst}], f)
+  def $ext_structinst{s : store, f : frame, si* : structinst*}(`%;%`_state(s, f), si*{si : structinst}) = `%;%`_state(s[STRUCTS_store =++ si*{si : structinst}], f)
 
 ;; 5-runtime-aux.watsup
 def $ext_arrayinst(state : state, arrayinst*) : state
   ;; 5-runtime-aux.watsup
-  def $ext_arrayinst{s : store, f : frame, ai* : arrayinst*}(`%;%`_state(s, f), ai*{ai : arrayinst}) = `%;%`_state(s[ARRAYS_store =.. ai*{ai : arrayinst}], f)
+  def $ext_arrayinst{s : store, f : frame, ai* : arrayinst*}(`%;%`_state(s, f), ai*{ai : arrayinst}) = `%;%`_state(s[ARRAYS_store =++ ai*{ai : arrayinst}], f)
 
 ;; 5-runtime-aux.watsup
 def $growtable(tableinst : tableinst, nat : nat, ref : ref) : tableinst?
@@ -30670,7 +30670,7 @@ relation Type_ok: `%|-%:%`(context, type, deftype*)
     `%|-%:%`(C, TYPE_type(rectype), dt*{dt : deftype})
     -- where x = `%`_idx(|C.TYPES_context|)
     -- where dt*{dt : deftype} = $rolldt(x, rectype)
-    -- Rectype_ok: `%|-%:%`(C[TYPES_context =.. dt*{dt : deftype}], rectype, OK_oktypeidx(x))
+    -- Rectype_ok: `%|-%:%`(C ++ {TYPES dt*{dt : deftype}, RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, rectype, OK_oktypeidx(x))
 
 ;; 6-typing.watsup
 relation Local_ok: `%|-%:%`(context, local, localtype)
@@ -30824,11 +30824,11 @@ relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1342.1-1345.55
+  ;; 6-typing.watsup:1342.1-1345.54
   rule cons{C : context, global_1 : global, global : global, gt_1 : globaltype, gt* : globaltype*}:
     `%|-%:%`(C, [global_1] :: global*{}, [gt_1] :: gt*{gt : globaltype})
     -- Global_ok: `%|-%:%`(C, global, gt_1)
-    -- Globals_ok: `%|-%:%`(C[GLOBALS_context =.. [gt_1]], global*{}, gt*{gt : globaltype})
+    -- Globals_ok: `%|-%:%`(C ++ {TYPES [], RECS [], FUNCS [], GLOBALS [gt_1], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, global*{}, gt*{gt : globaltype})
 }
 
 ;; 6-typing.watsup
@@ -30840,11 +30840,11 @@ relation Types_ok: `%|-%:%`(context, type*, deftype*)
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; 6-typing.watsup:1334.1-1337.50
+  ;; 6-typing.watsup:1334.1-1337.49
   rule cons{C : context, type_1 : type, type* : type*, dt_1* : deftype*, dt* : deftype*}:
     `%|-%:%`(C, [type_1] :: type*{type : type}, dt_1*{dt_1 : deftype} :: dt*{dt : deftype})
     -- Type_ok: `%|-%:%`(C, type_1, dt_1*{dt_1 : deftype})
-    -- Types_ok: `%|-%:%`(C[TYPES_context =.. dt_1*{dt_1 : deftype}], type*{type : type}, dt*{dt : deftype})
+    -- Types_ok: `%|-%:%`(C ++ {TYPES dt_1*{dt_1 : deftype}, RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []}, type*{type : type}, dt*{dt : deftype})
 }
 
 ;; 6-typing.watsup

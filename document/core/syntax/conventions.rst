@@ -79,7 +79,7 @@ When dealing with syntactic constructs the following notation is also used:
 * ${:s_1++s_2} denotes the sequence ${:s_1} concatenated with ${:s_2};
   this is equivalent to ${:s_1 s_2}, but sometimes used for clarity.
 
-* ${:$concat(s*)} denotes the flat sequence formed by concatenating all sequences ${:s_i} in ${:s*}.
+* ${:(++) s*} denotes the flat sequence formed by concatenating all sequences ${:s_i} in ${:s*}.
 
 Moreover, the following conventions are employed:
 
@@ -105,14 +105,14 @@ The following notation is adopted for manipulating such records:
 * ${:r[.FIELD = A]} denotes the same record as ${:r},
   except that the contents of the ${:FIELD} component is replaced with ${:A}.
 
-* ${:r[.FIELD =.. A^n]} denotes the same record as ${:r},
-  except that ${:A^n} is appended to the sequence of the ${:FIELD} component,
-  i.e, it is short for ${:r[.FIELD = r.FIELD A^n]}.
+* ${:r[.FIELD =++ A*]} denotes the same record as ${:r},
+  except that ${:A*} is appended to the sequence of the ${:FIELD} component,
+  i.e, it is short for ${:r[.FIELD = r.FIELD ++ A*]}.
 
 * ${:r_1++r_2} denotes the composition of two identically shaped records by concatenating each field of sequences point-wise:
 
   $${:
-    `{FIELD_ 1 A_1*, FIELD_ 2 A_2*, `...} ++ `{FIELD_ 1 B_1*, FIELD_ 2 B_2*, `...} = `{FIELD_ 1 A_1* B_1*, FIELD_ 2 A_2* B_2*, `...}
+    `{FIELD_ 1 A_1*, FIELD_ 2 A_2*, `...} ++ `{FIELD_ 1 B_1*, FIELD_ 2 B_2*, `...} = `{FIELD_ 1 (A_1* ++ B_1*), FIELD_ 2 (A_2* ++ B_2*), `...}
   }
 
 * ${:(++) r*} denotes the composition of a sequence of records, respectively; if the sequence is empty, then all fields of the resulting record are empty.

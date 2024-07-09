@@ -330,14 +330,14 @@ def $upd(r, 6) = r[.FG = 0]
 def $upd(r, 7) = r[.FH = 0]
 
 def $ext(rec, nat) : rec
-def $ext(r, 0) = r[.FA =.. 0]
-def $ext(r, 1) = r[.FB =.. 0]
-def $ext(r, 2) = r[.FC =.. 0]
-def $ext(r, 3) = r[.FD =.. 0]
-def $ext(r, 4) = r[.FE =.. 0]
-def $ext(r, 5) = r[.FF =.. 0]
-def $ext(r, 6) = r[.FG =.. 0]
-def $ext(r, 7) = r[.FH =.. 0]
+def $ext(r, 0) = r[.FA =++ 0]
+def $ext(r, 1) = r[.FB =++ 0]
+def $ext(r, 2) = r[.FC =++ 0]
+def $ext(r, 3) = r[.FD =++ 0]
+def $ext(r, 4) = r[.FE =++ 0]
+def $ext(r, 5) = r[.FF =++ 0]
+def $ext(r, 6) = r[.FG =++ 0]
+def $ext(r, 7) = r[.FH =++ 0]
 
 syntax recimpl hint(macro "%" "R%") = {
   FIA nat*,                                      ;; \RFIA

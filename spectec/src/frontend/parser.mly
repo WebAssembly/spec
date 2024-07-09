@@ -118,8 +118,9 @@ let rec is_typcon t =
 
 %token LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE
 %token COLON SEMICOLON COMMA DOT DOTDOT DOTDOTDOT BAR BARBAR DASH
+%token BIGAND BIGOR BIGADD BIGMUL BIGCAT
 %token COMMA_NL NL_BAR NL_NL_NL
-%token EQ NE LT GT LE GE APPROX EQUIV ASSIGN SUB SUP EQDOT2
+%token EQ NE LT GT LE GE APPROX EQUIV ASSIGN SUB SUP EQCAT
 %token NOT AND OR
 %token QUEST PLUS MINUS STAR SLASH BACKSLASH UP CAT PLUSMINUS MINUSPLUS
 %token ARROW ARROW2 ARROWSUB ARROW2SUB DARROW2 SQARROW SQARROWSTAR
@@ -143,7 +144,7 @@ let rec is_typcon t =
 %left AND
 %nonassoc TURNSTILE
 %nonassoc TILESTURN
-%right SQARROW SQARROWSTAR PREC SUCC
+%right SQARROW SQARROWSTAR PREC SUCC BIGAND BIGOR BIGADD BIGMUL BIGCAT
 %left COLON SUB SUP ASSIGN EQUIV APPROX
 %left COMMA COMMA_NL
 %right EQ NE LT GT LE GE MEM
@@ -325,6 +326,11 @@ check_atom :
   | ARROW { Atom.Arrow }
   | ARROWSUB { Atom.ArrowSub }
   | ARROW2SUB { Atom.Arrow2Sub }
+  | BIGAND { Atom.BigAnd }
+  | BIGOR { Atom.BigOr }
+  | BIGADD { Atom.BigAdd }
+  | BIGMUL { Atom.BigMul }
+  | BIGCAT { Atom.BigCat }
 
 %inline relop :
   | relop_ { $1 $$ $sloc }
@@ -546,7 +552,7 @@ exp_post_ :
   | exp_atom LBRACK arith RBRACK { IdxE ($1, $3) }
   | exp_atom LBRACK arith COLON arith RBRACK { SliceE ($1, $3, $5) }
   | exp_atom LBRACK path EQ exp RBRACK { UpdE ($1, $3, $5) }
-  | exp_atom LBRACK path EQDOT2 exp RBRACK { ExtE ($1, $3, $5) }
+  | exp_atom LBRACK path EQCAT exp RBRACK { ExtE ($1, $3, $5) }
   | exp_atom iter { IterE ($1, $2) }
   | exp_post dotid { DotE ($1, $2) }
 
@@ -579,9 +585,9 @@ exp_bin_ :
   | exp_un_ { $1 }
   | exp_bin infixop exp_bin { InfixE ($1, $2, $3) }
   | exp_bin cmpop exp_bin { CmpE ($1, $2, $3) }
+  | exp_bin boolop exp_bin { BinE ($1, $2, $3) }
   | exp_bin CAT exp_bin { CatE ($1, $3) }
   | exp_bin MEM exp_bin { MemE ($1, $3) }
-  | exp_bin boolop exp_bin { BinE ($1, $2, $3) }
 
 exp_rel : exp_rel_ { $1 $ $sloc }
 exp_rel_ :
@@ -638,6 +644,7 @@ arith_un : arith_un_ { $1 $ $sloc }
 arith_un_ :
   | arith_atom_ { $1 }
   | bar exp bar { LenE $2 }
+  | BARBAR gramid BARBAR { SizeE $2 }
   | unop arith_un { UnE ($1, $2) }
 
 arith_bin : arith_bin_ { $1 $ $sloc }
@@ -645,9 +652,9 @@ arith_bin_ :
   | arith_un_ { $1 }
   | arith_bin binop arith_bin { BinE ($1, $2, $3) }
   | arith_bin cmpop arith_bin { CmpE ($1, $2, $3) }
+  | arith_bin boolop arith_bin { BinE ($1, $2, $3) }
   | arith_bin CAT arith_bin { CatE ($1, $3) }
   | arith_bin MEM arith_bin { MemE ($1, $3) }
-  | arith_bin boolop arith_bin { BinE ($1, $2, $3) }
 
 arith : arith_bin { $1 }
 

@@ -150,7 +150,7 @@ and string_of_exp e =
       "[" ^ string_of_path p ^ " = " ^ string_of_exp e2 ^ "]"
   | ExtE (e1, p, e2) ->
     string_of_exp e1 ^
-      "[" ^ string_of_path p ^ " =.. " ^ string_of_exp e2 ^ "]"
+      "[" ^ string_of_path p ^ " =++ " ^ string_of_exp e2 ^ "]"
   | StrE efs -> "{" ^ concat ", " (map_filter_nl_list string_of_expfield efs) ^ "}"
   | DotE (e1, atom) -> string_of_exp e1 ^ "." ^ string_of_atom atom
   | CommaE (e1, e2) -> string_of_exp e1 ^ ", " ^ string_of_exp e2

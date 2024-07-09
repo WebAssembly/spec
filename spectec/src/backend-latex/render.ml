@@ -877,6 +877,11 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
           | SqArrowStar -> "\\hookrightarrow^\\ast"
           | Cat -> "\\oplus"
           | Bar -> "\\mid"
+          | BigAnd -> "\\bigwedge"
+          | BigOr -> "\\bigvee"
+          | BigAdd -> "\\Sigma"
+          | BigMul -> "\\Pi"
+          | BigCat -> "\\bigoplus"
           | _ -> "\\" ^ Atom.name atom
     )
 
@@ -1046,7 +1051,7 @@ Printf.eprintf "[render %s:X @ %s] try expansion\n%!" (Source.string_of_region e
       "{}[" ^ render_path env p ^ " = " ^ render_exp env e2 ^ "]"
   | ExtE (e1, p, e2) ->
     render_exp env e1 ^
-      "{}[" ^ render_path env p ^ " = .." ^ render_exp env e2 ^ "]"
+      "{}[" ^ render_path env p ^ " \\mathrel{{=}{\\oplus}} " ^ render_exp env e2 ^ "]"
   | StrE efs ->
     "\\{ " ^
     "\\begin{array}[t]{@{}l@{}}\n" ^
