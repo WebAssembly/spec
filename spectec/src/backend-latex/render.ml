@@ -59,6 +59,11 @@ let rec ends_sub_exp e =
   | FuseE (_e1, e2) -> ends_sub_exp e2
   | _ -> false
 
+let as_arith_exp e =
+  match e.it with
+  | ArithE e1 -> e1
+  | _ -> e
+
 let as_paren_exp e =
   match e.it with
   | ParenE (e1, _) -> e1
@@ -1070,14 +1075,23 @@ Printf.eprintf "[render %s:X @ %s] try expansion\n%!" (Source.string_of_region e
   | TupE es -> "(" ^ render_exps ", " env es ^ ")"
   | InfixE (e1, atom, e2) ->
     let id = typed_id atom in
-    let e = AtomE atom $ atom.at in
-    let args = List.map arg_of_exp (as_seq_exp e1 @ [e] @ as_seq_exp e2) in
+    let ea = AtomE atom $ atom.at in
+    let args = List.map arg_of_exp ([e1; ea] @ as_seq_exp e2) in
     render_expand render_exp env env.show_atom env.macro_atom id args
       (fun () ->
-        (match e1.it with
-        | SeqE [] -> "{" ^ space (render_atom env) atom ^ "}\\;"
-        | _ -> render_exp env e1 ^ space (render_atom env) atom
-        ) ^ render_exp env e2
+        (* Handle subscripting and unary uses *)
+        (match Atom.is_sub atom, (as_arith_exp e1).it with
+        | false, SeqE [] -> "{" ^ render_atom env atom ^ "}\\, "
+        | true, SeqE [] -> "{" ^ render_atom env atom ^ "}_"
+        | false, _ -> render_exp env e1 ^ space (render_atom env) atom
+        | true, _ -> render_exp env e1 ^ " " ^ render_atom env atom ^ "_"
+        ) ^
+        (match Atom.is_sub atom, e2.it with
+        | true, SeqE (e21::e22::es2) ->
+          "{" ^ render_exps "," env (as_tup_exp e21) ^ "} " ^ render_exp_seq env (e22::es2)
+        | true, _ -> "{" ^ render_exps "," env (as_tup_exp e2) ^ "} {}"
+        | false, _ -> render_exp env e2
+        )
       )
   | BrackE (l, e1, r) ->
     let id = typed_id l in

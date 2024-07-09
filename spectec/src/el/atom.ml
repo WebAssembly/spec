@@ -55,8 +55,15 @@ let eq atom1 atom2 =
 let compare atom1 atom2 =
   compare atom1.it atom2.it
 
-let sub atom1 atom2 =
+let is_sub atom =
+  match atom.it with
+  | Atom id -> id <> "" && id.[String.length id - 1] = '_'
+  | ArrowSub | Arrow2Sub -> true
+  | _ -> false
+
+let sub atom1 atom2 = 
   match atom1.it, atom2.it with
+  | Atom id1, Atom id2 -> id1 = id2 ^ "_"
   | ArrowSub, Arrow
   | Arrow2Sub, Arrow2 -> true
   | _, _ -> false
@@ -127,8 +134,8 @@ let name atom =
   | Mem -> "in"
   | Arrow -> "arrow"              (* Latex: \rightarrow *)
   | Arrow2 -> "darrow"            (* Latex: \Rightarrow *)
-  | ArrowSub -> "arrowsub"        (* Latex: \rightarrow with subscript *)
-  | Arrow2Sub -> "darrowsub"      (* Latex: \Rightarrow with subscript *)
+  | ArrowSub -> "arrow_"          (* Latex: \rightarrow with subscript *)
+  | Arrow2Sub -> "darrow_"        (* Latex: \Rightarrow with subscript *)
   | Colon -> "colon"              (* Latex: : *)
   | Sub -> "sub"                  (* Latex: \leq or <: *)
   | Sup -> "sup"                  (* Latex: \geq or :> *)

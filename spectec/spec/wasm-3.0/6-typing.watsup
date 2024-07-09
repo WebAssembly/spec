@@ -8,9 +8,8 @@ syntax init hint(desc "initialization status") =
 syntax localtype hint(desc "local type") =
   init valtype
 
-;; TODO(1, rossberg): fix rendering of subscript
 syntax instrtype hint(desc "instruction type") =
-  resulttype ->_ localidx* resulttype  hint(show %0 `->_ %2 %3) hint(macro "to")
+  resulttype ->_ localidx* resulttype  hint(macro "to")
 
 
 syntax context hint(desc "context") hint(macro "%" "C%") =
