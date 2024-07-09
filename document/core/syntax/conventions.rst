@@ -71,15 +71,17 @@ When dealing with syntactic constructs the following notation is also used:
 * ${:s[i : n]} denotes the sub-sequence ${:s[i]...s[i+n-1]} of a sequence ${:s}.
 
 * ${:s[[i]=A]} denotes the same sequence as ${:s},
-  except that the ${:i}-th element is replaced with ${-:A}.
+  except that the ${:i}-th element is replaced with ${:A}.
 
 * ${:s[[i : n] = A^n]} denotes the same sequence as ${:s},
   except that the sub-sequence ${:s[i : n]} is replaced with ${:A^n}.
 
 * ${:s_1++s_2} denotes the sequence ${:s_1} concatenated with ${:s_2};
-  this is equivalent to ${:s_1 s_2}, but sometimes used for clarity.
+  this is equivalent to ${:s_1 s_2}, but used for clarity.
 
 * ${:(++) s*} denotes the flat sequence formed by concatenating all sequences ${:s_i} in ${:s*}.
+
+* ${:A <- s} denotes that ${:A} is contained in the sequence ${:s}, that is, ${:s} is of the form ${:s_1 A s_2} for some sequences ${:s_1}, ${:s_2}.
 
 Moreover, the following conventions are employed:
 
@@ -103,11 +105,11 @@ The following notation is adopted for manipulating such records:
 * ${:r.FIELD} denotes the contents of the ${:FIELD} component of ${:r}.
 
 * ${:r[.FIELD = A]} denotes the same record as ${:r},
-  except that the contents of the ${:FIELD} component is replaced with ${:A}.
+  except that the value of the ${:FIELD} component is replaced with ${:A}.
 
 * ${:r[.FIELD =++ A*]} denotes the same record as ${:r},
-  except that ${:A*} is appended to the sequence of the ${:FIELD} component,
-  i.e, it is short for ${:r[.FIELD = r.FIELD ++ A*]}.
+  except that ${:A*} is appended to the sequence value of the ${:FIELD} component,
+  that is, it is short for ${:r[.FIELD = r.FIELD ++ A*]}.
 
 * ${:r_1++r_2} denotes the composition of two identically shaped records by concatenating each field of sequences point-wise:
 
