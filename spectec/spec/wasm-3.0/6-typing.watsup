@@ -598,18 +598,18 @@ rule Blocktype_ok/typeidx:
 rule Instr_ok/block:
   C |- BLOCK bt instr* : t_1* -> t_2*
   -- Blocktype_ok: C |- bt : t_1* -> t_2*
-  -- Instrs_ok: C, LABELS (t_2*) |- instr* : t_1* ->_(x*) t_2*
+  -- Instrs_ok: {LABELS (t_2*)} ++ C |- instr* : t_1* ->_(x*) t_2*
 
 rule Instr_ok/loop:
   C |- LOOP bt instr* : t_1* -> t_2*
   -- Blocktype_ok: C |- bt : t_1* -> t_2*
-  -- Instrs_ok: C, LABELS (t_1*) |- instr* : t_1* ->_(x*) t_2*
+  -- Instrs_ok: {LABELS (t_1*)} ++ C |- instr* : t_1* ->_(x*) t_2*
 
 rule Instr_ok/if:
   C |- IF bt instr_1* ELSE instr_2* : t_1* I32 -> t_2*
   -- Blocktype_ok: C |- bt : t_1* -> t_2*
-  -- Instrs_ok: C, LABELS (t_2*) |- instr_1* : t_1* ->_(x_1*) t_2*
-  -- Instrs_ok: C, LABELS (t_2*) |- instr_2* : t_1* ->_(x_2*) t_2*
+  -- Instrs_ok: {LABELS (t_2*)} ++ C |- instr_1* : t_1* ->_(x_1*) t_2*
+  -- Instrs_ok: {LABELS (t_2*)} ++ C |- instr_2* : t_1* ->_(x_2*) t_2*
 
 
 ;; Branch instructions
@@ -1205,7 +1205,7 @@ rule Func_ok:
   C |- FUNC x local* expr : C.TYPES[x]
   -- Expand: C.TYPES[x] ~~ FUNC (t_1* -> t_2*)
   -- (Local_ok: C |- local : lct)*
-  -- Expr_ok: C, LOCALS (SET t_1)* lct*, LABELS (t_2*), RETURN (t_2*) |- expr : t_2*
+  -- Expr_ok: C ++ {LOCALS (SET t_1)* lct*, LABELS (t_2*), RETURN (t_2*)} |- expr : t_2*
 
 rule Global_ok:
   C |- GLOBAL globaltype expr : globaltype

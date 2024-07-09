@@ -162,16 +162,16 @@ rule Instr_ok/select:
 
 rule Instr_ok/block:
   C |- BLOCK t? instr* : eps -> t?
-  -- Instrs_ok: C, LABELS (t?) |- instr* : eps -> t?
+  -- Instrs_ok: {LABELS (t?)} ++ C |- instr* : eps -> t?
 
 rule Instr_ok/loop:
   C |- LOOP t? instr* : eps -> t?
-  -- Instrs_ok: C, LABELS (eps) |- instr* : eps -> eps
+  -- Instrs_ok: {LABELS (eps)} ++ C |- instr* : eps -> eps
 
 rule Instr_ok/if:
   C |- IF t? instr_1* ELSE instr_2* : I32 -> t?
-  -- Instrs_ok: C, LABELS (t?) |- instr_1* : eps -> t?
-  -- Instrs_ok: C, LABELS (t?) |- instr_2* : eps -> t?
+  -- Instrs_ok: {LABELS (t?)} ++ C |- instr_1* : eps -> t?
+  -- Instrs_ok: {LABELS (t?)} ++ C |- instr_2* : eps -> t?
 
 
 ;; Branch instructions
@@ -333,7 +333,7 @@ rule Type_ok:
 rule Func_ok:
   C |- FUNC x (LOCAL t)* expr : t_1* -> t_2?
   -- if C.TYPES[x] = t_1* -> t_2?
-  -- Expr_ok: C, LOCALS t_1* t*, LABELS (t_2?), RETURN (t_2?) |- expr : t_2?
+  -- Expr_ok: C ++ {LOCALS t_1* t*, LABELS (t_2?), RETURN (t_2?)} |- expr : t_2?
 
 rule Global_ok:
   C |- GLOBAL gt expr : gt

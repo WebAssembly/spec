@@ -47,7 +47,7 @@ rule NotationTypingInstrScheme/global.get:
 rule NotationTypingInstrScheme/block:
   C |- BLOCK blocktype instr* : t_1* -> t_2*
   -- Blocktype_ok: C |- blocktype : t_1* -> t_2*
-  -- NotationTypingInstrScheme: C, LABELS (t_2*) |- instr* : t_1* -> t_2*
+  -- NotationTypingInstrScheme: {LABELS (t_2*)} ++ C |- instr* : t_1* -> t_2*
 
 
 ;; Execution notation

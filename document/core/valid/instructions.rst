@@ -1394,7 +1394,7 @@ Control Instructions
 $${rule: Instr_ok/block}
 
 .. note::
-   The :ref:`notation <notation-extend>` ${context: C, LABELS (t*)} inserts the new label type at index ${:0}, shifting all others.
+   The :ref:`notation <notation-concat>` ${context: {LABELS (t*)} ++ C} inserts the new label type at index ${:0}, shifting all others.
 
 
 .. _valid-loop:
@@ -1414,7 +1414,7 @@ $${rule: Instr_ok/block}
 $${rule: Instr_ok/loop}
 
 .. note::
-   The :ref:`notation <notation-extend>` ${context: C, LABELS (t*)} inserts the new label type at index ${:0}, shifting all others.
+   The :ref:`notation <notation-concat>` ${context: {LABELS (t*)} ++ C} inserts the new label type at index ${:0}, shifting all others.
 
 
 .. _valid-if:
@@ -1437,7 +1437,7 @@ $${rule: Instr_ok/loop}
 $${rule: Instr_ok/if}
 
 .. note::
-   The :ref:`notation <notation-extend>` ${context: C, LABELS (t*)} inserts the new label type at index ${:0}, shifting all others.
+   The :ref:`notation <notation-concat>` ${context: {LABELS (t*)} ++ C} inserts the new label type at index ${:0}, shifting all others.
 
 
 .. _valid-br:

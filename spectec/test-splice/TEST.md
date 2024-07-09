@@ -207,7 +207,8 @@ $$
 \frac{
 C \vdash {\mathit{bt}} : {t_1^\ast} \rightarrow {t_2^\ast}
  \qquad
-C, \mathsf{labels}~({t_2^\ast}) \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{({x^\ast})}\,{t_2^\ast}
+\{ \begin{array}[t]{@{}l@{}}
+\mathsf{labels}~({t_2^\ast}) \}\end{array} \oplus C \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{({x^\ast})}\,{t_2^\ast}
 }{
 C \vdash \mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow {t_2^\ast}
 } \, {[\textsc{\scriptsize T{-}block}]}
@@ -220,7 +221,8 @@ $$
 \frac{
 C \vdash {\mathit{bt}} : {t_1^\ast} \rightarrow {t_2^\ast}
  \qquad
-C, \mathsf{labels}~({t_1^\ast}) \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{({x^\ast})}\,{t_2^\ast}
+\{ \begin{array}[t]{@{}l@{}}
+\mathsf{labels}~({t_1^\ast}) \}\end{array} \oplus C \vdash {{\mathit{instr}}^\ast} : {t_1^\ast}~{\rightarrow}_{({x^\ast})}\,{t_2^\ast}
 }{
 C \vdash \mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast} : {t_1^\ast} \rightarrow {t_2^\ast}
 } \, {[\textsc{\scriptsize T{-}loop}]}
@@ -233,9 +235,11 @@ $$
 \frac{
 C \vdash {\mathit{bt}} : {t_1^\ast} \rightarrow {t_2^\ast}
  \qquad
-C, \mathsf{labels}~({t_2^\ast}) \vdash {{\mathit{instr}}_1^\ast} : {t_1^\ast}~{\rightarrow}_{({x_1^\ast})}\,{t_2^\ast}
+\{ \begin{array}[t]{@{}l@{}}
+\mathsf{labels}~({t_2^\ast}) \}\end{array} \oplus C \vdash {{\mathit{instr}}_1^\ast} : {t_1^\ast}~{\rightarrow}_{({x_1^\ast})}\,{t_2^\ast}
  \qquad
-C, \mathsf{labels}~({t_2^\ast}) \vdash {{\mathit{instr}}_2^\ast} : {t_1^\ast}~{\rightarrow}_{({x_2^\ast})}\,{t_2^\ast}
+\{ \begin{array}[t]{@{}l@{}}
+\mathsf{labels}~({t_2^\ast}) \}\end{array} \oplus C \vdash {{\mathit{instr}}_2^\ast} : {t_1^\ast}~{\rightarrow}_{({x_2^\ast})}\,{t_2^\ast}
 }{
 C \vdash \mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~\mathsf{else}~{{\mathit{instr}}_2^\ast} : {t_1^\ast}~\mathsf{i{\scriptstyle 32}} \rightarrow {t_2^\ast}
 } \, {[\textsc{\scriptsize T{-}if}]}

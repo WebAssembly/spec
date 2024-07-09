@@ -115,7 +115,7 @@ and exp' =
   | ExtE of exp * path * exp     (* exp `[` path `=..` exp `]` *)
   | StrE of expfield nl_list     (* `{` list(expfield, `,`) `}` *)
   | DotE of exp * atom           (* exp `.` atom *)
-  | CommaE of exp * exp          (* exp `,` exp *)
+  | CommaE of exp * exp          (* exp `,` exp *)  (* TODO(3, rossberg): Remove? *)
   | CatE of exp * exp            (* exp `++` exp *)
   | MemE of exp * exp            (* exp `<-` exp *)
   | LenE of exp                  (* `|` exp `|` *)

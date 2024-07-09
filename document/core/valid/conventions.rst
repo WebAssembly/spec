@@ -230,17 +230,6 @@ More concretely, contexts are defined as :ref:`records <notation-record>` ${:C} 
 
 $${syntax: context}
 
-.. _notation-extend:
-
-In addition to field access written ${:C.FIELD}, the following notation is adopted for manipulating contexts:
-
-* ${:C, FIELD A*} denotes the same context as ${:C} but with the elements ${:A*} prepended to its ${:FIELD} component sequence.
-
-.. note::
-   :ref:`Indexing notation <notation-index>` like ${resulttype: C.LABELS[i]} is used to look up indices in their respective :ref:`index space <syntax-index>` in the context.
-   Context extension notation ${:C, FIELD A} is primarily used to locally extend *relative* index spaces, such as :ref:`label indices <syntax-labelidx>`.
-   Accordingly, the notation is defined to append at the *front* of the respective sequence, introducing a new relative index ${:0} and shifting the existing ones.
-
 
 .. index:: ! type closure
 .. _type-closure:
