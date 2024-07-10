@@ -151,8 +151,8 @@ def $rundata_(x, DATA b^n (ACTIVE y instr*)) =
 def $instantiate(store, module, externval*) : config
 def $instantiate(s, module, externval*) = s'; f; instr_E* instr_D* instr_S?
   ---- ----
-  ;; TODO(1, rossberg): -- Module_ok: |- module : xt_I* -> xt_E*
-  ;; TODO(1, rossberg): -- (Externval_type: s |- externval : xt_I)*
+  ;; TODO(1, ShinWonho rossberg, #101): -- Module_ok: |- module : xt_I* -> xt_E*
+  ;; TODO(1, ShinWonho rossberg, #101): -- (Externval_type: s |- externval : xt_I)*
   ----
   -- if module = MODULE type* import* func* global* table* mem* elem* data* start? export*
   -- if global* = (GLOBAL globaltype expr_G)*
@@ -185,5 +185,5 @@ def $invoke(store, funcaddr, val*) : config
 def $invoke(s, funcaddr, val*) = s; f; val* (REF.FUNC_ADDR funcaddr) (CALL_REF s.FUNCS[funcaddr].TYPE)
   ---- ----
   -- Expand: s.FUNCS[funcaddr].TYPE ~~ FUNC (t_1* -> t_2*)
-  ;; TODO(1, rossberg): -- (Val_type: s |- val : t_1)*
+  ;; TODO(1, ShinWonho rossberg, #101): -- (Val_type: s |- val : t_1)*
   -- if f = {MODULE {}}  ;; TODO(2, rossberg): inline
