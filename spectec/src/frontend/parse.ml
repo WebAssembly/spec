@@ -16,6 +16,10 @@ let parse_exp s =
   let lexbuf = Lexing.from_string s in
   with_lexbuf "(string)" lexbuf Parser.exp_eof
 
+let parse_sym s =
+  let lexbuf = Lexing.from_string s in
+  with_lexbuf "(string)" lexbuf Parser.sym_eof
+
 let parse_script s =
   let lexbuf = Lexing.from_string s in
   with_lexbuf "(string)" lexbuf Parser.script

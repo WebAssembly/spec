@@ -1,16 +1,13 @@
 open Util.Source
 
 
-(* TODO: annotate types on nodes *)
-
-
 (* Terminals *)
 
 type nat = Z.t
 type text = string
 type id = string phrase
-type atom = Atom.atom
-type mixop = Atom.mixop
+type atom = El.Atom.atom
+type mixop = Mixop.mixop
 
 
 (* Iteration *)
@@ -97,6 +94,7 @@ and exp' =
   | DotE of exp * atom           (* exp.atom *)
   | CompE of exp * exp           (* exp @ exp *)
   | ListE of exp list            (* [exp ... exp] *)
+  | MemE of exp * exp            (* exp `<-` exp *)
   | LenE of exp                  (* |exp| *)
   | CatE of exp * exp            (* exp :: exp *)
   | IdxE of exp * exp            (* exp[exp]` *)
@@ -125,16 +123,19 @@ and arg = arg' phrase
 and arg' =
   | ExpA of exp                                       (* exp *)
   | TypA of typ                                       (* `syntax` typ *)
+  | DefA of id                                        (* `def` defid *)
 
 and bind = bind' phrase
 and bind' =
   | ExpB of id * typ * iter list
   | TypB of id
+  | DefB of id * param list * typ
 
 and param = param' phrase
 and param' =
   | ExpP of id * typ                                  (* varid `:` typ *)
   | TypP of id                                        (* `syntax` varid *)
+  | DefP of id * param list * typ                     (* `def` defid params `:` typ *)
 
 and def = def' phrase
 and def' =
@@ -170,7 +171,7 @@ and hintdef' =
   | RelH of id * hint list
   | DecH of id * hint list
 
-and hint = {hintid : id; hintexp : string list}       (* hint *)
+and hint = {hintid : id; hintexp : El.Ast.exp}        (* hint *)
 
 
 (* Scripts *)

@@ -164,14 +164,16 @@ and token = parse
   | ":>" { SUP }
   | ":=" { ASSIGN }
   | "==" { EQUIV }
-  | "=.." { EQDOT2 }
+  | "=++" { EQCAT }
 
   | "~" { NOT }
   | "/\\" { AND }
   | "\\/" { OR }
-  | "(++)" { BIGCOMP }
   | "(/\\)" { BIGAND }
   | "(\\/)" { BIGOR }
+  | "(+)" { BIGADD }
+  | "(*)" { BIGMUL }
+  | "(++)" { BIGCAT }
 
   | "?" { QUEST }
   | "+" { PLUS }
@@ -180,11 +182,11 @@ and token = parse
   | "/" { SLASH }
   | "\\" { BACKSLASH }
   | "^" { UP }
-  | "++" { COMPOSE }
+  | "++" { CAT }
   | "+-" { PLUSMINUS }
   | "-+" { MINUSPLUS }
 
-  | "<-" { IN }
+  | "<-" { MEM }
   | "->" { ARROW }
   | "=>" { ARROW2 }
   | "->_" { ARROWSUB }
@@ -207,6 +209,7 @@ and token = parse
   | "!%" { NOTHING }
   | "#" { FUSE }
   | "##" { FUSEFUSE }
+  | "%latex" { LATEX }
 
   | "`" { TICK }
 

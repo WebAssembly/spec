@@ -63,7 +63,7 @@ Numeric Instructions
 Numeric instructions provide basic operations over numeric :ref:`values <syntax-value>` of specific :ref:`type <syntax-numtype>`.
 These operations closely match respective operations available in hardware.
 
-$${syntax: {sz sx} num_ instr/num unop_ binop_ testop_ relop_ cvtop}
+$${syntax: {sz sx} num_ instr/num unop_ binop_ testop_ relop_ cvtop_}
 
 Numeric instructions are divided by :ref:`number type <syntax-numtype>`.
 For each type, several subcategories can be distinguished:
@@ -93,6 +93,7 @@ For the other integer instructions, the use of two's complement for the signed i
 .. _syntax-dim:
 .. _syntax-shape:
 .. _syntax-half:
+.. _syntax-zero:
 .. _syntax-vvunop:
 .. _syntax-vvbinop:
 .. _syntax-vvternop:
@@ -112,7 +113,7 @@ Vector Instructions
 
 Vector instructions (also known as *SIMD* instructions, *single instruction multiple data*) provide basic operations over :ref:`values <syntax-value>` of :ref:`vector type <syntax-vectype>`.
 
-$${syntax: {lanetype dim shape ishape} half laneidx instr/vec}
+$${syntax: {lanetype dim shape ishape} half_ zero_ laneidx instr/vec}
 
 $${syntax:
   vvunop vvbinop vvternop vvtestop
@@ -445,6 +446,7 @@ The ${:ELEM.DROP} instruction prevents further use of a passive element segment.
 .. _syntax-loadn:
 .. _syntax-storen:
 .. _syntax-memarg:
+.. _syntax-loadop:
 .. _syntax-vloadop:
 .. _syntax-lanewidth:
 .. _syntax-instr-memory:
@@ -454,7 +456,7 @@ Memory Instructions
 
 Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
 
-$${syntax: memarg vloadop {instr/memory instr/data}}
+$${syntax: memarg loadop_ vloadop_ {instr/memory instr/data}}
 
 Memory is accessed with ${:LOAD} and ${:STORE} instructions for the different :ref:`number types <syntax-numtype>` and `vector types <syntax-vectype>`.
 They all take a :ref:`memory index <syntax-memidx>` and a *memory argument* ${:memarg} that contains an address *offset* and the expected *alignment* (expressed as the exponent of a power of 2).

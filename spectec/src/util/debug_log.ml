@@ -25,7 +25,8 @@ let log_at (type a) label at (arg_f : unit -> string) (res_f : a -> string) (f :
 let log_in_at label at arg_f = log_at label at arg_f (Fun.const "") Fun.id
 let log_in label = log_in_at label Source.no_region
 let log label = log_at label Source.no_region
-let log_if label b arg_f res_f f = if b then log label arg_f res_f f else f ()
+let log_if_at label at b arg_f res_f f = if b then log_at label at arg_f res_f f else f ()
+let log_if label = log_if_at label Source.no_region
 
 module MyMap = Map.Make(String)
 

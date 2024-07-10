@@ -43,7 +43,7 @@ let under_iterexp (iter, vs) eqns : iterexp * eqns =
    let new_vs = List.map (fun (bind, _) ->
      match bind.it with
      | ExpB (v, t, _) -> (v, t)
-     | TypB _ -> error bind.at "unexpected type binding") eqns in
+     | TypB _ | DefB _ -> error bind.at "unexpected type binding") eqns in
    let iterexp' = (iter, vs @ new_vs) in
    let eqns' = List.map (fun (bind, pr) ->
      match bind.it with
@@ -51,7 +51,7 @@ let under_iterexp (iter, vs) eqns : iterexp * eqns =
        let pr_iterexp = update_iterexp_vars (Il.Free.free_prem pr) (iter, vs @ new_vs) in
        let pr' = IterPr (pr, pr_iterexp) $ no_region in
        (ExpB (v, t, is@[iter]) $ bind.at, pr')
-     | TypB _ -> error bind.at "unexpected type binding") eqns in
+     | TypB _ | DefB _ -> error bind.at "unexpected type binding") eqns in
    iterexp', eqns'
 
 
@@ -136,6 +136,7 @@ and t_exp' n e : eqns * exp' =
   | IdxE (exp1, exp2) -> t_ee n (exp1, exp2) (fun (e1', e2') -> IdxE (e1', e2'))
   | CompE (exp1, exp2) -> t_ee n (exp1, exp2) (fun (e1', e2') -> CompE (e1', e2'))
   | CatE (exp1, exp2) -> t_ee n (exp1, exp2) (fun (e1', e2') -> CatE (e1', e2'))
+  | MemE (exp1, exp2) -> t_ee n (exp1, exp2) (fun (e1', e2') -> MemE (e1', e2'))
 
   | SliceE (exp1, exp2, exp3) -> t_eee n (exp1, exp2, exp3) (fun (e1', e2', e3') -> SliceE (e1', e2', e3'))
 
@@ -176,6 +177,7 @@ and t_arg n = phrase t_arg' n
 and t_arg' n arg = match arg with
   | ExpA exp -> unary t_exp n exp (fun exp' -> ExpA exp')
   | TypA _ -> [], arg
+  | DefA _ -> [], arg
 
 let rec t_prem n : prem -> eqns * prem = phrase t_prem' n
 

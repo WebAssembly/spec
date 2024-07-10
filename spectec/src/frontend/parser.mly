@@ -3,6 +3,8 @@ open Util
 open Source
 open El.Ast
 
+module Atom = El.Atom
+
 
 (* Errors *)
 
@@ -25,7 +27,7 @@ let positions_to_region position1 position2 =
 let at (l, r) = positions_to_region l r
 
 let ($) it pos = it $ at pos
-let ($$) it pos = it $$ at pos % Il.Atom.info ""
+let ($$) it pos = it $$ at pos % Atom.info ""
 
 
 (* Conversions *)
@@ -62,13 +64,14 @@ let check_varid_bind id =
 
 type prec = Op | Seq | Post | Prim
 
-let prec_of_exp = function  (* as far as iteration is concerned *)
+let rec prec_of_exp = function  (* as far as iteration is concerned *)
   | VarE _ | BoolE _ | NatE _ | TextE _ | EpsE | StrE _
   | ParenE _ | TupE _ | BrackE _ | CallE _ | HoleE _ -> Prim
   | AtomE _ | IdxE _ | SliceE _ | UpdE _ | ExtE _ | DotE _ | IterE _ -> Post
   | SeqE _ -> Seq
-  | UnE _ | BinE _ | CmpE _ | InfixE _ | LenE _ | SizeE _
-  | CommaE _ | CompE _ | TypE _ | FuseE _ | UnparenE _ -> Op
+  | UnE _ | BinE _ | CmpE _ | MemE _ | InfixE _ | LenE _ | SizeE _
+  | CommaE _ | CatE _ | TypE _ | FuseE _ | UnparenE _ | LatexE _ -> Op
+  | ArithE e -> prec_of_exp e.it
 
 (* Extra parentheses can be inserted to disambiguate the role of elements of
  * an iteration. For example, `( x* )` will be interpreted differently from `x*`
@@ -114,16 +117,17 @@ let rec is_typcon t =
 %}
 
 %token LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE
-%token COLON SEMICOLON COMMA DOT DOTDOT DOTDOTDOT BAR BARBAR DASH BIGCOMP BIGAND BIGOR
+%token COLON SEMICOLON COMMA DOT DOTDOT DOTDOTDOT BAR BARBAR DASH
+%token BIGAND BIGOR BIGADD BIGMUL BIGCAT
 %token COMMA_NL NL_BAR NL_NL_NL
-%token EQ NE LT GT LE GE APPROX EQUIV ASSIGN SUB SUP EQDOT2
+%token EQ NE LT GT LE GE APPROX EQUIV ASSIGN SUB SUP EQCAT
 %token NOT AND OR
-%token QUEST PLUS MINUS STAR SLASH BACKSLASH UP COMPOSE PLUSMINUS MINUSPLUS
+%token QUEST PLUS MINUS STAR SLASH BACKSLASH UP CAT PLUSMINUS MINUSPLUS
 %token ARROW ARROW2 ARROWSUB ARROW2SUB DARROW2 SQARROW SQARROWSTAR
-%token IN PREC SUCC TURNSTILE TILESTURN
+%token MEM PREC SUCC TURNSTILE TILESTURN
 %token DOLLAR TICK
 %token BOT TOP
-%token HOLE MULTIHOLE NOTHING FUSE FUSEFUSE
+%token HOLE MULTIHOLE NOTHING FUSE FUSEFUSE LATEX
 %token<int> HOLEN
 %token BOOL NAT INT RAT REAL TEXT
 %token SYNTAX GRAMMAR RELATION RULE VAR DEF
@@ -140,20 +144,21 @@ let rec is_typcon t =
 %left AND
 %nonassoc TURNSTILE
 %nonassoc TILESTURN
-%right SQARROW SQARROWSTAR PREC SUCC BIGCOMP BIGAND BIGOR
+%right SQARROW SQARROWSTAR PREC SUCC BIGAND BIGOR BIGADD BIGMUL BIGCAT
 %left COLON SUB SUP ASSIGN EQUIV APPROX
 %left COMMA COMMA_NL
-%right EQ NE LT GT LE GE IN
+%right EQ NE LT GT LE GE MEM
 %right ARROW ARROWSUB
 %left SEMICOLON
 %left DOT DOTDOT DOTDOTDOT
-%left PLUS MINUS COMPOSE
+%left PLUS MINUS CAT
 %left STAR SLASH BACKSLASH
 
-%start script typ_eof exp_eof check_atom
+%start script typ_eof exp_eof sym_eof check_atom
 %type<El.Ast.script> script
 %type<El.Ast.typ> typ_eof
 %type<El.Ast.exp> exp_eof
+%type<El.Ast.sym> sym_eof
 %type<bool> check_atom
 
 %%
@@ -222,8 +227,8 @@ defid : id { $1 $ $sloc } | IF { "if" $ $sloc }
 relid : id { $1 $ $sloc }
 gramid : id { $1 $ $sloc }
 hintid : id { $1 }
-fieldid : atomid_ { Il.Atom.Atom $1 $$ $sloc } | atom_escape { $1 $$ $sloc }
-dotid : DOTID { Il.Atom.Atom $1 $$ $sloc }
+fieldid : atomid_ { Atom.Atom $1 $$ $sloc } | atom_escape { $1 $$ $sloc }
+dotid : DOTID { Atom.Atom $1 $$ $sloc }
 
 atomid_lparen : UPID_LPAREN { $1 }
 varid_lparen : LOID_LPAREN { $1 $ $sloc }
@@ -244,22 +249,23 @@ atomid : atomid_ { $1 } | atomid DOTID { $1 ^ "." ^ $2 }
 atom :
   | atom_ { $1 $$ $sloc }
 atom_ :
-  | atomid { Il.Atom.Atom $1 }
+  | atomid { Atom.Atom $1 }
   | atom_escape { $1 }
 atom_escape :
-  | TICK EQ { Il.Atom.Equal }
-  | TICK QUEST { Il.Atom.Quest }
-  | TICK PLUS { Il.Atom.Plus }
-  | TICK STAR { Il.Atom.Star }
-  | TICK BAR { Il.Atom.Bar }
-  | TICK COMPOSE { Il.Atom.Comp }
-  | TICK COMMA { Il.Atom.Comma }
-  | TICK ARROW2 { Il.Atom.Arrow2 }
+  | TICK EQ { Atom.Equal }
+  | TICK MEM { Atom.Mem }
+  | TICK QUEST { Atom.Quest }
+  | TICK PLUS { Atom.Plus }
+  | TICK STAR { Atom.Star }
+  | TICK BAR { Atom.Bar }
+  | TICK CAT { Atom.Cat }
+  | TICK COMMA { Atom.Comma }
+  | TICK ARROW2 { Atom.Arrow2 }
   | TICK infixop_ { $2 }
   | TICK relop_ { $2 }
-  | BOT { Il.Atom.Bot }
-  | TOP { Il.Atom.Top }
-  | INFINITY { Il.Atom.Infinity }
+  | BOT { Atom.Bot }
+  | TOP { Atom.Top }
+  | INFINITY { Atom.Infinity }
 
 varid_bind_with_suffix :
   | varid { $1 }
@@ -312,34 +318,35 @@ check_atom :
 %inline infixop :
   | infixop_ { $1 $$ $sloc }
 %inline infixop_ :
-  | DOT { Il.Atom.Dot }
-  | DOTDOT { Il.Atom.Dot2 }
-  | DOTDOTDOT { Il.Atom.Dot3 }
-  | SEMICOLON { Il.Atom.Semicolon }
-  | BACKSLASH { Il.Atom.Backslash }
-  | ARROW { Il.Atom.Arrow }
-  | ARROWSUB { Il.Atom.ArrowSub }
-  | ARROW2SUB { Il.Atom.Arrow2Sub }
-  | BIGCOMP { Il.Atom.BigComp }
-  | BIGAND { Il.Atom.BigAnd }
-  | BIGOR { Il.Atom.BigOr }
+  | DOT { Atom.Dot }
+  | DOTDOT { Atom.Dot2 }
+  | DOTDOTDOT { Atom.Dot3 }
+  | SEMICOLON { Atom.Semicolon }
+  | BACKSLASH { Atom.Backslash }
+  | ARROW { Atom.Arrow }
+  | ARROWSUB { Atom.ArrowSub }
+  | ARROW2SUB { Atom.Arrow2Sub }
+  | BIGAND { Atom.BigAnd }
+  | BIGOR { Atom.BigOr }
+  | BIGADD { Atom.BigAdd }
+  | BIGMUL { Atom.BigMul }
+  | BIGCAT { Atom.BigCat }
 
 %inline relop :
   | relop_ { $1 $$ $sloc }
 %inline relop_ :
-  | COLON { Il.Atom.Colon }
-  | SUB { Il.Atom.Sub }
-  | SUP { Il.Atom.Sup }
-  | ASSIGN { Il.Atom.Assign }
-  | EQUIV { Il.Atom.Equiv }
-  | APPROX { Il.Atom.Approx }
-  | SQARROW { Il.Atom.SqArrow }
-  | SQARROWSTAR { Il.Atom.SqArrowStar }
-  | PREC { Il.Atom.Prec }
-  | SUCC { Il.Atom.Succ }
-  | TILESTURN { Il.Atom.Tilesturn }
-  | TURNSTILE { Il.Atom.Turnstile }
-  | IN { Il.Atom.In }
+  | COLON { Atom.Colon }
+  | SUB { Atom.Sub }
+  | SUP { Atom.Sup }
+  | ASSIGN { Atom.Assign }
+  | EQUIV { Atom.Equiv }
+  | APPROX { Atom.Approx }
+  | SQARROW { Atom.SqArrow }
+  | SQARROWSTAR { Atom.SqArrowStar }
+  | PREC { Atom.Prec }
+  | SUCC { Atom.Succ }
+  | TILESTURN { Atom.Tilesturn }
+  | TURNSTILE { Atom.Turnstile }
 
 
 (* Iteration *)
@@ -424,15 +431,15 @@ nottyp_prim_ :
   | atom { AtomT $1 }
   | atomid_lparen nottyp RPAREN
     { SeqT [
-        AtomT (Il.Atom.Atom $1 $$ $loc($1)) $ $loc($1);
+        AtomT (Atom.Atom $1 $$ $loc($1)) $ $loc($1);
         ParenT $2 $ $loc($2)
       ] }
   | TICK LPAREN nottyp RPAREN
-    { BrackT (Il.Atom.LParen $$ $loc($2), $3, Il.Atom.RParen $$ $loc($4)) }
+    { BrackT (Atom.LParen $$ $loc($2), $3, Atom.RParen $$ $loc($4)) }
   | TICK LBRACK nottyp RBRACK
-    { BrackT (Il.Atom.LBrack $$ $loc($2), $3, Il.Atom.RBrack $$ $loc($4)) }
+    { BrackT (Atom.LBrack $$ $loc($2), $3, Atom.RBrack $$ $loc($4)) }
   | TICK LBRACE nottyp RBRACE
-    { BrackT (Il.Atom.LBrace $$ $loc($2), $3, Il.Atom.RBrace $$ $loc($4)) }
+    { BrackT (Atom.LBrace $$ $loc($2), $3, Atom.RBrace $$ $loc($4)) }
   | LPAREN tup_list(nottyp) RPAREN
     { match $2 with
       | [], _ -> ParenT (SeqT [] $ $sloc)
@@ -505,6 +512,7 @@ exp_var_ :
   | REAL { VarE ("real" $ $sloc, []) }
   | TEXT { VarE ("text" $ $sloc, []) }
 
+exp_call : exp_call_ { $1 $ $sloc }
 exp_call_ :
   | DOLLAR defid { CallE ($2, []) }
   | DOLLAR defid_lparen comma_list(arg) RPAREN { CallE ($2, $3) }
@@ -514,6 +522,7 @@ exp_hole_ :
   | HOLE { HoleE `Next }
   | MULTIHOLE { HoleE `Rest }
   | NOTHING { HoleE `None }
+  | LATEX LPAREN list(TEXTLIT) RPAREN { LatexE (String.concat " " $3) }
 
 exp_prim : exp_prim_ { $1 $ $sloc }
 exp_prim_ :
@@ -529,11 +538,11 @@ exp_prim_ :
       | [e], `Insig -> ParenE (e, `Insig)
       | es, _ -> TupE es }
   | TICK LPAREN exp RPAREN
-    { BrackE (Il.Atom.LParen $$ $loc($2), $3, Il.Atom.RParen $$ $loc($4)) }
+    { BrackE (Atom.LParen $$ $loc($2), $3, Atom.RParen $$ $loc($4)) }
   | TICK LBRACK exp RBRACK
-    { BrackE (Il.Atom.LBrack $$ $loc($2), $3, Il.Atom.RBrack $$ $loc($4)) }
+    { BrackE (Atom.LBrack $$ $loc($2), $3, Atom.RBrack $$ $loc($4)) }
   | TICK LBRACE exp RBRACE
-    { BrackE (Il.Atom.LBrace $$ $loc($2), $3, Il.Atom.RBrace $$ $loc($4)) }
+    { BrackE (Atom.LBrace $$ $loc($2), $3, Atom.RBrace $$ $loc($4)) }
   | DOLLAR LPAREN arith RPAREN { $3.it }
   | FUSEFUSE exp_prim { UnparenE $2 }
 
@@ -543,7 +552,7 @@ exp_post_ :
   | exp_atom LBRACK arith RBRACK { IdxE ($1, $3) }
   | exp_atom LBRACK arith COLON arith RBRACK { SliceE ($1, $3, $5) }
   | exp_atom LBRACK path EQ exp RBRACK { UpdE ($1, $3, $5) }
-  | exp_atom LBRACK path EQDOT2 exp RBRACK { ExtE ($1, $3, $5) }
+  | exp_atom LBRACK path EQCAT exp RBRACK { ExtE ($1, $3, $5) }
   | exp_atom iter { IterE ($1, $2) }
   | exp_post dotid { DotE ($1, $2) }
 
@@ -553,7 +562,7 @@ exp_atom_ :
   | atom { AtomE $1 }
   | atomid_lparen exp RPAREN
     { SeqE [
-        AtomE (Il.Atom.Atom $1 $$ $loc($1)) $ $loc($1);
+        AtomE (Atom.Atom $1 $$ $loc($1)) $ $loc($1);
         ParenE ($2, `Insig) $ $loc($2)
       ] }
 
@@ -574,10 +583,11 @@ exp_un_ :
 exp_bin : exp_bin_ { $1 $ $sloc }
 exp_bin_ :
   | exp_un_ { $1 }
-  | exp_bin COMPOSE exp_bin { CompE ($1, $3) }
   | exp_bin infixop exp_bin { InfixE ($1, $2, $3) }
   | exp_bin cmpop exp_bin { CmpE ($1, $2, $3) }
   | exp_bin boolop exp_bin { BinE ($1, $2, $3) }
+  | exp_bin CAT exp_bin { CatE ($1, $3) }
+  | exp_bin MEM exp_bin { MemE ($1, $3) }
 
 exp_rel : exp_rel_ { $1 $ $sloc }
 exp_rel_ :
@@ -634,6 +644,7 @@ arith_un : arith_un_ { $1 $ $sloc }
 arith_un_ :
   | arith_atom_ { $1 }
   | bar exp bar { LenE $2 }
+  | BARBAR gramid BARBAR { SizeE $2 }
   | unop arith_un { UnE ($1, $2) }
 
 arith_bin : arith_bin_ { $1 $ $sloc }
@@ -642,6 +653,8 @@ arith_bin_ :
   | arith_bin binop arith_bin { BinE ($1, $2, $3) }
   | arith_bin cmpop arith_bin { CmpE ($1, $2, $3) }
   | arith_bin boolop arith_bin { BinE ($1, $2, $3) }
+  | arith_bin CAT arith_bin { CatE ($1, $3) }
+  | arith_bin MEM arith_bin { MemE ($1, $3) }
 
 arith : arith_bin { $1 }
 
@@ -755,6 +768,9 @@ arg_ :
   | SYNTAX typ { TypA $2 }
   | SYNTAX atomid_ { Id.make_var $2; TypA (VarT ($2 $ $loc($2), []) $ $loc($2)) }
   | GRAMMAR sym { GramA $2 }
+  | DEF DOLLAR defid { DefA $3 }
+  (* HACK for representing def parameters as args *)
+  | DEF exp_call COLON typ { ExpA (TypE ($2, $4) $ $sloc) }
 
 param : param_ { $1 $ $sloc }
 param_ :
@@ -765,6 +781,10 @@ param_ :
       in ExpP (id, $1) }
   | SYNTAX varid_bind { TypP $2 }
   | GRAMMAR gramid COLON typ { GramP ($2, $4) }
+  | DEF DOLLAR defid COLON typ
+    { DefP ($3, [], $5) }
+  | DEF DOLLAR defid_lparen enter_scope comma_list(param) RPAREN COLON typ exit_scope
+    { DefP ($3, $5, $8) }
 
 
 def : def_ { $1 $ $sloc }
@@ -806,11 +826,11 @@ def_ :
   | SYNTAX varid_bind ruleid_list atom hint*
     { HintD (AtomH ($2, $4, $5) $ $sloc) }
   | SYNTAX varid_bind ruleid_list TICK LPAREN hint*
-    { HintD (AtomH ($2, Il.Atom.LParen $$ $loc($5), $6) $ $sloc) }
+    { HintD (AtomH ($2, Atom.LParen $$ $loc($5), $6) $ $sloc) }
   | SYNTAX varid_bind ruleid_list TICK LBRACK hint*
-    { HintD (AtomH ($2, Il.Atom.LBrack $$ $loc($5), $6) $ $sloc) }
+    { HintD (AtomH ($2, Atom.LBrack $$ $loc($5), $6) $ $sloc) }
   | SYNTAX varid_bind ruleid_list TICK LBRACE hint*
-    { HintD (AtomH ($2, Il.Atom.LBrace $$ $loc($5), $6) $ $sloc) }
+    { HintD (AtomH ($2, Atom.LBrace $$ $loc($5), $6) $ $sloc) }
   | GRAMMAR varid_bind ruleid_list hint*
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
       HintD (GramH ($2, id $ $loc($3), $4) $ $sloc) }
@@ -844,5 +864,8 @@ typ_eof :
 
 exp_eof :
   | exp EOF { $1 }
+
+sym_eof :
+  | sym EOF { $1 }
 
 %%

@@ -75,12 +75,12 @@ let under_iterexp (iter, vs) binds : iterexp * bind list =
    let new_vs = List.map (fun bind ->
      match bind.it with
      | ExpB (v, t, _) -> (v, t)
-     | TypB _ -> error bind.at "unexpected type binding") binds in
+     | TypB _ | DefB _ -> error bind.at "unexpected type binding") binds in
    let iterexp' = (iter, vs @ new_vs) in
    let binds' = List.map (fun bind ->
      match bind.it with
      | ExpB (v, t, is) -> ExpB (v, t, is@[iter]) $ bind.at
-     | TypB _ -> assert false) binds in
+     | TypB _ | DefB _ -> assert false) binds in
    iterexp', binds'
 
 (* Generic traversal helpers *)
@@ -158,6 +158,7 @@ and t_exp' env e : bind list * exp' =
   | IdxE (exp1, exp2) -> t_ee env (exp1, exp2) (fun (e1', e2') -> IdxE (e1', e2'))
   | CompE (exp1, exp2) -> t_ee env (exp1, exp2) (fun (e1', e2') -> CompE (e1', e2'))
   | CatE (exp1, exp2) -> t_ee env (exp1, exp2) (fun (e1', e2') -> CatE (e1', e2'))
+  | MemE (exp1, exp2) -> t_ee env (exp1, exp2) (fun (e1', e2') -> MemE (e1', e2'))
 
   | SliceE (exp1, exp2, exp3) -> t_eee env (exp1, exp2, exp3) (fun (e1', e2', e3') -> SliceE (e1', e2', e3'))
 
@@ -197,6 +198,7 @@ and t_arg env = phrase t_arg' env
 and t_arg' env arg = match arg with
   | ExpA exp -> unary t_exp env exp (fun exp' -> ExpA exp')
   | TypA _ -> [], arg
+  | DefA _ -> [], arg
 
 let rec t_prem env : prem -> bind list * prem = phrase t_prem' env
 

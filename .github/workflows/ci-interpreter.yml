@@ -31,6 +31,6 @@ jobs:
       - name: Build interpreter
         run: cd interpreter && opam exec make
       - name: Run tests
-        # TODO: reactiate node once it supports all of Wasm 3.0
+        # TODO: reactivate node once it supports all of Wasm 3.0
         # run: cd interpreter && opam exec make JS=node ci
         run: cd interpreter && opam exec make ci

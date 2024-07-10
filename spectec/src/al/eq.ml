@@ -30,6 +30,9 @@ let rec eq_expr e1 e2 =
   | CatE (e11, e12), CatE (e21, e22) ->
       eq_expr e11 e21 &&
       eq_expr e12 e22
+  | MemE (e11, e12), MemE (e21, e22) ->
+      eq_expr e11 e21 &&
+      eq_expr e12 e22
   | LenE e1, LenE e2 -> eq_expr e1 e2
   | TupE el1, TupE el2 -> eq_exprs el1 el2
   | CaseE (a1, el1), CaseE (a2, el2) ->

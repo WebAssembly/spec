@@ -47,7 +47,7 @@ rule NotationTypingInstrScheme/global.get:
 rule NotationTypingInstrScheme/block:
   C |- BLOCK blocktype instr* : t_1* -> t_2*
   -- Blocktype_ok: C |- blocktype : t_1* -> t_2*
-  -- NotationTypingInstrScheme: C, LABELS (t_2*) |- instr* : t_1* -> t_2*
+  -- NotationTypingInstrScheme: {LABELS (t_2*)} ++ C |- instr* : t_1* -> t_2*
 
 
 ;; Execution notation
@@ -102,3 +102,11 @@ def $allocXs2(syntax X, syntax Y, s*[0], X^n, Y^n) = (s*[n], a^n)
    x_n &=& |\deftype^\ast| \\
    \end{array}
 ;)
+
+
+;; Binary format
+
+grammar Btypewriter : () hint(macro none) = 0x00 => ()
+
+def $symdots : A hint(show `...) hint(macro none)
+grammar Bsym : A hint(macro none) = $(B_1) => A_1 | $($symdots) | $(B_n) => A_n

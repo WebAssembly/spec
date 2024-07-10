@@ -15,28 +15,6 @@ def $setminus1(x, y_1 y*) = eps                -- if x = y_1
 def $setminus1(x, y_1 y*) = $setminus1(x, y*)  -- otherwise
 
 
-;; Free indices
-
-def $dataidx_instr(instr) : dataidx*  hint(show $dataidx(%))
-def $dataidx_instr(MEMORY.INIT x y) = y
-def $dataidx_instr(DATA.DROP x) = x
-def $dataidx_instr(in) = eps
-
-def $dataidx_instrs(instr*) : dataidx*  hint(show $dataidx(%))
-def $dataidx_instrs(eps) = eps
-def $dataidx_instrs(instr instr'*) = $dataidx_instr(instr) $dataidx_instrs(instr'*)
-
-def $dataidx_expr(expr) : dataidx*  hint(show $dataidx(%))
-def $dataidx_expr(in*) = $dataidx_instrs(in*)
-
-def $dataidx_func(func) : dataidx*  hint(show $dataidx(%))
-def $dataidx_func(FUNC x loc* e) = $dataidx_expr(e)
-
-def $dataidx_funcs(func*) : dataidx*  hint(show $dataidx(%))
-def $dataidx_funcs(eps) = eps
-def $dataidx_funcs(func func'*) = $dataidx_func(func) $dataidx_funcs(func'*)
-
-
 ;;
 ;; Auxiliary definitions on Types
 ;;
@@ -70,13 +48,19 @@ def $zsize(numtype) = $size(numtype)
 def $zsize(vectype) = $vsize(vectype)
 def $zsize(packtype) = $psize(packtype)
 
-def $IN(N) : numtype  hint(show I#%) hint(macro "numtype")
+def $IN(N) : Inn  hint(show I#%) hint(macro "INX")
 def $IN(32) = I32
 def $IN(64) = I64
 
-def $FN(N) : numtype  hint(show F#%) hint(macro "numtype")
+def $FN(N) : Fnn  hint(show F#%) hint(macro "FNX")
 def $FN(32) = F32
 def $FN(64) = F64
+
+def $JN(N) : Jnn  hint(show I#%) hint(macro "INX")
+def $JN(8) = I8
+def $JN(16) = I16
+def $JN(32) = I32
+def $JN(64) = I64
 
 
 ;; Unpacking
@@ -145,6 +129,420 @@ var tu : typeuse
 
 def $idx(typeidx) : typevar  hint(show %)
 def $idx(x) = _IDX x
+
+
+;; Free indices
+
+(;
+def $dataidx_instr(instr) : dataidx*  hint(show $dataidx(%)) hint(macro "freedataidx")
+def $dataidx_instr(MEMORY.INIT x y) = y
+def $dataidx_instr(DATA.DROP x) = x
+def $dataidx_instr(in) = eps
+
+def $dataidx_instrs(instr*) : dataidx*  hint(show $dataidx(%)) hint(macro "freedataidx")
+def $dataidx_instrs(eps) = eps
+def $dataidx_instrs(instr instr'*) = $dataidx_instr(instr) $dataidx_instrs(instr'*)
+
+def $dataidx_expr(expr) : dataidx*  hint(show $dataidx(%)) hint(macro "freedataidx")
+def $dataidx_expr(in*) = $dataidx_instrs(in*)
+
+def $dataidx_func(func) : dataidx*  hint(show $dataidx(%)) hint(macro "freedataidx")
+def $dataidx_func(FUNC x loc* e) = $dataidx_expr(e)
+
+def $dataidx_funcs(func*) : dataidx*  hint(show $dataidx(%)) hint(macro "freedataidx")
+def $dataidx_funcs(eps) = eps
+def $dataidx_funcs(func func'*) = $dataidx_func(func) $dataidx_funcs(func'*)
+;)
+
+syntax free =
+  { TYPES typeidx*,
+    FUNCS funcidx*,
+    GLOBALS globalidx*,
+    TABLES tableidx*,
+    MEMS memidx*,
+    ELEMS elemidx*,
+    DATAS dataidx*,
+    LOCALS localidx*,
+    LABELS labelidx*
+  }
+
+
+def $free_opt(free?) : free
+def $free_opt(eps) = {}
+def $free_opt(free) = free
+
+def $free_list(free*) : free
+def $free_list(eps) = {}
+def $free_list(free free'*) = free ++ $free_list(free'*)
+
+
+def $free_typeidx(typeidx) : free
+def $free_typeidx(typeidx) = {TYPES typeidx}
+
+def $free_funcidx(funcidx) : free
+def $free_funcidx(funcidx) = {FUNCS funcidx}
+
+def $free_globalidx(globalidx) : free
+def $free_globalidx(globalidx) = {GLOBALS globalidx}
+
+def $free_tableidx(tableidx) : free
+def $free_tableidx(tableidx) = {TABLES tableidx}
+
+def $free_memidx(memidx) : free
+def $free_memidx(memidx) = {MEMS memidx}
+
+def $free_elemidx(elemidx) : free
+def $free_elemidx(elemidx) = {ELEMS elemidx}
+
+def $free_dataidx(dataidx) : free
+def $free_dataidx(dataidx) = {DATAS dataidx}
+
+def $free_localidx(localidx) : free
+def $free_localidx(localidx) = {LOCALS localidx}
+
+def $free_labelidx(labelidx) : free
+def $free_labelidx(labelidx) = {LABELS labelidx}
+
+def $free_externidx(externidx) : free
+def $free_externidx(FUNC funcidx) = $free_funcidx(funcidx)
+def $free_externidx(GLOBAL globalidx) = $free_globalidx(globalidx)
+def $free_externidx(TABLE tableidx) = $free_tableidx(tableidx)
+def $free_externidx(MEM memidx) = $free_memidx(memidx)
+
+
+def $free_numtype(numtype) : free
+def $free_numtype(numtype) = {}
+
+def $free_packtype(packtype) : free
+def $free_packtype(packtype) = {}
+
+def $free_lanetype(lanetype) : free
+def $free_lanetype(numtype) = $free_numtype(numtype)
+def $free_lanetype(packtype) = $free_packtype(packtype)
+
+def $free_vectype(vectype) : free
+def $free_vectype(vectype) = {}
+
+def $free_consttype(consttype) : free
+def $free_consttype(numtype) = $free_numtype(numtype)
+def $free_consttype(vectype) = $free_vectype(vectype)
+
+def $free_absheaptype(absheaptype) : free
+def $free_absheaptype(absheaptype) = {}
+
+def $free_rectype(rectype) : free  ;; forward decl
+
+def $free_deftype(deftype) : free
+def $free_deftype(DEF rectype n) = $free_rectype(rectype)
+
+def $free_typeuse(typeuse) : free
+def $free_typeuse(_IDX typeidx) = $free_typeidx(typeidx)
+def $free_typeuse(REC n) = {}
+def $free_typeuse(deftype) = $free_deftype(deftype)
+
+def $free_heaptype(heaptype) : free
+def $free_heaptype(absheaptype) = $free_absheaptype(absheaptype)
+def $free_heaptype(typeuse) = $free_typeuse(typeuse)
+
+def $free_reftype(reftype) : free
+def $free_reftype(REF nul heaptype) = $free_heaptype(heaptype)
+
+def $free_valtype(valtype) : free
+def $free_valtype(numtype) = $free_numtype(numtype)
+def $free_valtype(vectype) = $free_vectype(vectype)
+def $free_valtype(reftype) = $free_reftype(reftype)
+def $free_valtype(BOT) = {}
+
+def $free_resulttype(resulttype) : free
+def $free_resulttype(valtype*) = $free_list($free_valtype(valtype)*)
+
+def $free_storagetype(storagetype) : free
+def $free_storagetype(valtype) = $free_valtype(valtype)
+def $free_storagetype(packtype) = $free_packtype(packtype)
+
+def $free_fieldtype(fieldtype) : free
+def $free_fieldtype(mut storagetype) = $free_storagetype(storagetype)
+
+def $free_functype(functype) : free
+def $free_functype(resulttype_1 -> resulttype_2) =
+  $free_resulttype(resulttype_1) ++ $free_resulttype(resulttype_2)
+
+def $free_structtype(structtype) : free
+def $free_structtype(fieldtype*) = $free_list($free_fieldtype(fieldtype)*)
+
+def $free_arraytype(arraytype) : free
+def $free_arraytype(fieldtype) = $free_fieldtype(fieldtype)
+
+def $free_comptype(comptype) : free
+def $free_comptype(STRUCT structtype) = $free_structtype(structtype)
+def $free_comptype(ARRAY arraytype) = $free_arraytype(arraytype)
+def $free_comptype(FUNC functype) = $free_functype(functype)
+
+def $free_subtype(subtype) : free
+def $free_subtype(SUB fin typeuse* comptype) =
+  $free_list($free_typeuse(typeuse)*) ++ $free_comptype(comptype)
+
+;;def $free_rectype(subtype) : free  ;; forward decl'd
+def $free_rectype(REC subtype*) = $free_list($free_subtype(subtype)*)
+
+def $free_globaltype(globaltype) : free
+def $free_globaltype(mut valtype) = $free_valtype(valtype)
+
+def $free_tabletype(tabletype) : free
+def $free_tabletype(limits reftype) = $free_reftype(reftype)
+
+def $free_memtype(memtype) : free
+def $free_memtype(limits PAGE) = {}
+
+def $free_elemtype(elemtype) : free
+def $free_elemtype(reftype) = $free_reftype(reftype)
+
+def $free_datatype(datatype) : free
+def $free_datatype(OK) = {}
+
+def $free_externtype(externtype) : free
+def $free_externtype(FUNC typeuse) = $free_typeuse(typeuse)
+def $free_externtype(GLOBAL globaltype) = $free_globaltype(globaltype)
+def $free_externtype(TABLE tabletype) = $free_tabletype(tabletype)
+def $free_externtype(MEM memtype) = $free_memtype(memtype)
+
+def $free_moduletype(moduletype) : free
+def $free_moduletype(externtype_1* -> externtype_2*) =
+  $free_list($free_externtype(externtype_1)*) ++ $free_list($free_externtype(externtype_2)*)
+
+def $free_blocktype(blocktype) : free
+def $free_blocktype(_RESULT valtype?) = $free_opt($free_valtype(valtype)?)
+def $free_blocktype(_IDX funcidx) = $free_funcidx(funcidx)
+
+
+def $free_shape(shape) : free
+def $free_shape(lanetype X dim) = $free_lanetype(lanetype)
+
+def $free_block(instr*) : free  ;; forward decl
+
+def $free_instr(instr) : free
+def $free_instr(NOP) = {}
+def $free_instr(UNREACHABLE) = {}
+def $free_instr(DROP) = {}
+def $free_instr(SELECT (valtype*)?) = $free_opt($free_list($free_valtype(valtype)*)?)
+
+def $free_instr(BLOCK blocktype instr*) = $free_blocktype(blocktype) ++ $free_block(instr*)
+def $free_instr(LOOP blocktype instr*) = $free_blocktype(blocktype) ++ $free_block(instr*)
+def $free_instr(IF blocktype instr_1* ELSE instr_2*) =
+  $free_blocktype(blocktype) ++ $free_block(instr_1*) ++ $free_block(instr_2*)
+
+def $free_instr(BR labelidx) = $free_labelidx(labelidx)
+def $free_instr(BR_IF labelidx) = $free_labelidx(labelidx)
+def $free_instr(BR_TABLE labelidx* labelidx') =
+  $free_list($free_labelidx(labelidx)*) ++ $free_labelidx(labelidx)
+def $free_instr(BR_ON_NULL labelidx) = $free_labelidx(labelidx)
+def $free_instr(BR_ON_NON_NULL labelidx) = $free_labelidx(labelidx)
+def $free_instr(BR_ON_CAST labelidx reftype_1 reftype_2) =
+  $free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2)
+def $free_instr(BR_ON_CAST_FAIL labelidx reftype_1 reftype_2) =
+  $free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2)
+
+def $free_instr(CALL funcidx) = $free_funcidx(funcidx)
+def $free_instr(CALL_REF typeuse) = $free_typeuse(typeuse)
+def $free_instr(CALL_INDIRECT tableidx typeuse) =
+  $free_tableidx(tableidx) ++ $free_typeuse(typeuse)
+def $free_instr(RETURN) = {}
+def $free_instr(RETURN_CALL funcidx) = $free_funcidx(funcidx)
+def $free_instr(RETURN_CALL_REF typeuse) = $free_typeuse(typeuse)
+def $free_instr(RETURN_CALL_INDIRECT tableidx typeuse) =
+  $free_tableidx(tableidx) ++ $free_typeuse(typeuse)
+
+def $free_instr(CONST numtype numlit) = $free_numtype(numtype)
+def $free_instr(UNOP numtype unop) = $free_numtype(numtype)
+def $free_instr(BINOP numtype binop) = $free_numtype(numtype)
+def $free_instr(TESTOP numtype testop) = $free_numtype(numtype)
+def $free_instr(RELOP numtype relop) = $free_numtype(numtype)
+def $free_instr(CVTOP numtype_1 numtype_2 cvtop sx?) =
+  $free_numtype(numtype_1) ++ $free_numtype(numtype_2)
+
+def $free_instr(VCONST vectype veclit) = $free_vectype(vectype)
+def $free_instr(VVUNOP vectype vvunop) = $free_vectype(vectype)
+def $free_instr(VVBINOP vectype vvbinop) = $free_vectype(vectype)
+def $free_instr(VVTERNOP vectype vvternop) = $free_vectype(vectype)
+def $free_instr(VVTESTOP vectype vvtestop) = $free_vectype(vectype)
+def $free_instr(VUNOP shape vunop) = $free_shape(shape)
+def $free_instr(VBINOP shape vbinop) = $free_shape(shape)
+def $free_instr(VTESTOP shape vtestop) = $free_shape(shape)
+def $free_instr(VRELOP shape vrelop) = $free_shape(shape)
+def $free_instr(VSHIFTOP ishape vshiftop) = $free_shape(ishape)
+def $free_instr(VBITMASK ishape) = $free_shape(ishape)
+def $free_instr(VSWIZZLE ishape) = $free_shape(ishape)
+def $free_instr(VSHUFFLE ishape laneidx*) = $free_shape(ishape)
+def $free_instr(VEXTUNOP ishape_1 ishape_2 vextunop sx) =
+  $free_shape(ishape_1) ++ $free_shape(ishape_2)
+def $free_instr(VEXTBINOP ishape_1 ishape_2 vextbinop sx) =
+  $free_shape(ishape_1) ++ $free_shape(ishape_2)
+def $free_instr(VNARROW ishape_1 ishape_2 sx) =
+  $free_shape(ishape_1) ++ $free_shape(ishape_2)
+def $free_instr(VCVTOP shape_1 shape_2 vcvtop half? sx? zero?) =
+  $free_shape(shape_1) ++ $free_shape(shape_2)
+def $free_instr(VSPLAT shape) = $free_shape(shape)
+def $free_instr(VEXTRACT_LANE shape sx? laneidx) = $free_shape(shape)
+def $free_instr(VREPLACE_LANE shape laneidx) = $free_shape(shape)
+
+def $free_instr(REF.NULL heaptype) = $free_heaptype(heaptype)
+def $free_instr(REF.IS_NULL) = {}
+def $free_instr(REF.AS_NON_NULL) = {}
+def $free_instr(REF.EQ) = {}
+def $free_instr(REF.TEST reftype) = $free_reftype(reftype)
+def $free_instr(REF.CAST reftype) = $free_reftype(reftype)
+def $free_instr(REF.FUNC funcidx) = $free_funcidx(funcidx)
+def $free_instr(REF.I31) = {}
+
+def $free_instr(I31.GET sx) = {}
+
+def $free_instr(STRUCT.NEW typeidx) = {}
+def $free_instr(STRUCT.NEW_DEFAULT typeidx) = $free_typeidx(typeidx)
+def $free_instr(STRUCT.GET sx? typeidx u32) = $free_typeidx(typeidx)
+def $free_instr(STRUCT.SET typeidx u32) = $free_typeidx(typeidx)
+
+def $free_instr(ARRAY.NEW typeidx) = $free_typeidx(typeidx)
+def $free_instr(ARRAY.NEW_DEFAULT typeidx) = $free_typeidx(typeidx)
+def $free_instr(ARRAY.NEW_FIXED typeidx u32) = $free_typeidx(typeidx)
+def $free_instr(ARRAY.NEW_DATA typeidx dataidx) =
+  $free_typeidx(typeidx) ++ $free_dataidx(dataidx)
+def $free_instr(ARRAY.NEW_ELEM typeidx elemidx) =
+  $free_typeidx(typeidx) ++ $free_elemidx(elemidx)
+def $free_instr(ARRAY.GET sx? typeidx) = $free_typeidx(typeidx)
+def $free_instr(ARRAY.SET typeidx) = $free_typeidx(typeidx)
+def $free_instr(ARRAY.LEN) = {}
+def $free_instr(ARRAY.FILL typeidx) = $free_typeidx(typeidx)
+def $free_instr(ARRAY.COPY typeidx_1 typeidx_2) =
+  $free_typeidx(typeidx_1) ++ $free_typeidx(typeidx_2)
+def $free_instr(ARRAY.INIT_DATA typeidx dataidx) =
+  $free_typeidx(typeidx) ++ $free_dataidx(dataidx)
+def $free_instr(ARRAY.INIT_ELEM typeidx elemidx) =
+  $free_typeidx(typeidx) ++ $free_elemidx(elemidx)
+
+def $free_instr(EXTERN.CONVERT_ANY) = {}
+def $free_instr(ANY.CONVERT_EXTERN) = {}
+
+def $free_instr(LOCAL.GET localidx) = $free_localidx(localidx)
+def $free_instr(LOCAL.SET localidx) = $free_localidx(localidx)
+def $free_instr(LOCAL.TEE localidx) = $free_localidx(localidx)
+
+def $free_instr(GLOBAL.GET globalidx) = $free_globalidx(globalidx)
+def $free_instr(GLOBAL.SET globalidx) = $free_globalidx(globalidx)
+
+def $free_instr(TABLE.GET tableidx) = $free_tableidx(tableidx)
+def $free_instr(TABLE.SET tableidx) = $free_tableidx(tableidx)
+def $free_instr(TABLE.SIZE tableidx) = $free_tableidx(tableidx)
+def $free_instr(TABLE.GROW tableidx) = $free_tableidx(tableidx)
+def $free_instr(TABLE.FILL tableidx) = $free_tableidx(tableidx)
+def $free_instr(TABLE.COPY tableidx_1 tableidx_2) =
+  $free_tableidx(tableidx_1) ++ $free_tableidx(tableidx_2)
+def $free_instr(TABLE.INIT tableidx elemidx) =
+  $free_tableidx(tableidx) ++ $free_elemidx(elemidx)
+def $free_instr(ELEM.DROP elemidx) = $free_elemidx(elemidx)
+
+def $free_instr(LOAD numtype loadop memidx memarg) =
+  $free_numtype(numtype) ++ $free_memidx(memidx)
+def $free_instr(STORE numtype sz? memidx memarg) =
+  $free_numtype(numtype) ++ $free_memidx(memidx)
+def $free_instr(VLOAD vectype vloadop? memidx memarg) =
+  $free_vectype(vectype) ++ $free_memidx(memidx)
+def $free_instr(VLOAD_LANE vectype sz memidx memarg laneidx) =
+  $free_vectype(vectype) ++ $free_memidx(memidx)
+def $free_instr(VSTORE vectype memidx memarg) =
+  $free_vectype(vectype) ++ $free_memidx(memidx)
+def $free_instr(VSTORE_LANE vectype sz memidx memarg laneidx) =
+  $free_vectype(vectype) ++ $free_memidx(memidx)
+def $free_instr(MEMORY.SIZE memidx) = $free_memidx(memidx)
+def $free_instr(MEMORY.GROW memidx) = $free_memidx(memidx)
+def $free_instr(MEMORY.FILL memidx) = $free_memidx(memidx)
+def $free_instr(MEMORY.COPY memidx_1 memidx_2) =
+  $free_memidx(memidx_1) ++ $free_memidx(memidx_2)
+def $free_instr(MEMORY.INIT memidx dataidx) =
+  $free_memidx(memidx) ++ $free_dataidx(dataidx)
+def $free_instr(DATA.DROP dataidx) = $free_dataidx(dataidx)
+
+
+def $shift_labelidxs(labelidx*) : labelidx*
+def $shift_labelidxs(eps) = eps
+def $shift_labelidxs(0 labelidx'*) = $shift_labelidxs(labelidx'*)
+def $shift_labelidxs(labelidx labelidx'*) = ($(labelidx - 1)) $shift_labelidxs(labelidx'*)
+
+;; def $free_block(instr*) : free  ;; forward decl'd
+def $free_block(instr*) = free[.LABELS = $shift_labelidxs(free.LABELS)]
+  -- if free = $free_list($free_instr(instr)*)
+
+def $free_expr(expr) : free
+def $free_expr(instr*) = $free_list($free_instr(instr)*)
+
+
+def $free_type(type) : free
+def $free_type(TYPE rectype) = $free_rectype(rectype)
+
+def $free_local(local) : free
+def $free_local(LOCAL t) = $free_valtype(t)
+
+def $free_func(func) : free
+def $free_func(FUNC typeidx local* expr) =
+  $free_typeidx(typeidx) ++ $free_list($free_local(local)*) ++ $free_block(expr)[.LOCALS = eps]
+
+def $free_global(global) : free
+def $free_global(GLOBAL globaltype expr) =
+  $free_globaltype(globaltype) ++ $free_expr(expr)
+
+def $free_table(table) : free
+def $free_table(TABLE tabletype expr) =
+  $free_tabletype(tabletype) ++ $free_expr(expr)
+
+def $free_mem(mem) : free
+def $free_mem(MEMORY memtype) = $free_memtype(memtype)
+
+def $free_elemmode(elemmode) : free
+def $free_elemmode(ACTIVE tableidx expr) =
+  $free_tableidx(tableidx) ++ $free_expr(expr)
+def $free_elemmode(PASSIVE) = {}
+def $free_elemmode(DECLARE) = {}
+
+def $free_datamode(datamode) : free
+def $free_datamode(ACTIVE memidx expr) =
+  $free_memidx(memidx) ++ $free_expr(expr)
+def $free_datamode(PASSIVE) = {}
+
+def $free_elem(elem) : free
+def $free_elem(ELEM reftype expr* elemmode) =
+  $free_reftype(reftype) ++ $free_list($free_expr(expr)*) ++ $free_elemmode(elemmode)
+
+def $free_data(data) : free
+def $free_data(DATA byte* datamode) = $free_datamode(datamode)
+
+def $free_start(start) : free
+def $free_start(START funcidx) = $free_funcidx(funcidx)
+
+def $free_export(export) : free
+def $free_export(EXPORT name externidx) = $free_externidx(externidx)
+
+def $free_import(import) : free
+def $free_import(IMPORT name_1 name_2 externtype) = $free_externtype(externtype)
+
+
+def $free_module(module) : free
+def $free_module(MODULE type* import* func* global* table* mem* elem* data* start* export*) =
+  $free_list($free_type(type)*) ++
+  $free_list($free_import(import)*) ++
+  $free_list($free_func(func)*) ++
+  $free_list($free_global(global)*) ++
+  $free_list($free_table(table)*) ++
+  $free_list($free_mem(mem)*) ++
+  $free_list($free_elem(elem)*) ++
+  $free_list($free_data(data)*) ++
+  $free_list($free_start(start)*) ++
+  $free_list($free_export(export)*)
+
+
+def $funcidx_module(module) : funcidx*  hint(show $funcidx(%)) hint(macro "freefuncidx")
+def $funcidx_module(module) = $free_module(module).FUNCS
+
+def $dataidx_funcs(func*) : dataidx*  hint(show $dataidx(%)) hint(macro "freedataidx")
+def $dataidx_funcs(func*) = $free_list($free_func(func)*).DATAS
 
 
 ;; Substitution
@@ -251,8 +649,8 @@ def $rolldt(typeidx, rectype) : deftype* hint(show $roll_(%)*#((%))) hint(macro 
 def $unrolldt(deftype) : subtype         hint(show $unroll(%))     hint(macro "unrolldt")
 def $expanddt(deftype) : comptype        hint(show $expand(%))     hint(macro "expanddt")
 
-;; TODO: in general, multi-dimensional use of dimensioned vars is ambiguous;
-;; for example, x** with dimension x* could be x1 x2 x1 x2 of x1 x1 x2 x2.
+;; TODO(3, rossberg): in general, multi-dimensional use of dimensioned vars is ambiguous;
+;; for example, x** with dimension x* could be x1 x2 x1 x2 or x1 x1 x2 x2.
 ;; For now, we avoid to reuse the dimension var in exact same form
 def $rollrt(x, rectype) = REC ($subst_subtype(subtype, ($idx($(x + i)))^(i<n), (REC i)^(i<n)))^n
   -- if rectype = REC subtype^n
@@ -270,7 +668,7 @@ rule Expand: deftype ~~ comptype               -- if $unrolldt(deftype) = SUB fi
 
 ;; Projections
 
-;; TODO: use built-in notation
+;; TODO(2, rossberg): add built-in notation for comprehensions
 
 def $funcsxx(externidx*) : typeidx*      hint(show $funcs(%))   hint(macro "funcsxx")
 def $globalsxx(externidx*) : globalidx*  hint(show $globals(%)) hint(macro "globalsxx")

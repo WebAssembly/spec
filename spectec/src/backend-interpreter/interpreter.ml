@@ -150,6 +150,10 @@ and eval_expr env expr =
     | GeOp, v1, v2 -> boolV (v1 >= v2)
     | _ -> fail_expr expr "type mismatch for binary operation"
     )
+  (* Set Operation *)
+  | MemE (e1, e2) ->
+    let v1 = eval_expr env e1 in
+    eval_expr env e2 |> unwrap_listv_to_array |> Array.exists ((=) v1) |> boolV
   (* Function Call *)
   | CallE (fname, el) ->
     let args = List.map (eval_expr env) el in

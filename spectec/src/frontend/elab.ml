@@ -5,7 +5,7 @@ open Ast
 open Convert
 open Print
 
-module Atom = Il.Atom
+module Atom = El.Atom
 module Il = struct include Il include Ast end
 
 module Set = Free.Set
@@ -118,9 +118,9 @@ let new_env () =
   }
 
 let local_env env =
-  {env with gvars = env.gvars; vars = env.vars; typs = env.typs}
+  {env with gvars = env.gvars; vars = env.vars; typs = env.typs; defs = env.defs}
 let promote_env env' env =
-  env.gvars <- env'.gvars; env.vars <- env'.vars; env.typs <- env'.typs
+  env.gvars <- env'.gvars; env.vars <- env'.vars; env.typs <- env'.typs; env.defs <- env'.defs
 
 let bound env' id = Map.mem id.it env'
 
@@ -134,27 +134,27 @@ let find space env' id =
 let bind space env' id t =
   if id.it = "_" then
     env'
-  else if Map.mem id.it env' then
+  else if bound env' id then
     error_id (spaceid space id) ("duplicate declaration for " ^ space)
   else
     Map.add id.it (id.at, t) env'
 
 let rebind _space env' id t =
-  assert (Map.mem id.it env');
+  assert (bound env' id);
   Map.add id.it (id.at, t) env'
 
 let find_field fs atom at t =
-  match List.find_opt (fun (atom', _, _) -> atom'.it = atom.it) fs with
+  match List.find_opt (fun (atom', _, _) -> Atom.eq atom' atom) fs with
   | Some (_, x, _) -> x
   | None -> error_atom at atom t "unbound field"
 
 let find_case cases atom at t =
-  match List.find_opt (fun (atom', _, _) -> atom'.it = atom.it) cases with
+  match List.find_opt (fun (atom', _, _) -> Atom.eq atom' atom) cases with
   | Some (_, x, _) -> x
   | None -> error_atom at atom t "unknown case"
 
 let find_case_sub cases atom at t =
-  match List.find_opt (fun (atom', _, _) -> atom'.it = atom.it || Il.Atom.sub atom' atom) cases with
+  match List.find_opt (fun (atom', _, _) -> Atom.eq atom' atom || Atom.sub atom' atom) cases with
   | Some (_, x, _) -> x
   | None -> error_atom at atom t "unknown case"
 
@@ -240,7 +240,7 @@ let rec arg_subst s ps args =
     in arg_subst s' ps' as'
   | _, _ -> assert false
 
-(* TODO: eliminate, replace expansion with reduction *)
+(* TODO(4, rossberg): eliminate, replace expansion with reduction *)
 let aliased dt' =
   match dt'.it with
   | Il.AliasT _ -> `Alias
@@ -249,7 +249,7 @@ let aliased_inst inst' =
   let Il.InstD (_, _, dt') = inst'.it in
   aliased dt'
 
-(* TODO: replace with reduce_typ *)
+(* TODO(4, rossberg): replace with reduce_typ *)
 let as_defined_typid' env id args at : typ' * [`Alias | `NoAlias] =
   match find "syntax type" env.typs (strip_var_suffix id) with
   | ps, Defined (t, dt') ->
@@ -290,7 +290,7 @@ let rec expand' env = function
 
 let expand env t = expand' env t.it
 
-(* Expand all but the last alias. TODO: remove *)
+(* Expand all but the last alias. TODO(4, rossberg): remove *)
 exception Last
 let rec expand_nondef' env t =
   match t.it with
@@ -318,7 +318,7 @@ let expand_def env t =
 let rec expand_id env t =
   match (expand_nondef env t).it with
   | VarT (id, _) -> strip_var_suffix id
-  | IterT (t1, _) -> expand_id env t1  (* TODO: this shouldn't be needed, but goes along with the as_*_typ functions unrolling iterations *)
+  | IterT (t1, _) -> expand_id env t1  (* TODO(4, rossberg): this shouldn't be needed, but goes along with the as_*_typ functions unrolling iterations *)
   | _ -> "" $ no_region
 
 let rec expand_iter_notation env t =
@@ -399,6 +399,24 @@ let as_struct_typ phrase env dir t at : typfield list =
   | VarT (id, args) -> as_struct_typid' phrase env id args at
   | _ -> error_dir_typ env at phrase dir t "{...}"
 
+let rec as_cat_typid' phrase env dir id args at =
+  match as_defined_typid' env id args at with
+  | VarT (id', args'), `Alias -> as_cat_typid' phrase env dir id' args' at
+  | IterT _, _ -> ()
+  | StrT tfs, _ ->
+    Convert.iter_nl_list (fun (_, (t, _), _) ->
+      as_cat_typ phrase env dir t at) tfs
+  | _ ->
+    error at (phrase ^ "'s type `" ^ string_of_typ (VarT (id, args) $ id.at) ^
+      "` is not concatenable")
+
+and as_cat_typ phrase env dir t at =
+  match expand env t with
+  | VarT (id, args) -> as_cat_typid' phrase env dir id args at
+  | IterT _ -> ()
+  | _ ->
+    error at (phrase ^ "'s type `" ^ string_of_typ t ^ "` is not concatenable")
+
 let rec as_variant_typid' phrase env id args at : typcase list * dots =
   match as_defined_typid' env id args at with
   | VarT (id', args'), `Alias -> as_variant_typid' phrase env id' args' at
@@ -455,17 +473,12 @@ let elab_hint tid mixop {hintid; hintexp} : Il.hint =
           assert (valid_tid tid);
           assert (atom.note.Atom.def = "");
           atom.note.Atom.def <- tid.it;
-          atom.note.Atom.case <- Atom.name_of_mixop mixop
+          atom.note.Atom.case <- Il.Mixop.name mixop
       end
     )
   in
   IterAtoms.exp hintexp;
-  let ss =
-    match hintexp.it with
-    | SeqE es -> List.map Print.string_of_exp es
-    | _ -> [Print.string_of_exp hintexp]
-  in
-  {Il.hintid; Il.hintexp = ss}
+  {Il.hintid; Il.hintexp}
 
 let elab_hints tid mixop = List.map (elab_hint tid mixop)
 
@@ -589,7 +602,7 @@ let rec elab_iter env iter : Il.iter =
   | ListN (e, id_opt) ->
     Option.iter (fun id ->
       let e' = elab_exp env (VarE (id, []) $ id.at) (NumT NatT $ id.at) in
-      (* TODO: extend IL to allow arbitrary pattern exps *)
+      (* TODO(4, rossberg): extend IL to allow arbitrary pattern exps *)
       match e'.it with
       | Il.VarE _ -> ()
       | _ -> error_typ env id.at "iteration variable" (NumT NatT $ id.at)
@@ -693,7 +706,7 @@ and elab_typfield env tid at ((atom, (t, prems), hints) as tf) : Il.typfield =
   let es' = List.map (Dim.annot_exp dims') (List.map2 (elab_exp env') es ts) in
   let prems' = List.map (Dim.annot_prem dims')
     (concat_map_filter_nl_list (elab_prem env') prems) in
-  let det = Free.(union (free_list det_exp es) (det_prems prems)) in
+  let det = Free.(diff (union (free_list det_exp es) (det_prems prems)) (bound_env env)) in
   let free = Free.(diff (free_typfield tf) (union det (bound_env env))) in
   if free <> Free.empty then
     error at ("type case contains indeterminate variable(s) `" ^
@@ -717,7 +730,7 @@ and elab_typcase env tid at ((_atom, (t, prems), hints) as tc) : Il.typcase =
   let es' = List.map (Dim.annot_exp dims') (List.map2 (elab_exp env') es ts) in
   let prems' = List.map (Dim.annot_prem dims')
     (concat_map_filter_nl_list (elab_prem env') prems) in
-  let det = Free.(union (free_list det_exp es) (det_prems prems)) in
+  let det = Free.(diff (union (free_list det_exp es) (det_prems prems)) (bound_env env)) in
   let free = Free.(diff (free_typcase tc) (union det (bound_env env))) in
   if free <> Free.empty then
     error at ("type case contains indeterminate variable(s) `" ^
@@ -741,7 +754,7 @@ and elab_typcon env tid at (((t, prems), hints) as tc) : Il.typcase =
   let es' = List.map (Dim.annot_exp dims') (List.map2 (elab_exp env') es ts) in
   let prems' = List.map (Dim.annot_prem dims')
     (concat_map_filter_nl_list (elab_prem env') prems) in
-  let det = Free.(union (free_list det_exp es) (det_prems prems)) in
+  let det = Free.(diff (union (free_list det_exp es) (det_prems prems)) (bound_env env)) in
   let free = Free.(diff (free_typcon tc) (union det (bound_env env))) in
   if free <> Free.empty then
     error at ("type constraint contains indeterminate variable(s) `" ^
@@ -813,8 +826,8 @@ and elab_typ_notation env tid t : Il.mixop * Il.typ list * typ list =
       ts1', ts1
   | ParenT t1 ->
     let mixop1, ts1', ts1 = elab_typ_notation env tid t1 in
-    let l = Il.Atom.LParen $$ t.at % Atom.info tid.it in
-    let r = Il.Atom.RParen $$ t.at % Atom.info tid.it in
+    let l = Atom.LParen $$ t.at % Atom.info tid.it in
+    let r = Atom.RParen $$ t.at % Atom.info tid.it in
     merge_mixop (merge_mixop [[l]] mixop1) [[r]], ts1', ts1
   | IterT (t1, iter) ->
     (match iter with
@@ -825,7 +838,7 @@ and elab_typ_notation env tid t : Il.mixop * Il.typ list * typ list =
       let tit = IterT (tup_typ ts1 t1.at, iter) $ t.at in
       let t' = Il.IterT (tup_typ' ts1' t1.at, iter') $ t.at in
       let op =
-        Il.Atom.(match iter with Opt -> Quest | _ -> Star) $$ t.at % Atom.info tid.it in
+        Atom.(match iter with Opt -> Quest | _ -> Star) $$ t.at % Atom.info tid.it in
       (if mixop1 = [[]; []] then mixop1 else [List.flatten mixop1] @ [[op]]),
       [t'], [tit]
     )
@@ -843,7 +856,7 @@ and must_elab_exp env e =
   match e.it with
   | VarE (id, _) -> not (bound env.vars id || bound env.gvars (strip_var_suffix id))
   | AtomE _ | BrackE _ | InfixE _ | EpsE | SeqE _ | StrE _ -> true
-  | ParenE (e1, _) | IterE (e1, _) -> must_elab_exp env e1
+  | ParenE (e1, _) | IterE (e1, _) | ArithE e1 -> must_elab_exp env e1
   | TupE es -> List.exists (must_elab_exp env) es
   | _ -> false
 
@@ -957,20 +970,25 @@ and infer_exp' env e : Il.exp' * typ =
   | CommaE (e1, e2) ->
     let e1', t1 = infer_exp env e1 in
     let tfs = as_struct_typ "expression" env Infer t1 e1.at in
-    (* TODO: this is a bit of a hack *)
+    let _ = as_cat_typ "expression" env Infer t1 e.at in
+    (* TODO(4, rossberg): this is a bit of a hack, can we avoid it? *)
     (match e2.it with
     | SeqE ({it = AtomE atom; at; _} :: es2) ->
       let _t2 = find_field tfs atom at t1 in
       let e2 = match es2 with [e2] -> e2 | _ -> SeqE es2 $ e2.at in
       let e2' = elab_exp env (StrE [Elem (atom, e2)] $ e2.at) t1 in
       Il.CompE (e2', e1'), t1
-    | _ -> failwith "unimplemented: infer CommaE"
+    | _ -> error e.at "malformed comma operator"
     )
-  | CompE (e1, e2) ->
+  | CatE (e1, e2) ->
     let e1', t1 = infer_exp env e1 in
-    let _ = as_struct_typ "record" env Infer t1 e.at in
+    let _ = as_cat_typ "operand" env Infer t1 e.at in
     let e2' = elab_exp env e2 t1 in
-    Il.CompE (e1', e2'), t1
+    (if is_iter_typ env t1 then Il.CatE (e1', e2') else Il.CompE (e1', e2')), t1
+  | MemE (e1, e2) ->
+    let e1', t1 = infer_exp env e1 in
+    let e2' = elab_exp env e2 (IterT (t1, List) $ e2.at) in
+    Il.MemE (e1', e2'), BoolT $ e.at
   | LenE e1 ->
     let e1', t1 = infer_exp env e1 in
     let _t11 = as_list_typ "expression" env Infer t1 e1.at in
@@ -978,7 +996,7 @@ and infer_exp' env e : Il.exp' * typ =
   | SizeE id ->
     let _ = find "grammar" env.syms id in
     Il.NatE Z.zero, NumT NatT $ e.at
-  | ParenE (e1, _) ->
+  | ParenE (e1, _) | ArithE e1 ->
     infer_exp' env e1
   | TupE es ->
     let es', ts = List.split (List.map (infer_exp env) es) in
@@ -1003,6 +1021,7 @@ and infer_exp' env e : Il.exp' * typ =
   | HoleE _ -> error e.at "misplaced hole"
   | FuseE _ -> error e.at "misplaced token concatenation"
   | UnparenE _ -> error e.at "misplaced unparenthesize"
+  | LatexE _ -> error e.at "misplaced latex literal"
 
 
 and elab_exp env e t : Il.exp =
@@ -1025,13 +1044,18 @@ and elab_exp' env e t : Il.exp' =
   match e.it with
   | VarE (id, []) when id.it = "_" ->
     Il.VarE id
-  | VarE (id, []) when not (Map.mem id.it env.vars) ->
+  | VarE (id, []) when not (bound env.vars id) ->
     if bound env.gvars (strip_var_suffix id) then
       (* Variable type must be consistent with possible type hint. *)
       let t' = find "" env.gvars (strip_var_suffix id) in
       env.vars <- bind "variable" env.vars id t';
       let e' = elab_exp env e t' in
       cast_exp' "variable" env e' t' t
+    else if is_iter_typ env t then
+      (* Never infer an iteration type for a variable *)
+      let t1, iter = as_iter_typ "" env Check t e.at in
+      let e' = elab_exp env e t1 in
+      lift_exp' e' iter
     else (
       env.vars <- bind "variable" env.vars id t;
       Il.VarE id
@@ -1087,20 +1111,24 @@ and elab_exp' env e t : Il.exp' =
   | CommaE (e1, e2) ->
     let e1' = elab_exp env e1 t in
     let tfs = as_struct_typ "expression" env Check t e1.at in
-    (* TODO: this is a bit of a hack *)
+    let _ = as_cat_typ "expression" env Check t e.at in
+    (* TODO(4, rossberg): this is a bit of a hack, can we avoid it? *)
     (match e2.it with
     | SeqE ({it = AtomE atom; at; _} :: es2) ->
       let _t2 = find_field tfs atom at t in
       let e2 = match es2 with [e2] -> e2 | _ -> SeqE es2 $ e2.at in
       let e2' = elab_exp env (StrE [Elem (atom, e2)] $ e2.at) t in
       Il.CompE (e2', e1')
-    | _ -> failwith "unimplemented: check CommaE"
+    | _ -> error e.at "malformed comma operator"
     )
-  | CompE (e1, e2) ->
-    let _ = as_struct_typ "record" env Check t e.at in
+  | CatE (e1, e2) ->
+    let _ = as_cat_typ "expression" env Check t e.at in
     let e1' = elab_exp env e1 t in
     let e2' = elab_exp env e2 t in
-    Il.CompE (e1', e2')
+    if is_iter_typ env t then Il.CatE (e1', e2') else Il.CompE (e1', e2')
+  | MemE _ ->
+    let e', t' = infer_exp env e in
+    cast_exp' "element operator" env e' t' t
   | LenE _ ->
     let e', t' = infer_exp env e in
     cast_exp' "list length" env e' t' t
@@ -1112,7 +1140,7 @@ and elab_exp' env e t : Il.exp' =
     let t1, _iter = as_iter_typ "expression" env Check t e.at in
     let e1' = elab_exp env e1 t1 in
     cast_exp' "expression" env e1' t1 t
-  | ParenE (e1, _) ->
+  | ParenE (e1, _) | ArithE e1 ->
     elab_exp' env e1 t
   | TupE es ->
     let ts = as_tup_typ "tuple" env Check t e.at in
@@ -1160,6 +1188,7 @@ and elab_exp' env e t : Il.exp' =
   | HoleE _ -> error e.at "misplaced hole"
   | FuseE _ -> error e.at "misplaced token concatenation"
   | UnparenE _ -> error e.at "misplaced unparenthesize"
+  | LatexE _ -> error e.at "misplaced latex literal"
 
 and elab_expfields env tid efs tfs t0 at : Il.expfield list =
   Debug.(log_in_at "el.elab_expfields" at
@@ -1233,7 +1262,7 @@ and elab_exp_notation' env tid e t : Il.exp list * Subst.t =
     if atom.it <> atom'.it then error_typ env e.at "atom" t;
     ignore (elab_atom atom tid);
     [], Subst.empty
-  | InfixE (e1, atom, e2), InfixT (_, atom', _) when Il.Atom.sub atom' atom ->
+  | InfixE (e1, atom, e2), InfixT (_, atom', _) when Atom.sub atom' atom ->
     let e21 = ParenE (SeqE [] $ e2.at, `Insig) $ e2.at in
     elab_exp_notation' env tid
       (InfixE (e1, atom', SeqE [e21; e2] $ e2.at) $ e.at) t
@@ -1272,7 +1301,7 @@ and elab_exp_notation' env tid e t : Il.exp list * Subst.t =
       es1' @ es2', Subst.union s2 s2
     )
   | SeqE ({it = AtomE atom; at; _}::es2), SeqT ({it = AtomT atom'; _}::_)
-    when Il.Atom.sub atom' atom ->
+    when Atom.sub atom' atom ->
     let e21 = ParenE (SeqE [] $ at, `Insig) $ at in
     elab_exp_notation' env tid (SeqE ((AtomE atom' $ at) :: e21 :: es2) $ e.at) t
   | SeqE (e1::es2), SeqT (t1::ts2) ->
@@ -1311,12 +1340,13 @@ and elab_exp_notation' env tid e t : Il.exp list * Subst.t =
   | (IdxE _ | SliceE _ | UpdE _ | ExtE _ | DotE _ | CallE _), IterT _ ->
     [elab_exp env e t], Subst.empty
   (* All other expressions are considered splices *)
-  (* TODO: can't they be splices, too? *)
+  (* TODO(4, rossberg): can't they be splices, too? *)
   | _, IterT (t1, iter) ->
     let es', _s = elab_exp_notation' env tid e t1 in
     [lift_exp' (tup_exp' es' e.at) iter $$ e.at % !!!env tid t], Subst.empty
 
-  | ParenE (e1, _), _ ->
+  | ParenE (e1, _), _
+  | ArithE e1, _ ->
     elab_exp_notation' env tid e1 t
   | _, ParenT t1 ->
     elab_exp_notation' env tid e t1
@@ -1672,7 +1702,7 @@ and make_binds_iter_arg env free dims dims' : Il.bind list ref * (module Iter.Ar
           let fwd = Free.(inter (free_typ t) !left) in
           if fwd <> Free.empty then
             error id.at ("the type of `" ^ id.it ^ "` depends on " ^
-              ( Free.Set.(elements fwd.typid @ elements fwd.gramid @ elements fwd.varid) |>
+              ( Free.Set.(elements fwd.typid @ elements fwd.gramid @ elements fwd.varid @ elements fwd.defid) |>
                 List.map (fun id -> "`" ^ id ^ "`") |>
                 String.concat ", " ) ^
               ", which only occur(s) to its right; try to reorder parameters or premises");
@@ -1690,11 +1720,29 @@ and make_binds_iter_arg env free dims dims' : Il.bind list ref * (module Iter.Ar
           let fwd = Free.(inter free' !left) in
           if fwd <> Free.empty then
             error id.at ("the type of `" ^ id.it ^ "` depends on " ^
-              ( Free.Set.(elements fwd.typid @ elements fwd.gramid @ elements fwd.varid) |>
+              ( Free.Set.(elements fwd.typid @ elements fwd.gramid @ elements fwd.varid @ elements fwd.defid) |>
                 List.map (fun id -> "`" ^ id ^ "`") |>
                 String.concat ", " ) ^
               ", which only occur(s) to its right; try to reorder parameters or premises");
           left := Free.{!left with varid = Set.remove id.it !left.gramid};
+        )
+
+      let visit_defid id =
+        if Free.Set.mem id.it !left.defid then (
+          let ps, t, _ = find "definition" env.defs id in
+          let env' = local_env env in
+          let ps' = elab_params env' ps in
+          let t' = elab_typ env' t in
+          let free' = Free.(union (free_params ps) (diff (free_typ t) (bound_params ps))) in
+          let fwd = Free.(inter free' !left) in
+          if fwd <> Free.empty then
+            error id.at ("the type of `" ^ (spaceid "definition" id).it ^ "` depends on " ^
+              ( Free.Set.(elements fwd.typid @ elements fwd.gramid @ elements fwd.varid @ elements fwd.defid) |>
+                List.map (fun id -> "`" ^ id ^ "`") |>
+                String.concat ", " ) ^
+              ", which only occur(s) to its right; try to reorder parameters or premises");
+          acc := !acc @ [Il.DefB (id, ps', t') $ id.at];
+          left := Free.{!left with defid = Set.remove id.it !left.defid};
         )
     end
   in Arg.acc, (module Arg)
@@ -1702,8 +1750,8 @@ and make_binds_iter_arg env free dims dims' : Il.bind list ref * (module Iter.Ar
 and elab_arg in_lhs env a p s : Il.arg option * Subst.subst =
   (match !(a.it), p.it with  (* HACK: handle shorthands *)
   | ExpA e, TypP _ -> a.it := TypA (typ_of_exp e)
-  | ExpA e, GramP _ ->
-   a.it := GramA (sym_of_exp e)
+  | ExpA e, GramP _ -> a.it := GramA (sym_of_exp e)
+  | ExpA {it = CallE (id, []); _}, DefP _ -> a.it := DefA id
   | _, _ -> ()
   );
   match !(a.it), (Subst.subst_param s p).it with
@@ -1729,13 +1777,26 @@ and elab_arg in_lhs env a p s : Il.arg option * Subst.subst =
       error_typ2 env a.at "argument" t' t "";
     (* Grammar args are erased *)
     None, Subst.add_gramid s' id g
+  | DefA id, DefP (id', ps', t') when in_lhs = `Lhs ->
+    env.defs <- bind "definition" env.defs id (ps', t', []);
+    Some (Il.DefA id $ a.at), Subst.add_defid s id' id
+  | DefA id, DefP (id', ps', t') ->
+    let ps, t, _ = find "definition" env.defs id in
+    if not (Eval.equiv_functyp (to_eval_env env) (ps, t) (ps', t')) then
+      error a.at ("type mismatch in function argument, expected `" ^
+        (spaceid "definition" id').it ^ Print.(string_of_params ps' ^ " : " ^ string_of_typ t') ^
+        "` but got `" ^
+        (spaceid "definition" id).it ^ Print.(string_of_params ps ^ " : " ^ string_of_typ t ^ "`")
+      );
+    Some (Il.DefA id $ a.at), Subst.add_defid s id id'
   | _, _ ->
     error a.at "sort mismatch for argument"
 
 and elab_args in_lhs env as_ ps at : Il.arg list * Subst.subst =
-  Debug.(log_in_at "el.elab_args" at
-    (fun _ -> fmt "%s : %s" (list el_arg as_) (list el_param ps))
-  );
+  Debug.(log_at "el.elab_args" at
+    (fun _ -> fmt "(%s) : (%s)" (list el_arg as_) (list el_param ps))
+    (fun (r, _) -> fmt "(%s)" (list il_arg r))
+  ) @@ fun _ ->
   elab_args' in_lhs env as_ ps [] Subst.empty at
 
 and elab_args' in_lhs env as_ ps aos' s at : Il.arg list * Subst.subst =
@@ -1762,7 +1823,7 @@ and subst_implicit env s t t' : Subst.subst =
     | _ -> s
   in inst s t t'
 
-let elab_params env ps : Il.param list =
+and elab_params env ps : Il.param list =
   List.fold_left (fun ps' p ->
     match p.it with
     | ExpP (id, t) ->
@@ -1802,6 +1863,12 @@ let elab_params env ps : Il.param list =
       ) free.typid;
       let _t' = elab_typ env t in
       ps'  (* Grammar parameters are erased *)
+    | DefP (id, ps, t) ->
+      let env' = local_env env in
+      let ps'' = elab_params env' ps in
+      let t' = elab_typ env' t in
+      env.defs <- bind "definition" env.defs id (ps, t, []);
+      ps' @ [Il.DefP (id, ps'', t') $ p.at]
   ) [] ps
 
 
@@ -1872,6 +1939,13 @@ let elab_hintdef _env hd : Il.def list =
 
 
 let infer_binds env env' dims dims' d : Il.bind list =
+  Debug.(log_in_at "el.infer_binds" d.at
+    (fun _ ->
+      Map.fold (fun id _ ids ->
+        if Map.mem id env.vars then ids else id::ids
+      ) env'.vars [] |> List.rev |> String.concat " "
+    )
+  );
   let det = Free.det_def d in
   let free = Free.(diff (free_def d) (union det (bound_env env))) in
   if free <> Free.empty then
@@ -2090,7 +2164,7 @@ let check_recursion ds' =
       error (List.hd ds').at (" " ^ string_of_region d'.at ^
         ": invalid recursion between definitions of different sort")
   ) ds'
-  (* TODO: check that notations are non-recursive and defs are inductive? *)
+  (* TODO(4, rossberg): check that notations are non-recursive and defs are inductive? *)
 
 let recursify_defs ds' : Il.def list =
   let open Il.Free in

@@ -729,7 +729,7 @@ This instruction checks whether the runtime type stored in `<operand>` is a runt
 
 In order to cast down the type of a struct or array, the aggregate itself must be equipped with a suitable RTT. Attaching runtime type information to aggregates happens at allocation time.
 A runtime type is an expression of type `rtt <type>`, which is another form of opaque value type. It represents the static type `<type>` at runtime.
-In its plain form, a runtime type is obtained using the instruction `rtt.get`
+In its plain form, a runtime type is obtained using the instruction `rtt.canon`
 ```
 (rtt.canon <type>)
 ```

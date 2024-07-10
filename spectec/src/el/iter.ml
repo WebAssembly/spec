@@ -124,14 +124,14 @@ and exp e =
   | BoolE b -> bool b
   | NatE (op, n) -> natop op; nat n
   | TextE s -> text s
-  | EpsE | HoleE _ -> ()
+  | EpsE | HoleE _ | LatexE _ -> ()
   | UnE (op, e1) -> unop op; exp e1
-  | LenE e1 | ParenE (e1, _) | UnparenE e1 -> exp e1
+  | LenE e1 | ArithE e1 | ParenE (e1, _) | UnparenE e1 -> exp e1
   | DotE (e1, at) -> exp e1; atom at
   | SizeE x -> gramid x
   | BinE (e1, op, e2) -> exp e1; binop op; exp e2
   | CmpE (e1, op, e2) -> exp e1; cmpop op; exp e2
-  | IdxE (e1, e2) | CommaE (e1, e2) | CompE (e1, e2)
+  | IdxE (e1, e2) | CommaE (e1, e2) | CatE (e1, e2) | MemE (e1, e2)
   | FuseE (e1, e2) -> exp e1; exp e2
   | SliceE (e1, e2, e3) -> exp e1; exp e2; exp e3
   | SeqE es | TupE es -> list exp es
@@ -202,12 +202,14 @@ and arg a =
   | ExpA e -> exp e
   | TypA t -> typ t
   | GramA g -> sym g
+  | DefA x -> defid x
 
 and param p =
   match p.it with
   | ExpP (x, t) -> varid x; typ t
   | TypP x -> typid x
   | GramP (x, t) -> gramid x; typ t
+  | DefP (x, ps, t) -> defid x; params ps; typ t
 
 and args as_ = list arg as_
 and params ps = list param ps
@@ -239,7 +241,7 @@ end
 
 (* Cloning *)
 
-let clone_note note = Il.Atom.{note with def = ""}
+let clone_note note = Atom.{note with def = ""}
 let clone_atom atom = {atom with note = clone_note atom.note}
 
 let rec clone_iter = function
@@ -279,7 +281,8 @@ and clone_exp e =
   | StrE efs -> StrE (Convert.map_nl_list clone_expfield efs)
   | DotE (e1, atom) -> DotE (clone_exp e1, clone_atom atom)
   | CommaE (e1, e2) -> CommaE (clone_exp e1, clone_exp e2)
-  | CompE (e1, e2) -> CompE (clone_exp e1, clone_exp e2)
+  | CatE (e1, e2) -> CatE (clone_exp e1, clone_exp e2)
+  | MemE (e1, e2) -> MemE (clone_exp e1, clone_exp e2)
   | LenE e1 -> LenE (clone_exp e1)
   | ParenE (e1, b) -> ParenE (clone_exp e1, b)
   | TupE es -> TupE (List.map clone_exp es)
@@ -288,8 +291,10 @@ and clone_exp e =
   | CallE (id, args) -> CallE (id, List.map clone_arg args)
   | IterE (e1, iter) -> IterE (clone_exp e1, clone_iter iter)
   | TypE (e1, t) -> TypE (clone_exp e1, clone_typ t)
+  | ArithE e1 -> ArithE (clone_exp e1)
   | FuseE (e1, e2) -> FuseE (clone_exp e1, clone_exp e2)
   | UnparenE e1 -> UnparenE (clone_exp e1)
+  | LatexE s -> LatexE s
   ) $ e.at
 
 and clone_expfield (atom, e) = (clone_atom atom, clone_exp e)
@@ -307,6 +312,7 @@ and clone_arg a =
   | ExpA e -> ExpA (clone_exp e)
   | TypA t -> TypA (clone_typ t)
   | GramA _ as a' -> a'
+  | DefA _ as a' -> a'
   ) |> ref $ a.at
 
 and clone_hint hint = {hint with hintexp = clone_exp hint.hintexp}

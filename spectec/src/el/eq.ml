@@ -85,11 +85,13 @@ and eq_exp e1 e2 =
     eq_exp e11 e21 && op1 = op2 && eq_exp e12 e22
   | CmpE (e11, op1, e12), CmpE (e21, op2, e22) ->
     eq_exp e11 e21 && op1 = op2 && eq_exp e12 e22
-  | LenE e11, LenE e21 
+  | LenE e11, LenE e21
+  | ArithE e11, ArithE e21
   | UnparenE e11, UnparenE e21 -> eq_exp e11 e21
   | IdxE (e11, e12), IdxE (e21, e22)
   | CommaE (e11, e12), CommaE (e21, e22)
-  | CompE (e11, e12), CompE (e21, e22)
+  | CatE (e11, e12), CatE (e21, e22)
+  | MemE (e11, e12), MemE (e21, e22)
   | FuseE (e11, e12), FuseE (e21, e22) -> eq_exp e11 e21 && eq_exp e12 e22
   | SliceE (e11, e12, e13), SliceE (e21, e22, e23) ->
     eq_exp e11 e21 && eq_exp e12 e22 && eq_exp e13 e23
@@ -164,6 +166,7 @@ and eq_arg a1 a2 =
   | ExpA e1, ExpA e2 -> eq_exp e1 e2
   | TypA t1, TypA t2 -> eq_typ t1 t2
   | GramA g1, GramA g2 -> eq_sym g1 g2
+  | DefA id1, DefA id2 -> eq_id id1 id2
   | _, _ -> false
 
 and eq_param p1 p2 =
@@ -171,4 +174,6 @@ and eq_param p1 p2 =
   | ExpP (id1, t1), ExpP (id2, t2) -> eq_id id1 id2 && eq_typ t1 t2
   | TypP id1, TypP id2 -> eq_id id1 id2
   | GramP (id1, t1), GramP (id2, t2) -> eq_id id1 id2 && eq_typ t1 t2
+  | DefP (id1, ps1, t1), DefP (id2, ps2, t2) ->
+    eq_id id1 id2 && eq_list eq_param ps1 ps2 && eq_typ t1 t2
   | _, _ -> false

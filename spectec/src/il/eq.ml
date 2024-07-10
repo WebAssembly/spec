@@ -1,6 +1,8 @@
 open Util.Source
 open Ast
 
+module Atom = El.Atom
+
 
 (* Helpers *)
 
@@ -22,10 +24,10 @@ let eq_id i1 i2 =
   i1.it = i2.it
 
 let eq_atom atom1 atom2 =
-  atom1.it = atom2.it
+  Atom.eq atom1 atom2
 
 let eq_mixop op1 op2 =
-  eq_list (eq_list eq_atom) op1 op2
+  Mixop.eq op1 op2
 
 
 (* Iteration *)
@@ -73,6 +75,7 @@ and eq_exp e1 e2 =
   | LenE e11, LenE e21 -> eq_exp e11 e21
   | IdxE (e11, e12), IdxE (e21, e22)
   | CompE (e11, e12), CompE (e21, e22)
+  | MemE (e11, e12), MemE (e21, e22)
   | CatE (e11, e12), CatE (e21, e22) -> eq_exp e11 e21 && eq_exp e12 e22
   | SliceE (e11, e12, e13), SliceE (e21, e22, e23) ->
     eq_exp e11 e21 && eq_exp e12 e22 && eq_exp e13 e23
@@ -129,4 +132,5 @@ and eq_arg a1 a2 =
   match a1.it, a2.it with
   | ExpA e1, ExpA e2 -> eq_exp e1 e2
   | TypA t1, TypA t2 -> eq_typ t1 t2
+  | DefA id1, DefA id2 -> eq_id id1 id2
   | _, _ -> false

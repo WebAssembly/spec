@@ -47,6 +47,7 @@ let rec transform_expr f e =
     | TheE e1 -> TheE (new_ e1)
     | ListE es -> ListE ((List.map new_) es)
     | CatE (e1, e2) -> CatE (new_ e1, new_ e2)
+    | MemE (e1, e2) -> MemE (new_ e1, new_ e2)
     | CaseE (mixop, e1) -> CaseE (mixop, new_ e1)
     | SubE (e1, _t1, t2) -> SubE (new_ e1, _t1, t2)
   in { e with it }
@@ -55,7 +56,8 @@ let rec transform_expr f e =
 and transform_arg f a =
   { a with it = match a.it with
     | ExpA e -> ExpA (transform_expr f e)
-    | TypA t -> TypA t }
+    | TypA t -> TypA t
+    | DefA id -> DefA id }
 
 (* Change right_assoc cat into left_assoc cat *)
 let to_left_assoc_cat =
@@ -160,6 +162,8 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
       ListE (List.map2 overlap es1 es2) |> replace_it
     | CatE (e1, e1'), CatE (e2, e2') ->
       CatE (overlap e1 e2, overlap e1' e2') |> replace_it
+    | MemE (e1, e1'), MemE (e2, e2') ->
+      MemE (overlap e1 e2, overlap e1' e2') |> replace_it
     | CaseE (mixop1, e1), CaseE (mixop2, e2) when eq_mixop mixop1 mixop2 ->
       CaseE (mixop1, overlap e1 e2) |> replace_it
     | SubE (e1, typ1, typ1'), SubE (e2, typ2, typ2') when eq_typ typ1 typ2 && eq_typ typ1' typ2' ->
@@ -181,6 +185,7 @@ and overlap_arg a1 a2 = if eq_arg a1 a2 then a1 else
   (match a1.it, a2.it with
     | ExpA e1, ExpA e2 -> ExpA (overlap e1 e2)
     | TypA _, TypA _ -> a1.it
+    | DefA _, DefA _ -> a1.it
     | _, _ -> assert false
   ) $ a1.at
 
@@ -221,6 +226,7 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
     | ExtE (e1, _, e1'), ExtE (e2, _, e2')
     | CompE (e1, e1'), CompE (e2, e2')
     | CatE (e1, e1'), CatE (e2, e2') -> pairwise_concat (collect_unified e1 e2) (collect_unified e1' e2')
+    | MemE (e1, e1'), MemE (e2, e2') -> pairwise_concat (collect_unified e1 e2) (collect_unified e1' e2')
     | SliceE (e1, e1', e1''), SliceE (e2, e2', e2'') ->
       pairwise_concat (pairwise_concat (collect_unified e1 e2) (collect_unified e1' e2')) (collect_unified e1'' e2'')
     | StrE efs1, StrE efs2 ->
@@ -236,6 +242,7 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
 and collect_unified_arg template a = if eq_arg template a then [], [] else match template.it, a.it with
   | ExpA template', ExpA e -> collect_unified template' e
   | TypA _, TypA _ -> [], []
+  | DefA _, DefA _ -> [], []
   | _ -> Util.Error.error a.at "prose transformation" "cannot unify the argument"
 
 and collect_unified_args as1 as2 =

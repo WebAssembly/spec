@@ -4,12 +4,93 @@ open El.Ast
 open El.Convert
 open Config
 
-module Atom = Il.Atom
+module Atom = El.Atom
 
 
 (* Errors *)
 
 let error at msg = Error.error at "latex generation" msg
+
+
+(* Helpers *)
+
+let concat = String.concat
+let suffix s f x = f x ^ s
+let space f x = " " ^ f x ^ " "
+
+let rec has_nl = function
+  | [] -> false
+  | Nl::_ -> true
+  | _::xs -> has_nl xs
+
+let rec concat_map_nl sep br f = function
+  | [] -> ""
+  | [Elem x] -> f x
+  | (Elem x)::xs -> f x ^ sep ^ concat_map_nl sep br f xs
+  | Nl::xs -> br ^ concat_map_nl sep br f xs
+
+let rec altern_map_nl sep br f = function
+  | [] -> ""
+  | [Elem x] -> f x
+  | (Elem x)::Nl::xs -> f x ^ br ^ altern_map_nl sep br f xs
+  | (Elem x)::xs -> f x ^ sep ^ altern_map_nl sep br f xs
+  | Nl::xs -> br ^ altern_map_nl sep br f xs
+
+let strip_nl = function
+  | Nl::xs -> xs
+  | xs -> xs
+
+
+let split_ticks id =
+  let i = ref (String.length id) in
+  while !i > 0 && id.[!i - 1] = '\'' do decr i done;
+  String.sub id 0 !i, String.sub id !i (String.length id - !i)
+
+let ends_sub id = id <> "" && id.[String.length id - 1] = '_'
+let all_sub id = String.for_all ((=) '_') id
+let split_sub id =
+  if ends_sub id then String.sub id 0 (String.length id - 1), "_" else id, ""
+let chop_sub id = fst (split_sub id)
+
+let rec ends_sub_exp e =
+  match e.it with
+  | VarE (id, []) -> ends_sub id.it
+  | AtomE atom -> atom.it <> Atom.Atom "_" && ends_sub (Atom.to_string atom)
+  | FuseE (_e1, e2) -> ends_sub_exp e2
+  | _ -> false
+
+let as_arith_exp e =
+  match e.it with
+  | ArithE e1 -> e1
+  | _ -> e
+
+let as_paren_exp e =
+  match e.it with
+  | ParenE (e1, _) -> e1
+  | _ -> e
+
+let as_tup_exp e =
+  match e.it with
+  | TupE es -> es
+  | ParenE (e1, _) -> [e1]
+  | _ -> [e]
+
+let as_seq_exp e =
+  match e.it with
+  | SeqE es -> es
+  | _ -> [e]
+
+let rec fuse_exp e deep =
+  match e.it with
+  | ParenE (e1, b) when deep -> ParenE (fuse_exp e1 false, b) $ e.at
+  | IterE (e1, iter) -> IterE (fuse_exp e1 deep, iter) $ e.at
+  | SeqE (e1::es) -> List.fold_left (fun e1 e2 -> FuseE (e1, e2) $ e.at) e1 es
+  | _ -> e
+
+let as_tup_arg a =
+  match !(a.it) with
+  | ExpA {it = TupE es; _} -> List.map (fun e -> ref (ExpA e) $ e.at) es
+  | _ -> [a]
 
 
 (* Environment *)
@@ -26,26 +107,25 @@ let map_append x ys map =
     (function None -> Some ys | Some ys' -> Some (ys' @ ys)) !map
 
 
-type rel_sort = TypingRel | ReductionRel
-
+type hints = exp list Map.t
 type env =
   { config : config;
     vars : Set.t ref;
     atoms : atom list Map.t ref;
-    show_typ : exp list Map.t ref;
-    show_gram : exp list Map.t ref;
-    show_var : exp list Map.t ref;
-    show_rel : exp list Map.t ref;
-    show_def : exp list Map.t ref;
-    show_atom : exp list Map.t ref;
-    macro_typ : exp list Map.t ref;
-    macro_gram : exp list Map.t ref;
-    macro_var : exp list Map.t ref;
-    macro_rel : exp list Map.t ref;
-    macro_def : exp list Map.t ref;
-    macro_atom : exp list Map.t ref;
-    desc_typ : exp list Map.t ref;
-    desc_gram : exp list Map.t ref;
+    show_typ : hints ref;
+    show_gram : hints ref;
+    show_var : hints ref;
+    show_rel : hints ref;
+    show_def : hints ref;
+    show_atom : hints ref;
+    macro_typ : hints ref;
+    macro_gram : hints ref;
+    macro_var : hints ref;
+    macro_rel : hints ref;
+    macro_def : hints ref;
+    macro_atom : hints ref;
+    desc_typ : hints ref;
+    desc_gram : hints ref;
     deco_typ : bool;
     deco_rule : bool;
   }
@@ -94,31 +174,16 @@ let local_env env =
     macro_atom = ref !(env.macro_atom);
   }
 
-let split_ticks id =
-  let i = ref (String.length id) in
-  while !i > 0 && id.[!i - 1] = '\'' do decr i done;
-  String.sub id 0 !i, String.sub id !i (String.length id - !i)
 
-let ends_sub id = id <> "" && id.[String.length id - 1] = '_'
-let all_sub id = String.for_all ((=) '_') id
-let split_sub id =
-  if ends_sub id then String.sub id 0 (String.length id - 1), "_" else id, ""
-let chop_sub id = fst (split_sub id)
-
-let rec ends_sub_exp e =
-  match e.it with
-  | VarE (id, []) -> ends_sub id.it
-  | AtomE atom -> atom.it <> Atom.Atom "_" && ends_sub (Atom.string_of_atom atom)
-  | FuseE (_e1, e2) -> ends_sub_exp e2
-  | _ -> false
-
-
-let typed_id' atom def = def ^ ":" ^ (Atom.name_of_atom atom)
+let typed_id' atom def = def ^ ":" ^ (Atom.name atom)
 let typed_id atom = typed_id' atom atom.note.Atom.def $ atom.at
 let untyped_id' id' =
   let i = String.rindex id' ':' in
   String.sub id' (i + 1) (String.length id' - i - 1)
 let untyped_id id = untyped_id' id.it $ id.at
+
+
+(* Collecting hints to populate the environment *)
 
 let is_atom_typ = function
   | {it = AtomT _; _} -> true
@@ -321,7 +386,7 @@ begin
 t_id (El.Print.string_of_exp e);
 *)
         map_append t_id [e] env.macro_atom;
-        (* TODO: do something for having macros on untyped splices *)
+        (* TODO(4, rossberg): do something for having macros on untyped splices *)
 (*      map_cons (typed_id' atom "") e env.macro_atom  (* for defaulting *) *)
     ) (Map.find tid.it !(env.atoms));
   ) inherits;
@@ -334,64 +399,6 @@ Printf.printf "\n[env macro_atom]\n%s\n%!"
   env
 
 
-(* Helpers *)
-
-let concat = String.concat
-let suffix s f x = f x ^ s
-let space f x = " " ^ f x ^ " "
-
-let rec has_nl = function
-  | [] -> false
-  | Nl::_ -> true
-  | _::xs -> has_nl xs
-
-let rec concat_map_nl sep br f = function
-  | [] -> ""
-  | [Elem x] -> f x
-  | (Elem x)::xs -> f x ^ sep ^ concat_map_nl sep br f xs
-  | Nl::xs -> br ^ concat_map_nl sep br f xs
-
-let rec altern_map_nl sep br f = function
-  | [] -> ""
-  | [Elem x] -> f x
-  | (Elem x)::Nl::xs -> f x ^ br ^ altern_map_nl sep br f xs
-  | (Elem x)::xs -> f x ^ sep ^ altern_map_nl sep br f xs
-  | Nl::xs -> br ^ altern_map_nl sep br f xs
-
-let strip_nl = function
-  | Nl::xs -> xs
-  | xs -> xs
-
-
-let as_paren_exp e =
-  match e.it with
-  | ParenE (e1, _) -> e1
-  | _ -> e
-
-let as_tup_exp e =
-  match e.it with
-  | TupE es -> es
-  | ParenE (e1, _) -> [e1]
-  | _ -> [e]
-
-let as_seq_exp e =
-  match e.it with
-  | SeqE es -> es
-  | _ -> [e]
-
-let rec fuse_exp e deep =
-  match e.it with
-  | ParenE (e1, b) when deep -> ParenE (fuse_exp e1 false, b) $ e.at
-  | IterE (e1, iter) -> IterE (fuse_exp e1 deep, iter) $ e.at
-  | SeqE (e1::es) -> List.fold_left (fun e1 e2 -> FuseE (e1, e2) $ e.at) e1 es
-  | _ -> e
-
-let as_tup_arg a =
-  match !(a.it) with
-  | ExpA {it = TupE es; _} -> List.map (fun e -> ref (ExpA e) $ e.at) es
-  | _ -> [a]
-
-
 (* Show expansions *)
 
 exception Arity_mismatch
@@ -399,6 +406,16 @@ exception Arity_mismatch
 let render_exp_fwd = ref (fun _ -> assert false)
 let render_arg_fwd = ref (fun _ -> assert false)
 let render_args_fwd = ref (fun _ -> assert false)
+
+(* Show hints are expressions, so expansion produces an expression that is
+ * potentially converted to another syntactic class afterwards.
+ *)
+type ctxt =
+  { macro : hints ref;           (* macro map for the target class of ids *)
+    templ : string list option;  (* current macro template *)
+    args : arg list;             (* epansion arguments *)
+    next : int ref;              (* argument counter *)
+  }
 
 let macro_template env macro name =
   if not env.config.macros_for_ids then None else
@@ -429,167 +446,210 @@ let nonmacro_atom atom =
   | LBrace | RBrace -> true
   | _ -> false
 
-
-let expand_atom map templ atom =
+let expand_atom env (ctxt : ctxt) atom =
 (*
 Printf.eprintf "[expand_atom %s @ %s] def=%s templ=%s\n%!"
-(Atom.string_of_atom atom) (Source.string_of_region atom.at) atom.note.Atom.def
+(Atom.to_string atom) (Source.string_of_region atom.at) atom.note.Atom.def
 (match templ with None -> "none" | Some xs -> String.concat "%" xs);
 *)
-  (* If expanding with macro template, then pre-macrofy atom name,
+  (* When expanding with macro template, then pre-macrofy atom name,
    * since we will have lost the template context later on. *)
-  if templ = None || nonmacro_atom atom then atom else
-  let name' = expand_name templ (Atom.name_of_atom atom) in
+  if ctxt.templ = None || nonmacro_atom atom then atom else
+  let name' = expand_name ctxt.templ (Atom.name atom) in
   let atom' = {atom with it = Atom.Atom name'} in
   (* Record result as identity expansion, HACK: unless it exists already *)
-  if not (Map.mem name' !map) then env_macro map (typed_id atom');
+  if not (Map.mem name' !(env.macro_atom)) then env_macro env.macro_atom (typed_id atom');
   atom'
 
-let expand_id map templ id =
-(*
-Printf.eprintf "[expand_id %s @ %s] templ=%s macro=%b => %s macro=%b\n%!"
-id.it (Source.string_of_region id.at)
-(match templ with None -> "none" | Some xs -> String.concat "%" xs)
-(Map.mem id.it !map) id'.it (Map.mem id'.it !map);
-*)
-  (* If expanding with macro template, then pre-macrofy id name,
+let expand_id _env (ctxt : ctxt) id =
+  (* When expanding with macro template, then pre-macrofy id name,
    * since we will have lost the template context later on. *)
-  if templ = None || all_sub id.it then id else
-  let id' = {id with it = expand_name templ id.it} in
+  if ctxt.templ = None || all_sub id.it then id else
+  let id' = {id with it = expand_name ctxt.templ id.it} in
+(*
+Printf.eprintf "[expand_id %s] templ=%s macro=%b => %s macro=%b\n%!"
+id.it
+(match templ with None -> "none" | Some xs -> String.concat "%" xs)
+(Map.mem id.it !(ctxt.macro)) id'.it (Map.mem id'.it !(ctxt.macro));
+*)
   (* Record result as identity expansion, HACK: unless it exists already *)
-  if not (Map.mem id'.it !map) then env_macro map id';
+  if not (Map.mem id'.it !(ctxt.macro)) then env_macro ctxt.macro id';
   id'
 
-let rec expand_iter env templ args i iter =
+let rec expand_iter env ctxt iter =
   match iter with
   | Opt | List | List1 -> iter
-  | ListN (e, id_opt) -> ListN (expand_exp env templ args i e, id_opt)
+  | ListN (e, id_opt) -> ListN (expand_exp env ctxt e, id_opt)
 
-and expand_exp env templ args i e =
+and expand_exp env ctxt e =
   (match e.it with
-  | AtomE atom -> AtomE (expand_atom env.macro_atom templ atom)
-  | BoolE _ | NatE _ | TextE _ | EpsE -> e.it
-  | VarE (id, args') ->
-    VarE (expand_id env.macro_var templ id,
-      List.map (expand_arg env templ args i) args')
-  | UnE (op, e) -> UnE (op, expand_exp env templ args i e)
+  | AtomE atom ->
+    let atom' = expand_atom env ctxt atom in
+    AtomE atom'
+  | BoolE _ | NatE _ | TextE _ | EpsE ->
+    e.it
+  | VarE (id, args) ->
+    let id' = expand_id env ctxt id in
+    let args' = List.map (expand_arg env ctxt) args in
+    VarE (id', args')
+  | UnE (op, e1) ->
+    let e1' = expand_exp env ctxt e1 in
+    UnE (op, e1')
   | BinE (e1, op, e2) ->
-    let e1' = expand_exp env templ args i e1 in
-    let e2' = expand_exp env templ args i e2 in
+    let e1' = expand_exp env ctxt e1 in
+    let e2' = expand_exp env ctxt e2 in
     BinE (e1', op, e2')
   | CmpE (e1, op, e2) ->
-    let e1' = expand_exp env templ args i e1 in
-    let e2' = expand_exp env templ args i e2 in
+    let e1' = expand_exp env ctxt e1 in
+    let e2' = expand_exp env ctxt e2 in
     CmpE (e1', op, e2')
-  | SeqE es -> SeqE (List.map (expand_exp env templ args i) es)
+  | SeqE es ->
+    let es' = List.map (expand_exp env ctxt) es in
+    SeqE es'
   | IdxE (e1, e2) ->
-    let e1' = expand_exp env templ args i e1 in
-    let e2' = expand_exp env templ args i e2 in
+    let e1' = expand_exp env ctxt e1 in
+    let e2' = expand_exp env ctxt e2 in
     IdxE (e1', e2')
   | SliceE (e1, e2, e3) ->
-    let e1' = expand_exp env templ args i e1 in
-    let e2' = expand_exp env templ args i e2 in
-    let e3' = expand_exp env templ args i e3 in
+    let e1' = expand_exp env ctxt e1 in
+    let e2' = expand_exp env ctxt e2 in
+    let e3' = expand_exp env ctxt e3 in
     SliceE (e1', e2', e3')
   | UpdE (e1, p, e2) ->
-    let e1' = expand_exp env templ args i e1 in
-    let p' = expand_path env templ args i p in
-    let e2' = expand_exp env templ args i e2 in
+    let e1' = expand_exp env ctxt e1 in
+    let p' = expand_path env ctxt p in
+    let e2' = expand_exp env ctxt e2 in
     UpdE (e1', p', e2')
   | ExtE (e1, p, e2) ->
-    let e1' = expand_exp env templ args i e1 in
-    let p' = expand_path env templ args i p in
-    let e2' = expand_exp env templ args i e2 in
+    let e1' = expand_exp env ctxt e1 in
+    let p' = expand_path env ctxt p in
+    let e2' = expand_exp env ctxt e2 in
     ExtE (e1', p', e2')
-  | StrE efs -> StrE (map_nl_list (expand_expfield env templ args i) efs)
-  | DotE (e, atom) ->
-    DotE (expand_exp env templ args i e, expand_atom env.macro_atom templ atom)
+  | StrE efs ->
+    let efs' = map_nl_list (expand_expfield env ctxt) efs in
+    StrE efs'
+  | DotE (e1, atom) ->
+    let e1' = expand_exp env ctxt e1 in
+    let atom' = expand_atom env ctxt atom in
+    DotE (e1', atom')
   | CommaE (e1, e2) ->
-    let e1' = expand_exp env templ args i e1 in
-    let e2' = expand_exp env templ args i e2 in
+    let e1' = expand_exp env ctxt e1 in
+    let e2' = expand_exp env ctxt e2 in
     CommaE (e1', e2')
-  | CompE (e1, e2) ->
-    let e1' = expand_exp env templ args i e1 in
-    let e2' = expand_exp env templ args i e2 in
-    CompE (e1', e2')
-  | LenE e -> LenE (expand_exp env templ args i e)
-  | SizeE id -> SizeE id
-  | ParenE (e, b) -> ParenE (expand_exp env templ args i e, b)
-  | TupE es -> TupE (List.map (expand_exp env templ args i) es)
+  | CatE (e1, e2) ->
+    let e1' = expand_exp env ctxt e1 in
+    let e2' = expand_exp env ctxt e2 in
+    CatE (e1', e2')
+  | MemE (e1, e2) ->
+    let e1' = expand_exp env ctxt e1 in
+    let e2' = expand_exp env ctxt e2 in
+    MemE (e1', e2')
+  | LenE e1 ->
+    let e1' = expand_exp env ctxt e1 in
+    LenE e1'
+  | SizeE id ->
+    SizeE id
+  | ParenE (e1, b) ->
+    let e1' = expand_exp env ctxt e1 in
+    ParenE (e1', b)
+  | TupE es ->
+    let es' = List.map (expand_exp env ctxt) es in
+    TupE es'
   | InfixE (e1, atom, e2) ->
-    let e1' = expand_exp env templ args i e1 in
-    let e2' = expand_exp env templ args i e2 in
-    InfixE (e1', expand_atom env.macro_atom templ atom, e2')
+    let e1' = expand_exp env ctxt e1 in
+    let atom' = expand_atom env ctxt atom in
+    let e2' = expand_exp env ctxt e2 in
+    InfixE (e1', atom', e2')
   | BrackE (l, e1, r) ->
-    BrackE (
-      expand_atom env.macro_atom templ l,
-      expand_exp env templ args i e1,
-      expand_atom env.macro_atom templ r
-    )
-  | CallE (id, args') ->
-    CallE (expand_id env.macro_def templ id,
-      List.map (expand_arg env templ args i) args')
+    let l' = expand_atom env ctxt l in
+    let e1' = expand_exp env ctxt e1 in
+    let r' = expand_atom env ctxt r in
+    BrackE (l', e1', r')
+  | CallE (id, args) ->
+    let id' = expand_id env {ctxt with macro = env.macro_def} id in
+    let args' = List.map (expand_arg env ctxt) args in
+    CallE (id', args')
   | IterE (e1, iter) ->
-    let e1' = expand_exp env templ args i e1 in
-    let iter' = expand_iter env templ args i iter in
+    let e1' = expand_exp env ctxt e1 in
+    let iter' = expand_iter env ctxt iter in
     IterE (e1', iter')
-  | TypE (e1, t) -> TypE (expand_exp env templ args i e1, t)
-  | HoleE (`Num j) ->
-    (match List.nth_opt args j with
+  | TypE (e1, t) ->
+    let e1' = expand_exp env ctxt e1 in
+    TypE (e1', t)
+  | ArithE e1 ->
+    let e1' = expand_exp env ctxt e1 in
+    ArithE e1'
+  | HoleE (`Num i) ->
+    (match List.nth_opt ctxt.args i with
     | None -> raise Arity_mismatch
-    | Some arg -> i := j + 1;
+    | Some arg -> ctxt.next := i + 1;
       match !(arg.it) with
-      | ExpA eJ -> eJ.it
+      | ExpA eJ -> ArithE eJ
       | _ -> CallE ("" $ e.at, [arg])
     )
-  | HoleE `Next -> (expand_exp env templ args i (HoleE (`Num !i) $ e.at)).it
+  | HoleE `Next ->
+    (expand_exp env ctxt (HoleE (`Num !(ctxt.next)) $ e.at)).it
   | HoleE `Rest ->
-    let args' = try Lib.List.drop !i args with Failure _ -> raise Arity_mismatch in
-    i := List.length args;
+    let args =
+      try Lib.List.drop !(ctxt.next) ctxt.args
+      with Failure _ -> raise Arity_mismatch
+    in
+    ctxt.next := List.length ctxt.args;
     SeqE (List.map (function
-      | {it = {contents = ExpA e}; _} -> e
+      | {it = {contents = ExpA e}; _} ->
+        (* Guard exp arguments against being reinterpreted as sym
+         * when expanding a grammar id, by wrapping in ArithE. *)
+        Source.(ArithE e $ e.at)
       | a -> CallE ("" $ a.at, [a]) $ a.at
-    ) args')
-  | HoleE `None -> HoleE `None
+    ) args)
+  | HoleE `None ->
+    HoleE `None
   | FuseE (e1, e2) ->
-    let e1' = expand_exp env templ args i e1 in
-    let e2' = expand_exp env templ args i e2 in
+    let e1' = expand_exp env ctxt e1 in
+    let e2' = expand_exp env ctxt e2 in
     FuseE (e1', e2')
-  | UnparenE e1 -> UnparenE (expand_exp env templ args i e1)
+  | UnparenE e1 ->
+    let e1' = expand_exp env ctxt e1 in
+    UnparenE e1'
+  | LatexE s ->
+    LatexE s
   ) $ e.at
 
-and expand_expfield env templ args i (atom, e) =
-  (expand_atom env.macro_atom templ atom, expand_exp env templ args i e)
+and expand_expfield env ctxt (atom, e) =
+  let atom' = expand_atom env ctxt atom in
+  let e' = expand_exp env ctxt e in
+  (atom', e')
 
-and expand_path env templ args i p =
+and expand_path env ctxt p =
   (match p.it with
   | RootP -> RootP
   | IdxP (p1, e1) ->
-    let p1' = expand_path env templ args i p1 in
-    let e1' = expand_exp env templ args i e1 in
+    let p1' = expand_path env ctxt p1 in
+    let e1' = expand_exp env ctxt e1 in
     IdxP (p1', e1')
   | SliceP (p1, e1, e2) ->
-    let p1' = expand_path env templ args i p1 in
-    let e1' = expand_exp env templ args i e1 in
-    let e2' = expand_exp env templ args i e2 in
+    let p1' = expand_path env ctxt p1 in
+    let e1' = expand_exp env ctxt e1 in
+    let e2' = expand_exp env ctxt e2 in
     SliceP (p1', e1', e2')
   | DotP (p1, atom) ->
-    DotP (expand_path env templ args i p1,
-      expand_atom env.macro_atom templ atom)
+    let p1' = expand_path env ctxt p1 in
+    let atom' = expand_atom env ctxt atom in
+    DotP (p1', atom')
   ) $ p.at
 
-and expand_arg env templ args i a =
+and expand_arg env ctxt a =
   ref (match !(a.it) with
-  | ExpA e -> ExpA (expand_exp env templ args i e)
+  | ExpA e -> ExpA (expand_exp env ctxt e)
   | a' -> a'
   ) $ a.at
 
 
-(* Attempt to show-expand the application `id(args)`, using the hints `show`,
+(* Attempt to expand the application `id(args)`, using the hints `show`,
  * and the function `render` for rendering the resulting expression.
  * If no hint can be found, fall back to the default of rendering `f`.
  *)
-let render_expand render env (show : exp list Map.t ref) macro id args f =
+let render_expand render env (show : hints ref) macro id args f =
   match Map.find_opt id.it !show with
   | None ->
 (*
@@ -612,7 +672,7 @@ Printf.printf "[expand attempt %s %s] %s\n%!" id.it m (El.Print.string_of_exp sh
 );
 *)
           let env' = local_env env in
-          let e = expand_exp env' templ args (ref 1) showexp in
+          let e = expand_exp env' {macro; templ; args; next = ref 1} showexp in
           (* Avoid cyclic expansion *)
           show := Map.remove id.it !show;
           Fun.protect (fun () -> render env' e)
@@ -627,8 +687,8 @@ Printf.printf "[expand attempt %s %s] %s\n%!" id.it m (El.Print.string_of_exp sh
  * possible show expansion results, respectively.
  *)
 let render_apply render_id render_exp env show macro id args =
-  let atom = Atom.(Atom (" " ^ render_id env id) $$ id.at % info "") in
-  let arg0 = arg_of_exp (AtomE atom $ id.at) in
+  (* Pre-render id here, since we cannot distinguish it from other id classes later. *)
+  let arg0 = arg_of_exp (LatexE (render_id env id) $ id.at) in
   render_expand render_exp env show macro id (arg0::args)
     (fun () ->
       match args with
@@ -651,6 +711,7 @@ let lower = String.lowercase_ascii
 let dash_id = Str.(global_replace (regexp "-") "{-}")
 let quote_id = Str.(global_replace (regexp "_+") "\\_")
 let shrink_id = Str.(global_replace (regexp "[0-9]+") "{\\\\scriptstyle \\0}")
+let rekerni_id = Str.(global_replace (regexp "[.]") "{.}")
 let rekernl_id = Str.(global_replace (regexp "\\([a-z]\\)[{]") "\\1{\\kern-0.1em")
 let rekernr_id = Str.(global_replace (regexp "[}]\\([a-z{]\\)") "\\kern-0.1em}\\1")
 let macrofy_id = Str.(global_replace (regexp "[_.]") "")
@@ -677,11 +738,15 @@ Printf.eprintf "[id w/o macro] %s%s\n%!" (if style = `Func then "$" else "") id;
 *)
   let id' = quote_id id in
   let id'' =
-    (* TODO: provide a way to selectively shrink uppercase vars, esp after # *)
+    (* TODO(3, rossberg): provide a way to selectively shrink uppercase vars, esp after # *)
     match style with
     | `Var | `Func -> rekernl_id (rekernr_id (shrink_id id'))
-    | `Atom -> shrink_id (lower id')
-    | `Token -> id'
+    | `Atom -> rekerni_id (shrink_id (lower id'))
+    | `Token ->
+      (* HACK for now: if first char is upper, remove *)
+      if String.length id' > 1 && is_upper id'.[0]
+      then String.sub id' 1 (String.length id' - 1)
+      else id'
   in
   if style = `Var && String.length id'' = 1 && Lib.Char.is_letter_ascii id''.[0]
   then id''
@@ -713,7 +778,7 @@ let rec render_id_sub style show macro env first at = function
       if String.for_all is_digit s3 then s3 else
       if not first then render_id' env style s2 None else
       render_expand !render_exp_fwd env show macro
-        (s3 $ at) []
+        (s3 $ at) [ref (ExpA (VarE (s3 $ at, []) $ at)) $ at]
         (fun () -> render_id' env style s2 (macro_template env macro s3))
     in
     let s5 = s4 ^ ticks in
@@ -737,10 +802,7 @@ and render_id style show macro env id =
 let render_typid env id = render_id `Var env.show_typ env.macro_typ env id
 let render_varid env id = render_id `Var env.show_var env.macro_var env id
 let render_defid env id = render_id `Func env.show_def env.macro_def env id
-let render_gramid env id = render_id `Token env.show_gram env.macro_gram env
-  (* TODO: HACK for now: if first char is upper, remove *)
-  (let len = String.length id.it in
-  if len > 1 && is_upper id.it.[0] then String.sub id.it 1 (len - 1) $ id.at else id)
+let render_gramid env id = render_id `Token env.show_gram env.macro_gram env id
 
 let render_ruleid env id1 id2 =
   let id1' =
@@ -774,7 +836,7 @@ let render_atom env atom =
 (*
 if env.config.macros_for_ids then
 Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
-(Atom.string_of_atom atom) (Source.string_of_region atom.at) id.it atom.note.Atom.def
+(Atom.to_string atom) (Source.string_of_region atom.at) id.it atom.note.Atom.def
 (String.concat "%" (List.concat (Option.to_list (macro_template env env.macro_atom id.it))))
 ""(*(String.concat " " (List.map fst (Map.bindings !(env.macro_atom))))*);
 *)
@@ -786,9 +848,7 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
       match atom.it with
       | Atom "_" -> render_id' env `Atom "_" None
       | Atom s when s.[0] = '_' -> ""
-      (* HACK: inject literally, already rendered stuff *)
-      | Atom s when s.[0] = ' ' -> String.sub s 1 (String.length s - 1)
-      (* HACK: for now, always keep this as non-macros *)
+      (* Always keep punctuation as non-macros *)
       | Dot -> "{.}"
       | Comma -> ","
       | Semicolon -> ";"
@@ -812,6 +872,7 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
           match atom.it with
           | Atom s -> render_id' env `Atom (chop_sub s) None
           | Dot2 -> ".."
+          | Dot3 -> "\\ldots"
           | Assign -> ":="
           | Arrow | ArrowSub -> "\\rightarrow"
           | Arrow2 | Arrow2Sub -> "\\Rightarrow"
@@ -819,10 +880,14 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
           | Sup -> "\\geq"
           | SqArrow -> "\\hookrightarrow"
           | SqArrowStar -> "\\hookrightarrow^\\ast"
-          | Comp -> "\\oplus"
+          | Cat -> "\\oplus"
           | Bar -> "\\mid"
-          | BigComp -> "\\bigoplus"
-          | _ -> "\\" ^ Atom.name_of_atom atom
+          | BigAnd -> "\\bigwedge"
+          | BigOr -> "\\bigvee"
+          | BigAdd -> "\\Sigma"
+          | BigMul -> "\\Pi"
+          | BigCat -> "\\bigoplus"
+          | _ -> "\\" ^ Atom.name atom
     )
 
 
@@ -856,7 +921,7 @@ let render_cmpop = function
   | GeOp -> "\\geq"
 
 let render_dots = function
-  | Dots -> [Elem "\\dots"]
+  | Dots -> [Elem "\\ldots"]
   | NoDots -> []
 
 
@@ -911,7 +976,7 @@ and render_typenum env (e, eo) =
   render_exp env e ^
   match eo with
   | None -> ""
-  | Some e2 -> " ~|~ \\dots ~|~ " ^ render_exp env e2
+  | Some e2 -> " ~|~ \\ldots ~|~ " ^ render_exp env e2
 
 
 (* Expressions *)
@@ -957,7 +1022,7 @@ and render_exp env e =
   | NatE (AtomOp, n) ->
     let atom = {it = Atom.Atom (Z.to_string n); at = e.at; note = Atom.info "nat"} in
     render_atom (without_macros true env) atom
-  | TextE t -> "``" ^ t ^ "''"
+  | TextE t -> "\\mbox{\\tt`" ^ t ^ "'}"
   | UnE (op, e2) -> "{" ^ render_unop op ^ render_exp env e2 ^ "}"
   | BinE (e1, ExpOp, ({it = ParenE (e2, _); _ } | e2)) ->
     "{" ^ render_exp env e1 ^ "^{" ^ render_exp env e2 ^ "}}"
@@ -991,7 +1056,7 @@ Printf.eprintf "[render %s:X @ %s] try expansion\n%!" (Source.string_of_region e
       "{}[" ^ render_path env p ^ " = " ^ render_exp env e2 ^ "]"
   | ExtE (e1, p, e2) ->
     render_exp env e1 ^
-      "{}[" ^ render_path env p ^ " = .." ^ render_exp env e2 ^ "]"
+      "{}[" ^ render_path env p ^ " \\mathrel{{=}{\\oplus}} " ^ render_exp env e2 ^ "]"
   | StrE efs ->
     "\\{ " ^
     "\\begin{array}[t]{@{}l@{}}\n" ^
@@ -999,24 +1064,34 @@ Printf.eprintf "[render %s:X @ %s] try expansion\n%!" (Source.string_of_region e
     "\\end{array}"
   | DotE (e1, atom) -> render_exp env e1 ^ "{.}" ^ render_fieldname env atom
   | CommaE (e1, e2) -> render_exp env e1 ^ ", " ^ render_exp env e2
-  | CompE (e1, e2) -> render_exp env e1 ^ " \\oplus " ^ render_exp env e2
+  | CatE (e1, e2) -> render_exp env e1 ^ " \\oplus " ^ render_exp env e2
+  | MemE (e1, e2) -> render_exp env e1 ^ " \\in " ^ render_exp env e2
   | LenE e1 -> "{|" ^ render_exp env e1 ^ "|}"
   | SizeE id -> "||" ^ render_gramid env id ^ "||"
   | ParenE ({it = SeqE [{it = AtomE atom; _}; _]; _} as e1, _)
     when render_atom env atom = "" ->
     render_exp env e1
   | ParenE (e1, _) -> "(" ^ render_exp env e1 ^ ")"
-  | TupE es -> "(" ^ render_exps ",\\, " env es ^ ")"
+  | TupE es -> "(" ^ render_exps ", " env es ^ ")"
   | InfixE (e1, atom, e2) ->
     let id = typed_id atom in
-    let e = AtomE atom $ atom.at in
-    let args = List.map arg_of_exp (as_seq_exp e1 @ [e] @ as_seq_exp e2) in
+    let ea = AtomE atom $ atom.at in
+    let args = List.map arg_of_exp ([e1; ea] @ as_seq_exp e2) in
     render_expand render_exp env env.show_atom env.macro_atom id args
       (fun () ->
-        (match e1.it with
-        | SeqE [] -> "{" ^ space (render_atom env) atom ^ "}\\;"
-        | _ -> render_exp env e1 ^ space (render_atom env) atom
-        ) ^ render_exp env e2
+        (* Handle subscripting and unary uses *)
+        (match Atom.is_sub atom, (as_arith_exp e1).it with
+        | false, SeqE [] -> "{" ^ render_atom env atom ^ "}\\, "
+        | true, SeqE [] -> "{" ^ render_atom env atom ^ "}_"
+        | false, _ -> render_exp env e1 ^ space (render_atom env) atom
+        | true, _ -> render_exp env e1 ^ " " ^ render_atom env atom ^ "_"
+        ) ^
+        (match Atom.is_sub atom, e2.it with
+        | true, SeqE (e21::e22::es2) ->
+          "{" ^ render_exps "," env (as_tup_exp e21) ^ "} " ^ render_exp_seq env (e22::es2)
+        | true, _ -> "{" ^ render_exps "," env (as_tup_exp e2) ^ "} {}"
+        | false, _ -> render_exp env e2
+        )
       )
   | BrackE (l, e1, r) ->
     let id = typed_id l in
@@ -1036,15 +1111,17 @@ Printf.eprintf "[render %s:X @ %s] try expansion\n%!" (Source.string_of_region e
     (* HACK for rendering shorthand parameters that have been turned into args
      * with arg_of_param, for use in render_apply. *)
     render_typ env t
-  | TypE (e1, _) -> render_exp env e1
+  | TypE (e1, _) | ArithE e1 -> render_exp env e1
   | FuseE (e1, e2) ->
-    (* TODO: HACK for printing t.LOADn_sx (replace with invisible parens) *)
+    (* TODO(2, rossberg): HACK for printing t.LOADn_sx (replace with invisible parens) *)
     let e2' = as_paren_exp (fuse_exp e2 true) in
     let es = e2' :: flatten_fuse_exp_rev e1 in
     String.concat "" (List.map (fun e -> "{" ^ render_exp env e ^ "}") (List.rev es))
+  | UnparenE {it = ArithE e1; _} -> render_exp env (UnparenE e1 $ e.at)
   | UnparenE ({it = ParenE (e1, _); _} | e1) -> render_exp env e1
   | HoleE `None -> ""
   | HoleE _ -> error e.at "misplaced hole"
+  | LatexE s -> s
 
 and render_exps sep env es =
   concat sep (List.filter ((<>) "") (List.map (render_exp env) es))
@@ -1152,7 +1229,7 @@ and render_sym env g =
   match g.it with
   | VarG (id, args) ->
     render_apply render_gramid render_exp_as_sym
-      env env.show_gram env.macro_def id args
+      env env.show_gram env.macro_gram id args
   | NatG (DecOp, n) -> Z.to_string n
   | NatG (HexOp, n) ->
     let fmt =
@@ -1169,10 +1246,10 @@ and render_sym env g =
   | NatG (AtomOp, n) -> "\\mathtt{" ^ Z.to_string n ^ "}"
   | TextG t -> "`" ^ t ^ "'"
   | EpsG -> "\\epsilon"
-  | SeqG gs -> render_syms "~" env gs
+  | SeqG gs -> render_syms "~~" env gs
   | AltG gs -> render_syms " ~|~ " env gs
   | RangeG (g1, g2) ->
-    render_sym env g1 ^ " ~|~ \\dots ~|~ " ^ render_sym env g2
+    render_sym env g1 ^ " ~|~ \\ldots ~|~ " ^ render_sym env g2
   | ParenG g1 -> "(" ^ render_sym env g1 ^ ")"
   | TupG gs -> "(" ^ concat ", " (List.map (render_sym env) gs) ^ ")"
   | IterG (g1, iter) -> "{" ^ render_sym env g1 ^ render_iter env iter ^ "}"
@@ -1183,18 +1260,26 @@ and render_sym env g =
   | UnparenG ({it = ParenG g1; _} | g1) -> render_sym env g1
 
 and render_syms sep env gs =
-  altern_map_nl sep " \\\\ &&&" (render_sym env) gs
+  altern_map_nl sep " \\\\ &&& " (render_sym env) gs
 
-and render_prod env prod =
+and render_prod arrow env prod =
   let (g, e, prems) = prod.it in
-  render_sym env g ^ " &\\Rightarrow& " ^
-    render_conditions env (render_exp env e) "&&&&&" prems
+  match e.it, prems with
+  | (TupE [] | ParenE ({it = SeqE []; _}, _)), [] -> render_sym env g
+  | _ ->
+    render_sym env g ^ " " ^ arrow ^ " " ^
+      if g.at.right.line = e.at.left.line then
+        render_conditions env (render_exp env e) "&&&&&" prems
+      else
+        render_conditions env ("\\\\\n  &&& \\multicolumn{3}{@{}l@{}}{\\qquad " ^
+          render_exp env e ^ " }") "&&&&&" prems
 
-and render_gram env gram =
+and render_gram arrow env gram =
   let (dots1, prods, dots2) = gram.it in
-  altern_map_nl " ~|~ " " \\\\ &&|&\n" Fun.id
+  altern_map_nl (if env.config.display then " \\\\ &&|&\n" else " ~|~ ")
+    " \\\\ &&|&\n" Fun.id
     ( render_dots dots1 @
-      map_nl_list (render_prod env) prods @
+      map_nl_list (render_prod arrow env) prods @
       render_dots dots2
     )
 
@@ -1206,6 +1291,7 @@ and render_arg env arg =
   | ExpA e -> render_exp env e
   | TypA t -> render_typ env t
   | GramA g -> render_sym env g
+  | DefA id -> render_defid env id
 
 and render_args env args =
   match List.map (render_arg env) args with
@@ -1217,6 +1303,7 @@ let render_param env p =
   | ExpP (id, t) -> if id.it = "_" then render_typ env t else render_varid env id
   | TypP id -> render_typid env id
   | GramP (id, _t) -> render_gramid env id
+  | DefP (id, _ps, _t) -> render_defid env id
 
 let _render_params env = function
   | [] -> ""
@@ -1269,7 +1356,7 @@ let render_typdeco env id =
 
 let render_typdef env d =
   match d.it with
-  | TypD (id1, _id2, args, t, _) ->
+  | TypD (id1, _id2, args, t, _hints) ->
     render_typdeco env id1 ^
     render_apply render_typid render_exp env env.show_typ env.macro_typ id1 args ^
     " &::=& " ^ render_typ env t
@@ -1277,11 +1364,16 @@ let render_typdef env d =
 
 let render_gramdef env d =
   match d.it with
-  | GramD (id1, _id2, ps, _t, gram, _) ->
+  | GramD (id1, _id2, ps, _t, gram, _hints) ->
     let args = List.map arg_of_param ps in
+    let arrow =
+      if env.config.display
+      then "&\\quad\\Rightarrow&\\quad"
+      else "~\\Rightarrow~"
+    in
     "& " ^ render_apply render_gramid render_exp_as_sym
       env env.show_gram env.macro_gram id1 args ^
-      " &::=& " ^ render_gram env gram
+      " &::=& " ^ render_gram arrow env gram
   | _ -> assert false
 
 let render_ruledef env d =
@@ -1330,6 +1422,8 @@ let rec render_sep_defs ?(sep = " \\\\\n") ?(br = " \\\\[0.8ex]\n") f = function
   | d::ds -> f d ^ sep ^ render_sep_defs ~sep ~br f ds
 
 
+type rel_sort = TypingRel | ReductionRel
+
 let rec classify_rel e : rel_sort option =
   match e.it with
   | InfixE (_, {it = Turnstile; _}, _) -> Some TypingRel
@@ -1349,13 +1443,17 @@ let rec render_defs env = function
     match d.it with
     | TypD _ ->
       let ds' = merge_typdefs ds in
-      let deco = if env.deco_typ then "l" else "l@{}" in
+      if List.length ds' > 1 && not env.config.display then
+        error d.at "cannot render multiple syntax types in line";
+      let deco = if env.deco_typ then "l" ^ sp else "l@{}" in
       "\\begin{array}{@{}" ^ deco ^ "r" ^ sp ^ "r" ^ sp ^ "l@{}l@{}}\n" ^
         render_sep_defs (render_typdef env) ds' ^
       "\\end{array}"
     | GramD _ ->
       let ds' = merge_gramdefs ds in
-      "\\begin{array}{@{}l@{}r" ^ sp ^ "r" ^ sp ^ "lll@{}l@{}}\n" ^
+      if List.length ds' > 1 && not env.config.display then
+        error d.at "cannot render multiple grammars in line";
+      "\\begin{array}{@{}l@{}r" ^ sp ^ "r" ^ sp ^ "l@{}l@{}l@{}l@{}}\n" ^
         render_sep_defs (render_gramdef env) ds' ^
       "\\end{array}"
     | RelD (_, t, _) ->

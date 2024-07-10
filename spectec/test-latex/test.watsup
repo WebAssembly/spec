@@ -25,6 +25,115 @@ syntax testfuse =
 
 
 ;;
+;; Atoms with subscripts
+;;
+
+syntax InfixArrow  = nat* ->_(nat*) nat* hint(macro none)
+syntax InfixArrow2 = nat* =>_(nat*) nat* hint(macro none)
+syntax AtomArrow   = nat? `->_(nat*) nat* hint(macro none)
+syntax AtomArrow2  = nat? `=>_(nat*) nat* hint(macro none)
+
+def $InfixArrow(InfixArrow) : nat
+def $InfixArrow(a ->_c) = 0
+def $InfixArrow(a ->_c b) = 0
+def $InfixArrow(a ->_(c*) b) = 0
+def $InfixArrow(a ->_c b_1 b_2) = 0
+def $InfixArrow(a ->_(c*) b_1 b_2) = 0
+def $InfixArrow(a ->_(c_1 c_2) b_1 b_2) = 0
+def $InfixArrow(->_(c_1 c_2) b_1 b_2) = 0
+
+def $InfixArrow2(InfixArrow2) : nat
+def $InfixArrow2(a =>_c) = 0
+def $InfixArrow2(a =>_c b) = 0
+def $InfixArrow2(a =>_(c*) b) = 0
+def $InfixArrow2(a =>_c b_1 b_2) = 0
+def $InfixArrow2(a =>_(c*) b_1 b_2) = 0
+def $InfixArrow2(a =>_(c_1 c_2) b_1 b_2) = 0
+def $InfixArrow2(=>_(c_1 c_2) b_1 b_2) = 0
+
+def $AtomArrow(AtomArrow) : nat
+def $AtomArrow(a `->_c) = 0
+def $AtomArrow(a `->_c b) = 0
+def $AtomArrow(a `->_(c*) b) = 0
+def $AtomArrow(a `->_c b_1 b_2) = 0
+def $AtomArrow(a `->_(c*) b_1 b_2) = 0
+def $AtomArrow(a `->_(c_1 c_2) b_1 b_2) = 0
+def $AtomArrow(`->_(c_1 c_2) b_1 b_2) = 0
+
+def $AtomArrow2(AtomArrow2) : nat
+def $AtomArrow2(a `=>_c) = 0
+def $AtomArrow2(a `=>_c b) = 0
+def $AtomArrow2(a `=>_(c*) b) = 0
+def $AtomArrow2(a `=>_c b_1 b_2) = 0
+def $AtomArrow2(a `=>_(c*) b_1 b_2) = 0
+def $AtomArrow2(a `=>_(c_1 c_2) b_1 b_2) = 0
+def $AtomArrow2(`=>_(c_1 c_2) b_1 b_2) = 0
+
+syntax MacroInfixArrow = nat* ->_nat* nat* hint(macro "to")
+syntax MacroAtomArrow = nat* ->_nat* nat* hint(macro "to")
+
+def $MacroInfixArrow(MacroInfixArrow) : nat
+def $MacroInfixArrow(a ->_c) = 0
+def $MacroInfixArrow(a ->_c b) = 0
+def $MacroInfixArrow(a ->_(c*) b) = 0
+def $MacroInfixArrow(a ->_c b_1 b_2) = 0
+def $MacroInfixArrow(a ->_(c*) b_1 b_2) = 0
+def $MacroInfixArrow(a ->_(c_1 c_2) b_1 b_2) = 0
+def $MacroInfixArrow(->_(c_1 c_2) b_1 b_2) = 0
+
+def $MacroAtomArrow(MacroAtomArrow) : nat
+def $MacroAtomArrow(a ->_c) = 0
+def $MacroAtomArrow(a ->_c b) = 0
+def $MacroAtomArrow(a ->_(c*) b) = 0
+def $MacroAtomArrow(a ->_c b_1 b_2) = 0
+def $MacroAtomArrow(a ->_(c*) b_1 b_2) = 0
+def $MacroAtomArrow(a ->_(c_1 c_2) b_1 b_2) = 0
+def $MacroAtomArrow(->_(c_1 c_2) b_1 b_2) = 0
+
+syntax ShowInfixArrow = nat* ->_nat* nat* hint(show %0 ->_%2 %%) hint(macro none)
+syntax ShowAtomArrow = nat* ->_nat* nat* hint(show %0 `->_%2 %%) hint(macro none)
+
+def $ShowInfixArrow(ShowInfixArrow) : nat
+def $ShowInfixArrow(a ->_c) = 0
+def $ShowInfixArrow(a ->_c b) = 0
+def $ShowInfixArrow(a ->_(c*) b) = 0
+def $ShowInfixArrow(a ->_c b_1 b_2) = 0
+def $ShowInfixArrow(a ->_(c*) b_1 b_2) = 0
+def $ShowInfixArrow(a ->_(c_1 c_2) b_1 b_2) = 0
+def $ShowInfixArrow(->_(c_1 c_2) b_1 b_2) = 0
+
+def $ShowAtomArrow(ShowAtomArrow) : nat
+def $ShowAtomArrow(a ->_c) = 0
+def $ShowAtomArrow(a ->_c b) = 0
+def $ShowAtomArrow(a ->_(c*) b) = 0
+def $ShowAtomArrow(a ->_c b_1 b_2) = 0
+def $ShowAtomArrow(a ->_(c*) b_1 b_2) = 0
+def $ShowAtomArrow(a ->_(c_1 c_2) b_1 b_2) = 0
+def $ShowAtomArrow(->_(c_1 c_2) b_1 b_2) = 0
+
+syntax ShowMacroInfixArrow = nat* ->_nat* nat* hint(show %0 ->_%2 %%) hint(macro "to")
+syntax ShowMacroAtomArrow = nat* ->_nat* nat* hint(show %0 `->_%2 %%) hint(macro "to")
+
+def $ShowMacroInfixArrow(ShowMacroInfixArrow) : nat
+def $ShowMacroInfixArrow(a ->_c) = 0
+def $ShowMacroInfixArrow(a ->_c b) = 0
+def $ShowMacroInfixArrow(a ->_(c*) b) = 0
+def $ShowMacroInfixArrow(a ->_c b_1 b_2) = 0
+def $ShowMacroInfixArrow(a ->_(c*) b_1 b_2) = 0
+def $ShowMacroInfixArrow(a ->_(c_1 c_2) b_1 b_2) = 0
+def $ShowMacroInfixArrow(->_(c_1 c_2) b_1 b_2) = 0
+
+def $ShowMacroAtomArrow(ShowMacroAtomArrow) : nat
+def $ShowMacroAtomArrow(a ->_c) = 0
+def $ShowMacroAtomArrow(a ->_c b) = 0
+def $ShowMacroAtomArrow(a ->_(c*) b) = 0
+def $ShowMacroAtomArrow(a ->_c b_1 b_2) = 0
+def $ShowMacroAtomArrow(a ->_(c*) b_1 b_2) = 0
+def $ShowMacroAtomArrow(a ->_(c_1 c_2) b_1 b_2) = 0
+def $ShowMacroAtomArrow(->_(c_1 c_2) b_1 b_2) = 0
+
+
+;;
 ;; Macro hints
 ;;
 
@@ -330,14 +439,14 @@ def $upd(r, 6) = r[.FG = 0]
 def $upd(r, 7) = r[.FH = 0]
 
 def $ext(rec, nat) : rec
-def $ext(r, 0) = r[.FA =.. 0]
-def $ext(r, 1) = r[.FB =.. 0]
-def $ext(r, 2) = r[.FC =.. 0]
-def $ext(r, 3) = r[.FD =.. 0]
-def $ext(r, 4) = r[.FE =.. 0]
-def $ext(r, 5) = r[.FF =.. 0]
-def $ext(r, 6) = r[.FG =.. 0]
-def $ext(r, 7) = r[.FH =.. 0]
+def $ext(r, 0) = r[.FA =++ 0]
+def $ext(r, 1) = r[.FB =++ 0]
+def $ext(r, 2) = r[.FC =++ 0]
+def $ext(r, 3) = r[.FD =++ 0]
+def $ext(r, 4) = r[.FE =++ 0]
+def $ext(r, 5) = r[.FF =++ 0]
+def $ext(r, 6) = r[.FG =++ 0]
+def $ext(r, 7) = r[.FH =++ 0]
 
 syntax recimpl hint(macro "%" "R%") = {
   FIA nat*,                                      ;; \RFIA

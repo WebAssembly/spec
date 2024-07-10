@@ -133,11 +133,12 @@ exp ::=
   exp "[" arith "]"                    list indexing
   exp "[" arith ":" arith "]"          list slicing
   exp "[" path "=" exp "]"             list update
-  exp "[" path "=.." exp "]"           list extension
+  exp "[" path "=++" exp "]"           list extension
   "{" list(atom exp, ",") "}"          record
   exp "." atom                         record access
   exp "," exp                          record extension
-  exp "++" exp                         record composition
+  exp "++" exp                         list and record composition
+  exp "<-" exp                         list membership
   "|" exp "|"                          list length
   "||" gramid "||"                     expansion length
   "(" list(exp, ",") ")"               parentheses or tupling
@@ -180,6 +181,7 @@ hole ::=
   "%"digit*                            use numbered operand
   "%%"                                 use all operands
   "!%"                                 empty expression
+  "%latex" "(" text* ")"               literal latex
 ```
 
 The various meta notations for lists, records, and tuples mirror the syntactic conventions defined in the Wasm spec.
@@ -227,12 +229,14 @@ arg ::=
   exp
   "syntax" typ
   "grammar" sym
+  "def" defid
 
 params ::= ("(" list(param ",") ")")?
 param ::=
   (varid ":") typ
   "syntax" synid
   "grammar" gramid ":" typ
+  "def" "$" defid params ":" typ
 
 def ::=
   "syntax" varid params hint*                               syntax declaration

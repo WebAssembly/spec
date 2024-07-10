@@ -19,6 +19,7 @@ val without_macros : bool -> env -> env
 val render_atom : env -> atom -> string
 val render_typ : env -> typ -> string
 val render_exp : env -> exp -> string
+val render_sym : env -> sym -> string
 val render_arg : env -> arg -> string
 val render_def : env -> def -> string
 val render_defs : env -> def list -> string

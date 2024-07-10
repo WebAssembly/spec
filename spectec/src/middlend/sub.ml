@@ -62,6 +62,7 @@ let arg_of_param param =
   match param.it with
   | ExpP (id, t) -> ExpA (VarE id $$ param.at % t) $ param.at
   | TypP id -> TypA (VarT (id, []) $ param.at) $ param.at
+  | DefP (id, _ps, _t) -> DefA id $ param.at
 
 let register_variant (env : env) (id : id) params (cases : typcase list) =
   if M.mem id.it env.typ then
@@ -74,6 +75,7 @@ let subst_of_args =
     match arg.it, param.it with
     | ExpA e, ExpP (id, _) -> Il.Subst.add_varid s id e
     | TypA t, TypP id -> Il.Subst.add_typid s id t
+    | DefA x, DefP (id, _, _) -> Il.Subst.add_defid s id x
     | _, _ -> assert false
   ) Il.Subst.empty
 
@@ -159,6 +161,7 @@ and t_exp' env = function
   | TheE exp -> TheE exp
   | ListE es -> ListE (List.map (t_exp env) es)
   | CatE (exp1, exp2) -> CatE (t_exp env exp1, t_exp env exp2)
+  | MemE (exp1, exp2) -> MemE (t_exp env exp1, t_exp env exp2)
   | CaseE (mixop, e) -> CaseE (mixop, t_exp env e)
   | SubE (e, t1, t2) -> SubE (e, t1, t2)
 
@@ -179,18 +182,21 @@ and t_path env x = { x with it = t_path' env x.it; note = t_typ env x.note }
 and t_arg' env = function
   | ExpA exp -> ExpA (t_exp env exp)
   | TypA t -> TypA t
+  | DefA id -> DefA id
 
 and t_arg env x = { x with it = t_arg' env x.it }
 
 and t_bind' env = function
   | ExpB (id, t, dim) -> ExpB (id, t_typ env t, dim)
   | TypB id -> TypB id
+  | DefB (id, ps, t) -> DefB (id, t_params env ps, t_typ env t)
 
 and t_bind env x = { x with it = t_bind' env x.it }
 
 and t_param' env = function
   | ExpP (id, t) -> ExpP (id, t_typ env t)
   | TypP id -> TypP id
+  | DefP (id, ps, t) -> DefP (id, t_params env ps, t_typ env t)
 
 and t_param env x = { x with it = t_param' env x.it }
 
@@ -277,6 +283,10 @@ let rec rename_params s = function
     let id' = (id.it ^ "_2") $ id.at in
     (TypP id' $ at) ::
       rename_params (Il.Subst.add_typid s id (VarT (id', []) $ id.at)) params
+  | { it = DefP (id, ps, t); at; _ } :: params ->
+    let id' = (id.it ^ "_2") $ id.at in
+    (DefP (id', ps, t) $ at) ::
+      rename_params (Il.Subst.add_typid s id (VarT (id', []) $ id.at)) params
 
 let insert_injections env (def : def) : def list =
   add_type_info env def;
@@ -297,7 +307,7 @@ let insert_injections env (def : def) : def list =
         let xes = List.map (fun bind ->
           match bind.it with
           | ExpB (x, arg_typ_i, _) -> VarE x $$ no_region % arg_typ_i
-          | TypB _ -> assert false) binds
+          | TypB _ | DefB _ -> assert false) binds
         in
         let xe = TupE xes $$ no_region % arg_typ in
         DefD (binds,

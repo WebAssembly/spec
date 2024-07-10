@@ -26,19 +26,19 @@ let extract_typ_atom = function
 let extract_typcase_atom = function
   | El.Ast.Nl -> None
   | El.Ast.Elem (atom, _, _) -> (match atom.it with
-    | Il.Atom.Atom id -> Some id
+    | El.Atom.Atom id -> Some id
     | _ -> None)
 
 let extract_typfield_atom = function
   | El.Ast.Nl -> None
   | El.Ast.Elem (atom, _, _) -> (match atom.it with
-    | Il.Atom.Atom id -> Some id
+    | El.Atom.Atom id -> Some id
     | _ -> None)
 
 let rec extract_typ_atoms typ =
   match typ.it with
   | El.Ast.AtomT atom -> (match atom.it with
-    | Il.Atom.Atom id -> [ id ]
+    | El.Atom.Atom id -> [ id ]
     | _ -> [])
   | El.Ast.IterT (typ_inner, _) -> extract_typ_atoms typ_inner
   | El.Ast.StrT typfields -> List.filter_map extract_typfield_atom typfields

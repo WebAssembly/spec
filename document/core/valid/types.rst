@@ -41,7 +41,8 @@ $${rule: Vectype_ok}
 Heap Types
 ~~~~~~~~~~
 
-Concrete :ref:`Heap types <syntax-heaptype>` are only valid when the :ref:`type index <syntax-typeidx>` is.
+Concrete :ref:`heap types <syntax-heaptype>` are only valid when the :ref:`type index <syntax-typeidx>` is,
+while abstract ones are vacuously valid.
 
 :math:`\absheaptype`
 ....................

@@ -44,6 +44,7 @@ let rec walk_expr f e =
       (* TODO: Implement walker for iter *)
       | ListE el -> ListE (List.map new_ el)
       | CatE (e1, e2) -> CatE (new_ e1, new_ e2)
+      | MemE (e1, e2) -> MemE (new_ e1, new_ e2)
       | LenE e' -> LenE (new_ e')
       | StrE r -> StrE (Record.map id new_ r)
       | AccE (e, p) -> AccE (new_ e, walk_path f p)

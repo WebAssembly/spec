@@ -203,18 +203,18 @@ rule Blocktype_ok/typeidx:
 rule Instr_ok/block:
   C |- BLOCK bt instr* : t_1* -> t_2*
   -- Blocktype_ok: C |- bt : t_1* -> t_2*
-  -- Instrs_ok: C, LABELS (t_2*) |- instr* : t_1* -> t_2*
+  -- Instrs_ok: {LABELS (t_2*)} ++ C |- instr* : t_1* -> t_2*
 
 rule Instr_ok/loop:
   C |- LOOP bt instr* : t_1* -> t_2*
   -- Blocktype_ok: C |- bt : t_1* -> t_2*
-  -- Instrs_ok: C, LABELS (t_1*) |- instr* : t_1* -> t_2*
+  -- Instrs_ok: {LABELS (t_1*)} ++ C |- instr* : t_1* -> t_2*
 
 rule Instr_ok/if:
   C |- IF bt instr_1* ELSE instr_2* : t_1* I32 -> t_2*
   -- Blocktype_ok: C |- bt : t_1* -> t_2*
-  -- Instrs_ok: C, LABELS (t_2*) |- instr_1* : t_1* -> t_2*
-  -- Instrs_ok: C, LABELS (t_2*) |- instr_2* : t_1* -> t_2*
+  -- Instrs_ok: {LABELS (t_2*)} ++ C |- instr_1* : t_1* -> t_2*
+  -- Instrs_ok: {LABELS (t_2*)} ++ C |- instr_2* : t_1* -> t_2*
 
 
 ;; Branch instructions
@@ -474,12 +474,12 @@ rule Instr_ok/vload-splat:
 rule Instr_ok/vload-zero:
   C |- VLOAD V128 (ZERO n) memarg : I32 -> V128
   -- if C.MEMS[0] = mt
-  -- if $(2^(memarg.ALIGN) < n/8)
+  -- if $(2^(memarg.ALIGN) <= n/8)
 
 rule Instr_ok/vload_lane:
   C |- VLOAD_LANE V128 n memarg laneidx : I32 V128 -> V128
   -- if C.MEMS[0] = mt
-  -- if $(2^(memarg.ALIGN) < n/8)
+  -- if $(2^(memarg.ALIGN) <= n/8)
   -- if $(laneidx < 128 / n)
 
 rule Instr_ok/vstore:
@@ -490,7 +490,7 @@ rule Instr_ok/vstore:
 rule Instr_ok/vstore_lane:
   C |- VSTORE_LANE V128 n memarg laneidx : I32 V128 -> eps
   -- if C.MEMS[0] = mt
-  -- if $(2^(memarg.ALIGN) < n/8)
+  -- if $(2^(memarg.ALIGN) <= n/8)
   -- if $(laneidx < 128 / n)
 
 
@@ -554,7 +554,7 @@ rule Type_ok:
 rule Func_ok:
   C |- FUNC x (LOCAL t)* expr : t_1* -> t_2*
   -- if C.TYPES[x] = t_1* -> t_2*
-  -- Expr_ok: C, LOCALS t_1* t*, LABELS (t_2*), RETURN (t_2*) |- expr : t_2*
+  -- Expr_ok: C ++ {LOCALS t_1* t*, LABELS (t_2*), RETURN (t_2*)} |- expr : t_2*
 
 rule Global_ok:
   C |- GLOBAL gt expr : gt

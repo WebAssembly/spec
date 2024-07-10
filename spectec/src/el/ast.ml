@@ -15,7 +15,7 @@ type 'a nl_list = 'a nl_elem list
 type nat = Z.t
 type text = string
 type id = string phrase
-type atom = Il.Atom.atom
+type atom = Atom.atom
 
 
 (* Iteration *)
@@ -115,8 +115,9 @@ and exp' =
   | ExtE of exp * path * exp     (* exp `[` path `=..` exp `]` *)
   | StrE of expfield nl_list     (* `{` list(expfield, `,`) `}` *)
   | DotE of exp * atom           (* exp `.` atom *)
-  | CommaE of exp * exp          (* exp `,` exp *)
-  | CompE of exp * exp           (* exp `++` exp *)
+  | CommaE of exp * exp          (* exp `,` exp *)  (* TODO(3, rossberg): Remove? *)
+  | CatE of exp * exp            (* exp `++` exp *)
+  | MemE of exp * exp            (* exp `<-` exp *)
   | LenE of exp                  (* `|` exp `|` *)
   | SizeE of id                  (* `||` exp `||` *)
   | ParenE of exp * [`Sig | `Insig]  (* `(` exp `)` *)
@@ -126,9 +127,11 @@ and exp' =
   | CallE of id * arg list       (* `$` defid (`(` arg,* `)`)? *)
   | IterE of exp * iter          (* exp iter *)
   | TypE of exp * typ            (* exp `:` typ *)
+  | ArithE of exp                (* `$(` exp `)` *)
   | HoleE of [`Num of int | `Next | `Rest | `None]  (* `%N` or `%` or `%%` or `!%` *)
   | FuseE of exp * exp           (* exp `#` exp *)
   | UnparenE of exp              (* `##` exp *)
+  | LatexE of string             (* `latex` `(` `"..."`* `)` *)
 
 and expfield = atom * exp        (* atom exp *)
 
@@ -173,12 +176,14 @@ and param' =
   | ExpP of id * typ                         (* varid `:` typ *)
   | TypP of id                               (* `syntax` varid *)
   | GramP of id * typ                        (* `grammar` gramid `:` typ *)
+  | DefP of id * param list * typ            (* `def` `$` defid params `:` typ *)
 
 and arg = arg' ref phrase
 and arg' =
   | ExpA of exp                              (* exp *)
   | TypA of typ                              (* `syntax` typ *)
   | GramA of sym                             (* `grammar` sym *)
+  | DefA of id                               (* `def` defid *)
 
 and def = def' phrase
 and def' =

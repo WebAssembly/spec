@@ -45,7 +45,7 @@ $${rule-prose: exec/select}
 $${rule: {Step_pure/select-*}}
 
 .. note::
-   In future versions of WebAssembly, |SELECT| may allow more than one value per choice.
+   In future versions of WebAssembly, ${:SELECT} may allow more than one value per choice.
 
 
 .. index:: numeric instruction, determinism, trap, NaN, value, value type
@@ -837,13 +837,13 @@ $${rule-prose: exec/array.copy}
 
     a. Push the value :math:`\REFARRAYADDR~a_1` to the stack.
 
-    b. Assert: due to the earlier check against the memory size, :math:`d+n-1 < 2^{32}`.
+    b. Assert: due to the earlier check against the array size, :math:`d+n-1 < 2^{32}`.
 
     c. Push the value :math:`\I32.\CONST~(d+n-1)` to the stack.
 
     d. Push the value :math:`\REFARRAYADDR~a_2` to the stack.
 
-    e. Assert: due to the earlier check against the memory size, :math:`s+n-1 < 2^{32}`.
+    e. Assert: due to the earlier check against the array size, :math:`s+n-1 < 2^{32}`.
 
     f. Push the value :math:`\I32.\CONST~(s+n-1)` to the stack.
 
@@ -1930,6 +1930,8 @@ $${rule: {Step_read/load-*}}
      (\otherwise) \\
    \end{array}
 
+$${rule: {Step_read/vload-pack-*}}
+
 
 .. _exec-vload-splat:
 
@@ -1989,6 +1991,8 @@ $${rule: {Step_read/load-*}}
      (\otherwise) \\
    \end{array}
 
+$${rule: {Step_read/vload-splat-*}}
+
 
 .. _exec-vload-zero:
 
@@ -2045,6 +2049,8 @@ $${rule: {Step_read/load-*}}
    \\ \qquad
      (\otherwise) \\
    \end{array}
+
+$${rule: {Step_read/vload-zero-*}}
 
 
 .. _exec-vload_lane:
@@ -2112,6 +2118,8 @@ $${rule: {Step_read/load-*}}
      (\otherwise) \\
    \end{array}
 
+$${rule: {Step_read/vload_lane-*}}
+
 
 .. _exec-store-val:
 .. _exec-store-pack:
@@ -2119,7 +2127,7 @@ $${rule: {Step_read/load-*}}
 
 $${rule-prose: exec/store}
 
-$${rule: {Step/store-*}}
+$${rule: {Step/store-* Step/vstore-*}}
 
 
 .. _exec-vstore_lane:
@@ -2181,6 +2189,8 @@ $${rule: {Step/store-*}}
    \\ \qquad
      (\otherwise) \\
    \end{array}
+
+$${rule: {Step/vstore_lane-*}}
 
 
 .. _exec-memory.size:

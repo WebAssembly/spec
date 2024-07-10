@@ -1,10 +1,11 @@
+open Util.Source
 open Al
 open Ast
 open Al_util
 
 type config = expr * expr * instr list
 
-let atom_of_name name typ = Il.Atom.Atom name, typ
+let atom_of_name name typ = El.Atom.Atom name, typ
 
 let eval_expr =
   let instrs = iterE (varE "instr", ["instr"], List) in
@@ -128,7 +129,7 @@ let return_instrs_of_instantiate config =
       frameE (Some (numE Z.zero), frame),
       listE ([ caseE (atom_of_name "FRAME_" "admininstr", []) ]), rhs
     );
-    returnI (Some (tupE [ store; varE "mm" ]))
+    returnI (Some (tupE [ store; accE (frame, DotP (atom_of_name "MODULE" "") $ no_region) ]))
   ]
 let return_instrs_of_invoke config =
   let _, frame, rhs = config in

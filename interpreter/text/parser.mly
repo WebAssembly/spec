@@ -87,6 +87,11 @@ let nat32 s loc =
 let name s loc =
   try Utf8.decode s with Utf8.Utf8 -> error (at loc) "malformed UTF-8 encoding"
 
+let var s loc =
+  let r = at loc in
+  try ignore (Utf8.decode s); Source.(s @@ r)
+  with Utf8.Utf8 -> error r "malformed UTF-8 encoding"
+
 
 (* Symbolic variables *)
 
@@ -144,9 +149,24 @@ let force_locals (c : context) =
   c.deferred_locals := []
 
 
+let print_char = function
+  | 0x09 -> "\\t"
+  | 0x0a -> "\\n"
+  | 0x22 -> "\\\""
+  | 0x5c -> "\\\\"
+  | c when 0x20 <= c && c < 0x7f -> String.make 1 (Char.chr c)
+  | c -> Printf.sprintf "\\u{%02x}" c
+
+let print x =
+  "$" ^
+  if String.for_all (fun c -> Lib.Char.is_alphanum_ascii c || c = '_') x.it
+  then x.it
+  else "\"" ^ String.concat "" (List.map print_char (Utf8.decode x.it)) ^ "\""
+
+
 let lookup category space x =
   try VarMap.find x.it space.map
-  with Not_found -> error x.at ("unknown " ^ category ^ " " ^ x.it)
+  with Not_found -> error x.at ("unknown " ^ category ^ " " ^ print x)
 
 let type_ (c : context) x = lookup "type" c.types.space x
 let func (c : context) x = lookup "function" c.funcs x
@@ -169,7 +189,7 @@ let func_type (c : context) x =
 
 let bind_abs category space x =
   if VarMap.mem x.it space.map then
-    error x.at ("duplicate " ^ category ^ " " ^ x.it);
+    error x.at ("duplicate " ^ category ^ " " ^ print x);
   let i = bind category space 1l x.at in
   space.map <- VarMap.add x.it i space.map;
   i
@@ -242,6 +262,30 @@ let inline_func_type_explicit (c : context) x ft loc =
     error (at loc) "inline function type does not match explicit type";
   x
 
+
+(* Custom annotations *)
+
+let parse_annots (m : module_) : Custom.section list =
+  let bs = Annot.get_source () in
+  let annots = Annot.get m.at in
+  let secs =
+    Annot.NameMap.fold (fun name anns secs ->
+      match Custom.handler name with
+      | Some (module Handler) ->
+        let secs' = Handler.parse m bs anns in
+        List.map (fun fmt ->
+          let module S = struct module Handler = Handler let it = fmt end in
+          (module S : Custom.Section)
+        ) secs' @ secs
+      | None ->
+        if !Flags.custom_reject then
+          raise (Custom.Syntax ((List.hd anns).at,
+            "unknown annotation @" ^ Utf8.encode name))
+        else []
+    ) annots []
+  in
+   List.stable_sort Custom.compare_section secs
+
 %}
 
 %token LPAR RPAR
@@ -291,6 +335,7 @@ let inline_func_type_explicit (c : context) x ft loc =
 %token MODULE BIN QUOTE
 %token SCRIPT REGISTER INVOKE GET
 %token ASSERT_MALFORMED ASSERT_INVALID ASSERT_UNLINKABLE
+%token ASSERT_MALFORMED_CUSTOM ASSERT_INVALID_CUSTOM
 %token ASSERT_RETURN ASSERT_TRAP ASSERT_EXHAUSTION
 %token<Script.nan> NAN
 %token INPUT OUTPUT
@@ -440,7 +485,7 @@ num :
 
 var :
   | NAT { fun c lookup -> nat32 $1 $sloc @@ $sloc }
-  | VAR { fun c lookup -> lookup c ($1 @@ $sloc) @@ $sloc }
+  | VAR { fun c lookup -> lookup c (var $1 $sloc) @@ $sloc }
 
 var_opt :
   | /* empty */ { fun c lookup at -> 0l @@ at }
@@ -459,7 +504,7 @@ bind_var_opt :
   | bind_var { fun c anon bind -> bind c $1 }  /* Sugar */
 
 bind_var :
-  | VAR { $1 @@ $sloc }
+  | VAR { var $1 $sloc }
 
 labeling_opt :
   | /* empty */
@@ -1197,30 +1242,41 @@ module_fields1 :
       {m with exports = $1 c :: m.exports} }
 
 module_var :
-  | VAR { $1 @@ $sloc }  /* Sugar */
+  | VAR { var $1 $sloc }  /* Sugar */
 
 module_ :
   | LPAR MODULE option(module_var) module_fields RPAR
-    { $3, Textual ($4 (empty_context ()) () () @@ $sloc) @@ $sloc }
+    { let m = $4 (empty_context ()) () () @@ $sloc in
+      $3, Textual (m, parse_annots m) @@ $sloc }
 
 inline_module :  /* Sugar */
-  | module_fields { Textual ($1 (empty_context ()) () () @@ $sloc) @@ $sloc }
+  | module_fields
+    { let m = $1 (empty_context ()) () () @@ $sloc in
+      (* Hack to handle annotations before first and after last token *)
+      let all = all_region (at $sloc).left.file in
+      Textual (m, parse_annots Source.(m.it @@ all)) @@ $sloc }
 
 inline_module1 :  /* Sugar */
-  | module_fields1 { Textual ($1 (empty_context ()) () () @@ $sloc) @@ $sloc }
+  | module_fields1
+    { let m = $1 (empty_context ()) () () @@ $sloc in
+      (* Hack to handle annotations before first and after last token *)
+      let all = all_region (at $sloc).left.file in
+      Textual (m, parse_annots Source.(m.it @@ all)) @@ $sloc }
 
 
 /* Scripts */
 
 script_var :
-  | VAR { $1 @@ $sloc }  /* Sugar */
+  | VAR { var $1 $sloc }  /* Sugar */
 
 script_module :
   | module_ { $1 }
   | LPAR MODULE option(module_var) BIN string_list RPAR
-    { $3, Encoded ("binary:" ^ string_of_pos (at $sloc).left, $5) @@ $sloc }
+    { let s = $5 @@ $loc($5) in
+      $3, Encoded ("binary:" ^ string_of_pos (at $sloc).left, s) @@ $sloc }
   | LPAR MODULE option(module_var) QUOTE string_list RPAR
-    { $3, Quoted ("quote:" ^ string_of_pos (at $sloc).left, $5) @@ $sloc }
+    { let s = $5 @@ $loc($5) in
+      $3, Quoted ("quote:" ^ string_of_pos (at $sloc).left, s) @@ $sloc }
 
 action :
   | LPAR INVOKE option(module_var) name list(literal) RPAR
@@ -1233,6 +1289,10 @@ assertion :
     { AssertMalformed (snd $3, $4) @@ $sloc }
   | LPAR ASSERT_INVALID script_module STRING RPAR
     { AssertInvalid (snd $3, $4) @@ $sloc }
+  | LPAR ASSERT_MALFORMED_CUSTOM script_module STRING RPAR
+    { AssertMalformedCustom (snd $3, $4) @@ $sloc }
+  | LPAR ASSERT_INVALID_CUSTOM script_module STRING RPAR
+    { AssertInvalidCustom (snd $3, $4) @@ $sloc }
   | LPAR ASSERT_UNLINKABLE script_module STRING RPAR
     { AssertUnlinkable (snd $3, $4) @@ $sloc }
   | LPAR ASSERT_TRAP script_module STRING RPAR

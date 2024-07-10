@@ -19,9 +19,9 @@ def $allocfunc(s, deftype, funccode, moduleinst) = (s ++ {FUNCS funcinst}, |s.FU
 
 def $allocfuncs(store, deftype*, funccode*, moduleinst*) : (store, funcaddr*) hint(show $allocfunc*#((%,%,%,%)))
 def $allocfuncs(s, eps, eps, eps) = (s, eps)
-def $allocfuncs(s, dt dt'*, funccode funccode'*, mm mm'*) = (s_2, fa fa'*)
-  -- if (s_1, fa) = $allocfunc(s, dt, funccode, mm)
-  -- if (s_2, fa'*) = $allocfuncs(s_1, dt'*, funccode'*, mm'*)
+def $allocfuncs(s, dt dt'*, funccode funccode'*, moduleinst moduleinst'*) = (s_2, fa fa'*)
+  -- if (s_1, fa) = $allocfunc(s, dt, funccode, moduleinst)
+  -- if (s_2, fa'*) = $allocfuncs(s_1, dt'*, funccode'*, moduleinst'*)
 
 def $allocglobal(store, globaltype, val) : (store, globaladdr)
 def $allocglobal(s, globaltype, val) = (s ++ {GLOBALS globalinst}, |s.GLOBALS|)
@@ -100,12 +100,12 @@ def $allocmodule(s, module, externval*, val_G*, ref_T*, (ref_E*)*) = (s_6, modul
   -- if mem* = (MEMORY memtype)*
   -- if elem* = (ELEM elemtype expr_E* elemmode)*
   -- if data* = (DATA byte* datamode)*
-  ;; TODO: inline these
+  ;; TODO(3, rossberg): inline these
   -- if fa_I* = $funcsxv(externval*)
   -- if ga_I* = $globalsxv(externval*)
   -- if ta_I* = $tablesxv(externval*)
   -- if ma_I* = $memsxv(externval*)
-  ;; TODO: get rid of these
+  ;; TODO(2, rossberg): get rid of these forward guesses
   -- if fa* = ($(|s.FUNCS|+i_F))^(i_F<|func*|)
   -- if ga* = ($(|s.GLOBALS|+i_G))^(i_G<|global*|)
   -- if ta* = ($(|s.TABLES|+i_T))^(i_T<|table*|)
@@ -119,7 +119,7 @@ def $allocmodule(s, module, externval*, val_G*, ref_T*, (ref_E*)*) = (s_6, modul
   -- if (s_4, ma*) = $allocmems(s_3, memtype*)
   -- if (s_5, ea*) = $allocelems(s_4, elemtype*, (ref_E*)*)
   -- if (s_6, da*) = $allocdatas(s_5, OK^(|data*|), (byte*)*)
-  ;; TODO: use moduleinst here and remove hack above
+  ;; TODO(2, rossberg): use moduleinst here and remove hack above
   -- if xi* = $allocexports({FUNCS fa_I* fa*, GLOBALS ga_I* ga*, TABLES ta_I* ta*, MEMS ma_I* ma*}, export*)
   -- if moduleinst = {
       TYPES dt*,
@@ -149,7 +149,7 @@ def $rundata_(x, DATA b^n (ACTIVE y instr*)) =
   instr* (CONST I32 0) (CONST I32 n) (MEMORY.INIT y x) (DATA.DROP x)
 
 def $instantiate(store, module, externval*) : config
-def $instantiate(s, module, externval*) = s'; f; instr_E* instr_D* (CALL x)?
+def $instantiate(s, module, externval*) = s'; f; instr_E* instr_D* instr_S?
   ---- ----
   -- Module_ok: |- module : xt_I* -> xt_E*
   -- (Externval_type: s |- externval : xt_I)*
@@ -160,22 +160,21 @@ def $instantiate(s, module, externval*) = s'; f; instr_E* instr_D* (CALL x)?
   -- if elem* = (ELEM reftype expr_E* elemmode)*
   -- if data* = (DATA byte* datamode)*
   -- if start? = (START x)?
-  ;; TODO: avoid this HACK and use mm directly, or built it fully incrementally
+  ;; TODO(2, rossberg): avoid this HACK and use moduleinst directly, or built it fully incrementally
   -- if moduleinst_0 = {
       TYPES $alloctypes(type*),
       FUNCS $funcsxv(externval*) ($(|s.FUNCS|+i_F))^(i_F<|func*|),
       GLOBALS $globalsxv(externval*), \
     }
-  -- if z = s; {MODULE moduleinst_0}  ;; TODO: inline
+  -- if z = s; {MODULE moduleinst_0}  ;; TODO(2, rossberg): inline
   -- (Eval_expr : z; expr_G ~>* z; val_G)*
   -- (Eval_expr : z; expr_T ~>* z; ref_T)*
   -- (Eval_expr : z; expr_E ~>* z; ref_E)**
-  ;; TODO: rename mm to moduleinst (causes stack overflow in interpreter!)
-  -- if (s', mm) = $allocmodule(s, module, externval*, val_G*, ref_T*, (ref_E*)*)
-  -- if f = {MODULE mm}  ;; TODO: inline
+  -- if (s', moduleinst) = $allocmodule(s, module, externval*, val_G*, ref_T*, (ref_E*)*)
+  -- if f = {MODULE moduleinst}  ;; TODO(2, rossberg): inline
   -- if instr_E* = $concat_(instr, $runelem_(i_E, elem*[i_E])^(i_E<|elem*|))
   -- if instr_D* = $concat_(instr, $rundata_(i_D, data*[i_D])^(i_D<|data*|))
-  ;;-- if instr_S? = (CALL x)?  ;; TODO: use above
+  -- if instr_S? = (CALL x)?
 
 
 ;;
@@ -187,4 +186,4 @@ def $invoke(s, funcaddr, val*) = s; f; val* (REF.FUNC_ADDR funcaddr) (CALL_REF s
   ---- ----
   -- Expand: s.FUNCS[funcaddr].TYPE ~~ FUNC (t_1* -> t_2*)
   -- (Val_type: s |- val : t_1)*
-  -- if f = {MODULE {}}  ;; TODO: inline
+  -- if f = {MODULE {}}  ;; TODO(2, rossberg): inline

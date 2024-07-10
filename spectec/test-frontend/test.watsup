@@ -95,3 +95,18 @@ def $testemptyn6(notation6) : nat
 def $testemptyn6(eps 0) = 0
 ;;def $testemptyn6(0) = 0
 def $testemptyn6("" 0) = 0
+
+
+
+;;
+;; Parameterisation
+;;
+
+def $f(syntax X, X) : X
+def $f(syntax X, x) = x
+
+def $g(def $h(syntax X, X) : X, syntax Y, Y) : Y
+def $g(def $h, syntax Y, y) = $h(Y, y)
+
+def $x : nat
+def $x = $($g(def $f, syntax nat, 1) + $g($f, nat, 2))

@@ -39,8 +39,8 @@ let string_of_cmpop = function
   | LeOp _ -> "<="
   | GeOp _ -> ">="
 
-let string_of_atom = Atom.string_of_atom
-let string_of_mixop = Atom.string_of_mixop
+let string_of_atom = El.Atom.to_string
+let string_of_mixop = Mixop.to_string
 
 
 (* Types *)
@@ -129,11 +129,12 @@ and string_of_exp e =
       "[" ^ string_of_path p ^ " = " ^ string_of_exp e2 ^ "]"
   | ExtE (e1, p, e2) ->
     string_of_exp e1 ^
-      "[" ^ string_of_path p ^ " =.. " ^ string_of_exp e2 ^ "]"
+      "[" ^ string_of_path p ^ " =++ " ^ string_of_exp e2 ^ "]"
   | StrE efs -> "{" ^ concat ", " (List.map string_of_expfield efs) ^ "}"
   | DotE (e1, atom) ->
     string_of_exp e1 ^ "." ^ string_of_mixop [[atom]] ^ "_" ^ string_of_typ_name e1.note
   | CompE (e1, e2) -> string_of_exp e1 ^ " ++ " ^ string_of_exp e2
+  | MemE (e1, e2) -> string_of_exp e1 ^ " <- " ^ string_of_exp e2
   | LenE e1 -> "|" ^ string_of_exp e1 ^ "|"
   | TupE es -> "(" ^ string_of_exps ", " es ^ ")"
   | CallE (id, as1) -> "$" ^ id.it ^ string_of_args as1
@@ -200,6 +201,7 @@ and string_of_arg a =
   match a.it with
   | ExpA e -> string_of_exp e
   | TypA t -> "syntax " ^ string_of_typ t
+  | DefA id -> "def $" ^ id.it
 
 and string_of_args = function
   | [] -> ""
@@ -211,17 +213,19 @@ and string_of_bind bind =
     let dim = String.concat "" (List.map string_of_iter iters) in
     id.it ^ dim ^ " : " ^ string_of_typ t ^ dim
   | TypB id -> "syntax " ^ id.it
+  | DefB (id, ps, t) -> "def $" ^ id.it ^ string_of_params ps ^ " : " ^ string_of_typ t
 
 and string_of_binds = function
   | [] -> ""
   | bs -> "{" ^ concat ", " (List.map string_of_bind bs) ^ "}"
 
-let string_of_param p =
+and string_of_param p =
   match p.it with
   | ExpP (id, t) -> (if id.it = "_" then "" else id.it ^ " : ") ^ string_of_typ t
   | TypP id -> "syntax " ^ id.it
+  | DefP (id, ps, t) -> "def $" ^ id.it ^ string_of_params ps ^ " : " ^ string_of_typ t
 
-let string_of_params = function
+and string_of_params = function
   | [] -> ""
   | ps -> "(" ^ concat ", " (List.map string_of_param ps) ^ ")"
 

@@ -102,11 +102,20 @@ and reduce_typ_app' env id args at = function
 
 (* Expression Reduction *)
 
+and is_head_normal_exp e =
+  match e.it with
+  | BoolE _ | NatE _ | TextE _ | UnE (MinusOp _, {it = NatE _; _})
+  | OptE _ | ListE _ | TupE _ | CaseE _ | StrE _ -> true
+  | SubE (e, _, _) -> is_head_normal_exp e
+  | _ -> false
+
 and is_normal_exp e =
   match e.it with
-  | BoolE _ | NatE _ | TextE _ | ListE _ | OptE _
-  | UnE (MinusOp _, {it = NatE _; _})
-  | StrE _ | TupE _ | CaseE _ -> true
+  | BoolE _ | NatE _ | TextE _ | UnE (MinusOp _, {it = NatE _; _}) -> true
+  | ListE es | TupE es -> List.for_all is_normal_exp es
+  | OptE None -> true
+  | OptE (Some e) | CaseE (_, e) | SubE (e, _, _) -> is_normal_exp e
+  | StrE efs -> List.for_all (fun (_, e) -> is_normal_exp e) efs
   | _ -> false
 
 and reduce_exp env e : exp =
@@ -173,8 +182,10 @@ and reduce_exp env e : exp =
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
     (match op, e1'.it, e2'.it with
-    | EqOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE (Eq.eq_exp e1' e2')
-    | NeOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE (not (Eq.eq_exp e1' e2'))
+    | EqOp, _, _ when Eq.eq_exp e1' e2' -> BoolE true
+    | EqOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE false
+    | NeOp, _, _ when Eq.eq_exp e1' e2' -> BoolE false
+    | NeOp, _, _ when is_normal_exp e1' && is_normal_exp e2' -> BoolE true
     | LtOp _, NatE n1, NatE n2 -> BoolE (n1 < n2)
     | LtOp _, UnE (MinusOp _, {it = NatE n1; _}), UnE (MinusOp _, {it = NatE n2; _}) -> BoolE (n2 < n1)
     | LtOp _, UnE (MinusOp _, {it = NatE _; _}), NatE _ -> BoolE true
@@ -227,16 +238,36 @@ and reduce_exp env e : exp =
   | DotE (e1, atom) ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with
-    | StrE efs -> snd (List.find (fun (atomN, _) -> Eq.eq_atom atomN atom) efs)
+    | StrE efs -> snd (List.find (fun (atomN, _) -> El.Atom.eq atomN atom) efs)
     | _ -> DotE (e1', atom) $> e
     )
   | CompE (e1, e2) ->
+    (* TODO(4, rossberg): avoid overlap with CatE? *)
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
-    (* TODO *)
     (match e1'.it, e2'.it with
-    | _ -> CompE (e1', e2') $> e
-    )
+    | ListE es1, ListE es2 -> ListE (es1 @ es2)
+    | OptE None, OptE _ -> e2'.it
+    | OptE _, OptE None -> e1'.it
+    | StrE efs1, StrE efs2 ->
+      let merge (atom1, e1) (atom2, e2) =
+        assert (El.Atom.eq atom1 atom2);
+        (atom1, reduce_exp env (CompE (e1, e2) $> e1))
+      in StrE (List.map2 merge efs1 efs2)
+    | _ -> CompE (e1', e2')
+    ) $> e
+  | MemE (e1, e2) ->
+    let e1' = reduce_exp env e1 in
+    let e2' = reduce_exp env e2 in
+    (match e2'.it with
+    | OptE None -> BoolE false
+    | OptE (Some e2') when Eq.eq_exp e1' e2' -> BoolE true
+    | OptE (Some e2') when is_normal_exp e1' && is_normal_exp e2' -> BoolE false
+    | ListE [] -> BoolE false
+    | ListE es2' when List.exists (Eq.eq_exp e1') es2' -> BoolE true
+    | ListE es2' when is_normal_exp e1' && List.for_all is_normal_exp es2' -> BoolE false
+    | _ -> MemE (e1', e2')
+    ) $> e
   | LenE e1 ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with
@@ -301,6 +332,8 @@ and reduce_exp env e : exp =
     let e2' = reduce_exp env e2 in
     (match e1'.it, e2'.it with
     | ListE es1, ListE es2 -> ListE (es1 @ es2)
+    | OptE None, OptE _ -> e2'.it
+    | OptE _, OptE None -> e1'.it
     | _ -> CatE (e1', e2')
     ) $> e
   | CaseE (op, e1) -> CaseE (op, reduce_exp env e1) $> e
@@ -334,7 +367,7 @@ and reduce_exp env e : exp =
         )
       | _ -> SubE (e1', t1', t2') $> e
       )
-    | _ when is_normal_exp e1' ->
+    | _ when is_head_normal_exp e1' ->
       {e1' with note = e.note}
     | _ -> SubE (e1', t1', t2') $> e
     )
@@ -393,6 +426,7 @@ and reduce_arg env a : arg =
   match a.it with
   | ExpA e -> ExpA (reduce_exp env e) $ a.at
   | TypA _t -> a  (* types are reduced on demand *)
+  | DefA _id -> a
 
 and reduce_exp_call env id args at = function
   | [] ->
@@ -434,11 +468,11 @@ and reduce_prem env prem : bool option =
   | ElsePr -> Some true
   | LetPr (e1, e2, _ids) ->
     (match match_exp env Subst.empty e2 e1 with
-    | Some _ -> Some true  (* TODO: need to keep substitution? *)
+    | Some _ -> Some true  (* TODO(2, rossberg): need to keep substitution? *)
     | None -> None
     | exception Irred -> None
     )
-  | IterPr (_prem, _iter) -> None  (* TODO *)
+  | IterPr (_prem, _iter) -> None  (* TODO(3, rossberg): reduce? *)
 
 
 (* Matching *)
@@ -505,7 +539,7 @@ and match_exp' env s e1 e2 : subst option =
     (fun r -> fmt "%s" (opt il_subst r))
   ) @@ fun _ ->
   assert (Eq.eq_exp e1 (reduce_exp env e1));
-  if Eq.eq_exp e1 e2 then Some Subst.empty else  (* HACK around subtype elim pass introducing calls on LHS's *)
+  if Eq.eq_exp e1 e2 then Some s else  (* HACK around subtype elim pass introducing calls on LHS's *)
   match e1.it, (reduce_exp env (Subst.subst_exp s e2)).it with
   | _, VarE id when Subst.mem_varid s id ->
     (* A pattern variable already in the substitution is non-linear *)
@@ -585,7 +619,7 @@ and match_exp' env s e1 e2 : subst option =
   | _, SubE (e21, t21, _t22) ->
     if sub_typ env e1.note t21 then
       match_exp' env s (reduce_exp env (SubE (e1, e1.note, t21) $> e21)) e21
-    else if is_normal_exp e1 then
+    else if is_head_normal_exp e1 then
       let t21' = reduce_typ env t21 in
       if
         match e1.it, t21'.it with
@@ -607,7 +641,7 @@ and match_exp' env s e1 e2 : subst option =
       then match_exp' env s {e1 with note = t21} e21
       else None
     else raise Irred
-  | _, _ when is_normal_exp e1 -> None
+  | _, _ when is_head_normal_exp e1 -> None
   | _, _ ->
     raise Irred
 
@@ -638,7 +672,7 @@ and eta_iter_exp env e : exp * iterexp =
   match (reduce_typ env e.note).it with
   | IterT (t, Opt) -> reduce_exp env (TheE e $$ e.at % t), (Opt, [])
   | IterT (t, List) ->
-    let id = "_i_" $ e.at in  (* TODO: this is unbound now *)
+    let id = "_i_" $ e.at in  (* TODO(2, rossberg): this is unbound now *)
     let len = reduce_exp env (LenE e $$ e.at % (NumT NatT $ e.at)) in
     IdxE (e, VarE id $$ e.at % (NumT NatT $ e.at)) $$ e.at % t,
     (ListN (len, Some id), [(id, t)])
@@ -652,6 +686,7 @@ and match_arg env s a1 a2 : subst option =
   match a1.it, a2.it with
   | ExpA e1, ExpA e2 -> match_exp env s e1 e2
   | TypA t1, TypA t2 -> match_typ env s t1 t2
+  | DefA id1, DefA id2 -> Some (Subst.add_defid s id1 id2)
   | _, _ -> assert false
 
 
@@ -667,7 +702,7 @@ and equiv_typ env t1 t2 =
     let t1' = reduce_typ env t1 in
     let t2' = reduce_typ env t2 in
     (t1 <> t1' || t2 <> t2') && equiv_typ env t1' t2' ||
-    Eq.eq_deftyp (reduce_typdef env t1') (reduce_typdef env t2')  (* TODO *)
+    Eq.eq_deftyp (reduce_typdef env t1') (reduce_typdef env t2')  (* TODO(3, rossberg): be more expressive *)
   | VarT _, _ ->
     let t1' = reduce_typ env t1 in
     t1 <> t1' && equiv_typ env t1' t2
@@ -712,7 +747,7 @@ and equiv_exp env e1 e2 =
   Debug.(log "il.equiv_exp"
     (fun _ -> fmt "%s == %s" (il_exp e1) (il_exp e2)) Bool.to_string
   ) @@ fun _ ->
-  (* TODO: this does not reduce inner type arguments *)
+  (* TODO(3, rossberg): this does not reduce inner type arguments *)
   Eq.eq_exp (reduce_exp env e1) (reduce_exp env e2)
 
 and equiv_arg env a1 a2 =
@@ -722,7 +757,29 @@ and equiv_arg env a1 a2 =
   match a1.it, a2.it with
   | ExpA e1, ExpA e2 -> equiv_exp env e1 e2
   | TypA t1, TypA t2 -> equiv_typ env t1 t2
+  | DefA id1, DefA id2 -> id1.it = id2.it
   | _, _ -> false
+
+
+and equiv_functyp env (ps1, t1) (ps2, t2) =
+  List.length ps1 = List.length ps2 &&
+  match equiv_params env ps1 ps2 with
+  | None -> false
+  | Some s -> equiv_typ env t1 (Subst.subst_typ s t2)
+
+and equiv_params env ps1 ps2 =
+  List.fold_left2 (fun s_opt p1 p2 ->
+    let* s = s_opt in
+    match p1.it, (Subst.subst_param s p2).it with
+    | ExpP (id1, t1), ExpP (id2, t2) ->
+      if not (equiv_typ env t1 t2) then None else
+      Some (Subst.add_varid s id2 (VarE id1 $$ p1.at % t1))
+    | TypP _, TypP _ -> Some s
+    | DefP (id1, ps1, t1), DefP (id2, ps2, t2) ->
+      if not (equiv_functyp env (ps1, t1) (ps2, t2)) then None else
+      Some (Subst.add_defid s id2 id1)
+    | _, _ -> assert false
+  ) (Some Subst.empty) ps1 ps2
 
 
 (* Subtyping *)

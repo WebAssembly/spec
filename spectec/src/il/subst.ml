@@ -6,20 +6,23 @@ open Ast
 
 module Map = Map.Make(String)
 
-type subst = {varid : exp Map.t; typid : typ Map.t}
+type subst = {varid : exp Map.t; typid : typ Map.t; defid : id Map.t}
 type t = subst
 
-let empty = {varid = Map.empty; typid = Map.empty}
+let empty = {varid = Map.empty; typid = Map.empty; defid = Map.empty}
 
 let mem_varid s id = Map.mem id.it s.varid
 let mem_typid s id = Map.mem id.it s.typid
+let mem_defid s id = Map.mem id.it s.defid
 
 let add_varid s id e = if id.it = "_" then s else {s with varid = Map.add id.it e s.varid}
 let add_typid s id t = if id.it = "_" then s else {s with typid = Map.add id.it t s.typid}
+let add_defid s id x = if id.it = "_" then s else {s with defid = Map.add id.it x s.defid}
 
 let union s1 s2 =
   { varid = Map.union (fun _ _e1 e2 -> Some e2) s1.varid s2.varid;
     typid = Map.union (fun _ _t1 t2 -> Some t2) s1.typid s2.typid;
+    defid = Map.union (fun _ _x1 x2 -> Some x2) s1.defid s2.defid;
   }
 
 let remove_varid' s id' = {s with varid = Map.remove id' s.varid}
@@ -47,6 +50,11 @@ let subst_varid s id =
   | None -> id
   | Some {it = VarE id'; _} -> id'
   | Some _ -> raise (Invalid_argument "subst_varid")
+
+let subst_defid s id =
+  match Map.find_opt id.it s.defid with
+  | None -> id
+  | Some id' -> id'
 
 
 (* Iterations *)
@@ -110,9 +118,10 @@ and subst_exp s e =
   | StrE efs -> StrE (subst_list subst_expfield s efs)
   | DotE (e1, atom) -> DotE (subst_exp s e1, atom)
   | CompE (e1, e2) -> CompE (subst_exp s e1, subst_exp s e2)
+  | MemE (e1, e2) -> MemE (subst_exp s e1, subst_exp s e2)
   | LenE e1 -> LenE (subst_exp s e1)
   | TupE es -> TupE (subst_list subst_exp s es)
-  | CallE (id, as_) -> CallE (id, subst_args s as_)
+  | CallE (id, as_) -> CallE (subst_defid s id, subst_args s as_)
   | IterE (e1, iterexp) -> IterE (subst_exp s e1, subst_iterexp s iterexp)
   | ProjE (e1, i) -> ProjE (subst_exp s e1, i)
   | UncaseE (e1, op) -> UncaseE (subst_exp s e1, op)
@@ -136,7 +145,7 @@ and subst_path s p =
   ) $$ p.at % subst_typ s p.note
 
 and subst_iterexp s (iter, bs) =
-  (* TODO: This is assuming expressions in s are closed. *)
+  (* TODO(3, rossberg): This is assuming expressions in s are closed, is that okay? *)
   subst_iter s iter,
   List.map (fun (id, t) ->
     let id' =
@@ -144,7 +153,7 @@ and subst_iterexp s (iter, bs) =
       | None -> id
       | Some {it = VarE id'; _} -> id'
       | Some _ ->
-        id  (* TODO: would need to update bind list; change bs to proper bindings *)
+        id  (* TODO(3, rossberg): would need to update bind list; change bs to proper bindings *)
     in (id', subst_typ s t)
   ) bs
 (*
@@ -197,18 +206,25 @@ and subst_arg s a =
   (match a.it with
   | ExpA e -> ExpA (subst_exp s e)
   | TypA t -> TypA (subst_typ s t)
+  | DefA id -> DefA (subst_defid s id)
   ) $ a.at
 
 and subst_bind s b =
   (match b.it with
   | ExpB (id, t, iters) -> ExpB (id, subst_typ s t, iters)
   | TypB id -> TypB id
+  | DefB (id, ps, t) ->
+    let ps', s' = subst_params s ps in
+    DefB (id, ps', subst_typ s' t)
   ) $ b.at
 
 and subst_param s p =
   (match p.it with
   | ExpP (id, t) -> ExpP (id, subst_typ s t)
   | TypP id -> TypP id
+  | DefP (id, ps, t) ->
+    let ps', s' = subst_params s ps in
+    DefP (id, ps', subst_typ s' t)
   ) $ p.at
 
 and subst_args s as_ = subst_list subst_arg s as_

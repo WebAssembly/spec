@@ -8,9 +8,8 @@ syntax init hint(desc "initialization status") =
 syntax localtype hint(desc "local type") =
   init valtype
 
-;; TODO: fix rendering
 syntax instrtype hint(desc "instruction type") =
-  resulttype ->_ localidx* resulttype  hint(show %0 `->_ %2 %3) hint(macro "to")
+  resulttype ->_ localidx* resulttype  hint(macro "to")
 
 
 syntax context hint(desc "context") hint(macro "%" "C%") =
@@ -24,7 +23,8 @@ syntax context hint(desc "context") hint(macro "%" "C%") =
     DATAS datatype*,
     LOCALS localtype*,
     LABELS resulttype*,
-    RETURN resulttype?
+    RETURN resulttype?,
+    REFS funcidx*
   }
 
 var C : context
@@ -32,7 +32,7 @@ var lct : localtype  hint(show lt)
 var it : instrtype
 
 
-;; TODO: is there a way to show this as %[.LOCAL[%]* = %*] ?
+;; TODO(3, rossberg): is there a way to show this as %[.LOCAL[%]* = %*] ?
 def $with_locals(context, localidx*, localtype*) : context  hint(show %[.LOCAL[%]=%])
 
 def $with_locals(C, eps, eps) = C
@@ -44,7 +44,7 @@ def $clos_deftype(context, deftype) : deftype  hint(show $clos_(%,%)) hint(macro
 def $clos_moduletype(context, moduletype) : moduletype  hint(show $clos_(%,%)) hint(macro "clostype")
 def $clos_deftypes(deftype*) : deftype*        hint(show $clos*#((%))) hint(macro "clostype")
 
-;; TODO: inline dt*
+;; TODO(3, rossberg): enable inlining dt*
 def $clos_valtype(C, t) = $subst_all_valtype(t, dt*) -- if dt* = $clos_deftypes(C.TYPES)
 def $clos_deftype(C, dt) = $subst_all_deftype(dt, dt'*) -- if dt'* = $clos_deftypes(C.TYPES)
 def $clos_moduletype(C, mmt) = $subst_all_moduletype(mmt, dt*) -- if dt* = $clos_deftypes(C.TYPES)
@@ -536,7 +536,7 @@ rule Expr_ok:
 rule Instrs_ok/empty:
   C |- eps : eps -> eps
 
-;; TODO: enable x_1*#x_2*
+;; TODO(3, rossberg): enable x_1*#x_2* to avoid space
 rule Instrs_ok/seq:
   C |- instr_1 instr_2* : t_1* ->_(x_1* x_2*) t_3*
   -- Instr_ok: C |- instr_1 : t_1* ->_(x_1*) t_2*
@@ -549,7 +549,7 @@ rule Instrs_ok/sub:
   -- Instrtype_sub: C |- it <: it'
   -- Instrtype_ok: C |- it' : OK
 
-;; TODO: allow omitting parens
+;; TODO(3, rossberg): allow omitting parens
 rule Instrs_ok/frame:
   C |- instr* : (t* t_1*) ->_(x*) (t* t_2*)
   -- Instrs_ok: C |- instr* : t_1* ->_(x*) t_2*
@@ -597,18 +597,18 @@ rule Blocktype_ok/typeidx:
 rule Instr_ok/block:
   C |- BLOCK bt instr* : t_1* -> t_2*
   -- Blocktype_ok: C |- bt : t_1* -> t_2*
-  -- Instrs_ok: C, LABELS (t_2*) |- instr* : t_1* ->_(x*) t_2*
+  -- Instrs_ok: {LABELS (t_2*)} ++ C |- instr* : t_1* ->_(x*) t_2*
 
 rule Instr_ok/loop:
   C |- LOOP bt instr* : t_1* -> t_2*
   -- Blocktype_ok: C |- bt : t_1* -> t_2*
-  -- Instrs_ok: C, LABELS (t_1*) |- instr* : t_1* ->_(x*) t_2*
+  -- Instrs_ok: {LABELS (t_1*)} ++ C |- instr* : t_1* ->_(x*) t_2*
 
 rule Instr_ok/if:
   C |- IF bt instr_1* ELSE instr_2* : t_1* I32 -> t_2*
   -- Blocktype_ok: C |- bt : t_1* -> t_2*
-  -- Instrs_ok: C, LABELS (t_2*) |- instr_1* : t_1* ->_(x_1*) t_2*
-  -- Instrs_ok: C, LABELS (t_2*) |- instr_2* : t_1* ->_(x_2*) t_2*
+  -- Instrs_ok: {LABELS (t_2*)} ++ C |- instr_1* : t_1* ->_(x_1*) t_2*
+  -- Instrs_ok: {LABELS (t_2*)} ++ C |- instr_2* : t_1* ->_(x_2*) t_2*
 
 
 ;; Branch instructions
@@ -675,7 +675,7 @@ rule Instr_ok/return:
   -- if C.RETURN = (t*)
   -- Instrtype_ok: C |- t_1* -> t_2* : OK
 
-;; TODO: enable t_2* <: C.RETURN
+;; TODO(3, rossberg): enable t_2* <: C.RETURN
 rule Instr_ok/return_call:
   C |- RETURN_CALL x : t_3* t_1* -> t_4*
   -- Expand: C.FUNCS[x] ~~ FUNC (t_1* -> t_2*)
@@ -683,7 +683,7 @@ rule Instr_ok/return_call:
   -- Resulttype_sub: C |- t_2* <: t'_2*
   -- Instrtype_ok: C |- t_3* -> t_4* : OK
 
-;; TODO: enable t_2* <: C.RETURN
+;; TODO(3, rossberg): enable t_2* <: C.RETURN
 rule Instr_ok/return_call_ref:
   C |- RETURN_CALL_REF $idx(x) : t_3* t_1* (REF NULL $idx(x)) -> t_4*
   -- Expand: C.TYPES[x] ~~ FUNC (t_1* -> t_2*)
@@ -691,7 +691,7 @@ rule Instr_ok/return_call_ref:
   -- Resulttype_sub: C |- t_2* <: t'_2*
   -- Instrtype_ok: C |- t_3* -> t_4* : OK
 
-;; TODO: enable t_2* <: C.RETURN
+;; TODO(3, rossberg): enable t_2* <: C.RETURN
 rule Instr_ok/return_call_indirect:
   C |- RETURN_CALL_INDIRECT x $idx(y) : t_3* t_1* I32 -> t_4*
   -- if C.TABLES[x] = lim rt
@@ -721,7 +721,7 @@ rule Instr_ok/relop:
   C |- RELOP nt relop_nt : nt nt -> I32
 
 
-;; TODO: move side conditions to syntax
+;; TODO(1, rossberg): move side conditions to syntax
 rule Instr_ok/cvtop-reinterpret:
   C |- CVTOP nt_1 nt_2 REINTERPRET : nt_2 -> nt_1
   -- if $size(nt_1) = $size(nt_2)
@@ -737,10 +737,10 @@ rule Instr_ok/ref.null:
   C |- REF.NULL ht : eps -> (REF NULL ht)
   -- Heaptype_ok: C |- ht : OK
 
-;; TODO: check C.refs
 rule Instr_ok/ref.func:
   C |- REF.FUNC x : eps -> (REF dt)
   -- if C.FUNCS[x] = dt
+  -- if x <- C.REFS
 
 rule Instr_ok/ref.i31:
   C |- REF.I31 : I32 -> (REF I31)
@@ -913,7 +913,7 @@ rule Instr_ok/vshuffle:
 rule Instr_ok/vsplat:
   C |- VSPLAT sh : $unpackshape(sh) -> V128
 
-;; TODO: This rule (or the abstract syntax) is too liberal, since some combinations are illegal
+;; TODO(1, rossberg): This rule (or the abstract syntax) is too liberal, since some combinations are illegal
 rule Instr_ok/vextract_lane:
   C |- VEXTRACT_LANE sh sx? i : V128 -> $unpackshape(sh)
   -- if i < $dim(sh)
@@ -931,10 +931,8 @@ rule Instr_ok/vextbinop:
 rule Instr_ok/vnarrow:
   C |- VNARROW sh_1 sh_2 sx : V128 V128 -> V128
 
-;; TODO: move constraint to syntax
 rule Instr_ok/vcvtop:
-  C |- VCVTOP sh_1 sh_2 vcvtop hf? sx? zero? : V128 -> V128
-  -- if sx? = eps <=> $lanetype(sh_1) = imm_1 /\ $lanetype(sh_2) = imm_2 /\ $lsize(imm_1) > $lsize(imm_2) \/ $lanetype(sh_1) = Fnn_1 /\ $lanetype(sh_2) = Fnn_2
+  C |- VCVTOP sh_1 sh_2 vcvtop half? sx? zero? : V128 -> V128
 
 
 ;; Local instructions
@@ -1032,7 +1030,7 @@ rule Instr_ok/data.drop:
 
 (;
 rule Instr_ok/load:
-  C |- LOAD nt (N _ sx)? x memarg : I32 -> nt
+  C |- LOAD nt (N sx)? x memarg : I32 -> nt
   -- if C.MEMS[x] = mt
   -- if $(2^(memarg.ALIGN) <= $size(nt)/8)
   -- if $(2^(memarg.ALIGN) <= N/8 < $size(nt)/8)?
@@ -1045,7 +1043,7 @@ rule Instr_ok/load-val:
   -- if $(2^(memarg.ALIGN) <= $size(nt)/8)
 
 rule Instr_ok/load-pack:
-  C |- LOAD Inn (M _ sx) x memarg : I32 -> Inn
+  C |- LOAD Inn (M sx) x memarg : I32 -> Inn
   -- if C.MEMS[x] = mt
   -- if $(2^(memarg.ALIGN) <= M/8)
 
@@ -1086,12 +1084,12 @@ rule Instr_ok/vload-splat:
 rule Instr_ok/vload-zero:
   C |- VLOAD V128 (ZERO N) x memarg : I32 -> V128
   -- if C.MEMS[x] = mt
-  -- if $(2^(memarg.ALIGN) < N/8)
+  -- if $(2^(memarg.ALIGN) <= N/8)
 
 rule Instr_ok/vload_lane:
   C |- VLOAD_LANE V128 N x memarg i : I32 V128 -> V128
   -- if C.MEMS[x] = mt
-  -- if $(2^(memarg.ALIGN) < N/8)
+  -- if $(2^(memarg.ALIGN) <= N/8)
   -- if $(i < 128/N)
 
 rule Instr_ok/vstore:
@@ -1102,7 +1100,7 @@ rule Instr_ok/vstore:
 rule Instr_ok/vstore_lane:
   C |- VSTORE_LANE V128 N x memarg i : I32 V128 -> eps
   -- if C.MEMS[x] = mt
-  -- if $(2^(memarg.ALIGN) < N/8)
+  -- if $(2^(memarg.ALIGN) <= N/8)
   -- if $(i < 128/N)
 
 
@@ -1154,19 +1152,10 @@ rule Instr_const/global.get:
   C |- (GLOBAL.GET x) CONST
   -- if C.GLOBALS[x] = t
 
-;; TODO: built in elemof
-def $in_numtype(numtype, numtype*) : bool    hint(show % <- %)
-def $in_numtype(nt, epsilon) = false
-def $in_numtype(nt, nt_1 nt'*) = nt = nt_1 \/ $in_numtype(nt, nt'*)
-
-def $in_binop(numtype, binop_(numtype), binop_(numtype)*) : bool  hint(show %2 <- %3)
-def $in_binop(nt, binop, epsilon) = false
-def $in_binop(nt, binop, (ibinop_1) ibinop'*) = binop = ibinop_1 \/ $in_binop(nt, binop, ibinop'*)
-
 rule Instr_const/binop:
   C |- (BINOP Inn binop) CONST
-  -- if $in_numtype(Inn, I32 I64)
-  -- if $in_binop(Inn, binop, ADD SUB MUL)
+  -- if Inn <- I32 I64
+  -- if binop <- ADD SUB MUL
 
 
 rule Expr_const: C |- instr* CONST
@@ -1201,7 +1190,7 @@ rule Type_ok:
   C |- TYPE rectype : dt*
   -- if x = |C.TYPES|
   -- if dt* = $rolldt(x, rectype)
-  -- Rectype_ok: C[.TYPES =.. dt*] |- rectype : OK(x)
+  -- Rectype_ok: C ++ {TYPES dt*} |- rectype : OK(x)
 
 rule Local_ok/set:
   C |- LOCAL t : SET t
@@ -1215,7 +1204,7 @@ rule Func_ok:
   C |- FUNC x local* expr : C.TYPES[x]
   -- Expand: C.TYPES[x] ~~ FUNC (t_1* -> t_2*)
   -- (Local_ok: C |- local : lct)*
-  -- Expr_ok: C, LOCALS (SET t_1)* lct*, LABELS (t_2*), RETURN (t_2*) |- expr : t_2*
+  -- Expr_ok: C ++ {LOCALS (SET t_1)* lct*, LABELS (t_2*), RETURN (t_2*)} |- expr : t_2*
 
 rule Global_ok:
   C |- GLOBAL globaltype expr : globaltype
@@ -1271,7 +1260,7 @@ rule Start_ok:
 ;; Module im/exports
 
 relation Import_ok: context |- import : externtype        hint(show "T-import")    hint(macro "%import")
-relation Export_ok: context |- export : externtype        hint(show "T-export")    hint(macro "%export")
+relation Export_ok: context |- export : name externtype   hint(show "T-export")    hint(macro "%export")
 relation Externidx_ok: context |- externidx : externtype  hint(show "T-externidx") hint(macro "%externidx")
 
 rule Import_ok:
@@ -1279,7 +1268,7 @@ rule Import_ok:
   -- Externtype_ok: C |- xt : OK
 
 rule Export_ok:
-  C |- EXPORT name externidx : xt
+  C |- EXPORT name externidx : name xt
   -- Externidx_ok: C |- externidx : xt
 
 
@@ -1306,7 +1295,11 @@ relation Module_ok: |- module : moduletype            hint(show "T-module")  hin
 relation Types_ok: context |- type* : deftype*        hint(show "T-types")   hint(macro "%types")
 relation Globals_ok: context |- global* : globaltype* hint(show "T-globals") hint(macro "%globals")
 
-;; TODO: refs
+;; HACK for notation
+syntax nonfuncs = global* table* mem* elem* data*
+def $funcidx_nonfuncs(nonfuncs) : funcidx*  hint(show $funcidx(%)) hint(macro "freefuncidx")
+def $funcidx_nonfuncs(global* table* mem* elem* data*) = $funcidx_module(MODULE eps eps eps global* table* mem* elem* data* eps eps)
+
 rule Module_ok:
   |- MODULE type* import* func* global* table* mem* elem* data* start? export* : $clos_moduletype(C, xt_I* -> xt_E*)
   -- Types_ok: {} |- type* : dt'*
@@ -1320,12 +1313,13 @@ rule Module_ok:
   -- (Elem_ok: C |- elem : rt)*
   -- (Data_ok: C |- data : ok)*
   -- (Start_ok: C |- start : OK)?
-  -- (Export_ok: C |- export : xt_E)*
-  ;; -- TODO: disjoint export names
+  -- (Export_ok: C |- export : nm xt_E)*
+  -- if $disjoint_(name, nm*)
   ----
-  -- if C = {TYPES dt'*, FUNCS dt_I* dt*, GLOBALS gt_I* gt*, TABLES tt_I* tt*, MEMS mt_I* mt*, ELEMS rt*, DATAS ok*}
+  -- if C = {TYPES dt'*, FUNCS dt_I* dt*, GLOBALS gt_I* gt*, TABLES tt_I* tt*, MEMS mt_I* mt*, ELEMS rt*, DATAS ok*, REFS x*}
   ----
-  -- if C' = {TYPES dt'*, FUNCS dt_I* dt*, GLOBALS gt_I*}
+  -- if C' = {TYPES dt'*, FUNCS dt_I* dt*, GLOBALS gt_I*, REFS x*}
+  -- if x* = $funcidx_nonfuncs(global* table* mem* elem* data*)
   ----
   -- if dt_I* = $funcsxt(xt_I*)
   -- if gt_I* = $globalsxt(xt_I*)
@@ -1339,7 +1333,7 @@ rule Types_ok/empty:
 rule Types_ok/cons:
   C |- type_1 type* : dt_1* dt*
   -- Type_ok: C |- type_1 : dt_1*
-  -- Types_ok: C[.TYPES =.. dt_1*] |- type* : dt*
+  -- Types_ok: C ++ {TYPES dt_1*} |- type* : dt*
 
 rule Globals_ok/empty:
   C |- eps : eps
@@ -1347,4 +1341,4 @@ rule Globals_ok/empty:
 rule Globals_ok/cons:
   C |- global_1 global* : gt_1 gt*
   -- Global_ok: C |- global : gt_1
-  -- Globals_ok: C[.GLOBALS =.. gt_1] |- global* : gt*
+  -- Globals_ok: C ++ {GLOBALS gt_1} |- global* : gt*

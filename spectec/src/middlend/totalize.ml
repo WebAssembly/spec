@@ -100,6 +100,7 @@ and t_exp' env = function
   | TheE exp -> TheE exp
   | ListE es -> ListE (List.map (t_exp env) es)
   | CatE (exp1, exp2) -> CatE (t_exp env exp1, t_exp env exp2)
+  | MemE (exp1, exp2) -> MemE (t_exp env exp1, t_exp env exp2)
   | CaseE (mixop, e) -> CaseE (mixop, t_exp env e)
   | SubE (exp, t1, t2) -> SubE (t_exp env exp, t_typ env t1, t_typ env t2)
 
@@ -120,18 +121,21 @@ and t_path env x = { x with it = t_path' env x.it; note = t_typ env x.note }
 and t_arg' env = function
   | ExpA exp -> ExpA (t_exp env exp)
   | TypA t -> TypA (t_typ env t)
+  | DefA id -> DefA id
 
 and t_arg env x = { x with it = t_arg' env x.it }
 
 and t_bind' env = function
   | ExpB (id, t, dim) -> ExpB (id, t_typ env t, List.map (t_iter env) dim)
   | TypB id -> TypB id
+  | DefB (id, ps, t) -> DefB (id, t_params env ps, t_typ env t)
 
 and t_bind env x = { x with it = t_bind' env x.it }
 
 and t_param' env = function
   | ExpP (id, t) -> ExpP (id, t_typ env t)
   | TypP id -> TypP id
+  | DefP (id, ps, t) -> DefP (id, t_params env ps, t_typ env t)
 
 and t_param env x = { x with it = t_param' env x.it }
 
@@ -188,6 +192,7 @@ let rec t_def' env = function
           let x = ("x" ^ string_of_int i) $ no_region in
           [ExpB (x, typI, []) $ x.at], ExpA (VarE x $$ no_region % typI) $ no_region
         | TypP id -> [], TypA (VarT (id, []) $ no_region) $ no_region
+        | DefP (id, _, _) -> [], DefA id $ no_region
         ) params' |> List.split in
       let catch_all = DefD (List.concat binds, args,
         OptE None $$ no_region % typ'', []) $ no_region in

@@ -33,7 +33,7 @@ let (let*) = Option.bind
 
 let al_to_el_atom atom =
   let atom', typ = atom in
-  atom' $$ (no_region, Il.Atom.info typ)
+  atom' $$ (no_region, El.Atom.info typ)
 
 let al_to_el_unop = function
   | Al.Ast.MinusOp -> Some El.Ast.MinusOp
@@ -195,7 +195,7 @@ and al_to_el_record record =
 
 (* Helpers *)
 
-let indent = "    "
+let indent = "   "
 
 let rec repeat str num =
   if num = 0 then ""
@@ -215,8 +215,8 @@ let render_opt prefix stringifier suffix = function
 let render_order index depth =
   index := !index + 1;
 
-  let num_idx = string_of_int !index in
-  let alp_idx = Char.escaped (Char.chr (96 + !index)) in
+  let num_idx = if !index = 1 then string_of_int !index else "#" in
+  let alp_idx = if !index = 1 then Char.escaped (Char.chr (96 + !index)) else "#" in
 
   match depth mod 4 with
   | 0 -> num_idx ^ "."
@@ -243,7 +243,7 @@ let render_al_binop = function
   | Al.Ast.AndOp -> "and"
   | Al.Ast.OrOp -> "or"
   | Al.Ast.ImplOp -> "implies"
-  | Al.Ast.EquivOp -> "is equivanlent to"
+  | Al.Ast.EquivOp -> "is equivalent to"
   | Al.Ast.AddOp -> "plus"
   | Al.Ast.SubOp -> "minus"
   | Al.Ast.MulOp -> "multiplied by"
@@ -417,6 +417,10 @@ let rec render_prose_instr env depth = function
       (String.capitalize_ascii (render_expr env e1))
       (render_prose_cmpop cmpop)
       (render_expr env e2)
+  | MemI (e1, e2) ->
+    sprintf "* %s must be contained in %s."
+      (String.capitalize_ascii (render_expr env e1))
+      (render_expr env e2)
   | MustValidI (e1, e2, e3) ->
     sprintf "* Under the context %s, %s must be valid%s."
       (render_expr env e1)
@@ -573,9 +577,9 @@ let render_atom_title env name params =
   let name', typ = name in 
   let name' =
     match name' with
-    | Il.Atom.Atom "label" -> Il.Atom.Atom "LABEL_"
-    | Il.Atom.Atom "frame" -> Il.Atom.Atom "FRAME_"
-    | Il.Atom.Atom s -> Il.Atom.Atom (String.uppercase_ascii s)
+    | El.Atom.Atom "label" -> El.Atom.Atom "LABEL_"
+    | El.Atom.Atom "frame" -> El.Atom.Atom "FRAME_"
+    | El.Atom.Atom s -> El.Atom.Atom (String.uppercase_ascii s)
     | _ -> name'
   in
   let name = (name', typ) in

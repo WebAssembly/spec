@@ -47,6 +47,7 @@ let updE ?(at = no) (e1, pl, e2) = UpdE (e1, pl, e2) |> mk_expr at
 let extE ?(at = no) (e1, pl, e2, dir) = ExtE (e1, pl, e2, dir) |> mk_expr at
 let strE ?(at = no) r = StrE r |> mk_expr at
 let catE ?(at = no) (e1, e2) = CatE (e1, e2) |> mk_expr at
+let memE ?(at = no) (e1, e2) = MemE (e1, e2) |> mk_expr at
 let lenE ?(at = no) e = LenE e |> mk_expr at
 let tupE ?(at = no) el = TupE el |> mk_expr at
 let caseE ?(at = no) (a, el) = CaseE (a, el) |> mk_expr at

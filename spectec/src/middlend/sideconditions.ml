@@ -88,6 +88,7 @@ let rec t_exp env e : prem list =
   | CmpE (_, exp1, exp2)
   | IdxE (exp1, exp2)
   | CompE (exp1, exp2)
+  | MemE (exp1, exp2)
   | CatE (exp1, exp2)
   -> t_exp env exp1 @ t_exp env exp2
   | SliceE (exp1, exp2, exp3)
@@ -122,6 +123,7 @@ and t_path env path = match path.it with
 and t_arg env arg = match arg.it with
   | ExpA exp -> t_exp env exp
   | TypA _ -> []
+  | DefA _ -> []
 
 
 let rec t_prem env prem = match prem.it with
@@ -161,7 +163,7 @@ let t_rule' = function
     let env = List.fold_left (fun env bind ->
       match bind.it with
       | ExpB (v, t, i) -> Env.add v.it (t, i) env
-      | TypB _ -> error bind.at "unexpected type argument in rule") Env.empty binds
+      | TypB _ | DefB _ -> error bind.at "unexpected type argument in rule") Env.empty binds
     in
     let extra_prems = t_prems env prems @ t_exp env exp in
     let prems' = reduce_prems (extra_prems @ prems) in

@@ -41,6 +41,10 @@ let rec string_of_instr = function
         (string_of_expr e1)
         (string_of_cmpop cmpop)
         (string_of_expr e2)
+  | MemI (e1, e2) ->
+      sprintf "%s %s must be contained in %s." (indent ())
+        (string_of_expr e1)
+        (string_of_expr e2)
   | MustValidI (e1, e2, eo) ->
       sprintf "%s Under the context %s, %s must be valid%s." (indent ())
         (string_of_expr e1)

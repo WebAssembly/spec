@@ -32,9 +32,9 @@ let new_env () =
     defs = Env.empty;
   }
 
-let local_env env = {env with vars = env.vars; typs = env.typs}
+let local_env env = {env with vars = env.vars; typs = env.typs; defs = env.defs}
 
-(* TODO: avoid repeated copying of environment *)
+(* TODO(3, rossberg): avoid repeated copying of environment *)
 let to_eval_env env =
   let vars = Env.map (fun (t, _iters) -> t) env.vars in
   let typs = Env.map (fun (_ps, insts) -> insts) env.typs in
@@ -47,7 +47,7 @@ let find space env' id =
   | Some t -> t
 
 let bind _space env' id t =
-(* TODO
+(* TODO(3, rossberg): reenable
   if Env.mem id.it env' then
     error id.at ("duplicate declaration for " ^ space ^ " `" ^ id.it ^ "`")
   else
@@ -126,6 +126,14 @@ let as_variant_typ phrase env dir t at : typcase list =
   match expand_typdef env t with
   | VariantT tcs -> tcs
   | _ -> as_error at phrase dir t "| ..."
+
+let rec as_comp_typ phrase env dir t at =
+  match expand_typdef env t with
+  | AliasT {it = IterT _; _} -> ()
+  | StructT tfs ->
+    List.iter (fun (_, (_, t, _), _) -> as_comp_typ phrase env dir t at) tfs
+  | _ ->
+    error at (phrase ^ "'s type `" ^ string_of_typ t ^ "` is not composable")
 
 
 (* Type Equivalence and Subtyping *)
@@ -279,7 +287,7 @@ and infer_exp env e : typ =
   | TextE _ -> TextT $ e.at
   | UnE (op, _) -> let _t1, t' = infer_unop op in t' $ e.at
   | BinE (op, _, _) -> let _t1, _t2, t' = infer_binop op in t' $ e.at
-  | CmpE _ -> BoolT $ e.at
+  | CmpE _ | MemE _ -> BoolT $ e.at
   | IdxE (e1, _) -> as_list_typ "expression" env Infer (infer_exp env e1) e1.at
   | SliceE (e1, _, _)
   | UpdE (e1, _, _)
@@ -297,8 +305,9 @@ and infer_exp env e : typ =
     let s = valid_args env as_ ps Subst.empty e.at in
     Subst.subst_typ s t
   | IterE (e1, iter) ->
+    let env' = valid_iterexp env iter in
     let iter' = match fst iter with ListN _ -> List | iter' -> iter' in
-    IterT (infer_exp env e1, iter') $ e.at
+    IterT (infer_exp env' e1, iter') $ e.at
   | ProjE (e1, i) ->
     let t1 = infer_exp env e1 in
     let ets = as_tup_typ "expression" env Infer t1 e1.at in
@@ -353,8 +362,7 @@ try
     let t' =
       match infer_cmpop op with
       | Some t' -> t' $ e.at
-      | None -> try infer_exp env e1 with
-        | _ -> infer_exp env e2
+      | None -> try infer_exp env e1 with _ -> infer_exp env e2
     in
     valid_exp env e1 t';
     valid_exp env e2 t';
@@ -389,9 +397,14 @@ try
     let _binds, t', _prems = find_field tfs atom e1.at in
     equiv_typ env t' t e.at
   | CompE (e1, e2) ->
-    let _ = as_struct_typ "record" env Check t e.at in
+    let _ = as_comp_typ "expression" env Check t e.at in
     valid_exp env e1 t;
     valid_exp env e2 t
+  | MemE (e1, e2) ->
+    let t1 = infer_exp env e1 in
+    valid_exp env e1 t1;
+    valid_exp env e2 (IterT (t1, List) $ e2.at);
+    equiv_typ env (BoolT $ e.at) t e.at
   | LenE e1 ->
     let t1 = infer_exp env e1 in
     let _typ11 = as_list_typ "expression" env Infer t1 e1.at in
@@ -464,6 +477,9 @@ and valid_expmix env mixop e (mixop', t) at =
   valid_exp env e t
 
 and valid_tup_exp env s es ets =
+  Debug.(log_in "il.valid_tup_exp"
+    (fun _ -> fmt "(%s) : (%s)[%s]" (list il_exp es) (list il_typ (List.map snd ets)) (il_subst s))
+  );
   match es, ets with
   | e1::es', (e2, t)::ets' ->
     valid_exp env e1 (Subst.subst_typ s t);
@@ -554,10 +570,17 @@ and valid_arg env a p s =
   Debug.(log_at "il.valid_arg" a.at
     (fun _ -> fmt "%s : %s" (il_arg a) (il_param p)) (Fun.const "ok")
   ) @@ fun _ ->
-  match a.it, p.it with
-  | ExpA e, ExpP (id, t) -> valid_exp env e (Subst.subst_typ s t); Subst.add_varid s id e
+  match a.it, (Subst.subst_param s p).it with
+  | ExpA e, ExpP (id, t) -> valid_exp env e t; Subst.add_varid s id e
   | TypA t, TypP id -> valid_typ env t; Subst.add_typid s id t
-  | _, _ -> error a.at "sort mismatch for argument"
+  | DefA id, DefP (id', ps', t') ->
+    let ps, t, _ = find "function" env.defs id in
+    if not (Eval.equiv_functyp (to_eval_env env) (ps, t) (ps', t')) then
+      error a.at "type mismatch in function argument";
+    Subst.add_defid s id id'
+  | _, _ ->
+    error a.at ("sort mismatch for argument, expected `" ^
+      Print.string_of_param p ^ "`, got `" ^ Print.string_of_arg a ^ "`")
 
 and valid_args env as_ ps s at : Subst.t =
   Debug.(log_if "il.valid_args" (as_ <> [] || ps <> [])
@@ -578,14 +601,24 @@ and valid_bind env b =
     env.vars <- bind "variable" env.vars id (t, dim)
   | TypB id ->
     env.typs <- bind "syntax" env.typs id ([], [])
+  | DefB (id, ps, t) ->
+    let env' = local_env env in
+    List.iter (valid_param env') ps;
+    valid_typ env' t;
+    env.defs <- bind "definition" env.defs id (ps, t, [])
 
-let valid_param env p =
+and valid_param env p =
   match p.it with
   | ExpP (id, t) ->
     valid_typ env t;
     env.vars <- bind "variable" env.vars id (t, [])
   | TypP id ->
     env.typs <- bind "syntax" env.typs id ([], [])
+  | DefP (id, ps, t) ->
+    let env' = local_env env in
+    List.iter (valid_param env') ps;
+    valid_typ env' t;
+    env.defs <- bind "definition" env.defs id (ps, t, [])
 
 let valid_inst env ps inst =
   Debug.(log_in "il.valid_inst" line);

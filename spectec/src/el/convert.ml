@@ -146,6 +146,7 @@ let rec sym_of_exp e =
   | TypE (e1, t) -> AttrG (e1, sym_of_exp (exp_of_typ t))
   | FuseE (e1, e2) -> FuseG (sym_of_exp e1, sym_of_exp e2)
   | UnparenE e1 -> UnparenG (sym_of_exp e1)
+  | ArithE e -> ArithG e
   | _ -> ArithG e
   ) $ e.at
 
@@ -159,7 +160,7 @@ let rec exp_of_sym g =
   | ParenG g1 -> ParenE (exp_of_sym g1, `Insig)
   | TupG gs -> TupE (List.map exp_of_sym gs)
   | IterG (g1, iter) -> IterE (exp_of_sym g1, iter)
-  | ArithG e -> e.it
+  | ArithG e -> ArithE e
   | AttrG (e, g2) -> TypE (e, typ_of_exp (exp_of_sym g2))
   | FuseG (g1, g2) -> FuseE (exp_of_sym g1, exp_of_sym g2)
   | UnparenG g1 -> UnparenE (exp_of_sym g1)
@@ -172,13 +173,15 @@ let exp_of_arg a =
   | ExpA e -> e
   | _ -> error a.at "malformed expression"
 
-let param_of_arg a =
+let rec param_of_arg a =
   (match !(a.it) with
   | ExpA e ->
     (match e.it with
     | TypE ({it = VarE (id, []); _}, t) -> ExpP (id, t)
     | VarE (id, args) ->
       ExpP (id, typ_of_exp (VarE (strip_var_suffix id, args) $ e.at))
+    | TypE ({it = CallE (id, as_); _}, t) ->
+      DefP (id, List.map param_of_arg as_, t)
     | _ -> ExpP ("_" $ e.at, typ_of_exp e)
     )
   | TypA {it = VarT (id, []); _} ->
@@ -187,12 +190,13 @@ let param_of_arg a =
     TypP id
   | GramA {it = AttrG ({it = VarE (id, []); _}, g); _} ->
     GramP (id, typ_of_exp (exp_of_sym g))
-  | _ -> error a.at "malformed grammar"
+  | _ -> error a.at "malformed parameter"
   ) $ a.at
 
 let arg_of_param p =
   (match p.it with
-  | ExpP (id, t) -> ExpA (TypE (VarE (id, []) $ id.at, t) $ p.at)
+  | ExpP (id, _t) -> ExpA ((*TypE ( *)VarE (id, []) $ id.at(*, t) $ p.at*))
   | TypP id -> TypA (VarT (id, []) $ id.at)
   | GramP (id, _t) -> GramA (VarG (id, []) $ id.at)
+  | DefP (id, _params, _t) -> DefA id
   ) |> ref $ p.at

@@ -871,19 +871,3 @@ $${rule+:
   Expr_const
   Expr_ok_const
 }
-
-.. _def-in_binop:
-
-$${definition-prose: in_binop}
-
-\
-
-$${definition: in_binop}
-
-.. _def-in_numtype:
-
-$${definition-prose: in_numtype}
-
-\
-
-$${definition: in_numtype}
