@@ -597,8 +597,13 @@ let translate_rulepr id exp =
       letI (rhs, callE ("eval_expr", [ lhs ])) ~at:at;
       popI (frameE (None, z));
     ]
-  | "Ref_type", [_s; ref; rt] ->
-    [ letI (rt, callE ("ref_type_of", [ ref ]) ~at:at) ~at:at ]
+  (* ".*_type" *)
+  | typing_rule_name, [_store; lhs; ty]
+  when String.ends_with ~suffix:"_type" typing_rule_name ->
+    (* TODO: Automatically remove store *)
+    (* TODO: Check condition or binding *)
+    [ letI (ty, callE (typing_rule_name, [(*store; *)lhs]) ~at:at) ~at:at ]
+  (* ".*_sub" | ".*_ok" | ".*_const" *)
   | "Reftype_sub", [_C; rt1; rt2] ->
     [ ifI (matchE (rt1, rt2) ~at:at, [], []) ~at:at ]
   | _ ->
