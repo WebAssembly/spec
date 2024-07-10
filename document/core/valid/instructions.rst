@@ -1098,7 +1098,7 @@ Memory Instructions
      \qquad
      C.\CMEMS[0] = \memtype
      \qquad
-     2^{\memarg.\ALIGN} < N/8
+     2^{\memarg.\ALIGN} \leq N/8
    }{
      C \vdashinstr \K{v128.}\LOAD{N}\K{\_lane}~\memarg~\laneidx : [\I32~\V128] \to [\V128]
    }
@@ -1122,7 +1122,7 @@ Memory Instructions
      \qquad
      C.\CMEMS[0] = \memtype
      \qquad
-     2^{\memarg.\ALIGN} < N/8
+     2^{\memarg.\ALIGN} \leq N/8
    }{
      C \vdashinstr \K{v128.}\STORE{N}\K{\_lane}~\memarg~\laneidx : [\I32~\V128] \to []
    }
