@@ -365,10 +365,19 @@ syntax relop_(Fnn) =
   | EQ | NE | LT | GT | LE | GE
 
 syntax cvtop_(numtype_1, numtype_2) hint(show cvtop_((%,%)))
-syntax cvtop_(nt_1, nt_2) =
-  | CONVERT
-  | CONVERT_SAT  -- if nt_1 = Inn /\ nt_2 = Fnn
-  | REINTERPRET  -- if $size(nt_1) = $size(nt_2)
+syntax cvtop_(Inn_1, Inn_2) =
+  | EXTEND sx hint(show %0#_#%1)  -- if $sizenn1(Inn_1) < $sizenn2(Inn_2)
+  | WRAP         -- if $sizenn1(Inn_1) > $sizenn2(Inn_2)
+syntax cvtop_(Inn_1, Fnn_2) =
+  | CONVERT sx hint(show %0#_#%1)
+  | REINTERPRET  -- if $sizenn1(Inn_1) = $sizenn2(Fnn_2)
+syntax cvtop_(Fnn_1, Inn_2) =
+  | TRUNC sx hint(show %0#_#%1)
+  | TRUNC_SAT sx hint(show %0#_#%1)
+  | REINTERPRET  -- if $sizenn1(Fnn_1) = $sizenn2(Inn_2)
+syntax cvtop_(Fnn_1, Fnn_2) =
+  | PROMOTE      -- if $sizenn1(Fnn_1) < $sizenn2(Fnn_2)
+  | DEMOTE       -- if $sizenn1(Fnn_1) > $sizenn2(Fnn_2)
 
 
 ;; Vector operators
@@ -514,9 +523,7 @@ syntax instr/num hint(desc "numeric instruction") = ...
   | BINOP numtype binop_(numtype)    hint(show %.##%)
   | TESTOP numtype testop_(numtype)  hint(show %.##%)
   | RELOP numtype relop_(numtype)    hint(show %.##%)
-  | CVTOP numtype_1 numtype_2 cvtop_(numtype_2, numtype_1) sx?  hint(show %1.%3#_#%2) hint(show %1.%3#_#%2#_#%4)
-    -- if numtype_1 =/= numtype_2
-    ;; TODO(1, rossberg): constrain sx? or move it into cvtop
+  | CVTOP numtype_1 numtype_2 cvtop_(numtype_2, numtype_1)  hint(show %1.##%3#_#%2)
   | ...
 
 syntax instr/vec hint(desc "vector instruction") = ...

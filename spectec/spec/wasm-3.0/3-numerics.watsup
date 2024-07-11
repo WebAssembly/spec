@@ -19,6 +19,7 @@ def $invsigned(N, i) = j        -- if $signed(N, j) = i
 
 ;; TODO(3, all): implement numerics internally
 
+;; TODO(2, rossberg): show as function ids, not var ids
 def $unop(numtype, unop_(numtype), num_(numtype)) : num_(numtype)*
     hint(show %2#$_(%1)#((%3)))
 def $binop(numtype, binop_(numtype), num_(numtype), num_(numtype)) : num_(numtype)*
@@ -27,8 +28,8 @@ def $testop(numtype, testop_(numtype), num_(numtype)) : num_(I32)
     hint(show %2#$_(%1)#((%3)))
 def $relop(numtype, relop_(numtype), num_(numtype), num_(numtype)) : num_(I32)
     hint(show %2#$_(%1)#(%3, %4))
-def $cvtop(numtype_1, numtype_2, cvtop_(numtype_1, numtype_2), sx?, num_(numtype_1)) : num_(numtype_2)*
-    hint(show %3#$_((%1,%2))^(%4)#((%5)))
+def $cvtop(numtype_1, numtype_2, cvtop_(numtype_1, numtype_2), num_(numtype_1)) : num_(numtype_2)*
+    hint(show %3#$_((%1,%2))#((%4)))
 
 def $wrap(M, N, iN(M)) : iN(N)                      hint(show $wrap_((%,%))#((%)))
 def $ext(M, N, sx, iN(M)) : iN(N)                   hint(show $ext_((%,%))^(%)#((%)))
@@ -166,15 +167,15 @@ def $relop(Fnn, GT, fN_1, fN_2) = $fgt($size(Fnn), fN_1, fN_2)
 def $relop(Fnn, LE, fN_1, fN_2) = $fle($size(Fnn), fN_1, fN_2)
 def $relop(Fnn, GE, fN_1, fN_2) = $fge($size(Fnn), fN_1, fN_2)
 
-def $cvtop(I32, I64, CONVERT, sx, iN) = $ext(32, 64, sx, iN)
-def $cvtop(I64, I32, CONVERT, sx?, iN) = $wrap(64, 32, iN)
-def $cvtop(Fnn, Inn, CONVERT, sx, fN) = $trunc($size(Fnn), $size(Inn), sx, fN)
-def $cvtop(Fnn, Inn, CONVERT_SAT, sx, fN) = $trunc_sat($size(Fnn), $size(Inn), sx, fN)
-def $cvtop(F32, F64, CONVERT, sx?, fN) = $promote(32, 64, fN)
-def $cvtop(F64, F32, CONVERT, sx?, fN) = $demote(64, 32, fN)
-def $cvtop(Inn, Fnn, CONVERT, sx, iN) = $convert($size(Inn), $size(Fnn), sx, iN)
-def $cvtop(Inn, Fnn, REINTERPRET, sx?, iN) = $reinterpret(Inn, Fnn, iN) -- if $size(Inn) = $size(Fnn)
-def $cvtop(Fnn, Inn, REINTERPRET, sx?, fN) = $reinterpret(Fnn, Inn, fN) -- if $size(Inn) = $size(Fnn)
+def $cvtop(Inn_1, Inn_2, EXTEND sx, iN_1) = $ext($sizenn1(Inn_1), $sizenn2(Inn_2), sx, iN_1)
+def $cvtop(Inn_1, Inn_2, WRAP, iN_1) = $wrap($sizenn1(Inn_1), $sizenn2(Inn_2), iN_1)
+def $cvtop(Fnn_1, Inn_2, TRUNC sx, fN_1) = $trunc($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)
+def $cvtop(Fnn_1, Inn_2, TRUNC_SAT sx, fN_1) = $trunc_sat($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)
+def $cvtop(Inn_1, Fnn_2, CONVERT sx, iN_1) = $convert($sizenn1(Inn_1), $sizenn2(Fnn_2), sx, iN_1)
+def $cvtop(Fnn_1, Fnn_2, PROMOTE, fN_1) = $promote($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1)
+def $cvtop(Fnn_1, Fnn_2, DEMOTE, fN_1) = $demote($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1)
+def $cvtop(Inn_1, Fnn_2, REINTERPRET, iN_1) = $reinterpret(Inn_1, Fnn_2, iN_1) -- if $sizenn1(Inn_1) = $sizenn2(Fnn_2)
+def $cvtop(Fnn_1, Inn_2, REINTERPRET, fN_1) = $reinterpret(Fnn_1, Inn_2, fN_1) -- if $sizenn1(Inn_1) = $sizenn2(Fnn_2)
 
 
 ;; Packed numbers

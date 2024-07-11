@@ -40,7 +40,7 @@ $${rule+: Instr_ok/loop}
 $${rule+: Instr_ok/if}
 
 
-$${rule-ignore: Instr_ok/cvtop-*}
+$${rule-ignore: Instr_ok/memory.grow}
 
 
 **Runtime**

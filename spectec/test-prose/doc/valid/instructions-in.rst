@@ -58,7 +58,7 @@ $${rule-prose: valid/cvtop}
 \
 
 $${rule+: 
-  Instr_ok/cvtop-*
+  Instr_ok/cvtop
 }
 
 Reference Instructions
