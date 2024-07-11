@@ -95,7 +95,7 @@ validation_of_TESTOP t testop_t
 validation_of_RELOP t relop_t
 - The instruction is valid with type ([t, t] -> [I32]).
 
-validation_of_CVTOP nt_1 nt_2 REINTERPRET ?()
+validation_of_CVTOP nt_1 nt_2 REINTERPRET
 - $size(nt_1) must be equal to $size(nt_2).
 - The instruction is valid with type ([nt_2] -> [nt_1]).
 
@@ -495,38 +495,38 @@ relop valty_u1 relop_u0 val__u3 val__u5
 13. Let fN_2 be val__u5.
 14. Return $fge($size(Fnn), fN_1, fN_2).
 
-cvtop valty_u0 valty_u1 cvtop_u5 sx_u2? val__u4
-1. If ((valty_u0 is I32) and ((valty_u1 is I64) and (cvtop_u5 is CONVERT))), then:
+cvtop valty_u0 valty_u1 cvtop_u2 val__u4
+1. If ((valty_u0 is I32) and (valty_u1 is I64)), then:
   a. Let iN be val__u4.
-  b. If sx_u2? is defined, then:
-    1) Let ?(sx) be sx_u2?.
+  b. If cvtop_u2 is of the case EXTEND, then:
+    1) Let (EXTEND sx) be cvtop_u2.
     2) Return [$ext(32, 64, sx, iN)].
-2. If ((valty_u0 is I64) and ((valty_u1 is I32) and (cvtop_u5 is CONVERT))), then:
+2. If ((valty_u0 is I64) and ((valty_u1 is I32) and (cvtop_u2 is WRAP))), then:
   a. Let iN be val__u4.
   b. Return [$wrap(64, 32, iN)].
-3. If ((cvtop_u5 is CONVERT) and the type of valty_u0 is Fnn), then:
+3. If the type of valty_u0 is Fnn, then:
   a. Let Fnn be valty_u0.
   b. If the type of valty_u1 is Inn, then:
     1) Let Inn be valty_u1.
     2) Let fN be val__u4.
-    3) If sx_u2? is defined, then:
-      a) Let ?(sx) be sx_u2?.
+    3) If cvtop_u2 is of the case TRUNC, then:
+      a) Let (TRUNC sx) be cvtop_u2.
       b) Return [$trunc($size(Fnn), $size(Inn), sx, fN)].
-4. If ((valty_u0 is F32) and ((valty_u1 is F64) and (cvtop_u5 is CONVERT))), then:
+4. If ((valty_u0 is F32) and ((valty_u1 is F64) and (cvtop_u2 is PROMOTE))), then:
   a. Let fN be val__u4.
   b. Return [$promote(32, 64, fN)].
-5. If ((valty_u0 is F64) and ((valty_u1 is F32) and (cvtop_u5 is CONVERT))), then:
+5. If ((valty_u0 is F64) and ((valty_u1 is F32) and (cvtop_u2 is DEMOTE))), then:
   a. Let fN be val__u4.
   b. Return [$demote(64, 32, fN)].
-6. If ((cvtop_u5 is CONVERT) and the type of valty_u1 is Fnn), then:
+6. If the type of valty_u1 is Fnn, then:
   a. Let Fnn be valty_u1.
   b. If the type of valty_u0 is Inn, then:
     1) Let Inn be valty_u0.
     2) Let iN be val__u4.
-    3) If sx_u2? is defined, then:
-      a) Let ?(sx) be sx_u2?.
+    3) If cvtop_u2 is of the case CONVERT, then:
+      a) Let (CONVERT sx) be cvtop_u2.
       b) Return [$convert($size(Inn), $size(Fnn), sx, iN)].
-7. Assert: Due to validation, (cvtop_u5 is REINTERPRET).
+7. Assert: Due to validation, (cvtop_u2 is REINTERPRET).
 8. If the type of valty_u1 is Fnn, then:
   a. Let Fnn be valty_u1.
   b. If the type of valty_u0 is Inn, then:
@@ -1028,13 +1028,13 @@ execution_of_RELOP t relop
 5. Let c be $relop(t, relop, c_1, c_2).
 6. Push the value (I32.CONST c) to the stack.
 
-execution_of_CVTOP t_2 t_1 cvtop sx?
+execution_of_CVTOP t_2 t_1 cvtop
 1. Assert: Due to validation, a value of value type t_1 is on the top of the stack.
 2. Pop the value (t_1.CONST c_1) from the stack.
-3. If (|$cvtop(t_1, t_2, cvtop, sx?, c_1)| is 1), then:
-  a. Let [c] be $cvtop(t_1, t_2, cvtop, sx?, c_1).
+3. If (|$cvtop(t_1, t_2, cvtop, c_1)| is 1), then:
+  a. Let [c] be $cvtop(t_1, t_2, cvtop, c_1).
   b. Push the value (t_2.CONST c) to the stack.
-4. If ($cvtop(t_1, t_2, cvtop, sx?, c_1) is []), then:
+4. If ($cvtop(t_1, t_2, cvtop, c_1) is []), then:
   a. Trap.
 
 execution_of_LOCAL.TEE x
@@ -1310,7 +1310,7 @@ validation_of_TESTOP nt testop_nt
 validation_of_RELOP nt relop_nt
 - The instruction is valid with type ([nt, nt] -> [I32]).
 
-validation_of_CVTOP nt_1 nt_2 REINTERPRET ?()
+validation_of_CVTOP nt_1 nt_2 REINTERPRET
 - $size(nt_1) must be equal to $size(nt_2).
 - The instruction is valid with type ([nt_2] -> [nt_1]).
 
@@ -1967,47 +1967,47 @@ relop numty_u1 relop_u0 num__u3 num__u5
 13. Let fN_2 be num__u5.
 14. Return $fge($size(Fnn), fN_1, fN_2).
 
-cvtop numty_u0 numty_u1 cvtop_u5 sx_u2? num__u4
-1. If ((numty_u0 is I32) and ((numty_u1 is I64) and (cvtop_u5 is CONVERT))), then:
+cvtop numty_u0 numty_u1 cvtop_u2 num__u4
+1. If ((numty_u0 is I32) and (numty_u1 is I64)), then:
   a. Let iN be num__u4.
-  b. If sx_u2? is defined, then:
-    1) Let ?(sx) be sx_u2?.
+  b. If cvtop_u2 is of the case EXTEND, then:
+    1) Let (EXTEND sx) be cvtop_u2.
     2) Return [$ext(32, 64, sx, iN)].
-2. If ((numty_u0 is I64) and ((numty_u1 is I32) and (cvtop_u5 is CONVERT))), then:
+2. If ((numty_u0 is I64) and ((numty_u1 is I32) and (cvtop_u2 is WRAP))), then:
   a. Let iN be num__u4.
   b. Return [$wrap(64, 32, iN)].
-3. If ((cvtop_u5 is CONVERT) and the type of numty_u0 is Fnn), then:
+3. If the type of numty_u0 is Fnn, then:
   a. Let Fnn be numty_u0.
   b. If the type of numty_u1 is Inn, then:
     1) Let Inn be numty_u1.
     2) Let fN be num__u4.
-    3) If sx_u2? is defined, then:
-      a) Let ?(sx) be sx_u2?.
+    3) If cvtop_u2 is of the case TRUNC, then:
+      a) Let (TRUNC sx) be cvtop_u2.
       b) Return [$trunc($size(Fnn), $size(Inn), sx, fN)].
-4. If ((cvtop_u5 is CONVERT_SAT) and the type of numty_u0 is Fnn), then:
-  a. Let Fnn be numty_u0.
-  b. If the type of numty_u1 is Inn, then:
-    1) Let Inn be numty_u1.
-    2) Let fN be num__u4.
-    3) If sx_u2? is defined, then:
-      a) Let ?(sx) be sx_u2?.
+    4) If cvtop_u2 is of the case TRUNC_SAT, then:
+      a) Let (TRUNC_SAT sx) be cvtop_u2.
       b) Return [$trunc_sat($size(Fnn), $size(Inn), sx, fN)].
-5. If ((numty_u0 is F32) and ((numty_u1 is F64) and (cvtop_u5 is CONVERT))), then:
+4. If ((numty_u0 is F32) and ((numty_u1 is F64) and (cvtop_u2 is PROMOTE))), then:
   a. Let fN be num__u4.
   b. Return [$promote(32, 64, fN)].
-6. If ((numty_u0 is F64) and ((numty_u1 is F32) and (cvtop_u5 is CONVERT))), then:
+5. If ((numty_u0 is F64) and ((numty_u1 is F32) and (cvtop_u2 is DEMOTE))), then:
   a. Let fN be num__u4.
   b. Return [$demote(64, 32, fN)].
-7. Assert: Due to validation, (cvtop_u5 is CONVERT).
+6. If the type of numty_u1 is Fnn, then:
+  a. Let Fnn be numty_u1.
+  b. If the type of numty_u0 is Inn, then:
+    1) Let Inn be numty_u0.
+    2) Let iN be num__u4.
+    3) If cvtop_u2 is of the case CONVERT, then:
+      a) Let (CONVERT sx) be cvtop_u2.
+      b) Return [$convert($size(Inn), $size(Fnn), sx, iN)].
+7. Assert: Due to validation, (cvtop_u2 is REINTERPRET).
 8. If the type of numty_u1 is Fnn, then:
   a. Let Fnn be numty_u1.
   b. If the type of numty_u0 is Inn, then:
     1) Let Inn be numty_u0.
     2) Let iN be num__u4.
-    3) If sx_u2? is defined, then:
-      a) Let ?(sx) be sx_u2?.
-      b) Return [$convert($size(Inn), $size(Fnn), sx, iN)].
-    4) If ($size(Inn) is $size(Fnn)), then:
+    3) If ($size(Inn) is $size(Fnn)), then:
       a) Return [$reinterpret(Inn, Fnn, iN)].
 9. Assert: Due to validation, the type of numty_u0 is Fnn.
 10. Let Fnn be numty_u0.
@@ -2957,13 +2957,13 @@ execution_of_RELOP nt relop
 5. Let c be $relop(nt, relop, c_1, c_2).
 6. Push the value (I32.CONST c) to the stack.
 
-execution_of_CVTOP nt_2 nt_1 cvtop sx?
+execution_of_CVTOP nt_2 nt_1 cvtop
 1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
 2. Pop the value (nt_1.CONST c_1) from the stack.
-3. If (|$cvtop(nt_1, nt_2, cvtop, sx?, c_1)| is 1), then:
-  a. Let [c] be $cvtop(nt_1, nt_2, cvtop, sx?, c_1).
+3. If (|$cvtop(nt_1, nt_2, cvtop, c_1)| is 1), then:
+  a. Let [c] be $cvtop(nt_1, nt_2, cvtop, c_1).
   b. Push the value (nt_2.CONST c) to the stack.
-4. If ($cvtop(nt_1, nt_2, cvtop, sx?, c_1) is []), then:
+4. If ($cvtop(nt_1, nt_2, cvtop, c_1) is []), then:
   a. Trap.
 
 execution_of_REF.IS_NULL
@@ -3649,14 +3649,14 @@ watsup 0.4 generator
 6-typing.watsup:691.6-691.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
 6-typing.watsup:698.6-698.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
 6-typing.watsup:702.6-702.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
-6-typing.watsup:763.6-763.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-6-typing.watsup:769.6-769.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-6-typing.watsup:787.7-787.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
-6-typing.watsup:819.6-819.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
-6-typing.watsup:848.6-848.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
-6-typing.watsup:853.6-853.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
-6-typing.watsup:990.6-990.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-6-typing.watsup:996.6-996.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:756.6-756.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
+6-typing.watsup:762.6-762.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
+6-typing.watsup:780.7-780.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
+6-typing.watsup:812.6-812.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
+6-typing.watsup:841.6-841.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
+6-typing.watsup:846.6-846.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
+6-typing.watsup:983.6-983.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:989.6-989.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 =================
  Generated prose
 =================
@@ -3806,8 +3806,7 @@ validation_of_TESTOP nt testop_nt
 validation_of_RELOP nt relop_nt
 - The instruction is valid with type ([nt, nt] ->_ [] ++ [I32]).
 
-validation_of_CVTOP nt_1 nt_2 REINTERPRET ?()
-- $size(nt_1) must be equal to $size(nt_2).
+validation_of_CVTOP nt_1 nt_2 cvtop
 - The instruction is valid with type ([nt_2] ->_ [] ++ [nt_1]).
 
 validation_of_REF.NULL ht
@@ -5452,60 +5451,67 @@ relop numty_u1 relop_u0 num__u3 num__u5
 13. Let fN_2 be num__u5.
 14. Return $fge($size(Fnn), fN_1, fN_2).
 
-cvtop numty_u0 numty_u1 cvtop_u7 sx_u2? num__u4
-1. If ((numty_u0 is I32) and ((numty_u1 is I64) and (cvtop_u7 is CONVERT))), then:
-  a. Let iN be num__u4.
-  b. If sx_u2? is defined, then:
-    1) Let ?(sx) be sx_u2?.
-    2) Return [$ext(32, 64, sx, iN)].
-2. If ((numty_u0 is I64) and ((numty_u1 is I32) and (cvtop_u7 is CONVERT))), then:
-  a. Let iN be num__u4.
-  b. Return [$wrap(64, 32, iN)].
-3. If ((cvtop_u7 is CONVERT) and the type of numty_u0 is Fnn), then:
-  a. Let Fnn be numty_u0.
+cvtop numty_u1 numty_u4 cvtop_u0 num__u3
+1. If the type of numty_u1 is Inn, then:
+  a. Let Inn_1 be numty_u1.
+  b. If the type of numty_u4 is Inn, then:
+    1) Let Inn_2 be numty_u4.
+    2) Let iN_1 be num__u3.
+    3) If cvtop_u0 is of the case EXTEND, then:
+      a) Let (EXTEND sx) be cvtop_u0.
+      b) Return [$ext($sizenn1(Inn_1), $sizenn2(Inn_2), sx, iN_1)].
+2. If ((cvtop_u0 is WRAP) and the type of numty_u1 is Inn), then:
+  a. Let Inn_1 be numty_u1.
+  b. If the type of numty_u4 is Inn, then:
+    1) Let Inn_2 be numty_u4.
+    2) Let iN_1 be num__u3.
+    3) Return [$wrap($sizenn1(Inn_1), $sizenn2(Inn_2), iN_1)].
+3. If the type of numty_u1 is Fnn, then:
+  a. Let Fnn_1 be numty_u1.
+  b. If the type of numty_u4 is Inn, then:
+    1) Let Inn_2 be numty_u4.
+    2) Let fN_1 be num__u3.
+    3) If cvtop_u0 is of the case TRUNC, then:
+      a) Let (TRUNC sx) be cvtop_u0.
+      b) Return [$trunc($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)].
+    4) If cvtop_u0 is of the case TRUNC_SAT, then:
+      a) Let (TRUNC_SAT sx) be cvtop_u0.
+      b) Return [$trunc_sat($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)].
+4. If the type of numty_u4 is Fnn, then:
+  a. Let Fnn_2 be numty_u4.
   b. If the type of numty_u1 is Inn, then:
-    1) Let Inn be numty_u1.
-    2) Let fN be num__u4.
-    3) If sx_u2? is defined, then:
-      a) Let ?(sx) be sx_u2?.
-      b) Return [$trunc($size(Fnn), $size(Inn), sx, fN)].
-4. If ((cvtop_u7 is CONVERT_SAT) and the type of numty_u0 is Fnn), then:
-  a. Let Fnn be numty_u0.
+    1) Let Inn_1 be numty_u1.
+    2) Let iN_1 be num__u3.
+    3) If cvtop_u0 is of the case CONVERT, then:
+      a) Let (CONVERT sx) be cvtop_u0.
+      b) Return [$convert($sizenn1(Inn_1), $sizenn2(Fnn_2), sx, iN_1)].
+5. If ((cvtop_u0 is PROMOTE) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn_1 be numty_u1.
+  b. If the type of numty_u4 is Fnn, then:
+    1) Let Fnn_2 be numty_u4.
+    2) Let fN_1 be num__u3.
+    3) Return [$promote($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1)].
+6. If ((cvtop_u0 is DEMOTE) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn_1 be numty_u1.
+  b. If the type of numty_u4 is Fnn, then:
+    1) Let Fnn_2 be numty_u4.
+    2) Let fN_1 be num__u3.
+    3) Return [$demote($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1)].
+7. Assert: Due to validation, (cvtop_u0 is REINTERPRET).
+8. If the type of numty_u4 is Fnn, then:
+  a. Let Fnn_2 be numty_u4.
   b. If the type of numty_u1 is Inn, then:
-    1) Let Inn be numty_u1.
-    2) Let fN be num__u4.
-    3) If sx_u2? is defined, then:
-      a) Let ?(sx) be sx_u2?.
-      b) Return [$trunc_sat($size(Fnn), $size(Inn), sx, fN)].
-5. If ((numty_u0 is F32) and ((numty_u1 is F64) and (cvtop_u7 is CONVERT))), then:
-  a. Let fN be num__u4.
-  b. Return [$promote(32, 64, fN)].
-6. If ((numty_u0 is F64) and ((numty_u1 is F32) and (cvtop_u7 is CONVERT))), then:
-  a. Let fN be num__u4.
-  b. Return [$demote(64, 32, fN)].
-7. If ((cvtop_u7 is CONVERT) and the type of numty_u1 is Fnn), then:
-  a. Let Fnn be numty_u1.
-  b. If the type of numty_u0 is Inn, then:
-    1) Let Inn be numty_u0.
-    2) Let iN be num__u4.
-    3) If sx_u2? is defined, then:
-      a) Let ?(sx) be sx_u2?.
-      b) Return [$convert($size(Inn), $size(Fnn), sx, iN)].
-8. Assert: Due to validation, (cvtop_u7 is REINTERPRET).
-9. If the type of numty_u1 is Fnn, then:
-  a. Let Fnn be numty_u1.
-  b. If the type of numty_u0 is Inn, then:
-    1) Let Inn be numty_u0.
-    2) Let iN be num__u4.
-    3) If ($size(Inn) is $size(Fnn)), then:
-      a) Return [$reinterpret(Inn, Fnn, iN)].
-10. Assert: Due to validation, the type of numty_u0 is Fnn.
-11. Let Fnn be numty_u0.
-12. Assert: Due to validation, the type of numty_u1 is Inn.
-13. Let Inn be numty_u1.
-14. Let fN be num__u4.
-15. Assert: Due to validation, ($size(Inn) is $size(Fnn)).
-16. Return [$reinterpret(Fnn, Inn, fN)].
+    1) Let Inn_1 be numty_u1.
+    2) Let iN_1 be num__u3.
+    3) If ($sizenn1(Inn_1) is $sizenn2(Fnn_2)), then:
+      a) Return [$reinterpret(Inn_1, Fnn_2, iN_1)].
+9. Assert: Due to validation, the type of numty_u1 is Fnn.
+10. Let Fnn_1 be numty_u1.
+11. Assert: Due to validation, the type of numty_u4 is Inn.
+12. Let Inn_2 be numty_u4.
+13. Let fN_1 be num__u3.
+14. Assert: Due to validation, the type of $inverse_of_sizenn2($sizenn1(Inn_1)) is Fnn.
+15. Return [$reinterpret(Fnn_1, Inn_2, fN_1)].
 
 invibytes N b*
 1. Let n be $inverse_of_ibytes(N, b*).
@@ -6587,13 +6593,13 @@ execution_of_RELOP nt relop
 5. Let c be $relop(nt, relop, c_1, c_2).
 6. Push the value (I32.CONST c) to the stack.
 
-execution_of_CVTOP nt_2 nt_1 cvtop sx?
+execution_of_CVTOP nt_2 nt_1 cvtop
 1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
 2. Pop the value (nt_1.CONST c_1) from the stack.
-3. If (|$cvtop(nt_1, nt_2, cvtop, sx?, c_1)| is 1), then:
-  a. Let [c] be $cvtop(nt_1, nt_2, cvtop, sx?, c_1).
+3. If (|$cvtop(nt_1, nt_2, cvtop, c_1)| is 1), then:
+  a. Let [c] be $cvtop(nt_1, nt_2, cvtop, c_1).
   b. Push the value (nt_2.CONST c) to the stack.
-4. If ($cvtop(nt_1, nt_2, cvtop, sx?, c_1) is []), then:
+4. If ($cvtop(nt_1, nt_2, cvtop, c_1) is []), then:
   a. Trap.
 
 execution_of_REF.I31

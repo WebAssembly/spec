@@ -199,12 +199,12 @@ rule Step_pure/relop:
 
 
 rule Step_pure/cvtop-val:
-  (CONST nt_1 c_1) (CVTOP nt_2 nt_1 cvtop sx?)  ~>  (CONST nt_2 c)
-  -- if $cvtop(nt_1, nt_2, cvtop, sx?, c_1) = c  ;; TODO
+  (CONST nt_1 c_1) (CVTOP nt_2 nt_1 cvtop)  ~>  (CONST nt_2 c)
+  -- if $cvtop(nt_1, nt_2, cvtop, c_1) = c  ;; TODO
 
 rule Step_pure/cvtop-trap:
-  (CONST nt_1 c_1) (CVTOP nt_2 nt_1 cvtop sx?)  ~>  TRAP
-  -- if $cvtop(nt_1, nt_2, cvtop, sx?, c_1) = eps  ;; TODO
+  (CONST nt_1 c_1) (CVTOP nt_2 nt_1 cvtop)  ~>  TRAP
+  -- if $cvtop(nt_1, nt_2, cvtop, c_1) = eps  ;; TODO
 
 
 ;; Reference instructions

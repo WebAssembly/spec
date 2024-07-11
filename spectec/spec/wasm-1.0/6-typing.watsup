@@ -229,8 +229,7 @@ rule Instr_ok/cvtop-reinterpret:
   -- if $size(nt_1) = $size(nt_2)
 
 rule Instr_ok/cvtop-convert:
-  C |- CVTOP nt_1 nt_2 CONVERT sx? : nt_2 -> nt_1
-  -- if sx? = eps <=> nt_1 = Inn_1 /\ nt_2 = Inn_2 /\ $size(nt_1) > $size(nt_2) \/ nt_1 = Fnn_1 /\ nt_2 = Fnn_2
+  C |- CVTOP nt_1 nt_2 cvtop : nt_2 -> nt_1
 
 
 ;; Local instructions

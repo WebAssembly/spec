@@ -27,8 +27,8 @@ def $testop(numtype, testop_(numtype), num_(numtype)) : num_(I32)
     hint(show %2#$_(%1)#((%3)))
 def $relop(numtype, relop_(numtype), num_(numtype), num_(numtype)) : num_(I32)
     hint(show %2#$_(%1)#(%3, %4))
-def $cvtop(numtype_1, numtype_2, cvtop, sx?, num_(numtype_1)) : num_(numtype_2)*
-    hint(show %3#$_((%1,%2))^(%4)#((%5)))
+def $cvtop(numtype_1, numtype_2, cvtop, num_(numtype_1)) : num_(numtype_2)*
+    hint(show %3#$_((%1,%2))#((%4)))
 
 def $wrap(M, N, iN(M)) : iN(N)                      hint(show $wrap_((%,%))#((%)))
 def $ext(M, N, sx, iN(M)) : iN(N)                   hint(show $ext_((%,%))^(%)#((%)))
@@ -162,15 +162,15 @@ def $relop(Fnn, GT, fN_1, fN_2) = $fgt($size(Fnn), fN_1, fN_2)
 def $relop(Fnn, LE, fN_1, fN_2) = $fle($size(Fnn), fN_1, fN_2)
 def $relop(Fnn, GE, fN_1, fN_2) = $fge($size(Fnn), fN_1, fN_2)
 
-def $cvtop(I32, I64, CONVERT, sx, iN) = $ext(32, 64, sx, iN)
-def $cvtop(I64, I32, CONVERT, sx?, iN) = $wrap(64, 32, iN)
-def $cvtop(Fnn, Inn, CONVERT, sx, fN) = $trunc($size(Fnn), $size(Inn), sx, fN)
-def $cvtop(Fnn, Inn, CONVERT_SAT, sx, fN) = $trunc_sat($size(Fnn), $size(Inn), sx, fN)
-def $cvtop(F32, F64, CONVERT, sx?, fN) = $promote(32, 64, fN)
-def $cvtop(F64, F32, CONVERT, sx?, fN) = $demote(64, 32, fN)
-def $cvtop(Inn, Fnn, CONVERT, sx, iN) = $convert($size(Inn), $size(Fnn), sx, iN)
-def $cvtop(Inn, Fnn, CONVERT, sx?, iN) = $reinterpret(Inn, Fnn, iN) -- if $size(Inn) = $size(Fnn)
-def $cvtop(Fnn, Inn, CONVERT, sx?, fN) = $reinterpret(Fnn, Inn, fN) -- if $size(Inn) = $size(Fnn)
+def $cvtop(I32, I64, EXTEND sx, iN) = $ext(32, 64, sx, iN)
+def $cvtop(I64, I32, WRAP, iN) = $wrap(64, 32, iN)
+def $cvtop(Fnn, Inn, TRUNC sx, fN) = $trunc($size(Fnn), $size(Inn), sx, fN)
+def $cvtop(Fnn, Inn, TRUNC_SAT sx, fN) = $trunc_sat($size(Fnn), $size(Inn), sx, fN)
+def $cvtop(F32, F64, PROMOTE, fN) = $promote(32, 64, fN)
+def $cvtop(F64, F32, DEMOTE, fN) = $demote(64, 32, fN)
+def $cvtop(Inn, Fnn, CONVERT sx, iN) = $convert($size(Inn), $size(Fnn), sx, iN)
+def $cvtop(Inn, Fnn, REINTERPRET, iN) = $reinterpret(Inn, Fnn, iN) -- if $size(Inn) = $size(Fnn)
+def $cvtop(Fnn, Inn, REINTERPRET, fN) = $reinterpret(Fnn, Inn, fN) -- if $size(Inn) = $size(Fnn)
 
 
 ;; Packed values
