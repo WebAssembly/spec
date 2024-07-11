@@ -357,7 +357,7 @@ def $free_instr(UNOP numtype unop) = $free_numtype(numtype)
 def $free_instr(BINOP numtype binop) = $free_numtype(numtype)
 def $free_instr(TESTOP numtype testop) = $free_numtype(numtype)
 def $free_instr(RELOP numtype relop) = $free_numtype(numtype)
-def $free_instr(CVTOP numtype_1 numtype_2 cvtop sx?) =
+def $free_instr(CVTOP numtype_1 numtype_2 cvtop) =
   $free_numtype(numtype_1) ++ $free_numtype(numtype_2)
 
 def $free_instr(VCONST vectype veclit) = $free_vectype(vectype)

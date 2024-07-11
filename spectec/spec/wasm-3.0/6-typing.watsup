@@ -720,15 +720,8 @@ rule Instr_ok/testop:
 rule Instr_ok/relop:
   C |- RELOP nt relop_nt : nt nt -> I32
 
-
-;; TODO(1, rossberg): move side conditions to syntax
-rule Instr_ok/cvtop-reinterpret:
-  C |- CVTOP nt_1 nt_2 REINTERPRET : nt_2 -> nt_1
-  -- if $size(nt_1) = $size(nt_2)
-
-rule Instr_ok/cvtop-convert:
-  C |- CVTOP nt_1 nt_2 CONVERT sx? : nt_2 -> nt_1
-  -- if sx? = eps <=> nt_1 = Inn_1 /\ nt_2 = Inn_2 /\ $size(nt_1) > $size(nt_2) \/ nt_1 = Fnn_1 /\ nt_2 = Fnn_2
+rule Instr_ok/cvtop:
+  C |- CVTOP nt_1 nt_2 cvtop : nt_2 -> nt_1
 
 
 ;; Reference instructions
