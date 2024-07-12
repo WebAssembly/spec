@@ -430,14 +430,14 @@ let rec translate_rhs exp =
   (* Execute instr *)
   | Il.CaseE ([{it = Atom _; _} as atom]::_, argexp) ->
       [ executeI (caseE (translate_atom atom, translate_argexp argexp)) ~at:at ]
-  | Il.CaseE ([[]; [{it = Il.Semicolon; _}]; []], {it = TupE [ se; rhs ]; _}) -> (
-    let push_instrs = translate_rhs rhs in
-    let at = se.at in
-    match se.it with
-    | Il.CaseE ([[]; [{it = Il.Semicolon; _}]; []], _)
-    | Il.VarE _ -> push_instrs
-    | Il.CallE (f, ae) -> push_instrs @ [ performI (f.it, translate_args ae) ~at:at ]
-    | _ -> error_exp se "state expression" )
+  (* Config *)
+  | _ when is_config exp ->
+    let state, rhs = split_config exp in
+    (match state.it with
+    | Il.CallE (f, ae) ->
+      translate_rhs rhs @ [ performI (f.it, translate_args ae) ~at:state.at ]
+    | _ -> translate_rhs rhs
+    )
   | _ -> error_exp exp "expression on rhs of reduction"
 
 
