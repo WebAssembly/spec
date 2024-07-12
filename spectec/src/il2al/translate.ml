@@ -25,20 +25,14 @@ let error_exp exp typ =
 
 (* Helpers *)
 
-let is_state expr = match expr.it with
-  | Il.VarE z ->
-    z.it = "z" || String.starts_with ~prefix:"z'" z.it || String.starts_with ~prefix:"z_" z.it
+let check_type_of_exp (ty: string) (exp: Il.exp) =
+  match exp.note.it with
+  | Il.VarT (id, []) when id.it = ty -> true
   | _ -> false
 
-let is_store expr = match expr.it with
-  | Il.VarE s ->
-    s.it = "s" || String.starts_with ~prefix:"s'" s.it || String.starts_with ~prefix:"s_" s.it
-  | _ -> false
-
-let is_frame expr = match expr.it with
-  | Il.VarE f ->
-    f.it = "f" || String.starts_with ~prefix:"f'" f.it || String.starts_with ~prefix:"f_" f.it
-  | _ -> false
+let is_state = check_type_of_exp "state"
+let is_store = check_type_of_exp "store"
+let is_frame = check_type_of_exp "frame"
 
 let is_list expr = match expr.it with
   | Il.CatE _ | Il.ListE _ -> true
@@ -594,12 +588,6 @@ and translate_letpr lhs rhs ids cont =
           letI (varE s ~at:lhs_at, rhs) ~at:at :: cont,
           [] )
     ]
-  | VarE s when s = "f" || String.starts_with ~prefix:"f_" s ->
-    letI (lhs, rhs) ~at:at :: cont
-  | VarE s when s = "s" || String.starts_with ~prefix:"s'" s -> (* HARDCODE: hide state *)
-    ( match rhs.it with
-    | CallE (func, args) -> performI (func, args) ~at:rhs_at :: cont
-    | _ -> letI (lhs, rhs) ~at:at :: cont )
   | _ -> letI (lhs, rhs) ~at:at :: cont
 
 (* HARDCODE: Translate each RulePr manually based on their names *)

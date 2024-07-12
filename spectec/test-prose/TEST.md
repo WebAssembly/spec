@@ -16,8 +16,6 @@ watsup 0.4 generator
 == Running pass animate...
 == IL Validation after pass animate...
 == Translating to AL...
-8-reduction.watsup:159.12-159.36: translate_rulepr: Yet `(`%;%`_config(z, (instr : instr <: admininstr)*{instr : instr}), `%;%`_config(z', (instr' : instr <: admininstr)*{instr' : instr}))`
-8-reduction.watsup:163.12-163.44: translate_rulepr: Yet `(`%;%`_config(`%;%`_state(s, f'), (instr : instr <: admininstr)*{instr : instr}), `%;%`_config(`%;%`_state(s', f'), (instr' : instr <: admininstr)*{instr' : instr}))`
 == Prose Generation...
 =================
  Generated prose
@@ -1128,18 +1126,7 @@ execution_of_MEMORY.SIZE
 3. Push the value (I32.CONST n) to the stack.
 
 execution_of_CTXT
-1. Pop all values val* from the top of the stack.
-2. YetI: TODO: translate_context.
-3. If admin_u1 is of the case LABEL_, then:
-  a. Let (LABEL_ n instr_0* instr*) be admin_u1.
-  b. YetI: TODO: translate_rulepr Step.
-  c. Let L be the label_n{instr_0*}.
-  d. Enter instr'* with label L.
-4. YetI: TODO: translate_rulepr Step.
-5. If admin_u1 is of the case FRAME_, then:
-  a. Let (FRAME_ n y_0 instr*) be admin_u1.
-  b. If (y_0 is f'), then:
-    1) Execute the instruction (FRAME_ n f' instr'*).
+1. YetI: TODO: It is likely that the value stack of two rules are different.
 
 execution_of_LOCAL.SET x
 1. Let z be the current state.
@@ -1226,8 +1213,6 @@ watsup 0.4 generator
 == Running pass animate...
 == IL Validation after pass animate...
 == Translating to AL...
-8-reduction.watsup:165.12-165.36: translate_rulepr: Yet `(`%;%`_config(z, (instr : instr <: admininstr)*{instr : instr}), `%;%`_config(z', (instr' : instr <: admininstr)*{instr' : instr}))`
-8-reduction.watsup:169.12-169.44: translate_rulepr: Yet `(`%;%`_config(`%;%`_state(s, f'), (instr : instr <: admininstr)*{instr : instr}), `%;%`_config(`%;%`_state(s', f'), (instr' : instr <: admininstr)*{instr' : instr}))`
 == Prose Generation...
 =================
  Generated prose
@@ -3480,18 +3465,7 @@ execution_of_MEMORY.INIT x
   g. Execute the instruction (MEMORY.INIT x).
 
 execution_of_CTXT
-1. Pop all values val* from the top of the stack.
-2. YetI: TODO: translate_context.
-3. If admin_u1 is of the case LABEL_, then:
-  a. Let (LABEL_ n instr_0* instr*) be admin_u1.
-  b. YetI: TODO: translate_rulepr Step.
-  c. Let L be the label_n{instr_0*}.
-  d. Enter instr'* with label L.
-4. YetI: TODO: translate_rulepr Step.
-5. If admin_u1 is of the case FRAME_, then:
-  a. Let (FRAME_ n y_0 instr*) be admin_u1.
-  b. If (y_0 is f'), then:
-    1) Execute the instruction (FRAME_ n f' instr'*).
+1. YetI: TODO: It is likely that the value stack of two rules are different.
 
 execution_of_LOCAL.SET x
 1. Let z be the current state.
@@ -3635,8 +3609,6 @@ watsup 0.4 generator
 == Running pass animate...
 == IL Validation after pass animate...
 == Translating to AL...
-8-reduction.watsup:227.12-227.36: translate_rulepr: Yet `(`%;%`_config(z, instr*{instr : instr}), `%;%`_config(z', instr'*{instr' : instr}))`
-8-reduction.watsup:231.12-231.44: translate_rulepr: Yet `(`%;%`_config(`%;%`_state(s, f'), instr*{instr : instr}), `%;%`_config(`%;%`_state(s', f'), instr'*{instr' : instr}))`
 == Prose Generation...
 6-typing.watsup:627.7-627.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0)`
 6-typing.watsup:628.6-628.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l'!`%`_labelidx.0]!`%`_resulttype.0)`
@@ -7542,18 +7514,7 @@ execution_of_MEMORY.INIT x y
   g. Execute the instruction (MEMORY.INIT x y).
 
 execution_of_CTXT
-1. Pop all values val* from the top of the stack.
-2. YetI: TODO: translate_context.
-3. If instr_u1 is of the case LABEL_, then:
-  a. Let (LABEL_ n instr_0* instr*) be instr_u1.
-  b. YetI: TODO: translate_rulepr Step.
-  c. Let L be the label_n{instr_0*}.
-  d. Enter instr'* with label L.
-4. YetI: TODO: translate_rulepr Step.
-5. If instr_u1 is of the case FRAME_, then:
-  a. Let (FRAME_ n y_0 instr*) be instr_u1.
-  b. If (y_0 is f'), then:
-    1) Execute the instruction (FRAME_ n f' instr'*).
+1. YetI: TODO: It is likely that the value stack of two rules are different.
 
 execution_of_STRUCT.NEW x
 1. Let z be the current state.
