@@ -979,8 +979,8 @@ execution_of_FRAME_
 execution_of_RETURN
 1. Pop all values val* from the top of the stack.
 2. If a frame is now on the top of the stack, then:
-  a. Let F be the current frame.
-  b. Let n be the arity of F.
+  a. Let f be the current frame.
+  b. Let n be the arity of f.
   c. Pop the current frame from the stack.
   d. Let val'* ++ val^n be val*.
   e. Push the values val^n to the stack.
@@ -2895,8 +2895,8 @@ execution_of_FRAME_
 execution_of_RETURN
 1. Pop all values val* from the top of the stack.
 2. If a frame is now on the top of the stack, then:
-  a. Let F be the current frame.
-  b. Let n be the arity of F.
+  a. Let f be the current frame.
+  b. Let n be the arity of f.
   c. Pop the current frame from the stack.
   d. Let val'* ++ val^n be val*.
   e. Push the values val^n to the stack.
@@ -6077,10 +6077,12 @@ with_data x b*
 2. Replace s.DATAS[f.MODULE.DATAS[x]].BYTES with b*.
 
 with_struct a i fv
-1. Replace s.STRUCTS[a].FIELDS[i] with fv.
+1. Let f be the current frame.
+2. Replace s.STRUCTS[a].FIELDS[i] with fv.
 
 with_array a i fv
-1. Replace s.ARRAYS[a].FIELDS[i] with fv.
+1. Let f be the current frame.
+2. Replace s.ARRAYS[a].FIELDS[i] with fv.
 
 ext_structinst si*
 1. Let f be the current frame.
@@ -6518,8 +6520,8 @@ execution_of_FRAME_
 execution_of_RETURN
 1. Pop all values val* from the top of the stack.
 2. If a frame is now on the top of the stack, then:
-  a. Let F be the current frame.
-  b. Let n be the arity of F.
+  a. Let f be the current frame.
+  b. Let n be the arity of f.
   c. Pop the current frame from the stack.
   d. Let val'* ++ val^n be val*.
   e. Push the values val^n to the stack.
