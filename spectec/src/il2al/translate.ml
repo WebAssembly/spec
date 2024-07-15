@@ -702,8 +702,7 @@ let translate_helper partial_funcs def =
     in
     let blocks = List.map (translate_helper_body name) unified_clauses in
     let body =
-      blocks
-      |> Transpile.merge_blocks
+      letI (varE "f", getCurFrameE ()) :: Transpile.merge_blocks blocks
       |> Transpile.enhance_readability
       |> (if List.mem id partial_funcs then Fun.id else Transpile.ensure_return)
       |> Transpile.flatten_if in
@@ -843,8 +842,8 @@ let translate_context ctx vs =
       ]
     | Il.CaseE ([{it = Il.Atom "FRAME_"; _} as atom]::_, { it = Il.TupE [ n; _f; _hole ]; _ }) ->
       [
-        letI (varE "F", getCurFrameE ()) ~at:at;
-        letI (translate_exp n, arityE (varE "F")) ~at:at;
+        letI (varE "f", getCurFrameE ()) ~at:at;
+        letI (translate_exp n, arityE (varE "f")) ~at:at;
         exitI (translate_atom atom) ~at:at
       ]
     | _ -> [ yetI "TODO: translate_context" ~at:at ]
