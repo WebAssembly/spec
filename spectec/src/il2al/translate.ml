@@ -95,7 +95,7 @@ let wrap typ e = e $$ no_region % typ
 let top = Il.VarT ("TOP" $ no_region, []) $ no_region
 let hole = Il.TextE "_" |> wrap top
 
-(* `Il.atom` -> `atom` *) 
+(* `Il.atom` -> `atom` *)
 let translate_atom atom = atom.it, atom.note.Il.Atom.def
 
 (* `Il.iter` -> `iter` *)
@@ -751,8 +751,8 @@ let translate_helpers il =
 
 let rec kind_of_context e =
   match e.it with
-  | Il.CaseE ([{it = Il.Atom "FRAME_"; _} as atom]::_, _) -> translate_atom atom 
-  | Il.CaseE ([{it = Il.Atom "LABEL_"; _} as atom]::_, _) -> translate_atom atom 
+  | Il.CaseE ([{it = Il.Atom "FRAME_"; _} as atom]::_, _) -> translate_atom atom
+  | Il.CaseE ([{it = Il.Atom "LABEL_"; _} as atom]::_, _) -> translate_atom atom
   | Il.CaseE ([[]; [{it = Il.Semicolon; _}]; []], e')
   | Il.ListE [ e' ]
   | Il.TupE [_ (* z *); e'] -> kind_of_context e'
