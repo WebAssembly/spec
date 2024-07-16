@@ -152,7 +152,6 @@ let pack_ok_rule vrule =
       (Print.string_of_exp exp
       |> Printf.sprintf "exp `%s` cannot be a rule for *_ok relation")
 
-(*
 let pack_match_rule vrule =
   match vrule.it with
   | Ast.RuleD (_, tenv, _, exp, prems) ->
@@ -162,7 +161,6 @@ let pack_match_rule vrule =
     | _ -> error exp.at
       (Print.string_of_exp exp
       |> Printf.sprintf "exp `%s` cannot be a rule for *_sub relation")
-*)
 
 let pack_vrule vrule =
   match vrule.it with
@@ -217,28 +215,27 @@ let is_match_rel def =
   match def.it with
   | Ast.RelD (_, mixop, _, _) -> Mixop.eq pattern mixop
   | _ -> false
-(*
 let prose_of_match_rule rule =
   let (e1, e2, prems, _) = pack_match_rule rule in
   let tmp = Print.string_of_typ e1.note in
-  let kind = extract_desc e.note in
+  let kind = extract_desc e1.note in
 
   (* name *)
-  let name = El.Atom.Atom tmp, tmp in (* TODO *)
-  (* params *)
-  let params = [ exp_to_expr e1 ] in
-  (* body *)
-  let body = (List.concat_map prem_to_instrs prems) @ [ IsValidI (kind, None) ] in
+  let name = tmp in
+  (* expr *)
+  let expr = exp_to_expr e1 in
+  (* concl *)
+  let concl = MatchesI (kind, exp_to_expr e2) in
+  (* prems *)
+  let prems = (List.concat_map prem_to_instrs prems) in
 
-  Pred (name, params, body)
-let prose_of_match_rel =
+  Iff (name, expr, concl, prems)
+let prose_of_match_rel def =
   match def.it with
   | Ast.RelD (_, _, _, [rule]) -> prose_of_match_rule rule
   | Ast.RelD (id, _, _, _) -> Pred ((Atom id.it, id.it), [], [ YetI "TODO: Match relation with Multiple rules" ])
   | _ -> assert false
 let prose_of_match_rels = List.map prose_of_match_rel
-*)
-let prose_of_match_rels _ = []
 
 (** 3. C |- instr : type **)
 let is_instr_type_rel def =
@@ -257,7 +254,10 @@ let is_other_rel def =
   match def.it with
   | Ast.RelD _ -> true
   | _ -> false
-let prose_of_other_rels _il = []
+let prose_of_other_rels rels = List.iter (fun rel -> match rel.it with
+  | Ast.RelD (id, _, _, _) -> print_endline id.it
+  | _ -> ()) rels;
+  []
 
 (** Classify each relations into each category based on its shape **)
 let classify_rels () =

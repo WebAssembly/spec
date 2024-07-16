@@ -17,7 +17,28 @@ watsup 0.4 generator
 == IL Validation after pass animate...
 == Translating to AL...
 == Prose Generation...
-6-typing.watsup:356.10-356.20: prem_to_instrs: Yet `if (x!`%`_idx.0 < |C.FUNCS_context|)`
+Limits_ok
+Functype_ok
+Globaltype_ok
+Tabletype_ok
+Memtype_ok
+Externtype_ok
+Limits_sub
+Functype_sub
+Globaltype_sub
+Tabletype_sub
+Memtype_sub
+Externtype_sub
+Instr_const
+Expr_const
+Expr_ok_const
+Type_ok
+Module_ok
+Step_pure
+Step_read
+Step
+Steps
+Eval_expr
 6-typing.watsup:355.6-355.42: prem_to_instrs: Yet `Expr_ok_const: `%|-%:%CONST`(C, expr, ?(I32_valtype))`
 6-typing.watsup:356.9-356.26: prem_to_instrs: Yet `if (C.FUNCS_context[x!`%`_idx.0] = ft)`
 6-typing.watsup:362.6-362.42: prem_to_instrs: Yet `Expr_ok_const: `%|-%:%CONST`(C, expr, ?(I32_valtype))`
@@ -27,7 +48,8 @@ watsup 0.4 generator
 validation_of_elem (ELEM expr x*)
 - |C.TABLES| must be greater than 0.
 - |x*| must be equal to |ft*|.
-- Yet: TODO: prem_to_intrs iter
+- For all x in x*,
+  - |C.FUNCS| must be greater than x.
 - C.TABLES[0] must be equal to lim.
 - Yet: Expr_ok_const: `%|-%:%CONST`(C, expr, ?(I32_valtype))
 - Yet: TODO: prem_to_intrs iter
@@ -1249,6 +1271,30 @@ watsup 0.4 generator
 == IL Validation after pass animate...
 == Translating to AL...
 == Prose Generation...
+Limits_ok
+Functype_ok
+Globaltype_ok
+Tabletype_ok
+Memtype_ok
+Externtype_ok
+Valtype_sub
+Resulttype_sub
+Limits_sub
+Functype_sub
+Globaltype_sub
+Tabletype_sub
+Memtype_sub
+Externtype_sub
+Instr_const
+Expr_const
+Expr_ok_const
+Type_ok
+Module_ok
+Step_pure
+Step_read
+Step
+Steps
+Eval_expr
 =================
  Generated prose
 =================
@@ -3669,17 +3715,32 @@ watsup 0.4 generator
 == IL Validation after pass animate...
 == Translating to AL...
 == Prose Generation...
-6-typing.watsup:627.7-627.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0)`
-6-typing.watsup:628.6-628.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l'!`%`_labelidx.0]!`%`_resulttype.0)`
+Expand
+Instr_const
+Expr_const
+Expr_ok_const
+Export_ok
+Module_ok
+Step_pure
+Step_read
+Step
+Steps
+Eval_expr
+NotationTypingPremise
+NotationTypingPremisedots
+NotationTypingScheme
+NotationReduct
+6-typing.watsup:627.7-627.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t*{t : valtype}), C.LABELS_context[l!`%`_labelidx.0])`
+6-typing.watsup:628.6-628.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t*{t : valtype}), C.LABELS_context[l'!`%`_labelidx.0])`
 6-typing.watsup:645.6-645.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 6-typing.watsup:646.6-646.34: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt)`
 6-typing.watsup:653.6-653.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 6-typing.watsup:654.6-654.49: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, $diffrt(rt_1, rt_2), rt)`
 6-typing.watsup:670.6-670.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
-6-typing.watsup:683.6-683.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
-6-typing.watsup:691.6-691.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+6-typing.watsup:683.6-683.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_2*{t_2 : valtype}), `%`_resulttype(t'_2*{t'_2 : valtype}))`
+6-typing.watsup:691.6-691.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_2*{t_2 : valtype}), `%`_resulttype(t'_2*{t'_2 : valtype}))`
 6-typing.watsup:698.6-698.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
-6-typing.watsup:702.6-702.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+6-typing.watsup:702.6-702.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_2*{t_2 : valtype}), `%`_resulttype(t'_2*{t'_2 : valtype}))`
 6-typing.watsup:756.6-756.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
 6-typing.watsup:762.6-762.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
 6-typing.watsup:780.7-780.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
@@ -3688,7 +3749,16 @@ watsup 0.4 generator
 6-typing.watsup:846.6-846.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
 6-typing.watsup:983.6-983.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 6-typing.watsup:989.6-989.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-6-typing.watsup:119.10-119.21: prem_to_instrs: Yet `if (x!`%`_idx.0 < |C.LOCALS_context|)`
+6-typing.watsup:396.7-396.35: prem_to_instrs: Yet `Valtype_sub: `%|-%<:%`(C, t_1, t_2)`
+6-typing.watsup:477.6-477.41: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_21*{t_21 : valtype}), `%`_resulttype(t_11*{t_11 : valtype}))`
+6-typing.watsup:478.6-478.41: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_12*{t_12 : valtype}), `%`_resulttype(t_22*{t_22 : valtype}))`
+6-typing.watsup:400.6-400.41: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_21*{t_21 : valtype}), `%`_resulttype(t_11*{t_11 : valtype}))`
+6-typing.watsup:401.6-401.41: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_12*{t_12 : valtype}), `%`_resulttype(t_22*{t_22 : valtype}))`
+6-typing.watsup:403.7-403.29: prem_to_instrs: Yet `if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(SET_init, t))`
+6-typing.watsup:491.6-491.43: prem_to_instrs: Yet `Limits_sub: `%|-%<:%`(C, limits_1, limits_2)`
+6-typing.watsup:492.6-492.46: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, reftype_1, reftype_2)`
+6-typing.watsup:493.6-493.46: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, reftype_2, reftype_1)`
+6-typing.watsup:497.6-497.43: prem_to_instrs: Yet `Limits_sub: `%|-%<:%`(C, limits_1, limits_2)`
 6-typing.watsup:119.7-119.27: prem_to_instrs: Yet `if (C.LOCALS_context[x!`%`_idx.0] = lct)`
 6-typing.watsup:1250.6-1250.45: prem_to_instrs: Yet `Expand: `%~~%`(C.FUNCS_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype([]), `%`_resulttype([]))))`
 =================
@@ -3717,7 +3787,8 @@ validation_of_resulttype t*
 
 validation_of_instrtype (t_1* ->_ x* ++ t_2*)
 - |x*| must be equal to |lct*|.
-- Yet: TODO: prem_to_intrs iter
+- For all x in x*,
+  - |C.LOCALS| must be greater than x.
 - Under the context C, t_1* must be valid.
 - Under the context C, t_2* must be valid.
 - Yet: TODO: prem_to_intrs iter
@@ -3767,6 +3838,77 @@ validation_of_start (START x)
 - |C.FUNCS| must be greater than x.
 - Yet: Expand: `%~~%`(C.FUNCS_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype([]), `%`_resulttype([]))))
 - The start function is valid.
+
+validation_of_packtype packtype
+- The packed type matches the packed type packtype.
+
+validation_of_numtype numtype
+- The number type matches the number type numtype.
+
+validation_of_Deftype_sub
+- Yet: TODO: Match relation with Multiple rules
+
+validation_of_Heaptype_sub
+- Yet: TODO: Match relation with Multiple rules
+
+validation_of_Reftype_sub
+- Yet: TODO: Match relation with Multiple rules
+
+validation_of_vectype vectype
+- The vector type matches the vector type vectype.
+
+validation_of_Valtype_sub
+- Yet: TODO: Match relation with Multiple rules
+
+validation_of_Storagetype_sub
+- Yet: TODO: Match relation with Multiple rules
+
+validation_of_Fieldtype_sub
+- Yet: TODO: Match relation with Multiple rules
+
+validation_of_resulttype t_1*
+- The result type matches the result type t_2* if and only if:
+  - |t_2*| must be equal to |t_1*|.
+  - Yet: TODO: prem_to_intrs iter
+
+validation_of_functype (t_11* -> t_12*)
+- The function type matches the function type (t_21* -> t_22*) if and only if:
+  - Yet: TODO: prem_to_instrs rule_sub
+  - Yet: TODO: prem_to_instrs rule_sub
+
+validation_of_Comptype_sub
+- Yet: TODO: Match relation with Multiple rules
+
+validation_of_instrtype (t_11* ->_ x_1* ++ t_12*)
+- The instruction type matches the instruction type (t_21* ->_ x_2* ++ t_22*) if and only if:
+  - |x*| must be equal to |t*|.
+  - For all x in x*,
+    - |C.LOCALS| must be greater than x.
+  - Yet: TODO: prem_to_instrs rule_sub
+  - Yet: TODO: prem_to_instrs rule_sub
+  - x* must be equal to $setminus(x_2*, x_1*).
+  - Yet: TODO: prem_to_intrs iter
+
+validation_of_limits (n_1, m_1)
+- The limits matches the limits (n_2, m_2) if and only if:
+  - n_1 must be greater than or equal to n_2.
+  - m_1 must be less than or equal to m_2.
+
+validation_of_Globaltype_sub
+- Yet: TODO: Match relation with Multiple rules
+
+validation_of_tabletype (limits_1, reftype_1)
+- The table type matches the table type (limits_2, reftype_2) if and only if:
+  - Yet: TODO: prem_to_instrs rule_sub
+  - Yet: TODO: prem_to_instrs rule_sub
+  - Yet: TODO: prem_to_instrs rule_sub
+
+validation_of_memtype (PAGE limits_1)
+- The memory type matches the memory type (PAGE limits_2) if and only if:
+  - Yet: TODO: prem_to_instrs rule_sub
+
+validation_of_Externtype_sub
+- Yet: TODO: Match relation with Multiple rules
 
 validation_of_NOP
 - The instruction is valid with type ([] ->_ [] ++ []).

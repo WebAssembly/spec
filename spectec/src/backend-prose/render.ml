@@ -478,6 +478,11 @@ let rec render_prose_instr env depth = function
     sprintf "* The %s is valid%s."
       kind
       (render_opt " with type " (render_expr env) "" e)
+  | MatchesI (kind, e) ->
+    sprintf "* The %s matches the %s %s."
+      kind
+      kind
+      (render_expr env e)
   | IfI (c, is) ->
     sprintf "* If %s,%s"
       (render_expr env c)
@@ -675,6 +680,7 @@ let render_func env fname params instrs =
 let render_def env = function
   | Pred (name, params, instrs) ->
     "\n" ^ render_pred env name params instrs ^ "\n\n"
+  | Iff _ -> "TODO: render_iff"
   | Algo algo -> (match algo.it with
     | Al.Ast.RuleA (name, params, instrs) ->
       "\n" ^ render_rule env name params instrs ^ "\n\n"

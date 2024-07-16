@@ -11,6 +11,7 @@ type instr =
 | MustValidI of Al.Ast.expr * Al.Ast.expr * Al.Ast.expr option
 | MustMatchI of Al.Ast.expr * Al.Ast.expr
 | IsValidI of string * Al.Ast.expr option
+| MatchesI of string * Al.Ast.expr
 | IfI of Al.Ast.expr * instr list
 | ForallI of Al.Ast.expr * Al.Ast.expr * instr list
 | EquivI of Al.Ast.expr * Al.Ast.expr
@@ -18,7 +19,8 @@ type instr =
 
 (* TODO: perhaps rename to avoid name clash *)
 type def =
-| Pred of Al.Ast.atom * Al.Ast.expr list * instr list
+| Pred of Al.Ast.atom * Al.Ast.expr list * instr list (* TODO : Abandon Pred, and use Iff? *)
+| Iff of string * Al.Ast.expr * instr * instr list
 | Algo of Al.Ast.algorithm
 
 type prose = def list

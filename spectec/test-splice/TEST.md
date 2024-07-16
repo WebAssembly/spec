@@ -11,17 +11,32 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup -l --splice-latex -p spe
 == IL Validation after pass animate...
 == Translating to AL...
 == Prose Generation...
-../spec/wasm-3.0/6-typing.watsup:627.7-627.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0)`
-../spec/wasm-3.0/6-typing.watsup:628.6-628.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l'!`%`_labelidx.0]!`%`_resulttype.0)`
+Expand
+Instr_const
+Expr_const
+Expr_ok_const
+Export_ok
+Module_ok
+Step_pure
+Step_read
+Step
+Steps
+Eval_expr
+NotationTypingPremise
+NotationTypingPremisedots
+NotationTypingScheme
+NotationReduct
+../spec/wasm-3.0/6-typing.watsup:627.7-627.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t*{t : valtype}), C.LABELS_context[l!`%`_labelidx.0])`
+../spec/wasm-3.0/6-typing.watsup:628.6-628.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t*{t : valtype}), C.LABELS_context[l'!`%`_labelidx.0])`
 ../spec/wasm-3.0/6-typing.watsup:645.6-645.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 ../spec/wasm-3.0/6-typing.watsup:646.6-646.34: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt)`
 ../spec/wasm-3.0/6-typing.watsup:653.6-653.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 ../spec/wasm-3.0/6-typing.watsup:654.6-654.49: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, $diffrt(rt_1, rt_2), rt)`
 ../spec/wasm-3.0/6-typing.watsup:670.6-670.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
-../spec/wasm-3.0/6-typing.watsup:683.6-683.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
-../spec/wasm-3.0/6-typing.watsup:691.6-691.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+../spec/wasm-3.0/6-typing.watsup:683.6-683.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_2*{t_2 : valtype}), `%`_resulttype(t'_2*{t'_2 : valtype}))`
+../spec/wasm-3.0/6-typing.watsup:691.6-691.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_2*{t_2 : valtype}), `%`_resulttype(t'_2*{t'_2 : valtype}))`
 ../spec/wasm-3.0/6-typing.watsup:698.6-698.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
-../spec/wasm-3.0/6-typing.watsup:702.6-702.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+../spec/wasm-3.0/6-typing.watsup:702.6-702.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_2*{t_2 : valtype}), `%`_resulttype(t'_2*{t'_2 : valtype}))`
 ../spec/wasm-3.0/6-typing.watsup:756.6-756.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
 ../spec/wasm-3.0/6-typing.watsup:762.6-762.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
 ../spec/wasm-3.0/6-typing.watsup:780.7-780.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
@@ -30,7 +45,16 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup -l --splice-latex -p spe
 ../spec/wasm-3.0/6-typing.watsup:846.6-846.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
 ../spec/wasm-3.0/6-typing.watsup:983.6-983.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 ../spec/wasm-3.0/6-typing.watsup:989.6-989.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-../spec/wasm-3.0/6-typing.watsup:119.10-119.21: prem_to_instrs: Yet `if (x!`%`_idx.0 < |C.LOCALS_context|)`
+../spec/wasm-3.0/6-typing.watsup:396.7-396.35: prem_to_instrs: Yet `Valtype_sub: `%|-%<:%`(C, t_1, t_2)`
+../spec/wasm-3.0/6-typing.watsup:477.6-477.41: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_21*{t_21 : valtype}), `%`_resulttype(t_11*{t_11 : valtype}))`
+../spec/wasm-3.0/6-typing.watsup:478.6-478.41: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_12*{t_12 : valtype}), `%`_resulttype(t_22*{t_22 : valtype}))`
+../spec/wasm-3.0/6-typing.watsup:400.6-400.41: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_21*{t_21 : valtype}), `%`_resulttype(t_11*{t_11 : valtype}))`
+../spec/wasm-3.0/6-typing.watsup:401.6-401.41: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_12*{t_12 : valtype}), `%`_resulttype(t_22*{t_22 : valtype}))`
+../spec/wasm-3.0/6-typing.watsup:403.7-403.29: prem_to_instrs: Yet `if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(SET_init, t))`
+../spec/wasm-3.0/6-typing.watsup:491.6-491.43: prem_to_instrs: Yet `Limits_sub: `%|-%<:%`(C, limits_1, limits_2)`
+../spec/wasm-3.0/6-typing.watsup:492.6-492.46: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, reftype_1, reftype_2)`
+../spec/wasm-3.0/6-typing.watsup:493.6-493.46: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, reftype_2, reftype_1)`
+../spec/wasm-3.0/6-typing.watsup:497.6-497.43: prem_to_instrs: Yet `Limits_sub: `%|-%<:%`(C, limits_1, limits_2)`
 ../spec/wasm-3.0/6-typing.watsup:119.7-119.27: prem_to_instrs: Yet `if (C.LOCALS_context[x!`%`_idx.0] = lct)`
 ../spec/wasm-3.0/6-typing.watsup:1250.6-1250.45: prem_to_instrs: Yet `Expand: `%~~%`(C.FUNCS_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype([]), `%`_resulttype([]))))`
 == Splicing...
@@ -1665,6 +1689,15 @@ warning: rule prose `valid/select` was never spliced
 warning: rule prose `valid/drop` was never spliced
 warning: rule prose `valid/unreachable` was never spliced
 warning: rule prose `valid/nop` was never spliced
+warning: rule prose `valid/externtype_sub` was never spliced
+warning: rule prose `valid/globaltype_sub` was never spliced
+warning: rule prose `valid/comptype_sub` was never spliced
+warning: rule prose `valid/fieldtype_sub` was never spliced
+warning: rule prose `valid/storagetype_sub` was never spliced
+warning: rule prose `valid/valtype_sub` was never spliced
+warning: rule prose `valid/reftype_sub` was never spliced
+warning: rule prose `valid/heaptype_sub` was never spliced
+warning: rule prose `valid/deftype_sub` was never spliced
 warning: rule prose `valid/start` was never spliced
 warning: rule prose `valid/externtype_ok` was never spliced
 warning: rule prose `valid/memtype` was never spliced

@@ -58,6 +58,11 @@ let rec string_of_instr = function
       sprintf "%s The %s is valid%s." (indent ())
         kind
         (string_of_opt " with type " string_of_expr "" e_opt)
+  | MatchesI (kind, e) ->
+      sprintf "%s The %s matches the %s %s." (indent ())
+        kind
+        kind
+        (string_of_expr e)
   | IfI (c, is) ->
       sprintf "%s If %s, \n%s" (indent ())
         (string_of_expr c)
@@ -84,6 +89,18 @@ let string_of_def = function
     "validation_of_" ^ string_of_atom a
     ^ string_of_list string_of_expr " " " " "\n" params
     ^ string_of_list string_of_instr "" "\n" "\n" instrs
+| Iff (name, e, concl, []) ->
+    "validation_of_" ^ name
+    ^ " " ^ string_of_expr e ^ "\n"
+    ^ string_of_instr concl ^ "\n"
+| Iff (name, e, concl, prems) ->
+    let concl_str = string_of_instr concl in
+    let drop_last x = String.sub x 0 (String.length x - 1) in
+    "validation_of_" ^ name
+    ^ " " ^ string_of_expr e ^ "\n"
+    ^ drop_last concl_str
+    ^ " if and only if:\n"
+    ^ string_of_list indented_string_of_instr "" "\n" "\n" prems
 | Algo algo -> string_of_algorithm algo
 
 let string_of_prose prose = List.map string_of_def prose |> String.concat "\n"
