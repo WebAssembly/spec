@@ -41,6 +41,10 @@ let rec eq_expr e1 e2 =
   | CallE (i1, el1), CallE (i2, el2) ->
       i1 = i2 &&
       eq_exprs el1 el2
+  | InvCallE (i1, nl1, el1), InvCallE (i2, nl2, el2) ->
+      i1 = i2 &&
+      List.for_all2 (=) nl1 nl2 &&
+      eq_exprs el1 el2
   | IterE (e1, il1, it1), IterE (e2, il2, it2) ->
       eq_expr e1 e2 &&
       il1 = il2 &&

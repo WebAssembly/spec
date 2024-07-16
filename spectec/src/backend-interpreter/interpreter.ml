@@ -161,6 +161,13 @@ and eval_expr env expr =
     | Some v -> v
     | _ -> raise (Exception.MissingReturnValue fname)
     )
+  | InvCallE (fname, _, el) ->
+    (* TODO: refactor numerics function name *)
+    let args = List.map (eval_expr env) el in
+    (match call_func ("inverse_of_"^fname) args  with
+    | Some v -> v
+    | _ -> raise (Exception.MissingReturnValue fname)
+    )
   (* Data Structure *)
   | ListE el -> List.map (eval_expr env) el |> listV_of_list
   | CatE (e1, e2) ->
