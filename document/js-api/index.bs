@@ -1199,7 +1199,6 @@ dictionary TagType {
 [LegacyNamespace=WebAssembly, Exposed=(Window,Worker,Worklet)]
 interface Tag {
   constructor(TagType type);
-  TagType type();
 };
 </pre>
 
@@ -1241,21 +1240,6 @@ The <dfn constructor for="Tag" lt="Tag(type)">new Tag(|type|)</dfn> constructor 
 1. Let (|store|, |tagAddress|) be [=tag_alloc=](|store|, |wasmParameters|).
 1. Set the current agent's [=associated store=] to |store|.
 1. [=initialize a Tag object|Initialize=] **this** from |tagAddress|.
-
-</div>
-
-<div algorithm>
-
-The <dfn method for="Tag">type()</dfn> method steps are:
-
-1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-1. Let [|parameters|] → [] be [=tag_type=](|store|, **this**.\[[Address]]).
-1. Let |idlParameters| be «».
-1. [=list/iterate|For each=] |type| of |parameters|,
-    1. [=list/Append=] [$FromValueType$](|type|) to |idlParameters|.
-1. Return «[ "{{TagType/parameters}}" → |idlParameters| ]».
-
-Advisement: This method is only expected to be implemented or shipped when both this proposal and the Type Reflection proposal are implemented or shipped (respectively).
 
 </div>
 
