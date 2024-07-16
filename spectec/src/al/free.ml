@@ -33,6 +33,7 @@ let rec free_expr expr =
   | LabelE (e1, e2) -> free_expr e1 @ free_expr e2
   | FrameE (e_opt, e) -> free_opt free_expr e_opt @ free_expr e
   | CallE (_, el)
+  | InvCallE (_, _, el)
   | TupE el
   | ListE el
   | CaseE (_, el) -> free_list free_expr el

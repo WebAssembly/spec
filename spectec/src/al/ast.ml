@@ -90,6 +90,7 @@ and expr' =
   | TupE of expr list                   (* `(` (expr `,`)* `)` *)
   | CaseE of atom * expr list           (* atom `(` expr* `)` -- MixE/CaseE *)
   | CallE of id * expr list             (* id `(` expr* `)` *)
+  | InvCallE of id * int list * expr list (* id`_`int*`^-1(` expr* `)` *)
   | IterE of expr * id list * iter      (* expr (`{` id* `}`)* *)
   | OptE of expr option                 (* expr?  *)
   | ListE of expr list                  (* `[` expr* `]` *)

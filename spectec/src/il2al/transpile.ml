@@ -513,13 +513,15 @@ let remove_state algo =
   in
 
   match Walk.walk walk_config algo with
-  | FuncA (name, params, body) -> (match params with
-    | { it = TupE [ _; { it = VarE "f"; _ } ]; _ } :: tail ->
-        FuncA (name, tail, letI (varE "f", getCurFrameE ()) :: body |> remove_dead_assignment)
-    | { it = VarE ("s" | "z"); _ } :: tail ->
-        FuncA (name, tail, body)
-    | _ -> FuncA(name, params, body))
-  | RuleA _ as a -> a
+  | FuncA (name, args, body) ->
+    let args' =
+      args
+      |> Lib.List.filter_not is_state
+      |> Lib.List.filter_not is_store
+      |> Lib.List.filter_not is_frame
+    in
+    FuncA (name, args', body)
+  | rule -> rule
 
 let insert_state_binding algo =
   let state_count = ref 0 in

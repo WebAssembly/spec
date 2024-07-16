@@ -143,6 +143,16 @@ and string_of_expr expr =
     sprintf "(%s %s %s)" (string_of_expr e1) (string_of_binop op) (string_of_expr e2)
   | TupE el -> "(" ^ string_of_exprs ", " el ^ ")"
   | CallE (id, el) -> sprintf "$%s(%s)" id (string_of_exprs ", " el)
+  | InvCallE (id, nl, el) ->
+    let id' =
+      if List.length nl = 0 then id
+      else
+        nl
+        |> List.map string_of_int
+        |> List.fold_left (^) ""
+        |> sprintf "%s_%s" id
+    in
+    sprintf "$%s^-1(%s)" id' (string_of_exprs ", " el)
   | CatE (e1, e2) ->
     sprintf "%s ++ %s" (string_of_expr e1) (string_of_expr e2)
   | MemE (e1, e2) ->
@@ -422,6 +432,9 @@ and structured_string_of_expr expr =
     ^ ")"
   | TupE el -> "TupE (" ^ structured_string_of_exprs el ^ ")"
   | CallE (id, el) -> "CallE (" ^ id ^ ", [ " ^ structured_string_of_exprs el ^ " ])"
+  | InvCallE (id, nl, el) ->
+    sprintf "InvCallE (%s, [%s], [%s])"
+      id (string_of_list string_of_int "" nl) (structured_string_of_exprs el)
   | CatE (e1, e2) ->
     "CatE ("
     ^ structured_string_of_expr e1

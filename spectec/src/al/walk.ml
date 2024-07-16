@@ -41,6 +41,7 @@ let rec walk_expr f e =
       | UnE (op, e') -> UnE (op, new_ e')
       | BinE (op, e1, e2) -> BinE (op, new_ e1, new_ e2)
       | CallE (id, el) -> CallE (id, List.map new_ el)
+      | InvCallE (id, nl, el) -> InvCallE (id, nl, List.map new_ el)
       (* TODO: Implement walker for iter *)
       | ListE el -> ListE (List.map new_ el)
       | CatE (e1, e2) -> CatE (new_ e1, new_ e2)

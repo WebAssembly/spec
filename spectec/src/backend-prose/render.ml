@@ -105,6 +105,26 @@ and al_to_el_expr expr =
         elel
       in
       Some (El.Ast.CallE (elid, elel))
+    | Al.Ast.InvCallE (id, nl, el) ->
+      let ($~) at it = it $ at in
+      let elid =
+        if List.length nl = 0 then
+          (id^"^-1") $ no_region
+        else
+          nl
+          |> List.map string_of_int
+          |> List.fold_left (^) ""
+          |> sprintf "%s_%s^-1" id
+          |> ($~) no_region
+      in
+      let* elel = al_to_el_exprs el in
+      let elel = List.map
+        (fun ele ->
+          let elarg = El.Ast.ExpA ele in
+          (ref elarg) $ no_region)
+        elel
+      in
+      Some (El.Ast.CallE (elid, elel))
     | Al.Ast.CatE (e1, e2) ->
       let* ele1 = al_to_el_expr e1 in
       let* ele2 = al_to_el_expr e2 in

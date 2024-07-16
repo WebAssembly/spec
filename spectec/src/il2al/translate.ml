@@ -25,44 +25,41 @@ let error_exp exp typ =
 
 (* Helpers *)
 
-let is_state expr = match expr.it with
-  | Il.VarE z ->
-    z.it = "z" || String.starts_with ~prefix:"z'" z.it || String.starts_with ~prefix:"z_" z.it
+let check_type_of_exp (ty: string) (exp: Il.exp) =
+  match exp.note.it with
+  | Il.VarT (id, []) when id.it = ty -> true
   | _ -> false
 
-let is_store expr = match expr.it with
-  | Il.VarE s ->
-    s.it = "s" || String.starts_with ~prefix:"s'" s.it || String.starts_with ~prefix:"s_" s.it
-  | _ -> false
+let is_state: Il.exp -> bool = check_type_of_exp "state"
+let is_store: Il.exp -> bool = check_type_of_exp "store"
+let is_frame: Il.exp -> bool = check_type_of_exp "frame"
+let is_config: Il.exp -> bool = check_type_of_exp "config"
 
-let is_frame expr = match expr.it with
-  | Il.VarE f ->
-    f.it = "f" || String.starts_with ~prefix:"f'" f.it || String.starts_with ~prefix:"f_" f.it
-  | _ -> false
+let split_config (exp: Il.exp): Il.exp * Il.exp =
+  assert(is_config exp);
+  match exp.it with
+  | Il.CaseE ([[]; [{it = Il.Semicolon; _}]; []], {it = TupE [ e1; e2 ]; _})
+  when is_state e1 -> e1, e2
+  | _ -> assert(false)
 
-let is_list expr = match expr.it with
+let split_state (exp: Il.exp): Il.exp * Il.exp =
+  assert(is_state exp);
+  match exp.it with
+  | Il.CaseE ([[]; [{it = Il.Semicolon; _}]; []], {it = TupE [ e1; e2 ]; _})
+  when is_store e1 && is_frame e2 -> e1, e2
+  | _ -> assert(false)
+
+let is_list expr =
+  match expr.it with
   | Il.CatE _ | Il.ListE _ -> true
   | _ -> false
 
-(* transform z; e into e *)
-let split_state e =
-  let state_instr = [ letI (varE "f", getCurFrameE ()) ] in
-  match e.it with
-  (* z; e *)
-  | Il.CaseE ([ []; [{it = Il.Semicolon; _}]; [] ], {it = TupE [ state; e' ]; _})
-    when is_state state -> state_instr, e'
-  (* s; f; e *)
-  | Il.CaseE ([ []; [{it = Il.Semicolon; _}]; [] ],
-      {it = TupE [ { it = Il.CaseE ([ []; [{it = Il.Semicolon; _}]; [] ],
-        {it = TupE [ store; frame ]; _}); _ }; e' ]; _} )
-    when is_store store && is_frame frame -> state_instr, e'
-  | _ -> [], e
-
-let rec flatten e =
-  match e.it with
-  | Il.CatE (e1, e2) -> flatten e1 @ flatten e2
-  | Il.ListE es -> List.concat_map flatten es
-  | _ -> [ e ]
+let rec to_exp_list' (exp: Il.exp): Il.exp list =
+  match exp.it with
+  | Il.CatE (exp1, exp2) -> to_exp_list' exp1 @ to_exp_list' exp2
+  | Il.ListE exps -> List.concat_map to_exp_list' exps
+  | _ -> [ exp ]
+let to_exp_list (exp: Il.exp): Il.exp list = to_exp_list' exp |> List.rev
 
 let flatten_rec def =
   match def.it with
@@ -433,14 +430,14 @@ let rec translate_rhs exp =
   (* Execute instr *)
   | Il.CaseE ([{it = Atom _; _} as atom]::_, argexp) ->
       [ executeI (caseE (translate_atom atom, translate_argexp argexp)) ~at:at ]
-  | Il.CaseE ([[]; [{it = Il.Semicolon; _}]; []], {it = TupE [ se; rhs ]; _}) -> (
-    let push_instrs = translate_rhs rhs in
-    let at = se.at in
-    match se.it with
-    | Il.CaseE ([[]; [{it = Il.Semicolon; _}]; []], _)
-    | Il.VarE _ -> push_instrs
-    | Il.CallE (f, ae) -> push_instrs @ [ performI (f.it, translate_args ae) ~at:at ]
-    | _ -> error_exp se "state expression" )
+  (* Config *)
+  | _ when is_config exp ->
+    let state, rhs = split_config exp in
+    (match state.it with
+    | Il.CallE (f, ae) ->
+      translate_rhs rhs @ [ performI (f.it, translate_args ae) ~at:state.at ]
+    | _ -> translate_rhs rhs
+    )
   | _ -> error_exp exp "expression on rhs of reduction"
 
 
@@ -471,14 +468,10 @@ let contains_diff target_ns e =
   not (IdSet.is_empty free_ns) && IdSet.disjoint free_ns target_ns
 
 let extract_diff lhs rhs ids cont =
-  let at = lhs.at in
   match lhs.it with
   (* TODO: Make this actually consider the targets *)
-  | CallE (f, args) ->
-    let hds, tl = Util.Lib.List.split_last args in
-    let new_lhs = tl in
-    let new_rhs = callE ("inverse_of_" ^ f, hds @ [ rhs ]) ~at:at in
-    new_lhs, new_rhs, cont
+  | CallE (_, _) ->
+    lhs, rhs, cont
   | _ ->
     let conds = ref [] in
     let target_ns = IdSet.of_list (List.map it ids) in
@@ -487,7 +480,7 @@ let extract_diff lhs rhs ids cont =
         e
       else
         let new_e = get_lhs_name () in
-        conds := !conds @ [ binE (EqOp, new_e, e) ];
+        conds := [ binE (EqOp, new_e, e) ];
         new_e
     ) in
     let walker = Al.Walk.walk_expr { Al.Walk.default_config with
@@ -505,31 +498,70 @@ let rec translate_bindings ids cont bindings =
     | _ -> translate_letpr l r ids cont
   ) bindings cont
 
+and translate_letpr lhs rhs free_ids cont =
+  (* helpers *)
+  let contains_free expr =
+    free_ids
+    |> List.map it
+    |> IdSet.of_list
+    |> IdSet.disjoint (free_expr expr)
+    |> not
+  in
+  let rhs2args e =
+    match e.it with
+    | TupE el -> el
+    | _ -> [e]
+  in
+  let args2lhs args = if List.length args = 1 then List.hd args else tupE args in
 
-and translate_letpr lhs rhs ids cont =
-  let lhs, rhs, cont = extract_diff lhs rhs ids cont in
-  let lhs_at = lhs.at in
-  let rhs_at = rhs.at in
-  let at = over_region [ lhs_at; rhs_at ] in
+  let lhs, rhs, cont = extract_diff lhs rhs free_ids cont in
+  let at = over_region [ lhs.at; rhs.at ] in
   match lhs.it with
+  | CallE (f, args) when List.for_all contains_free args ->
+    let new_lhs = args2lhs args in
+    let new_rhs = InvCallE (f, [], rhs2args rhs) $ lhs.at in
+    translate_letpr new_lhs new_rhs free_ids cont
+  | CallE (f, args) when List.exists contains_free args ->
+    (* Distinguish free arguments and bound arguments *)
+    let free_args_with_index, bound_args =
+      args
+      |> List.mapi (fun i arg ->
+          if contains_free arg then Some (arg, i), None
+          else None, Some arg
+        )
+      |> List.split
+    in
+    let bound_args = List.filter_map (fun x -> x) bound_args in
+    let free_args, indices =
+      free_args_with_index
+      |> List.filter_map (fun x -> x)
+      |> List.split
+    in
+
+    (* Free argument become new lhs & InvCallE become new rhs *)
+    let new_lhs = args2lhs free_args in
+    let new_rhs = InvCallE (f, indices, bound_args @ rhs2args rhs) $ lhs.at in
+
+    (* Recursively translate new_lhs and new_rhs *)
+    translate_letpr new_lhs new_rhs free_ids cont
   | CaseE (tag, es) ->
     let bindings, es' = extract_non_names es in
     [
       ifI (
         isCaseOfE (rhs, tag),
-        letI (caseE (tag, es') ~at:lhs_at, rhs) ~at:at :: translate_bindings ids cont bindings,
+        letI (caseE (tag, es') ~at:lhs.at, rhs) ~at:at :: translate_bindings free_ids cont bindings,
         []
       );
     ]
   | ListE es ->
     let bindings, es' = extract_non_names es in
     if List.length es >= 2 then (* TODO: remove this. This is temporarily for a pure function returning stores *)
-    letI (listE es' ~at:lhs_at, rhs) ~at:at :: translate_bindings ids cont bindings
+    letI (listE es' ~at:lhs.at, rhs) ~at:at :: translate_bindings free_ids cont bindings
     else
     [
       ifI
         ( binE (EqOp, lenE rhs, numE (Z.of_int (List.length es))),
-          letI (listE es' ~at:lhs_at, rhs) ~at:at :: translate_bindings ids cont bindings,
+          letI (listE es' ~at:lhs.at, rhs) ~at:at :: translate_bindings free_ids cont bindings,
           [] );
     ]
   | OptE None ->
@@ -551,7 +583,7 @@ and translate_letpr lhs rhs ids cont =
     [
       ifI
         ( isDefinedE rhs,
-          letI (optE (Some fresh) ~at:lhs_at, rhs) ~at:at :: translate_letpr e fresh ids cont,
+          letI (optE (Some fresh) ~at:lhs.at, rhs) ~at:at :: translate_letpr e fresh free_ids cont,
           [] );
      ]
   | BinE (AddOp, a, b) ->
@@ -583,23 +615,17 @@ and translate_letpr lhs rhs ids cont =
     [
       ifI
         ( cond,
-          letI (catE (prefix', suffix') ~at:lhs_at, rhs) ~at:at
-            :: translate_bindings ids cont (bindings_p @ bindings_s),
+          letI (catE (prefix', suffix') ~at:lhs.at, rhs) ~at:at
+            :: translate_bindings free_ids cont (bindings_p @ bindings_s),
           [] );
     ]
   | SubE (s, t) ->
     [
       ifI
         ( hasTypeE (rhs, t),
-          letI (varE s ~at:lhs_at, rhs) ~at:at :: cont,
+          letI (varE s ~at:lhs.at, rhs) ~at:at :: cont,
           [] )
     ]
-  | VarE s when s = "f" || String.starts_with ~prefix:"f_" s ->
-    letI (lhs, rhs) ~at:at :: cont
-  | VarE s when s = "s" || String.starts_with ~prefix:"s'" s -> (* HARDCODE: hide state *)
-    ( match rhs.it with
-    | CallE (func, args) -> performI (func, args) ~at:rhs_at :: cont
-    | _ -> letI (lhs, rhs) ~at:at :: cont )
   | _ -> letI (lhs, rhs) ~at:at :: cont
 
 (* HARDCODE: Translate each RulePr manually based on their names *)
@@ -671,42 +697,30 @@ let rec insert_instrs target il =
 let translate_prems =
   List.fold_right (fun prem il -> translate_prem prem |> insert_instrs il)
 
-let get_tup_exps c =
-  match c.it with
-  | Il.CaseE ([[]; [{it = Il.Semicolon; _}]; []], {it = TupE [ e1; e2 ]; _}) -> e1, e2
-  | _ -> failwith "Invalid config"
-
-let split_config ce =
-  try
-    let state, e = get_tup_exps ce in
-    let sto, f = get_tup_exps state in
-    sto, f, e
-  with _ -> error ce.at
-    (sprintf "cannot split `%s` into store, frame and rhs" (Il.Print.string_of_exp ce))
-
 (* s; f; e -> `expr * expr * instr list` *)
-let translate_config ce =
-  let sto, f, e = split_config ce in
+let get_config_return_instrs name exp at =
+  assert(is_config exp);
+  let state, rhs = split_config exp in
+  let store, f = split_state state in
 
-  if is_store sto && is_frame f then
-    translate_exp sto, translate_exp f, translate_rhs e
-  else
-    error ce.at
-      (sprintf "cannot translate `%s` into store, frame and rhs" (Il.Print.string_of_exp ce))
+  let config = translate_exp store, translate_exp f, translate_rhs rhs in
+  (* HARDCODE: hardcoding required for config returning helper functions *)
+  match name with
+  | "instantiate" -> Manual.return_instrs_of_instantiate config
+  | "invoke" -> Manual.return_instrs_of_invoke config
+  | _ ->
+    error at
+      (sprintf "Helper function that returns config requires hardcoding: %s" name)
 
 let translate_helper_body name clause =
-  match clause.it with
-  | Il.DefD (_, _, re, prems) ->
-    (* TODO: Remove hack *)
-    let return_instrs =
-      if name = "instantiate" then
-        translate_config re |> Manual.return_instrs_of_instantiate
-      else if name = "invoke" then
-        translate_config re |> Manual.return_instrs_of_invoke
-      else
-        [ returnI (Some (translate_exp re)) ]
-    in
-    translate_prems prems return_instrs
+  let Il.DefD (_, _, exp, prems) = clause.it in
+  let return_instrs =
+    if is_config exp then
+      get_config_return_instrs name exp clause.at
+    else
+      [ returnI (Some (translate_exp exp)) ]
+  in
+  translate_prems prems return_instrs
 
 (* Main translation for helper functions *)
 let translate_helper partial_funcs def =
@@ -723,8 +737,7 @@ let translate_helper partial_funcs def =
     in
     let blocks = List.map (translate_helper_body name) unified_clauses in
     let body =
-      blocks
-      |> Transpile.merge_blocks
+      letI (varE "f", getCurFrameE ()) :: Transpile.merge_blocks blocks
       (* |> Transpile.enhance_readability *)
       |> Walk.(walk_instrs { default_config with pre_expr = Transpile.remove_sub })
       |> (if List.mem id partial_funcs then Fun.id else Transpile.ensure_return)
@@ -865,8 +878,8 @@ let translate_context ctx vs =
       ]
     | Il.CaseE ([{it = Il.Atom "FRAME_"; _} as atom]::_, { it = Il.TupE [ n; _f; _hole ]; _ }) ->
       [
-        letI (varE "F", getCurFrameE ()) ~at:at;
-        letI (translate_exp n, arityE (varE "F")) ~at:at;
+        letI (varE "f", getCurFrameE ()) ~at:at;
+        letI (translate_exp n, arityE (varE "f")) ~at:at;
         exitI (translate_atom atom) ~at:at
       ]
     | _ -> [ yetI "TODO: translate_context" ~at:at ]
@@ -929,7 +942,7 @@ let rec split_lhs_stack' ?(note : Il.typ option) name stack ctxs instrs =
       -> ctxs @ [ (tl, instrs), None ], hd
     | Il.CaseE (tag, ({it = Il.TupE args; _} as e)) ->
       let list_arg = List.find is_list args in
-      let inner_stack = list_arg |> flatten |> List.rev in
+      let inner_stack = to_exp_list list_arg in
       let holed_args = List.map (fun x -> if x = list_arg then hole else x) args in
       let ctx = { hd with it = Il.CaseE (tag, { e with it = Il.TupE holed_args }) } in
 
@@ -989,10 +1002,16 @@ let rec translate_rgroup' context winstr instr_name rgroup =
 
 (* Main translation for reduction rules
  * `rgroup` -> `Backend-prose.Algo` *)
+
+and get_lhs_stack (exp: Il.exp): Il.exp list =
+  if is_config exp then
+    split_config exp |> snd |> to_exp_list
+  else to_exp_list exp
+
 and translate_rgroup (instr_name, rgroup) =
   let lhs, _, _ = List.hd rgroup in
-  let state_instr, lhs_pure = split_state lhs in
-  let lhs_stack = lhs_pure |> flatten |> List.rev in
+  (* TODO: Generalize getting current frame *)
+  let lhs_stack = get_lhs_stack lhs in
   let context, winstr = split_lhs_stack instr_name lhs_stack in
 
   let inner_params, instrs = translate_rgroup' context winstr instr_name rgroup in
@@ -1018,7 +1037,7 @@ and translate_rgroup (instr_name, rgroup) =
       al_params
   in
   let body =
-    state_instr @ instrs
+    letI (varE "f", getCurFrameE ()) :: instrs
     |> insert_nop
     (* |> Transpile.enhance_readability *)
     |> Walk.(walk_instrs { default_config with pre_expr = Transpile.remove_sub })
