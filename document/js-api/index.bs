@@ -1273,8 +1273,8 @@ In practice, an implementation may run out of resources for valid modules below 
 <li>The maximum size of a module is 1,073,741,824 bytes (1 GiB).</li>
 <li>The maximum number of types defined in the types section is 1,000,000.</li>
 <li>The maximum number of functions defined in a module is 1,000,000.</li>
-<li>The maximum number of imports declared in a module is 100,000.</li>
-<li>The maximum number of exports declared in a module is 100,000.</li>
+<li>The maximum number of imports declared in a module is 1,000,000.</li>
+<li>The maximum number of exports declared in a module is 1,000,000.</li>
 <li>The maximum number of globals defined in a module is 1,000,000.</li>
 <li>The maximum number of data segments defined in a module is 100,000.</li>
 
