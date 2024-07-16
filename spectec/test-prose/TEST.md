@@ -17,9 +17,33 @@ watsup 0.4 generator
 == IL Validation after pass animate...
 == Translating to AL...
 == Prose Generation...
+6-typing.watsup:356.10-356.20: prem_to_instrs: Yet `if (x!`%`_idx.0 < |C.FUNCS_context|)`
+6-typing.watsup:355.6-355.42: prem_to_instrs: Yet `Expr_ok_const: `%|-%:%CONST`(C, expr, ?(I32_valtype))`
+6-typing.watsup:356.9-356.26: prem_to_instrs: Yet `if (C.FUNCS_context[x!`%`_idx.0] = ft)`
+6-typing.watsup:362.6-362.42: prem_to_instrs: Yet `Expr_ok_const: `%|-%:%CONST`(C, expr, ?(I32_valtype))`
 =================
  Generated prose
 =================
+validation_of_elem (ELEM expr x*)
+- |C.TABLES| must be greater than 0.
+- |x*| must be equal to |ft*|.
+- Yet: TODO: prem_to_intrs iter
+- C.TABLES[0] must be equal to lim.
+- Yet: Expr_ok_const: `%|-%:%CONST`(C, expr, ?(I32_valtype))
+- Yet: TODO: prem_to_intrs iter
+- The table segment is valid.
+
+validation_of_data (DATA expr b*)
+- |C.MEMS| must be greater than 0.
+- C.MEMS[0] must be equal to lim.
+- Yet: Expr_ok_const: `%|-%:%CONST`(C, expr, ?(I32_valtype))
+- The memory segment is valid.
+
+validation_of_start (START x)
+- |C.FUNCS| must be greater than x.
+- C.FUNCS[x] must be equal to ([] -> []).
+- The start function is valid.
+
 validation_of_NOP
 - The instruction is valid with type ([] -> []).
 
@@ -1228,6 +1252,18 @@ watsup 0.4 generator
 =================
  Generated prose
 =================
+validation_of_Datamode_ok
+- Yet: TODO: Validation relation with Multiple rules
+
+validation_of_data (DATA b* datamode)
+- Under the context C, datamode must be valid.
+- The memory segment is valid.
+
+validation_of_start (START x)
+- |C.FUNCS| must be greater than x.
+- C.FUNCS[x] must be equal to ([] -> []).
+- The start function is valid.
+
 validation_of_NOP
 - The instruction is valid with type ([] -> []).
 
@@ -3652,9 +3688,86 @@ watsup 0.4 generator
 6-typing.watsup:846.6-846.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
 6-typing.watsup:983.6-983.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 6-typing.watsup:989.6-989.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+6-typing.watsup:119.10-119.21: prem_to_instrs: Yet `if (x!`%`_idx.0 < |C.LOCALS_context|)`
+6-typing.watsup:119.7-119.27: prem_to_instrs: Yet `if (C.LOCALS_context[x!`%`_idx.0] = lct)`
+6-typing.watsup:1250.6-1250.45: prem_to_instrs: Yet `Expand: `%~~%`(C.FUNCS_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype([]), `%`_resulttype([]))))`
 =================
  Generated prose
 =================
+validation_of_numtype numtype
+- The number type is valid.
+
+validation_of_vectype vectype
+- The vector type is valid.
+
+validation_of_Heaptype_ok
+- Yet: TODO: Validation relation with Multiple rules
+
+validation_of_reftype (REF (NULL ()?) heaptype)
+- Under the context C, heaptype must be valid.
+- The reference type is valid.
+
+validation_of_Valtype_ok
+- Yet: TODO: Validation relation with Multiple rules
+
+validation_of_resulttype t*
+- For all t in t*,
+  - Under the context C, t must be valid.
+- The result type is valid.
+
+validation_of_instrtype (t_1* ->_ x* ++ t_2*)
+- |x*| must be equal to |lct*|.
+- Yet: TODO: prem_to_intrs iter
+- Under the context C, t_1* must be valid.
+- Under the context C, t_2* must be valid.
+- Yet: TODO: prem_to_intrs iter
+- The instruction type is valid.
+
+validation_of_packtype packtype
+- The packed type is valid.
+
+validation_of_Storagetype_ok
+- Yet: TODO: Validation relation with Multiple rules
+
+validation_of_fieldtype ((MUT ()?), storagetype)
+- Under the context C, storagetype must be valid.
+- The field type is valid.
+
+validation_of_functype (t_1* -> t_2*)
+- Under the context C, t_1* must be valid.
+- Under the context C, t_2* must be valid.
+- The function type is valid.
+
+validation_of_Comptype_ok
+- Yet: TODO: Validation relation with Multiple rules
+
+validation_of_deftype (DEF rectype i)
+- Under the context C, rectype must be valid with type (OK x).
+- rectype must be equal to (REC subtype^n).
+- i must be less than n.
+- The defined type is valid.
+
+validation_of_globaltype ((MUT ()?), t)
+- Under the context C, t must be valid.
+- The global type is valid.
+
+validation_of_tabletype (limits, reftype)
+- Under the context C, limits must be valid with type ((2 ^ 32) - 1).
+- Under the context C, reftype must be valid.
+- The table type is valid.
+
+validation_of_memtype (PAGE limits)
+- Under the context C, limits must be valid with type (2 ^ 16).
+- The memory type is valid.
+
+validation_of_Externtype_ok
+- Yet: TODO: Validation relation with Multiple rules
+
+validation_of_start (START x)
+- |C.FUNCS| must be greater than x.
+- Yet: Expand: `%~~%`(C.FUNCS_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype([]), `%`_resulttype([]))))
+- The start function is valid.
+
 validation_of_NOP
 - The instruction is valid with type ([] ->_ [] ++ []).
 

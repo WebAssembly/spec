@@ -474,8 +474,9 @@ let rec render_prose_instr env depth = function
     sprintf "* %s must match %s."
       (String.capitalize_ascii (render_expr env e1))
       (render_expr env e2)
-  | IsValidI e ->
-    sprintf "* The instruction is valid%s."
+  | IsValidI (kind, e) ->
+    sprintf "* The %s is valid%s."
+      kind
       (render_opt " with type " (render_expr env) "" e)
   | IfI (c, is) ->
     sprintf "* If %s,%s"

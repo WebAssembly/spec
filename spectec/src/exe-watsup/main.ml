@@ -228,7 +228,7 @@ let () =
 
     | Prose ->
       log "Prose Generation...";
-      let prose = Backend_prose.Gen.gen_prose il al in
+      let prose = Backend_prose.Gen.gen_prose el il al in
       let oc =
         match !odsts with
         | [] -> stdout
@@ -258,7 +258,7 @@ let () =
           exit 2
       );
       log "Prose Generation...";
-      let prose = Backend_prose.Gen.gen_prose il al in
+      let prose = Backend_prose.Gen.gen_prose el il al in
       log "Splicing...";
       let config' =
         Backend_splice.Config.{config with latex = Backend_latex.Config.{config.latex with

@@ -20,6 +20,34 @@ let print_yet_exp exp fname =
   print_yet exp.at fname ("`" ^ s ^ "`")
 
 
+(* Globally stored languages *)
+type langs = { mutable el: El.Ast.script; mutable il: Il.Ast.script; mutable al: Al.Ast.script }
+let langs = { el = []; il = []; al = [] }
+
+
+(* Helpers *)
+
+let flatten_rec def =
+  match def.it with
+  | Ast.RecD defs -> defs
+  | _ -> [ def ]
+
+let atomize atom' = atom' $$ no_region % (El.Atom.info "")
+
+let extract_desc typ =
+  let name = Print.string_of_typ typ in
+  match langs.el |> List.find_map (fun def ->
+    match def.it with
+    | El.Ast.TypD (id, _, _, _, hints) when id.it = name ->
+      hints |> List.find_map (function
+        | El.Ast.{ hintid = id; hintexp = { it = TextE desc; _ } }
+          when id.it = "desc" -> Some desc
+        | _ -> None)
+    | _ -> None)
+  with
+  | Some desc -> desc
+  | None -> error typ.at ("Unrecognized syntax named `" ^ name ^ "`.")
+
 let cmpop_to_cmpop = function
 | Ast.EqOp -> Eq
 | Ast.NeOp -> Ne
@@ -103,7 +131,7 @@ let vrule_group_to_prose ((_name, vrules): vrule_group) =
   (* params *)
   let params = get_params winstr |> List.map exp_to_expr in
   (* body *)
-  let body = (List.concat_map prem_to_instrs prems) @ [ IsValidI (Some (exp_to_expr t)) ] in
+  let body = (List.concat_map prem_to_instrs prems) @ [ IsValidI ("instruction", Some (exp_to_expr t)) ] in
 
   (* Predicate *)
   Pred (name, params, body)
@@ -113,6 +141,28 @@ let rec extract_vrules def =
   | Ast.RecD defs -> List.concat_map extract_vrules defs
   | Ast.RelD (id, _, _, rules) when id.it = "Instr_ok" -> rules
   | _ -> []
+
+let pack_ok_rule vrule =
+  match vrule.it with
+  | Ast.RuleD (_, tenv, _, exp, prems) ->
+    match exp.it with
+    (* c |- e : OK *)
+    | Ast.TupE [ _c; e ] -> (e, prems, tenv)
+    | _ -> error exp.at
+      (Print.string_of_exp exp
+      |> Printf.sprintf "exp `%s` cannot be a rule for *_ok relation")
+
+(*
+let pack_match_rule vrule =
+  match vrule.it with
+  | Ast.RuleD (_, tenv, _, exp, prems) ->
+    match exp.it with
+    (* c |- e1 <: e2 *)
+    | Ast.TupE [ _c; e1; e2 ] -> (e1, e2, prems, tenv)
+    | _ -> error exp.at
+      (Print.string_of_exp exp
+      |> Printf.sprintf "exp `%s` cannot be a rule for *_sub relation")
+*)
 
 let pack_vrule vrule =
   match vrule.it with
@@ -135,15 +185,102 @@ let rec group_vrules = function
       let group = (name, List.map pack_vrule (h :: same_rules)) in
       group :: group_vrules diff_rules
 
-(** Entry for generating validation prose **)
-let gen_validation_prose il =
-  il
+(** 1. C |- expr : OK *)
+let is_ok_rel def =
+  let pattern = El.Atom.[[]; [atomize Turnstile]; [atomize Colon; atomize (Atom "OK")]] in
+  match def.it with
+  | Ast.RelD (_, mixop, _, _) -> Mixop.eq pattern mixop
+  | _ -> false
+let prose_of_ok_rule rule =
+  let (e, prems, _) = pack_ok_rule rule in
+  let tmp = Print.string_of_typ e.note in
+  let kind = extract_desc e.note in
+
+  (* name *)
+  let name = El.Atom.Atom tmp, tmp in (* TODO *)
+  (* params *)
+  let params = [ exp_to_expr e ] in
+  (* body *)
+  let body = (List.concat_map prem_to_instrs prems) @ [ IsValidI (kind, None) ] in
+
+  Pred (name, params, body)
+let prose_of_ok_rel def =
+  match def.it with
+  | Ast.RelD (_, _, _, [rule]) -> prose_of_ok_rule rule
+  | Ast.RelD (id, _, _, _) -> Pred ((Atom id.it, id.it), [], [ YetI "TODO: Validation relation with Multiple rules" ])
+  | _ -> assert false
+let prose_of_ok_rels = List.map prose_of_ok_rel
+
+(** 2. C |- type <: type **)
+let is_match_rel def =
+  let pattern = El.Atom.[[]; [atomize Turnstile]; [atomize Sub]; []] in
+  match def.it with
+  | Ast.RelD (_, mixop, _, _) -> Mixop.eq pattern mixop
+  | _ -> false
+(*
+let prose_of_match_rule rule =
+  let (e1, e2, prems, _) = pack_match_rule rule in
+  let tmp = Print.string_of_typ e1.note in
+  let kind = extract_desc e.note in
+
+  (* name *)
+  let name = El.Atom.Atom tmp, tmp in (* TODO *)
+  (* params *)
+  let params = [ exp_to_expr e1 ] in
+  (* body *)
+  let body = (List.concat_map prem_to_instrs prems) @ [ IsValidI (kind, None) ] in
+
+  Pred (name, params, body)
+let prose_of_match_rel =
+  match def.it with
+  | Ast.RelD (_, _, _, [rule]) -> prose_of_match_rule rule
+  | Ast.RelD (id, _, _, _) -> Pred ((Atom id.it, id.it), [], [ YetI "TODO: Match relation with Multiple rules" ])
+  | _ -> assert false
+let prose_of_match_rels = List.map prose_of_match_rel
+*)
+let prose_of_match_rels _ = []
+
+(** 3. C |- instr : type **)
+let is_instr_type_rel def =
+  let pattern = El.Atom.[[]; [atomize Turnstile]; [atomize Colon]; []] in
+  match def.it with
+  | Ast.RelD (_, mixop, _, _) -> Mixop.eq pattern mixop
+  | _ -> false
+let prose_of_instr_type_rels rels =
+  rels
   |> List.concat_map extract_vrules
   |> group_vrules
   |> List.map vrule_group_to_prose
 
+(** 4. Others **)
+let is_other_rel def =
+  match def.it with
+  | Ast.RelD _ -> true
+  | _ -> false
+let prose_of_other_rels _il = []
+
+(** Classify each relations into each category based on its shape **)
+let classify_rels () =
+  let il = List.concat_map flatten_rec langs.il in
+
+  let ok_rels,         il = List.partition is_ok_rel il in
+  let match_rels,      il = List.partition is_match_rel il in
+  let instr_type_rels, il = List.partition is_instr_type_rel il in
+  let other_rels,     _il = List.partition is_other_rel il in
+
+  (ok_rels, match_rels, instr_type_rels, other_rels)
+
+(** Entry for generating validation prose **)
+let gen_validation_prose () =
+  let (ok_rels, match_rels, instr_type_rels, other_rels) = classify_rels () in
+
+  prose_of_ok_rels           ok_rels
+  @ prose_of_match_rels      match_rels
+  @ prose_of_instr_type_rels instr_type_rels
+  @ prose_of_other_rels      other_rels
+
 (** Entry for generating execution prose **)
-let gen_execution_prose =
+let gen_execution_prose () =
   List.map
     (fun algo ->
       let handle_state = match algo.it with
@@ -155,13 +292,18 @@ let gen_execution_prose =
         |> Il2al.Transpile.remove_exit
         |> Il2al.Transpile.remove_enter
       in
-      Prose.Algo algo)
+      Prose.Algo algo) langs.al
 
 (** Main entry for generating prose **)
-let gen_prose il al =
-  let validation_prose = gen_validation_prose il in
-  let execution_prose = gen_execution_prose al in
+let gen_prose el il al =
+  langs.el <- el;
+  langs.il <- il;
+  langs.al <- al;
+
+  let validation_prose = gen_validation_prose () in
+  let execution_prose = gen_execution_prose () in
+
   validation_prose @ execution_prose
 
 (** Main entry for generating stringified prose **)
-let gen_string il al = string_of_prose (gen_prose il al)
+let gen_string el il al = string_of_prose (gen_prose el il al)

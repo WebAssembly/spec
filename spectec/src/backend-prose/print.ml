@@ -54,8 +54,9 @@ let rec string_of_instr = function
       sprintf "%s %s must match %s." (indent ())
         (string_of_expr e2)
         (string_of_expr e1)
-  | IsValidI e_opt ->
-      sprintf "%s The instruction is valid%s." (indent ())
+  | IsValidI (kind, e_opt) ->
+      sprintf "%s The %s is valid%s." (indent ())
+        kind
         (string_of_opt " with type " string_of_expr "" e_opt)
   | IfI (c, is) ->
       sprintf "%s If %s, \n%s" (indent ())
