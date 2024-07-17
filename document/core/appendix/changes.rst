@@ -250,6 +250,23 @@ Added managed reference types. [#proposal-gc]_
 * Extended set of :ref:`constant instructions <valid-const>` with |REFI31|, |STRUCTNEW|, |STRUCTNEWDEFAULT|, |ARRAYNEW|, |ARRAYNEWDEFAULT|, |ARRAYNEWFIXED|, |ANYCONVERTEXTERN|, |EXTERNCONVERTANY|
 
 
+.. index: text format, annotation, custom section, identifier, module, type, function, local, structure field
+
+Custom annotations
+..................
+
+Added generic syntax for custom annotations in the text format,
+mirroring the role of custom sections in the binary format. [#proposal-annot]_
+
+* :ref:`Annotations <text-annot>` of the form :math:`\text{(@id~\dots)}` are allowed anywhere in the :ref:`text format <text>`
+
+* :ref:`Identifiers <text-id>` can be escaped as :math:`\text{@"\dots"}` with arbitrary :ref:`names <text-name>`
+
+* Defined :ref:`name annotations <text-nameannot>` :math:`\text{(@name~"\dots")}` for :ref:`module names <text-modulenameannot>`, :ref:`type names <text-typenameannot>`, :ref:`function names <text-funcnameannot>`, :ref:`local names <text-localnameannot>`, and :ref:`field names <text-fieldnameannot>`
+
+* Defined :ref:`custom annotation <text-customannot>` :math:`\text{(@custom~"\dots")}` to represent arbitrary :ref:`custom sections <binary-customsec>` in the text format
+
+
 .. [#proposal-extconst]
    https://github.com/WebAssembly/extended-const/blob/main/proposals/extended-const/
 
@@ -264,3 +281,6 @@ Added managed reference types. [#proposal-gc]_
 
 .. [#proposal-gc]
    https://github.com/WebAssembly/spec/tree/main/proposals/gc/
+
+.. [#proposal-annot]
+   https://github.com/WebAssembly/annotations/tree/main/proposals/annotations/
