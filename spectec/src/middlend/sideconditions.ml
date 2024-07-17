@@ -13,6 +13,7 @@ variable x and require e=?x. Maybe later.)
 open Util
 open Source
 open Il.Ast
+open Il.Free
 
 (* Errors *)
 
@@ -24,6 +25,14 @@ module Env = Map.Make(String)
 let lenE e = match e.it with
 | IterE (_, (ListN (ne, _), _)) -> ne
 | _ -> LenE e $$ e.at % (NumT NatT $ e.at)
+
+(* Smart constructor for IterPr that removes dead iter-variables *)
+let iterPr (pr, (iter, vars)) =
+  let frees = free_prem pr in
+  let vars' = List.filter (fun (id, _) ->
+    Set.mem id.it frees.varid
+  ) vars in
+  IterPr (pr, (iter, vars'))
 
 let is_null e = CmpE (EqOp, e, OptE None $$ e.at % e.note) $$ e.at % (BoolT $ e.at)
 let iffE e1 e2 = IfPr (BinE (EquivOp, e1, e2) $$ e1.at % (BoolT $ e1.at)) $ e1.at
@@ -106,7 +115,7 @@ let rec t_exp env e : prem list =
   ->
     t_iterexp env iterexp @
     let env' = env_under_iter env iterexp in
-    List.map (fun pr -> IterPr (pr, iterexp) $ e.at) (t_exp env' e1)
+    List.map (fun pr -> iterPr (pr, iterexp) $ e.at) (t_exp env' e1)
 
 and t_iterexp env (iter, _) = t_iter env iter
 
@@ -135,7 +144,7 @@ let rec t_prem env prem = match prem.it with
   -> iter_side_conditions env iterexp @
      t_iterexp env iterexp @
      let env' = env_under_iter env iterexp in
-     List.map (fun pr -> IterPr (pr, iterexp) $ prem.at) (t_prem env' prem)
+     List.map (fun pr -> iterPr (pr, iterexp) $ prem.at) (t_prem env' prem)
 
 let t_prems env = List.concat_map (t_prem env)
 
