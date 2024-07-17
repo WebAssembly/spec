@@ -190,7 +190,7 @@ directly after the :math:`\text{module}` keyword, or if present, after the follo
 
 
 .. index:: function
-.. _binary-funcnameannot:
+.. _text-funcnameannot:
 
 Function Names
 ..............
@@ -206,7 +206,7 @@ directly after the :math:`\text{func}` keyword, or if present, after the followi
 
 
 .. index:: function, parameter
-.. _binary-paramnameannot:
+.. _text-paramnameannot:
 
 Parameter Names
 ...............
@@ -223,7 +223,7 @@ It may only be placed on a declaration that declares exactly one parameter.
 
 
 .. index:: function, local
-.. _binary-localnameannot:
+.. _text-localnameannot:
 
 Local Names
 ...........
