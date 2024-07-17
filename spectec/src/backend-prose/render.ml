@@ -571,12 +571,12 @@ let rec render_al_instr env algoname index depth instr =
   | Al.Ast.ExecuteSeqI e ->
     sprintf "%s Execute the sequence %s." (render_order index depth) (render_expr env e)
   | Al.Ast.PerformI (n, es) ->
-    sprintf "%s Perform %s." (render_order index depth) (render_expr env (Al.Ast.CallE (n, es) $ no_region))
+    sprintf "%s Perform %s." (render_order index depth) (render_expr env (Al.Al_util.callE (n, es) ~at:no_region))
   | Al.Ast.ExitI a ->
     sprintf "%s Exit from %s." (render_order index depth) (render_atom env a)
   | Al.Ast.ReplaceI (e1, p, e2) ->
     sprintf "%s Replace %s with %s." (render_order index depth)
-      (render_expr env (Al.Ast.AccE (e1, p) $ no_region)) (render_expr env e2)
+      (render_expr env (Al.Al_util.accE (e1, p) ~at:no_region)) (render_expr env e2)
   | Al.Ast.AppendI (e1, e2) ->
     sprintf "%s Append %s to the %s." (render_order index depth)
       (render_expr env e2) (render_expr env e1)
@@ -603,14 +603,14 @@ let render_atom_title env name params =
     | _ -> name'
   in
   let name = (name', typ) in
-  let expr = Al.Ast.CaseE (name, params) $ no_region in
+  let expr = Al.Al_util.caseE (name, params) ~at:no_region in
   match al_to_el_expr expr with
   | Some ({ it = El.Ast.ParenE (exp, _); _ }) -> render_el_exp env exp
   | Some exp -> render_el_exp env exp
   | None -> render_expr' env expr
 
 let render_funcname_title env fname params =
-  render_expr env (Al.Ast.CallE (fname, params) $ no_region)
+  render_expr env (Al.Al_util.callE (fname, params) ~at:no_region)
 
 let render_pred env name params instrs =
   let title = render_atom_title env name params in

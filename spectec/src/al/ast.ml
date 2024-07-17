@@ -73,7 +73,7 @@ type iter =
 
 (* Expressions *)
 
-and expr = expr' phrase
+and expr = (expr', Il.Ast.typ) note_phrase
 and expr' =
   | VarE of id                          (* varid *)
   | NumE of Z.t                         (* number *)

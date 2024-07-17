@@ -119,27 +119,28 @@ let rec translate_iter = function
 (* `Il.exp` -> `expr` *)
 and translate_exp exp =
   let at = exp.at in
+  let note = exp.note in
   match exp.it with
-  | Il.NatE n -> numE n ~at:at
-  | Il.BoolE b -> boolE b ~at:at
+  | Il.NatE n -> numE n ~at:at ~note:note
+  | Il.BoolE b -> boolE b ~at:at ~note:note
   (* List *)
-  | Il.LenE inner_exp -> lenE (translate_exp inner_exp) ~at:at
-  | Il.ListE exps -> listE (List.map translate_exp exps) ~at:at
+  | Il.LenE inner_exp -> lenE (translate_exp inner_exp) ~at:at ~note:note
+  | Il.ListE exps -> listE (List.map translate_exp exps) ~at:at ~note:note
   | Il.IdxE (exp1, exp2) ->
-    accE (translate_exp exp1, idxP (translate_exp exp2)) ~at:at
+    accE (translate_exp exp1, idxP (translate_exp exp2)) ~at:at ~note:note
   | Il.SliceE (exp1, exp2, exp3) ->
-    accE (translate_exp exp1, sliceP (translate_exp exp2, translate_exp exp3)) ~at:at
-  | Il.CatE (exp1, exp2) -> catE (translate_exp exp1, translate_exp exp2) ~at:at
+    accE (translate_exp exp1, sliceP (translate_exp exp2, translate_exp exp3)) ~at:at ~note:note
+  | Il.CatE (exp1, exp2) -> catE (translate_exp exp1, translate_exp exp2) ~at:at ~note:note
   (* Variable *)
-  | Il.VarE id -> varE id.it ~at:at
-  | Il.SubE ({ it = Il.VarE id; _}, { it = VarT (t, _); _ }, _) -> subE (id.it, t.it) ~at:at
+  | Il.VarE id -> varE id.it ~at:at ~note:note
+  | Il.SubE ({ it = Il.VarE id; _}, { it = VarT (t, _); _ }, _) -> subE (id.it, t.it) ~at:at ~note:note
   | Il.SubE (inner_exp, _, _) -> translate_exp inner_exp
   | Il.IterE (inner_exp, (iter, ids)) ->
     let names = List.map (fun (id, _) -> id.it) ids in
-    iterE (translate_exp inner_exp, names, translate_iter iter) ~at:at
+    iterE (translate_exp inner_exp, names, translate_iter iter) ~at:at ~note:note
   (* property access *)
   | Il.DotE (inner_exp, ({it = Atom _; _} as atom)) ->
-    accE (translate_exp inner_exp, dotP (translate_atom atom)) ~at:at
+    accE (translate_exp inner_exp, dotP (translate_atom atom)) ~at:at ~note:note
   (* conacatenation of records *)
   | Il.CompE (inner_exp, { it = Il.StrE expfields; _ }) ->
     (* assumption: CompE is only used with at least one literal *)
@@ -149,7 +150,7 @@ and translate_exp exp =
       | {it = Il.Atom _; _} as atom, fieldexp ->
         let extend_expr = translate_exp fieldexp in
         if nonempty extend_expr then
-          extE (acc, [ dotP (translate_atom atom) ], extend_expr, Back) ~at:at
+          extE (acc, [ dotP (translate_atom atom) ], extend_expr, Back) ~at:at ~note:note
         else
           acc
       | _ -> error_exp exp "AL record expression")
@@ -162,15 +163,15 @@ and translate_exp exp =
       | {it = Il.Atom _; _} as atom, fieldexp ->
         let extend_expr = translate_exp fieldexp in
         if nonempty extend_expr then
-          extE (acc, [ dotP (translate_atom atom) ], extend_expr, Front) ~at:at
+          extE (acc, [ dotP (translate_atom atom) ], extend_expr, Front) ~at:at ~note:note
         else
           acc
       | _ -> error_exp exp "AL record expression")
       (translate_exp inner_exp) expfields
   (* extension of record field *)
-  | Il.ExtE (base, path, v) -> extE (translate_exp base, translate_path path, translate_exp v, Back) ~at:at
+  | Il.ExtE (base, path, v) -> extE (translate_exp base, translate_path path, translate_exp v, Back) ~at:at ~note:note
   (* update of record field *)
-  | Il.UpdE (base, path, v) -> updE (translate_exp base, translate_path path, translate_exp v) ~at:at
+  | Il.UpdE (base, path, v) -> updE (translate_exp base, translate_path path, translate_exp v) ~at:at ~note:note
   (* Binary / Unary operation *)
   | Il.UnE (op, exp) ->
     let exp' = translate_exp exp in
@@ -179,7 +180,7 @@ and translate_exp exp =
     | Il.MinusOp _ -> MinusOp
     | _ -> error_exp exp "AL unary expression"
     in
-    unE (op, exp') ~at:at
+    unE (op, exp') ~at:at ~note:note
   | Il.BinE (op, exp1, exp2) ->
     let lhs = translate_exp exp1 in
     let rhs = translate_exp exp2 in
@@ -196,7 +197,7 @@ and translate_exp exp =
       | Il.ImplOp -> ImplOp
       | Il.EquivOp -> EquivOp
     in
-    binE (op, lhs, rhs) ~at:at
+    binE (op, lhs, rhs) ~at:at ~note:note
   | Il.CmpE (op, exp1, exp2) ->
     let lhs = translate_exp exp1 in
     let rhs = translate_exp exp2 in
@@ -209,17 +210,17 @@ and translate_exp exp =
       | Il.LeOp _ -> LeOp
       | Il.GeOp _ -> GeOp
     in
-    binE (compare_op, lhs, rhs) ~at:at
+    binE (compare_op, lhs, rhs) ~at:at ~note:note
   (* Set operation *)
   | Il.MemE (exp1, exp2) ->
     let lhs = translate_exp exp1 in
     let rhs = translate_exp exp2 in
-    memE (lhs, rhs) ~at:at
+    memE (lhs, rhs) ~at:at ~note:note
   (* Tuple *)
   | Il.TupE [e] -> translate_exp e
-  | Il.TupE exps -> tupE (List.map translate_exp exps) ~at:at
+  | Il.TupE exps -> tupE (List.map translate_exp exps) ~at:at ~note:note
   (* Call *)
-  | Il.CallE (id, args) -> callE (id.it, translate_args args) ~at:at
+  | Il.CallE (id, args) -> callE (id.it, translate_args args) ~at:at ~note:note
   (* Record expression *)
   | Il.StrE expfields ->
     let f acc = function
@@ -230,7 +231,7 @@ and translate_exp exp =
       | _ -> error_exp exp "AL record expression"
     in
     let record = List.fold_left f Record.empty expfields in
-    strE record ~at:at
+    strE record ~at:at ~note:note
   (* CaseE *)
   | Il.CaseE (op, e) -> (
     let exps =
@@ -243,43 +244,43 @@ and translate_exp exp =
     (* TODO: Need a better way to convert these CaseE into ConstructE *)
     | [ [ {it = Il.Atom "MUT"; _} as atom ]; [ {it = Il.Quest; _} ]; [] ],
       [ { it = Il.OptE (Some { it = Il.TupE []; _ }); _}; t ] ->
-      tupE [ caseE (translate_atom atom, []); translate_exp t ] ~at:at
+      tupE [ caseE (translate_atom atom, []); translate_exp t ] ~at:at ~note:note
     | [ [ {it = Il.Atom "MUT"; _} ]; [ {it = Il.Quest; _} ]; [] ],
       [ { it = Il.IterE ({ it = Il.TupE []; _ }, (Il.Opt, [])); _}; t ] ->
-      tupE [ iterE (varE "mut", ["mut"], Opt); translate_exp t ] ~at:at
+      tupE [ iterE (varE "mut", ["mut"], Opt); translate_exp t ] ~at:at ~note:note
     | [ []; [ {it = Il.Atom "PAGE"; _} as atom ] ], el ->
-      caseE (translate_atom atom, List.map translate_exp el) ~at:at
+      caseE (translate_atom atom, List.map translate_exp el) ~at:at ~note:note
     | [ [ {it = Il.Atom "NULL"; _} as atom ]; [ {it = Il.Quest; _} ] ], el ->
-      caseE (translate_atom atom, List.map translate_exp el) ~at:at
+      caseE (translate_atom atom, List.map translate_exp el) ~at:at ~note:note
     | [ {it = Il.Atom _; _} as atom ] :: ll, el
       when List.for_all (function ([] | [ {it = (Il.Star | Il.Quest); _} ]) -> true | _ -> false) ll ->
-      caseE (translate_atom atom, List.map translate_exp el) ~at:at
+      caseE (translate_atom atom, List.map translate_exp el) ~at:at ~note:note
     | [ [{it = Il.LBrack; _}]; [{it = Il.Dot2; _}]; [{it = Il.RBrack; _}] ], [ e1; e2 ] ->
-      tupE [ translate_exp e1; translate_exp e2 ] ~at:at
+      tupE [ translate_exp e1; translate_exp e2 ] ~at:at ~note:note
     | (({it = Il.Atom _; _} as atom)::_)::_, _ ->
-        caseE (translate_atom atom, translate_argexp e) ~at:at
+        caseE (translate_atom atom, translate_argexp e) ~at:at ~note:note
     | [ []; [] ], [ e1 ] -> translate_exp e1
     | [ []; []; [] ], [ e1; e2 ] ->
-      tupE [ translate_exp e1; translate_exp e2 ] ~at:at
+      tupE [ translate_exp e1; translate_exp e2 ] ~at:at ~note:note
     | [ []; [{it = Il.Semicolon; _}]; [] ], [ e1; e2 ] ->
-      tupE [ translate_exp e1; translate_exp e2 ] ~at:at
+      tupE [ translate_exp e1; translate_exp e2 ] ~at:at ~note:note
     | [ []; [{it = Il.Arrow; _} as atom]; [] ], [ e1; e2 ] ->
-      infixE (translate_exp e1, translate_atom atom, translate_exp e2) ~at:at
+      infixE (translate_exp e1, translate_atom atom, translate_exp e2) ~at:at ~note:note
     | [ []; [{it = Il.Arrow; _} as atom]; []; [] ], [ e1; e2; e3 ] ->
-      infixE (translate_exp e1, translate_atom atom, catE (translate_exp e2, translate_exp e3)) ~at:at
+      infixE (translate_exp e1, translate_atom atom, catE (translate_exp e2, translate_exp e3)) ~at:at ~note:note
     | [ []; [{it = Il.ArrowSub; _} as atom]; []; [] ], [ e1; e2; e3 ] ->
-      infixE (translate_exp e1, translate_atom atom, catE (translate_exp e2, translate_exp e3)) ~at:at
+      infixE (translate_exp e1, translate_atom atom, catE (translate_exp e2, translate_exp e3)) ~at:at ~note:note
     | [ []; [{it = Il.Atom _; _} as atom]; [] ], [ e1; e2 ] ->
-      infixE (translate_exp e1, translate_atom atom, translate_exp e2) ~at:at
-    | _ -> yetE (Il.Print.string_of_exp exp) ~at:at)
+      infixE (translate_exp e1, translate_atom atom, translate_exp e2) ~at:at ~note:note
+    | _ -> yetE (Il.Print.string_of_exp exp) ~at:at ~note:note)
   | Il.UncaseE (e, op) -> (
     match op with
     | [ []; [] ] -> translate_exp e
-    | _ -> yetE (Il.Print.string_of_exp exp) ~at:at)
+    | _ -> yetE (Il.Print.string_of_exp exp) ~at:at ~note:note)
   | Il.ProjE (e, 0) -> translate_exp e
-  | Il.OptE inner_exp -> optE (Option.map translate_exp inner_exp) ~at:at
+  | Il.OptE inner_exp -> optE (Option.map translate_exp inner_exp) ~at:at ~note:note
   (* Yet *)
-  | _ -> yetE (Il.Print.string_of_exp exp) ~at:at
+  | _ -> yetE (Il.Print.string_of_exp exp) ~at:at ~note:note
 
 (* `Il.exp` -> `expr list` *)
 and translate_argexp exp =
@@ -536,12 +537,11 @@ and handle_inverse_function lhs rhs free_ids =
   (* All arguments are free *)
   if List.for_all contains_free args then
     let new_lhs = args2lhs args in
-    let new_rhs = InvCallE (f, [], rhs2args rhs) $ lhs.at in
+    let new_rhs = invCallE (f, [], rhs2args rhs) ~at:lhs.at in
     handle_special_lhs new_lhs new_rhs free_ids
 
   (* Some arguments are free *)
   else if List.exists contains_free args then
-
     (* Distinguish free arguments and bound arguments *)
     let free_args_with_index, bound_args =
       args
@@ -560,7 +560,7 @@ and handle_inverse_function lhs rhs free_ids =
 
     (* Free argument become new lhs & InvCallE become new rhs *)
     let new_lhs = args2lhs free_args in
-    let new_rhs = InvCallE (f, indices, bound_args @ rhs2args rhs) $ lhs.at in
+    let new_rhs = invCallE (f, indices, bound_args @ rhs2args rhs) ~at:lhs.at in
 
     (* Recursively translate new_lhs and new_rhs *)
     handle_special_lhs new_lhs new_rhs free_ids

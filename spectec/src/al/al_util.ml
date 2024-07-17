@@ -6,6 +6,7 @@ open Source
 (* Constructor Shorthands *)
 
 let no = no_region
+let no_note = Il.Ast.VarT ("TODO" $ no_region, []) $ no_region
 
 let _nid_count = ref 0
 let gen_nid () =
@@ -35,47 +36,48 @@ let appendI ?(at = no) (e1, e2) = AppendI (e1, e2) |> mk_instr at
 let otherwiseI ?(at = no) il = OtherwiseI il |> mk_instr at
 let yetI ?(at = no) s = YetI s |> mk_instr at
 
-let mk_expr at it = Util.Source.($) it at
+let mk_expr at note it = it $$ at % note
 
-let varE ?(at = no) id = VarE id |> mk_expr at
-let boolE ?(at = no) b = BoolE b |> mk_expr at
-let numE ?(at = no) i = NumE i |> mk_expr at
-let unE ?(at = no) (unop, e) = UnE (unop, e) |> mk_expr at
-let binE ?(at = no) (binop, e1, e2) = BinE (binop, e1, e2) |> mk_expr at
-let accE ?(at = no) (e, p) = AccE (e, p) |> mk_expr at
-let updE ?(at = no) (e1, pl, e2) = UpdE (e1, pl, e2) |> mk_expr at
-let extE ?(at = no) (e1, pl, e2, dir) = ExtE (e1, pl, e2, dir) |> mk_expr at
-let strE ?(at = no) r = StrE r |> mk_expr at
-let catE ?(at = no) (e1, e2) = CatE (e1, e2) |> mk_expr at
-let memE ?(at = no) (e1, e2) = MemE (e1, e2) |> mk_expr at
-let lenE ?(at = no) e = LenE e |> mk_expr at
-let tupE ?(at = no) el = TupE el |> mk_expr at
-let caseE ?(at = no) (a, el) = CaseE (a, el) |> mk_expr at
-let callE ?(at = no) (id, el) = CallE (id, el) |> mk_expr at
-let iterE ?(at = no) (e, idl, it) = IterE (e, idl, it) |> mk_expr at
-let optE ?(at = no) e_opt = OptE e_opt |> mk_expr at
-let listE ?(at = no) el = ListE el |> mk_expr at
-let infixE ?(at = no) (e1, infix, e2) = InfixE (e1, infix, e2) |> mk_expr at
-let arityE ?(at = no) e = ArityE e |> mk_expr at
-let frameE ?(at = no) (e_opt, e) = FrameE (e_opt, e) |> mk_expr at
-let labelE ?(at = no) (e1, e2) = LabelE (e1, e2) |> mk_expr at
-let getCurStateE ?(at = no) () = GetCurStateE |> mk_expr at
-let getCurFrameE ?(at = no) () = GetCurFrameE |> mk_expr at
-let getCurLabelE ?(at = no) () = GetCurLabelE |> mk_expr at
-let getCurContextE ?(at = no) () = GetCurContextE |> mk_expr at
-let contE ?(at = no) e = ContE e |> mk_expr at
-let isCaseOfE ?(at = no) (e, a) = IsCaseOfE (e, a) |> mk_expr at
-let isValidE ?(at = no) e = IsValidE e |> mk_expr at
-let contextKindE ?(at = no) (a, e) = ContextKindE (a, e) |> mk_expr at
-let isDefinedE ?(at = no) e = IsDefinedE e |> mk_expr at
-let matchE ?(at = no) (e1, e2) = MatchE (e1, e2) |> mk_expr at
-let hasTypeE ?(at = no) (e, ty) = HasTypeE (e, ty) |> mk_expr at
-let topLabelE ?(at = no) () = TopLabelE |> mk_expr at
-let topFrameE ?(at = no) () = TopFrameE |> mk_expr at
-let topValueE ?(at = no) e_opt = TopValueE e_opt |> mk_expr at
-let topValuesE ?(at = no) e = TopValuesE e |> mk_expr at
-let subE ?(at = no) (id, ty) = SubE (id, ty) |> mk_expr at
-let yetE ?(at = no) s = YetE s |> mk_expr at
+let varE ?(at = no) ?(note = no_note) id = VarE id |> mk_expr at note
+let boolE ?(at = no) ?(note = no_note) b = BoolE b |> mk_expr at note
+let numE ?(at = no) ?(note = no_note) i = NumE i |> mk_expr at note
+let unE ?(at = no) ?(note = no_note) (unop, e) = UnE (unop, e) |> mk_expr at note
+let binE ?(at = no) ?(note = no_note) (binop, e1, e2) = BinE (binop, e1, e2) |> mk_expr at note
+let accE ?(at = no) ?(note = no_note) (e, p) = AccE (e, p) |> mk_expr at note
+let updE ?(at = no) ?(note = no_note) (e1, pl, e2) = UpdE (e1, pl, e2) |> mk_expr at note
+let extE ?(at = no) ?(note = no_note) (e1, pl, e2, dir) = ExtE (e1, pl, e2, dir) |> mk_expr at note
+let strE ?(at = no) ?(note = no_note) r = StrE r |> mk_expr at note
+let catE ?(at = no) ?(note = no_note) (e1, e2) = CatE (e1, e2) |> mk_expr at note
+let memE ?(at = no) ?(note = no_note) (e1, e2) = MemE (e1, e2) |> mk_expr at note
+let lenE ?(at = no) ?(note = no_note) e = LenE e |> mk_expr at note
+let tupE ?(at = no) ?(note = no_note) el = TupE el |> mk_expr at note
+let caseE ?(at = no) ?(note = no_note) (a, el) = CaseE (a, el) |> mk_expr at note
+let callE ?(at = no) ?(note = no_note) (id, el) = CallE (id, el) |> mk_expr at note
+let invCallE ?(at = no) ?(note = no_note) (id, il, el) = InvCallE (id, il, el) |> mk_expr at note
+let iterE ?(at = no) ?(note = no_note) (e, idl, it) = IterE (e, idl, it) |> mk_expr at note
+let optE ?(at = no) ?(note = no_note) e_opt = OptE e_opt |> mk_expr at note
+let listE ?(at = no) ?(note = no_note) el = ListE el |> mk_expr at note
+let infixE ?(at = no) ?(note = no_note) (e1, infix, e2) = InfixE (e1, infix, e2) |> mk_expr at note
+let arityE ?(at = no) ?(note = no_note) e = ArityE e |> mk_expr at note
+let frameE ?(at = no) ?(note = no_note) (e_opt, e) = FrameE (e_opt, e) |> mk_expr at note
+let labelE ?(at = no) ?(note = no_note) (e1, e2) = LabelE (e1, e2) |> mk_expr at note
+let getCurStateE ?(at = no) ?(note = no_note) () = GetCurStateE |> mk_expr at note
+let getCurFrameE ?(at = no) ?(note = no_note) () = GetCurFrameE |> mk_expr at note
+let getCurLabelE ?(at = no) ?(note = no_note) () = GetCurLabelE |> mk_expr at note
+let getCurContextE ?(at = no) ?(note = no_note) () = GetCurContextE |> mk_expr at note
+let contE ?(at = no) ?(note = no_note) e = ContE e |> mk_expr at note
+let isCaseOfE ?(at = no) ?(note = no_note) (e, a) = IsCaseOfE (e, a) |> mk_expr at note
+let isValidE ?(at = no) ?(note = no_note) e = IsValidE e |> mk_expr at note
+let contextKindE ?(at = no) ?(note = no_note) (a, e) = ContextKindE (a, e) |> mk_expr at note
+let isDefinedE ?(at = no) ?(note = no_note) e = IsDefinedE e |> mk_expr at note
+let matchE ?(at = no) ?(note = no_note) (e1, e2) = MatchE (e1, e2) |> mk_expr at note
+let hasTypeE ?(at = no) ?(note = no_note) (e, ty) = HasTypeE (e, ty) |> mk_expr at note
+let topLabelE ?(at = no) ?(note = no_note) () = TopLabelE |> mk_expr at note
+let topFrameE ?(at = no) ?(note = no_note) () = TopFrameE |> mk_expr at note
+let topValueE ?(at = no) ?(note = no_note) e_opt = TopValueE e_opt |> mk_expr at note
+let topValuesE ?(at = no) ?(note = no_note) e = TopValuesE e |> mk_expr at note
+let subE ?(at = no) ?(note = no_note) (id, ty) = SubE (id, ty) |> mk_expr at note
+let yetE ?(at = no) ?(note = no_note) s = YetE s |> mk_expr at note
 
 let mk_path at it = Util.Source.($) it at
 
