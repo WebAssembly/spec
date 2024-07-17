@@ -288,7 +288,7 @@ let remove_dead_assignment il =
           let bindings = free_expr e11 @ free_expr e12 in
           let get_bounds_iters e =
             match e.it with
-            | IterE (_, _, ListN (e_iter, _)) -> free_expr e_iter 
+            | IterE (_, _, ListN (e_iter, _)) -> free_expr e_iter
             | _ -> IdSet.empty
           in
           let bounds_iters = (get_bounds_iters e11) @ (get_bounds_iters e12) in
@@ -439,7 +439,7 @@ let flatten_if instrs =
       Walk.default_config with
       post_instr = lift flatten_if';
     } in
-  
+
   Walk.walk_instrs walk_config instrs
 
 let rec mk_access ps base =
@@ -549,6 +549,26 @@ let insert_state_binding algo =
     RuleA (name, params, body)
   | _ -> algo
 
+let insert_frame_binding instrs =
+  let frame_count = ref 0 in
+
+  let count_frame e =
+    (match e.it with
+    | VarE "f" -> frame_count := !frame_count + 1
+    | _ -> ());
+    e
+  in
+
+  let walk_config =
+    {
+      Walk.default_config with
+      pre_expr = count_frame;
+    }
+  in
+
+  match Walk.walk_instrs walk_config instrs with
+  | il when !frame_count > 0 -> (letI (varE "f", getCurFrameE ())) :: il
+  | _ -> instrs
 
 (* Applied for reduction rules: infer assert from if *)
 let count_if instrs =
@@ -634,7 +654,7 @@ let remove_enter algo =
         begin match e_arity.it with
         | NumE z when Z.to_int z = 0 ->
             pushI e_frame ~at:instr.at :: il @ [ popI e_frame ~at:instr.at ]
-        | _ -> 
+        | _ ->
             let e_tmp = iterE (varE ("val"), [ "val" ], List) in
             pushI e_frame ~at:instr.at :: il @ [
               popallI e_tmp ~at:instr.at;
@@ -648,7 +668,7 @@ let remove_enter algo =
         pushI e_frame ~at:instr.at :: il @ [ popI e_frame ~at:instr.at ]
     | _ -> [ instr ]
   in
-  
+
   let enter_frame_to_push instr =
     match instr.it with
     | EnterI (e_frame, { it = ListE ([ { it = CaseE ((Atom.Atom "FRAME_", _), []); _ } ]); _ }, il) ->
