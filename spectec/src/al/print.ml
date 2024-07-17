@@ -148,6 +148,7 @@ and string_of_expr expr =
       if List.length nl = 0 then id
       else
         nl
+        |> List.filter_map (fun x -> x)
         |> List.map string_of_int
         |> List.fold_left (^) ""
         |> sprintf "%s_%s" id
@@ -433,6 +434,7 @@ and structured_string_of_expr expr =
   | TupE el -> "TupE (" ^ structured_string_of_exprs el ^ ")"
   | CallE (id, el) -> "CallE (" ^ id ^ ", [ " ^ structured_string_of_exprs el ^ " ])"
   | InvCallE (id, nl, el) ->
+    let nl = List.filter_map (fun x -> x) nl in
     sprintf "InvCallE (%s, [%s], [%s])"
       id (string_of_list string_of_int "" nl) (structured_string_of_exprs el)
   | CatE (e1, e2) ->
