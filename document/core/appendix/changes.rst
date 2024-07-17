@@ -155,3 +155,27 @@ Added vector type and instructions that manipulate multiple numeric values in pa
 
 .. [#proposal-vectype]
    https://github.com/WebAssembly/spec/tree/main/proposals/simd/
+
+
+Release 3.0
+~~~~~~~~~~~
+
+.. index: text format, annotation, custom section, identifier, module, function, local
+
+Custom annotations
+..................
+
+Added generic syntax for custom annotations in the text format,
+mirroring the role of custom sections in the binary format. [#proposal-annot]_
+
+* :ref:`Annotations <text-annot>` of the form :math:`\text{(@id~\dots)}` are allowed anywhere in the :ref:`text format <text>`
+
+* :ref:`Identifiers <text-id>` can be escaped as :math:`\text{@"\dots"}` with arbitrary :ref:`names <text-name>`
+
+* Defined :ref:`name annotations <text-nameannot>` :math:`\text{(@name~"\dots")}` for :ref:`module names <text-modulenameannot>`, :ref:`function names <text-funcnameannot>`, and :ref:`local names <text-localnameannot>`
+
+* Defined :ref:`custom annotation <text-customannot>` :math:`\text{(@custom~"\dots")}` to represent arbitrary :ref:`custom sections <binary-customsec>` in the text format
+
+
+.. [#proposal-annot]
+   https://github.com/WebAssembly/annotations/tree/main/proposals/annotations/
