@@ -96,11 +96,19 @@ function assert_malformed(bytes) {
   throw new Error("Wasm decoding failure expected");
 }
 
+function assert_malformed_custom(bytes) {
+  return;
+}
+
 function assert_invalid(bytes) {
   try { module(bytes, false) } catch (e) {
     if (e instanceof WebAssembly.CompileError) return;
   }
   throw new Error("Wasm validation failure expected");
+}
+
+function assert_invalid_custom(bytes) {
+  return;
 }
 
 function assert_unlinkable(bytes) {
@@ -559,12 +567,11 @@ let of_result res =
 
 let rec of_definition def =
   match def.it with
-  | Textual m -> of_bytes (Encode.encode m)
-  | Encoded (_, bs) -> of_bytes bs
+  | Textual (m, _) -> of_bytes (Encode.encode m)
+  | Encoded (_, bs) -> of_bytes bs.it
   | Quoted (_, s) ->
-    try of_definition (snd (Parse.Module.parse_string s))
-    with Parse.Syntax _ ->
-      of_bytes "<malformed quote>"
+    try of_definition (snd (Parse.Module.parse_string ~offset:s.at s.it))
+    with Parse.Syntax _ | Custom.Syntax _ -> of_bytes "<malformed quote>"
 
 let of_wrapper mods x_opt name wrap_action wrap_assertion at =
   let x = of_var_opt mods x_opt in
@@ -611,8 +618,12 @@ let of_assertion mods ass =
   match ass.it with
   | AssertMalformed (def, _) ->
     "assert_malformed(" ^ of_definition def ^ ");"
+  | AssertMalformedCustom (def, _) ->
+    "assert_malformed_custom(" ^ of_definition def ^ ");"
   | AssertInvalid (def, _) ->
     "assert_invalid(" ^ of_definition def ^ ");"
+  | AssertInvalidCustom (def, _) ->
+    "assert_invalid_custom(" ^ of_definition def ^ ");"
   | AssertUnlinkable (def, _) ->
     "assert_unlinkable(" ^ of_definition def ^ ");"
   | AssertUninstantiable (def, _) ->
@@ -634,9 +645,10 @@ let of_command mods cmd =
   | Module (x_opt, def) ->
     let rec unquote def =
       match def.it with
-      | Textual m -> m
-      | Encoded (_, bs) -> Decode.decode "binary" bs
-      | Quoted (_, s) -> unquote (snd (Parse.Module.parse_string s))
+      | Textual (m, _) -> m
+      | Encoded (name, bs) -> Decode.decode name bs.it
+      | Quoted (_, s) ->
+        unquote (snd (Parse.Module.parse_string ~offset:s.at s.it))
     in bind mods x_opt (unquote def);
     "let " ^ current_var mods ^ " = instance(" ^ of_definition def ^ ");\n" ^
     (if x_opt = None then "" else

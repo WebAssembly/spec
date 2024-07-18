@@ -763,7 +763,7 @@ Instructions in this group affect the flow of control.
      \CALLREF~\typeidx \\&&|&
      \CALLINDIRECT~\tableidx~\typeidx \\&&|&
      \RETURNCALL~\funcidx \\&&|&
-     \RETURNCALLREF~\funcidx \\&&|&
+     \RETURNCALLREF~\typeidx \\&&|&
      \RETURNCALLINDIRECT~\tableidx~\typeidx \\&&|&
      \THROW~\tagidx \\&&|&
      \THROWREF \\ &&|&

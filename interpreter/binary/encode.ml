@@ -1100,40 +1100,69 @@ struct
 
 
   (* Custom section *)
-
-  let custom (n, bs) =
+  let custom c =
+    let Custom.{name = n; content; _} = c.it in
     name n;
-    put_string s bs
+    put_string s content
 
-  let custom_section n bs =
-    section 0 custom (n, bs) true
+  let custom_section place c =
+    let here = Custom.(compare_place c.it.place place) <= 0 in
+    if here then section 0 custom c true;
+    here
 
 
   (* Module *)
+  let rec iterate f xs =
+    match xs with
+    | [] -> []
+    | x::xs' -> if f x then iterate f xs' else xs
 
-  let module_ m =
+  let module_ m cs =
+    let open Custom in
     word32 0x6d736100l;
     word32 version;
+    let cs = iterate (custom_section (Before Type)) cs in
     type_section m.it.types;
+    let cs = iterate (custom_section (Before Import)) cs in
     import_section m.it.imports;
+    let cs = iterate (custom_section (Before Func)) cs in
     func_section m.it.funcs;
+    let cs = iterate (custom_section (Before Table)) cs in
     table_section m.it.tables;
+    let cs = iterate (custom_section (Before Memory)) cs in
     memory_section m.it.memories;
+    let cs = iterate (custom_section (Before Tag)) cs in
     tag_section m.it.tags;
+    let cs = iterate (custom_section (Before Global)) cs in
     global_section m.it.globals;
+    let cs = iterate (custom_section (Before Export)) cs in
     export_section m.it.exports;
+    let cs = iterate (custom_section (Before Start)) cs in
     start_section m.it.start;
+    let cs = iterate (custom_section (Before Elem)) cs in
     elem_section m.it.elems;
+    let cs = iterate (custom_section (Before DataCount)) cs in
     data_count_section m.it.datas m;
+    let cs = iterate (custom_section (Before Code)) cs in
     code_section m.it.funcs;
-    data_section m.it.datas
+    let cs = iterate (custom_section (Before Data)) cs in
+    data_section m.it.datas;
+    let cs = iterate (custom_section (After Data)) cs in
+    assert (cs = [])
 end
 
 
+let encode_custom m bs (module S : Custom.Section) =
+  let open Source in
+  let c = S.Handler.encode m bs S.it in
+  Custom.{c.it with place = S.Handler.place S.it} @@ c.at
+
 let encode m =
   let module E = E (struct let stream = stream () end) in
-  E.module_ m; to_string E.s
+  E.module_ m []; to_string E.s
 
-let encode_custom name content =
+let encode_with_custom (m, secs) =
+  let bs = encode m in
   let module E = E (struct let stream = stream () end) in
-  E.custom_section name content; to_string E.s
+  let cs = List.map (encode_custom m bs) secs in
+  E.module_ m cs; to_string E.s

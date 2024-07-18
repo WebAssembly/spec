@@ -1118,3 +1118,7 @@ let check_module (m : module_) =
   List.iter (check_func_body c) m.it.funcs;
   Option.iter (check_start c) m.it.start;
   ignore (List.fold_left (check_export c) NameSet.empty m.it.exports)
+
+let check_module_with_custom ((m : module_), (cs : Custom.section list)) =
+  check_module m;
+  List.iter (fun (module S : Custom.Section) -> S.Handler.check m S.it) cs

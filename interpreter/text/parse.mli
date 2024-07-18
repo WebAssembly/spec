@@ -5,7 +5,7 @@ sig
   type t
   val parse : string -> Lexing.lexbuf -> t (* raises Syntax *)
   val parse_file : string -> t (* raises Syntax *)
-  val parse_string : string -> t (* raises Syntax *)
+  val parse_string : ?offset:Source.region -> string -> t (* raises Syntax *)
   val parse_channel : in_channel -> t (* raises Syntax *)
 end
 

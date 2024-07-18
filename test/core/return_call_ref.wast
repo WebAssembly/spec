@@ -374,3 +374,24 @@
   )
   "type mismatch"
 )
+
+(assert_invalid
+  (module
+    (type $t (func))
+    (func $f (param $r funcref)
+      (return_call_ref $t (local.get $r))
+    )
+  )
+  "type mismatch"
+)
+
+(assert_invalid
+  (module
+    (type $ty (func (result i32 i32)))
+    (func (param (ref $ty)) (result i32)
+      local.get 0
+      return_call_ref $ty
+    )
+  )
+  "type mismatch"
+)

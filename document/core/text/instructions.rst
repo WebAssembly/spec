@@ -32,11 +32,11 @@ The following grammar handles the corresponding update to the :ref:`identifier c
 .. math::
    \begin{array}{llcllll}
    \production{label} & \Tlabel_I &::=&
-     v{:}\Tid &\Rightarrow& \{\ILABELS~v\} \compose I
+     v{:}\Tid &\Rightarrow& v, \{\ILABELS~v\} \compose I
        & (\iff v \notin I.\ILABELS) \\ &&|&
-     v{:}\Tid &\Rightarrow& \{\ILABELS~v\} \compose (I \with \ILABELS[i] = \epsilon)
+     v{:}\Tid &\Rightarrow& v, \{\ILABELS~v\} \compose (I \with \ILABELS[i] = \epsilon)
        & (\iff I.\ILABELS[i] = v) \\ &&|&
-     \epsilon &\Rightarrow& \{\ILABELS~(\epsilon)\} \compose I \\
+     \epsilon &\Rightarrow& \epsilon, \{\ILABELS~(\epsilon)\} \compose I \\
    \end{array}
 
 .. note::
@@ -81,16 +81,16 @@ However, the special case of a type use that is syntactically empty or consists 
      x,I'{:}\Ttypeuse_I &\Rightarrow& x & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\
    \end{array} \\
    \production{block instruction} & \Tblockinstr_I &::=&
-     \text{block}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype_I~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
+     \text{block}~~(v^?,I'){:}\Tlabel_I~~\X{bt}{:}\Tblocktype_I~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~{v'}^?{:}\Tid^?
        \\ &&&\qquad \Rightarrow\quad \BLOCK~\X{bt}~\X{in}^\ast~\END
-       \qquad\quad~~ (\iff \Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\ &&|&
-     \text{loop}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype_I~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
+       \qquad\quad~~ (\iff {v'}^? = \epsilon \vee {v'}^? = v^?) \\ &&|&
+     \text{loop}~~(v^?,I'){:}\Tlabel_I~~\X{bt}{:}\Tblocktype_I~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~{v'}^?{:}\Tid^?
        \\ &&&\qquad \Rightarrow\quad \LOOP~\X{bt}~\X{in}^\ast~\END
-       \qquad\qquad (\iff \Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\ &&|&
-     \text{if}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype_I~~(\X{in}_1{:}\Tinstr_{I'})^\ast~~
-       \text{else}~~\Tid_1^?~~(\X{in}_2{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid_2^?
+       \qquad\qquad (\iff {v'}^? = \epsilon \vee {v'}^? = v^?) \\ &&|&
+     \text{if}~~(v^?,I'){:}\Tlabel_I~~\X{bt}{:}\Tblocktype_I~~(\X{in}_1{:}\Tinstr_{I'})^\ast~~
+       \text{else}~~v_1^?{:}\Tid_1^?~~(\X{in}_2{:}\Tinstr_{I'})^\ast~~\text{end}~~v_2^?{:}\Tid_2^?
        \\ &&&\qquad \Rightarrow\quad \IF~\X{bt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END
-       \qquad (\iff \Tid_1^? = \epsilon \vee \Tid_1^? = \Tlabel, \Tid_2^? = \epsilon \vee \Tid_2^? = \Tlabel) \\ &&|&
+       \qquad (\iff v_1^? = \epsilon \vee v_1^? = v^?, v_2^? = \epsilon \vee v_2^? = v^?) \\ &&|&
      \text{try\_table}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype~~(c{:}\Tcatch_I)^\ast~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
        \\ &&&\qquad \Rightarrow\quad \TRYTABLE~\X{bt}~c^\ast~\X{in}^\ast~~\END
        \qquad\qquad (\iff \Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\

@@ -759,34 +759,33 @@ The definition of the initial :ref:`identifier context <text-context>` :math:`I`
    \begin{array}{@{}lcl@{\qquad\qquad}l}
    \F{idc}(\text{(}~\text{rec}~~\Ttypedef^\ast~\text{)}) &=&
      \bigcompose \F{idc}(\Ttypedef)^\ast \\
-   \F{idc}(\text{(}~\text{type}~\Tid^?~\Tsubtype~\text{)}) &=&
-     \{\ITYPES~(\Tid^?), \IFIELDS~\F{idf}(\Tsubtype), \ITYPEDEFS~\X{st}\} \\
-   \F{idc}(\text{(}~\text{func}~\Tid^?~\dots~\text{)}) &=&
-     \{\IFUNCS~(\Tid^?)\} \\
-   \F{idc}(\text{(}~\text{table}~\Tid^?~\dots~\text{)}) &=&
-     \{\ITABLES~(\Tid^?)\} \\
-   \F{idc}(\text{(}~\text{memory}~\Tid^?~\dots~\text{)}) &=&
-     \{\IMEMS~(\Tid^?)\} \\
-   \F{idc}(\text{(}~\text{global}~\Tid^?~\dots~\text{)}) &=&
-     \{\IGLOBALS~(\Tid^?)\} \\
-   \F{idc}(\text{(}~\text{tag}~\Tid^?~\dots~\text{)}) &=&
-     \{\ITAGS~(\Tid^?)\} \\
-   \F{idc}(\text{(}~\text{elem}~\Tid^?~\dots~\text{)}) &=&
-     \{\IELEM~(\Tid^?)\} \\
-   \F{idc}(\text{(}~\text{data}~\Tid^?~\dots~\text{)}) &=&
-     \{\IDATA~(\Tid^?)\} \\
-   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{func}~\Tid^?~\dots~\text{)}~\text{)}) &=&
-     \{\IFUNCS~(\Tid^?)\} \\
-   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{table}~\Tid^?~\dots~\text{)}~\text{)}) &=&
-     \{\ITABLES~(\Tid^?)\} \\
-   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{memory}~\Tid^?~\dots~\text{)}~\text{)}) &=&
-     \{\IMEMS~(\Tid^?)\} \\
-   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{global}~\Tid^?~\dots~\text{)}~\text{)}) &=&
-     \{\IGLOBALS~(\Tid^?)\} \\
-   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{tag}~\Tid^?~\dots~\text{)}~\text{)}) &=&
-     \{\ITAGS~(\Tid^?)\} \\
+   \F{idc}(\text{(}~\text{type}~v^?{:}\Tid^?~\Tsubtype~\text{)}) &=&
+     \{\ITYPES~(v^?), \IFIELDS~\F{idf}(\Tsubtype), \ITYPEDEFS~\X{st}\} \\
+   \F{idc}(\text{(}~\text{func}~v^?{:}\Tid^?~\dots~\text{)}) &=&
+     \{\IFUNCS~(v^?)\} \\
+   \F{idc}(\text{(}~\text{table}~v^?{:}\Tid^?~\dots~\text{)}) &=&
+     \{\ITABLES~(v^?)\} \\
+   \F{idc}(\text{(}~\text{memory}~v^?{:}\Tid^?~\dots~\text{)}) &=&
+     \{\IMEMS~(v^?)\} \\
+   \F{idc}(\text{(}~\text{global}~v^?{:}\Tid^?~\dots~\text{)}) &=&
+     \{\IGLOBALS~(v^?)\} \\
+   \F{idc}(\text{(}~\text{tag}~v^?{:}\Tid^?~\dots~\text{)}) &=&
+     \{\ITAGS~(v^?)\} \\
+   \F{idc}(\text{(}~\text{elem}~v^?{:}\Tid^?~\dots~\text{)}) &=&
+     \{\IELEM~(v^?)\} \\
+   \F{idc}(\text{(}~\text{data}~v^?{:}\Tid^?~\dots~\text{)}) &=&
+     \{\IDATA~(v^?)\} \\
+   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{func}~v^?{:}\Tid^?~\dots~\text{)}~\text{)}) &=&
+     \{\IFUNCS~(v^?)\} \\
+   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{table}~v^?{:}\Tid^?~\dots~\text{)}~\text{)}) &=&
+     \{\ITABLES~(v^?)\} \\
+   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{memory}~v^?{:}\Tid^?~\dots~\text{)}~\text{)}) &=&
+     \{\IMEMS~(v^?)\} \\
+   \F{idc}(\text{(}~\text{import}~\dots~\text{(}~\text{global}~v^?{:}\Tid^?~\dots~\text{)}~\text{)}) &=&
+     \{\IGLOBALS~(v^?)\} \\
    \F{idc}(\text{(}~\dots~\text{)}) &=&
-     \{\} \\[2ex]
+     \{\}
+   \\[2ex]
    \F{idf}(\text{(}~\text{sub}~\dots~\Tcomptype~\text{)}) &=&
      \F{idf}(\Tcomptype) \\
    \F{idf}(\text{(}~\text{struct}~\X{Tfield}^\ast~\text{)}) &=&
@@ -795,8 +794,8 @@ The definition of the initial :ref:`identifier context <text-context>` :math:`I`
      \epsilon \\
    \F{idf}(\text{(}~\text{func}~\dots~\text{)}) &=&
      \epsilon \\
-   \F{idf}(\text{(}~\text{field}~\Tid^?~\dots~\text{)}) &=&
-     \Tid^? \\
+   \F{idf}(\text{(}~\text{field}~v^?{:}\Tid^?~\dots~\text{)}) &=&
+     v^? \\
    \end{array}
 
 
