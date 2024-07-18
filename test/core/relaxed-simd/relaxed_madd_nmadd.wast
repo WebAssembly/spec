@@ -189,3 +189,36 @@
                        (v128.const f64x2 -0x1.000002p+0 -0x1.000002p+0)
                        (v128.const f64x2 -0x1.00000204p+0 -0x1.00000204p+0))
                (v128.const i64x2 -1 -1))
+
+;; Test that the non-deterministic choice of fusing and then rounding or
+;; rounding multiple times in `relaxed_madd` is consistent throughout a
+;; program's execution.
+;;
+;; This property is impossible to test exhaustively, so this is just a simple
+;; smoke test for when the operands to a `relaxed_madd` are known statically
+;; versus when they are dynamically supplied. This should, at least, catch
+;; illegal constant-folding and -propagation by the compiler that leads to
+;; inconsistent rounding behavior at compile time versus at run time.
+;;
+;; FLT_MAX == 0x1.fffffep+127
+;; FLT_MAX * 2 - FLT_MAX ==
+;;   FLT_MAX (if fma)
+;;   0       (if no fma)
+;; from https://www.vinc17.net/software/fma-tests.c
+(module
+  (func (export "test-consistent-nondeterminism") (param v128 v128 v128) (result v128)
+    (f32x4.eq
+      (f32x4.relaxed_madd (v128.const f32x4 0x1.fffffep+127 0x1.fffffep+127 0x1.fffffep+127 0x1.fffffep+127 )
+                          (v128.const f32x4 2.0 2.0 2.0 2.0)
+                          (v128.const f32x4 -0x1.fffffep+127 -0x1.fffffep+127 -0x1.fffffep+127 -0x1.fffffep+127))
+      (f32x4.relaxed_madd (local.get 0)
+                          (local.get 1)
+                          (local.get 2))
+    )
+  )
+)
+(assert_return (invoke "test-consistent-nondeterminism"
+                       (v128.const f32x4 0x1.fffffep+127 0x1.fffffep+127 0x1.fffffep+127 0x1.fffffep+127 )
+                       (v128.const f32x4 2.0 2.0 2.0 2.0)
+                       (v128.const f32x4 -0x1.fffffep+127 -0x1.fffffep+127 -0x1.fffffep+127 -0x1.fffffep+127))
+               (v128.const i32x4 -1 -1 -1 -1))
