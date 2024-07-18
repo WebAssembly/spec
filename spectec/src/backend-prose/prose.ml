@@ -13,7 +13,7 @@ type instr =
 | IsValidI of string * Al.Ast.expr option
 | MatchesI of string * Al.Ast.expr
 | IfI of Al.Ast.expr * instr list
-| ForallI of Al.Ast.expr * Al.Ast.expr * instr list
+| ForallI of (Al.Ast.expr * Al.Ast.expr) list * instr list
 | EquivI of Al.Ast.expr * Al.Ast.expr
 | YetI of string
 

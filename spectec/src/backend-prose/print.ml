@@ -67,10 +67,10 @@ let rec string_of_instr = function
       sprintf "%s If %s, \n%s" (indent ())
         (string_of_expr c)
         (string_of_list indented_string_of_instr "" "\n" "" is)
-  | ForallI (e1, e2, is) ->
-      sprintf "%s For all %s in %s,\n%s" (indent ())
-        (string_of_expr e1)
-        (string_of_expr e2)
+  | ForallI (iters, is) ->
+      let string_of_iter (e1, e2) = (string_of_expr e1) ^ " in " ^ (string_of_expr e2) in
+      sprintf "%s For all %s,\n%s" (indent ())
+        (string_of_list string_of_iter "" " and " "" iters)
         (string_of_list indented_string_of_instr "" "\n" "" is)
   | EquivI (e1, e2) ->
       sprintf "%s (%s) if and only if (%s)." (indent ())

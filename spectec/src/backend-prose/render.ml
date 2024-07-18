@@ -487,10 +487,11 @@ let rec render_prose_instr env depth = function
     sprintf "* If %s,%s"
       (render_expr env c)
       (render_prose_instrs env (depth + 1) is)
-  | ForallI (e1, e2, is) ->
-    sprintf "* For all %s in %s,%s"
-      (render_expr env e1)
-      (render_expr env e2)
+  | ForallI (iters, is) ->
+    let render_iter env (e1, e2) = (render_expr env e1) ^ " in " ^ (render_expr env e2) in
+    let render_iters env iters = List.map (render_iter env) iters |> String.concat " and " in
+    sprintf "* For all %s,%s"
+      (render_iters env iters)
       (render_prose_instrs env (depth + 1) is)
   | EquivI (c1, c2) ->
     sprintf "* %s if and only if %s."

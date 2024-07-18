@@ -39,7 +39,6 @@ NotationReduct
 ../spec/wasm-3.0/6-typing.watsup:702.6-702.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_2*{t_2 : valtype}), `%`_resulttype(t'_2*{t'_2 : valtype}))`
 ../spec/wasm-3.0/6-typing.watsup:756.6-756.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
 ../spec/wasm-3.0/6-typing.watsup:762.6-762.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-../spec/wasm-3.0/6-typing.watsup:780.7-780.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
 ../spec/wasm-3.0/6-typing.watsup:812.6-812.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
 ../spec/wasm-3.0/6-typing.watsup:841.6-841.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
 ../spec/wasm-3.0/6-typing.watsup:846.6-846.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
@@ -50,12 +49,10 @@ NotationReduct
 ../spec/wasm-3.0/6-typing.watsup:478.6-478.41: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_12*{t_12 : valtype}), `%`_resulttype(t_22*{t_22 : valtype}))`
 ../spec/wasm-3.0/6-typing.watsup:400.6-400.41: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_21*{t_21 : valtype}), `%`_resulttype(t_11*{t_11 : valtype}))`
 ../spec/wasm-3.0/6-typing.watsup:401.6-401.41: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_12*{t_12 : valtype}), `%`_resulttype(t_22*{t_22 : valtype}))`
-../spec/wasm-3.0/6-typing.watsup:403.7-403.29: prem_to_instrs: Yet `if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(SET_init, t))`
 ../spec/wasm-3.0/6-typing.watsup:491.6-491.43: prem_to_instrs: Yet `Limits_sub: `%|-%<:%`(C, limits_1, limits_2)`
 ../spec/wasm-3.0/6-typing.watsup:492.6-492.46: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, reftype_1, reftype_2)`
 ../spec/wasm-3.0/6-typing.watsup:493.6-493.46: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, reftype_2, reftype_1)`
 ../spec/wasm-3.0/6-typing.watsup:497.6-497.43: prem_to_instrs: Yet `Limits_sub: `%|-%<:%`(C, limits_1, limits_2)`
-../spec/wasm-3.0/6-typing.watsup:119.7-119.27: prem_to_instrs: Yet `if (C.LOCALS_context[x!`%`_idx.0] = lct)`
 ../spec/wasm-3.0/6-typing.watsup:1250.6-1250.45: prem_to_instrs: Yet `Expand: `%~~%`(C.FUNCS_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype([]), `%`_resulttype([]))))`
 == Splicing...
 \documentclass[a4paper]{scrartcl}

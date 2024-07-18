@@ -40,7 +40,6 @@ Step
 Steps
 Eval_expr
 6-typing.watsup:355.6-355.42: prem_to_instrs: Yet `Expr_ok_const: `%|-%:%CONST`(C, expr, ?(I32_valtype))`
-6-typing.watsup:356.9-356.26: prem_to_instrs: Yet `if (C.FUNCS_context[x!`%`_idx.0] = ft)`
 6-typing.watsup:362.6-362.42: prem_to_instrs: Yet `Expr_ok_const: `%|-%:%CONST`(C, expr, ?(I32_valtype))`
 =================
  Generated prose
@@ -52,7 +51,8 @@ validation_of_elem (ELEM expr x*)
   - |C.FUNCS| must be greater than x.
 - C.TABLES[0] must be equal to lim.
 - Yet: Expr_ok_const: `%|-%:%CONST`(C, expr, ?(I32_valtype))
-- Yet: TODO: prem_to_intrs iter
+- For all ft in ft* and x in x*,
+  - C.FUNCS[x] must be equal to ft.
 - The table segment is valid.
 
 validation_of_data (DATA expr b*)
@@ -3743,7 +3743,6 @@ NotationReduct
 6-typing.watsup:702.6-702.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_2*{t_2 : valtype}), `%`_resulttype(t'_2*{t'_2 : valtype}))`
 6-typing.watsup:756.6-756.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
 6-typing.watsup:762.6-762.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-6-typing.watsup:780.7-780.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
 6-typing.watsup:812.6-812.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
 6-typing.watsup:841.6-841.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
 6-typing.watsup:846.6-846.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
@@ -3754,12 +3753,10 @@ NotationReduct
 6-typing.watsup:478.6-478.41: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_12*{t_12 : valtype}), `%`_resulttype(t_22*{t_22 : valtype}))`
 6-typing.watsup:400.6-400.41: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_21*{t_21 : valtype}), `%`_resulttype(t_11*{t_11 : valtype}))`
 6-typing.watsup:401.6-401.41: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_12*{t_12 : valtype}), `%`_resulttype(t_22*{t_22 : valtype}))`
-6-typing.watsup:403.7-403.29: prem_to_instrs: Yet `if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(SET_init, t))`
 6-typing.watsup:491.6-491.43: prem_to_instrs: Yet `Limits_sub: `%|-%<:%`(C, limits_1, limits_2)`
 6-typing.watsup:492.6-492.46: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, reftype_1, reftype_2)`
 6-typing.watsup:493.6-493.46: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, reftype_2, reftype_1)`
 6-typing.watsup:497.6-497.43: prem_to_instrs: Yet `Limits_sub: `%|-%<:%`(C, limits_1, limits_2)`
-6-typing.watsup:119.7-119.27: prem_to_instrs: Yet `if (C.LOCALS_context[x!`%`_idx.0] = lct)`
 6-typing.watsup:1250.6-1250.45: prem_to_instrs: Yet `Expand: `%~~%`(C.FUNCS_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype([]), `%`_resulttype([]))))`
 =================
  Generated prose
@@ -3791,7 +3788,8 @@ validation_of_instrtype (t_1* ->_ x* ++ t_2*)
   - |C.LOCALS| must be greater than x.
 - Under the context C, t_1* must be valid.
 - Under the context C, t_2* must be valid.
-- Yet: TODO: prem_to_intrs iter
+- For all lct in lct* and x in x*,
+  - C.LOCALS[x] must be equal to lct.
 - The instruction type is valid.
 
 validation_of_packtype packtype
@@ -3869,7 +3867,8 @@ validation_of_Fieldtype_sub
 validation_of_resulttype t_1*
 - The result type matches the result type t_2* if and only if:
   - |t_2*| must be equal to |t_1*|.
-  - Yet: TODO: prem_to_intrs iter
+  - For all t_1 in t_1* and t_2 in t_2*,
+    - Yet: TODO: prem_to_instrs rule_sub
 
 validation_of_functype (t_11* -> t_12*)
 - The function type matches the function type (t_21* -> t_22*) if and only if:
@@ -3887,7 +3886,8 @@ validation_of_instrtype (t_11* ->_ x_1* ++ t_12*)
   - Yet: TODO: prem_to_instrs rule_sub
   - Yet: TODO: prem_to_instrs rule_sub
   - x* must be equal to $setminus(x_2*, x_1*).
-  - Yet: TODO: prem_to_intrs iter
+  - For all t in t* and x in x*,
+    - C.LOCALS[x] must be equal to (SET, t).
 
 validation_of_limits (n_1, m_1)
 - The limits matches the limits (n_2, m_2) if and only if:
@@ -4108,7 +4108,8 @@ validation_of_STRUCT.NEW_DEFAULT x
 - |C.TYPES| must be greater than x.
 - Let (STRUCT (mut, zt)*) be $expanddt(C.TYPES[x]).
 - |zt*| must be equal to |mut*|.
-- Yet: TODO: prem_to_intrs iter
+- For all val in val* and zt in zt*,
+  - Let ?(val) be $default_($unpack(zt)).
 - |zt*| must be equal to |val*|.
 - The instruction is valid with type ([] ->_ [] ++ [(REF (NULL ?()) $idx(x))]).
 

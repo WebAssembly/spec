@@ -107,9 +107,12 @@ let rec prem_to_instrs prem = match prem.it with
   | Ast.IterPr (prem, iter) ->
     (match iter with
     | Ast.Opt, [(id, _)] -> [ IfI (isDefinedE (varE id.it), prem_to_instrs prem) ]
-    | Ast.(List | ListN _), [(id, _)] ->
-        let name = varE id.it in
-        [ ForallI (name, iterE (name, [id.it], Al.Ast.List), prem_to_instrs prem) ]
+    | Ast.(List | ListN _), vars ->
+        let to_iter (id, _) =
+          let name = varE id.it in
+          name, iterE (name, [id.it], Al.Ast.List)
+        in
+        [ ForallI (List.map to_iter vars, prem_to_instrs prem) ]
     | _ -> print_yet_prem prem "prem_to_instrs"; [ YetI "TODO: prem_to_intrs iter" ]
     )
   | _ ->
