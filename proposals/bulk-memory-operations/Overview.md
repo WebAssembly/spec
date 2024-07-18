@@ -228,7 +228,7 @@ The meaning of the bits of the flag field (a `varuint32`) for element segments i
 | 0   | 0=is active, 1=is passive                        |
 | 1   | if bit 0 clear: 0=table 0, 1=has table index     | 
 |     | if bit 0 set: 0=active, 1=declared               |
-| 2   | 0=carries indicies; 1=carries elemexprs          |
+| 2   | 0=carries indices; 1=carries elemexprs          |
 
 which yields this view, with the fields carried by each flag value:
 
@@ -356,7 +356,7 @@ The bounds check is performed before any data are written.
 
 ### `table.init`, `elem.drop`, and `table.copy` instructions
 
-The `table.*` instructions behave similary to the `memory.*` instructions, with
+The `table.*` instructions behave similarly to the `memory.*` instructions, with
 the difference that they operate on element segments and tables, instead of
 data segments and memories. The offset and length operands of `table.init` and
 `table.copy` have element units instead of bytes as well.
