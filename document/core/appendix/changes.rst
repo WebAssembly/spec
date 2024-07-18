@@ -160,7 +160,7 @@ Added vector type and instructions that manipulate multiple numeric values in pa
 Release 3.0
 ~~~~~~~~~~~
 
-.. index: instruction, expression, constant
+.. index:: instruction, expression, constant
 
 Extended Constant Expressions
 .............................
@@ -173,7 +173,7 @@ Allowed basic numeric computations in constant expressions. [#proposal-extconst]
    The :ref:`garbage collection <extension-gc>` added further constant instructions.
 
 
-.. index: instruction, function, call
+.. index:: instruction, function, call
 
 Tail Calls
 ..........
@@ -201,7 +201,7 @@ Added tag definitions, imports, and exports, and instructions to throw and catch
 * New :ref:`tag section <binary-tagsec>` in binary format.
 
 
-.. index: instruction, memory, memory index, data segment, import, export
+.. index:: instruction, memory, memory index, data segment, import, export
 
 Multiple Memories
 .................
@@ -268,7 +268,7 @@ Added managed reference types. [#proposal-gc]_
 * Extended set of :ref:`constant instructions <valid-const>` with |REFI31|, |STRUCTNEW|, |STRUCTNEWDEFAULT|, |ARRAYNEW|, |ARRAYNEWDEFAULT|, |ARRAYNEWFIXED|, |ANYCONVERTEXTERN|, |EXTERNCONVERTANY|
 
 
-.. index: text format, annotation, custom section, identifier, module, type, function, local, structure field
+.. index:: text format, annotation, custom section, identifier, module, type, function, local, structure field
 
 Custom Annotations
 ..................
