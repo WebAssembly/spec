@@ -537,7 +537,7 @@ and handle_inverse_function lhs rhs free_ids =
   (* All arguments are free *)
   if List.for_all contains_free args then
     let new_lhs = args2lhs args in
-    let new_rhs = invCallE (f, [], rhs2args rhs) ~at:lhs.at in
+    let new_rhs = invCallE (f, [], rhs2args rhs) ~at:lhs.at ~note:lhs.note in
     handle_special_lhs new_lhs new_rhs free_ids
 
   (* Some arguments are free *)
@@ -560,7 +560,7 @@ and handle_inverse_function lhs rhs free_ids =
 
     (* Free argument become new lhs & InvCallE become new rhs *)
     let new_lhs = args2lhs free_args in
-    let new_rhs = invCallE (f, indices, bound_args @ rhs2args rhs) ~at:lhs.at in
+    let new_rhs = invCallE (f, indices, bound_args @ rhs2args rhs) ~at:lhs.at ~note:lhs.note in
 
     (* Recursively translate new_lhs and new_rhs *)
     handle_special_lhs new_lhs new_rhs free_ids
