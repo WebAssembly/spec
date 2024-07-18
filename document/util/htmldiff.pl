@@ -48,7 +48,7 @@
 # also requires the perl modules Getopt::Std
 #
 # NOTE: The markup created by htmldiff may not validate against the HTML 4.0
-# DTD. This is because the algorithm is realtively simple, and there are
+# DTD. This is because the algorithm is relatively simple, and there are
 # places in the markup content model where the span element is not allowed.
 # Htmldiff is NOT aware of these places.
 #
