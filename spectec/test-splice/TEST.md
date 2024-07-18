@@ -53,7 +53,6 @@ NotationReduct
 ../spec/wasm-3.0/6-typing.watsup:492.6-492.46: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, reftype_1, reftype_2)`
 ../spec/wasm-3.0/6-typing.watsup:493.6-493.46: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, reftype_2, reftype_1)`
 ../spec/wasm-3.0/6-typing.watsup:497.6-497.43: prem_to_instrs: Yet `Limits_sub: `%|-%<:%`(C, limits_1, limits_2)`
-../spec/wasm-3.0/6-typing.watsup:1250.6-1250.45: prem_to_instrs: Yet `Expand: `%~~%`(C.FUNCS_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype([]), `%`_resulttype([]))))`
 == Splicing...
 \documentclass[a4paper]{scrartcl}
 
@@ -1696,21 +1695,21 @@ warning: rule prose `valid/reftype_sub` was never spliced
 warning: rule prose `valid/heaptype_sub` was never spliced
 warning: rule prose `valid/deftype_sub` was never spliced
 warning: rule prose `valid/start` was never spliced
-warning: rule prose `valid/externtype_ok` was never spliced
+warning: rule prose `valid/externtype` was never spliced
 warning: rule prose `valid/memtype` was never spliced
 warning: rule prose `valid/tabletype` was never spliced
 warning: rule prose `valid/globaltype` was never spliced
 warning: rule prose `valid/deftype` was never spliced
-warning: rule prose `valid/comptype_ok` was never spliced
+warning: rule prose `valid/comptype` was never spliced
 warning: rule prose `valid/functype` was never spliced
 warning: rule prose `valid/fieldtype` was never spliced
-warning: rule prose `valid/storagetype_ok` was never spliced
+warning: rule prose `valid/storagetype` was never spliced
 warning: rule prose `valid/packtype` was never spliced
 warning: rule prose `valid/instrtype` was never spliced
 warning: rule prose `valid/resulttype` was never spliced
-warning: rule prose `valid/valtype_ok` was never spliced
+warning: rule prose `valid/valtype` was never spliced
 warning: rule prose `valid/reftype` was never spliced
-warning: rule prose `valid/heaptype_ok` was never spliced
+warning: rule prose `valid/heaptype` was never spliced
 warning: rule prose `valid/vectype` was never spliced
 warning: rule prose `valid/numtype` was never spliced
 warning: definition prose `ANYREF` was never spliced

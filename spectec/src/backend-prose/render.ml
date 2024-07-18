@@ -497,6 +497,8 @@ let rec render_prose_instr env depth = function
     sprintf "* %s if and only if %s."
       (String.capitalize_ascii (render_expr env c1))
       (render_expr env c2)
+  | EitherI _ -> 
+    sprintf "* Either: (TODO)"
   | YetI s ->
     sprintf "* YetI: %s." s
 

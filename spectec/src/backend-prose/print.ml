@@ -66,16 +66,19 @@ let rec string_of_instr = function
   | IfI (c, is) ->
       sprintf "%s If %s, \n%s" (indent ())
         (string_of_expr c)
-        (string_of_list indented_string_of_instr "" "\n" "" is)
+        (indented_string_of_instrs is)
   | ForallI (iters, is) ->
       let string_of_iter (e1, e2) = (string_of_expr e1) ^ " in " ^ (string_of_expr e2) in
       sprintf "%s For all %s,\n%s" (indent ())
         (string_of_list string_of_iter "" " and " "" iters)
-        (string_of_list indented_string_of_instr "" "\n" "" is)
+        (indented_string_of_instrs is)
   | EquivI (e1, e2) ->
       sprintf "%s (%s) if and only if (%s)." (indent ())
         (string_of_expr e2)
         (string_of_expr e1)
+  | EitherI iss -> 
+      sprintf "%s Either:\n%s" (indent ())
+        (string_of_list indented_string_of_instrs "" ("\n" ^ indent () ^ " Or:\n") "" iss)
   | YetI s -> indent () ^ " Yet: " ^ s
 
 and indented_string_of_instr i =
@@ -83,6 +86,9 @@ and indented_string_of_instr i =
   let result = string_of_instr i in
   indent_depth := !indent_depth - 1;
   result
+
+and indented_string_of_instrs is =
+  (string_of_list indented_string_of_instr "" "\n" "" is)
 
 let string_of_def = function
 | Pred (a, params, instrs) ->

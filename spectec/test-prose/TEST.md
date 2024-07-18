@@ -1295,11 +1295,19 @@ Step_read
 Step
 Steps
 Eval_expr
+6-typing.watsup:595.6-595.42: prem_to_instrs: Yet `Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype)`
 =================
  Generated prose
 =================
-validation_of_Datamode_ok
-- Yet: TODO: Validation relation with Multiple rules
+validation_of_datamode datam_u0
+- Either:
+  - datam_u0 must be equal to (ACTIVE 0 expr).
+  - |C.MEMS| must be greater than 0.
+  - C.MEMS[0] must be equal to mt.
+  - Yet: Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype)
+- Or:
+  - datam_u0 must be equal to PASSIVE.
+- The datamode is valid.
 
 validation_of_data (DATA b* datamode)
 - Under the context C, datamode must be valid.
@@ -3757,7 +3765,6 @@ NotationReduct
 6-typing.watsup:492.6-492.46: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, reftype_1, reftype_2)`
 6-typing.watsup:493.6-493.46: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, reftype_2, reftype_1)`
 6-typing.watsup:497.6-497.43: prem_to_instrs: Yet `Limits_sub: `%|-%<:%`(C, limits_1, limits_2)`
-6-typing.watsup:1250.6-1250.45: prem_to_instrs: Yet `Expand: `%~~%`(C.FUNCS_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype([]), `%`_resulttype([]))))`
 =================
  Generated prose
 =================
@@ -3767,15 +3774,36 @@ validation_of_numtype numtype
 validation_of_vectype vectype
 - The vector type is valid.
 
-validation_of_Heaptype_ok
-- Yet: TODO: Validation relation with Multiple rules
+validation_of_heaptype heapt_u0
+- Either:
+  - heapt_u0 must be equal to absheaptype.
+- Or:
+  - heapt_u0 must be equal to (_IDX typeidx).
+  - |C.TYPES| must be greater than typeidx.
+  - C.TYPES[typeidx] must be equal to dt.
+- Or:
+  - heapt_u0 must be equal to (REC i).
+  - |C.RECS| must be greater than i.
+  - C.RECS[i] must be equal to st.
+- The heap type is valid.
 
 validation_of_reftype (REF (NULL ()?) heaptype)
 - Under the context C, heaptype must be valid.
 - The reference type is valid.
 
-validation_of_Valtype_ok
-- Yet: TODO: Validation relation with Multiple rules
+validation_of_valtype valty_u0
+- Either:
+  - valty_u0 must be equal to numtype.
+  - Under the context C, numtype must be valid.
+- Or:
+  - valty_u0 must be equal to vectype.
+  - Under the context C, vectype must be valid.
+- Or:
+  - valty_u0 must be equal to reftype.
+  - Under the context C, reftype must be valid.
+- Or:
+  - valty_u0 must be equal to BOT.
+- The value type is valid.
 
 validation_of_resulttype t*
 - For all t in t*,
@@ -3795,8 +3823,14 @@ validation_of_instrtype (t_1* ->_ x* ++ t_2*)
 validation_of_packtype packtype
 - The packed type is valid.
 
-validation_of_Storagetype_ok
-- Yet: TODO: Validation relation with Multiple rules
+validation_of_storagetype stora_u0
+- Either:
+  - stora_u0 must be equal to valtype.
+  - Under the context C, valtype must be valid.
+- Or:
+  - stora_u0 must be equal to packtype.
+  - Under the context C, packtype must be valid.
+- The storage type is valid.
 
 validation_of_fieldtype ((MUT ()?), storagetype)
 - Under the context C, storagetype must be valid.
@@ -3807,8 +3841,18 @@ validation_of_functype (t_1* -> t_2*)
 - Under the context C, t_2* must be valid.
 - The function type is valid.
 
-validation_of_Comptype_ok
-- Yet: TODO: Validation relation with Multiple rules
+validation_of_comptype compt_u0
+- Either:
+  - compt_u0 must be equal to (STRUCT fieldtype*).
+  - For all fieldtype in fieldtype*,
+    - Under the context C, fieldtype must be valid.
+- Or:
+  - compt_u0 must be equal to (ARRAY fieldtype).
+  - Under the context C, fieldtype must be valid.
+- Or:
+  - compt_u0 must be equal to (FUNC functype).
+  - Under the context C, functype must be valid.
+- The composite type is valid.
 
 validation_of_deftype (DEF rectype i)
 - Under the context C, rectype must be valid with type (OK x).
@@ -3829,12 +3873,25 @@ validation_of_memtype (PAGE limits)
 - Under the context C, limits must be valid with type (2 ^ 16).
 - The memory type is valid.
 
-validation_of_Externtype_ok
-- Yet: TODO: Validation relation with Multiple rules
+validation_of_externtype exter_u0
+- Either:
+  - exter_u0 must be equal to (FUNC deftype).
+  - Under the context C, deftype must be valid.
+  - $expanddt(deftype) must be equal to (FUNC functype).
+- Or:
+  - exter_u0 must be equal to (GLOBAL globaltype).
+  - Under the context C, globaltype must be valid.
+- Or:
+  - exter_u0 must be equal to (TABLE tabletype).
+  - Under the context C, tabletype must be valid.
+- Or:
+  - exter_u0 must be equal to (MEM memtype).
+  - Under the context C, memtype must be valid.
+- The external type is valid.
 
 validation_of_start (START x)
 - |C.FUNCS| must be greater than x.
-- Yet: Expand: `%~~%`(C.FUNCS_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype([]), `%`_resulttype([]))))
+- $expanddt(C.FUNCS[x]) must be equal to (FUNC ([] -> [])).
 - The start function is valid.
 
 validation_of_packtype packtype

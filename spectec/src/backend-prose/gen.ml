@@ -32,6 +32,17 @@ let flatten_rec def =
   | Ast.RecD defs -> defs
   | _ -> [ def ]
 
+let preprocess_prem prem = match prem.it with
+  (* HARDCODE: translation of `Expand: dt ~~ ct` into `$expanddt(dt) = ct` *)
+  | Ast.RulePr (
+      { it = "Expand"; _ },
+      [[]; [{it = Approx; _}]; []],
+      { it = TupE [dt; ct]; at = tup_at; _ }
+    ) ->
+      let expanded_dt = { dt with it = Ast.CallE ("expanddt" $ no_region, [Ast.ExpA dt $ dt.at]); note = ct.note } in
+      { prem with it = Ast.IfPr (Ast.CmpE (Ast.EqOp, expanded_dt, ct) $$ tup_at % (Ast.BoolT $ tup_at)) }
+  | _ -> prem
+
 let atomize atom' = atom' $$ no_region % (El.Atom.info "")
 
 let extract_desc typ =
@@ -46,7 +57,7 @@ let extract_desc typ =
     | _ -> None)
   with
   | Some desc -> desc
-  | None -> error typ.at ("Unrecognized syntax named `" ^ name ^ "`.")
+  | None -> name
 
 let cmpop_to_cmpop = function
 | Ast.EqOp -> Eq
@@ -88,7 +99,9 @@ let rec if_expr_to_instrs e =
       [ MemI (exp_to_expr e1, exp_to_expr e2) ]
   | _ -> print_yet_exp e "if_expr_to_instrs"; [ YetI (Il.Print.string_of_exp e) ]
 
-let rec prem_to_instrs prem = match prem.it with
+let rec prem_to_instrs prem =
+  let prem = preprocess_prem prem in
+  match prem.it with
   | Ast.LetPr (e1, e2, _) ->
     [ LetI (exp_to_expr e1, exp_to_expr e2) ]
   | Ast.IfPr e ->
@@ -192,8 +205,9 @@ let is_ok_rel def =
   match def.it with
   | Ast.RelD (_, mixop, _, _) -> Mixop.eq pattern mixop
   | _ -> false
-let prose_of_ok_rule rule =
-  let (e, prems, _) = pack_ok_rule rule in
+let prose_of_ok_rules rules =
+  let rule = List.hd rules in
+  let (e, _, _) = pack_ok_rule rule in
   let tmp = Print.string_of_typ e.note in
   let kind = extract_desc e.note in
 
@@ -202,13 +216,20 @@ let prose_of_ok_rule rule =
   (* params *)
   let params = [ exp_to_expr e ] in
   (* body *)
-  let body = (List.concat_map prem_to_instrs prems) @ [ IsValidI (kind, None) ] in
+  let body = (
+    rules
+    |> List.map pack_ok_rule
+    |> List.map (fun (_, prems, _) -> prems)
+    |> List.map (List.concat_map prem_to_instrs)
+    |> (function
+        | [ instrs ] -> instrs
+        | instrss -> [ EitherI instrss ])
+  ) @ [ IsValidI (kind, None) ] in
 
   Pred (name, params, body)
 let prose_of_ok_rel def =
   match def.it with
-  | Ast.RelD (_, _, _, [rule]) -> prose_of_ok_rule rule
-  | Ast.RelD (id, _, _, _) -> Pred ((Atom id.it, id.it), [], [ YetI "TODO: Validation relation with Multiple rules" ])
+  | Ast.RelD (_, _, _, rules) -> prose_of_ok_rules (Il2al.Il2il.unify_rules rules)
   | _ -> assert false
 let prose_of_ok_rels = List.map prose_of_ok_rel
 

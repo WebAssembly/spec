@@ -15,6 +15,7 @@ type instr =
 | IfI of Al.Ast.expr * instr list
 | ForallI of (Al.Ast.expr * Al.Ast.expr) list * instr list
 | EquivI of Al.Ast.expr * Al.Ast.expr
+| EitherI of instr list list
 | YetI of string
 
 (* TODO: perhaps rename to avoid name clash *)
