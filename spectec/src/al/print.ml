@@ -352,7 +352,7 @@ let string_of_instr instr =
   string_of_instr' 0 instr
 let string_of_instrs = string_of_instrs' 0
 
-let string_of_algorithm = function
+let string_of_algorithm algo = match algo.it with
   | RuleA (a, params, instrs) ->
     "execution_of_" ^ string_of_atom a
     ^ List.fold_left
@@ -617,7 +617,7 @@ and structured_string_of_instrs' depth instrs =
 let structured_string_of_instr = structured_string_of_instr' 0
 let structured_string_of_instrs = structured_string_of_instrs' 0
 
-let structured_string_of_algorithm = function
+let structured_string_of_algorithm algo = match algo.it with
   | RuleA (a, params, instrs) ->
       "execution_of_" ^ string_of_atom a
       ^ List.fold_left

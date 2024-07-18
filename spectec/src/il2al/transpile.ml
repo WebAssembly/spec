@@ -512,16 +512,19 @@ let remove_state algo =
       }
   in
 
-  match Walk.walk walk_config algo with
-  | FuncA (name, args, body) ->
-    let args' =
-      args
-      |> Lib.List.filter_not is_state
-      |> Lib.List.filter_not is_store
-      |> Lib.List.filter_not is_frame
-    in
-    FuncA (name, args', body)
-  | rule -> rule
+  let algo' = Walk.walk walk_config algo in
+  { algo' with it =
+    match algo'.it with
+    | FuncA (name, args, body) ->
+      let args' =
+        args
+        |> Lib.List.filter_not is_state
+        |> Lib.List.filter_not is_store
+        |> Lib.List.filter_not is_frame
+      in
+      FuncA (name, args', body)
+    | rule -> rule
+  }
 
 let insert_state_binding algo =
   let state_count = ref 0 in
@@ -540,14 +543,17 @@ let insert_state_binding algo =
     }
   in
 
-  match Walk.walk walk_config algo with
-  | FuncA (name, params, body) when !state_count > 0 ->
-    let body = (letI (varE "z", getCurStateE ())) :: body in
-    FuncA (name, params, body)
-  | RuleA (name, params, body) when !state_count > 0 ->
-    let body = (letI (varE "z", getCurStateE ())) :: body in
-    RuleA (name, params, body)
-  | _ -> algo
+  let algo' = Walk.walk walk_config algo in
+  { algo' with it =
+    match algo'.it with
+    | FuncA (name, params, body) when !state_count > 0 ->
+      let body = (letI (varE "z", getCurStateE ())) :: body in
+      FuncA (name, params, body)
+    | RuleA (name, params, body) when !state_count > 0 ->
+      let body = (letI (varE "z", getCurStateE ())) :: body in
+      RuleA (name, params, body)
+    | a -> a
+  }
 
 let insert_frame_binding instrs =
   let frame_count = ref 0 in
@@ -691,8 +697,7 @@ let remove_enter algo =
     | _ -> instr
   in
 
-  let remove_enter' algo =
-    match algo with
+  let remove_enter' = Source.map (function
     | FuncA (name, params, body) ->
         let walk_config =
           {
@@ -711,7 +716,7 @@ let remove_enter algo =
         in
         let body = Walk.walk_instrs walk_config body in
         RuleA (name, params, body)
-  in
+  ) in
 
   let algo' = remove_enter' algo in
   if Eq.eq_algos algo algo' then algo else remove_enter' algo'

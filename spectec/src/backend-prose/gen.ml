@@ -146,7 +146,7 @@ let gen_validation_prose il =
 let gen_execution_prose =
   List.map
     (fun algo ->
-      let handle_state = match algo with
+      let handle_state = match algo.it with
       | Al.Ast.RuleA _ -> Il2al.Transpile.insert_state_binding
       | Al.Ast.FuncA _ -> Il2al.Transpile.remove_state
       in

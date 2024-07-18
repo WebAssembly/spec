@@ -74,7 +74,7 @@ let get_params winstr =
     (sprintf "cannot get params of wasm instruction `%s`" (Il.Print.string_of_exp winstr))
 
 let lhs_of_rgroup rgroup =
-  let (lhs, _, _) = List.hd rgroup in
+  let (lhs, _, _) = (List.hd rgroup).it in
   lhs
 
 let name_of_rule rule =
@@ -785,7 +785,7 @@ let translate_helper partial_funcs def =
       |> (if List.mem id partial_funcs then Fun.id else Transpile.ensure_return)
       |> Transpile.flatten_if in
 
-    Some (FuncA (name, params, body))
+    Some (FuncA (name, params, body) $ def.at)
   | _ -> None
 
 
@@ -818,7 +818,7 @@ let in_same_context (lhs1, _, _) (lhs2, _, _) =
 
 let group_contexts xs =
   List.fold_left (fun acc x ->
-    let g1, g2 = List.partition (fun g -> in_same_context (List.hd g) x) acc in
+    let g1, g2 = List.partition (fun g -> in_same_context (List.hd g).it x.it) acc in
     match g1 with
     | [] -> [ x ] :: acc
     | [ g ] -> (x :: g) :: g2
@@ -856,7 +856,7 @@ let insert_deferred = function
 
 (* `reduction` -> `instr list` *)
 let translate_reduction deferred reduction =
-  let _, rhs, prems = reduction in
+  let _, rhs, prems = reduction.it in
 
   (* Translate rhs *)
   translate_rhs rhs
@@ -951,7 +951,7 @@ let translate_context_rgroup lhss sub_algos inner_params =
   let instr_popall = popallI e_vals in
   let instrs_context =
     List.fold_right2 (fun lhs algo acc ->
-      match algo with
+      match algo.it with
       | RuleA (_, params, body) ->
         (* Assume that each sub-algorithms are produced by translate_context,
            i.e., they will always contain instr_popall as their first instruction. *)
@@ -1006,7 +1006,7 @@ let rec translate_rgroup' context winstr instr_name rgroup =
       let instrs' =
         match rgroup |> Util.Lib.List.split_last with
         (* Either case: No premise for the last reduction rule *)
-        | hds, (_, rhs, []) when List.length hds > 0 ->
+        | hds, { it = (_, rhs, []); _ } when List.length hds > 0 ->
           assert (defer_opt = None);
           let blocks = List.map (translate_reduction None) hds in
           let body1 = Transpile.merge_blocks blocks in
@@ -1029,7 +1029,7 @@ let rec translate_rgroup' context winstr instr_name rgroup =
       (try
       let unified_sub_groups =
         rgroup
-        |> List.map un_unify
+        |> List.map (Source.map un_unify)
         |> group_contexts
         |> List.map (fun g -> Il2il.unify_lhs (instr_name, g)) in
 
@@ -1051,7 +1051,7 @@ and get_lhs_stack (exp: Il.exp): Il.exp list =
   else to_exp_list exp
 
 and translate_rgroup (instr_name, rgroup) =
-  let lhs, _, _ = List.hd rgroup in
+  let lhs, _, _ = (List.hd rgroup).it in
   (* TODO: Generalize getting current frame *)
   let lhs_stack = get_lhs_stack lhs in
   let context, winstr = split_lhs_stack instr_name lhs_stack in
@@ -1086,14 +1086,18 @@ and translate_rgroup (instr_name, rgroup) =
     |> Transpile.infer_assert
     |> Transpile.flatten_if
   in
-  RuleA (name, al_params', body)
+
+  let at = rgroup
+    |> List.map at
+    |> over_region in
+  RuleA (name, al_params', body) $ at
 
 
 let rule_to_tup rule =
   match rule.it with
   | Il.RuleD (_, _, _, exp, prems) ->
     match exp.it with
-    | Il.TupE [ lhs; rhs ] -> lhs, rhs, prems
+    | Il.TupE [ lhs; rhs ] -> (lhs, rhs, prems) $ rule.at
     | _ -> error_exp exp "form of reduction rule"
 
 
