@@ -22907,7 +22907,7 @@ relation Instrtype_ok: `%|-%:OK`(context, instrtype)
   rule _{C : context, t_1* : valtype*, x* : idx*, t_2* : valtype*, lct* : localtype*}:
     `%|-%:OK`(C, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x*{x : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
     -- if (|lct*{lct : localtype}| = |x*{x : idx}|)
-    -- (if (x!`%`_idx.0 < |C.LOCALS_context|))*{lct : localtype, x : idx}
+    -- (if (x!`%`_idx.0 < |C.LOCALS_context|))*{x : idx}
     -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_1*{t_1 : valtype}))
     -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_2*{t_2 : valtype}))
     -- (if (C.LOCALS_context[x!`%`_idx.0] = lct))*{lct : localtype, x : idx}
@@ -23192,7 +23192,7 @@ relation Subtype_ok: `%|-%:%`(context, subtype, oktypeidx)
     `%|-%:%`(C, SUB_subtype(`FINAL%?`_fin(w0), ($idx(typeidx) : typevar <: typeuse)*{typeidx : typeidx}, comptype), OK_oktypeidx(x_0))
     -- if (|comptype'*{comptype' : comptype}| = |x*{x : idx}|)
     -- if (|comptype'*{comptype' : comptype}| = |x'*{x' : idx}*{x' : idx}|)
-    -- (if (x!`%`_idx.0 < |C.TYPES_context|))*{comptype' : comptype, x : idx, x' : typeidx}
+    -- (if (x!`%`_idx.0 < |C.TYPES_context|))*{x : idx}
     -- if (|x*{x : idx}| <= 1)
     -- (if (x!`%`_idx.0 < x_0!`%`_idx.0))*{x : idx}
     -- (if ($unrolldt(C.TYPES_context[x!`%`_idx.0]) = SUB_subtype(`FINAL%?`_fin(?()), ($idx(x') : typevar <: typeuse)*{x' : typeidx}, comptype')))*{comptype' : comptype, x : idx, x' : typeidx}
@@ -23334,7 +23334,7 @@ relation Instrtype_sub: `%|-%<:%`(context, instrtype, instrtype)
   rule _{C : context, t_11* : valtype*, x_1* : idx*, t_12* : valtype*, t_21* : valtype*, x_2* : idx*, t_22* : valtype*, x* : idx*, t* : valtype*}:
     `%|-%<:%`(C, `%->_%%`_instrtype(`%`_resulttype(t_11*{t_11 : valtype}), x_1*{x_1 : localidx}, `%`_resulttype(t_12*{t_12 : valtype})), `%->_%%`_instrtype(`%`_resulttype(t_21*{t_21 : valtype}), x_2*{x_2 : localidx}, `%`_resulttype(t_22*{t_22 : valtype})))
     -- if (|t*{t : valtype}| = |x*{x : idx}|)
-    -- (if (x!`%`_idx.0 < |C.LOCALS_context|))*{t : valtype, x : idx}
+    -- (if (x!`%`_idx.0 < |C.LOCALS_context|))*{x : idx}
     -- Resulttype_sub: `%|-%<:%`(C, t_21*{t_21 : valtype}, t_11*{t_11 : valtype})
     -- Resulttype_sub: `%|-%<:%`(C, t_12*{t_12 : valtype}, t_22*{t_22 : valtype})
     -- if (x*{x : idx} = $setminus(x_2*{x_2 : idx}, x_1*{x_1 : idx}))
@@ -24071,7 +24071,7 @@ relation Instrs_ok: `%|-%:%`(context, instr*, instrtype)
     `%|-%:%`(C, [instr_1] :: instr_2*{instr_2 : instr}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x_1*{x_1 : localidx} :: x_2*{x_2 : localidx}, `%`_resulttype(t_3*{t_3 : valtype})))
     -- if (|init*{init : init}| = |t*{t : valtype}|)
     -- if (|init*{init : init}| = |x_1*{x_1 : idx}|)
-    -- (if (x_1!`%`_idx.0 < |C.LOCALS_context|))*{init : init, t : valtype, x_1 : idx}
+    -- (if (x_1!`%`_idx.0 < |C.LOCALS_context|))*{x_1 : idx}
     -- Instr_ok: `%|-%:%`(C, instr_1, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x_1*{x_1 : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
     -- (if (C.LOCALS_context[x_1!`%`_idx.0] = `%%`_localtype(init, t)))*{init : init, t : valtype, x_1 : idx}
     -- Instrs_ok: `%|-%:%`($with_locals(C, x_1*{x_1 : localidx}, `%%`_localtype(SET_init, t)*{t : valtype}), instr_2*{instr_2 : instr}, `%->_%%`_instrtype(`%`_resulttype(t_2*{t_2 : valtype}), x_2*{x_2 : localidx}, `%`_resulttype(t_3*{t_3 : valtype})))
@@ -25042,7 +25042,7 @@ relation Step_read: `%~>%`(config, instr*)
   ;; 8-reduction.watsup
   rule array.new_data-num{z : state, i : nat, n : n, x : idx, y : idx, zt : storagetype, c^n : lit_(zt)^n, mut : mut}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr(I32_numtype, `%`_num_(n)) ARRAY.NEW_DATA_instr(x, y)]), $const(!($cunpack(zt)), $cunpacknum(zt, c))^n{c : lit_(zt)} :: [ARRAY.NEW_FIXED_instr(x, `%`_u32(n))])
-    -- (if ($cunpack(zt) =/= ?()))^n{c : lit_(zt)}
+    -- (if ($cunpack(zt) =/= ?()))^n{}
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
     -- if ($concat_(syntax byte, $zbytes(zt, c)^n{c : lit_(zt)}) = $data(z, y).BYTES_datainst[i : ((n * $zsize(zt)) / 8)])
 
@@ -29520,7 +29520,7 @@ relation Instrtype_ok: `%|-%:OK`(context, instrtype)
   rule _{C : context, t_1* : valtype*, x* : idx*, t_2* : valtype*, lct* : localtype*}:
     `%|-%:OK`(C, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x*{x : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
     -- if (|lct*{lct : localtype}| = |x*{x : idx}|)
-    -- (if (x!`%`_idx.0 < |C.LOCALS_context|))*{lct : localtype, x : idx}
+    -- (if (x!`%`_idx.0 < |C.LOCALS_context|))*{x : idx}
     -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_1*{t_1 : valtype}))
     -- Resulttype_ok: `%|-%:OK`(C, `%`_resulttype(t_2*{t_2 : valtype}))
     -- (if (C.LOCALS_context[x!`%`_idx.0] = lct))*{lct : localtype, x : idx}
@@ -29806,7 +29806,7 @@ relation Subtype_ok: `%|-%:%`(context, subtype, oktypeidx)
     -- Comptype_ok: `%|-%:OK`(C, comptype)
     -- if (|comptype'*{comptype' : comptype}| = |x*{x : idx}|)
     -- if (|comptype'*{comptype' : comptype}| = |x'*{x' : idx}*{x' : idx}|)
-    -- (if (x!`%`_idx.0 < |C.TYPES_context|))*{comptype' : comptype, x : idx, x' : typeidx}
+    -- (if (x!`%`_idx.0 < |C.TYPES_context|))*{x : idx}
     -- if (|x*{x : idx}| <= 1)
     -- (if (x!`%`_idx.0 < x_0!`%`_idx.0))*{x : idx}
     -- (if ($unrolldt(C.TYPES_context[x!`%`_idx.0]) = SUB_subtype(`FINAL%?`_fin(?()), ($idx(x') : typevar <: typeuse)*{x' : typeidx}, comptype')))*{comptype' : comptype, x : idx, x' : typeidx}
@@ -29948,7 +29948,7 @@ relation Instrtype_sub: `%|-%<:%`(context, instrtype, instrtype)
   rule _{C : context, t_11* : valtype*, x_1* : idx*, t_12* : valtype*, t_21* : valtype*, x_2* : idx*, t_22* : valtype*, x* : idx*, t* : valtype*}:
     `%|-%<:%`(C, `%->_%%`_instrtype(`%`_resulttype(t_11*{t_11 : valtype}), x_1*{x_1 : localidx}, `%`_resulttype(t_12*{t_12 : valtype})), `%->_%%`_instrtype(`%`_resulttype(t_21*{t_21 : valtype}), x_2*{x_2 : localidx}, `%`_resulttype(t_22*{t_22 : valtype})))
     -- if (|t*{t : valtype}| = |x*{x : idx}|)
-    -- (if (x!`%`_idx.0 < |C.LOCALS_context|))*{t : valtype, x : idx}
+    -- (if (x!`%`_idx.0 < |C.LOCALS_context|))*{x : idx}
     -- Resulttype_sub: `%|-%<:%`(C, t_21*{t_21 : valtype}, t_11*{t_11 : valtype})
     -- Resulttype_sub: `%|-%<:%`(C, t_12*{t_12 : valtype}, t_22*{t_22 : valtype})
     -- if (x*{x : idx} = $setminus(x_2*{x_2 : idx}, x_1*{x_1 : idx}))
@@ -30709,7 +30709,7 @@ relation Instrs_ok: `%|-%:%`(context, instr*, instrtype)
   rule seq{C : context, instr_1 : instr, instr_2* : instr*, t_1* : valtype*, x_1* : idx*, x_2* : idx*, t_3* : valtype*, t_2* : valtype*, init* : init*, t* : valtype*}:
     `%|-%:%`(C, [instr_1] :: instr_2*{instr_2 : instr}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x_1*{x_1 : localidx} :: x_2*{x_2 : localidx}, `%`_resulttype(t_3*{t_3 : valtype})))
     -- Instr_ok: `%|-%:%`(C, instr_1, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), x_1*{x_1 : localidx}, `%`_resulttype(t_2*{t_2 : valtype})))
-    -- (if (x_1!`%`_idx.0 < |C.LOCALS_context|))*{init : init, t : valtype, x_1 : idx}
+    -- (if (x_1!`%`_idx.0 < |C.LOCALS_context|))*{x_1 : idx}
     -- if (|init*{init : init}| = |x_1*{x_1 : idx}|)
     -- if (|init*{init : init}| = |t*{t : valtype}|)
     -- (if (C.LOCALS_context[x_1!`%`_idx.0] = `%%`_localtype(init, t)))*{init : init, t : valtype, x_1 : idx}
@@ -31688,7 +31688,7 @@ relation Step_read: `%~>%`(config, instr*)
   rule array.new_data-num{z : state, i : nat, n : n, x : idx, y : idx, zt : storagetype, c^n : lit_(zt)^n, mut : mut}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr(I32_numtype, `%`_num_(n)) ARRAY.NEW_DATA_instr(x, y)]), $const(!($cunpack(zt)), $cunpacknum(zt, c))^n{c : lit_(zt)} :: [ARRAY.NEW_FIXED_instr(x, `%`_u32(n))])
     -- where ARRAY_comptype(`%%`_arraytype(mut, zt)) = $expanddt($type(z, x))
-    -- (if ($cunpack(zt) =/= ?()))^n{c : lit_(zt)}
+    -- (if ($cunpack(zt) =/= ?()))^n{}
     -- where $concat_(syntax byte, $zbytes(zt, c)^n{c : lit_(zt)}) = $data(z, y).BYTES_datainst[i : ((n * $zsize(zt)) / 8)]
 
   ;; 8-reduction.watsup

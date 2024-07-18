@@ -7033,10 +7033,9 @@ execution_of_ARRAY.NEW_DATA x y
 8. Let (mut, zt) be y_0.
 9. If ((i + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
   a. Trap.
-10. Let $zbytes(y_0, c)^n be $concat_^-1($data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)]).
-11. If (y_0 is zt), then:
-  a. Push the values $const($cunpack(zt), $cunpacknum(zt, c))^n to the stack.
-  b. Execute the instruction (ARRAY.NEW_FIXED x n).
+10. Let $zbytes(zt, c)^n be $concat_^-1($data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)]).
+11. Push the values $const($cunpack(zt), $cunpacknum(zt, c))^n to the stack.
+12. Execute the instruction (ARRAY.NEW_FIXED x n).
 
 execution_of_ARRAY.GET sx? x
 1. Let z be the current state.

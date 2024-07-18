@@ -674,8 +674,15 @@ and create_context (name: string) (args: value list) : AlContext.mode =
   let params = params_of_algo algo in
   let body = body_of_algo algo in
 
-  if List.length args <> List.length params then
-    raise (Exception.InvalidArg ("Args number mismatch for algorithm " ^ name));
+  if List.length args <> List.length params then (
+    error
+      algo.at
+      (Printf.sprintf "Expected %d arguments for the algorithm `%s` but %d arguments are given"
+        (List.length params)
+        name
+        (List.length args))
+      (string_of_value (CaseV (name, args)))
+  );
 
   let env =
     Env.empty

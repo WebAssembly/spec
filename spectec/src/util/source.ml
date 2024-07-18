@@ -43,3 +43,6 @@ let (%) at note = (at, note)
 let it {it; _} = it
 let at {at; _} = at
 let note {note; _} = note
+
+(* Utils *)
+let map f {it; at; note} = {it = f it; at; note}

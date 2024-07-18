@@ -134,6 +134,7 @@ let rec walk_instr f (instr:instr) : instr list =
 
 and walk_instrs f = walk_instr f |> List.concat_map
 
-let walk f algo = match algo with
+let walk' f algo' = match algo' with
   | RuleA (a, params, body) -> RuleA (a, params, walk_instrs f body)
   | FuncA (id, params, body) -> FuncA (id, params, walk_instrs f body)
+let walk f algo = Source.map (walk' f) algo

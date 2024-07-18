@@ -73,7 +73,7 @@ type iter =
 
 (* Expressions *)
 
-and expr = expr' phrase
+and expr = (expr', Il.Ast.typ) note_phrase
 and expr' =
   | VarE of id                          (* varid *)
   | NumE of Z.t                         (* number *)
@@ -152,6 +152,7 @@ and instr' =
 
 (* Algorithms *)
 
-type algorithm =                           (* `algorithm` x`(`expr*`)` `{`instr*`}` *)
+type algorithm = algorithm' phrase
+and algorithm' =                          (* `algorithm` f`(`expr*`)` `{`instr*`}` *)
   | RuleA of atom * expr list * instr list (* reduction rule *)
   | FuncA of id * expr list * instr list   (* helper function *)
