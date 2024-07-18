@@ -5482,7 +5482,7 @@ cvtop numty_u1 numty_u4 cvtop_u0 num__u3
 11. Assert: Due to validation, the type of numty_u4 is Inn.
 12. Let Inn_2 be numty_u4.
 13. Let fN_1 be num__u3.
-14. Assert: Due to validation, the type of $sizenn2^-1($sizenn1(Inn_1)) is Fnn.
+14. Assert: Due to validation, ($sizenn1(Fnn_1) is $sizenn2(Inn_2)).
 15. Return [$reinterpret(Fnn_1, Inn_2, fN_1)].
 
 invibytes N b*

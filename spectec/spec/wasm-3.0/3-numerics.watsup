@@ -175,7 +175,7 @@ def $cvtop(Inn_1, Fnn_2, CONVERT sx, iN_1) = $convert($sizenn1(Inn_1), $sizenn2(
 def $cvtop(Fnn_1, Fnn_2, PROMOTE, fN_1) = $promote($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1)
 def $cvtop(Fnn_1, Fnn_2, DEMOTE, fN_1) = $demote($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1)
 def $cvtop(Inn_1, Fnn_2, REINTERPRET, iN_1) = $reinterpret(Inn_1, Fnn_2, iN_1) -- if $sizenn1(Inn_1) = $sizenn2(Fnn_2)
-def $cvtop(Fnn_1, Inn_2, REINTERPRET, fN_1) = $reinterpret(Fnn_1, Inn_2, fN_1) -- if $sizenn1(Inn_1) = $sizenn2(Fnn_2)
+def $cvtop(Fnn_1, Inn_2, REINTERPRET, fN_1) = $reinterpret(Fnn_1, Inn_2, fN_1) -- if $sizenn1(Fnn_1) = $sizenn2(Inn_2)
 
 
 ;; Packed numbers
@@ -195,7 +195,7 @@ def $cpacknum(storagetype, lit_($cunpack(storagetype))) : lit_(storagetype)
 def $cpacknum(consttype, c) = c
 def $cpacknum(packtype, c) = $wrap($size($lunpack(packtype)), $psize(packtype), c)
 
-def $cunpacknum(storagetype, lit_(storagetype)) : lit_($cunpack(storagetype)) 
+def $cunpacknum(storagetype, lit_(storagetype)) : lit_($cunpack(storagetype))
     hint(show $unpack_(%,%)) hint(macro "unpacknum")
 def $cunpacknum(consttype, c) = c
 def $cunpacknum(packtype, c) = $ext($psize(packtype), $size($lunpack(packtype)), U, c)
