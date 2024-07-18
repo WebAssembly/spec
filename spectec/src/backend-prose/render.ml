@@ -465,24 +465,15 @@ let rec render_prose_instr env depth = function
     sprintf "* %s must be contained in %s."
       (String.capitalize_ascii (render_expr env e1))
       (render_expr env e2)
-  | MustValidI (e1, e2, e3) ->
-    sprintf "* Under the context %s, %s must be valid%s."
+  | IsValidI (c_opt, e1, e2_opt) ->
+    sprintf "* %s%s is valid%s."
+      (render_opt "Under the context " (render_expr env) ", " c_opt)
+      (render_expr env e1)
+      (render_opt " with type " (render_expr env) "" e2_opt)
+  | MatchesI (e1, e2) ->
+    sprintf "* %s matches %s."
       (render_expr env e1)
       (render_expr env e2)
-      (render_opt " with type " (render_expr env) "" e3)
-  | MustMatchI (e1, e2) ->
-    sprintf "* %s must match %s."
-      (String.capitalize_ascii (render_expr env e1))
-      (render_expr env e2)
-  | IsValidI (kind, e) ->
-    sprintf "* The %s is valid%s."
-      kind
-      (render_opt " with type " (render_expr env) "" e)
-  | MatchesI (kind, e) ->
-    sprintf "* The %s matches the %s %s."
-      kind
-      kind
-      (render_expr env e)
   | IfI (c, is) ->
     sprintf "* If %s,%s"
       (render_expr env c)
@@ -661,7 +652,7 @@ let render_atom_title env name params =
 let render_funcname_title env fname params =
   render_expr env (Al.Al_util.callE (fname, params) ~at:no_region)
 
-let render_pred env name params instrs =
+let _render_pred env name params instrs =
   let title = render_atom_title env name params in
   title ^ "\n" ^
   String.make (String.length title) '.' ^ "\n" ^
@@ -681,8 +672,6 @@ let render_func env fname params instrs =
   render_al_instrs env fname 0 instrs
 
 let render_def env = function
-  | Pred (name, params, instrs) ->
-    "\n" ^ render_pred env name params instrs ^ "\n\n"
   | Iff _ -> "TODO: render_iff"
   | Algo algo -> (match algo.it with
     | Al.Ast.RuleA (name, params, instrs) ->

@@ -11,48 +11,33 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup -l --splice-latex -p spe
 == IL Validation after pass animate...
 == Translating to AL...
 == Prose Generation...
-Expand
-Instr_const
-Expr_const
-Expr_ok_const
-Export_ok
-Module_ok
-Step_pure
-Step_read
-Step
-Steps
-Eval_expr
-NotationTypingPremise
-NotationTypingPremisedots
-NotationTypingScheme
-NotationReduct
-../spec/wasm-3.0/6-typing.watsup:627.7-627.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t*{t : valtype}), C.LABELS_context[l!`%`_labelidx.0])`
-../spec/wasm-3.0/6-typing.watsup:628.6-628.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t*{t : valtype}), C.LABELS_context[l'!`%`_labelidx.0])`
-../spec/wasm-3.0/6-typing.watsup:645.6-645.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-../spec/wasm-3.0/6-typing.watsup:646.6-646.34: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt)`
-../spec/wasm-3.0/6-typing.watsup:653.6-653.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-../spec/wasm-3.0/6-typing.watsup:654.6-654.49: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, $diffrt(rt_1, rt_2), rt)`
-../spec/wasm-3.0/6-typing.watsup:670.6-670.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
-../spec/wasm-3.0/6-typing.watsup:683.6-683.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_2*{t_2 : valtype}), `%`_resulttype(t'_2*{t'_2 : valtype}))`
-../spec/wasm-3.0/6-typing.watsup:691.6-691.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_2*{t_2 : valtype}), `%`_resulttype(t'_2*{t'_2 : valtype}))`
-../spec/wasm-3.0/6-typing.watsup:698.6-698.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
-../spec/wasm-3.0/6-typing.watsup:702.6-702.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_2*{t_2 : valtype}), `%`_resulttype(t'_2*{t'_2 : valtype}))`
-../spec/wasm-3.0/6-typing.watsup:756.6-756.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-../spec/wasm-3.0/6-typing.watsup:762.6-762.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-../spec/wasm-3.0/6-typing.watsup:812.6-812.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
-../spec/wasm-3.0/6-typing.watsup:841.6-841.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
-../spec/wasm-3.0/6-typing.watsup:846.6-846.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
-../spec/wasm-3.0/6-typing.watsup:983.6-983.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-../spec/wasm-3.0/6-typing.watsup:989.6-989.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-../spec/wasm-3.0/6-typing.watsup:396.7-396.35: prem_to_instrs: Yet `Valtype_sub: `%|-%<:%`(C, t_1, t_2)`
-../spec/wasm-3.0/6-typing.watsup:477.6-477.41: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_21*{t_21 : valtype}), `%`_resulttype(t_11*{t_11 : valtype}))`
-../spec/wasm-3.0/6-typing.watsup:478.6-478.41: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_12*{t_12 : valtype}), `%`_resulttype(t_22*{t_22 : valtype}))`
-../spec/wasm-3.0/6-typing.watsup:400.6-400.41: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_21*{t_21 : valtype}), `%`_resulttype(t_11*{t_11 : valtype}))`
-../spec/wasm-3.0/6-typing.watsup:401.6-401.41: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_12*{t_12 : valtype}), `%`_resulttype(t_22*{t_22 : valtype}))`
-../spec/wasm-3.0/6-typing.watsup:491.6-491.43: prem_to_instrs: Yet `Limits_sub: `%|-%<:%`(C, limits_1, limits_2)`
-../spec/wasm-3.0/6-typing.watsup:492.6-492.46: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, reftype_1, reftype_2)`
-../spec/wasm-3.0/6-typing.watsup:493.6-493.46: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, reftype_2, reftype_1)`
-../spec/wasm-3.0/6-typing.watsup:497.6-497.43: prem_to_instrs: Yet `Limits_sub: `%|-%<:%`(C, limits_1, limits_2)`
+relation Subtype_ok: `%|-%:%`(context, subtype, oktypeidx)
+relation Subtype_ok2: `%|-%:%`(context, subtype, oktypeidxnat)
+relation Rectype_ok2: `%|-%:%`(context, rectype, oktypeidxnat)
+relation Rectype_ok: `%|-%:%`(context, rectype, oktypeidx)
+relation Limits_ok: `%|-%:%`(context, limits, nat)
+relation Blocktype_ok: `%|-%:%`(context, blocktype, instrtype)
+relation Instrs_ok: `%|-%:%`(context, instr*, instrtype)
+relation Expr_ok: `%|-%:%`(context, expr, resulttype)
+relation Instr_const: `%|-%CONST`(context, instr)
+relation Expr_const: `%|-%CONST`(context, expr)
+relation Expr_ok_const: `%|-%:%CONST`(context, expr, valtype)
+relation Type_ok: `%|-%:%`(context, type, deftype*)
+relation Local_ok: `%|-%:%`(context, local, localtype)
+relation Func_ok: `%|-%:%`(context, func, deftype)
+relation Global_ok: `%|-%:%`(context, global, globaltype)
+relation Table_ok: `%|-%:%`(context, table, tabletype)
+relation Mem_ok: `%|-%:%`(context, mem, memtype)
+relation Elemmode_ok: `%|-%:%`(context, elemmode, elemtype)
+relation Elem_ok: `%|-%:%`(context, elem, elemtype)
+relation Datamode_ok: `%|-%:%`(context, datamode, datatype)
+relation Data_ok: `%|-%:%`(context, data, datatype)
+relation Import_ok: `%|-%:%`(context, import, externtype)
+relation Externidx_ok: `%|-%:%`(context, externidx, externtype)
+relation Export_ok: `%|-%:%%`(context, export, name, externtype)
+relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
+relation Types_ok: `%|-%:%`(context, type*, deftype*)
+relation NotationTypingInstrScheme: `%|-%:%`(context, instr*, functype)
 == Splicing...
 \documentclass[a4paper]{scrartcl}
 
@@ -1685,31 +1670,40 @@ warning: rule prose `valid/select` was never spliced
 warning: rule prose `valid/drop` was never spliced
 warning: rule prose `valid/unreachable` was never spliced
 warning: rule prose `valid/nop` was never spliced
-warning: rule prose `valid/externtype_sub` was never spliced
-warning: rule prose `valid/globaltype_sub` was never spliced
-warning: rule prose `valid/comptype_sub` was never spliced
-warning: rule prose `valid/fieldtype_sub` was never spliced
-warning: rule prose `valid/storagetype_sub` was never spliced
-warning: rule prose `valid/valtype_sub` was never spliced
-warning: rule prose `valid/reftype_sub` was never spliced
-warning: rule prose `valid/heaptype_sub` was never spliced
-warning: rule prose `valid/deftype_sub` was never spliced
-warning: rule prose `valid/start` was never spliced
-warning: rule prose `valid/externtype` was never spliced
-warning: rule prose `valid/memtype` was never spliced
-warning: rule prose `valid/tabletype` was never spliced
-warning: rule prose `valid/globaltype` was never spliced
-warning: rule prose `valid/deftype` was never spliced
-warning: rule prose `valid/comptype` was never spliced
-warning: rule prose `valid/functype` was never spliced
-warning: rule prose `valid/fieldtype` was never spliced
-warning: rule prose `valid/storagetype` was never spliced
+warning: rule prose `valid/exter_u0` was never spliced
+warning: rule prose `valid/page` was never spliced
+warning: rule prose `valid/(limits_1, reftype_1)` was never spliced
+warning: rule prose `valid/((mut _u0?), valtype_1)` was never spliced
+warning: rule prose `valid/(n_1, m_1)` was never spliced
+warning: rule prose `valid/(t_11* ->_ x_1* ++ t_12*)` was never spliced
+warning: rule prose `valid/compt_u0` was never spliced
+warning: rule prose `valid/(t_11* -> t_12*)` was never spliced
+warning: rule prose `valid/t_1*` was never spliced
+warning: rule prose `valid/((mut _u0?), zt_1)` was never spliced
+warning: rule prose `valid/stora_u0` was never spliced
+warning: rule prose `valid/valty_u0` was never spliced
+warning: rule prose `valid/vectype` was never spliced
+warning: rule prose `valid/ref` was never spliced
+warning: rule prose `valid/heapt_u0` was never spliced
+warning: rule prose `valid/deftype_1` was never spliced
+warning: rule prose `valid/numtype` was never spliced
 warning: rule prose `valid/packtype` was never spliced
-warning: rule prose `valid/instrtype` was never spliced
-warning: rule prose `valid/resulttype` was never spliced
-warning: rule prose `valid/valtype` was never spliced
-warning: rule prose `valid/reftype` was never spliced
-warning: rule prose `valid/heaptype` was never spliced
+warning: rule prose `valid/start` was never spliced
+warning: rule prose `valid/exter_u0` was never spliced
+warning: rule prose `valid/page` was never spliced
+warning: rule prose `valid/(limits, reftype)` was never spliced
+warning: rule prose `valid/((mut ()?), t)` was never spliced
+warning: rule prose `valid/def` was never spliced
+warning: rule prose `valid/compt_u0` was never spliced
+warning: rule prose `valid/(t_1* -> t_2*)` was never spliced
+warning: rule prose `valid/((mut ()?), storagetype)` was never spliced
+warning: rule prose `valid/stora_u0` was never spliced
+warning: rule prose `valid/packtype` was never spliced
+warning: rule prose `valid/(t_1* ->_ x* ++ t_2*)` was never spliced
+warning: rule prose `valid/t*` was never spliced
+warning: rule prose `valid/valty_u0` was never spliced
+warning: rule prose `valid/ref` was never spliced
+warning: rule prose `valid/heapt_u0` was never spliced
 warning: rule prose `valid/vectype` was never spliced
 warning: rule prose `valid/numtype` was never spliced
 warning: definition prose `ANYREF` was never spliced
