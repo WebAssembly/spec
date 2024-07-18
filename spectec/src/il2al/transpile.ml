@@ -556,7 +556,11 @@ let insert_state_binding algo =
   }
 
 let insert_frame_binding instrs =
+  let open Free in
+  let (@) = IdSet.union in
   let frame_count = ref 0 in
+  let bindings = ref IdSet.empty in
+  let found = ref false in
 
   let count_frame e =
     (match e.it with
@@ -565,15 +569,44 @@ let insert_frame_binding instrs =
     e
   in
 
+  let update_bindings i =
+    frame_count := 0;
+    match i.it with
+    | LetI ({ it = CatE (e11, e12) ; _ }, _) ->
+      let bindings' = free_expr e11 @ free_expr e12 in
+      let get_bounds_iters e =
+        match e.it with
+        | IterE (_, _, ListN (e_iter, _)) -> free_expr e_iter
+        | _ -> IdSet.empty
+      in
+      let bounds_iters = (get_bounds_iters e11) @ (get_bounds_iters e12) in
+      bindings := IdSet.diff bindings' bounds_iters |> IdSet.union !bindings;
+      [ i ]
+    | LetI (e1, _) ->
+      bindings := IdSet.union !bindings (free_expr e1);
+      found := (not (IdSet.mem "f" !bindings)) && !frame_count > 0;
+      [ i ]
+    | _ -> [ i ]
+  in
+
+  let found_frame _ = !found in
+  let check_free_frame i =
+    found := (not (IdSet.mem "f" !bindings)) && !frame_count > 0;
+    [ i ]
+  in
+
   let walk_config =
     {
       Walk.default_config with
       pre_expr = count_frame;
+      pre_instr = update_bindings;
+      stop_cond_instr = found_frame;
+      post_instr = check_free_frame;
     }
   in
 
   match Walk.walk_instrs walk_config instrs with
-  | il when !frame_count > 0 -> (letI (varE "f", getCurFrameE ())) :: il
+  | il when !found -> (letI (varE "f", getCurFrameE ())) :: il
   | _ -> instrs
 
 (* Applied for reduction rules: infer assert from if *)
