@@ -51,8 +51,8 @@ setup: document
 
 .PHONY: splice
 
-splice: setup 
-	cd $(SPHINXDIR) && $(EXE) -l ../$(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $(SPLICEOUTPUT) -p $(SPLICEINPUT)
+splice: setup
+	cd $(SPHINXDIR) && $(EXE) -l ../$(SPECDIR)/*.$(EXT) --sideconditions --splice-sphinx -o $(SPLICEOUTPUT) -p $(SPLICEINPUT)
 	rm -f $(INPUTFILES)
 	cd ..
 
@@ -64,7 +64,7 @@ html: splice
 
 .PHONY: pdf
 
-pdf: latexpdf 
+pdf: latexpdf
 	cp $(BUILDDIR)/latex/*.pdf .
 	@echo "pdf finished; the PDF files are in the current directory."
 
