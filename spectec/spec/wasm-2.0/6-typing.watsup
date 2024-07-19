@@ -344,10 +344,10 @@ rule Instr_ok/vreplace_lane:
   -- if i < $dim(sh)
 
 rule Instr_ok/vextunop:
-  C |- VEXTUNOP sh_1 sh_2 vextunop sx : V128 -> V128
+  C |- VEXTUNOP sh_1 sh_2 vextunop : V128 -> V128
 
 rule Instr_ok/vextbinop:
-  C |- VEXTBINOP sh_1 sh_2 vextbinop sx : V128 V128 -> V128
+  C |- VEXTBINOP sh_1 sh_2 vextbinop : V128 V128 -> V128
 
 rule Instr_ok/vnarrow:
   C |- VNARROW sh_1 sh_2 sx : V128 V128 -> V128

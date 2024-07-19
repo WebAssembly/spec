@@ -1362,10 +1362,10 @@ validation_of_VREPLACE_LANE sh i
 - i must be less than $dim(sh).
 - The instruction is valid with type ([V128, $shunpack(sh)] -> [V128]).
 
-validation_of_VEXTUNOP sh_1 sh_2 vextunop sx
+validation_of_VEXTUNOP sh_1 sh_2 vextunop
 - The instruction is valid with type ([V128] -> [V128]).
 
-validation_of_VEXTBINOP sh_1 sh_2 vextbinop sx
+validation_of_VEXTBINOP sh_1 sh_2 vextbinop
 - The instruction is valid with type ([V128, V128] -> [V128]).
 
 validation_of_VNARROW sh_1 sh_2 sx
@@ -2361,15 +2361,15 @@ vcvtop (lanet_u0 X N_1) (lanet_u1 X N_2) vcvto_u4 sx_u5? lane__u3
 10. Let f64 be $promote(32, 64, f32).
 11. Return f64.
 
-vextunop (Inn_1 X N_1) (Inn_2 X N_2) EXTADD_PAIRWISE sx c_1
+vextunop (Inn_1 X N_1) (Inn_2 X N_2) (EXTADD_PAIRWISE sx) c_1
 1. Let ci* be $lanes_((Inn_2 X N_2), c_1).
 2. Let [cj_1, cj_2]* be $concat_^-1($ext($lsize(Inn_2), $lsize(Inn_1), sx, ci)*).
 3. Let c be $invlanes_((Inn_1 X N_1), $iadd($lsize(Inn_1), cj_1, cj_2)*).
 4. Return c.
 
-vextbinop (Inn_1 X N_1) (Inn_2 X N_2) vextb_u0 sx c_1 c_2
+vextbinop (Inn_1 X N_1) (Inn_2 X N_2) vextb_u0 c_1 c_2
 1. If vextb_u0 is of the case EXTMUL, then:
-  a. Let (EXTMUL hf) be vextb_u0.
+  a. Let (EXTMUL sx hf) be vextb_u0.
   b. Let ci_1* be $lanes_((Inn_2 X N_2), c_1)[$halfop(hf, 0, N_1) : N_1].
   c. Let ci_2* be $lanes_((Inn_2 X N_2), c_2)[$halfop(hf, 0, N_1) : N_1].
   d. Let c be $invlanes_((Inn_1 X N_1), $imul($lsize(Inn_1), $ext($lsize(Inn_2), $lsize(Inn_1), sx, ci_1), $ext($lsize(Inn_2), $lsize(Inn_1), sx, ci_2))*).
@@ -3092,18 +3092,18 @@ execution_of_VREPLACE_LANE (Lnn X N) i
 5. Let c be $invlanes_((Lnn X N), $lanes_((Lnn X N), c_1) with [i] replaced by $packnum(Lnn, c_2)).
 6. Push the value (V128.CONST c) to the stack.
 
-execution_of_VEXTUNOP sh_1 sh_2 vextunop sx
+execution_of_VEXTUNOP sh_1 sh_2 vextunop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
-3. Let c be $vextunop(sh_1, sh_2, vextunop, sx, c_1).
+3. Let c be $vextunop(sh_1, sh_2, vextunop, c_1).
 4. Push the value (V128.CONST c) to the stack.
 
-execution_of_VEXTBINOP sh_1 sh_2 vextbinop sx
+execution_of_VEXTBINOP sh_1 sh_2 vextbinop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c be $vextbinop(sh_1, sh_2, vextbinop, sx, c_1, c_2).
+5. Let c be $vextbinop(sh_1, sh_2, vextbinop, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
 
 execution_of_VNARROW (Jnn_2 X N_2) (Jnn_1 X N_1) sx
@@ -3982,10 +3982,10 @@ validation_of_VREPLACE_LANE sh i
 - i must be less than $dim(sh).
 - The instruction is valid with type ([V128, $unpackshape(sh)] ->_ [] ++ [V128]).
 
-validation_of_VEXTUNOP sh_1 sh_2 vextunop sx
+validation_of_VEXTUNOP sh_1 sh_2 vextunop
 - The instruction is valid with type ([V128] ->_ [] ++ [V128]).
 
-validation_of_VEXTBINOP sh_1 sh_2 vextbinop sx
+validation_of_VEXTBINOP sh_1 sh_2 vextbinop
 - The instruction is valid with type ([V128, V128] ->_ [] ++ [V128]).
 
 validation_of_VNARROW sh_1 sh_2 sx
@@ -5861,15 +5861,15 @@ vcvtop (lanet_u0 X N_1) (lanet_u1 X N_2) vcvto_u6 sx_u7? lane__u3
 10. Let f64 be $promote(32, 64, f32).
 11. Return f64.
 
-vextunop (Jnn_1 X N_1) (Jnn_2 X N_2) EXTADD_PAIRWISE sx c_1
+vextunop (Jnn_1 X N_1) (Jnn_2 X N_2) (EXTADD_PAIRWISE sx) c_1
 1. Let ci* be $lanes_((Jnn_1 X N_1), c_1).
 2. Let [cj_1, cj_2]* be $concat_^-1($ext($lsize(Jnn_1), $lsize(Jnn_2), sx, ci)*).
 3. Let c be $invlanes_((Jnn_2 X N_2), $iadd($lsize(Jnn_2), cj_1, cj_2)*).
 4. Return c.
 
-vextbinop (Jnn_1 X N_1) (Jnn_2 X N_2) vextb_u0 sx c_1 c_2
+vextbinop (Jnn_1 X N_1) (Jnn_2 X N_2) vextb_u0 c_1 c_2
 1. If vextb_u0 is of the case EXTMUL, then:
-  a. Let (EXTMUL half) be vextb_u0.
+  a. Let (EXTMUL sx half) be vextb_u0.
   b. Let ci_1* be $lanes_((Jnn_1 X N_1), c_1)[$half((Jnn_1 X N_1), (Jnn_2 X N_2), half, 0, N_2) : N_2].
   c. Let ci_2* be $lanes_((Jnn_1 X N_1), c_2)[$half((Jnn_1 X N_1), (Jnn_2 X N_2), half, 0, N_2) : N_2].
   d. Let c be $invlanes_((Jnn_2 X N_2), $imul($lsize(Jnn_2), $ext($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1), $ext($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2))*).
@@ -6776,18 +6776,18 @@ execution_of_VREPLACE_LANE (Lnn X M) i
 5. Let c be $invlanes_((Lnn X M), $lanes_((Lnn X M), c_1) with [i] replaced by $lpacknum(Lnn, c_2)).
 6. Push the value (V128.CONST c) to the stack.
 
-execution_of_VEXTUNOP sh_2 sh_1 vextunop sx
+execution_of_VEXTUNOP sh_2 sh_1 vextunop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
-3. Let c be $vextunop(sh_1, sh_2, vextunop, sx, c_1).
+3. Let c be $vextunop(sh_1, sh_2, vextunop, c_1).
 4. Push the value (V128.CONST c) to the stack.
 
-execution_of_VEXTBINOP sh_2 sh_1 vextbinop sx
+execution_of_VEXTBINOP sh_2 sh_1 vextbinop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c be $vextbinop(sh_1, sh_2, vextbinop, sx, c_1, c_2).
+5. Let c be $vextbinop(sh_1, sh_2, vextbinop, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
 
 execution_of_VNARROW (Jnn_2 X M_2) (Jnn_1 X M_1) sx
