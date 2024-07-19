@@ -27,8 +27,8 @@ def $testop(numtype, testop_(numtype), num_(numtype)) : num_(I32)
     hint(show %2#$_(%1)#((%3)))
 def $relop(numtype, relop_(numtype), num_(numtype), num_(numtype)) : num_(I32)
     hint(show %2#$_(%1)#(%3, %4))
-def $cvtop(numtype_1, numtype_2, cvtop, sx?, num_(numtype_1)) : num_(numtype_2)*
-    hint(show %3#$_((%1,%2))^(%4)#((%5)))
+def $cvtop(numtype_1, numtype_2, cvtop, num_(numtype_1)) : num_(numtype_2)*
+    hint(show %3#$_((%1,%2))#((%4)))
 
 def $wrap(M, N, iN(M)) : iN(N)                      hint(show $wrap_((%,%))#((%)))
 def $ext(M, N, sx, iN(M)) : iN(N)                   hint(show $ext_((%,%))^(%)#((%)))
@@ -162,15 +162,15 @@ def $relop(Fnn, GT, fN_1, fN_2) = $fgt($size(Fnn), fN_1, fN_2)
 def $relop(Fnn, LE, fN_1, fN_2) = $fle($size(Fnn), fN_1, fN_2)
 def $relop(Fnn, GE, fN_1, fN_2) = $fge($size(Fnn), fN_1, fN_2)
 
-def $cvtop(I32, I64, CONVERT, sx, iN) = $ext(32, 64, sx, iN)
-def $cvtop(I64, I32, CONVERT, sx?, iN) = $wrap(64, 32, iN)
-def $cvtop(Fnn, Inn, CONVERT, sx, fN) = $trunc($size(Fnn), $size(Inn), sx, fN)
-def $cvtop(Fnn, Inn, CONVERT_SAT, sx, fN) = $trunc_sat($size(Fnn), $size(Inn), sx, fN)
-def $cvtop(F32, F64, CONVERT, sx?, fN) = $promote(32, 64, fN)
-def $cvtop(F64, F32, CONVERT, sx?, fN) = $demote(64, 32, fN)
-def $cvtop(Inn, Fnn, CONVERT, sx, iN) = $convert($size(Inn), $size(Fnn), sx, iN)
-def $cvtop(Inn, Fnn, CONVERT, sx?, iN) = $reinterpret(Inn, Fnn, iN) -- if $size(Inn) = $size(Fnn)
-def $cvtop(Fnn, Inn, CONVERT, sx?, fN) = $reinterpret(Fnn, Inn, fN) -- if $size(Inn) = $size(Fnn)
+def $cvtop(I32, I64, EXTEND sx, iN) = $ext(32, 64, sx, iN)
+def $cvtop(I64, I32, WRAP, iN) = $wrap(64, 32, iN)
+def $cvtop(Fnn, Inn, TRUNC sx, fN) = $trunc($size(Fnn), $size(Inn), sx, fN)
+def $cvtop(Fnn, Inn, TRUNC_SAT sx, fN) = $trunc_sat($size(Fnn), $size(Inn), sx, fN)
+def $cvtop(F32, F64, PROMOTE, fN) = $promote(32, 64, fN)
+def $cvtop(F64, F32, DEMOTE, fN) = $demote(64, 32, fN)
+def $cvtop(Inn, Fnn, CONVERT sx, iN) = $convert($size(Inn), $size(Fnn), sx, iN)
+def $cvtop(Inn, Fnn, REINTERPRET, iN) = $reinterpret(Inn, Fnn, iN) -- if $size(Inn) = $size(Fnn)
+def $cvtop(Fnn, Inn, REINTERPRET, fN) = $reinterpret(Fnn, Inn, fN) -- if $size(Inn) = $size(Fnn)
 
 
 ;; Packed values
@@ -413,24 +413,24 @@ def $vcvtop(F64 X N_1, F32 X N_2, DEMOTE, sx?, f64) = f32
 def $vcvtop(F32 X N_1, F64 X N_2, PROMOTE, sx?, f32) = f64
     -- if f64 = $promote(32, 64, f32)
 
-def $vextunop(ishape_1, ishape_2, vextunop_(ishape_1), sx, vec_(V128)) : vec_(V128)
+def $vextunop(ishape_1, ishape_2, vextunop_(ishape_1), vec_(V128)) : vec_(V128)
     hint(show %3#$_((%1,%2))^(%5)#((%6)))
-def $vextbinop(ishape_1, ishape_2, vextbinop_(ishape_1), sx, vec_(V128), vec_(V128)) : vec_(V128)
+def $vextbinop(ishape_1, ishape_2, vextbinop_(ishape_1), vec_(V128), vec_(V128)) : vec_(V128)
     hint(show %3#$_((%1,%2))^(%5)#((%6,%7)))
 
-def $vextunop(Inn_1 X N_1, Inn_2 X N_2, EXTADD_PAIRWISE, sx, c_1) = c
+def $vextunop(Inn_1 X N_1, Inn_2 X N_2, EXTADD_PAIRWISE sx, c_1) = c
   -- var cj_1 : iN($lsize(Inn_1))
   -- var cj_2 : iN($lsize(Inn_1))
   -- if ci* = $lanes_(Inn_2 X N_2, c_1)
   -- if $concat_(iN($lsize(Inn_1)), (cj_1 cj_2)*) = $ext($lsize(Inn_2), $lsize(Inn_1), sx, ci)*
   -- if c = $invlanes_(Inn_1 X N_1, $iadd($lsize(Inn_1), cj_1, cj_2)*)
 
-def $vextbinop(Inn_1 X N_1, Inn_2 X N_2, EXTMUL hf, sx, c_1, c_2) = c
+def $vextbinop(Inn_1 X N_1, Inn_2 X N_2, EXTMUL sx hf, c_1, c_2) = c
   -- if ci_1* = $lanes_(Inn_2 X N_2, c_1)[$halfop(hf, 0, N_1) : N_1]
   -- if ci_2* = $lanes_(Inn_2 X N_2, c_2)[$halfop(hf, 0, N_1) : N_1]
   -- if c = $invlanes_(Inn_1 X N_1, $imul($lsize(Inn_1), $ext($lsize(Inn_2), $lsize(Inn_1), sx, ci_1), $ext($lsize(Inn_2), $lsize(Inn_1), sx, ci_2))*)
 
-def $vextbinop(Inn_1 X N_1, Inn_2 X N_2, DOT, sx, c_1, c_2) = c
+def $vextbinop(Inn_1 X N_1, Inn_2 X N_2, DOT S, c_1, c_2) = c
   -- var cj_1 : iN($lsize(Inn_1))
   -- var cj_2 : iN($lsize(Inn_1))
   -- if ci_1* = $lanes_(Inn_2 X N_2, c_1)

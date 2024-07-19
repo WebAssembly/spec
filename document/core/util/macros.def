@@ -476,6 +476,8 @@
 
 .. |S| mathdef:: \xref{syntax/instructions}{syntax-sx}{\K{s}}
 .. |U| mathdef:: \xref{syntax/instructions}{syntax-sx}{\K{u}}
+.. |VS| mathdef:: \xref{syntax/instructions}{syntax-sx}{\K{s}}
+.. |VU| mathdef:: \xref{syntax/instructions}{syntax-sx}{\K{u}}
 
 .. |OFFSET| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{offset}}
 .. |ALIGN| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{align}}

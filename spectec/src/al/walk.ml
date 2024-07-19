@@ -41,6 +41,7 @@ let rec walk_expr f e =
       | UnE (op, e') -> UnE (op, new_ e')
       | BinE (op, e1, e2) -> BinE (op, new_ e1, new_ e2)
       | CallE (id, el) -> CallE (id, List.map new_ el)
+      | InvCallE (id, nl, el) -> InvCallE (id, nl, List.map new_ el)
       (* TODO: Implement walker for iter *)
       | ListE el -> ListE (List.map new_ el)
       | CatE (e1, e2) -> CatE (new_ e1, new_ e2)
@@ -133,6 +134,7 @@ let rec walk_instr f (instr:instr) : instr list =
 
 and walk_instrs f = walk_instr f |> List.concat_map
 
-let walk f algo = match algo with
+let walk' f algo' = match algo' with
   | RuleA (a, params, body) -> RuleA (a, params, walk_instrs f body)
   | FuncA (id, params, body) -> FuncA (id, params, walk_instrs f body)
+let walk f algo = Source.map (walk' f) algo

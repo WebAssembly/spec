@@ -143,6 +143,16 @@ and string_of_expr expr =
     sprintf "(%s %s %s)" (string_of_expr e1) (string_of_binop op) (string_of_expr e2)
   | TupE el -> "(" ^ string_of_exprs ", " el ^ ")"
   | CallE (id, el) -> sprintf "$%s(%s)" id (string_of_exprs ", " el)
+  | InvCallE (id, nl, el) ->
+    let id' =
+      if List.length nl = 0 then id
+      else
+        nl
+        |> List.map string_of_int
+        |> List.fold_left (^) ""
+        |> sprintf "%s_%s" id
+    in
+    sprintf "$%s^-1(%s)" id' (string_of_exprs ", " el)
   | CatE (e1, e2) ->
     sprintf "%s ++ %s" (string_of_expr e1) (string_of_expr e2)
   | MemE (e1, e2) ->
@@ -321,7 +331,7 @@ let rec string_of_instr' depth instr =
   | ExecuteSeqI e ->
     sprintf "%s Execute the sequence (%s)." (make_index depth) (string_of_expr e)
   | PerformI (id, el) ->
-    sprintf "%s Perform %s." (make_index depth) (string_of_expr (CallE (id, el) $ instr.at))
+    sprintf "%s Perform %s." (make_index depth) (string_of_expr (CallE (id, el) $$ instr.at % (Il.Ast.VarT ("TODO" $ no_region, []) $ no_region)))
   | ExitI a ->
     sprintf "%s Exit from %s." (make_index depth) (string_of_atom a)
   | ReplaceI (e1, p, e2) ->
@@ -342,7 +352,7 @@ let string_of_instr instr =
   string_of_instr' 0 instr
 let string_of_instrs = string_of_instrs' 0
 
-let string_of_algorithm = function
+let string_of_algorithm algo = match algo.it with
   | RuleA (a, params, instrs) ->
     "execution_of_" ^ string_of_atom a
     ^ List.fold_left
@@ -422,6 +432,9 @@ and structured_string_of_expr expr =
     ^ ")"
   | TupE el -> "TupE (" ^ structured_string_of_exprs el ^ ")"
   | CallE (id, el) -> "CallE (" ^ id ^ ", [ " ^ structured_string_of_exprs el ^ " ])"
+  | InvCallE (id, nl, el) ->
+    sprintf "InvCallE (%s, [%s], [%s])"
+      id (string_of_list string_of_int "" nl) (structured_string_of_exprs el)
   | CatE (e1, e2) ->
     "CatE ("
     ^ structured_string_of_expr e1
@@ -604,7 +617,7 @@ and structured_string_of_instrs' depth instrs =
 let structured_string_of_instr = structured_string_of_instr' 0
 let structured_string_of_instrs = structured_string_of_instrs' 0
 
-let structured_string_of_algorithm = function
+let structured_string_of_algorithm algo = match algo.it with
   | RuleA (a, params, instrs) ->
       "execution_of_" ^ string_of_atom a
       ^ List.fold_left

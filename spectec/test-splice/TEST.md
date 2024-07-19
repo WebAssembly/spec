@@ -10,8 +10,6 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup -l --splice-latex -p spe
 == Running pass animate...
 == IL Validation after pass animate...
 == Translating to AL...
-../spec/wasm-3.0/8-reduction.watsup:227.12-227.36: translate_rulepr: Yet `(`%;%`_config(z, instr*{instr : instr}), `%;%`_config(z', instr'*{instr' : instr}))`
-../spec/wasm-3.0/8-reduction.watsup:231.12-231.44: translate_rulepr: Yet `(`%;%`_config(`%;%`_state(s, f'), instr*{instr : instr}), `%;%`_config(`%;%`_state(s', f'), instr'*{instr' : instr}))`
 == Prose Generation...
 ../spec/wasm-3.0/6-typing.watsup:627.7-627.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0)`
 ../spec/wasm-3.0/6-typing.watsup:628.6-628.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l'!`%`_labelidx.0]!`%`_resulttype.0)`
@@ -24,14 +22,14 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup -l --splice-latex -p spe
 ../spec/wasm-3.0/6-typing.watsup:691.6-691.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
 ../spec/wasm-3.0/6-typing.watsup:698.6-698.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
 ../spec/wasm-3.0/6-typing.watsup:702.6-702.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
-../spec/wasm-3.0/6-typing.watsup:763.6-763.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-../spec/wasm-3.0/6-typing.watsup:769.6-769.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-../spec/wasm-3.0/6-typing.watsup:787.7-787.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
-../spec/wasm-3.0/6-typing.watsup:819.6-819.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
-../spec/wasm-3.0/6-typing.watsup:848.6-848.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
-../spec/wasm-3.0/6-typing.watsup:853.6-853.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
-../spec/wasm-3.0/6-typing.watsup:990.6-990.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
-../spec/wasm-3.0/6-typing.watsup:996.6-996.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+../spec/wasm-3.0/6-typing.watsup:756.6-756.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
+../spec/wasm-3.0/6-typing.watsup:762.6-762.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
+../spec/wasm-3.0/6-typing.watsup:780.7-780.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
+../spec/wasm-3.0/6-typing.watsup:812.6-812.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
+../spec/wasm-3.0/6-typing.watsup:841.6-841.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
+../spec/wasm-3.0/6-typing.watsup:846.6-846.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
+../spec/wasm-3.0/6-typing.watsup:983.6-983.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
+../spec/wasm-3.0/6-typing.watsup:989.6-989.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 == Splicing...
 \documentclass[a4paper]{scrartcl}
 
@@ -93,8 +91,7 @@ $$
 {\mathit{numtype}} {.} {{\mathit{binop}}}_{{\mathit{numtype}}} \\ &&|&
 {\mathit{numtype}} {.} {{\mathit{testop}}}_{{\mathit{numtype}}} \\ &&|&
 {\mathit{numtype}} {.} {{\mathit{relop}}}_{{\mathit{numtype}}} \\ &&|&
-{\mathit{numtype}}_1 {.} {{{\mathit{cvtop}}}_{{\mathit{numtype}}_2, {\mathit{numtype}}_1}}{\mathsf{\_}}{{\mathit{numtype}}_2}{\mathsf{\_}}{{{\mathit{sx}}^?}}
-  &\qquad \mbox{if}~{\mathit{numtype}}_1 \neq {\mathit{numtype}}_2 \\ &&|&
+{\mathit{numtype}}_1 {.} {{{\mathit{cvtop}}}_{{\mathit{numtype}}_2, {\mathit{numtype}}_1}}{\mathsf{\_}}{{\mathit{numtype}}_2} \\ &&|&
 \mathsf{local{.}get}~{\mathit{localidx}} \\ &&|&
 \mathsf{local{.}set}~{\mathit{localidx}} \\ &&|&
 \mathsf{local{.}tee}~{\mathit{localidx}} \\ &&|&
@@ -344,6 +341,9 @@ warning: syntax `comptype` was never spliced
 warning: syntax `config` was never spliced
 warning: syntax `consttype` was never spliced
 warning: syntax `context` was never spliced
+warning: syntax `cvtop_` was never spliced
+warning: syntax `cvtop_` was never spliced
+warning: syntax `cvtop_` was never spliced
 warning: syntax `cvtop_` was never spliced
 warning: syntax `data` was never spliced
 warning: syntax `dataaddr` was never spliced
@@ -795,6 +795,7 @@ warning: rule `Instr_ok/unop` was never spliced
 warning: rule `Instr_ok/binop` was never spliced
 warning: rule `Instr_ok/testop` was never spliced
 warning: rule `Instr_ok/relop` was never spliced
+warning: rule `Instr_ok/cvtop` was never spliced
 warning: rule `Instr_ok/ref.null` was never spliced
 warning: rule `Instr_ok/ref.func` was never spliced
 warning: rule `Instr_ok/ref.i31` was never spliced
@@ -856,7 +857,6 @@ warning: rule `Instr_ok/table.copy` was never spliced
 warning: rule `Instr_ok/table.init` was never spliced
 warning: rule `Instr_ok/elem.drop` was never spliced
 warning: rule `Instr_ok/memory.size` was never spliced
-warning: rule `Instr_ok/memory.grow` was never spliced
 warning: rule `Instr_ok/memory.fill` was never spliced
 warning: rule `Instr_ok/memory.copy` was never spliced
 warning: rule `Instr_ok/memory.init` was never spliced

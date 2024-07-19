@@ -105,6 +105,26 @@ and al_to_el_expr expr =
         elel
       in
       Some (El.Ast.CallE (elid, elel))
+    | Al.Ast.InvCallE (id, nl, el) ->
+      let ($~) at it = it $ at in
+      let elid =
+        if List.length nl = 0 then
+          (id^"^-1") $ no_region
+        else
+          nl
+          |> List.map string_of_int
+          |> List.fold_left (^) ""
+          |> sprintf "%s_%s^-1" id
+          |> ($~) no_region
+      in
+      let* elel = al_to_el_exprs el in
+      let elel = List.map
+        (fun ele ->
+          let elarg = El.Ast.ExpA ele in
+          (ref elarg) $ no_region)
+        elel
+      in
+      Some (El.Ast.CallE (elid, elel))
     | Al.Ast.CatE (e1, e2) ->
       let* ele1 = al_to_el_expr e1 in
       let* ele2 = al_to_el_expr e2 in
@@ -551,12 +571,12 @@ let rec render_al_instr env algoname index depth instr =
   | Al.Ast.ExecuteSeqI e ->
     sprintf "%s Execute the sequence %s." (render_order index depth) (render_expr env e)
   | Al.Ast.PerformI (n, es) ->
-    sprintf "%s Perform %s." (render_order index depth) (render_expr env (Al.Ast.CallE (n, es) $ no_region))
+    sprintf "%s Perform %s." (render_order index depth) (render_expr env (Al.Al_util.callE (n, es) ~at:no_region))
   | Al.Ast.ExitI a ->
     sprintf "%s Exit from %s." (render_order index depth) (render_atom env a)
   | Al.Ast.ReplaceI (e1, p, e2) ->
     sprintf "%s Replace %s with %s." (render_order index depth)
-      (render_expr env (Al.Ast.AccE (e1, p) $ no_region)) (render_expr env e2)
+      (render_expr env (Al.Al_util.accE (e1, p) ~at:no_region)) (render_expr env e2)
   | Al.Ast.AppendI (e1, e2) ->
     sprintf "%s Append %s to the %s." (render_order index depth)
       (render_expr env e2) (render_expr env e1)
@@ -583,14 +603,14 @@ let render_atom_title env name params =
     | _ -> name'
   in
   let name = (name', typ) in
-  let expr = Al.Ast.CaseE (name, params) $ no_region in
+  let expr = Al.Al_util.caseE (name, params) ~at:no_region in
   match al_to_el_expr expr with
   | Some ({ it = El.Ast.ParenE (exp, _); _ }) -> render_el_exp env exp
   | Some exp -> render_el_exp env exp
   | None -> render_expr' env expr
 
 let render_funcname_title env fname params =
-  render_expr env (Al.Ast.CallE (fname, params) $ no_region)
+  render_expr env (Al.Al_util.callE (fname, params) ~at:no_region)
 
 let render_pred env name params instrs =
   let title = render_atom_title env name params in
@@ -614,7 +634,7 @@ let render_func env fname params instrs =
 let render_def env = function
   | Pred (name, params, instrs) ->
     "\n" ^ render_pred env name params instrs ^ "\n\n"
-  | Algo algo -> (match algo with
+  | Algo algo -> (match algo.it with
     | Al.Ast.RuleA (name, params, instrs) ->
       "\n" ^ render_rule env name params instrs ^ "\n\n"
     | Al.Ast.FuncA (name, params, instrs) ->

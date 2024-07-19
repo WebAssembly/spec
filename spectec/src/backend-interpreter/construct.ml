@@ -366,38 +366,38 @@ let al_to_float_relop: value -> FloatOp.relop = function
 let al_to_relop: value list -> relop = al_to_op al_to_int_relop al_to_float_relop
 
 let al_to_int_cvtop: value list -> IntOp.cvtop = function
-  | [ CaseV ("I64", []); CaseV ("I32", []); CaseV ("CONVERT", []); opt ] as l ->
-    (match opt with
-    | OptV (Some (CaseV ("S", []))) -> IntOp.ExtendSI32
-    | OptV (Some (CaseV ("U", []))) -> IntOp.ExtendUI32
+  | [ CaseV ("I64", []); CaseV ("I32", []); CaseV ("EXTEND", [ CaseV (sx, []) ]) ] as l ->
+    (match sx with
+    | "S" -> IntOp.ExtendSI32
+    | "U" -> IntOp.ExtendUI32
     | _ -> error_values "extend" l)
-  | [ CaseV ("I32", []); CaseV ("I64", []); CaseV ("CONVERT", []); OptV None ] -> IntOp.WrapI64
-  | [ CaseV (_, []); CaseV (nt, []); CaseV ("CONVERT", []); OptV (Some (CaseV (sx, []))) ] as l ->
+  | [ CaseV ("I32", []); CaseV ("I64", []); CaseV ("WRAP", []) ] -> IntOp.WrapI64
+  | [ CaseV (_, []); CaseV (nt, []); CaseV ("TRUNC", [ CaseV (sx, []) ]) ] as l ->
     (match nt, sx with
     | "F32", "S" -> IntOp.TruncSF32
     | "F32", "U" -> IntOp.TruncUF32
     | "F64", "S" -> IntOp.TruncSF64
     | "F64", "U" -> IntOp.TruncUF64
     | _ -> error_values "trunc" l)
-  | [ CaseV (_, []); CaseV (nt, []); CaseV ("CONVERT_SAT", []); OptV (Some (CaseV (sx, []))) ] as l ->
+  | [ CaseV (_, []); CaseV (nt, []); CaseV ("TRUNC_SAT", [ CaseV (sx, []) ]) ] as l ->
     (match nt, sx with
     | "F32", "S" -> IntOp.TruncSatSF32
     | "F32", "U" -> IntOp.TruncSatUF32
     | "F64", "S" -> IntOp.TruncSatSF64
     | "F64", "U" -> IntOp.TruncSatUF64
     | _ -> error_values "trunc_sat" l)
-  | [ _; _; CaseV ("REINTERPRET", []); OptV None ] -> IntOp.ReinterpretFloat
+  | [ _; _; CaseV ("REINTERPRET", []) ] -> IntOp.ReinterpretFloat
   | l -> error_values "integer cvtop" l
 let al_to_float_cvtop : value list -> FloatOp.cvtop = function
-  | [ CaseV (_, []); CaseV (nt, []); CaseV ("CONVERT", []); OptV (Some (CaseV (sx, []))) ] as l ->
+  | [ CaseV (_, []); CaseV (nt, []); CaseV ("CONVERT", [ CaseV (sx, []) ]) ] as l ->
     (match nt, sx with
     | "I32", "S" -> FloatOp.ConvertSI32
     | "I32", "U" -> FloatOp.ConvertUI32
     | "I64", "S" -> FloatOp.ConvertSI64
     | "I64", "U" -> FloatOp.ConvertUI64
     | _ -> error_values "convert" l)
-  | [ CaseV ("F64", []); CaseV ("F32", []); CaseV ("CONVERT", []); OptV None ] -> FloatOp.PromoteF32
-  | [ CaseV ("F32", []); CaseV ("F64", []); CaseV ("CONVERT", []); OptV None ] -> FloatOp.DemoteF64
+  | [ CaseV ("F64", []); CaseV ("F32", []); CaseV ("PROMOTE", []) ] -> FloatOp.PromoteF32
+  | [ CaseV ("F32", []); CaseV ("F64", []); CaseV ("DEMOTE", []) ] -> FloatOp.DemoteF64
   | [ _; _; CaseV ("REINTERPRET", []); OptV None ] -> FloatOp.ReinterpretInt
   | l -> error_values "float cvtop" l
 let al_to_cvtop: value list -> cvtop = function
@@ -508,7 +508,7 @@ let al_to_int_vbinop : value -> V128Op.ibinop = function
   | CaseV ("ADD_SAT", [CaseV ("U", [])]) -> V128Op.AddSatU
   | CaseV ("SUB_SAT", [CaseV ("S", [])]) -> V128Op.SubSatS
   | CaseV ("SUB_SAT", [CaseV ("U", [])]) -> V128Op.SubSatU
-  | CaseV ("DOTS", []) -> V128Op.DotS
+  | CaseV ("DOT", [CaseV ("S", [])]) -> V128Op.DotS
   | CaseV ("Q15MULR_SAT_S", []) -> V128Op.Q15MulRSatS
   | CaseV ("SWIZZLE", []) -> V128Op.Swizzle
   (*TODO *)
@@ -535,19 +535,6 @@ let al_to_special_vbinop = function
   | CaseV ("VNARROW", [ TupV [ CaseV ("I16", []); NumV z1 ]; TupV [ CaseV ("I32", []); NumV z2 ]; CaseV ("S", []) ]) when z1 = eight && z2 = four -> V128 (V128.I16x8 (V128Op.NarrowS))
   | CaseV ("VNARROW", [ TupV [ CaseV ("I8", []); NumV z1 ]; TupV [ CaseV ("I16", []); NumV z2 ]; CaseV ("U", []) ]) when z1 = sixteen && z2 = eight -> V128 (V128.I8x16 (V128Op.NarrowU))
   | CaseV ("VNARROW", [ TupV [ CaseV ("I16", []); NumV z1 ]; TupV [ CaseV ("I32", []); NumV z2 ]; CaseV ("U", []) ]) when z1 = eight && z2 = four -> V128 (V128.I16x8 (V128Op.NarrowU))
-  | CaseV ("VEXTMUL", [ TupV [ CaseV ("I16", []); NumV z1 ]; CaseV ("HIGH", []); TupV [ CaseV ("I8", []); NumV z2 ]; CaseV ("S", []) ]) when z1 = eight && z2 = sixteen -> V128 (V128.I16x8 (V128Op.ExtMulHighS))
-  | CaseV ("VEXTMUL", [ TupV [ CaseV ("I16", []); NumV z1 ]; CaseV ("HIGH", []); TupV [ CaseV ("I8", []); NumV z2 ]; CaseV ("U", []) ]) when z1 = eight && z2 = sixteen -> V128 (V128.I16x8 (V128Op.ExtMulHighU))
-  | CaseV ("VEXTMUL", [ TupV [ CaseV ("I16", []); NumV z1 ]; CaseV ("LOW", []); TupV [ CaseV ("I8", []); NumV z2 ]; CaseV ("S", []) ]) when z1 = eight && z2 = sixteen -> V128 (V128.I16x8 (V128Op.ExtMulLowS))
-  | CaseV ("VEXTMUL", [ TupV [ CaseV ("I16", []); NumV z1 ]; CaseV ("LOW", []); TupV [ CaseV ("I8", []); NumV z2 ]; CaseV ("U", []) ] ) when z1 = eight && z2 = sixteen -> V128 (V128.I16x8 (V128Op.ExtMulLowU))
-  | CaseV ("VEXTMUL", [ TupV [ CaseV ("I32", []); NumV z1 ]; CaseV ("HIGH", []); TupV [ CaseV ("I16", []); NumV z2 ]; CaseV ("S", []) ]) when z1 = four && z2 = eight -> V128 (V128.I32x4 (V128Op.ExtMulHighS))
-  | CaseV ("VEXTMUL", [ TupV [ CaseV ("I32", []); NumV z1 ]; CaseV ("HIGH", []); TupV [ CaseV ("I16", []); NumV z2 ]; CaseV ("U", []) ]) when z1 = four && z2 = eight -> V128 (V128.I32x4 (V128Op.ExtMulHighU))
-  | CaseV ("VEXTMUL", [ TupV [ CaseV ("I32", []); NumV z1 ]; CaseV ("LOW", []); TupV [ CaseV ("I16", []); NumV z2 ]; CaseV ("S", []) ]) when z1 = four && z2 = eight -> V128 (V128.I32x4 (V128Op.ExtMulLowS))
-  | CaseV ("VEXTMUL", [ TupV [ CaseV ("I32", []); NumV z1 ]; CaseV ("LOW", []); TupV [ CaseV ("I16", []); NumV z2 ]; CaseV ("U", []) ] ) when z1 = four && z2 = eight -> V128 (V128.I32x4 (V128Op.ExtMulLowU))
-  | CaseV ("VEXTMUL", [ TupV [ CaseV ("I64", []); NumV z1 ]; CaseV ("HIGH", []); TupV [ CaseV ("I32", []); NumV z2 ]; CaseV ("S", []) ]) when z1 = two && z2 = four -> V128 (V128.I64x2 (V128Op.ExtMulHighS))
-  | CaseV ("VEXTMUL", [ TupV [ CaseV ("I64", []); NumV z1 ]; CaseV ("HIGH", []); TupV [ CaseV ("I32", []); NumV z2 ]; CaseV ("U", []) ]) when z1 = two && z2 = four -> V128 (V128.I64x2 (V128Op.ExtMulHighU))
-  | CaseV ("VEXTMUL", [ TupV [ CaseV ("I64", []); NumV z1 ]; CaseV ("LOW", []); TupV [ CaseV ("I32", []); NumV z2 ]; CaseV ("S", []) ]) when z1 = two && z2 = four -> V128 (V128.I64x2 (V128Op.ExtMulLowS))
-  | CaseV ("VEXTMUL", [ TupV [ CaseV ("I64", []); NumV z1 ]; CaseV ("LOW", []); TupV [ CaseV ("I32", []); NumV z2 ]; CaseV ("U", []) ] ) when z1 = two && z2 = four -> V128 (V128.I64x2 (V128Op.ExtMulLowU))
-  | CaseV ("VDOT", [ TupV [ CaseV ("I32", []); NumV z1 ]; TupV [ CaseV ("I16", []); NumV z2 ]; CaseV ("S", []) ]) when z1 = four && z2 = eight -> V128 (V128.I32x4 (V128Op.DotS))
   | v -> error_value "special vbinop" v
 
 let al_to_int_vcvtop : value list -> V128Op.icvtop = function
@@ -596,13 +583,6 @@ let al_to_vcvtop : value list -> vec_cvtop = function
   | TupV [ CaseV ("F32", []); NumV z ] :: op when z = four -> V128 (V128.F32x4 (al_to_float_vcvtop op))
   | TupV [ CaseV ("F64", []); NumV z ] :: op when z = two -> V128 (V128.F64x2 (al_to_float_vcvtop op))
   | l -> error_values "vcvtop" l
-
-let al_to_special_vcvtop = function
-  | CaseV ("VEXTADD_PAIRWISE", [ TupV [ CaseV ("I16", []); NumV z1]; TupV [ CaseV ("I8", []); NumV z2 ]; CaseV ("S", []) ]) when z1 = eight && z2 = sixteen -> V128 (V128.I16x8 (V128Op.ExtAddPairwiseS))
-  | CaseV ("VEXTADD_PAIRWISE", [ TupV [ CaseV ("I16", []); NumV z1]; TupV [ CaseV ("I8", []); NumV z2 ]; CaseV ("U", []) ]) when z1 = eight && z2 = sixteen -> V128 (V128.I16x8 (V128Op.ExtAddPairwiseU))
-  | CaseV ("VEXTADD_PAIRWISE", [ TupV [ CaseV ("I32", []); NumV z1]; TupV [ CaseV ("I16", []); NumV z2 ]; CaseV ("S", []) ]) when z1 = four && z2 = eight -> V128 (V128.I32x4 (V128Op.ExtAddPairwiseS))
-  | CaseV ("VEXTADD_PAIRWISE", [ TupV [ CaseV ("I32", []); NumV z1]; TupV [ CaseV ("I16", []); NumV z2 ]; CaseV ("U", []) ]) when z1 = four && z2 = eight -> V128 (V128.I32x4 (V128Op.ExtAddPairwiseU))
-  | v -> error_value "special vcvtop" v
 
 let al_to_int_vshiftop : value -> V128Op.ishiftop = function
   | CaseV ("SHL", []) -> V128Op.Shl
@@ -786,10 +766,8 @@ and al_to_instr': value -> Ast.instr' = function
   | CaseV ("VRELOP", vop) -> VecCompare (al_to_vrelop vop)
   | CaseV ("VUNOP", vop) -> VecUnary (al_to_vunop vop)
   | CaseV ("VBINOP", vop) -> VecBinary (al_to_vbinop vop)
-  | CaseV (("VSWIZZLE" | "VSHUFFLE" | "VNARROW" | "VEXTMUL" | "VDOT"), _) as v ->
-    VecBinary (al_to_special_vbinop v)
+  | CaseV (("VSWIZZLE" | "VSHUFFLE" | "VNARROW"), _) as v -> VecBinary (al_to_special_vbinop v)
   | CaseV ("VCVTOP", vop) -> VecConvert (al_to_vcvtop vop)
-  | CaseV ("VEXTADD_PAIRWISE", _) as v -> VecConvert (al_to_special_vcvtop v)
   | CaseV ("VSHIFTOP", vop) -> VecShift (al_to_vshiftop vop)
   | CaseV ("VBITMASK", vop) -> VecBitmask (al_to_vbitmaskop vop)
   | CaseV ("VVTESTOP", vop) -> VecTestBits (al_to_vvtestop vop)
@@ -1306,41 +1284,41 @@ let al_of_float_relop = function
 let al_of_relop = al_of_op al_of_int_relop al_of_float_relop
 
 let al_of_int_cvtop num_bits = function
-  | IntOp.ExtendSI32 -> "I64", "Convert", Some (nullary "S")
-  | IntOp.ExtendUI32 -> "I64", "Convert", Some (nullary "U")
-  | IntOp.WrapI64 -> "I64", "Convert", None
-  | IntOp.TruncSF32 -> "F32", "Convert", Some (nullary "S")
-  | IntOp.TruncUF32 -> "F32", "Convert", Some (nullary "U")
-  | IntOp.TruncSF64 -> "F64", "Convert", Some (nullary "S")
-  | IntOp.TruncUF64 -> "F64", "Convert", Some (nullary "U")
-  | IntOp.TruncSatSF32 -> "F32", "Convert_sat", Some (nullary "S")
-  | IntOp.TruncSatUF32 -> "F32", "Convert_sat", Some (nullary "U")
-  | IntOp.TruncSatSF64 -> "F64", "Convert_sat", Some (nullary "S")
-  | IntOp.TruncSatUF64 -> "F64", "Convert_sat", Some (nullary "U")
-  | IntOp.ReinterpretFloat -> "F" ^ num_bits, "Reinterpret", None
+  | IntOp.ExtendSI32 -> "I64", "EXTEND", [ nullary "S" ]
+  | IntOp.ExtendUI32 -> "I64", "EXTEND", [ nullary "U" ]
+  | IntOp.WrapI64 -> "I64", "WRAP", []
+  | IntOp.TruncSF32 -> "F32", "TRUNC", [ nullary "S" ]
+  | IntOp.TruncUF32 -> "F32", "TRUNC", [ nullary "U" ]
+  | IntOp.TruncSF64 -> "F64", "TRUNC", [ nullary "S" ]
+  | IntOp.TruncUF64 -> "F64", "TRUNC", [ nullary "U" ]
+  | IntOp.TruncSatSF32 -> "F32", "TRUNC_SAT", [ nullary "S" ]
+  | IntOp.TruncSatUF32 -> "F32", "TRUNC_SAT", [ nullary "U" ]
+  | IntOp.TruncSatSF64 -> "F64", "TRUNC_SAT", [ nullary "S" ]
+  | IntOp.TruncSatUF64 -> "F64", "TRUNC_SAT", [ nullary "U" ]
+  | IntOp.ReinterpretFloat -> "F" ^ num_bits, "REINTERPRET", []
 
 let al_of_float_cvtop num_bits = function
-  | FloatOp.ConvertSI32 -> "I32", "Convert", Some (nullary ("S"))
-  | FloatOp.ConvertUI32 -> "I32", "Convert", Some (nullary ("U"))
-  | FloatOp.ConvertSI64 -> "I64", "Convert", Some (nullary ("S"))
-  | FloatOp.ConvertUI64 -> "I64", "Convert", Some (nullary ("U"))
-  | FloatOp.PromoteF32 -> "F32", "Convert", None
-  | FloatOp.DemoteF64 -> "F64", "Convert", None
-  | FloatOp.ReinterpretInt -> "I" ^ num_bits, "Reinterpret", None
+  | FloatOp.ConvertSI32 -> "I32", "CONVERT", [ nullary "S" ]
+  | FloatOp.ConvertUI32 -> "I32", "CONVERT", [ nullary "U" ]
+  | FloatOp.ConvertSI64 -> "I64", "CONVERT", [ nullary "S" ]
+  | FloatOp.ConvertUI64 -> "I64", "CONVERT", [ nullary "U" ]
+  | FloatOp.PromoteF32 -> "F32", "PROMOTE", []
+  | FloatOp.DemoteF64 -> "F64", "DEMOTE", []
+  | FloatOp.ReinterpretInt -> "I" ^ num_bits, "REINTERPRET", []
 
 let al_of_cvtop = function
   | I32 op ->
     let to_, op', ext = al_of_int_cvtop "32" op in
-    [ nullary "I32"; nullary to_; nullary op'; optV ext ]
+    [ nullary "I32"; nullary to_; caseV (op', ext) ]
   | I64 op ->
     let to_, op', ext = al_of_int_cvtop "64" op in
-    [ nullary "I64"; nullary to_; nullary op'; optV ext ]
+    [ nullary "I64"; nullary to_; caseV (op', ext) ]
   | F32 op ->
     let to_, op', ext = al_of_float_cvtop "32" op in
-    [ nullary "F32"; nullary to_; nullary op'; optV ext ]
+    [ nullary "F32"; nullary to_; caseV (op', ext) ]
   | F64 op ->
     let to_, op', ext = al_of_float_cvtop "64" op in
-    [ nullary "F64"; nullary to_; nullary op'; optV ext ]
+    [ nullary "F64"; nullary to_; caseV (op', ext) ]
 
 (* Vector operator *)
 
@@ -1470,19 +1448,19 @@ let al_of_special_vbinop = function
   | V128 (V128.I16x8 (V128Op.NarrowS)) -> CaseV ("VNARROW", [ TupV [ nullary "I16"; numV eight ]; TupV [ nullary "I32"; numV four ]; al_of_extension Pack.SX ])
   | V128 (V128.I8x16 (V128Op.NarrowU)) -> CaseV ("VNARROW", [ TupV [ nullary "I8"; numV sixteen ]; TupV [ nullary "I16"; numV eight ]; al_of_extension Pack.ZX ])
   | V128 (V128.I16x8 (V128Op.NarrowU)) -> CaseV ("VNARROW", [ TupV [ nullary "I16"; numV eight]; TupV [ nullary "I32"; numV four ]; al_of_extension Pack.ZX ])
-  | V128 (V128.I16x8 (V128Op.ExtMulHighS)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I16"; numV eight ]; TupV [ nullary "I8"; numV sixteen ]; caseV ("EXTMUL", [nullary "HIGH"]); al_of_extension Pack.SX ])
-  | V128 (V128.I16x8 (V128Op.ExtMulHighU)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I16"; numV eight ]; TupV [ nullary "I8"; numV sixteen ]; caseV ("EXTMUL", [nullary "HIGH"]); al_of_extension Pack.ZX ])
-  | V128 (V128.I16x8 (V128Op.ExtMulLowS)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I16"; numV eight ]; TupV [ nullary "I8"; numV sixteen ]; caseV ("EXTMUL", [nullary "LOW"]); al_of_extension Pack.SX ])
-  | V128 (V128.I16x8 (V128Op.ExtMulLowU)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I16"; numV eight ]; TupV [ nullary "I8"; numV sixteen ]; caseV ("EXTMUL", [nullary "LOW"]); al_of_extension Pack.ZX ] )
-  | V128 (V128.I32x4 (V128Op.ExtMulHighS)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I32"; numV four ]; TupV [ nullary "I16"; numV eight ]; caseV ("EXTMUL", [nullary "HIGH"]); al_of_extension Pack.SX ])
-  | V128 (V128.I32x4 (V128Op.ExtMulHighU)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I32"; numV four ]; TupV [ nullary "I16"; numV eight ]; caseV ("EXTMUL", [nullary "HIGH"]); al_of_extension Pack.ZX ])
-  | V128 (V128.I32x4 (V128Op.ExtMulLowS)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I32"; numV four ]; TupV [ nullary "I16"; numV eight ]; caseV ("EXTMUL", [nullary "LOW"]); al_of_extension Pack.SX ])
-  | V128 (V128.I32x4 (V128Op.ExtMulLowU)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I32"; numV four ]; TupV [ nullary "I16"; numV eight ]; caseV ("EXTMUL", [nullary "LOW"]); al_of_extension Pack.ZX ] )
-  | V128 (V128.I64x2 (V128Op.ExtMulHighS)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I64"; numV two ]; TupV [ nullary "I32"; numV four ]; caseV ("EXTMUL", [nullary "HIGH"]); al_of_extension Pack.SX ])
-  | V128 (V128.I64x2 (V128Op.ExtMulHighU)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I64"; numV two ]; TupV [ nullary "I32"; numV four ]; caseV ("EXTMUL", [nullary "HIGH"]); al_of_extension Pack.ZX ])
-  | V128 (V128.I64x2 (V128Op.ExtMulLowS)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I64"; numV two ]; TupV [ nullary "I32"; numV four ]; caseV ("EXTMUL", [nullary "LOW"]); al_of_extension Pack.SX ])
-  | V128 (V128.I64x2 (V128Op.ExtMulLowU)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I64"; numV two ]; TupV [ nullary "I32"; numV four ]; caseV ("EXTMUL", [nullary "LOW"]); al_of_extension Pack.ZX ] )
-  | V128 (V128.I32x4 (V128Op.DotS)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I32"; numV four ]; TupV [ nullary "I16"; numV eight ]; nullary "DOT"; al_of_extension Pack.SX ])
+  | V128 (V128.I16x8 (V128Op.ExtMulHighS)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I16"; numV eight ]; TupV [ nullary "I8"; numV sixteen ]; caseV ("EXTMUL", [al_of_extension Pack.SX; nullary "HIGH"]) ])
+  | V128 (V128.I16x8 (V128Op.ExtMulHighU)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I16"; numV eight ]; TupV [ nullary "I8"; numV sixteen ]; caseV ("EXTMUL", [al_of_extension Pack.ZX; nullary "HIGH"]) ])
+  | V128 (V128.I16x8 (V128Op.ExtMulLowS)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I16"; numV eight ]; TupV [ nullary "I8"; numV sixteen ]; caseV ("EXTMUL", [al_of_extension Pack.SX; nullary "LOW"]) ])
+  | V128 (V128.I16x8 (V128Op.ExtMulLowU)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I16"; numV eight ]; TupV [ nullary "I8"; numV sixteen ]; caseV ("EXTMUL", [al_of_extension Pack.ZX; nullary "LOW"]) ] )
+  | V128 (V128.I32x4 (V128Op.ExtMulHighS)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I32"; numV four ]; TupV [ nullary "I16"; numV eight ]; caseV ("EXTMUL", [al_of_extension Pack.SX; nullary "HIGH"]) ])
+  | V128 (V128.I32x4 (V128Op.ExtMulHighU)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I32"; numV four ]; TupV [ nullary "I16"; numV eight ]; caseV ("EXTMUL", [al_of_extension Pack.ZX; nullary "HIGH"]) ])
+  | V128 (V128.I32x4 (V128Op.ExtMulLowS)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I32"; numV four ]; TupV [ nullary "I16"; numV eight ]; caseV ("EXTMUL", [al_of_extension Pack.SX; nullary "LOW"]) ])
+  | V128 (V128.I32x4 (V128Op.ExtMulLowU)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I32"; numV four ]; TupV [ nullary "I16"; numV eight ]; caseV ("EXTMUL", [al_of_extension Pack.ZX; nullary "LOW"]) ] )
+  | V128 (V128.I64x2 (V128Op.ExtMulHighS)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I64"; numV two ]; TupV [ nullary "I32"; numV four ]; caseV ("EXTMUL", [al_of_extension Pack.SX; nullary "HIGH"]) ])
+  | V128 (V128.I64x2 (V128Op.ExtMulHighU)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I64"; numV two ]; TupV [ nullary "I32"; numV four ]; caseV ("EXTMUL", [al_of_extension Pack.ZX; nullary "HIGH"]) ])
+  | V128 (V128.I64x2 (V128Op.ExtMulLowS)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I64"; numV two ]; TupV [ nullary "I32"; numV four ]; caseV ("EXTMUL", [al_of_extension Pack.SX; nullary "LOW"]) ])
+  | V128 (V128.I64x2 (V128Op.ExtMulLowU)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I64"; numV two ]; TupV [ nullary "I32"; numV four ]; caseV ("EXTMUL", [al_of_extension Pack.ZX; nullary "LOW"]) ] )
+  | V128 (V128.I32x4 (V128Op.DotS)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I32"; numV four ]; TupV [ nullary "I16"; numV eight ]; caseV ("DOT", [nullary "S"]) ])
   | _ -> error "al_of_special_vbinop" empty
 
 let al_of_int_vcvtop = function
@@ -1575,10 +1553,10 @@ let al_of_vcvtop = function
 
 
 let al_of_special_vcvtop = function
-  | V128 (V128.I16x8 (V128Op.ExtAddPairwiseS)) -> CaseV ("VEXTUNOP", [ TupV [ nullary "I16"; numV eight]; TupV [ nullary "I8"; numV sixteen ]; nullary "EXTADD_PAIRWISE"; al_of_extension Pack.SX ])
-  | V128 (V128.I16x8 (V128Op.ExtAddPairwiseU)) -> CaseV ("VEXTUNOP", [ TupV [ nullary "I16"; numV eight]; TupV [ nullary "I8"; numV sixteen ]; nullary "EXTADD_PAIRWISE"; al_of_extension Pack.ZX ])
-  | V128 (V128.I32x4 (V128Op.ExtAddPairwiseS)) -> CaseV ("VEXTUNOP", [ TupV [ nullary "I32"; numV four]; TupV [ nullary "I16"; numV eight ]; nullary "EXTADD_PAIRWISE"; al_of_extension Pack.SX ])
-  | V128 (V128.I32x4 (V128Op.ExtAddPairwiseU)) -> CaseV ("VEXTUNOP", [ TupV [ nullary "I32"; numV four]; TupV [ nullary "I16"; numV eight ]; nullary "EXTADD_PAIRWISE"; al_of_extension Pack.ZX ])
+  | V128 (V128.I16x8 (V128Op.ExtAddPairwiseS)) -> CaseV ("VEXTUNOP", [ TupV [ nullary "I16"; numV eight]; TupV [ nullary "I8"; numV sixteen ]; caseV ("EXTADD_PAIRWISE", [al_of_extension Pack.SX]) ])
+  | V128 (V128.I16x8 (V128Op.ExtAddPairwiseU)) -> CaseV ("VEXTUNOP", [ TupV [ nullary "I16"; numV eight]; TupV [ nullary "I8"; numV sixteen ]; caseV ("EXTADD_PAIRWISE", [al_of_extension Pack.ZX]) ])
+  | V128 (V128.I32x4 (V128Op.ExtAddPairwiseS)) -> CaseV ("VEXTUNOP", [ TupV [ nullary "I32"; numV four]; TupV [ nullary "I16"; numV eight ]; caseV ("EXTADD_PAIRWISE", [al_of_extension Pack.SX]) ])
+  | V128 (V128.I32x4 (V128Op.ExtAddPairwiseU)) -> CaseV ("VEXTUNOP", [ TupV [ nullary "I32"; numV four]; TupV [ nullary "I16"; numV eight ]; caseV ("EXTADD_PAIRWISE", [al_of_extension Pack.ZX]) ])
   | _ -> error "al_of_special_vcvtop" empty
 
 let al_of_int_vshiftop : V128Op.ishiftop -> value = function

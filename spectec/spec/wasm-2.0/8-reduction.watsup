@@ -199,12 +199,12 @@ rule Step_pure/relop:
 
 
 rule Step_pure/cvtop-val:
-  (CONST nt_1 c_1) (CVTOP nt_2 nt_1 cvtop sx?)  ~>  (CONST nt_2 c)
-  -- if $cvtop(nt_1, nt_2, cvtop, sx?, c_1) = c  ;; TODO
+  (CONST nt_1 c_1) (CVTOP nt_2 nt_1 cvtop)  ~>  (CONST nt_2 c)
+  -- if $cvtop(nt_1, nt_2, cvtop, c_1) = c  ;; TODO
 
 rule Step_pure/cvtop-trap:
-  (CONST nt_1 c_1) (CVTOP nt_2 nt_1 cvtop sx?)  ~>  TRAP
-  -- if $cvtop(nt_1, nt_2, cvtop, sx?, c_1) = eps  ;; TODO
+  (CONST nt_1 c_1) (CVTOP nt_2 nt_1 cvtop)  ~>  TRAP
+  -- if $cvtop(nt_1, nt_2, cvtop, c_1) = eps  ;; TODO
 
 
 ;; Reference instructions
@@ -328,13 +328,13 @@ rule Step_pure/vreplace_lane:
 
 
 rule Step_pure/vextunop:
-  (VCONST V128 c_1) (VEXTUNOP sh_1 sh_2 vextunop sx) ~> (VCONST V128 c)
-  -- if $vextunop(sh_1, sh_2, vextunop, sx, c_1) = c
+  (VCONST V128 c_1) (VEXTUNOP sh_1 sh_2 vextunop) ~> (VCONST V128 c)
+  -- if $vextunop(sh_1, sh_2, vextunop, c_1) = c
 
 
 rule Step_pure/vextbinop:
-  (VCONST V128 c_1) (VCONST V128 c_2) (VEXTBINOP sh_1 sh_2 vextbinop sx) ~> (VCONST V128 c)
-  -- if $vextbinop(sh_1, sh_2, vextbinop, sx, c_1, c_2) = c
+  (VCONST V128 c_1) (VCONST V128 c_2) (VEXTBINOP sh_1 sh_2 vextbinop) ~> (VCONST V128 c)
+  -- if $vextbinop(sh_1, sh_2, vextbinop, c_1, c_2) = c
 
 
 rule Step_pure/vnarrow:

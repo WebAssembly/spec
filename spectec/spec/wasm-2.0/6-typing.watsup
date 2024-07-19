@@ -273,8 +273,7 @@ rule Instr_ok/cvtop-reinterpret:
   -- if $size(nt_1) = $size(nt_2)
 
 rule Instr_ok/cvtop-convert:
-  C |- CVTOP nt_1 nt_2 CONVERT sx? : nt_2 -> nt_1
-  -- if sx? = eps <=> nt_1 = Inn_1 /\ nt_2 = Inn_2 /\ $size(nt_1) > $size(nt_2) \/ nt_1 = Fnn_1 /\ nt_2 = Fnn_2
+  C |- CVTOP nt_1 nt_2 cvtop : nt_2 -> nt_1
 
 
 ;; Reference instructions
@@ -345,10 +344,10 @@ rule Instr_ok/vreplace_lane:
   -- if i < $dim(sh)
 
 rule Instr_ok/vextunop:
-  C |- VEXTUNOP sh_1 sh_2 vextunop sx : V128 -> V128
+  C |- VEXTUNOP sh_1 sh_2 vextunop : V128 -> V128
 
 rule Instr_ok/vextbinop:
-  C |- VEXTBINOP sh_1 sh_2 vextbinop sx : V128 V128 -> V128
+  C |- VEXTBINOP sh_1 sh_2 vextbinop : V128 V128 -> V128
 
 rule Instr_ok/vnarrow:
   C |- VNARROW sh_1 sh_2 sx : V128 V128 -> V128

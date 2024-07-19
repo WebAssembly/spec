@@ -25,3 +25,6 @@ val (%) : region -> 'b -> region * 'b
 val it : ('a, 'b) note_phrase -> 'a
 val at : ('a, 'b) note_phrase -> region
 val note : ('a, 'b) note_phrase -> 'b
+
+(* Utils *)
+val map : ('a -> 'a) -> ('a, 'b) note_phrase -> ('a, 'b) note_phrase

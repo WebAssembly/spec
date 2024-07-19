@@ -19,7 +19,7 @@ let eval_expr =
       popI result;
       returnI (Some (listE [ result ]))
     ]
-  )
+  ) $ no_region
 
 (* Helper for the manual array_new.data algorithm *)
 
@@ -48,7 +48,7 @@ let group_bytes_by =
       );
       returnI (Some (listE []));
     ]
-  )
+  ) $ no_region
 
 let array_new_data =
   let i32 = caseE (atom_of_name "I32" "numtype", []) in
@@ -118,7 +118,7 @@ let array_new_data =
         []
       );
     ]
-  )
+  ) $ no_region
 
 let manual_algos = [eval_expr; group_bytes_by; array_new_data;]
 

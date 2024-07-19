@@ -195,7 +195,7 @@ $${rule: Instr_ok/relop}
 
 * The instruction is valid with type :math:`[t_1] \to [t_2]`.
 
-$${rule: Instr_ok/cvtop-*}
+$${rule: Instr_ok/cvtop}
 
 
 .. index:: reference instructions, reference type

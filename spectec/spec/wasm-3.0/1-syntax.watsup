@@ -365,10 +365,19 @@ syntax relop_(Fnn) =
   | EQ | NE | LT | GT | LE | GE
 
 syntax cvtop_(numtype_1, numtype_2) hint(show cvtop_((%,%)))
-syntax cvtop_(nt_1, nt_2) =
-  | CONVERT
-  | CONVERT_SAT  -- if nt_1 = Inn /\ nt_2 = Fnn
-  | REINTERPRET  -- if $size(nt_1) = $size(nt_2)
+syntax cvtop_(Inn_1, Inn_2) =
+  | EXTEND sx hint(show %0#_#%1)  -- if $sizenn1(Inn_1) < $sizenn2(Inn_2)
+  | WRAP         -- if $sizenn1(Inn_1) > $sizenn2(Inn_2)
+syntax cvtop_(Inn_1, Fnn_2) =
+  | CONVERT sx hint(show %0#_#%1)
+  | REINTERPRET  -- if $sizenn1(Inn_1) = $sizenn2(Fnn_2)
+syntax cvtop_(Fnn_1, Inn_2) =
+  | TRUNC sx hint(show %0#_#%1)
+  | TRUNC_SAT sx hint(show %0#_#%1)
+  | REINTERPRET  -- if $sizenn1(Fnn_1) = $sizenn2(Inn_2)
+syntax cvtop_(Fnn_1, Fnn_2) =
+  | PROMOTE      -- if $sizenn1(Fnn_1) < $sizenn2(Fnn_2)
+  | DEMOTE       -- if $sizenn1(Fnn_1) > $sizenn2(Fnn_2)
 
 
 ;; Vector operators
@@ -399,8 +408,8 @@ syntax vbinop_(Jnn X M) =
   | ADD_SAT sx hint(show ADD_SAT#_#%)      -- if $lsizenn(Jnn) <= `16
   | SUB_SAT sx hint(show SUB_SAT#_#%)      -- if $lsizenn(Jnn) <= `16
   | MUL                                    -- if $lsizenn(Jnn) >= `16
-  | AVGR_U                                 -- if $lsizenn(Jnn) <= `16
-  | Q15MULR_SAT_S                          -- if $lsizenn(Jnn) = `16
+  | AVGR_U                                 -- if $lsizenn(Jnn) <= `16  ;; TODO(2, rossberg): AVGR U
+  | Q15MULR_SAT_S                          -- if $lsizenn(Jnn) = `16   ;; TODO(2, rossberg): Q15MULR_SAT S
   | MIN sx hint(show MIN#_#%)              -- if $lsizenn(Jnn) <= `32
   | MAX sx hint(show MAX#_#%)              -- if $lsizenn(Jnn) <= `32
 syntax vbinop_(Fnn X M) = ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX
@@ -440,12 +449,15 @@ syntax vshiftop_(Jnn X M) = SHL | SHR sx hint(show SHR#_#%)
 
 syntax vextunop_(ishape_1, ishape_2) hint(show vextunop_((%,%))) hint(macro "%" "V%")
 syntax vextunop_(Jnn_1 X M_1, Jnn_2 X M_2) =
-  | EXTADD_PAIRWISE  -- if 16 <= $(2 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2) <= `32
+  | EXTADD_PAIRWISE sx hint(show EXTADD_PAIRWISE#_#%)
+    -- if 16 <= $(2 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2) <= `32
 
 syntax vextbinop_(ishape_1, ishape_2) hint(show vextbinop_((%,%))) hint(macro "%" "V%")
 syntax vextbinop_(Jnn_1 X M_1, Jnn_2 X M_2) =
-  | EXTMUL half_(Jnn_1 X M_1, Jnn_2 X M_2) hint(show EXTMUL#_#%) -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2) >= `16
-  | DOT                                                          -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2) = `32
+  | EXTMUL sx half_(Jnn_1 X M_1, Jnn_2 X M_2) hint(show EXTMUL#_#%#_#%)
+    -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2) >= `16
+  | DOT S hint(show DOT#_#%)
+    -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2) = `32
 
 
 ;; Memory operators
@@ -514,9 +526,7 @@ syntax instr/num hint(desc "numeric instruction") = ...
   | BINOP numtype binop_(numtype)    hint(show %.##%)
   | TESTOP numtype testop_(numtype)  hint(show %.##%)
   | RELOP numtype relop_(numtype)    hint(show %.##%)
-  | CVTOP numtype_1 numtype_2 cvtop_(numtype_2, numtype_1) sx?  hint(show %1.%3#_#%2) hint(show %1.%3#_#%2#_#%4)
-    -- if numtype_1 =/= numtype_2
-    ;; TODO(1, rossberg): constrain sx? or move it into cvtop
+  | CVTOP numtype_1 numtype_2 cvtop_(numtype_2, numtype_1)  hint(show %1.##%3#_#%2)
   | ...
 
 syntax instr/vec hint(desc "vector instruction") = ...
@@ -536,13 +546,10 @@ syntax instr/vec hint(desc "vector instruction") = ...
   | VSHUFFLE ishape laneidx*            hint(show ##%.SHUFFLE %) hint(macro "VSHUFFLE")
     -- if ishape = I8 X `16 /\ |laneidx*| = `16
     ;; TODO(3, rossberg): enable ^16 in type
-  | VEXTUNOP ishape_1 ishape_2 vextunop_(ishape_2, ishape_1) sx
-    hint(show ##%1.##%3#_# ##%2#_#%4)
-    -- if $($lsize($lanetype(ishape_1)) = 2*$lsize($lanetype(ishape_2)))
-  | VEXTBINOP ishape_1 ishape_2 vextbinop_(ishape_2, ishape_1) sx
-    hint(show ##%1.##%3#_# ##%2#_#%4)
-    -- if $($lsize($lanetype(ishape_1)) = 2*$lsize($lanetype(ishape_2)))
-    ;; TODO(1, rossberg): /\ (vextbinop =/= DOT \/ sx = S)
+  | VEXTUNOP ishape_1 ishape_2 vextunop_(ishape_2, ishape_1)
+    hint(show ##%1.##%3#_# ##%2)
+  | VEXTBINOP ishape_1 ishape_2 vextbinop_(ishape_2, ishape_1)
+    hint(show ##%1.##%3#_# ##%2)
   | VNARROW ishape_1 ishape_2 sx        hint(show ##%.NARROW#_# ##%#_#%) hint(macro "VNARROW")
     -- if $($lsize($lanetype(ishape_2)) = 2*$lsize($lanetype(ishape_1)) <= `32)
   | VCVTOP shape_1 shape_2 vcvtop_(shape_2, shape_1) half_(shape_2, shape_1)? sx? zero_(shape_2, shape_1)?
