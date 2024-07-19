@@ -12,6 +12,7 @@ type instr =
 | MemI of expr * expr
 | IsValidI of expr option * expr * expr option
 | MatchesI of expr * expr
+| IsConstI of expr option * expr
 | IfI of expr * instr list
 | ForallI of (expr * expr) list * instr list
 | EquivI of expr * expr

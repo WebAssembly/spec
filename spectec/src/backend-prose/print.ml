@@ -70,11 +70,15 @@ let rec string_of_instr = function
       sprintf "%s %s%s is valid%s." (indent ())
         (string_of_opt "Under the context " string_of_expr ", " c_opt)
         (string_of_expr_with_type e)
-        (string_of_opt " with type " string_of_expr "" e_opt)
+        (string_of_opt " with " string_of_expr_with_type "" e_opt)
   | MatchesI (e1, e2) ->
       sprintf "%s %s matches %s." (indent ())
         (string_of_expr_with_type e1)
         (string_of_expr_with_type e2)
+  | IsConstI (c_opt, e) ->
+      sprintf "%s %s%s is constant." (indent ())
+        (string_of_opt "Under the context " string_of_expr ", " c_opt)
+        (string_of_expr_with_type e)
   | IfI (c, is) ->
       sprintf "%s If %s, \n%s" (indent ())
         (string_of_expr c)

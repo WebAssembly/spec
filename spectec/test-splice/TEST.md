@@ -11,33 +11,19 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup -l --splice-latex -p spe
 == IL Validation after pass animate...
 == Translating to AL...
 == Prose Generation...
-relation Subtype_ok: `%|-%:%`(context, subtype, oktypeidx)
-relation Subtype_ok2: `%|-%:%`(context, subtype, oktypeidxnat)
-relation Rectype_ok2: `%|-%:%`(context, rectype, oktypeidxnat)
-relation Rectype_ok: `%|-%:%`(context, rectype, oktypeidx)
-relation Limits_ok: `%|-%:%`(context, limits, nat)
-relation Blocktype_ok: `%|-%:%`(context, blocktype, instrtype)
-relation Instrs_ok: `%|-%:%`(context, instr*, instrtype)
-relation Expr_ok: `%|-%:%`(context, expr, resulttype)
-relation Instr_const: `%|-%CONST`(context, instr)
-relation Expr_const: `%|-%CONST`(context, expr)
-relation Expr_ok_const: `%|-%:%CONST`(context, expr, valtype)
-relation Type_ok: `%|-%:%`(context, type, deftype*)
-relation Local_ok: `%|-%:%`(context, local, localtype)
-relation Func_ok: `%|-%:%`(context, func, deftype)
-relation Global_ok: `%|-%:%`(context, global, globaltype)
-relation Table_ok: `%|-%:%`(context, table, tabletype)
-relation Mem_ok: `%|-%:%`(context, mem, memtype)
-relation Elemmode_ok: `%|-%:%`(context, elemmode, elemtype)
-relation Elem_ok: `%|-%:%`(context, elem, elemtype)
-relation Datamode_ok: `%|-%:%`(context, datamode, datatype)
-relation Data_ok: `%|-%:%`(context, data, datatype)
-relation Import_ok: `%|-%:%`(context, import, externtype)
-relation Externidx_ok: `%|-%:%`(context, externidx, externtype)
-relation Export_ok: `%|-%:%%`(context, export, name, externtype)
-relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
-relation Types_ok: `%|-%:%`(context, type*, deftype*)
-relation NotationTypingInstrScheme: `%|-%:%`(context, instr*, functype)
+other_relation Expr_ok_const: `%|-%:%CONST`(context, expr, valtype)
+other_relation Export_ok: `%|-%:%%`(context, export, name, externtype)
+../spec/wasm-3.0/6-typing.watsup:1155.7-1155.36: prem_to_instrs: Yet `Instr_const: `%|-%CONST`(C, instr)`
+../spec/wasm-3.0/6-typing.watsup:194.10-194.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
+../spec/wasm-3.0/6-typing.watsup:219.6-219.55: prem_to_instrs: Yet `Rectype_ok2: `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype : subtype})), OK_oktypeidxnat(`%`_typeidx((x!`%`_idx.0 + 1)), (i + 1)))`
+../spec/wasm-3.0/6-typing.watsup:218.6-218.42: prem_to_instrs: Yet `Subtype_ok2: `%|-%:%`(C, subtype_1, OK_oktypeidxnat(x, i))`
+../spec/wasm-3.0/6-typing.watsup:211.6-211.60: prem_to_instrs: Yet `Rectype_ok2: `%|-%:%`({TYPES [], RECS subtype*{subtype : subtype}, FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []} ++ C, REC_rectype(`%`_list(subtype*{subtype : subtype})), OK_oktypeidxnat(x, 0))`
+../spec/wasm-3.0/6-typing.watsup:1206.6-1206.40: prem_to_instrs: Yet `Expr_ok_const: `%|-%:%CONST`(C, expr, t)`
+../spec/wasm-3.0/6-typing.watsup:1212.6-1212.41: prem_to_instrs: Yet `Expr_ok_const: `%|-%:%CONST`(C, expr, (rt : reftype <: valtype))`
+../spec/wasm-3.0/6-typing.watsup:1232.6-1232.42: prem_to_instrs: Yet `Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype)`
+../spec/wasm-3.0/6-typing.watsup:1221.7-1221.48: prem_to_instrs: Yet `Expr_ok_const: `%|-%:%CONST`(C, expr, (elemtype : reftype <: valtype))`
+../spec/wasm-3.0/6-typing.watsup:1243.6-1243.42: prem_to_instrs: Yet `Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype)`
+../spec/wasm-3.0/C-conventions.watsup:50.6-50.78: prem_to_instrs: Yet `NotationTypingInstrScheme: `%|-%:%`({TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [`%`_resulttype(t_2*{t_2 : valtype})], RETURN ?(), REFS []} ++ C, instr*{instr : instr}, `%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype})))`
 == Splicing...
 \documentclass[a4paper]{scrartcl}
 
@@ -1571,6 +1557,31 @@ warning: rule prose `exec/select` was never spliced
 warning: rule prose `exec/drop` was never spliced
 warning: rule prose `exec/nop` was never spliced
 warning: rule prose `exec/unreachable` was never spliced
+warning: rule prose `valid/instr*` was never spliced
+warning: rule prose `valid/instr_u0` was never spliced
+warning: rule prose `valid/[instr_u0]` was never spliced
+warning: rule prose `valid/type_u0*` was never spliced
+warning: rule prose `valid/globa_u0*` was never spliced
+warning: rule prose `valid/exter_u0` was never spliced
+warning: rule prose `valid/import` was never spliced
+warning: rule prose `valid/data` was never spliced
+warning: rule prose `valid/datam_u0` was never spliced
+warning: rule prose `valid/elem` was never spliced
+warning: rule prose `valid/elemm_u0` was never spliced
+warning: rule prose `valid/memory` was never spliced
+warning: rule prose `valid/table` was never spliced
+warning: rule prose `valid/global` was never spliced
+warning: rule prose `valid/func` was never spliced
+warning: rule prose `valid/local` was never spliced
+warning: rule prose `valid/type` was never spliced
+warning: rule prose `valid/instr*` was never spliced
+warning: rule prose `valid/instr_u0*` was never spliced
+warning: rule prose `valid/block_u0` was never spliced
+warning: rule prose `valid/(n, m)` was never spliced
+warning: rule prose `valid/rec` was never spliced
+warning: rule prose `valid/rec` was never spliced
+warning: rule prose `valid/sub` was never spliced
+warning: rule prose `valid/sub` was never spliced
 warning: rule prose `valid/vstore_lane` was never spliced
 warning: rule prose `valid/vstore` was never spliced
 warning: rule prose `valid/vload_lane` was never spliced

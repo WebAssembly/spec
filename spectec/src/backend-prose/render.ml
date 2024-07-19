@@ -474,6 +474,10 @@ let rec render_prose_instr env depth = function
     sprintf "* %s matches %s."
       (render_expr env e1)
       (render_expr env e2)
+  | IsConstI (c_opt, e) ->
+    sprintf "* %s%s is const."
+      (render_opt "Under the context " (render_expr env) ", " c_opt)
+      (render_expr env e)
   | IfI (c, is) ->
     sprintf "* If %s,%s"
       (render_expr env c)
