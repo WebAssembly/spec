@@ -405,13 +405,13 @@ syntax vbinop_(shape) hint(macro "%" "V%")
 syntax vbinop_(Jnn X M) =
   | ADD
   | SUB
-  | ADD_SAT sx hint(show ADD_SAT#_#%)      -- if $lsizenn(Jnn) <= `16
-  | SUB_SAT sx hint(show SUB_SAT#_#%)      -- if $lsizenn(Jnn) <= `16
-  | MUL                                    -- if $lsizenn(Jnn) >= `16
-  | AVGR_U                                 -- if $lsizenn(Jnn) <= `16  ;; TODO(2, rossberg): AVGR U
-  | Q15MULR_SAT_S                          -- if $lsizenn(Jnn) = `16   ;; TODO(2, rossberg): Q15MULR_SAT S
-  | MIN sx hint(show MIN#_#%)              -- if $lsizenn(Jnn) <= `32
-  | MAX sx hint(show MAX#_#%)              -- if $lsizenn(Jnn) <= `32
+  | ADD_SAT sx hint(show ADD_SAT#_#%)        -- if $lsizenn(Jnn) <= `16
+  | SUB_SAT sx hint(show SUB_SAT#_#%)        -- if $lsizenn(Jnn) <= `16
+  | MUL                                      -- if $lsizenn(Jnn) >= `16
+  | AVGR U hint(show AVGR#_#%)               -- if $lsizenn(Jnn) <= `16
+  | Q15MULR_SAT S hint(show Q15MULR_SAT#_#%) -- if $lsizenn(Jnn) = `16
+  | MIN sx hint(show MIN#_#%)                -- if $lsizenn(Jnn) <= `32
+  | MAX sx hint(show MAX#_#%)                -- if $lsizenn(Jnn) <= `32
 syntax vbinop_(Fnn X M) = ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX
 
 syntax vtestop_(shape) hint(macro "%" "V%")
