@@ -74,7 +74,7 @@ let get_params winstr =
     (sprintf "cannot get params of wasm instruction `%s`" (Il.Print.string_of_exp winstr))
 
 let lhs_of_rgroup rgroup =
-  let (lhs, _, _) = List.hd rgroup in
+  let (lhs, _, _) = (List.hd rgroup).it in
   lhs
 
 let name_of_rule rule =
@@ -102,10 +102,9 @@ let rec insert_instrs target il =
     h @ [ ifI (cond, insert_instrs (insert_nop target) il' , []) ]
   | _ -> il @ target
 
-
 (** Translation *)
 
-(* `Il.atom` -> `atom` *) 
+(* `Il.atom` -> `atom` *)
 let translate_atom atom = atom.it, atom.note.Il.Atom.def
 
 (* `Il.iter` -> `iter` *)
@@ -538,7 +537,7 @@ and handle_inverse_function lhs rhs free_ids =
   if List.for_all contains_free args then
     let new_lhs = args2lhs args in
     let indices = List.init (List.length args) (fun i -> Some i) in
-    let new_rhs = invCallE (f, indices, rhs2args rhs) ~at:lhs.at in
+    let new_rhs = invCallE (f, indices, rhs2args rhs) ~at:lhs.at ~note:lhs.note in
     handle_special_lhs new_lhs new_rhs free_ids
 
   (* Some arguments are free *)
@@ -561,7 +560,7 @@ and handle_inverse_function lhs rhs free_ids =
 
     (* Free argument become new lhs & InvCallE become new rhs *)
     let new_lhs = args2lhs free_args in
-    let new_rhs = invCallE (f, indices, bound_args @ rhs2args rhs) ~at:lhs.at in
+    let new_rhs = invCallE (f, indices, bound_args @ rhs2args rhs) ~at:lhs.at ~note:lhs.note in
 
     (* Recursively translate new_lhs and new_rhs *)
     handle_special_lhs new_lhs new_rhs free_ids
@@ -780,12 +779,14 @@ let translate_helper partial_funcs def =
     in
     let blocks = List.map (translate_helper_body name) unified_clauses in
     let body =
-      letI (varE "f", getCurFrameE ()) :: Transpile.merge_blocks blocks
+      Transpile.merge_blocks blocks
+      |> Transpile.insert_frame_binding
       |> Transpile.enhance_readability
+      (* |> Walk.(walk_instrs { default_config with pre_expr = Transpile.remove_sub }) *)
       |> (if List.mem id partial_funcs then Fun.id else Transpile.ensure_return)
       |> Transpile.flatten_if in
 
-    Some (FuncA (name, params, body))
+    Some (FuncA (name, params, body) $ def.at)
   | _ -> None
 
 
@@ -806,8 +807,8 @@ let translate_helpers il =
 
 let rec kind_of_context e =
   match e.it with
-  | Il.CaseE ([{it = Il.Atom "FRAME_"; _} as atom]::_, _) -> translate_atom atom 
-  | Il.CaseE ([{it = Il.Atom "LABEL_"; _} as atom]::_, _) -> translate_atom atom 
+  | Il.CaseE ([{it = Il.Atom "FRAME_"; _} as atom]::_, _) -> translate_atom atom
+  | Il.CaseE ([{it = Il.Atom "LABEL_"; _} as atom]::_, _) -> translate_atom atom
   | Il.CaseE ([[]; [{it = Il.Semicolon; _}]; []], e')
   | Il.ListE [ e' ]
   | Il.TupE [_ (* z *); e'] -> kind_of_context e'
@@ -818,7 +819,7 @@ let in_same_context (lhs1, _, _) (lhs2, _, _) =
 
 let group_contexts xs =
   List.fold_left (fun acc x ->
-    let g1, g2 = List.partition (fun g -> in_same_context (List.hd g) x) acc in
+    let g1, g2 = List.partition (fun g -> in_same_context (List.hd g).it x.it) acc in
     match g1 with
     | [] -> [ x ] :: acc
     | [ g ] -> (x :: g) :: g2
@@ -856,7 +857,7 @@ let insert_deferred = function
 
 (* `reduction` -> `instr list` *)
 let translate_reduction deferred reduction =
-  let _, rhs, prems = reduction in
+  let _, rhs, prems = reduction.it in
 
   (* Translate rhs *)
   translate_rhs rhs
@@ -951,7 +952,7 @@ let translate_context_rgroup lhss sub_algos inner_params =
   let instr_popall = popallI e_vals in
   let instrs_context =
     List.fold_right2 (fun lhs algo acc ->
-      match algo with
+      match algo.it with
       | RuleA (_, params, body) ->
         (* Assume that each sub-algorithms are produced by translate_context,
            i.e., they will always contain instr_popall as their first instruction. *)
@@ -1006,7 +1007,7 @@ let rec translate_rgroup' context winstr instr_name rgroup =
       let instrs' =
         match rgroup |> Util.Lib.List.split_last with
         (* Either case: No premise for the last reduction rule *)
-        | hds, (_, rhs, []) when List.length hds > 0 ->
+        | hds, { it = (_, rhs, []); _ } when List.length hds > 0 ->
           assert (defer_opt = None);
           let blocks = List.map (translate_reduction None) hds in
           let body1 = Transpile.merge_blocks blocks in
@@ -1029,7 +1030,7 @@ let rec translate_rgroup' context winstr instr_name rgroup =
       (try
       let unified_sub_groups =
         rgroup
-        |> List.map un_unify
+        |> List.map (Source.map un_unify)
         |> group_contexts
         |> List.map (fun g -> Il2il.unify_lhs (instr_name, g)) in
 
@@ -1051,7 +1052,7 @@ and get_lhs_stack (exp: Il.exp): Il.exp list =
   else to_exp_list exp
 
 and translate_rgroup (instr_name, rgroup) =
-  let lhs, _, _ = List.hd rgroup in
+  let lhs, _, _ = (List.hd rgroup).it in
   (* TODO: Generalize getting current frame *)
   let lhs_stack = get_lhs_stack lhs in
   let context, winstr = split_lhs_stack instr_name lhs_stack in
@@ -1079,20 +1080,26 @@ and translate_rgroup (instr_name, rgroup) =
       al_params
   in
   let body =
-    letI (varE "f", getCurFrameE ()) :: instrs
+    instrs
+    |> Transpile.insert_frame_binding
     |> insert_nop
     |> Transpile.enhance_readability
+    (* |> Walk.(walk_instrs { default_config with pre_expr = Transpile.remove_sub }) *)
     |> Transpile.infer_assert
     |> Transpile.flatten_if
   in
-  RuleA (name, al_params', body)
+
+  let at = rgroup
+    |> List.map at
+    |> over_region in
+  RuleA (name, al_params', body) $ at
 
 
 let rule_to_tup rule =
   match rule.it with
   | Il.RuleD (_, _, _, exp, prems) ->
     match exp.it with
-    | Il.TupE [ lhs; rhs ] -> lhs, rhs, prems
+    | Il.TupE [ lhs; rhs ] -> (lhs, rhs, prems) $ rule.at
     | _ -> error_exp exp "form of reduction rule"
 
 

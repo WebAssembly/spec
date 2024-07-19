@@ -674,7 +674,7 @@ let render_func env fname params instrs =
 let render_def env = function
   | Pred (name, params, instrs) ->
     "\n" ^ render_pred env name params instrs ^ "\n\n"
-  | Algo algo -> (match algo with
+  | Algo algo -> (match algo.it with
     | Al.Ast.RuleA (name, params, instrs) ->
       "\n" ^ render_rule env name params instrs ^ "\n\n"
     | Al.Ast.FuncA (name, params, instrs) ->

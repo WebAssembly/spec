@@ -693,13 +693,13 @@ rule Step_pure/vreplace_lane:
 
 
 rule Step_pure/vextunop:
-  (VCONST V128 c_1) (VEXTUNOP sh_2 sh_1 vextunop sx) ~> (VCONST V128 c)
-  -- if $vextunop(sh_1, sh_2, vextunop, sx, c_1) = c
+  (VCONST V128 c_1) (VEXTUNOP sh_2 sh_1 vextunop) ~> (VCONST V128 c)
+  -- if $vextunop(sh_1, sh_2, vextunop, c_1) = c
 
 
 rule Step_pure/vextbinop:
-  (VCONST V128 c_1) (VCONST V128 c_2) (VEXTBINOP sh_2 sh_1 vextbinop sx) ~> (VCONST V128 c)
-  -- if $vextbinop(sh_1, sh_2, vextbinop, sx, c_1, c_2) = c
+  (VCONST V128 c_1) (VCONST V128 c_2) (VEXTBINOP sh_2 sh_1 vextbinop) ~> (VCONST V128 c)
+  -- if $vextbinop(sh_1, sh_2, vextbinop, c_1, c_2) = c
 
 
 rule Step_pure/vnarrow:

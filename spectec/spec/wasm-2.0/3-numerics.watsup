@@ -413,24 +413,24 @@ def $vcvtop(F64 X N_1, F32 X N_2, DEMOTE, sx?, f64) = f32
 def $vcvtop(F32 X N_1, F64 X N_2, PROMOTE, sx?, f32) = f64
     -- if f64 = $promote(32, 64, f32)
 
-def $vextunop(ishape_1, ishape_2, vextunop_(ishape_1), sx, vec_(V128)) : vec_(V128)
+def $vextunop(ishape_1, ishape_2, vextunop_(ishape_1), vec_(V128)) : vec_(V128)
     hint(show %3#$_((%1,%2))^(%5)#((%6)))
-def $vextbinop(ishape_1, ishape_2, vextbinop_(ishape_1), sx, vec_(V128), vec_(V128)) : vec_(V128)
+def $vextbinop(ishape_1, ishape_2, vextbinop_(ishape_1), vec_(V128), vec_(V128)) : vec_(V128)
     hint(show %3#$_((%1,%2))^(%5)#((%6,%7)))
 
-def $vextunop(Inn_1 X N_1, Inn_2 X N_2, EXTADD_PAIRWISE, sx, c_1) = c
+def $vextunop(Inn_1 X N_1, Inn_2 X N_2, EXTADD_PAIRWISE sx, c_1) = c
   -- var cj_1 : iN($lsize(Inn_1))
   -- var cj_2 : iN($lsize(Inn_1))
   -- if ci* = $lanes_(Inn_2 X N_2, c_1)
   -- if $concat_(iN($lsize(Inn_1)), (cj_1 cj_2)*) = $ext($lsize(Inn_2), $lsize(Inn_1), sx, ci)*
   -- if c = $invlanes_(Inn_1 X N_1, $iadd($lsize(Inn_1), cj_1, cj_2)*)
 
-def $vextbinop(Inn_1 X N_1, Inn_2 X N_2, EXTMUL hf, sx, c_1, c_2) = c
+def $vextbinop(Inn_1 X N_1, Inn_2 X N_2, EXTMUL sx hf, c_1, c_2) = c
   -- if ci_1* = $lanes_(Inn_2 X N_2, c_1)[$halfop(hf, 0, N_1) : N_1]
   -- if ci_2* = $lanes_(Inn_2 X N_2, c_2)[$halfop(hf, 0, N_1) : N_1]
   -- if c = $invlanes_(Inn_1 X N_1, $imul($lsize(Inn_1), $ext($lsize(Inn_2), $lsize(Inn_1), sx, ci_1), $ext($lsize(Inn_2), $lsize(Inn_1), sx, ci_2))*)
 
-def $vextbinop(Inn_1 X N_1, Inn_2 X N_2, DOT, sx, c_1, c_2) = c
+def $vextbinop(Inn_1 X N_1, Inn_2 X N_2, DOT S, c_1, c_2) = c
   -- var cj_1 : iN($lsize(Inn_1))
   -- var cj_2 : iN($lsize(Inn_1))
   -- if ci_1* = $lanes_(Inn_2 X N_2, c_1)

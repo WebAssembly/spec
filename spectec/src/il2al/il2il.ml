@@ -4,9 +4,10 @@ Functions that transform IL into IL.
 
 open Il.Ast
 open Il.Eq
+open Util
 open Util.Source
 
-type rgroup = (exp * exp * (prem list)) list
+type rgroup = (exp * exp * (prem list)) phrase list
 
 (* Helpers *)
 
@@ -261,17 +262,18 @@ let apply_template_to_rgroup template (lhs, rhs, prems) =
 
 let unify_lhs' rgroup =
   init_unified_idx();
-  let lhs_group = List.map (function (lhs, _, _) -> lhs) rgroup in
+  let fst = fun (x, _, _) -> x in
+  let lhs_group = List.map (fun r -> fst r.it) rgroup in
   let hd = List.hd lhs_group in
   let tl = List.tl lhs_group in
   let template = List.fold_left overlap hd tl in
-  List.map (apply_template_to_rgroup template) rgroup
+  List.map (Source.map (apply_template_to_rgroup template)) rgroup
 
 let unify_lhs (rname, rgroup) =
   let to_left_assoc (lhs, rhs, prems) = to_left_assoc_cat lhs, rhs, prems in
   let to_right_assoc (lhs, rhs, prems) = to_right_assoc_cat lhs, rhs, prems in
   (* typical f^-1 ∘ g ∘ f *)
-  rname, (rgroup |> List.map to_left_assoc |> unify_lhs' |> List.map to_right_assoc)
+  rname, (rgroup |> List.map (Source.map to_left_assoc) |> unify_lhs' |> List.map (Source.map to_right_assoc))
 
 let apply_template_to_def template def =
   match def.it with

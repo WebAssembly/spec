@@ -116,12 +116,12 @@ let env_prose env prose =
     let relation = Map.find valid_id env.rel_prose in
     let ralgos = (normalize_id id, prose, ref 0) :: relation.ralgos in
     env.rel_prose <- Map.add valid_id {ralgos} env.rel_prose
-  | Algo (Al.Ast.RuleA ((id, typ), _, _)) ->
+  | Algo ({ it = Al.Ast.RuleA ((id, typ), _, _); _ }) ->
     let id = El.Atom.to_string (id $$ (no_region, ref typ)) in
     let relation = Map.find exec_id env.rel_prose in
     let ralgos = (normalize_id id, prose, ref 0) :: relation.ralgos in
     env.rel_prose <- Map.add exec_id {ralgos} env.rel_prose
-  | Algo (Al.Ast.FuncA (id, _, _)) ->
+  | Algo ({ it = Al.Ast.FuncA (id, _, _); _}) ->
     env.def_prose <- Map.add id {falgo = prose; use = ref 0} env.def_prose
 
 let env (config : config) pdsts odsts elab el pr : env =

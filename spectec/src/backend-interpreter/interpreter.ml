@@ -123,6 +123,65 @@ and replace_path env base path v_new =
     Record.replace str v_new r_new;
     strV r_new
 
+and check_type ty v expr =
+  (* type definition *)
+  let addr_refs = [
+    "REF.I31_NUM"; "REF.STRUCT_ADDR"; "REF.ARRAY_ADDR";
+    "REF.FUNC_ADDR"; "REF.HOST_ADDR"; "REF.EXTERN";
+  ] in
+  let pnn_types = [ "I8"; "I16" ] in
+  let inn_types = [ "I32"; "I64" ] in
+  let fnn_types = [ "F32"; "F64" ] in
+  let vnn_types = [ "V128"; ] in
+  let abs_heap_types = [
+    "ANY"; "EQ"; "I31"; "STRUCT"; "ARRAY"; "NONE"; "FUNC";
+    "NOFUNC"; "EXTERN"; "NOEXTERN"
+  ] in
+  match v with
+  (* addrref *)
+  | CaseV (ar, _) when List.mem ar addr_refs->
+    boolV (ty = "addrref" ||ty = "ref" || ty = "val")
+  (* nul *)
+  | CaseV ("REF.NULL", _) ->
+    boolV (ty = "nul" || ty = "ref" || ty = "val")
+  (* values *)
+  | CaseV ("CONST", CaseV (nt, []) ::_) when List.mem nt inn_types ->
+    boolV (ty = "val")
+  | CaseV ("CONST", CaseV (nt, []) ::_) when List.mem nt fnn_types ->
+    boolV (ty = "val")
+  | CaseV ("VCONST", CaseV (vt, [])::_) when List.mem vt vnn_types ->
+    boolV (ty = "val")
+  (* numtype *)
+  | CaseV (nt, []) when List.mem nt inn_types ->
+    boolV (ty = "Inn" || ty = "Jnn" || ty = "numtype" || ty = "valtype")
+  | CaseV (nt, []) when List.mem nt fnn_types ->
+    boolV (ty = "Fnn" || ty = "numtype" || ty = "valtype")
+  | CaseV (vt, []) when List.mem vt vnn_types ->
+    boolV (ty = "Vnn" || ty = "vectype" || ty = "valtype")
+  (* valtype *)
+  | CaseV ("REF", _) ->
+    boolV (ty = "reftype" || ty = "valtype" || ty = "val")
+  (* absheaptype *)
+  | CaseV (aht, []) when List.mem aht abs_heap_types ->
+    boolV (ty = "absheaptype" || ty = "heaptype")
+  (* deftype *)
+  | CaseV ("DEF", [ _; _ ]) ->
+    boolV (ty = "deftype" || ty = "heaptype")
+  (* typevar *)
+  | CaseV ("_IDX", [ _ ]) ->
+    boolV (ty = "heaptype" || ty = "typevar")
+  (* heaptype *)
+  | CaseV ("REC", [ _ ]) ->
+    boolV (ty = "heaptype" || ty = "typevar")
+  (* packval *)
+  | CaseV ("PACK", CaseV (pt, [])::_) when List.mem pt pnn_types ->
+    boolV (ty = "val")
+  (* packtype *)
+  | CaseV (pt, []) when List.mem pt pnn_types ->
+    boolV (ty = "Pnn" || ty = "Jnn" || ty = "packtype" || ty = "storagetype")
+  | v -> fail_expr expr
+    (sprintf "%s doesn't have type %s" (structured_string_of_value v) ty)
+
 and eval_expr env expr =
   match expr.it with
   (* Value *)
@@ -298,59 +357,9 @@ and eval_expr env expr =
     )
   | HasTypeE (e, s) ->
     (* TODO: This shouldn't be hardcoded *)
-
-    (* type definition *)
-    let addr_refs = [
-      "REF.I31_NUM"; "REF.STRUCT_ADDR"; "REF.ARRAY_ADDR";
-      "REF.FUNC_ADDR"; "REF.HOST_ADDR"; "REF.EXTERN";
-    ] in
-    let pnn_types = [ "I8"; "I16" ] in
-    let inn_types = [ "I32"; "I64" ] in
-    let fnn_types = [ "F32"; "F64" ] in
-    let vnn_types = [ "V128"; ] in
-    let abs_heap_types = [
-      "ANY"; "EQ"; "I31"; "STRUCT"; "ARRAY"; "NONE"; "FUNC";
-      "NOFUNC"; "EXTERN"; "NOEXTERN"
-    ] in
-
     (* check type *)
-
-    (match eval_expr env e with
-    (* addrref *)
-    | CaseV (ar, _) when List.mem ar addr_refs->
-      boolV (s = "addrref" || s = "ref" || s = "val")
-    (* nul *)
-    | CaseV ("REF.NULL", _) ->
-      boolV (s = "nul" || s = "ref" || s = "val")
-    (* numtype *)
-    | CaseV (nt, []) when List.mem nt inn_types ->
-      boolV (s = "Inn" || s = "Jnn" || s = "numtype" || s = "valtype")
-    | CaseV (nt, []) when List.mem nt fnn_types ->
-      boolV (s = "Fnn" || s = "numtype" || s = "valtype")
-    | CaseV (vt, []) when List.mem vt vnn_types ->
-      boolV (s = "Vnn" || s = "vectype" || s = "valtype")
-    (* valtype *)
-    | CaseV ("REF", _) ->
-      boolV (s = "reftype" || s = "valtype")
-    (* absheaptype *)
-    | CaseV (aht, []) when List.mem aht abs_heap_types ->
-      boolV (s = "absheaptype" || s = "heaptype")
-    (* deftype *)
-    | CaseV ("DEF", [ _; _ ]) ->
-      boolV (s = "deftype" || s = "heaptype")
-    (* typevar *)
-    | CaseV ("_IDX", [ _ ]) ->
-      boolV (s = "heaptype" || s = "typevar")
-    (* heaptype *)
-    | CaseV ("REC", [ _ ]) ->
-      boolV (s = "heaptype" || s = "typevar")
-    (* packtype *)
-    | CaseV (pt, []) when List.mem pt pnn_types ->
-      boolV (s = "Pnn" || s = "Jnn" || s = "packtype" || s = "storagetype")
-    | v ->
-      fail_expr expr
-        (sprintf "%s doesn't have type %s" (string_of_value v) s)
-    )
+    let v = eval_expr env e in
+    check_type s v expr
   | MatchE (e1, e2) ->
     (* Deferred to reference interpreter *)
     let rt1 = e1 |> eval_expr env |> Construct.al_to_ref_type in
@@ -388,7 +397,7 @@ and assign lhs rhs env =
       match rhs with
       | OptV opt -> optV None, Option.to_list opt
       | ListV arr -> empty_list, Array.to_list !arr
-      | _ -> 
+      | _ ->
         fail_expr lhs
           (sprintf
             "invalid assignment: %s is not an iterable value" (string_of_value rhs)
@@ -665,8 +674,15 @@ and create_context (name: string) (args: value list) : AlContext.mode =
   let params = params_of_algo algo in
   let body = body_of_algo algo in
 
-  if List.length args <> List.length params then
-    raise (Exception.InvalidArg ("Args number mismatch for algorithm " ^ name));
+  if List.length args <> List.length params then (
+    error
+      algo.at
+      (Printf.sprintf "Expected %d arguments for the algorithm `%s` but %d arguments are given"
+        (List.length params)
+        name
+        (List.length args))
+      (string_of_value (CaseV (name, args)))
+  );
 
   let env =
     Env.empty

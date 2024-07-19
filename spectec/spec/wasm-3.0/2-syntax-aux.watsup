@@ -373,9 +373,9 @@ def $free_instr(VSHIFTOP ishape vshiftop) = $free_shape(ishape)
 def $free_instr(VBITMASK ishape) = $free_shape(ishape)
 def $free_instr(VSWIZZLE ishape) = $free_shape(ishape)
 def $free_instr(VSHUFFLE ishape laneidx*) = $free_shape(ishape)
-def $free_instr(VEXTUNOP ishape_1 ishape_2 vextunop sx) =
+def $free_instr(VEXTUNOP ishape_1 ishape_2 vextunop) =
   $free_shape(ishape_1) ++ $free_shape(ishape_2)
-def $free_instr(VEXTBINOP ishape_1 ishape_2 vextbinop sx) =
+def $free_instr(VEXTBINOP ishape_1 ishape_2 vextbinop) =
   $free_shape(ishape_1) ++ $free_shape(ishape_2)
 def $free_instr(VNARROW ishape_1 ishape_2 sx) =
   $free_shape(ishape_1) ++ $free_shape(ishape_2)
