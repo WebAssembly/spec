@@ -145,7 +145,7 @@ and string_of_expr expr =
   | CallE (id, el) -> sprintf "$%s(%s)" id (string_of_exprs ", " el)
   | InvCallE (id, nl, el) ->
     let id' =
-      if List.length nl = 0 then id
+      if List.for_all Option.is_some nl then id
       else
         nl
         |> List.filter_map (fun x -> x)
