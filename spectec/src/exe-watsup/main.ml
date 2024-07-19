@@ -19,7 +19,6 @@ type pass =
   | Unthe
   | Wild
   | Sideconditions
-  | Animate
 
 (* This list declares the intended order of passes.
 
@@ -28,7 +27,7 @@ passers (--all-passes, some targets), we do _not_ want to use the order of
 flags on the command line.
 *)
 let _skip_passes = [ Sub; Unthe ]  (* Not clear how to extend them to indexed types *)
-let all_passes = [ Totalize; Wild; Sideconditions; Animate ]
+let all_passes = [ Totalize; Wild; Sideconditions ]
 
 type file_kind =
   | Spec
@@ -73,7 +72,6 @@ let pass_flag = function
   | Unthe -> "the-elimination"
   | Wild -> "wildcards"
   | Sideconditions -> "sideconditions"
-  | Animate -> "animate"
 
 let pass_desc = function
   | Sub -> "Synthesize explicit subtype coercions"
@@ -81,7 +79,6 @@ let pass_desc = function
   | Unthe -> "Eliminate the ! operator in relations"
   | Wild -> "Eliminate wildcards and equivalent expressions"
   | Sideconditions -> "Infer side conditions"
-  | Animate -> "Animate equality conditions"
 
 let run_pass : pass -> Il.Ast.script -> Il.Ast.script = function
   | Sub -> Middlend.Sub.transform
@@ -89,7 +86,6 @@ let run_pass : pass -> Il.Ast.script -> Il.Ast.script = function
   | Unthe -> Middlend.Unthe.transform
   | Wild -> Middlend.Wild.transform
   | Sideconditions -> Middlend.Sideconditions.transform
-  | Animate -> Il2al.Animate.transform
 
 
 (* Argument parsing *)
@@ -174,8 +170,7 @@ let () =
     Il.Valid.valid il;
 
     (match !target with
-    | Prose | Splice _ | Interpreter _ ->
-      enable_pass Sideconditions; enable_pass Animate
+    | Prose | Splice _ | Interpreter _ -> enable_pass Sideconditions;
     | _ -> ()
     );
 
@@ -198,7 +193,7 @@ let () =
     if !print_final_il && not !print_all_il then print_il il;
 
     let al =
-      if !target = Check || !target = Latex || not (PS.mem Animate !selected_passes)
+      if !target = Check || !target = Latex
       then [] else (
         log "Translating to AL...";
         (Il2al.Translate.translate il @ Il2al.Manual.manual_algos)

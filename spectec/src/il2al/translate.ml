@@ -1083,5 +1083,5 @@ let translate_rules il =
 
 (* Entry *)
 let translate il =
-  let il = List.concat_map flatten_rec il in
-  translate_helpers il @ translate_rules il
+  let il' = il |> Animate.transform |> List.concat_map flatten_rec in
+  translate_helpers il' @ translate_rules il'
