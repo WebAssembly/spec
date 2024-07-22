@@ -13,7 +13,7 @@ let alloc_exn tag vs =
   assert (ts2 = []);
   Exn (tag, vs)
 
-let type_of_exn (Exn (tag, _)) =
+let type_of (Exn (tag, _)) =
   let TagT dt = Tag.type_of tag in
   dt
 
@@ -27,7 +27,7 @@ let () =
 let () =
   let type_of_ref' = !Value.type_of_ref' in
   Value.type_of_ref' := function
-    | ExnRef e -> DefHT (type_of_exn e)
+    | ExnRef e -> DefHT (type_of e)
     | r -> type_of_ref' r
 
 let () =
