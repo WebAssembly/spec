@@ -583,10 +583,6 @@ and handle_iter_lhs lhs rhs free_ids =
   in
 
   (* Helper functions *)
-  let is_target (expr: expr): bool =
-    (* Check whether `expr` contains iter variables *)
-    contains_ids iter_ids expr
-  in
   let iter_ids_of (expr: expr): string list =
     expr
     |> free_expr
@@ -594,8 +590,8 @@ and handle_iter_lhs lhs rhs free_ids =
     |> IdSet.to_list
   in
   let walk_expr (walker: Walk.walker) (expr: expr): expr =
-    if is_target expr then
-      IterE (expr, iter_ids_of expr, iter) $$ expr.at % expr.note
+    if contains_ids iter_ids expr then
+      IterE (expr, iter_ids_of expr, iter) $$ lhs.at % lhs.note
     else
       Walk.base_walker.walk_expr walker expr
   in
