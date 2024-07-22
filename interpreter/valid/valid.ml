@@ -939,11 +939,11 @@ and check_catch (c : context) (cc : catch) (ts : val_type list) at =
   | CatchRef (x1, x2) ->
     let TagT dt = tag c x1 in
     let FuncT (ts1, ts2) = as_func_str_type (expand_def_type dt) in
-    match_target c (ts1 @ [RefT (Null, ExnHT)]) (label c x2) cc.at
+    match_target c (ts1 @ [RefT (NoNull, ExnHT)]) (label c x2) cc.at
   | CatchAll x ->
     match_target c [] (label c x) cc.at
   | CatchAllRef x ->
-    match_target c [RefT (Null, ExnHT)] (label c x) cc.at
+    match_target c [RefT (NoNull, ExnHT)] (label c x) cc.at
 
 
 (* Functions & Constants *)
