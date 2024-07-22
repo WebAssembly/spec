@@ -1,5 +1,24 @@
 open Ast
 
+type unit_walker = {
+  walk_algo: unit_walker -> algorithm -> unit;
+  walk_instr: unit_walker -> instr -> unit;
+  walk_expr: unit_walker -> expr -> unit;
+  walk_path: unit_walker -> path -> unit;
+  walk_iter: unit_walker -> iter -> unit;
+}
+type walker = {
+  walk_algo: walker -> algorithm -> algorithm;
+  walk_instr: walker -> instr -> instr;
+  walk_expr: walker -> expr -> expr;
+  walk_path: walker -> path -> path;
+  walk_iter: walker -> iter -> iter;
+}
+val base_unit_walker : unit_walker
+val base_walker : walker
+
+(* TODO: remove walker below *)
+
 type config = {
   pre_instr: instr -> instr list;
   post_instr: instr -> instr list;
@@ -9,7 +28,6 @@ type config = {
   post_expr: expr -> expr;
   stop_cond_expr: expr -> bool;
 }
-
 val default_config : config
 val walk : config -> algorithm -> algorithm
 val walk_instr : config -> instr -> instr list

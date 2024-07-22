@@ -536,7 +536,8 @@ and handle_inverse_function lhs rhs free_ids =
   (* All arguments are free *)
   if List.for_all contains_free args then
     let new_lhs = args2lhs args in
-    let new_rhs = invCallE (f, [], rhs2args rhs) ~at:lhs.at ~note:lhs.note in
+    let indices = List.init (List.length args) (fun i -> Some i) in
+    let new_rhs = invCallE (f, indices, rhs2args rhs) ~at:lhs.at ~note:lhs.note in
     handle_special_lhs new_lhs new_rhs free_ids
 
   (* Some arguments are free *)
@@ -551,10 +552,10 @@ and handle_inverse_function lhs rhs free_ids =
       |> List.split
     in
     let bound_args = List.filter_map (fun x -> x) bound_args in
-    let free_args, indices =
+    let indices = List.map (Option.map snd) free_args_with_index in
+    let free_args =
       free_args_with_index
-      |> List.filter_map (fun x -> x)
-      |> List.split
+      |> List.filter_map (Option.map fst)
     in
 
     (* Free argument become new lhs & InvCallE become new rhs *)
@@ -785,8 +786,8 @@ let translate_helper partial_funcs def =
     let body =
       Transpile.merge_blocks blocks
       |> Transpile.insert_frame_binding
+      |> Walk.(walk_instrs { default_config with pre_expr = Transpile.remove_sub })
       |> Transpile.enhance_readability
-      (* |> Walk.(walk_instrs { default_config with pre_expr = Transpile.remove_sub }) *)
       |> (if List.mem id partial_funcs then Fun.id else Transpile.ensure_return)
       |> Transpile.flatten_if in
 
@@ -1087,8 +1088,8 @@ and translate_rgroup (instr_name, rgroup) =
     instrs
     |> Transpile.insert_frame_binding
     |> insert_nop
+    |> Walk.(walk_instrs { default_config with pre_expr = Transpile.remove_sub })
     |> Transpile.enhance_readability
-    (* |> Walk.(walk_instrs { default_config with pre_expr = Transpile.remove_sub }) *)
     |> Transpile.infer_assert
     |> Transpile.flatten_if
   in
