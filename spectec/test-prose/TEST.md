@@ -17,36 +17,27 @@ watsup 0.4 generator
 == IL Validation after pass animate...
 == Translating to AL...
 == Prose Generation...
-other_relation Expr_ok_const: `%|-%:%CONST`(context, expr, valtype?)
-6-typing.watsup:303.7-303.36: prem_to_instrs: Yet `Instr_const: `%|-%CONST`(C, instr)`
-6-typing.watsup:341.6-341.40: prem_to_instrs: Yet `Expr_ok_const: `%|-%:%CONST`(C, expr, ?(t))`
-6-typing.watsup:355.6-355.42: prem_to_instrs: Yet `Expr_ok_const: `%|-%:%CONST`(C, expr, ?(I32_valtype))`
-6-typing.watsup:362.6-362.42: prem_to_instrs: Yet `Expr_ok_const: `%|-%:%CONST`(C, expr, ?(I32_valtype))`
+Untranslated relation Limits_ok: `|-%:%`(limits, nat)
+Untranslated relation Functype_ok: `|-%:OK`functype
+Untranslated relation Globaltype_ok: `|-%:OK`globaltype
+Untranslated relation Tabletype_ok: `|-%:OK`tabletype
+Untranslated relation Memtype_ok: `|-%:OK`memtype
+Untranslated relation Externtype_ok: `|-%:OK`externtype
+Untranslated relation Limits_sub: `|-%<:%`(limits, limits)
+Untranslated relation Functype_sub: `|-%<:%`(functype, functype)
+Untranslated relation Globaltype_sub: `|-%<:%`(globaltype, globaltype)
+Untranslated relation Tabletype_sub: `|-%<:%`(tabletype, tabletype)
+Untranslated relation Memtype_sub: `|-%<:%`(memtype, memtype)
+Untranslated relation Externtype_sub: `|-%<:%`(externtype, externtype)
+Untranslated relation Type_ok: `|-%:%`(type, functype)
+6-typing.watsup:339.6-339.31: prem_to_instrs: Yet `Globaltype_ok: `|-%:OK`(gt)`
+6-typing.watsup:345.6-345.30: prem_to_instrs: Yet `Tabletype_ok: `|-%:OK`(tt)`
+6-typing.watsup:349.6-349.28: prem_to_instrs: Yet `Memtype_ok: `|-%:OK`(mt)`
+6-typing.watsup:377.6-377.31: prem_to_instrs: Yet `Externtype_ok: `|-%:OK`(xt)`
+Untranslated relation Module_ok: `|-%:OK`module
 =================
  Generated prose
 =================
-validation_of_valid_elem
-- the table segment (ELEM expr x*) is valid if and only if:
-  - |C.TABLES| is greater than 0.
-  - |x*| is |ft*|.
-  - For all x in x*,
-    - |C.FUNCS| is greater than x.
-  - C.TABLES[0] is lim.
-  - Yet: Expr_ok_const: `%|-%:%CONST`(C, expr, ?(I32_valtype))
-  - For all ft in ft* and x in x*,
-    - C.FUNCS[x] is ft.
-
-validation_of_valid_data
-- the memory segment (DATA expr b*) is valid if and only if:
-  - |C.MEMS| is greater than 0.
-  - C.MEMS[0] is lim.
-  - Yet: Expr_ok_const: `%|-%:%CONST`(C, expr, ?(I32_valtype))
-
-validation_of_valid_start
-- the start function (START x) is valid if and only if:
-  - |C.FUNCS| is greater than x.
-  - C.FUNCS[x] is ([] -> []).
-
 validation_of_NOP
 - the instr NOP is valid with the function type ([] -> []).
 
@@ -202,6 +193,20 @@ validation_of_valid_expr
 - the expression instr* is valid with the result type t? if and only if:
   - the instr* instr* is valid with the function type ([] -> t?).
 
+validation_of_const_instr
+- the instr instr_u0 is constant if and only if:
+  - Either:
+    - instr_u0 is (t.CONST c).
+  - Or:
+    - instr_u0 is (GLOBAL.GET x).
+    - |C.GLOBALS| is greater than x.
+    - C.GLOBALS[x] is ((MUT ?()), t).
+
+validation_of_const_expr
+- the expression instr* is constant if and only if:
+  - For all instr in instr*,
+    - the instr instr is constant.
+
 validation_of_valid_func
 - the function (FUNC x (LOCAL t)* expr) is valid with the function type (t_1* -> t_2?) if and only if:
   - |C.TYPES| is greater than x.
@@ -210,21 +215,46 @@ validation_of_valid_func
 
 validation_of_valid_global
 - the global (GLOBAL gt expr) is valid with the global type gt if and only if:
-  - Yet: TODO: unrecognized form of argument in rule_ok
+  - Yet: TODO: prem_to_instrs for RulePr
   - Let (mut, t) be gt.
-  - Yet: Expr_ok_const: `%|-%:%CONST`(C, expr, ?(t))
+  - the expression expr is valid with the valtype? ?(t).
+  - the expression expr is constant.
 
 validation_of_valid_table
 - the table (TABLE tt) is valid with the table type tt if and only if:
-  - Yet: TODO: unrecognized form of argument in rule_ok
+  - Yet: TODO: prem_to_instrs for RulePr
 
 validation_of_valid_mem
 - the memory (MEMORY mt) is valid with the memory type mt if and only if:
-  - Yet: TODO: unrecognized form of argument in rule_ok
+  - Yet: TODO: prem_to_instrs for RulePr
+
+validation_of_valid_elem
+- the table segment (ELEM expr x*) is valid if and only if:
+  - |C.TABLES| is greater than 0.
+  - |x*| is |ft*|.
+  - For all x in x*,
+    - |C.FUNCS| is greater than x.
+  - C.TABLES[0] is lim.
+  - the expression expr is valid with the valtype? ?(I32).
+  - the expression expr is constant.
+  - For all ft in ft* and x in x*,
+    - C.FUNCS[x] is ft.
+
+validation_of_valid_data
+- the memory segment (DATA expr b*) is valid if and only if:
+  - |C.MEMS| is greater than 0.
+  - C.MEMS[0] is lim.
+  - the expression expr is valid with the valtype? ?(I32).
+  - the expression expr is constant.
+
+validation_of_valid_start
+- the start function (START x) is valid if and only if:
+  - |C.FUNCS| is greater than x.
+  - C.FUNCS[x] is ([] -> []).
 
 validation_of_valid_import
 - the import (IMPORT name_1 name_2 xt) is valid with the external type xt if and only if:
-  - Yet: TODO: unrecognized form of argument in rule_ok
+  - Yet: TODO: prem_to_instrs for RulePr
 
 validation_of_valid_externidx
 - the external index exter_u0 is valid with the external type exter_u1 if and only if:
@@ -252,20 +282,6 @@ validation_of_valid_externidx
 validation_of_valid_export
 - the export (EXPORT name externidx) is valid with the external type xt if and only if:
   - the external index externidx is valid with the external type xt.
-
-validation_of_const_instr
-- the instr instr_u0 is constant if and only if:
-  - Either:
-    - instr_u0 is (t.CONST c).
-  - Or:
-    - instr_u0 is (GLOBAL.GET x).
-    - |C.GLOBALS| is greater than x.
-    - C.GLOBALS[x] is ((MUT ?()), t).
-
-validation_of_const_expr
-- the expression instr* is constant if and only if:
-  - For all instr in instr*,
-    - Yet: Instr_const: `%|-%CONST`(C, instr)
 
 Ki
 1. Return 1024.
@@ -1339,33 +1355,45 @@ watsup 0.4 generator
 == IL Validation after pass animate...
 == Translating to AL...
 == Prose Generation...
-other_relation Expr_ok_const: `%|-%:%CONST`(context, expr, valtype)
-6-typing.watsup:522.7-522.36: prem_to_instrs: Yet `Instr_const: `%|-%CONST`(C, instr)`
-6-typing.watsup:562.6-562.40: prem_to_instrs: Yet `Expr_ok_const: `%|-%:%CONST`(C, expr, t)`
-6-typing.watsup:584.6-584.42: prem_to_instrs: Yet `Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype)`
-6-typing.watsup:574.7-574.42: prem_to_instrs: Yet `Expr_ok_const: `%|-%:%CONST`(C, expr, (rt : reftype <: valtype))`
-6-typing.watsup:595.6-595.42: prem_to_instrs: Yet `Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype)`
+Untranslated relation Limits_ok: `|-%:%`(limits, nat)
+Untranslated relation Functype_ok: `|-%:OK`functype
+Untranslated relation Globaltype_ok: `|-%:OK`globaltype
+Untranslated relation Tabletype_ok: `|-%:OK`tabletype
+Untranslated relation Memtype_ok: `|-%:OK`memtype
+Untranslated relation Externtype_ok: `|-%:OK`externtype
+Untranslated relation Valtype_sub: `|-%<:%`(valtype, valtype)
+Untranslated relation Resulttype_sub: `|-%<:%`(valtype*, valtype*)
+Untranslated relation Limits_sub: `|-%<:%`(limits, limits)
+Untranslated relation Functype_sub: `|-%<:%`(functype, functype)
+Untranslated relation Globaltype_sub: `|-%<:%`(globaltype, globaltype)
+Untranslated relation Tabletype_sub: `|-%<:%`(tabletype, tabletype)
+Untranslated relation Memtype_sub: `|-%<:%`(memtype, memtype)
+Untranslated relation Externtype_sub: `|-%<:%`(externtype, externtype)
+6-typing.watsup:232.7-232.43: prem_to_instrs: Yet `Resulttype_sub: `|-%<:%`(t*{t : valtype}, C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0)`
+6-typing.watsup:233.6-233.43: prem_to_instrs: Yet `Resulttype_sub: `|-%<:%`(t*{t : valtype}, C.LABELS_context[l'!`%`_labelidx.0]!`%`_resulttype.0)`
+6-typing.watsup:162.6-162.38: prem_to_instrs: Yet `Resulttype_sub: `|-%<:%`(t'_1*{t'_1 : valtype}, t_1*{t_1 : valtype})`
+6-typing.watsup:163.6-163.38: prem_to_instrs: Yet `Resulttype_sub: `|-%<:%`(t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+Untranslated relation Type_ok: `|-%:%`(type, functype)
+6-typing.watsup:560.6-560.31: prem_to_instrs: Yet `Globaltype_ok: `|-%:OK`(gt)`
+6-typing.watsup:566.6-566.30: prem_to_instrs: Yet `Tabletype_ok: `|-%:OK`(tt)`
+6-typing.watsup:570.6-570.28: prem_to_instrs: Yet `Memtype_ok: `|-%:OK`(mt)`
+6-typing.watsup:613.6-613.31: prem_to_instrs: Yet `Externtype_ok: `|-%:OK`(xt)`
+Untranslated relation Module_ok: `|-%:OK`module
 =================
  Generated prose
 =================
-validation_of_valid_datamode
-- the datamode datam_u0 is valid if and only if:
+validation_of_valid_blocktype
+- the block type block_u0 is valid with the function type (valty_u1* -> valty_u2*) if and only if:
   - Either:
-    - datam_u0 is (ACTIVE 0 expr).
-    - |C.MEMS| is greater than 0.
-    - C.MEMS[0] is mt.
-    - Yet: Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype)
+    - block_u0 is (_RESULT valtype?).
+    - valty_u1* is [].
+    - valty_u2* is valtype?.
   - Or:
-    - datam_u0 is PASSIVE.
-
-validation_of_valid_data
-- the memory segment (DATA b* datamode) is valid if and only if:
-  - the datamode datamode is valid.
-
-validation_of_valid_start
-- the start function (START x) is valid if and only if:
-  - |C.FUNCS| is greater than x.
-  - C.FUNCS[x] is ([] -> []).
+    - block_u0 is (_IDX typeidx).
+    - valty_u1* is t_1*.
+    - valty_u2* is t_2*.
+    - |C.TYPES| is greater than typeidx.
+    - Let (t_1* -> t_2*) be C.TYPES[typeidx].
 
 validation_of_NOP
 - the instr NOP is valid with the function type ([] -> []).
@@ -1411,8 +1439,8 @@ validation_of_BR_TABLE
     - |C.LABELS| is greater than l.
   - |C.LABELS| is greater than l'.
   - For all l in l*,
-    - the valtype* t* matches the result type C.LABELS[l].
-  - the valtype* t* matches the result type C.LABELS[l'].
+    - Yet: TODO: prem_to_instrs for RulePr
+  - Yet: TODO: prem_to_instrs for RulePr
 
 validation_of_CALL
 - the instr (CALL x) is valid with the function type (t_1* -> t_2*) if and only if:
@@ -1672,19 +1700,6 @@ validation_of_VSTORE_LANE
   - laneidx is less than (128 / n).
   - Let mt be C.MEMS[0].
 
-validation_of_valid_blocktype
-- the block type block_u0 is valid with the function type (valty_u1* -> valty_u2*) if and only if:
-  - Either:
-    - block_u0 is (_RESULT valtype?).
-    - valty_u1* is [].
-    - valty_u2* is valtype?.
-  - Or:
-    - block_u0 is (_IDX typeidx).
-    - valty_u1* is t_1*.
-    - valty_u2* is t_2*.
-    - |C.TYPES| is greater than typeidx.
-    - Let (t_1* -> t_2*) be C.TYPES[typeidx].
-
 validation_of_valid_instr*
 - the instr* instr_u0* is valid with the function type (valty_u1* -> valty_u2*) if and only if:
   - Either:
@@ -1702,8 +1717,8 @@ validation_of_valid_instr*
     - valty_u1* is t'_1*.
     - valty_u2* is t'_2*.
     - the instr* instr* is valid with the function type (t_1* -> t_2*).
-    - the valtype* t'_1* matches the valtype* t_1*.
-    - the valtype* t_2* matches the valtype* t'_2*.
+    - Yet: TODO: prem_to_instrs for RulePr
+    - Yet: TODO: prem_to_instrs for RulePr
   - Or:
     - instr_u0* is instr*.
     - valty_u1* is t* ++ t_1*.
@@ -1714,6 +1729,26 @@ validation_of_valid_expr
 - the expression instr* is valid with the valtype* t* if and only if:
   - the instr* instr* is valid with the function type ([] -> t*).
 
+validation_of_const_instr
+- the instr instr_u0 is constant if and only if:
+  - Either:
+    - instr_u0 is (nt.CONST c).
+  - Or:
+    - instr_u0 is (vt.CONST vc).
+  - Or:
+    - instr_u0 is (REF.NULL rt).
+  - Or:
+    - instr_u0 is (REF.FUNC x).
+  - Or:
+    - instr_u0 is (GLOBAL.GET x).
+    - |C.GLOBALS| is greater than x.
+    - C.GLOBALS[x] is ((MUT ?()), t).
+
+validation_of_const_expr
+- the expression instr* is constant if and only if:
+  - For all instr in instr*,
+    - the instr instr is constant.
+
 validation_of_valid_func
 - the function (FUNC x (LOCAL t)* expr) is valid with the function type (t_1* -> t_2*) if and only if:
   - |C.TYPES| is greater than x.
@@ -1722,24 +1757,26 @@ validation_of_valid_func
 
 validation_of_valid_global
 - the global (GLOBAL gt expr) is valid with the global type gt if and only if:
-  - Yet: TODO: unrecognized form of argument in rule_ok
+  - Yet: TODO: prem_to_instrs for RulePr
   - Let (mut, t) be gt.
-  - Yet: Expr_ok_const: `%|-%:%CONST`(C, expr, t)
+  - the expression expr is valid with the value type t.
+  - the expression expr is constant.
 
 validation_of_valid_table
 - the table (TABLE tt) is valid with the table type tt if and only if:
-  - Yet: TODO: unrecognized form of argument in rule_ok
+  - Yet: TODO: prem_to_instrs for RulePr
 
 validation_of_valid_mem
 - the memory (MEMORY mt) is valid with the memory type mt if and only if:
-  - Yet: TODO: unrecognized form of argument in rule_ok
+  - Yet: TODO: prem_to_instrs for RulePr
 
 validation_of_valid_elemmode
 - the elemmode elemm_u0 is valid with the reference type rt if and only if:
   - Either:
     - elemm_u0 is (ACTIVE x expr).
     - |C.TABLES| is greater than x.
-    - Yet: Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype)
+    - the expression expr is valid with the value type I32.
+    - the expression expr is constant.
     - Let (lim, rt) be C.TABLES[x].
   - Or:
     - elemm_u0 is PASSIVE.
@@ -1749,12 +1786,33 @@ validation_of_valid_elemmode
 validation_of_valid_elem
 - the table segment (ELEM rt expr* elemmode) is valid with the reference type rt if and only if:
   - For all expr in expr*,
-    - Yet: Expr_ok_const: `%|-%:%CONST`(C, expr, (rt : reftype <: valtype))
+    - the expression expr is valid with the value type rt.
+    - the expression expr is constant.
   - the elemmode elemmode is valid with the reference type rt.
+
+validation_of_valid_datamode
+- the datamode datam_u0 is valid if and only if:
+  - Either:
+    - datam_u0 is (ACTIVE 0 expr).
+    - |C.MEMS| is greater than 0.
+    - C.MEMS[0] is mt.
+    - the expression expr is valid with the value type I32.
+    - the expression expr is constant.
+  - Or:
+    - datam_u0 is PASSIVE.
+
+validation_of_valid_data
+- the memory segment (DATA b* datamode) is valid if and only if:
+  - the datamode datamode is valid.
+
+validation_of_valid_start
+- the start function (START x) is valid if and only if:
+  - |C.FUNCS| is greater than x.
+  - C.FUNCS[x] is ([] -> []).
 
 validation_of_valid_import
 - the import (IMPORT name_1 name_2 xt) is valid with the external type xt if and only if:
-  - Yet: TODO: unrecognized form of argument in rule_ok
+  - Yet: TODO: prem_to_instrs for RulePr
 
 validation_of_valid_externidx
 - the external index exter_u0 is valid with the external type exter_u1 if and only if:
@@ -1782,26 +1840,6 @@ validation_of_valid_externidx
 validation_of_valid_export
 - the export (EXPORT name externidx) is valid with the external type xt if and only if:
   - the external index externidx is valid with the external type xt.
-
-validation_of_const_instr
-- the instr instr_u0 is constant if and only if:
-  - Either:
-    - instr_u0 is (nt.CONST c).
-  - Or:
-    - instr_u0 is (vt.CONST vc).
-  - Or:
-    - instr_u0 is (REF.NULL rt).
-  - Or:
-    - instr_u0 is (REF.FUNC x).
-  - Or:
-    - instr_u0 is (GLOBAL.GET x).
-    - |C.GLOBALS| is greater than x.
-    - C.GLOBALS[x] is ((MUT ?()), t).
-
-validation_of_const_expr
-- the expression instr* is constant if and only if:
-  - For all instr in instr*,
-    - Yet: Instr_const: `%|-%CONST`(C, instr)
 
 Ki
 1. Return 1024.
@@ -3903,19 +3941,8 @@ watsup 0.4 generator
 == IL Validation after pass animate...
 == Translating to AL...
 == Prose Generation...
-other_relation Expr_ok_const: `%|-%:%CONST`(context, expr, valtype)
-other_relation Export_ok: `%|-%:%%`(context, export, name, externtype)
-6-typing.watsup:1155.7-1155.36: prem_to_instrs: Yet `Instr_const: `%|-%CONST`(C, instr)`
 6-typing.watsup:194.10-194.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
-6-typing.watsup:219.6-219.55: prem_to_instrs: Yet `Rectype_ok2: `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype : subtype})), OK_oktypeidxnat(`%`_typeidx((x!`%`_idx.0 + 1)), (i + 1)))`
-6-typing.watsup:218.6-218.42: prem_to_instrs: Yet `Subtype_ok2: `%|-%:%`(C, subtype_1, OK_oktypeidxnat(x, i))`
-6-typing.watsup:211.6-211.60: prem_to_instrs: Yet `Rectype_ok2: `%|-%:%`({TYPES [], RECS subtype*{subtype : subtype}, FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []} ++ C, REC_rectype(`%`_list(subtype*{subtype : subtype})), OK_oktypeidxnat(x, 0))`
-6-typing.watsup:1206.6-1206.40: prem_to_instrs: Yet `Expr_ok_const: `%|-%:%CONST`(C, expr, t)`
-6-typing.watsup:1212.6-1212.41: prem_to_instrs: Yet `Expr_ok_const: `%|-%:%CONST`(C, expr, (rt : reftype <: valtype))`
-6-typing.watsup:1232.6-1232.42: prem_to_instrs: Yet `Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype)`
-6-typing.watsup:1221.7-1221.48: prem_to_instrs: Yet `Expr_ok_const: `%|-%:%CONST`(C, expr, (elemtype : reftype <: valtype))`
-6-typing.watsup:1243.6-1243.42: prem_to_instrs: Yet `Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype)`
-C-conventions.watsup:50.6-50.78: prem_to_instrs: Yet `NotationTypingInstrScheme: `%|-%:%`({TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [`%`_resulttype(t_2*{t_2 : valtype})], RETURN ?(), REFS []} ++ C, instr*{instr : instr}, `%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype})))`
+Untranslated relation Module_ok: `|-%:%`(module, moduletype)
 =================
  Generated prose
 =================
@@ -4004,46 +4031,6 @@ validation_of_valid_comptype
   - Or:
     - compt_u0 is (FUNC functype).
     - the function type functype is valid.
-
-validation_of_valid_deftype
-- the defined type (DEF rectype i) is valid if and only if:
-  - the recursive type rectype is valid with the oktypeidx (OK x).
-  - rectype is (REC subtype^n).
-  - i is less than n.
-
-validation_of_valid_globaltype
-- the global type ((MUT ()?), t) is valid if and only if:
-  - the value type t is valid.
-
-validation_of_valid_tabletype
-- the table type (limits, reftype) is valid if and only if:
-  - the limits limits is valid with the nat ((2 ^ 32) - 1).
-  - the reference type reftype is valid.
-
-validation_of_valid_memtype
-- the memory type (PAGE limits) is valid if and only if:
-  - the limits limits is valid with the nat (2 ^ 16).
-
-validation_of_valid_externtype
-- the external type exter_u0 is valid if and only if:
-  - Either:
-    - exter_u0 is (FUNC deftype).
-    - the defined type deftype is valid.
-    - $expanddt(deftype) is (FUNC functype).
-  - Or:
-    - exter_u0 is (GLOBAL globaltype).
-    - the global type globaltype is valid.
-  - Or:
-    - exter_u0 is (TABLE tabletype).
-    - the table type tabletype is valid.
-  - Or:
-    - exter_u0 is (MEM memtype).
-    - the memory type memtype is valid.
-
-validation_of_valid_start
-- the start function (START x) is valid if and only if:
-  - |C.FUNCS| is greater than x.
-  - $expanddt(C.FUNCS[x]) is (FUNC ([] -> [])).
 
 validation_of_matching_packtype
 - the packed type packtype matches the packed type packtype.
@@ -4214,6 +4201,95 @@ validation_of_matching_comptype
     - compt_u1 is (FUNC ft_2).
     - the function type ft_1 matches the function type ft_2.
 
+validation_of_valid_subtype
+- the sub type (SUB (FINAL ()?) $idx(typeidx)* comptype) is valid with the oktypeidx (OK x_0) if and only if:
+  - the composite type comptype is valid.
+  - |x*| is |comptype'*|.
+  - |x'**| is |comptype'*|.
+  - For all x in x*,
+    - |C.TYPES| is greater than x.
+  - |x*| is less than or equal to 1.
+  - For all x in x*,
+    - x is less than x_0.
+  - For all comptype' in comptype'* and x in x* and x' in x'*,
+    - $unrolldt(C.TYPES[x]) is (SUB (FINAL ?()) $idx(x')* comptype').
+  - For all comptype' in comptype'*,
+    - the composite type comptype matches the composite type comptype'.
+
+validation_of_valid_subtype
+- the sub type (SUB (FINAL ()?) typeuse* compttype) is valid with the oktypeidxnat (OK x i) if and only if:
+  - |typeuse*| is less than or equal to 1.
+  - |typeuse*| is |comptype'*|.
+  - |typeuse'**| is |comptype'*|.
+  - For all typeuse in typeuse*,
+    - Yet: $before(typeuse, x, i)
+  - For all comptype' in comptype'* and typeuse in typeuse* and typeuse' in typeuse'*,
+    - $unrollht(C, typeuse) is (SUB (FINAL ?()) typeuse'* comptype').
+  - the composite type comptype is valid.
+  - For all comptype' in comptype'*,
+    - the composite type comptype matches the composite type comptype'.
+
+validation_of_valid_rectype
+- the recursive type (REC subty_u0*) is valid with the oktypeidxnat (OK x i) if and only if:
+  - Either:
+    - subty_u0* is [].
+  - Or:
+    - subty_u0* is [subtype_1] ++ subtype*.
+    - the recursive type (REC subtype*) is valid with the oktypeidxnat (OK (x + 1) (i + 1)).
+    - the sub type subtype_1 is valid with the oktypeidxnat (OK x i).
+
+validation_of_valid_rectype
+- the recursive type (REC subty_u0*) is valid with the oktypeidx (OK x) if and only if:
+  - Either:
+    - subty_u0* is [].
+  - Or:
+    - subty_u0* is [subtype_1] ++ subtype*.
+    - the recursive type (REC subtype*) is valid with the oktypeidx (OK (x + 1)).
+    - the sub type subtype_1 is valid with the oktypeidx (OK x).
+  - Or:
+    - subty_u0* is subtype*.
+    - Under the context C with .RECS prepended by subtype*, the recursive type (REC subtype*) is valid with the oktypeidxnat (OK x 0).
+
+validation_of_valid_deftype
+- the defined type (DEF rectype i) is valid if and only if:
+  - the recursive type rectype is valid with the oktypeidx (OK x).
+  - rectype is (REC subtype^n).
+  - i is less than n.
+
+validation_of_valid_limits
+- the limits (n, m) is valid with the nat k if and only if:
+  - n is less than or equal to m.
+  - m is less than or equal to k.
+
+validation_of_valid_globaltype
+- the global type ((MUT ()?), t) is valid if and only if:
+  - the value type t is valid.
+
+validation_of_valid_tabletype
+- the table type (limits, reftype) is valid if and only if:
+  - the limits limits is valid with the nat ((2 ^ 32) - 1).
+  - the reference type reftype is valid.
+
+validation_of_valid_memtype
+- the memory type (PAGE limits) is valid if and only if:
+  - the limits limits is valid with the nat (2 ^ 16).
+
+validation_of_valid_externtype
+- the external type exter_u0 is valid if and only if:
+  - Either:
+    - exter_u0 is (FUNC deftype).
+    - the defined type deftype is valid.
+    - $expanddt(deftype) is (FUNC functype).
+  - Or:
+    - exter_u0 is (GLOBAL globaltype).
+    - the global type globaltype is valid.
+  - Or:
+    - exter_u0 is (TABLE tabletype).
+    - the table type tabletype is valid.
+  - Or:
+    - exter_u0 is (MEM memtype).
+    - the memory type memtype is valid.
+
 validation_of_matching_instrtype
 - the instruction type (t_11* ->_ x_1* ++ t_12*) matches the instruction type (t_21* ->_ x_2* ++ t_22*) if and only if:
   - |x*| is |t*|.
@@ -4270,6 +4346,21 @@ validation_of_matching_externtype
     - exter_u0 is (MEM memtype_1).
     - exter_u1 is (MEM memtype_2).
     - the memory type memtype_1 matches the memory type memtype_2.
+
+validation_of_valid_blocktype
+- the block type block_u0 is valid with the instruction type (valty_u1* ->_ [] ++ valty_u2*) if and only if:
+  - Either:
+    - block_u0 is (_RESULT valtype?).
+    - valty_u1* is [].
+    - valty_u2* is valtype?.
+    - If valtype is defined,
+      - the value type valtype is valid.
+  - Or:
+    - block_u0 is (_IDX typeidx).
+    - valty_u1* is t_1*.
+    - valty_u2* is t_2*.
+    - |C.TYPES| is greater than typeidx.
+    - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPES[typeidx]).
 
 validation_of_NOP
 - the instr NOP is valid with the instruction type ([] ->_ [] ++ []).
@@ -4777,75 +4868,6 @@ validation_of_VSTORE_LANE
   - i is less than (128 / N).
   - Let mt be C.MEMS[x].
 
-validation_of_valid_subtype
-- the sub type (SUB (FINAL ()?) $idx(typeidx)* comptype) is valid with the oktypeidx (OK x_0) if and only if:
-  - the composite type comptype is valid.
-  - |x*| is |comptype'*|.
-  - |x'**| is |comptype'*|.
-  - For all x in x*,
-    - |C.TYPES| is greater than x.
-  - |x*| is less than or equal to 1.
-  - For all x in x*,
-    - x is less than x_0.
-  - For all comptype' in comptype'* and x in x* and x' in x'*,
-    - $unrolldt(C.TYPES[x]) is (SUB (FINAL ?()) $idx(x')* comptype').
-  - For all comptype' in comptype'*,
-    - the composite type comptype matches the composite type comptype'.
-
-validation_of_valid_subtype
-- the sub type (SUB (FINAL ()?) typeuse* compttype) is valid with the oktypeidxnat (OK x i) if and only if:
-  - |typeuse*| is less than or equal to 1.
-  - |typeuse*| is |comptype'*|.
-  - |typeuse'**| is |comptype'*|.
-  - For all typeuse in typeuse*,
-    - Yet: $before(typeuse, x, i)
-  - For all comptype' in comptype'* and typeuse in typeuse* and typeuse' in typeuse'*,
-    - $unrollht(C, typeuse) is (SUB (FINAL ?()) typeuse'* comptype').
-  - the composite type comptype is valid.
-  - For all comptype' in comptype'*,
-    - the composite type comptype matches the composite type comptype'.
-
-validation_of_valid_rectype
-- the recursive type (REC subty_u0*) is valid with the oktypeidxnat (OK x i) if and only if:
-  - Either:
-    - subty_u0* is [].
-  - Or:
-    - subty_u0* is [subtype_1] ++ subtype*.
-    - Yet: Rectype_ok2: `%|-%:%`(C, REC_rectype(`%`_list(subtype*{subtype : subtype})), OK_oktypeidxnat(`%`_typeidx((x!`%`_idx.0 + 1)), (i + 1)))
-    - Yet: Subtype_ok2: `%|-%:%`(C, subtype_1, OK_oktypeidxnat(x, i))
-
-validation_of_valid_rectype
-- the recursive type (REC subty_u0*) is valid with the oktypeidx (OK x) if and only if:
-  - Either:
-    - subty_u0* is [].
-  - Or:
-    - subty_u0* is [subtype_1] ++ subtype*.
-    - the recursive type (REC subtype*) is valid with the oktypeidx (OK (x + 1)).
-    - the sub type subtype_1 is valid with the oktypeidx (OK x).
-  - Or:
-    - subty_u0* is subtype*.
-    - Yet: Rectype_ok2: `%|-%:%`({TYPES [], RECS subtype*{subtype : subtype}, FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], RETURN ?(), REFS []} ++ C, REC_rectype(`%`_list(subtype*{subtype : subtype})), OK_oktypeidxnat(x, 0))
-
-validation_of_valid_limits
-- the limits (n, m) is valid with the nat k if and only if:
-  - n is less than or equal to m.
-  - m is less than or equal to k.
-
-validation_of_valid_blocktype
-- the block type block_u0 is valid with the instruction type (valty_u1* ->_ [] ++ valty_u2*) if and only if:
-  - Either:
-    - block_u0 is (_RESULT valtype?).
-    - valty_u1* is [].
-    - valty_u2* is valtype?.
-    - If valtype is defined,
-      - the value type valtype is valid.
-  - Or:
-    - block_u0 is (_IDX typeidx).
-    - valty_u1* is t_1*.
-    - valty_u2* is t_2*.
-    - |C.TYPES| is greater than typeidx.
-    - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPES[typeidx]).
-
 validation_of_valid_instr*
 - the instr* instr_u0* is valid with the instruction type instr_u4 if and only if:
   - Either:
@@ -4877,148 +4899,6 @@ validation_of_valid_instr*
 validation_of_valid_expr
 - the expression instr* is valid with the valtype* t* if and only if:
   - the instr* instr* is valid with the instruction type ([] ->_ [] ++ t*).
-
-validation_of_valid_type
-- the type definition (TYPE rectype) is valid with the deftype* dt* if and only if:
-  - Let x be |C.TYPES|.
-  - Let dt* be $rolldt(x, rectype).
-  - Under the context C with .TYPES appended by dt*, the recursive type rectype is valid with the oktypeidx (OK x).
-
-validation_of_valid_local
-- the local (LOCAL t) is valid with the local type (init_u0, t) if and only if:
-  - Either:
-    - init_u0 is SET.
-    - $default_(t) is different with ?().
-  - Or:
-    - init_u0 is UNSET.
-    - $default_(t) is ?().
-
-validation_of_valid_func
-- the function (FUNC x local* expr) is valid with the defined type C.TYPES[x] if and only if:
-  - |C.TYPES| is greater than x.
-  - For all lct in lct* and local in local*,
-    - the local local is valid with the local type lct.
-  - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPES[x]).
-  - |local*| is |lct*|.
-  - Under the context C with .LOCALS appended by (SET, t_1)* ++ lct* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the valtype* t_2*.
-
-validation_of_valid_global
-- the global (GLOBAL globaltype expr) is valid with the global type globaltype if and only if:
-  - the global type gt is valid.
-  - Let (mut, t) be globaltype.
-  - Yet: Expr_ok_const: `%|-%:%CONST`(C, expr, t)
-
-validation_of_valid_table
-- the table (TABLE tabletype expr) is valid with the table type tabletype if and only if:
-  - the table type tt is valid.
-  - Let (lim, rt) be tabletype.
-  - Yet: Expr_ok_const: `%|-%:%CONST`(C, expr, (rt : reftype <: valtype))
-
-validation_of_valid_mem
-- the memory (MEMORY memtype) is valid with the memory type memtype if and only if:
-  - the memory type memtype is valid.
-
-validation_of_valid_elemmode
-- the elemmode elemm_u0 is valid with the element type rt if and only if:
-  - Either:
-    - elemm_u0 is (ACTIVE x expr).
-    - |C.TABLES| is greater than x.
-    - Yet: Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype)
-    - C.TABLES[x] is (lim, rt').
-    - the reference type rt matches the reference type rt'.
-  - Or:
-    - elemm_u0 is PASSIVE.
-  - Or:
-    - elemm_u0 is DECLARE.
-
-validation_of_valid_elem
-- the table segment (ELEM elemtype expr* elemmode) is valid with the element type elemtype if and only if:
-  - the reference type elemtype is valid.
-  - For all expr in expr*,
-    - Yet: Expr_ok_const: `%|-%:%CONST`(C, expr, (elemtype : reftype <: valtype))
-  - the elemmode elemmode is valid with the element type elemtype.
-
-validation_of_valid_datamode
-- the datamode datam_u0 is valid with the data type OK if and only if:
-  - Either:
-    - datam_u0 is (ACTIVE x expr).
-    - |C.MEMS| is greater than x.
-    - Yet: Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype)
-    - Let mt be C.MEMS[x].
-  - Or:
-    - datam_u0 is PASSIVE.
-
-validation_of_valid_data
-- the memory segment (DATA b* datamode) is valid with the data type OK if and only if:
-  - the datamode datamode is valid with the data type OK.
-
-validation_of_valid_import
-- the import (IMPORT name_1 name_2 xt) is valid with the external type xt if and only if:
-  - the external type xt is valid.
-
-validation_of_valid_externidx
-- the external index exter_u0 is valid with the external type exter_u1 if and only if:
-  - Either:
-    - exter_u0 is (FUNC x).
-    - exter_u1 is (FUNC dt).
-    - |C.FUNCS| is greater than x.
-    - Let dt be C.FUNCS[x].
-  - Or:
-    - exter_u0 is (GLOBAL x).
-    - exter_u1 is (GLOBAL gt).
-    - |C.GLOBALS| is greater than x.
-    - Let gt be C.GLOBALS[x].
-  - Or:
-    - exter_u0 is (TABLE x).
-    - exter_u1 is (TABLE tt).
-    - |C.TABLES| is greater than x.
-    - Let tt be C.TABLES[x].
-  - Or:
-    - exter_u0 is (MEM x).
-    - exter_u1 is (MEM mt).
-    - |C.MEMS| is greater than x.
-    - Let mt be C.MEMS[x].
-
-validation_of_valid_global*
-- the global* globa_u0* is valid with the globaltype* globa_u1* if and only if:
-  - Either:
-    - globa_u0* is [].
-    - globa_u1* is [].
-  - Or:
-    - globa_u0* is [global_1] ++ global*.
-    - globa_u1* is [gt_1] ++ gt*.
-    - the global global is valid with the global type gt_1.
-    - Under the context C with .GLOBALS appended by [gt_1], the global* global* is valid with the globaltype* gt*.
-
-validation_of_valid_type*
-- the type* type_u0* is valid with the deftype* defty_u1* if and only if:
-  - Either:
-    - type_u0* is [].
-    - defty_u1* is [].
-  - Or:
-    - type_u0* is [type_1] ++ type*.
-    - defty_u1* is dt_1* ++ dt*.
-    - the type definition type_1 is valid with the deftype* dt_1*.
-    - Under the context C with .TYPES appended by dt_1*, the type* type* is valid with the deftype* dt*.
-
-validation_of_valid_instr*
-- the instr* [instr_u0] is valid with the function type (valty_u1* -> valty_u3*) if and only if:
-  - Either:
-    - instr_u0 is (BINOP I32 ADD).
-    - valty_u1* is [I32, I32].
-    - valty_u3* is [I32].
-  - Or:
-    - instr_u0 is (GLOBAL.GET x).
-    - valty_u1* is [].
-    - valty_u3* is [t].
-    - |C.GLOBALS| is greater than x.
-    - Let (mut, t) be C.GLOBALS[x].
-  - Or:
-    - instr_u0 is (BLOCK blocktype instr*).
-    - valty_u1* is t_1*.
-    - valty_u3* is t_2*.
-    - Yet: NotationTypingInstrScheme: `%|-%:%`({TYPES [], RECS [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [`%`_resulttype(t_2*{t_2 : valtype})], RETURN ?(), REFS []} ++ C, instr*{instr : instr}, `%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype})))
-    - the block type blocktype is valid with the instruction type (t_1* ->_ [] ++ t_2*).
 
 validation_of_const_instr
 - the instr instr_u0 is constant if and only if:
@@ -5058,7 +4938,163 @@ validation_of_const_instr
 validation_of_const_expr
 - the expression instr* is constant if and only if:
   - For all instr in instr*,
-    - Yet: Instr_const: `%|-%CONST`(C, instr)
+    - the instr instr is constant.
+
+validation_of_valid_type
+- the type definition (TYPE rectype) is valid with the deftype* dt* if and only if:
+  - Let x be |C.TYPES|.
+  - Let dt* be $rolldt(x, rectype).
+  - Under the context C with .TYPES appended by dt*, the recursive type rectype is valid with the oktypeidx (OK x).
+
+validation_of_valid_local
+- the local (LOCAL t) is valid with the local type (init_u0, t) if and only if:
+  - Either:
+    - init_u0 is SET.
+    - $default_(t) is different with ?().
+  - Or:
+    - init_u0 is UNSET.
+    - $default_(t) is ?().
+
+validation_of_valid_func
+- the function (FUNC x local* expr) is valid with the defined type C.TYPES[x] if and only if:
+  - |C.TYPES| is greater than x.
+  - For all lct in lct* and local in local*,
+    - the local local is valid with the local type lct.
+  - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPES[x]).
+  - |local*| is |lct*|.
+  - Under the context C with .LOCALS appended by (SET, t_1)* ++ lct* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the valtype* t_2*.
+
+validation_of_valid_global
+- the global (GLOBAL globaltype expr) is valid with the global type globaltype if and only if:
+  - the global type gt is valid.
+  - Let (mut, t) be globaltype.
+  - the expression expr is valid with the value type t.
+  - the expression expr is constant.
+
+validation_of_valid_table
+- the table (TABLE tabletype expr) is valid with the table type tabletype if and only if:
+  - the table type tt is valid.
+  - Let (lim, rt) be tabletype.
+  - the expression expr is valid with the value type rt.
+  - the expression expr is constant.
+
+validation_of_valid_mem
+- the memory (MEMORY memtype) is valid with the memory type memtype if and only if:
+  - the memory type memtype is valid.
+
+validation_of_valid_elemmode
+- the elemmode elemm_u0 is valid with the element type rt if and only if:
+  - Either:
+    - elemm_u0 is (ACTIVE x expr).
+    - |C.TABLES| is greater than x.
+    - the expression expr is valid with the value type I32.
+    - the expression expr is constant.
+    - C.TABLES[x] is (lim, rt').
+    - the reference type rt matches the reference type rt'.
+  - Or:
+    - elemm_u0 is PASSIVE.
+  - Or:
+    - elemm_u0 is DECLARE.
+
+validation_of_valid_elem
+- the table segment (ELEM elemtype expr* elemmode) is valid with the element type elemtype if and only if:
+  - the reference type elemtype is valid.
+  - For all expr in expr*,
+    - the expression expr is valid with the value type elemtype.
+    - the expression expr is constant.
+  - the elemmode elemmode is valid with the element type elemtype.
+
+validation_of_valid_datamode
+- the datamode datam_u0 is valid with the data type OK if and only if:
+  - Either:
+    - datam_u0 is (ACTIVE x expr).
+    - |C.MEMS| is greater than x.
+    - the expression expr is valid with the value type I32.
+    - the expression expr is constant.
+    - Let mt be C.MEMS[x].
+  - Or:
+    - datam_u0 is PASSIVE.
+
+validation_of_valid_data
+- the memory segment (DATA b* datamode) is valid with the data type OK if and only if:
+  - the datamode datamode is valid with the data type OK.
+
+validation_of_valid_start
+- the start function (START x) is valid if and only if:
+  - |C.FUNCS| is greater than x.
+  - $expanddt(C.FUNCS[x]) is (FUNC ([] -> [])).
+
+validation_of_valid_import
+- the import (IMPORT name_1 name_2 xt) is valid with the external type xt if and only if:
+  - the external type xt is valid.
+
+validation_of_valid_externidx
+- the external index exter_u0 is valid with the external type exter_u1 if and only if:
+  - Either:
+    - exter_u0 is (FUNC x).
+    - exter_u1 is (FUNC dt).
+    - |C.FUNCS| is greater than x.
+    - Let dt be C.FUNCS[x].
+  - Or:
+    - exter_u0 is (GLOBAL x).
+    - exter_u1 is (GLOBAL gt).
+    - |C.GLOBALS| is greater than x.
+    - Let gt be C.GLOBALS[x].
+  - Or:
+    - exter_u0 is (TABLE x).
+    - exter_u1 is (TABLE tt).
+    - |C.TABLES| is greater than x.
+    - Let tt be C.TABLES[x].
+  - Or:
+    - exter_u0 is (MEM x).
+    - exter_u1 is (MEM mt).
+    - |C.MEMS| is greater than x.
+    - Let mt be C.MEMS[x].
+
+validation_of_valid_export
+- the export (EXPORT name externidx) is valid with the name name and the external type xt if and only if:
+  - the external index externidx is valid with the external type xt.
+
+validation_of_valid_global*
+- the global* globa_u0* is valid with the globaltype* globa_u1* if and only if:
+  - Either:
+    - globa_u0* is [].
+    - globa_u1* is [].
+  - Or:
+    - globa_u0* is [global_1] ++ global*.
+    - globa_u1* is [gt_1] ++ gt*.
+    - the global global is valid with the global type gt_1.
+    - Under the context C with .GLOBALS appended by [gt_1], the global* global* is valid with the globaltype* gt*.
+
+validation_of_valid_type*
+- the type* type_u0* is valid with the deftype* defty_u1* if and only if:
+  - Either:
+    - type_u0* is [].
+    - defty_u1* is [].
+  - Or:
+    - type_u0* is [type_1] ++ type*.
+    - defty_u1* is dt_1* ++ dt*.
+    - the type definition type_1 is valid with the deftype* dt_1*.
+    - Under the context C with .TYPES appended by dt_1*, the type* type* is valid with the deftype* dt*.
+
+validation_of_valid_instr*
+- the instr* [instr_u0] is valid with the function type (valty_u1* -> valty_u3*) if and only if:
+  - Either:
+    - instr_u0 is (BINOP I32 ADD).
+    - valty_u1* is [I32, I32].
+    - valty_u3* is [I32].
+  - Or:
+    - instr_u0 is (GLOBAL.GET x).
+    - valty_u1* is [].
+    - valty_u3* is [t].
+    - |C.GLOBALS| is greater than x.
+    - Let (mut, t) be C.GLOBALS[x].
+  - Or:
+    - instr_u0 is (BLOCK blocktype instr*).
+    - valty_u1* is t_1*.
+    - valty_u3* is t_2*.
+    - Under the context C with .LABELS prepended by [t_2*], the instr* instr* is valid with the function type (t_1* -> t_2*).
+    - the block type blocktype is valid with the instruction type (t_1* ->_ [] ++ t_2*).
 
 Ki
 1. Return 1024.

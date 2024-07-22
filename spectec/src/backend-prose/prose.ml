@@ -10,7 +10,7 @@ type instr =
 | LetI of expr * expr
 | CmpI of expr * cmpop * expr
 | MemI of expr * expr
-| IsValidI of expr option * expr * expr option
+| IsValidI of expr option * expr * expr list
 | MatchesI of expr * expr
 | IsConstI of expr option * expr
 | IfI of expr * instr list

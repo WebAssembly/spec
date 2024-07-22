@@ -26,6 +26,21 @@ let flatten_rec def =
   | Ast.RecD defs -> defs
   | _ -> [ def ]
 
+let is_context_rel def =
+  match def.it with
+  | Ast.RelD (_, _, { it = TupT ((_, t) :: _); _}, _) ->
+    Il.Print.string_of_typ t = "context"
+  | _ -> false
+let is_empty_context_rel def =
+  match def.it with
+  | Ast.RelD (_, [ { it = El.Atom.Turnstile; _} ] :: _, _, _) -> true
+  | _ -> false
+
+let preprocess_il il =
+  il
+  |> List.concat_map flatten_rec
+  |> List.filter (fun rel -> is_context_rel rel || is_empty_context_rel rel)
+
 let preprocess_prem prem = match prem.it with
   (* HARDCODE: translation of `Expand: dt ~~ ct` into `$expanddt(dt) = ct` *)
   | Ast.RulePr (
@@ -38,6 +53,11 @@ let preprocess_prem prem = match prem.it with
   | _ -> prem
 
 let atomize atom' = atom' $$ no_region % (El.Atom.info "")
+
+let rel_has_id id rel =
+  match rel.it with
+  | Ast.RelD (id', _, _, _) -> id.it = id'.it
+  | _ -> false
 
 let cmpop_to_cmpop = function
 | Ast.EqOp -> Eq
@@ -54,69 +74,63 @@ let try_omit c = match c.it with
 | Al.Ast.VarE "C" -> None
 | _ -> Some c
 
+(* End of helpers *)
 
-(** There are currently 6 supported shape of a validation relation.
-  * Extend this list upon introducing new shape of validation rule to the spec.
+
+(** There are currently 7 supported shape of a validation relation.
+  * Extend this list upon introducing new shape of validation rule to the spec,
+  * or shrink the list by merging and generalizing the shape.
   * 1. C |- e : OK
-  * 2. C |- t <: t
-  * 3. C |- i : t (where i is a wasm instruction)
-  * 4. C |- e : e
+  * 2. C |- i : t (where i is a wasm instruction)
+  * 3. C |- e : e
+  * 4. C |- t <: t
   * 5. C |- e : CONST
-  * 6. Others
+  * 6. C |- e : e CONST
+  * 7. C |- e : e e
 **)
-let is_ok_rel def =
-  let pattern = El.Atom.[[]; [atomize Turnstile]; [atomize Colon; atomize (Atom "OK")]] in
-  match def.it with
-  | Ast.RelD (_, mixop, _, _) -> Mixop.eq pattern mixop
-  | _ -> false
-let is_match_rel def =
-  let pattern = El.Atom.[[]; [atomize Turnstile]; [atomize Sub]; []] in
-  match def.it with
-  | Ast.RelD (_, mixop, _, _) -> Mixop.eq pattern mixop
-  | _ -> false
-let is_instr_type_rel def =
-  let pattern = El.Atom.[[]; [atomize Turnstile]; [atomize Colon]; []] in
-  match def.it with
-  | Ast.RelD (_, mixop, { it = TupT [_; (_, t); _]; _}, _) ->
-    Mixop.eq pattern mixop &&
-    Il.Print.string_of_typ t = "instr"
-  | _ -> false
-let is_valid_with_rel def =
-  let pattern = El.Atom.[[]; [atomize Turnstile]; [atomize Colon]; []] in
-  match def.it with
-  | Ast.RelD (_, mixop, _, _) -> Mixop.eq pattern mixop
-  | _ -> false
-let is_const_rel def =
-  let pattern = El.Atom.[[]; [atomize Turnstile]; [atomize (Atom "CONST")]] in
-  match def.it with
-  | Ast.RelD (_, mixop, _, _) -> Mixop.eq pattern mixop
-  | _ -> false
-let is_context_rel def =
-  match def.it with
-  | Ast.RelD (_, _, { it = TupT ((_, t) :: _); _}, _) ->
-    Il.Print.string_of_typ t = "context"
-  | _ -> false
 
-let classify_rels () =
-  let il = List.concat_map flatten_rec !Langs.il in
-  let il = List.filter is_context_rel il in
+type rel_kind =
+  | ValidRel
+  | ValidInstrRel
+  | ValidWithRel
+  | MatchRel
+  | ConstRel
+  | ValidConstRel
+  | ValidWith2Rel
+  | OtherRel
 
-  let ok_rels,         il = List.partition is_ok_rel il in
-  let match_rels,      il = List.partition is_match_rel il in
-  let instr_type_rels, il = List.partition is_instr_type_rel il in
-  let valid_with_rels, il = List.partition is_valid_with_rel il in
-  let const_rels,      il = List.partition is_const_rel il in
-  let other_rels = il in
+let get_rel_kind def =
+  let open El.Atom in
+  let valid_pattern = [[]; [atomize Turnstile]; [atomize Colon; atomize (Atom "OK")]] in
+  let valid_with_pattern = [[]; [atomize Turnstile]; [atomize Colon]; []] in
+  let match_pattern = [[]; [atomize Turnstile]; [atomize Sub]; []] in
+  let const_pattern = [[]; [atomize Turnstile]; [atomize (Atom "CONST")]] in
+  let valid_const_pattern = [[]; [atomize Turnstile]; [atomize Colon]; [atomize (Atom "CONST")]] in
+  let valid_with2_pattern = [[]; [atomize Turnstile]; [atomize Colon]; []; []] in
 
-  (
-    ok_rels,
-    match_rels,
-    instr_type_rels,
-    valid_with_rels,
-    const_rels,
-    other_rels
-  )
+  let has_instr_as_second typ =
+    match typ.it with
+    | Il.Ast.TupT [_; (_, t); _] -> Il.Print.string_of_typ t = "instr"
+    | _ -> false
+  in
 
+  match def.it with
+  | Ast.RelD (_, mixop, typ, _) ->
+      if Mixop.eq valid_pattern mixop then
+        ValidRel
+      else if Mixop.eq valid_with_pattern mixop then
+        ( if has_instr_as_second typ then ValidInstrRel else ValidWithRel )
+      else if Mixop.eq match_pattern mixop then
+        MatchRel
+      else if Mixop.eq const_pattern mixop then
+        ConstRel
+      else if Mixop.eq valid_const_pattern mixop then
+        ValidConstRel
+      else if Mixop.eq valid_with2_pattern mixop then
+        ValidWith2Rel
+      else
+        OtherRel
+  | _ -> OtherRel
 
 let transpile_expr =
   Al.Walk.walk_expr { Al.Walk.default_config with
@@ -155,18 +169,19 @@ let rec prem_to_instrs prem =
     [ LetI (exp_to_expr e1, exp_to_expr e2) ]
   | Ast.IfPr e ->
     if_expr_to_instrs e
-  | Ast.RulePr (id, _, e) when String.ends_with ~suffix:"_ok" id.it ->
-    (match exp_to_argexpr e with
-    | [c; e'; t] -> [ IsValidI (try_omit c, e', Some t) ]
-    | [c; e'] -> [ IsValidI (try_omit c, e', None) ]
-    | _ -> [ YetI "TODO: unrecognized form of argument in rule_ok" ]
-    )
-  | Ast.RulePr (id, _, e) when String.ends_with ~suffix:"_sub" id.it ->
-    (match exp_to_argexpr e with
-    | [_; t1; t2]
-    | [t1; t2] -> [ MatchesI (t1, t2) ]
-    | _ -> print_yet_prem prem "prem_to_instrs"; [ YetI "TODO: prem_to_instrs rule_sub" ]
-    )
+  | Ast.RulePr (id, _, e) ->
+    let rel = match List.find_opt (rel_has_id id) !Langs.il with Some rel -> rel | None -> failwith id.it in
+    let args = exp_to_argexpr e in
+    ( match get_rel_kind rel, args with
+    | ValidRel,      [c; e]       -> [ IsValidI(try_omit c, e, []) ]
+    | ValidInstrRel, [c; e; t]    -> [ IsValidI(try_omit c, e, [t]) ]
+    | ValidWithRel,  [c; e; e']   -> [ IsValidI(try_omit c, e, [e']) ]
+    | MatchRel,      [_c; t1; t2] -> [ MatchesI (t1, t2) ]
+    | ConstRel,      [c; e]       -> [ IsConstI (try_omit c, e) ]
+    | ValidConstRel, [c; e; e']   -> [ IsValidI (try_omit c, e, [e']); IsConstI (try_omit c, e) ]
+    | ValidWith2Rel,  _
+    | OtherRel,       _           -> print_yet_prem prem "prem_to_instrs"; [ YetI "TODO: prem_to_instrs for RulePr" ]
+    | _,              _           -> assert false )
   | Ast.IterPr (prem, iter) ->
     (match iter with
     | Ast.Opt, [(id, _)] -> [ IfI (isDefinedE (varE id.it), prem_to_instrs prem) ]
@@ -197,7 +212,7 @@ let vrule_group_to_prose ((_name, vrules): vrule_group) =
   (* expr *)
   let expr = exp_to_expr winstr in
   (* concl *)
-  let concl = IsValidI (None, expr, Some (exp_to_expr t)) in
+  let concl = IsValidI (None, expr, [exp_to_expr t]) in
   (* prems *)
   let prems = (List.concat_map prem_to_instrs prems) in
 
@@ -228,10 +243,21 @@ let pack_pair_rule rule =
     (* c |- e1 <: e2 *)
     (* c |- e : t *)
     (* c |- e : e *)
+    (* c |- e : e CONST *)
     | Ast.TupE [ _c; e1; e2 ] -> (e1, e2, prems, tenv)
     | _ -> error exp.at
       (Print.string_of_exp exp
       |> Printf.sprintf "exp `%s` cannot be a rule for the double-argument relation")
+
+let pack_triplet_rule rule =
+  match rule.it with
+  | Ast.RuleD (_, tenv, _, exp, prems) ->
+    match exp.it with
+    (* c |- e : e e *)
+    | Ast.TupE [ _c; e1; e2; e3 ] -> (e1, e2, e3, prems, tenv)
+    | _ -> error exp.at
+      (Print.string_of_exp exp
+      |> Printf.sprintf "exp `%s` cannot be a rule for the triple-argument relation")
 
 
 (* group typing rules that have same name *)
@@ -245,8 +271,10 @@ let rec group_vrules = function
       let group = (name, List.map pack_pair_rule (h :: same_rules)) in
       group :: group_vrules diff_rules
 
+(* TODO: The codes below are too repetitive. Should be factored. *)
+
 (** 1. C |- expr : OK *)
-let prose_of_ok_rules rules =
+let prose_of_valid_rules rules =
   let rule = List.hd rules in
   let (e, _, _) = pack_single_rule rule in
   let typ = Print.string_of_typ e.note in
@@ -256,7 +284,7 @@ let prose_of_ok_rules rules =
   (* expr *)
   let expr = exp_to_expr e in
   (* concl *)
-  let concl = IsValidI (None, expr, None) in
+  let concl = IsValidI (None, expr, []) in
   (* prems *)
   let prems = (
     rules
@@ -269,13 +297,48 @@ let prose_of_ok_rules rules =
   ) in
 
   Iff (name, expr, concl, prems)
-let prose_of_ok_rel def =
+let prose_of_valid_rel def =
   match def.it with
-  | Ast.RelD (_, _, _, rules) -> prose_of_ok_rules (Il2al.Il2il.unify_rules rules)
+  | Ast.RelD (_, _, _, rules) -> prose_of_valid_rules (Il2al.Il2il.unify_rules rules)
   | _ -> assert false
-let prose_of_ok_rels = List.map prose_of_ok_rel
 
-(** 2. C |- type <: type **)
+(** 2. C |- instr : type **)
+let proses_of_valid_instr_rel rel =
+  rel
+  |> extract_vrules
+  |> group_vrules
+  |> List.map vrule_group_to_prose
+
+(** 3. C |- e : e **)
+let prose_of_valid_with_rules rules =
+  let rule = List.hd rules in
+  let (e1, e2, _, _) = pack_pair_rule rule in
+  let typ = Print.string_of_typ e1.note in
+
+  (* name *)
+  let name = "valid_" ^ typ in
+  (* expr *)
+  let expr = exp_to_expr e1 in
+  (* concl *)
+  let concl = IsValidI (None, expr, [exp_to_expr e2]) in
+  (* prems *)
+  let prems = (
+    rules
+    |> List.map pack_pair_rule
+    |> List.map (fun (_, _, prems, _) -> prems)
+    |> List.map (List.concat_map prem_to_instrs)
+    |> (function
+        | [ instrs ] -> instrs
+        | instrss -> [ EitherI instrss ])
+  ) in
+
+  Iff (name, expr, concl, prems)
+let prose_of_valid_with_rel def =
+  match def.it with
+  | Ast.RelD (_, _, _, rules) -> prose_of_valid_with_rules (Il2al.Il2il.unify_rules rules)
+  | _ -> assert false
+
+(** 4. C |- type <: type **)
 let prose_of_match_rules rules =
   let rule = List.hd rules in
   let (e1, e2, _, _) = pack_pair_rule rule in
@@ -303,44 +366,7 @@ let prose_of_match_rel def =
   match def.it with
   | Ast.RelD (_, _, _, rules) -> prose_of_match_rules (Il2al.Il2il.unify_rules rules)
   | _ -> assert false
-let prose_of_match_rels = List.map prose_of_match_rel
 
-(** 3. C |- instr : type **)
-let prose_of_instr_type_rels rels =
-  rels
-  |> List.concat_map extract_vrules
-  |> group_vrules
-  |> List.map vrule_group_to_prose
-
-(** 4. C |- e : e **)
-let prose_of_valid_with_rules rules =
-  let rule = List.hd rules in
-  let (e1, e2, _, _) = pack_pair_rule rule in
-  let typ = Print.string_of_typ e1.note in
-
-  (* name *)
-  let name = "valid_" ^ typ in
-  (* expr *)
-  let expr = exp_to_expr e1 in
-  (* concl *)
-  let concl = IsValidI (None, expr, Some(exp_to_expr e2)) in
-  (* prems *)
-  let prems = (
-    rules
-    |> List.map pack_pair_rule
-    |> List.map (fun (_, _, prems, _) -> prems)
-    |> List.map (List.concat_map prem_to_instrs)
-    |> (function
-        | [ instrs ] -> instrs
-        | instrss -> [ EitherI instrss ])
-  ) in
-
-  Iff (name, expr, concl, prems)
-let prose_of_valid_with_rel def =
-  match def.it with
-  | Ast.RelD (_, _, _, rules) -> prose_of_valid_with_rules (Il2al.Il2il.unify_rules rules)
-  | _ -> assert false
-let prose_of_valid_with_rels = List.map prose_of_valid_with_rel
 
 (** 5. C |- x CONST **)
 let prose_of_const_rules rules =
@@ -370,31 +396,60 @@ let prose_of_const_rel def =
   match def.it with
   | Ast.RelD (_, _, _, rules) -> prose_of_const_rules (Il2al.Il2il.unify_rules rules)
   | _ -> assert false
-let prose_of_const_rels = List.map prose_of_const_rel
 
-(** 6. Others **)
-let prose_of_other_rels rels = List.iter (fun rel -> match rel.it with
-  | Ast.RelD (id, mixop, args, _) -> "other_relation " ^ id.it ^ ": " ^ Print.string_of_mixop mixop ^ Print.string_of_typ args |> print_endline;
-  | _ -> ()) rels;
+(** 6. C |- e : e CONST **)
+let proses_of_valid_const_rel _def = [] (* Do not generate prose *)
+
+(** 7. C |- e : e e **)
+let prose_of_valid_with2_rules rules =
+  let rule = List.hd rules in
+  let (e1, e2, e3, _, _) = pack_triplet_rule rule in
+  let typ = Print.string_of_typ e1.note in
+
+  (* name *)
+  let name = "valid_" ^ typ in
+  (* expr *)
+  let expr = exp_to_expr e1 in
+  (* concl *)
+  let concl = IsValidI (None, expr, [exp_to_expr e2; exp_to_expr e3]) in
+  (* prems *)
+  let prems = (
+    rules
+    |> List.map pack_triplet_rule
+    |> List.map (fun (_, _, _, prems, _) -> prems)
+    |> List.map (List.concat_map prem_to_instrs)
+    |> (function
+        | [ instrs ] -> instrs
+        | instrss -> [ EitherI instrss ])
+  ) in
+
+  Iff (name, expr, concl, prems)
+let prose_of_valid_with2_rel def =
+  match def.it with
+  | Ast.RelD (_, _, _, rules) -> prose_of_valid_with2_rules (Il2al.Il2il.unify_rules rules)
+  | _ -> assert false
+
+(** 8. Others **)
+let proses_of_other_rel rel = ( match rel.it with
+  | Ast.RelD (id, mixop, args, _) ->
+    "Untranslated relation " ^ id.it ^ ": " ^ Print.string_of_mixop mixop ^ Print.string_of_typ args |> print_endline;
+  | _ -> ());
   []
+
+let prose_of_rel rel = match get_rel_kind rel with
+  | ValidRel      -> [ prose_of_valid_rel rel ]
+  | ValidInstrRel -> proses_of_valid_instr_rel rel
+  | ValidWithRel  -> [ prose_of_valid_with_rel rel ]
+  | MatchRel      -> [ prose_of_match_rel rel ]
+  | ConstRel      -> [ prose_of_const_rel rel ]
+  | ValidConstRel -> proses_of_valid_const_rel rel
+  | ValidWith2Rel -> [ prose_of_valid_with2_rel rel ]
+  | OtherRel      -> proses_of_other_rel rel
+let prose_of_rels = List.concat_map prose_of_rel
 
 (** Entry for generating validation prose **)
 let gen_validation_prose () =
-  let (
-    ok_rels,
-    match_rels,
-    instr_type_rels,
-    valid_with_rels,
-    const_rels,
-    other_rels
-  ) = classify_rels () in
-
-  prose_of_ok_rels           ok_rels
-  @ prose_of_match_rels      match_rels
-  @ prose_of_instr_type_rels instr_type_rels
-  @ prose_of_valid_with_rels valid_with_rels
-  @ prose_of_const_rels      const_rels
-  @ prose_of_other_rels      other_rels
+  prose_of_rels !Langs.il
 
 (** Entry for generating execution prose **)
 let gen_execution_prose () =
@@ -414,7 +469,7 @@ let gen_execution_prose () =
 (** Main entry for generating prose **)
 let gen_prose el il al =
   Langs.el := el;
-  Langs.il := il;
+  Langs.il := preprocess_il il;
   Langs.al := al;
 
   let validation_prose = gen_validation_prose () in

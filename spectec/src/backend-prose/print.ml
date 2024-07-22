@@ -21,6 +21,10 @@ let string_of_list stringifier left sep right = function
       ^ (if is_long then (sep ^ "...") else "")
       ^ right
 
+let string_of_nullable_list stringifier left sep right = function
+  | [] -> ""
+  | l -> string_of_list stringifier left sep right l
+
 let indent_depth = ref 0
 let indent () = ((List.init !indent_depth (fun _ -> "  ")) |> String.concat "") ^ "-"
 
@@ -66,11 +70,11 @@ let rec string_of_instr = function
       sprintf "%s %s is contained in %s." (indent ())
         (string_of_expr e1)
         (string_of_expr e2)
-  | IsValidI (c_opt, e, e_opt) ->
+  | IsValidI (c_opt, e, es) ->
       sprintf "%s %s%s is valid%s." (indent ())
         (string_of_opt "Under the context " string_of_expr ", " c_opt)
         (string_of_expr_with_type e)
-        (string_of_opt " with " string_of_expr_with_type "" e_opt)
+        (string_of_nullable_list string_of_expr_with_type " with " " and " "" es)
   | MatchesI (e1, e2) ->
       sprintf "%s %s matches %s." (indent ())
         (string_of_expr_with_type e1)

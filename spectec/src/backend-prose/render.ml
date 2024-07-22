@@ -46,6 +46,10 @@ let render_opt prefix stringifier suffix = function
   | None -> ""
   | Some x -> prefix ^ stringifier x ^ suffix
 
+let render_list stringifier sep = function
+  | [] -> ""
+  | hd :: tl -> List.fold_left (fun acc x -> acc ^ sep ^ (stringifier x)) (stringifier hd) tl
+
 let render_order index depth =
   index := !index + 1;
 
@@ -252,6 +256,7 @@ and al_to_el_record record =
       Some (expfield @ [ elelem ]))
     record (Some [])
 
+
 (* Operators *)
 
 let render_prose_cmpop = function
@@ -289,7 +294,7 @@ let render_al_binop = function
 let render_atom env a =
   let ela = al_to_el_atom a in
   let sela = Backend_latex.Render.render_atom env.render_latex ela in
-  render_math sela 
+  render_math sela
 
 
 (* Expressions and Paths *)
@@ -441,7 +446,7 @@ and render_path env path =
   | Al.Ast.SliceP (e1, e2) ->
     let se1 = render_expr env e1 in
     let se2 = render_expr env e2 in
-    sprintf "the slice from %s to %s" se1 se2 
+    sprintf "the slice from %s to %s" se1 se2
   | Al.Ast.DotP a ->
     sprintf "the field %s" (render_atom env a)
 
@@ -465,11 +470,11 @@ let rec render_prose_instr env depth = function
     sprintf "* %s must be contained in %s."
       (String.capitalize_ascii (render_expr env e1))
       (render_expr env e2)
-  | IsValidI (c_opt, e1, e2_opt) ->
+  | IsValidI (c_opt, e, es) ->
     sprintf "* %s%s is valid%s."
       (render_opt "Under the context " (render_expr env) ", " c_opt)
-      (render_expr env e1)
-      (render_opt " with type " (render_expr env) "" e2_opt)
+      (render_expr env e)
+      (if es = [] then "" else " with type " ^ render_list (render_expr env) " and " es)
   | MatchesI (e1, e2) ->
     sprintf "* %s matches %s."
       (render_expr env e1)
@@ -492,7 +497,7 @@ let rec render_prose_instr env depth = function
     sprintf "* %s if and only if %s."
       (String.capitalize_ascii (render_expr env c1))
       (render_expr env c2)
-  | EitherI _ -> 
+  | EitherI _ ->
     sprintf "* Either: (TODO)"
   | YetI s ->
     sprintf "* YetI: %s." s
@@ -638,7 +643,7 @@ and render_al_instrs env algoname depth instrs =
 let render_atom_title env name params =
   (* TODO a workaround, for algorithms named label or name
      that are defined as LABEL_ or FRAME_ in the dsl *)
-  let name', typ = name in 
+  let name', typ = name in
   let name' =
     match name' with
     | El.Atom.Atom "label" -> El.Atom.Atom "LABEL_"
