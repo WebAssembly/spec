@@ -690,12 +690,6 @@ let translate_rulepr id exp =
       letI (rhs, callE ("eval_expr", [ lhs ])) ~at:at;
       popI (frameE (None, z));
     ]
-  (* ".*_type" *)
-  | name, [_store; lhs; ty]
-    when String.ends_with ~suffix:"_type" name ->
-    (* TODO: Automatically remove store *)
-    (* TODO: Check condition or binding *)
-    [ letI (ty, callE (name, [(*store; *)lhs]) ~at:at) ~at:at ]
   (* ".*_sub" *)
   | name, [_C; rt1; rt2]
     when String.ends_with ~suffix:"_sub" name ->
