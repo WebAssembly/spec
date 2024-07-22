@@ -370,3 +370,21 @@
   )
   "type mismatch"
 )
+
+
+(module
+  (type $t (func))
+  (func $dummy)
+  (elem declare func $dummy)
+
+  (tag $e (param (ref $t)))
+  (func $throw (throw $e (ref.func $dummy)))
+  (func (export "run") (result (ref null $t))
+    (block $l (result (ref null $t))
+      (try_table (catch $e $l) (call $throw))
+      (unreachable)
+    )
+  )
+)
+
+(assert_return (invoke "run") (ref.func))
