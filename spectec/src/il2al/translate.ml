@@ -584,10 +584,8 @@ and handle_iter_lhs lhs rhs free_ids =
 
   (* Helper functions *)
   let is_target (expr: expr): bool =
-    (* Check whether `expr` is the innermost expression for iter *)
-    (is_var expr || is_data_structure expr || is_condition expr) &&
-      (* Check whether `expr` contains iter variables *)
-      contains_ids iter_ids expr
+    (* Check whether `expr` contains iter variables *)
+    contains_ids iter_ids expr
   in
   let iter_ids_of (expr: expr): string list =
     expr
