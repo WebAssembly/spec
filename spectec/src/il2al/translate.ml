@@ -617,6 +617,20 @@ and handle_special_lhs lhs rhs free_ids =
   | CallE _ -> handle_inverse_function lhs rhs free_ids
   (* Handle iterator *)
   | IterE _ -> handle_iter_lhs lhs rhs free_ids
+  (* Handle subtyping *)
+  | SubE (s, t) ->
+    let rec inject_hasType expr =
+      match expr.it with
+      | IterE (inner_expr, ids, iter) ->
+        IterE (inject_hasType inner_expr, ids, iter) $$ rhs.at % rhs.note
+      | _ -> HasTypeE (expr, t) $$ rhs.at % rhs.note
+    in
+    [
+      ifI
+        ( inject_hasType rhs,
+          [letI (varE s ~at:lhs.at, rhs) ~at:at],
+          [] )
+    ]
   (* Normal cases *)
   | CaseE (tag, es) ->
     let bindings, es' = extract_non_names es in
@@ -692,13 +706,6 @@ and handle_special_lhs lhs rhs free_ids =
           letI (catE (prefix', suffix') ~at:lhs.at, rhs) ~at:at
             :: translate_bindings free_ids (bindings_p @ bindings_s),
           [] );
-    ]
-  | SubE (s, t) ->
-    [
-      ifI
-        ( hasTypeE (rhs, t),
-          [letI (varE s ~at:lhs.at, rhs) ~at:at],
-          [] )
     ]
   | _ -> [letI (lhs, rhs) ~at:at]
 
