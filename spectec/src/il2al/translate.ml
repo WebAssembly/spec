@@ -616,15 +616,14 @@ and handle_special_lhs lhs rhs free_ids =
     let rec inject_hasType expr =
       match expr.it with
       | IterE (inner_expr, ids, iter) ->
-        IterE (inject_hasType inner_expr, ids, iter) $$ rhs.at % rhs.note
+        IterE (inject_hasType inner_expr, ids, iter) $$ expr.at % expr.note
       | _ -> HasTypeE (expr, t) $$ rhs.at % rhs.note
     in
-    [
-      ifI
-        ( inject_hasType rhs,
-          [letI (varE s ~at:lhs.at, rhs) ~at:at],
-          [] )
-    ]
+    [ ifI (
+      inject_hasType rhs,
+      [ letI (varE s ~at:lhs.at, rhs) ~at:at ],
+      []
+    )]
   (* Normal cases *)
   | CaseE (tag, es) ->
     let bindings, es' = extract_non_names es in
