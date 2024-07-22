@@ -13,8 +13,6 @@ watsup 0.4 generator
 == IL Validation...
 == Running pass sideconditions...
 == IL Validation after pass sideconditions...
-== Running pass animate...
-== IL Validation after pass animate...
 == Translating to AL...
 == Prose Generation...
 =================
@@ -47,35 +45,35 @@ validation_of_IF t? instr_1* instr_2*
 
 validation_of_BR l
 - |C.LABELS| must be greater than l.
-- Let t? be C.LABELS[l].
+- C.LABELS[l] must be equal to t?.
 - The instruction is valid with type (t_1* ++ t? -> t_2*).
 
 validation_of_BR_IF l
 - |C.LABELS| must be greater than l.
-- Let t? be C.LABELS[l].
+- C.LABELS[l] must be equal to t?.
 - The instruction is valid with type (t? ++ [I32] -> t?).
 
 validation_of_BR_TABLE l* l'
 - |C.LABELS| must be greater than l'.
 - For all l in l*,
   - |C.LABELS| must be greater than l.
-- For all l in l*,
-  - Let t? be C.LABELS[l].
 - t? must be equal to C.LABELS[l'].
+- For all l in l*,
+  - t? must be equal to C.LABELS[l].
 - The instruction is valid with type (t_1* ++ t? -> t_2*).
 
 validation_of_CALL x
 - |C.FUNCS| must be greater than x.
-- Let (t_1* -> t_2?) be C.FUNCS[x].
+- C.FUNCS[x] must be equal to (t_1* -> t_2?).
 - The instruction is valid with type (t_1* -> t_2?).
 
 validation_of_CALL_INDIRECT x
 - |C.TYPES| must be greater than x.
-- Let (t_1* -> t_2?) be C.TYPES[x].
+- C.TYPES[x] must be equal to (t_1* -> t_2?).
 - The instruction is valid with type (t_1* ++ [I32] -> t_2?).
 
 validation_of_RETURN
-- Let ?(t?) be C.RETURN.
+- C.RETURN must be equal to ?(t?).
 - The instruction is valid with type (t_1* ++ t? -> t_2*).
 
 validation_of_CONST t c_t
@@ -99,58 +97,60 @@ validation_of_CVTOP nt_1 nt_2 REINTERPRET
 
 validation_of_LOCAL.GET x
 - |C.LOCALS| must be greater than x.
-- Let t be C.LOCALS[x].
+- C.LOCALS[x] must be equal to t.
 - The instruction is valid with type ([] -> [t]).
 
 validation_of_LOCAL.SET x
 - |C.LOCALS| must be greater than x.
-- Let t be C.LOCALS[x].
+- C.LOCALS[x] must be equal to t.
 - The instruction is valid with type ([t] -> []).
 
 validation_of_LOCAL.TEE x
 - |C.LOCALS| must be greater than x.
-- Let t be C.LOCALS[x].
+- C.LOCALS[x] must be equal to t.
 - The instruction is valid with type ([t] -> [t]).
 
 validation_of_GLOBAL.GET x
 - |C.GLOBALS| must be greater than x.
-- Let (mut, t) be C.GLOBALS[x].
+- C.GLOBALS[x] must be equal to (mut, t).
 - The instruction is valid with type ([] -> [t]).
 
 validation_of_GLOBAL.SET x
 - |C.GLOBALS| must be greater than x.
-- Let ((MUT ?(())), t) be C.GLOBALS[x].
+- C.GLOBALS[x] must be equal to ((MUT ?(())), t).
 - The instruction is valid with type ([t] -> []).
 
 validation_of_MEMORY.SIZE
 - |C.MEMS| must be greater than 0.
-- Let mt be C.MEMS[0].
+- C.MEMS[0] must be equal to mt.
 - The instruction is valid with type ([] -> [I32]).
 
 validation_of_MEMORY.GROW
 - |C.MEMS| must be greater than 0.
-- Let mt be C.MEMS[0].
+- C.MEMS[0] must be equal to mt.
 - The instruction is valid with type ([I32] -> [I32]).
 
 validation_of_LOAD nt (n, sx)? memarg
 - |C.MEMS| must be greater than 0.
 - ((sx? is ?())) if and only if ((n? is ?())).
+- C.MEMS[0] must be equal to mt.
 - (2 ^ memarg.ALIGN) must be less than or equal to ($size(nt) / 8).
 - If n is defined,
   - (2 ^ memarg.ALIGN) must be less than or equal to (n / 8).
   - (n / 8) must be less than ($size(nt) / 8).
-- n? must be equal to ?().
-- Let mt be C.MEMS[0].
+- If n is defined,
+  - nt must be equal to Inn.
 - The instruction is valid with type ([I32] -> [nt]).
 
 validation_of_STORE nt n? memarg
 - |C.MEMS| must be greater than 0.
+- C.MEMS[0] must be equal to mt.
 - (2 ^ memarg.ALIGN) must be less than or equal to ($size(nt) / 8).
 - If n is defined,
   - (2 ^ memarg.ALIGN) must be less than or equal to (n / 8).
   - (n / 8) must be less than ($size(nt) / 8).
-- n? must be equal to ?().
-- Let mt be C.MEMS[0].
+- If n is defined,
+  - nt must be equal to Inn.
 - The instruction is valid with type ([I32, nt] -> []).
 
 Ki
@@ -1210,8 +1210,6 @@ watsup 0.4 generator
 == IL Validation...
 == Running pass sideconditions...
 == IL Validation after pass sideconditions...
-== Running pass animate...
-== IL Validation after pass animate...
 == Translating to AL...
 == Prose Generation...
 =================
@@ -1230,29 +1228,29 @@ validation_of_SELECT ?([t])
 - The instruction is valid with type ([t, t, I32] -> [t]).
 
 validation_of_BLOCK bt instr*
-- Under the context C with .LABELS prepended by [t_2*], instr* must be valid with type (t_1* -> t_2*).
 - Under the context C, bt must be valid with type (t_1* -> t_2*).
+- Under the context C with .LABELS prepended by [t_2*], instr* must be valid with type (t_1* -> t_2*).
 - The instruction is valid with type (t_1* -> t_2*).
 
 validation_of_LOOP bt instr*
-- Under the context C with .LABELS prepended by [t_1*], instr* must be valid with type (t_1* -> t_2*).
 - Under the context C, bt must be valid with type (t_1* -> t_2*).
+- Under the context C with .LABELS prepended by [t_1*], instr* must be valid with type (t_1* -> t_2*).
 - The instruction is valid with type (t_1* -> t_2*).
 
 validation_of_IF bt instr_1* instr_2*
-- Under the context C with .LABELS prepended by [t_2*], instr_2* must be valid with type (t_1* -> t_2*).
 - Under the context C, bt must be valid with type (t_1* -> t_2*).
 - Under the context C with .LABELS prepended by [t_2*], instr_1* must be valid with type (t_1* -> t_2*).
+- Under the context C with .LABELS prepended by [t_2*], instr_2* must be valid with type (t_1* -> t_2*).
 - The instruction is valid with type (t_1* ++ [I32] -> t_2*).
 
 validation_of_BR l
 - |C.LABELS| must be greater than l.
-- Let t* be C.LABELS[l].
+- C.LABELS[l] must be equal to t*.
 - The instruction is valid with type (t_1* ++ t* -> t_2*).
 
 validation_of_BR_IF l
 - |C.LABELS| must be greater than l.
-- Let t* be C.LABELS[l].
+- C.LABELS[l] must be equal to t*.
 - The instruction is valid with type (t* ++ [I32] -> t*).
 
 validation_of_BR_TABLE l* l'
@@ -1266,18 +1264,18 @@ validation_of_BR_TABLE l* l'
 
 validation_of_CALL x
 - |C.FUNCS| must be greater than x.
-- Let (t_1* -> t_2*) be C.FUNCS[x].
+- C.FUNCS[x] must be equal to (t_1* -> t_2*).
 - The instruction is valid with type (t_1* -> t_2*).
 
 validation_of_CALL_INDIRECT x y
 - |C.TABLES| must be greater than x.
 - |C.TYPES| must be greater than y.
-- Let (lim, FUNCREF) be C.TABLES[x].
-- Let (t_1* -> t_2*) be C.TYPES[y].
+- C.TABLES[x] must be equal to (lim, FUNCREF).
+- C.TYPES[y] must be equal to (t_1* -> t_2*).
 - The instruction is valid with type (t_1* ++ [I32] -> t_2*).
 
 validation_of_RETURN
-- Let ?(t*) be C.RETURN.
+- C.RETURN must be equal to ?(t*).
 - The instruction is valid with type (t_1* ++ t* -> t_2*).
 
 validation_of_CONST nt c_nt
@@ -1304,7 +1302,7 @@ validation_of_REF.NULL rt
 
 validation_of_REF.FUNC x
 - |C.FUNCS| must be greater than x.
-- Let ft be C.FUNCS[x].
+- C.FUNCS[x] must be equal to ft.
 - The instruction is valid with type ([] -> [FUNCREF]).
 
 validation_of_REF.IS_NULL
@@ -1376,98 +1374,98 @@ validation_of_VCVTOP sh_1 sh_2 vcvtop hf? sx? zero?
 
 validation_of_LOCAL.GET x
 - |C.LOCALS| must be greater than x.
-- Let t be C.LOCALS[x].
+- C.LOCALS[x] must be equal to t.
 - The instruction is valid with type ([] -> [t]).
 
 validation_of_LOCAL.SET x
 - |C.LOCALS| must be greater than x.
-- Let t be C.LOCALS[x].
+- C.LOCALS[x] must be equal to t.
 - The instruction is valid with type ([t] -> []).
 
 validation_of_LOCAL.TEE x
 - |C.LOCALS| must be greater than x.
-- Let t be C.LOCALS[x].
+- C.LOCALS[x] must be equal to t.
 - The instruction is valid with type ([t] -> [t]).
 
 validation_of_GLOBAL.GET x
 - |C.GLOBALS| must be greater than x.
-- Let (mut, t) be C.GLOBALS[x].
+- C.GLOBALS[x] must be equal to (mut, t).
 - The instruction is valid with type ([] -> [t]).
 
 validation_of_GLOBAL.SET x
 - |C.GLOBALS| must be greater than x.
-- Let ((MUT ?(())), t) be C.GLOBALS[x].
+- C.GLOBALS[x] must be equal to ((MUT ?(())), t).
 - The instruction is valid with type ([t] -> []).
 
 validation_of_TABLE.GET x
 - |C.TABLES| must be greater than x.
-- Let (lim, rt) be C.TABLES[x].
+- C.TABLES[x] must be equal to (lim, rt).
 - The instruction is valid with type ([I32] -> [rt]).
 
 validation_of_TABLE.SET x
 - |C.TABLES| must be greater than x.
-- Let (lim, rt) be C.TABLES[x].
+- C.TABLES[x] must be equal to (lim, rt).
 - The instruction is valid with type ([I32, rt] -> []).
 
 validation_of_TABLE.SIZE x
 - |C.TABLES| must be greater than x.
-- Let (lim, rt) be C.TABLES[x].
+- C.TABLES[x] must be equal to (lim, rt).
 - The instruction is valid with type ([] -> [I32]).
 
 validation_of_TABLE.GROW x
 - |C.TABLES| must be greater than x.
-- Let (lim, rt) be C.TABLES[x].
+- C.TABLES[x] must be equal to (lim, rt).
 - The instruction is valid with type ([rt, I32] -> [I32]).
 
 validation_of_TABLE.FILL x
 - |C.TABLES| must be greater than x.
-- Let (lim, rt) be C.TABLES[x].
+- C.TABLES[x] must be equal to (lim, rt).
 - The instruction is valid with type ([I32, rt, I32] -> []).
 
 validation_of_TABLE.COPY x_1 x_2
 - |C.TABLES| must be greater than x_1.
 - |C.TABLES| must be greater than x_2.
-- Let (lim_1, rt) be C.TABLES[x_1].
-- Let (lim_2, rt) be C.TABLES[x_2].
+- C.TABLES[x_1] must be equal to (lim_1, rt).
+- C.TABLES[x_2] must be equal to (lim_2, rt).
 - The instruction is valid with type ([I32, I32, I32] -> []).
 
 validation_of_TABLE.INIT x_1 x_2
 - |C.TABLES| must be greater than x_1.
 - |C.ELEMS| must be greater than x_2.
-- Let (lim, rt) be C.TABLES[x_1].
+- C.TABLES[x_1] must be equal to (lim, rt).
 - C.ELEMS[x_2] must be equal to rt.
 - The instruction is valid with type ([I32, I32, I32] -> []).
 
 validation_of_ELEM.DROP x
 - |C.ELEMS| must be greater than x.
-- Let rt be C.ELEMS[x].
+- C.ELEMS[x] must be equal to rt.
 - The instruction is valid with type ([] -> []).
 
 validation_of_MEMORY.SIZE
 - |C.MEMS| must be greater than 0.
-- Let mt be C.MEMS[0].
+- C.MEMS[0] must be equal to mt.
 - The instruction is valid with type ([] -> [I32]).
 
 validation_of_MEMORY.GROW
 - |C.MEMS| must be greater than 0.
-- Let mt be C.MEMS[0].
+- C.MEMS[0] must be equal to mt.
 - The instruction is valid with type ([I32] -> [I32]).
 
 validation_of_MEMORY.FILL
 - |C.MEMS| must be greater than 0.
-- Let mt be C.MEMS[0].
+- C.MEMS[0] must be equal to mt.
 - The instruction is valid with type ([I32, I32, I32] -> []).
 
 validation_of_MEMORY.COPY
 - |C.MEMS| must be greater than 0.
-- Let mt be C.MEMS[0].
+- C.MEMS[0] must be equal to mt.
 - The instruction is valid with type ([I32, I32, I32] -> []).
 
 validation_of_MEMORY.INIT x
 - |C.MEMS| must be greater than 0.
 - |C.DATAS| must be greater than x.
+- C.MEMS[0] must be equal to mt.
 - C.DATAS[x] must be equal to OK.
-- Let mt be C.MEMS[0].
 - The instruction is valid with type ([I32, I32, I32] -> []).
 
 validation_of_DATA.DROP x
@@ -1478,48 +1476,50 @@ validation_of_DATA.DROP x
 validation_of_LOAD nt (n, sx)? memarg
 - |C.MEMS| must be greater than 0.
 - ((sx? is ?())) if and only if ((n? is ?())).
+- C.MEMS[0] must be equal to mt.
 - (2 ^ memarg.ALIGN) must be less than or equal to ($size(nt) / 8).
 - If n is defined,
   - (2 ^ memarg.ALIGN) must be less than or equal to (n / 8).
   - (n / 8) must be less than ($size(nt) / 8).
-- n? must be equal to ?().
-- Let mt be C.MEMS[0].
+- If n is defined,
+  - nt must be equal to Inn.
 - The instruction is valid with type ([I32] -> [nt]).
 
 validation_of_STORE nt n? memarg
 - |C.MEMS| must be greater than 0.
+- C.MEMS[0] must be equal to mt.
 - (2 ^ memarg.ALIGN) must be less than or equal to ($size(nt) / 8).
 - If n is defined,
   - (2 ^ memarg.ALIGN) must be less than or equal to (n / 8).
   - (n / 8) must be less than ($size(nt) / 8).
-- n? must be equal to ?().
-- Let mt be C.MEMS[0].
+- If n is defined,
+  - nt must be equal to Inn.
 - The instruction is valid with type ([I32, nt] -> []).
 
 validation_of_VLOAD V128 ?((SHAPE M N sx)) memarg
 - |C.MEMS| must be greater than 0.
+- C.MEMS[0] must be equal to mt.
 - (2 ^ memarg.ALIGN) must be less than or equal to ((M / 8) · N).
-- Let mt be C.MEMS[0].
 - The instruction is valid with type ([I32] -> [V128]).
 
 validation_of_VLOAD_LANE V128 n memarg laneidx
 - |C.MEMS| must be greater than 0.
+- C.MEMS[0] must be equal to mt.
 - (2 ^ memarg.ALIGN) must be less than or equal to (n / 8).
 - laneidx must be less than (128 / n).
-- Let mt be C.MEMS[0].
 - The instruction is valid with type ([I32, V128] -> [V128]).
 
 validation_of_VSTORE V128 memarg
 - |C.MEMS| must be greater than 0.
+- C.MEMS[0] must be equal to mt.
 - (2 ^ memarg.ALIGN) must be less than or equal to ($size(V128) / 8).
-- Let mt be C.MEMS[0].
 - The instruction is valid with type ([I32, V128] -> []).
 
 validation_of_VSTORE_LANE V128 n memarg laneidx
 - |C.MEMS| must be greater than 0.
+- C.MEMS[0] must be equal to mt.
 - (2 ^ memarg.ALIGN) must be less than or equal to (n / 8).
 - laneidx must be less than (128 / n).
-- Let mt be C.MEMS[0].
 - The instruction is valid with type ([I32, V128] -> []).
 
 Ki
@@ -3606,8 +3606,6 @@ watsup 0.4 generator
 == IL Validation...
 == Running pass sideconditions...
 == IL Validation after pass sideconditions...
-== Running pass animate...
-== IL Validation after pass animate...
 == Translating to AL...
 == Prose Generation...
 6-typing.watsup:627.7-627.45: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0)`
@@ -3616,17 +3614,42 @@ watsup 0.4 generator
 6-typing.watsup:646.6-646.34: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt)`
 6-typing.watsup:653.6-653.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 6-typing.watsup:654.6-654.49: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, $diffrt(rt_1, rt_2), rt)`
+6-typing.watsup:661.6-661.47: prem_to_instrs: Yet `Expand: `%~~%`(C.FUNCS_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype}))))`
+6-typing.watsup:665.6-665.47: prem_to_instrs: Yet `Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype}))))`
 6-typing.watsup:670.6-670.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
+6-typing.watsup:671.6-671.47: prem_to_instrs: Yet `Expand: `%~~%`(C.TYPES_context[y!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype}))))`
+6-typing.watsup:681.6-681.47: prem_to_instrs: Yet `Expand: `%~~%`(C.FUNCS_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype}))))`
 6-typing.watsup:683.6-683.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
+6-typing.watsup:689.6-689.47: prem_to_instrs: Yet `Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype}))))`
 6-typing.watsup:691.6-691.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
 6-typing.watsup:698.6-698.45: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))`
+6-typing.watsup:700.6-700.47: prem_to_instrs: Yet `Expand: `%~~%`(C.TYPES_context[y!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype}))))`
 6-typing.watsup:702.6-702.40: prem_to_instrs: Yet `Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})`
 6-typing.watsup:756.6-756.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
 6-typing.watsup:762.6-762.33: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt, rt')`
-6-typing.watsup:780.7-780.38: prem_to_instrs: Yet `where ?(val) = $default_($unpack(zt))`
+6-typing.watsup:775.6-775.44: prem_to_instrs: Yet `Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_structtype(`%%`_fieldtype(mut, zt)*{mut : mut, zt : storagetype})))`
+6-typing.watsup:779.6-779.44: prem_to_instrs: Yet `Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_structtype(`%%`_fieldtype(mut, zt)*{mut : mut, zt : storagetype})))`
+6-typing.watsup:780.7-780.38: prem_to_instrs: Yet `if ($default_($unpack(zt)) = ?(val))`
+6-typing.watsup:784.6-784.38: prem_to_instrs: Yet `Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_structtype(yt*{yt : fieldtype})))`
+6-typing.watsup:790.6-790.38: prem_to_instrs: Yet `Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_structtype(yt*{yt : fieldtype})))`
+6-typing.watsup:798.6-798.42: prem_to_instrs: Yet `Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(mut, zt)))`
+6-typing.watsup:802.6-802.42: prem_to_instrs: Yet `Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(mut, zt)))`
+6-typing.watsup:807.6-807.42: prem_to_instrs: Yet `Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(mut, zt)))`
+6-typing.watsup:811.6-811.42: prem_to_instrs: Yet `Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(mut, (rt : reftype <: storagetype))))`
 6-typing.watsup:812.6-812.40: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, C.ELEMS_context[y!`%`_idx.0], rt)`
+6-typing.watsup:816.6-816.42: prem_to_instrs: Yet `Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(mut, zt)))`
+6-typing.watsup:817.9-817.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
+6-typing.watsup:822.6-822.42: prem_to_instrs: Yet `Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(mut, zt)))`
+6-typing.watsup:827.6-827.42: prem_to_instrs: Yet `Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(`MUT%?`_mut(?(())), zt)))`
+6-typing.watsup:831.6-831.42: prem_to_instrs: Yet `Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(`MUT%?`_mut(?(())), zt)))`
+6-typing.watsup:835.6-835.42: prem_to_instrs: Yet `Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(`MUT%?`_mut(?(())), zt)))`
+6-typing.watsup:839.6-839.46: prem_to_instrs: Yet `Expand: `%~~%`(C.TYPES_context[x_1!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(`MUT%?`_mut(?(())), zt_1)))`
+6-typing.watsup:840.6-840.46: prem_to_instrs: Yet `Expand: `%~~%`(C.TYPES_context[x_2!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(mut, zt_2)))`
 6-typing.watsup:841.6-841.40: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)`
+6-typing.watsup:845.6-845.42: prem_to_instrs: Yet `Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(`MUT%?`_mut(?(())), zt)))`
 6-typing.watsup:846.6-846.44: prem_to_instrs: Yet `Storagetype_sub: `%|-%<:%`(C, (C.ELEMS_context[y!`%`_idx.0] : reftype <: storagetype), zt)`
+6-typing.watsup:850.6-850.42: prem_to_instrs: Yet `Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(`MUT%?`_mut(?(())), zt)))`
+6-typing.watsup:851.9-851.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
 6-typing.watsup:983.6-983.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 6-typing.watsup:989.6-989.36: prem_to_instrs: Yet `Reftype_sub: `%|-%<:%`(C, rt_2, rt_1)`
 =================
@@ -3648,30 +3671,30 @@ validation_of_SELECT ?([t])
 - The instruction is valid with type ([t, t, I32] ->_ [] ++ [t]).
 
 validation_of_BLOCK bt instr*
-- Under the context C with .LABELS prepended by [t_2*], instr* must be valid with type (t_1* ->_ x* ++ t_2*).
 - Under the context C, bt must be valid with type (t_1* ->_ [] ++ t_2*).
+- Under the context C with .LABELS prepended by [t_2*], instr* must be valid with type (t_1* ->_ x* ++ t_2*).
 - The instruction is valid with type (t_1* ->_ [] ++ t_2*).
 
 validation_of_LOOP bt instr*
-- Under the context C with .LABELS prepended by [t_1*], instr* must be valid with type (t_1* ->_ x* ++ t_2*).
 - Under the context C, bt must be valid with type (t_1* ->_ [] ++ t_2*).
+- Under the context C with .LABELS prepended by [t_1*], instr* must be valid with type (t_1* ->_ x* ++ t_2*).
 - The instruction is valid with type (t_1* ->_ [] ++ t_2*).
 
 validation_of_IF bt instr_1* instr_2*
-- Under the context C with .LABELS prepended by [t_2*], instr_1* must be valid with type (t_1* ->_ x_1* ++ t_2*).
 - Under the context C, bt must be valid with type (t_1* ->_ [] ++ t_2*).
+- Under the context C with .LABELS prepended by [t_2*], instr_1* must be valid with type (t_1* ->_ x_1* ++ t_2*).
 - Under the context C with .LABELS prepended by [t_2*], instr_2* must be valid with type (t_1* ->_ x_2* ++ t_2*).
 - The instruction is valid with type (t_1* ++ [I32] ->_ [] ++ t_2*).
 
 validation_of_BR l
 - |C.LABELS| must be greater than l.
-- Let t* be C.LABELS[l].
+- C.LABELS[l] must be equal to t*.
 - Under the context C, (t_1* ->_ [] ++ t_2*) must be valid.
 - The instruction is valid with type (t_1* ++ t* ->_ [] ++ t_2*).
 
 validation_of_BR_IF l
 - |C.LABELS| must be greater than l.
-- Let t* be C.LABELS[l].
+- C.LABELS[l] must be equal to t*.
 - The instruction is valid with type (t* ++ [I32] ->_ [] ++ t*).
 
 validation_of_BR_TABLE l* l'
@@ -3686,81 +3709,81 @@ validation_of_BR_TABLE l* l'
 
 validation_of_BR_ON_NULL l
 - |C.LABELS| must be greater than l.
+- C.LABELS[l] must be equal to t*.
 - Under the context C, ht must be valid.
-- Let t* be C.LABELS[l].
 - The instruction is valid with type (t* ++ [(REF (NULL ?(())) ht)] ->_ [] ++ t* ++ [(REF (NULL ?()) ht)]).
 
 validation_of_BR_ON_NON_NULL l
 - |C.LABELS| must be greater than l.
-- Let t* ++ [(REF (NULL ?()) ht)] be C.LABELS[l].
+- C.LABELS[l] must be equal to t* ++ [(REF (NULL ?()) ht)].
 - The instruction is valid with type (t* ++ [(REF (NULL ?(())) ht)] ->_ [] ++ t*).
 
 validation_of_BR_ON_CAST l rt_1 rt_2
 - |C.LABELS| must be greater than l.
+- C.LABELS[l] must be equal to t* ++ [rt].
 - Under the context C, rt_1 must be valid.
 - Under the context C, rt_2 must be valid.
 - Yet: TODO: prem_to_instrs rule_sub
-- Let t* ++ [rt] be C.LABELS[l].
 - Yet: TODO: prem_to_instrs rule_sub
 - The instruction is valid with type (t* ++ [rt_1] ->_ [] ++ t* ++ [$diffrt(rt_1, rt_2)]).
 
 validation_of_BR_ON_CAST_FAIL l rt_1 rt_2
 - |C.LABELS| must be greater than l.
+- C.LABELS[l] must be equal to t* ++ [rt].
 - Under the context C, rt_1 must be valid.
 - Under the context C, rt_2 must be valid.
 - Yet: TODO: prem_to_instrs rule_sub
-- Let t* ++ [rt] be C.LABELS[l].
 - Yet: TODO: prem_to_instrs rule_sub
 - The instruction is valid with type (t* ++ [rt_1] ->_ [] ++ t* ++ [rt_2]).
 
 validation_of_CALL x
 - |C.FUNCS| must be greater than x.
-- Let (FUNC (t_1* -> t_2*)) be $expanddt(C.FUNCS[x]).
+- Yet: Expand: `%~~%`(C.FUNCS_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype}))))
 - The instruction is valid with type (t_1* ->_ [] ++ t_2*).
 
 validation_of_CALL_REF $idx(x)
 - |C.TYPES| must be greater than x.
-- Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPES[x]).
+- Yet: Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype}))))
 - The instruction is valid with type (t_1* ++ [(REF (NULL ?(())) $idx(x))] ->_ [] ++ t_2*).
 
 validation_of_CALL_INDIRECT x $idx(y)
 - |C.TABLES| must be greater than x.
 - |C.TYPES| must be greater than y.
-- Let (lim, rt) be C.TABLES[x].
-- Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPES[y]).
+- C.TABLES[x] must be equal to (lim, rt).
 - Yet: TODO: prem_to_instrs rule_sub
+- Yet: Expand: `%~~%`(C.TYPES_context[y!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype}))))
 - The instruction is valid with type (t_1* ++ [I32] ->_ [] ++ t_2*).
 
 validation_of_RETURN
-- Let ?(t*) be C.RETURN.
+- C.RETURN must be equal to ?(t*).
 - Under the context C, (t_1* ->_ [] ++ t_2*) must be valid.
 - The instruction is valid with type (t_1* ++ t* ->_ [] ++ t_2*).
 
 validation_of_RETURN_CALL x
 - |C.FUNCS| must be greater than x.
-- Under the context C, (t_3* ->_ [] ++ t_4*) must be valid.
-- Let (FUNC (t_1* -> t_2*)) be $expanddt(C.FUNCS[x]).
-- Yet: TODO: prem_to_instrs rule_sub
+- Yet: Expand: `%~~%`(C.FUNCS_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype}))))
 - C.RETURN must be equal to ?(t'_2*).
+- Yet: TODO: prem_to_instrs rule_sub
+- Under the context C, (t_3* ->_ [] ++ t_4*) must be valid.
 - The instruction is valid with type (t_3* ++ t_1* ->_ [] ++ t_4*).
 
 validation_of_RETURN_CALL_REF $idx(x)
 - |C.TYPES| must be greater than x.
-- Under the context C, (t_3* ->_ [] ++ t_4*) must be valid.
-- Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPES[x]).
-- Yet: TODO: prem_to_instrs rule_sub
+- Yet: Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype}))))
 - C.RETURN must be equal to ?(t'_2*).
+- Yet: TODO: prem_to_instrs rule_sub
+- Under the context C, (t_3* ->_ [] ++ t_4*) must be valid.
 - The instruction is valid with type (t_3* ++ t_1* ++ [(REF (NULL ?(())) $idx(x))] ->_ [] ++ t_4*).
 
 validation_of_RETURN_CALL_INDIRECT x $idx(y)
 - |C.TABLES| must be greater than x.
 - |C.TYPES| must be greater than y.
-- Under the context C, (t_3* ->_ [] ++ t_4*) must be valid.
-- Let (lim, rt) be C.TABLES[x].
-- Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPES[y]).
+- C.TABLES[x] must be equal to (lim, rt).
 - Yet: TODO: prem_to_instrs rule_sub
-- Yet: TODO: prem_to_instrs rule_sub
+- Yet: Expand: `%~~%`(C.TYPES_context[y!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype}))))
 - C.RETURN must be equal to ?(t'_2*).
+- Yet: TODO: prem_to_instrs rule_sub
+- Under the context C, (t_3* ->_ [] ++ t_4*) must be valid.
 - The instruction is valid with type (t_3* ++ t_1* ++ [I32] ->_ [] ++ t_4*).
 
 validation_of_CONST nt c_nt
@@ -3787,8 +3810,8 @@ validation_of_REF.NULL ht
 
 validation_of_REF.FUNC x
 - |C.FUNCS| must be greater than x.
+- C.FUNCS[x] must be equal to dt.
 - x must be contained in C.REFS.
-- Let dt be C.FUNCS[x].
 - The instruction is valid with type ([] ->_ [] ++ [(REF (NULL ?()) dt)]).
 
 validation_of_REF.I31
@@ -3807,14 +3830,14 @@ validation_of_REF.EQ
 
 validation_of_REF.TEST rt
 - Under the context C, rt must be valid.
-- Yet: TODO: prem_to_instrs rule_sub
 - Under the context C, rt' must be valid.
+- Yet: TODO: prem_to_instrs rule_sub
 - The instruction is valid with type ([rt'] ->_ [] ++ [I32]).
 
 validation_of_REF.CAST rt
 - Under the context C, rt must be valid.
-- Yet: TODO: prem_to_instrs rule_sub
 - Under the context C, rt' must be valid.
+- Yet: TODO: prem_to_instrs rule_sub
 - The instruction is valid with type ([rt'] ->_ [] ++ [rt]).
 
 validation_of_I31.GET sx
@@ -3822,106 +3845,106 @@ validation_of_I31.GET sx
 
 validation_of_STRUCT.NEW x
 - |C.TYPES| must be greater than x.
-- Let (STRUCT (mut, zt)*) be $expanddt(C.TYPES[x]).
 - |zt*| must be equal to |mut*|.
+- Yet: Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_structtype(`%%`_fieldtype(mut, zt)*{mut : mut, zt : storagetype})))
 - The instruction is valid with type ($unpack(zt)* ->_ [] ++ [(REF (NULL ?()) $idx(x))]).
 
 validation_of_STRUCT.NEW_DEFAULT x
 - |C.TYPES| must be greater than x.
-- Let (STRUCT (mut, zt)*) be $expanddt(C.TYPES[x]).
 - |zt*| must be equal to |mut*|.
-- Yet: TODO: prem_to_intrs iter
 - |zt*| must be equal to |val*|.
+- Yet: Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_structtype(`%%`_fieldtype(mut, zt)*{mut : mut, zt : storagetype})))
+- Yet: TODO: prem_to_intrs iter
 - The instruction is valid with type ([] ->_ [] ++ [(REF (NULL ?()) $idx(x))]).
 
 validation_of_STRUCT.GET sx? x i
 - |C.TYPES| must be greater than x.
-- Let (STRUCT yt*) be $expanddt(C.TYPES[x]).
 - |yt*| must be greater than i.
-- Let (mut, zt) be yt*[i].
+- Yet: Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_structtype(yt*{yt : fieldtype})))
+- yt*[i] must be equal to (mut, zt).
 - ((zt is $unpack(zt))) if and only if ((sx? is ?())).
 - The instruction is valid with type ([(REF (NULL ?(())) $idx(x))] ->_ [] ++ [$unpack(zt)]).
 
 validation_of_STRUCT.SET x i
 - |C.TYPES| must be greater than x.
-- Let (STRUCT yt*) be $expanddt(C.TYPES[x]).
 - |yt*| must be greater than i.
-- Let ((MUT ?(())), zt) be yt*[i].
+- Yet: Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], STRUCT_comptype(`%`_structtype(yt*{yt : fieldtype})))
+- yt*[i] must be equal to ((MUT ?(())), zt).
 - The instruction is valid with type ([(REF (NULL ?(())) $idx(x)), $unpack(zt)] ->_ [] ++ []).
 
 validation_of_ARRAY.NEW x
 - |C.TYPES| must be greater than x.
-- Let (ARRAY (mut, zt)) be $expanddt(C.TYPES[x]).
+- Yet: Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(mut, zt)))
 - The instruction is valid with type ([$unpack(zt), I32] ->_ [] ++ [(REF (NULL ?()) $idx(x))]).
 
 validation_of_ARRAY.NEW_DEFAULT x
 - |C.TYPES| must be greater than x.
-- Let (ARRAY (mut, zt)) be $expanddt(C.TYPES[x]).
-- Let ?(val) be $default_($unpack(zt)).
+- Yet: Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(mut, zt)))
+- $default_($unpack(zt)) must be equal to ?(val).
 - The instruction is valid with type ([I32] ->_ [] ++ [(REF (NULL ?()) $idx(x))]).
 
 validation_of_ARRAY.NEW_FIXED x n
 - |C.TYPES| must be greater than x.
-- Let (ARRAY (mut, zt)) be $expanddt(C.TYPES[x]).
+- Yet: Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(mut, zt)))
 - The instruction is valid with type ($unpack(zt)^n ->_ [] ++ [(REF (NULL ?()) $idx(x))]).
 
 validation_of_ARRAY.NEW_ELEM x y
 - |C.TYPES| must be greater than x.
 - |C.ELEMS| must be greater than y.
-- Let (ARRAY (mut, rt)) be $expanddt(C.TYPES[x]).
+- Yet: Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(mut, (rt : reftype <: storagetype))))
 - Yet: TODO: prem_to_instrs rule_sub
 - The instruction is valid with type ([I32, I32] ->_ [] ++ [(REF (NULL ?()) $idx(x))]).
 
 validation_of_ARRAY.NEW_DATA x y
 - |C.TYPES| must be greater than x.
 - |C.DATAS| must be greater than y.
+- Yet: Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(mut, zt)))
+- Yet: (($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))
 - C.DATAS[y] must be equal to OK.
-- Let (ARRAY (mut, zt)) be $expanddt(C.TYPES[x]).
-- Let numtype be $unpack(zt).
 - The instruction is valid with type ([I32, I32] ->_ [] ++ [(REF (NULL ?()) $idx(x))]).
 
 validation_of_ARRAY.GET sx? x
 - |C.TYPES| must be greater than x.
-- Let (ARRAY (mut, zt)) be $expanddt(C.TYPES[x]).
+- Yet: Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(mut, zt)))
 - ((zt is $unpack(zt))) if and only if ((sx? is ?())).
 - The instruction is valid with type ([(REF (NULL ?(())) $idx(x)), I32] ->_ [] ++ [$unpack(zt)]).
 
 validation_of_ARRAY.SET x
 - |C.TYPES| must be greater than x.
-- Let (ARRAY ((MUT ?(())), zt)) be $expanddt(C.TYPES[x]).
+- Yet: Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(`MUT%?`_mut(?(())), zt)))
 - The instruction is valid with type ([(REF (NULL ?(())) $idx(x)), I32, $unpack(zt)] ->_ [] ++ []).
 
 validation_of_ARRAY.LEN
-- Let $expanddt(C.TYPES[x]) be (ARRAY ((MUT ?(())), zt)).
 - |C.TYPES| must be greater than x.
+- Yet: Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(`MUT%?`_mut(?(())), zt)))
 - The instruction is valid with type ([(REF (NULL ?(())) ARRAY)] ->_ [] ++ [I32]).
 
 validation_of_ARRAY.FILL x
 - |C.TYPES| must be greater than x.
-- Let (ARRAY ((MUT ?(())), zt)) be $expanddt(C.TYPES[x]).
+- Yet: Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(`MUT%?`_mut(?(())), zt)))
 - The instruction is valid with type ([(REF (NULL ?(())) $idx(x)), I32, $unpack(zt), I32] ->_ [] ++ []).
 
 validation_of_ARRAY.COPY x_1 x_2
 - |C.TYPES| must be greater than x_1.
 - |C.TYPES| must be greater than x_2.
-- Let (ARRAY (mut, zt_2)) be $expanddt(C.TYPES[x_2]).
+- Yet: Expand: `%~~%`(C.TYPES_context[x_1!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(`MUT%?`_mut(?(())), zt_1)))
+- Yet: Expand: `%~~%`(C.TYPES_context[x_2!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(mut, zt_2)))
 - Yet: TODO: prem_to_instrs rule_sub
-- $expanddt(C.TYPES[x_1]) must be equal to (ARRAY ((MUT ?(())), zt_1)).
 - The instruction is valid with type ([(REF (NULL ?(())) $idx(x_1)), I32, (REF (NULL ?(())) $idx(x_2)), I32, I32] ->_ [] ++ []).
 
 validation_of_ARRAY.INIT_ELEM x y
 - |C.TYPES| must be greater than x.
 - |C.ELEMS| must be greater than y.
+- Yet: Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(`MUT%?`_mut(?(())), zt)))
 - Yet: TODO: prem_to_instrs rule_sub
-- $expanddt(C.TYPES[x]) must be equal to (ARRAY ((MUT ?(())), zt)).
 - The instruction is valid with type ([(REF (NULL ?(())) $idx(x)), I32, I32, I32] ->_ [] ++ []).
 
 validation_of_ARRAY.INIT_DATA x y
 - |C.TYPES| must be greater than x.
 - |C.DATAS| must be greater than y.
+- Yet: Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], ARRAY_comptype(`%%`_arraytype(`MUT%?`_mut(?(())), zt)))
+- Yet: (($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))
 - C.DATAS[y] must be equal to OK.
-- Let (ARRAY ((MUT ?(())), zt)) be $expanddt(C.TYPES[x]).
-- Let numtype be $unpack(zt).
 - The instruction is valid with type ([(REF (NULL ?(())) $idx(x)), I32, I32, I32] ->_ [] ++ []).
 
 validation_of_EXTERN.CONVERT_ANY
@@ -3996,102 +4019,102 @@ validation_of_VCVTOP sh_1 sh_2 vcvtop half? sx? zero?
 
 validation_of_LOCAL.GET x
 - |C.LOCALS| must be greater than x.
-- Let (SET, t) be C.LOCALS[x].
+- C.LOCALS[x] must be equal to (SET, t).
 - The instruction is valid with type ([] ->_ [] ++ [t]).
 
 validation_of_LOCAL.SET x
 - |C.LOCALS| must be greater than x.
-- Let (init, t) be C.LOCALS[x].
+- C.LOCALS[x] must be equal to (init, t).
 - The instruction is valid with type ([t] ->_ [x] ++ []).
 
 validation_of_LOCAL.TEE x
 - |C.LOCALS| must be greater than x.
-- Let (init, t) be C.LOCALS[x].
+- C.LOCALS[x] must be equal to (init, t).
 - The instruction is valid with type ([t] ->_ [x] ++ [t]).
 
 validation_of_GLOBAL.GET x
 - |C.GLOBALS| must be greater than x.
-- Let (mut, t) be C.GLOBALS[x].
+- C.GLOBALS[x] must be equal to (mut, t).
 - The instruction is valid with type ([] ->_ [] ++ [t]).
 
 validation_of_GLOBAL.SET x
 - |C.GLOBALS| must be greater than x.
-- Let ((MUT ?(())), t) be C.GLOBALS[x].
+- C.GLOBALS[x] must be equal to ((MUT ?(())), t).
 - The instruction is valid with type ([t] ->_ [] ++ []).
 
 validation_of_TABLE.GET x
 - |C.TABLES| must be greater than x.
-- Let (lim, rt) be C.TABLES[x].
+- C.TABLES[x] must be equal to (lim, rt).
 - The instruction is valid with type ([I32] ->_ [] ++ [rt]).
 
 validation_of_TABLE.SET x
 - |C.TABLES| must be greater than x.
-- Let (lim, rt) be C.TABLES[x].
+- C.TABLES[x] must be equal to (lim, rt).
 - The instruction is valid with type ([I32, rt] ->_ [] ++ []).
 
 validation_of_TABLE.SIZE x
 - |C.TABLES| must be greater than x.
-- Let (lim, rt) be C.TABLES[x].
+- C.TABLES[x] must be equal to (lim, rt).
 - The instruction is valid with type ([] ->_ [] ++ [I32]).
 
 validation_of_TABLE.GROW x
 - |C.TABLES| must be greater than x.
-- Let (lim, rt) be C.TABLES[x].
+- C.TABLES[x] must be equal to (lim, rt).
 - The instruction is valid with type ([rt, I32] ->_ [] ++ [I32]).
 
 validation_of_TABLE.FILL x
 - |C.TABLES| must be greater than x.
-- Let (lim, rt) be C.TABLES[x].
+- C.TABLES[x] must be equal to (lim, rt).
 - The instruction is valid with type ([I32, rt, I32] ->_ [] ++ []).
 
 validation_of_TABLE.COPY x_1 x_2
 - |C.TABLES| must be greater than x_1.
 - |C.TABLES| must be greater than x_2.
-- Let (lim_1, rt_1) be C.TABLES[x_1].
-- Let (lim_2, rt_2) be C.TABLES[x_2].
+- C.TABLES[x_1] must be equal to (lim_1, rt_1).
+- C.TABLES[x_2] must be equal to (lim_2, rt_2).
 - Yet: TODO: prem_to_instrs rule_sub
 - The instruction is valid with type ([I32, I32, I32] ->_ [] ++ []).
 
 validation_of_TABLE.INIT x y
 - |C.TABLES| must be greater than x.
 - |C.ELEMS| must be greater than y.
-- Let rt_2 be C.ELEMS[y].
-- Let (lim, rt_1) be C.TABLES[x].
+- C.TABLES[x] must be equal to (lim, rt_1).
+- C.ELEMS[y] must be equal to rt_2.
 - Yet: TODO: prem_to_instrs rule_sub
 - The instruction is valid with type ([I32, I32, I32] ->_ [] ++ []).
 
 validation_of_ELEM.DROP x
 - |C.ELEMS| must be greater than x.
-- Let rt be C.ELEMS[x].
+- C.ELEMS[x] must be equal to rt.
 - The instruction is valid with type ([] ->_ [] ++ []).
 
 validation_of_MEMORY.SIZE x
 - |C.MEMS| must be greater than x.
-- Let mt be C.MEMS[x].
+- C.MEMS[x] must be equal to mt.
 - The instruction is valid with type ([] ->_ [] ++ [I32]).
 
 validation_of_MEMORY.GROW x
 - |C.MEMS| must be greater than x.
-- Let mt be C.MEMS[x].
+- C.MEMS[x] must be equal to mt.
 - The instruction is valid with type ([I32] ->_ [] ++ [I32]).
 
 validation_of_MEMORY.FILL x
 - |C.MEMS| must be greater than x.
-- Let mt be C.MEMS[x].
+- C.MEMS[x] must be equal to mt.
 - The instruction is valid with type ([I32, I32, I32] ->_ [] ++ []).
 
 validation_of_MEMORY.COPY x_1 x_2
 - |C.MEMS| must be greater than x_1.
 - |C.MEMS| must be greater than x_2.
-- Let mt_1 be C.MEMS[x_1].
-- Let mt_2 be C.MEMS[x_2].
+- C.MEMS[x_1] must be equal to mt_1.
+- C.MEMS[x_2] must be equal to mt_2.
 - The instruction is valid with type ([I32, I32, I32] ->_ [] ++ []).
 
 validation_of_MEMORY.INIT x y
 - |C.MEMS| must be greater than x.
 - |C.DATAS| must be greater than y.
+- C.MEMS[x] must be equal to mt.
 - C.DATAS[y] must be equal to OK.
-- Let mt be C.MEMS[x].
 - The instruction is valid with type ([I32, I32, I32] ->_ [] ++ []).
 
 validation_of_DATA.DROP x
@@ -4101,40 +4124,40 @@ validation_of_DATA.DROP x
 
 validation_of_LOAD nt ?() x memarg
 - |C.MEMS| must be greater than x.
+- C.MEMS[x] must be equal to mt.
 - (2 ^ memarg.ALIGN) must be less than or equal to ($size(nt) / 8).
-- Let mt be C.MEMS[x].
 - The instruction is valid with type ([I32] ->_ [] ++ [nt]).
 
 validation_of_STORE nt ?() x memarg
 - |C.MEMS| must be greater than x.
+- C.MEMS[x] must be equal to mt.
 - (2 ^ memarg.ALIGN) must be less than or equal to ($size(nt) / 8).
-- Let mt be C.MEMS[x].
 - The instruction is valid with type ([I32, nt] ->_ [] ++ []).
 
 validation_of_VLOAD V128 ?() x memarg
 - |C.MEMS| must be greater than x.
+- C.MEMS[x] must be equal to mt.
 - (2 ^ memarg.ALIGN) must be less than or equal to ($vsize(V128) / 8).
-- Let mt be C.MEMS[x].
 - The instruction is valid with type ([I32] ->_ [] ++ [V128]).
 
 validation_of_VLOAD_LANE V128 N x memarg i
 - |C.MEMS| must be greater than x.
+- C.MEMS[x] must be equal to mt.
 - (2 ^ memarg.ALIGN) must be less than or equal to (N / 8).
 - i must be less than (128 / N).
-- Let mt be C.MEMS[x].
 - The instruction is valid with type ([I32, V128] ->_ [] ++ [V128]).
 
 validation_of_VSTORE V128 x memarg
 - |C.MEMS| must be greater than x.
+- C.MEMS[x] must be equal to mt.
 - (2 ^ memarg.ALIGN) must be less than or equal to ($vsize(V128) / 8).
-- Let mt be C.MEMS[x].
 - The instruction is valid with type ([I32, V128] ->_ [] ++ []).
 
 validation_of_VSTORE_LANE V128 N x memarg i
 - |C.MEMS| must be greater than x.
+- C.MEMS[x] must be equal to mt.
 - (2 ^ memarg.ALIGN) must be less than or equal to (N / 8).
 - i must be less than (128 / N).
-- Let mt be C.MEMS[x].
 - The instruction is valid with type ([I32, V128] ->_ [] ++ []).
 
 Ki
@@ -6353,52 +6376,55 @@ rundata_ x (DATA b^n datam_u0)
 4. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT y x), (DATA.DROP x)].
 
 instantiate module externval*
-1. Assert: Due to validation, module is of the case MODULE.
-2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
-3. Let instr_D* be $concat_($rundata_(i_D, data*[i_D])^(i_D<|data*|)).
-4. Let instr_E* be $concat_($runelem_(i_E, elem*[i_E])^(i_E<|elem*|)).
-5. Let (START x)? be start?.
-6. Let moduleinst_0 be { TYPES: $alloctypes(type*); FUNCS: $funcsxv(externval*) ++ (|s.FUNCS| + i_F)^(i_F<|func*|); GLOBALS: $globalsxv(externval*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
-7. Let (GLOBAL globaltype expr_G)* be global*.
-8. Let (TABLE tabletype expr_T)* be table*.
-9. Let (ELEM reftype expr_E* elemmode)* be elem*.
-10. Let instr_S? be (CALL x)?.
-11. Let z be { LOCALS: []; MODULE: moduleinst_0; }.
-12. Push the activation of z to the stack.
-13. Let [val_G]* be $eval_expr(expr_G)*.
-14. Pop the activation of z from the stack.
-15. Push the activation of z to the stack.
-16. Let [ref_T]* be $eval_expr(expr_T)*.
-17. Pop the activation of z from the stack.
-18. Push the activation of z to the stack.
-19. Let [ref_E]** be $eval_expr(expr_E)**.
-20. Pop the activation of z from the stack.
-21. Let moduleinst be $allocmodule(module, externval*, val_G*, ref_T*, ref_E**).
-22. Let f be { LOCALS: []; MODULE: moduleinst; }.
-23. Push the activation of f with arity 0 to the stack.
-24. Execute the sequence (instr_E*).
-25. Execute the sequence (instr_D*).
-26. If instr_S? is defined, then:
+1. Assert: Due to validation, $Module_ok(module, (xt_I* -> xt_E*)).
+2. Assert: Due to validation, module is of the case MODULE.
+3. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
+4. Assert: Due to validation, ($Externval_type(externval) is xt_I)*.
+5. Let instr_D* be $concat_($rundata_(i_D, data*[i_D])^(i_D<|data*|)).
+6. Let instr_E* be $concat_($runelem_(i_E, elem*[i_E])^(i_E<|elem*|)).
+7. Let (START x)? be start?.
+8. Let moduleinst_0 be { TYPES: $alloctypes(type*); FUNCS: $funcsxv(externval*) ++ (|s.FUNCS| + i_F)^(i_F<|func*|); GLOBALS: $globalsxv(externval*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
+9. Let (GLOBAL globaltype expr_G)* be global*.
+10. Let (TABLE tabletype expr_T)* be table*.
+11. Let (ELEM reftype expr_E* elemmode)* be elem*.
+12. Let instr_S? be (CALL x)?.
+13. Let z be { LOCALS: []; MODULE: moduleinst_0; }.
+14. Push the activation of z to the stack.
+15. Let [val_G]* be $eval_expr(expr_G)*.
+16. Pop the activation of z from the stack.
+17. Push the activation of z to the stack.
+18. Let [ref_T]* be $eval_expr(expr_T)*.
+19. Pop the activation of z from the stack.
+20. Push the activation of z to the stack.
+21. Let [ref_E]** be $eval_expr(expr_E)**.
+22. Pop the activation of z from the stack.
+23. Let moduleinst be $allocmodule(module, externval*, val_G*, ref_T*, ref_E**).
+24. Let f be { LOCALS: []; MODULE: moduleinst; }.
+25. Push the activation of f with arity 0 to the stack.
+26. Execute the sequence (instr_E*).
+27. Execute the sequence (instr_D*).
+28. If instr_S? is defined, then:
   a. Let ?(instr_0) be instr_S?.
   b. Execute the instruction instr_0.
-27. Pop the activation of f with arity 0 from the stack.
-28. Return f.MODULE.
+29. Pop the activation of f with arity 0 from the stack.
+30. Return f.MODULE.
 
 invoke funcaddr val*
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
 2. Assert: Due to validation, $expanddt(s.FUNCS[funcaddr].TYPE) is of the case FUNC.
 3. Let (FUNC y_0) be $expanddt(s.FUNCS[funcaddr].TYPE).
 4. Let (t_1* -> t_2*) be y_0.
-5. Let k be |t_2*|.
-6. Push the activation of f with arity k to the stack.
-7. Push the values val* to the stack.
-8. Push the value (REF.FUNC_ADDR funcaddr) to the stack.
-9. Execute the instruction (CALL_REF s.FUNCS[funcaddr].TYPE).
-10. Pop all values val* from the top of the stack.
-11. Pop the activation of f with arity k from the stack.
-12. Push the values val* to the stack.
-13. Pop the values val^k from the stack.
-14. Return val^k.
+5. Assert: Due to validation, ($Val_type(val) is t_1)*.
+6. Let k be |t_2*|.
+7. Push the activation of f with arity k to the stack.
+8. Push the values val* to the stack.
+9. Push the value (REF.FUNC_ADDR funcaddr) to the stack.
+10. Execute the instruction (CALL_REF s.FUNCS[funcaddr].TYPE).
+11. Pop all values val* from the top of the stack.
+12. Pop the activation of f with arity k from the stack.
+13. Push the values val* to the stack.
+14. Pop the values val^k from the stack.
+15. Return val^k.
 
 allocXs X_u0* Y_u1*
 1. If (X_u0* is []), then:
@@ -6862,7 +6888,7 @@ execution_of_BR_ON_CAST l rt_1 rt_2
 1. Let f be the current frame.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value ref from the stack.
-4. Let rt be $ref_type_of(ref).
+4. Let rt be $Ref_type(ref).
 5. If rt does not match $inst_reftype(f.MODULE, rt_2), then:
   a. Push the value ref to the stack.
 6. Else:
@@ -6873,7 +6899,7 @@ execution_of_BR_ON_CAST_FAIL l rt_1 rt_2
 1. Let f be the current frame.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value ref from the stack.
-4. Let rt be $ref_type_of(ref).
+4. Let rt be $Ref_type(ref).
 5. If rt matches $inst_reftype(f.MODULE, rt_2), then:
   a. Push the value ref to the stack.
 6. Else:
@@ -6957,7 +6983,7 @@ execution_of_REF.TEST rt
 1. Let f be the current frame.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value ref from the stack.
-4. Let rt' be $ref_type_of(ref).
+4. Let rt' be $Ref_type(ref).
 5. If rt' matches $inst_reftype(f.MODULE, rt), then:
   a. Push the value (I32.CONST 1) to the stack.
 6. Else:
@@ -6967,7 +6993,7 @@ execution_of_REF.CAST rt
 1. Let f be the current frame.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value ref from the stack.
-4. Let rt' be $ref_type_of(ref).
+4. Let rt' be $Ref_type(ref).
 5. If rt' does not match $inst_reftype(f.MODULE, rt), then:
   a. Trap.
 6. Push the value ref to the stack.
