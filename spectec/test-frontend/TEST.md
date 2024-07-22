@@ -3822,10 +3822,10 @@ relation Fieldtype_sub: `%|-%<:%`(context, fieldtype, fieldtype)
     -- Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)
 
 ;; 6-typing.watsup
-relation Resulttype_sub: `%|-%<:%`(context, resulttype, resulttype)
+relation Resulttype_sub: `%|-%<:%`(context, valtype*, valtype*)
   ;; 6-typing.watsup
   rule _{C : context, t_1* : valtype*, t_2* : valtype*}:
-    `%|-%<:%`(C, `%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype}))
+    `%|-%<:%`(C, t_1*{t_1 : valtype}, t_2*{t_2 : valtype})
     -- (Valtype_sub: `%|-%<:%`(C, t_1, t_2))*{t_1 : valtype, t_2 : valtype}
 
 ;; 6-typing.watsup
@@ -3833,8 +3833,8 @@ relation Functype_sub: `%|-%<:%`(context, functype, functype)
   ;; 6-typing.watsup
   rule _{C : context, t_11* : valtype*, t_12* : valtype*, t_21* : valtype*, t_22* : valtype*}:
     `%|-%<:%`(C, `%->%`_functype(`%`_resulttype(t_11*{t_11 : valtype}), `%`_resulttype(t_12*{t_12 : valtype})), `%->%`_functype(`%`_resulttype(t_21*{t_21 : valtype}), `%`_resulttype(t_22*{t_22 : valtype})))
-    -- Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_21*{t_21 : valtype}), `%`_resulttype(t_11*{t_11 : valtype}))
-    -- Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_12*{t_12 : valtype}), `%`_resulttype(t_22*{t_22 : valtype}))
+    -- Resulttype_sub: `%|-%<:%`(C, t_21*{t_21 : valtype}, t_11*{t_11 : valtype})
+    -- Resulttype_sub: `%|-%<:%`(C, t_12*{t_12 : valtype}, t_22*{t_22 : valtype})
 
 ;; 6-typing.watsup
 relation Comptype_sub: `%|-%<:%`(context, comptype, comptype)
@@ -3996,8 +3996,8 @@ relation Instrtype_sub: `%|-%<:%`(context, instrtype, instrtype)
   ;; 6-typing.watsup
   rule _{C : context, t_11* : valtype*, x_1* : idx*, t_12* : valtype*, t_21* : valtype*, x_2* : idx*, t_22* : valtype*, x* : idx*, t* : valtype*}:
     `%|-%<:%`(C, `%->_%%`_instrtype(`%`_resulttype(t_11*{t_11 : valtype}), x_1*{x_1 : localidx}, `%`_resulttype(t_12*{t_12 : valtype})), `%->_%%`_instrtype(`%`_resulttype(t_21*{t_21 : valtype}), x_2*{x_2 : localidx}, `%`_resulttype(t_22*{t_22 : valtype})))
-    -- Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_21*{t_21 : valtype}), `%`_resulttype(t_11*{t_11 : valtype}))
-    -- Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_12*{t_12 : valtype}), `%`_resulttype(t_22*{t_22 : valtype}))
+    -- Resulttype_sub: `%|-%<:%`(C, t_21*{t_21 : valtype}, t_11*{t_11 : valtype})
+    -- Resulttype_sub: `%|-%<:%`(C, t_12*{t_12 : valtype}, t_22*{t_22 : valtype})
     -- if (x*{x : idx} = $setminus(x_2*{x_2 : idx}, x_1*{x_1 : idx}))
     -- (if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(SET_init, t)))*{t : valtype, x : idx}
 
@@ -4136,8 +4136,8 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
   ;; 6-typing.watsup:625.1-629.42
   rule br_table{C : context, l* : labelidx*, l' : labelidx, t_1* : valtype*, t* : valtype*, t_2* : valtype*}:
     `%|-%:%`(C, BR_TABLE_instr(l*{l : labelidx}, l'), `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype} :: t*{t : valtype}), [], `%`_resulttype(t_2*{t_2 : valtype})))
-    -- (Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t*{t : valtype}), C.LABELS_context[l!`%`_labelidx.0]))*{l : labelidx}
-    -- Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t*{t : valtype}), C.LABELS_context[l'!`%`_labelidx.0])
+    -- (Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l!`%`_labelidx.0]!`%`_resulttype.0))*{l : labelidx}
+    -- Resulttype_sub: `%|-%<:%`(C, t*{t : valtype}, C.LABELS_context[l'!`%`_labelidx.0]!`%`_resulttype.0)
     -- Instrtype_ok: `%|-%:OK`(C, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 : valtype}), [], `%`_resulttype(t_2*{t_2 : valtype})))
 
   ;; 6-typing.watsup:631.1-634.31
@@ -4197,7 +4197,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     `%|-%:%`(C, RETURN_CALL_instr(x), `%->_%%`_instrtype(`%`_resulttype(t_3*{t_3 : valtype} :: t_1*{t_1 : valtype}), [], `%`_resulttype(t_4*{t_4 : valtype})))
     -- Expand: `%~~%`(C.FUNCS_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype}))))
     -- if (C.RETURN_context = ?(`%`_list(t'_2*{t'_2 : valtype})))
-    -- Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_2*{t_2 : valtype}), `%`_resulttype(t'_2*{t'_2 : valtype}))
+    -- Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})
     -- Instrtype_ok: `%|-%:OK`(C, `%->_%%`_instrtype(`%`_resulttype(t_3*{t_3 : valtype}), [], `%`_resulttype(t_4*{t_4 : valtype})))
 
   ;; 6-typing.watsup:687.1-692.42
@@ -4205,7 +4205,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     `%|-%:%`(C, RETURN_CALL_REF_instr(($idx(x) : typevar <: typeuse)), `%->_%%`_instrtype(`%`_resulttype(t_3*{t_3 : valtype} :: t_1*{t_1 : valtype} :: [REF_valtype(`NULL%?`_nul(?(())), ($idx(x) : typevar <: heaptype))]), [], `%`_resulttype(t_4*{t_4 : valtype})))
     -- Expand: `%~~%`(C.TYPES_context[x!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype}))))
     -- if (C.RETURN_context = ?(`%`_list(t'_2*{t'_2 : valtype})))
-    -- Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_2*{t_2 : valtype}), `%`_resulttype(t'_2*{t'_2 : valtype}))
+    -- Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})
     -- Instrtype_ok: `%|-%:OK`(C, `%->_%%`_instrtype(`%`_resulttype(t_3*{t_3 : valtype}), [], `%`_resulttype(t_4*{t_4 : valtype})))
 
   ;; 6-typing.watsup:695.1-703.42
@@ -4215,7 +4215,7 @@ relation Instr_ok: `%|-%:%`(context, instr, instrtype)
     -- Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`_nul(?(())), FUNC_heaptype))
     -- Expand: `%~~%`(C.TYPES_context[y!`%`_idx.0], FUNC_comptype(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype}))))
     -- if (C.RETURN_context = ?(`%`_list(t'_2*{t'_2 : valtype})))
-    -- Resulttype_sub: `%|-%<:%`(C, `%`_resulttype(t_2*{t_2 : valtype}), `%`_resulttype(t'_2*{t'_2 : valtype}))
+    -- Resulttype_sub: `%|-%<:%`(C, t_2*{t_2 : valtype}, t'_2*{t'_2 : valtype})
     -- Instrtype_ok: `%|-%:OK`(C, `%->_%%`_instrtype(`%`_resulttype(t_3*{t_3 : valtype}), [], `%`_resulttype(t_4*{t_4 : valtype})))
 
   ;; 6-typing.watsup:708.1-709.33

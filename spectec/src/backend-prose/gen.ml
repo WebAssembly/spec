@@ -80,13 +80,13 @@ let try_omit c = match c.it with
 (** There are currently 7 supported shape of a validation relation.
   * Extend this list upon introducing new shape of validation rule to the spec,
   * or shrink the list by merging and generalizing the shape.
-  * 1. C |- e : OK
-  * 2. C |- i : t (where i is a wasm instruction)
-  * 3. C |- e : e
-  * 4. C |- t <: t
-  * 5. C |- e : CONST
-  * 6. C |- e : e CONST
-  * 7. C |- e : e e
+  * 1. C? |- e : OK
+  * 2. C? |- i : t (where i is a wasm instruction)
+  * 3. C? |- e : e
+  * 4. C? |- t <: t
+  * 5. C? |- e : CONST
+  * 6. C? |- e : e CONST
+  * 7. C? |- e : e e
 **)
 
 type rel_kind =
@@ -116,17 +116,18 @@ let get_rel_kind def =
 
   match def.it with
   | Ast.RelD (_, mixop, typ, _) ->
-      if Mixop.eq valid_pattern mixop then
+      let match_mixop pattern = Mixop.(eq mixop pattern || eq mixop (List.tl pattern)) in
+      if match_mixop valid_pattern then
         ValidRel
-      else if Mixop.eq valid_with_pattern mixop then
+      else if match_mixop valid_with_pattern then
         ( if has_instr_as_second typ then ValidInstrRel else ValidWithRel )
-      else if Mixop.eq match_pattern mixop then
+      else if match_mixop match_pattern then
         MatchRel
-      else if Mixop.eq const_pattern mixop then
+      else if match_mixop const_pattern then
         ConstRel
-      else if Mixop.eq valid_const_pattern mixop then
+      else if match_mixop valid_const_pattern then
         ValidConstRel
-      else if Mixop.eq valid_with2_pattern mixop then
+      else if match_mixop valid_with2_pattern then
         ValidWith2Rel
       else
         OtherRel
@@ -173,15 +174,24 @@ let rec prem_to_instrs prem =
     let rel = match List.find_opt (rel_has_id id) !Langs.il with Some rel -> rel | None -> failwith id.it in
     let args = exp_to_argexpr e in
     ( match get_rel_kind rel, args with
-    | ValidRel,      [c; e]       -> [ IsValidI(try_omit c, e, []) ]
-    | ValidInstrRel, [c; e; t]    -> [ IsValidI(try_omit c, e, [t]) ]
-    | ValidWithRel,  [c; e; e']   -> [ IsValidI(try_omit c, e, [e']) ]
-    | MatchRel,      [_c; t1; t2] -> [ MatchesI (t1, t2) ]
-    | ConstRel,      [c; e]       -> [ IsConstI (try_omit c, e) ]
-    | ValidConstRel, [c; e; e']   -> [ IsValidI (try_omit c, e, [e']); IsConstI (try_omit c, e) ]
-    | ValidWith2Rel,  _
-    | OtherRel,       _           -> print_yet_prem prem "prem_to_instrs"; [ YetI "TODO: prem_to_instrs for RulePr" ]
-    | _,              _           -> assert false )
+    (* contextless *)
+    | ValidRel,      [e]         -> [ IsValidI(None, e, []) ]
+    | ValidInstrRel, [e; t]      -> [ IsValidI(None, e, [t]) ]
+    | ValidWithRel,  [e; e']     -> [ IsValidI(None, e, [e']) ]
+    | MatchRel,      [t1; t2]    -> [ MatchesI (t1, t2) ]
+    | ConstRel,      [e]         -> [ IsConstI (None, e) ]
+    | ValidConstRel, [e; e']     -> [ IsValidI (None, e, [e']); IsConstI (None, e) ]
+    | ValidWith2Rel, [e; e1; e2] -> [ IsValidI (None, e, [e1; e2]) ]
+    (* context *)
+    | ValidRel,      [c; e]         -> [ IsValidI(try_omit c, e, []) ]
+    | ValidInstrRel, [c; e; t]      -> [ IsValidI(try_omit c, e, [t]) ]
+    | ValidWithRel,  [c; e; e']     -> [ IsValidI(try_omit c, e, [e']) ]
+    | MatchRel,      [_; t1; t2]    -> [ MatchesI (t1, t2) ]
+    | ConstRel,      [c; e]         -> [ IsConstI (try_omit c, e) ]
+    | ValidConstRel, [c; e; e']     -> [ IsValidI (try_omit c, e, [e']); IsConstI (try_omit c, e) ]
+    | ValidWith2Rel, [c; e; e1; e2] -> [ IsValidI (try_omit c, e, [e1; e2]) ]
+    | OtherRel,       _             -> print_yet_prem prem "prem_to_instrs"; [ YetI "TODO: prem_to_instrs for RulePr" ]
+    | _,              _             -> assert false )
   | Ast.IterPr (prem, iter) ->
     (match iter with
     | Ast.Opt, [(id, _)] -> [ IfI (isDefinedE (varE id.it), prem_to_instrs prem) ]
@@ -229,22 +239,22 @@ let pack_single_rule rule =
   match rule.it with
   | Ast.RuleD (_, tenv, _, exp, prems) ->
     match exp.it with
-    (* c |- e : OK *)
-    (* c |- e CONST *)
-    | Ast.TupE [ _c; e ] -> (e, prems, tenv)
-    | _ -> error exp.at
-      (Print.string_of_exp exp
-      |> Printf.sprintf "exp `%s` cannot be a rule for the single-argument relation")
+    (* c? |- e : OK *)
+    (* c? |- e CONST *)
+    | Ast.TupE [ e ] -> (e, prems, tenv)
+    | Ast.TupE [ _; e ] -> (e, prems, tenv)
+    | _ -> (exp, prems, tenv)
 
 let pack_pair_rule rule =
   match rule.it with
   | Ast.RuleD (_, tenv, _, exp, prems) ->
     match exp.it with
-    (* c |- e1 <: e2 *)
-    (* c |- e : t *)
-    (* c |- e : e *)
-    (* c |- e : e CONST *)
-    | Ast.TupE [ _c; e1; e2 ] -> (e1, e2, prems, tenv)
+    (* c? |- e1 <: e2 *)
+    (* c? |- e : t *)
+    (* c? |- e : e *)
+    (* c? |- e : e CONST *)
+    | Ast.TupE [ e1; e2 ] -> (e1, e2, prems, tenv)
+    | Ast.TupE [ _; e1; e2 ] -> (e1, e2, prems, tenv)
     | _ -> error exp.at
       (Print.string_of_exp exp
       |> Printf.sprintf "exp `%s` cannot be a rule for the double-argument relation")
@@ -253,8 +263,9 @@ let pack_triplet_rule rule =
   match rule.it with
   | Ast.RuleD (_, tenv, _, exp, prems) ->
     match exp.it with
-    (* c |- e : e e *)
-    | Ast.TupE [ _c; e1; e2; e3 ] -> (e1, e2, e3, prems, tenv)
+    (* c? |- e : e e *)
+    | Ast.TupE [ e1; e2; e3 ] -> (e1, e2, e3, prems, tenv)
+    | Ast.TupE [ _; e1; e2; e3 ] -> (e1, e2, e3, prems, tenv)
     | _ -> error exp.at
       (Print.string_of_exp exp
       |> Printf.sprintf "exp `%s` cannot be a rule for the triple-argument relation")

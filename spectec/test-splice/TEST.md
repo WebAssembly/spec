@@ -12,7 +12,7 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup -l --splice-latex -p spe
 == Translating to AL...
 == Prose Generation...
 ../spec/wasm-3.0/6-typing.watsup:194.10-194.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
-Untranslated relation Module_ok: `|-%:%`(module, moduletype)
+../spec/wasm-3.0/6-typing.watsup:1310.9-1310.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm : name})`
 == Splicing...
 \documentclass[a4paper]{scrartcl}
 
@@ -1547,6 +1547,7 @@ warning: rule prose `exec/drop` was never spliced
 warning: rule prose `exec/nop` was never spliced
 warning: rule prose `exec/unreachable` was never spliced
 warning: rule prose `valid/[instr_u0]` was never spliced
+warning: rule prose `valid/module` was never spliced
 warning: rule prose `valid/type_u0*` was never spliced
 warning: rule prose `valid/globa_u0*` was never spliced
 warning: rule prose `valid/export` was never spliced

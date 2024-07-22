@@ -12,13 +12,10 @@ let string_of_opt prefix stringifier suffix = function
 let string_of_list stringifier left sep right = function
   | [] -> left ^ right
   | h :: t ->
-      let limit = 16 in
-      let is_long = List.length t > limit in
       left
       ^ List.fold_left
           (fun acc elem -> acc ^ sep ^ stringifier elem)
-          (stringifier h) (List.filteri (fun i _ -> i <= limit) t)
-      ^ (if is_long then (sep ^ "...") else "")
+          (stringifier h) t
       ^ right
 
 let string_of_nullable_list stringifier left sep right = function
@@ -32,19 +29,19 @@ let extract_desc_hint = List.find_map (function
   | El.Ast.{ hintid = id; hintexp = { it = TextE desc; _ } }
     when id.it = "desc" -> Some desc
   | _ -> None)
-let extract_desc typ =
-  let name = Il.Print.string_of_typ typ in
-  match !Langs.el |> List.find_map (fun def ->
-    match def.it with
-    | El.Ast.FamD (id, _, hints) when id.it = name ->
-      extract_desc_hint hints
-    | El.Ast.TypD (id, subid, _, _, hints)
-      when id.it = name && (subid.it = "" || (* HARDCODE *) subid.it = "syn") ->
-      extract_desc_hint hints
-    | _ -> None)
-  with
-  | Some desc -> desc
-  | None -> name
+let rec extract_desc typ = match typ.it with
+  | Il.Ast.IterT (typ, _) -> extract_desc typ ^ " sequence"
+  | _ ->
+    let name = Il.Print.string_of_typ typ in
+    match !Langs.el |> List.find_map (fun def ->
+      match def.it with
+      | El.Ast.TypD (id, subid, _, _, hints)
+        when id.it = name && (subid.it = "" || (* HARDCODE *) subid.it = "syn") ->
+        extract_desc_hint hints
+      | _ -> None)
+    with
+    | Some desc -> desc
+    | None -> name
 
 let string_of_expr_with_type e = "the " ^ extract_desc e.note ^ " " ^ string_of_expr e
 
@@ -96,7 +93,7 @@ let rec string_of_instr = function
       sprintf "%s (%s) if and only if (%s)." (indent ())
         (string_of_expr e2)
         (string_of_expr e1)
-  | EitherI iss -> 
+  | EitherI iss ->
       sprintf "%s Either:\n%s" (indent ())
         (string_of_list indented_string_of_instrs "" ("\n" ^ indent () ^ " Or:\n") "" iss)
   | YetI s -> indent () ^ " Yet: " ^ s

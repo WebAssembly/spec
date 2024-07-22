@@ -388,7 +388,7 @@ rule Valtype_sub/bot:
 
 ;; Result and Instruction types
 
-relation Resulttype_sub: context |- resulttype <: resulttype   hint(show "S-result") hint(macro "%resulttypematch")
+relation Resulttype_sub: context |- valtype* <: valtype*   hint(show "S-result") hint(macro "%resulttypematch")
 relation Instrtype_sub: context |- instrtype <: instrtype  hint(show "S-instr")  hint(macro "%instrtypematch")
 
 rule Resulttype_sub:
