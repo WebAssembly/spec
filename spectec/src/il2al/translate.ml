@@ -526,7 +526,14 @@ and handle_inverse_function lhs rhs free_ids =
     | TupE el -> el
     | _ -> [e]
   in
-  let args2lhs args = if List.length args = 1 then List.hd args else tupE args in
+  let args2lhs args =
+    if List.length args = 1 then
+      List.hd args
+    else
+      let no_name = Il.VarE ("_" $ no_region) $$ no_region % (Il.TextT $ no_region) in
+      let typ = Il.TupT (List.map (fun e -> no_name, e.note) args) $ no_region in
+      TupE args $$ no_region % typ
+    in
 
   (* Get function name and arguments *)
   let f, args =
@@ -538,8 +545,10 @@ and handle_inverse_function lhs rhs free_ids =
   (* All arguments are free *)
   if List.for_all contains_free args then
     let new_lhs = args2lhs args in
-    let indices = List.init (List.length args) (fun i -> Some i) in
-    let new_rhs = invCallE (f, indices, rhs2args rhs) ~at:lhs.at ~note:lhs.note in
+    let indices = List.init (List.length args) Option.some in
+    let new_rhs =
+      invCallE (f, indices, rhs2args rhs) ~at:lhs.at ~note:new_lhs.note
+    in
     handle_special_lhs new_lhs new_rhs free_ids
 
   (* Some arguments are free *)
@@ -562,7 +571,9 @@ and handle_inverse_function lhs rhs free_ids =
 
     (* Free argument become new lhs & InvCallE become new rhs *)
     let new_lhs = args2lhs free_args in
-    let new_rhs = invCallE (f, indices, bound_args @ rhs2args rhs) ~at:lhs.at ~note:lhs.note in
+    let new_rhs =
+      invCallE (f, indices, bound_args @ rhs2args rhs) ~at:lhs.at ~note:new_lhs.note
+    in
 
     (* Recursively translate new_lhs and new_rhs *)
     handle_special_lhs new_lhs new_rhs free_ids
@@ -591,7 +602,12 @@ and handle_iter_lhs lhs rhs free_ids =
   in
   let walk_expr (walker: Walk.walker) (expr: expr): expr =
     if contains_ids iter_ids expr then
-      IterE (expr, iter_ids_of expr, iter) $$ lhs.at % lhs.note
+      let typ =
+        match iter with
+        | Opt -> Il.IterT (expr.note, Il.Opt) $ no_region
+        | _ -> Il.IterT (expr.note, Il.List) $ no_region
+      in
+      IterE (expr, iter_ids_of expr, iter) $$ lhs.at % typ
     else
       Walk.base_walker.walk_expr walker expr
   in
@@ -616,7 +632,8 @@ and handle_special_lhs lhs rhs free_ids =
     let rec inject_hasType expr =
       match expr.it with
       | IterE (inner_expr, ids, iter) ->
-        IterE (inject_hasType inner_expr, ids, iter) $$ expr.at % expr.note
+        let typ = Il.BoolT $ no_region in
+        IterE (inject_hasType inner_expr, ids, iter) $$ expr.at % typ
       | _ -> HasTypeE (expr, t) $$ rhs.at % rhs.note
     in
     [ ifI (
