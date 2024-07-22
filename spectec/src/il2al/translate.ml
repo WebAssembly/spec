@@ -697,8 +697,7 @@ let translate_rulepr id exp =
   (* ".*_ok" *)
   | name, el when String.ends_with ~suffix: "_ok" name ->
     (match el with
-    | [c; e; t] -> [ assertI (callE (name, [c; e; t]) ~at:at) ~at:at]
-    | [c; e ] -> [ assertI (callE (name, [c; e]) ~at:at) ~at:at]
+    | [_; e; t] | [e; t] -> [ assertI (callE (name, [e; t]) ~at:at) ~at:at]
     | _ -> error_exp exp "unrecognized form of argument in rule_ok"
     )
   (* ".*_const" *)
