@@ -453,6 +453,8 @@ let rec translate_rhs exp =
   | _ -> error_exp exp "expression on rhs of reduction"
 
 
+(* Handle pattern matching *)
+
 let lhs_id_ref = ref 0
 let lhs_prefix = "y_"
 let init_lhs_id () = lhs_id_ref := 0
@@ -461,6 +463,12 @@ let get_lhs_name () =
   lhs_id_ref := (lhs_id + 1);
   varE (lhs_prefix ^ (lhs_id |> string_of_int))
 
+(* Helper functions *)
+let contains_ids ids expr =
+  ids
+  |> IdSet.of_list
+  |> IdSet.disjoint (free_expr expr)
+  |> not
 
 let rec contains_name e = match e.it with
   | VarE _ | SubE _ -> true
@@ -512,12 +520,6 @@ let rec translate_bindings ids bindings =
 
 and handle_inverse_function lhs rhs free_ids =
   (* Helper functions *)
-  let contains_ids ids expr =
-    ids
-    |> IdSet.of_list
-    |> IdSet.disjoint (free_expr expr)
-    |> not
-  in
   let contains_free = contains_ids free_ids in
   let rhs2args e =
     match e.it with
@@ -571,6 +573,41 @@ and handle_inverse_function lhs rhs free_ids =
     |> sprintf "lhs expression %s doesn't contain free variable"
     |> error lhs.at
 
+and handle_iter_lhs lhs rhs free_ids =
+  (* Get iterator fields *)
+  let inner_lhs, iter_ids, iter =
+    match lhs.it with
+    | IterE (inner_lhs, iter_ids, iter) ->
+      inner_lhs, iter_ids, iter
+    | _ -> assert (false);
+  in
+
+  (* Helper functions *)
+  let is_target (expr: expr): bool =
+    (* Check whether `expr` is the innermost expression for iter *)
+    (is_var expr || is_data_structure expr || is_condition expr) &&
+      (* Check whether `expr` contains iter variables *)
+      contains_ids iter_ids expr
+  in
+  let iter_ids_of (expr: expr): string list =
+    expr
+    |> free_expr
+    |> IdSet.inter (IdSet.of_list iter_ids)
+    |> IdSet.to_list
+  in
+  let walk_expr (walker: Walk.walker) (expr: expr): expr =
+    if is_target expr then
+      IterE (expr, iter_ids_of expr, iter) $$ expr.at % expr.note
+    else
+      Walk.base_walker.walk_expr walker expr
+  in
+
+  (* Translate inner lhs *)
+  let instrs = handle_special_lhs inner_lhs rhs free_ids in
+
+  (* Iter injection *)
+  let walker = { Walk.base_walker with walk_expr } in
+  List.map (walker.walk_instr walker) instrs
 
 and handle_special_lhs lhs rhs free_ids =
 
@@ -578,6 +615,8 @@ and handle_special_lhs lhs rhs free_ids =
   match lhs.it with
   (* Handle inverse function call *)
   | CallE _ -> handle_inverse_function lhs rhs free_ids
+  (* Handle iterator *)
+  | IterE _ -> handle_iter_lhs lhs rhs free_ids
   (* Normal cases *)
   | CaseE (tag, es) ->
     let bindings, es' = extract_non_names es in

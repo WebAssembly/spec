@@ -123,6 +123,23 @@ let print_yet at category msg =
 
 (* Helper functions *)
 
+let is_var (expr: expr) =
+  match expr.it with
+  | VarE _ -> true
+  | _ -> false
+
+let is_data_structure (expr: expr) =
+  match expr.it with
+  | StrE _ | TupE _ | CaseE _ | OptE _ | ListE _
+  | InfixE _ | FrameE _ | LabelE _ | ContE _ -> true
+  | _ -> false
+
+let is_condition (expr: expr) =
+  match expr.it with
+  | IsCaseOfE _ | IsValidE _ | ContextKindE _ | IsDefinedE _ | MatchE _
+  | HasTypeE _ | TopFrameE | TopLabelE | TopValueE _ | TopValuesE _ -> true
+  | _ -> false
+
 let listv_map f = function
   | ListV arr_ref -> ListV (ref (Array.map f !arr_ref))
   | v -> fail_value "listv_map" v
