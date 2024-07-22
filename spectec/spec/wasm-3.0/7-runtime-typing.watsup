@@ -32,6 +32,9 @@ rule Ref_type/func:
   s |- REF.FUNC_ADDR a : (REF eps dt)
   -- if s.FUNCS[a].TYPE = dt
 
+rule Ref_type/exn:
+  s |- REF.EXN_ADDR a : (REF eps EXN)
+
 rule Ref_type/host:
   s |- REF.HOST_ADDR a : (REF eps ANY)
 

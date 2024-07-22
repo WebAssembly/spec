@@ -182,6 +182,25 @@ Global Types
 $${grammar: Bglobaltype}
 
 
+.. index:: tag type, function type, exception tag
+   pair: binary format; tag type
+.. _binary-tagtype:
+
+Tag Types
+~~~~~~~~~
+
+:ref:`Tag types <syntax-tagtype>` are encoded by their function type.
+
+$${grammar: Btagtype}
+
+The ${grammar-case: Bfunctype} of a tag is used to characterise exceptions.
+The ${grammar-case: 0x00} bit signifies an exception and is currently the only allowed value.
+
+.. note::
+   In future versions of WebAssembly,
+   the preceding zero byte may encode additional flags.
+
+
 .. index:: external type
    pair: binary format; external type
 .. _binary-externtype:

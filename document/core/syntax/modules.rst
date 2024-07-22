@@ -1,4 +1,4 @@
-.. index:: ! module, type definition, function type, function, table, memory, global, element, data, start function, import, export
+.. index:: ! module, type definition, function type, tag type, function, table, memory, tag, global, element, data, start function, import, export
    pair: abstract syntax; module
 .. _syntax-module:
 
@@ -7,21 +7,31 @@ Modules
 
 WebAssembly programs are organized into *modules*,
 which are the unit of deployment, loading, and compilation.
-A module collects definitions for :ref:`types <syntax-type>`, :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>`, and :ref:`globals <syntax-global>`.
-In addition, it can declare :ref:`imports <syntax-import>` and :ref:`exports <syntax-export>`
-and provide initialization in the form of :ref:`data <syntax-data>` and :ref:`element <syntax-elem>` segments, or a :ref:`start function <syntax-start>`.
+A module collects definitions for
+:ref:`types <syntax-type>`,
+:ref:`functions <syntax-func>`,
+:ref:`tables <syntax-table>`,
+:ref:`memories <syntax-mem>`,
+:ref:`tags <syntax-tag>`, and
+:ref:`globals <syntax-global>`.
+In addition, it can declare
+:ref:`imports <syntax-import>` and :ref:`exports <syntax-export>`
+and provide initialization in the form of
+:ref:`data <syntax-data>` and :ref:`element <syntax-elem>` segments,
+or a :ref:`start function <syntax-start>`.
 
 $${syntax: module}
 
 Each of the lists --- and thus the entire module --- may be empty.
 
 
-.. index:: ! index, ! index space, ! type index, ! function index, ! table index, ! memory index, ! global index, ! local index, ! label index, ! element index, ! data index, ! field index, function, global, table, memory, element, data, local, parameter, import, field
+.. index:: ! index, ! index space, ! type index, ! function index, ! table index, ! memory index, ! global index, ! tag index, ! local index, ! label index, ! element index, ! data index, ! field index, function, global, table, memory, tag, element, data, local, parameter, import, field
    pair: abstract syntax; type index
    pair: abstract syntax; function index
    pair: abstract syntax; table index
    pair: abstract syntax; memory index
    pair: abstract syntax; global index
+   pair: abstract syntax; tag index
    pair: abstract syntax; element index
    pair: abstract syntax; data index
    pair: abstract syntax; local index
@@ -32,6 +42,7 @@ Each of the lists --- and thus the entire module --- may be empty.
    pair: table; index
    pair: memory; index
    pair: global; index
+   pair: tag; index
    pair: element; index
    pair: data; index
    pair: local; index
@@ -43,6 +54,7 @@ Each of the lists --- and thus the entire module --- may be empty.
 .. _syntax-tableidx:
 .. _syntax-memidx:
 .. _syntax-globalidx:
+.. _syntax-tagidx:
 .. _syntax-elemidx:
 .. _syntax-dataidx:
 .. _syntax-localidx:
@@ -56,9 +68,15 @@ Indices
 Definitions are referenced with zero-based *indices*.
 Each class of definition has its own *index space*, as distinguished by the following classes.
 
-$${syntax: {typeidx funcidx globalidx tableidx memidx elemidx dataidx labelidx localidx fieldidx}}
+$${syntax: {typeidx funcidx globalidx tableidx memidx tagidx elemidx dataidx labelidx localidx fieldidx}}
 
-The index space for :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>` and :ref:`globals <syntax-global>` includes respective :ref:`imports <syntax-import>` declared in the same module.
+The index space for
+:ref:`functions <syntax-func>`,
+:ref:`tables <syntax-table>`,
+:ref:`memories <syntax-mem>`,
+:ref:`globals <syntax-global>`, and
+:ref:`tags <syntax-tag>`
+includes respective :ref:`imports <syntax-import>` declared in the same module.
 The indices of these imports precede the indices of other definitions in the same index space.
 
 Element indices reference :ref:`element segments <syntax-elem>` and data indices reference :ref:`data segments <syntax-data>`.
@@ -82,6 +100,7 @@ Conventions
 .. _free-tableidx:
 .. _free-memidx:
 .. _free-globalidx:
+.. _free-tagidx:
 .. _free-elemidx:
 .. _free-dataidx:
 .. _free-localidx:
@@ -198,6 +217,23 @@ Globals are referenced through :ref:`global indices <syntax-globalidx>`,
 starting with the smallest index not referencing a global :ref:`import <syntax-import>`.
 
 
+.. index:: ! tag, type index, tag type
+   pair: abstract syntax; tag
+.. _syntax-tag:
+
+Tags
+~~~~
+
+The ${:tag} section of a module defines a list of *tags*:
+
+$${syntax: tag}
+
+The :ref:`type index <syntax-typeidx>` of a tag must refer to a :ref:`function type <syntax-functype>` that declares its :ref:`tag type <syntax-tagtype>`.
+
+Tags are referenced through :ref:`tag indices <syntax-tagidx>`,
+starting with the smallest index not referencing a tag :ref:`import <syntax-import>`.
+
+
 .. index:: ! element, ! element mode, ! active, ! passive, ! declarative, element index, table, table index, expression, constant, function index, list
    pair: abstract syntax; element
    pair: abstract syntax; element mode
@@ -264,13 +300,14 @@ $${syntax: start}
    The module and its exports are not accessible externally before this initialization has completed.
 
 
-.. index:: ! export, name, index, external index, function index, table index, memory index, global index, function, table, memory, global, instantiation
+.. index:: ! export, name, index, external index, function index, table index, memory index, global index, tag index, function, table, memory, global, tag, instantiation
    pair: abstract syntax; export
    pair: abstract syntax; external index
    single: function; export
    single: table; export
    single: memory; export
    single: global; export
+   single: tag; export
 .. _syntax-exportdesc:
 .. _syntax-export:
 .. _syntax-externidx:
@@ -283,7 +320,12 @@ The ${:export} section of a module defines a set of *exports* that become access
 $${syntax: export externidx}
 
 Each export is labeled by a unique :ref:`name <syntax-name>`.
-Exportable definitions are :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>`, and :ref:`globals <syntax-global>`,
+Exportable definitions are
+:ref:`functions <syntax-func>`,
+:ref:`tables <syntax-table>`,
+:ref:`memories <syntax-mem>`,
+:ref:`globals <syntax-global>`, and
+:ref:`tags <syntax-tag>`,
 which are referenced through a respective index.
 
 
@@ -294,13 +336,16 @@ The following auxiliary notation is defined for sequences of exports, filtering 
 
 $${definition: funcsxx tablesxx memsxx globalsxx}
 
+* :math:`\edtags(\export^\ast) = [\tagidx ~|~ \EDTAG~\tagidx \in (\export.\EDESC)^\ast]`
 
-.. index:: ! import, name, function type, table type, memory type, global type, index, index space, type index, function index, table index, memory index, global index, function, table, memory, global, instantiation
+
+.. index:: ! import, name, function type, table type, memory type, global type, tag type, index, index space, type index, function index, table index, memory index, global index, tag index, function, table, memory, tag, global, instantiation
    pair: abstract syntax; import
    single: function; import
    single: table; import
    single: memory; import
    single: global; import
+   single: tag; import
 .. _syntax-importdesc:
 .. _syntax-import:
 
@@ -312,8 +357,13 @@ The ${:import} section of a module defines a set of *imports* that are required 
 $${syntax: import}
 
 Each import is labeled by a two-level :ref:`name <syntax-name>` space, consisting of a *module name* and an *item name* for an entity within that module.
-Importable definitions are :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>`, and :ref:`globals <syntax-global>`.
-Each import is specified by a descriptor with a respective type that a definition provided during instantiation is required to match.
+Importable definitions are
+:ref:`functions <syntax-func>`,
+:ref:`tables <syntax-table>`,
+:ref:`memories <syntax-mem>`,
+:ref:`globals <syntax-global>`, and
+:ref:`tags <syntax-tag>`.
+Each import is specified by a respective :ref:`external type <syntax-externtype>` that a definition provided during instantiation is required to match.
 
 Every import defines an index in the respective :ref:`index space <syntax-index>`.
 In each index space, the indices of imports go before the first index of any definition contained in the module itself.

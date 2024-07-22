@@ -56,6 +56,17 @@ def $allocmems(s, memtype memtype'*) = (s_2, ma ma'*)
   -- if (s_1, ma) = $allocmem(s, memtype)
   -- if (s_2, ma'*) = $allocmems(s_1, memtype'*)
 
+def $alloctag(store, tagtype) : (store, tagaddr)
+def $alloctag(s, at) = (s ++ {TAGS taginst}, |s.TAGS|)
+  ---- ----
+  -- if taginst = { TYPE at }
+
+def $alloctags(store, tagtype*) : (store, tagaddr*) hint(show $alloctag*#((%,%)))
+def $alloctags(s, eps) = (s, eps)
+def $alloctags(s, at at'*) = (s_2, aa aa'*)
+  -- if (s_1, aa) = $alloctag(s, at)
+  -- if (s_2, aa'*) = $alloctags(s_1, at'*)
+
 def $allocelem(store, elemtype, ref*) : (store, elemaddr)
 def $allocelem(s, elemtype, ref*) = (s ++ {ELEMS eleminst}, |s.ELEMS|)
   ---- ----
@@ -91,13 +102,14 @@ def $allocexports(moduleinst, export*) = $allocexport(moduleinst, export)*
 ;; Modules
 
 def $allocmodule(store, module, externval*, val*, ref*, (ref*)*) : (store, moduleinst)
-def $allocmodule(s, module, externval*, val_G*, ref_T*, (ref_E*)*) = (s_6, moduleinst)
+def $allocmodule(s, module, externval*, val_G*, ref_T*, (ref_E*)*) = (s_7, moduleinst)
   ---- ----
-  -- if module = MODULE type* import* func* global* table* mem* elem* data* start? export*
+  -- if module = MODULE type* import* func* global* table* mem* tag* elem* data* start? export*
   -- if func* = (FUNC x local* expr_F)*
   -- if global* = (GLOBAL globaltype expr_G)*
   -- if table* = (TABLE tabletype expr_T)*
   -- if mem* = (MEMORY memtype)*
+  -- if tag* = (TAG y)*
   -- if elem* = (ELEM elemtype expr_E* elemmode)*
   -- if data* = (DATA byte* datamode)*
   ;; TODO(3, rossberg): inline these
@@ -105,6 +117,7 @@ def $allocmodule(s, module, externval*, val_G*, ref_T*, (ref_E*)*) = (s_6, modul
   -- if ga_I* = $globalsxv(externval*)
   -- if ta_I* = $tablesxv(externval*)
   -- if ma_I* = $memsxv(externval*)
+  -- if aa_I* = $tagsxv(externval*)
   ;; TODO(2, rossberg): get rid of these forward guesses
   -- if fa* = ($(|s.FUNCS|+i_F))^(i_F<|func*|)
   -- if ga* = ($(|s.GLOBALS|+i_G))^(i_G<|global*|)
@@ -117,16 +130,18 @@ def $allocmodule(s, module, externval*, val_G*, ref_T*, (ref_E*)*) = (s_6, modul
   -- if (s_2, ga*) = $allocglobals(s_1, globaltype*, val_G*)
   -- if (s_3, ta*) = $alloctables(s_2, tabletype*, ref_T*)
   -- if (s_4, ma*) = $allocmems(s_3, memtype*)
-  -- if (s_5, ea*) = $allocelems(s_4, elemtype*, (ref_E*)*)
-  -- if (s_6, da*) = $allocdatas(s_5, OK^(|data*|), (byte*)*)
+  -- if (s_5, aa*) = $alloctags(s_4, dt*[y]*)
+  -- if (s_6, ea*) = $allocelems(s_5, elemtype*, (ref_E*)*)
+  -- if (s_7, da*) = $allocdatas(s_6, OK^(|data*|), (byte*)*)
   ;; TODO(2, rossberg): use moduleinst here and remove hack above
-  -- if xi* = $allocexports({FUNCS fa_I* fa*, GLOBALS ga_I* ga*, TABLES ta_I* ta*, MEMS ma_I* ma*}, export*)
+  -- if xi* = $allocexports({FUNCS fa_I* fa*, GLOBALS ga_I* ga*, TABLES ta_I* ta*, MEMS ma_I* ma*, TAGS aa_I* aa*}, export*)
   -- if moduleinst = {
       TYPES dt*,
       FUNCS fa_I* fa*, \
       GLOBALS ga_I* ga*,
       TABLES ta_I* ta*, \
       MEMS ma_I* ma*,
+      TAGS aa_I* aa*,
       ELEMS ea*, \
       DATAS da*,
       EXPORTS xi*
@@ -154,7 +169,7 @@ def $instantiate(s, module, externval*) = s'; f; instr_E* instr_D* instr_S?
   ;; TODO(1, ShinWonho rossberg, #101): -- Module_ok: |- module : xt_I* -> xt_E*
   ;; TODO(1, ShinWonho rossberg, #101): -- (Externval_type: s |- externval : xt_I)*
   ----
-  -- if module = MODULE type* import* func* global* table* mem* elem* data* start? export*
+  -- if module = MODULE type* import* func* global* table* mem* tag* elem* data* start? export*
   -- if global* = (GLOBAL globaltype expr_G)*
   -- if table* = (TABLE tabletype expr_T)*
   -- if elem* = (ELEM reftype expr_E* elemmode)*

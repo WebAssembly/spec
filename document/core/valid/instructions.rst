@@ -1368,7 +1368,7 @@ $${rule: Instr_ok/memory.init}
 $${rule: Instr_ok/data.drop}
 
 
-.. index:: control instructions, structured control, label, block, branch, block type, label index, function index, type index, list, polymorphism, context
+.. index:: control instructions, structured control, label, block, branch, block type, label index, result type, function index, type index, tag index, list, polymorphism, context
    pair: validation; instruction
    single: abstract syntax; instruction
 .. _valid-label:
@@ -1395,6 +1395,7 @@ $${rule: Instr_ok/block}
 
 .. note::
    The :ref:`notation <notation-concat>` ${context: {LABELS (t*)} ++ C} inserts the new label type at index ${:0}, shifting all others.
+   The same applies to all other block instructions.
 
 
 .. _valid-loop:
@@ -1412,9 +1413,6 @@ $${rule: Instr_ok/block}
 * Then the compound instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 $${rule: Instr_ok/loop}
-
-.. note::
-   The :ref:`notation <notation-concat>` ${context: {LABELS (t*)} ++ C} inserts the new label type at index ${:0}, shifting all others.
 
 
 .. _valid-if:
@@ -1436,8 +1434,86 @@ $${rule: Instr_ok/loop}
 
 $${rule: Instr_ok/if}
 
-.. note::
-   The :ref:`notation <notation-concat>` ${context: {LABELS (t*)} ++ C} inserts the new label type at index ${:0}, shifting all others.
+
+
+.. _valid-try_table:
+
+:math:`\TRYTABLE~\blocktype~\catch^\ast~\instr^\ast~\END`
+.........................................................
+
+* The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
+
+* For every :ref:`catch clause <syntax-catch>` :math:`\catch_i` in :math:`\catch^\ast`, :math:`\catch_i` must be :ref:`valid <valid-catch>`.
+
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` prepended to the |CLABELS| vector.
+
+* Under context :math:`C'`,
+  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^\ast]`.
+
+* Then the compound instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
+
+
+.. _valid-catch:
+
+:math:`\CATCH~x~l`
+..................
+
+* The tag :math:`C.\CTAGS[x]` must be defined in the context.
+
+* Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[{t'}^\ast]` must be empty.
+
+* The label :math:`C.\CLABELS[l]` must be defined in the context.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[t^\ast]` must :ref:`match <match-resulttype>` :math:`C.\CLABELS[l]`.
+
+* Then the catch clause is valid.
+
+$${rule: Catch_ok/catch}
+
+
+:math:`\CATCHREF~x~l`
+.....................
+
+* The tag :math:`C.\CTAGS[x]` must be defined in the context.
+
+* Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[{t'}^\ast]` must be empty.
+
+* The label :math:`C.\CLABELS[l]` must be defined in the context.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[t^\ast (REF EXN)]` must :ref:`match <match-resulttype>` :math:`C.\CLABELS[l]`.
+
+* Then the catch clause is valid.
+
+$${rule: Catch_ok/catch_ref}
+
+
+:math:`\CATCHALL~l`
+...................
+
+* The label :math:`C.\CLABELS[l]` must be defined in the context.
+
+* The :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l]` must be empty.
+
+* Then the catch clause is valid.
+
+$${rule: Catch_ok/catch_all}
+
+
+:math:`\CATCHALLREF~l`
+......................
+
+* The label :math:`C.\CLABELS[l]` must be defined in the context.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[(REF EXN)]` must :ref:`match <match-resulttype>` :math:`C.\CLABELS[l]`.
+
+* Then the catch clause is valid.
+
+$${rule: Catch_ok/catch_all_ref}
+
 
 
 .. _valid-br:
@@ -1454,7 +1530,8 @@ $${rule: Instr_ok/if}
 $${rule: Instr_ok/br}
 
 .. note::
-   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` ${:C} contains the most recent label first, so that ${:C.LABEL[l]} performs a relative lookup as expected.
+   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` ${:C} contains the most recent label first, so that ${:C.LABELS[l]} performs a relative lookup as expected.
+   This applies to other branch instructions as well.
 
    The ${:BR} instruction is :ref:`stack-polymorphic <polymorphism>`.
 
@@ -1471,9 +1548,6 @@ $${rule: Instr_ok/br}
 * Then the instruction is valid with type :math:`[t^\ast~\I32] \to [t^\ast]`.
 
 $${rule: Instr_ok/br_if}
-
-.. note::
-   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` ${:C} contains the most recent label first, so that ${:C.LABEL[l]} performs a relative lookup as expected.
 
 
 .. _valid-br_table:
@@ -1498,8 +1572,6 @@ $${rule: Instr_ok/br_if}
 $${rule: Instr_ok/br_table}
 
 .. note::
-   The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` ${:C} contains the most recent label first, so that ${:C.LABEL[l]} performs a relative lookup as expected.
-
    The ${:BR_TABLE} instruction is :ref:`stack-polymorphic <polymorphism>`.
 
    Furthermore, the :ref:`result type <syntax-resulttype>` ${:t*} is also chosen non-deterministically in this rule.
@@ -1727,6 +1799,38 @@ $${rule: Instr_ok/return_call_indirect}
 
 .. note::
    The ${:RETURN_CALL_INDIRECT} instruction is :ref:`stack-polymorphic <polymorphism>`.
+
+
+.. _valid-throw:
+
+:math:`\THROW~x`
+................
+
+* The tag :math:`C.\CTAGS[x]` must be defined in the context.
+
+* Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[{t'}^\ast]` must be empty.
+
+* Then the instruction is valid with type :math:`[t_1^\ast t^\ast] \to [t_2^\ast]`, for any sequences of  :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
+
+$${rule: Instr_ok/throw}
+
+.. note::
+   The ${:THROW} instruction is :ref:`stack-polymorphic <polymorphism>`.
+
+
+.. _valid-throw_ref:
+
+:math:`\THROWREF`
+.................
+
+* The instruction is valid with type :math:`[t_1^\ast~\EXNREF] \to [t_2^\ast]`, for any sequences of  :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
+
+$${rule: Instr_ok/throw}
+
+.. note::
+   The ${:THROW_REF} instruction is :ref:`stack-polymorphic <polymorphism>`.
 
 
 .. index:: instruction, instruction sequence, local type

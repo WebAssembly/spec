@@ -14,6 +14,7 @@ type section_kind =
   | DataCount
   | Code
   | Data
+  | Tag
 
 type place =
   | Before of section_kind

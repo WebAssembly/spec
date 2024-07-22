@@ -9,11 +9,13 @@ open Instance
 (* Errors *)
 
 module Link = Error.Make ()
+module Exception = Error.Make ()
 module Trap = Error.Make ()
 module Crash = Error.Make ()
 module Exhaustion = Error.Make ()
 
 exception Link = Link.Error
+exception Exception = Exception.Error
 exception Trap = Trap.Error
 exception Crash = Crash.Error (* failure that cannot happen in valid code *)
 exception Exhaustion = Exhaustion.Error
@@ -60,12 +62,14 @@ and admin_instr' =
   | Plain of instr'
   | Refer of ref_
   | Invoke of func_inst
-  | Trapping of string
+  | Breaking of int32 * value stack
   | Returning of value stack
   | ReturningInvoke of value stack * func_inst
-  | Breaking of int32 * value stack
+  | Throwing of Tag.t * value stack
+  | Trapping of string
   | Label of int * instr list * code
   | Frame of int * frame * code
+  | Handler of int * catch list * code
 
 type config =
 {
@@ -88,7 +92,8 @@ let admin_instr_of_value (v : value) at : admin_instr' =
 
 let is_jumping e =
   match e.it with
-  | Trapping _ | Returning _ | ReturningInvoke _ | Breaking _ -> true
+  | Returning _ | ReturningInvoke _ | Breaking _
+  | Throwing _ | Trapping _ -> true
   | _ -> false
 
 let lookup category list x =
@@ -99,6 +104,7 @@ let type_ (inst : module_inst) x = lookup "type" inst.types x
 let func (inst : module_inst) x = lookup "function" inst.funcs x
 let table (inst : module_inst) x = lookup "table" inst.tables x
 let memory (inst : module_inst) x = lookup "memory" inst.memories x
+let tag (inst : module_inst) x = lookup "tag" inst.tags x
 let global (inst : module_inst) x = lookup "global" inst.globals x
 let elem (inst : module_inst) x = lookup "element segment" inst.elems x
 let data (inst : module_inst) x = lookup "data segment" inst.datas x
@@ -170,6 +176,7 @@ let elem_oob frame x i n =
 let array_oob a i n =
   I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
     (I64_convert.extend_i32_u (Aggr.array_length a))
+
 
 let rec step (c : config) : config =
   let vs, es = c.code in
@@ -265,6 +272,12 @@ let rec step (c : config) : config =
             string_of_def_type (type_ c.frame.inst y) ^ " but got " ^
             string_of_def_type (Func.type_of f)) @@ e.at]
 
+      | ReturnCall x, vs ->
+        (match (step {c with code = (vs, [Plain (Call x) @@ e.at])}).code with
+        | vs', [{it = Invoke a; at}] -> vs', [ReturningInvoke (vs', a) @@ at]
+        | _ -> assert false
+        )
+
       | ReturnCallRef _x, Ref (NullRef _) :: vs ->
         vs, [Trapping "null function reference" @@ e.at]
 
@@ -272,12 +285,6 @@ let rec step (c : config) : config =
         (match (step {c with code = (vs, [Plain (CallRef x) @@ e.at])}).code with
         | vs', [{it = Invoke a; at}] -> vs', [ReturningInvoke (vs', a) @@ at]
         | vs', [{it = Trapping s; at}] -> vs', [Trapping s @@ at]
-        | _ -> assert false
-        )
-
-      | ReturnCall x, vs ->
-        (match (step {c with code = (vs, [Plain (Call x) @@ e.at])}).code with
-        | vs', [{it = Invoke a; at}] -> vs', [ReturningInvoke (vs', a) @@ at]
         | _ -> assert false
         )
 
@@ -289,6 +296,27 @@ let rec step (c : config) : config =
         | vs', [{it = Trapping s; at}] -> vs', [Trapping s @@ at]
         | _ -> assert false
         )
+
+      | Throw x, vs ->
+        let t = tag c.frame.inst x in
+        let TagT dt = Tag.type_of t in
+        let FuncT (ts, _) = as_func_str_type (expand_def_type dt) in
+        let n = List.length ts in
+        let args, vs' = split n vs e.at in
+        vs', [Throwing (t, args) @@ e.at]
+
+      | ThrowRef, Ref (NullRef _) :: vs ->
+        vs, [Trapping "null exception reference" @@ e.at]
+
+      | ThrowRef, Ref (Exn.(ExnRef (Exn (t, args)))) :: vs ->
+        vs, [Throwing (t, args) @@ e.at]
+
+      | TryTable (bt, cs, es'), vs ->
+        let InstrT (ts1, ts2, _xs) = block_type c.frame.inst bt e.at in
+        let n1 = List.length ts1 in
+        let n2 = List.length ts2 in
+        let args, vs' = split n1 vs e.at in
+        vs', [Handler (n2, cs, (args, [Label (n2, [], ([], List.map plain es')) @@ e.at])) @@ e.at]
 
       | Drop, v :: vs' ->
         vs', []
@@ -980,6 +1008,9 @@ let rec step (c : config) : config =
     | Breaking _, vs ->
       Crash.error e.at "undefined label"
 
+    | Throwing _, _ ->
+      assert false
+
     | Label (n, es0, (vs', [])), vs ->
       vs' @ vs, []
 
@@ -999,9 +1030,6 @@ let rec step (c : config) : config =
     | Frame (n, frame', (vs', [])), vs ->
       vs' @ vs, []
 
-    | Frame (n, frame', (vs', {it = Trapping msg; at} :: es')), vs ->
-      vs, [Trapping msg @@ at]
-
     | Frame (n, frame', (vs', {it = Returning vs0; at} :: es')), vs ->
       take n vs0 e.at @ vs, []
 
@@ -1009,9 +1037,43 @@ let rec step (c : config) : config =
       let FuncT (ts1, _ts2) = as_func_str_type (expand_def_type (Func.type_of f)) in
       take (List.length ts1) vs0 e.at @ vs, [Invoke f @@ at]
 
+    | Frame (n, frame', (vs', e' :: es')), vs when is_jumping e' ->
+      vs, [e']
+
     | Frame (n, frame', code'), vs ->
       let c' = step {frame = frame'; code = code'; budget = c.budget - 1} in
       vs, [Frame (n, frame', c'.code) @@ e.at]
+
+    | Handler (n, cs, (vs', [])), vs ->
+      vs' @ vs, []
+
+    | Handler (n, {it = Catch (x1, x2); _} :: cs, (vs', {it = Throwing (a, vs0); at} :: es')), vs ->
+      if a == tag c.frame.inst x1 then
+        vs0 @ vs, [Plain (Br x2) @@ e.at]
+      else
+        vs, [Handler (n, cs, (vs', {it = Throwing (a, vs0); at} :: es')) @@ e.at]
+
+    | Handler (n, {it = CatchRef (x1, x2); _} :: cs, (vs', {it = Throwing (a, vs0); at} :: es')), vs ->
+      if a == tag c.frame.inst x1 then
+        Ref Exn.(ExnRef (Exn (a, vs0))) :: vs0 @ vs, [Plain (Br x2) @@ e.at]
+      else
+        vs, [Handler (n, cs, (vs', {it = Throwing (a, vs0); at} :: es')) @@ e.at]
+
+    | Handler (n, {it = CatchAll x; _} :: cs, (vs', {it = Throwing (a, vs0); at} :: es')), vs ->
+      vs, [Plain (Br x) @@ e.at]
+
+    | Handler (n, {it = CatchAllRef x; _} :: cs, (vs', {it = Throwing (a, vs0); at} :: es')), vs ->
+      Ref Exn.(ExnRef (Exn (a, vs0))) :: vs, [Plain (Br x) @@ e.at]
+
+    | Handler (n, [], (vs', {it = Throwing (a, vs0); at} :: es')), vs ->
+      vs, [Throwing (a, vs0) @@ at]
+
+    | Handler (n, cs, (vs', e' :: es')), vs when is_jumping e' ->
+      vs, [e']
+
+    | Handler (n, cs, code'), vs ->
+      let c' = step {c with code = code'} in
+      vs, [Handler (n, cs, c'.code) @@ e.at]
 
     | Invoke f, vs when c.budget = 0 ->
       Exhaustion.error e.at "call stack exhausted"
@@ -1045,6 +1107,10 @@ let rec eval (c : config) : value stack =
 
   | vs, {it = Trapping msg; at} :: _ ->
     Trap.error at msg
+
+  | vs, {it = Throwing (a, args); at} :: _ ->
+    let msg = "uncaught exception with args (" ^ string_of_values args ^ ")" in
+    Exception.error at msg
 
   | vs, es ->
     eval (step c)
@@ -1089,6 +1155,7 @@ let init_import (inst : module_inst) (ex : extern) (im : import) : module_inst =
     | TableImport tt -> ExternTableT tt
     | MemoryImport mt -> ExternMemoryT mt
     | GlobalImport gt -> ExternGlobalT gt
+    | TagImport x -> ExternTagT (TagT (type_ inst x))
   in
   let et = subst_extern_type (subst_of inst) it in
   let et' = extern_type_of inst.types ex in
@@ -1103,10 +1170,15 @@ let init_import (inst : module_inst) (ex : extern) (im : import) : module_inst =
   | ExternTable tab -> {inst with tables = inst.tables @ [tab]}
   | ExternMemory mem -> {inst with memories = inst.memories @ [mem]}
   | ExternGlobal glob -> {inst with globals = inst.globals @ [glob]}
+  | ExternTag tag -> {inst with tags = inst.tags @ [tag]}
 
 let init_func (inst : module_inst) (f : func) : module_inst =
   let func = Func.alloc (type_ inst f.it.ftype) (Lib.Promise.make ()) f in
   {inst with funcs = inst.funcs @ [func]}
+
+let init_tag (inst : module_inst) (t : tag) : module_inst =
+  let tag = Tag.alloc (TagT (type_ inst t.it.tgtype)) in
+  {inst with tags = inst.tags @ [tag]}
 
 let init_global (inst : module_inst) (glob : global) : module_inst =
   let {gtype; ginit} = glob.it in
@@ -1150,6 +1222,7 @@ let init_export (inst : module_inst) (ex : export) : module_inst =
     | TableExport x -> ExternTable (table inst x)
     | MemoryExport x -> ExternMemory (memory inst x)
     | GlobalExport x -> ExternGlobal (global inst x)
+    | TagExport x -> ExternTag (tag inst x)
   in
   {inst with exports = inst.exports @ [(name, ext)]}
 
@@ -1210,6 +1283,7 @@ let init (m : module_) (exts : extern list) : module_inst =
     |> init_list init_global m.it.globals
     |> init_list init_table m.it.tables
     |> init_list init_memory m.it.memories
+    |> init_list init_tag m.it.tags
     |> init_list init_elem m.it.elems
     |> init_list init_data m.it.datas
     |> init_list init_export m.it.exports

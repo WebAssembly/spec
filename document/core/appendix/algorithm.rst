@@ -32,7 +32,7 @@ Value types are representable as sets of enumerations:
    type vec_type = V128
    type heap_type =
      Any | Eq | I31 | Struct | Array | None |
-     Func | Nofunc | Extern | Noextern | Bot |
+     Func | Nofunc | Exn | Noexn | Extern | Noextern | Bot |
      Def(def : def_type)
    type ref_type = Ref(heap : heap_type, null : bool)
    type val_type = num_type | vec_type | ref_type | Bot
@@ -444,6 +444,28 @@ Other instructions are checked in a similar manner.
          error_if(not is_struct(t) || n >= t.fields.len())
          pop_val(Ref(Def(types[x])))
          pop_val(unpack_field(st.fields[n]))
+
+       case (throw x)
+          pop_vals(tags[x].type.params)
+          unreachable()
+
+       case (try_table t1*->t2* handler*)
+         pop_vals([t1*])
+         foreach (handler in handler*)
+           error_if(ctrls.size() < handler.label)
+           push_ctrl(catch, [], label_types(ctrls[handler.label]))
+           switch (handler.clause)
+             case (catch x)
+               push_vals(tags[x].type.params)
+             case (catch_ref x)
+               push_vals(tags[x].type.params)
+               push_val(Exnref)
+             case (catch_all)
+               skip
+             case (catch_all_ref)
+               push_val(Exnref)
+           pop_ctrl()
+         push_ctrl(try_table, [t1*], [t2*])
 
 .. note::
    It is an invariant under the current WebAssembly instruction set that an operand of :code:`Bot` type is never duplicated on the stack.

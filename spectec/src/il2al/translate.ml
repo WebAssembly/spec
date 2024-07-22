@@ -394,6 +394,7 @@ let rec translate_rhs exp =
       "REF.I31_NUM";
       "REF.STRUCT_ADDR";
       "REF.ARRAY_ADDR";
+      "REF.EXN_ADDR";
       "REF.FUNC_ADDR";
       "REF.HOST_ADDR";
       "REF.EXTERN";

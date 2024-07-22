@@ -410,6 +410,30 @@ Memory Types
 $${rule: Memtype_ok}
 
 
+.. index:: tag type, function type, exception tag
+   pair: validation; tag type
+   single: abstract syntax; tag type
+.. _valid-tagtype:
+
+Tag Types
+~~~~~~~~~
+
+:math:`[t_1^n] \to [t_2^m]`
+...........................
+
+* The :ref:`function type <syntax-functype>` :math:`[t_1^n] \to [t_2^m]` must be :ref:`valid <valid-functype>`.
+
+* The type sequence :math:`t_2^m` must be empty.
+
+* Then the tag type is valid.
+
+.. math::
+   \frac{
+   }{
+     \vdashtagtype [t^\ast] \to [] \ok
+   }
+
+
 .. index:: global type, value type, mutability
    pair: validation; global type
    single: abstract syntax; global type
@@ -467,6 +491,20 @@ $${rule: Externtype_ok/table}
 
 $${rule: Externtype_ok/mem}
 
+
+:math:`\ETTAG~\tagtype`
+.......................
+
+* The :ref:`tag type <syntax-tagtype>` :math:`\tagtype` must be :ref:`valid <valid-tagtype>`.
+
+* Then the external type is valid.
+
+.. math::
+   \frac{
+     \vdashtagtype \tagtype \ok
+   }{
+     \vdashexterntype \ETTAG~\tagtype \ok
+   }
 
 :math:`\ETGLOBAL~\globaltype`
 .............................

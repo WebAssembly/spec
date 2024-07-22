@@ -17,6 +17,7 @@ type vec_type = V128T
 type heap_type =
   | AnyHT | NoneHT | EqHT | I31HT | StructHT | ArrayHT
   | FuncHT | NoFuncHT
+  | ExnHT | NoExnHT
   | ExternHT | NoExternHT
   | VarHT of var
   | DefHT of def_type
@@ -46,12 +47,14 @@ and def_type = DefT of rec_type * int32
 type table_type = TableT of Int32.t limits * ref_type
 type memory_type = MemoryT of Int32.t limits
 type global_type = GlobalT of mut * val_type
+type tag_type = TagT of def_type
 type local_type = LocalT of init * val_type
 type extern_type =
   | ExternFuncT of def_type
   | ExternTableT of table_type
   | ExternMemoryT of memory_type
   | ExternGlobalT of global_type
+  | ExternTagT of tag_type
 
 type export_type = ExportT of extern_type * name
 type import_type = ImportT of extern_type * name * name
@@ -141,6 +144,7 @@ let funcs = List.filter_map (function ExternFuncT ft -> Some ft | _ -> None)
 let tables = List.filter_map (function ExternTableT tt -> Some tt | _ -> None)
 let memories = List.filter_map (function ExternMemoryT mt -> Some mt | _ -> None)
 let globals = List.filter_map (function ExternGlobalT gt -> Some gt | _ -> None)
+let tags = List.filter_map (function ExternTagT tt -> Some tt | _ -> None)
 
 
 (* Substitution *)
@@ -165,6 +169,8 @@ let subst_heap_type s = function
   | ArrayHT -> ArrayHT
   | FuncHT -> FuncHT
   | NoFuncHT -> NoFuncHT
+  | ExnHT -> ExnHT
+  | NoExnHT -> NoExnHT
   | ExternHT -> ExternHT
   | NoExternHT -> NoExternHT
   | VarHT x -> s x
@@ -225,11 +231,15 @@ let subst_table_type s = function
 let subst_global_type s = function
   | GlobalT (mut, t) ->  GlobalT (mut, subst_val_type s t)
 
+let subst_tag_type s = function
+  | TagT dt -> TagT (subst_def_type s dt)
+
 let subst_extern_type s = function
   | ExternFuncT dt -> ExternFuncT (subst_def_type s dt)
   | ExternTableT tt -> ExternTableT (subst_table_type s tt)
   | ExternMemoryT mt -> ExternMemoryT (subst_memory_type s mt)
   | ExternGlobalT gt -> ExternGlobalT (subst_global_type s gt)
+  | ExternTagT tt -> ExternTagT (subst_tag_type s tt)
 
 
 let subst_export_type s = function
@@ -334,6 +344,8 @@ let rec string_of_heap_type = function
   | ArrayHT -> "array"
   | FuncHT -> "func"
   | NoFuncHT -> "nofunc"
+  | ExnHT -> "exn"
+  | NoExnHT -> "noexn"
   | ExternHT -> "extern"
   | NoExternHT -> "noextern"
   | VarHT x -> string_of_var x
@@ -409,6 +421,9 @@ let string_of_table_type = function
 let string_of_global_type = function
   | GlobalT (mut, t) -> string_of_mut (string_of_val_type t) mut
 
+let string_of_tag_type = function
+  | TagT dt -> string_of_def_type dt
+
 let string_of_local_type = function
   | LocalT (Set, t) -> string_of_val_type t
   | LocalT (Unset, t) -> "(unset " ^ string_of_val_type t ^ ")"
@@ -418,6 +433,7 @@ let string_of_extern_type = function
   | ExternTableT tt -> "table " ^ string_of_table_type tt
   | ExternMemoryT mt -> "memory " ^ string_of_memory_type mt
   | ExternGlobalT gt -> "global " ^ string_of_global_type gt
+  | ExternTagT tt -> "tag " ^ string_of_tag_type tt
 
 
 let string_of_export_type = function

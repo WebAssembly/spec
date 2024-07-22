@@ -45,7 +45,8 @@ Each subsection consists of a
      n{:}\Bname & (\iff n = \text{name}) \\ &&&
      \Bmodulenamesubsec^? \\ &&&
      \Bfuncnamesubsec^? \\ &&&
-     \Blocalnamesubsec^? \\
+     \Blocalnamesubsec^? \\ &&&
+     \Btagnamesubsec^? \\
    \production{name subsection} & \Bnamesubsection_N(\B{B}) &::=&
      N{:}\Bbyte~~\X{size}{:}\Bu32~~\B{B}
        & (\iff \X{size} = ||\B{B}||) \\
@@ -61,6 +62,7 @@ Id  Subsection
  2  :ref:`local names <binary-localnamesec>`
  4  :ref:`type names <binary-typenamesec>`
 10  :ref:`field names <binary-fieldnamesec>`
+11  :ref:`tag names <binary-tagnamesec>`
 ==  ===========================================
 
 Each subsection may occur at most once, and in order of increasing id.
@@ -175,6 +177,22 @@ It consists of an :ref:`indirect name map <binary-indirectnamemap>` assigning fi
    \begin{array}{llclll}
    \production{field name subsection} & \Bfieldnamesubsec &::=&
      \Bnamesubsection_2(\Bindirectnamemap) \\
+   \end{array}
+
+
+.. index:: tag, tag index
+.. _binary-tagnamesec:
+
+Tag Names
+.........
+
+The *tag name subsection* has the id 11.
+It consists of a :ref:`name map <binary-namemap>` assigning tag names to :ref:`tag indices <syntax-tagidx>`.
+
+.. math::
+   \begin{array}{llclll}
+   \production{tag name subsection} & \Btagnamesubsec &::=&
+     \Bnamesubsection_1(\Bnamemap) \\
    \end{array}
 
 
@@ -302,6 +320,22 @@ It may only be placed on a declaration that declares exactly one field.
 .. math::
    \begin{array}{llclll}
    \production{field name annotation} & \Tfieldnameannot &::=&
+     \Tnameannot \\
+   \end{array}
+
+
+.. index:: tag
+.. _text-tagnameannot:
+
+Tag Names
+.........
+
+A *tag name annotation* must be placed on a :ref:`tag declaration <text-tag>` or tag :ref:`import <text-import>`,
+directly after the :math:`\text{tag}` keyword, or if present, after the following tag :ref:`identifier <text-id>`.
+
+.. math::
+   \begin{array}{llclll}
+   \production{tag name annotation} & \Ttagnameannot &::=&
      \Tnameannot \\
    \end{array}
 

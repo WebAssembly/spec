@@ -212,6 +212,39 @@ $${rule: Global_ok}
 $${rule: {Globals_ok/*}}
 
 
+.. index:: tag, tag type, function type, exception tag
+   pair: validation; tag
+   single: abstract syntax; tag
+.. _valid-tag:
+
+Tags
+~~~~
+
+Tags :math:`\tag` are classified by their :ref:`tag type <syntax-tagtype>`,
+each containing an index to a :ref:`function type <syntax-functype>` with empty result.
+
+:math:`\{ \TAGTYPE~x \}`
+........................
+
+* The type :math:`C.\CTYPES[x]` must be defined in the context.
+
+* Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
+
+* The sequence :math:`{t'}^\ast` must be empty.
+
+* Then the tag definition is valid with :ref:`tag type <syntax-tagtype>` :math:`[t^\ast]\to[]`.
+
+.. math::
+   \frac{
+     C.\CTYPES[x] = [t^\ast] \to []
+   }{
+     C \vdashtag \{ \TAGTYPE~x \} : [t^\ast]\to[]
+   }
+
+.. note::
+   Future versions of WebAssembly might allow non-empty return types for tags.
+
+
 .. index:: element, table, table index, expression, constant, function index
    pair: validation; element
    single: abstract syntax; element
@@ -229,7 +262,7 @@ Element segments ${:elem} are classified by the :ref:`reference type <syntax-ref
 
 * The :ref:`reference type <syntax-reftype>` :math:`t` must be :ref:`valid <valid-reftype>`.
 
-* For each :math:`e_i` in :math:`e^\ast`,
+* For each :math:`e_i` in :math:`e^\ast`:
 
   * The expression :math:`e_i` must be :ref:`valid <valid-expr>` with some :ref:`result type <syntax-resulttype>` :math:`[t]`.
 
@@ -345,7 +378,7 @@ Start function declarations ${:start} are not classified by any type.
 $${rule: Start_ok}
 
 
-.. index:: export, name, index, function index, table index, memory index, global index
+.. index:: export, name, index, function index, table index, memory index, global index, tag index
    pair: validation; export
    single: abstract syntax; export
 .. _valid-exportdesc:
@@ -411,7 +444,22 @@ $${rule: Externidx_ok/global}
 
 
 
-.. index:: import, name, function type, table type, memory type, global type
+:math:`\EDTAG~x`
+................
+
+* The tag :math:`C.\CTAGS[x]` must be defined in the context.
+
+* Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\ETTAG~C.\CTAGS[x]`.
+
+.. math::
+   \frac{
+     C.\CTAGS[x] = \tagtype
+   }{
+     C \vdashexportdesc \EDTAG~x : \ETTAG~\tagtype
+   }
+
+
+.. index:: import, name, function type, table type, memory type, global type, tag type
    pair: validation; import
    single: abstract syntax; import
 .. _valid-importdesc:
@@ -433,7 +481,27 @@ Imports ${:import} are classified by :ref:`external types <syntax-externtype>`.
 $${rule: Import_ok}
 
 
-.. index:: module, type definition, function type, function, table, memory, global, element, data, start function, import, export, context
+:math:`\IDTAG~\tag`
+...................
+
+* Let :math:`\{ \TAGTYPE~x \}` be the tag :math:`\tag`.
+
+* The type :math:`C.\CTYPES[x]` must be defined in the context.
+
+* The :ref:`tag type <syntax-tagtype>` :math:`C.\CTYPES[x]` must be a :ref:`valid tag type <valid-tagtype>`.
+
+* Then the import description is valid with type :math:`\ETTAG~C.\CTYPES[x]`.
+
+.. math::
+   \frac{
+     \vdashtagtype C.\CTYPES[x] \ok
+   }{
+     C \vdashimportdesc \IDTAG~\{ \TAGTYPE~x \} : \ETTAG~C.\CTYPES[x]
+   }
+
+
+
+.. index:: module, type definition, function type, function, table, memory, global, tag, element, data, start function, import, export, context
    pair: validation; module
    single: abstract syntax; module
 .. _valid-module:
@@ -471,6 +539,9 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
   * :math:`C.\CGLOBALS` is :math:`\globalsxt(\X{it}^\ast)` concatenated with :math:`\X{gt}^\ast`,
     with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`global types <syntax-globaltype>` :math:`\X{gt}^\ast` as determined below,
+
+  * :math:`C.\CTAGS` is :math:`\ettags(\X{it}^\ast)` concatenated with :math:`\X{ht}^\ast`,
+    with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`tag types <syntax-tagtype>` :math:`\X{ht}^\ast` as determined below,
 
   * :math:`C.\CELEMS` is :math:`{\X{rt}}^\ast` as determined below,
 
@@ -515,6 +586,9 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
   * For each :math:`\func_i` in :math:`\module.\MFUNCS`,
     the definition :math:`\func_i` must be :ref:`valid <valid-func>` with a :ref:`defined type <syntax-deftype>` :math:`\X{dt}_i`.
 
+  * For each :math:`\tag_i` in :math:`\module.\MTAGS`,
+    the definition :math:`\tag_i` must be :ref:`valid <valid-tag>` with a :ref:`tag type <syntax-tagtype>` :math:`\X{ht}_i`.
+
   * For each :math:`\elem_i` in :math:`\module.\MELEMS`,
     the segment :math:`\elem_i` must be :ref:`valid <valid-elem>` with :ref:`reference type <syntax-reftype>` :math:`\X{rt}_i`.
 
@@ -535,6 +609,10 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 * Let :math:`\X{tt}^\ast` be the concatenation of the internal :ref:`table types <syntax-tabletype>` :math:`\X{tt}_i`, in index order.
 
 * Let :math:`\X{mt}^\ast` be the concatenation of the internal :ref:`memory types <syntax-memtype>` :math:`\X{mt}_i`, in index order.
+
+* Let :math:`\X{gt}^\ast` be the concatenation of the internal :ref:`global types <syntax-globaltype>` :math:`\X{gt}_i`, in index order.
+
+* Let :math:`\X{ht}^\ast` be the concatenation of the internal :ref:`tag types <syntax-tagtype>` :math:`\X{ht}_i`, in index order.
 
 * Let :math:`\X{rt}^\ast` be the concatenation of the :ref:`reference types <syntax-reftype>` :math:`\X{rt}_i`, in index order.
 
@@ -563,6 +641,3 @@ $${rule: Module_ok}
    All types needed to construct ${:C} can easily be determined from a simple pre-pass over the module that does not perform any actual validation.
 
    Globals, however, are not recursive but evaluated sequentially, such that each :ref:`constant expressions <valid-const>` only has access to imported or previously defined globals.
-
-.. note::
-   The restriction on the number of memories may be lifted in future versions of WebAssembly.

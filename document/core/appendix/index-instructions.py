@@ -52,17 +52,26 @@ def RefWrap(s, kind):
         return f':ref:`{kind} <{s}>`'
 
 
-def Instruction(name, opcode, type=None, validation=None, execution=None, operator=None):
+def Instruction(name, opcode, type=None, validation=None, execution=None, operator=None, validation2=None, execution2=None):
     if operator:
         execution_str = RefWrap(execution, 'execution') + ' (' + RefWrap(operator, 'operator') + ')'
+    elif execution2:
+        execution_str = ', '.join([RefWrap(execution, 'execution'),
+                                   RefWrap(execution, 'execution')])
     else:
         execution_str = RefWrap(execution, 'execution')
+
+    if validation2:
+        validation_str = ', '.join([RefWrap(validation, 'validation'),
+                                    RefWrap(validation2, 'validation')])
+    else:
+        validation_str = RefWrap(validation, 'validation')
 
     return (
         MathWrap(name, '(reserved)'),
         MathWrap(opcode),
         MathWrap(type),
-        RefWrap(validation, 'validation'),
+        validation_str,
         execution_str
     )
 
@@ -76,9 +85,9 @@ INSTRUCTIONS = [
     Instruction(r'\ELSE', r'\hex{05}'),
     Instruction(None, r'\hex{06}'),
     Instruction(None, r'\hex{07}'),
-    Instruction(None, r'\hex{08}'),
+    Instruction(r'\THROW~x', r'\hex{08}', r'[t_1^\ast~t_x^\ast] \to [t_2^\ast]', r'valid-throw', r'exec-throw'),
     Instruction(None, r'\hex{09}'),
-    Instruction(None, r'\hex{0A}'),
+    Instruction(r'\THROWREF', r'\hex{0A}', r'[t_1^\ast~\EXNREF] \to [t_2^\ast]', r'valid-throw_ref', r'exec-throw_ref'),
     Instruction(r'\END', r'\hex{0B}'),
     Instruction(r'\BR~l', r'\hex{0C}', r'[t_1^\ast~t^\ast] \to [t_2^\ast]', r'valid-br', r'exec-br'),
     Instruction(r'\BRIF~l', r'\hex{0D}', r'[t^\ast~\I32] \to [t^\ast]', r'valid-br_if', r'exec-br_if'),
@@ -99,7 +108,7 @@ INSTRUCTIONS = [
     Instruction(r'\SELECT~t', r'\hex{1C}', r'[t~t~\I32] \to [t]', r'valid-select', r'exec-select'),
     Instruction(None, r'\hex{1D}'),
     Instruction(None, r'\hex{1E}'),
-    Instruction(None, r'\hex{1F}'),
+    Instruction(r'\TRYTABLE~\X{bt}', r'\hex{1F}', r'[t_1^\ast] \to [t_2^\ast]', r'valid-try_table', r'exec-try_table'),
     Instruction(r'\LOCALGET~x', r'\hex{20}', r'[] \to [t]', r'valid-local.get', r'exec-local.get'),
     Instruction(r'\LOCALSET~x', r'\hex{21}', r'[t] \to []', r'valid-local.set', r'exec-local.set'),
     Instruction(r'\LOCALTEE~x', r'\hex{22}', r'[t] \to [t]', r'valid-local.tee', r'exec-local.tee'),

@@ -49,7 +49,7 @@ Failure of an interface operation is indicated by an auxiliary syntactic class:
    \production{error} & \error &::=& \ERROR \\
    \end{array}
 
-In addition to the error conditions specified explicitly in this section, implementations may also return errors when specific :ref:`implementation limitations <impl>` are reached.
+In addition to the error conditions specified explicitly in this section, such as invalid arguments or :ref:`exceptions <exception>` and :ref:`traps <trap>` resulting from :ref:`execution <exec>`, implementations may also return errors when specific :ref:`implementation limitations <impl>` are reached.
 
 .. note::
    Errors are abstract and unspecific with this definition.
@@ -89,7 +89,7 @@ Store
 
 .. math::
    \begin{array}{lclll}
-   \F{store\_init}() &=& \{ \SFUNCS~\epsilon,~ \SMEMS~\epsilon,~ \STABLES~\epsilon,~ \SGLOBALS~\epsilon \} \\
+   \F{store\_init}() &=& \{ \} \\
    \end{array}
 
 
@@ -167,7 +167,7 @@ Modules
 .. math::
    \begin{array}{lclll}
    \F{module\_instantiate}(S, m, \X{ev}^\ast) &=& (S', F.\AMODULE) && (\iff \instantiate(S, m, \X{ev}^\ast) \stepto^\ast S'; F; \epsilon) \\
-   \F{module\_instantiate}(S, m, \X{ev}^\ast) &=& (S', \ERROR) && (\iff \instantiate(S, m, \X{ev}^\ast) \stepto^\ast S'; F; \TRAP) \\
+   \F{module\_instantiate}(S, m, \X{ev}^\ast) &=& (S', \ERROR) && (\otherwise, \iff \instantiate(S, m, \X{ev}^\ast) \stepto^\ast S'; F; \result) \\
    \end{array}
 
 .. note::
@@ -322,7 +322,7 @@ Functions
    ~ \\
    \begin{array}{lclll}
    \F{func\_invoke}(S, a, v^\ast) &=& (S', {v'}^\ast) && (\iff \invoke(S, a, v^\ast) \stepto^\ast S'; F; {v'}^\ast) \\
-   \F{func\_invoke}(S, a, v^\ast) &=& (S', \ERROR) && (\iff \invoke(S, a, v^\ast) \stepto^\ast S'; F; \TRAP) \\
+   \F{func\_invoke}(S, a, v^\ast) &=& (S', \ERROR) && (\iff \invoke(S, a, v^\ast) \stepto^\ast S'; F; \result) \\
    \end{array}
 
 .. note::
@@ -552,6 +552,28 @@ Memories
    \F{mem\_grow}(S, a, n) &=& \ERROR && (\otherwise) \\
    \end{array}
 
+
+.. index:: tag, tag address, store, tag instance, tag type, function type
+.. _embed-tag:
+
+Tags
+~~~~
+
+.. _embedd-tag-alloc:
+
+:math:`\F{tag\_alloc}(\store, \tagtype) : (\store, \tagaddr)`
+.............................................................
+
+1. Pre-condition: :math:`tagtype` is :ref:`valid <valid-tagtype>`.
+
+2. Let :math:`\tagaddr` be the result of :ref:`allocating a tag <alloc-tag>` in :math:`\store` with :ref:`tag type <syntax-tagtype>` :math:`\tagtype`.
+
+3. Return the new store paired with :math:`\tagaddr`.
+
+.. math::
+   \begin{array}{lclll}
+   \F{tag\_alloc}(S, \X{tt}) &=& (S', \X{a}) && (\iff \alloctag(S, \X{tt}) = S', \X{a}) \\
+   \end{array}
 
 
 .. index:: global, global address, store, global instance, global type, value

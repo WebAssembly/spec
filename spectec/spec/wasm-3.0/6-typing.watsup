@@ -19,6 +19,7 @@ syntax context hint(desc "context") hint(macro "%" "C%") =
     GLOBALS globaltype*,
     TABLES tabletype*,
     MEMS memtype*,
+    TAGS tagtype*,
     ELEMS elemtype*,
     DATAS datatype*,
     LOCALS localtype*,
@@ -464,6 +465,7 @@ relation Limits_sub: context |- limits <: limits             hint(show "S-limits
 relation Globaltype_sub: context |- globaltype <: globaltype hint(show "S-global") hint(macro "%globaltypematch")
 relation Tabletype_sub: context |- tabletype <: tabletype    hint(show "S-table")  hint(macro "%tabletypematch")
 relation Memtype_sub: context |- memtype <: memtype          hint(show "S-mem")    hint(macro "%memtypematch")
+relation Tagtype_sub: context |- tagtype <: tagtype          hint(show "S-tag")    hint(macro "%tagtypematch")
 relation Externtype_sub: context |- externtype <: externtype hint(show "S-extern") hint(macro "%externtypematch")
 
 
@@ -496,6 +498,11 @@ rule Memtype_sub:
   C |- limits_1 PAGE <: limits_2 PAGE
   -- Limits_sub: C |- limits_1 <: limits_2
 
+rule Tagtype_sub:
+  C |- deftype_1 <: deftype_2
+  -- Deftype_sub: C |- deftype_1 <: deftype_2
+  -- Deftype_sub: C |- deftype_2 <: deftype_1
+
 
 rule Externtype_sub/func:
   C |- FUNC deftype_1 <: FUNC deftype_2
@@ -512,6 +519,10 @@ rule Externtype_sub/table:
 rule Externtype_sub/mem:
   C |- MEM memtype_1 <: MEM memtype_2
   -- Memtype_sub: C |- memtype_1 <: memtype_2
+
+rule Externtype_sub/tag:
+  C |- TAG tagtype_1 <: TAG tagtype_2
+  -- Tagtype_sub: C |- tagtype_1 <: tagtype_2
 
 
 
@@ -701,6 +712,44 @@ rule Instr_ok/return_call_indirect:
   -- if C.RETURN = (t'_2*)
   -- Resulttype_sub: C |- t_2* <: t'_2*
   -- Instrtype_ok: C |- t_3* -> t_4* : OK
+
+
+;; Exception instructions
+
+relation Catch_ok: context |- catch : OK hint(show "T") hint(macro "%catch")
+
+rule Instr_ok/throw:
+  C |- THROW x : t_1* t* -> t_2*
+  -- Expand: C.TAGS[x] ~~ FUNC (t* -> eps)
+  -- Instrtype_ok: C |- t_1* -> t_2* : OK
+
+rule Instr_ok/throw_ref:
+  C |- THROW_REF : t_1* (REF NULL EXN) -> t_2*
+  -- Instrtype_ok: C |- t_1* -> t_2* : OK
+
+rule Instr_ok/try_table:
+  C |- TRY_TABLE bt catch* instr* : t_1* -> t_2*
+  -- Blocktype_ok: C |- bt : t_1* -> t_2*
+  -- Instrs_ok: {LABELS (t_2*)} ++ C |- instr* : t_1* ->_(x*) t_2*
+  -- (Catch_ok: C |- catch : OK)*
+
+rule Catch_ok/catch:
+  C |- CATCH x l : OK
+  -- Expand: C.TAGS[x] ~~ FUNC (t* -> eps)
+  -- Resulttype_sub: C |- t* <: C.LABELS[l]
+
+rule Catch_ok/catch_ref:
+  C |- CATCH_REF x l : OK
+  -- Expand: C.TAGS[x] ~~ FUNC (t* -> eps)
+  -- Resulttype_sub: C |- t* (REF EXN) <: C.LABELS[l]
+
+rule Catch_ok/catch_all:
+  C |- CATCH_ALL l : OK
+  -- Resulttype_sub: C |- eps <: C.LABELS[l]
+
+rule Catch_ok/catch_all_ref:
+  C |- CATCH_ALL_REF l : OK
+  -- Resulttype_sub: C |- (REF EXN) <: C.LABELS[l]
 
 
 ;; Numeric instructions
@@ -1173,6 +1222,7 @@ relation Local_ok: context |- local : localtype      hint(show "T-local")    hin
 relation Global_ok: context |- global : globaltype   hint(show "T-global")   hint(macro "%global")
 relation Table_ok: context |- table : tabletype      hint(show "T-table")    hint(macro "%table")
 relation Mem_ok: context |- mem : memtype            hint(show "T-mem")      hint(macro "%mem")
+relation Tag_ok: context |- tag : tagtype            hint(show "T-tag")      hint(macro "%tag")
 relation Elem_ok: context |- elem : elemtype         hint(show "T-elem")     hint(macro "%elem")
 relation Data_ok: context |- data : datatype         hint(show "T-data")     hint(macro "%data")
 relation Elemmode_ok: context |- elemmode : elemtype hint(show "T-elemmode") hint(macro "%elemmode")
@@ -1214,6 +1264,10 @@ rule Table_ok:
 rule Mem_ok:
   C |- MEMORY memtype : memtype
   -- Memtype_ok: C |- memtype : OK
+
+rule Tag_ok:
+  C |- TAG x : C.TYPES[x]
+  -- Expand: C.TYPES[x] ~~ FUNC functype
 
 rule Elem_ok:
   C |- ELEM elemtype expr* elemmode : elemtype
@@ -1291,16 +1345,17 @@ relation Globals_ok: context |- global* : globaltype* hint(show "T-globals") hin
 ;; HACK for notation
 syntax nonfuncs = global* table* mem* elem* data*
 def $funcidx_nonfuncs(nonfuncs) : funcidx*  hint(show $funcidx(%)) hint(macro "freefuncidx")
-def $funcidx_nonfuncs(global* table* mem* elem* data*) = $funcidx_module(MODULE eps eps eps global* table* mem* elem* data* eps eps)
+def $funcidx_nonfuncs(global* table* mem* elem* data*) = $funcidx_module(MODULE eps eps eps global* table* mem* eps elem* data* eps eps)
 
 rule Module_ok:
-  |- MODULE type* import* func* global* table* mem* elem* data* start? export* : $clos_moduletype(C, xt_I* -> xt_E*)
+  |- MODULE type* import* func* global* table* mem* tag* elem* data* start? export* : $clos_moduletype(C, xt_I* -> xt_E*)
   -- Types_ok: {} |- type* : dt'*
   -- (Import_ok: {TYPES dt'*} |- import : xt_I)*
   ----
   -- Globals_ok: C' |- global* : gt*
   -- (Table_ok: C' |- table : tt)*
   -- (Mem_ok: C' |- mem : mt)*
+  -- (Tag_ok: C' |- tag : at)*
   -- (Func_ok: C |- func : dt)*
   ----
   -- (Elem_ok: C |- elem : rt)*
@@ -1309,7 +1364,7 @@ rule Module_ok:
   -- (Export_ok: C |- export : nm xt_E)*
   -- if $disjoint_(name, nm*)
   ----
-  -- if C = {TYPES dt'*, FUNCS dt_I* dt*, GLOBALS gt_I* gt*, TABLES tt_I* tt*, MEMS mt_I* mt*, ELEMS rt*, DATAS ok*, REFS x*}
+  -- if C = {TYPES dt'*, FUNCS dt_I* dt*, GLOBALS gt_I* gt*, TABLES tt_I* tt*, MEMS mt_I* mt*, TAGS at_I* at*, ELEMS rt*, DATAS ok*, REFS x*}
   ----
   -- if C' = {TYPES dt'*, FUNCS dt_I* dt*, GLOBALS gt_I*, REFS x*}
   -- if x* = $funcidx_nonfuncs(global* table* mem* elem* data*)
@@ -1318,6 +1373,7 @@ rule Module_ok:
   -- if gt_I* = $globalsxt(xt_I*)
   -- if tt_I* = $tablesxt(xt_I*)
   -- if mt_I* = $memsxt(xt_I*)
+  -- if at_I* = $tagsxt(xt_I*)
 
 
 rule Types_ok/empty:

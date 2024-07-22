@@ -55,10 +55,12 @@ module Store = struct
       |> Record.add "GLOBALS" (listV [||])
       |> Record.add "TABLES" (listV [||])
       |> Record.add "MEMS" (listV [||])
+      |> Record.add "TAGS" (listV [||])
       |> Record.add "ELEMS" (listV [||])
       |> Record.add "DATAS" (listV [||])
       |> Record.add "STRUCTS" (listV [||])
       |> Record.add "ARRAYS" (listV [||])
+      |> Record.add "EXNS" (listV [||])
 
   let get () = strV !store
 

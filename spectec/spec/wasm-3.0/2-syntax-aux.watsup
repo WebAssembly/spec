@@ -496,6 +496,9 @@ def $free_table(TABLE tabletype expr) =
 def $free_mem(mem) : free
 def $free_mem(MEMORY memtype) = $free_memtype(memtype)
 
+def $free_tag(tag) : free
+def $free_tag(TAG typeidx) = $free_typeidx(typeidx)
+
 def $free_elemmode(elemmode) : free
 def $free_elemmode(ACTIVE tableidx expr) =
   $free_tableidx(tableidx) ++ $free_expr(expr)
@@ -525,13 +528,14 @@ def $free_import(IMPORT name_1 name_2 externtype) = $free_externtype(externtype)
 
 
 def $free_module(module) : free
-def $free_module(MODULE type* import* func* global* table* mem* elem* data* start* export*) =
+def $free_module(MODULE type* import* func* global* table* mem* tag* elem* data* start* export*) =
   $free_list($free_type(type)*) ++
   $free_list($free_import(import)*) ++
   $free_list($free_func(func)*) ++
   $free_list($free_global(global)*) ++
   $free_list($free_table(table)*) ++
   $free_list($free_mem(mem)*) ++
+  $free_list($free_tag(tag)*) ++
   $free_list($free_elem(elem)*) ++
   $free_list($free_data(data)*) ++
   $free_list($free_start(start)*) ++
@@ -674,6 +678,7 @@ def $funcsxx(externidx*) : typeidx*      hint(show $funcs(%))   hint(macro "func
 def $globalsxx(externidx*) : globalidx*  hint(show $globals(%)) hint(macro "globalsxx")
 def $tablesxx(externidx*) : tableidx*    hint(show $tables(%))  hint(macro "tablesxx")
 def $memsxx(externidx*) : memidx*        hint(show $mems(%))    hint(macro "memsxx")
+def $tagsxx(externidx*) : tagidx*        hint(show $tags(%))    hint(macro "tagsxx")
 
 def $funcsxx(eps) = eps
 def $funcsxx((FUNC x) xx*) = x $funcsxx(xx*)
@@ -691,11 +696,16 @@ def $memsxx(eps) = eps
 def $memsxx((MEM x) xx*) = x $memsxx(xx*)
 def $memsxx(externidx xx*) = $memsxx(xx*)  -- otherwise
 
+def $tagsxx(eps) = eps
+def $tagsxx((TAG x) xx*) = x $tagsxx(xx*)
+def $tagsxx(externidx xx*) = $tagsxx(xx*)  -- otherwise
+
 
 def $funcsxt(externtype*) : deftype*       hint(show $funcs(%))   hint(macro "funcsxt")
 def $globalsxt(externtype*) : globaltype*  hint(show $globals(%)) hint(macro "globalsxt")
 def $tablesxt(externtype*) : tabletype*    hint(show $tables(%))  hint(macro "tablesxt")
 def $memsxt(externtype*) : memtype*        hint(show $mems(%))    hint(macro "memsxt")
+def $tagsxt(externtype*) : tagtype*        hint(show $tags(%))    hint(macro "tagsxt")
 
 def $funcsxt(eps) = eps
 def $funcsxt((FUNC dt) xt*) = dt $funcsxt(xt*)
@@ -712,6 +722,10 @@ def $tablesxt(externtype xt*) = $tablesxt(xt*)  -- otherwise
 def $memsxt(eps) = eps
 def $memsxt((MEM mt) xt*) = mt $memsxt(xt*)
 def $memsxt(externtype xt*) = $memsxt(xt*)  -- otherwise
+
+def $tagsxt(eps) = eps
+def $tagsxt((TAG at) xt*) = at $tagsxt(xt*)
+def $tagsxt(externtype xt*) = $tagsxt(xt*)  -- otherwise
 
 
 

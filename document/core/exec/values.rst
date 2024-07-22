@@ -130,6 +130,23 @@ The following auxiliary typing rules specify this typing relation relative to a 
    }
 
 
+.. _valid-ref.exn:
+
+:ref:`Exception References <syntax-ref>` :math:`\REFEXNADDR~a`
+..............................................................
+
+* The store entry :math:`S.\SEXNS[a]` must exist.
+
+* Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`\EXNREF`.
+
+.. math::
+   \frac{
+     S.\SEXNS[a] = \exninst
+   }{
+     S \vdashval \REFEXNADDR : \EXNREF
+   }
+
+
 :ref:`Function References <syntax-ref>` :math:`\REFFUNCADDR~a`
 ..............................................................
 
@@ -284,6 +301,26 @@ The following auxiliary typing rules specify this typing relation relative to a 
    }{
      S \vdashexternval \EVGLOBAL~a : \ETGLOBAL~S.\SGLOBALS[a].\GITYPE
    }
+
+
+.. index:: tag type, tag address, exception tag, function type
+.. _valid-externval-tag:
+
+:math:`\EVTAG~a`
+................
+
+* The store entry :math:`S.\STAGS[a]` must exist.
+
+* Let :math:`\tagtype` be the function type :math:`S.\STAGS[a].\TAGITYPE`.
+
+* Then :math:`\EVTAG~a` is valid with :ref:`external type <syntax-externtype>` :math:`\ETTAG~\tagtype`.
+
+.. math::
+   \frac{
+   }{
+     S \vdashexternval \EVTAG~a : \ETTAG~S.\STAGS[a].\TAGITYPE
+   }
+
 
 Subsumption
 ...........

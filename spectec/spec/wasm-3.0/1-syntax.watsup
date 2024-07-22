@@ -103,6 +103,7 @@ syntax funcidx hint(desc "function index") = idx
 syntax globalidx hint(desc "global index") = idx
 syntax tableidx hint(desc "table index") = idx
 syntax memidx hint(desc "memory index") = idx
+syntax tagidx hint(desc "tag index") = idx
 syntax elemidx hint(desc "elem index") = idx
 syntax dataidx hint(desc "data index") = idx
 syntax labelidx hint(desc "label index") = idx
@@ -139,6 +140,7 @@ syntax consttype hint(desc "literal type") =
 syntax absheaptype/syn hint(desc "abstract heap type") =
   | ANY | EQ hint(macro "EQT") | I31 | STRUCT | ARRAY | NONE
   | FUNC hint(macro "FUNCT") | NOFUNC
+  | EXN | NOEXN
   | EXTERN | NOEXTERN
   | ...
 syntax absheaptype/sem =
@@ -244,12 +246,14 @@ syntax tabletype hint(desc "table type") =
   limits reftype
 syntax memtype hint(desc "memory type") =
   limits PAGE
+syntax tagtype hint(desc "memory type") =
+  deftype
 syntax elemtype hint(desc "element type") =
   reftype
 syntax datatype hint(desc "data type") hint(macro "%" "%data") =
   OK
 syntax externtype hint(desc "external type") hint(macro "%" "ET%") =
-  | FUNC typeuse | GLOBAL globaltype | TABLE tabletype | MEM memtype
+  | FUNC typeuse | GLOBAL globaltype | TABLE tabletype | MEM memtype | TAG typeuse
 
 syntax moduletype hint(desc "module type") = externtype* -> externtype* hint(macro "toM")
 
@@ -259,9 +263,11 @@ syntax moduletype hint(desc "module type") = externtype* -> externtype* hint(mac
 var lim : limits
 
 var t : valtype
+var at : tagtype
 ;; var bt : blocktype  ;; defined below
 var ct : comptype
 var dt : deftype
+var et : elemtype
 var ft : functype
 var gt : globaltype
 var ht : heaptype
@@ -520,6 +526,19 @@ syntax instr/call hint(desc "function instruction") = ...
   | RETURN_CALL_INDIRECT tableidx typeuse
   | ...
 
+syntax instr/exn hint(desc "exception instructions") = ...
+  | THROW tagidx
+  | THROW_REF
+  | TRY_TABLE blocktype list(catch) instr*
+  | ...
+
+syntax catch hint(desc "catch clause") =
+  | CATCH tagidx labelidx
+  | CATCH_REF tagidx labelidx
+  | CATCH_ALL labelidx
+  | CATCH_ALL_REF labelidx
+
+
 syntax instr/num hint(desc "numeric instruction") = ...
   | CONST numtype num_(numtype)      hint(show %.CONST %)
   | UNOP numtype unop_(numtype)      hint(show %.##%)
@@ -681,6 +700,8 @@ syntax table hint(desc "table") =
   TABLE tabletype expr
 syntax mem hint(desc "memory") =
   MEMORY memtype
+syntax tag hint(desc "tag") =
+  TAG typeidx
 syntax elem hint(desc "table segment") =
   ELEM reftype expr* elemmode
 syntax data hint(desc "memory segment") =
@@ -689,14 +710,14 @@ syntax start hint(desc "start function") =
   START funcidx
 
 syntax externidx hint(desc "external index") hint(macro "%" "EX%") =
-  | FUNC funcidx | GLOBAL globalidx | TABLE tableidx | MEM memidx
+  | FUNC funcidx | GLOBAL globalidx | TABLE tableidx | MEM memidx | TAG tagidx
 syntax export hint(desc "export") =
   EXPORT name externidx
 syntax import hint(desc "import") =
   IMPORT name name externtype
 
 syntax module hint(desc "module") =
-  MODULE type* import* func* global* table* mem* elem* data* start* export*
+  MODULE type* import* func* global* table* mem* tag* elem* data* start* export*
 
 
 var ty : type
