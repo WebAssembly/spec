@@ -308,7 +308,7 @@ let rec step (c : config) : config =
       | ThrowRef, Ref (NullRef _) :: vs ->
         vs, [Trapping "null exception reference" @@ e.at]
 
-      | ThrowRef, Ref (ExnRef (t, args)) :: vs ->
+      | ThrowRef, Ref (Exn.(ExnRef (Exn (t, args)))) :: vs ->
         vs, [Throwing (t, args) @@ e.at]
 
       | TryTable (bt, cs, es'), vs ->
@@ -1055,7 +1055,7 @@ let rec step (c : config) : config =
 
     | Handler (n, {it = CatchRef (x1, x2); _} :: cs, (vs', {it = Throwing (a, vs0); at} :: es')), vs ->
       if a == tag c.frame.inst x1 then
-        Ref (ExnRef (a, vs0)) :: vs0 @ vs, [Plain (Br x2) @@ e.at]
+        Ref Exn.(ExnRef (Exn (a, vs0))) :: vs0 @ vs, [Plain (Br x2) @@ e.at]
       else
         vs, [Handler (n, cs, (vs', {it = Throwing (a, vs0); at} :: es')) @@ e.at]
 
@@ -1063,7 +1063,7 @@ let rec step (c : config) : config =
       vs, [Plain (Br x) @@ e.at]
 
     | Handler (n, {it = CatchAllRef x; _} :: cs, (vs', {it = Throwing (a, vs0); at} :: es')), vs ->
-      Ref (ExnRef (a, vs0)) :: vs, [Plain (Br x) @@ e.at]
+      Ref Exn.(ExnRef (Exn (a, vs0))) :: vs, [Plain (Br x) @@ e.at]
 
     | Handler (n, [], (vs', {it = Throwing (a, vs0); at} :: es')), vs ->
       vs, [Throwing (a, vs0) @@ at]

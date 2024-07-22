@@ -26,6 +26,7 @@ val func_type : Types.func_type -> t
 val global_type : Types.global_type -> t
 val table_type : Types.table_type -> t
 val memory_type : Types.memory_type -> t
+val tag_type : Types.tag_type -> t
 val extern_type : Types.extern_type -> t
 
 val str_type : Types.str_type -> t

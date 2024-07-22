@@ -401,7 +401,7 @@ let assert_ref_pat r p =
   | RefTypePat Types.StructHT, Aggr.StructRef _
   | RefTypePat Types.ArrayHT, Aggr.ArrayRef _ -> true
   | RefTypePat Types.FuncHT, Instance.FuncRef _
-  | RefTypePat Types.ExnHT, Value.ExnRef _
+  | RefTypePat Types.ExnHT, Exn.ExnRef _
   | RefTypePat Types.ExternHT, _ -> true
   | NullPat, Value.NullRef _ -> true
   | _ -> false

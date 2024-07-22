@@ -1,6 +1,6 @@
 open Types
 
-type tag = {ty : tag_type}
+type tag
 type t = tag
 
 val alloc : tag_type -> tag

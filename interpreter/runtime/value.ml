@@ -18,7 +18,6 @@ type value = Num of num | Vec of vec | Ref of ref_
 type t = value
 
 type ref_ += NullRef of heap_type
-type ref_ += ExnRef of Tag.t * value list
 
 
 (* Injection & projection *)
@@ -109,7 +108,6 @@ let type_of_vec = type_of_vecop
 let type_of_ref' = ref (function _ -> assert false)
 let type_of_ref = function
   | NullRef t -> (Null, Match.bot_of_heap_type [] t)
-  | ExnRef _ -> (NoNull, ExnHT)
   | r -> (NoNull, !type_of_ref' r)
 
 let type_of_value = function
@@ -304,7 +302,6 @@ let hex_string_of_vec = function
 let string_of_ref' = ref (function _ -> "ref")
 let string_of_ref = function
   | NullRef _ -> "null"
-  | ExnRef _ -> "exn"
   | r -> !string_of_ref' r
 
 let string_of_value = function
