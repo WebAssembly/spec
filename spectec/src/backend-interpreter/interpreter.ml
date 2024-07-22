@@ -183,12 +183,18 @@ and check_type ty v expr =
     (sprintf "%s doesn't have type %s" (structured_string_of_value v) ty)
 
 and eval_expr env expr =
+  let rec to_bool = function
+    | BoolV b -> b
+    | ListV _ as v -> List.for_all to_bool (unwrap_listv_to_list v)
+    | _ -> fail_expr expr "type mismatch for binary operation"
+  in
+
   match expr.it with
   (* Value *)
   | NumE i -> numV i
   (* Numeric Operation *)
   | UnE (MinusOp, inner_e) -> eval_expr env inner_e |> al_to_z |> Z.neg |> numV
-  | UnE (NotOp, e) -> eval_expr env e |> al_to_bool |> not |> boolV
+  | UnE (NotOp, e) -> eval_expr env e |> to_bool |> not |> boolV
   | BinE (op, e1, e2) ->
     (match op, eval_expr env e1, eval_expr env e2 with
     | AddOp, NumV i1, NumV i2 -> Z.add i1 i2 |> numV
@@ -197,10 +203,10 @@ and eval_expr env expr =
     | DivOp, NumV i1, NumV i2 -> Z.div i1 i2 |> numV
     | ModOp, NumV i1, NumV i2 -> Z.rem i1 i2 |> numV
     | ExpOp, NumV i1, NumV i2 -> Z.pow i1 (Z.to_int i2) |> numV
-    | AndOp, BoolV b1, BoolV b2 -> boolV (b1 && b2)
-    | OrOp, BoolV b1, BoolV b2 -> boolV (b1 || b2)
-    | ImplOp, BoolV b1, BoolV b2 -> boolV (not b1 || b2)
-    | EquivOp, BoolV b1, BoolV b2 -> boolV (b1 = b2)
+    | AndOp, b1, b2 -> boolV (to_bool b1 && to_bool b2)
+    | OrOp, b1, b2 -> boolV (to_bool b1 || to_bool b2)
+    | ImplOp, b1, b2 -> boolV (not (to_bool b1) || to_bool b2)
+    | EquivOp, b1, b2 -> boolV (to_bool b1 = to_bool b2)
     | EqOp, v1, v2 -> boolV (v1 = v2)
     | NeOp, v1, v2 -> boolV (v1 <> v2)
     | LtOp, v1, v2 -> boolV (v1 < v2)

@@ -810,25 +810,29 @@ allocmodule module externval* val*
 4. Let ta_ex* be $tables(externval*).
 5. Assert: Due to validation, module is of the case MODULE.
 6. Let (MODULE y_0 import* func^n_func y_1 y_2 y_3 elem* data* start? export*) be module.
-7. Let (MEMORY memtype)^n_mem be y_3.
-8. Let (TABLE tabletype)^n_table be y_2.
-9. Let (GLOBAL globaltype expr_1)^n_global be y_1.
-10. Let (TYPE ft)* be y_0.
-11. Let fa* be (|s.FUNCS| + i_func)^(i_func<n_func).
-12. Let ga* be (|s.GLOBALS| + i_global)^(i_global<n_global).
-13. Let ta* be (|s.TABLES| + i_table)^(i_table<n_table).
-14. Let ma* be (|s.MEMS| + i_mem)^(i_mem<n_mem).
-15. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
-16. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* ++ fa*; GLOBALS: ga_ex* ++ ga*; TABLES: ta_ex* ++ ta*; MEMS: ma_ex* ++ ma*; EXPORTS: xi*; }.
-17. Let y_0 be $allocfuncs(moduleinst, func^n_func).
-18. Assert: Due to validation, (y_0 is fa*).
-19. Let y_0 be $allocglobals(globaltype^n_global, val*).
-20. Assert: Due to validation, (y_0 is ga*).
-21. Let y_0 be $alloctables(tabletype^n_table).
-22. Assert: Due to validation, (y_0 is ta*).
-23. Let y_0 be $allocmems(memtype^n_mem).
-24. Assert: Due to validation, (y_0 is ma*).
-25. Return moduleinst.
+7. Assert: Due to validation, y_3 is of the case MEMORY.
+8. Let (MEMORY memtype)^n_mem be y_3.
+9. Assert: Due to validation, y_2 is of the case TABLE.
+10. Let (TABLE tabletype)^n_table be y_2.
+11. Assert: Due to validation, y_1 is of the case GLOBAL.
+12. Let (GLOBAL globaltype expr_1)^n_global be y_1.
+13. Assert: Due to validation, y_0 is of the case TYPE.
+14. Let (TYPE ft)* be y_0.
+15. Let fa* be (|s.FUNCS| + i_func)^(i_func<n_func).
+16. Let ga* be (|s.GLOBALS| + i_global)^(i_global<n_global).
+17. Let ta* be (|s.TABLES| + i_table)^(i_table<n_table).
+18. Let ma* be (|s.MEMS| + i_mem)^(i_mem<n_mem).
+19. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
+20. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* ++ fa*; GLOBALS: ga_ex* ++ ga*; TABLES: ta_ex* ++ ta*; MEMS: ma_ex* ++ ma*; EXPORTS: xi*; }.
+21. Let y_0 be $allocfuncs(moduleinst, func^n_func).
+22. Assert: Due to validation, (y_0 is fa*).
+23. Let y_0 be $allocglobals(globaltype^n_global, val*).
+24. Assert: Due to validation, (y_0 is ga*).
+25. Let y_0 be $alloctables(tabletype^n_table).
+26. Assert: Due to validation, (y_0 is ta*).
+27. Let y_0 be $allocmems(memtype^n_mem).
+28. Assert: Due to validation, (y_0 is ma*).
+29. Return moduleinst.
 
 initelem moduleinst u32_u0* funca_u1*
 1. If ((u32_u0* is []) and (funca_u1* is [])), then:
@@ -855,34 +859,39 @@ initdata moduleinst u32_u0* byte_u1*
 instantiate module externval*
 1. Assert: Due to validation, module is of the case MODULE.
 2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
-3. Let (TYPE functype)* be type*.
-4. Let n_F be |func*|.
-5. Let (START x')? be start?.
-6. Let (DATA expr_D b*)* be data*.
-7. Let (ELEM expr_E x*)* be elem*.
-8. Let (GLOBAL globaltype expr_G)* be global*.
-9. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externval*) ++ (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externval*); TABLES: []; MEMS: []; EXPORTS: []; }.
-10. Let f_init be { LOCALS: []; MODULE: moduleinst_init; }.
-11. Let z be f_init.
-12. Push the activation of z to the stack.
-13. Let [(I32.CONST i_D)]* be $eval_expr(expr_D)*.
-14. Pop the activation of z from the stack.
-15. Push the activation of z to the stack.
-16. Let [(I32.CONST i_E)]* be $eval_expr(expr_E)*.
-17. Pop the activation of z from the stack.
-18. Push the activation of z to the stack.
-19. Let [val]* be $eval_expr(expr_G)*.
-20. Pop the activation of z from the stack.
-21. Let moduleinst be $allocmodule(module, externval*, val*).
-22. Let f be { LOCALS: []; MODULE: moduleinst; }.
-23. Perform $initelem(moduleinst, i_E*, moduleinst.FUNCS[x]**).
-24. Perform $initdata(moduleinst, i_D*, b**).
-25. Push the activation of f with arity 0 to the stack.
-26. If (CALL x')? is defined, then:
+3. Assert: Due to validation, type* is of the case TYPE.
+4. Let (TYPE functype)* be type*.
+5. Let n_F be |func*|.
+6. Assert: Due to validation, start? is of the case START.
+7. Let (START x')? be start?.
+8. Assert: Due to validation, data* is of the case DATA.
+9. Let (DATA expr_D b*)* be data*.
+10. Assert: Due to validation, elem* is of the case ELEM.
+11. Let (ELEM expr_E x*)* be elem*.
+12. Assert: Due to validation, global* is of the case GLOBAL.
+13. Let (GLOBAL globaltype expr_G)* be global*.
+14. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externval*) ++ (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externval*); TABLES: []; MEMS: []; EXPORTS: []; }.
+15. Let f_init be { LOCALS: []; MODULE: moduleinst_init; }.
+16. Let z be f_init.
+17. Push the activation of z to the stack.
+18. Let [(I32.CONST i_D)]* be $eval_expr(expr_D)*.
+19. Pop the activation of z from the stack.
+20. Push the activation of z to the stack.
+21. Let [(I32.CONST i_E)]* be $eval_expr(expr_E)*.
+22. Pop the activation of z from the stack.
+23. Push the activation of z to the stack.
+24. Let [val]* be $eval_expr(expr_G)*.
+25. Pop the activation of z from the stack.
+26. Let moduleinst be $allocmodule(module, externval*, val*).
+27. Let f be { LOCALS: []; MODULE: moduleinst; }.
+28. Perform $initelem(moduleinst, i_E*, moduleinst.FUNCS[x]**).
+29. Perform $initdata(moduleinst, i_D*, b**).
+30. Push the activation of f with arity 0 to the stack.
+31. If (CALL x')? is defined, then:
   a. Let ?(instr_0) be (CALL x')?.
   b. Execute the instruction instr_0.
-27. Pop the activation of f with arity 0 from the stack.
-28. Return f.MODULE.
+32. Pop the activation of f with arity 0 from the stack.
+33. Return f.MODULE.
 
 invoke fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; EXPORTS: []; }; }.
@@ -947,9 +956,10 @@ execution_of_BR n_u0
   c. Execute the sequence (instr'*).
 8. If (n_u0 ≥ 1), then:
   a. Let l be (n_u0 - 1).
-  b. Let val* be admin_u1*.
-  c. Push the values val* to the stack.
-  d. Execute the instruction (BR l).
+  b. If the type of admin_u1 is val*, then:
+    1) Let val* be admin_u1*.
+    2) Push the values val* to the stack.
+    3) Execute the instruction (BR l).
 
 execution_of_BR_IF l
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -1082,12 +1092,13 @@ execution_of_CALL_ADDR a
 5. Pop the values val^k from the stack.
 6. Assert: Due to validation, func is of the case FUNC.
 7. Let (FUNC x y_0 instr*) be func.
-8. Let (LOCAL t)* be y_0.
-9. Let f be { LOCALS: val^k ++ $default_(t)*; MODULE: mm; }.
-10. Let F be the activation of f with arity n.
-11. Push F to the stack.
-12. Let L be the label_n{[]}.
-13. Enter instr* with label L.
+8. Assert: Due to validation, y_0 is of the case LOCAL.
+9. Let (LOCAL t)* be y_0.
+10. Let f be { LOCALS: val^k ++ $default_(t)*; MODULE: mm; }.
+11. Let F be the activation of f with arity n.
+12. Push F to the stack.
+13. Let L be the label_n{[]}.
+14. Enter instr* with label L.
 
 execution_of_LOCAL.GET x
 1. Let z be the current state.
@@ -2721,33 +2732,39 @@ allocmodule module externval* val* ref**
 4. Let ta_ex* be $tables(externval*).
 5. Assert: Due to validation, module is of the case MODULE.
 6. Let (MODULE y_0 import* func^n_func y_1 y_2 y_3 y_4 y_5 start? export*) be module.
-7. Let (DATA byte* datamode)^n_data be y_5.
-8. Let (ELEM rt expr_2* elemmode)^n_elem be y_4.
-9. Let (MEMORY memtype)^n_mem be y_3.
-10. Let (TABLE tabletype)^n_table be y_2.
-11. Let (GLOBAL globaltype expr_1)^n_global be y_1.
-12. Let (TYPE ft)* be y_0.
-13. Let fa* be (|s.FUNCS| + i_func)^(i_func<n_func).
-14. Let ga* be (|s.GLOBALS| + i_global)^(i_global<n_global).
-15. Let ta* be (|s.TABLES| + i_table)^(i_table<n_table).
-16. Let ma* be (|s.MEMS| + i_mem)^(i_mem<n_mem).
-17. Let ea* be (|s.ELEMS| + i_elem)^(i_elem<n_elem).
-18. Let da* be (|s.DATAS| + i_data)^(i_data<n_data).
-19. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
-20. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* ++ fa*; GLOBALS: ga_ex* ++ ga*; TABLES: ta_ex* ++ ta*; MEMS: ma_ex* ++ ma*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
-21. Let y_0 be $allocfuncs(moduleinst, func^n_func).
-22. Assert: Due to validation, (y_0 is fa*).
-23. Let y_0 be $allocglobals(globaltype^n_global, val*).
-24. Assert: Due to validation, (y_0 is ga*).
-25. Let y_0 be $alloctables(tabletype^n_table).
-26. Assert: Due to validation, (y_0 is ta*).
-27. Let y_0 be $allocmems(memtype^n_mem).
-28. Assert: Due to validation, (y_0 is ma*).
-29. Let y_0 be $allocelems(rt^n_elem, ref**).
-30. Assert: Due to validation, (y_0 is ea*).
-31. Let y_0 be $allocdatas(byte*^n_data).
-32. Assert: Due to validation, (y_0 is da*).
-33. Return moduleinst.
+7. Assert: Due to validation, y_5 is of the case DATA.
+8. Let (DATA byte* datamode)^n_data be y_5.
+9. Assert: Due to validation, y_4 is of the case ELEM.
+10. Let (ELEM rt expr_2* elemmode)^n_elem be y_4.
+11. Assert: Due to validation, y_3 is of the case MEMORY.
+12. Let (MEMORY memtype)^n_mem be y_3.
+13. Assert: Due to validation, y_2 is of the case TABLE.
+14. Let (TABLE tabletype)^n_table be y_2.
+15. Assert: Due to validation, y_1 is of the case GLOBAL.
+16. Let (GLOBAL globaltype expr_1)^n_global be y_1.
+17. Assert: Due to validation, y_0 is of the case TYPE.
+18. Let (TYPE ft)* be y_0.
+19. Let fa* be (|s.FUNCS| + i_func)^(i_func<n_func).
+20. Let ga* be (|s.GLOBALS| + i_global)^(i_global<n_global).
+21. Let ta* be (|s.TABLES| + i_table)^(i_table<n_table).
+22. Let ma* be (|s.MEMS| + i_mem)^(i_mem<n_mem).
+23. Let ea* be (|s.ELEMS| + i_elem)^(i_elem<n_elem).
+24. Let da* be (|s.DATAS| + i_data)^(i_data<n_data).
+25. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
+26. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* ++ fa*; GLOBALS: ga_ex* ++ ga*; TABLES: ta_ex* ++ ta*; MEMS: ma_ex* ++ ma*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
+27. Let y_0 be $allocfuncs(moduleinst, func^n_func).
+28. Assert: Due to validation, (y_0 is fa*).
+29. Let y_0 be $allocglobals(globaltype^n_global, val*).
+30. Assert: Due to validation, (y_0 is ga*).
+31. Let y_0 be $alloctables(tabletype^n_table).
+32. Assert: Due to validation, (y_0 is ta*).
+33. Let y_0 be $allocmems(memtype^n_mem).
+34. Assert: Due to validation, (y_0 is ma*).
+35. Let y_0 be $allocelems(rt^n_elem, ref**).
+36. Assert: Due to validation, (y_0 is ea*).
+37. Let y_0 be $allocdatas(byte*^n_data).
+38. Assert: Due to validation, (y_0 is da*).
+39. Return moduleinst.
 
 runelem (ELEM reftype expr* elemm_u0) i
 1. If (elemm_u0 is PASSIVE), then:
@@ -2771,34 +2788,38 @@ rundata (DATA byte* datam_u0) i
 instantiate module externval*
 1. Assert: Due to validation, module is of the case MODULE.
 2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
-3. Let (TYPE functype)* be type*.
-4. Let n_D be |data*|.
-5. Let n_E be |elem*|.
-6. Let n_F be |func*|.
-7. Let (START x)? be start?.
-8. Let (GLOBAL globaltype expr_G)* be global*.
-9. Let (ELEM reftype expr_E* elemmode)* be elem*.
-10. Let instr_D* be $concat_($rundata(data*[j], j)^(j<n_D)).
-11. Let instr_E* be $concat_($runelem(elem*[i], i)^(i<n_E)).
-12. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externval*) ++ (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externval*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
-13. Let f_init be { LOCALS: []; MODULE: moduleinst_init; }.
-14. Let z be f_init.
-15. Push the activation of z to the stack.
-16. Let [val]* be $eval_expr(expr_G)*.
-17. Pop the activation of z from the stack.
-18. Push the activation of z to the stack.
-19. Let [ref]** be $eval_expr(expr_E)**.
-20. Pop the activation of z from the stack.
-21. Let moduleinst be $allocmodule(module, externval*, val*, ref**).
-22. Let f be { LOCALS: []; MODULE: moduleinst; }.
-23. Push the activation of f with arity 0 to the stack.
-24. Execute the sequence (instr_E*).
-25. Execute the sequence (instr_D*).
-26. If (CALL x)? is defined, then:
+3. Assert: Due to validation, type* is of the case TYPE.
+4. Let (TYPE functype)* be type*.
+5. Let n_D be |data*|.
+6. Let n_E be |elem*|.
+7. Let n_F be |func*|.
+8. Assert: Due to validation, start? is of the case START.
+9. Let (START x)? be start?.
+10. Assert: Due to validation, global* is of the case GLOBAL.
+11. Let (GLOBAL globaltype expr_G)* be global*.
+12. Assert: Due to validation, elem* is of the case ELEM.
+13. Let (ELEM reftype expr_E* elemmode)* be elem*.
+14. Let instr_D* be $concat_($rundata(data*[j], j)^(j<n_D)).
+15. Let instr_E* be $concat_($runelem(elem*[i], i)^(i<n_E)).
+16. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externval*) ++ (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externval*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
+17. Let f_init be { LOCALS: []; MODULE: moduleinst_init; }.
+18. Let z be f_init.
+19. Push the activation of z to the stack.
+20. Let [val]* be $eval_expr(expr_G)*.
+21. Pop the activation of z from the stack.
+22. Push the activation of z to the stack.
+23. Let [ref]** be $eval_expr(expr_E)**.
+24. Pop the activation of z from the stack.
+25. Let moduleinst be $allocmodule(module, externval*, val*, ref**).
+26. Let f be { LOCALS: []; MODULE: moduleinst; }.
+27. Push the activation of f with arity 0 to the stack.
+28. Execute the sequence (instr_E*).
+29. Execute the sequence (instr_D*).
+30. If (CALL x)? is defined, then:
   a. Let ?(instr_0) be (CALL x)?.
   b. Execute the instruction instr_0.
-27. Pop the activation of f with arity 0 from the stack.
-28. Return f.MODULE.
+31. Pop the activation of f with arity 0 from the stack.
+32. Return f.MODULE.
 
 invoke fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
@@ -2863,9 +2884,10 @@ execution_of_BR n_u0
   c. Execute the sequence (instr'*).
 8. If (n_u0 ≥ 1), then:
   a. Let l be (n_u0 - 1).
-  b. Let val* be admin_u1*.
-  c. Push the values val* to the stack.
-  d. Execute the instruction (BR l).
+  b. If the type of admin_u1 is val*, then:
+    1) Let val* be admin_u1*.
+    2) Push the values val* to the stack.
+    3) Execute the instruction (BR l).
 
 execution_of_BR_IF l
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -3198,12 +3220,13 @@ execution_of_CALL_ADDR a
 5. Pop the values val^k from the stack.
 6. Assert: Due to validation, func is of the case FUNC.
 7. Let (FUNC x y_0 instr*) be func.
-8. Let (LOCAL t)* be y_0.
-9. Let f be { LOCALS: val^k ++ $default_(t)*; MODULE: mm; }.
-10. Let F be the activation of f with arity n.
-11. Push F to the stack.
-12. Let L be the label_n{[]}.
-13. Enter instr* with label L.
+8. Assert: Due to validation, y_0 is of the case LOCAL.
+9. Let (LOCAL t)* be y_0.
+10. Let f be { LOCALS: val^k ++ $default_(t)*; MODULE: mm; }.
+11. Let F be the activation of f with arity n.
+12. Push F to the stack.
+13. Let L be the label_n{[]}.
+14. Enter instr* with label L.
 
 execution_of_REF.FUNC x
 1. Let z be the current state.
@@ -6313,28 +6336,34 @@ allocmodule module externval* val_G* ref_T* ref_E**
 10. Let ma* be (|s.MEMS| + i_M)^(i_M<|mem*|).
 11. Let ea* be (|s.ELEMS| + i_E)^(i_E<|elem*|).
 12. Let da* be (|s.DATAS| + i_D)^(i_D<|data*|).
-13. Let (MEMORY memtype)* be mem*.
-14. Let dt* be $alloctypes(type*).
-15. Let (DATA byte* datamode)* be data*.
-16. Let (GLOBAL globaltype expr_G)* be global*.
-17. Let (TABLE tabletype expr_T)* be table*.
-18. Let (ELEM elemtype expr_E* elemmode)* be elem*.
-19. Let (FUNC x local* expr_F)* be func*.
-20. Let xi* be $allocexports({ TYPES: []; FUNCS: fa_I* ++ fa*; GLOBALS: ga_I* ++ ga*; TABLES: ta_I* ++ ta*; MEMS: ma_I* ++ ma*; ELEMS: []; DATAS: []; EXPORTS: []; }, export*).
-21. Let moduleinst be { TYPES: dt*; FUNCS: fa_I* ++ fa*; GLOBALS: ga_I* ++ ga*; TABLES: ta_I* ++ ta*; MEMS: ma_I* ++ ma*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
-22. Let y_0 be $allocfuncs(dt*[x]*, (FUNC x local* expr_F)*, moduleinst^|func*|).
-23. Assert: Due to validation, (y_0 is fa*).
-24. Let y_0 be $allocglobals(globaltype*, val_G*).
-25. Assert: Due to validation, (y_0 is ga*).
-26. Let y_0 be $alloctables(tabletype*, ref_T*).
-27. Assert: Due to validation, (y_0 is ta*).
-28. Let y_0 be $allocmems(memtype*).
-29. Assert: Due to validation, (y_0 is ma*).
-30. Let y_0 be $allocelems(elemtype*, ref_E**).
-31. Assert: Due to validation, (y_0 is ea*).
-32. Let y_0 be $allocdatas(OK^|data*|, byte**).
-33. Assert: Due to validation, (y_0 is da*).
-34. Return moduleinst.
+13. Assert: Due to validation, mem* is of the case MEMORY.
+14. Let (MEMORY memtype)* be mem*.
+15. Let dt* be $alloctypes(type*).
+16. Assert: Due to validation, data* is of the case DATA.
+17. Let (DATA byte* datamode)* be data*.
+18. Assert: Due to validation, global* is of the case GLOBAL.
+19. Let (GLOBAL globaltype expr_G)* be global*.
+20. Assert: Due to validation, table* is of the case TABLE.
+21. Let (TABLE tabletype expr_T)* be table*.
+22. Assert: Due to validation, elem* is of the case ELEM.
+23. Let (ELEM elemtype expr_E* elemmode)* be elem*.
+24. Assert: Due to validation, func* is of the case FUNC.
+25. Let (FUNC x local* expr_F)* be func*.
+26. Let xi* be $allocexports({ TYPES: []; FUNCS: fa_I* ++ fa*; GLOBALS: ga_I* ++ ga*; TABLES: ta_I* ++ ta*; MEMS: ma_I* ++ ma*; ELEMS: []; DATAS: []; EXPORTS: []; }, export*).
+27. Let moduleinst be { TYPES: dt*; FUNCS: fa_I* ++ fa*; GLOBALS: ga_I* ++ ga*; TABLES: ta_I* ++ ta*; MEMS: ma_I* ++ ma*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
+28. Let y_0 be $allocfuncs(dt*[x]*, (FUNC x local* expr_F)*, moduleinst^|func*|).
+29. Assert: Due to validation, (y_0 is fa*).
+30. Let y_0 be $allocglobals(globaltype*, val_G*).
+31. Assert: Due to validation, (y_0 is ga*).
+32. Let y_0 be $alloctables(tabletype*, ref_T*).
+33. Assert: Due to validation, (y_0 is ta*).
+34. Let y_0 be $allocmems(memtype*).
+35. Assert: Due to validation, (y_0 is ma*).
+36. Let y_0 be $allocelems(elemtype*, ref_E**).
+37. Assert: Due to validation, (y_0 is ea*).
+38. Let y_0 be $allocdatas(OK^|data*|, byte**).
+39. Assert: Due to validation, (y_0 is da*).
+40. Return moduleinst.
 
 runelem_ x (ELEM rt e^n elemm_u0)
 1. If (elemm_u0 is PASSIVE), then:
@@ -6357,32 +6386,37 @@ instantiate module externval*
 2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
 3. Let instr_D* be $concat_($rundata_(i_D, data*[i_D])^(i_D<|data*|)).
 4. Let instr_E* be $concat_($runelem_(i_E, elem*[i_E])^(i_E<|elem*|)).
-5. Let (START x)? be start?.
-6. Let moduleinst_0 be { TYPES: $alloctypes(type*); FUNCS: $funcsxv(externval*) ++ (|s.FUNCS| + i_F)^(i_F<|func*|); GLOBALS: $globalsxv(externval*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
-7. Let (GLOBAL globaltype expr_G)* be global*.
-8. Let (TABLE tabletype expr_T)* be table*.
-9. Let (ELEM reftype expr_E* elemmode)* be elem*.
-10. Let instr_S? be (CALL x)?.
-11. Let z be { LOCALS: []; MODULE: moduleinst_0; }.
-12. Push the activation of z to the stack.
-13. Let [val_G]* be $eval_expr(expr_G)*.
-14. Pop the activation of z from the stack.
-15. Push the activation of z to the stack.
-16. Let [ref_T]* be $eval_expr(expr_T)*.
-17. Pop the activation of z from the stack.
-18. Push the activation of z to the stack.
-19. Let [ref_E]** be $eval_expr(expr_E)**.
-20. Pop the activation of z from the stack.
-21. Let moduleinst be $allocmodule(module, externval*, val_G*, ref_T*, ref_E**).
-22. Let f be { LOCALS: []; MODULE: moduleinst; }.
-23. Push the activation of f with arity 0 to the stack.
-24. Execute the sequence (instr_E*).
-25. Execute the sequence (instr_D*).
-26. If instr_S? is defined, then:
+5. Assert: Due to validation, start? is of the case START.
+6. Let (START x)? be start?.
+7. Let moduleinst_0 be { TYPES: $alloctypes(type*); FUNCS: $funcsxv(externval*) ++ (|s.FUNCS| + i_F)^(i_F<|func*|); GLOBALS: $globalsxv(externval*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
+8. Assert: Due to validation, data* is of the case DATA.
+9. Assert: Due to validation, global* is of the case GLOBAL.
+10. Let (GLOBAL globaltype expr_G)* be global*.
+11. Assert: Due to validation, table* is of the case TABLE.
+12. Let (TABLE tabletype expr_T)* be table*.
+13. Assert: Due to validation, elem* is of the case ELEM.
+14. Let (ELEM reftype expr_E* elemmode)* be elem*.
+15. Let instr_S? be (CALL x)?.
+16. Let z be { LOCALS: []; MODULE: moduleinst_0; }.
+17. Push the activation of z to the stack.
+18. Let [val_G]* be $eval_expr(expr_G)*.
+19. Pop the activation of z from the stack.
+20. Push the activation of z to the stack.
+21. Let [ref_T]* be $eval_expr(expr_T)*.
+22. Pop the activation of z from the stack.
+23. Push the activation of z to the stack.
+24. Let [ref_E]** be $eval_expr(expr_E)**.
+25. Pop the activation of z from the stack.
+26. Let moduleinst be $allocmodule(module, externval*, val_G*, ref_T*, ref_E**).
+27. Let f be { LOCALS: []; MODULE: moduleinst; }.
+28. Push the activation of f with arity 0 to the stack.
+29. Execute the sequence (instr_E*).
+30. Execute the sequence (instr_D*).
+31. If instr_S? is defined, then:
   a. Let ?(instr_0) be instr_S?.
   b. Execute the instruction instr_0.
-27. Pop the activation of f with arity 0 from the stack.
-28. Return f.MODULE.
+32. Pop the activation of f with arity 0 from the stack.
+33. Return f.MODULE.
 
 invoke funcaddr val*
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
@@ -6460,7 +6494,7 @@ execution_of_BR l
   a. Let val'* ++ val^n be instr_u0*.
   b. Push the values val^n to the stack.
   c. Execute the sequence (instr'*).
-8. If (l > 0), then:
+8. If ((l > 0) and the type of instr_u0 is val*), then:
   a. Let val* be instr_u0*.
   b. Push the values val* to the stack.
   c. Execute the instruction (BR (l - 1)).
@@ -6900,17 +6934,18 @@ execution_of_CALL_REF yy
     1) Let fi be $funcinst(z)[a].
     2) Assert: Due to validation, fi.CODE is of the case FUNC.
     3) Let (FUNC x y_0 instr*) be fi.CODE.
-    4) Let (LOCAL t)* be y_0.
-    5) Assert: Due to validation, $expanddt(fi.TYPE) is of the case FUNC.
-    6) Let (FUNC y_0) be $expanddt(fi.TYPE).
-    7) Let (t_1^n -> t_2^m) be y_0.
-    8) Assert: Due to validation, there are at least n values on the top of the stack.
-    9) Pop the values val^n from the stack.
-    10) Let f be { LOCALS: ?(val)^n ++ $default_(t)*; MODULE: fi.MODULE; }.
-    11) Let F be the activation of f with arity m.
-    12) Push F to the stack.
-    13) Let L be the label_m{[]}.
-    14) Enter instr* with label L.
+    4) Assert: Due to validation, y_0 is of the case LOCAL.
+    5) Let (LOCAL t)* be y_0.
+    6) Assert: Due to validation, $expanddt(fi.TYPE) is of the case FUNC.
+    7) Let (FUNC y_0) be $expanddt(fi.TYPE).
+    8) Let (t_1^n -> t_2^m) be y_0.
+    9) Assert: Due to validation, there are at least n values on the top of the stack.
+    10) Pop the values val^n from the stack.
+    11) Let f be { LOCALS: ?(val)^n ++ $default_(t)*; MODULE: fi.MODULE; }.
+    12) Let F be the activation of f with arity m.
+    13) Push F to the stack.
+    14) Let L be the label_m{[]}.
+    15) Enter instr* with label L.
 
 execution_of_RETURN_CALL x
 1. Let z be the current state.
@@ -6941,7 +6976,7 @@ execution_of_RETURN_CALL_REF yy
         2. Push the values val^n to the stack.
         3. Push the value (REF.FUNC_ADDR a) to the stack.
         4. Execute the instruction (CALL_REF yy).
-  d. If instr_u0 is of the case REF.NULL, then:
+  d. If (instr_u0 is of the case REF.NULL and the type of instr_u1 is val*), then:
     1) Trap.
 
 execution_of_REF.NULL $idx(x)
@@ -7033,7 +7068,7 @@ execution_of_ARRAY.NEW_DATA x y
 8. Let (mut, zt) be y_0.
 9. If ((i + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
   a. Trap.
-10. Let $zbytes(zt, c)^n be $concat_^-1($data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)]).
+10. Let c^n be $zbytes_1^-1(zt, $concat_^-1($data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)])).
 11. Push the values $const($cunpack(zt), $cunpacknum(zt, c))^n to the stack.
 12. Execute the instruction (ARRAY.NEW_FIXED x n).
 
