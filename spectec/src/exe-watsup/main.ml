@@ -176,6 +176,8 @@ let () =
     (match !target with
     | Prose | Splice _ | Interpreter _ ->
       enable_pass Sideconditions; enable_pass Animate
+    | _ when !print_al ->
+      enable_pass Sideconditions; enable_pass Animate
     | _ -> ()
     );
 
@@ -198,8 +200,8 @@ let () =
     if !print_final_il && not !print_all_il then print_il il;
 
     let al =
-      if !target = Check || !target = Latex || not (PS.mem Animate !selected_passes)
-      then [] else (
+      if not !print_al && (!target = Check || !target = Latex) then []
+      else (
         log "Translating to AL...";
         (Il2al.Translate.translate il @ Il2al.Manual.manual_algos)
       )
