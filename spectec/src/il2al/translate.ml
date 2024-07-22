@@ -587,7 +587,7 @@ and handle_iter_lhs lhs rhs free_ids =
     expr
     |> free_expr
     |> IdSet.inter (IdSet.of_list iter_ids)
-    |> IdSet.to_list
+    |> IdSet.elements
   in
   let walk_expr (walker: Walk.walker) (expr: expr): expr =
     if contains_ids iter_ids expr then
