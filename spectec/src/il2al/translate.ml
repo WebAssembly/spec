@@ -691,14 +691,26 @@ let translate_rulepr id exp =
       popI (frameE (None, z));
     ]
   (* ".*_type" *)
-  | typing_rule_name, [_store; lhs; ty]
-  when String.ends_with ~suffix:"_type" typing_rule_name ->
+  | name, [_store; lhs; ty]
+    when String.ends_with ~suffix:"_type" name ->
     (* TODO: Automatically remove store *)
     (* TODO: Check condition or binding *)
-    [ letI (ty, callE (typing_rule_name, [(*store; *)lhs]) ~at:at) ~at:at ]
-  (* ".*_sub" | ".*_ok" | ".*_const" *)
-  | "Reftype_sub", [_C; rt1; rt2] ->
+    [ letI (ty, callE (name, [(*store; *)lhs]) ~at:at) ~at:at ]
+  (* ".*_sub" *)
+  | name, [_C; rt1; rt2]
+    when String.ends_with ~suffix:"_sub" name ->
     [ ifI (matchE (rt1, rt2) ~at:at, [], []) ~at:at ]
+  (* ".*_ok" *)
+  | name, el when String.ends_with ~suffix: "_ok" name ->
+    (match el with
+    | [c; e; t] -> [ assertI (callE (name, [c; e; t]) ~at:at) ~at:at]
+    | [c; e ] -> [ assertI (callE (name, [c; e]) ~at:at) ~at:at]
+    | _ -> error_exp exp "unrecognized form of argument in rule_ok"
+    )
+  (* ".*_const" *)
+  | name, el
+    when String.ends_with ~suffix: "_const" name ->
+    [ assertI (callE (name, el) ~at:at) ~at:at]
   | _ ->
     print_yet exp.at "translate_rulepr" ("`" ^ Il.Print.string_of_exp exp ^ "`");
     [ yetI ("TODO: translate_rulepr " ^ id.it) ~at:at ]
