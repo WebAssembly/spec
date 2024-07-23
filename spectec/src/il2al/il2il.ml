@@ -254,6 +254,26 @@ let prioritize_else prems =
   let other, non_others = List.partition (fun p -> p.it = ElsePr) prems in
   other @ non_others
 
+
+(** 1. Validation rules **)
+
+let apply_template_to_rule template rule =
+  match rule.it with
+  | RuleD (id, binds, mixop, exp, prems) ->
+    let new_prems, _ = collect_unified template exp in
+    RuleD (id, binds, mixop, template, new_prems @ prems) $ rule.at
+
+let unify_rules rules =
+  init_unified_idx();
+  let concls = List.map (fun x -> let RuleD(_, _, _, e, _) = x.it in e) rules in
+  let hd = List.hd concls in
+  let tl = List.tl concls in
+  let template = List.fold_left overlap hd tl in
+  List.map (apply_template_to_rule template) rules
+
+
+(** 2. Reduction rules **)
+
 let apply_template_to_rgroup template (lhs, rhs, prems) =
   let new_prems, _ = collect_unified template lhs in
   (* TODO: Remove this depedency on animation. Perhaps this should be moved as a middle end before animation path *)
@@ -275,12 +295,15 @@ let unify_lhs (rname, rgroup) =
   (* typical f^-1 ∘ g ∘ f *)
   rname, (rgroup |> List.map (Source.map to_left_assoc) |> unify_lhs' |> List.map (Source.map to_right_assoc))
 
+
+(** 3. Functions **)
+
 let apply_template_to_def template def =
   match def.it with
   | DefD (binds, lhs, rhs, prems) ->
     let new_prems, new_binds = collect_unified_args template lhs in
     let animated_prems = Animate.animate_prems Il.Free.(free_list free_arg template) new_prems in
-    DefD (binds @ new_binds, template, rhs, (animated_prems @ prems) |> prioritize_else) $ no_region
+    DefD (binds @ new_binds, template, rhs, (animated_prems @ prems) |> prioritize_else) $ def.at
 
 let unify_defs defs =
   init_unified_idx();

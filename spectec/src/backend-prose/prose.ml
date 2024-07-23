@@ -3,22 +3,25 @@
 
 type cmpop = Eq | Ne | Lt | Gt | Le | Ge
 
+type expr = Al.Ast.expr
+
 (* TODO: perhaps rename to `stmt`, to avoid confusion with Wasm *)
 type instr =
-| LetI of Al.Ast.expr * Al.Ast.expr
-| CmpI of Al.Ast.expr * cmpop * Al.Ast.expr
-| MemI of Al.Ast.expr * Al.Ast.expr
-| MustValidI of Al.Ast.expr * Al.Ast.expr * Al.Ast.expr option
-| MustMatchI of Al.Ast.expr * Al.Ast.expr
-| IsValidI of Al.Ast.expr option
-| IfI of Al.Ast.expr * instr list
-| ForallI of Al.Ast.expr * Al.Ast.expr * instr list
-| EquivI of Al.Ast.expr * Al.Ast.expr
+| LetI of expr * expr
+| CmpI of expr * cmpop * expr
+| MemI of expr * expr
+| IsValidI of expr option * expr * expr list
+| MatchesI of expr * expr
+| IsConstI of expr option * expr
+| IfI of expr * instr list
+| ForallI of (expr * expr) list * instr list
+| EquivI of expr * expr
+| EitherI of instr list list
 | YetI of string
 
 (* TODO: perhaps rename to avoid name clash *)
 type def =
-| Pred of Al.Ast.atom * Al.Ast.expr list * instr list
+| Iff of string * Al.Ast.expr * instr * instr list
 | Algo of Al.Ast.algorithm
 
 type prose = def list

@@ -156,3 +156,8 @@ type algorithm = algorithm' phrase
 and algorithm' =                          (* `algorithm` f`(`expr*`)` `{`instr*`}` *)
   | RuleA of atom * expr list * instr list (* reduction rule *)
   | FuncA of id * expr list * instr list   (* helper function *)
+
+
+(* Scripts *)
+
+type script = algorithm list

@@ -170,7 +170,10 @@ let () =
     Il.Valid.valid il;
 
     (match !target with
-    | Prose | Splice _ | Interpreter _ -> enable_pass Sideconditions;
+    | Prose | Splice _ | Interpreter _ ->
+      enable_pass Sideconditions;
+    | _ when !print_al ->
+      enable_pass Sideconditions;
     | _ -> ()
     );
 
@@ -193,8 +196,8 @@ let () =
     if !print_final_il && not !print_all_il then print_il il;
 
     let al =
-      if !target = Check || !target = Latex
-      then [] else (
+      if not !print_al && (!target = Check || !target = Latex) then []
+      else (
         log "Translating to AL...";
         (Il2al.Translate.translate il @ Il2al.Manual.manual_algos)
       )
@@ -221,7 +224,7 @@ let () =
 
     | Prose ->
       log "Prose Generation...";
-      let prose = Backend_prose.Gen.gen_prose il al in
+      let prose = Backend_prose.Gen.gen_prose el il al in
       let oc =
         match !odsts with
         | [] -> stdout
@@ -251,7 +254,7 @@ let () =
           exit 2
       );
       log "Prose Generation...";
-      let prose = Backend_prose.Gen.gen_prose il al in
+      let prose = Backend_prose.Gen.gen_prose el il al in
       log "Splicing...";
       let config' =
         Backend_splice.Config.{config with latex = Backend_latex.Config.{config.latex with
