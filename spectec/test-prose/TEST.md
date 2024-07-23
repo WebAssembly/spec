@@ -8228,9 +8228,10 @@ execution_of_ARRAY.NEW_ELEM x y
 5. Pop the value (I32.CONST i) from the stack.
 6. If ((i + n) > |$elem(z, y).REFS|), then:
   a. Trap.
-7. Let ref^n be $elem(z, y).REFS[i : n].
-8. Push the values ref^n to the stack.
-9. Execute the instruction (ARRAY.NEW_FIXED x n).
+7. Assert: Due to validation, (|$elem(z, y).REFS[i : n]| is n).
+8. Let ref* be $elem(z, y).REFS[i : n].
+9. Push the values ref^n to the stack.
+10. Execute the instruction (ARRAY.NEW_FIXED x n).
 
 execution_of_ARRAY.NEW_DATA x y
 1. Let z be the current state.
@@ -8243,10 +8244,11 @@ execution_of_ARRAY.NEW_DATA x y
 8. Let (mut, zt) be y_0.
 9. If ((i + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
   a. Trap.
-10. Let tmp* be $concat_^-1($data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)]).
-11. Let c^n be $zbytes_1^-1(zt, tmp)*.
-12. Push the values $const($cunpack(zt), $cunpacknum(zt, c))^n to the stack.
-13. Execute the instruction (ARRAY.NEW_FIXED x n).
+10. Assert: Due to validation, (|$concat_^-1($data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)])| is n).
+11. Let tmp* be $concat_^-1($data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)]).
+12. Let c* be $zbytes_1^-1(zt, tmp)*.
+13. Push the values $const($cunpack(zt), $cunpacknum(zt, c))^n to the stack.
+14. Execute the instruction (ARRAY.NEW_FIXED x n).
 
 execution_of_ARRAY.GET sx? x
 1. Let z be the current state.

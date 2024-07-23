@@ -489,7 +489,6 @@ let contains_diff target_ns e =
 
 let handle_partial_bindings lhs rhs ids =
   match lhs.it with
-  (* TODO: Make this actually consider the targets *)
   | CallE (_, _) ->
     lhs, rhs, []
   | _ ->
@@ -520,6 +519,14 @@ let rec translate_bindings ids bindings =
 
 and call_lhs_to_inverse_call_rhs lhs rhs free_ids =
 
+  (* Get CallE fields *)
+
+  let f, args =
+    match lhs.it with
+    | CallE (f, args) -> f, args
+    | _ -> assert (false);
+  in
+
   (* Helper functions *)
 
   let contains_free = contains_ids free_ids in
@@ -535,14 +542,6 @@ and call_lhs_to_inverse_call_rhs lhs rhs free_ids =
       let no_name = Il.VarE ("_" $ no_region) $$ no_region % (Il.TextT $ no_region) in
       let typ = Il.TupT (List.map (fun e -> no_name, e.note) args) $ no_region in
       TupE args $$ no_region % typ
-  in
-
-  (* Get function name and arguments *)
-
-  let f, args =
-    match lhs.it with
-    | CallE (f, args) -> f, args
-    | _ -> assert (false);
   in
 
   (* All arguments are free *)
@@ -643,7 +642,9 @@ and handle_call_lhs lhs rhs free_ids =
   )
 
 and handle_iter_lhs lhs rhs free_ids =
-  (* Get iterator fields *)
+
+  (* Get IterE fields *)
+
   let inner_lhs, iter_ids, iter =
     match lhs.it with
     | IterE (inner_lhs, iter_ids, iter) ->
@@ -652,6 +653,7 @@ and handle_iter_lhs lhs rhs free_ids =
   in
 
   (* Helper functions *)
+
   let iter_ids_of (expr: expr): string list =
     expr
     |> free_expr
@@ -660,22 +662,32 @@ and handle_iter_lhs lhs rhs free_ids =
   in
   let walk_expr (walker: Walk.walker) (expr: expr): expr =
     if contains_ids iter_ids expr then
-      let typ =
+      let iter', typ =
         match iter with
-        | Opt -> Il.IterT (expr.note, Il.Opt) $ no_region
-        | _ -> Il.IterT (expr.note, Il.List) $ no_region
+        | Opt -> iter, Il.IterT (expr.note, Il.Opt) $ no_region
+        | ListN (expr, None) when not (contains_ids free_ids expr) ->
+          List, Il.IterT (expr.note, Il.List) $ no_region
+        | _ -> iter, Il.IterT (expr.note, Il.List) $ no_region
       in
-      IterE (expr, iter_ids_of expr, iter) $$ lhs.at % typ
+      IterE (expr, iter_ids_of expr, iter') $$ lhs.at % typ
     else
       Walk.base_walker.walk_expr walker expr
   in
 
   (* Translate inner lhs *)
+
   let instrs = handle_special_lhs inner_lhs rhs free_ids in
 
   (* Iter injection *)
+
   let walker = { Walk.base_walker with walk_expr } in
-  List.map (walker.walk_instr walker) instrs
+  let instrs' = List.map (walker.walk_instr walker) instrs in
+
+  (* Add ListN condition *)
+  match iter with
+  | ListN (expr, None) when not (contains_ids free_ids expr) ->
+    assertI (binE (EqOp, lenE rhs, expr)) :: instrs'
+  | _ -> instrs'
 
 and handle_special_lhs lhs rhs free_ids =
 
