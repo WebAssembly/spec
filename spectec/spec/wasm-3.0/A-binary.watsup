@@ -184,13 +184,16 @@ grammar Btabletype : tabletype =
 grammar Bmemtype : memtype =
   | lim:Blimits => lim PAGE
 
+grammar Btagtype : typeidx =
+  | 0x00 x:Btypeidx => x
+
 
 grammar Bexterntype : externtype =
   | 0x00 x:Btypeidx => FUNC $idx(x)
   | 0x01 tt:Btabletype => TABLE tt
   | 0x02 mt:Bmemtype => MEM mt
   | 0x03 gt:Bglobaltype => GLOBAL gt
-  | 0x04 x:Btypeidx => TAG $idx(x)
+  | 0x04 x:Btagtype => TAG $idx(x)
 
 
 ;;

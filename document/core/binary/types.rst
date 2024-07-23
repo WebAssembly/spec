@@ -189,12 +189,9 @@ $${grammar: Bglobaltype}
 Tag Types
 ~~~~~~~~~
 
-:ref:`Tag types <syntax-tagtype>` are encoded by their function type.
+:ref:`Tag types <syntax-tagtype>` are encoded by a :ref:`type index <syntax-typeidx>` denoting a :ref:`function type <syntax-functype>`.
 
 $${grammar: Btagtype}
-
-The ${grammar-case: Bfunctype} of a tag is used to characterise exceptions.
-The ${grammar-case: 0x00} bit signifies an exception and is currently the only allowed value.
 
 .. note::
    In future versions of WebAssembly,
