@@ -579,7 +579,7 @@ syntax instr/vec hint(desc "vector instruction") = ...
     -- if sx? =/= eps <=> $lanetype(shape_1) = Jnn_1 /\ $lanetype(shape_2) = Jnn_2 /\ $lsizenn1(Jnn_1) > $lsizenn2(Jnn_2)
   | VSPLAT shape                        hint(show ##%.SPLAT) hint(macro "VSPLAT")
   | VEXTRACT_LANE shape sx? laneidx     hint(show ##%.EXTRACT_LANE %) hint(show ##%.EXTRACT_LANE#_#% %) hint(macro "VEXTRACT_LANE")
-    -- if $lanetype(shape) = numtype <=> sx? = eps
+    -- if sx? = eps <=> $lanetype(shape) = numtype
   | VREPLACE_LANE shape laneidx         hint(show ##%.REPLACE_LANE %) hint(macro "VREPLACE_LANE")
   | ...
 

@@ -697,20 +697,20 @@ and create_context (name: string) (args: value list) : AlContext.mode =
 
   AlContext.al (name, body, env)
 
-and call_func (fname: string) (args: value list) : value option =
+and call_func (name: string) (args: value list) : value option =
   (* Module & Runtime *)
-  if bound_func fname then
-    [create_context fname args]
+  if bound_func name then
+    [create_context name args]
     |> run
     |> AlContext.get_return_value
   (* Numerics *)
-  else if Numerics.mem fname then
-    Some (Numerics.call_numerics fname args)
+  else if Numerics.mem name then
+    Some (Numerics.call_numerics name args)
   (* Manual *)
-  else if fname = "ref_type_of" then
-    Some (Manual.ref_type_of args)
+  else if Manual.mem name then
+    Some (Manual.call_func name args)
   else
-    raise (Exception.InvalidFunc ("Invalid DSL function: " ^ fname))
+    raise (Exception.InvalidFunc ("Invalid DSL function: " ^ name))
 
 
 (* Wasm interpreter entry *)

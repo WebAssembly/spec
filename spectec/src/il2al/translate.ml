@@ -490,7 +490,6 @@ let contains_diff target_ns e =
 
 let handle_partial_bindings lhs rhs ids =
   match lhs.it with
-  (* TODO: Make this actually consider the targets *)
   | CallE (_, _) ->
     lhs, rhs, []
   | _ ->
@@ -519,31 +518,45 @@ let rec translate_bindings ids bindings =
     | _ -> insert_instrs cont (handle_special_lhs l r ids)
   ) bindings []
 
-and handle_inverse_function lhs rhs free_ids =
-  (* Helper functions *)
-  let contains_free = contains_ids free_ids in
-  let rhs2args e =
-    match e.it with
-    | TupE el -> el
-    | _ -> [e]
-  in
-  let args2lhs args = if List.length args = 1 then List.hd args else tupE args in
+and call_lhs_to_inverse_call_rhs lhs rhs free_ids =
 
-  (* Get function name and arguments *)
+  (* Get CallE fields *)
+
   let f, args =
     match lhs.it with
     | CallE (f, args) -> f, args
     | _ -> assert (false);
   in
 
+  (* Helper functions *)
+
+  let contains_free = contains_ids free_ids in
+  let rhs2args e =
+    match e.it with
+    | TupE el -> el
+    | _ -> [e]
+  in
+  let args2lhs args =
+    if List.length args = 1 then
+      List.hd args
+    else
+      let no_name = Il.VarE ("_" $ no_region) $$ no_region % (Il.TextT $ no_region) in
+      let typ = Il.TupT (List.map (fun e -> no_name, e.note) args) $ no_region in
+      TupE args $$ no_region % typ
+  in
+
   (* All arguments are free *)
+
   if List.for_all contains_free args then
     let new_lhs = args2lhs args in
-    let indices = List.init (List.length args) (fun i -> Some i) in
-    let new_rhs = invCallE (f, indices, rhs2args rhs) ~at:lhs.at ~note:lhs.note in
-    handle_special_lhs new_lhs new_rhs free_ids
+    let indices = List.init (List.length args) Option.some in
+    let new_rhs =
+      invCallE (f, indices, rhs2args rhs) ~at:lhs.at ~note:new_lhs.note
+    in
+    new_lhs, new_rhs
 
-  (* Some arguments are free *)
+  (* Some arguments are free  *)
+
   else if List.exists contains_free args then
     (* Distinguish free arguments and bound arguments *)
     let free_args_with_index, bound_args =
@@ -563,19 +576,76 @@ and handle_inverse_function lhs rhs free_ids =
 
     (* Free argument become new lhs & InvCallE become new rhs *)
     let new_lhs = args2lhs free_args in
-    let new_rhs = invCallE (f, indices, bound_args @ rhs2args rhs) ~at:lhs.at ~note:lhs.note in
-
-    (* Recursively translate new_lhs and new_rhs *)
-    handle_special_lhs new_lhs new_rhs free_ids
+    let new_rhs =
+      invCallE (f, indices, bound_args @ rhs2args rhs) ~at:lhs.at ~note:new_lhs.note
+    in
+    new_lhs, new_rhs
 
   (* No argument is free *)
+
   else
     Print.string_of_expr lhs
     |> sprintf "lhs expression %s doesn't contain free variable"
     |> error lhs.at
 
+and handle_call_lhs lhs rhs free_ids =
+
+  (* Helper functions *)
+
+  let collect_iters typ1 =
+    let rec collect_iters' acc typ2 =
+      match typ2.it with
+      | Il.IterT (typ3, iter) -> collect_iters' (iter :: acc) typ3
+      | _ -> acc
+    in
+    collect_iters' [] typ1
+  in
+
+  let lhs_iters, rhs_iters = collect_iters lhs.note, collect_iters rhs.note in
+
+  (* LHS type and RHS type are the same: normal inverse function *)
+
+  if List.length lhs_iters = List.length rhs_iters then
+    let new_lhs, new_rhs = call_lhs_to_inverse_call_rhs lhs rhs free_ids in
+    handle_special_lhs new_lhs new_rhs free_ids
+
+  (* RHS has more iter: it is in map translation process *)
+
+  else if List.length lhs_iters < List.length rhs_iters then
+
+    (* TODO: Better name using type *)
+    let var_name = "tmp" in
+    let var_expr = varE var_name in
+
+    let rec get_map_iters iters1 iters2 =
+      match iters1, iters2 with
+      | [], _ -> iters2
+      | _ :: t1, _ :: t2 -> get_map_iters t1 t2
+      | _ -> assert (false);
+    in
+    let to_iter_expr (expr: expr) : expr =
+      get_map_iters lhs_iters rhs_iters
+      |> List.map translate_iter
+      |> List.fold_left (fun e iter -> iterE (e, [var_name], iter)) expr
+    in
+
+    let new_lhs, new_rhs = call_lhs_to_inverse_call_rhs lhs var_expr free_ids in
+    (* Introduce new variable for map *)
+    let let_instr = letI (to_iter_expr var_expr, rhs) in
+    let_instr :: handle_special_lhs new_lhs (to_iter_expr new_rhs) free_ids
+
+  (* LHS has more iter: invalid case *)
+
+  else (
+    Print.string_of_expr rhs
+    |> sprintf "lhs has more iter than rhs %s"
+    |> error lhs.at
+  )
+
 and handle_iter_lhs lhs rhs free_ids =
-  (* Get iterator fields *)
+
+  (* Get IterE fields *)
+
   let inner_lhs, iter_ids, iter =
     match lhs.it with
     | IterE (inner_lhs, iter_ids, iter) ->
@@ -584,6 +654,7 @@ and handle_iter_lhs lhs rhs free_ids =
   in
 
   (* Helper functions *)
+
   let iter_ids_of (expr: expr): string list =
     expr
     |> free_expr
@@ -592,24 +663,39 @@ and handle_iter_lhs lhs rhs free_ids =
   in
   let walk_expr (walker: Walk.walker) (expr: expr): expr =
     if contains_ids iter_ids expr then
-      IterE (expr, iter_ids_of expr, iter) $$ lhs.at % lhs.note
+      let iter', typ =
+        match iter with
+        | Opt -> iter, Il.IterT (expr.note, Il.Opt) $ no_region
+        | ListN (expr, None) when not (contains_ids free_ids expr) ->
+          List, Il.IterT (expr.note, Il.List) $ no_region
+        | _ -> iter, Il.IterT (expr.note, Il.List) $ no_region
+      in
+      IterE (expr, iter_ids_of expr, iter') $$ lhs.at % typ
     else
       Walk.base_walker.walk_expr walker expr
   in
 
   (* Translate inner lhs *)
+
   let instrs = handle_special_lhs inner_lhs rhs free_ids in
 
   (* Iter injection *)
+
   let walker = { Walk.base_walker with walk_expr } in
-  List.map (walker.walk_instr walker) instrs
+  let instrs' = List.map (walker.walk_instr walker) instrs in
+
+  (* Add ListN condition *)
+  match iter with
+  | ListN (expr, None) when not (contains_ids free_ids expr) ->
+    assertI (binE (EqOp, lenE rhs, expr)) :: instrs'
+  | _ -> instrs'
 
 and handle_special_lhs lhs rhs free_ids =
 
   let at = over_region [ lhs.at; rhs.at ] in
   match lhs.it with
   (* Handle inverse function call *)
-  | CallE _ -> handle_inverse_function lhs rhs free_ids
+  | CallE _ -> handle_call_lhs lhs rhs free_ids
   (* Handle iterator *)
   | IterE _ -> handle_iter_lhs lhs rhs free_ids
   (* Handle subtyping *)
@@ -617,7 +703,8 @@ and handle_special_lhs lhs rhs free_ids =
     let rec inject_hasType expr =
       match expr.it with
       | IterE (inner_expr, ids, iter) ->
-        IterE (inject_hasType inner_expr, ids, iter) $$ expr.at % expr.note
+        let typ = Il.BoolT $ no_region in
+        IterE (inject_hasType inner_expr, ids, iter) $$ expr.at % typ
       | _ -> HasTypeE (expr, t) $$ rhs.at % rhs.note
     in
     [ ifI (
@@ -730,10 +817,20 @@ let translate_rulepr id exp =
       letI (rhs, callE ("eval_expr", [ lhs ])) ~at:at;
       popI (frameE (None, z));
     ]
-  | "Ref_type", [_s; ref; rt] ->
-    [ letI (rt, callE ("ref_type_of", [ ref ]) ~at:at) ~at:at ]
-  | "Reftype_sub", [_C; rt1; rt2] ->
+  (* ".*_sub" *)
+  | name, [_C; rt1; rt2]
+    when String.ends_with ~suffix:"_sub" name ->
     [ ifI (matchE (rt1, rt2) ~at:at, [], []) ~at:at ]
+  (* ".*_ok" *)
+  | name, el when String.ends_with ~suffix: "_ok" name ->
+    (match el with
+    | [_; e; t] | [e; t] -> [ assertI (callE (name, [e; t]) ~at:at) ~at:at]
+    | _ -> error_exp exp "unrecognized form of argument in rule_ok"
+    )
+  (* ".*_const" *)
+  | name, el
+    when String.ends_with ~suffix: "_const" name ->
+    [ assertI (callE (name, el) ~at:at) ~at:at]
   | _ ->
     print_yet exp.at "translate_rulepr" ("`" ^ Il.Print.string_of_exp exp ^ "`");
     [ yetI ("TODO: translate_rulepr " ^ id.it) ~at:at ]
@@ -1187,5 +1284,5 @@ let translate_rules il =
 
 (* Entry *)
 let translate il =
-  let il = List.concat_map flatten_rec il in
-  translate_helpers il @ translate_rules il
+  let il' = il |> Animate.transform |> List.concat_map flatten_rec in
+  translate_helpers il' @ translate_rules il'

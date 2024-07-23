@@ -220,6 +220,8 @@ let build_matrix prems known_vars =
 
 (* Pre-process a premise *)
 let rec pre_process prem = match prem.it with
+  | IterPr (prem, iterexp) ->
+    List.map (fun pr -> { prem with it=IterPr (pr, iterexp) }) (pre_process prem)
   (* HARDCODE: translation of `Expand: dt ~~ ct` into `$expanddt(dt) = ct` *)
   | RulePr (
       { it = "Expand"; _ },
@@ -228,6 +230,10 @@ let rec pre_process prem = match prem.it with
     ) ->
       let expanded_dt = { dt with it = CallE ("expanddt" $ no_region, [ExpA dt $ no_region]); note = ct.note } in
       [ { prem with it = IfPr (CmpE (EqOp, expanded_dt, ct) $$ no_region % (BoolT $ no_region)) } ]
+  | RulePr (id, _, { it=TupE [_context; lhs; rhs]; at; note })
+  when String.ends_with ~suffix:"_type" id.it ->
+    let typing_function_call = { it=CallE (id, [ExpA lhs $ lhs.at]); at; note } in
+    [ { prem with it=IfPr (CmpE (EqOp, typing_function_call, rhs) $$ at % note) } ]
   (* Split -- if e1 /\ e2 *)
   | IfPr ( { it = BinE (AndOp, e1, e2); _ } ) ->
     let p1 = { prem with it = IfPr ( e1 ) } in

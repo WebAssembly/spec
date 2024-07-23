@@ -1,3 +1,5 @@
 open Al.Ast
 
-val ref_type_of : value list -> value
+val mem : string -> bool
+
+val call_func : string -> value list -> value
