@@ -14,26 +14,26 @@ def $default_(F64) = (CONST F64 $fzero(64))
 
 ;; Projections
 
-def $funcsxv(externval*) : funcaddr*     hint(show $funcs(%))
-def $globalsxv(externval*) : globaladdr* hint(show $globals(%))
-def $tablesxv(externval*) : tableaddr*   hint(show $tables(%))
-def $memsxv(externval*) : memaddr*       hint(show $mems(%))
+def $funcsxa(externaddr*) : funcaddr*     hint(show $funcs(%))
+def $globalsxa(externaddr*) : globaladdr* hint(show $globals(%))
+def $tablesxa(externaddr*) : tableaddr*   hint(show $tables(%))
+def $memsxa(externaddr*) : memaddr*       hint(show $mems(%))
 
-def $funcsxv(eps) = eps
-def $funcsxv((FUNC fa) xv*) = fa $funcsxv(xv*)
-def $funcsxv(externval xv*) = $funcsxv(xv*)  -- otherwise
+def $funcsxa(eps) = eps
+def $funcsxa((FUNC fa) xv*) = fa $funcsxa(xv*)
+def $funcsxa(externaddr xv*) = $funcsxa(xv*)  -- otherwise
 
-def $globalsxv(eps) = eps
-def $globalsxv((GLOBAL ga) xv*) = ga $globalsxv(xv*)
-def $globalsxv(externval xv*) = $globalsxv(xv*)  -- otherwise
+def $globalsxa(eps) = eps
+def $globalsxa((GLOBAL ga) xv*) = ga $globalsxa(xv*)
+def $globalsxa(externaddr xv*) = $globalsxa(xv*)  -- otherwise
 
-def $tablesxv(eps) = eps
-def $tablesxv((TABLE ta) xv*) = ta $tablesxv(xv*)
-def $tablesxv(externval xv*) = $tablesxv(xv*)  -- otherwise
+def $tablesxa(eps) = eps
+def $tablesxa((TABLE ta) xv*) = ta $tablesxa(xv*)
+def $tablesxa(externaddr xv*) = $tablesxa(xv*)  -- otherwise
 
-def $memsxv(eps) = eps
-def $memsxv((MEM ma) xv*) = ma $memsxv(xv*)
-def $memsxv(externval xv*) = $memsxv(xv*)  -- otherwise
+def $memsxa(eps) = eps
+def $memsxa((MEM ma) xv*) = ma $memsxa(xv*)
+def $memsxa(externaddr xv*) = $memsxa(xv*)  -- otherwise
 
 
 

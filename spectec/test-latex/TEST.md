@@ -3908,6 +3908,7 @@ $$
 \mbox{(structure address)} & {\mathit{structaddr}} &::=& {\mathit{addr}} \\
 \mbox{(array address)} & {\mathit{arrayaddr}} &::=& {\mathit{addr}} \\
 \mbox{(exception address)} & {\mathit{exnaddr}} &::=& {\mathit{addr}} \\
+\mbox{(external address)} & {\mathit{externaddr}} &::=& \mathsf{func}~{\mathit{funcaddr}} ~|~ \mathsf{global}~{\mathit{globaladdr}} ~|~ \mathsf{table}~{\mathit{tableaddr}} ~|~ \mathsf{mem}~{\mathit{memaddr}} ~|~ \mathsf{tag}~{\mathit{tagaddr}} \\
 \end{array}
 $$
 
@@ -3935,14 +3936,6 @@ $$
 
 \vspace{1ex}
 
-$$
-\begin{array}{@{}lrrl@{}l@{}}
-\mbox{(external value)} & {\mathit{externval}} &::=& \mathsf{func}~{\mathit{funcaddr}} ~|~ \mathsf{global}~{\mathit{globaladdr}} ~|~ \mathsf{table}~{\mathit{tableaddr}} ~|~ \mathsf{mem}~{\mathit{memaddr}} ~|~ \mathsf{tag}~{\mathit{tagaddr}} \\
-\end{array}
-$$
-
-\vspace{1ex}
-
 \vspace{1ex}
 
 $$
@@ -3964,7 +3957,7 @@ $$
 \mbox{(data instance)} & {\mathit{datainst}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
 \mathsf{bytes}~{{\mathit{byte}}^\ast} \}\end{array} \\
 \mbox{(export instance)} & {\mathit{exportinst}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
-\mathsf{name}~{\mathit{name}},\; \mathsf{value}~{\mathit{externval}} \}\end{array} \\
+\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~{\mathit{externaddr}} \}\end{array} \\
 \mbox{(packed value)} & {\mathit{packval}} &::=& {\mathit{packtype}}{.}\mathsf{pack}~{i}{N} \\
 \mbox{(field value)} & {\mathit{fieldval}} &::=& {\mathit{val}} ~|~ {\mathit{packval}} \\
 \mbox{(structure instance)} & {\mathit{structinst}} &::=& \{ \begin{array}[t]{@{}l@{}l@{}}
@@ -4079,8 +4072,8 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {\mathrm{funcs}}(\epsilon) &=& \epsilon \\
-{\mathrm{funcs}}((\mathsf{func}~{\mathit{fa}})~{{\mathit{xv}}^\ast}) &=& {\mathit{fa}}~{\mathrm{funcs}}({{\mathit{xv}}^\ast}) \\
-{\mathrm{funcs}}({\mathit{externval}}~{{\mathit{xv}}^\ast}) &=& {\mathrm{funcs}}({{\mathit{xv}}^\ast})
+{\mathrm{funcs}}((\mathsf{func}~{\mathit{fa}})~{{\mathit{xa}}^\ast}) &=& {\mathit{fa}}~{\mathrm{funcs}}({{\mathit{xa}}^\ast}) \\
+{\mathrm{funcs}}({\mathit{externaddr}}~{{\mathit{xa}}^\ast}) &=& {\mathrm{funcs}}({{\mathit{xa}}^\ast})
   &\qquad \mbox{otherwise} \\
 \end{array}
 $$
@@ -4088,8 +4081,8 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {\mathrm{globals}}(\epsilon) &=& \epsilon \\
-{\mathrm{globals}}((\mathsf{global}~{\mathit{ga}})~{{\mathit{xv}}^\ast}) &=& {\mathit{ga}}~{\mathrm{globals}}({{\mathit{xv}}^\ast}) \\
-{\mathrm{globals}}({\mathit{externval}}~{{\mathit{xv}}^\ast}) &=& {\mathrm{globals}}({{\mathit{xv}}^\ast})
+{\mathrm{globals}}((\mathsf{global}~{\mathit{ga}})~{{\mathit{xa}}^\ast}) &=& {\mathit{ga}}~{\mathrm{globals}}({{\mathit{xa}}^\ast}) \\
+{\mathrm{globals}}({\mathit{externaddr}}~{{\mathit{xa}}^\ast}) &=& {\mathrm{globals}}({{\mathit{xa}}^\ast})
   &\qquad \mbox{otherwise} \\
 \end{array}
 $$
@@ -4097,8 +4090,8 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {\mathrm{tables}}(\epsilon) &=& \epsilon \\
-{\mathrm{tables}}((\mathsf{table}~{\mathit{ta}})~{{\mathit{xv}}^\ast}) &=& {\mathit{ta}}~{\mathrm{tables}}({{\mathit{xv}}^\ast}) \\
-{\mathrm{tables}}({\mathit{externval}}~{{\mathit{xv}}^\ast}) &=& {\mathrm{tables}}({{\mathit{xv}}^\ast})
+{\mathrm{tables}}((\mathsf{table}~{\mathit{ta}})~{{\mathit{xa}}^\ast}) &=& {\mathit{ta}}~{\mathrm{tables}}({{\mathit{xa}}^\ast}) \\
+{\mathrm{tables}}({\mathit{externaddr}}~{{\mathit{xa}}^\ast}) &=& {\mathrm{tables}}({{\mathit{xa}}^\ast})
   &\qquad \mbox{otherwise} \\
 \end{array}
 $$
@@ -4106,8 +4099,8 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {\mathrm{mems}}(\epsilon) &=& \epsilon \\
-{\mathrm{mems}}((\mathsf{mem}~{\mathit{ma}})~{{\mathit{xv}}^\ast}) &=& {\mathit{ma}}~{\mathrm{mems}}({{\mathit{xv}}^\ast}) \\
-{\mathrm{mems}}({\mathit{externval}}~{{\mathit{xv}}^\ast}) &=& {\mathrm{mems}}({{\mathit{xv}}^\ast})
+{\mathrm{mems}}((\mathsf{mem}~{\mathit{ma}})~{{\mathit{xa}}^\ast}) &=& {\mathit{ma}}~{\mathrm{mems}}({{\mathit{xa}}^\ast}) \\
+{\mathrm{mems}}({\mathit{externaddr}}~{{\mathit{xa}}^\ast}) &=& {\mathrm{mems}}({{\mathit{xa}}^\ast})
   &\qquad \mbox{otherwise} \\
 \end{array}
 $$
@@ -4115,8 +4108,8 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {\mathrm{tags}}(\epsilon) &=& \epsilon \\
-{\mathrm{tags}}((\mathsf{tag}~{\mathit{ha}})~{{\mathit{xv}}^\ast}) &=& {\mathit{ha}}~{\mathrm{tags}}({{\mathit{xv}}^\ast}) \\
-{\mathrm{tags}}({\mathit{externval}}~{{\mathit{xv}}^\ast}) &=& {\mathrm{tags}}({{\mathit{xv}}^\ast})
+{\mathrm{tags}}((\mathsf{tag}~{\mathit{ha}})~{{\mathit{xa}}^\ast}) &=& {\mathit{ha}}~{\mathrm{tags}}({{\mathit{xa}}^\ast}) \\
+{\mathrm{tags}}({\mathit{externaddr}}~{{\mathit{xa}}^\ast}) &=& {\mathrm{tags}}({{\mathit{xa}}^\ast})
   &\qquad \mbox{otherwise} \\
 \end{array}
 $$
@@ -4849,6 +4842,8 @@ $\boxed{{\mathit{context}} \vdash {\mathit{tabletype}} : \mathsf{ok}}$
 
 $\boxed{{\mathit{context}} \vdash {\mathit{memtype}} : \mathsf{ok}}$
 
+$\boxed{{\mathit{context}} \vdash {\mathit{tagtype}} : \mathsf{ok}}$
+
 $\boxed{{\mathit{context}} \vdash {\mathit{externtype}} : \mathsf{ok}}$
 
 \vspace{1ex}
@@ -4912,6 +4907,19 @@ C \vdash {\mathit{limits}}~\mathsf{page} : \mathsf{ok}
 \end{array}
 $$
 
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+C \vdash {\mathit{deftype}} : \mathsf{ok}
+ \qquad
+{\mathit{deftype}} \approx \mathsf{func}~{\mathit{functype}}
+}{
+C \vdash {\mathit{deftype}} : \mathsf{ok}
+} \, {[\textsc{\scriptsize K{-}tag}]}
+\qquad
+\end{array}
+$$
+
 \vspace{1ex}
 
 $$
@@ -4956,6 +4964,17 @@ C \vdash {\mathit{memtype}} : \mathsf{ok}
 }{
 C \vdash \mathsf{mem}~{\mathit{memtype}} : \mathsf{ok}
 } \, {[\textsc{\scriptsize K{-}extern{-}mem}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+C \vdash {\mathit{tagtype}} : \mathsf{ok}
+}{
+C \vdash \mathsf{tag}~{\mathit{tagtype}} : \mathsf{ok}
+} \, {[\textsc{\scriptsize K{-}extern{-}tag}]}
 \qquad
 \end{array}
 $$
@@ -7560,6 +7579,17 @@ C \vdash \mathsf{mem}~x : \mathsf{mem}~{\mathit{mt}}
 \end{array}
 $$
 
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+C{.}\mathsf{tags}{}[x] = {\mathit{at}}
+}{
+C \vdash \mathsf{tag}~x : \mathsf{tag}~{\mathit{at}}
+} \, {[\textsc{\scriptsize T{-}externidx{-}tag}]}
+\qquad
+\end{array}
+$$
+
 \vspace{1ex}
 
 $\boxed{{\vdash}\, {\mathit{module}} : {\mathit{moduletype}}}$
@@ -7849,7 +7879,7 @@ $$
 
 \vspace{1ex}
 
-$\boxed{{\mathit{store}} \vdash {\mathit{externval}} : {\mathit{externtype}}}$
+$\boxed{{\mathit{store}} \vdash {\mathit{externaddr}} : {\mathit{externtype}}}$
 
 $$
 \begin{array}{@{}c@{}}\displaystyle
@@ -7857,7 +7887,7 @@ $$
 s{.}\mathsf{funcs}{}[a] = {\mathit{funcinst}}
 }{
 s \vdash \mathsf{func}~a : \mathsf{func}~{\mathit{funcinst}}{.}\mathsf{type}
-} \, {[\textsc{\scriptsize Externval\_type{-}func}]}
+} \, {[\textsc{\scriptsize Externaddr\_type{-}func}]}
 \qquad
 \end{array}
 $$
@@ -7868,7 +7898,7 @@ $$
 s{.}\mathsf{globals}{}[a] = {\mathit{globalinst}}
 }{
 s \vdash \mathsf{global}~a : \mathsf{global}~{\mathit{globalinst}}{.}\mathsf{type}
-} \, {[\textsc{\scriptsize Externval\_type{-}global}]}
+} \, {[\textsc{\scriptsize Externaddr\_type{-}global}]}
 \qquad
 \end{array}
 $$
@@ -7879,7 +7909,7 @@ $$
 s{.}\mathsf{tables}{}[a] = {\mathit{tableinst}}
 }{
 s \vdash \mathsf{table}~a : \mathsf{table}~{\mathit{tableinst}}{.}\mathsf{type}
-} \, {[\textsc{\scriptsize Externval\_type{-}table}]}
+} \, {[\textsc{\scriptsize Externaddr\_type{-}table}]}
 \qquad
 \end{array}
 $$
@@ -7890,7 +7920,7 @@ $$
 s{.}\mathsf{mems}{}[a] = {\mathit{meminst}}
 }{
 s \vdash \mathsf{mem}~a : \mathsf{mem}~{\mathit{meminst}}{.}\mathsf{type}
-} \, {[\textsc{\scriptsize Externval\_type{-}mem}]}
+} \, {[\textsc{\scriptsize Externaddr\_type{-}mem}]}
 \qquad
 \end{array}
 $$
@@ -7898,13 +7928,24 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-s \vdash {\mathit{externval}} : {\mathit{xt}'}
+s{.}\mathsf{tags}{}[a] = {\mathit{taginst}}
+}{
+s \vdash \mathsf{tag}~a : \mathsf{tag}~{\mathit{taginst}}{.}\mathsf{type}
+} \, {[\textsc{\scriptsize Externaddr\_type{-}tag}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+s \vdash {\mathit{externaddr}} : {\mathit{xt}'}
  \qquad
 \{ \begin{array}[t]{@{}l@{}}
  \}\end{array} \vdash {\mathit{xt}'} \leq {\mathit{xt}}
 }{
-s \vdash {\mathit{externval}} : {\mathit{xt}}
-} \, {[\textsc{\scriptsize Externval\_type{-}sub}]}
+s \vdash {\mathit{externaddr}} : {\mathit{xt}}
+} \, {[\textsc{\scriptsize Externaddr\_type{-}sub}]}
 \qquad
 \end{array}
 $$
@@ -8009,10 +8050,11 @@ $$
 
 $$
 \begin{array}{@{}l@{}rcl@{}l@{}}
-{[\textsc{\scriptsize E{-}br{-}zero}]} \quad & ({{\mathsf{label}}_{n}}{\{ {{\mathit{instr}'}^\ast} \}}~{{\mathit{val}'}^\ast}~{{\mathit{val}}^{n}}~(\mathsf{br}~l)~{{\mathit{instr}}^\ast}) &\hookrightarrow& {{\mathit{val}}^{n}}~{{\mathit{instr}'}^\ast}
+{[\textsc{\scriptsize E{-}br{-}label{-}zero}]} \quad & ({{\mathsf{label}}_{n}}{\{ {{\mathit{instr}'}^\ast} \}}~{{\mathit{val}'}^\ast}~{{\mathit{val}}^{n}}~(\mathsf{br}~l)~{{\mathit{instr}}^\ast}) &\hookrightarrow& {{\mathit{val}}^{n}}~{{\mathit{instr}'}^\ast}
   &\qquad \mbox{if}~l = 0 \\
-{[\textsc{\scriptsize E{-}br{-}succ}]} \quad & ({{\mathsf{label}}_{n}}{\{ {{\mathit{instr}'}^\ast} \}}~{{\mathit{val}}^\ast}~(\mathsf{br}~l)~{{\mathit{instr}}^\ast}) &\hookrightarrow& {{\mathit{val}}^\ast}~(\mathsf{br}~l - 1)
+{[\textsc{\scriptsize E{-}br{-}label{-}succ}]} \quad & ({{\mathsf{label}}_{n}}{\{ {{\mathit{instr}'}^\ast} \}}~{{\mathit{val}}^\ast}~(\mathsf{br}~l)~{{\mathit{instr}}^\ast}) &\hookrightarrow& {{\mathit{val}}^\ast}~(\mathsf{br}~l - 1)
   &\qquad \mbox{if}~l > 0 \\
+{[\textsc{\scriptsize E{-}br{-}handler}]} \quad & ({{\mathsf{handler}}_{n}}{\{ {{\mathit{catch}}^\ast} \}}~{{\mathit{val}}^\ast}~(\mathsf{br}~l)~{{\mathit{instr}}^\ast}) &\hookrightarrow& {{\mathit{val}}^\ast}~(\mathsf{br}~l - 1) \\
 \end{array}
 $$
 
@@ -8138,6 +8180,7 @@ $$
 {[\textsc{\scriptsize E{-}frame{-}vals}]} \quad & ({{\mathsf{frame}}_{n}}{\{ f \}}~{{\mathit{val}}^{n}}) &\hookrightarrow& {{\mathit{val}}^{n}} \\
 {[\textsc{\scriptsize E{-}return{-}frame}]} \quad & ({{\mathsf{frame}}_{n}}{\{ f \}}~{{\mathit{val}'}^\ast}~{{\mathit{val}}^{n}}~\mathsf{return}~{{\mathit{instr}}^\ast}) &\hookrightarrow& {{\mathit{val}}^{n}} \\
 {[\textsc{\scriptsize E{-}return{-}label}]} \quad & ({{\mathsf{label}}_{n}}{\{ {{\mathit{instr}'}^\ast} \}}~{{\mathit{val}}^\ast}~\mathsf{return}~{{\mathit{instr}}^\ast}) &\hookrightarrow& {{\mathit{val}}^\ast}~\mathsf{return} \\
+{[\textsc{\scriptsize E{-}return{-}handler}]} \quad & ({{\mathsf{handler}}_{n}}{\{ {{\mathit{catch}}^\ast} \}}~{{\mathit{val}}^\ast}~\mathsf{return}~{{\mathit{instr}}^\ast}) &\hookrightarrow& {{\mathit{val}}^\ast}~\mathsf{return} \\
 \end{array}
 $$
 
@@ -8173,6 +8216,14 @@ $$
   &\qquad \mbox{otherwise} \\
 {[\textsc{\scriptsize E{-}try\_table}]} \quad & z ; {{\mathit{val}}^{m}}~(\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast}) &\hookrightarrow& ({{\mathsf{handler}}_{n}}{\{ {{\mathit{catch}}^\ast} \}}~({{\mathsf{label}}_{n}}{\{ \epsilon \}}~{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}))
   &\qquad \mbox{if}~{{\mathrm{blocktype}}}_{z}({\mathit{bt}}) = {t_1^{m}} \rightarrow {t_2^{n}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}rcl@{}l@{}}
+{[\textsc{\scriptsize E{-}handler{-}vals}]} \quad & ({{\mathsf{handler}}_{n}}{\{ {{\mathit{catch}}^\ast} \}}~{{\mathit{val}}^\ast}) &\hookrightarrow& {{\mathit{val}}^\ast} \\
 \end{array}
 $$
 
@@ -9173,13 +9224,15 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {\mathrm{allocexport}}({\mathit{moduleinst}}, \mathsf{export}~{\mathit{name}}~(\mathsf{func}~x)) &=& \{ \begin{array}[t]{@{}l@{}}
-\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{func}~{\mathit{moduleinst}}{.}\mathsf{funcs}{}[x]) \}\end{array} \\
+\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{func}~{\mathit{moduleinst}}{.}\mathsf{funcs}{}[x]) \}\end{array} \\
 {\mathrm{allocexport}}({\mathit{moduleinst}}, \mathsf{export}~{\mathit{name}}~(\mathsf{global}~x)) &=& \{ \begin{array}[t]{@{}l@{}}
-\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{global}~{\mathit{moduleinst}}{.}\mathsf{globals}{}[x]) \}\end{array} \\
+\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{global}~{\mathit{moduleinst}}{.}\mathsf{globals}{}[x]) \}\end{array} \\
 {\mathrm{allocexport}}({\mathit{moduleinst}}, \mathsf{export}~{\mathit{name}}~(\mathsf{table}~x)) &=& \{ \begin{array}[t]{@{}l@{}}
-\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{table}~{\mathit{moduleinst}}{.}\mathsf{tables}{}[x]) \}\end{array} \\
+\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{\mathit{moduleinst}}{.}\mathsf{tables}{}[x]) \}\end{array} \\
 {\mathrm{allocexport}}({\mathit{moduleinst}}, \mathsf{export}~{\mathit{name}}~(\mathsf{mem}~x)) &=& \{ \begin{array}[t]{@{}l@{}}
-\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{mem}~{\mathit{moduleinst}}{.}\mathsf{mems}{}[x]) \}\end{array} \\
+\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{mem}~{\mathit{moduleinst}}{.}\mathsf{mems}{}[x]) \}\end{array} \\
+{\mathrm{allocexport}}({\mathit{moduleinst}}, \mathsf{export}~{\mathit{name}}~(\mathsf{tag}~x)) &=& \{ \begin{array}[t]{@{}l@{}}
+\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{tag}~{\mathit{moduleinst}}{.}\mathsf{tags}{}[x]) \}\end{array} \\
 \end{array}
 $$
 
@@ -9193,7 +9246,7 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externval}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {({{\mathit{ref}}_{\mathsf{e}}^\ast})^\ast}) &=& \multicolumn{2}{l@{}}{ (s_7, {\mathit{moduleinst}}) } \\
+{\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {({{\mathit{ref}}_{\mathsf{e}}^\ast})^\ast}) &=& \multicolumn{2}{l@{}}{ (s_7, {\mathit{moduleinst}}) } \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad \mbox{if}~{\mathit{module}} = \mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast}} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{func}}^\ast} = {(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{global}}^\ast} = {(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}} \\
@@ -9202,11 +9255,11 @@ $$
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{tag}}^\ast} = {(\mathsf{tag}~y)^\ast}} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{elem}}^\ast} = {(\mathsf{elem}~{\mathit{elemtype}}~{{\mathit{expr}}_{\mathsf{e}}^\ast}~{\mathit{elemmode}})^\ast}} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{data}}^\ast} = {(\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}})^\ast}} \\
-   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{fa}}_{\mathsf{i}}^\ast} = {\mathrm{funcs}}({{\mathit{externval}}^\ast})} \\
-   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{ga}}_{\mathsf{i}}^\ast} = {\mathrm{globals}}({{\mathit{externval}}^\ast})} \\
-   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{ta}}_{\mathsf{i}}^\ast} = {\mathrm{tables}}({{\mathit{externval}}^\ast})} \\
-   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{ma}}_{\mathsf{i}}^\ast} = {\mathrm{mems}}({{\mathit{externval}}^\ast})} \\
-   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{aa}}_{\mathsf{i}}^\ast} = {\mathrm{tags}}({{\mathit{externval}}^\ast})} \\
+   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{fa}}_{\mathsf{i}}^\ast} = {\mathrm{funcs}}({{\mathit{externaddr}}^\ast})} \\
+   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{ga}}_{\mathsf{i}}^\ast} = {\mathrm{globals}}({{\mathit{externaddr}}^\ast})} \\
+   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{ta}}_{\mathsf{i}}^\ast} = {\mathrm{tables}}({{\mathit{externaddr}}^\ast})} \\
+   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{ma}}_{\mathsf{i}}^\ast} = {\mathrm{mems}}({{\mathit{externaddr}}^\ast})} \\
+   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{aa}}_{\mathsf{i}}^\ast} = {\mathrm{tags}}({{\mathit{externaddr}}^\ast})} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{fa}}^\ast} = {({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}}} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{ga}}^\ast} = {({|s{.}\mathsf{globals}|} + i_{\mathsf{g}})^{i_{\mathsf{g}}<{|{{\mathit{global}}^\ast}|}}}} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{ta}}^\ast} = {({|s{.}\mathsf{tables}|} + i_{\mathsf{t}})^{i_{\mathsf{t}}<{|{{\mathit{table}}^\ast}|}}}} \\
@@ -9253,9 +9306,9 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathrm{instantiate}}(s, {\mathit{module}}, {{\mathit{externval}}^\ast}) &=& \multicolumn{2}{l@{}}{ {s'} ; f ; {{\mathit{instr}}_{\mathsf{e}}^\ast}~{{\mathit{instr}}_{\mathsf{d}}^\ast}~{{\mathit{instr}}_{\mathsf{s}}^?} } \\
+{\mathrm{instantiate}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}) &=& \multicolumn{2}{l@{}}{ {s'} ; f ; {{\mathit{instr}}_{\mathsf{e}}^\ast}~{{\mathit{instr}}_{\mathsf{d}}^\ast}~{{\mathit{instr}}_{\mathsf{s}}^?} } \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad \mbox{if}~{\vdash}\, {\mathit{module}} : {{\mathit{xt}}_{\mathsf{i}}^\ast} \rightarrow {{\mathit{xt}}_{\mathsf{e}}^\ast}} \\
-   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~(s \vdash {\mathit{externval}} : {\mathit{xt}}_{\mathsf{i}})^\ast} \\
+   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~(s \vdash {\mathit{externaddr}} : {\mathit{xt}}_{\mathsf{i}})^\ast} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{\mathit{module}} = \mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast}} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{global}}^\ast} = {(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{table}}^\ast} = {(\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}}_{\mathsf{t}})^\ast}} \\
@@ -9264,14 +9317,14 @@ $$
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{start}}^?} = {(\mathsf{start}~x)^?}} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{\mathit{moduleinst}}_0 = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{types}~{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})},\; \\
-  \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externval}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}},\; \\
-  \mathsf{globals}~{\mathrm{globals}}({{\mathit{externval}}^\ast}) \}\end{array}} \\
+  \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{({|s{.}\mathsf{funcs}|} + i_{\mathsf{f}})^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}},\; \\
+  \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}) \}\end{array}} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~z = s ; \{ \begin{array}[t]{@{}l@{}}
 \mathsf{module}~{\mathit{moduleinst}}_0 \}\end{array}} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~(z ; {\mathit{expr}}_{\mathsf{g}} \hookrightarrow^\ast z ; {\mathit{val}}_{\mathsf{g}})^\ast} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~(z ; {\mathit{expr}}_{\mathsf{t}} \hookrightarrow^\ast z ; {\mathit{ref}}_{\mathsf{t}})^\ast} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{(z ; {\mathit{expr}}_{\mathsf{e}} \hookrightarrow^\ast z ; {\mathit{ref}}_{\mathsf{e}})^\ast}^\ast} \\
-   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~({s'}, {\mathit{moduleinst}}) = {\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externval}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {({{\mathit{ref}}_{\mathsf{e}}^\ast})^\ast})} \\
+   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~({s'}, {\mathit{moduleinst}}) = {\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {({{\mathit{ref}}_{\mathsf{e}}^\ast})^\ast})} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~f = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{module}~{\mathit{moduleinst}} \}\end{array}} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{{\mathit{instr}}_{\mathsf{e}}^\ast} = {\bigoplus}\, {{{\mathrm{runelem}}}_{i_{\mathsf{e}}}({{\mathit{elem}}^\ast}{}[i_{\mathsf{e}}])^{i_{\mathsf{e}}<{|{{\mathit{elem}}^\ast}|}}}} \\
@@ -9472,6 +9525,7 @@ $$
 & {\mathtt{globaltype}} &::=& t{:}{\mathtt{valtype}}~~{\mathsf{mut}^?}{:}{\mathtt{mut}} &\quad\Rightarrow&\quad {\mathsf{mut}^?}~t \\
 & {\mathtt{tabletype}} &::=& {\mathit{rt}}{:}{\mathtt{reftype}}~~{\mathit{lim}}{:}{\mathtt{limits}} &\quad\Rightarrow&\quad {\mathit{lim}}~{\mathit{rt}} \\
 & {\mathtt{memtype}} &::=& {\mathit{lim}}{:}{\mathtt{limits}} &\quad\Rightarrow&\quad {\mathit{lim}}~\mathsf{page} \\
+& {\mathtt{tagtype}} &::=& \mathtt{0x00}~~x{:}{\mathtt{typeidx}} &\quad\Rightarrow&\quad x \\
 \end{array}
 $$
 
@@ -9483,7 +9537,7 @@ $$
 \mathtt{0x01}~~{\mathit{tt}}{:}{\mathtt{tabletype}} &\quad\Rightarrow&\quad \mathsf{table}~{\mathit{tt}} \\ &&|&
 \mathtt{0x02}~~{\mathit{mt}}{:}{\mathtt{memtype}} &\quad\Rightarrow&\quad \mathsf{mem}~{\mathit{mt}} \\ &&|&
 \mathtt{0x03}~~{\mathit{gt}}{:}{\mathtt{globaltype}} &\quad\Rightarrow&\quad \mathsf{global}~{\mathit{gt}} \\ &&|&
-\mathtt{0x04}~~x{:}{\mathtt{typeidx}} &\quad\Rightarrow&\quad \mathsf{tag}~x \\
+\mathtt{0x04}~~x{:}{\mathtt{tagtype}} &\quad\Rightarrow&\quad \mathsf{tag}~x \\
 \end{array}
 $$
 

@@ -20,6 +20,14 @@ var ea : elemaddr
 var da : dataaddr
 
 
+;; External addresses
+
+syntax externaddr hint(desc "external value") =
+  | FUNC funcaddr | GLOBAL globaladdr | TABLE tableaddr | MEM memaddr
+
+var xa : externaddr
+
+
 ;;
 ;; Values
 ;;
@@ -41,14 +49,6 @@ syntax result hint(desc "result") =
 var r : ref
 var v : val
 var res : result
-
-
-;; External values
-
-syntax externval hint(desc "external value") =
-  | FUNC funcaddr | GLOBAL globaladdr | TABLE tableaddr | MEM memaddr
-
-var xv : externval
 
 
 ;;
@@ -77,7 +77,7 @@ syntax datainst hint(desc "data instance") =
   { BYTES byte* }
 syntax exportinst hint(desc "export instance") =
   { NAME name,
-    VALUE externval }
+    ADDR externaddr }
 
 syntax moduleinst hint(desc "module instance") =
   { TYPES functype*,

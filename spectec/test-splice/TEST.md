@@ -10,9 +10,9 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup -l --splice-latex -p spe
 == Translating to AL...
 == Prose Generation...
 ../spec/wasm-3.0/6-typing.watsup:195.10-195.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
-../spec/wasm-3.0/6-typing.watsup:866.9-866.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
-../spec/wasm-3.0/6-typing.watsup:900.9-900.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
-../spec/wasm-3.0/6-typing.watsup:1364.9-1364.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm : name})`
+../spec/wasm-3.0/6-typing.watsup:876.9-876.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
+../spec/wasm-3.0/6-typing.watsup:910.9-910.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
+../spec/wasm-3.0/6-typing.watsup:1378.9-1378.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm : name})`
 == Splicing...
 \documentclass[a4paper]{scrartcl}
 
@@ -347,8 +347,8 @@ warning: syntax `exnaddr` was never spliced
 warning: syntax `exninst` was never spliced
 warning: syntax `export` was never spliced
 warning: syntax `exportinst` was never spliced
+warning: syntax `externaddr` was never spliced
 warning: syntax `externidx` was never spliced
-warning: syntax `externval` was never spliced
 warning: syntax `f32` was never spliced
 warning: syntax `f64` was never spliced
 warning: syntax `fN` was never spliced
@@ -672,6 +672,7 @@ warning: grammar `Btabletype` was never spliced
 warning: grammar `Btag` was never spliced
 warning: grammar `Btagidx` was never spliced
 warning: grammar `Btagsec` was never spliced
+warning: grammar `Btagtype` was never spliced
 warning: grammar `Btype` was never spliced
 warning: grammar `Btypeidx` was never spliced
 warning: grammar `Btypesec` was never spliced
@@ -710,24 +711,27 @@ warning: rule `Export_ok` was never spliced
 warning: rule `Expr_const` was never spliced
 warning: rule `Expr_ok` was never spliced
 warning: rule `Expr_ok_const` was never spliced
+warning: rule `Externaddr_type/func` was never spliced
+warning: rule `Externaddr_type/global` was never spliced
+warning: rule `Externaddr_type/table` was never spliced
+warning: rule `Externaddr_type/mem` was never spliced
+warning: rule `Externaddr_type/tag` was never spliced
+warning: rule `Externaddr_type/sub` was never spliced
 warning: rule `Externidx_ok/func` was never spliced
 warning: rule `Externidx_ok/global` was never spliced
 warning: rule `Externidx_ok/table` was never spliced
 warning: rule `Externidx_ok/mem` was never spliced
+warning: rule `Externidx_ok/tag` was never spliced
 warning: rule `Externtype_ok/func` was never spliced
 warning: rule `Externtype_ok/global` was never spliced
 warning: rule `Externtype_ok/table` was never spliced
 warning: rule `Externtype_ok/mem` was never spliced
+warning: rule `Externtype_ok/tag` was never spliced
 warning: rule `Externtype_sub/func` was never spliced
 warning: rule `Externtype_sub/global` was never spliced
 warning: rule `Externtype_sub/table` was never spliced
 warning: rule `Externtype_sub/mem` was never spliced
 warning: rule `Externtype_sub/tag` was never spliced
-warning: rule `Externval_type/func` was never spliced
-warning: rule `Externval_type/global` was never spliced
-warning: rule `Externval_type/table` was never spliced
-warning: rule `Externval_type/mem` was never spliced
-warning: rule `Externval_type/sub` was never spliced
 warning: rule `Fieldtype_ok` was never spliced
 warning: rule `Fieldtype_sub/const` was never spliced
 warning: rule `Fieldtype_sub/var` was never spliced
@@ -957,8 +961,9 @@ warning: rule `Step_pure/select-false` was never spliced
 warning: rule `Step_pure/if-true` was spliced more than once
 warning: rule `Step_pure/if-false` was spliced more than once
 warning: rule `Step_pure/label-vals` was never spliced
-warning: rule `Step_pure/br-zero` was never spliced
-warning: rule `Step_pure/br-succ` was never spliced
+warning: rule `Step_pure/br-label-zero` was never spliced
+warning: rule `Step_pure/br-label-succ` was never spliced
+warning: rule `Step_pure/br-handler` was never spliced
 warning: rule `Step_pure/br_if-true` was never spliced
 warning: rule `Step_pure/br_if-false` was never spliced
 warning: rule `Step_pure/br_table-lt` was never spliced
@@ -972,6 +977,8 @@ warning: rule `Step_pure/return_call_indirect` was never spliced
 warning: rule `Step_pure/frame-vals` was never spliced
 warning: rule `Step_pure/return-frame` was never spliced
 warning: rule `Step_pure/return-label` was never spliced
+warning: rule `Step_pure/return-handler` was never spliced
+warning: rule `Step_pure/handler-vals` was never spliced
 warning: rule `Step_pure/trap-vals` was never spliced
 warning: rule `Step_pure/trap-label` was never spliced
 warning: rule `Step_pure/trap-frame` was never spliced
@@ -1137,6 +1144,7 @@ warning: rule `Table_ok` was never spliced
 warning: rule `Tabletype_ok` was never spliced
 warning: rule `Tabletype_sub` was never spliced
 warning: rule `Tag_ok` was never spliced
+warning: rule `Tagtype_ok` was never spliced
 warning: rule `Tagtype_sub` was never spliced
 warning: rule `Type_ok` was never spliced
 warning: rule `Types_ok/empty` was never spliced
@@ -1312,14 +1320,14 @@ warning: definition `fsub` was never spliced
 warning: definition `ftrunc` was never spliced
 warning: definition `funcidx_module` was never spliced
 warning: definition `funcidx_nonfuncs` was never spliced
+warning: definition `funcsxa` was never spliced
 warning: definition `funcsxt` was never spliced
-warning: definition `funcsxv` was never spliced
 warning: definition `funcsxx` was never spliced
 warning: definition `fzero` was never spliced
 warning: definition `global` was never spliced
 warning: definition `globalinst` was never spliced
+warning: definition `globalsxa` was never spliced
 warning: definition `globalsxt` was never spliced
-warning: definition `globalsxv` was never spliced
 warning: definition `globalsxx` was never spliced
 warning: definition `growmem` was never spliced
 warning: definition `growtable` was never spliced
@@ -1383,8 +1391,8 @@ warning: definition `lunpacknum` was never spliced
 warning: definition `mem` was never spliced
 warning: definition `memarg0` was never spliced
 warning: definition `meminst` was never spliced
+warning: definition `memsxa` was never spliced
 warning: definition `memsxt` was never spliced
-warning: definition `memsxv` was never spliced
 warning: definition `memsxx` was never spliced
 warning: definition `min` was never spliced
 warning: definition `moduleinst` was never spliced
@@ -1442,14 +1450,14 @@ warning: definition `sum` was never spliced
 warning: definition `sx` was never spliced
 warning: definition `symdots` was never spliced
 warning: definition `tableinst` was never spliced
+warning: definition `tablesxa` was never spliced
 warning: definition `tablesxt` was never spliced
-warning: definition `tablesxv` was never spliced
 warning: definition `tablesxx` was never spliced
 warning: definition `tag` was never spliced
 warning: definition `tagaddr` was never spliced
 warning: definition `taginst` was never spliced
+warning: definition `tagsxa` was never spliced
 warning: definition `tagsxt` was never spliced
-warning: definition `tagsxv` was never spliced
 warning: definition `tagsxx` was never spliced
 warning: definition `testop` was never spliced
 warning: definition `trunc` was never spliced
@@ -1581,6 +1589,7 @@ warning: rule prose `exec/testop` was never spliced
 warning: rule prose `exec/binop` was never spliced
 warning: rule prose `exec/unop` was never spliced
 warning: rule prose `exec/trap` was never spliced
+warning: rule prose `exec/handler` was never spliced
 warning: rule prose `exec/return` was never spliced
 warning: rule prose `exec/frame` was never spliced
 warning: rule prose `exec/return_call_indirect` was never spliced
@@ -1731,6 +1740,7 @@ warning: rule prose `valid/((mut _u0?), valtype_1)` was never spliced
 warning: rule prose `valid/(n_1, m_1)` was never spliced
 warning: rule prose `valid/(t_11* ->_ x_1* ++ t_12*)` was never spliced
 warning: rule prose `valid/exter_u0` was never spliced
+warning: rule prose `valid/deftype` was never spliced
 warning: rule prose `valid/page` was never spliced
 warning: rule prose `valid/(limits, reftype)` was never spliced
 warning: rule prose `valid/((mut ()?), t)` was never spliced
@@ -1896,14 +1906,14 @@ warning: definition prose `func` was never spliced
 warning: definition prose `funcidx_module` was never spliced
 warning: definition prose `funcidx_nonfuncs` was never spliced
 warning: definition prose `funcinst` was never spliced
+warning: definition prose `funcsxa` was never spliced
 warning: definition prose `funcsxt` was never spliced
-warning: definition prose `funcsxv` was never spliced
 warning: definition prose `funcsxx` was never spliced
 warning: definition prose `fzero` was never spliced
 warning: definition prose `global` was never spliced
 warning: definition prose `globalinst` was never spliced
+warning: definition prose `globalsxa` was never spliced
 warning: definition prose `globalsxt` was never spliced
-warning: definition prose `globalsxv` was never spliced
 warning: definition prose `globalsxx` was never spliced
 warning: definition prose `group_bytes_by` was never spliced
 warning: definition prose `growmem` was never spliced
@@ -1931,8 +1941,8 @@ warning: definition prose `lunpacknum` was never spliced
 warning: definition prose `mem` was never spliced
 warning: definition prose `memarg0` was never spliced
 warning: definition prose `meminst` was never spliced
+warning: definition prose `memsxa` was never spliced
 warning: definition prose `memsxt` was never spliced
-warning: definition prose `memsxv` was never spliced
 warning: definition prose `memsxx` was never spliced
 warning: definition prose `min` was never spliced
 warning: definition prose `moduleinst` was never spliced
@@ -1986,14 +1996,14 @@ warning: definition prose `sum` was never spliced
 warning: definition prose `sx` was never spliced
 warning: definition prose `table` was never spliced
 warning: definition prose `tableinst` was never spliced
+warning: definition prose `tablesxa` was never spliced
 warning: definition prose `tablesxt` was never spliced
-warning: definition prose `tablesxv` was never spliced
 warning: definition prose `tablesxx` was never spliced
 warning: definition prose `tag` was never spliced
 warning: definition prose `tagaddr` was never spliced
 warning: definition prose `taginst` was never spliced
+warning: definition prose `tagsxa` was never spliced
 warning: definition prose `tagsxt` was never spliced
-warning: definition prose `tagsxv` was never spliced
 warning: definition prose `tagsxx` was never spliced
 warning: definition prose `testop` was never spliced
 warning: definition prose `type` was never spliced

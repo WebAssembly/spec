@@ -95,7 +95,7 @@ let builtin () =
       | _ -> assert false
     in
     let new_extern =
-      StrV [ "NAME", ref (TextV name); "VALUE", ref (CaseV (kind, [ numV addr ])) ]
+      StrV [ "NAME", ref (TextV name); "ADDR", ref (CaseV (kind, [ numV addr ])) ]
     in
 
     (* Update Store *)
