@@ -2670,7 +2670,7 @@ $${rule-prose: exec/throw_ref}
 
        3. Execute the instruction :math:`\THROWREF` again.
 
-$${rule: Step_pure/throw_ref-*}
+$${rule: Step_read/throw_ref-*}
 
 
 .. _exec-try_table:
@@ -2691,7 +2691,7 @@ $${rule-prose: exec/try_table}
 
 6. :ref:`Enter <exec-handler-enter>` the block :math:`\val^m~\instr_1^\ast` with label :math:`L` and exception handler :math:`\HANDLER_n\{\catch^\ast\}`.
 
-$${rule: Step_pure/try_table}
+$${rule: Step_read/try_table}
 
 
 .. index:: instruction, instruction sequence, block, exception, trap
