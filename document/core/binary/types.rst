@@ -321,16 +321,13 @@ Global Types
 Tag Types
 ~~~~~~~~~
 
-:ref:`Tag types <syntax-tagtype>` are encoded by their function type.
+:ref:`Tag types <syntax-tagtype>` are encoded by a :ref:`type index <syntax-typeidx>` denoting a :ref:`function type <syntax-functype>`.
 
 .. math::
    \begin{array}{llclll}
    \production{tag type} & \Btagtype &::=&
-     \hex{00}~~ft{:}\Bfunctype &\Rightarrow& ft \\
+     \hex{00}~~x{:}\Btypeidx &\Rightarrow& x \\
    \end{array}
-
-The |Bfunctype| of a tag is used to characterise exceptions.
-The :math:`\hex{00}` bit signifies an exception and is currently the only allowed value.
 
 .. note::
    In future versions of WebAssembly,

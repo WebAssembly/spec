@@ -445,7 +445,7 @@ The |MIMPORTS| component of a module defines a set of *imports* that are require
      \IDTABLE~\tabletype \\&&|&
      \IDMEM~\memtype \\&&|&
      \IDGLOBAL~\globaltype \\&&|&
-     \IDTAG~\tagtype \\
+     \IDTAG~\typeidx \\
    \end{array}
 
 Each import is labeled by a two-level :ref:`name <syntax-name>` space, consisting of a |IMODULE| name and a |INAME| for an entity within that module.
