@@ -34,8 +34,6 @@ def $size(I64) = 64
 def $size(F32) = 32
 def $size(F64) = 64
 
-def $isize(Inn) = $size(Inn)
-
 def $vsize(V128) = 128
 
 def $psize(I8) = 8
