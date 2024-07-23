@@ -54,6 +54,7 @@ let print_elab_il = ref false
 let print_final_il = ref false
 let print_all_il = ref false
 let print_al = ref false
+let print_al_which = ref ""
 let print_no_pos = ref false
 
 module PS = Set.Make(struct type t = pass let compare = compare; end)
@@ -143,6 +144,7 @@ let argspec = Arg.align
   "--print-final-il", Arg.Set print_final_il, " Print final IL";
   "--print-all-il", Arg.Set print_all_il, " Print IL after each step";
   "--print-al", Arg.Set print_al, " Print al";
+  "--print-al-o", Arg.Set_string print_al_which, " Print al with given name";
   "--print-no-pos", Arg.Set print_no_pos, " Suppress position info in output";
 ] @ List.map pass_argspec all_passes @ [
   "--all-passes", Arg.Unit (fun () -> List.iter enable_pass all_passes)," Run all passes";
@@ -200,16 +202,30 @@ let () =
     if !print_final_il && not !print_all_il then print_il il;
 
     let al =
-      if not !print_al && (!target = Check || !target = Latex) then []
-      else (
+      if !target = Check || !target = Latex
+      then [] else (
         log "Translating to AL...";
         (Il2al.Translate.translate il @ Il2al.Manual.manual_algos)
       )
     in
 
+    let match_function_name function_name al_elt=
+      
+      if function_name="" then true
+      else
+      match al_elt.Util.Source.it with
+      | Al.Ast.RuleA (a, _, _) -> 
+        (Al.Print.string_of_atom a) = (String.uppercase_ascii function_name)
+      | Al.Ast.FuncA (id , _, _) -> 
+        id = (String.lowercase_ascii function_name)
+    in
+
     if !print_al then
       Printf.printf "%s\n%!"
-        (List.map Al.Print.string_of_algorithm al |> String.concat "\n");
+        (List.map Al.Print.string_of_algorithm al |> String.concat "\n")
+    else if !print_al_which <> "" then
+      Printf.printf "%s\n%!"
+        (List.filter (match_function_name !print_al_which) al |> List.map Al.Print.string_of_algorithm |> String.concat "\n");
 
     (match !target with
     | Check -> ()
