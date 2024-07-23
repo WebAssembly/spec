@@ -1202,6 +1202,8 @@
 .. |allocdata| mathdef:: \xref{exec/modules}{alloc-data}{\F{allocdata}}
 .. |allocmodule| mathdef:: \xref{exec/modules}{alloc-module}{\F{allocmodule}}
 
+.. |allocexn| mathdef:: \xref{exec/modules}{alloc-exception}{\F{allocexn}}
+
 .. |growtable| mathdef:: \xref{exec/modules}{grow-table}{\F{growtable}}
 .. |growmem| mathdef:: \xref{exec/modules}{grow-mem}{\F{growmem}}
 
@@ -1627,3 +1629,5 @@
 
 .. |error| mathdef:: \xref{appendix/embedding}{embed-error}{\X{error}}
 .. |ERROR| mathdef:: \xref{appendix/embedding}{embed-error}{\K{error}}
+.. |exception| mathdef:: \xref{appendix/embedding}{embed-error}{\X{exception}}
+.. |ETHROW| mathdef:: \xref{appendix/embedding}{embed-error}{\K{THROW}}

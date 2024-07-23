@@ -1,11 +1,16 @@
-# Exception handling
+This V2 proposal was developed from [Level 1 Proposal](Exceptions-v2-Level-1.md)
+and superseded [V1 proposal](Exceptions-v1.md). We decided to adopt this
+proposal in [Oct 2018 CG
+meeting](https://github.com/WebAssembly/meetings/blob/main/main/2018/TPAC.md#exception-handling-ben-titzer),
+recognizing the need for a first-class exception type, based on the reasoning
+that it is more expressive and also more extendible to other kinds of events.
 
-There were two alternative proposals ([1st](Exceptions-v1.md) and
-[2nd](Exceptions-v2-Level-1.md)) for the design of exception handling and we
-[decided](https://github.com/WebAssembly/meetings/blob/master/2018/TPAC.md#exception-handling-ben-titzer)
-on the second proposal, which uses first-class exception types, mainly based on
-the reasoning that it is more expressive and also more extendible to other kinds
-of events.
+This proposal was active from Oct 2018 to Sep 2020 and superseded by [V3
+proposal](https://github.com/WebAssembly/exception-handling/blob/main/proposals/exception-handling/legacy/Exceptions.md).
+
+---
+
+# Exception handling
 
 This proposal requires the following proposals as prerequisites.
 

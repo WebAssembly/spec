@@ -170,6 +170,32 @@ are *allocated* in a :ref:`store <syntax-store>` :math:`S`, as defined by the fo
    \end{array}
 
 
+.. index:: exception, exception instance, exception address, tag address
+.. _alloc-exception:
+
+:ref:`Exceptions <syntax-exninst>`
+..................................
+
+1. Let :math:`ta` be the :ref:`tag address <syntax-tagaddr>` associated with the exception to allocate and :math:`\EIFIELDS~\val^\ast` be the values to initialize the exception with.
+
+2. Let :math:`a` be the first free :ref:`exception address <syntax-exnaddr>` in :math:`S`.
+
+3. Let :math:`\exninst` be the :ref:`exception instance <syntax-exninst>` :math:`\{ \EITAG~ta, \EIFIELDS~\val^\ast \}`.
+
+4. Append :math:`\exninst` to the |SEXNS| of :math:`S`.
+
+5. Return :math:`a`.
+
+.. math::
+   \begin{array}{rlll}
+   \allocexn(S, \tagaddr, \val^\ast) &=& S', \exnaddr \\[1ex]
+   \mbox{where:} \hfill \\
+   \exnaddr &=& |S.\SEXNS| \\
+   \exninst &=& \{ \EITAG~\tagaddr, \EIFIELDS~\val^\ast \} \\
+   S' &=& S \compose \{\SEXNS~\exninst\} \\
+   \end{array}
+
+
 .. index:: global, global instance, global address, global type, value type, mutability, value
 .. _alloc-global:
 

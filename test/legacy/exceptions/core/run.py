@@ -23,7 +23,7 @@ parser.add_argument("file", nargs='*')
 arguments = parser.parse_args()
 sys.argv = sys.argv[:1]
 
-exceptions_test_files = glob.glob(os.path.join(inputDir, "exceptions", "*.wast"))
+exceptions_test_files = glob.glob(os.path.join(inputDir, "*.wast"))
 
 wasmCommand = arguments.wasm
 jsCommand = arguments.js

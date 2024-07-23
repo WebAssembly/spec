@@ -1,8 +1,8 @@
 # Exception handling
 
 This explainer reflects the up-to-date version of the exception handling
-proposal agreed on [the CG meeting on
-09-15-2020](https://github.com/WebAssembly/meetings/blob/master/main/2020/CG-09-15.md).
+proposal agreed on [Oct 2023 CG
+meeting](https://github.com/WebAssembly/meetings/blob/main/main/2023/CG-10.md#exception-handling-vote-on-proposal-to-re-introduce-exnref).
 
 ---
 
@@ -36,8 +36,8 @@ succeeding instructions to process the data.
 A WebAssembly exception is created when you throw it with the `throw`
 instruction. Thrown exceptions are handled as follows:
 
-1. They can be caught by one of the *catch clauses* in an enclosing try
-   block of a function body.
+1. They can be caught by one of the *catch clauses* in an enclosing try block of
+   a function body.
 
 1. Throws not caught within a function body continue up the call stack, popping
    call frames, until an enclosing try block is found.
@@ -86,21 +86,22 @@ Exception tag indices are used by:
 1. The `throw` instruction which creates a WebAssembly exception with the
    corresponding exception tag, and then throws it.
 
-2. Catch clauses use a tag to identify the thrown exception it
-   can catch. If it matches, it pushes the corresponding argument values of the
-   exception onto the stack.
+2. Catch clauses use a tag to identify the thrown exception it can catch. If it
+   matches, it pushes the corresponding argument values of the exception onto
+   the stack.
 
 ### Exception references
 
-When caught, an exception is reified into an _exception reference_, a value of the new type `exnref`.
-Exception references can be used to rethrow the caught exception.
+When caught, an exception is reified into an _exception reference_, a value of
+the new type `exnref`. Exception references can be used to rethrow the caught
+exception.
 
 ### Try blocks
 
 A _try block_ defines a list of instructions that may need to process exceptions
 and/or clean up state when an exception is thrown. Like other higher-level
-constructs, a try block begins with a `try_table` instruction, and ends with an `end`
-instruction. That is, a try block is sequence of instructions having the
+constructs, a try block begins with a `try_table` instruction, and ends with an
+`end` instruction. That is, a try block is sequence of instructions having the
 following form:
 
 ```
@@ -109,10 +110,11 @@ try_table blocktype catch*
 end
 ```
 
-A try block contains zero or more _catch clauses_. If there are no catch clauses, then the try block does not catch any exceptions.
+A try block contains zero or more _catch clauses_. If there are no catch
+clauses, then the try block does not catch any exceptions.
 
-The _body_ of the try block is the list of instructions after the last
-catch clause, if any.
+The _body_ of the try block is the list of instructions after the last catch
+clause, if any.
 
 Each `catch` clause can be in one of 4 forms:
 ```
@@ -121,16 +123,16 @@ catch_ref tag label
 catch_all label
 catch_all_ref label
 ```
-All forms have a label which is branched to when an exception is cought (see below).
-The former two forms have an exception tag associated with it that
-identifies what exceptions it will catch.
-The latter two forms catch any exception, so that they can be used to define a _default_ handler.
+All forms have a label which is branched to when an exception is caught (see
+below). The former two forms have an exception tag associated with it that
+identifies what exceptions it will catch. The latter two forms catch any
+exception, so that they can be used to define a _default_ handler.
 
 Try blocks, like control-flow blocks, have a _block type_. The block type of a
 try block defines the values yielded by evaluating the try block when either no
-exception is thrown, or the exception is successfully caught by the catch clause.
-Because `try_table` defines a control-flow block, it can be
-targets for branches (`br` and `br_if`) as well.
+exception is thrown, or the exception is successfully caught by the catch
+clause. Because `try_table` defines a control-flow block, it can be targets for
+branches (`br` and `br_if`) as well.
 
 ### Throwing an exception
 
@@ -160,37 +162,38 @@ Once a catching try block is found for the thrown exception, the operand stack
 is popped back to the size the operand stack had when the try block was entered
 after possible block parameters were popped.
 
-Then catch clauses are tried in the order
-they appear in the catching try block, until one matches. If a matching catch clause is found, control is transferred to the label of that catch clause.
-In case of `catch` or `catch_ref`,
-the arguments of the exception are pushed back onto the stack.
-For `catch_ref` and `catch_all_ref`, an exception reference is then pushed to the stack, which represents the caught exception.
+Then catch clauses are tried in the order they appear in the catching try block,
+until one matches. If a matching catch clause is found, control is transferred
+to the label of that catch clause. In case of `catch` or `catch_ref`, the
+arguments of the exception are pushed back onto the stack. For `catch_ref` and
+`catch_all_ref`, an exception reference is then pushed to the stack, which
+represents the caught exception.
 
 If no catch clauses were matched, the exception is implicitly rethrown.
 
-Note that a caught exception can be rethrown explicitly using the `exnref` and the `throw_ref` instruction.
+Note that a caught exception can be rethrown explicitly using the `exnref` and
+the `throw_ref` instruction.
 
 ### Rethrowing an exception
 
-The `throw_ref` takes an operand of type `exnref` and re-throws the corresponding caught exception.
-If the operand is null, a trap occurs.
+The `throw_ref` takes an operand of type `exnref` and re-throws the
+corresponding caught exception. If the operand is null, a trap occurs.
 
 ### JS API
 
 #### Traps
 
-Catch clauses handle exceptions generated by the `throw`
-instruction, but do not catch traps. The rationale for this is that in general
-traps are not locally recoverable and are not needed to be handled in local
-scopes like try blocks.
+Catch clauses handle exceptions generated by the `throw` instruction, but do not
+catch traps. The rationale for this is that in general traps are not locally
+recoverable and are not needed to be handled in local scopes like try blocks.
 
 The `try_table` instruction catches foreign exceptions generated from calls to
 function imports as well, including JavaScript exceptions, with a few
 exceptions:
 1. In order to be consistent before and after a trap reaches a JavaScript frame,
    the `try_table` instruction does not catch exceptions generated from traps.
-1. The `try_table` instruction does not catch JavaScript exceptions generated from
-   stack overflow and out of memory.
+1. The `try_table` instruction does not catch JavaScript exceptions generated
+   from stack overflow and out of memory.
 
 Filtering these exceptions should be based on a predicate that is not observable
 by JavaScript. Traps currently generate instances of
@@ -232,22 +235,22 @@ check ensures that without access to a WebAssembly module's exported exception
 tag, the associated data fields cannot be read.
 
 The `Exception` constructor can take an optional `ExceptionOptions` argument,
-which can optionally contain `traceStack` entry. When `traceStack` is
-`true`, JavaScript VMs are permitted to attach a stack trace string to
-`Exception.stack` field, as in JavaScript's `Error` class. `traceStack`
-serves as a request to the WebAssembly engine to attach a stack trace; it
-is not necessary to honour if `true`, but `trace` may not be populated if
-`traceStack` is `false`. While `Exception` is not a subclass of JavaScript's
-`Error` and it can be used to represent normal control flow constructs,
-`traceStack` field can be set when we use it to represent errors. The
-format of stack trace strings conform to the [WebAssembly stack trace
+which can optionally contain `traceStack` entry. When `traceStack` is `true`,
+JavaScript VMs are permitted to attach a stack trace string to `Exception.stack`
+field, as in JavaScript's `Error` class. `traceStack` serves as a request to the
+WebAssembly engine to attach a stack trace; it is not necessary to honour if
+`true`, but `trace` may not be populated if `traceStack` is `false`. While
+`Exception` is not a subclass of JavaScript's `Error` and it can be used to
+represent normal control flow constructs, `traceStack` field can be set when we
+use it to represent errors. The format of stack trace strings conform to the
+[WebAssembly stack trace
 conventions](https://webassembly.github.io/spec/web-api/index.html#conventions).
 When `ExceptionOption` is not provided or it does not contain `traceStack`
 entry, `traceStack` is considered `false` by default.
 
 To preserve stack trace info when crossing the JS to Wasm boundary, exceptions
-can internally contain a stack trace, which is propagated when caught by a `catch[_all]_ref` clause
-and rethrown by `throw_ref`.
+can internally contain a stack trace, which is propagated when caught by a
+`catch[_all]_ref` clause and rethrown by `throw_ref`.
 
 More formally, the added interfaces look like the following:
 
@@ -331,16 +334,17 @@ document](https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md).
 
 The type `exnref` is represented by the type opcode `-0x17`.
 
-When combined with the [GC proposal](https://github.com/WebAssembly/gc/blob/main/proposals/gc/MVP.md),
-there also is a value type `nullexnref` with opcode `-0x0c`.
-Furthermore, these opcodes also function as heap type,
-i.e., `exn` is a new heap type with opcode `-0x17`,
-and `noexn` is a new heap type with opcode `-0x0c`;
-`exnref` and `nullexnref` are shorthands for `(ref null exn)` and `(ref null noexn)`, respectively.
+When combined with the [GC
+proposal](https://github.com/WebAssembly/gc/blob/main/proposals/gc/MVP.md),
+there also is a value type `nullexnref` with opcode `-0x0c`. Furthermore, these
+opcodes also function as heap type, i.e., `exn` is a new heap type with opcode
+`-0x17`, and `noexn` is a new heap type with opcode `-0x0c`; `exnref` and
+`nullexnref` are shorthands for `(ref null exn)` and `(ref null noexn)`,
+respectively.
 
-The heap type `noexn` is a subtype of `exn`.
-They are not in a subtype relation with any other type (except bottom),
-such that they form a new disjoint hierarchy of heap types.
+The heap type `noexn` is a subtype of `exn`. They are not in a subtype relation
+with any other type (except bottom), such that they form a new disjoint
+hierarchy of heap types.
 
 
 ##### tag_type
@@ -439,13 +443,13 @@ follows:
 
 ###### Tag names
 
-The tag names subsection is a `name_map` which assigns names to a subset of
-the tag indices (Used for both imports and module-defined).
+The tag names subsection is a `name_map` which assigns names to a subset of the
+tag indices (Used for both imports and module-defined).
 
 ### Control flow instructions
 
-The control flow instructions are extended to define try blocks and
-throws as follows:
+The control flow instructions are extended to define try blocks and throws as
+follows:
 
 | Name | Opcode | Immediates | Description |
 | ---- | ---- | ---- | ---- |

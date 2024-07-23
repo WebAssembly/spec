@@ -167,6 +167,14 @@
       (catch $e0)
     )
   )
+
+  (func (export "break-try-catch")
+    (try (do (br 0)) (catch $e0))
+  )
+
+  (func (export "break-try-catch_all")
+    (try (do (br 0)) (catch_all))
+  )
 )
 
 (assert_return (invoke "empty-catch"))
@@ -210,6 +218,9 @@
 
 (assert_exception (invoke "return-call-in-try-catch"))
 (assert_exception (invoke "return-call-indirect-in-try-catch"))
+
+(assert_return (invoke "break-try-catch"))
+(assert_return (invoke "break-try-catch_all"))
 
 (module
   (func $imported-throw (import "test" "throw"))
