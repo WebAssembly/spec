@@ -2249,7 +2249,7 @@ $$
   &&&&\qquad {\land}~{{\mathit{sx}}^?} \neq \epsilon \Leftrightarrow {\mathrm{lanetype}}({\mathit{shape}}_1) = {{\mathsf{i}}{N}}_1 \land {\mathrm{lanetype}}({\mathit{shape}}_2) = {{\mathsf{i}}{N}}_2 \land N_1 > N_2 \\ &&|&
 {\mathit{shape}}{.}\mathsf{splat} \\ &&|&
 {{\mathit{shape}}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~{\mathit{laneidx}}
-  &\qquad \mbox{if}~{\mathrm{lanetype}}({\mathit{shape}}) = {\mathit{numtype}} \Leftrightarrow {{\mathit{sx}}^?} = \epsilon \\ &&|&
+  &\qquad \mbox{if}~{{\mathit{sx}}^?} = \epsilon \Leftrightarrow {\mathrm{lanetype}}({\mathit{shape}}) = {\mathit{numtype}} \\ &&|&
 {\mathit{shape}}{.}\mathsf{replace\_lane}~{\mathit{laneidx}} \\ &&|&
 \mathsf{ref{.}null}~{\mathit{heaptype}} \\ &&|&
 \mathsf{ref{.}is\_null} \\ &&|&

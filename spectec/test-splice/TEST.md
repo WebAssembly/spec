@@ -12,7 +12,7 @@ $ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup -l --splice-latex -p spe
 ../spec/wasm-3.0/6-typing.watsup:194.10-194.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
 ../spec/wasm-3.0/6-typing.watsup:817.9-817.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
 ../spec/wasm-3.0/6-typing.watsup:851.9-851.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
-../spec/wasm-3.0/6-typing.watsup:1310.9-1310.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm : name})`
+../spec/wasm-3.0/6-typing.watsup:1309.9-1309.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm : name})`
 == Splicing...
 \documentclass[a4paper]{scrartcl}
 
