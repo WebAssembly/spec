@@ -54,7 +54,7 @@ let print_elab_il = ref false
 let print_final_il = ref false
 let print_all_il = ref false
 let print_al = ref false
-let print_al_which = ref ""
+let print_al_o = ref ""
 let print_no_pos = ref false
 
 module PS = Set.Make(struct type t = pass let compare = compare; end)
@@ -144,7 +144,7 @@ let argspec = Arg.align
   "--print-final-il", Arg.Set print_final_il, " Print final IL";
   "--print-all-il", Arg.Set print_all_il, " Print IL after each step";
   "--print-al", Arg.Set print_al, " Print al";
-  "--print-al-o", Arg.Set_string print_al_which, " Print al with given name";
+  "--print-al-o", Arg.Set_string print_al_o, " Print al with given name";
   "--print-no-pos", Arg.Set print_no_pos, " Suppress position info in output";
 ] @ List.map pass_argspec all_passes @ [
   "--all-passes", Arg.Unit (fun () -> List.iter enable_pass all_passes)," Run all passes";
@@ -178,7 +178,7 @@ let () =
     (match !target with
     | Prose | Splice _ | Interpreter _ ->
       enable_pass Sideconditions; enable_pass Animate
-    | _ when !print_al ->
+    | _ when !print_al || !print_al_o <> "" ->
       enable_pass Sideconditions; enable_pass Animate
     | _ -> ()
     );
@@ -202,8 +202,8 @@ let () =
     if !print_final_il && not !print_all_il then print_il il;
 
     let al =
-      if !target = Check || !target = Latex
-      then [] else (
+      if not (!print_al || !print_al_o <> "") && (!target = Check || !target = Latex) then []
+      else (
         log "Translating to AL...";
         (Il2al.Translate.translate il @ Il2al.Manual.manual_algos)
       )
@@ -223,9 +223,9 @@ let () =
     if !print_al then
       Printf.printf "%s\n%!"
         (List.map Al.Print.string_of_algorithm al |> String.concat "\n")
-    else if !print_al_which <> "" then
+    else if !print_al_o <> "" then
       Printf.printf "%s\n%!"
-        (List.filter (match_function_name !print_al_which) al |> List.map Al.Print.string_of_algorithm |> String.concat "\n");
+        (List.filter (match_function_name !print_al_o) al |> List.map Al.Print.string_of_algorithm |> String.concat "\n");
 
     (match !target with
     | Check -> ()
