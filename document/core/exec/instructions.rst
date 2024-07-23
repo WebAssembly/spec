@@ -2585,7 +2585,7 @@ $${rule-prose: exec/throw}
 
 12. Execute the instruction |THROWREF|.
 
-$${rule: Step_read/throw}
+$${rule: Step/throw}
 
 
 .. _exec-throw_ref:
