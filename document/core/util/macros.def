@@ -1276,7 +1276,7 @@
 .. |vdashexprconst| mathdef:: \xref{valid/instructions}{valid-const}{\vdash}
 .. |vdashexprokconst| mathdef:: \xref{valid/instructions}{valid-const}{\vdash}
 
-.. |OKcatch| mathdef:: \xref{valid/types}{valid-catch}{\K{ok}}
+.. |OKcatch| mathdef:: \xref{valid/instructions}{valid-catch}{\K{ok}}
 
 .. |CONSTinstrconst| mathdef:: \xref{valid/instructions}{valid-const}{\K{const}}
 .. |CONSTexprconst| mathdef:: \xref{valid/instructions}{valid-const}{\K{const}}

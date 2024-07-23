@@ -999,10 +999,16 @@ let al_to_export': value -> export' = function
   | v -> error_value "export" v
 let al_to_export: value -> export = al_to_phrase al_to_export'
 
-let al_to_module': value -> module_' = function
+let rec al_to_module': value -> module_' = function
   | CaseV ("MODULE", [
-    types; _imports; funcs; globals; tables; memories; tags; elems; datas; start; exports
-  ]) ->
+      types; _imports; funcs; globals; tables; memories; elems; datas; start; exports
+    ]) when !version < 3 ->
+    al_to_module' (CaseV ("MODULE", [
+      types; _imports; funcs; globals; tables; memories; listV [||]; elems; datas; start; exports
+    ]))
+  | CaseV ("MODULE", [
+      types; _imports; funcs; globals; tables; memories; tags; elems; datas; start; exports
+    ]) ->
     {
       types = al_to_list al_to_type types;
       (* TODO: imports = al_to_list (al_to_import module_) imports;*)
@@ -2017,7 +2023,9 @@ let al_of_module module_ =
     al_of_list al_of_global module_.it.globals;
     al_of_list al_of_table module_.it.tables;
     al_of_list al_of_memory module_.it.memories;
-    al_of_list al_of_tag module_.it.tags;
+  ] @
+    (if !version < 3 then [] else [al_of_list al_of_tag module_.it.tags])
+  @ [
     al_of_list al_of_elem module_.it.elems;
     al_of_list al_of_data module_.it.datas;
     al_of_opt al_of_start module_.it.start;
