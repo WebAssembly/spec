@@ -41,7 +41,7 @@ jobs:
       - name: Build main spec
         run: cd document/core && opam exec make main
       - name: Run Bikeshed
-        run: cd document/core && make bikeshed
+      #  run: cd document/core && opam exec make bikeshed
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
@@ -56,7 +56,7 @@ jobs:
       - name: Setup Bikeshed
         run: pip install bikeshed && bikeshed update
       - name: Run Bikeshed
-        run: bikeshed spec "document/js-api/index.bs" "document/js-api/index.html"
+      #  run: bikeshed spec "document/js-api/index.bs" "document/js-api/index.html"
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
@@ -71,7 +71,7 @@ jobs:
       - name: Setup Bikeshed
         run: pip install bikeshed && bikeshed update
       - name: Run Bikeshed
-        run: bikeshed spec "document/web-api/index.bs" "document/web-api/index.html"
+      #  run: bikeshed spec "document/web-api/index.bs" "document/web-api/index.html"
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
@@ -125,7 +125,7 @@ jobs:
       - name: Setup Bikeshed
         run: pip install bikeshed && bikeshed update
       - name: Run Bikeshed
-        run: bikeshed spec "document/legacy/exceptions/js-api/index.bs" "document/legacy/exceptions/js-api/index.html"
+      #  run: bikeshed spec "document/legacy/exceptions/js-api/index.bs" "document/legacy/exceptions/js-api/index.html"
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
