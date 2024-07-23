@@ -145,6 +145,46 @@
       (catch $e0)
     )
   )
+
+  (func (export "break-try-delegate")
+    (try (do (br 0)) (delegate 0))
+  )
+
+  (func (export "break-and-call-throw") (result i32)
+    (try $outer (result i32)
+      (do
+        (try (result i32)
+          (do
+            (block $a
+              (try (do (br $a)) (delegate $outer))
+            )
+            (call $throw-void)
+            (i32.const 0)
+          )
+          (catch $e0 (i32.const 1))
+        )
+      )
+      (catch $e0 (i32.const 2))
+    )
+  )
+
+  (func (export "break-and-throw") (result i32)
+    (try $outer (result i32)
+      (do
+        (try (result i32)
+          (do
+            (block $a
+              (try (do (br $a)) (delegate $outer))
+            )
+            (throw $e0)
+            (i32.const 0)
+          )
+          (catch $e0 (i32.const 1))
+        )
+      )
+      (catch $e0 (i32.const 2))
+    )
+  )
 )
 
 (assert_return (invoke "delegate-no-throw") (i32.const 1))
@@ -172,6 +212,11 @@
 
 (assert_exception (invoke "return-call-in-try-delegate"))
 (assert_exception (invoke "return-call-indirect-in-try-delegate"))
+
+(assert_return (invoke "break-try-delegate"))
+
+(assert_return (invoke "break-and-call-throw") (i32.const 1))
+(assert_return (invoke "break-and-throw") (i32.const 1))
 
 (assert_malformed
   (module quote "(module (func (delegate 0)))")
