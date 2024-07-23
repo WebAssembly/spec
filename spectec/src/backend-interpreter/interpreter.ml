@@ -28,6 +28,7 @@ let try_with_error fname at stringifier f step =
   | Construct.InvalidConversion msg
   | Exception.InvalidArg msg
   | Exception.InvalidFunc msg
+  | Exception.FreeVar msg
   | Failure msg -> error at (prefix ^ msg) (stringifier step)
 
 
