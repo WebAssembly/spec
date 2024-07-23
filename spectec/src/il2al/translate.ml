@@ -804,10 +804,20 @@ let translate_rulepr id exp =
       letI (rhs, callE ("eval_expr", [ lhs ])) ~at:at;
       popI (frameE (None, z));
     ]
-  | "Ref_type", [_s; ref; rt] ->
-    [ letI (rt, callE ("ref_type_of", [ ref ]) ~at:at) ~at:at ]
-  | "Reftype_sub", [_C; rt1; rt2] ->
+  (* ".*_sub" *)
+  | name, [_C; rt1; rt2]
+    when String.ends_with ~suffix:"_sub" name ->
     [ ifI (matchE (rt1, rt2) ~at:at, [], []) ~at:at ]
+  (* ".*_ok" *)
+  | name, el when String.ends_with ~suffix: "_ok" name ->
+    (match el with
+    | [_; e; t] | [e; t] -> [ assertI (callE (name, [e; t]) ~at:at) ~at:at]
+    | _ -> error_exp exp "unrecognized form of argument in rule_ok"
+    )
+  (* ".*_const" *)
+  | name, el
+    when String.ends_with ~suffix: "_const" name ->
+    [ assertI (callE (name, el) ~at:at) ~at:at]
   | _ ->
     print_yet exp.at "translate_rulepr" ("`" ^ Il.Print.string_of_exp exp ^ "`");
     [ yetI ("TODO: translate_rulepr " ^ id.it) ~at:at ]
@@ -1261,5 +1271,5 @@ let translate_rules il =
 
 (* Entry *)
 let translate il =
-  let il = List.concat_map flatten_rec il in
-  translate_helpers il @ translate_rules il
+  let il' = il |> Animate.transform |> List.concat_map flatten_rec in
+  translate_helpers il' @ translate_rules il'

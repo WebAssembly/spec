@@ -2,7 +2,9 @@ open Al
 open Ast
 open Al_util
 
-let ref_type_of =
+module FuncMap = Map.Make (String)
+
+let ref_type =
   (* TODO: some / none *)
   let null = caseV ("NULL", [ optV (Some (listV [||])) ]) in
   let nonull = caseV ("NULL", [ optV None ]) in
@@ -27,7 +29,7 @@ let ref_type_of =
     else if match_heap_type noextern ht then
       CaseV ("REF", [ null; noextern])
     else
-      Numerics.error_typ_value "$ref_type_of" "null reference" v
+      Numerics.error_typ_value "$Ref_type" "null reference" v
   (* i31 *)
   | [CaseV ("REF.I31_NUM", [ _ ])] -> CaseV ("REF", [ nonull; nullary "I31"])
   (* host *)
@@ -42,4 +44,12 @@ let ref_type_of =
   (* extern *)
   (* TODO: check null *)
   | [CaseV ("REF.EXTERN", [ _ ])] -> CaseV ("REF", [ nonull; nullary "EXTERN"])
-  | vs -> Numerics.error_values "$ref_type_of" vs
+  | vs -> Numerics.error_values "$Ref_type" vs
+
+let manual_map = FuncMap.add "Ref_type" ref_type FuncMap.empty
+
+let mem name = FuncMap.mem name manual_map
+
+let call_func name args =
+  let func = FuncMap.find name manual_map in
+  func args

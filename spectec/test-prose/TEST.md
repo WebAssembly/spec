@@ -13,8 +13,6 @@ watsup 0.4 generator
 == IL Validation...
 == Running pass sideconditions...
 == IL Validation after pass sideconditions...
-== Running pass animate...
-== IL Validation after pass animate...
 == Translating to AL...
 == Prose Generation...
 =================
@@ -120,35 +118,35 @@ validation_of_IF
 validation_of_BR
 - the instr (BR l) is valid with the function type (t_1* ++ t? -> t_2*) if and only if:
   - |C.LABELS| is greater than l.
-  - Let t? be C.LABELS[l].
+  - C.LABELS[l] is t?.
 
 validation_of_BR_IF
 - the instr (BR_IF l) is valid with the function type (t? ++ [I32] -> t?) if and only if:
   - |C.LABELS| is greater than l.
-  - Let t? be C.LABELS[l].
+  - C.LABELS[l] is t?.
 
 validation_of_BR_TABLE
 - the instr (BR_TABLE l* l') is valid with the function type (t_1* ++ t? -> t_2*) if and only if:
   - |C.LABELS| is greater than l'.
   - For all l in l*,
     - |C.LABELS| is greater than l.
-  - For all l in l*,
-    - Let t? be C.LABELS[l].
   - t? is C.LABELS[l'].
+  - For all l in l*,
+    - t? is C.LABELS[l].
 
 validation_of_CALL
 - the instr (CALL x) is valid with the function type (t_1* -> t_2?) if and only if:
   - |C.FUNCS| is greater than x.
-  - Let (t_1* -> t_2?) be C.FUNCS[x].
+  - C.FUNCS[x] is (t_1* -> t_2?).
 
 validation_of_CALL_INDIRECT
 - the instr (CALL_INDIRECT x) is valid with the function type (t_1* ++ [I32] -> t_2?) if and only if:
   - |C.TYPES| is greater than x.
-  - Let (t_1* -> t_2?) be C.TYPES[x].
+  - C.TYPES[x] is (t_1* -> t_2?).
 
 validation_of_RETURN
 - the instr RETURN is valid with the function type (t_1* ++ t? -> t_2*) if and only if:
-  - Let ?(t?) be C.RETURN.
+  - C.RETURN is ?(t?).
 
 validation_of_CONST
 - the instr (t.CONST c_t) is valid with the function type ([] -> [t]).
@@ -172,58 +170,60 @@ validation_of_CVTOP
 validation_of_LOCAL.GET
 - the instr (LOCAL.GET x) is valid with the function type ([] -> [t]) if and only if:
   - |C.LOCALS| is greater than x.
-  - Let t be C.LOCALS[x].
+  - C.LOCALS[x] is t.
 
 validation_of_LOCAL.SET
 - the instr (LOCAL.SET x) is valid with the function type ([t] -> []) if and only if:
   - |C.LOCALS| is greater than x.
-  - Let t be C.LOCALS[x].
+  - C.LOCALS[x] is t.
 
 validation_of_LOCAL.TEE
 - the instr (LOCAL.TEE x) is valid with the function type ([t] -> [t]) if and only if:
   - |C.LOCALS| is greater than x.
-  - Let t be C.LOCALS[x].
+  - C.LOCALS[x] is t.
 
 validation_of_GLOBAL.GET
 - the instr (GLOBAL.GET x) is valid with the function type ([] -> [t]) if and only if:
   - |C.GLOBALS| is greater than x.
-  - Let (mut, t) be C.GLOBALS[x].
+  - C.GLOBALS[x] is (mut, t).
 
 validation_of_GLOBAL.SET
 - the instr (GLOBAL.SET x) is valid with the function type ([t] -> []) if and only if:
   - |C.GLOBALS| is greater than x.
-  - Let ((MUT ?(())), t) be C.GLOBALS[x].
+  - C.GLOBALS[x] is ((MUT ?(())), t).
 
 validation_of_MEMORY.SIZE
 - the instr MEMORY.SIZE is valid with the function type ([] -> [I32]) if and only if:
   - |C.MEMS| is greater than 0.
-  - Let mt be C.MEMS[0].
+  - C.MEMS[0] is mt.
 
 validation_of_MEMORY.GROW
 - the instr MEMORY.GROW is valid with the function type ([I32] -> [I32]) if and only if:
   - |C.MEMS| is greater than 0.
-  - Let mt be C.MEMS[0].
+  - C.MEMS[0] is mt.
 
 validation_of_LOAD
 - the instr (LOAD nt (n, sx)? memarg) is valid with the function type ([I32] -> [nt]) if and only if:
   - |C.MEMS| is greater than 0.
   - ((sx? is ?())) if and only if ((n? is ?())).
+  - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - If n is defined,
     - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
     - (n / 8) is less than ($size(nt) / 8).
-  - n? is ?().
-  - Let mt be C.MEMS[0].
+  - If n is defined,
+    - nt is Inn.
 
 validation_of_STORE
 - the instr (STORE nt n? memarg) is valid with the function type ([I32, nt] -> []) if and only if:
   - |C.MEMS| is greater than 0.
+  - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - If n is defined,
     - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
     - (n / 8) is less than ($size(nt) / 8).
-  - n? is ?().
-  - Let mt be C.MEMS[0].
+  - If n is defined,
+    - nt is Inn.
 
 validation_of_valid_instr*
 - the instr sequence instr_u0* is valid with the function type (valty_u1* -> valty_u2*) if and only if:
@@ -268,13 +268,13 @@ validation_of_valid_type
 validation_of_valid_func
 - the function (FUNC x (LOCAL t)* expr) is valid with the function type (t_1* -> t_2?) if and only if:
   - |C.TYPES| is greater than x.
-  - Let (t_1* -> t_2?) be C.TYPES[x].
+  - C.TYPES[x] is (t_1* -> t_2?).
   - Under the context C with .LOCALS appended by t_1* ++ t* with .LABELS appended by [t_2?] with .RETURN appended by ?(t_2?), the expression expr is valid with the result type t_2?.
 
 validation_of_valid_global
 - the global (GLOBAL gt expr) is valid with the global type gt if and only if:
   - the global type gt is valid.
-  - Let (mut, t) be gt.
+  - gt is (mut, t).
   - the expression expr is valid with the number type sequence ?(t).
   - the expression expr is constant.
 
@@ -320,22 +320,22 @@ validation_of_valid_externidx
     - exter_u0 is (FUNC x).
     - exter_u1 is (FUNC ft).
     - |C.FUNCS| is greater than x.
-    - Let ft be C.FUNCS[x].
+    - C.FUNCS[x] is ft.
   - Or:
     - exter_u0 is (GLOBAL x).
     - exter_u1 is (GLOBAL gt).
     - |C.GLOBALS| is greater than x.
-    - Let gt be C.GLOBALS[x].
+    - C.GLOBALS[x] is gt.
   - Or:
     - exter_u0 is (TABLE x).
     - exter_u1 is (TABLE tt).
     - |C.TABLES| is greater than x.
-    - Let tt be C.TABLES[x].
+    - C.TABLES[x] is tt.
   - Or:
     - exter_u0 is (MEM x).
     - exter_u1 is (MEM mt).
     - |C.MEMS| is greater than x.
-    - Let mt be C.MEMS[x].
+    - C.MEMS[x] is mt.
 
 validation_of_valid_export
 - the export (EXPORT name externidx) is valid with the external type xt if and only if:
@@ -1447,8 +1447,6 @@ watsup 0.4 generator
 == IL Validation...
 == Running pass sideconditions...
 == IL Validation after pass sideconditions...
-== Running pass animate...
-== IL Validation after pass animate...
 == Translating to AL...
 == Prose Generation...
 =================
@@ -1550,7 +1548,7 @@ validation_of_valid_blocktype
     - valty_u1* is t_1*.
     - valty_u2* is t_2*.
     - |C.TYPES| is greater than typeidx.
-    - Let (t_1* -> t_2*) be C.TYPES[typeidx].
+    - C.TYPES[typeidx] is (t_1* -> t_2*).
 
 validation_of_NOP
 - the instr NOP is valid with the function type ([] -> []).
@@ -1566,29 +1564,29 @@ validation_of_SELECT
 
 validation_of_BLOCK
 - the instr (BLOCK bt instr*) is valid with the function type (t_1* -> t_2*) if and only if:
-  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr* is valid with the function type (t_1* -> t_2*).
   - the block type bt is valid with the function type (t_1* -> t_2*).
+  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr* is valid with the function type (t_1* -> t_2*).
 
 validation_of_LOOP
 - the instr (LOOP bt instr*) is valid with the function type (t_1* -> t_2*) if and only if:
-  - Under the context C with .LABELS prepended by [t_1*], the instr sequence instr* is valid with the function type (t_1* -> t_2*).
   - the block type bt is valid with the function type (t_1* -> t_2*).
+  - Under the context C with .LABELS prepended by [t_1*], the instr sequence instr* is valid with the function type (t_1* -> t_2*).
 
 validation_of_IF
 - the instr (IF bt instr_1* instr_2*) is valid with the function type (t_1* ++ [I32] -> t_2*) if and only if:
-  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr_2* is valid with the function type (t_1* -> t_2*).
   - the block type bt is valid with the function type (t_1* -> t_2*).
   - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr_1* is valid with the function type (t_1* -> t_2*).
+  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr_2* is valid with the function type (t_1* -> t_2*).
 
 validation_of_BR
 - the instr (BR l) is valid with the function type (t_1* ++ t* -> t_2*) if and only if:
   - |C.LABELS| is greater than l.
-  - Let t* be C.LABELS[l].
+  - C.LABELS[l] is t*.
 
 validation_of_BR_IF
 - the instr (BR_IF l) is valid with the function type (t* ++ [I32] -> t*) if and only if:
   - |C.LABELS| is greater than l.
-  - Let t* be C.LABELS[l].
+  - C.LABELS[l] is t*.
 
 validation_of_BR_TABLE
 - the instr (BR_TABLE l* l') is valid with the function type (t_1* ++ t* -> t_2*) if and only if:
@@ -1602,18 +1600,18 @@ validation_of_BR_TABLE
 validation_of_CALL
 - the instr (CALL x) is valid with the function type (t_1* -> t_2*) if and only if:
   - |C.FUNCS| is greater than x.
-  - Let (t_1* -> t_2*) be C.FUNCS[x].
+  - C.FUNCS[x] is (t_1* -> t_2*).
 
 validation_of_CALL_INDIRECT
 - the instr (CALL_INDIRECT x y) is valid with the function type (t_1* ++ [I32] -> t_2*) if and only if:
   - |C.TABLES| is greater than x.
   - |C.TYPES| is greater than y.
-  - Let (lim, FUNCREF) be C.TABLES[x].
-  - Let (t_1* -> t_2*) be C.TYPES[y].
+  - C.TABLES[x] is (lim, FUNCREF).
+  - C.TYPES[y] is (t_1* -> t_2*).
 
 validation_of_RETURN
 - the instr RETURN is valid with the function type (t_1* ++ t* -> t_2*) if and only if:
-  - Let ?(t*) be C.RETURN.
+  - C.RETURN is ?(t*).
 
 validation_of_CONST
 - the instr (nt.CONST c_nt) is valid with the function type ([] -> [nt]).
@@ -1640,7 +1638,7 @@ validation_of_REF.NULL
 validation_of_REF.FUNC
 - the instr (REF.FUNC x) is valid with the function type ([] -> [FUNCREF]) if and only if:
   - |C.FUNCS| is greater than x.
-  - Let ft be C.FUNCS[x].
+  - C.FUNCS[x] is ft.
 
 validation_of_REF.IS_NULL
 - the instr REF.IS_NULL is valid with the function type ([rt] -> [I32]).
@@ -1712,98 +1710,98 @@ validation_of_VCVTOP
 validation_of_LOCAL.GET
 - the instr (LOCAL.GET x) is valid with the function type ([] -> [t]) if and only if:
   - |C.LOCALS| is greater than x.
-  - Let t be C.LOCALS[x].
+  - C.LOCALS[x] is t.
 
 validation_of_LOCAL.SET
 - the instr (LOCAL.SET x) is valid with the function type ([t] -> []) if and only if:
   - |C.LOCALS| is greater than x.
-  - Let t be C.LOCALS[x].
+  - C.LOCALS[x] is t.
 
 validation_of_LOCAL.TEE
 - the instr (LOCAL.TEE x) is valid with the function type ([t] -> [t]) if and only if:
   - |C.LOCALS| is greater than x.
-  - Let t be C.LOCALS[x].
+  - C.LOCALS[x] is t.
 
 validation_of_GLOBAL.GET
 - the instr (GLOBAL.GET x) is valid with the function type ([] -> [t]) if and only if:
   - |C.GLOBALS| is greater than x.
-  - Let (mut, t) be C.GLOBALS[x].
+  - C.GLOBALS[x] is (mut, t).
 
 validation_of_GLOBAL.SET
 - the instr (GLOBAL.SET x) is valid with the function type ([t] -> []) if and only if:
   - |C.GLOBALS| is greater than x.
-  - Let ((MUT ?(())), t) be C.GLOBALS[x].
+  - C.GLOBALS[x] is ((MUT ?(())), t).
 
 validation_of_TABLE.GET
 - the instr (TABLE.GET x) is valid with the function type ([I32] -> [rt]) if and only if:
   - |C.TABLES| is greater than x.
-  - Let (lim, rt) be C.TABLES[x].
+  - C.TABLES[x] is (lim, rt).
 
 validation_of_TABLE.SET
 - the instr (TABLE.SET x) is valid with the function type ([I32, rt] -> []) if and only if:
   - |C.TABLES| is greater than x.
-  - Let (lim, rt) be C.TABLES[x].
+  - C.TABLES[x] is (lim, rt).
 
 validation_of_TABLE.SIZE
 - the instr (TABLE.SIZE x) is valid with the function type ([] -> [I32]) if and only if:
   - |C.TABLES| is greater than x.
-  - Let (lim, rt) be C.TABLES[x].
+  - C.TABLES[x] is (lim, rt).
 
 validation_of_TABLE.GROW
 - the instr (TABLE.GROW x) is valid with the function type ([rt, I32] -> [I32]) if and only if:
   - |C.TABLES| is greater than x.
-  - Let (lim, rt) be C.TABLES[x].
+  - C.TABLES[x] is (lim, rt).
 
 validation_of_TABLE.FILL
 - the instr (TABLE.FILL x) is valid with the function type ([I32, rt, I32] -> []) if and only if:
   - |C.TABLES| is greater than x.
-  - Let (lim, rt) be C.TABLES[x].
+  - C.TABLES[x] is (lim, rt).
 
 validation_of_TABLE.COPY
 - the instr (TABLE.COPY x_1 x_2) is valid with the function type ([I32, I32, I32] -> []) if and only if:
   - |C.TABLES| is greater than x_1.
   - |C.TABLES| is greater than x_2.
-  - Let (lim_1, rt) be C.TABLES[x_1].
-  - Let (lim_2, rt) be C.TABLES[x_2].
+  - C.TABLES[x_1] is (lim_1, rt).
+  - C.TABLES[x_2] is (lim_2, rt).
 
 validation_of_TABLE.INIT
 - the instr (TABLE.INIT x_1 x_2) is valid with the function type ([I32, I32, I32] -> []) if and only if:
   - |C.TABLES| is greater than x_1.
   - |C.ELEMS| is greater than x_2.
-  - Let (lim, rt) be C.TABLES[x_1].
+  - C.TABLES[x_1] is (lim, rt).
   - C.ELEMS[x_2] is rt.
 
 validation_of_ELEM.DROP
 - the instr (ELEM.DROP x) is valid with the function type ([] -> []) if and only if:
   - |C.ELEMS| is greater than x.
-  - Let rt be C.ELEMS[x].
+  - C.ELEMS[x] is rt.
 
 validation_of_MEMORY.SIZE
 - the instr MEMORY.SIZE is valid with the function type ([] -> [I32]) if and only if:
   - |C.MEMS| is greater than 0.
-  - Let mt be C.MEMS[0].
+  - C.MEMS[0] is mt.
 
 validation_of_MEMORY.GROW
 - the instr MEMORY.GROW is valid with the function type ([I32] -> [I32]) if and only if:
   - |C.MEMS| is greater than 0.
-  - Let mt be C.MEMS[0].
+  - C.MEMS[0] is mt.
 
 validation_of_MEMORY.FILL
 - the instr MEMORY.FILL is valid with the function type ([I32, I32, I32] -> []) if and only if:
   - |C.MEMS| is greater than 0.
-  - Let mt be C.MEMS[0].
+  - C.MEMS[0] is mt.
 
 validation_of_MEMORY.COPY
 - the instr MEMORY.COPY is valid with the function type ([I32, I32, I32] -> []) if and only if:
   - |C.MEMS| is greater than 0.
-  - Let mt be C.MEMS[0].
+  - C.MEMS[0] is mt.
 
 validation_of_MEMORY.INIT
 - the instr (MEMORY.INIT x) is valid with the function type ([I32, I32, I32] -> []) if and only if:
   - |C.MEMS| is greater than 0.
   - |C.DATAS| is greater than x.
+  - C.MEMS[0] is mt.
   - C.DATAS[x] is OK.
-  - Let mt be C.MEMS[0].
 
 validation_of_DATA.DROP
 - the instr (DATA.DROP x) is valid with the function type ([] -> []) if and only if:
@@ -1814,48 +1812,50 @@ validation_of_LOAD
 - the instr (LOAD nt (n, sx)? memarg) is valid with the function type ([I32] -> [nt]) if and only if:
   - |C.MEMS| is greater than 0.
   - ((sx? is ?())) if and only if ((n? is ?())).
+  - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - If n is defined,
     - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
     - (n / 8) is less than ($size(nt) / 8).
-  - n? is ?().
-  - Let mt be C.MEMS[0].
+  - If n is defined,
+    - nt is Inn.
 
 validation_of_STORE
 - the instr (STORE nt n? memarg) is valid with the function type ([I32, nt] -> []) if and only if:
   - |C.MEMS| is greater than 0.
+  - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - If n is defined,
     - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
     - (n / 8) is less than ($size(nt) / 8).
-  - n? is ?().
-  - Let mt be C.MEMS[0].
+  - If n is defined,
+    - nt is Inn.
 
 validation_of_VLOAD
 - the instr (VLOAD V128 ?((SHAPE M N sx)) memarg) is valid with the function type ([I32] -> [V128]) if and only if:
   - |C.MEMS| is greater than 0.
+  - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) · N).
-  - Let mt be C.MEMS[0].
 
 validation_of_VLOAD_LANE
 - the instr (VLOAD_LANE V128 n memarg laneidx) is valid with the function type ([I32, V128] -> [V128]) if and only if:
   - |C.MEMS| is greater than 0.
+  - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
   - laneidx is less than (128 / n).
-  - Let mt be C.MEMS[0].
 
 validation_of_VSTORE
 - the instr (VSTORE V128 memarg) is valid with the function type ([I32, V128] -> []) if and only if:
   - |C.MEMS| is greater than 0.
+  - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(V128) / 8).
-  - Let mt be C.MEMS[0].
 
 validation_of_VSTORE_LANE
 - the instr (VSTORE_LANE V128 n memarg laneidx) is valid with the function type ([I32, V128] -> []) if and only if:
   - |C.MEMS| is greater than 0.
+  - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
   - laneidx is less than (128 / n).
-  - Let mt be C.MEMS[0].
 
 validation_of_valid_instr*
 - the instr sequence instr_u0* is valid with the function type (valty_u1* -> valty_u2*) if and only if:
@@ -1913,13 +1913,13 @@ validation_of_valid_type
 validation_of_valid_func
 - the function (FUNC x (LOCAL t)* expr) is valid with the function type (t_1* -> t_2*) if and only if:
   - |C.TYPES| is greater than x.
-  - Let (t_1* -> t_2*) be C.TYPES[x].
+  - C.TYPES[x] is (t_1* -> t_2*).
   - Under the context C with .LOCALS appended by t_1* ++ t* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the value type sequence t_2*.
 
 validation_of_valid_global
 - the global (GLOBAL gt expr) is valid with the global type gt if and only if:
   - the global type gt is valid.
-  - Let (mut, t) be gt.
+  - gt is (mut, t).
   - the expression expr is valid with the value type t.
   - the expression expr is constant.
 
@@ -1936,9 +1936,9 @@ validation_of_valid_elemmode
   - Either:
     - elemm_u0 is (ACTIVE x expr).
     - |C.TABLES| is greater than x.
+    - C.TABLES[x] is (lim, rt).
     - the expression expr is valid with the value type I32.
     - the expression expr is constant.
-    - Let (lim, rt) be C.TABLES[x].
   - Or:
     - elemm_u0 is PASSIVE.
   - Or:
@@ -1981,22 +1981,22 @@ validation_of_valid_externidx
     - exter_u0 is (FUNC x).
     - exter_u1 is (FUNC ft).
     - |C.FUNCS| is greater than x.
-    - Let ft be C.FUNCS[x].
+    - C.FUNCS[x] is ft.
   - Or:
     - exter_u0 is (GLOBAL x).
     - exter_u1 is (GLOBAL gt).
     - |C.GLOBALS| is greater than x.
-    - Let gt be C.GLOBALS[x].
+    - C.GLOBALS[x] is gt.
   - Or:
     - exter_u0 is (TABLE x).
     - exter_u1 is (TABLE tt).
     - |C.TABLES| is greater than x.
-    - Let tt be C.TABLES[x].
+    - C.TABLES[x] is tt.
   - Or:
     - exter_u0 is (MEM x).
     - exter_u1 is (MEM mt).
     - |C.MEMS| is greater than x.
-    - Let mt be C.MEMS[x].
+    - C.MEMS[x] is mt.
 
 validation_of_valid_export
 - the export (EXPORT name externidx) is valid with the external type xt if and only if:
@@ -4136,11 +4136,11 @@ watsup 0.4 generator
 == IL Validation...
 == Running pass sideconditions...
 == IL Validation after pass sideconditions...
-== Running pass animate...
-== IL Validation after pass animate...
 == Translating to AL...
 == Prose Generation...
 6-typing.watsup:194.10-194.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
+6-typing.watsup:817.9-817.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
+6-typing.watsup:851.9-851.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
 6-typing.watsup:1310.9-1310.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm : name})`
 =================
  Generated prose
@@ -4402,7 +4402,6 @@ validation_of_matching_comptype
 
 validation_of_valid_subtype
 - the sub type (SUB (FINAL ()?) $idx(typeidx)* comptype) is valid with the oktypeidx (OK x_0) if and only if:
-  - the composite type comptype is valid.
   - |x*| is |comptype'*|.
   - |x'**| is |comptype'*|.
   - For all x in x*,
@@ -4412,14 +4411,15 @@ validation_of_valid_subtype
     - x is less than x_0.
   - For all comptype' in comptype'* and x in x* and x' in x'*,
     - $unrolldt(C.TYPES[x]) is (SUB (FINAL ?()) $idx(x')* comptype').
+  - the composite type comptype is valid.
   - For all comptype' in comptype'*,
     - the composite type comptype matches the composite type comptype'.
 
 validation_of_valid_subtype
 - the sub type (SUB (FINAL ()?) typeuse* compttype) is valid with the oktypeidxnat (OK x i) if and only if:
-  - |typeuse*| is less than or equal to 1.
   - |typeuse*| is |comptype'*|.
   - |typeuse'**| is |comptype'*|.
+  - |typeuse*| is less than or equal to 1.
   - For all typeuse in typeuse*,
     - Yet: $before(typeuse, x, i)
   - For all comptype' in comptype'* and typeuse in typeuse* and typeuse' in typeuse'*,
@@ -4434,8 +4434,8 @@ validation_of_valid_rectype
     - subty_u0* is [].
   - Or:
     - subty_u0* is [subtype_1] ++ subtype*.
-    - the recursive type (REC subtype*) is valid with the oktypeidxnat (OK (x + 1) (i + 1)).
     - the sub type subtype_1 is valid with the oktypeidxnat (OK x i).
+    - the recursive type (REC subtype*) is valid with the oktypeidxnat (OK (x + 1) (i + 1)).
 
 validation_of_valid_rectype
 - the recursive type (REC subty_u0*) is valid with the oktypeidx (OK x) if and only if:
@@ -4443,8 +4443,8 @@ validation_of_valid_rectype
     - subty_u0* is [].
   - Or:
     - subty_u0* is [subtype_1] ++ subtype*.
-    - the recursive type (REC subtype*) is valid with the oktypeidx (OK (x + 1)).
     - the sub type subtype_1 is valid with the oktypeidx (OK x).
+    - the recursive type (REC subtype*) is valid with the oktypeidx (OK (x + 1)).
   - Or:
     - subty_u0* is subtype*.
     - Under the context C with .RECS prepended by subtype*, the recursive type (REC subtype*) is valid with the oktypeidxnat (OK x 0).
@@ -4559,7 +4559,7 @@ validation_of_valid_blocktype
     - valty_u1* is t_1*.
     - valty_u2* is t_2*.
     - |C.TYPES| is greater than typeidx.
-    - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPES[typeidx]).
+    - $expanddt(C.TYPES[typeidx]) is (FUNC (t_1* -> t_2*)).
 
 validation_of_NOP
 - the instr NOP is valid with the instruction type ([] ->_ [] ++ []).
@@ -4578,30 +4578,30 @@ validation_of_SELECT
 
 validation_of_BLOCK
 - the instr (BLOCK bt instr*) is valid with the instruction type (t_1* ->_ [] ++ t_2*) if and only if:
-  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr* is valid with the instruction type (t_1* ->_ x* ++ t_2*).
   - the block type bt is valid with the instruction type (t_1* ->_ [] ++ t_2*).
+  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr* is valid with the instruction type (t_1* ->_ x* ++ t_2*).
 
 validation_of_LOOP
 - the instr (LOOP bt instr*) is valid with the instruction type (t_1* ->_ [] ++ t_2*) if and only if:
-  - Under the context C with .LABELS prepended by [t_1*], the instr sequence instr* is valid with the instruction type (t_1* ->_ x* ++ t_2*).
   - the block type bt is valid with the instruction type (t_1* ->_ [] ++ t_2*).
+  - Under the context C with .LABELS prepended by [t_1*], the instr sequence instr* is valid with the instruction type (t_1* ->_ x* ++ t_2*).
 
 validation_of_IF
 - the instr (IF bt instr_1* instr_2*) is valid with the instruction type (t_1* ++ [I32] ->_ [] ++ t_2*) if and only if:
-  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr_1* is valid with the instruction type (t_1* ->_ x_1* ++ t_2*).
   - the block type bt is valid with the instruction type (t_1* ->_ [] ++ t_2*).
+  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr_1* is valid with the instruction type (t_1* ->_ x_1* ++ t_2*).
   - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr_2* is valid with the instruction type (t_1* ->_ x_2* ++ t_2*).
 
 validation_of_BR
 - the instr (BR l) is valid with the instruction type (t_1* ++ t* ->_ [] ++ t_2*) if and only if:
   - |C.LABELS| is greater than l.
-  - Let t* be C.LABELS[l].
+  - C.LABELS[l] is t*.
   - the instruction type (t_1* ->_ [] ++ t_2*) is valid.
 
 validation_of_BR_IF
 - the instr (BR_IF l) is valid with the instruction type (t* ++ [I32] ->_ [] ++ t*) if and only if:
   - |C.LABELS| is greater than l.
-  - Let t* be C.LABELS[l].
+  - C.LABELS[l] is t*.
 
 validation_of_BR_TABLE
 - the instr (BR_TABLE l* l') is valid with the instruction type (t_1* ++ t* ->_ [] ++ t_2*) if and only if:
@@ -4616,81 +4616,81 @@ validation_of_BR_TABLE
 validation_of_BR_ON_NULL
 - the instr (BR_ON_NULL l) is valid with the instruction type (t* ++ [(REF (NULL ?(())) ht)] ->_ [] ++ t* ++ [(REF (NULL ?()) ht)]) if and only if:
   - |C.LABELS| is greater than l.
+  - C.LABELS[l] is t*.
   - the heap type ht is valid.
-  - Let t* be C.LABELS[l].
 
 validation_of_BR_ON_NON_NULL
 - the instr (BR_ON_NON_NULL l) is valid with the instruction type (t* ++ [(REF (NULL ?(())) ht)] ->_ [] ++ t*) if and only if:
   - |C.LABELS| is greater than l.
-  - Let t* ++ [(REF (NULL ?()) ht)] be C.LABELS[l].
+  - C.LABELS[l] is t* ++ [(REF (NULL ?()) ht)].
 
 validation_of_BR_ON_CAST
 - the instr (BR_ON_CAST l rt_1 rt_2) is valid with the instruction type (t* ++ [rt_1] ->_ [] ++ t* ++ [$diffrt(rt_1, rt_2)]) if and only if:
   - |C.LABELS| is greater than l.
+  - C.LABELS[l] is t* ++ [rt].
   - the reference type rt_1 is valid.
   - the reference type rt_2 is valid.
   - the reference type rt_2 matches the reference type rt_1.
-  - Let t* ++ [rt] be C.LABELS[l].
   - the reference type rt_2 matches the reference type rt.
 
 validation_of_BR_ON_CAST_FAIL
 - the instr (BR_ON_CAST_FAIL l rt_1 rt_2) is valid with the instruction type (t* ++ [rt_1] ->_ [] ++ t* ++ [rt_2]) if and only if:
   - |C.LABELS| is greater than l.
+  - C.LABELS[l] is t* ++ [rt].
   - the reference type rt_1 is valid.
   - the reference type rt_2 is valid.
   - the reference type rt_2 matches the reference type rt_1.
-  - Let t* ++ [rt] be C.LABELS[l].
   - the reference type $diffrt(rt_1, rt_2) matches the reference type rt.
 
 validation_of_CALL
 - the instr (CALL x) is valid with the instruction type (t_1* ->_ [] ++ t_2*) if and only if:
   - |C.FUNCS| is greater than x.
-  - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.FUNCS[x]).
+  - $expanddt(C.FUNCS[x]) is (FUNC (t_1* -> t_2*)).
 
 validation_of_CALL_REF
 - the instr (CALL_REF $idx(x)) is valid with the instruction type (t_1* ++ [(REF (NULL ?(())) $idx(x))] ->_ [] ++ t_2*) if and only if:
   - |C.TYPES| is greater than x.
-  - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPES[x]).
+  - $expanddt(C.TYPES[x]) is (FUNC (t_1* -> t_2*)).
 
 validation_of_CALL_INDIRECT
 - the instr (CALL_INDIRECT x $idx(y)) is valid with the instruction type (t_1* ++ [I32] ->_ [] ++ t_2*) if and only if:
   - |C.TABLES| is greater than x.
   - |C.TYPES| is greater than y.
-  - Let (lim, rt) be C.TABLES[x].
-  - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPES[y]).
+  - C.TABLES[x] is (lim, rt).
   - the reference type rt matches the reference type (REF (NULL ?(())) FUNC).
+  - $expanddt(C.TYPES[y]) is (FUNC (t_1* -> t_2*)).
 
 validation_of_RETURN
 - the instr RETURN is valid with the instruction type (t_1* ++ t* ->_ [] ++ t_2*) if and only if:
-  - Let ?(t*) be C.RETURN.
+  - C.RETURN is ?(t*).
   - the instruction type (t_1* ->_ [] ++ t_2*) is valid.
 
 validation_of_RETURN_CALL
 - the instr (RETURN_CALL x) is valid with the instruction type (t_3* ++ t_1* ->_ [] ++ t_4*) if and only if:
   - |C.FUNCS| is greater than x.
-  - the instruction type (t_3* ->_ [] ++ t_4*) is valid.
-  - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.FUNCS[x]).
-  - the value type sequence t_2* matches the value type sequence t'_2*.
+  - $expanddt(C.FUNCS[x]) is (FUNC (t_1* -> t_2*)).
   - C.RETURN is ?(t'_2*).
+  - the value type sequence t_2* matches the value type sequence t'_2*.
+  - the instruction type (t_3* ->_ [] ++ t_4*) is valid.
 
 validation_of_RETURN_CALL_REF
 - the instr (RETURN_CALL_REF $idx(x)) is valid with the instruction type (t_3* ++ t_1* ++ [(REF (NULL ?(())) $idx(x))] ->_ [] ++ t_4*) if and only if:
   - |C.TYPES| is greater than x.
-  - the instruction type (t_3* ->_ [] ++ t_4*) is valid.
-  - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPES[x]).
-  - the value type sequence t_2* matches the value type sequence t'_2*.
+  - $expanddt(C.TYPES[x]) is (FUNC (t_1* -> t_2*)).
   - C.RETURN is ?(t'_2*).
+  - the value type sequence t_2* matches the value type sequence t'_2*.
+  - the instruction type (t_3* ->_ [] ++ t_4*) is valid.
 
 validation_of_RETURN_CALL_INDIRECT
 - the instr (RETURN_CALL_INDIRECT x $idx(y)) is valid with the instruction type (t_3* ++ t_1* ++ [I32] ->_ [] ++ t_4*) if and only if:
   - |C.TABLES| is greater than x.
   - |C.TYPES| is greater than y.
-  - the instruction type (t_3* ->_ [] ++ t_4*) is valid.
-  - Let (lim, rt) be C.TABLES[x].
-  - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPES[y]).
+  - C.TABLES[x] is (lim, rt).
   - the reference type rt matches the reference type (REF (NULL ?(())) FUNC).
-  - the value type sequence t_2* matches the value type sequence t'_2*.
+  - $expanddt(C.TYPES[y]) is (FUNC (t_1* -> t_2*)).
   - C.RETURN is ?(t'_2*).
+  - the value type sequence t_2* matches the value type sequence t'_2*.
+  - the instruction type (t_3* ->_ [] ++ t_4*) is valid.
 
 validation_of_CONST
 - the instr (nt.CONST c_nt) is valid with the instruction type ([] ->_ [] ++ [nt]).
@@ -4717,8 +4717,8 @@ validation_of_REF.NULL
 validation_of_REF.FUNC
 - the instr (REF.FUNC x) is valid with the instruction type ([] ->_ [] ++ [(REF (NULL ?()) dt)]) if and only if:
   - |C.FUNCS| is greater than x.
+  - C.FUNCS[x] is dt.
   - x is contained in C.REFS.
-  - Let dt be C.FUNCS[x].
 
 validation_of_REF.I31
 - the instr REF.I31 is valid with the instruction type ([I32] ->_ [] ++ [(REF (NULL ?()) I31)]).
@@ -4737,14 +4737,14 @@ validation_of_REF.EQ
 validation_of_REF.TEST
 - the instr (REF.TEST rt) is valid with the instruction type ([rt'] ->_ [] ++ [I32]) if and only if:
   - the reference type rt is valid.
-  - the reference type rt matches the reference type rt'.
   - the reference type rt' is valid.
+  - the reference type rt matches the reference type rt'.
 
 validation_of_REF.CAST
 - the instr (REF.CAST rt) is valid with the instruction type ([rt'] ->_ [] ++ [rt]) if and only if:
   - the reference type rt is valid.
-  - the reference type rt matches the reference type rt'.
   - the reference type rt' is valid.
+  - the reference type rt matches the reference type rt'.
 
 validation_of_I31.GET
 - the instr (I31.GET sx) is valid with the instruction type ([(REF (NULL ?(())) I31)] ->_ [] ++ [I32]).
@@ -4752,107 +4752,107 @@ validation_of_I31.GET
 validation_of_STRUCT.NEW
 - the instr (STRUCT.NEW x) is valid with the instruction type ($unpack(zt)* ->_ [] ++ [(REF (NULL ?()) $idx(x))]) if and only if:
   - |C.TYPES| is greater than x.
-  - Let (STRUCT (mut, zt)*) be $expanddt(C.TYPES[x]).
   - |zt*| is |mut*|.
+  - $expanddt(C.TYPES[x]) is (STRUCT (mut, zt)*).
 
 validation_of_STRUCT.NEW_DEFAULT
 - the instr (STRUCT.NEW_DEFAULT x) is valid with the instruction type ([] ->_ [] ++ [(REF (NULL ?()) $idx(x))]) if and only if:
   - |C.TYPES| is greater than x.
-  - Let (STRUCT (mut, zt)*) be $expanddt(C.TYPES[x]).
   - |zt*| is |mut*|.
-  - For all val in val* and zt in zt*,
-    - Let ?(val) be $default_($unpack(zt)).
   - |zt*| is |val*|.
+  - $expanddt(C.TYPES[x]) is (STRUCT (mut, zt)*).
+  - For all val in val* and zt in zt*,
+    - $default_($unpack(zt)) is ?(val).
 
 validation_of_STRUCT.GET
 - the instr (STRUCT.GET sx? x i) is valid with the instruction type ([(REF (NULL ?(())) $idx(x))] ->_ [] ++ [$unpack(zt)]) if and only if:
   - |C.TYPES| is greater than x.
-  - Let (STRUCT yt*) be $expanddt(C.TYPES[x]).
   - |yt*| is greater than i.
-  - Let (mut, zt) be yt*[i].
+  - $expanddt(C.TYPES[x]) is (STRUCT yt*).
+  - yt*[i] is (mut, zt).
   - ((zt is $unpack(zt))) if and only if ((sx? is ?())).
 
 validation_of_STRUCT.SET
 - the instr (STRUCT.SET x i) is valid with the instruction type ([(REF (NULL ?(())) $idx(x)), $unpack(zt)] ->_ [] ++ []) if and only if:
   - |C.TYPES| is greater than x.
-  - Let (STRUCT yt*) be $expanddt(C.TYPES[x]).
   - |yt*| is greater than i.
-  - Let ((MUT ?(())), zt) be yt*[i].
+  - $expanddt(C.TYPES[x]) is (STRUCT yt*).
+  - yt*[i] is ((MUT ?(())), zt).
 
 validation_of_ARRAY.NEW
 - the instr (ARRAY.NEW x) is valid with the instruction type ([$unpack(zt), I32] ->_ [] ++ [(REF (NULL ?()) $idx(x))]) if and only if:
   - |C.TYPES| is greater than x.
-  - Let (ARRAY (mut, zt)) be $expanddt(C.TYPES[x]).
+  - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
 
 validation_of_ARRAY.NEW_DEFAULT
 - the instr (ARRAY.NEW_DEFAULT x) is valid with the instruction type ([I32] ->_ [] ++ [(REF (NULL ?()) $idx(x))]) if and only if:
   - |C.TYPES| is greater than x.
-  - Let (ARRAY (mut, zt)) be $expanddt(C.TYPES[x]).
-  - Let ?(val) be $default_($unpack(zt)).
+  - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
+  - $default_($unpack(zt)) is ?(val).
 
 validation_of_ARRAY.NEW_FIXED
 - the instr (ARRAY.NEW_FIXED x n) is valid with the instruction type ($unpack(zt)^n ->_ [] ++ [(REF (NULL ?()) $idx(x))]) if and only if:
   - |C.TYPES| is greater than x.
-  - Let (ARRAY (mut, zt)) be $expanddt(C.TYPES[x]).
+  - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
 
 validation_of_ARRAY.NEW_ELEM
 - the instr (ARRAY.NEW_ELEM x y) is valid with the instruction type ([I32, I32] ->_ [] ++ [(REF (NULL ?()) $idx(x))]) if and only if:
   - |C.TYPES| is greater than x.
   - |C.ELEMS| is greater than y.
-  - Let (ARRAY (mut, rt)) be $expanddt(C.TYPES[x]).
+  - $expanddt(C.TYPES[x]) is (ARRAY (mut, rt)).
   - the reference type C.ELEMS[y] matches the reference type rt.
 
 validation_of_ARRAY.NEW_DATA
 - the instr (ARRAY.NEW_DATA x y) is valid with the instruction type ([I32, I32] ->_ [] ++ [(REF (NULL ?()) $idx(x))]) if and only if:
   - |C.TYPES| is greater than x.
   - |C.DATAS| is greater than y.
+  - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
+  - Yet: (($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))
   - C.DATAS[y] is OK.
-  - Let (ARRAY (mut, zt)) be $expanddt(C.TYPES[x]).
-  - Let numtype be $unpack(zt).
 
 validation_of_ARRAY.GET
 - the instr (ARRAY.GET sx? x) is valid with the instruction type ([(REF (NULL ?(())) $idx(x)), I32] ->_ [] ++ [$unpack(zt)]) if and only if:
   - |C.TYPES| is greater than x.
-  - Let (ARRAY (mut, zt)) be $expanddt(C.TYPES[x]).
+  - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
   - ((zt is $unpack(zt))) if and only if ((sx? is ?())).
 
 validation_of_ARRAY.SET
 - the instr (ARRAY.SET x) is valid with the instruction type ([(REF (NULL ?(())) $idx(x)), I32, $unpack(zt)] ->_ [] ++ []) if and only if:
   - |C.TYPES| is greater than x.
-  - Let (ARRAY ((MUT ?(())), zt)) be $expanddt(C.TYPES[x]).
+  - $expanddt(C.TYPES[x]) is (ARRAY ((MUT ?(())), zt)).
 
 validation_of_ARRAY.LEN
 - the instr ARRAY.LEN is valid with the instruction type ([(REF (NULL ?(())) ARRAY)] ->_ [] ++ [I32]) if and only if:
-  - Let $expanddt(C.TYPES[x]) be (ARRAY ((MUT ?(())), zt)).
   - |C.TYPES| is greater than x.
+  - $expanddt(C.TYPES[x]) is (ARRAY ((MUT ?(())), zt)).
 
 validation_of_ARRAY.FILL
 - the instr (ARRAY.FILL x) is valid with the instruction type ([(REF (NULL ?(())) $idx(x)), I32, $unpack(zt), I32] ->_ [] ++ []) if and only if:
   - |C.TYPES| is greater than x.
-  - Let (ARRAY ((MUT ?(())), zt)) be $expanddt(C.TYPES[x]).
+  - $expanddt(C.TYPES[x]) is (ARRAY ((MUT ?(())), zt)).
 
 validation_of_ARRAY.COPY
 - the instr (ARRAY.COPY x_1 x_2) is valid with the instruction type ([(REF (NULL ?(())) $idx(x_1)), I32, (REF (NULL ?(())) $idx(x_2)), I32, I32] ->_ [] ++ []) if and only if:
   - |C.TYPES| is greater than x_1.
   - |C.TYPES| is greater than x_2.
-  - Let (ARRAY (mut, zt_2)) be $expanddt(C.TYPES[x_2]).
-  - the storage type zt_2 matches the storage type zt_1.
   - $expanddt(C.TYPES[x_1]) is (ARRAY ((MUT ?(())), zt_1)).
+  - $expanddt(C.TYPES[x_2]) is (ARRAY (mut, zt_2)).
+  - the storage type zt_2 matches the storage type zt_1.
 
 validation_of_ARRAY.INIT_ELEM
 - the instr (ARRAY.INIT_ELEM x y) is valid with the instruction type ([(REF (NULL ?(())) $idx(x)), I32, I32, I32] ->_ [] ++ []) if and only if:
   - |C.TYPES| is greater than x.
   - |C.ELEMS| is greater than y.
-  - the element type C.ELEMS[y] matches the storage type zt.
   - $expanddt(C.TYPES[x]) is (ARRAY ((MUT ?(())), zt)).
+  - the element type C.ELEMS[y] matches the storage type zt.
 
 validation_of_ARRAY.INIT_DATA
 - the instr (ARRAY.INIT_DATA x y) is valid with the instruction type ([(REF (NULL ?(())) $idx(x)), I32, I32, I32] ->_ [] ++ []) if and only if:
   - |C.TYPES| is greater than x.
   - |C.DATAS| is greater than y.
+  - $expanddt(C.TYPES[x]) is (ARRAY ((MUT ?(())), zt)).
+  - Yet: (($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))
   - C.DATAS[y] is OK.
-  - Let (ARRAY ((MUT ?(())), zt)) be $expanddt(C.TYPES[x]).
-  - Let numtype be $unpack(zt).
 
 validation_of_EXTERN.CONVERT_ANY
 - the instr EXTERN.CONVERT_ANY is valid with the instruction type ([(REF nul ANY)] ->_ [] ++ [(REF nul EXTERN)]).
@@ -4927,102 +4927,102 @@ validation_of_VCVTOP
 validation_of_LOCAL.GET
 - the instr (LOCAL.GET x) is valid with the instruction type ([] ->_ [] ++ [t]) if and only if:
   - |C.LOCALS| is greater than x.
-  - Let (SET, t) be C.LOCALS[x].
+  - C.LOCALS[x] is (SET, t).
 
 validation_of_LOCAL.SET
 - the instr (LOCAL.SET x) is valid with the instruction type ([t] ->_ [x] ++ []) if and only if:
   - |C.LOCALS| is greater than x.
-  - Let (init, t) be C.LOCALS[x].
+  - C.LOCALS[x] is (init, t).
 
 validation_of_LOCAL.TEE
 - the instr (LOCAL.TEE x) is valid with the instruction type ([t] ->_ [x] ++ [t]) if and only if:
   - |C.LOCALS| is greater than x.
-  - Let (init, t) be C.LOCALS[x].
+  - C.LOCALS[x] is (init, t).
 
 validation_of_GLOBAL.GET
 - the instr (GLOBAL.GET x) is valid with the instruction type ([] ->_ [] ++ [t]) if and only if:
   - |C.GLOBALS| is greater than x.
-  - Let (mut, t) be C.GLOBALS[x].
+  - C.GLOBALS[x] is (mut, t).
 
 validation_of_GLOBAL.SET
 - the instr (GLOBAL.SET x) is valid with the instruction type ([t] ->_ [] ++ []) if and only if:
   - |C.GLOBALS| is greater than x.
-  - Let ((MUT ?(())), t) be C.GLOBALS[x].
+  - C.GLOBALS[x] is ((MUT ?(())), t).
 
 validation_of_TABLE.GET
 - the instr (TABLE.GET x) is valid with the instruction type ([I32] ->_ [] ++ [rt]) if and only if:
   - |C.TABLES| is greater than x.
-  - Let (lim, rt) be C.TABLES[x].
+  - C.TABLES[x] is (lim, rt).
 
 validation_of_TABLE.SET
 - the instr (TABLE.SET x) is valid with the instruction type ([I32, rt] ->_ [] ++ []) if and only if:
   - |C.TABLES| is greater than x.
-  - Let (lim, rt) be C.TABLES[x].
+  - C.TABLES[x] is (lim, rt).
 
 validation_of_TABLE.SIZE
 - the instr (TABLE.SIZE x) is valid with the instruction type ([] ->_ [] ++ [I32]) if and only if:
   - |C.TABLES| is greater than x.
-  - Let (lim, rt) be C.TABLES[x].
+  - C.TABLES[x] is (lim, rt).
 
 validation_of_TABLE.GROW
 - the instr (TABLE.GROW x) is valid with the instruction type ([rt, I32] ->_ [] ++ [I32]) if and only if:
   - |C.TABLES| is greater than x.
-  - Let (lim, rt) be C.TABLES[x].
+  - C.TABLES[x] is (lim, rt).
 
 validation_of_TABLE.FILL
 - the instr (TABLE.FILL x) is valid with the instruction type ([I32, rt, I32] ->_ [] ++ []) if and only if:
   - |C.TABLES| is greater than x.
-  - Let (lim, rt) be C.TABLES[x].
+  - C.TABLES[x] is (lim, rt).
 
 validation_of_TABLE.COPY
 - the instr (TABLE.COPY x_1 x_2) is valid with the instruction type ([I32, I32, I32] ->_ [] ++ []) if and only if:
   - |C.TABLES| is greater than x_1.
   - |C.TABLES| is greater than x_2.
-  - Let (lim_1, rt_1) be C.TABLES[x_1].
-  - Let (lim_2, rt_2) be C.TABLES[x_2].
+  - C.TABLES[x_1] is (lim_1, rt_1).
+  - C.TABLES[x_2] is (lim_2, rt_2).
   - the reference type rt_2 matches the reference type rt_1.
 
 validation_of_TABLE.INIT
 - the instr (TABLE.INIT x y) is valid with the instruction type ([I32, I32, I32] ->_ [] ++ []) if and only if:
   - |C.TABLES| is greater than x.
   - |C.ELEMS| is greater than y.
-  - Let rt_2 be C.ELEMS[y].
-  - Let (lim, rt_1) be C.TABLES[x].
+  - C.TABLES[x] is (lim, rt_1).
+  - C.ELEMS[y] is rt_2.
   - the reference type rt_2 matches the reference type rt_1.
 
 validation_of_ELEM.DROP
 - the instr (ELEM.DROP x) is valid with the instruction type ([] ->_ [] ++ []) if and only if:
   - |C.ELEMS| is greater than x.
-  - Let rt be C.ELEMS[x].
+  - C.ELEMS[x] is rt.
 
 validation_of_MEMORY.SIZE
 - the instr (MEMORY.SIZE x) is valid with the instruction type ([] ->_ [] ++ [I32]) if and only if:
   - |C.MEMS| is greater than x.
-  - Let mt be C.MEMS[x].
+  - C.MEMS[x] is mt.
 
 validation_of_MEMORY.GROW
 - the instr (MEMORY.GROW x) is valid with the instruction type ([I32] ->_ [] ++ [I32]) if and only if:
   - |C.MEMS| is greater than x.
-  - Let mt be C.MEMS[x].
+  - C.MEMS[x] is mt.
 
 validation_of_MEMORY.FILL
 - the instr (MEMORY.FILL x) is valid with the instruction type ([I32, I32, I32] ->_ [] ++ []) if and only if:
   - |C.MEMS| is greater than x.
-  - Let mt be C.MEMS[x].
+  - C.MEMS[x] is mt.
 
 validation_of_MEMORY.COPY
 - the instr (MEMORY.COPY x_1 x_2) is valid with the instruction type ([I32, I32, I32] ->_ [] ++ []) if and only if:
   - |C.MEMS| is greater than x_1.
   - |C.MEMS| is greater than x_2.
-  - Let mt_1 be C.MEMS[x_1].
-  - Let mt_2 be C.MEMS[x_2].
+  - C.MEMS[x_1] is mt_1.
+  - C.MEMS[x_2] is mt_2.
 
 validation_of_MEMORY.INIT
 - the instr (MEMORY.INIT x y) is valid with the instruction type ([I32, I32, I32] ->_ [] ++ []) if and only if:
   - |C.MEMS| is greater than x.
   - |C.DATAS| is greater than y.
+  - C.MEMS[x] is mt.
   - C.DATAS[y] is OK.
-  - Let mt be C.MEMS[x].
 
 validation_of_DATA.DROP
 - the instr (DATA.DROP x) is valid with the instruction type ([] ->_ [] ++ []) if and only if:
@@ -5032,40 +5032,40 @@ validation_of_DATA.DROP
 validation_of_LOAD
 - the instr (LOAD nt ?() x memarg) is valid with the instruction type ([I32] ->_ [] ++ [nt]) if and only if:
   - |C.MEMS| is greater than x.
+  - C.MEMS[x] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
-  - Let mt be C.MEMS[x].
 
 validation_of_STORE
 - the instr (STORE nt ?() x memarg) is valid with the instruction type ([I32, nt] ->_ [] ++ []) if and only if:
   - |C.MEMS| is greater than x.
+  - C.MEMS[x] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
-  - Let mt be C.MEMS[x].
 
 validation_of_VLOAD
 - the instr (VLOAD V128 ?() x memarg) is valid with the instruction type ([I32] ->_ [] ++ [V128]) if and only if:
   - |C.MEMS| is greater than x.
+  - C.MEMS[x] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
-  - Let mt be C.MEMS[x].
 
 validation_of_VLOAD_LANE
 - the instr (VLOAD_LANE V128 N x memarg i) is valid with the instruction type ([I32, V128] ->_ [] ++ [V128]) if and only if:
   - |C.MEMS| is greater than x.
+  - C.MEMS[x] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
   - i is less than (128 / N).
-  - Let mt be C.MEMS[x].
 
 validation_of_VSTORE
 - the instr (VSTORE V128 x memarg) is valid with the instruction type ([I32, V128] ->_ [] ++ []) if and only if:
   - |C.MEMS| is greater than x.
+  - C.MEMS[x] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
-  - Let mt be C.MEMS[x].
 
 validation_of_VSTORE_LANE
 - the instr (VSTORE_LANE V128 N x memarg i) is valid with the instruction type ([I32, V128] ->_ [] ++ []) if and only if:
   - |C.MEMS| is greater than x.
+  - C.MEMS[x] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
   - i is less than (128 / N).
-  - Let mt be C.MEMS[x].
 
 validation_of_valid_instr*
 - the instr sequence instr_u0* is valid with the instruction type instr_u4 if and only if:
@@ -5075,11 +5075,11 @@ validation_of_valid_instr*
   - Or:
     - instr_u0* is [instr_1] ++ instr_2*.
     - instr_u4 is (t_1* ->_ x_1* ++ x_2* ++ t_3*).
-    - the instr instr_1 is valid with the instruction type (t_1* ->_ x_1* ++ t_2*).
+    - |t*| is |init*|.
+    - |x_1*| is |init*|.
     - For all x_1 in x_1*,
       - |C.LOCALS| is greater than x_1.
-    - |x_1*| is |init*|.
-    - |t*| is |init*|.
+    - the instr instr_1 is valid with the instruction type (t_1* ->_ x_1* ++ t_2*).
     - For all init in init* and t in t* and x_1 in x_1*,
       - C.LOCALS[x_1] is (init, t).
     - Under the context $with_locals(C, x_1*, (SET, t)*), the instr sequence instr_2* is valid with the instruction type (t_2* ->_ x_2* ++ t_3*).
@@ -5087,13 +5087,13 @@ validation_of_valid_instr*
     - instr_u0* is instr*.
     - instr_u4 is it'.
     - the instr sequence instr* is valid with the instruction type it.
-    - the instruction type it' is valid.
     - the instruction type it matches the instruction type it'.
+    - the instruction type it' is valid.
   - Or:
     - instr_u0* is instr*.
     - instr_u4 is (t* ++ t_1* ->_ x* ++ t* ++ t_2*).
-    - the value type sequence t* is valid.
     - the instr sequence instr* is valid with the instruction type (t_1* ->_ x* ++ t_2*).
+    - the value type sequence t* is valid.
 
 validation_of_valid_expr
 - the expression instr* is valid with the value type sequence t* if and only if:
@@ -5141,8 +5141,8 @@ validation_of_const_expr
 
 validation_of_valid_type
 - the type definition (TYPE rectype) is valid with the defined type sequence dt* if and only if:
-  - Let x be |C.TYPES|.
-  - Let dt* be $rolldt(x, rectype).
+  - |C.TYPES| is x.
+  - dt* is $rolldt(x, rectype).
   - Under the context C with .TYPES appended by dt*, the recursive type rectype is valid with the oktypeidx (OK x).
 
 validation_of_valid_local
@@ -5157,23 +5157,23 @@ validation_of_valid_local
 validation_of_valid_func
 - the function (FUNC x local* expr) is valid with the defined type C.TYPES[x] if and only if:
   - |C.TYPES| is greater than x.
+  - |local*| is |lct*|.
+  - $expanddt(C.TYPES[x]) is (FUNC (t_1* -> t_2*)).
   - For all lct in lct* and local in local*,
     - the local local is valid with the local type lct.
-  - Let (FUNC (t_1* -> t_2*)) be $expanddt(C.TYPES[x]).
-  - |local*| is |lct*|.
   - Under the context C with .LOCALS appended by (SET, t_1)* ++ lct* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the value type sequence t_2*.
 
 validation_of_valid_global
 - the global (GLOBAL globaltype expr) is valid with the global type globaltype if and only if:
   - the global type gt is valid.
-  - Let (mut, t) be globaltype.
+  - globaltype is (mut, t).
   - the expression expr is valid with the value type t.
   - the expression expr is constant.
 
 validation_of_valid_table
 - the table (TABLE tabletype expr) is valid with the table type tabletype if and only if:
   - the table type tt is valid.
-  - Let (lim, rt) be tabletype.
+  - tabletype is (lim, rt).
   - the expression expr is valid with the value type rt.
   - the expression expr is constant.
 
@@ -5186,10 +5186,10 @@ validation_of_valid_elemmode
   - Either:
     - elemm_u0 is (ACTIVE x expr).
     - |C.TABLES| is greater than x.
-    - the expression expr is valid with the value type I32.
-    - the expression expr is constant.
     - C.TABLES[x] is (lim, rt').
     - the reference type rt matches the reference type rt'.
+    - the expression expr is valid with the value type I32.
+    - the expression expr is constant.
   - Or:
     - elemm_u0 is PASSIVE.
   - Or:
@@ -5208,9 +5208,9 @@ validation_of_valid_datamode
   - Either:
     - datam_u0 is (ACTIVE x expr).
     - |C.MEMS| is greater than x.
+    - C.MEMS[x] is mt.
     - the expression expr is valid with the value type I32.
     - the expression expr is constant.
-    - Let mt be C.MEMS[x].
   - Or:
     - datam_u0 is PASSIVE.
 
@@ -5233,22 +5233,22 @@ validation_of_valid_externidx
     - exter_u0 is (FUNC x).
     - exter_u1 is (FUNC dt).
     - |C.FUNCS| is greater than x.
-    - Let dt be C.FUNCS[x].
+    - C.FUNCS[x] is dt.
   - Or:
     - exter_u0 is (GLOBAL x).
     - exter_u1 is (GLOBAL gt).
     - |C.GLOBALS| is greater than x.
-    - Let gt be C.GLOBALS[x].
+    - C.GLOBALS[x] is gt.
   - Or:
     - exter_u0 is (TABLE x).
     - exter_u1 is (TABLE tt).
     - |C.TABLES| is greater than x.
-    - Let tt be C.TABLES[x].
+    - C.TABLES[x] is tt.
   - Or:
     - exter_u0 is (MEM x).
     - exter_u1 is (MEM mt).
     - |C.MEMS| is greater than x.
-    - Let mt be C.MEMS[x].
+    - C.MEMS[x] is mt.
 
 validation_of_valid_export
 - the export (EXPORT name externidx) is valid with the name name and the external type xt if and only if:
@@ -5324,13 +5324,13 @@ validation_of_valid_instr*
     - valty_u1* is [].
     - valty_u3* is [t].
     - |C.GLOBALS| is greater than x.
-    - Let (mut, t) be C.GLOBALS[x].
+    - C.GLOBALS[x] is (mut, t).
   - Or:
     - instr_u0 is (BLOCK blocktype instr*).
     - valty_u1* is t_1*.
     - valty_u3* is t_2*.
-    - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr* is valid with the function type (t_1* -> t_2*).
     - the block type blocktype is valid with the instruction type (t_1* ->_ [] ++ t_2*).
+    - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr* is valid with the function type (t_1* -> t_2*).
 
 Ki
 1. Return 1024.
@@ -7554,57 +7554,60 @@ rundata_ x (DATA b^n datam_u0)
 4. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT y x), (DATA.DROP x)].
 
 instantiate module externval*
-1. Assert: Due to validation, module is of the case MODULE.
-2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
-3. Let instr_D* be $concat_($rundata_(i_D, data*[i_D])^(i_D<|data*|)).
-4. Let instr_E* be $concat_($runelem_(i_E, elem*[i_E])^(i_E<|elem*|)).
-5. Assert: Due to validation, start? is of the case START.
-6. Let (START x)? be start?.
-7. Let moduleinst_0 be { TYPES: $alloctypes(type*); FUNCS: $funcsxv(externval*) ++ (|s.FUNCS| + i_F)^(i_F<|func*|); GLOBALS: $globalsxv(externval*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
-8. Assert: Due to validation, data* is of the case DATA.
-9. Assert: Due to validation, global* is of the case GLOBAL.
-10. Let (GLOBAL globaltype expr_G)* be global*.
-11. Assert: Due to validation, table* is of the case TABLE.
-12. Let (TABLE tabletype expr_T)* be table*.
-13. Assert: Due to validation, elem* is of the case ELEM.
-14. Let (ELEM reftype expr_E* elemmode)* be elem*.
-15. Let instr_S? be (CALL x)?.
-16. Let z be { LOCALS: []; MODULE: moduleinst_0; }.
-17. Push the activation of z to the stack.
-18. Let [val_G]* be $eval_expr(expr_G)*.
-19. Pop the activation of z from the stack.
-20. Push the activation of z to the stack.
-21. Let [ref_T]* be $eval_expr(expr_T)*.
-22. Pop the activation of z from the stack.
-23. Push the activation of z to the stack.
-24. Let [ref_E]** be $eval_expr(expr_E)**.
-25. Pop the activation of z from the stack.
-26. Let moduleinst be $allocmodule(module, externval*, val_G*, ref_T*, ref_E**).
-27. Let f be { LOCALS: []; MODULE: moduleinst; }.
-28. Push the activation of f with arity 0 to the stack.
-29. Execute the sequence (instr_E*).
-30. Execute the sequence (instr_D*).
-31. If instr_S? is defined, then:
+1. Assert: Due to validation, $Module_ok(module, (xt_I* -> xt_E*)).
+2. Assert: Due to validation, module is of the case MODULE.
+3. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
+4. Assert: Due to validation, ($Externval_type(externval) is xt_I)*.
+5. Let instr_D* be $concat_($rundata_(i_D, data*[i_D])^(i_D<|data*|)).
+6. Let instr_E* be $concat_($runelem_(i_E, elem*[i_E])^(i_E<|elem*|)).
+7. Assert: Due to validation, start? is of the case START.
+8. Let (START x)? be start?.
+9. Let moduleinst_0 be { TYPES: $alloctypes(type*); FUNCS: $funcsxv(externval*) ++ (|s.FUNCS| + i_F)^(i_F<|func*|); GLOBALS: $globalsxv(externval*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
+10. Assert: Due to validation, data* is of the case DATA.
+11. Assert: Due to validation, global* is of the case GLOBAL.
+12. Let (GLOBAL globaltype expr_G)* be global*.
+13. Assert: Due to validation, table* is of the case TABLE.
+14. Let (TABLE tabletype expr_T)* be table*.
+15. Assert: Due to validation, elem* is of the case ELEM.
+16. Let (ELEM reftype expr_E* elemmode)* be elem*.
+17. Let instr_S? be (CALL x)?.
+18. Let z be { LOCALS: []; MODULE: moduleinst_0; }.
+19. Push the activation of z to the stack.
+20. Let [val_G]* be $eval_expr(expr_G)*.
+21. Pop the activation of z from the stack.
+22. Push the activation of z to the stack.
+23. Let [ref_T]* be $eval_expr(expr_T)*.
+24. Pop the activation of z from the stack.
+25. Push the activation of z to the stack.
+26. Let [ref_E]** be $eval_expr(expr_E)**.
+27. Pop the activation of z from the stack.
+28. Let moduleinst be $allocmodule(module, externval*, val_G*, ref_T*, ref_E**).
+29. Let f be { LOCALS: []; MODULE: moduleinst; }.
+30. Push the activation of f with arity 0 to the stack.
+31. Execute the sequence (instr_E*).
+32. Execute the sequence (instr_D*).
+33. If instr_S? is defined, then:
   a. Let ?(instr_0) be instr_S?.
   b. Execute the instruction instr_0.
-32. Pop the activation of f with arity 0 from the stack.
-33. Return f.MODULE.
+34. Pop the activation of f with arity 0 from the stack.
+35. Return f.MODULE.
 
 invoke funcaddr val*
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
 2. Assert: Due to validation, $expanddt(s.FUNCS[funcaddr].TYPE) is of the case FUNC.
 3. Let (FUNC y_0) be $expanddt(s.FUNCS[funcaddr].TYPE).
 4. Let (t_1* -> t_2*) be y_0.
-5. Let k be |t_2*|.
-6. Push the activation of f with arity k to the stack.
-7. Push the values val* to the stack.
-8. Push the value (REF.FUNC_ADDR funcaddr) to the stack.
-9. Execute the instruction (CALL_REF s.FUNCS[funcaddr].TYPE).
-10. Pop all values val* from the top of the stack.
-11. Pop the activation of f with arity k from the stack.
-12. Push the values val* to the stack.
-13. Pop the values val^k from the stack.
-14. Return val^k.
+5. Assert: Due to validation, ($Val_type(val) is t_1)*.
+6. Let k be |t_2*|.
+7. Push the activation of f with arity k to the stack.
+8. Push the values val* to the stack.
+9. Push the value (REF.FUNC_ADDR funcaddr) to the stack.
+10. Execute the instruction (CALL_REF s.FUNCS[funcaddr].TYPE).
+11. Pop all values val* from the top of the stack.
+12. Pop the activation of f with arity k from the stack.
+13. Push the values val* to the stack.
+14. Pop the values val^k from the stack.
+15. Return val^k.
 
 allocXs X_u0* Y_u1*
 1. If (X_u0* is []), then:
@@ -8068,7 +8071,7 @@ execution_of_BR_ON_CAST l rt_1 rt_2
 1. Let f be the current frame.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value ref from the stack.
-4. Let rt be $ref_type_of(ref).
+4. Let rt be $Ref_type(ref).
 5. If rt does not match $inst_reftype(f.MODULE, rt_2), then:
   a. Push the value ref to the stack.
 6. Else:
@@ -8079,7 +8082,7 @@ execution_of_BR_ON_CAST_FAIL l rt_1 rt_2
 1. Let f be the current frame.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value ref from the stack.
-4. Let rt be $ref_type_of(ref).
+4. Let rt be $Ref_type(ref).
 5. If rt matches $inst_reftype(f.MODULE, rt_2), then:
   a. Push the value ref to the stack.
 6. Else:
@@ -8164,7 +8167,7 @@ execution_of_REF.TEST rt
 1. Let f be the current frame.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value ref from the stack.
-4. Let rt' be $ref_type_of(ref).
+4. Let rt' be $Ref_type(ref).
 5. If rt' matches $inst_reftype(f.MODULE, rt), then:
   a. Push the value (I32.CONST 1) to the stack.
 6. Else:
@@ -8174,7 +8177,7 @@ execution_of_REF.CAST rt
 1. Let f be the current frame.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value ref from the stack.
-4. Let rt' be $ref_type_of(ref).
+4. Let rt' be $Ref_type(ref).
 5. If rt' does not match $inst_reftype(f.MODULE, rt), then:
   a. Trap.
 6. Push the value ref to the stack.
