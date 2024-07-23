@@ -246,12 +246,21 @@ Results
    }
 
 
-:ref:`Results <syntax-result>` :math:`\XT[(\REFEXNADDR~a)~\THROWREF]`
-.....................................................................
+:ref:`Results <syntax-result>` :math:`(\REFEXNADDR~a)~\THROWREF`
+................................................................
 
 * The value :math:`\REFEXNADDR~a` must be :ref:`valid <valid-val>`.
 
-* Then the result is valid with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`, for any sequence :math:`{t'}^\ast` of :ref:`value types <syntax-valtype>`.
+* Then the result is valid with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`, for any :ref:`valid <valid-resulttype>` :ref:`closed <type-closed>` :ref:`result types <syntax-resulttype>`.
+
+.. math::
+   \frac{
+     S \vdashval REFEXNADDR~a : REF~EXN
+     \qquad
+     \vdashresulttype [t^\ast] : \OKresulttype
+   }{
+     S \vdashresult (\REFEXNADDR~a)~\THROWREF : [{t'}^\ast]
+   }
 
 
 :ref:`Results <syntax-result>` :math:`\TRAP`
@@ -264,16 +273,6 @@ Results
      \vdashresulttype [t^\ast] : \OKresulttype
    }{
      S \vdashresult \TRAP : [t^\ast]
-   }
-
-
-.. math::
-   \frac{
-     S \vdashexternval \EVTAG~\tagaddr : \ETTAG~[t^\ast] \to []
-     \qquad
-     (S \vdashval \val : t)^\ast
-   }{
-     S \vdashresult \XT[(\REFEXNADDR~a)~\THROWREF] : [{t'}^\ast]
    }
 
 
@@ -307,7 +306,7 @@ To that end, each kind of instance is classified by a respective
 :ref:`tag <syntax-tagtype>`,
 :ref:`element <syntax-eleminst>`, or
 :ref:`data <syntax-datainst>`
-type, or just |OK| in the case of
+type, or just ${:OK} in the case of
 :ref:`structures <syntax-structinst>`,
 :ref:`arrays <syntax-arrayinst>`, or
 :ref:`exceptions <syntax-exninst>`.
@@ -593,8 +592,8 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 .. index:: tag type, tag instance
 .. _valid-taginst:
 
-:ref:`Tag Instances <syntax-taginst>` :math:`\{ \TAGITYPE~\tagtype \}`
-......................................................................
+:ref:`Tag Instances <syntax-taginst>` :math:`\{ \HITYPE~\tagtype \}`
+....................................................................
 
 * The :ref:`tag type <syntax-tagtype>` :math:`\tagtype` must be :ref:`valid <valid-tagtype>` under the empty :ref:`context <context>`.
 
@@ -602,9 +601,9 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 .. math::
    \frac{
-     \vdashtagtype \tagtype \ok
+     \vdashtagtype \tagtype : \OKtagtype
    }{
-     S \vdashtaginst \{ \TAGITYPE~\tagtype \} : \tagtype
+     S \vdashtaginst \{ \HITYPE~\tagtype \} : \tagtype
    }
 
 
@@ -747,7 +746,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 * The store entry :math:`S.\STAGS[a]` must exist.
 
-* Let :math:`[t^\ast] \toF [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`S.\STAGS[a].\TAGITYPE`.
+* Let :math:`[t^\ast] \toF [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`S.\STAGS[a].\HITYPE`.
 
 * The :ref:`result type <syntax-resulttype>` :math:`[{t'}^\ast]` must be empty.
 
@@ -759,29 +758,29 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 .. math::
    \frac{
-     S.\STAGS[a] = \{\TAGITYPE = [t^\ast] \toF []\}
+     S.\STAGS[a] = \{\HITYPE = [t^\ast] \toF []\}
      \qquad
      (S \vdashval \val : t)^\ast
    }{
-     S \vdashexninst \{ \EITAG~a, \EIFIELDS~\val^\ast \} \ok
+     S \vdashexninst \{ \EITAG~a, \EIFIELDS~\val^\ast \} : \OKexninst
    }
 
 
-.. index:: external type, export instance, name, external value
+.. index:: external type, export instance, name, external address
 .. _valid-exportinst:
 
-:ref:`Export Instances <syntax-exportinst>` :math:`\{ \EINAME~\name, \EIVALUE~\externval \}`
-.......................................................................................................
+:ref:`Export Instances <syntax-exportinst>` :math:`\{ \XINAME~\name, \XIADDR~\externaddr \}`
+............................................................................................
 
-* The :ref:`external value <syntax-externval>` :math:`\externval` must be :ref:`valid <valid-externval>` with some :ref:`external type <syntax-externtype>` :math:`\externtype`.
+* The :ref:`external address <syntax-externaddr>` :math:`\externaddr` must be :ref:`valid <valid-externaddr>` with some :ref:`external type <syntax-externtype>` :math:`\externtype`.
 
 * Then the export instance is valid.
 
 .. math::
    \frac{
-     S \vdashexternval \externval : \externtype
+     S \vdashexternaddr \externaddr : \externtype
    }{
-     S \vdashexportinst \{ \EINAME~\name, \EIVALUE~\externval \} : \OKexportinst
+     S \vdashexportinst \{ \XINAME~\name, \XIADDR~\externaddr \} : \OKexportinst
    }
 
 
@@ -793,15 +792,15 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 * Each :ref:`defined type <syntax-deftype>` :math:`\deftype_i` in :math:`\moduleinst.\MITYPES` must be :ref:`valid <valid-deftype>` under the empty :ref:`context <context>`.
 
-* For each :ref:`function address <syntax-funcaddr>` :math:`\funcaddr_i` in :math:`\moduleinst.\MIFUNCS`, the :ref:`external value <syntax-externval>` :math:`\EVFUNC~\funcaddr_i` must be :ref:`valid <valid-externval-func>` with some :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\functype_i`.
+* For each :ref:`function address <syntax-funcaddr>` :math:`\funcaddr_i` in :math:`\moduleinst.\MIFUNCS`, the :ref:`external address <syntax-externaddr>` :math:`\XAFUNC~\funcaddr_i` must be :ref:`valid <valid-externaddr-func>` with some :ref:`external type <syntax-externtype>` :math:`\XTFUNC~\functype_i`.
 
-* For each :ref:`table address <syntax-tableaddr>` :math:`\tableaddr_i` in :math:`\moduleinst.\MITABLES`, the :ref:`external value <syntax-externval>` :math:`\EVTABLE~\tableaddr_i` must be :ref:`valid <valid-externval-table>` with some :ref:`external type <syntax-externtype>` :math:`\ETTABLE~\tabletype_i`.
+* For each :ref:`table address <syntax-tableaddr>` :math:`\tableaddr_i` in :math:`\moduleinst.\MITABLES`, the :ref:`external address <syntax-externaddr>` :math:`\XATABLE~\tableaddr_i` must be :ref:`valid <valid-externaddr-table>` with some :ref:`external type <syntax-externtype>` :math:`\XTTABLE~\tabletype_i`.
 
-* For each :ref:`memory address <syntax-memaddr>` :math:`\memaddr_i` in :math:`\moduleinst.\MIMEMS`, the :ref:`external value <syntax-externval>` :math:`\EVMEM~\memaddr_i` must be :ref:`valid <valid-externval-mem>` with some :ref:`external type <syntax-externtype>` :math:`\ETMEM~\memtype_i`.
+* For each :ref:`memory address <syntax-memaddr>` :math:`\memaddr_i` in :math:`\moduleinst.\MIMEMS`, the :ref:`external address <syntax-externaddr>` :math:`\XAMEM~\memaddr_i` must be :ref:`valid <valid-externaddr-mem>` with some :ref:`external type <syntax-externtype>` :math:`\XTMEM~\memtype_i`.
 
-* For each :ref:`global address <syntax-globaladdr>` :math:`\globaladdr_i` in :math:`\moduleinst.\MIGLOBALS`, the :ref:`external value <syntax-externval>` :math:`\EVGLOBAL~\globaladdr_i` must be :ref:`valid <valid-externval-global>` with some :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~\globaltype_i`.
+* For each :ref:`global address <syntax-globaladdr>` :math:`\globaladdr_i` in :math:`\moduleinst.\MIGLOBALS`, the :ref:`external address <syntax-externaddr>` :math:`\XAGLOBAL~\globaladdr_i` must be :ref:`valid <valid-externaddr-global>` with some :ref:`external type <syntax-externtype>` :math:`\XTGLOBAL~\globaltype_i`.
 
-* For each :ref:`tag address <syntax-tagaddr>` :math:`\tagaddr_i` in :math:`\moduleinst.\MITAGS`, the :ref:`external value <syntax-externval>` :math:`\EVTAG~\tagaddr_i` must be :ref:`valid <valid-externval-tag>` with some :ref:`external type <syntax-externtype>` :math:`\ETTAG~\tagtype_i`.
+* For each :ref:`tag address <syntax-tagaddr>` :math:`\tagaddr_i` in :math:`\moduleinst.\MITAGS`, the :ref:`external address <syntax-externaddr>` :math:`\XATAG~\tagaddr_i` must be :ref:`valid <valid-externaddr-tag>` with some :ref:`external type <syntax-externtype>` :math:`\XTTAG~\tagtype_i`.
 
 * For each :ref:`element address <syntax-elemaddr>` :math:`\elemaddr_i` in :math:`\moduleinst.\MIELEMS`, the :ref:`element instance <syntax-eleminst>` :math:`S.\SELEMS[\elemaddr_i]` must be :ref:`valid <valid-eleminst>` with some :ref:`reference type <syntax-reftype>` :math:`\reftype_i`.
 
@@ -809,7 +808,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 * Each :ref:`export instance <syntax-exportinst>` :math:`\exportinst_i` in :math:`\moduleinst.\MIEXPORTS` must be :ref:`valid <valid-exportinst>`.
 
-* For each :ref:`export instance <syntax-exportinst>` :math:`\exportinst_i` in :math:`\moduleinst.\MIEXPORTS`, the :ref:`name <syntax-name>` :math:`\exportinst_i.\EINAME` must be different from any other name occurring in :math:`\moduleinst.\MIEXPORTS`.
+* For each :ref:`export instance <syntax-exportinst>` :math:`\exportinst_i` in :math:`\moduleinst.\MIEXPORTS`, the :ref:`name <syntax-name>` :math:`\exportinst_i.\XINAME` must be different from any other name occurring in :math:`\moduleinst.\MIEXPORTS`.
 
 * Let :math:`\deftype^\ast` be the concatenation of all :math:`\deftype_i` in order.
 
@@ -840,15 +839,15 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
      \begin{array}{@{}c@{}}
      (\vdashdeftype \deftype : \OKdeftype)^\ast
      \\
-     (S \vdashexternval \EVFUNC~\funcaddr : \ETFUNC~\functype)^\ast
+     (S \vdashexternaddr \XAFUNC~\funcaddr : \XTFUNC~\functype)^\ast
      \qquad
-     (S \vdashexternval \EVTABLE~\tableaddr : \ETTABLE~\tabletype)^\ast
+     (S \vdashexternaddr \XATABLE~\tableaddr : \XTTABLE~\tabletype)^\ast
      \\
-     (S \vdashexternval \EVMEM~\memaddr : \ETMEM~\memtype)^\ast
+     (S \vdashexternaddr \XAMEM~\memaddr : \XTMEM~\memtype)^\ast
      \qquad
-     (S \vdashexternval \EVGLOBAL~\globaladdr : \ETGLOBAL~\globaltype)^\ast
+     (S \vdashexternaddr \XAGLOBAL~\globaladdr : \XTGLOBAL~\globaltype)^\ast
      \\
-     (S \vdashexternval \EVTAG~\tagaddr : \ETTAG~\tagtype)^\ast
+     (S \vdashexternaddr \XATAG~\tagaddr : \XTTAG~\tagtype)^\ast
      \\
      (S \vdasheleminst S.\SELEMS[\elemaddr] : \reftype)^\ast
      \qquad
@@ -856,7 +855,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
      \\
      (S \vdashexportinst \exportinst : \OKexportinst)^\ast
      \qquad
-     (\exportinst.\EINAME)^\ast ~\mbox{disjoint}
+     (\exportinst.\XINAME)^\ast ~\mbox{disjoint}
      \end{array}
    }{
      S \vdashmoduleinst \{
@@ -1071,7 +1070,7 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 :math:`\INVOKE~\funcaddr`
 .........................
 
-* The :ref:`external function value <syntax-externval>` :math:`\EVFUNC~\funcaddr` must be :ref:`valid <valid-externval-func>` with :ref:`external function type <syntax-externtype>` :math:`\ETFUNC \functype'`.
+* The :ref:`external function address <syntax-externaddr>` :math:`\XAFUNC~\funcaddr` must be :ref:`valid <valid-externaddr-func>` with :ref:`external function type <syntax-externtype>` :math:`\XTFUNC~\functype'`.
 
 * Let :math:`[t_1^\ast] \toF [t_2^\ast])` be the :ref:`function type <syntax-functype>` :math:`\functype`.
 
@@ -1079,7 +1078,7 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 .. math::
    \frac{
-     S \vdashexternval \EVFUNC~\funcaddr : \ETFUNC~[t_1^\ast] \toF [t_2^\ast]
+     S \vdashexternaddr \XAFUNC~\funcaddr : \XTFUNC~[t_1^\ast] \toF [t_2^\ast]
    }{
      S; C \vdashadmininstr \INVOKE~\funcaddr : [t_1^\ast] \to [t_2^\ast]
    }
@@ -1109,33 +1108,10 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
    }
 
 
-.. index:: handler, throw context
-
-:math:`\HANDLER_n\{\catch^\ast\}~\instr^\ast~\END`
-..................................................
-
-* For every :ref:`catch clause <syntax-catch>` :math:`\catch_i` in :math:`\catch^\ast`, :math:`\catch_i` must be :ref:`valid <valid-catch>`.
-
-* The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with some type :math:`[t_1^\ast] \to [t_2^\ast]`.
-
-* Then the compound instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
-
-.. math::
-   \frac{
-     \begin{array}{c}
-     (C \vdashcatch \catch \ok)^\ast
-     \qquad
-     S; C \vdashinstrseq \instr^\ast : [t_1^\ast] \to [t_2^\ast] \\
-     \end{array}
-   }{
-     S; C \vdashadmininstr \HANDLER_n\{\catch^\ast\}~\instr^\ast~\END : [t_1^\ast] \to [t_2^\ast]
-   }
-
-
 .. index:: frame, instruction, result type
 
 :math:`\FRAME_n\{F\}~\instr^\ast~\END`
-...........................................
+......................................
 
 * Under the :ref:`valid <valid-resulttype>` return type :math:`[t^n]`,
   the :ref:`thread <syntax-frame>` :math:`F; \instr^\ast` must be :ref:`valid <valid-frame>` with :ref:`result type <syntax-resulttype>` :math:`[t^n]`.
@@ -1149,6 +1125,29 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
      S; [t^n] \vdashinstrs F; \instr^\ast : [t^n]
    }{
      S; C \vdashadmininstr \FRAME_n\{F\}~\instr^\ast~\END : [] \to [t^n]
+   }
+
+
+.. index:: handler, throw context
+
+:math:`\HANDLER_n\{\catch^\ast\}~\instr^\ast~\END`
+..................................................
+
+* For every :ref:`catch clause <syntax-catch>` :math:`\catch_i` in :math:`\catch^\ast`, :math:`\catch_i` must be :ref:`valid <valid-catch>`.
+
+* The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instrs>` with some type :math:`[t_1^\ast] \to [t_2^\ast]`.
+
+* Then the compound instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
+
+.. math::
+   \frac{
+     \begin{array}{c}
+     (C \vdashcatch \catch : \OKcatch)^\ast
+     \qquad
+     S; C \vdashinstrs \instr^\ast : [t_1^\ast] \to [t_2^\ast] \\
+     \end{array}
+   }{
+     S; C \vdashadmininstr \HANDLER_n\{\catch^\ast\}~\instr^\ast~\END : [t_1^\ast] \to [t_2^\ast]
    }
 
 

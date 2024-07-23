@@ -2571,7 +2571,7 @@ $${rule-prose: exec/throw}
 
 5. Let :math:`\X{ti}` be the :ref:`tag instance <syntax-taginst>` :math:`S.\STAGS[ta]`.
 
-6. Let :math:`[t^n] \toF [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`\X{ti}.\TAGITYPE`.
+6. Let :math:`[t^n] \toF [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`\X{ti}.\HITYPE`.
 
 7. Assert: due to :ref:`validation <valid-throw>`, there are at least :math:`n` values on the top of the stack.
 
@@ -2779,7 +2779,7 @@ When the end of a ${:TRY_TABLE} block is reached without a jump, :ref:`exception
 
 2. Pop the values :math:`\val^m` from the stack.
 
-3. Assert: due to :ref:`validation <valid-instr-seq>`, a handler and a label are now on the top of the stack.
+3. Assert: due to :ref:`validation <valid-instrs>`, a handler and a label are now on the top of the stack.
 
 4. Pop the label from the stack.
 
@@ -2790,12 +2790,6 @@ When the end of a ${:TRY_TABLE} block is reached without a jump, :ref:`exception
 7. Jump to the position after the |END| of the administrative instruction associated with the handler :math:`H`.
 
 $${rule: Step_pure/handler-vals}
-
-.. math::
-   ~\\[-1ex]
-   \begin{array}{lcl@{\qquad}l}
-   \HANDLER_m\{\catch^\ast\}~\val^m~\END &\stepto& \val^m \\
-   \end{array}
 
 
 .. index:: ! call, function, function instance, label, frame

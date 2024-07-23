@@ -334,9 +334,7 @@ Conventions
 
 The following auxiliary notation is defined for sequences of exports, filtering out indices of a specific kind in an order-preserving fashion:
 
-$${definition: funcsxx tablesxx memsxx globalsxx}
-
-* :math:`\edtags(\export^\ast) = [\tagidx ~|~ \EDTAG~\tagidx \in (\export.\EDESC)^\ast]`
+$${definition: funcsxx tablesxx memsxx globalsxx tagsxx}
 
 
 .. index:: ! import, name, function type, table type, memory type, global type, tag type, index, index space, type index, function index, table index, memory index, global index, tag index, function, table, memory, tag, global, instantiation

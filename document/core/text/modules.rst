@@ -512,18 +512,18 @@ The syntax for exports mirrors their :ref:`abstract syntax <syntax-export>` dire
    \begin{array}{llclll}
    \production{export} & \Texport_I &::=&
      \text{(}~\text{export}~~\X{nm}{:}\Tname~~d{:}\Texportdesc_I~\text{)}
-       &\Rightarrow& \{ \ENAME~\X{nm}, \EDESC~d \} \\
+       &\Rightarrow& \{ \XNAME~\X{nm}, \XDESC~d \} \\
    \production{export description} & \Texportdesc_I &::=&
      \text{(}~\text{func}~~x{:}\Tfuncidx_I~\text{)}
-       &\Rightarrow& \EDFUNC~x \\ &&|&
+       &\Rightarrow& \XDFUNC~x \\ &&|&
      \text{(}~\text{table}~~x{:}\Ttableidx_I~\text{)}
-       &\Rightarrow& \EDTABLE~x \\ &&|&
+       &\Rightarrow& \XDTABLE~x \\ &&|&
      \text{(}~\text{memory}~~x{:}\Tmemidx_I~\text{)}
-       &\Rightarrow& \EDMEM~x \\ &&|&
+       &\Rightarrow& \XDMEM~x \\ &&|&
      \text{(}~\text{global}~~x{:}\Tglobalidx_I~\text{)}
-       &\Rightarrow& \EDGLOBAL~x \\&&|&
+       &\Rightarrow& \XDGLOBAL~x \\&&|&
      \text{(}~\text{tag}~~x{:}\Ttagidx_I~\text{)}
-       &\Rightarrow& \EDTAG~x \\
+       &\Rightarrow& \XDTAG~x \\
    \end{array}
 
 

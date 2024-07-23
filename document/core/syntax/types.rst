@@ -427,7 +427,7 @@ Furthermore, it is an invariant of the semantics that every |functype| in a :ref
    Future versions of WebAssembly may have additional uses for tags, and may allow non-empty result types in the function types of tags.
 
 
-.. index:: ! external type, defined type, function type, table type, memory type, global type, tag type, import, external value
+.. index:: ! external type, defined type, function type, table type, memory type, global type, tag type, import, external address
    pair: abstract syntax; external type
    pair: external; type
 .. _syntax-externtype:
@@ -435,7 +435,7 @@ Furthermore, it is an invariant of the semantics that every |functype| in a :ref
 External Types
 ~~~~~~~~~~~~~~
 
-*External types* classify :ref:`imports <syntax-import>` and :ref:`external values <syntax-externval>` with their respective types.
+*External types* classify :ref:`imports <syntax-import>` and :ref:`external addresses <syntax-externaddr>` with their respective types.
 
 $${syntax: externtype}
 

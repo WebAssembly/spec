@@ -233,6 +233,7 @@ relation Limits_ok: context |- limits : nat         hint(show "K-limits") hint(m
 relation Globaltype_ok: context |- globaltype : OK  hint(show "K-global") hint(macro "%globaltype")
 relation Tabletype_ok: context |- tabletype : OK    hint(show "K-table")  hint(macro "%tabletype")
 relation Memtype_ok: context |- memtype : OK        hint(show "K-mem")    hint(macro "%memtype")
+relation Tagtype_ok: context |- tagtype : OK        hint(show "K-tag")    hint(macro "%tagtype")
 relation Externtype_ok: context |- externtype : OK  hint(show "K-extern") hint(macro "%externtype")
 
 
@@ -258,6 +259,11 @@ rule Memtype_ok:
   C |- limits PAGE : OK
   -- Limits_ok: C |- limits : $(2^16)
 
+rule Tagtype_ok:
+  C |- deftype : OK
+  -- Deftype_ok: C |- deftype : OK
+  -- Expand: deftype ~~ FUNC functype
+
 
 rule Externtype_ok/func:
   C |- FUNC deftype : OK
@@ -275,6 +281,10 @@ rule Externtype_ok/table:
 rule Externtype_ok/mem:
   C |- MEM memtype : OK
   -- Memtype_ok: C |- memtype : OK
+
+rule Externtype_ok/tag:
+  C |- TAG tagtype : OK
+  -- Tagtype_ok: C |- tagtype : OK
 
 
 
@@ -1333,6 +1343,10 @@ rule Externidx_ok/table:
 rule Externidx_ok/mem:
   C |- MEM x : MEM mt
   -- if C.MEMS[x] = mt
+
+rule Externidx_ok/tag:
+  C |- TAG x : TAG at
+  -- if C.TAGS[x] = at
 
 
 ;; Modules proper

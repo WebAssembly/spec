@@ -10,7 +10,7 @@ Values
 Value Typing
 ~~~~~~~~~~~~
 
-For the purpose of checking argument :ref:`values <syntax-externval>` against the parameter types of exported :ref:`functions <syntax-func>`,
+For the purpose of checking argument :ref:`values <syntax-val>` against the parameter types of exported :ref:`functions <syntax-func>`,
 values are classified by :ref:`value types <syntax-valtype>`.
 The following auxiliary typing rules specify this typing relation relative to a :ref:`store <syntax-store>` :math:`S` in which possibly referenced addresses live.
 
@@ -224,120 +224,91 @@ Subsumption
    }
 
 
-.. index:: external value, external type, validation, import, store
-.. _valid-externval:
+.. index:: external address, external type, validation, import, store
+.. _valid-externaddr:
 
 External Typing
 ~~~~~~~~~~~~~~~
 
-For the purpose of checking :ref:`external values <syntax-externval>` against :ref:`imports <syntax-import>`,
+For the purpose of checking :ref:`external address <syntax-externaddr>` against :ref:`imports <syntax-import>`,
 such values are classified by :ref:`external types <syntax-externtype>`.
 The following auxiliary typing rules specify this typing relation relative to a :ref:`store <syntax-store>` :math:`S` in which the referenced instances live.
 
 
 .. index:: function type, function address
-.. _valid-externval-func:
+.. _valid-externaddr-func:
 
-:math:`\EVFUNC~a`
+:math:`\XAFUNC~a`
 .................
 
 * The store entry :math:`S.\SFUNCS[a]` must exist.
 
-* Then :math:`\EVFUNC~a` is valid with :ref:`external type <syntax-externtype>` :math:`\ETFUNC~S.\SFUNCS[a].\FITYPE`.
+* Then :math:`\XAFUNC~a` is valid with :ref:`external type <syntax-externtype>` :math:`\XTFUNC~S.\SFUNCS[a].\FITYPE`.
 
-.. math::
-   \frac{
-   }{
-     S \vdashexternval \EVFUNC~a : \ETFUNC~S.\SFUNCS[a].\FITYPE
-   }
+$${rule: Externaddr_type/func}
 
 
 .. index:: table type, table address
-.. _valid-externval-table:
+.. _valid-externaddr-table:
 
-:math:`\EVTABLE~a`
+:math:`\XATABLE~a`
 ..................
 
 * The store entry :math:`S.\STABLES[a]` must exist.
 
-* Then :math:`\EVTABLE~a` is valid with :ref:`external type <syntax-externtype>` :math:`\ETTABLE~S.\STABLES[a].\TITYPE`.
+* Then :math:`\XATABLE~a` is valid with :ref:`external type <syntax-externtype>` :math:`\XTTABLE~S.\STABLES[a].\TITYPE`.
 
-.. math::
-   \frac{
-   }{
-     S \vdashexternval \EVTABLE~a : \ETTABLE~S.\STABLES[a].\TITYPE
-   }
+$${rule: Externaddr_type/table}
 
 
 .. index:: memory type, memory address
-.. _valid-externval-mem:
+.. _valid-externaddr-mem:
 
-:math:`\EVMEM~a`
+:math:`\XAMEM~a`
 ................
 
 * The store entry :math:`S.\SMEMS[a]` must exist.
 
-* Then :math:`\EVMEM~a` is valid with :ref:`external type <syntax-externtype>` :math:`\ETMEM~S.\SMEMS[a].\MITYPE`.
+* Then :math:`\XAMEM~a` is valid with :ref:`external type <syntax-externtype>` :math:`\XTMEM~S.\SMEMS[a].\MITYPE`.
 
-.. math::
-   \frac{
-   }{
-     S \vdashexternval \EVMEM~a : \ETMEM~S.\SMEMS[a].\MITYPE
-   }
+$${rule: Externaddr_type/mem}
 
 
 .. index:: global type, global address, value type, mutability
-.. _valid-externval-global:
+.. _valid-externaddr-global:
 
-:math:`\EVGLOBAL~a`
+:math:`\XAGLOBAL~a`
 ...................
 
 * The store entry :math:`S.\SGLOBALS[a]` must exist.
 
-* Then :math:`\EVGLOBAL~a` is valid with :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~S.\SGLOBALS[a].\GITYPE`.
+* Then :math:`\XAGLOBAL~a` is valid with :ref:`external type <syntax-externtype>` :math:`\XTGLOBAL~S.\SGLOBALS[a].\GITYPE`.
 
-.. math::
-   \frac{
-   }{
-     S \vdashexternval \EVGLOBAL~a : \ETGLOBAL~S.\SGLOBALS[a].\GITYPE
-   }
+$${rule: Externaddr_type/global}
 
 
 .. index:: tag type, tag address, exception tag, function type
-.. _valid-externval-tag:
+.. _valid-externaddr-tag:
 
-:math:`\EVTAG~a`
+:math:`\XATAG~a`
 ................
 
 * The store entry :math:`S.\STAGS[a]` must exist.
 
-* Let :math:`\tagtype` be the function type :math:`S.\STAGS[a].\TAGITYPE`.
+* Let :math:`\tagtype` be the function type :math:`S.\STAGS[a].\HITYPE`.
 
-* Then :math:`\EVTAG~a` is valid with :ref:`external type <syntax-externtype>` :math:`\ETTAG~\tagtype`.
+* Then :math:`\XATAG~a` is valid with :ref:`external type <syntax-externtype>` :math:`\XTTAG~\tagtype`.
 
-.. math::
-   \frac{
-   }{
-     S \vdashexternval \EVTAG~a : \ETTAG~S.\STAGS[a].\TAGITYPE
-   }
+$${rule: Externaddr_type/tag}
 
 
 Subsumption
 ...........
 
-* The external value must be valid with some external type :math:`\X{et}`.
+* The external address must be valid with some external type :math:`\X{et}`.
 
 * The external type :math:`\X{et}` :ref:`matches <match-externtype>` another :ref:`valid <valid-externtype>` type :math:`\X{et'}`.
 
-* Then the external value is valid with type :math:`\X{et'}`.
+* Then the external address is valid with type :math:`\X{et'}`.
 
-.. math::
-   \frac{
-     S \vdashexternval \externval : \X{et}
-     \qquad
-     \vdashexterntype \X{et'} : \OKexterntype
-     \qquad
-     \vdashexterntypematch \X{et} \subexterntypematch \X{et'}
-   }{
-     S \vdashexternval \externval : \X{et'}
-   }
+$${rule: Externaddr_type/sub}

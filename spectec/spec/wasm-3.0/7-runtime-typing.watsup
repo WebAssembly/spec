@@ -61,28 +61,32 @@ rule Val_type/ref:
 
 
 ;;
-;; Typing external values
+;; Typing external addresses
 ;;
 
-relation Externval_type: store |- externval : externtype
+relation Externaddr_type: store |- externaddr : externtype
 
-rule Externval_type/func:
+rule Externaddr_type/func:
   s |- FUNC a : FUNC funcinst.TYPE
   -- if s.FUNCS[a] = funcinst
 
-rule Externval_type/global:
+rule Externaddr_type/global:
   s |- GLOBAL a : GLOBAL globalinst.TYPE
   -- if s.GLOBALS[a] = globalinst
 
-rule Externval_type/table:
+rule Externaddr_type/table:
   s |- TABLE a : TABLE tableinst.TYPE
   -- if s.TABLES[a] = tableinst
 
-rule Externval_type/mem:
+rule Externaddr_type/mem:
   s |- MEM a : MEM meminst.TYPE
   -- if s.MEMS[a] = meminst
 
-rule Externval_type/sub:
-  s |- externval : xt
-  -- Externval_type: s |- externval : xt'
+rule Externaddr_type/tag:
+  s |- TAG a : TAG taginst.TYPE
+  -- if s.TAGS[a] = taginst
+
+rule Externaddr_type/sub:
+  s |- externaddr : xt
+  -- Externaddr_type: s |- externaddr : xt'
   -- Externtype_sub: {} |- xt' <: xt

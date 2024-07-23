@@ -205,6 +205,26 @@ Conventions
 * The notation ${:$addr(A)} denotes the set of addresses from address space ${:addr} occurring free in ${:A}. We sometimes reinterpret this set as the :ref:`list <syntax-list>` of its elements.
 
 
+.. index:: ! external address, function address, table address, memory address, global address, tag address, store, function, table, memory, global, tag, instruction type
+   pair: abstract syntax; external address
+   pair: external; address
+.. _syntax-externaddr:
+
+External Addresses
+~~~~~~~~~~~~~~~~~~
+
+An *external address* is the runtime :ref:`address <syntax-addr>` of an entity that can be imported or exported.
+It is an :ref:`address <syntax-addr>` denoting either a
+:ref:`function instance <syntax-funcinst>`,
+:ref:`global instances <syntax-globalinst>`,
+:ref:`table instance <syntax-tableinst>`,
+:ref:`memory instance <syntax-meminst>`, or
+:ref:`tag instances <syntax-taginst>`
+in the shared :ref:`store <syntax-store>`.
+
+$${syntax: externaddr}
+
+
 
 .. index:: ! instance, function type, type instance, function instance, table instance, memory instance, global instance, tag instance, element instance, data instance, export instance, table address, memory address, global address, tag address, element address, data address, index, name
    pair: abstract syntax; module instance
@@ -357,7 +377,7 @@ It holds a list of :ref:`bytes <syntax-byte>`.
 $${syntax: datainst}
 
 
-.. index:: ! export instance, export, name, external value
+.. index:: ! export instance, export, name, external address
    pair: abstract syntax; export instance
    pair: export; instance
 .. _syntax-exportinst:
@@ -366,40 +386,18 @@ Export Instances
 ~~~~~~~~~~~~~~~~
 
 An *export instance* is the runtime representation of an :ref:`export <syntax-export>`.
-It defines the export's :ref:`name <syntax-name>` and the associated :ref:`external value <syntax-externval>`.
+It defines the export's :ref:`name <syntax-name>` and the associated :ref:`external address <syntax-externaddr>`.
 
 $${syntax: exportinst}
-
-
-.. index:: ! external value, function address, table address, memory address, global address, tag address, store, function, table, memory, global, tag, instruction type
-   pair: abstract syntax; external value
-   pair: external; value
-.. _syntax-externval:
-
-External Values
-~~~~~~~~~~~~~~~
-
-An *external value* is the runtime representation of an entity that can be imported or exported.
-It is an :ref:`address <syntax-addr>` denoting either a
-:ref:`function instance <syntax-funcinst>`,
-:ref:`global instances <syntax-globalinst>`,
-:ref:`table instance <syntax-tableinst>`,
-:ref:`memory instance <syntax-meminst>`, or
-:ref:`tag instances <syntax-taginst>`
-in the shared :ref:`store <syntax-store>`.
-
-$${syntax: externval}
 
 
 Conventions
 ...........
 
-The following auxiliary notation is defined for sequences of external values.
+The following auxiliary notation is defined for sequences of external addresses.
 It filters out entries of a specific kind in an order-preserving fashion:
 
-$${definition: funcsxv tablesxv memsxv globalsxv}
-
-* :math:`\evtags(\externval^\ast) = [\tagaddr ~|~ (\EVTAG~\tagaddr) \in \externval^\ast]`
+$${definition: funcsxa tablesxa memsxa globalsxa tagsxa}
 
 
 .. index:: ! structure instance, ! array instance, structure type, array type, defined type, ! field value, ! packed value

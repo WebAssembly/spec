@@ -82,7 +82,7 @@ Construct                                        Judgement
 :ref:`Result <valid-result>`                     :math:`S \vdashresult \result : \resulttype`
 :ref:`Packed value <valid-packval>`              :math:`S \vdashpackval \packval : \packtype`
 :ref:`Field value <valid-fieldval>`              :math:`S \vdashfieldval \fieldval : \storagetype`
-:ref:`External value <valid-externval>`          :math:`S \vdashexternval \externval : \externtype`
+:ref:`External address <valid-externaddr>`       :math:`S \vdashexternaddr \externaddr : \externtype`
 :ref:`Function instance <valid-funcinst>`        :math:`S \vdashfuncinst \funcinst : \functype`
 :ref:`Table instance <valid-tableinst>`          :math:`S \vdashtableinst \tableinst : \tabletype`
 :ref:`Memory instance <valid-meminst>`           :math:`S \vdashmeminst \meminst : \memtype`
@@ -136,7 +136,7 @@ Construct                                        Judgement
 :ref:`Table type <match-tabletype>`              :math:`C \vdashtabletypematch \tabletype_1 \subtabletypematch \tabletype_2`
 :ref:`Memory type <match-memtype>`               :math:`C \vdashmemtypematch \memtype_1 \submemtypematch \memtype_2`
 :ref:`Global type <match-globaltype>`            :math:`C \vdashglobaltypematch \globaltype_1 \subglobaltypematch \globaltype_2`
-:ref:`Tag type <match-tagtype>`                  :math:`C \vdashtagtypematch \tagtype_1 \subtagtype \tagtype_2`
+:ref:`Tag type <match-tagtype>`                  :math:`C \vdashtagtypematch \tagtype_1 \subtagtypematch \tagtype_2`
 :ref:`External type <match-externtype>`          :math:`C \vdashexterntypematch \externtype_1 \subexterntypematch \externtype_2`
 :ref:`Limits <match-limits>`                     :math:`C \vdashlimitsmatch \limits_1 \sublimitsmatch \limits_2`
 ===============================================  ===================================================================================

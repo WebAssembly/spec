@@ -43,31 +43,31 @@ def $unpackfield(packtype, sx, PACK packtype i) = CONST I32 $ext($psize(packtype
 
 ;; Projections
 
-def $funcsxv(externval*) : funcaddr*     hint(show $funcs(%))   hint(macro "funcsxv")
-def $globalsxv(externval*) : globaladdr* hint(show $globals(%)) hint(macro "globalsxv")
-def $tablesxv(externval*) : tableaddr*   hint(show $tables(%))  hint(macro "tablesxv")
-def $memsxv(externval*) : memaddr*       hint(show $mems(%))    hint(macro "memsxv")
-def $tagsxv(externval*) : tagaddr*       hint(show $tags(%))    hint(macro "tagsxv")
+def $funcsxa(externaddr*) : funcaddr*     hint(show $funcs(%))   hint(macro "funcsxa")
+def $globalsxa(externaddr*) : globaladdr* hint(show $globals(%)) hint(macro "globalsxa")
+def $tablesxa(externaddr*) : tableaddr*   hint(show $tables(%))  hint(macro "tablesxa")
+def $memsxa(externaddr*) : memaddr*       hint(show $mems(%))    hint(macro "memsxa")
+def $tagsxa(externaddr*) : tagaddr*       hint(show $tags(%))    hint(macro "tagsxa")
 
-def $funcsxv(eps) = eps
-def $funcsxv((FUNC fa) xv*) = fa $funcsxv(xv*)
-def $funcsxv(externval xv*) = $funcsxv(xv*)  -- otherwise
+def $funcsxa(eps) = eps
+def $funcsxa((FUNC fa) xa*) = fa $funcsxa(xa*)
+def $funcsxa(externaddr xa*) = $funcsxa(xa*)  -- otherwise
 
-def $globalsxv(eps) = eps
-def $globalsxv((GLOBAL ga) xv*) = ga $globalsxv(xv*)
-def $globalsxv(externval xv*) = $globalsxv(xv*)  -- otherwise
+def $globalsxa(eps) = eps
+def $globalsxa((GLOBAL ga) xa*) = ga $globalsxa(xa*)
+def $globalsxa(externaddr xa*) = $globalsxa(xa*)  -- otherwise
 
-def $tablesxv(eps) = eps
-def $tablesxv((TABLE ta) xv*) = ta $tablesxv(xv*)
-def $tablesxv(externval xv*) = $tablesxv(xv*)  -- otherwise
+def $tablesxa(eps) = eps
+def $tablesxa((TABLE ta) xa*) = ta $tablesxa(xa*)
+def $tablesxa(externaddr xa*) = $tablesxa(xa*)  -- otherwise
 
-def $memsxv(eps) = eps
-def $memsxv((MEM ma) xv*) = ma $memsxv(xv*)
-def $memsxv(externval xv*) = $memsxv(xv*)  -- otherwise
+def $memsxa(eps) = eps
+def $memsxa((MEM ma) xa*) = ma $memsxa(xa*)
+def $memsxa(externaddr xa*) = $memsxa(xa*)  -- otherwise
 
-def $tagsxv(eps) = eps
-def $tagsxv((TAG ha) xv*) = ha $tagsxv(xv*)
-def $tagsxv(externval xv*) = $tagsxv(xv*)  -- otherwise
+def $tagsxa(eps) = eps
+def $tagsxa((TAG ha) xa*) = ha $tagsxa(xa*)
+def $tagsxa(externaddr xa*) = $tagsxa(xa*)  -- otherwise
 
 
 ;;

@@ -46,7 +46,7 @@ Invoking an exported function may throw or propagate exceptions, expressed by an
 
 .. math::
    \begin{array}{llll}
-   \production{exception} & \exception &::=& \ETHROW ~ \exnaddr \\
+   \production{exception} & \exception &::=& \EXCEPTION~\exnaddr \\
    \end{array}
 
 The exception address :math:`exnaddr` identifies the exception thrown.
@@ -74,7 +74,7 @@ Some operations state *pre-conditions* about their arguments or *post-conditions
 It is the embedder's responsibility to meet the pre-conditions.
 If it does, the post conditions are guaranteed by the semantics.
 
-In addition to pre- and post-conditions explicitly stated with each operation, the specification adopts the following conventions for :ref:`runtime objects <syntax-runtime>` (:math:`\store`, :math:`\moduleinst`, :math:`\externval`, :ref:`addresses <syntax-addr>`):
+In addition to pre- and post-conditions explicitly stated with each operation, the specification adopts the following conventions for :ref:`runtime objects <syntax-runtime>` (:math:`\store`, :math:`\moduleinst`, :ref:`addresses <syntax-addr>`):
 
 * Every runtime object passed as a parameter must be :ref:`valid <valid-store>` per an implicit pre-condition.
 
@@ -164,10 +164,10 @@ Modules
 .. index:: instantiation, module instance
 .. _embed-module-instantiate:
 
-:math:`\F{module\_instantiate}(\store, \module, \externval^\ast) : (\store, \moduleinst ~|~ \error)`
-....................................................................................................
+:math:`\F{module\_instantiate}(\store, \module, \externaddr^\ast) : (\store, \moduleinst ~|~ \error)`
+.....................................................................................................
 
-1. Try :ref:`instantiating <exec-instantiation>` :math:`\module` in :math:`\store` with :ref:`external values <syntax-externval>` :math:`\externval^\ast` as imports:
+1. Try :ref:`instantiating <exec-instantiation>` :math:`\module` in :math:`\store` with :ref:`external addresses <syntax-externaddr>` :math:`\externaddr^\ast` as imports:
 
   a. If it succeeds with a :ref:`module instance <syntax-moduleinst>` :math:`\moduleinst`, then let :math:`\X{result}` be :math:`\moduleinst`.
 
@@ -227,7 +227,7 @@ Modules
 
 4. For each :math:`\export_i` in :math:`\export^\ast` and corresponding :math:`\externtype'_i` in :math:`{\externtype'}^\ast`, do:
 
-  a. Let :math:`\X{result}_i` be the pair :math:`(\export_i.\ENAME, \externtype'_i)`.
+  a. Let :math:`\X{result}_i` be the pair :math:`(\export_i.\XNAME, \externtype'_i)`.
 
 5. Return the concatenation of all :math:`\X{result}_i`, in index order.
 
@@ -236,7 +236,7 @@ Modules
 .. math::
    ~ \\
    \begin{array}{lclll}
-   \F{module\_exports}(m) &=& (\X{ex}.\ENAME, \externtype')^\ast \\
+   \F{module\_exports}(m) &=& (\X{ex}.\XNAME, \externtype')^\ast \\
      && \qquad (\iff \X{ex}^\ast = m.\MEXPORTS \wedge {} \vdashmodule m : \externtype^\ast \rightarrow {\externtype'}^\ast) \\
    \end{array}
 
@@ -251,21 +251,21 @@ Module Instances
 
 .. _embed-instance-export:
 
-:math:`\F{instance\_export}(\moduleinst, \name) : \externval ~|~ \error`
-........................................................................
+:math:`\F{instance\_export}(\moduleinst, \name) : \externaddr ~|~ \error`
+.........................................................................
 
 1. Assert: due to :ref:`validity <valid-moduleinst>` of the :ref:`module instance <syntax-moduleinst>` :math:`\moduleinst`, all its :ref:`export names <syntax-exportinst>` are different.
 
-2. If there exists an :math:`\exportinst_i` in :math:`\moduleinst.\MIEXPORTS` such that :ref:`name <syntax-name>` :math:`\exportinst_i.\EINAME` equals :math:`\name`, then:
+2. If there exists an :math:`\exportinst_i` in :math:`\moduleinst.\MIEXPORTS` such that :ref:`name <syntax-name>` :math:`\exportinst_i.\XINAME` equals :math:`\name`, then:
 
-   a. Return the :ref:`external value <syntax-externval>` :math:`\exportinst_i.\EIVALUE`.
+   a. Return the :ref:`external address <syntax-externaddr>` :math:`\exportinst_i.\XIADDR`.
 
 3. Else, return :math:`\ERROR`.
 
 .. math::
    ~ \\
    \begin{array}{lclll}
-   \F{instance\_export}(m, \name) &=& m.\MIEXPORTS[i].\EIVALUE && (\iff m.\MEXPORTS[i].\EINAME = \name) \\
+   \F{instance\_export}(m, \name) &=& m.\MIEXPORTS[i].\XIADDR && (\iff m.\MEXPORTS[i].\XINAME = \name) \\
    \F{instance\_export}(m, \name) &=& \ERROR && (\otherwise) \\
    \end{array}
 
@@ -325,7 +325,7 @@ Functions
 
   a. If it succeeds with :ref:`values <syntax-val>` :math:`{\val'}^\ast` as results, then let :math:`\X{result}` be :math:`{\val'}^\ast`.
 
-  b. Else if the outcome is an exception with a thrown :ref:`exception <exec-throw_ref>` :math:`\REFEXNADDR~\exnaddr` as the result, then let :math:`\X{result}` be :math:`\ETHROW~\exnaddr`
+  b. Else if the outcome is an exception with a thrown :ref:`exception <exec-throw_ref>` :math:`\REFEXNADDR~\exnaddr` as the result, then let :math:`\X{result}` be :math:`\EXCEPTION~\exnaddr`
 
   c. Else it has trapped, hence let :math:`\X{result}` be :math:`\ERROR`.
 
@@ -335,7 +335,7 @@ Functions
    ~ \\
    \begin{array}{lclll}
    \F{func\_invoke}(S, a, v^\ast) &=& (S', {v'}^\ast) && (\iff \invoke(S, a, v^\ast) \stepto^\ast S'; F; {v'}^\ast) \\
-   \F{func\_invoke}(S, a, v^\ast) &=& (S', \ETHROW~a') && (\iff \invoke(S, a, v^\ast) \stepto^\ast S'; F; \XT[(\REFEXNADDR~a')~\THROWREF] \\
+   \F{func\_invoke}(S, a, v^\ast) &=& (S', \EXCEPTION~a') && (\iff \invoke(S, a, v^\ast) \stepto^\ast S'; F; (\REFEXNADDR~a')~\THROWREF \\
    \F{func\_invoke}(S, a, v^\ast) &=& (S', \ERROR) && (\iff \invoke(S, a, v^\ast) \stepto^\ast S'; F; \TRAP) \\
    \end{array}
 
@@ -595,13 +595,13 @@ Tags
 :math:`\F{tag\_type}(\store, \tagaddr) : \tagtype`
 ..................................................
 
-1. Return :math:`S.\STAGS[a].\TAGITYPE`.
+1. Return :math:`S.\STAGS[a].\HITYPE`.
 
 2. Post-condition: the returned :ref:`tag type <syntax-tagtype>` is :ref:`valid  <valid-tagtype>`.
 
 .. math::
    \begin{array}{lclll}
-   \F{tag\_type}(S, a) &=& S.\STAGS[a].\TAGITYPE \\
+   \F{tag\_type}(S, a) &=& S.\STAGS[a].\HITYPE \\
    \end{array}
 
 

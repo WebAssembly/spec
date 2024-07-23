@@ -88,13 +88,16 @@ rule Step_pure/label-vals:
 ;; Branch instructions
 
 ;; TODO(4, rossberg): may want a label context instead of bubbling up
-rule Step_pure/br-zero:
+rule Step_pure/br-label-zero:
   (LABEL_ n `{instr'*} val'* val^n (BR l) instr*)  ~>  val^n instr'*
   -- if l = 0
 
-rule Step_pure/br-succ:
+rule Step_pure/br-label-succ:
   (LABEL_ n `{instr'*} val* (BR l) instr*)  ~>  val* (BR $(l - 1))
   -- if l > 0
+
+rule Step_pure/br-handler:
+  (HANDLER_ n `{catch*} val* (BR l) instr*)  ~>  val* (BR $(l - 1))
 
 
 rule Step_pure/br_if-true:
@@ -206,6 +209,9 @@ rule Step_pure/return-frame:
 rule Step_pure/return-label:
   (LABEL_ n `{instr'*} val* RETURN instr*)  ~>  val* RETURN
 
+rule Step_pure/return-handler:
+  (HANDLER_ n `{catch*} val* RETURN instr*)  ~>  val* RETURN
+
 
 ;; Exceptions
 
@@ -254,6 +260,10 @@ rule Step_read/throw_ref-handler-next:
 rule Step_read/try_table:
   z; val^m (TRY_TABLE bt catch* instr*)  ~>  (HANDLER_ n `{catch*} (LABEL_ n `{eps} val^m instr*))
   -- if $blocktype_(z, bt) = t_1^m -> t_2^n
+
+
+rule Step_pure/handler-vals:
+  (HANDLER_ n `{catch*} val*)  ~>  val*
 
 
 ;; Traps

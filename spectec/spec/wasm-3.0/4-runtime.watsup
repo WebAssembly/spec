@@ -15,17 +15,11 @@ syntax structaddr hint(desc "structure address") = addr
 syntax arrayaddr hint(desc "array address") = addr
 syntax exnaddr hint(desc "exception address") = addr
 
+syntax externaddr hint(desc "external address") hint(macro "%" "XA%") =
+  | FUNC funcaddr | GLOBAL globaladdr | TABLE tableaddr | MEM memaddr | TAG tagaddr
+
 var a : addr
-var fa : funcaddr
-var ga : globaladdr
-var ta : tableaddr
-var ma : memaddr
-var ha : tagaddr
-var ea : elemaddr
-var da : dataaddr
-var sa : structaddr
-var aa : arrayaddr
-var xa : exnaddr
+var xa : externaddr
 
 
 ;;
@@ -60,14 +54,6 @@ var v : val
 var res : result
 
 
-;; External values
-
-syntax externval hint(desc "external value") hint(macro "%" "EV%") =
-  | FUNC funcaddr | GLOBAL globaladdr | TABLE tableaddr | MEM memaddr | TAG tagaddr
-
-var xv : externval
-
-
 ;;
 ;; Configurations
 ;;
@@ -91,9 +77,8 @@ syntax eleminst hint(desc "element instance") hint(macro "%" "EI%") =
   { TYPE elemtype, REFS ref* }
 syntax datainst hint(desc "data instance") hint(macro "%" "DI%") =
   { BYTES byte* }
-;; TODO(rossberg, 1): change prefix to XI
-syntax exportinst hint(desc "export instance") hint(macro "%" "EI%") =
-  { NAME name, VALUE externval }
+syntax exportinst hint(desc "export instance") hint(macro "%" "XI%") =
+  { NAME name, ADDR externaddr }
 
 syntax packval hint(desc "packed value") =
   | PACK packtype iN($psizenn(packtype))    hint(show %.PACK %)

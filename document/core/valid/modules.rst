@@ -228,21 +228,11 @@ each containing an index to a :ref:`function type <syntax-functype>` with empty 
 
 * The type :math:`C.\CTYPES[x]` must be defined in the context.
 
-* Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
+* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
 
-* The sequence :math:`{t'}^\ast` must be empty.
+* Then the tag definition is valid with :ref:`tag type <syntax-tagtype>` :math:`[t_1^\ast]\to[t_2^\ast]`.
 
-* Then the tag definition is valid with :ref:`tag type <syntax-tagtype>` :math:`[t^\ast]\to[]`.
-
-.. math::
-   \frac{
-     C.\CTYPES[x] = [t^\ast] \to []
-   }{
-     C \vdashtag \{ \TAGTYPE~x \} : [t^\ast]\to[]
-   }
-
-.. note::
-   Future versions of WebAssembly might allow non-empty return types for tags.
+$${rule: Tag_ok}
 
 
 .. index:: element, table, table index, expression, constant, function index
@@ -391,7 +381,7 @@ Exports
 Exports ${:export} are classified by their :ref:`external type <syntax-externtype>`.
 
 
-:math:`\{ \ENAME~\name, \EDESC~\exportdesc \}`
+:math:`\{ \XNAME~\name, \XDESC~\exportdesc \}`
 ..............................................
 
 * The export description :math:`\exportdesc` must be valid with :ref:`external type <syntax-externtype>` :math:`\externtype`.
@@ -401,62 +391,57 @@ Exports ${:export} are classified by their :ref:`external type <syntax-externtyp
 $${rule: Export_ok}
 
 
-:math:`\EDFUNC~x`
+:math:`\XDFUNC~x`
 .................
 
 * The function :math:`C.\CFUNCS[x]` must be defined in the context.
 
 * Let :math:`\X{dt}` be the :ref:`defined type <syntax-deftype>` :math:`C.\CFUNCS[x]`.
 
-* Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\X{dt}`.
+* Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\XTFUNC~\X{dt}`.
 
 $${rule: Externidx_ok/func}
 
 
-:math:`\EDTABLE~x`
+:math:`\XDTABLE~x`
 ..................
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
-* Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\ETTABLE~C.\CTABLES[x]`.
+* Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\XTTABLE~C.\CTABLES[x]`.
 
 $${rule: Externidx_ok/table}
 
 
-:math:`\EDMEM~x`
+:math:`\XDMEM~x`
 ................
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
-* Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\ETMEM~C.\CMEMS[x]`.
+* Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\XTMEM~C.\CMEMS[x]`.
 
 $${rule: Externidx_ok/mem}
 
 
-:math:`\EDGLOBAL~x`
+:math:`\XDGLOBAL~x`
 ...................
 
 * The global :math:`C.\CGLOBALS[x]` must be defined in the context.
 
-* Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~C.\CGLOBALS[x]`.
+* Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\XTGLOBAL~C.\CGLOBALS[x]`.
 
 $${rule: Externidx_ok/global}
 
 
 
-:math:`\EDTAG~x`
+:math:`\XDTAG~x`
 ................
 
 * The tag :math:`C.\CTAGS[x]` must be defined in the context.
 
-* Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\ETTAG~C.\CTAGS[x]`.
+* Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\XTTAG~C.\CTAGS[x]`.
 
-.. math::
-   \frac{
-     C.\CTAGS[x] = \tagtype
-   }{
-     C \vdashexportdesc \EDTAG~x : \ETTAG~\tagtype
-   }
+$${rule: Externidx_ok/tag}
 
 
 .. index:: import, name, function type, table type, memory type, global type, tag type
@@ -479,26 +464,6 @@ Imports ${:import} are classified by :ref:`external types <syntax-externtype>`.
 * Then the import is valid with type :math:`\externtype`.
 
 $${rule: Import_ok}
-
-
-:math:`\IDTAG~\tag`
-...................
-
-* Let :math:`\{ \TAGTYPE~x \}` be the tag :math:`\tag`.
-
-* The type :math:`C.\CTYPES[x]` must be defined in the context.
-
-* The :ref:`tag type <syntax-tagtype>` :math:`C.\CTYPES[x]` must be a :ref:`valid tag type <valid-tagtype>`.
-
-* Then the import description is valid with type :math:`\ETTAG~C.\CTYPES[x]`.
-
-.. math::
-   \frac{
-     \vdashtagtype C.\CTYPES[x] \ok
-   }{
-     C \vdashimportdesc \IDTAG~\{ \TAGTYPE~x \} : \ETTAG~C.\CTYPES[x]
-   }
-
 
 
 .. index:: module, type definition, function type, function, table, memory, global, tag, element, data, start function, import, export, context
@@ -540,7 +505,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
   * :math:`C.\CGLOBALS` is :math:`\globalsxt(\X{it}^\ast)` concatenated with :math:`\X{gt}^\ast`,
     with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`global types <syntax-globaltype>` :math:`\X{gt}^\ast` as determined below,
 
-  * :math:`C.\CTAGS` is :math:`\ettags(\X{it}^\ast)` concatenated with :math:`\X{ht}^\ast`,
+  * :math:`C.\CTAGS` is :math:`\tagsxt(\X{it}^\ast)` concatenated with :math:`\X{ht}^\ast`,
     with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`tag types <syntax-tagtype>` :math:`\X{ht}^\ast` as determined below,
 
   * :math:`C.\CELEMS` is :math:`{\X{rt}}^\ast` as determined below,
@@ -624,7 +589,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
 * The length of :math:`C.\CMEMS` must not be larger than :math:`1`.
 
-* All export names :math:`\export_i.\ENAME` must be different.
+* All export names :math:`\export_i.\XNAME` must be different.
 
 * Then the module is valid with :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast \to \X{et}^\ast`.
 

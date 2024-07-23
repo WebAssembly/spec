@@ -90,10 +90,11 @@ def $allocdatas(s, ok ok'*, (b*) (b'*)*) = (s_2, da da'*)
   -- if (s_2, da'*) = $allocdatas(s_1, ok'*, (b'*)*)
 
 def $allocexport(moduleinst, export) : exportinst hint(show $allocexport(moduleinst, %2))  ;; HACK !
-def $allocexport(moduleinst, EXPORT name (FUNC x)) = { NAME name, VALUE (FUNC moduleinst.FUNCS[x]) }
-def $allocexport(moduleinst, EXPORT name (GLOBAL x)) = { NAME name, VALUE (GLOBAL moduleinst.GLOBALS[x]) }
-def $allocexport(moduleinst, EXPORT name (TABLE x)) = { NAME name, VALUE (TABLE moduleinst.TABLES[x]) }
-def $allocexport(moduleinst, EXPORT name (MEM x)) = { NAME name, VALUE (MEM moduleinst.MEMS[x]) }
+def $allocexport(moduleinst, EXPORT name (FUNC x)) = { NAME name, ADDR (FUNC moduleinst.FUNCS[x]) }
+def $allocexport(moduleinst, EXPORT name (GLOBAL x)) = { NAME name, ADDR (GLOBAL moduleinst.GLOBALS[x]) }
+def $allocexport(moduleinst, EXPORT name (TABLE x)) = { NAME name, ADDR (TABLE moduleinst.TABLES[x]) }
+def $allocexport(moduleinst, EXPORT name (MEM x)) = { NAME name, ADDR (MEM moduleinst.MEMS[x]) }
+def $allocexport(moduleinst, EXPORT name (TAG x)) = { NAME name, ADDR (TAG moduleinst.TAGS[x]) }
 
 def $allocexports(moduleinst, export*) : exportinst* hint(show $allocexport*#(%,%))
 def $allocexports(moduleinst, export*) = $allocexport(moduleinst, export)*
@@ -101,8 +102,8 @@ def $allocexports(moduleinst, export*) = $allocexport(moduleinst, export)*
 
 ;; Modules
 
-def $allocmodule(store, module, externval*, val*, ref*, (ref*)*) : (store, moduleinst)
-def $allocmodule(s, module, externval*, val_G*, ref_T*, (ref_E*)*) = (s_7, moduleinst)
+def $allocmodule(store, module, externaddr*, val*, ref*, (ref*)*) : (store, moduleinst)
+def $allocmodule(s, module, externaddr*, val_G*, ref_T*, (ref_E*)*) = (s_7, moduleinst)
   ---- ----
   -- if module = MODULE type* import* func* global* table* mem* tag* elem* data* start? export*
   -- if func* = (FUNC x local* expr_F)*
@@ -113,11 +114,11 @@ def $allocmodule(s, module, externval*, val_G*, ref_T*, (ref_E*)*) = (s_7, modul
   -- if elem* = (ELEM elemtype expr_E* elemmode)*
   -- if data* = (DATA byte* datamode)*
   ;; TODO(3, rossberg): inline these
-  -- if fa_I* = $funcsxv(externval*)
-  -- if ga_I* = $globalsxv(externval*)
-  -- if ta_I* = $tablesxv(externval*)
-  -- if ma_I* = $memsxv(externval*)
-  -- if aa_I* = $tagsxv(externval*)
+  -- if fa_I* = $funcsxa(externaddr*)
+  -- if ga_I* = $globalsxa(externaddr*)
+  -- if ta_I* = $tablesxa(externaddr*)
+  -- if ma_I* = $memsxa(externaddr*)
+  -- if aa_I* = $tagsxa(externaddr*)
   ;; TODO(2, rossberg): get rid of these forward guesses
   -- if fa* = ($(|s.FUNCS|+i_F))^(i_F<|func*|)
   -- if ga* = ($(|s.GLOBALS|+i_G))^(i_G<|global*|)
@@ -164,11 +165,11 @@ def $rundata_(x, DATA b^n (PASSIVE)) = eps
 def $rundata_(x, DATA b^n (ACTIVE y instr*)) =
   instr* (CONST I32 0) (CONST I32 n) (MEMORY.INIT y x) (DATA.DROP x)
 
-def $instantiate(store, module, externval*) : config
-def $instantiate(s, module, externval*) = s'; f; instr_E* instr_D* instr_S?
+def $instantiate(store, module, externaddr*) : config
+def $instantiate(s, module, externaddr*) = s'; f; instr_E* instr_D* instr_S?
   ---- ----
   -- Module_ok: |- module : xt_I* -> xt_E*
-  -- (Externval_type: s |- externval : xt_I)*
+  -- (Externaddr_type: s |- externaddr : xt_I)*
   ----
   -- if module = MODULE type* import* func* global* table* mem* tag* elem* data* start? export*
   -- if global* = (GLOBAL globaltype expr_G)*
@@ -179,14 +180,14 @@ def $instantiate(s, module, externval*) = s'; f; instr_E* instr_D* instr_S?
   ;; TODO(2, rossberg): avoid this HACK and use moduleinst directly, or built it fully incrementally
   -- if moduleinst_0 = {
       TYPES $alloctypes(type*),
-      FUNCS $funcsxv(externval*) ($(|s.FUNCS|+i_F))^(i_F<|func*|),
-      GLOBALS $globalsxv(externval*), \
+      FUNCS $funcsxa(externaddr*) ($(|s.FUNCS|+i_F))^(i_F<|func*|),
+      GLOBALS $globalsxa(externaddr*), \
     }
   -- if z = s; {MODULE moduleinst_0}  ;; TODO(2, rossberg): inline
   -- (Eval_expr : z; expr_G ~>* z; val_G)*
   -- (Eval_expr : z; expr_T ~>* z; ref_T)*
   -- (Eval_expr : z; expr_E ~>* z; ref_E)**
-  -- if (s', moduleinst) = $allocmodule(s, module, externval*, val_G*, ref_T*, (ref_E*)*)
+  -- if (s', moduleinst) = $allocmodule(s, module, externaddr*, val_G*, ref_T*, (ref_E*)*)
   -- if f = {MODULE moduleinst}  ;; TODO(2, rossberg): inline
   -- if instr_E* = $concat_(instr, $runelem_(i_E, elem*[i_E])^(i_E<|elem*|))
   -- if instr_D* = $concat_(instr, $rundata_(i_D, data*[i_D])^(i_D<|data*|))

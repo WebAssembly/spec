@@ -427,11 +427,7 @@ Tag Types
 
 * Then the tag type is valid.
 
-.. math::
-   \frac{
-   }{
-     \vdashtagtype [t^\ast] \to [] \ok
-   }
+$${rule: Tagtype_ok}
 
 
 .. index:: global type, value type, mutability
@@ -460,7 +456,7 @@ $${rule: Globaltype_ok}
 External Types
 ~~~~~~~~~~~~~~
 
-:math:`\ETFUNC~\deftype`
+:math:`\XTFUNC~\deftype`
 ........................
 
 * The :ref:`defined type <syntax-deftype>` :math:`\deftype` must be :ref:`valid <valid-deftype>`.
@@ -472,7 +468,7 @@ External Types
 $${rule: Externtype_ok/func}
 
 
-:math:`\ETTABLE~\tabletype`
+:math:`\XTTABLE~\tabletype`
 ...........................
 
 * The :ref:`table type <syntax-tabletype>` :math:`\tabletype` must be :ref:`valid <valid-tabletype>`.
@@ -482,7 +478,7 @@ $${rule: Externtype_ok/func}
 $${rule: Externtype_ok/table}
 
 
-:math:`\ETMEM~\memtype`
+:math:`\XTMEM~\memtype`
 .......................
 
 * The :ref:`memory type <syntax-memtype>` :math:`\memtype` must be :ref:`valid <valid-memtype>`.
@@ -492,21 +488,17 @@ $${rule: Externtype_ok/table}
 $${rule: Externtype_ok/mem}
 
 
-:math:`\ETTAG~\tagtype`
+:math:`\XTTAG~\tagtype`
 .......................
 
 * The :ref:`tag type <syntax-tagtype>` :math:`\tagtype` must be :ref:`valid <valid-tagtype>`.
 
 * Then the external type is valid.
 
-.. math::
-   \frac{
-     \vdashtagtype \tagtype \ok
-   }{
-     \vdashexterntype \ETTAG~\tagtype \ok
-   }
+$${rule: Externtype_ok/tag}
 
-:math:`\ETGLOBAL~\globaltype`
+
+:math:`\XTGLOBAL~\globaltype`
 .............................
 
 * The :ref:`global type <syntax-globaltype>` :math:`\globaltype` must be :ref:`valid <valid-globaltype>`.

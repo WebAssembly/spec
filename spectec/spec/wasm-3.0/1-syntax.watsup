@@ -252,7 +252,7 @@ syntax elemtype hint(desc "element type") =
   reftype
 syntax datatype hint(desc "data type") hint(macro "%" "%data") =
   OK
-syntax externtype hint(desc "external type") hint(macro "%" "ET%") =
+syntax externtype hint(desc "external type") hint(macro "%" "XT%") =
   | FUNC typeuse | GLOBAL globaltype | TABLE tabletype | MEM memtype | TAG typeuse
 
 syntax moduletype hint(desc "module type") = externtype* -> externtype* hint(macro "toM")
@@ -709,7 +709,7 @@ syntax data hint(desc "memory segment") =
 syntax start hint(desc "start function") =
   START funcidx
 
-syntax externidx hint(desc "external index") hint(macro "%" "EX%") =
+syntax externidx hint(desc "external index") hint(macro "%" "XX%") =
   | FUNC funcidx | GLOBAL globalidx | TABLE tableidx | MEM memidx | TAG tagidx
 syntax export hint(desc "export") =
   EXPORT name externidx

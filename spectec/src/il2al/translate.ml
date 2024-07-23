@@ -946,6 +946,7 @@ let rec kind_of_context e =
   match e.it with
   | Il.CaseE ([{it = Il.Atom "FRAME_"; _} as atom]::_, _) -> translate_atom atom
   | Il.CaseE ([{it = Il.Atom "LABEL_"; _} as atom]::_, _) -> translate_atom atom
+  | Il.CaseE ([{it = Il.Atom "HANDLER_"; _} as atom]::_, _) -> translate_atom atom
   | Il.CaseE ([[]; [{it = Il.Semicolon; _}]; []], e')
   | Il.ListE [ e' ]
   | Il.TupE [_ (* z *); e'] -> kind_of_context e'
