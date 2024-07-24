@@ -503,13 +503,13 @@ let al_to_int_vbinop : value -> V128Op.ibinop = function
   | CaseV ("MIN", [CaseV ("U", [])]) -> V128Op.MinU
   | CaseV ("MAX", [CaseV ("S", [])]) -> V128Op.MaxS
   | CaseV ("MAX", [CaseV ("U", [])]) -> V128Op.MaxU
-  | CaseV ("AVGR", [CaseV ("U", [])]) -> V128Op.AvgrU
+  | CaseV ("AVGR", []) -> V128Op.AvgrU
   | CaseV ("ADD_SAT", [CaseV ("S", [])]) -> V128Op.AddSatS
   | CaseV ("ADD_SAT", [CaseV ("U", [])]) -> V128Op.AddSatU
   | CaseV ("SUB_SAT", [CaseV ("S", [])]) -> V128Op.SubSatS
   | CaseV ("SUB_SAT", [CaseV ("U", [])]) -> V128Op.SubSatU
   | CaseV ("DOT", [CaseV ("S", [])]) -> V128Op.DotS
-  | CaseV ("Q15MULR_SAT", [CaseV ("S", [])]) -> V128Op.Q15MulRSatS
+  | CaseV ("Q15MULR_SAT", []) -> V128Op.Q15MulRSatS
   | CaseV ("SWIZZLE", []) -> V128Op.Swizzle
   (*TODO *)
   | CaseV ("Shuffle", [ l ]) -> V128Op.Shuffle (al_to_list al_to_int l)
@@ -1412,12 +1412,12 @@ let al_of_int_vbinop : V128Op.ibinop -> value option = function
   | V128Op.MinU -> Some (caseV ("MIN", [nullary "U"]))
   | V128Op.MaxS -> Some (caseV ("MAX", [nullary "S"]))
   | V128Op.MaxU -> Some (caseV ("MAX", [nullary "U"]))
-  | V128Op.AvgrU -> Some (caseV ("AVGR", [nullary "U"]))
+  | V128Op.AvgrU -> Some (nullary "AVGR")
   | V128Op.AddSatS -> Some (caseV ("ADD_SAT", [nullary "S"]))
   | V128Op.AddSatU -> Some (caseV ("ADD_SAT", [nullary "U"]))
   | V128Op.SubSatS -> Some (caseV ("SUB_SAT", [nullary "S"]))
   | V128Op.SubSatU -> Some (caseV ("SUB_SAT", [nullary "U"]))
-  | V128Op.Q15MulRSatS -> Some (caseV ("Q15MULR_SAT", [nullary "S"]))
+  | V128Op.Q15MulRSatS -> Some (nullary "Q15MULR_SAT")
   | _ -> None
 
 let al_of_float_vbinop : V128Op.fbinop -> value = function

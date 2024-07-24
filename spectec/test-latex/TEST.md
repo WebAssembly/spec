@@ -2080,9 +2080,9 @@ $$
   &\qquad \mbox{if}~N \leq \mathsf{{\scriptstyle 16}} \\ &&|&
 \mathsf{mul}
   &\qquad \mbox{if}~N \geq \mathsf{{\scriptstyle 16}} \\ &&|&
-\mathsf{avgr\_u}
+{\mathsf{avgr}}{\mathsf{\_}}{\mathsf{u}}
   &\qquad \mbox{if}~N \leq \mathsf{{\scriptstyle 16}} \\ &&|&
-\mathsf{q{\scriptstyle 15}mulr\_sat\_s}
+{\mathsf{q{\scriptstyle 15}mulr\_sat}}{\mathsf{\_}}{\mathsf{s}}
   &\qquad \mbox{if}~N = \mathsf{{\scriptstyle 16}} \\ &&|&
 {\mathsf{min}}{\mathsf{\_}}{{\mathit{sx}}}
   &\qquad \mbox{if}~N \leq \mathsf{{\scriptstyle 32}} \\ &&|&
@@ -3647,11 +3647,11 @@ $$
   &\qquad \mbox{if}~{{\mathit{lane}}_1^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{N}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1) \\
   &&&\qquad {\land}~{{\mathit{lane}}_2^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{N}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2) \\
   &&&\qquad {\land}~{\mathit{v{\kern-0.1em\scriptstyle 128}}} = {{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{N}}^{{-1}}}}{({{{\mathrm{imul}}}_{{|{\mathsf{i}}{N}|}}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})} \\
-{\mathsf{avgr\_u}}{{}_{{{\mathsf{i}}{N}}{\mathsf{x}}{N}}}{({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)} &=& {\mathit{v{\kern-0.1em\scriptstyle 128}}}
+{{\mathsf{avgr}}{\mathsf{\_}}{\mathsf{u}}}{{}_{{{\mathsf{i}}{N}}{\mathsf{x}}{N}}}{({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)} &=& {\mathit{v{\kern-0.1em\scriptstyle 128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_1^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{N}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1) \\
   &&&\qquad {\land}~{{\mathit{lane}}_2^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{N}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2) \\
   &&&\qquad {\land}~{\mathit{v{\kern-0.1em\scriptstyle 128}}} = {{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{N}}^{{-1}}}}{({{{\mathrm{iavgr\_u}}}_{{|{\mathsf{i}}{N}|}}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})} \\
-{\mathsf{q{\scriptstyle 15}mulr\_sat\_s}}{{}_{{{\mathsf{i}}{N}}{\mathsf{x}}{N}}}{({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)} &=& {\mathit{v{\kern-0.1em\scriptstyle 128}}}
+{{\mathsf{q{\scriptstyle 15}mulr\_sat}}{\mathsf{\_}}{\mathsf{s}}}{{}_{{{\mathsf{i}}{N}}{\mathsf{x}}{N}}}{({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_2)} &=& {\mathit{v{\kern-0.1em\scriptstyle 128}}}
   &\qquad \mbox{if}~{{\mathit{lane}}_1^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{N}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1) \\
   &&&\qquad {\land}~{{\mathit{lane}}_2^\ast} = {{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{N}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_2) \\
   &&&\qquad {\land}~{\mathit{v{\kern-0.1em\scriptstyle 128}}} = {{{{\mathrm{lanes}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{N}}^{{-1}}}}{({{{\mathrm{iq{\kern-0.1em\scriptstyle 15\kern-0.1em}mulrsat\_s}}}_{{|{\mathsf{i}}{N}|}}({\mathit{lane}}_1, {\mathit{lane}}_2)^\ast})} \\
@@ -9637,12 +9637,12 @@ $$
 \mathtt{0xFD}~~119{:}{\mathtt{u32}} &\quad\Rightarrow&\quad {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} {\mathsf{min}}{\mathsf{\_}}{\mathsf{u}} \\ &&|&
 \mathtt{0xFD}~~120{:}{\mathtt{u32}} &\quad\Rightarrow&\quad {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} {\mathsf{max}}{\mathsf{\_}}{\mathsf{s}} \\ &&|&
 \mathtt{0xFD}~~121{:}{\mathtt{u32}} &\quad\Rightarrow&\quad {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} {\mathsf{max}}{\mathsf{\_}}{\mathsf{u}} \\ &&|&
-\mathtt{0xFD}~~123{:}{\mathtt{u32}} &\quad\Rightarrow&\quad {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} \mathsf{avgr\_u} \\ &&|&
+\mathtt{0xFD}~~123{:}{\mathtt{u32}} &\quad\Rightarrow&\quad {\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}} {.} {\mathsf{avgr}}{\mathsf{\_}}{\mathsf{u}} \\ &&|&
 \mathtt{0xFD}~~124{:}{\mathtt{u32}} &\quad\Rightarrow&\quad {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} {{\mathsf{extadd\_pairwise}}{\mathsf{\_}}{\mathsf{s}}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}}} \\ &&|&
 \mathtt{0xFD}~~125{:}{\mathtt{u32}} &\quad\Rightarrow&\quad {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} {{\mathsf{extadd\_pairwise}}{\mathsf{\_}}{\mathsf{u}}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}}} \\ &&|&
 \mathtt{0xFD}~~128{:}{\mathtt{u32}} &\quad\Rightarrow&\quad {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{abs} \\ &&|&
 \mathtt{0xFD}~~129{:}{\mathtt{u32}} &\quad\Rightarrow&\quad {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{neg} \\ &&|&
-\mathtt{0xFD}~~130{:}{\mathtt{u32}} &\quad\Rightarrow&\quad {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{q{\scriptstyle 15}mulr\_sat\_s} \\ &&|&
+\mathtt{0xFD}~~130{:}{\mathtt{u32}} &\quad\Rightarrow&\quad {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} {\mathsf{q{\scriptstyle 15}mulr\_sat}}{\mathsf{\_}}{\mathsf{s}} \\ &&|&
 \mathtt{0xFD}~~131{:}{\mathtt{u32}} &\quad\Rightarrow&\quad {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{all\_true} \\ &&|&
 \mathtt{0xFD}~~132{:}{\mathtt{u32}} &\quad\Rightarrow&\quad {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}{.}\mathsf{bitmask} \\ &&|&
 \mathtt{0xFD}~~133{:}{\mathtt{u32}} &\quad\Rightarrow&\quad {{\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}}{.}\mathsf{narrow}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{\mathsf{{\scriptstyle 4}}}}{\mathsf{\_}}{\mathsf{s}} \\ &&|&
@@ -9665,7 +9665,7 @@ $$
 \mathtt{0xFD}~~151{:}{\mathtt{u32}} &\quad\Rightarrow&\quad {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} {\mathsf{min}}{\mathsf{\_}}{\mathsf{u}} \\ &&|&
 \mathtt{0xFD}~~152{:}{\mathtt{u32}} &\quad\Rightarrow&\quad {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} {\mathsf{max}}{\mathsf{\_}}{\mathsf{s}} \\ &&|&
 \mathtt{0xFD}~~153{:}{\mathtt{u32}} &\quad\Rightarrow&\quad {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} {\mathsf{max}}{\mathsf{\_}}{\mathsf{u}} \\ &&|&
-\mathtt{0xFD}~~155{:}{\mathtt{u32}} &\quad\Rightarrow&\quad {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} \mathsf{avgr\_u} \\ &&|&
+\mathtt{0xFD}~~155{:}{\mathtt{u32}} &\quad\Rightarrow&\quad {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} {\mathsf{avgr}}{\mathsf{\_}}{\mathsf{u}} \\ &&|&
 \mathtt{0xFD}~~156{:}{\mathtt{u32}} &\quad\Rightarrow&\quad {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} {{\mathsf{extmul}}{\mathsf{\_}}{\mathsf{s}}{\mathsf{\_}}{\mathsf{low}}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}}} \\ &&|&
 \mathtt{0xFD}~~157{:}{\mathtt{u32}} &\quad\Rightarrow&\quad {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} {{\mathsf{extmul}}{\mathsf{\_}}{\mathsf{s}}{\mathsf{\_}}{\mathsf{high}}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}}} \\ &&|&
 \mathtt{0xFD}~~158{:}{\mathtt{u32}} &\quad\Rightarrow&\quad {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{\mathsf{{\scriptstyle 8}}} {.} {{\mathsf{extmul}}{\mathsf{\_}}{\mathsf{u}}{\mathsf{\_}}{\mathsf{low}}}{\mathsf{\_}}{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{\mathsf{{\scriptstyle 16}}}} \\ &&|&
