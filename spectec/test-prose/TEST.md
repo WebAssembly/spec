@@ -2666,13 +2666,13 @@ vbinop (lanet_u1 X N) vbino_u0 v128_1 v128_2
   c. Let lane_2* be $lanes_((Jnn X N), v128_2).
   d. Let v128 be $invlanes_((Jnn X N), $imul($lsize(Jnn), lane_1, lane_2)*).
   e. Return [v128].
-5. If ((vbino_u0 is AVGR_U) and the type of lanet_u1 is Jnn), then:
+5. If ((vbino_u0 is AVGR) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
   b. Let lane_1* be $lanes_((Jnn X N), v128_1).
   c. Let lane_2* be $lanes_((Jnn X N), v128_2).
   d. Let v128 be $invlanes_((Jnn X N), $iavgr_u($lsize(Jnn), lane_1, lane_2)*).
   e. Return [v128].
-6. If ((vbino_u0 is Q15MULR_SAT_S) and the type of lanet_u1 is Jnn), then:
+6. If ((vbino_u0 is Q15MULR_SAT) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
   b. Let lane_1* be $lanes_((Jnn X N), v128_1).
   c. Let lane_2* be $lanes_((Jnn X N), v128_2).
@@ -6843,13 +6843,13 @@ vbinop (lanet_u1 X N) vbino_u0 v128_1 v128_2
   c. Let lane_2* be $lanes_((Jnn X N), v128_2).
   d. Let v128 be $invlanes_((Jnn X N), $imul($lsize(Jnn), lane_1, lane_2)*).
   e. Return [v128].
-5. If ((vbino_u0 is AVGR_U) and the type of lanet_u1 is Jnn), then:
+5. If ((vbino_u0 is AVGR) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
   b. Let lane_1* be $lanes_((Jnn X N), v128_1).
   c. Let lane_2* be $lanes_((Jnn X N), v128_2).
   d. Let v128 be $invlanes_((Jnn X N), $iavgr_u($lsize(Jnn), lane_1, lane_2)*).
   e. Return [v128].
-6. If ((vbino_u0 is Q15MULR_SAT_S) and the type of lanet_u1 is Jnn), then:
+6. If ((vbino_u0 is Q15MULR_SAT) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
   b. Let lane_1* be $lanes_((Jnn X N), v128_1).
   c. Let lane_2* be $lanes_((Jnn X N), v128_2).
