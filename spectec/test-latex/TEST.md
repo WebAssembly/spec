@@ -1619,6 +1619,13 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
+{\bigoplus}\, \epsilon &=& \epsilon \\
+{\bigoplus}\, ({w^\ast})~{({{w'}^\ast})^\ast} &=& {w^\ast}~{\bigoplus}\, {({{w'}^\ast})^\ast} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
 \epsilon~{\mathrm{disjoint}} &=& \mathsf{true} \\
 w~{{w'}^\ast}~{\mathrm{disjoint}} &=& {\neg(w \in {{w'}^\ast})} \land {{w'}^\ast}~{\mathrm{disjoint}} \\
 \end{array}

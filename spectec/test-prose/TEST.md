@@ -1421,24 +1421,6 @@ group_bytes_by n byte*
 2. If (n' ≥ n), then:
   a. Return [byte*[0 : n]] ++ $group_bytes_by(n, byte*[n : (n' - n)]).
 3. Return [].
-
-execution_of_ARRAY.NEW_DATA x y
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If $expanddt($type(z, x)) is of the case ARRAY, then:
-  a. Let (ARRAY y_0) be $expanddt($type(z, x)).
-  b. Let (mut, zt) be y_0.
-  c. If ((i + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
-    1) Trap.
-  d. Let cnn be $cunpack(zt).
-  e. Let b* be $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)].
-  f. Let gb* be $group_bytes_by(($zsize(zt) / 8), b*).
-  g. Let c^n be $inverse_of_ibytes($zsize(zt), gb)*.
-  h. Push the values (cnn.CONST c)^n to the stack.
-  i. Execute the instruction (ARRAY.NEW_FIXED x n).
 == Complete.
 Generating prose for Wasm 2.0...
 watsup 0.4 generator
@@ -4110,24 +4092,6 @@ group_bytes_by n byte*
 2. If (n' ≥ n), then:
   a. Return [byte*[0 : n]] ++ $group_bytes_by(n, byte*[n : (n' - n)]).
 3. Return [].
-
-execution_of_ARRAY.NEW_DATA x y
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If $expanddt($type(z, x)) is of the case ARRAY, then:
-  a. Let (ARRAY y_0) be $expanddt($type(z, x)).
-  b. Let (mut, zt) be y_0.
-  c. If ((i + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
-    1) Trap.
-  d. Let cnn be $cunpack(zt).
-  e. Let b* be $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)].
-  f. Let gb* be $group_bytes_by(($zsize(zt) / 8), b*).
-  g. Let c^n be $inverse_of_ibytes($zsize(zt), gb)*.
-  h. Push the values (cnn.CONST c)^n to the stack.
-  i. Execute the instruction (ARRAY.NEW_FIXED x n).
 == Complete.
 Generating prose for Wasm 3.0...
 watsup 0.4 generator
@@ -5357,6 +5321,12 @@ concat_ X_u0*
   a. Return [].
 2. Let [w*] ++ w'** be X_u0*.
 3. Return w* ++ $concat_(w'**).
+
+concat_uniform_length X_u0* n
+1. If (X_u0* is []), then:
+  a. Return [].
+2. Let [w*] ++ w'** be X_u0*.
+3. Return w* ++ $concat_uniform_length(w'**, n).
 
 disjoint_ X_u0*
 1. If (X_u0* is []), then:
@@ -8244,8 +8214,8 @@ execution_of_ARRAY.NEW_DATA x y
 8. Let (mut, zt) be y_0.
 9. If ((i + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
   a. Trap.
-10. Assert: Due to validation, (|$concat_^-1($data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)])| is n).
-11. Let tmp* be $concat_^-1($data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)]).
+10. Assert: Due to validation, (|$concat_uniform_length_0^-1(($zsize(zt) / 8), $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)])| is n).
+11. Let tmp* be $concat_uniform_length_0^-1(($zsize(zt) / 8), $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)]).
 12. Let c* be $zbytes__1^-1(zt, tmp)*.
 13. Push the values $const($cunpack(zt), $cunpacknum_(zt, c))^n to the stack.
 14. Execute the instruction (ARRAY.NEW_FIXED x n).
@@ -8905,23 +8875,5 @@ group_bytes_by n byte*
 2. If (n' ≥ n), then:
   a. Return [byte*[0 : n]] ++ $group_bytes_by(n, byte*[n : (n' - n)]).
 3. Return [].
-
-execution_of_ARRAY.NEW_DATA x y
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If $expanddt($type(z, x)) is of the case ARRAY, then:
-  a. Let (ARRAY y_0) be $expanddt($type(z, x)).
-  b. Let (mut, zt) be y_0.
-  c. If ((i + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
-    1) Trap.
-  d. Let cnn be $cunpack(zt).
-  e. Let b* be $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)].
-  f. Let gb* be $group_bytes_by(($zsize(zt) / 8), b*).
-  g. Let c^n be $inverse_of_ibytes($zsize(zt), gb)*.
-  h. Push the values (cnn.CONST c)^n to the stack.
-  i. Execute the instruction (ARRAY.NEW_FIXED x n).
 == Complete.
 ```

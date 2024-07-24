@@ -1166,6 +1166,7 @@ warning: definition `clos_deftypes` was never spliced
 warning: definition `clos_moduletype` was never spliced
 warning: definition `clos_valtype` was never spliced
 warning: definition `concat_` was never spliced
+warning: definition `concat_uniform_length` was never spliced
 warning: definition `const` was never spliced
 warning: definition `cont` was never spliced
 warning: definition `convert__` was never spliced
@@ -1444,7 +1445,6 @@ warning: definition `wrap__` was never spliced
 warning: definition `zbytes_` was never spliced
 warning: definition `zero` was never spliced
 warning: definition `zsize` was never spliced
-warning: rule prose `exec/array.new_data` was never spliced
 warning: rule prose `exec/data.drop` was never spliced
 warning: rule prose `exec/memory.grow` was never spliced
 warning: rule prose `exec/vstore_lane` was never spliced
@@ -1753,6 +1753,7 @@ warning: definition prose `clos_deftypes` was never spliced
 warning: definition prose `clos_moduletype` was never spliced
 warning: definition prose `clos_valtype` was never spliced
 warning: definition prose `concat_` was never spliced
+warning: definition prose `concat_uniform_length` was never spliced
 warning: definition prose `const` was never spliced
 warning: definition prose `cont` was never spliced
 warning: definition prose `cpacknum_` was never spliced

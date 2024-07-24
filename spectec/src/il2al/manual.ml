@@ -120,7 +120,7 @@ let array_new_data =
     ]
   ) $ no_region
 
-let manual_algos = [eval_expr; group_bytes_by; array_new_data;]
+let manual_algos = [eval_expr; group_bytes_by;]
 
 let return_instrs_of_instantiate config =
   let store, frame, rhs = config in
