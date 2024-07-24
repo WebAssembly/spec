@@ -407,7 +407,7 @@ let rec enhance_readability instrs =
   let walk_config =
     {
       Walk.default_config with
-      pre_expr = composite remove_sub simplify_record_concat |> composite if_not_defined;
+      pre_expr = simplify_record_concat |> composite if_not_defined;
       post_instr =
         unify_if_tail @@ (lift swap_if) @@ early_return @@ (lift merge_three_branches);
     } in

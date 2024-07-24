@@ -27,6 +27,69 @@ let env inputs outputs render_latex el prose : env =
   let env = { prose; render_latex; symbol; macro; } in
   env
 
+(* Helpers *)
+
+let indent = "   "
+
+let rec repeat str num =
+  if num = 0 then ""
+  else if Int.rem num 2 = 0 then repeat (str ^ str) (num / 2)
+  else str ^ repeat (str ^ str) (num / 2)
+
+let math = ":math:"
+
+let render_math s =
+  if (String.length s > 0) then math ^ sprintf "`%s`" s
+  else s
+
+let render_opt prefix stringifier suffix = function
+  | None -> ""
+  | Some x -> prefix ^ stringifier x ^ suffix
+
+let render_list stringifier sep = function
+  | [] -> ""
+  | hd :: tl -> List.fold_left (fun acc x -> acc ^ sep ^ (stringifier x)) (stringifier hd) tl
+
+let render_order index depth =
+  index := !index + 1;
+
+  let num_idx = if !index = 1 then string_of_int !index else "#" in
+  let alp_idx = if !index = 1 then Char.escaped (Char.chr (96 + !index)) else "#" in
+
+  match depth mod 4 with
+  | 0 -> num_idx ^ "."
+  | 1 -> alp_idx ^ "."
+  | 2 -> num_idx ^ ")"
+  | 3 -> alp_idx ^ ")"
+  | _ -> assert false
+
+(* Translation from Al inverse call exp to Al binary exp *)
+
+let al_invcalle_to_al_bine e id nl el =
+  let efree = (match e.it with Al.Ast.TupE el -> el | _ -> [ e ]) in
+  let ebound, erhs =
+    let nbound = List.length nl - List.length efree in
+    Util.Lib.List.split nbound el
+  in
+  let eargs, _, _ =
+    List.fold_left
+      (fun (eargs, efree, ebound) n ->
+        match n with
+        | Some _ -> (match efree with
+          | e :: efree -> eargs @ [ e ], efree, ebound
+          | _ -> assert false)
+        | None -> (match ebound with
+          | e :: ebound -> eargs @ [ e ], efree, ebound
+          | _ -> assert false))
+      ([], efree, ebound) nl
+  in
+  let elhs = Al.Al_util.callE (id, eargs) in
+  let erhs = (match erhs with
+    | [ e ] -> e
+    | _ -> Al.Al_util.tupE erhs)
+  in
+  elhs, erhs
+
 (* Translation from Al exp to El exp *)
 
 let (let*) = Option.bind
@@ -97,26 +160,6 @@ and al_to_el_expr expr =
       Some (El.Ast.TupE elel)
     | Al.Ast.CallE (id, el) ->
       let elid = id $ no_region in
-      let* elel = al_to_el_exprs el in
-      let elel = List.map
-        (fun ele ->
-          let elarg = El.Ast.ExpA ele in
-          (ref elarg) $ no_region)
-        elel
-      in
-      Some (El.Ast.CallE (elid, elel))
-    | Al.Ast.InvCallE (id, nl, el) ->
-      let ($~) at it = it $ at in
-      let elid =
-        if List.length nl = 0 then
-          (id^"^-1") $ no_region
-        else
-          nl
-          |> List.map string_of_int
-          |> List.fold_left (^) ""
-          |> sprintf "%s_%s^-1" id
-          |> ($~) no_region
-      in
       let* elel = al_to_el_exprs el in
       let elel = List.map
         (fun ele ->
@@ -213,37 +256,6 @@ and al_to_el_record record =
       Some (expfield @ [ elelem ]))
     record (Some [])
 
-(* Helpers *)
-
-let indent = "   "
-
-let rec repeat str num =
-  if num = 0 then ""
-  else if Int.rem num 2 = 0 then repeat (str ^ str) (num / 2)
-  else str ^ repeat (str ^ str) (num / 2)
-
-let math = ":math:"
-
-let render_math s =
-  if (String.length s > 0) then math ^ sprintf "`%s`" s
-  else s
-
-let render_opt prefix stringifier suffix = function
-  | None -> ""
-  | Some x -> prefix ^ stringifier x ^ suffix
-
-let render_order index depth =
-  index := !index + 1;
-
-  let num_idx = if !index = 1 then string_of_int !index else "#" in
-  let alp_idx = if !index = 1 then Char.escaped (Char.chr (96 + !index)) else "#" in
-
-  match depth mod 4 with
-  | 0 -> num_idx ^ "."
-  | 1 -> alp_idx ^ "."
-  | 2 -> num_idx ^ ")"
-  | 3 -> alp_idx ^ ")"
-  | _ -> assert false
 
 (* Operators *)
 
@@ -282,7 +294,7 @@ let render_al_binop = function
 let render_atom env a =
   let ela = al_to_el_atom a in
   let sela = Backend_latex.Render.render_atom env.render_latex ela in
-  render_math sela 
+  render_math sela
 
 
 (* Expressions and Paths *)
@@ -346,6 +358,23 @@ and render_expr' env expr =
     (match dir with
     | Al.Ast.Front -> sprintf "%s with %s prepended by %s" se1 sps se2
     | Al.Ast.Back -> sprintf "%s with %s appended by %s" se1 sps se2)
+  | Al.Ast.InvCallE (id, nl, el) ->
+    let e =
+      if id = "lsizenn" || id = "lsizenn1" || id = "lsizenn2" then Al.Al_util.varE "N"
+      else if List.length nl = 1 then Al.Al_util.varE "fresh"
+      else
+        let el =
+          nl
+          |> List.filter_map (Option.map (fun x -> Al.Al_util.varE ("fresh_" ^ (string_of_int x))))
+        in
+        Al.Al_util.tupE el
+    in
+    let elhs, erhs = al_invcalle_to_al_bine e id nl el in
+    sprintf "%s for which %s %s %s"
+      (render_expr env e)
+      (render_expr env elhs)
+      (render_math "=")
+      (render_expr env erhs)
   | Al.Ast.IterE (e, ids, iter) when al_to_el_expr e = None ->
     let se = render_expr env e in
     let ids = Al.Al_util.tupE (List.map Al.Al_util.varE ids) in
@@ -417,7 +446,7 @@ and render_path env path =
   | Al.Ast.SliceP (e1, e2) ->
     let se1 = render_expr env e1 in
     let se2 = render_expr env e2 in
-    sprintf "the slice from %s to %s" se1 se2 
+    sprintf "the slice from %s to %s" se1 se2
   | Al.Ast.DotP a ->
     sprintf "the field %s" (render_atom env a)
 
@@ -441,31 +470,35 @@ let rec render_prose_instr env depth = function
     sprintf "* %s must be contained in %s."
       (String.capitalize_ascii (render_expr env e1))
       (render_expr env e2)
-  | MustValidI (e1, e2, e3) ->
-    sprintf "* Under the context %s, %s must be valid%s."
+  | IsValidI (c_opt, e, es) ->
+    sprintf "* %s%s is valid%s."
+      (render_opt "Under the context " (render_expr env) ", " c_opt)
+      (render_expr env e)
+      (if es = [] then "" else " with type " ^ render_list (render_expr env) " and " es)
+  | MatchesI (e1, e2) ->
+    sprintf "* %s matches %s."
       (render_expr env e1)
       (render_expr env e2)
-      (render_opt " with type " (render_expr env) "" e3)
-  | MustMatchI (e1, e2) ->
-    sprintf "* %s must match %s."
-      (String.capitalize_ascii (render_expr env e1))
-      (render_expr env e2)
-  | IsValidI e ->
-    sprintf "* The instruction is valid%s."
-      (render_opt " with type " (render_expr env) "" e)
+  | IsConstI (c_opt, e) ->
+    sprintf "* %s%s is const."
+      (render_opt "Under the context " (render_expr env) ", " c_opt)
+      (render_expr env e)
   | IfI (c, is) ->
     sprintf "* If %s,%s"
       (render_expr env c)
       (render_prose_instrs env (depth + 1) is)
-  | ForallI (e1, e2, is) ->
-    sprintf "* For all %s in %s,%s"
-      (render_expr env e1)
-      (render_expr env e2)
+  | ForallI (iters, is) ->
+    let render_iter env (e1, e2) = (render_expr env e1) ^ " in " ^ (render_expr env e2) in
+    let render_iters env iters = List.map (render_iter env) iters |> String.concat " and " in
+    sprintf "* For all %s,%s"
+      (render_iters env iters)
       (render_prose_instrs env (depth + 1) is)
   | EquivI (c1, c2) ->
     sprintf "* %s if and only if %s."
       (String.capitalize_ascii (render_expr env c1))
       (render_expr env c2)
+  | EitherI _ ->
+    sprintf "* Either: (TODO)"
   | YetI s ->
     sprintf "* YetI: %s." s
 
@@ -554,6 +587,22 @@ let rec render_al_instr env algoname index depth instr =
   | Al.Ast.PopAllI e ->
     sprintf "%s Pop all values %s from the top of the stack." (render_order index depth)
       (render_expr env e)
+  | Al.Ast.LetI (e, { it = Al.Ast.IterE ({ it = Al.Ast.InvCallE (id, nl, el); _ }, ids, iter); _ }) ->
+    let elhs, erhs = al_invcalle_to_al_bine e id nl el in
+    let ebin = Al.Al_util.binE (Al.Ast.EqOp, elhs, erhs) in
+    let eiter = Al.Al_util.iterE (ebin, ids, iter) in
+    sprintf "%s Let %s be the result for which %s."
+      (render_order index depth)
+      (render_expr env e)
+      (render_expr env eiter)
+  | Al.Ast.LetI (e, { it = Al.Ast.InvCallE (id, nl, el); _ }) ->
+    let elhs, erhs = al_invcalle_to_al_bine e id nl el in
+    sprintf "%s Let %s be the result for which %s %s %s."
+      (render_order index depth)
+      (render_expr env e)
+      (render_expr env elhs)
+      (render_math "=")
+      (render_expr env erhs)
   | Al.Ast.LetI (n, e) ->
     sprintf "%s Let %s be %s." (render_order index depth) (render_expr env n)
       (render_expr env e)
@@ -594,7 +643,7 @@ and render_al_instrs env algoname depth instrs =
 let render_atom_title env name params =
   (* TODO a workaround, for algorithms named label or name
      that are defined as LABEL_ or FRAME_ in the dsl *)
-  let name', typ = name in 
+  let name', typ = name in
   let name' =
     match name' with
     | El.Atom.Atom "label" -> El.Atom.Atom "LABEL_"
@@ -612,7 +661,7 @@ let render_atom_title env name params =
 let render_funcname_title env fname params =
   render_expr env (Al.Al_util.callE (fname, params) ~at:no_region)
 
-let render_pred env name params instrs =
+let _render_pred env name params instrs =
   let title = render_atom_title env name params in
   title ^ "\n" ^
   String.make (String.length title) '.' ^ "\n" ^
@@ -632,8 +681,7 @@ let render_func env fname params instrs =
   render_al_instrs env fname 0 instrs
 
 let render_def env = function
-  | Pred (name, params, instrs) ->
-    "\n" ^ render_pred env name params instrs ^ "\n\n"
+  | Iff _ -> "TODO: render_iff"
   | Algo algo -> (match algo.it with
     | Al.Ast.RuleA (name, params, instrs) ->
       "\n" ^ render_rule env name params instrs ^ "\n\n"

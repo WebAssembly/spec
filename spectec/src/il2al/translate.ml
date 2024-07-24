@@ -16,6 +16,18 @@ struct
 end
 
 
+(* Global env for eval *)
+let env: Il.Eval.env ref =
+  ref Il.Eval.{ vars=Map.empty; typs=Map.empty; defs=Map.empty }
+
+let sub_typ typ1 typ2 =
+  match typ1.it, typ2.it with
+  | Il.VarT ({ it="nat"; _ }, []), Il.VarT ({ it="int"; _ }, [])
+  | _, Il.VarT ({ it="TODO"; _ }, []) -> true
+  | Il.VarT ({ it="TODO"; _ }, []), _ -> false
+  | _ -> Il.Eval.sub_typ !env typ1 typ2
+
+
 (* Errors *)
 
 let error at msg = Error.error at "prose translation" msg
@@ -453,6 +465,8 @@ let rec translate_rhs exp =
   | _ -> error_exp exp "expression on rhs of reduction"
 
 
+(* Handle pattern matching *)
+
 let lhs_id_ref = ref 0
 let lhs_prefix = "y_"
 let init_lhs_id () = lhs_id_ref := 0
@@ -461,6 +475,12 @@ let get_lhs_name () =
   lhs_id_ref := (lhs_id + 1);
   varE (lhs_prefix ^ (lhs_id |> string_of_int))
 
+(* Helper functions *)
+let contains_ids ids expr =
+  ids
+  |> IdSet.of_list
+  |> IdSet.disjoint (free_expr expr)
+  |> not
 
 let rec contains_name e = match e.it with
   | VarE _ | SubE _ -> true
@@ -481,9 +501,7 @@ let contains_diff target_ns e =
 
 let handle_partial_bindings lhs rhs ids =
   match lhs.it with
-  (* TODO: Make this actually consider the targets *)
-  | CallE (_, _) ->
-    lhs, rhs, []
+  | CallE (_, _) -> lhs, rhs, []
   | _ ->
     let conds = ref [] in
     let target_ns = IdSet.of_list ids in
@@ -492,7 +510,8 @@ let handle_partial_bindings lhs rhs ids =
         e
       else (
         let new_e = get_lhs_name () in
-        conds := !conds @ [ binE (EqOp, new_e, e) ];
+        let typ = Il.BoolT $ no_region in
+        conds := !conds @ [ BinE (EqOp, new_e, e) $$ no_region % typ ];
         new_e
       )
     ) in
@@ -506,40 +525,51 @@ let handle_partial_bindings lhs rhs ids =
 let rec translate_bindings ids bindings =
   List.fold_right (fun (l, r) cont ->
     match l with
-    | _ when IdSet.is_empty (free_expr l) -> [ ifI (binE (EqOp, r, l), [], []) ]
+    | _ when IdSet.is_empty (free_expr l) ->
+      let typ = Il.BoolT $ no_region in
+      [ ifI (BinE (EqOp, r, l) $$ no_region % typ, [], []) ]
     | _ -> insert_instrs cont (handle_special_lhs l r ids)
   ) bindings []
 
-and handle_inverse_function lhs rhs free_ids =
-  (* Helper functions *)
-  let contains_ids ids expr =
-    ids
-    |> IdSet.of_list
-    |> IdSet.disjoint (free_expr expr)
-    |> not
-  in
-  let contains_free = contains_ids free_ids in
-  let rhs2args e =
-    match e.it with
-    | TupE el -> el
-    | _ -> [e]
-  in
-  let args2lhs args = if List.length args = 1 then List.hd args else tupE args in
+and call_lhs_to_inverse_call_rhs lhs rhs free_ids =
 
-  (* Get function name and arguments *)
+  (* Get CallE fields *)
+
   let f, args =
     match lhs.it with
     | CallE (f, args) -> f, args
     | _ -> assert (false);
   in
 
+  (* Helper functions *)
+
+  let contains_free = contains_ids free_ids in
+  let rhs2args e =
+    match e.it with
+    | TupE el -> el
+    | _ -> [e]
+  in
+  let args2lhs args =
+    if List.length args = 1 then
+      List.hd args
+    else
+      let no_name = Il.VarE ("_" $ no_region) $$ no_region % (Il.TextT $ no_region) in
+      let typ = Il.TupT (List.map (fun e -> no_name, e.note) args) $ no_region in
+      TupE args $$ no_region % typ
+  in
+
   (* All arguments are free *)
+
   if List.for_all contains_free args then
     let new_lhs = args2lhs args in
-    let new_rhs = invCallE (f, [], rhs2args rhs) ~at:lhs.at ~note:lhs.note in
-    handle_special_lhs new_lhs new_rhs free_ids
+    let indices = List.init (List.length args) Option.some in
+    let new_rhs =
+      InvCallE (f, indices, rhs2args rhs) $$ lhs.at % new_lhs.note
+    in
+    new_lhs, new_rhs
 
-  (* Some arguments are free *)
+  (* Some arguments are free  *)
+
   else if List.exists contains_free args then
     (* Distinguish free arguments and bound arguments *)
     let free_args_with_index, bound_args =
@@ -551,42 +581,154 @@ and handle_inverse_function lhs rhs free_ids =
       |> List.split
     in
     let bound_args = List.filter_map (fun x -> x) bound_args in
-    let free_args, indices =
+    let indices = List.map (Option.map snd) free_args_with_index in
+    let free_args =
       free_args_with_index
-      |> List.filter_map (fun x -> x)
-      |> List.split
+      |> List.filter_map (Option.map fst)
     in
 
     (* Free argument become new lhs & InvCallE become new rhs *)
     let new_lhs = args2lhs free_args in
-    let new_rhs = invCallE (f, indices, bound_args @ rhs2args rhs) ~at:lhs.at ~note:lhs.note in
-
-    (* Recursively translate new_lhs and new_rhs *)
-    handle_special_lhs new_lhs new_rhs free_ids
+    let new_rhs =
+      InvCallE (f, indices, bound_args @ rhs2args rhs) $$ lhs.at % new_lhs.note
+    in
+    new_lhs, new_rhs
 
   (* No argument is free *)
+
   else
     Print.string_of_expr lhs
     |> sprintf "lhs expression %s doesn't contain free variable"
     |> error lhs.at
 
+and handle_call_lhs lhs rhs free_ids =
+
+  (* Helper function *)
+
+  let matches typ1 typ2 = sub_typ typ1 typ2 || sub_typ typ2 typ1 in
+
+  (* LHS type and RHS type are the same: normal inverse function *)
+
+  if matches lhs.note rhs.note then
+    let new_lhs, new_rhs = call_lhs_to_inverse_call_rhs lhs rhs free_ids in
+    handle_special_lhs new_lhs new_rhs free_ids
+
+  (* RHS has more iter: it is in map translation process *)
+
+  else
+
+    let rec get_base_typ_and_iters typ1 typ2 =
+      match typ1.it, typ2.it with
+      | _, Il.IterT (typ2', iter) when not (matches typ1 typ2) ->
+        let base_typ, iters = get_base_typ_and_iters typ1 typ2' in
+        base_typ, iter :: iters
+      | _, _ when matches typ1 typ2 -> typ2, []
+      | _ ->
+        error lhs.at
+          (sprintf "lhs type %s mismatch with rhs type %s"
+            (Il.string_of_typ lhs.note) (Il.string_of_typ rhs.note)
+          )
+    in
+
+    let base_typ, map_iters =  get_base_typ_and_iters lhs.note rhs.note in
+    (* TODO: Better name using type *)
+    let var_name = "tmp" in
+    let var_expr = VarE var_name $$ no_region % base_typ in
+    let to_iter_expr =
+      List.fold_right
+        (fun iter e ->
+          let iter_typ = Il.IterT (e.note, iter) $ no_region in
+          IterE (e, [var_name], translate_iter iter) $$ e.at % iter_typ
+        )
+        map_iters
+    in
+
+    let new_lhs, new_rhs = call_lhs_to_inverse_call_rhs lhs var_expr free_ids in
+    (* Introduce new variable for map *)
+    let let_instr = letI (to_iter_expr var_expr, rhs) in
+    let_instr :: handle_special_lhs new_lhs (to_iter_expr new_rhs) free_ids
+
+and handle_iter_lhs lhs rhs free_ids =
+
+  (* Get IterE fields *)
+
+  let inner_lhs, iter_ids, iter =
+    match lhs.it with
+    | IterE (inner_lhs, iter_ids, iter) ->
+      inner_lhs, iter_ids, iter
+    | _ -> assert (false);
+  in
+
+  (* Helper functions *)
+
+  let iter_ids_of (expr: expr): string list =
+    expr
+    |> free_expr
+    |> IdSet.inter (IdSet.of_list iter_ids)
+    |> IdSet.elements
+  in
+  let walk_expr (walker: Walk.walker) (expr: expr): expr =
+    if contains_ids iter_ids expr then
+      let iter', typ =
+        match iter with
+        | Opt -> iter, Il.IterT (expr.note, Il.Opt) $ no_region
+        | ListN (expr', None) when not (contains_ids free_ids expr') ->
+          List, Il.IterT (expr.note, Il.List) $ no_region
+        | _ -> iter, Il.IterT (expr.note, Il.List) $ no_region
+      in
+      IterE (expr, iter_ids_of expr, iter') $$ lhs.at % typ
+    else
+      Walk.base_walker.walk_expr walker expr
+  in
+
+  (* Translate inner lhs *)
+
+  let instrs = handle_special_lhs inner_lhs rhs free_ids in
+
+  (* Iter injection *)
+
+  let walker = { Walk.base_walker with walk_expr } in
+  let instrs' = List.map (walker.walk_instr walker) instrs in
+
+  (* Add ListN condition *)
+  match iter with
+  | ListN (expr, None) when not (contains_ids free_ids expr) ->
+    let typ = Il.BoolT $ no_region in
+    let at = over_region [ lhs.at; rhs.at ] in
+    assertI (BinE (EqOp, lenE rhs, expr) $$ at % typ) :: instrs'
+  | _ -> instrs'
 
 and handle_special_lhs lhs rhs free_ids =
 
+  let boolt = Il.BoolT $ no_region in
   let at = over_region [ lhs.at; rhs.at ] in
   match lhs.it with
   (* Handle inverse function call *)
-  | CallE _ -> handle_inverse_function lhs rhs free_ids
+  | CallE _ -> handle_call_lhs lhs rhs free_ids
+  (* Handle iterator *)
+  | IterE _ -> handle_iter_lhs lhs rhs free_ids
+  (* Handle subtyping *)
+  | SubE (s, t) ->
+    let rec inject_hasType expr =
+      match expr.it with
+      | IterE (inner_expr, ids, iter) ->
+        IterE (inject_hasType inner_expr, ids, iter) $$ expr.at % boolt
+      | _ -> HasTypeE (expr, t) $$ rhs.at % boolt
+    in
+    [ ifI (
+      inject_hasType rhs,
+      [ letI (VarE s $$ lhs.at % lhs.note, rhs) ~at:at ],
+      []
+    )]
   (* Normal cases *)
   | CaseE (tag, es) ->
     let bindings, es' = extract_non_names es in
-    [
-      ifI (
-        isCaseOfE (rhs, tag),
-        letI (caseE (tag, es') ~at:lhs.at, rhs) ~at:at :: translate_bindings free_ids bindings,
-        []
-      );
-    ]
+    [ ifI (
+      IsCaseOfE (rhs, tag) $$ lhs.at % boolt,
+      letI (caseE (tag, es') ~at:lhs.at, rhs) ~at:at
+        :: translate_bindings free_ids bindings,
+      []
+      )]
   | ListE es ->
     let bindings, es' = extract_non_names es in
     if List.length es >= 2 then (* TODO: remove this. This is temporarily for a pure function returning stores *)
@@ -653,13 +795,6 @@ and handle_special_lhs lhs rhs free_ids =
             :: translate_bindings free_ids (bindings_p @ bindings_s),
           [] );
     ]
-  | SubE (s, t) ->
-    [
-      ifI
-        ( hasTypeE (rhs, t),
-          [letI (varE s ~at:lhs.at, rhs) ~at:at],
-          [] )
-    ]
   | _ -> [letI (lhs, rhs) ~at:at]
 
 let translate_letpr lhs rhs free_ids =
@@ -689,10 +824,20 @@ let translate_rulepr id exp =
       letI (rhs, callE ("eval_expr", [ lhs ])) ~at:at;
       popI (frameE (None, z));
     ]
-  | "Ref_type", [_s; ref; rt] ->
-    [ letI (rt, callE ("ref_type_of", [ ref ]) ~at:at) ~at:at ]
-  | "Reftype_sub", [_C; rt1; rt2] ->
+  (* ".*_sub" *)
+  | name, [_C; rt1; rt2]
+    when String.ends_with ~suffix:"_sub" name ->
     [ ifI (matchE (rt1, rt2) ~at:at, [], []) ~at:at ]
+  (* ".*_ok" *)
+  | name, el when String.ends_with ~suffix: "_ok" name ->
+    (match el with
+    | [_; e; t] | [e; t] -> [ assertI (callE (name, [e; t]) ~at:at) ~at:at]
+    | _ -> error_exp exp "unrecognized form of argument in rule_ok"
+    )
+  (* ".*_const" *)
+  | name, el
+    when String.ends_with ~suffix: "_const" name ->
+    [ assertI (callE (name, el) ~at:at) ~at:at]
   | _ ->
     print_yet exp.at "translate_rulepr" ("`" ^ Il.Print.string_of_exp exp ^ "`");
     [ yetI ("TODO: translate_rulepr " ^ id.it) ~at:at ]
@@ -780,8 +925,8 @@ let translate_helper partial_funcs def =
     let body =
       Transpile.merge_blocks blocks
       |> Transpile.insert_frame_binding
+      |> Walk.(walk_instrs { default_config with pre_expr = Transpile.remove_sub })
       |> Transpile.enhance_readability
-      (* |> Walk.(walk_instrs { default_config with pre_expr = Transpile.remove_sub }) *)
       |> (if List.mem id partial_funcs then Fun.id else Transpile.ensure_return)
       |> Transpile.flatten_if in
 
@@ -1082,8 +1227,8 @@ and translate_rgroup (instr_name, rgroup) =
     instrs
     |> Transpile.insert_frame_binding
     |> insert_nop
+    |> Walk.(walk_instrs { default_config with pre_expr = Transpile.remove_sub })
     |> Transpile.enhance_readability
-    (* |> Walk.(walk_instrs { default_config with pre_expr = Transpile.remove_sub }) *)
     |> Transpile.infer_assert
     |> Transpile.flatten_if
   in
@@ -1143,8 +1288,24 @@ let translate_rules il =
   (* Translate reduction group into algorithm *)
   |> List.map translate_rgroup
 
+let collect_typd env typd =
+  match typd.it with
+  | Il.TypD (id, _ps, insts) -> Il.Eval.Map.add id.it insts env
+  | _ -> env
+
+let collect_decd env typd =
+  match typd.it with
+  | Il.DecD (id, _ps, _t, clauses) -> Il.Eval.Map.add id.it clauses env
+  | _ -> env
+
+let initialize_env il =
+  let typs = List.fold_left collect_typd Il.Eval.Map.empty il in
+  let defs = List.fold_left collect_decd Il.Eval.Map.empty il in
+  env := { vars=Il.Eval.Map.empty; typs; defs }
 
 (* Entry *)
 let translate il =
-  let il = List.concat_map flatten_rec il in
-  translate_helpers il @ translate_rules il
+  initialize_env il;
+
+  let il' = il |> Animate.transform |> List.concat_map flatten_rec in
+  translate_helpers il' @ translate_rules il'

@@ -198,6 +198,7 @@ let run_command command =
     with
     | Exception.Error (at, msg, step) ->
       let msg' = msg ^ " (interpreting " ^ step ^ ")" in
+      command.at |> string_of_region |> print_endline;
       error_interpret at msg'
     | e ->
       print_endline ("- Test failed at " ^ string_of_region command.at ^

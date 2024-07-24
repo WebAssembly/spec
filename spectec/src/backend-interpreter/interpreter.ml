@@ -28,6 +28,7 @@ let try_with_error fname at stringifier f step =
   | Construct.InvalidConversion msg
   | Exception.InvalidArg msg
   | Exception.InvalidFunc msg
+  | Exception.FreeVar msg
   | Failure msg -> error at (prefix ^ msg) (stringifier step)
 
 
@@ -183,12 +184,18 @@ and check_type ty v expr =
     (sprintf "%s doesn't have type %s" (structured_string_of_value v) ty)
 
 and eval_expr env expr =
+  let rec to_bool source = function
+    | BoolV b -> b
+    | ListV _ as v -> List.for_all (to_bool source) (unwrap_listv_to_list v)
+    | _ -> fail_expr source "type mismatch for boolean value"
+  in
+
   match expr.it with
   (* Value *)
   | NumE i -> numV i
   (* Numeric Operation *)
   | UnE (MinusOp, inner_e) -> eval_expr env inner_e |> al_to_z |> Z.neg |> numV
-  | UnE (NotOp, e) -> eval_expr env e |> al_to_bool |> not |> boolV
+  | UnE (NotOp, e) -> eval_expr env e |> to_bool e |> not |> boolV
   | BinE (op, e1, e2) ->
     (match op, eval_expr env e1, eval_expr env e2 with
     | AddOp, NumV i1, NumV i2 -> Z.add i1 i2 |> numV
@@ -197,10 +204,10 @@ and eval_expr env expr =
     | DivOp, NumV i1, NumV i2 -> Z.div i1 i2 |> numV
     | ModOp, NumV i1, NumV i2 -> Z.rem i1 i2 |> numV
     | ExpOp, NumV i1, NumV i2 -> Z.pow i1 (Z.to_int i2) |> numV
-    | AndOp, BoolV b1, BoolV b2 -> boolV (b1 && b2)
-    | OrOp, BoolV b1, BoolV b2 -> boolV (b1 || b2)
-    | ImplOp, BoolV b1, BoolV b2 -> boolV (not b1 || b2)
-    | EquivOp, BoolV b1, BoolV b2 -> boolV (b1 = b2)
+    | AndOp, b1, b2 -> boolV (to_bool e1 b1 && to_bool e2 b2)
+    | OrOp, b1, b2 -> boolV (to_bool e1 b1 || to_bool e2 b2)
+    | ImplOp, b1, b2 -> boolV (not (to_bool e1 b1) || to_bool e2 b2)
+    | EquivOp, b1, b2 -> boolV (to_bool e1 b1 = to_bool e2 b2)
     | EqOp, v1, v2 -> boolV (v1 = v2)
     | NeOp, v1, v2 -> boolV (v1 <> v2)
     | LtOp, v1, v2 -> boolV (v1 < v2)
@@ -691,20 +698,20 @@ and create_context (name: string) (args: value list) : AlContext.mode =
 
   AlContext.al (name, body, env)
 
-and call_func (fname: string) (args: value list) : value option =
+and call_func (name: string) (args: value list) : value option =
   (* Module & Runtime *)
-  if bound_func fname then
-    [create_context fname args]
+  if bound_func name then
+    [create_context name args]
     |> run
     |> AlContext.get_return_value
   (* Numerics *)
-  else if Numerics.mem fname then
-    Some (Numerics.call_numerics fname args)
+  else if Numerics.mem name then
+    Some (Numerics.call_numerics name args)
   (* Manual *)
-  else if fname = "ref_type_of" then
-    Some (Manual.ref_type_of args)
+  else if Manual.mem name then
+    Some (Manual.call_func name args)
   else
-    raise (Exception.InvalidFunc ("Invalid DSL function: " ^ fname))
+    raise (Exception.InvalidFunc ("Invalid DSL function: " ^ name))
 
 
 (* Wasm interpreter entry *)

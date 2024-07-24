@@ -906,7 +906,6 @@ rule Instr_ok/vshuffle:
 rule Instr_ok/vsplat:
   C |- VSPLAT sh : $unpackshape(sh) -> V128
 
-;; TODO(1, rossberg): This rule (or the abstract syntax) is too liberal, since some combinations are illegal
 rule Instr_ok/vextract_lane:
   C |- VEXTRACT_LANE sh sx? i : V128 -> $unpackshape(sh)
   -- if i < $dim(sh)

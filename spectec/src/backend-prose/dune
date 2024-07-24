@@ -7,5 +7,6 @@
     gen
     render
     macro
-    symbol)
+    symbol
+    langs)
 )
