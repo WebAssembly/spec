@@ -842,8 +842,10 @@ grammar Bexportsec : export* hint(desc "export section") =
 grammar Bstart : start* =
   | x:Bfuncidx => (START x)
 
-grammar Bstartsec : start* hint(desc "start section") =
-  | st*:Bsection_(8, Bstart) => st*
+syntax startopt hint(show start?) = start*  ;; HACK
+
+grammar Bstartsec : start? hint(desc "start section") =
+  | startopt:Bsection_(8, Bstart) => $opt_(start, startopt)
 
 
 ;; Element section
@@ -906,8 +908,10 @@ grammar Bdatasec : data* hint(desc "data section") =
 grammar Bdatacnt : u32* hint(desc "data count") =
   | n:Bu32 => n
 
-grammar Bdatacntsec : u32* hint(desc "data count section") =
-  | n*:Bsection_(12, Bdatacnt) => n*
+syntax nopt hint(show n?) = u32*  ;; HACK
+
+grammar Bdatacntsec : u32? hint(desc "data count section") =
+  | nopt:Bsection_(12, Bdatacnt) => $opt_(u32, nopt)
 
 
 ;; Modules
@@ -925,7 +929,7 @@ grammar Bmodule : module =
     Bcustomsec*
 
 
-    typeidx^n:Bfuncsec
+    typeidx*:Bfuncsec
     Bcustomsec*
 
 
@@ -945,7 +949,7 @@ grammar Bmodule : module =
     Bcustomsec*
 
 
-    start*:Bstartsec
+    start?:Bstartsec
     Bcustomsec*
 
 
@@ -953,17 +957,18 @@ grammar Bmodule : module =
     Bcustomsec*
 
 
-    m'*:Bdatacntsec
+    n?:Bdatacntsec
     Bcustomsec*
 
 
-    (local*, expr)^n:Bcodesec
+    (local*, expr)*:Bcodesec
     Bcustomsec*
 
 
-    data^m:Bdatasec
+    data*:Bdatasec
     Bcustomsec* =>
-      MODULE type* import* func^n global* table* mem* elem* data^m start* export*
-    -- if m'* = eps \/ $free_dataidx_funcs(func^n) = eps
-    -- if m = $sum(m'*)
-    -- if (func = FUNC typeidx local* expr)^n
+      MODULE type* import* func* global* table* mem* elem* data* start? export*
+    ----
+    -- (if n = |data*|)?
+    -- if n? =/= eps \/ $dataidx_funcs(func*) = eps
+    -- (if func = FUNC typeidx local* expr)*

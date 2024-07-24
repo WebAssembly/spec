@@ -81,6 +81,13 @@ def $disjoint_(syntax X, X*) : bool
   def $disjoint_{syntax X, w : X, w'* : X*}(syntax X, [w] :: w'*{w' : X}) = (~ w <- w'*{w' : X} /\ $disjoint_(syntax X, w'*{w' : X}))
 }
 
+;; 0-aux.watsup
+def $opt_(syntax X, X*) : X?
+  ;; 0-aux.watsup
+  def $opt_{syntax X}(syntax X, []) = ?()
+  ;; 0-aux.watsup
+  def $opt_{syntax X, w : X}(syntax X, [w]) = ?(w)
+
 ;; 1-syntax.watsup
 syntax list{syntax X}(syntax X) =
   | `%`{X* : X*}(X*{X : X} : X*)
@@ -1317,7 +1324,7 @@ syntax import =
 
 ;; 1-syntax.watsup
 syntax module =
-  | MODULE{type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start* : start*, export* : export*}(type*{type : type} : type*, import*{import : import} : import*, func*{func : func} : func*, global*{global : global} : global*, table*{table : table} : table*, mem*{mem : mem} : mem*, elem*{elem : elem} : elem*, data*{data : data} : data*, start*{start : start} : start*, export*{export : export} : export*)
+  | MODULE{type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start? : start?, export* : export*}(type*{type : type} : type*, import*{import : import} : import*, func*{func : func} : func*, global*{global : global} : global*, table*{table : table} : table*, mem*{mem : mem} : mem*, elem*{elem : elem} : elem*, data*{data : data} : data*, start?{start : start} : start?, export*{export : export} : export*)
 
 ;; 2-syntax-aux.watsup
 rec {
@@ -2011,7 +2018,7 @@ def $free_import(import : import) : free
 ;; 2-syntax-aux.watsup
 def $free_module(module : module) : free
   ;; 2-syntax-aux.watsup
-  def $free_module{type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start* : start*, export* : export*}(MODULE_module(type*{type : type}, import*{import : import}, func*{func : func}, global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data}, start*{start : start}, export*{export : export})) = $free_list($free_type(type)*{type : type}) ++ $free_list($free_import(import)*{import : import}) ++ $free_list($free_func(func)*{func : func}) ++ $free_list($free_global(global)*{global : global}) ++ $free_list($free_table(table)*{table : table}) ++ $free_list($free_mem(mem)*{mem : mem}) ++ $free_list($free_elem(elem)*{elem : elem}) ++ $free_list($free_data(data)*{data : data}) ++ $free_list($free_start(start)*{start : start}) ++ $free_list($free_export(export)*{export : export})
+  def $free_module{type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start? : start?, export* : export*}(MODULE_module(type*{type : type}, import*{import : import}, func*{func : func}, global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data}, start?{start : start}, export*{export : export})) = $free_list($free_type(type)*{type : type}) ++ $free_list($free_import(import)*{import : import}) ++ $free_list($free_func(func)*{func : func}) ++ $free_list($free_global(global)*{global : global}) ++ $free_list($free_table(table)*{table : table}) ++ $free_list($free_mem(mem)*{mem : mem}) ++ $free_list($free_elem(elem)*{elem : elem}) ++ $free_list($free_data(data)*{data : data}) ++ $free_opt($free_start(start)?{start : start}) ++ $free_list($free_export(export)*{export : export})
 
 ;; 2-syntax-aux.watsup
 def $funcidx_module(module : module) : funcidx*
@@ -4935,7 +4942,7 @@ syntax nonfuncs =
 ;; 6-typing.watsup
 def $funcidx_nonfuncs(nonfuncs : nonfuncs) : funcidx*
   ;; 6-typing.watsup
-  def $funcidx_nonfuncs{global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*}(`%%%%%`_nonfuncs(global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data})) = $funcidx_module(MODULE_module([], [], [], global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data}, [], []))
+  def $funcidx_nonfuncs{global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*}(`%%%%%`_nonfuncs(global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data})) = $funcidx_module(MODULE_module([], [], [], global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data}, ?(), []))
 
 ;; 6-typing.watsup
 relation Module_ok: `|-%:%`(module, moduletype)
@@ -6332,7 +6339,13 @@ syntax castop = (nul, nul)
 syntax memidxop = (memidx, memarg)
 
 ;; A-binary.watsup
+syntax startopt = start*
+
+;; A-binary.watsup
 syntax code = (local*, expr)
+
+;; A-binary.watsup
+syntax nopt = u32*
 
 ;; C-conventions.watsup
 syntax A = nat

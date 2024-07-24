@@ -405,6 +405,13 @@ concat_ X_u0*
 2. Let [w*] ++ w'** be X_u0*.
 3. Return w* ++ $concat_(w'**).
 
+opt_ X_u0*
+1. If (X_u0* is []), then:
+  a. Return ?().
+2. Assert: Due to validation, (|X_u0*| is 1).
+3. Let [w] be X_u0*.
+4. Return ?(w).
+
 signif N_u0
 1. If (N_u0 is 32), then:
   a. Return 23.
@@ -2066,6 +2073,13 @@ concat_ X_u0*
 2. Let [w*] ++ w'** be X_u0*.
 3. Return w* ++ $concat_(w'**).
 
+opt_ X_u0*
+1. If (X_u0* is []), then:
+  a. Return ?().
+2. Assert: Due to validation, (|X_u0*| is 1).
+3. Let [w] be X_u0*.
+4. Return ?(w).
+
 signif N_u0
 1. If (N_u0 is 32), then:
   a. Return 23.
@@ -2218,7 +2232,7 @@ memsxt exter_u0*
 4. Let [externtype] ++ xt* be exter_u0*.
 5. Return $memsxt(xt*).
 
-free_dataidx_instr instr_u0
+dataidx_instr instr_u0
 1. If instr_u0 is of the case MEMORY.INIT, then:
   a. Let (MEMORY.INIT x) be instr_u0.
   b. Return [x].
@@ -2227,23 +2241,23 @@ free_dataidx_instr instr_u0
   b. Return [x].
 3. Return [].
 
-free_dataidx_instrs instr_u0*
+dataidx_instrs instr_u0*
 1. If (instr_u0* is []), then:
   a. Return [].
 2. Let [instr] ++ instr'* be instr_u0*.
-3. Return $free_dataidx_instr(instr) ++ $free_dataidx_instrs(instr'*).
+3. Return $dataidx_instr(instr) ++ $dataidx_instrs(instr'*).
 
-free_dataidx_expr in*
-1. Return $free_dataidx_instrs(in*).
+dataidx_expr in*
+1. Return $dataidx_instrs(in*).
 
-free_dataidx_func (FUNC x loc* e)
-1. Return $free_dataidx_expr(e).
+dataidx_func (FUNC x loc* e)
+1. Return $dataidx_expr(e).
 
-free_dataidx_funcs func_u0*
+dataidx_funcs func_u0*
 1. If (func_u0* is []), then:
   a. Return [].
 2. Let [func] ++ func'* be func_u0*.
-3. Return $free_dataidx_func(func) ++ $free_dataidx_funcs(func'*).
+3. Return $dataidx_func(func) ++ $dataidx_funcs(func'*).
 
 memarg0
 1. Return { ALIGN: 0; OFFSET: 0; }.
@@ -5364,6 +5378,13 @@ disjoint_ X_u0*
 2. Let [w] ++ w'* be X_u0*.
 3. Return (not w <- w'* and $disjoint_(w'*)).
 
+opt_ X_u0*
+1. If (X_u0* is []), then:
+  a. Return ?().
+2. Assert: Due to validation, (|X_u0*| is 1).
+3. Let [w] be X_u0*.
+4. Return ?(w).
+
 signif N_u0
 1. If (N_u0 is 32), then:
   a. Return 23.
@@ -6144,8 +6165,8 @@ free_export (EXPORT name externidx)
 free_import (IMPORT name_1 name_2 externtype)
 1. Return $free_externtype(externtype).
 
-free_module (MODULE type* import* func* global* table* mem* elem* data* start* export*)
-1. Return YetE ($free_list($free_type(type)*{type : type}) ++ $free_list($free_import(import)*{import : import}) ++ $free_list($free_func(func)*{func : func}) ++ $free_list($free_global(global)*{global : global}) ++ $free_list($free_table(table)*{table : table}) ++ $free_list($free_mem(mem)*{mem : mem}) ++ $free_list($free_elem(elem)*{elem : elem}) ++ $free_list($free_data(data)*{data : data}) ++ $free_list($free_start(start)*{start : start}) ++ $free_list($free_export(export)*{export : export})).
+free_module (MODULE type* import* func* global* table* mem* elem* data* start? export*)
+1. Return YetE ($free_list($free_type(type)*{type : type}) ++ $free_list($free_import(import)*{import : import}) ++ $free_list($free_func(func)*{func : func}) ++ $free_list($free_global(global)*{global : global}) ++ $free_list($free_table(table)*{table : table}) ++ $free_list($free_mem(mem)*{mem : mem}) ++ $free_list($free_elem(elem)*{elem : elem}) ++ $free_list($free_data(data)*{data : data}) ++ $free_opt($free_start(start)?{start : start}) ++ $free_list($free_export(export)*{export : export})).
 
 funcidx_module module
 1. Return $free_module(module).FUNCS.
@@ -7351,7 +7372,7 @@ unrollht C heapt_u0
 5. Return C.RECS[i].
 
 funcidx_nonfuncs YetE (`%%%%%`_nonfuncs(global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data}))
-1. Return $funcidx_module((MODULE [] [] [] global* table* mem* elem* data* [] [])).
+1. Return $funcidx_module((MODULE [] [] [] global* table* mem* elem* data* ?() [])).
 
 blocktype_ block_u0
 1. If block_u0 is of the case _IDX, then:

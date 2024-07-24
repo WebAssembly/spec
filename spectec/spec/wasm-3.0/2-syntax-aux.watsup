@@ -525,7 +525,7 @@ def $free_import(IMPORT name_1 name_2 externtype) = $free_externtype(externtype)
 
 
 def $free_module(module) : free
-def $free_module(MODULE type* import* func* global* table* mem* elem* data* start* export*) =
+def $free_module(MODULE type* import* func* global* table* mem* elem* data* start? export*) =
   $free_list($free_type(type)*) ++
   $free_list($free_import(import)*) ++
   $free_list($free_func(func)*) ++
@@ -534,7 +534,7 @@ def $free_module(MODULE type* import* func* global* table* mem* elem* data* star
   $free_list($free_mem(mem)*) ++
   $free_list($free_elem(elem)*) ++
   $free_list($free_data(data)*) ++
-  $free_list($free_start(start)*) ++
+  $free_opt($free_start(start)?) ++
   $free_list($free_export(export)*)
 
 

@@ -7,7 +7,7 @@ open Convert
 
 (* Errors *)
 
-let error at msg = Error.error at "multiplicity" msg
+let error at msg = Error.error at "dimension" msg
 
 
 (* Environment *)
@@ -241,7 +241,9 @@ and check_param env ctx p =
   | ExpP (id, t) ->
     check_varid env ctx id;
     check_typ env ctx t
-  | TypP id -> check_typid env ctx id
+  | TypP id ->
+    check_typid env ctx id;
+    check_varid env ctx id
   | GramP (id, t) ->
     check_gramid env ctx id;
     check_typ env ctx t

@@ -477,8 +477,10 @@ grammar Bexportsec : export* hint(desc "export section") =
 grammar Bstart : start* =
   | x:Bfuncidx => (START x)
 
-grammar Bstartsec : start* hint(desc "start section") =
-  | st*:Bsection_(8, Bstart) => st*
+syntax startopt hint(show start?) = start*  ;; HACK
+
+grammar Bstartsec : start? hint(desc "start section") =
+  | startopt:Bsection_(8, Bstart) => $opt_(start, startopt)
 
 
 ;; Element section
@@ -531,7 +533,7 @@ grammar Bmodule : module =
     Bcustomsec*
 
 
-    typeidx^n:Bfuncsec
+    typeidx*:Bfuncsec
     Bcustomsec*
 
 
@@ -551,7 +553,7 @@ grammar Bmodule : module =
     Bcustomsec*
 
 
-    start*:Bstartsec
+    start?:Bstartsec
     Bcustomsec*
 
 
@@ -559,11 +561,11 @@ grammar Bmodule : module =
     Bcustomsec*
 
 
-    (local*, expr)^n:Bcodesec
+    (local*, expr)*:Bcodesec
     Bcustomsec*
 
 
     data*:Bdatasec
     Bcustomsec* =>
-      MODULE type* import* func^n global* table* mem* elem* data* start* export*
-    -- if (func = FUNC typeidx local* expr)^n
+      MODULE type* import* func* global* table* mem* elem* data* start? export*
+    -- if (func = FUNC typeidx local* expr)*

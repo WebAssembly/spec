@@ -422,6 +422,7 @@ warning: syntax `mut2` was never spliced
 warning: syntax `n` was never spliced
 warning: syntax `name` was never spliced
 warning: syntax `nonfuncs` was never spliced
+warning: syntax `nopt` was never spliced
 warning: syntax `nul` was never spliced
 warning: syntax `nul1` was never spliced
 warning: syntax `nul2` was never spliced
@@ -449,6 +450,7 @@ warning: syntax `s33` was never spliced
 warning: syntax `sN` was never spliced
 warning: syntax `shape` was never spliced
 warning: syntax `start` was never spliced
+warning: syntax `startopt` was never spliced
 warning: syntax `state` was never spliced
 warning: syntax `storagetype` was never spliced
 warning: syntax `store` was never spliced
@@ -1350,6 +1352,7 @@ warning: definition `moduleinst` was never spliced
 warning: definition `narrow__` was never spliced
 warning: definition `nbytes_` was never spliced
 warning: definition `nunpack` was never spliced
+warning: definition `opt_` was never spliced
 warning: definition `packfield_` was never spliced
 warning: definition `promote__` was never spliced
 warning: definition `psize` was never spliced
@@ -1876,6 +1879,7 @@ warning: definition prose `memsxx` was never spliced
 warning: definition prose `min` was never spliced
 warning: definition prose `moduleinst` was never spliced
 warning: definition prose `nunpack` was never spliced
+warning: definition prose `opt_` was never spliced
 warning: definition prose `packfield_` was never spliced
 warning: definition prose `psize` was never spliced
 warning: definition prose `psizenn` was never spliced

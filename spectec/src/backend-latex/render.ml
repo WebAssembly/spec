@@ -1233,6 +1233,10 @@ and render_exp_as_sym env e =
   render_sym env (sym_of_exp e)
 
 and render_sym env g =
+  (*
+  Printf.eprintf "[render_sym %s] %s\n%!"
+    (string_of_region g.at) (El.Print.string_of_sym g);
+  *)
   match g.it with
   | VarG (id, args) ->
     render_apply render_gramid render_exp_as_sym

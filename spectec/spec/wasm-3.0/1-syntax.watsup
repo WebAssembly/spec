@@ -696,7 +696,7 @@ syntax import hint(desc "import") =
   IMPORT name name externtype
 
 syntax module hint(desc "module") =
-  MODULE type* import* func* global* table* mem* elem* data* start* export*
+  MODULE type* import* func* global* table* mem* elem* data* start? export*
 
 
 var ty : type
