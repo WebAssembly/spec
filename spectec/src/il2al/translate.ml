@@ -501,8 +501,7 @@ let contains_diff target_ns e =
 
 let handle_partial_bindings lhs rhs ids =
   match lhs.it with
-  | CallE (_, _) ->
-    lhs, rhs, []
+  | CallE (_, _) -> lhs, rhs, []
   | _ ->
     let conds = ref [] in
     let target_ns = IdSet.of_list ids in
@@ -511,7 +510,8 @@ let handle_partial_bindings lhs rhs ids =
         e
       else (
         let new_e = get_lhs_name () in
-        conds := !conds @ [ binE (EqOp, new_e, e) ];
+        let typ = Il.BoolT $ no_region in
+        conds := !conds @ [ BinE (EqOp, new_e, e) $$ no_region % typ ];
         new_e
       )
     ) in
@@ -525,7 +525,9 @@ let handle_partial_bindings lhs rhs ids =
 let rec translate_bindings ids bindings =
   List.fold_right (fun (l, r) cont ->
     match l with
-    | _ when IdSet.is_empty (free_expr l) -> [ ifI (binE (EqOp, r, l), [], []) ]
+    | _ when IdSet.is_empty (free_expr l) ->
+      let typ = Il.BoolT $ no_region in
+      [ ifI (BinE (EqOp, r, l) $$ no_region % typ, [], []) ]
     | _ -> insert_instrs cont (handle_special_lhs l r ids)
   ) bindings []
 
@@ -562,7 +564,7 @@ and call_lhs_to_inverse_call_rhs lhs rhs free_ids =
     let new_lhs = args2lhs args in
     let indices = List.init (List.length args) Option.some in
     let new_rhs =
-      invCallE (f, indices, rhs2args rhs) ~at:lhs.at ~note:new_lhs.note
+      InvCallE (f, indices, rhs2args rhs) $$ lhs.at % new_lhs.note
     in
     new_lhs, new_rhs
 
@@ -588,7 +590,7 @@ and call_lhs_to_inverse_call_rhs lhs rhs free_ids =
     (* Free argument become new lhs & InvCallE become new rhs *)
     let new_lhs = args2lhs free_args in
     let new_rhs =
-      invCallE (f, indices, bound_args @ rhs2args rhs) ~at:lhs.at ~note:new_lhs.note
+      InvCallE (f, indices, bound_args @ rhs2args rhs) $$ lhs.at % new_lhs.note
     in
     new_lhs, new_rhs
 
@@ -631,12 +633,12 @@ and handle_call_lhs lhs rhs free_ids =
     let base_typ, map_iters =  get_base_typ_and_iters lhs.note rhs.note in
     (* TODO: Better name using type *)
     let var_name = "tmp" in
-    let var_expr = varE var_name ~note:base_typ in
+    let var_expr = VarE var_name $$ no_region % base_typ in
     let to_iter_expr =
       List.fold_right
         (fun iter e ->
           let iter_typ = Il.IterT (e.note, iter) $ no_region in
-          iterE (e, [var_name], translate_iter iter) ~note:iter_typ
+          IterE (e, [var_name], translate_iter iter) $$ e.at % iter_typ
         )
         map_iters
     in
@@ -670,7 +672,7 @@ and handle_iter_lhs lhs rhs free_ids =
       let iter', typ =
         match iter with
         | Opt -> iter, Il.IterT (expr.note, Il.Opt) $ no_region
-        | ListN (expr, None) when not (contains_ids free_ids expr) ->
+        | ListN (expr', None) when not (contains_ids free_ids expr') ->
           List, Il.IterT (expr.note, Il.List) $ no_region
         | _ -> iter, Il.IterT (expr.note, Il.List) $ no_region
       in
@@ -691,11 +693,14 @@ and handle_iter_lhs lhs rhs free_ids =
   (* Add ListN condition *)
   match iter with
   | ListN (expr, None) when not (contains_ids free_ids expr) ->
-    assertI (binE (EqOp, lenE rhs, expr)) :: instrs'
+    let typ = Il.BoolT $ no_region in
+    let at = over_region [ lhs.at; rhs.at ] in
+    assertI (BinE (EqOp, lenE rhs, expr) $$ at % typ) :: instrs'
   | _ -> instrs'
 
 and handle_special_lhs lhs rhs free_ids =
 
+  let boolt = Il.BoolT $ no_region in
   let at = over_region [ lhs.at; rhs.at ] in
   match lhs.it with
   (* Handle inverse function call *)
@@ -707,25 +712,23 @@ and handle_special_lhs lhs rhs free_ids =
     let rec inject_hasType expr =
       match expr.it with
       | IterE (inner_expr, ids, iter) ->
-        let typ = Il.BoolT $ no_region in
-        IterE (inject_hasType inner_expr, ids, iter) $$ expr.at % typ
-      | _ -> HasTypeE (expr, t) $$ rhs.at % rhs.note
+        IterE (inject_hasType inner_expr, ids, iter) $$ expr.at % boolt
+      | _ -> HasTypeE (expr, t) $$ rhs.at % boolt
     in
     [ ifI (
       inject_hasType rhs,
-      [ letI (varE s ~at:lhs.at, rhs) ~at:at ],
+      [ letI (VarE s $$ lhs.at % lhs.note, rhs) ~at:at ],
       []
     )]
   (* Normal cases *)
   | CaseE (tag, es) ->
     let bindings, es' = extract_non_names es in
-    [
-      ifI (
-        isCaseOfE (rhs, tag),
-        letI (caseE (tag, es') ~at:lhs.at, rhs) ~at:at :: translate_bindings free_ids bindings,
-        []
-      );
-    ]
+    [ ifI (
+      IsCaseOfE (rhs, tag) $$ lhs.at % boolt,
+      letI (caseE (tag, es') ~at:lhs.at, rhs) ~at:at
+        :: translate_bindings free_ids bindings,
+      []
+      )]
   | ListE es ->
     let bindings, es' = extract_non_names es in
     if List.length es >= 2 then (* TODO: remove this. This is temporarily for a pure function returning stores *)
