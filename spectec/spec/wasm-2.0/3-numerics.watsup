@@ -31,13 +31,13 @@ def $cvtop__(numtype_1, numtype_2, cvtop, num_(numtype_1)) : num_(numtype_2)*
     hint(show %3#$__(%1,%2)#((%4)))
 
 def $wrap__(M, N, iN(M)) : iN(N)
-def $extend__(M, N, sx, iN(M)) : iN(N)                hint(show $extend__(%,%)^(%)#((%)))
-def $trunc__(M, N, sx, fN(M)) : iN(N)                 hint(show $trunc__(%,%)^(%)#((%)))
-def $trunc_sat__(M, N, sx, fN(M)) : iN(N)             hint(show $trunc__sat__(%,%)^(%)#((%)))
+def $extend__(M, N, sx, iN(M)) : iN(N)               hint(show $extend__(%,%)^(%)#((%)))
+def $trunc__(M, N, sx, fN(M)) : iN(N)                hint(show $trunc__(%,%)^(%)#((%)))
+def $trunc_sat__(M, N, sx, fN(M)) : iN(N)            hint(show $trunc__sat__(%,%)^(%)#((%)))
 def $demote__(M, N, fN(M)) : fN(N)
 def $promote__(M, N, fN(M)) : fN(N)
-def $convert__(M, N, sx, iN(M)) : fN(N)               hint(show $convert__(%,%)^(%)#((%)))
-def $narrow__(M, N, sx, iN(M)) : iN(N)                hint(show $narrow__(%,%)^(%)#(%))
+def $convert__(M, N, sx, iN(M)) : fN(N)              hint(show $convert__(%,%)^(%)#((%)))
+def $narrow__(M, N, sx, iN(M)) : iN(N)               hint(show $narrow__(%,%)^(%)#(%))
 def $reinterpret__(numtype_1, numtype_2, num_(numtype_1)) : num_(numtype_2)
 
 def $ibits_(N, iN(N)) : bit*                         hint(show $bits_(I#%,%))

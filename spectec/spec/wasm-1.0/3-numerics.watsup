@@ -26,11 +26,11 @@ def $cvtop__(valtype_1, valtype_2, cvtop, val_(valtype_1)) : val_(valtype_2)*
     hint(show %3#$__(%1,%2)#((%4)))
 
 def $wrap__(M, N, iN(M)) : iN(N)
-def $extend__(M, N, sx, iN(M)) : iN(N)                hint(show $extend__(%,%)^(%)#((%)))
-def $trunc__(M, N, sx, fN(M)) : iN(N)                 hint(show $trunc__(%,%)^(%)#((%)))
+def $extend__(M, N, sx, iN(M)) : iN(N)               hint(show $extend__(%,%)^(%)#((%)))
+def $trunc__(M, N, sx, fN(M)) : iN(N)                hint(show $trunc__(%,%)^(%)#((%)))
 def $demote__(M, N, fN(M)) : fN(N)
 def $promote__(M, N, fN(M)) : fN(N)
-def $convert__(M, N, sx, iN(M)) : fN(N)               hint(show $convert__(%,%)^(%)#((%)))
+def $convert__(M, N, sx, iN(M)) : fN(N)              hint(show $convert__(%,%)^(%)#((%)))
 def $reinterpret__(valtype_1, valtype_2, val_(valtype_1)) : val_(valtype_2)
 
 def $ibytes_(N, iN(N)) : byte*                       hint(show $bytes_(I#%,%))
