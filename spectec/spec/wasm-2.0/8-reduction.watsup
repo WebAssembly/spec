@@ -276,7 +276,7 @@ rule Step_pure/vrelop:
 (; TODO: this should be implemented at the same level as other pointwise ops
   -- if c'_1* = $lanes_(Lnn X N, c_1)
   -- if c'_2* = $lanes_(Lnn X N, c_2)
-  -- if c = $invlanes_($IN($lsize(Lnn)) X N, $ext__(1, $lsize(Lnn), S, $vrelop_(Lnn X N, vrelop, c'_1, c'_2))*)
+  -- if c = $invlanes_($IN($lsize(Lnn)) X N, $extend__(1, $lsize(Lnn), S, $vrelop_(Lnn X N, vrelop, c'_1, c'_2))*)
 ;)
 
 
@@ -319,7 +319,7 @@ rule Step_pure/vextract_lane-num:
 ;; TODO : fshape
 rule Step_pure/vextract_lane-pack:
   (VCONST V128 c_1) (VEXTRACT_LANE (pt X N) sx i) ~> (CONST I32 c_2)
-  -- if c_2 = $ext__($psize(pt), 32, sx, $lanes_(pt X N, c_1)[i])
+  -- if c_2 = $extend__($psize(pt), 32, sx, $lanes_(pt X N, c_1)[i])
 
 
 rule Step_pure/vreplace_lane:
@@ -490,7 +490,7 @@ rule Step_read/load-pack-trap:
   -- if $(i + ao.OFFSET + n/8 > |$mem(z, 0).BYTES|)
 
 rule Step_read/load-pack-val:
-  z; (CONST I32 i) (LOAD Inn (n _ sx) ao)  ~>  (CONST Inn $ext__(n, $size(Inn), sx, c))
+  z; (CONST I32 i) (LOAD Inn (n _ sx) ao)  ~>  (CONST Inn $extend__(n, $size(Inn), sx, c))
   -- if $ibytes_(n, c) = $mem(z, 0).BYTES[i + ao.OFFSET : n/8]
 
 rule Step_read/vload-oob:
@@ -510,7 +510,7 @@ rule Step_read/vload-shape-val:
   z; (CONST I32 i) (VLOAD V128 (SHAPE M X N sx) ao)  ~>  (VCONST V128 c)
   -- (if $ibytes_(M, j) = $mem(z, 0).BYTES[i + ao.OFFSET + k * M/8 : M/8])^(k<N)
   -- if $lsize(Jnn) = $(M * 2)  ;; TODO: relate implicitly
-  -- if c = $invlanes_(Jnn X N, $ext__(M, $lsize(Jnn), sx, j)^N)
+  -- if c = $invlanes_(Jnn X N, $extend__(M, $lsize(Jnn), sx, j)^N)
 
 
 rule Step_read/vload-splat-oob:
@@ -532,7 +532,7 @@ rule Step_read/vload-zero-oob:
 rule Step_read/vload-zero-val:
   z; (CONST I32 i) (VLOAD V128 (ZERO N) ao)  ~>  (VCONST V128 c)
   -- if $ibytes_(N, j) = $mem(z, 0).BYTES[i + ao.OFFSET : N/8]
-  -- if c = $ext__(N, 128, U, j)
+  -- if c = $extend__(N, 128, U, j)
 
 
 rule Step_read/vload_lane-oob:

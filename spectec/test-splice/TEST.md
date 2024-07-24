@@ -1186,7 +1186,7 @@ warning: definition `elem` was never spliced
 warning: definition `eleminst` was never spliced
 warning: definition `expanddt` was never spliced
 warning: definition `expon` was never spliced
-warning: definition `ext__` was never spliced
+warning: definition `extend__` was never spliced
 warning: definition `fabs_` was never spliced
 warning: definition `fadd_` was never spliced
 warning: definition `fbits_` was never spliced

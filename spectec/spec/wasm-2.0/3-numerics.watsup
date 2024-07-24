@@ -30,12 +30,12 @@ def $relop_(numtype, relop_(numtype), num_(numtype), num_(numtype)) : num_(I32)
 def $cvtop__(numtype_1, numtype_2, cvtop, num_(numtype_1)) : num_(numtype_2)*
     hint(show %3#$__(%1,%2)#((%4)))
 
-def $wrap__(M, N, iN(M)) : iN(N)                      hint(show $wrap__(%,%)#((%)))
-def $ext__(M, N, sx, iN(M)) : iN(N)                   hint(show $ext__(%,%)^(%)#((%)))
+def $wrap__(M, N, iN(M)) : iN(N)
+def $extend__(M, N, sx, iN(M)) : iN(N)                hint(show $extend__(%,%)^(%)#((%)))
 def $trunc__(M, N, sx, fN(M)) : iN(N)                 hint(show $trunc__(%,%)^(%)#((%)))
 def $trunc_sat__(M, N, sx, fN(M)) : iN(N)             hint(show $trunc__sat__(%,%)^(%)#((%)))
-def $demote__(M, N, fN(M)) : fN(N)                    hint(show $demote__(%,%)#((%)))
-def $promote__(M, N, fN(M)) : fN(N)                   hint(show $promote__(%,%)#((%)))
+def $demote__(M, N, fN(M)) : fN(N)
+def $promote__(M, N, fN(M)) : fN(N)
 def $convert__(M, N, sx, iN(M)) : fN(N)               hint(show $convert__(%,%)^(%)#((%)))
 def $narrow__(M, N, sx, iN(M)) : iN(N)                hint(show $narrow__(%,%)^(%)#(%))
 def $reinterpret__(numtype_1, numtype_2, num_(numtype_1)) : num_(numtype_2)
@@ -128,7 +128,7 @@ def $binop_(Inn, ROTR, iN_1, iN_2) = $irotr_($size(Inn), iN_1, iN_2)
 def $unop_(Inn, CLZ, iN) = $iclz_($size(Inn), iN)
 def $unop_(Inn, CTZ, iN) = $ictz_($size(Inn), iN)
 def $unop_(Inn, POPCNT, iN) = $ipopcnt_($size(Inn), iN)
-def $unop_(Inn, EXTEND N, iN) = $ext__(N, $size(Inn), S, $wrap__($size(Inn), N, iN))
+def $unop_(Inn, EXTEND N, iN) = $extend__(N, $size(Inn), S, $wrap__($size(Inn), N, iN))
 def $testop_(Inn, EQZ, iN) = $ieqz_($size(Inn), iN)
 def $relop_(Inn, EQ, iN_1, iN_2) = $ieq_($size(Inn), iN_1, iN_2)
 def $relop_(Inn, NE, iN_1, iN_2) = $ine_($size(Inn), iN_1, iN_2)
@@ -160,7 +160,7 @@ def $relop_(Fnn, GT, fN_1, fN_2) = $fgt_($size(Fnn), fN_1, fN_2)
 def $relop_(Fnn, LE, fN_1, fN_2) = $fle_($size(Fnn), fN_1, fN_2)
 def $relop_(Fnn, GE, fN_1, fN_2) = $fge_($size(Fnn), fN_1, fN_2)
 
-def $cvtop__(I32, I64, EXTEND sx, iN) = $ext__(32, 64, sx, iN)
+def $cvtop__(I32, I64, EXTEND sx, iN) = $extend__(32, 64, sx, iN)
 def $cvtop__(I64, I32, WRAP, iN) = $wrap__(64, 32, iN)
 def $cvtop__(Fnn, Inn, TRUNC sx, fN) = $trunc__($size(Fnn), $size(Inn), sx, fN)
 def $cvtop__(Fnn, Inn, TRUNC_SAT sx, fN) = $trunc_sat__($size(Fnn), $size(Inn), sx, fN)
@@ -181,7 +181,7 @@ def $packnum_(packtype, c) = $wrap__($size($unpack(packtype)), $psize(packtype),
 def $unpacknum_(lanetype, lane_(lanetype)) : num_($unpack(lanetype))
     hint(show $unpack_(%,%))
 def $unpacknum_(numtype, c) = c
-def $unpacknum_(packtype, c) = $ext__($psize(packtype), $size($unpack(packtype)), U, c)
+def $unpacknum_(packtype, c) = $extend__($psize(packtype), $size($unpack(packtype)), U, c)
 
 
 ;; Vectors
@@ -271,32 +271,32 @@ def $vbinop_(Jnn X N, Q15MULR_SAT S, v128_1, v128_2) = v128
 def $vrelop_(Jnn X N, EQ, v128_1, v128_2) = v128
     -- if lane_1* = $lanes_(Jnn X N, v128_1)
     -- if lane_2* = $lanes_(Jnn X N, v128_2)
-    -- if lane_3* = $ext__(1, $lsize(Jnn), S, $ieq_($lsize(Jnn), lane_1, lane_2))*
+    -- if lane_3* = $extend__(1, $lsize(Jnn), S, $ieq_($lsize(Jnn), lane_1, lane_2))*
     -- if v128 = $invlanes_(Jnn X N, lane_3*)
 def $vrelop_(Jnn X N, NE, v128_1, v128_2) = v128
     -- if lane_1* = $lanes_(Jnn X N, v128_1)
     -- if lane_2* = $lanes_(Jnn X N, v128_2)
-    -- if lane_3* = $ext__(1, $lsize(Jnn), S, $ine_($lsize(Jnn), lane_1, lane_2))*
+    -- if lane_3* = $extend__(1, $lsize(Jnn), S, $ine_($lsize(Jnn), lane_1, lane_2))*
     -- if v128 = $invlanes_(Jnn X N, lane_3*)
 def $vrelop_(Jnn X N, LT sx, v128_1, v128_2) = v128
     -- if lane_1* = $lanes_(Jnn X N, v128_1)
     -- if lane_2* = $lanes_(Jnn X N, v128_2)
-    -- if lane_3* = $ext__(1, $lsize(Jnn), S, $ilt_($lsize(Jnn), sx, lane_1, lane_2))*
+    -- if lane_3* = $extend__(1, $lsize(Jnn), S, $ilt_($lsize(Jnn), sx, lane_1, lane_2))*
     -- if v128 = $invlanes_(Jnn X N, lane_3*)
 def $vrelop_(Jnn X N, GT sx, v128_1, v128_2) = v128
     -- if lane_1* = $lanes_(Jnn X N, v128_1)
     -- if lane_2* = $lanes_(Jnn X N, v128_2)
-    -- if lane_3* = $ext__(1, $lsize(Jnn), S, $igt_($lsize(Jnn), sx, lane_1, lane_2))*
+    -- if lane_3* = $extend__(1, $lsize(Jnn), S, $igt_($lsize(Jnn), sx, lane_1, lane_2))*
     -- if v128 = $invlanes_(Jnn X N, lane_3*)
 def $vrelop_(Jnn X N, LE sx, v128_1, v128_2) = v128
     -- if lane_1* = $lanes_(Jnn X N, v128_1)
     -- if lane_2* = $lanes_(Jnn X N, v128_2)
-    -- if lane_3* = $ext__(1, $lsize(Jnn), S, $ile_($lsize(Jnn), sx, lane_1, lane_2))*
+    -- if lane_3* = $extend__(1, $lsize(Jnn), S, $ile_($lsize(Jnn), sx, lane_1, lane_2))*
     -- if v128 = $invlanes_(Jnn X N, lane_3*)
 def $vrelop_(Jnn X N, GE sx, v128_1, v128_2) = v128
     -- if lane_1* = $lanes_(Jnn X N, v128_1)
     -- if lane_2* = $lanes_(Jnn X N, v128_2)
-    -- if lane_3* = $ext__(1, $lsize(Jnn), S, $ige_($lsize(Jnn), sx, lane_1, lane_2))*
+    -- if lane_3* = $extend__(1, $lsize(Jnn), S, $ige_($lsize(Jnn), sx, lane_1, lane_2))*
     -- if v128 = $invlanes_(Jnn X N, lane_3*)
 
 def $vunop_(Fnn X N, ABS, v128_1) = v128
@@ -357,46 +357,46 @@ def $vbinop_(Fnn X N, PMAX, v128_1, v128_2) = v128
 def $vrelop_(Fnn X N, EQ, v128_1, v128_2) = v128
     -- if lane_1* = $lanes_(Fnn X N, v128_1)
     -- if lane_2* = $lanes_(Fnn X N, v128_2)
-    -- if lane_3* = $ext__(1, $size(Fnn), S, $feq_($size(Fnn), lane_1, lane_2))*
+    -- if lane_3* = $extend__(1, $size(Fnn), S, $feq_($size(Fnn), lane_1, lane_2))*
     -- if $isize(Inn) = $size(Fnn)
     -- if v128 = $invlanes_(Inn X N, lane_3*)
 def $vrelop_(Fnn X N, NE, v128_1, v128_2) = v128
     -- if lane_1* = $lanes_(Fnn X N, v128_1)
     -- if lane_2* = $lanes_(Fnn X N, v128_2)
-    -- if lane_3* = $ext__(1, $size(Fnn), S, $fne_($size(Fnn), lane_1, lane_2))*
+    -- if lane_3* = $extend__(1, $size(Fnn), S, $fne_($size(Fnn), lane_1, lane_2))*
     -- if $isize(Inn) = $size(Fnn)
     -- if v128 = $invlanes_(Inn X N, lane_3*)
 def $vrelop_(Fnn X N, LT, v128_1, v128_2) = v128
     -- if lane_1* = $lanes_(Fnn X N, v128_1)
     -- if lane_2* = $lanes_(Fnn X N, v128_2)
-    -- if lane_3* = $ext__(1, $size(Fnn), S, $flt_($size(Fnn), lane_1, lane_2))*
+    -- if lane_3* = $extend__(1, $size(Fnn), S, $flt_($size(Fnn), lane_1, lane_2))*
     -- if $isize(Inn) = $size(Fnn)
     -- if v128 = $invlanes_(Inn X N, lane_3*)
 def $vrelop_(Fnn X N, GT, v128_1, v128_2) = v128
     -- if lane_1* = $lanes_(Fnn X N, v128_1)
     -- if lane_2* = $lanes_(Fnn X N, v128_2)
-    -- if lane_3* = $ext__(1, $size(Fnn), S, $fgt_($size(Fnn), lane_1, lane_2))*
+    -- if lane_3* = $extend__(1, $size(Fnn), S, $fgt_($size(Fnn), lane_1, lane_2))*
     -- if $isize(Inn) = $size(Fnn)
     -- if v128 = $invlanes_(Inn X N, lane_3*)
 def $vrelop_(Fnn X N, LE, v128_1, v128_2) = v128
     -- if lane_1* = $lanes_(Fnn X N, v128_1)
     -- if lane_2* = $lanes_(Fnn X N, v128_2)
-    -- if lane_3* = $ext__(1, $size(Fnn), S, $fle_($size(Fnn), lane_1, lane_2))*
+    -- if lane_3* = $extend__(1, $size(Fnn), S, $fle_($size(Fnn), lane_1, lane_2))*
     -- if $isize(Inn) = $size(Fnn)
     -- if v128 = $invlanes_(Inn X N, lane_3*)
 def $vrelop_(Fnn X N, GE, v128_1, v128_2) = v128
     -- if lane_1* = $lanes_(Fnn X N, v128_1)
     -- if lane_2* = $lanes_(Fnn X N, v128_2)
-    -- if lane_3* = $ext__(1, $size(Fnn), S, $fge_($size(Fnn), lane_1, lane_2))*
+    -- if lane_3* = $extend__(1, $size(Fnn), S, $fge_($size(Fnn), lane_1, lane_2))*
     -- if $isize(Inn) = $size(Fnn)
     -- if v128 = $invlanes_(Inn X N, lane_3*)
 
 def $vcvtop__(I8 X N_1, I16 X N_2, EXTEND, sx, i8) = i16
-    -- if i16 = $ext__(8, 16, sx, i8)
+    -- if i16 = $extend__(8, 16, sx, i8)
 def $vcvtop__(I16 X N_1, I32 X N_2, EXTEND, sx, i16) = i32
-    -- if i32 = $ext__(16, 32, sx, i16)
+    -- if i32 = $extend__(16, 32, sx, i16)
 def $vcvtop__(I32 X N_1, I64 X N_2, EXTEND, sx, i32) = i64
-    -- if i64 = $ext__(32, 64, sx, i32)
+    -- if i64 = $extend__(32, 64, sx, i32)
 def $vcvtop__(I32 X N_1, F32 X N_2, CONVERT, sx, i32) = f32
     -- if f32 = $convert__(32, 32, sx, i32)
 def $vcvtop__(I32 X N_1, F64 X N_2, CONVERT, sx, i32) = f64
@@ -419,20 +419,20 @@ def $vextunop_(Inn_1 X N_1, Inn_2 X N_2, EXTADD_PAIRWISE sx, c_1) = c
   -- var cj_1 : iN($lsize(Inn_1))
   -- var cj_2 : iN($lsize(Inn_1))
   -- if ci* = $lanes_(Inn_2 X N_2, c_1)
-  -- if $concat_(iN($lsize(Inn_1)), (cj_1 cj_2)*) = $ext__($lsize(Inn_2), $lsize(Inn_1), sx, ci)*
+  -- if $concat_(iN($lsize(Inn_1)), (cj_1 cj_2)*) = $extend__($lsize(Inn_2), $lsize(Inn_1), sx, ci)*
   -- if c = $invlanes_(Inn_1 X N_1, $iadd_($lsize(Inn_1), cj_1, cj_2)*)
 
 def $vextbinop_(Inn_1 X N_1, Inn_2 X N_2, EXTMUL sx hf, c_1, c_2) = c
   -- if ci_1* = $lanes_(Inn_2 X N_2, c_1)[$half(hf, 0, N_1) : N_1]
   -- if ci_2* = $lanes_(Inn_2 X N_2, c_2)[$half(hf, 0, N_1) : N_1]
-  -- if c = $invlanes_(Inn_1 X N_1, $imul_($lsize(Inn_1), $ext__($lsize(Inn_2), $lsize(Inn_1), sx, ci_1), $ext__($lsize(Inn_2), $lsize(Inn_1), sx, ci_2))*)
+  -- if c = $invlanes_(Inn_1 X N_1, $imul_($lsize(Inn_1), $extend__($lsize(Inn_2), $lsize(Inn_1), sx, ci_1), $extend__($lsize(Inn_2), $lsize(Inn_1), sx, ci_2))*)
 
 def $vextbinop_(Inn_1 X N_1, Inn_2 X N_2, DOT S, c_1, c_2) = c
   -- var cj_1 : iN($lsize(Inn_1))
   -- var cj_2 : iN($lsize(Inn_1))
   -- if ci_1* = $lanes_(Inn_2 X N_2, c_1)
   -- if ci_2* = $lanes_(Inn_2 X N_2, c_2)
-  -- if $concat_(iN($lsize(Inn_1)), (cj_1 cj_2)*) = $imul_($lsize(Inn_1), $ext__($lsize(Inn_2), $lsize(Inn_1), S, ci_1), $ext__($lsize(Inn_2), $lsize(Inn_1), S, ci_2))*
+  -- if $concat_(iN($lsize(Inn_1)), (cj_1 cj_2)*) = $imul_($lsize(Inn_1), $extend__($lsize(Inn_2), $lsize(Inn_1), S, ci_1), $extend__($lsize(Inn_2), $lsize(Inn_1), S, ci_2))*
   -- if c = $invlanes_(Inn_1 X N_1, $iadd_($lsize(Inn_1), cj_1, cj_2)*)
 
 def $vshiftop_(ishape, vshiftop_(ishape), lane_($lanetype(ishape)), u32) : lane_($lanetype(ishape))

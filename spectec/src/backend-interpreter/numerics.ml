@@ -742,16 +742,16 @@ let fpmax : numerics =
       );
   }
 
-let ext : numerics =
+let extend : numerics =
   {
-    name = "ext";
+    name = "extend";
     f =
       (function
       | [ NumV z; _; CaseV ("U", []); NumV v ] when z = Z.of_int 128 -> V128.I64x2.of_lanes [ z_to_int64 v; 0L ] |> al_of_vec128 (* HARDCODE *)
       | [ _; _; CaseV ("U", []); v ] -> v
       | [ NumV _ as m; NumV _ as n; CaseV ("S", []); NumV _ as i ] ->
         inverse_of_signed.f [ n; signed.f [ m; i ] ]
-      | vs -> error_values "ext" vs
+      | vs -> error_values "extend" vs
       );
   }
 
@@ -1177,7 +1177,7 @@ let numerics_list : numerics list = [
   fge;
   fpmin;
   fpmax;
-  ext;
+  extend;
   wrap;
   trunc;
   trunc_sat;

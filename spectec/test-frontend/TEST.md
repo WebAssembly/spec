@@ -2373,7 +2373,7 @@ def $invsigned_(N : N, int : int) : nat
     -- if ($signed_(N, j) = (i : nat <: int))
 
 ;; 3-numerics.watsup
-def $ext__(M : M, N : N, sx : sx, iN : iN(M)) : iN(N)
+def $extend__(M : M, N : N, sx : sx, iN : iN(M)) : iN(N)
 
 ;; 3-numerics.watsup
 def $fabs_(N : N, fN : fN(N)) : fN(N)
@@ -2417,7 +2417,7 @@ def $unop_(numtype : numtype, unop_ : unop_(numtype), num_ : num_(numtype)) : nu
   ;; 3-numerics.watsup
   def $unop_{Inn : Inn, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), POPCNT_unop_, iN) = [$ipopcnt_($size((Inn : Inn <: numtype)), iN)]
   ;; 3-numerics.watsup
-  def $unop_{Inn : Inn, N : N, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EXTEND_unop_(`%`_sz(N)), iN) = [$ext__(N, $size((Inn : Inn <: numtype)), S_sx, $wrap__($size((Inn : Inn <: numtype)), N, iN))]
+  def $unop_{Inn : Inn, N : N, iN : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), EXTEND_unop_(`%`_sz(N)), iN) = [$extend__(N, $size((Inn : Inn <: numtype)), S_sx, $wrap__($size((Inn : Inn <: numtype)), N, iN))]
   ;; 3-numerics.watsup
   def $unop_{Fnn : Fnn, fN : num_((Fnn : Fnn <: numtype))}((Fnn : Fnn <: numtype), ABS_unop_, fN) = [$fabs_($size((Fnn : Fnn <: numtype)), fN)]
   ;; 3-numerics.watsup
@@ -2623,7 +2623,7 @@ def $trunc_sat__(M : M, N : N, sx : sx, fN : fN(M)) : iN(N)
 ;; 3-numerics.watsup
 def $cvtop__(numtype_1 : numtype, numtype_2 : numtype, cvtop__ : cvtop__(numtype_1, numtype_2), num_ : num_(numtype_1)) : num_(numtype_2)*
   ;; 3-numerics.watsup
-  def $cvtop__{Inn_1 : Inn, Inn_2 : Inn, sx : sx, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Inn_2 : Inn <: numtype), EXTEND_cvtop__(sx), iN_1) = [$ext__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, iN_1)]
+  def $cvtop__{Inn_1 : Inn, Inn_2 : Inn, sx : sx, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Inn_2 : Inn <: numtype), EXTEND_cvtop__(sx), iN_1) = [$extend__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), sx, iN_1)]
   ;; 3-numerics.watsup
   def $cvtop__{Inn_1 : Inn, Inn_2 : Inn, iN_1 : num_((Inn_1 : Inn <: numtype))}((Inn_1 : Inn <: numtype), (Inn_2 : Inn <: numtype), WRAP_cvtop__, iN_1) = [$wrap__($sizenn1((Inn_1 : Inn <: numtype)), $sizenn2((Inn_2 : Inn <: numtype)), iN_1)]
   ;; 3-numerics.watsup
@@ -2733,7 +2733,7 @@ def $lunpacknum_(lanetype : lanetype, lane_ : lane_(lanetype)) : num_($lunpack(l
   ;; 3-numerics.watsup
   def $lunpacknum_{numtype : numtype, c : lane_((numtype : numtype <: lanetype))}((numtype : numtype <: lanetype), c) = c
   ;; 3-numerics.watsup
-  def $lunpacknum_{packtype : packtype, c : lane_((packtype : packtype <: lanetype))}((packtype : packtype <: lanetype), c) = $ext__($psize(packtype), $size($lunpack((packtype : packtype <: lanetype))), U_sx, c)
+  def $lunpacknum_{packtype : packtype, c : lane_((packtype : packtype <: lanetype))}((packtype : packtype <: lanetype), c) = $extend__($psize(packtype), $size($lunpack((packtype : packtype <: lanetype))), U_sx, c)
 
 ;; 3-numerics.watsup
 def $cpacknum_(storagetype : storagetype, lit_ : lit_(($cunpack(storagetype) : consttype <: storagetype))) : lit_(storagetype)
@@ -2747,7 +2747,7 @@ def $cunpacknum_(storagetype : storagetype, lit_ : lit_(storagetype)) : lit_(($c
   ;; 3-numerics.watsup
   def $cunpacknum_{consttype : consttype, c : lit_((consttype : consttype <: storagetype))}((consttype : consttype <: storagetype), c) = c
   ;; 3-numerics.watsup
-  def $cunpacknum_{packtype : packtype, c : lit_((packtype : packtype <: storagetype))}((packtype : packtype <: storagetype), c) = $ext__($psize(packtype), $size($lunpack((packtype : packtype <: lanetype))), U_sx, c)
+  def $cunpacknum_{packtype : packtype, c : lit_((packtype : packtype <: storagetype))}((packtype : packtype <: storagetype), c) = $extend__($psize(packtype), $size($lunpack((packtype : packtype <: lanetype))), U_sx, c)
 
 ;; 3-numerics.watsup
 def $lanes_(shape : shape, vec_ : vec_(V128_Vnn)) : lane_($lanetype(shape))*
@@ -2925,78 +2925,78 @@ def $vrelop_(shape : shape, vrelop_ : vrelop_(shape), vec_ : vec_(V128_Vnn), vec
   def $vrelop_{Jnn : Jnn, N : N, v128_1 : vec_(V128_Vnn), v128_2 : vec_(V128_Vnn), v128 : vec_(V128_Vnn), lane_1* : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))*, lane_2* : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))*, lane_3* : iN($lsize((Jnn : Jnn <: lanetype)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), EQ_vrelop_, v128_1, v128_2) = v128
     -- if (lane_1*{lane_1 : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), v128_1))
     -- if (lane_2*{lane_2 : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), v128_2))
-    -- if (lane_3*{lane_3 : iN($lsize((Jnn : Jnn <: lanetype)))} = $ext__(1, $lsize((Jnn : Jnn <: lanetype)), S_sx, `%`_iN($ieq_($lsize((Jnn : Jnn <: lanetype)), lane_1, lane_2)!`%`_u32.0))*{lane_1 : iN($lsize((Jnn : Jnn <: lanetype))), lane_2 : iN($lsize((Jnn : Jnn <: lanetype)))})
+    -- if (lane_3*{lane_3 : iN($lsize((Jnn : Jnn <: lanetype)))} = $extend__(1, $lsize((Jnn : Jnn <: lanetype)), S_sx, `%`_iN($ieq_($lsize((Jnn : Jnn <: lanetype)), lane_1, lane_2)!`%`_u32.0))*{lane_1 : iN($lsize((Jnn : Jnn <: lanetype))), lane_2 : iN($lsize((Jnn : Jnn <: lanetype)))})
     -- if (v128 = $invlanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), lane_3*{lane_3 : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))}))
   ;; 3-numerics.watsup
   def $vrelop_{Jnn : Jnn, N : N, v128_1 : vec_(V128_Vnn), v128_2 : vec_(V128_Vnn), v128 : vec_(V128_Vnn), lane_1* : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))*, lane_2* : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))*, lane_3* : iN($lsize((Jnn : Jnn <: lanetype)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), NE_vrelop_, v128_1, v128_2) = v128
     -- if (lane_1*{lane_1 : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), v128_1))
     -- if (lane_2*{lane_2 : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), v128_2))
-    -- if (lane_3*{lane_3 : iN($lsize((Jnn : Jnn <: lanetype)))} = $ext__(1, $lsize((Jnn : Jnn <: lanetype)), S_sx, `%`_iN($ine_($lsize((Jnn : Jnn <: lanetype)), lane_1, lane_2)!`%`_u32.0))*{lane_1 : iN($lsize((Jnn : Jnn <: lanetype))), lane_2 : iN($lsize((Jnn : Jnn <: lanetype)))})
+    -- if (lane_3*{lane_3 : iN($lsize((Jnn : Jnn <: lanetype)))} = $extend__(1, $lsize((Jnn : Jnn <: lanetype)), S_sx, `%`_iN($ine_($lsize((Jnn : Jnn <: lanetype)), lane_1, lane_2)!`%`_u32.0))*{lane_1 : iN($lsize((Jnn : Jnn <: lanetype))), lane_2 : iN($lsize((Jnn : Jnn <: lanetype)))})
     -- if (v128 = $invlanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), lane_3*{lane_3 : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))}))
   ;; 3-numerics.watsup
   def $vrelop_{Jnn : Jnn, N : N, sx : sx, v128_1 : vec_(V128_Vnn), v128_2 : vec_(V128_Vnn), v128 : vec_(V128_Vnn), lane_1* : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))*, lane_2* : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))*, lane_3* : iN($lsize((Jnn : Jnn <: lanetype)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), LT_vrelop_(sx), v128_1, v128_2) = v128
     -- if (lane_1*{lane_1 : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), v128_1))
     -- if (lane_2*{lane_2 : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), v128_2))
-    -- if (lane_3*{lane_3 : iN($lsize((Jnn : Jnn <: lanetype)))} = $ext__(1, $lsize((Jnn : Jnn <: lanetype)), S_sx, `%`_iN($ilt_($lsize((Jnn : Jnn <: lanetype)), sx, lane_1, lane_2)!`%`_u32.0))*{lane_1 : iN($lsize((Jnn : Jnn <: lanetype))), lane_2 : iN($lsize((Jnn : Jnn <: lanetype)))})
+    -- if (lane_3*{lane_3 : iN($lsize((Jnn : Jnn <: lanetype)))} = $extend__(1, $lsize((Jnn : Jnn <: lanetype)), S_sx, `%`_iN($ilt_($lsize((Jnn : Jnn <: lanetype)), sx, lane_1, lane_2)!`%`_u32.0))*{lane_1 : iN($lsize((Jnn : Jnn <: lanetype))), lane_2 : iN($lsize((Jnn : Jnn <: lanetype)))})
     -- if (v128 = $invlanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), lane_3*{lane_3 : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))}))
   ;; 3-numerics.watsup
   def $vrelop_{Jnn : Jnn, N : N, sx : sx, v128_1 : vec_(V128_Vnn), v128_2 : vec_(V128_Vnn), v128 : vec_(V128_Vnn), lane_1* : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))*, lane_2* : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))*, lane_3* : iN($lsize((Jnn : Jnn <: lanetype)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), GT_vrelop_(sx), v128_1, v128_2) = v128
     -- if (lane_1*{lane_1 : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), v128_1))
     -- if (lane_2*{lane_2 : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), v128_2))
-    -- if (lane_3*{lane_3 : iN($lsize((Jnn : Jnn <: lanetype)))} = $ext__(1, $lsize((Jnn : Jnn <: lanetype)), S_sx, `%`_iN($igt_($lsize((Jnn : Jnn <: lanetype)), sx, lane_1, lane_2)!`%`_u32.0))*{lane_1 : iN($lsize((Jnn : Jnn <: lanetype))), lane_2 : iN($lsize((Jnn : Jnn <: lanetype)))})
+    -- if (lane_3*{lane_3 : iN($lsize((Jnn : Jnn <: lanetype)))} = $extend__(1, $lsize((Jnn : Jnn <: lanetype)), S_sx, `%`_iN($igt_($lsize((Jnn : Jnn <: lanetype)), sx, lane_1, lane_2)!`%`_u32.0))*{lane_1 : iN($lsize((Jnn : Jnn <: lanetype))), lane_2 : iN($lsize((Jnn : Jnn <: lanetype)))})
     -- if (v128 = $invlanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), lane_3*{lane_3 : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))}))
   ;; 3-numerics.watsup
   def $vrelop_{Jnn : Jnn, N : N, sx : sx, v128_1 : vec_(V128_Vnn), v128_2 : vec_(V128_Vnn), v128 : vec_(V128_Vnn), lane_1* : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))*, lane_2* : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))*, lane_3* : iN($lsize((Jnn : Jnn <: lanetype)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), LE_vrelop_(sx), v128_1, v128_2) = v128
     -- if (lane_1*{lane_1 : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), v128_1))
     -- if (lane_2*{lane_2 : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), v128_2))
-    -- if (lane_3*{lane_3 : iN($lsize((Jnn : Jnn <: lanetype)))} = $ext__(1, $lsize((Jnn : Jnn <: lanetype)), S_sx, `%`_iN($ile_($lsize((Jnn : Jnn <: lanetype)), sx, lane_1, lane_2)!`%`_u32.0))*{lane_1 : iN($lsize((Jnn : Jnn <: lanetype))), lane_2 : iN($lsize((Jnn : Jnn <: lanetype)))})
+    -- if (lane_3*{lane_3 : iN($lsize((Jnn : Jnn <: lanetype)))} = $extend__(1, $lsize((Jnn : Jnn <: lanetype)), S_sx, `%`_iN($ile_($lsize((Jnn : Jnn <: lanetype)), sx, lane_1, lane_2)!`%`_u32.0))*{lane_1 : iN($lsize((Jnn : Jnn <: lanetype))), lane_2 : iN($lsize((Jnn : Jnn <: lanetype)))})
     -- if (v128 = $invlanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), lane_3*{lane_3 : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))}))
   ;; 3-numerics.watsup
   def $vrelop_{Jnn : Jnn, N : N, sx : sx, v128_1 : vec_(V128_Vnn), v128_2 : vec_(V128_Vnn), v128 : vec_(V128_Vnn), lane_1* : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))*, lane_2* : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))*, lane_3* : iN($lsize((Jnn : Jnn <: lanetype)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), GE_vrelop_(sx), v128_1, v128_2) = v128
     -- if (lane_1*{lane_1 : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), v128_1))
     -- if (lane_2*{lane_2 : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), v128_2))
-    -- if (lane_3*{lane_3 : iN($lsize((Jnn : Jnn <: lanetype)))} = $ext__(1, $lsize((Jnn : Jnn <: lanetype)), S_sx, `%`_iN($ige_($lsize((Jnn : Jnn <: lanetype)), sx, lane_1, lane_2)!`%`_u32.0))*{lane_1 : iN($lsize((Jnn : Jnn <: lanetype))), lane_2 : iN($lsize((Jnn : Jnn <: lanetype)))})
+    -- if (lane_3*{lane_3 : iN($lsize((Jnn : Jnn <: lanetype)))} = $extend__(1, $lsize((Jnn : Jnn <: lanetype)), S_sx, `%`_iN($ige_($lsize((Jnn : Jnn <: lanetype)), sx, lane_1, lane_2)!`%`_u32.0))*{lane_1 : iN($lsize((Jnn : Jnn <: lanetype))), lane_2 : iN($lsize((Jnn : Jnn <: lanetype)))})
     -- if (v128 = $invlanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N)), lane_3*{lane_3 : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(N))))}))
   ;; 3-numerics.watsup
   def $vrelop_{Fnn : Fnn, N : N, v128_1 : vec_(V128_Vnn), v128_2 : vec_(V128_Vnn), v128 : vec_(V128_Vnn), lane_1* : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N))))*, lane_2* : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N))))*, lane_3* : iN($size((Fnn : Fnn <: numtype)))*, Inn : Inn}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N)), EQ_vrelop_, v128_1, v128_2) = v128
     -- if (lane_1*{lane_1 : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N))))} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N)), v128_1))
     -- if (lane_2*{lane_2 : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N))))} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N)), v128_2))
-    -- if (lane_3*{lane_3 : iN($size((Fnn : Fnn <: numtype)))} = $ext__(1, $size((Fnn : Fnn <: numtype)), S_sx, `%`_iN($feq_($size((Fnn : Fnn <: numtype)), lane_1, lane_2)!`%`_u32.0))*{lane_1 : fN($size((Fnn : Fnn <: numtype))), lane_2 : fN($size((Fnn : Fnn <: numtype)))})
+    -- if (lane_3*{lane_3 : iN($size((Fnn : Fnn <: numtype)))} = $extend__(1, $size((Fnn : Fnn <: numtype)), S_sx, `%`_iN($feq_($size((Fnn : Fnn <: numtype)), lane_1, lane_2)!`%`_u32.0))*{lane_1 : fN($size((Fnn : Fnn <: numtype))), lane_2 : fN($size((Fnn : Fnn <: numtype)))})
     -- if ($isize(Inn) = $size((Fnn : Fnn <: numtype)))
     -- if (v128 = $invlanes_(`%X%`_shape((Inn : Inn <: lanetype), `%`_dim(N)), `%`_lane_(lane_3!`%`_iN.0)*{lane_3 : iN($size((Fnn : Fnn <: numtype)))}))
   ;; 3-numerics.watsup
   def $vrelop_{Fnn : Fnn, N : N, v128_1 : vec_(V128_Vnn), v128_2 : vec_(V128_Vnn), v128 : vec_(V128_Vnn), lane_1* : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N))))*, lane_2* : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N))))*, lane_3* : iN($size((Fnn : Fnn <: numtype)))*, Inn : Inn}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N)), NE_vrelop_, v128_1, v128_2) = v128
     -- if (lane_1*{lane_1 : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N))))} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N)), v128_1))
     -- if (lane_2*{lane_2 : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N))))} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N)), v128_2))
-    -- if (lane_3*{lane_3 : iN($size((Fnn : Fnn <: numtype)))} = $ext__(1, $size((Fnn : Fnn <: numtype)), S_sx, `%`_iN($fne_($size((Fnn : Fnn <: numtype)), lane_1, lane_2)!`%`_u32.0))*{lane_1 : fN($size((Fnn : Fnn <: numtype))), lane_2 : fN($size((Fnn : Fnn <: numtype)))})
+    -- if (lane_3*{lane_3 : iN($size((Fnn : Fnn <: numtype)))} = $extend__(1, $size((Fnn : Fnn <: numtype)), S_sx, `%`_iN($fne_($size((Fnn : Fnn <: numtype)), lane_1, lane_2)!`%`_u32.0))*{lane_1 : fN($size((Fnn : Fnn <: numtype))), lane_2 : fN($size((Fnn : Fnn <: numtype)))})
     -- if ($isize(Inn) = $size((Fnn : Fnn <: numtype)))
     -- if (v128 = $invlanes_(`%X%`_shape((Inn : Inn <: lanetype), `%`_dim(N)), `%`_lane_(lane_3!`%`_iN.0)*{lane_3 : iN($size((Fnn : Fnn <: numtype)))}))
   ;; 3-numerics.watsup
   def $vrelop_{Fnn : Fnn, N : N, v128_1 : vec_(V128_Vnn), v128_2 : vec_(V128_Vnn), v128 : vec_(V128_Vnn), lane_1* : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N))))*, lane_2* : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N))))*, lane_3* : iN($size((Fnn : Fnn <: numtype)))*, Inn : Inn}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N)), LT_vrelop_, v128_1, v128_2) = v128
     -- if (lane_1*{lane_1 : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N))))} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N)), v128_1))
     -- if (lane_2*{lane_2 : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N))))} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N)), v128_2))
-    -- if (lane_3*{lane_3 : iN($size((Fnn : Fnn <: numtype)))} = $ext__(1, $size((Fnn : Fnn <: numtype)), S_sx, `%`_iN($flt_($size((Fnn : Fnn <: numtype)), lane_1, lane_2)!`%`_u32.0))*{lane_1 : fN($size((Fnn : Fnn <: numtype))), lane_2 : fN($size((Fnn : Fnn <: numtype)))})
+    -- if (lane_3*{lane_3 : iN($size((Fnn : Fnn <: numtype)))} = $extend__(1, $size((Fnn : Fnn <: numtype)), S_sx, `%`_iN($flt_($size((Fnn : Fnn <: numtype)), lane_1, lane_2)!`%`_u32.0))*{lane_1 : fN($size((Fnn : Fnn <: numtype))), lane_2 : fN($size((Fnn : Fnn <: numtype)))})
     -- if ($isize(Inn) = $size((Fnn : Fnn <: numtype)))
     -- if (v128 = $invlanes_(`%X%`_shape((Inn : Inn <: lanetype), `%`_dim(N)), `%`_lane_(lane_3!`%`_iN.0)*{lane_3 : iN($size((Fnn : Fnn <: numtype)))}))
   ;; 3-numerics.watsup
   def $vrelop_{Fnn : Fnn, N : N, v128_1 : vec_(V128_Vnn), v128_2 : vec_(V128_Vnn), v128 : vec_(V128_Vnn), lane_1* : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N))))*, lane_2* : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N))))*, lane_3* : iN($size((Fnn : Fnn <: numtype)))*, Inn : Inn}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N)), GT_vrelop_, v128_1, v128_2) = v128
     -- if (lane_1*{lane_1 : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N))))} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N)), v128_1))
     -- if (lane_2*{lane_2 : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N))))} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N)), v128_2))
-    -- if (lane_3*{lane_3 : iN($size((Fnn : Fnn <: numtype)))} = $ext__(1, $size((Fnn : Fnn <: numtype)), S_sx, `%`_iN($fgt_($size((Fnn : Fnn <: numtype)), lane_1, lane_2)!`%`_u32.0))*{lane_1 : fN($size((Fnn : Fnn <: numtype))), lane_2 : fN($size((Fnn : Fnn <: numtype)))})
+    -- if (lane_3*{lane_3 : iN($size((Fnn : Fnn <: numtype)))} = $extend__(1, $size((Fnn : Fnn <: numtype)), S_sx, `%`_iN($fgt_($size((Fnn : Fnn <: numtype)), lane_1, lane_2)!`%`_u32.0))*{lane_1 : fN($size((Fnn : Fnn <: numtype))), lane_2 : fN($size((Fnn : Fnn <: numtype)))})
     -- if ($isize(Inn) = $size((Fnn : Fnn <: numtype)))
     -- if (v128 = $invlanes_(`%X%`_shape((Inn : Inn <: lanetype), `%`_dim(N)), `%`_lane_(lane_3!`%`_iN.0)*{lane_3 : iN($size((Fnn : Fnn <: numtype)))}))
   ;; 3-numerics.watsup
   def $vrelop_{Fnn : Fnn, N : N, v128_1 : vec_(V128_Vnn), v128_2 : vec_(V128_Vnn), v128 : vec_(V128_Vnn), lane_1* : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N))))*, lane_2* : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N))))*, lane_3* : iN($size((Fnn : Fnn <: numtype)))*, Inn : Inn}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N)), LE_vrelop_, v128_1, v128_2) = v128
     -- if (lane_1*{lane_1 : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N))))} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N)), v128_1))
     -- if (lane_2*{lane_2 : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N))))} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N)), v128_2))
-    -- if (lane_3*{lane_3 : iN($size((Fnn : Fnn <: numtype)))} = $ext__(1, $size((Fnn : Fnn <: numtype)), S_sx, `%`_iN($fle_($size((Fnn : Fnn <: numtype)), lane_1, lane_2)!`%`_u32.0))*{lane_1 : fN($size((Fnn : Fnn <: numtype))), lane_2 : fN($size((Fnn : Fnn <: numtype)))})
+    -- if (lane_3*{lane_3 : iN($size((Fnn : Fnn <: numtype)))} = $extend__(1, $size((Fnn : Fnn <: numtype)), S_sx, `%`_iN($fle_($size((Fnn : Fnn <: numtype)), lane_1, lane_2)!`%`_u32.0))*{lane_1 : fN($size((Fnn : Fnn <: numtype))), lane_2 : fN($size((Fnn : Fnn <: numtype)))})
     -- if ($isize(Inn) = $size((Fnn : Fnn <: numtype)))
     -- if (v128 = $invlanes_(`%X%`_shape((Inn : Inn <: lanetype), `%`_dim(N)), `%`_lane_(lane_3!`%`_iN.0)*{lane_3 : iN($size((Fnn : Fnn <: numtype)))}))
   ;; 3-numerics.watsup
   def $vrelop_{Fnn : Fnn, N : N, v128_1 : vec_(V128_Vnn), v128_2 : vec_(V128_Vnn), v128 : vec_(V128_Vnn), lane_1* : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N))))*, lane_2* : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N))))*, lane_3* : iN($size((Fnn : Fnn <: numtype)))*, Inn : Inn}(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N)), GE_vrelop_, v128_1, v128_2) = v128
     -- if (lane_1*{lane_1 : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N))))} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N)), v128_1))
     -- if (lane_2*{lane_2 : lane_($lanetype(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N))))} = $lanes_(`%X%`_shape((Fnn : Fnn <: lanetype), `%`_dim(N)), v128_2))
-    -- if (lane_3*{lane_3 : iN($size((Fnn : Fnn <: numtype)))} = $ext__(1, $size((Fnn : Fnn <: numtype)), S_sx, `%`_iN($fge_($size((Fnn : Fnn <: numtype)), lane_1, lane_2)!`%`_u32.0))*{lane_1 : fN($size((Fnn : Fnn <: numtype))), lane_2 : fN($size((Fnn : Fnn <: numtype)))})
+    -- if (lane_3*{lane_3 : iN($size((Fnn : Fnn <: numtype)))} = $extend__(1, $size((Fnn : Fnn <: numtype)), S_sx, `%`_iN($fge_($size((Fnn : Fnn <: numtype)), lane_1, lane_2)!`%`_u32.0))*{lane_1 : fN($size((Fnn : Fnn <: numtype))), lane_2 : fN($size((Fnn : Fnn <: numtype)))})
     -- if ($isize(Inn) = $size((Fnn : Fnn <: numtype)))
     -- if (v128 = $invlanes_(`%X%`_shape((Inn : Inn <: lanetype), `%`_dim(N)), `%`_lane_(lane_3!`%`_iN.0)*{lane_3 : iN($size((Fnn : Fnn <: numtype)))}))
 
@@ -3004,13 +3004,13 @@ def $vrelop_(shape : shape, vrelop_ : vrelop_(shape), vec_ : vec_(V128_Vnn), vec
 def $vcvtop__(shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__(shape_1, shape_2), sx?, lane_ : lane_($lanetype(shape_1))) : lane_($lanetype(shape_2))
   ;; 3-numerics.watsup
   def $vcvtop__{N_1 : N, N_2 : N, sx : sx, i8 : lane_($lanetype(`%X%`_shape(I8_lanetype, `%`_dim(N_1)))), i16 : lane_($lanetype(`%X%`_shape(I16_lanetype, `%`_dim(N_2))))}(`%X%`_shape(I8_lanetype, `%`_dim(N_1)), `%X%`_shape(I16_lanetype, `%`_dim(N_2)), EXTEND_vcvtop__, ?(sx), i8) = i16
-    -- if (i16 = $ext__(8, 16, sx, i8))
+    -- if (i16 = $extend__(8, 16, sx, i8))
   ;; 3-numerics.watsup
   def $vcvtop__{N_1 : N, N_2 : N, sx : sx, i16 : lane_($lanetype(`%X%`_shape(I16_lanetype, `%`_dim(N_1)))), i32 : lane_($lanetype(`%X%`_shape(I32_lanetype, `%`_dim(N_2))))}(`%X%`_shape(I16_lanetype, `%`_dim(N_1)), `%X%`_shape(I32_lanetype, `%`_dim(N_2)), EXTEND_vcvtop__, ?(sx), i16) = i32
-    -- if (i32 = $ext__(16, 32, sx, i16))
+    -- if (i32 = $extend__(16, 32, sx, i16))
   ;; 3-numerics.watsup
   def $vcvtop__{N_1 : N, N_2 : N, sx : sx, i32 : lane_($lanetype(`%X%`_shape(I32_lanetype, `%`_dim(N_1)))), i64 : lane_($lanetype(`%X%`_shape(I64_lanetype, `%`_dim(N_2))))}(`%X%`_shape(I32_lanetype, `%`_dim(N_1)), `%X%`_shape(I64_lanetype, `%`_dim(N_2)), EXTEND_vcvtop__, ?(sx), i32) = i64
-    -- if (i64 = $ext__(32, 64, sx, i32))
+    -- if (i64 = $extend__(32, 64, sx, i32))
   ;; 3-numerics.watsup
   def $vcvtop__{N_1 : N, N_2 : N, sx : sx, i32 : lane_($lanetype(`%X%`_shape(I32_lanetype, `%`_dim(N_1)))), f32 : f32}(`%X%`_shape(I32_lanetype, `%`_dim(N_1)), `%X%`_shape(F32_lanetype, `%`_dim(N_2)), CONVERT_vcvtop__, ?(sx), i32) = f32
     -- if (f32 = $convert__(32, 32, sx, i32))
@@ -3035,7 +3035,7 @@ def $vextunop__(ishape_1 : ishape, ishape_2 : ishape, vextunop__ : vextunop__(is
   ;; 3-numerics.watsup
   def $vextunop__{Jnn_1 : Jnn, N_1 : N, Jnn_2 : Jnn, N_2 : N, sx : sx, c_1 : vec_(V128_Vnn), c : vec_(V128_Vnn), cj_1* : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, cj_2* : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, ci* : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1))))*}(`%X%`_ishape(Jnn_1, `%`_dim(N_1)), `%X%`_ishape(Jnn_2, `%`_dim(N_2)), EXTADD_PAIRWISE_vextunop__(sx), c_1) = c
     -- if (ci*{ci : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1))))} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1)), c_1))
-    -- if ($concat_(syntax iN($lsize((Jnn_2 : Jnn <: lanetype))), [cj_1 cj_2]*{cj_1 : uN($lsize((Jnn_2 : Jnn <: lanetype))), cj_2 : uN($lsize((Jnn_2 : Jnn <: lanetype)))}) = $ext__($lsize((Jnn_1 : Jnn <: lanetype)), $lsize((Jnn_2 : Jnn <: lanetype)), sx, ci)*{ci : iN($lsize((Jnn_1 : Jnn <: lanetype)))})
+    -- if ($concat_(syntax iN($lsize((Jnn_2 : Jnn <: lanetype))), [cj_1 cj_2]*{cj_1 : uN($lsize((Jnn_2 : Jnn <: lanetype))), cj_2 : uN($lsize((Jnn_2 : Jnn <: lanetype)))}) = $extend__($lsize((Jnn_1 : Jnn <: lanetype)), $lsize((Jnn_2 : Jnn <: lanetype)), sx, ci)*{ci : iN($lsize((Jnn_1 : Jnn <: lanetype)))})
     -- if (c = $invlanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(N_2)), $iadd_($lsize((Jnn_2 : Jnn <: lanetype)), cj_1, cj_2)*{cj_1 : iN($lsize((Jnn_2 : Jnn <: lanetype))), cj_2 : iN($lsize((Jnn_2 : Jnn <: lanetype)))}))
 
 ;; 3-numerics.watsup
@@ -3044,12 +3044,12 @@ def $vextbinop__(ishape_1 : ishape, ishape_2 : ishape, vextbinop__ : vextbinop__
   def $vextbinop__{Jnn_1 : Jnn, N_1 : N, Jnn_2 : Jnn, N_2 : N, sx : sx, half : half__(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(N_2))), c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c : vec_(V128_Vnn), ci_1* : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1))))*, ci_2* : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1))))*}(`%X%`_ishape(Jnn_1, `%`_dim(N_1)), `%X%`_ishape(Jnn_2, `%`_dim(N_2)), EXTMUL_vextbinop__(sx, half), c_1, c_2) = c
     -- if (ci_1*{ci_1 : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1))))} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1)), c_1)[$half__(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(N_2)), half, 0, N_2) : N_2])
     -- if (ci_2*{ci_2 : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1))))} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1)), c_2)[$half__(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1)), `%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(N_2)), half, 0, N_2) : N_2])
-    -- if (c = $invlanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(N_2)), $imul_($lsize((Jnn_2 : Jnn <: lanetype)), $ext__($lsize((Jnn_1 : Jnn <: lanetype)), $lsize((Jnn_2 : Jnn <: lanetype)), sx, ci_1), $ext__($lsize((Jnn_1 : Jnn <: lanetype)), $lsize((Jnn_2 : Jnn <: lanetype)), sx, ci_2))*{ci_1 : iN($lsize((Jnn_1 : Jnn <: lanetype))), ci_2 : iN($lsize((Jnn_1 : Jnn <: lanetype)))}))
+    -- if (c = $invlanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(N_2)), $imul_($lsize((Jnn_2 : Jnn <: lanetype)), $extend__($lsize((Jnn_1 : Jnn <: lanetype)), $lsize((Jnn_2 : Jnn <: lanetype)), sx, ci_1), $extend__($lsize((Jnn_1 : Jnn <: lanetype)), $lsize((Jnn_2 : Jnn <: lanetype)), sx, ci_2))*{ci_1 : iN($lsize((Jnn_1 : Jnn <: lanetype))), ci_2 : iN($lsize((Jnn_1 : Jnn <: lanetype)))}))
   ;; 3-numerics.watsup
   def $vextbinop__{Jnn_1 : Jnn, N_1 : N, Jnn_2 : Jnn, N_2 : N, c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c : vec_(V128_Vnn), cj_1* : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, cj_2* : iN($lsize((Jnn_2 : Jnn <: lanetype)))*, ci_1* : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1))))*, ci_2* : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1))))*}(`%X%`_ishape(Jnn_1, `%`_dim(N_1)), `%X%`_ishape(Jnn_2, `%`_dim(N_2)), `DOTS`_vextbinop__, c_1, c_2) = c
     -- if (ci_1*{ci_1 : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1))))} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1)), c_1))
     -- if (ci_2*{ci_2 : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1))))} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), `%`_dim(N_1)), c_2))
-    -- if ($concat_(syntax iN($lsize((Jnn_2 : Jnn <: lanetype))), [cj_1 cj_2]*{cj_1 : uN($lsize((Jnn_2 : Jnn <: lanetype))), cj_2 : uN($lsize((Jnn_2 : Jnn <: lanetype)))}) = $imul_($lsize((Jnn_2 : Jnn <: lanetype)), $ext__($lsize((Jnn_1 : Jnn <: lanetype)), $lsize((Jnn_2 : Jnn <: lanetype)), S_sx, ci_1), $ext__($lsize((Jnn_1 : Jnn <: lanetype)), $lsize((Jnn_2 : Jnn <: lanetype)), S_sx, ci_2))*{ci_1 : iN($lsize((Jnn_1 : Jnn <: lanetype))), ci_2 : iN($lsize((Jnn_1 : Jnn <: lanetype)))})
+    -- if ($concat_(syntax iN($lsize((Jnn_2 : Jnn <: lanetype))), [cj_1 cj_2]*{cj_1 : uN($lsize((Jnn_2 : Jnn <: lanetype))), cj_2 : uN($lsize((Jnn_2 : Jnn <: lanetype)))}) = $imul_($lsize((Jnn_2 : Jnn <: lanetype)), $extend__($lsize((Jnn_1 : Jnn <: lanetype)), $lsize((Jnn_2 : Jnn <: lanetype)), S_sx, ci_1), $extend__($lsize((Jnn_1 : Jnn <: lanetype)), $lsize((Jnn_2 : Jnn <: lanetype)), S_sx, ci_2))*{ci_1 : iN($lsize((Jnn_1 : Jnn <: lanetype))), ci_2 : iN($lsize((Jnn_1 : Jnn <: lanetype)))})
     -- if (c = $invlanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), `%`_dim(N_2)), $iadd_($lsize((Jnn_2 : Jnn <: lanetype)), cj_1, cj_2)*{cj_1 : iN($lsize((Jnn_2 : Jnn <: lanetype))), cj_2 : iN($lsize((Jnn_2 : Jnn <: lanetype)))}))
 
 ;; 3-numerics.watsup
@@ -3222,7 +3222,7 @@ def $unpackfield_(storagetype : storagetype, sx?, fieldval : fieldval) : val
   ;; 5-runtime-aux.watsup
   def $unpackfield_{valtype : valtype, val : val}((valtype : valtype <: storagetype), ?(), (val : val <: fieldval)) = val
   ;; 5-runtime-aux.watsup
-  def $unpackfield_{packtype : packtype, sx : sx, i : nat}((packtype : packtype <: storagetype), ?(sx), PACK_fieldval(packtype, `%`_iN(i))) = CONST_val(I32_numtype, $ext__($psize(packtype), 32, sx, `%`_iN(i)))
+  def $unpackfield_{packtype : packtype, sx : sx, i : nat}((packtype : packtype <: storagetype), ?(sx), PACK_fieldval(packtype, `%`_iN(i))) = CONST_val(I32_numtype, $extend__($psize(packtype), 32, sx, `%`_iN(i)))
 
 ;; 5-runtime-aux.watsup
 rec {
@@ -5279,7 +5279,7 @@ relation Step_pure: `%~>%`(instr*, instr*)
 
   ;; 8-reduction.watsup
   rule i31.get-num{i : nat, sx : sx}:
-    `%~>%`([REF.I31_NUM_instr(`%`_u31(i)) I31.GET_instr(sx)], [CONST_instr(I32_numtype, $ext__(31, 32, sx, `%`_iN(i)))])
+    `%~>%`([REF.I31_NUM_instr(`%`_u31(i)) I31.GET_instr(sx)], [CONST_instr(I32_numtype, $extend__(31, 32, sx, `%`_iN(i)))])
 
   ;; 8-reduction.watsup
   rule array.new{val : val, n : n, x : idx}:
@@ -5390,7 +5390,7 @@ relation Step_pure: `%~>%`(instr*, instr*)
   ;; 8-reduction.watsup
   rule vextract_lane-pack{c_1 : vec_(V128_Vnn), pt : packtype, M : M, sx : sx, i : nat, c_2 : num_(I32_numtype)}:
     `%~>%`([VCONST_instr(V128_vectype, c_1) VEXTRACT_LANE_instr(`%X%`_shape((pt : packtype <: lanetype), `%`_dim(M)), ?(sx), `%`_laneidx(i))], [CONST_instr(I32_numtype, c_2)])
-    -- if (c_2 = $ext__($psize(pt), 32, sx, $lanes_(`%X%`_shape((pt : packtype <: lanetype), `%`_dim(M)), c_1)[i]))
+    -- if (c_2 = $extend__($psize(pt), 32, sx, $lanes_(`%X%`_shape((pt : packtype <: lanetype), `%`_dim(M)), c_1)[i]))
 
   ;; 8-reduction.watsup
   rule vreplace_lane{c_1 : vec_(V128_Vnn), Lnn : Lnn, c_2 : num_($lunpack(Lnn)), M : M, i : nat, c : vec_(V128_Vnn)}:
@@ -5818,7 +5818,7 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; 8-reduction.watsup
   rule load-pack-val{z : state, i : nat, Inn : Inn, n : n, sx : sx, x : idx, ao : memarg, c : iN(n)}:
-    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) LOAD_instr((Inn : Inn <: numtype), ?(`%%`_loadop_(`%`_sz(n), sx)), x, ao)]), [CONST_instr((Inn : Inn <: numtype), $ext__(n, $size((Inn : Inn <: numtype)), sx, c))])
+    `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) LOAD_instr((Inn : Inn <: numtype), ?(`%%`_loadop_(`%`_sz(n), sx)), x, ao)]), [CONST_instr((Inn : Inn <: numtype), $extend__(n, $size((Inn : Inn <: numtype)), sx, c))])
     -- if ($ibytes_(n, c) = $mem(z, x).BYTES_meminst[(i + ao.OFFSET_memarg!`%`_u32.0) : (n / 8)])
 
   ;; 8-reduction.watsup
@@ -5840,7 +5840,7 @@ relation Step_read: `%~>%`(config, instr*)
   rule vload-pack-val{z : state, i : nat, M : M, K : K, sx : sx, x : idx, ao : memarg, c : vec_(V128_Vnn), j^K : nat^K, k^K : nat^K, Jnn : Jnn}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VLOAD_instr(V128_vectype, ?(`SHAPE%X%%`_vloadop_(`%`_sz(M), K, sx)), x, ao)]), [VCONST_instr(V128_vectype, c)])
     -- (if ($ibytes_(M, `%`_iN(j)) = $mem(z, x).BYTES_meminst[((i + ao.OFFSET_memarg!`%`_u32.0) + ((k * M) / 8)) : (M / 8)]))^(k<K){j : nat, k : nat}
-    -- if ((c = $invlanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(K)), $ext__(M, $lsizenn((Jnn : Jnn <: lanetype)), sx, `%`_iN(j))^K{j : nat})) /\ ($lsizenn((Jnn : Jnn <: lanetype)) = (M * 2)))
+    -- if ((c = $invlanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(K)), $extend__(M, $lsizenn((Jnn : Jnn <: lanetype)), sx, `%`_iN(j))^K{j : nat})) /\ ($lsizenn((Jnn : Jnn <: lanetype)) = (M * 2)))
 
   ;; 8-reduction.watsup
   rule vload-splat-oob{z : state, i : nat, N : N, x : idx, ao : memarg}:
@@ -5864,7 +5864,7 @@ relation Step_read: `%~>%`(config, instr*)
   rule vload-zero-val{z : state, i : nat, N : N, x : idx, ao : memarg, c : vec_(V128_Vnn), j : nat}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VLOAD_instr(V128_vectype, ?(ZERO_vloadop_(`%`_sz(N))), x, ao)]), [VCONST_instr(V128_vectype, c)])
     -- if ($ibytes_(N, `%`_iN(j)) = $mem(z, x).BYTES_meminst[(i + ao.OFFSET_memarg!`%`_u32.0) : (N / 8)])
-    -- if (c = $ext__(N, 128, U_sx, `%`_iN(j)))
+    -- if (c = $extend__(N, 128, U_sx, `%`_iN(j)))
 
   ;; 8-reduction.watsup
   rule vload_lane-oob{z : state, i : nat, c_1 : vec_(V128_Vnn), N : N, x : idx, ao : memarg, j : nat}:
