@@ -508,7 +508,7 @@ let al_to_int_vbinop : value -> V128Op.ibinop = function
   | CaseV ("ADD_SAT", [CaseV ("U", [])]) -> V128Op.AddSatU
   | CaseV ("SUB_SAT", [CaseV ("S", [])]) -> V128Op.SubSatS
   | CaseV ("SUB_SAT", [CaseV ("U", [])]) -> V128Op.SubSatU
-  | CaseV ("DOT", [CaseV ("S", [])]) -> V128Op.DotS
+  | CaseV ("DOT", []) -> V128Op.DotS
   | CaseV ("Q15MULR_SAT", []) -> V128Op.Q15MulRSatS
   | CaseV ("SWIZZLE", []) -> V128Op.Swizzle
   (*TODO *)
@@ -1460,7 +1460,7 @@ let al_of_special_vbinop = function
   | V128 (V128.I64x2 (V128Op.ExtMulHighU)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I64"; numV two ]; TupV [ nullary "I32"; numV four ]; caseV ("EXTMUL", [al_of_extension Pack.ZX; nullary "HIGH"]) ])
   | V128 (V128.I64x2 (V128Op.ExtMulLowS)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I64"; numV two ]; TupV [ nullary "I32"; numV four ]; caseV ("EXTMUL", [al_of_extension Pack.SX; nullary "LOW"]) ])
   | V128 (V128.I64x2 (V128Op.ExtMulLowU)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I64"; numV two ]; TupV [ nullary "I32"; numV four ]; caseV ("EXTMUL", [al_of_extension Pack.ZX; nullary "LOW"]) ] )
-  | V128 (V128.I32x4 (V128Op.DotS)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I32"; numV four ]; TupV [ nullary "I16"; numV eight ]; caseV ("DOT", [nullary "S"]) ])
+  | V128 (V128.I32x4 (V128Op.DotS)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I32"; numV four ]; TupV [ nullary "I16"; numV eight ]; nullary "DOT" ])
   | _ -> error "al_of_special_vbinop" empty
 
 let al_of_int_vcvtop = function
