@@ -15,7 +15,7 @@ let eval_expr =
     "eval_expr",
     [instrs],
     [
-      executeseqI instrs;
+      executeI instrs;
       popI result;
       returnI (Some (listE [ result ]))
     ]

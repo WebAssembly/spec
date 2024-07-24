@@ -563,15 +563,14 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
   | ReturnI None -> AlContext.tl ctx
   | ReturnI (Some e) ->
     AlContext.return (eval_expr env e) :: AlContext.tl ctx
-  | ExecuteI e -> AlContext.execute (eval_expr env e) :: ctx
-  | ExecuteSeqI e ->
-    let ctx' =
-      e
-      |> eval_expr env
-      |> unwrap_listv_to_list
-      |> List.map AlContext.execute
-    in
-    ctx' @ ctx
+  | ExecuteI e ->
+    let v = eval_expr env e in
+    (match v with
+    | ListV _ ->
+      let ctx' = v |> unwrap_listv_to_list |> List.map AlContext.execute in
+      ctx' @ ctx
+    | _ -> AlContext.execute v :: ctx
+    )
   | EnterI (e1, e2, il) ->
     let v1 = eval_expr env e1 in
     let v2 = eval_expr env e2 in

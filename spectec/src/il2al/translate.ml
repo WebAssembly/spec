@@ -16,9 +16,20 @@ struct
 end
 
 
+(* Errors *)
+
+let error at msg = Error.error at "prose translation" msg
+
+let error_exp exp typ =
+  error exp.at (sprintf "unexpected %s: `%s`" typ (Il.Print.string_of_exp exp))
+
+
 (* Global env for eval *)
+
 let env: Il.Eval.env ref =
   ref Il.Eval.{ vars=Map.empty; typs=Map.empty; defs=Map.empty }
+
+(* Helpers *)
 
 let sub_typ typ1 typ2 =
   match typ1.it, typ2.it with
@@ -27,15 +38,9 @@ let sub_typ typ1 typ2 =
   | Il.VarT ({ it="TODO"; _ }, []), _ -> false
   | _ -> Il.Eval.sub_typ !env typ1 typ2
 
-
-(* Errors *)
-
-let error at msg = Error.error at "prose translation" msg
-
-let error_exp exp typ =
-  error exp.at (sprintf "unexpected %s: `%s`" typ (Il.Print.string_of_exp exp))
-
-(* Helpers *)
+(* name for tuple type *)
+let no_name = Il.VarE ("_" $ no_region) $$ no_region % (Il.TextT $ no_region)
+let varT s = Il.VarT (s $ no_region, []) $ no_region
 
 let check_type_of_exp (ty: string) (exp: Il.exp) =
   match exp.note.it with
@@ -103,6 +108,12 @@ let wrap typ e = e $$ no_region % typ
 
 let top = Il.VarT ("TOP" $ no_region, []) $ no_region
 let hole = Il.TextE "_" |> wrap top
+
+let contains_ids ids expr =
+  ids
+  |> IdSet.of_list
+  |> IdSet.disjoint (free_expr expr)
+  |> not
 
 let insert_nop instrs = match instrs with [] -> [ nopI () ] | _ -> instrs
 
@@ -380,41 +391,7 @@ let rec translate_rhs exp =
   match exp.it with
   (* Trap *)
   | Il.CaseE ([{it = Atom "TRAP"; _}]::_, _) -> [ trapI () ~at:at ]
-  (* Execute instrs
-   * TODO: doing this based on variable name is too ad-hoc. Need smarter way. *)
-  | Il.IterE ({ it = VarE id; _ }, (List, _))
-  | Il.IterE ({ it = SubE ({ it = VarE id; _ }, _, _); _}, (List, _))
-    when String.starts_with ~prefix:"instr" id.it ->
-      [executeseqI (translate_exp exp) ~at:at ]
-  | Il.VarE id | Il.SubE ({ it = VarE id; _ }, _, _)
-    when String.starts_with ~prefix:"instr" id.it ->
-      [ executeI (translate_exp exp) ~at:at ]
-  | Il.IterE (_, (Opt, _)) ->
-      (* TODO: need AL expression for unwrapping option *)
-    let tmp_name = varE "instr_0" in
-    [ ifI (
-      isDefinedE (translate_exp exp),
-      [ letI (optE (Some tmp_name), translate_exp exp) ~at:at; executeI tmp_name ],
-      []
-    ) ~at:at ]
-  (* Push *)
-  | Il.SubE _ | CallE _ | IterE _ -> [ pushI (translate_exp exp) ~at:at ]
-  | Il.CaseE ([{it = Atom id; _}]::_, _) when List.mem id [
-      (* TODO: Consider automating this *)
-      "CONST";
-      "VCONST";
-      "REF.I31_NUM";
-      "REF.STRUCT_ADDR";
-      "REF.ARRAY_ADDR";
-      "REF.FUNC_ADDR";
-      "REF.HOST_ADDR";
-      "REF.EXTERN";
-      "REF.NULL"
-    ] -> [ pushI (translate_exp exp) ~at:at ]
-  (* multiple rhs' *)
-  | Il.CatE (e1, e2) -> translate_rhs e1 @ translate_rhs e2
-  | Il.ListE es -> List.concat_map translate_rhs es
-  (* Frame *)
+  (* Context *)
   | Il.CaseE (
       [ { it = Il.Atom "FRAME_"; _ } as atom ] :: _,
       { it =
@@ -430,7 +407,6 @@ let rec translate_rhs exp =
       letI (varE "F", frameE (Some (varE arity.it), varE fid.it)) ~at:at;
       enterI (varE "F", listE ([caseE (translate_atom atom, [])]), translate_rhs le) ~at:at;
     ]
-  (* Label *)
   | Il.CaseE (
 
       [ { it = Atom "LABEL_"; _ } as atom ] :: _,
@@ -451,9 +427,6 @@ let rec translate_rhs exp =
         enterI (varE "L", catE(translate_exp e2, listE ([caseE (translate_atom atom, [])])), []) ~at:at;
       ]
     )
-  (* Execute instr *)
-  | Il.CaseE ([{it = Atom _; _} as atom]::_, argexp) ->
-      [ executeI (caseE (translate_atom atom, translate_argexp argexp)) ~at:at ]
   (* Config *)
   | _ when is_config exp ->
     let state, rhs = split_config exp in
@@ -462,6 +435,49 @@ let rec translate_rhs exp =
       translate_rhs rhs @ [ performI (f.it, translate_args ae) ~at:state.at ]
     | _ -> translate_rhs rhs
     )
+  (* Recursive case *)
+  | Il.SubE (inner_exp, _, _) -> translate_rhs inner_exp
+  | Il.CatE (e1, e2) -> translate_rhs e1 @ translate_rhs e2
+  | Il.ListE es -> List.concat_map translate_rhs es
+  | Il.IterE (inner_exp, (Opt, _itl)) ->
+    (* NOTE: Assume that no other iter is nested for Opt *)
+    (* TODO: better name using type *)
+    let tmp_name = Il.VarE ("instr_0" $ no_region) $$ no_region % inner_exp.note in
+    [ ifI (
+      isDefinedE (translate_exp exp),
+      letI (optE (Some (translate_exp tmp_name)), translate_exp exp) ~at:at :: translate_rhs tmp_name,
+      []
+    ) ~at:at ]
+  | Il.IterE (inner_exp, (iter, itl)) ->
+    let iter_ids = itl |> List.map fst |> List.map it in
+    let walk_expr _walker (expr: expr): expr =
+      let typ = Il.IterT (expr.note, Il.List) $ no_region in
+      IterE (expr, iter_ids, translate_iter iter) $$ exp.at % typ
+    in
+    let walker = { Walk.base_walker with walk_expr } in
+
+    let instrs = translate_rhs inner_exp in
+    List.map (walker.walk_instr walker) instrs
+  (* Value *)
+  | _ when sub_typ exp.note (varT "val") -> [ pushI (translate_exp exp) ]
+  | Il.CaseE ([{it = Atom id; _}]::_, _) when List.mem id [
+      (* TODO: Consider automating this *)
+      "CONST";
+      "VCONST";
+      "REF.I31_NUM";
+      "REF.STRUCT_ADDR";
+      "REF.ARRAY_ADDR";
+      "REF.FUNC_ADDR";
+      "REF.HOST_ADDR";
+      "REF.EXTERN";
+      "REF.NULL"
+    ] -> [ pushI (translate_exp exp) ~at:at ]
+  (* TODO: use hint *)
+  | Il.CallE (id, _) when id.it = "const" -> [ pushI (translate_exp exp) ~at:at ]
+  (* Instr *)
+  (* TODO: use hint *)
+  | _ when sub_typ exp.note (varT "instr") || sub_typ exp.note (varT "admininstr") ->
+    [ executeI (translate_exp exp) ]
   | _ -> error_exp exp "expression on rhs of reduction"
 
 
@@ -476,12 +492,6 @@ let get_lhs_name () =
   varE (lhs_prefix ^ (lhs_id |> string_of_int))
 
 (* Helper functions *)
-let contains_ids ids expr =
-  ids
-  |> IdSet.of_list
-  |> IdSet.disjoint (free_expr expr)
-  |> not
-
 let rec contains_name e = match e.it with
   | VarE _ | SubE _ -> true
   | IterE (e', _, _) -> contains_name e'
@@ -553,7 +563,6 @@ and call_lhs_to_inverse_call_rhs lhs rhs free_ids =
     if List.length args = 1 then
       List.hd args
     else
-      let no_name = Il.VarE ("_" $ no_region) $$ no_region % (Il.TextT $ no_region) in
       let typ = Il.TupT (List.map (fun e -> no_name, e.note) args) $ no_region in
       TupE args $$ no_region % typ
   in
@@ -1305,7 +1314,8 @@ let initialize_env il =
 
 (* Entry *)
 let translate il =
-  initialize_env il;
-
   let il' = il |> Animate.transform |> List.concat_map flatten_rec in
+
+  initialize_env il';
+
   translate_helpers il' @ translate_rules il'

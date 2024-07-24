@@ -1179,7 +1179,7 @@ execution_of_BR n_u0
 7. If ((n_u0 is 0) and (|admin_u1*| ≥ n)), then:
   a. Let val'* ++ val^n be admin_u1*.
   b. Push the values val^n to the stack.
-  c. Execute the sequence (instr'*).
+  c. Execute the instruction instr'*.
 8. If (n_u0 ≥ 1), then:
   a. Let l be (n_u0 - 1).
   b. If the type of admin_u1 is val*, then:
@@ -1412,7 +1412,7 @@ execution_of_MEMORY.GROW
   a. Push the value (I32.CONST $invsigned(32, (- 1))) to the stack.
 
 eval_expr instr*
-1. Execute the sequence (instr*).
+1. Execute the instruction instr*.
 2. Pop the value val from the stack.
 3. Return [val].
 
@@ -3320,8 +3320,8 @@ instantiate module externval*
 25. Let moduleinst be $allocmodule(module, externval*, val*, ref**).
 26. Let f be { LOCALS: []; MODULE: moduleinst; }.
 27. Push the activation of f with arity 0 to the stack.
-28. Execute the sequence (instr_E*).
-29. Execute the sequence (instr_D*).
+28. Execute the instruction instr_E*.
+29. Execute the instruction instr_D*.
 30. If (CALL x)? is defined, then:
   a. Let ?(instr_0) be (CALL x)?.
   b. Execute the instruction instr_0.
@@ -3388,7 +3388,7 @@ execution_of_BR n_u0
 7. If ((n_u0 is 0) and (|admin_u1*| ≥ n)), then:
   a. Let val'* ++ val^n be admin_u1*.
   b. Push the values val^n to the stack.
-  c. Execute the sequence (instr'*).
+  c. Execute the instruction instr'*.
 8. If (n_u0 ≥ 1), then:
   a. Let l be (n_u0 - 1).
   b. If the type of admin_u1 is val*, then:
@@ -4101,7 +4101,7 @@ execution_of_DATA.DROP x
 2. Perform $with_data(z, x, []).
 
 eval_expr instr*
-1. Execute the sequence (instr*).
+1. Execute the instruction instr*.
 2. Pop the value val from the stack.
 3. Return [val].
 
@@ -7584,8 +7584,8 @@ instantiate module externval*
 28. Let moduleinst be $allocmodule(module, externval*, val_G*, ref_T*, ref_E**).
 29. Let f be { LOCALS: []; MODULE: moduleinst; }.
 30. Push the activation of f with arity 0 to the stack.
-31. Execute the sequence (instr_E*).
-32. Execute the sequence (instr_D*).
+31. Execute the instruction instr_E*.
+32. Execute the instruction instr_D*.
 33. If instr_S? is defined, then:
   a. Let ?(instr_0) be instr_S?.
   b. Execute the instruction instr_0.
@@ -7668,7 +7668,7 @@ execution_of_BR l
 7. If ((l is 0) and (|instr_u0*| ≥ n)), then:
   a. Let val'* ++ val^n be instr_u0*.
   b. Push the values val^n to the stack.
-  c. Execute the sequence (instr'*).
+  c. Execute the instruction instr'*.
 8. If ((l > 0) and the type of instr_u0 is val*), then:
   a. Let val* be instr_u0*.
   b. Push the values val* to the stack.
@@ -8896,7 +8896,7 @@ execution_of_DATA.DROP x
 2. Perform $with_data(z, x, []).
 
 eval_expr instr*
-1. Execute the sequence (instr*).
+1. Execute the instruction instr*.
 2. Pop the value val from the stack.
 3. Return [val].
 
