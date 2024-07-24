@@ -27,11 +27,11 @@ grammar BsN(N) : sN(N) hint(show `Bs#%) hint(macro "BsNX") =
   | n:Bbyte i:BuN(($(N-7))) => $(2^7 * i + (n - 2^7))  -- if $(n >= 2^7 /\ N > 7)
 
 grammar BiN(N) : iN(N) hint(show `Bi#%) hint(macro "BiNX") =
-  | i:BsN(N)                => $invsigned(N, i)
+  | i:BsN(N)                => $invsigned_(N, i)
 
 
 grammar BfN(N) : fN(N) hint(show `Bf#%) hint(macro "BfNX") =
-  | b*:Bbyte^(N/8)  => $invfbytes(N, b*)
+  | b*:Bbyte^(N/8)  => $invfbytes_(N, b*)
 
 
 grammar Bu32 : u32 = n:BuN(32) => n
@@ -610,7 +610,7 @@ grammar Binstr/vec-memory : instr = ...
   | ...
 
 grammar Binstr/vec-const : instr = ...
-  | 0xFD 12:Bu32 (b:Bbyte)^16 => VCONST V128 $invibytes(`128, (b)^16)
+  | 0xFD 12:Bu32 (b:Bbyte)^16 => VCONST V128 $invibytes_(`128, (b)^16)
   | ...
 
 grammar Binstr/vec-shuffle : instr = ...

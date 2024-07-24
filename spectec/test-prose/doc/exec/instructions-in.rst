@@ -260,13 +260,13 @@ $${rule-prose: exec/i31.get}
 
 $${rule+: Step_pure/i31.get-*}
 
-.. _def-ext_structinst:
+.. _def-add_structinst:
 
-$${definition-prose: ext_structinst}
+$${definition-prose: add_structinst}
 
 \
 
-$${definition: ext_structinst}
+$${definition: add_structinst}
 
 .. _exec-struct.new:
 
@@ -316,13 +316,13 @@ $${rule-prose: exec/array.new_default}
 
 $${rule+: Step_read/array.new_default}
 
-.. _def-ext_arrayinst:
+.. _def-add_arrayinst:
 
-$${definition-prose: ext_arrayinst}
+$${definition-prose: add_arrayinst}
 
 \
 
-$${definition: ext_arrayinst}
+$${definition: add_arrayinst}
 
 .. _exec-array.new_fixed:
 

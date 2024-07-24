@@ -982,8 +982,8 @@ let inverse_of_cbytes : numerics =
       | args -> inverse_of_nbytes.f args
   }
 
-let bytes_ : numerics = { name = "bytes"; f = nbytes.f }
-let inverse_of_bytes_ : numerics = { name = "inverse_of_bytes"; f = inverse_of_nbytes.f }
+let bytes : numerics = { name = "bytes"; f = nbytes.f }
+let inverse_of_bytes : numerics = { name = "inverse_of_bytes"; f = inverse_of_nbytes.f }
 
 let wrap : numerics =
   {
@@ -1020,7 +1020,7 @@ let narrow : numerics =
 
 let lanes : numerics =
   {
-    name = "lanes_";
+    name = "lanes";
     f =
       (function
       | [ TupV [ CaseV ("I8", []); NumV z ]; v ] when z = Z.of_int 16 ->
@@ -1040,7 +1040,7 @@ let lanes : numerics =
   }
 let inverse_of_lanes : numerics =
   {
-    name = "inverse_of_lanes_";
+    name = "inverse_of_lanes";
     f =
       (function
       | [ TupV [ CaseV ("I8", []); NumV z ]; ListV lanes; ] when z = Z.of_int 16 && Array.length !lanes = 16 ->
@@ -1095,7 +1095,7 @@ let rec inverse_of_concat_helper = function
 
 let inverse_of_concat : numerics =
   {
-    name = "inverse_of_concat_";
+    name = "inverse_of_concat";
     f =
       (function
       | [ ListV _ as lv ] ->
@@ -1116,8 +1116,8 @@ let numerics_list : numerics list = [
   inverse_of_vbytes;
   inverse_of_zbytes;
   inverse_of_cbytes;
-  bytes_;
-  inverse_of_bytes_;
+  bytes;
+  inverse_of_bytes;
   inverse_of_concat;
   signed;
   inverse_of_signed;
@@ -1194,9 +1194,19 @@ let numerics_list : numerics list = [
   inverse_of_ibits;
 ]
 
-let call_numerics fname args =
+let rec strip_suffix name =
+  let last = String.length name - 1 in
+  if name <> "" && name.[last] = '_' then
+    strip_suffix (String.sub name 0 last)
+  else
+    name
+
+let call_numerics name args =
+  let fname = strip_suffix name in
   match List.find_opt (fun numerics -> numerics.name = fname) numerics_list with
   | Some numerics -> numerics.f args
-  | None -> raise (Exception.InvalidFunc ("Invalid numerics: " ^ fname))
+  | None -> raise (Exception.InvalidFunc ("Invalid numerics: " ^ name))
 
-let mem name = List.exists (fun numerics -> numerics.name = name) numerics_list
+let mem name =
+  let fname = strip_suffix name in
+  List.exists (fun numerics -> numerics.name = fname) numerics_list

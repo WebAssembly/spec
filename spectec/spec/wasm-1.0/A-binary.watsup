@@ -27,11 +27,11 @@ grammar BsN(N) : sN(N) hint(show Bs#%) =
   | n:Bbyte i:BuN(($(N-7))) => $(2^7 * i + (n - 2^7))  -- if $(n >= 2^7 /\ N > 7)
 
 grammar BiN(N) : iN(N) hint(show Bi#%) =
-  | i:BsN(N)                => $invsigned(N, i)
+  | i:BsN(N)                => $invsigned_(N, i)
 
 
 grammar BfN(N) : fN(N) hint(show Bf#%) =
-  | b*:Bbyte^(N/8)  => $invfbytes(N, b*)
+  | b*:Bbyte^(N/8)  => $invfbytes_(N, b*)
 
 
 grammar Bu32 : u32 = n:BuN(32) => n
