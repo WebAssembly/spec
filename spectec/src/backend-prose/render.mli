@@ -1,4 +1,4 @@
-open Al.Ast
+open Prose
 
 
 (* Environment *)
@@ -11,7 +11,7 @@ val env : Config.config -> string list -> string list -> Backend_latex.Render.en
 (* Generators *)
 
 val render_expr : env -> expr -> string
-val render_al_instr : env -> id -> int ref -> int -> instr -> string
-val render_prose_instr : env -> int -> Prose.instr -> string
-val render_def : env -> Prose.def -> string
-val render_prose : env -> Prose.prose -> string
+val render_instr : Al.Ast.(env -> id -> int ref -> int -> instr -> string)
+val render_stmt : env -> int -> stmt -> string
+val render_def : env -> def -> string
+val render_prose : env -> prose -> string

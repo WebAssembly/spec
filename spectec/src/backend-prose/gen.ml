@@ -16,10 +16,6 @@ let print_yet_prem prem fname =
   let s = Il.Print.string_of_prem prem in
   print_yet prem.at fname ("`" ^ s ^ "`")
 
-let print_yet_exp exp fname =
-  let s = Il.Print.string_of_exp exp in
-  print_yet exp.at fname ("`" ^ s ^ "`")
-
 (* Helpers *)
 
 let flatten_rec def =
@@ -184,29 +180,29 @@ let rec if_expr_to_instrs e =
     let op = cmpop_to_cmpop op in
     let e1 = exp_to_expr e1 in
     let e2 = exp_to_expr e2 in
-    [ match e2.it with LenE _ -> CmpI (e2, swap op, e1) | _ -> CmpI (e1, op, e2) ]
+    [ match e2.it with LenE _ -> CmpS (e2, swap op, e1) | _ -> CmpS (e1, op, e2) ]
   | Ast.BinE (Ast.AndOp, e1, e2) ->
     if_expr_to_instrs e1 @ if_expr_to_instrs e2
   | Ast.BinE (Ast.OrOp, e1, e2) ->
     let cond1 = if_expr_to_instrs e1 in
     let cond2 = if_expr_to_instrs e2 in
     [ match cond1 with
-      | [ CmpI ({ it = IterE ({ it = VarE name; _ }, (Opt, _)); _ }, Eq, { it = OptE None; _ }) ] ->
+      | [ CmpS ({ it = IterE ({ it = VarE name; _ }, (Opt, _)); _ }, Eq, { it = OptE None; _ }) ] ->
         (* ~P \/ Q is equivalent to P -> Q *)
-        IfI (isDefinedE (varE name ~note:no_note) ~note:no_note, cond2)
+        IfS (isDefinedE (varE name ~note:no_note) ~note:no_note, cond2)
       | _ ->
-        EitherI [cond1; cond2] ]
-  | Ast.BinE (Ast.EquivOp, e1, e2) ->
-      [ EquivI (exp_to_expr e1, exp_to_expr e2) ]
-  | Ast.MemE (e1, e2) ->
-      [ MemI (exp_to_expr e1, exp_to_expr e2) ]
-  | _ -> print_yet_exp e "if_expr_to_instrs"; [ YetI (Il.Print.string_of_exp e) ]
+        EitherS [cond1; cond2] ]
+  | Ast.BinE (Ast.EquivOp, _, _)
+  | Ast.MemE _ ->
+      [ CondS (exp_to_expr e) ]
+  | _ ->
+      [ CmpS (exp_to_expr e, Eq, boolE true ~note:boolT) ]
 
 let rec prem_to_instrs prem =
   let prem = preprocess_prem prem in
   match prem.it with
   | Ast.LetPr (e1, e2, _) ->
-    [ LetI (exp_to_expr e1, exp_to_expr e2) ]
+    [ LetS (exp_to_expr e1, exp_to_expr e2) ]
   | Ast.IfPr e ->
     if_expr_to_instrs e
   | Ast.RulePr (id, _, e) ->
@@ -214,37 +210,37 @@ let rec prem_to_instrs prem =
     let args = exp_to_argexpr e in
     ( match get_rel_kind rel, args with
     (* contextless *)
-    | ValidRel,      [e]         -> [ IsValidI(None, e, []) ]
-    | ValidInstrRel, [e; t]      -> [ IsValidI(None, e, [t]) ]
-    | ValidWithRel,  [e; e']     -> [ IsValidI(None, e, [e']) ]
-    | MatchRel,      [t1; t2]    -> [ MatchesI (t1, t2) ]
-    | ConstRel,      [e]         -> [ IsConstI (None, e) ]
-    | ValidConstRel, [e; e']     -> [ IsValidI (None, e, [e']); IsConstI (None, e) ]
-    | ValidWith2Rel, [e; e1; e2] -> [ IsValidI (None, e, [e1; e2]) ]
+    | ValidRel,      [e]         -> [ IsValidS (None, e, []) ]
+    | ValidInstrRel, [e; t]      -> [ IsValidS (None, e, [t]) ]
+    | ValidWithRel,  [e; e']     -> [ IsValidS (None, e, [e']) ]
+    | MatchRel,      [t1; t2]    -> [ MatchesS (t1, t2) ]
+    | ConstRel,      [e]         -> [ IsConstS (None, e) ]
+    | ValidConstRel, [e; e']     -> [ IsValidS (None, e, [e']); IsConstS (None, e) ]
+    | ValidWith2Rel, [e; e1; e2] -> [ IsValidS (None, e, [e1; e2]) ]
     (* context *)
-    | ValidRel,      [c; e]         -> [ IsValidI(try_omit c, e, []) ]
-    | ValidInstrRel, [c; e; t]      -> [ IsValidI(try_omit c, e, [t]) ]
-    | ValidWithRel,  [c; e; e']     -> [ IsValidI(try_omit c, e, [e']) ]
-    | MatchRel,      [_; t1; t2]    -> [ MatchesI (t1, t2) ]
-    | ConstRel,      [c; e]         -> [ IsConstI (try_omit c, e) ]
-    | ValidConstRel, [c; e; e']     -> [ IsValidI (try_omit c, e, [e']); IsConstI (try_omit c, e) ]
-    | ValidWith2Rel, [c; e; e1; e2] -> [ IsValidI (try_omit c, e, [e1; e2]) ]
-    | OtherRel,       _             -> print_yet_prem prem "prem_to_instrs"; [ YetI "TODO: prem_to_instrs for RulePr" ]
+    | ValidRel,      [c; e]         -> [ IsValidS (try_omit c, e, []) ]
+    | ValidInstrRel, [c; e; t]      -> [ IsValidS (try_omit c, e, [t]) ]
+    | ValidWithRel,  [c; e; e']     -> [ IsValidS (try_omit c, e, [e']) ]
+    | MatchRel,      [_; t1; t2]    -> [ MatchesS (t1, t2) ]
+    | ConstRel,      [c; e]         -> [ IsConstS (try_omit c, e) ]
+    | ValidConstRel, [c; e; e']     -> [ IsValidS (try_omit c, e, [e']); IsConstS (try_omit c, e) ]
+    | ValidWith2Rel, [c; e; e1; e2] -> [ IsValidS (try_omit c, e, [e1; e2]) ]
+    | OtherRel,       _             -> print_yet_prem prem "prem_to_instrs"; [ YetS "TODO: prem_to_instrs for RulePr" ]
     | _,              _             -> assert false )
   | Ast.IterPr (prem, iter) ->
     (match iter with
-    | Ast.Opt, [(id, _)] -> [ IfI (isDefinedE (varE id.it ~note:no_note) ~note:no_note, prem_to_instrs prem) ]
+    | Ast.Opt, [(id, _)] -> [ IfS (isDefinedE (varE id.it ~note:no_note) ~note:no_note, prem_to_instrs prem) ]
     | Ast.(List | ListN _), vars ->
         let to_iter (id, _) =
           let name = varE id.it ~note:no_note in
           name, iter_var id.it List no_note
         in
-        [ ForallI (List.map to_iter vars, prem_to_instrs prem) ]
-    | _ -> print_yet_prem prem "prem_to_instrs"; [ YetI "TODO: prem_to_intrs iter" ]
+        [ ForallS (List.map to_iter vars, prem_to_instrs prem) ]
+    | _ -> print_yet_prem prem "prem_to_instrs"; [ YetS "TODO: prem_to_intrs iter" ]
     )
   | _ ->
     let s = Il.Print.string_of_prem prem in
-    print_yet_prem prem "prem_to_instrs"; [ YetI s ]
+    print_yet_prem prem "prem_to_instrs"; [ YetS s ]
 
 type vrule_group =
   string * Ast.id * (Ast.exp * Ast.exp * Ast.prem list * Ast.bind list) list
@@ -258,19 +254,19 @@ let vrule_group_to_prose ((rule_name, rel_id, vrules): vrule_group) =
   (* expr *)
   let expr = exp_to_expr winstr in
   (* concl *)
-  let concl = IsValidI (None, expr, [exp_to_expr t]) in
+  let concl = IsValidS (None, expr, [exp_to_expr t]) in
   (* prems *)
   let prems =
     vrules
     |> List.map (fun (_, _, prems, _) -> prems)
     |> List.map (List.concat_map prem_to_instrs)
     |> (function
-        | [ instrs ] -> instrs
-        | instrss -> [ EitherI instrss ])
+        | [ stmts ] -> stmts
+        | stmtss -> [ EitherS stmtss ])
   in
 
   (* Predicate *)
-  Iff (anchor, expr, concl, prems)
+  RuleD (anchor, expr, concl, prems)
 
 let rec extract_vrules def =
   match def.it with
@@ -340,7 +336,7 @@ let prose_of_valid_rules rel_id rules =
   (* expr *)
   let expr = exp_to_expr e in
   (* concl *)
-  let concl = IsValidI (None, expr, []) in
+  let concl = IsValidS (None, expr, []) in
   (* prems *)
   let prems = (
     rules
@@ -348,11 +344,12 @@ let prose_of_valid_rules rel_id rules =
     |> List.map (fun (_, prems, _) -> prems)
     |> List.map (List.concat_map prem_to_instrs)
     |> (function
-        | [ instrs ] -> instrs
-        | instrss -> [ EitherI instrss ])
+        | [ stmts ] -> stmts
+        | stmtss -> [ EitherS stmtss ])
   ) in
 
-  Iff (anchor, expr, concl, prems)
+  RuleD (anchor, expr, concl, prems)
+
 
 let prose_of_valid_rel def =
   match def.it with
@@ -376,7 +373,7 @@ let prose_of_valid_with_rules rel_id rules =
   (* expr *)
   let expr = exp_to_expr e1 in
   (* concl *)
-  let concl = IsValidI (None, expr, [exp_to_expr e2]) in
+  let concl = IsValidS (None, expr, [exp_to_expr e2]) in
   (* prems *)
   let prems = (
     rules
@@ -384,11 +381,11 @@ let prose_of_valid_with_rules rel_id rules =
     |> List.map (fun (_, _, prems, _) -> prems)
     |> List.map (List.concat_map prem_to_instrs)
     |> (function
-        | [ instrs ] -> instrs
-        | instrss -> [ EitherI instrss ])
+        | [ stmts ] -> stmts
+        | stmtss -> [ EitherS stmtss ])
   ) in
 
-  Iff (anchor, expr, concl, prems)
+  RuleD (anchor, expr, concl, prems)
 
 let prose_of_valid_with_rel def =
   match def.it with
@@ -405,7 +402,7 @@ let prose_of_match_rules rel_id rules =
   (* expr *)
   let expr = exp_to_expr e1 in
   (* concl *)
-  let concl = MatchesI (expr, exp_to_expr e2) in
+  let concl = MatchesS (expr, exp_to_expr e2) in
   (* prems *)
   let prems = (
     rules
@@ -413,11 +410,11 @@ let prose_of_match_rules rel_id rules =
     |> List.map (fun (_, _, prems, _) -> prems)
     |> List.map (List.concat_map prem_to_instrs)
     |> (function
-        | [ instrs ] -> instrs
-        | instrss -> [ EitherI instrss ])
+        | [ stmts ] -> stmts
+        | stmtss -> [ EitherS stmtss ])
   ) in
 
-  Iff (anchor, expr, concl, prems)
+  RuleD (anchor, expr, concl, prems)
 
 let prose_of_match_rel def =
   match def.it with
@@ -435,7 +432,7 @@ let prose_of_const_rules rel_id rules =
   (* expr *)
   let expr = exp_to_expr e in
   (* concl *)
-  let concl = IsConstI (None, expr) in
+  let concl = IsConstS (None, expr) in
   (* prems *)
   let prems = (
     rules
@@ -443,11 +440,11 @@ let prose_of_const_rules rel_id rules =
     |> List.map (fun (_, prems, _) -> prems)
     |> List.map (List.concat_map prem_to_instrs)
     |> (function
-        | [ instrs ] -> instrs
-        | instrss -> [ EitherI instrss ])
+        | [ stmts ] -> stmts
+        | stmtss -> [ EitherS stmtss ])
   ) in
 
-  Iff (anchor, expr, concl, prems)
+  RuleD (anchor, expr, concl, prems)
 
 let prose_of_const_rel def =
   match def.it with
@@ -467,7 +464,7 @@ let prose_of_valid_with2_rules rel_id rules =
   (* expr *)
   let expr = exp_to_expr e1 in
   (* concl *)
-  let concl = IsValidI (None, expr, [exp_to_expr e2; exp_to_expr e3]) in
+  let concl = IsValidS (None, expr, [exp_to_expr e2; exp_to_expr e3]) in
   (* prems *)
   let prems = (
     rules
@@ -475,11 +472,11 @@ let prose_of_valid_with2_rules rel_id rules =
     |> List.map (fun (_, _, _, prems, _) -> prems)
     |> List.map (List.concat_map prem_to_instrs)
     |> (function
-        | [ instrs ] -> instrs
-        | instrss -> [ EitherI instrss ])
+        | [ stmts ] -> stmts
+        | stmtss -> [ EitherS stmtss ])
   ) in
 
-  Iff (anchor, expr, concl, prems)
+  RuleD (anchor, expr, concl, prems)
 
 let prose_of_valid_with2_rel def =
   match def.it with
@@ -506,42 +503,42 @@ let prose_of_rel rel = match get_rel_kind rel with
 let prose_of_rels = List.concat_map prose_of_rel
 
 (** Postprocess of generated prose **)
-let unify_either instrs =
-  let f instr =
-    match instr with
-    | EitherI iss ->
-      let unified, bodies = List.fold_left (fun (commons, instrss) i ->
-        let pairs = List.map (List.partition (eq_instr i)) instrss in
+let unify_either stmts =
+  let f stmt =
+    match stmt with
+    | EitherS sss ->
+      let unified, bodies = List.fold_left (fun (commons, stmtss) s ->
+        let pairs = List.map (List.partition (eq_stmt s)) stmtss in
         let fsts = List.map fst pairs in
         let snds = List.map snd pairs in
         if List.for_all (fun l -> List.length l = 1) fsts then
-          i :: commons, snds
+          s :: commons, snds
         else
-          commons, instrss
-      ) ([], iss) (List.hd iss) in
+          commons, stmtss
+      ) ([], sss) (List.hd sss) in
       let unified = List.rev unified in
-      unified @ [ EitherI bodies ]
-    | _ -> [instr]
+      unified @ [ EitherS bodies ]
+    | _ -> [stmt]
   in
-  let rec walk instrs = List.concat_map walk' instrs
-  and walk' instr =
-    f instr
+  let rec walk stmts = List.concat_map walk' stmts
+  and walk' stmt =
+    f stmt
     |> List.map (function
-      | IfI (e, il) -> IfI (e, walk il)
-      | ForallI (vars, il) -> ForallI (vars, walk il)
-      | EitherI ill -> EitherI (List.map walk ill)
-      | i -> i
+      | IfS (e, sl) -> IfS (e, walk sl)
+      | ForallS (vars, sl) -> ForallS (vars, walk sl)
+      | EitherS sll -> EitherS (List.map walk sll)
+      | s -> s
     )
   in
-  walk instrs
+  walk stmts
 
 let postprocess_prose defs =
   List.map (fun def ->
     match def with
-    | Iff (anchor, e, i, il) ->
+    | RuleD (anchor, e, i, il) ->
       let new_il = unify_either il in
-      Iff (anchor, e, i, new_il)
-    | Algo _ -> def
+      RuleD (anchor, e, i, new_il)
+    | AlgoD _ -> def
   ) defs
 
 
@@ -560,7 +557,7 @@ let gen_execution_prose () =
         |> Il2al.Transpile.remove_exit
         |> Il2al.Transpile.remove_enter
       in
-      Prose.Algo algo) !Langs.al
+      AlgoD algo) !Langs.al
 
 (** Main entry for generating prose **)
 let gen_prose el il al =

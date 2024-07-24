@@ -301,7 +301,7 @@ watsup 0.4 generator
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
 
-   * :math:`{\mathit{n?}}` is :math:`\epsilon` if and only if :math:`{\mathit{sx?}}` is :math:`\epsilon`.
+   * :math:`{\mathit{n?}}` is :math:`\epsilon` is equivalent to :math:`{\mathit{sx?}}` is :math:`\epsilon`.
 
    * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
 
@@ -2980,7 +2980,7 @@ Instr_ok/memory.grow
 Instr_ok/load
 - the instr (LOAD nt (_) (n, sx)? ? memarg) is valid with the function type ([I32] -> [nt]) if:
   - |C.MEMS| is greater than 0.
-  - ((sx? is ?())) if and only if ((n? is ?())).
+  - ((n? is ?()) is equivalent to (sx? is ?())).
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - If n is defined,
@@ -4751,7 +4751,7 @@ watsup 0.4 generator
 
    * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
 
-   * :math:`{\mathit{n?}}` is :math:`\epsilon` if and only if :math:`{\mathit{sx?}}` is :math:`\epsilon`.
+   * :math:`{\mathit{n?}}` is :math:`\epsilon` is equivalent to :math:`{\mathit{sx?}}` is :math:`\epsilon`.
 
    * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
 
@@ -9967,7 +9967,7 @@ Instr_ok/data.drop
 Instr_ok/load
 - the instr (LOAD nt (_) (n, sx)? ? memarg) is valid with the function type ([I32] -> [nt]) if:
   - |C.MEMS| is greater than 0.
-  - ((sx? is ?())) if and only if ((n? is ?())).
+  - ((n? is ?()) is equivalent to (sx? is ?())).
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
   - If n is defined,
@@ -12332,8 +12332,6 @@ watsup 0.4 generator
 == IL Validation after pass sideconditions...
 == Translating to AL...
 == Prose Generation...
-6-typing.watsup:195.10-195.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
-6-typing.watsup:1380.9-1380.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm <- `nm*`})`
 
 * :math:`{\mathit{numtype}}` is valid.
 
@@ -12782,7 +12780,7 @@ watsup 0.4 generator
 
    * For all :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}`,
 
-      * YetI: $before(typeuse, x, i).
+      * :math:`{\mathit{typeuse}} \prec x, i` must be equal to true.
 
    * For all :math:`{\mathit{comptype}'}` in :math:`{{\mathit{comptype}'}^\ast}` and :math:`{\mathit{typeuse}}` in :math:`{{\mathit{typeuse}}^\ast}` and :math:`{\mathit{typeuse'*}}` in :math:`{{\mathit{typeuse'*}}^\ast}`,
 
@@ -13377,7 +13375,7 @@ watsup 0.4 generator
 
    * :math:`C{.}\mathsf{funcs}{}[x]` must be equal to :math:`{\mathit{dt}}`.
 
-   * :math:`x` must be contained in :math:`C{.}\mathsf{refs}`.
+   * :math:`x` is contained in :math:`C{.}\mathsf{refs}`.
 
 
 * :math:`\mathsf{ref{.}i{\scriptstyle 31}}` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\rightarrow~(\mathsf{ref}~\mathsf{i{\scriptstyle 31}}))`.
@@ -13458,7 +13456,7 @@ watsup 0.4 generator
 
    * :math:`{{\mathit{yt}}^\ast}{}[i]` must be equal to :math:`({\mathsf{mut}^?}, {\mathit{zt}})`.
 
-   * :math:`{{\mathit{sx}}^?}` is :math:`\epsilon` if and only if :math:`{\mathit{zt}}` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+   * :math:`{{\mathit{sx}}^?}` is :math:`\epsilon` is equivalent to :math:`{\mathit{zt}}` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
 * :math:`(\mathsf{struct{.}set}~x~i)` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~x)~{\mathrm{unpack}}({\mathit{zt}})~\rightarrow~\epsilon)` if:
@@ -13538,7 +13536,7 @@ watsup 0.4 generator
 
    * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
 
-   * :math:`{{\mathit{sx}}^?}` is :math:`\epsilon` if and only if :math:`{\mathit{zt}}` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
+   * :math:`{{\mathit{sx}}^?}` is :math:`\epsilon` is equivalent to :math:`{\mathit{zt}}` is :math:`{\mathrm{unpack}}({\mathit{zt}})`.
 
 
 * :math:`(\mathsf{array{.}set}~x)` is valid with type :math:`((\mathsf{ref}~\mathsf{null}~x)~\mathsf{i{\scriptstyle 32}}~{\mathrm{unpack}}({\mathit{zt}})~\rightarrow~\epsilon)` if:
@@ -14083,9 +14081,9 @@ watsup 0.4 generator
 
       * :math:`{|\mathsf{add}~\mathsf{sub}~\mathsf{mul}|}` must be greater than :math:`0`.
 
-      * :math:`{\mathsf{i}}{N}` must be contained in :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 64}}`.
+      * :math:`{\mathsf{i}}{N}` is contained in :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{i{\scriptstyle 64}}`.
 
-      * :math:`{\mathit{binop}}` must be contained in :math:`\mathsf{add}~\mathsf{sub}~\mathsf{mul}`.
+      * :math:`{\mathit{binop}}` is contained in :math:`\mathsf{add}~\mathsf{sub}~\mathsf{mul}`.
 
 
 * :math:`{{\mathit{instr}}^\ast}` is const if:
@@ -14409,7 +14407,7 @@ watsup 0.4 generator
 
       * :math:`{\mathit{export}}` is valid with type :math:`{\mathit{nm}}` and :math:`{\mathit{xt}}_{\mathsf{e}}`.
 
-   * YetI: $disjoint_(syntax name, nm*{nm <- `nm*`}).
+   * :math:`{{\mathit{nm}}^\ast}~{\mathrm{disjoint}}` must be equal to true.
 
    * :math:`C` must be equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{tags}~{{\mathit{at}}_{\mathsf{i}}^\ast}~{{\mathit{at}}^\ast},\; \mathsf{elems}~{{\mathit{rt}}^\ast},\; \mathsf{datas}~{{\mathit{ok}}^\ast},\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
 
@@ -17528,7 +17526,7 @@ watsup 0.4 generator
 
 #. Let :math:`w~{{w'}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Return not `w <- w'*{w' <- w'*}` and :math:`{{w'}^\ast}~{\mathrm{disjoint}}`.
+#. Return :math:`w` is not contained in :math:`{{w'}^\ast}` and :math:`{{w'}^\ast}~{\mathrm{disjoint}}`.
 
 
 :math:`{{\mathrm{setminus{\kern-0.1em\scriptstyle 1}}}}_{{\mathit{TODO}}}(w, {X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
@@ -22300,8 +22298,6 @@ watsup 0.4 generator
 == IL Validation after pass sideconditions...
 == Translating to AL...
 == Prose Generation...
-6-typing.watsup:195.10-195.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
-6-typing.watsup:1380.9-1380.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm <- `nm*`})`
 Numtype_ok
 - the number type numtype is valid.
 
@@ -22576,7 +22572,7 @@ Subtype_ok2
   - |typeuse'**| is |comptype'*|.
   - |typeuse*| is less than or equal to 1.
   - For all typeuse in typeuse*,
-    - Yet: $before(typeuse, x, i)
+    - $before(typeuse, x, i) is true.
   - For all comptype' in comptype'* and typeuse in typeuse* and typeuse'* in typeuse'**,
     - $unrollht(C, typeuse) is (SUB () typeuse'* comptype').
   - the composite type comptype is valid.
@@ -22988,7 +22984,7 @@ Instr_ok/struct.get
   - |yt*| is greater than i.
   - $expanddt(C.TYPES[x]) is (STRUCT yt*).
   - yt*[i] is (mut, zt).
-  - ((zt is $unpack(zt))) if and only if ((sx? is ?())).
+  - ((sx? is ?()) is equivalent to (zt is $unpack(zt))).
 
 Instr_ok/struct.set
 - the instr (STRUCT.SET x i) is valid with the instruction type ([(REF NULL (_IDX x)), $unpack(zt)] -> []) if:
@@ -23035,7 +23031,7 @@ Instr_ok/array.get
 - the instr (ARRAY.GET sx? x) is valid with the instruction type ([(REF NULL (_IDX x)), I32] -> [$unpack(zt)]) if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
-  - ((zt is $unpack(zt))) if and only if ((sx? is ?())).
+  - ((sx? is ?()) is equivalent to (zt is $unpack(zt))).
 
 Instr_ok/array.set
 - the instr (ARRAY.SET x) is valid with the instruction type ([(REF NULL (_IDX x)), I32, $unpack(zt)] -> []) if:
@@ -23574,7 +23570,7 @@ Module_ok
     - the start function start is valid.
   - For all export in export* and nm in nm* and xt_E in xt_E*,
     - the export export is valid with the name nm and the external type xt_E.
-  - Yet: $disjoint_(syntax name, nm*{nm <- `nm*`})
+  - $disjoint_(name, nm*) is true.
   - C is { TYPES: dt'*; RECS: []; FUNCS: dt_I* :: dt*; GLOBALS: gt_I* :: gt*; TABLES: tt_I* :: tt*; MEMS: mt_I* :: mt*; TAGS: at_I* :: at*; ELEMS: rt*; DATAS: ok*; LOCALS: []; LABELS: []; RETURN: ?(); REFS: x*; }.
   - C' is { TYPES: dt'*; RECS: []; FUNCS: dt_I* :: dt*; GLOBALS: gt_I*; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: x*; }.
   - x* is $funcidx_nonfuncs((global* table* mem* elem* data*)).
@@ -25075,7 +25071,7 @@ disjoint_ X X_u0*
 1. If (X_u0* is []), then:
   a. Return true.
 2. Let [w] :: w'* be X_u0*.
-3. Return (not w <- w'* and $disjoint_(X, w'*)).
+3. Return (w is not contained in w'* and $disjoint_(X, w'*)).
 
 setminus1_ X w X_u0*
 1. If (X_u0* is []), then:

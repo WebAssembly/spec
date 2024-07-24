@@ -56,8 +56,8 @@ let string_of_unop = function
 let string_of_binop = function
   | AndOp -> "and"
   | OrOp -> "or"
-  | ImplOp -> "=>"
-  | EquivOp -> "<=>"
+  | ImplOp -> "implies"
+  | EquivOp -> "is equivalent to"
   | AddOp -> "+"
   | SubOp -> "-"
   | MulOp -> "·"
@@ -102,6 +102,8 @@ and string_of_expr expr =
     sprintf "%s is not valid" (string_of_expr e)
   | UnE (NotOp, { it = MatchE (e1, e2); _ }) ->
     sprintf "%s does not match %s" (string_of_expr e1) (string_of_expr e2)
+  | UnE (NotOp, { it = MemE (e1, e2); _ }) ->
+    sprintf "%s is not contained in %s" (string_of_expr e1) (string_of_expr e2)
   | UnE (NotOp, e) -> sprintf "not %s" (string_of_expr e)
   | UnE (op, e) -> sprintf "(%s %s)" (string_of_unop op) (string_of_expr e)
   | BinE (op, e1, e2) ->
@@ -124,7 +126,7 @@ and string_of_expr expr =
   | CatE (e1, e2) ->
     sprintf "%s :: %s" (string_of_expr e1) (string_of_expr e2)
   | MemE (e1, e2) ->
-    sprintf "%s <- %s" (string_of_expr e1) (string_of_expr e2)
+    sprintf "%s is contained in %s" (string_of_expr e1) (string_of_expr e2)
   | LenE e -> sprintf "|%s|" (string_of_expr e)
   | ArityE e -> sprintf "the arity of %s" (string_of_expr e)
   | GetCurStateE -> "the current state"
@@ -409,76 +411,71 @@ let string_of_cmpop = function
   | Le -> "is less than or equal to"
   | Ge -> "is greater than or equal to"
 
-let rec string_of_instr = function
-  | LetI (e1, e2) ->
+let rec string_of_stmt = function
+  | LetS (e1, e2) ->
       sprintf "%s Let %s be %s." (indent ())
         (string_of_expr e1)
         (string_of_expr e2)
-  | CmpI (e1, cmpop, e2) ->
+  | CondS e ->
+      sprintf "%s %s." (indent ())
+        (string_of_expr e)
+  | CmpS (e1, cmpop, e2) ->
       sprintf "%s %s %s %s." (indent ())
         (string_of_expr e1)
         (string_of_cmpop cmpop)
         (string_of_expr e2)
-  | MemI (e1, e2) ->
-      sprintf "%s %s is contained in %s." (indent ())
-        (string_of_expr e1)
-        (string_of_expr e2)
-  | IsValidI (c_opt, e, es) ->
+  | IsValidS (c_opt, e, es) ->
       sprintf "%s %s%s is valid%s." (indent ())
         (string_of_opt "Under the context " string_of_expr ", " c_opt)
         (string_of_expr_with_type e)
         (string_of_nullable_list string_of_expr_with_type " with " " and " "" es)
-  | MatchesI (e1, e2) ->
+  | MatchesS (e1, e2) ->
       sprintf "%s %s matches %s." (indent ())
         (string_of_expr_with_type e1)
         (string_of_expr_with_type e2)
-  | IsConstI (c_opt, e) ->
+  | IsConstS (c_opt, e) ->
       sprintf "%s %s%s is constant." (indent ())
         (string_of_opt "Under the context " string_of_expr ", " c_opt)
         (string_of_expr_with_type e)
-  | IfI (c, is) ->
+  | IfS (c, is) ->
       sprintf "%s If %s, \n%s" (indent ())
         (string_of_expr c)
-        (indented_string_of_instrs is)
-  | ForallI (iters, is) ->
+        (indented_string_of_stmts is)
+  | ForallS (iters, is) ->
       let string_of_iter (e1, e2) = (string_of_expr e1) ^ " in " ^ (string_of_expr e2) in
       sprintf "%s For all %s,\n%s" (indent ())
         (string_of_list string_of_iter "" " and " "" iters)
-        (indented_string_of_instrs is)
-  | EquivI (e1, e2) ->
-      sprintf "%s (%s) if and only if (%s)." (indent ())
-        (string_of_expr e2)
-        (string_of_expr e1)
-  | EitherI iss ->
+        (indented_string_of_stmts is)
+  | EitherS iss ->
       sprintf "%s Either:\n%s" (indent ())
-        (string_of_list indented_string_of_instrs "" ("\n" ^ indent () ^ " Or:\n") "" iss)
-  | YetI s -> indent () ^ " Yet: " ^ s
+        (string_of_list indented_string_of_stmts "" ("\n" ^ indent () ^ " Or:\n") "" iss)
+  | YetS s -> indent () ^ " Yet: " ^ s
 
-and indented_string_of_instr i =
+and indented_string_of_stmt i =
   indent_depth := !indent_depth + 1;
-  let result = string_of_instr i in
+  let result = string_of_stmt i in
   indent_depth := !indent_depth - 1;
   result
 
-and indented_string_of_instrs is =
-  (string_of_list indented_string_of_instr "" "\n" "" is)
+and indented_string_of_stmts is =
+  (string_of_list indented_string_of_stmt "" "\n" "" is)
 
 let string_of_def = function
-| Iff (anchor, _e, concl, []) ->
+| RuleD (anchor, _e, concl, []) ->
     anchor
     (* ^ " " ^ string_of_expr e ^ "\n" *)
     ^ "\n"
-    ^ string_of_instr concl ^ "\n"
-| Iff (anchor, _e, concl, prems) ->
-    let concl_str = string_of_instr concl in
+    ^ string_of_stmt concl ^ "\n"
+| RuleD (anchor, _e, concl, prems) ->
+    let concl_str = string_of_stmt concl in
     let drop_last x = String.sub x 0 (String.length x - 1) in
     anchor
     (* ^ " " ^ string_of_expr e ^ "\n" *)
     ^ "\n"
     ^ drop_last concl_str
     ^ " if:\n"
-    ^ string_of_list indented_string_of_instr "" "\n" "\n" prems
-| Algo algo -> string_of_algorithm algo
+    ^ string_of_list indented_string_of_stmt "" "\n" "\n" prems
+| AlgoD algo -> string_of_algorithm algo
 
 let string_of_prose prose = List.map string_of_def prose |> String.concat "\n"
 
