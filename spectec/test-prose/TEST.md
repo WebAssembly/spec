@@ -719,15 +719,15 @@ relop_ valty_u1 relop_u0 val__u3 val__u5
 13. Let fN_2 be val__u5.
 14. Return $fge_($size(Fnn), fN_1, fN_2).
 
-cvtop_ valty_u0 valty_u1 cvtop_u2 val__u4
+cvtop__ valty_u0 valty_u1 cvtop_u2 val__u4
 1. If ((valty_u0 is I32) and (valty_u1 is I64)), then:
   a. Let iN be val__u4.
   b. If cvtop_u2 is of the case EXTEND, then:
     1) Let (EXTEND sx) be cvtop_u2.
-    2) Return [$ext_(32, 64, sx, iN)].
+    2) Return [$ext__(32, 64, sx, iN)].
 2. If ((valty_u0 is I64) and ((valty_u1 is I32) and (cvtop_u2 is WRAP))), then:
   a. Let iN be val__u4.
-  b. Return [$wrap_(64, 32, iN)].
+  b. Return [$wrap__(64, 32, iN)].
 3. If the type of valty_u0 is Fnn, then:
   a. Let Fnn be valty_u0.
   b. If the type of valty_u1 is Inn, then:
@@ -735,13 +735,13 @@ cvtop_ valty_u0 valty_u1 cvtop_u2 val__u4
     2) Let fN be val__u4.
     3) If cvtop_u2 is of the case TRUNC, then:
       a) Let (TRUNC sx) be cvtop_u2.
-      b) Return [$trunc_($size(Fnn), $size(Inn), sx, fN)].
+      b) Return [$trunc__($size(Fnn), $size(Inn), sx, fN)].
 4. If ((valty_u0 is F32) and ((valty_u1 is F64) and (cvtop_u2 is PROMOTE))), then:
   a. Let fN be val__u4.
-  b. Return [$promote_(32, 64, fN)].
+  b. Return [$promote__(32, 64, fN)].
 5. If ((valty_u0 is F64) and ((valty_u1 is F32) and (cvtop_u2 is DEMOTE))), then:
   a. Let fN be val__u4.
-  b. Return [$demote_(64, 32, fN)].
+  b. Return [$demote__(64, 32, fN)].
 6. If the type of valty_u1 is Fnn, then:
   a. Let Fnn be valty_u1.
   b. If the type of valty_u0 is Inn, then:
@@ -749,7 +749,7 @@ cvtop_ valty_u0 valty_u1 cvtop_u2 val__u4
     2) Let iN be val__u4.
     3) If cvtop_u2 is of the case CONVERT, then:
       a) Let (CONVERT sx) be cvtop_u2.
-      b) Return [$convert_($size(Inn), $size(Fnn), sx, iN)].
+      b) Return [$convert__($size(Inn), $size(Fnn), sx, iN)].
 7. Assert: Due to validation, (cvtop_u2 is REINTERPRET).
 8. If the type of valty_u1 is Fnn, then:
   a. Let Fnn be valty_u1.
@@ -757,14 +757,14 @@ cvtop_ valty_u0 valty_u1 cvtop_u2 val__u4
     1) Let Inn be valty_u0.
     2) Let iN be val__u4.
     3) If ($size(Inn) is $size(Fnn)), then:
-      a) Return [$reinterpret_(Inn, Fnn, iN)].
+      a) Return [$reinterpret__(Inn, Fnn, iN)].
 9. Assert: Due to validation, the type of valty_u0 is Fnn.
 10. Let Fnn be valty_u0.
 11. Assert: Due to validation, the type of valty_u1 is Inn.
 12. Let Inn be valty_u1.
 13. Let fN be val__u4.
 14. Assert: Due to validation, ($size(Inn) is $size(Fnn)).
-15. Return [$reinterpret_(Fnn, Inn, fN)].
+15. Return [$reinterpret__(Fnn, Inn, fN)].
 
 invibytes_ N b*
 1. Let n be $ibytes__1^-1(N, b*).
@@ -1265,10 +1265,10 @@ execution_of_RELOP t relop
 execution_of_CVTOP t_2 t_1 cvtop
 1. Assert: Due to validation, a value of value type t_1 is on the top of the stack.
 2. Pop the value (t_1.CONST c_1) from the stack.
-3. If (|$cvtop_(t_1, t_2, cvtop, c_1)| is 1), then:
-  a. Let [c] be $cvtop_(t_1, t_2, cvtop, c_1).
+3. If (|$cvtop__(t_1, t_2, cvtop, c_1)| is 1), then:
+  a. Let [c] be $cvtop__(t_1, t_2, cvtop, c_1).
   b. Push the value (t_2.CONST c) to the stack.
-4. If ($cvtop_(t_1, t_2, cvtop, c_1) is []), then:
+4. If ($cvtop__(t_1, t_2, cvtop, c_1) is []), then:
   a. Trap.
 
 execution_of_LOCAL.TEE x
@@ -1355,7 +1355,7 @@ execution_of_LOAD valty_u0 sz_sx_u1? ao
     1) Let ?(y_0) be sz_sx_u1?.
     2) Let (n, sx) be y_0.
     3) Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
-    4) Push the value (Inn.CONST $ext_(n, $size(Inn), sx, c)) to the stack.
+    4) Push the value (Inn.CONST $ext__(n, $size(Inn), sx, c)) to the stack.
 
 execution_of_MEMORY.SIZE
 1. Let z be the current state.
@@ -1397,7 +1397,7 @@ execution_of_STORE valty_u1 sz_u2? ao
     2) If ((((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|) and (valty_u0 is Inn)), then:
       a) Trap.
     3) If (valty_u0 is Inn), then:
-      a) Let b* be $ibytes_(n, $wrap_($size(Inn), n, c)).
+      a) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
       b) Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
 
 execution_of_MEMORY.GROW
@@ -2277,7 +2277,7 @@ unop_ numty_u1 unop__u0 num__u3
   b. Assert: Due to validation, unop__u0 is of the case EXTEND.
   c. Let (EXTEND N) be unop__u0.
   d. Let iN be num__u3.
-  e. Return [$ext_(N, $size(Inn), S, $wrap_($size(Inn), N, iN))].
+  e. Return [$ext__(N, $size(Inn), S, $wrap__($size(Inn), N, iN))].
 5. If ((unop__u0 is ABS) and the type of numty_u1 is Fnn), then:
   a. Let Fnn be numty_u1.
   b. Let fN be num__u3.
@@ -2470,15 +2470,15 @@ relop_ numty_u1 relop_u0 num__u3 num__u5
 13. Let fN_2 be num__u5.
 14. Return $fge_($size(Fnn), fN_1, fN_2).
 
-cvtop_ numty_u0 numty_u1 cvtop_u2 num__u4
+cvtop__ numty_u0 numty_u1 cvtop_u2 num__u4
 1. If ((numty_u0 is I32) and (numty_u1 is I64)), then:
   a. Let iN be num__u4.
   b. If cvtop_u2 is of the case EXTEND, then:
     1) Let (EXTEND sx) be cvtop_u2.
-    2) Return [$ext_(32, 64, sx, iN)].
+    2) Return [$ext__(32, 64, sx, iN)].
 2. If ((numty_u0 is I64) and ((numty_u1 is I32) and (cvtop_u2 is WRAP))), then:
   a. Let iN be num__u4.
-  b. Return [$wrap_(64, 32, iN)].
+  b. Return [$wrap__(64, 32, iN)].
 3. If the type of numty_u0 is Fnn, then:
   a. Let Fnn be numty_u0.
   b. If the type of numty_u1 is Inn, then:
@@ -2486,16 +2486,16 @@ cvtop_ numty_u0 numty_u1 cvtop_u2 num__u4
     2) Let fN be num__u4.
     3) If cvtop_u2 is of the case TRUNC, then:
       a) Let (TRUNC sx) be cvtop_u2.
-      b) Return [$trunc_($size(Fnn), $size(Inn), sx, fN)].
+      b) Return [$trunc__($size(Fnn), $size(Inn), sx, fN)].
     4) If cvtop_u2 is of the case TRUNC_SAT, then:
       a) Let (TRUNC_SAT sx) be cvtop_u2.
-      b) Return [$trunc_sat_($size(Fnn), $size(Inn), sx, fN)].
+      b) Return [$trunc_sat__($size(Fnn), $size(Inn), sx, fN)].
 4. If ((numty_u0 is F32) and ((numty_u1 is F64) and (cvtop_u2 is PROMOTE))), then:
   a. Let fN be num__u4.
-  b. Return [$promote_(32, 64, fN)].
+  b. Return [$promote__(32, 64, fN)].
 5. If ((numty_u0 is F64) and ((numty_u1 is F32) and (cvtop_u2 is DEMOTE))), then:
   a. Let fN be num__u4.
-  b. Return [$demote_(64, 32, fN)].
+  b. Return [$demote__(64, 32, fN)].
 6. If the type of numty_u1 is Fnn, then:
   a. Let Fnn be numty_u1.
   b. If the type of numty_u0 is Inn, then:
@@ -2503,7 +2503,7 @@ cvtop_ numty_u0 numty_u1 cvtop_u2 num__u4
     2) Let iN be num__u4.
     3) If cvtop_u2 is of the case CONVERT, then:
       a) Let (CONVERT sx) be cvtop_u2.
-      b) Return [$convert_($size(Inn), $size(Fnn), sx, iN)].
+      b) Return [$convert__($size(Inn), $size(Fnn), sx, iN)].
 7. Assert: Due to validation, (cvtop_u2 is REINTERPRET).
 8. If the type of numty_u1 is Fnn, then:
   a. Let Fnn be numty_u1.
@@ -2511,14 +2511,14 @@ cvtop_ numty_u0 numty_u1 cvtop_u2 num__u4
     1) Let Inn be numty_u0.
     2) Let iN be num__u4.
     3) If ($size(Inn) is $size(Fnn)), then:
-      a) Return [$reinterpret_(Inn, Fnn, iN)].
+      a) Return [$reinterpret__(Inn, Fnn, iN)].
 9. Assert: Due to validation, the type of numty_u0 is Fnn.
 10. Let Fnn be numty_u0.
 11. Assert: Due to validation, the type of numty_u1 is Inn.
 12. Let Inn be numty_u1.
 13. Let fN be num__u4.
 14. Assert: Due to validation, ($size(Inn) is $size(Fnn)).
-15. Return [$reinterpret_(Fnn, Inn, fN)].
+15. Return [$reinterpret__(Fnn, Inn, fN)].
 
 invibytes_ N b*
 1. Let n be $ibytes__1^-1(N, b*).
@@ -2533,20 +2533,20 @@ packnum_ lanet_u0 c
   a. Return c.
 2. Assert: Due to validation, the type of lanet_u0 is packtype.
 3. Let packtype be lanet_u0.
-4. Return $wrap_($size($unpack(packtype)), $psize(packtype), c).
+4. Return $wrap__($size($unpack(packtype)), $psize(packtype), c).
 
 unpacknum_ lanet_u0 c
 1. If the type of lanet_u0 is numtype, then:
   a. Return c.
 2. Assert: Due to validation, the type of lanet_u0 is packtype.
 3. Let packtype be lanet_u0.
-4. Return $ext_($psize(packtype), $size($unpack(packtype)), U, c).
+4. Return $ext__($psize(packtype), $size($unpack(packtype)), U, c).
 
 invlanes_ sh c*
 1. Let vc be $lanes__1^-1(sh, c*).
 2. Return vc.
 
-half_ half_u0 i j
+half half_u0 i j
 1. If (half_u0 is LOW), then:
   a. Return i.
 2. Assert: Due to validation, (half_u0 is HIGH).
@@ -2733,14 +2733,14 @@ vrelop_ (lanet_u1 X N) vrelo_u0 v128_1 v128_2
   a. Let Jnn be lanet_u1.
   b. Let lane_1* be $lanes_((Jnn X N), v128_1).
   c. Let lane_2* be $lanes_((Jnn X N), v128_2).
-  d. Let lane_3* be $ext_(1, $lsize(Jnn), S, $ieq_($lsize(Jnn), lane_1, lane_2))*.
+  d. Let lane_3* be $ext__(1, $lsize(Jnn), S, $ieq_($lsize(Jnn), lane_1, lane_2))*.
   e. Let v128 be $invlanes_((Jnn X N), lane_3*).
   f. Return v128.
 2. If ((vrelo_u0 is NE) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
   b. Let lane_1* be $lanes_((Jnn X N), v128_1).
   c. Let lane_2* be $lanes_((Jnn X N), v128_2).
-  d. Let lane_3* be $ext_(1, $lsize(Jnn), S, $ine_($lsize(Jnn), lane_1, lane_2))*.
+  d. Let lane_3* be $ext__(1, $lsize(Jnn), S, $ine_($lsize(Jnn), lane_1, lane_2))*.
   e. Let v128 be $invlanes_((Jnn X N), lane_3*).
   f. Return v128.
 3. If the type of lanet_u1 is Jnn, then:
@@ -2749,28 +2749,28 @@ vrelop_ (lanet_u1 X N) vrelo_u0 v128_1 v128_2
     1) Let (LT sx) be vrelo_u0.
     2) Let lane_1* be $lanes_((Jnn X N), v128_1).
     3) Let lane_2* be $lanes_((Jnn X N), v128_2).
-    4) Let lane_3* be $ext_(1, $lsize(Jnn), S, $ilt_($lsize(Jnn), sx, lane_1, lane_2))*.
+    4) Let lane_3* be $ext__(1, $lsize(Jnn), S, $ilt_($lsize(Jnn), sx, lane_1, lane_2))*.
     5) Let v128 be $invlanes_((Jnn X N), lane_3*).
     6) Return v128.
   c. If vrelo_u0 is of the case GT, then:
     1) Let (GT sx) be vrelo_u0.
     2) Let lane_1* be $lanes_((Jnn X N), v128_1).
     3) Let lane_2* be $lanes_((Jnn X N), v128_2).
-    4) Let lane_3* be $ext_(1, $lsize(Jnn), S, $igt_($lsize(Jnn), sx, lane_1, lane_2))*.
+    4) Let lane_3* be $ext__(1, $lsize(Jnn), S, $igt_($lsize(Jnn), sx, lane_1, lane_2))*.
     5) Let v128 be $invlanes_((Jnn X N), lane_3*).
     6) Return v128.
   d. If vrelo_u0 is of the case LE, then:
     1) Let (LE sx) be vrelo_u0.
     2) Let lane_1* be $lanes_((Jnn X N), v128_1).
     3) Let lane_2* be $lanes_((Jnn X N), v128_2).
-    4) Let lane_3* be $ext_(1, $lsize(Jnn), S, $ile_($lsize(Jnn), sx, lane_1, lane_2))*.
+    4) Let lane_3* be $ext__(1, $lsize(Jnn), S, $ile_($lsize(Jnn), sx, lane_1, lane_2))*.
     5) Let v128 be $invlanes_((Jnn X N), lane_3*).
     6) Return v128.
   e. If vrelo_u0 is of the case GE, then:
     1) Let (GE sx) be vrelo_u0.
     2) Let lane_1* be $lanes_((Jnn X N), v128_1).
     3) Let lane_2* be $lanes_((Jnn X N), v128_2).
-    4) Let lane_3* be $ext_(1, $lsize(Jnn), S, $ige_($lsize(Jnn), sx, lane_1, lane_2))*.
+    4) Let lane_3* be $ext__(1, $lsize(Jnn), S, $ige_($lsize(Jnn), sx, lane_1, lane_2))*.
     5) Let v128 be $invlanes_((Jnn X N), lane_3*).
     6) Return v128.
 4. If ((vrelo_u0 is EQ) and the type of lanet_u1 is Fnn), then:
@@ -2778,7 +2778,7 @@ vrelop_ (lanet_u1 X N) vrelo_u0 v128_1 v128_2
   b. Let lane_1* be $lanes_((Fnn X N), v128_1).
   c. Let lane_2* be $lanes_((Fnn X N), v128_2).
   d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $ext_(1, $size(Fnn), S, $feq_($size(Fnn), lane_1, lane_2))*.
+  e. Let lane_3* be $ext__(1, $size(Fnn), S, $feq_($size(Fnn), lane_1, lane_2))*.
   f. Let v128 be $invlanes_((Inn X N), lane_3*).
   g. Return v128.
 5. If ((vrelo_u0 is NE) and the type of lanet_u1 is Fnn), then:
@@ -2786,7 +2786,7 @@ vrelop_ (lanet_u1 X N) vrelo_u0 v128_1 v128_2
   b. Let lane_1* be $lanes_((Fnn X N), v128_1).
   c. Let lane_2* be $lanes_((Fnn X N), v128_2).
   d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $ext_(1, $size(Fnn), S, $fne_($size(Fnn), lane_1, lane_2))*.
+  e. Let lane_3* be $ext__(1, $size(Fnn), S, $fne_($size(Fnn), lane_1, lane_2))*.
   f. Let v128 be $invlanes_((Inn X N), lane_3*).
   g. Return v128.
 6. If ((vrelo_u0 is LT) and the type of lanet_u1 is Fnn), then:
@@ -2794,7 +2794,7 @@ vrelop_ (lanet_u1 X N) vrelo_u0 v128_1 v128_2
   b. Let lane_1* be $lanes_((Fnn X N), v128_1).
   c. Let lane_2* be $lanes_((Fnn X N), v128_2).
   d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $ext_(1, $size(Fnn), S, $flt_($size(Fnn), lane_1, lane_2))*.
+  e. Let lane_3* be $ext__(1, $size(Fnn), S, $flt_($size(Fnn), lane_1, lane_2))*.
   f. Let v128 be $invlanes_((Inn X N), lane_3*).
   g. Return v128.
 7. If ((vrelo_u0 is GT) and the type of lanet_u1 is Fnn), then:
@@ -2802,7 +2802,7 @@ vrelop_ (lanet_u1 X N) vrelo_u0 v128_1 v128_2
   b. Let lane_1* be $lanes_((Fnn X N), v128_1).
   c. Let lane_2* be $lanes_((Fnn X N), v128_2).
   d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $ext_(1, $size(Fnn), S, $fgt_($size(Fnn), lane_1, lane_2))*.
+  e. Let lane_3* be $ext__(1, $size(Fnn), S, $fgt_($size(Fnn), lane_1, lane_2))*.
   f. Let v128 be $invlanes_((Inn X N), lane_3*).
   g. Return v128.
 8. If ((vrelo_u0 is LE) and the type of lanet_u1 is Fnn), then:
@@ -2810,7 +2810,7 @@ vrelop_ (lanet_u1 X N) vrelo_u0 v128_1 v128_2
   b. Let lane_1* be $lanes_((Fnn X N), v128_1).
   c. Let lane_2* be $lanes_((Fnn X N), v128_2).
   d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $ext_(1, $size(Fnn), S, $fle_($size(Fnn), lane_1, lane_2))*.
+  e. Let lane_3* be $ext__(1, $size(Fnn), S, $fle_($size(Fnn), lane_1, lane_2))*.
   f. Let v128 be $invlanes_((Inn X N), lane_3*).
   g. Return v128.
 9. Assert: Due to validation, (vrelo_u0 is GE).
@@ -2819,83 +2819,83 @@ vrelop_ (lanet_u1 X N) vrelo_u0 v128_1 v128_2
 12. Let lane_1* be $lanes_((Fnn X N), v128_1).
 13. Let lane_2* be $lanes_((Fnn X N), v128_2).
 14. Let Inn be $isize^-1($size(Fnn)).
-15. Let lane_3* be $ext_(1, $size(Fnn), S, $fge_($size(Fnn), lane_1, lane_2))*.
+15. Let lane_3* be $ext__(1, $size(Fnn), S, $fge_($size(Fnn), lane_1, lane_2))*.
 16. Let v128 be $invlanes_((Inn X N), lane_3*).
 17. Return v128.
 
-vcvtop_ (lanet_u0 X N_1) (lanet_u1 X N_2) vcvto_u4 sx_u5? lane__u3
+vcvtop__ (lanet_u0 X N_1) (lanet_u1 X N_2) vcvto_u4 sx_u5? lane__u3
 1. If ((lanet_u0 is I8) and ((lanet_u1 is I16) and (vcvto_u4 is EXTEND))), then:
   a. Let i8 be lane__u3.
   b. If sx_u5? is defined, then:
     1) Let ?(sx) be sx_u5?.
-    2) Let i16 be $ext_(8, 16, sx, i8).
+    2) Let i16 be $ext__(8, 16, sx, i8).
     3) Return i16.
 2. If ((lanet_u0 is I16) and ((lanet_u1 is I32) and (vcvto_u4 is EXTEND))), then:
   a. Let i16 be lane__u3.
   b. If sx_u5? is defined, then:
     1) Let ?(sx) be sx_u5?.
-    2) Let i32 be $ext_(16, 32, sx, i16).
+    2) Let i32 be $ext__(16, 32, sx, i16).
     3) Return i32.
 3. If (lanet_u0 is I32), then:
   a. If ((lanet_u1 is I64) and (vcvto_u4 is EXTEND)), then:
     1) Let i32 be lane__u3.
     2) If sx_u5? is defined, then:
       a) Let ?(sx) be sx_u5?.
-      b) Let i64 be $ext_(32, 64, sx, i32).
+      b) Let i64 be $ext__(32, 64, sx, i32).
       c) Return i64.
   b. If ((lanet_u1 is F32) and (vcvto_u4 is CONVERT)), then:
     1) Let i32 be lane__u3.
     2) If sx_u5? is defined, then:
       a) Let ?(sx) be sx_u5?.
-      b) Let f32 be $convert_(32, 32, sx, i32).
+      b) Let f32 be $convert__(32, 32, sx, i32).
       c) Return f32.
   c. If ((lanet_u1 is F64) and (vcvto_u4 is CONVERT)), then:
     1) Let i32 be lane__u3.
     2) If sx_u5? is defined, then:
       a) Let ?(sx) be sx_u5?.
-      b) Let f64 be $convert_(32, 64, sx, i32).
+      b) Let f64 be $convert__(32, 64, sx, i32).
       c) Return f64.
 4. If ((lanet_u0 is F32) and ((lanet_u1 is I32) and (vcvto_u4 is TRUNC_SAT))), then:
   a. Let f32 be lane__u3.
   b. If sx_u5? is defined, then:
     1) Let ?(sx) be sx_u5?.
-    2) Let i32 be $trunc_sat_(32, 32, sx, f32).
+    2) Let i32 be $trunc_sat__(32, 32, sx, f32).
     3) Return i32.
 5. If (lanet_u0 is F64), then:
   a. If ((lanet_u1 is I32) and (vcvto_u4 is TRUNC_SAT)), then:
     1) Let f64 be lane__u3.
     2) If sx_u5? is defined, then:
       a) Let ?(sx) be sx_u5?.
-      b) Let i32 be $trunc_sat_(64, 32, sx, f64).
+      b) Let i32 be $trunc_sat__(64, 32, sx, f64).
       c) Return i32.
   b. If ((lanet_u1 is F32) and (vcvto_u4 is DEMOTE)), then:
     1) Let f64 be lane__u3.
-    2) Let f32 be $demote_(64, 32, f64).
+    2) Let f32 be $demote__(64, 32, f64).
     3) Return f32.
 6. Assert: Due to validation, (lanet_u0 is F32).
 7. Assert: Due to validation, (lanet_u1 is F64).
 8. Assert: Due to validation, (vcvto_u4 is PROMOTE).
 9. Let f32 be lane__u3.
-10. Let f64 be $promote_(32, 64, f32).
+10. Let f64 be $promote__(32, 64, f32).
 11. Return f64.
 
 vextunop_ (Inn_1 X N_1) (Inn_2 X N_2) (EXTADD_PAIRWISE sx) c_1
 1. Let ci* be $lanes_((Inn_2 X N_2), c_1).
-2. Let [cj_1, cj_2]* be $concat_^-1($ext_($lsize(Inn_2), $lsize(Inn_1), sx, ci)*).
+2. Let [cj_1, cj_2]* be $concat_^-1($ext__($lsize(Inn_2), $lsize(Inn_1), sx, ci)*).
 3. Let c be $invlanes_((Inn_1 X N_1), $iadd_($lsize(Inn_1), cj_1, cj_2)*).
 4. Return c.
 
 vextbinop_ (Inn_1 X N_1) (Inn_2 X N_2) vextb_u0 c_1 c_2
 1. If vextb_u0 is of the case EXTMUL, then:
   a. Let (EXTMUL sx hf) be vextb_u0.
-  b. Let ci_1* be $lanes_((Inn_2 X N_2), c_1)[$half_(hf, 0, N_1) : N_1].
-  c. Let ci_2* be $lanes_((Inn_2 X N_2), c_2)[$half_(hf, 0, N_1) : N_1].
-  d. Let c be $invlanes_((Inn_1 X N_1), $imul_($lsize(Inn_1), $ext_($lsize(Inn_2), $lsize(Inn_1), sx, ci_1), $ext_($lsize(Inn_2), $lsize(Inn_1), sx, ci_2))*).
+  b. Let ci_1* be $lanes_((Inn_2 X N_2), c_1)[$half(hf, 0, N_1) : N_1].
+  c. Let ci_2* be $lanes_((Inn_2 X N_2), c_2)[$half(hf, 0, N_1) : N_1].
+  d. Let c be $invlanes_((Inn_1 X N_1), $imul_($lsize(Inn_1), $ext__($lsize(Inn_2), $lsize(Inn_1), sx, ci_1), $ext__($lsize(Inn_2), $lsize(Inn_1), sx, ci_2))*).
   e. Return c.
 2. Assert: Due to validation, (vextb_u0 is DOT).
 3. Let ci_1* be $lanes_((Inn_2 X N_2), c_1).
 4. Let ci_2* be $lanes_((Inn_2 X N_2), c_2).
-5. Let [cj_1, cj_2]* be $concat_^-1($imul_($lsize(Inn_1), $ext_($lsize(Inn_2), $lsize(Inn_1), S, ci_1), $ext_($lsize(Inn_2), $lsize(Inn_1), S, ci_2))*).
+5. Let [cj_1, cj_2]* be $concat_^-1($imul_($lsize(Inn_1), $ext__($lsize(Inn_2), $lsize(Inn_1), S, ci_1), $ext__($lsize(Inn_2), $lsize(Inn_1), S, ci_2))*).
 6. Let c be $invlanes_((Inn_1 X N_1), $iadd_($lsize(Inn_1), cj_1, cj_2)*).
 7. Return c.
 
@@ -3474,10 +3474,10 @@ execution_of_RELOP nt relop
 execution_of_CVTOP nt_2 nt_1 cvtop
 1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
 2. Pop the value (nt_1.CONST c_1) from the stack.
-3. If (|$cvtop_(nt_1, nt_2, cvtop, c_1)| is 1), then:
-  a. Let [c] be $cvtop_(nt_1, nt_2, cvtop, c_1).
+3. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| is 1), then:
+  a. Let [c] be $cvtop__(nt_1, nt_2, cvtop, c_1).
   b. Push the value (nt_2.CONST c) to the stack.
-4. If ($cvtop_(nt_1, nt_2, cvtop, c_1) is []), then:
+4. If ($cvtop__(nt_1, nt_2, cvtop, c_1) is []), then:
   a. Trap.
 
 execution_of_REF.IS_NULL
@@ -3610,7 +3610,7 @@ execution_of_VEXTRACT_LANE (lanet_u0 X N) sx_u1? i
   b. If sx_u1? is defined, then:
     1) Let ?(sx) be sx_u1?.
     2) If (i < |$lanes_((pt X N), c_1)|), then:
-      a) Let c_2 be $ext_($psize(pt), 32, sx, $lanes_((pt X N), c_1)[i]).
+      a) Let c_2 be $ext__($psize(pt), 32, sx, $lanes_((pt X N), c_1)[i]).
       b) Push the value (I32.CONST c_2) to the stack.
 
 execution_of_VREPLACE_LANE (Lnn X N) i
@@ -3642,8 +3642,8 @@ execution_of_VNARROW (Jnn_2 X N_2) (Jnn_1 X N_1) sx
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let ci_1* be $lanes_((Jnn_1 X N_1), c_1).
 6. Let ci_2* be $lanes_((Jnn_1 X N_1), c_2).
-7. Let cj_1* be $narrow_($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1)*.
-8. Let cj_2* be $narrow_($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2)*.
+7. Let cj_1* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1)*.
+8. Let cj_2* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2)*.
 9. Let c be $invlanes_((Jnn_2 X N_2), cj_1* ++ cj_2*).
 10. Push the value (V128.CONST c) to the stack.
 
@@ -3656,7 +3656,7 @@ execution_of_VCVTOP (lanet_u2 X N_2) (lanet_u3 X N_1) vcvtop half_u0? sx_u1? zer
   c. If sx_u1? is defined, then:
     1) Let ?(sx) be sx_u1?.
     2) Let c'* be $lanes_((Lnn_1 X N_1), c_1).
-    3) Let c be $invlanes_((Lnn_2 X N_2), $vcvtop_((Lnn_1 X N_1), (Lnn_2 X N_2), vcvtop, ?(sx), c')*).
+    3) Let c be $invlanes_((Lnn_2 X N_2), $vcvtop__((Lnn_1 X N_1), (Lnn_2 X N_2), vcvtop, ?(sx), c')*).
     4) Push the value (V128.CONST c) to the stack.
 4. If zero_u4? is not defined, then:
   a. Let Lnn_1 be lanet_u3.
@@ -3664,8 +3664,8 @@ execution_of_VCVTOP (lanet_u2 X N_2) (lanet_u3 X N_1) vcvtop half_u0? sx_u1? zer
   c. If half_u0? is defined, then:
     1) Let ?(hf) be half_u0?.
     2) Let sx? be sx_u1?.
-    3) Let ci* be $lanes_((Lnn_1 X N_1), c_1)[$half_(hf, 0, N_2) : N_2].
-    4) Let c be $invlanes_((Lnn_2 X N_2), $vcvtop_((Lnn_1 X N_1), (Lnn_2 X N_2), vcvtop, sx?, ci)*).
+    3) Let ci* be $lanes_((Lnn_1 X N_1), c_1)[$half(hf, 0, N_2) : N_2].
+    4) Let c be $invlanes_((Lnn_2 X N_2), $vcvtop__((Lnn_1 X N_1), (Lnn_2 X N_2), vcvtop, sx?, ci)*).
     5) Push the value (V128.CONST c) to the stack.
 5. If (half_u0? is not defined and ((zero_u4? is ?(ZERO)) and the type of lanet_u3 is numtype)), then:
   a. Let nt_1 be lanet_u3.
@@ -3673,7 +3673,7 @@ execution_of_VCVTOP (lanet_u2 X N_2) (lanet_u3 X N_1) vcvtop half_u0? sx_u1? zer
     1) Let nt_2 be lanet_u2.
     2) Let sx? be sx_u1?.
     3) Let ci* be $lanes_((nt_1 X N_1), c_1).
-    4) Let c be $invlanes_((nt_2 X N_2), $vcvtop_((nt_1 X N_1), (nt_2 X N_2), vcvtop, sx?, ci)* ++ $zero(nt_2)^N_1).
+    4) Let c be $invlanes_((nt_2 X N_2), $vcvtop__((nt_1 X N_1), (nt_2 X N_2), vcvtop, sx?, ci)* ++ $zero(nt_2)^N_1).
     5) Push the value (V128.CONST c) to the stack.
 
 execution_of_LOCAL.TEE x
@@ -3858,7 +3858,7 @@ execution_of_LOAD numty_u0 sz_sx_u1? ao
     1) Let ?(y_0) be sz_sx_u1?.
     2) Let (n, sx) be y_0.
     3) Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
-    4) Push the value (Inn.CONST $ext_(n, $size(Inn), sx, c)) to the stack.
+    4) Push the value (Inn.CONST $ext__(n, $size(Inn), sx, c)) to the stack.
 
 execution_of_VLOAD V128 vload_u0? ao
 1. Let z be the current state.
@@ -3878,7 +3878,7 @@ execution_of_VLOAD V128 vload_u0? ao
     3) If the type of $lsize^-1((M · 2)) is Jnn, then:
       a) Let Jnn be $lsize^-1((M · 2)).
       b) Let j^N be $ibytes__1^-1(M, $mem(z, 0).BYTES[((i + ao.OFFSET) + ((k · M) / 8)) : (M / 8)])^(k<N).
-      c) Let c be $invlanes_((Jnn X N), $ext_(M, $lsize(Jnn), sx, j)^N).
+      c) Let c be $invlanes_((Jnn X N), $ext__(M, $lsize(Jnn), sx, j)^N).
       d) Push the value (V128.CONST c) to the stack.
   c. If y_0 is of the case SPLAT, then:
     1) Let (SPLAT N) be y_0.
@@ -3895,7 +3895,7 @@ execution_of_VLOAD V128 vload_u0? ao
     2) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
     3) Let j be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
-    4) Let c be $ext_(N, 128, U, j).
+    4) Let c be $ext__(N, 128, U, j).
     5) Push the value (V128.CONST c) to the stack.
 
 execution_of_VLOAD_LANE V128 N ao j
@@ -4056,7 +4056,7 @@ execution_of_STORE numty_u1 sz_u2? ao
     2) If ((((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|) and (numty_u0 is Inn)), then:
       a) Trap.
     3) If (numty_u0 is Inn), then:
-      a) Let b* be $ibytes_(n, $wrap_($size(Inn), n, c)).
+      a) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
       b) Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
 
 execution_of_VSTORE V128 ao
@@ -6425,7 +6425,7 @@ unop_ numty_u1 unop__u0 num__u3
   b. Assert: Due to validation, unop__u0 is of the case EXTEND.
   c. Let (EXTEND N) be unop__u0.
   d. Let iN be num__u3.
-  e. Return [$ext_(N, $size(Inn), S, $wrap_($size(Inn), N, iN))].
+  e. Return [$ext__(N, $size(Inn), S, $wrap__($size(Inn), N, iN))].
 5. If ((unop__u0 is ABS) and the type of numty_u1 is Fnn), then:
   a. Let Fnn be numty_u1.
   b. Let fN be num__u3.
@@ -6618,7 +6618,7 @@ relop_ numty_u1 relop_u0 num__u3 num__u5
 13. Let fN_2 be num__u5.
 14. Return $fge_($size(Fnn), fN_1, fN_2).
 
-cvtop_ numty_u1 numty_u4 cvtop_u0 num__u3
+cvtop__ numty_u1 numty_u4 cvtop_u0 num__u3
 1. If the type of numty_u1 is Inn, then:
   a. Let Inn_1 be numty_u1.
   b. If the type of numty_u4 is Inn, then:
@@ -6626,13 +6626,13 @@ cvtop_ numty_u1 numty_u4 cvtop_u0 num__u3
     2) Let iN_1 be num__u3.
     3) If cvtop_u0 is of the case EXTEND, then:
       a) Let (EXTEND sx) be cvtop_u0.
-      b) Return [$ext_($sizenn1(Inn_1), $sizenn2(Inn_2), sx, iN_1)].
+      b) Return [$ext__($sizenn1(Inn_1), $sizenn2(Inn_2), sx, iN_1)].
 2. If ((cvtop_u0 is WRAP) and the type of numty_u1 is Inn), then:
   a. Let Inn_1 be numty_u1.
   b. If the type of numty_u4 is Inn, then:
     1) Let Inn_2 be numty_u4.
     2) Let iN_1 be num__u3.
-    3) Return [$wrap_($sizenn1(Inn_1), $sizenn2(Inn_2), iN_1)].
+    3) Return [$wrap__($sizenn1(Inn_1), $sizenn2(Inn_2), iN_1)].
 3. If the type of numty_u1 is Fnn, then:
   a. Let Fnn_1 be numty_u1.
   b. If the type of numty_u4 is Inn, then:
@@ -6640,10 +6640,10 @@ cvtop_ numty_u1 numty_u4 cvtop_u0 num__u3
     2) Let fN_1 be num__u3.
     3) If cvtop_u0 is of the case TRUNC, then:
       a) Let (TRUNC sx) be cvtop_u0.
-      b) Return [$trunc_($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)].
+      b) Return [$trunc__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)].
     4) If cvtop_u0 is of the case TRUNC_SAT, then:
       a) Let (TRUNC_SAT sx) be cvtop_u0.
-      b) Return [$trunc_sat_($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)].
+      b) Return [$trunc_sat__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)].
 4. If the type of numty_u4 is Fnn, then:
   a. Let Fnn_2 be numty_u4.
   b. If the type of numty_u1 is Inn, then:
@@ -6651,19 +6651,19 @@ cvtop_ numty_u1 numty_u4 cvtop_u0 num__u3
     2) Let iN_1 be num__u3.
     3) If cvtop_u0 is of the case CONVERT, then:
       a) Let (CONVERT sx) be cvtop_u0.
-      b) Return [$convert_($sizenn1(Inn_1), $sizenn2(Fnn_2), sx, iN_1)].
+      b) Return [$convert__($sizenn1(Inn_1), $sizenn2(Fnn_2), sx, iN_1)].
 5. If ((cvtop_u0 is PROMOTE) and the type of numty_u1 is Fnn), then:
   a. Let Fnn_1 be numty_u1.
   b. If the type of numty_u4 is Fnn, then:
     1) Let Fnn_2 be numty_u4.
     2) Let fN_1 be num__u3.
-    3) Return [$promote_($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1)].
+    3) Return [$promote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1)].
 6. If ((cvtop_u0 is DEMOTE) and the type of numty_u1 is Fnn), then:
   a. Let Fnn_1 be numty_u1.
   b. If the type of numty_u4 is Fnn, then:
     1) Let Fnn_2 be numty_u4.
     2) Let fN_1 be num__u3.
-    3) Return [$demote_($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1)].
+    3) Return [$demote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1)].
 7. Assert: Due to validation, (cvtop_u0 is REINTERPRET).
 8. If the type of numty_u4 is Fnn, then:
   a. Let Fnn_2 be numty_u4.
@@ -6671,14 +6671,14 @@ cvtop_ numty_u1 numty_u4 cvtop_u0 num__u3
     1) Let Inn_1 be numty_u1.
     2) Let iN_1 be num__u3.
     3) If ($sizenn1(Inn_1) is $sizenn2(Fnn_2)), then:
-      a) Return [$reinterpret_(Inn_1, Fnn_2, iN_1)].
+      a) Return [$reinterpret__(Inn_1, Fnn_2, iN_1)].
 9. Assert: Due to validation, the type of numty_u1 is Fnn.
 10. Let Fnn_1 be numty_u1.
 11. Assert: Due to validation, the type of numty_u4 is Inn.
 12. Let Inn_2 be numty_u4.
 13. Let fN_1 be num__u3.
 14. Assert: Due to validation, ($sizenn1(Fnn_1) is $sizenn2(Inn_2)).
-15. Return [$reinterpret_(Fnn_1, Inn_2, fN_1)].
+15. Return [$reinterpret__(Fnn_1, Inn_2, fN_1)].
 
 invibytes_ N b*
 1. Let n be $ibytes__1^-1(N, b*).
@@ -6693,34 +6693,34 @@ lpacknum_ lanet_u0 c
   a. Return c.
 2. Assert: Due to validation, the type of lanet_u0 is packtype.
 3. Let packtype be lanet_u0.
-4. Return $wrap_($size($lunpack(packtype)), $psize(packtype), c).
+4. Return $wrap__($size($lunpack(packtype)), $psize(packtype), c).
 
 lunpacknum_ lanet_u0 c
 1. If the type of lanet_u0 is numtype, then:
   a. Return c.
 2. Assert: Due to validation, the type of lanet_u0 is packtype.
 3. Let packtype be lanet_u0.
-4. Return $ext_($psize(packtype), $size($lunpack(packtype)), U, c).
+4. Return $ext__($psize(packtype), $size($lunpack(packtype)), U, c).
 
 cpacknum_ stora_u0 c
 1. If the type of stora_u0 is consttype, then:
   a. Return c.
 2. Assert: Due to validation, the type of stora_u0 is packtype.
 3. Let packtype be stora_u0.
-4. Return $wrap_($size($lunpack(packtype)), $psize(packtype), c).
+4. Return $wrap__($size($lunpack(packtype)), $psize(packtype), c).
 
 cunpacknum_ stora_u0 c
 1. If the type of stora_u0 is consttype, then:
   a. Return c.
 2. Assert: Due to validation, the type of stora_u0 is packtype.
 3. Let packtype be stora_u0.
-4. Return $ext_($psize(packtype), $size($lunpack(packtype)), U, c).
+4. Return $ext__($psize(packtype), $size($lunpack(packtype)), U, c).
 
 invlanes_ sh c*
 1. Let vc be $lanes__1^-1(sh, c*).
 2. Return vc.
 
-half_ (lanet_u1 X M_1) (lanet_u2 X M_2) half__u0 i j
+half__ (lanet_u1 X M_1) (lanet_u2 X M_2) half__u0 i j
 1. If ((half__u0 is LOW) and (the type of lanet_u1 is Jnn and the type of lanet_u2 is Jnn)), then:
   a. Return i.
 2. If ((half__u0 is HIGH) and (the type of lanet_u1 is Jnn and the type of lanet_u2 is Jnn)), then:
@@ -6910,14 +6910,14 @@ vrelop_ (lanet_u1 X N) vrelo_u0 v128_1 v128_2
   a. Let Jnn be lanet_u1.
   b. Let lane_1* be $lanes_((Jnn X N), v128_1).
   c. Let lane_2* be $lanes_((Jnn X N), v128_2).
-  d. Let lane_3* be $ext_(1, $lsize(Jnn), S, $ieq_($lsize(Jnn), lane_1, lane_2))*.
+  d. Let lane_3* be $ext__(1, $lsize(Jnn), S, $ieq_($lsize(Jnn), lane_1, lane_2))*.
   e. Let v128 be $invlanes_((Jnn X N), lane_3*).
   f. Return v128.
 2. If ((vrelo_u0 is NE) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
   b. Let lane_1* be $lanes_((Jnn X N), v128_1).
   c. Let lane_2* be $lanes_((Jnn X N), v128_2).
-  d. Let lane_3* be $ext_(1, $lsize(Jnn), S, $ine_($lsize(Jnn), lane_1, lane_2))*.
+  d. Let lane_3* be $ext__(1, $lsize(Jnn), S, $ine_($lsize(Jnn), lane_1, lane_2))*.
   e. Let v128 be $invlanes_((Jnn X N), lane_3*).
   f. Return v128.
 3. If the type of lanet_u1 is Jnn, then:
@@ -6926,28 +6926,28 @@ vrelop_ (lanet_u1 X N) vrelo_u0 v128_1 v128_2
     1) Let (LT sx) be vrelo_u0.
     2) Let lane_1* be $lanes_((Jnn X N), v128_1).
     3) Let lane_2* be $lanes_((Jnn X N), v128_2).
-    4) Let lane_3* be $ext_(1, $lsize(Jnn), S, $ilt_($lsize(Jnn), sx, lane_1, lane_2))*.
+    4) Let lane_3* be $ext__(1, $lsize(Jnn), S, $ilt_($lsize(Jnn), sx, lane_1, lane_2))*.
     5) Let v128 be $invlanes_((Jnn X N), lane_3*).
     6) Return v128.
   c. If vrelo_u0 is of the case GT, then:
     1) Let (GT sx) be vrelo_u0.
     2) Let lane_1* be $lanes_((Jnn X N), v128_1).
     3) Let lane_2* be $lanes_((Jnn X N), v128_2).
-    4) Let lane_3* be $ext_(1, $lsize(Jnn), S, $igt_($lsize(Jnn), sx, lane_1, lane_2))*.
+    4) Let lane_3* be $ext__(1, $lsize(Jnn), S, $igt_($lsize(Jnn), sx, lane_1, lane_2))*.
     5) Let v128 be $invlanes_((Jnn X N), lane_3*).
     6) Return v128.
   d. If vrelo_u0 is of the case LE, then:
     1) Let (LE sx) be vrelo_u0.
     2) Let lane_1* be $lanes_((Jnn X N), v128_1).
     3) Let lane_2* be $lanes_((Jnn X N), v128_2).
-    4) Let lane_3* be $ext_(1, $lsize(Jnn), S, $ile_($lsize(Jnn), sx, lane_1, lane_2))*.
+    4) Let lane_3* be $ext__(1, $lsize(Jnn), S, $ile_($lsize(Jnn), sx, lane_1, lane_2))*.
     5) Let v128 be $invlanes_((Jnn X N), lane_3*).
     6) Return v128.
   e. If vrelo_u0 is of the case GE, then:
     1) Let (GE sx) be vrelo_u0.
     2) Let lane_1* be $lanes_((Jnn X N), v128_1).
     3) Let lane_2* be $lanes_((Jnn X N), v128_2).
-    4) Let lane_3* be $ext_(1, $lsize(Jnn), S, $ige_($lsize(Jnn), sx, lane_1, lane_2))*.
+    4) Let lane_3* be $ext__(1, $lsize(Jnn), S, $ige_($lsize(Jnn), sx, lane_1, lane_2))*.
     5) Let v128 be $invlanes_((Jnn X N), lane_3*).
     6) Return v128.
 4. If ((vrelo_u0 is EQ) and the type of lanet_u1 is Fnn), then:
@@ -6955,7 +6955,7 @@ vrelop_ (lanet_u1 X N) vrelo_u0 v128_1 v128_2
   b. Let lane_1* be $lanes_((Fnn X N), v128_1).
   c. Let lane_2* be $lanes_((Fnn X N), v128_2).
   d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $ext_(1, $size(Fnn), S, $feq_($size(Fnn), lane_1, lane_2))*.
+  e. Let lane_3* be $ext__(1, $size(Fnn), S, $feq_($size(Fnn), lane_1, lane_2))*.
   f. Let v128 be $invlanes_((Inn X N), lane_3*).
   g. Return v128.
 5. If ((vrelo_u0 is NE) and the type of lanet_u1 is Fnn), then:
@@ -6963,7 +6963,7 @@ vrelop_ (lanet_u1 X N) vrelo_u0 v128_1 v128_2
   b. Let lane_1* be $lanes_((Fnn X N), v128_1).
   c. Let lane_2* be $lanes_((Fnn X N), v128_2).
   d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $ext_(1, $size(Fnn), S, $fne_($size(Fnn), lane_1, lane_2))*.
+  e. Let lane_3* be $ext__(1, $size(Fnn), S, $fne_($size(Fnn), lane_1, lane_2))*.
   f. Let v128 be $invlanes_((Inn X N), lane_3*).
   g. Return v128.
 6. If ((vrelo_u0 is LT) and the type of lanet_u1 is Fnn), then:
@@ -6971,7 +6971,7 @@ vrelop_ (lanet_u1 X N) vrelo_u0 v128_1 v128_2
   b. Let lane_1* be $lanes_((Fnn X N), v128_1).
   c. Let lane_2* be $lanes_((Fnn X N), v128_2).
   d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $ext_(1, $size(Fnn), S, $flt_($size(Fnn), lane_1, lane_2))*.
+  e. Let lane_3* be $ext__(1, $size(Fnn), S, $flt_($size(Fnn), lane_1, lane_2))*.
   f. Let v128 be $invlanes_((Inn X N), lane_3*).
   g. Return v128.
 7. If ((vrelo_u0 is GT) and the type of lanet_u1 is Fnn), then:
@@ -6979,7 +6979,7 @@ vrelop_ (lanet_u1 X N) vrelo_u0 v128_1 v128_2
   b. Let lane_1* be $lanes_((Fnn X N), v128_1).
   c. Let lane_2* be $lanes_((Fnn X N), v128_2).
   d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $ext_(1, $size(Fnn), S, $fgt_($size(Fnn), lane_1, lane_2))*.
+  e. Let lane_3* be $ext__(1, $size(Fnn), S, $fgt_($size(Fnn), lane_1, lane_2))*.
   f. Let v128 be $invlanes_((Inn X N), lane_3*).
   g. Return v128.
 8. If ((vrelo_u0 is LE) and the type of lanet_u1 is Fnn), then:
@@ -6987,7 +6987,7 @@ vrelop_ (lanet_u1 X N) vrelo_u0 v128_1 v128_2
   b. Let lane_1* be $lanes_((Fnn X N), v128_1).
   c. Let lane_2* be $lanes_((Fnn X N), v128_2).
   d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $ext_(1, $size(Fnn), S, $fle_($size(Fnn), lane_1, lane_2))*.
+  e. Let lane_3* be $ext__(1, $size(Fnn), S, $fle_($size(Fnn), lane_1, lane_2))*.
   f. Let v128 be $invlanes_((Inn X N), lane_3*).
   g. Return v128.
 9. Assert: Due to validation, (vrelo_u0 is GE).
@@ -6996,83 +6996,83 @@ vrelop_ (lanet_u1 X N) vrelo_u0 v128_1 v128_2
 12. Let lane_1* be $lanes_((Fnn X N), v128_1).
 13. Let lane_2* be $lanes_((Fnn X N), v128_2).
 14. Let Inn be $isize^-1($size(Fnn)).
-15. Let lane_3* be $ext_(1, $size(Fnn), S, $fge_($size(Fnn), lane_1, lane_2))*.
+15. Let lane_3* be $ext__(1, $size(Fnn), S, $fge_($size(Fnn), lane_1, lane_2))*.
 16. Let v128 be $invlanes_((Inn X N), lane_3*).
 17. Return v128.
 
-vcvtop_ (lanet_u0 X N_1) (lanet_u1 X N_2) vcvto_u6 sx_u7? lane__u3
+vcvtop__ (lanet_u0 X N_1) (lanet_u1 X N_2) vcvto_u6 sx_u7? lane__u3
 1. If ((lanet_u0 is I8) and ((lanet_u1 is I16) and (vcvto_u6 is EXTEND))), then:
   a. Let i8 be lane__u3.
   b. If sx_u7? is defined, then:
     1) Let ?(sx) be sx_u7?.
-    2) Let i16 be $ext_(8, 16, sx, i8).
+    2) Let i16 be $ext__(8, 16, sx, i8).
     3) Return i16.
 2. If ((lanet_u0 is I16) and ((lanet_u1 is I32) and (vcvto_u6 is EXTEND))), then:
   a. Let i16 be lane__u3.
   b. If sx_u7? is defined, then:
     1) Let ?(sx) be sx_u7?.
-    2) Let i32 be $ext_(16, 32, sx, i16).
+    2) Let i32 be $ext__(16, 32, sx, i16).
     3) Return i32.
 3. If (lanet_u0 is I32), then:
   a. If ((lanet_u1 is I64) and (vcvto_u6 is EXTEND)), then:
     1) Let i32 be lane__u3.
     2) If sx_u7? is defined, then:
       a) Let ?(sx) be sx_u7?.
-      b) Let i64 be $ext_(32, 64, sx, i32).
+      b) Let i64 be $ext__(32, 64, sx, i32).
       c) Return i64.
   b. If ((lanet_u1 is F32) and (vcvto_u6 is CONVERT)), then:
     1) Let i32 be lane__u3.
     2) If sx_u7? is defined, then:
       a) Let ?(sx) be sx_u7?.
-      b) Let f32 be $convert_(32, 32, sx, i32).
+      b) Let f32 be $convert__(32, 32, sx, i32).
       c) Return f32.
   c. If ((lanet_u1 is F64) and (vcvto_u6 is CONVERT)), then:
     1) Let i32 be lane__u3.
     2) If sx_u7? is defined, then:
       a) Let ?(sx) be sx_u7?.
-      b) Let f64 be $convert_(32, 64, sx, i32).
+      b) Let f64 be $convert__(32, 64, sx, i32).
       c) Return f64.
 4. If ((lanet_u0 is F32) and ((lanet_u1 is I32) and (vcvto_u6 is TRUNC_SAT))), then:
   a. Let f32 be lane__u3.
   b. If sx_u7? is defined, then:
     1) Let ?(sx) be sx_u7?.
-    2) Let i32 be $trunc_sat_(32, 32, sx, f32).
+    2) Let i32 be $trunc_sat__(32, 32, sx, f32).
     3) Return i32.
 5. If (lanet_u0 is F64), then:
   a. If ((lanet_u1 is I32) and (vcvto_u6 is TRUNC_SAT)), then:
     1) Let f64 be lane__u3.
     2) If sx_u7? is defined, then:
       a) Let ?(sx) be sx_u7?.
-      b) Let i32 be $trunc_sat_(64, 32, sx, f64).
+      b) Let i32 be $trunc_sat__(64, 32, sx, f64).
       c) Return i32.
   b. If ((lanet_u1 is F32) and (vcvto_u6 is DEMOTE)), then:
     1) Let f64 be lane__u3.
-    2) Let f32 be $demote_(64, 32, f64).
+    2) Let f32 be $demote__(64, 32, f64).
     3) Return f32.
 6. Assert: Due to validation, (lanet_u0 is F32).
 7. Assert: Due to validation, (lanet_u1 is F64).
 8. Assert: Due to validation, (vcvto_u6 is PROMOTE).
 9. Let f32 be lane__u3.
-10. Let f64 be $promote_(32, 64, f32).
+10. Let f64 be $promote__(32, 64, f32).
 11. Return f64.
 
-vextunop_ (Jnn_1 X N_1) (Jnn_2 X N_2) (EXTADD_PAIRWISE sx) c_1
+vextunop__ (Jnn_1 X N_1) (Jnn_2 X N_2) (EXTADD_PAIRWISE sx) c_1
 1. Let ci* be $lanes_((Jnn_1 X N_1), c_1).
-2. Let [cj_1, cj_2]* be $concat_^-1($ext_($lsize(Jnn_1), $lsize(Jnn_2), sx, ci)*).
+2. Let [cj_1, cj_2]* be $concat_^-1($ext__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci)*).
 3. Let c be $invlanes_((Jnn_2 X N_2), $iadd_($lsize(Jnn_2), cj_1, cj_2)*).
 4. Return c.
 
-vextbinop_ (Jnn_1 X N_1) (Jnn_2 X N_2) vextb_u0 c_1 c_2
+vextbinop__ (Jnn_1 X N_1) (Jnn_2 X N_2) vextb_u0 c_1 c_2
 1. If vextb_u0 is of the case EXTMUL, then:
   a. Let (EXTMUL sx half) be vextb_u0.
-  b. Let ci_1* be $lanes_((Jnn_1 X N_1), c_1)[$half_((Jnn_1 X N_1), (Jnn_2 X N_2), half, 0, N_2) : N_2].
-  c. Let ci_2* be $lanes_((Jnn_1 X N_1), c_2)[$half_((Jnn_1 X N_1), (Jnn_2 X N_2), half, 0, N_2) : N_2].
-  d. Let c be $invlanes_((Jnn_2 X N_2), $imul_($lsize(Jnn_2), $ext_($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1), $ext_($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2))*).
+  b. Let ci_1* be $lanes_((Jnn_1 X N_1), c_1)[$half__((Jnn_1 X N_1), (Jnn_2 X N_2), half, 0, N_2) : N_2].
+  c. Let ci_2* be $lanes_((Jnn_1 X N_1), c_2)[$half__((Jnn_1 X N_1), (Jnn_2 X N_2), half, 0, N_2) : N_2].
+  d. Let c be $invlanes_((Jnn_2 X N_2), $imul_($lsize(Jnn_2), $ext__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1), $ext__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2))*).
   e. Return c.
 2. Assert: Due to validation, (vextb_u0 is DOT).
 3. Let ci_1* be $lanes_((Jnn_1 X N_1), c_1).
 4. Let ci_2* be $lanes_((Jnn_1 X N_1), c_2).
-5. Let [cj_1, cj_2]* be $concat_^-1($imul_($lsize(Jnn_2), $ext_($lsize(Jnn_1), $lsize(Jnn_2), S, ci_1), $ext_($lsize(Jnn_1), $lsize(Jnn_2), S, ci_2))*).
+5. Let [cj_1, cj_2]* be $concat_^-1($imul_($lsize(Jnn_2), $ext__($lsize(Jnn_1), $lsize(Jnn_2), S, ci_1), $ext__($lsize(Jnn_1), $lsize(Jnn_2), S, ci_2))*).
 6. Let c be $invlanes_((Jnn_2 X N_2), $iadd_($lsize(Jnn_2), cj_1, cj_2)*).
 7. Return c.
 
@@ -7117,7 +7117,7 @@ packfield_ stora_u0 val_u1
 5. Assert: Due to validation, (y_0 is I32).
 6. Assert: Due to validation, the type of stora_u0 is packtype.
 7. Let packtype be stora_u0.
-8. Return (PACK packtype $wrap_(32, $psize(packtype), i)).
+8. Return (PACK packtype $wrap__(32, $psize(packtype), i)).
 
 unpackfield_ stora_u0 sx_u1? field_u2
 1. If sx_u1? is not defined, then:
@@ -7130,7 +7130,7 @@ unpackfield_ stora_u0 sx_u1? field_u2
   b. Assert: Due to validation, field_u2 is of the case PACK.
   c. Let (PACK packtype i) be field_u2.
   d. Assert: Due to validation, (stora_u0 is packtype).
-  e. Return (I32.CONST $ext_($psize(packtype), 32, sx, i)).
+  e. Return (I32.CONST $ext__($psize(packtype), 32, sx, i)).
 
 funcsxv exter_u0*
 1. If (exter_u0* is []), then:
@@ -7779,16 +7779,16 @@ execution_of_RELOP nt relop
 execution_of_CVTOP nt_2 nt_1 cvtop
 1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
 2. Pop the value (nt_1.CONST c_1) from the stack.
-3. If (|$cvtop_(nt_1, nt_2, cvtop, c_1)| is 1), then:
-  a. Let [c] be $cvtop_(nt_1, nt_2, cvtop, c_1).
+3. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| is 1), then:
+  a. Let [c] be $cvtop__(nt_1, nt_2, cvtop, c_1).
   b. Push the value (nt_2.CONST c) to the stack.
-4. If ($cvtop_(nt_1, nt_2, cvtop, c_1) is []), then:
+4. If ($cvtop__(nt_1, nt_2, cvtop, c_1) is []), then:
   a. Trap.
 
 execution_of_REF.I31
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop the value (I32.CONST i) from the stack.
-3. Push the value (REF.I31_NUM $wrap_(32, 31, i)) to the stack.
+3. Push the value (REF.I31_NUM $wrap__(32, 31, i)) to the stack.
 
 execution_of_REF.IS_NULL
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -7824,7 +7824,7 @@ execution_of_I31.GET sx
   a. Trap.
 4. If instr_u0 is of the case REF.I31_NUM, then:
   a. Let (REF.I31_NUM i) be instr_u0.
-  b. Push the value (I32.CONST $ext_(31, 32, sx, i)) to the stack.
+  b. Push the value (I32.CONST $ext__(31, 32, sx, i)) to the stack.
 
 execution_of_ARRAY.NEW x
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -7974,7 +7974,7 @@ execution_of_VEXTRACT_LANE (lanet_u0 X M) sx_u1? i
   b. If sx_u1? is defined, then:
     1) Let ?(sx) be sx_u1?.
     2) If (i < |$lanes_((pt X M), c_1)|), then:
-      a) Let c_2 be $ext_($psize(pt), 32, sx, $lanes_((pt X M), c_1)[i]).
+      a) Let c_2 be $ext__($psize(pt), 32, sx, $lanes_((pt X M), c_1)[i]).
       b) Push the value (I32.CONST c_2) to the stack.
 
 execution_of_VREPLACE_LANE (Lnn X M) i
@@ -7988,7 +7988,7 @@ execution_of_VREPLACE_LANE (Lnn X M) i
 execution_of_VEXTUNOP sh_2 sh_1 vextunop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
-3. Let c be $vextunop_(sh_1, sh_2, vextunop, c_1).
+3. Let c be $vextunop__(sh_1, sh_2, vextunop, c_1).
 4. Push the value (V128.CONST c) to the stack.
 
 execution_of_VEXTBINOP sh_2 sh_1 vextbinop
@@ -7996,7 +7996,7 @@ execution_of_VEXTBINOP sh_2 sh_1 vextbinop
 2. Pop the value (V128.CONST c_2) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c be $vextbinop_(sh_1, sh_2, vextbinop, c_1, c_2).
+5. Let c be $vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
 
 execution_of_VNARROW (Jnn_2 X M_2) (Jnn_1 X M_1) sx
@@ -8006,8 +8006,8 @@ execution_of_VNARROW (Jnn_2 X M_2) (Jnn_1 X M_1) sx
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let ci_1* be $lanes_((Jnn_1 X M_1), c_1).
 6. Let ci_2* be $lanes_((Jnn_1 X M_1), c_2).
-7. Let cj_1* be $narrow_($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1)*.
-8. Let cj_2* be $narrow_($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2)*.
+7. Let cj_1* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1)*.
+8. Let cj_2* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2)*.
 9. Let c be $invlanes_((Jnn_2 X M_2), cj_1* ++ cj_2*).
 10. Push the value (V128.CONST c) to the stack.
 
@@ -8020,7 +8020,7 @@ execution_of_VCVTOP (lanet_u5 X n_u0) (lanet_u6 X n_u1) vcvtop half__u4? sx? zer
   c. Let M be n_u1.
   d. If (n_u0 is M), then:
     1) Let c'* be $lanes_((Lnn_1 X M), c_1).
-    2) Let c be $invlanes_((Lnn_2 X M), $vcvtop_((Lnn_1 X M), (Lnn_2 X M), vcvtop, sx?, c')*).
+    2) Let c be $invlanes_((Lnn_2 X M), $vcvtop__((Lnn_1 X M), (Lnn_2 X M), vcvtop, sx?, c')*).
     3) Push the value (V128.CONST c) to the stack.
 4. If zero__u13? is not defined, then:
   a. Let Lnn_1 be lanet_u6.
@@ -8029,8 +8029,8 @@ execution_of_VCVTOP (lanet_u5 X n_u0) (lanet_u6 X n_u1) vcvtop half__u4? sx? zer
   d. Let M_2 be n_u0.
   e. If half__u4? is defined, then:
     1) Let ?(half) be half__u4?.
-    2) Let ci* be $lanes_((Lnn_1 X M_1), c_1)[$half_((Lnn_1 X M_1), (Lnn_2 X M_2), half, 0, M_2) : M_2].
-    3) Let c be $invlanes_((Lnn_2 X M_2), $vcvtop_((Lnn_1 X M_1), (Lnn_2 X M_2), vcvtop, sx?, ci)*).
+    2) Let ci* be $lanes_((Lnn_1 X M_1), c_1)[$half__((Lnn_1 X M_1), (Lnn_2 X M_2), half, 0, M_2) : M_2].
+    3) Let c be $invlanes_((Lnn_2 X M_2), $vcvtop__((Lnn_1 X M_1), (Lnn_2 X M_2), vcvtop, sx?, ci)*).
     4) Push the value (V128.CONST c) to the stack.
 5. If half__u4? is not defined, then:
   a. Let M_1 be n_u1.
@@ -8041,7 +8041,7 @@ execution_of_VCVTOP (lanet_u5 X n_u0) (lanet_u6 X n_u1) vcvtop half__u4? sx? zer
       a) Let nt_2 be lanet_u5.
       b) If zero__u13? is defined, then:
         1. Let ci* be $lanes_((nt_1 X M_1), c_1).
-        2. Let c be $invlanes_((nt_2 X M_2), $vcvtop_((nt_1 X M_1), (nt_2 X M_2), vcvtop, sx?, ci)* ++ $zero(nt_2)^M_1).
+        2. Let c be $invlanes_((nt_2 X M_2), $vcvtop__((nt_1 X M_1), (nt_2 X M_2), vcvtop, sx?, ci)* ++ $zero(nt_2)^M_1).
         3. Push the value (V128.CONST c) to the stack.
 
 execution_of_LOCAL.TEE x
@@ -8592,7 +8592,7 @@ execution_of_LOAD numty_u0 loado_u2? x ao
     1) Let ?(y_0) be loado_u2?.
     2) Let (n, sx) be y_0.
     3) Let c be $ibytes__1^-1(n, $mem(z, x).BYTES[(i + ao.OFFSET) : (n / 8)]).
-    4) Push the value (Inn.CONST $ext_(n, $size(Inn), sx, c)) to the stack.
+    4) Push the value (Inn.CONST $ext__(n, $size(Inn), sx, c)) to the stack.
 
 execution_of_VLOAD V128 vload_u0? x ao
 1. Let z be the current state.
@@ -8612,7 +8612,7 @@ execution_of_VLOAD V128 vload_u0? x ao
     3) If the type of $lsizenn^-1((M · 2)) is Jnn, then:
       a) Let Jnn be $lsizenn^-1((M · 2)).
       b) Let j^K be $ibytes__1^-1(M, $mem(z, x).BYTES[((i + ao.OFFSET) + ((k · M) / 8)) : (M / 8)])^(k<K).
-      c) Let c be $invlanes_((Jnn X K), $ext_(M, $lsizenn(Jnn), sx, j)^K).
+      c) Let c be $invlanes_((Jnn X K), $ext__(M, $lsizenn(Jnn), sx, j)^K).
       d) Push the value (V128.CONST c) to the stack.
   c. If y_0 is of the case SPLAT, then:
     1) Let (SPLAT N) be y_0.
@@ -8629,7 +8629,7 @@ execution_of_VLOAD V128 vload_u0? x ao
     2) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
     3) Let j be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
-    4) Let c be $ext_(N, 128, U, j).
+    4) Let c be $ext__(N, 128, U, j).
     5) Push the value (V128.CONST c) to the stack.
 
 execution_of_VLOAD_LANE V128 N x ao j
@@ -8851,7 +8851,7 @@ execution_of_STORE nt sz_u1? x ao
   b. Let Inn be numty_u0.
   c. If sz_u1? is defined, then:
     1) Let ?(n) be sz_u1?.
-    2) Let b* be $ibytes_(n, $wrap_($size(Inn), n, c)).
+    2) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
     3) Perform $with_mem(z, x, (i + ao.OFFSET), (n / 8), b*).
 
 execution_of_VSTORE V128 x ao

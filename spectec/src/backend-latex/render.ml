@@ -46,10 +46,15 @@ let split_ticks id =
   while !i > 0 && id.[!i - 1] = '\'' do decr i done;
   String.sub id 0 !i, String.sub id !i (String.length id - !i)
 
-let ends_sub id = id <> "" && id.[String.length id - 1] = '_'
 let all_sub id = String.for_all ((=) '_') id
+let ends_sub id = id <> "" && id.[String.length id - 1] = '_'
+let count_sub id =
+  let n = ref 0 in
+  while !n < String.length id && id.[String.length id - !n - 1] = '_' do incr n done;
+  !n
 let split_sub id =
-  if ends_sub id then String.sub id 0 (String.length id - 1), "_" else id, ""
+  let n = count_sub id in
+  String.sub id 0 (String.length id - n), String.make n '_'
 let chop_sub id = fst (split_sub id)
 
 let rec ends_sub_exp e =
@@ -691,14 +696,16 @@ let render_apply render_id render_exp env show macro id args =
   let arg0 = arg_of_exp (LatexE (render_id env id) $ id.at) in
   render_expand render_exp env show macro id (arg0::args)
     (fun () ->
-      match args with
-      | arg::args when ends_sub id.it ->
+      let n = count_sub id.it in
+      if n > 0 && n <= List.length args then
         (* Handle subscripting *)
+        let subs, args' = Lib.List.split n args in
         "{" ^ render_id env id ^
         "}_{" ^
-          String.concat ", " (List.map (!render_arg_fwd env) (as_tup_arg arg)) ^
-        "}" ^ !render_args_fwd env args
-      | args -> render_id env id ^ !render_args_fwd env args
+          String.concat ", " (List.map (!render_arg_fwd env) (List.flatten (List.map as_tup_arg subs))) ^
+        "}" ^ !render_args_fwd env args'
+      else
+        render_id env id ^ !render_args_fwd env args
     )
 
 

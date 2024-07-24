@@ -262,11 +262,11 @@ rule Step_pure/relop:
 
 rule Step_pure/cvtop-val:
   (CONST nt_1 c_1) (CVTOP nt_2 nt_1 cvtop)  ~>  (CONST nt_2 c)
-  -- if $cvtop_(nt_1, nt_2, cvtop, c_1) = c  ;; TODO(1, rossberg): nondet
+  -- if $cvtop__(nt_1, nt_2, cvtop, c_1) = c  ;; TODO(1, rossberg): nondet
 
 rule Step_pure/cvtop-trap:
   (CONST nt_1 c_1) (CVTOP nt_2 nt_1 cvtop)  ~>  TRAP
-  -- if $cvtop_(nt_1, nt_2, cvtop, c_1) = eps
+  -- if $cvtop__(nt_1, nt_2, cvtop, c_1) = eps
 
 
 ;; Reference instructions
@@ -278,7 +278,7 @@ rule Step_read/ref.func:
   z; (REF.FUNC x)  ~>  (REF.FUNC_ADDR $moduleinst(z).FUNCS[x])
 
 rule Step_pure/ref.i31:
-  (CONST I32 i) REF.I31  ~>  (REF.I31_NUM $wrap_(32, 31, i))
+  (CONST I32 i) REF.I31  ~>  (REF.I31_NUM $wrap__(32, 31, i))
 
 
 rule Step_pure/ref.is_null-true:
@@ -341,7 +341,7 @@ rule Step_pure/i31.get-null:
   (REF.NULL ht) (I31.GET sx)  ~>  TRAP
 
 rule Step_pure/i31.get-num:
-  (REF.I31_NUM i) (I31.GET sx)  ~>  (CONST I32 $ext_(31, 32, sx, i))
+  (REF.I31_NUM i) (I31.GET sx)  ~>  (CONST I32 $ext__(31, 32, sx, i))
 
 
 ;; Structure instructions
@@ -642,7 +642,7 @@ rule Step_pure/vrelop:
 (; TODO(3, rossberg): this should be implemented at the same level as other pointwise ops
   -- if c'_1* = $lanes_(Lnn X M, c_1)
   -- if c'_2* = $lanes_(Lnn X M, c_2)
-  -- if c = $invlanes_($IN($lsize(Lnn)) X M, $ext_(1, $lsize(Lnn), S, $vrelop_(Lnn X M, vrelop, c'_1, c'_2))*)
+  -- if c = $invlanes_($IN($lsize(Lnn)) X M, $ext__(1, $lsize(Lnn), S, $vrelop_(Lnn X M, vrelop, c'_1, c'_2))*)
 ;)
 
 
@@ -684,7 +684,7 @@ rule Step_pure/vextract_lane-num:
 
 rule Step_pure/vextract_lane-pack:
   (VCONST V128 c_1) (VEXTRACT_LANE (pt X M) sx i) ~> (CONST I32 c_2)
-  -- if c_2 = $ext_($psize(pt), 32, sx, $lanes_(pt X M, c_1)[i])
+  -- if c_2 = $ext__($psize(pt), 32, sx, $lanes_(pt X M, c_1)[i])
 
 
 rule Step_pure/vreplace_lane:
@@ -694,37 +694,37 @@ rule Step_pure/vreplace_lane:
 
 rule Step_pure/vextunop:
   (VCONST V128 c_1) (VEXTUNOP sh_2 sh_1 vextunop) ~> (VCONST V128 c)
-  -- if $vextunop_(sh_1, sh_2, vextunop, c_1) = c
+  -- if $vextunop__(sh_1, sh_2, vextunop, c_1) = c
 
 
 rule Step_pure/vextbinop:
   (VCONST V128 c_1) (VCONST V128 c_2) (VEXTBINOP sh_2 sh_1 vextbinop) ~> (VCONST V128 c)
-  -- if $vextbinop_(sh_1, sh_2, vextbinop, c_1, c_2) = c
+  -- if $vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2) = c
 
 
 rule Step_pure/vnarrow:
   (VCONST V128 c_1) (VCONST V128 c_2) (VNARROW (Jnn_2 X M_2) (Jnn_1 X M_1) sx) ~> (VCONST V128 c)
   -- if ci_1* = $lanes_(Jnn_1 X M_1, c_1)
   -- if ci_2* = $lanes_(Jnn_1 X M_1, c_2)
-  -- if cj_1* = $narrow_($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1)*
-  -- if cj_2* = $narrow_($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2)*
+  -- if cj_1* = $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1)*
+  -- if cj_2* = $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2)*
   -- if c = $invlanes_(Jnn_2 X M_2, cj_1* cj_2*)
 
 
 rule Step_pure/vcvtop-full:
   (VCONST V128 c_1) (VCVTOP (Lnn_2 X M) (Lnn_1 X M) vcvtop sx?) ~> (VCONST V128 c)
   -- if c'* = $lanes_(Lnn_1 X M, c_1)
-  -- if c = $invlanes_(Lnn_2 X M, $vcvtop_(Lnn_1 X M, Lnn_2 X M, vcvtop, sx?, c')*)
+  -- if c = $invlanes_(Lnn_2 X M, $vcvtop__(Lnn_1 X M, Lnn_2 X M, vcvtop, sx?, c')*)
 
 rule Step_pure/vcvtop-half:
   (VCONST V128 c_1) (VCVTOP (Lnn_2 X M_2) (Lnn_1 X M_1) vcvtop half sx?) ~> (VCONST V128 c)
-  -- if ci* = $lanes_(Lnn_1 X M_1, c_1)[$half_(Lnn_1 X M_1, Lnn_2 X M_2, half, 0, M_2) : M_2]
-  -- if c = $invlanes_(Lnn_2 X M_2, $vcvtop_(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, sx?, ci)*)
+  -- if ci* = $lanes_(Lnn_1 X M_1, c_1)[$half__(Lnn_1 X M_1, Lnn_2 X M_2, half, 0, M_2) : M_2]
+  -- if c = $invlanes_(Lnn_2 X M_2, $vcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, sx?, ci)*)
 
 rule Step_pure/vcvtop-zero:
   (VCONST V128 c_1) (VCVTOP (nt_2 X M_2) (nt_1 X M_1) vcvtop sx? zero) ~> (VCONST V128 c)
   -- if ci* = $lanes_(nt_1 X M_1, c_1)
-  -- if c = $invlanes_(nt_2 X M_2, $vcvtop_(nt_1 X M_1, nt_2 X M_2, vcvtop, sx?, ci)* $zero(nt_2)^M_1)
+  -- if c = $invlanes_(nt_2 X M_2, $vcvtop__(nt_1 X M_1, nt_2 X M_2, vcvtop, sx?, ci)* $zero(nt_2)^M_1)
 
 
 ;; Local instructions
@@ -862,7 +862,7 @@ rule Step_read/load-pack-oob:
   -- if $(i + ao.OFFSET + n/8 > |$mem(z, x).BYTES|)
 
 rule Step_read/load-pack-val:
-  z; (CONST I32 i) (LOAD Inn (n sx) x ao)  ~>  (CONST Inn $ext_(n, $size(Inn), sx, c))
+  z; (CONST I32 i) (LOAD Inn (n sx) x ao)  ~>  (CONST Inn $ext__(n, $size(Inn), sx, c))
   ----
   -- if $ibytes_(n, c) = $mem(z, x).BYTES[i + ao.OFFSET : n/8]
 
@@ -883,7 +883,7 @@ rule Step_read/vload-pack-val:
   z; (CONST I32 i) (VLOAD V128 (SHAPE M X K sx) x ao)  ~>  (VCONST V128 c)
   ---- ----
   -- (if $ibytes_(M, j) = $mem(z, x).BYTES[i + ao.OFFSET + k * M/8 : M/8])^(k<K)
-  -- if c = $invlanes_(Jnn X K, $ext_(M, $lsizenn(Jnn), sx, j)^K)
+  -- if c = $invlanes_(Jnn X K, $ext__(M, $lsizenn(Jnn), sx, j)^K)
      /\ $lsizenn(Jnn) = $(M * 2)
 
 
@@ -908,7 +908,7 @@ rule Step_read/vload-zero-val:
   z; (CONST I32 i) (VLOAD V128 (ZERO N) x ao)  ~>  (VCONST V128 c)
   ----
   -- if $ibytes_(N, j) = $mem(z, x).BYTES[i + ao.OFFSET : N/8]
-  -- if c = $ext_(N, 128, U, j)
+  -- if c = $ext__(N, 128, U, j)
 
 
 rule Step_read/vload_lane-oob:
@@ -944,7 +944,7 @@ rule Step/store-pack-val:
   z; (CONST I32 i) (CONST Inn c) (STORE nt n x ao)  ~>  $with_mem(z, x, $(i + ao.OFFSET), $(n/8), b*); eps
   ----
   ;; TODO(3, rossberg): enable otherwise?
-  -- if b* = $ibytes_(n, $wrap_($size(Inn), n, c))
+  -- if b* = $ibytes_(n, $wrap__($size(Inn), n, c))
 
 rule Step/vstore-oob:
   z; (CONST I32 i) (VCONST V128 c) (VSTORE V128 x ao)  ~>  z; TRAP

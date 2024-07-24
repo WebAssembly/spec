@@ -324,10 +324,10 @@ warning: syntax `comptype` was never spliced
 warning: syntax `config` was never spliced
 warning: syntax `consttype` was never spliced
 warning: syntax `context` was never spliced
-warning: syntax `cvtop_` was never spliced
-warning: syntax `cvtop_` was never spliced
-warning: syntax `cvtop_` was never spliced
-warning: syntax `cvtop_` was never spliced
+warning: syntax `cvtop__` was never spliced
+warning: syntax `cvtop__` was never spliced
+warning: syntax `cvtop__` was never spliced
+warning: syntax `cvtop__` was never spliced
 warning: syntax `data` was never spliced
 warning: syntax `dataaddr` was never spliced
 warning: syntax `dataidx` was never spliced
@@ -366,8 +366,8 @@ warning: syntax `global` was never spliced
 warning: syntax `globaladdr` was never spliced
 warning: syntax `globalidx` was never spliced
 warning: syntax `globalinst` was never spliced
-warning: syntax `half_` was never spliced
-warning: syntax `half_` was never spliced
+warning: syntax `half__` was never spliced
+warning: syntax `half__` was never spliced
 warning: syntax `heaptype` was never spliced
 warning: syntax `hostaddr` was never spliced
 warning: syntax `hostfunc` was never spliced
@@ -486,15 +486,15 @@ warning: syntax `valtype/syn` was never spliced
 warning: syntax `valtype/sem` was never spliced
 warning: syntax `vbinop_` was never spliced
 warning: syntax `vbinop_` was never spliced
-warning: syntax `vcvtop_` was never spliced
-warning: syntax `vcvtop_` was never spliced
-warning: syntax `vcvtop_` was never spliced
-warning: syntax `vcvtop_` was never spliced
+warning: syntax `vcvtop__` was never spliced
+warning: syntax `vcvtop__` was never spliced
+warning: syntax `vcvtop__` was never spliced
+warning: syntax `vcvtop__` was never spliced
 warning: syntax `vec` was never spliced
 warning: syntax `vec_` was never spliced
 warning: syntax `vectype` was never spliced
-warning: syntax `vextbinop_` was never spliced
-warning: syntax `vextunop_` was never spliced
+warning: syntax `vextbinop__` was never spliced
+warning: syntax `vextunop__` was never spliced
 warning: syntax `vloadop_` was never spliced
 warning: syntax `vrelop_` was never spliced
 warning: syntax `vrelop_` was never spliced
@@ -506,7 +506,7 @@ warning: syntax `vvbinop` was never spliced
 warning: syntax `vvternop` was never spliced
 warning: syntax `vvtestop` was never spliced
 warning: syntax `vvunop` was never spliced
-warning: syntax `zero_` was never spliced
+warning: syntax `zero__` was never spliced
 warning: grammar `Babsheaptype` was never spliced
 warning: grammar `Bblocktype` was never spliced
 warning: grammar `Bbyte` was never spliced
@@ -1168,15 +1168,15 @@ warning: definition `clos_valtype` was never spliced
 warning: definition `concat_` was never spliced
 warning: definition `const` was never spliced
 warning: definition `cont` was never spliced
-warning: definition `convert_` was never spliced
+warning: definition `convert__` was never spliced
 warning: definition `cpacknum_` was never spliced
 warning: definition `cunpack` was never spliced
 warning: definition `cunpacknum_` was never spliced
-warning: definition `cvtop_` was never spliced
+warning: definition `cvtop__` was never spliced
 warning: definition `data` was never spliced
 warning: definition `dataidx_funcs` was never spliced
 warning: definition `datainst` was never spliced
-warning: definition `demote_` was never spliced
+warning: definition `demote__` was never spliced
 warning: definition `diffrt` was never spliced
 warning: definition `dim` was never spliced
 warning: definition `disjoint_` was never spliced
@@ -1184,7 +1184,7 @@ warning: definition `elem` was never spliced
 warning: definition `eleminst` was never spliced
 warning: definition `expanddt` was never spliced
 warning: definition `expon` was never spliced
-warning: definition `ext_` was never spliced
+warning: definition `ext__` was never spliced
 warning: definition `fabs_` was never spliced
 warning: definition `fadd_` was never spliced
 warning: definition `fbits_` was never spliced
@@ -1282,7 +1282,7 @@ warning: definition `globalsxv` was never spliced
 warning: definition `globalsxx` was never spliced
 warning: definition `growmem` was never spliced
 warning: definition `growtable` was never spliced
-warning: definition `half_` was never spliced
+warning: definition `half__` was never spliced
 warning: definition `iabs_` was never spliced
 warning: definition `iadd_` was never spliced
 warning: definition `iadd_sat_` was never spliced
@@ -1347,14 +1347,14 @@ warning: definition `memsxv` was never spliced
 warning: definition `memsxx` was never spliced
 warning: definition `min` was never spliced
 warning: definition `moduleinst` was never spliced
-warning: definition `narrow_` was never spliced
+warning: definition `narrow__` was never spliced
 warning: definition `nbytes_` was never spliced
 warning: definition `nunpack` was never spliced
 warning: definition `packfield_` was never spliced
-warning: definition `promote_` was never spliced
+warning: definition `promote__` was never spliced
 warning: definition `psize` was never spliced
 warning: definition `psizenn` was never spliced
-warning: definition `reinterpret_` was never spliced
+warning: definition `reinterpret__` was never spliced
 warning: definition `relop_` was never spliced
 warning: definition `rolldt` was never spliced
 warning: definition `rollrt` was never spliced
@@ -1405,8 +1405,8 @@ warning: definition `tablesxt` was never spliced
 warning: definition `tablesxv` was never spliced
 warning: definition `tablesxx` was never spliced
 warning: definition `testop_` was never spliced
-warning: definition `trunc_` was never spliced
-warning: definition `trunc_sat_` was never spliced
+warning: definition `trunc__` was never spliced
+warning: definition `trunc_sat__` was never spliced
 warning: definition `type` was never spliced
 warning: definition `unop_` was never spliced
 warning: definition `unpack` was never spliced
@@ -1418,9 +1418,9 @@ warning: definition `unrollrt` was never spliced
 warning: definition `utf8` was never spliced
 warning: definition `vbinop_` was never spliced
 warning: definition `vbytes_` was never spliced
-warning: definition `vcvtop_` was never spliced
-warning: definition `vextbinop_` was never spliced
-warning: definition `vextunop_` was never spliced
+warning: definition `vcvtop__` was never spliced
+warning: definition `vextbinop__` was never spliced
+warning: definition `vextunop__` was never spliced
 warning: definition `vrelop_` was never spliced
 warning: definition `vshiftop_` was never spliced
 warning: definition `vsize` was never spliced
@@ -1440,7 +1440,7 @@ warning: definition `with_meminst` was never spliced
 warning: definition `with_struct` was never spliced
 warning: definition `with_table` was never spliced
 warning: definition `with_tableinst` was never spliced
-warning: definition `wrap_` was never spliced
+warning: definition `wrap__` was never spliced
 warning: definition `zbytes_` was never spliced
 warning: definition `zero` was never spliced
 warning: definition `zsize` was never spliced
@@ -1758,7 +1758,7 @@ warning: definition prose `cont` was never spliced
 warning: definition prose `cpacknum_` was never spliced
 warning: definition prose `cunpack` was never spliced
 warning: definition prose `cunpacknum_` was never spliced
-warning: definition prose `cvtop_` was never spliced
+warning: definition prose `cvtop__` was never spliced
 warning: definition prose `data` was never spliced
 warning: definition prose `dataidx_funcs` was never spliced
 warning: definition prose `datainst` was never spliced
@@ -1847,7 +1847,7 @@ warning: definition prose `globalsxx` was never spliced
 warning: definition prose `group_bytes_by` was never spliced
 warning: definition prose `growmem` was never spliced
 warning: definition prose `growtable` was never spliced
-warning: definition prose `half_` was never spliced
+warning: definition prose `half__` was never spliced
 warning: definition prose `idx` was never spliced
 warning: definition prose `inst_reftype` was never spliced
 warning: definition prose `inst_valtype` was never spliced
@@ -1939,9 +1939,9 @@ warning: definition prose `unrollht` was never spliced
 warning: definition prose `unrollrt` was never spliced
 warning: definition prose `utf8` was never spliced
 warning: definition prose `vbinop_` was never spliced
-warning: definition prose `vcvtop_` was never spliced
-warning: definition prose `vextbinop_` was never spliced
-warning: definition prose `vextunop_` was never spliced
+warning: definition prose `vcvtop__` was never spliced
+warning: definition prose `vextbinop__` was never spliced
+warning: definition prose `vextunop__` was never spliced
 warning: definition prose `vrelop_` was never spliced
 warning: definition prose `vshiftop_` was never spliced
 warning: definition prose `vsize` was never spliced
