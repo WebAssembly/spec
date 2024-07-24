@@ -429,9 +429,9 @@ let imax : numerics =
       | vs -> error_values "imax" vs
       );
   }
-let iaddsat : numerics =
+let iadd_sat : numerics =
   {
-    name = "iaddsat";
+    name = "iadd_sat";
     f =
       (function
       | [ NumV _ as z; CaseV ("U", []); NumV m; NumV n ] -> sat.f [ z; nullary "U"; NumV Z.(add m n)]
@@ -439,12 +439,12 @@ let iaddsat : numerics =
         let m = signed.f [ z; NumV m ] |> al_to_z in
         let n = signed.f [ z; NumV n ] |> al_to_z in
         sat.f [ z; nullary "S"; NumV Z.(add m n)]
-      | vs -> error_values "iaddsat" vs
+      | vs -> error_values "iadd_sat" vs
       );
   }
-let isubsat : numerics =
+let isub_sat : numerics =
   {
-    name = "isubsat";
+    name = "isub_sat";
     f =
       (function
       | [ NumV _ as z; CaseV ("U", []); NumV m; NumV n ] -> sat.f [ z; nullary "U"; NumV Z.(sub m n)]
@@ -452,28 +452,32 @@ let isubsat : numerics =
         let m = signed.f [ z; NumV m ] |> al_to_z in
         let n = signed.f [ z; NumV n ] |> al_to_z in
         sat.f [ z; nullary "S"; NumV Z.(sub m n)]
-      | vs -> error_values "isubsat" vs
+      | vs -> error_values "isub_sat" vs
       );
   }
-let iavgr_u : numerics =
+let iavgr : numerics =
   {
-    name = "iavgr_u";
+    name = "iavgr";
     f =
       (function
-      | [ NumV _ ; NumV m; NumV n ] -> Z.((m + n + one) / two) |> al_of_z
-      | vs -> error_values "iavgr_u" vs
+      | [ NumV _ ; CaseV ("U", []); NumV m; NumV n ] -> Z.((m + n + one) / two) |> al_of_z
+      | [ NumV _ as z; CaseV ("S", []); NumV m; NumV n ] ->
+        let m = signed.f [ z; NumV m ] |> al_to_z in
+        let n = signed.f [ z; NumV n ] |> al_to_z in
+        Z.((m + n + one) / two) |> al_of_z
+      | vs -> error_values "iavgr" vs
       );
   }
-let iq15mulrsat_s : numerics =
+let iq15mulr_sat : numerics =
   {
-    name = "iq15mulrsat_s";
+    name = "iq15mulr_sat";
     f =
       (function
-      | [ NumV _ as z; NumV _ as m; NumV _ as n ] ->
+      | [ NumV _ as z; sx; NumV _ as m; NumV _ as n ] ->
         let m = signed.f [ z; m ] |> al_to_z in
         let n = signed.f [ z; n ] |> al_to_z in
-        sat.f [ z; nullary "S"; NumV Z.(shift_right (mul m n + of_int 0x4000) 15) ]
-      | vs -> error_values "iq15mulrsat_s" vs
+        sat.f [ z; sx; NumV Z.(shift_right (mul m n + of_int 0x4000) 15) ]
+      | vs -> error_values "iq15mulr_sat" vs
       );
   }
 
@@ -1147,10 +1151,10 @@ let numerics_list : numerics list = [
   ineg;
   imin;
   imax;
-  iaddsat;
-  isubsat;
-  iavgr_u;
-  iq15mulrsat_s;
+  iadd_sat;
+  isub_sat;
+  iavgr;
+  iq15mulr_sat;
   fadd;
   fsub;
   fmul;

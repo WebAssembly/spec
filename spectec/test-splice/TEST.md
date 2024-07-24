@@ -1285,10 +1285,10 @@ warning: definition `growtable` was never spliced
 warning: definition `half` was never spliced
 warning: definition `iabs` was never spliced
 warning: definition `iadd` was never spliced
-warning: definition `iaddsat` was never spliced
+warning: definition `iadd_sat` was never spliced
 warning: definition `iand` was never spliced
 warning: definition `iandnot` was never spliced
-warning: definition `iavgr_u` was never spliced
+warning: definition `iavgr` was never spliced
 warning: definition `ibits` was never spliced
 warning: definition `ibitselect` was never spliced
 warning: definition `ibytes` was never spliced
@@ -1319,7 +1319,7 @@ warning: definition `invoke` was never spliced
 warning: definition `invsigned` was never spliced
 warning: definition `ior` was never spliced
 warning: definition `ipopcnt` was never spliced
-warning: definition `iq15mulrsat_s` was never spliced
+warning: definition `iq15mulr_sat` was never spliced
 warning: definition `irem` was never spliced
 warning: definition `irotl` was never spliced
 warning: definition `irotr` was never spliced
@@ -1327,7 +1327,7 @@ warning: definition `ishl` was never spliced
 warning: definition `ishr` was never spliced
 warning: definition `isize` was never spliced
 warning: definition `isub` was never spliced
-warning: definition `isubsat` was never spliced
+warning: definition `isub_sat` was never spliced
 warning: definition `ixor` was never spliced
 warning: definition `lanes_` was never spliced
 warning: definition `lanetype` was never spliced

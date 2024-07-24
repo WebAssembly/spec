@@ -86,10 +86,10 @@ def $iabs(N, iN(N)) : iN(N)             hint(show $iabs_(%,%))
 def $ineg(N, iN(N)) : iN(N)             hint(show $ineg_(%,%))
 def $imin(N, sx, iN(N), iN(N)) : iN(N)  hint(show $imin_(%)^(%)%((%,%)))
 def $imax(N, sx, iN(N), iN(N)) : iN(N)  hint(show $imax_(%)^(%)%((%,%)))
-def $iaddsat(N, sx, iN(N), iN(N)) : iN(N)  hint(show $iaddsat_(%)^(%)#((%,%)))
-def $isubsat(N, sx, iN(N), iN(N)) : iN(N)  hint(show $isubsat_(%)^(%)#((%,%)))
-def $iavgr_u(N, iN(N), iN(N)) : iN(N)   hint(show $iavgr_u_(%,%,%))
-def $iq15mulrsat_s(N, iN(N), iN(N)) : iN(N) hint(show $iq15mulrsat_s_(%,%,%))
+def $iadd_sat(N, sx, iN(N), iN(N)) : iN(N)     hint(show $iadd__sat_(%)^(%)#((%,%)))
+def $isub_sat(N, sx, iN(N), iN(N)) : iN(N)     hint(show $isub__sat_(%)^(%)#((%,%)))
+def $iavgr(N, sx, iN(N), iN(N)) : iN(N)        hint(show $iavgr_(%)^(%)#((%,%)))
+def $iq15mulr_sat(N, sx, iN(N), iN(N)) : iN(N) hint(show $iq15mulr__sat_(%)^(%)#((%,%)))
 
 def $fadd(N, fN(N), fN(N)) : fN(N)      hint(show $fadd_(%,%,%))
 def $fsub(N, fN(N), fN(N)) : fN(N)      hint(show $fsub_(%,%,%))
@@ -253,11 +253,11 @@ def $vbinop(Jnn X N, MAX sx, v128_1, v128_2) = v128
 def $vbinop(Jnn X N, ADD_SAT sx, v128_1, v128_2) = v128
     -- if lane_1* = $lanes_(Jnn X N, v128_1)
     -- if lane_2* = $lanes_(Jnn X N, v128_2)
-    -- if v128 = $invlanes_(Jnn X N, $iaddsat($lsize(Jnn), sx, lane_1, lane_2)*)
+    -- if v128 = $invlanes_(Jnn X N, $iadd_sat($lsize(Jnn), sx, lane_1, lane_2)*)
 def $vbinop(Jnn X N, SUB_SAT sx, v128_1, v128_2) = v128
     -- if lane_1* = $lanes_(Jnn X N, v128_1)
     -- if lane_2* = $lanes_(Jnn X N, v128_2)
-    -- if v128 = $invlanes_(Jnn X N, $isubsat($lsize(Jnn), sx, lane_1, lane_2)*)
+    -- if v128 = $invlanes_(Jnn X N, $isub_sat($lsize(Jnn), sx, lane_1, lane_2)*)
 def $vbinop(Jnn X N, MUL, v128_1, v128_2) = v128
     -- if lane_1* = $lanes_(Jnn X N, v128_1)
     -- if lane_2* = $lanes_(Jnn X N, v128_2)
@@ -265,11 +265,11 @@ def $vbinop(Jnn X N, MUL, v128_1, v128_2) = v128
 def $vbinop(Jnn X N, AVGR U, v128_1, v128_2) = v128
     -- if lane_1* = $lanes_(Jnn X N, v128_1)
     -- if lane_2* = $lanes_(Jnn X N, v128_2)
-    -- if v128 = $invlanes_(Jnn X N, $iavgr_u($lsize(Jnn), lane_1, lane_2)*)
+    -- if v128 = $invlanes_(Jnn X N, $iavgr($lsize(Jnn), U, lane_1, lane_2)*)
 def $vbinop(Jnn X N, Q15MULR_SAT S, v128_1, v128_2) = v128
     -- if lane_1* = $lanes_(Jnn X N, v128_1)
     -- if lane_2* = $lanes_(Jnn X N, v128_2)
-    -- if v128 = $invlanes_(Jnn X N, $iq15mulrsat_s($lsize(Jnn), lane_1, lane_2)*)
+    -- if v128 = $invlanes_(Jnn X N, $iq15mulr_sat($lsize(Jnn), S, lane_1, lane_2)*)
 
 def $vrelop(Jnn X N, EQ, v128_1, v128_2) = v128
     -- if lane_1* = $lanes_(Jnn X N, v128_1)
