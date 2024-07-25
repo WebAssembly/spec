@@ -4,6 +4,9 @@ open Ast
 open Print
 open Walk
 
+(* Ignore TODO *)
+let debug = false
+
 (* Error *)
 
 let error at msg = Error.error at "AL validation" msg
@@ -27,7 +30,18 @@ let init_bound_set algo =
 let typ_env: Il.Eval.env ref =
   ref Il.Eval.{ vars=Map.empty; typs=Map.empty; defs=Map.empty }
 
-let sub_typ typ1 typ2 = Il.Eval.sub_typ !typ_env typ1 typ2
+let is_num typ =
+  (* TODO: generalize this *)
+  let num_typs = [ "nat"; "int"; "num_"; "N"; "M"; "n"; "m"; "byte"; "bit"; "char" ] in
+  match typ.it with
+  | Il.Ast.VarT (id, _) -> List.mem id.it num_typs
+  | Il.Ast.NumT _ -> true
+  | _ -> false
+let sub_typ typ1 typ2 =
+  match typ1.it, typ2.it with
+  | _, Il.Ast.VarT ({ it="TODO"; _ }, []) when debug -> true
+  | _ ->
+    Il.Eval.sub_typ !typ_env typ1 typ2 || is_num typ1 && is_num typ2
 let matches typ1 typ2 = sub_typ typ1 typ2 || sub_typ typ2 typ1
 
 (* Helper functions *)
@@ -50,12 +64,14 @@ let check_match expr typ =
 
 let check_num expr =
   match expr.note.it with
-  | Il.Ast.NumT _ -> ()
+  | _ when is_num expr.note -> ()
+  | Il.Ast.VarT (id, []) when id.it = "TODO" && debug -> ()
   | _ -> error_expr expr "num"
 
 let check_bool expr =
   match expr.note.it with
   | Il.Ast.BoolT -> ()
+  | Il.Ast.VarT (id, []) when id.it = "TODO" && debug -> ()
   | _ -> error_expr expr "bool"
 
 let check_list expr =
@@ -127,7 +143,7 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
   (* TODO *)
   | _ ->
     match expr.note.it with
-    | Il.Ast.VarT (id, []) when id.it = "TODO" ->
+    | Il.Ast.VarT (id, []) when id.it = "TODO" && not debug ->
       error expr.at (Printf.sprintf "%s's type is TODO" (string_of_expr expr))
     | _ -> ()
   );
