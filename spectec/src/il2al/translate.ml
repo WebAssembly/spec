@@ -704,7 +704,7 @@ and handle_iter_lhs lhs rhs free_ids =
   match iter with
   | ListN (expr, None) when not (contains_ids free_ids expr) ->
     let at = over_region [ lhs.at; rhs.at ] in
-    assertI (BinE (EqOp, lenE rhs, expr) $$ at % boolT) :: instrs'
+    assertI (BinE (EqOp, lenE rhs ~note:expr.note, expr) $$ at % boolT) :: instrs'
   | _ -> instrs'
 
 and handle_special_lhs lhs rhs free_ids =
@@ -743,7 +743,7 @@ and handle_special_lhs lhs rhs free_ids =
     else
       [
         ifI
-          ( binE (EqOp, lenE rhs, numE (Z.of_int (List.length es))) ~note:boolT,
+          ( binE (EqOp, lenE rhs ~note:natT, numE (Z.of_int (List.length es)) ~note:natT) ~note:boolT,
             letI (listE es' ~at:lhs.at ~note:rhs.note, rhs) ~at:at :: translate_bindings free_ids bindings,
             [] );
       ]
@@ -781,7 +781,7 @@ and handle_special_lhs lhs rhs free_ids =
       match e.it with
       | ListE es ->
         let bindings', es' = extract_non_names es in
-        Some (numE (Z.of_int (List.length es))), bindings', listE es'
+        Some (numE (Z.of_int (List.length es)) ~note:natT), bindings', listE es' ~note:e.note
       | IterE (({ it = VarE _; _ } | { it = SubE _; _ }), _, ListN (e', None)) ->
         Some e', [], e
       | _ ->
@@ -792,8 +792,8 @@ and handle_special_lhs lhs rhs free_ids =
     let cond = match length_p, length_s with
       | None, None -> yetE ("Nondeterministic assignment target: " ^ Al.Print.string_of_expr lhs) ~note:boolT
       | Some l, None
-      | None, Some l -> binE (GeOp, lenE rhs, l) ~note:boolT
-      | Some l1, Some l2 -> binE (EqOp, lenE rhs, binE (AddOp, l1, l2)) ~note:boolT
+      | None, Some l -> binE (GeOp, lenE rhs ~note:l.note, l) ~note:boolT
+      | Some l1, Some l2 -> binE (EqOp, lenE rhs ~note:l1.note, binE (AddOp, l1, l2)) ~note:boolT
     in
     [
       ifI

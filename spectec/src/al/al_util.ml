@@ -230,6 +230,7 @@ let unwrap_framev: value -> value = function
 let varT id args = Il.Ast.VarT (id $ no_region, args) $ no_region
 let listT ty = Il.Ast.IterT (ty, Il.Ast.List) $ no_region
 let boolT = Il.Ast.BoolT $ no_region
+let natT = Il.Ast.NumT Il.Ast.NatT $ no_region
 let topT = varT "TOP" []
 let valT = varT "val" []
 let callframeT = varT "callframe" []
