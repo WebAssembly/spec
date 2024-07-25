@@ -1081,10 +1081,10 @@ let translate_context ctx vs =
     | v1 :: v2 :: vs ->
         let e1 = translate_exp v1 in
         let e2 = translate_exp v2 in
-        let e_vs = catE (e1, e2) in
+        let e_vs = catE (e1, e2) ~note:e1.note in
         let e =
           List.fold_left
-            (fun e_vs v -> catE (e_vs, translate_exp v))
+            (fun e_vs v -> catE (e_vs, translate_exp v) ~note:e_vs.note)
             e_vs vs
         in
         [ letI (e, e_vals) ~at:at ]
