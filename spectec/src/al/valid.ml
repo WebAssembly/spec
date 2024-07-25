@@ -20,6 +20,7 @@ let error_expr expr expected_typ =
 module Set = Free.IdSet
 
 let bound_set: Set.t ref = ref Set.empty
+let add_bound_var id = bound_set := Set.add id !bound_set
 let add_bound_vars expr = bound_set := Set.union (Free.free_expr expr) !bound_set
 let init_bound_set algo =
   bound_set := Set.empty;
@@ -154,6 +155,18 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
     check_match expr1 expr2.note
   | AccE (expr', path) -> check_access expr expr' path
   (* TODO *)
+  | IterE (expr1, _, iter) ->
+    let iterT typ iter' = Il.Ast.IterT (typ, iter') $ no_region in
+    (match iter with
+    | Opt ->
+      check_match expr (iterT expr1.note Il.Ast.Opt);
+    | ListN (expr2, id_opt) ->
+      Option.iter add_bound_var id_opt;
+      check_match expr (iterT expr1.note Il.Ast.List);
+      check_num expr2
+    | _ ->
+      check_match expr (iterT expr1.note Il.Ast.List);
+    )
   | _ ->
     match expr.note.it with
     | Il.Ast.VarT (id, []) when id.it = "TODO" && not debug ->
