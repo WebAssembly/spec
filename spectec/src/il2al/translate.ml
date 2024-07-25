@@ -1314,7 +1314,17 @@ let initialize_typ_env il =
 
 (* Entry *)
 let translate il =
-  let il' = il |> Animate.transform |> List.concat_map flatten_rec in
+  let is_al_target def =
+    match def.it with
+    | Il.DecD (id, _, _, _) when id.it = "utf8" -> false
+    | _ -> true
+  in
+  let il' =
+    il
+    |> List.concat_map flatten_rec
+    |> List.filter is_al_target
+    |> Animate.transform
+  in
 
   initialize_typ_env il';
 
