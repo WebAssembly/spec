@@ -148,6 +148,16 @@ def $rundata_(x, DATA b^n (PASSIVE)) = eps
 def $rundata_(x, DATA b^n (ACTIVE y instr*)) =
   instr* (CONST I32 0) (CONST I32 n) (MEMORY.INIT y x) (DATA.DROP x)
 
+;; TODO(2, rossberg): replace with something more uniform
+def $evalglobals(state, globaltype*, expr*) : val* hint(show $evalglobal*#((%,%,%)))
+def $evalglobals(z, eps, eps) = eps
+def $evalglobals(z, gt gt'*, expr expr'*) = val val'*
+  ----
+  -- Eval_expr: z; expr ~>* z; val
+  -- if z = s; f
+  -- if (s', a) = $allocglobal(s, gt, val)
+  -- if val'* = $evalglobals((s'; f[.MODULE.GLOBALS =++ a]), gt'*, expr'*)
+
 def $instantiate(store, module, externval*) : config
 def $instantiate(s, module, externval*) = s'; f; instr_E* instr_D* instr_S?
   ---- ----
@@ -167,7 +177,7 @@ def $instantiate(s, module, externval*) = s'; f; instr_E* instr_D* instr_S?
       GLOBALS $globalsxv(externval*), \
     }
   -- if z = s; {MODULE moduleinst_0}  ;; TODO(2, rossberg): inline
-  -- (Eval_expr : z; expr_G ~>* z; val_G)*
+  -- if val_G* = $evalglobals(z, globaltype*, expr_G*)
   -- (Eval_expr : z; expr_T ~>* z; ref_T)*
   -- (Eval_expr : z; expr_E ~>* z; ref_E)**
   -- if (s', moduleinst) = $allocmodule(s, module, externval*, val_G*, ref_T*, (ref_E*)*)
