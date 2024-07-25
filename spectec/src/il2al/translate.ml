@@ -278,6 +278,7 @@ and translate_exp exp =
     | _ -> yetE (Il.Print.string_of_exp exp) ~at:at ~note:note)
   | Il.ProjE (e, 0) -> translate_exp e
   | Il.OptE inner_exp -> optE (Option.map translate_exp inner_exp) ~at:at ~note:note
+  | Il.TheE e -> chooseE (translate_exp e)  ~at:at ~note:note
   (* Yet *)
   | _ -> yetE (Il.Print.string_of_exp exp) ~at:at ~note:note
 

@@ -32,7 +32,7 @@ and walk_expr (walker: unit_walker) (expr: expr) : unit =
 
   | UnE (_, e) | LenE e | ArityE e | ContE e | ContextKindE (_, e)
   | IsDefinedE e | IsCaseOfE (e, _) | HasTypeE (e, _) | IsValidE e
-  | TopValueE (Some e) | TopValuesE e -> walker.walk_expr walker e
+  | TopValueE (Some e) | TopValuesE e | ChooseE e -> walker.walk_expr walker e
 
   | BinE (_, e1, e2) | CatE (e1, e2) | MemE (e1, e2)
   | InfixE (e1, _, e2) | LabelE (e1, e2) | MatchE (e1, e2) ->
@@ -134,6 +134,7 @@ let walk_expr (walker: walker) (expr: expr) : expr =
     | FrameE (e1_opt, e2) -> FrameE (Option.map walk_expr e1_opt, walk_expr e2)
     | LabelE (e1, e2) -> LabelE (walk_expr e1, walk_expr e2)
     | ContE e' -> ContE (walk_expr e')
+    | ChooseE e' -> ChooseE (walk_expr e')
     | IterE (e, ids, iter) -> IterE (walk_expr e, ids, walk_iter iter)
     | ContextKindE (a, e) -> ContextKindE (a, walk_expr e)
     | IsCaseOfE (e, a) -> IsCaseOfE (walk_expr e, a)
@@ -251,6 +252,7 @@ let rec walk_expr f e =
       | FrameE (e1_opt, e2) -> FrameE (Option.map new_ e1_opt, new_ e2)
       | LabelE (e1, e2) -> LabelE (new_ e1, new_ e2)
       | ContE e' -> ContE (new_ e')
+      | ChooseE e' -> ChooseE (new_ e')
       | VarE id -> VarE id
       | SubE (id, t) -> SubE (id, t)
       | IterE (e, ids, iter) -> IterE (new_ e, ids, iter)

@@ -190,6 +190,9 @@ let rec rows_of_prem vars len i p =
         [ Condition, p, [i] ]
         @ rows_of_eq vars len i l r p.at
         @ rows_of_eq vars len i r l p.at
+      | MemE (l, r) ->
+        [ Condition, p, [i] ]
+        @ rows_of_eq vars len i l { r with it = TheE r } p.at
       | _ -> [ Condition, p, [i] ]
     )
   | LetPr (_, _, ids) ->

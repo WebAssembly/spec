@@ -67,6 +67,7 @@ let rec eq_expr e1 e2 =
   | GetCurLabelE, GetCurLabelE
   | GetCurContextE, GetCurContextE -> true
   | ContE e1, ContE e2 -> eq_expr e1 e2
+  | ChooseE e1, ChooseE e2 -> eq_expr e1 e2
   | IsCaseOfE (e1, a1), IsCaseOfE (e2, a2) ->
       eq_expr e1 e2 &&
       a1 = a2

@@ -299,6 +299,12 @@ and eval_expr env expr =
     (match eval_expr env e with
     | LabelV (_, vs) -> vs
     | _ -> fail_expr expr "inner expr is not a label")
+  | ChooseE e ->
+    let a = eval_expr env e |> unwrap_listv_to_array in
+    if Array.length a = 0 then
+      fail_expr expr (sprintf "cannot choose an element from %s because it's empty" (string_of_expr e))
+    else
+      Array.get a 0
   | VarE "s" -> Store.get ()
   | VarE name -> lookup_env name env
   (* Optimized getter for simple IterE(VarE, ...) *)
