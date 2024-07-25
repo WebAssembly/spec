@@ -443,7 +443,7 @@ let rec translate_rhs exp =
     (* TODO: better name using type *)
     let tmp_name = Il.VarE ("instr_0" $ no_region) $$ no_region % inner_exp.note in
     [ ifI (
-      isDefinedE (translate_exp exp),
+      isDefinedE (translate_exp exp) ~note:boolT,
       letI (optE (Some (translate_exp tmp_name)), translate_exp exp) ~at:at :: translate_rhs tmp_name,
       []
     ) ~at:at ]
