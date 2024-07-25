@@ -13,12 +13,12 @@ let error_expr expr expected_typ =
 
 (* Global env for eval *)
 
-let env: Il.Eval.env ref =
+let typ_env: Il.Eval.env ref =
   ref Il.Eval.{ vars=Map.empty; typs=Map.empty; defs=Map.empty }
 
 let varT s = Il.Ast.VarT (s $ no_region, []) $ no_region
 
-let sub_typ typ1 typ2 = Il.Eval.sub_typ !env typ1 typ2
+let sub_typ typ1 typ2 = Il.Eval.sub_typ !typ_env typ1 typ2
 
 let get_base_typ typ =
   match typ.it with
@@ -44,9 +44,9 @@ let check_val expr =
     error_expr expr "val"
 
 let check_context expr =
-  let context_types = [ "call frame"; "label" ] in
+  let context_typs = [ "call frame"; "label" ] in
   match expr.note.it with
-  | Il.Ast.VarT (id, []) when List.mem id.it context_types -> ()
+  | Il.Ast.VarT (id, []) when List.mem id.it context_typs -> ()
   | _ -> error_expr expr "context"
 
 
@@ -54,7 +54,11 @@ let check_context expr =
 
 let valid_expr (walker: unit_walker) (expr: expr) : unit =
   (match expr.it with
-  | _ -> () (* TODO *)
+  | _ ->
+    match expr.note.it with
+    | Il.Ast.VarT (id, []) when id.it = "TODO" ->
+      error expr.at (Printf.sprintf "%s's type is TODO" (string_of_expr expr))
+    | _ -> ()
   );
   base_unit_walker.walk_expr walker expr
 

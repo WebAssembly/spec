@@ -30,21 +30,21 @@ let sub_typ typ1 typ2 =
   | Il.VarT ({ it="nat"; _ }, []), Il.VarT ({ it="int"; _ }, [])
   | _, Il.VarT ({ it="TODO"; _ }, []) -> true
   | Il.VarT ({ it="TODO"; _ }, []), _ -> false
-  | _ -> Il.Eval.sub_typ !Al.Valid.env typ1 typ2
+  | _ -> Il.Eval.sub_typ !Al.Valid.typ_env typ1 typ2
 
 (* name for tuple type *)
 let no_name = Il.VarE ("_" $ no_region) $$ no_region % (Il.TextT $ no_region)
 let varT s = Il.VarT (s $ no_region, []) $ no_region
 
-let check_type_of_exp (ty: string) (exp: Il.exp) =
+let check_typ_of_exp (ty: string) (exp: Il.exp) =
   match exp.note.it with
   | Il.VarT (id, []) when id.it = ty -> true
   | _ -> false
 
-let is_state: Il.exp -> bool = check_type_of_exp "state"
-let is_store: Il.exp -> bool = check_type_of_exp "store"
-let is_frame: Il.exp -> bool = check_type_of_exp "frame"
-let is_config: Il.exp -> bool = check_type_of_exp "config"
+let is_state: Il.exp -> bool = check_typ_of_exp "state"
+let is_store: Il.exp -> bool = check_typ_of_exp "store"
+let is_frame: Il.exp -> bool = check_typ_of_exp "frame"
+let is_config: Il.exp -> bool = check_typ_of_exp "config"
 
 let split_config (exp: Il.exp): Il.exp * Il.exp =
   assert(is_config exp);
@@ -1292,25 +1292,25 @@ let translate_rules il =
   (* Translate reduction group into algorithm *)
   |> List.map translate_rgroup
 
-let collect_typd env typd =
+let collect_typd typ_env typd =
   match typd.it with
-  | Il.TypD (id, _ps, insts) -> Il.Eval.Map.add id.it insts env
-  | _ -> env
+  | Il.TypD (id, _ps, insts) -> Il.Eval.Map.add id.it insts typ_env
+  | _ -> typ_env
 
-let collect_decd env typd =
-  match typd.it with
-  | Il.DecD (id, _ps, _t, clauses) -> Il.Eval.Map.add id.it clauses env
-  | _ -> env
+let collect_decd typ_env decd =
+  match decd.it with
+  | Il.DecD (id, _ps, _t, clauses) -> Il.Eval.Map.add id.it clauses typ_env
+  | _ -> typ_env
 
-let initialize_env il =
+let initialize_typ_env il =
   let typs = List.fold_left collect_typd Il.Eval.Map.empty il in
   let defs = List.fold_left collect_decd Il.Eval.Map.empty il in
-  Al.Valid.env := { vars=Il.Eval.Map.empty; typs; defs }
+  Al.Valid.typ_env := { vars=Il.Eval.Map.empty; typs; defs }
 
 (* Entry *)
 let translate il =
   let il' = il |> Animate.transform |> List.concat_map flatten_rec in
 
-  initialize_env il';
+  initialize_typ_env il';
 
   translate_helpers il' @ translate_rules il'
