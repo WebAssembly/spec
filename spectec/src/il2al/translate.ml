@@ -31,9 +31,6 @@ let sub_typ typ1 typ2 =
   | Il.VarT ({ it="TODO"; _ }, []), _ -> false
   | _ -> Il.Eval.sub_typ !Al.Valid.typ_env typ1 typ2
 
-(* name for tuple type *)
-let no_name = Il.VarE ("_" $ no_region) $$ no_region % (Il.TextT $ no_region)
-
 let check_typ_of_exp (ty: string) (exp: Il.exp) =
   match exp.note.it with
   | Il.VarT (id, []) when id.it = ty -> true

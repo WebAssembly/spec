@@ -227,8 +227,11 @@ let unwrap_framev: value -> value = function
 
 (* Il Types *)
 
+(* name for tuple type *)
+let no_name = Il.Ast.VarE ("_" $ no_region) $$ no_region % (Il.Ast.TextT $ no_region)
 let varT id args = Il.Ast.VarT (id $ no_region, args) $ no_region
 let listT ty = Il.Ast.IterT (ty, Il.Ast.List) $ no_region
+let listnT ty n= Il.Ast.IterT (ty, Il.Ast.ListN (n, None)) $ no_region
 let boolT = Il.Ast.BoolT $ no_region
 let natT = Il.Ast.NumT Il.Ast.NatT $ no_region
 let topT = varT "TOP" []
@@ -239,4 +242,3 @@ let labelT = varT "label" []
 let stateT = varT "state" []
 let instrT = varT "instr" []
 let admininstrT = varT "admininstr" []
-

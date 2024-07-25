@@ -82,7 +82,7 @@ let to_right_assoc_cat =
     | CatE (l, r) ->
       begin match l.it with
       | CatE (ll, lr) ->
-        { e with it = CatE (ll, CatE (lr, r) $$ no_region% e.note) } |> rotate_cw
+        { e with it = CatE (ll, CatE (lr, r) $$ no_region % e.note) } |> rotate_cw
       | _ -> e
       end
     | _ -> e

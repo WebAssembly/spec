@@ -126,23 +126,35 @@ let manual_algos = [eval_expr; group_bytes_by; array_new_data;]
 
 let return_instrs_of_instantiate config =
   let store, frame, rhs = config in
+  let ty = listT admininstrT in
+  let ty' = varT "moduleinst" [] in
+  let ty'' = Il.Ast.TupT (List.map (fun t -> no_name, t) [store.note; ty']) $ no_region in
   [
     enterI (
-      frameE (Some (numE Z.zero), frame),
-      listE ([ caseE (atom_of_name "FRAME_" "admininstr", []) ]), rhs
+      frameE (Some (numE Z.zero ~note:natT), frame) ~note:callframeT,
+      listE ([ caseE (atom_of_name "FRAME_" "admininstr", []) ~note:admininstrT]) ~note:ty,
+      rhs
     );
-    returnI (Some (tupE [ store; accE (frame, DotP (atom_of_name "MODULE" "") $ no_region) ]))
+    returnI (Some (tupE [
+      store;
+      accE (frame, DotP (atom_of_name "MODULE" "") $ no_region) ~note:ty'
+    ] ~note:ty''))
   ]
 let return_instrs_of_invoke config =
   let _, frame, rhs = config in
+  let arity = varE "k" ~note:natT in
+  let value = varE "val" ~note:valT in
+  let ty = listT admininstrT in
+  let ty' = listnT valT (Il.Ast.VarE ("k" $ no_region) $$ no_region % natT) in
   [
-    letI (varE "k", lenE (iterE (varE "t_2", ["t_2"], List)));
+    letI (arity, lenE (iterE (varE "t_2", ["t_2"], List)) ~note:natT);
     enterI (
-      frameE (Some (varE "k"), frame),
-      listE ([caseE (atom_of_name "FRAME_" "admininstr", [])]), rhs
+      frameE (Some (arity), frame) ~note:callframeT,
+      listE ([caseE (atom_of_name "FRAME_" "admininstr", []) ~note:admininstrT]) ~note:ty,
+      rhs
     );
-    popI (iterE (varE "val", ["val"], ListN (varE "k", None)));
-    returnI (Some (iterE (varE "val", ["val"], ListN (varE "k", None))))
+    popI (iterE (value, ["val"], ListN (arity, None)) ~note:ty');
+    returnI (Some (iterE (value, ["val"], ListN (arity, None)) ~note:ty'))
   ]
 
 
