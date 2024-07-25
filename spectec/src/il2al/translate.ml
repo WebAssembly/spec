@@ -933,7 +933,7 @@ let translate_helper_body name clause =
     if is_config exp then
       get_config_return_instrs name exp clause.at
     else
-      [ returnI (Some (translate_exp exp)) ]
+      [ returnI (Some (translate_exp exp)) ~at:exp.at ]
   in
   translate_prems prems return_instrs
 
