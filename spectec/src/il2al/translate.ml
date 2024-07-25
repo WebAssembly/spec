@@ -381,7 +381,7 @@ let insert_pop e =
     | _ -> e
   in
 
-  [ insert_assert e; popI (translate_exp e') ~at:e'.at ]
+  [ insert_assert e; popI ({ (translate_exp e') with note=valT }) ~at:e'.at ]
 
 
 (* Assume that only the iter variable is unbound *)
