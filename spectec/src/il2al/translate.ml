@@ -173,27 +173,31 @@ and translate_exp exp =
     (* assumption: CompE is only used with at least one literal *)
     let nonempty e = (match e.it with ListE [] | OptE None -> false | _ -> true) in
     List.fold_left
-    (fun acc extend_exp -> match extend_exp with
-    | {it = Il.Atom _; _} as atom, fieldexp ->
-      let extend_expr = translate_exp fieldexp in
-      if nonempty extend_expr then
-        extE (acc, [ dotP (translate_atom atom) ], extend_expr, Back) ~at:at ~note:note
-      else
-        acc
-    | _ -> error_exp exp "AL record expression")
-    (translate_exp inner_exp) expfields
+      (fun acc extend_exp ->
+        match extend_exp with
+        | {it = Il.Atom _; _} as atom, fieldexp ->
+          let extend_expr = translate_exp fieldexp in
+          if nonempty extend_expr then
+            extE (acc, [ dotP (translate_atom atom) ], extend_expr, Back) ~at:at ~note:note
+          else
+            acc
+        | _ -> error_exp exp "AL record expression"
+      )
+      (translate_exp inner_exp) expfields
   | Il.CompE ({ it = Il.StrE expfields; _ }, inner_exp) ->
     (* assumption: CompE is only used with at least one literal *)
     let nonempty e = (match e.it with ListE [] | OptE None -> false | _ -> true) in
-      List.fold_left
-        (fun acc extend_exp -> match extend_exp with
+    List.fold_left
+      (fun acc extend_exp ->
+        match extend_exp with
         | {it = Il.Atom _; _} as atom, fieldexp ->
           let extend_expr = translate_exp fieldexp in
           if nonempty extend_expr then
             extE (acc, [ dotP (translate_atom atom) ], extend_expr, Front) ~at:at ~note:note
           else
             acc
-        | _ -> error_exp exp "AL record expression")
+        | _ -> error_exp exp "AL record expression"
+      )
       (translate_exp inner_exp) expfields
   (* extension of record field *)
   | Il.ExtE (base, path, v) -> extE (translate_exp base, translate_path path, translate_exp v, Back) ~at:at ~note:note
@@ -300,10 +304,11 @@ and translate_exp exp =
     | [ []; [{it = Il.Atom _; _} as atom]; [] ], [ e1; e2 ] ->
       infixE (translate_exp e1, translate_atom atom, translate_exp e2) ~at:at ~note:note
     | _ -> yetE (Il.Print.string_of_exp exp) ~at:at ~note:note)
-  | Il.UncaseE (e, op) -> (
-    match op with
+  | Il.UncaseE (e, op) ->
+    (match op with
     | [ []; [] ] -> translate_exp e
-      | _ -> yetE (Il.Print.string_of_exp exp) ~at:at ~note:note)
+    | _ -> yetE (Il.Print.string_of_exp exp) ~at:at ~note:note
+    )
   | Il.ProjE (e, 0) -> translate_exp e
   | Il.OptE inner_exp -> optE (Option.map translate_exp inner_exp) ~at:at ~note:note
   (* Yet *)
@@ -375,7 +380,7 @@ let insert_pop e =
     | _ -> e
   in
 
-  [ insert_assert e; popI (translate_exp e') ~at:e'.at ]
+  [ insert_assert e; popI ({ (translate_exp e') with note=valT }) ~at:e'.at ]
 
 
 (* Assume that only the iter variable is unbound *)
@@ -410,13 +415,13 @@ let rec translate_rhs exp =
         _;
       }
     ) ->
-      let exp' = varE arity.it ~note:n1 in
-      let exp'' = varE fid.it ~note:n2 in
-      let exp''' = caseE (translate_atom atom, []) ~note:note in
+      let exp1 = varE arity.it ~note:n1 in
+      let exp2 = varE fid.it ~note:n2 in
+      let exp3 = caseE (translate_atom atom, []) ~note:note in
       let note' = listT note in
     [
-      letI (varE "F" ~note:callframeT, frameE (Some (exp'), exp'') ~note:callframeT) ~at:at;
-      enterI (varE "F" ~note:callframeT, listE ([exp''']) ~note:note', translate_rhs le) ~at:at;
+      letI (varE "F" ~note:callframeT, frameE (Some (exp1), exp2) ~note:callframeT) ~at:at;
+      enterI (varE "F" ~note:callframeT, listE ([exp3]) ~note:note', translate_rhs le) ~at:at;
     ]
   | Il.CaseE (
       [ { it = Atom "LABEL_"; _ } as atom ] :: _,
@@ -746,7 +751,7 @@ and handle_special_lhs lhs rhs free_ids =
     let bindings, es' = extract_non_names es in
     [ ifI (
       IsCaseOfE (rhs, tag) $$ lhs.at % boolt,
-      letI (caseE (tag, es') ~at:lhs.at ~note:rhs.note, rhs) ~at:at
+      letI (caseE (tag, es') ~at:lhs.at ~note:lhs.note, rhs) ~at:at
         :: translate_bindings free_ids bindings,
       []
       )]
