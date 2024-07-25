@@ -483,10 +483,10 @@ let rec translate_rhs exp =
       "REF.HOST_ADDR";
       "REF.EXTERN";
       "REF.NULL"
-  ] -> [ pushI { (translate_exp exp) with note=varT "val" } ~at:at ]
+  ] -> [ pushI { (translate_exp exp) with note=valT } ~at:at ]
   (* TODO: use hint *)
   | Il.CallE (id, _) when id.it = "const" ->
-    [ pushI { (translate_exp exp) with note=varT "val" } ~at:at ]
+    [ pushI { (translate_exp exp) with note=valT } ~at:at ]
   (* Instr *)
   (* TODO: use hint *)
   | _ when sub_typ exp.note instrT || sub_typ exp.note admininstrT ->
