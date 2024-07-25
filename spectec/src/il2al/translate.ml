@@ -23,12 +23,6 @@ let error at msg = Error.error at "prose translation" msg
 let error_exp exp typ =
   error exp.at (sprintf "unexpected %s: `%s`" typ (Il.Print.string_of_exp exp))
 
-
-(* Global env for eval *)
-
-let env: Il.Eval.env ref =
-  ref Il.Eval.{ vars=Map.empty; typs=Map.empty; defs=Map.empty }
-
 (* Helpers *)
 
 let sub_typ typ1 typ2 =
@@ -36,7 +30,7 @@ let sub_typ typ1 typ2 =
   | Il.VarT ({ it="nat"; _ }, []), Il.VarT ({ it="int"; _ }, [])
   | _, Il.VarT ({ it="TODO"; _ }, []) -> true
   | Il.VarT ({ it="TODO"; _ }, []), _ -> false
-  | _ -> Il.Eval.sub_typ !env typ1 typ2
+  | _ -> Il.Eval.sub_typ !Al.Valid.env typ1 typ2
 
 (* name for tuple type *)
 let no_name = Il.VarE ("_" $ no_region) $$ no_region % (Il.TextT $ no_region)
@@ -471,9 +465,10 @@ let rec translate_rhs exp =
       "REF.HOST_ADDR";
       "REF.EXTERN";
       "REF.NULL"
-    ] -> [ pushI (translate_exp exp) ~at:at ]
+  ] -> [ pushI { (translate_exp exp) with note=varT "val" } ~at:at ]
   (* TODO: use hint *)
-  | Il.CallE (id, _) when id.it = "const" -> [ pushI (translate_exp exp) ~at:at ]
+  | Il.CallE (id, _) when id.it = "const" ->
+    [ pushI { (translate_exp exp) with note=varT "val" } ~at:at ]
   (* Instr *)
   (* TODO: use hint *)
   | _ when sub_typ exp.note (varT "instr") || sub_typ exp.note (varT "admininstr") ->
@@ -1310,7 +1305,7 @@ let collect_decd env typd =
 let initialize_env il =
   let typs = List.fold_left collect_typd Il.Eval.Map.empty il in
   let defs = List.fold_left collect_decd Il.Eval.Map.empty il in
-  env := { vars=Il.Eval.Map.empty; typs; defs }
+  Al.Valid.env := { vars=Il.Eval.Map.empty; typs; defs }
 
 (* Entry *)
 let translate il =
