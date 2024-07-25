@@ -30,13 +30,15 @@ let init_bound_set algo =
 let typ_env: Il.Eval.env ref =
   ref Il.Eval.{ vars=Map.empty; typs=Map.empty; defs=Map.empty }
 
+
+let varT s = Il.Ast.VarT (s $ no_region, []) $ no_region
+
+let num_typs = [ "nat"; "int"; "sN"; "uN"; "byte"; "bit"(* TODO*); "N"; "u32" ]
+
 let is_num typ =
-  (* TODO: generalize this *)
-  let num_typs = [ "nat"; "int"; "num_"; "N"; "M"; "n"; "m"; "byte"; "bit"; "char" ] in
   match typ.it with
-  | Il.Ast.VarT (id, _) -> List.mem id.it num_typs
   | Il.Ast.NumT _ -> true
-  | _ -> false
+  | _ -> List.exists (fun nt -> Il.Eval.sub_typ !typ_env typ (varT nt)) num_typs
 let sub_typ typ1 typ2 =
   match typ1.it, typ2.it with
   | _, Il.Ast.VarT ({ it="TODO"; _ }, []) when debug -> true
@@ -45,8 +47,6 @@ let sub_typ typ1 typ2 =
 let matches typ1 typ2 = sub_typ typ1 typ2 || sub_typ typ2 typ1
 
 (* Helper functions *)
-
-let varT s = Il.Ast.VarT (s $ no_region, []) $ no_region
 
 let get_base_typ typ =
   match typ.it with
@@ -108,12 +108,25 @@ let check_access expr1 expr2 path =
     in
     (match expr2.note.it with
     | TupT etl when List.exists f etl ->
-      let _typ = List.find f etl in
-      ()
+      let (_, typ) = List.find f etl in
+      check_match expr1 typ
+    | VarT (id, _) when Il.Eval.Map.mem id.it !typ_env.typs ->
+      let f = fun (atom, _, _) -> Il.Print.string_of_atom atom = field in
+      (match Il.Eval.Map.find id.it !typ_env.typs with
+      | [{ it = InstD (_, _, { it = StructT tfs; _ }); _ }]
+      when List.exists f tfs ->
+        let _, (_, typ, _), _ = List.find f tfs in
+        check_match expr1 typ
+      | _ ->
+        error expr2.at
+          (Printf.sprintf "%s whose type is %s doesn't contain field %s"
+            (string_of_expr expr2) (Il.Print.string_of_typ expr2.note) field
+          )
+      )
     | _ ->
       error expr2.at
-        (Printf.sprintf "%s doesn't contain field %s"
-          (string_of_expr expr2) field
+        (Printf.sprintf "%s whose type is %s doesn't contain field %s"
+          (string_of_expr expr2) (Il.Print.string_of_typ expr2.note) field
         )
     )
 
