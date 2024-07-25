@@ -192,7 +192,7 @@ let rec infer_else instrs =
 let if_not_defined cond =
   let at = cond.at in
   match cond.it with
-  | BinE (EqOp, e, { it = OptE None; _ }) -> unE (NotOp, isDefinedE e ~at:e.at) ~at:at
+  | BinE (EqOp, e, { it = OptE None; _ }) -> unE (NotOp, isDefinedE e ~at:e.at ~note:boolT) ~at:at ~note:boolT
   | _ -> cond
 
 let swap_if instr =
@@ -261,7 +261,7 @@ let merge_three_branches i =
   match i.it with
   | IfI (e1, il1, [ { it = IfI (e2, il2, il3); at = at2; _ } ]) when Eq.eq_instrs il1 il3 ->
     let at = over_region [ at1; at2 ] in
-    ifI (binE (AndOp, neg e1, e2), il2, il1) ~at:at
+    ifI (binE (AndOp, neg e1, e2) ~note:boolT, il2, il1) ~at:at
   | _ -> i
 
 let remove_dead_assignment il =
@@ -431,7 +431,7 @@ let flatten_if instrs =
     match instr.it with
     | IfI (e1, [ { it = IfI (e2, il1, il2); at = at2; _ }], []) ->
       let at = over_region [ at1; at2 ] in
-      ifI (binE (AndOp, e1, e2) ~at:at, il1, il2) ~at:at1
+      ifI (binE (AndOp, e1, e2) ~at:at ~note:boolT, il1, il2) ~at:at1
     | _ -> instr
   in
   let walk_config =
@@ -483,24 +483,28 @@ let hide_state instr =
   | LetI (e, { it = CallE (fname, args); _ }) when is_state e || is_store e -> [ performI (fname, hide_state_args args) ~at:at ]
   | PerformI (f, args) -> [ performI (f, hide_state_args args) ~at:at ]
   (* Append *)
-  | LetI (_, { it = ExtE (s, ps, { it = ListE [ e ]; _ }, Back); _ } ) when is_store s ->
-    [ appendI (mk_access ps s, e) ~at:at ]
+  | LetI (_, { it = ExtE (s, ps, { it = ListE [ e ]; _ }, Back); note; _ } ) when is_store s ->
+    let access = { (mk_access ps s) with note } in
+    [ appendI (access , e) ~at:at ]
   (* Append & Return *)
-  | ReturnI (Some ({ it = TupE [ { it = ExtE (s, ps, { it = ListE [ e1 ]; _ }, Back); _ }; e2 ]; _  })) when is_store s ->
-    let addr = varE "a" in
+  | ReturnI (Some ({ it = TupE [ { it = ExtE (s, ps, { it = ListE [ e1 ]; _ }, Back); note; _ }; e2 ]; _  })) when is_store s ->
+    let addr = varE "a" ~note:e2.note in
+    let access = {(mk_access ps s) with note } in
     [ letI (addr, e2) ~at:at;
-      appendI (mk_access ps s, e1) ~at:at;
+      appendI (access, e1) ~at:at;
       returnI (Some addr) ~at:at ]
   (* Replace store *)
-  | LetI (_, { it = UpdE (s, ps, e); _ })
-  | ReturnI (Some ({ it = TupE [ { it = UpdE (s, ps, e); _ }; { it = VarE "f"; _ } ]; _ }))
-  | ReturnI (Some ({ it = UpdE (s, ps, e); _ })) when is_store s ->
+  | LetI (_, { it = UpdE (s, ps, e); note; _ })
+  | ReturnI (Some ({ it = TupE [ { it = UpdE (s, ps, e); note; _ }; { it = VarE "f"; _ } ]; _ }))
+  | ReturnI (Some ({ it = UpdE (s, ps, e); note; _ })) when is_store s ->
     let hs, t = Lib.List.split_last ps in
-    [ replaceI (mk_access hs s, t, e) ~at:at ]
+    let access = { (mk_access hs s) with note } in
+    [ replaceI (access, t, e) ~at:at ]
   (* Replace frame *)
-  | ReturnI (Some ({ it = TupE [ { it = VarE "s"; _ }; { it = UpdE (f, ps, e); _ } ]; _ })) when is_frame f ->
+  | ReturnI (Some ({ it = TupE [ { it = VarE "s"; _ }; { it = UpdE (f, ps, e); note; _ } ]; _ })) when is_frame f ->
     let hs, t = Lib.List.split_last ps in
-    [ replaceI (mk_access hs f, t, e) ~at:at ]
+    let access = { (mk_access hs f) with note } in
+    [ replaceI (access, t, e) ~at:at ]
   | _ -> [ instr ]
 
 let remove_state algo =
@@ -547,10 +551,10 @@ let insert_state_binding algo =
   { algo' with it =
     match algo'.it with
     | FuncA (name, params, body) when !state_count > 0 ->
-      let body = (letI (varE "z", getCurStateE ())) :: body in
+      let body = (letI (varE "z" ~note:stateT, getCurStateE () ~note:stateT)) :: body in
       FuncA (name, params, body)
     | RuleA (name, params, body) when !state_count > 0 ->
-      let body = (letI (varE "z", getCurStateE ())) :: body in
+      let body = (letI (varE "z" ~note:stateT, getCurStateE () ~note:stateT)) :: body in
       RuleA (name, params, body)
     | a -> a
   }
@@ -606,7 +610,7 @@ let insert_frame_binding instrs =
   in
 
   match Walk.walk_instrs walk_config instrs with
-  | il when !found -> (letI (varE "f", getCurFrameE ())) :: il
+  | il when !found -> (letI (varE "f" ~note:frameT, getCurFrameE () ~note:frameT)) :: il
   | _ -> instrs
 
 (* Applied for reduction rules: infer assert from if *)
@@ -667,9 +671,9 @@ let remove_exit algo =
   let exit_to_pop instr =
     match instr.it with
     | ExitI (Atom.Atom "FRAME_", _) ->
-        popI (getCurFrameE ()) ~at:instr.at
+        popI (getCurFrameE () ~note:frameT) ~at:instr.at
     | ExitI (Atom.Atom "LABEL_", _) ->
-        popI (getCurLabelE ()) ~at:instr.at
+        popI (getCurLabelE () ~note:labelT) ~at:instr.at
     | _ -> instr
   in
 
@@ -692,13 +696,15 @@ let remove_enter algo =
       il) ->
         begin match e_arity.it with
         | NumE z when Z.to_int z = 0 ->
-            pushI e_frame ~at:instr.at :: il @ [ popI e_frame ~at:instr.at ]
+          pushI e_frame ~at:instr.at :: il @ [ popI e_frame ~at:instr.at ]
         | _ ->
-            let e_tmp = iterE (varE ("val"), [ "val" ], List) in
-            pushI e_frame ~at:instr.at :: il @ [
-              popallI e_tmp ~at:instr.at;
-              popI e_frame ~at:instr.at;
-              pushI e_tmp ~at:instr.at; ]
+          let ty_vals = listT valT in
+          let e_tmp = iterE (varE ("val") ~note:valT, [ "val" ], List) ~note:ty_vals in
+          pushI e_frame ~at:instr.at :: il @ [
+            popallI e_tmp ~at:instr.at;
+            popI e_frame ~at:instr.at;
+            pushI e_tmp ~at:instr.at;
+          ]
         end
     | EnterI (
       ({ it = FrameE (None, _); _ } as e_frame),
@@ -719,9 +725,9 @@ let remove_enter algo =
     match instr.it with
     | EnterI (
       e_label,
-      { it = CatE (e_instrs, { it = ListE ([ { it = CaseE ((Atom.Atom "LABEL_", _), []); _ } ]); _ }); _ },
+      { it = CatE (e_instrs, { it = ListE ([ { it = CaseE ((Atom.Atom "LABEL_", _), []); _ } ]); _ }); note; _ },
       [ { it = PushI e_vals; _ } ]) ->
-        enterI (catE (e_vals, e_instrs), e_label, []) ~at:instr.at
+        enterI (catE (e_vals, e_instrs) ~note:note, e_label, []) ~at:instr.at
     | EnterI (
       e_label,
       { it = CatE (e_instrs, { it = ListE ([ { it = CaseE ((Atom.Atom "LABEL_", _), []); _ } ]); _ }); _ },

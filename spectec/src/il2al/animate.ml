@@ -1,7 +1,7 @@
 (*
 This transformation
  1) reorders premises and
- 2) explicitly denotate a premise if it is an assignment.
+ 2) explicitly denote a premise if it is an assignment.
 by performing dataflow analysis.
 *)
 

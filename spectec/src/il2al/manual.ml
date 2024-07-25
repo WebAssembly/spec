@@ -6,17 +6,12 @@ open Al_util
 type config = expr * expr * instr list
 
 let atom_of_name name typ = El.Atom.Atom name, typ
-let varT id args = Il.Ast.VarT (id $ no_region, args) $ no_region
-let listT ty = Il.Ast.IterT (ty, Il.Ast.List) $ no_region
-
 
 let eval_expr =
-  let ty_instr = varT "instr" [] in
-  let ty_instrs = listT ty_instr in
-  let ty_val = varT "val" [] in
-  let ty_vals = listT ty_val in
-  let instrs = iterE (varE "instr" ~note:ty_instr, ["instr"], List) ~note:ty_instrs in
-  let result = varE "val" ~note:ty_val in
+  let ty_instrs = listT instrT in
+  let ty_vals = listT valT in
+  let instrs = iterE (varE "instr" ~note:instrT, ["instr"], List) ~note:ty_instrs in
+  let result = varE "val" ~note:valT in
 
   FuncA (
     "eval_expr",

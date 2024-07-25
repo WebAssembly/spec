@@ -223,3 +223,19 @@ let arity_of_framev: value -> value = function
 let unwrap_framev: value -> value = function
   | FrameV (_, v) -> v
   | v -> fail_value "unwrap_framev" v
+
+
+(* Il Types *)
+
+let varT id args = Il.Ast.VarT (id $ no_region, args) $ no_region
+let listT ty = Il.Ast.IterT (ty, Il.Ast.List) $ no_region
+let boolT = Il.Ast.BoolT $ no_region
+let topT = varT "TOP" []
+let valT = varT "val" []
+let callframeT = varT "callframe" []
+let frameT = varT "frame" []
+let labelT = varT "label" []
+let stateT = varT "state" []
+let instrT = varT "instr" []
+let admininstrT = varT "admininstr" []
+

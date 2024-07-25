@@ -15,7 +15,6 @@ struct
   include Atom
 end
 
-
 (* Errors *)
 
 let error at msg = Error.error at "prose translation" msg
@@ -24,19 +23,6 @@ let error_exp exp typ =
   error exp.at (sprintf "unexpected %s: `%s`" typ (Il.Print.string_of_exp exp))
 
 (* Helpers *)
-
-(* Il Types *)
-
-let boolT () = Il.BoolT $ no_region
-let varT id args = Il.VarT (id $ no_region, args) $ no_region
-let listT ty = Il.IterT (ty, Il.List) $ no_region
-(* TODO: hardcoded *)
-let topT = varT "TOP" []
-let valT = varT "val" []
-let callframeT = varT "callframe" []
-let labelT = varT "label" []
-let instrT = varT "instr" []
-let admininstrT = varT "admininstr" []
 
 let sub_typ typ1 typ2 =
   match typ1.it, typ2.it with
@@ -343,18 +329,17 @@ and translate_path path =
 
 let insert_assert exp =
   let at = exp.at in
-  let ty = boolT () in
   match exp.it with
   | Il.CaseE ([{it = Il.Atom "FRAME_"; _}]::_, _) ->
-    assertI (topFrameE () ~note:ty) ~at:at
+    assertI (topFrameE () ~note:boolT) ~at:at
   | Il.IterE (_, (Il.ListN (e, None), _)) ->
-    assertI (topValuesE (translate_exp e) ~at:at ~note:ty) ~at:at
+    assertI (topValuesE (translate_exp e) ~at:at ~note:boolT) ~at:at
   | Il.CaseE ([{it = Il.Atom "LABEL_"; _}]::_, { it = Il.TupE [ _n; _instrs; _vals ]; _ }) ->
-    assertI (topLabelE () ~at:at ~note:ty) ~at:at
+    assertI (topLabelE () ~at:at ~note:boolT) ~at:at
   | Il.CaseE ([{it = Il.Atom "CONST"; _}]::_, { it = Il.TupE (ty' :: _); _ }) ->
-    assertI (topValueE (Some (translate_exp ty')) ~note:ty) ~at:at
+    assertI (topValueE (Some (translate_exp ty')) ~note:boolT) ~at:at
   | _ ->
-    assertI (topValueE None ~note:ty) ~at:at
+    assertI (topValueE None ~note:boolT) ~at:at
 
 let insert_pop e =
   let consts = [ "CONST"; "VCONST" ] in
@@ -538,7 +523,7 @@ let handle_partial_bindings lhs rhs ids =
         e
       else (
         let new_e = get_lhs_name () in
-        conds := !conds @ [ BinE (EqOp, new_e, e) $$ no_region % boolT () ];
+        conds := !conds @ [ BinE (EqOp, new_e, e) $$ no_region % boolT ];
         new_e
       )
     ) in
@@ -553,8 +538,7 @@ let rec translate_bindings ids bindings =
   List.fold_right (fun (l, r) cont ->
     match l with
     | _ when IdSet.is_empty (free_expr l) ->
-      let typ = boolT () in
-      [ ifI (BinE (EqOp, r, l) $$ no_region % typ, [], []) ]
+      [ ifI (BinE (EqOp, r, l) $$ no_region % boolT, [], []) ]
     | _ -> insert_instrs cont (handle_special_lhs l r ids)
   ) bindings []
 
@@ -719,14 +703,11 @@ and handle_iter_lhs lhs rhs free_ids =
   (* Add ListN condition *)
   match iter with
   | ListN (expr, None) when not (contains_ids free_ids expr) ->
-    let typ = Il.BoolT $ no_region in
     let at = over_region [ lhs.at; rhs.at ] in
-    assertI (BinE (EqOp, lenE rhs, expr) $$ at % typ) :: instrs'
+    assertI (BinE (EqOp, lenE rhs, expr) $$ at % boolT) :: instrs'
   | _ -> instrs'
 
 and handle_special_lhs lhs rhs free_ids =
-
-  let boolt = boolT () in
   let at = over_region [ lhs.at; rhs.at ] in
   match lhs.it with
   (* Handle inverse function call *)
@@ -738,19 +719,19 @@ and handle_special_lhs lhs rhs free_ids =
     let rec inject_hasType expr =
       match expr.it with
       | IterE (inner_expr, ids, iter) ->
-        IterE (inject_hasType inner_expr, ids, iter) $$ expr.at % boolt
-      | _ -> HasTypeE (expr, t) $$ rhs.at % boolt
+        IterE (inject_hasType inner_expr, ids, iter) $$ expr.at % boolT
+      | _ -> HasTypeE (expr, t) $$ rhs.at % boolT
     in
     [ ifI (
       inject_hasType rhs,
-      [ letI (VarE s $$ lhs.at % lhs.note, rhs) ~at:at ],
+      [ letI (VarE s $$ lhs.at % rhs.note, rhs) ~at:at ],
       []
     )]
   (* Normal cases *)
   | CaseE (tag, es) ->
     let bindings, es' = extract_non_names es in
     [ ifI (
-      IsCaseOfE (rhs, tag) $$ lhs.at % boolt,
+      IsCaseOfE (rhs, tag) $$ lhs.at % boolT,
       letI (caseE (tag, es') ~at:lhs.at ~note:lhs.note, rhs) ~at:at
         :: translate_bindings free_ids bindings,
       []
@@ -758,25 +739,25 @@ and handle_special_lhs lhs rhs free_ids =
   | ListE es ->
     let bindings, es' = extract_non_names es in
     if List.length es >= 2 then (* TODO: remove this. This is temporarily for a pure function returning stores *)
-    letI (listE es' ~at:lhs.at, rhs) ~at:at :: translate_bindings free_ids bindings
+      letI (listE es' ~at:lhs.at ~note:rhs.note, rhs) ~at:at :: translate_bindings free_ids bindings
     else
-    [
-      ifI
-        ( binE (EqOp, lenE rhs, numE (Z.of_int (List.length es))),
-          letI (listE es' ~at:lhs.at, rhs) ~at:at :: translate_bindings free_ids bindings,
-          [] );
-    ]
+      [
+        ifI
+          ( binE (EqOp, lenE rhs, numE (Z.of_int (List.length es))) ~note:boolT,
+            letI (listE es' ~at:lhs.at ~note:rhs.note, rhs) ~at:at :: translate_bindings free_ids bindings,
+            [] );
+      ]
   | OptE None ->
     [
       ifI
-        ( unE (NotOp, isDefinedE rhs),
+        ( unE (NotOp, isDefinedE rhs ~note:boolT) ~note:boolT,
           [],
           [] );
     ]
   | OptE (Some ({ it = VarE _; _ })) ->
     [
       ifI
-        ( isDefinedE rhs,
+        ( isDefinedE rhs ~note:boolT,
           [letI (lhs, rhs) ~at:at],
           [] );
      ]
@@ -784,15 +765,15 @@ and handle_special_lhs lhs rhs free_ids =
     let fresh = get_lhs_name() in
     [
       ifI
-        ( isDefinedE rhs,
-          letI (optE (Some fresh) ~at:lhs.at, rhs) ~at:at :: handle_special_lhs e fresh free_ids,
+        ( isDefinedE rhs ~note:boolT,
+          letI (optE (Some fresh) ~at:lhs.at ~note:rhs.note, rhs) ~at:at :: handle_special_lhs e fresh free_ids,
           [] );
      ]
   | BinE (AddOp, a, b) ->
     [
       ifI
-        ( binE (GeOp, rhs, b),
-          [letI (a, binE (SubOp, rhs, b) ~at:at) ~at:at],
+        ( binE (GeOp, rhs, b) ~note:boolT,
+          [letI (a, binE (SubOp, rhs, b) ~at:at ~note:a.note) ~at:at],
           [] );
     ]
   | CatE (prefix, suffix) ->
@@ -809,15 +790,15 @@ and handle_special_lhs lhs rhs free_ids =
     let length_s, bindings_s, suffix' = handle_list suffix in
     (* TODO: This condition should be injected by sideconditions pass *)
     let cond = match length_p, length_s with
-      | None, None -> yetE ("Nondeterministic assignment target: " ^ Al.Print.string_of_expr lhs)
+      | None, None -> yetE ("Nondeterministic assignment target: " ^ Al.Print.string_of_expr lhs) ~note:boolT
       | Some l, None
-      | None, Some l -> binE (GeOp, lenE rhs, l)
-      | Some l1, Some l2 -> binE (EqOp, lenE rhs, binE (AddOp, l1, l2))
+      | None, Some l -> binE (GeOp, lenE rhs, l) ~note:boolT
+      | Some l1, Some l2 -> binE (EqOp, lenE rhs, binE (AddOp, l1, l2)) ~note:boolT
     in
     [
       ifI
         ( cond,
-          letI (catE (prefix', suffix') ~at:lhs.at, rhs) ~at:at
+          letI (catE (prefix', suffix') ~at:lhs.at ~note:rhs.note, rhs) ~at:at
             :: translate_bindings free_ids (bindings_p @ bindings_s),
           [] );
     ]
@@ -853,20 +834,17 @@ let translate_rulepr id exp =
   (* ".*_sub" *)
   | name, [_C; rt1; rt2]
     when String.ends_with ~suffix:"_sub" name ->
-    let ty = boolT () in
-    [ ifI (matchE (rt1, rt2) ~at:at ~note:ty, [], []) ~at:at ]
+    [ ifI (matchE (rt1, rt2) ~at:at ~note:boolT, [], []) ~at:at ]
   (* ".*_ok" *)
   | name, el when String.ends_with ~suffix: "_ok" name ->
-    let ty = boolT () in
     (match el with
-    | [_; e; t] | [e; t] -> [ assertI (callE (name, [e; t]) ~at:at ~note:ty) ~at:at]
+    | [_; e; t] | [e; t] -> [ assertI (callE (name, [e; t]) ~at:at ~note:boolT) ~at:at]
     | _ -> error_exp exp "unrecognized form of argument in rule_ok"
     )
   (* ".*_const" *)
   | name, el
     when String.ends_with ~suffix: "_const" name ->
-      let ty = boolT () in
-    [ assertI (callE (name, el) ~at:at ~note:ty) ~at:at]
+    [ assertI (callE (name, el) ~at:at ~note:boolT) ~at:at]
   | _ ->
     print_yet exp.at "translate_rulepr" ("`" ^ Il.Print.string_of_exp exp ^ "`");
     [ yetI ("TODO: translate_rulepr " ^ id.it) ~at:at ]
@@ -1133,11 +1111,10 @@ let translate_context_rgroup lhss sub_algos inner_params =
            i.e., they will always contain instr_popall as their first instruction. *)
         assert(Eq.eq_instr (List.hd body) instr_popall);
         if Option.is_none !inner_params then inner_params := Some params;
-        let ty' = boolT () in
         let e_cond =
           begin match kind_of_context lhs with
-          | Il.Atom.Atom "FRAME_", _ -> topFrameE () ~note:ty'
-          | Il.Atom.Atom "LABEL_", _ -> topLabelE () ~note:ty'
+          | Il.Atom.Atom "FRAME_", _ -> topFrameE () ~note:boolT
+          | Il.Atom.Atom "LABEL_", _ -> topLabelE () ~note:boolT
           | _ -> error lhs.at "the context is neither a frame nor a label"
           end
         in
