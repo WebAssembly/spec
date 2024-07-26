@@ -510,15 +510,15 @@ let lhs_id_ref = ref 0
 (* let lhs_prefix = "y_" *)
 let init_lhs_id () = lhs_id_ref := 0
 let get_lhs_name e =
-  let rec variable_name_of_typ t = 
-    match t.it with
-    | Il.Ast.VarT (id, _) -> id.it
-    | Il.Ast.IterT (t1, _) -> variable_name_of_typ t1
-    | _ -> Il.Print.string_of_typ t
+  let rec base_typ_of typ =
+    match typ.it with
+    | Il.Ast.IterT (typ', _) -> base_typ_of typ'
+    | _ -> typ
   in
   let lhs_id = !lhs_id_ref in
-  lhs_id_ref := (lhs_id + 1);
-  varE ((variable_name_of_typ e.note) ^ "_" ^ (lhs_id |> string_of_int))
+  lhs_id_ref := lhs_id + 1;
+  let typ = base_typ_of e.note in
+  varE (sprintf "%s_%s" (Il.string_of_typ typ) (string_of_int lhs_id)) ~note:typ
 
 (* Helper functions *)
 let rec contains_name e = match e.it with
