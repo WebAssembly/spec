@@ -247,12 +247,16 @@ rule Step_pure/vvtestop:
 
 rule Step_pure/vunop:
   (VCONST V128 c_1) (VUNOP sh vunop)  ~>  (VCONST V128 c)
-  -- if c = $vunop(sh, vunop, c_1)
+  -- if c <- $vunop(sh, vunop, c_1)
+
+rule Step_pure/vunop-trap:
+  (VCONST V128 c_1) (VUNOP sh vunop)  ~>  TRAP
+  -- if $vunop(sh, vunop, c_1) = eps
 
 
 rule Step_pure/vbinop-val:
   (VCONST V128 c_1) (VCONST V128 c_2) (VBINOP sh vbinop)  ~>  (VCONST V128 c)
-  -- if $vbinop(sh, vbinop, c_1, c_2) = c  ;; TODO
+  -- if c <- $vbinop(sh, vbinop, c_1, c_2)
 
 rule Step_pure/vbinop-trap:
   (VCONST V128 c_1) (VCONST V128 c_2) (VBINOP sh vbinop)  ~>  TRAP
@@ -349,18 +353,18 @@ rule Step_pure/vnarrow:
 rule Step_pure/vcvtop-full:
   (VCONST V128 c_1) (VCVTOP (Lnn_2 X N_2) (Lnn_1 X N_1) vcvtop eps sx) ~> (VCONST V128 c)
   -- if c'* = $lanes_(Lnn_1 X N_1, c_1)
-  -- if c = $invlanes_(Lnn_2 X N_2, $vcvtop(Lnn_1 X N_1, Lnn_2 X N_2, vcvtop, sx, c')*)
+  -- if c <- $mapinvlanes_(Lnn_2 X N_2, $vcvtop(Lnn_1 X N_1, Lnn_2 X N_2, vcvtop, sx, c')*)
 
 var hf : half  ;; TODO: this declaration shouldn't be needed
 rule Step_pure/vcvtop-half:
   (VCONST V128 c_1) (VCVTOP (Lnn_2 X N_2) (Lnn_1 X N_1) vcvtop hf sx?) ~> (VCONST V128 c)
   -- if ci* = $lanes_(Lnn_1 X N_1, c_1)[$halfop(hf, 0, N_2) : N_2]
-  -- if c = $invlanes_(Lnn_2 X N_2, $vcvtop(Lnn_1 X N_1, Lnn_2 X N_2, vcvtop, sx?, ci)*)
+  -- if c <- $mapinvlanes_(Lnn_2 X N_2, $vcvtop(Lnn_1 X N_1, Lnn_2 X N_2, vcvtop, sx?, ci)*)
 
 rule Step_pure/vcvtop-zero:
   (VCONST V128 c_1) (VCVTOP (nt_2 X N_2) (nt_1 X N_1) vcvtop eps sx? ZERO) ~> (VCONST V128 c)
   -- if ci* = $lanes_(nt_1 X N_1, c_1)
-  -- if c = $invlanes_(nt_2 X N_2, $vcvtop(nt_1 X N_1, nt_2 X N_2, vcvtop, sx?, ci)* $zero(nt_2)^N_1)
+  -- if c <- $mapinvlanes_(nt_2 X N_2, $vcvtop(nt_1 X N_1, nt_2 X N_2, vcvtop, sx?, ci)* $zero(nt_2)^N_1)
 
 
 ;; Local instructions
