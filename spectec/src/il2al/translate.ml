@@ -1311,8 +1311,14 @@ let initialize_typ_env il =
 
 (* Entry *)
 let translate il =
+  let not_translate =
+    [ "typing.watsup";
+    ]
+  in
   let is_al_target def =
+    let f = fun name -> String.ends_with ~suffix:name def.at.left.file in
     match def.it with
+    | _ when List.exists f not_translate -> false
     | Il.DecD (id, _, _, _) when id.it = "utf8" -> false
     | _ -> true
   in

@@ -40,9 +40,12 @@ let is_num typ =
   match typ.it with
   | Il.Ast.NumT _ -> true
   | _ -> List.exists (fun nt -> Il.Eval.sub_typ !typ_env typ (varT nt)) num_typs
-let sub_typ typ1 typ2 =
+let rec sub_typ typ1 typ2 =
   match typ1.it, typ2.it with
+  | Il.Ast.IterT (typ1', _), Il.Ast.IterT (typ2', _) -> sub_typ typ1' typ2'
   | _, Il.Ast.VarT ({ it="TODO"; _ }, []) when debug -> true
+  | Il.Ast.VarT (id1, _), Il.Ast.VarT (id2, _) ->
+    Il.Eval.sub_typ !typ_env (varT id1.it) (varT id2.it) || is_num typ1 && is_num typ2
   | _ ->
     Il.Eval.sub_typ !typ_env typ1 typ2 || is_num typ1 && is_num typ2
 let matches typ1 typ2 = sub_typ typ1 typ2 || sub_typ typ2 typ1
@@ -97,11 +100,9 @@ let check_context expr =
 let check_access expr1 expr2 path =
   match path.it with
   | IdxP expr3 ->
-    check_list expr2; check_num expr3;
-    check_match expr1 (unwrap_iter_typ expr2.note)
+    check_list expr2; check_num expr3; check_match expr1 (unwrap_iter_typ expr2.note)
   | SliceP (expr3, expr4) ->
-    check_list expr2; check_num expr3; check_num expr4;
-    check_match expr1 expr2.note
+    check_list expr2; check_num expr3; check_num expr4; check_match expr1 expr2.note
   | DotP atom ->
     let field = string_of_atom atom in
     let f =
@@ -194,7 +195,9 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
   base_unit_walker.walk_instr walker instr
 
 let valid_algo (algo: algorithm) =
-  print_endline (Al_util.name_of_algo algo);
+  print_string (Al_util.name_of_algo algo ^ ":");
+  List.iter (fun arg -> print_string (string_of_expr arg ^ " ")) (Al_util.params_of_algo algo);
+  print_endline "";
 
   init_bound_set algo;
   let walker = { base_unit_walker with walk_expr=valid_expr; walk_instr=valid_instr } in
