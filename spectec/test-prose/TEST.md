@@ -2613,262 +2613,262 @@ vvbinop_ V128 vvbin_u0 v128_1 v128_2
 vvternop_ V128 BITSELECT v128_1 v128_2 v128_3
 1. Return $ibitselect_($size(V128), v128_1, v128_2, v128_3).
 
-vunop_ (lanet_u1 X N) vunop_u0 v128_1
+vunop_ (lanet_u1 X M) vunop_u0 v128_1
 1. If ((vunop_u0 is ABS) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Jnn X N), v128_1).
-  c. Let v128 be $invlanes_((Jnn X N), $iabs_($lsize(Jnn), lane_1)*).
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let v128 be $invlanes_((Jnn X M), $iabs_($lsize(Jnn), lane_1)*).
   d. Return [v128].
 2. If ((vunop_u0 is NEG) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Jnn X N), v128_1).
-  c. Let v128 be $invlanes_((Jnn X N), $ineg_($lsize(Jnn), lane_1)*).
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let v128 be $invlanes_((Jnn X M), $ineg_($lsize(Jnn), lane_1)*).
   d. Return [v128].
 3. If ((vunop_u0 is POPCNT) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Jnn X N), v128_1).
-  c. Let v128 be $invlanes_((Jnn X N), $ipopcnt_($lsize(Jnn), lane_1)*).
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let v128 be $invlanes_((Jnn X M), $ipopcnt_($lsize(Jnn), lane_1)*).
   d. Return [v128].
 4. If ((vunop_u0 is ABS) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let v128* be $mapinvlanes_((Fnn X N), $fabs_($size(Fnn), lane_1)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let v128* be $mapinvlanes_((Fnn X M), $fabs_($size(Fnn), lane_1)*).
   d. Return v128*.
 5. If ((vunop_u0 is NEG) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let v128* be $mapinvlanes_((Fnn X N), $fneg_($size(Fnn), lane_1)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let v128* be $mapinvlanes_((Fnn X M), $fneg_($size(Fnn), lane_1)*).
   d. Return v128*.
 6. If ((vunop_u0 is SQRT) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let v128* be $mapinvlanes_((Fnn X N), $fsqrt_($size(Fnn), lane_1)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let v128* be $mapinvlanes_((Fnn X M), $fsqrt_($size(Fnn), lane_1)*).
   d. Return v128*.
 7. If ((vunop_u0 is CEIL) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let v128* be $mapinvlanes_((Fnn X N), $fceil_($size(Fnn), lane_1)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let v128* be $mapinvlanes_((Fnn X M), $fceil_($size(Fnn), lane_1)*).
   d. Return v128*.
 8. If ((vunop_u0 is FLOOR) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let v128* be $mapinvlanes_((Fnn X N), $ffloor_($size(Fnn), lane_1)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let v128* be $mapinvlanes_((Fnn X M), $ffloor_($size(Fnn), lane_1)*).
   d. Return v128*.
 9. If ((vunop_u0 is TRUNC) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let v128* be $mapinvlanes_((Fnn X N), $ftrunc_($size(Fnn), lane_1)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let v128* be $mapinvlanes_((Fnn X M), $ftrunc_($size(Fnn), lane_1)*).
   d. Return v128*.
 10. Assert: Due to validation, (vunop_u0 is NEAREST).
 11. Assert: Due to validation, the type of lanet_u1 is Fnn.
 12. Let Fnn be lanet_u1.
-13. Let lane_1* be $lanes_((Fnn X N), v128_1).
-14. Let v128* be $mapinvlanes_((Fnn X N), $fnearest_($size(Fnn), lane_1)*).
+13. Let lane_1* be $lanes_((Fnn X M), v128_1).
+14. Let v128* be $mapinvlanes_((Fnn X M), $fnearest_($size(Fnn), lane_1)*).
 15. Return v128*.
 
-vbinop_ (lanet_u1 X N) vbino_u0 v128_1 v128_2
+vbinop_ (lanet_u1 X M) vbino_u0 v128_1 v128_2
 1. If ((vbino_u0 is ADD) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Jnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X N), v128_2).
-  d. Let v128 be $invlanes_((Jnn X N), $iadd_($lsize(Jnn), lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  d. Let v128 be $invlanes_((Jnn X M), $iadd_($lsize(Jnn), lane_1, lane_2)*).
   e. Return [v128].
 2. If ((vbino_u0 is SUB) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Jnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X N), v128_2).
-  d. Let v128 be $invlanes_((Jnn X N), $isub_($lsize(Jnn), lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  d. Let v128 be $invlanes_((Jnn X M), $isub_($lsize(Jnn), lane_1, lane_2)*).
   e. Return [v128].
 3. If the type of lanet_u1 is Jnn, then:
   a. Let Jnn be lanet_u1.
   b. If vbino_u0 is of the case MIN, then:
     1) Let (MIN sx) be vbino_u0.
-    2) Let lane_1* be $lanes_((Jnn X N), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X N), v128_2).
-    4) Let v128 be $invlanes_((Jnn X N), $imin_($lsize(Jnn), sx, lane_1, lane_2)*).
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    4) Let v128 be $invlanes_((Jnn X M), $imin_($lsize(Jnn), sx, lane_1, lane_2)*).
     5) Return [v128].
   c. If vbino_u0 is of the case MAX, then:
     1) Let (MAX sx) be vbino_u0.
-    2) Let lane_1* be $lanes_((Jnn X N), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X N), v128_2).
-    4) Let v128 be $invlanes_((Jnn X N), $imax_($lsize(Jnn), sx, lane_1, lane_2)*).
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    4) Let v128 be $invlanes_((Jnn X M), $imax_($lsize(Jnn), sx, lane_1, lane_2)*).
     5) Return [v128].
   d. If vbino_u0 is of the case ADD_SAT, then:
     1) Let (ADD_SAT sx) be vbino_u0.
-    2) Let lane_1* be $lanes_((Jnn X N), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X N), v128_2).
-    4) Let v128 be $invlanes_((Jnn X N), $iadd_sat_($lsize(Jnn), sx, lane_1, lane_2)*).
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    4) Let v128 be $invlanes_((Jnn X M), $iadd_sat_($lsize(Jnn), sx, lane_1, lane_2)*).
     5) Return [v128].
   e. If vbino_u0 is of the case SUB_SAT, then:
     1) Let (SUB_SAT sx) be vbino_u0.
-    2) Let lane_1* be $lanes_((Jnn X N), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X N), v128_2).
-    4) Let v128 be $invlanes_((Jnn X N), $isub_sat_($lsize(Jnn), sx, lane_1, lane_2)*).
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    4) Let v128 be $invlanes_((Jnn X M), $isub_sat_($lsize(Jnn), sx, lane_1, lane_2)*).
     5) Return [v128].
 4. If ((vbino_u0 is MUL) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Jnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X N), v128_2).
-  d. Let v128 be $invlanes_((Jnn X N), $imul_($lsize(Jnn), lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  d. Let v128 be $invlanes_((Jnn X M), $imul_($lsize(Jnn), lane_1, lane_2)*).
   e. Return [v128].
 5. If ((vbino_u0 is AVGR) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Jnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X N), v128_2).
-  d. Let v128 be $invlanes_((Jnn X N), $iavgr_($lsize(Jnn), U, lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  d. Let v128 be $invlanes_((Jnn X M), $iavgr_($lsize(Jnn), U, lane_1, lane_2)*).
   e. Return [v128].
 6. If ((vbino_u0 is Q15MULR_SAT) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Jnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X N), v128_2).
-  d. Let v128 be $invlanes_((Jnn X N), $iq15mulr_sat_($lsize(Jnn), S, lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  d. Let v128 be $invlanes_((Jnn X M), $iq15mulr_sat_($lsize(Jnn), S, lane_1, lane_2)*).
   e. Return [v128].
 7. If ((vbino_u0 is ADD) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X N), v128_2).
-  d. Let v128* be $mapinvlanes_((Fnn X N), $fadd_($size(Fnn), lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let v128* be $mapinvlanes_((Fnn X M), $fadd_($size(Fnn), lane_1, lane_2)*).
   e. Return v128*.
 8. If ((vbino_u0 is SUB) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X N), v128_2).
-  d. Let v128* be $mapinvlanes_((Fnn X N), $fsub_($size(Fnn), lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let v128* be $mapinvlanes_((Fnn X M), $fsub_($size(Fnn), lane_1, lane_2)*).
   e. Return v128*.
 9. If ((vbino_u0 is MUL) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X N), v128_2).
-  d. Let v128* be $mapinvlanes_((Fnn X N), $fmul_($size(Fnn), lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let v128* be $mapinvlanes_((Fnn X M), $fmul_($size(Fnn), lane_1, lane_2)*).
   e. Return v128*.
 10. If ((vbino_u0 is DIV) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X N), v128_2).
-  d. Let v128* be $mapinvlanes_((Fnn X N), $fdiv_($size(Fnn), lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let v128* be $mapinvlanes_((Fnn X M), $fdiv_($size(Fnn), lane_1, lane_2)*).
   e. Return v128*.
 11. If ((vbino_u0 is MIN) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X N), v128_2).
-  d. Let v128* be $mapinvlanes_((Fnn X N), $fmin_($size(Fnn), lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let v128* be $mapinvlanes_((Fnn X M), $fmin_($size(Fnn), lane_1, lane_2)*).
   e. Return v128*.
 12. If ((vbino_u0 is MAX) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X N), v128_2).
-  d. Let v128* be $mapinvlanes_((Fnn X N), $fmax_($size(Fnn), lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let v128* be $mapinvlanes_((Fnn X M), $fmax_($size(Fnn), lane_1, lane_2)*).
   e. Return v128*.
 13. If ((vbino_u0 is PMIN) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X N), v128_2).
-  d. Let v128* be $mapinvlanes_((Fnn X N), $fpmin_($size(Fnn), lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let v128* be $mapinvlanes_((Fnn X M), $fpmin_($size(Fnn), lane_1, lane_2)*).
   e. Return v128*.
 14. Assert: Due to validation, (vbino_u0 is PMAX).
 15. Assert: Due to validation, the type of lanet_u1 is Fnn.
 16. Let Fnn be lanet_u1.
-17. Let lane_1* be $lanes_((Fnn X N), v128_1).
-18. Let lane_2* be $lanes_((Fnn X N), v128_2).
-19. Let v128* be $mapinvlanes_((Fnn X N), $fpmax_($size(Fnn), lane_1, lane_2)*).
+17. Let lane_1* be $lanes_((Fnn X M), v128_1).
+18. Let lane_2* be $lanes_((Fnn X M), v128_2).
+19. Let v128* be $mapinvlanes_((Fnn X M), $fpmax_($size(Fnn), lane_1, lane_2)*).
 20. Return v128*.
 
-vrelop_ (lanet_u1 X N) vrelo_u0 v128_1 v128_2
+vrelop_ (lanet_u1 X M) vrelo_u0 v128_1 v128_2
 1. If ((vrelo_u0 is EQ) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Jnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X N), v128_2).
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
   d. Let lane_3* be $extend__(1, $lsize(Jnn), S, $ieq_($lsize(Jnn), lane_1, lane_2))*.
-  e. Let v128 be $invlanes_((Jnn X N), lane_3*).
+  e. Let v128 be $invlanes_((Jnn X M), lane_3*).
   f. Return v128.
 2. If ((vrelo_u0 is NE) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Jnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X N), v128_2).
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
   d. Let lane_3* be $extend__(1, $lsize(Jnn), S, $ine_($lsize(Jnn), lane_1, lane_2))*.
-  e. Let v128 be $invlanes_((Jnn X N), lane_3*).
+  e. Let v128 be $invlanes_((Jnn X M), lane_3*).
   f. Return v128.
 3. If the type of lanet_u1 is Jnn, then:
   a. Let Jnn be lanet_u1.
   b. If vrelo_u0 is of the case LT, then:
     1) Let (LT sx) be vrelo_u0.
-    2) Let lane_1* be $lanes_((Jnn X N), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X N), v128_2).
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
     4) Let lane_3* be $extend__(1, $lsize(Jnn), S, $ilt_($lsize(Jnn), sx, lane_1, lane_2))*.
-    5) Let v128 be $invlanes_((Jnn X N), lane_3*).
+    5) Let v128 be $invlanes_((Jnn X M), lane_3*).
     6) Return v128.
   c. If vrelo_u0 is of the case GT, then:
     1) Let (GT sx) be vrelo_u0.
-    2) Let lane_1* be $lanes_((Jnn X N), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X N), v128_2).
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
     4) Let lane_3* be $extend__(1, $lsize(Jnn), S, $igt_($lsize(Jnn), sx, lane_1, lane_2))*.
-    5) Let v128 be $invlanes_((Jnn X N), lane_3*).
+    5) Let v128 be $invlanes_((Jnn X M), lane_3*).
     6) Return v128.
   d. If vrelo_u0 is of the case LE, then:
     1) Let (LE sx) be vrelo_u0.
-    2) Let lane_1* be $lanes_((Jnn X N), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X N), v128_2).
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
     4) Let lane_3* be $extend__(1, $lsize(Jnn), S, $ile_($lsize(Jnn), sx, lane_1, lane_2))*.
-    5) Let v128 be $invlanes_((Jnn X N), lane_3*).
+    5) Let v128 be $invlanes_((Jnn X M), lane_3*).
     6) Return v128.
   e. If vrelo_u0 is of the case GE, then:
     1) Let (GE sx) be vrelo_u0.
-    2) Let lane_1* be $lanes_((Jnn X N), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X N), v128_2).
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
     4) Let lane_3* be $extend__(1, $lsize(Jnn), S, $ige_($lsize(Jnn), sx, lane_1, lane_2))*.
-    5) Let v128 be $invlanes_((Jnn X N), lane_3*).
+    5) Let v128 be $invlanes_((Jnn X M), lane_3*).
     6) Return v128.
 4. If ((vrelo_u0 is EQ) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X N), v128_2).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
   d. Let Inn be $isize^-1($size(Fnn)).
   e. Let lane_3* be $extend__(1, $size(Fnn), S, $feq_($size(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X N), lane_3*).
+  f. Let v128 be $invlanes_((Inn X M), lane_3*).
   g. Return v128.
 5. If ((vrelo_u0 is NE) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X N), v128_2).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
   d. Let Inn be $isize^-1($size(Fnn)).
   e. Let lane_3* be $extend__(1, $size(Fnn), S, $fne_($size(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X N), lane_3*).
+  f. Let v128 be $invlanes_((Inn X M), lane_3*).
   g. Return v128.
 6. If ((vrelo_u0 is LT) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X N), v128_2).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
   d. Let Inn be $isize^-1($size(Fnn)).
   e. Let lane_3* be $extend__(1, $size(Fnn), S, $flt_($size(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X N), lane_3*).
+  f. Let v128 be $invlanes_((Inn X M), lane_3*).
   g. Return v128.
 7. If ((vrelo_u0 is GT) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X N), v128_2).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
   d. Let Inn be $isize^-1($size(Fnn)).
   e. Let lane_3* be $extend__(1, $size(Fnn), S, $fgt_($size(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X N), lane_3*).
+  f. Let v128 be $invlanes_((Inn X M), lane_3*).
   g. Return v128.
 8. If ((vrelo_u0 is LE) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X N), v128_2).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
   d. Let Inn be $isize^-1($size(Fnn)).
   e. Let lane_3* be $extend__(1, $size(Fnn), S, $fle_($size(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X N), lane_3*).
+  f. Let v128 be $invlanes_((Inn X M), lane_3*).
   g. Return v128.
 9. Assert: Due to validation, (vrelo_u0 is GE).
 10. Assert: Due to validation, the type of lanet_u1 is Fnn.
 11. Let Fnn be lanet_u1.
-12. Let lane_1* be $lanes_((Fnn X N), v128_1).
-13. Let lane_2* be $lanes_((Fnn X N), v128_2).
+12. Let lane_1* be $lanes_((Fnn X M), v128_1).
+13. Let lane_2* be $lanes_((Fnn X M), v128_2).
 14. Let Inn be $isize^-1($size(Fnn)).
 15. Let lane_3* be $extend__(1, $size(Fnn), S, $fge_($size(Fnn), lane_1, lane_2))*.
-16. Let v128 be $invlanes_((Inn X N), lane_3*).
+16. Let v128 be $invlanes_((Inn X M), lane_3*).
 17. Return v128.
 
-vcvtop__ (lanet_u0 X N_1) (lanet_u1 X N_2) vcvto_u4 sx_u5? lane__u3
+vcvtop__ (lanet_u0 X M_1) (lanet_u1 X M_2) vcvto_u4 sx_u5? lane__u3
 1. If ((lanet_u0 is I8) and ((lanet_u1 is I16) and (vcvto_u4 is EXTEND))), then:
   a. Let i8 be lane__u3.
   b. If sx_u5? is defined, then:
@@ -2924,27 +2924,27 @@ vcvtop__ (lanet_u0 X N_1) (lanet_u1 X N_2) vcvto_u4 sx_u5? lane__u3
 10. Let f64* be $promote__(32, 64, f32).
 11. Return f64*.
 
-vextunop__ (Inn_1 X N_1) (Inn_2 X N_2) (EXTADD_PAIRWISE sx) c_1
-1. Let ci* be $lanes_((Inn_2 X N_2), c_1).
+vextunop__ (Inn_1 X M_1) (Inn_2 X M_2) (EXTADD_PAIRWISE sx) c_1
+1. Let ci* be $lanes_((Inn_2 X M_2), c_1).
 2. Let [cj_1, cj_2]* be $concat_^-1($extend__($lsize(Inn_2), $lsize(Inn_1), sx, ci)*).
-3. Let c be $invlanes_((Inn_1 X N_1), $iadd_($lsize(Inn_1), cj_1, cj_2)*).
+3. Let c be $invlanes_((Inn_1 X M_1), $iadd_($lsize(Inn_1), cj_1, cj_2)*).
 4. Return c.
 
-vextbinop__ (Inn_1 X N_1) (Inn_2 X N_2) vextb_u0 c_1 c_2
+vextbinop__ (Inn_1 X M_1) (Inn_2 X M_2) vextb_u0 c_1 c_2
 1. If vextb_u0 is of the case EXTMUL, then:
   a. Let (EXTMUL sx hf) be vextb_u0.
-  b. Let ci_1* be $lanes_((Inn_2 X N_2), c_1)[$half(hf, 0, N_1) : N_1].
-  c. Let ci_2* be $lanes_((Inn_2 X N_2), c_2)[$half(hf, 0, N_1) : N_1].
-  d. Let c be $invlanes_((Inn_1 X N_1), $imul_($lsize(Inn_1), $extend__($lsize(Inn_2), $lsize(Inn_1), sx, ci_1), $extend__($lsize(Inn_2), $lsize(Inn_1), sx, ci_2))*).
+  b. Let ci_1* be $lanes_((Inn_2 X M_2), c_1)[$half(hf, 0, M_1) : M_1].
+  c. Let ci_2* be $lanes_((Inn_2 X M_2), c_2)[$half(hf, 0, M_1) : M_1].
+  d. Let c be $invlanes_((Inn_1 X M_1), $imul_($lsize(Inn_1), $extend__($lsize(Inn_2), $lsize(Inn_1), sx, ci_1), $extend__($lsize(Inn_2), $lsize(Inn_1), sx, ci_2))*).
   e. Return c.
 2. Assert: Due to validation, (vextb_u0 is DOT).
-3. Let ci_1* be $lanes_((Inn_2 X N_2), c_1).
-4. Let ci_2* be $lanes_((Inn_2 X N_2), c_2).
+3. Let ci_1* be $lanes_((Inn_2 X M_2), c_1).
+4. Let ci_2* be $lanes_((Inn_2 X M_2), c_2).
 5. Let [cj_1, cj_2]* be $concat_^-1($imul_($lsize(Inn_1), $extend__($lsize(Inn_2), $lsize(Inn_1), S, ci_1), $extend__($lsize(Inn_2), $lsize(Inn_1), S, ci_2))*).
-6. Let c be $invlanes_((Inn_1 X N_1), $iadd_($lsize(Inn_1), cj_1, cj_2)*).
+6. Let c be $invlanes_((Inn_1 X M_1), $iadd_($lsize(Inn_1), cj_1, cj_2)*).
 7. Return c.
 
-vshiftop_ (Jnn X N) vshif_u0 lane n
+vshiftop_ (Jnn X M) vshif_u0 lane n
 1. If (vshif_u0 is SHL), then:
   a. Return $ishl_($lsize(Jnn), lane, n).
 2. Assert: Due to validation, vshif_u0 is of the case SHR.
@@ -6829,263 +6829,263 @@ vvbinop_ V128 vvbin_u0 v128_1 v128_2
 vvternop_ V128 BITSELECT v128_1 v128_2 v128_3
 1. Return [$ibitselect_($vsize(V128), v128_1, v128_2, v128_3)].
 
-vunop_ (lanet_u1 X N) vunop_u0 v128_1
+vunop_ (lanet_u1 X M) vunop_u0 v128_1
 1. If ((vunop_u0 is ABS) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Jnn X N), v128_1).
-  c. Let v128 be $invlanes_((Jnn X N), $iabs_($lsize(Jnn), lane_1)*).
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let v128 be $invlanes_((Jnn X M), $iabs_($lsize(Jnn), lane_1)*).
   d. Return [v128].
 2. If ((vunop_u0 is NEG) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Jnn X N), v128_1).
-  c. Let v128 be $invlanes_((Jnn X N), $ineg_($lsize(Jnn), lane_1)*).
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let v128 be $invlanes_((Jnn X M), $ineg_($lsize(Jnn), lane_1)*).
   d. Return [v128].
 3. If ((vunop_u0 is POPCNT) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Jnn X N), v128_1).
-  c. Let v128 be $invlanes_((Jnn X N), $ipopcnt_($lsize(Jnn), lane_1)*).
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let v128 be $invlanes_((Jnn X M), $ipopcnt_($lsize(Jnn), lane_1)*).
   d. Return [v128].
 4. If ((vunop_u0 is ABS) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let v128* be $mapinvlanes_((Fnn X N), $fabs_($size(Fnn), lane_1)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let v128* be $mapinvlanes_((Fnn X M), $fabs_($size(Fnn), lane_1)*).
   d. Return v128*.
 5. If ((vunop_u0 is NEG) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let v128* be $mapinvlanes_((Fnn X N), $fneg_($size(Fnn), lane_1)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let v128* be $mapinvlanes_((Fnn X M), $fneg_($size(Fnn), lane_1)*).
   d. Return v128*.
 6. If ((vunop_u0 is SQRT) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let v128* be $mapinvlanes_((Fnn X N), $fsqrt_($size(Fnn), lane_1)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let v128* be $mapinvlanes_((Fnn X M), $fsqrt_($size(Fnn), lane_1)*).
   d. Return v128*.
 7. If ((vunop_u0 is CEIL) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let v128* be $mapinvlanes_((Fnn X N), $fceil_($size(Fnn), lane_1)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let v128* be $mapinvlanes_((Fnn X M), $fceil_($size(Fnn), lane_1)*).
   d. Return v128*.
 8. If ((vunop_u0 is FLOOR) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let v128* be $mapinvlanes_((Fnn X N), $ffloor_($size(Fnn), lane_1)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let v128* be $mapinvlanes_((Fnn X M), $ffloor_($size(Fnn), lane_1)*).
   d. Return v128*.
 9. If ((vunop_u0 is TRUNC) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let v128* be $mapinvlanes_((Fnn X N), $ftrunc_($size(Fnn), lane_1)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let v128* be $mapinvlanes_((Fnn X M), $ftrunc_($size(Fnn), lane_1)*).
   d. Return v128*.
 10. Assert: Due to validation, (vunop_u0 is NEAREST).
 11. Assert: Due to validation, the type of lanet_u1 is Fnn.
 12. Let Fnn be lanet_u1.
-13. Let lane_1* be $lanes_((Fnn X N), v128_1).
-14. Let v128* be $mapinvlanes_((Fnn X N), $fnearest_($size(Fnn), lane_1)*).
+13. Let lane_1* be $lanes_((Fnn X M), v128_1).
+14. Let v128* be $mapinvlanes_((Fnn X M), $fnearest_($size(Fnn), lane_1)*).
 15. Return v128*.
 
-vbinop_ (lanet_u1 X N) vbino_u0 v128_1 v128_2
+vbinop_ (lanet_u1 X M) vbino_u0 v128_1 v128_2
 1. If ((vbino_u0 is ADD) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Jnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X N), v128_2).
-  d. Let v128 be $invlanes_((Jnn X N), $iadd_($lsize(Jnn), lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  d. Let v128 be $invlanes_((Jnn X M), $iadd_($lsize(Jnn), lane_1, lane_2)*).
   e. Return [v128].
 2. If ((vbino_u0 is SUB) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Jnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X N), v128_2).
-  d. Let v128 be $invlanes_((Jnn X N), $isub_($lsize(Jnn), lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  d. Let v128 be $invlanes_((Jnn X M), $isub_($lsize(Jnn), lane_1, lane_2)*).
   e. Return [v128].
 3. If the type of lanet_u1 is Jnn, then:
   a. Let Jnn be lanet_u1.
   b. If vbino_u0 is of the case MIN, then:
     1) Let (MIN sx) be vbino_u0.
-    2) Let lane_1* be $lanes_((Jnn X N), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X N), v128_2).
-    4) Let v128 be $invlanes_((Jnn X N), $imin_($lsize(Jnn), sx, lane_1, lane_2)*).
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    4) Let v128 be $invlanes_((Jnn X M), $imin_($lsize(Jnn), sx, lane_1, lane_2)*).
     5) Return [v128].
   c. If vbino_u0 is of the case MAX, then:
     1) Let (MAX sx) be vbino_u0.
-    2) Let lane_1* be $lanes_((Jnn X N), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X N), v128_2).
-    4) Let v128 be $invlanes_((Jnn X N), $imax_($lsize(Jnn), sx, lane_1, lane_2)*).
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    4) Let v128 be $invlanes_((Jnn X M), $imax_($lsize(Jnn), sx, lane_1, lane_2)*).
     5) Return [v128].
   d. If vbino_u0 is of the case ADD_SAT, then:
     1) Let (ADD_SAT sx) be vbino_u0.
-    2) Let lane_1* be $lanes_((Jnn X N), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X N), v128_2).
-    4) Let v128 be $invlanes_((Jnn X N), $iadd_sat_($lsize(Jnn), sx, lane_1, lane_2)*).
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    4) Let v128 be $invlanes_((Jnn X M), $iadd_sat_($lsize(Jnn), sx, lane_1, lane_2)*).
     5) Return [v128].
   e. If vbino_u0 is of the case SUB_SAT, then:
     1) Let (SUB_SAT sx) be vbino_u0.
-    2) Let lane_1* be $lanes_((Jnn X N), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X N), v128_2).
-    4) Let v128 be $invlanes_((Jnn X N), $isub_sat_($lsize(Jnn), sx, lane_1, lane_2)*).
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    4) Let v128 be $invlanes_((Jnn X M), $isub_sat_($lsize(Jnn), sx, lane_1, lane_2)*).
     5) Return [v128].
 4. If ((vbino_u0 is MUL) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Jnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X N), v128_2).
-  d. Let v128 be $invlanes_((Jnn X N), $imul_($lsize(Jnn), lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  d. Let v128 be $invlanes_((Jnn X M), $imul_($lsize(Jnn), lane_1, lane_2)*).
   e. Return [v128].
 5. If ((vbino_u0 is AVGR) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Jnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X N), v128_2).
-  d. Let v128 be $invlanes_((Jnn X N), $iavgr_($lsize(Jnn), U, lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  d. Let v128 be $invlanes_((Jnn X M), $iavgr_($lsize(Jnn), U, lane_1, lane_2)*).
   e. Return [v128].
 6. If ((vbino_u0 is Q15MULR_SAT) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Jnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X N), v128_2).
-  d. Let v128 be $invlanes_((Jnn X N), $iq15mulr_sat_($lsize(Jnn), S, lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  d. Let v128 be $invlanes_((Jnn X M), $iq15mulr_sat_($lsize(Jnn), S, lane_1, lane_2)*).
   e. Return [v128].
 7. If ((vbino_u0 is ADD) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X N), v128_2).
-  d. Let v128* be $mapinvlanes_((Fnn X N), $fadd_($size(Fnn), lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let v128* be $mapinvlanes_((Fnn X M), $fadd_($size(Fnn), lane_1, lane_2)*).
   e. Return v128*.
 8. If ((vbino_u0 is SUB) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X N), v128_2).
-  d. Let v128* be $mapinvlanes_((Fnn X N), $fsub_($size(Fnn), lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let v128* be $mapinvlanes_((Fnn X M), $fsub_($size(Fnn), lane_1, lane_2)*).
   e. Return v128*.
 9. If ((vbino_u0 is MUL) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X N), v128_2).
-  d. Let v128* be $mapinvlanes_((Fnn X N), $fmul_($size(Fnn), lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let v128* be $mapinvlanes_((Fnn X M), $fmul_($size(Fnn), lane_1, lane_2)*).
   e. Return v128*.
 10. If ((vbino_u0 is DIV) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X N), v128_2).
-  d. Let v128* be $mapinvlanes_((Fnn X N), $fdiv_($size(Fnn), lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let v128* be $mapinvlanes_((Fnn X M), $fdiv_($size(Fnn), lane_1, lane_2)*).
   e. Return v128*.
 11. If ((vbino_u0 is MIN) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X N), v128_2).
-  d. Let v128* be $mapinvlanes_((Fnn X N), $fmin_($size(Fnn), lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let v128* be $mapinvlanes_((Fnn X M), $fmin_($size(Fnn), lane_1, lane_2)*).
   e. Return v128*.
 12. If ((vbino_u0 is MAX) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X N), v128_2).
-  d. Let v128* be $mapinvlanes_((Fnn X N), $fmax_($size(Fnn), lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let v128* be $mapinvlanes_((Fnn X M), $fmax_($size(Fnn), lane_1, lane_2)*).
   e. Return v128*.
 13. If ((vbino_u0 is PMIN) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X N), v128_2).
-  d. Let v128* be $mapinvlanes_((Fnn X N), $fpmin_($size(Fnn), lane_1, lane_2)*).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let v128* be $mapinvlanes_((Fnn X M), $fpmin_($size(Fnn), lane_1, lane_2)*).
   e. Return v128*.
 14. Assert: Due to validation, (vbino_u0 is PMAX).
 15. Assert: Due to validation, the type of lanet_u1 is Fnn.
 16. Let Fnn be lanet_u1.
-17. Let lane_1* be $lanes_((Fnn X N), v128_1).
-18. Let lane_2* be $lanes_((Fnn X N), v128_2).
-19. Let v128* be $mapinvlanes_((Fnn X N), $fpmax_($size(Fnn), lane_1, lane_2)*).
+17. Let lane_1* be $lanes_((Fnn X M), v128_1).
+18. Let lane_2* be $lanes_((Fnn X M), v128_2).
+19. Let v128* be $mapinvlanes_((Fnn X M), $fpmax_($size(Fnn), lane_1, lane_2)*).
 20. Return v128*.
 
-vrelop_ (lanet_u1 X N) vrelo_u0 v128_1 v128_2
+vrelop_ (lanet_u1 X M) vrelo_u0 v128_1 v128_2
 1. If ((vrelo_u0 is EQ) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Jnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X N), v128_2).
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
   d. Let lane_3* be $extend__(1, $lsize(Jnn), S, $ieq_($lsize(Jnn), lane_1, lane_2))*.
-  e. Let v128 be $invlanes_((Jnn X N), lane_3*).
+  e. Let v128 be $invlanes_((Jnn X M), lane_3*).
   f. Return v128.
 2. If ((vrelo_u0 is NE) and the type of lanet_u1 is Jnn), then:
   a. Let Jnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Jnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X N), v128_2).
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
   d. Let lane_3* be $extend__(1, $lsize(Jnn), S, $ine_($lsize(Jnn), lane_1, lane_2))*.
-  e. Let v128 be $invlanes_((Jnn X N), lane_3*).
+  e. Let v128 be $invlanes_((Jnn X M), lane_3*).
   f. Return v128.
 3. If the type of lanet_u1 is Jnn, then:
   a. Let Jnn be lanet_u1.
   b. If vrelo_u0 is of the case LT, then:
     1) Let (LT sx) be vrelo_u0.
-    2) Let lane_1* be $lanes_((Jnn X N), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X N), v128_2).
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
     4) Let lane_3* be $extend__(1, $lsize(Jnn), S, $ilt_($lsize(Jnn), sx, lane_1, lane_2))*.
-    5) Let v128 be $invlanes_((Jnn X N), lane_3*).
+    5) Let v128 be $invlanes_((Jnn X M), lane_3*).
     6) Return v128.
   c. If vrelo_u0 is of the case GT, then:
     1) Let (GT sx) be vrelo_u0.
-    2) Let lane_1* be $lanes_((Jnn X N), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X N), v128_2).
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
     4) Let lane_3* be $extend__(1, $lsize(Jnn), S, $igt_($lsize(Jnn), sx, lane_1, lane_2))*.
-    5) Let v128 be $invlanes_((Jnn X N), lane_3*).
+    5) Let v128 be $invlanes_((Jnn X M), lane_3*).
     6) Return v128.
   d. If vrelo_u0 is of the case LE, then:
     1) Let (LE sx) be vrelo_u0.
-    2) Let lane_1* be $lanes_((Jnn X N), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X N), v128_2).
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
     4) Let lane_3* be $extend__(1, $lsize(Jnn), S, $ile_($lsize(Jnn), sx, lane_1, lane_2))*.
-    5) Let v128 be $invlanes_((Jnn X N), lane_3*).
+    5) Let v128 be $invlanes_((Jnn X M), lane_3*).
     6) Return v128.
   e. If vrelo_u0 is of the case GE, then:
     1) Let (GE sx) be vrelo_u0.
-    2) Let lane_1* be $lanes_((Jnn X N), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X N), v128_2).
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
     4) Let lane_3* be $extend__(1, $lsize(Jnn), S, $ige_($lsize(Jnn), sx, lane_1, lane_2))*.
-    5) Let v128 be $invlanes_((Jnn X N), lane_3*).
+    5) Let v128 be $invlanes_((Jnn X M), lane_3*).
     6) Return v128.
 4. If ((vrelo_u0 is EQ) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X N), v128_2).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
   d. If the type of $size^-1($size(Fnn)) is Inn, then:
     1) Let Inn be $size^-1($size(Fnn)).
     2) Let lane_3* be $extend__(1, $size(Fnn), S, $feq_($size(Fnn), lane_1, lane_2))*.
-    3) Let v128 be $invlanes_((Inn X N), lane_3*).
+    3) Let v128 be $invlanes_((Inn X M), lane_3*).
     4) Return v128.
 5. If ((vrelo_u0 is NE) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X N), v128_2).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
   d. Let Inn be $isize^-1($size(Fnn)).
   e. Let lane_3* be $extend__(1, $size(Fnn), S, $fne_($size(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X N), lane_3*).
+  f. Let v128 be $invlanes_((Inn X M), lane_3*).
   g. Return v128.
 6. If ((vrelo_u0 is LT) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X N), v128_2).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
   d. Let Inn be $isize^-1($size(Fnn)).
   e. Let lane_3* be $extend__(1, $size(Fnn), S, $flt_($size(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X N), lane_3*).
+  f. Let v128 be $invlanes_((Inn X M), lane_3*).
   g. Return v128.
 7. If ((vrelo_u0 is GT) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X N), v128_2).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
   d. Let Inn be $isize^-1($size(Fnn)).
   e. Let lane_3* be $extend__(1, $size(Fnn), S, $fgt_($size(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X N), lane_3*).
+  f. Let v128 be $invlanes_((Inn X M), lane_3*).
   g. Return v128.
 8. If ((vrelo_u0 is LE) and the type of lanet_u1 is Fnn), then:
   a. Let Fnn be lanet_u1.
-  b. Let lane_1* be $lanes_((Fnn X N), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X N), v128_2).
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
   d. Let Inn be $isize^-1($size(Fnn)).
   e. Let lane_3* be $extend__(1, $size(Fnn), S, $fle_($size(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X N), lane_3*).
+  f. Let v128 be $invlanes_((Inn X M), lane_3*).
   g. Return v128.
 9. Assert: Due to validation, (vrelo_u0 is GE).
 10. Assert: Due to validation, the type of lanet_u1 is Fnn.
 11. Let Fnn be lanet_u1.
-12. Let lane_1* be $lanes_((Fnn X N), v128_1).
-13. Let lane_2* be $lanes_((Fnn X N), v128_2).
+12. Let lane_1* be $lanes_((Fnn X M), v128_1).
+13. Let lane_2* be $lanes_((Fnn X M), v128_2).
 14. Let Inn be $isize^-1($size(Fnn)).
 15. Let lane_3* be $extend__(1, $size(Fnn), S, $fge_($size(Fnn), lane_1, lane_2))*.
-16. Let v128 be $invlanes_((Inn X N), lane_3*).
+16. Let v128 be $invlanes_((Inn X M), lane_3*).
 17. Return v128.
 
-vcvtop__ (lanet_u0 X N_1) (lanet_u1 X N_2) vcvto_u6 sx_u7? lane__u3
+vcvtop__ (lanet_u0 X M_1) (lanet_u1 X M_2) vcvto_u6 sx_u7? lane__u3
 1. If ((lanet_u0 is I8) and ((lanet_u1 is I16) and (vcvto_u6 is EXTEND))), then:
   a. Let i8 be lane__u3.
   b. If sx_u7? is defined, then:
@@ -7141,27 +7141,27 @@ vcvtop__ (lanet_u0 X N_1) (lanet_u1 X N_2) vcvto_u6 sx_u7? lane__u3
 10. Let f64* be $promote__(32, 64, f32).
 11. Return f64*.
 
-vextunop__ (Jnn_1 X N_1) (Jnn_2 X N_2) (EXTADD_PAIRWISE sx) c_1
-1. Let ci* be $lanes_((Jnn_1 X N_1), c_1).
+vextunop__ (Jnn_1 X M_1) (Jnn_2 X M_2) (EXTADD_PAIRWISE sx) c_1
+1. Let ci* be $lanes_((Jnn_1 X M_1), c_1).
 2. Let [cj_1, cj_2]* be $concat_^-1($extend__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci)*).
-3. Let c be $invlanes_((Jnn_2 X N_2), $iadd_($lsize(Jnn_2), cj_1, cj_2)*).
+3. Let c be $invlanes_((Jnn_2 X M_2), $iadd_($lsize(Jnn_2), cj_1, cj_2)*).
 4. Return c.
 
-vextbinop__ (Jnn_1 X N_1) (Jnn_2 X N_2) vextb_u0 c_1 c_2
+vextbinop__ (Jnn_1 X M_1) (Jnn_2 X M_2) vextb_u0 c_1 c_2
 1. If vextb_u0 is of the case EXTMUL, then:
   a. Let (EXTMUL sx half) be vextb_u0.
-  b. Let ci_1* be $lanes_((Jnn_1 X N_1), c_1)[$half__((Jnn_1 X N_1), (Jnn_2 X N_2), half, 0, N_2) : N_2].
-  c. Let ci_2* be $lanes_((Jnn_1 X N_1), c_2)[$half__((Jnn_1 X N_1), (Jnn_2 X N_2), half, 0, N_2) : N_2].
-  d. Let c be $invlanes_((Jnn_2 X N_2), $imul_($lsize(Jnn_2), $extend__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1), $extend__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2))*).
+  b. Let ci_1* be $lanes_((Jnn_1 X M_1), c_1)[$half__((Jnn_1 X M_1), (Jnn_2 X M_2), half, 0, M_2) : M_2].
+  c. Let ci_2* be $lanes_((Jnn_1 X M_1), c_2)[$half__((Jnn_1 X M_1), (Jnn_2 X M_2), half, 0, M_2) : M_2].
+  d. Let c be $invlanes_((Jnn_2 X M_2), $imul_($lsize(Jnn_2), $extend__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1), $extend__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2))*).
   e. Return c.
 2. Assert: Due to validation, (vextb_u0 is DOT).
-3. Let ci_1* be $lanes_((Jnn_1 X N_1), c_1).
-4. Let ci_2* be $lanes_((Jnn_1 X N_1), c_2).
+3. Let ci_1* be $lanes_((Jnn_1 X M_1), c_1).
+4. Let ci_2* be $lanes_((Jnn_1 X M_1), c_2).
 5. Let [cj_1, cj_2]* be $concat_^-1($imul_($lsize(Jnn_2), $extend__($lsize(Jnn_1), $lsize(Jnn_2), S, ci_1), $extend__($lsize(Jnn_1), $lsize(Jnn_2), S, ci_2))*).
-6. Let c be $invlanes_((Jnn_2 X N_2), $iadd_($lsize(Jnn_2), cj_1, cj_2)*).
+6. Let c be $invlanes_((Jnn_2 X M_2), $iadd_($lsize(Jnn_2), cj_1, cj_2)*).
 7. Return c.
 
-vshiftop_ (Jnn X N) vshif_u0 lane n
+vshiftop_ (Jnn X M) vshif_u0 lane n
 1. If (vshif_u0 is SHL), then:
   a. Return $ishl_($lsize(Jnn), lane, n).
 2. Assert: Due to validation, vshif_u0 is of the case SHR.
