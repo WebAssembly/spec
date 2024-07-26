@@ -507,12 +507,18 @@ let rec translate_rhs exp =
 (* Handle pattern matching *)
 
 let lhs_id_ref = ref 0
-let lhs_prefix = "y_"
+(* let lhs_prefix = "y_" *)
 let init_lhs_id () = lhs_id_ref := 0
-let get_lhs_name () =
+let get_lhs_name e =
+  let rec variable_name_of_typ t = 
+    match t.it with
+    | Il.Ast.VarT (id, _) -> id.it
+    | Il.Ast.IterT (t1, _) -> variable_name_of_typ t1
+    | _ -> Il.Print.string_of_typ t
+  in
   let lhs_id = !lhs_id_ref in
   lhs_id_ref := (lhs_id + 1);
-  varE (lhs_prefix ^ (lhs_id |> string_of_int))
+  varE ((variable_name_of_typ e.note) ^ "_" ^ (lhs_id |> string_of_int))
 
 (* Helper functions *)
 let rec contains_name e = match e.it with
@@ -524,7 +530,7 @@ let extract_non_names =
   List.fold_left_map (fun acc e ->
     if contains_name e then acc, e
     else
-      let fresh = get_lhs_name () in
+      let fresh = get_lhs_name e in
       [ e, fresh ] @ acc, fresh
   ) []
 
@@ -542,7 +548,7 @@ let handle_partial_bindings lhs rhs ids =
       if not (contains_diff target_ns e) then
         e
       else (
-        let new_e = get_lhs_name () in
+        let new_e = get_lhs_name e in
         conds := !conds @ [ BinE (EqOp, new_e, e) $$ no_region % boolT () ];
         new_e
       )
@@ -786,7 +792,7 @@ and handle_special_lhs lhs rhs free_ids =
           [] );
      ]
   | OptE (Some e) ->
-    let fresh = get_lhs_name() in
+    let fresh = get_lhs_name e in
     [
       ifI
         ( isDefinedE rhs,
