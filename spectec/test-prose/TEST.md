@@ -399,18 +399,24 @@ sum n_u0*
 2. Let [n] ++ n'* be n_u0*.
 3. Return (n + $sum(n'*)).
 
-concat_ X_u0*
-1. If (X_u0* is []), then:
-  a. Return [].
-2. Let [w*] ++ w'** be X_u0*.
-3. Return w* ++ $concat_(w'**).
-
 opt_ X_u0*
 1. If (X_u0* is []), then:
   a. Return ?().
 2. Assert: Due to validation, (|X_u0*| is 1).
 3. Let [w] be X_u0*.
 4. Return ?(w).
+
+list_ X_u0?
+1. If X_u0? is not defined, then:
+  a. Return [].
+2. Let ?(w) be X_u0?.
+3. Return [w].
+
+concat_ X_u0*
+1. If (X_u0* is []), then:
+  a. Return [].
+2. Let [w*] ++ w'** be X_u0*.
+3. Return w* ++ $concat_(w'**).
 
 signif N_u0
 1. If (N_u0 is 32), then:
@@ -586,10 +592,10 @@ binop_ valty_u1 binop_u0 val__u3 val__u5
   c. Let iN_2 be val__u5.
   d. If binop_u0 is of the case DIV, then:
     1) Let (DIV sx) be binop_u0.
-    2) Return $idiv_($size(Inn), sx, iN_1, iN_2).
+    2) Return $list_($idiv_($size(Inn), sx, iN_1, iN_2)).
   e. If binop_u0 is of the case REM, then:
     1) Let (REM sx) be binop_u0.
-    2) Return $irem_($size(Inn), sx, iN_1, iN_2).
+    2) Return $list_($irem_($size(Inn), sx, iN_1, iN_2)).
 5. If ((binop_u0 is AND) and the type of valty_u1 is Inn), then:
   a. Let Inn be valty_u1.
   b. Let iN_1 be val__u3.
@@ -742,7 +748,7 @@ cvtop__ valty_u0 valty_u1 cvtop_u2 val__u4
     2) Let fN be val__u4.
     3) If cvtop_u2 is of the case TRUNC, then:
       a) Let (TRUNC sx) be cvtop_u2.
-      b) Return $trunc__($size(Fnn), $size(Inn), sx, fN).
+      b) Return $list_($trunc__($size(Fnn), $size(Inn), sx, fN)).
 4. If ((valty_u0 is F32) and ((valty_u1 is F64) and (cvtop_u2 is PROMOTE))), then:
   a. Let fN be val__u4.
   b. Return $promote__(32, 64, fN).
@@ -2071,6 +2077,12 @@ opt_ X_u0*
 3. Let [w] be X_u0*.
 4. Return ?(w).
 
+list_ X_u0?
+1. If X_u0? is not defined, then:
+  a. Return [].
+2. Let ?(w) be X_u0?.
+3. Return [w].
+
 concat_ X_u0*
 1. If (X_u0* is []), then:
   a. Return [].
@@ -2359,10 +2371,10 @@ binop_ numty_u1 binop_u0 num__u3 num__u5
   c. Let iN_2 be num__u5.
   d. If binop_u0 is of the case DIV, then:
     1) Let (DIV sx) be binop_u0.
-    2) Return $idiv_($size(Inn), sx, iN_1, iN_2).
+    2) Return $list_($idiv_($size(Inn), sx, iN_1, iN_2)).
   e. If binop_u0 is of the case REM, then:
     1) Let (REM sx) be binop_u0.
-    2) Return $irem_($size(Inn), sx, iN_1, iN_2).
+    2) Return $list_($irem_($size(Inn), sx, iN_1, iN_2)).
 5. If ((binop_u0 is AND) and the type of numty_u1 is Inn), then:
   a. Let Inn be numty_u1.
   b. Let iN_1 be num__u3.
@@ -2515,10 +2527,10 @@ cvtop__ numty_u0 numty_u1 cvtop_u2 num__u4
     2) Let fN be num__u4.
     3) If cvtop_u2 is of the case TRUNC, then:
       a) Let (TRUNC sx) be cvtop_u2.
-      b) Return $trunc__($size(Fnn), $size(Inn), sx, fN).
+      b) Return $list_($trunc__($size(Fnn), $size(Inn), sx, fN)).
     4) If cvtop_u2 is of the case TRUNC_SAT, then:
       a) Let (TRUNC_SAT sx) be cvtop_u2.
-      b) Return $trunc_sat__($size(Fnn), $size(Inn), sx, fN).
+      b) Return $list_($trunc_sat__($size(Fnn), $size(Inn), sx, fN)).
 4. If ((numty_u0 is F32) and ((numty_u1 is F64) and (cvtop_u2 is PROMOTE))), then:
   a. Let fN be num__u4.
   b. Return $promote__(32, 64, fN).
@@ -2892,15 +2904,15 @@ vcvtop__ (lanet_u0 X N_1) (lanet_u1 X N_2) vcvto_u4 sx_u5? lane__u3
   a. Let f32 be lane__u3.
   b. If sx_u5? is defined, then:
     1) Let ?(sx) be sx_u5?.
-    2) Let i32* be $trunc_sat__(32, 32, sx, f32).
-    3) Return i32*.
+    2) Let i32? be $trunc_sat__(32, 32, sx, f32).
+    3) Return $list_(i32?).
 5. If (lanet_u0 is F64), then:
   a. If ((lanet_u1 is I32) and (vcvto_u4 is TRUNC_SAT)), then:
     1) Let f64 be lane__u3.
     2) If sx_u5? is defined, then:
       a) Let ?(sx) be sx_u5?.
-      b) Let i32* be $trunc_sat__(64, 32, sx, f64).
-      c) Return i32*.
+      b) Let i32? be $trunc_sat__(64, 32, sx, f64).
+      c) Return $list_(i32?).
   b. If ((lanet_u1 is F32) and (vcvto_u4 is DEMOTE)), then:
     1) Let f64 be lane__u3.
     2) Let f32* be $demote__(64, 32, f64).

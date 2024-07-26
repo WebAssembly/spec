@@ -32,8 +32,8 @@ def $cvtop__(numtype_1, numtype_2, cvtop, num_(numtype_1)) : num_(numtype_2)*
 
 def $wrap__(M, N, iN(M)) : iN(N)
 def $extend__(M, N, sx, iN(M)) : iN(N)               hint(show $extend__(%,%)^(%)#((%)))
-def $trunc__(M, N, sx, fN(M)) : iN(N)*               hint(show $trunc__(%,%)^(%)#((%)))
-def $trunc_sat__(M, N, sx, fN(M)) : iN(N)*           hint(show $trunc__sat__(%,%)^(%)#((%)))
+def $trunc__(M, N, sx, fN(M)) : iN(N)?               hint(show $trunc__(%,%)^(%)#((%)))
+def $trunc_sat__(M, N, sx, fN(M)) : iN(N)?           hint(show $trunc__sat__(%,%)^(%)#((%)))
 def $demote__(M, N, fN(M)) : fN(N)*
 def $promote__(M, N, fN(M)) : fN(N)*
 def $convert__(M, N, sx, iN(M)) : fN(N)              hint(show $convert__(%,%)^(%)#((%)))
@@ -58,8 +58,8 @@ def $invfbytes_(N, b*) = p  -- if $fbytes_(N, p) = b*
 def $iadd_(N, iN(N), iN(N)) : iN(N)
 def $isub_(N, iN(N), iN(N)) : iN(N)
 def $imul_(N, iN(N), iN(N)) : iN(N)
-def $idiv_(N, sx, iN(N), iN(N)) : iN(N)* hint(show $idiv_(%)^(%)#((%,%)))
-def $irem_(N, sx, iN(N), iN(N)) : iN(N)* hint(show $irem_(%)^(%)#((%,%)))
+def $idiv_(N, sx, iN(N), iN(N)) : iN(N)? hint(show $idiv_(%)^(%)#((%,%)))
+def $irem_(N, sx, iN(N), iN(N)) : iN(N)? hint(show $irem_(%)^(%)#((%,%)))
 def $inot_(N, iN(N)) : iN(N)
 def $iand_(N, iN(N), iN(N)) : iN(N)
 def $iandnot_(N, iN(N), iN(N)) : iN(N)
@@ -115,8 +115,8 @@ def $fge_(N, fN(N), fN(N)) : u32
 def $binop_(Inn, ADD, iN_1, iN_2) = $iadd_($size(Inn), iN_1, iN_2)
 def $binop_(Inn, SUB, iN_1, iN_2) = $isub_($size(Inn), iN_1, iN_2)
 def $binop_(Inn, MUL, iN_1, iN_2) = $imul_($size(Inn), iN_1, iN_2)
-def $binop_(Inn, DIV sx, iN_1, iN_2) = $idiv_($size(Inn), sx, iN_1, iN_2)
-def $binop_(Inn, REM sx, iN_1, iN_2) = $irem_($size(Inn), sx, iN_1, iN_2)
+def $binop_(Inn, DIV sx, iN_1, iN_2) = $list_(num_(Inn), $idiv_($size(Inn), sx, iN_1, iN_2))
+def $binop_(Inn, REM sx, iN_1, iN_2) = $list_(num_(Inn), $irem_($size(Inn), sx, iN_1, iN_2))
 def $binop_(Inn, AND, iN_1, iN_2) = $iand_($size(Inn), iN_1, iN_2)
 def $binop_(Inn, OR, iN_1, iN_2) = $ior_($size(Inn), iN_1, iN_2)
 def $binop_(Inn, XOR, iN_1, iN_2) = $ixor_($size(Inn), iN_1, iN_2)
@@ -161,8 +161,8 @@ def $relop_(Fnn, GE, fN_1, fN_2) = $fge_($size(Fnn), fN_1, fN_2)
 
 def $cvtop__(I32, I64, EXTEND sx, iN) = $extend__(32, 64, sx, iN)
 def $cvtop__(I64, I32, WRAP, iN) = $wrap__(64, 32, iN)
-def $cvtop__(Fnn, Inn, TRUNC sx, fN) = $trunc__($size(Fnn), $size(Inn), sx, fN)
-def $cvtop__(Fnn, Inn, TRUNC_SAT sx, fN) = $trunc_sat__($size(Fnn), $size(Inn), sx, fN)
+def $cvtop__(Fnn, Inn, TRUNC sx, fN) = $list_(num_(Inn), $trunc__($size(Fnn), $size(Inn), sx, fN))
+def $cvtop__(Fnn, Inn, TRUNC_SAT sx, fN) = $list_(num_(Inn), $trunc_sat__($size(Fnn), $size(Inn), sx, fN))
 def $cvtop__(F32, F64, PROMOTE, fN) = $promote__(32, 64, fN)
 def $cvtop__(F64, F32, DEMOTE, fN) = $demote__(64, 32, fN)
 def $cvtop__(Inn, Fnn, CONVERT sx, iN) = $convert__($size(Inn), $size(Fnn), sx, iN)
@@ -405,10 +405,10 @@ def $vcvtop__(I32 X N_1, F32 X N_2, CONVERT, sx, i32) = f32
     -- if f32 = $convert__(32, 32, sx, i32)
 def $vcvtop__(I32 X N_1, F64 X N_2, CONVERT, sx, i32) = f64
     -- if f64 = $convert__(32, 64, sx, i32)
-def $vcvtop__(F32 X N_1, I32 X N_2, TRUNC_SAT, sx, f32) = i32*
-    -- if i32* = $trunc_sat__(32, 32, sx, f32)
-def $vcvtop__(F64 X N_1, I32 X N_2, TRUNC_SAT, sx, f64) = i32*
-    -- if i32* = $trunc_sat__(64, 32, sx, f64)
+def $vcvtop__(F32 X N_1, I32 X N_2, TRUNC_SAT, sx, f32) = $list_(num_(I32), i32?)
+    -- if i32? = $trunc_sat__(32, 32, sx, f32)
+def $vcvtop__(F64 X N_1, I32 X N_2, TRUNC_SAT, sx, f64) = $list_(num_(I32), i32?)
+    -- if i32? = $trunc_sat__(64, 32, sx, f64)
 def $vcvtop__(F64 X N_1, F32 X N_2, DEMOTE, sx?, f64) = f32*
     -- if f32* = $demote__(64, 32, f64)
 def $vcvtop__(F32 X N_1, F64 X N_2, PROMOTE, sx?, f32) = f64*

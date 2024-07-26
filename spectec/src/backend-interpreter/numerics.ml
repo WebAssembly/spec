@@ -35,10 +35,10 @@ let i16_to_i32 i16 =
   (* NOTE: This operation extends the sign of i8 to i32 *)
   I32.shr_s (I32.shl i16 16l) 16l
 
-let catch_ixx_exception f = try f() |> singleton with
+let catch_ixx_exception f = try f() |> someV with
   | Ixx.DivideByZero
   | Ixx.Overflow
-  | Ixx.InvalidConversion -> empty_list
+  | Ixx.InvalidConversion -> noneV
 
 let signed : numerics =
   {
@@ -121,19 +121,19 @@ let idiv : numerics =
       (function
       | [ NumV _; CaseV ("U", []); NumV m; NumV n ] ->
         if n = Z.zero then
-          empty_list
+          noneV
         else
-          Z.(div m n) |> al_of_z |> singleton
+          Z.(div m n) |> al_of_z |> someV
       | [ NumV z; CaseV ("S", []); NumV m; NumV n ] ->
         if n = Z.zero then
-          empty_list
+          noneV
         else if m = Z.shift_left Z.one (Z.to_int z - 1) && n = maskN z then
-          empty_list
+          noneV
         else
           let z = NumV z in
           let m = signed.f [ z; NumV m ] |> al_to_z in
           let n = signed.f [ z; NumV n ] |> al_to_z in
-          inverse_of_signed.f [ z; NumV Z.(div m n) ] |> singleton
+          inverse_of_signed.f [ z; NumV Z.(div m n) ] |> someV
       | vs -> error_values "idiv" vs
       );
   }
@@ -144,16 +144,16 @@ let irem : numerics =
       (function
       | [ NumV _; CaseV ("U", []); NumV m; NumV n ] ->
         if n = Z.zero then
-          empty_list
+          noneV
         else
-          Z.(rem m n) |> al_of_z |> singleton
+          Z.(rem m n) |> al_of_z |> someV
       | [ NumV _ as z; CaseV ("S", []); NumV m; NumV n ] ->
         if n = Z.zero then
-          empty_list
+          noneV
         else
           let m = signed.f [ z; NumV m ] |> al_to_z in
           let n = signed.f [ z; NumV n ] |> al_to_z in
-          inverse_of_signed.f [ z; NumV Z.(rem m n) ] |> singleton
+          inverse_of_signed.f [ z; NumV Z.(rem m n) ] |> someV
       | vs -> error_values "irem" vs
       );
   }
@@ -1083,6 +1083,11 @@ let inverse_of_lsize : numerics =
       | vs -> error_values "inverse_of_lsize" vs
       );
   }
+let inverse_of_size : numerics =
+  {
+    name = "inverse_of_size";
+    f = inverse_of_lsize.f;
+  }
 let inverse_of_lsizenn : numerics =
   {
     name = "inverse_of_lsizenn";
@@ -1195,6 +1200,7 @@ let numerics_list : numerics list = [
   reinterpret;
   lanes;
   inverse_of_lanes;
+  inverse_of_size;
   inverse_of_isize;
   inverse_of_lsize;
   inverse_of_lsizenn;

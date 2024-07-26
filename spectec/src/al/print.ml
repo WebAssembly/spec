@@ -421,7 +421,8 @@ and structured_string_of_expr expr =
   | BoolE b -> string_of_bool b
   | UnE (op, e) ->
     "UnE ("
-    ^ string_of_unop op
+    ^ string_of_unop op 
+    ^ ", "
     ^ structured_string_of_expr e
     ^ ")"
   | BinE (op, e1, e2) ->
