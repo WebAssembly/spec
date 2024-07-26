@@ -34,11 +34,14 @@ let typ_env: Il.Eval.env ref =
 
 let varT s = Il.Ast.VarT (s $ no_region, []) $ no_region
 
-let num_typs = [ "nat"; "int"; "sN"; "uN"; "byte"; "bit"(* TODO*); "N"; "u32" ]
+(* Begin trash *)
+
+let num_typs = [ "nat"; "int"; "sN"; "uN"; "byte"; "bit"; "N"; "u32"; "iN"; "lane_" ]
 
 let is_num typ =
   match typ.it with
   | Il.Ast.NumT _ -> true
+  | Il.Ast.VarT (id, _) when List.mem id.it num_typs -> true
   | _ -> List.exists (fun nt -> Il.Eval.sub_typ !typ_env typ (varT nt)) num_typs
 let rec sub_typ typ1 typ2 =
   match typ1.it, typ2.it with
@@ -49,6 +52,8 @@ let rec sub_typ typ1 typ2 =
   | _ ->
     Il.Eval.sub_typ !typ_env typ1 typ2 || is_num typ1 && is_num typ2
 let matches typ1 typ2 = sub_typ typ1 typ2 || sub_typ typ2 typ1
+
+(* End trash *)
 
 (* Helper functions *)
 
@@ -186,7 +191,15 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
   | EnterI (expr1, expr2, _) -> check_instr expr1; check_context expr2
   | PushI expr -> check_val expr
   | PopI expr | PopAllI expr -> add_bound_vars expr; check_val expr
-  | LetI (expr1, expr2) -> add_bound_vars expr1; check_match expr1 expr2.note
+  | LetI (expr1, expr2) ->
+    add_bound_vars expr1;
+    if not (matches expr1.note expr2.note) then
+      error instr.at
+        (Printf.sprintf "lhs and rhs type mismatch in %s\n  %s = %s"
+          (string_of_instr instr)
+          (Il.Print.string_of_typ expr1.note)
+          (Il.Print.string_of_typ expr2.note)
+        )
   | ExecuteI expr | ExecuteSeqI expr -> check_instr expr
   | ReplaceI (expr1, path, expr2) -> check_access expr2 expr1 path
   | AppendI (expr1, _expr2) -> check_list expr1
