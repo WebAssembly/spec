@@ -924,7 +924,7 @@ rule Instr_ok/vnarrow:
   C |- VNARROW sh_1 sh_2 sx : V128 V128 -> V128
 
 rule Instr_ok/vcvtop:
-  C |- VCVTOP sh_1 sh_2 vcvtop half? sx? zero? : V128 -> V128
+  C |- VCVTOP sh_1 sh_2 vcvtop half? zero? : V128 -> V128
 
 
 ;; Local instructions

@@ -222,7 +222,7 @@ def $vbinop_(shape, vbinop_(shape), vec_(V128), vec_(V128)) : vec_(V128)*
     hint(show %2#$_(%1)#(%3, %4))
 def $vrelop_(shape, vrelop_(shape), vec_(V128), vec_(V128)) : vec_(V128)
     hint(show %2#$_(%1)#(%3, %4))
-def $vcvtop__(shape_1, shape_2, vcvtop, sx?, lane_($lanetype(shape_1))) : lane_($lanetype(shape_2))*
+def $vcvtop__(shape_1, shape_2, vcvtop, lane_($lanetype(shape_1))) : lane_($lanetype(shape_2))*
     hint(show %3#$__(%1,%2)^(%4)#((%5)))
 
 def $vunop_(Jnn X M, ABS, v128_1) = v128
@@ -395,15 +395,15 @@ def $vrelop_(Fnn X M, GE, v128_1, v128_2) = v128
     -- if $isize(Inn) = $size(Fnn)
     -- if v128 = $invlanes_(Inn X M, lane_3*)
 
-def $vcvtop__(Jnn_1 X M_1, Jnn_2 X M_2, EXTEND, sx, iN_1) = iN_2
+def $vcvtop__(Jnn_1 X M_1, Jnn_2 X M_2, EXTEND sx, iN_1) = iN_2
     -- if iN_2 = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, iN_1)
-def $vcvtop__(Jnn_1 X M_1, Fnn_2 X M_2, CONVERT, sx, iN_1) = fN_2
+def $vcvtop__(Jnn_1 X M_1, Fnn_2 X M_2, CONVERT sx, iN_1) = fN_2
     -- if fN_2 = $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, iN_1)
-def $vcvtop__(Fnn_1 X M_1, Inn_2 X M_2, TRUNC_SAT, sx, fN_1) = $list_(lane_(Inn_2), iN_2?)
+def $vcvtop__(Fnn_1 X M_1, Inn_2 X M_2, TRUNC_SAT sx, fN_1) = $list_(lane_(Inn_2), iN_2?)
     -- if iN_2? = $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, fN_1)
-def $vcvtop__(Fnn_1 X M_1, Fnn_2 X M_2, DEMOTE, eps, fN_1) = fN_2*
+def $vcvtop__(Fnn_1 X M_1, Fnn_2 X M_2, DEMOTE, fN_1) = fN_2*
     -- if fN_2* = $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1)
-def $vcvtop__(Fnn_1 X M_1, Fnn_2 X M_2, PROMOTE, eps, fN_1) = fN_2*
+def $vcvtop__(Fnn_1 X M_1, Fnn_2 X M_2, PROMOTE, fN_1) = fN_2*
     -- if fN_2* = $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1)
 
 

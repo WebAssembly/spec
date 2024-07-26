@@ -360,7 +360,7 @@ def $free_instr(VEXTBINOP ishape_1 ishape_2 vextbinop) =
   $free_shape(ishape_1) ++ $free_shape(ishape_2)
 def $free_instr(VNARROW ishape_1 ishape_2 sx) =
   $free_shape(ishape_1) ++ $free_shape(ishape_2)
-def $free_instr(VCVTOP shape_1 shape_2 vcvtop half? sx? zero?) =
+def $free_instr(VCVTOP shape_1 shape_2 vcvtop half? zero?) =
   $free_shape(shape_1) ++ $free_shape(shape_2)
 def $free_instr(VSPLAT shape) = $free_shape(shape)
 def $free_instr(VEXTRACT_LANE shape sx? laneidx) = $free_shape(shape)

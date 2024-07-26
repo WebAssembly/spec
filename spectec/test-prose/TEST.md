@@ -1715,7 +1715,7 @@ validation_of_VNARROW
 - the instr (VNARROW sh_1 sh_2 sx) is valid with the function type ([V128, V128] -> [V128]).
 
 validation_of_VCVTOP
-- the instr (VCVTOP sh_1 sh_2 vcvtop hf? sx? zero?) is valid with the function type ([V128] -> [V128]).
+- the instr (VCVTOP sh_1 sh_2 vcvtop hf? zero?) is valid with the function type ([V128] -> [V128]).
 
 validation_of_LOCAL.GET
 - the instr (LOCAL.GET x) is valid with the function type ([] -> [t]) if and only if:
@@ -2892,35 +2892,35 @@ vrelop_ (lanet_u1 X M) vrelo_u0 v128_1 v128_2
 16. Let v128 be $invlanes_((Inn X M), lane_3*).
 17. Return v128.
 
-vcvtop__ (lanet_u2 X M_1) (lanet_u0 X M_2) vcvto_u1 sx_u5? lane__u4
-1. If ((vcvto_u1 is EXTEND) and the type of lanet_u2 is Jnn), then:
+vcvtop__ (lanet_u2 X M_1) (lanet_u0 X M_2) vcvto_u1 lane__u4
+1. If the type of lanet_u2 is Jnn, then:
   a. Let Jnn_1 be lanet_u2.
   b. If the type of lanet_u0 is Jnn, then:
     1) Let Jnn_2 be lanet_u0.
     2) Let iN_1 be lane__u4.
-    3) If sx_u5? is defined, then:
-      a) Let ?(sx) be sx_u5?.
+    3) If vcvto_u1 is of the case EXTEND, then:
+      a) Let (EXTEND sx) be vcvto_u1.
       b) Let iN_2 be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, iN_1).
       c) Return [iN_2].
-2. If ((vcvto_u1 is CONVERT) and the type of lanet_u0 is Fnn), then:
+2. If the type of lanet_u0 is Fnn, then:
   a. Let Fnn_2 be lanet_u0.
   b. If the type of lanet_u2 is Jnn, then:
     1) Let Jnn_1 be lanet_u2.
     2) Let iN_1 be lane__u4.
-    3) If sx_u5? is defined, then:
-      a) Let ?(sx) be sx_u5?.
+    3) If vcvto_u1 is of the case CONVERT, then:
+      a) Let (CONVERT sx) be vcvto_u1.
       b) Let fN_2 be $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, iN_1).
       c) Return [fN_2].
-3. If ((vcvto_u1 is TRUNC_SAT) and the type of lanet_u2 is Fnn), then:
+3. If the type of lanet_u2 is Fnn, then:
   a. Let Fnn_1 be lanet_u2.
   b. If the type of lanet_u0 is Inn, then:
     1) Let Inn_2 be lanet_u0.
     2) Let fN_1 be lane__u4.
-    3) If sx_u5? is defined, then:
-      a) Let ?(sx) be sx_u5?.
+    3) If vcvto_u1 is of the case TRUNC_SAT, then:
+      a) Let (TRUNC_SAT sx) be vcvto_u1.
       b) Let iN_2? be $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, fN_1).
       c) Return $list_(iN_2?).
-4. If ((vcvto_u1 is DEMOTE) and (sx_u5? is not defined and the type of lanet_u2 is Fnn)), then:
+4. If ((vcvto_u1 is DEMOTE) and the type of lanet_u2 is Fnn), then:
   a. Let Fnn_1 be lanet_u2.
   b. If the type of lanet_u0 is Fnn, then:
     1) Let Fnn_2 be lanet_u0.
@@ -2928,14 +2928,13 @@ vcvtop__ (lanet_u2 X M_1) (lanet_u0 X M_2) vcvto_u1 sx_u5? lane__u4
     3) Let fN_2* be $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
     4) Return fN_2*.
 5. Assert: Due to validation, (vcvto_u1 is PROMOTE).
-6. Assert: Due to validation, sx_u5? is not defined.
-7. Assert: Due to validation, the type of lanet_u2 is Fnn.
-8. Let Fnn_1 be lanet_u2.
-9. Assert: Due to validation, the type of lanet_u0 is Fnn.
-10. Let Fnn_2 be lanet_u0.
-11. Let fN_1 be lane__u4.
-12. Let fN_2* be $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
-13. Return fN_2*.
+6. Assert: Due to validation, the type of lanet_u2 is Fnn.
+7. Let Fnn_1 be lanet_u2.
+8. Assert: Due to validation, the type of lanet_u0 is Fnn.
+9. Let Fnn_2 be lanet_u0.
+10. Let fN_1 be lane__u4.
+11. Let fN_2* be $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
+12. Return fN_2*.
 
 vextunop__ (Inn_1 X M_1) (Inn_2 X M_2) (EXTADD_PAIRWISE sx) c_1
 1. Let ci* be $lanes_((Inn_2 X M_2), c_1).
@@ -3706,36 +3705,32 @@ execution_of_VNARROW (Jnn_2 X N_2) (Jnn_1 X N_1) sx
 9. Let c be $invlanes_((Jnn_2 X N_2), cj_1* ++ cj_2*).
 10. Push the value (V128.CONST c) to the stack.
 
-execution_of_VCVTOP (lanet_u2 X N_2) (lanet_u3 X N_1) vcvtop half_u0? sx_u1? zero_u4?
+execution_of_VCVTOP (lanet_u1 X N_2) (lanet_u2 X N_1) vcvtop half_u0? zero_u3?
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
-3. If (half_u0? is not defined and zero_u4? is not defined), then:
-  a. Let Lnn_1 be lanet_u3.
-  b. Let Lnn_2 be lanet_u2.
-  c. If sx_u1? is defined, then:
-    1) Let ?(sx) be sx_u1?.
-    2) Let c'* be $lanes_((Lnn_1 X N_1), c_1).
-    3) If (|$mapinvlanes_((Lnn_2 X N_2), $vcvtop__((Lnn_1 X N_1), (Lnn_2 X N_2), vcvtop, ?(sx), c')*)| > 0), then:
-      a) Let c be an element of $mapinvlanes_((Lnn_2 X N_2), $vcvtop__((Lnn_1 X N_1), (Lnn_2 X N_2), vcvtop, ?(sx), c')*).
-      b) Push the value (V128.CONST c) to the stack.
-4. If zero_u4? is not defined, then:
-  a. Let Lnn_1 be lanet_u3.
-  b. Let Lnn_2 be lanet_u2.
+3. If (half_u0? is not defined and zero_u3? is not defined), then:
+  a. Let Lnn_1 be lanet_u2.
+  b. Let Lnn_2 be lanet_u1.
+  c. Let c'* be $lanes_((Lnn_1 X N_1), c_1).
+  d. If (|$mapinvlanes_((Lnn_2 X N_2), $vcvtop__((Lnn_1 X N_1), (Lnn_2 X N_2), vcvtop, c')*)| > 0), then:
+    1) Let c be an element of $mapinvlanes_((Lnn_2 X N_2), $vcvtop__((Lnn_1 X N_1), (Lnn_2 X N_2), vcvtop, c')*).
+    2) Push the value (V128.CONST c) to the stack.
+4. If zero_u3? is not defined, then:
+  a. Let Lnn_1 be lanet_u2.
+  b. Let Lnn_2 be lanet_u1.
   c. If half_u0? is defined, then:
     1) Let ?(hf) be half_u0?.
-    2) Let sx? be sx_u1?.
-    3) Let ci* be $lanes_((Lnn_1 X N_1), c_1)[$half(hf, 0, N_2) : N_2].
-    4) If (|$mapinvlanes_((Lnn_2 X N_2), $vcvtop__((Lnn_1 X N_1), (Lnn_2 X N_2), vcvtop, sx?, ci)*)| > 0), then:
-      a) Let c be an element of $mapinvlanes_((Lnn_2 X N_2), $vcvtop__((Lnn_1 X N_1), (Lnn_2 X N_2), vcvtop, sx?, ci)*).
+    2) Let ci* be $lanes_((Lnn_1 X N_1), c_1)[$half(hf, 0, N_2) : N_2].
+    3) If (|$mapinvlanes_((Lnn_2 X N_2), $vcvtop__((Lnn_1 X N_1), (Lnn_2 X N_2), vcvtop, ci)*)| > 0), then:
+      a) Let c be an element of $mapinvlanes_((Lnn_2 X N_2), $vcvtop__((Lnn_1 X N_1), (Lnn_2 X N_2), vcvtop, ci)*).
       b) Push the value (V128.CONST c) to the stack.
-5. If (half_u0? is not defined and ((zero_u4? is ?(ZERO)) and the type of lanet_u3 is numtype)), then:
-  a. Let nt_1 be lanet_u3.
-  b. If the type of lanet_u2 is numtype, then:
-    1) Let nt_2 be lanet_u2.
-    2) Let sx? be sx_u1?.
-    3) Let ci* be $lanes_((nt_1 X N_1), c_1).
-    4) If (|$mapinvlanes_((nt_2 X N_2), $vcvtop__((nt_1 X N_1), (nt_2 X N_2), vcvtop, sx?, ci)* ++ [$zero(nt_2)]^N_1)| > 0), then:
-      a) Let c be an element of $mapinvlanes_((nt_2 X N_2), $vcvtop__((nt_1 X N_1), (nt_2 X N_2), vcvtop, sx?, ci)* ++ [$zero(nt_2)]^N_1).
+5. If (half_u0? is not defined and ((zero_u3? is ?(ZERO)) and the type of lanet_u2 is numtype)), then:
+  a. Let nt_1 be lanet_u2.
+  b. If the type of lanet_u1 is numtype, then:
+    1) Let nt_2 be lanet_u1.
+    2) Let ci* be $lanes_((nt_1 X N_1), c_1).
+    3) If (|$mapinvlanes_((nt_2 X N_2), $vcvtop__((nt_1 X N_1), (nt_2 X N_2), vcvtop, ci)* ++ [$zero(nt_2)]^N_1)| > 0), then:
+      a) Let c be an element of $mapinvlanes_((nt_2 X N_2), $vcvtop__((nt_1 X N_1), (nt_2 X N_2), vcvtop, ci)* ++ [$zero(nt_2)]^N_1).
       b) Push the value (V128.CONST c) to the stack.
 
 execution_of_LOCAL.TEE x
@@ -4985,7 +4980,7 @@ validation_of_VNARROW
 - the instr (VNARROW sh_1 sh_2 sx) is valid with the instruction type ([V128, V128] ->_ [] ++ [V128]).
 
 validation_of_VCVTOP
-- the instr (VCVTOP sh_1 sh_2 vcvtop half? sx? zero?) is valid with the instruction type ([V128] ->_ [] ++ [V128]).
+- the instr (VCVTOP sh_1 sh_2 vcvtop half? zero?) is valid with the instruction type ([V128] ->_ [] ++ [V128]).
 
 validation_of_LOCAL.GET
 - the instr (LOCAL.GET x) is valid with the instruction type ([] ->_ [] ++ [t]) if and only if:
@@ -7098,35 +7093,35 @@ vrelop_ (lanet_u1 X M) vrelo_u0 v128_1 v128_2
 16. Let v128 be $invlanes_((Inn X M), lane_3*).
 17. Return v128.
 
-vcvtop__ (lanet_u3 X M_1) (lanet_u0 X M_2) vcvto_u2 sx_u6? lane__u5
-1. If ((vcvto_u2 is EXTEND) and the type of lanet_u3 is Jnn), then:
+vcvtop__ (lanet_u3 X M_1) (lanet_u0 X M_2) vcvto_u2 lane__u5
+1. If the type of lanet_u3 is Jnn, then:
   a. Let Jnn_1 be lanet_u3.
   b. If the type of lanet_u0 is Jnn, then:
     1) Let Jnn_2 be lanet_u0.
     2) Let iN_1 be lane__u5.
-    3) If sx_u6? is defined, then:
-      a) Let ?(sx) be sx_u6?.
+    3) If vcvto_u2 is of the case EXTEND, then:
+      a) Let (EXTEND sx) be vcvto_u2.
       b) Let iN_2 be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, iN_1).
       c) Return [iN_2].
-2. If ((vcvto_u2 is CONVERT) and the type of lanet_u0 is Fnn), then:
+2. If the type of lanet_u0 is Fnn, then:
   a. Let Fnn_2 be lanet_u0.
   b. If the type of lanet_u3 is Jnn, then:
     1) Let Jnn_1 be lanet_u3.
     2) Let iN_1 be lane__u5.
-    3) If sx_u6? is defined, then:
-      a) Let ?(sx) be sx_u6?.
+    3) If vcvto_u2 is of the case CONVERT, then:
+      a) Let (CONVERT sx) be vcvto_u2.
       b) Let fN_2 be $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, iN_1).
       c) Return [fN_2].
-3. If ((vcvto_u2 is TRUNC_SAT) and the type of lanet_u3 is Fnn), then:
+3. If the type of lanet_u3 is Fnn, then:
   a. Let Fnn_1 be lanet_u3.
   b. If the type of lanet_u0 is Inn, then:
     1) Let Inn_2 be lanet_u0.
     2) Let fN_1 be lane__u5.
-    3) If sx_u6? is defined, then:
-      a) Let ?(sx) be sx_u6?.
+    3) If vcvto_u2 is of the case TRUNC_SAT, then:
+      a) Let (TRUNC_SAT sx) be vcvto_u2.
       b) Let iN_2? be $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, fN_1).
       c) Return $list_(iN_2?).
-4. If ((vcvto_u2 is DEMOTE) and (sx_u6? is not defined and the type of lanet_u3 is Fnn)), then:
+4. If ((vcvto_u2 is DEMOTE) and the type of lanet_u3 is Fnn), then:
   a. Let Fnn_1 be lanet_u3.
   b. If the type of lanet_u0 is Fnn, then:
     1) Let Fnn_2 be lanet_u0.
@@ -7134,14 +7129,13 @@ vcvtop__ (lanet_u3 X M_1) (lanet_u0 X M_2) vcvto_u2 sx_u6? lane__u5
     3) Let fN_2* be $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
     4) Return fN_2*.
 5. Assert: Due to validation, (vcvto_u2 is PROMOTE).
-6. Assert: Due to validation, sx_u6? is not defined.
-7. Assert: Due to validation, the type of lanet_u3 is Fnn.
-8. Let Fnn_1 be lanet_u3.
-9. Assert: Due to validation, the type of lanet_u0 is Fnn.
-10. Let Fnn_2 be lanet_u0.
-11. Let fN_1 be lane__u5.
-12. Let fN_2* be $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
-13. Return fN_2*.
+6. Assert: Due to validation, the type of lanet_u3 is Fnn.
+7. Let Fnn_1 be lanet_u3.
+8. Assert: Due to validation, the type of lanet_u0 is Fnn.
+9. Let Fnn_2 be lanet_u0.
+10. Let fN_1 be lane__u5.
+11. Let fN_2* be $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
+12. Return fN_2*.
 
 vextunop__ (Jnn_1 X M_1) (Jnn_2 X M_2) (EXTADD_PAIRWISE sx) c_1
 1. Let ci* be $lanes_((Jnn_1 X M_1), c_1).
@@ -8099,7 +8093,7 @@ execution_of_VNARROW (Jnn_2 X M_2) (Jnn_1 X M_1) sx
 9. Let c be $invlanes_((Jnn_2 X M_2), cj_1* ++ cj_2*).
 10. Push the value (V128.CONST c) to the stack.
 
-execution_of_VCVTOP (lanet_u5 X n_u0) (lanet_u6 X n_u1) vcvtop half__u4? sx? zero__u13?
+execution_of_VCVTOP (lanet_u5 X n_u0) (lanet_u6 X n_u1) vcvtop half__u4? zero__u13?
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. If (half__u4? is not defined and zero__u13? is not defined), then:
@@ -8108,8 +8102,8 @@ execution_of_VCVTOP (lanet_u5 X n_u0) (lanet_u6 X n_u1) vcvtop half__u4? sx? zer
   c. Let M be n_u1.
   d. If (n_u0 is M), then:
     1) Let c'* be $lanes_((Lnn_1 X M), c_1).
-    2) If (|$mapinvlanes_((Lnn_2 X M), $vcvtop__((Lnn_1 X M), (Lnn_2 X M), vcvtop, sx?, c')*)| > 0), then:
-      a) Let c be an element of $mapinvlanes_((Lnn_2 X M), $vcvtop__((Lnn_1 X M), (Lnn_2 X M), vcvtop, sx?, c')*).
+    2) If (|$mapinvlanes_((Lnn_2 X M), $vcvtop__((Lnn_1 X M), (Lnn_2 X M), vcvtop, c')*)| > 0), then:
+      a) Let c be an element of $mapinvlanes_((Lnn_2 X M), $vcvtop__((Lnn_1 X M), (Lnn_2 X M), vcvtop, c')*).
       b) Push the value (V128.CONST c) to the stack.
 4. If zero__u13? is not defined, then:
   a. Let Lnn_1 be lanet_u6.
@@ -8119,8 +8113,8 @@ execution_of_VCVTOP (lanet_u5 X n_u0) (lanet_u6 X n_u1) vcvtop half__u4? sx? zer
   e. If half__u4? is defined, then:
     1) Let ?(half) be half__u4?.
     2) Let ci* be $lanes_((Lnn_1 X M_1), c_1)[$half__((Lnn_1 X M_1), (Lnn_2 X M_2), half, 0, M_2) : M_2].
-    3) If (|$mapinvlanes_((Lnn_2 X M_2), $vcvtop__((Lnn_1 X M_1), (Lnn_2 X M_2), vcvtop, sx?, ci)*)| > 0), then:
-      a) Let c be an element of $mapinvlanes_((Lnn_2 X M_2), $vcvtop__((Lnn_1 X M_1), (Lnn_2 X M_2), vcvtop, sx?, ci)*).
+    3) If (|$mapinvlanes_((Lnn_2 X M_2), $vcvtop__((Lnn_1 X M_1), (Lnn_2 X M_2), vcvtop, ci)*)| > 0), then:
+      a) Let c be an element of $mapinvlanes_((Lnn_2 X M_2), $vcvtop__((Lnn_1 X M_1), (Lnn_2 X M_2), vcvtop, ci)*).
       b) Push the value (V128.CONST c) to the stack.
 5. If half__u4? is not defined, then:
   a. Let M_1 be n_u1.
@@ -8131,8 +8125,8 @@ execution_of_VCVTOP (lanet_u5 X n_u0) (lanet_u6 X n_u1) vcvtop half__u4? sx? zer
       a) Let nt_2 be lanet_u5.
       b) If zero__u13? is defined, then:
         1. Let ci* be $lanes_((nt_1 X M_1), c_1).
-        2. If (|$mapinvlanes_((nt_2 X M_2), $vcvtop__((nt_1 X M_1), (nt_2 X M_2), vcvtop, sx?, ci)* ++ [$zero(nt_2)]^M_1)| > 0), then:
-          a. Let c be an element of $mapinvlanes_((nt_2 X M_2), $vcvtop__((nt_1 X M_1), (nt_2 X M_2), vcvtop, sx?, ci)* ++ [$zero(nt_2)]^M_1).
+        2. If (|$mapinvlanes_((nt_2 X M_2), $vcvtop__((nt_1 X M_1), (nt_2 X M_2), vcvtop, ci)* ++ [$zero(nt_2)]^M_1)| > 0), then:
+          a. Let c be an element of $mapinvlanes_((nt_2 X M_2), $vcvtop__((nt_1 X M_1), (nt_2 X M_2), vcvtop, ci)* ++ [$zero(nt_2)]^M_1).
           b. Push the value (V128.CONST c) to the stack.
 
 execution_of_LOCAL.TEE x

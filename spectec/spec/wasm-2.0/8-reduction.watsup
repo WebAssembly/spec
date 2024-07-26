@@ -351,20 +351,20 @@ rule Step_pure/vnarrow:
 
 
 rule Step_pure/vcvtop-full:
-  (VCONST V128 c_1) (VCVTOP (Lnn_2 X N_2) (Lnn_1 X N_1) vcvtop eps sx) ~> (VCONST V128 c)
+  (VCONST V128 c_1) (VCVTOP (Lnn_2 X N_2) (Lnn_1 X N_1) vcvtop) ~> (VCONST V128 c)
   -- if c'* = $lanes_(Lnn_1 X N_1, c_1)
-  -- if c <- $mapinvlanes_(Lnn_2 X N_2, $vcvtop__(Lnn_1 X N_1, Lnn_2 X N_2, vcvtop, sx, c')*)
+  -- if c <- $mapinvlanes_(Lnn_2 X N_2, $vcvtop__(Lnn_1 X N_1, Lnn_2 X N_2, vcvtop, c')*)
 
 var hf : half  ;; TODO: this declaration shouldn't be needed
 rule Step_pure/vcvtop-half:
-  (VCONST V128 c_1) (VCVTOP (Lnn_2 X N_2) (Lnn_1 X N_1) vcvtop hf sx?) ~> (VCONST V128 c)
+  (VCONST V128 c_1) (VCVTOP (Lnn_2 X N_2) (Lnn_1 X N_1) vcvtop hf) ~> (VCONST V128 c)
   -- if ci* = $lanes_(Lnn_1 X N_1, c_1)[$half(hf, 0, N_2) : N_2]
-  -- if c <- $mapinvlanes_(Lnn_2 X N_2, $vcvtop__(Lnn_1 X N_1, Lnn_2 X N_2, vcvtop, sx?, ci)*)
+  -- if c <- $mapinvlanes_(Lnn_2 X N_2, $vcvtop__(Lnn_1 X N_1, Lnn_2 X N_2, vcvtop, ci)*)
 
 rule Step_pure/vcvtop-zero:
-  (VCONST V128 c_1) (VCVTOP (nt_2 X N_2) (nt_1 X N_1) vcvtop eps sx? ZERO) ~> (VCONST V128 c)
+  (VCONST V128 c_1) (VCVTOP (nt_2 X N_2) (nt_1 X N_1) vcvtop ZERO) ~> (VCONST V128 c)
   -- if ci* = $lanes_(nt_1 X N_1, c_1)
-  -- if c <- $mapinvlanes_(nt_2 X N_2, $vcvtop__(nt_1 X N_1, nt_2 X N_2, vcvtop, sx?, ci)* $zero(nt_2)^N_1)
+  -- if c <- $mapinvlanes_(nt_2 X N_2, $vcvtop__(nt_1 X N_1, nt_2 X N_2, vcvtop, ci)* $zero(nt_2)^N_1)
 
 
 ;; Local instructions
