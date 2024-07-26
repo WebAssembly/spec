@@ -209,8 +209,12 @@ def $lanetype(shape) : lanetype
 def $sizenn(numtype) : nat     hint(show n)
 def $sizenn(nt) = $size(nt)
 
-def $sizemm(lanetype) : nat    hint(show n)
-def $sizemm(lt) = $lsize(lt)
+def $lsizenn(lanetype) : nat   hint(show N)   hint(macro none)  ;; HACK!
+def $lsizenn1(lanetype) : nat  hint(show N_1) hint(macro none)  ;; HACK!
+def $lsizenn2(lanetype) : nat  hint(show N_2) hint(macro none)  ;; HACK!
+def $lsizenn(lt) = $lsize(lt)
+def $lsizenn1(lt) = $lsize(lt)
+def $lsizenn2(lt) = $lsize(lt)
 
 syntax num_(numtype)
 syntax num_(Inn) = iN($sizenn(Inn))
@@ -293,13 +297,13 @@ syntax vbinop_(shape)
 syntax vbinop_(Jnn X N) =
   | ADD
   | SUB
-  | ADD_SAT sx hint(show ADD_SAT#_#%)      -- if $sizemm(Jnn) <= `16
-  | SUB_SAT sx hint(show SUB_SAT#_#%)      -- if $sizemm(Jnn) <= `16
-  | MUL                                    -- if $sizemm(Jnn) >= `16
-  | AVGR U                                 -- if $sizemm(Jnn) <= `16
-  | Q15MULR_SAT S                          -- if $sizemm(Jnn) = `16
-  | MIN sx hint(show MIN#_#%)              -- if $sizemm(Jnn) <= `32
-  | MAX sx hint(show MAX#_#%)              -- if $sizemm(Jnn) <= `32
+  | ADD_SAT sx hint(show ADD_SAT#_#%)      -- if $lsizenn(Jnn) <= `16
+  | SUB_SAT sx hint(show SUB_SAT#_#%)      -- if $lsizenn(Jnn) <= `16
+  | MUL                                    -- if $lsizenn(Jnn) >= `16
+  | AVGR U                                 -- if $lsizenn(Jnn) <= `16
+  | Q15MULR_SAT S                          -- if $lsizenn(Jnn) = `16
+  | MIN sx hint(show MIN#_#%)              -- if $lsizenn(Jnn) <= `32
+  | MAX sx hint(show MAX#_#%)              -- if $lsizenn(Jnn) <= `32
 syntax vbinop_(Fnn X N) = ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX
 
 syntax vtestop_(shape)
@@ -308,10 +312,10 @@ syntax vtestop_(Jnn X N) = ALL_TRUE
 
 syntax vrelop_(shape)
 syntax vrelop_(Jnn X N) = EQ | NE
-  | LT sx  -- if $sizemm(Jnn) =/= `64 \/ sx = S
-  | GT sx  -- if $sizemm(Jnn) =/= `64 \/ sx = S
-  | LE sx  -- if $sizemm(Jnn) =/= `64 \/ sx = S
-  | GE sx  -- if $sizemm(Jnn) =/= `64 \/ sx = S
+  | LT sx  -- if $lsizenn(Jnn) =/= `64 \/ sx = S
+  | GT sx  -- if $lsizenn(Jnn) =/= `64 \/ sx = S
+  | LE sx  -- if $lsizenn(Jnn) =/= `64 \/ sx = S
+  | GE sx  -- if $lsizenn(Jnn) =/= `64 \/ sx = S
 syntax vrelop_(Fnn X N) = EQ | NE | LT | GT | LE | GE
 
 syntax vcvtop = EXTEND | TRUNC_SAT | CONVERT | DEMOTE | PROMOTE
@@ -330,11 +334,11 @@ syntax vshiftop_(Jnn X N) = SHL | SHR sx
 
 syntax vextunop_(ishape)
 syntax vextunop_(Jnn X N) =
-  | EXTADD_PAIRWISE sx -- if `16 <= $sizemm(Jnn) <= `32
+  | EXTADD_PAIRWISE sx -- if `16 <= $lsizenn(Jnn) <= `32
 syntax vextbinop_(ishape)
 syntax vextbinop_(Jnn X N) =
   | EXTMUL sx half     hint(show EXTMUL#_#%)
-  | DOT S              -- if $sizemm(Jnn) = `32
+  | DOT S              -- if $lsizenn(Jnn) = `32
 
 
 ;; Memory operators
