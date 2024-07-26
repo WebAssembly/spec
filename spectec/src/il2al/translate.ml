@@ -513,6 +513,7 @@ let get_lhs_name e =
   let rec base_typ_of typ =
     match typ.it with
     | Il.Ast.IterT (typ', _) -> base_typ_of typ'
+    | Il.Ast.VarT (id, _) -> { typ with it=Il.Ast.VarT (id, []) }
     | _ -> typ
   in
   let lhs_id = !lhs_id_ref in
