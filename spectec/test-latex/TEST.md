@@ -1613,7 +1613,7 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {\bigoplus}\, \epsilon &=& \epsilon \\
-{\bigoplus}\, ({w^\ast})~{({{w'}^\ast})^\ast} &=& {w^\ast}~{\bigoplus}\, {({{w'}^\ast})^\ast} \\
+{\bigoplus}\, ({w^\ast})~{({{w'}^\ast})^\ast} &=& {w^\ast} \oplus {\bigoplus}\, {({{w'}^\ast})^\ast} \\
 \end{array}
 $$
 
@@ -1626,23 +1626,39 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathrm{listproduct}}}_{X}(\epsilon) &=& (\epsilon) \\
-{{\mathrm{listproduct}}}_{X}(({w^\ast})~{({{w'}^\ast})^\ast}) &=& {{\mathrm{lpaux}}}_{X}({w^\ast}, {{\mathrm{listproduct}}}_{X}({{{w'}^\ast}^\ast})) \\
+\epsilon \setminus {w^\ast} &=& \epsilon \\
+w_1~{{w'}^\ast} \setminus {w^\ast} &=& {{\mathrm{setminus{\kern-0.1em\scriptstyle 1}}}}_{X}(w_1, {w^\ast}) \oplus {{w'}^\ast} \setminus {w^\ast} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathrm{lpaux}}}_{X}(\epsilon, {({{w''}^\ast})^\ast}) &=& \epsilon \\
-{{\mathrm{lpaux}}}_{X}(w~{{w'}^\ast}, {({{w''}^\ast})^\ast}) &=& {{\mathrm{lpaux{\kern-0.1em\scriptstyle 2}}}}_{X}(w, {({{w''}^\ast})^\ast})~{{\mathrm{lpaux}}}_{X}({{w'}^\ast}, {({{w''}^\ast})^\ast}) \\
+{{\mathrm{setminus{\kern-0.1em\scriptstyle 1}}}}_{X}(w, \epsilon) &=& w \\
+{{\mathrm{setminus{\kern-0.1em\scriptstyle 1}}}}_{X}(w, w_1~{{w'}^\ast}) &=& \epsilon
+  &\qquad \mbox{if}~w = w_1 \\
+{{\mathrm{setminus{\kern-0.1em\scriptstyle 1}}}}_{X}(w, w_1~{{w'}^\ast}) &=& {{\mathrm{setminus{\kern-0.1em\scriptstyle 1}}}}_{X}(w, {{w'}^\ast})
+  &\qquad \mbox{otherwise} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{{\mathrm{lpaux{\kern-0.1em\scriptstyle 2}}}}_{X}(w, \epsilon) &=& \epsilon \\
-{{\mathrm{lpaux{\kern-0.1em\scriptstyle 2}}}}_{X}(w, ({{w'}^\ast})~{({{w''}^\ast})^\ast}) &=& ({{\mathit{ww}}^\ast})~{{\mathrm{lpaux{\kern-0.1em\scriptstyle 2}}}}_{X}(w, {({{w''}^\ast})^\ast})
-  &\qquad \mbox{if}~{{\mathit{ww}}^\ast} = w~{{w'}^\ast} \\
+{{\mathrm{setproduct}}}_{X}(\epsilon) &=& (\epsilon) \\
+{{\mathrm{setproduct}}}_{X}(({w_1^\ast})~{({w^\ast})^\ast}) &=& {{\mathrm{setproduct{\kern-0.1em\scriptstyle 1}}}}_{X}({w_1^\ast}, {{\mathrm{setproduct}}}_{X}({({w^\ast})^\ast})) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\mathrm{setproduct{\kern-0.1em\scriptstyle 1}}}}_{X}(\epsilon, {({w^\ast})^\ast}) &=& \epsilon \\
+{{\mathrm{setproduct{\kern-0.1em\scriptstyle 1}}}}_{X}(w_1~{{w'}^\ast}, {({w^\ast})^\ast}) &=& {{\mathrm{setproduct{\kern-0.1em\scriptstyle 2}}}}_{X}(w_1, {({w^\ast})^\ast}) \oplus {{\mathrm{setproduct{\kern-0.1em\scriptstyle 1}}}}_{X}({{w'}^\ast}, {({w^\ast})^\ast}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\mathrm{setproduct{\kern-0.1em\scriptstyle 2}}}}_{X}(w_1, \epsilon) &=& \epsilon \\
+{{\mathrm{setproduct{\kern-0.1em\scriptstyle 2}}}}_{X}(w_1, ({{w'}^\ast})~{({w^\ast})^\ast}) &=& (w_1~{{w'}^\ast}) \oplus {{\mathrm{setproduct{\kern-0.1em\scriptstyle 2}}}}_{X}(w_1, {({w^\ast})^\ast}) \\
 \end{array}
 $$
 
@@ -2356,27 +2372,6 @@ $$
 \mbox{(export)} & {\mathit{export}} &::=& \mathsf{export}~{\mathit{name}}~{\mathit{externidx}} \\
 \mbox{(import)} & {\mathit{import}} &::=& \mathsf{import}~{\mathit{name}}~{\mathit{name}}~{\mathit{externtype}} \\
 \mbox{(module)} & {\mathit{module}} &::=& \mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^\ast}~{{\mathit{export}}^\ast} \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-\vspace{1ex}
-
-$$
-\begin{array}{@{}lcl@{}l@{}}
-\epsilon \setminus {y^\ast} &=& \epsilon \\
-x_1~{x^\ast} \setminus {y^\ast} &=& {\mathrm{setminus{\kern-0.1em\scriptstyle 1}}}(x_1, {y^\ast})~{x^\ast} \setminus {y^\ast} \\
-\end{array}
-$$
-
-$$
-\begin{array}{@{}lcl@{}l@{}}
-{\mathrm{setminus{\kern-0.1em\scriptstyle 1}}}(x, \epsilon) &=& x \\
-{\mathrm{setminus{\kern-0.1em\scriptstyle 1}}}(x, y_1~{y^\ast}) &=& \epsilon
-  &\qquad \mbox{if}~x = y_1 \\
-{\mathrm{setminus{\kern-0.1em\scriptstyle 1}}}(x, y_1~{y^\ast}) &=& {\mathrm{setminus{\kern-0.1em\scriptstyle 1}}}(x, {y^\ast})
-  &\qquad \mbox{otherwise} \\
 \end{array}
 $$
 
@@ -3595,7 +3590,7 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {{{{\mathrm{lanes}}}_{{\mathit{sh}}}^{{-1}}}}{({{c^\ast}^\ast})} &=& {{{{{\mathrm{lanes}}}_{{\mathit{sh}}}^{{-1}}}}{({{c'}^\ast})}^\ast}
-  &\qquad \mbox{if}~{{{c'}^\ast}^\ast} = {{\mathrm{listproduct}}}_{{{\mathit{lane}}}_{{\mathrm{lanetype}}({\mathit{sh}})}}({{c^\ast}^\ast}) \\
+  &\qquad \mbox{if}~{{{c'}^\ast}^\ast} = {{\mathrm{setproduct}}}_{{{\mathit{lane}}}_{{\mathrm{lanetype}}({\mathit{sh}})}}({{c^\ast}^\ast}) \\
 \end{array}
 $$
 

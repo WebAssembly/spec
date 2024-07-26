@@ -399,7 +399,7 @@ rule Instrtype_sub:
   C |- t_11* ->_(x_1*) t_12* <: t_21* ->_(x_2*) t_22*
   -- Resulttype_sub: C |- t_21* <: t_11*
   -- Resulttype_sub: C |- t_12* <: t_22*
-  -- if x* = $setminus(x_2*, x_1*)
+  -- if x* = $setminus_(localidx, x_2*, x_1*)
   -- (if C.LOCALS[x] = SET t)*
 
 

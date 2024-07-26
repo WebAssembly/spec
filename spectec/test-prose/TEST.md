@@ -4520,7 +4520,7 @@ validation_of_matching_instrtype
     - |C.LOCALS| is greater than x.
   - the value type sequence t_21* matches the value type sequence t_11*.
   - the value type sequence t_12* matches the value type sequence t_22*.
-  - x* is $setminus(x_2*, x_1*).
+  - x* is $setminus_(x_2*, x_1*).
   - For all t in t* and x in x*,
     - C.LOCALS[x] is (SET, t).
 
@@ -5391,24 +5391,38 @@ disjoint_ X_u0*
 2. Let [w] ++ w'* be X_u0*.
 3. Return (not w <- w'* and $disjoint_(w'*)).
 
-lpaux2_ w X_u0*
+setminus1_ w X_u0*
+1. If (X_u0* is []), then:
+  a. Return [w].
+2. Let [w_1] ++ w'* be X_u0*.
+3. If (w is w_1), then:
+  a. Return [].
+4. Let [w_1] ++ w'* be X_u0*.
+5. Return $setminus1_(w, w'*).
+
+setminus_ X_u0* w*
 1. If (X_u0* is []), then:
   a. Return [].
-2. Let [w'*] ++ w''** be X_u0*.
-3. Let ww* be [w] ++ w'*.
-4. Return [ww*] ++ $lpaux2_(w, w''**).
+2. Let [w_1] ++ w'* be X_u0*.
+3. Return $setminus1_(w_1, w*) ++ $setminus_(w'*, w*).
 
-lpaux_ X_u0* w''**
+setproduct2_ w_1 X_u0*
 1. If (X_u0* is []), then:
   a. Return [].
-2. Let [w] ++ w'* be X_u0*.
-3. Return $lpaux2_(w, w''**) ++ $lpaux_(w'*, w''**).
+2. Let [w'*] ++ w** be X_u0*.
+3. Return [[w_1] ++ w'*] ++ $setproduct2_(w_1, w**).
 
-listproduct_ X_u0*
+setproduct1_ X_u0* w**
+1. If (X_u0* is []), then:
+  a. Return [].
+2. Let [w_1] ++ w'* be X_u0*.
+3. Return $setproduct2_(w_1, w**) ++ $setproduct1_(w'*, w**).
+
+setproduct_ X_u0*
 1. If (X_u0* is []), then:
   a. Return [[]].
-2. Let [w*] ++ w'** be X_u0*.
-3. Return $lpaux_(w*, $listproduct_(w'**)).
+2. Let [w_1*] ++ w** be X_u0*.
+3. Return $setproduct1_(w_1*, $setproduct_(w**)).
 
 signif N_u0
 1. If (N_u0 is 32), then:
@@ -5566,21 +5580,6 @@ dim (Lnn X N)
 
 shsize (Lnn X N)
 1. Return ($lsize(Lnn) · N).
-
-setminus1 x idx_u0*
-1. If (idx_u0* is []), then:
-  a. Return [x].
-2. Let [y_1] ++ y* be idx_u0*.
-3. If (x is y_1), then:
-  a. Return [].
-4. Let [y_1] ++ y* be idx_u0*.
-5. Return $setminus1(x, y*).
-
-setminus idx_u0* y*
-1. If (idx_u0* is []), then:
-  a. Return [].
-2. Let [x_1] ++ x* be idx_u0*.
-3. Return $setminus1(x_1, y*) ++ $setminus(x*, y*).
 
 IN N_u0
 1. If (N_u0 is 32), then:
@@ -6764,7 +6763,7 @@ invlanes_ sh c*
 2. Return vc.
 
 mapinvlanes_ sh c**
-1. Let c'** be $listproduct_(c**).
+1. Let c'** be $setproduct_(c**).
 2. Return $invlanes_(sh, c'*)*.
 
 half (lanet_u1 X M_1) (lanet_u2 X M_2) half__u0 i j

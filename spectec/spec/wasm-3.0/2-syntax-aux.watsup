@@ -1,27 +1,10 @@
 ;;
-;; Auxiliary definitions on Indices
-;;
-
-;; Sequence difference
-
-def $setminus(idx*, idx*) : idx*  hint(show %\%)
-def $setminus1(idx, idx*) : idx*
-
-def $setminus(eps, y*) = eps
-def $setminus(x_1 x*, y*) = $setminus1(x_1, y*) $setminus(x*, y*)
-
-def $setminus1(x, eps) = x
-def $setminus1(x, y_1 y*) = eps                -- if x = y_1
-def $setminus1(x, y_1 y*) = $setminus1(x, y*)  -- otherwise
-
-
-;;
 ;; Auxiliary definitions on Types
 ;;
 
 ;; Size
 
-;; def |I n| = |F n| = |V n| = n        ;; ????
+;; def |I n| = |F n| = |V n| = n        ;; TODO(2, rossberg): show this?
 
 ;;def $size(numtype) : nat       hint(show |%|)
 ;;def $vsize(vegtype) : nat      hint(show |%|)

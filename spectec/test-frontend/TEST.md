@@ -66,7 +66,7 @@ rec {
 def $concat_(syntax X, X**) : X*
   ;; 0-aux.watsup:41.1-41.34
   def $concat_{syntax X}(syntax X, []) = []
-  ;; 0-aux.watsup:42.1-42.61
+  ;; 0-aux.watsup:42.1-42.64
   def $concat_{syntax X, w* : X*, w'** : X**}(syntax X, [w*{w : X}] :: w'*{w' : X}*{w' : X}) = w*{w : X} :: $concat_(syntax X, w'*{w' : X}*{w' : X})
 }
 
@@ -84,35 +84,60 @@ def $disjoint_(syntax X, X*) : bool
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:51.1-51.41
-def $lpaux2_(syntax X, X : X, X**) : X**
-  ;; 0-aux.watsup:59.1-59.47
-  def $lpaux2_{syntax X, w : X}(syntax X, w, []) = []
-  ;; 0-aux.watsup:60.1-61.20
-  def $lpaux2_{syntax X, w : X, w'* : X*, w''** : X**, ww* : X*}(syntax X, w, [w'*{w' : X}] :: w''*{w'' : X}*{w'' : X}) = [ww*{ww : X}] :: $lpaux2_(syntax X, w, w''*{w'' : X}*{w'' : X})
-    -- if (ww*{ww : X} = [w] :: w'*{w' : X})
+;; 0-aux.watsup:49.1-49.38
+def $setminus1_(syntax X, X : X, X*) : X*
+  ;; 0-aux.watsup:53.1-53.38
+  def $setminus1_{syntax X, w : X}(syntax X, w, []) = [w]
+  ;; 0-aux.watsup:54.1-54.78
+  def $setminus1_{syntax X, w : X, w_1 : X, w'* : X*}(syntax X, w, [w_1] :: w'*{w' : X}) = []
+    -- if (w = w_1)
+  ;; 0-aux.watsup:55.1-55.77
+  def $setminus1_{syntax X, w : X, w_1 : X, w'* : X*}(syntax X, w, [w_1] :: w'*{w' : X}) = $setminus1_(syntax X, w, w'*{w' : X})
+    -- otherwise
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:50.1-50.41
-def $lpaux_(syntax X, X*, X**) : X**
-  ;; 0-aux.watsup:56.1-56.44
-  def $lpaux_{syntax X, w''** : X**}(syntax X, [], w''*{w'' : X}*{w'' : X}) = []
-  ;; 0-aux.watsup:57.1-57.89
-  def $lpaux_{syntax X, w : X, w'* : X*, w''** : X**}(syntax X, [w] :: w'*{w' : X}, w''*{w'' : X}*{w'' : X}) = $lpaux2_(syntax X, w, w''*{w'' : X}*{w'' : X}) :: $lpaux_(syntax X, w'*{w' : X}, w''*{w'' : X}*{w'' : X})
+;; 0-aux.watsup:48.1-48.56
+def $setminus_(syntax X, X*, X*) : X*
+  ;; 0-aux.watsup:51.1-51.40
+  def $setminus_{syntax X, w* : X*}(syntax X, [], w*{w : X}) = []
+  ;; 0-aux.watsup:52.1-52.90
+  def $setminus_{syntax X, w_1 : X, w'* : X*, w* : X*}(syntax X, [w_1] :: w'*{w' : X}, w*{w : X}) = $setminus1_(syntax X, w_1, w*{w : X}) :: $setminus_(syntax X, w'*{w' : X}, w*{w : X})
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:49.1-49.43
-def $listproduct_(syntax X, X**) : X**
-  ;; 0-aux.watsup:53.1-53.49
-  def $listproduct_{syntax X}(syntax X, []) = [[]]
-  ;; 0-aux.watsup:54.1-54.82
-  def $listproduct_{syntax X, w* : X*, w'** : X**}(syntax X, [w*{w : X}] :: w'*{w' : X}*{w' : X}) = $lpaux_(syntax X, w*{w : X}, $listproduct_(syntax X, w'*{w' : X}*{w' : X}))
+;; 0-aux.watsup:61.1-61.46
+def $setproduct2_(syntax X, X : X, X**) : X**
+  ;; 0-aux.watsup:67.1-67.44
+  def $setproduct2_{syntax X, w_1 : X}(syntax X, w_1, []) = []
+  ;; 0-aux.watsup:68.1-68.90
+  def $setproduct2_{syntax X, w_1 : X, w'* : X*, w** : X**}(syntax X, w_1, [w'*{w' : X}] :: w*{w : X}*{w : X}) = [[w_1] :: w'*{w' : X}] :: $setproduct2_(syntax X, w_1, w*{w : X}*{w : X})
+}
+
+;; 0-aux.watsup
+rec {
+
+;; 0-aux.watsup:60.1-60.47
+def $setproduct1_(syntax X, X*, X**) : X**
+  ;; 0-aux.watsup:65.1-65.46
+  def $setproduct1_{syntax X, w** : X**}(syntax X, [], w*{w : X}*{w : X}) = []
+  ;; 0-aux.watsup:66.1-66.107
+  def $setproduct1_{syntax X, w_1 : X, w'* : X*, w** : X**}(syntax X, [w_1] :: w'*{w' : X}, w*{w : X}*{w : X}) = $setproduct2_(syntax X, w_1, w*{w : X}*{w : X}) :: $setproduct1_(syntax X, w'*{w' : X}, w*{w : X}*{w : X})
+}
+
+;; 0-aux.watsup
+rec {
+
+;; 0-aux.watsup:59.1-59.42
+def $setproduct_(syntax X, X**) : X**
+  ;; 0-aux.watsup:63.1-63.40
+  def $setproduct_{syntax X}(syntax X, []) = [[]]
+  ;; 0-aux.watsup:64.1-64.90
+  def $setproduct_{syntax X, w_1* : X*, w** : X**}(syntax X, [w_1*{w_1 : X}] :: w*{w : X}*{w : X}) = $setproduct1_(syntax X, w_1*{w_1 : X}, $setproduct_(syntax X, w*{w : X}*{w : X}))
 }
 
 ;; 1-syntax.watsup
@@ -1352,32 +1377,6 @@ syntax module =
   | MODULE{type* : type*, import* : import*, func* : func*, global* : global*, table* : table*, mem* : mem*, elem* : elem*, data* : data*, start* : start*, export* : export*}(type*{type : type} : type*, import*{import : import} : import*, func*{func : func} : func*, global*{global : global} : global*, table*{table : table} : table*, mem*{mem : mem} : mem*, elem*{elem : elem} : elem*, data*{data : data} : data*, start*{start : start} : start*, export*{export : export} : export*)
 
 ;; 2-syntax-aux.watsup
-rec {
-
-;; 2-syntax-aux.watsup:8.1-8.33
-def $setminus1(idx : idx, idx*) : idx*
-  ;; 2-syntax-aux.watsup:13.1-13.27
-  def $setminus1{x : idx}(x, []) = [x]
-  ;; 2-syntax-aux.watsup:14.1-14.61
-  def $setminus1{x : idx, y_1 : idx, y* : idx*}(x, [y_1] :: y*{y : idx}) = []
-    -- if (x = y_1)
-  ;; 2-syntax-aux.watsup:15.1-15.60
-  def $setminus1{x : idx, y_1 : idx, y* : idx*}(x, [y_1] :: y*{y : idx}) = $setminus1(x, y*{y : idx})
-    -- otherwise
-}
-
-;; 2-syntax-aux.watsup
-rec {
-
-;; 2-syntax-aux.watsup:7.1-7.49
-def $setminus(idx*, idx*) : idx*
-  ;; 2-syntax-aux.watsup:10.1-10.29
-  def $setminus{y* : idx*}([], y*{y : idx}) = []
-  ;; 2-syntax-aux.watsup:11.1-11.66
-  def $setminus{x_1 : idx, x* : idx*, y* : idx*}([x_1] :: x*{x : idx}, y*{y : idx}) = $setminus1(x_1, y*{y : idx}) :: $setminus(x*{x : idx}, y*{y : idx})
-}
-
-;; 2-syntax-aux.watsup
 def $IN(N : N) : Inn
   ;; 2-syntax-aux.watsup
   def $IN(32) = I32_Inn
@@ -1497,11 +1496,11 @@ def $free_opt(free?) : free
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:172.1-172.29
+;; 2-syntax-aux.watsup:155.1-155.29
 def $free_list(free*) : free
-  ;; 2-syntax-aux.watsup:173.1-173.25
+  ;; 2-syntax-aux.watsup:156.1-156.25
   def $free_list([]) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:174.1-174.57
+  ;; 2-syntax-aux.watsup:157.1-157.57
   def $free_list{free : free, free'* : free*}([free] :: free'*{free' : free}) = free ++ $free_list(free'*{free' : free})
 }
 
@@ -1598,92 +1597,92 @@ def $free_absheaptype(absheaptype : absheaptype) : free
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:231.1-231.34
+;; 2-syntax-aux.watsup:214.1-214.34
 def $free_rectype(rectype : rectype) : free
-  ;; 2-syntax-aux.watsup:284.1-284.70
+  ;; 2-syntax-aux.watsup:267.1-267.70
   def $free_rectype{subtype* : subtype*}(REC_rectype(`%`_list(subtype*{subtype : subtype}))) = $free_list($free_subtype(subtype)*{subtype : subtype})
 
-;; 2-syntax-aux.watsup:233.1-233.34
+;; 2-syntax-aux.watsup:216.1-216.34
 def $free_deftype(deftype : deftype) : free
-  ;; 2-syntax-aux.watsup:234.1-234.58
+  ;; 2-syntax-aux.watsup:217.1-217.58
   def $free_deftype{rectype : rectype, n : n}(DEF_deftype(rectype, n)) = $free_rectype(rectype)
 
-;; 2-syntax-aux.watsup:236.1-236.34
+;; 2-syntax-aux.watsup:219.1-219.34
 def $free_typeuse(typeuse : typeuse) : free
-  ;; 2-syntax-aux.watsup:237.1-237.57
+  ;; 2-syntax-aux.watsup:220.1-220.57
   def $free_typeuse{typeidx : typeidx}(_IDX_typeuse(typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:238.1-238.30
+  ;; 2-syntax-aux.watsup:221.1-221.30
   def $free_typeuse{n : n}(REC_typeuse(n)) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:239.1-239.52
+  ;; 2-syntax-aux.watsup:222.1-222.52
   def $free_typeuse{deftype : deftype}((deftype : deftype <: typeuse)) = $free_deftype(deftype)
 
-;; 2-syntax-aux.watsup:241.1-241.36
+;; 2-syntax-aux.watsup:224.1-224.36
 def $free_heaptype(heaptype : heaptype) : free
-  ;; 2-syntax-aux.watsup:242.1-242.65
+  ;; 2-syntax-aux.watsup:225.1-225.65
   def $free_heaptype{absheaptype : absheaptype}((absheaptype : absheaptype <: heaptype)) = $free_absheaptype(absheaptype)
-  ;; 2-syntax-aux.watsup:243.1-243.53
+  ;; 2-syntax-aux.watsup:226.1-226.53
   def $free_heaptype{typeuse : typeuse}((typeuse : typeuse <: heaptype)) = $free_typeuse(typeuse)
 
-;; 2-syntax-aux.watsup:245.1-245.34
+;; 2-syntax-aux.watsup:228.1-228.34
 def $free_reftype(reftype : reftype) : free
-  ;; 2-syntax-aux.watsup:246.1-246.63
+  ;; 2-syntax-aux.watsup:229.1-229.63
   def $free_reftype{nul : nul, heaptype : heaptype}(REF_reftype(nul, heaptype)) = $free_heaptype(heaptype)
 
-;; 2-syntax-aux.watsup:248.1-248.34
+;; 2-syntax-aux.watsup:231.1-231.34
 def $free_valtype(valtype : valtype) : free
-  ;; 2-syntax-aux.watsup:249.1-249.52
+  ;; 2-syntax-aux.watsup:232.1-232.52
   def $free_valtype{numtype : numtype}((numtype : numtype <: valtype)) = $free_numtype(numtype)
-  ;; 2-syntax-aux.watsup:250.1-250.52
+  ;; 2-syntax-aux.watsup:233.1-233.52
   def $free_valtype{vectype : vectype}((vectype : vectype <: valtype)) = $free_vectype(vectype)
-  ;; 2-syntax-aux.watsup:251.1-251.52
+  ;; 2-syntax-aux.watsup:234.1-234.52
   def $free_valtype{reftype : reftype}((reftype : reftype <: valtype)) = $free_reftype(reftype)
-  ;; 2-syntax-aux.watsup:252.1-252.28
+  ;; 2-syntax-aux.watsup:235.1-235.28
   def $free_valtype(BOT_valtype) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
 
-;; 2-syntax-aux.watsup:254.1-254.40
+;; 2-syntax-aux.watsup:237.1-237.40
 def $free_resulttype(resulttype : resulttype) : free
-  ;; 2-syntax-aux.watsup:255.1-255.69
+  ;; 2-syntax-aux.watsup:238.1-238.69
   def $free_resulttype{valtype* : valtype*}(`%`_resulttype(valtype*{valtype : valtype})) = $free_list($free_valtype(valtype)*{valtype : valtype})
 
-;; 2-syntax-aux.watsup:257.1-257.42
+;; 2-syntax-aux.watsup:240.1-240.42
 def $free_storagetype(storagetype : storagetype) : free
-  ;; 2-syntax-aux.watsup:258.1-258.56
+  ;; 2-syntax-aux.watsup:241.1-241.56
   def $free_storagetype{valtype : valtype}((valtype : valtype <: storagetype)) = $free_valtype(valtype)
-  ;; 2-syntax-aux.watsup:259.1-259.59
+  ;; 2-syntax-aux.watsup:242.1-242.59
   def $free_storagetype{packtype : packtype}((packtype : packtype <: storagetype)) = $free_packtype(packtype)
 
-;; 2-syntax-aux.watsup:261.1-261.38
+;; 2-syntax-aux.watsup:244.1-244.38
 def $free_fieldtype(fieldtype : fieldtype) : free
-  ;; 2-syntax-aux.watsup:262.1-262.70
+  ;; 2-syntax-aux.watsup:245.1-245.70
   def $free_fieldtype{mut : mut, storagetype : storagetype}(`%%`_fieldtype(mut, storagetype)) = $free_storagetype(storagetype)
 
-;; 2-syntax-aux.watsup:264.1-264.36
+;; 2-syntax-aux.watsup:247.1-247.36
 def $free_functype(functype : functype) : free
-  ;; 2-syntax-aux.watsup:265.1-266.67
+  ;; 2-syntax-aux.watsup:248.1-249.67
   def $free_functype{resulttype_1 : resulttype, resulttype_2 : resulttype}(`%->%`_functype(resulttype_1, resulttype_2)) = $free_resulttype(resulttype_1) ++ $free_resulttype(resulttype_2)
 
-;; 2-syntax-aux.watsup:268.1-268.40
+;; 2-syntax-aux.watsup:251.1-251.40
 def $free_structtype(structtype : structtype) : free
-  ;; 2-syntax-aux.watsup:269.1-269.75
+  ;; 2-syntax-aux.watsup:252.1-252.75
   def $free_structtype{fieldtype* : fieldtype*}(`%`_structtype(fieldtype*{fieldtype : fieldtype})) = $free_list($free_fieldtype(fieldtype)*{fieldtype : fieldtype})
 
-;; 2-syntax-aux.watsup:271.1-271.38
+;; 2-syntax-aux.watsup:254.1-254.38
 def $free_arraytype(arraytype : arraytype) : free
-  ;; 2-syntax-aux.watsup:272.1-272.60
+  ;; 2-syntax-aux.watsup:255.1-255.60
   def $free_arraytype{fieldtype : fieldtype}(fieldtype) = $free_fieldtype(fieldtype)
 
-;; 2-syntax-aux.watsup:274.1-274.36
+;; 2-syntax-aux.watsup:257.1-257.36
 def $free_comptype(comptype : comptype) : free
-  ;; 2-syntax-aux.watsup:275.1-275.69
+  ;; 2-syntax-aux.watsup:258.1-258.69
   def $free_comptype{structtype : structtype}(STRUCT_comptype(structtype)) = $free_structtype(structtype)
-  ;; 2-syntax-aux.watsup:276.1-276.65
+  ;; 2-syntax-aux.watsup:259.1-259.65
   def $free_comptype{arraytype : arraytype}(ARRAY_comptype(arraytype)) = $free_arraytype(arraytype)
-  ;; 2-syntax-aux.watsup:277.1-277.61
+  ;; 2-syntax-aux.watsup:260.1-260.61
   def $free_comptype{functype : functype}(FUNC_comptype(functype)) = $free_functype(functype)
 
-;; 2-syntax-aux.watsup:279.1-279.34
+;; 2-syntax-aux.watsup:262.1-262.34
 def $free_subtype(subtype : subtype) : free
-  ;; 2-syntax-aux.watsup:280.1-281.66
+  ;; 2-syntax-aux.watsup:263.1-264.66
   def $free_subtype{fin : fin, typeuse* : typeuse*, comptype : comptype}(SUB_subtype(fin, typeuse*{typeuse : typeuse}, comptype)) = $free_list($free_typeuse(typeuse)*{typeuse : typeuse}) ++ $free_comptype(comptype)
 }
 
@@ -1743,224 +1742,224 @@ def $free_shape(shape : shape) : free
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:463.1-463.44
+;; 2-syntax-aux.watsup:446.1-446.44
 def $shift_labelidxs(labelidx*) : labelidx*
-  ;; 2-syntax-aux.watsup:464.1-464.32
+  ;; 2-syntax-aux.watsup:447.1-447.32
   def $shift_labelidxs([]) = []
-  ;; 2-syntax-aux.watsup:465.1-465.66
+  ;; 2-syntax-aux.watsup:448.1-448.66
   def $shift_labelidxs{labelidx'* : labelidx*}([`%`_uN(0)] :: labelidx'*{labelidx' : labelidx}) = $shift_labelidxs(labelidx'*{labelidx' : labelidx})
-  ;; 2-syntax-aux.watsup:466.1-466.91
+  ;; 2-syntax-aux.watsup:449.1-449.91
   def $shift_labelidxs{labelidx : labelidx, labelidx'* : labelidx*}([labelidx] :: labelidx'*{labelidx' : labelidx}) = [`%`_uN((labelidx!`%`_labelidx.0 - 1))] :: $shift_labelidxs(labelidx'*{labelidx' : labelidx})
 }
 
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:319.1-319.31
+;; 2-syntax-aux.watsup:302.1-302.31
 def $free_block(instr*) : free
-  ;; 2-syntax-aux.watsup:469.1-470.47
+  ;; 2-syntax-aux.watsup:452.1-453.47
   def $free_block{instr* : instr*, free : free}(instr*{instr : instr}) = free[LABELS_free = $shift_labelidxs(free.LABELS_free)]
     -- if (free = $free_list($free_instr(instr)*{instr : instr}))
 
-;; 2-syntax-aux.watsup:321.1-321.30
+;; 2-syntax-aux.watsup:304.1-304.30
 def $free_instr(instr : instr) : free
-  ;; 2-syntax-aux.watsup:322.1-322.26
+  ;; 2-syntax-aux.watsup:305.1-305.26
   def $free_instr(NOP_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:323.1-323.34
+  ;; 2-syntax-aux.watsup:306.1-306.34
   def $free_instr(UNREACHABLE_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:324.1-324.27
+  ;; 2-syntax-aux.watsup:307.1-307.27
   def $free_instr(DROP_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:325.1-325.86
+  ;; 2-syntax-aux.watsup:308.1-308.86
   def $free_instr{valtype*? : valtype*?}(`SELECT()%?`_instr(valtype*{valtype : valtype}?{valtype : valtype})) = $free_opt($free_list($free_valtype(valtype)*{valtype : valtype})?{valtype : valtype})
-  ;; 2-syntax-aux.watsup:327.1-327.92
+  ;; 2-syntax-aux.watsup:310.1-310.92
   def $free_instr{blocktype : blocktype, instr* : instr*}(BLOCK_instr(blocktype, instr*{instr : instr})) = $free_blocktype(blocktype) ++ $free_block(instr*{instr : instr})
-  ;; 2-syntax-aux.watsup:328.1-328.91
+  ;; 2-syntax-aux.watsup:311.1-311.91
   def $free_instr{blocktype : blocktype, instr* : instr*}(LOOP_instr(blocktype, instr*{instr : instr})) = $free_blocktype(blocktype) ++ $free_block(instr*{instr : instr})
-  ;; 2-syntax-aux.watsup:329.1-330.79
+  ;; 2-syntax-aux.watsup:312.1-313.79
   def $free_instr{blocktype : blocktype, instr_1* : instr*, instr_2* : instr*}(`IF%%ELSE%`_instr(blocktype, instr_1*{instr_1 : instr}, instr_2*{instr_2 : instr})) = $free_blocktype(blocktype) ++ $free_block(instr_1*{instr_1 : instr}) ++ $free_block(instr_2*{instr_2 : instr})
-  ;; 2-syntax-aux.watsup:332.1-332.56
+  ;; 2-syntax-aux.watsup:315.1-315.56
   def $free_instr{labelidx : labelidx}(BR_instr(labelidx)) = $free_labelidx(labelidx)
-  ;; 2-syntax-aux.watsup:333.1-333.59
+  ;; 2-syntax-aux.watsup:316.1-316.59
   def $free_instr{labelidx : labelidx}(BR_IF_instr(labelidx)) = $free_labelidx(labelidx)
-  ;; 2-syntax-aux.watsup:334.1-335.68
+  ;; 2-syntax-aux.watsup:317.1-318.68
   def $free_instr{labelidx : labelidx, labelidx' : labelidx}(BR_TABLE_instr(labelidx*{}, labelidx')) = $free_list($free_labelidx(labelidx)*{}) ++ $free_labelidx(labelidx)
-  ;; 2-syntax-aux.watsup:336.1-336.64
+  ;; 2-syntax-aux.watsup:319.1-319.64
   def $free_instr{labelidx : labelidx}(BR_ON_NULL_instr(labelidx)) = $free_labelidx(labelidx)
-  ;; 2-syntax-aux.watsup:337.1-337.68
+  ;; 2-syntax-aux.watsup:320.1-320.68
   def $free_instr{labelidx : labelidx}(BR_ON_NON_NULL_instr(labelidx)) = $free_labelidx(labelidx)
-  ;; 2-syntax-aux.watsup:338.1-339.83
+  ;; 2-syntax-aux.watsup:321.1-322.83
   def $free_instr{labelidx : labelidx, reftype_1 : reftype, reftype_2 : reftype}(BR_ON_CAST_instr(labelidx, reftype_1, reftype_2)) = $free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2)
-  ;; 2-syntax-aux.watsup:340.1-341.83
+  ;; 2-syntax-aux.watsup:323.1-324.83
   def $free_instr{labelidx : labelidx, reftype_1 : reftype, reftype_2 : reftype}(BR_ON_CAST_FAIL_instr(labelidx, reftype_1, reftype_2)) = $free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2)
-  ;; 2-syntax-aux.watsup:343.1-343.55
+  ;; 2-syntax-aux.watsup:326.1-326.55
   def $free_instr{funcidx : funcidx}(CALL_instr(funcidx)) = $free_funcidx(funcidx)
-  ;; 2-syntax-aux.watsup:344.1-344.59
+  ;; 2-syntax-aux.watsup:327.1-327.59
   def $free_instr{typeuse : typeuse}(CALL_REF_instr(typeuse)) = $free_typeuse(typeuse)
-  ;; 2-syntax-aux.watsup:345.1-346.53
+  ;; 2-syntax-aux.watsup:328.1-329.53
   def $free_instr{tableidx : tableidx, typeuse : typeuse}(CALL_INDIRECT_instr(tableidx, typeuse)) = $free_tableidx(tableidx) ++ $free_typeuse(typeuse)
-  ;; 2-syntax-aux.watsup:347.1-347.29
+  ;; 2-syntax-aux.watsup:330.1-330.29
   def $free_instr(RETURN_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:348.1-348.62
+  ;; 2-syntax-aux.watsup:331.1-331.62
   def $free_instr{funcidx : funcidx}(RETURN_CALL_instr(funcidx)) = $free_funcidx(funcidx)
-  ;; 2-syntax-aux.watsup:349.1-349.66
+  ;; 2-syntax-aux.watsup:332.1-332.66
   def $free_instr{typeuse : typeuse}(RETURN_CALL_REF_instr(typeuse)) = $free_typeuse(typeuse)
-  ;; 2-syntax-aux.watsup:350.1-351.53
+  ;; 2-syntax-aux.watsup:333.1-334.53
   def $free_instr{tableidx : tableidx, typeuse : typeuse}(RETURN_CALL_INDIRECT_instr(tableidx, typeuse)) = $free_tableidx(tableidx) ++ $free_typeuse(typeuse)
-  ;; 2-syntax-aux.watsup:353.1-353.63
+  ;; 2-syntax-aux.watsup:336.1-336.63
   def $free_instr{numtype : numtype, numlit : num_(numtype)}(CONST_instr(numtype, numlit)) = $free_numtype(numtype)
-  ;; 2-syntax-aux.watsup:354.1-354.60
+  ;; 2-syntax-aux.watsup:337.1-337.60
   def $free_instr{numtype : numtype, unop : unop_(numtype)}(UNOP_instr(numtype, unop)) = $free_numtype(numtype)
-  ;; 2-syntax-aux.watsup:355.1-355.62
+  ;; 2-syntax-aux.watsup:338.1-338.62
   def $free_instr{numtype : numtype, binop : binop_(numtype)}(BINOP_instr(numtype, binop)) = $free_numtype(numtype)
-  ;; 2-syntax-aux.watsup:356.1-356.64
+  ;; 2-syntax-aux.watsup:339.1-339.64
   def $free_instr{numtype : numtype, testop : testop_(numtype)}(TESTOP_instr(numtype, testop)) = $free_numtype(numtype)
-  ;; 2-syntax-aux.watsup:357.1-357.62
+  ;; 2-syntax-aux.watsup:340.1-340.62
   def $free_instr{numtype : numtype, relop : relop_(numtype)}(RELOP_instr(numtype, relop)) = $free_numtype(numtype)
-  ;; 2-syntax-aux.watsup:358.1-359.55
+  ;; 2-syntax-aux.watsup:341.1-342.55
   def $free_instr{numtype_1 : numtype, numtype_2 : numtype, cvtop : cvtop_(numtype_2, numtype_1)}(CVTOP_instr(numtype_1, numtype_2, cvtop)) = $free_numtype(numtype_1) ++ $free_numtype(numtype_2)
-  ;; 2-syntax-aux.watsup:361.1-361.64
+  ;; 2-syntax-aux.watsup:344.1-344.64
   def $free_instr{vectype : vectype, veclit : vec_(vectype)}(VCONST_instr(vectype, veclit)) = $free_vectype(vectype)
-  ;; 2-syntax-aux.watsup:362.1-362.64
+  ;; 2-syntax-aux.watsup:345.1-345.64
   def $free_instr{vectype : vectype, vvunop : vvunop}(VVUNOP_instr(vectype, vvunop)) = $free_vectype(vectype)
-  ;; 2-syntax-aux.watsup:363.1-363.66
+  ;; 2-syntax-aux.watsup:346.1-346.66
   def $free_instr{vectype : vectype, vvbinop : vvbinop}(VVBINOP_instr(vectype, vvbinop)) = $free_vectype(vectype)
-  ;; 2-syntax-aux.watsup:364.1-364.68
+  ;; 2-syntax-aux.watsup:347.1-347.68
   def $free_instr{vectype : vectype, vvternop : vvternop}(VVTERNOP_instr(vectype, vvternop)) = $free_vectype(vectype)
-  ;; 2-syntax-aux.watsup:365.1-365.68
+  ;; 2-syntax-aux.watsup:348.1-348.68
   def $free_instr{vectype : vectype, vvtestop : vvtestop}(VVTESTOP_instr(vectype, vvtestop)) = $free_vectype(vectype)
-  ;; 2-syntax-aux.watsup:366.1-366.56
+  ;; 2-syntax-aux.watsup:349.1-349.56
   def $free_instr{shape : shape, vunop : vunop_(shape)}(VUNOP_instr(shape, vunop)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:367.1-367.58
+  ;; 2-syntax-aux.watsup:350.1-350.58
   def $free_instr{shape : shape, vbinop : vbinop_(shape)}(VBINOP_instr(shape, vbinop)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:368.1-368.60
+  ;; 2-syntax-aux.watsup:351.1-351.60
   def $free_instr{shape : shape, vtestop : vtestop_(shape)}(VTESTOP_instr(shape, vtestop)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:369.1-369.58
+  ;; 2-syntax-aux.watsup:352.1-352.58
   def $free_instr{shape : shape, vrelop : vrelop_(shape)}(VRELOP_instr(shape, vrelop)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:370.1-370.64
+  ;; 2-syntax-aux.watsup:353.1-353.64
   def $free_instr{ishape : ishape, vshiftop : vshiftop_(ishape)}(VSHIFTOP_instr(ishape, vshiftop)) = $free_shape((ishape : ishape <: shape))
-  ;; 2-syntax-aux.watsup:371.1-371.55
+  ;; 2-syntax-aux.watsup:354.1-354.55
   def $free_instr{ishape : ishape}(VBITMASK_instr(ishape)) = $free_shape((ishape : ishape <: shape))
-  ;; 2-syntax-aux.watsup:372.1-372.55
+  ;; 2-syntax-aux.watsup:355.1-355.55
   def $free_instr{ishape : ishape}(VSWIZZLE_instr(ishape)) = $free_shape((ishape : ishape <: shape))
-  ;; 2-syntax-aux.watsup:373.1-373.64
+  ;; 2-syntax-aux.watsup:356.1-356.64
   def $free_instr{ishape : ishape, laneidx* : laneidx*}(VSHUFFLE_instr(ishape, laneidx*{laneidx : laneidx})) = $free_shape((ishape : ishape <: shape))
-  ;; 2-syntax-aux.watsup:374.1-375.49
+  ;; 2-syntax-aux.watsup:357.1-358.49
   def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextunop : vextunop_(ishape_2, ishape_1)}(VEXTUNOP_instr(ishape_1, ishape_2, vextunop)) = $free_shape((ishape_1 : ishape <: shape)) ++ $free_shape((ishape_2 : ishape <: shape))
-  ;; 2-syntax-aux.watsup:376.1-377.49
+  ;; 2-syntax-aux.watsup:359.1-360.49
   def $free_instr{ishape_1 : ishape, ishape_2 : ishape, vextbinop : vextbinop_(ishape_2, ishape_1)}(VEXTBINOP_instr(ishape_1, ishape_2, vextbinop)) = $free_shape((ishape_1 : ishape <: shape)) ++ $free_shape((ishape_2 : ishape <: shape))
-  ;; 2-syntax-aux.watsup:378.1-379.49
+  ;; 2-syntax-aux.watsup:361.1-362.49
   def $free_instr{ishape_1 : ishape, ishape_2 : ishape, sx : sx}(VNARROW_instr(ishape_1, ishape_2, sx)) = $free_shape((ishape_1 : ishape <: shape)) ++ $free_shape((ishape_2 : ishape <: shape))
-  ;; 2-syntax-aux.watsup:380.1-381.47
+  ;; 2-syntax-aux.watsup:363.1-364.47
   def $free_instr{shape_1 : shape, shape_2 : shape, vcvtop : vcvtop_(shape_2, shape_1), half? : half_(shape_2, shape_1)?, sx? : sx?, zero? : zero_(shape_2, shape_1)?}(VCVTOP_instr(shape_1, shape_2, vcvtop, half?{half : half_(shape_2, shape_1)}, sx?{sx : sx}, zero?{zero : zero_(shape_2, shape_1)})) = $free_shape(shape_1) ++ $free_shape(shape_2)
-  ;; 2-syntax-aux.watsup:382.1-382.51
+  ;; 2-syntax-aux.watsup:365.1-365.51
   def $free_instr{shape : shape}(VSPLAT_instr(shape)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:383.1-383.70
+  ;; 2-syntax-aux.watsup:366.1-366.70
   def $free_instr{shape : shape, sx? : sx?, laneidx : laneidx}(VEXTRACT_LANE_instr(shape, sx?{sx : sx}, laneidx)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:384.1-384.66
+  ;; 2-syntax-aux.watsup:367.1-367.66
   def $free_instr{shape : shape, laneidx : laneidx}(VREPLACE_LANE_instr(shape, laneidx)) = $free_shape(shape)
-  ;; 2-syntax-aux.watsup:386.1-386.62
+  ;; 2-syntax-aux.watsup:369.1-369.62
   def $free_instr{heaptype : heaptype}(REF.NULL_instr(heaptype)) = $free_heaptype(heaptype)
-  ;; 2-syntax-aux.watsup:387.1-387.34
+  ;; 2-syntax-aux.watsup:370.1-370.34
   def $free_instr(REF.IS_NULL_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:388.1-388.38
+  ;; 2-syntax-aux.watsup:371.1-371.38
   def $free_instr(REF.AS_NON_NULL_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:389.1-389.29
+  ;; 2-syntax-aux.watsup:372.1-372.29
   def $free_instr(REF.EQ_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:390.1-390.59
+  ;; 2-syntax-aux.watsup:373.1-373.59
   def $free_instr{reftype : reftype}(REF.TEST_instr(reftype)) = $free_reftype(reftype)
-  ;; 2-syntax-aux.watsup:391.1-391.59
+  ;; 2-syntax-aux.watsup:374.1-374.59
   def $free_instr{reftype : reftype}(REF.CAST_instr(reftype)) = $free_reftype(reftype)
-  ;; 2-syntax-aux.watsup:392.1-392.59
+  ;; 2-syntax-aux.watsup:375.1-375.59
   def $free_instr{funcidx : funcidx}(REF.FUNC_instr(funcidx)) = $free_funcidx(funcidx)
-  ;; 2-syntax-aux.watsup:393.1-393.30
+  ;; 2-syntax-aux.watsup:376.1-376.30
   def $free_instr(REF.I31_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:395.1-395.33
+  ;; 2-syntax-aux.watsup:378.1-378.33
   def $free_instr{sx : sx}(I31.GET_instr(sx)) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:397.1-397.41
+  ;; 2-syntax-aux.watsup:380.1-380.41
   def $free_instr{typeidx : typeidx}(STRUCT.NEW_instr(typeidx)) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:398.1-398.69
+  ;; 2-syntax-aux.watsup:381.1-381.69
   def $free_instr{typeidx : typeidx}(STRUCT.NEW_DEFAULT_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:399.1-399.69
+  ;; 2-syntax-aux.watsup:382.1-382.69
   def $free_instr{sx? : sx?, typeidx : typeidx, u32 : u32}(STRUCT.GET_instr(sx?{sx : sx}, typeidx, u32)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:400.1-400.65
+  ;; 2-syntax-aux.watsup:383.1-383.65
   def $free_instr{typeidx : typeidx, u32 : u32}(STRUCT.SET_instr(typeidx, u32)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:402.1-402.60
+  ;; 2-syntax-aux.watsup:385.1-385.60
   def $free_instr{typeidx : typeidx}(ARRAY.NEW_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:403.1-403.68
+  ;; 2-syntax-aux.watsup:386.1-386.68
   def $free_instr{typeidx : typeidx}(ARRAY.NEW_DEFAULT_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:404.1-404.70
+  ;; 2-syntax-aux.watsup:387.1-387.70
   def $free_instr{typeidx : typeidx, u32 : u32}(ARRAY.NEW_FIXED_instr(typeidx, u32)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:405.1-406.51
+  ;; 2-syntax-aux.watsup:388.1-389.51
   def $free_instr{typeidx : typeidx, dataidx : dataidx}(ARRAY.NEW_DATA_instr(typeidx, dataidx)) = $free_typeidx(typeidx) ++ $free_dataidx(dataidx)
-  ;; 2-syntax-aux.watsup:407.1-408.51
+  ;; 2-syntax-aux.watsup:390.1-391.51
   def $free_instr{typeidx : typeidx, elemidx : elemidx}(ARRAY.NEW_ELEM_instr(typeidx, elemidx)) = $free_typeidx(typeidx) ++ $free_elemidx(elemidx)
-  ;; 2-syntax-aux.watsup:409.1-409.64
+  ;; 2-syntax-aux.watsup:392.1-392.64
   def $free_instr{sx? : sx?, typeidx : typeidx}(ARRAY.GET_instr(sx?{sx : sx}, typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:410.1-410.60
+  ;; 2-syntax-aux.watsup:393.1-393.60
   def $free_instr{typeidx : typeidx}(ARRAY.SET_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:411.1-411.32
+  ;; 2-syntax-aux.watsup:394.1-394.32
   def $free_instr(ARRAY.LEN_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:412.1-412.61
+  ;; 2-syntax-aux.watsup:395.1-395.61
   def $free_instr{typeidx : typeidx}(ARRAY.FILL_instr(typeidx)) = $free_typeidx(typeidx)
-  ;; 2-syntax-aux.watsup:413.1-414.55
+  ;; 2-syntax-aux.watsup:396.1-397.55
   def $free_instr{typeidx_1 : typeidx, typeidx_2 : typeidx}(ARRAY.COPY_instr(typeidx_1, typeidx_2)) = $free_typeidx(typeidx_1) ++ $free_typeidx(typeidx_2)
-  ;; 2-syntax-aux.watsup:415.1-416.51
+  ;; 2-syntax-aux.watsup:398.1-399.51
   def $free_instr{typeidx : typeidx, dataidx : dataidx}(ARRAY.INIT_DATA_instr(typeidx, dataidx)) = $free_typeidx(typeidx) ++ $free_dataidx(dataidx)
-  ;; 2-syntax-aux.watsup:417.1-418.51
+  ;; 2-syntax-aux.watsup:400.1-401.51
   def $free_instr{typeidx : typeidx, elemidx : elemidx}(ARRAY.INIT_ELEM_instr(typeidx, elemidx)) = $free_typeidx(typeidx) ++ $free_elemidx(elemidx)
-  ;; 2-syntax-aux.watsup:420.1-420.41
+  ;; 2-syntax-aux.watsup:403.1-403.41
   def $free_instr(EXTERN.CONVERT_ANY_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:421.1-421.41
+  ;; 2-syntax-aux.watsup:404.1-404.41
   def $free_instr(ANY.CONVERT_EXTERN_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS []}
-  ;; 2-syntax-aux.watsup:423.1-423.63
+  ;; 2-syntax-aux.watsup:406.1-406.63
   def $free_instr{localidx : localidx}(LOCAL.GET_instr(localidx)) = $free_localidx(localidx)
-  ;; 2-syntax-aux.watsup:424.1-424.63
+  ;; 2-syntax-aux.watsup:407.1-407.63
   def $free_instr{localidx : localidx}(LOCAL.SET_instr(localidx)) = $free_localidx(localidx)
-  ;; 2-syntax-aux.watsup:425.1-425.63
+  ;; 2-syntax-aux.watsup:408.1-408.63
   def $free_instr{localidx : localidx}(LOCAL.TEE_instr(localidx)) = $free_localidx(localidx)
-  ;; 2-syntax-aux.watsup:427.1-427.67
+  ;; 2-syntax-aux.watsup:410.1-410.67
   def $free_instr{globalidx : globalidx}(GLOBAL.GET_instr(globalidx)) = $free_globalidx(globalidx)
-  ;; 2-syntax-aux.watsup:428.1-428.67
+  ;; 2-syntax-aux.watsup:411.1-411.67
   def $free_instr{globalidx : globalidx}(GLOBAL.SET_instr(globalidx)) = $free_globalidx(globalidx)
-  ;; 2-syntax-aux.watsup:430.1-430.63
+  ;; 2-syntax-aux.watsup:413.1-413.63
   def $free_instr{tableidx : tableidx}(TABLE.GET_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; 2-syntax-aux.watsup:431.1-431.63
+  ;; 2-syntax-aux.watsup:414.1-414.63
   def $free_instr{tableidx : tableidx}(TABLE.SET_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; 2-syntax-aux.watsup:432.1-432.64
+  ;; 2-syntax-aux.watsup:415.1-415.64
   def $free_instr{tableidx : tableidx}(TABLE.SIZE_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; 2-syntax-aux.watsup:433.1-433.64
+  ;; 2-syntax-aux.watsup:416.1-416.64
   def $free_instr{tableidx : tableidx}(TABLE.GROW_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; 2-syntax-aux.watsup:434.1-434.64
+  ;; 2-syntax-aux.watsup:417.1-417.64
   def $free_instr{tableidx : tableidx}(TABLE.FILL_instr(tableidx)) = $free_tableidx(tableidx)
-  ;; 2-syntax-aux.watsup:435.1-436.59
+  ;; 2-syntax-aux.watsup:418.1-419.59
   def $free_instr{tableidx_1 : tableidx, tableidx_2 : tableidx}(TABLE.COPY_instr(tableidx_1, tableidx_2)) = $free_tableidx(tableidx_1) ++ $free_tableidx(tableidx_2)
-  ;; 2-syntax-aux.watsup:437.1-438.53
+  ;; 2-syntax-aux.watsup:420.1-421.53
   def $free_instr{tableidx : tableidx, elemidx : elemidx}(TABLE.INIT_instr(tableidx, elemidx)) = $free_tableidx(tableidx) ++ $free_elemidx(elemidx)
-  ;; 2-syntax-aux.watsup:439.1-439.60
+  ;; 2-syntax-aux.watsup:422.1-422.60
   def $free_instr{elemidx : elemidx}(ELEM.DROP_instr(elemidx)) = $free_elemidx(elemidx)
-  ;; 2-syntax-aux.watsup:441.1-442.49
+  ;; 2-syntax-aux.watsup:424.1-425.49
   def $free_instr{numtype : numtype, loadop : loadop_(numtype), memidx : memidx, memarg : memarg}(LOAD_instr(numtype, ?(loadop), memidx, memarg)) = $free_numtype(numtype) ++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:443.1-444.49
+  ;; 2-syntax-aux.watsup:426.1-427.49
   def $free_instr{numtype : numtype, sz? : sz?, memidx : memidx, memarg : memarg}(STORE_instr(numtype, sz?{sz : sz}, memidx, memarg)) = $free_numtype(numtype) ++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:445.1-446.49
+  ;; 2-syntax-aux.watsup:428.1-429.49
   def $free_instr{vectype : vectype, vloadop? : vloadop_(vectype)?, memidx : memidx, memarg : memarg}(VLOAD_instr(vectype, vloadop?{vloadop : vloadop_(vectype)}, memidx, memarg)) = $free_vectype(vectype) ++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:447.1-448.49
+  ;; 2-syntax-aux.watsup:430.1-431.49
   def $free_instr{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(VLOAD_LANE_instr(vectype, sz, memidx, memarg, laneidx)) = $free_vectype(vectype) ++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:449.1-450.49
+  ;; 2-syntax-aux.watsup:432.1-433.49
   def $free_instr{vectype : vectype, memidx : memidx, memarg : memarg}(VSTORE_instr(vectype, memidx, memarg)) = $free_vectype(vectype) ++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:451.1-452.49
+  ;; 2-syntax-aux.watsup:434.1-435.49
   def $free_instr{vectype : vectype, sz : sz, memidx : memidx, memarg : memarg, laneidx : laneidx}(VSTORE_LANE_instr(vectype, sz, memidx, memarg, laneidx)) = $free_vectype(vectype) ++ $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:453.1-453.59
+  ;; 2-syntax-aux.watsup:436.1-436.59
   def $free_instr{memidx : memidx}(MEMORY.SIZE_instr(memidx)) = $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:454.1-454.59
+  ;; 2-syntax-aux.watsup:437.1-437.59
   def $free_instr{memidx : memidx}(MEMORY.GROW_instr(memidx)) = $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:455.1-455.59
+  ;; 2-syntax-aux.watsup:438.1-438.59
   def $free_instr{memidx : memidx}(MEMORY.FILL_instr(memidx)) = $free_memidx(memidx)
-  ;; 2-syntax-aux.watsup:456.1-457.51
+  ;; 2-syntax-aux.watsup:439.1-440.51
   def $free_instr{memidx_1 : memidx, memidx_2 : memidx}(MEMORY.COPY_instr(memidx_1, memidx_2)) = $free_memidx(memidx_1) ++ $free_memidx(memidx_2)
-  ;; 2-syntax-aux.watsup:458.1-459.49
+  ;; 2-syntax-aux.watsup:441.1-442.49
   def $free_instr{memidx : memidx, dataidx : dataidx}(MEMORY.INIT_instr(memidx, dataidx)) = $free_memidx(memidx) ++ $free_dataidx(dataidx)
-  ;; 2-syntax-aux.watsup:460.1-460.60
+  ;; 2-syntax-aux.watsup:443.1-443.60
   def $free_instr{dataidx : dataidx}(DATA.DROP_instr(dataidx)) = $free_dataidx(dataidx)
 }
 
@@ -2058,14 +2057,14 @@ def $dataidx_funcs(func*) : dataidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:548.1-548.112
+;; 2-syntax-aux.watsup:531.1-531.112
 def $subst_typevar(typevar : typevar, typevar*, typeuse*) : typeuse
-  ;; 2-syntax-aux.watsup:575.1-575.38
+  ;; 2-syntax-aux.watsup:558.1-558.38
   def $subst_typevar{tv : typevar}(tv, [], []) = (tv : typevar <: typeuse)
-  ;; 2-syntax-aux.watsup:576.1-576.95
+  ;; 2-syntax-aux.watsup:559.1-559.95
   def $subst_typevar{tv : typevar, tv_1 : typevar, tv'* : typevar*, tu_1 : typeuse, tu'* : typeuse*}(tv, [tv_1] :: tv'*{tv' : typevar}, [tu_1] :: tu'*{tu' : typeuse}) = tu_1
     -- if (tv = tv_1)
-  ;; 2-syntax-aux.watsup:577.1-577.92
+  ;; 2-syntax-aux.watsup:560.1-560.92
   def $subst_typevar{tv : typevar, tv_1 : typevar, tv'* : typevar*, tu_1 : typeuse, tu'* : typeuse*}(tv, [tv_1] :: tv'*{tv' : typevar}, [tu_1] :: tu'*{tu' : typeuse}) = $subst_typevar(tv, tv'*{tv' : typevar}, tu'*{tu' : typeuse})
     -- otherwise
 }
@@ -2088,78 +2087,78 @@ def $subst_vectype(vectype : vectype, typevar*, typeuse*) : vectype
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:549.1-549.112
+;; 2-syntax-aux.watsup:532.1-532.112
 def $subst_typeuse(typeuse : typeuse, typevar*, typeuse*) : typeuse
-  ;; 2-syntax-aux.watsup:579.1-579.66
+  ;; 2-syntax-aux.watsup:562.1-562.66
   def $subst_typeuse{tv' : typevar, tv* : typevar*, tu* : typeuse*}((tv' : typevar <: typeuse), tv*{tv : typevar}, tu*{tu : typeuse}) = $subst_typevar(tv', tv*{tv : typevar}, tu*{tu : typeuse})
-  ;; 2-syntax-aux.watsup:580.1-580.64
+  ;; 2-syntax-aux.watsup:563.1-563.64
   def $subst_typeuse{dt : deftype, tv* : typevar*, tu* : typeuse*}((dt : deftype <: typeuse), tv*{tv : typevar}, tu*{tu : typeuse}) = ($subst_deftype(dt, tv*{tv : typevar}, tu*{tu : typeuse}) : deftype <: typeuse)
 
-;; 2-syntax-aux.watsup:553.1-553.112
+;; 2-syntax-aux.watsup:536.1-536.112
 def $subst_heaptype(heaptype : heaptype, typevar*, typeuse*) : heaptype
-  ;; 2-syntax-aux.watsup:585.1-585.67
+  ;; 2-syntax-aux.watsup:568.1-568.67
   def $subst_heaptype{tv' : typevar, tv* : typevar*, tu* : typeuse*}((tv' : typevar <: heaptype), tv*{tv : typevar}, tu*{tu : typeuse}) = ($subst_typevar(tv', tv*{tv : typevar}, tu*{tu : typeuse}) : typeuse <: heaptype)
-  ;; 2-syntax-aux.watsup:586.1-586.65
+  ;; 2-syntax-aux.watsup:569.1-569.65
   def $subst_heaptype{dt : deftype, tv* : typevar*, tu* : typeuse*}((dt : deftype <: heaptype), tv*{tv : typevar}, tu*{tu : typeuse}) = ($subst_deftype(dt, tv*{tv : typevar}, tu*{tu : typeuse}) : deftype <: heaptype)
-  ;; 2-syntax-aux.watsup:587.1-587.53
+  ;; 2-syntax-aux.watsup:570.1-570.53
   def $subst_heaptype{ht : heaptype, tv* : typevar*, tu* : typeuse*}(ht, tv*{tv : typevar}, tu*{tu : typeuse}) = ht
     -- otherwise
 
-;; 2-syntax-aux.watsup:554.1-554.112
+;; 2-syntax-aux.watsup:537.1-537.112
 def $subst_reftype(reftype : reftype, typevar*, typeuse*) : reftype
-  ;; 2-syntax-aux.watsup:589.1-589.83
+  ;; 2-syntax-aux.watsup:572.1-572.83
   def $subst_reftype{nul : nul, ht : heaptype, tv* : typevar*, tu* : typeuse*}(REF_reftype(nul, ht), tv*{tv : typevar}, tu*{tu : typeuse}) = REF_reftype(nul, $subst_heaptype(ht, tv*{tv : typevar}, tu*{tu : typeuse}))
 
-;; 2-syntax-aux.watsup:555.1-555.112
+;; 2-syntax-aux.watsup:538.1-538.112
 def $subst_valtype(valtype : valtype, typevar*, typeuse*) : valtype
-  ;; 2-syntax-aux.watsup:591.1-591.64
+  ;; 2-syntax-aux.watsup:574.1-574.64
   def $subst_valtype{nt : numtype, tv* : typevar*, tu* : typeuse*}((nt : numtype <: valtype), tv*{tv : typevar}, tu*{tu : typeuse}) = ($subst_numtype(nt, tv*{tv : typevar}, tu*{tu : typeuse}) : numtype <: valtype)
-  ;; 2-syntax-aux.watsup:592.1-592.64
+  ;; 2-syntax-aux.watsup:575.1-575.64
   def $subst_valtype{vt : vectype, tv* : typevar*, tu* : typeuse*}((vt : vectype <: valtype), tv*{tv : typevar}, tu*{tu : typeuse}) = ($subst_vectype(vt, tv*{tv : typevar}, tu*{tu : typeuse}) : vectype <: valtype)
-  ;; 2-syntax-aux.watsup:593.1-593.64
+  ;; 2-syntax-aux.watsup:576.1-576.64
   def $subst_valtype{rt : reftype, tv* : typevar*, tu* : typeuse*}((rt : reftype <: valtype), tv*{tv : typevar}, tu*{tu : typeuse}) = ($subst_reftype(rt, tv*{tv : typevar}, tu*{tu : typeuse}) : reftype <: valtype)
-  ;; 2-syntax-aux.watsup:594.1-594.40
+  ;; 2-syntax-aux.watsup:577.1-577.40
   def $subst_valtype{tv* : typevar*, tu* : typeuse*}(BOT_valtype, tv*{tv : typevar}, tu*{tu : typeuse}) = BOT_valtype
 
-;; 2-syntax-aux.watsup:558.1-558.112
+;; 2-syntax-aux.watsup:541.1-541.112
 def $subst_storagetype(storagetype : storagetype, typevar*, typeuse*) : storagetype
-  ;; 2-syntax-aux.watsup:598.1-598.66
+  ;; 2-syntax-aux.watsup:581.1-581.66
   def $subst_storagetype{t : valtype, tv* : typevar*, tu* : typeuse*}((t : valtype <: storagetype), tv*{tv : typevar}, tu*{tu : typeuse}) = ($subst_valtype(t, tv*{tv : typevar}, tu*{tu : typeuse}) : valtype <: storagetype)
-  ;; 2-syntax-aux.watsup:599.1-599.69
+  ;; 2-syntax-aux.watsup:582.1-582.69
   def $subst_storagetype{pt : packtype, tv* : typevar*, tu* : typeuse*}((pt : packtype <: storagetype), tv*{tv : typevar}, tu*{tu : typeuse}) = ($subst_packtype(pt, tv*{tv : typevar}, tu*{tu : typeuse}) : packtype <: storagetype)
 
-;; 2-syntax-aux.watsup:559.1-559.112
+;; 2-syntax-aux.watsup:542.1-542.112
 def $subst_fieldtype(fieldtype : fieldtype, typevar*, typeuse*) : fieldtype
-  ;; 2-syntax-aux.watsup:601.1-601.80
+  ;; 2-syntax-aux.watsup:584.1-584.80
   def $subst_fieldtype{mut : mut, zt : storagetype, tv* : typevar*, tu* : typeuse*}(`%%`_fieldtype(mut, zt), tv*{tv : typevar}, tu*{tu : typeuse}) = `%%`_fieldtype(mut, $subst_storagetype(zt, tv*{tv : typevar}, tu*{tu : typeuse}))
 
-;; 2-syntax-aux.watsup:561.1-561.112
+;; 2-syntax-aux.watsup:544.1-544.112
 def $subst_comptype(comptype : comptype, typevar*, typeuse*) : comptype
-  ;; 2-syntax-aux.watsup:603.1-603.85
+  ;; 2-syntax-aux.watsup:586.1-586.85
   def $subst_comptype{yt* : fieldtype*, tv* : typevar*, tu* : typeuse*}(STRUCT_comptype(`%`_structtype(yt*{yt : fieldtype})), tv*{tv : typevar}, tu*{tu : typeuse}) = STRUCT_comptype(`%`_structtype($subst_fieldtype(yt, tv*{tv : typevar}, tu*{tu : typeuse})*{yt : fieldtype}))
-  ;; 2-syntax-aux.watsup:604.1-604.81
+  ;; 2-syntax-aux.watsup:587.1-587.81
   def $subst_comptype{yt : fieldtype, tv* : typevar*, tu* : typeuse*}(ARRAY_comptype(yt), tv*{tv : typevar}, tu*{tu : typeuse}) = ARRAY_comptype($subst_fieldtype(yt, tv*{tv : typevar}, tu*{tu : typeuse}))
-  ;; 2-syntax-aux.watsup:605.1-605.78
+  ;; 2-syntax-aux.watsup:588.1-588.78
   def $subst_comptype{ft : functype, tv* : typevar*, tu* : typeuse*}(FUNC_comptype(ft), tv*{tv : typevar}, tu*{tu : typeuse}) = FUNC_comptype($subst_functype(ft, tv*{tv : typevar}, tu*{tu : typeuse}))
 
-;; 2-syntax-aux.watsup:562.1-562.112
+;; 2-syntax-aux.watsup:545.1-545.112
 def $subst_subtype(subtype : subtype, typevar*, typeuse*) : subtype
-  ;; 2-syntax-aux.watsup:607.1-608.71
+  ;; 2-syntax-aux.watsup:590.1-591.71
   def $subst_subtype{fin : fin, tu'* : typeuse*, ct : comptype, tv* : typevar*, tu* : typeuse*}(SUB_subtype(fin, tu'*{tu' : typeuse}, ct), tv*{tv : typevar}, tu*{tu : typeuse}) = SUB_subtype(fin, $subst_typeuse(tu', tv*{tv : typevar}, tu*{tu : typeuse})*{tu' : typeuse}, $subst_comptype(ct, tv*{tv : typevar}, tu*{tu : typeuse}))
 
-;; 2-syntax-aux.watsup:563.1-563.112
+;; 2-syntax-aux.watsup:546.1-546.112
 def $subst_rectype(rectype : rectype, typevar*, typeuse*) : rectype
-  ;; 2-syntax-aux.watsup:610.1-610.76
+  ;; 2-syntax-aux.watsup:593.1-593.76
   def $subst_rectype{st* : subtype*, tv* : typevar*, tu* : typeuse*}(REC_rectype(`%`_list(st*{st : subtype})), tv*{tv : typevar}, tu*{tu : typeuse}) = REC_rectype(`%`_list($subst_subtype(st, tv*{tv : typevar}, tu*{tu : typeuse})*{st : subtype}))
 
-;; 2-syntax-aux.watsup:564.1-564.112
+;; 2-syntax-aux.watsup:547.1-547.112
 def $subst_deftype(deftype : deftype, typevar*, typeuse*) : deftype
-  ;; 2-syntax-aux.watsup:612.1-612.78
+  ;; 2-syntax-aux.watsup:595.1-595.78
   def $subst_deftype{qt : rectype, i : nat, tv* : typevar*, tu* : typeuse*}(DEF_deftype(qt, i), tv*{tv : typevar}, tu*{tu : typeuse}) = DEF_deftype($subst_rectype(qt, tv*{tv : typevar}, tu*{tu : typeuse}), i)
 
-;; 2-syntax-aux.watsup:567.1-567.112
+;; 2-syntax-aux.watsup:550.1-550.112
 def $subst_functype(functype : functype, typevar*, typeuse*) : functype
-  ;; 2-syntax-aux.watsup:615.1-615.113
+  ;; 2-syntax-aux.watsup:598.1-598.113
   def $subst_functype{t_1* : valtype*, t_2* : valtype*, tv* : typevar*, tu* : typeuse*}(`%->%`_functype(`%`_resulttype(t_1*{t_1 : valtype}), `%`_resulttype(t_2*{t_2 : valtype})), tv*{tv : typevar}, tu*{tu : typeuse}) = `%->%`_functype(`%`_resulttype($subst_valtype(t_1, tv*{tv : typevar}, tu*{tu : typeuse})*{t_1 : valtype}), `%`_resulttype($subst_valtype(t_2, tv*{tv : typevar}, tu*{tu : typeuse})*{t_2 : valtype}))
 }
 
@@ -2217,11 +2216,11 @@ def $subst_all_moduletype(moduletype : moduletype, heaptype*) : moduletype
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:637.1-637.98
+;; 2-syntax-aux.watsup:620.1-620.98
 def $subst_all_deftypes(deftype*, heaptype*) : deftype*
-  ;; 2-syntax-aux.watsup:638.1-638.40
+  ;; 2-syntax-aux.watsup:621.1-621.40
   def $subst_all_deftypes{tu* : typeuse*}([], (tu : typeuse <: heaptype)*{tu : typeuse}) = []
-  ;; 2-syntax-aux.watsup:639.1-639.101
+  ;; 2-syntax-aux.watsup:622.1-622.101
   def $subst_all_deftypes{dt_1 : deftype, dt* : deftype*, tu* : typeuse*}([dt_1] :: dt*{dt : deftype}, (tu : typeuse <: heaptype)*{tu : typeuse}) = [$subst_all_deftype(dt_1, (tu : typeuse <: heaptype)*{tu : typeuse})] :: $subst_all_deftypes(dt*{dt : deftype}, (tu : typeuse <: heaptype)*{tu : typeuse})
 }
 
@@ -2265,13 +2264,13 @@ relation Expand: `%~~%`(deftype, comptype)
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:671.1-671.86
+;; 2-syntax-aux.watsup:654.1-654.86
 def $funcsxx(externidx*) : typeidx*
-  ;; 2-syntax-aux.watsup:676.1-676.24
+  ;; 2-syntax-aux.watsup:659.1-659.24
   def $funcsxx([]) = []
-  ;; 2-syntax-aux.watsup:677.1-677.45
+  ;; 2-syntax-aux.watsup:660.1-660.45
   def $funcsxx{x : idx, xx* : externidx*}([FUNC_externidx(x)] :: xx*{xx : externidx}) = [x] :: $funcsxx(xx*{xx : externidx})
-  ;; 2-syntax-aux.watsup:678.1-678.58
+  ;; 2-syntax-aux.watsup:661.1-661.58
   def $funcsxx{externidx : externidx, xx* : externidx*}([externidx] :: xx*{xx : externidx}) = $funcsxx(xx*{xx : externidx})
     -- otherwise
 }
@@ -2279,13 +2278,13 @@ def $funcsxx(externidx*) : typeidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:672.1-672.88
+;; 2-syntax-aux.watsup:655.1-655.88
 def $globalsxx(externidx*) : globalidx*
-  ;; 2-syntax-aux.watsup:680.1-680.26
+  ;; 2-syntax-aux.watsup:663.1-663.26
   def $globalsxx([]) = []
-  ;; 2-syntax-aux.watsup:681.1-681.51
+  ;; 2-syntax-aux.watsup:664.1-664.51
   def $globalsxx{x : idx, xx* : externidx*}([GLOBAL_externidx(x)] :: xx*{xx : externidx}) = [x] :: $globalsxx(xx*{xx : externidx})
-  ;; 2-syntax-aux.watsup:682.1-682.62
+  ;; 2-syntax-aux.watsup:665.1-665.62
   def $globalsxx{externidx : externidx, xx* : externidx*}([externidx] :: xx*{xx : externidx}) = $globalsxx(xx*{xx : externidx})
     -- otherwise
 }
@@ -2293,13 +2292,13 @@ def $globalsxx(externidx*) : globalidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:673.1-673.87
+;; 2-syntax-aux.watsup:656.1-656.87
 def $tablesxx(externidx*) : tableidx*
-  ;; 2-syntax-aux.watsup:684.1-684.25
+  ;; 2-syntax-aux.watsup:667.1-667.25
   def $tablesxx([]) = []
-  ;; 2-syntax-aux.watsup:685.1-685.48
+  ;; 2-syntax-aux.watsup:668.1-668.48
   def $tablesxx{x : idx, xx* : externidx*}([TABLE_externidx(x)] :: xx*{xx : externidx}) = [x] :: $tablesxx(xx*{xx : externidx})
-  ;; 2-syntax-aux.watsup:686.1-686.60
+  ;; 2-syntax-aux.watsup:669.1-669.60
   def $tablesxx{externidx : externidx, xx* : externidx*}([externidx] :: xx*{xx : externidx}) = $tablesxx(xx*{xx : externidx})
     -- otherwise
 }
@@ -2307,13 +2306,13 @@ def $tablesxx(externidx*) : tableidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:674.1-674.85
+;; 2-syntax-aux.watsup:657.1-657.85
 def $memsxx(externidx*) : memidx*
-  ;; 2-syntax-aux.watsup:688.1-688.23
+  ;; 2-syntax-aux.watsup:671.1-671.23
   def $memsxx([]) = []
-  ;; 2-syntax-aux.watsup:689.1-689.42
+  ;; 2-syntax-aux.watsup:672.1-672.42
   def $memsxx{x : idx, xx* : externidx*}([MEM_externidx(x)] :: xx*{xx : externidx}) = [x] :: $memsxx(xx*{xx : externidx})
-  ;; 2-syntax-aux.watsup:690.1-690.56
+  ;; 2-syntax-aux.watsup:673.1-673.56
   def $memsxx{externidx : externidx, xx* : externidx*}([externidx] :: xx*{xx : externidx}) = $memsxx(xx*{xx : externidx})
     -- otherwise
 }
@@ -2321,13 +2320,13 @@ def $memsxx(externidx*) : memidx*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:693.1-693.88
+;; 2-syntax-aux.watsup:676.1-676.88
 def $funcsxt(externtype*) : deftype*
-  ;; 2-syntax-aux.watsup:698.1-698.24
+  ;; 2-syntax-aux.watsup:681.1-681.24
   def $funcsxt([]) = []
-  ;; 2-syntax-aux.watsup:699.1-699.47
+  ;; 2-syntax-aux.watsup:682.1-682.47
   def $funcsxt{dt : deftype, xt* : externtype*}([FUNC_externtype((dt : deftype <: typeuse))] :: xt*{xt : externtype}) = [dt] :: $funcsxt(xt*{xt : externtype})
-  ;; 2-syntax-aux.watsup:700.1-700.59
+  ;; 2-syntax-aux.watsup:683.1-683.59
   def $funcsxt{externtype : externtype, xt* : externtype*}([externtype] :: xt*{xt : externtype}) = $funcsxt(xt*{xt : externtype})
     -- otherwise
 }
@@ -2335,13 +2334,13 @@ def $funcsxt(externtype*) : deftype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:694.1-694.90
+;; 2-syntax-aux.watsup:677.1-677.90
 def $globalsxt(externtype*) : globaltype*
-  ;; 2-syntax-aux.watsup:702.1-702.26
+  ;; 2-syntax-aux.watsup:685.1-685.26
   def $globalsxt([]) = []
-  ;; 2-syntax-aux.watsup:703.1-703.53
+  ;; 2-syntax-aux.watsup:686.1-686.53
   def $globalsxt{gt : globaltype, xt* : externtype*}([GLOBAL_externtype(gt)] :: xt*{xt : externtype}) = [gt] :: $globalsxt(xt*{xt : externtype})
-  ;; 2-syntax-aux.watsup:704.1-704.63
+  ;; 2-syntax-aux.watsup:687.1-687.63
   def $globalsxt{externtype : externtype, xt* : externtype*}([externtype] :: xt*{xt : externtype}) = $globalsxt(xt*{xt : externtype})
     -- otherwise
 }
@@ -2349,13 +2348,13 @@ def $globalsxt(externtype*) : globaltype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:695.1-695.89
+;; 2-syntax-aux.watsup:678.1-678.89
 def $tablesxt(externtype*) : tabletype*
-  ;; 2-syntax-aux.watsup:706.1-706.25
+  ;; 2-syntax-aux.watsup:689.1-689.25
   def $tablesxt([]) = []
-  ;; 2-syntax-aux.watsup:707.1-707.50
+  ;; 2-syntax-aux.watsup:690.1-690.50
   def $tablesxt{tt : tabletype, xt* : externtype*}([TABLE_externtype(tt)] :: xt*{xt : externtype}) = [tt] :: $tablesxt(xt*{xt : externtype})
-  ;; 2-syntax-aux.watsup:708.1-708.61
+  ;; 2-syntax-aux.watsup:691.1-691.61
   def $tablesxt{externtype : externtype, xt* : externtype*}([externtype] :: xt*{xt : externtype}) = $tablesxt(xt*{xt : externtype})
     -- otherwise
 }
@@ -2363,13 +2362,13 @@ def $tablesxt(externtype*) : tabletype*
 ;; 2-syntax-aux.watsup
 rec {
 
-;; 2-syntax-aux.watsup:696.1-696.87
+;; 2-syntax-aux.watsup:679.1-679.87
 def $memsxt(externtype*) : memtype*
-  ;; 2-syntax-aux.watsup:710.1-710.23
+  ;; 2-syntax-aux.watsup:693.1-693.23
   def $memsxt([]) = []
-  ;; 2-syntax-aux.watsup:711.1-711.44
+  ;; 2-syntax-aux.watsup:694.1-694.44
   def $memsxt{mt : memtype, xt* : externtype*}([MEM_externtype(mt)] :: xt*{xt : externtype}) = [mt] :: $memsxt(xt*{xt : externtype})
-  ;; 2-syntax-aux.watsup:712.1-712.57
+  ;; 2-syntax-aux.watsup:695.1-695.57
   def $memsxt{externtype : externtype, xt* : externtype*}([externtype] :: xt*{xt : externtype}) = $memsxt(xt*{xt : externtype})
     -- otherwise
 }
@@ -2787,7 +2786,7 @@ def $invlanes_(shape : shape, lane_($lanetype(shape))*) : vec_(V128_Vnn)
 def $mapinvlanes_(shape : shape, lane_($lanetype(shape))**) : vec_(V128_Vnn)*
   ;; 3-numerics.watsup
   def $mapinvlanes_{sh : shape, c** : lane_($lanetype(sh))**, c'** : lane_($lanetype(sh))**}(sh, c*{c : lane_($lanetype(sh))}*{c : lane_($lanetype(sh))}) = $invlanes_(sh, c'*{c' : lane_($lanetype(sh))})*{c' : lane_($lanetype(sh))}
-    -- if (c'*{c' : lane_($lanetype(sh))}*{c' : lane_($lanetype(sh))} = $listproduct_(syntax lane_($lanetype(sh)), c*{c : lane_($lanetype(sh))}*{c : lane_($lanetype(sh))}))
+    -- if (c'*{c' : lane_($lanetype(sh))}*{c' : lane_($lanetype(sh))} = $setproduct_(syntax lane_($lanetype(sh)), c*{c : lane_($lanetype(sh))}*{c : lane_($lanetype(sh))}))
 
 ;; 3-numerics.watsup
 def $half(shape_1 : shape, shape_2 : shape, half_ : half_(shape_1, shape_2), nat : nat, nat : nat) : nat
@@ -4036,7 +4035,7 @@ relation Instrtype_sub: `%|-%<:%`(context, instrtype, instrtype)
     `%|-%<:%`(C, `%->_%%`_instrtype(`%`_resulttype(t_11*{t_11 : valtype}), x_1*{x_1 : localidx}, `%`_resulttype(t_12*{t_12 : valtype})), `%->_%%`_instrtype(`%`_resulttype(t_21*{t_21 : valtype}), x_2*{x_2 : localidx}, `%`_resulttype(t_22*{t_22 : valtype})))
     -- Resulttype_sub: `%|-%<:%`(C, t_21*{t_21 : valtype}, t_11*{t_11 : valtype})
     -- Resulttype_sub: `%|-%<:%`(C, t_12*{t_12 : valtype}, t_22*{t_22 : valtype})
-    -- if (x*{x : idx} = $setminus(x_2*{x_2 : idx}, x_1*{x_1 : idx}))
+    -- if (x*{x : idx} = $setminus_(syntax localidx, x_2*{x_2 : localidx}, x_1*{x_1 : localidx}))
     -- (if (C.LOCALS_context[x!`%`_idx.0] = `%%`_localtype(SET_init, t)))*{t : valtype, x : idx}
 
 ;; 6-typing.watsup

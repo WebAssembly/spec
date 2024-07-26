@@ -39,23 +39,30 @@ def $sum(n n'*) = $(n + $sum(n'*))
 
 def $concat_(syntax X, (X*)*) : X*  hint(show (++) %2)
 def $concat_(syntax X, eps) = eps
-def $concat_(syntax X, (w*) (w'*)*) = w* $concat_(X, (w'*)*)
+def $concat_(syntax X, (w*) (w'*)*) = w* ++ $concat_(X, (w'*)*)
 
 def $disjoint_(syntax X, X*) : bool  hint(show %2 $disjoint) hint(macro none)
 def $disjoint_(syntax X, eps) = true
 def $disjoint_(syntax X, w w'*) = ~(w <- w'*) /\ $disjoint_(X, w'*)
 
-;; [1; 2]; [a; b; c] -> [1; a]; [1; b]; [1; c]; [2; a]; [2; b]; [2; c]
-def $listproduct_(syntax X, (X*)*) : (X*)*
-def $lpaux_(syntax X, X*, (X*)*) : (X*)*
-def $lpaux2_(syntax X, X, (X*)*) : (X*)*
+def $setminus_(syntax X, X*, X*) : X*  hint(show %2\%3)
+def $setminus1_(syntax X, X, X*) : X*
 
-def $listproduct_(syntax X, eps)         = (eps)
-def $listproduct_(syntax X, (w*) (w'*)*) = $lpaux_(X, w*, $listproduct_(X, w'**))
+def $setminus_(syntax X, eps, w*) = eps
+def $setminus_(syntax X, w_1 w'*, w*) = $setminus1_(X, w_1, w*) ++ $setminus_(X, w'*, w*)
+def $setminus1_(syntax X, w, eps) = w
+def $setminus1_(syntax X, w, w_1 w'*) = eps                     -- if w = w_1
+def $setminus1_(syntax X, w, w_1 w'*) = $setminus1_(X, w, w'*)  -- otherwise
 
-def $lpaux_(syntax X, eps,   (w''*)*) = eps
-def $lpaux_(syntax X, w w'*, (w''*)*) = $lpaux2_(X, w, (w''*)*) $lpaux_(X, w'*, (w''*)*)
+;; TODO(1, rossberg): show and explain in document
+;; [{1, 2}, {a, b, c}] -> {[1, a], [1, b], [1, c], [2, a], [2, b], [2, c]}
+def $setproduct_(syntax X, (X*)*) : (X*)*  hint(show %latex("\\Large\\times") %2)
+def $setproduct1_(syntax X, X*, (X*)*) : (X*)*
+def $setproduct2_(syntax X, X, (X*)*) : (X*)*
 
-def $lpaux2_(syntax X, w, eps)           = eps
-def $lpaux2_(syntax X, w, (w'*) (w''*)*) = (ww*) $lpaux2_(X, w, (w''*)*)
-  -- if ww* = w w'*
+def $setproduct_(syntax X, eps) = (eps)
+def $setproduct_(syntax X, (w_1*) (w*)*) = $setproduct1_(X, w_1*, $setproduct_(X, (w*)*))
+def $setproduct1_(syntax X, eps, (w*)*) = eps
+def $setproduct1_(syntax X, w_1 w'*, (w*)*) = $setproduct2_(X, w_1, (w*)*) ++ $setproduct1_(X, w'*, (w*)*)
+def $setproduct2_(syntax X, w_1, eps) = eps
+def $setproduct2_(syntax X, w_1, (w'*) (w*)*) = (w_1 w'*) ++ $setproduct2_(X, w_1, (w*)*)

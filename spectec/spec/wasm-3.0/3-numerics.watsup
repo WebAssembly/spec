@@ -212,10 +212,11 @@ def $invlanes_(shape, lane_($lanetype(shape))*) : vec_(V128)
     hint(show $lanes_(%)^(-1)#((%)))
 def $invlanes_(sh, c*) = vc  -- if c* = $lanes_(sh, vc)
 
+;; TODO(1, rossberg): include this in document
 def $mapinvlanes_(shape, (lane_($lanetype(shape))*)*) : vec_(V128)*
     hint(show $lanes_(%)^(-1)#((%)))
 def $mapinvlanes_(sh, c**) = $invlanes_(sh, c'*)*
-  -- if c'** = $listproduct_(lane_($lanetype(sh)),c**)
+  -- if c'** = $setproduct_(lane_($lanetype(sh)),c**)
 
 ;; TODO(3, rossberg): somehow enable merging cases
 def $half(shape_1, shape_2, half_(shape_1, shape_2), nat, nat) : nat hint(show $half(%3,%4,%5))
