@@ -33,8 +33,8 @@ def $cvtop(numtype_1, numtype_2, cvtop_(numtype_1, numtype_2), num_(numtype_1)) 
 
 def $wrap(M, N, iN(M)) : iN(N)                      hint(show $wrap_((%,%))#((%)))
 def $ext(M, N, sx, iN(M)) : iN(N)                   hint(show $ext_((%,%))^(%)#((%)))
-def $trunc(M, N, sx, fN(M)) : iN(N)                 hint(show $trunc_((%,%))^(%)#((%)))
-def $trunc_sat(M, N, sx, fN(M)) : iN(N)             hint(show $trunc__sat_((%,%))^(%)#((%)))
+def $trunc(M, N, sx, fN(M)) : iN(N)*                hint(show $trunc_((%,%))^(%)#((%)))
+def $trunc_sat(M, N, sx, fN(M)) : iN(N)*            hint(show $trunc__sat_((%,%))^(%)#((%)))
 def $demote(M, N, fN(M)) : fN(N)*                   hint(show $demote_((%,%))#((%)))
 def $promote(M, N, fN(M)) : fN(N)*                  hint(show $promote_((%,%))#((%)))
 def $convert(M, N, sx, iN(M)) : fN(N)               hint(show $convert_((%,%))^(%)#((%)))
@@ -62,8 +62,8 @@ def $invfbytes(N, b*) = p  -- if $fbytes(N, p) = b*
 def $iadd(N, iN(N), iN(N)) : iN(N)      hint(show $iadd_(%,%,%))
 def $isub(N, iN(N), iN(N)) : iN(N)      hint(show $isub_(%,%,%))
 def $imul(N, iN(N), iN(N)) : iN(N)      hint(show $imul_(%,%,%))
-def $idiv(N, sx, iN(N), iN(N)) : iN(N)  hint(show $idiv_(%)^(%)#((%,%)))
-def $irem(N, sx, iN(N), iN(N)) : iN(N)  hint(show $irem_(%)^(%)#((%,%)))
+def $idiv(N, sx, iN(N), iN(N)) : iN(N)* hint(show $idiv_(%)^(%)#((%,%)))
+def $irem(N, sx, iN(N), iN(N)) : iN(N)* hint(show $irem_(%)^(%)#((%,%)))
 def $inot(N, iN(N)) : iN(N)             hint(show $inot_(%,%))
 def $iand(N, iN(N), iN(N)) : iN(N)      hint(show $iand_(%,%,%))
 def $iandnot(N, iN(N), iN(N)) : iN(N)   hint(show $inot_(%,%,%))
@@ -214,7 +214,8 @@ def $invlanes_(sh, c*) = vc  -- if c* = $lanes_(sh, vc)
 
 def $mapinvlanes_(shape, (lane_($lanetype(shape))*)*) : vec_(V128)*
     hint(show $lanes_(%)^(-1)#((%)))
-def $mapinvlanes_(sh, c**) = $invlanes_(sh, c*)*
+def $mapinvlanes_(sh, c**) = $invlanes_(sh, c'*)*
+  -- if c'** = $listproduct_(lane_($lanetype(sh)),c**)
 
 ;; TODO(3, rossberg): somehow enable merging cases
 def $half(shape_1, shape_2, half_(shape_1, shape_2), nat, nat) : nat hint(show $half(%3,%4,%5))
@@ -426,10 +427,10 @@ def $vcvtop(I32 X N_1, F32 X N_2, CONVERT, sx, i32) = f32
     -- if f32 = $convert(32, 32, sx, i32)
 def $vcvtop(I32 X N_1, F64 X N_2, CONVERT, sx, i32) = f64
     -- if f64 = $convert(32, 64, sx, i32)
-def $vcvtop(F32 X N_1, I32 X N_2, TRUNC_SAT, sx, f32) = i32
-    -- if i32 = $trunc_sat(32, 32, sx, f32)
-def $vcvtop(F64 X N_1, I32 X N_2, TRUNC_SAT, sx, f64) = i32
-    -- if i32 = $trunc_sat(64, 32, sx, f64)
+def $vcvtop(F32 X N_1, I32 X N_2, TRUNC_SAT, sx, f32) = i32*
+    -- if i32* = $trunc_sat(32, 32, sx, f32)
+def $vcvtop(F64 X N_1, I32 X N_2, TRUNC_SAT, sx, f64) = i32*
+    -- if i32* = $trunc_sat(64, 32, sx, f64)
 def $vcvtop(F64 X N_1, F32 X N_2, DEMOTE, sx?, f64) = f32*
     -- if f32* = $demote(64, 32, f64)
 def $vcvtop(F32 X N_1, F64 X N_2, PROMOTE, sx?, f32) = f64*

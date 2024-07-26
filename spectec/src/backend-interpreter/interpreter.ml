@@ -716,7 +716,7 @@ and call_func (name: string) (args: value list) : value option =
   else if Manual.mem name then
     Some (Manual.call_func name args)
   else
-    raise (Exception.InvalidFunc ("Invalid DSL function: " ^ name))
+    raise (Exception.InvalidFunc ("There is no function named: " ^ name))
 
 
 (* Wasm interpreter entry *)
