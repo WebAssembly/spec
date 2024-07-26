@@ -119,7 +119,7 @@ $${rule-prose: exec/vunop}
 
 \
 
-$${rule+: Step_pure/vunop}
+$${rule+: Step_pure/vunop-*}
 
 .. _exec-vbinop:
 
