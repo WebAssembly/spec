@@ -1343,7 +1343,6 @@ warning: definition `lsizenn1` was never spliced
 warning: definition `lsizenn2` was never spliced
 warning: definition `lunpack` was never spliced
 warning: definition `lunpacknum_` was never spliced
-warning: definition `mapinvlanes_` was never spliced
 warning: definition `mem` was never spliced
 warning: definition `memarg0` was never spliced
 warning: definition `meminst` was never spliced
@@ -1876,7 +1875,6 @@ warning: definition prose `lsizenn1` was never spliced
 warning: definition prose `lsizenn2` was never spliced
 warning: definition prose `lunpack` was never spliced
 warning: definition prose `lunpacknum_` was never spliced
-warning: definition prose `mapinvlanes_` was never spliced
 warning: definition prose `mem` was never spliced
 warning: definition prose `memarg0` was never spliced
 warning: definition prose `meminst` was never spliced

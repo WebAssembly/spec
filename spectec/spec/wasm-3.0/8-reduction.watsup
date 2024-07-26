@@ -717,18 +717,21 @@ rule Step_pure/vnarrow:
 
 rule Step_pure/vcvtop-full:
   (VCONST V128 c_1) (VCVTOP (Lnn_2 X M) (Lnn_1 X M) vcvtop) ~> (VCONST V128 c)
-  -- if c'* = $lanes_(Lnn_1 X M, c_1)
-  -- if c <- $mapinvlanes_(Lnn_2 X M, $vcvtop__(Lnn_1 X M, Lnn_2 X M, vcvtop, c')*)
+  -- if ci* = $lanes_(Lnn_1 X M, c_1)
+  -- if cj** = $setproduct_(lane_(Lnn_2), $vcvtop__(Lnn_1 X M, Lnn_2 X M, vcvtop, ci)*)
+  -- if c <- $invlanes_(Lnn_2 X M, cj*)*
 
 rule Step_pure/vcvtop-half:
   (VCONST V128 c_1) (VCVTOP (Lnn_2 X M_2) (Lnn_1 X M_1) vcvtop half eps) ~> (VCONST V128 c)
   -- if ci* = $lanes_(Lnn_1 X M_1, c_1)[$half__(Lnn_1 X M_1, Lnn_2 X M_2, half, 0, M_2) : M_2]
-  -- if c <- $mapinvlanes_(Lnn_2 X M_2, $vcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, ci)*)
+  -- if cj** = $setproduct_(lane_(Lnn_2), $vcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, ci)*)
+  -- if c <- $invlanes_(Lnn_2 X M_2, cj*)*
 
 rule Step_pure/vcvtop-zero:
   (VCONST V128 c_1) (VCVTOP (nt_2 X M_2) (nt_1 X M_1) vcvtop eps zero) ~> (VCONST V128 c)
   -- if ci* = $lanes_(nt_1 X M_1, c_1)
-  -- if c <- $mapinvlanes_(nt_2 X M_2, $vcvtop__(nt_1 X M_1, nt_2 X M_2, vcvtop, ci)* $zero(nt_2)^M_1)
+  -- if cj** = $setproduct_(lane_(nt_2), ($vcvtop__(nt_1 X M_1, nt_2 X M_2, vcvtop, ci)* ++ $zero(nt_2)^M_1))
+  -- if c <- $invlanes_(nt_2 X M_2, cj*)*
 
 
 ;; Local instructions

@@ -191,11 +191,6 @@ def $invlanes_(shape, lane_($lanetype(shape))*) : vec_(V128)
     hint(show $lanes^(-1)#_%#(%,%))
 def $invlanes_(sh, c*) = vc  -- if c* = $lanes_(sh, vc)
 
-def $mapinvlanes_(shape, (lane_($lanetype(shape))*)*) : vec_(V128)*
-    hint(show $lanes_(%)^(-1)#((%)))
-def $mapinvlanes_(sh, c**) = $invlanes_(sh, c'*)*
-  -- if c'** = $setproduct_(lane_($lanetype(sh)),c**)
-
 def $half(half, nat, nat) : nat
 def $half(LOW, i, j) = i
 def $half(HIGH, i, j) = j
@@ -305,58 +300,73 @@ def $vrelop_(Jnn X M, GE sx, v128_1, v128_2) = v128
 
 def $vunop_(Fnn X M, ABS, v128_1) = v128*
     -- if lane_1* = $lanes_(Fnn X M, v128_1)
-    -- if v128* = $mapinvlanes_(Fnn X M, $fabs_($sizenn(Fnn), lane_1)*)
+    -- if lane** = $setproduct_(lane_(Fnn), $fabs_($sizenn(Fnn), lane_1)*)
+    -- if v128* = $invlanes_(Fnn X M, lane*)*
 def $vunop_(Fnn X M, NEG, v128_1) = v128*
     -- if lane_1* = $lanes_(Fnn X M, v128_1)
-    -- if v128* = $mapinvlanes_(Fnn X M, $fneg_($sizenn(Fnn), lane_1)*)
+    -- if lane** = $setproduct_(lane_(Fnn), $fneg_($sizenn(Fnn), lane_1)*)
+    -- if v128* = $invlanes_(Fnn X M, lane*)*
 def $vunop_(Fnn X M, SQRT, v128_1) = v128*
     -- if lane_1* = $lanes_(Fnn X M, v128_1)
-    -- if v128* = $mapinvlanes_(Fnn X M, $fsqrt_($sizenn(Fnn), lane_1)*)
+    -- if lane** = $setproduct_(lane_(Fnn), $fsqrt_($sizenn(Fnn), lane_1)*)
+    -- if v128* = $invlanes_(Fnn X M, lane*)*
 def $vunop_(Fnn X M, CEIL, v128_1) = v128*
     -- if lane_1* = $lanes_(Fnn X M, v128_1)
-    -- if v128* = $mapinvlanes_(Fnn X M, $fceil_($sizenn(Fnn), lane_1)*)
+    -- if lane** = $setproduct_(lane_(Fnn), $fceil_($sizenn(Fnn), lane_1)*)
+    -- if v128* = $invlanes_(Fnn X M, lane*)*
 def $vunop_(Fnn X M, FLOOR, v128_1) = v128*
     -- if lane_1* = $lanes_(Fnn X M, v128_1)
-    -- if v128* = $mapinvlanes_(Fnn X M, $ffloor_($sizenn(Fnn), lane_1)*)
+    -- if lane** = $setproduct_(lane_(Fnn), $ffloor_($sizenn(Fnn), lane_1)*)
+    -- if v128* = $invlanes_(Fnn X M, lane*)*
 def $vunop_(Fnn X M, TRUNC, v128_1) = v128*
     -- if lane_1* = $lanes_(Fnn X M, v128_1)
-    -- if v128* = $mapinvlanes_(Fnn X M, $ftrunc_($sizenn(Fnn), lane_1)*)
+    -- if lane** = $setproduct_(lane_(Fnn), $ftrunc_($sizenn(Fnn), lane_1)*)
+    -- if v128* = $invlanes_(Fnn X M, lane*)*
 def $vunop_(Fnn X M, NEAREST, v128_1) = v128*
     -- if lane_1* = $lanes_(Fnn X M, v128_1)
-    -- if v128* = $mapinvlanes_(Fnn X M, $fnearest_($sizenn(Fnn), lane_1)*)
+    -- if lane** = $setproduct_(lane_(Fnn), $fnearest_($sizenn(Fnn), lane_1)*)
+    -- if v128* = $invlanes_(Fnn X M, lane*)*
 
 def $vbinop_(Fnn X M, ADD, v128_1, v128_2) = v128*
     -- if lane_1* = $lanes_(Fnn X M, v128_1)
     -- if lane_2* = $lanes_(Fnn X M, v128_2)
-    -- if v128* = $mapinvlanes_(Fnn X M, $fadd_($sizenn(Fnn), lane_1, lane_2)*)
+    -- if lane** = $setproduct_(lane_(Fnn), $fadd_($sizenn(Fnn), lane_1, lane_2)*)
+    -- if v128* = $invlanes_(Fnn X M, lane*)*
 def $vbinop_(Fnn X M, SUB, v128_1, v128_2) = v128*
     -- if lane_1* = $lanes_(Fnn X M, v128_1)
     -- if lane_2* = $lanes_(Fnn X M, v128_2)
-    -- if v128* = $mapinvlanes_(Fnn X M, $fsub_($sizenn(Fnn), lane_1, lane_2)*)
+    -- if lane** = $setproduct_(lane_(Fnn), $fsub_($sizenn(Fnn), lane_1, lane_2)*)
+    -- if v128* = $invlanes_(Fnn X M, lane*)*
 def $vbinop_(Fnn X M, MUL, v128_1, v128_2) = v128*
     -- if lane_1* = $lanes_(Fnn X M, v128_1)
     -- if lane_2* = $lanes_(Fnn X M, v128_2)
-    -- if v128* = $mapinvlanes_(Fnn X M, $fmul_($sizenn(Fnn), lane_1, lane_2)*)
+    -- if lane** = $setproduct_(lane_(Fnn), $fmul_($sizenn(Fnn), lane_1, lane_2)*)
+    -- if v128* = $invlanes_(Fnn X M, lane*)*
 def $vbinop_(Fnn X M, DIV, v128_1, v128_2) = v128*
     -- if lane_1* = $lanes_(Fnn X M, v128_1)
     -- if lane_2* = $lanes_(Fnn X M, v128_2)
-    -- if v128* = $mapinvlanes_(Fnn X M, $fdiv_($sizenn(Fnn), lane_1, lane_2)*)
+    -- if lane** = $setproduct_(lane_(Fnn), $fdiv_($sizenn(Fnn), lane_1, lane_2)*)
+    -- if v128* = $invlanes_(Fnn X M, lane*)*
 def $vbinop_(Fnn X M, MIN, v128_1, v128_2) = v128*
     -- if lane_1* = $lanes_(Fnn X M, v128_1)
     -- if lane_2* = $lanes_(Fnn X M, v128_2)
-    -- if v128* = $mapinvlanes_(Fnn X M, $fmin_($sizenn(Fnn), lane_1, lane_2)*)
+    -- if lane** = $setproduct_(lane_(Fnn), $fmin_($sizenn(Fnn), lane_1, lane_2)*)
+    -- if v128* = $invlanes_(Fnn X M, lane*)*
 def $vbinop_(Fnn X M, MAX, v128_1, v128_2) = v128*
     -- if lane_1* = $lanes_(Fnn X M, v128_1)
     -- if lane_2* = $lanes_(Fnn X M, v128_2)
-    -- if v128* = $mapinvlanes_(Fnn X M, $fmax_($sizenn(Fnn), lane_1, lane_2)*)
+    -- if lane** = $setproduct_(lane_(Fnn), $fmax_($sizenn(Fnn), lane_1, lane_2)*)
+    -- if v128* = $invlanes_(Fnn X M, lane*)*
 def $vbinop_(Fnn X M, PMIN, v128_1, v128_2) = v128*
     -- if lane_1* = $lanes_(Fnn X M, v128_1)
     -- if lane_2* = $lanes_(Fnn X M, v128_2)
-    -- if v128* = $mapinvlanes_(Fnn X M, $fpmin_($sizenn(Fnn), lane_1, lane_2)*)
+    -- if lane** = $setproduct_(lane_(Fnn), $fpmin_($sizenn(Fnn), lane_1, lane_2)*)
+    -- if v128* = $invlanes_(Fnn X M, lane*)*
 def $vbinop_(Fnn X M, PMAX, v128_1, v128_2) = v128*
     -- if lane_1* = $lanes_(Fnn X M, v128_1)
     -- if lane_2* = $lanes_(Fnn X M, v128_2)
-    -- if v128* = $mapinvlanes_(Fnn X M, $fpmax_($sizenn(Fnn), lane_1, lane_2)*)
+    -- if lane** = $setproduct_(lane_(Fnn), $fpmax_($sizenn(Fnn), lane_1, lane_2)*)
+    -- if v128* = $invlanes_(Fnn X M, lane*)*
 
 def $vrelop_(Fnn X M, EQ, v128_1, v128_2) = v128
     -- if lane_1* = $lanes_(Fnn X M, v128_1)
