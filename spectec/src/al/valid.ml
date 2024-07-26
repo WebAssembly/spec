@@ -189,8 +189,18 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
   (match instr.it with
   | IfI (expr, _, _) | AssertI expr -> check_bool expr
   | EnterI (expr1, expr2, _) -> check_instr expr1; check_context expr2
-  | PushI expr -> check_val expr
-  | PopI expr | PopAllI expr -> add_bound_vars expr; check_val expr
+  | PushI expr ->
+    if
+      not (sub_typ (get_base_typ expr.note) (varT "val")) &&
+      not (sub_typ (get_base_typ expr.note) (varT "callframe"))
+    then
+      error_expr expr "val"
+  | PopI expr | PopAllI expr -> add_bound_vars expr;
+    if
+      not (sub_typ (get_base_typ expr.note) (varT "val")) &&
+      not (sub_typ (get_base_typ expr.note) (varT "callframe"))
+    then
+      error_expr expr "val"
   | LetI (expr1, expr2) ->
     add_bound_vars expr1;
     if not (matches expr1.note expr2.note) then
@@ -208,9 +218,14 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
   base_unit_walker.walk_instr walker instr
 
 let valid_algo (algo: algorithm) =
-  print_string (Al_util.name_of_algo algo ^ ":");
-  List.iter (fun arg -> print_string (string_of_expr arg ^ " ")) (Al_util.params_of_algo algo);
-  print_endline "";
+  print_string (Al_util.name_of_algo algo ^ "(");
+
+  algo
+  |> Al_util.params_of_algo
+  |> List.map string_of_expr
+  |> String.concat ", "
+  |> print_string;
+  print_endline ")";
 
   init_bound_set algo;
   let walker = { base_unit_walker with walk_expr=valid_expr; walk_instr=valid_instr } in
