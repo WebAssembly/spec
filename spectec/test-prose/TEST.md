@@ -2187,6 +2187,12 @@ lanetype (Lnn X N)
 sizenn nt
 1. Return $size(nt).
 
+sizenn1 nt
+1. Return $size(nt).
+
+sizenn2 nt
+1. Return $size(nt).
+
 lsizenn lt
 1. Return $lsize(lt).
 
@@ -2517,55 +2523,67 @@ relop_ numty_u1 relop_u0 num__u3 num__u5
 13. Let fN_2 be num__u5.
 14. Return $fge_($sizenn(Fnn), fN_1, fN_2).
 
-cvtop__ numty_u0 numty_u1 cvtop_u2 num__u4
-1. If ((numty_u0 is I32) and (numty_u1 is I64)), then:
-  a. Let iN be num__u4.
-  b. If cvtop_u2 is of the case EXTEND, then:
-    1) Let (EXTEND sx) be cvtop_u2.
-    2) Return [$extend__(32, 64, sx, iN)].
-2. If ((numty_u0 is I64) and ((numty_u1 is I32) and (cvtop_u2 is WRAP))), then:
-  a. Let iN be num__u4.
-  b. Return [$wrap__(64, 32, iN)].
-3. If the type of numty_u0 is Fnn, then:
-  a. Let Fnn be numty_u0.
+cvtop__ numty_u1 numty_u4 cvtop_u0 num__u3
+1. If the type of numty_u1 is Inn, then:
+  a. Let Inn_1 be numty_u1.
+  b. If the type of numty_u4 is Inn, then:
+    1) Let Inn_2 be numty_u4.
+    2) Let iN_1 be num__u3.
+    3) If cvtop_u0 is of the case EXTEND, then:
+      a) Let (EXTEND sx) be cvtop_u0.
+      b) Return [$extend__($sizenn1(Inn_1), $sizenn2(Inn_2), sx, iN_1)].
+2. If ((cvtop_u0 is WRAP) and the type of numty_u1 is Inn), then:
+  a. Let Inn_1 be numty_u1.
+  b. If the type of numty_u4 is Inn, then:
+    1) Let Inn_2 be numty_u4.
+    2) Let iN_1 be num__u3.
+    3) Return [$wrap__($sizenn1(Inn_1), $sizenn2(Inn_2), iN_1)].
+3. If the type of numty_u1 is Fnn, then:
+  a. Let Fnn_1 be numty_u1.
+  b. If the type of numty_u4 is Inn, then:
+    1) Let Inn_2 be numty_u4.
+    2) Let fN_1 be num__u3.
+    3) If cvtop_u0 is of the case TRUNC, then:
+      a) Let (TRUNC sx) be cvtop_u0.
+      b) Return $list_($trunc__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
+    4) If cvtop_u0 is of the case TRUNC_SAT, then:
+      a) Let (TRUNC_SAT sx) be cvtop_u0.
+      b) Return $list_($trunc_sat__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
+4. If the type of numty_u4 is Fnn, then:
+  a. Let Fnn_2 be numty_u4.
   b. If the type of numty_u1 is Inn, then:
-    1) Let Inn be numty_u1.
-    2) Let fN be num__u4.
-    3) If cvtop_u2 is of the case TRUNC, then:
-      a) Let (TRUNC sx) be cvtop_u2.
-      b) Return $list_($trunc__($sizenn(Fnn), $sizenn(Inn), sx, fN)).
-    4) If cvtop_u2 is of the case TRUNC_SAT, then:
-      a) Let (TRUNC_SAT sx) be cvtop_u2.
-      b) Return $list_($trunc_sat__($sizenn(Fnn), $sizenn(Inn), sx, fN)).
-4. If ((numty_u0 is F32) and ((numty_u1 is F64) and (cvtop_u2 is PROMOTE))), then:
-  a. Let fN be num__u4.
-  b. Return $promote__(32, 64, fN).
-5. If ((numty_u0 is F64) and ((numty_u1 is F32) and (cvtop_u2 is DEMOTE))), then:
-  a. Let fN be num__u4.
-  b. Return $demote__(64, 32, fN).
-6. If the type of numty_u1 is Fnn, then:
-  a. Let Fnn be numty_u1.
-  b. If the type of numty_u0 is Inn, then:
-    1) Let Inn be numty_u0.
-    2) Let iN be num__u4.
-    3) If cvtop_u2 is of the case CONVERT, then:
-      a) Let (CONVERT sx) be cvtop_u2.
-      b) Return [$convert__($sizenn(Inn), $sizenn(Fnn), sx, iN)].
-7. Assert: Due to validation, (cvtop_u2 is REINTERPRET).
-8. If the type of numty_u1 is Fnn, then:
-  a. Let Fnn be numty_u1.
-  b. If the type of numty_u0 is Inn, then:
-    1) Let Inn be numty_u0.
-    2) Let iN be num__u4.
-    3) If ($sizenn(Inn) is $sizenn(Fnn)), then:
-      a) Return [$reinterpret__(Inn, Fnn, iN)].
-9. Assert: Due to validation, the type of numty_u0 is Fnn.
-10. Let Fnn be numty_u0.
-11. Assert: Due to validation, the type of numty_u1 is Inn.
-12. Let Inn be numty_u1.
-13. Let fN be num__u4.
-14. Assert: Due to validation, ($sizenn(Inn) is $sizenn(Fnn)).
-15. Return [$reinterpret__(Fnn, Inn, fN)].
+    1) Let Inn_1 be numty_u1.
+    2) Let iN_1 be num__u3.
+    3) If cvtop_u0 is of the case CONVERT, then:
+      a) Let (CONVERT sx) be cvtop_u0.
+      b) Return [$convert__($sizenn1(Inn_1), $sizenn2(Fnn_2), sx, iN_1)].
+5. If ((cvtop_u0 is PROMOTE) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn_1 be numty_u1.
+  b. If the type of numty_u4 is Fnn, then:
+    1) Let Fnn_2 be numty_u4.
+    2) Let fN_1 be num__u3.
+    3) Return $promote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1).
+6. If ((cvtop_u0 is DEMOTE) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn_1 be numty_u1.
+  b. If the type of numty_u4 is Fnn, then:
+    1) Let Fnn_2 be numty_u4.
+    2) Let fN_1 be num__u3.
+    3) Return $demote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1).
+7. Assert: Due to validation, (cvtop_u0 is REINTERPRET).
+8. If the type of numty_u4 is Fnn, then:
+  a. Let Fnn_2 be numty_u4.
+  b. If the type of numty_u1 is Inn, then:
+    1) Let Inn_1 be numty_u1.
+    2) Let iN_1 be num__u3.
+    3) If ($size(Inn_1) is $size(Fnn_2)), then:
+      a) Return [$reinterpret__(Inn_1, Fnn_2, iN_1)].
+9. Assert: Due to validation, the type of numty_u1 is Fnn.
+10. Let Fnn_1 be numty_u1.
+11. Assert: Due to validation, the type of numty_u4 is Inn.
+12. Let Inn_2 be numty_u4.
+13. Let fN_1 be num__u3.
+14. Assert: Due to validation, ($size(Fnn_1) is $size(Inn_2)).
+15. Return [$reinterpret__(Fnn_1, Inn_2, fN_1)].
 
 invibytes_ N b*
 1. Let n be $ibytes__1^-1(N, b*).

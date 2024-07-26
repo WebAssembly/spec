@@ -206,8 +206,12 @@ def $psize(packtype) : nat    hint(show |%|)
 def $lsize(lanetype) : nat    hint(show |%|)
 def $lanetype(shape) : lanetype
 
-def $sizenn(numtype) : nat     hint(show n)
+def $sizenn(numtype) : nat     hint(show N)   hint(macro none)  ;; HACK!
+def $sizenn1(numtype) : nat    hint(show N_1) hint(macro none)  ;; HACK!
+def $sizenn2(numtype) : nat    hint(show N_2) hint(macro none)  ;; HACK!
 def $sizenn(nt) = $size(nt)
+def $sizenn1(nt) = $size(nt)
+def $sizenn2(nt) = $size(nt)
 
 def $lsizenn(lanetype) : nat   hint(show N)   hint(macro none)  ;; HACK!
 def $lsizenn1(lanetype) : nat  hint(show N_1) hint(macro none)  ;; HACK!
