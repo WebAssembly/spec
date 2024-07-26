@@ -230,10 +230,18 @@ let rec pre_process prem = match prem.it with
     ) ->
       let expanded_dt = { dt with it = CallE ("expanddt" $ no_region, [ExpA dt $ no_region]); note = ct.note } in
       [ { prem with it = IfPr (CmpE (EqOp, expanded_dt, ct) $$ no_region % (BoolT $ no_region)) } ]
-  | RulePr (id, _, { it=TupE [_context; lhs; rhs]; at; note })
-  when String.ends_with ~suffix:"_type" id.it ->
-    let typing_function_call = { it=CallE (id, [ExpA lhs $ lhs.at]); at; note } in
-    [ { prem with it=IfPr (CmpE (EqOp, typing_function_call, rhs) $$ at % note) } ]
+  | RulePr (id, mixop, exp) ->
+    let open El.Atom in
+    (match mixop, exp.it with
+    (* |- `lhs` : `rhs` *)
+    | [[turnstile]; [colon]; []], TupE [lhs; rhs]
+    (* `C` |- `lhs` : `rhs` *)
+    | [[]; [turnstile]; [colon]; []], TupE [_; lhs; rhs]
+    when turnstile.it = Turnstile && colon.it = Colon ->
+      let typing_function_call = CallE (id, [ExpA lhs $ lhs.at]) $$ exp.at % exp.note in
+      [ { prem with it=IfPr (CmpE (EqOp, typing_function_call, rhs) $$ exp.at % exp.note) } ]
+    | _ -> [ prem ]
+    )
   (* Split -- if e1 /\ e2 *)
   | IfPr ( { it = BinE (AndOp, e1, e2); _ } ) ->
     let p1 = { prem with it = IfPr ( e1 ) } in
