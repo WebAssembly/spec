@@ -743,12 +743,12 @@ and handle_special_lhs lhs rhs free_ids =
   | ListE es ->
     let bindings, es' = extract_non_names es in
     if List.length es >= 2 then (* TODO: remove this. This is temporarily for a pure function returning stores *)
-      letI (listE es' ~at:lhs.at ~note:rhs.note, rhs) ~at:at :: translate_bindings free_ids bindings
+      letI (listE es' ~at:lhs.at ~note:lhs.note, lhs) ~at:at :: translate_bindings free_ids bindings
     else
       [
         ifI
           ( binE (EqOp, lenE rhs ~note:natT, numE (Z.of_int (List.length es)) ~note:natT) ~note:boolT,
-            letI (listE es' ~at:lhs.at ~note:rhs.note, rhs) ~at:at :: translate_bindings free_ids bindings,
+            letI (listE es' ~at:lhs.at ~note:lhs.note, rhs) ~at:at :: translate_bindings free_ids bindings,
             [] );
       ]
   | OptE None ->
@@ -770,14 +770,14 @@ and handle_special_lhs lhs rhs free_ids =
     [
       ifI
         ( isDefinedE rhs ~note:boolT,
-          letI (optE (Some fresh) ~at:lhs.at ~note:rhs.note, rhs) ~at:at :: handle_special_lhs e fresh free_ids,
+          letI (optE (Some fresh) ~at:lhs.at ~note:lhs.note, rhs) ~at:at :: handle_special_lhs e fresh free_ids,
           [] );
      ]
   | BinE (AddOp, a, b) ->
     [
       ifI
         ( binE (GeOp, rhs, b) ~note:boolT,
-          [letI (a, binE (SubOp, rhs, b) ~at:at ~note:a.note) ~at:at],
+          [letI (a, binE (SubOp, rhs, b) ~at:at ~note:natT) ~at:at],
           [] );
     ]
   | CatE (prefix, suffix) ->
@@ -802,7 +802,7 @@ and handle_special_lhs lhs rhs free_ids =
     [
       ifI
         ( cond,
-          letI (catE (prefix', suffix') ~at:lhs.at ~note:rhs.note, rhs) ~at:at
+          letI (catE (prefix', suffix') ~at:lhs.at ~note:lhs.note, rhs) ~at:at
             :: translate_bindings free_ids (bindings_p @ bindings_s),
           [] );
     ]
