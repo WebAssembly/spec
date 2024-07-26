@@ -77,6 +77,8 @@ let rec t_exp env e : prem list =
   | TheE exp ->
     [IfPr (CmpE (NeOp, exp, OptE None $$ e.at % exp.note) $$ e.at % (BoolT $ e.at)) $ e.at]
   | IterE (_exp, iterexp) -> iter_side_conditions env iterexp
+  | MemE (_exp, exp) ->
+    [IfPr (CmpE (GtOp NatT, LenE exp $$ exp.at % (NumT NatT $ exp.at), NatE Z.zero $$ no_region % (NumT NatT $ no_region)) $$ e.at % (BoolT $ e.at)) $ e.at]
   | _ -> []
   end @
   (* And now descend *)

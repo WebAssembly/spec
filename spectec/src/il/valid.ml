@@ -325,9 +325,17 @@ and infer_exp env e : typ =
     )
   | OptE _ -> error e.at "cannot infer type of option"
   | TheE e1 -> as_iter_typ Opt "option" env Check (infer_exp env e1) e1.at
-  | ListE _ -> error e.at "cannot infer type of list"
+  | ListE es ->
+    (match List.map (infer_exp env) es with
+    | [] -> error e.at "cannot infer type of list"
+    | t :: ts ->
+      if List.for_all (Eq.eq_typ t) ts then
+        IterT (t, List) $ e.at
+      else
+        error e.at "cannot infer type of list"
+    )
   | CatE _ -> error e.at "cannot infer type of concatenation"
-  | CaseE _ -> error e.at "cannot infer type of case constructor"
+  | CaseE _ -> e.note (* error e.at "cannot infer type of case constructor" *)
   | SubE _ -> error e.at "cannot infer type of subsumption"
 
 

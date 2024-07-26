@@ -235,7 +235,7 @@ rule Step/ctxt-frame:
 
 rule Step_pure/unop-val:
   (CONST nt c_1) (UNOP nt unop)  ~>  (CONST nt c)
-  -- if $unop_(nt, unop, c_1) = c  ;; TODO(1, rossberg): nondet
+  -- if c <- $unop_(nt, unop, c_1)
 
 rule Step_pure/unop-trap:
   (CONST nt c_1) (UNOP nt unop)  ~>  TRAP
@@ -244,7 +244,7 @@ rule Step_pure/unop-trap:
 
 rule Step_pure/binop-val:
   (CONST nt c_1) (CONST nt c_2) (BINOP nt binop)  ~>  (CONST nt c)
-  -- if $binop_(nt, binop, c_1, c_2) = c  ;; TODO(1, rossberg): nondet
+  -- if c <- $binop_(nt, binop, c_1, c_2)
 
 rule Step_pure/binop-trap:
   (CONST nt c_1) (CONST nt c_2) (BINOP nt binop)  ~>  TRAP
@@ -262,7 +262,7 @@ rule Step_pure/relop:
 
 rule Step_pure/cvtop-val:
   (CONST nt_1 c_1) (CVTOP nt_2 nt_1 cvtop)  ~>  (CONST nt_2 c)
-  -- if $cvtop__(nt_1, nt_2, cvtop, c_1) = c  ;; TODO(1, rossberg): nondet
+  -- if c <- $cvtop__(nt_1, nt_2, cvtop, c_1)
 
 rule Step_pure/cvtop-trap:
   (CONST nt_1 c_1) (CVTOP nt_2 nt_1 cvtop)  ~>  TRAP
@@ -592,18 +592,18 @@ rule Step_pure/any.convert_extern-addr:
 
 rule Step_pure/vvunop:
   (VCONST V128 c_1) (VVUNOP V128 vvunop)  ~>  (VCONST V128 c)
-  -- if c = $vvunop_(V128, vvunop, c_1) ;; TODO(1, rossberg): nondet
+  -- if c <- $vvunop_(V128, vvunop, c_1)
 
 
 rule Step_pure/vvbinop:
   (VCONST V128 c_1) (VCONST V128 c_2) (VVBINOP V128 vvbinop)  ~>  (VCONST V128 c)
-  -- if c = $vvbinop_(V128, vvbinop, c_1, c_2) ;; TODO
+  -- if c <- $vvbinop_(V128, vvbinop, c_1, c_2)
 
 
 rule Step_pure/vvternop:
   (VCONST V128 c_1) (VCONST V128 c_2) (VCONST V128 c_3) (VVTERNOP V128 vvternop)  ~>  (VCONST V128 c)
   ----
-  -- if c = $vvternop_(V128, vvternop, c_1, c_2, c_3) ;; TODO(1, rossberg): nondet
+  -- if c <- $vvternop_(V128, vvternop, c_1, c_2, c_3)
 
 
 rule Step_pure/vvtestop:
@@ -611,14 +611,18 @@ rule Step_pure/vvtestop:
   -- if c = $ine_($vsize(V128), c_1, 0)
 
 
-rule Step_pure/vunop:
+rule Step_pure/vunop-val:
   (VCONST V128 c_1) (VUNOP sh vunop)  ~>  (VCONST V128 c)
-  -- if c = $vunop_(sh, vunop, c_1)
+  -- if c <- $vunop_(sh, vunop, c_1)
+
+rule Step_pure/vunop-trap:
+  (VCONST V128 c_1) (VUNOP sh vunop)  ~>  TRAP
+  -- if $vunop_(sh, vunop, c_1) = eps
 
 
 rule Step_pure/vbinop-val:
   (VCONST V128 c_1) (VCONST V128 c_2) (VBINOP sh vbinop)  ~>  (VCONST V128 c)
-  -- if $vbinop_(sh, vbinop, c_1, c_2) = c ;; TODO(1, rossberg): nondet
+  -- if c <- $vbinop_(sh, vbinop, c_1, c_2)
 
 rule Step_pure/vbinop-trap:
   (VCONST V128 c_1) (VCONST V128 c_2) (VBINOP sh vbinop)  ~>  TRAP
@@ -712,19 +716,22 @@ rule Step_pure/vnarrow:
 
 
 rule Step_pure/vcvtop-full:
-  (VCONST V128 c_1) (VCVTOP (Lnn_2 X M) (Lnn_1 X M) vcvtop sx?) ~> (VCONST V128 c)
-  -- if c'* = $lanes_(Lnn_1 X M, c_1)
-  -- if c = $invlanes_(Lnn_2 X M, $vcvtop__(Lnn_1 X M, Lnn_2 X M, vcvtop, sx?, c')*)
+  (VCONST V128 c_1) (VCVTOP (Lnn_2 X M) (Lnn_1 X M) vcvtop) ~> (VCONST V128 c)
+  -- if ci* = $lanes_(Lnn_1 X M, c_1)
+  -- if cj** = $setproduct_(lane_(Lnn_2), $vcvtop__(Lnn_1 X M, Lnn_2 X M, vcvtop, ci)*)
+  -- if c <- $invlanes_(Lnn_2 X M, cj*)*
 
 rule Step_pure/vcvtop-half:
-  (VCONST V128 c_1) (VCVTOP (Lnn_2 X M_2) (Lnn_1 X M_1) vcvtop half sx?) ~> (VCONST V128 c)
+  (VCONST V128 c_1) (VCVTOP (Lnn_2 X M_2) (Lnn_1 X M_1) vcvtop half eps) ~> (VCONST V128 c)
   -- if ci* = $lanes_(Lnn_1 X M_1, c_1)[$half__(Lnn_1 X M_1, Lnn_2 X M_2, half, 0, M_2) : M_2]
-  -- if c = $invlanes_(Lnn_2 X M_2, $vcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, sx?, ci)*)
+  -- if cj** = $setproduct_(lane_(Lnn_2), $vcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, ci)*)
+  -- if c <- $invlanes_(Lnn_2 X M_2, cj*)*
 
 rule Step_pure/vcvtop-zero:
-  (VCONST V128 c_1) (VCVTOP (nt_2 X M_2) (nt_1 X M_1) vcvtop sx? zero) ~> (VCONST V128 c)
+  (VCONST V128 c_1) (VCVTOP (nt_2 X M_2) (nt_1 X M_1) vcvtop eps zero) ~> (VCONST V128 c)
   -- if ci* = $lanes_(nt_1 X M_1, c_1)
-  -- if c = $invlanes_(nt_2 X M_2, $vcvtop__(nt_1 X M_1, nt_2 X M_2, vcvtop, sx?, ci)* $zero(nt_2)^M_1)
+  -- if cj** = $setproduct_(lane_(nt_2), ($vcvtop__(nt_1 X M_1, nt_2 X M_2, vcvtop, ci)* ++ $zero(nt_2)^M_1))
+  -- if c <- $invlanes_(nt_2 X M_2, cj*)*
 
 
 ;; Local instructions

@@ -66,6 +66,7 @@ let getCurFrameE ?(at = no) ?(note = no_note) () = GetCurFrameE |> mk_expr at no
 let getCurLabelE ?(at = no) ?(note = no_note) () = GetCurLabelE |> mk_expr at note
 let getCurContextE ?(at = no) ?(note = no_note) () = GetCurContextE |> mk_expr at note
 let contE ?(at = no) ?(note = no_note) e = ContE e |> mk_expr at note
+let chooseE ?(at = no) ?(note = no_note) e = ChooseE e |> mk_expr at note
 let isCaseOfE ?(at = no) ?(note = no_note) (e, a) = IsCaseOfE (e, a) |> mk_expr at note
 let isValidE ?(at = no) ?(note = no_note) e = IsValidE e |> mk_expr at note
 let contextKindE ?(at = no) ?(note = no_note) (a, e) = ContextKindE (a, e) |> mk_expr at note
@@ -91,6 +92,8 @@ let boolV b = BoolV b
 let strV r = StrV r
 let caseV (s, vl) = CaseV (s, vl)
 let optV v_opt = OptV v_opt
+let noneV = OptV None
+let someV v = OptV (Some v)
 let tupV vl = TupV vl
 let nullary s = CaseV (String.uppercase_ascii s, [])
 let listV a = ListV (ref a)
