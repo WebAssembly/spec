@@ -429,9 +429,9 @@ let imax : numerics =
       | vs -> error_values "imax" vs
       );
   }
-let iaddsat : numerics =
+let iadd_sat : numerics =
   {
-    name = "iaddsat";
+    name = "iadd_sat";
     f =
       (function
       | [ NumV _ as z; CaseV ("U", []); NumV m; NumV n ] -> sat.f [ z; nullary "U"; NumV Z.(add m n)]
@@ -439,12 +439,12 @@ let iaddsat : numerics =
         let m = signed.f [ z; NumV m ] |> al_to_z in
         let n = signed.f [ z; NumV n ] |> al_to_z in
         sat.f [ z; nullary "S"; NumV Z.(add m n)]
-      | vs -> error_values "iaddsat" vs
+      | vs -> error_values "iadd_sat" vs
       );
   }
-let isubsat : numerics =
+let isub_sat : numerics =
   {
-    name = "isubsat";
+    name = "isub_sat";
     f =
       (function
       | [ NumV _ as z; CaseV ("U", []); NumV m; NumV n ] -> sat.f [ z; nullary "U"; NumV Z.(sub m n)]
@@ -452,28 +452,32 @@ let isubsat : numerics =
         let m = signed.f [ z; NumV m ] |> al_to_z in
         let n = signed.f [ z; NumV n ] |> al_to_z in
         sat.f [ z; nullary "S"; NumV Z.(sub m n)]
-      | vs -> error_values "isubsat" vs
+      | vs -> error_values "isub_sat" vs
       );
   }
-let iavgr_u : numerics =
+let iavgr : numerics =
   {
-    name = "iavgr_u";
+    name = "iavgr";
     f =
       (function
-      | [ NumV _ ; NumV m; NumV n ] -> Z.((m + n + one) / two) |> al_of_z
-      | vs -> error_values "iavgr_u" vs
+      | [ NumV _ ; CaseV ("U", []); NumV m; NumV n ] -> Z.((m + n + one) / two) |> al_of_z
+      | [ NumV _ as z; CaseV ("S", []); NumV m; NumV n ] ->
+        let m = signed.f [ z; NumV m ] |> al_to_z in
+        let n = signed.f [ z; NumV n ] |> al_to_z in
+        Z.((m + n + one) / two) |> al_of_z
+      | vs -> error_values "iavgr" vs
       );
   }
-let iq15mulrsat_s : numerics =
+let iq15mulr_sat : numerics =
   {
-    name = "iq15mulrsat_s";
+    name = "iq15mulr_sat";
     f =
       (function
-      | [ NumV _ as z; NumV _ as m; NumV _ as n ] ->
+      | [ NumV _ as z; sx; NumV _ as m; NumV _ as n ] ->
         let m = signed.f [ z; m ] |> al_to_z in
         let n = signed.f [ z; n ] |> al_to_z in
-        sat.f [ z; nullary "S"; NumV Z.(shift_right (mul m n + of_int 0x4000) 15) ]
-      | vs -> error_values "iq15mulrsat_s" vs
+        sat.f [ z; sx; NumV Z.(shift_right (mul m n + of_int 0x4000) 15) ]
+      | vs -> error_values "iq15mulr_sat" vs
       );
   }
 
@@ -739,16 +743,16 @@ let fpmax : numerics =
       );
   }
 
-let ext : numerics =
+let extend : numerics =
   {
-    name = "ext";
+    name = "extend";
     f =
       (function
       | [ NumV z; _; CaseV ("U", []); NumV v ] when z = Z.of_int 128 -> V128.I64x2.of_lanes [ z_to_int64 v; 0L ] |> al_of_vec128 (* HARDCODE *)
       | [ _; _; CaseV ("U", []); v ] -> v
       | [ NumV _ as m; NumV _ as n; CaseV ("S", []); NumV _ as i ] ->
         inverse_of_signed.f [ n; signed.f [ m; i ] ]
-      | vs -> error_values "ext" vs
+      | vs -> error_values "extend" vs
       );
   }
 
@@ -980,8 +984,8 @@ let inverse_of_cbytes : numerics =
       | args -> inverse_of_nbytes.f args
   }
 
-let bytes_ : numerics = { name = "bytes"; f = nbytes.f }
-let inverse_of_bytes_ : numerics = { name = "inverse_of_bytes"; f = inverse_of_nbytes.f }
+let bytes : numerics = { name = "bytes"; f = nbytes.f }
+let inverse_of_bytes : numerics = { name = "inverse_of_bytes"; f = inverse_of_nbytes.f }
 
 let wrap : numerics =
   {
@@ -1018,7 +1022,7 @@ let narrow : numerics =
 
 let lanes : numerics =
   {
-    name = "lanes_";
+    name = "lanes";
     f =
       (function
       | [ TupV [ CaseV ("I8", []); NumV z ]; v ] when z = Z.of_int 16 ->
@@ -1038,7 +1042,7 @@ let lanes : numerics =
   }
 let inverse_of_lanes : numerics =
   {
-    name = "inverse_of_lanes_";
+    name = "inverse_of_lanes";
     f =
       (function
       | [ TupV [ CaseV ("I8", []); NumV z ]; ListV lanes; ] when z = Z.of_int 16 && Array.length !lanes = 16 ->
@@ -1098,7 +1102,7 @@ let rec inverse_of_concat_helper = function
 
 let inverse_of_concat : numerics =
   {
-    name = "inverse_of_concat_";
+    name = "inverse_of_concat";
     f =
       (function
       | [ ListV _ as lv ] ->
@@ -1119,8 +1123,8 @@ let numerics_list : numerics list = [
   inverse_of_vbytes;
   inverse_of_zbytes;
   inverse_of_cbytes;
-  bytes_;
-  inverse_of_bytes_;
+  bytes;
+  inverse_of_bytes;
   inverse_of_concat;
   signed;
   inverse_of_signed;
@@ -1154,10 +1158,10 @@ let numerics_list : numerics list = [
   ineg;
   imin;
   imax;
-  iaddsat;
-  isubsat;
-  iavgr_u;
-  iq15mulrsat_s;
+  iadd_sat;
+  isub_sat;
+  iavgr;
+  iq15mulr_sat;
   fadd;
   fsub;
   fmul;
@@ -1180,7 +1184,7 @@ let numerics_list : numerics list = [
   fge;
   fpmin;
   fpmax;
-  ext;
+  extend;
   wrap;
   trunc;
   trunc_sat;
@@ -1198,9 +1202,19 @@ let numerics_list : numerics list = [
   inverse_of_ibits;
 ]
 
-let call_numerics fname args =
+let rec strip_suffix name =
+  let last = String.length name - 1 in
+  if name <> "" && name.[last] = '_' then
+    strip_suffix (String.sub name 0 last)
+  else
+    name
+
+let call_numerics name args =
+  let fname = strip_suffix name in
   match List.find_opt (fun numerics -> numerics.name = fname) numerics_list with
   | Some numerics -> numerics.f args
-  | None -> raise (Exception.InvalidFunc ("Invalid numerics: " ^ fname))
+  | None -> raise (Exception.InvalidFunc ("Invalid numerics: " ^ name))
 
-let mem name = List.exists (fun numerics -> numerics.name = name) numerics_list
+let mem name =
+  let fname = strip_suffix name in
+  List.exists (fun numerics -> numerics.name = fname) numerics_list

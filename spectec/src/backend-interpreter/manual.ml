@@ -46,7 +46,21 @@ let ref_type =
   | [CaseV ("REF.EXTERN", [ _ ])] -> CaseV ("REF", [ nonull; nullary "EXTERN"])
   | vs -> Numerics.error_values "$Ref_type" vs
 
-let manual_map = FuncMap.add "Ref_type" ref_type FuncMap.empty
+let module_ok = function
+  | [_module_] ->
+    (*
+    module_
+    |> Construct.al_to_module
+    |> Reference_interpreter.Valid.check_module;
+    *)
+    (* TODO: Moduletype *)
+    TupV [listV_of_list []; listV_of_list []]
+  | vs -> Numerics.error_values "$Module_ok" vs
+
+let manual_map =
+  FuncMap.empty
+  |> FuncMap.add "Ref_type" ref_type
+  |> FuncMap.add "Module_ok" module_ok
 
 let mem name = FuncMap.mem name manual_map
 

@@ -13,18 +13,18 @@ type unit_walker = {
   walk_iter: unit_walker -> iter -> unit;
 }
 
-let rec walk_iter (walker: unit_walker) (iter: iter) : unit =
+let walk_iter (walker: unit_walker) (iter: iter) : unit =
   match iter with
   | Opt | List | List1 -> ()
   | ListN (e, _) -> walker.walk_expr walker e
 
-and walk_path (walker: unit_walker) (path: path) : unit =
+let walk_path (walker: unit_walker) (path: path) : unit =
   match path.it with
   | IdxP e -> walker.walk_expr walker e
   | SliceP (e1, e2) -> walker.walk_expr walker e1; walker.walk_expr walker e2
   | DotP _ -> ()
 
-and walk_expr (walker: unit_walker) (expr: expr) : unit =
+let walk_expr (walker: unit_walker) (expr: expr) : unit =
   match expr.it with
   | VarE _ | SubE _ | NumE _ | BoolE _ | GetCurStateE | GetCurLabelE
   | GetCurContextE | GetCurFrameE | YetE _ | TopLabelE | TopFrameE
@@ -49,17 +49,17 @@ and walk_expr (walker: unit_walker) (expr: expr) : unit =
   | OptE e_opt -> Option.iter (walker.walk_expr walker) e_opt
   | IterE (e, _, i) -> walker.walk_expr walker e; walk_iter walker i
 
-let rec walk_instr (walker: unit_walker) (instr: instr) : unit =
+let walk_instr (walker: unit_walker) (instr: instr) : unit =
   match instr.it with
   | IfI (e, il1, il2) ->
     walker.walk_expr walker e;
-    List.iter (walk_instr walker) il1; List.iter (walk_instr walker) il2
+    List.iter (walker.walk_instr walker) il1; List.iter (walker.walk_instr walker) il2
   | OtherwiseI il -> List.iter (walker.walk_instr walker) il
   | EitherI (il1, il2) ->
-    List.iter (walker.walk_instr walker) il1; List.iter (walk_instr walker) il2
+    List.iter (walker.walk_instr walker) il1; List.iter (walker.walk_instr walker) il2
   | EnterI (e1, e2, il) ->
     walker.walk_expr walker e1; walker.walk_expr walker e2;
-    List.iter (walk_instr walker) il
+    List.iter (walker.walk_instr walker) il
   | TrapI | NopI | ReturnI None | ExitI _ | YetI _ -> ()
   | AssertI e | PushI e | PopI e | PopAllI e
   | ReturnI (Some e)| ExecuteI e | ExecuteSeqI e -> walker.walk_expr walker e
@@ -72,9 +72,9 @@ let rec walk_instr (walker: unit_walker) (instr: instr) : unit =
 let walk_algo (walker: unit_walker) (algo: algorithm) : unit =
   match algo.it with
   | RuleA (_, exprs, instrs) ->
-    List.iter (walker.walk_expr walker) exprs; List.iter (walk_instr walker) instrs
+    List.iter (walker.walk_expr walker) exprs; List.iter (walker.walk_instr walker) instrs
   | FuncA (_, exprs, instrs) ->
-    List.iter (walker.walk_expr walker) exprs; List.iter (walk_instr walker) instrs
+    List.iter (walker.walk_expr walker) exprs; List.iter (walker.walk_instr walker) instrs
 
 let base_unit_walker = { walk_algo; walk_instr; walk_expr; walk_path; walk_iter }
 

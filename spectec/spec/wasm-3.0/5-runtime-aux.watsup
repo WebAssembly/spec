@@ -31,14 +31,14 @@ def $default_(REF ht) = eps
 
 ;; Packed fields
 
-def $packfield(storagetype, val) : fieldval         hint(show $pack_(%,%)) hint(macro "packfield")
-def $unpackfield(storagetype, sx?, fieldval) : val  hint(show $unpack_(%)^(%)#((%))) hint(macro "unpackfield")
+def $packfield_(storagetype, val) : fieldval         hint(show $pack_(%,%)) hint(macro "packfield")
+def $unpackfield_(storagetype, sx?, fieldval) : val  hint(show $unpack_(%)^(%)#((%))) hint(macro "unpackfield")
 
-def $packfield(valtype, val) = val
-def $packfield(packtype, CONST I32 i) = PACK packtype $wrap(32, $psize(packtype), i)
+def $packfield_(valtype, val) = val
+def $packfield_(packtype, CONST I32 i) = PACK packtype $wrap__(32, $psize(packtype), i)
 
-def $unpackfield(valtype, eps, val) = val
-def $unpackfield(packtype, sx, PACK packtype i) = CONST I32 $ext($psize(packtype), 32, sx, i)
+def $unpackfield_(valtype, eps, val) = val
+def $unpackfield_(packtype, sx, PACK packtype i) = CONST I32 $extend__($psize(packtype), 32, sx, i)
 
 
 ;; Projections
@@ -140,11 +140,11 @@ def $with_data((s; f), x, b*) = s[.DATAS[f.MODULE.DATAS[x]].BYTES = b*]; f
 def $with_struct((s; f), a, i, fv) = s[.STRUCTS[a].FIELDS[i] = fv]; f
 def $with_array((s; f), a, i, fv) = s[.ARRAYS[a].FIELDS[i] = fv]; f
 
-def $ext_structinst(state, structinst*) : state  hint(show %[.STRUCTS =++ %]) hint(macro "Z%")
-def $ext_arrayinst(state, arrayinst*) : state    hint(show %[.ARRAYS =++ %])  hint(macro "Z%")
+def $add_structinst(state, structinst*) : state  hint(show %[.STRUCTS =++ %]) hint(macro "Z%")
+def $add_arrayinst(state, arrayinst*) : state    hint(show %[.ARRAYS =++ %])  hint(macro "Z%")
 
-def $ext_structinst((s; f), si*) = s[.STRUCTS =++ si*]; f
-def $ext_arrayinst((s; f), ai*) = s[.ARRAYS =++ ai*]; f
+def $add_structinst((s; f), si*) = s[.STRUCTS =++ si*]; f
+def $add_arrayinst((s; f), ai*) = s[.ARRAYS =++ ai*]; f
 
 
 ;; Growing

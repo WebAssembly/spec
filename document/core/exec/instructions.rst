@@ -296,7 +296,7 @@ $${rule-prose: exec/i31.get}
 
 5. Let :math:`\REFI31NUM~i` be the reference value :math:`\reff`.
 
-6. Let :math:`j` be the result of computing :math:`\ext^{\sx}_{31,32}(i)`.
+6. Let :math:`j` be the result of computing :math:`\extend^{\sx}_{31,32}(i)`.
 
 7. Push the value :math:`\I32.\CONST~j` to the stack.
 
@@ -1100,7 +1100,7 @@ $${rule-prose: exec/vrelop}
 
 6. Let :math:`i^\ast` be the result of computing :math:`\vrelop_t(i_1^\ast, i_2^\ast)`.
 
-7. Let :math:`j^\ast` be the result of computing :math:`\exts_{1,|t|}(i^\ast)`.
+7. Let :math:`j^\ast` be the result of computing :math:`\extends_{1,|t|}(i^\ast)`.
 
 8. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t\K{x}N}(j^\ast)`.
 
@@ -1115,7 +1115,7 @@ $${rule: {Step_pure/vrelop}}
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff c = \lanes^{-1}_{t\K{x}N}(\exts_{1,|t|}(\vrelop_t(\lanes_{t\K{x}N}(c_1), \lanes_{t\K{x}N}(c_2)))))
+     (\iff c = \lanes^{-1}_{t\K{x}N}(\extends_{1,|t|}(\vrelop_t(\lanes_{t\K{x}N}(c_1), \lanes_{t\K{x}N}(c_2)))))
      \end{array}
    \end{array}
 
@@ -1316,7 +1316,7 @@ $${rule-prose: exec/vextract_lane}
 
 5. Let :math:`t_2` be the type :math:`\unpackshape(t_1\K{x}N)`.
 
-6. Let :math:`c_2` be the result of computing :math:`\ext^{sx^?}_{t_1,t_2}(i^\ast[x])`.
+6. Let :math:`c_2` be the result of computing :math:`\extend^{sx^?}_{t_1,t_2}(i^\ast[x])`.
 
 7. Push the value :math:`t_2.\CONST~c_2` to the stack.
 
@@ -1330,7 +1330,7 @@ $${rule: {Step_pure/vextract_lane-*}}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
       (\iff & t_2 = \unpackshape(t_1\K{x}N) \\
-       \wedge & c_2 = \ext^{sx^?}_{t_1,t_2}(\lanes_{t_1\K{x}N}(c_1)[x]))
+       \wedge & c_2 = \extend^{sx^?}_{t_1,t_2}(\lanes_{t_1\K{x}N}(c_1)[x]))
      \end{array}
    \end{array}
 
@@ -1390,7 +1390,7 @@ $${rule-prose: exec/vextunop}
 
 4. Let :math:`i^\ast` be the result of computing :math:`\lanes_{t_1\K{x}M}(c_1)`.
 
-5. Let :math:`(j_1~j_2)^\ast` be the result of computing :math:`\ext^{\sx}_{|t_1|,|t_2|}(i^\ast)`.
+5. Let :math:`(j_1~j_2)^\ast` be the result of computing :math:`\extend^{\sx}_{|t_1|,|t_2|}(i^\ast)`.
 
 6. Let :math:`k^\ast` be the result of computing :math:`\iadd_{|t_2|}(j_1, j_2)^\ast`.
 
@@ -1407,7 +1407,7 @@ $${rule: {Step_pure/vextunop}}
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & (i_1~i_2)^\ast = \ext^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)) \\
+     (\iff & (i_1~i_2)^\ast = \extend^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)) \\
      \wedge & j^\ast = \iadd_{|t_2|}(i_1, i_2)^\ast \\
      \wedge & c = \lanes^{-1}_{t_2\K{x}N}(j^\ast))
      \end{array}
@@ -1445,9 +1445,9 @@ $${rule-prose: exec/vextbinop}
 
    b. Let :math:`j_2^\ast` be the sequence :math:`i_2^\ast[N \slice N]`.
 
-9. Let :math:`k_1^\ast` be the result of computing :math:`\ext^{\sx}_{|t_1|,|t_2|}(j_1^\ast)`.
+9. Let :math:`k_1^\ast` be the result of computing :math:`\extend^{\sx}_{|t_1|,|t_2|}(j_1^\ast)`.
 
-10. Let :math:`k_2^\ast` be the result of computing :math:`\ext^{\sx}_{|t_1|,|t_2|}(j_2^\ast)`.
+10. Let :math:`k_2^\ast` be the result of computing :math:`\extend^{\sx}_{|t_1|,|t_2|}(j_2^\ast)`.
 
 11. Let :math:`k^\ast` be the result of computing :math:`\imul_{|t_2|}(k_1^\ast, k_2^\ast)`.
 
@@ -1465,7 +1465,7 @@ $${rule: {Step_pure/vextbinop}}
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & i^\ast = \lanes_{t_1\K{x}M}(c_1)[\half(0, N) \slice N] \\
      \wedge & j^\ast = \lanes_{t_1\K{x}M}(c_2)[\half(0, N) \slice N] \\
-     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(\imul_{|t_2|}(\ext^{\sx}_{|t_1|,|t_2|}(i^\ast), \ext^{\sx}_{|t_1|,|t_2|}(j^\ast))))
+     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(\imul_{|t_2|}(\extend^{\sx}_{|t_1|,|t_2|}(i^\ast), \extend^{\sx}_{|t_1|,|t_2|}(j^\ast))))
      \end{array}
 
 where:
@@ -1492,11 +1492,11 @@ where:
 
 4. Let :math:`i_1^\ast` be the result of computing :math:`\lanes_{\I16X8}(c_1)`.
 
-5. Let :math:`j_1^\ast` be the result of computing :math:`\exts_{16,32}(i_1^\ast)`.
+5. Let :math:`j_1^\ast` be the result of computing :math:`\extends_{16,32}(i_1^\ast)`.
 
 6. Let :math:`i_2^\ast` be the result of computing :math:`\lanes_{\I16X8}(c_2)`.
 
-7. Let :math:`j_2^\ast` be the result of computing :math:`\exts_{16,32}(i_2^\ast)`.
+7. Let :math:`j_2^\ast` be the result of computing :math:`\extends_{16,32}(i_2^\ast)`.
 
 8. Let :math:`(k_1~k_2)^\ast` be the result of computing :math:`\imul_{32}(j_1^\ast, j_2^\ast)`.
 
@@ -1513,7 +1513,7 @@ where:
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & (i_1~i_2)^\ast = \imul_{32}(\exts_{16,32}(\lanes_{\I16X8}(c_1)), \exts_{16,32}(\lanes_{\I16X8}(c_2))) \\
+     (\iff & (i_1~i_2)^\ast = \imul_{32}(\extends_{16,32}(\lanes_{\I16X8}(c_1)), \extends_{16,32}(\lanes_{\I16X8}(c_2))) \\
      \wedge & j^\ast = \iadd_{32}(i_1, i_2)^\ast \\
      \wedge & c = \lanes^{-1}_{\I32X4}(j^\ast))
      \end{array}
@@ -1857,7 +1857,7 @@ $${rule-prose: exec/load}
 
     a. Let :math:`n` be the integer for which :math:`\bytes_{\iN}(n) = b^\ast`.
 
-    b. Let :math:`c` be the result of computing :math:`\ext^{\sx}_{N,|t|}(n)`.
+    b. Let :math:`c` be the result of computing :math:`\extend^{\sx}_{N,|t|}(n)`.
 
 13. Else:
 
@@ -1901,7 +1901,7 @@ $${rule: {Step_read/load-*}}
 
 12. Let :math:`W` be the integer :math:`M \cdot 2`.
 
-13. Let :math:`n_k` be the result of computing :math:`\ext^{\sx}_{M,W}(m_k)`.
+13. Let :math:`n_k` be the result of computing :math:`\extend^{\sx}_{M,W}(m_k)`.
 
 14. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\K{i}W\K{x}N}(n_0 \dots n_{N-1})`.
 
@@ -1920,7 +1920,7 @@ $${rule: {Step_read/load-*}}
      \wedge & \X{ea} + M \cdot N / 8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES| \\
      \wedge & \bytes_{\iM}(m_k) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES[\X{ea} + k \cdot M/8 \slice M/8]) \\
      \wedge & W = M \cdot 2 \\
-     \wedge & c = \lanes^{-1}_{\K{i}W\K{x}N}(\ext^{\sx}_{M,W}(m_0) \dots \ext^{\sx}_{M,W}(m_{N-1})))
+     \wedge & c = \lanes^{-1}_{\K{i}W\K{x}N}(\extend^{\sx}_{M,W}(m_0) \dots \extend^{\sx}_{M,W}(m_{N-1})))
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -2025,7 +2025,7 @@ $${rule: {Step_read/vload-splat-*}}
 
 11. Let :math:`n` be the integer for which :math:`\bytes_{\iN}(n) = b^\ast`.
 
-12. Let :math:`c` be the result of computing :math:`\extu_{N,128}(n)`.
+12. Let :math:`c` be the result of computing :math:`\extendu_{N,128}(n)`.
 
 13. Push the value :math:`\V128.\CONST~c` to the stack.
 
@@ -2040,7 +2040,7 @@ $${rule: {Step_read/vload-splat-*}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES| \\
      \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES[\X{ea} \slice N/8]) \\
-     \wedge & c = \extu_{N,128}(n)
+     \wedge & c = \extendu_{N,128}(n)
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}

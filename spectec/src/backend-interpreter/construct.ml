@@ -503,13 +503,13 @@ let al_to_int_vbinop : value -> V128Op.ibinop = function
   | CaseV ("MIN", [CaseV ("U", [])]) -> V128Op.MinU
   | CaseV ("MAX", [CaseV ("S", [])]) -> V128Op.MaxS
   | CaseV ("MAX", [CaseV ("U", [])]) -> V128Op.MaxU
-  | CaseV ("AVGR_U", []) -> V128Op.AvgrU
+  | CaseV ("AVGR", []) -> V128Op.AvgrU
   | CaseV ("ADD_SAT", [CaseV ("S", [])]) -> V128Op.AddSatS
   | CaseV ("ADD_SAT", [CaseV ("U", [])]) -> V128Op.AddSatU
   | CaseV ("SUB_SAT", [CaseV ("S", [])]) -> V128Op.SubSatS
   | CaseV ("SUB_SAT", [CaseV ("U", [])]) -> V128Op.SubSatU
-  | CaseV ("DOT", [CaseV ("S", [])]) -> V128Op.DotS
-  | CaseV ("Q15MULR_SAT_S", []) -> V128Op.Q15MulRSatS
+  | CaseV ("DOT", []) -> V128Op.DotS
+  | CaseV ("Q15MULR_SAT", []) -> V128Op.Q15MulRSatS
   | CaseV ("SWIZZLE", []) -> V128Op.Swizzle
   (*TODO *)
   | CaseV ("Shuffle", [ l ]) -> V128Op.Shuffle (al_to_list al_to_int l)
@@ -1412,12 +1412,12 @@ let al_of_int_vbinop : V128Op.ibinop -> value option = function
   | V128Op.MinU -> Some (caseV ("MIN", [nullary "U"]))
   | V128Op.MaxS -> Some (caseV ("MAX", [nullary "S"]))
   | V128Op.MaxU -> Some (caseV ("MAX", [nullary "U"]))
-  | V128Op.AvgrU -> Some (nullary "AVGR_U")
-  | V128Op.AddSatS -> Some (CaseV ("ADD_SAT", [nullary "S"]))
-  | V128Op.AddSatU -> Some (CaseV ("ADD_SAT", [nullary "U"]))
-  | V128Op.SubSatS -> Some (CaseV ("SUB_SAT", [nullary "S"]))
-  | V128Op.SubSatU -> Some (CaseV ("SUB_SAT", [nullary "U"]))
-  | V128Op.Q15MulRSatS -> Some (nullary "Q15MULR_SAT_S")
+  | V128Op.AvgrU -> Some (nullary "AVGR")
+  | V128Op.AddSatS -> Some (caseV ("ADD_SAT", [nullary "S"]))
+  | V128Op.AddSatU -> Some (caseV ("ADD_SAT", [nullary "U"]))
+  | V128Op.SubSatS -> Some (caseV ("SUB_SAT", [nullary "S"]))
+  | V128Op.SubSatU -> Some (caseV ("SUB_SAT", [nullary "U"]))
+  | V128Op.Q15MulRSatS -> Some (nullary "Q15MULR_SAT")
   | _ -> None
 
 let al_of_float_vbinop : V128Op.fbinop -> value = function
@@ -1460,7 +1460,7 @@ let al_of_special_vbinop = function
   | V128 (V128.I64x2 (V128Op.ExtMulHighU)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I64"; numV two ]; TupV [ nullary "I32"; numV four ]; caseV ("EXTMUL", [al_of_extension Pack.ZX; nullary "HIGH"]) ])
   | V128 (V128.I64x2 (V128Op.ExtMulLowS)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I64"; numV two ]; TupV [ nullary "I32"; numV four ]; caseV ("EXTMUL", [al_of_extension Pack.SX; nullary "LOW"]) ])
   | V128 (V128.I64x2 (V128Op.ExtMulLowU)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I64"; numV two ]; TupV [ nullary "I32"; numV four ]; caseV ("EXTMUL", [al_of_extension Pack.ZX; nullary "LOW"]) ] )
-  | V128 (V128.I32x4 (V128Op.DotS)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I32"; numV four ]; TupV [ nullary "I16"; numV eight ]; caseV ("DOT", [nullary "S"]) ])
+  | V128 (V128.I32x4 (V128Op.DotS)) -> CaseV ("VEXTBINOP", [ TupV [ nullary "I32"; numV four ]; TupV [ nullary "I16"; numV eight ]; nullary "DOT" ])
   | _ -> error "al_of_special_vbinop" empty
 
 let al_of_int_vcvtop = function

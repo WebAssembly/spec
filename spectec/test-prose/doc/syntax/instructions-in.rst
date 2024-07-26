@@ -24,7 +24,7 @@ $${syntax+:
   binop_
   testop_
   relop_
-  cvtop_}
+  cvtop__}
 }
 
 
