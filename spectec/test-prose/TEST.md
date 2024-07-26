@@ -7575,7 +7575,7 @@ rundata_ x (DATA b^n datam_u0)
 4. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT y x), (DATA.DROP x)].
 
 instantiate module externval*
-1. Assert: Due to validation, $Module_ok(module, (xt_I* -> xt_E*)).
+1. Let (xt_I* -> xt_E*) be $Module_ok(module).
 2. Assert: Due to validation, module is of the case MODULE.
 3. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
 4. Assert: Due to validation, ($Externval_type(externval) is xt_I)*.
