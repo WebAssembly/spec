@@ -979,7 +979,8 @@ warning: rule `Step_pure/vvunop` was never spliced
 warning: rule `Step_pure/vvbinop` was never spliced
 warning: rule `Step_pure/vvternop` was never spliced
 warning: rule `Step_pure/vvtestop` was never spliced
-warning: rule `Step_pure/vunop` was never spliced
+warning: rule `Step_pure/vunop-val` was never spliced
+warning: rule `Step_pure/vunop-trap` was never spliced
 warning: rule `Step_pure/vbinop-val` was never spliced
 warning: rule `Step_pure/vbinop-trap` was never spliced
 warning: rule `Step_pure/vtestop-true` was never spliced
@@ -1331,14 +1332,18 @@ warning: definition `isubsat` was never spliced
 warning: definition `ixor` was never spliced
 warning: definition `lanes_` was never spliced
 warning: definition `lanetype` was never spliced
+warning: definition `listproduct_` was never spliced
 warning: definition `local` was never spliced
 warning: definition `lpacknum` was never spliced
+warning: definition `lpaux2_` was never spliced
+warning: definition `lpaux_` was never spliced
 warning: definition `lsize` was never spliced
 warning: definition `lsizenn` was never spliced
 warning: definition `lsizenn1` was never spliced
 warning: definition `lsizenn2` was never spliced
 warning: definition `lunpack` was never spliced
 warning: definition `lunpacknum` was never spliced
+warning: definition `mapinvlanes_` was never spliced
 warning: definition `mem` was never spliced
 warning: definition `memarg0` was never spliced
 warning: definition `meminst` was never spliced
@@ -1857,16 +1862,19 @@ warning: definition prose `invibytes` was never spliced
 warning: definition prose `invlanes_` was never spliced
 warning: definition prose `invoke` was never spliced
 warning: definition prose `invsigned` was never spliced
-warning: definition prose `isize` was never spliced
 warning: definition prose `lanetype` was never spliced
+warning: definition prose `listproduct_` was never spliced
 warning: definition prose `local` was never spliced
 warning: definition prose `lpacknum` was never spliced
+warning: definition prose `lpaux2_` was never spliced
+warning: definition prose `lpaux_` was never spliced
 warning: definition prose `lsize` was never spliced
 warning: definition prose `lsizenn` was never spliced
 warning: definition prose `lsizenn1` was never spliced
 warning: definition prose `lsizenn2` was never spliced
 warning: definition prose `lunpack` was never spliced
 warning: definition prose `lunpacknum` was never spliced
+warning: definition prose `mapinvlanes_` was never spliced
 warning: definition prose `mem` was never spliced
 warning: definition prose `memarg0` was never spliced
 warning: definition prose `meminst` was never spliced
