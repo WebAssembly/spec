@@ -257,7 +257,6 @@ rule Step_pure/vunop-trap:
 rule Step_pure/vbinop-val:
   (VCONST V128 c_1) (VCONST V128 c_2) (VBINOP sh vbinop)  ~>  (VCONST V128 c)
   -- if c <- $vbinop_(sh, vbinop, c_1, c_2)
-  -- if $vbinop_(sh, vbinop, c_1, c_2) = c  ;; TODO
 
 rule Step_pure/vbinop-trap:
   (VCONST V128 c_1) (VCONST V128 c_2) (VBINOP sh vbinop)  ~>  TRAP

@@ -2077,24 +2077,23 @@ concat_ X_u0*
 2. Let [w*] ++ w'** be X_u0*.
 3. Return w* ++ $concat_(w'**).
 
-lpaux2_ w X_u0*
+setproduct2_ w_1 X_u0*
 1. If (X_u0* is []), then:
   a. Return [].
-2. Let [w'*] ++ w''** be X_u0*.
-3. Let ww* be [w] ++ w'*.
-4. Return [ww*] ++ $lpaux2_(w, w''**).
+2. Let [w'*] ++ w** be X_u0*.
+3. Return [[w_1] ++ w'*] ++ $setproduct2_(w_1, w**).
 
-lpaux_ X_u0* w''**
+setproduct1_ X_u0* w**
 1. If (X_u0* is []), then:
   a. Return [].
-2. Let [w] ++ w'* be X_u0*.
-3. Return $lpaux2_(w, w''**) ++ $lpaux_(w'*, w''**).
+2. Let [w_1] ++ w'* be X_u0*.
+3. Return $setproduct2_(w_1, w**) ++ $setproduct1_(w'*, w**).
 
-listproduct_ X_u0*
+setproduct_ X_u0*
 1. If (X_u0* is []), then:
   a. Return [[]].
-2. Let [w*] ++ w'** be X_u0*.
-3. Return $lpaux_(w*, $listproduct_(w'**)).
+2. Let [w_1*] ++ w** be X_u0*.
+3. Return $setproduct1_(w_1*, $setproduct_(w**)).
 
 signif N_u0
 1. If (N_u0 is 32), then:
@@ -2577,7 +2576,7 @@ invlanes_ sh c*
 2. Return vc.
 
 mapinvlanes_ sh c**
-1. Let c'** be $listproduct_(c**).
+1. Let c'** be $setproduct_(c**).
 2. Return $invlanes_(sh, c'*)*.
 
 half half_u0 i j
@@ -3567,10 +3566,8 @@ execution_of_VBINOP sh vbinop
 4. Pop the value (V128.CONST c_1) from the stack.
 5. If (|$vbinop_(sh, vbinop, c_1, c_2)| ≤ 0), then:
   a. Trap.
-6. If (|$vbinop_(sh, vbinop, c_1, c_2)| is 1), then:
-  a. Let [c] be $vbinop_(sh, vbinop, c_1, c_2).
-  b. If c <- $vbinop_(sh, vbinop, c_1, c_2), then:
-    1) Push the value (V128.CONST c) to the stack.
+6. Let c be an element of $vbinop_(sh, vbinop, c_1, c_2).
+7. Push the value (V128.CONST c) to the stack.
 
 execution_of_VTESTOP (Jnn X N) ALL_TRUE
 1. Assert: Due to validation, a value is on the top of the stack.

@@ -194,7 +194,7 @@ def $invlanes_(sh, c*) = vc  -- if c* = $lanes_(sh, vc)
 def $mapinvlanes_(shape, (lane_($lanetype(shape))*)*) : vec_(V128)*
     hint(show $lanes_(%)^(-1)#((%)))
 def $mapinvlanes_(sh, c**) = $invlanes_(sh, c'*)*
-  -- if c'** = $listproduct_(lane_($lanetype(sh)),c**)
+  -- if c'** = $setproduct_(lane_($lanetype(sh)),c**)
 
 def $half(half, nat, nat) : nat
 def $half(LOW, i, j) = i
@@ -202,11 +202,11 @@ def $half(HIGH, i, j) = j
 
 ;; TODO: return lists for nondeterminism
 def $vvunop_(vectype, vvunop, vec_(vectype)) : vec_(vectype)
-    hint(show %2#$_(%1)#((%3)))
+    hint(show %2#$_(%1,%3))
 def $vvbinop_(vectype, vvbinop, vec_(vectype), vec_(vectype)) : vec_(vectype)
-    hint(show %2#$_(%1)#(%3, %4))
+    hint(show %2#$_(%1,%3,%4))
 def $vvternop_(vectype, vvternop, vec_(vectype), vec_(vectype), vec_(vectype)) : vec_(vectype)
-    hint(show %2#$_(%1)#(%3, %4, %5))
+    hint(show %2#$_(%1,%3,%4,%5))
 
 def $vvunop_(V128, NOT, v128) = $inot_($size(V128), v128)
 def $vvbinop_(V128, AND, v128_1, v128_2) = $iand_($size(V128), v128_1, v128_2)
@@ -223,7 +223,7 @@ def $vbinop_(shape, vbinop_(shape), vec_(V128), vec_(V128)) : vec_(V128)*
 def $vrelop_(shape, vrelop_(shape), vec_(V128), vec_(V128)) : vec_(V128)
     hint(show %2#$_(%1)#(%3, %4))
 def $vcvtop__(shape_1, shape_2, vcvtop, sx?, lane_($lanetype(shape_1))) : lane_($lanetype(shape_2))*
-    hint(show %3#$_((%1,%2))^(%5)#((%6)))
+    hint(show %3#$__(%1,%2)^(%4)#((%5)))
 
 def $vunop_(Jnn X N, ABS, v128_1) = v128
     -- if lane_1* = $lanes_(Jnn X N, v128_1)

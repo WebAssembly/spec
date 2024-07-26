@@ -44,17 +44,14 @@ def $concat_(syntax X, (X*)*) : X*  hint(show $concat(%2))
 def $concat_(syntax X, eps) = eps
 def $concat_(syntax X, (w*) (w'*)*) = w* $concat_(X, (w'*)*)
 
-;; [1; 2]; [a; b; c] -> [1; a]; [1; b]; [1; c]; [2; a]; [2; b]; [2; c]
-def $listproduct_(syntax X, (X*)*) : (X*)*
-def $lpaux_(syntax X, X*, (X*)*) : (X*)*
-def $lpaux2_(syntax X, X, (X*)*) : (X*)*
+;; [{1, 2}, {a, b, c}] -> {[1, a], [1, b], [1, c], [2, a], [2, b], [2, c]}
+def $setproduct_(syntax X, (X*)*) : (X*)*  hint(show %latex("\\Large\\times") %2)
+def $setproduct1_(syntax X, X*, (X*)*) : (X*)*
+def $setproduct2_(syntax X, X, (X*)*) : (X*)*
 
-def $listproduct_(syntax X, eps)         = (eps)
-def $listproduct_(syntax X, (w*) (w'*)*) = $lpaux_(X, w*, $listproduct_(X, w'**))
-
-def $lpaux_(syntax X, eps,   (w''*)*) = eps
-def $lpaux_(syntax X, w w'*, (w''*)*) = $lpaux2_(X, w, (w''*)*) $lpaux_(X, w'*, (w''*)*)
-
-def $lpaux2_(syntax X, w, eps)           = eps
-def $lpaux2_(syntax X, w, (w'*) (w''*)*) = (ww*) $lpaux2_(X, w, (w''*)*)
-  -- if ww* = w w'*
+def $setproduct_(syntax X, eps) = (eps)
+def $setproduct_(syntax X, (w_1*) (w*)*) = $setproduct1_(X, w_1*, $setproduct_(X, (w*)*))
+def $setproduct1_(syntax X, eps, (w*)*) = eps
+def $setproduct1_(syntax X, w_1 w'*, (w*)*) = $setproduct2_(X, w_1, (w*)*) ++ $setproduct1_(X, w'*, (w*)*)
+def $setproduct2_(syntax X, w_1, eps) = eps
+def $setproduct2_(syntax X, w_1, (w'*) (w*)*) = (w_1 w'*) ++ $setproduct2_(X, w_1, (w*)*)
