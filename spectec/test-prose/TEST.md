@@ -2892,61 +2892,50 @@ vrelop_ (lanet_u1 X M) vrelo_u0 v128_1 v128_2
 16. Let v128 be $invlanes_((Inn X M), lane_3*).
 17. Return v128.
 
-vcvtop__ (lanet_u0 X M_1) (lanet_u1 X M_2) vcvto_u4 sx_u5? lane__u3
-1. If ((lanet_u0 is I8) and ((lanet_u1 is I16) and (vcvto_u4 is EXTEND))), then:
-  a. Let i8 be lane__u3.
-  b. If sx_u5? is defined, then:
-    1) Let ?(sx) be sx_u5?.
-    2) Let i16 be $extend__(8, 16, sx, i8).
-    3) Return [i16].
-2. If ((lanet_u0 is I16) and ((lanet_u1 is I32) and (vcvto_u4 is EXTEND))), then:
-  a. Let i16 be lane__u3.
-  b. If sx_u5? is defined, then:
-    1) Let ?(sx) be sx_u5?.
-    2) Let i32 be $extend__(16, 32, sx, i16).
-    3) Return [i32].
-3. If (lanet_u0 is I32), then:
-  a. If ((lanet_u1 is I64) and (vcvto_u4 is EXTEND)), then:
-    1) Let i32 be lane__u3.
-    2) If sx_u5? is defined, then:
+vcvtop__ (lanet_u2 X M_1) (lanet_u0 X M_2) vcvto_u1 sx_u5? lane__u4
+1. If ((vcvto_u1 is EXTEND) and the type of lanet_u2 is Jnn), then:
+  a. Let Jnn_1 be lanet_u2.
+  b. If the type of lanet_u0 is Jnn, then:
+    1) Let Jnn_2 be lanet_u0.
+    2) Let iN_1 be lane__u4.
+    3) If sx_u5? is defined, then:
       a) Let ?(sx) be sx_u5?.
-      b) Let i64 be $extend__(32, 64, sx, i32).
-      c) Return [i64].
-  b. If ((lanet_u1 is F32) and (vcvto_u4 is CONVERT)), then:
-    1) Let i32 be lane__u3.
-    2) If sx_u5? is defined, then:
+      b) Let iN_2 be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, iN_1).
+      c) Return [iN_2].
+2. If ((vcvto_u1 is CONVERT) and the type of lanet_u0 is Fnn), then:
+  a. Let Fnn_2 be lanet_u0.
+  b. If the type of lanet_u2 is Jnn, then:
+    1) Let Jnn_1 be lanet_u2.
+    2) Let iN_1 be lane__u4.
+    3) If sx_u5? is defined, then:
       a) Let ?(sx) be sx_u5?.
-      b) Let f32 be $convert__(32, 32, sx, i32).
-      c) Return [f32].
-  c. If ((lanet_u1 is F64) and (vcvto_u4 is CONVERT)), then:
-    1) Let i32 be lane__u3.
-    2) If sx_u5? is defined, then:
+      b) Let fN_2 be $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, iN_1).
+      c) Return [fN_2].
+3. If ((vcvto_u1 is TRUNC_SAT) and the type of lanet_u2 is Fnn), then:
+  a. Let Fnn_1 be lanet_u2.
+  b. If the type of lanet_u0 is Inn, then:
+    1) Let Inn_2 be lanet_u0.
+    2) Let fN_1 be lane__u4.
+    3) If sx_u5? is defined, then:
       a) Let ?(sx) be sx_u5?.
-      b) Let f64 be $convert__(32, 64, sx, i32).
-      c) Return [f64].
-4. If ((lanet_u0 is F32) and ((lanet_u1 is I32) and (vcvto_u4 is TRUNC_SAT))), then:
-  a. Let f32 be lane__u3.
-  b. If sx_u5? is defined, then:
-    1) Let ?(sx) be sx_u5?.
-    2) Let i32? be $trunc_sat__(32, 32, sx, f32).
-    3) Return $list_(i32?).
-5. If (lanet_u0 is F64), then:
-  a. If ((lanet_u1 is I32) and (vcvto_u4 is TRUNC_SAT)), then:
-    1) Let f64 be lane__u3.
-    2) If sx_u5? is defined, then:
-      a) Let ?(sx) be sx_u5?.
-      b) Let i32? be $trunc_sat__(64, 32, sx, f64).
-      c) Return $list_(i32?).
-  b. If ((lanet_u1 is F32) and (vcvto_u4 is DEMOTE)), then:
-    1) Let f64 be lane__u3.
-    2) Let f32* be $demote__(64, 32, f64).
-    3) Return f32*.
-6. Assert: Due to validation, (lanet_u0 is F32).
-7. Assert: Due to validation, (lanet_u1 is F64).
-8. Assert: Due to validation, (vcvto_u4 is PROMOTE).
-9. Let f32 be lane__u3.
-10. Let f64* be $promote__(32, 64, f32).
-11. Return f64*.
+      b) Let iN_2? be $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, fN_1).
+      c) Return $list_(iN_2?).
+4. If ((vcvto_u1 is DEMOTE) and (sx_u5? is not defined and the type of lanet_u2 is Fnn)), then:
+  a. Let Fnn_1 be lanet_u2.
+  b. If the type of lanet_u0 is Fnn, then:
+    1) Let Fnn_2 be lanet_u0.
+    2) Let fN_1 be lane__u4.
+    3) Let fN_2* be $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
+    4) Return fN_2*.
+5. Assert: Due to validation, (vcvto_u1 is PROMOTE).
+6. Assert: Due to validation, sx_u5? is not defined.
+7. Assert: Due to validation, the type of lanet_u2 is Fnn.
+8. Let Fnn_1 be lanet_u2.
+9. Assert: Due to validation, the type of lanet_u0 is Fnn.
+10. Let Fnn_2 be lanet_u0.
+11. Let fN_1 be lane__u4.
+12. Let fN_2* be $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
+13. Return fN_2*.
 
 vextunop__ (Inn_1 X M_1) (Inn_2 X M_2) (EXTADD_PAIRWISE sx) c_1
 1. Let ci* be $lanes_((Inn_2 X M_2), c_1).
@@ -7109,61 +7098,50 @@ vrelop_ (lanet_u1 X M) vrelo_u0 v128_1 v128_2
 16. Let v128 be $invlanes_((Inn X M), lane_3*).
 17. Return v128.
 
-vcvtop__ (lanet_u0 X M_1) (lanet_u1 X M_2) vcvto_u6 sx_u7? lane__u3
-1. If ((lanet_u0 is I8) and ((lanet_u1 is I16) and (vcvto_u6 is EXTEND))), then:
-  a. Let i8 be lane__u3.
-  b. If sx_u7? is defined, then:
-    1) Let ?(sx) be sx_u7?.
-    2) Let i16 be $extend__(8, 16, sx, i8).
-    3) Return [i16].
-2. If ((lanet_u0 is I16) and ((lanet_u1 is I32) and (vcvto_u6 is EXTEND))), then:
-  a. Let i16 be lane__u3.
-  b. If sx_u7? is defined, then:
-    1) Let ?(sx) be sx_u7?.
-    2) Let i32 be $extend__(16, 32, sx, i16).
-    3) Return [i32].
-3. If (lanet_u0 is I32), then:
-  a. If ((lanet_u1 is I64) and (vcvto_u6 is EXTEND)), then:
-    1) Let i32 be lane__u3.
-    2) If sx_u7? is defined, then:
-      a) Let ?(sx) be sx_u7?.
-      b) Let i64 be $extend__(32, 64, sx, i32).
-      c) Return [i64].
-  b. If ((lanet_u1 is F32) and (vcvto_u6 is CONVERT)), then:
-    1) Let i32 be lane__u3.
-    2) If sx_u7? is defined, then:
-      a) Let ?(sx) be sx_u7?.
-      b) Let f32 be $convert__(32, 32, sx, i32).
-      c) Return [f32].
-  c. If ((lanet_u1 is F64) and (vcvto_u6 is CONVERT)), then:
-    1) Let i32 be lane__u3.
-    2) If sx_u7? is defined, then:
-      a) Let ?(sx) be sx_u7?.
-      b) Let f64 be $convert__(32, 64, sx, i32).
-      c) Return [f64].
-4. If ((lanet_u0 is F32) and ((lanet_u1 is I32) and (vcvto_u6 is TRUNC_SAT))), then:
-  a. Let f32 be lane__u3.
-  b. If sx_u7? is defined, then:
-    1) Let ?(sx) be sx_u7?.
-    2) Let i32? be $trunc_sat__(32, 32, sx, f32).
-    3) Return $list_(i32?).
-5. If (lanet_u0 is F64), then:
-  a. If ((lanet_u1 is I32) and (vcvto_u6 is TRUNC_SAT)), then:
-    1) Let f64 be lane__u3.
-    2) If sx_u7? is defined, then:
-      a) Let ?(sx) be sx_u7?.
-      b) Let i32? be $trunc_sat__(64, 32, sx, f64).
-      c) Return $list_(i32?).
-  b. If ((lanet_u1 is F32) and (vcvto_u6 is DEMOTE)), then:
-    1) Let f64 be lane__u3.
-    2) Let f32* be $demote__(64, 32, f64).
-    3) Return f32*.
-6. Assert: Due to validation, (lanet_u0 is F32).
-7. Assert: Due to validation, (lanet_u1 is F64).
-8. Assert: Due to validation, (vcvto_u6 is PROMOTE).
-9. Let f32 be lane__u3.
-10. Let f64* be $promote__(32, 64, f32).
-11. Return f64*.
+vcvtop__ (lanet_u3 X M_1) (lanet_u0 X M_2) vcvto_u2 sx_u6? lane__u5
+1. If ((vcvto_u2 is EXTEND) and the type of lanet_u3 is Jnn), then:
+  a. Let Jnn_1 be lanet_u3.
+  b. If the type of lanet_u0 is Jnn, then:
+    1) Let Jnn_2 be lanet_u0.
+    2) Let iN_1 be lane__u5.
+    3) If sx_u6? is defined, then:
+      a) Let ?(sx) be sx_u6?.
+      b) Let iN_2 be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, iN_1).
+      c) Return [iN_2].
+2. If ((vcvto_u2 is CONVERT) and the type of lanet_u0 is Fnn), then:
+  a. Let Fnn_2 be lanet_u0.
+  b. If the type of lanet_u3 is Jnn, then:
+    1) Let Jnn_1 be lanet_u3.
+    2) Let iN_1 be lane__u5.
+    3) If sx_u6? is defined, then:
+      a) Let ?(sx) be sx_u6?.
+      b) Let fN_2 be $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, iN_1).
+      c) Return [fN_2].
+3. If ((vcvto_u2 is TRUNC_SAT) and the type of lanet_u3 is Fnn), then:
+  a. Let Fnn_1 be lanet_u3.
+  b. If the type of lanet_u0 is Inn, then:
+    1) Let Inn_2 be lanet_u0.
+    2) Let fN_1 be lane__u5.
+    3) If sx_u6? is defined, then:
+      a) Let ?(sx) be sx_u6?.
+      b) Let iN_2? be $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, fN_1).
+      c) Return $list_(iN_2?).
+4. If ((vcvto_u2 is DEMOTE) and (sx_u6? is not defined and the type of lanet_u3 is Fnn)), then:
+  a. Let Fnn_1 be lanet_u3.
+  b. If the type of lanet_u0 is Fnn, then:
+    1) Let Fnn_2 be lanet_u0.
+    2) Let fN_1 be lane__u5.
+    3) Let fN_2* be $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
+    4) Return fN_2*.
+5. Assert: Due to validation, (vcvto_u2 is PROMOTE).
+6. Assert: Due to validation, sx_u6? is not defined.
+7. Assert: Due to validation, the type of lanet_u3 is Fnn.
+8. Let Fnn_1 be lanet_u3.
+9. Assert: Due to validation, the type of lanet_u0 is Fnn.
+10. Let Fnn_2 be lanet_u0.
+11. Let fN_1 be lane__u5.
+12. Let fN_2* be $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
+13. Return fN_2*.
 
 vextunop__ (Jnn_1 X M_1) (Jnn_2 X M_2) (EXTADD_PAIRWISE sx) c_1
 1. Let ci* be $lanes_((Jnn_1 X M_1), c_1).

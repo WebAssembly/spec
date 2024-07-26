@@ -412,24 +412,16 @@ def $vrelop_(Fnn X M, GE, v128_1, v128_2) = v128
     -- if $isize(Inn) = $size(Fnn)  ;; TODO(rossberg, 3): make implicit
     -- if v128 = $invlanes_(Inn X M, lane_3*)
 
-def $vcvtop__(I8 X M_1, I16 X M_2, EXTEND, sx, i8) = i16
-    -- if i16 = $extend__(8, 16, sx, i8)
-def $vcvtop__(I16 X M_1, I32 X M_2, EXTEND, sx, i16) = i32
-    -- if i32 = $extend__(16, 32, sx, i16)
-def $vcvtop__(I32 X M_1, I64 X M_2, EXTEND, sx, i32) = i64
-    -- if i64 = $extend__(32, 64, sx, i32)
-def $vcvtop__(I32 X M_1, F32 X M_2, CONVERT, sx, i32) = f32
-    -- if f32 = $convert__(32, 32, sx, i32)
-def $vcvtop__(I32 X M_1, F64 X M_2, CONVERT, sx, i32) = f64
-    -- if f64 = $convert__(32, 64, sx, i32)
-def $vcvtop__(F32 X M_1, I32 X M_2, TRUNC_SAT, sx, f32) = $list_(num_(I32), i32?)
-    -- if i32? = $trunc_sat__(32, 32, sx, f32)
-def $vcvtop__(F64 X M_1, I32 X M_2, TRUNC_SAT, sx, f64) = $list_(num_(I32), i32?)
-    -- if i32? = $trunc_sat__(64, 32, sx, f64)
-def $vcvtop__(F64 X M_1, F32 X M_2, DEMOTE, sx?, f64) = f32*
-    -- if f32* = $demote__(64, 32, f64)
-def $vcvtop__(F32 X M_1, F64 X M_2, PROMOTE, sx?, f32) = f64*
-    -- if f64* = $promote__(32, 64, f32)
+def $vcvtop__(Jnn_1 X M_1, Jnn_2 X M_2, EXTEND, sx, iN_1) = iN_2
+    -- if iN_2 = $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, iN_1)
+def $vcvtop__(Jnn_1 X M_1, Fnn_2 X M_2, CONVERT, sx, iN_1) = fN_2
+    -- if fN_2 = $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, iN_1)
+def $vcvtop__(Fnn_1 X M_1, Inn_2 X M_2, TRUNC_SAT, sx, fN_1) = $list_(lane_(Inn_2), iN_2?)
+    -- if iN_2? = $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, fN_1)
+def $vcvtop__(Fnn_1 X M_1, Fnn_2 X M_2, DEMOTE, eps, fN_1) = fN_2*
+    -- if fN_2* = $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1)
+def $vcvtop__(Fnn_1 X M_1, Fnn_2 X M_2, PROMOTE, eps, fN_1) = fN_2*
+    -- if fN_2* = $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1)
 
 def $vextunop__(ishape_1, ishape_2, vextunop__(ishape_1, ishape_2), vec_(V128)) : vec_(V128)
     hint(show %3#$__(%1,%2,%4))

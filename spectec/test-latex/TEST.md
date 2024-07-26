@@ -3831,24 +3831,16 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathsf{extend}}{{{}_{{\mathsf{i{\scriptstyle 8}}}{\mathsf{x}}{M_1}, {\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{M_2}}^{{\mathit{sx}}}}}{({\mathit{i{\kern-0.1em\scriptstyle 8}}})} &=& {\mathit{i{\kern-0.1em\scriptstyle 16}}}
-  &\qquad \mbox{if}~{\mathit{i{\kern-0.1em\scriptstyle 16}}} = {{{{\mathrm{extend}}}_{8, 16}^{{\mathit{sx}}}}}{({\mathit{i{\kern-0.1em\scriptstyle 8}}})} \\
-{\mathsf{extend}}{{{}_{{\mathsf{i{\scriptstyle 16}}}{\mathsf{x}}{M_1}, {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{M_2}}^{{\mathit{sx}}}}}{({\mathit{i{\kern-0.1em\scriptstyle 16}}})} &=& {\mathit{i{\kern-0.1em\scriptstyle 32}}}
-  &\qquad \mbox{if}~{\mathit{i{\kern-0.1em\scriptstyle 32}}} = {{{{\mathrm{extend}}}_{16, 32}^{{\mathit{sx}}}}}{({\mathit{i{\kern-0.1em\scriptstyle 16}}})} \\
-{\mathsf{extend}}{{{}_{{\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{M_1}, {\mathsf{i{\scriptstyle 64}}}{\mathsf{x}}{M_2}}^{{\mathit{sx}}}}}{({\mathit{i{\kern-0.1em\scriptstyle 32}}})} &=& {\mathit{i{\kern-0.1em\scriptstyle 64}}}
-  &\qquad \mbox{if}~{\mathit{i{\kern-0.1em\scriptstyle 64}}} = {{{{\mathrm{extend}}}_{32, 64}^{{\mathit{sx}}}}}{({\mathit{i{\kern-0.1em\scriptstyle 32}}})} \\
-{\mathsf{convert}}{{{}_{{\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{M_1}, {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{M_2}}^{{\mathit{sx}}}}}{({\mathit{i{\kern-0.1em\scriptstyle 32}}})} &=& {\mathit{f{\kern-0.1em\scriptstyle 32}}}
-  &\qquad \mbox{if}~{\mathit{f{\kern-0.1em\scriptstyle 32}}} = {{{{\mathrm{convert}}}_{32, 32}^{{\mathit{sx}}}}}{({\mathit{i{\kern-0.1em\scriptstyle 32}}})} \\
-{\mathsf{convert}}{{{}_{{\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{M_1}, {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{M_2}}^{{\mathit{sx}}}}}{({\mathit{i{\kern-0.1em\scriptstyle 32}}})} &=& {\mathit{f{\kern-0.1em\scriptstyle 64}}}
-  &\qquad \mbox{if}~{\mathit{f{\kern-0.1em\scriptstyle 64}}} = {{{{\mathrm{convert}}}_{32, 64}^{{\mathit{sx}}}}}{({\mathit{i{\kern-0.1em\scriptstyle 32}}})} \\
-{\mathsf{trunc\_sat}}{{{}_{{\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{M_1}, {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{M_2}}^{{\mathit{sx}}}}}{({\mathit{f{\kern-0.1em\scriptstyle 32}}})} &=& {{\mathit{i{\kern-0.1em\scriptstyle 32}}}^?}
-  &\qquad \mbox{if}~{{\mathit{i{\kern-0.1em\scriptstyle 32}}}^?} = {{{{\mathrm{trunc\_sat}}}_{32, 32}^{{\mathit{sx}}}}}{({\mathit{f{\kern-0.1em\scriptstyle 32}}})} \\
-{\mathsf{trunc\_sat}}{{{}_{{\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{M_1}, {\mathsf{i{\scriptstyle 32}}}{\mathsf{x}}{M_2}}^{{\mathit{sx}}}}}{({\mathit{f{\kern-0.1em\scriptstyle 64}}})} &=& {{\mathit{i{\kern-0.1em\scriptstyle 32}}}^?}
-  &\qquad \mbox{if}~{{\mathit{i{\kern-0.1em\scriptstyle 32}}}^?} = {{{{\mathrm{trunc\_sat}}}_{64, 32}^{{\mathit{sx}}}}}{({\mathit{f{\kern-0.1em\scriptstyle 64}}})} \\
-{\mathsf{demote}}{{{}_{{\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{M_1}, {\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{M_2}}^{{{\mathit{sx}}^?}}}}{({\mathit{f{\kern-0.1em\scriptstyle 64}}})} &=& {{\mathit{f{\kern-0.1em\scriptstyle 32}}}^\ast}
-  &\qquad \mbox{if}~{{\mathit{f{\kern-0.1em\scriptstyle 32}}}^\ast} = {{\mathrm{demote}}}_{64, 32}({\mathit{f{\kern-0.1em\scriptstyle 64}}}) \\
-{\mathsf{promote}}{{{}_{{\mathsf{f{\scriptstyle 32}}}{\mathsf{x}}{M_1}, {\mathsf{f{\scriptstyle 64}}}{\mathsf{x}}{M_2}}^{{{\mathit{sx}}^?}}}}{({\mathit{f{\kern-0.1em\scriptstyle 32}}})} &=& {{\mathit{f{\kern-0.1em\scriptstyle 64}}}^\ast}
-  &\qquad \mbox{if}~{{\mathit{f{\kern-0.1em\scriptstyle 64}}}^\ast} = {{\mathrm{promote}}}_{32, 64}({\mathit{f{\kern-0.1em\scriptstyle 32}}}) \\
+{\mathsf{extend}}{{{}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)} &=& {\mathit{iN}}_2
+  &\qquad \mbox{if}~{\mathit{iN}}_2 = {{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)} \\
+{\mathsf{convert}}{{{}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{f}}{N}}_2}{\mathsf{x}}{M_2}}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)} &=& {\mathit{fN}}_2
+  &\qquad \mbox{if}~{\mathit{fN}}_2 = {{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)} \\
+{\mathsf{trunc\_sat}}{{{}_{{{{\mathsf{f}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)} &=& {{\mathit{iN}}_2^?}
+  &\qquad \mbox{if}~{{\mathit{iN}}_2^?} = {{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{fN}}_1)} \\
+{\mathsf{demote}}{{{}_{{{{\mathsf{f}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{f}}{N}}_2}{\mathsf{x}}{M_2}}^{\epsilon}}}{({\mathit{fN}}_1)} &=& {{\mathit{fN}}_2^\ast}
+  &\qquad \mbox{if}~{{\mathit{fN}}_2^\ast} = {{\mathrm{demote}}}_{N_1, N_2}({\mathit{fN}}_1) \\
+{\mathsf{promote}}{{{}_{{{{\mathsf{f}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{f}}{N}}_2}{\mathsf{x}}{M_2}}^{\epsilon}}}{({\mathit{fN}}_1)} &=& {{\mathit{fN}}_2^\ast}
+  &\qquad \mbox{if}~{{\mathit{fN}}_2^\ast} = {{\mathrm{promote}}}_{N_1, N_2}({\mathit{fN}}_1) \\
 \end{array}
 $$
 

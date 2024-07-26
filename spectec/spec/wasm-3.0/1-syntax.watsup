@@ -426,6 +426,7 @@ syntax vrelop_(Jnn X M) = EQ | NE
   | GE sx hint(show GE#_#%)  -- if $lsizenn(Jnn) =/= `64 \/ sx = S
 syntax vrelop_(Fnn X M) = EQ | NE | LT | GT | LE | GE
 
+;; TODO(1, rossberg): move sx into here
 syntax vcvtop__(shape_1, shape_2) hint(macro "%" "V%")
 syntax vcvtop__(Jnn_1 X M_1, Jnn_2 X M_2) =
   | EXTEND    -- if $lsizenn2(Jnn_2) = $(2 * $lsizenn1(Jnn_1))
