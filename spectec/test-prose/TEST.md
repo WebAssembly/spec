@@ -3637,17 +3637,17 @@ execution_of_VBITMASK (Jnn X N)
 4. Let ci be $ibits__1^-1(32, $ilt_($lsize(Jnn), S, ci_1, 0)*).
 5. Push the value (I32.CONST ci) to the stack.
 
-execution_of_VSWIZZLE (Pnn X N)
+execution_of_VSWIZZLE (Pnn X M)
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c* be $lanes_((Pnn X N), c_1) ++ 0^(256 - N).
-6. Let ci* be $lanes_((Pnn X N), c_2).
-7. Assert: Due to validation, (ci*[k] < |c*|)^(k<N).
-8. Assert: Due to validation, (k < |ci*|)^(k<N).
-9. Let c' be $invlanes_((Pnn X N), c*[ci*[k]]^(k<N)).
-10. Push the value (V128.CONST c') to the stack.
+5. Let c'* be $lanes_((Pnn X M), c_1) ++ 0^(256 - M).
+6. Let ci* be $lanes_((Pnn X M), c_2).
+7. Assert: Due to validation, (ci*[k] < |c'*|)^(k<M).
+8. Assert: Due to validation, (k < |ci*|)^(k<M).
+9. Let c be $invlanes_((Pnn X M), c'*[ci*[k]]^(k<M)).
+10. Push the value (V128.CONST c) to the stack.
 
 execution_of_VSHUFFLE (Pnn X N) i*
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -8052,12 +8052,12 @@ execution_of_VSWIZZLE (Pnn X M)
 2. Pop the value (V128.CONST c_2) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c* be $lanes_((Pnn X M), c_1) ++ 0^(256 - M).
+5. Let c'* be $lanes_((Pnn X M), c_1) ++ 0^(256 - M).
 6. Let ci* be $lanes_((Pnn X M), c_2).
-7. Assert: Due to validation, (ci*[k] < |c*|)^(k<M).
+7. Assert: Due to validation, (ci*[k] < |c'*|)^(k<M).
 8. Assert: Due to validation, (k < |ci*|)^(k<M).
-9. Let c' be $invlanes_((Pnn X M), c*[ci*[k]]^(k<M)).
-10. Push the value (V128.CONST c') to the stack.
+9. Let c be $invlanes_((Pnn X M), c'*[ci*[k]]^(k<M)).
+10. Push the value (V128.CONST c) to the stack.
 
 execution_of_VSHUFFLE (Pnn X M) i*
 1. Assert: Due to validation, a value is on the top of the stack.

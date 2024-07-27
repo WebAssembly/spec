@@ -297,11 +297,11 @@ rule Step_pure/vbitmask:
 
 
 rule Step_pure/vswizzle:
-  (VCONST V128 c_1) (VCONST V128 c_2) (VSWIZZLE (Pnn X N)) ~> (VCONST V128 c')
-  -- var c : iN($lsize(Pnn))
-  -- if ci* = $lanes_(Pnn X N, c_2)
-  -- if c* = $lanes_(Pnn X N, c_1) 0^(256 - N)
-  -- if c' = $invlanes_(Pnn X N, c*[$(ci*[k])]^(k<N))
+  (VCONST V128 c_1) (VCONST V128 c_2) (VSWIZZLE (Pnn X M)) ~> (VCONST V128 c)
+  -- var c' : iN($lsize(Pnn))
+  -- if ci* = $lanes_(Pnn X M, c_2)
+  -- if c'* = $lanes_(Pnn X M, c_1) 0^(256 - M)
+  -- if c = $invlanes_(Pnn X M, c'*[$(ci*[k])]^(k<M))
 
 
 rule Step_pure/vshuffle:
