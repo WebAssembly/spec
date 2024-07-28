@@ -332,7 +332,8 @@ and translate_args args = List.concat_map ( fun arg ->
   match arg.it with
   | Il.ExpA el -> [ translate_exp el ]
   | Il.TypA _ -> []
-  | Il.DefA _ -> [] (* TODO: handle functions *) ) args
+  | Il.DefA _ -> [] (* TODO: handle functions *)
+  | Il.GramA _ -> [] ) args
 
 (* `Il.path` -> `path list` *)
 and translate_path path =

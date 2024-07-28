@@ -7735,6 +7735,9 @@ allocXs X_u0* Y_u1*
   e. Let a'* be $allocXs(X'*, Y'*).
   f. Return [a] ++ a'*.
 
+var
+1. Return 0.
+
 execution_of_UNREACHABLE
 1. Trap.
 

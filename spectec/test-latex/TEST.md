@@ -10127,7 +10127,20 @@ $$
 $$
 
 $$
+\begin{array}{@{}lrrl@{}l@{}}
+& \ldots &::=& 0 \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+X &=& \mathtt{0x00} \\
+\end{array}
+$$
+
+$$
 \begin{array}{@{}l@{}rrl@{}l@{}l@{}l@{}}
+& X &::=& \mathtt{0x00} \\
 & {\mathtt{sym}} &::=& B_1 &\quad\Rightarrow&\quad A_1 \\ &&|&
 \ldots ~|~ B_n &\quad\Rightarrow&\quad A_n \\
 \end{array}

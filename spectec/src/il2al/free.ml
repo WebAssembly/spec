@@ -8,8 +8,6 @@ open Source
 open Il.Ast
 include Il.Free
 
-let empty =
-  {typid = Set.empty; relid = Set.empty; varid = Set.empty; defid = Set.empty}
 let free_varid id = {empty with varid = Set.singleton id.it}
 let free_defid id = {empty with defid = Set.singleton id.it}
 
@@ -47,6 +45,7 @@ and free_arg ignore_listN arg =
   | ExpA e -> f e
   | TypA _ -> empty
   | DefA id -> free_defid id
+  | GramA _ -> empty
 
 and free_path ignore_listN p =
   let f = free_exp ignore_listN in

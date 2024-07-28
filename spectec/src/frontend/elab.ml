@@ -88,7 +88,7 @@ type kind =
 
 type var_typ = typ
 type typ_typ = param list * kind
-type gram_typ = param list * typ * gram option
+type gram_typ = param list * typ * gram option * Il.prod list
 type rel_typ = typ * Il.rule list
 type def_typ = param list * typ * (def * Il.clause) list
 
@@ -97,9 +97,9 @@ type env =
   { mutable gvars : var_typ env'; (* variable type declarations *)
     mutable vars : var_typ env';  (* local bindings *)
     mutable typs : typ_typ env';
-    mutable syms : gram_typ env';
     mutable rels : rel_typ env';
     mutable defs : def_typ env';
+    mutable grams : gram_typ env';
   }
 
 let new_env () =
@@ -112,9 +112,9 @@ let new_env () =
       |> Map.add "text" (no_region, TextT $ no_region);
     vars = Map.empty;
     typs = Map.empty;
-    syms = Map.empty;
     rels = Map.empty;
     defs = Map.empty;
+    grams = Map.empty;
   }
 
 let local_env env =
@@ -165,7 +165,7 @@ let bound_env env =
     typid = bound_env' env.typs;
     relid = bound_env' env.rels;
     defid = bound_env' env.defs;
-    gramid = bound_env' env.syms;
+    gramid = bound_env' env.grams;
   }
 
 let to_eval_var (_at, t) = t
@@ -188,13 +188,13 @@ let to_eval_def (_at, (_ps, _t, clauses)) =
   ) clauses
 
 let to_eval_env env =
-  (* Need to include gvars, since matching can encounter uimplicit vars *)
+  (* Need to include gvars, since matching can encounter implicit vars *)
   let gvars = Map.map to_eval_var env.gvars in
   let vars = Map.map to_eval_var env.vars in
   let typs = Map.mapi to_eval_typ env.typs in
   let defs = Map.map to_eval_def env.defs in
-  let syms = Map.map ignore env.syms in
-  Eval.{vars = Map.union (fun _ _ t -> Some t) gvars vars; typs; defs; syms}
+  let grams = Map.map ignore env.grams in
+  Eval.{vars = Map.union (fun _ _ t -> Some t) gvars vars; typs; defs; grams}
 
 let valid_tid id = id.it <> ""
 
@@ -236,6 +236,7 @@ let rec arg_subst s ps args =
       | ExpP (id, _), ExpA e -> Subst.add_varid s id e
       | TypP id, TypA t -> Subst.add_typid s id t
       | GramP (id, _), GramA g -> Subst.add_gramid s id g
+      | DefP (id, _, _), DefA id' -> Subst.add_defid s id id'
       | _, _ -> assert false
     in arg_subst s' ps' as'
   | _, _ -> assert false
@@ -994,7 +995,7 @@ and infer_exp' env e : Il.exp' * typ =
     let _t11 = as_list_typ "expression" env Infer t1 e1.at in
     Il.LenE e1', NumT NatT $ e.at
   | SizeE id ->
-    let _ = find "grammar" env.syms id in
+    let _ = find "grammar" env.grams id in
     Il.NatE Z.zero, NumT NatT $ e.at
   | ParenE (e1, _) | ArithE e1 ->
     infer_exp' env e1
@@ -1611,70 +1612,84 @@ and elab_prem env prem : Il.prem list =
 
 (* Grammars *)
 
-and elab_sym env g : typ * env =
+and elab_sym env g : Il.sym * typ * env =
   match g.it with
   | VarG (id, as_) ->
-    let ps, t, _gram_opt = find "grammar" env.syms id in
-    let _as', s = elab_args `Rhs env as_ ps g.at in
-    Subst.subst_typ s t, env
-  | NatG _ -> NumT NatT $ g.at, env
-  | TextG _ -> TextT $ g.at, env
-  | EpsG -> TupT [] $ g.at, env
+    let ps, t, _gram, _prods' = find "grammar" env.grams id in
+    let as', s = elab_args `Rhs env as_ ps g.at in
+    Il.VarG (id, as') $ g.at, Subst.subst_typ s t, env
+  | NatG (CharOp, n) ->
+    let s = try Utf8.encode [Z.to_int n] with Z.Overflow | Utf8.Utf8 ->
+      error g.at "character value out of range" in
+    Il.TextG s $ g.at, TextT $ g.at, env
+  | NatG (_, n) ->
+    if n < Z.of_int 0x00 || n > Z.of_int 0xff then
+      error g.at "byte value out of range";
+    Il.NatG (Z.to_int n) $ g.at, NumT NatT $ g.at, env
+  | TextG s -> Il.TextG s $ g.at, TextT $ g.at, env
+  | EpsG -> Il.EpsG $ g.at, TupT [] $ g.at, env
   | SeqG gs ->
-    let _ts, env' = elab_sym_list env (filter_nl gs) in
-    TupT [] $ g.at, env'
+    let gs', _ts, env' = elab_sym_list env (filter_nl gs) in
+    Il.SeqG gs' $ g.at, TupT [] $ g.at, env'
   | AltG gs ->
-    let _ = elab_sym_list env (filter_nl gs) in
-    TupT [] $ g.at, env
+    let gs', _ts, _env' = elab_sym_list env (filter_nl gs) in
+    Il.AltG gs' $ g.at, TupT [] $ g.at, env
   | RangeG (g1, g2) ->
-    let t1, env1 = elab_sym env g1 in
-    let t2, env2 = elab_sym env g2 in
+    let g1', t1, env1 = elab_sym env g1 in
+    let g2', t2, env2 = elab_sym env g2 in
     if env1 != env then
       error g1.at "invalid symbol in range";
     if env2 != env then
       error g2.at "invalid symbol in range";
     if not (equiv_typ env t1 t2) then
       error_typ2 env g2.at "range item" t2 t1 " of other range item";
-    TupT [] $ g.at, env
+    Il.RangeG (g1', g2') $ g.at, TupT [] $ g.at, env
   | ParenG g1 -> elab_sym env g1
-  | TupG gs ->
-    let ts, env' = elab_sym_list env gs in
-    TupT ts $ g.at, env'
+  | TupG _ -> error g.at "malformed grammar"
+  | ArithG e -> elab_sym env (sym_of_exp e)
   | IterG (g1, iter) ->
-    let t1, env1 = elab_sym env g1 in
-    let _iter' = elab_iterexp env iter in
-    IterT (t1, match iter with Opt -> Opt | _ -> List) $ g.at, env1
-  | ArithG e ->
-    let _e', t = infer_exp env e in
-    t, env
+    let g1', t1, env1 = elab_sym env g1 in
+    let iterexp' = elab_iterexp env iter in
+    Il.IterG (g1', iterexp') $ g.at,
+      IterT (t1, match iter with Opt -> Opt | _ -> List) $ g.at, env1
   | AttrG (e, g1) ->
-    let t1, env1 = elab_sym env g1 in
-    let _e' = elab_exp env1 e t1 in
-    TupT [] $ g.at, env
+    let g1', t1, env1 = elab_sym env g1 in
+    let e' = elab_exp env1 e t1 in
+    Il.AttrG (e', g1') $ g.at, TupT [] $ g.at, env
   | FuseG _ -> error g.at "misplaced token concatenation"
   | UnparenG _ -> error g.at "misplaced token unparenthesize"
 
 and elab_sym_list env = function
-  | [] -> [], env
+  | [] -> [], [], env
   | g::gs ->
-    let t, env' = elab_sym env g in
-    let ts, env'' = elab_sym_list env' gs in
-    t::ts, env''
+    let g', t, env' = elab_sym env g in
+    let gs', ts, env'' = elab_sym_list env' gs in
+    g'::gs', t::ts, env''
 
-and elab_prod env prod t =
+and elab_prod env prod t : Il.prod =
   let (g, e, prems) = prod.it in
   let env' = local_env env in
-  let _prems' = concat_map_filter_nl_list (elab_prem env') prems in
-  let _g, env'' = elab_sym env' g in
-  let _e' = elab_exp env'' e t in
+  let dims = Dim.check_prod prod in
+  let dims' = Dim.Env.map (List.map (elab_iter env')) dims in
+  let g', _t', env'' = elab_sym env' g in
+  let e' = Dim.annot_exp dims' (elab_exp env' e t) in
+  let prems' = List.map (Dim.annot_prem dims')
+    (concat_map_filter_nl_list (elab_prem env') prems) in
+  let det = Free.(diff (union (det_sym g) (det_prems prems)) (bound_env env)) in
   let free = Free.(diff (free_prod prod) (union (det_prod prod) (bound_env env''))) in
   if free <> Free.empty then
     error prod.at ("grammar rule contains indeterminate variable(s) `" ^
-      String.concat "`, `" (Free.Set.elements free.varid) ^ "`")
+      String.concat "`, `" (Free.Set.elements free.varid) ^ "`");
+  let acc_bs', (module Arg : Iter.Arg) = make_binds_iter_arg env' det dims dims' in
+  let module Acc = Iter.Make(Arg) in
+  Acc.sym g;
+  Acc.exp e;
+  Acc.prems prems;
+  Il.ProdD (!acc_bs', Dim.annot_sym dims' g', e', prems') $ prod.at
 
-and elab_gram env gram t =
+and elab_gram env gram t : Il.prod list =
   let (_dots1, prods, _dots2) = gram.it in
-  iter_nl_list (fun prod -> elab_prod env prod t) prods
+  map_filter_nl_list (fun prod -> elab_prod env prod t) prods
 
 
 (* Definitions *)
@@ -1715,7 +1730,7 @@ and make_binds_iter_arg env free dims dims' : Il.bind list ref * (module Iter.Ar
 
       let visit_gramid id =
         if Free.(Set.mem id.it !left.gramid) then (
-          let ps, t, _gram_opt = find "grammar" env.syms id in
+          let ps, t, _gram, _prods' = find "grammar" env.grams id in
           let free' = Free.(union (free_params ps) (diff (free_typ t) (bound_params ps))) in
           let fwd = Free.(inter free' !left) in
           if fwd <> Free.empty then
@@ -1747,7 +1762,7 @@ and make_binds_iter_arg env free dims dims' : Il.bind list ref * (module Iter.Ar
     end
   in Arg.acc, (module Arg)
 
-and elab_arg in_lhs env a p s : Il.arg option * Subst.subst =
+and elab_arg in_lhs env a p s : Il.arg list * Subst.subst =
   (match !(a.it), p.it with  (* HACK: handle shorthands *)
   | ExpA e, TypP _ -> a.it := TypA (typ_of_exp e)
   | ExpA e, GramP _ -> a.it := GramA (sym_of_exp e)
@@ -1757,29 +1772,29 @@ and elab_arg in_lhs env a p s : Il.arg option * Subst.subst =
   match !(a.it), (Subst.subst_param s p).it with
   | ExpA e, ExpP (id, t) ->
     let e' = elab_exp env e t in
-    Some (Il.ExpA e' $ a.at), Subst.add_varid s id e
+    [Il.ExpA e' $ a.at], Subst.add_varid s id e
   | TypA ({it = VarT (id', []); _} as t), TypP id when in_lhs = `Lhs ->
     let id'' = strip_var_suffix id' in
     env.typs <- bind "syntax type" env.typs id'' ([], Opaque);
     env.gvars <- bind "variable" env.gvars (strip_var_sub id'') (VarT (id'', []) $ id''.at);
-    Some (Il.TypA (Il.VarT (id'', []) $ t.at) $ a.at), Subst.add_typid s id t
+    [Il.TypA (Il.VarT (id'', []) $ t.at) $ a.at], Subst.add_typid s id t
   | TypA t, TypP _ when in_lhs = `Lhs ->
     error t.at "misplaced syntax type"
   | TypA t, TypP id ->
     let t' = elab_typ env t in
-    Some (Il.TypA t' $ a.at), Subst.add_typid s id t
+    [Il.TypA t' $ a.at], Subst.add_typid s id t
   | GramA g, GramP _ when in_lhs = `Lhs ->
     error g.at "misplaced grammar symbol"
-  | GramA g, GramP (id, t) ->
-    let t', _ = elab_sym env g in
+  | GramA g, GramP (id', t) ->
+    let g', t', _ = elab_sym env g in
     let s' = subst_implicit env s t t' in
     if not (sub_typ env t' (Subst.subst_typ s' t)) then
       error_typ2 env a.at "argument" t' t "";
-    (* Grammar args are erased *)
-    None, Subst.add_gramid s' id g
+    let as' = List.map (fun (_id, t) -> Il.TypA (elab_typ env t) $ t.at) Subst.(Map.bindings s'.typid) in
+    as' @ [Il.GramA g' $ a.at], Subst.add_gramid s' id' g
   | DefA id, DefP (id', ps', t') when in_lhs = `Lhs ->
     env.defs <- bind "definition" env.defs id (ps', t', []);
-    Some (Il.DefA id $ a.at), Subst.add_defid s id' id
+    [Il.DefA id $ a.at], Subst.add_defid s id' id
   | DefA id, DefP (id', ps', t') ->
     let ps, t, _ = find "definition" env.defs id in
     if not (Eval.equiv_functyp (to_eval_env env) (ps, t) (ps', t')) then
@@ -1788,7 +1803,7 @@ and elab_arg in_lhs env a p s : Il.arg option * Subst.subst =
         "` but got `" ^
         (spaceid "definition" id).it ^ Print.(string_of_params ps ^ " : " ^ string_of_typ t ^ "`")
       );
-    Some (Il.DefA id $ a.at), Subst.add_defid s id id'
+    [Il.DefA id $ a.at], Subst.add_defid s id id'
   | _, _ ->
     error a.at "sort mismatch for argument"
 
@@ -1799,14 +1814,14 @@ and elab_args in_lhs env as_ ps at : Il.arg list * Subst.subst =
   ) @@ fun _ ->
   elab_args' in_lhs env as_ ps [] Subst.empty at
 
-and elab_args' in_lhs env as_ ps aos' s at : Il.arg list * Subst.subst =
+and elab_args' in_lhs env as_ ps as' s at : Il.arg list * Subst.subst =
   match as_, ps with
-  | [], [] -> List.rev (List.filter_map Fun.id aos'), s
+  | [], [] -> List.concat (List.rev as'), s
   | a::_, [] -> error a.at "too many arguments"
   | [], _::_ -> error at "too few arguments"
   | a::as1, p::ps1 ->
-    let ao', s' = elab_arg in_lhs env a p s in
-    elab_args' in_lhs env as1 ps1 (ao'::aos') s' at
+    let a', s' = elab_arg in_lhs env a p s in
+    elab_args' in_lhs env as1 ps1 (a'::as') s' at
 
 and subst_implicit env s t t' : Subst.subst =
   let free = Free.(Set.filter (fun id -> not (Map.mem id env.typs)) (free_typ t).typid) in
@@ -1823,53 +1838,57 @@ and subst_implicit env s t t' : Subst.subst =
     | _ -> s
   in inst s t t'
 
-and elab_params env ps : Il.param list =
-  List.fold_left (fun ps' p ->
-    match p.it with
-    | ExpP (id, t) ->
-      let t' = elab_typ env t in
-      (* If a variable isn't globally declared, this is a local declaration. *)
-      let id' = strip_var_suffix id in
-      if bound env.gvars id' then (
-        let t2 = find "" env.gvars id' in
-        if not (sub_typ env t t2) then
-          error_typ2 env id.at "local variable" t t2 ", shadowing with different type"
-      );
-      (* Shadowing is allowed, but only with consistent type. *)
-      if bound env.vars id' then (
-        let t2 = find "" env.vars id' in
-        if not (equiv_typ env t t2) then
-          error_typ2 env id.at "local variable" t t2 ", shadowing with different type"
-      )
-      else
-        env.vars <- bind "variable" env.vars id t;
-      ps' @ [Il.ExpP (id, t') $ p.at]
-    | TypP id ->
-      env.typs <- bind "syntax type" env.typs id ([], Opaque);
-      env.gvars <- bind "variable" env.gvars (strip_var_sub id) (VarT (id, []) $ id.at);
-      ps' @ [Il.TypP id $ p.at]
-    | GramP (id, t) ->
-      (* Treat unbound type identifiers in t as implicitly bound. *)
-      let free = Free.free_typ t in
-      env.syms <- bind "grammar" env.syms id ([], t, None);
-      Free.Set.iter (fun id' ->
-        if not (Map.mem id' env.typs) then (
+and elab_param env p : Il.param list =
+  match p.it with
+  | ExpP (id, t) ->
+    let t' = elab_typ env t in
+    (* If a variable isn't globally declared, this is a local declaration. *)
+    let id' = strip_var_suffix id in
+    if bound env.gvars id' then (
+      let t2 = find "" env.gvars id' in
+      if not (sub_typ env t t2) then
+        error_typ2 env id.at "local variable" t t2 ", shadowing with different type"
+    );
+    (* Shadowing is allowed, but only with consistent type. *)
+    if bound env.vars id' then (
+      let t2 = find "" env.vars id' in
+      if not (equiv_typ env t t2) then
+        error_typ2 env id.at "local variable" t t2 ", shadowing with different type"
+    )
+    else
+      env.vars <- bind "variable" env.vars id t;
+    [Il.ExpP (id, t') $ p.at]
+  | TypP id ->
+    env.typs <- bind "syntax type" env.typs id ([], Opaque);
+    env.gvars <- bind "variable" env.gvars (strip_var_sub id) (VarT (id, []) $ id.at);
+    [Il.TypP id $ p.at]
+  | GramP (id, t) ->
+    (* Treat unbound type identifiers in t as implicitly bound. *)
+    let free = Free.free_typ t in
+    env.grams <- bind "grammar" env.grams id ([], t, None, []);
+    let ps' =
+      Free.Set.fold (fun id' ps' ->
+        if Map.mem id' env.typs then ps' else (
           let id = id' $ t.at in
           if id.it <> (strip_var_suffix id).it then
             error_id id "invalid identifer suffix in binding position";
           env.typs <- bind "syntax type" env.typs id ([], Opaque);
           env.gvars <- bind "variable" env.gvars (strip_var_sub id) (VarT (id, []) $ id.at);
+          (Il.TypP id $ id.at) :: ps'
         )
-      ) free.typid;
-      let _t' = elab_typ env t in
-      ps'  (* Grammar parameters are erased *)
-    | DefP (id, ps, t) ->
-      let env' = local_env env in
-      let ps'' = elab_params env' ps in
-      let t' = elab_typ env' t in
-      env.defs <- bind "definition" env.defs id (ps, t, []);
-      ps' @ [Il.DefP (id, ps'', t') $ p.at]
-  ) [] ps
+      ) free.typid []
+    in
+    let t' = elab_typ env t in
+    ps' @ [Il.GramP (id, t') $ p.at] 
+  | DefP (id, ps, t) ->
+    let env' = local_env env in
+    let ps' = elab_params env' ps in
+    let t' = elab_typ env' t in
+    env.defs <- bind "definition" env.defs id (ps, t, []);
+    [Il.DefP (id, ps', t') $ p.at]
+
+and elab_params env ps : Il.param list =
+  List.concat_map (elab_param env) ps
 
 
 let infer_typ_definition _env t : kind =
@@ -1913,11 +1932,11 @@ let infer_gramdef env d =
     (*
     Printf.eprintf "[el.infer_gramdef %s]\n%!" (string_of_region d.at);
     *)
-    if not (bound env.syms id1) then (
+    if not (bound env.grams id1) then (
       let env' = local_env env in
       let _ps' = elab_params env' ps in
       let _t' = elab_typ env' t in
-      env.syms <- bind "grammar" env.syms id1 (ps, t, None);
+      env.grams <- bind "grammar" env.grams id1 (ps, t, None, []);
     )
   | _ -> ()
 
@@ -2016,7 +2035,34 @@ let elab_def env d : Il.def list =
       let ps' = elab_params (local_env env) ps in
       [Il.TypD (id1, ps', [inst']) $ d.at]
     ) @ elab_hintdef env (TypH (id1, id2, hints) $ d.at)
-  | GramD _ -> []
+  | GramD (id1, id2, ps, t, gram, hints) ->
+    let env' = local_env env in
+    let ps' = elab_params env' ps in
+    let t' = elab_typ env' t in
+    let prods' = elab_gram env' gram t in
+    infer_no_binds env' d;
+    let ps1, t1, gram1_opt, prods1' = find "grammar" env.grams id1 in
+    let gram', last =
+      match gram1_opt, gram.it with
+      | None, (Dots, _, _) ->
+        error_id id1 "extension of not yet defined grammar"
+      | None, (_, _, dots2) ->
+        gram, dots2 = NoDots
+      | Some {it = (dots1, prods1, Dots); at; _}, (Dots, prods2, dots2) ->
+        if not Eq.(eq_list eq_param ps ps1) then
+          error d.at "grammar parameters differ from previous fragment";
+        if not (equiv_typ env' t t1) then
+          error_typ2 env d.at "grammar" t1 t " of previous fragment";
+        (dots1, prods1 @ prods2, dots2) $ over_region [at; t.at], dots2 = NoDots
+      | Some _, (Dots, _, _) ->
+        error_id id1 "extension of non-extensible grammar"
+      | Some _, _ ->
+        error_id id1 "duplicate declaration for grammar";
+    in
+    env.grams <- rebind "grammar" env.grams id1 (ps, t, Some gram', prods1' @ prods');
+    (* Only add last fragment to IL defs, so that populate finds it only once *)
+    (if last then [Il.GramD (id1, ps', t', []) $ d.at] else [])
+      @ elab_hintdef env (GramH (id1, id2, hints) $ d.at)
   | RelD (id, t, hints) ->
     let mixop, ts', _ts = elab_typ_notation env id t in
     infer_no_binds env d;
@@ -2068,37 +2114,6 @@ let elab_def env d : Il.def list =
   | HintD hd ->
     elab_hintdef env hd
 
-let elab_gramdef env d =
-  match d.it with
-  | GramD (id1, _id2, ps, t, gram, _hints) ->
-    Debug.(log_in "el.elab_gramdef" line);
-    Debug.(log_in_at "el.elab_gramdef" d.at (fun _ -> el_def d));
-    let env' = local_env env in
-    let _ps' = elab_params env' ps in
-    let _t' = elab_typ env' t in
-    elab_gram env' gram t;
-    infer_no_binds env' d;
-    let ps1, t1, gram1_opt = find "grammar" env.syms id1 in
-    let gram' =
-      match gram1_opt, gram.it with
-      | None, (Dots, _, _) ->
-        error_id id1 "extension of not yet defined grammar"
-      | None, _ ->
-        gram
-      | Some {it = (dots1, prods1, Dots); at; _}, (Dots, prods2, dots2) ->
-        if not Eq.(eq_list eq_param ps ps1) then
-          error d.at "grammar parameters differ from previous fragment";
-        if not (equiv_typ env' t t1) then
-          error_typ2 env d.at "grammar" t1 t " of previous fragment";
-        (dots1, prods1 @ prods2, dots2) $ over_region [at; t.at]
-      | Some _, (Dots, _, _) ->
-        error_id id1 "extension of non-extensible grammar"
-      | Some _, _ ->
-        error_id id1 "duplicate declaration for grammar";
-    in
-    env.syms <- rebind "grammar" env.syms id1 (ps, t, Some gram')
-  | _ -> ()
-
 
 let check_dots env =
   Map.iter (fun id (at, (_ps, k)) ->
@@ -2110,13 +2125,13 @@ let check_dots env =
       error_id (id $ at) "no defined cases for syntax type family"
     | Defined _ | Family _ -> ()
   ) env.typs;
-  Map.iter (fun id (at, (_ps, _t, gram_opt)) ->
+  Map.iter (fun id (at, (_ps, _t, gram_opt, _prods')) ->
     match gram_opt with
     | None -> assert false
     | Some {it = (_, _, Dots); _} ->
       error_id (id $ at) "missing final extension to grammar"
     | _ -> ()
-  ) env.syms
+  ) env.grams
 
 
 let populate_def env d' : Il.def =
@@ -2137,6 +2152,9 @@ let populate_def env d' : Il.def =
   | Il.DecD (id, ps', t', []) ->
     let _, _, clauses' = find "definition" env.defs id in
     Il.DecD (id, ps', t', List.map snd clauses') $ d'.at
+  | Il.GramD (id, ps', t', []) ->
+    let _, _, _, prods' = find "grammar" env.grams id in
+    Il.GramD (id, ps', t', prods') $ d'.at
   | Il.HintD _ -> d'
   | _ ->
     assert false
@@ -2159,7 +2177,8 @@ let check_recursion ds' =
     | Il.HintD _, _ | _, Il.HintD _
     | Il.TypD _, Il.TypD _
     | Il.RelD _, Il.RelD _
-    | Il.DecD _, Il.DecD _ -> ()
+    | Il.DecD _, Il.DecD _
+    | Il.GramD _, Il.GramD _ -> ()
     | _, _ ->
       error (List.hd ds').at (" " ^ string_of_region d'.at ^
         ": invalid recursion between definitions of different sort")
@@ -2172,12 +2191,14 @@ let recursify_defs ds' : Il.def list =
   let map_typid = ref Map.empty in
   let map_relid = ref Map.empty in
   let map_defid = ref Map.empty in
+  let map_gramid = ref Map.empty in
   let frees = Array.map Il.Free.free_def da in
   let bounds = Array.map Il.Free.bound_def da in
   Array.iteri (fun i bound ->
     origins i map_typid bound.typid;
     origins i map_relid bound.relid;
     origins i map_defid bound.defid;
+    origins i map_gramid bound.gramid;
   ) bounds;
   let graph =
     Array.map (fun free ->
@@ -2185,6 +2206,7 @@ let recursify_defs ds' : Il.def list =
         [ deps !map_typid free.typid;
           deps !map_relid free.relid;
           deps !map_defid free.defid;
+          deps !map_gramid free.gramid;
         ];
     ) frees
   in
@@ -2202,9 +2224,8 @@ let recursify_defs ds' : Il.def list =
 let elab ds : Il.script * env =
   let env = new_env () in
   List.iter (infer_typdef env) ds;
-  let ds' = List.concat_map (elab_def env) ds in
   List.iter (infer_gramdef env) ds;
-  List.iter (elab_gramdef env) ds;
+  let ds' = List.concat_map (elab_def env) ds in
   check_dots env;
   let ds' = List.map (populate_def env) ds' in
   recursify_defs ds', env

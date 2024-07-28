@@ -135,6 +135,7 @@ and t_arg env arg = match arg.it with
   | ExpA exp -> t_exp env exp
   | TypA _ -> []
   | DefA _ -> []
+  | GramA _ -> []
 
 
 let rec t_prem env prem = match prem.it with
@@ -174,7 +175,7 @@ let t_rule' = function
     let env = List.fold_left (fun env bind ->
       match bind.it with
       | ExpB (v, t, i) -> Env.add v.it (t, i) env
-      | TypB _ | DefB _ -> error bind.at "unexpected type argument in rule") Env.empty binds
+      | TypB _ | DefB _ | GramB _ -> error bind.at "unexpected type argument in rule") Env.empty binds
     in
     let extra_prems = t_prems env prems @ t_exp env exp in
     let prems' = reduce_prems (extra_prems @ prems) in

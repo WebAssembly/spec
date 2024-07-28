@@ -460,6 +460,7 @@ warning: syntax `structtype` was never spliced
 warning: syntax `subtype` was never spliced
 warning: syntax `sx` was never spliced
 warning: syntax `sym` was never spliced
+warning: syntax `symdots` was never spliced
 warning: syntax `symsplit/1` was never spliced
 warning: syntax `symsplit/2` was never spliced
 warning: syntax `sz` was never spliced
@@ -669,6 +670,7 @@ warning: grammar `Bu32` was never spliced
 warning: grammar `Bu64` was never spliced
 warning: grammar `BuN` was never spliced
 warning: grammar `Bvaltype` was never spliced
+warning: grammar `Bvar` was never spliced
 warning: grammar `Bvectype` was never spliced
 warning: grammar `Bversion` was never spliced
 warning: rule `Blocktype_ok/valtype` was never spliced
@@ -1407,7 +1409,6 @@ warning: definition `subst_valtype` was never spliced
 warning: definition `subst_vectype` was never spliced
 warning: definition `sum` was never spliced
 warning: definition `sx` was never spliced
-warning: definition `symdots` was never spliced
 warning: definition `tableinst` was never spliced
 warning: definition `tablesxt` was never spliced
 warning: definition `tablesxv` was never spliced
@@ -1424,6 +1425,7 @@ warning: definition `unrolldt` was never spliced
 warning: definition `unrollht` was never spliced
 warning: definition `unrollrt` was never spliced
 warning: definition `utf8` was never spliced
+warning: definition `var` was never spliced
 warning: definition `vbinop_` was never spliced
 warning: definition `vbytes_` was never spliced
 warning: definition `vcvtop__` was never spliced
@@ -1950,6 +1952,7 @@ warning: definition prose `unrolldt` was never spliced
 warning: definition prose `unrollht` was never spliced
 warning: definition prose `unrollrt` was never spliced
 warning: definition prose `utf8` was never spliced
+warning: definition prose `var` was never spliced
 warning: definition prose `vbinop_` was never spliced
 warning: definition prose `vcvtop__` was never spliced
 warning: definition prose `vextbinop__` was never spliced
