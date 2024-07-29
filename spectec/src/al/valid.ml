@@ -19,6 +19,8 @@ let error_mismatch source typ1 typ2 =
 let error_field source typ field =
   error_valid "unknown field" source
     (Printf.sprintf "%s ∉ %s" field (Il.Print.string_of_typ typ))
+let error_struct source typ =
+  error_valid "invalid struct type" source (Il.Print.string_of_typ typ)
 
 (* Bound Set *)
 
@@ -100,6 +102,15 @@ let check_context source typ =
   | Il.Ast.VarT (id, []) when List.mem id.it context_typs -> ()
   | _ -> error_mismatch source typ (varT "context")
 
+let check_field source source_typ expr_record atom typ =
+  (* TODO: Use record api *)
+  let f e = El.Atom.eq (fst e) atom in
+  let expr =
+    try List.find f expr_record |> snd |> (!)
+    with _ -> error_field source source_typ (El.Print.string_of_atom atom)
+  in
+  check_match source expr.note typ
+
 let access source typ path =
   match path.it with
   | IdxP expr ->
@@ -115,6 +126,7 @@ let access source typ path =
     in
     (match typ.it with
     | TupT etl when List.exists valid_field etl ->
+      (* XXX: Not sure about this rule *)
       let (_, typ') = List.find valid_field etl in
       typ'
     | VarT (id, _) when Il.Eval.Map.mem id.it !typ_env.typs ->
@@ -153,6 +165,19 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
   | UpdE (expr1, pl, expr2) | ExtE (expr1, pl, expr2, _) ->
     List.fold_left (access source) expr1.note pl
     |> check_match source expr2.note
+  | StrE r ->
+    print_endline (string_of_expr expr);
+    print_endline (Il.Print.string_of_typ expr.note);
+    (match expr.note.it with
+    | VarT (id, _) when Il.Eval.Map.mem id.it !typ_env.typs ->
+      (match Il.Eval.Map.find id.it !typ_env.typs with
+      | [{ it = InstD (_, _, { it = StructT tfs; _ }); _ }] ->
+        List.iter (fun (a, (_, typ', _), _) ->
+        check_field source expr.note r a typ') tfs
+      | _ -> error_struct source expr.note
+      )
+    | _ -> error_struct source expr.note
+    )
   (* TODO *)
   | IterE (expr1, _, iter) ->
     if not (expr1.note.it = Il.Ast.BoolT && expr.note.it = BoolT) then
