@@ -413,7 +413,7 @@ rule Step_read/array.new_data-num:
   z; (CONST I32 i) (CONST I32 n) (ARRAY.NEW_DATA x y)  ~>  ($const($cunpack(zt), $cunpacknum_(zt, c)))^n (ARRAY.NEW_FIXED x n)
   ----
   -- Expand: $type(z, x) ~~ ARRAY (mut zt)
-  -- if $concat_uniform_length(byte, $zbytes_(zt, c)^n, $($zsize(zt)/8)) = $data(z, y).BYTES[i : n * $zsize(zt)/8]
+  -- if $concatn(byte, $zbytes_(zt, c)^n, $($zsize(zt)/8)) = $data(z, y).BYTES[i : n * $zsize(zt)/8]
 
 
 rule Step_read/array.get-null:

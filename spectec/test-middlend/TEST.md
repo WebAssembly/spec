@@ -64,11 +64,11 @@ def $concat_(syntax X, X**) : X*
 rec {
 
 ;; 0-aux.watsup:44.1-44.74
-def $concat_uniform_length(syntax X, X**, nat : nat) : X*
+def $concatn(syntax X, X**, nat : nat) : X*
   ;; 0-aux.watsup:45.1-45.51
-  def $concat_uniform_length{syntax X, n : n}(syntax X, [], n) = []
+  def $concatn{syntax X, n : n}(syntax X, [], n) = []
   ;; 0-aux.watsup:46.1-46.95
-  def $concat_uniform_length{syntax X, w* : X*, w'** : X**, n : n}(syntax X, [w*{w : X}] :: w'*{w' : X}*{w' : X}, n) = w*{w : X} :: $concat_uniform_length(syntax X, w'*{w' : X}*{w' : X}, n)
+  def $concatn{syntax X, w* : X*, w'** : X**, n : n}(syntax X, [w*{w : X}] :: w'*{w' : X}*{w' : X}, n) = w*{w : X} :: $concatn(syntax X, w'*{w' : X}*{w' : X}, n)
 }
 
 ;; 0-aux.watsup
@@ -5580,7 +5580,7 @@ relation Step_read: `%~>%`(config, instr*)
   rule array.new_data-num{z : state, i : nat, n : n, x : idx, y : idx, zt : storagetype, c^n : lit_(zt)^n, mut : mut}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr(I32_numtype, `%`_num_(n)) ARRAY.NEW_DATA_instr(x, y)]), $const($cunpack(zt), $cunpacknum_(zt, c))^n{c : lit_(zt)} :: [ARRAY.NEW_FIXED_instr(x, `%`_u32(n))])
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
-    -- if ($concat_uniform_length(syntax byte, $zbytes_(zt, c)^n{c : lit_(zt)}, ($zsize(zt) / 8)) = $data(z, y).BYTES_datainst[i : ((n * $zsize(zt)) / 8)])
+    -- if ($concatn(syntax byte, $zbytes_(zt, c)^n{c : lit_(zt)}, ($zsize(zt) / 8)) = $data(z, y).BYTES_datainst[i : ((n * $zsize(zt)) / 8)])
 
   ;; 8-reduction.watsup
   rule array.get-null{z : state, ht : heaptype, i : nat, sx? : sx?, x : idx}:
@@ -6514,11 +6514,11 @@ def $concat_(syntax X, X**) : X*
 rec {
 
 ;; 0-aux.watsup:44.1-44.74
-def $concat_uniform_length(syntax X, X**, nat : nat) : X*
+def $concatn(syntax X, X**, nat : nat) : X*
   ;; 0-aux.watsup:45.1-45.51
-  def $concat_uniform_length{syntax X, n : n}(syntax X, [], n) = []
+  def $concatn{syntax X, n : n}(syntax X, [], n) = []
   ;; 0-aux.watsup:46.1-46.95
-  def $concat_uniform_length{syntax X, w* : X*, w'** : X**, n : n}(syntax X, [w*{w : X}] :: w'*{w' : X}*{w' : X}, n) = w*{w : X} :: $concat_uniform_length(syntax X, w'*{w' : X}*{w' : X}, n)
+  def $concatn{syntax X, w* : X*, w'** : X**, n : n}(syntax X, [w*{w : X}] :: w'*{w' : X}*{w' : X}, n) = w*{w : X} :: $concatn(syntax X, w'*{w' : X}*{w' : X}, n)
 }
 
 ;; 0-aux.watsup
@@ -12035,7 +12035,7 @@ relation Step_read: `%~>%`(config, instr*)
   rule array.new_data-num{z : state, i : nat, n : n, x : idx, y : idx, zt : storagetype, c^n : lit_(zt)^n, mut : mut}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr(I32_numtype, `%`_num_(n)) ARRAY.NEW_DATA_instr(x, y)]), $const(!($cunpack(zt)), $cunpacknum_(zt, c))^n{c : lit_(zt)} :: [ARRAY.NEW_FIXED_instr(x, `%`_u32(n))])
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
-    -- if ($concat_uniform_length(syntax byte, $zbytes_(zt, c)^n{c : lit_(zt)}, ($zsize(zt) / 8)) = $data(z, y).BYTES_datainst[i : ((n * $zsize(zt)) / 8)])
+    -- if ($concatn(syntax byte, $zbytes_(zt, c)^n{c : lit_(zt)}, ($zsize(zt) / 8)) = $data(z, y).BYTES_datainst[i : ((n * $zsize(zt)) / 8)])
 
   ;; 8-reduction.watsup
   rule array.get-null{z : state, ht : heaptype, i : nat, sx? : sx?, x : idx}:
@@ -12969,11 +12969,11 @@ def $concat_(syntax X, X**) : X*
 rec {
 
 ;; 0-aux.watsup:44.1-44.74
-def $concat_uniform_length(syntax X, X**, nat : nat) : X*
+def $concatn(syntax X, X**, nat : nat) : X*
   ;; 0-aux.watsup:45.1-45.51
-  def $concat_uniform_length{syntax X, n : n}(syntax X, [], n) = []
+  def $concatn{syntax X, n : n}(syntax X, [], n) = []
   ;; 0-aux.watsup:46.1-46.95
-  def $concat_uniform_length{syntax X, w* : X*, w'** : X**, n : n}(syntax X, [w*{w : X}] :: w'*{w' : X}*{w' : X}, n) = w*{w : X} :: $concat_uniform_length(syntax X, w'*{w' : X}*{w' : X}, n)
+  def $concatn{syntax X, w* : X*, w'** : X**, n : n}(syntax X, [w*{w : X}] :: w'*{w' : X}*{w' : X}, n) = w*{w : X} :: $concatn(syntax X, w'*{w' : X}*{w' : X}, n)
 }
 
 ;; 0-aux.watsup
@@ -18490,7 +18490,7 @@ relation Step_read: `%~>%`(config, instr*)
   rule array.new_data-num{z : state, i : nat, n : n, x : idx, y : idx, zt : storagetype, c^n : lit_(zt)^n, mut : mut}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr(I32_numtype, `%`_num_(n)) ARRAY.NEW_DATA_instr(x, y)]), $const(!($cunpack(zt)), $cunpacknum_(zt, c))^n{c : lit_(zt)} :: [ARRAY.NEW_FIXED_instr(x, `%`_u32(n))])
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
-    -- if ($concat_uniform_length(syntax byte, $zbytes_(zt, c)^n{c : lit_(zt)}, ($zsize(zt) / 8)) = $data(z, y).BYTES_datainst[i : ((n * $zsize(zt)) / 8)])
+    -- if ($concatn(syntax byte, $zbytes_(zt, c)^n{c : lit_(zt)}, ($zsize(zt) / 8)) = $data(z, y).BYTES_datainst[i : ((n * $zsize(zt)) / 8)])
 
   ;; 8-reduction.watsup
   rule array.get-null{z : state, ht : heaptype, i : nat, sx? : sx?, x : idx}:
@@ -19424,11 +19424,11 @@ def $concat_(syntax X, X**) : X*
 rec {
 
 ;; 0-aux.watsup:44.1-44.74
-def $concat_uniform_length(syntax X, X**, nat : nat) : X*
+def $concatn(syntax X, X**, nat : nat) : X*
   ;; 0-aux.watsup:45.1-45.51
-  def $concat_uniform_length{syntax X, n : n}(syntax X, [], n) = []
+  def $concatn{syntax X, n : n}(syntax X, [], n) = []
   ;; 0-aux.watsup:46.1-46.95
-  def $concat_uniform_length{syntax X, w* : X*, w'** : X**, n : n}(syntax X, [w*{w : X}] :: w'*{w' : X}*{w' : X}, n) = w*{w : X} :: $concat_uniform_length(syntax X, w'*{w' : X}*{w' : X}, n)
+  def $concatn{syntax X, w* : X*, w'** : X**, n : n}(syntax X, [w*{w : X}] :: w'*{w' : X}*{w' : X}, n) = w*{w : X} :: $concatn(syntax X, w'*{w' : X}*{w' : X}, n)
 }
 
 ;; 0-aux.watsup
@@ -25089,7 +25089,7 @@ relation Step_read: `%~>%`(config, instr*)
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr(I32_numtype, `%`_num_(n)) ARRAY.NEW_DATA_instr(x, y)]), $const(!($cunpack(zt)), $cunpacknum_(zt, c))^n{c : lit_(zt)} :: [ARRAY.NEW_FIXED_instr(x, `%`_u32(n))])
     -- (if ($cunpack(zt) =/= ?()))^n{}
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
-    -- if ($concat_uniform_length(syntax byte, $zbytes_(zt, c)^n{c : lit_(zt)}, ($zsize(zt) / 8)) = $data(z, y).BYTES_datainst[i : ((n * $zsize(zt)) / 8)])
+    -- if ($concatn(syntax byte, $zbytes_(zt, c)^n{c : lit_(zt)}, ($zsize(zt) / 8)) = $data(z, y).BYTES_datainst[i : ((n * $zsize(zt)) / 8)])
 
   ;; 8-reduction.watsup
   rule array.get-null{z : state, ht : heaptype, i : nat, sx? : sx?, x : idx}:
