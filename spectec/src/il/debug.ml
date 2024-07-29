@@ -18,10 +18,10 @@ let il_params = list il_param
 let il_def = string_of_def
 let il_free s = String.concat " "
   Free.[
-    set (Set.elements s.typid);
-    set (Set.elements s.varid);
-    set (Set.elements s.gramid);
-    set (Set.elements s.defid);
+    set s.typid;
+    set s.varid;
+    set s.gramid;
+    set s.defid;
   ]
 let il_subst s = String.concat " "
   Subst.[

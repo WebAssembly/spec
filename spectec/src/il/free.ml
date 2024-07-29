@@ -4,7 +4,7 @@ open Ast
 
 (* Data Structure *)
 
-module Set = Set.Make(String)
+module Set = Env.Set
 
 type sets =
   {typid : Set.t; relid : Set.t; varid : Set.t; defid : Set.t; gramid : Set.t}

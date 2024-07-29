@@ -1655,7 +1655,7 @@ and elab_sym env g : Il.sym * typ * env =
   | AttrG (e, g1) ->
     let g1', t1, env1 = elab_sym env g1 in
     let e' = elab_exp env1 e t1 in
-    Il.AttrG (e', g1') $ g.at, TupT [] $ g.at, env
+    Il.AttrG (e', g1') $ g.at, t1, env
   | FuseG _ -> error g.at "misplaced token concatenation"
   | UnparenG _ -> error g.at "misplaced token unparenthesize"
 

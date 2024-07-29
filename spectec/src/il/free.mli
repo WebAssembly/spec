@@ -1,6 +1,6 @@
 open Ast
 
-module Set : Set.S with type elt = string
+module Set : Set.S with type elt = string with type t = Set.Make(String).t
 
 type sets = {typid : Set.t; relid : Set.t; varid : Set.t; defid : Set.t; gramid : Set.t}
 

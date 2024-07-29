@@ -26,8 +26,8 @@ let error_exp exp typ =
 
 (* Global env for eval *)
 
-let env: Il.Eval.env ref =
-  ref Il.Eval.{ vars=Map.empty; typs=Map.empty; defs=Map.empty }
+let env: Il.Env.t ref = ref Il.Env.empty
+
 
 (* Helpers *)
 
@@ -1371,25 +1371,10 @@ let translate_rules il =
   (* Translate reduction group into algorithm *)
   |> List.map translate_rgroup
 
-let collect_typd env typd =
-  match typd.it with
-  | Il.TypD (id, _ps, insts) -> Il.Eval.Map.add id.it insts env
-  | _ -> env
-
-let collect_decd env typd =
-  match typd.it with
-  | Il.DecD (id, _ps, _t, clauses) -> Il.Eval.Map.add id.it clauses env
-  | _ -> env
-
-let initialize_env il =
-  let typs = List.fold_left collect_typd Il.Eval.Map.empty il in
-  let defs = List.fold_left collect_decd Il.Eval.Map.empty il in
-  env := { vars=Il.Eval.Map.empty; typs; defs }
-
 (* Entry *)
 let translate il =
   let il' = il |> Animate.transform |> List.concat_map flatten_rec in
 
-  initialize_env il';
+  env := Il.Env.env_of_script il';
 
   translate_helpers il' @ translate_rules il'
