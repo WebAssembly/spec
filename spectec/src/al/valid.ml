@@ -205,7 +205,7 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
     add_bound_vars expr1;
     if not (matches expr1.note expr2.note) then
       error instr.at
-        (Printf.sprintf "lhs and rhs type mismatch in %s\n  %s = %s"
+        (Printf.sprintf "lhs and rhs type mismatch in %s\n  %s =/= %s"
           (string_of_instr instr)
           (Il.Print.string_of_typ expr1.note)
           (Il.Print.string_of_typ expr2.note)
