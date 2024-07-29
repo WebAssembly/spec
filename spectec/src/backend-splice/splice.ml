@@ -121,14 +121,14 @@ let env_prose env prose =
   | Iff (_, expr, _, _) -> (* TODO *)
     let id =
       match expr.it with
-      | CaseE ((id, typ), _) -> El.Atom.to_string (id $$ (no_region, ref typ))
+      | CaseE (atom, _) -> El.Atom.to_string atom
       | _ -> Al.Print.string_of_expr expr
     in
     let relation = Map.find valid_id env.rel_prose in
     let ralgos = (normalize_id id, prose, ref 0) :: relation.ralgos in
     env.rel_prose <- Map.add valid_id {ralgos} env.rel_prose
-  | Algo ({ it = Al.Ast.RuleA ((id, typ), _, _); _ }) ->
-    let id = El.Atom.to_string (id $$ (no_region, ref typ)) in
+  | Algo ({ it = Al.Ast.RuleA (atom, _, _); _ }) ->
+    let id = El.Atom.to_string atom in
     let relation = Map.find exec_id env.rel_prose in
     let ralgos = (normalize_id id, prose, ref 0) :: relation.ralgos in
     env.rel_prose <- Map.add exec_id {ralgos} env.rel_prose

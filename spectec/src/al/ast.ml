@@ -2,8 +2,7 @@ open Util.Source
 
 (* Terminals *)
 
-type atom = atom' * string
-and atom' = El.Atom.atom'
+type atom = El.Atom.atom
 
 (* Types *)
 
