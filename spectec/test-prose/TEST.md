@@ -3557,37 +3557,37 @@ execution_of_REF.IS_NULL
   a. Push the value (I32.CONST 0) to the stack.
 
 execution_of_VVUNOP V128 vvunop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. Let c be $vvunop_(V128, vvunop, c_1).
 4. Push the value (V128.CONST c) to the stack.
 
 execution_of_VVBINOP V128 vvbinop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c be $vvbinop_(V128, vvbinop, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
 
 execution_of_VVTERNOP V128 vvternop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_3) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_2) from the stack.
-5. Assert: Due to validation, a value is on the top of the stack.
+5. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 6. Pop the value (V128.CONST c_1) from the stack.
 7. Let c be $vvternop_(V128, vvternop, c_1, c_2, c_3).
 8. Push the value (V128.CONST c) to the stack.
 
 execution_of_VVTESTOP V128 ANY_TRUE
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. Let c be $ine_($size(V128), c_1, 0).
 4. Push the value (I32.CONST c) to the stack.
 
 execution_of_VUNOP sh vunop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. If (|$vunop_(sh, vunop, c_1)| ≤ 0), then:
   a. Trap.
@@ -3595,9 +3595,9 @@ execution_of_VUNOP sh vunop
 5. Push the value (V128.CONST c) to the stack.
 
 execution_of_VBINOP sh vbinop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. If (|$vbinop_(sh, vbinop, c_1, c_2)| ≤ 0), then:
   a. Trap.
@@ -3605,7 +3605,7 @@ execution_of_VBINOP sh vbinop
 7. Push the value (V128.CONST c) to the stack.
 
 execution_of_VTESTOP (Jnn X N) ALL_TRUE
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c) from the stack.
 3. Let ci_1* be $lanes_((Jnn X N), c).
 4. If (ci_1 is not 0)*, then:
@@ -3614,9 +3614,9 @@ execution_of_VTESTOP (Jnn X N) ALL_TRUE
   a. Push the value (I32.CONST 0) to the stack.
 
 execution_of_VRELOP sh vrelop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c be $vrelop_(sh, vrelop, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
@@ -3624,23 +3624,23 @@ execution_of_VRELOP sh vrelop
 execution_of_VSHIFTOP (Jnn X N) vshiftop
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c'* be $lanes_((Jnn X N), c_1).
 6. Let c be $invlanes_((Jnn X N), $vshiftop_((Jnn X N), vshiftop, c', n)*).
 7. Push the value (V128.CONST c) to the stack.
 
 execution_of_VBITMASK (Jnn X N)
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c) from the stack.
 3. Let ci_1* be $lanes_((Jnn X N), c).
 4. Let ci be $ibits__1^-1(32, $ilt_($lsize(Jnn), S, ci_1, 0)*).
 5. Push the value (I32.CONST ci) to the stack.
 
 execution_of_VSWIZZLE (Pnn X M)
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c'* be $lanes_((Pnn X M), c_1) ++ 0^(256 - M).
 6. Let ci* be $lanes_((Pnn X M), c_2).
@@ -3650,9 +3650,9 @@ execution_of_VSWIZZLE (Pnn X M)
 10. Push the value (V128.CONST c) to the stack.
 
 execution_of_VSHUFFLE (Pnn X N) i*
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Assert: Due to validation, (k < |i*|)^(k<N).
 6. Let c'* be $lanes_((Pnn X N), c_1) ++ $lanes_((Pnn X N), c_2).
@@ -3661,13 +3661,14 @@ execution_of_VSHUFFLE (Pnn X N) i*
 9. Push the value (V128.CONST c) to the stack.
 
 execution_of_VSPLAT (Lnn X N)
-1. Assert: Due to validation, a value of value type $unpack(Lnn) is on the top of the stack.
-2. Pop the value (nt_0.CONST c_1) from the stack.
-3. Let c be $invlanes_((Lnn X N), $packnum_(Lnn, c_1)^N).
-4. Push the value (V128.CONST c) to the stack.
+1. Let nt_0 be $unpack(Lnn).
+2. Assert: Due to validation, a value of value type nt_0 is on the top of the stack.
+3. Pop the value (nt_0.CONST c_1) from the stack.
+4. Let c be $invlanes_((Lnn X N), $packnum_(Lnn, c_1)^N).
+5. Push the value (V128.CONST c) to the stack.
 
 execution_of_VEXTRACT_LANE (lanet_u0 X N) sx_u1? i
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. If (sx_u1? is not defined and the type of lanet_u0 is numtype), then:
   a. Let nt be lanet_u0.
@@ -3683,31 +3684,32 @@ execution_of_VEXTRACT_LANE (lanet_u0 X N) sx_u1? i
       b) Push the value (I32.CONST c_2) to the stack.
 
 execution_of_VREPLACE_LANE (Lnn X N) i
-1. Assert: Due to validation, a value of value type $unpack(Lnn) is on the top of the stack.
-2. Pop the value (nt_0.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c be $invlanes_((Lnn X N), $lanes_((Lnn X N), c_1) with [i] replaced by $packnum_(Lnn, c_2)).
-6. Push the value (V128.CONST c) to the stack.
+1. Let nt_0 be $unpack(Lnn).
+2. Assert: Due to validation, a value of value type nt_0 is on the top of the stack.
+3. Pop the value (nt_0.CONST c_2) from the stack.
+4. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+5. Pop the value (V128.CONST c_1) from the stack.
+6. Let c be $invlanes_((Lnn X N), $lanes_((Lnn X N), c_1) with [i] replaced by $packnum_(Lnn, c_2)).
+7. Push the value (V128.CONST c) to the stack.
 
 execution_of_VEXTUNOP sh_1 sh_2 vextunop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. Let c be $vextunop__(sh_1, sh_2, vextunop, c_1).
 4. Push the value (V128.CONST c) to the stack.
 
 execution_of_VEXTBINOP sh_1 sh_2 vextbinop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c be $vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
 
 execution_of_VNARROW (Jnn_2 X N_2) (Jnn_1 X N_1) sx
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let ci_1* be $lanes_((Jnn_1 X N_1), c_1).
 6. Let ci_2* be $lanes_((Jnn_1 X N_1), c_2).
@@ -3717,7 +3719,7 @@ execution_of_VNARROW (Jnn_2 X N_2) (Jnn_1 X N_1) sx
 10. Push the value (V128.CONST c) to the stack.
 
 execution_of_VCVTOP (lanet_u3 X n_u0) (lanet_u4 X n_u1) vcvtop half_u2? zero_u5?
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. If (half_u2? is not defined and zero_u5? is not defined), then:
   a. Let Lnn_1 be lanet_u4.
@@ -3979,7 +3981,7 @@ execution_of_VLOAD V128 vload_u0? ao
 
 execution_of_VLOAD_LANE V128 N ao j
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 3. Pop the value (V128.CONST c_1) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
@@ -4140,7 +4142,7 @@ execution_of_STORE numty_u1 sz_u2? ao
 
 execution_of_VSTORE V128 ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 3. Pop the value (V128.CONST c) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
@@ -4151,7 +4153,7 @@ execution_of_VSTORE V128 ao
 
 execution_of_VSTORE_LANE V128 N ao j
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 3. Pop the value (V128.CONST c) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
@@ -7967,40 +7969,40 @@ execution_of_ANY.CONVERT_EXTERN
   b. Push the value addrref to the stack.
 
 execution_of_VVUNOP V128 vvunop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. Assert: Due to validation, (|$vvunop_(V128, vvunop, c_1)| > 0).
 4. Let c be an element of $vvunop_(V128, vvunop, c_1).
 5. Push the value (V128.CONST c) to the stack.
 
 execution_of_VVBINOP V128 vvbinop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Assert: Due to validation, (|$vvbinop_(V128, vvbinop, c_1, c_2)| > 0).
 6. Let c be an element of $vvbinop_(V128, vvbinop, c_1, c_2).
 7. Push the value (V128.CONST c) to the stack.
 
 execution_of_VVTERNOP V128 vvternop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_3) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_2) from the stack.
-5. Assert: Due to validation, a value is on the top of the stack.
+5. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 6. Pop the value (V128.CONST c_1) from the stack.
 7. Assert: Due to validation, (|$vvternop_(V128, vvternop, c_1, c_2, c_3)| > 0).
 8. Let c be an element of $vvternop_(V128, vvternop, c_1, c_2, c_3).
 9. Push the value (V128.CONST c) to the stack.
 
 execution_of_VVTESTOP V128 ANY_TRUE
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. Let c be $ine_($vsize(V128), c_1, 0).
 4. Push the value (I32.CONST c) to the stack.
 
 execution_of_VUNOP sh vunop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. If (|$vunop_(sh, vunop, c_1)| ≤ 0), then:
   a. Trap.
@@ -8008,9 +8010,9 @@ execution_of_VUNOP sh vunop
 5. Push the value (V128.CONST c) to the stack.
 
 execution_of_VBINOP sh vbinop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. If (|$vbinop_(sh, vbinop, c_1, c_2)| ≤ 0), then:
   a. Trap.
@@ -8018,7 +8020,7 @@ execution_of_VBINOP sh vbinop
 7. Push the value (V128.CONST c) to the stack.
 
 execution_of_VTESTOP (Jnn X M) ALL_TRUE
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c) from the stack.
 3. Let ci_1* be $lanes_((Jnn X M), c).
 4. If (ci_1 is not 0)*, then:
@@ -8027,9 +8029,9 @@ execution_of_VTESTOP (Jnn X M) ALL_TRUE
   a. Push the value (I32.CONST 0) to the stack.
 
 execution_of_VRELOP sh vrelop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c be $vrelop_(sh, vrelop, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
@@ -8037,23 +8039,23 @@ execution_of_VRELOP sh vrelop
 execution_of_VSHIFTOP (Jnn X M) vshiftop
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c'* be $lanes_((Jnn X M), c_1).
 6. Let c be $invlanes_((Jnn X M), $vshiftop_((Jnn X M), vshiftop, c', n)*).
 7. Push the value (V128.CONST c) to the stack.
 
 execution_of_VBITMASK (Jnn X M)
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c) from the stack.
 3. Let ci_1* be $lanes_((Jnn X M), c).
 4. Let ci be $ibits__1^-1(32, $ilt_($lsize(Jnn), S, ci_1, 0)*).
 5. Push the value (I32.CONST ci) to the stack.
 
 execution_of_VSWIZZLE (Pnn X M)
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c'* be $lanes_((Pnn X M), c_1) ++ 0^(256 - M).
 6. Let ci* be $lanes_((Pnn X M), c_2).
@@ -8063,9 +8065,9 @@ execution_of_VSWIZZLE (Pnn X M)
 10. Push the value (V128.CONST c) to the stack.
 
 execution_of_VSHUFFLE (Pnn X M) i*
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Assert: Due to validation, (k < |i*|)^(k<M).
 6. Let c'* be $lanes_((Pnn X M), c_1) ++ $lanes_((Pnn X M), c_2).
@@ -8074,13 +8076,14 @@ execution_of_VSHUFFLE (Pnn X M) i*
 9. Push the value (V128.CONST c) to the stack.
 
 execution_of_VSPLAT (Lnn X M)
-1. Assert: Due to validation, a value of value type $lunpack(Lnn) is on the top of the stack.
-2. Pop the value (nt_0.CONST c_1) from the stack.
-3. Let c be $invlanes_((Lnn X M), $lpacknum_(Lnn, c_1)^M).
-4. Push the value (V128.CONST c) to the stack.
+1. Let nt_0 be $lunpack(Lnn).
+2. Assert: Due to validation, a value of value type nt_0 is on the top of the stack.
+3. Pop the value (nt_0.CONST c_1) from the stack.
+4. Let c be $invlanes_((Lnn X M), $lpacknum_(Lnn, c_1)^M).
+5. Push the value (V128.CONST c) to the stack.
 
 execution_of_VEXTRACT_LANE (lanet_u0 X M) sx_u1? i
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. If (sx_u1? is not defined and the type of lanet_u0 is numtype), then:
   a. Let nt be lanet_u0.
@@ -8096,31 +8099,32 @@ execution_of_VEXTRACT_LANE (lanet_u0 X M) sx_u1? i
       b) Push the value (I32.CONST c_2) to the stack.
 
 execution_of_VREPLACE_LANE (Lnn X M) i
-1. Assert: Due to validation, a value of value type $lunpack(Lnn) is on the top of the stack.
-2. Pop the value (nt_0.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c be $invlanes_((Lnn X M), $lanes_((Lnn X M), c_1) with [i] replaced by $lpacknum_(Lnn, c_2)).
-6. Push the value (V128.CONST c) to the stack.
+1. Let nt_0 be $lunpack(Lnn).
+2. Assert: Due to validation, a value of value type nt_0 is on the top of the stack.
+3. Pop the value (nt_0.CONST c_2) from the stack.
+4. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+5. Pop the value (V128.CONST c_1) from the stack.
+6. Let c be $invlanes_((Lnn X M), $lanes_((Lnn X M), c_1) with [i] replaced by $lpacknum_(Lnn, c_2)).
+7. Push the value (V128.CONST c) to the stack.
 
 execution_of_VEXTUNOP sh_2 sh_1 vextunop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. Let c be $vextunop__(sh_1, sh_2, vextunop, c_1).
 4. Push the value (V128.CONST c) to the stack.
 
 execution_of_VEXTBINOP sh_2 sh_1 vextbinop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c be $vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
 
 execution_of_VNARROW (Jnn_2 X M_2) (Jnn_1 X M_1) sx
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let ci_1* be $lanes_((Jnn_1 X M_1), c_1).
 6. Let ci_2* be $lanes_((Jnn_1 X M_1), c_2).
@@ -8130,7 +8134,7 @@ execution_of_VNARROW (Jnn_2 X M_2) (Jnn_1 X M_1) sx
 10. Push the value (V128.CONST c) to the stack.
 
 execution_of_VCVTOP (lanet_u5 X n_u0) (lanet_u6 X n_u1) vcvtop half__u4? zero__u13?
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. If (half__u4? is not defined and zero__u13? is not defined), then:
   a. Let Lnn_1 be lanet_u6.
@@ -8263,7 +8267,7 @@ execution_of_RETURN_CALL_REF yy
   c. Execute the instruction (RETURN_CALL_REF yy).
 4. Else if a frame is now on the top of the stack, then:
   a. Pop the current frame from the stack.
-  b. Let instr_u1* ++ instr_u0 be val*.
+  b. Let instr_u1* ++ [instr_u0] be val*.
   c. If instr_u0 is of the case REF.FUNC_ADDR, then:
     1) Let (REF.FUNC_ADDR a) be instr_u0.
     2) If (a < |$funcinst(z)|), then:
@@ -8758,7 +8762,7 @@ execution_of_VLOAD V128 vload_u0? x ao
 
 execution_of_VLOAD_LANE V128 N x ao j
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 3. Pop the value (V128.CONST c_1) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
@@ -8980,7 +8984,7 @@ execution_of_STORE nt sz_u1? x ao
 
 execution_of_VSTORE V128 x ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 3. Pop the value (V128.CONST c) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
@@ -8991,7 +8995,7 @@ execution_of_VSTORE V128 x ao
 
 execution_of_VSTORE_LANE V128 N x ao j
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 3. Pop the value (V128.CONST c) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.

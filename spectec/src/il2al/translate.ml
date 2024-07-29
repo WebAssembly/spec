@@ -39,6 +39,7 @@ let listT ty = Il.IterT (ty, Il.List) $ no_region
 (* TODO: hardcoded *)
 let topT = varT "TOP" []
 let valT = varT "val" []
+let valsT = listT (valT)
 let callframeT = varT "callframe" []
 let labelT = varT "label" []
 let instrT = varT "instr" []
@@ -86,7 +87,7 @@ let is_list expr =
 let rec to_exp_list' (exp: Il.exp): Il.exp list =
   match exp.it with
   | Il.CatE (exp1, exp2) -> to_exp_list' exp1 @ to_exp_list' exp2
-  | Il.ListE exps -> List.concat_map to_exp_list' exps
+  | Il.ListE exps -> List.map (fun e -> { e with it = Il.ListE [e] }) exps
   | _ -> [ exp ]
 let to_exp_list (exp: Il.exp): Il.exp list = to_exp_list' exp |> List.rev
 
@@ -360,32 +361,66 @@ let insert_assert exp =
   | _ ->
     assertI (topValueE None ~note:ty) ~at:at
 
-let insert_pop e =
-  let consts = [ "CONST"; "VCONST" ] in
+let assert_cond_of_pop_value e =
+  let at = e.at in
+  let bt = boolT () in
+  match e.it with
+  | CaseE ({ it = Atom ("CONST" | "VCONST"); _ }, [t; _]) ->
+    topValueE (Some t) ~note:bt
+  | GetCurFrameE ->
+    topFrameE () ~at:at ~note:bt
+  | GetCurLabelE ->
+    topLabelE () ~at:at ~note:bt
+  (* TODO: Remove this when pops is done *)
+  | IterE (_, _, ListN (e', _)) ->
+    topValuesE e' ~at:at ~note:bt
+  | _ ->
+    topValueE None ~note:bt
 
-  let e' =
-    let open Il in
-    match e.it with
-    | CaseE ([{it = Atom name; _}]::_ as tag, tup) when List.mem name consts ->
-      let tup' =
-        match tup.it with
-        | TupE (ty :: exps) ->
-          let ty' =
-            match ty.it with
-            | CallE _ ->
-              let var, typ = if name = "CONST" then "nt_0", "numtype" else "vt_0", "vectype" in
-              VarE (var $ no_region) $$ no_region % (VarT (typ $ no_region, []) $ no_region)
-            | _ -> ty
-          in
-          { tup with it = TupE (ty' :: exps) }
-        | _ -> tup
-      in
-      { e with it = CaseE (tag, tup') }
-    | _ -> e
+let assert_of_pop i =
+  let at = i.at in
+  (* let bt = boolT () in *)
+
+  match i.it with
+  | PopI e -> [ assertI (assert_cond_of_pop_value e) ~at:at ]
+  (* | PopsI (_, e') -> [ assertI (topValuesE e' ~at:at ~note:bt) ~at:at ] *)
+  | _ -> []
+
+let post_process_of_pop i =
+  (* HARDCODE : Change ($lunpack(t).CONST c) into (nt.CONST c) *)
+  let prefix, pi =
+    (match i.it with
+    | PopI const ->
+      (match const.it with
+      | CaseE (name, [t; c]) when List.mem name.it [Atom "CONST"; Atom "VCONST"] ->
+        (match t.it with
+        | CallE _ ->
+            let var = if name.it = Atom "CONST" then "nt_0" else "vt_0" in
+            let t' = { t with it = VarE var } in
+            let const' = { const with it = CaseE (name, [t'; c]) } in
+            let i' = { i with it = PopI const' } in
+            [ letI (t', t) ], i'
+        | _ -> [], i)
+      | _ -> [], i)
+    | _ -> [], i)
   in
+  (* End of HARDCODE *)
 
-  [ insert_assert e; popI ({ (translate_exp e') with note=valT }) ~at:e'.at ]
+  prefix @ assert_of_pop pi @ [pi]
 
+let insert_pop e =
+  let pop =
+    match e.it with
+    | Il.ListE [e'] ->
+      popI { (translate_exp e') with note = valT } ~at:e'.at
+    | Il.ListE es ->
+      popsI { (translate_exp e) with note = valsT } (Some (es |> List.length |> Z.of_int |> numE)) ~at:e.at
+    | Il.IterE (_, (Il.ListN (e', None), _)) ->
+      popsI { (translate_exp e) with note = valsT } (Some (translate_exp e')) ~at:e.at
+    | _ ->
+      popsI { (translate_exp e) with note = valsT } None ~at:e.at
+  in
+  post_process_of_pop pop
 
 (* Assume that only the iter variable is unbound *)
 let is_unbound vars e =
@@ -1166,15 +1201,22 @@ let rec split_lhs_stack' ?(note : Il.typ option) name stack ctxs instrs =
     ctxs @ [ ([], instrs), None ], winstr
   | hd :: tl ->
     match hd.it with
-    | Il.CaseE (({it = Il.Atom name'; _}::_)::_, _) when name' = target || name' = target ^ "_"
-      -> ctxs @ [ (tl, instrs), None ], hd
-    | Il.CaseE (tag, ({it = Il.TupE args; _} as e)) ->
-      let list_arg = List.find is_list args in
-      let inner_stack = to_exp_list list_arg in
-      let holed_args = List.map (fun x -> if x = list_arg then hole else x) args in
-      let ctx = { hd with it = Il.CaseE (tag, { e with it = Il.TupE holed_args }) } in
+    | Il.ListE [hd'] ->
+      (match hd'.it with
+      (* Top of the stack is the target instruction *)
+      | Il.CaseE (({it = Il.Atom name'; _}::_)::_, _) when name' = target || name' = target ^ "_"
+        -> ctxs @ [ (tl, instrs), None ], hd'
+      (* Top of the stack is a context (label, frame, ...) *)
+      | Il.CaseE (tag, ({it = Il.TupE args; _} as e)) ->
+        let list_arg = List.find is_list args in
+        let inner_stack = to_exp_list list_arg in
+        let holed_args = List.map (fun x -> if x = list_arg then hole else x) args in
+        let ctx = { hd' with it = Il.CaseE (tag, { e with it = Il.TupE holed_args }) } in
 
-      split_lhs_stack' name inner_stack (ctxs @ [ ((tl, instrs), Some ctx) ]) []
+        split_lhs_stack' name inner_stack (ctxs @ [ ((tl, instrs), Some ctx) ]) []
+      (* Should be unreachable? *)
+      | _ ->
+        split_lhs_stack' ~note:(hd.note) name tl ctxs (hd :: instrs))
     | _ ->
       split_lhs_stack' ~note:(hd.note) name tl ctxs (hd :: instrs)
 
@@ -1218,7 +1260,7 @@ let rec translate_rgroup' context winstr instr_name rgroup =
         |> List.map (Source.map un_unify)
         |> group_contexts
         |> List.map (fun g -> Il2il.unify_lhs (instr_name, g)) in
-
+      if List.length unified_sub_groups = 1 then [ yetI "Translation fail: Infinite recursion" ] else
       let lhss = List.map (fun (_, g) -> lhs_of_rgroup g) unified_sub_groups in
       let sub_algos = List.map translate_rgroup unified_sub_groups in
       translate_context_rgroup lhss sub_algos inner_params
