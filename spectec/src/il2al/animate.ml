@@ -238,8 +238,8 @@ let rec pre_process prem = match prem.it with
     (* `C` |- `lhs` : `rhs` *)
     | [[]; [turnstile]; [colon]; []], TupE [_; lhs; rhs]
     when turnstile.it = Turnstile && colon.it = Colon ->
-      let typing_function_call = CallE (id, [ExpA lhs $ lhs.at]) $$ exp.at % exp.note in
-      [ { prem with it=IfPr (CmpE (EqOp, typing_function_call, rhs) $$ exp.at % exp.note) } ]
+      let typing_function_call = CallE (id, [ExpA lhs $ lhs.at]) $$ exp.at % rhs.note in
+      [ { prem with it=IfPr (CmpE (EqOp, typing_function_call, rhs) $$ exp.at % (BoolT $ no_region)) } ]
     | _ -> [ prem ]
     )
   (* Split -- if e1 /\ e2 *)
