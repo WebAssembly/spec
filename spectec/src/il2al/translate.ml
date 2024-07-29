@@ -855,12 +855,21 @@ let rec translate_iterpr pr (iter, ids) =
   let iter', ids' = translate_iter iter, IdSet.of_list (List.map (fun (id, _) -> id.it) ids) in
   let lhs_iter = match iter' with | ListN (e, _) -> ListN (e, None) | _ -> iter' in
 
+  let handle_iter_ty ty =
+    match iter' with
+    | Opt -> iterT ty Il.Opt
+    | List | List1 | ListN _ when ty <> boolT -> listT ty
+    | _ -> ty
+  in
+
   let distribute_iter lhs rhs =
     let lhs_ids = IdSet.elements (IdSet.inter (free_expr lhs) ids') in
     let rhs_ids = IdSet.elements (IdSet.inter (free_expr rhs) ids') in
+    let ty = handle_iter_ty lhs.note in
+    let ty' = handle_iter_ty rhs.note in
 
     assert (List.length (lhs_ids @ rhs_ids) > 0);
-    iterE (lhs, lhs_ids, lhs_iter) ~at:lhs.at ~note:lhs.note, iterE (rhs, rhs_ids, iter') ~at:rhs.at ~note:rhs.note
+    iterE (lhs, lhs_ids, lhs_iter) ~at:lhs.at ~note:ty, iterE (rhs, rhs_ids, iter') ~at:rhs.at ~note:ty'
   in
 
   let post_instr i =
@@ -869,7 +878,8 @@ let rec translate_iterpr pr (iter, ids) =
     | LetI (lhs, rhs) -> [ letI (distribute_iter lhs rhs) ~at:at ]
     | IfI (cond, il1, il2) ->
         let cond_ids = IdSet.elements (IdSet.inter (free_expr cond) ids') in
-        [ ifI (iterE (cond, cond_ids, iter') ~at:cond.at ~note:cond.note, il1, il2) ~at:at ]
+        let ty = handle_iter_ty cond.note in
+        [ ifI (iterE (cond, cond_ids, iter') ~at:cond.at ~note:ty, il1, il2) ~at:at ]
     | _ -> [ i ]
   in
   let walk_config = { Al.Walk.default_config with post_instr } in

@@ -167,7 +167,6 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
       | _ ->
         check_match source expr.note (iterT expr1.note Il.Ast.List);
       )
-
   | _ ->
     match expr.note.it with
     | Il.Ast.VarT (id, []) when id.it = "TODO" ->
