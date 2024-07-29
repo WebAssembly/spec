@@ -148,8 +148,7 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
   let source = string_of_expr expr, expr.at in
   (match expr.it with
   | VarE id ->
-    if not (Set.mem id !bound_set) then
-      error expr.at ("free identifier " ^ id)
+    if not (Set.mem id !bound_set) then error expr.at ("free identifier " ^ id)
   | UnE (NotOp, expr') -> check_bool source expr'.note
   | UnE (MinusOp, expr') -> check_num source expr'.note
   | BinE ((AddOp|SubOp|MulOp|DivOp|ModOp|ExpOp|LtOp|GtOp|LeOp|GeOp), expr1, expr2) ->
@@ -160,11 +159,9 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
     (* XXX: Not sure about this rule *)
     check_match source expr1.note expr2.note
   | AccE (expr', path) ->
-    access source expr'.note path
-    |> check_match source expr.note
+    access source expr'.note path |> check_match source expr.note
   | UpdE (expr1, pl, expr2) | ExtE (expr1, pl, expr2, _) ->
-    List.fold_left (access source) expr1.note pl
-    |> check_match source expr2.note
+    List.fold_left (access source) expr1.note pl |> check_match source expr2.note
   | StrE r ->
     (match expr.note.it with
     | VarT (id, _) when Il.Eval.Map.mem id.it !typ_env.typs ->
@@ -224,8 +221,7 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
     add_bound_vars expr1; check_match source expr1.note expr2.note
   | ExecuteI expr | ExecuteSeqI expr -> check_instr source expr.note
   | ReplaceI (expr1, path, expr2) ->
-    access source expr1.note path
-    |> check_match source expr2.note
+    access source expr1.note path |> check_match source expr2.note
   | AppendI (expr1, _expr2) -> check_list source expr1.note
   | _ -> ()
   );
@@ -243,8 +239,7 @@ let valid_algo (algo: algorithm) =
 
   init_bound_set algo;
   let walker = { base_unit_walker with walk_expr=valid_expr; walk_instr=valid_instr } in
-  let _ = walker.walk_algo walker algo in
-  ()
+  walker.walk_algo walker algo
 
 let valid (script: script) =
   List.iter valid_algo script
