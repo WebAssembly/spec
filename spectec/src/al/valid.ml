@@ -9,7 +9,7 @@ open Walk
 
 let error at msg = Error.error at "AL validation" msg
 let error_valid error_kind (source, at) msg =
-  error at (Printf.sprintf "%s when validating %s\n  %s" error_kind source msg)
+  error at (Printf.sprintf "%s when validating `%s`\n  %s" error_kind source msg)
 let error_mismatch source typ1 typ2 =
   error_valid "type mismatch" source
     (Printf.sprintf "%s =/= %s"
