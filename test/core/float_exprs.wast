@@ -1986,7 +1986,7 @@
 (assert_return (invoke "f64.xkcd_better_sqrt_5" (f64.const 13.0) (f64.const 4.0) (f64.const 0x1.921fb54442d18p+1) (f64.const 24.0)) (f64.const 0x1.1e3778509a5a3p+1))
 
 ;; Compute the floating-point radix.
-;; M. A. Malcom. Algorithms to reveal properties of floating-point arithmetic.
+;; M. A. Malcolm. Algorithms to reveal properties of floating-point arithmetic.
 ;; Communications of the ACM, 15(11):949-951, November 1972.
 (module
   (func (export "f32.compute_radix") (param $0 f32) (param $1 f32) (result f32)

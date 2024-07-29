@@ -18,7 +18,7 @@ packed data in one instruction. These are commonly used to improve performance
 for multimedia applications. The set of SIMD instructions in hardware is large, 
 and varies across different versions of hardware. This proposal is comprised
 of a portable subset of operations that in most cases map to commonly used
-instructions in mordern hardware. 
+instructions in modern hardware. 
 
 
 # Types
@@ -136,14 +136,14 @@ Accessing WebAssembly module imports or exports containing SIMD Type from JavaSc
 
 ### Module Function Imports
 
-Calling an imported function from JavaScript when the function arguments or result is of type v128 will cause the host function to immidiately throw a [`TypeError`](https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror).
+Calling an imported function from JavaScript when the function arguments or result is of type v128 will cause the host function to immediately throw a [`TypeError`](https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror).
 
 ### Exported Function Exotic Objects
 
-Invoking the [[Call]] method of an Exported Function Exotic Object when the function type of its [[Closure]] has an argument or result of type v128 will cause the host function to immidiately throw a [`TypeError`](https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror).
+Invoking the [[Call]] method of an Exported Function Exotic Object when the function type of its [[Closure]] has an argument or result of type v128 will cause the host function to immediately throw a [`TypeError`](https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror).
 
 
-## WebAssembly Module Instatiation
+## WebAssembly Module Instantiation
 
 Instantiating a WebAssembly Module from a Module moduleObject will throw a LinkError exception, when the global's valtype is v128 and the imported objects type is not WebAssembly.Global. 
 
