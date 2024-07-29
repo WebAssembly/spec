@@ -155,17 +155,19 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
     |> check_match source expr2.note
   (* TODO *)
   | IterE (expr1, _, iter) ->
-    let iterT typ iter' = Il.Ast.IterT (typ, iter') $ no_region in
-    (match iter with
-    | Opt ->
-      check_match source expr.note (iterT expr1.note Il.Ast.Opt);
-    | ListN (expr2, id_opt) ->
-      Option.iter add_bound_var id_opt;
-      check_match source expr.note (iterT expr1.note Il.Ast.List);
-      check_num source expr2.note
-    | _ ->
-      check_match source expr.note (iterT expr1.note Il.Ast.List);
-    )
+    if not (expr1.note.it = Il.Ast.BoolT && expr.note.it = BoolT) then
+      let iterT typ iter' = Il.Ast.IterT (typ, iter') $ no_region in
+      (match iter with
+      | Opt ->
+        check_match source expr.note (iterT expr1.note Il.Ast.Opt);
+      | ListN (expr2, id_opt) ->
+        Option.iter add_bound_var id_opt;
+        check_match source expr.note (iterT expr1.note Il.Ast.List);
+        check_num source expr2.note
+      | _ ->
+        check_match source expr.note (iterT expr1.note Il.Ast.List);
+      )
+
   | _ ->
     match expr.note.it with
     | Il.Ast.VarT (id, []) when id.it = "TODO" ->
