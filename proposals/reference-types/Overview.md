@@ -95,8 +95,8 @@ New/extended instructions:
 * The new instruction `table.fill` fills a range in a table with a value.
   - `table.fill $x : [i32 t i32] -> []`
     - iff `$x : table t`
-  - the first operand is the start index of the range, the third operand its length (analoguous to `memory.fill`)
-  - traps when range+length > size of the table, but only after filling range up to size (analoguous to `memory.fill`)
+  - the first operand is the start index of the range, the third operand its length (analogous to `memory.fill`)
+  - traps when range+length > size of the table, but only after filling range up to size (analogous to `memory.fill`)
 
 * The `table.init` instruction takes an additional table index as immediate.
   - `table.init $x $y : [i32 i32 i32] -> []`
