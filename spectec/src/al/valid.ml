@@ -166,8 +166,6 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
     List.fold_left (access source) expr1.note pl
     |> check_match source expr2.note
   | StrE r ->
-    print_endline (string_of_expr expr);
-    print_endline (Il.Print.string_of_typ expr.note);
     (match expr.note.it with
     | VarT (id, _) when Il.Eval.Map.mem id.it !typ_env.typs ->
       (match Il.Eval.Map.find id.it !typ_env.typs with
