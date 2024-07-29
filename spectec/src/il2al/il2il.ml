@@ -58,7 +58,8 @@ and transform_arg f a =
   { a with it = match a.it with
     | ExpA e -> ExpA (transform_expr f e)
     | TypA t -> TypA t
-    | DefA id -> DefA id }
+    | DefA id -> DefA id
+    | GramA id -> GramA id }
 
 (* Change right_assoc cat into left_assoc cat *)
 let to_left_assoc_cat =
@@ -185,8 +186,9 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
 and overlap_arg a1 a2 = if eq_arg a1 a2 then a1 else
   (match a1.it, a2.it with
     | ExpA e1, ExpA e2 -> ExpA (overlap e1 e2)
-    | TypA _, TypA _ -> a1.it
-    | DefA _, DefA _ -> a1.it
+    | TypA _, TypA _
+    | DefA _, DefA _
+    | GramA _, GramA _ -> a1.it
     | _, _ -> assert false
   ) $ a1.at
 
@@ -242,8 +244,9 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
 
 and collect_unified_arg template a = if eq_arg template a then [], [] else match template.it, a.it with
   | ExpA template', ExpA e -> collect_unified template' e
-  | TypA _, TypA _ -> [], []
-  | DefA _, DefA _ -> [], []
+  | TypA _, TypA _
+  | DefA _, DefA _
+  | GramA _, GramA _ -> [], []
   | _ -> Util.Error.error a.at "prose transformation" "cannot unify the argument"
 
 and collect_unified_args as1 as2 =

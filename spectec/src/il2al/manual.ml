@@ -5,7 +5,9 @@ open Al_util
 
 type config = expr * expr * instr list
 
-let atom_of_name name typ = El.Atom.Atom name, typ
+let atom_of_name name typ = El.Atom.Atom name $$ no_region % (El.Atom.info typ)
+let varT id args = Il.Ast.VarT (id $ no_region, args) $ no_region
+let listT ty = Il.Ast.IterT (ty, Il.Ast.List) $ no_region
 
 let eval_expr =
   let ty_instrs = listT instrT in

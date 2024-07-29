@@ -30,10 +30,7 @@ let rec repeat str num =
 
 (* Terminals *)
 
-let string_of_atom atom =
-  let atom', typ = atom in
-  let ilatom = atom' $$ (no_region, ref typ) in
-  Atom.to_string ilatom
+let string_of_atom = El.Print.string_of_atom
 
 
 (* Directions *)
@@ -179,13 +176,14 @@ and string_of_expr expr =
     sprintf "%s with %s replaced by %s" (string_of_expr e1) (string_of_paths ps) (string_of_expr e2)
   | StrE r -> string_of_record_expr r
   | ContE e -> sprintf "the continuation of %s" (string_of_expr e)
+  | ChooseE e -> sprintf "an element of %s" (string_of_expr e)
   | LabelE (e1, e2) ->
     sprintf "the label_%s{%s}" (string_of_expr e1) (string_of_expr e2)
   | VarE id -> id
   | SubE (id, _) -> id
   | IterE (e, _, iter) -> string_of_expr e ^ string_of_iter iter
   | InfixE (e1, a, e2) -> "(" ^ string_of_expr e1 ^ " " ^ string_of_atom a ^ " " ^ string_of_expr e2 ^ ")"
-  | CaseE ((Atom.Atom ("CONST" | "VCONST"), _), hd::tl) ->
+  | CaseE ({ it=Atom.Atom ("CONST" | "VCONST"); _ }, hd::tl) ->
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
   | CaseE (a, []) -> string_of_atom a
   | CaseE (a, el) -> "(" ^ string_of_atom a ^ " " ^ string_of_exprs " " el ^ ")"
@@ -420,7 +418,8 @@ and structured_string_of_expr expr =
   | BoolE b -> string_of_bool b
   | UnE (op, e) ->
     "UnE ("
-    ^ string_of_unop op
+    ^ string_of_unop op 
+    ^ ", "
     ^ structured_string_of_expr e
     ^ ")"
   | BinE (op, e1, e2) ->
@@ -483,6 +482,7 @@ and structured_string_of_expr expr =
     ^ ")"
   | StrE r -> "StrE (" ^ structured_string_of_record_expr r ^ ")"
   | ContE e1 -> "ContE (" ^ structured_string_of_expr e1 ^ ")"
+  | ChooseE e1 -> "ChooseE (" ^ structured_string_of_expr e1 ^ ")"
   | LabelE (e1, e2) ->
     "LabelE ("
     ^ structured_string_of_expr e1

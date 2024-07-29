@@ -25,7 +25,8 @@ let rec free_expr expr =
   | UnE (_, e)
   | LenE e
   | ArityE e
-  | ContE e -> free_expr e
+  | ContE e
+  | ChooseE e -> free_expr e
   | BinE (_, e1, e2)
   | CatE (e1, e2)
   | MemE (e1, e2)

@@ -2,8 +2,7 @@ open Util.Source
 
 (* Terminals *)
 
-type atom = atom' * string
-and atom' = El.Atom.atom'
+type atom = El.Atom.atom
 
 (* Types *)
 
@@ -102,7 +101,8 @@ and expr' =
   | GetCurFrameE                                  (* "the current frame" *)
   | GetCurLabelE                                  (* "the current lbael" *)
   | GetCurContextE                                (* "the current context" *)
-  | ContE of expr                                 (* "the continuation of expr" *)
+  | ContE of expr                                 (* "the continuation of" expr *)
+  | ChooseE of expr                               (* "an element of" expr *)
   (* Conditions *)
   | IsCaseOfE of expr * atom                      (* expr is of the case kwd *)
   | IsValidE of expr                              (* expr is valid *)

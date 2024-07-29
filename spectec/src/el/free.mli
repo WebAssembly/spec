@@ -43,6 +43,7 @@ val free_def : def -> sets
   This is a pragmatic criterium, intended only for sanity checks.
 *)
 val det_exp : exp -> sets
+val det_sym : sym -> sets
 val det_prems : prem nl_list -> sets
 val det_prod : prod -> sets
 val det_def : def -> sets

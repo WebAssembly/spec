@@ -460,6 +460,7 @@ warning: syntax `structtype` was never spliced
 warning: syntax `subtype` was never spliced
 warning: syntax `sx` was never spliced
 warning: syntax `sym` was never spliced
+warning: syntax `symdots` was never spliced
 warning: syntax `symsplit/1` was never spliced
 warning: syntax `symsplit/2` was never spliced
 warning: syntax `sz` was never spliced
@@ -669,6 +670,7 @@ warning: grammar `Bu32` was never spliced
 warning: grammar `Bu64` was never spliced
 warning: grammar `BuN` was never spliced
 warning: grammar `Bvaltype` was never spliced
+warning: grammar `Bvar` was never spliced
 warning: grammar `Bvectype` was never spliced
 warning: grammar `Bversion` was never spliced
 warning: rule `Blocktype_ok/valtype` was never spliced
@@ -981,7 +983,8 @@ warning: rule `Step_pure/vvunop` was never spliced
 warning: rule `Step_pure/vvbinop` was never spliced
 warning: rule `Step_pure/vvternop` was never spliced
 warning: rule `Step_pure/vvtestop` was never spliced
-warning: rule `Step_pure/vunop` was never spliced
+warning: rule `Step_pure/vunop-val` was never spliced
+warning: rule `Step_pure/vunop-trap` was never spliced
 warning: rule `Step_pure/vbinop-val` was never spliced
 warning: rule `Step_pure/vbinop-trap` was never spliced
 warning: rule `Step_pure/vtestop-true` was never spliced
@@ -1333,6 +1336,7 @@ warning: definition `isub_sat_` was never spliced
 warning: definition `ixor_` was never spliced
 warning: definition `lanes_` was never spliced
 warning: definition `lanetype` was never spliced
+warning: definition `list_` was never spliced
 warning: definition `local` was never spliced
 warning: definition `lpacknum_` was never spliced
 warning: definition `lsize` was never spliced
@@ -1364,8 +1368,11 @@ warning: definition `rollrt` was never spliced
 warning: definition `rundata_` was never spliced
 warning: definition `runelem_` was never spliced
 warning: definition `s33_to_u32` was never spliced
-warning: definition `setminus` was never spliced
-warning: definition `setminus1` was never spliced
+warning: definition `setminus1_` was never spliced
+warning: definition `setminus_` was never spliced
+warning: definition `setproduct1_` was never spliced
+warning: definition `setproduct2_` was never spliced
+warning: definition `setproduct_` was never spliced
 warning: definition `shift_labelidxs` was never spliced
 warning: definition `shsize` was never spliced
 warning: definition `signed_` was never spliced
@@ -1402,7 +1409,6 @@ warning: definition `subst_valtype` was never spliced
 warning: definition `subst_vectype` was never spliced
 warning: definition `sum` was never spliced
 warning: definition `sx` was never spliced
-warning: definition `symdots` was never spliced
 warning: definition `tableinst` was never spliced
 warning: definition `tablesxt` was never spliced
 warning: definition `tablesxv` was never spliced
@@ -1419,6 +1425,7 @@ warning: definition `unrolldt` was never spliced
 warning: definition `unrollht` was never spliced
 warning: definition `unrollrt` was never spliced
 warning: definition `utf8` was never spliced
+warning: definition `var` was never spliced
 warning: definition `vbinop_` was never spliced
 warning: definition `vbytes_` was never spliced
 warning: definition `vcvtop__` was never spliced
@@ -1860,8 +1867,8 @@ warning: definition prose `invibytes_` was never spliced
 warning: definition prose `invlanes_` was never spliced
 warning: definition prose `invoke` was never spliced
 warning: definition prose `invsigned_` was never spliced
-warning: definition prose `isize` was never spliced
 warning: definition prose `lanetype` was never spliced
+warning: definition prose `list_` was never spliced
 warning: definition prose `local` was never spliced
 warning: definition prose `lpacknum_` was never spliced
 warning: definition prose `lsize` was never spliced
@@ -1888,8 +1895,11 @@ warning: definition prose `rolldt` was never spliced
 warning: definition prose `rollrt` was never spliced
 warning: definition prose `rundata_` was never spliced
 warning: definition prose `runelem_` was never spliced
-warning: definition prose `setminus` was never spliced
-warning: definition prose `setminus1` was never spliced
+warning: definition prose `setminus1_` was never spliced
+warning: definition prose `setminus_` was never spliced
+warning: definition prose `setproduct1_` was never spliced
+warning: definition prose `setproduct2_` was never spliced
+warning: definition prose `setproduct_` was never spliced
 warning: definition prose `shift_labelidxs` was never spliced
 warning: definition prose `shsize` was never spliced
 warning: definition prose `signed_` was never spliced
@@ -1942,6 +1952,7 @@ warning: definition prose `unrolldt` was never spliced
 warning: definition prose `unrollht` was never spliced
 warning: definition prose `unrollrt` was never spliced
 warning: definition prose `utf8` was never spliced
+warning: definition prose `var` was never spliced
 warning: definition prose `vbinop_` was never spliced
 warning: definition prose `vcvtop__` was never spliced
 warning: definition prose `vextbinop__` was never spliced

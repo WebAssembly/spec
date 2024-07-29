@@ -190,6 +190,9 @@ let rec rows_of_prem vars len i p =
         [ Condition, p, [i] ]
         @ rows_of_eq vars len i l r p.at
         @ rows_of_eq vars len i r l p.at
+      | MemE (l, r) ->
+        [ Condition, p, [i] ]
+        @ rows_of_eq vars len i l { r with it = TheE r } p.at
       | _ -> [ Condition, p, [i] ]
     )
   | LetPr (_, _, ids) ->
@@ -299,7 +302,7 @@ let rec animate_def d = match d.it with
     let new_clauses = List.map animate_clause clauses in
     DecD (id, t1, t2, new_clauses) $ d.at
   | RecD ds -> RecD (List.map animate_def ds) $ d.at
-  | TypD _ | HintD _ -> d
+  | TypD _ | GramD _ | HintD _ -> d
 
 (* Main entry *)
 let transform (defs : script) =

@@ -301,14 +301,16 @@ and free_param p =
   match p.it with
   | ExpP (_, t) -> free_typ t
   | TypP _ -> empty
-  | GramP (_, t) -> free_typ t
+  | GramP (_, t) -> free_typ t - impl_bound_typ t
   | DefP (_, ps, t) -> free_params ps + free_typ t - bound_params ps
+
+and impl_bound_typ t = {empty with typid = (free_typ t).typid}
 
 and bound_param p =
   match p.it with
   | ExpP (id, _) -> bound_varid id
   | TypP id -> bound_typid id
-  | GramP (id, _) -> bound_gramid id
+  | GramP (id, t) -> bound_gramid id + impl_bound_typ t
   | DefP (id, _, _) -> bound_defid id
 
 and free_args as_ = free_list free_arg as_
@@ -324,7 +326,7 @@ let free_def d =
   | TypD (_id1, _id2, as_, t, _hints) ->
     free_args as_ + free_typ t
   | GramD (_id1, _id2, ps, t, gram, _hints) ->
-    free_params ps + (free_typ t + free_gram gram - bound_params ps)
+    free_params ps + (free_typ t + free_gram gram - bound_params ps - impl_bound_typ t)
   | VarD (_id, t, _hints) -> free_typ t
   | SepD -> empty
   | RelD (_id, t, _hints) -> free_typ t

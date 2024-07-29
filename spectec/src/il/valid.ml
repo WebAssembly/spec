@@ -17,12 +17,14 @@ type var_typ = typ * iter list
 type typ_typ = param list * inst list
 type rel_typ = mixop * typ
 type def_typ = param list * typ * clause list
+type gram_typ = param list * typ * prod list
 
 type env =
   { mutable vars : var_typ Env.t;
     mutable typs : typ_typ Env.t;
     mutable rels : rel_typ Env.t;
     mutable defs : def_typ Env.t;
+    mutable grams : gram_typ Env.t;
   }
 
 let new_env () =
@@ -30,9 +32,11 @@ let new_env () =
     typs = Env.empty;
     rels = Env.empty;
     defs = Env.empty;
+    grams = Env.empty;
   }
 
-let local_env env = {env with vars = env.vars; typs = env.typs; defs = env.defs}
+let local_env env =
+  {env with vars = env.vars; typs = env.typs; defs = env.defs; grams = env.grams}
 
 (* TODO(3, rossberg): avoid repeated copying of environment *)
 let to_eval_env env =
@@ -325,9 +329,17 @@ and infer_exp env e : typ =
     )
   | OptE _ -> error e.at "cannot infer type of option"
   | TheE e1 -> as_iter_typ Opt "option" env Check (infer_exp env e1) e1.at
-  | ListE _ -> error e.at "cannot infer type of list"
+  | ListE es ->
+    (match List.map (infer_exp env) es with
+    | [] -> error e.at "cannot infer type of list"
+    | t :: ts ->
+      if List.for_all (Eq.eq_typ t) ts then
+        IterT (t, List) $ e.at
+      else
+        error e.at "cannot infer type of list"
+    )
   | CatE _ -> error e.at "cannot infer type of concatenation"
-  | CaseE _ -> error e.at "cannot infer type of case constructor"
+  | CaseE _ -> e.note (* error e.at "cannot infer type of case constructor" *)
   | SubE _ -> error e.at "cannot infer type of subsumption"
 
 
@@ -539,9 +551,46 @@ and valid_iterexp env (iter, bs) : env =
   ) env bs
 
 
+(* Grammars *)
+
+and valid_sym env g : typ =
+  Debug.(log_at "il.valid_sym" g.at (fun _ -> il_sym g) (fun t -> il_typ t)) @@ fun _ ->
+  match g.it with
+  | VarG (id, as_) ->
+    let ps, t, _ = find "grammar" env.grams id in
+    let s = valid_args env as_ ps Subst.empty g.at in
+    Subst.subst_typ s t
+  | NatG n ->
+    if n < 0x00 || n > 0xff then
+      error g.at "byte value out of range";
+    NumT NatT $ g.at
+  | TextG _ -> TextT $ g.at
+  | EpsG -> TupT [] $ g.at
+  | SeqG gs ->
+    let _ts = List.map (valid_sym env) gs in
+    TupT [] $ g.at
+  | AltG gs ->
+    let _ts = List.map (valid_sym env) gs in
+    TupT [] $ g.at
+  | RangeG (g1, g2) ->
+    let t1 = valid_sym env g1 in
+    let t2 = valid_sym env g2 in
+    equiv_typ env t1 t2 g.at;
+    TupT [] $ g.at
+  | IterG (g1, iter) ->
+    let env' = valid_iterexp env iter in
+    let t1 = valid_sym env' g1 in
+    IterT (t1, match fst iter with Opt -> Opt | _ -> List) $ g.at
+  | AttrG (e, g1) ->
+    let t1 = valid_sym env g1 in
+    valid_exp env e t1;
+    TupT [] $ g.at
+
+
 (* Premises *)
 
 and valid_prem env prem =
+  Debug.(log_in_at "il.valid_prem" prem.at (fun _ -> il_prem prem));
   match prem.it with
   | RulePr (id, mixop, e) ->
     valid_expmix env mixop e (find "relation" env.rels id) e.at
@@ -573,11 +622,16 @@ and valid_arg env a p s =
   match a.it, (Subst.subst_param s p).it with
   | ExpA e, ExpP (id, t) -> valid_exp env e t; Subst.add_varid s id e
   | TypA t, TypP id -> valid_typ env t; Subst.add_typid s id t
-  | DefA id, DefP (id', ps', t') ->
-    let ps, t, _ = find "function" env.defs id in
-    if not (Eval.equiv_functyp (to_eval_env env) (ps, t) (ps', t')) then
+  | DefA id', DefP (id, ps, t) ->
+    let ps', t', _ = find "function" env.defs id' in
+    if not (Eval.equiv_functyp (to_eval_env env) (ps', t') (ps, t)) then
       error a.at "type mismatch in function argument";
     Subst.add_defid s id id'
+  | GramA g, GramP (id, t) ->
+    let t' = valid_sym env g in
+    if not (Eval.equiv_typ (to_eval_env env) t' t) then
+      error a.at "type mismatch in grammar argument";
+    Subst.add_gramid s id g
   | _, _ ->
     error a.at ("sort mismatch for argument, expected `" ^
       Print.string_of_param p ^ "`, got `" ^ Print.string_of_arg a ^ "`")
@@ -606,6 +660,11 @@ and valid_bind env b =
     List.iter (valid_param env') ps;
     valid_typ env' t;
     env.defs <- bind "definition" env.defs id (ps, t, [])
+  | GramB (id, ps, t) ->
+    let env' = local_env env in
+    List.iter (valid_param env') ps;
+    valid_typ env' t;
+    env.grams <- bind "grammar" env.grams id (ps, t, [])
 
 and valid_param env p =
   match p.it with
@@ -619,6 +678,9 @@ and valid_param env p =
     List.iter (valid_param env') ps;
     valid_typ env' t;
     env.defs <- bind "definition" env.defs id (ps, t, [])
+  | GramP (id, t) ->
+    valid_typ env t;
+    env.grams <- bind "grammar" env.grams id ([], t, [])
 
 let valid_inst env ps inst =
   Debug.(log_in "il.valid_inst" line);
@@ -657,6 +719,19 @@ let valid_clause env ps t clause =
     valid_exp env' e (Subst.subst_typ s t);
     List.iter (valid_prem env') prems
 
+let valid_prod env ps t prod =
+  Debug.(log_in "il.valid_prod" line);
+  Debug.(log_in_at "il.valid_prod" prod.at
+    (fun _ -> fmt ": (%s) -> %s" (il_params ps) (il_typ t))
+  );
+  match prod.it with
+  | ProdD (bs, g, e, prems) ->
+    let env' = local_env env in
+    List.iter (valid_bind env') bs;
+    let _t' = valid_sym env' g in
+    valid_exp env' e t;
+    List.iter (valid_prem env') prems
+
 let infer_def env d =
   match d.it with
   | TypD (id, ps, _insts) ->
@@ -671,6 +746,11 @@ let infer_def env d =
     List.iter (valid_param env') ps;
     valid_typ env' t;
     env.defs <- bind "function" env.defs id (ps, t, clauses)
+  | GramD (id, ps, t, prods) ->
+    let env' = local_env env in
+    List.iter (valid_param env') ps;
+    valid_typ env' t;
+    env.grams <- bind "grammar" env.grams id (ps, t, prods)
   | _ -> ()
 
 
@@ -695,6 +775,12 @@ let rec valid_def {bind} env d =
     valid_typ env' t;
     List.iter (valid_clause env ps t) clauses;
     env.defs <- bind "function" env.defs id (ps, t, clauses)
+  | GramD (id, ps, t, prods) ->
+    let env' = local_env env in
+    List.iter (valid_param env') ps;
+    valid_typ env' t;
+    List.iter (valid_prod env' ps t) prods;
+    env.grams <- bind "grammar" env.grams id (ps, t, prods)
   | RecD ds ->
     List.iter (infer_def env) ds;
     List.iter (valid_def {bind = rebind} env) ds;
@@ -703,7 +789,8 @@ let rec valid_def {bind} env d =
       | HintD _, _ | _, HintD _
       | TypD _, TypD _
       | RelD _, RelD _
-      | DecD _, DecD _ -> ()
+      | DecD _, DecD _
+      | GramD _, GramD _ -> ()
       | _, _ ->
         error (List.hd ds).at (" " ^ string_of_region d.at ^
           ": invalid recursion between definitions of different sort")
