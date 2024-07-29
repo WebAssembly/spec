@@ -8,14 +8,17 @@ open Walk
 (* Error *)
 
 let error at msg = Error.error at "AL validation" msg
-let error_mismatch expr typ1 typ2 =
-  error expr.at
-    (Printf.sprintf "type mismatch in %s\n  %s =/= %s"
-      (string_of_expr expr)
+let error_valid error_kind (source, at) msg =
+  error at (Printf.sprintf "%s when validating %s\n  %s" error_kind source msg)
+let error_mismatch source typ1 typ2 =
+  error_valid "type mismatch" source
+    (Printf.sprintf "%s =/= %s"
       (Il.Print.string_of_typ typ1)
       (Il.Print.string_of_typ typ2)
     )
-let error_expr expr expected_typ = error_mismatch expr expr.note expected_typ
+let error_field source typ field =
+  error_valid "unknown field" source
+    (Printf.sprintf "%s ∉ %s" field (Il.Print.string_of_typ typ))
 
 (* Bound Set *)
 
@@ -68,110 +71,96 @@ let unwrap_iter_typ typ =
   | Il.Ast.IterT (typ', _) -> typ'
   | _ -> assert (false)
 
-let check_match expr typ1 typ2 =
-  if not (matches typ1 typ2) then error_mismatch expr typ1 typ2
+let check_match source typ1 typ2 =
+  if not (matches typ1 typ2) then error_mismatch source typ1 typ2
 
-let check_num expr =
-  match expr.note.it with
-  | _ when is_num expr.note -> ()
-  | _ -> error_expr expr (varT "num")
+let check_num source typ =
+  if not (is_num typ) then error_mismatch source typ (varT "num")
 
-let check_bool expr =
-  match expr.note.it with
+let check_bool source typ =
+  match typ.it with
   | Il.Ast.BoolT -> ()
-  | _ -> error_expr expr (varT "bool")
+  | _ -> error_mismatch source typ (varT "bool")
 
-let check_list expr =
-  match expr.note.it with
+let check_list source typ =
+  match typ.it with
   | Il.Ast.IterT (_, iter) when iter <> Il.Ast.Opt -> ()
-  | _ -> error_expr expr (varT "list")
+  | _ -> error_mismatch source typ (varT "list")
 
-let check_instr expr =
-  if not (sub_typ (get_base_typ expr.note) (varT "instr")) then
-    error_expr expr (varT "instr")
+let check_instr source typ =
+  if not (sub_typ (get_base_typ typ) (varT "instr")) then
+    error_mismatch source typ (varT "instr")
 
-let check_val expr =
-  if not (sub_typ (get_base_typ expr.note) (varT "val")) then
-    error_expr expr (varT "val")
+let check_val source typ =
+  if not (sub_typ (get_base_typ typ) (varT "val")) then
+    error_mismatch source typ (varT "val")
 
-let check_context expr =
+let check_context source typ =
   let context_typs = [ "call frame"; "label" ] in
-  match expr.note.it with
+  match typ.it with
   | Il.Ast.VarT (id, []) when List.mem id.it context_typs -> ()
-  | _ -> error_expr expr (varT "context")
+  | _ -> error_mismatch source typ (varT "context")
 
-let check_access expr1 expr2 path =
+let check_access source typ1 typ2 path =
   match path.it with
-  | IdxP expr3 ->
-    check_list expr2; check_num expr3;
-    check_match expr1 expr1.note (unwrap_iter_typ expr2.note)
+  | IdxP expr ->
+    check_list source typ2; check_num source expr.note;
+    check_match source typ1 (unwrap_iter_typ typ2)
   | SliceP (expr3, expr4) ->
-    check_list expr2; check_num expr3; check_num expr4;
-    check_match expr1 expr1.note expr2.note
+    check_list source typ2; check_num source expr3.note; check_num source expr4.note;
+    check_match source typ1 typ2
   | DotP atom ->
     let field = string_of_atom atom in
-    let f =
+    let valid_field =
       fun (e, _) -> match e.it with Il.Ast.VarE s -> s.it = field | _ -> false
     in
-    (match expr2.note.it with
-    | TupT etl when List.exists f etl ->
-      let (_, typ) = List.find f etl in
-      check_match expr1 expr1.note typ
+    (match typ2.it with
+    | TupT etl when List.exists valid_field etl ->
+      let (_, typ) = List.find valid_field etl in
+      check_match source typ1 typ
     | VarT (id, _) when Il.Eval.Map.mem id.it !typ_env.typs ->
-      let f = fun (atom, _, _) -> Il.Print.string_of_atom atom = field in
+      let valid_field = fun (atom, _, _) -> Il.Print.string_of_atom atom = field in
       (match Il.Eval.Map.find id.it !typ_env.typs with
       | [{ it = InstD (_, _, { it = StructT tfs; _ }); _ }]
-      when List.exists f tfs ->
-        let _, (_, typ, _), _ = List.find f tfs in
-        check_match expr1 expr1.note typ
-      | _ ->
-        error expr2.at
-          (Printf.sprintf "%s whose type is %s doesn't contain field %s"
-            (string_of_expr expr2) (Il.Print.string_of_typ expr2.note) field
-          )
+      when List.exists valid_field tfs ->
+        let _, (_, typ, _), _ = List.find valid_field tfs in
+        check_match source typ1 typ
+      | _ -> error_field source typ1 field
       )
-    | _ ->
-      error expr2.at
-        (Printf.sprintf "%s whose type is %s doesn't contain field %s"
-          (string_of_expr expr2) (Il.Print.string_of_typ expr2.note) field
-        )
+    | _ -> error_field source typ1 field
     )
 
 
 (* Expr validation *)
 
 let valid_expr (walker: unit_walker) (expr: expr) : unit =
+  let source = string_of_expr expr, expr.at in
   (match expr.it with
   | VarE id ->
     if not (Set.mem id !bound_set) then
       error expr.at ("free identifier " ^ id)
-  | NumE _ -> check_num expr
-  | BoolE _ -> check_bool expr
-  | UnE (NotOp, expr') -> check_bool expr; check_bool expr'
-  | UnE (MinusOp, expr') -> check_num expr; check_num expr'
-  | BinE ((AddOp|SubOp|MulOp|DivOp|ModOp|ExpOp), expr1, expr2) ->
-    check_num expr; check_num expr1; check_num expr2
-  | BinE ((LtOp|GtOp|LeOp|GeOp), expr1, expr2) ->
-    check_bool expr; check_num expr1; check_num expr2
+  | UnE (NotOp, expr') -> check_bool source expr'.note
+  | UnE (MinusOp, expr') -> check_num source expr'.note
+  | BinE ((AddOp|SubOp|MulOp|DivOp|ModOp|ExpOp|LtOp|GtOp|LeOp|GeOp), expr1, expr2) ->
+    check_num source expr1.note; check_num source expr2.note
   | BinE ((ImplOp|EquivOp|AndOp|OrOp), expr1, expr2) ->
-    check_bool expr; check_bool expr1; check_bool expr2
+    check_bool source expr1.note; check_bool source expr2.note
   | BinE ((EqOp|NeOp), expr1, expr2) ->
-    check_bool expr;
     (* XXX: Not sure about this rule *)
-    check_match expr1 expr1.note expr2.note
-  | AccE (expr', path) -> check_access expr expr' path
+    check_match source expr1.note expr2.note
+  | AccE (expr', path) -> check_access source expr.note expr'.note path
   (* TODO *)
   | IterE (expr1, _, iter) ->
     let iterT typ iter' = Il.Ast.IterT (typ, iter') $ no_region in
     (match iter with
     | Opt ->
-      check_match expr expr.note (iterT expr1.note Il.Ast.Opt);
+      check_match source expr.note (iterT expr1.note Il.Ast.Opt);
     | ListN (expr2, id_opt) ->
       Option.iter add_bound_var id_opt;
-      check_match expr expr.note (iterT expr1.note Il.Ast.List);
-      check_num expr2
+      check_match source expr.note (iterT expr1.note Il.Ast.List);
+      check_num source expr2.note
     | _ ->
-      check_match expr expr.note (iterT expr1.note Il.Ast.List);
+      check_match source expr.note (iterT expr1.note Il.Ast.List);
     )
   | _ ->
     match expr.note.it with
@@ -186,33 +175,28 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
 
 let valid_instr (walker: unit_walker) (instr: instr) : unit =
   print_endline (string_of_instr instr);
+  let source = string_of_instr instr, instr.at in
   (match instr.it with
-  | IfI (expr, _, _) | AssertI expr -> check_bool expr
-  | EnterI (expr1, expr2, _) -> check_instr expr1; check_context expr2
+  | IfI (expr, _, _) | AssertI expr -> check_bool source expr.note
+  | EnterI (expr1, expr2, _) ->
+    check_instr source expr1.note; check_context source expr2.note
   | PushI expr ->
     if
       not (sub_typ (get_base_typ expr.note) (varT "val")) &&
       not (sub_typ (get_base_typ expr.note) (varT "callframe"))
     then
-      error_expr expr (varT "val")
+      error_mismatch source expr.note (varT "val")
   | PopI expr | PopAllI expr -> add_bound_vars expr;
     if
       not (sub_typ (get_base_typ expr.note) (varT "val")) &&
       not (sub_typ (get_base_typ expr.note) (varT "callframe"))
     then
-      error_expr expr (varT "val")
+      error_mismatch source expr.note (varT "val")
   | LetI (expr1, expr2) ->
-    add_bound_vars expr1;
-    if not (matches expr1.note expr2.note) then
-      error instr.at
-        (Printf.sprintf "lhs and rhs type mismatch in %s\n  %s =/= %s"
-          (string_of_instr instr)
-          (Il.Print.string_of_typ expr1.note)
-          (Il.Print.string_of_typ expr2.note)
-        )
-  | ExecuteI expr | ExecuteSeqI expr -> check_instr expr
-  | ReplaceI (expr1, path, expr2) -> check_access expr2 expr1 path
-  | AppendI (expr1, _expr2) -> check_list expr1
+    add_bound_vars expr1; check_match source expr1.note expr2.note
+  | ExecuteI expr | ExecuteSeqI expr -> check_instr source expr.note
+  | ReplaceI (expr1, path, expr2) -> check_access source expr2.note expr1.note path
+  | AppendI (expr1, _expr2) -> check_list source expr1.note
   | _ -> ()
   );
   base_unit_walker.walk_instr walker instr
