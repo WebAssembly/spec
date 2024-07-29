@@ -39,7 +39,7 @@ let typ_env: Il.Eval.env ref =
 
 let varT s = Il.Ast.VarT (s $ no_region, []) $ no_region
 
-(* Begin trash *)
+(* TODO: Generalize subtyping for numbers *)
 
 let num_typs = [ "nat"; "int"; "sN"; "uN"; "byte"; "bit"; "N"; "u32"; "iN"; "lane_" ]
 
@@ -57,7 +57,6 @@ let rec sub_typ typ1 typ2 =
     Il.Eval.sub_typ !typ_env typ1 typ2 || is_num typ1 && is_num typ2
 let matches typ1 typ2 = sub_typ typ1 typ2 || sub_typ typ2 typ1
 
-(* End trash *)
 
 (* Helper functions *)
 
@@ -101,33 +100,33 @@ let check_context source typ =
   | Il.Ast.VarT (id, []) when List.mem id.it context_typs -> ()
   | _ -> error_mismatch source typ (varT "context")
 
-let check_access source typ1 typ2 path =
+let access source typ path =
   match path.it with
   | IdxP expr ->
-    check_list source typ2; check_num source expr.note;
-    check_match source typ1 (unwrap_iter_typ typ2)
+    check_list source typ; check_num source expr.note;
+    unwrap_iter_typ typ
   | SliceP (expr3, expr4) ->
-    check_list source typ2; check_num source expr3.note; check_num source expr4.note;
-    check_match source typ1 typ2
+    check_list source typ; check_num source expr3.note; check_num source expr4.note;
+    typ
   | DotP atom ->
     let field = string_of_atom atom in
     let valid_field =
       fun (e, _) -> match e.it with Il.Ast.VarE s -> s.it = field | _ -> false
     in
-    (match typ2.it with
+    (match typ.it with
     | TupT etl when List.exists valid_field etl ->
-      let (_, typ) = List.find valid_field etl in
-      check_match source typ1 typ
+      let (_, typ') = List.find valid_field etl in
+      typ'
     | VarT (id, _) when Il.Eval.Map.mem id.it !typ_env.typs ->
       let valid_field = fun (atom, _, _) -> Il.Print.string_of_atom atom = field in
       (match Il.Eval.Map.find id.it !typ_env.typs with
       | [{ it = InstD (_, _, { it = StructT tfs; _ }); _ }]
       when List.exists valid_field tfs ->
-        let _, (_, typ, _), _ = List.find valid_field tfs in
-        check_match source typ1 typ
-      | _ -> error_field source typ1 field
+        let _, (_, typ', _), _ = List.find valid_field tfs in
+        typ'
+      | _ -> error_field source typ field
       )
-    | _ -> error_field source typ1 field
+    | _ -> error_field source typ field
     )
 
 
@@ -148,7 +147,12 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
   | BinE ((EqOp|NeOp), expr1, expr2) ->
     (* XXX: Not sure about this rule *)
     check_match source expr1.note expr2.note
-  | AccE (expr', path) -> check_access source expr.note expr'.note path
+  | AccE (expr', path) ->
+    access source expr'.note path
+    |> check_match source expr.note
+  | UpdE (expr1, pl, expr2) | ExtE (expr1, pl, expr2, _) ->
+    List.fold_left (access source) expr1.note pl
+    |> check_match source expr2.note
   (* TODO *)
   | IterE (expr1, _, iter) ->
     let iterT typ iter' = Il.Ast.IterT (typ, iter') $ no_region in
@@ -195,7 +199,9 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
   | LetI (expr1, expr2) ->
     add_bound_vars expr1; check_match source expr1.note expr2.note
   | ExecuteI expr | ExecuteSeqI expr -> check_instr source expr.note
-  | ReplaceI (expr1, path, expr2) -> check_access source expr2.note expr1.note path
+  | ReplaceI (expr1, path, expr2) ->
+    access source expr1.note path
+    |> check_match source expr2.note
   | AppendI (expr1, _expr2) -> check_list source expr1.note
   | _ -> ()
   );
