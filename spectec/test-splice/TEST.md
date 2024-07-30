@@ -1171,6 +1171,7 @@ warning: definition `clos_deftypes` was never spliced
 warning: definition `clos_moduletype` was never spliced
 warning: definition `clos_valtype` was never spliced
 warning: definition `concat_` was never spliced
+warning: definition `concatn_` was never spliced
 warning: definition `const` was never spliced
 warning: definition `cont` was never spliced
 warning: definition `convert__` was never spliced
@@ -1762,6 +1763,7 @@ warning: definition prose `clos_deftypes` was never spliced
 warning: definition prose `clos_moduletype` was never spliced
 warning: definition prose `clos_valtype` was never spliced
 warning: definition prose `concat_` was never spliced
+warning: definition prose `concatn_` was never spliced
 warning: definition prose `const` was never spliced
 warning: definition prose `cont` was never spliced
 warning: definition prose `cpacknum_` was never spliced

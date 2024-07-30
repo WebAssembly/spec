@@ -87,25 +87,36 @@ def $concat_(syntax X, X**) : X*
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:53.1-53.78
+;; 0-aux.watsup:53.1-53.61
+def $concatn_(syntax X, X**, nat : nat) : X*
+  ;; 0-aux.watsup:54.1-54.38
+  def $concatn_{syntax X, n : n}(syntax X, [], n) = []
+  ;; 0-aux.watsup:55.1-55.73
+  def $concatn_{syntax X, w^n : X^n, n : n, w'^n* : X^n*}(syntax X, [w^n{w : X}] :: w'^n{w' : X}*{w' : X}, n) = w^n{w : X} :: $concatn_(syntax X, w'^n{w' : X}*{w' : X}, n)
+}
+
+;; 0-aux.watsup
+rec {
+
+;; 0-aux.watsup:57.1-57.78
 def $disjoint_(syntax X, X*) : bool
-  ;; 0-aux.watsup:54.1-54.37
+  ;; 0-aux.watsup:58.1-58.37
   def $disjoint_{syntax X}(syntax X, []) = true
-  ;; 0-aux.watsup:55.1-55.68
+  ;; 0-aux.watsup:59.1-59.68
   def $disjoint_{syntax X, w : X, w'* : X*}(syntax X, [w] :: w'*{w' : X}) = (~ w <- w'*{w' : X} /\ $disjoint_(syntax X, w'*{w' : X}))
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:58.1-58.38
+;; 0-aux.watsup:62.1-62.38
 def $setminus1_(syntax X, X : X, X*) : X*
-  ;; 0-aux.watsup:62.1-62.38
+  ;; 0-aux.watsup:66.1-66.38
   def $setminus1_{syntax X, w : X}(syntax X, w, []) = [w]
-  ;; 0-aux.watsup:63.1-63.78
+  ;; 0-aux.watsup:67.1-67.78
   def $setminus1_{syntax X, w : X, w_1 : X, w'* : X*}(syntax X, w, [w_1] :: w'*{w' : X}) = []
     -- if (w = w_1)
-  ;; 0-aux.watsup:64.1-64.77
+  ;; 0-aux.watsup:68.1-68.77
   def $setminus1_{syntax X, w : X, w_1 : X, w'* : X*}(syntax X, w, [w_1] :: w'*{w' : X}) = $setminus1_(syntax X, w, w'*{w' : X})
     -- otherwise
 }
@@ -113,44 +124,44 @@ def $setminus1_(syntax X, X : X, X*) : X*
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:57.1-57.56
+;; 0-aux.watsup:61.1-61.56
 def $setminus_(syntax X, X*, X*) : X*
-  ;; 0-aux.watsup:60.1-60.40
+  ;; 0-aux.watsup:64.1-64.40
   def $setminus_{syntax X, w* : X*}(syntax X, [], w*{w : X}) = []
-  ;; 0-aux.watsup:61.1-61.90
+  ;; 0-aux.watsup:65.1-65.90
   def $setminus_{syntax X, w_1 : X, w'* : X*, w* : X*}(syntax X, [w_1] :: w'*{w' : X}, w*{w : X}) = $setminus1_(syntax X, w_1, w*{w : X}) :: $setminus_(syntax X, w'*{w' : X}, w*{w : X})
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:69.1-69.46
+;; 0-aux.watsup:73.1-73.46
 def $setproduct2_(syntax X, X : X, X**) : X**
-  ;; 0-aux.watsup:75.1-75.44
+  ;; 0-aux.watsup:79.1-79.44
   def $setproduct2_{syntax X, w_1 : X}(syntax X, w_1, []) = []
-  ;; 0-aux.watsup:76.1-76.90
+  ;; 0-aux.watsup:80.1-80.90
   def $setproduct2_{syntax X, w_1 : X, w'* : X*, w** : X**}(syntax X, w_1, [w'*{w' : X}] :: w*{w : X}*{w : X}) = [[w_1] :: w'*{w' : X}] :: $setproduct2_(syntax X, w_1, w*{w : X}*{w : X})
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:68.1-68.47
+;; 0-aux.watsup:72.1-72.47
 def $setproduct1_(syntax X, X*, X**) : X**
-  ;; 0-aux.watsup:73.1-73.46
+  ;; 0-aux.watsup:77.1-77.46
   def $setproduct1_{syntax X, w** : X**}(syntax X, [], w*{w : X}*{w : X}) = []
-  ;; 0-aux.watsup:74.1-74.107
+  ;; 0-aux.watsup:78.1-78.107
   def $setproduct1_{syntax X, w_1 : X, w'* : X*, w** : X**}(syntax X, [w_1] :: w'*{w' : X}, w*{w : X}*{w : X}) = $setproduct2_(syntax X, w_1, w*{w : X}*{w : X}) :: $setproduct1_(syntax X, w'*{w' : X}, w*{w : X}*{w : X})
 }
 
 ;; 0-aux.watsup
 rec {
 
-;; 0-aux.watsup:67.1-67.82
+;; 0-aux.watsup:71.1-71.82
 def $setproduct_(syntax X, X**) : X**
-  ;; 0-aux.watsup:71.1-71.40
+  ;; 0-aux.watsup:75.1-75.40
   def $setproduct_{syntax X}(syntax X, []) = [[]]
-  ;; 0-aux.watsup:72.1-72.90
+  ;; 0-aux.watsup:76.1-76.90
   def $setproduct_{syntax X, w_1* : X*, w** : X**}(syntax X, [w_1*{w_1 : X}] :: w*{w : X}*{w : X}) = $setproduct1_(syntax X, w_1*{w_1 : X}, $setproduct_(syntax X, w*{w : X}*{w : X}))
 }
 
@@ -5634,7 +5645,7 @@ relation Step_read: `%~>%`(config, instr*)
   rule array.new_data-num{z : state, i : nat, n : n, x : idx, y : idx, zt : storagetype, c^n : lit_(zt)^n, mut : mut}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr(I32_numtype, `%`_num_(n)) ARRAY.NEW_DATA_instr(x, y)]), $const($cunpack(zt), $cunpacknum_(zt, c))^n{c : lit_(zt)} :: [ARRAY.NEW_FIXED_instr(x, `%`_u32(n))])
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
-    -- if ($concat_(syntax byte, $zbytes_(zt, c)^n{c : lit_(zt)}) = $data(z, y).BYTES_datainst[i : ((n * $zsize(zt)) / 8)])
+    -- if ($concatn_(syntax byte, $zbytes_(zt, c)^n{c : lit_(zt)}, ($zsize(zt) / 8)) = $data(z, y).BYTES_datainst[i : ((n * $zsize(zt)) / 8)])
 
   ;; 8-reduction.watsup
   rule array.get-null{z : state, ht : heaptype, i : nat, sx? : sx?, x : idx}:
