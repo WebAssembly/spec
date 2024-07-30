@@ -21,7 +21,7 @@ type instr =
 
 (* TODO: perhaps rename to avoid name clash *)
 type def =
-| Iff of string * string * Al.Ast.expr * instr * instr list
+| Iff of Al.Ast.anchor * Al.Ast.expr * instr * instr list
 | Algo of Al.Ast.algorithm
 
 type prose = def list

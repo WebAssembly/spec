@@ -214,11 +214,6 @@ type vrule_group =
 let vrule_group_to_prose ((rule_name, rel_id, vrules): vrule_group) =
   let (winstr, t, prems, _tenv) = vrules |> List.hd in
 
-  (* name *)
-  let name = match winstr.it with
-  | Ast.CaseE (({it = (El.Atom.Atom name); _}::_)::_, _) -> name
-  | _ -> assert false
-  in
   (* anchor *)
   let anchor = rel_id.it ^ "/" ^ rule_name in
   (* expr *)
@@ -229,7 +224,7 @@ let vrule_group_to_prose ((rule_name, rel_id, vrules): vrule_group) =
   let prems = (List.concat_map prem_to_instrs prems) in
 
   (* Predicate *)
-  Iff (name, anchor, expr, concl, prems)
+  Iff (anchor, expr, concl, prems)
 
 let rec extract_vrules def =
   match def.it with
@@ -293,10 +288,7 @@ let rec group_vrules = function
 let prose_of_valid_rules rel_id rules =
   let rule = List.hd rules in
   let (e, _, _) = pack_single_rule rule in
-  let typ = Print.string_of_typ e.note in
 
-  (* name *)
-  let name = "valid_" ^ typ in
   (* anchor *)
   let anchor = rel_id.it in
   (* expr *)
@@ -314,7 +306,7 @@ let prose_of_valid_rules rel_id rules =
         | instrss -> [ EitherI instrss ])
   ) in
 
-  Iff (name, anchor, expr, concl, prems)
+  Iff (anchor, expr, concl, prems)
 
 let prose_of_valid_rel def =
   match def.it with
@@ -332,10 +324,7 @@ let proses_of_valid_instr_rel rel =
 let prose_of_valid_with_rules rel_id rules =
   let rule = List.hd rules in
   let (e1, e2, _, _) = pack_pair_rule rule in
-  let typ = Print.string_of_typ e1.note in
 
-  (* name *)
-  let name = "valid_" ^ typ in
   (* anchor *)
   let anchor = rel_id.it in
   (* expr *)
@@ -353,7 +342,7 @@ let prose_of_valid_with_rules rel_id rules =
         | instrss -> [ EitherI instrss ])
   ) in
 
-  Iff (name, anchor, expr, concl, prems)
+  Iff (anchor, expr, concl, prems)
 
 let prose_of_valid_with_rel def =
   match def.it with
@@ -364,10 +353,7 @@ let prose_of_valid_with_rel def =
 let prose_of_match_rules rel_id rules =
   let rule = List.hd rules in
   let (e1, e2, _, _) = pack_pair_rule rule in
-  let typ = Print.string_of_typ e1.note in
 
-  (* name *)
-  let name = "matching_" ^ typ in
   (* anchor *)
   let anchor = rel_id.it in
   (* expr *)
@@ -385,7 +371,7 @@ let prose_of_match_rules rel_id rules =
         | instrss -> [ EitherI instrss ])
   ) in
 
-  Iff (name, anchor, expr, concl, prems)
+  Iff (anchor, expr, concl, prems)
 
 let prose_of_match_rel def =
   match def.it with
@@ -397,10 +383,7 @@ let prose_of_match_rel def =
 let prose_of_const_rules rel_id rules =
   let rule = List.hd rules in
   let (e, _, _) = pack_single_rule rule in
-  let typ = Print.string_of_typ e.note in
 
-  (* name *)
-  let name = "const_" ^ typ in
   (* anchor *)
   let anchor = rel_id.it in
   (* expr *)
@@ -418,7 +401,7 @@ let prose_of_const_rules rel_id rules =
         | instrss -> [ EitherI instrss ])
   ) in
 
-  Iff (name, anchor, expr, concl, prems)
+  Iff (anchor, expr, concl, prems)
 
 let prose_of_const_rel def =
   match def.it with
@@ -432,10 +415,7 @@ let proses_of_valid_const_rel _def = [] (* Do not generate prose *)
 let prose_of_valid_with2_rules rel_id rules =
   let rule = List.hd rules in
   let (e1, e2, e3, _, _) = pack_triplet_rule rule in
-  let typ = Print.string_of_typ e1.note in
 
-  (* name *)
-  let name = "valid_" ^ typ in
   (* anchor *)
   let anchor = rel_id.it in
   (* expr *)
@@ -453,7 +433,7 @@ let prose_of_valid_with2_rules rel_id rules =
         | instrss -> [ EitherI instrss ])
   ) in
 
-  Iff (name, anchor, expr, concl, prems)
+  Iff (anchor, expr, concl, prems)
 
 let prose_of_valid_with2_rel def =
   match def.it with
