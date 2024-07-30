@@ -127,7 +127,7 @@ let env_prose env prose =
     let relation = Map.find valid_id env.rel_prose in
     let ralgos = (normalize_id id, prose, ref 0) :: relation.ralgos in
     env.rel_prose <- Map.add valid_id {ralgos} env.rel_prose
-  | Algo ({ it = Al.Ast.RuleA (atom, _, _); _ }) ->
+  | Algo ({ it = Al.Ast.RuleA (atom, _, _, _); _ }) ->
     let id = El.Atom.to_string atom in
     let relation = Map.find exec_id env.rel_prose in
     let ralgos = (normalize_id id, prose, ref 0) :: relation.ralgos in

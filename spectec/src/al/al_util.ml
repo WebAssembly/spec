@@ -205,15 +205,15 @@ let unwrap_cate e =
   | _ -> fail_expr "unwrap_cate" e
 
 let name_of_algo algo = match algo.it with
-  | RuleA (name, _, _) -> Print.string_of_atom name
+  | RuleA (name, _, _, _) -> Print.string_of_atom name
   | FuncA (name, _, _) -> name
 
 let params_of_algo algo = match algo.it with
-  | RuleA (_, params, _) -> params
+  | RuleA (_, _, params, _) -> params
   | FuncA (_, params, _) -> params
 
 let body_of_algo algo = match algo.it with
-  | RuleA (_, _, body) -> body
+  | RuleA (_, _, _, body) -> body
   | FuncA (_, _, body) -> body
 
 let args_of_casev = function

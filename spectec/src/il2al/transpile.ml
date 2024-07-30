@@ -549,9 +549,9 @@ let insert_state_binding algo =
     | FuncA (name, params, body) when !state_count > 0 ->
       let body = (letI (varE "z", getCurStateE ())) :: body in
       FuncA (name, params, body)
-    | RuleA (name, params, body) when !state_count > 0 ->
+    | RuleA (name, anchor, params, body) when !state_count > 0 ->
       let body = (letI (varE "z", getCurStateE ())) :: body in
-      RuleA (name, params, body)
+      RuleA (name, anchor, params, body)
     | a -> a
   }
 
@@ -740,7 +740,7 @@ let remove_enter algo =
         in
         let body = Walk.walk_instrs walk_config body in
         FuncA (name, params, body)
-    | RuleA (name, params, body) ->
+    | RuleA (name, anchor, params, body) ->
         let walk_config =
           {
             Walk.default_config with
@@ -748,7 +748,7 @@ let remove_enter algo =
           }
         in
         let body = Walk.walk_instrs walk_config body in
-        RuleA (name, params, body)
+        RuleA (name, anchor, params, body)
   ) in
 
   let algo' = remove_enter' algo in

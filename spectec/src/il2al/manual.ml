@@ -89,6 +89,7 @@ let array_new_data =
 
   RuleA (
     atom_of_name "ARRAY.NEW_DATA" "admininstr",
+    "Step_read/array.new_data",
     [x; y],
     [
       assertI (topValueE (Some i32));

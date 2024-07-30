@@ -1172,7 +1172,7 @@ let translate_context_rgroup lhss sub_algos inner_params =
   let instrs_context =
     List.fold_right2 (fun lhs algo acc ->
       match algo.it with
-      | RuleA (_, params, body) ->
+      | RuleA (_, _, params, body) ->
         (* Assume that each sub-algorithms are produced by translate_context,
            i.e., they will always contain instr_popall as their first instruction. *)
         assert(Eq.eq_instr (List.hd body) instr_popall);
@@ -1223,7 +1223,7 @@ let rec split_lhs_stack' ?(note : Il.typ option) name stack ctxs instrs =
 let split_lhs_stack name stack = split_lhs_stack' name stack [] []
 
 
-let rec translate_rgroup' context winstr instr_name rgroup =
+let rec translate_rgroup' context winstr instr_name rel_id rgroup =
   let inner_params = ref None in
   let instrs =
     match context with
@@ -1259,9 +1259,9 @@ let rec translate_rgroup' context winstr instr_name rgroup =
         rgroup
         |> List.map (Source.map un_unify)
         |> group_contexts
-        |> List.map (fun g -> Il2il.unify_lhs (instr_name, g)) in
+        |> List.map (fun g -> Il2il.unify_lhs (instr_name, rel_id, g)) in
       if List.length unified_sub_groups = 1 then [ yetI "Translation fail: Infinite recursion" ] else
-      let lhss = List.map (fun (_, g) -> lhs_of_rgroup g) unified_sub_groups in
+      let lhss = List.map (fun (_, _, g) -> lhs_of_rgroup g) unified_sub_groups in
       let sub_algos = List.map translate_rgroup unified_sub_groups in
       translate_context_rgroup lhss sub_algos inner_params
       with _ ->
@@ -1278,19 +1278,20 @@ and get_lhs_stack (exp: Il.exp): Il.exp list =
     split_config exp |> snd |> to_exp_list
   else to_exp_list exp
 
-and translate_rgroup (instr_name, rgroup) =
+and translate_rgroup (instr_name, rel_id, rgroup) =
   let lhs, _, _ = (List.hd rgroup).it in
   (* TODO: Generalize getting current frame *)
   let lhs_stack = get_lhs_stack lhs in
   let context, winstr = split_lhs_stack instr_name lhs_stack in
 
-  let inner_params, instrs = translate_rgroup' context winstr instr_name rgroup in
+  let inner_params, instrs = translate_rgroup' context winstr instr_name rel_id rgroup in
 
   let name =
     match winstr.it with
     | Il.CaseE ((({it = Il.Atom _; _} as atom)::_)::_, _) -> atom
     | _ -> assert false
   in
+  let anchor = rel_id.it ^ "/" ^ instr_name in
   let al_params =
     match inner_params with
     | None ->
@@ -1319,7 +1320,7 @@ and translate_rgroup (instr_name, rgroup) =
   let at = rgroup
     |> List.map at
     |> over_region in
-  RuleA (name, al_params', body) $ at
+  RuleA (name, anchor, al_params', body) $ at
 
 
 let rule_to_tup rule =
@@ -1345,7 +1346,7 @@ let rec group_rules = function
         "this reduction rule uses a different relation compared to the previous rules"
     ) t1 in
     let tups = List.map rule_to_tup rules in
-    (name, tups) :: group_rules t2
+    (name, rel_id, tups) :: group_rules t2
 
 (* extract reduction rules for wasm instructions *)
 let extract_rules def =

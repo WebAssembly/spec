@@ -291,11 +291,11 @@ let unify_lhs' rgroup =
   let template = List.fold_left overlap hd tl in
   List.map (Source.map (apply_template_to_rgroup template)) rgroup
 
-let unify_lhs (rname, rgroup) =
+let unify_lhs (rname, rel_id, rgroup) =
   let to_left_assoc (lhs, rhs, prems) = to_left_assoc_cat lhs, rhs, prems in
   let to_right_assoc (lhs, rhs, prems) = to_right_assoc_cat lhs, rhs, prems in
   (* typical f^-1 ∘ g ∘ f *)
-  rname, (rgroup |> List.map (Source.map to_left_assoc) |> unify_lhs' |> List.map (Source.map to_right_assoc))
+  rname, rel_id, (rgroup |> List.map (Source.map to_left_assoc) |> unify_lhs' |> List.map (Source.map to_right_assoc))
 
 
 (** 3. Functions **)

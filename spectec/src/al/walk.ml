@@ -71,7 +71,7 @@ let walk_instr (walker: unit_walker) (instr: instr) : unit =
 
 let walk_algo (walker: unit_walker) (algo: algorithm) : unit =
   match algo.it with
-  | RuleA (_, exprs, instrs) ->
+  | RuleA (_, _, exprs, instrs) ->
     List.iter (walker.walk_expr walker) exprs; List.iter (walker.walk_instr walker) instrs
   | FuncA (_, exprs, instrs) ->
     List.iter (walker.walk_expr walker) exprs; List.iter (walker.walk_instr walker) instrs
@@ -183,8 +183,8 @@ let walk_algo (walker: walker) (algo: algorithm) : algorithm =
   let walk_instr = walker.walk_instr walker in
   let it =
     match algo.it with
-    | RuleA (name, exprs, instrs) ->
-      RuleA (name, List.map walk_expr exprs, List.map walk_instr instrs)
+    | RuleA (name, anchor, exprs, instrs) ->
+      RuleA (name, anchor, List.map walk_expr exprs, List.map walk_instr instrs)
     | FuncA (name, exprs, instrs) ->
       FuncA (name, List.map walk_expr exprs, List.map walk_instr instrs)
   in
@@ -329,6 +329,6 @@ let rec walk_instr f (instr:instr) : instr list =
 and walk_instrs f = walk_instr f |> List.concat_map
 
 let walk' f algo' = match algo' with
-  | RuleA (a, params, body) -> RuleA (a, params, walk_instrs f body)
+  | RuleA (a, anchor, params, body) -> RuleA (a, anchor, params, walk_instrs f body)
   | FuncA (id, params, body) -> FuncA (id, params, walk_instrs f body)
 let walk f algo = Source.map (walk' f) algo

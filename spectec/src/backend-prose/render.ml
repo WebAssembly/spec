@@ -675,7 +675,7 @@ let render_func env fname params instrs =
 let render_def env = function
   | Iff _ -> "TODO: render_iff"
   | Algo algo -> (match algo.it with
-    | Al.Ast.RuleA (name, params, instrs) ->
+    | Al.Ast.RuleA (name, _anchor, params, instrs) ->
       "\n" ^ render_rule env name params instrs ^ "\n\n"
     | Al.Ast.FuncA (name, params, instrs) ->
       "\n" ^ render_func env name params instrs ^ "\n\n")
