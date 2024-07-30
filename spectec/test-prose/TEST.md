@@ -5416,11 +5416,11 @@ concat_ X_u0*
 2. Let [w*] ++ w'** be X_u0*.
 3. Return w* ++ $concat_(w'**).
 
-concatn X_u0* n
+concatn_ X_u0* n
 1. If (X_u0* is []), then:
   a. Return [].
-2. Let [w*] ++ w'** be X_u0*.
-3. Return w* ++ $concatn(w'**, n).
+2. Let [w^n] ++ w'^n* be X_u0*.
+3. Return w^n ++ $concatn_(w'^n*, n).
 
 disjoint_ X_u0*
 1. If (X_u0* is []), then:
@@ -8342,8 +8342,8 @@ execution_of_ARRAY.NEW_DATA x y
 8. Let (mut, zt) be arraytype_0.
 9. If ((i + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
   a. Trap.
-10. Assert: Due to validation, (|$concatn_0^-1(($zsize(zt) / 8), $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)])| is n).
-11. Let tmp* be $concatn_0^-1(($zsize(zt) / 8), $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)]).
+10. Assert: Due to validation, (|$concatn__0^-1(($zsize(zt) / 8), $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)])| is n).
+11. Let tmp* be $concatn__0^-1(($zsize(zt) / 8), $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)]).
 12. Let c* be $zbytes__1^-1(zt, tmp)*.
 13. Push the values $const($cunpack(zt), $cunpacknum_(zt, c))^n to the stack.
 14. Execute the instruction (ARRAY.NEW_FIXED x n).

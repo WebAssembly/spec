@@ -1634,7 +1634,7 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {\bigoplus}\, \epsilon &=& \epsilon \\
-{\bigoplus}\, ({w^\ast})~{({{w'}^\ast})^\ast} &=& {w^\ast}~{\bigoplus}\, {({{w'}^\ast})^\ast} \\
+{\bigoplus}\, ({w^{n}})~{({{w'}^{n}})^\ast} &=& {w^{n}}~{\bigoplus}\, {({{w'}^{n}})^\ast} \\
 \end{array}
 $$
 

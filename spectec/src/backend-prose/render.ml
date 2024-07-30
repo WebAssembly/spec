@@ -365,6 +365,9 @@ and render_expr' env expr =
       (render_expr env elhs)
       (render_math "=")
       (render_expr env erhs)
+  | Al.Ast.LenE e ->
+    let se = render_expr env e in
+    sprintf "the length of %s" se
   | Al.Ast.IterE (e, ids, iter) when al_to_el_expr e = None ->
     let se = render_expr env e in
     let ids = Al.Al_util.tupE (List.map Al.Al_util.varE ids) in
