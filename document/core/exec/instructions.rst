@@ -738,12 +738,11 @@ $${rule: {Step_read/array.fill-*}}
 
 .. _exec-array.copy:
 
-$${rule-prose: exec/array.copy}
-
 .. todo::
    Below is the actual prose.
    (3) Introduce if-let instruction instead of "is of the case".
    (5) Use "the expansion of" instead of $expand function application.
+   + Too deeply nested
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
