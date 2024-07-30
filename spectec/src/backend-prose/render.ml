@@ -463,35 +463,46 @@ let rec render_prose_instr env depth = function
     sprintf "* %s must be contained in %s."
       (String.capitalize_ascii (render_expr env e1))
       (render_expr env e2)
-  | IsValidI (c_opt, e, es) ->
+  | IsValidI (c_opt, e, el) ->
     sprintf "* %s%s is valid%s."
       (render_opt "Under the context " (render_expr env) ", " c_opt)
       (render_expr env e)
-      (if es = [] then "" else " with type " ^ render_list (render_expr env) " and " es)
+      (if el = [] then "" else " with type " ^ render_list (render_expr env) " and " el)
   | MatchesI (e1, e2) ->
     sprintf "* %s matches %s."
-      (render_expr env e1)
+      (String.capitalize_ascii (render_expr env e1))
       (render_expr env e2)
   | IsConstI (c_opt, e) ->
     sprintf "* %s%s is const."
       (render_opt "Under the context " (render_expr env) ", " c_opt)
       (render_expr env e)
-  | IfI (c, is) ->
+  | IfI (c, il) ->
     sprintf "* If %s,%s"
       (render_expr env c)
-      (render_prose_instrs env (depth + 1) is)
-  | ForallI (iters, is) ->
+      (render_prose_instrs env (depth + 1) il)
+  | ForallI (iters, il) ->
     let render_iter env (e1, e2) = (render_expr env e1) ^ " in " ^ (render_expr env e2) in
     let render_iters env iters = List.map (render_iter env) iters |> String.concat " and " in
     sprintf "* For all %s,%s"
       (render_iters env iters)
-      (render_prose_instrs env (depth + 1) is)
+      (render_prose_instrs env (depth + 1) il)
   | EquivI (c1, c2) ->
     sprintf "* %s if and only if %s."
       (String.capitalize_ascii (render_expr env c1))
       (render_expr env c2)
-  | EitherI _ ->
-    sprintf "* Either: (TODO)"
+  | EitherI ill ->
+    let il_head, ill = List.hd ill, List.tl ill in
+    let sil_head = render_prose_instrs env (depth + 1) il_head in
+    let sill =
+      List.fold_left
+        (fun sill il ->
+          sprintf "%s%s* Or:%s"
+            sill
+            (repeat indent depth)
+            (render_prose_instrs env (depth + 1) il))
+        "" ill
+    in
+    sprintf "* Either:%s\n\n%s" sil_head sill
   | YetI s ->
     sprintf "* YetI: %s." s
 
@@ -659,6 +670,15 @@ let _render_pred env name params instrs =
   String.make (String.length title) '.' ^ "\n" ^
   render_prose_instrs env 0 instrs
 
+let render_iff env concl prems =
+  match prems with
+  | [] -> render_prose_instr env 0 concl
+  | _ ->
+      let sconcl = render_prose_instr env 0 concl in
+      let sconcl = String.sub sconcl 0 (String.length sconcl - 1) in
+      let sprems = render_prose_instrs env 1 prems in
+      sprintf "%s if and only if:\n%s" sconcl sprems
+
 let render_rule env name params instrs =
   let title = render_atom_title env name params in
   let rname = Al.Print.string_of_atom name in
@@ -673,9 +693,10 @@ let render_func env fname params instrs =
   render_al_instrs env fname 0 instrs
 
 let render_def env = function
-  | Iff _ -> "TODO: render_iff"
+  | Iff (_, _, concl, prems) ->
+      "\n" ^ render_iff env concl prems ^ "\n\n"
   | Algo algo -> (match algo.it with
-    | Al.Ast.RuleA (name, _anchor, params, instrs) ->
+    | Al.Ast.RuleA (name, _, params, instrs) ->
       "\n" ^ render_rule env name params instrs ^ "\n\n"
     | Al.Ast.FuncA (name, params, instrs) ->
       "\n" ^ render_func env name params instrs ^ "\n\n")

@@ -218,7 +218,7 @@ let find_def env src id1 id2 =
     incr definition.use; [definition.clauses]
 
 let find_rule_prose env src id1 id2 =
-  let id = id1 ^ "/" ^ id2 in
+  let id = if id2 <> "" then id1 ^ "/" ^ id2 else id1 in
   match Map.find_opt id env.rule_prose with
   | None -> error src ("unknown prose relation identifier `" ^ id ^ "`")
   | Some rule -> incr rule.use; rule.ralgo
