@@ -114,6 +114,79 @@ let check_field source source_typ expr_record atom typ =
   in
   check_match source expr.note typ
 
+let rec check_struct source struct_ typ =
+  let open Il.Ast in
+  match typ.it with
+  | VarT (id, _) when Il.Eval.Map.mem id.it !typ_env.typs ->
+    (match Il.Eval.Map.find id.it !typ_env.typs with
+    | [{ it = InstD (_, _, { it = StructT tfs; _ }); _ }] ->
+      List.iter
+        (fun (a, (_, typ', _), _) -> check_field source typ struct_ a typ')
+        tfs
+    | [{ it = InstD (_, _, { it = AliasT typ'; _ }); _ }] ->
+      check_struct source struct_ typ'
+    | [{ it = InstD (_, _, { it = VariantT tcs; _ }); _ }] ->
+      let is_valid_struct typecase =
+        let _, (_, typ', _), _ = typecase in
+        try check_struct source struct_ typ'; true with _ -> false
+      in
+      if not (List.exists is_valid_struct tcs) then error_struct source typ
+    | _ -> error_struct source typ
+    )
+  | _ -> error_struct source typ
+
+let rec check_tuple source exprs typ =
+  let open Il.Ast in
+  match typ.it with
+  | TupT etl when List.length exprs = List.length etl ->
+    let f expr (_, typ) = check_match source expr.note typ in
+    List.iter2 f exprs etl
+  | VarT (id, _) when Il.Eval.Map.mem id.it !typ_env.typs ->
+    (match Il.Eval.Map.find id.it !typ_env.typs with
+    | [{ it = InstD (_, _, { it = AliasT typ'; _ }); _ }] ->
+      check_tuple source exprs typ'
+    | [{ it = InstD (_, _, { it = VariantT tcs; _ }); _ }] ->
+      let is_valid_tuple typecase =
+        let _, (_, typ', _), _ = typecase in
+        try check_tuple source exprs typ'; true with _ -> false
+      in
+      if not (List.exists is_valid_tuple tcs) then error_tuple source typ
+    | _ -> error_tuple source typ
+    )
+  | _ -> error_tuple source typ
+
+let rec access_field source typ field =
+  let open Il.Ast in
+  let valid_field =
+    fun (e, _) -> match e.it with VarE s -> s.it = field | _ -> false
+  in
+  match typ.it with
+  | TupT etl when List.exists valid_field etl ->
+    (* XXX: Not sure about this rule *)
+    let (_, typ') = List.find valid_field etl in
+    typ'
+  | VarT (id, _) when Il.Eval.Map.mem id.it !typ_env.typs ->
+    let valid_field = fun (atom, _, _) -> Il.Print.string_of_atom atom = field in
+    (match Il.Eval.Map.find id.it !typ_env.typs with
+    | [{ it = InstD (_, _, { it = StructT tfs; _ }); _ }]
+    when List.exists valid_field tfs ->
+      let _, (_, typ', _), _ = List.find valid_field tfs in
+      typ'
+    | [{ it = InstD (_, _, { it = AliasT typ'; _ }); _ }] ->
+      access_field source typ' field
+    | [{ it = InstD (_, _, { it = VariantT tcs; _ }); _ }] ->
+      let try_access_field typecase =
+        let _, (_, typ', _), _ = typecase in
+        try Some (access_field source typ' field) with _ -> None
+      in
+      (match List.find_map try_access_field tcs with
+      | Some typ'' -> typ''
+      | None -> error_field source typ field
+      )
+    | _ -> error_field source typ field
+    )
+  | _ -> error_field source typ field
+
 let access source typ path =
   match path.it with
   | IdxP expr ->
@@ -122,27 +195,8 @@ let access source typ path =
   | SliceP (expr3, expr4) ->
     check_list source typ; check_num source expr3.note; check_num source expr4.note;
     typ
-  | DotP atom ->
-    let field = string_of_atom atom in
-    let valid_field =
-      fun (e, _) -> match e.it with Il.Ast.VarE s -> s.it = field | _ -> false
-    in
-    (match typ.it with
-    | TupT etl when List.exists valid_field etl ->
-      (* XXX: Not sure about this rule *)
-      let (_, typ') = List.find valid_field etl in
-      typ'
-    | VarT (id, _) when Il.Eval.Map.mem id.it !typ_env.typs ->
-      let valid_field = fun (atom, _, _) -> Il.Print.string_of_atom atom = field in
-      (match Il.Eval.Map.find id.it !typ_env.typs with
-      | [{ it = InstD (_, _, { it = StructT tfs; _ }); _ }]
-      when List.exists valid_field tfs ->
-        let _, (_, typ', _), _ = List.find valid_field tfs in
-        typ'
-      | _ -> error_field source typ field
-      )
-    | _ -> error_field source typ field
-    )
+  | DotP atom -> access_field source typ (string_of_atom atom)
+    
 
 
 (* Expr validation *)
@@ -174,17 +228,7 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
   | UpdE (expr1, pl, expr2) | ExtE (expr1, pl, expr2, _) ->
     check_match source expr.note expr1.note;
     List.fold_left (access source) expr1.note pl |> check_match source expr2.note
-  | StrE r ->
-    (match expr.note.it with
-    | VarT (id, _) when Il.Eval.Map.mem id.it !typ_env.typs ->
-      (match Il.Eval.Map.find id.it !typ_env.typs with
-      | [{ it = InstD (_, _, { it = StructT tfs; _ }); _ }] ->
-        List.iter (fun (a, (_, typ', _), _) ->
-        check_field source expr.note r a typ') tfs
-      | _ -> error_struct source expr.note
-      )
-    | _ -> error_struct source expr.note
-    )
+  | StrE r -> check_struct source r expr.note
   | CatE (expr1, expr2) ->
     check_list source expr1.note; check_list source expr2.note;
     check_match source expr.note expr1.note; check_match source expr1.note expr2.note
@@ -193,13 +237,7 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
     check_match source expr2.note (iterT expr1.note Il.Ast.List)
   | LenE expr' ->
     check_list source expr'.note; check_num source expr.note
-  | TupE exprs ->
-    (match expr.note.it with
-    | TupT etl ->
-      let f expr (_, typ) = check_match source expr.note typ in
-      List.iter2 f exprs etl
-    | _ -> error_tuple source expr.note
-    )
+  | TupE exprs -> check_tuple source exprs expr.note
   (* TODO *)
   | IterE (expr1, _, iter) ->
     if not (expr1.note.it = Il.Ast.BoolT && expr.note.it = BoolT) then
