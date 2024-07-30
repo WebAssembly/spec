@@ -1,6 +1,7 @@
 open Util
 open Source
 open Ast
+open Al_util
 open Print
 open Walk
 
@@ -21,6 +22,8 @@ let error_field source typ field =
     (Printf.sprintf "%s ∉ %s" field (Il.Print.string_of_typ typ))
 let error_struct source typ =
   error_valid "invalid struct type" source (Il.Print.string_of_typ typ)
+let error_tuple source typ =
+  error_valid "invalid tuple type" source (Il.Print.string_of_typ typ)
 
 (* Bound Set *)
 
@@ -149,18 +152,27 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
   (match expr.it with
   | VarE id ->
     if not (Set.mem id !bound_set) then error expr.at ("free identifier " ^ id)
-  | UnE (NotOp, expr') -> check_bool source expr'.note
-  | UnE (MinusOp, expr') -> check_num source expr'.note
-  | BinE ((AddOp|SubOp|MulOp|DivOp|ModOp|ExpOp|LtOp|GtOp|LeOp|GeOp), expr1, expr2) ->
+  | UnE (NotOp, expr') ->
+    check_bool source expr.note; check_bool source expr'.note
+  | UnE (MinusOp, expr') ->
+    check_num source expr.note; check_num source expr'.note
+  | BinE ((AddOp|SubOp|MulOp|DivOp|ModOp|ExpOp), expr1, expr2) ->
+    check_num source expr.note;
+    check_num source expr1.note; check_num source expr2.note
+  | BinE ((LtOp|GtOp|LeOp|GeOp), expr1, expr2) ->
+    check_bool source expr.note;
     check_num source expr1.note; check_num source expr2.note
   | BinE ((ImplOp|EquivOp|AndOp|OrOp), expr1, expr2) ->
+    check_bool source expr.note;
     check_bool source expr1.note; check_bool source expr2.note
   | BinE ((EqOp|NeOp), expr1, expr2) ->
+    check_bool source expr.note;
     (* XXX: Not sure about this rule *)
     check_match source expr1.note expr2.note
   | AccE (expr', path) ->
     access source expr'.note path |> check_match source expr.note
   | UpdE (expr1, pl, expr2) | ExtE (expr1, pl, expr2, _) ->
+    check_match source expr.note expr1.note;
     List.fold_left (access source) expr1.note pl |> check_match source expr2.note
   | StrE r ->
     (match expr.note.it with
@@ -176,10 +188,21 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
   | CatE (expr1, expr2) ->
     check_list source expr1.note; check_list source expr2.note;
     check_match source expr.note expr1.note; check_match source expr1.note expr2.note
+  | MemE (expr1, expr2) ->
+    check_bool source expr.note;
+    check_match source expr2.note (iterT expr1.note Il.Ast.List)
+  | LenE expr' ->
+    check_list source expr'.note; check_num source expr.note
+  | TupE exprs ->
+    (match expr.note.it with
+    | TupT etl ->
+      let f expr (_, typ) = check_match source expr.note typ in
+      List.iter2 f exprs etl
+    | _ -> error_tuple source expr.note
+    )
   (* TODO *)
   | IterE (expr1, _, iter) ->
     if not (expr1.note.it = Il.Ast.BoolT && expr.note.it = BoolT) then
-      let iterT typ iter' = Il.Ast.IterT (typ, iter') $ no_region in
       (match iter with
       | Opt ->
         check_match source expr.note (iterT expr1.note Il.Ast.Opt);
