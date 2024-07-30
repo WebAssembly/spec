@@ -37,9 +37,18 @@ def $sum(n n'*) = $(n + $sum(n'*))
 
 ;; General sequence functions
 
+def $opt_(syntax X, X*) : X?  hint(show %2)
+def $opt_(syntax X, eps) = eps
+def $opt_(syntax X, w) = w
+
+;; TODO(3, rossberg): this function should not be needed
+def $list_(syntax X, X?) : X*  hint(show %2)
+def $list_(syntax X, eps) = eps
+def $list_(syntax X, w) = w
+
 def $concat_(syntax X, (X*)*) : X*  hint(show (++) %2)
 def $concat_(syntax X, eps) = eps
-def $concat_(syntax X, (w*) (w'*)*) = w* $concat_(X, (w'*)*)
+def $concat_(syntax X, (w*) (w'*)*) = w* ++ $concat_(X, (w'*)*)
 
 def $concatn_(syntax X, (X*)*, nat) : X*  hint(show (++) %2)
 def $concatn_(syntax X, eps, n) = eps
@@ -48,3 +57,24 @@ def $concatn_(syntax X, (w^n) (w'^n)*, n) = w* $concatn_(X, (w'^n)*, n)
 def $disjoint_(syntax X, X*) : bool  hint(show %2 $disjoint) hint(macro none)
 def $disjoint_(syntax X, eps) = true
 def $disjoint_(syntax X, w w'*) = ~(w <- w'*) /\ $disjoint_(X, w'*)
+
+def $setminus_(syntax X, X*, X*) : X*  hint(show %2\%3)
+def $setminus1_(syntax X, X, X*) : X*
+
+def $setminus_(syntax X, eps, w*) = eps
+def $setminus_(syntax X, w_1 w'*, w*) = $setminus1_(X, w_1, w*) ++ $setminus_(X, w'*, w*)
+def $setminus1_(syntax X, w, eps) = w
+def $setminus1_(syntax X, w, w_1 w'*) = eps                     -- if w = w_1
+def $setminus1_(syntax X, w, w_1 w'*) = $setminus1_(X, w, w'*)  -- otherwise
+
+;; [{1, 2}, {a, b, c}] -> {[1, a], [1, b], [1, c], [2, a], [2, b], [2, c]}
+def $setproduct_(syntax X, (X*)*) : (X*)*  hint(show %latex("\\Large\\times") %2)
+def $setproduct1_(syntax X, X*, (X*)*) : (X*)*
+def $setproduct2_(syntax X, X, (X*)*) : (X*)*
+
+def $setproduct_(syntax X, eps) = (eps)
+def $setproduct_(syntax X, (w_1*) (w*)*) = $setproduct1_(X, w_1*, $setproduct_(X, (w*)*))
+def $setproduct1_(syntax X, eps, (w*)*) = eps
+def $setproduct1_(syntax X, w_1 w'*, (w*)*) = $setproduct2_(X, w_1, (w*)*) ++ $setproduct1_(X, w'*, (w*)*)
+def $setproduct2_(syntax X, w_1, eps) = eps
+def $setproduct2_(syntax X, w_1, (w'*) (w*)*) = (w_1 w'*) ++ $setproduct2_(X, w_1, (w*)*)

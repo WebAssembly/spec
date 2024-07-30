@@ -58,7 +58,8 @@ and transform_arg f a =
   { a with it = match a.it with
     | ExpA e -> ExpA (transform_expr f e)
     | TypA t -> TypA t
-    | DefA id -> DefA id }
+    | DefA id -> DefA id
+    | GramA id -> GramA id }
 
 (* Change right_assoc cat into left_assoc cat *)
 let to_left_assoc_cat =
@@ -185,8 +186,9 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
 and overlap_arg a1 a2 = if eq_arg a1 a2 then a1 else
   (match a1.it, a2.it with
     | ExpA e1, ExpA e2 -> ExpA (overlap e1 e2)
-    | TypA _, TypA _ -> a1.it
-    | DefA _, DefA _ -> a1.it
+    | TypA _, TypA _
+    | DefA _, DefA _
+    | GramA _, GramA _ -> a1.it
     | _, _ -> assert false
   ) $ a1.at
 
@@ -208,8 +210,8 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
     | VarE id, _
     | IterE ({ it = VarE id; _}, _) , _
       when is_unified_id id.it ->
-      [ IfPr (CmpE (EqOp, template, e) $$ no_region % (BoolT $ no_region)) $ no_region ],
-      [ ExpB (id, template.note, []) $ no_region ]
+      [ IfPr (CmpE (EqOp, template, e) $$ e.at % (BoolT $ e.at)) $ e.at ],
+      [ ExpB (id, template.note, []) $ e.at ]
     | UnE (_, e1), UnE (_, e2)
     | DotE (e1, _), DotE (e2, _)
     | LenE e1, LenE e2
@@ -242,8 +244,9 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
 
 and collect_unified_arg template a = if eq_arg template a then [], [] else match template.it, a.it with
   | ExpA template', ExpA e -> collect_unified template' e
-  | TypA _, TypA _ -> [], []
-  | DefA _, DefA _ -> [], []
+  | TypA _, TypA _
+  | DefA _, DefA _
+  | GramA _, GramA _ -> [], []
   | _ -> Util.Error.error a.at "prose transformation" "cannot unify the argument"
 
 and collect_unified_args as1 as2 =
@@ -273,12 +276,11 @@ let unify_rules rules =
 
 
 (** 2. Reduction rules **)
-
 let apply_template_to_rgroup template (lhs, rhs, prems) =
   let new_prems, _ = collect_unified template lhs in
   (* TODO: Remove this depedency on animation. Perhaps this should be moved as a middle end before animation path *)
-  let animated_prems = Animate.animate_prems (Il.Free.free_exp template) (new_prems @ prems) in
-  template, rhs, prioritize_else animated_prems
+  let animated_prems = Animate.animate_prems (Il.Free.free_exp template) new_prems in
+  template, rhs, prioritize_else (animated_prems @ prems)
 
 let unify_lhs' rgroup =
   init_unified_idx();
@@ -289,11 +291,11 @@ let unify_lhs' rgroup =
   let template = List.fold_left overlap hd tl in
   List.map (Source.map (apply_template_to_rgroup template)) rgroup
 
-let unify_lhs (rname, rgroup) =
+let unify_lhs (rname, rel_id, rgroup) =
   let to_left_assoc (lhs, rhs, prems) = to_left_assoc_cat lhs, rhs, prems in
   let to_right_assoc (lhs, rhs, prems) = to_right_assoc_cat lhs, rhs, prems in
   (* typical f^-1 ∘ g ∘ f *)
-  rname, (rgroup |> List.map (Source.map to_left_assoc) |> unify_lhs' |> List.map (Source.map to_right_assoc))
+  rname, rel_id, (rgroup |> List.map (Source.map to_left_assoc) |> unify_lhs' |> List.map (Source.map to_right_assoc))
 
 
 (** 3. Functions **)

@@ -94,10 +94,6 @@ let al_invcalle_to_al_bine e id nl el =
 
 let (let*) = Option.bind
 
-let al_to_el_atom atom =
-  let atom', typ = atom in
-  atom' $$ (no_region, El.Atom.info typ)
-
 let al_to_el_unop = function
   | Al.Ast.MinusOp -> Some El.Ast.MinusOp
   | _ -> None
@@ -131,8 +127,7 @@ and al_to_el_path pl =
         let* eleh = al_to_el_expr eh in
         Some (El.Ast.SliceP (elp, elel, eleh))
       | Al.Ast.DotP a ->
-        let ela = al_to_el_atom a in
-        Some (El.Ast.DotP (elp, ela)))
+        Some (El.Ast.DotP (elp, a)))
     in
     Option.map (fun elp' -> elp' $ no_region) elp'
   in
@@ -190,8 +185,7 @@ and al_to_el_expr expr =
           let* eleh = al_to_el_expr eh in
           Some (El.Ast.SliceE (ele, elel, eleh))
       | DotP a ->
-          let ela = al_to_el_atom a in
-          Some (El.Ast.DotE (ele, ela)))
+          Some (El.Ast.DotE (ele, a)))
     | Al.Ast.UpdE (e1, pl, e2) ->
       let* ele1 = al_to_el_expr e1 in
       let* elp = al_to_el_path pl in
@@ -220,12 +214,10 @@ and al_to_el_expr expr =
       Some (El.Ast.IterE (ele, eliter))
     | Al.Ast.InfixE (e1, op, e2) ->
       let* ele1 = al_to_el_expr e1 in
-      let elop = al_to_el_atom op in
       let* ele2 = al_to_el_expr e2 in
-      Some (El.Ast.InfixE (ele1, elop, ele2))
+      Some (El.Ast.InfixE (ele1, op, ele2))
     | Al.Ast.CaseE (a, el) ->
-      let ela = al_to_el_atom a in
-      let ela = (El.Ast.AtomE ela) $ no_region in
+      let ela = (El.Ast.AtomE a) $ no_region in
       let* elel = al_to_el_exprs el in
       let ele = El.Ast.SeqE ([ ela ] @ elel) in
       if List.length elel = 0 then Some ele
@@ -251,8 +243,7 @@ and al_to_el_record record =
     (fun a e expfield ->
       let* expfield = expfield in
       let* ele = al_to_el_expr e in
-      let ela = al_to_el_atom a in
-      let elelem = El.Ast.Elem (ela, ele) in
+      let elelem = El.Ast.Elem (a, ele) in
       Some (expfield @ [ elelem ]))
     record (Some [])
 
@@ -292,8 +283,7 @@ let render_al_binop = function
 (* Names *)
 
 let render_atom env a =
-  let ela = al_to_el_atom a in
-  let sela = Backend_latex.Render.render_atom env.render_latex ela in
+  let sela = Backend_latex.Render.render_atom env.render_latex a in
   render_math sela
 
 
@@ -398,6 +388,9 @@ and render_expr' env expr =
   | Al.Ast.ContE e ->
     let se = render_expr env e in
     sprintf "the continuation of %s" se
+  | Al.Ast.ChooseE e ->
+    let se = render_expr env e in
+    sprintf "an element of %s" se
   | Al.Ast.LabelE (e1, e2) ->
     let se1 = render_expr env e1 in
     let se2 = render_expr env e2 in
@@ -613,7 +606,7 @@ let rec render_al_instr env algoname index depth instr =
       (render_opt " " (render_expr env) "" e_opt)
   | Al.Ast.EnterI (e1, e2, il) ->
     sprintf "%s Enter %s with label %s.%s" (render_order index depth)
-      (render_expr env e1) (render_expr env e2)
+      (render_expr env e2) (render_expr env e1)
       (render_al_instrs env algoname (depth + 1) il)
   | Al.Ast.ExecuteI e ->
     sprintf "%s Execute the instruction %s." (render_order index depth) (render_expr env e)
@@ -643,15 +636,14 @@ and render_al_instrs env algoname depth instrs =
 let render_atom_title env name params =
   (* TODO a workaround, for algorithms named label or name
      that are defined as LABEL_ or FRAME_ in the dsl *)
-  let name', typ = name in
   let name' =
-    match name' with
+    match name.it with
     | El.Atom.Atom "label" -> El.Atom.Atom "LABEL_"
     | El.Atom.Atom "frame" -> El.Atom.Atom "FRAME_"
     | El.Atom.Atom s -> El.Atom.Atom (String.uppercase_ascii s)
-    | _ -> name'
+    | _ -> name.it
   in
-  let name = (name', typ) in
+  let name = name' $$ no_region % name.note in
   let expr = Al.Al_util.caseE (name, params) ~at:no_region in
   match al_to_el_expr expr with
   | Some ({ it = El.Ast.ParenE (exp, _); _ }) -> render_el_exp env exp
@@ -683,7 +675,7 @@ let render_func env fname params instrs =
 let render_def env = function
   | Iff _ -> "TODO: render_iff"
   | Algo algo -> (match algo.it with
-    | Al.Ast.RuleA (name, params, instrs) ->
+    | Al.Ast.RuleA (name, _anchor, params, instrs) ->
       "\n" ^ render_rule env name params instrs ^ "\n\n"
     | Al.Ast.FuncA (name, params, instrs) ->
       "\n" ^ render_func env name params instrs ^ "\n\n")

@@ -25,12 +25,12 @@ def $relop_(valtype, relop_(valtype), val_(valtype), val_(valtype)) : val_(I32)
 def $cvtop__(valtype_1, valtype_2, cvtop, val_(valtype_1)) : val_(valtype_2)*
     hint(show %3#$__(%1,%2)#((%4)))
 
-def $wrap__(M, N, iN(M)) : iN(N)                      hint(show $wrap__(%,%)#((%)))
-def $ext__(M, N, sx, iN(M)) : iN(N)                   hint(show $ext__(%,%)^(%)#((%)))
-def $trunc__(M, N, sx, fN(M)) : iN(N)                 hint(show $trunc__(%,%)^(%)#((%)))
-def $demote__(M, N, fN(M)) : fN(N)                    hint(show $demote__(%,%)#((%)))
-def $promote__(M, N, fN(M)) : fN(N)                   hint(show $promote__(%,%)#((%)))
-def $convert__(M, N, sx, iN(M)) : fN(N)               hint(show $convert__(%,%)^(%)#((%)))
+def $wrap__(M, N, iN(M)) : iN(N)
+def $extend__(M, N, sx, iN(M)) : iN(N)               hint(show $extend__(%,%)^(%)#((%)))
+def $trunc__(M, N, sx, fN(M)) : iN(N)?               hint(show $trunc__(%,%)^(%)#((%)))
+def $demote__(M, N, fN(M)) : fN(N)*
+def $promote__(M, N, fN(M)) : fN(N)*
+def $convert__(M, N, sx, iN(M)) : fN(N)              hint(show $convert__(%,%)^(%)#((%)))
 def $reinterpret__(valtype_1, valtype_2, val_(valtype_1)) : val_(valtype_2)
 
 def $ibytes_(N, iN(N)) : byte*                       hint(show $bytes_(I#%,%))
@@ -46,8 +46,8 @@ def $invfbytes_(N, b*) = p  -- if $fbytes_(N, p) = b*
 def $iadd_(N, iN(N), iN(N)) : iN(N)
 def $isub_(N, iN(N), iN(N)) : iN(N)
 def $imul_(N, iN(N), iN(N)) : iN(N)
-def $idiv_(N, sx, iN(N), iN(N)) : iN(N)  hint(show $idiv_(%)^(%)#((%,%)))
-def $irem_(N, sx, iN(N), iN(N)) : iN(N)  hint(show $irem_(%)^(%)#((%,%)))
+def $idiv_(N, sx, iN(N), iN(N)) : iN(N)? hint(show $idiv_(%)^(%)#((%,%)))
+def $irem_(N, sx, iN(N), iN(N)) : iN(N)? hint(show $irem_(%)^(%)#((%,%)))
 def $inot_(N, iN(N)) : iN(N)
 def $iand_(N, iN(N), iN(N)) : iN(N)
 def $ior_(N, iN(N), iN(N)) : iN(N)
@@ -67,20 +67,20 @@ def $igt_(N, sx, iN(N), iN(N)) : u32     hint(show $igt_(%)^(%)#((%,%)))
 def $ile_(N, sx, iN(N), iN(N)) : u32     hint(show $ile_(%)^(%)#((%,%)))
 def $ige_(N, sx, iN(N), iN(N)) : u32     hint(show $ige_(%)^(%)#((%,%)))
 
-def $fadd_(N, fN(N), fN(N)) : fN(N)
-def $fsub_(N, fN(N), fN(N)) : fN(N)
-def $fmul_(N, fN(N), fN(N)) : fN(N)
-def $fdiv_(N, fN(N), fN(N)) : fN(N)
-def $fmin_(N, fN(N), fN(N)) : fN(N)
-def $fmax_(N, fN(N), fN(N)) : fN(N)
-def $fcopysign_(N, fN(N), fN(N)) : fN(N)
-def $fabs_(N, fN(N)) : fN(N)
-def $fneg_(N, fN(N)) : fN(N)
-def $fsqrt_(N, fN(N)) : fN(N)
-def $fceil_(N, fN(N)) : fN(N)
-def $ffloor_(N, fN(N)) : fN(N)
-def $ftrunc_(N, fN(N)) : fN(N)
-def $fnearest_(N, fN(N)) : fN(N)
+def $fadd_(N, fN(N), fN(N)) : fN(N)*
+def $fsub_(N, fN(N), fN(N)) : fN(N)*
+def $fmul_(N, fN(N), fN(N)) : fN(N)*
+def $fdiv_(N, fN(N), fN(N)) : fN(N)*
+def $fmin_(N, fN(N), fN(N)) : fN(N)*
+def $fmax_(N, fN(N), fN(N)) : fN(N)*
+def $fcopysign_(N, fN(N), fN(N)) : fN(N)*
+def $fabs_(N, fN(N)) : fN(N)*
+def $fneg_(N, fN(N)) : fN(N)*
+def $fsqrt_(N, fN(N)) : fN(N)*
+def $fceil_(N, fN(N)) : fN(N)*
+def $ffloor_(N, fN(N)) : fN(N)*
+def $ftrunc_(N, fN(N)) : fN(N)*
+def $fnearest_(N, fN(N)) : fN(N)*
 def $feq_(N, fN(N), fN(N)) : u32
 def $fne_(N, fN(N), fN(N)) : u32
 def $flt_(N, fN(N), fN(N)) : u32
@@ -92,8 +92,8 @@ def $fge_(N, fN(N), fN(N)) : u32
 def $binop_(Inn, ADD, iN_1, iN_2) = $iadd_($size(Inn), iN_1, iN_2)
 def $binop_(Inn, SUB, iN_1, iN_2) = $isub_($size(Inn), iN_1, iN_2)
 def $binop_(Inn, MUL, iN_1, iN_2) = $imul_($size(Inn), iN_1, iN_2)
-def $binop_(Inn, DIV sx, iN_1, iN_2) = $idiv_($size(Inn), sx, iN_1, iN_2)
-def $binop_(Inn, REM sx, iN_1, iN_2) = $irem_($size(Inn), sx, iN_1, iN_2)
+def $binop_(Inn, DIV sx, iN_1, iN_2) = $list_(val_(Inn), $idiv_($size(Inn), sx, iN_1, iN_2))
+def $binop_(Inn, REM sx, iN_1, iN_2) = $list_(val_(Inn), $irem_($size(Inn), sx, iN_1, iN_2))
 def $binop_(Inn, AND, iN_1, iN_2) = $iand_($size(Inn), iN_1, iN_2)
 def $binop_(Inn, OR, iN_1, iN_2) = $ior_($size(Inn), iN_1, iN_2)
 def $binop_(Inn, XOR, iN_1, iN_2) = $ixor_($size(Inn), iN_1, iN_2)
@@ -135,9 +135,9 @@ def $relop_(Fnn, GT, fN_1, fN_2) = $fgt_($size(Fnn), fN_1, fN_2)
 def $relop_(Fnn, LE, fN_1, fN_2) = $fle_($size(Fnn), fN_1, fN_2)
 def $relop_(Fnn, GE, fN_1, fN_2) = $fge_($size(Fnn), fN_1, fN_2)
 
-def $cvtop__(I32, I64, EXTEND sx, iN) = $ext__(32, 64, sx, iN)
+def $cvtop__(I32, I64, EXTEND sx, iN) = $extend__(32, 64, sx, iN)
 def $cvtop__(I64, I32, WRAP, iN) = $wrap__(64, 32, iN)
-def $cvtop__(Fnn, Inn, TRUNC sx, fN) = $trunc__($size(Fnn), $size(Inn), sx, fN)
+def $cvtop__(Fnn, Inn, TRUNC sx, fN) = $list_(val_(Inn), $trunc__($size(Fnn), $size(Inn), sx, fN))
 def $cvtop__(F32, F64, PROMOTE, fN) = $promote__(32, 64, fN)
 def $cvtop__(F64, F32, DEMOTE, fN) = $demote__(64, 32, fN)
 def $cvtop__(Inn, Fnn, CONVERT sx, iN) = $convert__($size(Inn), $size(Fnn), sx, iN)

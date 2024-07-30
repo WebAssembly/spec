@@ -1605,9 +1605,9 @@
 .. |fpmin| mathdef:: \xref{exec/numerics}{op-fpmin}{\F{fpmin}}
 .. |fpmax| mathdef:: \xref{exec/numerics}{op-fpmax}{\F{fpmax}}
 
-.. |ext| mathdef:: \xref{exec/numerics}{op-ext}{\F{extend}}
-.. |extu| mathdef:: \xref{exec/numerics}{op-ext}{\F{extend}^{\K{u}}}
-.. |exts| mathdef:: \xref{exec/numerics}{op-ext}{\F{extend}^{\K{s}}}
+.. |extend| mathdef:: \xref{exec/numerics}{op-ext}{\F{extend}}
+.. |extendu| mathdef:: \xref{exec/numerics}{op-ext}{\F{extend}^{\K{u}}}
+.. |extends| mathdef:: \xref{exec/numerics}{op-ext}{\F{extend}^{\K{s}}}
 .. |wrap| mathdef:: \xref{exec/numerics}{op-wrap}{\F{wrap}}
 .. |trunc| mathdef:: \xref{exec/numerics}{op-trunc}{\F{trunc}}
 .. |truncu| mathdef:: \xref{exec/numerics}{op-trunc}{\F{trunc}^{\K{u}}}

@@ -22,6 +22,7 @@ let enterI ?(at = no) (e1, e2, il) = EnterI (e1, e2, il) |> mk_instr at
 let assertI ?(at = no) c = AssertI c |> mk_instr at
 let pushI ?(at = no) e = PushI e |> mk_instr at
 let popI ?(at = no) e = PopI e |> mk_instr at
+let popsI ?(at = no) e _ = PopI e |> mk_instr at (* TODO *)
 let popallI ?(at = no) e = PopAllI e |> mk_instr at
 let letI ?(at = no) (e1, e2) = LetI (e1, e2) |> mk_instr at
 let trapI ?(at = no) () = TrapI |> mk_instr at
@@ -66,6 +67,7 @@ let getCurFrameE ?(at = no) ?(note = no_note) () = GetCurFrameE |> mk_expr at no
 let getCurLabelE ?(at = no) ?(note = no_note) () = GetCurLabelE |> mk_expr at note
 let getCurContextE ?(at = no) ?(note = no_note) () = GetCurContextE |> mk_expr at note
 let contE ?(at = no) ?(note = no_note) e = ContE e |> mk_expr at note
+let chooseE ?(at = no) ?(note = no_note) e = ChooseE e |> mk_expr at note
 let isCaseOfE ?(at = no) ?(note = no_note) (e, a) = IsCaseOfE (e, a) |> mk_expr at note
 let isValidE ?(at = no) ?(note = no_note) e = IsValidE e |> mk_expr at note
 let contextKindE ?(at = no) ?(note = no_note) (a, e) = ContextKindE (a, e) |> mk_expr at note
@@ -91,6 +93,8 @@ let boolV b = BoolV b
 let strV r = StrV r
 let caseV (s, vl) = CaseV (s, vl)
 let optV v_opt = OptV v_opt
+let noneV = OptV None
+let someV v = OptV (Some v)
 let tupV vl = TupV vl
 let nullary s = CaseV (String.uppercase_ascii s, [])
 let listV a = ListV (ref a)
@@ -201,15 +205,15 @@ let unwrap_cate e =
   | _ -> fail_expr "unwrap_cate" e
 
 let name_of_algo algo = match algo.it with
-  | RuleA (name, _, _) -> Print.string_of_atom name
+  | RuleA (name, _, _, _) -> Print.string_of_atom name
   | FuncA (name, _, _) -> name
 
 let params_of_algo algo = match algo.it with
-  | RuleA (_, params, _) -> params
+  | RuleA (_, _, params, _) -> params
   | FuncA (_, params, _) -> params
 
 let body_of_algo algo = match algo.it with
-  | RuleA (_, _, body) -> body
+  | RuleA (_, _, _, body) -> body
   | FuncA (_, _, body) -> body
 
 let args_of_casev = function

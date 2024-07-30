@@ -787,10 +787,10 @@ grammar Binstr/vec-narrow-i16x8 : instr = ...
   | ...
 
 grammar Binstr/vec-ext-i16x8 : instr = ...
-  | 0xFD 135:Bu32 => VCVTOP (I16 X `8) (I8 X `16) EXTEND LOW S
-  | 0xFD 136:Bu32 => VCVTOP (I16 X `8) (I8 X `16) EXTEND HIGH S
-  | 0xFD 137:Bu32 => VCVTOP (I16 X `8) (I8 X `16) EXTEND LOW U
-  | 0xFD 138:Bu32 => VCVTOP (I16 X `8) (I8 X `16) EXTEND HIGH U
+  | 0xFD 135:Bu32 => VCVTOP (I16 X `8) (I8 X `16) (EXTEND S) LOW
+  | 0xFD 136:Bu32 => VCVTOP (I16 X `8) (I8 X `16) (EXTEND S) HIGH
+  | 0xFD 137:Bu32 => VCVTOP (I16 X `8) (I8 X `16) (EXTEND U) LOW
+  | 0xFD 138:Bu32 => VCVTOP (I16 X `8) (I8 X `16) (EXTEND U) HIGH
   | ...
 
 grammar Binstr/vec-shift-i16x8 : instr = ...
@@ -840,10 +840,10 @@ grammar Binstr/vec-bitmask-i32x4 : instr = ...
   | ...
 
 grammar Binstr/vec-ext-i32x4 : instr = ...
-  | 0xFD 167:Bu32 => VCVTOP (I32 X `4) (I16 X `8) EXTEND LOW S
-  | 0xFD 168:Bu32 => VCVTOP (I32 X `4) (I16 X `8) EXTEND HIGH S
-  | 0xFD 169:Bu32 => VCVTOP (I32 X `4) (I16 X `8) EXTEND LOW U
-  | 0xFD 170:Bu32 => VCVTOP (I32 X `4) (I16 X `8) EXTEND HIGH U
+  | 0xFD 167:Bu32 => VCVTOP (I32 X `4) (I16 X `8) (EXTEND S) LOW
+  | 0xFD 168:Bu32 => VCVTOP (I32 X `4) (I16 X `8) (EXTEND S) HIGH
+  | 0xFD 169:Bu32 => VCVTOP (I32 X `4) (I16 X `8) (EXTEND U) LOW
+  | 0xFD 170:Bu32 => VCVTOP (I32 X `4) (I16 X `8) (EXTEND U) HIGH
   | ...
 
 grammar Binstr/vec-shift-i32x4 : instr = ...
@@ -884,10 +884,10 @@ grammar Binstr/vec-bitmask-i64x2 : instr = ...
   | ...
 
 grammar Binstr/vec-ext-i64x2 : instr = ...
-  | 0xFD 199:Bu32 => VCVTOP (I64 X `2) (I32 X `4) EXTEND LOW S
-  | 0xFD 200:Bu32 => VCVTOP (I64 X `2) (I32 X `4) EXTEND HIGH S
-  | 0xFD 201:Bu32 => VCVTOP (I64 X `2) (I32 X `4) EXTEND LOW U
-  | 0xFD 202:Bu32 => VCVTOP (I64 X `2) (I32 X `4) EXTEND HIGH U
+  | 0xFD 199:Bu32 => VCVTOP (I64 X `2) (I32 X `4) (EXTEND S) LOW
+  | 0xFD 200:Bu32 => VCVTOP (I64 X `2) (I32 X `4) (EXTEND S) HIGH
+  | 0xFD 201:Bu32 => VCVTOP (I64 X `2) (I32 X `4) (EXTEND U) LOW
+  | 0xFD 202:Bu32 => VCVTOP (I64 X `2) (I32 X `4) (EXTEND U) HIGH
   | ...
 
 grammar Binstr/vec-shift-i64x2 : instr = ...
@@ -963,14 +963,14 @@ grammar Binstr/vec-bin-f64x2 : instr = ...
 grammar Binstr/vec-cvt : instr = ...
   | 0xFD 94:Bu32 => VCVTOP (F32 X `4) (F64 X `2) DEMOTE ZERO
   | 0xFD 95:Bu32 => VCVTOP (F64 X `2) (F32 X `4) PROMOTE LOW
-  | 0xFD 248:Bu32 => VCVTOP (I32 X `4) (F32 X `4) TRUNC_SAT S
-  | 0xFD 249:Bu32 => VCVTOP (I32 X `4) (F32 X `4) TRUNC_SAT U
-  | 0xFD 250:Bu32 => VCVTOP (F32 X `4) (I32 X `4) CONVERT S
-  | 0xFD 251:Bu32 => VCVTOP (F32 X `4) (I32 X `4) CONVERT U
-  | 0xFD 252:Bu32 => VCVTOP (I32 X `4) (F64 X `2) TRUNC_SAT S ZERO
-  | 0xFD 253:Bu32 => VCVTOP (I32 X `4) (F64 X `2) TRUNC_SAT U ZERO
-  | 0xFD 254:Bu32 => VCVTOP (F64 X `2) (I32 X `4) CONVERT LOW S
-  | 0xFD 255:Bu32 => VCVTOP (F64 X `2) (I32 X `4) CONVERT LOW U
+  | 0xFD 248:Bu32 => VCVTOP (I32 X `4) (F32 X `4) (TRUNC_SAT S)
+  | 0xFD 249:Bu32 => VCVTOP (I32 X `4) (F32 X `4) (TRUNC_SAT U)
+  | 0xFD 250:Bu32 => VCVTOP (F32 X `4) (I32 X `4) (CONVERT S)
+  | 0xFD 251:Bu32 => VCVTOP (F32 X `4) (I32 X `4) (CONVERT U)
+  | 0xFD 252:Bu32 => VCVTOP (I32 X `4) (F64 X `2) (TRUNC_SAT S) ZERO
+  | 0xFD 253:Bu32 => VCVTOP (I32 X `4) (F64 X `2) (TRUNC_SAT U) ZERO
+  | 0xFD 254:Bu32 => VCVTOP (F64 X `2) (I32 X `4) (CONVERT S) LOW
+  | 0xFD 255:Bu32 => VCVTOP (F64 X `2) (I32 X `4) (CONVERT U) LOW
 
 
 ;; Expressions
@@ -1065,12 +1065,13 @@ grammar Bexportsec : export* hint(desc "export section") =
 
 ;; Start section
 
-;; TODO(1, rossberg): should return start?
 grammar Bstart : start* =
   | x:Bfuncidx => (START x)
 
-grammar Bstartsec : start* hint(desc "start section") =
-  | start*:Bsection_(8, Bstart) => start*
+syntax startopt hint(show start?) = start*  ;; HACK
+
+grammar Bstartsec : start? hint(desc "start section") =
+  | startopt:Bsection_(8, Bstart) => $opt_(start, startopt)
 
 
 ;; Element section
@@ -1131,12 +1132,13 @@ grammar Bdatasec : data* hint(desc "data section") =
 
 ;; Data count section
 
-;; TODO(1, rossberg): should return u32?
 grammar Bdatacnt : u32* hint(desc "data count") =
   | n:Bu32 => n
 
-grammar Bdatacntsec : u32* hint(desc "data count section") =
-  | n*:Bsection_(12, Bdatacnt) => n*
+syntax nopt hint(show n?) = u32*  ;; HACK
+
+grammar Bdatacntsec : u32? hint(desc "data count section") =
+  | nopt:Bsection_(12, Bdatacnt) => $opt_(u32, nopt)
 
 
 ;; Modules
@@ -1158,7 +1160,7 @@ grammar Bmodule : module =
 
 
     Bcustomsec*
-    typeidx^n:Bfuncsec
+    typeidx*:Bfuncsec
 
 
     Bcustomsec*
@@ -1178,7 +1180,7 @@ grammar Bmodule : module =
 
 
     Bcustomsec*
-    start*:Bstartsec
+    start?:Bstartsec
 
 
     Bcustomsec*
@@ -1186,20 +1188,20 @@ grammar Bmodule : module =
 
 
     Bcustomsec*
-    m'*:Bdatacntsec  ;; TODO(1, rossberg): should be m'?
+    n?:Bdatacntsec
 
 
     Bcustomsec*
-    (local*, expr)^n:Bcodesec
+    (local*, expr)*:Bcodesec
 
 
     Bcustomsec*
-    data^m:Bdatasec
+    data*:Bdatasec
 
 
     Bcustomsec* =>
-      MODULE type* import* func^n global* table* mem* elem* data^m start* export*
+      MODULE type* import* func* global* table* mem* elem* data* start? export*
     ----
-    -- if m'* =/= eps \/ $dataidx_funcs(func^n) = eps
-    -- if m = $sum(m'*)
-    -- (if func = FUNC typeidx local* expr)^n
+    -- (if n = |data*|)?
+    -- if n? =/= eps \/ $dataidx_funcs(func*) = eps
+    -- (if func = FUNC typeidx local* expr)*

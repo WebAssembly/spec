@@ -1,16 +1,12 @@
 open Util
 open Source
 open Ast
+open Env
 
 
 (* Environment *)
 
-module Set = Set.Make(String)
-module Map = Map.Make(String)
-
-type typ_def = inst list
-type def_def = clause list
-type env = {vars : typ Map.t; typs : typ_def Map.t; defs : def_def Map.t}
+type env = Env.t
 type subst = Subst.t
 
 
@@ -58,7 +54,7 @@ let rec reduce_typ env t : typ =
   match t.it with
   | VarT (id, args) ->
     let args' = List.map (reduce_arg env) args in
-    (match reduce_typ_app' env id args' t.at (Map.find_opt id.it env.typs) with
+    (match reduce_typ_app' env id args' t.at (Env.find_opt_typ env id) with
     | Some {it = AliasT t'; _} -> reduce_typ env t'
     | _ -> VarT (id, args') $ t.at
     )
@@ -79,15 +75,15 @@ and reduce_typ_app env id args at : deftyp option =
     (fun _ -> fmt "%s(%s)" id.it (il_args args))
     (fun r -> fmt "%s" (opt il_deftyp r))
   ) @@ fun _ ->
-  reduce_typ_app' env id (List.map (reduce_arg env) args) at (Map.find_opt id.it env.typs)
+  reduce_typ_app' env id (List.map (reduce_arg env) args) at (Env.find_opt_typ env id)
 
 and reduce_typ_app' env id args at = function
   | None -> None  (* id is a type parameter *)
-  | Some [] ->
+  | Some (_ps, []) ->
     if !assume_coherent_matches then None else
     Error.error at "validation"
       ("undefined instance of partial type `" ^ id.it ^ "`")
-  | Some ({it = InstD (_binds, args', dt); _}::insts') ->
+  | Some (ps, {it = InstD (_binds, args', dt); _}::insts') ->
     Debug.(log "il.reduce_typ_app'"
       (fun _ -> fmt "%s(%s) =: %s(%s)" id.it (il_args args) id.it (il_args args'))
       (fun r -> fmt "%s" (opt (Fun.const "!") r))
@@ -95,8 +91,8 @@ and reduce_typ_app' env id args at = function
     match match_list match_arg env Subst.empty args args' with
     | exception Irred ->
       if not !assume_coherent_matches then None else
-      reduce_typ_app' env id args at (Some insts')
-    | None -> reduce_typ_app' env id args at (Some insts')
+      reduce_typ_app' env id args at (Some (ps, insts'))
+    | None -> reduce_typ_app' env id args at (Some (ps, insts'))
     | Some s -> Some (Subst.subst_deftyp s dt)
 
 
@@ -277,7 +273,7 @@ and reduce_exp env e : exp =
   | TupE es -> TupE (List.map (reduce_exp env) es) $> e
   | CallE (id, args) ->
     let args' = List.map (reduce_arg env) args in
-    let clauses = Map.find id.it env.defs in
+    let _ps, _t, clauses = Env.find_def env id in
     (* Allow for uninterpreted functions *)
     if not !assume_coherent_matches && clauses = [] then CallE (id, args') $> e else
     (match reduce_exp_call env id args' e.at clauses with
@@ -288,7 +284,7 @@ and reduce_exp env e : exp =
     let e1' = reduce_exp env e1 in
     let (iter', bs') = reduce_iterexp env (iter, bs) in
     (match iter' with
-    | ListN ({it = NatE n; _}, ido) ->
+    | ListN ({it = NatE n; _}, ido) when is_normal_exp e1' ->
       ListE (List.init (Z.to_int n) (fun i ->
         let idx = NatE (Z.of_int i) $$ e.at % (NumT NatT $ e.at) in
         let s =
@@ -427,6 +423,7 @@ and reduce_arg env a : arg =
   | ExpA e -> ExpA (reduce_exp env e) $ a.at
   | TypA _t -> a  (* types are reduced on demand *)
   | DefA _id -> a
+  | GramA _g -> a
 
 and reduce_exp_call env id args at = function
   | [] ->
@@ -635,7 +632,7 @@ and match_exp' env s e1 e2 : subst option =
           | _ -> false
           )
         | VarE id1, _ ->
-          let t1 = reduce_typ env (Map.find id1.it env.vars) in
+          let t1 = reduce_typ env (fst (Env.find_var env id1)) in
           sub_typ env t1 t21 || raise Irred
         | _, _ -> false
       then match_exp' env s {e1 with note = t21} e21
@@ -679,6 +676,20 @@ and eta_iter_exp env e : exp * iterexp =
   | _ -> assert false
 
 
+(* Grammars *)
+
+and match_sym env s g1 g2 : subst option =
+  Debug.(log_in "il.match_sym" (fun _ -> fmt "%s =: %s" (il_sym g1) (il_sym g2)));
+  match g1.it, g2.it with
+  | _, VarG (id, []) when Subst.mem_gramid s id ->
+    match_sym env s g1 (Subst.subst_sym s g2)
+  | VarG (id1, args1), VarG (id2, args2) when id1.it = id2.it ->
+    match_list match_arg env s args1 args2
+  | IterG (g11, iter1), IterG (g21, iter2) ->
+    let* s' = match_sym env s g11 g21 in match_iterexp env s' iter1 iter2
+  | _, _ -> None
+
+
 (* Parameters *)
 
 and match_arg env s a1 a2 : subst option =
@@ -687,6 +698,7 @@ and match_arg env s a1 a2 : subst option =
   | ExpA e1, ExpA e2 -> match_exp env s e1 e2
   | TypA t1, TypA t2 -> match_typ env s t1 t2
   | DefA id1, DefA id2 -> Some (Subst.add_defid s id1 id2)
+  | GramA g1, GramA g2 -> match_sym env s g1 g2
   | _, _ -> assert false
 
 
@@ -750,6 +762,12 @@ and equiv_exp env e1 e2 =
   (* TODO(3, rossberg): this does not reduce inner type arguments *)
   Eq.eq_exp (reduce_exp env e1) (reduce_exp env e2)
 
+and equiv_sym _env g1 g2 =
+  Debug.(log "il.equiv_sym"
+    (fun _ -> fmt "%s == %s" (il_sym g1) (il_sym g2)) Bool.to_string
+  ) @@ fun _ ->
+  Eq.eq_sym g1 g2
+
 and equiv_arg env a1 a2 =
   Debug.(log "il.equiv_arg"
     (fun _ -> fmt "%s == %s" (il_arg a1) (il_arg a2)) Bool.to_string
@@ -758,6 +776,7 @@ and equiv_arg env a1 a2 =
   | ExpA e1, ExpA e2 -> equiv_exp env e1 e2
   | TypA t1, TypA t2 -> equiv_typ env t1 t2
   | DefA id1, DefA id2 -> id1.it = id2.it
+  | GramA g1, GramA g2 -> equiv_sym env g1 g2
   | _, _ -> false
 
 
@@ -778,6 +797,9 @@ and equiv_params env ps1 ps2 =
     | DefP (id1, ps1, t1), DefP (id2, ps2, t2) ->
       if not (equiv_functyp env (ps1, t1) (ps2, t2)) then None else
       Some (Subst.add_defid s id2 id1)
+    | GramP (id1, t1), GramP (id2, t2) ->
+      if not (equiv_typ env t1 t2) then None else
+      Some (Subst.add_gramid s id2 (VarG (id1, []) $ p1.at))
     | _, _ -> assert false
   ) (Some Subst.empty) ps1 ps2
 

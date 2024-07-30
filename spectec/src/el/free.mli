@@ -1,6 +1,6 @@
 open Ast
 
-module Set : Set.S with type elt = string
+module Set : Set.S with type elt = string with type t = Set.Make(String).t
 
 type sets =
   { typid : Set.t;
@@ -43,6 +43,7 @@ val free_def : def -> sets
   This is a pragmatic criterium, intended only for sanity checks.
 *)
 val det_exp : exp -> sets
+val det_sym : sym -> sets
 val det_prems : prem nl_list -> sets
 val det_prod : prod -> sets
 val det_def : def -> sets

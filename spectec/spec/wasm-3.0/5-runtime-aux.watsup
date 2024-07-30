@@ -38,7 +38,7 @@ def $packfield_(valtype, val) = val
 def $packfield_(packtype, CONST I32 i) = PACK packtype $wrap__(32, $psize(packtype), i)
 
 def $unpackfield_(valtype, eps, val) = val
-def $unpackfield_(packtype, sx, PACK packtype i) = CONST I32 $ext__($psize(packtype), 32, sx, i)
+def $unpackfield_(packtype, sx, PACK packtype i) = CONST I32 $extend__($psize(packtype), 32, sx, i)
 
 
 ;; Projections

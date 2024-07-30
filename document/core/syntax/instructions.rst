@@ -63,7 +63,7 @@ Numeric Instructions
 Numeric instructions provide basic operations over numeric :ref:`values <syntax-value>` of specific :ref:`type <syntax-numtype>`.
 These operations closely match respective operations available in hardware.
 
-$${syntax: {sz sx} num_ instr/num unop_ binop_ testop_ relop_ cvtop_}
+$${syntax: {sz sx} num_ instr/num unop_ binop_ testop_ relop_ cvtop__}
 
 Numeric instructions are divided by :ref:`number type <syntax-numtype>`.
 For each type, several subcategories can be distinguished:
@@ -113,11 +113,11 @@ Vector Instructions
 
 Vector instructions (also known as *SIMD* instructions, *single instruction multiple data*) provide basic operations over :ref:`values <syntax-value>` of :ref:`vector type <syntax-vectype>`.
 
-$${syntax: {lanetype dim shape ishape} half_ zero_ laneidx instr/vec}
+$${syntax: {lanetype dim shape ishape} half__ zero__ laneidx instr/vec}
 
 $${syntax:
   vvunop vvbinop vvternop vvtestop
-  vunop_ vbinop_ vtestop_ vrelop_ vshiftop_ vextunop_ vextbinop_ vcvtop_
+  vunop_ vbinop_ vtestop_ vrelop_ vshiftop_ vextunop__ vextbinop__ vcvtop__
 }
 
 Vector instructions have a naming convention involving a *shape* prefix that

@@ -2,8 +2,7 @@ open Util.Source
 
 (* Terminals *)
 
-type atom = atom' * string
-and atom' = El.Atom.atom'
+type atom = El.Atom.atom
 
 (* Types *)
 
@@ -12,6 +11,10 @@ type ty = string (* TODO *)
 (* Identifiers *)
 
 type id = string
+
+(* Anchors *)
+
+type anchor = string
 
 (* Values *)
 
@@ -102,7 +105,8 @@ and expr' =
   | GetCurFrameE                                  (* "the current frame" *)
   | GetCurLabelE                                  (* "the current lbael" *)
   | GetCurContextE                                (* "the current context" *)
-  | ContE of expr                                 (* "the continuation of expr" *)
+  | ContE of expr                                 (* "the continuation of" expr *)
+  | ChooseE of expr                               (* "an element of" expr *)
   (* Conditions *)
   | IsCaseOfE of expr * atom                      (* expr is of the case kwd *)
   | IsValidE of expr                              (* expr is valid *)
@@ -153,9 +157,9 @@ and instr' =
 (* Algorithms *)
 
 type algorithm = algorithm' phrase
-and algorithm' =                          (* `algorithm` f`(`expr*`)` `{`instr*`}` *)
-  | RuleA of atom * expr list * instr list (* reduction rule *)
-  | FuncA of id * expr list * instr list   (* helper function *)
+and algorithm' =                                    (* `algorithm` f`(`expr*`)` `{`instr*`}` *)
+  | RuleA of atom * anchor * expr list * instr list (* reduction rule *)
+  | FuncA of id * expr list * instr list            (* helper function *)
 
 
 (* Scripts *)
