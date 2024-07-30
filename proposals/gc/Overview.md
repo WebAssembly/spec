@@ -437,8 +437,8 @@ For now, we assume that all array types have a ([flexible](#flexible-aggregates)
 Elements are accessed with generic load/store instructions that take a reference to an array:
 ```
 (func $f (param $v (ref $vector))
-  (array.get $vector (local.get $v) (i32.const 1)
-    (array.set $vector (local.get $v) (i32.const 2))
+  (array.set $vector (local.get $v) (i32.const 1)
+    (array.get $vector (local.get $v) (i32.const 2))
   )
 )
 ```
@@ -717,7 +717,7 @@ Another alternative would be a three-point mutability lattice with readonly as a
 
 The Wasm type system is intentionally simple.
 That implies that it cannot be expressive enough to track all type information that is available in a source program.
-To allow producers to work around the inevitable limitations of the type system, down casts have to provided as an "escape hatch".
+To allow producers to work around the inevitable limitations of the type system, down casts have to be provided as an "escape hatch".
 For example, that allows the use of type `anyref` to represent reference values whose type is not locally known.
 When such a value is used in a context where the producer knows its real type, it can use a down cast to recover it.
 
@@ -776,7 +776,7 @@ There are a number of reasons to make RTTs explicit:
 
 * It allows more choice in producers' use of RTT information, including making it optional (post-MVP), in accordance with the pay-as-you-go principle: for example, structs that are not involved in any casts do not need to pay the overhead of carrying runtime type information (depending on specifics of the GC implementation strategy). Some languages may never need to introduce any RTTs at all.
 
-* Most importantly, making RTTs explicit separates the concerns of casting from Wasm-level polymorphism, i.e., [type parameters](Post-MVP.md#type-parameters). Type parameters can thus be treated as purely a validation artifact with no bearing on runtime. This property, known as parametricity, drastically simplifies the implementation of such type parameterisation and avoids the substantial hidden costs of reified generics that would otherwise hvae to be paid for every single use of type parameters (short of non-trivial cross-procedural dataflow analysis in the engine).
+* Most importantly, making RTTs explicit separates the concerns of casting from Wasm-level polymorphism, i.e., [type parameters](Post-MVP.md#type-parameters). Type parameters can thus be treated as purely a validation artifact with no bearing on runtime. This property, known as parametricity, drastically simplifies the implementation of such type parameterisation and avoids the substantial hidden costs of reified generics that would otherwise have to be paid for every single use of type parameters (short of non-trivial cross-procedural dataflow analysis in the engine).
 
 
 ## Future Extensions

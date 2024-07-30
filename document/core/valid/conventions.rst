@@ -308,7 +308,7 @@ In addition to field access written :math:`C.\K{field}` the following notation i
 Convention
 ..........
 
-Any form of :ref:`type <syntax-type>` can be *closed* to bring it into :ref:`closed <type-closed>` form relative to a :ref:`context <context>` it is :ref:`valid <valid-type>` in by :ref:`substituting <notation-subst>` each :ref:`type index <syntax-typeidx>` :math:`x` occurring in it with the corresponding :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]`, after first closing the the types in :math:`C.\CTYPES` themselves.
+Any form of :ref:`type <syntax-type>` can be *closed* to bring it into :ref:`closed <type-closed>` form relative to a :ref:`context <context>` it is :ref:`valid <valid-type>` in by :ref:`substituting <notation-subst>` each :ref:`type index <syntax-typeidx>` :math:`x` occurring in it with the corresponding :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]`, after first closing the types in :math:`C.\CTYPES` themselves.
 
 .. math::
    \begin{array}{@{}lcll@{}}
