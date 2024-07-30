@@ -118,7 +118,7 @@ let env_prose env prose =
     let ralgos = (normalize_id id, prose, ref 0) :: relation.ralgos in
     env.rel_prose <- Map.add valid_id {ralgos} env.rel_prose
   *)
-  | Iff (_, expr, _, _) -> (* TODO *)
+  | Iff (_, _, expr, _, _) -> (* TODO *)
     let id =
       match expr.it with
       | CaseE (atom, _) -> El.Atom.to_string atom
