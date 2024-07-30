@@ -92,7 +92,11 @@ let check_list source typ =
   | _ -> error_mismatch source typ (varT "list")
 
 let check_instr source typ =
-  if not (sub_typ (get_base_typ typ) (varT "instr")) then
+  let typ = get_base_typ typ in
+  if
+    not (sub_typ typ (varT "instr")) &&
+    not (sub_typ typ (varT "admininstr"))
+  then
     error_mismatch source typ (varT "instr")
 
 let check_val source typ =
