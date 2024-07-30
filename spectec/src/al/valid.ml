@@ -279,15 +279,13 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
       not (sub_typ (get_base_typ expr.note) (varT "val")) &&
       not (sub_typ (get_base_typ expr.note) (varT "callframe"))
     then
-      error_mismatch source expr.note (varT "val")
+      error_mismatch source (get_base_typ expr.note) (varT "val")
   | PopI expr | PopAllI expr -> add_bound_vars expr;
     if
       not (sub_typ (get_base_typ expr.note) (varT "val")) &&
       not (sub_typ (get_base_typ expr.note) (varT "callframe"))
-    then (
-      Printf.printf "validation fail: %s\n" (structured_string_of_expr expr);
+    then
       error_mismatch source (get_base_typ expr.note) (varT "val")
-      )
   | LetI (expr1, expr2) ->
     add_bound_vars expr1; check_match source expr1.note expr2.note
   | ExecuteI expr | ExecuteSeqI expr -> check_instr source expr.note
