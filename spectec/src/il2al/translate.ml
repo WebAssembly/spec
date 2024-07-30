@@ -1061,7 +1061,7 @@ let translate_context_winstr winstr =
   | Il.CaseE ([{it = Il.Atom "LABEL_"; _} as atom]::_, { it = Il.TupE [ _n; _instrs; vals ]; _ }) ->
     [
       (* TODO: append Jump instr *)
-      popallI (translate_exp vals) ~at:at;
+      popallI ({ (translate_exp vals) with note=(listT valT)}) ~at:at;
       insert_assert winstr;
       exitI atom ~at:at
     ]
