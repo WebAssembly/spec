@@ -3508,22 +3508,20 @@ execution_of_TRAP
 execution_of_UNOP nt unop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop the value (nt.CONST c_1) from the stack.
-3. If (|$unop_(nt, unop, c_1)| is 1), then:
-  a. Let [c] be $unop_(nt, unop, c_1).
-  b. Push the value (nt.CONST c) to the stack.
-4. If ($unop_(nt, unop, c_1) is []), then:
+3. If (|$unop_(nt, unop, c_1)| ≤ 0), then:
   a. Trap.
+4. Let c be an element of $unop_(nt, unop, c_1).
+5. Push the value (nt.CONST c) to the stack.
 
 execution_of_BINOP nt binop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop the value (nt.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type nt is on the top of the stack.
 4. Pop the value (nt.CONST c_1) from the stack.
-5. If (|$binop_(nt, binop, c_1, c_2)| is 1), then:
-  a. Let [c] be $binop_(nt, binop, c_1, c_2).
-  b. Push the value (nt.CONST c) to the stack.
-6. If ($binop_(nt, binop, c_1, c_2) is []), then:
+5. If (|$binop_(nt, binop, c_1, c_2)| ≤ 0), then:
   a. Trap.
+6. Let c be an element of $binop_(nt, binop, c_1, c_2).
+7. Push the value (nt.CONST c) to the stack.
 
 execution_of_TESTOP nt testop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
@@ -3542,11 +3540,10 @@ execution_of_RELOP nt relop
 execution_of_CVTOP nt_2 nt_1 cvtop
 1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
 2. Pop the value (nt_1.CONST c_1) from the stack.
-3. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| is 1), then:
-  a. Let [c] be $cvtop__(nt_1, nt_2, cvtop, c_1).
-  b. Push the value (nt_2.CONST c) to the stack.
-4. If ($cvtop__(nt_1, nt_2, cvtop, c_1) is []), then:
+3. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| ≤ 0), then:
   a. Trap.
+4. Let c be an element of $cvtop__(nt_1, nt_2, cvtop, c_1).
+5. Push the value (nt_2.CONST c) to the stack.
 
 execution_of_REF.IS_NULL
 1. Assert: Due to validation, a value is on the top of the stack.
