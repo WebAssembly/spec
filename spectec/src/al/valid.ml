@@ -97,7 +97,7 @@ let check_val source typ =
     error_mismatch source typ (varT "val")
 
 let check_context source typ =
-  let context_typs = [ "call frame"; "label" ] in
+  let context_typs = [ "callframe"; "label" ] in
   match typ.it with
   | Il.Ast.VarT (id, []) when List.mem id.it context_typs -> ()
   | _ -> error_mismatch source typ (varT "context")
@@ -207,7 +207,7 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
   (match instr.it with
   | IfI (expr, _, _) | AssertI expr -> check_bool source expr.note
   | EnterI (expr1, expr2, _) ->
-    check_instr source expr2.note; check_context source expr1.note
+    check_context source expr1.note; check_instr source expr2.note
   | PushI expr ->
     if
       not (sub_typ (get_base_typ expr.note) (varT "val")) &&
