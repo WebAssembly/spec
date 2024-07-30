@@ -721,12 +721,12 @@ let remove_enter algo =
       e_label,
       { it = CatE (e_instrs, { it = ListE ([ { it = CaseE ({ it = Atom.Atom "LABEL_"; _ }, []); _ } ]); _ }); _ },
       [ { it = PushI e_vals; _ } ]) ->
-        enterI (catE (e_vals, e_instrs), e_label, []) ~at:instr.at
+        enterI (e_label, catE (e_vals, e_instrs), []) ~at:instr.at
     | EnterI (
       e_label,
       { it = CatE (e_instrs, { it = ListE ([ { it = CaseE ({ it = Atom.Atom "LABEL_"; _ }, []); _ } ]); _ }); _ },
       []) ->
-        enterI (e_instrs, e_label, []) ~at:instr.at
+        enterI (e_label, e_instrs, []) ~at:instr.at
     | _ -> instr
   in
 
