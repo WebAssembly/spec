@@ -1395,20 +1395,20 @@ execution_of_STORE valty_u1 sz_u2? ao
 5. Pop the value (I32.CONST i) from the stack.
 6. If sz_u2? is not defined, then:
   a. Let t be valty_u1.
-  b. If ((((i + ao.OFFSET) + ($size(t) / 8)) > |$mem(z, 0).BYTES|) and (valty_u0 is t)), then:
-    1) Trap.
-  c. If (valty_u0 is t), then:
-    1) Let b* be $bytes_(t, c).
-    2) Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(t) / 8), b*).
+  b. If (valty_u0 is t), then:
+    1) If (((i + ao.OFFSET) + ($size(t) / 8)) > |$mem(z, 0).BYTES|), then:
+      a) Trap.
+    2) Let b* be $bytes_(t, c).
+    3) Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(t) / 8), b*).
 7. Else:
   a. Let ?(n) be sz_u2?.
   b. If the type of valty_u1 is Inn, then:
     1) Let Inn be valty_u1.
-    2) If ((((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|) and (valty_u0 is Inn)), then:
-      a) Trap.
-    3) If (valty_u0 is Inn), then:
-      a) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
-      b) Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
+    2) If (valty_u0 is Inn), then:
+      a) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
+        1. Trap.
+      b) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
+      c) Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
 
 execution_of_MEMORY.GROW
 1. Let z be the current state.
@@ -3942,12 +3942,12 @@ execution_of_VLOAD V128 vload_u0? ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
-4. If ((((i + ao.OFFSET) + ($size(V128) / 8)) > |$mem(z, 0).BYTES|) and vload_u0? is not defined), then:
-  a. Trap.
-5. If vload_u0? is not defined, then:
-  a. Let c be $vbytes__1^-1(V128, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(V128) / 8)]).
-  b. Push the value (V128.CONST c) to the stack.
-6. Else:
+4. If vload_u0? is not defined, then:
+  a. If (((i + ao.OFFSET) + ($size(V128) / 8)) > |$mem(z, 0).BYTES|), then:
+    1) Trap.
+  b. Let c be $vbytes__1^-1(V128, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(V128) / 8)]).
+  c. Push the value (V128.CONST c) to the stack.
+5. Else:
   a. Let ?(vloadop_0) be vload_u0?.
   b. If vloadop_0 is of the case SHAPE, then:
     1) Let (SHAPE M N sx) be vloadop_0.
@@ -4122,20 +4122,20 @@ execution_of_STORE numty_u1 sz_u2? ao
 5. Pop the value (I32.CONST i) from the stack.
 6. If sz_u2? is not defined, then:
   a. Let nt be numty_u1.
-  b. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, 0).BYTES|) and (numty_u0 is nt)), then:
-    1) Trap.
-  c. If (numty_u0 is nt), then:
-    1) Let b* be $nbytes_(nt, c).
-    2) Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(nt) / 8), b*).
+  b. If (numty_u0 is nt), then:
+    1) If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, 0).BYTES|), then:
+      a) Trap.
+    2) Let b* be $nbytes_(nt, c).
+    3) Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(nt) / 8), b*).
 7. Else:
   a. Let ?(n) be sz_u2?.
   b. If the type of numty_u1 is Inn, then:
     1) Let Inn be numty_u1.
-    2) If ((((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|) and (numty_u0 is Inn)), then:
-      a) Trap.
-    3) If (numty_u0 is Inn), then:
-      a) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
-      b) Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
+    2) If (numty_u0 is Inn), then:
+      a) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
+        1. Trap.
+      b) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
+      c) Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
 
 execution_of_VSTORE V128 ao
 1. Let z be the current state.
@@ -7781,14 +7781,16 @@ execution_of_BR l
 4. Let instr'* be the continuation of L.
 5. Pop the current label from the stack.
 6. Let instr_u0* be val*.
-7. If ((l is 0) and (|instr_u0*| ≥ n)), then:
+7. If (|instr_u0*| ≥ n), then:
   a. Let val'* ++ val^n be instr_u0*.
-  b. Push the values val^n to the stack.
-  c. Execute the instruction instr'*.
-8. If ((l > 0) and the type of instr_u0 is val*), then:
+  b. If (l is 0), then:
+    1) Push the values val^n to the stack.
+    2) Execute the instruction instr'*.
+8. If the type of instr_u0 is val*, then:
   a. Let val* be instr_u0*.
-  b. Push the values val* to the stack.
-  c. Execute the instruction (BR (l - 1)).
+  b. If (l > 0), then:
+    1) Push the values val* to the stack.
+    2) Execute the instruction (BR (l - 1)).
 
 execution_of_BR_IF l
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -8267,15 +8269,15 @@ execution_of_RETURN_CALL_REF yy
   b. Let instr_u1* ++ [instr_u0] be val*.
   c. If instr_u0 is of the case REF.FUNC_ADDR, then:
     1) Let (REF.FUNC_ADDR a) be instr_u0.
-    2) If (a < |$funcinst(z)|), then:
-      a) Assert: Due to validation, $expanddt($funcinst(z)[a].TYPE) is of the case FUNC.
-      b) Let (FUNC functype_0) be $expanddt($funcinst(z)[a].TYPE).
-      c) Let (t_1^n -> t_2^m) be functype_0.
-      d) If (|instr_u1*| ≥ n), then:
-        1. Let val'* ++ val^n be instr_u1*.
-        2. Push the values val^n to the stack.
-        3. Push the value (REF.FUNC_ADDR a) to the stack.
-        4. Execute the instruction (CALL_REF yy).
+    2) If (|instr_u1*| ≥ n), then:
+      a) Let val'* ++ val^n be instr_u1*.
+      b) If (a < |$funcinst(z)|), then:
+        1. Assert: Due to validation, $expanddt($funcinst(z)[a].TYPE) is of the case FUNC.
+        2. Let (FUNC functype_0) be $expanddt($funcinst(z)[a].TYPE).
+        3. Let (t_1^n -> t_2^m) be functype_0.
+        4. Push the values val^n to the stack.
+        5. Push the value (REF.FUNC_ADDR a) to the stack.
+        6. Execute the instruction (CALL_REF yy).
   d. If (instr_u0 is of the case REF.NULL and the type of instr_u1 is val*), then:
     1) Trap.
 
@@ -8325,13 +8327,14 @@ execution_of_STRUCT.GET sx? x i
 3. Pop the value instr_u0 from the stack.
 4. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
-5. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-6. Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
-7. Let (mut, zt)* be fieldtype_0.
-8. If instr_u0 is of the case REF.STRUCT_ADDR, then:
+5. If instr_u0 is of the case REF.STRUCT_ADDR, then:
   a. Let (REF.STRUCT_ADDR a) be instr_u0.
-  b. If ((i < |$structinst(z)[a].FIELDS|) and ((a < |$structinst(z)|) and ((|mut*| is |zt*|) and (i < |zt*|)))), then:
-    1) Push the value $unpackfield_(zt*[i], sx?, $structinst(z)[a].FIELDS[i]) to the stack.
+  b. If ((i < |$structinst(z)[a].FIELDS|) and (a < |$structinst(z)|)), then:
+    1) Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
+    2) Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
+    3) Let (mut, zt)* be fieldtype_0.
+    4) If ((|mut*| is |zt*|) and (i < |zt*|)), then:
+      a) Push the value $unpackfield_(zt*[i], sx?, $structinst(z)[a].FIELDS[i]) to the stack.
 
 execution_of_ARRAY.NEW_DEFAULT x
 1. Let z be the current state.
@@ -8387,13 +8390,11 @@ execution_of_ARRAY.GET sx? x
   a. Let (REF.ARRAY_ADDR a) be instr_u0.
   b. If ((a < |$arrayinst(z)|) and (i ≥ |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
-8. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
-9. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-10. Let (mut, zt) be arraytype_0.
-11. If instr_u0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be instr_u0.
-  b. If ((i < |$arrayinst(z)[a].FIELDS|) and (a < |$arrayinst(z)|)), then:
-    1) Push the value $unpackfield_(zt, sx?, $arrayinst(z)[a].FIELDS[i]) to the stack.
+  c. If ((i < |$arrayinst(z)[a].FIELDS|) and (a < |$arrayinst(z)|)), then:
+    1) Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
+    2) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+    3) Let (mut, zt) be arraytype_0.
+    4) Push the value $unpackfield_(zt, sx?, $arrayinst(z)[a].FIELDS[i]) to the stack.
 
 execution_of_ARRAY.LEN
 1. Let z be the current state.
@@ -8460,49 +8461,47 @@ execution_of_ARRAY.COPY x_1 x_2
     2) Let (REF.ARRAY_ADDR a_2) be instr_u1.
     3) If ((a_2 < |$arrayinst(z)|) and ((i_2 + n) > |$arrayinst(z)[a_2].FIELDS|)), then:
       a) Trap.
-  c. If (n is 0), then:
-    1) If instr_u1 is of the case REF.ARRAY_ADDR, then:
-      a) Do nothing.
-  d. Else if (i_1 > i_2), then:
-    1) Assert: Due to validation, $expanddt($type(z, x_2)) is of the case ARRAY.
-    2) Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
-    3) Let (mut, zt_2) be arraytype_0.
-    4) Let (REF.ARRAY_ADDR a_1) be instr_u0.
-    5) If instr_u1 is of the case REF.ARRAY_ADDR, then:
+  c. If (instr_u1 is of the case REF.ARRAY_ADDR and (n is 0)), then:
+    1) Do nothing.
+  d. Else:
+    1) Let (REF.ARRAY_ADDR a_1) be instr_u0.
+    2) If instr_u1 is of the case REF.ARRAY_ADDR, then:
       a) Let (REF.ARRAY_ADDR a_2) be instr_u1.
-      b) Let sx? be $sx(zt_2).
-      c) Push the value (REF.ARRAY_ADDR a_1) to the stack.
-      d) Push the value (I32.CONST ((i_1 + n) - 1)) to the stack.
-      e) Push the value (REF.ARRAY_ADDR a_2) to the stack.
-      f) Push the value (I32.CONST ((i_2 + n) - 1)) to the stack.
-      g) Execute the instruction (ARRAY.GET sx? x_2).
-      h) Execute the instruction (ARRAY.SET x_1).
-      i) Push the value (REF.ARRAY_ADDR a_1) to the stack.
-      j) Push the value (I32.CONST i_1) to the stack.
-      k) Push the value (REF.ARRAY_ADDR a_2) to the stack.
-      l) Push the value (I32.CONST i_2) to the stack.
-      m) Push the value (I32.CONST (n - 1)) to the stack.
-      n) Execute the instruction (ARRAY.COPY x_1 x_2).
-  e. Else:
-    1) Assert: Due to validation, $expanddt($type(z, x_2)) is of the case ARRAY.
-    2) Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
-    3) Let (mut, zt_2) be arraytype_0.
-    4) Let (REF.ARRAY_ADDR a_1) be instr_u0.
-    5) If instr_u1 is of the case REF.ARRAY_ADDR, then:
-      a) Let (REF.ARRAY_ADDR a_2) be instr_u1.
-      b) Let sx? be $sx(zt_2).
-      c) Push the value (REF.ARRAY_ADDR a_1) to the stack.
-      d) Push the value (I32.CONST i_1) to the stack.
-      e) Push the value (REF.ARRAY_ADDR a_2) to the stack.
-      f) Push the value (I32.CONST i_2) to the stack.
-      g) Execute the instruction (ARRAY.GET sx? x_2).
-      h) Execute the instruction (ARRAY.SET x_1).
-      i) Push the value (REF.ARRAY_ADDR a_1) to the stack.
-      j) Push the value (I32.CONST (i_1 + 1)) to the stack.
-      k) Push the value (REF.ARRAY_ADDR a_2) to the stack.
-      l) Push the value (I32.CONST (i_2 + 1)) to the stack.
-      m) Push the value (I32.CONST (n - 1)) to the stack.
-      n) Execute the instruction (ARRAY.COPY x_1 x_2).
+      b) If ((i_1 ≤ i_2) and $expanddt($type(z, x_2)) is of the case ARRAY), then:
+        1. Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
+        2. Let (mut, zt_2) be arraytype_0.
+        3. Let sx? be $sx(zt_2).
+        4. Push the value (REF.ARRAY_ADDR a_1) to the stack.
+        5. Push the value (I32.CONST i_1) to the stack.
+        6. Push the value (REF.ARRAY_ADDR a_2) to the stack.
+        7. Push the value (I32.CONST i_2) to the stack.
+        8. Execute the instruction (ARRAY.GET sx? x_2).
+        9. Execute the instruction (ARRAY.SET x_1).
+        10. Push the value (REF.ARRAY_ADDR a_1) to the stack.
+        11. Push the value (I32.CONST (i_1 + 1)) to the stack.
+        12. Push the value (REF.ARRAY_ADDR a_2) to the stack.
+        13. Push the value (I32.CONST (i_2 + 1)) to the stack.
+        14. Push the value (I32.CONST (n - 1)) to the stack.
+        15. Execute the instruction (ARRAY.COPY x_1 x_2).
+      c) Else:
+        1. Let (REF.ARRAY_ADDR a_1) be instr_u0.
+        2. Let (REF.ARRAY_ADDR a_2) be instr_u1.
+        3. If $expanddt($type(z, x_2)) is of the case ARRAY, then:
+          a. Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
+          b. Let (mut, zt_2) be arraytype_0.
+          c. Let sx? be $sx(zt_2).
+          d. Push the value (REF.ARRAY_ADDR a_1) to the stack.
+          e. Push the value (I32.CONST ((i_1 + n) - 1)) to the stack.
+          f. Push the value (REF.ARRAY_ADDR a_2) to the stack.
+          g. Push the value (I32.CONST ((i_2 + n) - 1)) to the stack.
+          h. Execute the instruction (ARRAY.GET sx? x_2).
+          i. Execute the instruction (ARRAY.SET x_1).
+          j. Push the value (REF.ARRAY_ADDR a_1) to the stack.
+          k. Push the value (I32.CONST i_1) to the stack.
+          l. Push the value (REF.ARRAY_ADDR a_2) to the stack.
+          m. Push the value (I32.CONST i_2) to the stack.
+          n. Push the value (I32.CONST (n - 1)) to the stack.
+          o. Execute the instruction (ARRAY.COPY x_1 x_2).
 
 execution_of_ARRAY.INIT_ELEM x y
 1. Let z be the current state.
@@ -8520,30 +8519,14 @@ execution_of_ARRAY.INIT_ELEM x y
   a. Let (REF.ARRAY_ADDR a) be instr_u0.
   b. If ((a < |$arrayinst(z)|) and ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
-12. If ((j + n) > |$elem(z, y).REFS|), then:
-  a. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+  c. If ((j + n) > |$elem(z, y).REFS|), then:
     1) Trap.
-  b. If ((n is 0) and (j < |$elem(z, y).REFS|)), then:
-    1) Let ref be $elem(z, y).REFS[j].
-    2) If instr_u0 is of the case REF.ARRAY_ADDR, then:
-      a) Let (REF.ARRAY_ADDR a) be instr_u0.
-      b) Push the value (REF.ARRAY_ADDR a) to the stack.
-      c) Push the value (I32.CONST i) to the stack.
-      d) Push the value ref to the stack.
-      e) Execute the instruction (ARRAY.SET x).
-      f) Push the value (REF.ARRAY_ADDR a) to the stack.
-      g) Push the value (I32.CONST (i + 1)) to the stack.
-      h) Push the value (I32.CONST (j + 1)) to the stack.
-      i) Push the value (I32.CONST (n - 1)) to the stack.
-      j) Execute the instruction (ARRAY.INIT_ELEM x y).
-13. Else if (n is 0), then:
-  a. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+  d. If (n is 0), then:
     1) Do nothing.
-14. Else:
-  a. If (j < |$elem(z, y).REFS|), then:
-    1) Let ref be $elem(z, y).REFS[j].
-    2) If instr_u0 is of the case REF.ARRAY_ADDR, then:
-      a) Let (REF.ARRAY_ADDR a) be instr_u0.
+  e. Else:
+    1) Let (REF.ARRAY_ADDR a) be instr_u0.
+    2) If (j < |$elem(z, y).REFS|), then:
+      a) Let ref be $elem(z, y).REFS[j].
       b) Push the value (REF.ARRAY_ADDR a) to the stack.
       c) Push the value (I32.CONST i) to the stack.
       d) Push the value ref to the stack.
@@ -8570,31 +8553,28 @@ execution_of_ARRAY.INIT_DATA x y
   a. Let (REF.ARRAY_ADDR a) be instr_u0.
   b. If ((a < |$arrayinst(z)|) and ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
-12. If $expanddt($type(z, x)) is not of the case ARRAY, then:
-  a. If ((n is 0) and instr_u0 is of the case REF.ARRAY_ADDR), then:
-    1) Do nothing.
-13. Else:
-  a. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-  b. Let (mut, zt) be arraytype_0.
-  c. If instr_u0 is of the case REF.ARRAY_ADDR, then:
-    1) If ((j + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
+  c. If $expanddt($type(z, x)) is of the case ARRAY, then:
+    1) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+    2) Let (mut, zt) be arraytype_0.
+    3) If ((j + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
       a) Trap.
-    2) If (n is 0), then:
-      a) Do nothing.
-    3) Else:
-      a) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-      b) Let (mut, zt) be arraytype_0.
-      c) Let (REF.ARRAY_ADDR a) be instr_u0.
-      d) Let c be $zbytes__1^-1(zt, $data(z, y).BYTES[j : ($zsize(zt) / 8)]).
-      e) Push the value (REF.ARRAY_ADDR a) to the stack.
-      f) Push the value (I32.CONST i) to the stack.
-      g) Push the value $const($cunpack(zt), $cunpacknum_(zt, c)) to the stack.
-      h) Execute the instruction (ARRAY.SET x).
-      i) Push the value (REF.ARRAY_ADDR a) to the stack.
-      j) Push the value (I32.CONST (i + 1)) to the stack.
-      k) Push the value (I32.CONST (j + ($zsize(zt) / 8))) to the stack.
-      l) Push the value (I32.CONST (n - 1)) to the stack.
-      m) Execute the instruction (ARRAY.INIT_DATA x y).
+  d. If (n is 0), then:
+    1) Do nothing.
+  e. Else:
+    1) Let (REF.ARRAY_ADDR a) be instr_u0.
+    2) Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
+    3) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+    4) Let (mut, zt) be arraytype_0.
+    5) Let c be $zbytes__1^-1(zt, $data(z, y).BYTES[j : ($zsize(zt) / 8)]).
+    6) Push the value (REF.ARRAY_ADDR a) to the stack.
+    7) Push the value (I32.CONST i) to the stack.
+    8) Push the value $const($cunpack(zt), $cunpacknum_(zt, c)) to the stack.
+    9) Execute the instruction (ARRAY.SET x).
+    10) Push the value (REF.ARRAY_ADDR a) to the stack.
+    11) Push the value (I32.CONST (i + 1)) to the stack.
+    12) Push the value (I32.CONST (j + ($zsize(zt) / 8))) to the stack.
+    13) Push the value (I32.CONST (n - 1)) to the stack.
+    14) Execute the instruction (ARRAY.INIT_DATA x y).
 
 execution_of_LOCAL.GET x
 1. Let z be the current state.
@@ -8723,12 +8703,12 @@ execution_of_VLOAD V128 vload_u0? x ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
-4. If ((((i + ao.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|) and vload_u0? is not defined), then:
-  a. Trap.
-5. If vload_u0? is not defined, then:
-  a. Let c be $vbytes__1^-1(V128, $mem(z, x).BYTES[(i + ao.OFFSET) : ($vsize(V128) / 8)]).
-  b. Push the value (V128.CONST c) to the stack.
-6. Else:
+4. If vload_u0? is not defined, then:
+  a. If (((i + ao.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|), then:
+    1) Trap.
+  b. Let c be $vbytes__1^-1(V128, $mem(z, x).BYTES[(i + ao.OFFSET) : ($vsize(V128) / 8)]).
+  c. Push the value (V128.CONST c) to the stack.
+5. Else:
   a. Let ?(vloadop__0) be vload_u0?.
   b. If vloadop__0 is of the case SHAPE, then:
     1) Let (SHAPE M K sx) be vloadop__0.
@@ -8876,12 +8856,12 @@ execution_of_STRUCT.SET x i
 5. Pop the value instr_u0 from the stack.
 6. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
-7. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-8. Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
-9. Let (mut, zt)* be fieldtype_0.
-10. If instr_u0 is of the case REF.STRUCT_ADDR, then:
+7. If instr_u0 is of the case REF.STRUCT_ADDR, then:
   a. Let (REF.STRUCT_ADDR a) be instr_u0.
-  b. If ((|mut*| is |zt*|) and (i < |zt*|)), then:
+  b. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
+  c. Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
+  d. Let (mut, zt)* be fieldtype_0.
+  e. If ((|mut*| is |zt*|) and (i < |zt*|)), then:
     1) Perform $with_struct(z, a, i, $packfield_(zt*[i], val)).
 
 execution_of_ARRAY.NEW_FIXED x n
@@ -8910,12 +8890,10 @@ execution_of_ARRAY.SET x
   a. Let (REF.ARRAY_ADDR a) be instr_u0.
   b. If ((a < |$arrayinst(z)|) and (i ≥ |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
-10. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
-11. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-12. Let (mut, zt) be arraytype_0.
-13. If instr_u0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be instr_u0.
-  b. Perform $with_array(z, a, i, $packfield_(zt, val)).
+  c. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
+  d. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+  e. Let (mut, zt) be arraytype_0.
+  f. Perform $with_array(z, a, i, $packfield_(zt, val)).
 
 execution_of_LOCAL.SET x
 1. Let z be the current state.
@@ -8962,12 +8940,11 @@ execution_of_STORE nt sz_u1? x ao
 3. Pop the value (numty_u0.CONST c) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
-6. If (numty_u0 is nt), then:
-  a. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|) and sz_u1? is not defined), then:
+6. If ((numty_u0 is nt) and sz_u1? is not defined), then:
+  a. If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|), then:
     1) Trap.
-  b. If sz_u1? is not defined, then:
-    1) Let b* be $nbytes_(nt, c).
-    2) Perform $with_mem(z, x, (i + ao.OFFSET), ($size(nt) / 8), b*).
+  b. Let b* be $nbytes_(nt, c).
+  c. Perform $with_mem(z, x, (i + ao.OFFSET), ($size(nt) / 8), b*).
 7. If the type of numty_u0 is Inn, then:
   a. If sz_u1? is defined, then:
     1) Let ?(n) be sz_u1?.
