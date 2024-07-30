@@ -173,6 +173,9 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
       )
     | _ -> error_struct source expr.note
     )
+  | CatE (expr1, expr2) ->
+    check_list source expr1.note; check_list source expr2.note;
+    check_match source expr.note expr1.note; check_match source expr1.note expr2.note
   (* TODO *)
   | IterE (expr1, _, iter) ->
     if not (expr1.note.it = Il.Ast.BoolT && expr.note.it = BoolT) then
@@ -204,7 +207,7 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
   (match instr.it with
   | IfI (expr, _, _) | AssertI expr -> check_bool source expr.note
   | EnterI (expr1, expr2, _) ->
-    check_instr source expr1.note; check_context source expr2.note
+    check_instr source expr2.note; check_context source expr1.note
   | PushI expr ->
     if
       not (sub_typ (get_base_typ expr.note) (varT "val")) &&
