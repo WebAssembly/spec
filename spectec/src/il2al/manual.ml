@@ -148,8 +148,12 @@ let return_instrs_of_invoke config =
   let value = varE "val" ~note:valT in
   let ty = listT admininstrT in
   let ty' = listnT valT (Il.Ast.VarE ("k" $ no_region) $$ no_region % natT) in
+  let valtype = varT "valtype" [] in
+  let len_expr =
+    lenE (iterE (varE "t_2" ~note:valtype, ["t_2"], List) ~note:(iterT valtype List))~note:natT
+  in
   [
-    letI (arity, lenE (iterE (varE "t_2", ["t_2"], List)) ~note:natT);
+    letI (arity,  len_expr);
     enterI (
       frameE (Some (arity), frame) ~note:callframeT,
       listE ([caseE (atom_of_name "FRAME_" "admininstr", []) ~note:admininstrT]) ~note:ty,

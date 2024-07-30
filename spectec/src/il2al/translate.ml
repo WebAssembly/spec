@@ -442,7 +442,7 @@ let rec translate_rhs exp =
     let tmp_name = Il.VarE ("instr_0" $ no_region) $$ no_region % inner_exp.note in
     [ ifI (
       isDefinedE (translate_exp exp) ~note:boolT,
-      letI (optE (Some (translate_exp tmp_name)), translate_exp exp) ~at:at :: translate_rhs tmp_name,
+      letI (OptE (Some (translate_exp tmp_name)) $$ exp.at % exp.note, translate_exp exp) ~at:at :: translate_rhs tmp_name,
       []
     ) ~at:at ]
   | Il.IterE (inner_exp, (iter, itl)) ->
@@ -1075,17 +1075,19 @@ let translate_context ctx vs =
   let instr_popall = popallI e_vals in
   let instr_pop_context =
     match ctx.it with
-    | Il.CaseE ([{it = Il.Atom "LABEL_"; _} as atom]::_, { it = Il.TupE [ n; instrs; _hole ]; _ }) ->
+    | Il.CaseE ([{it = Il.Atom "LABEL_"; at=at'; _} as atom]::_, { it = Il.TupE [ n; instrs; _hole ]; _ }) ->
+      let label = VarE "L" $$ at' % labelT in
       [
-        letI (varE "L", getCurLabelE () ~note:labelT) ~at:at;
-        letI (translate_exp n, arityE (varE "L") ~note:n.note) ~at:at;
-        letI (translate_exp instrs, contE (varE "L") ~note:instrs.note) ~at:at;
+        letI (label, getCurLabelE () ~note:labelT) ~at:at;
+        letI (translate_exp n, arityE label ~note:n.note) ~at:at;
+        letI (translate_exp instrs, contE label ~note:instrs.note) ~at:at;
         exitI atom ~at:at
       ]
-    | Il.CaseE ([{it = Il.Atom "FRAME_"; _} as atom]::_, { it = Il.TupE [ n; f; _hole ]; _ }) ->
+    | Il.CaseE ([{it = Il.Atom "FRAME_"; at=at'; _} as atom]::_, { it = Il.TupE [ n; f; _hole ]; _ }) ->
+      let frame = VarE "f" $$ at' % labelT in
       [
-        letI (varE "f", getCurFrameE () ~note:f.note) ~at:at;
-        letI (translate_exp n, arityE (varE "f") ~note:n.note) ~at:at;
+        letI (frame, getCurFrameE () ~note:f.note) ~at:at;
+        letI (translate_exp n, arityE frame ~note:n.note) ~at:at;
         exitI atom ~at:at
       ]
     | _ -> [ yetI "TODO: translate_context" ~at:at ]
