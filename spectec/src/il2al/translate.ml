@@ -510,15 +510,9 @@ let lhs_id_ref = ref 0
 (* let lhs_prefix = "y_" *)
 let init_lhs_id () = lhs_id_ref := 0
 let get_lhs_name e =
-  let rec variable_name_of_typ t = 
-    match t.it with
-    | Il.Ast.VarT (id, _) -> id.it
-    | Il.Ast.IterT (t1, _) -> variable_name_of_typ t1
-    | _ -> Il.Print.string_of_typ t
-  in
   let lhs_id = !lhs_id_ref in
   lhs_id_ref := (lhs_id + 1);
-  varE ((variable_name_of_typ e.note) ^ "_" ^ (lhs_id |> string_of_int))
+  varE ((typ_to_var_name e.note) ^ "_" ^ (lhs_id |> string_of_int))
 
 (* Helper functions *)
 let rec contains_name e = match e.it with
@@ -669,7 +663,7 @@ and handle_call_lhs lhs rhs free_ids =
 
     let base_typ, map_iters =  get_base_typ_and_iters lhs.note rhs.note in
     (* TODO: Better name using type *)
-    let var_name = "tmp" in
+    let var_name = typ_to_var_name base_typ in
     let var_expr = VarE var_name $$ no_region % base_typ in
     let to_iter_expr =
       List.fold_right
