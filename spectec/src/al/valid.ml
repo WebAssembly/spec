@@ -38,8 +38,9 @@ let init_bound_set algo =
 
 (* Type Env *)
 
-let typ_env: Il.Env.t ref =
-  ref Il.Env.empty
+module Env = Il.Env
+module Map = Env.Map
+let typ_env: Env.t ref = ref Env.empty
 
 
 let varT s = Il.Ast.VarT (s $ no_region, []) $ no_region
@@ -122,8 +123,8 @@ let check_field source source_typ expr_record atom typ =
 let rec check_struct source struct_ typ =
   let open Il.Ast in
   match typ.it with
-  | VarT (id, _) when Il.Env.Map.mem id.it !typ_env.typs ->
-    (match Il.Env.Map.find id.it !typ_env.typs with
+  | VarT (id, _) when Map.mem id.it !typ_env.typs ->
+    (match Map.find id.it !typ_env.typs with
     | _, [{ it = InstD (_, _, { it = StructT tfs; _ }); _ }] ->
       List.iter
         (fun (a, (_, typ', _), _) -> check_field source typ struct_ a typ')
@@ -146,8 +147,8 @@ let rec check_tuple source exprs typ =
   | TupT etl when List.length exprs = List.length etl ->
     let f expr (_, typ) = check_match source expr.note typ in
     List.iter2 f exprs etl
-  | VarT (id, _) when Il.Env.Map.mem id.it !typ_env.typs ->
-    (match Il.Env.Map.find id.it !typ_env.typs with
+  | VarT (id, _) when Map.mem id.it !typ_env.typs ->
+    (match Map.find id.it !typ_env.typs with
     | _, [{ it = InstD (_, _, { it = AliasT typ'; _ }); _ }] ->
       check_tuple source exprs typ'
     | _, [{ it = InstD (_, _, { it = VariantT tcs; _ }); _ }] ->
@@ -170,9 +171,9 @@ let rec access_field source typ field =
     (* XXX: Not sure about this rule *)
     let (_, typ') = List.find valid_field etl in
     typ'
-  | VarT (id, _) when Il.Env.Map.mem id.it !typ_env.typs ->
+  | VarT (id, _) when Map.mem id.it !typ_env.typs ->
     let valid_field = fun (atom, _, _) -> Il.Print.string_of_atom atom = field in
-    (match Il.Env.Map.find id.it !typ_env.typs with
+    (match Map.find id.it !typ_env.typs with
     | _, [{ it = InstD (_, _, { it = StructT tfs; _ }); _ }]
     when List.exists valid_field tfs ->
       let _, (_, typ', _), _ = List.find valid_field tfs in

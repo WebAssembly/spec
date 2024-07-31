@@ -1352,23 +1352,24 @@ let translate_rules il =
   (* Translate reduction group into algorithm *)
   |> List.map translate_rgroup
 
-let collect_typd typ_env typd =
-  match typd.it with
-  | Il.TypD (id, ps, insts) -> Il.Env.Map.add id.it (ps, insts) typ_env
-  | _ -> typ_env
-
-let collect_decd typ_env decd =
-  match decd.it with
-  | Il.DecD (id, ps, t, clauses) -> Il.Env.Map.add id.it (ps, t, clauses) typ_env
-  | _ -> typ_env
+let rec collect_def env def =
+  let open Il in
+  match def.it with
+  | TypD (id, ps, insts) -> Env.bind_typ env id (ps, insts)
+  | RelD (id, mixop, t, rules) -> Env.bind_rel env id (mixop, t, rules)
+  | DecD (id, ps, t, clauses) ->  Env.bind_def env id (ps, t, clauses)
+  | GramD (id, ps, t, prods) -> Env.bind_gram env id (ps, t, prods)
+  | RecD ds -> List.fold_left collect_def env ds
+  | HintD _ -> env
 
 let initialize_typ_env il =
-  let typs = List.fold_left collect_typd Il.Env.Map.empty il in
-  let defs = List.fold_left collect_decd Il.Env.Map.empty il in
-  Al.Valid.typ_env := { !Al.Valid.typ_env with typs; defs }
+  Al.Valid.typ_env := List.fold_left collect_def !Al.Valid.typ_env il
 
 (* Entry *)
 let translate il =
+
+  initialize_typ_env il;
+
   let not_translate =
     [ "typing.watsup";
     ]
@@ -1386,7 +1387,5 @@ let translate il =
     |> List.filter is_al_target
     |> Animate.transform
   in
-
-  initialize_typ_env il';
 
   translate_helpers il' @ translate_rules il'
