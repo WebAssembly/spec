@@ -1074,7 +1074,9 @@ let translate_context_winstr winstr =
         letI (translate_exp name, getCurFrameE () ~note:name.note) ~at:at;
         letI (translate_exp arity, arityE (translate_exp name) ~note:arity.note) ~at:at;
         insert_assert inner_exp;
-        popI (translate_exp inner_exp) ~at:at;
+      ]
+      @ insert_pop (inner_exp) @
+      [
         insert_assert winstr;
         exitI atom ~at:at
       ]
@@ -1106,10 +1108,10 @@ let translate_context ctx vs =
         letI (translate_exp instrs, contE label ~note:instrs.note) ~at:at;
         exitI atom ~at:at
       ]
-    | Il.CaseE ([{it = Il.Atom "FRAME_"; at=at'; _} as atom]::_, { it = Il.TupE [ n; f; _hole ]; _ }) ->
-      let frame = VarE "f" $$ at' % labelT in
+    | Il.CaseE ([{it = Il.Atom "FRAME_"; _} as atom]::_, { it = Il.TupE [ n; f; _hole ]; _ }) ->
+      let frame = translate_exp f in
       [
-        letI (frame, getCurFrameE () ~note:f.note) ~at:at;
+        letI (frame, getCurFrameE () ~note:frameT) ~at:at;
         letI (translate_exp n, arityE frame ~note:n.note) ~at:at;
         exitI atom ~at:at
       ]
