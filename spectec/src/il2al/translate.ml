@@ -753,7 +753,7 @@ and handle_special_lhs lhs rhs free_ids =
     in
     [ ifI (
       inject_hasType rhs,
-      [ letI (VarE s $$ lhs.at % rhs.note, rhs) ~at:at ],
+      [ letI (VarE s $$ lhs.at % lhs.note, rhs) ~at:at ],
       []
     )]
   (* Normal cases *)
