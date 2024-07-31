@@ -9,6 +9,8 @@ let atom_of_name name typ = El.Atom.Atom name $$ no_region % (El.Atom.info typ)
 let varT id args = Il.Ast.VarT (id $ no_region, args) $ no_region
 let listT ty = Il.Ast.IterT (ty, Il.Ast.List) $ no_region
 
+let expA e = ExpA e $ e.at
+
 let eval_expr =
   let ty_instrs = listT instrT in
   let ty_vals = listT valT in
@@ -17,7 +19,7 @@ let eval_expr =
 
   FuncA (
     "eval_expr",
-    [instrs],
+    [expA instrs],
     [
       executeI instrs;
       popI result;

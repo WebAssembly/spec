@@ -50,6 +50,12 @@ let transpose matrix =
       new_row :: new_rows in
   transpose' matrix
 
+let extract_exp a =
+  match a.it with
+  | ExpA e -> Some e
+  | TypA   -> None
+let extract_expargs = List.filter_map extract_exp
+
 
 let rec create_sub_al_context names iter env =
   let option_name_to_list name = lookup_env name env |> unwrap_optv |> Option.to_list in
@@ -221,13 +227,15 @@ and eval_expr env expr =
     let v1 = eval_expr env e1 in
     eval_expr env e2 |> unwrap_listv_to_array |> Array.exists ((=) v1) |> boolV
   (* Function Call *)
-  | CallE (fname, el) ->
+  | CallE (fname, al) ->
+    let el = extract_expargs al in
     let args = List.map (eval_expr env) el in
     (match call_func fname args  with
     | Some v -> v
     | _ -> raise (Exception.MissingReturnValue fname)
     )
-  | InvCallE (fname, _, el) ->
+  | InvCallE (fname, _, al) ->
+    let el = extract_expargs al in
     (* TODO: refactor numerics function name *)
     let args = List.map (eval_expr env) el in
     (match call_func ("inverse_of_"^fname) args  with
@@ -560,7 +568,8 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
   | LetI (e1, e2) ->
     let new_env = ctx |> AlContext.get_env |> assign e1 (eval_expr env e2) in
     AlContext.set_env new_env ctx
-  | PerformI (f, el) ->
+  | PerformI (f, al) ->
+    let el = extract_expargs al in
     let args = List.map (eval_expr env) el in
     call_func f args |> ignore;
     ctx
@@ -685,6 +694,8 @@ and create_context (name: string) (args: value list) : AlContext.mode =
   let algo = lookup_algo name in
   let params = params_of_algo algo in
   let body = body_of_algo algo in
+
+  let params = params |> extract_expargs in
 
   if List.length args <> List.length params then (
     error

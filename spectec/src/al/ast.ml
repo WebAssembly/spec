@@ -92,8 +92,8 @@ and expr' =
   | LenE of expr                                  (* `|` expr `|` *)
   | TupE of expr list                             (* `(` (expr `,`)* `)` *)
   | CaseE of atom * expr list                     (* atom `(` expr* `)` -- MixE/CaseE *)
-  | CallE of id * expr list                       (* id `(` expr* `)` *)
-  | InvCallE of id * int option list * expr list  (* id`_`int*`^-1(` expr* `)` *)
+  | CallE of id * arg list                        (* id `(` expr* `)` *)
+  | InvCallE of id * int option list * arg list   (* id`_`int*`^-1(` expr* `)` *)
   | IterE of expr * id list * iter                (* expr (`{` id* `}`)* *)
   | OptE of expr option                           (* expr?  *)
   | ListE of expr list                            (* `[` expr* `]` *)
@@ -129,6 +129,11 @@ and path' =
   | SliceP of expr * expr           (* `[` expr `:` expr `]` *)
   | DotP of atom                    (* `.` atom *)
 
+and arg = arg' phrase
+and arg' =
+  | ExpA of expr
+  | TypA                (* TODO: Use Il.typ *)
+
 (* Instructions *)
 
 type instr = (instr', int) note_phrase
@@ -146,7 +151,7 @@ and instr' =
   | ReturnI of expr option                (* `return` expr? *)
   | ExecuteI of expr                      (* `execute` expr *)
   | ExecuteSeqI of expr                   (* `executeseq` expr *)
-  | PerformI of id * expr list            (* `perform` id expr* *)
+  | PerformI of id * arg list             (* `perform` id expr* *)
   | ExitI of atom                         (* `exit` *)
   | ReplaceI of expr * path * expr        (* `replace` expr `->` path `with` expr *)
   | AppendI of expr * expr                (* `append` expr expr *)
@@ -158,8 +163,8 @@ and instr' =
 
 type algorithm = algorithm' phrase
 and algorithm' =                                    (* `algorithm` f`(`expr*`)` `{`instr*`}` *)
-  | RuleA of atom * anchor * expr list * instr list (* reduction rule *)
-  | FuncA of id * expr list * instr list            (* helper function *)
+  | RuleA of atom * anchor * arg list * instr list  (* reduction rule *)
+  | FuncA of id * arg list * instr list             (* helper function *)
 
 
 (* Scripts *)

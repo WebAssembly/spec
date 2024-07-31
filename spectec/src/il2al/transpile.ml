@@ -451,19 +451,30 @@ let is_store expr = match expr.it with
   | VarE s ->
     s = "s" || String.starts_with ~prefix:"s'" s || String.starts_with ~prefix:"s_" s
   | _ -> false
-
 let is_frame expr = match expr.it with
   | VarE f ->
     f = "f" || String.starts_with ~prefix:"f'" f || String.starts_with ~prefix:"f_" f
   | _ -> false
-
 let is_state expr = match expr.it with
   | TupE [ s; f ] -> is_store s && is_frame f
   | VarE z ->
     z = "z" || String.starts_with ~prefix:"z'" z || String.starts_with ~prefix:"z_" z
   | _ -> false
 
-let hide_state_args = Lib.List.filter_not (fun arg -> is_state arg || is_store arg)
+let is_store_arg arg = match arg.it with
+  | ExpA e -> is_store e
+  | TypA   -> false
+let is_frame_arg arg = match arg.it with
+  | ExpA e -> is_frame e
+  | TypA   -> false
+let is_state_arg arg = match arg.it with
+  | ExpA e -> is_state e
+  | TypA   -> false
+
+let hide_state_args args =
+  args
+  |> Lib.List.filter_not is_state_arg
+  |> Lib.List.filter_not is_store_arg
 
 let hide_state_expr expr =
   let expr' =
@@ -522,9 +533,9 @@ let remove_state algo =
     | FuncA (name, args, body) ->
       let args' =
         args
-        |> Lib.List.filter_not is_state
-        |> Lib.List.filter_not is_store
-        |> Lib.List.filter_not is_frame
+        |> Lib.List.filter_not is_state_arg
+        |> Lib.List.filter_not is_store_arg
+        |> Lib.List.filter_not is_frame_arg
       in
       FuncA (name, args', body)
     | rule -> rule

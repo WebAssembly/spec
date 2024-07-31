@@ -296,8 +296,8 @@ and translate_argexp exp =
 (* `Il.arg list` -> `expr list` *)
 and translate_args args = List.concat_map ( fun arg ->
   match arg.it with
-  | Il.ExpA el -> [ translate_exp el ]
-  | Il.TypA _ -> []
+  | Il.ExpA e -> [ ExpA (translate_exp e) $ arg.at ]
+  | Il.TypA _ -> [ TypA $ arg.at ]
   | Il.DefA _ -> [] (* TODO: handle functions *)
   | Il.GramA _ -> [] ) args
 
@@ -577,19 +577,30 @@ and call_lhs_to_inverse_call_rhs lhs rhs free_ids =
   in
 
   (* Helper functions *)
-
-  let contains_free = contains_ids free_ids in
+  let expr2arg e = ExpA e $ e.at in
+  let arg2expr a =
+    match a.it with
+    | ExpA e -> e
+    | TypA   -> error a.at "Cannot translate to inverse function for type argument"
+  in
+  let contains_free a =
+    match a.it with
+    | ExpA e -> contains_ids free_ids e
+    | TypA   -> false
+  in
   let rhs2args e =
-    match e.it with
+    (match e.it with
     | TupE el -> el
-    | _ -> [e]
+    | _ -> [ e ]
+    ) |> List.map expr2arg
   in
   let args2lhs args =
-    if List.length args = 1 then
-      List.hd args
+    let es = List.map arg2expr args in
+    if List.length es = 1 then
+      List.hd es
     else
-      let typ = Il.TupT (List.map (fun e -> no_name, e.note) args) $ no_region in
-      TupE args $$ no_region % typ
+      let typ = Il.TupT (List.map (fun e -> no_name, e.note) es) $ no_region in
+      TupE es $$ no_region % typ
   in
 
   (* All arguments are free *)
@@ -847,12 +858,13 @@ let translate_letpr lhs rhs free_ids =
 (* HARDCODE: Translate each RulePr manually based on their names *)
 let translate_rulepr id exp =
   let at = id.at in
+  let expA e = ExpA e $ e.at in
   match id.it, translate_argexp exp with
   | "Eval_expr", [z; lhs; _; rhs] ->
     (* Note: State is automatically converted into frame by remove_state *)
     [
       pushI (frameE (None, z) ~note:callframeT);
-      letI (rhs, callE ("eval_expr", [ lhs ]) ~note:rhs.note) ~at:at;
+      letI (rhs, callE ("eval_expr", [ expA lhs ]) ~note:rhs.note) ~at:at;
       popI (frameE (None, z) ~note:callframeT);
     ]
   (* ".*_sub" *)
@@ -862,13 +874,13 @@ let translate_rulepr id exp =
   (* ".*_ok" *)
   | name, el when String.ends_with ~suffix: "_ok" name ->
     (match el with
-    | [_; e; t] | [e; t] -> [ assertI (callE (name, [e; t]) ~at:at ~note:boolT) ~at:at]
+    | [_; e; t] | [e; t] -> [ assertI (callE (name, [expA e; expA t]) ~at:at ~note:boolT) ~at:at]
     | _ -> error_exp exp "unrecognized form of argument in rule_ok"
     )
   (* ".*_const" *)
   | name, el
     when String.ends_with ~suffix: "_const" name ->
-    [ assertI (callE (name, el) ~at:at ~note:boolT) ~at:at]
+    [ assertI (callE (name, el |> List.map expA) ~at:at ~note:boolT) ~at:at]
   | _ ->
     print_yet exp.at "translate_rulepr" ("`" ^ Il.Print.string_of_exp exp ^ "`");
     [ yetI ("TODO: translate_rulepr " ^ id.it) ~at:at ]
@@ -960,7 +972,7 @@ let translate_helper partial_funcs def =
       args
       |> translate_args
       |> List.map
-        Walk.(walk_expr { default_config with pre_expr = Transpile.remove_sub })
+        Walk.(walk_arg { default_config with pre_expr = Transpile.remove_sub })
     in
     let blocks = List.map (translate_helper_body name) unified_clauses in
     let body =
@@ -1265,16 +1277,16 @@ and translate_rgroup (instr_name, rel_id, rgroup) =
   let al_params =
     match inner_params with
     | None ->
-      if instr_name = "frame" || instr_name = "label"
-      then []
-      else
-        get_params winstr |> List.map translate_exp
+      if instr_name = "frame" || instr_name = "label" then [] else
+      get_params winstr
+      |> List.map translate_exp
+      |> List.map (fun e -> ExpA e $ e.at)
     | Some params -> params
   in
   (* TODO: refactor transpiles *)
   let al_params' =
     List.map
-      Walk.(walk_expr { default_config with pre_expr = Transpile.remove_sub })
+      Walk.(walk_arg { default_config with pre_expr = Transpile.remove_sub })
       al_params
   in
   let body =

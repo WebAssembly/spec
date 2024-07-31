@@ -64,26 +64,30 @@ let render_order index depth =
   | _ -> assert false
 
 (* Translation from Al inverse call exp to Al binary exp *)
+let e2a e = Al.Ast.ExpA e $ e.at
+let a2e a =
+  match a.it with
+  | Al.Ast.ExpA e -> e
+  | Al.Ast.TypA -> error a.at "Caannot render inverse function with type argument"
 
-let al_invcalle_to_al_bine e id nl el =
+let al_invcalle_to_al_bine e id nl al =
   let efree = (match e.it with Al.Ast.TupE el -> el | _ -> [ e ]) in
-  let ebound, erhs =
+  let abound, arhs =
     let nbound = List.length nl - List.length efree in
-    Util.Lib.List.split nbound el
+    Util.Lib.List.split nbound al
   in
-  let eargs, _, _ =
+
+  let args, _, _ =
     List.fold_left
-      (fun (eargs, efree, ebound) n ->
+      (fun (args, efree, abound) n ->
         match n with
-        | Some _ -> (match efree with
-          | e :: efree -> eargs @ [ e ], efree, ebound
-          | _ -> assert false)
-        | None -> (match ebound with
-          | e :: ebound -> eargs @ [ e ], efree, ebound
-          | _ -> assert false))
-      ([], efree, ebound) nl
+        | Some _ -> args @ [ List.hd efree |> e2a ], List.tl efree, abound
+        | None ->   args @ [ List.hd abound ],       efree,         List.tl abound)
+      ([], efree, abound) nl
   in
-  let elhs = Al.Al_util.callE (id, eargs) in
+  let erhs = List.map a2e arhs in
+
+  let elhs = Al.Al_util.callE (id, args) in
   let erhs = (match erhs with
     | [ e ] -> e
     | _ -> Al.Al_util.tupE erhs)
@@ -135,6 +139,21 @@ and al_to_el_path pl =
     (fun elp p -> Option.bind elp (fold_path p))
     (Some (El.Ast.RootP $ no_region)) pl
 
+and al_to_el_arg arg = match arg.it with
+  | Al.Ast.ExpA e ->
+    let* ele = al_to_el_expr e in
+    Some (El.Ast.ExpA ele)
+  | Al.Ast.TypA ->
+    Some (El.Ast.(TypA (VarT ("TODO" $ arg.at, []) $ arg.at))) (* TODO *)
+
+and al_to_el_args args =
+  List.fold_left
+    (fun args a ->
+      let* args = args in
+      let* arg = al_to_el_arg a in
+      Some (args @ [ arg ]))
+    (Some []) args
+
 and al_to_el_expr expr =
   let exp' =
     match expr.it with
@@ -153,16 +172,15 @@ and al_to_el_expr expr =
     | Al.Ast.TupE el ->
       let* elel = al_to_el_exprs el in
       Some (El.Ast.TupE elel)
-    | Al.Ast.CallE (id, el) ->
+    | Al.Ast.CallE (id, al) ->
       let elid = id $ no_region in
-      let* elel = al_to_el_exprs el in
-      let elel = List.map
-        (fun ele ->
-          let elarg = El.Ast.ExpA ele in
+      let* elal = al_to_el_args al in
+      let elal = List.map
+        (fun elarg ->
           (ref elarg) $ no_region)
-        elel
+        elal
       in
-      Some (El.Ast.CallE (elid, elel))
+      Some (El.Ast.CallE (elid, elal))
     | Al.Ast.CatE (e1, e2) ->
       let* ele1 = al_to_el_expr e1 in
       let* ele2 = al_to_el_expr e2 in
@@ -348,7 +366,7 @@ and render_expr' env expr =
     (match dir with
     | Al.Ast.Front -> sprintf "%s with %s prepended by %s" se1 sps se2
     | Al.Ast.Back -> sprintf "%s with %s appended by %s" se1 sps se2)
-  | Al.Ast.InvCallE (id, nl, el) ->
+  | Al.Ast.InvCallE (id, nl, al) ->
     let e =
       if id = "lsizenn" || id = "lsizenn1" || id = "lsizenn2" then Al.Al_util.varE "N"
       else if List.length nl = 1 then Al.Al_util.varE "fresh"
@@ -359,7 +377,7 @@ and render_expr' env expr =
         in
         Al.Al_util.tupE el
     in
-    let elhs, erhs = al_invcalle_to_al_bine e id nl el in
+    let elhs, erhs = al_invcalle_to_al_bine e id nl al in
     sprintf "%s for which %s %s %s"
       (render_expr env e)
       (render_expr env elhs)
@@ -594,16 +612,16 @@ let rec render_al_instr env algoname index depth instr =
   | Al.Ast.PopAllI e ->
     sprintf "%s Pop all values %s from the top of the stack." (render_order index depth)
       (render_expr env e)
-  | Al.Ast.LetI (e, { it = Al.Ast.IterE ({ it = Al.Ast.InvCallE (id, nl, el); _ }, ids, iter); _ }) ->
-    let elhs, erhs = al_invcalle_to_al_bine e id nl el in
+  | Al.Ast.LetI (e, { it = Al.Ast.IterE ({ it = Al.Ast.InvCallE (id, nl, al); _ }, ids, iter); _ }) ->
+    let elhs, erhs = al_invcalle_to_al_bine e id nl al in
     let ebin = Al.Al_util.binE (Al.Ast.EqOp, elhs, erhs) in
     let eiter = Al.Al_util.iterE (ebin, ids, iter) in
     sprintf "%s Let %s be the result for which %s."
       (render_order index depth)
       (render_expr env e)
       (render_expr env eiter)
-  | Al.Ast.LetI (e, { it = Al.Ast.InvCallE (id, nl, el); _ }) ->
-    let elhs, erhs = al_invcalle_to_al_bine e id nl el in
+  | Al.Ast.LetI (e, { it = Al.Ast.InvCallE (id, nl, al); _ }) ->
+    let elhs, erhs = al_invcalle_to_al_bine e id nl al in
     sprintf "%s Let %s be the result for which %s %s %s."
       (render_order index depth)
       (render_expr env e)
@@ -658,6 +676,7 @@ let render_atom_title env name params =
     | _ -> name.it
   in
   let name = name' $$ no_region % name.note in
+  let params = List.filter_map (fun a -> match a.it with Al.Ast.ExpA e -> Some e | _ -> None) params in
   let expr = Al.Al_util.caseE (name, params) ~at:no_region in
   match al_to_el_expr expr with
   | Some ({ it = El.Ast.ParenE (exp, _); _ }) -> render_el_exp env exp
