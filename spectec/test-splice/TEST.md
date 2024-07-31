@@ -1754,14 +1754,9 @@ warning: definition prose `alloctable` was never spliced
 warning: definition prose `alloctables` was never spliced
 warning: definition prose `alloctypes` was never spliced
 warning: definition prose `arrayinst` was never spliced
-warning: definition prose `before` was never spliced
 warning: definition prose `binop_` was never spliced
 warning: definition prose `blocktype_` was never spliced
 warning: definition prose `canon_` was never spliced
-warning: definition prose `clos_deftype` was never spliced
-warning: definition prose `clos_deftypes` was never spliced
-warning: definition prose `clos_moduletype` was never spliced
-warning: definition prose `clos_valtype` was never spliced
 warning: definition prose `concat_` was never spliced
 warning: definition prose `concatn_` was never spliced
 warning: definition prose `const` was never spliced
@@ -1844,7 +1839,6 @@ warning: definition prose `free_valtype` was never spliced
 warning: definition prose `free_vectype` was never spliced
 warning: definition prose `func` was never spliced
 warning: definition prose `funcidx_module` was never spliced
-warning: definition prose `funcidx_nonfuncs` was never spliced
 warning: definition prose `funcinst` was never spliced
 warning: definition prose `funcsxt` was never spliced
 warning: definition prose `funcsxv` was never spliced
@@ -1949,9 +1943,7 @@ warning: definition prose `unpack` was never spliced
 warning: definition prose `unpackfield_` was never spliced
 warning: definition prose `unpackshape` was never spliced
 warning: definition prose `unrolldt` was never spliced
-warning: definition prose `unrollht` was never spliced
 warning: definition prose `unrollrt` was never spliced
-warning: definition prose `utf8` was never spliced
 warning: definition prose `var` was never spliced
 warning: definition prose `vbinop_` was never spliced
 warning: definition prose `vcvtop__` was never spliced
@@ -1970,7 +1962,6 @@ warning: definition prose `with_data` was never spliced
 warning: definition prose `with_elem` was never spliced
 warning: definition prose `with_global` was never spliced
 warning: definition prose `with_local` was never spliced
-warning: definition prose `with_locals` was never spliced
 warning: definition prose `with_mem` was never spliced
 warning: definition prose `with_meminst` was never spliced
 warning: definition prose `with_struct` was never spliced

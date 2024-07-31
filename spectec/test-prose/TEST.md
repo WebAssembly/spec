@@ -445,24 +445,6 @@ fone N
 canon_ N
 1. Return (2 ^ ($signif(N) - 1)).
 
-utf8 char_u0*
-1. If (|char_u0*| is 1), then:
-  a. Let [ch] be char_u0*.
-  b. If (ch < 128), then:
-    1) Let b be ch.
-    2) Return [b].
-  c. If ((128 ≤ ch) and ((ch < 2048) and (ch ≥ (b_2 - 128)))), then:
-    1) Let ((2 ^ 6) · (b_1 - 192)) be (ch - (b_2 - 128)).
-    2) Return [b_1, b_2].
-  d. If ((((2048 ≤ ch) and (ch < 55296)) or ((57344 ≤ ch) and (ch < 65536))) and (ch ≥ (b_3 - 128))), then:
-    1) Let (((2 ^ 12) · (b_1 - 224)) + ((2 ^ 6) · (b_2 - 128))) be (ch - (b_3 - 128)).
-    2) Return [b_1, b_2, b_3].
-  e. If ((65536 ≤ ch) and ((ch < 69632) and (ch ≥ (b_4 - 128)))), then:
-    1) Let ((((2 ^ 18) · (b_1 - 240)) + ((2 ^ 12) · (b_2 - 128))) + ((2 ^ 6) · (b_3 - 128))) be (ch - (b_4 - 128)).
-    2) Return [b_1, b_2, b_3, b_4].
-2. Let ch* be char_u0*.
-3. Return $concat_($utf8([ch])*).
-
 size valtype_u0
 1. If (valtype_u0 is I32), then:
   a. Return 32.
@@ -2109,24 +2091,6 @@ fone N
 
 canon_ N
 1. Return (2 ^ ($signif(N) - 1)).
-
-utf8 char_u0*
-1. If (|char_u0*| is 1), then:
-  a. Let [ch] be char_u0*.
-  b. If (ch < 128), then:
-    1) Let b be ch.
-    2) Return [b].
-  c. If ((128 ≤ ch) and ((ch < 2048) and (ch ≥ (b_2 - 128)))), then:
-    1) Let ((2 ^ 6) · (b_1 - 192)) be (ch - (b_2 - 128)).
-    2) Return [b_1, b_2].
-  d. If ((((2048 ≤ ch) and (ch < 55296)) or ((57344 ≤ ch) and (ch < 65536))) and (ch ≥ (b_3 - 128))), then:
-    1) Let (((2 ^ 12) · (b_1 - 224)) + ((2 ^ 6) · (b_2 - 128))) be (ch - (b_3 - 128)).
-    2) Return [b_1, b_2, b_3].
-  e. If ((65536 ≤ ch) and ((ch < 69632) and (ch ≥ (b_4 - 128)))), then:
-    1) Let ((((2 ^ 18) · (b_1 - 240)) + ((2 ^ 12) · (b_2 - 128))) + ((2 ^ 6) · (b_3 - 128))) be (ch - (b_4 - 128)).
-    2) Return [b_1, b_2, b_3, b_4].
-2. Let ch* be char_u0*.
-3. Return $concat_($utf8([ch])*).
 
 size valtype_u0
 1. If (valtype_u0 is I32), then:
@@ -5481,26 +5445,6 @@ cont b
 2. Assert: Due to validation, (b < 192).
 3. Return (b - 128).
 
-utf8 char_u0*
-1. Let ch* be char_u0*.
-2. Return $concat_($utf8([ch])*).
-3. Assert: Due to validation, (|char_u0*| is 1).
-4. Let [ch] be char_u0*.
-5. If (ch < 128), then:
-  a. Let b be ch.
-  b. Return [b].
-6. If ((128 ≤ ch) and ((ch < 2048) and (ch ≥ $cont(b_2)))), then:
-  a. Let ((2 ^ 6) · (b_1 - 192)) be (ch - $cont(b_2)).
-  b. Return [b_1, b_2].
-7. If ((((2048 ≤ ch) and (ch < 55296)) or ((57344 ≤ ch) and (ch < 65536))) and (ch ≥ $cont(b_3))), then:
-  a. Let (((2 ^ 12) · (b_1 - 224)) + ((2 ^ 6) · $cont(b_2))) be (ch - $cont(b_3)).
-  b. Return [b_1, b_2, b_3].
-8. Assert: Due to validation, (65536 ≤ ch).
-9. Assert: Due to validation, (ch < 69632).
-10. Assert: Due to validation, (ch ≥ $cont(b_4)).
-11. Let ((((2 ^ 18) · (b_1 - 240)) + ((2 ^ 12) · $cont(b_2))) + ((2 ^ 6) · $cont(b_3))) be (ch - $cont(b_4)).
-12. Return [b_1, b_2, b_3, b_4].
-
 ANYREF
 1. Return (REF (NULL ?(())) ANY).
 
@@ -7371,58 +7315,6 @@ growmem meminst n
   a. Let i' be ((|b*| / (64 · $Ki())) + n).
   b. Let meminst' be { TYPE: (PAGE (i', j)); BYTES: b* ++ 0^(n · (64 · $Ki())); }.
   c. Return meminst'.
-
-with_locals C localidx_u0* localtype_u1*
-1. If ((localidx_u0* is []) and (localtype_u1* is [])), then:
-  a. Return C.
-2. Assert: Due to validation, (|localtype_u1*| ≥ 1).
-3. Let [lct_1] ++ lct* be localtype_u1*.
-4. Assert: Due to validation, (|localidx_u0*| ≥ 1).
-5. Let [x_1] ++ x* be localidx_u0*.
-6. Return $with_locals(C with .LOCALS[x_1] replaced by lct_1, x*, lct*).
-
-clos_deftypes deftype_u0*
-1. If (deftype_u0* is []), then:
-  a. Return [].
-2. Let dt* ++ [dt_n] be deftype_u0*.
-3. Let dt'* be $clos_deftypes(dt*).
-4. Return dt'* ++ [$subst_all_deftype(dt_n, dt'*)].
-
-clos_valtype C t
-1. Let dt* be $clos_deftypes(C.TYPES).
-2. Return $subst_all_valtype(t, dt*).
-
-clos_deftype C dt
-1. Let dt'* be $clos_deftypes(C.TYPES).
-2. Return $subst_all_deftype(dt, dt'*).
-
-clos_moduletype C mmt
-1. Let dt* be $clos_deftypes(C.TYPES).
-2. Return $subst_all_moduletype(mmt, dt*).
-
-before typeuse_u0 x i
-1. If the type of typeuse_u0 is deftype, then:
-  a. Return true.
-2. If typeuse_u0 is of the case _IDX, then:
-  a. Let (_IDX typeidx) be typeuse_u0.
-  b. Return (typeidx < x).
-3. Assert: Due to validation, typeuse_u0 is of the case REC.
-4. Let (REC j) be typeuse_u0.
-5. Return (j < i).
-
-unrollht C heaptype_u0
-1. If the type of heaptype_u0 is deftype, then:
-  a. Let deftype be heaptype_u0.
-  b. Return $unrolldt(deftype).
-2. If heaptype_u0 is of the case _IDX, then:
-  a. Let (_IDX typeidx) be heaptype_u0.
-  b. Return $unrolldt(C.TYPES[typeidx]).
-3. Assert: Due to validation, heaptype_u0 is of the case REC.
-4. Let (REC i) be heaptype_u0.
-5. Return C.RECS[i].
-
-funcidx_nonfuncs YetE (`%%%%%`_nonfuncs(global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data}))
-1. Return $funcidx_module((MODULE [] [] [] global* table* mem* elem* data* ?() [])).
 
 blocktype_ blocktype_u0
 1. If blocktype_u0 is of the case _IDX, then:

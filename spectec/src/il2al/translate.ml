@@ -763,7 +763,7 @@ and handle_special_lhs lhs rhs free_ids =
   | ListE es ->
     let bindings, es' = extract_non_names es in
     if List.length es >= 2 then (* TODO: remove this. This is temporarily for a pure function returning stores *)
-      letI (listE es' ~at:lhs.at ~note:lhs.note, lhs) ~at:at :: translate_bindings free_ids bindings
+      letI (listE es' ~at:lhs.at ~note:lhs.note, rhs) ~at:at :: translate_bindings free_ids bindings
     else
       [
         ifI

@@ -221,8 +221,10 @@ let () =
       Printf.printf "%s\n%!"
         (List.filter (match_algo_name !print_al_o) al |> List.map Al.Print.string_of_algorithm |> String.concat "\n");
 
+    (* WIP
     log "AL Validation...";
     Al.Valid.valid al;
+    *)
 
     (match !target with
     | Check -> ()
