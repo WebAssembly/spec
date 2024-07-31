@@ -456,7 +456,7 @@ A :ref:`defined type <syntax-deftype>` :math:`\deftype_1` matches a type :math:`
 .. note::
    Note that there is no explicit definition of type _equivalence_,
    since it coincides with syntactic equality,
-   as used in the premise of the fomer rule above.
+   as used in the premise of the former rule above.
 
 
 .. index:: limits
