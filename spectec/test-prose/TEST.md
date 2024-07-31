@@ -1425,12 +1425,6 @@ eval_expr instr*
 1. Execute the instruction instr*.
 2. Pop the value val from the stack.
 3. Return [val].
-
-group_bytes_by n byte*
-1. Let n' be |byte*|.
-2. If (n' ≥ n), then:
-  a. Return [byte*[0 : n]] ++ $group_bytes_by(n, byte*[n : (n' - n)]).
-3. Return [].
 == Complete.
 Generating prose for Wasm 2.0...
 watsup 0.4 generator
@@ -4164,12 +4158,6 @@ eval_expr instr*
 1. Execute the instruction instr*.
 2. Pop the value val from the stack.
 3. Return [val].
-
-group_bytes_by n byte*
-1. Let n' be |byte*|.
-2. If (n' ≥ n), then:
-  a. Return [byte*[0 : n]] ++ $group_bytes_by(n, byte*[n : (n' - n)]).
-3. Return [].
 == Complete.
 Generating prose for Wasm 3.0...
 watsup 0.4 generator
@@ -8971,11 +8959,5 @@ eval_expr instr*
 1. Execute the instruction instr*.
 2. Pop the value val from the stack.
 3. Return [val].
-
-group_bytes_by n byte*
-1. Let n' be |byte*|.
-2. If (n' ≥ n), then:
-  a. Return [byte*[0 : n]] ++ $group_bytes_by(n, byte*[n : (n' - n)]).
-3. Return [].
 == Complete.
 ```

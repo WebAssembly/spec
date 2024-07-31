@@ -1855,7 +1855,6 @@ warning: definition prose `globalinst` was never spliced
 warning: definition prose `globalsxt` was never spliced
 warning: definition prose `globalsxv` was never spliced
 warning: definition prose `globalsxx` was never spliced
-warning: definition prose `group_bytes_by` was never spliced
 warning: definition prose `growmem` was never spliced
 warning: definition prose `growtable` was never spliced
 warning: definition prose `half__` was never spliced
