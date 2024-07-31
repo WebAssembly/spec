@@ -24,13 +24,6 @@ let error_exp exp typ =
 
 (* Helpers *)
 
-let sub_typ typ1 typ2 =
-  match typ1.it, typ2.it with
-  | Il.VarT ({ it="nat"; _ }, []), Il.VarT ({ it="int"; _ }, [])
-  | _, Il.VarT ({ it="TODO"; _ }, []) -> true
-  | Il.VarT ({ it="TODO"; _ }, []), _ -> false
-  | _ -> Il.Eval.sub_typ !Al.Valid.typ_env typ1 typ2
-
 let check_typ_of_exp (ty: string) (exp: Il.exp) =
   match exp.note.it with
   | Il.VarT (id, []) when id.it = ty -> true
@@ -491,7 +484,7 @@ let rec translate_rhs exp =
     let instrs = translate_rhs inner_exp in
     List.map (walker.walk_instr walker) instrs
   (* Value *)
-  | _ when sub_typ exp.note valT -> [ pushI (translate_exp exp) ]
+  | _ when Valid.sub_typ exp.note valT -> [ pushI (translate_exp exp) ]
   | Il.CaseE ([{it = Atom id; _}]::_, _) when List.mem id [
       (* TODO: Consider automating this *)
       "CONST";
@@ -509,7 +502,7 @@ let rec translate_rhs exp =
     [ pushI { (translate_exp exp) with note=valT } ~at:at ]
   (* Instr *)
   (* TODO: use hint *)
-  | _ when sub_typ exp.note instrT || sub_typ exp.note admininstrT ->
+  | _ when Valid.sub_typ exp.note instrT || Valid.sub_typ exp.note admininstrT ->
     [ executeI (translate_exp exp) ]
   | _ -> error_exp exp "expression on rhs of reduction"
 
@@ -651,7 +644,7 @@ and handle_call_lhs lhs rhs free_ids =
 
   (* Helper function *)
 
-  let matches typ1 typ2 = sub_typ typ1 typ2 || sub_typ typ2 typ1 in
+  let matches typ1 typ2 = Valid.sub_typ typ1 typ2 || Valid.sub_typ typ2 typ1 in
 
   (* LHS type and RHS type are the same: normal inverse function *)
 
@@ -1362,13 +1355,13 @@ let rec collect_def env def =
   | RecD ds -> List.fold_left collect_def env ds
   | HintD _ -> env
 
-let initialize_typ_env il =
-  Al.Valid.typ_env := List.fold_left collect_def !Al.Valid.typ_env il
+let initialize_env il =
+  Al.Valid.env := List.fold_left collect_def !Al.Valid.env il
 
 (* Entry *)
 let translate il =
 
-  initialize_typ_env il;
+  initialize_env il;
 
   let not_translate =
     [ "typing.watsup";

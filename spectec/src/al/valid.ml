@@ -39,8 +39,7 @@ let init_bound_set algo =
 (* Type Env *)
 
 module Env = Il.Env
-module Map = Env.Map
-let typ_env: Env.t ref = ref Env.empty
+let env: Env.t ref = ref Env.empty
 
 
 let varT s = Il.Ast.VarT (s $ no_region, []) $ no_region
@@ -53,14 +52,14 @@ let is_num typ =
   match typ.it with
   | Il.Ast.NumT _ -> true
   | Il.Ast.VarT (id, _) when List.mem id.it num_typs -> true
-  | _ -> List.exists (fun nt -> Il.Eval.sub_typ !typ_env typ (varT nt)) num_typs
+  | _ -> List.exists (fun nt -> Il.Eval.sub_typ !env typ (varT nt)) num_typs
 let rec sub_typ typ1 typ2 =
   match typ1.it, typ2.it with
   | Il.Ast.IterT (typ1', _), Il.Ast.IterT (typ2', _) -> sub_typ typ1' typ2'
   | Il.Ast.VarT (id1, _), Il.Ast.VarT (id2, _) ->
-    Il.Eval.sub_typ !typ_env (varT id1.it) (varT id2.it) || is_num typ1 && is_num typ2
+    Il.Eval.sub_typ !env (varT id1.it) (varT id2.it) || is_num typ1 && is_num typ2
   | _ ->
-    Il.Eval.sub_typ !typ_env typ1 typ2 || is_num typ1 && is_num typ2
+    Il.Eval.sub_typ !env typ1 typ2 || is_num typ1 && is_num typ2
 let matches typ1 typ2 = sub_typ typ1 typ2 || sub_typ typ2 typ1
 
 
@@ -123,8 +122,8 @@ let check_field source source_typ expr_record atom typ =
 let rec check_struct source struct_ typ =
   let open Il.Ast in
   match typ.it with
-  | VarT (id, _) when Map.mem id.it !typ_env.typs ->
-    (match Map.find id.it !typ_env.typs with
+  | VarT (id, _) when Env.mem_typ !env id ->
+    (match Env.find_typ !env id with
     | _, [{ it = InstD (_, _, { it = StructT tfs; _ }); _ }] ->
       List.iter
         (fun (a, (_, typ', _), _) -> check_field source typ struct_ a typ')
@@ -147,8 +146,8 @@ let rec check_tuple source exprs typ =
   | TupT etl when List.length exprs = List.length etl ->
     let f expr (_, typ) = check_match source expr.note typ in
     List.iter2 f exprs etl
-  | VarT (id, _) when Map.mem id.it !typ_env.typs ->
-    (match Map.find id.it !typ_env.typs with
+  | VarT (id, _) when Env.mem_typ !env id ->
+    (match Env.find_typ !env id with
     | _, [{ it = InstD (_, _, { it = AliasT typ'; _ }); _ }] ->
       check_tuple source exprs typ'
     | _, [{ it = InstD (_, _, { it = VariantT tcs; _ }); _ }] ->
@@ -171,9 +170,9 @@ let rec access_field source typ field =
     (* XXX: Not sure about this rule *)
     let (_, typ') = List.find valid_field etl in
     typ'
-  | VarT (id, _) when Map.mem id.it !typ_env.typs ->
+  | VarT (id, _) when Env.mem_typ !env id ->
     let valid_field = fun (atom, _, _) -> Il.Print.string_of_atom atom = field in
-    (match Map.find id.it !typ_env.typs with
+    (match Env.find_typ !env id with
     | _, [{ it = InstD (_, _, { it = StructT tfs; _ }); _ }]
     when List.exists valid_field tfs ->
       let _, (_, typ', _), _ = List.find valid_field tfs in
