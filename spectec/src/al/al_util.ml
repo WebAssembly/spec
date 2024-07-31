@@ -159,6 +159,18 @@ let iter_type_of_value: value -> iter = function
   | OptV _ -> Opt
   | v -> fail_value "iter_type_of_value" v
 
+let rec typ_to_var_name ty = 
+  match ty.it with
+  (* TODO: guess this for "var" in el? *)
+  | Il.Ast.VarT (id, _) -> id.it
+  | Il.Ast.BoolT -> "b"
+  | Il.Ast.NumT NatT -> "n"
+  | Il.Ast.NumT IntT -> "i"
+  | Il.Ast.NumT RatT -> "q"
+  | Il.Ast.NumT RealT -> "r"
+  | Il.Ast.TextT -> "s"
+  | Il.Ast.TupT tys -> List.map typ_to_var_name (List.map snd tys) |> String.concat "_"
+  | Il.Ast.IterT (t, _) -> typ_to_var_name t
 
 (* Destruct *)
 
