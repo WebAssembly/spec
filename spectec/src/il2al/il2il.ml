@@ -10,13 +10,13 @@ open Util.Source
 type rgroup = (exp * exp * (prem list)) phrase list
 
 (* Helpers *)
-
+(* 
 let take_prefix n str =
   if String.length str < n then
     str
   else
     String.sub str 0 n
-
+ *)
 
 (* Walker-based transformer *)
 
@@ -94,23 +94,12 @@ let to_right_assoc_cat =
 (* Unifying lhs *)
 
 (* Estimate appropriate id name for a given type *)
-let rec type_to_id ty = match ty.it with
-(* TODO: guess this for "var" in el? *)
-| VarT (id, _) -> take_prefix 5 id.it
-| BoolT -> "b"
-| NumT NatT -> "n"
-| NumT IntT -> "i"
-| NumT RatT -> "q"
-| NumT RealT -> "r"
-| TextT -> "s"
-| TupT tys -> List.map type_to_id (List.map snd tys) |> String.concat "_"
-| IterT (t, _) -> type_to_id t
 
 let unified_prefix = "u"
 let _unified_idx = ref 0
 let init_unified_idx () = _unified_idx := 0
 let get_unified_idx () = let i = !_unified_idx in _unified_idx := (i+1); i
-let gen_new_unified ty = (type_to_id ty) ^ "_" ^ unified_prefix ^ (string_of_int (get_unified_idx())) $ no_region
+let gen_new_unified ty = (Al.Al_util.typ_to_var_name ty) ^ "_" ^ unified_prefix ^ (string_of_int (get_unified_idx())) $ no_region
 let is_unified_id id = String.split_on_char '_' id |> Util.Lib.List.last |> String.starts_with ~prefix:unified_prefix
 
 let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
