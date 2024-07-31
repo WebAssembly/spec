@@ -26,8 +26,8 @@ let error_exp exp typ =
 
 (* Global env for eval *)
 
-let env: Il.Eval.env ref =
-  ref Il.Eval.{ vars=Map.empty; typs=Map.empty; defs=Map.empty }
+let env: Il.Env.t ref = ref Il.Env.empty
+
 
 (* Helpers *)
 
@@ -39,6 +39,7 @@ let listT ty = Il.IterT (ty, Il.List) $ no_region
 (* TODO: hardcoded *)
 let topT = varT "TOP" []
 let valT = varT "val" []
+let valsT = listT (valT)
 let callframeT = varT "callframe" []
 let labelT = varT "label" []
 let instrT = varT "instr" []
@@ -86,7 +87,7 @@ let is_list expr =
 let rec to_exp_list' (exp: Il.exp): Il.exp list =
   match exp.it with
   | Il.CatE (exp1, exp2) -> to_exp_list' exp1 @ to_exp_list' exp2
-  | Il.ListE exps -> List.concat_map to_exp_list' exps
+  | Il.ListE exps -> List.map (fun e -> { e with it = Il.ListE [e] }) exps
   | _ -> [ exp ]
 let to_exp_list (exp: Il.exp): Il.exp list = to_exp_list' exp |> List.rev
 
@@ -138,9 +139,6 @@ let rec insert_instrs target il =
 
 (** Translation *)
 
-(* `Il.atom` -> `atom` *)
-let translate_atom atom = atom.it, atom.note.Il.Atom.def
-
 (* `Il.iter` -> `iter` *)
 let rec translate_iter = function
   | Il.Opt -> Opt
@@ -173,7 +171,7 @@ and translate_exp exp =
     iterE (translate_exp inner_exp, names, translate_iter iter) ~at:at ~note:note
   (* property access *)
   | Il.DotE (inner_exp, ({it = Atom _; _} as atom)) ->
-    accE (translate_exp inner_exp, dotP (translate_atom atom)) ~at:at ~note:note
+    accE (translate_exp inner_exp, dotP atom) ~at:at ~note:note
   (* conacatenation of records *)
   | Il.CompE (inner_exp, { it = Il.StrE expfields; _ }) ->
     (* assumption: CompE is only used with at least one literal *)
@@ -184,7 +182,7 @@ and translate_exp exp =
         | {it = Il.Atom _; _} as atom, fieldexp ->
           let extend_expr = translate_exp fieldexp in
           if nonempty extend_expr then
-            extE (acc, [ dotP (translate_atom atom) ], extend_expr, Back) ~at:at ~note:note
+            extE (acc, [ dotP atom ], extend_expr, Back) ~at:at ~note:note
           else
             acc
         | _ -> error_exp exp "AL record expression"
@@ -199,7 +197,7 @@ and translate_exp exp =
         | {it = Il.Atom _; _} as atom, fieldexp ->
           let extend_expr = translate_exp fieldexp in
           if nonempty extend_expr then
-            extE (acc, [ dotP (translate_atom atom) ], extend_expr, Front) ~at:at ~note:note
+            extE (acc, [ dotP atom ], extend_expr, Front) ~at:at ~note:note
           else
             acc
         | _ -> error_exp exp "AL record expression"
@@ -262,7 +260,6 @@ and translate_exp exp =
   | Il.StrE expfields ->
     let f acc = function
       | {it = Il.Atom _; _} as atom, fieldexp ->
-        let atom = translate_atom atom in
         let expr = translate_exp fieldexp in
         Record.add atom expr acc
       | _ -> error_exp exp "AL record expression"
@@ -281,34 +278,34 @@ and translate_exp exp =
     (* TODO: Need a better way to convert these CaseE into ConstructE *)
     | [ [ {it = Il.Atom "MUT"; _} as atom ]; [ {it = Il.Quest; _} ]; [] ],
       [ { it = Il.OptE (Some { it = Il.TupE []; _ }); _}; t ] ->
-      tupE [ caseE (translate_atom atom, []); translate_exp t ] ~at:at ~note:note
+      tupE [ caseE (atom, []); translate_exp t ] ~at:at ~note:note
     | [ [ {it = Il.Atom "MUT"; _} ]; [ {it = Il.Quest; _} ]; [] ],
       [ { it = Il.IterE ({ it = Il.TupE []; _ }, (Il.Opt, [])); _}; t ] ->
       tupE [ iterE (varE "mut", ["mut"], Opt); translate_exp t ] ~at:at ~note:note
     | [ []; [ {it = Il.Atom "PAGE"; _} as atom ] ], el ->
-      caseE (translate_atom atom, List.map translate_exp el) ~at:at ~note:note
+      caseE (atom, List.map translate_exp el) ~at:at ~note:note
     | [ [ {it = Il.Atom "NULL"; _} as atom ]; [ {it = Il.Quest; _} ] ], el ->
-      caseE (translate_atom atom, List.map translate_exp el) ~at:at ~note:note
+      caseE (atom, List.map translate_exp el) ~at:at ~note:note
     | [ {it = Il.Atom _; _} as atom ] :: ll, el
       when List.for_all (function ([] | [ {it = (Il.Star | Il.Quest); _} ]) -> true | _ -> false) ll ->
-      caseE (translate_atom atom, List.map translate_exp el) ~at:at ~note:note
+      caseE (atom, List.map translate_exp el) ~at:at ~note:note
     | [ [{it = Il.LBrack; _}]; [{it = Il.Dot2; _}]; [{it = Il.RBrack; _}] ], [ e1; e2 ] ->
       tupE [ translate_exp e1; translate_exp e2 ] ~at:at ~note:note
     | (({it = Il.Atom _; _} as atom)::_)::_, _ ->
-      caseE (translate_atom atom, translate_argexp e) ~at:at ~note:note
+      caseE (atom, translate_argexp e) ~at:at ~note:note
     | [ []; [] ], [ e1 ] -> translate_exp e1
     | [ []; []; [] ], [ e1; e2 ] ->
       tupE [ translate_exp e1; translate_exp e2 ] ~at:at ~note:note
     | [ []; [{it = Il.Semicolon; _}]; [] ], [ e1; e2 ] ->
       tupE [ translate_exp e1; translate_exp e2 ] ~at:at ~note:note
     | [ []; [{it = Il.Arrow; _} as atom]; [] ], [ e1; e2 ] ->
-      infixE (translate_exp e1, translate_atom atom, translate_exp e2) ~at:at ~note:note
+      infixE (translate_exp e1, atom, translate_exp e2) ~at:at ~note:note
     | [ []; [{it = Il.Arrow; _} as atom]; []; [] ], [ e1; e2; e3 ] ->
-      infixE (translate_exp e1, translate_atom atom, catE (translate_exp e2, translate_exp e3)) ~at:at ~note:note
+      infixE (translate_exp e1, atom, catE (translate_exp e2, translate_exp e3)) ~at:at ~note:note
     | [ []; [{it = Il.ArrowSub; _} as atom]; []; [] ], [ e1; e2; e3 ] ->
-      infixE (translate_exp e1, translate_atom atom, catE (translate_exp e2, translate_exp e3)) ~at:at ~note:note
+      infixE (translate_exp e1, atom, catE (translate_exp e2, translate_exp e3)) ~at:at ~note:note
     | [ []; [{it = Il.Atom _; _} as atom]; [] ], [ e1; e2 ] ->
-      infixE (translate_exp e1, translate_atom atom, translate_exp e2) ~at:at ~note:note
+      infixE (translate_exp e1, atom, translate_exp e2) ~at:at ~note:note
     | _ -> yetE (Il.Print.string_of_exp exp) ~at:at ~note:note)
   | Il.UncaseE (e, op) ->
     (match op with
@@ -317,6 +314,7 @@ and translate_exp exp =
     )
   | Il.ProjE (e, 0) -> translate_exp e
   | Il.OptE inner_exp -> optE (Option.map translate_exp inner_exp) ~at:at ~note:note
+  | Il.TheE e -> chooseE (translate_exp e)  ~at:at ~note:note
   (* Yet *)
   | _ -> yetE (Il.Print.string_of_exp exp) ~at:at ~note:note
 
@@ -331,7 +329,8 @@ and translate_args args = List.concat_map ( fun arg ->
   match arg.it with
   | Il.ExpA el -> [ translate_exp el ]
   | Il.TypA _ -> []
-  | Il.DefA _ -> [] (* TODO: handle functions *) ) args
+  | Il.DefA _ -> [] (* TODO: handle functions *)
+  | Il.GramA _ -> [] ) args
 
 (* `Il.path` -> `path list` *)
 and translate_path path =
@@ -342,7 +341,7 @@ and translate_path path =
     | Il.IdxP (p, e) -> (translate_path' p) @ [ idxP (translate_exp e) ~at:at ]
     | Il.SliceP (p, e1, e2) -> (translate_path' p) @ [ sliceP (translate_exp e1, translate_exp e2) ~at:at ]
     | Il.DotP (p, ({it = Atom _; _} as atom)) ->
-      (translate_path' p) @ [ dotP (translate_atom atom) ~at:at ]
+      (translate_path' p) @ [ dotP atom ~at:at ]
     | _ -> assert false
   in
   translate_path' path
@@ -362,32 +361,66 @@ let insert_assert exp =
   | _ ->
     assertI (topValueE None ~note:ty) ~at:at
 
-let insert_pop e =
-  let consts = [ "CONST"; "VCONST" ] in
+let assert_cond_of_pop_value e =
+  let at = e.at in
+  let bt = boolT () in
+  match e.it with
+  | CaseE ({ it = Atom ("CONST" | "VCONST"); _ }, [t; _]) ->
+    topValueE (Some t) ~note:bt
+  | GetCurFrameE ->
+    topFrameE () ~at:at ~note:bt
+  | GetCurLabelE ->
+    topLabelE () ~at:at ~note:bt
+  (* TODO: Remove this when pops is done *)
+  | IterE (_, _, ListN (e', _)) ->
+    topValuesE e' ~at:at ~note:bt
+  | _ ->
+    topValueE None ~note:bt
 
-  let e' =
-    let open Il in
-    match e.it with
-    | CaseE ([{it = Atom name; _}]::_ as tag, tup) when List.mem name consts ->
-      let tup' =
-        match tup.it with
-        | TupE (ty :: exps) ->
-          let ty' =
-            match ty.it with
-            | CallE _ ->
-              let var, typ = if name = "CONST" then "nt_0", "numtype" else "vt_0", "vectype" in
-              VarE (var $ no_region) $$ no_region % (VarT (typ $ no_region, []) $ no_region)
-            | _ -> ty
-          in
-          { tup with it = TupE (ty' :: exps) }
-        | _ -> tup
-      in
-      { e with it = CaseE (tag, tup') }
-    | _ -> e
+let assert_of_pop i =
+  let at = i.at in
+  (* let bt = boolT () in *)
+
+  match i.it with
+  | PopI e -> [ assertI (assert_cond_of_pop_value e) ~at:at ]
+  (* | PopsI (_, e') -> [ assertI (topValuesE e' ~at:at ~note:bt) ~at:at ] *)
+  | _ -> []
+
+let post_process_of_pop i =
+  (* HARDCODE : Change ($lunpack(t).CONST c) into (nt.CONST c) *)
+  let prefix, pi =
+    (match i.it with
+    | PopI const ->
+      (match const.it with
+      | CaseE (name, [t; c]) when List.mem name.it [Atom "CONST"; Atom "VCONST"] ->
+        (match t.it with
+        | CallE _ ->
+            let var = if name.it = Atom "CONST" then "nt_0" else "vt_0" in
+            let t' = { t with it = VarE var } in
+            let const' = { const with it = CaseE (name, [t'; c]) } in
+            let i' = { i with it = PopI const' } in
+            [ letI (t', t) ], i'
+        | _ -> [], i)
+      | _ -> [], i)
+    | _ -> [], i)
   in
+  (* End of HARDCODE *)
 
-  [ insert_assert e; popI ({ (translate_exp e') with note=valT }) ~at:e'.at ]
+  prefix @ assert_of_pop pi @ [pi]
 
+let insert_pop e =
+  let pop =
+    match e.it with
+    | Il.ListE [e'] ->
+      popI { (translate_exp e') with note = valT } ~at:e'.at
+    | Il.ListE es ->
+      popsI { (translate_exp e) with note = valsT } (Some (es |> List.length |> Z.of_int |> numE)) ~at:e.at
+    | Il.IterE (_, (Il.ListN (e', None), _)) ->
+      popsI { (translate_exp e) with note = valsT } (Some (translate_exp e')) ~at:e.at
+    | _ ->
+      popsI { (translate_exp e) with note = valsT } None ~at:e.at
+  in
+  post_process_of_pop pop
 
 (* Assume that only the iter variable is unbound *)
 let is_unbound vars e =
@@ -423,7 +456,7 @@ let rec translate_rhs exp =
     ) ->
       let exp1 = varE arity.it ~note:n1 in
       let exp2 = varE fid.it ~note:n2 in
-      let exp3 = caseE (translate_atom atom, []) ~note:note in
+      let exp3 = caseE (atom, []) ~note:note in
       let note' = listT note in
     [
       letI (varE "F" ~note:callframeT, frameE (Some (exp1), exp2) ~note:callframeT) ~at:at;
@@ -437,7 +470,7 @@ let rec translate_rhs exp =
     let at' = e2.at in
     let note' = e2.note in
     let exp' = labelE (translate_exp arity, translate_exp e1) ~at:at ~note:labelT in
-    let exp'' = listE ([caseE (translate_atom atom, []) ~note:note]) ~at:at' ~note:note' in
+    let exp'' = listE ([caseE (atom, []) ~note:note]) ~at:at' ~note:note' in
     match e2.it with
     | Il.CatE (ve, ie) ->
       [
@@ -510,9 +543,21 @@ let lhs_id_ref = ref 0
 (* let lhs_prefix = "y_" *)
 let init_lhs_id () = lhs_id_ref := 0
 let get_lhs_name e =
+<<<<<<< HEAD
   let lhs_id = !lhs_id_ref in
   lhs_id_ref := (lhs_id + 1);
   varE ((typ_to_var_name e.note) ^ "_" ^ (lhs_id |> string_of_int))
+=======
+  let rec variable_name_of_typ typ =
+    match typ.it with
+    | Il.Ast.VarT (id, _) -> id.it
+    | Il.Ast.IterT (typ', _) -> variable_name_of_typ typ'
+    | _ -> Il.Print.string_of_typ typ
+  in
+  let lhs_id = !lhs_id_ref in
+  lhs_id_ref := lhs_id + 1;
+  varE (variable_name_of_typ e.note ^ "_" ^ string_of_int lhs_id) ~note:e.note
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
 
 (* Helper functions *)
 let rec contains_name e = match e.it with
@@ -985,8 +1030,8 @@ let translate_helpers il =
 
 let rec kind_of_context e =
   match e.it with
-  | Il.CaseE ([{it = Il.Atom "FRAME_"; _} as atom]::_, _) -> translate_atom atom
-  | Il.CaseE ([{it = Il.Atom "LABEL_"; _} as atom]::_, _) -> translate_atom atom
+  | Il.CaseE ([{it = Il.Atom "FRAME_"; _} as atom]::_, _) -> atom
+  | Il.CaseE ([{it = Il.Atom "LABEL_"; _} as atom]::_, _) -> atom
   | Il.CaseE ([[]; [{it = Il.Semicolon; _}]; []], e')
   | Il.ListE [ e' ]
   | Il.TupE [_ (* z *); e'] -> kind_of_context e'
@@ -1069,7 +1114,7 @@ let translate_context_winstr winstr =
         insert_assert inner_exp;
         popI (translate_exp inner_exp) ~at:at;
         insert_assert winstr;
-        exitI (translate_atom atom) ~at:at
+        exitI atom ~at:at
       ]
     | _ -> error_exp args "argument of frame"
     )
@@ -1079,7 +1124,7 @@ let translate_context_winstr winstr =
       (* TODO: append Jump instr *)
       popallI (translate_exp vals) ~at:at;
       insert_assert winstr;
-      exitI (translate_atom atom) ~at:at
+      exitI atom ~at:at
     ]
   | _ -> []
 
@@ -1096,13 +1141,13 @@ let translate_context ctx vs =
         letI (varE "L", getCurLabelE () ~note:labelT) ~at:at;
         letI (translate_exp n, arityE (varE "L") ~note:n.note) ~at:at;
         letI (translate_exp instrs, contE (varE "L") ~note:instrs.note) ~at:at;
-        exitI (translate_atom atom) ~at:at
+        exitI atom ~at:at
       ]
     | Il.CaseE ([{it = Il.Atom "FRAME_"; _} as atom]::_, { it = Il.TupE [ n; f; _hole ]; _ }) ->
       [
         letI (varE "f", getCurFrameE () ~note:f.note) ~at:at;
         letI (translate_exp n, arityE (varE "f") ~note:n.note) ~at:at;
-        exitI (translate_atom atom) ~at:at
+        exitI atom ~at:at
       ]
     | _ -> [ yetI "TODO: translate_context" ~at:at ]
   in
@@ -1133,16 +1178,16 @@ let translate_context_rgroup lhss sub_algos inner_params =
   let instrs_context =
     List.fold_right2 (fun lhs algo acc ->
       match algo.it with
-      | RuleA (_, params, body) ->
+      | RuleA (_, _, params, body) ->
         (* Assume that each sub-algorithms are produced by translate_context,
            i.e., they will always contain instr_popall as their first instruction. *)
         assert(Eq.eq_instr (List.hd body) instr_popall);
         if Option.is_none !inner_params then inner_params := Some params;
         let ty' = boolT () in
         let e_cond =
-          begin match kind_of_context lhs with
-          | Il.Atom.Atom "FRAME_", _ -> topFrameE () ~note:ty'
-          | Il.Atom.Atom "LABEL_", _ -> topLabelE () ~note:ty'
+          begin match it (kind_of_context lhs) with
+          | Il.Atom.Atom "FRAME_" -> topFrameE () ~note:ty'
+          | Il.Atom.Atom "LABEL_" -> topLabelE () ~note:ty'
           | _ -> error lhs.at "the context is neither a frame nor a label"
           end
         in
@@ -1162,22 +1207,29 @@ let rec split_lhs_stack' ?(note : Il.typ option) name stack ctxs instrs =
     ctxs @ [ ([], instrs), None ], winstr
   | hd :: tl ->
     match hd.it with
-    | Il.CaseE (({it = Il.Atom name'; _}::_)::_, _) when name' = target || name' = target ^ "_"
-      -> ctxs @ [ (tl, instrs), None ], hd
-    | Il.CaseE (tag, ({it = Il.TupE args; _} as e)) ->
-      let list_arg = List.find is_list args in
-      let inner_stack = to_exp_list list_arg in
-      let holed_args = List.map (fun x -> if x = list_arg then hole else x) args in
-      let ctx = { hd with it = Il.CaseE (tag, { e with it = Il.TupE holed_args }) } in
+    | Il.ListE [hd'] ->
+      (match hd'.it with
+      (* Top of the stack is the target instruction *)
+      | Il.CaseE (({it = Il.Atom name'; _}::_)::_, _) when name' = target || name' = target ^ "_"
+        -> ctxs @ [ (tl, instrs), None ], hd'
+      (* Top of the stack is a context (label, frame, ...) *)
+      | Il.CaseE (tag, ({it = Il.TupE args; _} as e)) ->
+        let list_arg = List.find is_list args in
+        let inner_stack = to_exp_list list_arg in
+        let holed_args = List.map (fun x -> if x = list_arg then hole else x) args in
+        let ctx = { hd' with it = Il.CaseE (tag, { e with it = Il.TupE holed_args }) } in
 
-      split_lhs_stack' name inner_stack (ctxs @ [ ((tl, instrs), Some ctx) ]) []
+        split_lhs_stack' name inner_stack (ctxs @ [ ((tl, instrs), Some ctx) ]) []
+      (* Should be unreachable? *)
+      | _ ->
+        split_lhs_stack' ~note:(hd.note) name tl ctxs (hd :: instrs))
     | _ ->
       split_lhs_stack' ~note:(hd.note) name tl ctxs (hd :: instrs)
 
 let split_lhs_stack name stack = split_lhs_stack' name stack [] []
 
 
-let rec translate_rgroup' context winstr instr_name rgroup =
+let rec translate_rgroup' context winstr instr_name rel_id rgroup =
   let inner_params = ref None in
   let instrs =
     match context with
@@ -1213,9 +1265,9 @@ let rec translate_rgroup' context winstr instr_name rgroup =
         rgroup
         |> List.map (Source.map un_unify)
         |> group_contexts
-        |> List.map (fun g -> Il2il.unify_lhs (instr_name, g)) in
-
-      let lhss = List.map (fun (_, g) -> lhs_of_rgroup g) unified_sub_groups in
+        |> List.map (fun g -> Il2il.unify_lhs (instr_name, rel_id, g)) in
+      if List.length unified_sub_groups = 1 then [ yetI "Translation fail: Infinite recursion" ] else
+      let lhss = List.map (fun (_, _, g) -> lhs_of_rgroup g) unified_sub_groups in
       let sub_algos = List.map translate_rgroup unified_sub_groups in
       translate_context_rgroup lhss sub_algos inner_params
       with _ ->
@@ -1232,19 +1284,20 @@ and get_lhs_stack (exp: Il.exp): Il.exp list =
     split_config exp |> snd |> to_exp_list
   else to_exp_list exp
 
-and translate_rgroup (instr_name, rgroup) =
+and translate_rgroup (instr_name, rel_id, rgroup) =
   let lhs, _, _ = (List.hd rgroup).it in
   (* TODO: Generalize getting current frame *)
   let lhs_stack = get_lhs_stack lhs in
   let context, winstr = split_lhs_stack instr_name lhs_stack in
 
-  let inner_params, instrs = translate_rgroup' context winstr instr_name rgroup in
+  let inner_params, instrs = translate_rgroup' context winstr instr_name rel_id rgroup in
 
   let name =
     match winstr.it with
-    | Il.CaseE ((({it = Il.Atom _; _} as atom)::_)::_, _) -> translate_atom atom
+    | Il.CaseE ((({it = Il.Atom _; _} as atom)::_)::_, _) -> atom
     | _ -> assert false
   in
+  let anchor = rel_id.it ^ "/" ^ instr_name in
   let al_params =
     match inner_params with
     | None ->
@@ -1273,7 +1326,7 @@ and translate_rgroup (instr_name, rgroup) =
   let at = rgroup
     |> List.map at
     |> over_region in
-  RuleA (name, al_params', body) $ at
+  RuleA (name, anchor, al_params', body) $ at
 
 
 let rule_to_tup rule =
@@ -1299,7 +1352,7 @@ let rec group_rules = function
         "this reduction rule uses a different relation compared to the previous rules"
     ) t1 in
     let tups = List.map rule_to_tup rules in
-    (name, tups) :: group_rules t2
+    (name, rel_id, tups) :: group_rules t2
 
 (* extract reduction rules for wasm instructions *)
 let extract_rules def =
@@ -1325,25 +1378,10 @@ let translate_rules il =
   (* Translate reduction group into algorithm *)
   |> List.map translate_rgroup
 
-let collect_typd env typd =
-  match typd.it with
-  | Il.TypD (id, _ps, insts) -> Il.Eval.Map.add id.it insts env
-  | _ -> env
-
-let collect_decd env typd =
-  match typd.it with
-  | Il.DecD (id, _ps, _t, clauses) -> Il.Eval.Map.add id.it clauses env
-  | _ -> env
-
-let initialize_env il =
-  let typs = List.fold_left collect_typd Il.Eval.Map.empty il in
-  let defs = List.fold_left collect_decd Il.Eval.Map.empty il in
-  env := { vars=Il.Eval.Map.empty; typs; defs }
-
 (* Entry *)
 let translate il =
   let il' = il |> Animate.transform |> List.concat_map flatten_rec in
 
-  initialize_env il';
+  env := Il.Env.env_of_script il';
 
   translate_helpers il' @ translate_rules il'

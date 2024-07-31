@@ -460,6 +460,7 @@ warning: syntax `structtype` was never spliced
 warning: syntax `subtype` was never spliced
 warning: syntax `sx` was never spliced
 warning: syntax `sym` was never spliced
+warning: syntax `symdots` was never spliced
 warning: syntax `symsplit/1` was never spliced
 warning: syntax `symsplit/2` was never spliced
 warning: syntax `sz` was never spliced
@@ -669,6 +670,7 @@ warning: grammar `Bu32` was never spliced
 warning: grammar `Bu64` was never spliced
 warning: grammar `BuN` was never spliced
 warning: grammar `Bvaltype` was never spliced
+warning: grammar `Bvar` was never spliced
 warning: grammar `Bvectype` was never spliced
 warning: grammar `Bversion` was never spliced
 warning: rule `Blocktype_ok/valtype` was never spliced
@@ -981,7 +983,8 @@ warning: rule `Step_pure/vvunop` was never spliced
 warning: rule `Step_pure/vvbinop` was never spliced
 warning: rule `Step_pure/vvternop` was never spliced
 warning: rule `Step_pure/vvtestop` was never spliced
-warning: rule `Step_pure/vunop` was never spliced
+warning: rule `Step_pure/vunop-val` was never spliced
+warning: rule `Step_pure/vunop-trap` was never spliced
 warning: rule `Step_pure/vbinop-val` was never spliced
 warning: rule `Step_pure/vbinop-trap` was never spliced
 warning: rule `Step_pure/vtestop-true` was never spliced
@@ -1168,6 +1171,7 @@ warning: definition `clos_deftypes` was never spliced
 warning: definition `clos_moduletype` was never spliced
 warning: definition `clos_valtype` was never spliced
 warning: definition `concat_` was never spliced
+warning: definition `concatn_` was never spliced
 warning: definition `const` was never spliced
 warning: definition `cont` was never spliced
 warning: definition `convert__` was never spliced
@@ -1333,6 +1337,7 @@ warning: definition `isub_sat_` was never spliced
 warning: definition `ixor_` was never spliced
 warning: definition `lanes_` was never spliced
 warning: definition `lanetype` was never spliced
+warning: definition `list_` was never spliced
 warning: definition `local` was never spliced
 warning: definition `lpacknum_` was never spliced
 warning: definition `lsize` was never spliced
@@ -1364,8 +1369,11 @@ warning: definition `rollrt` was never spliced
 warning: definition `rundata_` was never spliced
 warning: definition `runelem_` was never spliced
 warning: definition `s33_to_u32` was never spliced
-warning: definition `setminus` was never spliced
-warning: definition `setminus1` was never spliced
+warning: definition `setminus1_` was never spliced
+warning: definition `setminus_` was never spliced
+warning: definition `setproduct1_` was never spliced
+warning: definition `setproduct2_` was never spliced
+warning: definition `setproduct_` was never spliced
 warning: definition `shift_labelidxs` was never spliced
 warning: definition `shsize` was never spliced
 warning: definition `signed_` was never spliced
@@ -1402,7 +1410,6 @@ warning: definition `subst_valtype` was never spliced
 warning: definition `subst_vectype` was never spliced
 warning: definition `sum` was never spliced
 warning: definition `sx` was never spliced
-warning: definition `symdots` was never spliced
 warning: definition `tableinst` was never spliced
 warning: definition `tablesxt` was never spliced
 warning: definition `tablesxv` was never spliced
@@ -1419,6 +1426,7 @@ warning: definition `unrolldt` was never spliced
 warning: definition `unrollht` was never spliced
 warning: definition `unrollrt` was never spliced
 warning: definition `utf8` was never spliced
+warning: definition `var` was never spliced
 warning: definition `vbinop_` was never spliced
 warning: definition `vbytes_` was never spliced
 warning: definition `vcvtop__` was never spliced
@@ -1447,270 +1455,269 @@ warning: definition `wrap__` was never spliced
 warning: definition `zbytes_` was never spliced
 warning: definition `zero` was never spliced
 warning: definition `zsize` was never spliced
-warning: rule prose `exec/array.new_data` was never spliced
-warning: rule prose `exec/data.drop` was never spliced
-warning: rule prose `exec/memory.grow` was never spliced
-warning: rule prose `exec/vstore_lane` was never spliced
-warning: rule prose `exec/vstore` was never spliced
-warning: rule prose `exec/store` was never spliced
-warning: rule prose `exec/elem.drop` was never spliced
-warning: rule prose `exec/table.grow` was never spliced
-warning: rule prose `exec/table.set` was never spliced
-warning: rule prose `exec/global.set` was never spliced
-warning: rule prose `exec/local.set` was never spliced
-warning: rule prose `exec/array.set` was never spliced
-warning: rule prose `exec/array.new_fixed` was never spliced
-warning: rule prose `exec/struct.set` was never spliced
-warning: rule prose `exec/struct.new` was never spliced
-warning: rule prose `exec/ctxt` was never spliced
-warning: rule prose `exec/memory.init` was never spliced
-warning: rule prose `exec/memory.copy` was never spliced
-warning: rule prose `exec/memory.fill` was never spliced
-warning: rule prose `exec/memory.size` was never spliced
-warning: rule prose `exec/vload_lane` was never spliced
-warning: rule prose `exec/vload` was never spliced
-warning: rule prose `exec/load` was never spliced
-warning: rule prose `exec/table.init` was never spliced
-warning: rule prose `exec/table.copy` was never spliced
-warning: rule prose `exec/table.fill` was never spliced
-warning: rule prose `exec/table.size` was never spliced
-warning: rule prose `exec/table.get` was never spliced
-warning: rule prose `exec/global.get` was never spliced
-warning: rule prose `exec/local.get` was never spliced
-warning: rule prose `exec/array.init_data` was never spliced
-warning: rule prose `exec/array.init_elem` was never spliced
-warning: rule prose `exec/array.copy` was never spliced
-warning: rule prose `exec/array.fill` was never spliced
-warning: rule prose `exec/array.len` was never spliced
-warning: rule prose `exec/array.get` was never spliced
-warning: rule prose `exec/array.new_data` was never spliced
-warning: rule prose `exec/array.new_elem` was never spliced
-warning: rule prose `exec/array.new_default` was never spliced
-warning: rule prose `exec/struct.get` was never spliced
-warning: rule prose `exec/struct.new_default` was never spliced
-warning: rule prose `exec/ref.cast` was never spliced
-warning: rule prose `exec/ref.test` was never spliced
-warning: rule prose `exec/ref.func` was never spliced
-warning: rule prose `exec/ref.null` was never spliced
-warning: rule prose `exec/return_call_ref` was never spliced
-warning: rule prose `exec/return_call` was never spliced
-warning: rule prose `exec/call_ref` was never spliced
-warning: rule prose `exec/call` was never spliced
-warning: rule prose `exec/br_on_cast_fail` was never spliced
-warning: rule prose `exec/br_on_cast` was never spliced
-warning: rule prose `exec/loop` was never spliced
-warning: rule prose `exec/block` was never spliced
-warning: rule prose `exec/local.tee` was never spliced
-warning: rule prose `exec/vcvtop` was never spliced
-warning: rule prose `exec/vnarrow` was never spliced
-warning: rule prose `exec/vextbinop` was never spliced
-warning: rule prose `exec/vextunop` was never spliced
-warning: rule prose `exec/vreplace_lane` was never spliced
-warning: rule prose `exec/vextract_lane` was never spliced
-warning: rule prose `exec/vsplat` was never spliced
-warning: rule prose `exec/vshuffle` was never spliced
-warning: rule prose `exec/vswizzle` was never spliced
-warning: rule prose `exec/vbitmask` was never spliced
-warning: rule prose `exec/vshiftop` was never spliced
-warning: rule prose `exec/vrelop` was never spliced
-warning: rule prose `exec/vtestop` was never spliced
-warning: rule prose `exec/vbinop` was never spliced
-warning: rule prose `exec/vunop` was never spliced
-warning: rule prose `exec/vvtestop` was never spliced
-warning: rule prose `exec/vvternop` was never spliced
-warning: rule prose `exec/vvbinop` was never spliced
-warning: rule prose `exec/vvunop` was never spliced
-warning: rule prose `exec/any.convert_extern` was never spliced
-warning: rule prose `exec/extern.convert_any` was never spliced
-warning: rule prose `exec/array.new` was never spliced
-warning: rule prose `exec/i31.get` was never spliced
-warning: rule prose `exec/ref.eq` was never spliced
-warning: rule prose `exec/ref.as_non_null` was never spliced
-warning: rule prose `exec/ref.is_null` was never spliced
-warning: rule prose `exec/ref.i31` was never spliced
-warning: rule prose `exec/cvtop` was never spliced
-warning: rule prose `exec/relop` was never spliced
-warning: rule prose `exec/testop` was never spliced
-warning: rule prose `exec/binop` was never spliced
-warning: rule prose `exec/unop` was never spliced
-warning: rule prose `exec/trap` was never spliced
-warning: rule prose `exec/return` was never spliced
-warning: rule prose `exec/frame` was never spliced
-warning: rule prose `exec/return_call_indirect` was never spliced
-warning: rule prose `exec/call_indirect` was never spliced
-warning: rule prose `exec/br_on_non_null` was never spliced
-warning: rule prose `exec/br_on_null` was never spliced
-warning: rule prose `exec/br_table` was never spliced
-warning: rule prose `exec/br_if` was never spliced
-warning: rule prose `exec/br` was never spliced
-warning: rule prose `exec/label` was never spliced
-warning: rule prose `exec/if` was never spliced
-warning: rule prose `exec/select` was never spliced
-warning: rule prose `exec/drop` was never spliced
-warning: rule prose `exec/nop` was never spliced
-warning: rule prose `exec/unreachable` was never spliced
-warning: rule prose `valid/[instr_u0]` was never spliced
-warning: rule prose `valid/module` was never spliced
-warning: rule prose `valid/type_u0*` was never spliced
-warning: rule prose `valid/globa_u0*` was never spliced
-warning: rule prose `valid/export` was never spliced
-warning: rule prose `valid/exter_u0` was never spliced
-warning: rule prose `valid/import` was never spliced
-warning: rule prose `valid/start` was never spliced
-warning: rule prose `valid/data` was never spliced
-warning: rule prose `valid/datam_u0` was never spliced
-warning: rule prose `valid/elem` was never spliced
-warning: rule prose `valid/elemm_u0` was never spliced
-warning: rule prose `valid/memory` was never spliced
-warning: rule prose `valid/table` was never spliced
-warning: rule prose `valid/global` was never spliced
-warning: rule prose `valid/func` was never spliced
-warning: rule prose `valid/local` was never spliced
-warning: rule prose `valid/type` was never spliced
-warning: rule prose `valid/instr*` was never spliced
-warning: rule prose `valid/instr_u0` was never spliced
-warning: rule prose `valid/instr*` was never spliced
-warning: rule prose `valid/instr_u0*` was never spliced
-warning: rule prose `valid/vstore_lane` was never spliced
-warning: rule prose `valid/vstore` was never spliced
-warning: rule prose `valid/vload_lane` was never spliced
-warning: rule prose `valid/vload` was never spliced
-warning: rule prose `valid/store` was never spliced
-warning: rule prose `valid/load` was never spliced
-warning: rule prose `valid/data.drop` was never spliced
-warning: rule prose `valid/memory.init` was never spliced
-warning: rule prose `valid/memory.copy` was never spliced
-warning: rule prose `valid/memory.fill` was never spliced
-warning: rule prose `valid/memory.grow` was never spliced
-warning: rule prose `valid/memory.size` was never spliced
-warning: rule prose `valid/elem.drop` was never spliced
-warning: rule prose `valid/table.init` was never spliced
-warning: rule prose `valid/table.copy` was never spliced
-warning: rule prose `valid/table.fill` was never spliced
-warning: rule prose `valid/table.grow` was never spliced
-warning: rule prose `valid/table.size` was never spliced
-warning: rule prose `valid/table.set` was never spliced
-warning: rule prose `valid/table.get` was never spliced
-warning: rule prose `valid/global.set` was never spliced
-warning: rule prose `valid/global.get` was never spliced
-warning: rule prose `valid/local.tee` was never spliced
-warning: rule prose `valid/local.set` was never spliced
-warning: rule prose `valid/local.get` was never spliced
-warning: rule prose `valid/vcvtop` was never spliced
-warning: rule prose `valid/vnarrow` was never spliced
-warning: rule prose `valid/vextbinop` was never spliced
-warning: rule prose `valid/vextunop` was never spliced
-warning: rule prose `valid/vreplace_lane` was never spliced
-warning: rule prose `valid/vextract_lane` was never spliced
-warning: rule prose `valid/vsplat` was never spliced
-warning: rule prose `valid/vshuffle` was never spliced
-warning: rule prose `valid/vswizzle` was never spliced
-warning: rule prose `valid/vbitmask` was never spliced
-warning: rule prose `valid/vshiftop` was never spliced
-warning: rule prose `valid/vrelop` was never spliced
-warning: rule prose `valid/vtestop` was never spliced
-warning: rule prose `valid/vbinop` was never spliced
-warning: rule prose `valid/vunop` was never spliced
-warning: rule prose `valid/vvtestop` was never spliced
-warning: rule prose `valid/vvternop` was never spliced
-warning: rule prose `valid/vvbinop` was never spliced
-warning: rule prose `valid/vvunop` was never spliced
-warning: rule prose `valid/vconst` was never spliced
-warning: rule prose `valid/any.convert_extern` was never spliced
-warning: rule prose `valid/extern.convert_any` was never spliced
-warning: rule prose `valid/array.init_data` was never spliced
-warning: rule prose `valid/array.init_elem` was never spliced
-warning: rule prose `valid/array.copy` was never spliced
-warning: rule prose `valid/array.fill` was never spliced
-warning: rule prose `valid/array.len` was never spliced
-warning: rule prose `valid/array.set` was never spliced
-warning: rule prose `valid/array.get` was never spliced
-warning: rule prose `valid/array.new_data` was never spliced
-warning: rule prose `valid/array.new_elem` was never spliced
-warning: rule prose `valid/array.new_fixed` was never spliced
-warning: rule prose `valid/array.new_default` was never spliced
-warning: rule prose `valid/array.new` was never spliced
-warning: rule prose `valid/struct.set` was never spliced
-warning: rule prose `valid/struct.get` was never spliced
-warning: rule prose `valid/struct.new_default` was never spliced
-warning: rule prose `valid/struct.new` was never spliced
-warning: rule prose `valid/i31.get` was never spliced
-warning: rule prose `valid/ref.cast` was never spliced
-warning: rule prose `valid/ref.test` was never spliced
-warning: rule prose `valid/ref.eq` was never spliced
-warning: rule prose `valid/ref.as_non_null` was never spliced
-warning: rule prose `valid/ref.is_null` was never spliced
-warning: rule prose `valid/ref.i31` was never spliced
-warning: rule prose `valid/ref.func` was never spliced
-warning: rule prose `valid/ref.null` was never spliced
-warning: rule prose `valid/cvtop` was never spliced
-warning: rule prose `valid/relop` was never spliced
-warning: rule prose `valid/testop` was never spliced
-warning: rule prose `valid/binop` was never spliced
-warning: rule prose `valid/unop` was never spliced
-warning: rule prose `valid/const` was never spliced
-warning: rule prose `valid/return_call_indirect` was never spliced
-warning: rule prose `valid/return_call_ref` was never spliced
-warning: rule prose `valid/return_call` was never spliced
-warning: rule prose `valid/return` was never spliced
-warning: rule prose `valid/call_indirect` was never spliced
-warning: rule prose `valid/call_ref` was never spliced
-warning: rule prose `valid/call` was never spliced
-warning: rule prose `valid/br_on_cast_fail` was never spliced
-warning: rule prose `valid/br_on_cast` was never spliced
-warning: rule prose `valid/br_on_non_null` was never spliced
-warning: rule prose `valid/br_on_null` was never spliced
-warning: rule prose `valid/br_table` was never spliced
-warning: rule prose `valid/br_if` was never spliced
-warning: rule prose `valid/br` was never spliced
-warning: rule prose `valid/if` was never spliced
-warning: rule prose `valid/loop` was never spliced
-warning: rule prose `valid/block` was never spliced
-warning: rule prose `valid/select` was never spliced
-warning: rule prose `valid/drop` was never spliced
-warning: rule prose `valid/unreachable` was never spliced
-warning: rule prose `valid/nop` was never spliced
-warning: rule prose `valid/block_u0` was never spliced
-warning: rule prose `valid/exter_u0` was never spliced
-warning: rule prose `valid/page` was never spliced
-warning: rule prose `valid/(limits_1, reftype_1)` was never spliced
-warning: rule prose `valid/((mut _u0?), valtype_1)` was never spliced
-warning: rule prose `valid/(n_1, m_1)` was never spliced
-warning: rule prose `valid/(t_11* ->_ x_1* ++ t_12*)` was never spliced
-warning: rule prose `valid/exter_u0` was never spliced
-warning: rule prose `valid/page` was never spliced
-warning: rule prose `valid/(limits, reftype)` was never spliced
-warning: rule prose `valid/((mut ()?), t)` was never spliced
-warning: rule prose `valid/(n, m)` was never spliced
-warning: rule prose `valid/def` was never spliced
-warning: rule prose `valid/rec` was never spliced
-warning: rule prose `valid/rec` was never spliced
-warning: rule prose `valid/sub` was never spliced
-warning: rule prose `valid/sub` was never spliced
-warning: rule prose `valid/compt_u0` was never spliced
-warning: rule prose `valid/(t_11* -> t_12*)` was never spliced
-warning: rule prose `valid/t_1*` was never spliced
-warning: rule prose `valid/((mut _u0?), zt_1)` was never spliced
-warning: rule prose `valid/stora_u0` was never spliced
-warning: rule prose `valid/valty_u0` was never spliced
-warning: rule prose `valid/vectype` was never spliced
-warning: rule prose `valid/ref` was never spliced
-warning: rule prose `valid/heapt_u0` was never spliced
-warning: rule prose `valid/deftype_1` was never spliced
-warning: rule prose `valid/numtype` was never spliced
-warning: rule prose `valid/packtype` was never spliced
-warning: rule prose `valid/compt_u0` was never spliced
-warning: rule prose `valid/(t_1* -> t_2*)` was never spliced
-warning: rule prose `valid/((mut ()?), storagetype)` was never spliced
-warning: rule prose `valid/stora_u0` was never spliced
-warning: rule prose `valid/packtype` was never spliced
-warning: rule prose `valid/(t_1* ->_ x* ++ t_2*)` was never spliced
-warning: rule prose `valid/t*` was never spliced
-warning: rule prose `valid/valty_u0` was never spliced
-warning: rule prose `valid/ref` was never spliced
-warning: rule prose `valid/heapt_u0` was never spliced
-warning: rule prose `valid/vectype` was never spliced
-warning: rule prose `valid/numtype` was never spliced
+warning: rule prose `Blocktype_ok` was never spliced
+warning: rule prose `Comptype_ok` was never spliced
+warning: rule prose `Comptype_sub` was never spliced
+warning: rule prose `Data_ok` was never spliced
+warning: rule prose `Datamode_ok` was never spliced
+warning: rule prose `Deftype_ok` was never spliced
+warning: rule prose `Deftype_sub` was never spliced
+warning: rule prose `Elem_ok` was never spliced
+warning: rule prose `Elemmode_ok` was never spliced
+warning: rule prose `Export_ok` was never spliced
+warning: rule prose `Expr_const` was never spliced
+warning: rule prose `Expr_ok` was never spliced
+warning: rule prose `Externidx_ok` was never spliced
+warning: rule prose `Externtype_ok` was never spliced
+warning: rule prose `Externtype_sub` was never spliced
+warning: rule prose `Fieldtype_ok` was never spliced
+warning: rule prose `Fieldtype_sub` was never spliced
+warning: rule prose `Func_ok` was never spliced
+warning: rule prose `Functype_ok` was never spliced
+warning: rule prose `Functype_sub` was never spliced
+warning: rule prose `Global_ok` was never spliced
+warning: rule prose `Globals_ok` was never spliced
+warning: rule prose `Globaltype_ok` was never spliced
+warning: rule prose `Globaltype_sub` was never spliced
+warning: rule prose `Heaptype_ok` was never spliced
+warning: rule prose `Heaptype_sub` was never spliced
+warning: rule prose `Import_ok` was never spliced
+warning: rule prose `Instr_const` was never spliced
+warning: rule prose `Instr_ok/any.convert_extern` was never spliced
+warning: rule prose `Instr_ok/array.copy` was never spliced
+warning: rule prose `Instr_ok/array.fill` was never spliced
+warning: rule prose `Instr_ok/array.get` was never spliced
+warning: rule prose `Instr_ok/array.init_data` was never spliced
+warning: rule prose `Instr_ok/array.init_elem` was never spliced
+warning: rule prose `Instr_ok/array.len` was never spliced
+warning: rule prose `Instr_ok/array.new` was never spliced
+warning: rule prose `Instr_ok/array.new_data` was never spliced
+warning: rule prose `Instr_ok/array.new_default` was never spliced
+warning: rule prose `Instr_ok/array.new_elem` was never spliced
+warning: rule prose `Instr_ok/array.new_fixed` was never spliced
+warning: rule prose `Instr_ok/array.set` was never spliced
+warning: rule prose `Instr_ok/binop` was never spliced
+warning: rule prose `Instr_ok/block` was never spliced
+warning: rule prose `Instr_ok/br` was never spliced
+warning: rule prose `Instr_ok/br_if` was never spliced
+warning: rule prose `Instr_ok/br_on_cast` was never spliced
+warning: rule prose `Instr_ok/br_on_cast_fail` was never spliced
+warning: rule prose `Instr_ok/br_on_non_null` was never spliced
+warning: rule prose `Instr_ok/br_on_null` was never spliced
+warning: rule prose `Instr_ok/br_table` was never spliced
+warning: rule prose `Instr_ok/call` was never spliced
+warning: rule prose `Instr_ok/call_indirect` was never spliced
+warning: rule prose `Instr_ok/call_ref` was never spliced
+warning: rule prose `Instr_ok/const` was never spliced
+warning: rule prose `Instr_ok/cvtop` was never spliced
+warning: rule prose `Instr_ok/data.drop` was never spliced
+warning: rule prose `Instr_ok/drop` was never spliced
+warning: rule prose `Instr_ok/elem.drop` was never spliced
+warning: rule prose `Instr_ok/extern.convert_any` was never spliced
+warning: rule prose `Instr_ok/global.get` was never spliced
+warning: rule prose `Instr_ok/global.set` was never spliced
+warning: rule prose `Instr_ok/i31.get` was never spliced
+warning: rule prose `Instr_ok/if` was never spliced
+warning: rule prose `Instr_ok/load` was never spliced
+warning: rule prose `Instr_ok/local.get` was never spliced
+warning: rule prose `Instr_ok/local.set` was never spliced
+warning: rule prose `Instr_ok/local.tee` was never spliced
+warning: rule prose `Instr_ok/loop` was never spliced
+warning: rule prose `Instr_ok/memory.copy` was never spliced
+warning: rule prose `Instr_ok/memory.fill` was never spliced
+warning: rule prose `Instr_ok/memory.grow` was never spliced
+warning: rule prose `Instr_ok/memory.init` was never spliced
+warning: rule prose `Instr_ok/memory.size` was never spliced
+warning: rule prose `Instr_ok/nop` was never spliced
+warning: rule prose `Instr_ok/ref.as_non_null` was never spliced
+warning: rule prose `Instr_ok/ref.cast` was never spliced
+warning: rule prose `Instr_ok/ref.eq` was never spliced
+warning: rule prose `Instr_ok/ref.func` was never spliced
+warning: rule prose `Instr_ok/ref.i31` was never spliced
+warning: rule prose `Instr_ok/ref.is_null` was never spliced
+warning: rule prose `Instr_ok/ref.null` was never spliced
+warning: rule prose `Instr_ok/ref.test` was never spliced
+warning: rule prose `Instr_ok/relop` was never spliced
+warning: rule prose `Instr_ok/return` was never spliced
+warning: rule prose `Instr_ok/return_call` was never spliced
+warning: rule prose `Instr_ok/return_call_indirect` was never spliced
+warning: rule prose `Instr_ok/return_call_ref` was never spliced
+warning: rule prose `Instr_ok/select` was never spliced
+warning: rule prose `Instr_ok/store` was never spliced
+warning: rule prose `Instr_ok/struct.get` was never spliced
+warning: rule prose `Instr_ok/struct.new` was never spliced
+warning: rule prose `Instr_ok/struct.new_default` was never spliced
+warning: rule prose `Instr_ok/struct.set` was never spliced
+warning: rule prose `Instr_ok/table.copy` was never spliced
+warning: rule prose `Instr_ok/table.fill` was never spliced
+warning: rule prose `Instr_ok/table.get` was never spliced
+warning: rule prose `Instr_ok/table.grow` was never spliced
+warning: rule prose `Instr_ok/table.init` was never spliced
+warning: rule prose `Instr_ok/table.set` was never spliced
+warning: rule prose `Instr_ok/table.size` was never spliced
+warning: rule prose `Instr_ok/testop` was never spliced
+warning: rule prose `Instr_ok/unop` was never spliced
+warning: rule prose `Instr_ok/unreachable` was never spliced
+warning: rule prose `Instr_ok/vbinop` was never spliced
+warning: rule prose `Instr_ok/vbitmask` was never spliced
+warning: rule prose `Instr_ok/vconst` was never spliced
+warning: rule prose `Instr_ok/vcvtop` was never spliced
+warning: rule prose `Instr_ok/vextbinop` was never spliced
+warning: rule prose `Instr_ok/vextract_lane` was never spliced
+warning: rule prose `Instr_ok/vextunop` was never spliced
+warning: rule prose `Instr_ok/vload` was never spliced
+warning: rule prose `Instr_ok/vload_lane` was never spliced
+warning: rule prose `Instr_ok/vnarrow` was never spliced
+warning: rule prose `Instr_ok/vrelop` was never spliced
+warning: rule prose `Instr_ok/vreplace_lane` was never spliced
+warning: rule prose `Instr_ok/vshiftop` was never spliced
+warning: rule prose `Instr_ok/vshuffle` was never spliced
+warning: rule prose `Instr_ok/vsplat` was never spliced
+warning: rule prose `Instr_ok/vstore` was never spliced
+warning: rule prose `Instr_ok/vstore_lane` was never spliced
+warning: rule prose `Instr_ok/vswizzle` was never spliced
+warning: rule prose `Instr_ok/vtestop` was never spliced
+warning: rule prose `Instr_ok/vunop` was never spliced
+warning: rule prose `Instr_ok/vvbinop` was never spliced
+warning: rule prose `Instr_ok/vvternop` was never spliced
+warning: rule prose `Instr_ok/vvtestop` was never spliced
+warning: rule prose `Instr_ok/vvunop` was never spliced
+warning: rule prose `Instrs_ok` was never spliced
+warning: rule prose `Instrtype_ok` was never spliced
+warning: rule prose `Instrtype_sub` was never spliced
+warning: rule prose `Limits_ok` was never spliced
+warning: rule prose `Limits_sub` was never spliced
+warning: rule prose `Local_ok` was never spliced
+warning: rule prose `Mem_ok` was never spliced
+warning: rule prose `Memtype_ok` was never spliced
+warning: rule prose `Memtype_sub` was never spliced
+warning: rule prose `Module_ok` was never spliced
+warning: rule prose `NotationTypingInstrScheme` was never spliced
+warning: rule prose `Numtype_ok` was never spliced
+warning: rule prose `Numtype_sub` was never spliced
+warning: rule prose `Packtype_ok` was never spliced
+warning: rule prose `Packtype_sub` was never spliced
+warning: rule prose `Rectype_ok` was never spliced
+warning: rule prose `Rectype_ok2` was never spliced
+warning: rule prose `Reftype_ok` was never spliced
+warning: rule prose `Reftype_sub` was never spliced
+warning: rule prose `Resulttype_ok` was never spliced
+warning: rule prose `Resulttype_sub` was never spliced
+warning: rule prose `Start_ok` was never spliced
+warning: rule prose `Step/array.new_fixed` was never spliced
+warning: rule prose `Step/array.set` was never spliced
+warning: rule prose `Step/ctxt` was never spliced
+warning: rule prose `Step/data.drop` was never spliced
+warning: rule prose `Step/elem.drop` was never spliced
+warning: rule prose `Step/global.set` was never spliced
+warning: rule prose `Step/local.set` was never spliced
+warning: rule prose `Step/memory.grow` was never spliced
+warning: rule prose `Step/store` was never spliced
+warning: rule prose `Step/struct.new` was never spliced
+warning: rule prose `Step/struct.set` was never spliced
+warning: rule prose `Step/table.grow` was never spliced
+warning: rule prose `Step/table.set` was never spliced
+warning: rule prose `Step/vstore` was never spliced
+warning: rule prose `Step/vstore_lane` was never spliced
+warning: rule prose `Step_pure/any.convert_extern` was never spliced
+warning: rule prose `Step_pure/array.new` was never spliced
+warning: rule prose `Step_pure/binop` was never spliced
+warning: rule prose `Step_pure/br` was never spliced
+warning: rule prose `Step_pure/br_if` was never spliced
+warning: rule prose `Step_pure/br_on_non_null` was never spliced
+warning: rule prose `Step_pure/br_on_null` was never spliced
+warning: rule prose `Step_pure/br_table` was never spliced
+warning: rule prose `Step_pure/call_indirect` was never spliced
+warning: rule prose `Step_pure/cvtop` was never spliced
+warning: rule prose `Step_pure/drop` was never spliced
+warning: rule prose `Step_pure/extern.convert_any` was never spliced
+warning: rule prose `Step_pure/frame` was never spliced
+warning: rule prose `Step_pure/i31.get` was never spliced
+warning: rule prose `Step_pure/if` was never spliced
+warning: rule prose `Step_pure/label` was never spliced
+warning: rule prose `Step_pure/local.tee` was never spliced
+warning: rule prose `Step_pure/nop` was never spliced
+warning: rule prose `Step_pure/ref.as_non_null` was never spliced
+warning: rule prose `Step_pure/ref.eq` was never spliced
+warning: rule prose `Step_pure/ref.i31` was never spliced
+warning: rule prose `Step_pure/ref.is_null` was never spliced
+warning: rule prose `Step_pure/relop` was never spliced
+warning: rule prose `Step_pure/return` was never spliced
+warning: rule prose `Step_pure/return_call_indirect` was never spliced
+warning: rule prose `Step_pure/select` was never spliced
+warning: rule prose `Step_pure/testop` was never spliced
+warning: rule prose `Step_pure/trap` was never spliced
+warning: rule prose `Step_pure/unop` was never spliced
+warning: rule prose `Step_pure/unreachable` was never spliced
+warning: rule prose `Step_pure/vbinop` was never spliced
+warning: rule prose `Step_pure/vbitmask` was never spliced
+warning: rule prose `Step_pure/vcvtop` was never spliced
+warning: rule prose `Step_pure/vextbinop` was never spliced
+warning: rule prose `Step_pure/vextract_lane` was never spliced
+warning: rule prose `Step_pure/vextunop` was never spliced
+warning: rule prose `Step_pure/vnarrow` was never spliced
+warning: rule prose `Step_pure/vrelop` was never spliced
+warning: rule prose `Step_pure/vreplace_lane` was never spliced
+warning: rule prose `Step_pure/vshiftop` was never spliced
+warning: rule prose `Step_pure/vshuffle` was never spliced
+warning: rule prose `Step_pure/vsplat` was never spliced
+warning: rule prose `Step_pure/vswizzle` was never spliced
+warning: rule prose `Step_pure/vtestop` was never spliced
+warning: rule prose `Step_pure/vunop` was never spliced
+warning: rule prose `Step_pure/vvbinop` was never spliced
+warning: rule prose `Step_pure/vvternop` was never spliced
+warning: rule prose `Step_pure/vvtestop` was never spliced
+warning: rule prose `Step_pure/vvunop` was never spliced
+warning: rule prose `Step_read/array.copy` was never spliced
+warning: rule prose `Step_read/array.fill` was never spliced
+warning: rule prose `Step_read/array.get` was never spliced
+warning: rule prose `Step_read/array.init_data` was never spliced
+warning: rule prose `Step_read/array.init_elem` was never spliced
+warning: rule prose `Step_read/array.len` was never spliced
+warning: rule prose `Step_read/array.new_data` was never spliced
+warning: rule prose `Step_read/array.new_default` was never spliced
+warning: rule prose `Step_read/array.new_elem` was never spliced
+warning: rule prose `Step_read/block` was never spliced
+warning: rule prose `Step_read/br_on_cast` was never spliced
+warning: rule prose `Step_read/br_on_cast_fail` was never spliced
+warning: rule prose `Step_read/call` was never spliced
+warning: rule prose `Step_read/call_ref` was never spliced
+warning: rule prose `Step_read/global.get` was never spliced
+warning: rule prose `Step_read/load` was never spliced
+warning: rule prose `Step_read/local.get` was never spliced
+warning: rule prose `Step_read/loop` was never spliced
+warning: rule prose `Step_read/memory.copy` was never spliced
+warning: rule prose `Step_read/memory.fill` was never spliced
+warning: rule prose `Step_read/memory.init` was never spliced
+warning: rule prose `Step_read/memory.size` was never spliced
+warning: rule prose `Step_read/ref.cast` was never spliced
+warning: rule prose `Step_read/ref.func` was never spliced
+warning: rule prose `Step_read/ref.null` was never spliced
+warning: rule prose `Step_read/ref.test` was never spliced
+warning: rule prose `Step_read/return_call` was never spliced
+warning: rule prose `Step_read/return_call_ref` was never spliced
+warning: rule prose `Step_read/struct.get` was never spliced
+warning: rule prose `Step_read/struct.new_default` was never spliced
+warning: rule prose `Step_read/table.copy` was never spliced
+warning: rule prose `Step_read/table.fill` was never spliced
+warning: rule prose `Step_read/table.get` was never spliced
+warning: rule prose `Step_read/table.init` was never spliced
+warning: rule prose `Step_read/table.size` was never spliced
+warning: rule prose `Step_read/vload` was never spliced
+warning: rule prose `Step_read/vload_lane` was never spliced
+warning: rule prose `Storagetype_ok` was never spliced
+warning: rule prose `Storagetype_sub` was never spliced
+warning: rule prose `Subtype_ok` was never spliced
+warning: rule prose `Subtype_ok2` was never spliced
+warning: rule prose `Table_ok` was never spliced
+warning: rule prose `Tabletype_ok` was never spliced
+warning: rule prose `Tabletype_sub` was never spliced
+warning: rule prose `Type_ok` was never spliced
+warning: rule prose `Types_ok` was never spliced
+warning: rule prose `Valtype_ok` was never spliced
+warning: rule prose `Valtype_sub` was never spliced
+warning: rule prose `Vectype_ok` was never spliced
+warning: rule prose `Vectype_sub` was never spliced
 warning: definition prose `ANYREF` was never spliced
 warning: definition prose `ARRAYREF` was never spliced
 warning: definition prose `E` was never spliced
@@ -1756,6 +1763,7 @@ warning: definition prose `clos_deftypes` was never spliced
 warning: definition prose `clos_moduletype` was never spliced
 warning: definition prose `clos_valtype` was never spliced
 warning: definition prose `concat_` was never spliced
+warning: definition prose `concatn_` was never spliced
 warning: definition prose `const` was never spliced
 warning: definition prose `cont` was never spliced
 warning: definition prose `cpacknum_` was never spliced
@@ -1860,8 +1868,8 @@ warning: definition prose `invibytes_` was never spliced
 warning: definition prose `invlanes_` was never spliced
 warning: definition prose `invoke` was never spliced
 warning: definition prose `invsigned_` was never spliced
-warning: definition prose `isize` was never spliced
 warning: definition prose `lanetype` was never spliced
+warning: definition prose `list_` was never spliced
 warning: definition prose `local` was never spliced
 warning: definition prose `lpacknum_` was never spliced
 warning: definition prose `lsize` was never spliced
@@ -1888,8 +1896,11 @@ warning: definition prose `rolldt` was never spliced
 warning: definition prose `rollrt` was never spliced
 warning: definition prose `rundata_` was never spliced
 warning: definition prose `runelem_` was never spliced
-warning: definition prose `setminus` was never spliced
-warning: definition prose `setminus1` was never spliced
+warning: definition prose `setminus1_` was never spliced
+warning: definition prose `setminus_` was never spliced
+warning: definition prose `setproduct1_` was never spliced
+warning: definition prose `setproduct2_` was never spliced
+warning: definition prose `setproduct_` was never spliced
 warning: definition prose `shift_labelidxs` was never spliced
 warning: definition prose `shsize` was never spliced
 warning: definition prose `signed_` was never spliced
@@ -1942,6 +1953,7 @@ warning: definition prose `unrolldt` was never spliced
 warning: definition prose `unrollht` was never spliced
 warning: definition prose `unrollrt` was never spliced
 warning: definition prose `utf8` was never spliced
+warning: definition prose `var` was never spliced
 warning: definition prose `vbinop_` was never spliced
 warning: definition prose `vcvtop__` was never spliced
 warning: definition prose `vextbinop__` was never spliced

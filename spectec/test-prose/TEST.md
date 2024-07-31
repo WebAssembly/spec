@@ -18,27 +18,32 @@ watsup 0.4 generator
 =================
  Generated prose
 =================
-validation_of_valid_limits
+validation_of_Limits_ok
 - the limits (n, m) is valid with the nat k if and only if:
   - n is less than or equal to m.
   - m is less than or equal to k.
 
-validation_of_valid_functype
+validation_of_Functype_ok
 - the function type (t_1* -> t_2?) is valid.
 
-validation_of_valid_globaltype
+validation_of_Globaltype_ok
 - the global type ((MUT ()?), t) is valid.
 
-validation_of_valid_tabletype
+validation_of_Tabletype_ok
 - the table type limits is valid if and only if:
   - the limits limits is valid with the nat ((2 ^ 32) - 1).
 
-validation_of_valid_memtype
+validation_of_Memtype_ok
 - the memory type limits is valid if and only if:
   - the limits limits is valid with the nat (2 ^ 16).
 
+<<<<<<< HEAD
 validation_of_valid_externtype
 - the external type externtype_u0 is valid if and only if:
+=======
+validation_of_Externtype_ok
+- the external type exter_u0 is valid if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - externtype_u0 is (FUNC functype).
     - the function type functype is valid.
@@ -52,27 +57,32 @@ validation_of_valid_externtype
     - externtype_u0 is (MEM memtype).
     - the memory type memtype is valid.
 
-validation_of_matching_limits
+validation_of_Limits_sub
 - the limits (n_11, n_12) matches the limits (n_21, n_22) if and only if:
   - n_11 is greater than or equal to n_21.
   - n_12 is less than or equal to n_22.
 
-validation_of_matching_functype
+validation_of_Functype_sub
 - the function type ft matches the function type ft.
 
-validation_of_matching_globaltype
+validation_of_Globaltype_sub
 - the global type gt matches the global type gt.
 
-validation_of_matching_tabletype
+validation_of_Tabletype_sub
 - the table type lim_1 matches the table type lim_2 if and only if:
   - the limits lim_1 matches the limits lim_2.
 
-validation_of_matching_memtype
+validation_of_Memtype_sub
 - the memory type lim_1 matches the memory type lim_2 if and only if:
   - the limits lim_1 matches the limits lim_2.
 
+<<<<<<< HEAD
 validation_of_matching_externtype
 - the external type externtype_u0 matches the external type externtype_u1 if and only if:
+=======
+validation_of_Externtype_sub
+- the external type exter_u0 matches the external type exter_u1 if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - externtype_u0 is (FUNC ft_1).
     - externtype_u1 is (FUNC ft_2).
@@ -90,42 +100,42 @@ validation_of_matching_externtype
     - externtype_u1 is (MEM mt_2).
     - the memory type mt_1 matches the memory type mt_2.
 
-validation_of_NOP
+validation_of_Instr_ok/nop
 - the instr NOP is valid with the function type ([] -> []).
 
-validation_of_UNREACHABLE
+validation_of_Instr_ok/unreachable
 - the instr UNREACHABLE is valid with the function type (t_1* -> t_2*).
 
-validation_of_DROP
+validation_of_Instr_ok/drop
 - the instr DROP is valid with the function type ([t] -> []).
 
-validation_of_SELECT
+validation_of_Instr_ok/select
 - the instr SELECT is valid with the function type ([t, t, I32] -> [t]).
 
-validation_of_BLOCK
+validation_of_Instr_ok/block
 - the instr (BLOCK t? instr*) is valid with the function type ([] -> t?) if and only if:
   - Under the context C with .LABELS prepended by [t?], the instr sequence instr* is valid with the function type ([] -> t?).
 
-validation_of_LOOP
+validation_of_Instr_ok/loop
 - the instr (LOOP t? instr*) is valid with the function type ([] -> t?) if and only if:
   - Under the context C with .LABELS prepended by [?()], the instr sequence instr* is valid with the function type ([] -> []).
 
-validation_of_IF
+validation_of_Instr_ok/if
 - the instr (IF t? instr_1* instr_2*) is valid with the function type ([I32] -> t?) if and only if:
   - Under the context C with .LABELS prepended by [t?], the instr sequence instr_1* is valid with the function type ([] -> t?).
   - Under the context C with .LABELS prepended by [t?], the instr sequence instr_2* is valid with the function type ([] -> t?).
 
-validation_of_BR
+validation_of_Instr_ok/br
 - the instr (BR l) is valid with the function type (t_1* ++ t? -> t_2*) if and only if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t?.
 
-validation_of_BR_IF
+validation_of_Instr_ok/br_if
 - the instr (BR_IF l) is valid with the function type (t? ++ [I32] -> t?) if and only if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t?.
 
-validation_of_BR_TABLE
+validation_of_Instr_ok/br_table
 - the instr (BR_TABLE l* l') is valid with the function type (t_1* ++ t? -> t_2*) if and only if:
   - |C.LABELS| is greater than l'.
   - For all l in l*,
@@ -134,75 +144,75 @@ validation_of_BR_TABLE
   - For all l in l*,
     - t? is C.LABELS[l].
 
-validation_of_CALL
+validation_of_Instr_ok/call
 - the instr (CALL x) is valid with the function type (t_1* -> t_2?) if and only if:
   - |C.FUNCS| is greater than x.
   - C.FUNCS[x] is (t_1* -> t_2?).
 
-validation_of_CALL_INDIRECT
+validation_of_Instr_ok/call_indirect
 - the instr (CALL_INDIRECT x) is valid with the function type (t_1* ++ [I32] -> t_2?) if and only if:
   - |C.TYPES| is greater than x.
   - C.TYPES[x] is (t_1* -> t_2?).
 
-validation_of_RETURN
+validation_of_Instr_ok/return
 - the instr RETURN is valid with the function type (t_1* ++ t? -> t_2*) if and only if:
   - C.RETURN is ?(t?).
 
-validation_of_CONST
+validation_of_Instr_ok/const
 - the instr (t.CONST c_t) is valid with the function type ([] -> [t]).
 
-validation_of_UNOP
+validation_of_Instr_ok/unop
 - the instr (UNOP t unop_t) is valid with the function type ([t] -> [t]).
 
-validation_of_BINOP
+validation_of_Instr_ok/binop
 - the instr (BINOP t binop_t) is valid with the function type ([t, t] -> [t]).
 
-validation_of_TESTOP
+validation_of_Instr_ok/testop
 - the instr (TESTOP t testop_t) is valid with the function type ([t] -> [I32]).
 
-validation_of_RELOP
+validation_of_Instr_ok/relop
 - the instr (RELOP t relop_t) is valid with the function type ([t, t] -> [I32]).
 
-validation_of_CVTOP
+validation_of_Instr_ok/cvtop
 - the instr (CVTOP nt_1 nt_2 REINTERPRET) is valid with the function type ([nt_2] -> [nt_1]) if and only if:
   - $size(nt_1) is $size(nt_2).
 
-validation_of_LOCAL.GET
+validation_of_Instr_ok/local.get
 - the instr (LOCAL.GET x) is valid with the function type ([] -> [t]) if and only if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is t.
 
-validation_of_LOCAL.SET
+validation_of_Instr_ok/local.set
 - the instr (LOCAL.SET x) is valid with the function type ([t] -> []) if and only if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is t.
 
-validation_of_LOCAL.TEE
+validation_of_Instr_ok/local.tee
 - the instr (LOCAL.TEE x) is valid with the function type ([t] -> [t]) if and only if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is t.
 
-validation_of_GLOBAL.GET
+validation_of_Instr_ok/global.get
 - the instr (GLOBAL.GET x) is valid with the function type ([] -> [t]) if and only if:
   - |C.GLOBALS| is greater than x.
   - C.GLOBALS[x] is (mut, t).
 
-validation_of_GLOBAL.SET
+validation_of_Instr_ok/global.set
 - the instr (GLOBAL.SET x) is valid with the function type ([t] -> []) if and only if:
   - |C.GLOBALS| is greater than x.
   - C.GLOBALS[x] is ((MUT ?(())), t).
 
-validation_of_MEMORY.SIZE
+validation_of_Instr_ok/memory.size
 - the instr MEMORY.SIZE is valid with the function type ([] -> [I32]) if and only if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
 
-validation_of_MEMORY.GROW
+validation_of_Instr_ok/memory.grow
 - the instr MEMORY.GROW is valid with the function type ([I32] -> [I32]) if and only if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
 
-validation_of_LOAD
+validation_of_Instr_ok/load
 - the instr (LOAD nt (n, sx)? memarg) is valid with the function type ([I32] -> [nt]) if and only if:
   - |C.MEMS| is greater than 0.
   - ((sx? is ?())) if and only if ((n? is ?())).
@@ -214,7 +224,7 @@ validation_of_LOAD
   - If n is defined,
     - nt is Inn.
 
-validation_of_STORE
+validation_of_Instr_ok/store
 - the instr (STORE nt n? memarg) is valid with the function type ([I32, nt] -> []) if and only if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
@@ -225,8 +235,13 @@ validation_of_STORE
   - If n is defined,
     - nt is Inn.
 
+<<<<<<< HEAD
 validation_of_valid_instr*
 - the instr sequence instr_u0* is valid with the function type (valtype_u1* -> valtype_u2*) if and only if:
+=======
+validation_of_Instrs_ok
+- the instr sequence instr_u0* is valid with the function type (valty_u1* -> valty_u2*) if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - instr_u0* is [].
     - valtype_u1* is [].
@@ -243,11 +258,11 @@ validation_of_valid_instr*
     - valtype_u2* is t* ++ t_2*.
     - the instr sequence instr* is valid with the function type (t_1* -> t_2*).
 
-validation_of_valid_expr
+validation_of_Expr_ok
 - the expression instr* is valid with the result type t? if and only if:
   - the instr sequence instr* is valid with the function type ([] -> t?).
 
-validation_of_const_instr
+validation_of_Instr_const
 - the instr instr_u0 is constant if and only if:
   - Either:
     - instr_u0 is (t.CONST c).
@@ -256,37 +271,37 @@ validation_of_const_instr
     - |C.GLOBALS| is greater than x.
     - C.GLOBALS[x] is ((MUT ?()), t).
 
-validation_of_const_expr
+validation_of_Expr_const
 - the expression instr* is constant if and only if:
   - For all instr in instr*,
     - the instr instr is constant.
 
-validation_of_valid_type
+validation_of_Type_ok
 - the type (TYPE ft) is valid with the function type ft if and only if:
   - the function type ft is valid.
 
-validation_of_valid_func
+validation_of_Func_ok
 - the function (FUNC x (LOCAL t)* expr) is valid with the function type (t_1* -> t_2?) if and only if:
   - |C.TYPES| is greater than x.
   - C.TYPES[x] is (t_1* -> t_2?).
   - Under the context C with .LOCALS appended by t_1* ++ t* with .LABELS appended by [t_2?] with .RETURN appended by ?(t_2?), the expression expr is valid with the result type t_2?.
 
-validation_of_valid_global
+validation_of_Global_ok
 - the global (GLOBAL gt expr) is valid with the global type gt if and only if:
   - the global type gt is valid.
   - gt is (mut, t).
   - the expression expr is valid with the number type sequence ?(t).
   - the expression expr is constant.
 
-validation_of_valid_table
+validation_of_Table_ok
 - the table (TABLE tt) is valid with the table type tt if and only if:
   - the table type tt is valid.
 
-validation_of_valid_mem
+validation_of_Mem_ok
 - the memory (MEMORY mt) is valid with the memory type mt if and only if:
   - the memory type mt is valid.
 
-validation_of_valid_elem
+validation_of_Elem_ok
 - the table segment (ELEM expr x*) is valid if and only if:
   - |C.TABLES| is greater than 0.
   - |x*| is |ft*|.
@@ -298,24 +313,29 @@ validation_of_valid_elem
   - For all ft in ft* and x in x*,
     - C.FUNCS[x] is ft.
 
-validation_of_valid_data
+validation_of_Data_ok
 - the memory segment (DATA expr b*) is valid if and only if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is lim.
   - the expression expr is valid with the number type sequence ?(I32).
   - the expression expr is constant.
 
-validation_of_valid_start
+validation_of_Start_ok
 - the start function (START x) is valid if and only if:
   - |C.FUNCS| is greater than x.
   - C.FUNCS[x] is ([] -> []).
 
-validation_of_valid_import
+validation_of_Import_ok
 - the import (IMPORT name_1 name_2 xt) is valid with the external type xt if and only if:
   - the external type xt is valid.
 
+<<<<<<< HEAD
 validation_of_valid_externidx
 - the external index externidx_u0 is valid with the external type externtype_u1 if and only if:
+=======
+validation_of_Externidx_ok
+- the external index exter_u0 is valid with the external type exter_u1 if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - externidx_u0 is (FUNC x).
     - externtype_u1 is (FUNC ft).
@@ -337,11 +357,11 @@ validation_of_valid_externidx
     - |C.MEMS| is greater than x.
     - C.MEMS[x] is mt.
 
-validation_of_valid_export
+validation_of_Export_ok
 - the export (EXPORT name externidx) is valid with the external type xt if and only if:
   - the external index externidx is valid with the external type xt.
 
-validation_of_valid_module
+validation_of_Module_ok
 - the module (MODULE type* import* func* global* table* mem* elem* data* start? export*) is valid if and only if:
   - |type*| is |ft'*|.
   - |ixt*| is |import*|.
@@ -399,18 +419,24 @@ sum n_u0*
 2. Let [n] ++ n'* be n_u0*.
 3. Return (n + $sum(n'*)).
 
-concat_ X_u0*
-1. If (X_u0* is []), then:
-  a. Return [].
-2. Let [w*] ++ w'** be X_u0*.
-3. Return w* ++ $concat_(w'**).
-
 opt_ X_u0*
 1. If (X_u0* is []), then:
   a. Return ?().
 2. Assert: Due to validation, (|X_u0*| is 1).
 3. Let [w] be X_u0*.
 4. Return ?(w).
+
+list_ X_u0?
+1. If X_u0? is not defined, then:
+  a. Return [].
+2. Let ?(w) be X_u0?.
+3. Return [w].
+
+concat_ X_u0*
+1. If (X_u0* is []), then:
+  a. Return [].
+2. Let [w*] ++ w'** be X_u0*.
+3. Return w* ++ $concat_(w'**).
 
 signif N_u0
 1. If (N_u0 is 32), then:
@@ -537,6 +563,7 @@ unop_ valtype_u1 unop__u0 val__u3
 4. If ((unop__u0 is ABS) and the type of valtype_u1 is Fnn), then:
   a. Let Fnn be valtype_u1.
   b. Let fN be val__u3.
+<<<<<<< HEAD
   c. Return [$fabs_($size(Fnn), fN)].
 5. If ((unop__u0 is NEG) and the type of valtype_u1 is Fnn), then:
   a. Let Fnn be valtype_u1.
@@ -556,13 +583,34 @@ unop_ valtype_u1 unop__u0 val__u3
   c. Return [$ffloor_($size(Fnn), fN)].
 9. If ((unop__u0 is TRUNC) and the type of valtype_u1 is Fnn), then:
   a. Let Fnn be valtype_u1.
+=======
+  c. Return $fabs_($size(Fnn), fN).
+5. If ((unop__u0 is NEG) and the type of valty_u1 is Fnn), then:
+  a. Let Fnn be valty_u1.
   b. Let fN be val__u3.
-  c. Return [$ftrunc_($size(Fnn), fN)].
+  c. Return $fneg_($size(Fnn), fN).
+6. If ((unop__u0 is SQRT) and the type of valty_u1 is Fnn), then:
+  a. Let Fnn be valty_u1.
+  b. Let fN be val__u3.
+  c. Return $fsqrt_($size(Fnn), fN).
+7. If ((unop__u0 is CEIL) and the type of valty_u1 is Fnn), then:
+  a. Let Fnn be valty_u1.
+  b. Let fN be val__u3.
+  c. Return $fceil_($size(Fnn), fN).
+8. If ((unop__u0 is FLOOR) and the type of valty_u1 is Fnn), then:
+  a. Let Fnn be valty_u1.
+  b. Let fN be val__u3.
+  c. Return $ffloor_($size(Fnn), fN).
+9. If ((unop__u0 is TRUNC) and the type of valty_u1 is Fnn), then:
+  a. Let Fnn be valty_u1.
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
+  b. Let fN be val__u3.
+  c. Return $ftrunc_($size(Fnn), fN).
 10. Assert: Due to validation, (unop__u0 is NEAREST).
 11. Assert: Due to validation, the type of valtype_u1 is Fnn.
 12. Let Fnn be valtype_u1.
 13. Let fN be val__u3.
-14. Return [$fnearest_($size(Fnn), fN)].
+14. Return $fnearest_($size(Fnn), fN).
 
 binop_ valtype_u1 binop__u0 val__u3 val__u5
 1. If ((binop__u0 is ADD) and the type of valtype_u1 is Inn), then:
@@ -584,6 +632,7 @@ binop_ valtype_u1 binop__u0 val__u3 val__u5
   a. Let Inn be valtype_u1.
   b. Let iN_1 be val__u3.
   c. Let iN_2 be val__u5.
+<<<<<<< HEAD
   d. If binop__u0 is of the case DIV, then:
     1) Let (DIV sx) be binop__u0.
     2) Return [$idiv_($size(Inn), sx, iN_1, iN_2)].
@@ -592,6 +641,16 @@ binop_ valtype_u1 binop__u0 val__u3 val__u5
     2) Return [$irem_($size(Inn), sx, iN_1, iN_2)].
 5. If ((binop__u0 is AND) and the type of valtype_u1 is Inn), then:
   a. Let Inn be valtype_u1.
+=======
+  d. If binop_u0 is of the case DIV, then:
+    1) Let (DIV sx) be binop_u0.
+    2) Return $list_($idiv_($size(Inn), sx, iN_1, iN_2)).
+  e. If binop_u0 is of the case REM, then:
+    1) Let (REM sx) be binop_u0.
+    2) Return $list_($irem_($size(Inn), sx, iN_1, iN_2)).
+5. If ((binop_u0 is AND) and the type of valty_u1 is Inn), then:
+  a. Let Inn be valty_u1.
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   b. Let iN_1 be val__u3.
   c. Let iN_2 be val__u5.
   d. Return [$iand_($size(Inn), iN_1, iN_2)].
@@ -631,6 +690,7 @@ binop_ valtype_u1 binop__u0 val__u3 val__u5
   a. Let Fnn be valtype_u1.
   b. Let fN_1 be val__u3.
   c. Let fN_2 be val__u5.
+<<<<<<< HEAD
   d. Return [$fadd_($size(Fnn), fN_1, fN_2)].
 13. If ((binop__u0 is SUB) and the type of valtype_u1 is Fnn), then:
   a. Let Fnn be valtype_u1.
@@ -660,9 +720,40 @@ binop_ valtype_u1 binop__u0 val__u3 val__u5
 18. Assert: Due to validation, (binop__u0 is COPYSIGN).
 19. Assert: Due to validation, the type of valtype_u1 is Fnn.
 20. Let Fnn be valtype_u1.
+=======
+  d. Return $fadd_($size(Fnn), fN_1, fN_2).
+13. If ((binop_u0 is SUB) and the type of valty_u1 is Fnn), then:
+  a. Let Fnn be valty_u1.
+  b. Let fN_1 be val__u3.
+  c. Let fN_2 be val__u5.
+  d. Return $fsub_($size(Fnn), fN_1, fN_2).
+14. If ((binop_u0 is MUL) and the type of valty_u1 is Fnn), then:
+  a. Let Fnn be valty_u1.
+  b. Let fN_1 be val__u3.
+  c. Let fN_2 be val__u5.
+  d. Return $fmul_($size(Fnn), fN_1, fN_2).
+15. If ((binop_u0 is DIV) and the type of valty_u1 is Fnn), then:
+  a. Let Fnn be valty_u1.
+  b. Let fN_1 be val__u3.
+  c. Let fN_2 be val__u5.
+  d. Return $fdiv_($size(Fnn), fN_1, fN_2).
+16. If ((binop_u0 is MIN) and the type of valty_u1 is Fnn), then:
+  a. Let Fnn be valty_u1.
+  b. Let fN_1 be val__u3.
+  c. Let fN_2 be val__u5.
+  d. Return $fmin_($size(Fnn), fN_1, fN_2).
+17. If ((binop_u0 is MAX) and the type of valty_u1 is Fnn), then:
+  a. Let Fnn be valty_u1.
+  b. Let fN_1 be val__u3.
+  c. Let fN_2 be val__u5.
+  d. Return $fmax_($size(Fnn), fN_1, fN_2).
+18. Assert: Due to validation, (binop_u0 is COPYSIGN).
+19. Assert: Due to validation, the type of valty_u1 is Fnn.
+20. Let Fnn be valty_u1.
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
 21. Let fN_1 be val__u3.
 22. Let fN_2 be val__u5.
-23. Return [$fcopysign_($size(Fnn), fN_1, fN_2)].
+23. Return $fcopysign_($size(Fnn), fN_1, fN_2).
 
 testop_ Inn EQZ iN
 1. Return $ieqz_($size(Inn), iN).
@@ -742,6 +833,7 @@ cvtop__ valtype_u0 valtype_u1 cvtop_u2 val__u4
     2) Let fN be val__u4.
     3) If cvtop_u2 is of the case TRUNC, then:
       a) Let (TRUNC sx) be cvtop_u2.
+<<<<<<< HEAD
       b) Return [$trunc__($size(Fnn), $size(Inn), sx, fN)].
 4. If ((valtype_u0 is F32) and ((valtype_u1 is F64) and (cvtop_u2 is PROMOTE))), then:
   a. Let fN be val__u4.
@@ -753,6 +845,19 @@ cvtop__ valtype_u0 valtype_u1 cvtop_u2 val__u4
   a. Let Fnn be valtype_u1.
   b. If the type of valtype_u0 is Inn, then:
     1) Let Inn be valtype_u0.
+=======
+      b) Return $list_($trunc__($size(Fnn), $size(Inn), sx, fN)).
+4. If ((valty_u0 is F32) and ((valty_u1 is F64) and (cvtop_u2 is PROMOTE))), then:
+  a. Let fN be val__u4.
+  b. Return $promote__(32, 64, fN).
+5. If ((valty_u0 is F64) and ((valty_u1 is F32) and (cvtop_u2 is DEMOTE))), then:
+  a. Let fN be val__u4.
+  b. Return $demote__(64, 32, fN).
+6. If the type of valty_u1 is Fnn, then:
+  a. Let Fnn be valty_u1.
+  b. If the type of valty_u0 is Inn, then:
+    1) Let Inn be valty_u0.
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
     2) Let iN be val__u4.
     3) If cvtop_u2 is of the case CONVERT, then:
       a) Let (CONVERT sx) be cvtop_u2.
@@ -1238,22 +1343,20 @@ execution_of_TRAP
 execution_of_UNOP t unop
 1. Assert: Due to validation, a value of value type t is on the top of the stack.
 2. Pop the value (t.CONST c_1) from the stack.
-3. If (|$unop_(t, unop, c_1)| is 1), then:
-  a. Let [c] be $unop_(t, unop, c_1).
-  b. Push the value (t.CONST c) to the stack.
-4. If ($unop_(t, unop, c_1) is []), then:
+3. If (|$unop_(t, unop, c_1)| ≤ 0), then:
   a. Trap.
+4. Let c be an element of $unop_(t, unop, c_1).
+5. Push the value (t.CONST c) to the stack.
 
 execution_of_BINOP t binop
 1. Assert: Due to validation, a value of value type t is on the top of the stack.
 2. Pop the value (t.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type t is on the top of the stack.
 4. Pop the value (t.CONST c_1) from the stack.
-5. If (|$binop_(t, binop, c_1, c_2)| is 1), then:
-  a. Let [c] be $binop_(t, binop, c_1, c_2).
-  b. Push the value (t.CONST c) to the stack.
-6. If ($binop_(t, binop, c_1, c_2) is []), then:
+5. If (|$binop_(t, binop, c_1, c_2)| ≤ 0), then:
   a. Trap.
+6. Let c be an element of $binop_(t, binop, c_1, c_2).
+7. Push the value (t.CONST c) to the stack.
 
 execution_of_TESTOP t testop
 1. Assert: Due to validation, a value of value type t is on the top of the stack.
@@ -1272,11 +1375,10 @@ execution_of_RELOP t relop
 execution_of_CVTOP t_2 t_1 cvtop
 1. Assert: Due to validation, a value of value type t_1 is on the top of the stack.
 2. Pop the value (t_1.CONST c_1) from the stack.
-3. If (|$cvtop__(t_1, t_2, cvtop, c_1)| is 1), then:
-  a. Let [c] be $cvtop__(t_1, t_2, cvtop, c_1).
-  b. Push the value (t_2.CONST c) to the stack.
-4. If ($cvtop__(t_1, t_2, cvtop, c_1) is []), then:
+3. If (|$cvtop__(t_1, t_2, cvtop, c_1)| ≤ 0), then:
   a. Trap.
+4. Let c be an element of $cvtop__(t_1, t_2, cvtop, c_1).
+5. Push the value (t_2.CONST c) to the stack.
 
 execution_of_LOCAL.TEE x
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -1391,6 +1493,7 @@ execution_of_STORE valtype_u1 sz_u2? ao
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
 6. If sz_u2? is not defined, then:
+<<<<<<< HEAD
   a. Let t be valtype_u1.
   b. If ((((i + ao.OFFSET) + ($size(t) / 8)) > |$mem(z, 0).BYTES|) and (valtype_u0 is t)), then:
     1) Trap.
@@ -1406,6 +1509,23 @@ execution_of_STORE valtype_u1 sz_u2? ao
     3) If (valtype_u0 is Inn), then:
       a) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
       b) Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
+=======
+  a. Let t be valty_u1.
+  b. If (valty_u0 is t), then:
+    1) If (((i + ao.OFFSET) + ($size(t) / 8)) > |$mem(z, 0).BYTES|), then:
+      a) Trap.
+    2) Let b* be $bytes_(t, c).
+    3) Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(t) / 8), b*).
+7. Else:
+  a. Let ?(n) be sz_u2?.
+  b. If the type of valty_u1 is Inn, then:
+    1) Let Inn be valty_u1.
+    2) If (valty_u0 is Inn), then:
+      a) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
+        1. Trap.
+      b) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
+      c) Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
 
 execution_of_MEMORY.GROW
 1. Let z be the current state.
@@ -1428,24 +1548,6 @@ group_bytes_by n byte*
 2. If (n' ≥ n), then:
   a. Return [byte*[0 : n]] ++ $group_bytes_by(n, byte*[n : (n' - n)]).
 3. Return [].
-
-execution_of_ARRAY.NEW_DATA x y
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If $expanddt($type(z, x)) is of the case ARRAY, then:
-  a. Let (ARRAY y_0) be $expanddt($type(z, x)).
-  b. Let (mut, zt) be y_0.
-  c. If ((i + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
-    1) Trap.
-  d. Let cnn be $cunpack(zt).
-  e. Let b* be $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)].
-  f. Let gb* be $group_bytes_by(($zsize(zt) / 8), b*).
-  g. Let c^n be $inverse_of_ibytes($zsize(zt), gb)*.
-  h. Push the values (cnn.CONST c)^n to the stack.
-  i. Execute the instruction (ARRAY.NEW_FIXED x n).
 == Complete.
 Generating prose for Wasm 2.0...
 watsup 0.4 generator
@@ -1459,27 +1561,32 @@ watsup 0.4 generator
 =================
  Generated prose
 =================
-validation_of_valid_limits
+validation_of_Limits_ok
 - the limits (n, m) is valid with the nat k if and only if:
   - n is less than or equal to m.
   - m is less than or equal to k.
 
-validation_of_valid_functype
+validation_of_Functype_ok
 - the function type (t_1* -> t_2*) is valid.
 
-validation_of_valid_globaltype
+validation_of_Globaltype_ok
 - the global type ((MUT ()?), t) is valid.
 
-validation_of_valid_tabletype
+validation_of_Tabletype_ok
 - the table type (limits, reftype) is valid if and only if:
   - the limits limits is valid with the nat ((2 ^ 32) - 1).
 
-validation_of_valid_memtype
+validation_of_Memtype_ok
 - the memory type (PAGE limits) is valid if and only if:
   - the limits limits is valid with the nat (2 ^ 16).
 
+<<<<<<< HEAD
 validation_of_valid_externtype
 - the external type externtype_u0 is valid if and only if:
+=======
+validation_of_Externtype_ok
+- the external type exter_u0 is valid if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - externtype_u0 is (FUNC functype).
     - the function type functype is valid.
@@ -1493,40 +1600,50 @@ validation_of_valid_externtype
     - externtype_u0 is (MEM memtype).
     - the memory type memtype is valid.
 
+<<<<<<< HEAD
 validation_of_matching_valtype
 - the value type valtype_u0 matches the value type t if and only if:
+=======
+validation_of_Valtype_sub
+- the value type valty_u0 matches the value type t if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - valtype_u0 is t.
   - Or:
     - valtype_u0 is BOT.
 
-validation_of_matching_valtype*
+validation_of_Resulttype_sub
 - the value type sequence t_1* matches the value type sequence t_2* if and only if:
   - |t_2*| is |t_1*|.
   - For all t_1 in t_1* and t_2 in t_2*,
     - the value type t_1 matches the value type t_2.
 
-validation_of_matching_limits
+validation_of_Limits_sub
 - the limits (n_11, n_12) matches the limits (n_21, n_22) if and only if:
   - n_11 is greater than or equal to n_21.
   - n_12 is less than or equal to n_22.
 
-validation_of_matching_functype
+validation_of_Functype_sub
 - the function type ft matches the function type ft.
 
-validation_of_matching_globaltype
+validation_of_Globaltype_sub
 - the global type gt matches the global type gt.
 
-validation_of_matching_tabletype
+validation_of_Tabletype_sub
 - the table type (lim_1, rt) matches the table type (lim_2, rt) if and only if:
   - the limits lim_1 matches the limits lim_2.
 
-validation_of_matching_memtype
+validation_of_Memtype_sub
 - the memory type (PAGE lim_1) matches the memory type (PAGE lim_2) if and only if:
   - the limits lim_1 matches the limits lim_2.
 
+<<<<<<< HEAD
 validation_of_matching_externtype
 - the external type externtype_u0 matches the external type externtype_u1 if and only if:
+=======
+validation_of_Externtype_sub
+- the external type exter_u0 matches the external type exter_u1 if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - externtype_u0 is (FUNC ft_1).
     - externtype_u1 is (FUNC ft_2).
@@ -1544,8 +1661,13 @@ validation_of_matching_externtype
     - externtype_u1 is (MEM mt_2).
     - the memory type mt_1 matches the memory type mt_2.
 
+<<<<<<< HEAD
 validation_of_valid_blocktype
 - the block type blocktype_u0 is valid with the function type (valtype_u1* -> valtype_u2*) if and only if:
+=======
+validation_of_Blocktype_ok
+- the block type block_u0 is valid with the function type (valty_u1* -> valty_u2*) if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - blocktype_u0 is (_RESULT valtype?).
     - valtype_u1* is [].
@@ -1557,45 +1679,45 @@ validation_of_valid_blocktype
     - |C.TYPES| is greater than typeidx.
     - C.TYPES[typeidx] is (t_1* -> t_2*).
 
-validation_of_NOP
+validation_of_Instr_ok/nop
 - the instr NOP is valid with the function type ([] -> []).
 
-validation_of_UNREACHABLE
+validation_of_Instr_ok/unreachable
 - the instr UNREACHABLE is valid with the function type (t_1* -> t_2*).
 
-validation_of_DROP
+validation_of_Instr_ok/drop
 - the instr DROP is valid with the function type ([t] -> []).
 
-validation_of_SELECT
+validation_of_Instr_ok/select
 - the instr (SELECT ?([t])) is valid with the function type ([t, t, I32] -> [t]).
 
-validation_of_BLOCK
+validation_of_Instr_ok/block
 - the instr (BLOCK bt instr*) is valid with the function type (t_1* -> t_2*) if and only if:
   - the block type bt is valid with the function type (t_1* -> t_2*).
   - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr* is valid with the function type (t_1* -> t_2*).
 
-validation_of_LOOP
+validation_of_Instr_ok/loop
 - the instr (LOOP bt instr*) is valid with the function type (t_1* -> t_2*) if and only if:
   - the block type bt is valid with the function type (t_1* -> t_2*).
   - Under the context C with .LABELS prepended by [t_1*], the instr sequence instr* is valid with the function type (t_1* -> t_2*).
 
-validation_of_IF
+validation_of_Instr_ok/if
 - the instr (IF bt instr_1* instr_2*) is valid with the function type (t_1* ++ [I32] -> t_2*) if and only if:
   - the block type bt is valid with the function type (t_1* -> t_2*).
   - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr_1* is valid with the function type (t_1* -> t_2*).
   - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr_2* is valid with the function type (t_1* -> t_2*).
 
-validation_of_BR
+validation_of_Instr_ok/br
 - the instr (BR l) is valid with the function type (t_1* ++ t* -> t_2*) if and only if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t*.
 
-validation_of_BR_IF
+validation_of_Instr_ok/br_if
 - the instr (BR_IF l) is valid with the function type (t* ++ [I32] -> t*) if and only if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t*.
 
-validation_of_BR_TABLE
+validation_of_Instr_ok/br_table
 - the instr (BR_TABLE l* l') is valid with the function type (t_1* ++ t* -> t_2*) if and only if:
   - For all l in l*,
     - |C.LABELS| is greater than l.
@@ -1604,218 +1726,218 @@ validation_of_BR_TABLE
     - the value type sequence t* matches the result type C.LABELS[l].
   - the value type sequence t* matches the result type C.LABELS[l'].
 
-validation_of_CALL
+validation_of_Instr_ok/call
 - the instr (CALL x) is valid with the function type (t_1* -> t_2*) if and only if:
   - |C.FUNCS| is greater than x.
   - C.FUNCS[x] is (t_1* -> t_2*).
 
-validation_of_CALL_INDIRECT
+validation_of_Instr_ok/call_indirect
 - the instr (CALL_INDIRECT x y) is valid with the function type (t_1* ++ [I32] -> t_2*) if and only if:
   - |C.TABLES| is greater than x.
   - |C.TYPES| is greater than y.
   - C.TABLES[x] is (lim, FUNCREF).
   - C.TYPES[y] is (t_1* -> t_2*).
 
-validation_of_RETURN
+validation_of_Instr_ok/return
 - the instr RETURN is valid with the function type (t_1* ++ t* -> t_2*) if and only if:
   - C.RETURN is ?(t*).
 
-validation_of_CONST
+validation_of_Instr_ok/const
 - the instr (nt.CONST c_nt) is valid with the function type ([] -> [nt]).
 
-validation_of_UNOP
+validation_of_Instr_ok/unop
 - the instr (UNOP nt unop_nt) is valid with the function type ([nt] -> [nt]).
 
-validation_of_BINOP
+validation_of_Instr_ok/binop
 - the instr (BINOP nt binop_nt) is valid with the function type ([nt, nt] -> [nt]).
 
-validation_of_TESTOP
+validation_of_Instr_ok/testop
 - the instr (TESTOP nt testop_nt) is valid with the function type ([nt] -> [I32]).
 
-validation_of_RELOP
+validation_of_Instr_ok/relop
 - the instr (RELOP nt relop_nt) is valid with the function type ([nt, nt] -> [I32]).
 
-validation_of_CVTOP
+validation_of_Instr_ok/cvtop
 - the instr (CVTOP nt_1 nt_2 REINTERPRET) is valid with the function type ([nt_2] -> [nt_1]) if and only if:
   - $size(nt_1) is $size(nt_2).
 
-validation_of_REF.NULL
+validation_of_Instr_ok/ref.null
 - the instr (REF.NULL rt) is valid with the function type ([] -> [rt]).
 
-validation_of_REF.FUNC
+validation_of_Instr_ok/ref.func
 - the instr (REF.FUNC x) is valid with the function type ([] -> [FUNCREF]) if and only if:
   - |C.FUNCS| is greater than x.
   - C.FUNCS[x] is ft.
 
-validation_of_REF.IS_NULL
+validation_of_Instr_ok/ref.is_null
 - the instr REF.IS_NULL is valid with the function type ([rt] -> [I32]).
 
-validation_of_VCONST
+validation_of_Instr_ok/vconst
 - the instr (V128.CONST c) is valid with the function type ([] -> [V128]).
 
-validation_of_VVUNOP
+validation_of_Instr_ok/vvunop
 - the instr (VVUNOP V128 vvunop) is valid with the function type ([V128] -> [V128]).
 
-validation_of_VVBINOP
+validation_of_Instr_ok/vvbinop
 - the instr (VVBINOP V128 vvbinop) is valid with the function type ([V128, V128] -> [V128]).
 
-validation_of_VVTERNOP
+validation_of_Instr_ok/vvternop
 - the instr (VVTERNOP V128 vvternop) is valid with the function type ([V128, V128, V128] -> [V128]).
 
-validation_of_VVTESTOP
+validation_of_Instr_ok/vvtestop
 - the instr (VVTESTOP V128 vvtestop) is valid with the function type ([V128] -> [I32]).
 
-validation_of_VUNOP
+validation_of_Instr_ok/vunop
 - the instr (VUNOP sh vunop_sh) is valid with the function type ([V128] -> [V128]).
 
-validation_of_VBINOP
+validation_of_Instr_ok/vbinop
 - the instr (VBINOP sh vbinop_sh) is valid with the function type ([V128, V128] -> [V128]).
 
-validation_of_VTESTOP
+validation_of_Instr_ok/vtestop
 - the instr (VTESTOP sh vtestop_sh) is valid with the function type ([V128] -> [I32]).
 
-validation_of_VRELOP
+validation_of_Instr_ok/vrelop
 - the instr (VRELOP sh vrelop_sh) is valid with the function type ([V128, V128] -> [V128]).
 
-validation_of_VSHIFTOP
+validation_of_Instr_ok/vshiftop
 - the instr (VSHIFTOP sh vshiftop_sh) is valid with the function type ([V128, I32] -> [V128]).
 
-validation_of_VBITMASK
+validation_of_Instr_ok/vbitmask
 - the instr (VBITMASK sh) is valid with the function type ([V128] -> [I32]).
 
-validation_of_VSWIZZLE
+validation_of_Instr_ok/vswizzle
 - the instr (VSWIZZLE sh) is valid with the function type ([V128, V128] -> [V128]).
 
-validation_of_VSHUFFLE
+validation_of_Instr_ok/vshuffle
 - the instr (VSHUFFLE sh i*) is valid with the function type ([V128, V128] -> [V128]) if and only if:
   - For all i in i*,
     - i is less than (2 · $dim(sh)).
 
-validation_of_VSPLAT
+validation_of_Instr_ok/vsplat
 - the instr (VSPLAT sh) is valid with the function type ([$shunpack(sh)] -> [V128]).
 
-validation_of_VEXTRACT_LANE
+validation_of_Instr_ok/vextract_lane
 - the instr (VEXTRACT_LANE sh sx? i) is valid with the function type ([V128] -> [$shunpack(sh)]) if and only if:
   - i is less than $dim(sh).
 
-validation_of_VREPLACE_LANE
+validation_of_Instr_ok/vreplace_lane
 - the instr (VREPLACE_LANE sh i) is valid with the function type ([V128, $shunpack(sh)] -> [V128]) if and only if:
   - i is less than $dim(sh).
 
-validation_of_VEXTUNOP
+validation_of_Instr_ok/vextunop
 - the instr (VEXTUNOP sh_1 sh_2 vextunop) is valid with the function type ([V128] -> [V128]).
 
-validation_of_VEXTBINOP
+validation_of_Instr_ok/vextbinop
 - the instr (VEXTBINOP sh_1 sh_2 vextbinop) is valid with the function type ([V128, V128] -> [V128]).
 
-validation_of_VNARROW
+validation_of_Instr_ok/vnarrow
 - the instr (VNARROW sh_1 sh_2 sx) is valid with the function type ([V128, V128] -> [V128]).
 
-validation_of_VCVTOP
-- the instr (VCVTOP sh_1 sh_2 vcvtop hf? sx? zero?) is valid with the function type ([V128] -> [V128]).
+validation_of_Instr_ok/vcvtop
+- the instr (VCVTOP sh_1 sh_2 vcvtop hf? zero?) is valid with the function type ([V128] -> [V128]).
 
-validation_of_LOCAL.GET
+validation_of_Instr_ok/local.get
 - the instr (LOCAL.GET x) is valid with the function type ([] -> [t]) if and only if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is t.
 
-validation_of_LOCAL.SET
+validation_of_Instr_ok/local.set
 - the instr (LOCAL.SET x) is valid with the function type ([t] -> []) if and only if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is t.
 
-validation_of_LOCAL.TEE
+validation_of_Instr_ok/local.tee
 - the instr (LOCAL.TEE x) is valid with the function type ([t] -> [t]) if and only if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is t.
 
-validation_of_GLOBAL.GET
+validation_of_Instr_ok/global.get
 - the instr (GLOBAL.GET x) is valid with the function type ([] -> [t]) if and only if:
   - |C.GLOBALS| is greater than x.
   - C.GLOBALS[x] is (mut, t).
 
-validation_of_GLOBAL.SET
+validation_of_Instr_ok/global.set
 - the instr (GLOBAL.SET x) is valid with the function type ([t] -> []) if and only if:
   - |C.GLOBALS| is greater than x.
   - C.GLOBALS[x] is ((MUT ?(())), t).
 
-validation_of_TABLE.GET
+validation_of_Instr_ok/table.get
 - the instr (TABLE.GET x) is valid with the function type ([I32] -> [rt]) if and only if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
-validation_of_TABLE.SET
+validation_of_Instr_ok/table.set
 - the instr (TABLE.SET x) is valid with the function type ([I32, rt] -> []) if and only if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
-validation_of_TABLE.SIZE
+validation_of_Instr_ok/table.size
 - the instr (TABLE.SIZE x) is valid with the function type ([] -> [I32]) if and only if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
-validation_of_TABLE.GROW
+validation_of_Instr_ok/table.grow
 - the instr (TABLE.GROW x) is valid with the function type ([rt, I32] -> [I32]) if and only if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
-validation_of_TABLE.FILL
+validation_of_Instr_ok/table.fill
 - the instr (TABLE.FILL x) is valid with the function type ([I32, rt, I32] -> []) if and only if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
-validation_of_TABLE.COPY
+validation_of_Instr_ok/table.copy
 - the instr (TABLE.COPY x_1 x_2) is valid with the function type ([I32, I32, I32] -> []) if and only if:
   - |C.TABLES| is greater than x_1.
   - |C.TABLES| is greater than x_2.
   - C.TABLES[x_1] is (lim_1, rt).
   - C.TABLES[x_2] is (lim_2, rt).
 
-validation_of_TABLE.INIT
+validation_of_Instr_ok/table.init
 - the instr (TABLE.INIT x_1 x_2) is valid with the function type ([I32, I32, I32] -> []) if and only if:
   - |C.TABLES| is greater than x_1.
   - |C.ELEMS| is greater than x_2.
   - C.TABLES[x_1] is (lim, rt).
   - C.ELEMS[x_2] is rt.
 
-validation_of_ELEM.DROP
+validation_of_Instr_ok/elem.drop
 - the instr (ELEM.DROP x) is valid with the function type ([] -> []) if and only if:
   - |C.ELEMS| is greater than x.
   - C.ELEMS[x] is rt.
 
-validation_of_MEMORY.SIZE
+validation_of_Instr_ok/memory.size
 - the instr MEMORY.SIZE is valid with the function type ([] -> [I32]) if and only if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
 
-validation_of_MEMORY.GROW
+validation_of_Instr_ok/memory.grow
 - the instr MEMORY.GROW is valid with the function type ([I32] -> [I32]) if and only if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
 
-validation_of_MEMORY.FILL
+validation_of_Instr_ok/memory.fill
 - the instr MEMORY.FILL is valid with the function type ([I32, I32, I32] -> []) if and only if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
 
-validation_of_MEMORY.COPY
+validation_of_Instr_ok/memory.copy
 - the instr MEMORY.COPY is valid with the function type ([I32, I32, I32] -> []) if and only if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
 
-validation_of_MEMORY.INIT
+validation_of_Instr_ok/memory.init
 - the instr (MEMORY.INIT x) is valid with the function type ([I32, I32, I32] -> []) if and only if:
   - |C.MEMS| is greater than 0.
   - |C.DATAS| is greater than x.
   - C.MEMS[0] is mt.
   - C.DATAS[x] is OK.
 
-validation_of_DATA.DROP
+validation_of_Instr_ok/data.drop
 - the instr (DATA.DROP x) is valid with the function type ([] -> []) if and only if:
   - |C.DATAS| is greater than x.
   - C.DATAS[x] is OK.
 
-validation_of_LOAD
+validation_of_Instr_ok/load
 - the instr (LOAD nt (n, sx)? memarg) is valid with the function type ([I32] -> [nt]) if and only if:
   - |C.MEMS| is greater than 0.
   - ((sx? is ?())) if and only if ((n? is ?())).
@@ -1827,7 +1949,7 @@ validation_of_LOAD
   - If n is defined,
     - nt is Inn.
 
-validation_of_STORE
+validation_of_Instr_ok/store
 - the instr (STORE nt n? memarg) is valid with the function type ([I32, nt] -> []) if and only if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
@@ -1838,34 +1960,39 @@ validation_of_STORE
   - If n is defined,
     - nt is Inn.
 
-validation_of_VLOAD
+validation_of_Instr_ok/vload
 - the instr (VLOAD V128 ?((SHAPE M N sx)) memarg) is valid with the function type ([I32] -> [V128]) if and only if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) · N).
 
-validation_of_VLOAD_LANE
+validation_of_Instr_ok/vload_lane
 - the instr (VLOAD_LANE V128 n memarg laneidx) is valid with the function type ([I32, V128] -> [V128]) if and only if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
   - laneidx is less than (128 / n).
 
-validation_of_VSTORE
+validation_of_Instr_ok/vstore
 - the instr (VSTORE V128 memarg) is valid with the function type ([I32, V128] -> []) if and only if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(V128) / 8).
 
-validation_of_VSTORE_LANE
+validation_of_Instr_ok/vstore_lane
 - the instr (VSTORE_LANE V128 n memarg laneidx) is valid with the function type ([I32, V128] -> []) if and only if:
   - |C.MEMS| is greater than 0.
   - C.MEMS[0] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
   - laneidx is less than (128 / n).
 
+<<<<<<< HEAD
 validation_of_valid_instr*
 - the instr sequence instr_u0* is valid with the function type (valtype_u1* -> valtype_u2*) if and only if:
+=======
+validation_of_Instrs_ok
+- the instr sequence instr_u0* is valid with the function type (valty_u1* -> valty_u2*) if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - instr_u0* is [].
     - valtype_u1* is [].
@@ -1889,11 +2016,11 @@ validation_of_valid_instr*
     - valtype_u2* is t* ++ t_2*.
     - the instr sequence instr* is valid with the function type (t_1* -> t_2*).
 
-validation_of_valid_expr
+validation_of_Expr_ok
 - the expression instr* is valid with the value type sequence t* if and only if:
   - the instr sequence instr* is valid with the function type ([] -> t*).
 
-validation_of_const_instr
+validation_of_Instr_const
 - the instr instr_u0 is constant if and only if:
   - Either:
     - instr_u0 is (nt.CONST c).
@@ -1908,38 +2035,43 @@ validation_of_const_instr
     - |C.GLOBALS| is greater than x.
     - C.GLOBALS[x] is ((MUT ?()), t).
 
-validation_of_const_expr
+validation_of_Expr_const
 - the expression instr* is constant if and only if:
   - For all instr in instr*,
     - the instr instr is constant.
 
-validation_of_valid_type
+validation_of_Type_ok
 - the type (TYPE ft) is valid with the function type ft if and only if:
   - the function type ft is valid.
 
-validation_of_valid_func
+validation_of_Func_ok
 - the function (FUNC x (LOCAL t)* expr) is valid with the function type (t_1* -> t_2*) if and only if:
   - |C.TYPES| is greater than x.
   - C.TYPES[x] is (t_1* -> t_2*).
   - Under the context C with .LOCALS appended by t_1* ++ t* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the value type sequence t_2*.
 
-validation_of_valid_global
+validation_of_Global_ok
 - the global (GLOBAL gt expr) is valid with the global type gt if and only if:
   - the global type gt is valid.
   - gt is (mut, t).
   - the expression expr is valid with the value type t.
   - the expression expr is constant.
 
-validation_of_valid_table
+validation_of_Table_ok
 - the table (TABLE tt) is valid with the table type tt if and only if:
   - the table type tt is valid.
 
-validation_of_valid_mem
+validation_of_Mem_ok
 - the memory (MEMORY mt) is valid with the memory type mt if and only if:
   - the memory type mt is valid.
 
+<<<<<<< HEAD
 validation_of_valid_elemmode
 - the elemmode elemmode_u0 is valid with the reference type rt if and only if:
+=======
+validation_of_Elemmode_ok
+- the elemmode elemm_u0 is valid with the reference type rt if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - elemmode_u0 is (ACTIVE x expr).
     - |C.TABLES| is greater than x.
@@ -1951,15 +2083,20 @@ validation_of_valid_elemmode
   - Or:
     - elemmode_u0 is DECLARE.
 
-validation_of_valid_elem
+validation_of_Elem_ok
 - the table segment (ELEM rt expr* elemmode) is valid with the reference type rt if and only if:
   - For all expr in expr*,
     - the expression expr is valid with the value type rt.
     - the expression expr is constant.
   - the elemmode elemmode is valid with the reference type rt.
 
+<<<<<<< HEAD
 validation_of_valid_datamode
 - the datamode datamode_u0 is valid if and only if:
+=======
+validation_of_Datamode_ok
+- the datamode datam_u0 is valid if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - datamode_u0 is (ACTIVE 0 expr).
     - |C.MEMS| is greater than 0.
@@ -1969,21 +2106,26 @@ validation_of_valid_datamode
   - Or:
     - datamode_u0 is PASSIVE.
 
-validation_of_valid_data
+validation_of_Data_ok
 - the memory segment (DATA b* datamode) is valid if and only if:
   - the datamode datamode is valid.
 
-validation_of_valid_start
+validation_of_Start_ok
 - the start function (START x) is valid if and only if:
   - |C.FUNCS| is greater than x.
   - C.FUNCS[x] is ([] -> []).
 
-validation_of_valid_import
+validation_of_Import_ok
 - the import (IMPORT name_1 name_2 xt) is valid with the external type xt if and only if:
   - the external type xt is valid.
 
+<<<<<<< HEAD
 validation_of_valid_externidx
 - the external index externidx_u0 is valid with the external type externtype_u1 if and only if:
+=======
+validation_of_Externidx_ok
+- the external index exter_u0 is valid with the external type exter_u1 if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - externidx_u0 is (FUNC x).
     - externtype_u1 is (FUNC ft).
@@ -2005,11 +2147,11 @@ validation_of_valid_externidx
     - |C.MEMS| is greater than x.
     - C.MEMS[x] is mt.
 
-validation_of_valid_export
+validation_of_Export_ok
 - the export (EXPORT name externidx) is valid with the external type xt if and only if:
   - the external index externidx is valid with the external type xt.
 
-validation_of_valid_module
+validation_of_Module_ok
 - the module (MODULE type* import* func* global* table* mem* elem* data^n start? export*) is valid if and only if:
   - |type*| is |ft'*|.
   - |ixt*| is |import*|.
@@ -2067,18 +2209,42 @@ sum n_u0*
 2. Let [n] ++ n'* be n_u0*.
 3. Return (n + $sum(n'*)).
 
-concat_ X_u0*
-1. If (X_u0* is []), then:
-  a. Return [].
-2. Let [w*] ++ w'** be X_u0*.
-3. Return w* ++ $concat_(w'**).
-
 opt_ X_u0*
 1. If (X_u0* is []), then:
   a. Return ?().
 2. Assert: Due to validation, (|X_u0*| is 1).
 3. Let [w] be X_u0*.
 4. Return ?(w).
+
+list_ X_u0?
+1. If X_u0? is not defined, then:
+  a. Return [].
+2. Let ?(w) be X_u0?.
+3. Return [w].
+
+concat_ X_u0*
+1. If (X_u0* is []), then:
+  a. Return [].
+2. Let [w*] ++ w'** be X_u0*.
+3. Return w* ++ $concat_(w'**).
+
+setproduct2_ w_1 X_u0*
+1. If (X_u0* is []), then:
+  a. Return [].
+2. Let [w'*] ++ w** be X_u0*.
+3. Return [[w_1] ++ w'*] ++ $setproduct2_(w_1, w**).
+
+setproduct1_ X_u0* w**
+1. If (X_u0* is []), then:
+  a. Return [].
+2. Let [w_1] ++ w'* be X_u0*.
+3. Return $setproduct2_(w_1, w**) ++ $setproduct1_(w'*, w**).
+
+setproduct_ X_u0*
+1. If (X_u0* is []), then:
+  a. Return [[]].
+2. Let [w_1*] ++ w** be X_u0*.
+3. Return $setproduct1_(w_1*, $setproduct_(w**)).
 
 signif N_u0
 1. If (N_u0 is 32), then:
@@ -2160,7 +2326,19 @@ lanetype (Lnn X N)
 sizenn nt
 1. Return $size(nt).
 
-sizemm lt
+sizenn1 nt
+1. Return $size(nt).
+
+sizenn2 nt
+1. Return $size(nt).
+
+lsizenn lt
+1. Return $lsize(lt).
+
+lsizenn1 lt
+1. Return $lsize(lt).
+
+lsizenn2 lt
 1. Return $lsize(lt).
 
 zero numtype_u0
@@ -2277,6 +2455,7 @@ unop_ numtype_u1 unop__u0 num__u3
 1. If ((unop__u0 is CLZ) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
   b. Let iN be num__u3.
+<<<<<<< HEAD
   c. Return [$iclz_($size(Inn), iN)].
 2. If ((unop__u0 is CTZ) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
@@ -2288,9 +2467,23 @@ unop_ numtype_u1 unop__u0 num__u3
   c. Return [$ipopcnt_($size(Inn), iN)].
 4. If the type of numtype_u1 is Inn, then:
   a. Let Inn be numtype_u1.
+=======
+  c. Return [$iclz_($sizenn(Inn), iN)].
+2. If ((unop__u0 is CTZ) and the type of numty_u1 is Inn), then:
+  a. Let Inn be numty_u1.
+  b. Let iN be num__u3.
+  c. Return [$ictz_($sizenn(Inn), iN)].
+3. If ((unop__u0 is POPCNT) and the type of numty_u1 is Inn), then:
+  a. Let Inn be numty_u1.
+  b. Let iN be num__u3.
+  c. Return [$ipopcnt_($sizenn(Inn), iN)].
+4. If the type of numty_u1 is Inn, then:
+  a. Let Inn be numty_u1.
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   b. Assert: Due to validation, unop__u0 is of the case EXTEND.
-  c. Let (EXTEND N) be unop__u0.
+  c. Let (EXTEND M) be unop__u0.
   d. Let iN be num__u3.
+<<<<<<< HEAD
   e. Return [$extend__(N, $size(Inn), S, $wrap__($size(Inn), N, iN))].
 5. If ((unop__u0 is ABS) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
@@ -2314,19 +2507,45 @@ unop_ numtype_u1 unop__u0 num__u3
   c. Return [$ffloor_($size(Fnn), fN)].
 10. If ((unop__u0 is TRUNC) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
+=======
+  e. Return [$extend__(M, $sizenn(Inn), S, $wrap__($sizenn(Inn), M, iN))].
+5. If ((unop__u0 is ABS) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
   b. Let fN be num__u3.
-  c. Return [$ftrunc_($size(Fnn), fN)].
+  c. Return $fabs_($sizenn(Fnn), fN).
+6. If ((unop__u0 is NEG) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN be num__u3.
+  c. Return $fneg_($sizenn(Fnn), fN).
+7. If ((unop__u0 is SQRT) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN be num__u3.
+  c. Return $fsqrt_($sizenn(Fnn), fN).
+8. If ((unop__u0 is CEIL) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN be num__u3.
+  c. Return $fceil_($sizenn(Fnn), fN).
+9. If ((unop__u0 is FLOOR) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN be num__u3.
+  c. Return $ffloor_($sizenn(Fnn), fN).
+10. If ((unop__u0 is TRUNC) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
+  b. Let fN be num__u3.
+  c. Return $ftrunc_($sizenn(Fnn), fN).
 11. Assert: Due to validation, (unop__u0 is NEAREST).
 12. Assert: Due to validation, the type of numtype_u1 is Fnn.
 13. Let Fnn be numtype_u1.
 14. Let fN be num__u3.
-15. Return [$fnearest_($size(Fnn), fN)].
+15. Return $fnearest_($sizenn(Fnn), fN).
 
 binop_ numtype_u1 binop__u0 num__u3 num__u5
 1. If ((binop__u0 is ADD) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
   b. Let iN_1 be num__u3.
   c. Let iN_2 be num__u5.
+<<<<<<< HEAD
   d. Return [$iadd_($size(Inn), iN_1, iN_2)].
 2. If ((binop__u0 is SUB) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
@@ -2418,18 +2637,112 @@ binop_ numtype_u1 binop__u0 num__u3 num__u5
 18. Assert: Due to validation, (binop__u0 is COPYSIGN).
 19. Assert: Due to validation, the type of numtype_u1 is Fnn.
 20. Let Fnn be numtype_u1.
+=======
+  d. Return [$iadd_($sizenn(Inn), iN_1, iN_2)].
+2. If ((binop_u0 is SUB) and the type of numty_u1 is Inn), then:
+  a. Let Inn be numty_u1.
+  b. Let iN_1 be num__u3.
+  c. Let iN_2 be num__u5.
+  d. Return [$isub_($sizenn(Inn), iN_1, iN_2)].
+3. If ((binop_u0 is MUL) and the type of numty_u1 is Inn), then:
+  a. Let Inn be numty_u1.
+  b. Let iN_1 be num__u3.
+  c. Let iN_2 be num__u5.
+  d. Return [$imul_($sizenn(Inn), iN_1, iN_2)].
+4. If the type of numty_u1 is Inn, then:
+  a. Let Inn be numty_u1.
+  b. Let iN_1 be num__u3.
+  c. Let iN_2 be num__u5.
+  d. If binop_u0 is of the case DIV, then:
+    1) Let (DIV sx) be binop_u0.
+    2) Return $list_($idiv_($sizenn(Inn), sx, iN_1, iN_2)).
+  e. If binop_u0 is of the case REM, then:
+    1) Let (REM sx) be binop_u0.
+    2) Return $list_($irem_($sizenn(Inn), sx, iN_1, iN_2)).
+5. If ((binop_u0 is AND) and the type of numty_u1 is Inn), then:
+  a. Let Inn be numty_u1.
+  b. Let iN_1 be num__u3.
+  c. Let iN_2 be num__u5.
+  d. Return [$iand_($sizenn(Inn), iN_1, iN_2)].
+6. If ((binop_u0 is OR) and the type of numty_u1 is Inn), then:
+  a. Let Inn be numty_u1.
+  b. Let iN_1 be num__u3.
+  c. Let iN_2 be num__u5.
+  d. Return [$ior_($sizenn(Inn), iN_1, iN_2)].
+7. If ((binop_u0 is XOR) and the type of numty_u1 is Inn), then:
+  a. Let Inn be numty_u1.
+  b. Let iN_1 be num__u3.
+  c. Let iN_2 be num__u5.
+  d. Return [$ixor_($sizenn(Inn), iN_1, iN_2)].
+8. If ((binop_u0 is SHL) and the type of numty_u1 is Inn), then:
+  a. Let Inn be numty_u1.
+  b. Let iN_1 be num__u3.
+  c. Let iN_2 be num__u5.
+  d. Return [$ishl_($sizenn(Inn), iN_1, iN_2)].
+9. If the type of numty_u1 is Inn, then:
+  a. Let Inn be numty_u1.
+  b. Let iN_1 be num__u3.
+  c. Let iN_2 be num__u5.
+  d. If binop_u0 is of the case SHR, then:
+    1) Let (SHR sx) be binop_u0.
+    2) Return [$ishr_($sizenn(Inn), sx, iN_1, iN_2)].
+10. If ((binop_u0 is ROTL) and the type of numty_u1 is Inn), then:
+  a. Let Inn be numty_u1.
+  b. Let iN_1 be num__u3.
+  c. Let iN_2 be num__u5.
+  d. Return [$irotl_($sizenn(Inn), iN_1, iN_2)].
+11. If ((binop_u0 is ROTR) and the type of numty_u1 is Inn), then:
+  a. Let Inn be numty_u1.
+  b. Let iN_1 be num__u3.
+  c. Let iN_2 be num__u5.
+  d. Return [$irotr_($sizenn(Inn), iN_1, iN_2)].
+12. If ((binop_u0 is ADD) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN_1 be num__u3.
+  c. Let fN_2 be num__u5.
+  d. Return $fadd_($sizenn(Fnn), fN_1, fN_2).
+13. If ((binop_u0 is SUB) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN_1 be num__u3.
+  c. Let fN_2 be num__u5.
+  d. Return $fsub_($sizenn(Fnn), fN_1, fN_2).
+14. If ((binop_u0 is MUL) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN_1 be num__u3.
+  c. Let fN_2 be num__u5.
+  d. Return $fmul_($sizenn(Fnn), fN_1, fN_2).
+15. If ((binop_u0 is DIV) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN_1 be num__u3.
+  c. Let fN_2 be num__u5.
+  d. Return $fdiv_($sizenn(Fnn), fN_1, fN_2).
+16. If ((binop_u0 is MIN) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN_1 be num__u3.
+  c. Let fN_2 be num__u5.
+  d. Return $fmin_($sizenn(Fnn), fN_1, fN_2).
+17. If ((binop_u0 is MAX) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN_1 be num__u3.
+  c. Let fN_2 be num__u5.
+  d. Return $fmax_($sizenn(Fnn), fN_1, fN_2).
+18. Assert: Due to validation, (binop_u0 is COPYSIGN).
+19. Assert: Due to validation, the type of numty_u1 is Fnn.
+20. Let Fnn be numty_u1.
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
 21. Let fN_1 be num__u3.
 22. Let fN_2 be num__u5.
-23. Return [$fcopysign_($size(Fnn), fN_1, fN_2)].
+23. Return $fcopysign_($sizenn(Fnn), fN_1, fN_2).
 
 testop_ Inn EQZ iN
-1. Return $ieqz_($size(Inn), iN).
+1. Return $ieqz_($sizenn(Inn), iN).
 
 relop_ numtype_u1 relop__u0 num__u3 num__u5
 1. If ((relop__u0 is EQ) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
   b. Let iN_1 be num__u3.
   c. Let iN_2 be num__u5.
+<<<<<<< HEAD
   d. Return $ieq_($size(Inn), iN_1, iN_2).
 2. If ((relop__u0 is NE) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
@@ -2480,10 +2793,63 @@ relop_ numtype_u1 relop__u0 num__u3 num__u5
 9. Assert: Due to validation, (relop__u0 is GE).
 10. Assert: Due to validation, the type of numtype_u1 is Fnn.
 11. Let Fnn be numtype_u1.
+=======
+  d. Return $ieq_($sizenn(Inn), iN_1, iN_2).
+2. If ((relop_u0 is NE) and the type of numty_u1 is Inn), then:
+  a. Let Inn be numty_u1.
+  b. Let iN_1 be num__u3.
+  c. Let iN_2 be num__u5.
+  d. Return $ine_($sizenn(Inn), iN_1, iN_2).
+3. If the type of numty_u1 is Inn, then:
+  a. Let Inn be numty_u1.
+  b. Let iN_1 be num__u3.
+  c. Let iN_2 be num__u5.
+  d. If relop_u0 is of the case LT, then:
+    1) Let (LT sx) be relop_u0.
+    2) Return $ilt_($sizenn(Inn), sx, iN_1, iN_2).
+  e. If relop_u0 is of the case GT, then:
+    1) Let (GT sx) be relop_u0.
+    2) Return $igt_($sizenn(Inn), sx, iN_1, iN_2).
+  f. If relop_u0 is of the case LE, then:
+    1) Let (LE sx) be relop_u0.
+    2) Return $ile_($sizenn(Inn), sx, iN_1, iN_2).
+  g. If relop_u0 is of the case GE, then:
+    1) Let (GE sx) be relop_u0.
+    2) Return $ige_($sizenn(Inn), sx, iN_1, iN_2).
+4. If ((relop_u0 is EQ) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN_1 be num__u3.
+  c. Let fN_2 be num__u5.
+  d. Return $feq_($sizenn(Fnn), fN_1, fN_2).
+5. If ((relop_u0 is NE) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN_1 be num__u3.
+  c. Let fN_2 be num__u5.
+  d. Return $fne_($sizenn(Fnn), fN_1, fN_2).
+6. If ((relop_u0 is LT) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN_1 be num__u3.
+  c. Let fN_2 be num__u5.
+  d. Return $flt_($sizenn(Fnn), fN_1, fN_2).
+7. If ((relop_u0 is GT) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN_1 be num__u3.
+  c. Let fN_2 be num__u5.
+  d. Return $fgt_($sizenn(Fnn), fN_1, fN_2).
+8. If ((relop_u0 is LE) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN_1 be num__u3.
+  c. Let fN_2 be num__u5.
+  d. Return $fle_($sizenn(Fnn), fN_1, fN_2).
+9. Assert: Due to validation, (relop_u0 is GE).
+10. Assert: Due to validation, the type of numty_u1 is Fnn.
+11. Let Fnn be numty_u1.
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
 12. Let fN_1 be num__u3.
 13. Let fN_2 be num__u5.
-14. Return $fge_($size(Fnn), fN_1, fN_2).
+14. Return $fge_($sizenn(Fnn), fN_1, fN_2).
 
+<<<<<<< HEAD
 cvtop__ numtype_u0 numtype_u1 cvtop_u2 num__u4
 1. If ((numtype_u0 is I32) and (numtype_u1 is I64)), then:
   a. Let iN be num__u4.
@@ -2533,6 +2899,69 @@ cvtop__ numtype_u0 numtype_u1 cvtop_u2 num__u4
 13. Let fN be num__u4.
 14. Assert: Due to validation, ($size(Inn) is $size(Fnn)).
 15. Return [$reinterpret__(Fnn, Inn, fN)].
+=======
+cvtop__ numty_u1 numty_u4 cvtop_u0 num__u3
+1. If the type of numty_u1 is Inn, then:
+  a. Let Inn_1 be numty_u1.
+  b. If the type of numty_u4 is Inn, then:
+    1) Let Inn_2 be numty_u4.
+    2) Let iN_1 be num__u3.
+    3) If cvtop_u0 is of the case EXTEND, then:
+      a) Let (EXTEND sx) be cvtop_u0.
+      b) Return [$extend__($sizenn1(Inn_1), $sizenn2(Inn_2), sx, iN_1)].
+2. If ((cvtop_u0 is WRAP) and the type of numty_u1 is Inn), then:
+  a. Let Inn_1 be numty_u1.
+  b. If the type of numty_u4 is Inn, then:
+    1) Let Inn_2 be numty_u4.
+    2) Let iN_1 be num__u3.
+    3) Return [$wrap__($sizenn1(Inn_1), $sizenn2(Inn_2), iN_1)].
+3. If the type of numty_u1 is Fnn, then:
+  a. Let Fnn_1 be numty_u1.
+  b. If the type of numty_u4 is Inn, then:
+    1) Let Inn_2 be numty_u4.
+    2) Let fN_1 be num__u3.
+    3) If cvtop_u0 is of the case TRUNC, then:
+      a) Let (TRUNC sx) be cvtop_u0.
+      b) Return $list_($trunc__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
+    4) If cvtop_u0 is of the case TRUNC_SAT, then:
+      a) Let (TRUNC_SAT sx) be cvtop_u0.
+      b) Return $list_($trunc_sat__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
+4. If the type of numty_u4 is Fnn, then:
+  a. Let Fnn_2 be numty_u4.
+  b. If the type of numty_u1 is Inn, then:
+    1) Let Inn_1 be numty_u1.
+    2) Let iN_1 be num__u3.
+    3) If cvtop_u0 is of the case CONVERT, then:
+      a) Let (CONVERT sx) be cvtop_u0.
+      b) Return [$convert__($sizenn1(Inn_1), $sizenn2(Fnn_2), sx, iN_1)].
+5. If ((cvtop_u0 is PROMOTE) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn_1 be numty_u1.
+  b. If the type of numty_u4 is Fnn, then:
+    1) Let Fnn_2 be numty_u4.
+    2) Let fN_1 be num__u3.
+    3) Return $promote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1).
+6. If ((cvtop_u0 is DEMOTE) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn_1 be numty_u1.
+  b. If the type of numty_u4 is Fnn, then:
+    1) Let Fnn_2 be numty_u4.
+    2) Let fN_1 be num__u3.
+    3) Return $demote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1).
+7. Assert: Due to validation, (cvtop_u0 is REINTERPRET).
+8. If the type of numty_u4 is Fnn, then:
+  a. Let Fnn_2 be numty_u4.
+  b. If the type of numty_u1 is Inn, then:
+    1) Let Inn_1 be numty_u1.
+    2) Let iN_1 be num__u3.
+    3) If ($size(Inn_1) is $size(Fnn_2)), then:
+      a) Return [$reinterpret__(Inn_1, Fnn_2, iN_1)].
+9. Assert: Due to validation, the type of numty_u1 is Fnn.
+10. Let Fnn_1 be numty_u1.
+11. Assert: Due to validation, the type of numty_u4 is Inn.
+12. Let Inn_2 be numty_u4.
+13. Let fN_1 be num__u3.
+14. Assert: Due to validation, ($size(Fnn_1) is $size(Inn_2)).
+15. Return [$reinterpret__(Fnn_1, Inn_2, fN_1)].
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
 
 invibytes_ N b*
 1. Let n be $ibytes__1^-1(N, b*).
@@ -2582,6 +3011,7 @@ vvbinop_ V128 vvbinop_u0 v128_1 v128_2
 vvternop_ V128 BITSELECT v128_1 v128_2 v128_3
 1. Return $ibitselect_($size(V128), v128_1, v128_2, v128_3).
 
+<<<<<<< HEAD
 vunop_ (lanetype_u1 X N) vunop__u0 v128_1
 1. If ((vunop__u0 is ABS) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
@@ -2791,52 +3221,315 @@ vrelop_ (lanetype_u1 X N) vrelop__u0 v128_1 v128_2
   a. Let Fnn be lanetype_u1.
   b. Let lane_1* be $lanes_((Fnn X N), v128_1).
   c. Let lane_2* be $lanes_((Fnn X N), v128_2).
+=======
+vunop_ (lanet_u1 X M) vunop_u0 v128_1
+1. If ((vunop_u0 is ABS) and the type of lanet_u1 is Jnn), then:
+  a. Let Jnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let v128 be $invlanes_((Jnn X M), $iabs_($lsizenn(Jnn), lane_1)*).
+  d. Return [v128].
+2. If ((vunop_u0 is NEG) and the type of lanet_u1 is Jnn), then:
+  a. Let Jnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let v128 be $invlanes_((Jnn X M), $ineg_($lsizenn(Jnn), lane_1)*).
+  d. Return [v128].
+3. If ((vunop_u0 is POPCNT) and the type of lanet_u1 is Jnn), then:
+  a. Let Jnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let v128 be $invlanes_((Jnn X M), $ipopcnt_($lsizenn(Jnn), lane_1)*).
+  d. Return [v128].
+4. If ((vunop_u0 is ABS) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane** be $setproduct_($fabs_($sizenn(Fnn), lane_1)*).
+  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Return v128*.
+5. If ((vunop_u0 is NEG) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane** be $setproduct_($fneg_($sizenn(Fnn), lane_1)*).
+  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Return v128*.
+6. If ((vunop_u0 is SQRT) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane** be $setproduct_($fsqrt_($sizenn(Fnn), lane_1)*).
+  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Return v128*.
+7. If ((vunop_u0 is CEIL) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane** be $setproduct_($fceil_($sizenn(Fnn), lane_1)*).
+  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Return v128*.
+8. If ((vunop_u0 is FLOOR) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane** be $setproduct_($ffloor_($sizenn(Fnn), lane_1)*).
+  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Return v128*.
+9. If ((vunop_u0 is TRUNC) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane** be $setproduct_($ftrunc_($sizenn(Fnn), lane_1)*).
+  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Return v128*.
+10. Assert: Due to validation, (vunop_u0 is NEAREST).
+11. Assert: Due to validation, the type of lanet_u1 is Fnn.
+12. Let Fnn be lanet_u1.
+13. Let lane_1* be $lanes_((Fnn X M), v128_1).
+14. Let lane** be $setproduct_($fnearest_($sizenn(Fnn), lane_1)*).
+15. Let v128* be $invlanes_((Fnn X M), lane*)*.
+16. Return v128*.
+
+vbinop_ (lanet_u1 X M) vbino_u0 v128_1 v128_2
+1. If ((vbino_u0 is ADD) and the type of lanet_u1 is Jnn), then:
+  a. Let Jnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  d. Let v128 be $invlanes_((Jnn X M), $iadd_($lsizenn(Jnn), lane_1, lane_2)*).
+  e. Return [v128].
+2. If ((vbino_u0 is SUB) and the type of lanet_u1 is Jnn), then:
+  a. Let Jnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  d. Let v128 be $invlanes_((Jnn X M), $isub_($lsizenn(Jnn), lane_1, lane_2)*).
+  e. Return [v128].
+3. If the type of lanet_u1 is Jnn, then:
+  a. Let Jnn be lanet_u1.
+  b. If vbino_u0 is of the case MIN, then:
+    1) Let (MIN sx) be vbino_u0.
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    4) Let v128 be $invlanes_((Jnn X M), $imin_($lsizenn(Jnn), sx, lane_1, lane_2)*).
+    5) Return [v128].
+  c. If vbino_u0 is of the case MAX, then:
+    1) Let (MAX sx) be vbino_u0.
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    4) Let v128 be $invlanes_((Jnn X M), $imax_($lsizenn(Jnn), sx, lane_1, lane_2)*).
+    5) Return [v128].
+  d. If vbino_u0 is of the case ADD_SAT, then:
+    1) Let (ADD_SAT sx) be vbino_u0.
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    4) Let v128 be $invlanes_((Jnn X M), $iadd_sat_($lsizenn(Jnn), sx, lane_1, lane_2)*).
+    5) Return [v128].
+  e. If vbino_u0 is of the case SUB_SAT, then:
+    1) Let (SUB_SAT sx) be vbino_u0.
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    4) Let v128 be $invlanes_((Jnn X M), $isub_sat_($lsizenn(Jnn), sx, lane_1, lane_2)*).
+    5) Return [v128].
+4. If ((vbino_u0 is MUL) and the type of lanet_u1 is Jnn), then:
+  a. Let Jnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  d. Let v128 be $invlanes_((Jnn X M), $imul_($lsizenn(Jnn), lane_1, lane_2)*).
+  e. Return [v128].
+5. If ((vbino_u0 is AVGR) and the type of lanet_u1 is Jnn), then:
+  a. Let Jnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  d. Let v128 be $invlanes_((Jnn X M), $iavgr_($lsizenn(Jnn), U, lane_1, lane_2)*).
+  e. Return [v128].
+6. If ((vbino_u0 is Q15MULR_SAT) and the type of lanet_u1 is Jnn), then:
+  a. Let Jnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  d. Let v128 be $invlanes_((Jnn X M), $iq15mulr_sat_($lsizenn(Jnn), S, lane_1, lane_2)*).
+  e. Return [v128].
+7. If ((vbino_u0 is ADD) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let lane** be $setproduct_($fadd_($sizenn(Fnn), lane_1, lane_2)*).
+  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  f. Return v128*.
+8. If ((vbino_u0 is SUB) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let lane** be $setproduct_($fsub_($sizenn(Fnn), lane_1, lane_2)*).
+  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  f. Return v128*.
+9. If ((vbino_u0 is MUL) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let lane** be $setproduct_($fmul_($sizenn(Fnn), lane_1, lane_2)*).
+  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  f. Return v128*.
+10. If ((vbino_u0 is DIV) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let lane** be $setproduct_($fdiv_($sizenn(Fnn), lane_1, lane_2)*).
+  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  f. Return v128*.
+11. If ((vbino_u0 is MIN) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let lane** be $setproduct_($fmin_($sizenn(Fnn), lane_1, lane_2)*).
+  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  f. Return v128*.
+12. If ((vbino_u0 is MAX) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let lane** be $setproduct_($fmax_($sizenn(Fnn), lane_1, lane_2)*).
+  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  f. Return v128*.
+13. If ((vbino_u0 is PMIN) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let lane** be $setproduct_($fpmin_($sizenn(Fnn), lane_1, lane_2)*).
+  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  f. Return v128*.
+14. Assert: Due to validation, (vbino_u0 is PMAX).
+15. Assert: Due to validation, the type of lanet_u1 is Fnn.
+16. Let Fnn be lanet_u1.
+17. Let lane_1* be $lanes_((Fnn X M), v128_1).
+18. Let lane_2* be $lanes_((Fnn X M), v128_2).
+19. Let lane** be $setproduct_($fpmax_($sizenn(Fnn), lane_1, lane_2)*).
+20. Let v128* be $invlanes_((Fnn X M), lane*)*.
+21. Return v128*.
+
+vrelop_ (lanet_u1 X M) vrelo_u0 v128_1 v128_2
+1. If ((vrelo_u0 is EQ) and the type of lanet_u1 is Jnn), then:
+  a. Let Jnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  d. Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ieq_($lsizenn(Jnn), lane_1, lane_2))*.
+  e. Let v128 be $invlanes_((Jnn X M), lane_3*).
+  f. Return v128.
+2. If ((vrelo_u0 is NE) and the type of lanet_u1 is Jnn), then:
+  a. Let Jnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  d. Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ine_($lsizenn(Jnn), lane_1, lane_2))*.
+  e. Let v128 be $invlanes_((Jnn X M), lane_3*).
+  f. Return v128.
+3. If the type of lanet_u1 is Jnn, then:
+  a. Let Jnn be lanet_u1.
+  b. If vrelo_u0 is of the case LT, then:
+    1) Let (LT sx) be vrelo_u0.
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    4) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ilt_($lsizenn(Jnn), sx, lane_1, lane_2))*.
+    5) Let v128 be $invlanes_((Jnn X M), lane_3*).
+    6) Return v128.
+  c. If vrelo_u0 is of the case GT, then:
+    1) Let (GT sx) be vrelo_u0.
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    4) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $igt_($lsizenn(Jnn), sx, lane_1, lane_2))*.
+    5) Let v128 be $invlanes_((Jnn X M), lane_3*).
+    6) Return v128.
+  d. If vrelo_u0 is of the case LE, then:
+    1) Let (LE sx) be vrelo_u0.
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    4) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ile_($lsizenn(Jnn), sx, lane_1, lane_2))*.
+    5) Let v128 be $invlanes_((Jnn X M), lane_3*).
+    6) Return v128.
+  e. If vrelo_u0 is of the case GE, then:
+    1) Let (GE sx) be vrelo_u0.
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    4) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ige_($lsizenn(Jnn), sx, lane_1, lane_2))*.
+    5) Let v128 be $invlanes_((Jnn X M), lane_3*).
+    6) Return v128.
+4. If ((vrelo_u0 is EQ) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $extend__(1, $size(Fnn), S, $feq_($size(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X N), lane_3*).
+  e. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $feq_($sizenn(Fnn), lane_1, lane_2))*.
+  f. Let v128 be $invlanes_((Inn X M), lane_3*).
   g. Return v128.
+<<<<<<< HEAD
 5. If ((vrelop__u0 is NE) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
   b. Let lane_1* be $lanes_((Fnn X N), v128_1).
   c. Let lane_2* be $lanes_((Fnn X N), v128_2).
+=======
+5. If ((vrelo_u0 is NE) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $extend__(1, $size(Fnn), S, $fne_($size(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X N), lane_3*).
+  e. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fne_($sizenn(Fnn), lane_1, lane_2))*.
+  f. Let v128 be $invlanes_((Inn X M), lane_3*).
   g. Return v128.
+<<<<<<< HEAD
 6. If ((vrelop__u0 is LT) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
   b. Let lane_1* be $lanes_((Fnn X N), v128_1).
   c. Let lane_2* be $lanes_((Fnn X N), v128_2).
+=======
+6. If ((vrelo_u0 is LT) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $extend__(1, $size(Fnn), S, $flt_($size(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X N), lane_3*).
+  e. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $flt_($sizenn(Fnn), lane_1, lane_2))*.
+  f. Let v128 be $invlanes_((Inn X M), lane_3*).
   g. Return v128.
+<<<<<<< HEAD
 7. If ((vrelop__u0 is GT) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
   b. Let lane_1* be $lanes_((Fnn X N), v128_1).
   c. Let lane_2* be $lanes_((Fnn X N), v128_2).
+=======
+7. If ((vrelo_u0 is GT) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $extend__(1, $size(Fnn), S, $fgt_($size(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X N), lane_3*).
+  e. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fgt_($sizenn(Fnn), lane_1, lane_2))*.
+  f. Let v128 be $invlanes_((Inn X M), lane_3*).
   g. Return v128.
+<<<<<<< HEAD
 8. If ((vrelop__u0 is LE) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
   b. Let lane_1* be $lanes_((Fnn X N), v128_1).
   c. Let lane_2* be $lanes_((Fnn X N), v128_2).
+=======
+8. If ((vrelo_u0 is LE) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $extend__(1, $size(Fnn), S, $fle_($size(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X N), lane_3*).
+  e. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fle_($sizenn(Fnn), lane_1, lane_2))*.
+  f. Let v128 be $invlanes_((Inn X M), lane_3*).
   g. Return v128.
+<<<<<<< HEAD
 9. Assert: Due to validation, (vrelop__u0 is GE).
 10. Assert: Due to validation, the type of lanetype_u1 is Fnn.
 11. Let Fnn be lanetype_u1.
 12. Let lane_1* be $lanes_((Fnn X N), v128_1).
 13. Let lane_2* be $lanes_((Fnn X N), v128_2).
+=======
+9. Assert: Due to validation, (vrelo_u0 is GE).
+10. Assert: Due to validation, the type of lanet_u1 is Fnn.
+11. Let Fnn be lanet_u1.
+12. Let lane_1* be $lanes_((Fnn X M), v128_1).
+13. Let lane_2* be $lanes_((Fnn X M), v128_2).
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
 14. Let Inn be $isize^-1($size(Fnn)).
-15. Let lane_3* be $extend__(1, $size(Fnn), S, $fge_($size(Fnn), lane_1, lane_2))*.
-16. Let v128 be $invlanes_((Inn X N), lane_3*).
+15. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fge_($sizenn(Fnn), lane_1, lane_2))*.
+16. Let v128 be $invlanes_((Inn X M), lane_3*).
 17. Return v128.
 
+<<<<<<< HEAD
 vcvtop__ (lanetype_u0 X N_1) (lanetype_u1 X N_2) vcvtop_u4 sx_u5? lane__u3
 1. If ((lanetype_u0 is I8) and ((lanetype_u1 is I16) and (vcvtop_u4 is EXTEND))), then:
   a. Let i8 be lane__u3.
@@ -2892,13 +3585,59 @@ vcvtop__ (lanetype_u0 X N_1) (lanetype_u1 X N_2) vcvtop_u4 sx_u5? lane__u3
 9. Let f32 be lane__u3.
 10. Let f64 be $promote__(32, 64, f32).
 11. Return f64.
+=======
+vcvtop__ (lanet_u2 X M_1) (lanet_u0 X M_2) vcvto_u1 lane__u4
+1. If the type of lanet_u2 is Jnn, then:
+  a. Let Jnn_1 be lanet_u2.
+  b. If the type of lanet_u0 is Jnn, then:
+    1) Let Jnn_2 be lanet_u0.
+    2) Let iN_1 be lane__u4.
+    3) If vcvto_u1 is of the case EXTEND, then:
+      a) Let (EXTEND sx) be vcvto_u1.
+      b) Let iN_2 be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, iN_1).
+      c) Return [iN_2].
+2. If the type of lanet_u0 is Fnn, then:
+  a. Let Fnn_2 be lanet_u0.
+  b. If the type of lanet_u2 is Jnn, then:
+    1) Let Jnn_1 be lanet_u2.
+    2) Let iN_1 be lane__u4.
+    3) If vcvto_u1 is of the case CONVERT, then:
+      a) Let (CONVERT sx) be vcvto_u1.
+      b) Let fN_2 be $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, iN_1).
+      c) Return [fN_2].
+3. If the type of lanet_u2 is Fnn, then:
+  a. Let Fnn_1 be lanet_u2.
+  b. If the type of lanet_u0 is Inn, then:
+    1) Let Inn_2 be lanet_u0.
+    2) Let fN_1 be lane__u4.
+    3) If vcvto_u1 is of the case TRUNC_SAT, then:
+      a) Let (TRUNC_SAT sx) be vcvto_u1.
+      b) Let iN_2? be $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, fN_1).
+      c) Return $list_(iN_2?).
+4. If ((vcvto_u1 is DEMOTE) and the type of lanet_u2 is Fnn), then:
+  a. Let Fnn_1 be lanet_u2.
+  b. If the type of lanet_u0 is Fnn, then:
+    1) Let Fnn_2 be lanet_u0.
+    2) Let fN_1 be lane__u4.
+    3) Let fN_2* be $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
+    4) Return fN_2*.
+5. Assert: Due to validation, (vcvto_u1 is PROMOTE).
+6. Assert: Due to validation, the type of lanet_u2 is Fnn.
+7. Let Fnn_1 be lanet_u2.
+8. Assert: Due to validation, the type of lanet_u0 is Fnn.
+9. Let Fnn_2 be lanet_u0.
+10. Let fN_1 be lane__u4.
+11. Let fN_2* be $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
+12. Return fN_2*.
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
 
-vextunop_ (Inn_1 X N_1) (Inn_2 X N_2) (EXTADD_PAIRWISE sx) c_1
-1. Let ci* be $lanes_((Inn_2 X N_2), c_1).
-2. Let [cj_1, cj_2]* be $concat_^-1($extend__($lsize(Inn_2), $lsize(Inn_1), sx, ci)*).
-3. Let c be $invlanes_((Inn_1 X N_1), $iadd_($lsize(Inn_1), cj_1, cj_2)*).
+vextunop__ (Inn_1 X M_1) (Inn_2 X M_2) (EXTADD_PAIRWISE sx) c_1
+1. Let ci* be $lanes_((Inn_2 X M_2), c_1).
+2. Let [cj_1, cj_2]* be $concat_^-1($extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci)*).
+3. Let c be $invlanes_((Inn_1 X M_1), $iadd_($lsizenn1(Inn_1), cj_1, cj_2)*).
 4. Return c.
 
+<<<<<<< HEAD
 vextbinop_ (Inn_1 X N_1) (Inn_2 X N_2) vextbinop__u0 c_1 c_2
 1. If vextbinop__u0 is of the case EXTMUL, then:
   a. Let (EXTMUL sx hf) be vextbinop__u0.
@@ -2919,6 +3658,28 @@ vshiftop_ (Jnn X N) vshiftop__u0 lane n
 2. Assert: Due to validation, vshiftop__u0 is of the case SHR.
 3. Let (SHR sx) be vshiftop__u0.
 4. Return $ishr_($lsize(Jnn), sx, lane, n).
+=======
+vextbinop__ (Inn_1 X M_1) (Inn_2 X M_2) vextb_u0 c_1 c_2
+1. If vextb_u0 is of the case EXTMUL, then:
+  a. Let (EXTMUL sx hf) be vextb_u0.
+  b. Let ci_1* be $lanes_((Inn_2 X M_2), c_1)[$half(hf, 0, M_1) : M_1].
+  c. Let ci_2* be $lanes_((Inn_2 X M_2), c_2)[$half(hf, 0, M_1) : M_1].
+  d. Let c be $invlanes_((Inn_1 X M_1), $imul_($lsizenn1(Inn_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci_2))*).
+  e. Return c.
+2. Assert: Due to validation, (vextb_u0 is DOT).
+3. Let ci_1* be $lanes_((Inn_2 X M_2), c_1).
+4. Let ci_2* be $lanes_((Inn_2 X M_2), c_2).
+5. Let [cj_1, cj_2]* be $concat_^-1($imul_($lsizenn1(Inn_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), S, ci_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), S, ci_2))*).
+6. Let c be $invlanes_((Inn_1 X M_1), $iadd_($lsizenn1(Inn_1), cj_1, cj_2)*).
+7. Return c.
+
+vshiftop_ (Jnn X M) vshif_u0 lane n
+1. If (vshif_u0 is SHL), then:
+  a. Return $ishl_($lsizenn(Jnn), lane, n).
+2. Assert: Due to validation, vshif_u0 is of the case SHR.
+3. Let (SHR sx) be vshif_u0.
+4. Return $ishr_($lsizenn(Jnn), sx, lane, n).
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
 
 default_ valtype_u0
 1. If (valtype_u0 is I32), then:
@@ -3454,22 +4215,20 @@ execution_of_TRAP
 execution_of_UNOP nt unop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop the value (nt.CONST c_1) from the stack.
-3. If (|$unop_(nt, unop, c_1)| is 1), then:
-  a. Let [c] be $unop_(nt, unop, c_1).
-  b. Push the value (nt.CONST c) to the stack.
-4. If ($unop_(nt, unop, c_1) is []), then:
+3. If (|$unop_(nt, unop, c_1)| ≤ 0), then:
   a. Trap.
+4. Let c be an element of $unop_(nt, unop, c_1).
+5. Push the value (nt.CONST c) to the stack.
 
 execution_of_BINOP nt binop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop the value (nt.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type nt is on the top of the stack.
 4. Pop the value (nt.CONST c_1) from the stack.
-5. If (|$binop_(nt, binop, c_1, c_2)| is 1), then:
-  a. Let [c] be $binop_(nt, binop, c_1, c_2).
-  b. Push the value (nt.CONST c) to the stack.
-6. If ($binop_(nt, binop, c_1, c_2) is []), then:
+5. If (|$binop_(nt, binop, c_1, c_2)| ≤ 0), then:
   a. Trap.
+6. Let c be an element of $binop_(nt, binop, c_1, c_2).
+7. Push the value (nt.CONST c) to the stack.
 
 execution_of_TESTOP nt testop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
@@ -3488,11 +4247,10 @@ execution_of_RELOP nt relop
 execution_of_CVTOP nt_2 nt_1 cvtop
 1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
 2. Pop the value (nt_1.CONST c_1) from the stack.
-3. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| is 1), then:
-  a. Let [c] be $cvtop__(nt_1, nt_2, cvtop, c_1).
-  b. Push the value (nt_2.CONST c) to the stack.
-4. If ($cvtop__(nt_1, nt_2, cvtop, c_1) is []), then:
+3. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| ≤ 0), then:
   a. Trap.
+4. Let c be an element of $cvtop__(nt_1, nt_2, cvtop, c_1).
+5. Push the value (nt_2.CONST c) to the stack.
 
 execution_of_REF.IS_NULL
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -3503,54 +4261,55 @@ execution_of_REF.IS_NULL
   a. Push the value (I32.CONST 0) to the stack.
 
 execution_of_VVUNOP V128 vvunop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. Let c be $vvunop_(V128, vvunop, c_1).
 4. Push the value (V128.CONST c) to the stack.
 
 execution_of_VVBINOP V128 vvbinop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c be $vvbinop_(V128, vvbinop, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
 
 execution_of_VVTERNOP V128 vvternop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_3) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_2) from the stack.
-5. Assert: Due to validation, a value is on the top of the stack.
+5. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 6. Pop the value (V128.CONST c_1) from the stack.
 7. Let c be $vvternop_(V128, vvternop, c_1, c_2, c_3).
 8. Push the value (V128.CONST c) to the stack.
 
 execution_of_VVTESTOP V128 ANY_TRUE
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. Let c be $ine_($size(V128), c_1, 0).
 4. Push the value (I32.CONST c) to the stack.
 
 execution_of_VUNOP sh vunop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
-3. Let c be $vunop_(sh, vunop, c_1).
-4. Push the value (V128.CONST c) to the stack.
+3. If (|$vunop_(sh, vunop, c_1)| ≤ 0), then:
+  a. Trap.
+4. Let c be an element of $vunop_(sh, vunop, c_1).
+5. Push the value (V128.CONST c) to the stack.
 
 execution_of_VBINOP sh vbinop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
-5. If (|$vbinop_(sh, vbinop, c_1, c_2)| is 1), then:
-  a. Let [c] be $vbinop_(sh, vbinop, c_1, c_2).
-  b. Push the value (V128.CONST c) to the stack.
-6. If ($vbinop_(sh, vbinop, c_1, c_2) is []), then:
+5. If (|$vbinop_(sh, vbinop, c_1, c_2)| ≤ 0), then:
   a. Trap.
+6. Let c be an element of $vbinop_(sh, vbinop, c_1, c_2).
+7. Push the value (V128.CONST c) to the stack.
 
 execution_of_VTESTOP (Jnn X N) ALL_TRUE
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c) from the stack.
 3. Let ci_1* be $lanes_((Jnn X N), c).
 4. If (ci_1 is not 0)*, then:
@@ -3559,9 +4318,9 @@ execution_of_VTESTOP (Jnn X N) ALL_TRUE
   a. Push the value (I32.CONST 0) to the stack.
 
 execution_of_VRELOP sh vrelop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c be $vrelop_(sh, vrelop, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
@@ -3569,35 +4328,35 @@ execution_of_VRELOP sh vrelop
 execution_of_VSHIFTOP (Jnn X N) vshiftop
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c'* be $lanes_((Jnn X N), c_1).
 6. Let c be $invlanes_((Jnn X N), $vshiftop_((Jnn X N), vshiftop, c', n)*).
 7. Push the value (V128.CONST c) to the stack.
 
 execution_of_VBITMASK (Jnn X N)
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c) from the stack.
 3. Let ci_1* be $lanes_((Jnn X N), c).
 4. Let ci be $ibits__1^-1(32, $ilt_($lsize(Jnn), S, ci_1, 0)*).
 5. Push the value (I32.CONST ci) to the stack.
 
-execution_of_VSWIZZLE (Pnn X N)
-1. Assert: Due to validation, a value is on the top of the stack.
+execution_of_VSWIZZLE (Pnn X M)
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c* be $lanes_((Pnn X N), c_1) ++ 0^(256 - N).
-6. Let ci* be $lanes_((Pnn X N), c_2).
-7. Assert: Due to validation, (ci*[k] < |c*|)^(k<N).
-8. Assert: Due to validation, (k < |ci*|)^(k<N).
-9. Let c' be $invlanes_((Pnn X N), c*[ci*[k]]^(k<N)).
-10. Push the value (V128.CONST c') to the stack.
+5. Let c'* be $lanes_((Pnn X M), c_1) ++ 0^(256 - M).
+6. Let ci* be $lanes_((Pnn X M), c_2).
+7. Assert: Due to validation, (ci*[k] < |c'*|)^(k<M).
+8. Assert: Due to validation, (k < |ci*|)^(k<M).
+9. Let c be $invlanes_((Pnn X M), c'*[ci*[k]]^(k<M)).
+10. Push the value (V128.CONST c) to the stack.
 
 execution_of_VSHUFFLE (Pnn X N) i*
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Assert: Due to validation, (k < |i*|)^(k<N).
 6. Let c'* be $lanes_((Pnn X N), c_1) ++ $lanes_((Pnn X N), c_2).
@@ -3606,13 +4365,19 @@ execution_of_VSHUFFLE (Pnn X N) i*
 9. Push the value (V128.CONST c) to the stack.
 
 execution_of_VSPLAT (Lnn X N)
-1. Assert: Due to validation, a value of value type $unpack(Lnn) is on the top of the stack.
-2. Pop the value (nt_0.CONST c_1) from the stack.
-3. Let c be $invlanes_((Lnn X N), $packnum_(Lnn, c_1)^N).
-4. Push the value (V128.CONST c) to the stack.
+1. Let nt_0 be $unpack(Lnn).
+2. Assert: Due to validation, a value of value type nt_0 is on the top of the stack.
+3. Pop the value (nt_0.CONST c_1) from the stack.
+4. Let c be $invlanes_((Lnn X N), $packnum_(Lnn, c_1)^N).
+5. Push the value (V128.CONST c) to the stack.
 
+<<<<<<< HEAD
 execution_of_VEXTRACT_LANE (lanetype_u0 X N) sx_u1? i
 1. Assert: Due to validation, a value is on the top of the stack.
+=======
+execution_of_VEXTRACT_LANE (lanet_u0 X N) sx_u1? i
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
 2. Pop the value (V128.CONST c_1) from the stack.
 3. If (sx_u1? is not defined and the type of lanetype_u0 is numtype), then:
   a. Let nt be lanetype_u0.
@@ -3628,31 +4393,32 @@ execution_of_VEXTRACT_LANE (lanetype_u0 X N) sx_u1? i
       b) Push the value (I32.CONST c_2) to the stack.
 
 execution_of_VREPLACE_LANE (Lnn X N) i
-1. Assert: Due to validation, a value of value type $unpack(Lnn) is on the top of the stack.
-2. Pop the value (nt_0.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c be $invlanes_((Lnn X N), $lanes_((Lnn X N), c_1) with [i] replaced by $packnum_(Lnn, c_2)).
-6. Push the value (V128.CONST c) to the stack.
+1. Let nt_0 be $unpack(Lnn).
+2. Assert: Due to validation, a value of value type nt_0 is on the top of the stack.
+3. Pop the value (nt_0.CONST c_2) from the stack.
+4. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+5. Pop the value (V128.CONST c_1) from the stack.
+6. Let c be $invlanes_((Lnn X N), $lanes_((Lnn X N), c_1) with [i] replaced by $packnum_(Lnn, c_2)).
+7. Push the value (V128.CONST c) to the stack.
 
 execution_of_VEXTUNOP sh_1 sh_2 vextunop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
-3. Let c be $vextunop_(sh_1, sh_2, vextunop, c_1).
+3. Let c be $vextunop__(sh_1, sh_2, vextunop, c_1).
 4. Push the value (V128.CONST c) to the stack.
 
 execution_of_VEXTBINOP sh_1 sh_2 vextbinop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c be $vextbinop_(sh_1, sh_2, vextbinop, c_1, c_2).
+5. Let c be $vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
 
 execution_of_VNARROW (Jnn_2 X N_2) (Jnn_1 X N_1) sx
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let ci_1* be $lanes_((Jnn_1 X N_1), c_1).
 6. Let ci_2* be $lanes_((Jnn_1 X N_1), c_2).
@@ -3661,6 +4427,7 @@ execution_of_VNARROW (Jnn_2 X N_2) (Jnn_1 X N_1) sx
 9. Let c be $invlanes_((Jnn_2 X N_2), cj_1* ++ cj_2*).
 10. Push the value (V128.CONST c) to the stack.
 
+<<<<<<< HEAD
 execution_of_VCVTOP (lanetype_u2 X N_2) (lanetype_u3 X N_1) vcvtop half_u0? sx_u1? zero_u4?
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
@@ -3689,6 +4456,46 @@ execution_of_VCVTOP (lanetype_u2 X N_2) (lanetype_u3 X N_1) vcvtop half_u0? sx_u
     3) Let ci* be $lanes_((nt_1 X N_1), c_1).
     4) Let c be $invlanes_((nt_2 X N_2), $vcvtop__((nt_1 X N_1), (nt_2 X N_2), vcvtop, sx?, ci)* ++ $zero(nt_2)^N_1).
     5) Push the value (V128.CONST c) to the stack.
+=======
+execution_of_VCVTOP (lanet_u3 X n_u0) (lanet_u4 X n_u1) vcvtop half_u2? zero_u5?
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_1) from the stack.
+3. If (half_u2? is not defined and zero_u5? is not defined), then:
+  a. Let Lnn_1 be lanet_u4.
+  b. Let Lnn_2 be lanet_u3.
+  c. Let M be n_u1.
+  d. If (n_u0 is M), then:
+    1) Let ci* be $lanes_((Lnn_1 X M), c_1).
+    2) Let cj** be $setproduct_($vcvtop__((Lnn_1 X M), (Lnn_2 X M), vcvtop, ci)*).
+    3) If (|$invlanes_((Lnn_2 X M), cj*)*| > 0), then:
+      a) Let c be an element of $invlanes_((Lnn_2 X M), cj*)*.
+      b) Push the value (V128.CONST c) to the stack.
+4. If zero_u5? is not defined, then:
+  a. Let Lnn_1 be lanet_u4.
+  b. Let Lnn_2 be lanet_u3.
+  c. Let M_1 be n_u1.
+  d. Let M_2 be n_u0.
+  e. If half_u2? is defined, then:
+    1) Let ?(half) be half_u2?.
+    2) Let ci* be $lanes_((Lnn_1 X M_1), c_1)[$half(half, 0, M_2) : M_2].
+    3) Let cj** be $setproduct_($vcvtop__((Lnn_1 X M_1), (Lnn_2 X M_2), vcvtop, ci)*).
+    4) If (|$invlanes_((Lnn_2 X M_2), cj*)*| > 0), then:
+      a) Let c be an element of $invlanes_((Lnn_2 X M_2), cj*)*.
+      b) Push the value (V128.CONST c) to the stack.
+5. If half_u2? is not defined, then:
+  a. Let M_1 be n_u1.
+  b. Let M_2 be n_u0.
+  c. If the type of lanet_u4 is numtype, then:
+    1) Let nt_1 be lanet_u4.
+    2) If the type of lanet_u3 is numtype, then:
+      a) Let nt_2 be lanet_u3.
+      b) If zero_u5? is defined, then:
+        1. Let ci* be $lanes_((nt_1 X M_1), c_1).
+        2. Let cj** be $setproduct_($vcvtop__((nt_1 X M_1), (nt_2 X M_2), vcvtop, ci)* ++ [$zero(nt_2)]^M_1).
+        3. If (|$invlanes_((nt_2 X M_2), cj*)*| > 0), then:
+          a. Let c be an element of $invlanes_((nt_2 X M_2), cj*)*.
+          b. Push the value (V128.CONST c) to the stack.
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
 
 execution_of_LOCAL.TEE x
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -3878,6 +4685,7 @@ execution_of_VLOAD V128 vloadop_u0? ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
+<<<<<<< HEAD
 4. If ((((i + ao.OFFSET) + ($size(V128) / 8)) > |$mem(z, 0).BYTES|) and vloadop_u0? is not defined), then:
   a. Trap.
 5. If vloadop_u0? is not defined, then:
@@ -3885,6 +4693,15 @@ execution_of_VLOAD V128 vloadop_u0? ao
   b. Push the value (V128.CONST c) to the stack.
 6. Else:
   a. Let ?(vloadop_0) be vloadop_u0?.
+=======
+4. If vload_u0? is not defined, then:
+  a. If (((i + ao.OFFSET) + ($size(V128) / 8)) > |$mem(z, 0).BYTES|), then:
+    1) Trap.
+  b. Let c be $vbytes__1^-1(V128, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(V128) / 8)]).
+  c. Push the value (V128.CONST c) to the stack.
+5. Else:
+  a. Let ?(vloadop_0) be vload_u0?.
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   b. If vloadop_0 is of the case SHAPE, then:
     1) Let (SHAPE M N sx) be vloadop_0.
     2) If (((i + ao.OFFSET) + ((M · N) / 8)) > |$mem(z, 0).BYTES|), then:
@@ -3914,7 +4731,7 @@ execution_of_VLOAD V128 vloadop_u0? ao
 
 execution_of_VLOAD_LANE V128 N ao j
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 3. Pop the value (V128.CONST c_1) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
@@ -4057,6 +4874,7 @@ execution_of_STORE numtype_u1 sz_u2? ao
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
 6. If sz_u2? is not defined, then:
+<<<<<<< HEAD
   a. Let nt be numtype_u1.
   b. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, 0).BYTES|) and (numtype_u0 is nt)), then:
     1) Trap.
@@ -4072,10 +4890,27 @@ execution_of_STORE numtype_u1 sz_u2? ao
     3) If (numtype_u0 is Inn), then:
       a) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
       b) Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
+=======
+  a. Let nt be numty_u1.
+  b. If (numty_u0 is nt), then:
+    1) If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, 0).BYTES|), then:
+      a) Trap.
+    2) Let b* be $nbytes_(nt, c).
+    3) Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(nt) / 8), b*).
+7. Else:
+  a. Let ?(n) be sz_u2?.
+  b. If the type of numty_u1 is Inn, then:
+    1) Let Inn be numty_u1.
+    2) If (numty_u0 is Inn), then:
+      a) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
+        1. Trap.
+      b) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
+      c) Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
 
 execution_of_VSTORE V128 ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 3. Pop the value (V128.CONST c) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
@@ -4086,7 +4921,7 @@ execution_of_VSTORE V128 ao
 
 execution_of_VSTORE_LANE V128 N ao j
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 3. Pop the value (V128.CONST c) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
@@ -4124,24 +4959,6 @@ group_bytes_by n byte*
 2. If (n' ≥ n), then:
   a. Return [byte*[0 : n]] ++ $group_bytes_by(n, byte*[n : (n' - n)]).
 3. Return [].
-
-execution_of_ARRAY.NEW_DATA x y
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If $expanddt($type(z, x)) is of the case ARRAY, then:
-  a. Let (ARRAY y_0) be $expanddt($type(z, x)).
-  b. Let (mut, zt) be y_0.
-  c. If ((i + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
-    1) Trap.
-  d. Let cnn be $cunpack(zt).
-  e. Let b* be $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)].
-  f. Let gb* be $group_bytes_by(($zsize(zt) / 8), b*).
-  g. Let c^n be $inverse_of_ibytes($zsize(zt), gb)*.
-  h. Push the values (cnn.CONST c)^n to the stack.
-  i. Execute the instruction (ARRAY.NEW_FIXED x n).
 == Complete.
 Generating prose for Wasm 3.0...
 watsup 0.4 generator
@@ -4159,14 +4976,19 @@ watsup 0.4 generator
 =================
  Generated prose
 =================
-validation_of_valid_numtype
+validation_of_Numtype_ok
 - the number type numtype is valid.
 
-validation_of_valid_vectype
+validation_of_Vectype_ok
 - the vector type vectype is valid.
 
+<<<<<<< HEAD
 validation_of_valid_heaptype
 - the heap type heaptype_u0 is valid if and only if:
+=======
+validation_of_Heaptype_ok
+- the heap type heapt_u0 is valid if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - heaptype_u0 is absheaptype.
   - Or:
@@ -4178,12 +5000,17 @@ validation_of_valid_heaptype
     - |C.RECS| is greater than i.
     - C.RECS[i] is st.
 
-validation_of_valid_reftype
+validation_of_Reftype_ok
 - the reference type (REF (NULL ()?) heaptype) is valid if and only if:
   - the heap type heaptype is valid.
 
+<<<<<<< HEAD
 validation_of_valid_valtype
 - the value type valtype_u0 is valid if and only if:
+=======
+validation_of_Valtype_ok
+- the value type valty_u0 is valid if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - valtype_u0 is numtype.
     - the number type numtype is valid.
@@ -4196,12 +5023,12 @@ validation_of_valid_valtype
   - Or:
     - valtype_u0 is BOT.
 
-validation_of_valid_resulttype
+validation_of_Resulttype_ok
 - the value type sequence t* is valid if and only if:
   - For all t in t*,
     - the value type t is valid.
 
-validation_of_valid_instrtype
+validation_of_Instrtype_ok
 - the instruction type (t_1* ->_ x* ++ t_2*) is valid if and only if:
   - |x*| is |lct*|.
   - For all x in x*,
@@ -4211,11 +5038,16 @@ validation_of_valid_instrtype
   - For all lct in lct* and x in x*,
     - C.LOCALS[x] is lct.
 
-validation_of_valid_packtype
+validation_of_Packtype_ok
 - the packed type packtype is valid.
 
+<<<<<<< HEAD
 validation_of_valid_storagetype
 - the storage type storagetype_u0 is valid if and only if:
+=======
+validation_of_Storagetype_ok
+- the storage type stora_u0 is valid if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - storagetype_u0 is valtype.
     - the value type valtype is valid.
@@ -4223,17 +5055,22 @@ validation_of_valid_storagetype
     - storagetype_u0 is packtype.
     - the packed type packtype is valid.
 
-validation_of_valid_fieldtype
+validation_of_Fieldtype_ok
 - the field type ((MUT ()?), storagetype) is valid if and only if:
   - the storage type storagetype is valid.
 
-validation_of_valid_functype
+validation_of_Functype_ok
 - the function type (t_1* -> t_2*) is valid if and only if:
   - the value type sequence t_1* is valid.
   - the value type sequence t_2* is valid.
 
+<<<<<<< HEAD
 validation_of_valid_comptype
 - the composite type comptype_u0 is valid if and only if:
+=======
+validation_of_Comptype_ok
+- the composite type compt_u0 is valid if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - comptype_u0 is (STRUCT fieldtype*).
     - For all fieldtype in fieldtype*,
@@ -4245,13 +5082,13 @@ validation_of_valid_comptype
     - comptype_u0 is (FUNC functype).
     - the function type functype is valid.
 
-validation_of_matching_packtype
+validation_of_Packtype_sub
 - the packed type packtype matches the packed type packtype.
 
-validation_of_matching_numtype
+validation_of_Numtype_sub
 - the number type numtype matches the number type numtype.
 
-validation_of_matching_deftype
+validation_of_Deftype_sub
 - the defined type deftype_1 matches the defined type deftype_2 if and only if:
   - Either:
     - $clos_deftype(C, deftype_1) is $clos_deftype(C, deftype_2).
@@ -4260,8 +5097,13 @@ validation_of_matching_deftype
     - $unrolldt(deftype_1) is (SUB fin typeuse* ct).
     - the type use typeuse*[i] matches the heap type deftype_2.
 
+<<<<<<< HEAD
 validation_of_matching_heaptype
 - the heap type heaptype_u0 matches the heap type heaptype_u1 if and only if:
+=======
+validation_of_Heaptype_sub
+- the heap type heapt_u0 matches the heap type heapt_u1 if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - heaptype_u0 is heaptype.
     - heaptype_u1 is heaptype.
@@ -4331,7 +5173,7 @@ validation_of_matching_heaptype
     - heaptype_u0 is BOT.
     - heaptype_u1 is heaptype.
 
-validation_of_matching_reftype
+validation_of_Reftype_sub
 - the reference type (REF (NULL _u0?) ht_1) matches the reference type (REF (NULL _u1?) ht_2) if and only if:
   - Either:
     - _u0? is ?().
@@ -4342,11 +5184,16 @@ validation_of_matching_reftype
     - _u1? is ?(()).
     - the heap type ht_1 matches the heap type ht_2.
 
-validation_of_matching_vectype
+validation_of_Vectype_sub
 - the vector type vectype matches the vector type vectype.
 
+<<<<<<< HEAD
 validation_of_matching_valtype
 - the value type valtype_u0 matches the value type valtype_u1 if and only if:
+=======
+validation_of_Valtype_sub
+- the value type valty_u0 matches the value type valty_u1 if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - valtype_u0 is numtype_1.
     - valtype_u1 is numtype_2.
@@ -4363,8 +5210,13 @@ validation_of_matching_valtype
     - valtype_u0 is BOT.
     - valtype_u1 is valtype.
 
+<<<<<<< HEAD
 validation_of_matching_storagetype
 - the storage type storagetype_u0 matches the storage type storagetype_u1 if and only if:
+=======
+validation_of_Storagetype_sub
+- the storage type stora_u0 matches the storage type stora_u1 if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - storagetype_u0 is valtype_1.
     - storagetype_u1 is valtype_2.
@@ -4374,7 +5226,7 @@ validation_of_matching_storagetype
     - storagetype_u1 is packtype_2.
     - the packed type packtype_1 matches the packed type packtype_2.
 
-validation_of_matching_fieldtype
+validation_of_Fieldtype_sub
 - the field type ((MUT _u0?), zt_1) matches the field type ((MUT _u1?), zt_2) if and only if:
   - Either:
     - _u0? is ?().
@@ -4386,19 +5238,24 @@ validation_of_matching_fieldtype
     - the storage type zt_1 matches the storage type zt_2.
     - the storage type zt_2 matches the storage type zt_1.
 
-validation_of_matching_valtype*
+validation_of_Resulttype_sub
 - the value type sequence t_1* matches the value type sequence t_2* if and only if:
   - |t_2*| is |t_1*|.
   - For all t_1 in t_1* and t_2 in t_2*,
     - the value type t_1 matches the value type t_2.
 
-validation_of_matching_functype
+validation_of_Functype_sub
 - the function type (t_11* -> t_12*) matches the function type (t_21* -> t_22*) if and only if:
   - the value type sequence t_21* matches the value type sequence t_11*.
   - the value type sequence t_12* matches the value type sequence t_22*.
 
+<<<<<<< HEAD
 validation_of_matching_comptype
 - the composite type comptype_u0 matches the composite type comptype_u1 if and only if:
+=======
+validation_of_Comptype_sub
+- the composite type compt_u0 matches the composite type compt_u1 if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - comptype_u0 is (STRUCT yt_1* ++ [yt'_1]).
     - comptype_u1 is (STRUCT yt_2*).
@@ -4414,7 +5271,7 @@ validation_of_matching_comptype
     - comptype_u1 is (FUNC ft_2).
     - the function type ft_1 matches the function type ft_2.
 
-validation_of_valid_subtype
+validation_of_Subtype_ok
 - the sub type (SUB (FINAL ()?) $idx(typeidx)* comptype) is valid with the oktypeidx (OK x_0) if and only if:
   - |x*| is |comptype'*|.
   - |x'**| is |comptype'*|.
@@ -4429,7 +5286,7 @@ validation_of_valid_subtype
   - For all comptype' in comptype'*,
     - the composite type comptype matches the composite type comptype'.
 
-validation_of_valid_subtype
+validation_of_Subtype_ok2
 - the sub type (SUB (FINAL ()?) typeuse* compttype) is valid with the oktypeidxnat (OK x i) if and only if:
   - |typeuse*| is |comptype'*|.
   - |typeuse'**| is |comptype'*|.
@@ -4442,8 +5299,13 @@ validation_of_valid_subtype
   - For all comptype' in comptype'*,
     - the composite type comptype matches the composite type comptype'.
 
+<<<<<<< HEAD
 validation_of_valid_rectype
 - the recursive type (REC subtype_u0*) is valid with the oktypeidxnat (OK x i) if and only if:
+=======
+validation_of_Rectype_ok2
+- the recursive type (REC subty_u0*) is valid with the oktypeidxnat (OK x i) if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - subtype_u0* is [].
   - Or:
@@ -4451,8 +5313,13 @@ validation_of_valid_rectype
     - the sub type subtype_1 is valid with the oktypeidxnat (OK x i).
     - the recursive type (REC subtype*) is valid with the oktypeidxnat (OK (x + 1) (i + 1)).
 
+<<<<<<< HEAD
 validation_of_valid_rectype
 - the recursive type (REC subtype_u0*) is valid with the oktypeidx (OK x) if and only if:
+=======
+validation_of_Rectype_ok
+- the recursive type (REC subty_u0*) is valid with the oktypeidx (OK x) if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - subtype_u0* is [].
   - Or:
@@ -4463,32 +5330,37 @@ validation_of_valid_rectype
     - subtype_u0* is subtype*.
     - Under the context C with .RECS prepended by subtype*, the recursive type (REC subtype*) is valid with the oktypeidxnat (OK x 0).
 
-validation_of_valid_deftype
+validation_of_Deftype_ok
 - the defined type (DEF rectype i) is valid if and only if:
   - the recursive type rectype is valid with the oktypeidx (OK x).
   - rectype is (REC subtype^n).
   - i is less than n.
 
-validation_of_valid_limits
+validation_of_Limits_ok
 - the limits (n, m) is valid with the nat k if and only if:
   - n is less than or equal to m.
   - m is less than or equal to k.
 
-validation_of_valid_globaltype
+validation_of_Globaltype_ok
 - the global type ((MUT ()?), t) is valid if and only if:
   - the value type t is valid.
 
-validation_of_valid_tabletype
+validation_of_Tabletype_ok
 - the table type (limits, reftype) is valid if and only if:
   - the limits limits is valid with the nat ((2 ^ 32) - 1).
   - the reference type reftype is valid.
 
-validation_of_valid_memtype
+validation_of_Memtype_ok
 - the memory type (PAGE limits) is valid if and only if:
   - the limits limits is valid with the nat (2 ^ 16).
 
+<<<<<<< HEAD
 validation_of_valid_externtype
 - the external type externtype_u0 is valid if and only if:
+=======
+validation_of_Externtype_ok
+- the external type exter_u0 is valid if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - externtype_u0 is (FUNC deftype).
     - the defined type deftype is valid.
@@ -4503,23 +5375,23 @@ validation_of_valid_externtype
     - externtype_u0 is (MEM memtype).
     - the memory type memtype is valid.
 
-validation_of_matching_instrtype
+validation_of_Instrtype_sub
 - the instruction type (t_11* ->_ x_1* ++ t_12*) matches the instruction type (t_21* ->_ x_2* ++ t_22*) if and only if:
   - |x*| is |t*|.
   - For all x in x*,
     - |C.LOCALS| is greater than x.
   - the value type sequence t_21* matches the value type sequence t_11*.
   - the value type sequence t_12* matches the value type sequence t_22*.
-  - x* is $setminus(x_2*, x_1*).
+  - x* is $setminus_(x_2*, x_1*).
   - For all t in t* and x in x*,
     - C.LOCALS[x] is (SET, t).
 
-validation_of_matching_limits
+validation_of_Limits_sub
 - the limits (n_1, m_1) matches the limits (n_2, m_2) if and only if:
   - n_1 is greater than or equal to n_2.
   - m_1 is less than or equal to m_2.
 
-validation_of_matching_globaltype
+validation_of_Globaltype_sub
 - the global type ((MUT _u0?), valtype_1) matches the global type ((MUT _u1?), valtype_2) if and only if:
   - Either:
     - _u0? is ?().
@@ -4531,18 +5403,23 @@ validation_of_matching_globaltype
     - the value type valtype_1 matches the value type valtype_2.
     - the value type valtype_2 matches the value type valtype_1.
 
-validation_of_matching_tabletype
+validation_of_Tabletype_sub
 - the table type (limits_1, reftype_1) matches the table type (limits_2, reftype_2) if and only if:
   - the limits limits_1 matches the limits limits_2.
   - the reference type reftype_1 matches the reference type reftype_2.
   - the reference type reftype_2 matches the reference type reftype_1.
 
-validation_of_matching_memtype
+validation_of_Memtype_sub
 - the memory type (PAGE limits_1) matches the memory type (PAGE limits_2) if and only if:
   - the limits limits_1 matches the limits limits_2.
 
+<<<<<<< HEAD
 validation_of_matching_externtype
 - the external type externtype_u0 matches the external type externtype_u1 if and only if:
+=======
+validation_of_Externtype_sub
+- the external type exter_u0 matches the external type exter_u1 if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - externtype_u0 is (FUNC deftype_1).
     - externtype_u1 is (FUNC deftype_2).
@@ -4560,8 +5437,13 @@ validation_of_matching_externtype
     - externtype_u1 is (MEM memtype_2).
     - the memory type memtype_1 matches the memory type memtype_2.
 
+<<<<<<< HEAD
 validation_of_valid_blocktype
 - the block type blocktype_u0 is valid with the instruction type (valtype_u1* ->_ [] ++ valtype_u2*) if and only if:
+=======
+validation_of_Blocktype_ok
+- the block type block_u0 is valid with the instruction type (valty_u1* ->_ [] ++ valty_u2*) if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - blocktype_u0 is (_RESULT valtype?).
     - valtype_u1* is [].
@@ -4575,49 +5457,49 @@ validation_of_valid_blocktype
     - |C.TYPES| is greater than typeidx.
     - $expanddt(C.TYPES[typeidx]) is (FUNC (t_1* -> t_2*)).
 
-validation_of_NOP
+validation_of_Instr_ok/nop
 - the instr NOP is valid with the instruction type ([] ->_ [] ++ []).
 
-validation_of_UNREACHABLE
+validation_of_Instr_ok/unreachable
 - the instr UNREACHABLE is valid with the instruction type (t_1* ->_ [] ++ t_2*) if and only if:
   - the instruction type (t_1* ->_ [] ++ t_2*) is valid.
 
-validation_of_DROP
+validation_of_Instr_ok/drop
 - the instr DROP is valid with the instruction type ([t] ->_ [] ++ []) if and only if:
   - the value type t is valid.
 
-validation_of_SELECT
+validation_of_Instr_ok/select
 - the instr (SELECT ?([t])) is valid with the instruction type ([t, t, I32] ->_ [] ++ [t]) if and only if:
   - the value type t is valid.
 
-validation_of_BLOCK
+validation_of_Instr_ok/block
 - the instr (BLOCK bt instr*) is valid with the instruction type (t_1* ->_ [] ++ t_2*) if and only if:
   - the block type bt is valid with the instruction type (t_1* ->_ [] ++ t_2*).
   - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr* is valid with the instruction type (t_1* ->_ x* ++ t_2*).
 
-validation_of_LOOP
+validation_of_Instr_ok/loop
 - the instr (LOOP bt instr*) is valid with the instruction type (t_1* ->_ [] ++ t_2*) if and only if:
   - the block type bt is valid with the instruction type (t_1* ->_ [] ++ t_2*).
   - Under the context C with .LABELS prepended by [t_1*], the instr sequence instr* is valid with the instruction type (t_1* ->_ x* ++ t_2*).
 
-validation_of_IF
+validation_of_Instr_ok/if
 - the instr (IF bt instr_1* instr_2*) is valid with the instruction type (t_1* ++ [I32] ->_ [] ++ t_2*) if and only if:
   - the block type bt is valid with the instruction type (t_1* ->_ [] ++ t_2*).
   - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr_1* is valid with the instruction type (t_1* ->_ x_1* ++ t_2*).
   - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr_2* is valid with the instruction type (t_1* ->_ x_2* ++ t_2*).
 
-validation_of_BR
+validation_of_Instr_ok/br
 - the instr (BR l) is valid with the instruction type (t_1* ++ t* ->_ [] ++ t_2*) if and only if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t*.
   - the instruction type (t_1* ->_ [] ++ t_2*) is valid.
 
-validation_of_BR_IF
+validation_of_Instr_ok/br_if
 - the instr (BR_IF l) is valid with the instruction type (t* ++ [I32] ->_ [] ++ t*) if and only if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t*.
 
-validation_of_BR_TABLE
+validation_of_Instr_ok/br_table
 - the instr (BR_TABLE l* l') is valid with the instruction type (t_1* ++ t* ->_ [] ++ t_2*) if and only if:
   - For all l in l*,
     - |C.LABELS| is greater than l.
@@ -4627,18 +5509,18 @@ validation_of_BR_TABLE
   - the value type sequence t* matches the result type C.LABELS[l'].
   - the instruction type (t_1* ->_ [] ++ t_2*) is valid.
 
-validation_of_BR_ON_NULL
+validation_of_Instr_ok/br_on_null
 - the instr (BR_ON_NULL l) is valid with the instruction type (t* ++ [(REF (NULL ?(())) ht)] ->_ [] ++ t* ++ [(REF (NULL ?()) ht)]) if and only if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t*.
   - the heap type ht is valid.
 
-validation_of_BR_ON_NON_NULL
+validation_of_Instr_ok/br_on_non_null
 - the instr (BR_ON_NON_NULL l) is valid with the instruction type (t* ++ [(REF (NULL ?(())) ht)] ->_ [] ++ t*) if and only if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t* ++ [(REF (NULL ?()) ht)].
 
-validation_of_BR_ON_CAST
+validation_of_Instr_ok/br_on_cast
 - the instr (BR_ON_CAST l rt_1 rt_2) is valid with the instruction type (t* ++ [rt_1] ->_ [] ++ t* ++ [$diffrt(rt_1, rt_2)]) if and only if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t* ++ [rt].
@@ -4647,7 +5529,7 @@ validation_of_BR_ON_CAST
   - the reference type rt_2 matches the reference type rt_1.
   - the reference type rt_2 matches the reference type rt.
 
-validation_of_BR_ON_CAST_FAIL
+validation_of_Instr_ok/br_on_cast_fail
 - the instr (BR_ON_CAST_FAIL l rt_1 rt_2) is valid with the instruction type (t* ++ [rt_1] ->_ [] ++ t* ++ [rt_2]) if and only if:
   - |C.LABELS| is greater than l.
   - C.LABELS[l] is t* ++ [rt].
@@ -4656,17 +5538,17 @@ validation_of_BR_ON_CAST_FAIL
   - the reference type rt_2 matches the reference type rt_1.
   - the reference type $diffrt(rt_1, rt_2) matches the reference type rt.
 
-validation_of_CALL
+validation_of_Instr_ok/call
 - the instr (CALL x) is valid with the instruction type (t_1* ->_ [] ++ t_2*) if and only if:
   - |C.FUNCS| is greater than x.
   - $expanddt(C.FUNCS[x]) is (FUNC (t_1* -> t_2*)).
 
-validation_of_CALL_REF
+validation_of_Instr_ok/call_ref
 - the instr (CALL_REF $idx(x)) is valid with the instruction type (t_1* ++ [(REF (NULL ?(())) $idx(x))] ->_ [] ++ t_2*) if and only if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (FUNC (t_1* -> t_2*)).
 
-validation_of_CALL_INDIRECT
+validation_of_Instr_ok/call_indirect
 - the instr (CALL_INDIRECT x $idx(y)) is valid with the instruction type (t_1* ++ [I32] ->_ [] ++ t_2*) if and only if:
   - |C.TABLES| is greater than x.
   - |C.TYPES| is greater than y.
@@ -4674,12 +5556,12 @@ validation_of_CALL_INDIRECT
   - the reference type rt matches the reference type (REF (NULL ?(())) FUNC).
   - $expanddt(C.TYPES[y]) is (FUNC (t_1* -> t_2*)).
 
-validation_of_RETURN
+validation_of_Instr_ok/return
 - the instr RETURN is valid with the instruction type (t_1* ++ t* ->_ [] ++ t_2*) if and only if:
   - C.RETURN is ?(t*).
   - the instruction type (t_1* ->_ [] ++ t_2*) is valid.
 
-validation_of_RETURN_CALL
+validation_of_Instr_ok/return_call
 - the instr (RETURN_CALL x) is valid with the instruction type (t_3* ++ t_1* ->_ [] ++ t_4*) if and only if:
   - |C.FUNCS| is greater than x.
   - $expanddt(C.FUNCS[x]) is (FUNC (t_1* -> t_2*)).
@@ -4687,7 +5569,7 @@ validation_of_RETURN_CALL
   - the value type sequence t_2* matches the value type sequence t'_2*.
   - the instruction type (t_3* ->_ [] ++ t_4*) is valid.
 
-validation_of_RETURN_CALL_REF
+validation_of_Instr_ok/return_call_ref
 - the instr (RETURN_CALL_REF $idx(x)) is valid with the instruction type (t_3* ++ t_1* ++ [(REF (NULL ?(())) $idx(x))] ->_ [] ++ t_4*) if and only if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (FUNC (t_1* -> t_2*)).
@@ -4695,7 +5577,7 @@ validation_of_RETURN_CALL_REF
   - the value type sequence t_2* matches the value type sequence t'_2*.
   - the instruction type (t_3* ->_ [] ++ t_4*) is valid.
 
-validation_of_RETURN_CALL_INDIRECT
+validation_of_Instr_ok/return_call_indirect
 - the instr (RETURN_CALL_INDIRECT x $idx(y)) is valid with the instruction type (t_3* ++ t_1* ++ [I32] ->_ [] ++ t_4*) if and only if:
   - |C.TABLES| is greater than x.
   - |C.TYPES| is greater than y.
@@ -4706,70 +5588,71 @@ validation_of_RETURN_CALL_INDIRECT
   - the value type sequence t_2* matches the value type sequence t'_2*.
   - the instruction type (t_3* ->_ [] ++ t_4*) is valid.
 
-validation_of_CONST
+validation_of_Instr_ok/const
 - the instr (nt.CONST c_nt) is valid with the instruction type ([] ->_ [] ++ [nt]).
 
-validation_of_UNOP
+validation_of_Instr_ok/unop
 - the instr (UNOP nt unop_nt) is valid with the instruction type ([nt] ->_ [] ++ [nt]).
 
-validation_of_BINOP
+validation_of_Instr_ok/binop
 - the instr (BINOP nt binop_nt) is valid with the instruction type ([nt, nt] ->_ [] ++ [nt]).
 
-validation_of_TESTOP
+validation_of_Instr_ok/testop
 - the instr (TESTOP nt testop_nt) is valid with the instruction type ([nt] ->_ [] ++ [I32]).
 
-validation_of_RELOP
+validation_of_Instr_ok/relop
 - the instr (RELOP nt relop_nt) is valid with the instruction type ([nt, nt] ->_ [] ++ [I32]).
 
-validation_of_CVTOP
+validation_of_Instr_ok/cvtop
 - the instr (CVTOP nt_1 nt_2 cvtop) is valid with the instruction type ([nt_2] ->_ [] ++ [nt_1]).
 
-validation_of_REF.NULL
+validation_of_Instr_ok/ref.null
 - the instr (REF.NULL ht) is valid with the instruction type ([] ->_ [] ++ [(REF (NULL ?(())) ht)]) if and only if:
   - the heap type ht is valid.
 
-validation_of_REF.FUNC
+validation_of_Instr_ok/ref.func
 - the instr (REF.FUNC x) is valid with the instruction type ([] ->_ [] ++ [(REF (NULL ?()) dt)]) if and only if:
   - |C.FUNCS| is greater than x.
+  - |C.REFS| is greater than 0.
   - C.FUNCS[x] is dt.
   - x is contained in C.REFS.
 
-validation_of_REF.I31
+validation_of_Instr_ok/ref.i31
 - the instr REF.I31 is valid with the instruction type ([I32] ->_ [] ++ [(REF (NULL ?()) I31)]).
 
-validation_of_REF.IS_NULL
+validation_of_Instr_ok/ref.is_null
 - the instr REF.IS_NULL is valid with the instruction type ([(REF (NULL ?(())) ht)] ->_ [] ++ [I32]) if and only if:
   - the heap type ht is valid.
 
-validation_of_REF.AS_NON_NULL
+validation_of_Instr_ok/ref.as_non_null
 - the instr REF.AS_NON_NULL is valid with the instruction type ([(REF (NULL ?(())) ht)] ->_ [] ++ [(REF (NULL ?()) ht)]) if and only if:
   - the heap type ht is valid.
 
-validation_of_REF.EQ
+validation_of_Instr_ok/ref.eq
 - the instr REF.EQ is valid with the instruction type ([(REF (NULL ?(())) EQ), (REF (NULL ?(())) EQ)] ->_ [] ++ [I32]).
 
-validation_of_REF.TEST
+validation_of_Instr_ok/ref.test
 - the instr (REF.TEST rt) is valid with the instruction type ([rt'] ->_ [] ++ [I32]) if and only if:
   - the reference type rt is valid.
   - the reference type rt' is valid.
   - the reference type rt matches the reference type rt'.
 
-validation_of_REF.CAST
+validation_of_Instr_ok/ref.cast
 - the instr (REF.CAST rt) is valid with the instruction type ([rt'] ->_ [] ++ [rt]) if and only if:
   - the reference type rt is valid.
   - the reference type rt' is valid.
   - the reference type rt matches the reference type rt'.
 
-validation_of_I31.GET
+validation_of_Instr_ok/i31.get
 - the instr (I31.GET sx) is valid with the instruction type ([(REF (NULL ?(())) I31)] ->_ [] ++ [I32]).
 
-validation_of_STRUCT.NEW
+validation_of_Instr_ok/struct.new
 - the instr (STRUCT.NEW x) is valid with the instruction type ($unpack(zt)* ->_ [] ++ [(REF (NULL ?()) $idx(x))]) if and only if:
   - |C.TYPES| is greater than x.
   - |zt*| is |mut*|.
   - $expanddt(C.TYPES[x]) is (STRUCT (mut, zt)*).
 
-validation_of_STRUCT.NEW_DEFAULT
+validation_of_Instr_ok/struct.new_default
 - the instr (STRUCT.NEW_DEFAULT x) is valid with the instruction type ([] ->_ [] ++ [(REF (NULL ?()) $idx(x))]) if and only if:
   - |C.TYPES| is greater than x.
   - |zt*| is |mut*|.
@@ -4778,7 +5661,7 @@ validation_of_STRUCT.NEW_DEFAULT
   - For all val in val* and zt in zt*,
     - $default_($unpack(zt)) is ?(val).
 
-validation_of_STRUCT.GET
+validation_of_Instr_ok/struct.get
 - the instr (STRUCT.GET sx? x i) is valid with the instruction type ([(REF (NULL ?(())) $idx(x))] ->_ [] ++ [$unpack(zt)]) if and only if:
   - |C.TYPES| is greater than x.
   - |yt*| is greater than i.
@@ -4786,37 +5669,37 @@ validation_of_STRUCT.GET
   - yt*[i] is (mut, zt).
   - ((zt is $unpack(zt))) if and only if ((sx? is ?())).
 
-validation_of_STRUCT.SET
+validation_of_Instr_ok/struct.set
 - the instr (STRUCT.SET x i) is valid with the instruction type ([(REF (NULL ?(())) $idx(x)), $unpack(zt)] ->_ [] ++ []) if and only if:
   - |C.TYPES| is greater than x.
   - |yt*| is greater than i.
   - $expanddt(C.TYPES[x]) is (STRUCT yt*).
   - yt*[i] is ((MUT ?(())), zt).
 
-validation_of_ARRAY.NEW
+validation_of_Instr_ok/array.new
 - the instr (ARRAY.NEW x) is valid with the instruction type ([$unpack(zt), I32] ->_ [] ++ [(REF (NULL ?()) $idx(x))]) if and only if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
 
-validation_of_ARRAY.NEW_DEFAULT
+validation_of_Instr_ok/array.new_default
 - the instr (ARRAY.NEW_DEFAULT x) is valid with the instruction type ([I32] ->_ [] ++ [(REF (NULL ?()) $idx(x))]) if and only if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
   - $default_($unpack(zt)) is ?(val).
 
-validation_of_ARRAY.NEW_FIXED
+validation_of_Instr_ok/array.new_fixed
 - the instr (ARRAY.NEW_FIXED x n) is valid with the instruction type ($unpack(zt)^n ->_ [] ++ [(REF (NULL ?()) $idx(x))]) if and only if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
 
-validation_of_ARRAY.NEW_ELEM
+validation_of_Instr_ok/array.new_elem
 - the instr (ARRAY.NEW_ELEM x y) is valid with the instruction type ([I32, I32] ->_ [] ++ [(REF (NULL ?()) $idx(x))]) if and only if:
   - |C.TYPES| is greater than x.
   - |C.ELEMS| is greater than y.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, rt)).
   - the reference type C.ELEMS[y] matches the reference type rt.
 
-validation_of_ARRAY.NEW_DATA
+validation_of_Instr_ok/array.new_data
 - the instr (ARRAY.NEW_DATA x y) is valid with the instruction type ([I32, I32] ->_ [] ++ [(REF (NULL ?()) $idx(x))]) if and only if:
   - |C.TYPES| is greater than x.
   - |C.DATAS| is greater than y.
@@ -4824,28 +5707,28 @@ validation_of_ARRAY.NEW_DATA
   - Yet: (($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))
   - C.DATAS[y] is OK.
 
-validation_of_ARRAY.GET
+validation_of_Instr_ok/array.get
 - the instr (ARRAY.GET sx? x) is valid with the instruction type ([(REF (NULL ?(())) $idx(x)), I32] ->_ [] ++ [$unpack(zt)]) if and only if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
   - ((zt is $unpack(zt))) if and only if ((sx? is ?())).
 
-validation_of_ARRAY.SET
+validation_of_Instr_ok/array.set
 - the instr (ARRAY.SET x) is valid with the instruction type ([(REF (NULL ?(())) $idx(x)), I32, $unpack(zt)] ->_ [] ++ []) if and only if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY ((MUT ?(())), zt)).
 
-validation_of_ARRAY.LEN
+validation_of_Instr_ok/array.len
 - the instr ARRAY.LEN is valid with the instruction type ([(REF (NULL ?(())) ARRAY)] ->_ [] ++ [I32]) if and only if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY ((MUT ?(())), zt)).
 
-validation_of_ARRAY.FILL
+validation_of_Instr_ok/array.fill
 - the instr (ARRAY.FILL x) is valid with the instruction type ([(REF (NULL ?(())) $idx(x)), I32, $unpack(zt), I32] ->_ [] ++ []) if and only if:
   - |C.TYPES| is greater than x.
   - $expanddt(C.TYPES[x]) is (ARRAY ((MUT ?(())), zt)).
 
-validation_of_ARRAY.COPY
+validation_of_Instr_ok/array.copy
 - the instr (ARRAY.COPY x_1 x_2) is valid with the instruction type ([(REF (NULL ?(())) $idx(x_1)), I32, (REF (NULL ?(())) $idx(x_2)), I32, I32] ->_ [] ++ []) if and only if:
   - |C.TYPES| is greater than x_1.
   - |C.TYPES| is greater than x_2.
@@ -4853,14 +5736,14 @@ validation_of_ARRAY.COPY
   - $expanddt(C.TYPES[x_2]) is (ARRAY (mut, zt_2)).
   - the storage type zt_2 matches the storage type zt_1.
 
-validation_of_ARRAY.INIT_ELEM
+validation_of_Instr_ok/array.init_elem
 - the instr (ARRAY.INIT_ELEM x y) is valid with the instruction type ([(REF (NULL ?(())) $idx(x)), I32, I32, I32] ->_ [] ++ []) if and only if:
   - |C.TYPES| is greater than x.
   - |C.ELEMS| is greater than y.
   - $expanddt(C.TYPES[x]) is (ARRAY ((MUT ?(())), zt)).
   - the element type C.ELEMS[y] matches the storage type zt.
 
-validation_of_ARRAY.INIT_DATA
+validation_of_Instr_ok/array.init_data
 - the instr (ARRAY.INIT_DATA x y) is valid with the instruction type ([(REF (NULL ?(())) $idx(x)), I32, I32, I32] ->_ [] ++ []) if and only if:
   - |C.TYPES| is greater than x.
   - |C.DATAS| is greater than y.
@@ -4868,127 +5751,127 @@ validation_of_ARRAY.INIT_DATA
   - Yet: (($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))
   - C.DATAS[y] is OK.
 
-validation_of_EXTERN.CONVERT_ANY
+validation_of_Instr_ok/extern.convert_any
 - the instr EXTERN.CONVERT_ANY is valid with the instruction type ([(REF nul ANY)] ->_ [] ++ [(REF nul EXTERN)]).
 
-validation_of_ANY.CONVERT_EXTERN
+validation_of_Instr_ok/any.convert_extern
 - the instr ANY.CONVERT_EXTERN is valid with the instruction type ([(REF nul EXTERN)] ->_ [] ++ [(REF nul ANY)]).
 
-validation_of_VCONST
+validation_of_Instr_ok/vconst
 - the instr (V128.CONST c) is valid with the instruction type ([] ->_ [] ++ [V128]).
 
-validation_of_VVUNOP
+validation_of_Instr_ok/vvunop
 - the instr (VVUNOP V128 vvunop) is valid with the instruction type ([V128] ->_ [] ++ [V128]).
 
-validation_of_VVBINOP
+validation_of_Instr_ok/vvbinop
 - the instr (VVBINOP V128 vvbinop) is valid with the instruction type ([V128, V128] ->_ [] ++ [V128]).
 
-validation_of_VVTERNOP
+validation_of_Instr_ok/vvternop
 - the instr (VVTERNOP V128 vvternop) is valid with the instruction type ([V128, V128, V128] ->_ [] ++ [V128]).
 
-validation_of_VVTESTOP
+validation_of_Instr_ok/vvtestop
 - the instr (VVTESTOP V128 vvtestop) is valid with the instruction type ([V128] ->_ [] ++ [I32]).
 
-validation_of_VUNOP
+validation_of_Instr_ok/vunop
 - the instr (VUNOP sh vunop) is valid with the instruction type ([V128] ->_ [] ++ [V128]).
 
-validation_of_VBINOP
+validation_of_Instr_ok/vbinop
 - the instr (VBINOP sh vbinop) is valid with the instruction type ([V128, V128] ->_ [] ++ [V128]).
 
-validation_of_VTESTOP
+validation_of_Instr_ok/vtestop
 - the instr (VTESTOP sh vtestop) is valid with the instruction type ([V128] ->_ [] ++ [I32]).
 
-validation_of_VRELOP
+validation_of_Instr_ok/vrelop
 - the instr (VRELOP sh vrelop) is valid with the instruction type ([V128, V128] ->_ [] ++ [V128]).
 
-validation_of_VSHIFTOP
+validation_of_Instr_ok/vshiftop
 - the instr (VSHIFTOP sh vshiftop) is valid with the instruction type ([V128, I32] ->_ [] ++ [V128]).
 
-validation_of_VBITMASK
+validation_of_Instr_ok/vbitmask
 - the instr (VBITMASK sh) is valid with the instruction type ([V128] ->_ [] ++ [I32]).
 
-validation_of_VSWIZZLE
+validation_of_Instr_ok/vswizzle
 - the instr (VSWIZZLE sh) is valid with the instruction type ([V128, V128] ->_ [] ++ [V128]).
 
-validation_of_VSHUFFLE
+validation_of_Instr_ok/vshuffle
 - the instr (VSHUFFLE sh i*) is valid with the instruction type ([V128, V128] ->_ [] ++ [V128]) if and only if:
   - For all i in i*,
     - i is less than (2 · $dim(sh)).
 
-validation_of_VSPLAT
+validation_of_Instr_ok/vsplat
 - the instr (VSPLAT sh) is valid with the instruction type ([$unpackshape(sh)] ->_ [] ++ [V128]).
 
-validation_of_VEXTRACT_LANE
+validation_of_Instr_ok/vextract_lane
 - the instr (VEXTRACT_LANE sh sx? i) is valid with the instruction type ([V128] ->_ [] ++ [$unpackshape(sh)]) if and only if:
   - i is less than $dim(sh).
 
-validation_of_VREPLACE_LANE
+validation_of_Instr_ok/vreplace_lane
 - the instr (VREPLACE_LANE sh i) is valid with the instruction type ([V128, $unpackshape(sh)] ->_ [] ++ [V128]) if and only if:
   - i is less than $dim(sh).
 
-validation_of_VEXTUNOP
+validation_of_Instr_ok/vextunop
 - the instr (VEXTUNOP sh_1 sh_2 vextunop) is valid with the instruction type ([V128] ->_ [] ++ [V128]).
 
-validation_of_VEXTBINOP
+validation_of_Instr_ok/vextbinop
 - the instr (VEXTBINOP sh_1 sh_2 vextbinop) is valid with the instruction type ([V128, V128] ->_ [] ++ [V128]).
 
-validation_of_VNARROW
+validation_of_Instr_ok/vnarrow
 - the instr (VNARROW sh_1 sh_2 sx) is valid with the instruction type ([V128, V128] ->_ [] ++ [V128]).
 
-validation_of_VCVTOP
-- the instr (VCVTOP sh_1 sh_2 vcvtop half? sx? zero?) is valid with the instruction type ([V128] ->_ [] ++ [V128]).
+validation_of_Instr_ok/vcvtop
+- the instr (VCVTOP sh_1 sh_2 vcvtop half? zero?) is valid with the instruction type ([V128] ->_ [] ++ [V128]).
 
-validation_of_LOCAL.GET
+validation_of_Instr_ok/local.get
 - the instr (LOCAL.GET x) is valid with the instruction type ([] ->_ [] ++ [t]) if and only if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is (SET, t).
 
-validation_of_LOCAL.SET
+validation_of_Instr_ok/local.set
 - the instr (LOCAL.SET x) is valid with the instruction type ([t] ->_ [x] ++ []) if and only if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is (init, t).
 
-validation_of_LOCAL.TEE
+validation_of_Instr_ok/local.tee
 - the instr (LOCAL.TEE x) is valid with the instruction type ([t] ->_ [x] ++ [t]) if and only if:
   - |C.LOCALS| is greater than x.
   - C.LOCALS[x] is (init, t).
 
-validation_of_GLOBAL.GET
+validation_of_Instr_ok/global.get
 - the instr (GLOBAL.GET x) is valid with the instruction type ([] ->_ [] ++ [t]) if and only if:
   - |C.GLOBALS| is greater than x.
   - C.GLOBALS[x] is (mut, t).
 
-validation_of_GLOBAL.SET
+validation_of_Instr_ok/global.set
 - the instr (GLOBAL.SET x) is valid with the instruction type ([t] ->_ [] ++ []) if and only if:
   - |C.GLOBALS| is greater than x.
   - C.GLOBALS[x] is ((MUT ?(())), t).
 
-validation_of_TABLE.GET
+validation_of_Instr_ok/table.get
 - the instr (TABLE.GET x) is valid with the instruction type ([I32] ->_ [] ++ [rt]) if and only if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
-validation_of_TABLE.SET
+validation_of_Instr_ok/table.set
 - the instr (TABLE.SET x) is valid with the instruction type ([I32, rt] ->_ [] ++ []) if and only if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
-validation_of_TABLE.SIZE
+validation_of_Instr_ok/table.size
 - the instr (TABLE.SIZE x) is valid with the instruction type ([] ->_ [] ++ [I32]) if and only if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
-validation_of_TABLE.GROW
+validation_of_Instr_ok/table.grow
 - the instr (TABLE.GROW x) is valid with the instruction type ([rt, I32] ->_ [] ++ [I32]) if and only if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
-validation_of_TABLE.FILL
+validation_of_Instr_ok/table.fill
 - the instr (TABLE.FILL x) is valid with the instruction type ([I32, rt, I32] ->_ [] ++ []) if and only if:
   - |C.TABLES| is greater than x.
   - C.TABLES[x] is (lim, rt).
 
-validation_of_TABLE.COPY
+validation_of_Instr_ok/table.copy
 - the instr (TABLE.COPY x_1 x_2) is valid with the instruction type ([I32, I32, I32] ->_ [] ++ []) if and only if:
   - |C.TABLES| is greater than x_1.
   - |C.TABLES| is greater than x_2.
@@ -4996,7 +5879,7 @@ validation_of_TABLE.COPY
   - C.TABLES[x_2] is (lim_2, rt_2).
   - the reference type rt_2 matches the reference type rt_1.
 
-validation_of_TABLE.INIT
+validation_of_Instr_ok/table.init
 - the instr (TABLE.INIT x y) is valid with the instruction type ([I32, I32, I32] ->_ [] ++ []) if and only if:
   - |C.TABLES| is greater than x.
   - |C.ELEMS| is greater than y.
@@ -5004,85 +5887,90 @@ validation_of_TABLE.INIT
   - C.ELEMS[y] is rt_2.
   - the reference type rt_2 matches the reference type rt_1.
 
-validation_of_ELEM.DROP
+validation_of_Instr_ok/elem.drop
 - the instr (ELEM.DROP x) is valid with the instruction type ([] ->_ [] ++ []) if and only if:
   - |C.ELEMS| is greater than x.
   - C.ELEMS[x] is rt.
 
-validation_of_MEMORY.SIZE
+validation_of_Instr_ok/memory.size
 - the instr (MEMORY.SIZE x) is valid with the instruction type ([] ->_ [] ++ [I32]) if and only if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
 
-validation_of_MEMORY.GROW
+validation_of_Instr_ok/memory.grow
 - the instr (MEMORY.GROW x) is valid with the instruction type ([I32] ->_ [] ++ [I32]) if and only if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
 
-validation_of_MEMORY.FILL
+validation_of_Instr_ok/memory.fill
 - the instr (MEMORY.FILL x) is valid with the instruction type ([I32, I32, I32] ->_ [] ++ []) if and only if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
 
-validation_of_MEMORY.COPY
+validation_of_Instr_ok/memory.copy
 - the instr (MEMORY.COPY x_1 x_2) is valid with the instruction type ([I32, I32, I32] ->_ [] ++ []) if and only if:
   - |C.MEMS| is greater than x_1.
   - |C.MEMS| is greater than x_2.
   - C.MEMS[x_1] is mt_1.
   - C.MEMS[x_2] is mt_2.
 
-validation_of_MEMORY.INIT
+validation_of_Instr_ok/memory.init
 - the instr (MEMORY.INIT x y) is valid with the instruction type ([I32, I32, I32] ->_ [] ++ []) if and only if:
   - |C.MEMS| is greater than x.
   - |C.DATAS| is greater than y.
   - C.MEMS[x] is mt.
   - C.DATAS[y] is OK.
 
-validation_of_DATA.DROP
+validation_of_Instr_ok/data.drop
 - the instr (DATA.DROP x) is valid with the instruction type ([] ->_ [] ++ []) if and only if:
   - |C.DATAS| is greater than x.
   - C.DATAS[x] is OK.
 
-validation_of_LOAD
+validation_of_Instr_ok/load
 - the instr (LOAD nt ?() x memarg) is valid with the instruction type ([I32] ->_ [] ++ [nt]) if and only if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
 
-validation_of_STORE
+validation_of_Instr_ok/store
 - the instr (STORE nt ?() x memarg) is valid with the instruction type ([I32, nt] ->_ [] ++ []) if and only if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
 
-validation_of_VLOAD
+validation_of_Instr_ok/vload
 - the instr (VLOAD V128 ?() x memarg) is valid with the instruction type ([I32] ->_ [] ++ [V128]) if and only if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
 
-validation_of_VLOAD_LANE
+validation_of_Instr_ok/vload_lane
 - the instr (VLOAD_LANE V128 N x memarg i) is valid with the instruction type ([I32, V128] ->_ [] ++ [V128]) if and only if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
   - i is less than (128 / N).
 
-validation_of_VSTORE
+validation_of_Instr_ok/vstore
 - the instr (VSTORE V128 x memarg) is valid with the instruction type ([I32, V128] ->_ [] ++ []) if and only if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
 
-validation_of_VSTORE_LANE
+validation_of_Instr_ok/vstore_lane
 - the instr (VSTORE_LANE V128 N x memarg i) is valid with the instruction type ([I32, V128] ->_ [] ++ []) if and only if:
   - |C.MEMS| is greater than x.
   - C.MEMS[x] is mt.
   - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
   - i is less than (128 / N).
 
+<<<<<<< HEAD
 validation_of_valid_instr*
 - the instr sequence instr_u0* is valid with the instruction type instrtype_u4 if and only if:
+=======
+validation_of_Instrs_ok
+- the instr sequence instr_u0* is valid with the instruction type instr_u4 if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - instr_u0* is [].
     - instrtype_u4 is ([] ->_ [] ++ []).
@@ -5109,11 +5997,11 @@ validation_of_valid_instr*
     - the instr sequence instr* is valid with the instruction type (t_1* ->_ x* ++ t_2*).
     - the value type sequence t* is valid.
 
-validation_of_valid_expr
+validation_of_Expr_ok
 - the expression instr* is valid with the value type sequence t* if and only if:
   - the instr sequence instr* is valid with the instruction type ([] ->_ [] ++ t*).
 
-validation_of_const_instr
+validation_of_Instr_const
 - the instr instr_u0 is constant if and only if:
   - Either:
     - instr_u0 is (nt.CONST c_nt).
@@ -5145,21 +6033,23 @@ validation_of_const_instr
     - C.GLOBALS[x] is ((MUT ?()), t).
   - Or:
     - instr_u0 is (BINOP Inn binop).
+    - |[I32, I64]| is greater than 0.
+    - |[ADD, SUB, MUL]| is greater than 0.
     - Inn is contained in [I32, I64].
     - binop is contained in [ADD, SUB, MUL].
 
-validation_of_const_expr
+validation_of_Expr_const
 - the expression instr* is constant if and only if:
   - For all instr in instr*,
     - the instr instr is constant.
 
-validation_of_valid_type
+validation_of_Type_ok
 - the type definition (TYPE rectype) is valid with the defined type sequence dt* if and only if:
   - |C.TYPES| is x.
   - dt* is $rolldt(x, rectype).
   - Under the context C with .TYPES appended by dt*, the recursive type rectype is valid with the oktypeidx (OK x).
 
-validation_of_valid_local
+validation_of_Local_ok
 - the local (LOCAL t) is valid with the local type (init_u0, t) if and only if:
   - Either:
     - init_u0 is SET.
@@ -5168,7 +6058,7 @@ validation_of_valid_local
     - init_u0 is UNSET.
     - $default_(t) is ?().
 
-validation_of_valid_func
+validation_of_Func_ok
 - the function (FUNC x local* expr) is valid with the defined type C.TYPES[x] if and only if:
   - |C.TYPES| is greater than x.
   - |local*| is |lct*|.
@@ -5177,26 +6067,31 @@ validation_of_valid_func
     - the local local is valid with the local type lct.
   - Under the context C with .LOCALS appended by (SET, t_1)* ++ lct* with .LABELS appended by [t_2*] with .RETURN appended by ?(t_2*), the expression expr is valid with the value type sequence t_2*.
 
-validation_of_valid_global
+validation_of_Global_ok
 - the global (GLOBAL globaltype expr) is valid with the global type globaltype if and only if:
   - the global type gt is valid.
   - globaltype is (mut, t).
   - the expression expr is valid with the value type t.
   - the expression expr is constant.
 
-validation_of_valid_table
+validation_of_Table_ok
 - the table (TABLE tabletype expr) is valid with the table type tabletype if and only if:
   - the table type tt is valid.
   - tabletype is (lim, rt).
   - the expression expr is valid with the value type rt.
   - the expression expr is constant.
 
-validation_of_valid_mem
+validation_of_Mem_ok
 - the memory (MEMORY memtype) is valid with the memory type memtype if and only if:
   - the memory type memtype is valid.
 
+<<<<<<< HEAD
 validation_of_valid_elemmode
 - the elemmode elemmode_u0 is valid with the element type rt if and only if:
+=======
+validation_of_Elemmode_ok
+- the elemmode elemm_u0 is valid with the element type rt if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - elemmode_u0 is (ACTIVE x expr).
     - |C.TABLES| is greater than x.
@@ -5209,7 +6104,7 @@ validation_of_valid_elemmode
   - Or:
     - elemmode_u0 is DECLARE.
 
-validation_of_valid_elem
+validation_of_Elem_ok
 - the table segment (ELEM elemtype expr* elemmode) is valid with the element type elemtype if and only if:
   - the reference type elemtype is valid.
   - For all expr in expr*,
@@ -5217,8 +6112,13 @@ validation_of_valid_elem
     - the expression expr is constant.
   - the elemmode elemmode is valid with the element type elemtype.
 
+<<<<<<< HEAD
 validation_of_valid_datamode
 - the datamode datamode_u0 is valid with the data type OK if and only if:
+=======
+validation_of_Datamode_ok
+- the datamode datam_u0 is valid with the data type OK if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - datamode_u0 is (ACTIVE x expr).
     - |C.MEMS| is greater than x.
@@ -5228,21 +6128,26 @@ validation_of_valid_datamode
   - Or:
     - datamode_u0 is PASSIVE.
 
-validation_of_valid_data
+validation_of_Data_ok
 - the memory segment (DATA b* datamode) is valid with the data type OK if and only if:
   - the datamode datamode is valid with the data type OK.
 
-validation_of_valid_start
+validation_of_Start_ok
 - the start function (START x) is valid if and only if:
   - |C.FUNCS| is greater than x.
   - $expanddt(C.FUNCS[x]) is (FUNC ([] -> [])).
 
-validation_of_valid_import
+validation_of_Import_ok
 - the import (IMPORT name_1 name_2 xt) is valid with the external type xt if and only if:
   - the external type xt is valid.
 
+<<<<<<< HEAD
 validation_of_valid_externidx
 - the external index externidx_u0 is valid with the external type externtype_u1 if and only if:
+=======
+validation_of_Externidx_ok
+- the external index exter_u0 is valid with the external type exter_u1 if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - externidx_u0 is (FUNC x).
     - externtype_u1 is (FUNC dt).
@@ -5264,12 +6169,17 @@ validation_of_valid_externidx
     - |C.MEMS| is greater than x.
     - C.MEMS[x] is mt.
 
-validation_of_valid_export
+validation_of_Export_ok
 - the export (EXPORT name externidx) is valid with the name name and the external type xt if and only if:
   - the external index externidx is valid with the external type xt.
 
+<<<<<<< HEAD
 validation_of_valid_global*
 - the global sequence global_u0* is valid with the global type sequence globaltype_u1* if and only if:
+=======
+validation_of_Globals_ok
+- the global sequence globa_u0* is valid with the global type sequence globa_u1* if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - global_u0* is [].
     - globaltype_u1* is [].
@@ -5279,8 +6189,13 @@ validation_of_valid_global*
     - the global global is valid with the global type gt_1.
     - Under the context C with .GLOBALS appended by [gt_1], the global sequence global* is valid with the global type sequence gt*.
 
+<<<<<<< HEAD
 validation_of_valid_type*
 - the type definition sequence type_u0* is valid with the defined type sequence deftype_u1* if and only if:
+=======
+validation_of_Types_ok
+- the type definition sequence type_u0* is valid with the defined type sequence defty_u1* if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - type_u0* is [].
     - deftype_u1* is [].
@@ -5290,7 +6205,7 @@ validation_of_valid_type*
     - the type definition type_1 is valid with the defined type sequence dt_1*.
     - Under the context C with .TYPES appended by dt_1*, the type definition sequence type* is valid with the defined type sequence dt*.
 
-validation_of_valid_module
+validation_of_Module_ok
 - the module (MODULE type* import* func* global* table* mem* elem* data* start? export*) is valid with the module type $clos_moduletype(C, (xt_I* -> xt_E*)) if and only if:
   - |xt_I*| is |import*|.
   - |tt*| is |table*|.
@@ -5327,8 +6242,13 @@ validation_of_valid_module
   - tt_I* is $tablesxt(xt_I*).
   - mt_I* is $memsxt(xt_I*).
 
+<<<<<<< HEAD
 validation_of_valid_instr*
 - the instr sequence [instr_u0] is valid with the function type (valtype_u1* -> valtype_u3*) if and only if:
+=======
+validation_of_NotationTypingInstrScheme
+- the instr sequence [instr_u0] is valid with the function type (valty_u1* -> valty_u3*) if and only if:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   - Either:
     - instr_u0 is (BINOP I32 ADD).
     - valtype_u1* is [I32, I32].
@@ -5366,11 +6286,30 @@ sum n_u0*
 2. Let [n] ++ n'* be n_u0*.
 3. Return (n + $sum(n'*)).
 
+opt_ X_u0*
+1. If (X_u0* is []), then:
+  a. Return ?().
+2. Assert: Due to validation, (|X_u0*| is 1).
+3. Let [w] be X_u0*.
+4. Return ?(w).
+
+list_ X_u0?
+1. If X_u0? is not defined, then:
+  a. Return [].
+2. Let ?(w) be X_u0?.
+3. Return [w].
+
 concat_ X_u0*
 1. If (X_u0* is []), then:
   a. Return [].
 2. Let [w*] ++ w'** be X_u0*.
 3. Return w* ++ $concat_(w'**).
+
+concatn_ X_u0* n
+1. If (X_u0* is []), then:
+  a. Return [].
+2. Let [w^n] ++ w'^n* be X_u0*.
+3. Return w^n ++ $concatn_(w'^n*, n).
 
 disjoint_ X_u0*
 1. If (X_u0* is []), then:
@@ -5378,12 +6317,38 @@ disjoint_ X_u0*
 2. Let [w] ++ w'* be X_u0*.
 3. Return (not w <- w'* and $disjoint_(w'*)).
 
-opt_ X_u0*
+setminus1_ w X_u0*
 1. If (X_u0* is []), then:
-  a. Return ?().
-2. Assert: Due to validation, (|X_u0*| is 1).
-3. Let [w] be X_u0*.
-4. Return ?(w).
+  a. Return [w].
+2. Let [w_1] ++ w'* be X_u0*.
+3. If (w is w_1), then:
+  a. Return [].
+4. Let [w_1] ++ w'* be X_u0*.
+5. Return $setminus1_(w, w'*).
+
+setminus_ X_u0* w*
+1. If (X_u0* is []), then:
+  a. Return [].
+2. Let [w_1] ++ w'* be X_u0*.
+3. Return $setminus1_(w_1, w*) ++ $setminus_(w'*, w*).
+
+setproduct2_ w_1 X_u0*
+1. If (X_u0* is []), then:
+  a. Return [].
+2. Let [w'*] ++ w** be X_u0*.
+3. Return [[w_1] ++ w'*] ++ $setproduct2_(w_1, w**).
+
+setproduct1_ X_u0* w**
+1. If (X_u0* is []), then:
+  a. Return [].
+2. Let [w_1] ++ w'* be X_u0*.
+3. Return $setproduct2_(w_1, w**) ++ $setproduct1_(w'*, w**).
+
+setproduct_ X_u0*
+1. If (X_u0* is []), then:
+  a. Return [[]].
+2. Let [w_1*] ++ w** be X_u0*.
+3. Return $setproduct1_(w_1*, $setproduct_(w**)).
 
 signif N_u0
 1. If (N_u0 is 32), then:
@@ -5477,9 +6442,6 @@ size numtype_u0
 4. Assert: Due to validation, (numtype_u0 is F64).
 5. Return 64.
 
-isize Inn
-1. Return $size(Inn).
-
 vsize V128
 1. Return 128.
 
@@ -5544,21 +6506,6 @@ dim (Lnn X N)
 
 shsize (Lnn X N)
 1. Return ($lsize(Lnn) · N).
-
-setminus1 x idx_u0*
-1. If (idx_u0* is []), then:
-  a. Return [x].
-2. Let [y_1] ++ y* be idx_u0*.
-3. If (x is y_1), then:
-  a. Return [].
-4. Let [y_1] ++ y* be idx_u0*.
-5. Return $setminus1(x, y*).
-
-setminus idx_u0* y*
-1. If (idx_u0* is []), then:
-  a. Return [].
-2. Let [x_1] ++ x* be idx_u0*.
-3. Return $setminus1(x_1, y*) ++ $setminus(x*, y*).
 
 IN N_u0
 1. If (N_u0 is 32), then:
@@ -6432,6 +7379,7 @@ unop_ numtype_u1 unop__u0 num__u3
 1. If ((unop__u0 is CLZ) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
   b. Let iN be num__u3.
+<<<<<<< HEAD
   c. Return [$iclz_($size(Inn), iN)].
 2. If ((unop__u0 is CTZ) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
@@ -6443,9 +7391,23 @@ unop_ numtype_u1 unop__u0 num__u3
   c. Return [$ipopcnt_($size(Inn), iN)].
 4. If the type of numtype_u1 is Inn, then:
   a. Let Inn be numtype_u1.
+=======
+  c. Return [$iclz_($sizenn(Inn), iN)].
+2. If ((unop__u0 is CTZ) and the type of numty_u1 is Inn), then:
+  a. Let Inn be numty_u1.
+  b. Let iN be num__u3.
+  c. Return [$ictz_($sizenn(Inn), iN)].
+3. If ((unop__u0 is POPCNT) and the type of numty_u1 is Inn), then:
+  a. Let Inn be numty_u1.
+  b. Let iN be num__u3.
+  c. Return [$ipopcnt_($sizenn(Inn), iN)].
+4. If the type of numty_u1 is Inn, then:
+  a. Let Inn be numty_u1.
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   b. Assert: Due to validation, unop__u0 is of the case EXTEND.
-  c. Let (EXTEND N) be unop__u0.
+  c. Let (EXTEND M) be unop__u0.
   d. Let iN be num__u3.
+<<<<<<< HEAD
   e. Return [$extend__(N, $size(Inn), S, $wrap__($size(Inn), N, iN))].
 5. If ((unop__u0 is ABS) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
@@ -6469,19 +7431,45 @@ unop_ numtype_u1 unop__u0 num__u3
   c. Return [$ffloor_($size(Fnn), fN)].
 10. If ((unop__u0 is TRUNC) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
+=======
+  e. Return [$extend__(M, $sizenn(Inn), S, $wrap__($sizenn(Inn), M, iN))].
+5. If ((unop__u0 is ABS) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
   b. Let fN be num__u3.
-  c. Return [$ftrunc_($size(Fnn), fN)].
+  c. Return $fabs_($sizenn(Fnn), fN).
+6. If ((unop__u0 is NEG) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN be num__u3.
+  c. Return $fneg_($sizenn(Fnn), fN).
+7. If ((unop__u0 is SQRT) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN be num__u3.
+  c. Return $fsqrt_($sizenn(Fnn), fN).
+8. If ((unop__u0 is CEIL) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN be num__u3.
+  c. Return $fceil_($sizenn(Fnn), fN).
+9. If ((unop__u0 is FLOOR) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN be num__u3.
+  c. Return $ffloor_($sizenn(Fnn), fN).
+10. If ((unop__u0 is TRUNC) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
+  b. Let fN be num__u3.
+  c. Return $ftrunc_($sizenn(Fnn), fN).
 11. Assert: Due to validation, (unop__u0 is NEAREST).
 12. Assert: Due to validation, the type of numtype_u1 is Fnn.
 13. Let Fnn be numtype_u1.
 14. Let fN be num__u3.
-15. Return [$fnearest_($size(Fnn), fN)].
+15. Return $fnearest_($sizenn(Fnn), fN).
 
 binop_ numtype_u1 binop__u0 num__u3 num__u5
 1. If ((binop__u0 is ADD) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
   b. Let iN_1 be num__u3.
   c. Let iN_2 be num__u5.
+<<<<<<< HEAD
   d. Return [$iadd_($size(Inn), iN_1, iN_2)].
 2. If ((binop__u0 is SUB) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
@@ -6573,18 +7561,112 @@ binop_ numtype_u1 binop__u0 num__u3 num__u5
 18. Assert: Due to validation, (binop__u0 is COPYSIGN).
 19. Assert: Due to validation, the type of numtype_u1 is Fnn.
 20. Let Fnn be numtype_u1.
+=======
+  d. Return [$iadd_($sizenn(Inn), iN_1, iN_2)].
+2. If ((binop_u0 is SUB) and the type of numty_u1 is Inn), then:
+  a. Let Inn be numty_u1.
+  b. Let iN_1 be num__u3.
+  c. Let iN_2 be num__u5.
+  d. Return [$isub_($sizenn(Inn), iN_1, iN_2)].
+3. If ((binop_u0 is MUL) and the type of numty_u1 is Inn), then:
+  a. Let Inn be numty_u1.
+  b. Let iN_1 be num__u3.
+  c. Let iN_2 be num__u5.
+  d. Return [$imul_($sizenn(Inn), iN_1, iN_2)].
+4. If the type of numty_u1 is Inn, then:
+  a. Let Inn be numty_u1.
+  b. Let iN_1 be num__u3.
+  c. Let iN_2 be num__u5.
+  d. If binop_u0 is of the case DIV, then:
+    1) Let (DIV sx) be binop_u0.
+    2) Return $list_($idiv_($sizenn(Inn), sx, iN_1, iN_2)).
+  e. If binop_u0 is of the case REM, then:
+    1) Let (REM sx) be binop_u0.
+    2) Return $list_($irem_($sizenn(Inn), sx, iN_1, iN_2)).
+5. If ((binop_u0 is AND) and the type of numty_u1 is Inn), then:
+  a. Let Inn be numty_u1.
+  b. Let iN_1 be num__u3.
+  c. Let iN_2 be num__u5.
+  d. Return [$iand_($sizenn(Inn), iN_1, iN_2)].
+6. If ((binop_u0 is OR) and the type of numty_u1 is Inn), then:
+  a. Let Inn be numty_u1.
+  b. Let iN_1 be num__u3.
+  c. Let iN_2 be num__u5.
+  d. Return [$ior_($sizenn(Inn), iN_1, iN_2)].
+7. If ((binop_u0 is XOR) and the type of numty_u1 is Inn), then:
+  a. Let Inn be numty_u1.
+  b. Let iN_1 be num__u3.
+  c. Let iN_2 be num__u5.
+  d. Return [$ixor_($sizenn(Inn), iN_1, iN_2)].
+8. If ((binop_u0 is SHL) and the type of numty_u1 is Inn), then:
+  a. Let Inn be numty_u1.
+  b. Let iN_1 be num__u3.
+  c. Let iN_2 be num__u5.
+  d. Return [$ishl_($sizenn(Inn), iN_1, iN_2)].
+9. If the type of numty_u1 is Inn, then:
+  a. Let Inn be numty_u1.
+  b. Let iN_1 be num__u3.
+  c. Let iN_2 be num__u5.
+  d. If binop_u0 is of the case SHR, then:
+    1) Let (SHR sx) be binop_u0.
+    2) Return [$ishr_($sizenn(Inn), sx, iN_1, iN_2)].
+10. If ((binop_u0 is ROTL) and the type of numty_u1 is Inn), then:
+  a. Let Inn be numty_u1.
+  b. Let iN_1 be num__u3.
+  c. Let iN_2 be num__u5.
+  d. Return [$irotl_($sizenn(Inn), iN_1, iN_2)].
+11. If ((binop_u0 is ROTR) and the type of numty_u1 is Inn), then:
+  a. Let Inn be numty_u1.
+  b. Let iN_1 be num__u3.
+  c. Let iN_2 be num__u5.
+  d. Return [$irotr_($sizenn(Inn), iN_1, iN_2)].
+12. If ((binop_u0 is ADD) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN_1 be num__u3.
+  c. Let fN_2 be num__u5.
+  d. Return $fadd_($sizenn(Fnn), fN_1, fN_2).
+13. If ((binop_u0 is SUB) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN_1 be num__u3.
+  c. Let fN_2 be num__u5.
+  d. Return $fsub_($sizenn(Fnn), fN_1, fN_2).
+14. If ((binop_u0 is MUL) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN_1 be num__u3.
+  c. Let fN_2 be num__u5.
+  d. Return $fmul_($sizenn(Fnn), fN_1, fN_2).
+15. If ((binop_u0 is DIV) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN_1 be num__u3.
+  c. Let fN_2 be num__u5.
+  d. Return $fdiv_($sizenn(Fnn), fN_1, fN_2).
+16. If ((binop_u0 is MIN) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN_1 be num__u3.
+  c. Let fN_2 be num__u5.
+  d. Return $fmin_($sizenn(Fnn), fN_1, fN_2).
+17. If ((binop_u0 is MAX) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN_1 be num__u3.
+  c. Let fN_2 be num__u5.
+  d. Return $fmax_($sizenn(Fnn), fN_1, fN_2).
+18. Assert: Due to validation, (binop_u0 is COPYSIGN).
+19. Assert: Due to validation, the type of numty_u1 is Fnn.
+20. Let Fnn be numty_u1.
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
 21. Let fN_1 be num__u3.
 22. Let fN_2 be num__u5.
-23. Return [$fcopysign_($size(Fnn), fN_1, fN_2)].
+23. Return $fcopysign_($sizenn(Fnn), fN_1, fN_2).
 
 testop_ Inn EQZ iN
-1. Return $ieqz_($size(Inn), iN).
+1. Return $ieqz_($sizenn(Inn), iN).
 
 relop_ numtype_u1 relop__u0 num__u3 num__u5
 1. If ((relop__u0 is EQ) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
   b. Let iN_1 be num__u3.
   c. Let iN_2 be num__u5.
+<<<<<<< HEAD
   d. Return $ieq_($size(Inn), iN_1, iN_2).
 2. If ((relop__u0 is NE) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
@@ -6635,9 +7717,61 @@ relop_ numtype_u1 relop__u0 num__u3 num__u5
 9. Assert: Due to validation, (relop__u0 is GE).
 10. Assert: Due to validation, the type of numtype_u1 is Fnn.
 11. Let Fnn be numtype_u1.
+=======
+  d. Return $ieq_($sizenn(Inn), iN_1, iN_2).
+2. If ((relop_u0 is NE) and the type of numty_u1 is Inn), then:
+  a. Let Inn be numty_u1.
+  b. Let iN_1 be num__u3.
+  c. Let iN_2 be num__u5.
+  d. Return $ine_($sizenn(Inn), iN_1, iN_2).
+3. If the type of numty_u1 is Inn, then:
+  a. Let Inn be numty_u1.
+  b. Let iN_1 be num__u3.
+  c. Let iN_2 be num__u5.
+  d. If relop_u0 is of the case LT, then:
+    1) Let (LT sx) be relop_u0.
+    2) Return $ilt_($sizenn(Inn), sx, iN_1, iN_2).
+  e. If relop_u0 is of the case GT, then:
+    1) Let (GT sx) be relop_u0.
+    2) Return $igt_($sizenn(Inn), sx, iN_1, iN_2).
+  f. If relop_u0 is of the case LE, then:
+    1) Let (LE sx) be relop_u0.
+    2) Return $ile_($sizenn(Inn), sx, iN_1, iN_2).
+  g. If relop_u0 is of the case GE, then:
+    1) Let (GE sx) be relop_u0.
+    2) Return $ige_($sizenn(Inn), sx, iN_1, iN_2).
+4. If ((relop_u0 is EQ) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN_1 be num__u3.
+  c. Let fN_2 be num__u5.
+  d. Return $feq_($sizenn(Fnn), fN_1, fN_2).
+5. If ((relop_u0 is NE) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN_1 be num__u3.
+  c. Let fN_2 be num__u5.
+  d. Return $fne_($sizenn(Fnn), fN_1, fN_2).
+6. If ((relop_u0 is LT) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN_1 be num__u3.
+  c. Let fN_2 be num__u5.
+  d. Return $flt_($sizenn(Fnn), fN_1, fN_2).
+7. If ((relop_u0 is GT) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN_1 be num__u3.
+  c. Let fN_2 be num__u5.
+  d. Return $fgt_($sizenn(Fnn), fN_1, fN_2).
+8. If ((relop_u0 is LE) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn be numty_u1.
+  b. Let fN_1 be num__u3.
+  c. Let fN_2 be num__u5.
+  d. Return $fle_($sizenn(Fnn), fN_1, fN_2).
+9. Assert: Due to validation, (relop_u0 is GE).
+10. Assert: Due to validation, the type of numty_u1 is Fnn.
+11. Let Fnn be numty_u1.
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
 12. Let fN_1 be num__u3.
 13. Let fN_2 be num__u5.
-14. Return $fge_($size(Fnn), fN_1, fN_2).
+14. Return $fge_($sizenn(Fnn), fN_1, fN_2).
 
 cvtop__ numtype_u1 numtype_u4 cvtop___u0 num__u3
 1. If the type of numtype_u1 is Inn, then:
@@ -6659,6 +7793,7 @@ cvtop__ numtype_u1 numtype_u4 cvtop___u0 num__u3
   b. If the type of numtype_u4 is Inn, then:
     1) Let Inn_2 be numtype_u4.
     2) Let fN_1 be num__u3.
+<<<<<<< HEAD
     3) If cvtop___u0 is of the case TRUNC, then:
       a) Let (TRUNC sx) be cvtop___u0.
       b) Return [$trunc__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)].
@@ -6669,6 +7804,18 @@ cvtop__ numtype_u1 numtype_u4 cvtop___u0 num__u3
   a. Let Fnn_2 be numtype_u4.
   b. If the type of numtype_u1 is Inn, then:
     1) Let Inn_1 be numtype_u1.
+=======
+    3) If cvtop_u0 is of the case TRUNC, then:
+      a) Let (TRUNC sx) be cvtop_u0.
+      b) Return $list_($trunc__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
+    4) If cvtop_u0 is of the case TRUNC_SAT, then:
+      a) Let (TRUNC_SAT sx) be cvtop_u0.
+      b) Return $list_($trunc_sat__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
+4. If the type of numty_u4 is Fnn, then:
+  a. Let Fnn_2 be numty_u4.
+  b. If the type of numty_u1 is Inn, then:
+    1) Let Inn_1 be numty_u1.
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
     2) Let iN_1 be num__u3.
     3) If cvtop___u0 is of the case CONVERT, then:
       a) Let (CONVERT sx) be cvtop___u0.
@@ -6678,6 +7825,7 @@ cvtop__ numtype_u1 numtype_u4 cvtop___u0 num__u3
   b. If the type of numtype_u4 is Fnn, then:
     1) Let Fnn_2 be numtype_u4.
     2) Let fN_1 be num__u3.
+<<<<<<< HEAD
     3) Return [$promote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1)].
 6. If ((cvtop___u0 is DEMOTE) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn_1 be numtype_u1.
@@ -6690,15 +7838,29 @@ cvtop__ numtype_u1 numtype_u4 cvtop___u0 num__u3
   a. Let Fnn_2 be numtype_u4.
   b. If the type of numtype_u1 is Inn, then:
     1) Let Inn_1 be numtype_u1.
+=======
+    3) Return $promote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1).
+6. If ((cvtop_u0 is DEMOTE) and the type of numty_u1 is Fnn), then:
+  a. Let Fnn_1 be numty_u1.
+  b. If the type of numty_u4 is Fnn, then:
+    1) Let Fnn_2 be numty_u4.
+    2) Let fN_1 be num__u3.
+    3) Return $demote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1).
+7. Assert: Due to validation, (cvtop_u0 is REINTERPRET).
+8. If the type of numty_u4 is Fnn, then:
+  a. Let Fnn_2 be numty_u4.
+  b. If the type of numty_u1 is Inn, then:
+    1) Let Inn_1 be numty_u1.
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
     2) Let iN_1 be num__u3.
-    3) If ($sizenn1(Inn_1) is $sizenn2(Fnn_2)), then:
+    3) If ($size(Inn_1) is $size(Fnn_2)), then:
       a) Return [$reinterpret__(Inn_1, Fnn_2, iN_1)].
 9. Assert: Due to validation, the type of numtype_u1 is Fnn.
 10. Let Fnn_1 be numtype_u1.
 11. Assert: Due to validation, the type of numtype_u4 is Inn.
 12. Let Inn_2 be numtype_u4.
 13. Let fN_1 be num__u3.
-14. Assert: Due to validation, ($sizenn1(Fnn_1) is $sizenn2(Inn_2)).
+14. Assert: Due to validation, ($size(Fnn_1) is $size(Inn_2)).
 15. Return [$reinterpret__(Fnn_1, Inn_2, fN_1)].
 
 invibytes_ N b*
@@ -6751,8 +7913,9 @@ half__ (lanetype_u1 X M_1) (lanetype_u2 X M_2) half___u0 i j
 5. Return i.
 
 vvunop_ V128 NOT v128
-1. Return $inot_($vsize(V128), v128).
+1. Return [$inot_($vsize(V128), v128)].
 
+<<<<<<< HEAD
 vvbinop_ V128 vvbinop_u0 v128_1 v128_2
 1. If (vvbinop_u0 is AND), then:
   a. Return $iand_($vsize(V128), v128_1, v128_2).
@@ -6762,10 +7925,22 @@ vvbinop_ V128 vvbinop_u0 v128_1 v128_2
   a. Return $ior_($vsize(V128), v128_1, v128_2).
 4. Assert: Due to validation, (vvbinop_u0 is XOR).
 5. Return $ixor_($vsize(V128), v128_1, v128_2).
+=======
+vvbinop_ V128 vvbin_u0 v128_1 v128_2
+1. If (vvbin_u0 is AND), then:
+  a. Return [$iand_($vsize(V128), v128_1, v128_2)].
+2. If (vvbin_u0 is ANDNOT), then:
+  a. Return [$iandnot_($vsize(V128), v128_1, v128_2)].
+3. If (vvbin_u0 is OR), then:
+  a. Return [$ior_($vsize(V128), v128_1, v128_2)].
+4. Assert: Due to validation, (vvbin_u0 is XOR).
+5. Return [$ixor_($vsize(V128), v128_1, v128_2)].
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
 
 vvternop_ V128 BITSELECT v128_1 v128_2 v128_3
-1. Return $ibitselect_($vsize(V128), v128_1, v128_2, v128_3).
+1. Return [$ibitselect_($vsize(V128), v128_1, v128_2, v128_3)].
 
+<<<<<<< HEAD
 vunop_ (lanetype_u1 X N) vunop__u0 v128_1
 1. If ((vunop__u0 is ABS) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
@@ -6983,44 +8158,309 @@ vrelop_ (lanetype_u1 X N) vrelop__u0 v128_1 v128_2
   a. Let Fnn be lanetype_u1.
   b. Let lane_1* be $lanes_((Fnn X N), v128_1).
   c. Let lane_2* be $lanes_((Fnn X N), v128_2).
+=======
+vunop_ (lanet_u1 X M) vunop_u0 v128_1
+1. If ((vunop_u0 is ABS) and the type of lanet_u1 is Jnn), then:
+  a. Let Jnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let v128 be $invlanes_((Jnn X M), $iabs_($lsizenn(Jnn), lane_1)*).
+  d. Return [v128].
+2. If ((vunop_u0 is NEG) and the type of lanet_u1 is Jnn), then:
+  a. Let Jnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let v128 be $invlanes_((Jnn X M), $ineg_($lsizenn(Jnn), lane_1)*).
+  d. Return [v128].
+3. If ((vunop_u0 is POPCNT) and the type of lanet_u1 is Jnn), then:
+  a. Let Jnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let v128 be $invlanes_((Jnn X M), $ipopcnt_($lsizenn(Jnn), lane_1)*).
+  d. Return [v128].
+4. If ((vunop_u0 is ABS) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane** be $setproduct_($fabs_($sizenn(Fnn), lane_1)*).
+  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Return v128*.
+5. If ((vunop_u0 is NEG) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane** be $setproduct_($fneg_($sizenn(Fnn), lane_1)*).
+  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Return v128*.
+6. If ((vunop_u0 is SQRT) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane** be $setproduct_($fsqrt_($sizenn(Fnn), lane_1)*).
+  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Return v128*.
+7. If ((vunop_u0 is CEIL) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane** be $setproduct_($fceil_($sizenn(Fnn), lane_1)*).
+  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Return v128*.
+8. If ((vunop_u0 is FLOOR) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane** be $setproduct_($ffloor_($sizenn(Fnn), lane_1)*).
+  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Return v128*.
+9. If ((vunop_u0 is TRUNC) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane** be $setproduct_($ftrunc_($sizenn(Fnn), lane_1)*).
+  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  e. Return v128*.
+10. Assert: Due to validation, (vunop_u0 is NEAREST).
+11. Assert: Due to validation, the type of lanet_u1 is Fnn.
+12. Let Fnn be lanet_u1.
+13. Let lane_1* be $lanes_((Fnn X M), v128_1).
+14. Let lane** be $setproduct_($fnearest_($sizenn(Fnn), lane_1)*).
+15. Let v128* be $invlanes_((Fnn X M), lane*)*.
+16. Return v128*.
+
+vbinop_ (lanet_u1 X M) vbino_u0 v128_1 v128_2
+1. If ((vbino_u0 is ADD) and the type of lanet_u1 is Jnn), then:
+  a. Let Jnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  d. Let v128 be $invlanes_((Jnn X M), $iadd_($lsizenn(Jnn), lane_1, lane_2)*).
+  e. Return [v128].
+2. If ((vbino_u0 is SUB) and the type of lanet_u1 is Jnn), then:
+  a. Let Jnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  d. Let v128 be $invlanes_((Jnn X M), $isub_($lsizenn(Jnn), lane_1, lane_2)*).
+  e. Return [v128].
+3. If the type of lanet_u1 is Jnn, then:
+  a. Let Jnn be lanet_u1.
+  b. If vbino_u0 is of the case MIN, then:
+    1) Let (MIN sx) be vbino_u0.
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    4) Let v128 be $invlanes_((Jnn X M), $imin_($lsizenn(Jnn), sx, lane_1, lane_2)*).
+    5) Return [v128].
+  c. If vbino_u0 is of the case MAX, then:
+    1) Let (MAX sx) be vbino_u0.
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    4) Let v128 be $invlanes_((Jnn X M), $imax_($lsizenn(Jnn), sx, lane_1, lane_2)*).
+    5) Return [v128].
+  d. If vbino_u0 is of the case ADD_SAT, then:
+    1) Let (ADD_SAT sx) be vbino_u0.
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    4) Let v128 be $invlanes_((Jnn X M), $iadd_sat_($lsizenn(Jnn), sx, lane_1, lane_2)*).
+    5) Return [v128].
+  e. If vbino_u0 is of the case SUB_SAT, then:
+    1) Let (SUB_SAT sx) be vbino_u0.
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    4) Let v128 be $invlanes_((Jnn X M), $isub_sat_($lsizenn(Jnn), sx, lane_1, lane_2)*).
+    5) Return [v128].
+4. If ((vbino_u0 is MUL) and the type of lanet_u1 is Jnn), then:
+  a. Let Jnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  d. Let v128 be $invlanes_((Jnn X M), $imul_($lsizenn(Jnn), lane_1, lane_2)*).
+  e. Return [v128].
+5. If ((vbino_u0 is AVGR) and the type of lanet_u1 is Jnn), then:
+  a. Let Jnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  d. Let v128 be $invlanes_((Jnn X M), $iavgr_($lsizenn(Jnn), U, lane_1, lane_2)*).
+  e. Return [v128].
+6. If ((vbino_u0 is Q15MULR_SAT) and the type of lanet_u1 is Jnn), then:
+  a. Let Jnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  d. Let v128 be $invlanes_((Jnn X M), $iq15mulr_sat_($lsizenn(Jnn), S, lane_1, lane_2)*).
+  e. Return [v128].
+7. If ((vbino_u0 is ADD) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let lane** be $setproduct_($fadd_($sizenn(Fnn), lane_1, lane_2)*).
+  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  f. Return v128*.
+8. If ((vbino_u0 is SUB) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let lane** be $setproduct_($fsub_($sizenn(Fnn), lane_1, lane_2)*).
+  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  f. Return v128*.
+9. If ((vbino_u0 is MUL) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let lane** be $setproduct_($fmul_($sizenn(Fnn), lane_1, lane_2)*).
+  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  f. Return v128*.
+10. If ((vbino_u0 is DIV) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let lane** be $setproduct_($fdiv_($sizenn(Fnn), lane_1, lane_2)*).
+  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  f. Return v128*.
+11. If ((vbino_u0 is MIN) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let lane** be $setproduct_($fmin_($sizenn(Fnn), lane_1, lane_2)*).
+  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  f. Return v128*.
+12. If ((vbino_u0 is MAX) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let lane** be $setproduct_($fmax_($sizenn(Fnn), lane_1, lane_2)*).
+  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  f. Return v128*.
+13. If ((vbino_u0 is PMIN) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. Let lane** be $setproduct_($fpmin_($sizenn(Fnn), lane_1, lane_2)*).
+  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  f. Return v128*.
+14. Assert: Due to validation, (vbino_u0 is PMAX).
+15. Assert: Due to validation, the type of lanet_u1 is Fnn.
+16. Let Fnn be lanet_u1.
+17. Let lane_1* be $lanes_((Fnn X M), v128_1).
+18. Let lane_2* be $lanes_((Fnn X M), v128_2).
+19. Let lane** be $setproduct_($fpmax_($sizenn(Fnn), lane_1, lane_2)*).
+20. Let v128* be $invlanes_((Fnn X M), lane*)*.
+21. Return v128*.
+
+vrelop_ (lanet_u1 X M) vrelo_u0 v128_1 v128_2
+1. If ((vrelo_u0 is EQ) and the type of lanet_u1 is Jnn), then:
+  a. Let Jnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  d. Let lane* be $extend__(1, $lsizenn(Jnn), S, $ieq_($lsizenn(Jnn), lane_1, lane_2))*.
+  e. Let v128 be $invlanes_((Jnn X M), lane*).
+  f. Return v128.
+2. If ((vrelo_u0 is NE) and the type of lanet_u1 is Jnn), then:
+  a. Let Jnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  d. Let lane* be $extend__(1, $lsizenn(Jnn), S, $ine_($lsizenn(Jnn), lane_1, lane_2))*.
+  e. Let v128 be $invlanes_((Jnn X M), lane*).
+  f. Return v128.
+3. If the type of lanet_u1 is Jnn, then:
+  a. Let Jnn be lanet_u1.
+  b. If vrelo_u0 is of the case LT, then:
+    1) Let (LT sx) be vrelo_u0.
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    4) Let lane* be $extend__(1, $lsizenn(Jnn), S, $ilt_($lsizenn(Jnn), sx, lane_1, lane_2))*.
+    5) Let v128 be $invlanes_((Jnn X M), lane*).
+    6) Return v128.
+  c. If vrelo_u0 is of the case GT, then:
+    1) Let (GT sx) be vrelo_u0.
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    4) Let lane* be $extend__(1, $lsizenn(Jnn), S, $igt_($lsizenn(Jnn), sx, lane_1, lane_2))*.
+    5) Let v128 be $invlanes_((Jnn X M), lane*).
+    6) Return v128.
+  d. If vrelo_u0 is of the case LE, then:
+    1) Let (LE sx) be vrelo_u0.
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    4) Let lane* be $extend__(1, $lsizenn(Jnn), S, $ile_($lsizenn(Jnn), sx, lane_1, lane_2))*.
+    5) Let v128 be $invlanes_((Jnn X M), lane*).
+    6) Return v128.
+  e. If vrelo_u0 is of the case GE, then:
+    1) Let (GE sx) be vrelo_u0.
+    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    4) Let lane* be $extend__(1, $lsizenn(Jnn), S, $ige_($lsizenn(Jnn), sx, lane_1, lane_2))*.
+    5) Let v128 be $invlanes_((Jnn X M), lane*).
+    6) Return v128.
+4. If ((vrelo_u0 is EQ) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  d. If the type of $size^-1($size(Fnn)) is Inn, then:
+    1) Let Inn be $size^-1($size(Fnn)).
+    2) Let lane* be $extend__(1, $sizenn(Fnn), S, $feq_($sizenn(Fnn), lane_1, lane_2))*.
+    3) Let v128 be $invlanes_((Inn X M), lane*).
+    4) Return v128.
+5. If ((vrelo_u0 is NE) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $extend__(1, $size(Fnn), S, $fne_($size(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X N), lane_3*).
+  e. Let lane* be $extend__(1, $sizenn(Fnn), S, $fne_($sizenn(Fnn), lane_1, lane_2))*.
+  f. Let v128 be $invlanes_((Inn X M), lane*).
   g. Return v128.
+<<<<<<< HEAD
 6. If ((vrelop__u0 is LT) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
   b. Let lane_1* be $lanes_((Fnn X N), v128_1).
   c. Let lane_2* be $lanes_((Fnn X N), v128_2).
+=======
+6. If ((vrelo_u0 is LT) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $extend__(1, $size(Fnn), S, $flt_($size(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X N), lane_3*).
+  e. Let lane* be $extend__(1, $sizenn(Fnn), S, $flt_($sizenn(Fnn), lane_1, lane_2))*.
+  f. Let v128 be $invlanes_((Inn X M), lane*).
   g. Return v128.
+<<<<<<< HEAD
 7. If ((vrelop__u0 is GT) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
   b. Let lane_1* be $lanes_((Fnn X N), v128_1).
   c. Let lane_2* be $lanes_((Fnn X N), v128_2).
+=======
+7. If ((vrelo_u0 is GT) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $extend__(1, $size(Fnn), S, $fgt_($size(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X N), lane_3*).
+  e. Let lane* be $extend__(1, $sizenn(Fnn), S, $fgt_($sizenn(Fnn), lane_1, lane_2))*.
+  f. Let v128 be $invlanes_((Inn X M), lane*).
   g. Return v128.
+<<<<<<< HEAD
 8. If ((vrelop__u0 is LE) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
   b. Let lane_1* be $lanes_((Fnn X N), v128_1).
   c. Let lane_2* be $lanes_((Fnn X N), v128_2).
+=======
+8. If ((vrelo_u0 is LE) and the type of lanet_u1 is Fnn), then:
+  a. Let Fnn be lanet_u1.
+  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $extend__(1, $size(Fnn), S, $fle_($size(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X N), lane_3*).
+  e. Let lane* be $extend__(1, $sizenn(Fnn), S, $fle_($sizenn(Fnn), lane_1, lane_2))*.
+  f. Let v128 be $invlanes_((Inn X M), lane*).
   g. Return v128.
+<<<<<<< HEAD
 9. Assert: Due to validation, (vrelop__u0 is GE).
 10. Assert: Due to validation, the type of lanetype_u1 is Fnn.
 11. Let Fnn be lanetype_u1.
 12. Let lane_1* be $lanes_((Fnn X N), v128_1).
 13. Let lane_2* be $lanes_((Fnn X N), v128_2).
+=======
+9. Assert: Due to validation, (vrelo_u0 is GE).
+10. Assert: Due to validation, the type of lanet_u1 is Fnn.
+11. Let Fnn be lanet_u1.
+12. Let lane_1* be $lanes_((Fnn X M), v128_1).
+13. Let lane_2* be $lanes_((Fnn X M), v128_2).
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
 14. Let Inn be $isize^-1($size(Fnn)).
-15. Let lane_3* be $extend__(1, $size(Fnn), S, $fge_($size(Fnn), lane_1, lane_2))*.
-16. Let v128 be $invlanes_((Inn X N), lane_3*).
+15. Let lane* be $extend__(1, $sizenn(Fnn), S, $fge_($sizenn(Fnn), lane_1, lane_2))*.
+16. Let v128 be $invlanes_((Inn X M), lane*).
 17. Return v128.
 
+<<<<<<< HEAD
 vcvtop__ (lanetype_u0 X N_1) (lanetype_u1 X N_2) vcvtop___u6 sx_u7? lane__u3
 1. If ((lanetype_u0 is I8) and ((lanetype_u1 is I16) and (vcvtop___u6 is EXTEND))), then:
   a. Let i8 be lane__u3.
@@ -7076,13 +8516,59 @@ vcvtop__ (lanetype_u0 X N_1) (lanetype_u1 X N_2) vcvtop___u6 sx_u7? lane__u3
 9. Let f32 be lane__u3.
 10. Let f64 be $promote__(32, 64, f32).
 11. Return f64.
+=======
+vcvtop__ (lanet_u3 X M_1) (lanet_u0 X M_2) vcvto_u2 lane__u5
+1. If the type of lanet_u3 is Jnn, then:
+  a. Let Jnn_1 be lanet_u3.
+  b. If the type of lanet_u0 is Jnn, then:
+    1) Let Jnn_2 be lanet_u0.
+    2) Let iN_1 be lane__u5.
+    3) If vcvto_u2 is of the case EXTEND, then:
+      a) Let (EXTEND sx) be vcvto_u2.
+      b) Let iN_2 be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, iN_1).
+      c) Return [iN_2].
+2. If the type of lanet_u0 is Fnn, then:
+  a. Let Fnn_2 be lanet_u0.
+  b. If the type of lanet_u3 is Jnn, then:
+    1) Let Jnn_1 be lanet_u3.
+    2) Let iN_1 be lane__u5.
+    3) If vcvto_u2 is of the case CONVERT, then:
+      a) Let (CONVERT sx) be vcvto_u2.
+      b) Let fN_2 be $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, iN_1).
+      c) Return [fN_2].
+3. If the type of lanet_u3 is Fnn, then:
+  a. Let Fnn_1 be lanet_u3.
+  b. If the type of lanet_u0 is Inn, then:
+    1) Let Inn_2 be lanet_u0.
+    2) Let fN_1 be lane__u5.
+    3) If vcvto_u2 is of the case TRUNC_SAT, then:
+      a) Let (TRUNC_SAT sx) be vcvto_u2.
+      b) Let iN_2? be $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, fN_1).
+      c) Return $list_(iN_2?).
+4. If ((vcvto_u2 is DEMOTE) and the type of lanet_u3 is Fnn), then:
+  a. Let Fnn_1 be lanet_u3.
+  b. If the type of lanet_u0 is Fnn, then:
+    1) Let Fnn_2 be lanet_u0.
+    2) Let fN_1 be lane__u5.
+    3) Let fN_2* be $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
+    4) Return fN_2*.
+5. Assert: Due to validation, (vcvto_u2 is PROMOTE).
+6. Assert: Due to validation, the type of lanet_u3 is Fnn.
+7. Let Fnn_1 be lanet_u3.
+8. Assert: Due to validation, the type of lanet_u0 is Fnn.
+9. Let Fnn_2 be lanet_u0.
+10. Let fN_1 be lane__u5.
+11. Let fN_2* be $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
+12. Return fN_2*.
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
 
-vextunop__ (Jnn_1 X N_1) (Jnn_2 X N_2) (EXTADD_PAIRWISE sx) c_1
-1. Let ci* be $lanes_((Jnn_1 X N_1), c_1).
-2. Let [cj_1, cj_2]* be $concat_^-1($extend__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci)*).
-3. Let c be $invlanes_((Jnn_2 X N_2), $iadd_($lsize(Jnn_2), cj_1, cj_2)*).
+vextunop__ (Jnn_1 X M_1) (Jnn_2 X M_2) (EXTADD_PAIRWISE sx) c_1
+1. Let ci* be $lanes_((Jnn_1 X M_1), c_1).
+2. Let [cj_1, cj_2]* be $concat_^-1($extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci)*).
+3. Let c be $invlanes_((Jnn_2 X M_2), $iadd_($lsizenn2(Jnn_2), cj_1, cj_2)*).
 4. Return c.
 
+<<<<<<< HEAD
 vextbinop__ (Jnn_1 X N_1) (Jnn_2 X N_2) vextbinop___u0 c_1 c_2
 1. If vextbinop___u0 is of the case EXTMUL, then:
   a. Let (EXTMUL sx half) be vextbinop___u0.
@@ -7103,6 +8589,28 @@ vshiftop_ (Jnn X N) vshiftop__u0 lane n
 2. Assert: Due to validation, vshiftop__u0 is of the case SHR.
 3. Let (SHR sx) be vshiftop__u0.
 4. Return $ishr_($lsize(Jnn), sx, lane, n).
+=======
+vextbinop__ (Jnn_1 X M_1) (Jnn_2 X M_2) vextb_u0 c_1 c_2
+1. If vextb_u0 is of the case EXTMUL, then:
+  a. Let (EXTMUL sx half) be vextb_u0.
+  b. Let ci_1* be $lanes_((Jnn_1 X M_1), c_1)[$half__((Jnn_1 X M_1), (Jnn_2 X M_2), half, 0, M_2) : M_2].
+  c. Let ci_2* be $lanes_((Jnn_1 X M_1), c_2)[$half__((Jnn_1 X M_1), (Jnn_2 X M_2), half, 0, M_2) : M_2].
+  d. Let c be $invlanes_((Jnn_2 X M_2), $imul_($lsizenn2(Jnn_2), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci_1), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci_2))*).
+  e. Return c.
+2. Assert: Due to validation, (vextb_u0 is DOT).
+3. Let ci_1* be $lanes_((Jnn_1 X M_1), c_1).
+4. Let ci_2* be $lanes_((Jnn_1 X M_1), c_2).
+5. Let [cj_1, cj_2]* be $concat_^-1($imul_($lsizenn2(Jnn_2), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), S, ci_1), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), S, ci_2))*).
+6. Let c be $invlanes_((Jnn_2 X M_2), $iadd_($lsizenn2(Jnn_2), cj_1, cj_2)*).
+7. Return c.
+
+vshiftop_ (Jnn X M) vshif_u0 lane n
+1. If (vshif_u0 is SHL), then:
+  a. Return $ishl_($lsizenn(Jnn), lane, n).
+2. Assert: Due to validation, vshif_u0 is of the case SHR.
+3. Let (SHR sx) be vshif_u0.
+4. Return $ishr_($lsizenn(Jnn), sx, lane, n).
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
 
 inst_valtype moduleinst t
 1. Let dt* be moduleinst.TYPES.
@@ -7575,7 +9083,7 @@ rundata_ x (DATA b^n datamode_u0)
 4. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT y x), (DATA.DROP x)].
 
 instantiate module externval*
-1. Assert: Due to validation, $Module_ok(module, (xt_I* -> xt_E*)).
+1. Let (xt_I* -> xt_E*) be $Module_ok(module).
 2. Assert: Due to validation, module is of the case MODULE.
 3. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
 4. Assert: Due to validation, ($Externval_type(externval) is xt_I)*.
@@ -7642,6 +9150,9 @@ allocXs X_u0* Y_u1*
   e. Let a'* be $allocXs(X'*, Y'*).
   f. Return [a] ++ a'*.
 
+var
+1. Return 0.
+
 execution_of_UNREACHABLE
 1. Trap.
 
@@ -7686,14 +9197,16 @@ execution_of_BR l
 4. Let instr'* be the continuation of L.
 5. Pop the current label from the stack.
 6. Let instr_u0* be val*.
-7. If ((l is 0) and (|instr_u0*| ≥ n)), then:
+7. If (|instr_u0*| ≥ n), then:
   a. Let val'* ++ val^n be instr_u0*.
-  b. Push the values val^n to the stack.
-  c. Execute the instruction instr'*.
-8. If ((l > 0) and the type of instr_u0 is val*), then:
+  b. If (l is 0), then:
+    1) Push the values val^n to the stack.
+    2) Execute the instruction instr'*.
+8. If the type of instr_u0 is val*, then:
   a. Let val* be instr_u0*.
-  b. Push the values val* to the stack.
-  c. Execute the instruction (BR (l - 1)).
+  b. If (l > 0), then:
+    1) Push the values val* to the stack.
+    2) Execute the instruction (BR (l - 1)).
 
 execution_of_BR_IF l
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -7766,22 +9279,20 @@ execution_of_TRAP
 execution_of_UNOP nt unop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop the value (nt.CONST c_1) from the stack.
-3. If (|$unop_(nt, unop, c_1)| is 1), then:
-  a. Let [c] be $unop_(nt, unop, c_1).
-  b. Push the value (nt.CONST c) to the stack.
-4. If ($unop_(nt, unop, c_1) is []), then:
+3. If (|$unop_(nt, unop, c_1)| ≤ 0), then:
   a. Trap.
+4. Let c be an element of $unop_(nt, unop, c_1).
+5. Push the value (nt.CONST c) to the stack.
 
 execution_of_BINOP nt binop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop the value (nt.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type nt is on the top of the stack.
 4. Pop the value (nt.CONST c_1) from the stack.
-5. If (|$binop_(nt, binop, c_1, c_2)| is 1), then:
-  a. Let [c] be $binop_(nt, binop, c_1, c_2).
-  b. Push the value (nt.CONST c) to the stack.
-6. If ($binop_(nt, binop, c_1, c_2) is []), then:
+5. If (|$binop_(nt, binop, c_1, c_2)| ≤ 0), then:
   a. Trap.
+6. Let c be an element of $binop_(nt, binop, c_1, c_2).
+7. Push the value (nt.CONST c) to the stack.
 
 execution_of_TESTOP nt testop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
@@ -7800,11 +9311,10 @@ execution_of_RELOP nt relop
 execution_of_CVTOP nt_2 nt_1 cvtop
 1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
 2. Pop the value (nt_1.CONST c_1) from the stack.
-3. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| is 1), then:
-  a. Let [c] be $cvtop__(nt_1, nt_2, cvtop, c_1).
-  b. Push the value (nt_2.CONST c) to the stack.
-4. If ($cvtop__(nt_1, nt_2, cvtop, c_1) is []), then:
+3. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| ≤ 0), then:
   a. Trap.
+4. Let c be an element of $cvtop__(nt_1, nt_2, cvtop, c_1).
+5. Push the value (nt_2.CONST c) to the stack.
 
 execution_of_REF.I31
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -7874,54 +9384,58 @@ execution_of_ANY.CONVERT_EXTERN
   b. Push the value addrref to the stack.
 
 execution_of_VVUNOP V128 vvunop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
-3. Let c be $vvunop_(V128, vvunop, c_1).
-4. Push the value (V128.CONST c) to the stack.
+3. Assert: Due to validation, (|$vvunop_(V128, vvunop, c_1)| > 0).
+4. Let c be an element of $vvunop_(V128, vvunop, c_1).
+5. Push the value (V128.CONST c) to the stack.
 
 execution_of_VVBINOP V128 vvbinop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c be $vvbinop_(V128, vvbinop, c_1, c_2).
-6. Push the value (V128.CONST c) to the stack.
+5. Assert: Due to validation, (|$vvbinop_(V128, vvbinop, c_1, c_2)| > 0).
+6. Let c be an element of $vvbinop_(V128, vvbinop, c_1, c_2).
+7. Push the value (V128.CONST c) to the stack.
 
 execution_of_VVTERNOP V128 vvternop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_3) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_2) from the stack.
-5. Assert: Due to validation, a value is on the top of the stack.
+5. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 6. Pop the value (V128.CONST c_1) from the stack.
-7. Let c be $vvternop_(V128, vvternop, c_1, c_2, c_3).
-8. Push the value (V128.CONST c) to the stack.
+7. Assert: Due to validation, (|$vvternop_(V128, vvternop, c_1, c_2, c_3)| > 0).
+8. Let c be an element of $vvternop_(V128, vvternop, c_1, c_2, c_3).
+9. Push the value (V128.CONST c) to the stack.
 
 execution_of_VVTESTOP V128 ANY_TRUE
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. Let c be $ine_($vsize(V128), c_1, 0).
 4. Push the value (I32.CONST c) to the stack.
 
 execution_of_VUNOP sh vunop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
-3. Let c be $vunop_(sh, vunop, c_1).
-4. Push the value (V128.CONST c) to the stack.
+3. If (|$vunop_(sh, vunop, c_1)| ≤ 0), then:
+  a. Trap.
+4. Let c be an element of $vunop_(sh, vunop, c_1).
+5. Push the value (V128.CONST c) to the stack.
 
 execution_of_VBINOP sh vbinop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
-5. If (|$vbinop_(sh, vbinop, c_1, c_2)| is 1), then:
-  a. Let [c] be $vbinop_(sh, vbinop, c_1, c_2).
-  b. Push the value (V128.CONST c) to the stack.
-6. If ($vbinop_(sh, vbinop, c_1, c_2) is []), then:
+5. If (|$vbinop_(sh, vbinop, c_1, c_2)| ≤ 0), then:
   a. Trap.
+6. Let c be an element of $vbinop_(sh, vbinop, c_1, c_2).
+7. Push the value (V128.CONST c) to the stack.
 
 execution_of_VTESTOP (Jnn X M) ALL_TRUE
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c) from the stack.
 3. Let ci_1* be $lanes_((Jnn X M), c).
 4. If (ci_1 is not 0)*, then:
@@ -7930,9 +9444,9 @@ execution_of_VTESTOP (Jnn X M) ALL_TRUE
   a. Push the value (I32.CONST 0) to the stack.
 
 execution_of_VRELOP sh vrelop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c be $vrelop_(sh, vrelop, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
@@ -7940,35 +9454,35 @@ execution_of_VRELOP sh vrelop
 execution_of_VSHIFTOP (Jnn X M) vshiftop
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c'* be $lanes_((Jnn X M), c_1).
 6. Let c be $invlanes_((Jnn X M), $vshiftop_((Jnn X M), vshiftop, c', n)*).
 7. Push the value (V128.CONST c) to the stack.
 
 execution_of_VBITMASK (Jnn X M)
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c) from the stack.
 3. Let ci_1* be $lanes_((Jnn X M), c).
 4. Let ci be $ibits__1^-1(32, $ilt_($lsize(Jnn), S, ci_1, 0)*).
 5. Push the value (I32.CONST ci) to the stack.
 
 execution_of_VSWIZZLE (Pnn X M)
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c* be $lanes_((Pnn X M), c_1) ++ 0^(256 - M).
+5. Let c'* be $lanes_((Pnn X M), c_1) ++ 0^(256 - M).
 6. Let ci* be $lanes_((Pnn X M), c_2).
-7. Assert: Due to validation, (ci*[k] < |c*|)^(k<M).
+7. Assert: Due to validation, (ci*[k] < |c'*|)^(k<M).
 8. Assert: Due to validation, (k < |ci*|)^(k<M).
-9. Let c' be $invlanes_((Pnn X M), c*[ci*[k]]^(k<M)).
-10. Push the value (V128.CONST c') to the stack.
+9. Let c be $invlanes_((Pnn X M), c'*[ci*[k]]^(k<M)).
+10. Push the value (V128.CONST c) to the stack.
 
 execution_of_VSHUFFLE (Pnn X M) i*
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Assert: Due to validation, (k < |i*|)^(k<M).
 6. Let c'* be $lanes_((Pnn X M), c_1) ++ $lanes_((Pnn X M), c_2).
@@ -7977,13 +9491,19 @@ execution_of_VSHUFFLE (Pnn X M) i*
 9. Push the value (V128.CONST c) to the stack.
 
 execution_of_VSPLAT (Lnn X M)
-1. Assert: Due to validation, a value of value type $lunpack(Lnn) is on the top of the stack.
-2. Pop the value (nt_0.CONST c_1) from the stack.
-3. Let c be $invlanes_((Lnn X M), $lpacknum_(Lnn, c_1)^M).
-4. Push the value (V128.CONST c) to the stack.
+1. Let nt_0 be $lunpack(Lnn).
+2. Assert: Due to validation, a value of value type nt_0 is on the top of the stack.
+3. Pop the value (nt_0.CONST c_1) from the stack.
+4. Let c be $invlanes_((Lnn X M), $lpacknum_(Lnn, c_1)^M).
+5. Push the value (V128.CONST c) to the stack.
 
+<<<<<<< HEAD
 execution_of_VEXTRACT_LANE (lanetype_u0 X M) sx_u1? i
 1. Assert: Due to validation, a value is on the top of the stack.
+=======
+execution_of_VEXTRACT_LANE (lanet_u0 X M) sx_u1? i
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
 2. Pop the value (V128.CONST c_1) from the stack.
 3. If (sx_u1? is not defined and the type of lanetype_u0 is numtype), then:
   a. Let nt be lanetype_u0.
@@ -7999,31 +9519,32 @@ execution_of_VEXTRACT_LANE (lanetype_u0 X M) sx_u1? i
       b) Push the value (I32.CONST c_2) to the stack.
 
 execution_of_VREPLACE_LANE (Lnn X M) i
-1. Assert: Due to validation, a value of value type $lunpack(Lnn) is on the top of the stack.
-2. Pop the value (nt_0.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c be $invlanes_((Lnn X M), $lanes_((Lnn X M), c_1) with [i] replaced by $lpacknum_(Lnn, c_2)).
-6. Push the value (V128.CONST c) to the stack.
+1. Let nt_0 be $lunpack(Lnn).
+2. Assert: Due to validation, a value of value type nt_0 is on the top of the stack.
+3. Pop the value (nt_0.CONST c_2) from the stack.
+4. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+5. Pop the value (V128.CONST c_1) from the stack.
+6. Let c be $invlanes_((Lnn X M), $lanes_((Lnn X M), c_1) with [i] replaced by $lpacknum_(Lnn, c_2)).
+7. Push the value (V128.CONST c) to the stack.
 
 execution_of_VEXTUNOP sh_2 sh_1 vextunop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. Let c be $vextunop__(sh_1, sh_2, vextunop, c_1).
 4. Push the value (V128.CONST c) to the stack.
 
 execution_of_VEXTBINOP sh_2 sh_1 vextbinop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let c be $vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2).
 6. Push the value (V128.CONST c) to the stack.
 
 execution_of_VNARROW (Jnn_2 X M_2) (Jnn_1 X M_1) sx
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 4. Pop the value (V128.CONST c_1) from the stack.
 5. Let ci_1* be $lanes_((Jnn_1 X M_1), c_1).
 6. Let ci_2* be $lanes_((Jnn_1 X M_1), c_2).
@@ -8032,28 +9553,52 @@ execution_of_VNARROW (Jnn_2 X M_2) (Jnn_1 X M_1) sx
 9. Let c be $invlanes_((Jnn_2 X M_2), cj_1* ++ cj_2*).
 10. Push the value (V128.CONST c) to the stack.
 
+<<<<<<< HEAD
 execution_of_VCVTOP (lanetype_u5 X n_u0) (lanetype_u6 X n_u1) vcvtop half___u4? sx? zero___u13?
 1. Assert: Due to validation, a value is on the top of the stack.
+=======
+execution_of_VCVTOP (lanet_u5 X n_u0) (lanet_u6 X n_u1) vcvtop half__u4? zero__u13?
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
 2. Pop the value (V128.CONST c_1) from the stack.
 3. If (half___u4? is not defined and zero___u13? is not defined), then:
   a. Let Lnn_1 be lanetype_u6.
   b. Let Lnn_2 be lanetype_u5.
   c. Let M be n_u1.
   d. If (n_u0 is M), then:
+<<<<<<< HEAD
     1) Let c'* be $lanes_((Lnn_1 X M), c_1).
     2) Let c be $invlanes_((Lnn_2 X M), $vcvtop__((Lnn_1 X M), (Lnn_2 X M), vcvtop, sx?, c')*).
     3) Push the value (V128.CONST c) to the stack.
 4. If zero___u13? is not defined, then:
   a. Let Lnn_1 be lanetype_u6.
   b. Let Lnn_2 be lanetype_u5.
+=======
+    1) Let ci* be $lanes_((Lnn_1 X M), c_1).
+    2) Let cj** be $setproduct_($vcvtop__((Lnn_1 X M), (Lnn_2 X M), vcvtop, ci)*).
+    3) If (|$invlanes_((Lnn_2 X M), cj*)*| > 0), then:
+      a) Let c be an element of $invlanes_((Lnn_2 X M), cj*)*.
+      b) Push the value (V128.CONST c) to the stack.
+4. If zero__u13? is not defined, then:
+  a. Let Lnn_1 be lanet_u6.
+  b. Let Lnn_2 be lanet_u5.
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   c. Let M_1 be n_u1.
   d. Let M_2 be n_u0.
   e. If half___u4? is defined, then:
     1) Let ?(half) be half___u4?.
     2) Let ci* be $lanes_((Lnn_1 X M_1), c_1)[$half__((Lnn_1 X M_1), (Lnn_2 X M_2), half, 0, M_2) : M_2].
+<<<<<<< HEAD
     3) Let c be $invlanes_((Lnn_2 X M_2), $vcvtop__((Lnn_1 X M_1), (Lnn_2 X M_2), vcvtop, sx?, ci)*).
     4) Push the value (V128.CONST c) to the stack.
 5. If half___u4? is not defined, then:
+=======
+    3) Let cj** be $setproduct_($vcvtop__((Lnn_1 X M_1), (Lnn_2 X M_2), vcvtop, ci)*).
+    4) If (|$invlanes_((Lnn_2 X M_2), cj*)*| > 0), then:
+      a) Let c be an element of $invlanes_((Lnn_2 X M_2), cj*)*.
+      b) Push the value (V128.CONST c) to the stack.
+5. If half__u4? is not defined, then:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   a. Let M_1 be n_u1.
   b. Let M_2 be n_u0.
   c. If the type of lanetype_u6 is numtype, then:
@@ -8062,8 +9607,10 @@ execution_of_VCVTOP (lanetype_u5 X n_u0) (lanetype_u6 X n_u1) vcvtop half___u4? 
       a) Let nt_2 be lanetype_u5.
       b) If zero___u13? is defined, then:
         1. Let ci* be $lanes_((nt_1 X M_1), c_1).
-        2. Let c be $invlanes_((nt_2 X M_2), $vcvtop__((nt_1 X M_1), (nt_2 X M_2), vcvtop, sx?, ci)* ++ $zero(nt_2)^M_1).
-        3. Push the value (V128.CONST c) to the stack.
+        2. Let cj** be $setproduct_($vcvtop__((nt_1 X M_1), (nt_2 X M_2), vcvtop, ci)* ++ [$zero(nt_2)]^M_1).
+        3. If (|$invlanes_((nt_2 X M_2), cj*)*| > 0), then:
+          a. Let c be an element of $invlanes_((nt_2 X M_2), cj*)*.
+          b. Push the value (V128.CONST c) to the stack.
 
 execution_of_LOCAL.TEE x
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -8160,18 +9707,18 @@ execution_of_RETURN_CALL_REF yy
   c. Execute the instruction (RETURN_CALL_REF yy).
 4. Else if a frame is now on the top of the stack, then:
   a. Pop the current frame from the stack.
-  b. Let instr_u1* ++ instr_u0 be val*.
+  b. Let instr_u1* ++ [instr_u0] be val*.
   c. If instr_u0 is of the case REF.FUNC_ADDR, then:
     1) Let (REF.FUNC_ADDR a) be instr_u0.
-    2) If (a < |$funcinst(z)|), then:
-      a) Assert: Due to validation, $expanddt($funcinst(z)[a].TYPE) is of the case FUNC.
-      b) Let (FUNC functype_0) be $expanddt($funcinst(z)[a].TYPE).
-      c) Let (t_1^n -> t_2^m) be functype_0.
-      d) If (|instr_u1*| ≥ n), then:
-        1. Let val'* ++ val^n be instr_u1*.
-        2. Push the values val^n to the stack.
-        3. Push the value (REF.FUNC_ADDR a) to the stack.
-        4. Execute the instruction (CALL_REF yy).
+    2) If (|instr_u1*| ≥ n), then:
+      a) Let val'* ++ val^n be instr_u1*.
+      b) If (a < |$funcinst(z)|), then:
+        1. Assert: Due to validation, $expanddt($funcinst(z)[a].TYPE) is of the case FUNC.
+        2. Let (FUNC functype_0) be $expanddt($funcinst(z)[a].TYPE).
+        3. Let (t_1^n -> t_2^m) be functype_0.
+        4. Push the values val^n to the stack.
+        5. Push the value (REF.FUNC_ADDR a) to the stack.
+        6. Execute the instruction (CALL_REF yy).
   d. If (instr_u0 is of the case REF.NULL and the type of instr_u1 is val*), then:
     1) Trap.
 
@@ -8221,13 +9768,14 @@ execution_of_STRUCT.GET sx? x i
 3. Pop the value instr_u0 from the stack.
 4. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
-5. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-6. Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
-7. Let (mut, zt)* be fieldtype_0.
-8. If instr_u0 is of the case REF.STRUCT_ADDR, then:
+5. If instr_u0 is of the case REF.STRUCT_ADDR, then:
   a. Let (REF.STRUCT_ADDR a) be instr_u0.
-  b. If ((i < |$structinst(z)[a].FIELDS|) and ((a < |$structinst(z)|) and ((|mut*| is |zt*|) and (i < |zt*|)))), then:
-    1) Push the value $unpackfield_(zt*[i], sx?, $structinst(z)[a].FIELDS[i]) to the stack.
+  b. If ((i < |$structinst(z)[a].FIELDS|) and (a < |$structinst(z)|)), then:
+    1) Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
+    2) Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
+    3) Let (mut, zt)* be fieldtype_0.
+    4) If ((|mut*| is |zt*|) and (i < |zt*|)), then:
+      a) Push the value $unpackfield_(zt*[i], sx?, $structinst(z)[a].FIELDS[i]) to the stack.
 
 execution_of_ARRAY.NEW_DEFAULT x
 1. Let z be the current state.
@@ -8265,9 +9813,15 @@ execution_of_ARRAY.NEW_DATA x y
 8. Let (mut, zt) be arraytype_0.
 9. If ((i + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
   a. Trap.
+<<<<<<< HEAD
 10. Assert: Due to validation, (|$concat_^-1($data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)])| is n).
 11. Let byte* be $concat_^-1($data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)]).
 12. Let c* be $zbytes__1^-1(zt, byte)*.
+=======
+10. Assert: Due to validation, (|$concatn__0^-1(($zsize(zt) / 8), $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)])| is n).
+11. Let tmp* be $concatn__0^-1(($zsize(zt) / 8), $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)]).
+12. Let c* be $zbytes__1^-1(zt, tmp)*.
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
 13. Push the values $const($cunpack(zt), $cunpacknum_(zt, c))^n to the stack.
 14. Execute the instruction (ARRAY.NEW_FIXED x n).
 
@@ -8283,13 +9837,11 @@ execution_of_ARRAY.GET sx? x
   a. Let (REF.ARRAY_ADDR a) be instr_u0.
   b. If ((a < |$arrayinst(z)|) and (i ≥ |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
-8. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
-9. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-10. Let (mut, zt) be arraytype_0.
-11. If instr_u0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be instr_u0.
-  b. If ((i < |$arrayinst(z)[a].FIELDS|) and (a < |$arrayinst(z)|)), then:
-    1) Push the value $unpackfield_(zt, sx?, $arrayinst(z)[a].FIELDS[i]) to the stack.
+  c. If ((i < |$arrayinst(z)[a].FIELDS|) and (a < |$arrayinst(z)|)), then:
+    1) Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
+    2) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+    3) Let (mut, zt) be arraytype_0.
+    4) Push the value $unpackfield_(zt, sx?, $arrayinst(z)[a].FIELDS[i]) to the stack.
 
 execution_of_ARRAY.LEN
 1. Let z be the current state.
@@ -8356,49 +9908,47 @@ execution_of_ARRAY.COPY x_1 x_2
     2) Let (REF.ARRAY_ADDR a_2) be instr_u1.
     3) If ((a_2 < |$arrayinst(z)|) and ((i_2 + n) > |$arrayinst(z)[a_2].FIELDS|)), then:
       a) Trap.
-  c. If (n is 0), then:
-    1) If instr_u1 is of the case REF.ARRAY_ADDR, then:
-      a) Do nothing.
-  d. Else if (i_1 > i_2), then:
-    1) Assert: Due to validation, $expanddt($type(z, x_2)) is of the case ARRAY.
-    2) Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
-    3) Let (mut, zt_2) be arraytype_0.
-    4) Let (REF.ARRAY_ADDR a_1) be instr_u0.
-    5) If instr_u1 is of the case REF.ARRAY_ADDR, then:
+  c. If (instr_u1 is of the case REF.ARRAY_ADDR and (n is 0)), then:
+    1) Do nothing.
+  d. Else:
+    1) Let (REF.ARRAY_ADDR a_1) be instr_u0.
+    2) If instr_u1 is of the case REF.ARRAY_ADDR, then:
       a) Let (REF.ARRAY_ADDR a_2) be instr_u1.
-      b) Let sx? be $sx(zt_2).
-      c) Push the value (REF.ARRAY_ADDR a_1) to the stack.
-      d) Push the value (I32.CONST ((i_1 + n) - 1)) to the stack.
-      e) Push the value (REF.ARRAY_ADDR a_2) to the stack.
-      f) Push the value (I32.CONST ((i_2 + n) - 1)) to the stack.
-      g) Execute the instruction (ARRAY.GET sx? x_2).
-      h) Execute the instruction (ARRAY.SET x_1).
-      i) Push the value (REF.ARRAY_ADDR a_1) to the stack.
-      j) Push the value (I32.CONST i_1) to the stack.
-      k) Push the value (REF.ARRAY_ADDR a_2) to the stack.
-      l) Push the value (I32.CONST i_2) to the stack.
-      m) Push the value (I32.CONST (n - 1)) to the stack.
-      n) Execute the instruction (ARRAY.COPY x_1 x_2).
-  e. Else:
-    1) Assert: Due to validation, $expanddt($type(z, x_2)) is of the case ARRAY.
-    2) Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
-    3) Let (mut, zt_2) be arraytype_0.
-    4) Let (REF.ARRAY_ADDR a_1) be instr_u0.
-    5) If instr_u1 is of the case REF.ARRAY_ADDR, then:
-      a) Let (REF.ARRAY_ADDR a_2) be instr_u1.
-      b) Let sx? be $sx(zt_2).
-      c) Push the value (REF.ARRAY_ADDR a_1) to the stack.
-      d) Push the value (I32.CONST i_1) to the stack.
-      e) Push the value (REF.ARRAY_ADDR a_2) to the stack.
-      f) Push the value (I32.CONST i_2) to the stack.
-      g) Execute the instruction (ARRAY.GET sx? x_2).
-      h) Execute the instruction (ARRAY.SET x_1).
-      i) Push the value (REF.ARRAY_ADDR a_1) to the stack.
-      j) Push the value (I32.CONST (i_1 + 1)) to the stack.
-      k) Push the value (REF.ARRAY_ADDR a_2) to the stack.
-      l) Push the value (I32.CONST (i_2 + 1)) to the stack.
-      m) Push the value (I32.CONST (n - 1)) to the stack.
-      n) Execute the instruction (ARRAY.COPY x_1 x_2).
+      b) If ((i_1 ≤ i_2) and $expanddt($type(z, x_2)) is of the case ARRAY), then:
+        1. Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
+        2. Let (mut, zt_2) be arraytype_0.
+        3. Let sx? be $sx(zt_2).
+        4. Push the value (REF.ARRAY_ADDR a_1) to the stack.
+        5. Push the value (I32.CONST i_1) to the stack.
+        6. Push the value (REF.ARRAY_ADDR a_2) to the stack.
+        7. Push the value (I32.CONST i_2) to the stack.
+        8. Execute the instruction (ARRAY.GET sx? x_2).
+        9. Execute the instruction (ARRAY.SET x_1).
+        10. Push the value (REF.ARRAY_ADDR a_1) to the stack.
+        11. Push the value (I32.CONST (i_1 + 1)) to the stack.
+        12. Push the value (REF.ARRAY_ADDR a_2) to the stack.
+        13. Push the value (I32.CONST (i_2 + 1)) to the stack.
+        14. Push the value (I32.CONST (n - 1)) to the stack.
+        15. Execute the instruction (ARRAY.COPY x_1 x_2).
+      c) Else:
+        1. Let (REF.ARRAY_ADDR a_1) be instr_u0.
+        2. Let (REF.ARRAY_ADDR a_2) be instr_u1.
+        3. If $expanddt($type(z, x_2)) is of the case ARRAY, then:
+          a. Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
+          b. Let (mut, zt_2) be arraytype_0.
+          c. Let sx? be $sx(zt_2).
+          d. Push the value (REF.ARRAY_ADDR a_1) to the stack.
+          e. Push the value (I32.CONST ((i_1 + n) - 1)) to the stack.
+          f. Push the value (REF.ARRAY_ADDR a_2) to the stack.
+          g. Push the value (I32.CONST ((i_2 + n) - 1)) to the stack.
+          h. Execute the instruction (ARRAY.GET sx? x_2).
+          i. Execute the instruction (ARRAY.SET x_1).
+          j. Push the value (REF.ARRAY_ADDR a_1) to the stack.
+          k. Push the value (I32.CONST i_1) to the stack.
+          l. Push the value (REF.ARRAY_ADDR a_2) to the stack.
+          m. Push the value (I32.CONST i_2) to the stack.
+          n. Push the value (I32.CONST (n - 1)) to the stack.
+          o. Execute the instruction (ARRAY.COPY x_1 x_2).
 
 execution_of_ARRAY.INIT_ELEM x y
 1. Let z be the current state.
@@ -8416,30 +9966,14 @@ execution_of_ARRAY.INIT_ELEM x y
   a. Let (REF.ARRAY_ADDR a) be instr_u0.
   b. If ((a < |$arrayinst(z)|) and ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
-12. If ((j + n) > |$elem(z, y).REFS|), then:
-  a. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+  c. If ((j + n) > |$elem(z, y).REFS|), then:
     1) Trap.
-  b. If ((n is 0) and (j < |$elem(z, y).REFS|)), then:
-    1) Let ref be $elem(z, y).REFS[j].
-    2) If instr_u0 is of the case REF.ARRAY_ADDR, then:
-      a) Let (REF.ARRAY_ADDR a) be instr_u0.
-      b) Push the value (REF.ARRAY_ADDR a) to the stack.
-      c) Push the value (I32.CONST i) to the stack.
-      d) Push the value ref to the stack.
-      e) Execute the instruction (ARRAY.SET x).
-      f) Push the value (REF.ARRAY_ADDR a) to the stack.
-      g) Push the value (I32.CONST (i + 1)) to the stack.
-      h) Push the value (I32.CONST (j + 1)) to the stack.
-      i) Push the value (I32.CONST (n - 1)) to the stack.
-      j) Execute the instruction (ARRAY.INIT_ELEM x y).
-13. Else if (n is 0), then:
-  a. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+  d. If (n is 0), then:
     1) Do nothing.
-14. Else:
-  a. If (j < |$elem(z, y).REFS|), then:
-    1) Let ref be $elem(z, y).REFS[j].
-    2) If instr_u0 is of the case REF.ARRAY_ADDR, then:
-      a) Let (REF.ARRAY_ADDR a) be instr_u0.
+  e. Else:
+    1) Let (REF.ARRAY_ADDR a) be instr_u0.
+    2) If (j < |$elem(z, y).REFS|), then:
+      a) Let ref be $elem(z, y).REFS[j].
       b) Push the value (REF.ARRAY_ADDR a) to the stack.
       c) Push the value (I32.CONST i) to the stack.
       d) Push the value ref to the stack.
@@ -8466,31 +10000,28 @@ execution_of_ARRAY.INIT_DATA x y
   a. Let (REF.ARRAY_ADDR a) be instr_u0.
   b. If ((a < |$arrayinst(z)|) and ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
-12. If $expanddt($type(z, x)) is not of the case ARRAY, then:
-  a. If ((n is 0) and instr_u0 is of the case REF.ARRAY_ADDR), then:
-    1) Do nothing.
-13. Else:
-  a. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-  b. Let (mut, zt) be arraytype_0.
-  c. If instr_u0 is of the case REF.ARRAY_ADDR, then:
-    1) If ((j + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
+  c. If $expanddt($type(z, x)) is of the case ARRAY, then:
+    1) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+    2) Let (mut, zt) be arraytype_0.
+    3) If ((j + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
       a) Trap.
-    2) If (n is 0), then:
-      a) Do nothing.
-    3) Else:
-      a) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-      b) Let (mut, zt) be arraytype_0.
-      c) Let (REF.ARRAY_ADDR a) be instr_u0.
-      d) Let c be $zbytes__1^-1(zt, $data(z, y).BYTES[j : ($zsize(zt) / 8)]).
-      e) Push the value (REF.ARRAY_ADDR a) to the stack.
-      f) Push the value (I32.CONST i) to the stack.
-      g) Push the value $const($cunpack(zt), $cunpacknum_(zt, c)) to the stack.
-      h) Execute the instruction (ARRAY.SET x).
-      i) Push the value (REF.ARRAY_ADDR a) to the stack.
-      j) Push the value (I32.CONST (i + 1)) to the stack.
-      k) Push the value (I32.CONST (j + ($zsize(zt) / 8))) to the stack.
-      l) Push the value (I32.CONST (n - 1)) to the stack.
-      m) Execute the instruction (ARRAY.INIT_DATA x y).
+  d. If (n is 0), then:
+    1) Do nothing.
+  e. Else:
+    1) Let (REF.ARRAY_ADDR a) be instr_u0.
+    2) Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
+    3) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+    4) Let (mut, zt) be arraytype_0.
+    5) Let c be $zbytes__1^-1(zt, $data(z, y).BYTES[j : ($zsize(zt) / 8)]).
+    6) Push the value (REF.ARRAY_ADDR a) to the stack.
+    7) Push the value (I32.CONST i) to the stack.
+    8) Push the value $const($cunpack(zt), $cunpacknum_(zt, c)) to the stack.
+    9) Execute the instruction (ARRAY.SET x).
+    10) Push the value (REF.ARRAY_ADDR a) to the stack.
+    11) Push the value (I32.CONST (i + 1)) to the stack.
+    12) Push the value (I32.CONST (j + ($zsize(zt) / 8))) to the stack.
+    13) Push the value (I32.CONST (n - 1)) to the stack.
+    14) Execute the instruction (ARRAY.INIT_DATA x y).
 
 execution_of_LOCAL.GET x
 1. Let z be the current state.
@@ -8619,6 +10150,7 @@ execution_of_VLOAD V128 vloadop__u0? x ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
+<<<<<<< HEAD
 4. If ((((i + ao.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|) and vloadop__u0? is not defined), then:
   a. Trap.
 5. If vloadop__u0? is not defined, then:
@@ -8626,6 +10158,15 @@ execution_of_VLOAD V128 vloadop__u0? x ao
   b. Push the value (V128.CONST c) to the stack.
 6. Else:
   a. Let ?(vloadop__0) be vloadop__u0?.
+=======
+4. If vload_u0? is not defined, then:
+  a. If (((i + ao.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|), then:
+    1) Trap.
+  b. Let c be $vbytes__1^-1(V128, $mem(z, x).BYTES[(i + ao.OFFSET) : ($vsize(V128) / 8)]).
+  c. Push the value (V128.CONST c) to the stack.
+5. Else:
+  a. Let ?(vloadop__0) be vload_u0?.
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   b. If vloadop__0 is of the case SHAPE, then:
     1) Let (SHAPE M K sx) be vloadop__0.
     2) If (((i + ao.OFFSET) + ((M · K) / 8)) > |$mem(z, x).BYTES|), then:
@@ -8655,7 +10196,7 @@ execution_of_VLOAD V128 vloadop__u0? x ao
 
 execution_of_VLOAD_LANE V128 N x ao j
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 3. Pop the value (V128.CONST c_1) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
@@ -8772,12 +10313,12 @@ execution_of_STRUCT.SET x i
 5. Pop the value instr_u0 from the stack.
 6. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
-7. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-8. Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
-9. Let (mut, zt)* be fieldtype_0.
-10. If instr_u0 is of the case REF.STRUCT_ADDR, then:
+7. If instr_u0 is of the case REF.STRUCT_ADDR, then:
   a. Let (REF.STRUCT_ADDR a) be instr_u0.
-  b. If ((|mut*| is |zt*|) and (i < |zt*|)), then:
+  b. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
+  c. Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
+  d. Let (mut, zt)* be fieldtype_0.
+  e. If ((|mut*| is |zt*|) and (i < |zt*|)), then:
     1) Perform $with_struct(z, a, i, $packfield_(zt*[i], val)).
 
 execution_of_ARRAY.NEW_FIXED x n
@@ -8806,12 +10347,10 @@ execution_of_ARRAY.SET x
   a. Let (REF.ARRAY_ADDR a) be instr_u0.
   b. If ((a < |$arrayinst(z)|) and (i ≥ |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
-10. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
-11. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-12. Let (mut, zt) be arraytype_0.
-13. If instr_u0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be instr_u0.
-  b. Perform $with_array(z, a, i, $packfield_(zt, val)).
+  c. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
+  d. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+  e. Let (mut, zt) be arraytype_0.
+  f. Perform $with_array(z, a, i, $packfield_(zt, val)).
 
 execution_of_LOCAL.SET x
 1. Let z be the current state.
@@ -8858,6 +10397,7 @@ execution_of_STORE nt sz_u1? x ao
 3. Pop the value (numtype_u0.CONST c) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
+<<<<<<< HEAD
 6. If (numtype_u0 is nt), then:
   a. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|) and sz_u1? is not defined), then:
     1) Trap.
@@ -8865,6 +10405,14 @@ execution_of_STORE nt sz_u1? x ao
     1) Let b* be $nbytes_(nt, c).
     2) Perform $with_mem(z, x, (i + ao.OFFSET), ($size(nt) / 8), b*).
 7. If the type of numtype_u0 is Inn, then:
+=======
+6. If ((numty_u0 is nt) and sz_u1? is not defined), then:
+  a. If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|), then:
+    1) Trap.
+  b. Let b* be $nbytes_(nt, c).
+  c. Perform $with_mem(z, x, (i + ao.OFFSET), ($size(nt) / 8), b*).
+7. If the type of numty_u0 is Inn, then:
+>>>>>>> ec4a81c843f9d4ede62e429d3c4ff8f00170c1b5
   a. If sz_u1? is defined, then:
     1) Let ?(n) be sz_u1?.
     2) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
@@ -8877,7 +10425,7 @@ execution_of_STORE nt sz_u1? x ao
 
 execution_of_VSTORE V128 x ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 3. Pop the value (V128.CONST c) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
@@ -8888,7 +10436,7 @@ execution_of_VSTORE V128 x ao
 
 execution_of_VSTORE_LANE V128 N x ao j
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
+2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 3. Pop the value (V128.CONST c) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
@@ -8926,23 +10474,5 @@ group_bytes_by n byte*
 2. If (n' ≥ n), then:
   a. Return [byte*[0 : n]] ++ $group_bytes_by(n, byte*[n : (n' - n)]).
 3. Return [].
-
-execution_of_ARRAY.NEW_DATA x y
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If $expanddt($type(z, x)) is of the case ARRAY, then:
-  a. Let (ARRAY y_0) be $expanddt($type(z, x)).
-  b. Let (mut, zt) be y_0.
-  c. If ((i + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
-    1) Trap.
-  d. Let cnn be $cunpack(zt).
-  e. Let b* be $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)].
-  f. Let gb* be $group_bytes_by(($zsize(zt) / 8), b*).
-  g. Let c^n be $inverse_of_ibytes($zsize(zt), gb)*.
-  h. Push the values (cnn.CONST c)^n to the stack.
-  i. Execute the instruction (ARRAY.NEW_FIXED x n).
 == Complete.
 ```

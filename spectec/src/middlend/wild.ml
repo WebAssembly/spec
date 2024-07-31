@@ -75,12 +75,12 @@ let under_iterexp (iter, vs) binds : iterexp * bind list =
    let new_vs = List.map (fun bind ->
      match bind.it with
      | ExpB (v, t, _) -> (v, t)
-     | TypB _ | DefB _ -> error bind.at "unexpected type binding") binds in
+     | TypB _ | DefB _ | GramB _ -> error bind.at "unexpected type binding") binds in
    let iterexp' = (iter, vs @ new_vs) in
    let binds' = List.map (fun bind ->
      match bind.it with
      | ExpB (v, t, is) -> ExpB (v, t, is@[iter]) $ bind.at
-     | TypB _ | DefB _ -> assert false) binds in
+     | TypB _ | DefB _ | GramB _ -> assert false) binds in
    iterexp', binds'
 
 (* Generic traversal helpers *)
@@ -199,6 +199,7 @@ and t_arg' env arg = match arg with
   | ExpA exp -> unary t_exp env exp (fun exp' -> ExpA exp')
   | TypA _ -> [], arg
   | DefA _ -> [], arg
+  | GramA _ -> [], arg
 
 let rec t_prem env : prem -> bind list * prem = phrase t_prem' env
 

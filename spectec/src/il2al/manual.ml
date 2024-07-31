@@ -5,7 +5,7 @@ open Al_util
 
 type config = expr * expr * instr list
 
-let atom_of_name name typ = El.Atom.Atom name, typ
+let atom_of_name name typ = El.Atom.Atom name $$ no_region % (El.Atom.info typ)
 let varT id args = Il.Ast.VarT (id $ no_region, args) $ no_region
 let listT ty = Il.Ast.IterT (ty, Il.Ast.List) $ no_region
 
@@ -89,6 +89,7 @@ let array_new_data =
 
   RuleA (
     atom_of_name "ARRAY.NEW_DATA" "admininstr",
+    "Step_read/array.new_data",
     [x; y],
     [
       assertI (topValueE (Some i32));
@@ -127,7 +128,7 @@ let array_new_data =
     ]
   ) $ no_region
 
-let manual_algos = [eval_expr; group_bytes_by; array_new_data;]
+let manual_algos = [eval_expr; group_bytes_by;]
 
 let return_instrs_of_instantiate config =
   let store, frame, rhs = config in
