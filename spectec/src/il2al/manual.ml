@@ -86,6 +86,7 @@ let array_new_data =
 
   RuleA (
     atom_of_name "ARRAY.NEW_DATA" "admininstr",
+    "Step_read/array.new_data",
     [x; y],
     [
       assertI (topValueE (Some i32));
@@ -124,7 +125,7 @@ let array_new_data =
     ]
   ) $ no_region
 
-let manual_algos = [eval_expr; group_bytes_by; array_new_data;]
+let manual_algos = [eval_expr; group_bytes_by;]
 
 let return_instrs_of_instantiate config =
   let store, frame, rhs = config in

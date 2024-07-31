@@ -324,7 +324,7 @@ let rec string_of_instr' depth instr =
   | ReturnI (Some e) -> sprintf "%s Return %s." (make_index depth) (string_of_expr e)
   | EnterI (e1, e2, il) ->
     sprintf "%s Enter %s with label %s.%s" (make_index depth)
-      (string_of_expr e1) (string_of_expr e2) (string_of_instrs' (depth + 1) il)
+      (string_of_expr e2) (string_of_expr e1) (string_of_instrs' (depth + 1) il)
   | ExecuteI e ->
     sprintf "%s Execute the instruction %s." (make_index depth) (string_of_expr e)
   | ExecuteSeqI e ->
@@ -352,7 +352,7 @@ let string_of_instr instr =
 let string_of_instrs = string_of_instrs' 0
 
 let string_of_algorithm algo = match algo.it with
-  | RuleA (a, params, instrs) ->
+  | RuleA (a, _anchor, params, instrs) ->
     "execution_of_" ^ string_of_atom a
     ^ List.fold_left
         (fun acc p -> acc ^ " " ^ string_of_expr p)
@@ -620,7 +620,7 @@ let structured_string_of_instr = structured_string_of_instr' 0
 let structured_string_of_instrs = structured_string_of_instrs' 0
 
 let structured_string_of_algorithm algo = match algo.it with
-  | RuleA (a, params, instrs) ->
+  | RuleA (a, _anchor, params, instrs) ->
       "execution_of_" ^ string_of_atom a
       ^ List.fold_left
           (fun acc p -> acc ^ " " ^ structured_string_of_expr p)

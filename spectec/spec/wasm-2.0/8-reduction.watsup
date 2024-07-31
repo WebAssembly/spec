@@ -173,20 +173,20 @@ rule Step/ctxt-frame:
 
 rule Step_pure/unop-val:
   (CONST nt c_1) (UNOP nt unop)  ~>  (CONST nt c)
-  -- if $unop_(nt, unop, c_1) = c  ;; TODO
+  -- if c <- $unop_(nt, unop, c_1)
 
 rule Step_pure/unop-trap:
   (CONST nt c_1) (UNOP nt unop)  ~>  TRAP
-  -- if $unop_(nt, unop, c_1) = eps  ;; TODO
+  -- if $unop_(nt, unop, c_1) = eps
 
 
 rule Step_pure/binop-val:
   (CONST nt c_1) (CONST nt c_2) (BINOP nt binop)  ~>  (CONST nt c)
-  -- if $binop_(nt, binop, c_1, c_2) = c  ;; TODO
+  -- if c <- $binop_(nt, binop, c_1, c_2)
 
 rule Step_pure/binop-trap:
   (CONST nt c_1) (CONST nt c_2) (BINOP nt binop)  ~>  TRAP
-  -- if $binop_(nt, binop, c_1, c_2) = eps  ;; TODO
+  -- if $binop_(nt, binop, c_1, c_2) = eps
 
 
 rule Step_pure/testop:
@@ -200,11 +200,11 @@ rule Step_pure/relop:
 
 rule Step_pure/cvtop-val:
   (CONST nt_1 c_1) (CVTOP nt_2 nt_1 cvtop)  ~>  (CONST nt_2 c)
-  -- if $cvtop__(nt_1, nt_2, cvtop, c_1) = c  ;; TODO
+  -- if c <- $cvtop__(nt_1, nt_2, cvtop, c_1)
 
 rule Step_pure/cvtop-trap:
   (CONST nt_1 c_1) (CVTOP nt_2 nt_1 cvtop)  ~>  TRAP
-  -- if $cvtop__(nt_1, nt_2, cvtop, c_1) = eps  ;; TODO
+  -- if $cvtop__(nt_1, nt_2, cvtop, c_1) = eps
 
 
 ;; Reference instructions

@@ -17,10 +17,10 @@ let el_params = list el_param
 let el_def = string_of_def
 let el_free s = String.concat " "
   Free.[
-    set (Set.elements s.typid);
-    set (Set.elements s.varid);
-    set (Set.elements s.gramid);
-    set (Set.elements s.defid);
+    set s.typid;
+    set s.varid;
+    set s.gramid;
+    set s.defid;
   ]
 let el_subst s = String.concat " "
   Subst.[

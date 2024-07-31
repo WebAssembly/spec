@@ -25,7 +25,7 @@ let to_map algos =
   let f acc algo =
     let rmap, fmap = acc in
     match algo.it with
-    | RuleA (atom, _, _) ->
+    | RuleA (atom, _, _, _) ->
         let name = Print.string_of_atom atom in
         Map.add name algo rmap, fmap
     | FuncA (name, _, _) -> rmap, Map.add name algo fmap

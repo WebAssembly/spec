@@ -33,8 +33,8 @@ module MyMap = Map.Make(String)
 
 let opt f xo = match xo with None -> "-" | Some x -> f x
 let seq f xs = String.concat " " (List.map f xs)
-let set s = seq Fun.id s
 let list f xs = String.concat ", " (List.map f xs)
+let set s = seq Fun.id (MySet.elements s)
 let mapping f m = seq (fun (x, y) -> x ^ "=" ^ f y) (MyMap.bindings m)
 
 let qline _ = "--------------------"

@@ -1119,6 +1119,34 @@ let inverse_of_concat : numerics =
       );
   }
 
+  let rec inverse_of_concatn_helper n prev = function
+  | a :: l ->
+    let next = prev @ [a] in
+    if List.length next = n then
+      [listV_of_list (prev @ [a])] @ inverse_of_concatn_helper n [] l
+    else
+      inverse_of_concatn_helper n next l
+  | [] -> []
+
+let inverse_of_concatn : numerics =
+  {
+    name = "inverse_of_concatn";
+    f =
+      (function
+      | [ NumV len; ListV _ as lv] ->
+        let n = Z.to_int len in
+        let l =
+          lv
+          |> unwrap_listv_to_list
+        in
+        assert (List.length l mod n = 0);
+        l
+        |> inverse_of_concatn_helper n []
+        |> listV_of_list
+      | vs -> error_values "inverse_of_concatn" vs
+      );
+  }
+
 let numerics_list : numerics list = [
   ibytes;
   inverse_of_ibytes;
@@ -1131,6 +1159,7 @@ let numerics_list : numerics list = [
   bytes;
   inverse_of_bytes;
   inverse_of_concat;
+  inverse_of_concatn;
   signed;
   inverse_of_signed;
   sat;

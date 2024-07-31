@@ -261,13 +261,24 @@ let animate_prems known_vars prems =
   let is_other = function {it = ElsePr; _} -> true | _ -> false in
   let (other, non_other) = List.partition is_other pp_prems in
   let rows, cols = build_matrix non_other known_vars in
+
+  (* 1. Run knuth *)
   best := (List.length cols + 1, []);
-  let candidates = match knuth rows cols [] with
-    | [] -> [ snd !best ]
-    | xs -> List.map List.rev xs in
+  let (candidates, k_fail) =
+    match knuth rows cols [] with
+    | [] -> [ snd !best ], true
+    | xs -> List.map List.rev xs, false
+  in
+
+  (* 2. Reorder *)
   let best' = ref (-1, []) in
   match List.find_map (fun cand -> select_tight cand other known_vars best') candidates with
-  | None -> snd !best'
+  | None ->
+    if (not k_fail) then
+      let unhandled_prems = Lib.List.drop (fst !best') (snd !best') in
+      Error.error (over_region (List.map at unhandled_prems)) "prose translation" "There might be a cyclic binding"
+    else
+      snd !best'
   | Some x -> x
 
 (* Animate rule *)
@@ -275,10 +286,6 @@ let animate_rule r = match r.it with
   | RuleD(id, _ , _, _, _) when id.it = "pure" || id.it = "read" -> r (* TODO: remove this line *)
   | RuleD(id, binds, mixop, args, prems) -> (
     match (mixop, args.it) with
-    (* c |- e : t *)
-    | ([ [] ; [{it = Turnstile; _}] ; [{it = Colon; _}] ; []] , TupE ([c; e; _t])) ->
-      let new_prems = animate_prems (union (free_exp false c) (free_exp false e)) prems in
-      RuleD(id, binds, mixop, args, new_prems) $ r.at
     (* lhs ~> rhs *)
     | ([ [] ; [{it = SqArrow; _}] ; []] , TupE ([lhs; _rhs])) ->
       let new_prems = animate_prems (free_exp true lhs) prems in

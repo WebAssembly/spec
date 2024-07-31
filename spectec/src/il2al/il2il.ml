@@ -210,8 +210,8 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
     | VarE id, _
     | IterE ({ it = VarE id; _}, _) , _
       when is_unified_id id.it ->
-      [ IfPr (CmpE (EqOp, template, e) $$ no_region % (BoolT $ no_region)) $ no_region ],
-      [ ExpB (id, template.note, []) $ no_region ]
+      [ IfPr (CmpE (EqOp, template, e) $$ e.at % (BoolT $ e.at)) $ e.at ],
+      [ ExpB (id, template.note, []) $ e.at ]
     | UnE (_, e1), UnE (_, e2)
     | DotE (e1, _), DotE (e2, _)
     | LenE e1, LenE e2
@@ -276,12 +276,11 @@ let unify_rules rules =
 
 
 (** 2. Reduction rules **)
-
 let apply_template_to_rgroup template (lhs, rhs, prems) =
   let new_prems, _ = collect_unified template lhs in
   (* TODO: Remove this depedency on animation. Perhaps this should be moved as a middle end before animation path *)
-  let animated_prems = Animate.animate_prems (Il.Free.free_exp template) (new_prems @ prems) in
-  template, rhs, prioritize_else animated_prems
+  let animated_prems = Animate.animate_prems (Il.Free.free_exp template) new_prems in
+  template, rhs, prioritize_else (animated_prems @ prems)
 
 let unify_lhs' rgroup =
   init_unified_idx();
@@ -292,11 +291,11 @@ let unify_lhs' rgroup =
   let template = List.fold_left overlap hd tl in
   List.map (Source.map (apply_template_to_rgroup template)) rgroup
 
-let unify_lhs (rname, rgroup) =
+let unify_lhs (rname, rel_id, rgroup) =
   let to_left_assoc (lhs, rhs, prems) = to_left_assoc_cat lhs, rhs, prems in
   let to_right_assoc (lhs, rhs, prems) = to_right_assoc_cat lhs, rhs, prems in
   (* typical f^-1 ∘ g ∘ f *)
-  rname, (rgroup |> List.map (Source.map to_left_assoc) |> unify_lhs' |> List.map (Source.map to_right_assoc))
+  rname, rel_id, (rgroup |> List.map (Source.map to_left_assoc) |> unify_lhs' |> List.map (Source.map to_right_assoc))
 
 
 (** 3. Functions **)

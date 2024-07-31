@@ -38,8 +38,8 @@ let init_bound_set algo =
 
 (* Type Env *)
 
-let typ_env: Il.Eval.env ref =
-  ref Il.Eval.{ vars=Map.empty; typs=Map.empty; defs=Map.empty }
+let typ_env: Il.Env.t ref =
+  ref Il.Env.empty
 
 
 let varT s = Il.Ast.VarT (s $ no_region, []) $ no_region
@@ -122,15 +122,15 @@ let check_field source source_typ expr_record atom typ =
 let rec check_struct source struct_ typ =
   let open Il.Ast in
   match typ.it with
-  | VarT (id, _) when Il.Eval.Map.mem id.it !typ_env.typs ->
-    (match Il.Eval.Map.find id.it !typ_env.typs with
-    | [{ it = InstD (_, _, { it = StructT tfs; _ }); _ }] ->
+  | VarT (id, _) when Il.Env.Map.mem id.it !typ_env.typs ->
+    (match Il.Env.Map.find id.it !typ_env.typs with
+    | _, [{ it = InstD (_, _, { it = StructT tfs; _ }); _ }] ->
       List.iter
         (fun (a, (_, typ', _), _) -> check_field source typ struct_ a typ')
         tfs
-    | [{ it = InstD (_, _, { it = AliasT typ'; _ }); _ }] ->
+    | _, [{ it = InstD (_, _, { it = AliasT typ'; _ }); _ }] ->
       check_struct source struct_ typ'
-    | [{ it = InstD (_, _, { it = VariantT tcs; _ }); _ }] ->
+    | _, [{ it = InstD (_, _, { it = VariantT tcs; _ }); _ }] ->
       let is_valid_struct typecase =
         let _, (_, typ', _), _ = typecase in
         try check_struct source struct_ typ'; true with _ -> false
@@ -146,11 +146,11 @@ let rec check_tuple source exprs typ =
   | TupT etl when List.length exprs = List.length etl ->
     let f expr (_, typ) = check_match source expr.note typ in
     List.iter2 f exprs etl
-  | VarT (id, _) when Il.Eval.Map.mem id.it !typ_env.typs ->
-    (match Il.Eval.Map.find id.it !typ_env.typs with
-    | [{ it = InstD (_, _, { it = AliasT typ'; _ }); _ }] ->
+  | VarT (id, _) when Il.Env.Map.mem id.it !typ_env.typs ->
+    (match Il.Env.Map.find id.it !typ_env.typs with
+    | _, [{ it = InstD (_, _, { it = AliasT typ'; _ }); _ }] ->
       check_tuple source exprs typ'
-    | [{ it = InstD (_, _, { it = VariantT tcs; _ }); _ }] ->
+    | _, [{ it = InstD (_, _, { it = VariantT tcs; _ }); _ }] ->
       let is_valid_tuple typecase =
         let _, (_, typ', _), _ = typecase in
         try check_tuple source exprs typ'; true with _ -> false
@@ -170,16 +170,16 @@ let rec access_field source typ field =
     (* XXX: Not sure about this rule *)
     let (_, typ') = List.find valid_field etl in
     typ'
-  | VarT (id, _) when Il.Eval.Map.mem id.it !typ_env.typs ->
+  | VarT (id, _) when Il.Env.Map.mem id.it !typ_env.typs ->
     let valid_field = fun (atom, _, _) -> Il.Print.string_of_atom atom = field in
-    (match Il.Eval.Map.find id.it !typ_env.typs with
-    | [{ it = InstD (_, _, { it = StructT tfs; _ }); _ }]
+    (match Il.Env.Map.find id.it !typ_env.typs with
+    | _, [{ it = InstD (_, _, { it = StructT tfs; _ }); _ }]
     when List.exists valid_field tfs ->
       let _, (_, typ', _), _ = List.find valid_field tfs in
       typ'
-    | [{ it = InstD (_, _, { it = AliasT typ'; _ }); _ }] ->
+    | _, [{ it = InstD (_, _, { it = AliasT typ'; _ }); _ }] ->
       access_field source typ' field
-    | [{ it = InstD (_, _, { it = VariantT tcs; _ }); _ }] ->
+    | _, [{ it = InstD (_, _, { it = VariantT tcs; _ }); _ }] ->
       let try_access_field typecase =
         let _, (_, typ', _), _ = typecase in
         try Some (access_field source typ' field) with _ -> None

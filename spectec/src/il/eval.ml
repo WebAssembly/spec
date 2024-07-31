@@ -1,17 +1,12 @@
 open Util
 open Source
 open Ast
+open Env
 
 
 (* Environment *)
 
-module Set = Set.Make(String)
-module Map = Map.Make(String)
-
-type typ_def = inst list
-type def_def = clause list
-
-type env = {vars : typ Map.t; typs : typ_def Map.t; defs : def_def Map.t}
+type env = Env.t
 type subst = Subst.t
 
 
@@ -59,7 +54,7 @@ let rec reduce_typ env t : typ =
   match t.it with
   | VarT (id, args) ->
     let args' = List.map (reduce_arg env) args in
-    (match reduce_typ_app' env id args' t.at (Map.find_opt id.it env.typs) with
+    (match reduce_typ_app' env id args' t.at (Env.find_opt_typ env id) with
     | Some {it = AliasT t'; _} -> reduce_typ env t'
     | _ -> VarT (id, args') $ t.at
     )
@@ -80,15 +75,15 @@ and reduce_typ_app env id args at : deftyp option =
     (fun _ -> fmt "%s(%s)" id.it (il_args args))
     (fun r -> fmt "%s" (opt il_deftyp r))
   ) @@ fun _ ->
-  reduce_typ_app' env id (List.map (reduce_arg env) args) at (Map.find_opt id.it env.typs)
+  reduce_typ_app' env id (List.map (reduce_arg env) args) at (Env.find_opt_typ env id)
 
 and reduce_typ_app' env id args at = function
   | None -> None  (* id is a type parameter *)
-  | Some [] ->
+  | Some (_ps, []) ->
     if !assume_coherent_matches then None else
     Error.error at "validation"
       ("undefined instance of partial type `" ^ id.it ^ "`")
-  | Some ({it = InstD (_binds, args', dt); _}::insts') ->
+  | Some (ps, {it = InstD (_binds, args', dt); _}::insts') ->
     Debug.(log "il.reduce_typ_app'"
       (fun _ -> fmt "%s(%s) =: %s(%s)" id.it (il_args args) id.it (il_args args'))
       (fun r -> fmt "%s" (opt (Fun.const "!") r))
@@ -96,8 +91,8 @@ and reduce_typ_app' env id args at = function
     match match_list match_arg env Subst.empty args args' with
     | exception Irred ->
       if not !assume_coherent_matches then None else
-      reduce_typ_app' env id args at (Some insts')
-    | None -> reduce_typ_app' env id args at (Some insts')
+      reduce_typ_app' env id args at (Some (ps, insts'))
+    | None -> reduce_typ_app' env id args at (Some (ps, insts'))
     | Some s -> Some (Subst.subst_deftyp s dt)
 
 
@@ -278,7 +273,7 @@ and reduce_exp env e : exp =
   | TupE es -> TupE (List.map (reduce_exp env) es) $> e
   | CallE (id, args) ->
     let args' = List.map (reduce_arg env) args in
-    let clauses = Map.find id.it env.defs in
+    let _ps, _t, clauses = Env.find_def env id in
     (* Allow for uninterpreted functions *)
     if not !assume_coherent_matches && clauses = [] then CallE (id, args') $> e else
     (match reduce_exp_call env id args' e.at clauses with
@@ -637,7 +632,7 @@ and match_exp' env s e1 e2 : subst option =
           | _ -> false
           )
         | VarE id1, _ ->
-          let t1 = reduce_typ env (Map.find id1.it env.vars) in
+          let t1 = reduce_typ env (fst (Env.find_var env id1)) in
           sub_typ env t1 t21 || raise Irred
         | _, _ -> false
       then match_exp' env s {e1 with note = t21} e21

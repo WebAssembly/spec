@@ -12,6 +12,10 @@ type ty = string (* TODO *)
 
 type id = string
 
+(* Anchors *)
+
+type anchor = string
+
 (* Values *)
 
 type 'a growable_array = 'a array ref
@@ -153,9 +157,9 @@ and instr' =
 (* Algorithms *)
 
 type algorithm = algorithm' phrase
-and algorithm' =                          (* `algorithm` f`(`expr*`)` `{`instr*`}` *)
-  | RuleA of atom * expr list * instr list (* reduction rule *)
-  | FuncA of id * expr list * instr list   (* helper function *)
+and algorithm' =                                    (* `algorithm` f`(`expr*`)` `{`instr*`}` *)
+  | RuleA of atom * anchor * expr list * instr list (* reduction rule *)
+  | FuncA of id * expr list * instr list            (* helper function *)
 
 
 (* Scripts *)
