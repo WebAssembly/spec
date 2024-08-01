@@ -61,7 +61,7 @@ let get_deftyps (id: Il.Ast.id) (args: Il.Ast.arg list): deftyp list =
   match Env.find_opt_typ !env id with
   | Some (_, insts) ->
 
-    let inst_finder inst =
+    let get_deftyp inst =
       let typ_of_arg arg =
         match (Eval.reduce_arg !env arg).it with
         | ExpA { it=SubE (_, typ, _); _ } -> typ
@@ -78,7 +78,7 @@ let get_deftyps (id: Il.Ast.id) (args: Il.Ast.arg list): deftyp list =
         None
     in
 
-    (match List.find_map inst_finder insts with
+    (match List.find_map get_deftyp insts with
     | Some deftyp -> [deftyp]
     | None ->
       List.map (fun inst -> let InstD (_, _, deftyp) = inst.it in deftyp) insts
