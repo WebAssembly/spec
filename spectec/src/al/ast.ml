@@ -6,7 +6,7 @@ type atom = El.Atom.atom
 
 (* Types *)
 
-type ty = string (* TODO *)
+type typ = Il.Ast.typ
 
 (* Identifiers *)
 
@@ -113,14 +113,16 @@ and expr' =
   | ContextKindE of atom * expr                   (* TODO: desugar using IsCaseOf? *)
   | IsDefinedE of expr                            (* expr is defined *)
   | MatchE of expr * expr                         (* expr matches expr *)
-  | HasTypeE of expr * ty                         (* the type of expr is ty *)
+  (* TODO: use typ *)
+  | HasTypeE of expr * string                     (* the type of expr is ty *)
   | TopFrameE                                     (* "a frame is now on the top of the stack" *)
   | TopLabelE                                     (* "a label is now on the top of the stack" *)
   (* Conditions used in assertions *)
   | TopValueE of expr option                      (* "a value (of type expr)? is now on the top of the stack" *)
   | TopValuesE of expr                            (* "at least expr number of values on the top of the stack" *)
   (* Administrative Instructions *)
-  | SubE of id * ty                               (* varid, with specific type *)
+  (* TODO: use typ *)
+  | SubE of id * string                           (* varid, with specific type *)
   | YetE of string                                (* for future not yet implemented feature *)
 
 and path = path' phrase
