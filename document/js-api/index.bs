@@ -748,7 +748,8 @@ Immediately after a WebAssembly [=memory.grow=] instruction executes, perform th
 {{ArrayBuffer}} objects returned by a {{Memory}} object must have a size that is a multiple of a WebAssembly [=page size=] (the constant 65536). For this reason [=HostResizeArrayBuffer=] is redefined as follows.
 
 <div algorithm>
-    The <dfn>abstract operation [=HostResizeArrayBuffer=]</dfn> takes arguments |buffer| (an {{ArrayBuffer}}) and |newLength|. It performs the following steps when called.
+
+    The <dfn id=HostResizeArrayBuffer export>abstract operation [=HostResizeArrayBuffer=]</dfn> takes arguments |buffer| (an {{ArrayBuffer}}) and |newLength|. It performs the following steps when called.
 
     1. If |buffer|.\[[ArrayBufferDetachKey]] is "WebAssembly.Memory",
         1. Let |map| be the [=surrounding agent=]'s associated [=Memory object cache=].
@@ -1098,7 +1099,7 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
     1. If |resultsSize| is 0, return « ».
     1. Otherwise, if |resultsSize| is 1, return « [=?=] [=ToWebAssemblyValue=](|ret|, |results|[0]) ».
     1. Otherwise,
-        1. Let |method| be [=?=] [$GetMethod$](|ret|, {{@@iterator}}).
+        1. Let |method| be [=?=] [$GetMethod$](|ret|, {{%Symbol.iterator%}}).
         1. If |method| is undefined, [=throw=] a {{TypeError}}.
         1. Let |values| be [=?=] [$IteratorToList$]([=?=] [$GetIteratorFromMethod$](|ret|, |method|)).
         1. Let |wasmValues| be a new, empty [=list=].
@@ -1219,7 +1220,7 @@ When the [=namespace object=] for the {{WebAssembly}} namespace is [=create a na
 1.  Let |namespaceObject| be the [=namespace object=].
 1.  [=list/iterate|For each=] |error| of « "CompileError", "LinkError", "RuntimeError" »,
     1.  Let |constructor| be a new object, implementing the [=NativeError Object Structure=], with <var ignore>NativeError</var> set to |error|.
-    1.  [=!=] [$CreateMethodProperty$](|namespaceObject|, |error|,  |constructor|).
+    1.  [=!=] [$DefineMethodProperty$](|namespaceObject|, |error|,  |constructor|, false).
 
 </div>
 

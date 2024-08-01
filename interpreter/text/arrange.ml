@@ -15,7 +15,9 @@ let nat64 = I64.to_string_u
 let add_hex_char buf c = Printf.bprintf buf "\\%02x" (Char.code c)
 let add_char buf = function
   | '\n' -> Buffer.add_string buf "\\n"
+  | '\r' -> Buffer.add_string buf "\\r"
   | '\t' -> Buffer.add_string buf "\\t"
+  | '\'' -> Buffer.add_string buf "\\'"
   | '\"' -> Buffer.add_string buf "\\\""
   | '\\' -> Buffer.add_string buf "\\\\"
   | c when '\x20' <= c && c < '\x7f' -> Buffer.add_char buf c

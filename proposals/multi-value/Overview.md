@@ -9,7 +9,7 @@
   - instructions: `value* -> value?`
   - blocks: `[] -> value?`
 
-* In a stack machine, these asymmetries are artifical restrictions
+* In a stack machine, these asymmetries are artificial restrictions
   - were imposed to simplify the initial WebAssembly release (multiple results deferred to post-MVP)
   - can easily be lifted by generalising to value* -> value*
 
@@ -32,7 +32,7 @@
   - loop labels can have arguments
   - can represent phis on backward edges
   - enable future `pick` operator to cross block boundary
-  - macro definability of instructons with inputs
+  - macro definability of instructions with inputs
     * `i32.select3` = `dup if ... else ... end`
 
 
