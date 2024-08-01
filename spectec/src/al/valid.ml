@@ -83,7 +83,7 @@ let check_num source typ =
   if not (is_num typ) then error_mismatch source typ (varT "num")
 
 let check_bool source typ =
-  match typ.it with
+  match (get_base_typ typ).it with
   | Il.Ast.BoolT -> ()
   | _ -> error_mismatch source typ (varT "bool")
 
