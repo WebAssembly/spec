@@ -20,6 +20,7 @@ let rec top_of_str_type c st =
 and top_of_heap_type c = function
   | AnyHT | NoneHT | EqHT | StructHT | ArrayHT | I31HT -> AnyHT
   | FuncHT | NoFuncHT -> FuncHT
+  | ExnHT | NoExnHT -> ExnHT
   | ExternHT | NoExternHT -> ExternHT
   | DefHT dt -> top_of_str_type c (expand_def_type dt)
   | VarHT (StatX x) -> top_of_str_type c (expand_def_type (lookup c x))
@@ -31,6 +32,7 @@ let rec bot_of_str_type c st =
 and bot_of_heap_type c = function
   | AnyHT | NoneHT | EqHT | StructHT | ArrayHT | I31HT -> NoneHT
   | FuncHT | NoFuncHT -> NoFuncHT
+  | ExnHT | NoExnHT -> NoExnHT
   | ExternHT | NoExternHT -> NoExternHT
   | DefHT dt -> bot_of_str_type c (expand_def_type dt)
   | VarHT (StatX x) -> bot_of_str_type c (expand_def_type (lookup c x))
@@ -60,7 +62,6 @@ let match_vec_type _c t1 t2 =
 
 let rec match_heap_type c t1 t2 =
   match t1, t2 with
-  | AnyHT, AnyHT -> true
   | EqHT, AnyHT -> true
   | StructHT, AnyHT -> true
   | ArrayHT, AnyHT -> true
@@ -68,9 +69,9 @@ let rec match_heap_type c t1 t2 =
   | I31HT, EqHT -> true
   | StructHT, EqHT -> true
   | ArrayHT, EqHT -> true
-  | ExternHT, ExternHT -> true
   | NoneHT, t -> match_heap_type c t AnyHT
   | NoFuncHT, t -> match_heap_type c t FuncHT
+  | NoExnHT, t -> match_heap_type c t ExnHT
   | NoExternHT, t -> match_heap_type c t ExternHT
   | VarHT (StatX x1), _ -> match_heap_type c (DefHT (lookup c x1)) t2
   | _, VarHT (StatX x2) -> match_heap_type c t1 (DefHT (lookup c x2))
@@ -160,6 +161,9 @@ let match_table_type c (TableT (lim1, it1, t1)) (TableT (lim2, it2, t2)) =
 let match_memory_type c (MemoryT (lim1, it1)) (MemoryT (lim2, it2)) =
   match_limits c lim1 lim2 && it1 = it2
 
+let match_tag_type c (TagT dt1) (TagT dt2) =
+  match_def_type c dt1 dt2 && match_def_type c dt2 dt1
+
 
 let match_extern_type c et1 et2 =
   match et1, et2 with
@@ -167,4 +171,5 @@ let match_extern_type c et1 et2 =
   | ExternTableT tt1, ExternTableT tt2 -> match_table_type c tt1 tt2
   | ExternMemoryT mt1, ExternMemoryT mt2 -> match_memory_type c mt1 mt2
   | ExternGlobalT gt1, ExternGlobalT gt2 -> match_global_type c gt1 gt2
+  | ExternTagT tt1, ExternTagT tt2 -> match_tag_type c tt1 tt2
   | _, _ -> false

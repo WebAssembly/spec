@@ -10,6 +10,7 @@ type t =
   globals : Set.t;
   tables : Set.t;
   memories : Set.t;
+  tags : Set.t;
   funcs : Set.t;
   elems : Set.t;
   datas : Set.t;
@@ -23,6 +24,7 @@ let empty : t =
   globals = Set.empty;
   tables = Set.empty;
   memories = Set.empty;
+  tags = Set.empty;
   funcs = Set.empty;
   elems = Set.empty;
   datas = Set.empty;
@@ -36,6 +38,7 @@ let union (s1 : t) (s2 : t) : t =
   globals = Set.union s1.globals s2.globals;
   tables = Set.union s1.tables s2.tables;
   memories = Set.union s1.memories s2.memories;
+  tags = Set.union s1.tags s2.tags;
   funcs = Set.union s1.funcs s2.funcs;
   elems = Set.union s1.elems s2.elems;
   datas = Set.union s1.datas s2.datas;
@@ -47,6 +50,7 @@ let types s = {empty with types = s}
 let globals s = {empty with globals = s}
 let tables s = {empty with tables = s}
 let memories s = {empty with memories = s}
+let tags s = {empty with tags = s}
 let funcs s = {empty with funcs = s}
 let elems s = {empty with elems = s}
 let datas s = {empty with datas = s}
@@ -75,6 +79,7 @@ let heap_type = function
   | AnyHT | NoneHT | EqHT
   | I31HT | StructHT | ArrayHT -> empty
   | FuncHT | NoFuncHT -> empty
+  | ExnHT | NoExnHT -> empty
   | ExternHT | NoExternHT -> empty
   | VarHT x -> var_type x
   | DefHT _ct -> empty  (* assume closed *)
@@ -118,12 +123,14 @@ let def_type = function
 let global_type (GlobalT (_mut, t)) = val_type t
 let table_type (TableT (_lim, _it, t)) = ref_type t
 let memory_type (MemoryT (_lim, _it)) = empty
+let tag_type (TagT dt) = def_type dt
 
 let extern_type = function
   | ExternFuncT dt -> def_type dt
   | ExternTableT tt -> table_type tt
   | ExternMemoryT mt -> memory_type mt
   | ExternGlobalT gt -> global_type gt
+  | ExternTagT tt -> tag_type tt
 
 let block_type = function
   | VarBlockType x -> types (idx x)
@@ -162,6 +169,10 @@ let rec instr (e : instr) =
   | CallRef x | ReturnCallRef x -> types (idx x)
   | CallIndirect (x, y) | ReturnCallIndirect (x, y) ->
     tables (idx x) ++ types (idx y)
+  | Throw x -> tags (idx x)
+  | ThrowRef -> empty
+  | TryTable (bt, cs, es) ->
+    block_type bt ++ list catch cs ++ block es
   | LocalGet x | LocalSet x | LocalTee x -> locals (idx x)
   | GlobalGet x | GlobalSet x -> globals (idx x)
   | TableGet x | TableSet x | TableSize x | TableGrow x | TableFill x ->
@@ -185,6 +196,11 @@ let rec instr (e : instr) =
 and block (es : instr list) =
   let free = list instr es in {free with labels = shift free.labels}
 
+and catch (c : catch) =
+  match c.it with
+  | Catch (x1, x2) | CatchRef (x1, x2) -> tags (idx x1) ++ labels (idx x2)
+  | CatchAll x | CatchAllRef x -> labels (idx x)
+
 let const (c : const) = block c.it
 
 let global (g : global) = global_type g.it.gtype ++ const g.it.ginit
@@ -192,6 +208,7 @@ let func (f : func) =
   {(types (idx f.it.ftype) ++ block f.it.body) with locals = Set.empty}
 let table (t : table) = table_type t.it.ttype ++ const t.it.tinit
 let memory (m : memory) = memory_type m.it.mtype
+let tag (t : tag) = empty
 
 let segment_mode f (m : segment_mode) =
   match m.it with
@@ -212,6 +229,7 @@ let export_desc (d : export_desc) =
   | TableExport x -> tables (idx x)
   | MemoryExport x -> memories (idx x)
   | GlobalExport x -> globals (idx x)
+  | TagExport x -> tags (idx x)
 
 let import_desc (d : import_desc) =
   match d.it with
@@ -219,6 +237,7 @@ let import_desc (d : import_desc) =
   | TableImport tt -> table_type tt
   | MemoryImport mt -> memory_type mt
   | GlobalImport gt -> global_type gt
+  | TagImport x -> types (idx x)
 
 let export (e : export) = export_desc e.it.edesc
 let import (i : import) = import_desc i.it.idesc

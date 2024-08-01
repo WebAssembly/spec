@@ -43,7 +43,7 @@ let dispatch_file_ext on_binary on_sexpr on_script_binary on_script on_js file =
 
 let create_binary_file file _ get_module =
   trace ("Encoding (" ^ file ^ ")...");
-  let s = Encode.encode (get_module ()) in
+  let s = Encode.encode_with_custom (get_module ()) in
   let oc = open_out_bin file in
   try
     trace "Writing...";
@@ -55,7 +55,7 @@ let create_sexpr_file file _ get_module =
   trace ("Writing (" ^ file ^ ")...");
   let oc = open_out file in
   try
-    Print.module_ oc !Flags.width (get_module ());
+    Print.module_with_custom oc !Flags.width (get_module ());
     close_out oc
   with exn -> close_out oc; raise exn
 
@@ -87,7 +87,7 @@ let output_file =
 
 let output_stdout get_module =
   trace "Printing...";
-  Print.module_ stdout !Flags.width (get_module ())
+  Print.module_with_custom stdout !Flags.width (get_module ())
 
 
 (* Input *)
@@ -106,12 +106,16 @@ let input_from get_script run =
   with
   | Decode.Code (at, msg) -> error at "decoding error" msg
   | Parse.Syntax (at, msg) -> error at "syntax error" msg
-  | Valid.Invalid (at, msg) -> error at "invalid module" msg
+  | Valid.Invalid (at, msg) -> error at "validation error" msg
+  | Custom.Code (at, msg) -> error at "custom section decoding error" msg
+  | Custom.Syntax (at, msg) -> error at "custom annotation syntax error" msg
+  | Custom.Invalid (at, msg) -> error at "custom validation error" msg
   | Import.Unknown (at, msg) -> error at "link failure" msg
   | Eval.Link (at, msg) -> error at "link failure" msg
   | Eval.Trap (at, msg) -> error at "runtime trap" msg
   | Eval.Exhaustion (at, msg) -> error at "resource exhaustion" msg
   | Eval.Crash (at, msg) -> error at "runtime crash" msg
+  | Eval.Exception (at, msg) -> error at "uncaught exception" msg
   | Encode.Code (at, msg) -> error at "encoding error" msg
   | Script.Error (at, msg) -> error at "script error" msg
   | IO (at, msg) -> error at "i/o error" msg
@@ -132,7 +136,8 @@ let input_sexpr name lexbuf run =
 let input_binary name buf run =
   let open Source in
   input_from (fun () ->
-    [Module (None, Encoded (name, buf) @@ no_region) @@ no_region]) run
+    [Module (None, Encoded (name, buf @@ no_region) @@ no_region) @@ no_region]
+  ) run
 
 let input_sexpr_file input file run =
   trace ("Loading (" ^ file ^ ")...");
@@ -280,15 +285,18 @@ module Map = Map.Make(String)
 
 let quote : script ref = ref []
 let scripts : script Map.t ref = ref Map.empty
-let modules : Ast.module_ Map.t ref = ref Map.empty
+let modules : (Ast.module_ * Custom.section list) Map.t ref = ref Map.empty
 let instances : Instance.module_inst Map.t ref = ref Map.empty
 let registry : Instance.module_inst Map.t ref = ref Map.empty
 
-let bind map x_opt y =
+let bind category map x_opt y =
   let map' =
     match x_opt with
     | None -> !map
-    | Some x -> Map.add x.it y !map
+    | Some x ->
+      if Map.mem x.it !map then
+        IO.error x.at (category ^ " " ^ x.it ^ " already defined");
+      Map.add x.it y !map
   in map := Map.add "" y map'
 
 let lookup category map x_opt at =
@@ -310,15 +318,15 @@ let lookup_registry module_name item_name _t =
 
 (* Running *)
 
-let rec run_definition def : Ast.module_ =
+let rec run_definition def : Ast.module_ * Custom.section list =
   match def.it with
-  | Textual m -> m
+  | Textual (m, cs) -> m, cs
   | Encoded (name, bs) ->
     trace "Decoding...";
-    Decode.decode name bs
+    Decode.decode_with_custom name bs.it
   | Quoted (_, s) ->
     trace "Parsing quote...";
-    let _, def' = Parse.Module.parse_string s in
+    let _, def' = Parse.Module.parse_string ~offset:s.at s.it in
     run_definition def'
 
 let run_action act : Value.t list =
@@ -393,6 +401,7 @@ let assert_ref_pat r p =
   | RefTypePat Types.StructHT, Aggr.StructRef _
   | RefTypePat Types.ArrayHT, Aggr.ArrayRef _ -> true
   | RefTypePat Types.FuncHT, Instance.FuncRef _
+  | RefTypePat Types.ExnHT, Exn.ExnRef _
   | RefTypePat Types.ExternHT, _ -> true
   | NullPat, Value.NullRef _ -> true
   | _ -> false
@@ -435,21 +444,40 @@ let run_assertion ass =
     | _ -> Assert.error ass.at "expected decoding/parsing error"
     )
 
+  | AssertMalformedCustom (def, re) ->
+    trace "Asserting malformed custom...";
+    (match ignore (run_definition def) with
+    | exception Custom.Syntax (_, msg) ->
+      assert_message ass.at "annotation parsing" msg re
+    | _ -> Assert.error ass.at "expected custom decoding/parsing error"
+    )
+
   | AssertInvalid (def, re) ->
     trace "Asserting invalid...";
     (match
-      let m = run_definition def in
-      Valid.check_module m
+      let m, cs = run_definition def in
+      Valid.check_module_with_custom (m, cs)
     with
     | exception Valid.Invalid (_, msg) ->
       assert_message ass.at "validation" msg re
     | _ -> Assert.error ass.at "expected validation error"
     )
 
+  | AssertInvalidCustom (def, re) ->
+    trace "Asserting invalid custom...";
+    (match
+      let m, cs = run_definition def in
+      Valid.check_module_with_custom (m, cs)
+    with
+    | exception Custom.Invalid (_, msg) ->
+      assert_message ass.at "custom validation" msg re
+    | _ -> Assert.error ass.at "expected custom validation error"
+    )
+
   | AssertUnlinkable (def, re) ->
     trace "Asserting unlinkable...";
-    let m = run_definition def in
-    if not !Flags.unchecked then Valid.check_module m;
+    let m, cs = run_definition def in
+    if not !Flags.unchecked then Valid.check_module_with_custom (m, cs);
     (match
       let imports = Import.link m in
       ignore (Eval.init m imports)
@@ -461,8 +489,8 @@ let run_assertion ass =
 
   | AssertUninstantiable (def, re) ->
     trace "Asserting trap...";
-    let m = run_definition def in
-    if not !Flags.unchecked then Valid.check_module m;
+    let m, cs = run_definition def in
+    if not !Flags.unchecked then Valid.check_module_with_custom (m, cs);
     (match
       let imports = Import.link m in
       ignore (Eval.init m imports)
@@ -477,6 +505,13 @@ let run_assertion ass =
     let got_vs = run_action act in
     let expect_rs = List.map (fun r -> r.it) rs in
     assert_result ass.at got_vs expect_rs
+
+  | AssertException act ->
+    trace ("Asserting exception...");
+    (match run_action act with
+    | exception Eval.Exception (_, msg) -> ()
+    | _ -> Assert.error ass.at "expected exception"
+    )
 
   | AssertTrap (act, re) ->
     trace ("Asserting trap...");
@@ -497,22 +532,22 @@ let rec run_command cmd =
   match cmd.it with
   | Module (x_opt, def) ->
     quote := cmd :: !quote;
-    let m = run_definition def in
+    let m, cs = run_definition def in
     if not !Flags.unchecked then begin
       trace "Checking...";
-      Valid.check_module m;
+      Valid.check_module_with_custom (m, cs);
       if !Flags.print_sig then begin
         trace "Signature:";
         print_module x_opt m
       end
     end;
-    bind scripts x_opt [cmd];
-    bind modules x_opt m;
+    bind "module" modules x_opt (m, cs);
+    bind "script" scripts x_opt [cmd];
     if not !Flags.dry then begin
       trace "Initializing...";
       let imports = Import.link m in
       let inst = Eval.init m imports in
-      bind instances x_opt inst
+      bind "instance" instances x_opt inst
     end
 
   | Register (name, x_opt) ->
@@ -544,17 +579,17 @@ and run_meta cmd =
   match cmd.it with
   | Script (x_opt, script) ->
     run_quote_script script;
-    bind scripts x_opt (lookup_script None cmd.at)
+    bind "script" scripts x_opt (lookup_script None cmd.at)
 
   | Input (x_opt, file) ->
     (try if not (input_file file run_quote_script) then
       Abort.error cmd.at "aborting"
     with Sys_error msg -> IO.error cmd.at msg);
-    bind scripts x_opt (lookup_script None cmd.at);
+    bind "script" scripts x_opt (lookup_script None cmd.at);
     if x_opt <> None then begin
-      bind modules x_opt (lookup_module None cmd.at);
+      bind "module" modules x_opt (lookup_module None cmd.at);
       if not !Flags.dry then begin
-        bind instances x_opt (lookup_instance None cmd.at)
+        bind "instance" instances x_opt (lookup_instance None cmd.at)
       end
     end
 
@@ -576,7 +611,7 @@ and run_quote_script script =
   let save_quote = !quote in
   quote := [];
   (try run_script script with exn -> quote := save_quote; raise exn);
-  bind scripts None (List.rev !quote);
+  bind "script" scripts None (List.rev !quote);
   quote := !quote @ save_quote
 
 let run_file file = input_file file run_script

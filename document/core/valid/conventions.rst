@@ -1,4 +1,4 @@
-.. index:: ! validation, ! type system, function type, table type, memory type, globaltype, valtype, resulttype, index space, instantiation. module
+.. index:: ! validation, ! type system, function type, table type, memory type, global type, tag type, value type, result type, index space, instantiation. module
 .. _type-system:
 
 Conventions
@@ -239,7 +239,7 @@ Local Types
    they do not occur in programs.
 
 
-.. index:: ! context, local type, function type, table type, memory type, global type, value type, result type, index space, module, function, local type
+.. index:: ! context, local type, function type, table type, memory type, global type, tag type, local type, value type, result type, index space, module, function, table, memory, global, tag
 .. _context:
 
 Contexts
@@ -253,6 +253,7 @@ which collects relevant information about the surrounding :ref:`module <syntax-m
 * *Tables*: the list of :ref:`tables <syntax-table>` declared in the current module, represented by their :ref:`table type <syntax-tabletype>`.
 * *Memories*: the list of :ref:`memories <syntax-mem>` declared in the current module, represented by their :ref:`memory type <syntax-memtype>`.
 * *Globals*: the list of :ref:`globals <syntax-global>` declared in the current module, represented by their :ref:`global type <syntax-globaltype>`.
+* *Tags*: the list of tags declared in the current module, represented by their :ref:`tag type <syntax-tagtype>`.
 * *Element Segments*: the list of :ref:`element segments <syntax-elem>` declared in the current module, represented by the elements' :ref:`reference type <syntax-reftype>`.
 * *Data Segments*: the list of :ref:`data segments <syntax-data>` declared in the current module, each represented by an |ok| entry.
 * *Locals*: the list of :ref:`locals <syntax-local>` declared in the current :ref:`function <syntax-func>` (including parameters), represented by their :ref:`local type <syntax-localtype>`.
@@ -276,6 +277,7 @@ More concretely, contexts are defined as :ref:`records <notation-record>` :math:
         & \CTABLES & \tabletype^\ast, \\
         & \CMEMS & \memtype^\ast, \\
         & \CGLOBALS & \globaltype^\ast, \\
+        & \CTAGS & \tagtype^\ast, \\
         & \CELEMS & \reftype^\ast, \\
         & \CDATAS & {\ok}^\ast, \\
         & \CLOCALS & \localtype^\ast, \\
@@ -306,7 +308,7 @@ In addition to field access written :math:`C.\K{field}` the following notation i
 Convention
 ..........
 
-Any form of :ref:`type <syntax-type>` can be *closed* to bring it into :ref:`closed <type-closed>` form relative to a :ref:`context <context>` it is :ref:`valid <valid-type>` in by :ref:`substituting <notation-subst>` each :ref:`type index <syntax-typeidx>` :math:`x` occurring in it with the corresponding :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]`, after first closing the the types in :math:`C.\CTYPES` themselves.
+Any form of :ref:`type <syntax-type>` can be *closed* to bring it into :ref:`closed <type-closed>` form relative to a :ref:`context <context>` it is :ref:`valid <valid-type>` in by :ref:`substituting <notation-subst>` each :ref:`type index <syntax-typeidx>` :math:`x` occurring in it with the corresponding :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]`, after first closing the types in :math:`C.\CTYPES` themselves.
 
 .. math::
    \begin{array}{@{}lcll@{}}

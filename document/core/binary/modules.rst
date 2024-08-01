@@ -9,12 +9,13 @@ except that :ref:`function definitions <syntax-func>` are split into two section
    This separation enables *parallel* and *streaming* compilation of the functions in a module.
 
 
-.. index:: index, type index, function index, table index, memory index, global index, element index, data index, local index, label index, field index
+.. index:: index, type index, function index, table index, memory index, global index, tag index, element index, data index, local index, label index, field index
    pair: binary format; type index
    pair: binary format; function index
    pair: binary format; table index
    pair: binary format; memory index
    pair: binary format; global index
+   pair: binary format; tag index
    pair: binary format; element index
    pair: binary format; data index
    pair: binary format; local index
@@ -25,6 +26,7 @@ except that :ref:`function definitions <syntax-func>` are split into two section
 .. _binary-tableidx:
 .. _binary-memidx:
 .. _binary-globalidx:
+.. _binary-tagidx:
 .. _binary-elemidx:
 .. _binary-dataidx:
 .. _binary-localidx:
@@ -44,6 +46,7 @@ All :ref:`indices <syntax-index>` are encoded with their respective value.
    \production{table index} & \Btableidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{memory index} & \Bmemidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{global index} & \Bglobalidx &::=& x{:}\Bu32 &\Rightarrow& x \\
+   \production{tag index} & \Btagidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{element index} & \Belemidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{data index} & \Bdataidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{local index} & \Blocalidx &::=& x{:}\Bu32 &\Rightarrow& x \\
@@ -103,6 +106,7 @@ Id  Section
 10  :ref:`code section <binary-codesec>`           
 11  :ref:`data section <binary-datasec>`           
 12  :ref:`data count section <binary-datacountsec>`
+13  :ref:`tag section <binary-tagsec>`
 ==  ===============================================
 
 .. note::
@@ -152,7 +156,7 @@ It decodes into a vector of :ref:`recursive types <syntax-rectype>` that represe
    \end{array}
 
 
-.. index:: ! import section, import, name, function type, table type, memory type, global type
+.. index:: ! import section, import, name, function type, table type, memory type, global type, tag type
    pair: binary format; import
    pair: section; import
 .. _binary-import:
@@ -176,7 +180,8 @@ It decodes into a vector of :ref:`imports <syntax-import>` that represent the |M
      \hex{00}~~x{:}\Btypeidx &\Rightarrow& \IDFUNC~x \\ &&|&
      \hex{01}~~\X{tt}{:}\Btabletype &\Rightarrow& \IDTABLE~\X{tt} \\ &&|&
      \hex{02}~~\X{mt}{:}\Bmemtype &\Rightarrow& \IDMEM~\X{mt} \\ &&|&
-     \hex{03}~~\X{gt}{:}\Bglobaltype &\Rightarrow& \IDGLOBAL~\X{gt} \\
+     \hex{03}~~\X{gt}{:}\Bglobaltype &\Rightarrow& \IDGLOBAL~\X{gt} \\ &&|&
+     \hex{04}~~x{:}\Btagtype &\Rightarrow& \IDTAG~x \\
    \end{array}
 
 
@@ -272,7 +277,7 @@ It decodes into a vector of :ref:`globals <syntax-global>` that represent the |M
    \end{array}
 
 
-.. index:: ! export section, export, name, index, function index, table index, memory index, global index
+.. index:: ! export section, export, name, index, function index, table index, memory index, tag index, global index
    pair: binary format; export
    pair: section; export
 .. _binary-export:
@@ -296,7 +301,8 @@ It decodes into a vector of :ref:`exports <syntax-export>` that represent the |M
      \hex{00}~~x{:}\Bfuncidx &\Rightarrow& \EDFUNC~x \\ &&|&
      \hex{01}~~x{:}\Btableidx &\Rightarrow& \EDTABLE~x \\ &&|&
      \hex{02}~~x{:}\Bmemidx &\Rightarrow& \EDMEM~x \\ &&|&
-     \hex{03}~~x{:}\Bglobalidx &\Rightarrow& \EDGLOBAL~x \\
+     \hex{03}~~x{:}\Bglobalidx &\Rightarrow& \EDGLOBAL~x \\ &&|&
+     \hex{04}~~x{:}\Btagidx &\Rightarrow& \EDTAG~x \\
    \end{array}
 
 
@@ -372,7 +378,7 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
 
 .. note::
    The initial integer can be interpreted as a bitfield.
-   Bit 0 indicates a passive or declarative segment,
+   Bit 0 distinguishes a passive or declarative segment from an active segment,
    bit 1 indicates the presence of an explicit table index for an active segment and otherwise distinguishes passive from declarative segments,
    bit 2 indicates the use of element type and element :ref:`expressions <binary-expr>` instead of element kind and element indices.
 
@@ -499,7 +505,29 @@ It decodes into an optional :ref:`u32 <syntax-uint>` that represents the number 
    instead of deferring validation.
 
 
-.. index:: module, section, type definition, function type, function, table, memory, global, element, data, start function, import, export, context, version
+.. index:: ! tag section, tag, tag type, function type index, exception tag
+   pair: binary format; tag
+   pair: section; tag
+.. _binary-tag:
+.. _binary-tagsec:
+
+Tag Section
+~~~~~~~~~~~
+
+The *tag section* has the id 13.
+It decodes into a vector of :ref:`tags <syntax-tag>` that represent the |MTAGS|
+component of a :ref:`module <syntax-module>`.
+
+.. math::
+   \begin{array}{llclll}
+   \production{tag section} & \Btagsec &::=&
+     \X{tag}^\ast{:}\Bsection_{13}(\Bvec(\Btag)) &\Rightarrow& \X{tag}^\ast \\
+   \production{tag} & \Btag &::=&
+     \hex{00}~~\X{x}{:}\Btypeidx &\Rightarrow& \{ \TAGTYPE~\X{x} \} \\
+   \end{array}
+
+
+.. index:: module, section, type definition, function type, function, table, memory, tag, global, element, data, start function, import, export, context, version
    pair: binary format; module
 .. _binary-magic:
 .. _binary-version:
@@ -541,6 +569,8 @@ Furthermore, it must be present if any :ref:`data index <syntax-dataidx>` occurs
      \Bcustomsec^\ast \\ &&&
      \mem^\ast{:\,}\Bmemsec \\ &&&
      \Bcustomsec^\ast \\ &&&
+     \tag^\ast{:\,}\Btagsec \\ &&&
+     \Bcustomsec^\ast \\ &&&
      \global^\ast{:\,}\Bglobalsec \\ &&&
      \Bcustomsec^\ast \\ &&&
      \export^\ast{:\,}\Bexportsec \\ &&&
@@ -562,6 +592,7 @@ Furthermore, it must be present if any :ref:`data index <syntax-dataidx>` occurs
        \MTABLES~\table^\ast, \\
        \MMEMS~\mem^\ast, \\
        \MGLOBALS~\global^\ast, \\
+       \MTAGS~\tag^\ast, \\
        \MELEMS~\elem^\ast, \\
        \MDATAS~\data^m, \\
        \MSTART~\start^?, \\

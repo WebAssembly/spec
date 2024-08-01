@@ -79,7 +79,7 @@ struct
   let string bs = len (String.length bs); put_string s bs
   let name n = string (Utf8.encode n)
   let list f xs = List.iter f xs
-  let opt f xo = Lib.Option.app f xo
+  let opt f xo = Option.iter f xo
   let vec f xs = len (List.length xs); list f xs
 
   let gap32 () = let p = pos s in word32 0l; byte 0; p
@@ -96,6 +96,9 @@ struct
   (* Types *)
 
   open Types
+  open Source
+
+  let var x = u32 x.it
 
   let mutability = function
     | Cons -> byte 0
@@ -123,6 +126,8 @@ struct
     | NoneHT -> s7 (-0x0f)
     | FuncHT -> s7 (-0x10)
     | NoFuncHT -> s7 (-0x0d)
+    | ExnHT -> s7 (-0x17)
+    | NoExnHT -> s7 (-0x0c)
     | ExternHT -> s7 (-0x11)
     | NoExternHT -> s7 (-0x0e)
     | VarHT x -> var_type s33 x
@@ -141,6 +146,8 @@ struct
     | (Null, NoneHT) -> s7 (-0x0f)
     | (Null, FuncHT) -> s7 (-0x10)
     | (Null, NoFuncHT) -> s7 (-0x0d)
+    | (Null, ExnHT) -> s7 (-0x17)
+    | (Null, NoExnHT) -> s7 (-0x0c)
     | (Null, ExternHT) -> s7 (-0x11)
     | (Null, NoExternHT) -> s7 (-0x0e)
     | (Null, t) -> s7 (-0x1d); heap_type t
@@ -200,10 +207,12 @@ struct
   let global_type = function
     | GlobalT (mut, t) -> val_type t; mutability mut
 
+  let tag_type x =
+    u32 0x00l; var x
 
-  (* Instructions *)
 
-  open Source
+  (* Expressions *)
+
   open Ast
   open Value
   open V128
@@ -248,6 +257,8 @@ struct
       op 0x04; block_type bt; list instr es1;
       if es2 <> [] then op 0x05;
       list instr es2; end_ ()
+    | TryTable (bt, cs, es) ->
+      op 0x1f; block_type bt; vec catch cs; list instr es; end_ ()
 
     | Br x -> op 0x0c; var x
     | BrIf x -> op 0x0d; var x
@@ -267,6 +278,9 @@ struct
     | ReturnCall x -> op 0x12; var x
     | ReturnCallRef x -> op 0x15; var x
     | ReturnCallIndirect (x, y) -> op 0x13; var y; var x
+
+    | Throw x -> op 0x08; var x
+    | ThrowRef -> op 0x0a
 
     | Drop -> op 0x1a
     | Select None -> op 0x1b
@@ -873,6 +887,13 @@ struct
     | VecReplace (V128 (F32x4 (V128Op.Replace i))) -> vecop 0x20l; byte i
     | VecReplace (V128 (F64x2 (V128Op.Replace i))) -> vecop 0x22l; byte i
 
+  and catch c =
+    match c.it with
+    | Catch (x1, x2) -> byte 0x00; var x1; var x2
+    | CatchRef (x1, x2) -> byte 0x01; var x1; var x2
+    | CatchAll x -> byte 0x02; var x
+    | CatchAllRef x -> byte 0x03; var x
+
   let const c =
     list instr c.it; end_ ()
 
@@ -905,6 +926,7 @@ struct
     | TableImport t -> byte 0x01; table_type t
     | MemoryImport t -> byte 0x02; memory_type t
     | GlobalImport t -> byte 0x03; global_type t
+    | TagImport t -> byte 0x04; tag_type t
 
   let import im =
     let {module_name; item_name; idesc} = im.it in
@@ -945,6 +967,14 @@ struct
     section 5 (vec memory) mems (mems <> [])
 
 
+  (* Tag section *)
+
+  let tag (t : tag) = byte 0x00; var t.it.tgtype
+
+  let tag_section ts =
+    section 13 (vec tag) ts (ts <> [])
+
+
   (* Global section *)
 
   let global g =
@@ -963,6 +993,7 @@ struct
     | TableExport x -> byte 1; var x
     | MemoryExport x -> byte 2; var x
     | GlobalExport x -> byte 3; var x
+    | TagExport x -> byte 4; var x
 
   let export ex =
     let {name = n; edesc} = ex.it in
@@ -1070,39 +1101,69 @@ struct
 
 
   (* Custom section *)
-
-  let custom (n, bs) =
+  let custom c =
+    let Custom.{name = n; content; _} = c.it in
     name n;
-    put_string s bs
+    put_string s content
 
-  let custom_section n bs =
-    section 0 custom (n, bs) true
+  let custom_section place c =
+    let here = Custom.(compare_place c.it.place place) <= 0 in
+    if here then section 0 custom c true;
+    here
 
 
   (* Module *)
+  let rec iterate f xs =
+    match xs with
+    | [] -> []
+    | x::xs' -> if f x then iterate f xs' else xs
 
-  let module_ m =
+  let module_ m cs =
+    let open Custom in
     word32 0x6d736100l;
     word32 version;
+    let cs = iterate (custom_section (Before Type)) cs in
     type_section m.it.types;
+    let cs = iterate (custom_section (Before Import)) cs in
     import_section m.it.imports;
+    let cs = iterate (custom_section (Before Func)) cs in
     func_section m.it.funcs;
+    let cs = iterate (custom_section (Before Table)) cs in
     table_section m.it.tables;
+    let cs = iterate (custom_section (Before Memory)) cs in
     memory_section m.it.memories;
+    let cs = iterate (custom_section (Before Tag)) cs in
+    tag_section m.it.tags;
+    let cs = iterate (custom_section (Before Global)) cs in
     global_section m.it.globals;
+    let cs = iterate (custom_section (Before Export)) cs in
     export_section m.it.exports;
+    let cs = iterate (custom_section (Before Start)) cs in
     start_section m.it.start;
+    let cs = iterate (custom_section (Before Elem)) cs in
     elem_section m.it.elems;
+    let cs = iterate (custom_section (Before DataCount)) cs in
     data_count_section m.it.datas m;
+    let cs = iterate (custom_section (Before Code)) cs in
     code_section m.it.funcs;
-    data_section m.it.datas
+    let cs = iterate (custom_section (Before Data)) cs in
+    data_section m.it.datas;
+    let cs = iterate (custom_section (After Data)) cs in
+    assert (cs = [])
 end
 
 
+let encode_custom m bs (module S : Custom.Section) =
+  let open Source in
+  let c = S.Handler.encode m bs S.it in
+  Custom.{c.it with place = S.Handler.place S.it} @@ c.at
+
 let encode m =
   let module E = E (struct let stream = stream () end) in
-  E.module_ m; to_string E.s
+  E.module_ m []; to_string E.s
 
-let encode_custom name content =
+let encode_with_custom (m, secs) =
+  let bs = encode m in
   let module E = E (struct let stream = stream () end) in
-  E.custom_section name content; to_string E.s
+  let cs = List.map (encode_custom m bs) secs in
+  E.module_ m cs; to_string E.s

@@ -96,11 +96,19 @@ function assert_malformed(bytes) {
   throw new Error("Wasm decoding failure expected");
 }
 
+function assert_malformed_custom(bytes) {
+  return;
+}
+
 function assert_invalid(bytes) {
   try { module(bytes, false) } catch (e) {
     if (e instanceof WebAssembly.CompileError) return;
   }
   throw new Error("Wasm validation failure expected");
+}
+
+function assert_invalid_custom(bytes) {
+  return;
 }
 
 function assert_unlinkable(bytes) {
@@ -124,6 +132,11 @@ function assert_trap(action) {
     if (e instanceof WebAssembly.RuntimeError) return;
   }
   throw new Error("Wasm trap expected");
+}
+
+function assert_exception(action) {
+  try { action() } catch (e) { return; }
+  throw new Error("exception expected");
 }
 
 let StackOverflow;
@@ -390,7 +403,7 @@ let assert_return ress ts at =
         BrIf (0l @@ at) @@ at ]
     | RefResult (RefPat _) ->
       assert false
-    | RefResult (RefTypePat ExternHT) ->
+    | RefResult (RefTypePat (ExnHT | ExternHT)) ->
       [ BrOnNull (0l @@ at) @@ at ]
     | RefResult (RefTypePat t) ->
       [ RefTest (NoNull, t) @@ at;
@@ -450,6 +463,7 @@ let is_js_vec_type = function
   | _ -> false
 
 let is_js_ref_type = function
+  | (_, ExnHT) -> false
   | _ -> true
 
 let is_js_val_type = function
@@ -553,12 +567,11 @@ let of_result res =
 
 let rec of_definition def =
   match def.it with
-  | Textual m -> of_bytes (Encode.encode m)
-  | Encoded (_, bs) -> of_bytes bs
+  | Textual (m, _) -> of_bytes (Encode.encode m)
+  | Encoded (_, bs) -> of_bytes bs.it
   | Quoted (_, s) ->
-    try of_definition (snd (Parse.Module.parse_string s))
-    with Parse.Syntax _ ->
-      of_bytes "<malformed quote>"
+    try of_definition (snd (Parse.Module.parse_string ~offset:s.at s.it))
+    with Parse.Syntax _ | Custom.Syntax _ -> of_bytes "<malformed quote>"
 
 let of_wrapper mods x_opt name wrap_action wrap_assertion at =
   let x = of_var_opt mods x_opt in
@@ -605,8 +618,12 @@ let of_assertion mods ass =
   match ass.it with
   | AssertMalformed (def, _) ->
     "assert_malformed(" ^ of_definition def ^ ");"
+  | AssertMalformedCustom (def, _) ->
+    "assert_malformed_custom(" ^ of_definition def ^ ");"
   | AssertInvalid (def, _) ->
     "assert_invalid(" ^ of_definition def ^ ");"
+  | AssertInvalidCustom (def, _) ->
+    "assert_invalid_custom(" ^ of_definition def ^ ");"
   | AssertUnlinkable (def, _) ->
     "assert_unlinkable(" ^ of_definition def ^ ");"
   | AssertUninstantiable (def, _) ->
@@ -618,6 +635,8 @@ let of_assertion mods ass =
     of_assertion' mods act "assert_trap" [] None
   | AssertExhaustion (act, _) ->
     of_assertion' mods act "assert_exhaustion" [] None
+  | AssertException act ->
+    of_assertion' mods act "assert_exception" [] None
 
 let of_command mods cmd =
   "\n// " ^ Filename.basename cmd.at.left.file ^
@@ -626,9 +645,10 @@ let of_command mods cmd =
   | Module (x_opt, def) ->
     let rec unquote def =
       match def.it with
-      | Textual m -> m
-      | Encoded (_, bs) -> Decode.decode "binary" bs
-      | Quoted (_, s) -> unquote (snd (Parse.Module.parse_string s))
+      | Textual (m, _) -> m
+      | Encoded (name, bs) -> Decode.decode name bs.it
+      | Quoted (_, s) ->
+        unquote (snd (Parse.Module.parse_string ~offset:s.at s.it))
     in bind mods x_opt (unquote def);
     "let " ^ current_var mods ^ " = instance(" ^ of_definition def ^ ");\n" ^
     (if x_opt = None then "" else

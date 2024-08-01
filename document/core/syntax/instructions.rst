@@ -704,7 +704,7 @@ The |MEMORYCOPY| instruction copies data from a source memory region to a possib
 The |MEMORYINIT| instruction copies data from a :ref:`passive data segment <syntax-data>` into a memory.
 The |DATADROP| instruction prevents further use of a passive data segment. This instruction is intended to be used as an optimization hint. After a data segment is dropped its data can no longer be retrieved, so the memory used by this segment may be freed.
 
-.. index:: ! control instruction, ! structured control, ! label, ! block, ! block type, ! branch, ! unwinding, result type, label index, function index, type index, vector, trap, function, table, function type, value type, type index
+.. index:: ! control instruction, ! structured control, ! exception, ! label, ! block, ! block type, ! branch, result type, label index, function index, type index, tag index, vector, trap, function, table, tag, function type, value type, tag type, try block, catching try block
    pair: abstract syntax; instruction
    pair: abstract syntax; block type
    pair: block; type
@@ -726,6 +726,11 @@ The |DATADROP| instruction prevents further use of a passive data segment. This 
 .. _syntax-call_indirect:
 .. _syntax-instr-seq:
 .. _syntax-instr-control:
+.. _syntax-throw:
+.. _syntax-throw_ref:
+.. _syntax-try_table:
+.. _syntax-catch:
+.. _exception:
 
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
@@ -755,17 +760,31 @@ Instructions in this group affect the flow of control.
      \CALLREF~\typeidx \\&&|&
      \CALLINDIRECT~\tableidx~\typeidx \\&&|&
      \RETURNCALL~\funcidx \\&&|&
-     \RETURNCALLREF~\funcidx \\&&|&
-     \RETURNCALLINDIRECT~\tableidx~\typeidx \\
+     \RETURNCALLREF~\typeidx \\&&|&
+     \RETURNCALLINDIRECT~\tableidx~\typeidx \\&&|&
+     \THROW~\tagidx \\&&|&
+     \THROWREF \\ &&|&
+     \TRYTABLE~\blocktype~\catch^\ast~\instr^\ast~\END \\
+   \production{catch clause} & \catch &::=&
+     \CATCH~\tagidx~\labelidx \\ &&|&
+     \CATCHREF~\tagidx~\labelidx \\ &&|&
+     \CATCHALL~\labelidx \\ &&|&
+     \CATCHALLREF~\labelidx \\
    \end{array}
 
 The |NOP| instruction does nothing.
 
 The |UNREACHABLE| instruction causes an unconditional :ref:`trap <trap>`.
 
-The |BLOCK|, |LOOP| and |IF| instructions are *structured* instructions.
-They bracket nested sequences of instructions, called *blocks*, terminated with, or separated by, |END| or |ELSE| pseudo-instructions.
+The |BLOCK|, |LOOP|, |IF|, and |TRYTABLE| instructions are *structured* instructions.
+They bracket nested sequences of instructions, called *blocks*,
+separated by the |ELSE| pseudo-instruction,
+and terminated with an |END| pseudo-instruction.
 As the grammar prescribes, they must be well-nested.
+
+The instructions |THROW|, |THROWREF|, and |TRYTABLE| are concerned with *exceptions*.
+The |TRYTABLE| instruction installs an exception *handler* that handles exceptions as specified by its catch clauses..
+The |THROW| and |THROWREF| instructions raise and reraise an exception, respectively, and transfers control to the innermost enclosing exception handler that has a matching catch clause.
 
 A structured instruction can consume *input* and produce *output* on the operand stack according to its annotated *block type*.
 It is given either as a :ref:`type index <syntax-funcidx>` that refers to a suitable :ref:`function type <syntax-functype>` reinterpreted as an :ref:`instruction type <syntax-instrtype>`, or as an optional :ref:`value type <syntax-valtype>` inline, which is a shorthand for the instruction type :math:`[] \to [\valtype^?]`.

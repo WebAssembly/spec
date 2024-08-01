@@ -58,6 +58,7 @@ Heap Types
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{abstract heap type} & \Babsheaptype &::=&
+     \hex{74} &\Rightarrow& \NOEXN \\ &&|&
      \hex{73} &\Rightarrow& \NOFUNC \\ &&|&
      \hex{72} &\Rightarrow& \NOEXTERN \\ &&|&
      \hex{71} &\Rightarrow& \NONE \\ &&|&
@@ -67,7 +68,8 @@ Heap Types
      \hex{6D} &\Rightarrow& \EQT \\ &&|&
      \hex{6C} &\Rightarrow& \I31 \\ &&|&
      \hex{6B} &\Rightarrow& \STRUCT \\ &&|&
-     \hex{6A} &\Rightarrow& \ARRAY \\
+     \hex{6A} &\Rightarrow& \ARRAY \\ &&|&
+     \hex{69} &\Rightarrow& \EXN \\
    \production{heap type} & \Bheaptype &::=&
      \X{ht}{:}\Babsheaptype &\Rightarrow& \X{ht} \\ &&|&
      x{:}\Bs33 &\Rightarrow& x & (\iff x \geq 0) \\
@@ -312,3 +314,23 @@ Global Types
      \hex{00} &\Rightarrow& \MCONST \\ &&|&
      \hex{01} &\Rightarrow& \MVAR \\
    \end{array}
+
+
+.. index:: tag type, function type, exception tag
+   pair: binary format; tag type
+.. _binary-tagtype:
+
+Tag Types
+~~~~~~~~~
+
+:ref:`Tag types <syntax-tagtype>` are encoded by a :ref:`type index <syntax-typeidx>` denoting a :ref:`function type <syntax-functype>`.
+
+.. math::
+   \begin{array}{llclll}
+   \production{tag type} & \Btagtype &::=&
+     \hex{00}~~x{:}\Btypeidx &\Rightarrow& x \\
+   \end{array}
+
+.. note::
+   In future versions of WebAssembly,
+   the preceding zero byte may encode additional flags.

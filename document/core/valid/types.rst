@@ -51,7 +51,8 @@ Vector Types
 Heap Types
 ~~~~~~~~~~
 
-Concrete :ref:`Heap types <syntax-heaptype>` are only valid when the :ref:`type index <syntax-typeidx>` is.
+Concrete :ref:`heap types <syntax-heaptype>` are only valid when the :ref:`type index <syntax-typeidx>` is,
+while abstract ones are vacuously valid.
 
 :math:`\absheaptype`
 ....................
@@ -542,6 +543,30 @@ Memory Types
    }
 
 
+.. index:: tag type, function type, exception tag
+   pair: validation; tag type
+   single: abstract syntax; tag type
+.. _valid-tagtype:
+
+Tag Types
+~~~~~~~~~
+
+:math:`[t_1^n] \to [t_2^m]`
+...........................
+
+* The :ref:`function type <syntax-functype>` :math:`[t_1^n] \to [t_2^m]` must be :ref:`valid <valid-functype>`.
+
+* The type sequence :math:`t_2^m` must be empty.
+
+* Then the tag type is valid.
+
+.. math::
+   \frac{
+   }{
+     \vdashtagtype [t^\ast] \to [] \ok
+   }
+
+
 .. index:: global type, value type, mutability
    pair: validation; global type
    single: abstract syntax; global type
@@ -617,6 +642,20 @@ External Types
      C \vdashmemtype \memtype \ok
    }{
      C \vdashexterntype \ETMEM~\memtype \ok
+   }
+
+:math:`\ETTAG~\tagtype`
+.......................
+
+* The :ref:`tag type <syntax-tagtype>` :math:`\tagtype` must be :ref:`valid <valid-tagtype>`.
+
+* Then the external type is valid.
+
+.. math::
+   \frac{
+     \vdashtagtype \tagtype \ok
+   }{
+     \vdashexterntype \ETTAG~\tagtype \ok
    }
 
 :math:`\ETGLOBAL~\globaltype`

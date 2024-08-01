@@ -39,21 +39,32 @@ Interface operation that are predicates return Boolean values:
 
 .. _embed-error:
 
-Errors
-~~~~~~
+Exceptions and Errors
+~~~~~~~~~~~~~~~~~~~~~
 
-Failure of an interface operation is indicated by an auxiliary syntactic class:
+Invoking an exported function may throw or propagate exceptions, expressed by an auxiliary syntactic class:
+
+.. math::
+   \begin{array}{llll}
+   \production{exception} & \exception &::=& \ETHROW ~ \exnaddr \\
+   \end{array}
+
+The exception address :math:`exnaddr` identifies the exception thrown.
+
+Failure of an interface operation is also indicated by an auxiliary syntactic class:
 
 .. math::
    \begin{array}{llll}
    \production{error} & \error &::=& \ERROR \\
    \end{array}
 
-In addition to the error conditions specified explicitly in this section, implementations may also return errors when specific :ref:`implementation limitations <impl>` are reached.
+In addition to the error conditions specified explicitly in this section, such as invalid arguments or :ref:`exceptions <exception>` and :ref:`traps <trap>` resulting from :ref:`execution <exec>`, implementations may also return errors when specific :ref:`implementation limitations <impl>` are reached.
 
 .. note::
    Errors are abstract and unspecific with this definition.
    Implementations can refine it to carry suitable classifications and diagnostic messages.
+
+
 
 
 Pre- and Post-Conditions
@@ -89,7 +100,7 @@ Store
 
 .. math::
    \begin{array}{lclll}
-   \F{store\_init}() &=& \{ \SFUNCS~\epsilon,~ \SMEMS~\epsilon,~ \STABLES~\epsilon,~ \SGLOBALS~\epsilon \} \\
+   \F{store\_init}() &=& \{ \} \\
    \end{array}
 
 
@@ -167,7 +178,7 @@ Modules
 .. math::
    \begin{array}{lclll}
    \F{module\_instantiate}(S, m, \X{ev}^\ast) &=& (S', F.\AMODULE) && (\iff \instantiate(S, m, \X{ev}^\ast) \stepto^\ast S'; F; \epsilon) \\
-   \F{module\_instantiate}(S, m, \X{ev}^\ast) &=& (S', \ERROR) && (\iff \instantiate(S, m, \X{ev}^\ast) \stepto^\ast S'; F; \TRAP) \\
+   \F{module\_instantiate}(S, m, \X{ev}^\ast) &=& (S', \ERROR) && (\otherwise, \iff \instantiate(S, m, \X{ev}^\ast) \stepto^\ast S'; F; \result) \\
    \end{array}
 
 .. note::
@@ -307,14 +318,16 @@ Functions
 .. index:: invocation, value, result
 .. _embed-func-invoke:
 
-:math:`\F{func\_invoke}(\store, \funcaddr, \val^\ast) : (\store, \val^\ast ~|~ \error)`
-........................................................................................
+:math:`\F{func\_invoke}(\store, \funcaddr, \val^\ast) : (\store, \val^\ast ~|~ \exception ~|~ \error)`
+......................................................................................................
 
 1. Try :ref:`invoking <exec-invocation>` the function :math:`\funcaddr` in :math:`\store` with :ref:`values <syntax-val>` :math:`\val^\ast` as arguments:
 
   a. If it succeeds with :ref:`values <syntax-val>` :math:`{\val'}^\ast` as results, then let :math:`\X{result}` be :math:`{\val'}^\ast`.
 
-  b. Else it has trapped, hence let :math:`\X{result}` be :math:`\ERROR`.
+  b. Else if the outcome is an exception with a thrown :ref:`exception <exec-throw_ref>` :math:`\REFEXNADDR~\exnaddr` as the result, then let :math:`\X{result}` be :math:`\ETHROW~\exnaddr`
+
+  c. Else it has trapped, hence let :math:`\X{result}` be :math:`\ERROR`.
 
 2. Return the new store paired with :math:`\X{result}`.
 
@@ -322,6 +335,7 @@ Functions
    ~ \\
    \begin{array}{lclll}
    \F{func\_invoke}(S, a, v^\ast) &=& (S', {v'}^\ast) && (\iff \invoke(S, a, v^\ast) \stepto^\ast S'; F; {v'}^\ast) \\
+   \F{func\_invoke}(S, a, v^\ast) &=& (S', \ETHROW~a') && (\iff \invoke(S, a, v^\ast) \stepto^\ast S'; F; \XT[(\REFEXNADDR~a')~\THROWREF] \\
    \F{func\_invoke}(S, a, v^\ast) &=& (S', \ERROR) && (\iff \invoke(S, a, v^\ast) \stepto^\ast S'; F; \TRAP) \\
    \end{array}
 
@@ -552,6 +566,99 @@ Memories
    \F{mem\_grow}(S, a, n) &=& \ERROR && (\otherwise) \\
    \end{array}
 
+
+.. index:: tag, tag address, store, tag instance, tag type, function type
+.. _embed-tag:
+
+Tags
+~~~~
+
+.. _embedd-tag-alloc:
+
+:math:`\F{tag\_alloc}(\store, \tagtype) : (\store, \tagaddr)`
+.............................................................
+
+1. Pre-condition: :math:`tagtype` is :ref:`valid <valid-tagtype>`.
+
+2. Let :math:`\tagaddr` be the result of :ref:`allocating a tag <alloc-tag>` in :math:`\store` with :ref:`tag type <syntax-tagtype>` :math:`\tagtype`.
+
+3. Return the new store paired with :math:`\tagaddr`.
+
+.. math::
+   \begin{array}{lclll}
+   \F{tag\_alloc}(S, \X{tt}) &=& (S', \X{a}) && (\iff \alloctag(S, \X{tt}) = S', \X{a}) \\
+   \end{array}
+
+
+.. _embed-tag-type:
+
+:math:`\F{tag\_type}(\store, \tagaddr) : \tagtype`
+..................................................
+
+1. Return :math:`S.\STAGS[a].\TAGITYPE`.
+
+2. Post-condition: the returned :ref:`tag type <syntax-tagtype>` is :ref:`valid  <valid-tagtype>`.
+
+.. math::
+   \begin{array}{lclll}
+   \F{tag\_type}(S, a) &=& S.\STAGS[a].\TAGITYPE \\
+   \end{array}
+
+
+.. index:: exception, exception address, store, exception instance, exception type
+.. _embed-exception:
+
+Exceptions
+~~~~~~~~~~
+
+.. _embed-exn-alloc:
+
+:math:`\F{exn\_alloc}(\store, \tagaddr, \val^\ast) : (\store, \exnaddr)`
+........................................................................
+
+1. Pre-condition: :math:`\tagaddr` is an allocated :ref:`tag address <syntax-tagaddr>`.
+
+2. Let :math:`\exnaddr` be the result of :ref:`allocating an exception instance <syntax-exninst>` in :math:`\store` with :ref:`tag address <syntax-tagaddr>` :math:`\tagaddr` and initialization values :math:`\val^\ast`.
+
+3. Return the new store paired with :math:`\exnaddr`.
+
+.. math::
+   \begin{array}{lcll}
+   \F{exn\_alloc}(S, \tagaddr, \val^\ast) &=& (S \compose \{\SEXNS~\exninst\}, |S.\SEXNS|) &
+     (\iff \exninst = \{\EITAG~\tagaddr, \EIFIELDS~\val^\ast\} \\
+   \end{array}
+
+
+.. _embed-exn-tag:
+
+:math:`\F{exn\_tag}(\store, \exnaddr) : \tagaddr`
+.................................................
+
+1. Let :math:`\exninst` be the :ref:`exception instance <syntax-exninst>` :math:`\store.\SEXNS[\exnaddr]`.
+
+2. Return the :ref:`tag address <syntax-tagaddr>` :math:`\exninst.\EITAG`.
+
+.. math::
+   \begin{array}{lcll}
+   \F{exn\_tag}(S, a) &=& \exninst.\EITAG &
+     (\iff \exninst = S.\SEXNS[a]) \\
+   \end{array}
+
+
+.. _embed-exn-read:
+
+:math:`\F{exn\_read}(\store, \exnaddr) : \val^\ast`
+...................................................
+
+1. Let :math:`\exninst` be the :ref:`exception instance <syntax-exninst>` :math:`\store.\SEXNS[\exnaddr]`.
+
+2. Return the :ref:`values <syntax-val>` :math:`\exninst.\EIFIELDS`.
+
+.. math::
+   \begin{array}{lcll}
+   \F{exn\_read}(S, a) &=& \exninst.\EIFIELDS &
+     (\iff \exninst = S.\SEXNS[a]) \\
+   \end{array}
 
 
 .. index:: global, global address, store, global instance, global type, value

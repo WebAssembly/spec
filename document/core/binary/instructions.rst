@@ -13,7 +13,7 @@ The only exception are :ref:`structured control instructions <binary-instr-contr
    Gaps in the byte code ranges for encoding instructions are reserved for future extensions.
 
 
-.. index:: control instructions, structured control, label, block, branch, result type, value type, block type, label index, function index, type index, vector, polymorphism, LEB128
+.. index:: control instructions, structured control, exception handling, label, block, branch, result type, value type, block type, label index, function index, tag index, type index, vector, polymorphism, LEB128
    pair: binary format; instruction
    pair: binary format; block type
 .. _binary-instr-control:
@@ -21,7 +21,7 @@ The only exception are :ref:`structured control instructions <binary-instr-contr
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-:ref:`Control instructions <syntax-instr-control>` have varying encodings. For structured instructions, the instruction sequences forming nested blocks are terminated with explicit opcodes for |END| and |ELSE|.
+:ref:`Control instructions <syntax-instr-control>` have varying encodings. For structured instructions, the instruction sequences forming nested blocks are delimited with explicit opcodes for |END| and |ELSE|.
 
 :ref:`Block types <syntax-blocktype>` are encoded in special compressed form, by either the byte :math:`\hex{40}` indicating the empty type, as a single :ref:`value type <binary-valtype>`, or as a :ref:`type index <binary-typeidx>` encoded as a positive :ref:`signed integer <binary-sint>`.
 
@@ -46,6 +46,10 @@ Control Instructions
 .. _binary-return_call:
 .. _binary-return_call_ref:
 .. _binary-return_call_indirect:
+.. _binary-throw:
+.. _binary-throw_ref:
+.. _binary-try_table:
+.. _binary-catch:
 
 .. math::
    \begin{array}{@{}llcllll}
@@ -65,6 +69,8 @@ Control Instructions
      \hex{04}~~\X{bt}{:}\Bblocktype~~(\X{in}_1{:}\Binstr)^\ast\\&&&~~
        \hex{05}~~(\X{in}_2{:}\Binstr)^\ast~~\hex{0B}
        &\Rightarrow& \IF~\X{bt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END \\ &&|&
+     \hex{08}~~x{:}\Btagidx &\Rightarrow& \THROW~x \\ &&|&
+     \hex{0A} &\Rightarrow& \THROWREF \\ &&|&
      \hex{0C}~~l{:}\Blabelidx &\Rightarrow& \BR~l \\ &&|&
      \hex{0D}~~l{:}\Blabelidx &\Rightarrow& \BRIF~l \\ &&|&
      \hex{0E}~~l^\ast{:}\Bvec(\Blabelidx)~~l_N{:}\Blabelidx
@@ -76,10 +82,17 @@ Control Instructions
      \hex{13}~~y{:}\Btypeidx~~x{:}\Btableidx &\Rightarrow& \RETURNCALLINDIRECT~x~y \\ &&|&
      \hex{14}~~x{:}\Btypeidx &\Rightarrow& \CALLREF~x \\ &&|&
      \hex{15}~~x{:}\Btypeidx &\Rightarrow& \RETURNCALLREF~x \\ &&|&
+     \hex{1F}~~\X{bt}{:}\Bblocktype~~c^\ast{:}\Bvec(\Bcatch)~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
+       &\Rightarrow& \TRYTABLE~\X{bt}~c^\ast~\X{in}^\ast~\END \\
      \hex{D5}~~l{:}\Blabelidx &\Rightarrow& \BRONNULL~l \\ &&|&
      \hex{D6}~~l{:}\Blabelidx &\Rightarrow& \BRONNONNULL~l \\ &&|&
      \hex{FB}~~24{:}\Bu32~~(\NULL_1^?,\NULL_2^?){:}\Bcastflags\\&&&~~~~l{:}\Blabelidx~~\X{ht}_1{:}\Bheaptype~~\X{ht}_2{:}\Bheaptype &\Rightarrow& \BRONCAST~l~(\REF~\NULL_1^?~\X{ht}_1)~(\REF~\NULL_2^?~\X{ht}_2) \\ &&|&
      \hex{FB}~~25{:}\Bu32~~(\NULL_1^?,\NULL_2^?){:}\Bcastflags\\&&&~~~~l{:}\Blabelidx~~\X{ht}_1{:}\Bheaptype~~\X{ht}_2{:}\Bheaptype &\Rightarrow& \BRONCASTFAIL~l~(\REF~\NULL_1^?~\X{ht}_1)~(\REF~\NULL_2^?~\X{ht}_2) \\
+   \production{catch clause} & \Bcatch &::=&
+     \hex{00}~~x{:}\Btagidx~~l{:}\Blabelidx &\Rightarrow& \CATCH~x~l \\ &&|&
+     \hex{01}~~x{:}\Btagidx~~l{:}\Blabelidx &\Rightarrow& \CATCHREF~x~l \\ &&|&
+     \hex{02}~~l{:}\Blabelidx &\Rightarrow& \CATCHALL~l \\ &&|&
+     \hex{03}~~l{:}\Blabelidx &\Rightarrow& \CATCHALLREF~l \\
    \production{cast flags} & \Bcastflags &::=&
      0{:}\Bu8 &\Rightarrow& (\epsilon, \epsilon) \\ &&|&
      1{:}\Bu8 &\Rightarrow& (\NULL, \epsilon) \\ &&|&
@@ -173,7 +186,6 @@ Generic :ref:`reference instructions <syntax-instr-ref>` are represented by sing
      \hex{FB}~~29{:}\Bu32 &\Rightarrow& \I31GETS \\ &&|&
      \hex{FB}~~30{:}\Bu32 &\Rightarrow& \I31GETU \\
    \end{array}
-
 
 
 .. index:: parametric instruction, value type, polymorphism

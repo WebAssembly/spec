@@ -215,6 +215,7 @@ func_type:   ( type <var> )? <param>* <result>*
 global_type: <val_type> | ( mut <val_type> )
 table_type:  <nat> <nat>? <ref_type>
 memory_type: <nat> <nat>?
+tag_type: ( type <var> )? <param>*
 
 num: <int> | <float>
 var: <nat> | <name>
@@ -242,6 +243,7 @@ expr:
   ( loop <name>? <block_type> <instr>* )
   ( if <name>? <block_type> ( then <instr>* ) ( else <instr>* )? )
   ( if <name>? <block_type> <expr>+ ( then <instr>* ) ( else <instr>* )? ) ;; = <expr>+ (if <name>? <block_type> (then <instr>*) (else <instr>*)?)
+  ( try_table <name>? <block_type>  <catch>* <instr>* )
 
 instr:
   <expr>
@@ -250,6 +252,7 @@ instr:
   loop <name>? <block_type> <instr>* end <name>?                     ;; = (loop <name>? <block_type> <instr>*)
   if <name>? <block_type> <instr>* end <name>?                       ;; = (if <name>? <block_type> (then <instr>*))
   if <name>? <block_type> <instr>* else <name>? <instr>* end <name>? ;; = (if <name>? <block_type> (then <instr>*) (else <instr>*))
+  try_table <name>? <block_type> <catch>* <instr>* end <name>?       ;; = (try_table <name>? <block_type> <catch>* <instr>*)
 
 op:
   unreachable
@@ -270,6 +273,8 @@ op:
   return_call <var>
   return_call_ref <var>
   return_call_indirect <var>? (type <var>)? <func_type>
+  throw <tag_type>
+  throw_ref
   local.get <var>
   local.set <var>
   local.tee <var>
@@ -333,6 +338,12 @@ op:
   <vec_shape>.splat
   <vec_shape>.extract_lane(_<sign>)? <nat>
   <vec_shape>.replace_lane <nat>
+
+catch:
+  catch <var> <var>
+  catch_ref <var> <var>
+  catch_all <var>
+  catch_all_ref <var>
 
 func:    ( func <name>? <func_type> <local>* <instr>* )
          ( func <name>? ( export <string> ) <...> )                         ;; = (export <string> (func <N>)) (func <name>? <...>)
@@ -439,6 +450,7 @@ const:
 
 assertion:
   ( assert_return <action> <result_pat>* )   ;; assert action has expected results
+  ( assert_exception <action> )              ;; assert action throws an exception
   ( assert_trap <action> <failure> )         ;; assert action traps with given failure string
   ( assert_exhaustion <action> <failure> )   ;; assert action exhausts system resources
   ( assert_malformed <module> <failure> )    ;; assert module cannot be decoded with given failure string
@@ -532,6 +544,7 @@ action:
 
 assertion:
   ( assert_return <action> <result_pat>* )   ;; assert action has expected results
+  ( assert_exception <action> )              ;; assert action throws an exception
   ( assert_trap <action> <failure> )         ;; assert action traps with given failure string
   ( assert_exhaustion <action> <failure> )   ;; assert action exhausts system resources
   ( assert_malformed <module> <failure> )    ;; assert module cannot be decoded with given failure string

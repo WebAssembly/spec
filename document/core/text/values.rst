@@ -211,12 +211,13 @@ Identifiers
 ~~~~~~~~~~~
 
 :ref:`Indices <syntax-index>` can be given in both numeric and symbolic form.
-Symbolic *identifiers* that stand in lieu of indices start with :math:`\text{\$}`, followed by any sequence of printable |ASCII|_ characters that does not contain a space, quotation mark, comma, semicolon, or bracket.
+Symbolic *identifiers* that stand in lieu of indices start with :math:`\text{\$}`, followed by eiter a sequence of printable |ASCII|_ characters that does not contain a space, quotation mark, comma, semicolon, or bracket, or by a quoted :ref:`name <text-name>`.
 
 .. math::
    \begin{array}{llclll@{\qquad}l}
    \production{identifier} & \Tid &::=&
-     \text{\$}~\Tidchar^+ \\
+     \text{\$}~c^\ast{:}\Tidchar^+ &\Rightarrow& c^\ast \\ &&|&
+     \text{\$}~c^\ast{:}\Tname &\Rightarrow& c^\ast & (\iff |c^\ast| > 0) \\
    \production{identifier character} & \Tidchar &::=&
      \text{0} ~~|~~ \dots ~~|~~ \text{9} \\ &&|&
      \text{A} ~~|~~ \dots ~~|~~ \text{Z} \\ &&|&
@@ -245,6 +246,9 @@ Symbolic *identifiers* that stand in lieu of indices start with :math:`\text{\$}
      \text{|} ~~|~~
      \text{\tilde{~~}} \\
    \end{array}
+
+.. note::
+   The value of an identifier character is the Unicode codepoint denoting it.
 
 .. _text-id-fresh:
 
