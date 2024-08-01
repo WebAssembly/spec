@@ -444,7 +444,8 @@ let flatten_if instrs =
 
 let rec mk_access ps base =
   match ps with
-  | h :: t -> accE (base, h) |> mk_access t
+  (* TODO: type *)
+  | h :: t -> accE (base, h) ~note:Al.Al_util.no_note |> mk_access t
   | [] -> base
 
 let is_store expr = match expr.it with

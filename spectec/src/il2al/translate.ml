@@ -245,12 +245,13 @@ and translate_exp exp =
     match (op, exps) with
     (* Constructor *)
     (* TODO: Need a better way to convert these CaseE into ConstructE *)
+    (* TODO: type *)
     | [ [ {it = Il.Atom "MUT"; _} as atom ]; [ {it = Il.Quest; _} ]; [] ],
       [ { it = Il.OptE (Some { it = Il.TupE []; _ }); _}; t ] ->
-      tupE [ caseE (atom, []); translate_exp t ] ~at:at ~note:note
+      tupE [ caseE (atom, []) ~note:Al.Al_util.no_note; translate_exp t ] ~at:at ~note:note
     | [ [ {it = Il.Atom "MUT"; _} ]; [ {it = Il.Quest; _} ]; [] ],
       [ { it = Il.IterE ({ it = Il.TupE []; _ }, (Il.Opt, [])); _}; t ] ->
-      tupE [ iterE (varE "mut", ["mut"], Opt); translate_exp t ] ~at:at ~note:note
+      tupE [ iterE (varE "mut" ~note:Al.Al_util.no_note, ["mut"], Opt) ~note:Al.Al_util.no_note; translate_exp t ] ~at:at ~note:note
     | [ []; [ {it = Il.Atom "PAGE"; _} as atom ] ], el ->
       caseE (atom, List.map translate_exp el) ~at:at ~note:note
     | [ [ {it = Il.Atom "NULL"; _} as atom ]; [ {it = Il.Quest; _} ] ], el ->
@@ -270,9 +271,9 @@ and translate_exp exp =
     | [ []; [{it = Il.Arrow; _} as atom]; [] ], [ e1; e2 ] ->
       infixE (translate_exp e1, atom, translate_exp e2) ~at:at ~note:note
     | [ []; [{it = Il.Arrow; _} as atom]; []; [] ], [ e1; e2; e3 ] ->
-      infixE (translate_exp e1, atom, catE (translate_exp e2, translate_exp e3)) ~at:at ~note:note
+      infixE (translate_exp e1, atom, catE (translate_exp e2, translate_exp e3) ~note:Al.Al_util.no_note) ~at:at ~note:note
     | [ []; [{it = Il.ArrowSub; _} as atom]; []; [] ], [ e1; e2; e3 ] ->
-      infixE (translate_exp e1, atom, catE (translate_exp e2, translate_exp e3)) ~at:at ~note:note
+      infixE (translate_exp e1, atom, catE (translate_exp e2, translate_exp e3) ~note:Al.Al_util.no_note) ~at:at ~note:note
     | [ []; [{it = Il.Atom _; _} as atom]; [] ], [ e1; e2 ] ->
       infixE (translate_exp e1, atom, translate_exp e2) ~at:at ~note:note
     | _ -> yetE (Il.Print.string_of_exp exp) ~at:at ~note:note)
@@ -832,7 +833,7 @@ and handle_special_lhs lhs rhs free_ids =
       | None, None -> yetE ("Nondeterministic assignment target: " ^ Al.Print.string_of_expr lhs) ~note:boolT
       | Some l, None
       | None, Some l -> binE (GeOp, lenE rhs ~note:l.note, l) ~note:boolT
-      | Some l1, Some l2 -> binE (EqOp, lenE rhs ~note:l1.note, binE (AddOp, l1, l2)) ~note:boolT
+      | Some l1, Some l2 -> binE (EqOp, lenE rhs ~note:l1.note, binE (AddOp, l1, l2) ~note:natT) ~note:boolT
     in
     [
       ifI
