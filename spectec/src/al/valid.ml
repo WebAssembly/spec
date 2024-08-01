@@ -8,6 +8,7 @@ open Walk
 
 
 module Atom = El.Atom
+module Eval = Il.Eval
 
 (* Error *)
 
@@ -51,28 +52,116 @@ let env: Env.t ref = ref Env.empty
 
 let varT s = VarT (s $ no_region, []) $ no_region
 
-(* TODO: Generalize subtyping for numbers *)
+let is_trivial_mixop = List.for_all (fun atoms -> List.length atoms = 0)
 
-let num_typs = [ "nat"; "int"; "sN"; "uN"; "byte"; "bit"; "N"; "u32"; "iN"; "lane_" ]
+
+(* Subtyping *)
+
+let get_deftyps (id: Il.Ast.id) (args: Il.Ast.arg list): deftyp list =
+  match Env.find_opt_typ !env id with
+  | Some (_, insts) ->
+
+    let inst_finder inst =
+      let typ_of_arg arg =
+        match (Eval.reduce_arg !env arg).it with
+        | ExpA { it=SubE (_, typ, _); _ } -> typ
+        | ExpA { note; _ } -> note
+        | _ -> failwith (Il.Print.string_of_arg (Eval.reduce_arg !env arg))
+      in
+
+      let InstD (_, inst_args, deftyp) = inst.it in
+      let args' = List.map typ_of_arg args in
+      let inst_args' = List.map typ_of_arg inst_args in
+      if List.for_all2 (Eval.sub_typ !env) args' inst_args' then
+        Some deftyp
+      else
+        None
+    in
+
+    (match List.find_map inst_finder insts with
+    | Some deftyp -> [deftyp]
+    | None ->
+      List.map (fun inst -> let InstD (_, _, deftyp) = inst.it in deftyp) insts
+    )
+  | None -> []
+
+let rec unify_deftyp_opt (deftyp: deftyp) : typ option =
+  match deftyp.it with
+  | AliasT typ -> Some typ
+  | StructT _ -> None
+  | VariantT typcases
+  when List.for_all (fun (mixop', _, _) -> is_trivial_mixop mixop') typcases ->
+    (match typcases with
+    | (_, (_, typ, _), _) :: _
+    when
+      typcases
+      |> List.map (fun (_, (_, typ', _), _) -> unify_opt typ typ')
+      |> List.for_all Option.is_some
+    -> Some typ
+    | _ -> None
+    )
+  | _ -> None
+
+and unify_opt (typ1: typ) (typ2: typ) : typ option =
+  let typ1', typ2' = ground_typ_of typ1, ground_typ_of typ2 in
+  match typ1'.it, typ2'.it with
+  | VarT (id1, _), VarT (id2, _) when id1 = id2 -> Some (ground_typ_of typ1)
+  | BoolT, BoolT | NumT _, NumT _ | TextT, TextT -> Some typ1
+  | TupT etl1, TupT etl2 ->
+    let (let*) = Option.bind in
+    let etl =
+      List.fold_right2
+        (fun et1 et2 acc ->
+          let* acc = acc in
+          let* res = unify_opt (snd et1) (snd et2) in
+          Some ((fst et1, res) :: acc)
+        )
+        etl1
+        etl2
+        (Some [])
+    in
+    Option.map (fun etl -> TupT etl $ typ1.at) etl
+  | IterT (typ1'', iter), IterT (typ2'', _) ->
+    Option.map (fun typ -> IterT (typ, iter) $ typ1.at) (unify_opt typ1'' typ2'')
+  | _ -> None
+
+and ground_typ_of (typ: typ) : typ =
+  match typ.it with
+  (* NOTE: Consider `fN` as a `NumT` to prevent diverging ground type *)
+  | VarT (id, _) when id.it = "fN" -> NumT RealT $ typ.at
+  | VarT (id, args) ->
+    let typ_opts = List.map unify_deftyp_opt (get_deftyps id args) in
+    if List.for_all Option.is_some typ_opts then
+      match List.map Option.get typ_opts with
+      | typ' :: typs
+      when List.for_all Option.is_some (List.map (unify_opt typ') typs) ->
+        ground_typ_of typ'
+      | _ -> typ
+    else
+      typ
+  | TupT [_, typ'] -> ground_typ_of typ'
+  | _ -> typ
 
 let is_num typ =
-  match typ.it with
+  match (ground_typ_of typ).it with
   | NumT _ -> true
-  | VarT (id, _) when List.mem id.it num_typs -> true
-  | _ -> List.exists (fun nt -> Il.Eval.sub_typ !env typ (varT nt)) num_typs
+  | _ -> false
+
 let rec sub_typ typ1 typ2 =
-  match typ1.it, typ2.it with
-  | IterT (typ1', _), IterT (typ2', _) -> sub_typ typ1' typ2'
-  | VarT (id1, _), VarT (id2, _) ->
-    Il.Eval.sub_typ !env (varT id1.it) (varT id2.it) || is_num typ1 && is_num typ2
-  | _ ->
-    Il.Eval.sub_typ !env typ1 typ2 || is_num typ1 && is_num typ2
-let matches typ1 typ2 = sub_typ typ1 typ2 || sub_typ typ2 typ1
+  let typ1', typ2' = ground_typ_of typ1, ground_typ_of typ2 in
+  match typ1'.it, typ2'.it with
+  | IterT (typ1'', _), IterT (typ2'', _) -> sub_typ typ1'' typ2''
+  | NumT _, NumT _ -> true
+  | _, _ -> Eval.sub_typ !env typ1' typ2'
+
+let rec matches typ1 typ2 =
+  match (ground_typ_of typ1).it, (ground_typ_of typ2).it with
+  | IterT (typ1', _), IterT (typ2', _) -> matches typ1' typ2'
+  | VarT (id1, _), VarT (id2, _) when id1.it = id2.it -> true
+  | _ -> sub_typ typ1 typ2 || sub_typ typ2 typ1
 
 
 (* Helper functions *)
-
-let is_trivial_mixop = List.for_all (fun atoms -> List.length atoms = 0)
 
 let get_base_typ typ =
   match typ.it with
