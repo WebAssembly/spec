@@ -39,10 +39,7 @@ module Set = Free.IdSet
 let bound_set: Set.t ref = ref Set.empty
 let add_bound_var id = bound_set := Set.add id !bound_set
 let add_bound_vars expr = bound_set := Set.union (Free.free_expr expr) !bound_set
-let add_bound_vars_of_arg arg = match arg.it with ExpA e -> add_bound_vars e | TypA _ -> ()
-let init_bound_set algo =
-  bound_set := Set.empty;
-  algo |> Al_util.params_of_algo |> List.iter add_bound_vars_of_arg
+let add_bound_param arg = match arg.it with ExpA e -> add_bound_vars e | TypA _ -> ()
 
 (* Type Env *)
 
@@ -66,7 +63,8 @@ let get_deftyps (id: Il.Ast.id) (args: Il.Ast.arg list): deftyp list =
         match (Eval.reduce_arg !env arg).it with
         | ExpA { it=SubE (_, typ, _); _ } -> typ
         | ExpA { note; _ } -> note
-        | _ -> failwith (Il.Print.string_of_arg (Eval.reduce_arg !env arg))
+        | TypA typ -> typ
+        | _ -> failwith ("TODO: " ^ Il.Print.string_of_arg (Eval.reduce_arg !env arg))
       in
 
       let InstD (_, inst_args, deftyp) = inst.it in
@@ -127,6 +125,11 @@ and unify_opt (typ1: typ) (typ2: typ) : typ option =
 
 and ground_typ_of (typ: typ) : typ =
   match typ.it with
+  | VarT (id, _) when Env.mem_var !env id ->
+    let typ', iters = Env.find_var !env id in
+    (* TODO: local var type contains iter *)
+    assert (iters = []);
+    if Il.Eq.eq_typ typ typ' then typ else ground_typ_of typ'
   (* NOTE: Consider `fN` as a `NumT` to prevent diverging ground type *)
   | VarT (id, _) when id.it = "fN" -> NumT RealT $ typ.at
   | VarT (id, args) ->
@@ -140,6 +143,7 @@ and ground_typ_of (typ: typ) : typ =
     else
       typ
   | TupT [_, typ'] -> ground_typ_of typ'
+  | IterT (typ', iter) -> IterT (ground_typ_of typ', iter) $ typ.at
   | _ -> typ
 
 let is_num typ =
@@ -242,6 +246,32 @@ let check_tuple source exprs typ =
     List.iter2 f exprs etl
   | _ -> error_tuple source typ
 
+let check_call source id args result_typ =
+  match Env.find_opt_def !env (id $ no_region) with
+  | Some (params, typ, _) ->
+    (* TODO: Use local environment *)
+    (* Store global enviroment *)
+    let global_env = !env in
+
+    let check_arg arg param =
+      match arg.it, param.it with
+      | ExpA expr, ExpP (_, typ') -> check_match source expr.note typ'
+      (* Add local variable typ *)
+      | TypA typ1, TypP id -> env := Env.bind_var !env id (typ1, [])
+      | _ ->
+        error_valid "argument type mismatch" source
+          (Printf.sprintf "  %s =/= %s"
+            (string_of_arg arg)
+            (Il.Print.string_of_param param)
+          )
+    in
+    List.iter2 check_arg args params;
+    check_match source result_typ typ;
+
+    (* Reset global enviroment *)
+    env := global_env
+  | None -> error_valid "no function definition" source ""
+
 let access (source: source) (typ: typ) (path: path) : typ =
   match path.it with
   | IdxP expr ->
@@ -300,6 +330,8 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
   | LenE expr' ->
     check_list source expr'.note; check_num source expr.note
   | TupE exprs -> check_tuple source exprs expr.note
+  | CaseE _ -> () (* TODO *)
+  | CallE (id, args) -> check_call source id args expr.note
   (* TODO *)
   | IterE (expr1, _, iter) ->
     if not (expr1.note.it = BoolT && expr.note.it = BoolT) then
@@ -353,7 +385,15 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
   );
   (Option.get walker.super).walk_instr walker instr
 
+let init algo =
+  let params = Al_util.params_of_algo algo in
+
+  bound_set := Set.empty;
+  List.iter add_bound_param params
+
+
 let valid_algo (algo: algorithm) =
+
   print_string (Al_util.name_of_algo algo ^ "(");
 
   algo
@@ -363,7 +403,7 @@ let valid_algo (algo: algorithm) =
   |> print_string;
   print_endline ")";
 
-  init_bound_set algo;
+  init algo;
   let walker =
     { base_unit_walker with
       super = Some base_unit_walker;
