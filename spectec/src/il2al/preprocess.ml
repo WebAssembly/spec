@@ -21,6 +21,13 @@ let rec preprocess_prem prem =
       let new_prem =
         IfPr (CmpE (EqOp, expanddt, ct) $$ prem.at % (BoolT $ no_region))
       in
+
+      (* Add function definition to AL environment *)
+      if not (Env.mem_def !Al.Valid.env id) then (
+        let param = ExpP ("_" $ no_region, dt.note) $ dt.at in
+        Al.Valid.env := Env.bind_def !Al.Valid.env id ([param], ct.note, [])
+      );
+
       [ new_prem $ prem.at ]
     (* Expand: ??? *)
     | _ -> [ prem ]
@@ -39,6 +46,13 @@ let rec preprocess_prem prem =
       let new_prem =
         IfPr (CmpE (EqOp, typing_function_call, rhs) $$ exp.at % (BoolT $ no_region))
       in
+
+      (* Add function definition to AL environment *)
+      if not (Env.mem_def !Al.Valid.env id) then (
+        let param = ExpP ("_" $ no_region, lhs.note) $ lhs.at in
+        Al.Valid.env := Env.bind_def !Al.Valid.env id ([param], rhs.note, [])
+      );
+
       [ new_prem $ prem.at ]
     | _ -> [ prem ]
     )
