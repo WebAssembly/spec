@@ -241,8 +241,6 @@ let unwrap_framev: value -> value = function
   | FrameV (_, v) -> v
   | v -> fail_value "unwrap_framev" v
 
-let get_
-
 
 (* Il Types *)
 
