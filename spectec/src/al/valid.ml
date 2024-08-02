@@ -319,7 +319,7 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
       error expr.at (Printf.sprintf "%s's type is TODO" (string_of_expr expr))
     | _ -> ()
   );
-  base_unit_walker.walk_expr walker expr
+  (Option.get walker.super).walk_expr walker expr
 
 
 (* Instr validation *)
@@ -351,7 +351,7 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
   | AppendI (expr1, _expr2) -> check_list source expr1.note
   | _ -> ()
   );
-  base_unit_walker.walk_instr walker instr
+  (Option.get walker.super).walk_instr walker instr
 
 let valid_algo (algo: algorithm) =
   print_string (Al_util.name_of_algo algo ^ "(");
@@ -364,7 +364,13 @@ let valid_algo (algo: algorithm) =
   print_endline ")";
 
   init_bound_set algo;
-  let walker = { base_unit_walker with walk_expr=valid_expr; walk_instr=valid_instr } in
+  let walker =
+    { base_unit_walker with
+      super = Some base_unit_walker;
+      walk_expr = valid_expr;
+      walk_instr = valid_instr
+    }
+  in
   walker.walk_algo walker algo
 
 let valid (script: script) =

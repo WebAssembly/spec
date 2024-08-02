@@ -728,7 +728,7 @@ and handle_iter_lhs lhs rhs free_ids =
       in
       IterE (expr, iter_ids_of expr, iter') $$ lhs.at % typ
     else
-      Walk.base_walker.walk_expr walker expr
+      (Option.get walker.super).walk_expr walker expr
   in
 
   (* Translate inner lhs *)
@@ -737,7 +737,7 @@ and handle_iter_lhs lhs rhs free_ids =
 
   (* Iter injection *)
 
-  let walker = { Walk.base_walker with walk_expr } in
+  let walker = { Walk.base_walker with super = Some Walk.base_walker; walk_expr } in
   let instrs' = List.map (walker.walk_instr walker) instrs in
 
   (* Add ListN condition *)
