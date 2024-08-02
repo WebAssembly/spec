@@ -7289,12 +7289,10 @@ with_data x b*
 2. Replace s.DATAS[f.MODULE.DATAS[x]].BYTES with b*.
 
 with_struct a i fv
-1. Let f be the current frame.
-2. Replace s.STRUCTS[a].FIELDS[i] with fv.
+1. Replace s.STRUCTS[a].FIELDS[i] with fv.
 
 with_array a i fv
-1. Let f be the current frame.
-2. Replace s.ARRAYS[a].FIELDS[i] with fv.
+1. Replace s.ARRAYS[a].FIELDS[i] with fv.
 
 add_structinst si*
 1. Let f be the current frame.

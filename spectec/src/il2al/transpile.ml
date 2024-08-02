@@ -538,7 +538,10 @@ let remove_state algo =
         |> Lib.List.filter_not is_store_arg
         |> Lib.List.filter_not is_frame_arg
       in
-      FuncA (name, args', body)
+      let body' = body
+        |> remove_dead_assignment
+      in
+      FuncA (name, args', body')
     | rule -> rule
   }
 
