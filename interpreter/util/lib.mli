@@ -5,41 +5,48 @@ type void = |
 module Fun :
 sig
   val id : 'a -> 'a
+  val flip : ('a -> 'b -> 'c) -> ('b -> 'a -> 'c)
   val curry : ('a * 'b -> 'c) -> ('a -> 'b -> 'c)
   val uncurry : ('a -> 'b -> 'c) -> ('a * 'b -> 'c)
 
-  val repeat : int -> ('a -> unit) -> 'a -> unit
+  val repeat : int -> ('a -> 'a) -> 'a -> 'a
 end
 
 module List :
 sig
   val make : int -> 'a -> 'a list
-  val table : int -> (int -> 'a) -> 'a list
   val take : int -> 'a list -> 'a list (* raises Failure *)
   val drop : int -> 'a list -> 'a list (* raises Failure *)
+  val split : int -> 'a list -> 'a list * 'a list (* raises Failure *)
 
+  val lead : 'a list -> 'a list (* raises Failure *)
   val last : 'a list -> 'a (* raises Failure *)
   val split_last : 'a list -> 'a list * 'a (* raises Failure *)
 
   val index_of : 'a -> 'a list -> int option
   val index_where : ('a -> bool) -> 'a list -> int option
-  val map_filter : ('a -> 'b option) -> 'a list -> 'b list
-  val concat_map : ('a -> 'b list) -> 'a list -> 'b list
   val pairwise : ('a -> 'a -> 'b) -> 'a list -> 'b list
 end
 
 module List32 :
 sig
+  val init : int32 -> (int32 -> 'a) -> 'a list
   val make : int32 -> 'a -> 'a list
   val length : 'a list -> int32
   val nth : 'a list -> int32 -> 'a (* raises Failure *)
+  val replace : 'a list -> int32 -> 'a -> 'a list (* raises Failure *)
   val take : int32 -> 'a list -> 'a list (* raises Failure *)
   val drop : int32 -> 'a list -> 'a list (* raises Failure *)
+  val iteri : (int32 -> 'a -> unit) -> 'a list -> unit
   val mapi : (int32 -> 'a -> 'b) -> 'a list -> 'b list
+
+  val index_of : 'a -> 'a list -> int32 option
+  val index_where : ('a -> bool) -> 'a list -> int32 option
 end
 
 module List64 :
 sig
+  val init : int64 -> (int64 -> 'a) -> 'a list
   val make : int64 -> 'a -> 'a list
   val length : 'a list -> int64
   val nth : 'a list -> int64 -> 'a (* raises Failure *)
@@ -85,6 +92,15 @@ sig
   val is_power_of_two : int -> bool
 end
 
+module Char :
+sig
+  val is_digit_ascii : char -> bool
+  val is_uppercase_ascii : char -> bool
+  val is_lowercase_ascii : char -> bool
+  val is_letter_ascii : char -> bool
+  val is_alphanum_ascii : char -> bool
+end
+
 module String :
 sig
   val implode : char list -> string
@@ -92,4 +108,14 @@ sig
   val split : string -> char -> string list
   val breakup : string -> int -> string list
   val find_from_opt : (char -> bool) -> string -> int -> int option
+end
+
+module Promise :
+sig
+  type 'a t
+  exception Promise
+  val make : unit -> 'a t
+  val fulfill : 'a t -> 'a -> unit
+  val value : 'a t -> 'a
+  val value_opt : 'a t -> 'a option
 end

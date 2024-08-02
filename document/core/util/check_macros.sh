@@ -5,7 +5,7 @@ cd `dirname $0`/..
 FILES=`ls */*.rst`
 ERRORS=0
 
-for XREF in `grep xref util/macros.def`; do
+for XREF in `grep "[\\]xref" util/macros.def`; do
   if echo $XREF | grep -q "[|]"; then
     MACRO=`echo $XREF | sed 's/^[^|]*[|]//g' | sed 's/[|].*$//g'`
   elif echo $XREF | grep -q xref; then

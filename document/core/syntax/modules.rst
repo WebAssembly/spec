@@ -1,4 +1,4 @@
-.. index:: ! module, type definition, function type, function, table, memory, global, element, data, start function, import, export
+.. index:: ! module, type definition, function type, tag type, function, table, memory, tag, global, element, data, start function, import, export
    pair: abstract syntax; module
 .. _syntax-module:
 
@@ -7,18 +7,28 @@ Modules
 
 WebAssembly programs are organized into *modules*,
 which are the unit of deployment, loading, and compilation.
-A module collects definitions for :ref:`types <syntax-type>`, :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>`, and :ref:`globals <syntax-global>`.
-In addition, it can declare :ref:`imports <syntax-import>` and :ref:`exports <syntax-export>`
-and provide initialization in the form of :ref:`data <syntax-data>` and :ref:`element <syntax-elem>` segments, or a :ref:`start function <syntax-start>`.
+A module collects definitions for
+:ref:`types <syntax-type>`,
+:ref:`functions <syntax-func>`,
+:ref:`tables <syntax-table>`,
+:ref:`memories <syntax-mem>`,
+:ref:`tags <syntax-tag>`, and
+:ref:`globals <syntax-global>`.
+In addition, it can declare
+:ref:`imports <syntax-import>` and :ref:`exports <syntax-export>`
+and provide initialization in the form of
+:ref:`data <syntax-data>` and :ref:`element <syntax-elem>` segments,
+or a :ref:`start function <syntax-start>`.
 
 .. math::
-   \begin{array}{lllll}
+   \begin{array}{llrll}
    \production{module} & \module &::=& \{ &
-     \MTYPES~\vec(\functype), \\&&&&
+     \MTYPES~\vec(\rectype), \\&&&&
      \MFUNCS~\vec(\func), \\&&&&
      \MTABLES~\vec(\table), \\&&&&
      \MMEMS~\vec(\mem), \\&&&&
      \MGLOBALS~\vec(\global), \\&&&&
+     \MTAGS~\vec(\tag), \\&&&&
      \MELEMS~\vec(\elem), \\&&&&
      \MDATAS~\vec(\data), \\&&&&
      \MSTART~\start^?, \\&&&&
@@ -29,34 +39,40 @@ and provide initialization in the form of :ref:`data <syntax-data>` and :ref:`el
 Each of the vectors -- and thus the entire module -- may be empty.
 
 
-.. index:: ! index, ! index space, ! type index, ! function index, ! table index, ! memory index, ! global index, ! local index, ! label index, ! element index, ! data index, function, global, table, memory, element, data, local, parameter, import
+.. index:: ! index, ! index space, ! type index, ! function index, ! table index, ! memory index, ! global index, ! tag index, ! local index, ! label index, ! element index, ! data index, ! field index, function, global, table, memory, tag, element, data, local, parameter, import, field
    pair: abstract syntax; type index
    pair: abstract syntax; function index
    pair: abstract syntax; table index
    pair: abstract syntax; memory index
    pair: abstract syntax; global index
+   pair: abstract syntax; tag index
    pair: abstract syntax; element index
    pair: abstract syntax; data index
    pair: abstract syntax; local index
    pair: abstract syntax; label index
+   pair: abstract syntax; field index
    pair: type; index
    pair: function; index
    pair: table; index
    pair: memory; index
    pair: global; index
+   pair: tag; index
    pair: element; index
    pair: data; index
    pair: local; index
    pair: label; index
+   pair: field; index
 .. _syntax-typeidx:
 .. _syntax-funcidx:
 .. _syntax-tableidx:
 .. _syntax-memidx:
 .. _syntax-globalidx:
+.. _syntax-tagidx:
 .. _syntax-elemidx:
 .. _syntax-dataidx:
 .. _syntax-localidx:
 .. _syntax-labelidx:
+.. _syntax-fieldidx:
 .. _syntax-index:
 
 Indices
@@ -66,19 +82,27 @@ Definitions are referenced with zero-based *indices*.
 Each class of definition has its own *index space*, as distinguished by the following classes.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{type index} & \typeidx &::=& \u32 \\
    \production{function index} & \funcidx &::=& \u32 \\
    \production{table index} & \tableidx &::=& \u32 \\
    \production{memory index} & \memidx &::=& \u32 \\
    \production{global index} & \globalidx &::=& \u32 \\
+   \production{tag index} & \tagidx &::=& \u32 \\
    \production{element index} & \elemidx &::=& \u32 \\
    \production{data index} & \dataidx &::=& \u32 \\
    \production{local index} & \localidx &::=& \u32 \\
    \production{label index} & \labelidx &::=& \u32 \\
+   \production{field index} & \fieldidx &::=& \u32 \\
    \end{array}
 
-The index space for :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>` and :ref:`globals <syntax-global>` includes respective :ref:`imports <syntax-import>` declared in the same module.
+The index space for
+:ref:`functions <syntax-func>`,
+:ref:`tables <syntax-table>`,
+:ref:`memories <syntax-mem>`,
+:ref:`globals <syntax-global>`, and
+:ref:`tags <syntax-tag>`
+includes respective :ref:`imports <syntax-import>` declared in the same module.
 The indices of these imports precede the indices of other definitions in the same index space.
 
 Element indices reference :ref:`element segments <syntax-elem>` and data indices reference :ref:`data segments <syntax-data>`.
@@ -87,16 +111,20 @@ The index space for :ref:`locals <syntax-local>` is only accessible inside a :re
 
 Label indices reference :ref:`structured control instructions <syntax-instr-control>` inside an instruction sequence.
 
+Each :ref:`aggregate type <syntax-aggrtype>` provides an index space for its :ref:`fields <syntax-fieldtype>`.
+
 
 .. _free-typeidx:
 .. _free-funcidx:
 .. _free-tableidx:
 .. _free-memidx:
 .. _free-globalidx:
+.. _free-tagidx:
 .. _free-elemidx:
 .. _free-dataidx:
 .. _free-localidx:
 .. _free-labelidx:
+.. _free-fieldidx:
 .. _free-index:
 
 Conventions
@@ -112,20 +140,15 @@ Conventions
    For example, if :math:`\instr^\ast` is :math:`(\DATADROP~x) (\MEMORYINIT~y)`, then :math:`\freedataidx(\instr^\ast) = \{x, y\}`, or equivalently, the vector :math:`x~y`.
 
 
-.. index:: ! type definition, type index, function type
+.. index:: ! type definition, type index, function type, aggregate type
    pair: abstract syntax; type definition
 .. _syntax-typedef:
 
 Types
 ~~~~~
 
-The |MTYPES| component of a module defines a vector of :ref:`function types <syntax-functype>`.
-
-All function types used in a module must be defined in this component.
-They are referenced by :ref:`type indices <syntax-typeidx>`.
-
-.. note::
-   Future versions of WebAssembly may add additional forms of type definitions.
+The |MTYPES| component of a module defines a vector of :ref:`recursive types <syntax-rectype>`, each of consisting of a list of :ref:`sub types <syntax-subtype>` referenced by individual :ref:`type indices <syntax-typeidx>`.
+All :ref:`function <syntax-functype>` or :ref:`aggregate <syntax-aggrtype>` types used in a module must be defined in this component.
 
 
 .. index:: ! function, ! local, function index, local index, type index, value type, expression, import
@@ -140,9 +163,11 @@ Functions
 The |MFUNCS| component of a module defines a vector of *functions* with the following structure:
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{function} & \func &::=&
-     \{ \FTYPE~\typeidx, \FLOCALS~\vec(\valtype), \FBODY~\expr \} \\
+     \{ \FTYPE~\typeidx, \FLOCALS~\vec(\local), \FBODY~\expr \} \\
+   \production{local} & \local &::=&
+     \{ \LTYPE~\valtype \} \\
    \end{array}
 
 The |FTYPE| of a function declares its signature by reference to a :ref:`type <syntax-type>` defined in the module.
@@ -168,15 +193,16 @@ Tables
 The |MTABLES| component of a module defines a vector of *tables* described by their :ref:`table type <syntax-tabletype>`:
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{table} & \table &::=&
-     \{ \TTYPE~\tabletype \} \\
+     \{ \TTYPE~\tabletype, \TINIT~\expr \} \\
    \end{array}
 
-A table is a vector of opaque values of a particular :ref:`reference type <syntax-reftype>`.
-The |LMIN| size in the :ref:`limits <syntax-limits>` of the table type specifies the initial size of that table, while its |LMAX|, if present, restricts the size to which it can grow later.
+A table is an array of opaque values of a particular :ref:`reference type <syntax-reftype>`.
+Moreover, each table slot is initialized with the |TINIT| value given by a :ref:`constant <valid-constant>` initializer :ref:`expression <syntax-expr>`.
+Tables can further be initialized through :ref:`element segments <syntax-elem>`.
 
-Tables can be initialized through :ref:`element segments <syntax-elem>`.
+The |LMIN| size in the :ref:`limits <syntax-limits>` of the table type specifies the initial size of that table, while its |LMAX|, if present, restricts the size to which it can grow later.
 
 Tables are referenced through :ref:`table indices <syntax-tableidx>`,
 starting with the smallest index not referencing a table :ref:`import <syntax-import>`.
@@ -192,7 +218,7 @@ Memories
 The |MMEMS| component of a module defines a vector of *linear memories* (or *memories* for short) as described by their :ref:`memory type <syntax-memtype>`:
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{memory} & \mem &::=&
      \{ \MTYPE~\memtype \} \\
    \end{array}
@@ -207,11 +233,6 @@ Memories are referenced through :ref:`memory indices <syntax-memidx>`,
 starting with the smallest index not referencing a memory :ref:`import <syntax-import>`.
 Most constructs implicitly reference memory index :math:`0`.
 
-.. note::
-   In the current version of WebAssembly, at most one memory may be defined or imported in a single module,
-   and *all* constructs implicitly reference this memory :math:`0`.
-   This restriction may be lifted in future versions.
-
 
 .. index:: ! global, global index, global type, mutability, expression, constant, value, import
    pair: abstract syntax; global
@@ -223,7 +244,7 @@ Globals
 The |MGLOBALS| component of a module defines a vector of *global variables* (or *globals* for short):
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{global} & \global &::=&
      \{ \GTYPE~\globaltype, \GINIT~\expr \} \\
    \end{array}
@@ -234,6 +255,26 @@ Moreover, each global is initialized with an |GINIT| value given by a :ref:`cons
 
 Globals are referenced through :ref:`global indices <syntax-globalidx>`,
 starting with the smallest index not referencing a global :ref:`import <syntax-import>`.
+
+
+.. index:: ! tag, type index, tag type
+   pair: abstract syntax; tag
+.. _syntax-tag:
+
+Tags
+~~~~
+
+The |MTAGS| component of a module defines a vector of *tags* with the following structure.
+
+.. math::
+   \begin{array}{llll}
+   \production{tag} & \tag &::=& \{ \TAGTYPE~\typeidx \} \\
+   \end{array}
+
+The result type of the function signature with type index :math:`\typeidx` must be empty.
+
+Tags are referenced through :ref:`tag indices <syntax-tagidx>`,
+starting with the smallest index not referencing a tag :ref:`import <syntax-import>`.
 
 
 .. index:: ! element, ! element mode, ! active, ! passive, ! declarative, element index, table, table index, expression, constant, function index, vector
@@ -259,7 +300,7 @@ An active element segment copies its elements into a table during :ref:`instanti
 A declarative element segment is not available at runtime but merely serves to forward-declare references that are formed in code with instructions like :math:`\REFFUNC`.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{element segment} & \elem &::=&
      \{ \ETYPE~\reftype, \EINIT~\vec(\expr), \EMODE~\elemmode \} \\
    \production{element segment mode} & \elemmode &::=&
@@ -292,7 +333,7 @@ A passive data segment's contents can be copied into a memory using the |MEMORYI
 An active data segment copies its contents into a memory during :ref:`instantiation <exec-instantiation>`, as specified by a :ref:`memory index <syntax-memidx>` and a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>` defining an offset into that memory.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{data segment} & \data &::=&
      \{ \DINIT~\vec(\byte), \DMODE~\datamode \} \\
    \production{data segment mode} & \datamode &::=&
@@ -317,7 +358,7 @@ Start Function
 The |MSTART| component of a module declares the :ref:`function index <syntax-funcidx>` of a *start function* that is automatically invoked when the module is :ref:`instantiated <exec-instantiation>`, after :ref:`tables <syntax-table>` and :ref:`memories <syntax-mem>` have been initialized.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{start function} & \start &::=&
      \{ \SFUNC~\funcidx \} \\
    \end{array}
@@ -327,12 +368,13 @@ The |MSTART| component of a module declares the :ref:`function index <syntax-fun
    The module and its exports are not accessible externally before this initialization has completed.
 
 
-.. index:: ! export, name, index, function index, table index, memory index, global index, function, table, memory, global, instantiation
+.. index:: ! export, name, index, function index, table index, memory index, global index, tag index, function, table, memory, global, tag, instantiation
    pair: abstract syntax; export
    single: function; export
    single: table; export
    single: memory; export
    single: global; export
+   single: tag; export
 .. _syntax-exportdesc:
 .. _syntax-export:
 
@@ -349,11 +391,17 @@ The |MEXPORTS| component of a module defines a set of *exports* that become acce
      \EDFUNC~\funcidx \\&&|&
      \EDTABLE~\tableidx \\&&|&
      \EDMEM~\memidx \\&&|&
-     \EDGLOBAL~\globalidx \\
+     \EDGLOBAL~\globalidx \\&&|&
+     \EDTAG~\tagidx \\
    \end{array}
 
 Each export is labeled by a unique :ref:`name <syntax-name>`.
-Exportable definitions are :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>`, and :ref:`globals <syntax-global>`,
+Exportable definitions are
+:ref:`functions <syntax-func>`,
+:ref:`tables <syntax-table>`,
+:ref:`memories <syntax-mem>`,
+:ref:`globals <syntax-global>`, and
+:ref:`tags <syntax-tag>`,
 which are referenced through a respective descriptor.
 
 
@@ -370,13 +418,16 @@ The following auxiliary notation is defined for sequences of exports, filtering 
 
 * :math:`\edglobals(\export^\ast) = [\globalidx ~|~ \EDGLOBAL~\globalidx \in (\export.\EDESC)^\ast]`
 
+* :math:`\edtags(\export^\ast) = [\tagidx ~|~ \EDTAG~\tagidx \in (\export.\EDESC)^\ast]`
 
-.. index:: ! import, name, function type, table type, memory type, global type, index, index space, type index, function index, table index, memory index, global index, function, table, memory, global, instantiation
+
+.. index:: ! import, name, function type, table type, memory type, global type, tag type, index, index space, type index, function index, table index, memory index, global index, tag index, function, table, memory, tag, global, instantiation
    pair: abstract syntax; import
    single: function; import
    single: table; import
    single: memory; import
    single: global; import
+   single: tag; import
 .. _syntax-importdesc:
 .. _syntax-import:
 
@@ -386,18 +437,24 @@ Imports
 The |MIMPORTS| component of a module defines a set of *imports* that are required for :ref:`instantiation <exec-instantiation>`.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{import} & \import &::=&
      \{ \IMODULE~\name, \INAME~\name, \IDESC~\importdesc \} \\
    \production{import description} & \importdesc &::=&
      \IDFUNC~\typeidx \\&&|&
      \IDTABLE~\tabletype \\&&|&
      \IDMEM~\memtype \\&&|&
-     \IDGLOBAL~\globaltype \\
+     \IDGLOBAL~\globaltype \\&&|&
+     \IDTAG~\typeidx \\
    \end{array}
 
 Each import is labeled by a two-level :ref:`name <syntax-name>` space, consisting of a |IMODULE| name and a |INAME| for an entity within that module.
-Importable definitions are :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>`, and :ref:`globals <syntax-global>`.
+Importable definitions are
+:ref:`functions <syntax-func>`,
+:ref:`tables <syntax-table>`,
+:ref:`memories <syntax-mem>`,
+:ref:`globals <syntax-global>`, and
+:ref:`tags <syntax-tag>`.
 Each import is specified by a descriptor with a respective type that a definition provided during instantiation is required to match.
 
 Every import defines an index in the respective :ref:`index space <syntax-index>`.

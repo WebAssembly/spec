@@ -12,30 +12,30 @@ Release 2.0
 
 .. index:: instruction, integer
 
-Sign extension instructions
+Sign Extension Instructions
 ...........................
 
-Added new numeric instructions for performing sign extension within integer representations [#proposal-signext]_.
+Added new numeric instructions for performing sign extension within integer representations. [#proposal-signext]_
 
 * New :ref:`numeric instructions <syntax-instr-numeric>`: :math:`\K{i}\X{nn}\K{.}\EXTEND\X{N}\K{\_s}`
 
 
 .. index:: instruction, trap, floating-point, integer
 
-Non-trapping float-to-int conversions
+Non-trapping Float-to-Int Conversions
 .....................................
 
-Added new conversion instructions that avoid trapping when converting a floating-point number to an integer [#proposal-cvtsat]_.
+Added new conversion instructions that avoid trapping when converting a floating-point number to an integer. [#proposal-cvtsat]_
 
 * New :ref:`numeric instructions <syntax-instr-numeric>`: :math:`\K{i}\X{nn}\K{.}\TRUNC\K{\_sat\_f}\X{mm}\K{\_}\sx`
 
 
 .. index:: block, function, value type, result type
 
-Multiple values
+Multiple Values
 ...............
 
-Generalized the result type of blocks and functions to allow for multiple values; in addition, introduced the ability to have block parameters [#proposal-multivalue]_.
+Generalized the result type of blocks and functions to allow for multiple values; in addition, introduced the ability to have block parameters. [#proposal-multivalue]_
 
 * :ref:`Function types <syntax-functype>` allow more than one result
 
@@ -44,38 +44,38 @@ Generalized the result type of blocks and functions to allow for multiple values
 
 .. index:: value type, reference, reference type, instruction, element segment
 
-Reference types
+Reference Types
 ...............
 
-Added |FUNCREF| and |EXTERNREF| as new value types and respective instructions [#proposal-reftype]_.
+Added |FUNCREF| and |EXTERNREF| as new value types and respective instructions. [#proposal-reftype]_
 
 * New :ref:`value types <syntax-valtype>`: :ref:`reference types <syntax-reftype>` |FUNCREF| and |EXTERNREF|
 
 * New :ref:`reference instructions <syntax-instr-ref>`: |REFNULL|, |REFFUNC|, |REFISNULL|
 
-* Enrich :ref:`parametric instruction <syntax-instr-parametric>`: |SELECT| with optional type immediate
+* Extended :ref:`parametric instruction <syntax-instr-parametric>`: |SELECT| with optional type immediate
 
 * New :ref:`declarative <syntax-elemmode>` form of :ref:`element segment <syntax-elem>`
 
 
 .. index:: reference, instruction, table, table type
 
-Table instructions
+Table Instructions
 ..................
 
-Added instructions to directly access and modify tables [#proposal-reftype]_.
+Added instructions to directly access and modify tables. [#proposal-reftype]_
 
 * :ref:`Table types <syntax-tabletype>` allow any :ref:`reference type <syntax-reftype>` as element type
 
 * New :ref:`table instructions <syntax-instr-table>`: |TABLEGET|, |TABLESET|, |TABLESIZE|, |TABLEGROW|
 
 
-.. index:: table, instruction, table index, element segment
+.. index:: table, instruction, table index, element segment, import, export
 
-Multiple tables
+Multiple Tables
 ...............
 
-Added the ability to use multiple tables per module [#proposal-reftype]_.
+Added the ability to use multiple tables per module. [#proposal-reftype]_
 
 * :ref:`Modules <syntax-module>` may :ref:`define <syntax-table>`, :ref:`import <syntax-import>`, and :ref:`export <syntax-export>` multiple tables
 
@@ -86,10 +86,10 @@ Added the ability to use multiple tables per module [#proposal-reftype]_.
 
 .. index:: instruction, table, memory, data segment, element segment
 
-Bulk memory and table instructions
+Bulk Memory and Table Instructions
 ..................................
 
-Added instructions that modify ranges of memory or table entries [#proposal-reftype]_ [#proposal-bulk]_
+Added instructions that modify ranges of memory or table entries. [#proposal-reftype]_ [#proposal-bulk]_
 
 * New :ref:`memory instructions <syntax-instr-memory>`: |MEMORYFILL|, |MEMORYINIT|, |MEMORYCOPY|, |DATADROP|
 
@@ -106,7 +106,7 @@ Added instructions that modify ranges of memory or table entries [#proposal-reft
 
 .. index:: instructions, SIMD, value type, vector type
 
-Vector instructions
+Vector Instructions
 ...................
 
 Added vector type and instructions that manipulate multiple numeric values in parallel (also known as *SIMD*, single instruction multiple data) [#proposal-vectype]_
@@ -155,3 +155,153 @@ Added vector type and instructions that manipulate multiple numeric values in pa
 
 .. [#proposal-vectype]
    https://github.com/WebAssembly/spec/tree/main/proposals/simd/
+
+
+Release 3.0
+~~~~~~~~~~~
+
+.. index:: instruction, expression, constant
+
+Extended Constant Expressions
+.............................
+
+Allowed basic numeric computations in constant expressions. [#proposal-extconst]_
+
+* Extended set of :ref:`constant instructions <valid-const>` with :math:`\K{i}\X{nn}\K{.add}`, :math:`\K{i}\X{nn}\K{.sub}`, and :math:`\K{i}\X{nn}\K{.mul}`, and |GLOBALGET| for any previously declared immutable :ref:`global <syntax-global>`
+
+.. note::
+   The :ref:`garbage collection <extension-gc>` added further constant instructions.
+
+
+.. index:: instruction, function, call
+
+Tail Calls
+..........
+
+Added instructions to perform tail calls. [#proposal-tailcall]_
+
+* New :ref:`control instructions <syntax-instr-control>`: |RETURNCALL| and |RETURNCALLINDIRECT|
+
+
+.. index:: instruction, exception, reference type, tag type, tag, handler
+
+Exception Handling
+..................
+
+Added tag definitions, imports, and exports, and instructions to throw and catch exceptions [#proposal-exn]_
+
+* Modules may :ref:`define <syntax-tagtype>`, :ref:`import <syntax-import>`, and :ref:`export <syntax-export>` tags.
+
+* New :ref:`heap types <syntax-heaptype>`: |EXN|, |NOEXN|
+
+* New :ref:`reference type <syntax-reftype>` short-hands: |EXNREF|, |NULLEXNREF|
+
+* New :ref:`control instructions <syntax-instr-control>`: |THROW|, |THROWREF|, and |TRYTABLE|.
+
+* New :ref:`tag section <binary-tagsec>` in binary format.
+
+
+.. index:: instruction, memory, memory index, data segment, import, export
+
+Multiple Memories
+.................
+
+Added the ability to use multiple memories per module. [#proposal-multimem]_
+
+* :ref:`Modules <syntax-module>` may :ref:`define <syntax-mem>`, :ref:`import <syntax-import>`, and :ref:`export <syntax-export>` multiple memories
+
+* :ref:`Memory instructions <syntax-instr-memory>` take a :ref:`memory index <syntax-memidx>` immediate: |MEMORYSIZE|, |MEMORYGROW|, |MEMORYFILL|, |MEMORYCOPY|, |MEMORYINIT|, :math:`t\K{.load}`, :math:`t\K{.store}`, :math:`t\K{.load}\!N\!\K{\_}\sx`, :math:`t\K{.store}\!N`, :math:`\K{v128.load}\!N\!\K{x}\!M\!\K{\_}\sx`, :math:`\K{v128.load}\!N\!\K{\_zero}`, :math:`\K{v128.load}\!N\!\K{\_splat}`, :math:`\K{v128.load}\!N\!\K{\_lane}`, :math:`\K{v128.store}\!N\!\K{\_lane}`
+
+* :ref:`Data segments <syntax-elem>` take a :ref:`memory index <syntax-memidx>`
+
+
+.. index:: reference, reference type, heap type, value type, local, local type, instruction, instruction type, table, function, function type, matching, subtyping
+
+Typeful References
+..................
+
+Added more precise types for references. [#proposal-typedref]_
+
+* New generalised form of :ref:`reference types <syntax-reftype>`: :math:`(\REF~\NULL^?~\heaptype)`
+
+* New class of :ref:`heap types <syntax-heaptype>`: |FUNC|, |EXTERN|, :math:`\typeidx`
+
+* Basic :ref:`subtyping <match>` on :ref:`reference <match-reftype>` and :ref:`value <match-valtype>` types
+
+* New :ref:`reference instructions <syntax-instr-ref>`: |REFASNONNULL|, |BRONNULL|, |BRONNONNULL|
+
+* New :ref:`control instruction <syntax-instr-control>`: |CALLREF|
+
+* Refined typing of :ref:`reference instruction <syntax-instr-ref>` |REFFUNC| with more precise result type
+
+* Refined typing of :ref:`local instructions <valid-instr-variable>` and :ref:`instruction sequences <valid-instr-seq>` to track the :ref:`initialization status <syntax-init>` of :ref:`locals <syntax-local>` with non-:ref:`defaultable <valid-defaultable>` type
+
+* Extended :ref:`table definitions <syntax-table>` with optional initializer expression
+
+
+.. index:: reference, reference type, heap type, field type, storage type, structure type, array type, composite type, sub type, recursive type
+.. _extension-gc:
+
+Garbage Collection
+..................
+
+Added managed reference types. [#proposal-gc]_
+
+* New forms of :ref:`heap types <syntax-heaptype>`: |ANY|, |EQT|, |I31|, |STRUCT|, |ARRAY|, |NONE|, |NOFUNC|, |NOEXTERN|
+
+* New :ref:`reference type <syntax-reftype>` short-hands: |ANYREF|, |EQREF|, |I31REF|, |STRUCTREF|, |ARRAYREF|, |NULLREF|, |NULLFUNCREF|, |NULLEXTERNREF|
+
+* New forms of type definitions: :ref:`structure <syntax-structtype>` and :ref:`array types <syntax-arraytype>`, :ref:`sub types <syntax-subtype>`, and :ref:`recursive types <syntax-rectype>`
+
+* Enriched :ref:`subtyping <match>` based on explicitly declared :ref:`sub types <syntax-subtype>` and the new heap types
+
+* New generic :ref:`reference instructions <syntax-instr-ref>`: |REFEQ|, |REFTEST|, |REFCAST|, |BRONCAST|, |BRONCASTFAIL|
+
+* New :ref:`reference instructions <syntax-instr-ref>` for :ref:`unboxed scalars <syntax-i31>`: |REFI31|, :math:`\I31GET\K{\_}\sx`
+
+* New :ref:`reference instructions <syntax-instr-ref>` for :ref:`structure types <syntax-structtype>`: |STRUCTNEW|, |STRUCTNEWDEFAULT|, :math:`\STRUCTGET\K{\_}\sx^?`, |STRUCTSET|
+
+* New :ref:`reference instructions <syntax-instr-ref>` for :ref:`array types <syntax-structtype>`: |ARRAYNEW|, |ARRAYNEWDEFAULT|, |ARRAYNEWFIXED|, |ARRAYNEWDATA|, |ARRAYNEWELEM|, :math:`\ARRAYGET\K{\_}\sx^?`, |ARRAYSET|, |ARRAYLEN|, |ARRAYFILL|, |ARRAYCOPY|, |ARRAYINITDATA|, |ARRAYINITELEM|
+
+* New :ref:`reference instructions <syntax-instr-ref>` for converting :ref:`host types <syntax-externtype>`: |ANYCONVERTEXTERN|, |EXTERNCONVERTANY|
+
+* Extended set of :ref:`constant instructions <valid-const>` with |REFI31|, |STRUCTNEW|, |STRUCTNEWDEFAULT|, |ARRAYNEW|, |ARRAYNEWDEFAULT|, |ARRAYNEWFIXED|, |ANYCONVERTEXTERN|, |EXTERNCONVERTANY|
+
+
+.. index:: text format, annotation, custom section, identifier, module, type, function, local, structure field
+
+Custom Annotations
+..................
+
+Added generic syntax for custom annotations in the text format,
+mirroring the role of custom sections in the binary format. [#proposal-annot]_
+
+* :ref:`Annotations <text-annot>` of the form :math:`\text{(@id~\dots)}` are allowed anywhere in the :ref:`text format <text>`
+
+* :ref:`Identifiers <text-id>` can be escaped as :math:`\text{@"\dots"}` with arbitrary :ref:`names <text-name>`
+
+* Defined :ref:`name annotations <text-nameannot>` :math:`\text{(@name~"\dots")}` for :ref:`module names <text-modulenameannot>`, :ref:`type names <text-typenameannot>`, :ref:`function names <text-funcnameannot>`, :ref:`local names <text-localnameannot>`, and :ref:`field names <text-fieldnameannot>`
+
+* Defined :ref:`custom annotation <text-customannot>` :math:`\text{(@custom~"\dots")}` to represent arbitrary :ref:`custom sections <binary-customsec>` in the text format
+
+
+.. [#proposal-extconst]
+   https://github.com/WebAssembly/extended-const/blob/main/proposals/extended-const/
+
+.. [#proposal-tailcall]
+   https://github.com/WebAssembly/spec/tree/main/proposals/tail-call/
+
+.. [#proposal-exn]
+   https://github.com/WebAssembly/spec/tree/main/proposals/exception-handling/
+
+.. [#proposal-multimem]
+   https://github.com/WebAssembly/multi-memory/blob/main/proposals/multi-memory/
+
+.. [#proposal-typedref]
+   https://github.com/WebAssembly/spec/tree/main/proposals/function-references/
+
+.. [#proposal-gc]
+   https://github.com/WebAssembly/spec/tree/main/proposals/gc/
+
+.. [#proposal-annot]
+   https://github.com/WebAssembly/annotations/tree/main/proposals/annotations/
