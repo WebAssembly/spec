@@ -845,10 +845,9 @@ let translate_rulepr id exp =
   match id.it, translate_argexp exp with
   | "Eval_expr", [z; lhs; _; rhs] ->
     (* Note: State is automatically converted into frame by remove_state *)
+    (* Note: Push/pop is automatically inserted by handle_frame *)
     [
-      pushI (frameE (None, z) ~note:callframeT);
-      letI (rhs, callE ("eval_expr", [ lhs ]) ~note:rhs.note) ~at:at;
-      popI (frameE (None, z) ~note:callframeT);
+      letI (rhs, callE ("eval_expr", [ z; lhs ]) ~note:rhs.note) ~at:at;
     ]
   (* ".*_sub" *)
   | name, [_C; rt1; rt2]
@@ -953,7 +952,8 @@ let translate_helper partial_funcs def =
     let blocks = List.map (translate_helper_body name) unified_clauses in
     let body =
       Transpile.merge_blocks blocks
-      |> Transpile.insert_frame_binding
+      (* |> Transpile.insert_frame_binding *)
+      |> Transpile.handle_frame params
       |> Walk.(walk_instrs { default_config with pre_expr = Transpile.remove_sub })
       |> Transpile.enhance_readability
       |> (if List.mem id partial_funcs then Fun.id else Transpile.ensure_return)
