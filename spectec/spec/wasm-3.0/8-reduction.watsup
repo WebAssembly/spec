@@ -97,7 +97,7 @@ rule Step_pure/br-label-succ:
   -- if l > 0
 
 rule Step_pure/br-handler:
-  (HANDLER_ n `{catch*} val* (BR l) instr*)  ~>  val* (BR $(l - 1))
+  (HANDLER_ n `{catch*} val* (BR l) instr*)  ~>  val* (BR l)
 
 
 rule Step_pure/br_if-true:
