@@ -1144,3 +1144,117 @@
   )
   "unexpected content after last section"
 )
+
+;; Multiple function sections
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01\60\00\00"           ;; Type section
+    "\03\02\01\00"                 ;; Function section with 1 function
+    "\03\02\01\00"                 ;; Function section with 1 function
+    "\0a\07\02\02\00\0b\02\00\0b"  ;; Code section with 2 empty functions
+  )
+  "unexpected content after last section"
+)
+
+;; Multiple code sections
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01\60\00\00"           ;; Type section
+    "\03\03\02\00\00"              ;; Function section with 2 functions
+    "\0a\04\01\02\00\0b"           ;; Code section with 1 empty function
+    "\0a\04\01\02\00\0b"           ;; Code section with 1 empty function
+  )
+  "unexpected content after last section"
+)
+
+;; Multiple data count sections
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\0c\01\01"                   ;; Datacount section with value "1"
+    "\0c\01\01"                   ;; Datacount section with value "1"
+  )
+  "unexpected content after last section"
+)
+
+;; Multiple data sections
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\0b\01\00"                   ;; Data section with zero entries
+    "\0b\01\00"                   ;; Data section with zero entries
+  )
+  "unexpected content after last section"
+)
+
+;; Multiple global sections
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\06\01\00"                   ;; Global section with zero entries
+    "\06\01\00"                   ;; Global section with zero entries
+  )
+  "unexpected content after last section"
+)
+
+;; Multiple export sections
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\07\01\00"                   ;; Export section with zero entries
+    "\07\01\00"                   ;; Export section with zero entries
+  )
+  "unexpected content after last section"
+)
+
+;; Multiple table sections
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\04\01\00"                 ;; Table section with zero entries
+      "\04\01\00"                 ;; Table section with zero entries
+  )
+  "unexpected content after last section"
+)
+
+;; Multiple element sections
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\09\01\00"                 ;; Element section with zero entries
+      "\09\01\00"                 ;; Element section with zero entries
+  )
+  "unexpected content after last section"
+)
+
+;; Multiple import sections
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\02\01\00"                 ;; Import section with zero entries
+      "\02\01\00"                 ;; Import section with zero entries
+  )
+  "unexpected content after last section"
+)
+
+;; Multiple type sections
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\01\00"                   ;; Type section with zero entries
+    "\01\01\00"                   ;; Type section with zero entries
+  )
+  "unexpected content after last section"
+)
+
+;; Multiple memory sections
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\05\01\00"                   ;; Memory section with zero entries
+    "\05\01\00"                   ;; Memory section with zero entries
+  )
+  "unexpected content after last section"
+)
