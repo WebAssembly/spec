@@ -31,6 +31,7 @@ let rec repeat str num =
 (* Terminals *)
 
 let string_of_atom = El.Print.string_of_atom
+let string_of_mixop = Il.Print.string_of_mixop
 
 
 (* Directions *)
@@ -187,6 +188,7 @@ and string_of_expr expr =
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
   | CaseE (a, []) -> string_of_atom a
   | CaseE (a, el) -> "(" ^ string_of_atom a ^ " " ^ string_of_exprs " " el ^ ")"
+  | CaseE2 (op, el) -> "(" ^ string_of_mixop op ^ "_" ^ string_of_exprs " " el ^ ")"
   | OptE (Some e) -> "?(" ^ string_of_expr e ^ ")"
   | OptE None -> "?()"
   | ContextKindE (a, e) -> sprintf "%s is %s" (string_of_expr e) (string_of_atom a)
@@ -518,6 +520,9 @@ and structured_string_of_expr expr =
     ^ ")"
   | CaseE (a, el) ->
     "CaseE (" ^ string_of_atom a
+    ^ ", [" ^ structured_string_of_exprs el ^ "])"
+  | CaseE2 (op, el) ->
+    "CaseE2 (" ^ string_of_mixop op
     ^ ", [" ^ structured_string_of_exprs el ^ "])"
   | OptE None -> "OptE"
   | OptE (Some e) -> "OptE (" ^ structured_string_of_expr e ^ ")"
