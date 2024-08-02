@@ -17,13 +17,13 @@ let empty = ""
 let error at msg step = raise (Exception.Error (at, msg, step))
 
 let fail_expr expr msg =
-  failwith ("on expr `" ^ structured_string_of_expr expr ^ "` " ^ msg)
+  failwith ("on expr `" ^ string_of_expr expr ^ "` " ^ msg)
 
 let fail_path path msg =
-  failwith ("on path `" ^ structured_string_of_path path ^ "` " ^ msg)
+  failwith ("on path `" ^ string_of_path path ^ "` " ^ msg)
 
 let try_with_error fname at stringifier f step =
-  let prefix = if fname <> empty then fname ^ ": " else fname in
+  let prefix = if fname <> empty then "$" ^ fname ^ ": " else fname in
   try f step with
   | Construct.InvalidConversion msg
   | Exception.InvalidArg msg
@@ -544,9 +544,11 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     ctx
   | PopI e ->
     (match e.it with
-    | FrameE _ ->
+    | FrameE (_, inner_e) ->
       (match WasmContext.pop_context () with
-      | FrameV _, _, _ -> ctx
+      | FrameV (_, inner_v), _, _ ->
+        let new_env = assign inner_e inner_v env in
+        AlContext.set_env new_env ctx
       | v, _, _ -> failwith (sprintf "current context `%s` is not a frame" (string_of_value v))
       )
     | IterE ({ it = VarE name; _ }, [name'], ListN (e', None)) when name = name' ->
@@ -623,7 +625,7 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
   | _ -> failwith "cannot step instr"
 
 and try_step_instr fname ctx env instr =
-  try_with_error fname instr.at structured_string_of_instr (step_instr fname ctx env) instr
+  try_with_error fname instr.at string_of_instr (step_instr fname ctx env) instr
 
 and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
   (* TODO: Change ref.null semantics *)

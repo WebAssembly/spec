@@ -1297,6 +1297,8 @@
 .. |allocexport| mathdef:: \xref{exec/modules}{alloc-export}{\F{allocexport}}
 .. |allocmodule| mathdef:: \xref{exec/modules}{alloc-module}{\F{allocmodule}}
 
+.. |evalglobal| mathdef:: \xref{exec/modules}{eval-globals}{\F{evalglobal}}
+
 .. |growtable| mathdef:: \xref{exec/modules}{grow-table}{\F{growtable}}
 .. |growmem| mathdef:: \xref{exec/modules}{grow-mem}{\F{growmem}}
 

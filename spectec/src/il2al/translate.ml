@@ -865,13 +865,12 @@ let translate_rulepr id exp =
   let at = id.at in
   let expA e = ExpA e $ e.at in
   match id.it, translate_argexp exp with
-  | "Eval_expr", [z; lhs; _; rhs] ->
+  | "Eval_expr", [z; is; z'; vs] ->
     (* Note: State is automatically converted into frame by remove_state *)
-    [
-      pushI (frameE (None, z) ~note:callframeT);
-      letI (rhs, callE ("eval_expr", [ expA lhs ]) ~note:rhs.note) ~at:at;
-      popI (frameE (None, z) ~note:callframeT);
-    ]
+    (* Note: Push/pop is automatically inserted by handle_frame *)
+    let lhs = tupE [z'; vs] ~at:(over_region [z'.at; vs.at]) ~note:vs.note in
+    let rhs = callE ("eval_expr", [ expA z; expA is ]) ~note:vs.note in
+    [ letI (lhs, rhs) ~at:at ]
   (* ".*_sub" *)
   | name, [_C; rt1; rt2]
     when String.ends_with ~suffix:"_sub" name ->
@@ -962,7 +961,7 @@ let translate_helper_body name clause =
     if is_config exp then
       get_config_return_instrs name exp clause.at
     else
-      [ returnI (Some (translate_exp exp)) ]
+      [ returnI (Some (translate_exp exp)) ~at:exp.at ]
   in
   translate_prems prems return_instrs
 
@@ -982,7 +981,8 @@ let translate_helper partial_funcs def =
     let blocks = List.map (translate_helper_body name) unified_clauses in
     let body =
       Transpile.merge_blocks blocks
-      |> Transpile.insert_frame_binding
+      (* |> Transpile.insert_frame_binding *)
+      |> Transpile.handle_frame params
       |> Walk.(walk_instrs { default_config with pre_expr = Transpile.remove_sub })
       |> Transpile.enhance_readability
       |> (if List.mem id partial_funcs then Fun.id else Transpile.ensure_return)
