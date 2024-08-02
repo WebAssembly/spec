@@ -235,28 +235,12 @@ let check_field source source_typ expr_record typfield =
   | Some (_, expr_ref) -> check_match source !expr_ref.note typ
   | None -> error_field source source_typ atom
 
-
-
-let rec check_tuple source exprs typ =
-  match typ.it with
+let check_tuple source exprs typ =
+  match (ground_typ_of typ).it with
   | TupT etl when List.length exprs = List.length etl ->
     let f expr (_, typ) = check_match source expr.note typ in
     List.iter2 f exprs etl
-  | VarT (id, _) when Env.mem_typ !env id ->
-    (match Env.find_typ !env id with
-    | _, [{ it = InstD (_, _, { it = AliasT typ'; _ }); _ }] ->
-      check_tuple source exprs typ'
-    | _, [{ it = InstD (_, _, { it = VariantT tcs; _ }); _ }] ->
-      let is_valid_tuple typecase =
-        let _, (_, typ', _), _ = typecase in
-        try check_tuple source exprs typ'; true with _ -> false
-      in
-      if not (List.exists is_valid_tuple tcs) then error_tuple source typ
-    | _ -> error_tuple source typ
-    )
   | _ -> error_tuple source typ
-
-
 
 let access (source: source) (typ: typ) (path: path) : typ =
   match path.it with
