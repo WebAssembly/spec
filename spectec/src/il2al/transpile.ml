@@ -470,6 +470,7 @@ let hide_state_expr expr =
     match expr.it with
     | CallE (f, args) -> CallE (f, hide_state_args args)
     | TupE [ s; e ] when is_store s -> e.it
+    | TupE [ z; e ] when is_state z -> e.it
     | e -> e
   in
   { expr with it = expr' }
@@ -684,11 +685,20 @@ let handle_unframed_algo instrs =
     let ret =
       match !frame_arg with
       | Some f ->
-        let frame = frameE (None, f) ~at:f.at ~note:(Il.Ast.VarT ("callframe" $ no_region, []) $ no_region) in
+        let callframeT = Il.Ast.VarT ("callframe" $ no_region, []) $ no_region in
+        let frame = frameE (None, f) ~at:f.at ~note:callframeT in
+        let frame' =
+          match instr.it with
+          (* HARDCODE: the frame-passing-style *)
+          | LetI ( { it = TupE [f'; _]; _ }, _) ->
+            frameE (None, f') ~at:f'.at ~note:callframeT
+          | _ ->
+            frameE (None, varE "_f") ~note:callframeT
+        in
         [
           pushI frame ~at:frame.at;
           instr;
-          popI frame ~at:frame.at;
+          popI frame' ~at:frame'.at;
         ]
       | None -> [ instr ]
     in

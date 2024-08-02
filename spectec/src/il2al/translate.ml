@@ -843,12 +843,12 @@ let translate_letpr lhs rhs free_ids =
 let translate_rulepr id exp =
   let at = id.at in
   match id.it, translate_argexp exp with
-  | "Eval_expr", [z; lhs; _; rhs] ->
+  | "Eval_expr", [z; is; z'; vs] ->
     (* Note: State is automatically converted into frame by remove_state *)
     (* Note: Push/pop is automatically inserted by handle_frame *)
-    [
-      letI (rhs, callE ("eval_expr", [ z; lhs ]) ~note:rhs.note) ~at:at;
-    ]
+    let lhs = tupE [z'; vs] ~at:(over_region [z'.at; vs.at]) ~note:vs.note in
+    let rhs = callE ("eval_expr", [ z; is ]) ~note:vs.note in
+    [ letI (lhs, rhs) ~at:at ]
   (* ".*_sub" *)
   | name, [_C; rt1; rt2]
     when String.ends_with ~suffix:"_sub" name ->

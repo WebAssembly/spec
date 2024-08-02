@@ -1184,6 +1184,7 @@ warning: definition `dim` was never spliced
 warning: definition `disjoint_` was never spliced
 warning: definition `elem` was never spliced
 warning: definition `eleminst` was never spliced
+warning: definition `evalglobals` was never spliced
 warning: definition `expanddt` was never spliced
 warning: definition `expon` was never spliced
 warning: definition `extend__` was never spliced
@@ -1772,6 +1773,7 @@ warning: definition prose `disjoint_` was never spliced
 warning: definition prose `elem` was never spliced
 warning: definition prose `eleminst` was never spliced
 warning: definition prose `eval_expr` was never spliced
+warning: definition prose `evalglobals` was never spliced
 warning: definition prose `expanddt` was never spliced
 warning: definition prose `expon` was never spliced
 warning: definition prose `fone` was never spliced

@@ -530,9 +530,11 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     ctx
   | PopI e ->
     (match e.it with
-    | FrameE _ ->
+    | FrameE (_, inner_e) ->
       (match WasmContext.pop_context () with
-      | FrameV _, _, _ -> ctx
+      | FrameV (_, inner_v), _, _ ->
+        let new_env = assign inner_e inner_v env in
+        AlContext.set_env new_env ctx
       | v, _, _ -> failwith (sprintf "current context `%s` is not a frame" (string_of_value v))
       )
     | IterE ({ it = VarE name; _ }, [name'], ListN (e', None)) when name = name' ->

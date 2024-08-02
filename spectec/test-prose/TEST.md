@@ -1108,13 +1108,13 @@ instantiate module externval*
 16. Let z be f_init.
 17. Push the activation of z to the stack.
 18. Let [(I32.CONST i_D)]* be $eval_expr(expr_D)*.
-19. Pop the activation of z from the stack.
+19. Pop the activation of _f from the stack.
 20. Push the activation of z to the stack.
 21. Let [(I32.CONST i_E)]* be $eval_expr(expr_E)*.
-22. Pop the activation of z from the stack.
+22. Pop the activation of _f from the stack.
 23. Push the activation of z to the stack.
 24. Let [val]* be $eval_expr(expr_G)*.
-25. Pop the activation of z from the stack.
+25. Pop the activation of _f from the stack.
 26. Let moduleinst be $allocmodule(module, externval*, val*).
 27. Let f be { LOCALS: []; MODULE: moduleinst; }.
 28. Perform $initelem(moduleinst, i_E*, moduleinst.FUNCS[x]**).
@@ -1128,16 +1128,18 @@ instantiate module externval*
 
 invoke fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; EXPORTS: []; }; }.
-2. Let (t_1^n -> t_2*) be $funcinst()[fa].TYPE.
-3. Let k be |t_2*|.
-4. Push the activation of f with arity k to the stack.
-5. Push the values val^n to the stack.
-6. Execute the instruction (CALL_ADDR fa).
-7. Pop all values val* from the top of the stack.
-8. Pop the activation of f with arity k from the stack.
-9. Push the values val* to the stack.
-10. Pop the values val^k from the stack.
-11. Return val^k.
+2. Push the activation of f to the stack.
+3. Let (t_1^n -> t_2*) be $funcinst()[fa].TYPE.
+4. Pop the activation of _f from the stack.
+5. Let k be |t_2*|.
+6. Push the activation of f with arity k to the stack.
+7. Push the values val^n to the stack.
+8. Execute the instruction (CALL_ADDR fa).
+9. Pop all values val* from the top of the stack.
+10. Pop the activation of f with arity k from the stack.
+11. Push the values val* to the stack.
+12. Pop the values val^k from the stack.
+13. Return val^k.
 
 execution_of_UNREACHABLE
 1. Trap.
@@ -3088,16 +3090,17 @@ growmemory mi n
   b. Return mi'.
 
 blocktype block_u1
-1. If (block_u1 is (_RESULT ?())), then:
+1. Let z be the current frame.
+2. If (block_u1 is (_RESULT ?())), then:
   a. Return ([] -> []).
-2. If block_u1 is of the case _RESULT, then:
+3. If block_u1 is of the case _RESULT, then:
   a. Let (_RESULT y_0) be block_u1.
   b. If y_0 is defined, then:
     1) Let ?(t) be y_0.
     2) Return ([] -> [t]).
-3. Assert: Due to validation, block_u1 is of the case _IDX.
-4. Let (_IDX x) be block_u1.
-5. Return $type(x).
+4. Assert: Due to validation, block_u1 is of the case _IDX.
+5. Let (_IDX x) be block_u1.
+6. Return $type(x).
 
 funcs exter_u0*
 1. If (exter_u0* is []), then:
@@ -3327,10 +3330,10 @@ instantiate module externval*
 18. Let z be f_init.
 19. Push the activation of z to the stack.
 20. Let [val]* be $eval_expr(expr_G)*.
-21. Pop the activation of z from the stack.
+21. Pop the activation of _f from the stack.
 22. Push the activation of z to the stack.
 23. Let [ref]** be $eval_expr(expr_E)**.
-24. Pop the activation of z from the stack.
+24. Pop the activation of _f from the stack.
 25. Let moduleinst be $allocmodule(module, externval*, val*, ref**).
 26. Let f be { LOCALS: []; MODULE: moduleinst; }.
 27. Push the activation of f with arity 0 to the stack.
@@ -3344,16 +3347,18 @@ instantiate module externval*
 
 invoke fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
-2. Let (t_1^n -> t_2*) be $funcinst()[fa].TYPE.
-3. Let k be |t_2*|.
-4. Push the activation of f with arity k to the stack.
-5. Push the values val^n to the stack.
-6. Execute the instruction (CALL_ADDR fa).
-7. Pop all values val* from the top of the stack.
-8. Pop the activation of f with arity k from the stack.
-9. Push the values val* to the stack.
-10. Pop the values val^k from the stack.
-11. Return val^k.
+2. Push the activation of f to the stack.
+3. Let (t_1^n -> t_2*) be $funcinst()[fa].TYPE.
+4. Pop the activation of _f from the stack.
+5. Let k be |t_2*|.
+6. Push the activation of f with arity k to the stack.
+7. Push the values val^n to the stack.
+8. Execute the instruction (CALL_ADDR fa).
+9. Pop all values val* from the top of the stack.
+10. Pop the activation of f with arity k from the stack.
+11. Push the values val* to the stack.
+12. Pop the values val^k from the stack.
+13. Return val^k.
 
 execution_of_UNREACHABLE
 1. Trap.
@@ -7375,14 +7380,15 @@ funcidx_nonfuncs YetE (`%%%%%`_nonfuncs(global*{global : global}, table*{table :
 1. Return $funcidx_module((MODULE [] [] [] global* table* mem* elem* data* ?() [])).
 
 blocktype_ block_u0
-1. If block_u0 is of the case _IDX, then:
+1. Let z be the current frame.
+2. If block_u0 is of the case _IDX, then:
   a. Let (_IDX x) be block_u0.
   b. Assert: Due to validation, $expanddt($type(x)) is of the case FUNC.
   c. Let (FUNC ft) be $expanddt($type(x)).
   d. Return ft.
-2. Assert: Due to validation, block_u0 is of the case _RESULT.
-3. Let (_RESULT t?) be block_u0.
-4. Return ([] -> t?).
+3. Assert: Due to validation, block_u0 is of the case _RESULT.
+4. Let (_RESULT t?) be block_u0.
+5. Return ([] -> t?).
 
 alloctypes type_u0*
 1. If (type_u0* is []), then:
@@ -7574,6 +7580,21 @@ rundata_ x (DATA b^n datam_u0)
 3. Let (ACTIVE y instr*) be datam_u0.
 4. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT y x), (DATA.DROP x)].
 
+evalglobals globa_u0* expr_u1*
+1. Let z be the current frame.
+2. If ((globa_u0* is []) and (expr_u1* is [])), then:
+  a. Return [].
+3. Assert: Due to validation, (|expr_u1*| ≥ 1).
+4. Let [expr] ++ expr'* be expr_u1*.
+5. Assert: Due to validation, (|globa_u0*| ≥ 1).
+6. Let [gt] ++ gt'* be globa_u0*.
+7. Let [val] be $eval_expr(expr).
+8. Let f be z.
+9. Let a be $allocglobal(gt, val).
+10. Append a to the f.MODULE.GLOBALS.
+11. Let val'* be $evalglobals(gt'*, expr'*).
+12. Return [val] ++ val'*.
+
 instantiate module externval*
 1. Assert: Due to validation, $Module_ok(module, (xt_I* -> xt_E*)).
 2. Assert: Due to validation, module is of the case MODULE.
@@ -7585,23 +7606,23 @@ instantiate module externval*
 8. Let (START x)? be start?.
 9. Let moduleinst_0 be { TYPES: $alloctypes(type*); FUNCS: $funcsxv(externval*) ++ (|s.FUNCS| + i_F)^(i_F<|func*|); GLOBALS: $globalsxv(externval*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
 10. Assert: Due to validation, data* is of the case DATA.
-11. Assert: Due to validation, global* is of the case GLOBAL.
-12. Let (GLOBAL globaltype expr_G)* be global*.
-13. Assert: Due to validation, table* is of the case TABLE.
-14. Let (TABLE tabletype expr_T)* be table*.
+11. Assert: Due to validation, table* is of the case TABLE.
+12. Let (TABLE tabletype expr_T)* be table*.
+13. Assert: Due to validation, global* is of the case GLOBAL.
+14. Let (GLOBAL globaltype expr_G)* be global*.
 15. Assert: Due to validation, elem* is of the case ELEM.
 16. Let (ELEM reftype expr_E* elemmode)* be elem*.
 17. Let instr_S? be (CALL x)?.
 18. Let z be { LOCALS: []; MODULE: moduleinst_0; }.
 19. Push the activation of z to the stack.
-20. Let [val_G]* be $eval_expr(expr_G)*.
-21. Pop the activation of z from the stack.
-22. Push the activation of z to the stack.
+20. Let val_G* be $evalglobals(globaltype*, expr_G*).
+21. Pop the activation of z' from the stack.
+22. Push the activation of z' to the stack.
 23. Let [ref_T]* be $eval_expr(expr_T)*.
-24. Pop the activation of z from the stack.
-25. Push the activation of z to the stack.
+24. Pop the activation of _f from the stack.
+25. Push the activation of z' to the stack.
 26. Let [ref_E]** be $eval_expr(expr_E)**.
-27. Pop the activation of z from the stack.
+27. Pop the activation of _f from the stack.
 28. Let moduleinst be $allocmodule(module, externval*, val_G*, ref_T*, ref_E**).
 29. Let f be { LOCALS: []; MODULE: moduleinst; }.
 30. Push the activation of f with arity 0 to the stack.

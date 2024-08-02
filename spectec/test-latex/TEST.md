@@ -8955,6 +8955,17 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
+{{{\mathrm{evalglobal}}^\ast}}{(z, \epsilon, \epsilon)} &=& (z, \epsilon) \\
+{{{\mathrm{evalglobal}}^\ast}}{(z, {\mathit{gt}}~{{\mathit{gt}'}^\ast}, {\mathit{expr}}~{{\mathit{expr}'}^\ast})} &=& \multicolumn{2}{l@{}}{ ({z'}, {\mathit{val}}~{{\mathit{val}'}^\ast}) } \\
+  && \multicolumn{2}{l@{}}{\quad \mbox{if}~z ; {\mathit{expr}} \hookrightarrow^\ast z ; {\mathit{val}}} \\
+  && \multicolumn{2}{l@{}}{\quad {\land}~z = s ; f} \\
+  && \multicolumn{2}{l@{}}{\quad {\land}~({s'}, a) = {\mathrm{allocglobal}}(s, {\mathit{gt}}, {\mathit{val}})} \\
+  && \multicolumn{2}{l@{}}{\quad {\land}~({z'}, {{\mathit{val}'}^\ast}) = {{{\mathrm{evalglobal}}^\ast}}{(({s'} ; f{}[{.}\mathsf{module}{.}\mathsf{globals} \mathrel{{=}{\oplus}} a]), {{\mathit{gt}'}^\ast}, {{\mathit{expr}'}^\ast})}} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
 {\mathrm{instantiate}}(s, {\mathit{module}}, {{\mathit{externval}}^\ast}) &=& \multicolumn{2}{l@{}}{ {s'} ; f ; {{\mathit{instr}}_{\mathsf{e}}^\ast}~{{\mathit{instr}}_{\mathsf{d}}^\ast}~{{\mathit{instr}}_{\mathsf{s}}^?} } \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad \mbox{if}~{\vdash}\, {\mathit{module}} : {{\mathit{xt}}_{\mathsf{i}}^\ast} \rightarrow {{\mathit{xt}}_{\mathsf{e}}^\ast}} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~(s \vdash {\mathit{externval}} : {\mathit{xt}}_{\mathsf{i}})^\ast} \\
@@ -8970,9 +8981,9 @@ $$
   \mathsf{globals}~{\mathrm{globals}}({{\mathit{externval}}^\ast}) \}\end{array}} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~z = s ; \{ \begin{array}[t]{@{}l@{}}
 \mathsf{module}~{\mathit{moduleinst}}_0 \}\end{array}} \\
-   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~(z ; {\mathit{expr}}_{\mathsf{g}} \hookrightarrow^\ast z ; {\mathit{val}}_{\mathsf{g}})^\ast} \\
-   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~(z ; {\mathit{expr}}_{\mathsf{t}} \hookrightarrow^\ast z ; {\mathit{ref}}_{\mathsf{t}})^\ast} \\
-   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{(z ; {\mathit{expr}}_{\mathsf{e}} \hookrightarrow^\ast z ; {\mathit{ref}}_{\mathsf{e}})^\ast}^\ast} \\
+   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~({z'}, {{\mathit{val}}_{\mathsf{g}}^\ast}) = {{{\mathrm{evalglobal}}^\ast}}{(z, {{\mathit{globaltype}}^\ast}, {{\mathit{expr}}_{\mathsf{g}}^\ast})}} \\
+   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~({z'} ; {\mathit{expr}}_{\mathsf{t}} \hookrightarrow^\ast {z'} ; {\mathit{ref}}_{\mathsf{t}})^\ast} \\
+   \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~{({z'} ; {\mathit{expr}}_{\mathsf{e}} \hookrightarrow^\ast {z'} ; {\mathit{ref}}_{\mathsf{e}})^\ast}^\ast} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~({s'}, {\mathit{moduleinst}}) = {\mathrm{allocmodule}}(s, {\mathit{module}}, {{\mathit{externval}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {({{\mathit{ref}}_{\mathsf{e}}^\ast})^\ast})} \\
    \multicolumn{4}{@{}l@{}}{\qquad\quad {\land}~f = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{module}~{\mathit{moduleinst}} \}\end{array}} \\
