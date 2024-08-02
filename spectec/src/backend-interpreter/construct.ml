@@ -473,22 +473,22 @@ let al_to_special_vbinop = function
   | v -> error_value "special vbinop" v
 
 let al_to_int_vcvtop : value list -> V128Op.icvtop = function
-  | [ sh; CaseV (op, []); OptV half; OptV ext; OptV _zero ] as l -> (
+  | [ sh; CaseV (op, [CaseV (ext, [])]); OptV half; OptV _zero ] as l -> (
     match op with
     | "EXTEND" -> (
       match half, ext with
-      | Some (CaseV ("LOW", [])), Some (CaseV ("S", [])) -> V128Op.ExtendLowS
-      | Some (CaseV ("LOW", [])), Some (CaseV ("U", [])) -> V128Op.ExtendLowU
-      | Some (CaseV ("HIGH", [])), Some (CaseV ("S", [])) -> V128Op.ExtendHighS
-      | Some (CaseV ("HIGH", [])), Some (CaseV ("U", [])) -> V128Op.ExtendHighU
+      | Some (CaseV ("LOW", [])), "S" -> V128Op.ExtendLowS
+      | Some (CaseV ("LOW", [])), "U" -> V128Op.ExtendLowU
+      | Some (CaseV ("HIGH", [])), "S" -> V128Op.ExtendHighS
+      | Some (CaseV ("HIGH", [])), "U" -> V128Op.ExtendHighU
       | _ -> error_values "integer vcvtop" l
     )
     | "TRUNC_SAT" -> (
       match sh, ext with
-      | TupV [ CaseV ("F32", []); NumV z ], Some (CaseV ("S", [])) when z = four -> V128Op.TruncSatSF32x4
-      | TupV [ CaseV ("F32", []); NumV z ], Some (CaseV ("U", [])) when z = four -> V128Op.TruncSatUF32x4
-      | TupV [ CaseV ("F64", []); NumV z ], Some (CaseV ("S", [])) when z = two -> V128Op.TruncSatSZeroF64x2
-      | TupV [ CaseV ("F64", []); NumV z ], Some (CaseV ("U", [])) when z = two -> V128Op.TruncSatUZeroF64x2
+      | TupV [ CaseV ("F32", []); NumV z ], "S" when z = four -> V128Op.TruncSatSF32x4
+      | TupV [ CaseV ("F32", []); NumV z ], "U" when z = four -> V128Op.TruncSatUF32x4
+      | TupV [ CaseV ("F64", []); NumV z ], "S" when z = two -> V128Op.TruncSatSZeroF64x2
+      | TupV [ CaseV ("F64", []); NumV z ], "U" when z = two -> V128Op.TruncSatUZeroF64x2
       | _ -> error_values "integer vcvtop" l
     )
     | _ -> error_values "integer vcvtop" l
@@ -496,16 +496,12 @@ let al_to_int_vcvtop : value list -> V128Op.icvtop = function
   | l -> error_values "integer vcvtop" l
 
 let al_to_float_vcvtop : value list -> V128Op.fcvtop = function
-  | [ _sh; CaseV (op, []); OptV _half; OptV ext; OptV _zero ] as l -> (
-    match op with
-    | "DEMOTE" -> V128Op.DemoteZeroF64x2
-    | "CONVERT" -> (
-      match ext with
-      | Some (CaseV ("S", [])) -> V128Op.ConvertSI32x4
-      | Some (CaseV ("U", [])) -> V128Op.ConvertUI32x4
-      | _ -> error_values "float vcvtop" l
-    )
-    | "PROMOTE" -> V128Op.PromoteLowF32x4
+  | [ _sh; CaseV (op, ext); OptV _half; OptV _zero ] as l -> (
+    match op, ext with
+    | "DEMOTE", [] -> V128Op.DemoteZeroF64x2
+    | "CONVERT", [CaseV ("S", [])] -> V128Op.ConvertSI32x4
+    | "CONVERT", [CaseV ("U", [])] -> V128Op.ConvertUI32x4
+    | "PROMOTE", [] -> V128Op.PromoteLowF32x4
     | _ -> error_values "float vcvtop" l
   )
   | l -> error_values "float vcvtop" l
@@ -1479,89 +1475,89 @@ let al_of_special_vbinop = function
   | _ -> error "al_of_special_vbinop" empty
 
 let al_of_int_vcvtop = function
-  | V128Op.ExtendLowS -> Some (None, nullary "EXTEND", Some (nullary "LOW"), Some (nullary "S"), None)
-  | V128Op.ExtendLowU -> Some (None, nullary "EXTEND", Some (nullary "LOW"), Some (nullary "U"), None)
-  | V128Op.ExtendHighS -> Some (None, nullary "EXTEND", Some (nullary "HIGH"), Some (nullary "S"), None)
-  | V128Op.ExtendHighU -> Some (None, nullary "EXTEND", Some (nullary "HIGH"), Some (nullary "U"), None)
-  | V128Op.TruncSatSF32x4 -> Some (Some (TupV [ nullary "F32"; numV four ]), nullary "TRUNC_SAT", None, Some (nullary "S"), None)
-  | V128Op.TruncSatUF32x4 -> Some (Some (TupV [ nullary "F32"; numV four ]), nullary "TRUNC_SAT", None, Some (nullary "U"), None)
-  | V128Op.TruncSatSZeroF64x2 -> Some (Some (TupV [ nullary "F64"; numV two ]), nullary "TRUNC_SAT", None, Some (nullary "S"), Some (nullary "ZERO"))
-  | V128Op.TruncSatUZeroF64x2 -> Some (Some (TupV [ nullary "F64"; numV two ]), nullary "TRUNC_SAT", None, Some (nullary "U"), Some (nullary "ZERO"))
+  | V128Op.ExtendLowS -> Some (None, caseV ("EXTEND", [nullary "S"]), Some (nullary "LOW"), None)
+  | V128Op.ExtendLowU -> Some (None, caseV ("EXTEND", [nullary "U"]), Some (nullary "LOW"), None)
+  | V128Op.ExtendHighS -> Some (None, caseV ("EXTEND", [nullary "S"]), Some (nullary "HIGH"), None)
+  | V128Op.ExtendHighU -> Some (None, caseV ("EXTEND", [nullary "U"]), Some (nullary "HIGH"), None)
+  | V128Op.TruncSatSF32x4 -> Some (Some (TupV [ nullary "F32"; numV four ]), caseV ("TRUNC_SAT", [nullary "S"]), None, None)
+  | V128Op.TruncSatUF32x4 -> Some (Some (TupV [ nullary "F32"; numV four ]), caseV ("TRUNC_SAT", [nullary "U"]), None, None)
+  | V128Op.TruncSatSZeroF64x2 -> Some (Some (TupV [ nullary "F64"; numV two ]), caseV ("TRUNC_SAT", [nullary "S"]), None, Some (nullary "ZERO"))
+  | V128Op.TruncSatUZeroF64x2 -> Some (Some (TupV [ nullary "F64"; numV two ]), caseV ("TRUNC_SAT", [nullary "U"]), None, Some (nullary "ZERO"))
   | _ -> None
 
 let al_of_float32_vcvtop = function
-  | V128Op.DemoteZeroF64x2 -> Some (Some (TupV [ nullary "F64"; numV two ]), nullary "DEMOTE", None, None, Some (nullary "ZERO"))
-  | V128Op.ConvertSI32x4 -> Some (Some (TupV [ nullary "I32"; numV four ]), nullary "CONVERT", None, Some (nullary "S"), None)
-  | V128Op.ConvertUI32x4 -> Some (Some (TupV [ nullary "I32"; numV four ]), nullary "CONVERT", None, Some (nullary "U"), None)
+  | V128Op.DemoteZeroF64x2 -> Some (Some (TupV [ nullary "F64"; numV two ]), nullary "DEMOTE", None, Some (nullary "ZERO"))
+  | V128Op.ConvertSI32x4 -> Some (Some (TupV [ nullary "I32"; numV four ]), caseV ("CONVERT", [nullary "S"]), None, None)
+  | V128Op.ConvertUI32x4 -> Some (Some (TupV [ nullary "I32"; numV four ]), caseV ("CONVERT", [nullary "U"]), None, None)
   | _ -> None
 
 let al_of_float64_vcvtop = function
-  | V128Op.PromoteLowF32x4 -> Some (Some (TupV [ nullary "F32"; numV four ]), nullary "PROMOTE", Some (nullary "LOW"), None, None)
-  | V128Op.ConvertSI32x4 -> Some (Some (TupV [ nullary "I32"; numV four ]), nullary "CONVERT", Some (nullary "LOW"), Some (nullary "S"), None)
-  | V128Op.ConvertUI32x4 -> Some (Some (TupV [ nullary "I32"; numV four ]), nullary "CONVERT", Some (nullary "LOW"), Some (nullary "U"), None)
+  | V128Op.PromoteLowF32x4 -> Some (Some (TupV [ nullary "F32"; numV four ]), nullary "PROMOTE", Some (nullary "LOW"), None)
+  | V128Op.ConvertSI32x4 -> Some (Some (TupV [ nullary "I32"; numV four ]), caseV ("CONVERT", [nullary "S"]), Some (nullary "LOW"), None)
+  | V128Op.ConvertUI32x4 -> Some (Some (TupV [ nullary "I32"; numV four ]), caseV ("CONVERT", [nullary "U"]), Some (nullary "LOW"), None)
   | _ -> None
 
 let al_of_vcvtop = function
   | V128 vop -> (
     match vop with
     | V128.I8x16 op -> (
-      Option.map (fun (to_, op', half, ext, zero) ->
+      Option.map (fun (to_, op', half,  zero) ->
         let sh = match to_ with Some sh -> sh | None -> (
           match half with
           | Some _ -> error "al_of_vcvtop" empty
           | None -> TupV [ nullary "I8"; numV sixteen ]
         ) in
-        [ TupV [ nullary "I8"; numV sixteen ]; sh; op'; optV half; optV ext; optV zero ]
+        [ TupV [ nullary "I8"; numV sixteen ]; sh; op'; optV half; optV zero ]
       ) (al_of_int_vcvtop op)
     )
     | V128.I16x8 op -> (
-      Option.map (fun (to_, op', half, ext, zero) ->
+      Option.map (fun (to_, op', half, zero) ->
         let sh = match to_ with Some sh -> sh | None -> (
           match half with
           | Some _ -> TupV [ nullary "I8"; numV sixteen ]
           | None -> TupV [ nullary "I16"; numV eight ]
         ) in
-        [ TupV [ nullary "I16"; numV eight ]; sh; op'; optV half; optV ext; optV zero ]
+        [ TupV [ nullary "I16"; numV eight ]; sh; op'; optV half; optV zero ]
       ) (al_of_int_vcvtop op)
     )
     | V128.I32x4 op -> (
-      Option.map (fun (to_, op', half, ext, zero) ->
+      Option.map (fun (to_, op', half, zero) ->
         let sh = match to_ with Some sh -> sh | None -> (
           match half with
           | Some _ -> TupV [ nullary "I16"; numV eight ]
           | None -> TupV [ nullary "I32"; numV four ]
         ) in
-        [ TupV [ nullary "I32"; numV four ]; sh; op'; optV half; optV ext; optV zero ]
+        [ TupV [ nullary "I32"; numV four ]; sh; op'; optV half; optV zero ]
       ) (al_of_int_vcvtop op)
     )
     | V128.I64x2 op -> (
-      Option.map (fun (to_, op', half, ext, zero) ->
+      Option.map (fun (to_, op', half, zero) ->
         let sh = match to_ with Some sh -> sh | None -> (
           match half with
           | Some _ -> TupV [ nullary "I32"; numV four ]
           | None -> TupV [ nullary "I64"; numV two ]
         ) in
-        [ TupV [ nullary "I64"; numV two ]; sh; op'; optV half; optV ext; optV zero ]
+        [ TupV [ nullary "I64"; numV two ]; sh; op'; optV half; optV zero ]
       ) (al_of_int_vcvtop op)
     )
     | V128.F32x4 op -> (
-      Option.map (fun (to_, op', half, ext, zero) ->
+      Option.map (fun (to_, op', half, zero) ->
         let sh = match to_ with Some sh -> sh | None -> (
           match half with
           | Some _ -> error "al_of_vcvtop" empty
           | None -> TupV [ nullary "F32"; numV four ]
         ) in
-        [ TupV [ nullary "F32"; numV four ]; sh; op'; optV half; optV ext; optV zero ]
+        [ TupV [ nullary "F32"; numV four ]; sh; op'; optV half; optV zero ]
       ) (al_of_float32_vcvtop op)
     )
     | V128.F64x2 op -> (
-      Option.map (fun (to_, op', half, ext, zero) ->
+      Option.map (fun (to_, op', half, zero) ->
         let sh = match to_ with Some sh -> sh | None -> (
           match half with
           | Some _ -> TupV [ nullary "F32"; numV four ]
           | None -> TupV [ nullary "F64"; numV two ]
         ) in
-        [ TupV [ nullary "F64"; numV two ]; sh; op'; optV half; optV ext; optV zero ]
+        [ TupV [ nullary "F64"; numV two ]; sh; op'; optV half; optV zero ]
       ) (al_of_float64_vcvtop op)
     )
   )

@@ -205,15 +205,13 @@ let () =
       )
     in
 
-    let match_function_name function_name al_elt=
-      
-      if function_name="" then true
-      else
-      match al_elt.Util.Source.it with
-      | Al.Ast.RuleA (a, _, _) -> 
-        (Al.Print.string_of_atom a) = (String.uppercase_ascii function_name)
+    let match_algo_name algo_name al_elt =
+      algo_name = "" ||
+      (match al_elt.Util.Source.it with
+      | Al.Ast.RuleA (a, _, _, _) -> 
+        Al.Print.string_of_atom a = String.uppercase_ascii algo_name
       | Al.Ast.FuncA (id , _, _) -> 
-        id = (String.lowercase_ascii function_name)
+        id = String.lowercase_ascii algo_name)
     in
 
     if !print_al then
@@ -221,7 +219,12 @@ let () =
         (List.map Al.Print.string_of_algorithm al |> String.concat "\n")
     else if !print_al_o <> "" then
       Printf.printf "%s\n%!"
-        (List.filter (match_function_name !print_al_o) al |> List.map Al.Print.string_of_algorithm |> String.concat "\n");
+        (List.filter (match_algo_name !print_al_o) al |> List.map Al.Print.string_of_algorithm |> String.concat "\n");
+
+    (* WIP
+    log "AL Validation...";
+    Al.Valid.valid al;
+    *)
 
     (match !target with
     | Check -> ()

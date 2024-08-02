@@ -129,7 +129,7 @@ and narrow_atom env syntax variant =
  * shallowest nonterminal that defines the variant. *)
 let narrow_atom env atom =
   let variant = Al.Print.string_of_atom atom in
-  let _, syntax = atom in
+  let syntax = atom.note.def in
   narrow_atom env syntax variant
 
 let find_func env fname = Set.mem fname !(env.funcs)

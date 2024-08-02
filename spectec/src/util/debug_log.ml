@@ -28,11 +28,13 @@ let log label = log_at label Source.no_region
 let log_if_at label at b arg_f res_f f = if b then log_at label at arg_f res_f f else f ()
 let log_if label = log_if_at label Source.no_region
 
+module MySet = Set.Make(String)
 module MyMap = Map.Make(String)
 
 let opt f xo = match xo with None -> "-" | Some x -> f x
 let seq f xs = String.concat " " (List.map f xs)
 let list f xs = String.concat ", " (List.map f xs)
+let set s = seq Fun.id (MySet.elements s)
 let mapping f m = seq (fun (x, y) -> x ^ "=" ^ f y) (MyMap.bindings m)
 
 let qline _ = "--------------------"
