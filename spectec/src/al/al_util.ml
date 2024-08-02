@@ -53,6 +53,7 @@ let memE ?(at = no) ~note (e1, e2) = MemE (e1, e2) |> mk_expr at note
 let lenE ?(at = no) ~note e = LenE e |> mk_expr at note
 let tupE ?(at = no) ~note el = TupE el |> mk_expr at note
 let caseE ?(at = no) ~note (a, el) = CaseE (a, el) |> mk_expr at note
+let caseE2 ?(at = no) ~note (op, el) = CaseE2 (op, el) |> mk_expr at note
 let callE ?(at = no) ~note (id, el) = CallE (id, el) |> mk_expr at note
 let invCallE ?(at = no) ~note (id, il, el) = InvCallE (id, il, el) |> mk_expr at note
 let iterE ?(at = no) ~note (e, idl, it) = IterE (e, idl, it) |> mk_expr at note
@@ -163,7 +164,7 @@ let iter_type_of_value: value -> iter = function
   | OptV _ -> Opt
   | v -> fail_value "iter_type_of_value" v
 
-let rec typ_to_var_name ty = 
+let rec typ_to_var_name ty =
   match ty.it with
   (* TODO: guess this for "var" in el? *)
   | Il.Ast.VarT (id, _) -> id.it

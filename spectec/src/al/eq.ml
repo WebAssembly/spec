@@ -24,6 +24,7 @@ let rec eq_expr e1 e2 =
   | LenE e1, LenE e2 -> eq_expr e1 e2
   | TupE el1, TupE el2 -> eq_exprs el1 el2
   | CaseE (a1, el1), CaseE (a2, el2) -> El.Atom.eq a1 a2 && eq_exprs el1 el2
+  | CaseE2 (op1, el1), CaseE2 (op2, el2) -> Il.Mixop.eq op1 op2 && eq_exprs el1 el2
   | CallE (i1, al1), CallE (i2, al2) -> i1 = i2 && eq_args al1 al2
   | InvCallE (i1, nl1, al1), InvCallE (i2, nl2, al2) ->
     i1 = i2 && List.for_all2 (=) nl1 nl2 && eq_args al1 al2
@@ -87,7 +88,7 @@ and eq_paths pl1 pl2 = eq_list eq_path pl1 pl2
 and eq_arg a1 a2 =
   match a1.it, a2.it with
   | ExpA e1, ExpA e2 -> eq_expr e1 e2
-  | TypA, TypA -> true
+  | TypA typ1, TypA typ2 -> Il.Eq.eq_typ typ1 typ2
   | _ -> false
 
 and eq_args al1 al2 = eq_list eq_arg al1 al2

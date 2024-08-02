@@ -1,16 +1,23 @@
 open Util
 open Source
+open Il.Ast
 open Ast
 open Al_util
 open Print
 open Walk
 
 
+module Atom = El.Atom
+module Eval = Il.Eval
+
 (* Error *)
 
+type source = string phrase
+
 let error at msg = Error.error at "AL validation" msg
-let error_valid error_kind (source, at) msg =
-  error at (Printf.sprintf "%s when validating `%s`\n  %s" error_kind source msg)
+let error_valid error_kind source msg =
+  error source.at
+    (Printf.sprintf "%s when validating `%s`\n  %s" error_kind source.it msg)
 let error_mismatch source typ1 typ2 =
   error_valid "type mismatch" source
     (Printf.sprintf "%s =/= %s"
@@ -19,7 +26,7 @@ let error_mismatch source typ1 typ2 =
     )
 let error_field source typ field =
   error_valid "unknown field" source
-    (Printf.sprintf "%s ∉ %s" field (Il.Print.string_of_typ typ))
+    (Printf.sprintf "%s ∉ %s" (string_of_atom field) (Il.Print.string_of_typ typ))
 let error_struct source typ =
   error_valid "invalid struct type" source (Il.Print.string_of_typ typ)
 let error_tuple source typ =
@@ -32,10 +39,7 @@ module Set = Free.IdSet
 let bound_set: Set.t ref = ref Set.empty
 let add_bound_var id = bound_set := Set.add id !bound_set
 let add_bound_vars expr = bound_set := Set.union (Free.free_expr expr) !bound_set
-let add_bound_vars_of_arg arg = match arg.it with ExpA e -> add_bound_vars e | TypA -> ()
-let init_bound_set algo =
-  bound_set := Set.empty;
-  algo |> Al_util.params_of_algo |> List.iter add_bound_vars_of_arg
+let add_bound_param arg = match arg.it with ExpA e -> add_bound_vars e | TypA _ -> ()
 
 (* Type Env *)
 
@@ -43,38 +47,154 @@ module Env = Il.Env
 let env: Env.t ref = ref Env.empty
 
 
-let varT s = Il.Ast.VarT (s $ no_region, []) $ no_region
+let varT s = VarT (s $ no_region, []) $ no_region
 
-(* TODO: Generalize subtyping for numbers *)
+let is_trivial_mixop = List.for_all (fun atoms -> List.length atoms = 0)
 
-let num_typs = [ "nat"; "int"; "sN"; "uN"; "byte"; "bit"; "N"; "u32"; "iN"; "lane_" ]
+
+(* Subtyping *)
+
+let get_deftyps (id: Il.Ast.id) (args: Il.Ast.arg list): deftyp list =
+  match Env.find_opt_typ !env id with
+  | Some (_, insts) ->
+
+    let get_deftyp inst =
+      let typ_of_arg arg =
+        match (Eval.reduce_arg !env arg).it with
+        | ExpA { it=SubE (_, typ, _); _ } -> typ
+        | ExpA { note; _ } -> note
+        | TypA typ -> typ
+        | _ -> failwith ("TODO: " ^ Il.Print.string_of_arg (Eval.reduce_arg !env arg))
+      in
+
+      let InstD (_, inst_args, deftyp) = inst.it in
+      let args' = List.map typ_of_arg args in
+      let inst_args' = List.map typ_of_arg inst_args in
+      if List.for_all2 (Eval.sub_typ !env) args' inst_args' then
+        Some deftyp
+      else
+        None
+    in
+
+    (match List.find_map get_deftyp insts with
+    | Some deftyp -> [deftyp]
+    | None ->
+      List.map (fun inst -> let InstD (_, _, deftyp) = inst.it in deftyp) insts
+    )
+  | None -> []
+
+let rec unify_deftyp_opt (deftyp: deftyp) : typ option =
+  match deftyp.it with
+  | AliasT typ -> Some typ
+  | StructT _ -> None
+  | VariantT typcases
+  when List.for_all (fun (mixop', _, _) -> is_trivial_mixop mixop') typcases ->
+    (match typcases with
+    | (_, (_, typ, _), _) :: _
+    when
+      typcases
+      |> List.map (fun (_, (_, typ', _), _) -> unify_opt typ typ')
+      |> List.for_all Option.is_some
+    -> Some typ
+    | _ -> None
+    )
+  | _ -> None
+
+and unify_opt (typ1: typ) (typ2: typ) : typ option =
+  let typ1', typ2' = ground_typ_of typ1, ground_typ_of typ2 in
+  match typ1'.it, typ2'.it with
+  | VarT (id1, _), VarT (id2, _) when id1 = id2 -> Some (ground_typ_of typ1)
+  | BoolT, BoolT | NumT _, NumT _ | TextT, TextT -> Some typ1
+  | TupT etl1, TupT etl2 ->
+    let (let*) = Option.bind in
+    let etl =
+      List.fold_right2
+        (fun et1 et2 acc ->
+          let* acc = acc in
+          let* res = unify_opt (snd et1) (snd et2) in
+          Some ((fst et1, res) :: acc)
+        )
+        etl1
+        etl2
+        (Some [])
+    in
+    Option.map (fun etl -> TupT etl $ typ1.at) etl
+  | IterT (typ1'', iter), IterT (typ2'', _) ->
+    Option.map (fun typ -> IterT (typ, iter) $ typ1.at) (unify_opt typ1'' typ2'')
+  | _ -> None
+
+and ground_typ_of (typ: typ) : typ =
+  match typ.it with
+  | VarT (id, _) when Env.mem_var !env id ->
+    let typ', iters = Env.find_var !env id in
+    (* TODO: local var type contains iter *)
+    assert (iters = []);
+    if Il.Eq.eq_typ typ typ' then typ else ground_typ_of typ'
+  (* NOTE: Consider `fN` as a `NumT` to prevent diverging ground type *)
+  | VarT (id, _) when id.it = "fN" -> NumT RealT $ typ.at
+  | VarT (id, args) ->
+    let typ_opts = List.map unify_deftyp_opt (get_deftyps id args) in
+    if List.for_all Option.is_some typ_opts then
+      match List.map Option.get typ_opts with
+      | typ' :: typs
+      when List.for_all Option.is_some (List.map (unify_opt typ') typs) ->
+        ground_typ_of typ'
+      | _ -> typ
+    else
+      typ
+  | TupT [_, typ'] -> ground_typ_of typ'
+  | IterT (typ', iter) -> IterT (ground_typ_of typ', iter) $ typ.at
+  | _ -> typ
 
 let is_num typ =
-  match typ.it with
-  | Il.Ast.NumT _ -> true
-  | Il.Ast.VarT (id, _) when List.mem id.it num_typs -> true
-  | _ -> List.exists (fun nt -> Il.Eval.sub_typ !env typ (varT nt)) num_typs
+  match (ground_typ_of typ).it with
+  | NumT _ -> true
+  | _ -> false
+
 let rec sub_typ typ1 typ2 =
-  match typ1.it, typ2.it with
-  | Il.Ast.IterT (typ1', _), Il.Ast.IterT (typ2', _) -> sub_typ typ1' typ2'
-  | Il.Ast.VarT (id1, _), Il.Ast.VarT (id2, _) ->
-    Il.Eval.sub_typ !env (varT id1.it) (varT id2.it) || is_num typ1 && is_num typ2
-  | _ ->
-    Il.Eval.sub_typ !env typ1 typ2 || is_num typ1 && is_num typ2
-let matches typ1 typ2 = sub_typ typ1 typ2 || sub_typ typ2 typ1
+  let typ1', typ2' = ground_typ_of typ1, ground_typ_of typ2 in
+  match typ1'.it, typ2'.it with
+  | IterT (typ1'', _), IterT (typ2'', _) -> sub_typ typ1'' typ2''
+  | NumT _, NumT _ -> true
+  | _, _ -> Eval.sub_typ !env typ1' typ2'
+
+let rec matches typ1 typ2 =
+  match (ground_typ_of typ1).it, (ground_typ_of typ2).it with
+  | IterT (typ1', _), IterT (typ2', _) -> matches typ1' typ2'
+  | VarT (id1, _), VarT (id2, _) when id1.it = id2.it -> true
+  | _ -> sub_typ typ1 typ2 || sub_typ typ2 typ1
 
 
 (* Helper functions *)
 
 let get_base_typ typ =
   match typ.it with
-  | Il.Ast.IterT (typ', _) -> typ'
+  | IterT (typ', _) -> typ'
   | _ -> typ
 
 let unwrap_iter_typ typ =
   match typ.it with
-  | Il.Ast.IterT (typ', _) -> typ'
+  | IterT (typ', _) -> typ'
   | _ -> assert (false)
+
+
+let rec get_typfields_of_inst (inst: inst) : typfield list =
+  let InstD (_, _, dt) = inst.it in
+  match dt.it with
+  | StructT typfields -> typfields
+  | AliasT typ -> get_typfields typ
+  | VariantT [mixop, (_, typ, _), _] when is_trivial_mixop mixop ->
+    get_typfields typ
+  (* TODO: some variants of struct type *)
+  | VariantT _ -> []
+
+and get_typfields (typ: typ) : typfield list =
+  match typ.it with
+  | VarT (id, _) when Env.mem_typ !env id ->
+    let _, insts = Env.find_typ !env id in
+    List.concat_map get_typfields_of_inst insts
+  | _ -> []
+
 
 let check_match source typ1 typ2 =
   if not (matches typ1 typ2) then error_mismatch source typ1 typ2
@@ -84,12 +204,12 @@ let check_num source typ =
 
 let check_bool source typ =
   match (get_base_typ typ).it with
-  | Il.Ast.BoolT -> ()
+  | BoolT -> ()
   | _ -> error_mismatch source typ (varT "bool")
 
 let check_list source typ =
   match typ.it with
-  | Il.Ast.IterT (_, iter) when iter <> Il.Ast.Opt -> ()
+  | IterT (_, iter) when iter <> Opt -> ()
   | _ -> error_mismatch source typ (varT "list")
 
 (* TODO: use hint *)
@@ -108,107 +228,71 @@ let check_val source typ =
 let check_context source typ =
   let context_typs = [ "callframe"; "label" ] in
   match typ.it with
-  | Il.Ast.VarT (id, []) when List.mem id.it context_typs -> ()
+  | VarT (id, []) when List.mem id.it context_typs -> ()
   | _ -> error_mismatch source typ (varT "context")
 
-let check_field source source_typ expr_record atom typ =
+let check_field source source_typ expr_record typfield =
+  let atom, (_, typ, _), _ = typfield in
   (* TODO: Use record api *)
-  let f e = El.Atom.eq (fst e) atom in
-  let expr =
-    try List.find f expr_record |> snd |> (!)
-    with _ -> error_field source source_typ (El.Print.string_of_atom atom)
-  in
-  check_match source expr.note typ
+  let f e = e |> fst |> Atom.eq atom in
+  match List.find_opt f expr_record with
+  | Some (_, expr_ref) -> check_match source !expr_ref.note typ
+  | None -> error_field source source_typ atom
 
-let rec check_struct source struct_ typ =
-  let open Il.Ast in
-  match typ.it with
-  | VarT (id, _) when Env.mem_typ !env id ->
-    (match Env.find_typ !env id with
-    | _, [{ it = InstD (_, _, { it = StructT tfs; _ }); _ }] ->
-      List.iter
-        (fun (a, (_, typ', _), _) -> check_field source typ struct_ a typ')
-        tfs
-    | _, [{ it = InstD (_, _, { it = AliasT typ'; _ }); _ }] ->
-      check_struct source struct_ typ'
-    | _, [{ it = InstD (_, _, { it = VariantT tcs; _ }); _ }] ->
-      let is_valid_struct typecase =
-        let _, (_, typ', _), _ = typecase in
-        try check_struct source struct_ typ'; true with _ -> false
-      in
-      if not (List.exists is_valid_struct tcs) then error_struct source typ
-    | _ -> error_struct source typ
-    )
-  | _ -> error_struct source typ
-
-let rec check_tuple source exprs typ =
-  let open Il.Ast in
-  match typ.it with
+let check_tuple source exprs typ =
+  match (ground_typ_of typ).it with
   | TupT etl when List.length exprs = List.length etl ->
     let f expr (_, typ) = check_match source expr.note typ in
     List.iter2 f exprs etl
-  | VarT (id, _) when Env.mem_typ !env id ->
-    (match Env.find_typ !env id with
-    | _, [{ it = InstD (_, _, { it = AliasT typ'; _ }); _ }] ->
-      check_tuple source exprs typ'
-    | _, [{ it = InstD (_, _, { it = VariantT tcs; _ }); _ }] ->
-      let is_valid_tuple typecase =
-        let _, (_, typ', _), _ = typecase in
-        try check_tuple source exprs typ'; true with _ -> false
-      in
-      if not (List.exists is_valid_tuple tcs) then error_tuple source typ
-    | _ -> error_tuple source typ
-    )
   | _ -> error_tuple source typ
 
-let rec access_field source typ field =
-  let open Il.Ast in
-  let valid_field =
-    fun (e, _) -> match e.it with VarE s -> s.it = field | _ -> false
-  in
-  match typ.it with
-  | TupT etl when List.exists valid_field etl ->
-    (* XXX: Not sure about this rule *)
-    let (_, typ') = List.find valid_field etl in
-    typ'
-  | VarT (id, _) when Env.mem_typ !env id ->
-    let valid_field = fun (atom, _, _) -> Il.Print.string_of_atom atom = field in
-    (match Env.find_typ !env id with
-    | _, [{ it = InstD (_, _, { it = StructT tfs; _ }); _ }]
-    when List.exists valid_field tfs ->
-      let _, (_, typ', _), _ = List.find valid_field tfs in
-      typ'
-    | _, [{ it = InstD (_, _, { it = AliasT typ'; _ }); _ }] ->
-      access_field source typ' field
-    | _, [{ it = InstD (_, _, { it = VariantT tcs; _ }); _ }] ->
-      let try_access_field typecase =
-        let _, (_, typ', _), _ = typecase in
-        try Some (access_field source typ' field) with _ -> None
-      in
-      (match List.find_map try_access_field tcs with
-      | Some typ'' -> typ''
-      | None -> error_field source typ field
-      )
-    | _ -> error_field source typ field
-    )
-  | _ -> error_field source typ field
+let check_call source id args result_typ =
+  match Env.find_opt_def !env (id $ no_region) with
+  | Some (params, typ, _) ->
+    (* TODO: Use local environment *)
+    (* Store global enviroment *)
+    let global_env = !env in
 
-let access source typ path =
+    let check_arg arg param =
+      match arg.it, param.it with
+      | ExpA expr, ExpP (_, typ') -> check_match source expr.note typ'
+      (* Add local variable typ *)
+      | TypA typ1, TypP id -> env := Env.bind_var !env id (typ1, [])
+      | _ ->
+        error_valid "argument type mismatch" source
+          (Printf.sprintf "  %s =/= %s"
+            (string_of_arg arg)
+            (Il.Print.string_of_param param)
+          )
+    in
+    List.iter2 check_arg args params;
+    check_match source result_typ typ;
+
+    (* Reset global enviroment *)
+    env := global_env
+  | None -> error_valid "no function definition" source ""
+
+let access (source: source) (typ: typ) (path: path) : typ =
   match path.it with
   | IdxP expr ->
-    check_list source typ; check_num source expr.note;
-    unwrap_iter_typ typ
+    check_list source typ; check_num source expr.note; unwrap_iter_typ typ
   | SliceP (expr3, expr4) ->
-    check_list source typ; check_num source expr3.note; check_num source expr4.note;
+    check_list source typ;
+    check_num source expr3.note;
+    check_num source expr4.note;
     typ
-  | DotP atom -> access_field source typ (string_of_atom atom)
+  | DotP atom ->
+    let typfields = get_typfields typ in
+    match List.find_opt (fun (field, _, _) -> Atom.eq field atom) typfields with
+    | Some (_, (_, typ', _), _) -> typ'
+    | None -> error_field source typ atom
 
 
 
 (* Expr validation *)
 
 let valid_expr (walker: unit_walker) (expr: expr) : unit =
-  let source = string_of_expr expr, expr.at in
+  let source = string_of_expr expr $ expr.at in
   (match expr.it with
   | VarE id ->
     if not (Set.mem id !bound_set) then error expr.at ("free identifier " ^ id)
@@ -234,43 +318,47 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
   | UpdE (expr1, pl, expr2) | ExtE (expr1, pl, expr2, _) ->
     check_match source expr.note expr1.note;
     List.fold_left (access source) expr1.note pl |> check_match source expr2.note
-  | StrE r -> check_struct source r expr.note
+  | StrE r ->
+    let typfields = get_typfields expr.note in
+    List.iter (check_field source expr.note r) typfields
   | CatE (expr1, expr2) ->
     check_list source expr1.note; check_list source expr2.note;
     check_match source expr.note expr1.note; check_match source expr1.note expr2.note
   | MemE (expr1, expr2) ->
     check_bool source expr.note;
-    check_match source expr2.note (iterT expr1.note Il.Ast.List)
+    check_match source expr2.note (iterT expr1.note List)
   | LenE expr' ->
     check_list source expr'.note; check_num source expr.note
   | TupE exprs -> check_tuple source exprs expr.note
+  | CaseE _ -> () (* TODO *)
+  | CallE (id, args) -> check_call source id args expr.note
   (* TODO *)
   | IterE (expr1, _, iter) ->
-    if not (expr1.note.it = Il.Ast.BoolT && expr.note.it = BoolT) then
+    if not (expr1.note.it = BoolT && expr.note.it = BoolT) then
       (match iter with
       | Opt ->
-        check_match source expr.note (iterT expr1.note Il.Ast.Opt);
+        check_match source expr.note (iterT expr1.note Opt);
       | ListN (expr2, id_opt) ->
         Option.iter add_bound_var id_opt;
-        check_match source expr.note (iterT expr1.note Il.Ast.List);
+        check_match source expr.note (iterT expr1.note List);
         check_num source expr2.note
       | _ ->
-        check_match source expr.note (iterT expr1.note Il.Ast.List);
+        check_match source expr.note (iterT expr1.note List);
       )
   | _ ->
     match expr.note.it with
-    | Il.Ast.VarT (id, []) when id.it = "TODO" ->
+    | VarT (id, []) when id.it = "TODO" ->
       error expr.at (Printf.sprintf "%s's type is TODO" (string_of_expr expr))
     | _ -> ()
   );
-  base_unit_walker.walk_expr walker expr
+  (Option.get walker.super).walk_expr walker expr
 
 
 (* Instr validation *)
 
 let valid_instr (walker: unit_walker) (instr: instr) : unit =
   print_endline (string_of_instr instr);
-  let source = string_of_instr instr, instr.at in
+  let source = string_of_instr instr $ instr.at in
   (match instr.it with
   | IfI (expr, _, _) | AssertI expr -> check_bool source expr.note
   | EnterI (expr1, expr2, _) ->
@@ -295,9 +383,17 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
   | AppendI (expr1, _expr2) -> check_list source expr1.note
   | _ -> ()
   );
-  base_unit_walker.walk_instr walker instr
+  (Option.get walker.super).walk_instr walker instr
+
+let init algo =
+  let params = Al_util.params_of_algo algo in
+
+  bound_set := Set.empty;
+  List.iter add_bound_param params
+
 
 let valid_algo (algo: algorithm) =
+
   print_string (Al_util.name_of_algo algo ^ "(");
 
   algo
@@ -307,8 +403,14 @@ let valid_algo (algo: algorithm) =
   |> print_string;
   print_endline ")";
 
-  init_bound_set algo;
-  let walker = { base_unit_walker with walk_expr=valid_expr; walk_instr=valid_instr } in
+  init algo;
+  let walker =
+    { base_unit_walker with
+      super = Some base_unit_walker;
+      walk_expr = valid_expr;
+      walk_instr = valid_instr
+    }
+  in
   walker.walk_algo walker algo
 
 let valid (script: script) =

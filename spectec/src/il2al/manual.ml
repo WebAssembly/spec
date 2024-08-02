@@ -17,6 +17,11 @@ let eval_expr =
   let instrs = iterE (varE "instr" ~note:instrT, ["instr"], List) ~note:ty_instrs in
   let result = varE "val" ~note:valT in
 
+  (* Add function definition to AL environment *)
+  let param = Il.Ast.ExpP ("_" $ no_region, ty_instrs) $ no_region in
+  Al.Valid.env :=
+    Il.Env.bind_def !Al.Valid.env ("eval_expr" $ no_region) ([param], ty_vals, []);
+
   FuncA (
     "eval_expr",
     [expA instrs],

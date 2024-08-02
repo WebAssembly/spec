@@ -302,7 +302,7 @@ and translate_argexp exp =
 and translate_args args = List.concat_map ( fun arg ->
   match arg.it with
   | Il.ExpA e -> [ ExpA (translate_exp e) $ arg.at ]
-  | Il.TypA _ -> [ TypA $ arg.at ]
+  | Il.TypA typ -> [ TypA typ $ arg.at ]
   | Il.DefA _ -> [] (* TODO: handle functions *)
   | Il.GramA _ -> [] ) args
 
@@ -586,12 +586,12 @@ and call_lhs_to_inverse_call_rhs lhs rhs free_ids =
   let arg2expr a =
     match a.it with
     | ExpA e -> e
-    | TypA   -> error a.at "Cannot translate to inverse function for type argument"
+    | TypA _ -> error a.at "Cannot translate to inverse function for type argument"
   in
   let contains_free a =
     match a.it with
     | ExpA e -> contains_ids free_ids e
-    | TypA   -> false
+    | TypA _ -> false
   in
   let rhs2args e =
     (match e.it with
@@ -728,7 +728,7 @@ and handle_iter_lhs lhs rhs free_ids =
       in
       IterE (expr, iter_ids_of expr, iter') $$ lhs.at % typ
     else
-      Walk.base_walker.walk_expr walker expr
+      (Option.get walker.super).walk_expr walker expr
   in
 
   (* Translate inner lhs *)
@@ -737,7 +737,7 @@ and handle_iter_lhs lhs rhs free_ids =
 
   (* Iter injection *)
 
-  let walker = { Walk.base_walker with walk_expr } in
+  let walker = { Walk.base_walker with super = Some Walk.base_walker; walk_expr } in
   let instrs' = List.map (walker.walk_instr walker) instrs in
 
   (* Add ListN condition *)
@@ -865,13 +865,12 @@ let translate_rulepr id exp =
   let at = id.at in
   let expA e = ExpA e $ e.at in
   match id.it, translate_argexp exp with
-  | "Eval_expr", [z; lhs; _; rhs] ->
+  | "Eval_expr", [z; is; z'; vs] ->
     (* Note: State is automatically converted into frame by remove_state *)
-    [
-      pushI (frameE (None, z) ~note:callframeT);
-      letI (rhs, callE ("eval_expr", [ expA lhs ]) ~note:rhs.note) ~at:at;
-      popI (frameE (None, z) ~note:callframeT);
-    ]
+    (* Note: Push/pop is automatically inserted by handle_frame *)
+    let lhs = tupE [z'; vs] ~at:(over_region [z'.at; vs.at]) ~note:vs.note in
+    let rhs = callE ("eval_expr", [ expA z; expA is ]) ~note:vs.note in
+    [ letI (lhs, rhs) ~at:at ]
   (* ".*_sub" *)
   | name, [_C; rt1; rt2]
     when String.ends_with ~suffix:"_sub" name ->
@@ -962,7 +961,7 @@ let translate_helper_body name clause =
     if is_config exp then
       get_config_return_instrs name exp clause.at
     else
-      [ returnI (Some (translate_exp exp)) ]
+      [ returnI (Some (translate_exp exp)) ~at:exp.at ]
   in
   translate_prems prems return_instrs
 
@@ -982,7 +981,8 @@ let translate_helper partial_funcs def =
     let blocks = List.map (translate_helper_body name) unified_clauses in
     let body =
       Transpile.merge_blocks blocks
-      |> Transpile.insert_frame_binding
+      (* |> Transpile.insert_frame_binding *)
+      |> Transpile.handle_frame params
       |> Walk.(walk_instrs { default_config with pre_expr = Transpile.remove_sub })
       |> Transpile.enhance_readability
       |> (if List.mem id partial_funcs then Fun.id else Transpile.ensure_return)
@@ -1390,6 +1390,7 @@ let translate il =
   in
   let il' =
     il
+    |> Preprocess.preprocess
     |> List.concat_map flatten_rec
     |> List.filter is_al_target
     |> Animate.transform

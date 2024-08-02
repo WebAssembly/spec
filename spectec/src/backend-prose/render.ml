@@ -68,7 +68,7 @@ let e2a e = Al.Ast.ExpA e $ e.at
 let a2e a =
   match a.it with
   | Al.Ast.ExpA e -> e
-  | Al.Ast.TypA -> error a.at "Caannot render inverse function with type argument"
+  | Al.Ast.TypA _ -> error a.at "Caannot render inverse function with type argument"
 
 let al_invcalle_to_al_bine e id nl al =
   let efree = (match e.it with Al.Ast.TupE el -> el | _ -> [ e ]) in
@@ -139,12 +139,14 @@ and al_to_el_path pl =
     (fun elp p -> Option.bind elp (fold_path p))
     (Some (El.Ast.RootP $ no_region)) pl
 
-and al_to_el_arg arg = match arg.it with
+and al_to_el_arg arg =
+  match arg.it with
   | Al.Ast.ExpA e ->
     let* ele = al_to_el_expr e in
     Some (El.Ast.ExpA ele)
-  | Al.Ast.TypA ->
-    Some (El.Ast.(TypA (VarT ("TODO" $ arg.at, []) $ arg.at))) (* TODO *)
+  | Al.Ast.TypA _typ ->
+    (* TODO: Require Il.Ast.typ to El.Ast.typ translation *)
+    Some (El.Ast.(TypA (VarT ("TODO" $ arg.at, []) $ arg.at)))
 
 and al_to_el_args args =
   List.fold_left

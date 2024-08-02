@@ -31,6 +31,9 @@ let rec repeat str num =
 (* Terminals *)
 
 let string_of_atom = El.Print.string_of_atom
+let string_of_mixop = Il.Print.string_of_mixop
+
+let string_of_typ = Il.Print.string_of_typ
 
 
 (* Directions *)
@@ -187,6 +190,7 @@ and string_of_expr expr =
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
   | CaseE (a, []) -> string_of_atom a
   | CaseE (a, el) -> "(" ^ string_of_atom a ^ " " ^ string_of_exprs " " el ^ ")"
+  | CaseE2 (op, el) -> "(" ^ string_of_mixop op ^ "_" ^ string_of_exprs " " el ^ ")"
   | OptE (Some e) -> "?(" ^ string_of_expr e ^ ")"
   | OptE None -> "?()"
   | ContextKindE (a, e) -> sprintf "%s is %s" (string_of_expr e) (string_of_atom a)
@@ -225,7 +229,7 @@ and string_of_paths paths = List.map string_of_path paths |> List.fold_left (^) 
 and string_of_arg arg =
   match arg.it with
   | ExpA e -> string_of_expr e
-  | TypA -> "T"
+  | TypA typ -> string_of_typ typ
 
 and string_of_args sep = string_of_list string_of_arg sep
 
@@ -519,6 +523,9 @@ and structured_string_of_expr expr =
   | CaseE (a, el) ->
     "CaseE (" ^ string_of_atom a
     ^ ", [" ^ structured_string_of_exprs el ^ "])"
+  | CaseE2 (op, el) ->
+    "CaseE2 (" ^ string_of_mixop op
+    ^ ", [" ^ structured_string_of_exprs el ^ "])"
   | OptE None -> "OptE"
   | OptE (Some e) -> "OptE (" ^ structured_string_of_expr e ^ ")"
   | ContextKindE (a, e) -> sprintf "ContextKindE (%s, %s)" (string_of_atom a) (structured_string_of_expr e)
@@ -560,7 +567,7 @@ and structured_string_of_paths paths =
 and structured_string_of_arg arg =
   match arg.it with
   | ExpA e -> sprintf "ExpA (%s)" (structured_string_of_expr e)
-  | TypA -> "TypA"
+  | TypA typ -> sprintf "TypA (%s)" (string_of_typ typ)
 
 and structured_string_of_args al = string_of_list structured_string_of_arg ", " al
 

@@ -38,6 +38,7 @@ let rec free_expr expr =
   | TupE el
   | ListE el
   | CaseE (_, el) -> free_list free_expr el
+  | CaseE2 (_, el) -> free_list free_expr el
   | StrE r -> free_list (fun (_, e) -> free_expr !e) r
   | AccE (e, p) -> free_expr e @ free_path p
   | ExtE (e1, ps, e2, _)
@@ -79,7 +80,7 @@ and free_path path =
 and free_arg arg =
   match arg.it with
   | ExpA e -> free_expr e
-  | TypA -> IdSet.empty
+  | TypA _ -> IdSet.empty
 
 
 (* Instructions *)
