@@ -674,7 +674,7 @@ and elab_typ_definition env tid t : Il.deftyp =
     let nt = match t1.it with NumT nt -> nt | _ -> assert false in
     let id' = "i" $ t.at in
     let eid' = Il.VarE id' $$ t.at % t' in
-    let bs' = [Il.ExpB (id', t', []) $ t.at] in
+    let bs' = [Il.ExpB (id', t') $ t.at] in
     let prems' = [Il.IfPr (fe' eid' nt) $ t.at] in
     let tc' = ([[]; []], (bs', Il.TupT [(eid', t')] $ t.at, prems'), []) in
     Il.VariantT [tc']
@@ -712,7 +712,7 @@ and elab_typfield env tid at ((atom, (t, prems), hints) as tf) : Il.typfield =
   if free <> Free.empty then
     error at ("type case contains indeterminate variable(s) `" ^
       String.concat "`, `" (Free.Set.elements free.varid) ^ "`");
-  let acc_bs', (module Arg : Iter.Arg) = make_binds_iter_arg env' det dims dims' in
+  let acc_bs', (module Arg : Iter.Arg) = make_binds_iter_arg env' det dims in
   let module Acc = Iter.Make(Arg) in
   List.iter Acc.exp es;
   Acc.prems prems;
@@ -736,7 +736,7 @@ and elab_typcase env tid at ((_atom, (t, prems), hints) as tc) : Il.typcase =
   if free <> Free.empty then
     error at ("type case contains indeterminate variable(s) `" ^
       String.concat "`, `" (Free.Set.elements free.varid) ^ "`");
-  let acc_bs', (module Arg : Iter.Arg) = make_binds_iter_arg env' det dims dims' in
+  let acc_bs', (module Arg : Iter.Arg) = make_binds_iter_arg env' det dims in
   let module Acc = Iter.Make(Arg) in
   List.iter Acc.exp es;
   Acc.prems prems;
@@ -760,7 +760,7 @@ and elab_typcon env tid at (((t, prems), hints) as tc) : Il.typcase =
   if free <> Free.empty then
     error at ("type constraint contains indeterminate variable(s) `" ^
       String.concat "`, `" (Free.Set.elements free.varid) ^ "`");
-  let acc_bs', (module Arg : Iter.Arg) = make_binds_iter_arg env' det dims dims' in
+  let acc_bs', (module Arg : Iter.Arg) = make_binds_iter_arg env' det dims in
   let module Acc = Iter.Make(Arg) in
   List.iter Acc.exp es;
   Acc.prems prems;
@@ -1672,6 +1672,7 @@ and elab_prod env prod t : Il.prod =
   let dims = Dim.check_prod prod in
   let dims' = Dim.Env.map (List.map (elab_iter env')) dims in
   let g', _t', env'' = elab_sym env' g in
+  let g' = Dim.annot_sym dims' g' in
   let e' = Dim.annot_exp dims' (elab_exp env' e t) in
   let prems' = List.map (Dim.annot_prem dims')
     (concat_map_filter_nl_list (elab_prem env') prems) in
@@ -1680,12 +1681,12 @@ and elab_prod env prod t : Il.prod =
   if free <> Free.empty then
     error prod.at ("grammar rule contains indeterminate variable(s) `" ^
       String.concat "`, `" (Free.Set.elements free.varid) ^ "`");
-  let acc_bs', (module Arg : Iter.Arg) = make_binds_iter_arg env' det dims dims' in
+  let acc_bs', (module Arg : Iter.Arg) = make_binds_iter_arg env' det dims in
   let module Acc = Iter.Make(Arg) in
   Acc.sym g;
   Acc.exp e;
   Acc.prems prems;
-  Il.ProdD (!acc_bs', Dim.annot_sym dims' g', e', prems') $ prod.at
+  Il.ProdD (!acc_bs', g', e', prems') $ prod.at
 
 and elab_gram env gram t : Il.prod list =
   let (_dots1, prods, _dots2) = gram.it in
@@ -1694,7 +1695,7 @@ and elab_gram env gram t : Il.prod list =
 
 (* Definitions *)
 
-and make_binds_iter_arg env free dims dims' : Il.bind list ref * (module Iter.Arg) =
+and make_binds_iter_arg env free dims : Il.bind list ref * (module Iter.Arg) =
   let module Arg =
     struct
       include Iter.Skip
@@ -1721,10 +1722,16 @@ and make_binds_iter_arg env free dims dims' : Il.bind list ref * (module Iter.Ar
                 List.map (fun id -> "`" ^ id ^ "`") |>
                 String.concat ", " ) ^
               ", which only occur(s) to its right; try to reorder parameters or premises");
-          let t' = elab_typ env t in
-          let ctx = List.map (elab_iter env) (Dim.Env.find id.it dims) in
-          let ctx' = List.map (Dim.annot_iter dims') ctx in
-          acc := !acc @ [Il.ExpB (id, t', ctx') $ id.at];
+          let ctx' =
+            List.map (function Opt -> Il.Opt | _ -> Il.List)
+              (Dim.Env.find id.it dims)
+          in
+          let t' =
+            List.fold_left (fun t iter ->
+              Il.IterT (t, iter) $ t.at
+            ) (elab_typ env t) ctx'
+          in
+          acc := !acc @ [Il.ExpB (Dim.annot_varid id ctx', t') $ id.at];
           left := Free.{!left with varid = Set.remove id.it !left.varid};
         )
 
@@ -1957,7 +1964,7 @@ let elab_hintdef _env hd : Il.def list =
     []
 
 
-let infer_binds env env' dims dims' d : Il.bind list =
+let infer_binds env env' dims d : Il.bind list =
   Debug.(log_in_at "el.infer_binds" d.at
     (fun _ ->
       Map.fold (fun id _ ids ->
@@ -1970,15 +1977,13 @@ let infer_binds env env' dims dims' d : Il.bind list =
   if free <> Free.empty then
     error d.at ("definition contains indeterminate variable(s) `" ^
       String.concat "`, `" (Free.Set.elements free.varid) ^ "`");
-  let acc_bs', (module Arg : Iter.Arg) = make_binds_iter_arg env' det dims dims' in
+  let acc_bs', (module Arg : Iter.Arg) = make_binds_iter_arg env' det dims in
   let module Acc = Iter.Make(Arg) in
   Acc.def d;
   !acc_bs'
 
-let infer_no_binds env d =
-  let dims = Dim.check_def d in
-  let dims' = Dim.Env.map (List.map (elab_iter env)) dims in
-  let bs' = infer_binds env env dims dims' d in
+let infer_no_binds env dims d =
+  let bs' = infer_binds env env dims d in
   assert (bs' = [])
 
 
@@ -1988,7 +1993,8 @@ let elab_def env d : Il.def list =
   match d.it with
   | FamD (id, ps, hints) ->
     let ps' = elab_params (local_env env) ps in
-    infer_no_binds env d;
+    let dims = Dim.check_def d in
+    infer_no_binds env dims d;
     env.typs <- rebind "syntax type" env.typs id (ps, Family []);
     [Il.TypD (id, ps', []) $ d.at]
       @ elab_hintdef env (TypH (id, "" $ id.at, hints) $ d.at)
@@ -1999,8 +2005,8 @@ let elab_def env d : Il.def list =
     let dt' = elab_typ_definition env' id1 t in
     let dims = Dim.check_def d in
     let dims' = Dim.Env.map (List.map (elab_iter env')) dims in
-    let bs' = infer_binds env env' dims dims' d in
-    let inst' = Il.InstD (bs', as', dt') $ d.at in
+    let bs' = infer_binds env env' dims d in
+    let inst' = Il.InstD (bs', List.map (Dim.annot_arg dims') as', dt') $ d.at in
     let k1', closed =
       match k1, t.it with
       | Opaque, CaseT (Dots, _, _, _) ->
@@ -2040,7 +2046,8 @@ let elab_def env d : Il.def list =
     let ps' = elab_params env' ps in
     let t' = elab_typ env' t in
     let prods' = elab_gram env' gram t in
-    infer_no_binds env' d;
+    let dims = Dim.check_def d in
+    infer_no_binds env' dims d;
     let ps1, t1, gram1_opt, prods1' = find "grammar" env.grams id1 in
     let gram', last =
       match gram1_opt, gram.it with
@@ -2065,7 +2072,8 @@ let elab_def env d : Il.def list =
       @ elab_hintdef env (GramH (id1, id2, hints) $ d.at)
   | RelD (id, t, hints) ->
     let mixop, ts', _ts = elab_typ_notation env id t in
-    infer_no_binds env d;
+    let dims = Dim.check_def d in
+    infer_no_binds env dims d;
     env.rels <- bind "relation" env.rels id (t, []);
     [Il.RelD (id, mixop, tup_typ' ts' t.at, []) $ d.at]
       @ elab_hintdef env (RelH (id, hints) $ d.at)
@@ -2078,20 +2086,22 @@ let elab_def env d : Il.def list =
     let es' = List.map (Dim.annot_exp dims') (fst (elab_exp_notation' env' id1 e t)) in
     let prems' = List.map (Dim.annot_prem dims')
       (concat_map_filter_nl_list (elab_prem env') prems) in
-    let bs' = infer_binds env env' dims dims' d in
+    let bs' = infer_binds env env' dims d in
     let rule' = Il.RuleD (id2, bs', mixop, tup_exp' es' e.at, prems') $ d.at in
     env.rels <- rebind "relation" env.rels id1 (t, rules' @ [rule']);
     []
   | VarD (id, t, _hints) ->
     let _t' = elab_typ env t in
-    infer_no_binds env d;
+    let dims = Dim.check_def d in
+    infer_no_binds env dims d;
     env.gvars <- rebind "variable" env.gvars id t;
     []
   | DecD (id, ps, t, hints) ->
     let env' = local_env env in
     let ps' = elab_params env' ps in
     let t' = elab_typ env' t in
-    infer_no_binds env d;
+    let dims = Dim.check_def d in
+    infer_no_binds env dims d;
     env.defs <- bind "definition" env.defs id (ps, t, []);
     [Il.DecD (id, ps', t', []) $ d.at]
       @ elab_hintdef env (DecH (id, hints) $ d.at)
@@ -2105,7 +2115,7 @@ let elab_def env d : Il.def list =
     let e' = Dim.annot_exp dims' (elab_exp env' e (Subst.subst_typ s t)) in
     let prems' = List.map (Dim.annot_prem dims')
       (concat_map_filter_nl_list (elab_prem env') prems) in
-    let bs' = infer_binds env env' dims dims' d in
+    let bs' = infer_binds env env' dims d in
     let clause' = Il.DefD (bs', as', e', prems') $ d.at in
     env.defs <- rebind "definition" env.defs id (ps, t, clauses' @ [(d, clause')]);
     []

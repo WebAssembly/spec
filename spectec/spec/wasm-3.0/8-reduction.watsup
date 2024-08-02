@@ -21,7 +21,7 @@ rule Steps/refl:
 rule Steps/trans:
   z; instr*  ~>*  z''; instr''*
   -- Step: z; instr*  ~>  z'; instr'*
-  -- Steps: z'; instr'  ~>*  z''; instr''*
+  -- Steps: z'; instr'*  ~>*  z''; instr''*
 
 
 ;; Expressions

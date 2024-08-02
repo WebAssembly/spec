@@ -1332,5 +1332,5 @@ rule Globals_ok/empty:
 
 rule Globals_ok/cons:
   C |- global_1 global* : gt_1 gt*
-  -- Global_ok: C |- global : gt_1
+  -- Global_ok: C |- global_1 : gt_1
   -- Globals_ok: C ++ {GLOBALS gt_1} |- global* : gt*

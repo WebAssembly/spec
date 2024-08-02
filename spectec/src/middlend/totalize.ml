@@ -108,7 +108,8 @@ and t_iter env = function
   | ListN (e, id_opt) -> ListN (t_exp env e, id_opt)
   | i -> i
 
-and t_iterexp env (iter, xts) = (t_iter env iter, List.map (fun (x, t) -> x, t_typ env t) xts)
+and t_iterexp env (iter, xes) =
+  (t_iter env iter, List.map (fun (x, e) -> x, t_exp env e) xes)
 
 and t_path' env = function
   | RootP -> RootP
@@ -138,7 +139,7 @@ and t_arg' env = function
 and t_arg env x = { x with it = t_arg' env x.it }
 
 and t_bind' env = function
-  | ExpB (id, t, dim) -> ExpB (id, t_typ env t, List.map (t_iter env) dim)
+  | ExpB (id, t) -> ExpB (id, t_typ env t)
   | TypB id -> TypB id
   | DefB (id, ps, t) -> DefB (id, t_params env ps, t_typ env t)
   | GramB (id, ps, t) -> GramB (id, t_params env ps, t_typ env t)
@@ -210,7 +211,7 @@ let rec t_def' env = function
       let binds, args = List.mapi (fun i param -> match param.it with
         | ExpP (_, typI) ->
           let x = ("x" ^ string_of_int i) $ no_region in
-          [ExpB (x, typI, []) $ x.at], ExpA (VarE x $$ no_region % typI) $ no_region
+          [ExpB (x, typI) $ x.at], ExpA (VarE x $$ no_region % typI) $ no_region
         | TypP id -> [], TypA (VarT (id, []) $ no_region) $ no_region
         | DefP (id, _, _) -> [], DefA id $ no_region
         | GramP (id, _) -> [], GramA (VarG (id, []) $ no_region) $ no_region

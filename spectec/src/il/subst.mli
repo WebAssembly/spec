@@ -18,7 +18,6 @@ val mem_typid : subst -> id -> bool
 val mem_defid : subst -> id -> bool
 val mem_gramid : subst -> id -> bool
 
-val subst_iter : subst -> iter -> iter
 val subst_typ : subst -> typ -> typ
 val subst_exp : subst -> exp -> exp
 val subst_path : subst -> path -> path

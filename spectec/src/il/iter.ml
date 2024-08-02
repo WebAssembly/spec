@@ -148,7 +148,7 @@ and path p =
   | SliceP (p1, e1, e2) -> path p1; exp e1; exp e2
   | DotP (p1, at) -> path p1; atom at
 
-and iterexp (it, xts) = iter it; list (pair varid typ) xts
+and iterexp (it, xes) = iter it; list (pair varid exp) xes
 
 
 (* Grammars *)
@@ -191,7 +191,7 @@ and arg a =
 
 and bind b =
   match b.it with
-  | ExpB (id, t, its) -> varid id; typ t; list iter its
+  | ExpB (id, t) -> varid id; typ t
   | TypB id -> typid id
   | DefB (id, ps, t) -> defid id; params ps; typ t
   | GramB (id, ps, t) -> gramid id; params ps; typ t
