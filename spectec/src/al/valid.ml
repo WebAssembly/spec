@@ -126,9 +126,7 @@ and unify_opt (typ1: typ) (typ2: typ) : typ option =
 and ground_typ_of (typ: typ) : typ =
   match typ.it with
   | VarT (id, _) when Env.mem_var !env id ->
-    let typ', iters = Env.find_var !env id in
-    (* TODO: local var type contains iter *)
-    assert (iters = []);
+    let typ' = Env.find_var !env id in
     if Il.Eq.eq_typ typ typ' then typ else ground_typ_of typ'
   (* NOTE: Consider `fN` as a `NumT` to prevent diverging ground type *)
   | VarT (id, _) when id.it = "fN" -> NumT RealT $ typ.at
@@ -257,7 +255,7 @@ let check_call source id args result_typ =
       match arg.it, param.it with
       | ExpA expr, ExpP (_, typ') -> check_match source expr.note typ'
       (* Add local variable typ *)
-      | TypA typ1, TypP id -> env := Env.bind_var !env id (typ1, [])
+      | TypA typ1, TypP id -> env := Env.bind_var !env id typ1
       | _ ->
         error_valid "argument type mismatch" source
           (Printf.sprintf "  %s =/= %s"
