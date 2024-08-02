@@ -80,7 +80,7 @@ and free_path path =
 and free_arg arg =
   match arg.it with
   | ExpA e -> free_expr e
-  | TypA -> IdSet.empty
+  | TypA _ -> IdSet.empty
 
 
 (* Instructions *)

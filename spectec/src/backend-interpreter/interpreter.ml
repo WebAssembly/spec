@@ -53,7 +53,7 @@ let transpose matrix =
 let extract_exp a =
   match a.it with
   | ExpA e -> Some e
-  | TypA   -> None
+  | TypA _ -> None
 let extract_expargs = List.filter_map extract_exp
 
 

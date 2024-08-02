@@ -39,7 +39,7 @@ module Set = Free.IdSet
 let bound_set: Set.t ref = ref Set.empty
 let add_bound_var id = bound_set := Set.add id !bound_set
 let add_bound_vars expr = bound_set := Set.union (Free.free_expr expr) !bound_set
-let add_bound_vars_of_arg arg = match arg.it with ExpA e -> add_bound_vars e | TypA -> ()
+let add_bound_vars_of_arg arg = match arg.it with ExpA e -> add_bound_vars e | TypA _ -> ()
 let init_bound_set algo =
   bound_set := Set.empty;
   algo |> Al_util.params_of_algo |> List.iter add_bound_vars_of_arg

@@ -136,7 +136,7 @@ and path' =
 and arg = arg' phrase
 and arg' =
   | ExpA of expr
-  | TypA                (* TODO: Use Il.typ *)
+  | TypA of typ
 
 (* Instructions *)
 

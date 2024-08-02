@@ -464,13 +464,13 @@ let is_state expr = match expr.it with
 
 let is_store_arg arg = match arg.it with
   | ExpA e -> is_store e
-  | TypA   -> false
+  | TypA _ -> false
 let is_frame_arg arg = match arg.it with
   | ExpA e -> is_frame e
-  | TypA   -> false
+  | TypA _ -> false
 let is_state_arg arg = match arg.it with
   | ExpA e -> is_state e
-  | TypA   -> false
+  | TypA _ -> false
 
 let hide_state_args args =
   args

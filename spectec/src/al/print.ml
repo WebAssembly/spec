@@ -33,6 +33,8 @@ let rec repeat str num =
 let string_of_atom = El.Print.string_of_atom
 let string_of_mixop = Il.Print.string_of_mixop
 
+let string_of_typ = Il.Print.string_of_typ
+
 
 (* Directions *)
 
@@ -227,7 +229,7 @@ and string_of_paths paths = List.map string_of_path paths |> List.fold_left (^) 
 and string_of_arg arg =
   match arg.it with
   | ExpA e -> string_of_expr e
-  | TypA -> "T"
+  | TypA typ -> string_of_typ typ
 
 and string_of_args sep = string_of_list string_of_arg sep
 
@@ -565,7 +567,7 @@ and structured_string_of_paths paths =
 and structured_string_of_arg arg =
   match arg.it with
   | ExpA e -> sprintf "ExpA (%s)" (structured_string_of_expr e)
-  | TypA -> "TypA"
+  | TypA typ -> sprintf "TypA (%s)" (string_of_typ typ)
 
 and structured_string_of_args al = string_of_list structured_string_of_arg ", " al
 

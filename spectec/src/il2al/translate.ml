@@ -302,7 +302,7 @@ and translate_argexp exp =
 and translate_args args = List.concat_map ( fun arg ->
   match arg.it with
   | Il.ExpA e -> [ ExpA (translate_exp e) $ arg.at ]
-  | Il.TypA _ -> [ TypA $ arg.at ]
+  | Il.TypA typ -> [ TypA typ $ arg.at ]
   | Il.DefA _ -> [] (* TODO: handle functions *)
   | Il.GramA _ -> [] ) args
 
@@ -586,12 +586,12 @@ and call_lhs_to_inverse_call_rhs lhs rhs free_ids =
   let arg2expr a =
     match a.it with
     | ExpA e -> e
-    | TypA   -> error a.at "Cannot translate to inverse function for type argument"
+    | TypA _ -> error a.at "Cannot translate to inverse function for type argument"
   in
   let contains_free a =
     match a.it with
     | ExpA e -> contains_ids free_ids e
-    | TypA   -> false
+    | TypA _ -> false
   in
   let rhs2args e =
     (match e.it with

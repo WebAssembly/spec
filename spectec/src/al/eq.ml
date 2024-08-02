@@ -87,7 +87,7 @@ and eq_paths pl1 pl2 = eq_list eq_path pl1 pl2
 and eq_arg a1 a2 =
   match a1.it, a2.it with
   | ExpA e1, ExpA e2 -> eq_expr e1 e2
-  | TypA, TypA -> true
+  | TypA typ1, TypA typ2 -> Il.Eq.eq_typ typ1 typ2
   | _ -> false
 
 and eq_args al1 al2 = eq_list eq_arg al1 al2
