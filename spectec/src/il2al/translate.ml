@@ -1390,6 +1390,7 @@ let translate il =
   in
   let il' =
     il
+    |> Preprocess.preprocess
     |> List.concat_map flatten_rec
     |> List.filter is_al_target
     |> Animate.transform
