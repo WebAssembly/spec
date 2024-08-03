@@ -299,7 +299,7 @@ and valid_exp ?(side = `Rhs) env e t =
   ) @@ fun _ ->
 try
   match e.it with
-  | VarE id when id.it = "_" (* TODO(3, rossberg): && side = `Lhs *) -> ()
+  | VarE id when id.it = "_" && side = `Lhs -> ()
   | VarE id ->
     let t' = Env.find_var env id in
     equiv_typ env t' t e.at
@@ -310,45 +310,43 @@ try
     let t1, t' = infer_unop op in
     valid_exp ~side env e1 (t1 $ e.at);
     equiv_typ env (t' $ e.at) t e.at
-  | BinE (op, e1, e2) (* TODO(3, rossberg): when side = `Rhs *) ->
+  | BinE ((AddOp _ | SubOp _) as op, e1, ({it = NatE _; _} as e2))
+  | BinE ((AddOp _ | SubOp _) as op, ({it = NatE _; _} as e1), e2) when side = `Lhs ->
     let t1, t2, t' = infer_binop op in
     valid_exp ~side env e1 (t1 $ e.at);
     valid_exp ~side env e2 (t2 $ e.at);
     equiv_typ env (t' $ e.at) t e.at
-(*
-  | BinE ((AddOp _ | SubOp _) as op, e1, ({it = NatE _; _} as e2))
-  | BinE ((AddOp _ | SubOp _) as op, ({it = NatE _; _} as e1), e2) when side = `Lhs ->
+  | BinE (op, e1, e2) ->
     let t1, t2, t' = infer_binop op in
     valid_exp env e1 (t1 $ e.at);
     valid_exp env e2 (t2 $ e.at);
     equiv_typ env (t' $ e.at) t e.at
-*)
-  | CmpE (op, e1, e2) when side = `Rhs ->
+  | CmpE (op, e1, e2) ->
     let t' =
       match infer_cmpop op with
       | Some t' -> t' $ e.at
       | None -> try infer_exp env e1 with _ -> infer_exp env e2
     in
-    let side' = if op = EqOp then `Lhs else `Rhs in
+    let side' = if op = EqOp then `Lhs else `Rhs in (* HACK *)
     valid_exp ~side:side' env e1 t';
     valid_exp ~side:side' env e2 t';
     equiv_typ env (BoolT $ e.at) t e.at
-  | IdxE (e1, e2) (* TODO(3, rossberg): when side = `Rhs *) ->
+  | IdxE (e1, e2) ->
     let t1 = infer_exp env e1 in
     let t' = as_list_typ "expression" env Infer t1 e1.at in
     valid_exp env e1 t1;
     valid_exp env e2 (NumT NatT $ e2.at);
     equiv_typ env t' t e.at
-  | SliceE (e1, e2, e3) (* TODO(3, rossberg): when side = `Rhs *) ->
+  | SliceE (e1, e2, e3) ->
     let _typ' = as_list_typ "expression" env Check t e1.at in
     valid_exp env e1 t;
     valid_exp env e2 (NumT NatT $ e2.at);
     valid_exp env e3 (NumT NatT $ e3.at)
-  | UpdE (e1, p, e2) (* TODO(3, rossberg): when side = `Rhs *) ->
+  | UpdE (e1, p, e2) ->
     valid_exp env e1 t;
     let t2 = valid_path env p t in
     valid_exp env e2 t2
-  | ExtE (e1, p, e2) (* TODO(3, rossberg): when side = `Rhs *) ->
+  | ExtE (e1, p, e2) ->
     valid_exp env e1 t;
     let t2 = valid_path env p t in
     let _typ21 = as_list_typ "path" env Check t2 p.at in
@@ -356,22 +354,22 @@ try
   | StrE efs ->
     let tfs = as_struct_typ "record" env Check t e.at in
     valid_list (valid_expfield ~side) env efs tfs e.at
-  | DotE (e1, atom) (* TODO(3, rossberg): when side = `Rhs *) ->
+  | DotE (e1, atom) ->
     let t1 = infer_exp env e1 in
     valid_exp env e1 t1;
     let tfs = as_struct_typ "expression" env Check t1 e1.at in
     let _binds, t', _prems = find_field tfs atom e1.at in
     equiv_typ env t' t e.at
-  | CompE (e1, e2) when side = `Rhs ->
+  | CompE (e1, e2) ->
     let _ = as_comp_typ "expression" env Check t e.at in
     valid_exp env e1 t;
     valid_exp env e2 t
-  | MemE (e1, e2) when side = `Rhs ->
+  | MemE (e1, e2) ->
     let t1 = infer_exp env e1 in
     valid_exp env e1 t1;
     valid_exp env e2 (IterT (t1, List) $ e2.at);
     equiv_typ env (BoolT $ e.at) t e.at
-  | LenE e1 (* TODO(3, rossberg): when side = `Rhs *) ->
+  | LenE e1 ->
     let t1 = infer_exp env e1 in
     let _typ11 = as_list_typ "expression" env Infer t1 e1.at in
     valid_exp env e1 t1;
@@ -383,7 +381,7 @@ try
         string_of_int (List.length ets) ^ ", got " ^ string_of_int (List.length es));
     if not (valid_tup_exp ~side env Subst.empty es ets) then
       as_error e.at "tuple" Check t ""
-  | CallE (id, as_) (* TODO(3, rossberg): when side = `Rhs *) ->
+  | CallE (id, as_) ->
     let ps, t', _ = Env.find_def env id in
     let s = valid_args env as_ ps Subst.empty e.at in
     equiv_typ env (Subst.subst_typ s t') t e.at
@@ -396,9 +394,8 @@ try
     let ets = as_tup_typ "expression" env Infer t1 e1.at in
     if i >= List.length ets then
       error e.at "invalid tuple projection";
-    if i > 0 && side = `Lhs then
-      error e.at "invalid tuple projection in pattern";
-    valid_exp ~side env e1 t1;
+    let side' = if List.length ets > 1 then `Rhs else side in
+    valid_exp ~side:side' env e1 t1;
     (match proj_tup_typ env Subst.empty e1 ets i with
     | Some tI -> equiv_typ env tI t e.at
     | None -> error e.at "invalid tuple projection, cannot match pattern"
@@ -418,17 +415,15 @@ try
   | ListE es ->
     let t1 = as_iter_typ List "list" env Check t e.at in
     List.iter (fun eI -> valid_exp ~side env eI t1) es
-  | CatE (e1, e2) (* TODO(3, rossberg): when side = `Rhs *) ->
+  | CatE (e1, ({it = ListE _ | CatE ({it = ListE _; _}, _); _} as e2))
+  | CatE (({it = ListE _ | CatE ({it = ListE _; _}, _); _} as e1), e2) when side = `Lhs ->
     let _typ1 = as_iter_typ List "list" env Check t e.at in
     valid_exp ~side env e1 t;
     valid_exp ~side env e2 t
-(*
-  | CatE (e1, ({it = ListE _; _} as e2))
-  | CatE (({it = ListE _; _} as e1), e2) when side = `Lhs ->
+  | CatE (e1, e2) ->
     let _typ1 = as_iter_typ List "list" env Check t e.at in
     valid_exp env e1 t;
     valid_exp env e2 t
-*)
   | CaseE (op, e1) ->
     let cases = as_variant_typ "case" env Check t e.at in
     let _binds, t1, _prems = find_case cases op e1.at in
@@ -439,9 +434,6 @@ try
     valid_exp ~side env e1 t1;
     equiv_typ env t2 t e.at;
     sub_typ env t1 t2 e.at
-  | _ when side = `Lhs ->
-    error e.at "illegal expression in pattern"
-  | _ -> assert false
 with exn ->
   let bt = Printexc.get_raw_backtrace () in
   Printf.eprintf "[valid_exp] %s\n%!" (Debug.il_exp e);
