@@ -43,6 +43,12 @@ let as_list_exp e =
 
 (* Matching Lists *)
 
+let _match_opt match_x env s xo1 xo2 : subst option =
+  match xo1, xo2 with
+  | None, None -> Some s
+  | Some x1, Some x2 -> match_x env s x1 x2
+  | _, _ -> None
+
 let rec match_list match_x env s xs1 xs2 : subst option =
   match xs1, xs2 with
   | [], [] -> Some s
@@ -640,9 +646,59 @@ and match_exp' env s e1 e2 : subst option =
     match_exp' env s (CaseE (mixop, e1) $$ e1.at % e21.note) e21
   | _, ProjE (e21, 0) ->  (* only valid on unary tuples! *)
     match_exp' env s (TupE [e1] $$ e1.at % e21.note) e21
+(*
   | IterE (e11, iter1), IterE (e21, iter2) ->
     let* s' = match_exp' env s e11 e21 in
     match_iterexp env s' iter1 iter2
+  | _, IterE (e21, iter2) ->
+    let e11, iter1 = eta_iter_exp env e1 in
+    let* s' = match_exp' env s e11 e21 in
+    match_iterexp env s' iter1 iter2
+*)
+  | OptE None, IterE (_e21, (Opt, xes)) ->
+    List.fold_left (fun s_opt (_xI, eI) ->
+      let* s = s_opt in
+      match_exp' env s e1 eI
+    ) (Some s) xes
+  | OptE (Some e11), IterE (e21, (Opt, xes)) ->
+    let* s' = match_exp' env s e11 e21 in
+    let* s'' =
+      List.fold_left (fun s_opt (xI, exI) ->
+        let* s = s_opt in
+        match_exp' env s (OptE (Some (Subst.subst_exp s' (VarE xI $> exI))) $> e2) exI
+      ) (Some (List.fold_left Subst.remove_varid s (List.map fst xes))) xes
+    in Some (Subst.union s'' s)  (* re-add possibly locally shadowed bindings *)
+  | ListE _es1, IterE (e21, (List, xes)) ->
+    let en = VarE ("_" $ e2.at) $$ e2.at % (NumT NatT $ e2.at) in
+    match_exp' env s e1 (IterE (e21, (ListN (en, None), xes)) $> e2)
+  | ListE es1, IterE (e21, (List1, xes)) ->
+    if es1 = [] then None else
+    let en = VarE ("_" $ e2.at) $$ e2.at % (NumT NatT $ e2.at) in
+    match_exp' env s e1 (IterE (e21, (ListN (en, None), xes)) $> e2)
+  | ListE es1, IterE (e21, (ListN (en, id_opt), xes)) ->
+    let en' = NatE (Z.of_int (List.length es1)) $$ e1.at % (NumT NatT $ e1.at) in
+    let* s' = match_exp' env s en' en in
+    let s'' = List.fold_left Subst.remove_varid s' (List.map fst xes) in  (* local subst *)
+    (* match each list element against iteration body for corresponding subst *)
+    let* ss =
+      List.mapi (fun j e1J ->
+        let s''' =
+          match id_opt with
+          | None -> s''
+          | Some xJ ->
+            Subst.add_varid s'' xJ
+              (NatE (Z.of_int j) $$ e1.at % (NumT NatT $ e1.at))
+        in match_exp' env s''' e1J (Subst.subst_exp s''' e21)
+      ) es1 |> Lib.List.flatten_opt
+    in
+    (* now project list for each iteration variable and match against rhs's *)
+    let xs, exs = List.split xes in
+    let* s''' =
+      match_list (fun env s xI exI ->
+        let eI = ListE (List.map (fun sJ -> Subst.subst_exp sJ (VarE xI $> exI)) ss) $> e2 in
+        match_exp' env s eI exI
+      ) env s' xs exs
+    in Some (Subst.union s''' s)  (* re-add possibly locally shadowed bindings *)
   | _, IterE (e21, iter2) ->
     let e11, iter1 = eta_iter_exp env e1 in
     let* s' = match_exp' env s e11 e21 in

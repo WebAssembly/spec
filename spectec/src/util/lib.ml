@@ -41,6 +41,13 @@ struct
 
   let filter_not pred = List.filter (fun x -> not (pred x))
 
+  let rec flatten_opt = function
+    | [] -> Some []
+    | None::_ -> None
+    | (Some x)::xos ->
+      match flatten_opt xos with
+      | Some xs -> Some (x::xs)
+      | None -> None
 end
 
 module Char =

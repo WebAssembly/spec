@@ -22,12 +22,20 @@ let mem_typid s id = Map.mem id.it s.typid
 let mem_defid s id = Map.mem id.it s.defid
 let mem_gramid s id = Map.mem id.it s.gramid
 
+let find_varid s id = Map.find id.it s.varid
+let find_typid s id = Map.find id.it s.typid
+let find_defid s id = Map.find id.it s.defid
+let find_gramid s id = Map.find id.it s.gramid
+
 let add_varid s id e = if id.it = "_" then s else {s with varid = Map.add id.it e s.varid}
 let add_typid s id t = if id.it = "_" then s else {s with typid = Map.add id.it t s.typid}
 let add_defid s id x = if id.it = "_" then s else {s with defid = Map.add id.it x s.defid}
 let add_gramid s id g = if id.it = "_" then s else {s with gramid = Map.add id.it g s.gramid}
 
 let remove_varid s id = if id.it = "_" then s else {s with varid = Map.remove id.it s.varid}
+let remove_typid s id = if id.it = "_" then s else {s with typid = Map.remove id.it s.typid}
+let remove_defid s id = if id.it = "_" then s else {s with defid = Map.remove id.it s.defid}
+let remove_gramid s id = if id.it = "_" then s else {s with gramid = Map.remove id.it s.gramid}
 
 let union s1 s2 =
   { varid = Map.union (fun _ _e1 e2 -> Some e2) s1.varid s2.varid;
