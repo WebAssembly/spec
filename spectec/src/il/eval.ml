@@ -167,19 +167,19 @@ and reduce_exp env e : exp =
     | AddOp _, NatE n1, NatE n2 -> NatE Z.(n1 + n2) $> e
     | AddOp _, NatE z0, _ when z0 = Z.zero -> e2'
     | AddOp _, _, NatE z0 when z0 = Z.zero -> e1'
-    | SubOp _, NatE n1, NatE n2 -> NatE Z.(n1 - n2) $> e
+    | SubOp _, NatE n1, NatE n2 when n1 >= n2 -> NatE Z.(n1 - n2) $> e
     | SubOp t, NatE z0, _ when z0 = Z.zero -> UnE (MinusOp t, e2') $> e
     | SubOp _, _, NatE z0 when z0 = Z.zero -> e1'
     | MulOp _, NatE n1, NatE n2 -> NatE Z.(n1 * n2) $> e
     | MulOp _, NatE z1, _ when z1 = Z.one -> e2'
     | MulOp _, _, NatE z1 when z1 = Z.one -> e1'
-    | DivOp _, NatE n1, NatE n2 -> NatE Z.(n1 / n2) $> e
+    | DivOp _, NatE n1, NatE n2 when Z.(n2 <> zero && rem n1 n2 = zero) -> NatE Z.(n1 / n2) $> e
     | DivOp _, NatE z0, _ when z0 = Z.zero -> e1'
     | DivOp _, _, NatE z1 when z1 = Z.one -> e1'
     | ModOp _, NatE n1, NatE n2 -> NatE Z.(rem n1 n2) $> e
     | ModOp _, NatE z0, _ when z0 = Z.zero -> e1'
     | ModOp _, _, NatE z1 when z1 = Z.one -> NatE Z.zero $> e
-    | ExpOp _, NatE n1, NatE n2 -> NatE Z.(n1 ** to_int n2) $> e
+    | ExpOp _, NatE n1, NatE n2 when n2 >= Z.zero -> NatE Z.(n1 ** to_int n2) $> e
     | ExpOp _, NatE z01, _ when z01 = Z.zero || z01 = Z.one -> e1'
     | ExpOp _, _, NatE z0 when z0 = Z.zero -> NatE Z.one $> e
     | ExpOp _, _, NatE z1 when z1 = Z.one -> e1'
@@ -636,6 +636,10 @@ and match_exp' env s e1 e2 : subst option =
   | CallE (id1, args1), CallE (id2, args2) when id1.it = id2.it ->
     match_list match_arg env s args1 args2
 *)
+  | _, UncaseE (e21, mixop) ->
+    match_exp' env s (CaseE (mixop, e1) $$ e1.at % e21.note) e21
+  | _, ProjE (e21, 0) ->  (* only valid on unary tuples! *)
+    match_exp' env s (TupE [e1] $$ e1.at % e21.note) e21
   | IterE (e11, iter1), IterE (e21, iter2) ->
     let* s' = match_exp' env s e11 e21 in
     match_iterexp env s' iter1 iter2
@@ -717,6 +721,9 @@ and match_sym env s g1 g2 : subst option =
   match g1.it, g2.it with
   | _, VarG (id, []) when Subst.mem_gramid s id ->
     match_sym env s g1 (Subst.subst_sym s g2)
+  | _, VarG (id, []) when not (Map.mem id.it env.grams) ->
+    (* An unbound grammar is treated as a pattern variable *)
+    Some (Subst.add_gramid s id g1)
   | VarG (id1, args1), VarG (id2, args2) when id1.it = id2.it ->
     match_list match_arg env s args1 args2
   | IterG (g11, iter1), IterG (g21, iter2) ->
