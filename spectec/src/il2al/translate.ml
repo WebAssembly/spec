@@ -462,7 +462,13 @@ let rec translate_rhs exp =
     let state, rhs = split_config exp in
     (match state.it with
     | Il.CallE (f, ae) ->
-      translate_rhs rhs @ [ performI (f.it, translate_args ae) ~at:state.at ]
+      let perform_instr       = performI (f.it, translate_args ae) ~at:state.at in
+      let push_or_exec_instrs = translate_rhs rhs in
+      (match Lib.List.last_opt push_or_exec_instrs with
+      | Some { it = ExecuteI _; _ } ->
+        [ perform_instr ] @ push_or_exec_instrs
+      | _ -> (* HARDCODE: TABLE.GROW *)
+        push_or_exec_instrs @ [ perform_instr ])
     | _ -> translate_rhs rhs
     )
   (* Recursive case *)
