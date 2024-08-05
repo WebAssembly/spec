@@ -770,12 +770,18 @@ and handle_special_lhs lhs rhs free_ids =
   (* Normal cases *)
   | CaseE (tag, es) ->
     let bindings, es' = extract_non_names es in
+    let rec inject_isCaseOf expr =
+      match expr.note.it with
+      | IterE (inner_expr, ids, iter) ->
+        IterE (inject_isCaseOf inner_expr, ids, iter) $$ expr.at % boolT
+      | _ -> IsCaseOfE (expr, tag) $$ rhs.at % boolT
+    in
     [ ifI (
-      IsCaseOfE (rhs, tag) $$ lhs.at % boolT,
+      inject_isCaseOf rhs,
       letI (caseE (tag, es') ~at:lhs.at ~note:lhs.note, rhs) ~at:at
         :: translate_bindings free_ids bindings,
       []
-      )]
+    )]
   | ListE es ->
     let bindings, es' = extract_non_names es in
     if List.length es >= 2 then (* TODO: remove this. This is temporarily for a pure function returning stores *)

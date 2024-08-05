@@ -386,6 +386,12 @@ and eval_expr env expr =
     let rt1 = e1 |> eval_expr env |> Construct.al_to_ref_type in
     let rt2 = e2 |> eval_expr env |> Construct.al_to_ref_type in
     boolV (Match.match_ref_type [] rt1 rt2)
+  | TopValueE _ ->
+    (* TODO: type check *)
+    boolV (List.length (WasmContext.get_value_stack ()) > 0)
+  | TopValuesE e ->
+    let i = eval_expr env e |> al_to_int in
+    boolV (List.length (WasmContext.get_value_stack ()) >= i)
   | _ -> fail_expr expr "cannot evaluate expr"
 
 
@@ -513,15 +519,17 @@ and assign_split lhs vs env =
 and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.t =
   (Info.find instr.note).covered <- true;
 
+  let rec is_true = function
+    | BoolV true -> true
+    | OptV v_opt -> v_opt |> Option.map is_true |> Option.value ~default:true
+    | ListV a -> Array.for_all is_true !a
+    | _ -> false
+  in
+
+
   match instr.it with
   (* Block instruction *)
   | IfI (e, il1, il2) ->
-    let rec is_true = function
-      | BoolV true -> true
-      | ListV a -> Array.for_all is_true !a
-      | _ -> false
-    in
-
     if is_true (eval_expr env e) then
       AlContext.add_instrs il1 ctx
     else
@@ -534,7 +542,13 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     | Exception.OutOfMemory ->
       AlContext.add_instrs il2 ctx
     )
-  | AssertI _ -> ctx (*assert (eval_cond env c);*)
+  | AssertI e -> ()
+  (*
+    if is_true (eval_expr env e) then
+      ctx
+    else
+      fail_expr e "assertion fail"
+  *)
   | PushI e ->
     (match eval_expr env e with
     | FrameV _ as v -> WasmContext.push_context (v, [], [])
