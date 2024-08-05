@@ -3,6 +3,64 @@ open Ast
 open Util.Source
 open El.Atom
 
+
+(* Remove or *)
+let remove_or_exp e =
+  match e.it with (* TODO: recursive *)
+  | BinE (OrOp, e1, e2) -> [ e1; e2 ]
+  | _ -> [ e ]
+
+let rec remove_or_prem prem =
+  match prem.it with
+  | IfPr e -> e |> remove_or_exp |> List.map (fun e' -> IfPr e' $ prem.at)
+  | IterPr (prem, iterexp) ->
+    prem
+    |> remove_or_prem
+    |> List.map (fun new_prem -> IterPr (new_prem, iterexp) $ prem.at)
+  | _ -> [ prem ]
+
+let remove_or_rule rule =
+  match rule.it with
+  | RuleD (id, binds, mixop, args, prems) ->
+    let premss = List.map remove_or_prem prems in
+    let premss' = List.fold_right (fun ps pss ->
+      (* Duplice pss *)
+      List.concat_map (fun cur ->
+        List.map (fun p -> p :: cur) ps
+      ) pss
+    ) premss [[]] in
+
+    if List.length premss' = 1 then [ rule ] else
+
+    List.mapi (fun i prems' ->
+      let id' = id.it ^ "-" ^ string_of_int i $ id.at in
+      RuleD (id', binds, mixop, args, prems') $ rule.at
+    ) premss'
+
+let remove_or_clause clause =
+  match clause.it with
+  | DefD (binds, args, exp, prems) ->
+    let premss = List.map remove_or_prem prems in
+    let premss' = List.fold_right (fun ps pss ->
+      (* Duplice pss *)
+      List.concat_map (fun cur ->
+        List.map (fun p -> p :: cur) ps
+      ) pss
+    ) premss [[]] in
+
+    if List.length premss' = 1 then [ clause ] else
+
+    List.map (fun prems' -> DefD (binds, args, exp, prems') $ clause.at) premss'
+
+let remove_or def =
+  match def.it with
+  | RelD (id, mixop, typ, rules) ->
+    RelD (id, mixop, typ, List.concat_map remove_or_rule rules) $ def.at
+  | DecD (id, params, typ, clauses) ->
+    DecD (id, params, typ, List.concat_map remove_or_clause clauses) $ def.at
+  | _ -> def
+
+
 (* Pre-process a premise *)
 let rec preprocess_prem prem =
   match prem.it with
@@ -70,7 +128,7 @@ let preprocess_clause (clause: clause) : clause =
   DefD (binds, args, exp, List.concat_map preprocess_prem prems) $ clause.at
 
 let rec preprocess_def (def: def) : def =
-  match def.it with
+  match (remove_or def).it with
   | RelD (id, mixop, typ, rules) ->
     RelD (id, mixop, typ, List.map preprocess_rule rules) $ def.at
   | DecD (id, params, typ, clauses) ->
