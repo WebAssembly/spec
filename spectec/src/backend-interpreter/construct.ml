@@ -218,90 +218,6 @@ let al_to_tag_type: value -> tag_type = function
   | dt -> TagT (al_to_def_type dt)
 
 
-(* Destruct value *)
-
-let rec al_to_field: value -> Aggr.field = function
-  | CaseV ("PACK", [pack_size; c]) ->
-    (* TODO: fix bug in packsize *)
-    let pack_size' =
-      match pack_size with
-      | CaseV ("I8", []) -> Pack.Pack8
-      | CaseV ("I16", []) -> Pack.Pack16
-      | CaseV ("I32", []) -> Pack.Pack32
-      | CaseV ("I64", []) -> Pack.Pack64
-      | v -> error_value "packsize" v
-    in
-    Aggr.PackField (pack_size', ref (al_to_int c))
-  | v -> Aggr.ValField (ref (al_to_value v))
-
-and al_to_array: value -> Aggr.array = function
-  | StrV r when Record.mem "TYPE" r && Record.mem "FIELDS" r ->
-    Aggr.Array (
-      al_to_def_type (Record.find "TYPE" r),
-      al_to_list al_to_field (Record.find "FIELDS" r)
-    )
-  | v -> error_value "array" v
-
-and al_to_struct: value -> Aggr.struct_ = function
-  | StrV r when Record.mem "TYPE" r && Record.mem "FIELDS" r ->
-    Aggr.Struct (
-      al_to_def_type (Record.find "TYPE" r),
-      al_to_list al_to_field (Record.find "FIELDS" r)
-    )
-  | v -> error_value "struct" v
-
-and al_to_tag: value -> Tag.t = function
-  | StrV r when Record.mem "TYPE" r ->
-    Tag.alloc (al_to_tag_type (Record.find "TYPE" r))
-  | v -> error_value "tag" v
-
-and al_to_exn: value -> Exn.exn_ = function
-  | StrV r when Record.mem "TAG" r && Record.mem "FIELDS" r ->
-    let tag_insts = Ds.Store.access "TAGS" in
-    let tag = Record.find "TAG" r |> al_to_int |> listv_nth tag_insts |> al_to_tag in
-    Exn.Exn (
-      tag,
-      al_to_list al_to_value (Record.find "FIELDS" r)
-    )
-  | v -> error_value "exn" v
-
-and al_to_num: value -> num = function
-  | CaseV ("CONST", [ CaseV ("I32", []); i32 ]) -> I32 (al_to_int32 i32)
-  | CaseV ("CONST", [ CaseV ("I64", []); i64 ]) -> I64 (al_to_int64 i64)
-  | CaseV ("CONST", [ CaseV ("F32", []); f32 ]) -> F32 (al_to_float32 f32)
-  | CaseV ("CONST", [ CaseV ("F64", []); f64 ]) -> F64 (al_to_float64 f64)
-  | v -> error_value "num" v
-
-and al_to_vec: value -> vec = function
-  | CaseV ("VCONST", [ CaseV ("V128", []); v128 ]) -> V128 (al_to_vec128 v128)
-  | v -> error_value "vec" v
-
-and al_to_ref: value -> ref_ = function
-  | CaseV ("REF.NULL", [ ht ]) -> NullRef (al_to_heap_type ht)
-  | CaseV ("REF.HOST_ADDR", [ i32 ]) -> Script.HostRef (al_to_int32 i32)
-  | CaseV ("REF.I31_NUM", [ i ]) -> I31.I31Ref (al_to_int i)
-  | CaseV ("REF.STRUCT_ADDR", [ addr ]) ->
-    let struct_insts = Ds.Store.access "STRUCTS" in
-    let struct_ = addr |> al_to_int |> listv_nth struct_insts |> al_to_struct in
-    Aggr.StructRef struct_
-  | CaseV ("REF.ARRAY_ADDR", [ addr ]) ->
-    let arr_insts = Ds.Store.access "ARRAYS" in
-    let arr = addr |> al_to_int |> listv_nth arr_insts |> al_to_array in
-    Aggr.ArrayRef arr
-  | CaseV ("REF.EXN_ADDR", [ addr ]) ->
-    let exn_insts = Ds.Store.access "EXNS" in
-    let exn = addr |> al_to_int |> listv_nth exn_insts |> al_to_exn in
-    Exn.ExnRef exn
-  | CaseV ("REF.EXTERN", [ r ]) -> Extern.ExternRef (al_to_ref r)
-  | v -> error_value "ref" v
-
-and al_to_value: value -> Value.value = function
-  | CaseV ("CONST", _) as v -> Num (al_to_num v)
-  | CaseV (ref_, _) as v when String.sub ref_ 0 4 = "REF." -> Ref (al_to_ref v)
-  | CaseV ("VCONST", _) as v -> Vec (al_to_vec v)
-  | v -> error_value "value" v
-
-
 (* Destruct operator *)
 
 let al_to_op f1 f2 = function
@@ -767,6 +683,19 @@ let al_to_vlaneop: value list -> idx * vec_laneop * int = function
   | vs -> error_value "vlaneop" (TupV vs)
 
 
+(* Destruct expressions *)
+
+let al_to_num: value -> num = function
+  | CaseV ("CONST", [ CaseV ("I32", []); i32 ]) -> I32 (al_to_int32 i32)
+  | CaseV ("CONST", [ CaseV ("I64", []); i64 ]) -> I64 (al_to_int64 i64)
+  | CaseV ("CONST", [ CaseV ("F32", []); f32 ]) -> F32 (al_to_float32 f32)
+  | CaseV ("CONST", [ CaseV ("F64", []); f64 ]) -> F64 (al_to_float64 f64)
+  | v -> error_value "num" v
+
+let al_to_vec: value -> vec = function
+  | CaseV ("VCONST", [ CaseV ("V128", []); v128 ]) -> V128 (al_to_vec128 v128)
+  | v -> error_value "vec" v
+
 let rec al_to_instr (v: value): Ast.instr = al_to_phrase al_to_instr' v
 and al_to_instr': value -> Ast.instr' = function
   (* wasm values *)
@@ -1021,6 +950,88 @@ let rec al_to_module': value -> module_' = function
     }
   | v -> error_value "module" v
 let al_to_module: value -> module_ = al_to_phrase al_to_module'
+
+
+(* Destruct value *)
+
+let rec al_to_field: value -> Aggr.field = function
+  | CaseV ("PACK", [pack_size; c]) ->
+    (* TODO: fix bug in packsize *)
+    let pack_size' =
+      match pack_size with
+      | CaseV ("I8", []) -> Pack.Pack8
+      | CaseV ("I16", []) -> Pack.Pack16
+      | CaseV ("I32", []) -> Pack.Pack32
+      | CaseV ("I64", []) -> Pack.Pack64
+      | v -> error_value "packsize" v
+    in
+    Aggr.PackField (pack_size', ref (al_to_int c))
+  | v -> Aggr.ValField (ref (al_to_value v))
+
+and al_to_array: value -> Aggr.array = function
+  | StrV r when Record.mem "TYPE" r && Record.mem "FIELDS" r ->
+    Aggr.Array (
+      al_to_def_type (Record.find "TYPE" r),
+      al_to_list al_to_field (Record.find "FIELDS" r)
+    )
+  | v -> error_value "array" v
+
+and al_to_struct: value -> Aggr.struct_ = function
+  | StrV r when Record.mem "TYPE" r && Record.mem "FIELDS" r ->
+    Aggr.Struct (
+      al_to_def_type (Record.find "TYPE" r),
+      al_to_list al_to_field (Record.find "FIELDS" r)
+    )
+  | v -> error_value "struct" v
+
+and al_to_tag: value -> Tag.t = function
+  | StrV r when Record.mem "TYPE" r ->
+    Tag.alloc (al_to_tag_type (Record.find "TYPE" r))
+  | v -> error_value "tag" v
+
+and al_to_exn: value -> Exn.exn_ = function
+  | StrV r when Record.mem "TAG" r && Record.mem "FIELDS" r ->
+    let tag_insts = Ds.Store.access "TAGS" in
+    let tag = Record.find "TAG" r |> al_to_int |> listv_nth tag_insts |> al_to_tag in
+    Exn.Exn (
+      tag,
+      al_to_list al_to_value (Record.find "FIELDS" r)
+    )
+  | v -> error_value "exn" v
+
+and al_to_funcinst: value -> Instance.func_inst = function
+  | StrV r when Record.mem "TYPE" r && Record.mem "MODULE" r && Record.mem "CODE" r ->
+    Func.AstFunc (
+      al_to_def_type (Record.find "TYPE" r),
+      Reference_interpreter.Lib.Promise.make (), (* TODO: Fulfill the promise with module instance *)
+      al_to_func (Record.find "CODE" r)
+    )
+  | v -> error_value "funcinst" v
+
+and al_to_ref: value -> ref_ = function
+  | CaseV ("REF.NULL", [ ht ]) -> NullRef (al_to_heap_type ht)
+  | CaseV ("REF.I31_NUM", [ i ]) -> I31.I31Ref (al_to_int i)
+  | CaseV ("REF.STRUCT_ADDR", [ addr ]) ->
+    let struct_insts = Ds.Store.access "STRUCTS" in
+    let struct_ = addr |> al_to_int |> listv_nth struct_insts |> al_to_struct in
+    Aggr.StructRef struct_
+  | CaseV ("REF.ARRAY_ADDR", [ addr ]) ->
+    let arr_insts = Ds.Store.access "ARRAYS" in
+    let arr = addr |> al_to_int |> listv_nth arr_insts |> al_to_array in
+    Aggr.ArrayRef arr
+  | CaseV ("REF.FUNC_ADDR", [ addr ]) ->
+    let func_insts = Ds.Store.access "FUNCS" in
+    let func = addr |> al_to_int |> listv_nth func_insts |> al_to_funcinst in
+    Instance.FuncRef func
+  | CaseV ("REF.HOST_ADDR", [ i32 ]) -> Script.HostRef (al_to_int32 i32)
+  | CaseV ("REF.EXTERN", [ r ]) -> Extern.ExternRef (al_to_ref r)
+  | v -> error_value "ref" v
+
+and al_to_value: value -> Value.value = function
+  | CaseV ("CONST", _) as v -> Num (al_to_num v)
+  | CaseV (ref_, _) as v when String.sub ref_ 0 4 = "REF." -> Ref (al_to_ref v)
+  | CaseV ("VCONST", _) as v -> Vec (al_to_vec v)
+  | v -> error_value "value" v
 
 
 (* Construct *)

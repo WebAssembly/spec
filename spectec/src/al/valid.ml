@@ -212,6 +212,11 @@ let check_list source typ =
   | IterT (_, iter) when iter <> Opt -> ()
   | _ -> error_mismatch source typ (varT "list")
 
+let check_opt source typ =
+  match typ.it with
+  | IterT (_, Opt) -> ()
+  | _ -> error_mismatch source typ (varT "option")
+
 (* TODO: use hint *)
 let check_instr source typ =
   let typ = get_base_typ typ in
@@ -296,6 +301,7 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
   (match expr.it with
   | VarE id ->
     if not (Set.mem id !bound_set) then error expr.at ("free identifier " ^ id)
+  | NumE _ -> check_num source expr.note;
   | UnE (NotOp, expr') ->
     check_bool source expr.note; check_bool source expr'.note
   | UnE (MinusOp, expr') ->
@@ -330,9 +336,9 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
   | LenE expr' ->
     check_list source expr'.note; check_num source expr.note
   | TupE exprs -> check_tuple source exprs expr.note
-  | CaseE _ -> () (* TODO *)
+  | CaseE _ | CaseE2 _ -> () (* TODO *)
   | CallE (id, args) -> check_call source id args expr.note
-  (* TODO *)
+  | InvCallE _ -> () (* TODO *)
   | IterE (expr1, _, iter) ->
     if not (expr1.note.it = BoolT && expr.note.it = BoolT) then
       (match iter with
@@ -345,11 +351,46 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
       | _ ->
         check_match source expr.note (iterT expr1.note List);
       )
-  | _ ->
-    match expr.note.it with
-    | VarT (id, []) when id.it = "TODO" ->
-      error expr.at (Printf.sprintf "%s's type is TODO" (string_of_expr expr))
-    | _ -> ()
+  | OptE expr_opt ->
+    check_opt source expr.note;
+    (match expr_opt with
+    | Some expr' -> check_match source expr.note (iterT expr'.note Opt)
+    | None -> ()
+    )
+  | ListE [] -> check_list source expr.note
+  | ListE (h :: t) ->
+    check_list source expr.note;
+    t
+    |> List.map note
+    |> List.iter (check_match source h.note)
+  | InfixE _ -> () (* TODO: `InfixE` will be merged into CaseE *)
+  | ArityE expr1 ->
+    check_num source expr.note; check_context source expr1.note
+  | FrameE (expr_opt, expr1) ->
+    check_context source expr.note;
+    Option.iter (fun expr2 -> check_num source expr2.note) expr_opt;
+    check_match source expr1.note (varT "frame")
+  | LabelE (expr1, expr2) ->
+    check_context source expr.note;
+    check_num source expr1.note;
+    check_match source expr2.note (iterT (varT "instr") List)
+  | BoolE _ | GetCurStateE | GetCurFrameE | GetCurLabelE | GetCurContextE
+  | IsCaseOfE _ | IsValidE _ | MatchE _ | HasTypeE _ | TopFrameE | TopLabelE ->
+    check_bool source expr.note
+  | ContE expr1 ->
+    check_match source expr.note (iterT (varT "instr") List);
+    check_match source expr1.note (iterT (varT "instr") List)
+  | ChooseE expr1 ->
+    check_list source expr1.note; check_match source expr1.note (iterT expr.note List)
+  | ContextKindE _ -> () (* TODO: Not used anymore *)
+  | IsDefinedE expr1 ->
+    check_opt source expr1.note; check_bool source expr.note
+  | TopValueE expr_opt ->
+    check_bool source expr.note;
+    Option.iter (fun expr1 -> check_match source expr1.note (varT "val")) expr_opt
+  | TopValuesE expr1 ->
+    check_bool source expr.note; check_num source expr1.note
+  | SubE _ | YetE _ -> error_valid "invalid expression" source ""
   );
   (Option.get walker.super).walk_expr walker expr
 
@@ -378,9 +419,11 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
   | LetI (expr1, expr2) ->
     add_bound_vars expr1; check_match source expr1.note expr2.note
   | ExecuteI expr | ExecuteSeqI expr -> check_instr source expr.note
+  | PerformI _ -> () (* TODO *)
   | ReplaceI (expr1, path, expr2) ->
     access source expr1.note path |> check_match source expr2.note
   | AppendI (expr1, _expr2) -> check_list source expr1.note
+  | OtherwiseI _ | YetI _ -> error_valid "invalid instruction" source ""
   | _ -> ()
   );
   (Option.get walker.super).walk_instr walker instr

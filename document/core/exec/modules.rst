@@ -508,6 +508,10 @@ $${definition: instantiate}
 
 where:
 
+.. _eval-globals:
+
+$${definition: evalglobals}
+
 .. _aux-runelem:
 .. _aux-rundata:
 

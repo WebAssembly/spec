@@ -482,6 +482,7 @@ let hide_state_expr expr =
     match expr.it with
     | CallE (f, args) -> CallE (f, hide_state_args args)
     | TupE [ s; e ] when is_store s -> e.it
+    | TupE [ z; e ] when is_state z -> e.it
     | e -> e
   in
   { expr with it = expr' }
@@ -574,6 +575,7 @@ let insert_state_binding algo =
     | a -> a
   }
 
+(* Insert "Let f be the current frame" if necessary. *)
 let insert_frame_binding instrs =
   let open Free in
   let (@) = IdSet.union in
@@ -627,6 +629,113 @@ let insert_frame_binding instrs =
   match Walk.walk_instrs walk_config instrs with
   | il when !found -> (letI (varE "f" ~note:frameT, getCurFrameE () ~note:frameT)) :: il
   | _ -> instrs
+
+
+(* This function infers whether the frame should be
+   considered global or not within this given AL function.
+
+There are two kinds of auxilirary functions:
+  1) Global: Parameters contain a frame.
+  2) Not global: Parameters do not contain a frame.
+
+(1) These kinds of functions assumes that the activation of frame is already pushed,
+    which can be accessed by "the current frame."
+    If this function calls another function with a frame argument,
+    it does not need to push the frame to the stack again.
+(2) These kinds of functions assumes that the activation of frame is not pushed,
+    and if this function calls another function with an frame argument,
+    it has to push the frame to the stack before the function call,
+    and pop the frame after the function call.
+*)
+
+(* Case 1 *)
+let handle_framed_algo a instrs =
+  let e_zf = match a.it with | ExpA e -> e | TypA _ -> assert false in
+  let e_f = match e_zf.it with | TupE [_s; f] -> f | _ -> e_zf in
+
+  (* Helpers *)
+  let frame_appeared = ref false in
+  let frame_finder expr = if Eq.eq_expr expr e_f || Eq.eq_expr expr e_zf then frame_appeared:= true; expr in
+
+  let mut_instrs = ref [] in
+  let push_mutI i = (mut_instrs := i :: !mut_instrs) in
+  let pop_mutI () = let ret = !mut_instrs in mut_instrs := []; ret in
+  let expr_to_mutI expr =
+    match expr.it with
+    | ExtE (eb, ps, { it = ListE [ ev ]; _ }, Back) when is_frame eb ->
+      push_mutI (appendI (mk_access ps eb, ev) ~at:expr.at);
+      eb
+    | UpdE (eb, _ps, _ev) when is_frame eb ->
+      (* push_mutI (yetI "TODO: generate instruction for inplace-mutating of frame"); *)
+      expr
+    | _ ->
+      expr
+  in
+
+  let post_instr instr =
+    pop_mutI () @ [instr]
+  in
+  (* End of helpers *)
+
+  let instr_hd = letI (e_zf, { e_zf with it = GetCurFrameE }) ~at:e_zf.at in
+  let instr_tl = walk_instrs { default_config with
+    post_instr;
+    pre_expr = frame_finder;
+    post_expr = expr_to_mutI
+  } instrs in
+
+  if !frame_appeared then instr_hd :: instr_tl else instr_tl
+
+(* Case 2 *)
+let handle_unframed_algo instrs =
+  (* Helpers *)
+  let frame_arg = ref None in
+  let extract_frame_arg expr =
+    match expr.it with
+    | CallE (_, args) ->
+      List.iter (fun a ->
+        if (is_frame_arg a || is_state_arg a) then frame_arg := Some a
+      ) args;
+      expr
+    | _ ->
+      expr
+  in
+
+  let post_instr instr =
+    let ret =
+      match !frame_arg with
+      | Some { it = ExpA f; _ } ->
+        let callframeT = Il.Ast.VarT ("callframe" $ no_region, []) $ no_region in
+        let frame = frameE (None, f) ~at:f.at ~note:callframeT in
+        let frame' =
+          match instr.it with
+          (* HARDCODE: the frame-passing-style *)
+          | LetI ( { it = TupE [f'; _]; _ }, _) ->
+            frameE (None, f') ~at:f'.at ~note:callframeT
+          | _ ->
+            frameE (None, varE "_f" ~note:f.note) ~note:callframeT
+        in
+        [
+          pushI frame ~at:frame.at;
+          instr;
+          popI frame' ~at:frame'.at;
+        ]
+      | _ -> [ instr ]
+    in
+    frame_arg := None;
+    ret
+  in
+  (* End of helpers *)
+
+  walk_instrs { default_config with
+    post_instr;
+    pre_expr = extract_frame_arg;
+  } instrs
+
+let handle_frame params instrs =
+  match List.find_opt (fun a -> is_frame_arg a || is_state_arg a) params with
+  | Some a -> handle_framed_algo a instrs
+  | None   -> handle_unframed_algo instrs
 
 (* Applied for reduction rules: infer assert from if *)
 let count_if instrs =

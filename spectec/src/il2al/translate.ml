@@ -771,12 +771,18 @@ and handle_special_lhs lhs rhs free_ids =
   (* Normal cases *)
   | CaseE (tag, es) ->
     let bindings, es' = extract_non_names es in
+    let rec inject_isCaseOf expr =
+      match expr.it with
+      | IterE (inner_expr, ids, iter) ->
+        IterE (inject_isCaseOf inner_expr, ids, iter) $$ expr.at % boolT
+      | _ -> IsCaseOfE (expr, tag) $$ rhs.at % boolT
+    in
     [ ifI (
-      IsCaseOfE (rhs, tag) $$ lhs.at % boolT,
+      inject_isCaseOf rhs,
       letI (caseE (tag, es') ~at:lhs.at ~note:lhs.note, rhs) ~at:at
         :: translate_bindings free_ids bindings,
       []
-      )]
+    )]
   | ListE es ->
     let bindings, es' = extract_non_names es in
     if List.length es >= 2 then (* TODO: remove this. This is temporarily for a pure function returning stores *)
@@ -866,13 +872,12 @@ let translate_rulepr id exp =
   let at = id.at in
   let expA e = ExpA e $ e.at in
   match id.it, translate_argexp exp with
-  | "Eval_expr", [z; lhs; _; rhs] ->
+  | "Eval_expr", [z; is; z'; vs] ->
     (* Note: State is automatically converted into frame by remove_state *)
-    [
-      pushI (frameE (None, z) ~note:callframeT);
-      letI (rhs, callE ("eval_expr", [ expA lhs ]) ~note:rhs.note) ~at:at;
-      popI (frameE (None, z) ~note:callframeT);
-    ]
+    (* Note: Push/pop is automatically inserted by handle_frame *)
+    let lhs = tupE [z'; vs] ~at:(over_region [z'.at; vs.at]) ~note:vs.note in
+    let rhs = callE ("eval_expr", [ expA z; expA is ]) ~note:vs.note in
+    [ letI (lhs, rhs) ~at:at ]
   (* ".*_sub" *)
   | name, [_C; rt1; rt2]
     when String.ends_with ~suffix:"_sub" name ->
@@ -963,7 +968,7 @@ let translate_helper_body name clause =
     if is_config exp then
       get_config_return_instrs name exp clause.at
     else
-      [ returnI (Some (translate_exp exp)) ]
+      [ returnI (Some (translate_exp exp)) ~at:exp.at ]
   in
   translate_prems prems return_instrs
 
@@ -983,7 +988,8 @@ let translate_helper partial_funcs def =
     let blocks = List.map (translate_helper_body name) unified_clauses in
     let body =
       Transpile.merge_blocks blocks
-      |> Transpile.insert_frame_binding
+      (* |> Transpile.insert_frame_binding *)
+      |> Transpile.handle_frame params
       |> Walk.(walk_instrs { default_config with pre_expr = Transpile.remove_sub })
       |> Transpile.enhance_readability
       |> (if List.mem id partial_funcs then Fun.id else Transpile.ensure_return)
@@ -1381,10 +1387,7 @@ let translate il =
 
   initialize_env il;
 
-  let not_translate =
-    [ "typing.watsup";
-    ]
-  in
+  let not_translate = ["typing.watsup"] in
   let is_al_target def =
     let f = fun name -> String.ends_with ~suffix:name def.at.left.file in
     match def.it with
