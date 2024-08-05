@@ -81,7 +81,7 @@ and string_of_values sep = string_of_list string_of_value sep
 (* Operators *)
 
 let string_of_unop = function
-  | NotOp -> "!" (*"not"*)
+  | NotOp -> "!"
   | MinusOp -> "-"
 
 let string_of_binop = function
@@ -181,7 +181,6 @@ and string_of_expr expr =
     (* TODO: "type(top()) == frame"*)
   | TopValueE (Some e) -> sprintf "top_value(%s)" (string_of_expr e)
   | TopValueE None -> "top_value()"
-    (* "a value is on the top of the stack" *)
   | TopValuesE e -> sprintf "top_values(%s)" (string_of_expr e)
   | MatchE (e1, e2) ->
     sprintf "%s <: %s"
@@ -229,9 +228,7 @@ let string_of_stack_prefix expr =
   | FrameE _
   | VarE ("F" | "L") -> ""
   | IterE _ -> ""
-    (* "the values " *)
   | _ -> ""
-    (* "the value " *)
 
 let rec string_of_instr' depth instr =
   match instr.it with
