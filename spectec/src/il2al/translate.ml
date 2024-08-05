@@ -771,7 +771,7 @@ and handle_special_lhs lhs rhs free_ids =
   | CaseE (tag, es) ->
     let bindings, es' = extract_non_names es in
     let rec inject_isCaseOf expr =
-      match expr.note.it with
+      match expr.it with
       | IterE (inner_expr, ids, iter) ->
         IterE (inject_isCaseOf inner_expr, ids, iter) $$ expr.at % boolT
       | _ -> IsCaseOfE (expr, tag) $$ rhs.at % boolT

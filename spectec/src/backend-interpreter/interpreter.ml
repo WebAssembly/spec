@@ -542,7 +542,7 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     | Exception.OutOfMemory ->
       AlContext.add_instrs il2 ctx
     )
-  | AssertI e -> ()
+  | AssertI _e -> ctx
   (*
     if is_true (eval_expr env e) then
       ctx
