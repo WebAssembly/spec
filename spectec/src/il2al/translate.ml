@@ -1100,7 +1100,8 @@ let translate_context_rgroup lhss sub_algos inner_params =
           begin match kind_of_context lhs with
           | Il.Atom.Atom "FRAME_", _ -> topFrameE ()
           | Il.Atom.Atom "LABEL_", _ -> topLabelE ()
-          | _ -> error lhs.at "the context is neither a frame nor a label"
+          | Il.Atom.Atom id, _ -> yetE ("top context: " ^ id) ~at:lhs.at
+          | _ -> error lhs.at "unknown type of the context"
           end
         in
         [ ifI (e_cond, List.tl body, acc) ]
@@ -1176,7 +1177,7 @@ let rec translate_rgroup' context winstr instr_name rgroup =
       let sub_algos = List.map translate_rgroup unified_sub_groups in
       translate_context_rgroup lhss sub_algos inner_params
       with _ ->
-        [ yetI "TODO: It is likely that the value stack of two rules are different" ])
+        [ yetI "TODO: translate_rgroup with differnet contexts" ])
     | _ -> [ yetI "TODO: translate_rgroup" ] in
   !inner_params, instrs
 
@@ -1263,10 +1264,11 @@ let extract_rules def =
   match def.it with
   | Il.RelD (id, _, _, rules) when List.mem id.it [ "Step"; "Step_read"; "Step_pure" ] ->
     List.filter_map (fun rule ->
-      match rule.it with
-      | Il.RuleD (id', _, _, _, _) when List.mem id'.it [ "pure"; "read" ] ->
+      (* HARDCODE: Exclude administrative rules *)
+      if List.mem (name_of_rule rule) ["pure"; "read"; "trap"; "ctxt"] then
         None
-      | _ -> Some (id, rule)
+      else
+        Some (id, rule)
     ) rules
   | _ -> []
 
