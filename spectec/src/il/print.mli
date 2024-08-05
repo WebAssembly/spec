@@ -9,6 +9,7 @@ val string_of_iter : iter -> string
 val string_of_typ : typ -> string
 val string_of_exp : exp -> string
 val string_of_path : path -> string
+val string_of_sym : sym -> string
 val string_of_prem : prem -> string
 val string_of_arg : arg -> string
 val string_of_param : param -> string

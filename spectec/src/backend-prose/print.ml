@@ -108,15 +108,15 @@ and indented_string_of_instrs is =
   (string_of_list indented_string_of_instr "" "\n" "" is)
 
 let string_of_def = function
-| Iff (name, _e, concl, []) ->
-    "validation_of_" ^ name
+| Iff (anchor, _e, concl, []) ->
+    "validation_of_" ^ anchor
     (* ^ " " ^ string_of_expr e ^ "\n" *)
     ^ "\n"
     ^ string_of_instr concl ^ "\n"
-| Iff (name, _e, concl, prems) ->
+| Iff (anchor, _e, concl, prems) ->
     let concl_str = string_of_instr concl in
     let drop_last x = String.sub x 0 (String.length x - 1) in
-    "validation_of_" ^ name
+    "validation_of_" ^ anchor
     (* ^ " " ^ string_of_expr e ^ "\n" *)
     ^ "\n"
     ^ drop_last concl_str

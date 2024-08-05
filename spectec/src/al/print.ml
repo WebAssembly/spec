@@ -30,10 +30,10 @@ let rec repeat str num =
 
 (* Terminals *)
 
-let string_of_atom atom =
-  let atom', typ = atom in
-  let ilatom = atom' $$ (no_region, ref typ) in
-  Atom.to_string ilatom
+let string_of_atom = El.Print.string_of_atom
+let string_of_mixop = Il.Print.string_of_mixop
+
+let string_of_typ = Il.Print.string_of_typ
 
 
 (* Directions *)
@@ -142,8 +142,8 @@ and string_of_expr expr =
   | BinE (op, e1, e2) ->
     sprintf "(%s %s %s)" (string_of_expr e1) (string_of_binop op) (string_of_expr e2)
   | TupE el -> "(" ^ string_of_exprs ", " el ^ ")"
-  | CallE (id, el) -> sprintf "$%s(%s)" id (string_of_exprs ", " el)
-  | InvCallE (id, nl, el) ->
+  | CallE (id, al) -> sprintf "$%s(%s)" id (string_of_args ", " al)
+  | InvCallE (id, nl, al) ->
     let id' =
       if List.for_all Option.is_some nl then id
       else
@@ -153,7 +153,7 @@ and string_of_expr expr =
         |> List.fold_left (^) ""
         |> sprintf "%s_%s" id
     in
-    sprintf "$%s^-1(%s)" id' (string_of_exprs ", " el)
+    sprintf "$%s^-1(%s)" id' (string_of_args ", " al)
   | CatE (e1, e2) ->
     sprintf "%s ++ %s" (string_of_expr e1) (string_of_expr e2)
   | MemE (e1, e2) ->
@@ -179,16 +179,18 @@ and string_of_expr expr =
     sprintf "%s with %s replaced by %s" (string_of_expr e1) (string_of_paths ps) (string_of_expr e2)
   | StrE r -> string_of_record_expr r
   | ContE e -> sprintf "the continuation of %s" (string_of_expr e)
+  | ChooseE e -> sprintf "an element of %s" (string_of_expr e)
   | LabelE (e1, e2) ->
     sprintf "the label_%s{%s}" (string_of_expr e1) (string_of_expr e2)
   | VarE id -> id
   | SubE (id, _) -> id
   | IterE (e, _, iter) -> string_of_expr e ^ string_of_iter iter
   | InfixE (e1, a, e2) -> "(" ^ string_of_expr e1 ^ " " ^ string_of_atom a ^ " " ^ string_of_expr e2 ^ ")"
-  | CaseE ((Atom.Atom ("CONST" | "VCONST"), _), hd::tl) ->
+  | CaseE ({ it=Atom.Atom ("CONST" | "VCONST"); _ }, hd::tl) ->
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
   | CaseE (a, []) -> string_of_atom a
   | CaseE (a, el) -> "(" ^ string_of_atom a ^ " " ^ string_of_exprs " " el ^ ")"
+  | CaseE2 (op, el) -> "(" ^ string_of_mixop op ^ "_" ^ string_of_exprs " " el ^ ")"
   | OptE (Some e) -> "?(" ^ string_of_expr e ^ ")"
   | OptE None -> "?()"
   | ContextKindE (a, e) -> sprintf "%s is %s" (string_of_expr e) (string_of_atom a)
@@ -221,6 +223,15 @@ and string_of_path path =
 
 and string_of_paths paths = List.map string_of_path paths |> List.fold_left (^) ""
 
+
+(* Args *)
+
+and string_of_arg arg =
+  match arg.it with
+  | ExpA e -> string_of_expr e
+  | TypA typ -> string_of_typ typ
+
+and string_of_args sep = string_of_list string_of_arg sep
 
 
 (* Instructions *)
@@ -326,13 +337,13 @@ let rec string_of_instr' depth instr =
   | ReturnI (Some e) -> sprintf "%s Return %s." (make_index depth) (string_of_expr e)
   | EnterI (e1, e2, il) ->
     sprintf "%s Enter %s with label %s.%s" (make_index depth)
-      (string_of_expr e1) (string_of_expr e2) (string_of_instrs' (depth + 1) il)
+      (string_of_expr e2) (string_of_expr e1) (string_of_instrs' (depth + 1) il)
   | ExecuteI e ->
     sprintf "%s Execute the instruction %s." (make_index depth) (string_of_expr e)
   | ExecuteSeqI e ->
     sprintf "%s Execute the sequence (%s)." (make_index depth) (string_of_expr e)
-  | PerformI (id, el) ->
-    sprintf "%s Perform %s." (make_index depth) (string_of_expr (CallE (id, el) $$ instr.at % (Il.Ast.VarT ("TODO" $ no_region, []) $ no_region)))
+  | PerformI (id, al) ->
+    sprintf "%s Perform %s." (make_index depth) (string_of_expr (CallE (id, al) $$ instr.at % (Il.Ast.VarT ("TODO" $ no_region, []) $ no_region)))
   | ExitI a ->
     sprintf "%s Exit from %s." (make_index depth) (string_of_atom a)
   | ReplaceI (e1, p, e2) ->
@@ -354,16 +365,16 @@ let string_of_instr instr =
 let string_of_instrs = string_of_instrs' 0
 
 let string_of_algorithm algo = match algo.it with
-  | RuleA (a, params, instrs) ->
+  | RuleA (a, _anchor, params, instrs) ->
     "execution_of_" ^ string_of_atom a
     ^ List.fold_left
-        (fun acc p -> acc ^ " " ^ string_of_expr p)
+        (fun acc p -> acc ^ " " ^ string_of_arg p)
         "" params
     ^ string_of_instrs instrs ^ "\n"
   | FuncA (id, params, instrs) ->
     id
     ^ List.fold_left
-        (fun acc p -> acc ^ " " ^ string_of_expr p)
+        (fun acc p -> acc ^ " " ^ string_of_arg p)
         "" params
     ^ string_of_instrs instrs ^ "\n"
 
@@ -421,6 +432,7 @@ and structured_string_of_expr expr =
   | UnE (op, e) ->
     "UnE ("
     ^ string_of_unop op
+    ^ ", "
     ^ structured_string_of_expr e
     ^ ")"
   | BinE (op, e1, e2) ->
@@ -432,11 +444,11 @@ and structured_string_of_expr expr =
     ^ structured_string_of_expr e2
     ^ ")"
   | TupE el -> "TupE (" ^ structured_string_of_exprs el ^ ")"
-  | CallE (id, el) -> "CallE (" ^ id ^ ", [ " ^ structured_string_of_exprs el ^ " ])"
-  | InvCallE (id, nl, el) ->
+  | CallE (id, al) -> "CallE (" ^ id ^ ", [ " ^ structured_string_of_args al ^ " ])"
+  | InvCallE (id, nl, al) ->
     let nl = List.filter_map (fun x -> x) nl in
     sprintf "InvCallE (%s, [%s], [%s])"
-      id (string_of_list string_of_int "" nl) (structured_string_of_exprs el)
+      id (string_of_list string_of_int "" nl) (structured_string_of_args al)
   | CatE (e1, e2) ->
     "CatE ("
     ^ structured_string_of_expr e1
@@ -483,6 +495,7 @@ and structured_string_of_expr expr =
     ^ ")"
   | StrE r -> "StrE (" ^ structured_string_of_record_expr r ^ ")"
   | ContE e1 -> "ContE (" ^ structured_string_of_expr e1 ^ ")"
+  | ChooseE e1 -> "ChooseE (" ^ structured_string_of_expr e1 ^ ")"
   | LabelE (e1, e2) ->
     "LabelE ("
     ^ structured_string_of_expr e1
@@ -503,12 +516,15 @@ and structured_string_of_expr expr =
     "InfixE ("
     ^ structured_string_of_expr e1
     ^ ", "
-    ^ string_of_atom a 
+    ^ string_of_atom a
     ^ ", "
     ^ structured_string_of_expr e2
     ^ ")"
   | CaseE (a, el) ->
-    "CaseE (" ^ string_of_atom a 
+    "CaseE (" ^ string_of_atom a
+    ^ ", [" ^ structured_string_of_exprs el ^ "])"
+  | CaseE2 (op, el) ->
+    "CaseE2 (" ^ string_of_mixop op
     ^ ", [" ^ structured_string_of_exprs el ^ "])"
   | OptE None -> "OptE"
   | OptE (Some e) -> "OptE (" ^ structured_string_of_expr e ^ ")"
@@ -545,6 +561,15 @@ and structured_string_of_path path =
 and structured_string_of_paths paths =
   List.map string_of_path paths |> List.fold_left (^) ""
 
+
+(* Args *)
+
+and structured_string_of_arg arg =
+  match arg.it with
+  | ExpA e -> sprintf "ExpA (%s)" (structured_string_of_expr e)
+  | TypA typ -> sprintf "TypA (%s)" (string_of_typ typ)
+
+and structured_string_of_args al = string_of_list structured_string_of_arg ", " al
 
 (* Instructions *)
 
@@ -593,7 +618,7 @@ let rec structured_string_of_instr' depth instr =
     ^ ")"
   | ExecuteI e -> "ExecuteI (" ^ structured_string_of_expr e ^ ")"
   | ExecuteSeqI e -> "ExecuteSeqI (" ^ structured_string_of_expr e ^ ")"
-  | PerformI (id, el) -> "PerformI (" ^ id ^ ",[ " ^ structured_string_of_exprs el ^ " ])"
+  | PerformI (id, el) -> "PerformI (" ^ id ^ ",[ " ^ structured_string_of_args el ^ " ])"
   | ExitI a -> "ExitI (" ^ string_of_atom a ^ ")"
   | ReplaceI (e1, p, e2) ->
     "ReplaceI ("
@@ -620,17 +645,17 @@ let structured_string_of_instr = structured_string_of_instr' 0
 let structured_string_of_instrs = structured_string_of_instrs' 0
 
 let structured_string_of_algorithm algo = match algo.it with
-  | RuleA (a, params, instrs) ->
+  | RuleA (a, _anchor, params, instrs) ->
       "execution_of_" ^ string_of_atom a
       ^ List.fold_left
-          (fun acc p -> acc ^ " " ^ structured_string_of_expr p)
+          (fun acc p -> acc ^ " " ^ structured_string_of_arg p)
           "" params
       ^ ":\n"
       ^ structured_string_of_instrs' 1 instrs
   | FuncA (id, params, instrs) ->
       id
       ^ List.fold_left
-          (fun acc p -> acc ^ " " ^ structured_string_of_expr p)
+          (fun acc p -> acc ^ " " ^ structured_string_of_arg p)
           "" params
       ^ ":\n"
       ^ structured_string_of_instrs' 1 instrs

@@ -17,21 +17,21 @@ Parametric Instructions
 
 .. _exec-nop:
 
-$${rule-prose: exec/nop}
+$${rule-prose: Step_pure/nop}
 
 $${rule: {Step_pure/nop}}
 
 
 .. _exec-unreachable:
 
-$${rule-prose: exec/unreachable}
+$${rule-prose: Step_pure/unreachable}
 
 $${rule: {Step_pure/unreachable}}
 
 
 .. _exec-drop:
 
-$${rule-prose: exec/drop}
+$${rule-prose: Step_pure/drop}
 
 .. todo:: (1) Remove trailing "Do nothing."
 
@@ -40,7 +40,7 @@ $${rule: Step_pure/drop}
 
 .. _exec-select:
 
-$${rule-prose: exec/select}
+$${rule-prose: Step_pure/select}
 
 $${rule: {Step_pure/select-*}}
 
@@ -61,15 +61,15 @@ The mapping of numeric instructions to their underlying operators is expressed b
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \X{op}_{\IN}(i_1,\dots,i_k) &=& \xref{exec/numerics}{int-ops}{\F{i}\X{op}}_N(i_1,\dots,i_k) \\
-   \X{op}_{\FN}(z_1,\dots,z_k) &=& \xref{exec/numerics}{float-ops}{\F{f}\X{op}}_N(z_1,\dots,z_k) \\
+   \X{op}_{\IN}(i_1,\dots,i_k) &=& \xref{Step_pure/numerics}{int-ops}{\F{i}\X{op}}_N(i_1,\dots,i_k) \\
+   \X{op}_{\FN}(z_1,\dots,z_k) &=& \xref{Step_pure/numerics}{float-ops}{\F{f}\X{op}}_N(z_1,\dots,z_k) \\
    \end{array}
 
 And for :ref:`conversion operators <exec-cvtop>`:
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \cvtop^{\sx^?}_{t_1,t_2}(c) &=& \xref{exec/numerics}{convert-ops}{\X{cvtop}}^{\sx^?}_{|t_1|,|t_2|}(c) \\
+   \cvtop^{\sx^?}_{t_1,t_2}(c) &=& \xref{Step_pure/numerics}{convert-ops}{\X{cvtop}}^{\sx^?}_{|t_1|,|t_2|}(c) \\
    \end{array}
 
 Where the underlying operators are partial, the corresponding instruction will :ref:`trap <trap>` when the result is not defined.
@@ -97,7 +97,7 @@ Where the underlying operators are non-deterministic, because they may return on
 
 .. _exec-unop:
 
-$${rule-prose: exec/unop}
+$${rule-prose: Step_pure/unop}
 
 .. todo:: (2) SpecTec currently defines the image of unop as a sequence, not a set.
 
@@ -106,7 +106,7 @@ $${rule: {Step_pure/unop-*}}
 
 .. _exec-binop:
 
-$${rule-prose: exec/binop}
+$${rule-prose: Step_pure/binop}
 
 .. todo:: (2) SpecTec currently defines the image of binop as a sequence, not a set.
 
@@ -115,7 +115,7 @@ $${rule: {Step_pure/binop-*}}
 
 .. _exec-testop:
 
-$${rule-prose: exec/testop}
+$${rule-prose: Step_pure/testop}
 
 .. todo:: (2) SpecTec currently defines the image of testop as a sequence, not a set.
 
@@ -124,7 +124,7 @@ $${rule: Step_pure/testop}
 
 .. _exec-relop:
 
-$${rule-prose: exec/relop}
+$${rule-prose: Step_pure/relop}
 
 .. todo:: (2) SpecTec currently defines the image of testop as a sequence, not a set.
 
@@ -133,7 +133,7 @@ $${rule: Step_pure/relop}
 
 .. _exec-cvtop:
 
-$${rule-prose: exec/cvtop}
+$${rule-prose: Step_pure/cvtop}
 
 .. todo:: (2) SpecTec currently defines the image of testop as a sequence, not a set.
 
@@ -170,14 +170,14 @@ $${rule: {Step_read/ref.null-*}}
 
 .. _exec-ref.func:
 
-$${rule-prose: exec/ref.func}
+$${rule-prose: Step_read/ref.func}
 
 $${rule: Step_read/ref.func}
 
 
 .. _exec-ref.is_null:
 
-$${rule-prose: exec/ref.is_null}
+$${rule-prose: Step_pure/ref.is_null}
 
 .. todo:: (3) Introduce if-let instruction instead of "is of the case".
 
@@ -186,7 +186,7 @@ $${rule: {Step_pure/ref.is_null-*}}
 
 .. _exec-ref.as_non_null:
 
-$${rule-prose: exec/ref.as_non_null}
+$${rule-prose: Step_pure/ref.as_non_null}
 
 .. todo:: (3) Introduce if-let instruction instead of "is of the case".
 
@@ -195,7 +195,7 @@ $${rule: {Step_pure/ref.as_non_null-*}}
 
 .. _exec-ref.eq:
 
-$${rule-prose: exec/ref.eq}
+$${rule-prose: Step_pure/ref.eq}
 
 .. todo:: (3) Introduce if-let instruction instead of "is of the case".
 
@@ -204,7 +204,7 @@ $${rule: {Step_pure/ref.eq-*}}
 
 .. _exec-ref.test:
 
-$${rule-prose: exec/ref.test}
+$${rule-prose: Step_read/ref.test}
 
 .. todo::
    Below is the actual prose. 
@@ -237,7 +237,7 @@ $${rule: {Step_read/ref.test-*}}
 
 .. _exec-ref.cast:
 
-$${rule-prose: exec/ref.cast}
+$${rule-prose: Step_read/ref.cast}
 
 .. todo::
    Below is the actual prose. 
@@ -270,14 +270,14 @@ $${rule: {Step_read/ref.cast-*}}
 
 .. _exec-ref.i31:
 
-$${rule-prose: exec/ref.i31}
+$${rule-prose: Step_pure/ref.i31}
 
 $${rule: {Step_pure/ref.i31}}
 
 
 .. _exec-i31.get_sx:
 
-$${rule-prose: exec/i31.get}
+$${rule-prose: Step_pure/i31.get}
 
 .. todo::
    Below is the actual prose.
@@ -296,7 +296,7 @@ $${rule-prose: exec/i31.get}
 
 5. Let :math:`\REFI31NUM~i` be the reference value :math:`\reff`.
 
-6. Let :math:`j` be the result of computing :math:`\ext^{\sx}_{31,32}(i)`.
+6. Let :math:`j` be the result of computing :math:`\extend^{\sx}_{31,32}(i)`.
 
 7. Push the value :math:`\I32.\CONST~j` to the stack.
 
@@ -305,7 +305,7 @@ $${rule: {Step_pure/i31.get-*}}
 
 .. _exec-struct.new:
 
-$${rule-prose: exec/struct.new}
+$${rule-prose: Step/struct.new}
 
 .. todo::
    Below is the actual prose.
@@ -347,7 +347,7 @@ $${rule: {Step/struct.new}}
 
 .. _exec-struct.new_default:
 
-$${rule-prose: exec/struct.new_default}
+$${rule-prose: Step_read/struct.new_default}
 
 .. todo::
    Below is the actual prose.
@@ -382,7 +382,7 @@ $${rule: {Step_read/struct.new_default}}
 .. _exec-struct.get:
 .. _exec-struct.get_sx:
 
-$${rule-prose: exec/struct.get}
+$${rule-prose: Step_read/struct.get}
 
 .. todo::
    Below is the actual prose.
@@ -426,7 +426,7 @@ $${rule: {Step_read/struct.get-*}}
 
 .. _exec-struct.set:
 
-$${rule-prose: exec/struct.set}
+$${rule-prose: Step/struct.set}
 
 .. todo::
    Below is the actual prose.
@@ -472,14 +472,14 @@ $${rule: {Step/struct.set-*}}
 
 .. _exec-array.new:
 
-$${rule-prose: exec/array.new}
+$${rule-prose: Step_pure/array.new}
 
 $${rule: {Step_pure/array.new}}
 
 
 .. _exec-array.new_default:
 
-$${rule-prose: exec/array.new_default}
+$${rule-prose: Step_read/array.new_default}
 
 .. todo::
    Below is the actual prose.
@@ -513,7 +513,7 @@ $${rule: {Step_read/array.new_default}}
 
 .. _exec-array.new_fixed:
 
-$${rule-prose: exec/array.new_fixed}
+$${rule-prose: Step/array.new_fixed}
 
 .. todo::
    Below is the actual prose.
@@ -553,7 +553,7 @@ $${rule: {Step/array.new_fixed}}
 
 .. _exec-array.new_data:
 
-$${rule-prose: exec/array.new_data}
+$${rule-prose: Step_read/array.new_data}
 
 .. todo::
    Below is the actual prose.
@@ -610,7 +610,7 @@ $${rule: {Step_read/array.new_data-*}}
 
 .. _exec-array.new_elem:
 
-$${rule-prose: exec/array.new_elem}
+$${rule-prose: Step_read/array.new_elem}
 
 $${rule: {Step_read/array.new_elem-*}}
 
@@ -618,7 +618,7 @@ $${rule: {Step_read/array.new_elem-*}}
 .. _exec-array.get:
 .. _exec-array.get_sx:
 
-$${rule-prose: exec/array.get}
+$${rule-prose: Step_read/array.get}
 
 .. todo::
    Below is the actual prose.
@@ -668,7 +668,7 @@ $${rule: {Step_read/array.get-*}}
 
 .. _exec-array.set:
 
-$${rule-prose: exec/array.set}
+$${rule-prose: Step/array.set}
 
 .. todo::
    Below is the actual prose.
@@ -720,7 +720,7 @@ $${rule: {Step/array.set-*}}
 
 .. _exec-array.len:
 
-$${rule-prose: exec/array.len}
+$${rule-prose: Step_read/array.len}
 
 .. todo:: (3) Introduce if-let instruction instead of "is of the case".
 
@@ -729,7 +729,7 @@ $${rule: {Step_read/array.len-*}}
 
 .. _exec-array.fill:
 
-$${rule-prose: exec/array.fill}
+$${rule-prose: Step_read/array.fill}
 
 .. todo:: (3) Introduce if-let instruction instead of "is of the case".
 
@@ -738,12 +738,11 @@ $${rule: {Step_read/array.fill-*}}
 
 .. _exec-array.copy:
 
-$${rule-prose: exec/array.copy}
-
 .. todo::
    Below is the actual prose.
    (3) Introduce if-let instruction instead of "is of the case".
    (5) Use "the expansion of" instead of $expand function application.
+   + Too deeply nested
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -873,7 +872,7 @@ $${definition: sx}
 
 .. _exec-array.init_data:
 
-$${rule-prose: exec/array.init_data}
+$${rule-prose: Step_read/array.init_data}
 
 .. todo::
    Below is the actual prose.
@@ -962,7 +961,7 @@ $${rule: {Step_read/array.init_data-*}}
 
 .. _exec-array.init_elem:
 
-$${rule-prose: exec/array.init_elem}
+$${rule-prose: Step_read/array.init_elem}
 
 .. todo:: (3) Introduce if-let instruction instead of "is of the case".
 
@@ -971,7 +970,7 @@ $${rule: {Step_read/array.init_elem-*}}
 
 .. _exec-any.convert_extern:
 
-$${rule-prose: exec/any.convert_extern}
+$${rule-prose: Step_pure/any.convert_extern}
 
 .. todo:: (3) Introduce if-let instruction instead of "is of the case".
 
@@ -980,7 +979,7 @@ $${rule: {Step_pure/any.convert_extern-*}}
 
 .. _exec-extern.convert_any:
 
-$${rule-prose: exec/extern.convert_any}
+$${rule-prose: Step_pure/extern.convert_any}
 
 .. todo:: (3) Introduce if-let instruction instead of "is of the case".
 
@@ -999,7 +998,7 @@ Vector instructions that operate bitwise are handled as integer operations of re
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \X{op}_{\VN}(i_1,\dots,i_k) &=& \xref{exec/numerics}{int-ops}{\F{i}\X{op}}_N(i_1,\dots,i_k) \\
+   \X{op}_{\VN}(i_1,\dots,i_k) &=& \xref{Step_pure/numerics}{int-ops}{\F{i}\X{op}}_N(i_1,\dots,i_k) \\
    \end{array}
 
 Most other vector instructions are defined in terms of numeric operators that are applied lane-wise according to the given :ref:`shape <syntax-shape>`.
@@ -1007,7 +1006,7 @@ Most other vector instructions are defined in terms of numeric operators that ar
 .. math::
    \begin{array}{llll}
    \X{op}_{t\K{x}N}(n_1,\dots,n_k) &=&
-     \lanes^{-1}_{t\K{x}N}(\xref{exec/instructions}{exec-instr-numeric}{\X{op}}_t(i_1,\dots,i_k)^\ast) & \qquad(\iff i_1^\ast = \lanes_{t\K{x}N}(n_1) \land \dots \land i_k^\ast = \lanes_{t\K{x}N}(n_k) \\
+     \lanes^{-1}_{t\K{x}N}(\xref{Step_pure/instructions}{exec-instr-numeric}{\X{op}}_t(i_1,\dots,i_k)^\ast) & \qquad(\iff i_1^\ast = \lanes_{t\K{x}N}(n_1) \land \dots \land i_k^\ast = \lanes_{t\K{x}N}(n_k) \\
    \end{array}
 
 .. note::
@@ -1032,42 +1031,42 @@ Most other vector instructions are defined in terms of numeric operators that ar
 
 .. _exec-vvunop:
 
-$${rule-prose: exec/vvunop}
+$${rule-prose: Step_pure/vvunop}
 
 $${rule: {Step_pure/vvunop}}
 
 
 .. _exec-vvbinop:
 
-$${rule-prose: exec/vvbinop}
+$${rule-prose: Step_pure/vvbinop}
 
 $${rule: {Step_pure/vvbinop}}
 
 
 .. _exec-vvternop:
 
-$${rule-prose: exec/vvternop}
+$${rule-prose: Step_pure/vvternop}
 
 $${rule: {Step_pure/vvternop}}
 
 
 .. _exec-vvtestop:
 
-$${rule-prose: exec/vvtestop}
+$${rule-prose: Step_pure/vvtestop}
 
 $${rule: {Step_pure/vvtestop}}
 
 
 .. _exec-vunop:
 
-$${rule-prose: exec/vunop}
+$${rule-prose: Step_pure/vunop}
 
-$${rule: {Step_pure/vunop}}
+$${rule: {Step_pure/vunop-*}}
 
 
 .. _exec-vbinop:
 
-$${rule-prose: exec/vbinop}
+$${rule-prose: Step_pure/vbinop}
 
 .. todo:: (2) SpecTec currently defines the image of vbinop as a sequence, not a set.
 
@@ -1076,14 +1075,14 @@ $${rule: {Step_pure/vbinop-*}}
 
 .. _exec-vtestop:
 
-$${rule-prose: exec/vtestop}
+$${rule-prose: Step_pure/vtestop}
 
 $${rule: {Step_pure/vtestop-*}}
 
 
 .. _exec-vrelop:
 
-$${rule-prose: exec/vrelop}
+$${rule-prose: Step_pure/vrelop}
 
 .. todo::
    Below is the actual prose.
@@ -1100,7 +1099,7 @@ $${rule-prose: exec/vrelop}
 
 6. Let :math:`i^\ast` be the result of computing :math:`\vrelop_t(i_1^\ast, i_2^\ast)`.
 
-7. Let :math:`j^\ast` be the result of computing :math:`\exts_{1,|t|}(i^\ast)`.
+7. Let :math:`j^\ast` be the result of computing :math:`\extends_{1,|t|}(i^\ast)`.
 
 8. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t\K{x}N}(j^\ast)`.
 
@@ -1115,13 +1114,13 @@ $${rule: {Step_pure/vrelop}}
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff c = \lanes^{-1}_{t\K{x}N}(\exts_{1,|t|}(\vrelop_t(\lanes_{t\K{x}N}(c_1), \lanes_{t\K{x}N}(c_2)))))
+     (\iff c = \lanes^{-1}_{t\K{x}N}(\extends_{1,|t|}(\vrelop_t(\lanes_{t\K{x}N}(c_1), \lanes_{t\K{x}N}(c_2)))))
      \end{array}
    \end{array}
 
 .. _exec-vshiftop:
 
-$${rule-prose: exec/vshiftop}
+$${rule-prose: Step_pure/vshiftop}
 
 .. todo::
    Below is the actual prose.
@@ -1159,7 +1158,7 @@ $${rule: {Step_pure/vshiftop}}
 
 .. _exec-vbitmask:
 
-$${rule-prose: exec/vbitmask}
+$${rule-prose: Step_pure/vbitmask}
 
 .. todo::
    Below is the actual prose.
@@ -1192,7 +1191,7 @@ $${rule: {Step_pure/vbitmask}}
 
 .. _exec-vswizzle:
 
-$${rule-prose: exec/vswizzle}
+$${rule-prose: Step_pure/vswizzle}
 
 .. todo::
    Below is the actual prose.
@@ -1231,7 +1230,7 @@ $${rule: {Step_pure/vswizzle}}
 
 .. _exec-vshuffle:
 
-$${rule-prose: exec/vshuffle}
+$${rule-prose: Step_pure/vshuffle}
 
 .. todo::
    Below is the actual prose.
@@ -1271,7 +1270,7 @@ $${rule: {Step_pure/vshuffle}}
 
 .. _exec-vsplat:
 
-$${rule-prose: exec/vsplat}
+$${rule-prose: Step_pure/vsplat}
 
 .. todo::
    Below is the actual prose.
@@ -1301,7 +1300,7 @@ $${rule: {Step_pure/vsplat}}
 
 .. _exec-vextract_lane:
 
-$${rule-prose: exec/vextract_lane}
+$${rule-prose: Step_pure/vextract_lane}
 
 .. todo::
    Below is the actual prose.
@@ -1316,7 +1315,7 @@ $${rule-prose: exec/vextract_lane}
 
 5. Let :math:`t_2` be the type :math:`\unpackshape(t_1\K{x}N)`.
 
-6. Let :math:`c_2` be the result of computing :math:`\ext^{sx^?}_{t_1,t_2}(i^\ast[x])`.
+6. Let :math:`c_2` be the result of computing :math:`\extend^{sx^?}_{t_1,t_2}(i^\ast[x])`.
 
 7. Push the value :math:`t_2.\CONST~c_2` to the stack.
 
@@ -1330,14 +1329,14 @@ $${rule: {Step_pure/vextract_lane-*}}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
       (\iff & t_2 = \unpackshape(t_1\K{x}N) \\
-       \wedge & c_2 = \ext^{sx^?}_{t_1,t_2}(\lanes_{t_1\K{x}N}(c_1)[x]))
+       \wedge & c_2 = \extend^{sx^?}_{t_1,t_2}(\lanes_{t_1\K{x}N}(c_1)[x]))
      \end{array}
    \end{array}
 
 
 .. _exec-vreplace_lane:
 
-$${rule-prose: exec/vreplace_lane}
+$${rule-prose: Step_pure/vreplace_lane}
 
 .. todo::
    Below is the actual prose.
@@ -1377,7 +1376,7 @@ $${rule: {Step_pure/vreplace_lane}}
 
 .. _exec-vextadd_pairwise:
 
-$${rule-prose: exec/vextunop}
+$${rule-prose: Step_pure/vextunop}
 
 .. todo::
    Below is the actual prose.
@@ -1390,7 +1389,7 @@ $${rule-prose: exec/vextunop}
 
 4. Let :math:`i^\ast` be the result of computing :math:`\lanes_{t_1\K{x}M}(c_1)`.
 
-5. Let :math:`(j_1~j_2)^\ast` be the result of computing :math:`\ext^{\sx}_{|t_1|,|t_2|}(i^\ast)`.
+5. Let :math:`(j_1~j_2)^\ast` be the result of computing :math:`\extend^{\sx}_{|t_1|,|t_2|}(i^\ast)`.
 
 6. Let :math:`k^\ast` be the result of computing :math:`\iadd_{|t_2|}(j_1, j_2)^\ast`.
 
@@ -1407,7 +1406,7 @@ $${rule: {Step_pure/vextunop}}
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & (i_1~i_2)^\ast = \ext^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)) \\
+     (\iff & (i_1~i_2)^\ast = \extend^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)) \\
      \wedge & j^\ast = \iadd_{|t_2|}(i_1, i_2)^\ast \\
      \wedge & c = \lanes^{-1}_{t_2\K{x}N}(j^\ast))
      \end{array}
@@ -1416,7 +1415,7 @@ $${rule: {Step_pure/vextunop}}
 
 .. _exec-vextmul:
 
-$${rule-prose: exec/vextbinop}
+$${rule-prose: Step_pure/vextbinop}
 
 .. todo::
    Below is the actual prose.
@@ -1445,9 +1444,9 @@ $${rule-prose: exec/vextbinop}
 
    b. Let :math:`j_2^\ast` be the sequence :math:`i_2^\ast[N \slice N]`.
 
-9. Let :math:`k_1^\ast` be the result of computing :math:`\ext^{\sx}_{|t_1|,|t_2|}(j_1^\ast)`.
+9. Let :math:`k_1^\ast` be the result of computing :math:`\extend^{\sx}_{|t_1|,|t_2|}(j_1^\ast)`.
 
-10. Let :math:`k_2^\ast` be the result of computing :math:`\ext^{\sx}_{|t_1|,|t_2|}(j_2^\ast)`.
+10. Let :math:`k_2^\ast` be the result of computing :math:`\extend^{\sx}_{|t_1|,|t_2|}(j_2^\ast)`.
 
 11. Let :math:`k^\ast` be the result of computing :math:`\imul_{|t_2|}(k_1^\ast, k_2^\ast)`.
 
@@ -1465,7 +1464,7 @@ $${rule: {Step_pure/vextbinop}}
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & i^\ast = \lanes_{t_1\K{x}M}(c_1)[\half(0, N) \slice N] \\
      \wedge & j^\ast = \lanes_{t_1\K{x}M}(c_2)[\half(0, N) \slice N] \\
-     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(\imul_{|t_2|}(\ext^{\sx}_{|t_1|,|t_2|}(i^\ast), \ext^{\sx}_{|t_1|,|t_2|}(j^\ast))))
+     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(\imul_{|t_2|}(\extend^{\sx}_{|t_1|,|t_2|}(i^\ast), \extend^{\sx}_{|t_1|,|t_2|}(j^\ast))))
      \end{array}
 
 where:
@@ -1492,11 +1491,11 @@ where:
 
 4. Let :math:`i_1^\ast` be the result of computing :math:`\lanes_{\I16X8}(c_1)`.
 
-5. Let :math:`j_1^\ast` be the result of computing :math:`\exts_{16,32}(i_1^\ast)`.
+5. Let :math:`j_1^\ast` be the result of computing :math:`\extends_{16,32}(i_1^\ast)`.
 
 6. Let :math:`i_2^\ast` be the result of computing :math:`\lanes_{\I16X8}(c_2)`.
 
-7. Let :math:`j_2^\ast` be the result of computing :math:`\exts_{16,32}(i_2^\ast)`.
+7. Let :math:`j_2^\ast` be the result of computing :math:`\extends_{16,32}(i_2^\ast)`.
 
 8. Let :math:`(k_1~k_2)^\ast` be the result of computing :math:`\imul_{32}(j_1^\ast, j_2^\ast)`.
 
@@ -1513,7 +1512,7 @@ where:
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & (i_1~i_2)^\ast = \imul_{32}(\exts_{16,32}(\lanes_{\I16X8}(c_1)), \exts_{16,32}(\lanes_{\I16X8}(c_2))) \\
+     (\iff & (i_1~i_2)^\ast = \imul_{32}(\extends_{16,32}(\lanes_{\I16X8}(c_1)), \extends_{16,32}(\lanes_{\I16X8}(c_2))) \\
      \wedge & j^\ast = \iadd_{32}(i_1, i_2)^\ast \\
      \wedge & c = \lanes^{-1}_{\I32X4}(j^\ast))
      \end{array}
@@ -1522,7 +1521,7 @@ where:
 
 .. _exec-vnarrow:
 
-$${rule-prose: exec/vnarrow}
+$${rule-prose: Step_pure/vnarrow}
 
 .. todo::
    Below is the actual prose.
@@ -1694,35 +1693,35 @@ Variable Instructions
 
 .. _exec-local.get:
 
-$${rule-prose: exec/local.get}
+$${rule-prose: Step_read/local.get}
 
 $${rule: Step_read/local.get}
 
 
 .. _exec-local.set:
 
-$${rule-prose: exec/local.set}
+$${rule-prose: Step/local.set}
 
 $${rule: Step/local.set}
 
 
 .. _exec-local.tee:
 
-$${rule-prose: exec/local.tee}
+$${rule-prose: Step_pure/local.tee}
 
 $${rule: Step_pure/local.tee}
 
 
 .. _exec-global.get:
 
-$${rule-prose: exec/global.get}
+$${rule-prose: Step_read/global.get}
 
 $${rule: Step_read/global.get}
 
 
 .. _exec-global.set:
 
-$${rule-prose: exec/global.set}
+$${rule-prose: Step/global.set}
 
 $${rule: Step/global.set}
 
@@ -1737,28 +1736,28 @@ Table Instructions
 
 .. _exec-table.get:
 
-$${rule-prose: exec/table.get}
+$${rule-prose: Step_read/table.get}
 
 $${rule: {Step_read/table.get-*}}
 
 
 .. _exec-table.set:
 
-$${rule-prose: exec/table.set}
+$${rule-prose: Step/table.set}
 
 $${rule: {Step/table.set-*}}
 
 
 .. _exec-table.size:
 
-$${rule-prose: exec/table.size}
+$${rule-prose: Step_read/table.size}
 
 $${rule: Step_read/table.size}
 
 
 .. _exec-table.grow:
 
-$${rule-prose: exec/table.grow}
+$${rule-prose: Step/table.grow}
 
 .. todo:: (6) Maybe we want to be more precise than just saying "Either" in the prose, elaborating that it may succeed or fail non-deterministically.
 
@@ -1774,28 +1773,28 @@ $${rule: {Step/table.grow-*}}
 
 .. _exec-table.fill:
 
-$${rule-prose: exec/table.fill}
+$${rule-prose: Step_read/table.fill}
 
 $${rule: {Step_read/table.fill-*}}
 
 
 .. _exec-table.copy:
 
-$${rule-prose: exec/table.copy}
+$${rule-prose: Step_read/table.copy}
 
 $${rule: {Step_read/table.copy-*}}
 
 
 .. _exec-table.init:
 
-$${rule-prose: exec/table.init}
+$${rule-prose: Step_read/table.init}
 
 $${rule: {Step_read/table.init-*}}
 
 
 .. _exec-elem.drop:
 
-$${rule-prose: exec/elem.drop}
+$${rule-prose: Step/elem.drop}
 
 $${rule: Step/elem.drop}
 
@@ -1821,7 +1820,7 @@ Memory Instructions
 .. _exec-load-pack:
 .. _exec-vload-val:
 
-$${rule-prose: exec/load}
+$${rule-prose: Step_read/load}
 
 .. todo::
    Below is the actual prose.
@@ -1857,7 +1856,7 @@ $${rule-prose: exec/load}
 
     a. Let :math:`n` be the integer for which :math:`\bytes_{\iN}(n) = b^\ast`.
 
-    b. Let :math:`c` be the result of computing :math:`\ext^{\sx}_{N,|t|}(n)`.
+    b. Let :math:`c` be the result of computing :math:`\extend^{\sx}_{N,|t|}(n)`.
 
 13. Else:
 
@@ -1901,7 +1900,7 @@ $${rule: {Step_read/load-*}}
 
 12. Let :math:`W` be the integer :math:`M \cdot 2`.
 
-13. Let :math:`n_k` be the result of computing :math:`\ext^{\sx}_{M,W}(m_k)`.
+13. Let :math:`n_k` be the result of computing :math:`\extend^{\sx}_{M,W}(m_k)`.
 
 14. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\K{i}W\K{x}N}(n_0 \dots n_{N-1})`.
 
@@ -1920,7 +1919,7 @@ $${rule: {Step_read/load-*}}
      \wedge & \X{ea} + M \cdot N / 8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES| \\
      \wedge & \bytes_{\iM}(m_k) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES[\X{ea} + k \cdot M/8 \slice M/8]) \\
      \wedge & W = M \cdot 2 \\
-     \wedge & c = \lanes^{-1}_{\K{i}W\K{x}N}(\ext^{\sx}_{M,W}(m_0) \dots \ext^{\sx}_{M,W}(m_{N-1})))
+     \wedge & c = \lanes^{-1}_{\K{i}W\K{x}N}(\extend^{\sx}_{M,W}(m_0) \dots \extend^{\sx}_{M,W}(m_{N-1})))
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -2025,7 +2024,7 @@ $${rule: {Step_read/vload-splat-*}}
 
 11. Let :math:`n` be the integer for which :math:`\bytes_{\iN}(n) = b^\ast`.
 
-12. Let :math:`c` be the result of computing :math:`\extu_{N,128}(n)`.
+12. Let :math:`c` be the result of computing :math:`\extendu_{N,128}(n)`.
 
 13. Push the value :math:`\V128.\CONST~c` to the stack.
 
@@ -2040,7 +2039,7 @@ $${rule: {Step_read/vload-splat-*}}
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES| \\
      \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[x]].\MIBYTES[\X{ea} \slice N/8]) \\
-     \wedge & c = \extu_{N,128}(n)
+     \wedge & c = \extendu_{N,128}(n)
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -2125,7 +2124,7 @@ $${rule: {Step_read/vload_lane-*}}
 .. _exec-store-pack:
 .. _exec-vstore:
 
-$${rule-prose: exec/store}
+$${rule-prose: Step/store}
 
 $${rule: {Step/store-* Step/vstore-*}}
 
@@ -2195,14 +2194,14 @@ $${rule: {Step/vstore_lane-*}}
 
 .. _exec-memory.size:
 
-$${rule-prose: exec/memory.size}
+$${rule-prose: Step_read/memory.size}
 
 $${rule: {Step_read/memory.size}}
 
 
 .. _exec-memory.grow:
 
-$${rule-prose: exec/memory.grow}
+$${rule-prose: Step/memory.grow}
 
 .. todo:: (6) Maybe we want to be more precise than just saying "Either" in the prose, elaborating that it may succeed or fail non-deterministically.
 
@@ -2219,28 +2218,28 @@ $${rule: {Step/memory.grow-*}}
 
 .. _exec-memory.fill:
 
-$${rule-prose: exec/memory.fill}
+$${rule-prose: Step_read/memory.fill}
 
 $${rule: {Step_read/memory.fill-*}}
 
 
 .. _exec-memory.copy:
 
-$${rule-prose: exec/memory.copy}
+$${rule-prose: Step_read/memory.copy}
 
 $${rule: {Step_read/memory.copy-*}}
 
 
 .. _exec-memory.init:
 
-$${rule-prose: exec/memory.init}
+$${rule-prose: Step_read/memory.init}
 
 $${rule: {Step_read/memory.init-*}}
 
 
 .. _exec-data.drop:
 
-$${rule-prose: exec/data.drop}
+$${rule-prose: Step/data.drop}
 
 $${rule: {Step/data.drop}}
 
@@ -2256,49 +2255,49 @@ Control Instructions
 
 .. _exec-block:
 
-$${rule-prose: exec/block}
+$${rule-prose: Step_read/block}
 
 $${rule: {Step_read/block}}
 
 
 .. _exec-loop:
 
-$${rule-prose: exec/loop}
+$${rule-prose: Step_read/loop}
 
 $${rule: {Step_read/loop}}
 
 
 .. _exec-if:
 
-$${rule-prose: exec/if}
+$${rule-prose: Step_pure/if}
 
 $${rule: {Step_pure/if-*}}
 
 
 .. _exec-br:
 
-$${rule-prose: exec/br}
+$${rule-prose: Step_pure/br}
 
 $${rule: {Step_pure/br-*}}
 
 
 .. _exec-br_if:
 
-$${rule-prose: exec/br_if}
+$${rule-prose: Step_pure/br_if}
 
 $${rule: {Step_pure/br_if-*}}
 
 
 .. _exec-br_table:
 
-$${rule-prose: exec/br_table}
+$${rule-prose: Step_pure/br_table}
 
 $${rule: {Step_pure/br_table-*}}
 
 
 .. _exec-br_on_null:
 
-$${rule-prose: exec/br_on_null}
+$${rule-prose: Step_pure/br_on_null}
 
 .. todo:: (3) Introduce if-let instruction instead of "is of the case".
 
@@ -2307,7 +2306,7 @@ $${rule: {Step_pure/br_on_null-*}}
 
 .. _exec-br_on_non_null:
 
-$${rule-prose: exec/br_on_non_null}
+$${rule-prose: Step_pure/br_on_non_null}
 
 .. todo:: (3) Introduce if-let instruction instead of "is of the case".
 
@@ -2316,7 +2315,7 @@ $${rule: {Step_pure/br_on_non_null-*}}
 
 .. _exec-br_on_cast:
 
-$${rule-prose: exec/br_on_cast}
+$${rule-prose: Step_read/br_on_cast}
 
 .. todo::
    Below is the acutal prose.
@@ -2347,7 +2346,7 @@ $${rule: {Step_read/br_on_cast-*}}
 
 .. _exec-br_on_cast_fail:
 
-$${rule-prose: exec/br_on_cast_fail}
+$${rule-prose: Step_read/br_on_cast_fail}
 
 .. todo::
    Below is the actual prose.
@@ -2378,14 +2377,14 @@ $${rule: {Step_read/br_on_cast_fail-*}}
 
 .. _exec-return:
 
-$${rule-prose: exec/return}
+$${rule-prose: Step_pure/return}
 
 $${rule: {Step_pure/return-*}}
 
 
 .. _exec-call:
 
-$${rule-prose: exec/call}
+$${rule-prose: Step_read/call}
 
 $${rule: {Step_read/call}}
 
@@ -2419,7 +2418,7 @@ $${rule: {Step_read/call_ref-null}}
 
 .. _exec-call_indirect:
 
-$${rule-prose: exec/call_indirect}
+$${rule-prose: Step_pure/call_indirect}
 
 .. todo::
    Below is the actual prose.
@@ -2474,7 +2473,7 @@ $${rule: {Step_pure/call_indirect}}
 
 .. _exec-return_call:
 
-$${rule-prose: exec/return_call}
+$${rule-prose: Step_read/return_call}
 
 $${rule: {Step_read/return_call}}
 
@@ -2506,7 +2505,7 @@ $${rule: {Step_read/return_call_ref-*}}
 
 .. _exec-return_call_indirect:
 
-$${rule-prose: exec/return_call_indirect}
+$${rule-prose: Step_pure/return_call_indirect}
 
 .. todo::
    Below is the actual prose.

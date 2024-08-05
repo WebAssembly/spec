@@ -117,6 +117,21 @@ and path' =
 and iterexp = iter * (id * typ) list
 
 
+(* Grammars *)
+
+and sym = sym' phrase
+and sym' =
+  | VarG of id * arg list                    (* gramid (`(` arg,* `)`)? *)
+  | NatG of int                              (* nat *)
+  | TextG of string                          (* `"`text`"` *)
+  | EpsG                                     (* `eps` *)
+  | SeqG of sym list                         (* sym sym *)
+  | AltG of sym list                         (* sym `|` sym *)
+  | RangeG of sym * sym                      (* sym `|` `...` `|` sym *)
+  | IterG of sym * iterexp                   (* sym iter *)
+  | AttrG of exp * sym                       (* exp `:` sym *)
+
+
 (* Definitions *)
 
 and arg = arg' phrase
@@ -124,24 +139,28 @@ and arg' =
   | ExpA of exp                                       (* exp *)
   | TypA of typ                                       (* `syntax` typ *)
   | DefA of id                                        (* `def` defid *)
+  | GramA of sym                                      (* `grammar` sym *)
 
 and bind = bind' phrase
 and bind' =
   | ExpB of id * typ * iter list
   | TypB of id
   | DefB of id * param list * typ
+  | GramB of id * param list * typ
 
 and param = param' phrase
 and param' =
   | ExpP of id * typ                                  (* varid `:` typ *)
   | TypP of id                                        (* `syntax` varid *)
   | DefP of id * param list * typ                     (* `def` defid params `:` typ *)
+  | GramP of id * typ                                 (* `grammar` gramid params `:` typ *)
 
 and def = def' phrase
 and def' =
   | TypD of id * param list * inst list               (* syntax type (family) *)
   | RelD of id * mixop * typ * rule list              (* relation *)
   | DecD of id * param list * typ * clause list       (* definition *)
+  | GramD of id * param list * typ * prod list        (* grammar *)
   | RecD of def list                                  (* recursive *)
   | HintD of hintdef
 
@@ -157,6 +176,10 @@ and clause = clause' phrase
 and clause' =
   | DefD of bind list * arg list * exp * prem list    (* definition clause *)
 
+and prod = prod' phrase
+and prod' =
+  | ProdD of bind list * sym * exp * prem list        (* grammar production *)
+
 and prem = prem' phrase
 and prem' =
   | RulePr of id * mixop * exp                        (* premise *)
@@ -170,6 +193,7 @@ and hintdef' =
   | TypH of id * hint list
   | RelH of id * hint list
   | DecH of id * hint list
+  | GramH of id * hint list
 
 and hint = {hintid : id; hintexp : El.Ast.exp}        (* hint *)
 

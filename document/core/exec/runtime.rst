@@ -431,11 +431,11 @@ Conventions
 
 * Conversion of a regular :ref:`value <syntax-val>` to a :ref:`field value <syntax-fieldval>` is defined as follows:
 
-  $${definition: packfield}
+  $${definition: packfield_}
 
 * The inverse conversion of a :ref:`field value <syntax-fieldval>` to a regular :ref:`value <syntax-val>` is defined as follows:
 
-  $${definition: unpackfield}
+  $${definition: unpackfield_}
 
 
 .. index:: ! exception instance, tag, tag address, value

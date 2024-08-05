@@ -1,27 +1,10 @@
 ;;
-;; Auxiliary definitions on Indices
-;;
-
-;; Sequence difference
-
-def $setminus(idx*, idx*) : idx*  hint(show %\%)
-def $setminus1(idx, idx*) : idx*
-
-def $setminus(eps, y*) = eps
-def $setminus(x_1 x*, y*) = $setminus1(x_1, y*) $setminus(x*, y*)
-
-def $setminus1(x, eps) = x
-def $setminus1(x, y_1 y*) = eps                -- if x = y_1
-def $setminus1(x, y_1 y*) = $setminus1(x, y*)  -- otherwise
-
-
-;;
 ;; Auxiliary definitions on Types
 ;;
 
 ;; Size
 
-;; def |I n| = |F n| = |V n| = n        ;; ????
+;; def |I n| = |F n| = |V n| = n        ;; TODO(2, rossberg): show this?
 
 ;;def $size(numtype) : nat       hint(show |%|)
 ;;def $vsize(vegtype) : nat      hint(show |%|)
@@ -33,8 +16,6 @@ def $size(I32) = 32
 def $size(I64) = 64
 def $size(F32) = 32
 def $size(F64) = 64
-
-def $isize(Inn) = $size(Inn)
 
 def $vsize(V128) = 128
 
@@ -379,7 +360,7 @@ def $free_instr(VEXTBINOP ishape_1 ishape_2 vextbinop) =
   $free_shape(ishape_1) ++ $free_shape(ishape_2)
 def $free_instr(VNARROW ishape_1 ishape_2 sx) =
   $free_shape(ishape_1) ++ $free_shape(ishape_2)
-def $free_instr(VCVTOP shape_1 shape_2 vcvtop half? sx? zero?) =
+def $free_instr(VCVTOP shape_1 shape_2 vcvtop half? zero?) =
   $free_shape(shape_1) ++ $free_shape(shape_2)
 def $free_instr(VSPLAT shape) = $free_shape(shape)
 def $free_instr(VEXTRACT_LANE shape sx? laneidx) = $free_shape(shape)
@@ -528,7 +509,7 @@ def $free_import(IMPORT name_1 name_2 externtype) = $free_externtype(externtype)
 
 
 def $free_module(module) : free
-def $free_module(MODULE type* import* func* global* table* mem* tag* elem* data* start* export*) =
+def $free_module(MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) =
   $free_list($free_type(type)*) ++
   $free_list($free_import(import)*) ++
   $free_list($free_func(func)*) ++
@@ -538,7 +519,7 @@ def $free_module(MODULE type* import* func* global* table* mem* tag* elem* data*
   $free_list($free_tag(tag)*) ++
   $free_list($free_elem(elem)*) ++
   $free_list($free_data(data)*) ++
-  $free_list($free_start(start)*) ++
+  $free_opt($free_start(start)?) ++
   $free_list($free_export(export)*)
 
 

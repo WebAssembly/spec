@@ -27,11 +27,11 @@ grammar BsN(N) : sN(N) hint(show Bs#%) =
   | n:Bbyte i:BuN(($(N-7))) => $(2^7 * i + (n - 2^7))  -- if $(n >= 2^7 /\ N > 7)
 
 grammar BiN(N) : iN(N) hint(show Bi#%) =
-  | i:BsN(N)                => $invsigned(N, i)
+  | i:BsN(N)                => $invsigned_(N, i)
 
 
 grammar BfN(N) : fN(N) hint(show Bf#%) =
-  | b*:Bbyte^(N/8)  => $invfbytes(N, b*)
+  | b*:Bbyte^(N/8)  => $invfbytes_(N, b*)
 
 
 grammar Bu32 : u32 = n:BuN(32) => n
@@ -477,8 +477,10 @@ grammar Bexportsec : export* hint(desc "export section") =
 grammar Bstart : start* =
   | x:Bfuncidx => (START x)
 
-grammar Bstartsec : start* hint(desc "start section") =
-  | st*:Bsection_(8, Bstart) => st*
+syntax startopt hint(show start?) = start*  ;; HACK
+
+grammar Bstartsec : start? hint(desc "start section") =
+  | startopt:Bsection_(8, Bstart) => $opt_(start, startopt)
 
 
 ;; Element section
@@ -531,7 +533,7 @@ grammar Bmodule : module =
     Bcustomsec*
 
 
-    typeidx^n:Bfuncsec
+    typeidx*:Bfuncsec
     Bcustomsec*
 
 
@@ -551,7 +553,7 @@ grammar Bmodule : module =
     Bcustomsec*
 
 
-    start*:Bstartsec
+    start?:Bstartsec
     Bcustomsec*
 
 
@@ -559,11 +561,11 @@ grammar Bmodule : module =
     Bcustomsec*
 
 
-    (local*, expr)^n:Bcodesec
+    (local*, expr)*:Bcodesec
     Bcustomsec*
 
 
     data*:Bdatasec
     Bcustomsec* =>
-      MODULE type* import* func^n global* table* mem* elem* data* start* export*
-    -- if (func = FUNC typeidx local* expr)^n
+      MODULE type* import* func* global* table* mem* elem* data* start? export*
+    -- if (func = FUNC typeidx local* expr)*

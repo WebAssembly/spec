@@ -35,10 +35,10 @@ let i16_to_i32 i16 =
   (* NOTE: This operation extends the sign of i8 to i32 *)
   I32.shr_s (I32.shl i16 16l) 16l
 
-let catch_ixx_exception f = try f() with
+let catch_ixx_exception f = try f() |> someV with
   | Ixx.DivideByZero
   | Ixx.Overflow
-  | Ixx.InvalidConversion -> raise Exception.Trap
+  | Ixx.InvalidConversion -> noneV
 
 let signed : numerics =
   {
@@ -121,19 +121,19 @@ let idiv : numerics =
       (function
       | [ NumV _; CaseV ("U", []); NumV m; NumV n ] ->
         if n = Z.zero then
-          raise Exception.Trap
+          noneV
         else
-          Z.(div m n) |> al_of_z
+          Z.(div m n) |> al_of_z |> someV
       | [ NumV z; CaseV ("S", []); NumV m; NumV n ] ->
         if n = Z.zero then
-          raise Exception.Trap
+          noneV
         else if m = Z.shift_left Z.one (Z.to_int z - 1) && n = maskN z then
-          raise Exception.Trap
+          noneV
         else
           let z = NumV z in
           let m = signed.f [ z; NumV m ] |> al_to_z in
           let n = signed.f [ z; NumV n ] |> al_to_z in
-          inverse_of_signed.f [ z; NumV Z.(div m n) ]
+          inverse_of_signed.f [ z; NumV Z.(div m n) ] |> someV
       | vs -> error_values "idiv" vs
       );
   }
@@ -144,16 +144,16 @@ let irem : numerics =
       (function
       | [ NumV _; CaseV ("U", []); NumV m; NumV n ] ->
         if n = Z.zero then
-          raise Exception.Trap
+          noneV
         else
-          Z.(rem m n) |> al_of_z
+          Z.(rem m n) |> al_of_z |> someV
       | [ NumV _ as z; CaseV ("S", []); NumV m; NumV n ] ->
         if n = Z.zero then
-          raise Exception.Trap
+          noneV
         else
           let m = signed.f [ z; NumV m ] |> al_to_z in
           let n = signed.f [ z; NumV n ] |> al_to_z in
-          inverse_of_signed.f [ z; NumV Z.(rem m n) ]
+          inverse_of_signed.f [ z; NumV Z.(rem m n) ] |> someV
       | vs -> error_values "irem" vs
       );
   }
@@ -429,9 +429,9 @@ let imax : numerics =
       | vs -> error_values "imax" vs
       );
   }
-let iaddsat : numerics =
+let iadd_sat : numerics =
   {
-    name = "iaddsat";
+    name = "iadd_sat";
     f =
       (function
       | [ NumV _ as z; CaseV ("U", []); NumV m; NumV n ] -> sat.f [ z; nullary "U"; NumV Z.(add m n)]
@@ -439,12 +439,12 @@ let iaddsat : numerics =
         let m = signed.f [ z; NumV m ] |> al_to_z in
         let n = signed.f [ z; NumV n ] |> al_to_z in
         sat.f [ z; nullary "S"; NumV Z.(add m n)]
-      | vs -> error_values "iaddsat" vs
+      | vs -> error_values "iadd_sat" vs
       );
   }
-let isubsat : numerics =
+let isub_sat : numerics =
   {
-    name = "isubsat";
+    name = "isub_sat";
     f =
       (function
       | [ NumV _ as z; CaseV ("U", []); NumV m; NumV n ] -> sat.f [ z; nullary "U"; NumV Z.(sub m n)]
@@ -452,35 +452,40 @@ let isubsat : numerics =
         let m = signed.f [ z; NumV m ] |> al_to_z in
         let n = signed.f [ z; NumV n ] |> al_to_z in
         sat.f [ z; nullary "S"; NumV Z.(sub m n)]
-      | vs -> error_values "isubsat" vs
+      | vs -> error_values "isub_sat" vs
       );
   }
-let iavgr_u : numerics =
+let iavgr : numerics =
   {
-    name = "iavgr_u";
+    name = "iavgr";
     f =
       (function
-      | [ NumV _ ; NumV m; NumV n ] -> Z.((m + n + one) / two) |> al_of_z
-      | vs -> error_values "iavgr_u" vs
+      | [ NumV _ ; CaseV ("U", []); NumV m; NumV n ] -> Z.((m + n + one) / two) |> al_of_z
+      | [ NumV _ as z; CaseV ("S", []); NumV m; NumV n ] ->
+        let m = signed.f [ z; NumV m ] |> al_to_z in
+        let n = signed.f [ z; NumV n ] |> al_to_z in
+        Z.((m + n + one) / two) |> al_of_z
+      | vs -> error_values "iavgr" vs
       );
   }
-let iq15mulrsat_s : numerics =
+let iq15mulr_sat : numerics =
   {
-    name = "iq15mulrsat_s";
+    name = "iq15mulr_sat";
     f =
       (function
-      | [ NumV _ as z; NumV _ as m; NumV _ as n ] ->
+      | [ NumV _ as z; sx; NumV _ as m; NumV _ as n ] ->
         let m = signed.f [ z; m ] |> al_to_z in
         let n = signed.f [ z; n ] |> al_to_z in
-        sat.f [ z; nullary "S"; NumV Z.(shift_right (mul m n + of_int 0x4000) 15) ]
-      | vs -> error_values "iq15mulrsat_s" vs
+        sat.f [ z; sx; NumV Z.(shift_right (mul m n + of_int 0x4000) 15) ]
+      | vs -> error_values "iq15mulr_sat" vs
       );
   }
 
+let list_f f x = f x |> singleton
 let fadd : numerics =
   {
     name = "fadd";
-    f =
+    f = list_f
       (function
       | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 32 ->
         F32.add (al_to_float32 f1) (al_to_float32 f2) |> al_of_float32
@@ -492,7 +497,7 @@ let fadd : numerics =
 let fsub : numerics =
   {
     name = "fsub";
-    f =
+    f = list_f
       (function
       | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 32 ->
         F32.sub (al_to_float32 f1) (al_to_float32 f2) |> al_of_float32
@@ -504,7 +509,7 @@ let fsub : numerics =
 let fmul : numerics =
   {
     name = "fmul";
-    f =
+    f = list_f
       (function
       | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 32 ->
         F32.mul (al_to_float32 f1) (al_to_float32 f2) |> al_of_float32
@@ -516,7 +521,7 @@ let fmul : numerics =
 let fdiv : numerics =
   {
     name = "fdiv";
-    f =
+    f = list_f
       (function
       | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 32 ->
         F32.div (al_to_float32 f1) (al_to_float32 f2) |> al_of_float32
@@ -528,7 +533,7 @@ let fdiv : numerics =
 let fmin : numerics =
   {
     name = "fmin";
-    f =
+    f = list_f
       (function
       | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 32 ->
         F32.min (al_to_float32 f1) (al_to_float32 f2) |> al_of_float32
@@ -540,7 +545,7 @@ let fmin : numerics =
 let fmax : numerics =
   {
     name = "fmax";
-    f =
+    f = list_f
       (function
       | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 32 ->
         F32.max (al_to_float32 f1) (al_to_float32 f2) |> al_of_float32
@@ -552,7 +557,7 @@ let fmax : numerics =
 let fcopysign : numerics =
   {
     name = "fcopysign";
-    f =
+    f = list_f
       (function
       | [ NumV z; CaseV _ as f1; CaseV _ as f2; ] when z = Z.of_int 32 ->
         F32.copysign (al_to_float32 f1) (al_to_float32 f2) |> al_of_float32
@@ -564,7 +569,7 @@ let fcopysign : numerics =
 let fabs : numerics =
   {
     name = "fabs";
-    f =
+    f = list_f
       (function
       | [ NumV z; CaseV _ as f ] when z = Z.of_int 32 ->
         F32.abs (al_to_float32 f) |> al_of_float32
@@ -576,7 +581,7 @@ let fabs : numerics =
 let fneg : numerics =
   {
     name = "fneg";
-    f =
+    f = list_f
       (function
       | [ NumV z; CaseV _ as f ] when z = Z.of_int 32 ->
         F32.neg (al_to_float32 f) |> al_of_float32
@@ -588,7 +593,7 @@ let fneg : numerics =
 let fsqrt : numerics =
   {
     name = "fsqrt";
-    f =
+    f = list_f
       (function
       | [ NumV z; CaseV _ as f ] when z = Z.of_int 32 ->
         F32.sqrt (al_to_float32 f) |> al_of_float32
@@ -600,7 +605,7 @@ let fsqrt : numerics =
 let fceil : numerics =
   {
     name = "fceil";
-    f =
+    f = list_f
       (function
       | [ NumV z; CaseV _ as f ] when z = Z.of_int 32 ->
         F32.ceil (al_to_float32 f) |> al_of_float32
@@ -612,7 +617,7 @@ let fceil : numerics =
 let ffloor : numerics =
   {
     name = "ffloor";
-    f =
+    f = list_f
       (function
       | [ NumV z; CaseV _ as f ] when z = Z.of_int 32 ->
         F32.floor (al_to_float32 f) |> al_of_float32
@@ -624,7 +629,7 @@ let ffloor : numerics =
 let ftrunc : numerics =
   {
     name = "ftrunc";
-    f =
+    f = list_f
       (function
       | [ NumV z; CaseV _ as f ] when z = Z.of_int 32 ->
         F32.trunc (al_to_float32 f) |> al_of_float32
@@ -636,7 +641,7 @@ let ftrunc : numerics =
 let fnearest : numerics =
   {
     name = "fnearest";
-    f =
+    f = list_f
       (function
       | [ NumV z; CaseV _ as f ] when z = Z.of_int 32 ->
         F32.nearest (al_to_float32 f) |> al_of_float32
@@ -720,7 +725,7 @@ let fge : numerics =
 let fpmin : numerics =
   {
     name = "fpmin";
-    f =
+    f = list_f
       (function
       | [ NumV _ as z; CaseV _ as f1; CaseV _ as f2; ] ->
         if (flt.f [ z; f2; f1 ] |> al_to_int = 1) then f2 else f1
@@ -730,7 +735,7 @@ let fpmin : numerics =
 let fpmax : numerics =
   {
     name = "fpmax";
-    f =
+    f = list_f
       (function
       | [ NumV _ as z; CaseV _ as f1; CaseV _ as f2; ] ->
         if (flt.f [ z; f1; f2 ] |> al_to_int = 1) then f2 else f1
@@ -738,16 +743,16 @@ let fpmax : numerics =
       );
   }
 
-let ext : numerics =
+let extend : numerics =
   {
-    name = "ext";
+    name = "extend";
     f =
       (function
       | [ NumV z; _; CaseV ("U", []); NumV v ] when z = Z.of_int 128 -> V128.I64x2.of_lanes [ z_to_int64 v; 0L ] |> al_of_vec128 (* HARDCODE *)
       | [ _; _; CaseV ("U", []); v ] -> v
       | [ NumV _ as m; NumV _ as n; CaseV ("S", []); NumV _ as i ] ->
         inverse_of_signed.f [ n; signed.f [ m; i ] ]
-      | vs -> error_values "ext" vs
+      | vs -> error_values "extend" vs
       );
   }
 
@@ -804,10 +809,11 @@ let trunc_sat : numerics =
 let promote : numerics =
   {
     name = "promote";
-    f =
+    f = list_f
       (function
       | [ NumV m; NumV n; CaseV _ as i ] when m = Z.of_int 32 && n = Z.of_int 64 ->
-        i |> al_to_float32 |> F64_convert.promote_f32 |> al_of_float64
+        let ret = i |> al_to_float32 |> F64_convert.promote_f32 |> al_of_float64 in
+        ret
       | vs -> error_values "promote" vs
       );
   }
@@ -815,7 +821,7 @@ let promote : numerics =
 let demote : numerics =
   {
     name = "demote";
-    f =
+    f = list_f
       (function
       | [ NumV m; NumV n; CaseV _ as i ] when m = Z.of_int 64 && n = Z.of_int 32 ->
         i |> al_to_float64 |> F32_convert.demote_f64 |> al_of_float32
@@ -978,8 +984,8 @@ let inverse_of_cbytes : numerics =
       | args -> inverse_of_nbytes.f args
   }
 
-let bytes_ : numerics = { name = "bytes"; f = nbytes.f }
-let inverse_of_bytes_ : numerics = { name = "inverse_of_bytes"; f = inverse_of_nbytes.f }
+let bytes : numerics = { name = "bytes"; f = nbytes.f }
+let inverse_of_bytes : numerics = { name = "inverse_of_bytes"; f = inverse_of_nbytes.f }
 
 let wrap : numerics =
   {
@@ -1016,7 +1022,7 @@ let narrow : numerics =
 
 let lanes : numerics =
   {
-    name = "lanes_";
+    name = "lanes";
     f =
       (function
       | [ TupV [ CaseV ("I8", []); NumV z ]; v ] when z = Z.of_int 16 ->
@@ -1036,7 +1042,7 @@ let lanes : numerics =
   }
 let inverse_of_lanes : numerics =
   {
-    name = "inverse_of_lanes_";
+    name = "inverse_of_lanes";
     f =
       (function
       | [ TupV [ CaseV ("I8", []); NumV z ]; ListV lanes; ] when z = Z.of_int 16 && Array.length !lanes = 16 ->
@@ -1077,9 +1083,19 @@ let inverse_of_lsize : numerics =
       | vs -> error_values "inverse_of_lsize" vs
       );
   }
+let inverse_of_size : numerics =
+  {
+    name = "inverse_of_size";
+    f = inverse_of_lsize.f;
+  }
 let inverse_of_lsizenn : numerics =
   {
     name = "inverse_of_lsizenn";
+    f = inverse_of_lsize.f;
+  }
+let inverse_of_sizenn : numerics =
+  {
+    name = "inverse_of_sizenn";
     f = inverse_of_lsize.f;
   }
 
@@ -1091,7 +1107,7 @@ let rec inverse_of_concat_helper = function
 
 let inverse_of_concat : numerics =
   {
-    name = "inverse_of_concat_";
+    name = "inverse_of_concat";
     f =
       (function
       | [ ListV _ as lv ] ->
@@ -1100,6 +1116,34 @@ let inverse_of_concat : numerics =
         |> inverse_of_concat_helper
         |> listV_of_list
       | vs -> error_values "inverse_of_concat" vs
+      );
+  }
+
+  let rec inverse_of_concatn_helper n prev = function
+  | a :: l ->
+    let next = prev @ [a] in
+    if List.length next = n then
+      [listV_of_list (prev @ [a])] @ inverse_of_concatn_helper n [] l
+    else
+      inverse_of_concatn_helper n next l
+  | [] -> []
+
+let inverse_of_concatn : numerics =
+  {
+    name = "inverse_of_concatn";
+    f =
+      (function
+      | [ NumV len; ListV _ as lv] ->
+        let n = Z.to_int len in
+        let l =
+          lv
+          |> unwrap_listv_to_list
+        in
+        assert (List.length l mod n = 0);
+        l
+        |> inverse_of_concatn_helper n []
+        |> listV_of_list
+      | vs -> error_values "inverse_of_concatn" vs
       );
   }
 
@@ -1112,9 +1156,10 @@ let numerics_list : numerics list = [
   inverse_of_vbytes;
   inverse_of_zbytes;
   inverse_of_cbytes;
-  bytes_;
-  inverse_of_bytes_;
+  bytes;
+  inverse_of_bytes;
   inverse_of_concat;
+  inverse_of_concatn;
   signed;
   inverse_of_signed;
   sat;
@@ -1147,10 +1192,10 @@ let numerics_list : numerics list = [
   ineg;
   imin;
   imax;
-  iaddsat;
-  isubsat;
-  iavgr_u;
-  iq15mulrsat_s;
+  iadd_sat;
+  isub_sat;
+  iavgr;
+  iq15mulr_sat;
   fadd;
   fsub;
   fmul;
@@ -1173,7 +1218,7 @@ let numerics_list : numerics list = [
   fge;
   fpmin;
   fpmax;
-  ext;
+  extend;
   wrap;
   trunc;
   trunc_sat;
@@ -1184,15 +1229,27 @@ let numerics_list : numerics list = [
   reinterpret;
   lanes;
   inverse_of_lanes;
+  inverse_of_size;
   inverse_of_isize;
   inverse_of_lsize;
   inverse_of_lsizenn;
+  inverse_of_sizenn;
   inverse_of_ibits;
 ]
 
-let call_numerics fname args =
+let rec strip_suffix name =
+  let last = String.length name - 1 in
+  if name <> "" && name.[last] = '_' then
+    strip_suffix (String.sub name 0 last)
+  else
+    name
+
+let call_numerics name args =
+  let fname = strip_suffix name in
   match List.find_opt (fun numerics -> numerics.name = fname) numerics_list with
   | Some numerics -> numerics.f args
-  | None -> raise (Exception.InvalidFunc ("Invalid numerics: " ^ fname))
+  | None -> raise (Exception.InvalidFunc ("Invalid numerics: " ^ name))
 
-let mem name = List.exists (fun numerics -> numerics.name = name) numerics_list
+let mem name =
+  let fname = strip_suffix name in
+  List.exists (fun numerics -> numerics.name = fname) numerics_list

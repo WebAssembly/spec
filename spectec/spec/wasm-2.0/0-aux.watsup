@@ -36,6 +36,26 @@ def $sum(n n'*) = $(n + $sum(n'*))
 
 ;; General sequence functions
 
+def $opt_(syntax X, X*) : X?  hint(show %2)
+def $opt_(syntax X, eps) = eps
+def $opt_(syntax X, w) = w
+
+def $list_(syntax X, X?) : X*  hint(show %2)
+def $list_(syntax X, eps) = eps
+def $list_(syntax X, w) = w
+
 def $concat_(syntax X, (X*)*) : X*  hint(show $concat(%2))
 def $concat_(syntax X, eps) = eps
 def $concat_(syntax X, (w*) (w'*)*) = w* $concat_(X, (w'*)*)
+
+;; [{1, 2}, {a, b, c}] -> {[1, a], [1, b], [1, c], [2, a], [2, b], [2, c]}
+def $setproduct_(syntax X, (X*)*) : (X*)*  hint(show %latex("\\Large\\times") %2)
+def $setproduct1_(syntax X, X*, (X*)*) : (X*)*
+def $setproduct2_(syntax X, X, (X*)*) : (X*)*
+
+def $setproduct_(syntax X, eps) = (eps)
+def $setproduct_(syntax X, (w_1*) (w*)*) = $setproduct1_(X, w_1*, $setproduct_(X, (w*)*))
+def $setproduct1_(syntax X, eps, (w*)*) = eps
+def $setproduct1_(syntax X, w_1 w'*, (w*)*) = $setproduct2_(X, w_1, (w*)*) ++ $setproduct1_(X, w'*, (w*)*)
+def $setproduct2_(syntax X, w_1, eps) = eps
+def $setproduct2_(syntax X, w_1, (w'*) (w*)*) = (w_1 w'*) ++ $setproduct2_(X, w_1, (w*)*)

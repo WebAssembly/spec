@@ -1,7 +1,7 @@
 (*
 This transformation
  1) reorders premises and
- 2) explicitly denotate a premise if it is an assignment.
+ 2) explicitly denote a premise if it is an assignment.
 by performing dataflow analysis.
 *)
 
@@ -190,6 +190,9 @@ let rec rows_of_prem vars len i p =
         [ Condition, p, [i] ]
         @ rows_of_eq vars len i l r p.at
         @ rows_of_eq vars len i r l p.at
+      | MemE (l, r) ->
+        [ Condition, p, [i] ]
+        @ rows_of_eq vars len i l { r with it = TheE r } p.at
       | _ -> [ Condition, p, [i] ]
     )
   | LetPr (_, _, ids) ->
@@ -230,10 +233,18 @@ let rec pre_process prem = match prem.it with
     ) ->
       let expanded_dt = { dt with it = CallE ("expanddt" $ no_region, [ExpA dt $ no_region]); note = ct.note } in
       [ { prem with it = IfPr (CmpE (EqOp, expanded_dt, ct) $$ no_region % (BoolT $ no_region)) } ]
-  | RulePr (id, _, { it=TupE [_context; lhs; rhs]; at; note })
-  when String.ends_with ~suffix:"_type" id.it ->
-    let typing_function_call = { it=CallE (id, [ExpA lhs $ lhs.at]); at; note } in
-    [ { prem with it=IfPr (CmpE (EqOp, typing_function_call, rhs) $$ at % note) } ]
+  | RulePr (id, mixop, exp) ->
+    let open El.Atom in
+    (match mixop, exp.it with
+    (* |- `lhs` : `rhs` *)
+    | [[turnstile]; [colon]; []], TupE [lhs; rhs]
+    (* `C` |- `lhs` : `rhs` *)
+    | [[]; [turnstile]; [colon]; []], TupE [_; lhs; rhs]
+    when turnstile.it = Turnstile && colon.it = Colon ->
+      let typing_function_call = CallE (id, [ExpA lhs $ lhs.at]) $$ exp.at % rhs.note in
+      [ { prem with it=IfPr (CmpE (EqOp, typing_function_call, rhs) $$ exp.at % (BoolT $ no_region)) } ]
+    | _ -> [ prem ]
+    )
   (* Split -- if e1 /\ e2 *)
   | IfPr ( { it = BinE (AndOp, e1, e2); _ } ) ->
     let p1 = { prem with it = IfPr ( e1 ) } in
@@ -250,13 +261,24 @@ let animate_prems known_vars prems =
   let is_other = function {it = ElsePr; _} -> true | _ -> false in
   let (other, non_other) = List.partition is_other pp_prems in
   let rows, cols = build_matrix non_other known_vars in
+
+  (* 1. Run knuth *)
   best := (List.length cols + 1, []);
-  let candidates = match knuth rows cols [] with
-    | [] -> [ snd !best ]
-    | xs -> List.map List.rev xs in
+  let (candidates, k_fail) =
+    match knuth rows cols [] with
+    | [] -> [ snd !best ], true
+    | xs -> List.map List.rev xs, false
+  in
+
+  (* 2. Reorder *)
   let best' = ref (-1, []) in
   match List.find_map (fun cand -> select_tight cand other known_vars best') candidates with
-  | None -> snd !best'
+  | None ->
+    if (not k_fail) then
+      let unhandled_prems = Lib.List.drop (fst !best') (snd !best') in
+      Error.error (over_region (List.map at unhandled_prems)) "prose translation" "There might be a cyclic binding"
+    else
+      snd !best'
   | Some x -> x
 
 (* Animate rule *)
@@ -264,10 +286,6 @@ let animate_rule r = match r.it with
   | RuleD(id, _ , _, _, _) when id.it = "pure" || id.it = "read" -> r (* TODO: remove this line *)
   | RuleD(id, binds, mixop, args, prems) -> (
     match (mixop, args.it) with
-    (* c |- e : t *)
-    | ([ [] ; [{it = Turnstile; _}] ; [{it = Colon; _}] ; []] , TupE ([c; e; _t])) ->
-      let new_prems = animate_prems (union (free_exp false c) (free_exp false e)) prems in
-      RuleD(id, binds, mixop, args, new_prems) $ r.at
     (* lhs ~> rhs *)
     | ([ [] ; [{it = SqArrow; _}] ; []] , TupE ([lhs; _rhs])) ->
       let new_prems = animate_prems (free_exp true lhs) prems in
@@ -291,7 +309,7 @@ let rec animate_def d = match d.it with
     let new_clauses = List.map animate_clause clauses in
     DecD (id, t1, t2, new_clauses) $ d.at
   | RecD ds -> RecD (List.map animate_def ds) $ d.at
-  | TypD _ | HintD _ -> d
+  | TypD _ | GramD _ | HintD _ -> d
 
 (* Main entry *)
 let transform (defs : script) =

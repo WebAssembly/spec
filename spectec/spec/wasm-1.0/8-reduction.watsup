@@ -167,38 +167,38 @@ rule Step/ctxt-frame:
 
 rule Step_pure/unop-val:
   (CONST t c_1) (UNOP t unop)  ~>  (CONST t c)
-  -- if $unop(t, unop, c_1) = c  ;; TODO
+  -- if c <- $unop_(t, unop, c_1)
 
 rule Step_pure/unop-trap:
   (CONST t c_1) (UNOP t unop)  ~>  TRAP
-  -- if $unop(t, unop, c_1) = eps  ;; TODO
+  -- if $unop_(t, unop, c_1) = eps
 
 
 rule Step_pure/binop-val:
   (CONST t c_1) (CONST t c_2) (BINOP t binop)  ~>  (CONST t c)
-  -- if $binop(t, binop, c_1, c_2) = c  ;; TODO
+  -- if c <- $binop_(t, binop, c_1, c_2)
 
 rule Step_pure/binop-trap:
   (CONST t c_1) (CONST t c_2) (BINOP t binop)  ~>  TRAP
-  -- if $binop(t, binop, c_1, c_2) = eps  ;; TODO
+  -- if $binop_(t, binop, c_1, c_2) = eps
 
 
 rule Step_pure/testop:
   (CONST t c_1) (TESTOP t testop)  ~>  (CONST I32 c)
-  -- if c = $testop(t, testop, c_1)
+  -- if c = $testop_(t, testop, c_1)
 
 rule Step_pure/relop:
   (CONST t c_1) (CONST t c_2) (RELOP t relop)  ~>  (CONST I32 c)
-  -- if c = $relop(t, relop, c_1, c_2)
+  -- if c = $relop_(t, relop, c_1, c_2)
 
 
 rule Step_pure/cvtop-val:
   (CONST t_1 c_1) (CVTOP t_2 t_1 cvtop)  ~>  (CONST t_2 c)
-  -- if $cvtop(t_1, t_2, cvtop, c_1) = c  ;; TODO
+  -- if c <- $cvtop__(t_1, t_2, cvtop, c_1)
 
 rule Step_pure/cvtop-trap:
   (CONST t_1 c_1) (CVTOP t_2 t_1 cvtop)  ~>  TRAP
-  -- if $cvtop(t_1, t_2, cvtop, c_1) = eps  ;; TODO
+  -- if $cvtop__(t_1, t_2, cvtop, c_1) = eps
 
 
 ;; Local instructions
@@ -230,15 +230,15 @@ rule Step_read/load-num-trap:
 
 rule Step_read/load-num-val:
   z; (CONST I32 i) (LOAD t ao)  ~>  (CONST t c)
-  -- if $bytes(t, c) = $mem(z, 0).BYTES[i + ao.OFFSET : $size(t)/8]
+  -- if $bytes_(t, c) = $mem(z, 0).BYTES[i + ao.OFFSET : $size(t)/8]
 
 rule Step_read/load-pack-trap:
   z; (CONST I32 i) (LOAD Inn (n _ sx) ao)  ~>  TRAP
   -- if $(i + ao.OFFSET + n/8 > |$mem(z, 0).BYTES|)
 
 rule Step_read/load-pack-val:
-  z; (CONST I32 i) (LOAD Inn (n _ sx) ao)  ~>  (CONST Inn $ext(n, $size(Inn), sx, c))
-  -- if $ibytes(n, c) = $mem(z, 0).BYTES[i + ao.OFFSET : n/8]
+  z; (CONST I32 i) (LOAD Inn (n _ sx) ao)  ~>  (CONST Inn $extend__(n, $size(Inn), sx, c))
+  -- if $ibytes_(n, c) = $mem(z, 0).BYTES[i + ao.OFFSET : n/8]
 
 
 rule Step/store-num-trap:
@@ -247,7 +247,7 @@ rule Step/store-num-trap:
 
 rule Step/store-num-val:
   z; (CONST I32 i) (CONST t c) (STORE t ao)  ~>  $with_mem(z, 0, $(i + ao.OFFSET), $($size(t)/8), b*); eps
-  -- if b* = $bytes(t, c)
+  -- if b* = $bytes_(t, c)
 
 rule Step/store-pack-trap:
   z; (CONST I32 i) (CONST Inn c) (STORE Inn n ao)  ~>  z; TRAP
@@ -255,7 +255,7 @@ rule Step/store-pack-trap:
 
 rule Step/store-pack-val:
   z; (CONST I32 i) (CONST Inn c) (STORE Inn n ao)  ~>  $with_mem(z, 0, $(i + ao.OFFSET), $(n/8), b*); eps
-  -- if b* = $ibytes(n, $wrap($size(Inn), n, c))
+  -- if b* = $ibytes_(n, $wrap__($size(Inn), n, c))
 
 
 rule Step_read/memory.size:
@@ -268,4 +268,4 @@ rule Step/memory.grow-succeed:
   -- if $growmemory($mem(z, 0), n) = mi
 
 rule Step/memory.grow-fail:
-  z; (CONST I32 n) (MEMORY.GROW)  ~>  z; (CONST I32 $invsigned(32, $(-1)))
+  z; (CONST I32 n) (MEMORY.GROW)  ~>  z; (CONST I32 $invsigned_(32, $(-1)))

@@ -6,23 +6,32 @@ open Ast
 
 module Map = Map.Make(String)
 
-type subst = {varid : exp Map.t; typid : typ Map.t; defid : id Map.t}
+type subst =
+  {varid : exp Map.t; typid : typ Map.t; defid : id Map.t; gramid : sym Map.t}
 type t = subst
 
-let empty = {varid = Map.empty; typid = Map.empty; defid = Map.empty}
+let empty =
+  { varid = Map.empty;
+    typid = Map.empty;
+    defid = Map.empty;
+    gramid = Map.empty;
+  }
 
 let mem_varid s id = Map.mem id.it s.varid
 let mem_typid s id = Map.mem id.it s.typid
 let mem_defid s id = Map.mem id.it s.defid
+let mem_gramid s id = Map.mem id.it s.gramid
 
 let add_varid s id e = if id.it = "_" then s else {s with varid = Map.add id.it e s.varid}
 let add_typid s id t = if id.it = "_" then s else {s with typid = Map.add id.it t s.typid}
 let add_defid s id x = if id.it = "_" then s else {s with defid = Map.add id.it x s.defid}
+let add_gramid s id g = if id.it = "_" then s else {s with gramid = Map.add id.it g s.gramid}
 
 let union s1 s2 =
   { varid = Map.union (fun _ _e1 e2 -> Some e2) s1.varid s2.varid;
     typid = Map.union (fun _ _t1 t2 -> Some t2) s1.typid s2.typid;
     defid = Map.union (fun _ _x1 x2 -> Some x2) s1.defid s2.defid;
+    gramid = Map.union (fun _ _x1 x2 -> Some x2) s1.gramid s2.gramid;
   }
 
 let remove_varid' s id' = {s with varid = Map.remove id' s.varid}
@@ -55,6 +64,12 @@ let subst_defid s id =
   match Map.find_opt id.it s.defid with
   | None -> id
   | Some id' -> id'
+
+let subst_gramid s id =
+  match Map.find_opt id.it s.gramid with
+  | None -> id
+  | Some {it = VarG (id', []); _} -> id'
+  | Some _ -> raise (Invalid_argument "subst_varid")
 
 
 (* Iterations *)
@@ -187,6 +202,21 @@ and subst_iterexp s (iter, bs) =
 *)
 
 
+(* Grammars *)
+
+and subst_sym s g =
+  (match g.it with
+  | VarG (id, args) -> VarG (subst_gramid s id, List.map (subst_arg s) args)
+  | NatG _ | TextG _ -> g.it
+  | EpsG -> EpsG
+  | SeqG gs -> SeqG (subst_list subst_sym s gs)
+  | AltG gs -> AltG (subst_list subst_sym s gs)
+  | RangeG (g1, g2) -> RangeG (subst_sym s g1, subst_sym s g2)
+  | IterG (g1, iter) -> IterG (subst_sym s g1, subst_iterexp s iter)
+  | AttrG (e, g1) -> AttrG (subst_exp s e, subst_sym s g1)
+  ) $ g.at
+
+
 (* Premises *)
 
 and subst_prem s prem =
@@ -207,6 +237,7 @@ and subst_arg s a =
   | ExpA e -> ExpA (subst_exp s e)
   | TypA t -> TypA (subst_typ s t)
   | DefA id -> DefA (subst_defid s id)
+  | GramA g -> GramA (subst_sym s g)
   ) $ a.at
 
 and subst_bind s b =
@@ -216,6 +247,9 @@ and subst_bind s b =
   | DefB (id, ps, t) ->
     let ps', s' = subst_params s ps in
     DefB (id, ps', subst_typ s' t)
+  | GramB (id, ps, t) ->
+    let ps', s' = subst_params s ps in
+    GramB (id, ps', subst_typ s' t)
   ) $ b.at
 
 and subst_param s p =
@@ -225,6 +259,7 @@ and subst_param s p =
   | DefP (id, ps, t) ->
     let ps', s' = subst_params s ps in
     DefP (id, ps', subst_typ s' t)
+  | GramP (id, t) -> GramP (id, subst_typ s t)
   ) $ p.at
 
 and subst_args s as_ = subst_list subst_arg s as_
@@ -237,4 +272,5 @@ and subst_params s ps = subst_list_dep subst_param Free.bound_param s ps
 let subst_typ s t = if s = empty then t else subst_typ s t
 let subst_deftyp s dt = if s = empty then dt else subst_deftyp s dt
 let subst_exp s e = if s = empty then e else subst_exp s e
+let subst_sym s g = if s = empty then g else subst_sym s g
 let subst_prem s pr = if s = empty then pr else subst_prem s pr

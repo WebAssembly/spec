@@ -101,8 +101,4 @@ $${syntax+:
 
 .. _def-utf8:
 
-$${definition-prose: utf8}
-
-\
-
 $${definition: utf8}

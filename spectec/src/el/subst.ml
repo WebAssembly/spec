@@ -167,18 +167,6 @@ and subst_path s p =
   ) $ p.at
 
 
-(* Premises *)
-
-and subst_prem s prem =
-  (match prem.it with
-  | VarPr (id, t) -> VarPr (id, subst_typ s t)
-  | RulePr (id, e) -> RulePr (id, subst_exp s e)
-  | IfPr e -> IfPr (subst_exp s e)
-  | ElsePr -> ElsePr
-  | IterPr (prem1, iter) -> IterPr (subst_prem s prem1, subst_iter s iter)
-  ) $ prem.at
-
-
 (* Grammars *)
 
 and subst_sym s g =
@@ -211,6 +199,18 @@ and subst_gram s gram =
   let (dots1, prods, dots2) = gram.it in
   (dots1, subst_nl_list subst_prod s prods, dots2) $ gram.at
 *)
+
+
+(* Premises *)
+
+and subst_prem s prem =
+  (match prem.it with
+  | VarPr (id, t) -> VarPr (id, subst_typ s t)
+  | RulePr (id, e) -> RulePr (id, subst_exp s e)
+  | IfPr e -> IfPr (subst_exp s e)
+  | ElsePr -> ElsePr
+  | IterPr (prem1, iter) -> IterPr (subst_prem s prem1, subst_iter s iter)
+  ) $ prem.at
 
 
 (* Definitions *)

@@ -155,7 +155,7 @@ let rec if_expr_to_instrs e =
     let body = if_expr_to_instrs e2 in
     [ match neg_cond with
       | [ CmpI ({ it = IterE ({ it = VarE name; _ }, _, Opt); _ }, Eq, { it = OptE None; _ }) ] ->
-        IfI (isDefinedE (varE name), body)
+        IfI (isDefinedE (varE name ~note:no_note) ~note:no_note, body)
       | _ -> print_yet_exp e "if_expr_to_instrs"; YetI (Il.Print.string_of_exp e) ]
   | Ast.BinE (Ast.EquivOp, e1, e2) ->
       [ EquivI (exp_to_expr e1, exp_to_expr e2) ]
@@ -194,11 +194,11 @@ let rec prem_to_instrs prem =
     | _,              _             -> assert false )
   | Ast.IterPr (prem, iter) ->
     (match iter with
-    | Ast.Opt, [(id, _)] -> [ IfI (isDefinedE (varE id.it), prem_to_instrs prem) ]
+    | Ast.Opt, [(id, _)] -> [ IfI (isDefinedE (varE id.it ~note:no_note) ~note:no_note, prem_to_instrs prem) ]
     | Ast.(List | ListN _), vars ->
         let to_iter (id, _) =
-          let name = varE id.it in
-          name, iterE (name, [id.it], Al.Ast.List)
+          let name = varE id.it ~note:no_note in
+          name, iterE (name, [id.it], Al.Ast.List) ~note:no_note
         in
         [ ForallI (List.map to_iter vars, prem_to_instrs prem) ]
     | _ -> print_yet_prem prem "prem_to_instrs"; [ YetI "TODO: prem_to_intrs iter" ]
@@ -208,17 +208,14 @@ let rec prem_to_instrs prem =
     print_yet_prem prem "prem_to_instrs"; [ YetI s ]
 
 type vrule_group =
-  string * (Ast.exp * Ast.exp * Ast.prem list * Ast.bind list) list
+  string * Ast.id * (Ast.exp * Ast.exp * Ast.prem list * Ast.bind list) list
 
 (** Main translation for typing rules **)
-let vrule_group_to_prose ((_name, vrules): vrule_group) =
+let vrule_group_to_prose ((rule_name, rel_id, vrules): vrule_group) =
   let (winstr, t, prems, _tenv) = vrules |> List.hd in
 
-  (* name *)
-  let name = match winstr.it with
-  | Ast.CaseE (({it = (El.Atom.Atom name); _}::_)::_, _) -> name
-  | _ -> assert false
-  in
+  (* anchor *)
+  let anchor = rel_id.it ^ "/" ^ rule_name in
   (* expr *)
   let expr = exp_to_expr winstr in
   (* concl *)
@@ -227,12 +224,13 @@ let vrule_group_to_prose ((_name, vrules): vrule_group) =
   let prems = (List.concat_map prem_to_instrs prems) in
 
   (* Predicate *)
-  Iff (name, expr, concl, prems)
+  Iff (anchor, expr, concl, prems)
 
 let rec extract_vrules def =
   match def.it with
   | Ast.RecD defs -> List.concat_map extract_vrules defs
-  | Ast.RelD (id, _, _, rules) when id.it = "Instr_ok" -> rules
+  | Ast.RelD (id, _, _, rules) when id.it = "Instr_ok" ->
+      List.map (fun rule -> (id, rule)) rules
   | _ -> []
 
 let pack_single_rule rule =
@@ -272,26 +270,27 @@ let pack_triplet_rule rule =
 
 
 (* group typing rules that have same name *)
-(* Il.rule list -> vrule_group list *)
+(* (Il.id * Il.rule) list -> vrule_group list *)
 let rec group_vrules = function
   | [] -> []
   | h :: t ->
-      let name = name_of_rule h in
+      let (rel_id, rule) = h in
+      let rule_name = name_of_rule rule in
       let same_rules, diff_rules =
-        List.partition (fun rule -> name_of_rule rule = name) t in
-      let group = (name, List.map pack_pair_rule (h :: same_rules)) in
+        List.partition (fun (_, rule) -> name_of_rule rule = rule_name) t in
+      let same_rules = List.map snd same_rules in
+      let group = (rule_name, rel_id, List.map pack_pair_rule (rule :: same_rules)) in
       group :: group_vrules diff_rules
 
 (* TODO: The codes below are too repetitive. Should be factored. *)
 
 (** 1. C |- expr : OK *)
-let prose_of_valid_rules rules =
+let prose_of_valid_rules rel_id rules =
   let rule = List.hd rules in
   let (e, _, _) = pack_single_rule rule in
-  let typ = Print.string_of_typ e.note in
 
-  (* name *)
-  let name = "valid_" ^ typ in
+  (* anchor *)
+  let anchor = rel_id.it in
   (* expr *)
   let expr = exp_to_expr e in
   (* concl *)
@@ -307,10 +306,11 @@ let prose_of_valid_rules rules =
         | instrss -> [ EitherI instrss ])
   ) in
 
-  Iff (name, expr, concl, prems)
+  Iff (anchor, expr, concl, prems)
+
 let prose_of_valid_rel def =
   match def.it with
-  | Ast.RelD (_, _, _, rules) -> prose_of_valid_rules (Il2al.Il2il.unify_rules rules)
+  | Ast.RelD (rel_id, _, _, rules) -> prose_of_valid_rules rel_id (Il2al.Il2il.unify_rules rules)
   | _ -> assert false
 
 (** 2. C |- instr : type **)
@@ -321,13 +321,12 @@ let proses_of_valid_instr_rel rel =
   |> List.map vrule_group_to_prose
 
 (** 3. C |- e : e **)
-let prose_of_valid_with_rules rules =
+let prose_of_valid_with_rules rel_id rules =
   let rule = List.hd rules in
   let (e1, e2, _, _) = pack_pair_rule rule in
-  let typ = Print.string_of_typ e1.note in
 
-  (* name *)
-  let name = "valid_" ^ typ in
+  (* anchor *)
+  let anchor = rel_id.it in
   (* expr *)
   let expr = exp_to_expr e1 in
   (* concl *)
@@ -343,20 +342,20 @@ let prose_of_valid_with_rules rules =
         | instrss -> [ EitherI instrss ])
   ) in
 
-  Iff (name, expr, concl, prems)
+  Iff (anchor, expr, concl, prems)
+
 let prose_of_valid_with_rel def =
   match def.it with
-  | Ast.RelD (_, _, _, rules) -> prose_of_valid_with_rules (Il2al.Il2il.unify_rules rules)
+  | Ast.RelD (rel_id, _, _, rules) -> prose_of_valid_with_rules rel_id (Il2al.Il2il.unify_rules rules)
   | _ -> assert false
 
 (** 4. C |- type <: type **)
-let prose_of_match_rules rules =
+let prose_of_match_rules rel_id rules =
   let rule = List.hd rules in
   let (e1, e2, _, _) = pack_pair_rule rule in
-  let typ = Print.string_of_typ e1.note in
 
-  (* name *)
-  let name = "matching_" ^ typ in
+  (* anchor *)
+  let anchor = rel_id.it in
   (* expr *)
   let expr = exp_to_expr e1 in
   (* concl *)
@@ -372,21 +371,21 @@ let prose_of_match_rules rules =
         | instrss -> [ EitherI instrss ])
   ) in
 
-  Iff (name, expr, concl, prems)
+  Iff (anchor, expr, concl, prems)
+
 let prose_of_match_rel def =
   match def.it with
-  | Ast.RelD (_, _, _, rules) -> prose_of_match_rules (Il2al.Il2il.unify_rules rules)
+  | Ast.RelD (rel_id, _, _, rules) -> prose_of_match_rules rel_id (Il2al.Il2il.unify_rules rules)
   | _ -> assert false
 
 
 (** 5. C |- x CONST **)
-let prose_of_const_rules rules =
+let prose_of_const_rules rel_id rules =
   let rule = List.hd rules in
   let (e, _, _) = pack_single_rule rule in
-  let typ = Print.string_of_typ e.note in
 
-  (* name *)
-  let name = "const_" ^ typ in
+  (* anchor *)
+  let anchor = rel_id.it in
   (* expr *)
   let expr = exp_to_expr e in
   (* concl *)
@@ -402,23 +401,23 @@ let prose_of_const_rules rules =
         | instrss -> [ EitherI instrss ])
   ) in
 
-  Iff (name, expr, concl, prems)
+  Iff (anchor, expr, concl, prems)
+
 let prose_of_const_rel def =
   match def.it with
-  | Ast.RelD (_, _, _, rules) -> prose_of_const_rules (Il2al.Il2il.unify_rules rules)
+  | Ast.RelD (rel_id, _, _, rules) -> prose_of_const_rules rel_id (Il2al.Il2il.unify_rules rules)
   | _ -> assert false
 
 (** 6. C |- e : e CONST **)
 let proses_of_valid_const_rel _def = [] (* Do not generate prose *)
 
 (** 7. C |- e : e e **)
-let prose_of_valid_with2_rules rules =
+let prose_of_valid_with2_rules rel_id rules =
   let rule = List.hd rules in
   let (e1, e2, e3, _, _) = pack_triplet_rule rule in
-  let typ = Print.string_of_typ e1.note in
 
-  (* name *)
-  let name = "valid_" ^ typ in
+  (* anchor *)
+  let anchor = rel_id.it in
   (* expr *)
   let expr = exp_to_expr e1 in
   (* concl *)
@@ -434,16 +433,17 @@ let prose_of_valid_with2_rules rules =
         | instrss -> [ EitherI instrss ])
   ) in
 
-  Iff (name, expr, concl, prems)
+  Iff (anchor, expr, concl, prems)
+
 let prose_of_valid_with2_rel def =
   match def.it with
-  | Ast.RelD (_, _, _, rules) -> prose_of_valid_with2_rules (Il2al.Il2il.unify_rules rules)
+  | Ast.RelD (rel_id, _, _, rules) -> prose_of_valid_with2_rules rel_id (Il2al.Il2il.unify_rules rules)
   | _ -> assert false
 
 (** 8. Others **)
 let proses_of_other_rel rel = ( match rel.it with
-  | Ast.RelD (id, mixop, args, _) ->
-    "Untranslated relation " ^ id.it ^ ": " ^ Print.string_of_mixop mixop ^ Print.string_of_typ args |> print_endline;
+  | Ast.RelD (rel_id, mixop, args, _) ->
+    "Untranslated relation " ^ rel_id.it ^ ": " ^ Print.string_of_mixop mixop ^ Print.string_of_typ args |> print_endline;
   | _ -> ());
   []
 
@@ -456,6 +456,7 @@ let prose_of_rel rel = match get_rel_kind rel with
   | ValidConstRel -> proses_of_valid_const_rel rel
   | ValidWith2Rel -> [ prose_of_valid_with2_rel rel ]
   | OtherRel      -> proses_of_other_rel rel
+
 let prose_of_rels = List.concat_map prose_of_rel
 
 (** Entry for generating validation prose **)
