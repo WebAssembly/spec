@@ -1399,6 +1399,6 @@ watsup 0.4 generator
 
 ===== ../../test-interpreter/spec-test-3/throw.wast =====
 ../../test-interpreter/spec-test-3/throw.wast:49.1-49.42
-: interpreter error: $HANDLER_: (LABEL_ 0x0 [] [(CALL 0x6)]) is not a Wasm value (interpreting  Push val*)
+: interpreter error: $THROW_REF: cannot step instr (interpreting  YetI: TODO: translate_rgroup with differnet contexts.)
 [1]
 ```

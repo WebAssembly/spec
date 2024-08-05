@@ -7872,7 +7872,10 @@ Step_pure/return
     3) Execute the instruction RETURN.
 
 Step_pure/handler n catch* val*
-1. Push the values val* to the stack.
+1. Pop all values val* from the top of the stack.
+2. Assert: Due to validation, YetE (a handler is now on the top of the stack).
+3. Exit from HANDLER_.
+4. Push the values val* to the stack.
 
 Step_pure/unop nt unop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
@@ -8303,7 +8306,10 @@ Step_read/try_table bt catch* instr*
 2. Let (t_1^m -> t_2^n) be $blocktype_(z, bt).
 3. Assert: Due to validation, there are at least m values on the top of the stack.
 4. Pop the values val^m from the stack.
-5. Execute the instruction (HANDLER_ n catch* [(LABEL_ n [] val^m ++ instr*)]).
+5. Let H be (HANDLER_ n catch*).
+6. Enter [HANDLER_] with label H.
+  a. Let L be the label_n{[]}.
+  b. Enter val^m ++ instr* with label L.
 
 Step_read/ref.null $idx(x)
 1. Let z be the current state.
@@ -8866,9 +8872,9 @@ Step/throw x
 6. Assert: Due to validation, there are at least n values on the top of the stack.
 7. Pop the values val^n from the stack.
 8. Let exn be { TAG: a; FIELDS: val^n; }.
-9. Push the value (REF.EXN_ADDR a) to the stack.
-10. Execute the instruction THROW_REF.
-11. Perform $add_exninst(z, [exn]).
+9. Perform $add_exninst(z, [exn]).
+10. Push the value (REF.EXN_ADDR a) to the stack.
+11. Execute the instruction THROW_REF.
 
 Step/struct.new x
 1. Let z be the current state.
