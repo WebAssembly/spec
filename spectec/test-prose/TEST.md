@@ -1080,16 +1080,16 @@ initdata moduleinst u32_u0* byte_u1*
 instantiate module externval*
 1. Assert: Due to validation, module is of the case MODULE.
 2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
-3. Assert: Due to validation, type* is of the case TYPE.
+3. Assert: Due to validation, type is of the case TYPE*.
 4. Let (TYPE functype)* be type*.
 5. Let n_F be |func*|.
-6. Assert: Due to validation, start? is of the case START.
+6. Assert: Due to validation, start is of the case START?.
 7. Let (START x')? be start?.
-8. Assert: Due to validation, data* is of the case DATA.
+8. Assert: Due to validation, data is of the case DATA*.
 9. Let (DATA expr_D b*)* be data*.
-10. Assert: Due to validation, elem* is of the case ELEM.
+10. Assert: Due to validation, elem is of the case ELEM*.
 11. Let (ELEM expr_E x*)* be elem*.
-12. Assert: Due to validation, global* is of the case GLOBAL.
+12. Assert: Due to validation, global is of the case GLOBAL*.
 13. Let (GLOBAL globaltype expr_G)* be global*.
 14. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externval*) ++ (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externval*); TABLES: []; MEMS: []; EXPORTS: []; }.
 15. Let f_init be { LOCALS: []; MODULE: moduleinst_init; }.
@@ -3306,16 +3306,16 @@ rundata (DATA byte* datamode_u0) i
 instantiate module externval*
 1. Assert: Due to validation, module is of the case MODULE.
 2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
-3. Assert: Due to validation, type* is of the case TYPE.
+3. Assert: Due to validation, type is of the case TYPE*.
 4. Let (TYPE functype)* be type*.
 5. Let n_D be |data*|.
 6. Let n_E be |elem*|.
 7. Let n_F be |func*|.
-8. Assert: Due to validation, start? is of the case START.
+8. Assert: Due to validation, start is of the case START?.
 9. Let (START x)? be start?.
-10. Assert: Due to validation, global* is of the case GLOBAL.
+10. Assert: Due to validation, global is of the case GLOBAL*.
 11. Let (GLOBAL globaltype expr_G)* be global*.
-12. Assert: Due to validation, elem* is of the case ELEM.
+12. Assert: Due to validation, elem is of the case ELEM*.
 13. Let (ELEM reftype expr_E* elemmode)* be elem*.
 14. Let instr_D* be $concat_(instr, $rundata(data*[j], j)^(j<n_D)).
 15. Let instr_E* be $concat_(instr, $runelem(elem*[i], i)^(i<n_E)).
@@ -7475,18 +7475,18 @@ allocmodule module externval* val_G* ref_T* ref_E**
 10. Let ma* be (|s.MEMS| + i_M)^(i_M<|mem*|).
 11. Let ea* be (|s.ELEMS| + i_E)^(i_E<|elem*|).
 12. Let da* be (|s.DATAS| + i_D)^(i_D<|data*|).
-13. Assert: Due to validation, mem* is of the case MEMORY.
+13. Assert: Due to validation, mem is of the case MEMORY*.
 14. Let (MEMORY memtype)* be mem*.
 15. Let dt* be $alloctypes(type*).
-16. Assert: Due to validation, data* is of the case DATA.
+16. Assert: Due to validation, data is of the case DATA*.
 17. Let (DATA byte* datamode)* be data*.
-18. Assert: Due to validation, global* is of the case GLOBAL.
+18. Assert: Due to validation, global is of the case GLOBAL*.
 19. Let (GLOBAL globaltype expr_G)* be global*.
-20. Assert: Due to validation, table* is of the case TABLE.
+20. Assert: Due to validation, table is of the case TABLE*.
 21. Let (TABLE tabletype expr_T)* be table*.
-22. Assert: Due to validation, elem* is of the case ELEM.
+22. Assert: Due to validation, elem is of the case ELEM*.
 23. Let (ELEM elemtype expr_E* elemmode)* be elem*.
-24. Assert: Due to validation, func* is of the case FUNC.
+24. Assert: Due to validation, func is of the case FUNC*.
 25. Let (FUNC x local* expr_F)* be func*.
 26. Let xi* be $allocexports({ TYPES: []; FUNCS: fa_I* ++ fa*; GLOBALS: ga_I* ++ ga*; TABLES: ta_I* ++ ta*; MEMS: ma_I* ++ ma*; ELEMS: []; DATAS: []; EXPORTS: []; }, export*).
 27. Let moduleinst be { TYPES: dt*; FUNCS: fa_I* ++ fa*; GLOBALS: ga_I* ++ ga*; TABLES: ta_I* ++ ta*; MEMS: ma_I* ++ ma*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
@@ -7542,15 +7542,15 @@ instantiate module externval*
 4. Assert: Due to validation, ($Externval_type(externval) is xt_I)*.
 5. Let instr_D* be $concat_(instr, $rundata_(i_D, data*[i_D])^(i_D<|data*|)).
 6. Let instr_E* be $concat_(instr, $runelem_(i_E, elem*[i_E])^(i_E<|elem*|)).
-7. Assert: Due to validation, start? is of the case START.
+7. Assert: Due to validation, start is of the case START?.
 8. Let (START x)? be start?.
 9. Let moduleinst_0 be { TYPES: $alloctypes(type*); FUNCS: $funcsxv(externval*) ++ (|s.FUNCS| + i_F)^(i_F<|func*|); GLOBALS: $globalsxv(externval*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
-10. Assert: Due to validation, data* is of the case DATA.
-11. Assert: Due to validation, table* is of the case TABLE.
+10. Assert: Due to validation, data is of the case DATA*.
+11. Assert: Due to validation, table is of the case TABLE*.
 12. Let (TABLE tabletype expr_T)* be table*.
-13. Assert: Due to validation, global* is of the case GLOBAL.
+13. Assert: Due to validation, global is of the case GLOBAL*.
 14. Let (GLOBAL globaltype expr_G)* be global*.
-15. Assert: Due to validation, elem* is of the case ELEM.
+15. Assert: Due to validation, elem is of the case ELEM*.
 16. Let (ELEM reftype expr_E* elemmode)* be elem*.
 17. Let instr_S? be (CALL x)?.
 18. Let z be { LOCALS: []; MODULE: moduleinst_0; }.
