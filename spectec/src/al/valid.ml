@@ -423,7 +423,7 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
   | ReplaceI (expr1, path, expr2) ->
     access source expr1.note path |> check_match source expr2.note
   | AppendI (expr1, _expr2) -> check_list source expr1.note
-  | OtherwiseI _ | YetI _ -> error_valid "invalid expression" source ""
+  | OtherwiseI _ | YetI _ -> error_valid "invalid instruction" source ""
   | _ -> ()
   );
   (Option.get walker.super).walk_instr walker instr
