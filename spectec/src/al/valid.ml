@@ -419,7 +419,7 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
   | LetI (expr1, expr2) ->
     add_bound_vars expr1; check_match source expr1.note expr2.note
   | ExecuteI expr | ExecuteSeqI expr -> check_instr source expr.note
-  | PerformI _ -> () (* TODO: *)
+  | PerformI _ -> () (* TODO *)
   | ReplaceI (expr1, path, expr2) ->
     access source expr1.note path |> check_match source expr2.note
   | AppendI (expr1, _expr2) -> check_list source expr1.note
