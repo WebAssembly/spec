@@ -17,16 +17,19 @@ let concat_map_nl_list f xs = List.concat_map (function Nl -> [Nl] | Elem x -> f
 let concat_map_filter_nl_list f xs = List.concat_map (function Nl -> [] | Elem x -> f x) xs
 
 
+let rec is_sub s i = i = String.length s || s.[i] = '_' && is_sub s (i + 1)
+
 let strip_var_suffix id =
   match String.index_opt id.it '_', String.index_opt id.it '\'' with
   | None, None -> id
-  | Some n, None when n = String.length id.it - 1 -> id  (* keep trailing underscores *)
+  | Some n, None when is_sub id.it n -> id  (* keep trailing underscores *)
   | None, Some n | Some n, None -> String.sub id.it 0 n $ id.at
   | Some n1, Some n2 -> String.sub id.it 0 (min n1 n2) $ id.at
 
 let strip_var_sub id =
-  if id.it = "" || id.it.[String.length id.it - 1] <> '_' then id else
-  String.sub id.it 0 (String.length id.it - 1) $ id.at
+  let n = ref 0 in
+  while !n < String.length id.it && id.it.[String.length id.it - !n - 1] = '_' do incr n done;
+  String.sub id.it 0 (String.length id.it - !n) $ id.at
 
 
 let arg_of_exp e =

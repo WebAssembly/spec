@@ -8,18 +8,18 @@ Numerics
 Sign Interpretation
 ~~~~~~~~~~~~~~~~~~~
 
-.. _def-signed:
+.. _def-signed_:
 
-$${definition-prose: signed}
-
-\
-
-$${definition: signed}
-
-.. _def-invsigned:
-
-$${definition-prose: invsigned}
+$${definition-prose: signed_}
 
 \
 
-$${definition: invsigned}
+$${definition: signed_}
+
+.. _def-invsigned_:
+
+$${definition-prose: invsigned_}
+
+\
+
+$${definition: invsigned_}

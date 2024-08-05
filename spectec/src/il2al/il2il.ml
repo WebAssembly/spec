@@ -4,18 +4,19 @@ Functions that transform IL into IL.
 
 open Il.Ast
 open Il.Eq
+open Util
 open Util.Source
 
-type rgroup = (exp * exp * (prem list)) list
+type rgroup = (exp * exp * (prem list)) phrase list
 
 (* Helpers *)
-
+(* 
 let take_prefix n str =
   if String.length str < n then
     str
   else
     String.sub str 0 n
-
+ *)
 
 (* Walker-based transformer *)
 
@@ -57,7 +58,8 @@ and transform_arg f a =
   { a with it = match a.it with
     | ExpA e -> ExpA (transform_expr f e)
     | TypA t -> TypA t
-    | DefA id -> DefA id }
+    | DefA id -> DefA id
+    | GramA id -> GramA id }
 
 (* Change right_assoc cat into left_assoc cat *)
 let to_left_assoc_cat =
@@ -81,7 +83,7 @@ let to_right_assoc_cat =
     | CatE (l, r) ->
       begin match l.it with
       | CatE (ll, lr) ->
-        { e with it = CatE (ll, CatE (lr, r) $$ no_region% e.note) } |> rotate_cw
+        { e with it = CatE (ll, CatE (lr, r) $$ no_region % e.note) } |> rotate_cw
       | _ -> e
       end
     | _ -> e
@@ -92,23 +94,12 @@ let to_right_assoc_cat =
 (* Unifying lhs *)
 
 (* Estimate appropriate id name for a given type *)
-let rec type_to_id ty = match ty.it with
-(* TODO: guess this for "var" in el? *)
-| VarT (id, _) -> take_prefix 5 id.it
-| BoolT -> "b"
-| NumT NatT -> "n"
-| NumT IntT -> "i"
-| NumT RatT -> "q"
-| NumT RealT -> "r"
-| TextT -> "s"
-| TupT tys -> List.map type_to_id (List.map snd tys) |> String.concat "_"
-| IterT (t, _) -> type_to_id t
 
 let unified_prefix = "u"
 let _unified_idx = ref 0
 let init_unified_idx () = _unified_idx := 0
 let get_unified_idx () = let i = !_unified_idx in _unified_idx := (i+1); i
-let gen_new_unified ty = (type_to_id ty) ^ "_" ^ unified_prefix ^ (string_of_int (get_unified_idx())) $ no_region
+let gen_new_unified ty = (Al.Al_util.typ_to_var_name ty) ^ "_" ^ unified_prefix ^ (string_of_int (get_unified_idx())) $ no_region
 let is_unified_id id = String.split_on_char '_' id |> Util.Lib.List.last |> String.starts_with ~prefix:unified_prefix
 
 let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
@@ -184,8 +175,9 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
 and overlap_arg a1 a2 = if eq_arg a1 a2 then a1 else
   (match a1.it, a2.it with
     | ExpA e1, ExpA e2 -> ExpA (overlap e1 e2)
-    | TypA _, TypA _ -> a1.it
-    | DefA _, DefA _ -> a1.it
+    | TypA _, TypA _
+    | DefA _, DefA _
+    | GramA _, GramA _ -> a1.it
     | _, _ -> assert false
   ) $ a1.at
 
@@ -207,8 +199,8 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
     | VarE id, _
     | IterE ({ it = VarE id; _}, _) , _
       when is_unified_id id.it ->
-      [ IfPr (CmpE (EqOp, template, e) $$ no_region % (BoolT $ no_region)) $ no_region ],
-      [ ExpB (id, template.note, []) $ no_region ]
+      [ IfPr (CmpE (EqOp, template, e) $$ e.at % (BoolT $ e.at)) $ e.at ],
+      [ ExpB (id, template.note, []) $ e.at ]
     | UnE (_, e1), UnE (_, e2)
     | DotE (e1, _), DotE (e2, _)
     | LenE e1, LenE e2
@@ -241,8 +233,9 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
 
 and collect_unified_arg template a = if eq_arg template a then [], [] else match template.it, a.it with
   | ExpA template', ExpA e -> collect_unified template' e
-  | TypA _, TypA _ -> [], []
-  | DefA _, DefA _ -> [], []
+  | TypA _, TypA _
+  | DefA _, DefA _
+  | GramA _, GramA _ -> [], []
   | _ -> Util.Error.error a.at "prose transformation" "cannot unify the argument"
 
 and collect_unified_args as1 as2 =
@@ -253,32 +246,55 @@ let prioritize_else prems =
   let other, non_others = List.partition (fun p -> p.it = ElsePr) prems in
   other @ non_others
 
+
+(** 1. Validation rules **)
+
+let apply_template_to_rule template rule =
+  match rule.it with
+  | RuleD (id, binds, mixop, exp, prems) ->
+    let new_prems, _ = collect_unified template exp in
+    RuleD (id, binds, mixop, template, new_prems @ prems) $ rule.at
+
+let unify_rules rules =
+  init_unified_idx();
+  let concls = List.map (fun x -> let RuleD(_, _, _, e, _) = x.it in e) rules in
+  let hd = List.hd concls in
+  let tl = List.tl concls in
+  let template = List.fold_left overlap hd tl in
+  List.map (apply_template_to_rule template) rules
+
+
+(** 2. Reduction rules **)
 let apply_template_to_rgroup template (lhs, rhs, prems) =
   let new_prems, _ = collect_unified template lhs in
   (* TODO: Remove this depedency on animation. Perhaps this should be moved as a middle end before animation path *)
-  let animated_prems = Animate.animate_prems (Il.Free.free_exp template) (new_prems @ prems) in
-  template, rhs, prioritize_else animated_prems
+  let animated_prems = Animate.animate_prems (Il.Free.free_exp template) new_prems in
+  template, rhs, prioritize_else (animated_prems @ prems)
 
 let unify_lhs' rgroup =
   init_unified_idx();
-  let lhs_group = List.map (function (lhs, _, _) -> lhs) rgroup in
+  let fst = fun (x, _, _) -> x in
+  let lhs_group = List.map (fun r -> fst r.it) rgroup in
   let hd = List.hd lhs_group in
   let tl = List.tl lhs_group in
   let template = List.fold_left overlap hd tl in
-  List.map (apply_template_to_rgroup template) rgroup
+  List.map (Source.map (apply_template_to_rgroup template)) rgroup
 
-let unify_lhs (rname, rgroup) =
+let unify_lhs (rname, rel_id, rgroup) =
   let to_left_assoc (lhs, rhs, prems) = to_left_assoc_cat lhs, rhs, prems in
   let to_right_assoc (lhs, rhs, prems) = to_right_assoc_cat lhs, rhs, prems in
   (* typical f^-1 ∘ g ∘ f *)
-  rname, (rgroup |> List.map to_left_assoc |> unify_lhs' |> List.map to_right_assoc)
+  rname, rel_id, (rgroup |> List.map (Source.map to_left_assoc) |> unify_lhs' |> List.map (Source.map to_right_assoc))
+
+
+(** 3. Functions **)
 
 let apply_template_to_def template def =
   match def.it with
   | DefD (binds, lhs, rhs, prems) ->
     let new_prems, new_binds = collect_unified_args template lhs in
     let animated_prems = Animate.animate_prems Il.Free.(free_list free_arg template) new_prems in
-    DefD (binds @ new_binds, template, rhs, (animated_prems @ prems) |> prioritize_else) $ no_region
+    DefD (binds @ new_binds, template, rhs, (animated_prems @ prems) |> prioritize_else) $ def.at
 
 let unify_defs defs =
   init_unified_idx();

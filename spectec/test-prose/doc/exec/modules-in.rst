@@ -276,10 +276,6 @@ $${definition: with_local}
 
 .. _def-with_locals:
 
-$${definition-prose: with_locals}
-
-\
-
 $${definition: with_locals}
 
 .. _def-with_global:

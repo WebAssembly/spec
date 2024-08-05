@@ -19,7 +19,6 @@ type pass =
   | Unthe
   | Wild
   | Sideconditions
-  | Animate
 
 (* This list declares the intended order of passes.
 
@@ -28,7 +27,7 @@ passers (--all-passes, some targets), we do _not_ want to use the order of
 flags on the command line.
 *)
 let _skip_passes = [ Sub; Unthe ]  (* Not clear how to extend them to indexed types *)
-let all_passes = [ Totalize; Wild; Sideconditions; Animate ]
+let all_passes = [ Totalize; Wild; Sideconditions ]
 
 type file_kind =
   | Spec
@@ -54,6 +53,7 @@ let print_elab_il = ref false
 let print_final_il = ref false
 let print_all_il = ref false
 let print_al = ref false
+let print_al_o = ref ""
 let print_no_pos = ref false
 
 module PS = Set.Make(struct type t = pass let compare = compare; end)
@@ -73,7 +73,6 @@ let pass_flag = function
   | Unthe -> "the-elimination"
   | Wild -> "wildcards"
   | Sideconditions -> "sideconditions"
-  | Animate -> "animate"
 
 let pass_desc = function
   | Sub -> "Synthesize explicit subtype coercions"
@@ -81,7 +80,6 @@ let pass_desc = function
   | Unthe -> "Eliminate the ! operator in relations"
   | Wild -> "Eliminate wildcards and equivalent expressions"
   | Sideconditions -> "Infer side conditions"
-  | Animate -> "Animate equality conditions"
 
 let run_pass : pass -> Il.Ast.script -> Il.Ast.script = function
   | Sub -> Middlend.Sub.transform
@@ -89,7 +87,6 @@ let run_pass : pass -> Il.Ast.script -> Il.Ast.script = function
   | Unthe -> Middlend.Unthe.transform
   | Wild -> Middlend.Wild.transform
   | Sideconditions -> Middlend.Sideconditions.transform
-  | Animate -> Il2al.Animate.transform
 
 
 (* Argument parsing *)
@@ -143,6 +140,7 @@ let argspec = Arg.align
   "--print-final-il", Arg.Set print_final_il, " Print final IL";
   "--print-all-il", Arg.Set print_all_il, " Print IL after each step";
   "--print-al", Arg.Set print_al, " Print al";
+  "--print-al-o", Arg.Set_string print_al_o, " Print al with given name";
   "--print-no-pos", Arg.Set print_no_pos, " Suppress position info in output";
 ] @ List.map pass_argspec all_passes @ [
   "--all-passes", Arg.Unit (fun () -> List.iter enable_pass all_passes)," Run all passes";
@@ -175,7 +173,9 @@ let () =
 
     (match !target with
     | Prose | Splice _ | Interpreter _ ->
-      enable_pass Sideconditions; enable_pass Animate
+      enable_pass Sideconditions;
+    | _ when !print_al || !print_al_o <> "" ->
+      enable_pass Sideconditions;
     | _ -> ()
     );
 
@@ -198,16 +198,33 @@ let () =
     if !print_final_il && not !print_all_il then print_il il;
 
     let al =
-      if !target = Check || !target = Latex || not (PS.mem Animate !selected_passes)
-      then [] else (
+      if not (!print_al || !print_al_o <> "") && (!target = Check || !target = Latex) then []
+      else (
         log "Translating to AL...";
         (Il2al.Translate.translate il @ Il2al.Manual.manual_algos)
       )
     in
 
+    let match_algo_name algo_name al_elt =
+      algo_name = "" ||
+      (match al_elt.Util.Source.it with
+      | Al.Ast.RuleA (a, _, _, _) -> 
+        Al.Print.string_of_atom a = String.uppercase_ascii algo_name
+      | Al.Ast.FuncA (id , _, _) -> 
+        id = String.lowercase_ascii algo_name)
+    in
+
     if !print_al then
       Printf.printf "%s\n%!"
-        (List.map Al.Print.string_of_algorithm al |> String.concat "\n");
+        (List.map Al.Print.string_of_algorithm al |> String.concat "\n")
+    else if !print_al_o <> "" then
+      Printf.printf "%s\n%!"
+        (List.filter (match_algo_name !print_al_o) al |> List.map Al.Print.string_of_algorithm |> String.concat "\n");
+
+    (* WIP
+    log "AL Validation...";
+    Al.Valid.valid al;
+    *)
 
     (match !target with
     | Check -> ()
@@ -226,7 +243,7 @@ let () =
 
     | Prose ->
       log "Prose Generation...";
-      let prose = Backend_prose.Gen.gen_prose il al in
+      let prose = Backend_prose.Gen.gen_prose el il al in
       let oc =
         match !odsts with
         | [] -> stdout
@@ -256,7 +273,7 @@ let () =
           exit 2
       );
       log "Prose Generation...";
-      let prose = Backend_prose.Gen.gen_prose il al in
+      let prose = Backend_prose.Gen.gen_prose el il al in
       log "Splicing...";
       let config' =
         Backend_splice.Config.{config with latex = Backend_latex.Config.{config.latex with

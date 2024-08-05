@@ -9,6 +9,7 @@ val eq_typ : typ -> typ -> bool
 val eq_deftyp : deftyp -> deftyp -> bool
 val eq_exp : exp -> exp -> bool
 val eq_path : path -> path -> bool
+val eq_sym : sym -> sym -> bool
 val eq_prem : prem -> prem -> bool
 val eq_arg : arg -> arg -> bool
 

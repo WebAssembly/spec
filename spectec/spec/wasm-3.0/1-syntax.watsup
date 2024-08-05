@@ -364,18 +364,18 @@ syntax relop_(Inn) =
 syntax relop_(Fnn) =
   | EQ | NE | LT | GT | LE | GE
 
-syntax cvtop_(numtype_1, numtype_2) hint(show cvtop_((%,%)))
-syntax cvtop_(Inn_1, Inn_2) =
+syntax cvtop__(numtype_1, numtype_2)
+syntax cvtop__(Inn_1, Inn_2) =
   | EXTEND sx hint(show %0#_#%1)  -- if $sizenn1(Inn_1) < $sizenn2(Inn_2)
   | WRAP         -- if $sizenn1(Inn_1) > $sizenn2(Inn_2)
-syntax cvtop_(Inn_1, Fnn_2) =
+syntax cvtop__(Inn_1, Fnn_2) =
   | CONVERT sx hint(show %0#_#%1)
   | REINTERPRET  -- if $sizenn1(Inn_1) = $sizenn2(Fnn_2)
-syntax cvtop_(Fnn_1, Inn_2) =
+syntax cvtop__(Fnn_1, Inn_2) =
   | TRUNC sx hint(show %0#_#%1)
   | TRUNC_SAT sx hint(show %0#_#%1)
   | REINTERPRET  -- if $sizenn1(Fnn_1) = $sizenn2(Inn_2)
-syntax cvtop_(Fnn_1, Fnn_2) =
+syntax cvtop__(Fnn_1, Fnn_2) =
   | PROMOTE      -- if $sizenn1(Fnn_1) < $sizenn2(Fnn_2)
   | DEMOTE       -- if $sizenn1(Fnn_1) > $sizenn2(Fnn_2)
 
@@ -405,13 +405,13 @@ syntax vbinop_(shape) hint(macro "%" "V%")
 syntax vbinop_(Jnn X M) =
   | ADD
   | SUB
-  | ADD_SAT sx hint(show ADD_SAT#_#%)      -- if $lsizenn(Jnn) <= `16
-  | SUB_SAT sx hint(show SUB_SAT#_#%)      -- if $lsizenn(Jnn) <= `16
-  | MUL                                    -- if $lsizenn(Jnn) >= `16
-  | AVGR_U                                 -- if $lsizenn(Jnn) <= `16
-  | Q15MULR_SAT_S                          -- if $lsizenn(Jnn) = `16
-  | MIN sx hint(show MIN#_#%)              -- if $lsizenn(Jnn) <= `32
-  | MAX sx hint(show MAX#_#%)              -- if $lsizenn(Jnn) <= `32
+  | ADD_SAT sx hint(show ADD_SAT#_#%)        -- if $lsizenn(Jnn) <= `16
+  | SUB_SAT sx hint(show SUB_SAT#_#%)        -- if $lsizenn(Jnn) <= `16
+  | MUL                                      -- if $lsizenn(Jnn) >= `16
+  | AVGR U hint(show AVGR#_#%)               -- if $lsizenn(Jnn) <= `16
+  | Q15MULR_SAT S hint(show Q15MULR_SAT#_#%) -- if $lsizenn(Jnn) = `16
+  | MIN sx hint(show MIN#_#%)                -- if $lsizenn(Jnn) <= `32
+  | MAX sx hint(show MAX#_#%)                -- if $lsizenn(Jnn) <= `32
 syntax vbinop_(Fnn X M) = ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX
 
 syntax vtestop_(shape) hint(macro "%" "V%")
@@ -426,35 +426,42 @@ syntax vrelop_(Jnn X M) = EQ | NE
   | GE sx hint(show GE#_#%)  -- if $lsizenn(Jnn) =/= `64 \/ sx = S
 syntax vrelop_(Fnn X M) = EQ | NE | LT | GT | LE | GE
 
-syntax vcvtop_(shape_1, shape_2) hint(show vcvtop_((%,%))) hint(macro "%" "V%")
-syntax vcvtop_(Jnn_1 X M_1, Jnn_2 X M_2) =
-  | EXTEND    -- if $lsizenn2(Jnn_2) = $(2 * $lsizenn1(Jnn_1))
-syntax vcvtop_(Jnn_1 X M_1, Fnn_2 X M_2) =
-  | CONVERT   -- if $sizenn2(Fnn_2) >= $lsizenn1(Jnn_1) = `32
-syntax vcvtop_(Fnn_1 X M_1, Jnn_2 X M_2) =
-  | TRUNC_SAT -- if $sizenn1(Fnn_1) >= $lsizenn2(Jnn_2) = `32
-syntax vcvtop_(Fnn_1 X M_1, Fnn_2 X M_2) =
+;; TODO(2, rossberg): internalise half and zero
+syntax vcvtop__(shape_1, shape_2) hint(macro "%" "V%")
+syntax vcvtop__(Jnn_1 X M_1, Jnn_2 X M_2) =
+  | EXTEND sx hint(show EXTEND#_#%)
+    -- if $lsizenn2(Jnn_2) = $(2 * $lsizenn1(Jnn_1))
+syntax vcvtop__(Jnn_1 X M_1, Fnn_2 X M_2) =
+  | CONVERT sx hint(show CONVERT#_#%)
+    -- if $sizenn2(Fnn_2) >= $lsizenn1(Jnn_1) = `32
+syntax vcvtop__(Fnn_1 X M_1, Jnn_2 X M_2) =
+  | TRUNC_SAT sx hint(show TRUNC_SAT#_#%)
+    -- if $sizenn1(Fnn_1) >= $lsizenn2(Jnn_2) = `32
+syntax vcvtop__(Fnn_1 X M_1, Fnn_2 X M_2) =
   | DEMOTE    -- if $sizenn1(Fnn_1) > $sizenn2(Fnn_2)
   | PROMOTE   -- if $sizenn1(Fnn_1) < $sizenn2(Fnn_2)
 
-syntax half_(shape_1, shape_2) hint(show half_((%,%)))
-syntax half_(Jnn_1 X M_1, Jnn_2 X M_2) = LOW | HIGH  -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn1(Jnn_2)
-syntax half_(Lnn_1 X M_1, Fnn_2 X M_2) = LOW         -- if $(2 * $lsizenn1(Lnn_1)) = $sizenn1(Fnn_2) = `64
+syntax half__(shape_1, shape_2)
+syntax half__(Jnn_1 X M_1, Jnn_2 X M_2) = LOW | HIGH  -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn1(Jnn_2)
+syntax half__(Lnn_1 X M_1, Fnn_2 X M_2) = LOW         -- if $(2 * $lsizenn1(Lnn_1)) = $sizenn1(Fnn_2) = `64
 
-syntax zero_(shape_1, shape_2) hint(show zero_((%,%)))
-syntax zero_(Fnn_1 X M_1, Lnn_2 X M_2) = ZERO -- if $(2 * $lsizenn2(Lnn_2)) = $sizenn1(Fnn_1) = `64
+syntax zero__(shape_1, shape_2)
+syntax zero__(Fnn_1 X M_1, Lnn_2 X M_2) = ZERO -- if $(2 * $lsizenn2(Lnn_2)) = $sizenn1(Fnn_1) = `64
 
 syntax vshiftop_(ishape) hint(macro "%" "V%")
 syntax vshiftop_(Jnn X M) = SHL | SHR sx hint(show SHR#_#%)
 
-syntax vextunop_(ishape_1, ishape_2) hint(show vextunop_((%,%))) hint(macro "%" "V%")
-syntax vextunop_(Jnn_1 X M_1, Jnn_2 X M_2) =
-  | EXTADD_PAIRWISE  -- if 16 <= $(2 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2) <= `32
+syntax vextunop__(ishape_1, ishape_2) hint(macro "%" "V%")
+syntax vextunop__(Jnn_1 X M_1, Jnn_2 X M_2) =
+  | EXTADD_PAIRWISE sx hint(show EXTADD_PAIRWISE#_#%)
+    -- if 16 <= $(2 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2) <= `32
 
-syntax vextbinop_(ishape_1, ishape_2) hint(show vextbinop_((%,%))) hint(macro "%" "V%")
-syntax vextbinop_(Jnn_1 X M_1, Jnn_2 X M_2) =
-  | EXTMUL half_(Jnn_1 X M_1, Jnn_2 X M_2) hint(show EXTMUL#_#%) -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2) >= `16
-  | DOT                                                          -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2) = `32
+syntax vextbinop__(ishape_1, ishape_2) hint(macro "%" "V%")
+syntax vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2) =
+  | EXTMUL sx half__(Jnn_1 X M_1, Jnn_2 X M_2) hint(show EXTMUL#_#%#_#%)
+    -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2) >= `16
+  | DOT S hint(show DOT#_#%)
+    -- if $(2 * $lsizenn1(Jnn_1)) = $lsizenn2(Jnn_2) = `32
 
 
 ;; Memory operators
@@ -523,7 +530,7 @@ syntax instr/num hint(desc "numeric instruction") = ...
   | BINOP numtype binop_(numtype)    hint(show %.##%)
   | TESTOP numtype testop_(numtype)  hint(show %.##%)
   | RELOP numtype relop_(numtype)    hint(show %.##%)
-  | CVTOP numtype_1 numtype_2 cvtop_(numtype_2, numtype_1)  hint(show %1.##%3#_#%2)
+  | CVTOP numtype_1 numtype_2 cvtop__(numtype_2, numtype_1)  hint(show %1.##%3#_#%2)
   | ...
 
 syntax instr/vec hint(desc "vector instruction") = ...
@@ -543,24 +550,20 @@ syntax instr/vec hint(desc "vector instruction") = ...
   | VSHUFFLE ishape laneidx*            hint(show ##%.SHUFFLE %) hint(macro "VSHUFFLE")
     -- if ishape = I8 X `16 /\ |laneidx*| = `16
     ;; TODO(3, rossberg): enable ^16 in type
-  | VEXTUNOP ishape_1 ishape_2 vextunop_(ishape_2, ishape_1) sx
-    hint(show ##%1.##%3#_# ##%2#_#%4)
-    -- if $($lsize($lanetype(ishape_1)) = 2*$lsize($lanetype(ishape_2)))
-  | VEXTBINOP ishape_1 ishape_2 vextbinop_(ishape_2, ishape_1) sx
-    hint(show ##%1.##%3#_# ##%2#_#%4)
-    -- if $($lsize($lanetype(ishape_1)) = 2*$lsize($lanetype(ishape_2)))
-    ;; TODO(1, rossberg): /\ (vextbinop =/= DOT \/ sx = S)
+  | VEXTUNOP ishape_1 ishape_2 vextunop__(ishape_2, ishape_1)
+    hint(show ##%1.##%3#_# ##%2)
+  | VEXTBINOP ishape_1 ishape_2 vextbinop__(ishape_2, ishape_1)
+    hint(show ##%1.##%3#_# ##%2)
   | VNARROW ishape_1 ishape_2 sx        hint(show ##%.NARROW#_# ##%#_#%) hint(macro "VNARROW")
     -- if $($lsize($lanetype(ishape_2)) = 2*$lsize($lanetype(ishape_1)) <= `32)
-  | VCVTOP shape_1 shape_2 vcvtop_(shape_2, shape_1) half_(shape_2, shape_1)? sx? zero_(shape_2, shape_1)?
+  | VCVTOP shape_1 shape_2 vcvtop__(shape_2, shape_1) half__(shape_2, shape_1)? zero__(shape_2, shape_1)?
     hint(show ##%1.%3#_# ##%2)
     hint(show ##%1.%3#_# ##%2#_#%4)        ;; TODO(2, rossberg): this is wrong when half is absent
     hint(show ##%1.%3#_#%5#_# ##%2#_#%4)   ;; TODO(2, rossberg): this is wrong when half is present
     -- if $lanetype(shape_1) =/= $lanetype(shape_2)
-    -- if sx? =/= eps <=> $lanetype(shape_1) = Jnn_1 /\ $lanetype(shape_2) = Jnn_2 /\ $lsizenn1(Jnn_1) > $lsizenn2(Jnn_2)
   | VSPLAT shape                        hint(show ##%.SPLAT) hint(macro "VSPLAT")
   | VEXTRACT_LANE shape sx? laneidx     hint(show ##%.EXTRACT_LANE %) hint(show ##%.EXTRACT_LANE#_#% %) hint(macro "VEXTRACT_LANE")
-    -- if $lanetype(shape) = numtype <=> sx? = eps
+    -- if sx? = eps <=> $lanetype(shape) = numtype
   | VREPLACE_LANE shape laneidx         hint(show ##%.REPLACE_LANE %) hint(macro "VREPLACE_LANE")
   | ...
 
@@ -696,7 +699,7 @@ syntax import hint(desc "import") =
   IMPORT name name externtype
 
 syntax module hint(desc "module") =
-  MODULE type* import* func* global* table* mem* elem* data* start* export*
+  MODULE type* import* func* global* table* mem* elem* data* start? export*
 
 
 var ty : type

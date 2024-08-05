@@ -702,7 +702,7 @@ Numeric Instructions
 Vector Instructions
 ~~~~~~~~~~~~~~~~~~~
 
-Vector constant instructions have a mandatory :ref:`shape <syntax-vec-shape>` descriptor, which determines how the following values are parsed.
+Vector constant instructions have a mandatory :ref:`shape <syntax-shape>` descriptor, which determines how the following values are parsed.
 
 .. math::
    \begin{array}{llclll}
@@ -879,7 +879,7 @@ Vector constant instructions have a mandatory :ref:`shape <syntax-vec-shape>` de
      \text{i8x16.min\_u} &\Rightarrow& \I8X16.\VMIN\K{\_u}\\ &&|&
      \text{i8x16.max\_s} &\Rightarrow& \I8X16.\VMAX\K{\_s}\\ &&|&
      \text{i8x16.max\_u} &\Rightarrow& \I8X16.\VMAX\K{\_u}\\ &&|&
-     \text{i8x16.avgr\_u} &\Rightarrow& \I8X16.\VAVGRU\\ &&|&
+     \text{i8x16.avgr\_u} &\Rightarrow& \I8X16.\VAVGR\K{\_u}\\ &&|&
      \text{i8x16.popcnt} &\Rightarrow& \I8X16.\VPOPCNT\\
    \end{array}
 
@@ -910,8 +910,8 @@ Vector constant instructions have a mandatory :ref:`shape <syntax-vec-shape>` de
      \text{i16x8.min\_u} &\Rightarrow& \I16X8.\VMIN\K{\_u}\\ &&|&
      \text{i16x8.max\_s} &\Rightarrow& \I16X8.\VMAX\K{\_s}\\ &&|&
      \text{i16x8.max\_u} &\Rightarrow& \I16X8.\VMAX\K{\_u}\\ &&|&
-     \text{i16x8.avgr\_u} &\Rightarrow& \I16X8.\VAVGRU\\ &&|&
-     \text{i16x8.q15mulr\_sat\_s} &\Rightarrow& \I16X8.\VQ15MULRSATS\\ &&|&
+     \text{i16x8.avgr\_u} &\Rightarrow& \I16X8.\VAVGR\K{\_u}\\ &&|&
+     \text{i16x8.q15mulr\_sat\_s} &\Rightarrow& \I16X8.\VQ15MULRSAT\K{\_s}\\ &&|&
      \text{i16x8.extmul\_low\_i8x16\_s} &\Rightarrow& \I16X8.\VEXTMUL\K{\_low\_i8x16\_s}\\ &&|&
      \text{i16x8.extmul\_high\_i8x16\_s} &\Rightarrow& \I16X8.\VEXTMUL\K{\_high\_i8x16\_s}\\ &&|&
      \text{i16x8.extmul\_low\_i8x16\_u} &\Rightarrow& \I16X8.\VEXTMUL\K{\_low\_i8x16\_u}\\ &&|&

@@ -8,5 +8,6 @@
     translate
     transpile
     free
+    preprocess
   )
 )

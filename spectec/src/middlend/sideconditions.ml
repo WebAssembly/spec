@@ -13,6 +13,7 @@ variable x and require e=?x. Maybe later.)
 open Util
 open Source
 open Il.Ast
+open Il.Free
 
 (* Errors *)
 
@@ -24,6 +25,14 @@ module Env = Map.Make(String)
 let lenE e = match e.it with
 | IterE (_, (ListN (ne, _), _)) -> ne
 | _ -> LenE e $$ e.at % (NumT NatT $ e.at)
+
+(* Smart constructor for IterPr that removes dead iter-variables *)
+let iterPr (pr, (iter, vars)) =
+  let frees = free_prem pr in
+  let vars' = List.filter (fun (id, _) ->
+    Set.mem id.it frees.varid
+  ) vars in
+  IterPr (pr, (iter, vars'))
 
 let is_null e = CmpE (EqOp, e, OptE None $$ e.at % e.note) $$ e.at % (BoolT $ e.at)
 let iffE e1 e2 = IfPr (BinE (EquivOp, e1, e2) $$ e1.at % (BoolT $ e1.at)) $ e1.at
@@ -68,6 +77,8 @@ let rec t_exp env e : prem list =
   | TheE exp ->
     [IfPr (CmpE (NeOp, exp, OptE None $$ e.at % exp.note) $$ e.at % (BoolT $ e.at)) $ e.at]
   | IterE (_exp, iterexp) -> iter_side_conditions env iterexp
+  | MemE (_exp, exp) ->
+    [IfPr (CmpE (GtOp NatT, LenE exp $$ exp.at % (NumT NatT $ exp.at), NatE Z.zero $$ no_region % (NumT NatT $ no_region)) $$ e.at % (BoolT $ e.at)) $ e.at]
   | _ -> []
   end @
   (* And now descend *)
@@ -106,7 +117,7 @@ let rec t_exp env e : prem list =
   ->
     t_iterexp env iterexp @
     let env' = env_under_iter env iterexp in
-    List.map (fun pr -> IterPr (pr, iterexp) $ e.at) (t_exp env' e1)
+    List.map (fun pr -> iterPr (pr, iterexp) $ e.at) (t_exp env' e1)
 
 and t_iterexp env (iter, _) = t_iter env iter
 
@@ -124,6 +135,7 @@ and t_arg env arg = match arg.it with
   | ExpA exp -> t_exp env exp
   | TypA _ -> []
   | DefA _ -> []
+  | GramA _ -> []
 
 
 let rec t_prem env prem = match prem.it with
@@ -135,7 +147,7 @@ let rec t_prem env prem = match prem.it with
   -> iter_side_conditions env iterexp @
      t_iterexp env iterexp @
      let env' = env_under_iter env iterexp in
-     List.map (fun pr -> IterPr (pr, iterexp) $ prem.at) (t_prem env' prem)
+     List.map (fun pr -> iterPr (pr, iterexp) $ prem.at) (t_prem env' prem)
 
 let t_prems env = List.concat_map (t_prem env)
 
@@ -163,7 +175,7 @@ let t_rule' = function
     let env = List.fold_left (fun env bind ->
       match bind.it with
       | ExpB (v, t, i) -> Env.add v.it (t, i) env
-      | TypB _ | DefB _ -> error bind.at "unexpected type argument in rule") Env.empty binds
+      | TypB _ | DefB _ | GramB _ -> error bind.at "unexpected type argument in rule") Env.empty binds
     in
     let extra_prems = t_prems env prems @ t_exp env exp in
     let prems' = reduce_prems (extra_prems @ prems) in

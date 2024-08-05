@@ -98,21 +98,21 @@ $${definition: memsxt}
 Packed Fields
 ~~~~~~~~~~~~~
 
-.. _def-packfield:
+.. _def-packfield_:
 
-$${definition-prose: packfield}
-
-\
-
-$${definition: packfield}
-
-.. _def-unpackfield:
-
-$${definition-prose: unpackfield}
+$${definition-prose: packfield_}
 
 \
 
-$${definition: unpackfield}
+$${definition: packfield_}
+
+.. _def-unpackfield_:
+
+$${definition-prose: unpackfield_}
+
+\
+
+$${definition: unpackfield_}
 
 .. _def-sx:
 

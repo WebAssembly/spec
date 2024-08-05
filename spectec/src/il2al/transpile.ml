@@ -192,7 +192,7 @@ let rec infer_else instrs =
 let if_not_defined cond =
   let at = cond.at in
   match cond.it with
-  | BinE (EqOp, e, { it = OptE None; _ }) -> unE (NotOp, isDefinedE e ~at:e.at) ~at:at
+  | BinE (EqOp, e, { it = OptE None; _ }) -> unE (NotOp, isDefinedE e ~at:e.at ~note:boolT) ~at:at ~note:boolT
   | _ -> cond
 
 let swap_if instr =
@@ -261,7 +261,7 @@ let merge_three_branches i =
   match i.it with
   | IfI (e1, il1, [ { it = IfI (e2, il2, il3); at = at2; _ } ]) when Eq.eq_instrs il1 il3 ->
     let at = over_region [ at1; at2 ] in
-    ifI (binE (AndOp, neg e1, e2), il2, il1) ~at:at
+    ifI (binE (AndOp, neg e1, e2) ~note:boolT, il2, il1) ~at:at
   | _ -> i
 
 let remove_dead_assignment il =
@@ -288,7 +288,7 @@ let remove_dead_assignment il =
           let bindings = free_expr e11 @ free_expr e12 in
           let get_bounds_iters e =
             match e.it with
-            | IterE (_, _, ListN (e_iter, _)) -> free_expr e_iter 
+            | IterE (_, _, ListN (e_iter, _)) -> free_expr e_iter
             | _ -> IdSet.empty
           in
           let bounds_iters = (get_bounds_iters e11) @ (get_bounds_iters e12) in
@@ -407,7 +407,7 @@ let rec enhance_readability instrs =
   let walk_config =
     {
       Walk.default_config with
-      pre_expr = composite remove_sub simplify_record_concat |> composite if_not_defined;
+      pre_expr = simplify_record_concat |> composite if_not_defined;
       post_instr =
         unify_if_tail @@ (lift swap_if) @@ early_return @@ (lift merge_three_branches);
     } in
@@ -431,7 +431,7 @@ let flatten_if instrs =
     match instr.it with
     | IfI (e1, [ { it = IfI (e2, il1, il2); at = at2; _ }], []) ->
       let at = over_region [ at1; at2 ] in
-      ifI (binE (AndOp, e1, e2) ~at:at, il1, il2) ~at:at1
+      ifI (binE (AndOp, e1, e2) ~at:at ~note:boolT, il1, il2) ~at:at1
     | _ -> instr
   in
   let walk_config =
@@ -439,37 +439,50 @@ let flatten_if instrs =
       Walk.default_config with
       post_instr = lift flatten_if';
     } in
-  
+
   Walk.walk_instrs walk_config instrs
 
 let rec mk_access ps base =
   match ps with
-  | h :: t -> accE (base, h) |> mk_access t
+  (* TODO: type *)
+  | h :: t -> accE (base, h) ~note:Al.Al_util.no_note |> mk_access t
   | [] -> base
 
 let is_store expr = match expr.it with
   | VarE s ->
     s = "s" || String.starts_with ~prefix:"s'" s || String.starts_with ~prefix:"s_" s
   | _ -> false
-
 let is_frame expr = match expr.it with
   | VarE f ->
     f = "f" || String.starts_with ~prefix:"f'" f || String.starts_with ~prefix:"f_" f
   | _ -> false
-
 let is_state expr = match expr.it with
   | TupE [ s; f ] -> is_store s && is_frame f
   | VarE z ->
     z = "z" || String.starts_with ~prefix:"z'" z || String.starts_with ~prefix:"z_" z
   | _ -> false
 
-let hide_state_args = Lib.List.filter_not (fun arg -> is_state arg || is_store arg)
+let is_store_arg arg = match arg.it with
+  | ExpA e -> is_store e
+  | TypA _ -> false
+let is_frame_arg arg = match arg.it with
+  | ExpA e -> is_frame e
+  | TypA _ -> false
+let is_state_arg arg = match arg.it with
+  | ExpA e -> is_state e
+  | TypA _ -> false
+
+let hide_state_args args =
+  args
+  |> Lib.List.filter_not is_state_arg
+  |> Lib.List.filter_not is_store_arg
 
 let hide_state_expr expr =
   let expr' =
     match expr.it with
     | CallE (f, args) -> CallE (f, hide_state_args args)
     | TupE [ s; e ] when is_store s -> e.it
+    | TupE [ z; e ] when is_state z -> e.it
     | e -> e
   in
   { expr with it = expr' }
@@ -483,24 +496,28 @@ let hide_state instr =
   | LetI (e, { it = CallE (fname, args); _ }) when is_state e || is_store e -> [ performI (fname, hide_state_args args) ~at:at ]
   | PerformI (f, args) -> [ performI (f, hide_state_args args) ~at:at ]
   (* Append *)
-  | LetI (_, { it = ExtE (s, ps, { it = ListE [ e ]; _ }, Back); _ } ) when is_store s ->
-    [ appendI (mk_access ps s, e) ~at:at ]
+  | LetI (_, { it = ExtE (s, ps, { it = ListE [ e ]; _ }, Back); note; _ } ) when is_store s ->
+    let access = { (mk_access ps s) with note } in
+    [ appendI (access , e) ~at:at ]
   (* Append & Return *)
-  | ReturnI (Some ({ it = TupE [ { it = ExtE (s, ps, { it = ListE [ e1 ]; _ }, Back); _ }; e2 ]; _  })) when is_store s ->
-    let addr = varE "a" in
+  | ReturnI (Some ({ it = TupE [ { it = ExtE (s, ps, { it = ListE [ e1 ]; _ }, Back); note; _ }; e2 ]; _  })) when is_store s ->
+    let addr = varE "a" ~note:e2.note in
+    let access = {(mk_access ps s) with note } in
     [ letI (addr, e2) ~at:at;
-      appendI (mk_access ps s, e1) ~at:at;
+      appendI (access, e1) ~at:at;
       returnI (Some addr) ~at:at ]
   (* Replace store *)
-  | LetI (_, { it = UpdE (s, ps, e); _ })
-  | ReturnI (Some ({ it = TupE [ { it = UpdE (s, ps, e); _ }; { it = VarE "f"; _ } ]; _ }))
-  | ReturnI (Some ({ it = UpdE (s, ps, e); _ })) when is_store s ->
+  | LetI (_, { it = UpdE (s, ps, e); note; _ })
+  | ReturnI (Some ({ it = TupE [ { it = UpdE (s, ps, e); note; _ }; { it = VarE "f"; _ } ]; _ }))
+  | ReturnI (Some ({ it = UpdE (s, ps, e); note; _ })) when is_store s ->
     let hs, t = Lib.List.split_last ps in
-    [ replaceI (mk_access hs s, t, e) ~at:at ]
+    let access = { (mk_access hs s) with note } in
+    [ replaceI (access, t, e) ~at:at ]
   (* Replace frame *)
-  | ReturnI (Some ({ it = TupE [ { it = VarE "s"; _ }; { it = UpdE (f, ps, e); _ } ]; _ })) when is_frame f ->
+  | ReturnI (Some ({ it = TupE [ { it = VarE "s"; _ }; { it = UpdE (f, ps, e); note; _ } ]; _ })) when is_frame f ->
     let hs, t = Lib.List.split_last ps in
-    [ replaceI (mk_access hs f, t, e) ~at:at ]
+    let access = { (mk_access hs f) with note } in
+    [ replaceI (access, t, e) ~at:at ]
   | _ -> [ instr ]
 
 let remove_state algo =
@@ -512,14 +529,22 @@ let remove_state algo =
       }
   in
 
-  match Walk.walk walk_config algo with
-  | FuncA (name, params, body) -> (match params with
-    | { it = TupE [ _; { it = VarE "f"; _ } ]; _ } :: tail ->
-        FuncA (name, tail, letI (varE "f", getCurFrameE ()) :: body |> remove_dead_assignment)
-    | { it = VarE ("s" | "z"); _ } :: tail ->
-        FuncA (name, tail, body)
-    | _ -> FuncA(name, params, body))
-  | RuleA _ as a -> a
+  let algo' = Walk.walk walk_config algo in
+  { algo' with it =
+    match algo'.it with
+    | FuncA (name, args, body) ->
+      let args' =
+        args
+        |> Lib.List.filter_not is_state_arg
+        |> Lib.List.filter_not is_store_arg
+        |> Lib.List.filter_not is_frame_arg
+      in
+      let body' = body
+        |> remove_dead_assignment
+      in
+      FuncA (name, args', body')
+    | rule -> rule
+  }
 
 let insert_state_binding algo =
   let state_count = ref 0 in
@@ -538,15 +563,179 @@ let insert_state_binding algo =
     }
   in
 
-  match Walk.walk walk_config algo with
-  | FuncA (name, params, body) when !state_count > 0 ->
-    let body = (letI (varE "z", getCurStateE ())) :: body in
-    FuncA (name, params, body)
-  | RuleA (name, params, body) when !state_count > 0 ->
-    let body = (letI (varE "z", getCurStateE ())) :: body in
-    RuleA (name, params, body)
-  | _ -> algo
+  let algo' = Walk.walk walk_config algo in
+  { algo' with it =
+    match algo'.it with
+    | FuncA (name, params, body) when !state_count > 0 ->
+      let body = (letI (varE "z" ~note:stateT, getCurStateE () ~note:stateT)) :: body in
+      FuncA (name, params, body)
+    | RuleA (name, anchor, params, body) when !state_count > 0 ->
+      let body = (letI (varE "z" ~note:stateT, getCurStateE () ~note:stateT)) :: body in
+      RuleA (name, anchor, params, body)
+    | a -> a
+  }
 
+(* Insert "Let f be the current frame" if necessary. *)
+let insert_frame_binding instrs =
+  let open Free in
+  let (@) = IdSet.union in
+  let frame_count = ref 0 in
+  let bindings = ref IdSet.empty in
+  let found = ref false in
+
+  let count_frame e =
+    (match e.it with
+    | VarE "f" -> frame_count := !frame_count + 1
+    | _ -> ());
+    e
+  in
+
+  let update_bindings i =
+    frame_count := 0;
+    match i.it with
+    | LetI ({ it = CatE (e11, e12) ; _ }, _) ->
+      let bindings' = free_expr e11 @ free_expr e12 in
+      let get_bounds_iters e =
+        match e.it with
+        | IterE (_, _, ListN (e_iter, _)) -> free_expr e_iter
+        | _ -> IdSet.empty
+      in
+      let bounds_iters = (get_bounds_iters e11) @ (get_bounds_iters e12) in
+      bindings := IdSet.diff bindings' bounds_iters |> IdSet.union !bindings;
+      [ i ]
+    | LetI (e1, _) ->
+      bindings := IdSet.union !bindings (free_expr e1);
+      found := (not (IdSet.mem "f" !bindings)) && !frame_count > 0;
+      [ i ]
+    | _ -> [ i ]
+  in
+
+  let found_frame _ = !found in
+  let check_free_frame i =
+    found := (not (IdSet.mem "f" !bindings)) && !frame_count > 0;
+    [ i ]
+  in
+
+  let walk_config =
+    {
+      Walk.default_config with
+      pre_expr = count_frame;
+      pre_instr = update_bindings;
+      stop_cond_instr = found_frame;
+      post_instr = check_free_frame;
+    }
+  in
+
+  match Walk.walk_instrs walk_config instrs with
+  | il when !found -> (letI (varE "f" ~note:frameT, getCurFrameE () ~note:frameT)) :: il
+  | _ -> instrs
+
+
+(* This function infers whether the frame should be
+   considered global or not within this given AL function.
+
+There are two kinds of auxilirary functions:
+  1) Global: Parameters contain a frame.
+  2) Not global: Parameters do not contain a frame.
+
+(1) These kinds of functions assumes that the activation of frame is already pushed,
+    which can be accessed by "the current frame."
+    If this function calls another function with a frame argument,
+    it does not need to push the frame to the stack again.
+(2) These kinds of functions assumes that the activation of frame is not pushed,
+    and if this function calls another function with an frame argument,
+    it has to push the frame to the stack before the function call,
+    and pop the frame after the function call.
+*)
+
+(* Case 1 *)
+let handle_framed_algo a instrs =
+  let e_zf = match a.it with | ExpA e -> e | TypA _ -> assert false in
+  let e_f = match e_zf.it with | TupE [_s; f] -> f | _ -> e_zf in
+
+  (* Helpers *)
+  let frame_appeared = ref false in
+  let frame_finder expr = if Eq.eq_expr expr e_f || Eq.eq_expr expr e_zf then frame_appeared:= true; expr in
+
+  let mut_instrs = ref [] in
+  let push_mutI i = (mut_instrs := i :: !mut_instrs) in
+  let pop_mutI () = let ret = !mut_instrs in mut_instrs := []; ret in
+  let expr_to_mutI expr =
+    match expr.it with
+    | ExtE (eb, ps, { it = ListE [ ev ]; _ }, Back) when is_frame eb ->
+      push_mutI (appendI (mk_access ps eb, ev) ~at:expr.at);
+      eb
+    | UpdE (eb, _ps, _ev) when is_frame eb ->
+      (* push_mutI (yetI "TODO: generate instruction for inplace-mutating of frame"); *)
+      expr
+    | _ ->
+      expr
+  in
+
+  let post_instr instr =
+    pop_mutI () @ [instr]
+  in
+  (* End of helpers *)
+
+  let instr_hd = letI (e_zf, { e_zf with it = GetCurFrameE }) ~at:e_zf.at in
+  let instr_tl = walk_instrs { default_config with
+    post_instr;
+    pre_expr = frame_finder;
+    post_expr = expr_to_mutI
+  } instrs in
+
+  if !frame_appeared then instr_hd :: instr_tl else instr_tl
+
+(* Case 2 *)
+let handle_unframed_algo instrs =
+  (* Helpers *)
+  let frame_arg = ref None in
+  let extract_frame_arg expr =
+    match expr.it with
+    | CallE (_, args) ->
+      List.iter (fun a ->
+        if (is_frame_arg a || is_state_arg a) then frame_arg := Some a
+      ) args;
+      expr
+    | _ ->
+      expr
+  in
+
+  let post_instr instr =
+    let ret =
+      match !frame_arg with
+      | Some { it = ExpA f; _ } ->
+        let callframeT = Il.Ast.VarT ("callframe" $ no_region, []) $ no_region in
+        let frame = frameE (None, f) ~at:f.at ~note:callframeT in
+        let frame' =
+          match instr.it with
+          (* HARDCODE: the frame-passing-style *)
+          | LetI ( { it = TupE [f'; _]; _ }, _) ->
+            frameE (None, f') ~at:f'.at ~note:callframeT
+          | _ ->
+            frameE (None, varE "_f" ~note:f.note) ~note:callframeT
+        in
+        [
+          pushI frame ~at:frame.at;
+          instr;
+          popI frame' ~at:frame'.at;
+        ]
+      | _ -> [ instr ]
+    in
+    frame_arg := None;
+    ret
+  in
+  (* End of helpers *)
+
+  walk_instrs { default_config with
+    post_instr;
+    pre_expr = extract_frame_arg;
+  } instrs
+
+let handle_frame params instrs =
+  match List.find_opt (fun a -> is_frame_arg a || is_state_arg a) params with
+  | Some a -> handle_framed_algo a instrs
+  | None   -> handle_unframed_algo instrs
 
 (* Applied for reduction rules: infer assert from if *)
 let count_if instrs =
@@ -605,10 +794,10 @@ let ensure_return il =
 let remove_exit algo =
   let exit_to_pop instr =
     match instr.it with
-    | ExitI (Atom.Atom "FRAME_", _) ->
-        popI (getCurFrameE ()) ~at:instr.at
-    | ExitI (Atom.Atom "LABEL_", _) ->
-        popI (getCurLabelE ()) ~at:instr.at
+    | ExitI ({ it = Atom.Atom "FRAME_"; _ }) ->
+      popI (getCurFrameE () ~note:frameT) ~at:instr.at
+    | ExitI ({ it = Atom.Atom "LABEL_"; _ }) ->
+      popI (getCurLabelE () ~note:labelT) ~at:instr.at
     | _ -> instr
   in
 
@@ -627,29 +816,31 @@ let remove_enter algo =
     match instr.it with
     | EnterI (
       ({ it = FrameE (Some e_arity, _); _ } as e_frame),
-      { it = ListE ([ { it = CaseE ((Atom.Atom "FRAME_", _), []); _ } ]); _ },
+      { it = ListE ([ { it = CaseE ({ it = Atom.Atom "FRAME_"; _ }, []); _ } ]); _ },
       il) ->
         begin match e_arity.it with
         | NumE z when Z.to_int z = 0 ->
-            pushI e_frame ~at:instr.at :: il @ [ popI e_frame ~at:instr.at ]
-        | _ -> 
-            let e_tmp = iterE (varE ("val"), [ "val" ], List) in
-            pushI e_frame ~at:instr.at :: il @ [
-              popallI e_tmp ~at:instr.at;
-              popI e_frame ~at:instr.at;
-              pushI e_tmp ~at:instr.at; ]
+          pushI e_frame ~at:instr.at :: il @ [ popI e_frame ~at:instr.at ]
+        | _ ->
+          let ty_vals = listT valT in
+          let e_tmp = iterE (varE ("val") ~note:valT, [ "val" ], List) ~note:ty_vals in
+          pushI e_frame ~at:instr.at :: il @ [
+            popallI e_tmp ~at:instr.at;
+            popI e_frame ~at:instr.at;
+            pushI e_tmp ~at:instr.at;
+          ]
         end
     | EnterI (
       ({ it = FrameE (None, _); _ } as e_frame),
-      { it = ListE ([ { it = CaseE ((Atom.Atom "FRAME_", _), []); _ } ]); _ },
+      { it = ListE ([ { it = CaseE ({ it = Atom.Atom "FRAME_"; _ }, []); _ } ]); _ },
       il) ->
         pushI e_frame ~at:instr.at :: il @ [ popI e_frame ~at:instr.at ]
     | _ -> [ instr ]
   in
-  
+
   let enter_frame_to_push instr =
     match instr.it with
-    | EnterI (e_frame, { it = ListE ([ { it = CaseE ((Atom.Atom "FRAME_", _), []); _ } ]); _ }, il) ->
+    | EnterI (e_frame, { it = ListE ([ { it = CaseE ({ it = Atom.Atom "FRAME_"; _ }, []); _ } ]); _ }, il) ->
         pushI e_frame ~at:instr.at :: il
     | _ -> [ instr ]
   in
@@ -658,19 +849,18 @@ let remove_enter algo =
     match instr.it with
     | EnterI (
       e_label,
-      { it = CatE (e_instrs, { it = ListE ([ { it = CaseE ((Atom.Atom "LABEL_", _), []); _ } ]); _ }); _ },
+      { it = CatE (e_instrs, { it = ListE ([ { it = CaseE ({ it = Atom.Atom "LABEL_"; _ }, []); _ } ]); _ }); note; _ },
       [ { it = PushI e_vals; _ } ]) ->
-        enterI (catE (e_vals, e_instrs), e_label, []) ~at:instr.at
+        enterI (e_label, catE (e_vals, e_instrs) ~note:note, []) ~at:instr.at
     | EnterI (
       e_label,
-      { it = CatE (e_instrs, { it = ListE ([ { it = CaseE ((Atom.Atom "LABEL_", _), []); _ } ]); _ }); _ },
+      { it = CatE (e_instrs, { it = ListE ([ { it = CaseE ({ it = Atom.Atom "LABEL_"; _ }, []); _ } ]); _ }); _ },
       []) ->
-        enterI (e_instrs, e_label, []) ~at:instr.at
+        enterI (e_label, e_instrs, []) ~at:instr.at
     | _ -> instr
   in
 
-  let remove_enter' algo =
-    match algo with
+  let remove_enter' = Source.map (function
     | FuncA (name, params, body) ->
         let walk_config =
           {
@@ -680,7 +870,7 @@ let remove_enter algo =
         in
         let body = Walk.walk_instrs walk_config body in
         FuncA (name, params, body)
-    | RuleA (name, params, body) ->
+    | RuleA (name, anchor, params, body) ->
         let walk_config =
           {
             Walk.default_config with
@@ -688,8 +878,8 @@ let remove_enter algo =
           }
         in
         let body = Walk.walk_instrs walk_config body in
-        RuleA (name, params, body)
-  in
+        RuleA (name, anchor, params, body)
+  ) in
 
   let algo' = remove_enter' algo in
   if Eq.eq_algos algo algo' then algo else remove_enter' algo'

@@ -193,20 +193,6 @@ and string_of_path p =
   | DotP (p1, atom) -> string_of_path p1 ^ "." ^ string_of_atom atom
 
 
-(* Premises *)
-
-and string_of_prem prem =
-  match prem.it with
-  | VarPr (id, t) -> "var " ^ string_of_varid id ^ ": " ^ string_of_typ t
-  | RulePr (id, e) -> string_of_relid id ^ ": " ^ string_of_exp e
-  | IfPr e -> "if " ^ string_of_exp e
-  | ElsePr -> "otherwise"
-  | IterPr ({it = IterPr _; _} as prem', iter) ->
-    string_of_prem prem' ^ string_of_iter iter
-  | IterPr (prem', iter) ->
-    "(" ^ string_of_prem prem' ^ ")" ^ string_of_iter iter
-
-
 (* Grammars *)
 
 and string_of_sym g =
@@ -239,6 +225,20 @@ and string_of_gram gram =
   "\n  | " ^ concat "\n  | "
     (strings_of_dots dots1 @ map_filter_nl_list string_of_prod prods @
       strings_of_dots dots2)
+
+
+(* Premises *)
+
+and string_of_prem prem =
+  match prem.it with
+  | VarPr (id, t) -> "var " ^ string_of_varid id ^ ": " ^ string_of_typ t
+  | RulePr (id, e) -> string_of_relid id ^ ": " ^ string_of_exp e
+  | IfPr e -> "if " ^ string_of_exp e
+  | ElsePr -> "otherwise"
+  | IterPr ({it = IterPr _; _} as prem', iter) ->
+    string_of_prem prem' ^ string_of_iter iter
+  | IterPr (prem', iter) ->
+    "(" ^ string_of_prem prem' ^ ")" ^ string_of_iter iter
 
 
 (* Definitions *)

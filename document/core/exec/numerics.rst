@@ -706,11 +706,11 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 * Let :math:`j` be the result of computing :math:`\wrap_{N,M}(i)`.
 
-* Return :math:`\exts_{M,N}(j)`.
+* Return :math:`\extends_{M,N}(j)`.
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \iextendMs_{N}(i) &=& \exts_{M,N}(\wrap_{N,M}(i)) \\
+   \iextendMs_{N}(i) &=& \extends_{M,N}(\wrap_{N,M}(i)) \\
    \end{array}
 
 
@@ -1699,21 +1699,21 @@ Conversions
 
 .. todo:: ext or extend?
 
-:math:`\extu_{M,N}(i)`
-......................
+:math:`\extendu_{M,N}(i)`
+.........................
 
 * Return :math:`i`.
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \extu_{M,N}(i) &=& i \\
+   \extendu_{M,N}(i) &=& i \\
    \end{array}
 
 .. note::
    In the abstract syntax, unsigned extension just reinterprets the same value.
 
-:math:`\exts_{M,N}(i)`
-......................
+:math:`\extends_{M,N}(i)`
+.........................
 
 * Let :math:`j` be the :ref:`signed interpretation <aux-signed>` of :math:`i` of size :math:`M`.
 
@@ -1721,7 +1721,7 @@ Conversions
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \exts_{M,N}(i) &=& \signed_N^{-1}(\signed_M(i)) \\
+   \extends_{M,N}(i) &=& \signed_N^{-1}(\signed_M(i)) \\
    \end{array}
 
 

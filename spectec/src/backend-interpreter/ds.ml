@@ -24,8 +24,8 @@ let func_map: func_map ref = ref Map.empty
 let to_map algos =
   let f acc algo =
     let rmap, fmap = acc in
-    match algo with
-    | RuleA (atom, _, _) ->
+    match algo.it with
+    | RuleA (atom, _, _, _) ->
         let name = Print.string_of_atom atom in
         Map.add name algo rmap, fmap
     | FuncA (name, _, _) -> rmap, Map.add name algo fmap
@@ -82,9 +82,12 @@ let string_of_env env =
 let lookup_env key env =
   try Env.find key env
   with Not_found ->
-    Printf.eprintf "The key '%s' is not in the map: %s.\n%!"
-      key (string_of_env env);
-    raise Not_found
+    let freeVar s = Exception.FreeVar s in
+    env
+    |> string_of_env
+    |> Printf.sprintf "The key '%s' is not in the map: %s.\n%!" key
+    |> freeVar
+    |> raise
 
 
 (* Info *)

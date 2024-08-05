@@ -21,7 +21,7 @@ let add k v r =
 
 let find s r =
   try assoc s r |> (!) with
-  | _ -> failwith ("No field name: " ^ s ^ "\n")
+  | _ -> failwith ("No field name\n")
 
 let find_opt s r =
   assoc_opt s r |> Option.map (!)

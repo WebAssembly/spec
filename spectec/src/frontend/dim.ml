@@ -7,7 +7,7 @@ open Convert
 
 (* Errors *)
 
-let error at msg = Error.error at "multiplicity" msg
+let error at msg = Error.error at "dimension" msg
 
 
 (* Environment *)
@@ -241,7 +241,9 @@ and check_param env ctx p =
   | ExpP (id, t) ->
     check_varid env ctx id;
     check_typ env ctx t
-  | TypP id -> check_typid env ctx id
+  | TypP id ->
+    check_typid env ctx id;
+    check_varid env ctx id
   | GramP (id, t) ->
     check_gramid env ctx id;
     check_typ env ctx t
@@ -284,6 +286,12 @@ let check_def d : env =
     iter_nl_list (check_prem env []) prems;
     check_env env
   | SepD | HintD _ -> Env.empty
+
+
+let check_prod prod : env =
+  let env = ref Env.empty in
+  check_prod env [] prod;
+  check_env env
 
 let check_typdef t prems : env =
   let env = ref Env.empty in
@@ -457,6 +465,35 @@ and annot_iterexp env occur1 (iter, bs) at : Il.Ast.iterexp * occur =
   let bs' = List.map (fun (x, (t, _)) -> x $ at, t) (Env.bindings occur1') in
   (iter', bs'), union occur1' occur2
 
+and annot_sym env g : Il.Ast.sym * occur =
+  Il.Debug.(log_in "el.annot_sym" (fun _ -> il_sym g));
+  let it, occur =
+    match g.it with
+    | VarG (id, as1) ->
+      let as1', occurs = List.split (List.map (annot_arg env) as1) in
+      VarG (id, as1'), List.fold_left union Env.empty occurs
+    | NatG _ | TextG _ | EpsG ->
+      g.it, Env.empty
+    | SeqG gs ->
+      let gs', occurs = List.split (List.map (annot_sym env) gs) in
+      SeqG gs', List.fold_left union Env.empty occurs
+    | AltG gs ->
+      let gs', occurs = List.split (List.map (annot_sym env) gs) in
+      AltG gs', List.fold_left union Env.empty occurs
+    | RangeG (g1, g2) ->
+      let g1', occur1 = annot_sym env g1 in
+      let g2', occur2 = annot_sym env g2 in
+      RangeG (g1', g2'), union occur1 occur2
+    | IterG (g1, iter) ->
+      let g1', occur1 = annot_sym env g1 in
+      let iter', occur' = annot_iterexp env occur1 iter g.at in
+      IterG (g1', iter'), occur'
+    | AttrG (e1, g2) ->
+      let e1', occur1 = annot_exp env e1 in
+      let g2', occur2 = annot_sym env g2 in
+      AttrG (e1', g2'), union occur1 occur2
+  in {g with it}, occur
+
 and annot_arg env a : Il.Ast.arg * occur =
   let it, occur =
     match a.it with
@@ -465,6 +502,9 @@ and annot_arg env a : Il.Ast.arg * occur =
       ExpA e', occur1
     | TypA t -> TypA t, Env.empty
     | DefA id -> DefA id, Env.empty
+    | GramA g ->
+      let g', occur1 = annot_sym env g in
+      GramA g', occur1
   in {a with it}, occur
 
 and annot_prem env prem : Il.Ast.prem * occur =
@@ -496,5 +536,6 @@ let annot_top annot_x env x =
 
 let annot_iter = annot_top (fun env x -> let x', (y, _) = annot_iter env x in x', y)
 let annot_exp = annot_top annot_exp
+let annot_sym = annot_top annot_sym
 let annot_arg = annot_top annot_arg
 let annot_prem = annot_top annot_prem

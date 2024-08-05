@@ -180,6 +180,21 @@ and string_of_iterexp (iter, bs) =
     (List.map (fun (id, t) -> id.it ^ " : " ^ string_of_typ t) bs) ^ "}"
 
 
+(* Grammars *)
+
+and string_of_sym g =
+  match g.it with
+  | VarG (id, args) -> id.it ^ string_of_args args
+  | NatG n -> Printf.sprintf "0x%02X" n
+  | TextG t -> "\"" ^ String.escaped t ^ "\""
+  | EpsG -> "eps"
+  | SeqG gs -> "{" ^ concat " " (List.map string_of_sym gs) ^ "}"
+  | AltG gs -> "(" ^ concat " | " (List.map string_of_sym gs) ^ ")"
+  | RangeG (g1, g2) -> string_of_sym g1 ^ " | ... | " ^ string_of_sym g2
+  | IterG (g1, iter) -> string_of_sym g1 ^ string_of_iterexp iter
+  | AttrG (e, g1) -> string_of_exp e ^ ":" ^ string_of_sym g1
+
+
 (* Premises *)
 
 and string_of_prem prem =
@@ -202,6 +217,7 @@ and string_of_arg a =
   | ExpA e -> string_of_exp e
   | TypA t -> "syntax " ^ string_of_typ t
   | DefA id -> "def $" ^ id.it
+  | GramA g -> "grammar " ^ string_of_sym g
 
 and string_of_args = function
   | [] -> ""
@@ -214,6 +230,7 @@ and string_of_bind bind =
     id.it ^ dim ^ " : " ^ string_of_typ t ^ dim
   | TypB id -> "syntax " ^ id.it
   | DefB (id, ps, t) -> "def $" ^ id.it ^ string_of_params ps ^ " : " ^ string_of_typ t
+  | GramB (id, ps, t) -> "grammar " ^ id.it ^ string_of_params ps ^ " : " ^ string_of_typ t
 
 and string_of_binds = function
   | [] -> ""
@@ -224,6 +241,7 @@ and string_of_param p =
   | ExpP (id, t) -> (if id.it = "_" then "" else id.it ^ " : ") ^ string_of_typ t
   | TypP id -> "syntax " ^ id.it
   | DefP (id, ps, t) -> "def $" ^ id.it ^ string_of_params ps ^ " : " ^ string_of_typ t
+  | GramP (id, t) -> "grammar " ^ id.it ^ " : " ^ string_of_typ t
 
 and string_of_params = function
   | [] -> ""
@@ -258,6 +276,14 @@ let string_of_clause ?(suppress_pos = false) id clause =
       string_of_exp e ^
       concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
+let string_of_prod ?(suppress_pos = false) prod =
+  match prod.it with
+  | ProdD (bs, g, e, prems) ->
+    "\n" ^ region_comment ~suppress_pos "  " prod.at ^
+    "  prod" ^ string_of_binds bs ^ " " ^ string_of_sym g ^ " => " ^
+      string_of_exp e ^
+      concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
+
 let rec string_of_def ?(suppress_pos = false) d =
   let pre = "\n" ^ region_comment ~suppress_pos "" d.at in
   match d.it with
@@ -274,6 +300,9 @@ let rec string_of_def ?(suppress_pos = false) d =
   | DecD (id, ps, t, clauses) ->
     pre ^ "def $" ^ id.it ^ string_of_params ps ^ " : " ^ string_of_typ t ^
       concat "" (List.map (string_of_clause ~suppress_pos id) clauses) ^ "\n"
+  | GramD (id, ps, t, prods) ->
+    pre ^ "grammar " ^ id.it ^ string_of_params ps ^ " : " ^ string_of_typ t ^
+      concat "" (List.map (string_of_prod ~suppress_pos) prods) ^ "\n"
   | RecD ds ->
     pre ^ "rec {\n" ^ concat "" (List.map string_of_def ds) ^ "}" ^ "\n"
   | HintD _ ->

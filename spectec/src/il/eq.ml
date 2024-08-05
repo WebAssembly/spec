@@ -114,6 +114,21 @@ and eq_iterexp (iter1, bs1) (iter2, bs2) =
   eq_iter iter1 iter2 && eq_list (eq_pair eq_id eq_typ) bs1 bs2
 
 
+(* Grammars *)
+
+and eq_sym g1 g2 =
+  match g1.it, g2.it with
+  | VarG (id1, args1), VarG (id2, args2) ->
+    eq_id id1 id2 && eq_list eq_arg args1 args2
+  | SeqG gs1, SeqG gs2
+  | AltG gs1, AltG gs2 -> eq_list eq_sym gs1 gs2
+  | RangeG (g11, g12), RangeG (g21, g22) -> eq_sym g11 g21 && eq_sym g12 g22
+  | IterG (g11, iter1), IterG (g21, iter2) ->
+    eq_sym g11 g21 && eq_iterexp iter1 iter2
+  | AttrG (e1, g11), AttrG (e2, g21) -> eq_exp e1 e2 && eq_sym g11 g21
+  | _, _ -> g1.it = g2.it
+
+
 (* Premises *)
 
 and eq_prem prem1 prem2 =
@@ -133,4 +148,5 @@ and eq_arg a1 a2 =
   | ExpA e1, ExpA e2 -> eq_exp e1 e2
   | TypA t1, TypA t2 -> eq_typ t1 t2
   | DefA id1, DefA id2 -> eq_id id1 id2
+  | GramA g1, GramA g2 -> eq_sym g1 g2
   | _, _ -> false

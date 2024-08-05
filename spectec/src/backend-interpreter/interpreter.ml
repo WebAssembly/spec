@@ -17,17 +17,18 @@ let empty = ""
 let error at msg step = raise (Exception.Error (at, msg, step))
 
 let fail_expr expr msg =
-  failwith ("on expr `" ^ structured_string_of_expr expr ^ "` " ^ msg)
+  failwith ("on expr `" ^ string_of_expr expr ^ "` " ^ msg)
 
 let fail_path path msg =
-  failwith ("on path `" ^ structured_string_of_path path ^ "` " ^ msg)
+  failwith ("on path `" ^ string_of_path path ^ "` " ^ msg)
 
 let try_with_error fname at stringifier f step =
-  let prefix = if fname <> empty then fname ^ ": " else fname in
+  let prefix = if fname <> empty then "$" ^ fname ^ ": " else fname in
   try f step with
   | Construct.InvalidConversion msg
   | Exception.InvalidArg msg
   | Exception.InvalidFunc msg
+  | Exception.FreeVar msg
   | Failure msg -> error at (prefix ^ msg) (stringifier step)
 
 
@@ -48,6 +49,12 @@ let transpose matrix =
       let new_rows = transpose' (xs :: List.map List.tl xss) in
       new_row :: new_rows in
   transpose' matrix
+
+let extract_exp a =
+  match a.it with
+  | ExpA e -> Some e
+  | TypA _ -> None
+let extract_expargs = List.filter_map extract_exp
 
 
 let rec create_sub_al_context names iter env =
@@ -123,13 +130,78 @@ and replace_path env base path v_new =
     Record.replace str v_new r_new;
     strV r_new
 
+and check_type ty v expr =
+  (* type definition *)
+  let addr_refs = [
+    "REF.I31_NUM"; "REF.STRUCT_ADDR"; "REF.ARRAY_ADDR";
+    "REF.FUNC_ADDR"; "REF.HOST_ADDR"; "REF.EXTERN";
+  ] in
+  let pnn_types = [ "I8"; "I16" ] in
+  let inn_types = [ "I32"; "I64" ] in
+  let fnn_types = [ "F32"; "F64" ] in
+  let vnn_types = [ "V128"; ] in
+  let abs_heap_types = [
+    "ANY"; "EQ"; "I31"; "STRUCT"; "ARRAY"; "NONE"; "FUNC";
+    "NOFUNC"; "EXTERN"; "NOEXTERN"
+  ] in
+  match v with
+  (* addrref *)
+  | CaseV (ar, _) when List.mem ar addr_refs->
+    boolV (ty = "addrref" ||ty = "ref" || ty = "val")
+  (* nul *)
+  | CaseV ("REF.NULL", _) ->
+    boolV (ty = "nul" || ty = "ref" || ty = "val")
+  (* values *)
+  | CaseV ("CONST", CaseV (nt, []) ::_) when List.mem nt inn_types ->
+    boolV (ty = "val")
+  | CaseV ("CONST", CaseV (nt, []) ::_) when List.mem nt fnn_types ->
+    boolV (ty = "val")
+  | CaseV ("VCONST", CaseV (vt, [])::_) when List.mem vt vnn_types ->
+    boolV (ty = "val")
+  (* numtype *)
+  | CaseV (nt, []) when List.mem nt inn_types ->
+    boolV (ty = "Inn" || ty = "Jnn" || ty = "numtype" || ty = "valtype")
+  | CaseV (nt, []) when List.mem nt fnn_types ->
+    boolV (ty = "Fnn" || ty = "numtype" || ty = "valtype")
+  | CaseV (vt, []) when List.mem vt vnn_types ->
+    boolV (ty = "Vnn" || ty = "vectype" || ty = "valtype")
+  (* valtype *)
+  | CaseV ("REF", _) ->
+    boolV (ty = "reftype" || ty = "valtype" || ty = "val")
+  (* absheaptype *)
+  | CaseV (aht, []) when List.mem aht abs_heap_types ->
+    boolV (ty = "absheaptype" || ty = "heaptype")
+  (* deftype *)
+  | CaseV ("DEF", [ _; _ ]) ->
+    boolV (ty = "deftype" || ty = "heaptype")
+  (* typevar *)
+  | CaseV ("_IDX", [ _ ]) ->
+    boolV (ty = "heaptype" || ty = "typevar")
+  (* heaptype *)
+  | CaseV ("REC", [ _ ]) ->
+    boolV (ty = "heaptype" || ty = "typevar")
+  (* packval *)
+  | CaseV ("PACK", CaseV (pt, [])::_) when List.mem pt pnn_types ->
+    boolV (ty = "val")
+  (* packtype *)
+  | CaseV (pt, []) when List.mem pt pnn_types ->
+    boolV (ty = "Pnn" || ty = "Jnn" || ty = "packtype" || ty = "storagetype")
+  | v -> fail_expr expr
+    (sprintf "%s doesn't have type %s" (structured_string_of_value v) ty)
+
 and eval_expr env expr =
+  let rec to_bool source = function
+    | BoolV b -> b
+    | ListV _ as v -> List.for_all (to_bool source) (unwrap_listv_to_list v)
+    | _ -> fail_expr source "type mismatch for boolean value"
+  in
+
   match expr.it with
   (* Value *)
   | NumE i -> numV i
   (* Numeric Operation *)
   | UnE (MinusOp, inner_e) -> eval_expr env inner_e |> al_to_z |> Z.neg |> numV
-  | UnE (NotOp, e) -> eval_expr env e |> al_to_bool |> not |> boolV
+  | UnE (NotOp, e) -> eval_expr env e |> to_bool e |> not |> boolV
   | BinE (op, e1, e2) ->
     (match op, eval_expr env e1, eval_expr env e2 with
     | AddOp, NumV i1, NumV i2 -> Z.add i1 i2 |> numV
@@ -138,10 +210,10 @@ and eval_expr env expr =
     | DivOp, NumV i1, NumV i2 -> Z.div i1 i2 |> numV
     | ModOp, NumV i1, NumV i2 -> Z.rem i1 i2 |> numV
     | ExpOp, NumV i1, NumV i2 -> Z.pow i1 (Z.to_int i2) |> numV
-    | AndOp, BoolV b1, BoolV b2 -> boolV (b1 && b2)
-    | OrOp, BoolV b1, BoolV b2 -> boolV (b1 || b2)
-    | ImplOp, BoolV b1, BoolV b2 -> boolV (not b1 || b2)
-    | EquivOp, BoolV b1, BoolV b2 -> boolV (b1 = b2)
+    | AndOp, b1, b2 -> boolV (to_bool e1 b1 && to_bool e2 b2)
+    | OrOp, b1, b2 -> boolV (to_bool e1 b1 || to_bool e2 b2)
+    | ImplOp, b1, b2 -> boolV (not (to_bool e1 b1) || to_bool e2 b2)
+    | EquivOp, b1, b2 -> boolV (to_bool e1 b1 = to_bool e2 b2)
     | EqOp, v1, v2 -> boolV (v1 = v2)
     | NeOp, v1, v2 -> boolV (v1 <> v2)
     | LtOp, v1, v2 -> boolV (v1 < v2)
@@ -155,9 +227,18 @@ and eval_expr env expr =
     let v1 = eval_expr env e1 in
     eval_expr env e2 |> unwrap_listv_to_array |> Array.exists ((=) v1) |> boolV
   (* Function Call *)
-  | CallE (fname, el) ->
+  | CallE (fname, al) ->
+    let el = extract_expargs al in
     let args = List.map (eval_expr env) el in
     (match call_func fname args  with
+    | Some v -> v
+    | _ -> raise (Exception.MissingReturnValue fname)
+    )
+  | InvCallE (fname, _, al) ->
+    let el = extract_expargs al in
+    (* TODO: refactor numerics function name *)
+    let args = List.map (eval_expr env) el in
+    (match call_func ("inverse_of_"^fname) args  with
     | Some v -> v
     | _ -> raise (Exception.MissingReturnValue fname)
     )
@@ -227,6 +308,12 @@ and eval_expr env expr =
     (match eval_expr env e with
     | LabelV (_, vs) -> vs
     | _ -> fail_expr expr "inner expr is not a label")
+  | ChooseE e ->
+    let a = eval_expr env e |> unwrap_listv_to_array in
+    if Array.length a = 0 then
+      fail_expr expr (sprintf "cannot choose an element from %s because it's empty" (string_of_expr e))
+    else
+      Array.get a 0
   | VarE "s" -> Store.get ()
   | VarE name -> lookup_env name env
   (* Optimized getter for simple IterE(VarE, ...) *)
@@ -291,64 +378,20 @@ and eval_expr env expr =
     )
   | HasTypeE (e, s) ->
     (* TODO: This shouldn't be hardcoded *)
-
-    (* type definition *)
-    let addr_refs = [
-      "REF.I31_NUM"; "REF.STRUCT_ADDR"; "REF.ARRAY_ADDR";
-      "REF.FUNC_ADDR"; "REF.HOST_ADDR"; "REF.EXTERN";
-    ] in
-    let pnn_types = [ "I8"; "I16" ] in
-    let inn_types = [ "I32"; "I64" ] in
-    let fnn_types = [ "F32"; "F64" ] in
-    let vnn_types = [ "V128"; ] in
-    let abs_heap_types = [
-      "ANY"; "EQ"; "I31"; "STRUCT"; "ARRAY"; "NONE"; "FUNC";
-      "NOFUNC"; "EXTERN"; "NOEXTERN"
-    ] in
-
     (* check type *)
-
-    (match eval_expr env e with
-    (* addrref *)
-    | CaseV (ar, _) when List.mem ar addr_refs->
-      boolV (s = "addrref" || s = "ref" || s = "val")
-    (* nul *)
-    | CaseV ("REF.NULL", _) ->
-      boolV (s = "nul" || s = "ref" || s = "val")
-    (* numtype *)
-    | CaseV (nt, []) when List.mem nt inn_types ->
-      boolV (s = "Inn" || s = "Jnn" || s = "numtype" || s = "valtype")
-    | CaseV (nt, []) when List.mem nt fnn_types ->
-      boolV (s = "Fnn" || s = "numtype" || s = "valtype")
-    | CaseV (vt, []) when List.mem vt vnn_types ->
-      boolV (s = "Vnn" || s = "vectype" || s = "valtype")
-    (* valtype *)
-    | CaseV ("REF", _) ->
-      boolV (s = "reftype" || s = "valtype")
-    (* absheaptype *)
-    | CaseV (aht, []) when List.mem aht abs_heap_types ->
-      boolV (s = "absheaptype" || s = "heaptype")
-    (* deftype *)
-    | CaseV ("DEF", [ _; _ ]) ->
-      boolV (s = "deftype" || s = "heaptype")
-    (* typevar *)
-    | CaseV ("_IDX", [ _ ]) ->
-      boolV (s = "heaptype" || s = "typevar")
-    (* heaptype *)
-    | CaseV ("REC", [ _ ]) ->
-      boolV (s = "heaptype" || s = "typevar")
-    (* packtype *)
-    | CaseV (pt, []) when List.mem pt pnn_types ->
-      boolV (s = "Pnn" || s = "Jnn" || s = "packtype" || s = "storagetype")
-    | v ->
-      fail_expr expr
-        (sprintf "%s doesn't have type %s" (string_of_value v) s)
-    )
+    let v = eval_expr env e in
+    check_type s v expr
   | MatchE (e1, e2) ->
     (* Deferred to reference interpreter *)
     let rt1 = e1 |> eval_expr env |> Construct.al_to_ref_type in
     let rt2 = e2 |> eval_expr env |> Construct.al_to_ref_type in
     boolV (Match.match_ref_type [] rt1 rt2)
+  | TopValueE _ ->
+    (* TODO: type check *)
+    boolV (List.length (WasmContext.get_value_stack ()) > 0)
+  | TopValuesE e ->
+    let i = eval_expr env e |> al_to_int in
+    boolV (List.length (WasmContext.get_value_stack ()) >= i)
   | _ -> fail_expr expr "cannot evaluate expr"
 
 
@@ -381,7 +424,7 @@ and assign lhs rhs env =
       match rhs with
       | OptV opt -> optV None, Option.to_list opt
       | ListV arr -> empty_list, Array.to_list !arr
-      | _ -> 
+      | _ ->
         fail_expr lhs
           (sprintf
             "invalid assignment: %s is not an iterable value" (string_of_value rhs)
@@ -476,15 +519,17 @@ and assign_split lhs vs env =
 and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.t =
   (Info.find instr.note).covered <- true;
 
+  let rec is_true = function
+    | BoolV true -> true
+    | OptV v_opt -> v_opt |> Option.map is_true |> Option.value ~default:true
+    | ListV a -> Array.for_all is_true !a
+    | _ -> false
+  in
+
+
   match instr.it with
   (* Block instruction *)
   | IfI (e, il1, il2) ->
-    let rec is_true = function
-      | BoolV true -> true
-      | ListV a -> Array.for_all is_true !a
-      | _ -> false
-    in
-
     if is_true (eval_expr env e) then
       AlContext.add_instrs il1 ctx
     else
@@ -497,7 +542,13 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     | Exception.OutOfMemory ->
       AlContext.add_instrs il2 ctx
     )
-  | AssertI _ -> ctx (*assert (eval_cond env c);*)
+  | AssertI _e -> ctx
+  (*
+    if is_true (eval_expr env e) then
+      ctx
+    else
+      fail_expr e "assertion fail"
+  *)
   | PushI e ->
     (match eval_expr env e with
     | FrameV _ as v -> WasmContext.push_context (v, [], [])
@@ -507,9 +558,11 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     ctx
   | PopI e ->
     (match e.it with
-    | FrameE _ ->
+    | FrameE (_, inner_e) ->
       (match WasmContext.pop_context () with
-      | FrameV _, _, _ -> ctx
+      | FrameV (_, inner_v), _, _ ->
+        let new_env = assign inner_e inner_v env in
+        AlContext.set_env new_env ctx
       | v, _, _ -> failwith (sprintf "current context `%s` is not a frame" (string_of_value v))
       )
     | IterE ({ it = VarE name; _ }, [name'], ListN (e', None)) when name = name' ->
@@ -531,7 +584,8 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
   | LetI (e1, e2) ->
     let new_env = ctx |> AlContext.get_env |> assign e1 (eval_expr env e2) in
     AlContext.set_env new_env ctx
-  | PerformI (f, el) ->
+  | PerformI (f, al) ->
+    let el = extract_expargs al in
     let args = List.map (eval_expr env) el in
     call_func f args |> ignore;
     ctx
@@ -540,15 +594,14 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
   | ReturnI None -> AlContext.tl ctx
   | ReturnI (Some e) ->
     AlContext.return (eval_expr env e) :: AlContext.tl ctx
-  | ExecuteI e -> AlContext.execute (eval_expr env e) :: ctx
-  | ExecuteSeqI e ->
-    let ctx' =
-      e
-      |> eval_expr env
-      |> unwrap_listv_to_list
-      |> List.map AlContext.execute
-    in
-    ctx' @ ctx
+  | ExecuteI e ->
+    let v = eval_expr env e in
+    (match v with
+    | ListV _ ->
+      let ctx' = v |> unwrap_listv_to_list |> List.map AlContext.execute in
+      ctx' @ ctx
+    | _ -> AlContext.execute v :: ctx
+    )
   | EnterI (e1, e2, il) ->
     let v1 = eval_expr env e1 in
     let v2 = eval_expr env e2 in
@@ -586,7 +639,7 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
   | _ -> failwith "cannot step instr"
 
 and try_step_instr fname ctx env instr =
-  try_with_error fname instr.at structured_string_of_instr (step_instr fname ctx env) instr
+  try_with_error fname instr.at string_of_instr (step_instr fname ctx env) instr
 
 and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
   (* TODO: Change ref.null semantics *)
@@ -658,8 +711,17 @@ and create_context (name: string) (args: value list) : AlContext.mode =
   let params = params_of_algo algo in
   let body = body_of_algo algo in
 
-  if List.length args <> List.length params then
-    raise (Exception.InvalidArg ("Args number mismatch for algorithm " ^ name));
+  let params = params |> extract_expargs in
+
+  if List.length args <> List.length params then (
+    error
+      algo.at
+      (Printf.sprintf "Expected %d arguments for the algorithm `%s` but %d arguments are given"
+        (List.length params)
+        name
+        (List.length args))
+      (string_of_value (CaseV (name, args)))
+  );
 
   let env =
     Env.empty
@@ -668,20 +730,20 @@ and create_context (name: string) (args: value list) : AlContext.mode =
 
   AlContext.al (name, body, env)
 
-and call_func (fname: string) (args: value list) : value option =
+and call_func (name: string) (args: value list) : value option =
   (* Module & Runtime *)
-  if bound_func fname then
-    [create_context fname args]
+  if bound_func name then
+    [create_context name args]
     |> run
     |> AlContext.get_return_value
   (* Numerics *)
-  else if Numerics.mem fname then
-    Some (Numerics.call_numerics fname args)
+  else if Numerics.mem name then
+    Some (Numerics.call_numerics name args)
   (* Manual *)
-  else if fname = "ref_type_of" then
-    Some (Manual.ref_type_of args)
+  else if Manual.mem name then
+    Some (Manual.call_func name args)
   else
-    raise (Exception.InvalidFunc ("Invalid DSL function: " ^ fname))
+    raise (Exception.InvalidFunc ("There is no function named: " ^ name))
 
 
 (* Wasm interpreter entry *)
