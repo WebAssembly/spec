@@ -374,12 +374,13 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
     check_context source expr.note;
     check_num source expr1.note;
     check_match source expr2.note (iterT (varT "instr") List)
-  | BoolE _ | GetCurStateE | GetCurFrameE | GetCurLabelE | GetCurContextE
-  | IsCaseOfE _ | IsValidE _ | MatchE _ | HasTypeE _ | TopFrameE | TopLabelE ->
+  | GetCurStateE | GetCurFrameE | GetCurLabelE | GetCurContextE ->
+    check_context source expr.note
+  | BoolE _  | IsCaseOfE _ | IsValidE _ | MatchE _ | HasTypeE _ | TopFrameE | TopLabelE ->
     check_bool source expr.note
   | ContE expr1 ->
     check_match source expr.note (iterT (varT "instr") List);
-    check_match source expr1.note (iterT (varT "instr") List)
+    check_match source expr1.note (varT "label")
   | ChooseE expr1 ->
     check_list source expr1.note; check_match source expr1.note (iterT expr.note List)
   | ContextKindE _ -> () (* TODO: Not used anymore *)
@@ -387,7 +388,7 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
     check_opt source expr1.note; check_bool source expr.note
   | TopValueE expr_opt ->
     check_bool source expr.note;
-    Option.iter (fun expr1 -> check_match source expr1.note (varT "val")) expr_opt
+    Option.iter (fun expr1 -> check_match source expr1.note (varT "valtype")) expr_opt
   | TopValuesE expr1 ->
     check_bool source expr.note; check_num source expr1.note
   | SubE _ | YetE _ -> error_valid "invalid expression" source ""
