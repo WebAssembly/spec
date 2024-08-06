@@ -15,16 +15,13 @@ module Map = Map.Make(String)
 
 type env =
   {
-    prose: prose;
     render_latex: Backend_latex.Render.env;
-    symbol: Symbol.env;
     macro: Macro.env;
   }
 
-let env inputs outputs render_latex el prose : env =
-  let symbol = Symbol.env el in
+let env inputs outputs render_latex : env =
   let macro = Macro.env inputs outputs in
-  let env = { prose; render_latex; symbol; macro; } in
+  let env = { render_latex; macro; } in
   env
 
 (* Helpers *)
