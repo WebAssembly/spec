@@ -1,16 +1,18 @@
 <pre class='metadata'>
-Title: WebAssembly Web API
+Title: WebAssembly Web API: Exception Handling
 Shortname: wasm-web-api
 Group: wasm
 Status: ED
+Issue Tracking: GitHub https://github.com/WebAssembly/spec/issues
 Level: 2
 TR: https://www.w3.org/TR/wasm-web-api-2/
 ED: https://webassembly.github.io/spec/web-api/
-Editor: Ms2ger, Igalia
+Editor: Ms2ger, w3cid 46309, Igalia
 Repository: WebAssembly/spec
 Abstract: This document describes the integration of WebAssembly with the broader web platform.
 Markup Shorthands: css no, markdown yes
 Prepare For TR: true
+Date: now
 </pre>
 
 <pre class='biblio'>
@@ -32,6 +34,12 @@ Prepare For TR: true
     "title": "WebAssembly JS Integration Specification",
     "publisher": "W3C WebAssembly Community Group",
     "status": "Draft"
+  },
+  "SECURECONTEXTS": {
+    "href": "https://w3c.github.io/webappsec-secure-contexts/",
+    "title": "Secure Contexts",
+    "publisher": "WebAppSec WG",
+    "status": "Candidate Recommendation"
   }
 }
 </pre>
@@ -65,6 +73,7 @@ urlPrefix: https://webassembly.github.io/spec/js-api/; spec: WASMJS
         text: Exported Function; url: #exported-function
 url:https://html.spec.whatwg.org/#cors-same-origin;text:CORS-same-origin;type:dfn;spec:HTML
 url:https://fetch.spec.whatwg.org/#concept-body-consume-body;text:consume body;type:dfn;spec:FETCH
+url:https://w3c.github.io/webappsec-secure-contexts/#environment-settings-object-contextually-secure; text:contextually secure; type: dfn; spec: SECURECONTEXTS
 </pre>
 
 <pre class='link-defaults'>

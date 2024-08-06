@@ -1,9 +1,16 @@
 let name = "wasm"
-let version = "2.0.1"
+let version = "3.0.0"
 
-let configure () =
+let all_handlers = [
+  (module Handler_custom : Custom.Handler);
+  (module Handler_name : Custom.Handler);
+  (module Handler_branch_hint : Custom.Handler);
+]
+
+let configure custom_handlers =
   Import.register (Utf8.decode "spectest") Spectest.lookup;
-  Import.register (Utf8.decode "env") Env.lookup
+  Import.register (Utf8.decode "env") Env.lookup;
+  List.iter Custom.register custom_handlers
 
 let banner () =
   print_endline (name ^ " " ^ version ^ " reference interpreter")
@@ -12,6 +19,15 @@ let usage = "Usage: " ^ name ^ " [option] [file ...]"
 
 let args = ref []
 let add_arg source = args := !args @ [source]
+
+let customs = ref []
+let add_custom name =
+  let n = Utf8.decode name in
+  match List.find_opt (fun (module H : Custom.Handler) -> n = H.name) all_handlers with
+  | Some h -> customs := !customs @ [h]
+  | None ->
+    prerr_endline ("option -c: unknown custom section \"" ^ name ^ "\"");
+    exit 1
 
 let quote s = "\"" ^ String.escaped s ^ "\""
 
@@ -28,6 +44,12 @@ let argspec = Arg.align
     " configure call depth budget (default is " ^ string_of_int !Flags.budget ^ ")";
   "-w", Arg.Int (fun n -> Flags.width := n),
     " configure output width (default is " ^ string_of_int !Flags.width ^ ")";
+  "-c", Arg.String add_custom,
+    " recognize custom section";
+  "-ca", Arg.Unit (fun () -> customs := all_handlers),
+    " recognize all known custom section";
+  "-cr", Arg.Set Flags.custom_reject,
+    " reject unrecognized custom sections";
   "-s", Arg.Set Flags.print_sig, " show module signatures";
   "-u", Arg.Set Flags.unchecked, " unchecked, do not perform validation";
   "-j", Arg.Clear Flags.harness, " exclude harness for JS conversion";
@@ -39,9 +61,9 @@ let argspec = Arg.align
 let () =
   Printexc.record_backtrace true;
   try
-    configure ();
     Arg.parse argspec
       (fun file -> add_arg ("(input " ^ quote file ^ ")")) usage;
+    configure !customs;
     List.iter (fun arg -> if not (Run.run_string arg) then exit 1) !args;
     if !args = [] then Flags.interactive := true;
     if !Flags.interactive then begin

@@ -1,5 +1,6 @@
 open Types
 open Ast
+open Value
 open Script
 open Source
 
@@ -10,31 +11,19 @@ let harness =
 {|
 'use strict';
 
-let externrefs = {};
-let externsym = Symbol("externref");
-function externref(s) {
-  if (! (s in externrefs)) externrefs[s] = {[externsym]: s};
-  return externrefs[s];
+let hostrefs = {};
+let hostsym = Symbol("hostref");
+function hostref(s) {
+  if (! (s in hostrefs)) hostrefs[s] = {[hostsym]: s};
+  return hostrefs[s];
 }
-function is_externref(x) {
-  return (x !== null && externsym in x) ? 1 : 0;
-}
-function is_funcref(x) {
-  return typeof x === "function" ? 1 : 0;
-}
-function eq_externref(x, y) {
-  return x === y ? 1 : 0;
-}
-function eq_funcref(x, y) {
+function eq_ref(x, y) {
   return x === y ? 1 : 0;
 }
 
 let spectest = {
-  externref: externref,
-  is_externref: is_externref,
-  is_funcref: is_funcref,
-  eq_externref: eq_externref,
-  eq_funcref: eq_funcref,
+  hostref: hostref,
+  eq_ref: eq_ref,
   print: console.log.bind(console),
   print_i32: console.log.bind(console),
   print_i64: console.log.bind(console),
@@ -44,8 +33,8 @@ let spectest = {
   print_f64: console.log.bind(console),
   global_i32: 666,
   global_i64: 666n,
-  global_f32: 666,
-  global_f64: 666,
+  global_f32: 666.6,
+  global_f64: 666.6,
   table: new WebAssembly.Table({initial: 10, maximum: 20, element: 'anyfunc'}),
   memory: new WebAssembly.Memory({initial: 1, maximum: 2})
 };
@@ -107,11 +96,19 @@ function assert_malformed(bytes) {
   throw new Error("Wasm decoding failure expected");
 }
 
+function assert_malformed_custom(bytes) {
+  return;
+}
+
 function assert_invalid(bytes) {
   try { module(bytes, false) } catch (e) {
     if (e instanceof WebAssembly.CompileError) return;
   }
   throw new Error("Wasm validation failure expected");
+}
+
+function assert_invalid_custom(bytes) {
+  return;
 }
 
 function assert_unlinkable(bytes) {
@@ -135,6 +132,11 @@ function assert_trap(action) {
     if (e instanceof WebAssembly.RuntimeError) return;
   }
   throw new Error("Wasm trap expected");
+}
+
+function assert_exception(action) {
+  try { action() } catch (e) { return; }
+  throw new Error("exception expected");
 }
 
 let StackOverflow;
@@ -168,6 +170,21 @@ function assert_return(action, ...expected) {
           throw new Error("Wasm return value NaN expected, got " + actual[i]);
         };
         return;
+      case "ref.i31":
+        if (typeof actual[i] !== "number" || (actual[i] & 0x7fffffff) !== actual[i]) {
+          throw new Error("Wasm i31 return value expected, got " + actual[i]);
+        };
+        return;
+      case "ref.any":
+      case "ref.eq":
+      case "ref.struct":
+      case "ref.array":
+        // For now, JS can't distinguish exported Wasm GC values,
+        // so we only test for object.
+        if (typeof actual[i] !== "object") {
+          throw new Error("Wasm function return value expected, got " + actual[i]);
+        };
+        return;
       case "ref.func":
         if (typeof actual[i] !== "function") {
           throw new Error("Wasm function return value expected, got " + actual[i]);
@@ -176,6 +193,11 @@ function assert_return(action, ...expected) {
       case "ref.extern":
         if (actual[i] === null) {
           throw new Error("Wasm reference return value expected, got " + actual[i]);
+        };
+        return;
+      case "ref.null":
+        if (actual[i] !== null) {
+          throw new Error("Wasm null return value expected, got " + actual[i]);
         };
         return;
       default:
@@ -197,9 +219,9 @@ type exports = extern_type NameMap.t
 type modules = {mutable env : exports Map.t; mutable current : int}
 
 let exports m : exports =
-  List.fold_left
-    (fun map exp -> NameMap.add exp.it.name (export_type m exp) map)
-    NameMap.empty m.it.exports
+  let ModuleT (_, ets) = module_type_of m in
+  List.fold_left (fun map (ExportT (et, name)) -> NameMap.add name et map)
+    NameMap.empty ets
 
 let modules () : modules = {env = Map.empty; current = 0}
 
@@ -228,48 +250,46 @@ let lookup (mods : modules) x_opt name at =
 (* Wrappers *)
 
 let subject_idx = 0l
-let externref_idx = 1l
-let is_externref_idx = 2l
-let is_funcref_idx = 3l
-let eq_externref_idx = 4l
-let _eq_funcref_idx = 5l
-let subject_type_idx = 6l
+let hostref_idx = 1l
+let eq_ref_idx = 2l
+let subject_type_idx = 3l
 
 let eq_of = function
-  | I32Type -> Values.I32 I32Op.Eq
-  | I64Type -> Values.I64 I64Op.Eq
-  | F32Type -> Values.F32 F32Op.Eq
-  | F64Type -> Values.F64 F64Op.Eq
+  | I32T -> I32 I32Op.Eq
+  | I64T -> I64 I64Op.Eq
+  | F32T -> F32 F32Op.Eq
+  | F64T -> F64 F64Op.Eq
 
 let and_of = function
-  | I32Type | F32Type -> Values.I32 I32Op.And
-  | I64Type | F64Type -> Values.I64 I64Op.And
+  | I32T | F32T -> I32 I32Op.And
+  | I64T | F64T -> I64 I64Op.And
 
 let reinterpret_of = function
-  | I32Type -> I32Type, Nop
-  | I64Type -> I64Type, Nop
-  | F32Type -> I32Type, Convert (Values.I32 I32Op.ReinterpretFloat)
-  | F64Type -> I64Type, Convert (Values.I64 I64Op.ReinterpretFloat)
+  | I32T -> I32T, Nop
+  | I64T -> I64T, Nop
+  | F32T -> I32T, Convert (I32 I32Op.ReinterpretFloat)
+  | F64T -> I64T, Convert (I64 I64Op.ReinterpretFloat)
 
 let canonical_nan_of = function
-  | I32Type | F32Type -> Values.I32 (F32.to_bits F32.pos_nan)
-  | I64Type | F64Type -> Values.I64 (F64.to_bits F64.pos_nan)
+  | I32T | F32T -> I32 (F32.to_bits F32.pos_nan)
+  | I64T | F64T -> I64 (F64.to_bits F64.pos_nan)
 
 let abs_mask_of = function
-  | I32Type | F32Type -> Values.I32 Int32.max_int
-  | I64Type | F64Type -> Values.I64 Int64.max_int
+  | I32T | F32T -> I32 Int32.max_int
+  | I64T | F64T -> I64 Int64.max_int
 
 let value v =
   match v.it with
-  | Values.Num n -> [Const (n @@ v.at) @@ v.at]
-  | Values.Vec s -> [VecConst (s @@ v.at) @@ v.at]
-  | Values.Ref (Values.NullRef t) -> [RefNull t @@ v.at]
-  | Values.Ref (ExternRef n) ->
-    [Const (Values.I32 n @@ v.at) @@ v.at; Call (externref_idx @@ v.at) @@ v.at]
-  | Values.Ref _ -> assert false
+  | Num n -> [Const (n @@ v.at) @@ v.at]
+  | Vec s -> [VecConst (s @@ v.at) @@ v.at]
+  | Ref (NullRef ht) -> [RefNull (Match.bot_of_heap_type [] ht) @@ v.at]
+  | Ref (Extern.ExternRef (HostRef n)) ->
+    [Const (I32 n @@ v.at) @@ v.at; Call (hostref_idx @@ v.at) @@ v.at]
+  | Ref _ -> assert false
 
 let invoke ft vs at =
-  [ft @@ at], FuncImport (subject_type_idx @@ at) @@ at,
+  let dt = RecT [SubT (Final, [], DefFuncT ft)] in
+  [dt @@ at], FuncImport (subject_type_idx @@ at) @@ at,
   List.concat (List.map value vs) @ [Call (subject_idx @@ at) @@ at]
 
 let get t at =
@@ -278,43 +298,58 @@ let get t at =
 let run ts at =
   [], []
 
+let nan_bitmask_of = function
+  | CanonicalNan -> abs_mask_of  (* differ from canonical NaN in sign bit *)
+  | ArithmeticNan -> canonical_nan_of  (* 1 everywhere canonical NaN is *)
+
+let type_of_num_pat = function
+  | NumPat num -> Value.type_of_num num.it
+  | NanPat op -> Value.type_of_op op.it
+
+let type_of_vec_pat = function
+  | VecPat vec -> Value.type_of_vec vec
+
+let type_of_ref_pat = function
+  | RefPat ref -> type_of_ref ref.it
+  | RefTypePat ht -> (NoNull, ht)
+  | NullPat -> (Null, BotHT)
+
+let type_of_result res =
+  match res.it with
+  | NumResult pat -> NumT (type_of_num_pat pat)
+  | VecResult pat -> VecT (type_of_vec_pat pat)
+  | RefResult pat -> RefT (type_of_ref_pat pat)
+
 let assert_return ress ts at =
-  let test res =
-    let nan_bitmask_of = function
-      | CanonicalNan -> abs_mask_of (* must only differ from the canonical NaN in its sign bit *)
-      | ArithmeticNan -> canonical_nan_of (* can be any NaN that's one everywhere the canonical NaN is one *)
-    in
+  let test (res, t) =
+    if not (Match.match_val_type [] t (type_of_result res)) then
+      [ Br (0l @@ at) @@ at ]
+    else
     match res.it with
     | NumResult (NumPat {it = num; at = at'}) ->
-      let t', reinterpret = reinterpret_of (Values.type_of_num num) in
+      let t', reinterpret = reinterpret_of (Value.type_of_op num) in
       [ reinterpret @@ at;
         Const (num @@ at')  @@ at;
         reinterpret @@ at;
         Compare (eq_of t') @@ at;
-        Test (Values.I32 I32Op.Eqz) @@ at;
+        Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | NumResult (NanPat nanop) ->
       let nan =
         match nanop.it with
-        | Values.I32 _ | Values.I64 _ -> .
-        | Values.F32 n | Values.F64 n -> n
+        | Value.I32 _ | Value.I64 _ -> .
+        | Value.F32 n | Value.F64 n -> n
       in
-      let t = Values.type_of_num nanop.it in
-      let t', reinterpret = reinterpret_of t in
+      let t', reinterpret = reinterpret_of (Value.type_of_op nanop.it) in
       [ reinterpret @@ at;
         Const (nan_bitmask_of nan t' @@ at) @@ at;
         Binary (and_of t') @@ at;
         Const (canonical_nan_of t' @@ at) @@ at;
         Compare (eq_of t') @@ at;
-        Test (Values.I32 I32Op.Eqz) @@ at;
+        Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | VecResult (VecPat (Values.V128 (shape, pats))) ->
-      let open Values in
-      (* VecResult is a list of NumPat or LitPat. For float shapes, we can have a mix of literals
-       * and NaNs. For NaNs, we need to mask it and compare with a canonical NaN. To simplify
-       * comparison, we build masks even for literals (will just be all set), collect them into
-       * a v128, then compare the entire 128 bits.
-       *)
+    | VecResult (VecPat (Value.V128 (shape, pats))) ->
+      let open Value in
       let mask_and_canonical = function
         | NumPat {it = I32 _ as i; _} -> I32 (Int32.minus_one), i
         | NumPat {it = I64 _ as i; _} -> I64 (Int64.minus_one), i
@@ -323,13 +358,15 @@ let assert_return ress ts at =
         | NumPat {it = F64 f; _} ->
           I64 (Int64.minus_one), I64 (I64_convert.reinterpret_f64 f)
         | NanPat {it = F32 nan; _} ->
-          nan_bitmask_of nan I32Type, canonical_nan_of I32Type
+          nan_bitmask_of nan I32T, canonical_nan_of I32T
         | NanPat {it = F64 nan; _} ->
-          nan_bitmask_of nan I64Type, canonical_nan_of I64Type
+          nan_bitmask_of nan I64T, canonical_nan_of I64T
         | _ -> .
       in
-      let masks, canons = List.split (List.map (fun p -> mask_and_canonical p) pats) in
-      let all_ones = V128.I32x4.of_lanes (List.init 4 (fun _ -> Int32.minus_one)) in
+      let masks, canons =
+        List.split (List.map (fun p -> mask_and_canonical p) pats) in
+      let all_ones =
+        V128.I32x4.of_lanes (List.init 4 (fun _ -> Int32.minus_one)) in
       let mask, expected = match shape with
         | V128.I8x16 () ->
           all_ones, V128.I8x16.of_lanes (List.map (I32Num.of_num 0) canons)
@@ -354,53 +391,52 @@ let assert_return ress ts at =
         VecTest (V128 (V128.I8x16 V128Op.AllTrue)) @@ at;
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | RefResult (RefPat {it = Values.NullRef t; _}) ->
+    | RefResult (RefPat {it = NullRef _; _}) ->
       [ RefIsNull @@ at;
-        Test (Values.I32 I32Op.Eqz) @@ at;
+        Test (Value.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | RefResult (RefPat {it = ExternRef n; _}) ->
-      [ Const (Values.I32 n @@ at) @@ at;
-        Call (externref_idx @@ at) @@ at;
-        Call (eq_externref_idx @@ at)  @@ at;
-        Test (Values.I32 I32Op.Eqz) @@ at;
+    | RefResult (RefPat {it = HostRef n; _}) ->
+      [ Const (Value.I32 n @@ at) @@ at;
+        Call (hostref_idx @@ at) @@ at;
+        Call (eq_ref_idx @@ at)  @@ at;
+        Test (Value.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
     | RefResult (RefPat _) ->
       assert false
+    | RefResult (RefTypePat (ExnHT | ExternHT)) ->
+      [ BrOnNull (0l @@ at) @@ at ]
     | RefResult (RefTypePat t) ->
-      let is_ref_idx =
-        match t with
-        | FuncRefType -> is_funcref_idx
-        | ExternRefType -> is_externref_idx
-      in
-      [ Call (is_ref_idx @@ at) @@ at;
-        Test (Values.I32 I32Op.Eqz) @@ at;
+      [ RefTest (NoNull, t) @@ at;
+        Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-  in [], List.flatten (List.rev_map test ress)
+    | RefResult NullPat ->
+      [ RefIsNull @@ at;
+        Test (I32 I32Op.Eqz) @@ at;
+        BrIf (0l @@ at) @@ at ]
+  in [], List.flatten (List.rev_map test (List.combine ress ts))
+
+let i32 = NumT I32T
+let anyref = RefT (Null, AnyHT)
+let eqref = RefT (Null, EqHT)
+let func_rec_type ts1 ts2 at =
+  RecT [SubT (Final, [], DefFuncT (FuncT (ts1, ts2)))] @@ at
 
 let wrap item_name wrap_action wrap_assertion at =
   let itypes, idesc, action = wrap_action at in
   let locals, assertion = wrap_assertion at in
   let types =
-    (FuncType ([], []) @@ at) ::
-    (FuncType ([NumType I32Type], [RefType ExternRefType]) @@ at) ::
-    (FuncType ([RefType ExternRefType], [NumType I32Type]) @@ at) ::
-    (FuncType ([RefType FuncRefType], [NumType I32Type]) @@ at) ::
-    (FuncType ([RefType ExternRefType; RefType ExternRefType], [NumType I32Type]) @@ at) ::
-    (FuncType ([RefType FuncRefType; RefType FuncRefType], [NumType I32Type]) @@ at) ::
+    func_rec_type [] [] at ::
+    func_rec_type [i32] [anyref] at ::
+    func_rec_type [eqref; eqref] [i32] at ::
     itypes
   in
   let imports =
     [ {module_name = Utf8.decode "module"; item_name; idesc} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "externref";
+      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "hostref";
        idesc = FuncImport (1l @@ at) @@ at} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "is_externref";
+      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "eq_ref";
        idesc = FuncImport (2l @@ at) @@ at} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "is_funcref";
-       idesc = FuncImport (3l @@ at) @@ at} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "eq_externref";
-       idesc = FuncImport (4l @@ at) @@ at} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "eq_funcref";
-       idesc = FuncImport (5l @@ at) @@ at} @@ at ]
+    ]
   in
   let item =
     List.fold_left
@@ -420,19 +456,27 @@ let wrap item_name wrap_action wrap_assertion at =
 
 
 let is_js_num_type = function
-  | I32Type -> true
-  | I64Type | F32Type | F64Type -> false
+  | I32T -> true
+  | I64T | F32T | F64T -> false
 
-let is_js_value_type = function
-  | NumType t -> is_js_num_type t
-  | VecType t -> false
-  | RefType t -> true
+let is_js_vec_type = function
+  | _ -> false
+
+let is_js_ref_type = function
+  | (_, ExnHT) -> false
+  | _ -> true
+
+let is_js_val_type = function
+  | NumT t -> is_js_num_type t
+  | VecT t -> is_js_vec_type t
+  | RefT t -> is_js_ref_type t
+  | BotT -> assert false
 
 let is_js_global_type = function
-  | GlobalType (t, mut) -> is_js_value_type t && mut = Immutable
+  | GlobalT (mut, t) -> is_js_val_type t && mut = Cons
 
 let is_js_func_type = function
-  | FuncType (ins, out) -> List.for_all is_js_value_type (ins @ out)
+  | FuncT (ts1, ts2) -> List.for_all is_js_val_type (ts1 @ ts2)
 
 
 (* Script conversion *)
@@ -470,7 +514,7 @@ let of_float z =
   | s -> s
 
 let of_num n =
-  let open Values in
+  let open Value in
   match n with
   | I32 i -> I32.to_string_s i
   | I64 i -> "int64(\"" ^ I64.to_string_s i ^ "\")"
@@ -478,19 +522,18 @@ let of_num n =
   | F64 z -> of_float (F64.to_float z)
 
 let of_vec v =
-  let open Values in
+  let open Value in
   match v with
   | V128 v -> "v128(\"" ^ V128.to_string v ^ "\")"
 
 let of_ref r =
-  let open Values in
+  let open Value in
   match r with
   | NullRef _ -> "null"
-  | ExternRef n -> "externref(" ^ Int32.to_string n ^ ")"
+  | HostRef n | Extern.ExternRef (HostRef n) -> "hostref(" ^ Int32.to_string n ^ ")"
   | _ -> assert false
 
 let of_value v =
-  let open Values in
   match v.it with
   | Num n -> of_num n
   | Vec v -> of_vec v
@@ -504,16 +547,17 @@ let of_num_pat = function
   | NumPat num -> of_num num.it
   | NanPat nanop ->
     match nanop.it with
-    | Values.I32 _ | Values.I64 _ -> .
-    | Values.F32 n | Values.F64 n -> of_nan n
+    | Value.I32 _ | Value.I64 _ -> .
+    | Value.F32 n | Value.F64 n -> of_nan n
 
 let of_vec_pat = function
-  | VecPat (Values.V128 (shape, pats)) ->
+  | VecPat (Value.V128 (shape, pats)) ->
     Printf.sprintf "v128(\"%s\")" (String.concat " " (List.map of_num_pat pats))
 
 let of_ref_pat = function
   | RefPat r -> of_ref r.it
-  | RefTypePat t -> "\"ref." ^ string_of_refed_type t ^ "\""
+  | RefTypePat t -> "\"ref." ^ string_of_heap_type t ^ "\""
+  | NullPat -> "\"ref.null\""
 
 let of_result res =
   match res.it with
@@ -523,11 +567,11 @@ let of_result res =
 
 let rec of_definition def =
   match def.it with
-  | Textual m -> of_bytes (Encode.encode m)
-  | Encoded (_, bs) -> of_bytes bs
+  | Textual (m, _) -> of_bytes (Encode.encode m)
+  | Encoded (_, bs) -> of_bytes bs.it
   | Quoted (_, s) ->
-    try of_definition (Parse.string_to_module s) with Parse.Syntax _ ->
-      of_bytes "<malformed quote>"
+    try of_definition (snd (Parse.Module.parse_string ~offset:s.at s.it))
+    with Parse.Syntax _ | Custom.Syntax _ -> of_bytes "<malformed quote>"
 
 let of_wrapper mods x_opt name wrap_action wrap_assertion at =
   let x = of_var_opt mods x_opt in
@@ -541,16 +585,19 @@ let of_action mods act =
     "call(" ^ of_var_opt mods x_opt ^ ", " ^ of_name name ^ ", " ^
       "[" ^ String.concat ", " (List.map of_value vs) ^ "])",
     (match lookup mods x_opt name act.at with
-    | ExternFuncType ft when not (is_js_func_type ft) ->
-      let FuncType (_, out) = ft in
-      Some (of_wrapper mods x_opt name (invoke ft vs), out)
+    | ExternFuncT dt ->
+      let FuncT (_, out) as ft = as_func_str_type (expand_def_type dt) in
+      if is_js_func_type ft then
+        None
+      else
+        Some (of_wrapper mods x_opt name (invoke ft vs), out)
     | _ -> None
     )
   | Get (x_opt, name) ->
     "get(" ^ of_var_opt mods x_opt ^ ", " ^ of_name name ^ ")",
     (match lookup mods x_opt name act.at with
-    | ExternGlobalType gt when not (is_js_global_type gt) ->
-      let GlobalType (t, _) = gt in
+    | ExternGlobalT gt when not (is_js_global_type gt) ->
+      let GlobalT (_, t) = gt in
       Some (of_wrapper mods x_opt name (get gt), [t])
     | _ -> None
     )
@@ -571,8 +618,12 @@ let of_assertion mods ass =
   match ass.it with
   | AssertMalformed (def, _) ->
     "assert_malformed(" ^ of_definition def ^ ");"
+  | AssertMalformedCustom (def, _) ->
+    "assert_malformed_custom(" ^ of_definition def ^ ");"
   | AssertInvalid (def, _) ->
     "assert_invalid(" ^ of_definition def ^ ");"
+  | AssertInvalidCustom (def, _) ->
+    "assert_invalid_custom(" ^ of_definition def ^ ");"
   | AssertUnlinkable (def, _) ->
     "assert_unlinkable(" ^ of_definition def ^ ");"
   | AssertUninstantiable (def, _) ->
@@ -584,6 +635,8 @@ let of_assertion mods ass =
     of_assertion' mods act "assert_trap" [] None
   | AssertExhaustion (act, _) ->
     of_assertion' mods act "assert_exhaustion" [] None
+  | AssertException act ->
+    of_assertion' mods act "assert_exception" [] None
 
 let of_command mods cmd =
   "\n// " ^ Filename.basename cmd.at.left.file ^
@@ -592,9 +645,10 @@ let of_command mods cmd =
   | Module (x_opt, def) ->
     let rec unquote def =
       match def.it with
-      | Textual m -> m
-      | Encoded (_, bs) -> Decode.decode "binary" bs
-      | Quoted (_, s) -> unquote (Parse.string_to_module s)
+      | Textual (m, _) -> m
+      | Encoded (name, bs) -> Decode.decode name bs.it
+      | Quoted (_, s) ->
+        unquote (snd (Parse.Module.parse_string ~offset:s.at s.it))
     in bind mods x_opt (unquote def);
     "let " ^ current_var mods ^ " = instance(" ^ of_definition def ^ ");\n" ^
     (if x_opt = None then "" else

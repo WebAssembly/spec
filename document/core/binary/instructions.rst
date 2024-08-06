@@ -13,7 +13,7 @@ The only exception are :ref:`structured control instructions <binary-instr-contr
    Gaps in the byte code ranges for encoding instructions are reserved for future extensions.
 
 
-.. index:: control instructions, structured control, label, block, branch, result type, value type, block type, label index, function index, type index, vector, polymorphism, LEB128
+.. index:: control instructions, structured control, exception handling, label, block, branch, result type, value type, block type, label index, function index, tag index, type index, vector, polymorphism, LEB128
    pair: binary format; instruction
    pair: binary format; block type
 .. _binary-instr-control:
@@ -21,11 +21,12 @@ The only exception are :ref:`structured control instructions <binary-instr-contr
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-:ref:`Control instructions <syntax-instr-control>` have varying encodings. For structured instructions, the instruction sequences forming nested blocks are terminated with explicit opcodes for |END| and |ELSE|.
+:ref:`Control instructions <syntax-instr-control>` have varying encodings. For structured instructions, the instruction sequences forming nested blocks are delimited with explicit opcodes for |END| and |ELSE|.
 
 :ref:`Block types <syntax-blocktype>` are encoded in special compressed form, by either the byte :math:`\hex{40}` indicating the empty type, as a single :ref:`value type <binary-valtype>`, or as a :ref:`type index <binary-typeidx>` encoded as a positive :ref:`signed integer <binary-sint>`.
 
 .. _binary-blocktype:
+.. _binary-castflags:
 .. _binary-nop:
 .. _binary-unreachable:
 .. _binary-block:
@@ -34,16 +35,28 @@ Control Instructions
 .. _binary-br:
 .. _binary-br_if:
 .. _binary-br_table:
+.. _binary-br_on_null:
+.. _binary-br_on_non_null:
+.. _binary-br_on_cast:
+.. _binary-br_on_cast_fail:
 .. _binary-return:
 .. _binary-call:
+.. _binary-call_ref:
 .. _binary-call_indirect:
+.. _binary-return_call:
+.. _binary-return_call_ref:
+.. _binary-return_call_indirect:
+.. _binary-throw:
+.. _binary-throw_ref:
+.. _binary-try_table:
+.. _binary-catch:
 
 .. math::
-   \begin{array}{llcllll}
+   \begin{array}{@{}llcllll}
    \production{block type} & \Bblocktype &::=&
      \hex{40} &\Rightarrow& \epsilon \\ &&|&
      t{:}\Bvaltype &\Rightarrow& t \\ &&|&
-     x{:}\Bs33 &\Rightarrow& x & (\iff x \geq 0) \\
+     x{:}\Bs33 &\Rightarrow& x \qquad (\iff x \geq 0) \\
    \production{instruction} & \Binstr &::=&
      \hex{00} &\Rightarrow& \UNREACHABLE \\ &&|&
      \hex{01} &\Rightarrow& \NOP \\ &&|&
@@ -53,16 +66,38 @@ Control Instructions
        &\Rightarrow& \LOOP~\X{bt}~\X{in}^\ast~\END \\ &&|&
      \hex{04}~~\X{bt}{:}\Bblocktype~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
        &\Rightarrow& \IF~\X{bt}~\X{in}^\ast~\ELSE~\epsilon~\END \\ &&|&
-     \hex{04}~~\X{bt}{:}\Bblocktype~~(\X{in}_1{:}\Binstr)^\ast~~
+     \hex{04}~~\X{bt}{:}\Bblocktype~~(\X{in}_1{:}\Binstr)^\ast\\&&&~~
        \hex{05}~~(\X{in}_2{:}\Binstr)^\ast~~\hex{0B}
        &\Rightarrow& \IF~\X{bt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END \\ &&|&
+     \hex{08}~~x{:}\Btagidx &\Rightarrow& \THROW~x \\ &&|&
+     \hex{0A} &\Rightarrow& \THROWREF \\ &&|&
      \hex{0C}~~l{:}\Blabelidx &\Rightarrow& \BR~l \\ &&|&
      \hex{0D}~~l{:}\Blabelidx &\Rightarrow& \BRIF~l \\ &&|&
      \hex{0E}~~l^\ast{:}\Bvec(\Blabelidx)~~l_N{:}\Blabelidx
        &\Rightarrow& \BRTABLE~l^\ast~l_N \\ &&|&
      \hex{0F} &\Rightarrow& \RETURN \\ &&|&
      \hex{10}~~x{:}\Bfuncidx &\Rightarrow& \CALL~x \\ &&|&
-     \hex{11}~~y{:}\Btypeidx~~x{:}\Btableidx &\Rightarrow& \CALLINDIRECT~x~y \\
+     \hex{11}~~y{:}\Btypeidx~~x{:}\Btableidx &\Rightarrow& \CALLINDIRECT~x~y \\ &&|&
+     \hex{12}~~x{:}\Bfuncidx &\Rightarrow& \RETURNCALL~x \\ &&|&
+     \hex{13}~~y{:}\Btypeidx~~x{:}\Btableidx &\Rightarrow& \RETURNCALLINDIRECT~x~y \\ &&|&
+     \hex{14}~~x{:}\Btypeidx &\Rightarrow& \CALLREF~x \\ &&|&
+     \hex{15}~~x{:}\Btypeidx &\Rightarrow& \RETURNCALLREF~x \\ &&|&
+     \hex{1F}~~\X{bt}{:}\Bblocktype~~c^\ast{:}\Bvec(\Bcatch)~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
+       &\Rightarrow& \TRYTABLE~\X{bt}~c^\ast~\X{in}^\ast~\END \\
+     \hex{D5}~~l{:}\Blabelidx &\Rightarrow& \BRONNULL~l \\ &&|&
+     \hex{D6}~~l{:}\Blabelidx &\Rightarrow& \BRONNONNULL~l \\ &&|&
+     \hex{FB}~~24{:}\Bu32~~(\NULL_1^?,\NULL_2^?){:}\Bcastflags\\&&&~~~~l{:}\Blabelidx~~\X{ht}_1{:}\Bheaptype~~\X{ht}_2{:}\Bheaptype &\Rightarrow& \BRONCAST~l~(\REF~\NULL_1^?~\X{ht}_1)~(\REF~\NULL_2^?~\X{ht}_2) \\ &&|&
+     \hex{FB}~~25{:}\Bu32~~(\NULL_1^?,\NULL_2^?){:}\Bcastflags\\&&&~~~~l{:}\Blabelidx~~\X{ht}_1{:}\Bheaptype~~\X{ht}_2{:}\Bheaptype &\Rightarrow& \BRONCASTFAIL~l~(\REF~\NULL_1^?~\X{ht}_1)~(\REF~\NULL_2^?~\X{ht}_2) \\
+   \production{catch clause} & \Bcatch &::=&
+     \hex{00}~~x{:}\Btagidx~~l{:}\Blabelidx &\Rightarrow& \CATCH~x~l \\ &&|&
+     \hex{01}~~x{:}\Btagidx~~l{:}\Blabelidx &\Rightarrow& \CATCHREF~x~l \\ &&|&
+     \hex{02}~~l{:}\Blabelidx &\Rightarrow& \CATCHALL~l \\ &&|&
+     \hex{03}~~l{:}\Blabelidx &\Rightarrow& \CATCHALLREF~l \\
+   \production{cast flags} & \Bcastflags &::=&
+     0{:}\Bu8 &\Rightarrow& (\epsilon, \epsilon) \\ &&|&
+     1{:}\Bu8 &\Rightarrow& (\NULL, \epsilon) \\ &&|&
+     2{:}\Bu8 &\Rightarrow& (\epsilon, \NULL) \\ &&|&
+     3{:}\Bu8 &\Rightarrow& (\NULL, \NULL) \\
    \end{array}
 
 .. note::
@@ -79,18 +114,77 @@ Control Instructions
 Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
 
-:ref:`Reference instructions <syntax-instr-ref>` are represented by single byte codes.
+Generic :ref:`reference instructions <syntax-instr-ref>` are represented by single byte codes, others use prefixes and type operands.
 
 .. _binary-ref.null:
 .. _binary-ref.func:
 .. _binary-ref.is_null:
+.. _binary-ref.as_non_null:
+.. _binary-struct.new:
+.. _binary-struct.new_default:
+.. _binary-struct.get:
+.. _binary-struct.get_s:
+.. _binary-struct.get_u:
+.. _binary-struct.set:
+.. _binary-array.new:
+.. _binary-array.new_default:
+.. _binary-array.new_fixed:
+.. _binary-array.new_elem:
+.. _binary-array.new_data:
+.. _binary-array.get:
+.. _binary-array.get_s:
+.. _binary-array.get_u:
+.. _binary-array.set:
+.. _binary-array.len:
+.. _binary-array.fill:
+.. _binary-array.copy:
+.. _binary-array.init_data:
+.. _binary-array.init_elem:
+.. _binary-ref.i31:
+.. _binary-i31.get_s:
+.. _binary-i31.get_u:
+.. _binary-ref.test:
+.. _binary-ref.cast:
+.. _binary-any.convert_extern:
+.. _binary-extern.convert_any:
 
 .. math::
    \begin{array}{llclll}
    \production{instruction} & \Binstr &::=& \dots \\ &&|&
-     \hex{D0}~~t{:}\Breftype &\Rightarrow& \REFNULL~t \\ &&|&
+     \hex{D0}~~t{:}\Bheaptype &\Rightarrow& \REFNULL~t \\ &&|&
      \hex{D1} &\Rightarrow& \REFISNULL \\ &&|&
-     \hex{D2}~~x{:}\Bfuncidx &\Rightarrow& \REFFUNC~x \\
+     \hex{D2}~~x{:}\Bfuncidx &\Rightarrow& \REFFUNC~x \\ &&|&
+     \hex{D3} &\Rightarrow& \REFEQ \\ &&|&
+     \hex{D4} &\Rightarrow& \REFASNONNULL \\ &&|&
+     \hex{FB}~~0{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \STRUCTNEW~x \\ &&|&
+     \hex{FB}~~1{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \STRUCTNEWDEFAULT~x \\ &&|&
+     \hex{FB}~~2{:}\Bu32~~x{:}\Btypeidx~~y{:}\Bfieldidx &\Rightarrow& \STRUCTGET~x~y \\ &&|&
+     \hex{FB}~~3{:}\Bu32~~x{:}\Btypeidx~~y{:}\Bfieldidx &\Rightarrow& \STRUCTGETS~x~y \\ &&|&
+     \hex{FB}~~4{:}\Bu32~~x{:}\Btypeidx~~y{:}\Bfieldidx &\Rightarrow& \STRUCTGETU~x~y \\ &&|&
+     \hex{FB}~~5{:}\Bu32~~x{:}\Btypeidx~~y{:}\Bfieldidx &\Rightarrow& \STRUCTSET~x~y \\ &&|&
+     \hex{FB}~~6{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYNEW~x \\ &&|&
+     \hex{FB}~~7{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYNEWDEFAULT~x \\ &&|&
+     \hex{FB}~~8{:}\Bu32~~x{:}\Btypeidx~~n{:}\Bu32 &\Rightarrow& \ARRAYNEWFIXED~x~n \\ &&|&
+     \hex{FB}~~9{:}\Bu32~~x{:}\Btypeidx~~y{:}\Bdataidx &\Rightarrow& \ARRAYNEWDATA~x~y \\ &&|&
+     \hex{FB}~~10{:}\Bu32~~x{:}\Btypeidx~~y{:}\Belemidx &\Rightarrow& \ARRAYNEWELEM~x~y \\ &&|&
+     \hex{FB}~~11{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYGET~x \\ &&|&
+     \hex{FB}~~12{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYGETS~x \\ &&|&
+     \hex{FB}~~13{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYGETU~x \\ &&|&
+     \hex{FB}~~14{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYSET~x \\ &&|&
+     \hex{FB}~~15{:}\Bu32 &\Rightarrow& \ARRAYLEN \\ &&|&
+     \hex{FB}~~16{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYFILL~x \\ &&|&
+     \hex{FB}~~17{:}\Bu32~~x{:}\Btypeidx~~y{:}\Btypeidx &\Rightarrow& \ARRAYCOPY~x~y \\ &&|&
+     \hex{FB}~~18{:}\Bu32~~x{:}\Btypeidx~~y{:}\Bdataidx &\Rightarrow& \ARRAYINITDATA~x~y \\ &&|&
+     \hex{FB}~~19{:}\Bu32~~x{:}\Btypeidx~~y{:}\Belemidx &\Rightarrow& \ARRAYINITELEM~x~y \\ &&|&
+     \hex{FB}~~20{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFTEST~(\REF~\X{ht}) \\ &&|&
+     \hex{FB}~~21{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFTEST~(\REF~\NULL~\X{ht}) \\ &&|&
+     \hex{FB}~~22{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFCAST~(\REF~\X{ht}) \\ &&|&
+     \hex{FB}~~23{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFCAST~(\REF~\NULL~\X{ht}) \\ &&|&
+     \hex{FB}~~26{:}\Bu32 &\Rightarrow& \ANYCONVERTEXTERN \\ &&|&
+     \hex{FB}~~27{:}\Bu32 &\Rightarrow& \EXTERNCONVERTANY \\ &&|&
+     \hex{FB}~~28{:}\Bu32 &\Rightarrow& \REFI31 \\ &&|&
+     \hex{FB}~~29{:}\Bu32 &\Rightarrow& \I31GETS \\ &&|&
+     \hex{FB}~~30{:}\Bu32 &\Rightarrow& \I31GETU \\
    \end{array}
 
 
@@ -179,7 +273,7 @@ Table Instructions
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
 
-Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with a different byte code. Loads and stores are followed by the encoding of their |memarg| immediate.
+Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with a different byte code. Loads and stores are followed by the encoding of their |memarg| immediate, which includes the :ref:`memory index <binary-memidx>` if bit 6 of the flags field containing alignment is set; the memory index defaults to 0 otherwise.
 
 .. _binary-memarg:
 .. _binary-load:
@@ -194,9 +288,12 @@ Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with 
 .. _binary-data.drop:
 
 .. math::
-   \begin{array}{llclll}
+   \begin{array}{llcllll}
    \production{memory argument} & \Bmemarg &::=&
-     a{:}\Bu32~~o{:}\Bu32 &\Rightarrow& \{ \ALIGN~a,~\OFFSET~o \} \\
+     a{:}\Bu32~~o{:}\Bu32 &\Rightarrow& 0~\{ \ALIGN~a,~\OFFSET~o \}
+       & (\iff a < 2^6) \\ &&|&
+     a{:}\Bu32~~x{:}\memidx~~o{:}\Bu32 &\Rightarrow& x~\{ \ALIGN~(a - 2^6),~\OFFSET~o \}
+       & (\iff 2^6 \leq a < 2^7) \\
    \production{instruction} & \Binstr &::=& \dots \\ &&|&
      \hex{28}~~m{:}\Bmemarg &\Rightarrow& \I32.\LOAD~m \\ &&|&
      \hex{29}~~m{:}\Bmemarg &\Rightarrow& \I64.\LOAD~m \\ &&|&
@@ -221,17 +318,13 @@ Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with 
      \hex{3C}~~m{:}\Bmemarg &\Rightarrow& \I64.\STORE\K{8}~m \\ &&|&
      \hex{3D}~~m{:}\Bmemarg &\Rightarrow& \I64.\STORE\K{16}~m \\ &&|&
      \hex{3E}~~m{:}\Bmemarg &\Rightarrow& \I64.\STORE\K{32}~m \\ &&|&
-     \hex{3F}~~\hex{00} &\Rightarrow& \MEMORYSIZE \\ &&|&
-     \hex{40}~~\hex{00} &\Rightarrow& \MEMORYGROW \\ &&|&
-     \hex{FC}~~8{:}\Bu32~~x{:}\Bdataidx~\hex{00} &\Rightarrow& \MEMORYINIT~x \\ &&|&
+     \hex{3F}~~x{:}\Bmemidx &\Rightarrow& \MEMORYSIZE~x \\ &&|&
+     \hex{40}~~x{:}\Bmemidx &\Rightarrow& \MEMORYGROW~x \\ &&|&
+     \hex{FC}~~8{:}\Bu32~~y{:}\Bdataidx~x{:}\Bmemidx &\Rightarrow& \MEMORYINIT~x~y \\ &&|&
      \hex{FC}~~9{:}\Bu32~~x{:}\Bdataidx &\Rightarrow& \DATADROP~x \\ &&|&
-     \hex{FC}~~10{:}\Bu32~~\hex{00}~~\hex{00} &\Rightarrow& \MEMORYCOPY \\ &&|&
-     \hex{FC}~~11{:}\Bu32~~\hex{00} &\Rightarrow& \MEMORYFILL \\
+     \hex{FC}~~10{:}\Bu32~~x{:}\Bmemidx~~y{:}\Bmemidx &\Rightarrow& \MEMORYCOPY~x~y \\ &&|&
+     \hex{FC}~~11{:}\Bu32~~x{:}\Bmemidx &\Rightarrow& \MEMORYFILL~x \\
    \end{array}
-
-.. note::
-   In future versions of WebAssembly, the additional zero bytes occurring in the encoding of the |MEMORYSIZE|, |MEMORYGROW|, |MEMORYCOPY|, and |MEMORYFILL| instructions may be used to index additional memories.
-
 
 .. index:: numeric instruction
    pair: binary format; instruction

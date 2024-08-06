@@ -49,7 +49,7 @@ The following conventions are adopted in stating these rules.
 
 * Execution can *enter* and *exit* :ref:`instruction sequences <syntax-instr-seq>` that form :ref:`blocks <syntax-instr-control>`.
 
-* :ref:`Instruction sequences <syntax-instr-seq>` are implicitly executed in order, unless a trap or jump occurs.
+* :ref:`Instruction sequences <syntax-instr-seq>` are implicitly executed in order, unless a trap or jump occurs, or an exception is thrown.
 
 * In various places the rules contain *assertions* expressing crucial invariants about the program state.
 
@@ -105,7 +105,7 @@ The order of reduction is determined by the definition of an appropriate :ref:`e
 
 Reduction *terminates* when no more reduction rules are applicable.
 :ref:`Soundness <soundness>` of the WebAssembly :ref:`type system <type-system>` guarantees that this is only the case when the original instruction sequence has either been reduced to a sequence of |CONST| instructions, which can be interpreted as the :ref:`values <syntax-val>` of the resulting operand stack,
-or if a :ref:`trap <syntax-trap>` occurred.
+or if a :ref:`trap <syntax-trap>` or an uncaught exception occurred.
 
 .. note::
    For example, the following instruction sequence,

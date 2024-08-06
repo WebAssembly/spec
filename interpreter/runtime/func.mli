@@ -1,11 +1,12 @@
 open Types
-open Values
+open Value
 
 type 'inst t = 'inst func
 and 'inst func =
-  | AstFunc of func_type * 'inst * Ast.func
-  | HostFunc of func_type * (value list -> value list)
+  | AstFunc of def_type * 'inst * Ast.func
+  | HostFunc of def_type * (value list -> value list)
 
-val alloc : func_type -> 'inst -> Ast.func -> 'inst func
-val alloc_host : func_type -> (value list -> value list) -> 'inst func
-val type_of : 'inst func -> func_type
+val alloc : def_type -> 'inst -> Ast.func -> 'inst func
+val alloc_host : def_type -> (value list -> value list) -> 'inst func
+
+val type_of : 'inst func -> def_type

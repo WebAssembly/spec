@@ -3,13 +3,18 @@ type region = {left : pos; right : pos}
 type 'a phrase = {at : region; it : 'a}
 
 let (@@) x region = {it = x; at = region}
-let at region x = x @@ region
+let it phrase = phrase.it
+let at phrase = phrase.at
 
 
 (* Positions and regions *)
 
 let no_pos = {file = ""; line = 0; column = 0}
 let no_region = {left = no_pos; right = no_pos}
+let all_region file =
+  { left = {file; line = 0; column = 0};
+    right = {file; line = Int.max_int; column = Int.max_int}
+  }
 
 let string_of_pos pos =
   if pos.line = -1 then

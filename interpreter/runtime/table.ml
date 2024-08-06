@@ -1,5 +1,5 @@
 open Types
-open Values
+open Value
 
 type size = int32
 type index = int32
@@ -23,7 +23,8 @@ let create size r =
   try Lib.Array32.make size r
   with Out_of_memory | Invalid_argument _ -> raise OutOfMemory
 
-let alloc (TableType (lim, _) as ty) r =
+let alloc (TableT (lim, t) as ty) r =
+  assert Free.((ref_type t).types = Set.empty);
   if not (valid_limits lim) then raise Type;
   {ty; content = create lim.min r}
 
@@ -34,7 +35,7 @@ let type_of tab =
   tab.ty
 
 let grow tab delta r =
-  let TableType (lim, t) = tab.ty in
+  let TableT (lim, t) = tab.ty in
   assert (lim.min = size tab);
   let old_size = lim.min in
   let new_size = Int32.add old_size delta in
@@ -43,7 +44,7 @@ let grow tab delta r =
   if not (valid_limits lim') then raise SizeLimit else
   let after = create new_size r in
   Array.blit tab.content 0 after 0 (Array.length tab.content);
-  tab.ty <- TableType (lim', t);
+  tab.ty <- TableT (lim', t);
   tab.content <- after
 
 let load tab i =
@@ -51,8 +52,8 @@ let load tab i =
   Lib.Array32.get tab.content i
 
 let store tab i r =
-  let TableType (lim, t) = tab.ty in
-  if type_of_ref r <> t then raise Type;
+  let TableT (lim, t) = tab.ty in
+  if not (Match.match_ref_type [] (type_of_ref r) t) then raise Type;
   if i < 0l || i >= Lib.Array32.length tab.content then raise Bounds;
   Lib.Array32.set tab.content i r
 

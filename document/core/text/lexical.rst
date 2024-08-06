@@ -50,7 +50,7 @@ The character stream in the source text is divided, from left to right, into a s
      (\text{a} ~|~ \dots ~|~ \text{z})~\Tidchar^\ast
      \qquad (\iff~\mbox{occurring as a literal terminal in the grammar}) \\
    \production{reserved} & \Treserved &::=&
-     (\Tidchar ~|~ \Tstring)^+ \\
+     (\Tidchar ~|~ \Tstring ~|~ \text{,} ~|~ \text{;} ~|~ \text{[} ~|~ \text{]} ~|~ \text{\{} ~|~ \text{\}})^+ \\
    \end{array}
 
 Tokens are formed from the input character stream according to the *longest match* rule.
@@ -71,13 +71,14 @@ Any token that does not fall into any of the other categories is considered *res
 
 .. index:: ! white space, character, ASCII
    single: text format; white space
-.. _text-format:
 .. _text-space:
+.. _text-format:
+.. _text-newline:
 
 White Space
 ~~~~~~~~~~~
 
-*White space* is any sequence of literal space characters, formatting characters, or :ref:`comments <text-comment>`.
+*White space* is any sequence of literal space characters, formatting characters, :ref:`comments <text-comment>`, or :ref:`annotations <text-annot>`.
 The allowed formatting characters correspond to a subset of the |ASCII|_ *format effectors*, namely, *horizontal tabulation* (:math:`\unicode{09}`), *line feed* (:math:`\unicode{0A}`), and *carriage return* (:math:`\unicode{0D}`).
 
 .. math::
@@ -85,7 +86,9 @@ The allowed formatting characters correspond to a subset of the |ASCII|_ *format
    \production{white space} & \Tspace &::=&
      (\text{~~} ~|~ \Tformat ~|~ \Tcomment)^\ast \\
    \production{format} & \Tformat &::=&
-     \unicode{09} ~|~ \unicode{0A} ~|~ \unicode{0D} \\
+     \Tnewline ~|~ \unicode{09} \\
+   \production{newline} & \Tnewline &::=&
+     \unicode{0A} ~|~ \unicode{0D} ~|~ \unicode{0D}~\unicode{0A} \\
    \end{array}
 
 The only relevance of white space is to separate :ref:`tokens <text-token>`. It is otherwise ignored.
@@ -107,13 +110,13 @@ Block comments can be nested.
    \production{comment} & \Tcomment &::=&
      \Tlinecomment ~|~ \Tblockcomment \\
    \production{line comment} & \Tlinecomment &::=&
-     \Tcommentd~~\Tlinechar^\ast~~(\unicode{0A} ~|~ \T{eof}) \\
+     \Tcommentd~~\Tlinechar^\ast~~(\Tnewline ~|~ \T{eof}) \\
    \production{line character} & \Tlinechar &::=&
-     c{:}\Tchar & (\iff c \neq \unicode{0A}) \\
+     c{:}\Tchar & (\iff c \neq \unicode{0A} \land c \neq \unicode{0D}) \\
    \production{block comment} & \Tblockcomment &::=&
      \Tcommentl~~\Tblockchar^\ast~~\Tcommentr \\
    \production{block character} & \Tblockchar &::=&
-     c{:}\Tchar & (\iff c \neq \text{;} \wedge c \neq \text{(}) \\ &&|&
+     c{:}\Tchar & (\iff c \neq \text{;} \land c \neq \text{(}) \\ &&|&
      \text{;} & (\iff~\mbox{the next character is not}~\text{)}) \\ &&|&
      \text{(} & (\iff~\mbox{the next character is not}~\text{;}) \\ &&|&
      \Tblockcomment \\
@@ -124,3 +127,35 @@ The *look-ahead* restrictions on the productions for |Tblockchar| disambiguate t
 
 .. note::
    Any formatting and control characters are allowed inside comments.
+
+
+.. index:: ! annotation
+   single: text format; annotation
+.. _text-annot:
+
+Annotations
+~~~~~~~~~~~
+
+An *annotation* is a bracketed token sequence headed by an *annotation id* of the form :math:`\text{@id}` or :math:`\text{@"..."}`.
+No :ref:`space <text-space>` is allowed between the opening parenthesis and this id.
+Annotations are intended to be used for third-party extensions;
+they can appear anywhere in a program but are ignored by the WebAssembly semantics itself, which treats them as :ref:`white space <text-space>`.
+
+Annotations can contain other parenthesized token sequences (including nested annotations), as long as they are well-nested.
+:ref:`String literals <text-string>` and :ref:`comments <text-comment>` occurring in an annotation must also be properly nested and closed.
+
+.. math::
+   \begin{array}{llclll@{\qquad\qquad}l}
+   \production{annotation} & \Tannot &::=&
+     \text{(@}~\Tannotid ~(\Tspace ~|~ \Ttoken)^\ast~\text{)} \\
+   \production{annotation identifier} & \Tannotid &::=&
+     \Tidchar^+ ~|~ \Tname \\
+   \end{array}
+
+.. note::
+   The annotation id is meant to be an identifier categorising the extension, and plays a role similar to the name of a :ref:`custom section <binary-customsec>`.
+   By convention, annotations corresponding to a custom section should use the custom section's name as an id.
+
+   Implementations are expected to ignore annotations with ids that they do not recognize.
+   On the other hand, they may impose restrictions on annotations that they do recognize, e.g., requiring a specific structure by superimposing a more concrete grammar.
+   It is up to an implementation how it deals with errors in such annotations.

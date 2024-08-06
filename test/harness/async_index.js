@@ -100,8 +100,8 @@ function reinitializeRegistry() {
       print_f64: console.log.bind(console),
       global_i32: 666,
       global_i64: 666n,
-      global_f32: 666,
-      global_f64: 666,
+      global_f32: 666.6,
+      global_f64: 666.6,
       table: new WebAssembly.Table({
         initial: 10,
         maximum: 20,
@@ -175,6 +175,12 @@ function assert_invalid(bytes) {
 }
 
 const assert_malformed = assert_invalid;
+
+function assert_invalid_custom(bytes) {
+  module(bytes);
+}
+
+const assert_malformed_custom = assert_invalid_custom;
 
 function instance(bytes, imports, valid = true) {
   const test = valid
