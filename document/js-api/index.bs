@@ -93,6 +93,7 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: store_init; url: appendix/embedding.html#embed-store-init
     text: module_decode; url: appendix/embedding.html#embed-module-decode
     text: module_validate; url: appendix/embedding.html#embed-module-validate
+    text: module_validate_partial_imports; url: appendix/embedding.html#embed-module-validate-partial-imports
     text: module_instantiate; url: appendix/embedding.html#embed-module-instantiate
     text: module_imports; url: appendix/embedding.html#embed-module-imports
     text: module_exports; url: appendix/embedding.html#embed-module-exports
@@ -302,13 +303,18 @@ dictionary WebAssemblyInstantiatedSource {
     required Instance instance;
 };
 
+dictionary WebAssemblyCompileOptions {
+    USVString? importedStringConstants;
+    sequence&lt;USVString> builtins;
+};
+
 [Exposed=*]
 namespace WebAssembly {
-    boolean validate(BufferSource bytes);
-    Promise&lt;Module> compile(BufferSource bytes);
+    boolean validate(BufferSource bytes, optional WebAssemblyCompileOptions options);
+    Promise&lt;Module> compile(BufferSource bytes, optional WebAssemblyCompileOptions options);
 
     Promise&lt;WebAssemblyInstantiatedSource> instantiate(
-        BufferSource bytes, optional object importObject);
+        BufferSource bytes, optional object importObject, optional WebAssemblyCompileOptions options);
 
     Promise&lt;Instance> instantiate(
         Module moduleObject, optional object importObject);
@@ -335,10 +341,21 @@ Note:
 </div>
 
 <div algorithm>
-  The <dfn method for="WebAssembly">validate(|bytes|)</dfn> method, when invoked, performs the following steps:
+  To <dfn>Validate builtins for WebAssembly module</dfn> from module |module| and enabled builtins |builtins|, perform the following steps:
+    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
+    1. Let |imports| be ... // TODO: create imports from a builtin set name
+    1. Let |result| be [=module_validate_partial_imports=](|store|, |module|, |imports|).
+    1. If |result| is [=error=], return [=error=].
+    1. Return true.
+</div>
+
+<div algorithm>
+  The <dfn method for="WebAssembly">validate(|bytes|, |options|)</dfn> method, when invoked, performs the following steps:
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
     1. [=Compile a WebAssembly module|Compile=] |stableBytes| as a WebAssembly module and store the results as |module|.
     1. If |module| is [=error=], return false.
+    1. Let |builtins| be options["builtins"]
+    1. If [=Validate builtins for WebAssembly module=] |module| |builtins| is [=error=], return false.
     1. Return true.
 </div>
 
@@ -346,41 +363,47 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 
     * \[[Module]] : a WebAssembly [=/module=]
     * \[[Bytes]] : the source bytes of \[[Module]].
+    * \[[Builtins]] : an ordered set of names of <a href="#builtins">builtin sets</a>
 
 <div algorithm>
-  To <dfn>construct a WebAssembly module object</dfn> from a module |module| and source bytes |bytes|, perform the following steps:
+  To <dfn>construct a WebAssembly module object</dfn> from a module |module|, source bytes |bytes|, builtins |builtins|, perform the following steps:
 
     1. Let |moduleObject| be a new {{Module}} object.
     1. Set |moduleObject|.\[[Module]] to |module|.
     1. Set |moduleObject|.\[[Bytes]] to |bytes|.
+    1. Set |moduleObject|.\[[Builtins]] to |builtins|.
     1. Return |moduleObject|.
 </div>
 
 <div algorithm>
-  To <dfn>asynchronously compile a WebAssembly module</dfn> from source bytes |bytes|, using optional [=task source=] |taskSource|, perform the following steps:
+  To <dfn>asynchronously compile a WebAssembly module</dfn> from source bytes |bytes| and {{WebAssemblyCompileOptions}} |options| using optional [=task source=] |taskSource|, perform the following steps:
 
     1. Let |promise| be [=a new promise=].
     1. Run the following steps [=in parallel=]:
         1. [=compile a WebAssembly module|Compile the WebAssembly module=] |bytes| and store the result as |module|.
         1. [=Queue a task=] to perform the following steps. If |taskSource| was provided, queue the task on that task source.
             1. If |module| is [=error=], reject |promise| with a {{CompileError}} exception.
+            1. Let |builtins| be options["builtins"]
+            1. If [=Validate builtins for WebAssembly module=] |module| |builtins| is [=error=], reject |promise| with a {{CompileError}} exception.
             1. Otherwise,
-                1. [=Construct a WebAssembly module object=] from |module| and |bytes|, and let |moduleObject| be the result.
+                1. [=Construct a WebAssembly module object=] from |module|, |bytes|, |builtins|, and let |moduleObject| be the result.
                 1. [=Resolve=] |promise| with |moduleObject|.
     1. Return |promise|.
 </div>
 
 <div algorithm>
-    The <dfn method for="WebAssembly">compile(|bytes|)</dfn> method, when invoked, performs the following steps:
+    The <dfn method for="WebAssembly">compile(|bytes|, |options|)</dfn> method, when invoked, performs the following steps:
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
-    1. [=Asynchronously compile a WebAssembly module=] from |stableBytes| and return the result.
+    1. [=Asynchronously compile a WebAssembly module=] from |stableBytes| using |options| and return the result.
 </div>
 
 <div algorithm="read-the-imports">
   To <dfn>read the imports</dfn> from a WebAssembly module |module| from imports object |importObject|, perform the following steps:
     1. If |module|.[=imports=] [=list/is empty|is not empty=], and |importObject| is undefined, throw a {{TypeError}} exception.
+        // TODO: instantiate builtin sets
     1. Let |imports| be « ».
     1. [=list/iterate|For each=] (|moduleName|, |componentName|, |externtype|) of [=module_imports=](|module|),
+        // TODO: get exports from a builtin set if enabled
         1. Let |o| be [=?=] [$Get$](|importObject|, |moduleName|).
         1. If [=Type=](|o|) is not Object, throw a {{TypeError}} exception.
         1. Let |v| be [=?=] [$Get$](|o|, |componentName|).
@@ -527,9 +550,9 @@ The verification of WebAssembly type requirements is deferred to the
 </div>
 
 <div algorithm>
-  The <dfn method for="WebAssembly">instantiate(|bytes|, |importObject|)</dfn> method, when invoked, performs the following steps:
+  The <dfn method for="WebAssembly">instantiate(|bytes|, |importObject|, |options|)</dfn> method, when invoked, performs the following steps:
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
-    1. [=Asynchronously compile a WebAssembly module=] from |stableBytes| and let |promiseOfModule| be the result.
+    1. [=Asynchronously compile a WebAssembly module=] from |stableBytes| using |options| and let |promiseOfModule| be the result.
     1. [=Instantiate a promise of a module|Instantiate=] |promiseOfModule| with imports |importObject| and return the result.
 </div>
 
@@ -570,7 +593,7 @@ dictionary ModuleImportDescriptor {
 
 [LegacyNamespace=WebAssembly, Exposed=*]
 interface Module {
-  constructor(BufferSource bytes);
+  constructor(BufferSource bytes, optional WebAssemblyCompileOptions options);
   static sequence&lt;ModuleExportDescriptor> exports(Module moduleObject);
   static sequence&lt;ModuleImportDescriptor> imports(Module moduleObject);
   static sequence&lt;ArrayBuffer> customSections(Module moduleObject, DOMString sectionName);
@@ -602,6 +625,7 @@ interface Module {
     1. Let |module| be |moduleObject|.\[[Module]].
     1. Let |imports| be « ».
     1. [=list/iterate|For each=] (|moduleName|, |name|, |type|) of [=module_imports=](|module|),
+        // TODO: skip import if in builtin module set
         1. Let |kind| be the [=string value of the extern type=] |type|.
         1. Let |obj| be «[ "{{ModuleImportDescriptor/module}}" → |moduleName|, "{{ModuleImportDescriptor/name}}" → |name|, "{{ModuleImportDescriptor/kind}}" → |kind| ]».
         1. [=list/Append=] |obj| to |imports|.
@@ -1644,6 +1668,40 @@ Note: This defines {{CompileError}}, {{LinkError}}, and {{RuntimeError}} classes
 They expose the same interface as native JavaScript errors like {{TypeError}} and {{RangeError}}.
 
 Note: It is not currently possible to define this behavior using Web IDL.
+
+
+<h2 id="builtins">Builtins</h2>
+
+The JS-API defines sets of builtin functions which can be imported through a flag when compiling a module. WebAssembly builtin functions mirror existing JavaScript builtins, but adapt them to be useable directly as WebAssembly functions.
+
+All builtin functions are grouped into builtin sets. Every builtin set has a name that [=read the imports|is used during import lookup=]. All names are prefixed by the `wasm:` namespace.
+
+
+<h3 id="builtins-js-string">String Builtins</h3>
+
+String builtins adapt the interface of the String builtin object. The import name for this set is `wasm:js-string`.
+
+<div algorithm="js-string-unwrapString">
+
+The <dfn>unwrapString(|v|)</dfn> method, when invoked, performs the following steps:
+
+1. If [=Type=](|v|) is not String
+    1. Throw a {{RuntimeError}} exception. TODO: this needs to not be catchable, like a trap.
+1. Return |v|
+
+</div>
+
+<h4 id="js-string-charCodeAt">charCodeAt</h4>
+
+The type of this function is `(func (param externref i32) (result i32))`.
+
+<div algorithm="js-string-charCodeAt">
+When this builtin is invoked, the following steps must be run:
+
+1. Let |string| be [$unwrapString$](param0)
+1. TODO
+
+</div>
 
 
 <h2 id="errors">Error Condition Mappings to JavaScript</h2>

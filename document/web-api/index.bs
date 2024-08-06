@@ -89,25 +89,25 @@ This document builds off of the WebAssembly specification [[WEBASSEMBLY]] and th
 <pre class="idl">
 [Exposed=(Window,Worker)]
 partial namespace WebAssembly {
-  Promise&lt;Module> compileStreaming(Promise&lt;Response> source);
+  Promise&lt;Module> compileStreaming(Promise&lt;Response> source, optional WebAssemblyCompileOptions options);
   Promise&lt;WebAssemblyInstantiatedSource> instantiateStreaming(
-      Promise&lt;Response> source, optional object importObject);
+      Promise&lt;Response> source, optional object importObject, optional WebAssemblyCompileOptions options);
 };
 </pre>
 
 <div algorithm>
-The <dfn method for="WebAssembly">compileStreaming(|source|)</dfn> method, when invoked, returns the result of [=compile a potential WebAssembly response|compiling a potential WebAssembly response=] with |source|.
+The <dfn method for="WebAssembly">compileStreaming(|source|, |options|)</dfn> method, when invoked, returns the result of [=compile a potential WebAssembly response|compiling a potential WebAssembly response=] with |source| using |options|.
 </div>
 
 <div algorithm>
-The <dfn method for="WebAssembly">instantiateStreaming(|source|, |importObject|)</dfn> method, when invoked, performs the following steps:
+The <dfn method for="WebAssembly">instantiateStreaming(|source|, |importObject|, |options|)</dfn> method, when invoked, performs the following steps:
 
-    1. Let |promiseOfModule| be the result of [=compile a potential WebAssembly response|compiling a potential WebAssembly response=] with |source|.
+    1. Let |promiseOfModule| be the result of [=compile a potential WebAssembly response|compiling a potential WebAssembly response=] with |source| using |options|.
     1. Return the result of [=instantiate a promise of a module|instantiating the promise of a module=] |promiseOfModule| with imports |importObject|.
 </div>
 
 <div algorithm>
-To <dfn>compile a potential WebAssembly response</dfn> with a promise of a {{Response}} |source|, perform the following steps:
+To <dfn>compile a potential WebAssembly response</dfn> with a promise of a {{Response}} |source| and {{WebAssemblyCompileOptions}} |options|, perform the following steps:
 
 Note: This algorithm accepts a {{Response}} object, or a
     promise for one, and compiles and instantiates the resulting bytes of the response. This compilation
@@ -136,7 +136,7 @@ Note: This algorithm accepts a {{Response}} object, or a
 
         1. [=Upon fulfillment=] of |bodyPromise| with value |bodyArrayBuffer|:
             1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bodyArrayBuffer|.
-            1. [=Asynchronously compile a WebAssembly module|Asynchronously compile the WebAssembly module=] |stableBytes| using the [=networking task source=] and [=resolve=] |returnValue| with the result.
+            1. [=Asynchronously compile a WebAssembly module|Asynchronously compile the WebAssembly module=] |stableBytes| using the [=networking task source=] and |options| and [=resolve=] |returnValue| with the result.
         1. [=Upon rejection=] of |bodyPromise| with reason |reason|:
             1. [=Reject=] |returnValue| with |reason|.
      1. [=Upon rejection=] of |source| with reason |reason|:
