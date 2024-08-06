@@ -459,3 +459,9 @@ let string_of_def = function
 | Algo algo -> string_of_algorithm algo
 
 let string_of_prose prose = List.map string_of_def prose |> String.concat "\n"
+
+let file_of_prose file prose =
+  let prose = string_of_prose prose in
+  let oc = Out_channel.open_text file in
+  Fun.protect (fun () -> Out_channel.output_string oc prose)
+    ~finally:(fun () -> Out_channel.close oc)

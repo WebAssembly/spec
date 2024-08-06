@@ -9,7 +9,7 @@ let version = "0.4"
 type target =
  | Check
  | Latex
- | Prose
+ | Prose of bool
  | Splice of Backend_splice.Config.t
  | Interpreter of string list
 
@@ -129,7 +129,8 @@ let argspec = Arg.align
     " Splice Sphinx";
   "--splice-sphinx", Arg.Unit (fun () -> target := Splice Backend_splice.Config.sphinx),
     " Splice Sphinx";
-  "--prose", Arg.Unit (fun () -> target := Prose), " Generate prose";
+  "--prose", Arg.Unit (fun () -> target := Prose true), " Generate prose";
+  "--prose-rst", Arg.Unit (fun () -> target := Prose false), " Generate prose";
   "--interpreter", Arg.Rest_all (fun args -> target := Interpreter args),
     " Generate interpreter";
 
@@ -172,7 +173,7 @@ let () =
     Il.Valid.valid il;
 
     (match !target with
-    | Prose | Splice _ | Interpreter _ ->
+    | Prose _ | Splice _ | Interpreter _ ->
       enable_pass Sideconditions;
     | _ when !print_al || !print_al_o <> "" ->
       enable_pass Sideconditions;
@@ -241,22 +242,28 @@ let () =
         exit 2
       )
 
-    | Prose ->
+    | Prose as_plaintext ->
       log "Prose Generation...";
-      let prose = Backend_prose.Gen.gen_prose el il al in
-      let oc =
-        match !odsts with
-        | [] -> stdout
-        | [odst] -> open_out odst
-        | _ ->
-          prerr_endline "too many output file names";
-          exit 2
-      in
-      output_string oc "=================\n";
-      output_string oc " Generated prose \n";
-      output_string oc "=================\n";
-      output_string oc (Backend_prose.Print.string_of_prose prose);
-      if oc != stdout then close_out oc
+      let config_latex = Backend_latex.Config.default in
+      let config_prose = Backend_prose.Config.{panic_on_error = false} in
+      (match !odsts with
+      | [] ->
+          if as_plaintext then
+            Backend_prose.Gen.gen_prose el il al
+            |> Backend_prose.Print.string_of_prose
+            |> print_endline
+          else
+            print_endline (Backend_prose.Gen.gen_string config_latex config_prose el il al)
+      | [odst] ->
+          if as_plaintext then
+            Backend_prose.Gen.gen_prose el il al
+            |> Backend_prose.Print.file_of_prose odst
+          else
+            Backend_prose.Gen.gen_file config_latex config_prose odst el il al
+      | _ ->
+        prerr_endline "too many output file names";
+        exit 2
+      )
 
     | Splice config ->
       if !in_place then

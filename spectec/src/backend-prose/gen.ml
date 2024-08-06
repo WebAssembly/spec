@@ -1,5 +1,4 @@
 open Prose
-open Print
 open Il
 open Al.Al_util
 open Il2al.Translate
@@ -490,4 +489,15 @@ let gen_prose el il al =
   validation_prose @ execution_prose
 
 (** Main entry for generating stringified prose **)
-let gen_string el il al = string_of_prose (gen_prose el il al)
+let gen_string cfg_latex cfg_prose el il al =
+  let env_latex = Backend_latex.Render.env cfg_latex el in
+  let prose = gen_prose el il al in
+  let env_prose = Render.env cfg_prose [] [] env_latex in
+  Render.render_prose env_prose prose
+
+(** Main entry for generating prose file **)
+let gen_file cfg_latex cfg_prose file el il al =
+  let prose = gen_string cfg_latex cfg_prose el il al in
+  let oc = Out_channel.open_text file in
+  Fun.protect (fun () -> Out_channel.output_string oc prose)
+    ~finally:(fun () -> Out_channel.close oc)
