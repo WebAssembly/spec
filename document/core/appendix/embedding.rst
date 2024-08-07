@@ -161,15 +161,6 @@ Modules
    \end{array}
 
 
-.. index:: validation
-.. _embed-module-module-validate-partial-imports:
-
-:math:`\F{module\_validate\_partial\_imports}(\module, \imports) : \error^?`
-................................................
-
-// TODO
-1. Return :math:`\ERROR`.
-
 .. index:: instantiation, module instance
 .. _embed-module-instantiate:
 
