@@ -2067,8 +2067,8 @@ watsup 0.4 generator
 #. Return.
 
 
-:math:`{\mathrm{instantiate}}({\mathit{module}}, {{\mathit{externval}}^\ast})`
-..............................................................................
+:math:`{\mathrm{instantiate}}(z, {\mathit{module}}, {{\mathit{externval}}^\ast})`
+.................................................................................
 
 
 1. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
@@ -2142,15 +2142,15 @@ watsup 0.4 generator
 #. Return :math:`f{.}\mathsf{module}`.
 
 
-:math:`{\mathrm{invoke}}({\mathit{fa}}, {{\mathit{val}}^{n}})`
-..............................................................
+:math:`{\mathrm{invoke}}(z, {\mathit{fa}}, {{\mathit{val}}^{n}})`
+.................................................................
 
 
 1. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array} \}\end{array}`.
 
 #. Push the activation of :math:`f` to the stack.
 
-#. Let :math:`{t_1^{n}} \rightarrow {t_2^\ast}` be :math:`{\mathrm{funcinst}}{}[{\mathit{fa}}]{.}\mathsf{type}`.
+#. Let :math:`{t_1^{n}} \rightarrow {t_2^\ast}` be :math:`z{.}\mathsf{funcs}{}[{\mathit{fa}}]{.}\mathsf{type}`.
 
 #. Pop the activation of :math:`f` from the stack.
 
@@ -3838,7 +3838,7 @@ initdata moduleinst u32_u0* byte_u1*
 7. Perform $initdata(moduleinst, i'*, b'**).
 8. Return.
 
-instantiate module externval*
+instantiate z module externval*
 1. Assert: Due to validation, module is of the case MODULE.
 2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
 3. Assert: Due to validation, type is of the case TYPE*.
@@ -3875,10 +3875,10 @@ instantiate module externval*
 32. Pop the activation of f with arity 0 from the stack.
 33. Return f.MODULE.
 
-invoke fa val^n
+invoke z fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; EXPORTS: []; }; }.
 2. Push the activation of f to the stack.
-3. Let (t_1^n -> t_2*) be $funcinst()[fa].TYPE.
+3. Let (t_1^n -> t_2*) be $funcinst(z)[fa].TYPE.
 4. Pop the activation of _f from the stack.
 5. Let k be |t_2*|.
 6. Push the activation of f with arity k to the stack.
@@ -7348,8 +7348,8 @@ watsup 0.4 generator
    #. Return :math:`{\mathit{mi}'}`.
 
 
-:math:`{\mathrm{blocktype}}({\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}})`
-..........................................................................................
+:math:`{{\mathrm{blocktype}}}_{z}({\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}})`
+................................................................................................
 
 
 1. If :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`\epsilon`, then:
@@ -7370,7 +7370,7 @@ watsup 0.4 generator
 
 #. Let :math:`x` be :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-#. Return :math:`{\mathrm{type}}(x)`.
+#. Return :math:`z{.}\mathsf{types}{}[x]`.
 
 
 :math:`{\mathrm{funcs}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
@@ -7807,8 +7807,8 @@ watsup 0.4 generator
 #. Return :math:`{{\mathit{instr}}^\ast}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}init}~i)~(\mathsf{data{.}drop}~i)`.
 
 
-:math:`{\mathrm{instantiate}}({\mathit{module}}, {{\mathit{externval}}^\ast})`
-..............................................................................
+:math:`{\mathrm{instantiate}}(z, {\mathit{module}}, {{\mathit{externval}}^\ast})`
+.................................................................................
 
 
 1. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
@@ -7880,15 +7880,15 @@ watsup 0.4 generator
 #. Return :math:`f{.}\mathsf{module}`.
 
 
-:math:`{\mathrm{invoke}}({\mathit{fa}}, {{\mathit{val}}^{n}})`
-..............................................................
+:math:`{\mathrm{invoke}}(z, {\mathit{fa}}, {{\mathit{val}}^{n}})`
+.................................................................
 
 
 1. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array} \}\end{array}`.
 
 #. Push the activation of :math:`f` to the stack.
 
-#. Let :math:`{t_1^{n}} \rightarrow {t_2^\ast}` be :math:`{\mathrm{funcinst}}{}[{\mathit{fa}}]{.}\mathsf{type}`.
+#. Let :math:`{t_1^{n}} \rightarrow {t_2^\ast}` be :math:`z{.}\mathsf{funcs}{}[{\mathit{fa}}]{.}\mathsf{type}`.
 
 #. Pop the activation of :math:`f` from the stack.
 
@@ -11201,7 +11201,7 @@ growmemory mi n
   a. Let mi' be { TYPE: (PAGE (i', j)); BYTES: b* ++ 0^(n · (64 · $Ki())); }.
   b. Return mi'.
 
-blocktype blocktype_u1
+blocktype z blocktype_u1
 1. If (blocktype_u1 is (_RESULT ?())), then:
   a. Return ([] -> []).
 2. If blocktype_u1 is of the case _RESULT, then:
@@ -11211,7 +11211,7 @@ blocktype blocktype_u1
     2) Return ([] -> [t]).
 3. Assert: Due to validation, blocktype_u1 is of the case _IDX.
 4. Let (_IDX x) be blocktype_u1.
-5. Return $type(x).
+5. Return $type(z, x).
 
 funcs externval_u0*
 1. If (externval_u0* is []), then:
@@ -11420,7 +11420,7 @@ rundata (DATA byte* datamode_u0) i
 5. Let n be |byte*|.
 6. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT i), (DATA.DROP i)].
 
-instantiate module externval*
+instantiate z module externval*
 1. Assert: Due to validation, module is of the case MODULE.
 2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
 3. Assert: Due to validation, type is of the case TYPE*.
@@ -11456,10 +11456,10 @@ instantiate module externval*
 31. Pop the activation of f with arity 0 from the stack.
 32. Return f.MODULE.
 
-invoke fa val^n
+invoke z fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
 2. Push the activation of f to the stack.
-3. Let (t_1^n -> t_2*) be $funcinst()[fa].TYPE.
+3. Let (t_1^n -> t_2*) be $funcinst(z)[fa].TYPE.
 4. Pop the activation of _f from the stack.
 5. Let k be |t_2*|.
 6. Push the activation of f with arity k to the stack.
@@ -18389,17 +18389,17 @@ watsup 0.4 generator
    #. Return :math:`{\mathit{meminst}'}`.
 
 
-:math:`{{\mathrm{blocktype}}}_{{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}`
-.............................................................................................
+:math:`{{\mathrm{blocktype}}}_{z}({\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}})`
+................................................................................................
 
 
 1. If :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case , then:
 
    a. Let :math:`x` be :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Assert: Due to validation, :math:`{\mathrm{expand}}({\mathrm{type}}(x))` is of the case :math:`\mathsf{func}`.
+   #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{func}`.
 
-   #. Let :math:`(\mathsf{func}~{\mathit{ft}})` be :math:`{\mathrm{expand}}({\mathrm{type}}(x))`.
+   #. Let :math:`(\mathsf{func}~{\mathit{ft}})` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
    #. Return :math:`{\mathit{ft}}`.
 
@@ -18808,8 +18808,8 @@ watsup 0.4 generator
 #. Return :math:`{{\mathit{instr}}^\ast}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}init}~y~x)~(\mathsf{data{.}drop}~x)`.
 
 
-:math:`{\mathrm{evalglobals}}({{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{\mathit{expr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})`
-....................................................................................................................................................................
+:math:`{{{\mathrm{evalglobal}}^\ast}}{(z, {{\mathit{globaltype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}, {{\mathit{expr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast})}`
+.................................................................................................................................................................................
 
 
 1. Let :math:`z` be the current frame.
@@ -18834,13 +18834,13 @@ watsup 0.4 generator
 
 #. Append :math:`a` to the :math:`f{.}\mathsf{module}{.}\mathsf{globals}`.
 
-#. Let :math:`{{\mathit{val}'}^\ast}` be :math:`{\mathrm{evalglobals}}({{\mathit{gt}'}^\ast}, {{\mathit{expr}'}^\ast})`.
+#. Let :math:`{{\mathit{val}'}^\ast}` be :math:`{{{\mathrm{evalglobal}}^\ast}}{(z, {{\mathit{gt}'}^\ast}, {{\mathit{expr}'}^\ast})}`.
 
 #. Return :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}`.
 
 
-:math:`{\mathrm{instantiate}}({\mathit{module}}, {{\mathit{externval}}^\ast})`
-..............................................................................
+:math:`{\mathrm{instantiate}}(z, {\mathit{module}}, {{\mathit{externval}}^\ast})`
+.................................................................................
 
 
 1. Let :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast} \rightarrow {{\mathit{xt}}_{\mathsf{e}}^\ast}` be :math:`{\mathrm{Module}}_{\mathit{ok}}({\mathit{module}})`.
@@ -18881,7 +18881,7 @@ watsup 0.4 generator
 
 #. Push the activation of :math:`z` to the stack.
 
-#. Let :math:`{{\mathit{val}}_{\mathsf{g}}^\ast}` be :math:`{\mathrm{evalglobals}}({{\mathit{globaltype}}^\ast}, {{\mathit{expr}}_{\mathsf{g}}^\ast})`.
+#. Let :math:`{{\mathit{val}}_{\mathsf{g}}^\ast}` be :math:`{{{\mathrm{evalglobal}}^\ast}}{(z, {{\mathit{globaltype}}^\ast}, {{\mathit{expr}}_{\mathsf{g}}^\ast})}`.
 
 #. Pop the activation of :math:`{z'}` from the stack.
 
@@ -24807,11 +24807,11 @@ growmem meminst n
   b. Let meminst' be { TYPE: (PAGE (i', j)); BYTES: b* ++ 0^(n · (64 · $Ki())); }.
   c. Return meminst'.
 
-blocktype_ blocktype_u0
+blocktype_ z blocktype_u0
 1. If blocktype_u0 is of the case _IDX, then:
   a. Let (_IDX x) be blocktype_u0.
-  b. Assert: Due to validation, $expanddt($type(x)) is of the case FUNC.
-  c. Let (FUNC ft) be $expanddt($type(x)).
+  b. Assert: Due to validation, $expanddt($type(z, x)) is of the case FUNC.
+  c. Let (FUNC ft) be $expanddt($type(z, x)).
   d. Return ft.
 2. Assert: Due to validation, blocktype_u0 is of the case _RESULT.
 3. Let (_RESULT t?) be blocktype_u0.
@@ -25007,7 +25007,7 @@ rundata_ x (DATA b^n datamode_u0)
 3. Let (ACTIVE y instr*) be datamode_u0.
 4. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT y x), (DATA.DROP x)].
 
-evalglobals globaltype_u0* expr_u1*
+evalglobals z globaltype_u0* expr_u1*
 1. Let z be the current frame.
 2. If ((globaltype_u0* is []) and (expr_u1* is [])), then:
   a. Return [].
@@ -25019,10 +25019,10 @@ evalglobals globaltype_u0* expr_u1*
 8. Let f be z.
 9. Let a be $allocglobal(gt, val).
 10. Append a to the f.MODULE.GLOBALS.
-11. Let val'* be $evalglobals(gt'*, expr'*).
+11. Let val'* be $evalglobals(z, gt'*, expr'*).
 12. Return [val] ++ val'*.
 
-instantiate module externval*
+instantiate z module externval*
 1. Let (xt_I* -> xt_E*) be $Module_ok(module).
 2. Assert: Due to validation, module is of the case MODULE.
 3. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
@@ -25042,7 +25042,7 @@ instantiate module externval*
 17. Let instr_S? be (CALL x)?.
 18. Let z be { LOCALS: []; MODULE: moduleinst_0; }.
 19. Push the activation of z to the stack.
-20. Let val_G* be $evalglobals(globaltype*, expr_G*).
+20. Let val_G* be $evalglobals(z, globaltype*, expr_G*).
 21. Pop the activation of z' from the stack.
 22. Push the activation of z' to the stack.
 23. Let [ref_T]* be $eval_expr(expr_T)*.

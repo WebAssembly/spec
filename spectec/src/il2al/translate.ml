@@ -1399,4 +1399,5 @@ let translate il =
     |> Animate.transform
   in
 
-  translate_helpers il' @ translate_rules il'
+  let al = (translate_helpers il' @ translate_rules il') in
+  List.map Transpile.remove_state al
