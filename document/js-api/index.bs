@@ -682,13 +682,18 @@ interface Module {
 </div>
 
 <div algorithm>
-    The <dfn constructor for="Module">Module(|bytes|)</dfn> constructor, when invoked, performs the following steps:
+    The <dfn constructor for="Module">Module(|bytes|, |options|)</dfn> constructor, when invoked, performs the following steps:
 
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
     1. [=Compile a WebAssembly module|Compile the WebAssembly module=] |stableBytes| and store the result as |module|.
     1. If |module| is [=error=], throw a {{CompileError}} exception.
+    1. Let |builtinSetNames| be options["builtins"]
+    1. Let |importedStringModule| be options["importedStringConstants"]
+    1. If [=validate builtins and imported string for a WebAssembly module|validating builtins and imported strings=] for |module| with |builtinSetNames| and |importedStringModule| returns false, throw a {{CompileError}} exception.
     1. Set **this**.\[[Module]] to |module|.
     1. Set **this**.\[[Bytes]] to |stableBytes|.
+    1. Set **this**.\[[BuiltinSets]] to |builtinSetNames|.
+    1. Set **this**.\[[ImportedStringModule]] to |importedStringModule|.
 
 Note: Some implementations enforce a size limitation on |bytes|. Use of this API is discouraged, in favor of asynchronous APIs.
 </div>
