@@ -41,6 +41,7 @@ struct
 
   let filter_not pred = List.filter (fun x -> not (pred x))
 
+  let assoc_map f = List.map (fun (k, v) -> (k, f v))
 end
 
 module Char =

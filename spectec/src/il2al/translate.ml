@@ -96,10 +96,6 @@ let is_context exp =
     | _ -> false)
   | _ -> false
 
-let lhs_of_rgroup rgroup =
-  let (lhs, _, _) = (List.hd rgroup).it in
-  lhs
-
 let name_of_rule rule =
   match rule.it with
   | Il.RuleD (id, _, _, _, _) ->
@@ -1068,35 +1064,41 @@ let translate_helpers il =
 
 let rec kind_of_context e =
   match e.it with
-  | Il.CaseE ([{it = Il.Atom "FRAME_"; _} as atom]::_, _) -> atom
-  | Il.CaseE ([{it = Il.Atom "LABEL_"; _} as atom]::_, _) -> atom
-  | Il.CaseE ([{it = Il.Atom "HANDLER_"; _} as atom]::_, _) -> atom
+  | Il.CaseE ([{it = Il.Atom "FRAME_"; _} as atom]::_, _) -> Some atom
+  | Il.CaseE ([{it = Il.Atom "LABEL_"; _} as atom]::_, _) -> Some atom
+  | Il.CaseE ([{it = Il.Atom "HANDLER_"; _} as atom]::_, _) -> Some atom
   | Il.CaseE ([[]; [{it = Il.Semicolon; _}]; []], e')
   | Il.ListE [ e' ]
   | Il.TupE [_ (* z *); e'] -> kind_of_context e'
-  | _ -> error e.at "cannot get a frame or label from lhs of the reduction rule"
+  | Il.CatE _ -> Some (Il.Atom "E" $$ no_region % Il.Atom.info "E")
+  | _ -> None (* No context *)
 
-let in_same_context (lhs1, _, _) (lhs2, _, _) =
-  kind_of_context lhs1 = kind_of_context lhs2
-
-let group_contexts xs =
+let group_by_context xs =
+  let rec add k v = function
+    | [] -> [(k, [v])]
+    | (k', vs) :: tl ->
+      if k = k' then
+        (k', v :: vs) :: tl
+      else
+        (k', vs) :: add k v tl
+  in
   List.fold_left (fun acc x ->
-    let g1, g2 = List.partition (fun g -> in_same_context (List.hd g).it x.it) acc in
-    match g1 with
-    | [] -> [ x ] :: acc
-    | [ g ] -> (x :: g) :: g2
-    | _ -> failwith "group_contexts: duplicate groups"
-    ) [] xs |> List.rev
+    let (lhs, _, _) = x.it in
+    let ctx = kind_of_context lhs in
+    add ctx x acc
+  ) [] xs
 
-let un_unify (lhs, rhs, prems) =
+let un_unify' (lhs, rhs, prems) =
   let new_lhs, new_prems = List.fold_left (fun (lhs, ps) p ->
     match p.it with
-    | Il.LetPr (e1, ({ it = Il.VarE uvar; _} as u), _) when Il2il.is_unified_id uvar.it ->
+    | Il.LetPr (e1, ({ it = Il.VarE uvar; _} as u), _)
+    | Il.LetPr (e1, ({ it = Il.IterE ({ it = Il.VarE uvar; _}, _); _} as u), _) when Il2il.is_unified_id uvar.it ->
       let new_lhs = Il2il.transform_expr (fun e2 -> if Il.Eq.eq_exp e2 u then e1 else e2) lhs in
       new_lhs, ps
     | _ -> lhs, ps @ [ p ]
   ) (lhs, []) prems in
   new_lhs, rhs, new_prems
+let un_unify = Source.map un_unify'
 
 let insert_deferred = function
   | None -> Fun.id
@@ -1220,12 +1222,12 @@ let translate_context ctx vs =
   in
   instr_popall :: instr_pop_context @ instr_let
 
-let translate_context_rgroup lhss sub_algos inner_params =
+let merge_ctxt_algos algos inner_params =
   let ty = listT valT in
   let e_vals = iterE (varE "val" ~note:valT, [ "val" ], List) ~note:ty in
   let instr_popall = popallI e_vals in
   let instrs_context =
-    List.fold_right2 (fun lhs algo acc ->
+    List.fold_right (fun (ctxt, algo) acc ->
       match algo.it with
       | RuleA (_, _, params, body) ->
         (* Assume that each sub-algorithms are produced by translate_context,
@@ -1233,17 +1235,32 @@ let translate_context_rgroup lhss sub_algos inner_params =
         assert(Eq.eq_instr (List.hd body) instr_popall);
         if Option.is_none !inner_params then inner_params := Some params;
         let e_cond =
-          match it (kind_of_context lhs) with
-          | Il.Atom.Atom "FRAME_" -> topFrameE () ~note:boolT
-          | Il.Atom.Atom "LABEL_" -> topLabelE () ~note:boolT
-          | Il.Atom.Atom id -> yetE ("top context is " ^ id) ~at:lhs.at ~note:boolT
-          | _ -> error lhs.at "unknown type of the context"
+          match ctxt with
+          | Some atom ->
+            (match atom.it with
+            | Il.Atom.Atom "FRAME_" -> topFrameE () ~note:boolT
+            | Il.Atom.Atom "LABEL_" -> topLabelE () ~note:boolT
+            | Il.Atom.Atom id -> yetE ("top context is " ^ id) ~at:atom.at ~note:boolT
+            | _ -> error atom.at "unknown type of the context"
+            )
+          | None -> yetE ("no context") ~note:boolT
         in
         [ ifI (e_cond, List.tl body, acc) ]
-      | _ -> assert false)
-    lhss sub_algos []
+      | _ -> assert false
+    ) algos []
   in
   instr_popall :: instrs_context
+
+let merge_subalgos subalgos inner_params =
+  let ctxtless_algos, ctxt_algos = List.partition (fun (k, _) -> k = None) subalgos in
+  let ctxt_instrs = merge_ctxt_algos ctxt_algos inner_params in
+  match ctxtless_algos with
+  | [] ->
+    ctxt_instrs
+  | [(_, algo)] ->
+    let ctxtless_instrs = match algo.it with RuleA (_, _, _, body) | FuncA (_, _, body) -> body in
+    [ ifI (yetE "out of context?" ~note:boolT, ctxtless_instrs, ctxt_instrs) ]
+  | _ -> assert false (* Unreachable *)
 
 let rec split_lhs_stack' ?(note : Il.typ option) name stack ctxs instrs =
   let target = upper name in
@@ -1301,6 +1318,9 @@ let rec translate_rgroup' context winstr instr_name rel_id rgroup =
       in
 
       pop_instrs @ inner_pop_instrs @ instrs'
+    (* The target instruction is between values and instrs *)
+    | [ (_v :: _, _i :: _), None ] ->
+      [ popallI (iterE (varE "val" ~note:valT, [ "val" ], List) ~note:(listT valT)) ]
     (* The target instruction is inside a context *)
     | [ ([], []), Some context ; (vs, _is), None ] ->
       let head_instrs = translate_context context vs in
@@ -1308,29 +1328,30 @@ let rec translate_rgroup' context winstr instr_name rel_id rgroup =
       head_instrs @ body_instrs
     (* The target instruction is inside different contexts (i.e. return in both label and frame) *)
     | [ ([], [ _ ]), None ] ->
-      (try
-      let unified_sub_groups =
+      let subgroups =
         rgroup
-        |> List.map (Source.map un_unify)
-        |> group_contexts
-        |> List.map (fun g -> Il2il.unify_lhs (instr_name, rel_id, g)) in
-      if List.length unified_sub_groups = 1 then [ yetI "Translation fail: Infinite recursion" ] else
-      let lhss = List.map (fun (_, _, g) -> lhs_of_rgroup g) unified_sub_groups in
-      let sub_algos = List.map translate_rgroup unified_sub_groups in
-      translate_context_rgroup lhss sub_algos inner_params
-      with _ ->
-        [ yetI "TODO: translate_rgroup with differnet contexts" ])
-    | _ -> [ yetI "TODO: translate_rgroup" ] in
+        |> List.map un_unify
+        |> group_by_context
+        |> Lib.List.assoc_map (fun g -> Il2il.unify_lhs (instr_name, rel_id, g))
+      in
+
+      if List.length subgroups = 1 then
+        (* error (over_region (List.map at rgroup)) "anti-unification failed"; *)
+        [ yetI "tmp" ] else
+
+      let subalgos = Lib.List.assoc_map translate_rgroup subgroups in
+
+      merge_subalgos subalgos inner_params
+    | _ -> error (over_region (List.map at rgroup)) "Unsupported shape of lhs for the reduction rule" in
   !inner_params, instrs
-
-
-(* Main translation for reduction rules
- * `rgroup` -> `Backend-prose.Algo` *)
 
 and get_lhs_stack (exp: Il.exp): Il.exp list =
   if is_config exp then
     split_config exp |> snd |> to_exp_list
   else to_exp_list exp
+
+(* Main translation for reduction rules
+ * `rgroup` -> `Backend-prose.Algo` *)
 
 and translate_rgroup (instr_name, rel_id, rgroup) =
   let lhs, _, _ = (List.hd rgroup).it in
@@ -1395,8 +1416,7 @@ let rec group_rules = function
       List.partition (fun (_, rule) -> name_of_rule rule = name) t in
     let rules = rule :: List.map (fun (rel_id', rule') ->
       if rel_id = rel_id' then rule' else
-        Util.Error.error rule'.at
-        "prose transformation"
+        error rule'.at
         "this reduction rule uses a different relation compared to the previous rules"
     ) t1 in
     let tups = List.map rule_to_tup rules in
