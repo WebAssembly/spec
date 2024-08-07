@@ -93,7 +93,6 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: store_init; url: appendix/embedding.html#embed-store-init
     text: module_decode; url: appendix/embedding.html#embed-module-decode
     text: module_validate; url: appendix/embedding.html#embed-module-validate
-    text: module_validate_partial_imports; url: appendix/embedding.html#embed-module-validate-partial-imports
     text: module_instantiate; url: appendix/embedding.html#embed-module-instantiate
     text: module_imports; url: appendix/embedding.html#embed-module-imports
     text: module_exports; url: appendix/embedding.html#embed-module-exports
@@ -120,6 +119,7 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: ref_type; url: appendix/embedding.html#embed-ref-type
     text: val_default; url: appendix/embedding.html#embed-val-default
     text: match_valtype; url: appendix/embedding.html#embed-match-valtype
+    text: match_externtype; url: appendix/embedding.html#embed-match-externtype
     text: error; url: appendix/embedding.html#embed-error
     text: store; url: exec/runtime.html#syntax-store
     text: table type; url: syntax/types.html#syntax-tabletype
@@ -341,11 +341,10 @@ Note:
 </div>
 
 <div algorithm>
-  To <dfn>Validate builtins for WebAssembly module</dfn> from module |module| and enabled builtins |builtins|, perform the following steps:
-    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let |imports| be ... // TODO: create imports from a builtin set name
-    1. Let |result| be [=module_validate_partial_imports=](|store|, |module|, |imports|).
-    1. If |result| is [=error=], return [=error=].
+  To <dfn>validate builtins for a WebAssembly module</dfn> from module |module| and enabled builtins |builtinSetNames|, perform the following steps:
+    1. If [=validate builtin set names|validating builtin set names=] for |builtinSetNames| is false, return false.
+    1. [=list/iterate|For each=] |import| of [=module_imports=](|module|),
+        1. If [=validate an import for builtins|validating a import for builtin=] with |import| and |builtinSetNames| is false, return false.
     1. Return true.
 </div>
 
@@ -354,8 +353,8 @@ Note:
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
     1. [=Compile a WebAssembly module|Compile=] |stableBytes| as a WebAssembly module and store the results as |module|.
     1. If |module| is [=error=], return false.
-    1. Let |builtins| be options["builtins"]
-    1. If [=Validate builtins for WebAssembly module=] |module| |builtins| is [=error=], return false.
+    1. Let |builtinSetNames| be options["builtins"]
+    1. If [=validate builtins for a WebAssembly module|validating builtins for WebAssembly module=] |module| with |builtinSetNames| returns false, return false.
     1. Return true.
 </div>
 
@@ -363,15 +362,15 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 
     * \[[Module]] : a WebAssembly [=/module=]
     * \[[Bytes]] : the source bytes of \[[Module]].
-    * \[[Builtins]] : an ordered set of names of <a href="#builtins">builtin sets</a>
+    * \[[BuiltinSets]] : an ordered set of names of <a href="#builtins">builtin sets</a>
 
 <div algorithm>
-  To <dfn>construct a WebAssembly module object</dfn> from a module |module|, source bytes |bytes|, builtins |builtins|, perform the following steps:
+  To <dfn>construct a WebAssembly module object</dfn> from a module |module|, source bytes |bytes|, enabled builtins |builtinSetNames|, perform the following steps:
 
     1. Let |moduleObject| be a new {{Module}} object.
     1. Set |moduleObject|.\[[Module]] to |module|.
     1. Set |moduleObject|.\[[Bytes]] to |bytes|.
-    1. Set |moduleObject|.\[[Builtins]] to |builtins|.
+    1. Set |moduleObject|.\[[BuiltinSets]] to |builtinSetNames|.
     1. Return |moduleObject|.
 </div>
 
@@ -383,10 +382,10 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
         1. [=compile a WebAssembly module|Compile the WebAssembly module=] |bytes| and store the result as |module|.
         1. [=Queue a task=] to perform the following steps. If |taskSource| was provided, queue the task on that task source.
             1. If |module| is [=error=], reject |promise| with a {{CompileError}} exception.
-            1. Let |builtins| be options["builtins"]
-            1. If [=Validate builtins for WebAssembly module=] |module| |builtins| is [=error=], reject |promise| with a {{CompileError}} exception.
+            1. Let |builtinSetNames| be options["builtins"]
+            1. If [=validate builtins for a WebAssembly module|validating builtins=] for |module| |builtinSetNames| is false, reject |promise| with a {{CompileError}} exception.
             1. Otherwise,
-                1. [=Construct a WebAssembly module object=] from |module|, |bytes|, |builtins|, and let |moduleObject| be the result.
+                1. [=Construct a WebAssembly module object=] from |module|, |bytes|, |builtinSetNames|, and let |moduleObject| be the result.
                 1. [=Resolve=] |promise| with |moduleObject|.
     1. Return |promise|.
 </div>
@@ -398,13 +397,19 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 </div>
 
 <div algorithm="read-the-imports">
-  To <dfn>read the imports</dfn> from a WebAssembly module |module| from imports object |importObject|, perform the following steps:
+  To <dfn>read the imports</dfn> from a WebAssembly module |module| from imports object |importObject| and enabled builtins |builtinSetNames|, perform the following steps:
     1. If |module|.[=imports=] [=list/is empty|is not empty=], and |importObject| is undefined, throw a {{TypeError}} exception.
-        // TODO: instantiate builtin sets
+    1. Let |instantiatedBuiltins| be the ordered map « ».
+    1. [=list/iterate|For each=] |builtinSetName| of |builtinSetNames|,
+        1. Assert: |instantiatedBuiltins| does not contain |builtinSetName|
+        1. Let |exportsObject| be the result of [=instantiate a builtin set=] with |builtinSetName|
+        1. [=map/set|Set=] |instantiatedBuiltins|[|builtinSetName|] to |exportsObject|
     1. Let |imports| be « ».
     1. [=list/iterate|For each=] (|moduleName|, |componentName|, |externtype|) of [=module_imports=](|module|),
-        // TODO: get exports from a builtin set if enabled
-        1. Let |o| be [=?=] [$Get$](|importObject|, |moduleName|).
+        1. If |instantiatedBuiltins| [=map/exist|contains=] |moduleName|,
+            1. Let |o| be |instantiatedBuiltins|[|moduleName|]
+        1. Else,
+            1. Let |o| be [=?=] [$Get$](|importObject|, |moduleName|).
         1. If [=Type=](|o|) is not Object, throw a {{TypeError}} exception.
         1. Let |v| be [=?=] [$Get$](|o|, |componentName|).
         1. If |externtype| is of the form [=external-type/func=] |functype|,
@@ -519,7 +524,8 @@ The verification of WebAssembly type requirements is deferred to the
   To <dfn>asynchronously instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
     1. Let |promise| be [=a new promise=].
     1. Let |module| be |moduleObject|.\[[Module]].
-    1. [=Read the imports=] of |module| with imports |importObject|, and let |imports| be the result.
+    1. Let |builtinSetNames| be |moduleObject|.\[[BuiltinSets]].
+    1. [=Read the imports=] of |module| with imports |importObject| and |builtinSetNames|, and let |imports| be the result.
         If this operation throws an exception, catch it, [=reject=] |promise| with the exception, and return |promise|.
     1. Run the following steps [=in parallel=]:
         1. [=Queue a task=] to perform the following steps:
@@ -623,12 +629,13 @@ interface Module {
 <div algorithm>
     The <dfn method for="Module">imports(|moduleObject|)</dfn> method, when invoked, performs the following steps:
     1. Let |module| be |moduleObject|.\[[Module]].
+    1. Let |builtinSetNames| be |moduleObject|.\[[BuiltinSets]].
     1. Let |imports| be « ».
     1. [=list/iterate|For each=] (|moduleName|, |name|, |type|) of [=module_imports=](|module|),
-        // TODO: skip import if in builtin module set
-        1. Let |kind| be the [=string value of the extern type=] |type|.
-        1. Let |obj| be «[ "{{ModuleImportDescriptor/module}}" → |moduleName|, "{{ModuleImportDescriptor/name}}" → |name|, "{{ModuleImportDescriptor/kind}}" → |kind| ]».
-        1. [=list/Append=] |obj| to |imports|.
+        1. If [=find a builtin=] for (|moduleName|, |name|, |type|) and |builtinSetNames| is null,
+            1. Let |kind| be the [=string value of the extern type=] |type|.
+            1. Let |obj| be «[ "{{ModuleImportDescriptor/module}}" → |moduleName|, "{{ModuleImportDescriptor/name}}" → |name|, "{{ModuleImportDescriptor/kind}}" → |kind| ]».
+            1. [=list/Append=] |obj| to |imports|.
     1. Return |imports|.
 </div>
 
@@ -669,7 +676,8 @@ interface Instance {
 <div algorithm>
   The <dfn constructor for="Instance">Instance(|module|, |importObject|)</dfn> constructor, when invoked, runs the following steps:
     1. Let |module| be |module|.\[[Module]].
-    1. [=Read the imports=] of |module| with imports |importObject|, and let |imports| be the result.
+    1. Let |builtinSetNames| be |module|.\[[BuiltinSets]].
+    1. [=Read the imports=] of |module| with imports |importObject| and |builtinSetNames|, and let |imports| be the result.
     1. [=Instantiate the core of a WebAssembly module=] |module| with |imports|, and let |instance| be the result.
     1. [=initialize an instance object|Initialize=] **this** from |module| and |instance|.
 
@@ -1672,9 +1680,83 @@ Note: It is not currently possible to define this behavior using Web IDL.
 
 <h2 id="builtins">Builtins</h2>
 
-The JS-API defines sets of builtin functions which can be imported through a flag when compiling a module. WebAssembly builtin functions mirror existing JavaScript builtins, but adapt them to be useable directly as WebAssembly functions.
+The JS-API defines sets of builtin functions which can be imported through {{WebAssemblyCompileOptions|options}} when compiling a module. WebAssembly builtin functions mirror existing JavaScript builtins, but adapt them to be useable directly as WebAssembly functions with minimal overhead.
 
-All builtin functions are grouped into builtin sets. Every builtin set has a name that [=read the imports|is used during import lookup=]. All names are prefixed by the `wasm:` namespace.
+All builtin functions are grouped into sets. Every builtin set has a unique name that [=read the imports|is used during import lookup=]. All names are prefixed by the `wasm:` namespace (e.g. `wasm:js-string`).
+
+<div algorithm>
+To <dfn>get the builtins for a builtin set</dfn> with |builtinSetName|, perform the following steps:
+
+1. Return a list of (|name|, |funcType|, |steps|) for the set with name |builtinSetName| defined within this section.
+
+</div>
+
+<div algorithm>
+To <dfn>find a builtin</dfn> with |import| and enabled builtins |builtinSetNames|, perform the following steps:
+
+1. Assert: [=validate builtin set names=] |builtinSetNames| is true.
+1. Let |importModuleName| be |import|[0]
+1. Let |importName| be |import|[1]
+1.  [=list/iterate|For each=] |builtinSetName| of |builtinSetNames|,
+    1. If |importModuleName| equals |builtinSetName|
+        1. Let |builtins| be the result of [=get the builtins for a builtin set=] |builtinSetName|
+        1. [=list/iterate|For each=] |builtin| of |builtins|
+            1. Let |builtinName| be |builtin|[0]
+            1. If |importName| equals |builtinName|, return (|builtinSetName|, |builtin|).
+1. Return null.
+
+</div>
+
+<div algorithm>
+To <dfn>validate builtin set names</dfn> with |builtinSetNames|, perform the following steps:
+
+1. If |builtinSetNames| contains any duplicates, return false.
+1. [=list/iterate|For each=] |builtinSetName| of |builtinSetNames|,
+    1. If |builtinSetName| does not equal the name of one of the builtin sets defined in this section, return false.
+1. Return false.
+
+</div>
+
+<div algorithm>
+  To <dfn>create a builtin function</dfn> from type |functype| and execution steps |steps|, perform the following steps:
+
+    1. Let |stored settings| be the <a spec=HTML>incumbent settings object</a>.
+    1. Let |hostfunc| be a [=host function=] which executes |steps| when called.
+    1. Let (|store|, |funcaddr|) be [=func_alloc=](|store|, |functype|, |hostfunc|).
+    1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
+    1. Return |funcaddr|.
+
+</div>
+
+<div algorithm>
+To <dfn>instantiate a builtin set</dfn> with name |builtinSetName|, perform the following steps:
+
+1. Let |builtins| be the result of [=get the builtins for a builtin set=] |builtinSetName|
+1. Let |exportsObject| be [=!=] [$OrdinaryObjectCreate$](null).
+        1. If |externtype| is of the form [=external-type/func=] <var ignore>functype</var>,
+1. [=list/iterate|For each=] (|name|, |funcType|, |algorithm|) of |builtins|,
+    1. Let |funcaddr| be the result fo [=create a builtin function=] with |funcType| and |algorithm|
+    1. Let |func| be the result of creating [=a new Exported Function=] from |funcaddr|.
+    1. Let |value| be |func|.
+    1. Let |status| be [=!=] [$CreateDataProperty$](|exportsObject|, |name|, |value|).
+    1. Assert: |status| is true.
+1. Perform [=!=] [$SetIntegrityLevel$](|exportsObject|, `"frozen"`).
+1. Return |exportsObject|.
+
+</div>
+
+<div algorithm>
+To <dfn>validate an import for builtins</dfn> with |import| and enabled builtins |builtinSetNames|, perform the following steps:
+
+1. Assert: [=validate builtin set names=] |builtinSetNames| is true.
+1. Let |maybeBuiltin| be the result of [=find a builtin|finding a builtin=] for |import| and |builtinSetNames|
+1. If |maybeBuiltin| is null, return true.
+1. Let |importExternType| be |import|[2]
+1. Let |builtinFuncType| be |maybeBuiltin|[0][1]
+1. Let |builtinExternType| be `func |builtinFuncType|`
+1. Return [=match_externtype=](|builtinExternType|, |importExternType|)
+
+</div>
 
 
 <h3 id="builtins-js-string">String Builtins</h3>
