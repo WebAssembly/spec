@@ -1258,3 +1258,116 @@
   )
   "unexpected content after last section"
 )
+
+;; Type section out of order
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\02\01\00"                 ;; Import section with zero entries
+      "\01\01\00"                 ;; Type section with zero entries
+  )
+  "unexpected content after last section"
+)
+
+;; Import section out of order
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\03\01\00"                 ;; Function section with zero entries
+      "\02\01\00"                 ;; Import section with zero entries
+  )
+  "unexpected content after last section"
+)
+
+;; Function section out of order
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\04\01\00"                 ;; Table section with zero entries
+      "\03\01\00"                 ;; Function section with zero entries
+  )
+  "unexpected content after last section"
+)
+
+;; Table section out of order
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\05\01\00"                 ;; Memory section with zero entries
+      "\04\01\00"                 ;; Table section with zero entries
+  )
+  "unexpected content after last section"
+)
+
+;; Memory section out of order
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\06\01\00"                 ;; Global section with zero entries
+      "\05\01\00"                 ;; Memory section with zero entries
+  )
+  "unexpected content after last section"
+)
+
+;; Global section out of order
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\07\01\00"                 ;; Export section with zero entries
+      "\06\01\00"                 ;; Global section with zero entries
+  )
+  "unexpected content after last section"
+)
+
+;; Export section out of order
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\03\02\01\00"              ;; Function section
+      "\08\01\00"                 ;; Start section: function 0
+      "\07\01\00"                 ;; Export section with zero entries
+  )
+  "unexpected content after last section"
+)
+
+;; Start section out of order
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\03\02\01\00"              ;; Function section
+      "\09\01\00"                 ;; Element section with zero entries
+      "\08\01\00"                 ;; Start section: function 0
+  )
+  "unexpected content after last section"
+)
+
+;; Element section out of order
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\0c\01\01"                 ;; Datacount section with value "1"
+      "\09\01\00"                 ;; Element section with zero entries
+  )
+  "unexpected content after last section"
+)
+
+;; Datacount section out of order
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\0a\01\00"                 ;; Code section with zero entries
+      "\0c\01\01"                 ;; Datacount section with value "1"
+  )
+  "unexpected content after last section"
+)
+
+;; Code section out of order
+(assert_malformed
+  (module binary
+      "\00asm" "\01\00\00\00"
+      "\0b\01\00"                 ;; Data section with zero entries
+      "\0a\01\00"                 ;; Code section with zero entries
+  )
+  "unexpected content after last section"
+)
+
