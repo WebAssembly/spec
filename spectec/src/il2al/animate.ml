@@ -28,6 +28,7 @@ type tag =
   | Assign of string list
 (* type row = tag * prem * int list *)
 let unwrap (_, p, _) = p
+let targets (t, _, _) = match t with Assign targets -> targets | _ -> assert false
 
 (* are all free variables in the premise known? *)
 let is_tight env (tag, prem, _) =
@@ -63,7 +64,13 @@ and select_assign prems acc env fb =
       None
     | _ ->
       let assigns' = List.map unwrap assigns in
-      let new_env = assigns' |> List.map (free_prem false) |> List.fold_left union env in
+      let new_env = assigns
+        |> List.map targets
+        |> List.concat
+        |> List.fold_left (fun env x ->
+          union env { empty with varid = Set.singleton x }
+        ) env
+      in
       select_tight non_assigns (acc @ assigns') new_env fb
 
 let select_target_col rows cols =
@@ -150,8 +157,7 @@ let rows_of_eq vars len i l r at =
   |> List.filter_map (fun frees ->
     let covering_vars = List.filter_map (index_of len vars) frees in
     if List.length frees = List.length covering_vars then (
-      let ids = List.map (fun x -> x $ no_region) frees in (* TODO: restore source *)
-      Some (Assign frees, LetPr (l, r, ids) $ at, [i] @ covering_vars) )
+      Some (Assign frees, LetPr (l, r, frees) $ at, [i] @ covering_vars) )
     else
       None
   )
@@ -169,8 +175,7 @@ let rec rows_of_prem vars len i p =
         @ rows_of_eq vars len i l { r with it = TheE r } p.at
       | _ -> [ Condition, p, [i] ]
     )
-  | LetPr (_, _, ids) ->
-    let targets = List.map it ids in
+  | LetPr (_, _, targets) ->
     let covering_vars = List.filter_map (index_of len vars) targets in
     [ Assign targets, p, [i] @ covering_vars ]
   | RulePr (_, _, { it = TupE args; _ }) ->
@@ -229,8 +234,8 @@ let animate_rule r = match r.it with
   | RuleD(id, binds, mixop, args, prems) -> (
     match (mixop, args.it) with
     (* lhs ~> rhs *)
-    | ([ [] ; [{it = SqArrow; _}] ; []] , TupE ([lhs; _rhs])) ->
-      let new_prems = animate_prems (free_exp true lhs) prems in
+    | ([ [] ; [{it = SqArrow; _}] ; []] , TupE ([_lhs; _rhs])) ->
+      let new_prems = animate_prems {empty with varid = Set.of_list ["ctxt"; "input"; "stack0"]} prems in
       RuleD(id, binds, mixop, args, new_prems) $ r.at
     | _ -> r
   )

@@ -126,6 +126,13 @@ let rec insert_instrs target il =
     h @ [ ifI (cond, insert_instrs (insert_nop target) il' , []) ]
   | _ -> il @ target
 
+let has_branch = List.exists (fun i ->
+  match i.it with
+  | IfI _
+  | OtherwiseI _ -> true
+  | _ -> false
+)
+
 (** Translation *)
 
 (* `Il.iter` -> `iter` *)
@@ -800,6 +807,10 @@ and handle_iter_lhs lhs rhs free_ids =
 and handle_special_lhs lhs rhs free_ids =
   let at = over_region [ lhs.at; rhs.at ] in
   match lhs.it with
+  (* Handle encoded premises *)
+  | _ when (Il.Print.string_of_typ rhs.note) = "inputT" -> []
+  | _ when (Il.Print.string_of_typ rhs.note) = "contextT" -> []
+  | _ when (Il.Print.string_of_typ rhs.note) = "stackT" -> []
   (* Handle inverse function call *)
   | CallE _ -> handle_call_lhs lhs rhs free_ids
   (* Handle iterator *)
@@ -900,16 +911,15 @@ and handle_special_lhs lhs rhs free_ids =
     ]
   | _ -> [letI (lhs, rhs) ~at:at]
 
-let translate_letpr lhs rhs free_ids =
+let translate_letpr lhs rhs ids =
   (* Translate *)
   let al_lhs, al_rhs = translate_exp lhs, translate_exp rhs in
-  let al_ids = List.map it free_ids in
 
   (* Handle partial bindings *)
-  let al_lhs', al_rhs', cond_instrs = handle_partial_bindings al_lhs al_rhs al_ids in
+  let al_lhs', al_rhs', cond_instrs = handle_partial_bindings al_lhs al_rhs ids in
 
   (* Construct binding instructions *)
-  let instrs = handle_special_lhs al_lhs' al_rhs' al_ids in
+  let instrs = handle_special_lhs al_lhs' al_rhs' ids in
 
   (* Insert conditions *)
   if List.length cond_instrs = 0 then instrs
@@ -1304,17 +1314,12 @@ let rec translate_rgroup' context winstr instr_name rel_id rgroup =
 
       let instrs' =
         match rgroup |> Util.Lib.List.split_last with
-        (* Either case: No premise for the last reduction rule *)
-        | hds, { it = (_, rhs, []); _ } when List.length hds > 0 ->
-          assert (defer_opt = None);
-          let blocks = List.map (translate_reduction None) hds in
-          let body1 = Transpile.merge_blocks blocks in
-          let body2 = translate_rhs rhs |> insert_nop in
-          eitherI (body1, body2) |> Transpile.push_either
         (* Normal case *)
         | _ ->
           let blocks = List.map (translate_reduction defer_opt) rgroup in
-          Transpile.merge_blocks blocks
+          match blocks with
+          | [b1; b2] when not (has_branch b1 || has_branch b2) -> [ eitherI (b1, b2) ] (* Either case *)
+          | _ -> Transpile.merge_blocks blocks
       in
 
       pop_instrs @ inner_pop_instrs @ instrs'
@@ -1476,6 +1481,7 @@ let translate il =
   let il' =
     il
     |> Preprocess.preprocess
+    |> Encode.transform
     |> List.concat_map flatten_rec
     |> List.filter is_al_target
     |> Animate.transform

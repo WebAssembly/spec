@@ -9,5 +9,6 @@
     transpile
     free
     preprocess
+    encode
   )
 )
