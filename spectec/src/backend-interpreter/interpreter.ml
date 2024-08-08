@@ -633,17 +633,17 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     ctx
   | AppendI (e1, e2) ->
     let a = eval_expr env e1 |> unwrap_listv in
-    let v = (
-      match e2.it with
-      | IterE (_, _, _) -> (
-        match eval_expr env e2 with
-        | ListV a -> !a
-        | _ -> failwith "wrong IterE"
-      )
-      | _ ->
-        [|eval_expr env e2|]
-    ) in
-    a := Array.append !a v;
+    (match e2.note.it, eval_expr env e2 with
+    | IterT _, ListV arr_ref -> a := Array.append !a !arr_ref
+    | IterT (_, Opt), OptV opt ->
+      a := opt |> Option.to_list |> Array.of_list |> Array.append !a
+    | IterT _, v ->
+      v
+      |> string_of_value
+      |> sprintf "the expression is evaluated to %s, not a iterable data type"
+      |> fail_expr e2
+    | _, v -> a := Array.append !a [|v|]
+    );
     ctx
   | _ -> failwith "cannot step instr"
 
