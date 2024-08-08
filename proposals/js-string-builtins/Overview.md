@@ -157,14 +157,6 @@ For this purpose, `WebAssembly.validate()` is extended to take a list of builtin
 
 If a user wishes to polyfill these imports for some reason, or is running on a system without a builtin, these imports may be provided as normal through instantiation.
 
-## UTF8/WTF8 support
-
-As stated above in 'goals for builtins', builtins are intended to just wrap existing primitives and not invent new functionality.
-
-JS Strings are semantically a sequence of 16-bit code units (referred to as char codes in method naming), and there are no builtin operations on them to acquire a UTF-8 or WTF-8 view. This makes it difficult to write Wasm builtins for these encodings without introducing significant new logic to them.
-
-There is the Encoding API for `TextEncoder`/`TextDecoder` which can be used for UTF-8 support. However, this is technically a separate spec from JS and may not be available on all JS engines (in practice it's available widely). This proposal exposes UTF-8 data conversions using this API under separate `wasm:text-encoder` `wasm:text-decoder` interfaces which are available when the host implements these interfaces.
-
 ## String constants
 
 String constants may be defined in JS and made available to Wasm through a variety of means.
@@ -551,7 +543,19 @@ function compare(
 }
 ```
 
-## Encoding API
+## Future extensions
+
+There are several extensions we can make in the future as need arrives.
+
+### UTF8/WTF8 support
+
+As stated above in 'goals for builtins', builtins are intended to just wrap existing primitives and not invent new functionality.
+
+JS Strings are semantically a sequence of 16-bit code units (referred to as char codes in method naming), and there are no builtin operations on them to acquire a UTF-8 or WTF-8 view. This makes it difficult to write Wasm builtins for these encodings without introducing significant new logic to them.
+
+There is the Encoding API for `TextEncoder`/`TextDecoder` which can be used for UTF-8 support. However, this is technically a separate spec from JS and may not be available on all JS engines (in practice it's available widely). This proposal exposes UTF-8 data conversions using this API under separate `wasm:text-encoder` `wasm:text-decoder` interfaces which are available when the host implements these interfaces.
+
+### Encoding API
 
 The following is an initial set of function builtins for the [`TextEncoder`](https://encoding.spec.whatwg.org/#interface-textencoder) and the [`TextDecoder`](https://encoding.spec.whatwg.org/#interface-textdecoder) interfaces. These builtins are exposed under `wasm:text-encoder` and `wasm:text-decoder`, respectively.
 
@@ -607,7 +611,7 @@ function trap() {
 }
 ```
 
-### "wasm:text-decoder" "decodeStringFromUTF8Array"
+#### "wasm:text-decoder" "decodeStringFromUTF8Array"
 
 ```
 /// Decode the specified range of an i8 array using UTF-8 into a string.
@@ -656,7 +660,7 @@ func decodeStringFromUTF8Array(
 }
 ```
 
-### "wasm:text-encoder" "measureStringAsUTF8"
+#### "wasm:text-encoder" "measureStringAsUTF8"
 
 ```
 /// Returns the number of bytes string would take when encoded as UTF-8.
@@ -684,7 +688,7 @@ func measureStringAsUTF8(
 }
 ```
 
-### "wasm:text-encoder" "encodeStringIntoUTF8Array"
+#### "wasm:text-encoder" "encodeStringIntoUTF8Array"
 
 ```
 /// Encode a string into a pre-allocated mutable i8 array at `start` index using
@@ -731,7 +735,7 @@ func encodeStringIntoUTF8Array(
 }
 ```
 
-### "wasm:text-encoder" "encodeStringToUTF8Array"
+#### "wasm:text-encoder" "encodeStringToUTF8Array"
 
 ```
 /// Encode a string into a new mutable i8 array using UTF-8.
@@ -759,10 +763,6 @@ func encodeStringToUTF8Array(
   return array;
 }
 ```
-
-## Future extensions
-
-There are several extensions we can make in the future as need arrives.
 
 ### Binding memory to builtins
 
