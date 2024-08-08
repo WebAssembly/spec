@@ -18345,18 +18345,14 @@ watsup 0.4 generator
 ..................................................................
 
 
-1. Let :math:`f` be the current frame.
-
-#. Return :math:`(s{}[{.}\mathsf{structs} \mathrel{{=}{\oplus}} {{\mathit{si}}^\ast}], f)`.
+1. Append :math:`{{\mathit{si}}^\ast}` to the :math:`s{.}\mathsf{structs}`.
 
 
 :math:`{\mathrm{add}}_{\mathit{arrayinst}}({{\mathit{ai}}^\ast})`
 .................................................................
 
 
-1. Let :math:`f` be the current frame.
-
-#. Return :math:`(s{}[{.}\mathsf{arrays} \mathrel{{=}{\oplus}} {{\mathit{ai}}^\ast}], f)`.
+1. Append :math:`{{\mathit{ai}}^\ast}` to the :math:`s{.}\mathsf{arrays}`.
 
 
 :math:`{\mathrm{growtable}}({\mathit{tableinst}}, n, r)`
@@ -24786,12 +24782,10 @@ with_array a i fv
 1. Replace s.ARRAYS[a].FIELDS[i] with fv.
 
 add_structinst si*
-1. Let f be the current frame.
-2. Return (s with .STRUCTS appended by si*, f).
+1. Append si* to the s.STRUCTS.
 
 add_arrayinst ai*
-1. Let f be the current frame.
-2. Return (s with .ARRAYS appended by ai*, f).
+1. Append ai* to the s.ARRAYS.
 
 growtable tableinst n r
 1. Let { TYPE: ((i, j), rt); REFS: r'*; } be tableinst.

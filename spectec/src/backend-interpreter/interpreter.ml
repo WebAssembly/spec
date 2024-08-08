@@ -633,8 +633,17 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     ctx
   | AppendI (e1, e2) ->
     let a = eval_expr env e1 |> unwrap_listv in
-    let v = eval_expr env e2 in
-    a := Array.append !a [|v|];
+    let v = (
+      match e2.it with
+      | IterE (_, _, _) -> (
+        match eval_expr env e2 with
+        | ListV a -> !a
+        | _ -> failwith "wrong IterE"
+      )
+      | _ ->
+        [|eval_expr env e2|]
+    ) in
+    a := Array.append !a v;
     ctx
   | _ -> failwith "cannot step instr"
 

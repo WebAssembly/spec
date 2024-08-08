@@ -448,18 +448,14 @@ let rec mk_access ps base =
   | h :: t -> accE (base, h) ~note:Al.Al_util.no_note |> mk_access t
   | [] -> base
 
-let is_store expr = match expr.it with
-  | VarE s ->
-    s = "s" || String.starts_with ~prefix:"s'" s || String.starts_with ~prefix:"s_" s
+let is_store expr = match expr.note.it with
+  | Il.Ast.VarT (id, _) when id.it = "store" -> true
   | _ -> false
-let is_frame expr = match expr.it with
-  | VarE f ->
-    f = "f" || String.starts_with ~prefix:"f'" f || String.starts_with ~prefix:"f_" f
+let is_frame expr = match expr.note.it with
+  | Il.Ast.VarT (id, _) when id.it = "frame" -> true
   | _ -> false
-let is_state expr = match expr.it with
-  | TupE [ s; f ] -> is_store s && is_frame f
-  | VarE z ->
-    z = "z" || String.starts_with ~prefix:"z'" z || String.starts_with ~prefix:"z_" z
+let is_state expr = match expr.note.it with
+  | Il.Ast.VarT (id, _) when id.it = "state" -> true
   | _ -> false
 
 let is_store_arg arg = match arg.it with
@@ -490,8 +486,6 @@ let hide_state_expr expr =
 let hide_state instr =
   let at = instr.at in
   match instr.it with
-  (* Return *)
-  | ReturnI (Some e) when is_state e || is_store e -> [ returnI None ~at:at ]
   (* Perform *)
   | LetI (e, { it = CallE (fname, args); _ }) when is_state e || is_store e -> [ performI (fname, hide_state_args args) ~at:at ]
   | PerformI (f, args) -> [ performI (f, hide_state_args args) ~at:at ]
@@ -507,17 +501,27 @@ let hide_state instr =
       appendI (access, e1) ~at:at;
       returnI (Some addr) ~at:at ]
   (* Replace store *)
+  | ReturnI (Some ({ it = TupE [ { it = UpdE (s, ps, e); note; _ }; f ]; _ })) when is_store s && is_frame f ->
+    let hs, t = Lib.List.split_last ps in
+    let access = { (mk_access hs s) with note } in
+    [ replaceI (access, t, e) ~at:at ]
   | LetI (_, { it = UpdE (s, ps, e); note; _ })
-  | ReturnI (Some ({ it = TupE [ { it = UpdE (s, ps, e); note; _ }; { it = VarE "f"; _ } ]; _ }))
   | ReturnI (Some ({ it = UpdE (s, ps, e); note; _ })) when is_store s ->
     let hs, t = Lib.List.split_last ps in
     let access = { (mk_access hs s) with note } in
     [ replaceI (access, t, e) ~at:at ]
   (* Replace frame *)
-  | ReturnI (Some ({ it = TupE [ { it = VarE "s"; _ }; { it = UpdE (f, ps, e); note; _ } ]; _ })) when is_frame f ->
+  | ReturnI (Some ({ it = TupE [ s; { it = UpdE (f, ps, e); note; _ } ]; _ })) when is_store s && is_frame f ->
     let hs, t = Lib.List.split_last ps in
     let access = { (mk_access hs f) with note } in
     [ replaceI (access, t, e) ~at:at ]
+  (* Append store *)
+  | ReturnI (Some ({ it = TupE [ { it = ExtE (s, ps, e, Back); note; _ }; f ]; _ })) when is_store s && is_frame f ->
+    (* let hs, t = Lib.List.split_last ps in *)
+    let access = { (mk_access ps s) with note } in
+    [ appendI (access, e) ~at:at ]
+  (* Return *)
+  | ReturnI (Some e) when is_state e || is_store e -> [ returnI None ~at:at ]
   | _ -> [ instr ]
 
 let remove_state algo =
