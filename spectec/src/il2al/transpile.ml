@@ -99,6 +99,9 @@ let unify_tail l1 l2 =
 
 (* AL -> AL transpilers *)
 
+(* Explictly insert nop into empty instr list to prevent the optimization *)
+let insert_nop instrs = match instrs with [] -> [ nopI () ] | _ -> instrs
+
 (* Recursively append else block to every empty if *)
 let rec insert_otherwise else_body instrs =
   let walk = insert_otherwise else_body in
@@ -216,13 +219,28 @@ let early_return instr =
   | IfI (c, il1, il2) when return_at_last il1 -> ifI (c, il1, []) ~at:at :: il2
   | _ -> [ instr ]
 
+(* If c then (A; B) else (A; C) --> A; If c then B else C *)
+let unify_if_head instr =
+  let at = instr.at in
+  match instr.it with
+  | IfI (_, [], []) -> []
+  | IfI (_, _, [])
+  | IfI (_, [], _) -> [ instr ]
+  | IfI (c, il1, il2) ->
+    let h, il1', il2' = unify_head il1 il2 in
+    h @ [ ifI (c, insert_nop il1', insert_nop il2') ~at:at ]
+  | _ -> [ instr ]
+
+(* If c then (A; C) else (B; C) --> If c then A else B; C *)
 let unify_if_tail instr =
   let at = instr.at in
   match instr.it with
   | IfI (_, [], []) -> []
+  | IfI (_, _, [])
+  | IfI (_, [], _) -> [ instr ]
   | IfI (c, il1, il2) ->
     let t, il1', il2' = unify_tail il1 il2 in
-    ifI (c, il1', il2') ~at:at :: t
+    ifI (c, insert_nop il1', insert_nop il2') ~at:at :: t
   | _ -> [ instr ]
 
 let remove_unnecessary_branch =
@@ -409,7 +427,7 @@ let rec enhance_readability instrs =
       Walk.default_config with
       pre_expr = simplify_record_concat |> composite if_not_defined;
       post_instr =
-        unify_if_tail @@ (lift swap_if) @@ early_return @@ (lift merge_three_branches);
+        unify_if_head @@ unify_if_tail @@ (lift swap_if) @@ early_return @@ (lift merge_three_branches);
     } in
 
   let instrs' =
