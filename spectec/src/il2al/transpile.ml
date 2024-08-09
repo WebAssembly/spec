@@ -485,10 +485,17 @@ let hide_state_expr expr =
 
 let hide_state instr =
   let at = instr.at in
+  let env = Al.Valid.env in
+  let set_unit_type fname =
+    let id = (fname $ no_region) in
+    let unit_type = Il.Ast.TupT [] $ no_region in
+    match Il.Env.find_def !Al.Valid.env id with
+    | (params, _, clauses) -> env := Al.Valid.Env.bind_def !env id (params, unit_type, clauses)
+  in
   match instr.it with
   (* Perform *)
-  | LetI (e, { it = CallE (fname, args); _ }) when is_state e || is_store e -> [ performI (fname, hide_state_args args) ~at:at ]
-  | PerformI (f, args) -> [ performI (f, hide_state_args args) ~at:at ]
+  | LetI (e, { it = CallE (fname, args); _ }) when is_state e || is_store e -> set_unit_type fname; [ performI (fname, hide_state_args args) ~at:at ]
+  | PerformI (f, args) -> set_unit_type f; [ performI (f, hide_state_args args) ~at:at ]
   (* Append *)
   | LetI (_, { it = ExtE (s, ps, { it = ListE [ e ]; _ }, Back); note; _ } ) when is_store s ->
     let access = { (mk_access ps s) with note } in
