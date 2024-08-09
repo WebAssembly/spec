@@ -1753,7 +1753,7 @@ To <dfn>validate builtin set names</dfn> with |builtinSetNames|, perform the fol
 </div>
 
 <div algorithm>
-  To <dfn>create a builtin function</dfn> from type |functype| and execution steps |steps|, perform the following steps:
+  To <dfn>create a builtin function</dfn> from type |funcType| and execution steps |steps|, perform the following steps:
 
     1. Let |stored settings| be the <a spec=HTML>incumbent settings object</a>.
     1. Let |hostfunc| be a [=host function=] which executes |steps| when called.
@@ -1769,8 +1769,8 @@ To <dfn>instantiate a builtin set</dfn> with name |builtinSetName|, perform the 
 1. Let |builtins| be the result of [=get the builtins for a builtin set=] |builtinSetName|
 1. Let |exportsObject| be [=!=] [$OrdinaryObjectCreate$](null).
         1. If |externtype| is of the form [=external-type/func=] <var ignore>functype</var>,
-1. [=list/iterate|For each=] (|name|, |funcType|, |algorithm|) of |builtins|,
-    1. Let |funcaddr| be the result fo [=create a builtin function=] with |funcType| and |algorithm|
+1. [=list/iterate|For each=] (|name|, |funcType|, |steps|) of |builtins|,
+    1. Let |funcaddr| be the result fo [=create a builtin function=] with |funcType| and |steps|
     1. Let |func| be the result of creating [=a new Exported Function=] from |funcaddr|.
     1. Let |value| be |func|.
     1. Let |status| be [=!=] [$CreateDataProperty$](|exportsObject|, |name|, |value|).
