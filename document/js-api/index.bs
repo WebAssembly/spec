@@ -1819,6 +1819,19 @@ When this builtin is invoked with parameter |v|, the following steps must be run
 
 </div>
 
+<h4 id="js-string-test">test</h4>
+
+The |funcType| of this builtin is `(func (param externref) (result i32))`.
+
+<div algorithm="js-string-test">
+When this builtin is invoked with parameter |v|, the following steps must be run:
+
+1. If [=Type=](|v|) is not [=String=]
+    1. Return 0
+1. Return 1
+
+</div>
+
 <h4 id="js-string-charCodeAt">charCodeAt</h4>
 
 The type of this function is `(func (param externref i32) (result i32))`.
