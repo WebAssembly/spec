@@ -67,6 +67,7 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         text: String.prototype.charCodeAt; url: sec-string.prototype.charcodeat
         text: String.prototype.codePointAt; url: sec-string.prototype.codepointat
         text: String.prototype.concat; url: sec-string.prototype.concat
+        text: String.prototype.substring; url: sec-string.prototype.substring
 urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: dfn
     url: valid/modules.html#valid-module
         text: valid
@@ -1922,13 +1923,24 @@ When this builtin is invoked with parameters |first| and |second|, the following
 
 1. Let |first| be [=?=] [$UnwrapString$](|first|).
 1. Let |second| be [=?=] [$UnwrapString$](|second|).
-1. Return [=!=] [$Call$]([=String.prototype.concat=], |first|, |second|).
+1. Return [=!=] [$Call$]([=String.prototype.concat=], |first|, &laquo; |second| &raquo;).
 
 </div>
 
 <h4 id="js-string-substring">substring</h4>
 
-TODO
+The |funcType| of this builtin is `(func (param externref i32 i32) (result externref))`.
+
+<div algorithm="js-string-substring">
+When this builtin is invoked with parameters |string|, |start|, and |end|, the following steps must be run:
+
+1. Let |string| be [=?=] [$UnwrapString$](|string|).
+1. Let |length| be the [=string/length=] of |string|.
+1. If |start| > |end| or |start| > |length|
+    1. Return the empty string.
+1. Return [=!=] [$Call$]([=String.prototype.substring=], |string|, &laquo; [=ToJSValue=](|start|), [=ToJSValue=](|end|) &raquo;).
+
+</div>
 
 <h4 id="js-string-equals">equals</h4>
 
