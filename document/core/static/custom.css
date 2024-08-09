@@ -15,10 +15,16 @@ body {
   font-size: 15px;
 }
 
-div.document { width: unset; }
+div.document {
+  width: unset;
+  max-width: 1000px;
+}
 div.bodywrapper { margin: 0 0 0 200px; }
 div.body { padding: 0 10px 0 10px; }
-div.footer { width: unset; }
+div.footer {
+  width: unset;
+  max-width: 1000px;
+}
 
 div.body h1 { font-size: 200%; }
 div.body h2 { font-size: 150%; }
