@@ -66,6 +66,7 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         text: String.fromCodePoint; url: sec-string.fromcodepoint
         text: String.prototype.charCodeAt; url: sec-string.prototype.charcodeat
         text: String.prototype.codePointAt; url: sec-string.prototype.codepointat
+        text: String.prototype.concat; url: sec-string.prototype.concat
 urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: dfn
     url: valid/modules.html#valid-module
         text: valid
@@ -1914,7 +1915,16 @@ When this builtin is invoked with parameter |v|, the following steps must be run
 
 <h4 id="js-string-concat">concat</h4>
 
-TODO
+The |funcType| of this builtin is `(func (param externref externref) (result externref))`.
+
+<div algorithm="js-string-concat">
+When this builtin is invoked with parameters |first| and |second|, the following steps must be run:
+
+1. Let |first| be [=?=] [$UnwrapString$](|first|).
+1. Let |second| be [=?=] [$UnwrapString$](|second|).
+1. Return [=!=] [$Call$]([=String.prototype.concat=], |first|, |second|).
+
+</div>
 
 <h4 id="js-string-substring">substring</h4>
 
