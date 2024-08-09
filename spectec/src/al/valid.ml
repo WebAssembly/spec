@@ -32,6 +32,10 @@ let error_struct source typ =
 let error_tuple source typ =
   error_valid "invalid tuple type" source (Il.Print.string_of_typ typ)
 
+
+let (let*) = Option.bind
+
+
 (* Bound Set *)
 
 module Set = Free.IdSet
@@ -64,7 +68,7 @@ let get_deftyps (id: Il.Ast.id) (args: Il.Ast.arg list): deftyp list =
         | ExpA { it=SubE (_, typ, _); _ } -> typ
         | ExpA { note; _ } -> note
         | TypA typ -> typ
-        | _ -> failwith ("TODO: " ^ Il.Print.string_of_arg (Eval.reduce_arg !env arg))
+        | a -> failwith ("TODO: " ^ Il.Print.string_of_arg (a $ arg.at))
       in
 
       let InstD (_, inst_args, deftyp) = inst.it in
@@ -89,39 +93,46 @@ let rec unify_deftyp_opt (deftyp: deftyp) : typ option =
   | StructT _ -> None
   | VariantT typcases
   when List.for_all (fun (mixop', _, _) -> is_trivial_mixop mixop') typcases ->
-    (match typcases with
-    | (_, (_, typ, _), _) :: _
-    when
-      typcases
-      |> List.map (fun (_, (_, typ', _), _) -> unify_opt typ typ')
-      |> List.for_all Option.is_some
-    -> Some typ
-    | _ -> None
-    )
+    typcases |> List.map (fun (_, (_, typ, _), _) -> typ) |> unify_typs_opt
   | _ -> None
 
-and unify_opt (typ1: typ) (typ2: typ) : typ option =
+and unify_deftyps_opt : deftyp list -> typ option = function
+  | [] -> None
+  | [deftyp] -> unify_deftyp_opt deftyp
+  | deftyp :: deftyps ->
+    let* typ1 = unify_deftyp_opt deftyp in
+    let* typ2 = unify_deftyps_opt deftyps in
+    unify_typ_opt typ1 typ2
+
+and unify_typ_opt (typ1: typ) (typ2: typ) : typ option =
   let typ1', typ2' = ground_typ_of typ1, ground_typ_of typ2 in
   match typ1'.it, typ2'.it with
-  | VarT (id1, _), VarT (id2, _) when id1 = id2 -> Some (ground_typ_of typ1)
-  | BoolT, BoolT | NumT _, NumT _ | TextT, TextT -> Some typ1
+  | VarT (id1, _), VarT (id2, _) when id1 = id2 -> Some typ1'
+  | BoolT, BoolT | NumT _, NumT _ | TextT, TextT -> Some typ1'
   | TupT etl1, TupT etl2 ->
-    let (let*) = Option.bind in
-    let etl =
+    let* etl =
       List.fold_right2
         (fun et1 et2 acc ->
           let* acc = acc in
-          let* res = unify_opt (snd et1) (snd et2) in
+          let* res = unify_typ_opt (snd et1) (snd et2) in
           Some ((fst et1, res) :: acc)
         )
         etl1
         etl2
         (Some [])
     in
-    Option.map (fun etl -> TupT etl $ typ1.at) etl
+    Some (TupT etl $ typ1.at)
   | IterT (typ1'', iter), IterT (typ2'', _) ->
-    Option.map (fun typ -> IterT (typ, iter) $ typ1.at) (unify_opt typ1'' typ2'')
+    let* typ = unify_typ_opt typ1'' typ2'' in
+    Some (IterT (typ, iter) $ typ1.at)
   | _ -> None
+
+and unify_typs_opt : typ list -> typ option = function
+  | [] -> None
+  | [typ] -> Some typ
+  | typ :: typs' ->
+    let* unified_typ = unify_typs_opt typs' in
+    unify_typ_opt typ unified_typ
 
 and ground_typ_of (typ: typ) : typ =
   match typ.it with
@@ -133,15 +144,10 @@ and ground_typ_of (typ: typ) : typ =
   (* NOTE: Consider `fN` as a `NumT` to prevent diverging ground type *)
   | VarT (id, _) when id.it = "fN" -> NumT RealT $ typ.at
   | VarT (id, args) ->
-    let typ_opts = List.map unify_deftyp_opt (get_deftyps id args) in
-    if List.for_all Option.is_some typ_opts then
-      match List.map Option.get typ_opts with
-      | typ' :: typs
-      when List.for_all Option.is_some (List.map (unify_opt typ') typs) ->
-        ground_typ_of typ'
-      | _ -> typ
-    else
-      typ
+    get_deftyps id args
+    |> unify_deftyps_opt
+    |> Option.map ground_typ_of
+    |> Option.value ~default:typ
   | TupT [_, typ'] -> ground_typ_of typ'
   | IterT (typ', iter) -> IterT (ground_typ_of typ', iter) $ typ.at
   | _ -> typ
