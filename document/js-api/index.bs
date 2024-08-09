@@ -1853,13 +1853,11 @@ The |funcType| of this builtin is `(func (param i32) (result externref))`.
 <div algorithm="js-string-fromCharCode">
 When this builtin is invoked with parameter |v|, the following steps must be run:
 
-1. Return [=!=] [$Call$]([=String.fromCharCode=], undefined, [=ToJSValue=](|v|)).
+1. Return [=!=] [$Call$]([=String.fromCharCode=], undefined, « [=ToJSValue=](|v|) »).
 
 </div>
 
 <h4 id="js-string-fromCodePoint">fromCodePoint</h4>
-
-TODO
 
 The |funcType| of this builtin is `(func (param i32) (result externref))`.
 
@@ -1868,7 +1866,7 @@ When this builtin is invoked with parameter |v|, the following steps must be run
 
 1. If |v| &gt; 0x10ffff
     1. Throw a {{RuntimeError}} exception. TODO: this needs to not be catchable, like a trap.
-1. Return [=!=] [$Call$]([=String.fromCodePoint=], undefined, [=ToJSValue=](|v|)).
+1. Return [=!=] [$Call$]([=String.fromCodePoint=], undefined, « [=ToJSValue=](|v|) »).
 
 </div>
 
@@ -1883,7 +1881,7 @@ When this builtin is invoked with parameters |string| and |index|, the following
 1. Let |length| be the [=string/length=] of |string|.
 1. If |index| >= |length|
     1. Throw a {{RuntimeError}} exception. TODO: this needs to not be catchable, like a trap.
-1. Return [=!=] [$Call$]([=String.prototype.charCodeAt=], |string|, [=ToJSValue=](|index|)).
+1. Return [=!=] [$Call$]([=String.prototype.charCodeAt=], |string|, « [=ToJSValue=](|index|) »).
 
 </div>
 
@@ -1898,7 +1896,7 @@ When this builtin is invoked with parameters |string| and |index|, the following
 1. Let |length| be the [=string/length=] of |string|.
 1. If |index| >= |length|
     1. Throw a {{RuntimeError}} exception. TODO: this needs to not be catchable, like a trap.
-1. Return [=!=] [$Call$]([=String.prototype.codePointAt=], |string|, [=ToJSValue=](|index|)).
+1. Return [=!=] [$Call$]([=String.prototype.codePointAt=], |string|, « [=ToJSValue=](|index|) »).
 
 </div>
 
@@ -1923,7 +1921,7 @@ When this builtin is invoked with parameters |first| and |second|, the following
 
 1. Let |first| be [=?=] [$UnwrapString$](|first|).
 1. Let |second| be [=?=] [$UnwrapString$](|second|).
-1. Return [=!=] [$Call$]([=String.prototype.concat=], |first|, &laquo; |second| &raquo;).
+1. Return [=!=] [$Call$]([=String.prototype.concat=], |first|, « |second| »).
 
 </div>
 
@@ -1938,7 +1936,7 @@ When this builtin is invoked with parameters |string|, |start|, and |end|, the f
 1. Let |length| be the [=string/length=] of |string|.
 1. If |start| > |end| or |start| > |length|
     1. Return the empty string.
-1. Return [=!=] [$Call$]([=String.prototype.substring=], |string|, &laquo; [=ToJSValue=](|start|), [=ToJSValue=](|end|) &raquo;).
+1. Return [=!=] [$Call$]([=String.prototype.substring=], |string|, « [=ToJSValue=](|start|), [=ToJSValue=](|end|) »).
 
 </div>
 
