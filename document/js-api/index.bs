@@ -64,6 +64,8 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         text: SameValue; url: sec-samevalue
         text: String.fromCharCode; url: sec-string.fromcharcode
         text: String.fromCodePoint; url: sec-string.fromcodepoint
+        text: String.prototype.charCodeAt; url: sec-string.prototype.charcodeat
+        text: String.prototype.codePointAt; url: sec-string.prototype.codepointat
 urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: dfn
     url: valid/modules.html#valid-module
         text: valid
@@ -1862,6 +1864,8 @@ The |funcType| of this builtin is `(func (param i32) (result externref))`.
 <div algorithm="js-string-fromCodePoint">
 When this builtin is invoked with parameter |v|, the following steps must be run:
 
+1. If |v| &gt; 0x10ffff
+    1. Throw a {{RuntimeError}} exception. TODO: this needs to not be catchable, like a trap.
 1. Return [=!=] [$Call$]([=String.fromCodePoint=], undefined, [=ToJSValue=](|v|)).
 
 </div>
@@ -1871,16 +1875,30 @@ When this builtin is invoked with parameter |v|, the following steps must be run
 The type of this function is `(func (param externref i32) (result i32))`.
 
 <div algorithm="js-string-charCodeAt">
-When this builtin is invoked, the following steps must be run:
+When this builtin is invoked with parameters |string| and |index|, the following steps must be run:
 
-1. Let |string| be [$UnwrapString$](param0)
-1. TODO
+1. Let |string| be [=?=] [$UnwrapString$](|string|).
+1. Let |length| be the [=string/length=] of |string|.
+1. If |index| >= |length|
+    1. Throw a {{RuntimeError}} exception. TODO: this needs to not be catchable, like a trap.
+1. Return [=!=] [$Call$]([=String.prototype.charCodeAt=], |string|, [=ToJSValue=](|index|)).
 
 </div>
 
 <h4 id="js-string-codePointAt">codePointAt</h4>
 
-TODO
+The type of this function is `(func (param externref i32) (result i32))`.
+
+<div algorithm="js-string-codePointAt">
+When this builtin is invoked with parameters |string| and |index|, the following steps must be run:
+
+1. Let |string| be [=?=] [$UnwrapString$](|string|).
+1. Let |length| be the [=string/length=] of |string|.
+1. If |index| >= |length|
+    1. Throw a {{RuntimeError}} exception. TODO: this needs to not be catchable, like a trap.
+1. Return [=!=] [$Call$]([=String.prototype.codePointAt=], |string|, [=ToJSValue=](|index|)).
+
+</div>
 
 <h4 id="js-string-length">length</h4>
 
