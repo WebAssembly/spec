@@ -283,6 +283,33 @@ let check_call source id args result_typ =
     env := global_env
   | None -> error_valid "no function definition" source ""
 
+let check_inv_call source id indices args result_typ =
+  let typ2arg typ = ExpA (VarE "" $$ no_region % typ) $ no_region
+  in
+  let typs =
+    match result_typ.it with
+    | TupT l -> l |> List.split |> snd
+    | _ -> [result_typ]
+  in
+  let free_args = List.map typ2arg typs in
+  let count_free_args = ref 0 in
+  let count_bound_args = ref 0 in
+  let idx2arg idx =
+    if Option.is_some idx then (
+      count_free_args := !count_free_args + 1;
+      List.nth free_args (!count_free_args - 1)
+    ) else (
+      count_bound_args := !count_bound_args + 1;
+      List.nth args (!count_bound_args - 1)
+    )
+  in
+  let new_args = List.map idx2arg indices in
+  let new_result_typ = match (List.nth args !count_bound_args).it with
+    | ExpA exp -> exp.note
+    | a -> error_valid (Printf.sprintf "wrong free argument: %s" (Print.string_of_arg (a $ no_region))) source ""
+  in
+  check_call source id new_args new_result_typ
+
 let access (source: source) (typ: typ) (path: path) : typ =
   match path.it with
   | IdxP expr ->
@@ -344,7 +371,7 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
   | TupE exprs -> check_tuple source exprs expr.note
   | CaseE _ | CaseE2 _ -> () (* TODO *)
   | CallE (id, args) -> check_call source id args expr.note
-  | InvCallE _ -> () (* TODO *)
+  | InvCallE (id, indices, args) -> check_inv_call source id indices args expr.note;
   | IterE (expr1, _, iter) ->
     if not (expr1.note.it = BoolT && expr.note.it = BoolT) then
       (match iter with
@@ -405,7 +432,6 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
 (* Instr validation *)
 
 let valid_instr (walker: unit_walker) (instr: instr) : unit =
-  print_endline (string_of_instr instr);
   let source = string_of_instr instr $ instr.at in
   (match instr.it with
   | IfI (expr, _, _) | AssertI expr -> check_bool source expr.note
@@ -425,8 +451,8 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
       error_mismatch source (get_base_typ expr.note) (varT "val")
   | LetI (expr1, expr2) ->
     add_bound_vars expr1; check_match source expr1.note expr2.note
-  | ExecuteI expr | ExecuteSeqI expr -> check_instr source expr.note
-  | PerformI _ -> () (* TODO *)
+    | ExecuteI expr | ExecuteSeqI expr -> check_instr source expr.note
+  | PerformI (id, args) -> check_call source id args (TupT [] $ no_region)
   | ReplaceI (expr1, path, expr2) ->
     access source expr1.note path |> check_match source expr2.note
   | AppendI (expr1, _expr2) -> check_list source expr1.note
@@ -438,7 +464,7 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
 let init algo =
   let params = Al_util.params_of_algo algo in
 
-  bound_set := Set.empty;
+  bound_set := Set.singleton "s";
   List.iter add_bound_param params
 
 
