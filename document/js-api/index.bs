@@ -1797,13 +1797,25 @@ To <dfn>validate an import for builtins</dfn> with |import|, enabled builtins |b
 
 String builtins adapt the interface of the String builtin object. The import name for this set is `wasm:js-string`.
 
-<div algorithm="js-string-unwrapString">
+<h4 id="builtins-js-string-abstract-ops">Abstract operations</h4>
+<div algorithm>
 
-The <dfn>unwrapString(|v|)</dfn> method, when invoked, performs the following steps:
+The <dfn abstract-op lt="UnwrapString">UnwrapString(|v|)</dfn> abstract operation, when invoked, performs the following steps:
 
-1. If [=Type=](|v|) is not String
+1. If [=Type=](|v|) is not [=String=]
     1. Throw a {{RuntimeError}} exception. TODO: this needs to not be catchable, like a trap.
 1. Return |v|
+
+</div>
+
+<h4 id="js-string-cast">cast</h4>
+
+The |funcType| of this builtin is `(func (param externref) (result externref))`.
+
+<div algorithm="js-string-cast">
+When this builtin is invoked with parameter |v|, the following steps must be run:
+
+1. Return [=?=] [$UnwrapString$](|v|)
 
 </div>
 
@@ -1814,7 +1826,7 @@ The type of this function is `(func (param externref i32) (result i32))`.
 <div algorithm="js-string-charCodeAt">
 When this builtin is invoked, the following steps must be run:
 
-1. Let |string| be [$unwrapString$](param0)
+1. Let |string| be [$UnwrapString$](param0)
 1. TODO
 
 </div>
