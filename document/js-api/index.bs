@@ -1884,7 +1884,15 @@ TODO
 
 <h4 id="js-string-length">length</h4>
 
-TODO
+The |funcType| of this builtin is `(func (param externref) (result i32))`.
+
+<div algorithm="js-string-length">
+When this builtin is invoked with parameter |v|, the following steps must be run:
+
+1. Let |string| be [=?=] [$UnwrapString$](|v|).
+1. Return the [=string/length=] of |string|.
+
+</div>
 
 <h4 id="js-string-concat">concat</h4>
 
