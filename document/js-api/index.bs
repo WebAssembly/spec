@@ -1832,6 +1832,22 @@ When this builtin is invoked with parameter |v|, the following steps must be run
 
 </div>
 
+<h4 id="js-string-fromCharCodeArray">fromCharCodeArray</h4>
+
+TODO
+
+<h4 id="js-string-intoCharCodeArray">intoCharCodeArray</h4>
+
+TODO
+
+<h4 id="js-string-fromCharCode">fromCharCode</h4>
+
+TODO
+
+<h4 id="js-string-fromCodePoint">fromCodePoint</h4>
+
+TODO
+
 <h4 id="js-string-charCodeAt">charCodeAt</h4>
 
 The type of this function is `(func (param externref i32) (result i32))`.
@@ -1844,6 +1860,29 @@ When this builtin is invoked, the following steps must be run:
 
 </div>
 
+<h4 id="js-string-codePointAt">codePointAt</h4>
+
+TODO
+
+<h4 id="js-string-length">length</h4>
+
+TODO
+
+<h4 id="js-string-concat">concat</h4>
+
+TODO
+
+<h4 id="js-string-substring">substring</h4>
+
+TODO
+
+<h4 id="js-string-equals">equals</h4>
+
+TODO
+
+<h4 id="js-string-compare">compare</h4>
+
+TODO
 
 <h2 id="errors">Error Condition Mappings to JavaScript</h2>
 
