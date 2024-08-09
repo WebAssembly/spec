@@ -63,6 +63,7 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         text: ℤ; url: #ℤ
         text: SameValue; url: sec-samevalue
         text: String.fromCharCode; url: sec-string.fromcharcode
+        text: String.fromCodePoint; url: sec-string.fromcodepoint
 urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: dfn
     url: valid/modules.html#valid-module
         text: valid
@@ -1848,13 +1849,22 @@ The |funcType| of this builtin is `(func (param i32) (result externref))`.
 <div algorithm="js-string-fromCharCode">
 When this builtin is invoked with parameter |v|, the following steps must be run:
 
-1. Return [=!=] [=String.fromCharCode=]([=ToJSValue=](|v|)).
+1. Return [=!=] [$Call$]([=String.fromCharCode=], undefined, [=ToJSValue=](|v|)).
 
 </div>
 
 <h4 id="js-string-fromCodePoint">fromCodePoint</h4>
 
 TODO
+
+The |funcType| of this builtin is `(func (param i32) (result externref))`.
+
+<div algorithm="js-string-fromCodePoint">
+When this builtin is invoked with parameter |v|, the following steps must be run:
+
+1. Return [=!=] [$Call$]([=String.fromCodePoint=], undefined, [=ToJSValue=](|v|)).
+
+</div>
 
 <h4 id="js-string-charCodeAt">charCodeAt</h4>
 
