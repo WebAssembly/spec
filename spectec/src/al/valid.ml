@@ -32,6 +32,10 @@ let error_struct source typ =
 let error_tuple source typ =
   error_valid "invalid tuple type" source (Il.Print.string_of_typ typ)
 
+
+let (let*) = Option.bind
+
+
 (* Bound Set *)
 
 module Set = Free.IdSet
@@ -64,7 +68,7 @@ let get_deftyps (id: Il.Ast.id) (args: Il.Ast.arg list): deftyp list =
         | ExpA { it=SubE (_, typ, _); _ } -> typ
         | ExpA { note; _ } -> note
         | TypA typ -> typ
-        | _ -> failwith ("TODO: " ^ Il.Print.string_of_arg (Eval.reduce_arg !env arg))
+        | a -> failwith ("TODO: " ^ Il.Print.string_of_arg (a $ arg.at))
       in
 
       let InstD (_, inst_args, deftyp) = inst.it in
@@ -89,39 +93,46 @@ let rec unify_deftyp_opt (deftyp: deftyp) : typ option =
   | StructT _ -> None
   | VariantT typcases
   when List.for_all (fun (mixop', _, _) -> is_trivial_mixop mixop') typcases ->
-    (match typcases with
-    | (_, (_, typ, _), _) :: _
-    when
-      typcases
-      |> List.map (fun (_, (_, typ', _), _) -> unify_opt typ typ')
-      |> List.for_all Option.is_some
-    -> Some typ
-    | _ -> None
-    )
+    typcases |> List.map (fun (_, (_, typ, _), _) -> typ) |> unify_typs_opt
   | _ -> None
 
-and unify_opt (typ1: typ) (typ2: typ) : typ option =
+and unify_deftyps_opt : deftyp list -> typ option = function
+  | [] -> None
+  | [deftyp] -> unify_deftyp_opt deftyp
+  | deftyp :: deftyps ->
+    let* typ1 = unify_deftyp_opt deftyp in
+    let* typ2 = unify_deftyps_opt deftyps in
+    unify_typ_opt typ1 typ2
+
+and unify_typ_opt (typ1: typ) (typ2: typ) : typ option =
   let typ1', typ2' = ground_typ_of typ1, ground_typ_of typ2 in
   match typ1'.it, typ2'.it with
-  | VarT (id1, _), VarT (id2, _) when id1 = id2 -> Some (ground_typ_of typ1)
-  | BoolT, BoolT | NumT _, NumT _ | TextT, TextT -> Some typ1
+  | VarT (id1, _), VarT (id2, _) when id1 = id2 -> Some typ1'
+  | BoolT, BoolT | NumT _, NumT _ | TextT, TextT -> Some typ1'
   | TupT etl1, TupT etl2 ->
-    let (let*) = Option.bind in
-    let etl =
+    let* etl =
       List.fold_right2
         (fun et1 et2 acc ->
           let* acc = acc in
-          let* res = unify_opt (snd et1) (snd et2) in
+          let* res = unify_typ_opt (snd et1) (snd et2) in
           Some ((fst et1, res) :: acc)
         )
         etl1
         etl2
         (Some [])
     in
-    Option.map (fun etl -> TupT etl $ typ1.at) etl
+    Some (TupT etl $ typ1.at)
   | IterT (typ1'', iter), IterT (typ2'', _) ->
-    Option.map (fun typ -> IterT (typ, iter) $ typ1.at) (unify_opt typ1'' typ2'')
+    let* typ = unify_typ_opt typ1'' typ2'' in
+    Some (IterT (typ, iter) $ typ1.at)
   | _ -> None
+
+and unify_typs_opt : typ list -> typ option = function
+  | [] -> None
+  | [typ] -> Some typ
+  | typ :: typs' ->
+    let* unified_typ = unify_typs_opt typs' in
+    unify_typ_opt typ unified_typ
 
 and ground_typ_of (typ: typ) : typ =
   match typ.it with
@@ -131,15 +142,10 @@ and ground_typ_of (typ: typ) : typ =
   (* NOTE: Consider `fN` as a `NumT` to prevent diverging ground type *)
   | VarT (id, _) when id.it = "fN" -> NumT RealT $ typ.at
   | VarT (id, args) ->
-    let typ_opts = List.map unify_deftyp_opt (get_deftyps id args) in
-    if List.for_all Option.is_some typ_opts then
-      match List.map Option.get typ_opts with
-      | typ' :: typs
-      when List.for_all Option.is_some (List.map (unify_opt typ') typs) ->
-        ground_typ_of typ'
-      | _ -> typ
-    else
-      typ
+    get_deftyps id args
+    |> unify_deftyps_opt
+    |> Option.map ground_typ_of
+    |> Option.value ~default:typ
   | TupT [_, typ'] -> ground_typ_of typ'
   | IterT (typ', iter) -> IterT (ground_typ_of typ', iter) $ typ.at
   | _ -> typ
@@ -210,6 +216,11 @@ let check_list source typ =
   | IterT (_, iter) when iter <> Opt -> ()
   | _ -> error_mismatch source typ (varT "list")
 
+let check_opt source typ =
+  match typ.it with
+  | IterT (_, Opt) -> ()
+  | _ -> error_mismatch source typ (varT "option")
+
 (* TODO: use hint *)
 let check_instr source typ =
   let typ = get_base_typ typ in
@@ -270,6 +281,33 @@ let check_call source id args result_typ =
     env := global_env
   | None -> error_valid "no function definition" source ""
 
+let check_inv_call source id indices args result_typ =
+  let typ2arg typ = ExpA (VarE "" $$ no_region % typ) $ no_region
+  in
+  let typs =
+    match result_typ.it with
+    | TupT l -> l |> List.split |> snd
+    | _ -> [result_typ]
+  in
+  let free_args = List.map typ2arg typs in
+  let count_free_args = ref 0 in
+  let count_bound_args = ref 0 in
+  let idx2arg idx =
+    if Option.is_some idx then (
+      count_free_args := !count_free_args + 1;
+      List.nth free_args (!count_free_args - 1)
+    ) else (
+      count_bound_args := !count_bound_args + 1;
+      List.nth args (!count_bound_args - 1)
+    )
+  in
+  let new_args = List.map idx2arg indices in
+  let new_result_typ = match (List.nth args !count_bound_args).it with
+    | ExpA exp -> exp.note
+    | a -> error_valid (Printf.sprintf "wrong free argument: %s" (Print.string_of_arg (a $ no_region))) source ""
+  in
+  check_call source id new_args new_result_typ
+
 let access (source: source) (typ: typ) (path: path) : typ =
   match path.it with
   | IdxP expr ->
@@ -294,6 +332,7 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
   (match expr.it with
   | VarE id ->
     if not (Set.mem id !bound_set) then error expr.at ("free identifier " ^ id)
+  | NumE _ -> check_num source expr.note;
   | UnE (NotOp, expr') ->
     check_bool source expr.note; check_bool source expr'.note
   | UnE (MinusOp, expr') ->
@@ -328,9 +367,9 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
   | LenE expr' ->
     check_list source expr'.note; check_num source expr.note
   | TupE exprs -> check_tuple source exprs expr.note
-  | CaseE _ -> () (* TODO *)
+  | CaseE _ | CaseE2 _ -> () (* TODO *)
   | CallE (id, args) -> check_call source id args expr.note
-  (* TODO *)
+  | InvCallE (id, indices, args) -> check_inv_call source id indices args expr.note;
   | IterE (expr1, _, iter) ->
     if not (expr1.note.it = BoolT && expr.note.it = BoolT) then
       (match iter with
@@ -343,11 +382,47 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
       | _ ->
         check_match source expr.note (iterT expr1.note List);
       )
-  | _ ->
-    match expr.note.it with
-    | VarT (id, []) when id.it = "TODO" ->
-      error expr.at (Printf.sprintf "%s's type is TODO" (string_of_expr expr))
-    | _ -> ()
+  | OptE expr_opt ->
+    check_opt source expr.note;
+    (match expr_opt with
+    | Some expr' -> check_match source expr.note (iterT expr'.note Opt)
+    | None -> ()
+    )
+  | ListE [] -> check_list source expr.note
+  | ListE (h :: t) ->
+    check_list source expr.note;
+    t
+    |> List.map note
+    |> List.iter (check_match source h.note)
+  | InfixE _ -> () (* TODO: `InfixE` will be merged into CaseE *)
+  | ArityE expr1 ->
+    check_num source expr.note; check_context source expr1.note
+  | FrameE (expr_opt, expr1) ->
+    check_context source expr.note;
+    Option.iter (fun expr2 -> check_num source expr2.note) expr_opt;
+    check_match source expr1.note (varT "frame")
+  | LabelE (expr1, expr2) ->
+    check_context source expr.note;
+    check_num source expr1.note;
+    check_match source expr2.note (iterT (varT "instr") List)
+  | GetCurStateE | GetCurFrameE | GetCurLabelE | GetCurContextE ->
+    check_context source expr.note
+  | BoolE _  | IsCaseOfE _ | IsValidE _ | MatchE _ | HasTypeE _ | TopFrameE | TopLabelE ->
+    check_bool source expr.note
+  | ContE expr1 ->
+    check_match source expr.note (iterT (varT "instr") List);
+    check_match source expr1.note (varT "label")
+  | ChooseE expr1 ->
+    check_list source expr1.note; check_match source expr1.note (iterT expr.note List)
+  | ContextKindE _ -> () (* TODO: Not used anymore *)
+  | IsDefinedE expr1 ->
+    check_opt source expr1.note; check_bool source expr.note
+  | TopValueE expr_opt ->
+    check_bool source expr.note;
+    Option.iter (fun expr1 -> check_match source expr1.note (varT "valtype")) expr_opt
+  | TopValuesE expr1 ->
+    check_bool source expr.note; check_num source expr1.note
+  | SubE _ | YetE _ -> error_valid "invalid expression" source ""
   );
   (Option.get walker.super).walk_expr walker expr
 
@@ -355,7 +430,6 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
 (* Instr validation *)
 
 let valid_instr (walker: unit_walker) (instr: instr) : unit =
-  print_endline (string_of_instr instr);
   let source = string_of_instr instr $ instr.at in
   (match instr.it with
   | IfI (expr, _, _) | AssertI expr -> check_bool source expr.note
@@ -375,10 +449,12 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
       error_mismatch source (get_base_typ expr.note) (varT "val")
   | LetI (expr1, expr2) ->
     add_bound_vars expr1; check_match source expr1.note expr2.note
-  | ExecuteI expr | ExecuteSeqI expr -> check_instr source expr.note
+    | ExecuteI expr | ExecuteSeqI expr -> check_instr source expr.note
+  | PerformI (id, args) -> check_call source id args (TupT [] $ no_region)
   | ReplaceI (expr1, path, expr2) ->
     access source expr1.note path |> check_match source expr2.note
   | AppendI (expr1, _expr2) -> check_list source expr1.note
+  | OtherwiseI _ | YetI _ -> error_valid "invalid instruction" source ""
   | _ -> ()
   );
   (Option.get walker.super).walk_instr walker instr
@@ -386,7 +462,7 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
 let init algo =
   let params = Al_util.params_of_algo algo in
 
-  bound_set := Set.empty;
+  bound_set := Set.singleton "s";
   List.iter add_bound_param params
 
 

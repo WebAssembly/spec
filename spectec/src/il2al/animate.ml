@@ -20,32 +20,6 @@ let list_count pred = list_count' pred 0
 
 let not_ f x = not (f x)
 
-(* Remove or *)
-let remove_or_exp e = match e.it with (* TODO: recursive *)
-| BinE (OrOp, e1, e2) -> [ e1; e2 ]
-| _ -> [ e ]
-
-let remove_or_prem prem = match prem.it with (* TODO: iterPr *)
-| IfPr e -> remove_or_exp e |> List.map (fun e' -> { prem with it = IfPr e' })
-| _ -> [ prem ]
-
-let remove_or rule = match rule.it with
-| RuleD(id, binds, mixop, args, prems) ->
-  let premss = List.map remove_or_prem prems in
-  let premss' = List.fold_right (fun ps pss ->
-    (* Duplice pss *)
-    List.concat_map (fun cur ->
-      List.map (fun p -> p :: cur) ps
-    ) pss
-  ) premss [[]] in
-
-  if List.length premss' = 1 then [ rule ] else
-
-  List.mapi (fun i prems' ->
-    let id' = { id with it = id.it ^ "-" ^ string_of_int i } in
-    { rule with it = RuleD (id', binds, mixop, args, prems') }
-  ) premss'
-
 (* Helper for handling free-var set *)
 let subset x y = Set.subset x.varid y.varid
 
@@ -221,45 +195,13 @@ let build_matrix prems known_vars =
   let cols = List.init (len_prem + List.length unknown_vars) (fun i -> i) in
   rows, cols
 
-(* Pre-process a premise *)
-let rec pre_process prem = match prem.it with
-  | IterPr (prem, iterexp) ->
-    List.map (fun pr -> { prem with it=IterPr (pr, iterexp) }) (pre_process prem)
-  (* HARDCODE: translation of `Expand: dt ~~ ct` into `$expanddt(dt) = ct` *)
-  | RulePr (
-      { it = "Expand"; _ },
-      [[]; [{it = Approx; _}]; []],
-      { it = TupE [dt; ct]; _ }
-    ) ->
-      let expanded_dt = { dt with it = CallE ("expanddt" $ no_region, [ExpA dt $ no_region]); note = ct.note } in
-      [ { prem with it = IfPr (CmpE (EqOp, expanded_dt, ct) $$ no_region % (BoolT $ no_region)) } ]
-  | RulePr (id, mixop, exp) ->
-    let open El.Atom in
-    (match mixop, exp.it with
-    (* |- `lhs` : `rhs` *)
-    | [[turnstile]; [colon]; []], TupE [lhs; rhs]
-    (* `C` |- `lhs` : `rhs` *)
-    | [[]; [turnstile]; [colon]; []], TupE [_; lhs; rhs]
-    when turnstile.it = Turnstile && colon.it = Colon ->
-      let typing_function_call = CallE (id, [ExpA lhs $ lhs.at]) $$ exp.at % rhs.note in
-      [ { prem with it=IfPr (CmpE (EqOp, typing_function_call, rhs) $$ exp.at % (BoolT $ no_region)) } ]
-    | _ -> [ prem ]
-    )
-  (* Split -- if e1 /\ e2 *)
-  | IfPr ( { it = BinE (AndOp, e1, e2); _ } ) ->
-    let p1 = { prem with it = IfPr ( e1 ) } in
-    let p2 = { prem with it = IfPr ( e2 ) } in
-    pre_process p1 @ pre_process p2
-  | _ -> [ prem ]
-
 
 (* Animate the list of premises *)
 
 let animate_prems known_vars prems =
-  let pp_prems = List.concat_map pre_process prems in
   (* Set --otherwise prem to be the first prem (if any) *)
   let is_other = function {it = ElsePr; _} -> true | _ -> false in
-  let (other, non_other) = List.partition is_other pp_prems in
+  let (other, non_other) = List.partition is_other prems in
   let rows, cols = build_matrix non_other known_vars in
 
   (* 1. Run knuth *)
@@ -302,9 +244,8 @@ let animate_clause c = match c.it with
 (* Animate defs *)
 let rec animate_def d = match d.it with
   | RelD (id, mixop, t, rules) ->
-    let rules1 = List.concat_map remove_or rules in
-    let rules2 = List.map animate_rule rules1 in
-    RelD (id, mixop, t, rules2) $ d.at
+    let rules' = List.map animate_rule rules in
+    RelD (id, mixop, t, rules') $ d.at
   | DecD (id, t1, t2, clauses) ->
     let new_clauses = List.map animate_clause clauses in
     DecD (id, t1, t2, new_clauses) $ d.at

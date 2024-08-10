@@ -15,16 +15,14 @@ module Map = Map.Make(String)
 
 type env =
   {
-    prose: prose;
+    config : Config.config;
     render_latex: Backend_latex.Render.env;
-    symbol: Symbol.env;
     macro: Macro.env;
   }
 
-let env inputs outputs render_latex el prose : env =
-  let symbol = Symbol.env el in
+let env config inputs outputs render_latex : env =
   let macro = Macro.env inputs outputs in
-  let env = { prose; render_latex; symbol; macro; } in
+  let env = { config; render_latex; macro; } in
   env
 
 (* Helpers *)
@@ -450,8 +448,10 @@ and render_expr' env expr =
     sprintf "%s matches %s" se1 se2
   | _ ->
     let se = "`" ^ (Al.Print.string_of_expr expr) ^ "`" in
-    let msg = sprintf "expr cannot be rendered %s" se in
-    error expr.at msg
+    if env.config.panic_on_error then (
+      let msg = sprintf "expr cannot be rendered %s" se in
+      error expr.at msg);
+    se
 
 and render_path env path =
   match path.it with
