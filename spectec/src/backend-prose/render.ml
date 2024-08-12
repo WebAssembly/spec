@@ -240,6 +240,7 @@ and al_to_el_expr expr =
       let ele = El.Ast.SeqE ([ ela ] @ elel) in
       if List.length elel = 0 then Some ele
       else Some (El.Ast.ParenE (ele $ no_region, `Insig))
+    | Al.Ast.CaseE2 (_op, _el) -> None (* TODO *)
     | Al.Ast.OptE (Some e) ->
       let* ele = al_to_el_expr e in
       Some (ele.it)

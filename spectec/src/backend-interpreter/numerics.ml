@@ -1025,17 +1025,17 @@ let lanes : numerics =
     name = "lanes";
     f =
       (function
-      | [ TupV [ CaseV ("I8", []); NumV z ]; v ] when z = Z.of_int 16 ->
+      | [ CaseV ("`%X%`", [ CaseV ("I8", []); NumV z ]); v ] when z = Z.of_int 16 ->
         v |> al_to_vec128 |> V128.I8x16.to_lanes |> List.map al_of_int8 |> listV_of_list
-      | [ TupV [ CaseV ("I16", []); NumV z ]; v ] when z = Z.of_int 8 ->
+      | [ CaseV ("`%X%`", [ CaseV ("I16", []); NumV z ]); v ] when z = Z.of_int 8 ->
         v |> al_to_vec128 |> V128.I16x8.to_lanes |> List.map al_of_int16 |> listV_of_list
-      | [ TupV [ CaseV ("I32", []); NumV z ]; v ] when z = Z.of_int 4 ->
+      | [ CaseV ("`%X%`", [ CaseV ("I32", []); NumV z ]); v ] when z = Z.of_int 4 ->
         v |> al_to_vec128 |> V128.I32x4.to_lanes |> List.map al_of_int32 |> listV_of_list
-      | [ TupV [ CaseV ("I64", []); NumV z ]; v ] when z = Z.of_int 2 ->
+      | [ CaseV ("`%X%`", [ CaseV ("I64", []); NumV z ]); v ] when z = Z.of_int 2 ->
         v |> al_to_vec128 |> V128.I64x2.to_lanes |> List.map al_of_int64 |> listV_of_list
-      | [ TupV [ CaseV ("F32", []); NumV z ]; v ] when z = Z.of_int 4 ->
+      | [ CaseV ("`%X%`", [ CaseV ("F32", []); NumV z ]); v ] when z = Z.of_int 4 ->
         v |> al_to_vec128 |> V128.F32x4.to_lanes |> List.map al_of_float32 |> listV_of_list
-      | [ TupV [ CaseV ("F64", []); NumV z ]; v ] when z = Z.of_int 2 ->
+      | [ CaseV ("`%X%`", [ CaseV ("F64", []); NumV z ]); v ] when z = Z.of_int 2 ->
         v |> al_to_vec128 |> V128.F64x2.to_lanes |> List.map al_of_float64 |> listV_of_list
       | vs -> error_values "lanes" vs
       );
@@ -1045,19 +1045,19 @@ let inverse_of_lanes : numerics =
     name = "inverse_of_lanes";
     f =
       (function
-      | [ TupV [ CaseV ("I8", []); NumV z ]; ListV lanes; ] when z = Z.of_int 16 && Array.length !lanes = 16 ->
+      | [ CaseV ("`%X%`",[ CaseV ("I8", []); NumV z ]); ListV lanes; ] when z = Z.of_int 16 && Array.length !lanes = 16 ->
         List.map al_to_int32 (!lanes |> Array.to_list) |> List.map i8_to_i32 |> V128.I8x16.of_lanes |> al_of_vec128
-      | [ TupV [ CaseV ("I16", []); NumV z ]; ListV lanes; ] when z = Z.of_int 8 && Array.length !lanes = 8 ->
+      | [ CaseV ("`%X%`",[ CaseV ("I16", []); NumV z ]); ListV lanes; ] when z = Z.of_int 8 && Array.length !lanes = 8 ->
         List.map al_to_int32 (!lanes |> Array.to_list) |> List.map i16_to_i32 |> V128.I16x8.of_lanes |> al_of_vec128
-      | [ TupV [ CaseV ("I32", []); NumV z ]; ListV lanes; ] when z = Z.of_int 4 && Array.length !lanes = 4 ->
+      | [ CaseV ("`%X%`",[ CaseV ("I32", []); NumV z ]); ListV lanes; ] when z = Z.of_int 4 && Array.length !lanes = 4 ->
         List.map al_to_int32 (!lanes |> Array.to_list) |> V128.I32x4.of_lanes |> al_of_vec128
-      | [ TupV [ CaseV ("I64", []); NumV z ]; ListV lanes; ] when z = Z.of_int 2 && Array.length !lanes = 2 ->
+      | [ CaseV ("`%X%`",[ CaseV ("I64", []); NumV z ]); ListV lanes; ] when z = Z.of_int 2 && Array.length !lanes = 2 ->
         List.map al_to_int64 (!lanes |> Array.to_list) |> V128.I64x2.of_lanes |> al_of_vec128
-      | [ TupV [ CaseV ("F32", []); NumV z ]; ListV lanes; ] when z = Z.of_int 4 && Array.length !lanes = 4 ->
+      | [ CaseV ("`%X%`",[ CaseV ("F32", []); NumV z ]); ListV lanes; ] when z = Z.of_int 4 && Array.length !lanes = 4 ->
         List.map al_to_float32 (!lanes |> Array.to_list) |> V128.F32x4.of_lanes |> al_of_vec128
-      | [ TupV [ CaseV ("F64", []); NumV z ]; ListV lanes; ] when z = Z.of_int 2 && Array.length !lanes = 2 ->
+      | [ CaseV ("`%X%`",[ CaseV ("F64", []); NumV z ]); ListV lanes; ] when z = Z.of_int 2 && Array.length !lanes = 2 ->
         List.map al_to_float64 (!lanes |> Array.to_list) |> V128.F64x2.of_lanes |> al_of_vec128
-      | vs -> error_values "inverse_of_lanes" vs
+        | vs -> error_values "inverse_of_lanes" vs
       );
   }
 

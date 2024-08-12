@@ -277,6 +277,7 @@ and eval_expr env expr =
       | [] -> eval_expr env e2 in
     eval_expr env e1 |> replace ps
   | CaseE (tag, el) -> caseV (Print.string_of_atom tag, List.map (eval_expr env) el)
+  | CaseE2 (op, el) -> caseV (Print.string_of_mixop op, List.map (eval_expr env) el)
   | OptE opt -> Option.map (eval_expr env) opt |> optV
   | TupE el -> List.map (eval_expr env) el |> tupV
   (* Context *)
@@ -338,7 +339,6 @@ and eval_expr env expr =
     | [], Opt -> optV None
     | [v], Opt -> Option.some v |> optV
     | l, _ -> listV_of_list l)
-  | InfixE (e1, _, e2) -> TupV [ eval_expr env e1; eval_expr env e2 ]
   (* condition *)
   | TopFrameE ->
     let ctx = WasmContext.get_top_context () in
@@ -451,8 +451,6 @@ and assign lhs rhs env =
     |> List.fold_right merge
       (List.map (fun v -> assign e v Env.empty) rhs_iter)
     |> Env.union (fun _ _ v -> Some v) env_with_length
-  | InfixE (lhs1, _, lhs2), TupV [rhs1; rhs2] ->
-    env |> assign lhs1 rhs1 |> assign lhs2 rhs2
   | TupE lhs_s, TupV rhs_s
     when List.length lhs_s = List.length rhs_s ->
     List.fold_right2 assign lhs_s rhs_s env
@@ -461,6 +459,9 @@ and assign lhs rhs env =
     List.fold_right2 assign lhs_s (Array.to_list !rhs_s) env
   | CaseE (lhs_tag, lhs_s), CaseV (rhs_tag, rhs_s)
     when (Print.string_of_atom lhs_tag) = rhs_tag && List.length lhs_s = List.length rhs_s ->
+    List.fold_right2 assign lhs_s rhs_s env
+  | CaseE2 (op, lhs_s), CaseV (rhs_tag, rhs_s)
+    when (Print.string_of_mixop op) = rhs_tag && List.length lhs_s = List.length rhs_s ->
     List.fold_right2 assign lhs_s rhs_s env
   | OptE (Some lhs), OptV (Some rhs) -> assign lhs rhs env
   (* Assumption: e1 is the assign target *)

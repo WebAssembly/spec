@@ -242,6 +242,12 @@ let unwrap_framev: value -> value = function
   | v -> fail_value "unwrap_framev" v
 
 
+(* Mixop *)
+
+let get_atom op =
+  List.find (fun al -> List.length al <> 0) op |> List.hd
+
+
 (* Il Types *)
 
 (* name for tuple type *)
