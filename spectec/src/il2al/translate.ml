@@ -252,17 +252,17 @@ and translate_exp exp =
     | [ [ {it = Il.Atom "MUT"; _} ]; [ {it = Il.Quest; _} ]; [] ],
       [ { it = Il.IterE ({ it = Il.TupE []; _ }, (Il.Opt, [])); _}; t ] ->
       tupE [ iterE (varE "mut" ~note:Al.Al_util.no_note, ["mut"], Opt) ~note:Al.Al_util.no_note; translate_exp t ] ~at:at ~note:note
-    | [ []; [ {it = Il.Atom "PAGE"; _} as atom ] ], el ->
-      caseE (atom, List.map translate_exp el) ~at:at ~note:note
-    | [ [ {it = Il.Atom "NULL"; _} as atom ]; [ {it = Il.Quest; _} ] ], el ->
-      caseE (atom, List.map translate_exp el) ~at:at ~note:note
-    | [ {it = Il.Atom _; _} as atom ] :: ll, el
+    | [ []; [ {it = Il.Atom "PAGE"; _} ] ], el ->
+      caseE2 (op, List.map translate_exp el) ~at:at ~note:note
+    | [ [ {it = Il.Atom "NULL"; _} ]; [ {it = Il.Quest; _} ] ], el ->
+      caseE2 (op, List.map translate_exp el) ~at:at ~note:note
+    | [ {it = Il.Atom _; _} ] :: ll, el
       when List.for_all (function ([] | [ {it = (Il.Star | Il.Quest); _} ]) -> true | _ -> false) ll ->
-      caseE (atom, List.map translate_exp el) ~at:at ~note:note
+      caseE2 (op, List.map translate_exp el) ~at:at ~note:note
     | [ [{it = Il.LBrack; _}]; [{it = Il.Dot2; _}]; [{it = Il.RBrack; _}] ], [ e1; e2 ] ->
       tupE [ translate_exp e1; translate_exp e2 ] ~at:at ~note:note
-    | (({it = Il.Atom _; _} as atom)::_)::_, _ ->
-      caseE (atom, translate_argexp e) ~at:at ~note:note
+    | (({it = Il.Atom _; _} )::_)::_, _ ->
+      caseE2 (op, translate_argexp e) ~at:at ~note:note
     | [ []; [] ], [ e1 ] -> translate_exp e1
     | [ []; []; [] ], [ e1; e2 ] ->
       tupE [ translate_exp e1; translate_exp e2 ] ~at:at ~note:note
@@ -334,7 +334,7 @@ let assert_cond_of_pop_value e =
   let at = e.at in
   let bt = boolT in
   match e.it with
-  | CaseE ({ it = Atom ("CONST" | "VCONST"); _ }, [t; _]) ->
+  | CaseE2 ([ [{ it = Atom ("CONST" | "VCONST"); _ }]; _], [t; _]) ->
     topValueE (Some t) ~note:bt
   | GetCurFrameE ->
     topFrameE () ~at:at ~note:bt
@@ -361,15 +361,16 @@ let post_process_of_pop i =
     (match i.it with
     | PopI const ->
       (match const.it with
-      | CaseE (name, [t; c]) when List.mem name.it [Atom "CONST"; Atom "VCONST"] ->
-        (match t.it with
-        | CallE _ ->
-            let var = if name.it = Atom "CONST" then "nt_0" else "vt_0" in
-            let t' = { t with it = VarE var } in
-            let const' = { const with it = CaseE (name, [t'; c]) } in
-            let i' = { i with it = PopI const' } in
-            [ letI (t', t) ], i'
-        | _ -> [], i)
+      | CaseE2 (op, [ { it = CallE _; _ } as t; c]) ->
+        (match (get_atom op) with
+        | Some a ->
+          let name = Il.Atom.name a in
+          let var = if name = "CONST" then "nt_0" else "vt_0" in
+          let t' = { t with it = VarE var } in
+          let const' = { const with it = CaseE2 (op, [t'; c]) } in
+          let i' = { i with it = PopI const' } in
+          [ letI (t', t) ], i'
+        | None -> [], i)
       | _ -> [], i)
     | _ -> [], i)
   in
@@ -426,7 +427,7 @@ let rec translate_rhs exp =
     ) ->
       let exp1 = varE arity.it ~note:n1 in
       let exp2 = varE fid.it ~note:n2 in
-      let exp3 = caseE (atom, []) ~note:note in
+      let exp3 = caseE2 ([[atom]], []) ~note:note in
       let note' = listT note in
     [
       letI (varE "F" ~note:callframeT, frameE (Some (exp1), exp2) ~note:callframeT) ~at:at;
@@ -440,7 +441,7 @@ let rec translate_rhs exp =
     let at' = e2.at in
     let note' = e2.note in
     let exp' = labelE (translate_exp arity, translate_exp e1) ~at:at ~note:labelT in
-    let exp'' = listE ([caseE (atom, []) ~note:note]) ~at:at' ~note:note' in
+    let exp'' = listE ([caseE2 ([[atom]], []) ~note:note]) ~at:at' ~note:note' in
     match e2.it with
     | Il.CatE (ve, ie) ->
       [
@@ -763,7 +764,7 @@ and handle_special_lhs lhs rhs free_ids =
       [ letI (VarE s $$ lhs.at % lhs.note, rhs) ~at:at ],
       []
     )]
-  (* Normal cases *)
+  (* Normal cases TODO *)
   | CaseE (tag, es) ->
     let bindings, es' = extract_non_names es in
     let rec inject_isCaseOf expr =
@@ -775,6 +776,21 @@ and handle_special_lhs lhs rhs free_ids =
     [ ifI (
       inject_isCaseOf rhs,
       letI (caseE (tag, es') ~at:lhs.at ~note:lhs.note, rhs) ~at:at
+        :: translate_bindings free_ids bindings,
+      []
+    )]
+  | CaseE2 (op, es) ->
+    let tag = get_atom op |> Option.get in
+    let bindings, es' = extract_non_names es in
+    let rec inject_isCaseOf expr =
+      match expr.it with
+      | IterE (inner_expr, ids, iter) ->
+        IterE (inject_isCaseOf inner_expr, ids, iter) $$ expr.at % boolT
+      | _ -> IsCaseOfE (expr, tag) $$ rhs.at % boolT
+    in
+    [ ifI (
+      inject_isCaseOf rhs,
+      letI (caseE2 (op, es') ~at:lhs.at ~note:lhs.note, rhs) ~at:at
         :: translate_bindings free_ids bindings,
       []
     )]

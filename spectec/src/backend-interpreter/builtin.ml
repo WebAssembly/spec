@@ -21,7 +21,7 @@ let builtin () =
     let winstr_tag = String.uppercase_ascii name in
     let code = nullary winstr_tag in
     let ptype = Array.map nullary type_tags in
-    let arrow = CaseV ("`%->%`", [ listV ptype; listV [||] ]) in
+    let arrow = CaseV ("->", [ listV ptype; listV [||] ]) in
     let ftype = CaseV ("FUNC", [ arrow ]) in
     let dt =
       CaseV ("DEF", [

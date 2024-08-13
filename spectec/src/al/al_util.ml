@@ -245,8 +245,11 @@ let unwrap_framev: value -> value = function
 (* Mixop *)
 
 let get_atom op =
-  List.find (fun al -> List.length al <> 0) op |> List.hd
+  match List.find_opt (fun al -> List.length al <> 0) op with
+  | Some al -> Some(List.hd al)
+  | None -> None
 
+let name_of_mixop = Il.Mixop.name
 
 (* Il Types *)
 
