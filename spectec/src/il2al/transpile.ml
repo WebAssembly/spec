@@ -889,7 +889,7 @@ let remove_enter algo =
     match instr.it with
     | EnterI (
       ({ it = FrameE (Some e_arity, _); _ } as e_frame),
-      { it = ListE ([ { it = CaseE2 ([[{ it = Atom.Atom "FRAME_"; _ }]], []); _ } ]); _ },
+      { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "FRAME_"; _ }]], []); _ } ]); _ },
       il) ->
         begin match e_arity.it with
         | NumE z when Z.to_int z = 0 ->
@@ -905,7 +905,7 @@ let remove_enter algo =
         end
     | EnterI (
       ({ it = FrameE (None, _); _ } as e_frame),
-      { it = ListE ([ { it = CaseE2 ([[{ it = Atom.Atom "FRAME_"; _ }]], []); _ } ]); _ },
+      { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "FRAME_"; _ }]], []); _ } ]); _ },
       il) ->
         pushI e_frame ~at:instr.at :: il @ [ popI e_frame ~at:instr.at ]
     | _ -> [ instr ]
@@ -913,7 +913,7 @@ let remove_enter algo =
 
   let enter_frame_to_push instr =
     match instr.it with
-    | EnterI (e_frame, { it = ListE ([ { it = CaseE2 ([[{ it = Atom.Atom "FRAME_"; _ }]], []); _ } ]); _ }, il) ->
+    | EnterI (e_frame, { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "FRAME_"; _ }]], []); _ } ]); _ }, il) ->
         pushI e_frame ~at:instr.at :: il
     | _ -> [ instr ]
   in
@@ -922,12 +922,12 @@ let remove_enter algo =
     match instr.it with
     | EnterI (
       e_label,
-      { it = CatE (e_instrs, { it = ListE ([ { it = CaseE2 ([[{ it = Atom.Atom "LABEL_"; _ }]], []); _ } ]); _ }); note; _ },
+      { it = CatE (e_instrs, { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "LABEL_"; _ }]], []); _ } ]); _ }); note; _ },
       [ { it = PushI e_vals; _ } ]) ->
         enterI (e_label, catE (e_vals, e_instrs) ~note:note, []) ~at:instr.at
     | EnterI (
       e_label,
-      { it = CatE (e_instrs, { it = ListE ([ { it = CaseE2 ([[{ it = Atom.Atom "LABEL_"; _ }]], []); _ } ]); _ }); _ },
+      { it = CatE (e_instrs, { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "LABEL_"; _ }]], []); _ } ]); _ }); _ },
       []) ->
         enterI (e_label, e_instrs, []) ~at:instr.at
     | _ -> instr

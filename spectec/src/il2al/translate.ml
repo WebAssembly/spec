@@ -254,7 +254,7 @@ and translate_exp exp =
     | [ []; [{it = Il.Semicolon; _}]; [] ], [ e1; e2 ] ->
       tupE [ translate_exp e1; translate_exp e2 ] ~at:at ~note:note
     | _, _ when List.length op = List.length exps + 1 ->
-      caseE2 (op, translate_argexp e) ~at:at ~note:note
+      caseE (op, translate_argexp e) ~at:at ~note:note
     | _ -> yetE (Il.Print.string_of_exp exp) ~at:at ~note:note
     )
   | Il.UncaseE (e, op) ->
@@ -318,7 +318,7 @@ let assert_cond_of_pop_value e =
   let at = e.at in
   let bt = boolT in
   match e.it with
-  | CaseE2 (op, [t; _]) ->
+  | CaseE (op, [t; _]) ->
     (match get_atom op with
     | Some {it = Il.Atom "CONST"; _} -> topValueE (Some t) ~note:bt
     | Some {it = Il.Atom "VCONST"; _} -> topValueE (Some t) ~note:bt
@@ -349,13 +349,13 @@ let post_process_of_pop i =
     (match i.it with
     | PopI const ->
       (match const.it with
-      | CaseE2 (op, [ { it = CallE _; _ } as t; c]) ->
+      | CaseE (op, [ { it = CallE _; _ } as t; c]) ->
         (match (get_atom op) with
         | Some a ->
           let name = Il.Atom.name a in
           let var = if name = "CONST" then "nt_0" else "vt_0" in
           let t' = { t with it = VarE var } in
-          let const' = { const with it = CaseE2 (op, [t'; c]) } in
+          let const' = { const with it = CaseE (op, [t'; c]) } in
           let i' = { i with it = PopI const' } in
           [ letI (t', t) ], i'
         | None -> [], i)
@@ -415,7 +415,7 @@ let rec translate_rhs exp =
     ) ->
       let exp1 = varE arity.it ~note:n1 in
       let exp2 = varE fid.it ~note:n2 in
-      let exp3 = caseE2 ([[atom]], []) ~note:note in
+      let exp3 = caseE ([[atom]], []) ~note:note in
       let note' = listT note in
     [
       letI (varE "F" ~note:callframeT, frameE (Some (exp1), exp2) ~note:callframeT) ~at:at;
@@ -429,7 +429,7 @@ let rec translate_rhs exp =
     let at' = e2.at in
     let note' = e2.note in
     let exp' = labelE (translate_exp arity, translate_exp e1) ~at:at ~note:labelT in
-    let exp'' = listE ([caseE2 ([[atom]], []) ~note:note]) ~at:at' ~note:note' in
+    let exp'' = listE ([caseE ([[atom]], []) ~note:note]) ~at:at' ~note:note' in
     match e2.it with
     | Il.CatE (ve, ie) ->
       [
@@ -753,7 +753,7 @@ and handle_special_lhs lhs rhs free_ids =
       []
     )]
   (* Normal cases *)
-  | CaseE2 (op, es) ->
+  | CaseE (op, es) ->
     let tag = get_atom op |> Option.get in
     let bindings, es' = extract_non_names es in
     let rec inject_isCaseOf expr =
@@ -766,12 +766,12 @@ and handle_special_lhs lhs rhs free_ids =
     | { it = Il.Atom _; _} ->
       [ ifI (
         inject_isCaseOf rhs,
-        letI (caseE2 (op, es') ~at:lhs.at ~note:lhs.note, rhs) ~at:at
+        letI (caseE (op, es') ~at:lhs.at ~note:lhs.note, rhs) ~at:at
         :: translate_bindings free_ids bindings,
         []
       )]
     | _ ->
-      letI (caseE2 (op, es') ~at:lhs.at ~note:lhs.note, rhs) ~at:at
+      letI (caseE (op, es') ~at:lhs.at ~note:lhs.note, rhs) ~at:at
       :: translate_bindings free_ids bindings)
   | ListE es ->
     let bindings, es' = extract_non_names es in

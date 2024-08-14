@@ -36,7 +36,7 @@ let rec free_expr expr =
   | InvCallE (_, _, al) ->  free_list free_arg al
   | TupE el
   | ListE el
-  | CaseE2 (_, el) -> free_list free_expr el
+  | CaseE (_, el) -> free_list free_expr el
   | StrE r -> free_list (fun (_, e) -> free_expr !e) r
   | AccE (e, p) -> free_expr e @ free_path p
   | ExtE (e1, ps, e2, _)

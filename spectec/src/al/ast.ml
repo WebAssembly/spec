@@ -92,7 +92,7 @@ and expr' =
   | MemE of expr * expr                           (* expr `<-` expr *)
   | LenE of expr                                  (* `|` expr `|` *)
   | TupE of expr list                             (* `(` (expr `,`)* `)` *)
-  | CaseE2 of mixop * expr list                   (* mixop `(` expr* `)` -- CaseE *) (* TODO: Migrate CaseE to CaseE2*)
+  | CaseE of mixop * expr list                   (* mixop `(` expr* `)` -- CaseE *)
   | CallE of id * arg list                        (* id `(` expr* `)` *)
   | InvCallE of id * int option list * arg list   (* id`_`int*`^-1(` expr* `)` *)
   | IterE of expr * id list * iter                (* expr (`{` id* `}`)* *)

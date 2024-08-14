@@ -42,7 +42,7 @@ let return_instrs_of_instantiate config =
   [
     enterI (
       frameE (Some (numE Z.zero ~note:natT), frame) ~note:callframeT,
-      listE ([ caseE2 ([[atom_of_name "FRAME_" "admininstr"]], []) ~note:admininstrT]) ~note:ty,
+      listE ([ caseE ([[atom_of_name "FRAME_" "admininstr"]], []) ~note:admininstrT]) ~note:ty,
       rhs
     );
     returnI (Some (tupE [
@@ -64,7 +64,7 @@ let return_instrs_of_invoke config =
     letI (arity,  len_expr);
     enterI (
       frameE (Some (arity), frame) ~note:callframeT,
-      listE ([caseE2 ([[atom_of_name "FRAME_" "admininstr"]], []) ~note:admininstrT]) ~note:ty,
+      listE ([caseE ([[atom_of_name "FRAME_" "admininstr"]], []) ~note:admininstrT]) ~note:ty,
       rhs
     );
     popI (iterE (value, ["val"], ListN (arity, None)) ~note:ty');

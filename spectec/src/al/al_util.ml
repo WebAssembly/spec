@@ -52,7 +52,7 @@ let catE ?(at = no) ~note (e1, e2) = CatE (e1, e2) |> mk_expr at note
 let memE ?(at = no) ~note (e1, e2) = MemE (e1, e2) |> mk_expr at note
 let lenE ?(at = no) ~note e = LenE e |> mk_expr at note
 let tupE ?(at = no) ~note el = TupE el |> mk_expr at note
-let caseE2 ?(at = no) ~note (op, el) = CaseE2 (op, el) |> mk_expr at note
+let caseE ?(at = no) ~note (op, el) = CaseE (op, el) |> mk_expr at note
 let callE ?(at = no) ~note (id, el) = CallE (id, el) |> mk_expr at note
 let invCallE ?(at = no) ~note (id, il, el) = InvCallE (id, il, el) |> mk_expr at note
 let iterE ?(at = no) ~note (e, idl, it) = IterE (e, idl, it) |> mk_expr at note

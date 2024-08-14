@@ -230,7 +230,7 @@ and al_to_el_expr expr =
         | _ -> ele
       in
       Some (El.Ast.IterE (ele, eliter))
-    | Al.Ast.CaseE2 (op, el) ->
+    | Al.Ast.CaseE (op, el) ->
       let elal = mixop_to_el_exprs op in
       let* elel = al_to_el_exprs el in
       let ele = El.Ast.SeqE (case_to_el_exprs elal elel) in
@@ -695,7 +695,7 @@ let render_atom_title env name params =
   let name = name' $$ no_region % name.note in
   let op = [name] :: List.init (List.length params) (fun _ -> []) in
   let params = List.filter_map (fun a -> match a.it with Al.Ast.ExpA e -> Some e | _ -> None) params in
-  let expr = Al.Al_util.caseE2 (op, params) ~at:no_region ~note:Al.Al_util.no_note in
+  let expr = Al.Al_util.caseE (op, params) ~at:no_region ~note:Al.Al_util.no_note in
   match al_to_el_expr expr with
   | Some ({ it = El.Ast.ParenE (exp, _); _ }) -> render_el_exp env exp
   | Some exp -> render_el_exp env exp

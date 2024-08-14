@@ -376,7 +376,7 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
   | LenE expr' ->
     check_list source expr'.note; check_num source expr.note
   | TupE exprs -> check_tuple source exprs expr.note
-  | CaseE2 _ -> () (* TODO *)
+  | CaseE _ -> () (* TODO *)
   | CallE (id, args) -> check_call source id args expr.note
   | InvCallE (id, indices, args) -> check_inv_call source id indices args expr.note;
   | IterE (expr1, _, iter) ->
