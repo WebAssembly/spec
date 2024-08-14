@@ -283,15 +283,19 @@ let check_call source id args result_typ =
     env := global_env
   | None -> error_valid "no function definition" source ""
 
-let check_inv_call source id indices args result_typ =
-  let typ2arg typ = ExpA (VarE "" $$ no_region % typ) $ no_region
-  in
+let check_inv_call source id indices bound_args result_typ =
+  (* Get typs from result_typ *)
   let typs =
     match result_typ.it with
     | TupT l -> l |> List.split |> snd
     | _ -> [result_typ]
   in
+
+  (* Make arguments with typs *)
+  let typ2arg typ = ExpA (VarE "" $$ no_region % typ) $ no_region in
   let free_args = List.map typ2arg typs in
+
+  (* Merge free args and bound args *)
   let count_free_args = ref 0 in
   let count_bound_args = ref 0 in
   let idx2arg idx =
@@ -300,11 +304,13 @@ let check_inv_call source id indices args result_typ =
       List.nth free_args (!count_free_args - 1)
     ) else (
       count_bound_args := !count_bound_args + 1;
-      List.nth args (!count_bound_args - 1)
+      List.nth bound_args (!count_bound_args - 1)
     )
   in
   let new_args = List.map idx2arg indices in
-  let new_result_typ = match (List.nth args !count_bound_args).it with
+
+  (* Set new result typ as the last element of args *)
+  let new_result_typ = match (List.nth bound_args !count_bound_args).it with
     | ExpA exp -> exp.note
     | a -> error_valid (Printf.sprintf "wrong free argument: %s" (Print.string_of_arg (a $ no_region))) source ""
   in
