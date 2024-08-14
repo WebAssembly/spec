@@ -180,7 +180,23 @@ and string_of_expr expr =
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
   | CaseE (a, []) -> string_of_atom a
   | CaseE (a, el) -> "(" ^ string_of_atom a ^ " " ^ string_of_exprs " " el ^ ")"
-  | CaseE2 (op, el) -> "(" ^ string_of_mixop op ^ "_" ^ string_of_exprs " " el ^ ")"
+  | CaseE2 ([{ it=Atom.Atom ("CONST" | "VCONST"); _ }]::_tl, hd::tl) ->
+    "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
+  | CaseE2 ([[ atom ]], []) -> string_of_atom atom
+  | CaseE2 (op, el) ->
+    let op' = List.map (fun al -> String.concat "" (List.map string_of_atom al)) op in
+    (match op' with
+    | [] -> "()"
+    | hd::tl ->
+      let res =
+        List.fold_left2 (
+          fun acc a e ->
+            let a' = if a = "" then "" else " " ^ a in
+            let acc' = if acc = "" then "" else acc ^ " " in
+            acc' ^ string_of_expr e ^ a'
+        ) hd tl el in
+      "(" ^ res ^ ")"
+    )
   | OptE (Some e) -> "?(" ^ string_of_expr e ^ ")"
   | OptE None -> "?()"
   | ContextKindE (a, e) -> sprintf "%s == %s" (string_of_expr e) (string_of_atom a)
@@ -286,7 +302,7 @@ let rec string_of_instr' depth instr =
       (string_of_instrs' (depth + 1) il2)
       (repeat indent depth)
   | OtherwiseI il ->
-    sprintf " Otherwise:%s" 
+    sprintf " Otherwise:%s"
       (string_of_instrs' (depth + 1) il)
   | EitherI (il1, il2) ->
     sprintf " Either {%s\n%s }\n%s Or {%s\n %s}"
@@ -308,12 +324,12 @@ let rec string_of_instr' depth instr =
   | LetI (e1, e2) ->
     sprintf " Let %s = %s" (string_of_expr e1)
       (string_of_expr e2)
-  | TrapI -> sprintf " Trap" 
-  | NopI -> sprintf " Nop" 
-  | ReturnI None -> sprintf " Return" 
+  | TrapI -> sprintf " Trap"
+  | NopI -> sprintf " Nop"
+  | ReturnI None -> sprintf " Return"
   | ReturnI (Some e) -> sprintf " Return %s" (string_of_expr e)
   | EnterI (e1, e2, il) ->
-    sprintf " Enter (%s, %s) {%s \n%s }" 
+    sprintf " Enter (%s, %s) {%s \n%s }"
       (string_of_expr e1) (string_of_expr e2) (string_of_instrs' (depth + 1) il) (repeat indent depth)
   | ExecuteI e ->
     sprintf " Execute %s" (string_of_expr e)
@@ -327,7 +343,7 @@ let rec string_of_instr' depth instr =
     sprintf " %s%s := %s"
       (string_of_expr e1) (string_of_path p) (string_of_expr e2)
   | AppendI (e1, e2) ->
-    sprintf " %s :+ %s" 
+    sprintf " %s :+ %s"
       (string_of_expr e2) (string_of_expr e1)
   | YetI s -> sprintf " YetI: %s." s
 

@@ -45,7 +45,6 @@ let rec extract_desc typ = match typ.it with
 
 
 let string_of_atom = El.Print.string_of_atom
-let string_of_mixop = Il.Print.string_of_mixop
 let string_of_typ = Il.Print.string_of_typ
 
 (* Operators *)
@@ -156,7 +155,23 @@ and string_of_expr expr =
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
   | CaseE (a, []) -> string_of_atom a
   | CaseE (a, el) -> "(" ^ string_of_atom a ^ " " ^ string_of_exprs " " el ^ ")"
-  | CaseE2 (op, el) -> "(" ^ string_of_mixop op ^ "_" ^ string_of_exprs " " el ^ ")"
+  | CaseE2 ([{ it=El.Atom.Atom ("CONST" | "VCONST"); _ }]::_tl, hd::tl) ->
+    "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
+  | CaseE2 ([[ atom ]], []) -> string_of_atom atom
+  | CaseE2 (op, el) ->
+    let op' = List.map (fun al -> String.concat "" (List.map string_of_atom al)) op in
+    (match op' with
+    | [] -> "()"
+    | hd::tl ->
+      let res =
+        List.fold_left2 (
+          fun acc a e ->
+            let a' = if a = "" then "" else " " ^ a in
+            let acc' = if acc = "" then "" else acc ^ " " in
+            acc' ^ string_of_expr e ^ a'
+        ) hd tl el in
+      "(" ^ res ^ ")"
+    )
   | OptE (Some e) -> "?(" ^ string_of_expr e ^ ")"
   | OptE None -> "?()"
   | ContextKindE (a, e) -> sprintf "%s is %s" (string_of_expr e) (string_of_atom a)

@@ -240,7 +240,14 @@ and al_to_el_expr expr =
       let ele = El.Ast.SeqE ([ ela ] @ elel) in
       if List.length elel = 0 then Some ele
       else Some (El.Ast.ParenE (ele $ no_region, `Insig))
-    | Al.Ast.CaseE2 (_op, _el) -> None (* TODO *)
+    | Al.Ast.CaseE2 (op, el) ->
+      let elal = mixop_to_el_exprs op in
+      let* elel = al_to_el_exprs el in
+      let ele = El.Ast.SeqE (case_to_el_exprs elal elel) in
+      (match elel with
+      | _::_ -> Some (El.Ast.ParenE (ele $ no_region, `Insig))
+      | [] -> Some ele
+      )
     | Al.Ast.OptE (Some e) ->
       let* ele = al_to_el_expr e in
       Some (ele.it)
@@ -248,6 +255,23 @@ and al_to_el_expr expr =
     | _ -> None
   in
   Option.map (fun exp' -> exp' $ no_region) exp'
+
+and case_to_el_exprs al el =
+  match al with
+  | [] -> error no_region "empty mixop in a AL case expr"
+  | hd::tl ->
+    List.fold_left2 (fun acc a e -> a::Some(e)::acc) [ hd ] tl el
+    |> List.filter_map (fun x -> x)
+    |> List.rev
+
+and mixop_to_el_exprs op =
+  List.map
+    (fun al ->
+      match al with
+      | [ a ] -> Some((El.Ast.AtomE a) $ no_region)
+      | _ -> None
+    )
+  op
 
 and al_to_el_exprs exprs =
   List.fold_left
@@ -679,8 +703,9 @@ let render_atom_title env name params =
     | _ -> name.it
   in
   let name = name' $$ no_region % name.note in
+  let op = [name] :: List.init (List.length params) (fun _ -> []) in
   let params = List.filter_map (fun a -> match a.it with Al.Ast.ExpA e -> Some e | _ -> None) params in
-  let expr = Al.Al_util.caseE (name, params) ~at:no_region ~note:Al.Al_util.no_note in
+  let expr = Al.Al_util.caseE2 (op, params) ~at:no_region ~note:Al.Al_util.no_note in
   match al_to_el_expr expr with
   | Some ({ it = El.Ast.ParenE (exp, _); _ }) -> render_el_exp env exp
   | Some exp -> render_el_exp env exp
