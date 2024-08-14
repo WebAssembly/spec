@@ -283,7 +283,7 @@ let check_call source id args result_typ =
     env := global_env
   | None -> error_valid "no function definition" source ""
 
-let check_inv_call source id indices bound_args result_typ =
+let check_inv_call source id indices args result_typ =
   (* Get typs from result_typ *)
   let typs =
     match result_typ.it with
@@ -295,26 +295,27 @@ let check_inv_call source id indices bound_args result_typ =
   let typ2arg typ = ExpA (VarE "" $$ no_region % typ) $ no_region in
   let free_args = List.map typ2arg typs in
 
+  (* Pop last arg from args *)
+  let bound_args, last_arg = Lib.List.split_last args in
+
   (* Merge free args and bound args *)
-  let count_free_args = ref 0 in
-  let count_bound_args = ref 0 in
-  let idx2arg idx =
-    if Option.is_some idx then (
-      count_free_args := !count_free_args + 1;
-      List.nth free_args (!count_free_args - 1)
-    ) else (
-      count_bound_args := !count_bound_args + 1;
-      List.nth bound_args (!count_bound_args - 1)
-    )
+  let merge_args args idx =
+    let free_args, bound_args, merged_args = args in
+    if Option.is_some idx then
+      let new_free_args, first_free_arg = Lib.List.split_last free_args in
+      (new_free_args, bound_args, first_free_arg :: merged_args)
+    else
+      let new_bound_args,first_bound_arg = Lib.List.split_last free_args in
+      (free_args, new_bound_args, first_bound_arg :: merged_args)
   in
-  let new_args = List.map idx2arg indices in
+  let _, _, merged_args = List.fold_left merge_args (free_args, bound_args, []) indices in
 
   (* Set new result typ as the last element of args *)
-  let new_result_typ = match (List.nth bound_args !count_bound_args).it with
+  let new_result_typ = match last_arg.it with
     | ExpA exp -> exp.note
     | a -> error_valid (Printf.sprintf "wrong free argument: %s" (Print.string_of_arg (a $ no_region))) source ""
   in
-  check_call source id new_args new_result_typ
+  check_call source id merged_args new_result_typ
 
 let access (source: source) (typ: typ) (path: path) : typ =
   match path.it with
