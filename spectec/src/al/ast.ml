@@ -99,7 +99,6 @@ and expr' =
   | IterE of expr * id list * iter                (* expr (`{` id* `}`)* *)
   | OptE of expr option                           (* expr?  *)
   | ListE of expr list                            (* `[` expr* `]` *)
-  | InfixE of expr * atom * expr                  (* "expr infix expr" *) (* TODO: Remove InfixE using hint *)
   | ArityE of expr                                (* "the arity of expr" *)
   | FrameE of expr option * expr                  (* "the activation of expr (with arity expr)?" *)
   | LabelE of expr * expr                         (* "the label whose arity is expr and whose continuation is expr" *)

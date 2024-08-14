@@ -59,7 +59,6 @@ let invCallE ?(at = no) ~note (id, il, el) = InvCallE (id, il, el) |> mk_expr at
 let iterE ?(at = no) ~note (e, idl, it) = IterE (e, idl, it) |> mk_expr at note
 let optE ?(at = no) ~note e_opt = OptE e_opt |> mk_expr at note
 let listE ?(at = no) ~note el = ListE el |> mk_expr at note
-let infixE ?(at = no) ~note (e1, infix, e2) = InfixE (e1, infix, e2) |> mk_expr at note
 let arityE ?(at = no) ~note e = ArityE e |> mk_expr at note
 let frameE ?(at = no) ~note (e_opt, e) = FrameE (e_opt, e) |> mk_expr at note
 let labelE ?(at = no) ~note (e1, e2) = LabelE (e1, e2) |> mk_expr at note

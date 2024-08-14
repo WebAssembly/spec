@@ -403,7 +403,6 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
     t
     |> List.map note
     |> List.iter (check_match source h.note)
-  | InfixE _ -> () (* TODO: `InfixE` will be merged into CaseE *)
   | ArityE expr1 ->
     check_num source expr.note; check_context source expr1.note
   | FrameE (expr_opt, expr1) ->

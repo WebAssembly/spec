@@ -32,8 +32,6 @@ let rec eq_expr e1 e2 =
     eq_expr e1 e2 && il1 = il2 && it1 = it2
   | OptE eo1, OptE eo2 -> eq_expr_opt eo1 eo2
   | ListE el1, ListE el2 -> eq_exprs el1 el2
-  | InfixE (e11, a1, e12), InfixE (e21, a2, e22) ->
-    eq_expr e11 e21 && El.Atom.eq a1 a2 && eq_expr e12 e22
   | ArityE e1, ArityE e2 -> eq_expr e1 e2
   | FrameE (eo1, e1), FrameE (eo2, e2) ->
     eq_expr_opt eo1 eo2 && eq_expr e1 e2

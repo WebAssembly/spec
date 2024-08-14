@@ -230,10 +230,6 @@ and al_to_el_expr expr =
         | _ -> ele
       in
       Some (El.Ast.IterE (ele, eliter))
-    | Al.Ast.InfixE (e1, op, e2) ->
-      let* ele1 = al_to_el_expr e1 in
-      let* ele2 = al_to_el_expr e2 in
-      Some (El.Ast.InfixE (ele1, op, ele2))
     | Al.Ast.CaseE (a, el) ->
       let ela = (El.Ast.AtomE a) $ no_region in
       let* elel = al_to_el_exprs el in

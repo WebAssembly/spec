@@ -30,7 +30,6 @@ let rec free_expr expr =
   | BinE (_, e1, e2)
   | CatE (e1, e2)
   | MemE (e1, e2)
-  | InfixE (e1, _, e2)
   | LabelE (e1, e2) -> free_expr e1 @ free_expr e2
   | FrameE (e_opt, e) -> free_opt free_expr e_opt @ free_expr e
   | CallE (_, al)

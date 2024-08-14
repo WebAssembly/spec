@@ -175,7 +175,6 @@ and string_of_expr expr =
   | VarE id -> id
   | SubE (id, _) -> id
   | IterE (e, _, iter) -> string_of_expr e ^ string_of_iter iter
-  | InfixE (e1, a, e2) -> "(" ^ string_of_expr e1 ^ " " ^ string_of_atom a ^ " " ^ string_of_expr e2 ^ ")"
   | CaseE ({ it=Atom.Atom ("CONST" | "VCONST"); _ }, hd::tl) ->
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
   | CaseE (a, []) -> string_of_atom a
@@ -507,14 +506,6 @@ and structured_string_of_expr expr =
     ^ structured_string_of_ids ids
     ^ ", "
     ^ string_of_iter iter
-    ^ ")"
-  | InfixE (e1, a, e2) ->
-    "InfixE ("
-    ^ structured_string_of_expr e1
-    ^ ", "
-    ^ string_of_atom a
-    ^ ", "
-    ^ structured_string_of_expr e2
     ^ ")"
   | CaseE (a, el) ->
     "CaseE (" ^ string_of_atom a
