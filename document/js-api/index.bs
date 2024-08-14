@@ -1814,6 +1814,15 @@ The <dfn abstract-op lt="UnwrapString">UnwrapString(|v|)</dfn> abstract operatio
 
 </div>
 
+<div algorithm>
+
+The <dfn abstract-op lt="FromCharCode">FromCharCode(|v|)</dfn> abstract operation, when invoked, performs the following steps:
+
+1. Assert: |v| is of type [=i32=].
+1. Return [=!=] [$Call$]([=String.fromCharCode=], undefined, « [=ToJSValue=](|v|) »).
+
+</div>
+
 <h4 id="js-string-cast">cast</h4>
 
 The |funcType| of this builtin is `(func (param externref) (result externref))`.
@@ -1840,7 +1849,25 @@ When this builtin is invoked with parameter |v|, the following steps must be run
 
 <h4 id="js-string-fromCharCodeArray">fromCharCodeArray</h4>
 
-TODO
+The |funcType| of this builtin is `(func (param (ref null (array (mut i16))) i32 i32) (result externref))`.
+
+<div algorithm="js-string-fromCharCodeArray">
+When this builtin is invoked with parameters |array|, |start|, and |end|, the following steps must be run:
+
+1. If |array| is nul]
+    1. Throw a {{RuntimeError}} exception. TODO: this needs to not be catchable, like a trap.
+1. If |start| > |end| or |end| > [=array_len=](|array|)
+    1. Throw a {{RuntimeError}} exception. TODO: this needs to not be catchable, like a trap.
+1. Let |result| be the empty string
+1. Let |i| be |start|
+1. While |i| < |end|:
+    1. Let |charCode| be [=array_i16_get=](|array|, |i|).
+    1. Let |charCodeString| be [$FromCharCode$](|charCode|).
+    1. Let |result| be the concatenation of |result| and |charCodeString|.
+    1. Set |i| to |i| + 1.
+1. Return |result|
+
+</div>
 
 <h4 id="js-string-intoCharCodeArray">intoCharCodeArray</h4>
 
@@ -1853,7 +1880,7 @@ The |funcType| of this builtin is `(func (param i32) (result externref))`.
 <div algorithm="js-string-fromCharCode">
 When this builtin is invoked with parameter |v|, the following steps must be run:
 
-1. Return [=!=] [$Call$]([=String.fromCharCode=], undefined, « [=ToJSValue=](|v|) »).
+1. Return [$FromCharCode$](|v|).
 
 </div>
 
