@@ -246,30 +246,14 @@ and translate_exp exp =
     (* Constructor *)
     (* TODO: Need a better way to convert these CaseE into ConstructE *)
     (* TODO: type *)
-    | [ [ {it = Il.Atom "MUT"; _} ]; [ {it = Il.Quest; _} ]; [] ],
-      [ { it = Il.OptE (Some { it = Il.TupE []; _ }); _}; _t ] ->
-      caseE2(op, translate_argexp e) ~at:at ~note:note
-    | [ [ {it = Il.Atom "MUT"; _} ]; [ {it = Il.Quest; _} ]; [] ],
-      [ { it = Il.IterE ({ it = Il.TupE []; _ }, (Il.Opt, [])); _}; _t ] ->
-      caseE2 (op, translate_argexp e) ~at:at ~note:note
-    | [ []; [ {it = Il.Atom "PAGE"; _} ] ], _ ->
-      caseE2 (op, translate_argexp e) ~at:at ~note:note
-    | [ [ {it = Il.Atom "NULL"; _} ]; [ {it = Il.Quest; _} ] ], _ ->
-      caseE2 (op, translate_argexp e) ~at:at ~note:note
-    | [ {it = Il.Atom _; _} ] :: ll, _
-      when List.for_all (function ([] | [ {it = (Il.Star | Il.Quest); _} ]) -> true | _ -> false) ll ->
-      caseE2 (op, translate_argexp e) ~at:at ~note:note
     | [ [{it = Il.LBrack; _}]; [{it = Il.Dot2; _}]; [{it = Il.RBrack; _}] ], [ e1; e2 ] ->
       tupE [ translate_exp e1; translate_exp e2 ] ~at:at ~note:note
-    | (({it = Il.Atom _; _} )::_)::_, _ ->
-      caseE2 (op, translate_argexp e) ~at:at ~note:note
     | [ []; [] ], [ e1 ] -> translate_exp e1
     | [ []; []; [] ], [ e1; e2 ] ->
       tupE [ translate_exp e1; translate_exp e2 ] ~at:at ~note:note
     | [ []; [{it = Il.Semicolon; _}]; [] ], [ e1; e2 ] ->
       tupE [ translate_exp e1; translate_exp e2 ] ~at:at ~note:note
-    | [ []; _atom; [] ], [ _; _ ]
-    | [ []; _atom; []; [] ], [ _; _; _ ] ->
+    | _, _ when List.length op = List.length exps + 1 ->
       caseE2 (op, translate_argexp e) ~at:at ~note:note
     | _ -> yetE (Il.Print.string_of_exp exp) ~at:at ~note:note
     )
