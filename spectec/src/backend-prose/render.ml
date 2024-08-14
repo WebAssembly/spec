@@ -230,12 +230,6 @@ and al_to_el_expr expr =
         | _ -> ele
       in
       Some (El.Ast.IterE (ele, eliter))
-    | Al.Ast.CaseE (a, el) ->
-      let ela = (El.Ast.AtomE a) $ no_region in
-      let* elel = al_to_el_exprs el in
-      let ele = El.Ast.SeqE ([ ela ] @ elel) in
-      if List.length elel = 0 then Some ele
-      else Some (El.Ast.ParenE (ele $ no_region, `Insig))
     | Al.Ast.CaseE2 (op, el) ->
       let elal = mixop_to_el_exprs op in
       let* elel = al_to_el_exprs el in

@@ -276,7 +276,6 @@ and eval_expr env expr =
       | path :: rest -> access_path env base path |> replace rest |> replace_path env base path
       | [] -> eval_expr env e2 in
     eval_expr env e1 |> replace ps
-  | CaseE (tag, el) -> caseV (Print.string_of_atom tag, List.map (eval_expr env) el)
   | CaseE2 (op, el) ->
     (match (get_atom op) with
     | Some a -> caseV (Print.string_of_atom a, List.map (eval_expr env) el)
@@ -461,9 +460,6 @@ and assign lhs rhs env =
   | ListE lhs_s, ListV rhs_s
     when List.length lhs_s = Array.length !rhs_s ->
     List.fold_right2 assign lhs_s (Array.to_list !rhs_s) env
-  | CaseE (lhs_tag, lhs_s), CaseV (rhs_tag, rhs_s)
-    when (Print.string_of_atom lhs_tag) = rhs_tag && List.length lhs_s = List.length rhs_s ->
-    List.fold_right2 assign lhs_s rhs_s env
   | CaseE2 (op, lhs_s), CaseV (rhs_tag, rhs_s) when List.length lhs_s = List.length rhs_s ->
     (match get_atom op with
     | Some lhs_tag when (Print.string_of_atom lhs_tag) = rhs_tag ->

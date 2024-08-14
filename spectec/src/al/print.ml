@@ -175,10 +175,6 @@ and string_of_expr expr =
   | VarE id -> id
   | SubE (id, _) -> id
   | IterE (e, _, iter) -> string_of_expr e ^ string_of_iter iter
-  | CaseE ({ it=Atom.Atom ("CONST" | "VCONST"); _ }, hd::tl) ->
-    "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
-  | CaseE (a, []) -> string_of_atom a
-  | CaseE (a, el) -> "(" ^ string_of_atom a ^ " " ^ string_of_exprs " " el ^ ")"
   | CaseE2 ([{ it=Atom.Atom ("CONST" | "VCONST"); _ }]::_tl, hd::tl) ->
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
   | CaseE2 ([[ atom ]], []) -> string_of_atom atom
@@ -507,9 +503,6 @@ and structured_string_of_expr expr =
     ^ ", "
     ^ string_of_iter iter
     ^ ")"
-  | CaseE (a, el) ->
-    "CaseE (" ^ string_of_atom a
-    ^ ", [" ^ structured_string_of_exprs el ^ "])"
   | CaseE2 (op, el) ->
     "CaseE2 (" ^ string_of_mixop op
     ^ ", [" ^ structured_string_of_exprs el ^ "])"

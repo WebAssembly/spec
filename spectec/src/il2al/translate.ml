@@ -752,21 +752,7 @@ and handle_special_lhs lhs rhs free_ids =
       [ letI (VarE s $$ lhs.at % lhs.note, rhs) ~at:at ],
       []
     )]
-  (* Normal cases TODO *)
-  | CaseE (tag, es) ->
-    let bindings, es' = extract_non_names es in
-    let rec inject_isCaseOf expr =
-      match expr.it with
-      | IterE (inner_expr, ids, iter) ->
-        IterE (inject_isCaseOf inner_expr, ids, iter) $$ expr.at % boolT
-      | _ -> IsCaseOfE (expr, tag) $$ rhs.at % boolT
-    in
-    [ ifI (
-      inject_isCaseOf rhs,
-      letI (caseE (tag, es') ~at:lhs.at ~note:lhs.note, rhs) ~at:at
-        :: translate_bindings free_ids bindings,
-      []
-    )]
+  (* Normal cases *)
   | CaseE2 (op, es) ->
     let tag = get_atom op |> Option.get in
     let bindings, es' = extract_non_names es in

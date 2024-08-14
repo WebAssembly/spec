@@ -23,7 +23,6 @@ let rec eq_expr e1 e2 =
   | MemE (e11, e12), MemE (e21, e22) -> eq_expr e11 e21 && eq_expr e12 e22
   | LenE e1, LenE e2 -> eq_expr e1 e2
   | TupE el1, TupE el2 -> eq_exprs el1 el2
-  | CaseE (a1, el1), CaseE (a2, el2) -> El.Atom.eq a1 a2 && eq_exprs el1 el2
   | CaseE2 (op1, el1), CaseE2 (op2, el2) -> Il.Mixop.eq op1 op2 && eq_exprs el1 el2
   | CallE (i1, al1), CallE (i2, al2) -> i1 = i2 && eq_args al1 al2
   | InvCallE (i1, nl1, al1), InvCallE (i2, nl2, al2) ->

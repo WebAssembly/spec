@@ -48,7 +48,7 @@ let walk_expr (walker: unit_walker) (expr: expr) : unit =
     Option.iter (walker.walk_expr walker) e_opt; walker.walk_expr walker e
   | CallE (_, al) | InvCallE (_, _, al) ->
     List.iter (walker.walk_arg walker) al
-  | TupE el | ListE el | CaseE (_, el) | CaseE2 (_, el) ->
+  | TupE el | ListE el | CaseE2 (_, el) ->
     List.iter (walker.walk_expr walker) el
   | StrE r -> List.iter (fun (_, e) -> walker.walk_expr walker !e) r
   | AccE (e, p) -> walker.walk_expr walker e; walk_path walker p
@@ -144,7 +144,6 @@ let walk_expr (walker: walker) (expr: expr) : expr =
     | ExtE (e1, ps, e2, dir) ->
       ExtE (walk_expr e1, List.map walk_path ps, walk_expr e2, dir)
     | UpdE (e1, ps, e2) -> UpdE (walk_expr e1, List.map walk_path ps, walk_expr e2)
-    | CaseE (a, el) -> CaseE (a, List.map walk_expr el)
     | CaseE2 (a, el) -> CaseE2 (a, List.map walk_expr el)
     | OptE e -> OptE (Option.map walk_expr e)
     | TupE el -> TupE (List.map walk_expr el)
@@ -263,7 +262,6 @@ let rec walk_expr f e =
       | AccE (e, p) -> AccE (new_ e, walk_path f p)
       | ExtE (e1, ps, e2, dir) -> ExtE (new_ e1, List.map (walk_path f) ps, new_ e2, dir)
       | UpdE (e1, ps, e2) -> UpdE (new_ e1, List.map (walk_path f) ps, new_ e2)
-      | CaseE (a, el) -> CaseE (a, List.map new_ el)
       | CaseE2 (a, el) -> CaseE2 (a, List.map new_ el)
       | OptE e -> OptE (Option.map new_ e)
       | TupE el -> TupE (List.map new_ el)
