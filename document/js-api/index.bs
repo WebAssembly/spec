@@ -1823,6 +1823,15 @@ The <dfn abstract-op lt="FromCharCode">FromCharCode(|v|)</dfn> abstract operatio
 
 </div>
 
+<div algorithm>
+
+The <dfn abstract-op lt="CharCodeAt ">CharCodeAt(|string|, |index|)</dfn> abstract operation, when invoked, performs the following steps:
+
+1. Assert: |index| is of type [=i32=].
+1. Return [=!=] [$Call$]([=String.prototype.charCodeAt=], |string|, « [=ToJSValue=](|index|) »).
+
+</div>
+
 <h4 id="js-string-cast">cast</h4>
 
 The |funcType| of this builtin is `(func (param externref) (result externref))`.
@@ -1876,7 +1885,31 @@ When this builtin is invoked with parameters |array|, |start|, and |end|, the fo
 
 <h4 id="js-string-intoCharCodeArray">intoCharCodeArray</h4>
 
-TODO
+The |funcType| of this builtin is `(func (param externref (ref null (array (mut i16))) i32) (result i32))`.
+
+Note: This function only takes a mutable i16 array defined in its own recursion group.
+If this is an issue for toolchains, we can look into how to relax the function type
+while still maintaining good performance.
+
+<div algorithm="js-string-intoCharCodeArray">
+When this builtin is invoked with parameters |string|, |array|, and |start|, the following steps must be run:
+
+1. If |array| is null
+    1. Throw a {{RuntimeError}} exception. TODO: this needs to not be catchable, like a trap.
+1. Let |string| be [=?=] [$UnwrapString$](|string|).
+1. Let |stringLength| be the [=string/length=] of |string|.
+1. Let |arrayLength| be the number of elements in |array|.
+1. If |start| + |length| > |arrayLength|
+    1. Throw a {{RuntimeError}} exception. TODO: this needs to not be catchable, like a trap.
+1. Let |i| be 0.
+1. While |i| < |stringLength|:
+    1. Let |charCode| be [$CharCodeAt$](|string|, |i|).
+    1. Set the element at index |start| + |i| in |array| to [=ToWebAssemblyValue=](|charCode|).
+    1. Set |i| to |i| + 1.
+1. Return |stringLength|.
+
+</div>
+
 
 <h4 id="js-string-fromCharCode">fromCharCode</h4>
 
@@ -1913,7 +1946,7 @@ When this builtin is invoked with parameters |string| and |index|, the following
 1. Let |length| be the [=string/length=] of |string|.
 1. If |index| >= |length|
     1. Throw a {{RuntimeError}} exception. TODO: this needs to not be catchable, like a trap.
-1. Return [=!=] [$Call$]([=String.prototype.charCodeAt=], |string|, « [=ToJSValue=](|index|) »).
+1. Return [$CharCodeAt$](|string|, |index|).
 
 </div>
 
