@@ -394,7 +394,8 @@ let post_process_of_pop i =
 
   match i.it with
   | PopI e -> assertI (cond_of_pop_value e) ~at:at :: [i]
-  | _ -> error at "not PopI"
+  | PopAllI _ -> [i]
+  | _ -> error at "not PopI nor PopallI"
 
 (* TODO: remove this *)
 let insert_pop' e =
@@ -419,7 +420,7 @@ let insert_pop e e_n =
     | ListE [e'], _ ->
       popI { e' with note = valT } ~at:e'.at
     | _, NumE z when z = Z.minus_one ->
-      popsI { e with note = valsT } None ~at:e.at
+      popallI { e with note = valsT } ~at:e.at
     | _ ->
       popsI { e with note = valsT } (Some e_n) ~at:e.at
   in
@@ -1079,13 +1080,18 @@ let group_by_context rs =
   let eq_context = Option.equal Il.Eq.eq_exp in
   List.fold_left (fun acc r -> acc |> add eq_context (extract_context r) r) [] rs
 
+let exit_context context_opt instrs =
+  match context_opt with
+  | None -> instrs
+  | Some instr -> instr :: instrs
+
 let remove_pop_after_otherwise prems =
   match prems with
   | hd :: tl when hd.it = Il.ElsePr -> hd :: Lib.List.filter_not is_pop tl;
   | _ -> prems
 
 (* `reduction` -> `instr list` *)
-let translate_reduction reduction =
+let translate_reduction ?(context_opt=None) reduction =
   let _, rhs, prems = reduction.it in
 
   (* ASSUMPTION: ElsePr is only usable if all LHS are identical,
@@ -1094,6 +1100,8 @@ let translate_reduction reduction =
 
   (* Translate rhs *)
   translate_rhs rhs
+  (* Exit context *)
+  |> exit_context context_opt
   |> Transpile.insert_nop
   (* Translate premises *)
   |> translate_prems prems'
@@ -1144,16 +1152,23 @@ let translate_context ctx =
       letI (label, getCurLabelE () ~note:labelT) ~at:at;
       letI (translate_exp n, arityE label ~note:n.note) ~at:at;
       letI (translate_exp instrs, contE label ~note:instrs.note) ~at:at;
-      exitI atom ~at:at
-    ]
+    ],
+    exitI atom ~at:at
   | Il.CaseE ([{it = Il.Atom "FRAME_"; _} as atom]::_, { it = Il.TupE [ n; f ]; _ }) ->
     let frame = translate_exp f in
     [
       letI (frame, getCurFrameE () ~note:frameT) ~at:at;
       letI (translate_exp n, arityE frame ~note:n.note) ~at:at;
-      exitI atom ~at:at
-    ]
-  | _ -> [ yetI "TODO: translate_context" ~at:at ]
+    ],
+    exitI atom ~at:at
+  | Il.CaseE ([atom]::_, { it = Il.TupE (n :: _); _ }) ->
+    let ctxt = VarE "ctxt" $$ atom.at % topT in
+    [
+      letI (ctxt, yetE "current context" ~note:ctx.note) ~at:at;
+      letI (translate_exp n, arityE ctxt ~note:n.note) ~at:at;
+    ],
+    exitI atom ~at:at
+  | _ -> [ yetI "TODO: translate_context" ~at:at ], yetI "TODO: translate_context"
 
 let rec translate_rgroup' rgroup =
   let subgroups =
@@ -1191,9 +1206,9 @@ let rec translate_rgroup' rgroup =
       let e_vals = iterE (subE ("val", "val") ~note:valT, [ "val" ], List) ~note:valTs in
       let instr_popall = popallI e_vals in
       let instr_push = pushI e_vals in
-      let head_instrs = translate_context ctxt in
+      let head_instrs, middle_instr = translate_context ctxt in
       let body_instrs =
-        List.map translate_reduction u_group
+        List.map (translate_reduction ~context_opt:(Some middle_instr)) u_group
         |> List.mapi (fun i instrs -> if i = 0 then instrs else [otherwiseI instrs])
         |> Transpile.merge_blocks in
       [

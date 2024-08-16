@@ -350,6 +350,13 @@ and eval_expr env expr =
     (match ctx with
     | Some (LabelV _) -> boolV true
     | _ -> boolV false)
+  | ContextKindE a ->
+    let ctx = WasmContext.get_top_context () in
+    (match a.it, ctx with
+    | Atom "FRAME_", Some (FrameV _) -> boolV true
+    | Atom "LABEL_", Some (LabelV _) -> boolV true
+    | Atom case, Some (CaseV (case', _)) -> boolV (case = case')
+    | _ -> boolV false)
   | IsDefinedE e ->
     e
     |> eval_expr env
@@ -710,7 +717,6 @@ and create_context (name: string) (args: value list) : AlContext.mode =
   let algo = lookup_algo name in
   let params = params_of_algo algo in
   let body = body_of_algo algo in
-
   let params = params |> extract_expargs in
 
   if List.length args <> List.length params then (
