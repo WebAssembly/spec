@@ -62,6 +62,8 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         text: 𝔽; url: #𝔽
         text: ℤ; url: #ℤ
         text: SameValue; url: sec-samevalue
+        text: IsStrictlyEqual; url: sec-isstrictlyequal
+        text: IsLessThan; url: sec-islessthan
         text: String.fromCharCode; url: sec-string.fromcharcode
         text: String.fromCodePoint; url: sec-string.fromcodepoint
         text: String.prototype.charCodeAt; url: sec-string.prototype.charcodeat
@@ -2007,11 +2009,41 @@ When this builtin is invoked with parameters |string|, |start|, and |end|, the f
 
 <h4 id="js-string-equals">equals</h4>
 
-TODO
+The |funcType| of this builtin is `(func (param externref externref) (result i32))`.
+
+Note: Explicitly allow null strings to be compared for equality as that is meaningful.
+
+<div algorithm="js-string-equals">
+
+When this builtin is invoked with parameters |first| and |second|, the following steps must be run:
+
+1. If |first| is not null and [=Type=](|first|) is not [=String=]
+    1. Throw a {{RuntimeError}} exception. TODO: this needs to not be catchable, like a trap.
+1. If |second| is not null and [=Type=](|second|) is not [=String=]
+    1. Throw a {{RuntimeError}} exception. TODO: this needs to not be catchable, like a trap.
+1. If [=!=] [=IsStrictlyEqual=](|first|, |second|) is true
+    1. Return 1.
+1. Return 0.
+
+</div>
 
 <h4 id="js-string-compare">compare</h4>
 
-TODO
+The |funcType| of this builtin is `(func (param externref externref) (result i32))`.
+
+<div algorithm="js-string-compare">
+
+When this builtin is invoked with parameters |first| and |second|, the following steps must be run:
+
+1. Let |first| be [=?=] [$UnwrapString$](|first|).
+1. Let |second| be [=?=] [$UnwrapString$](|second|).
+1. If [=!=] [=IsStrictlyEqual=](|first|, |second|) is true
+    1. Return 0.
+1. If [=!=] [=IsLessThan=](|first|, |second|, true) is true
+    1. Return -1.
+1. Return 1.
+
+</div>
 
 <h2 id="errors">Error Condition Mappings to JavaScript</h2>
 
