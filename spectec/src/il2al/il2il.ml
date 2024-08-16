@@ -4,13 +4,14 @@ Functions that transform IL into IL.
 
 open Il.Ast
 open Il.Eq
+open Il.Free
 open Util
 open Util.Source
 
 type rgroup = (exp * exp * (prem list)) phrase list
 
 (* Helpers *)
-(* 
+(*
 let take_prefix n str =
   if String.length str < n then
     str
@@ -60,35 +61,6 @@ and transform_arg f a =
     | TypA t -> TypA t
     | DefA id -> DefA id
     | GramA id -> GramA id }
-
-(* Change right_assoc cat into left_assoc cat *)
-let to_left_assoc_cat =
-  let rec rotate_ccw e =
-    begin match e.it with
-    | CatE (l, r) ->
-      begin match r.it with
-      | CatE (rl, rr) ->
-        { e with it = CatE (CatE (l, rl) $$ no_region % e.note, rr) } |> rotate_ccw
-      | _ -> e
-      end
-    | _ -> e
-    end in
-  transform_expr rotate_ccw
-
-
-(* Change left_assoc cat into right_assoc cat *)
-let to_right_assoc_cat =
-  let rec rotate_cw e =
-    begin match e.it with
-    | CatE (l, r) ->
-      begin match l.it with
-      | CatE (ll, lr) ->
-        { e with it = CatE (ll, CatE (lr, r) $$ no_region % e.note) } |> rotate_cw
-      | _ -> e
-      end
-    | _ -> e
-    end in
-  transform_expr rotate_cw
 
 
 (* Unifying lhs *)
@@ -194,12 +166,19 @@ and overlap_typ t1 t2 = if eq_typ t1 t2 then t1 else
 
 let pairwise_concat (a,b) (c,d) = (a@c, b@d)
 
+type if_or_let = If | Let
+let if_or_let_flag = ref If
+
 let rec collect_unified template e = if eq_exp template e then [], [] else
   match template.it, e.it with
     | VarE id, _
     | IterE ({ it = VarE id; _}, _) , _
       when is_unified_id id.it ->
-      [ IfPr (CmpE (EqOp, template, e) $$ e.at % (BoolT $ e.at)) $ e.at ],
+      [
+        match !if_or_let_flag with
+        | If -> IfPr (CmpE (EqOp, template, e) $$ e.at % (BoolT $ e.at)) $ e.at
+        | Let -> LetPr (e, template, []) $ e.at
+      ],
       [ ExpB (id, template.note, []) $ e.at ]
     | UnE (_, e1), UnE (_, e2)
     | DotE (e1, _), DotE (e2, _)
@@ -229,7 +208,8 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
     | CallE (_, as1), CallE (_, as2) -> collect_unified_args as1 as2
     (* HARDCODE: Unifying CatE with non-CatE *)
     | CatE (_, e1), _ -> collect_unified e1 e
-    | _ -> Util.Error.error e.at "prose transformation" "cannot unify the expression with previous rule for the same instruction"
+    | _ ->
+      Util.Error.error e.at "prose transformation" "cannot unify the expression with previous rule for the same instruction"
 
 and collect_unified_arg template a = if eq_arg template a then [], [] else match template.it, a.it with
   | ExpA template', ExpA e -> collect_unified template' e
@@ -246,6 +226,29 @@ let prioritize_else prems =
   let other, non_others = List.partition (fun p -> p.it = ElsePr) prems in
   other @ non_others
 
+let lhs_of_prem pr =
+  match pr.it with
+  | LetPr (lhs, _, _) -> lhs
+  | _ -> Error.error pr.at "prose translation" "expected a LetPr"
+let rhs_of_prem pr =
+  match pr.it with
+  | LetPr (_, rhs, _) -> rhs
+  | _ -> Error.error pr.at "prose translation" "expected a LetPr"
+let replace_lhs lhs pr =
+  match pr.it with
+  | LetPr (lhs', rhs, _) ->
+    if eq_exp lhs lhs' then
+      pr
+    else
+      { pr with it = LetPr (lhs, rhs, (free_exp lhs).varid |> Set.to_list) }
+  | _ -> Error.error pr.at "prose translation" "expected a LetPr"
+let inject_ids pr1 pr2 =
+  match pr1.it, pr2.it with
+  | LetPr (_, _, ids), LetPr (lhs, rhs, _) ->
+    let ids' = Set.inter (Set.of_list ids) (free_exp lhs).varid |> Set.to_list in
+    { pr2 with it = LetPr (lhs, rhs, ids') }
+  | _ -> Error.error (over_region [pr1.at; pr2.at]) "prose translation" "expected a LetPr"
+
 
 (** 1. Validation rules **)
 
@@ -257,6 +260,8 @@ let apply_template_to_rule template rule =
 
 let unify_rules rules =
   init_unified_idx();
+  if_or_let_flag := If;
+
   let concls = List.map (fun x -> let RuleD(_, _, _, e, _) = x.it in e) rules in
   let hd = List.hd concls in
   let tl = List.tl concls in
@@ -265,26 +270,84 @@ let unify_rules rules =
 
 
 (** 2. Reduction rules **)
-let apply_template_to_rgroup template (lhs, rhs, prems) =
-  let new_prems, _ = collect_unified template lhs in
-  (* TODO: Remove this depedency on animation. Perhaps this should be moved as a middle end before animation path *)
-  let animated_prems = Animate.animate_prems (Il.Free.free_exp template) new_prems in
-  template, rhs, prioritize_else (animated_prems @ prems)
+
+let apply_template_to_prems template prems idx =
+  List.mapi (fun i prem ->
+    if i = idx then
+      let new_prem = replace_lhs template prem in
+      let new_prems, _ = collect_unified template (lhs_of_prem prem) in
+      let new_prems' = List.map (inject_ids prem) new_prems in
+      new_prem :: new_prems'
+    else
+      [prem]
+  ) prems |> List.concat
+
+let unify_pop pops premss =
+  let idxs = List.map fst pops in
+  let ps = List.map snd pops in
+
+  let es = List.map lhs_of_prem ps in
+
+  let hd = List.hd es in
+  let tl = List.tl es in
+
+  let template = List.fold_left overlap hd tl in
+
+  List.map2 (apply_template_to_prems template) premss idxs
+  |> List.map (Animate.animate_prems {empty with varid = Set.of_list ["ctxt"; "input"; "stack0"]})
+
+let is_pop pr =
+  match pr.it with
+  | LetPr (_, e, _) ->
+    (match e.note.it with
+    | VarT (id, []) -> id.it = "stackT"
+    | _ -> false)
+  | _ -> false
+
+let rec extract_pops' cnt =
+  function
+  | [] -> []
+  | hd :: tl ->
+    if is_pop hd then
+      (cnt, hd) :: extract_pops' (cnt + 1) tl
+    else
+      extract_pops' (cnt + 1) tl
+let extract_pops = extract_pops' 0
+
+let has_identical_rhs iprems =
+  let prems = List.map snd iprems in
+  let lhss = List.map rhs_of_prem prems in
+  match lhss with
+  | [] -> true
+  | hd :: tl -> List.for_all (eq_exp hd) tl
+
+let rec filter_unifiable popss =
+  if List.exists ((=) []) popss then
+    []
+  else
+    let hds = List.map List.hd popss in
+    let tls = List.map List.tl popss in
+    if has_identical_rhs hds then
+      hds :: filter_unifiable tls
+    else
+      []
+
+let replace_prems r prems =
+  let (lhs, rhs, _) = r.it in
+  { r with it = (lhs, rhs, prems) }
 
 let unify_lhs' rgroup =
   init_unified_idx();
-  let fst = fun (x, _, _) -> x in
-  let lhs_group = List.map (fun r -> fst r.it) rgroup in
-  let hd = List.hd lhs_group in
-  let tl = List.tl lhs_group in
-  let template = List.fold_left overlap hd tl in
-  List.map (Source.map (apply_template_to_rgroup template)) rgroup
+  if_or_let_flag := Let;
+
+  let premss = List.map (fun g -> let (_, _, prems) = g.it in prems) rgroup in
+  let popss = List.map extract_pops premss in
+  let unifiable_popss = filter_unifiable popss in
+  let new_premss = List.fold_right unify_pop unifiable_popss premss in
+  List.map2 replace_prems rgroup new_premss
 
 let unify_lhs (rname, rel_id, rgroup) =
-  let to_left_assoc (lhs, rhs, prems) = to_left_assoc_cat lhs, rhs, prems in
-  let to_right_assoc (lhs, rhs, prems) = to_right_assoc_cat lhs, rhs, prems in
-  (* typical f^-1 ∘ g ∘ f *)
-  rname, rel_id, (rgroup |> List.map (Source.map to_left_assoc) |> unify_lhs' |> List.map (Source.map to_right_assoc))
+  rname, rel_id, (rgroup |> unify_lhs')
 
 
 (** 3. Functions **)
@@ -293,11 +356,13 @@ let apply_template_to_def template def =
   match def.it with
   | DefD (binds, lhs, rhs, prems) ->
     let new_prems, new_binds = collect_unified_args template lhs in
-    let animated_prems = Animate.animate_prems Il.Free.(free_list free_arg template) new_prems in
+    let animated_prems = Animate.animate_prems (free_list free_arg template) new_prems in
     DefD (binds @ new_binds, template, rhs, (animated_prems @ prems) |> prioritize_else) $ def.at
 
 let unify_defs defs =
   init_unified_idx();
+  if_or_let_flag := If;
+
   let lhs_s = List.map (fun x -> let DefD(_, lhs, _, _) = x.it in lhs) defs in
   let hd = List.hd lhs_s in
   let tl = List.tl lhs_s in

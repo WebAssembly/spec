@@ -75,8 +75,12 @@ let free_ids e =
   |> Set.to_list
 
 let dim e =
+  let t = (NumT NatT $ no_region) in
   match e.it with
-  | _ -> NatE Z.one $$ e.at % (NumT NatT $ no_region)
+  | IterE (_, (ListN (e_n, _), _)) -> e_n
+  | IterE _ -> NatE Z.minus_one $$ e.at % t
+  | ListE es -> NatE (List.length es |> Z.of_int) $$ e.at % t
+  | _ -> NatE Z.one $$ e.at % t
 
 let arg e =
   ExpA e $ e.at

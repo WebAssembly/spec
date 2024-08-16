@@ -42,7 +42,14 @@ let is_assign env (tag, prem, _) =
   | Assign frees -> subset (diff (free_prem false prem) {empty with varid = (Set.of_list frees)}) env
   | _ -> false
 
-(* iteratively select condition and assignment premises,
+(* is this premise encoded premise for pop? *)
+let is_pop env row =
+  is_assign env row &&
+  match (unwrap row).it with
+  | LetPr (_, rhs, _) -> Il.Print.string_of_typ rhs.note = "stackT"
+  | _ -> false
+
+(* iteratively select pop, condition and assignment premises,
  * effectively sorting the premises as a result. *)
 let rec select_tight prems acc env fb =
   match prems with
@@ -55,7 +62,13 @@ and select_assign prems acc env fb =
   match prems with
   | [] -> Some acc
   | _ ->
-    let (assigns, non_assigns) = List.partition (is_assign env) prems in
+    let (pops, non_pops) = List.partition (is_pop env) prems in
+    let (assigns, non_assigns) =
+      if pops = [] then
+        List.partition (is_assign env) prems
+      else
+        pops, non_pops
+    in
     match assigns with
     | [] ->
       let len = List.length acc in
