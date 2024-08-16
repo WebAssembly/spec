@@ -229,6 +229,9 @@ let unify_if_head instr =
   | IfI (c, il1, il2) ->
     let h, il1', il2' = unify_head il1 il2 in
     h @ [ ifI (c, insert_nop il1', insert_nop il2') ~at:at ]
+  | EitherI (il1, il2) ->
+    let h, il1', il2' = unify_head il1 il2 in
+    h @ [ eitherI (insert_nop il1', insert_nop il2') ~at:at ]
   | _ -> [ instr ]
 
 (* If c then (A; C) else (B; C) --> If c then A else B; C *)
