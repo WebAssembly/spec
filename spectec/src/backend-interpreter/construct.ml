@@ -1328,8 +1328,8 @@ let al_of_float_relop = function
 let al_of_relop = al_of_op al_of_int_relop al_of_float_relop
 
 let al_of_int_cvtop num_bits = function
-  | IntOp.ExtendSI32 -> "I64", "EXTEND", [ nullary "S" ]
-  | IntOp.ExtendUI32 -> "I64", "EXTEND", [ nullary "U" ]
+  | IntOp.ExtendSI32 -> "I32", "EXTEND", [ nullary "S" ]
+  | IntOp.ExtendUI32 -> "I32", "EXTEND", [ nullary "U" ]
   | IntOp.WrapI64 -> "I64", "WRAP", []
   | IntOp.TruncSF32 -> "F32", "TRUNC", [ nullary "S" ]
   | IntOp.TruncUF32 -> "F32", "TRUNC", [ nullary "U" ]
