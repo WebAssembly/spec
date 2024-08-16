@@ -302,10 +302,12 @@ let check_inv_call source id indices args result_typ =
   let merge_args args idx =
     let free_args, bound_args, merged_args = args in
     if Option.is_some idx then
-      let new_free_args, first_free_arg = Lib.List.split_last free_args in
+      (
+      let first_free_arg, new_free_args = Lib.List.split_hd free_args in
       (new_free_args, bound_args, first_free_arg :: merged_args)
+    )
     else
-      let new_bound_args,first_bound_arg = Lib.List.split_last free_args in
+      let first_bound_arg, new_bound_args = Lib.List.split_hd bound_args in
       (free_args, new_bound_args, first_bound_arg :: merged_args)
   in
   let _, _, merged_args = List.fold_left merge_args (free_args, bound_args, []) indices in
