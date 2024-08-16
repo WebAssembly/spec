@@ -94,13 +94,18 @@ let input_vars = [
 
 (* Encode stack *)
 
-let encode_inner_stack stack =
+let encode_inner_stack context_opt stack =
   let es = stack_to_list stack |> List.rev |> drop_until is_case in
 
   match es with
   | [] ->
     (* ASSUMPTION: The target instruction was actually the outer context (i.e. LABEL_) *)
-    []
+    (
+      match context_opt with
+      | None -> assert false
+      | Some e ->
+        Some (LetPr (e, mk_varE "input" "inputT", free_ids e) $ e.at), []
+    )
   | _ ->
     (* ASSUMPTION: The top of the stack should be now the target instruction *)
     let winstr, operands = Lib.List.split_hd es in
@@ -121,7 +126,7 @@ let encode_inner_stack stack =
       IfPr (CmpE (EqOp, lhs, rhs) $$ e.at % (BoolT $ no_region)) $ e.at
     ) operands in
 
-    prem :: prems
+    None, prem :: prems
 
 let encode_stack stack =
   match stack.it with
@@ -138,9 +143,14 @@ let encode_stack stack =
 
     let pr = LetPr (e1, e2, free_ids e1) $ e2.at in
 
-    pr :: encode_inner_stack inner_stack
+    let pr_opt, prs = encode_inner_stack (Some e) inner_stack in
+    (
+      match pr_opt with
+      | None -> pr
+      | Some pr -> pr
+    ) :: prs
   | _ ->
-    encode_inner_stack stack
+    encode_inner_stack None stack |> snd
 
 (* Encode lhs *)
 let encode_lhs lhs =

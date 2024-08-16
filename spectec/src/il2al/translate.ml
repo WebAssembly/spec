@@ -1228,22 +1228,27 @@ let rec translate_rgroup' rgroup =
   in
 
   (* TODO *)
-  let winstr = ref (Il.CaseE ([[Il.Atom "CTXT?" $$ no_region % Il.info ""]], Il.ListE [] $$ no_region % topT) $$ no_region % topT) in
+  let winstr = ref (Il.NatE (Z.of_int 42) $$ no_region % topT) in
 
   let blocks = List.map (fun (ctxt, subgroup) ->
     let u_group = Il2il.unify_rgroup subgroup in
+
+    (* TODO: This should be done only once *)
+    begin match extract_winstr (List.hd u_group) with
+    | Some wi -> winstr := wi
+    | None -> () end;
+
     match ctxt with
     (* Normal case *)
     | None ->
-      begin match extract_winstr (List.hd u_group) with
-      | Some wi -> winstr := wi
-      | None -> () end;
-
+      let inner_pop_instrs = translate_context_winstr !winstr in
       let blocks = List.map translate_reduction u_group in
-      begin match blocks with
-      | [b1; b2] when not (has_branch b1 || has_branch b2) -> [ eitherI (b1, b2) ] (* Either case *)
-      | _ -> Transpile.merge_blocks blocks
-      end
+      let instrs =
+        match blocks with
+        | [b1; b2] when not (has_branch b1 || has_branch b2) -> [ eitherI (b1, b2) ] (* Either case *)
+        | _ -> Transpile.merge_blocks blocks
+      in
+      inner_pop_instrs @ instrs
     (* Context case *)
     | Some _ctxt -> (*
       let ctxt = extract_context (List.hd unified_subgroup) in
@@ -1258,52 +1263,10 @@ let rec translate_rgroup' rgroup =
 
   !winstr, Transpile.merge_blocks blocks (*inner_params*)
 
-(*
-  let inner_params = ref None in
-  let instrs =
-    match context with
-    | [ (vs, []), None ] ->
-      let pop_instrs, defer_opt = vs |> insert_pop_winstr (Il.Free.free_exp winstr) in
-      let inner_pop_instrs = translate_context_winstr winstr in
-
-      let instrs' =
-        match rgroup |> Util.Lib.List.split_last with
-        (* Normal case *)
-        | _ ->
-          let blocks = List.map (translate_reduction defer_opt) rgroup in
-          match blocks with
-          | [b1; b2] when not (has_branch b1 || has_branch b2) -> [ eitherI (b1, b2) ] (* Either case *)
-          | _ -> Transpile.merge_blocks blocks
-      in
-
-      ignore pop_instrs;
-      inner_pop_instrs @ instrs'
-    (* The target instruction is between values and instrs *)
-    | [ (_v :: _, _i :: _), None ] ->
-      [ popallI (iterE (varE "val" ~note:valT, [ "val" ], List) ~note:(listT valT)) ]
-    (* The target instruction is inside a context *)
-    | [ ([], []), Some context ; (vs, _is), None ] ->
-      let head_instrs = translate_context context vs in
-      let body_instrs = List.map (translate_reduction None) rgroup |> List.concat in
-      head_instrs @ body_instrs
-    (* The target instruction is inside different contexts (i.e. return in both label and frame) *)
-    | [ ([], [ _ ]), None ] ->
-    | _ -> error (over_region (List.map at rgroup)) "Unsupported shape of lhs for the reduction rule" in
-
-    !inner_params, instrs
-*)
-
 (* Main translation for reduction rules
  * `rgroup` -> `Backend-prose.Algo` *)
 
 and translate_rgroup (instr_name, rel_id, rgroup) =
-  (*
-  let lhs, _, _ = (List.hd rgroup).it in
-  (* TODO: Generalize getting current frame *)
-  let lhs_stack = get_lhs_stack lhs in
-  let context, winstr = split_lhs_stack instr_name lhs_stack in
-  *)
-
   let winstr, instrs = translate_rgroup' rgroup in
 
   let name =
@@ -1313,7 +1276,7 @@ and translate_rgroup (instr_name, rel_id, rgroup) =
   in
   let anchor = rel_id.it ^ "/" ^ instr_name in
   let al_params =
-    if instr_name = "frame" || instr_name = "label" then [] else
+    if List.mem instr_name ["frame"; "label"; "handler"] then [] else
     args_of_case winstr
     |> List.map translate_exp
     |> List.map (fun e -> ExpA e $ e.at)
