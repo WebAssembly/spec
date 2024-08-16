@@ -35,9 +35,9 @@ let walk_expr (walker: unit_walker) (expr: expr) : unit =
   match expr.it with
   | VarE _ | SubE _ | NumE _ | BoolE _ | GetCurStateE | GetCurLabelE
   | GetCurContextE | GetCurFrameE | YetE _ | TopLabelE | TopFrameE
-  | TopValueE None -> ()
+  | TopValueE None | ContextKindE _ -> ()
 
-  | UnE (_, e) | LenE e | ArityE e | ContE e | ContextKindE (_, e)
+  | UnE (_, e) | LenE e | ArityE e | ContE e
   | IsDefinedE e | IsCaseOfE (e, _) | HasTypeE (e, _) | IsValidE e
   | TopValueE (Some e) | TopValuesE e | ChooseE e -> walker.walk_expr walker e
 
@@ -130,7 +130,7 @@ let walk_expr (walker: walker) (expr: expr) : expr =
   let it =
     match expr.it with
     | NumE _ | BoolE _ | VarE _ | SubE _ | GetCurStateE | GetCurFrameE
-    | GetCurLabelE | GetCurContextE | TopLabelE | TopFrameE | YetE _ -> expr.it
+    | GetCurLabelE | GetCurContextE | ContextKindE _ | TopLabelE | TopFrameE | YetE _ -> expr.it
     | UnE (op, e) -> UnE (op, walk_expr e)
     | BinE (op, e1, e2) -> BinE (op, walk_expr e1, walk_expr e2)
     | CallE (id, al) -> CallE (id, List.map walk_arg al)
@@ -155,7 +155,6 @@ let walk_expr (walker: walker) (expr: expr) : expr =
     | ContE e' -> ContE (walk_expr e')
     | ChooseE e' -> ChooseE (walk_expr e')
     | IterE (e, ids, iter) -> IterE (walk_expr e, ids, walk_iter iter)
-    | ContextKindE (a, e) -> ContextKindE (a, walk_expr e)
     | IsCaseOfE (e, a) -> IsCaseOfE (walk_expr e, a)
     | IsDefinedE e -> IsDefinedE (walk_expr e)
     | HasTypeE (e, t) -> HasTypeE(walk_expr e, t)
@@ -277,7 +276,7 @@ let rec walk_expr f e =
       | VarE id -> VarE id
       | SubE (id, t) -> SubE (id, t)
       | IterE (e, ids, iter) -> IterE (new_ e, ids, iter)
-      | ContextKindE (a, e) -> ContextKindE (a, new_ e)
+      | ContextKindE _ -> e.it
       | IsCaseOfE (e, a) -> IsCaseOfE (new_ e, a)
       | IsDefinedE e -> IsDefinedE (new_ e)
       | HasTypeE (e, t) -> HasTypeE(new_ e, t)

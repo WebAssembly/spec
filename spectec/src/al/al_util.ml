@@ -71,7 +71,7 @@ let contE ?(at = no) ~note e = ContE e |> mk_expr at note
 let chooseE ?(at = no) ~note e = ChooseE e |> mk_expr at note
 let isCaseOfE ?(at = no) ~note (e, a) = IsCaseOfE (e, a) |> mk_expr at note
 let isValidE ?(at = no) ~note e = IsValidE e |> mk_expr at note
-let contextKindE ?(at = no) ~note (a, e) = ContextKindE (a, e) |> mk_expr at note
+let contextKindE ?(at = no) ~note a = ContextKindE a |> mk_expr at note
 let isDefinedE ?(at = no) ~note e = IsDefinedE e |> mk_expr at note
 let matchE ?(at = no) ~note (e1, e2) = MatchE (e1, e2) |> mk_expr at note
 let hasTypeE ?(at = no) ~note (e, ty) = HasTypeE (e, ty) |> mk_expr at note

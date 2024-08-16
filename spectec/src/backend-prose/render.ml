@@ -418,10 +418,9 @@ and render_expr' env expr =
     let se1 = render_expr env e1 in
     let se2 = render_expr env e2 in
     sprintf "the label whose arity is %s and whose continuation is %s" se1 se2
-  | Al.Ast.ContextKindE (a, e) ->
+  | Al.Ast.ContextKindE a ->
     let sa = render_atom env a in
-    let se = render_expr env e in
-    sprintf "%s is %s" se sa
+    sprintf "the top of the stack is a %s" sa
   | Al.Ast.IsDefinedE e ->
     let se = render_expr env e in
     sprintf "%s is defined" se

@@ -1057,13 +1057,13 @@ let translate_helpers il =
 
   List.filter_map (translate_helper partial_funcs) il
 
-let rec add k v = function (* add a (k,v) to an assoc list *)
+let rec add eq k v = function (* add a (k,v) to an assoc list *)
   | [] -> [(k, [v])]
   | (k', vs) :: tl ->
-    if k = k' then
+    if eq k k' then
       (k', vs @ [v]) :: tl
     else
-      (k', vs) :: add k v tl
+      (k', vs) :: add eq k v tl
 
 let extract_winstr r =
   let (_, _, prems) = r.it in
@@ -1074,10 +1074,10 @@ let extract_context r =
   let (_, _, prems) = r.it in
   List.find_opt is_ctxt_prem prems
   |> Option.map lhs_of_prem (* TODO: Collect helper functions into one place *)
-  |> Option.map case_of_case
 
 let group_by_context rs =
-  List.fold_left (fun acc r -> acc |> add (extract_context r) r) [] rs
+  let eq_context = Option.equal Il.Eq.eq_exp in
+  List.fold_left (fun acc r -> acc |> add eq_context (extract_context r) r) [] rs
 
 let remove_pop_after_otherwise prems =
   match prems with
@@ -1134,92 +1134,26 @@ let translate_context_winstr winstr =
       exitI kind ~at:at
     ]
 
-let translate_context ctx vs =
+let translate_context ctx =
   let at = ctx.at in
-  let ty = listT valT in
-  let e_vals = iterE (subE ("val", "val") ~note:valT, [ "val" ], List) ~note:ty in
-  let vs = List.rev vs in
-  let instr_popall = popallI e_vals in
-  let instr_pop_context =
-    match ctx.it with
-    | Il.CaseE ([{it = Il.Atom "LABEL_"; at=at'; _} as atom]::_, { it = Il.TupE [ n; instrs; _hole ]; _ }) ->
-      let label = VarE "L" $$ at' % labelT in
-      [
-        letI (label, getCurLabelE () ~note:labelT) ~at:at;
-        letI (translate_exp n, arityE label ~note:n.note) ~at:at;
-        letI (translate_exp instrs, contE label ~note:instrs.note) ~at:at;
-        exitI atom ~at:at
-      ]
-    | Il.CaseE ([{it = Il.Atom "FRAME_"; _} as atom]::_, { it = Il.TupE [ n; f; _hole ]; _ }) ->
-      let frame = translate_exp f in
-      [
-        letI (frame, getCurFrameE () ~note:frameT) ~at:at;
-        letI (translate_exp n, arityE frame ~note:n.note) ~at:at;
-        exitI atom ~at:at
-      ]
-    | _ -> [ yetI "TODO: translate_context" ~at:at ]
-  in
-  let instr_let =
-    match vs with
-    | v1 :: v2 :: vs ->
-        let e1 = translate_exp v1 in
-        let e2 = translate_exp v2 in
-        let e_vs = catE (e1, e2) ~note:e1.note in
-        let e =
-          List.fold_left
-            (fun e_vs v -> catE (e_vs, translate_exp v) ~note:e_vs.note)
-            e_vs vs
-        in
-        [ letI (e, e_vals) ~at:at ]
-    | v :: [] ->
-        let e = translate_exp v in
-        if Eq.eq_expr e e_vals then []
-        else [ letI (e, e_vals) ~at:at ]
-    | _ -> []
-  in
-  instr_popall :: instr_pop_context @ instr_let
 
-(*
-let merge_ctxt_algos algos inner_params =
-  let ty = listT valT in
-  let e_vals = iterE (varE "val" ~note:valT, [ "val" ], List) ~note:ty in
-  let instr_popall = popallI e_vals in
-  let instrs_context =
-    List.fold_right (fun (ctxt, algo) acc ->
-      match algo.it with
-      | RuleA (_, _, params, body) ->
-        (* Assume that each sub-algorithms are produced by translate_context,
-           i.e., they will always contain instr_popall as their first instruction. *)
-        assert(Eq.eq_instr (List.hd body) instr_popall);
-        if Option.is_none !inner_params then inner_params := Some params;
-        let e_cond =
-          match ctxt with
-          | Some atom ->
-            (match atom.it with
-            | Il.Atom.Atom "FRAME_" -> topFrameE () ~note:boolT
-            | Il.Atom.Atom "LABEL_" -> topLabelE () ~note:boolT
-            | Il.Atom.Atom id -> yetE ("top context is " ^ id) ~at:atom.at ~note:boolT
-            | _ -> error atom.at "unknown type of the context"
-            )
-          | None -> yetE ("no context") ~note:boolT
-        in
-        [ ifI (e_cond, List.tl body, acc) ]
-      | _ -> assert false
-    ) algos []
-  in
-  instr_popall :: instrs_context
-
-let merge_subalgos subalgos inner_params =
-  let ctxtless_algos, ctxt_algos = List.partition (fun (k, _) -> k = None) subalgos in
-  let ctxt_instrs = merge_ctxt_algos ctxt_algos inner_params in
-  match ctxtless_algos with
-  | [] ->
-    ctxt_instrs
-  | [(_, algo)] ->
-    let ctxtless_instrs = match algo.it with RuleA (_, _, _, body) | FuncA (_, _, body) -> body in
-    [ ifI (yetE "out of context?" ~note:boolT, ctxtless_instrs, ctxt_instrs) ]
-  | _ -> assert false (* Unreachable *)
-*)
+  match ctx.it with
+  | Il.CaseE ([{it = Il.Atom "LABEL_"; at=at'; _} as atom]::_, { it = Il.TupE [ n; instrs ]; _ }) ->
+    let label = VarE "L" $$ at' % labelT in
+    [
+      letI (label, getCurLabelE () ~note:labelT) ~at:at;
+      letI (translate_exp n, arityE label ~note:n.note) ~at:at;
+      letI (translate_exp instrs, contE label ~note:instrs.note) ~at:at;
+      exitI atom ~at:at
+    ]
+  | Il.CaseE ([{it = Il.Atom "FRAME_"; _} as atom]::_, { it = Il.TupE [ n; f ]; _ }) ->
+    let frame = translate_exp f in
+    [
+      letI (frame, getCurFrameE () ~note:frameT) ~at:at;
+      letI (translate_exp n, arityE frame ~note:n.note) ~at:at;
+      exitI atom ~at:at
+    ]
+  | _ -> [ yetI "TODO: translate_context" ~at:at ]
 
 let rec translate_rgroup' rgroup =
   let subgroups =
@@ -1250,18 +1184,29 @@ let rec translate_rgroup' rgroup =
       in
       inner_pop_instrs @ instrs
     (* Context case *)
-    | Some _ctxt -> (*
-      let ctxt = extract_context (List.hd unified_subgroup) in
-      let head_instrs = translate_context context vs in
-      let body_instrs = List.map (translate_reduction None) rgroup |> List.concat in
-      head_instrs @ body_instrs
-      *)
-      ignore translate_context;
-      ignore translate_context_winstr;
-      []
+    | Some ctxt ->
+      let atom = case_of_case ctxt |> List.hd |> List.hd in
+      let cond = ContextKindE atom $$ atom.at % boolT in
+      let valTs = listT valT in
+      let e_vals = iterE (subE ("val", "val") ~note:valT, [ "val" ], List) ~note:valTs in
+      let instr_popall = popallI e_vals in
+      let instr_push = pushI e_vals in
+      let head_instrs = translate_context ctxt in
+      let body_instrs =
+        List.map translate_reduction u_group
+        |> List.mapi (fun i instrs -> if i = 0 then instrs else [otherwiseI instrs])
+        |> Transpile.merge_blocks in
+      [
+        instr_popall;
+        ifI (
+          cond,
+          head_instrs @ [instr_push] @ body_instrs,
+          []
+        )
+      ]
   ) subgroups in
 
-  !winstr, Transpile.merge_blocks blocks (*inner_params*)
+  !winstr, Transpile.merge_blocks blocks
 
 (* Main translation for reduction rules
  * `rgroup` -> `Backend-prose.Algo` *)

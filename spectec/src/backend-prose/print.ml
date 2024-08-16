@@ -159,7 +159,7 @@ and string_of_expr expr =
   | CaseE2 (op, el) -> "(" ^ string_of_mixop op ^ "_" ^ string_of_exprs " " el ^ ")"
   | OptE (Some e) -> "?(" ^ string_of_expr e ^ ")"
   | OptE None -> "?()"
-  | ContextKindE (a, e) -> sprintf "%s is %s" (string_of_expr e) (string_of_atom a)
+  | ContextKindE a -> sprintf "the top of the stack is a %s" (string_of_atom a)
   | IsDefinedE e -> sprintf "%s is defined" (string_of_expr e)
   | IsCaseOfE (e, a) -> sprintf "%s is of the case %s" (string_of_expr e) (string_of_atom a)
   | HasTypeE (e, t) -> sprintf "the type of %s is %s" (string_of_expr e) t

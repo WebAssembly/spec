@@ -183,7 +183,7 @@ and string_of_expr expr =
   | CaseE2 (op, el) -> "(" ^ string_of_mixop op ^ "_" ^ string_of_exprs " " el ^ ")"
   | OptE (Some e) -> "?(" ^ string_of_expr e ^ ")"
   | OptE None -> "?()"
-  | ContextKindE (a, e) -> sprintf "%s == %s" (string_of_expr e) (string_of_atom a)
+  | ContextKindE a -> sprintf "context_kind(%s)" (string_of_atom a)
   | IsDefinedE e -> sprintf "%s != None" (string_of_expr e)
   | IsCaseOfE (e, a) -> sprintf "case(%s) == %s" (string_of_expr e) (string_of_atom a)
   | HasTypeE (e, t) -> sprintf "type(%s) == %s" (string_of_expr e) t
@@ -508,7 +508,7 @@ and structured_string_of_expr expr =
     ^ ", [" ^ structured_string_of_exprs el ^ "])"
   | OptE None -> "OptE"
   | OptE (Some e) -> "OptE (" ^ structured_string_of_expr e ^ ")"
-  | ContextKindE (a, e) -> sprintf "ContextKindE (%s, %s)" (string_of_atom a) (structured_string_of_expr e)
+  | ContextKindE a -> sprintf "ContextKindE (%s)" (string_of_atom a)
   | IsDefinedE e -> "DefinedE (" ^ structured_string_of_expr e ^ ")"
   | IsCaseOfE (e, a) -> "CaseOfE (" ^ structured_string_of_expr e ^ ", " ^ string_of_atom a ^ ")"
   | HasTypeE (e, t) -> "HasTypeE (" ^ structured_string_of_expr e ^ ", " ^ t ^ ")"

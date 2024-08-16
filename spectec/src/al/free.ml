@@ -19,6 +19,7 @@ let rec free_expr expr =
   | GetCurLabelE
   | GetCurContextE
   | GetCurFrameE
+  | ContextKindE _
   | YetE _ -> IdSet.empty
   | VarE id
   | SubE (id, _) -> IdSet.singleton id
@@ -49,7 +50,6 @@ let rec free_expr expr =
   | TopLabelE
   | TopFrameE
   | TopValueE None -> IdSet.empty
-  | ContextKindE (_, e)
   | IsDefinedE e
   | IsCaseOfE (e, _)
   | HasTypeE (e, _)
