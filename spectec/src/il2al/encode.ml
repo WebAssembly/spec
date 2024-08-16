@@ -85,6 +85,12 @@ let dim e =
 let arg e =
   ExpA e $ e.at
 
+let input_vars = [
+  "input";
+  "stack0";
+  "ctxt";
+  "state";
+]
 
 (* Encode stack *)
 
@@ -140,7 +146,7 @@ let encode_stack stack =
 let encode_lhs lhs =
   match lhs.it with
   | CaseE ([[]; [{it = Semicolon; _}]; []], {it = TupE [z; stack]; _}) ->
-    let prem = LetPr (z, mk_varE "input" "stateT", free_ids z) $ z.at in
+    let prem = LetPr (z, mk_varE "state" "stateT", free_ids z) $ z.at in
     prem :: encode_stack stack
   | _ ->
     let stack = lhs in

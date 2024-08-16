@@ -1235,7 +1235,7 @@ let rec translate_rgroup' rgroup =
     match ctxt with
     (* Normal case *)
     | None ->
-      begin match extract_winstr (List.hd subgroup) with
+      begin match extract_winstr (List.hd u_group) with
       | Some wi -> winstr := wi
       | None -> () end;
 

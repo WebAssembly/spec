@@ -250,7 +250,7 @@ let animate_rule r = match r.it with
     match (mixop, args.it) with
     (* lhs ~> rhs *)
     | ([ [] ; [{it = SqArrow; _}] ; []] , TupE ([_lhs; _rhs])) ->
-      let new_prems = animate_prems {empty with varid = Set.of_list ["ctxt"; "input"; "stack0"]} prems in
+      let new_prems = animate_prems {empty with varid = Set.of_list Encode.input_vars} prems in
       RuleD(id, binds, mixop, args, new_prems) $ r.at
     | _ -> r
   )

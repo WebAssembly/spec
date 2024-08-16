@@ -198,6 +198,10 @@ let inject_ids pr1 pr2 =
     { pr2 with it = LetPr (lhs, rhs, ids') }
   | _ -> Error.error (over_region [pr1.at; pr2.at]) "prose translation" "expected a LetPr"
 
+(* x list list -> x list list list *)
+let lift = List.map (fun xs -> List.map (fun x -> [x]) xs)
+(* x list list list -> x list list *)
+let unlift = List.map List.concat
 
 (** 1. Validation rules **)
 
@@ -222,18 +226,20 @@ let unify_rules rules =
 
 let apply_template_to_prems template prems idx =
   List.mapi (fun i prem ->
-    if i = idx then
+    if i <> idx then
+      prem
+    else (
+      assert (List.length prem = 1);
+      let prem = List.hd prem in
       let new_prem = replace_lhs template prem in
       let new_prems, _ = collect_unified template (lhs_of_prem prem) in
       let new_prems' = List.map (inject_ids prem) new_prems in
-      new_prem :: new_prems'
-    else
-      [prem]
-  ) prems |> List.concat
+      new_prem :: new_prems')
+  ) prems
 
-let unify_pop pops premss =
-  let idxs = List.map fst pops in
-  let ps = List.map snd pops in
+let unify_enc premss encs =
+  let idxs = List.map fst encs in
+  let ps = List.map snd encs in
 
   let es = List.map lhs_of_prem ps in
 
@@ -243,46 +249,59 @@ let unify_pop pops premss =
   let template = List.fold_left overlap hd tl in
 
   List.map2 (apply_template_to_prems template) premss idxs
-  |> List.map (Animate.animate_prems {empty with varid = Set.of_list ["ctxt"; "input"; "stack0"]})
 
-let is_pop pr =
+let is_enc pr =
   match pr.it with
   | LetPr (_, e, _) ->
     (match e.note.it with
-    | VarT (id, []) -> id.it = "stackT"
+    | VarT (id, []) -> List.mem id.it ["stackT"; "inputT"; "contextT"]
     | _ -> false)
   | _ -> false
 
-let rec extract_pops' cnt =
+let rec extract_encs' cnt =
   function
   | [] -> []
   | hd :: tl ->
-    if is_pop hd then
-      (cnt, hd) :: extract_pops' (cnt + 1) tl
+    if is_enc hd then
+      (cnt, hd) :: extract_encs' (cnt + 1) tl
     else
-      extract_pops' (cnt + 1) tl
-let extract_pops = extract_pops' 0
+      extract_encs' (cnt + 1) tl
+let extract_encs = extract_encs' 0
 
-let has_identical_rhs iprems =
-  let prems = List.map snd iprems in
-  let lhss = List.map rhs_of_prem prems in
-  match lhss with
-  | [] -> true
-  | hd :: tl -> List.for_all (eq_exp hd) tl
+let has_identical_rhs iprem1 iprem2 =
+  let rhs1 = iprem1 |> snd |> rhs_of_prem in
+  let rhs2 = iprem2 |> snd |> rhs_of_prem in
 
-let rec filter_unifiable popss =
-  if List.exists ((=) []) popss then
-    []
-  else
-    let hds = List.map List.hd popss in
-    let tls = List.map List.tl popss in
-    if has_identical_rhs hds then
-      hds :: filter_unifiable tls
-    else
+  eq_exp rhs1 rhs2
+
+let rec filter_unifiable encss =
+  match encss with
+  | [] -> assert false
+  | encs :: encss' ->
+    if encs = [] then
       []
+    else
+      let hd = List.hd encs in
+      let tl = List.tl encs in
+      let pairs = List.map (fun encs -> List.partition (has_identical_rhs hd) encs) encss' in
+      let fsts = List.map fst pairs in
+      let snds = List.map snd pairs in
+
+      assert (List.for_all (fun xs -> List.length xs <= 1) fsts);
+
+      if List.for_all (fun xs -> List.length xs = 1) fsts then
+        (hd :: List.map List.hd fsts) :: filter_unifiable (tl :: snds)
+      else
+        filter_unifiable (tl :: snds)
 
 let replace_prems r prems =
-  let (lhs, rhs, _) = r.it in
+  let (lhs, rhs, _prems) = r.it in
+  (*
+  List.iter (fun p -> print_endline (Il.Print.string_of_prem p)) _prems;
+  print_endline "->";
+  List.iter (fun p -> print_endline (Il.Print.string_of_prem p)) prems;
+  print_endline "";
+  *)
   { r with it = (lhs, rhs, prems) }
 
 let unify_rgroup rgroup =
@@ -290,10 +309,12 @@ let unify_rgroup rgroup =
   if_or_let_flag := Let;
 
   let premss = List.map (fun g -> let (_, _, prems) = g.it in prems) rgroup in
-  let popss = List.map extract_pops premss in
-  let unifiable_popss = filter_unifiable popss in
-  let new_premss = List.fold_right unify_pop unifiable_popss premss in
-  List.map2 replace_prems rgroup new_premss
+  let encss = List.map extract_encs premss in
+  let unifiable_encss = filter_unifiable encss in
+  let new_premss = List.fold_left unify_enc (lift premss) unifiable_encss |> unlift in
+  let animated_premss = List.map (Animate.animate_prems {empty with varid = Set.of_list Encode.input_vars}) new_premss in
+
+  List.map2 replace_prems rgroup animated_premss
 
 
 (** 3. Functions **)
