@@ -123,7 +123,7 @@ let encode_stack stack =
     let mixop = case_of_case e in
     let args  = args_of_case e in
 
-    (* ASSUMPTION: the inner stack of the frame instruction is always the last arg *)
+    (* ASSUMPTION: the inner stack of the ctxt instruction is always the last arg *)
     let args', inner_stack = Lib.List.split_last args in
     let mixop', _ = Lib.List.split_last mixop in
 
@@ -140,7 +140,7 @@ let encode_stack stack =
 let encode_lhs lhs =
   match lhs.it with
   | CaseE ([[]; [{it = Semicolon; _}]; []], {it = TupE [z; stack]; _}) ->
-    let prem = LetPr (z, mk_varE "input" "inputT", free_ids z) $ z.at in
+    let prem = LetPr (z, mk_varE "input" "stateT", free_ids z) $ z.at in
     prem :: encode_stack stack
   | _ ->
     let stack = lhs in

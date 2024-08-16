@@ -20,6 +20,8 @@ let list_count pred = list_count' pred 0
 
 let not_ f x = not (f x)
 
+let (--) xs ys = List.filter (fun x -> not (List.mem x ys)) xs
+
 (* Helper for handling free-var set *)
 let subset x y = Set.subset x.varid y.varid
 
@@ -42,7 +44,7 @@ let is_assign env (tag, prem, _) =
   | Assign frees -> subset (diff (free_prem false prem) {empty with varid = (Set.of_list frees)}) env
   | _ -> false
 
-(* is this premise encoded premise for pop? *)
+(* is this assign premise encoded premise for pop? *)
 let is_pop env row =
   is_assign env row &&
   match (unwrap row).it with
@@ -165,7 +167,7 @@ let subset_selector e =
   else large_enough_subsets
 
 let rows_of_eq vars len i l r at =
-  free_exp_list l
+  (free_exp_list l -- free_exp_list r)
   |> subset_selector l
   |> List.filter_map (fun frees ->
     let covering_vars = List.filter_map (index_of len vars) frees in
