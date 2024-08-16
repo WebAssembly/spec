@@ -82,7 +82,7 @@ def $allocelems(store, reftype*, (ref*)*) : (store, elemaddr*)
 def $allocelems(s, eps, eps) = (s, eps)
 def $allocelems(s, rt rt'*, (ref*) (ref'*)*) = (s_2, ea ea'*)
   -- if (s_1, ea) = $allocelem(s, rt, ref*)
-  -- if (s_2, ea'*) = $allocelems(s_2, rt'*, (ref'*)*)
+  -- if (s_2, ea'*) = $allocelems(s_1, rt'*, (ref'*)*)
 
 def $allocdata(store, byte*) : (store, dataaddr)
 def $allocdata(s, byte*) = (s[.DATAS =++ di], |s.DATAS|)
