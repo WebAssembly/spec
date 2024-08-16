@@ -115,20 +115,13 @@ and overlap_typ t1 t2 = if eq_typ t1 t2 then t1 else
 
 let pairwise_concat (a,b) (c,d) = (a@c, b@d)
 
-type if_or_let = If | Let
-let if_or_let_flag = ref If
-
 let rec collect_unified template e = if eq_exp template e then [], [] else
   match template.it, e.it with
     | VarE id, _
     | IterE ({ it = VarE id; _}, _) , _
       when is_unified_id id.it ->
-      [
-        match !if_or_let_flag with
-        | If -> IfPr (CmpE (EqOp, template, e) $$ e.at % (BoolT $ e.at)) $ e.at
-        | Let -> LetPr (e, template, []) $ e.at
-      ],
-      [ ExpB (id, template.note, []) $ e.at ]
+      [IfPr (CmpE (EqOp, template, e) $$ e.at % (BoolT $ e.at)) $ e.at],
+      [ExpB (id, template.note, []) $ e.at]
     | UnE (_, e1), UnE (_, e2)
     | DotE (e1, _), DotE (e2, _)
     | LenE e1, LenE e2
@@ -191,12 +184,6 @@ let replace_lhs lhs pr =
     else
       { pr with it = LetPr (lhs, rhs, (free_exp lhs).varid |> Set.to_list) }
   | _ -> Error.error pr.at "prose translation" "expected a LetPr"
-let inject_ids pr1 pr2 =
-  match pr1.it, pr2.it with
-  | LetPr (_, _, ids), LetPr (lhs, rhs, _) ->
-    let ids' = Set.inter (Set.of_list ids) (free_exp lhs).varid |> Set.to_list in
-    { pr2 with it = LetPr (lhs, rhs, ids') }
-  | _ -> Error.error (over_region [pr1.at; pr2.at]) "prose translation" "expected a LetPr"
 
 (* x list list -> x list list list *)
 let lift = List.map (fun xs -> List.map (fun x -> [x]) xs)
@@ -213,7 +200,6 @@ let apply_template_to_rule template rule =
 
 let unify_rules rules =
   init_unified_idx();
-  if_or_let_flag := If;
 
   let concls = List.map (fun x -> let RuleD(_, _, _, e, _) = x.it in e) rules in
   let hd = List.hd concls in
@@ -233,8 +219,7 @@ let apply_template_to_prems template prems idx =
       let prem = List.hd prem in
       let new_prem = replace_lhs template prem in
       let new_prems, _ = collect_unified template (lhs_of_prem prem) in
-      let new_prems' = List.map (inject_ids prem) new_prems in
-      new_prem :: new_prems')
+      new_prem :: new_prems)
   ) prems
 
 let unify_enc premss encs =
@@ -306,7 +291,6 @@ let replace_prems r prems =
 
 let unify_rgroup rgroup =
   init_unified_idx();
-  if_or_let_flag := Let;
 
   let premss = List.map (fun g -> let (_, _, prems) = g.it in prems) rgroup in
   let encss = List.map extract_encs premss in
@@ -328,7 +312,6 @@ let apply_template_to_def template def =
 
 let unify_defs defs =
   init_unified_idx();
-  if_or_let_flag := If;
 
   let lhs_s = List.map (fun x -> let DefD(_, lhs, _, _) = x.it in lhs) defs in
   let hd = List.hd lhs_s in
