@@ -120,6 +120,13 @@ let rec insert_instrs target il =
     h @ [ ifI (cond, insert_instrs (Transpile.insert_nop target) il' , []) ]
   | _ -> il @ target
 
+(* Insert `target` at the else-branch of innermost if instruction *)
+let rec insert_instrs_to_else target il =
+  match Util.Lib.List.split_last_opt il with
+  | Some (h, { it = IfI (cond, il1, il2); _ }) ->
+    h @ [ ifI (cond, il1, insert_instrs_to_else target il2) ]
+  | _ -> il @ target
+
 let has_branch = List.exists (fun i ->
   match i.it with
   | IfI _
@@ -793,11 +800,11 @@ and handle_special_lhs lhs rhs free_ids =
   | _ when (Il.Print.string_of_typ rhs.note) = "inputT" -> []
   | _ when (Il.Print.string_of_typ rhs.note) = "stateT" -> []
   | _ when (Il.Print.string_of_typ rhs.note) = "unusedT" -> []
+  | _ when (Il.Print.string_of_typ rhs.note) = "contextT" -> []
   | TupE [e; _stack] when (Il.Print.string_of_typ rhs.note) = "stackT" ->
     let args = args_of_call rhs in
     let pop_num = List.hd args |> arg2expr in
     insert_pop e pop_num
-  | _ when (Il.Print.string_of_typ rhs.note) = "contextT" -> []
   (* Handle inverse function call *)
   | CallE _ -> handle_call_lhs lhs rhs free_ids
   (* Handle iterator *)
@@ -1200,50 +1207,76 @@ let rec translate_rgroup' rgroup =
   let pops, rgroup' = extract_pops rgroup in
   let subgroups = group_by_context rgroup' in
 
-  let blocks = List.map (fun (ctxt, subgroup) ->
-    let popped_vars = List.concat_map (fun p ->
-      match p.it with
-      | Il.LetPr (_, _, ids) -> ids
-      | _ -> assert false
-    ) pops in
-    let u_group = Il2il.unify_ctxt popped_vars subgroup in
-
-    match ctxt with
+  let blocks = List.map (fun (k, subgroup) ->
+    match k with
     (* Normal case *)
     | None ->
-      let winstr = extract_winstr (List.hd u_group) in
+      let winstr = extract_winstr (List.hd subgroup) in
       let inner_pop_instrs = translate_context_winstr winstr in
-      let blocks = List.map translate_reduction u_group in
+      let blocks = List.map translate_reduction subgroup in
       let instrs =
         match blocks with
         | [b1; b2] when not (has_branch b1 || has_branch b2) -> [ eitherI (b1, b2) ] (* Either case *)
         | _ -> Transpile.merge_blocks blocks
       in
-      inner_pop_instrs @ instrs
+      k, inner_pop_instrs @ instrs
     (* Context case *)
     | Some ctxt ->
+      let popped_vars = List.concat_map (fun p ->
+        match p.it with
+        | Il.LetPr (_, _, ids) -> ids
+        | _ -> assert false
+      ) pops in
+      let u_group = Il2il.unify_ctxt popped_vars subgroup in
       let atom = case_of_case ctxt |> List.hd |> List.hd in
       let cond = ContextKindE atom $$ atom.at % boolT in
-      let valTs = listT valT in
-      let e_vals = iterE (subE ("val", "val") ~note:valT, [ "val" ], List) ~note:valTs in
-      let instr_popall = popallI e_vals in
-      let instr_push = pushI e_vals in
       let head_instrs, middle_instr = translate_context ctxt in
       let body_instrs =
         List.map (translate_reduction ~context_opt:(Some middle_instr)) u_group
         |> List.mapi (fun i instrs -> if i = 0 then instrs else [otherwiseI instrs])
         |> Transpile.merge_blocks in
-      [
-        instr_popall;
+      k, [
         ifI (
           cond,
-          head_instrs @ [instr_push] @ body_instrs,
+          head_instrs @ body_instrs,
           []
         )
       ]
   ) subgroups in
 
-  translate_prems pops (Transpile.merge_blocks blocks)
+  let normal_block_opt, ctxt_blocks =
+    match List.hd blocks with
+    | (Some _, _) -> None, blocks
+    | (None, b) -> Some b, List.tl blocks
+  in
+
+  let ctxt_block = match ctxt_blocks with
+  | [] -> []
+  | _ ->
+    let valTs = listT valT in
+    let e_vals = iterE (subE ("val", "val") ~note:valT, [ "val" ], List) ~note:valTs in
+    let instr_popall = popallI e_vals in
+    let instr_push = pushI e_vals in
+
+    instr_popall ::
+    List.fold_right (fun instrs acc ->
+      assert (List.length instrs = 1);
+      let if_instr = List.hd instrs in
+      match if_instr.it with
+      | IfI (c, instrs1, []) -> [{if_instr with it = IfI (c, instr_push :: instrs1, acc)}]
+      | _ -> assert false
+    ) (List.map snd ctxt_blocks) []
+  in
+
+  let body_instrs =
+    match normal_block_opt, ctxt_block with
+    | None, b -> b
+    | Some b1, b2 ->
+      (* Assert: b1 must have the else-less IfI as inner most instruction *)
+      insert_instrs_to_else b2 b1
+  in
+
+  translate_prems pops body_instrs
 
 (* Main translation for reduction rules
  * `rgroup` -> `Al.Algo` *)

@@ -203,6 +203,7 @@ let swap_if instr =
   match instr.it with
   | IfI (c, il, []) -> ifI (c, il, []) ~at:at
   | IfI (c, [], il) -> ifI (neg c, il, []) ~at:at
+  | IfI (_, _, il2) when (match il2 with | [{it = IfI _; _}] -> true | _ -> false) -> instr
   | IfI (c, il1, il2) when count_instrs il1 > count_instrs il2 -> ifI (neg c, il2, il1) ~at:at
   | _ -> instr
 

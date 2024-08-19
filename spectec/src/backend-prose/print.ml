@@ -270,39 +270,30 @@ let rec string_of_instr' depth instr =
 
   let open Al.Ast in
   match instr.it with
-  | IfI (e, il, []) ->
-    sprintf "%s If %s, then:%s" (make_index depth) (string_of_expr e)
-      (string_of_instrs' (depth + 1) il)
-  | IfI (e, il1, [ { it = IfI (inner_e, inner_il1, []); _ } ]) ->
-    let if_index = make_index depth in
-    let else_if_index = make_index depth in
-    sprintf "%s If %s, then:%s\n%s Else if %s, then:%s"
-      if_index
-      (string_of_expr e)
-      (string_of_instrs' (depth + 1) il1)
-      (repeat indent depth ^ else_if_index)
-      (string_of_expr inner_e)
-      (string_of_instrs' (depth + 1) inner_il1)
-  | IfI (e, il1, [ { it = IfI (inner_e, inner_il1, inner_il2); _ } ]) ->
-    let if_index = make_index depth in
-    let else_if_index = make_index depth in
-    let else_index = make_index depth in
-    sprintf "%s If %s, then:%s\n%s Else if %s, then:%s\n%s Else:%s"
-      if_index
-      (string_of_expr e)
-      (string_of_instrs' (depth + 1) il1)
-      (repeat indent depth ^ else_if_index)
-      (string_of_expr inner_e)
-      (string_of_instrs' (depth + 1) inner_il1)
-      (repeat indent depth ^ else_index)
-      (string_of_instrs' (depth + 1) inner_il2)
   | IfI (e, il1, il2) ->
     let if_index = make_index depth in
-    let else_index = make_index depth in
-    sprintf "%s If %s, then:%s\n%s Else:%s" if_index (string_of_expr e)
+    let if_prose = sprintf "%s If %s, then:%s" if_index (string_of_expr e)
       (string_of_instrs' (depth + 1) il1)
-      (repeat indent depth ^ else_index)
-      (string_of_instrs' (depth + 1) il2)
+    in
+
+    let rec collect_clause il =
+      match il with
+      | [ {it = IfI (c, il1, il2); _} ] -> (Some c, il1) :: collect_clause il2
+      | _ -> [(None, il)]
+    in
+    let else_clauses = collect_clause il2 |> List.filter (fun (_, x) -> x <> []) in
+    let else_proses = List.map (fun (cond_opt, il)->
+      let else_index = make_index depth in
+      match cond_opt with
+      | None -> sprintf "%s Else:%s"
+        (repeat indent depth ^ else_index)
+        (string_of_instrs' (depth + 1) il)
+      | Some e ->  sprintf "%s Else if %s, then:%s"
+        (repeat indent depth ^ else_index) (string_of_expr e)
+        (string_of_instrs' (depth + 1) il)
+    ) else_clauses in
+
+    String.concat "\n" (if_prose :: else_proses)
   | OtherwiseI il ->
     sprintf "%s Otherwise:%s" (make_index depth)
       (string_of_instrs' (depth + 1) il)
