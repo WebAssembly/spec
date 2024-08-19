@@ -296,24 +296,28 @@ let check_inv_call source id indices args result_typ =
   let free_args = List.map typ2arg typs in
 
   (* Pop last arg from args *)
+  (* TODO: Not just last argument *)
   let bound_args, last_arg = Lib.List.split_last args in
 
   (* Merge free args and bound args *)
-  let merge_args args idx =
+  let merge_args idx args =
     let free_args, bound_args, merged_args = args in
     if Option.is_some idx then
-      (
-      let first_free_arg, new_free_args = Lib.List.split_hd free_args in
-      (new_free_args, bound_args, merged_args @ [first_free_arg])
-    )
+      let new_free_args, last_free_arg = Lib.List.split_last free_args in
+      new_free_args, bound_args, last_free_arg :: merged_args
     else
-      let first_bound_arg, new_bound_args = Lib.List.split_hd bound_args in
-      (free_args, new_bound_args, merged_args @ [first_bound_arg])
+      let new_bound_args, last_bound_arg = Lib.List.split_last bound_args in
+      free_args, new_bound_args, last_bound_arg :: merged_args
   in
-  let _, _, merged_args = List.fold_left merge_args (free_args, bound_args, []) indices in
+  let free_args', _, merged_args =
+    List.fold_right merge_args indices (free_args, bound_args, [])
+  in
+  (* TODO: Use error function *)
+  assert (List.length free_args' = 0);
 
   (* Set new result typ as the last element of args *)
-  let new_result_typ = match last_arg.it with
+  let new_result_typ =
+    match last_arg.it with
     | ExpA exp -> exp.note
     | a -> error_valid (Printf.sprintf "wrong free argument: %s" (Print.string_of_arg (a $ no_region))) source ""
   in
