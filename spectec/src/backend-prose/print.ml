@@ -172,7 +172,7 @@ and string_of_expr expr =
   | ContextKindE (a, e) -> sprintf "%s is %s" (string_of_expr e) (string_of_atom a)
   | IsDefinedE e -> sprintf "%s is defined" (string_of_expr e)
   | IsCaseOfE (e, a) -> sprintf "%s is of the case %s" (string_of_expr e) (string_of_atom a)
-  | HasTypeE (e, t) -> sprintf "the type of %s is %s" (string_of_expr e) t
+  | HasTypeE (e, t) -> sprintf "the type of %s is %s" (string_of_expr e) (string_of_typ t)
   | IsValidE e -> sprintf "%s is valid" (string_of_expr e)
   | TopLabelE -> "a label is now on the top of the stack"
   | TopFrameE -> "a frame is now on the top of the stack"

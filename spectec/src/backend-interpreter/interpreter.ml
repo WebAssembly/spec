@@ -379,11 +379,11 @@ and eval_expr env expr =
     | _ ->
       fail_expr expr "TODO: deferring validation to reference interpreter"
     )
-  | HasTypeE (e, s) ->
+  | HasTypeE (e, t) ->
     (* TODO: This shouldn't be hardcoded *)
     (* check type *)
     let v = eval_expr env e in
-    check_type s v expr
+    check_type (string_of_typ t) v expr
   | MatchE (e1, e2) ->
     (* Deferred to reference interpreter *)
     let rt1 = e1 |> eval_expr env |> Construct.al_to_ref_type in

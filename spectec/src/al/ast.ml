@@ -114,7 +114,7 @@ and expr' =
   | IsDefinedE of expr                            (* expr is defined *)
   | MatchE of expr * expr                         (* expr matches expr *)
   (* TODO: use typ *)
-  | HasTypeE of expr * string                     (* the type of expr is ty *)
+  | HasTypeE of expr * typ                     (* the type of expr is ty *)
   | TopFrameE                                     (* "a frame is now on the top of the stack" *)
   | TopLabelE                                     (* "a label is now on the top of the stack" *)
   (* Conditions used in assertions *)
@@ -122,7 +122,7 @@ and expr' =
   | TopValuesE of expr                            (* "at least expr number of values on the top of the stack" *)
   (* Administrative Instructions *)
   (* TODO: use typ *)
-  | SubE of id * string                           (* varid, with specific type *)
+  | SubE of id * typ                           (* varid, with specific type *)
   | YetE of string                                (* for future not yet implemented feature *)
 
 and path = path' phrase

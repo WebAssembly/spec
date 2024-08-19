@@ -444,7 +444,7 @@ and render_expr' env expr =
     sprintf "%s is of the case %s" se sa
   | Al.Ast.HasTypeE (e, t) ->
     let se = render_expr env e in
-    sprintf "the type of %s is %s" se t
+    sprintf "the type of %s is %s" se (Il.Print.string_of_typ t)
   | Al.Ast.IsValidE e ->
     let se = render_expr env e in
     sprintf "%s is valid" se

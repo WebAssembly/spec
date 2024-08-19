@@ -197,7 +197,7 @@ and string_of_expr expr =
   | ContextKindE (a, e) -> sprintf "%s == %s" (string_of_expr e) (string_of_atom a)
   | IsDefinedE e -> sprintf "%s != None" (string_of_expr e)
   | IsCaseOfE (e, a) -> sprintf "case(%s) == %s" (string_of_expr e) (string_of_atom a)
-  | HasTypeE (e, t) -> sprintf "type(%s) == %s" (string_of_expr e) t
+  | HasTypeE (e, t) -> sprintf "type(%s) == %s" (string_of_expr e) (string_of_typ t)
   | IsValidE e -> sprintf "valid(%s)" (string_of_expr e)
   | TopLabelE -> "top_label()"
     (* TODO: "type(top()) == label"*)
@@ -494,7 +494,7 @@ and structured_string_of_expr expr =
     ^ structured_string_of_expr e2
     ^ ")"
   | VarE id -> "VarE (" ^ id ^ ")"
-  | SubE (id, t) -> "SubE (" ^ id ^ "," ^ t ^ ")"
+  | SubE (id, t) -> sprintf "SubE (%s, %s)" id (string_of_typ t)
   | IterE (e, ids, iter) ->
     "IterE ("
     ^ structured_string_of_expr e
@@ -511,7 +511,8 @@ and structured_string_of_expr expr =
   | ContextKindE (a, e) -> sprintf "ContextKindE (%s, %s)" (string_of_atom a) (structured_string_of_expr e)
   | IsDefinedE e -> "DefinedE (" ^ structured_string_of_expr e ^ ")"
   | IsCaseOfE (e, a) -> "CaseOfE (" ^ structured_string_of_expr e ^ ", " ^ string_of_atom a ^ ")"
-  | HasTypeE (e, t) -> "HasTypeE (" ^ structured_string_of_expr e ^ ", " ^ t ^ ")"
+  | HasTypeE (e, t) ->
+    sprintf "HasTypeE (%s, %s)" (structured_string_of_expr e) (string_of_typ t)
   | IsValidE e -> "IsValidE (" ^ structured_string_of_expr e ^ ")"
   | TopLabelE -> "TopLabelE"
   | TopFrameE -> "TopFrameE"

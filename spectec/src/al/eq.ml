@@ -47,12 +47,12 @@ let rec eq_expr e1 e2 =
   | ContextKindE (a1, e1), ContextKindE (a2, e2) -> El.Atom.eq a1 a2 && eq_expr e1 e2
   | IsDefinedE e1, IsDefinedE e2 -> eq_expr e1 e2
   | MatchE (e11, e12), MatchE (e21, e22) -> eq_expr e11 e21 && eq_expr e12 e22
-  | HasTypeE (e1, t1), HasTypeE (e2, t2) -> eq_expr e1 e2 && t1 = t2
+  | HasTypeE (e1, t1), HasTypeE (e2, t2) -> eq_expr e1 e2 && Il.Eq.eq_typ t1 t2
   | TopLabelE, TopLabelE
   | TopFrameE, TopFrameE -> true
   | TopValueE eo1, TopValueE eo2 -> eq_expr_opt eo1 eo2
   | TopValuesE e1, TopValuesE e2 -> eq_expr e1 e2
-  | SubE (i1, t1), SubE (i2, t2) -> i1 = i2 && t1 = t2
+  | SubE (i1, t1), SubE (i2, t2) -> i1 = i2 && Il.Eq.eq_typ t1 t2
   | YetE s1, YetE s2 -> s1 = s2
   | _ -> false
 

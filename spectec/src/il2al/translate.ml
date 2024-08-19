@@ -133,7 +133,7 @@ and translate_exp exp =
   | Il.CatE (exp1, exp2) -> catE (translate_exp exp1, translate_exp exp2) ~at:at ~note:note
   (* Variable *)
   | Il.VarE id -> varE id.it ~at:at ~note:note
-  | Il.SubE ({ it = Il.VarE id; _}, { it = VarT (t, _); _ }, _) -> subE (id.it, t.it) ~at:at ~note:note
+  | Il.SubE ({ it = Il.VarE id; _}, t, _) -> subE (id.it, t) ~at:at ~note:note
   | Il.SubE (inner_exp, _, _) -> translate_exp inner_exp
   | Il.IterE (inner_exp, (iter, ids)) ->
     let names = List.map (fun (id, _) -> id.it) ids in
@@ -1109,7 +1109,7 @@ let translate_context_winstr winstr =
 let translate_context ctx vs =
   let at = ctx.at in
   let ty = listT valT in
-  let e_vals = iterE (subE ("val", "val") ~note:valT, [ "val" ], List) ~note:ty in
+  let e_vals = iterE (subE ("val", valT) ~note:valT, [ "val" ], List) ~note:ty in
   let vs = List.rev vs in
   let instr_popall = popallI e_vals in
   let instr_pop_context =

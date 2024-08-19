@@ -7,6 +7,7 @@ val string_of_value : value -> string
 val string_of_values : string -> value list -> string
 val string_of_iter : iter -> string
 val string_of_iters : iter list -> string
+val string_of_typ : typ -> string
 val string_of_expr : expr -> string
 val string_of_path : path -> string
 val string_of_arg : arg -> string
