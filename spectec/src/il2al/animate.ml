@@ -53,7 +53,26 @@ let is_pop env row =
 
 (* iteratively select pop, condition and assignment premises,
  * effectively sorting the premises as a result. *)
-let rec select_tight prems acc env fb =
+let rec select_pops prems acc env fb =
+  match prems with
+  | [] -> Some acc
+  | _ ->
+    let (pops, non_pops) = List.partition (is_pop env) prems in
+    match pops with
+    | [] ->
+      select_tight prems acc env fb
+    | _ ->
+      let pops' = List.map unwrap pops in
+      let new_env = pops
+        |> List.map targets
+        |> List.concat
+        |> List.fold_left (fun env x ->
+          union env { empty with varid = Set.singleton x }
+        ) env
+      in
+      select_pops non_pops (acc @ pops') new_env fb
+
+and select_tight prems acc env fb =
   match prems with
   | [] -> Some acc
   | _ ->
@@ -234,7 +253,7 @@ let animate_prems known_vars prems =
 
   (* 2. Reorder *)
   let best' = ref (-1, []) in
-  match List.find_map (fun cand -> select_tight cand other known_vars best') candidates with
+  match List.find_map (fun cand -> select_pops cand other known_vars best') candidates with
   | None ->
     if (not k_fail) then
       let unhandled_prems = Lib.List.drop (fst !best') (snd !best') in

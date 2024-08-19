@@ -64,10 +64,11 @@ let rec stack_to_list e =
   (* List.map (fun e -> { e with it = ListE [e] }) es *)
   | _ -> [ e ]
 
-let rec drop_until f xs =
+let rec drop_until' acc f xs =
   match xs with
-  | [] -> []
-  | hd :: tl -> if f hd then xs else drop_until f tl
+  | [] -> acc, []
+  | hd :: tl -> if f hd then acc, xs else drop_until' (hd :: acc) f tl
+let drop_until = drop_until' []
 
 let free_ids e =
   (free_exp e)
@@ -90,12 +91,21 @@ let input_vars = [
   "stack0";
   "ctxt";
   "state";
+  "unused";
 ]
 
 (* Encode stack *)
 
 let encode_inner_stack context_opt stack =
-  let es = stack_to_list stack |> List.rev |> drop_until is_case in
+  let dropped, es = stack_to_list stack |> List.rev |> drop_until is_case in
+
+  let unused_prems =
+    if List.length dropped = 0 then
+      []
+    else
+      let unused = TupE dropped $$ no_region % (mk_varT "unusedT") in
+      [LetPr (unused, mk_varE "unused" "unusedT", free_ids unused) $ no_region]
+  in
 
   match es with
   | [] ->
@@ -104,7 +114,7 @@ let encode_inner_stack context_opt stack =
       match context_opt with
       | None -> assert false
       | Some e ->
-        Some (LetPr (e, mk_varE "input" "inputT", free_ids e) $ e.at), []
+        Some (LetPr (e, mk_varE "input" "inputT", free_ids e) $ e.at), unused_prems
     )
   | _ ->
     (* ASSUMPTION: The top of the stack should be now the target instruction *)
@@ -126,7 +136,7 @@ let encode_inner_stack context_opt stack =
       IfPr (CmpE (EqOp, lhs, rhs) $$ e.at % (BoolT $ no_region)) $ e.at
     ) operands in
 
-    None, prem :: prems
+    None, prem :: prems @ unused_prems
 
 let encode_stack stack =
   match stack.it with

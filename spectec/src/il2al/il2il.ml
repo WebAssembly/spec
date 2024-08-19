@@ -18,10 +18,16 @@ type rgroup = (exp * exp * (prem list)) phrase list
 
 let unified_prefix = "u"
 let _unified_idx = ref 0
-let init_unified_idx () = _unified_idx := 0
+let _unified_idx_cache = ref None
+let init_unified_idx () = _unified_idx := 0; _unified_idx_cache := None
+let soft_init_unified_idx () =
+  match !_unified_idx_cache with
+  | None -> _unified_idx_cache := Some (!_unified_idx)
+  | Some n -> _unified_idx := n
 let get_unified_idx () = let i = !_unified_idx in _unified_idx := (i+1); i
 let gen_new_unified ty = (Al.Al_util.typ_to_var_name ty) ^ "_" ^ unified_prefix ^ (string_of_int (get_unified_idx())) $ no_region
 let is_unified_id id = String.split_on_char '_' id |> Util.Lib.List.last |> String.starts_with ~prefix:unified_prefix
+
 
 let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
   let replace_it it = { e1 with it = it } in
@@ -235,23 +241,30 @@ let unify_enc premss encs =
 
   List.map2 (apply_template_to_prems template) premss idxs
 
-let is_enc pr =
+let is_encoded_ctxt pr =
   match pr.it with
   | LetPr (_, e, _) ->
     (match e.note.it with
-    | VarT (id, []) -> List.mem id.it ["stackT"; "inputT"; "contextT"]
+    | VarT (id, []) -> List.mem id.it ["inputT"; "stackT"; "contextT"]
+    | _ -> false)
+  | _ -> false
+let is_encoded_pop_or_winstr pr =
+  match pr.it with
+  | LetPr (_, e, _) ->
+    (match e.note.it with
+    | VarT (id, []) -> List.mem id.it ["inputT"; "stackT"]
     | _ -> false)
   | _ -> false
 
-let rec extract_encs' cnt =
+let rec extract_encs' pred cnt =
   function
   | [] -> []
   | hd :: tl ->
-    if is_enc hd then
-      (cnt, hd) :: extract_encs' (cnt + 1) tl
+    if pred hd then
+      (cnt, hd) :: extract_encs' pred (cnt + 1) tl
     else
-      extract_encs' (cnt + 1) tl
-let extract_encs = extract_encs' 0
+      extract_encs' pred (cnt + 1) tl
+let extract_encs pred = extract_encs' pred 0
 
 let has_identical_rhs iprem1 iprem2 =
   let rhs1 = iprem1 |> snd |> rhs_of_prem in
@@ -281,25 +294,23 @@ let rec filter_unifiable encss =
 
 let replace_prems r prems =
   let (lhs, rhs, _prems) = r.it in
-  (*
-  List.iter (fun p -> print_endline (Il.Print.string_of_prem p)) _prems;
-  print_endline "->";
-  List.iter (fun p -> print_endline (Il.Print.string_of_prem p)) prems;
-  print_endline "";
-  *)
   { r with it = (lhs, rhs, prems) }
 
-let unify_rgroup rgroup =
-  init_unified_idx();
-
+let unify_rgroup pred input_vars rgroup =
   let premss = List.map (fun g -> let (_, _, prems) = g.it in prems) rgroup in
-  let encss = List.map extract_encs premss in
+  let encss = List.map (extract_encs pred) premss in
   let unifiable_encss = filter_unifiable encss in
   let new_premss = List.fold_left unify_enc (lift premss) unifiable_encss |> unlift in
-  let animated_premss = List.map (Animate.animate_prems {empty with varid = Set.of_list Encode.input_vars}) new_premss in
+  let animated_premss = List.map (Animate.animate_prems {empty with varid = Set.of_list (input_vars @ Encode.input_vars)}) new_premss in
 
   List.map2 replace_prems rgroup animated_premss
 
+let unify_ctxt input_vars rgroup =
+  soft_init_unified_idx();
+  unify_rgroup is_encoded_ctxt input_vars rgroup
+let unify_pop_and_winstr rgroup =
+  init_unified_idx();
+  unify_rgroup is_encoded_pop_or_winstr [] rgroup
 
 (** 3. Functions **)
 
