@@ -6295,12 +6295,12 @@ relation Step: `%~>%`(config, config)
     `%~>%`(`%;%`_config(z, instr*{instr : instr}), `%;%`_config(z, instr'*{instr' : instr}))
     -- Step_read: `%~>%`(`%;%`_config(z, instr*{instr : instr}), instr'*{instr' : instr})
 
-  ;; 8-reduction.watsup:218.1-223.36
+  ;; 8-reduction.watsup:218.1-223.49
   rule throw{z : state, val^n : val^n, n : n, x : idx, exn : exninst, a : addr, t^n : valtype^n}:
     `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val : val} :: [THROW_instr(x)]), `%;%`_config($add_exninst(z, [exn]), [REF.EXN_ADDR_instr(a) THROW_REF_instr]))
     -- Expand: `%~~%`($tag(z, x).TYPE_taginst, FUNC_comptype(`%->%`_functype(`%`_resulttype(t^n{t : valtype}), `%`_resulttype([]))))
     -- if (a = |$exninst(z)|)
-    -- if (exn = {TAG a, FIELDS val^n{val : val}})
+    -- if (exn = {TAG $tagaddr(z)[x!`%`_idx.0], FIELDS val^n{val : val}})
 
   ;; 8-reduction.watsup:285.1-287.36
   rule ctxt-label{z : state, n : n, instr_0* : instr*, instr* : instr*, z' : state, instr'* : instr*}:
@@ -6584,7 +6584,7 @@ def $allocelems(store : store, elemtype*, ref**) : (store, elemaddr*)
   ;; 9-module.watsup:77.1-79.55
   def $allocelems{s : store, rt : reftype, rt'* : reftype*, ref* : ref*, ref'** : ref**, s_2 : store, ea : elemaddr, ea'* : elemaddr*, s_1 : store}(s, [rt] :: rt'*{rt' : elemtype}, [ref*{ref : ref}] :: ref'*{ref' : ref}*{ref' : ref}) = (s_2, [ea] :: ea'*{ea' : elemaddr})
     -- if ((s_1, ea) = $allocelem(s, rt, ref*{ref : ref}))
-    -- if ((s_2, ea'*{ea' : elemaddr}) = $allocelems(s_2, rt'*{rt' : elemtype}, ref'*{ref' : ref}*{ref' : ref}))
+    -- if ((s_2, ea'*{ea' : elemaddr}) = $allocelems(s_1, rt'*{rt' : elemtype}, ref'*{ref' : ref}*{ref' : ref}))
 }
 
 ;; 9-module.watsup

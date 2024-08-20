@@ -8230,7 +8230,7 @@ $$
   &\qquad \mbox{if}~z{.}\mathsf{tags}{}[x]{.}\mathsf{type} \approx \mathsf{func}~({t^{n}} \rightarrow \epsilon) \\
   &&&&\qquad {\land}~a = {|z{.}\mathsf{exns}|} \\
   &&&&\qquad {\land}~{\mathit{exn}} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{tag}~a,\; \mathsf{fields}~{{\mathit{val}}^{n}} \}\end{array} \\
+\mathsf{tag}~z{.}\mathsf{tags}{}[x],\; \mathsf{fields}~{{\mathit{val}}^{n}} \}\end{array} \\
 \end{array}
 $$
 
@@ -9242,7 +9242,7 @@ $$
 {{{\mathrm{allocelem}}^\ast}}{(s, \epsilon, \epsilon)} &=& (s, \epsilon) \\
 {{{\mathrm{allocelem}}^\ast}}{(s, {\mathit{rt}}~{{\mathit{rt}'}^\ast}, ({{\mathit{ref}}^\ast})~{({{\mathit{ref}'}^\ast})^\ast})} &=& (s_2, {\mathit{ea}}~{{\mathit{ea}'}^\ast})
   &\qquad \mbox{if}~(s_1, {\mathit{ea}}) = {\mathrm{allocelem}}(s, {\mathit{rt}}, {{\mathit{ref}}^\ast}) \\
-  &&&\qquad {\land}~(s_2, {{\mathit{ea}'}^\ast}) = {{{\mathrm{allocelem}}^\ast}}{(s_2, {{\mathit{rt}'}^\ast}, {({{\mathit{ref}'}^\ast})^\ast})} \\
+  &&&\qquad {\land}~(s_2, {{\mathit{ea}'}^\ast}) = {{{\mathrm{allocelem}}^\ast}}{(s_1, {{\mathit{rt}'}^\ast}, {({{\mathit{ref}'}^\ast})^\ast})} \\
 \end{array}
 $$
 

@@ -1429,86 +1429,86 @@ watsup 0.4 generator
 #. Return :math:`(\mathsf{f{\scriptstyle 64}}{.}\mathsf{const}~{+0})`.
 
 
-:math:`{\mathrm{funcs}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-.............................................................................................
+:math:`{\mathrm{funcs}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+..............................................................................................
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{func}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externaddr}}_0`.
 
    #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{xv}}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. Return :math:`{\mathrm{funcs}}({{\mathit{xv}}^\ast})`.
 
 
-:math:`{\mathrm{globals}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-...............................................................................................
+:math:`{\mathrm{globals}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+................................................................................................
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externaddr}}_0`.
 
    #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{xv}}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. Return :math:`{\mathrm{globals}}({{\mathit{xv}}^\ast})`.
 
 
-:math:`{\mathrm{tables}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-..............................................................................................
+:math:`{\mathrm{tables}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+...............................................................................................
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externaddr}}_0`.
 
    #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{xv}}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. Return :math:`{\mathrm{tables}}({{\mathit{xv}}^\ast})`.
 
 
-:math:`{\mathrm{mems}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-............................................................................................
+:math:`{\mathrm{mems}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+.............................................................................................
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{mem}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{mem}`, then:
 
-   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externaddr}}_0`.
 
    #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. Return :math:`{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
 
@@ -1713,88 +1713,88 @@ watsup 0.4 generator
    #. Return :math:`{\mathit{mi}'}`.
 
 
-:math:`{\mathrm{funcs}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-.............................................................................................
-
-
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
-
-   a. Return :math:`\epsilon`.
-
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{func}`, then:
-
-   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externval}}_0`.
-
-   #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{externval}'}^\ast})`.
-
-#. Let :math:`{\mathit{externval}}~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-#. Return :math:`{\mathrm{funcs}}({{\mathit{externval}'}^\ast})`.
-
-
-:math:`{\mathrm{globals}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-...............................................................................................
-
-
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
-
-   a. Return :math:`\epsilon`.
-
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{global}`, then:
-
-   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externval}}_0`.
-
-   #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{externval}'}^\ast})`.
-
-#. Let :math:`{\mathit{externval}}~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-#. Return :math:`{\mathrm{globals}}({{\mathit{externval}'}^\ast})`.
-
-
-:math:`{\mathrm{tables}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+:math:`{\mathrm{funcs}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
 ..............................................................................................
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{externval}'}^\ast})`.
+   #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{externaddr}'}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Return :math:`{\mathrm{tables}}({{\mathit{externval}'}^\ast})`.
-
-
-:math:`{\mathrm{mems}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-............................................................................................
+#. Return :math:`{\mathrm{funcs}}({{\mathit{externaddr}'}^\ast})`.
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+:math:`{\mathrm{globals}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+................................................................................................
+
+
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{mem}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{externval}'}^\ast})`.
+   #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{externaddr}'}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Return :math:`{\mathrm{mems}}({{\mathit{externval}'}^\ast})`.
+#. Return :math:`{\mathrm{globals}}({{\mathit{externaddr}'}^\ast})`.
+
+
+:math:`{\mathrm{tables}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+...............................................................................................
+
+
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{table}`, then:
+
+   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externaddr}}_0`.
+
+   #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{externaddr}'}^\ast})`.
+
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. Return :math:`{\mathrm{tables}}({{\mathit{externaddr}'}^\ast})`.
+
+
+:math:`{\mathrm{mems}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+.............................................................................................
+
+
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{mem}`, then:
+
+   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externaddr}}_0`.
+
+   #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{externaddr}'}^\ast})`.
+
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. Return :math:`{\mathrm{mems}}({{\mathit{externaddr}'}^\ast})`.
 
 
 :math:`{\mathrm{allocfunc}}({\mathit{moduleinst}}, {\mathit{func}})`
@@ -1937,38 +1937,38 @@ watsup 0.4 generator
 
    a. Let :math:`(\mathsf{func}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{func}~{{\mathit{fa}}^\ast}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{func}~{{\mathit{fa}}^\ast}{}[x]) \}\end{array}`.
 
 #. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{global}`, then:
 
    a. Let :math:`(\mathsf{global}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{global}~{{\mathit{ga}}^\ast}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{global}~{{\mathit{ga}}^\ast}{}[x]) \}\end{array}`.
 
 #. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{table}`, then:
 
    a. Let :math:`(\mathsf{table}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{table}~{{\mathit{ta}}^\ast}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{{\mathit{ta}}^\ast}{}[x]) \}\end{array}`.
 
 #. Assert: Due to validation, :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{mem}`.
 
 #. Let :math:`(\mathsf{mem}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-#. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{mem}~{{\mathit{ma}}^\ast}{}[x]) \}\end{array}`.
+#. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{mem}~{{\mathit{ma}}^\ast}{}[x]) \}\end{array}`.
 
 
-:math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externval}}^\ast}, {{\mathit{val}}^\ast})`
-.....................................................................................................
+:math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast})`
+......................................................................................................
 
 
-1. Let :math:`{{\mathit{fa}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externval}}^\ast})`.
+1. Let :math:`{{\mathit{fa}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{ga}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{globals}}({{\mathit{externval}}^\ast})`.
+#. Let :math:`{{\mathit{ga}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{globals}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{ma}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{mems}}({{\mathit{externval}}^\ast})`.
+#. Let :math:`{{\mathit{ma}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{mems}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{ta}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{tables}}({{\mathit{externval}}^\ast})`.
+#. Let :math:`{{\mathit{ta}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{tables}}({{\mathit{externaddr}}^\ast})`.
 
 #. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
 
@@ -2067,8 +2067,8 @@ watsup 0.4 generator
 #. Return.
 
 
-:math:`{\mathrm{instantiate}}(z, {\mathit{module}}, {{\mathit{externval}}^\ast})`
-.................................................................................
+:math:`{\mathrm{instantiate}}(z, {\mathit{module}}, {{\mathit{externaddr}}^\ast})`
+..................................................................................
 
 
 1. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
@@ -2097,7 +2097,7 @@ watsup 0.4 generator
 
 #. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}` be :math:`{{\mathit{global}}^\ast}`.
 
-#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externval}}^\ast})~{{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externval}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
 
 #. Let :math:`f_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}}_{\mathit{init}} \}\end{array}`.
 
@@ -2121,7 +2121,7 @@ watsup 0.4 generator
 
 #. Pop the activation of :math:`f` from the stack.
 
-#. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externval}}^\ast}, {{\mathit{val}}^\ast})`.
+#. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast})`.
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
@@ -2259,31 +2259,39 @@ watsup 0.4 generator
 
 1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
+#. Assert: Due to validation, the top of the stack is a :math:`\mathsf{label}`.
+
+#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
 #. Let :math:`L` be the current label.
 
 #. Let :math:`n` be the arity of :math:`L`.
 
 #. Let :math:`{{\mathit{instr}'}^\ast}` be the continuation of :math:`L`.
 
-#. Pop the current label from the stack.
+#. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`0`, then:
 
-#. Let :math:`{{{\mathit{instr}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` be :math:`{{\mathit{val}}^\ast}`.
+   a. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
-#. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`0` and :math:`{|{{{\mathit{instr}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`n`, then:
+   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-   a. Let :math:`{{\mathit{val}'}^\ast}~{{\mathit{val}}^{n}}` be :math:`{{{\mathit{instr}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+
+   #. Pop the current label from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
    #. Execute the instruction :math:`{{\mathit{instr}'}^\ast}`.
 
-#. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is greater than or equal to :math:`1`, then:
+#. Else:
 
-   a. Let :math:`l` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}} - 1`.
+   a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. If for all :math:`{({{\mathit{instr}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}})^\ast}`, the type of :math:`{{\mathit{instr}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is val, then:
+   #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is greater than or equal to :math:`1`, then:
 
-      1) Let :math:`{{\mathit{val}}^\ast}` be :math:`{{{\mathit{instr}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+      1) Let :math:`l` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}} - 1`.
+
+      #) Pop the current label from the stack.
 
       #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -2351,41 +2359,46 @@ watsup 0.4 generator
 
 1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-#. If a frame is now on the top of the stack, then:
+#. If the top of the stack is a :math:`\mathsf{frame}`, then:
 
-   a. Let :math:`f` be the current frame.
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Let :math:`f` be the current frame.
 
    #. Let :math:`n` be the arity of :math:`f`.
 
-   #. Pop the current frame from the stack.
+   #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
-   #. Let :math:`{{\mathit{val}'}^\ast}~{{\mathit{val}}^{n}}` be :math:`{{\mathit{val}}^\ast}`.
+   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+
+   #. Pop the current frame from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
-#. Else if a label is now on the top of the stack, then:
+#. Else if the top of the stack is a :math:`\mathsf{label}`, then:
 
-   a. Pop the current label from the stack.
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+   #. Pop the current label from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
    #. Execute the instruction :math:`\mathsf{return}`.
 
 
-:math:`\mathsf{trap}`
-.....................
-
-
-1. YetI: TODO: It is likely that the value stack of two rules are different.
-
-
 :math:`t {.} {\mathit{unop}}`
 .............................
 
 
-1. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`(t{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t`.
 
 #. If :math:`{|{{\mathit{unop}}}{{}_{t}}{(c_1)}|}` is less than or equal to :math:`0`, then:
 
@@ -2400,13 +2413,15 @@ watsup 0.4 generator
 ..............................
 
 
-1. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`(t{.}\mathsf{const}~c_2)` from the stack.
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
+#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t`.
 
-#. Pop the value :math:`(t{.}\mathsf{const}~c_1)` from the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
 #. If :math:`{|{{\mathit{binop}}}{{}_{t}}{(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
 
@@ -2421,9 +2436,11 @@ watsup 0.4 generator
 ...............................
 
 
-1. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`(t{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t`.
 
 #. Let :math:`c` be :math:`{{\mathit{testop}}}{{}_{t}}{(c_1)}`.
 
@@ -2434,13 +2451,15 @@ watsup 0.4 generator
 ..............................
 
 
-1. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`(t{.}\mathsf{const}~c_2)` from the stack.
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
+#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t`.
 
-#. Pop the value :math:`(t{.}\mathsf{const}~c_1)` from the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
 #. Let :math:`c` be :math:`{{\mathit{relop}}}{{}_{t}}{(c_1, c_2)}`.
 
@@ -2451,9 +2470,11 @@ watsup 0.4 generator
 ....................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`t_1` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`(t_1{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t_1`.
 
 #. If :math:`{|{{\mathit{cvtop}}}{{}_{t_1, t_2}}{(c_1)}|}` is less than or equal to :math:`0`, then:
 
@@ -2483,17 +2504,21 @@ watsup 0.4 generator
 ....................................................
 
 
-1. If :math:`{t^?}` is not defined, then:
+1. Let :math:`n` be :math:`0`.
 
-   a. Let :math:`n` be :math:`0`.
+#. If :math:`{t^?}` is not defined, then:
 
-#. Else:
+   a. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
 
-   a. Let :math:`n` be :math:`1`.
+   #. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
 
-#. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
+#. Let :math:`n` be :math:`1`.
 
-#. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
+#. If :math:`{t^?}` is not :math:`\epsilon`, then:
+
+   a. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
+
+   #. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
 
 
 :math:`\mathsf{loop}~{t^?}~{{\mathit{instr}}^\ast}`
@@ -2656,13 +2681,6 @@ watsup 0.4 generator
 #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` to the stack.
 
 
-:math:`\mathsf{ctxt}`
-.....................
-
-
-1. YetI: TODO: It is likely that the value stack of two rules are different.
-
-
 :math:`\mathsf{local{.}set}~x`
 ..............................
 
@@ -2689,51 +2707,47 @@ watsup 0.4 generator
 #. Perform :math:`z{}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = {\mathit{val}}]`.
 
 
-:math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{store}~{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}~{\mathit{ao}}`
+:math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}~{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{\mathit{ao}}`
 ...........................................................................................................................................................
 
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{const}~c)` from the stack.
+#. Pop the value :math:`({\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}{.}\mathsf{const}~c)` from the stack.
 
 #. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}` is not defined, then:
+#. Let :math:`t` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-   a. Let :math:`t` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|t|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`t` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
 
-   #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`t`, then:
+   a. Trap.
 
-      1) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|t|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+#. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`t` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
+
+   a. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{t}(c)`.
+
+   #. Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|t|} / 8] = {b^\ast}]`.
+
+#. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Inn, then:
+
+   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+
+   #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathsf{i}}{n}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
+
+      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
+
+      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
          a) Trap.
 
-      #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{t}(c)`.
+      #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{n}|}, n}(c))`.
 
-      #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|t|} / 8] = {b^\ast}]`.
-
-#. Else:
-
-   a. Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}`.
-
-   #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-      1) Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-      #) If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathsf{i}}{n}`, then:
-
-         a) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
-
-            1. Trap.
-
-         #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{n}|}, n}(c))`.
-
-         #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
+      #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
 
 
 :math:`\mathsf{memory{.}grow}`
@@ -3146,50 +3160,50 @@ Ki
 min n_u0 n_u1
 1. If (n_u0 is 0), then:
   a. Return 0.
-2. If (n_u1 is 0), then:
+1. If (n_u1 is 0), then:
   a. Return 0.
-3. Assert: Due to validation, (n_u0 ≥ 1).
-4. Let i be (n_u0 - 1).
-5. Assert: Due to validation, (n_u1 ≥ 1).
-6. Let j be (n_u1 - 1).
-7. Return $min(i, j).
+1. Assert: Due to validation, (n_u0 ≥ 1).
+1. Let i be (n_u0 - 1).
+1. Assert: Due to validation, (n_u1 ≥ 1).
+1. Let j be (n_u1 - 1).
+1. Return $min(i, j).
 
 sum n_u0*
 1. If (n_u0* is []), then:
   a. Return 0.
-2. Let [n] ++ n'* be n_u0*.
-3. Return (n + $sum(n'*)).
+1. Let [n] ++ n'* be n_u0*.
+1. Return (n + $sum(n'*)).
 
 opt_ X X_u0*
 1. If (X_u0* is []), then:
   a. Return ?().
-2. Assert: Due to validation, (|X_u0*| is 1).
-3. Let [w] be X_u0*.
-4. Return ?(w).
+1. Assert: Due to validation, (|X_u0*| is 1).
+1. Let [w] be X_u0*.
+1. Return ?(w).
 
 list_ X X_u0?
 1. If X_u0? is not defined, then:
   a. Return [].
-2. Let ?(w) be X_u0?.
-3. Return [w].
+1. Let ?(w) be X_u0?.
+1. Return [w].
 
 concat_ X X_u0*
 1. If (X_u0* is []), then:
   a. Return [].
-2. Let [w*] ++ w'** be X_u0*.
-3. Return w* ++ $concat_(X, w'**).
+1. Let [w*] ++ w'** be X_u0*.
+1. Return w* ++ $concat_(X, w'**).
 
 signif N_u0
 1. If (N_u0 is 32), then:
   a. Return 23.
-2. Assert: Due to validation, (N_u0 is 64).
-3. Return 52.
+1. Assert: Due to validation, (N_u0 is 64).
+1. Return 52.
 
 expon N_u0
 1. If (N_u0 is 32), then:
   a. Return 8.
-2. Assert: Due to validation, (N_u0 is 64).
-3. Return 11.
+1. Assert: Due to validation, (N_u0 is 64).
+1. Return 11.
 
 M N
 1. Return $signif(N).
@@ -3209,52 +3223,52 @@ canon_ N
 size valtype_u0
 1. If (valtype_u0 is I32), then:
   a. Return 32.
-2. If (valtype_u0 is I64), then:
+1. If (valtype_u0 is I64), then:
   a. Return 64.
-3. If (valtype_u0 is F32), then:
+1. If (valtype_u0 is F32), then:
   a. Return 32.
-4. If (valtype_u0 is F64), then:
+1. If (valtype_u0 is F64), then:
   a. Return 64.
 
 funcsxt externtype_u0*
 1. If (externtype_u0* is []), then:
   a. Return [].
-2. Let [externtype_0] ++ xt* be externtype_u0*.
-3. If externtype_0 is of the case FUNC, then:
+1. Let [externtype_0] ++ xt* be externtype_u0*.
+1. If externtype_0 is of the case FUNC, then:
   a. Let (FUNC ft) be externtype_0.
-  b. Return [ft] ++ $funcsxt(xt*).
-4. Let [externtype] ++ xt* be externtype_u0*.
-5. Return $funcsxt(xt*).
+  a. Return [ft] ++ $funcsxt(xt*).
+1. Let [externtype] ++ xt* be externtype_u0*.
+1. Return $funcsxt(xt*).
 
 globalsxt externtype_u0*
 1. If (externtype_u0* is []), then:
   a. Return [].
-2. Let [externtype_0] ++ xt* be externtype_u0*.
-3. If externtype_0 is of the case GLOBAL, then:
+1. Let [externtype_0] ++ xt* be externtype_u0*.
+1. If externtype_0 is of the case GLOBAL, then:
   a. Let (GLOBAL gt) be externtype_0.
-  b. Return [gt] ++ $globalsxt(xt*).
-4. Let [externtype] ++ xt* be externtype_u0*.
-5. Return $globalsxt(xt*).
+  a. Return [gt] ++ $globalsxt(xt*).
+1. Let [externtype] ++ xt* be externtype_u0*.
+1. Return $globalsxt(xt*).
 
 tablesxt externtype_u0*
 1. If (externtype_u0* is []), then:
   a. Return [].
-2. Let [externtype_0] ++ xt* be externtype_u0*.
-3. If externtype_0 is of the case TABLE, then:
+1. Let [externtype_0] ++ xt* be externtype_u0*.
+1. If externtype_0 is of the case TABLE, then:
   a. Let (TABLE tt) be externtype_0.
-  b. Return [tt] ++ $tablesxt(xt*).
-4. Let [externtype] ++ xt* be externtype_u0*.
-5. Return $tablesxt(xt*).
+  a. Return [tt] ++ $tablesxt(xt*).
+1. Let [externtype] ++ xt* be externtype_u0*.
+1. Return $tablesxt(xt*).
 
 memsxt externtype_u0*
 1. If (externtype_u0* is []), then:
   a. Return [].
-2. Let [externtype_0] ++ xt* be externtype_u0*.
-3. If externtype_0 is of the case MEM, then:
+1. Let [externtype_0] ++ xt* be externtype_u0*.
+1. If externtype_0 is of the case MEM, then:
   a. Let (MEM mt) be externtype_0.
-  b. Return [mt] ++ $memsxt(xt*).
-4. Let [externtype] ++ xt* be externtype_u0*.
-5. Return $memsxt(xt*).
+  a. Return [mt] ++ $memsxt(xt*).
+1. Let [externtype] ++ xt* be externtype_u0*.
+1. Return $memsxt(xt*).
 
 memarg0
 1. Return { ALIGN: 0; OFFSET: 0; }.
@@ -3262,156 +3276,156 @@ memarg0
 signed_ N i
 1. If (0 ≤ (2 ^ (N - 1))), then:
   a. Return i.
-2. Assert: Due to validation, ((2 ^ (N - 1)) ≤ i).
-3. Assert: Due to validation, (i < (2 ^ N)).
-4. Return (i - (2 ^ N)).
+1. Assert: Due to validation, ((2 ^ (N - 1)) ≤ i).
+1. Assert: Due to validation, (i < (2 ^ N)).
+1. Return (i - (2 ^ N)).
 
 invsigned_ N ii
 1. Let j be $signed__1^-1(N, ii).
-2. Return j.
+1. Return j.
 
 unop_ valtype_u1 unop__u0 val__u3
 1. If ((unop__u0 is CLZ) and the type of valtype_u1 is Inn), then:
   a. Let Inn be valtype_u1.
-  b. Let iN be val__u3.
-  c. Return [$iclz_($size(Inn), iN)].
-2. If ((unop__u0 is CTZ) and the type of valtype_u1 is Inn), then:
+  a. Let iN be val__u3.
+  a. Return [$iclz_($size(Inn), iN)].
+1. If ((unop__u0 is CTZ) and the type of valtype_u1 is Inn), then:
   a. Let Inn be valtype_u1.
-  b. Let iN be val__u3.
-  c. Return [$ictz_($size(Inn), iN)].
-3. If ((unop__u0 is POPCNT) and the type of valtype_u1 is Inn), then:
+  a. Let iN be val__u3.
+  a. Return [$ictz_($size(Inn), iN)].
+1. If ((unop__u0 is POPCNT) and the type of valtype_u1 is Inn), then:
   a. Let Inn be valtype_u1.
-  b. Let iN be val__u3.
-  c. Return [$ipopcnt_($size(Inn), iN)].
-4. If ((unop__u0 is ABS) and the type of valtype_u1 is Fnn), then:
+  a. Let iN be val__u3.
+  a. Return [$ipopcnt_($size(Inn), iN)].
+1. If ((unop__u0 is ABS) and the type of valtype_u1 is Fnn), then:
   a. Let Fnn be valtype_u1.
-  b. Let fN be val__u3.
-  c. Return $fabs_($size(Fnn), fN).
-5. If ((unop__u0 is NEG) and the type of valtype_u1 is Fnn), then:
+  a. Let fN be val__u3.
+  a. Return $fabs_($size(Fnn), fN).
+1. If ((unop__u0 is NEG) and the type of valtype_u1 is Fnn), then:
   a. Let Fnn be valtype_u1.
-  b. Let fN be val__u3.
-  c. Return $fneg_($size(Fnn), fN).
-6. If ((unop__u0 is SQRT) and the type of valtype_u1 is Fnn), then:
+  a. Let fN be val__u3.
+  a. Return $fneg_($size(Fnn), fN).
+1. If ((unop__u0 is SQRT) and the type of valtype_u1 is Fnn), then:
   a. Let Fnn be valtype_u1.
-  b. Let fN be val__u3.
-  c. Return $fsqrt_($size(Fnn), fN).
-7. If ((unop__u0 is CEIL) and the type of valtype_u1 is Fnn), then:
+  a. Let fN be val__u3.
+  a. Return $fsqrt_($size(Fnn), fN).
+1. If ((unop__u0 is CEIL) and the type of valtype_u1 is Fnn), then:
   a. Let Fnn be valtype_u1.
-  b. Let fN be val__u3.
-  c. Return $fceil_($size(Fnn), fN).
-8. If ((unop__u0 is FLOOR) and the type of valtype_u1 is Fnn), then:
+  a. Let fN be val__u3.
+  a. Return $fceil_($size(Fnn), fN).
+1. If ((unop__u0 is FLOOR) and the type of valtype_u1 is Fnn), then:
   a. Let Fnn be valtype_u1.
-  b. Let fN be val__u3.
-  c. Return $ffloor_($size(Fnn), fN).
-9. If ((unop__u0 is TRUNC) and the type of valtype_u1 is Fnn), then:
+  a. Let fN be val__u3.
+  a. Return $ffloor_($size(Fnn), fN).
+1. If ((unop__u0 is TRUNC) and the type of valtype_u1 is Fnn), then:
   a. Let Fnn be valtype_u1.
-  b. Let fN be val__u3.
-  c. Return $ftrunc_($size(Fnn), fN).
-10. Assert: Due to validation, (unop__u0 is NEAREST).
-11. Assert: Due to validation, the type of valtype_u1 is Fnn.
-12. Let Fnn be valtype_u1.
-13. Let fN be val__u3.
-14. Return $fnearest_($size(Fnn), fN).
+  a. Let fN be val__u3.
+  a. Return $ftrunc_($size(Fnn), fN).
+1. Assert: Due to validation, (unop__u0 is NEAREST).
+1. Assert: Due to validation, the type of valtype_u1 is Fnn.
+1. Let Fnn be valtype_u1.
+1. Let fN be val__u3.
+1. Return $fnearest_($size(Fnn), fN).
 
 binop_ valtype_u1 binop__u0 val__u3 val__u5
 1. If ((binop__u0 is ADD) and the type of valtype_u1 is Inn), then:
   a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. Return [$iadd_($size(Inn), iN_1, iN_2)].
-2. If ((binop__u0 is SUB) and the type of valtype_u1 is Inn), then:
+  a. Let iN_1 be val__u3.
+  a. Let iN_2 be val__u5.
+  a. Return [$iadd_($size(Inn), iN_1, iN_2)].
+1. If ((binop__u0 is SUB) and the type of valtype_u1 is Inn), then:
   a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. Return [$isub_($size(Inn), iN_1, iN_2)].
-3. If ((binop__u0 is MUL) and the type of valtype_u1 is Inn), then:
+  a. Let iN_1 be val__u3.
+  a. Let iN_2 be val__u5.
+  a. Return [$isub_($size(Inn), iN_1, iN_2)].
+1. If ((binop__u0 is MUL) and the type of valtype_u1 is Inn), then:
   a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. Return [$imul_($size(Inn), iN_1, iN_2)].
-4. If the type of valtype_u1 is Inn, then:
+  a. Let iN_1 be val__u3.
+  a. Let iN_2 be val__u5.
+  a. Return [$imul_($size(Inn), iN_1, iN_2)].
+1. If the type of valtype_u1 is Inn, then:
   a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. If binop__u0 is of the case DIV, then:
+  a. Let iN_1 be val__u3.
+  a. Let iN_2 be val__u5.
+  a. If binop__u0 is of the case DIV, then:
     1) Let (DIV sx) be binop__u0.
-    2) Return $list_(val_((Inn : Inn <: valtype)), $idiv_($size(Inn), sx, iN_1, iN_2)).
-  e. If binop__u0 is of the case REM, then:
+    1) Return $list_(val_((Inn : Inn <: valtype)), $idiv_($size(Inn), sx, iN_1, iN_2)).
+  a. If binop__u0 is of the case REM, then:
     1) Let (REM sx) be binop__u0.
-    2) Return $list_(val_((Inn : Inn <: valtype)), $irem_($size(Inn), sx, iN_1, iN_2)).
-5. If ((binop__u0 is AND) and the type of valtype_u1 is Inn), then:
+    1) Return $list_(val_((Inn : Inn <: valtype)), $irem_($size(Inn), sx, iN_1, iN_2)).
+1. If ((binop__u0 is AND) and the type of valtype_u1 is Inn), then:
   a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. Return [$iand_($size(Inn), iN_1, iN_2)].
-6. If ((binop__u0 is OR) and the type of valtype_u1 is Inn), then:
+  a. Let iN_1 be val__u3.
+  a. Let iN_2 be val__u5.
+  a. Return [$iand_($size(Inn), iN_1, iN_2)].
+1. If ((binop__u0 is OR) and the type of valtype_u1 is Inn), then:
   a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. Return [$ior_($size(Inn), iN_1, iN_2)].
-7. If ((binop__u0 is XOR) and the type of valtype_u1 is Inn), then:
+  a. Let iN_1 be val__u3.
+  a. Let iN_2 be val__u5.
+  a. Return [$ior_($size(Inn), iN_1, iN_2)].
+1. If ((binop__u0 is XOR) and the type of valtype_u1 is Inn), then:
   a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. Return [$ixor_($size(Inn), iN_1, iN_2)].
-8. If ((binop__u0 is SHL) and the type of valtype_u1 is Inn), then:
+  a. Let iN_1 be val__u3.
+  a. Let iN_2 be val__u5.
+  a. Return [$ixor_($size(Inn), iN_1, iN_2)].
+1. If ((binop__u0 is SHL) and the type of valtype_u1 is Inn), then:
   a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. Return [$ishl_($size(Inn), iN_1, iN_2)].
-9. If the type of valtype_u1 is Inn, then:
+  a. Let iN_1 be val__u3.
+  a. Let iN_2 be val__u5.
+  a. Return [$ishl_($size(Inn), iN_1, iN_2)].
+1. If the type of valtype_u1 is Inn, then:
   a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. If binop__u0 is of the case SHR, then:
+  a. Let iN_1 be val__u3.
+  a. Let iN_2 be val__u5.
+  a. If binop__u0 is of the case SHR, then:
     1) Let (SHR sx) be binop__u0.
-    2) Return [$ishr_($size(Inn), sx, iN_1, iN_2)].
-10. If ((binop__u0 is ROTL) and the type of valtype_u1 is Inn), then:
+    1) Return [$ishr_($size(Inn), sx, iN_1, iN_2)].
+1. If ((binop__u0 is ROTL) and the type of valtype_u1 is Inn), then:
   a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. Return [$irotl_($size(Inn), iN_1, iN_2)].
-11. If ((binop__u0 is ROTR) and the type of valtype_u1 is Inn), then:
+  a. Let iN_1 be val__u3.
+  a. Let iN_2 be val__u5.
+  a. Return [$irotl_($size(Inn), iN_1, iN_2)].
+1. If ((binop__u0 is ROTR) and the type of valtype_u1 is Inn), then:
   a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. Return [$irotr_($size(Inn), iN_1, iN_2)].
-12. If ((binop__u0 is ADD) and the type of valtype_u1 is Fnn), then:
+  a. Let iN_1 be val__u3.
+  a. Let iN_2 be val__u5.
+  a. Return [$irotr_($size(Inn), iN_1, iN_2)].
+1. If ((binop__u0 is ADD) and the type of valtype_u1 is Fnn), then:
   a. Let Fnn be valtype_u1.
-  b. Let fN_1 be val__u3.
-  c. Let fN_2 be val__u5.
-  d. Return $fadd_($size(Fnn), fN_1, fN_2).
-13. If ((binop__u0 is SUB) and the type of valtype_u1 is Fnn), then:
+  a. Let fN_1 be val__u3.
+  a. Let fN_2 be val__u5.
+  a. Return $fadd_($size(Fnn), fN_1, fN_2).
+1. If ((binop__u0 is SUB) and the type of valtype_u1 is Fnn), then:
   a. Let Fnn be valtype_u1.
-  b. Let fN_1 be val__u3.
-  c. Let fN_2 be val__u5.
-  d. Return $fsub_($size(Fnn), fN_1, fN_2).
-14. If ((binop__u0 is MUL) and the type of valtype_u1 is Fnn), then:
+  a. Let fN_1 be val__u3.
+  a. Let fN_2 be val__u5.
+  a. Return $fsub_($size(Fnn), fN_1, fN_2).
+1. If ((binop__u0 is MUL) and the type of valtype_u1 is Fnn), then:
   a. Let Fnn be valtype_u1.
-  b. Let fN_1 be val__u3.
-  c. Let fN_2 be val__u5.
-  d. Return $fmul_($size(Fnn), fN_1, fN_2).
-15. If ((binop__u0 is DIV) and the type of valtype_u1 is Fnn), then:
+  a. Let fN_1 be val__u3.
+  a. Let fN_2 be val__u5.
+  a. Return $fmul_($size(Fnn), fN_1, fN_2).
+1. If ((binop__u0 is DIV) and the type of valtype_u1 is Fnn), then:
   a. Let Fnn be valtype_u1.
-  b. Let fN_1 be val__u3.
-  c. Let fN_2 be val__u5.
-  d. Return $fdiv_($size(Fnn), fN_1, fN_2).
-16. If ((binop__u0 is MIN) and the type of valtype_u1 is Fnn), then:
+  a. Let fN_1 be val__u3.
+  a. Let fN_2 be val__u5.
+  a. Return $fdiv_($size(Fnn), fN_1, fN_2).
+1. If ((binop__u0 is MIN) and the type of valtype_u1 is Fnn), then:
   a. Let Fnn be valtype_u1.
-  b. Let fN_1 be val__u3.
-  c. Let fN_2 be val__u5.
-  d. Return $fmin_($size(Fnn), fN_1, fN_2).
-17. If ((binop__u0 is MAX) and the type of valtype_u1 is Fnn), then:
+  a. Let fN_1 be val__u3.
+  a. Let fN_2 be val__u5.
+  a. Return $fmin_($size(Fnn), fN_1, fN_2).
+1. If ((binop__u0 is MAX) and the type of valtype_u1 is Fnn), then:
   a. Let Fnn be valtype_u1.
-  b. Let fN_1 be val__u3.
-  c. Let fN_2 be val__u5.
-  d. Return $fmax_($size(Fnn), fN_1, fN_2).
-18. Assert: Due to validation, (binop__u0 is COPYSIGN).
-19. Assert: Due to validation, the type of valtype_u1 is Fnn.
-20. Let Fnn be valtype_u1.
-21. Let fN_1 be val__u3.
-22. Let fN_2 be val__u5.
-23. Return $fcopysign_($size(Fnn), fN_1, fN_2).
+  a. Let fN_1 be val__u3.
+  a. Let fN_2 be val__u5.
+  a. Return $fmax_($size(Fnn), fN_1, fN_2).
+1. Assert: Due to validation, (binop__u0 is COPYSIGN).
+1. Assert: Due to validation, the type of valtype_u1 is Fnn.
+1. Let Fnn be valtype_u1.
+1. Let fN_1 be val__u3.
+1. Let fN_2 be val__u5.
+1. Return $fcopysign_($size(Fnn), fN_1, fN_2).
 
 testop_ Inn EQZ iN
 1. Return $ieqz_($size(Inn), iN).
@@ -3419,177 +3433,177 @@ testop_ Inn EQZ iN
 relop_ valtype_u1 relop__u0 val__u3 val__u5
 1. If ((relop__u0 is EQ) and the type of valtype_u1 is Inn), then:
   a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. Return $ieq_($size(Inn), iN_1, iN_2).
-2. If ((relop__u0 is NE) and the type of valtype_u1 is Inn), then:
+  a. Let iN_1 be val__u3.
+  a. Let iN_2 be val__u5.
+  a. Return $ieq_($size(Inn), iN_1, iN_2).
+1. If ((relop__u0 is NE) and the type of valtype_u1 is Inn), then:
   a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. Return $ine_($size(Inn), iN_1, iN_2).
-3. If the type of valtype_u1 is Inn, then:
+  a. Let iN_1 be val__u3.
+  a. Let iN_2 be val__u5.
+  a. Return $ine_($size(Inn), iN_1, iN_2).
+1. If the type of valtype_u1 is Inn, then:
   a. Let Inn be valtype_u1.
-  b. Let iN_1 be val__u3.
-  c. Let iN_2 be val__u5.
-  d. If relop__u0 is of the case LT, then:
+  a. Let iN_1 be val__u3.
+  a. Let iN_2 be val__u5.
+  a. If relop__u0 is of the case LT, then:
     1) Let (LT sx) be relop__u0.
-    2) Return $ilt_($size(Inn), sx, iN_1, iN_2).
-  e. If relop__u0 is of the case GT, then:
+    1) Return $ilt_($size(Inn), sx, iN_1, iN_2).
+  a. If relop__u0 is of the case GT, then:
     1) Let (GT sx) be relop__u0.
-    2) Return $igt_($size(Inn), sx, iN_1, iN_2).
-  f. If relop__u0 is of the case LE, then:
+    1) Return $igt_($size(Inn), sx, iN_1, iN_2).
+  a. If relop__u0 is of the case LE, then:
     1) Let (LE sx) be relop__u0.
-    2) Return $ile_($size(Inn), sx, iN_1, iN_2).
-  g. If relop__u0 is of the case GE, then:
+    1) Return $ile_($size(Inn), sx, iN_1, iN_2).
+  a. If relop__u0 is of the case GE, then:
     1) Let (GE sx) be relop__u0.
-    2) Return $ige_($size(Inn), sx, iN_1, iN_2).
-4. If ((relop__u0 is EQ) and the type of valtype_u1 is Fnn), then:
+    1) Return $ige_($size(Inn), sx, iN_1, iN_2).
+1. If ((relop__u0 is EQ) and the type of valtype_u1 is Fnn), then:
   a. Let Fnn be valtype_u1.
-  b. Let fN_1 be val__u3.
-  c. Let fN_2 be val__u5.
-  d. Return $feq_($size(Fnn), fN_1, fN_2).
-5. If ((relop__u0 is NE) and the type of valtype_u1 is Fnn), then:
+  a. Let fN_1 be val__u3.
+  a. Let fN_2 be val__u5.
+  a. Return $feq_($size(Fnn), fN_1, fN_2).
+1. If ((relop__u0 is NE) and the type of valtype_u1 is Fnn), then:
   a. Let Fnn be valtype_u1.
-  b. Let fN_1 be val__u3.
-  c. Let fN_2 be val__u5.
-  d. Return $fne_($size(Fnn), fN_1, fN_2).
-6. If ((relop__u0 is LT) and the type of valtype_u1 is Fnn), then:
+  a. Let fN_1 be val__u3.
+  a. Let fN_2 be val__u5.
+  a. Return $fne_($size(Fnn), fN_1, fN_2).
+1. If ((relop__u0 is LT) and the type of valtype_u1 is Fnn), then:
   a. Let Fnn be valtype_u1.
-  b. Let fN_1 be val__u3.
-  c. Let fN_2 be val__u5.
-  d. Return $flt_($size(Fnn), fN_1, fN_2).
-7. If ((relop__u0 is GT) and the type of valtype_u1 is Fnn), then:
+  a. Let fN_1 be val__u3.
+  a. Let fN_2 be val__u5.
+  a. Return $flt_($size(Fnn), fN_1, fN_2).
+1. If ((relop__u0 is GT) and the type of valtype_u1 is Fnn), then:
   a. Let Fnn be valtype_u1.
-  b. Let fN_1 be val__u3.
-  c. Let fN_2 be val__u5.
-  d. Return $fgt_($size(Fnn), fN_1, fN_2).
-8. If ((relop__u0 is LE) and the type of valtype_u1 is Fnn), then:
+  a. Let fN_1 be val__u3.
+  a. Let fN_2 be val__u5.
+  a. Return $fgt_($size(Fnn), fN_1, fN_2).
+1. If ((relop__u0 is LE) and the type of valtype_u1 is Fnn), then:
   a. Let Fnn be valtype_u1.
-  b. Let fN_1 be val__u3.
-  c. Let fN_2 be val__u5.
-  d. Return $fle_($size(Fnn), fN_1, fN_2).
-9. Assert: Due to validation, (relop__u0 is GE).
-10. Assert: Due to validation, the type of valtype_u1 is Fnn.
-11. Let Fnn be valtype_u1.
-12. Let fN_1 be val__u3.
-13. Let fN_2 be val__u5.
-14. Return $fge_($size(Fnn), fN_1, fN_2).
+  a. Let fN_1 be val__u3.
+  a. Let fN_2 be val__u5.
+  a. Return $fle_($size(Fnn), fN_1, fN_2).
+1. Assert: Due to validation, (relop__u0 is GE).
+1. Assert: Due to validation, the type of valtype_u1 is Fnn.
+1. Let Fnn be valtype_u1.
+1. Let fN_1 be val__u3.
+1. Let fN_2 be val__u5.
+1. Return $fge_($size(Fnn), fN_1, fN_2).
 
 cvtop__ valtype_u0 valtype_u1 cvtop_u2 val__u4
 1. If ((valtype_u0 is I32) and (valtype_u1 is I64)), then:
   a. Let iN be val__u4.
-  b. If cvtop_u2 is of the case EXTEND, then:
+  a. If cvtop_u2 is of the case EXTEND, then:
     1) Let (EXTEND sx) be cvtop_u2.
-    2) Return [$extend__(32, 64, sx, iN)].
-2. If ((valtype_u0 is I64) and ((valtype_u1 is I32) and (cvtop_u2 is WRAP))), then:
+    1) Return [$extend__(32, 64, sx, iN)].
+1. If ((valtype_u0 is I64) and ((valtype_u1 is I32) and (cvtop_u2 is WRAP))), then:
   a. Let iN be val__u4.
-  b. Return [$wrap__(64, 32, iN)].
-3. If the type of valtype_u0 is Fnn, then:
+  a. Return [$wrap__(64, 32, iN)].
+1. If the type of valtype_u0 is Fnn, then:
   a. Let Fnn be valtype_u0.
-  b. If the type of valtype_u1 is Inn, then:
+  a. If the type of valtype_u1 is Inn, then:
     1) Let Inn be valtype_u1.
-    2) Let fN be val__u4.
-    3) If cvtop_u2 is of the case TRUNC, then:
+    1) Let fN be val__u4.
+    1) If cvtop_u2 is of the case TRUNC, then:
       a) Let (TRUNC sx) be cvtop_u2.
-      b) Return $list_(val_((Inn : Inn <: valtype)), $trunc__($size(Fnn), $size(Inn), sx, fN)).
-4. If ((valtype_u0 is F32) and ((valtype_u1 is F64) and (cvtop_u2 is PROMOTE))), then:
+      a) Return $list_(val_((Inn : Inn <: valtype)), $trunc__($size(Fnn), $size(Inn), sx, fN)).
+1. If ((valtype_u0 is F32) and ((valtype_u1 is F64) and (cvtop_u2 is PROMOTE))), then:
   a. Let fN be val__u4.
-  b. Return $promote__(32, 64, fN).
-5. If ((valtype_u0 is F64) and ((valtype_u1 is F32) and (cvtop_u2 is DEMOTE))), then:
+  a. Return $promote__(32, 64, fN).
+1. If ((valtype_u0 is F64) and ((valtype_u1 is F32) and (cvtop_u2 is DEMOTE))), then:
   a. Let fN be val__u4.
-  b. Return $demote__(64, 32, fN).
-6. If the type of valtype_u1 is Fnn, then:
+  a. Return $demote__(64, 32, fN).
+1. If the type of valtype_u1 is Fnn, then:
   a. Let Fnn be valtype_u1.
-  b. If the type of valtype_u0 is Inn, then:
+  a. If the type of valtype_u0 is Inn, then:
     1) Let Inn be valtype_u0.
-    2) Let iN be val__u4.
-    3) If cvtop_u2 is of the case CONVERT, then:
+    1) Let iN be val__u4.
+    1) If cvtop_u2 is of the case CONVERT, then:
       a) Let (CONVERT sx) be cvtop_u2.
-      b) Return [$convert__($size(Inn), $size(Fnn), sx, iN)].
-7. Assert: Due to validation, (cvtop_u2 is REINTERPRET).
-8. If the type of valtype_u1 is Fnn, then:
+      a) Return [$convert__($size(Inn), $size(Fnn), sx, iN)].
+1. Assert: Due to validation, (cvtop_u2 is REINTERPRET).
+1. If the type of valtype_u1 is Fnn, then:
   a. Let Fnn be valtype_u1.
-  b. If the type of valtype_u0 is Inn, then:
+  a. If the type of valtype_u0 is Inn, then:
     1) Let Inn be valtype_u0.
-    2) Let iN be val__u4.
-    3) If ($size(Inn) is $size(Fnn)), then:
+    1) Let iN be val__u4.
+    1) If ($size(Inn) is $size(Fnn)), then:
       a) Return [$reinterpret__(Inn, Fnn, iN)].
-9. Assert: Due to validation, the type of valtype_u0 is Fnn.
-10. Let Fnn be valtype_u0.
-11. Assert: Due to validation, the type of valtype_u1 is Inn.
-12. Let Inn be valtype_u1.
-13. Let fN be val__u4.
-14. Assert: Due to validation, ($size(Inn) is $size(Fnn)).
-15. Return [$reinterpret__(Fnn, Inn, fN)].
+1. Assert: Due to validation, the type of valtype_u0 is Fnn.
+1. Let Fnn be valtype_u0.
+1. Assert: Due to validation, the type of valtype_u1 is Inn.
+1. Let Inn be valtype_u1.
+1. Let fN be val__u4.
+1. Assert: Due to validation, ($size(Inn) is $size(Fnn)).
+1. Return [$reinterpret__(Fnn, Inn, fN)].
 
 invibytes_ N b*
 1. Let n be $ibytes__1^-1(N, b*).
-2. Return n.
+1. Return n.
 
 invfbytes_ N b*
 1. Let p be $fbytes__1^-1(N, b*).
-2. Return p.
+1. Return p.
 
 default_ valtype_u0
 1. If (valtype_u0 is I32), then:
   a. Return (I32.CONST 0).
-2. If (valtype_u0 is I64), then:
+1. If (valtype_u0 is I64), then:
   a. Return (I64.CONST 0).
-3. If (valtype_u0 is F32), then:
+1. If (valtype_u0 is F32), then:
   a. Return (F32.CONST $fzero(32)).
-4. Assert: Due to validation, (valtype_u0 is F64).
-5. Return (F64.CONST $fzero(64)).
+1. Assert: Due to validation, (valtype_u0 is F64).
+1. Return (F64.CONST $fzero(64)).
 
 funcsxa externaddr_u0*
 1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externaddr_0] ++ xv* be externaddr_u0*.
-3. If externaddr_0 is of the case FUNC, then:
+1. Let [externaddr_0] ++ xv* be externaddr_u0*.
+1. If externaddr_0 is of the case FUNC, then:
   a. Let (FUNC fa) be externaddr_0.
-  b. Return [fa] ++ $funcsxa(xv*).
-4. Let [externaddr] ++ xv* be externaddr_u0*.
-5. Return $funcsxa(xv*).
+  a. Return [fa] ++ $funcsxa(xv*).
+1. Let [externaddr] ++ xv* be externaddr_u0*.
+1. Return $funcsxa(xv*).
 
 globalsxa externaddr_u0*
 1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externaddr_0] ++ xv* be externaddr_u0*.
-3. If externaddr_0 is of the case GLOBAL, then:
+1. Let [externaddr_0] ++ xv* be externaddr_u0*.
+1. If externaddr_0 is of the case GLOBAL, then:
   a. Let (GLOBAL ga) be externaddr_0.
-  b. Return [ga] ++ $globalsxa(xv*).
-4. Let [externaddr] ++ xv* be externaddr_u0*.
-5. Return $globalsxa(xv*).
+  a. Return [ga] ++ $globalsxa(xv*).
+1. Let [externaddr] ++ xv* be externaddr_u0*.
+1. Return $globalsxa(xv*).
 
 tablesxa externaddr_u0*
 1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externaddr_0] ++ xv* be externaddr_u0*.
-3. If externaddr_0 is of the case TABLE, then:
+1. Let [externaddr_0] ++ xv* be externaddr_u0*.
+1. If externaddr_0 is of the case TABLE, then:
   a. Let (TABLE ta) be externaddr_0.
-  b. Return [ta] ++ $tablesxa(xv*).
-4. Let [externaddr] ++ xv* be externaddr_u0*.
-5. Return $tablesxa(xv*).
+  a. Return [ta] ++ $tablesxa(xv*).
+1. Let [externaddr] ++ xv* be externaddr_u0*.
+1. Return $tablesxa(xv*).
 
 memsxa externaddr_u0*
 1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externaddr_0] ++ xv* be externaddr_u0*.
-3. If externaddr_0 is of the case MEM, then:
+1. Let [externaddr_0] ++ xv* be externaddr_u0*.
+1. If externaddr_0 is of the case MEM, then:
   a. Let (MEM ma) be externaddr_0.
-  b. Return [ma] ++ $memsxa(xv*).
-4. Let [externaddr] ++ xv* be externaddr_u0*.
-5. Return $memsxa(xv*).
+  a. Return [ma] ++ $memsxa(xv*).
+1. Let [externaddr] ++ xv* be externaddr_u0*.
+1. Return $memsxa(xv*).
 
 store
 1. Return.
 
 frame
 1. Let f be the current frame.
-2. Return f.
+1. Return f.
 
 funcaddr
 1. Let f be the current frame.
-2. Return f.MODULE.FUNCS.
+1. Return f.MODULE.FUNCS.
 
 funcinst
 1. Return s.FUNCS.
@@ -3605,294 +3619,290 @@ meminst
 
 moduleinst
 1. Let f be the current frame.
-2. Return f.MODULE.
+1. Return f.MODULE.
 
 type x
 1. Let f be the current frame.
-2. Return f.MODULE.TYPES[x].
+1. Return f.MODULE.TYPES[x].
 
 func x
 1. Let f be the current frame.
-2. Return s.FUNCS[f.MODULE.FUNCS[x]].
+1. Return s.FUNCS[f.MODULE.FUNCS[x]].
 
 global x
 1. Let f be the current frame.
-2. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
+1. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
 
 table x
 1. Let f be the current frame.
-2. Return s.TABLES[f.MODULE.TABLES[x]].
+1. Return s.TABLES[f.MODULE.TABLES[x]].
 
 mem x
 1. Let f be the current frame.
-2. Return s.MEMS[f.MODULE.MEMS[x]].
+1. Return s.MEMS[f.MODULE.MEMS[x]].
 
 local x
 1. Let f be the current frame.
-2. Return f.LOCALS[x].
+1. Return f.LOCALS[x].
 
 with_local x v
 1. Let f be the current frame.
-2. Replace f.LOCALS[x] with v.
+1. Replace f.LOCALS[x] with v.
 
 with_global x v
 1. Let f be the current frame.
-2. Replace s.GLOBALS[f.MODULE.GLOBALS[x]].VALUE with v.
+1. Replace s.GLOBALS[f.MODULE.GLOBALS[x]].VALUE with v.
 
 with_table x i a
 1. Let f be the current frame.
-2. Replace s.TABLES[f.MODULE.TABLES[x]].REFS[i] with ?(a).
+1. Replace s.TABLES[f.MODULE.TABLES[x]].REFS[i] with ?(a).
 
 with_tableinst x ti
 1. Let f be the current frame.
-2. Replace s.TABLES[f.MODULE.TABLES[x]] with ti.
+1. Replace s.TABLES[f.MODULE.TABLES[x]] with ti.
 
 with_mem x i j b*
 1. Let f be the current frame.
-2. Replace s.MEMS[f.MODULE.MEMS[x]].BYTES[i : j] with b*.
+1. Replace s.MEMS[f.MODULE.MEMS[x]].BYTES[i : j] with b*.
 
 with_meminst x mi
 1. Let f be the current frame.
-2. Replace s.MEMS[f.MODULE.MEMS[x]] with mi.
+1. Replace s.MEMS[f.MODULE.MEMS[x]] with mi.
 
 growtable ti n
 1. Let { TYPE: (i, j); REFS: ?(a)*; } be ti.
-2. Let i' be (|a*| + n).
-3. If (i' ≤ j), then:
+1. Let i' be (|a*| + n).
+1. If (i' ≤ j), then:
   a. Let ti' be { TYPE: (i', j); REFS: ?(a)* ++ ?()^n; }.
-  b. Return ti'.
+  a. Return ti'.
 
 growmemory mi n
 1. Let { TYPE: (i, j); BYTES: b*; } be mi.
-2. Let i' be ((|b*| / (64 · $Ki())) + n).
-3. If (i' ≤ j), then:
+1. Let i' be ((|b*| / (64 · $Ki())) + n).
+1. If (i' ≤ j), then:
   a. Let mi' be { TYPE: (i', j); BYTES: b* ++ 0^(n · (64 · $Ki())); }.
-  b. Return mi'.
+  a. Return mi'.
 
 funcs externaddr_u0*
 1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externaddr_0] ++ externaddr'* be externaddr_u0*.
-3. If externaddr_0 is of the case FUNC, then:
+1. Let [externaddr_0] ++ externaddr'* be externaddr_u0*.
+1. If externaddr_0 is of the case FUNC, then:
   a. Let (FUNC fa) be externaddr_0.
-  b. Return [fa] ++ $funcs(externaddr'*).
-4. Let [externaddr] ++ externaddr'* be externaddr_u0*.
-5. Return $funcs(externaddr'*).
+  a. Return [fa] ++ $funcs(externaddr'*).
+1. Let [externaddr] ++ externaddr'* be externaddr_u0*.
+1. Return $funcs(externaddr'*).
 
 globals externaddr_u0*
 1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externaddr_0] ++ externaddr'* be externaddr_u0*.
-3. If externaddr_0 is of the case GLOBAL, then:
+1. Let [externaddr_0] ++ externaddr'* be externaddr_u0*.
+1. If externaddr_0 is of the case GLOBAL, then:
   a. Let (GLOBAL ga) be externaddr_0.
-  b. Return [ga] ++ $globals(externaddr'*).
-4. Let [externaddr] ++ externaddr'* be externaddr_u0*.
-5. Return $globals(externaddr'*).
+  a. Return [ga] ++ $globals(externaddr'*).
+1. Let [externaddr] ++ externaddr'* be externaddr_u0*.
+1. Return $globals(externaddr'*).
 
 tables externaddr_u0*
 1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externaddr_0] ++ externaddr'* be externaddr_u0*.
-3. If externaddr_0 is of the case TABLE, then:
+1. Let [externaddr_0] ++ externaddr'* be externaddr_u0*.
+1. If externaddr_0 is of the case TABLE, then:
   a. Let (TABLE ta) be externaddr_0.
-  b. Return [ta] ++ $tables(externaddr'*).
-4. Let [externaddr] ++ externaddr'* be externaddr_u0*.
-5. Return $tables(externaddr'*).
+  a. Return [ta] ++ $tables(externaddr'*).
+1. Let [externaddr] ++ externaddr'* be externaddr_u0*.
+1. Return $tables(externaddr'*).
 
 mems externaddr_u0*
 1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externaddr_0] ++ externaddr'* be externaddr_u0*.
-3. If externaddr_0 is of the case MEM, then:
+1. Let [externaddr_0] ++ externaddr'* be externaddr_u0*.
+1. If externaddr_0 is of the case MEM, then:
   a. Let (MEM ma) be externaddr_0.
-  b. Return [ma] ++ $mems(externaddr'*).
-4. Let [externaddr] ++ externaddr'* be externaddr_u0*.
-5. Return $mems(externaddr'*).
+  a. Return [ma] ++ $mems(externaddr'*).
+1. Let [externaddr] ++ externaddr'* be externaddr_u0*.
+1. Return $mems(externaddr'*).
 
 allocfunc moduleinst func
 1. Assert: Due to validation, func is of the case FUNC.
-2. Let (FUNC x local* expr) be func.
-3. Let fi be { TYPE: moduleinst.TYPES[x]; MODULE: moduleinst; CODE: func; }.
-4. Let a be |s.FUNCS|.
-5. Append fi to the s.FUNCS.
-6. Return a.
+1. Let (FUNC x local* expr) be func.
+1. Let fi be { TYPE: moduleinst.TYPES[x]; MODULE: moduleinst; CODE: func; }.
+1. Let a be |s.FUNCS|.
+1. Append fi to the s.FUNCS.
+1. Return a.
 
 allocfuncs moduleinst func_u0*
 1. If (func_u0* is []), then:
   a. Return [].
-2. Let [func] ++ func'* be func_u0*.
-3. Let fa be $allocfunc(moduleinst, func).
-4. Let fa'* be $allocfuncs(moduleinst, func'*).
-5. Return [fa] ++ fa'*.
+1. Let [func] ++ func'* be func_u0*.
+1. Let fa be $allocfunc(moduleinst, func).
+1. Let fa'* be $allocfuncs(moduleinst, func'*).
+1. Return [fa] ++ fa'*.
 
 allocglobal globaltype val
 1. Let gi be { TYPE: globaltype; VALUE: val; }.
-2. Let a be |s.GLOBALS|.
-3. Append gi to the s.GLOBALS.
-4. Return a.
+1. Let a be |s.GLOBALS|.
+1. Append gi to the s.GLOBALS.
+1. Return a.
 
 allocglobals globaltype_u0* val_u1*
 1. If (globaltype_u0* is []), then:
   a. Assert: Due to validation, (val_u1* is []).
-  b. Return [].
-2. Else:
+  a. Return [].
+1. Else:
   a. Let [globaltype] ++ globaltype'* be globaltype_u0*.
-  b. Assert: Due to validation, (|val_u1*| ≥ 1).
-  c. Let [val] ++ val'* be val_u1*.
-  d. Let ga be $allocglobal(globaltype, val).
-  e. Let ga'* be $allocglobals(globaltype'*, val'*).
-  f. Return [ga] ++ ga'*.
+  a. Assert: Due to validation, (|val_u1*| ≥ 1).
+  a. Let [val] ++ val'* be val_u1*.
+  a. Let ga be $allocglobal(globaltype, val).
+  a. Let ga'* be $allocglobals(globaltype'*, val'*).
+  a. Return [ga] ++ ga'*.
 
 alloctable (i, j)
 1. Let ti be { TYPE: (i, j); REFS: ?()^i; }.
-2. Let a be |s.TABLES|.
-3. Append ti to the s.TABLES.
-4. Return a.
+1. Let a be |s.TABLES|.
+1. Append ti to the s.TABLES.
+1. Return a.
 
 alloctables tabletype_u0*
 1. If (tabletype_u0* is []), then:
   a. Return [].
-2. Let [tabletype] ++ tabletype'* be tabletype_u0*.
-3. Let ta be $alloctable(tabletype).
-4. Let ta'* be $alloctables(tabletype'*).
-5. Return [ta] ++ ta'*.
+1. Let [tabletype] ++ tabletype'* be tabletype_u0*.
+1. Let ta be $alloctable(tabletype).
+1. Let ta'* be $alloctables(tabletype'*).
+1. Return [ta] ++ ta'*.
 
 allocmem (i, j)
 1. Let mi be { TYPE: (i, j); BYTES: 0^(i · (64 · $Ki())); }.
-2. Let a be |s.MEMS|.
-3. Append mi to the s.MEMS.
-4. Return a.
+1. Let a be |s.MEMS|.
+1. Append mi to the s.MEMS.
+1. Return a.
 
 allocmems memtype_u0*
 1. If (memtype_u0* is []), then:
   a. Return [].
-2. Let [memtype] ++ memtype'* be memtype_u0*.
-3. Let ma be $allocmem(memtype).
-4. Let ma'* be $allocmems(memtype'*).
-5. Return [ma] ++ ma'*.
+1. Let [memtype] ++ memtype'* be memtype_u0*.
+1. Let ma be $allocmem(memtype).
+1. Let ma'* be $allocmems(memtype'*).
+1. Return [ma] ++ ma'*.
 
 instexport fa* ga* ta* ma* (EXPORT name externidx_u0)
 1. If externidx_u0 is of the case FUNC, then:
   a. Let (FUNC x) be externidx_u0.
-  b. Return { NAME: name; ADDR: (FUNC fa*[x]); }.
-2. If externidx_u0 is of the case GLOBAL, then:
+  a. Return { NAME: name; ADDR: (FUNC fa*[x]); }.
+1. If externidx_u0 is of the case GLOBAL, then:
   a. Let (GLOBAL x) be externidx_u0.
-  b. Return { NAME: name; ADDR: (GLOBAL ga*[x]); }.
-3. If externidx_u0 is of the case TABLE, then:
+  a. Return { NAME: name; ADDR: (GLOBAL ga*[x]); }.
+1. If externidx_u0 is of the case TABLE, then:
   a. Let (TABLE x) be externidx_u0.
-  b. Return { NAME: name; ADDR: (TABLE ta*[x]); }.
-4. Assert: Due to validation, externidx_u0 is of the case MEM.
-5. Let (MEM x) be externidx_u0.
-6. Return { NAME: name; ADDR: (MEM ma*[x]); }.
+  a. Return { NAME: name; ADDR: (TABLE ta*[x]); }.
+1. Assert: Due to validation, externidx_u0 is of the case MEM.
+1. Let (MEM x) be externidx_u0.
+1. Return { NAME: name; ADDR: (MEM ma*[x]); }.
 
 allocmodule module externaddr* val*
 1. Let fa_ex* be $funcs(externaddr*).
-2. Let ga_ex* be $globals(externaddr*).
-3. Let ma_ex* be $mems(externaddr*).
-4. Let ta_ex* be $tables(externaddr*).
-5. Assert: Due to validation, module is of the case MODULE.
-6. Let (MODULE type_0 import* func^n_func global_1 table_2 mem_3 elem* data* start? export*) be module.
-7. Assert: Due to validation, mem_3 is of the case MEMORY.
-8. Let (MEMORY memtype)^n_mem be mem_3.
-9. Assert: Due to validation, table_2 is of the case TABLE.
-10. Let (TABLE tabletype)^n_table be table_2.
-11. Assert: Due to validation, global_1 is of the case GLOBAL.
-12. Let (GLOBAL globaltype expr_1)^n_global be global_1.
-13. Assert: Due to validation, type_0 is of the case TYPE.
-14. Let (TYPE ft)* be type_0.
-15. Let fa* be (|s.FUNCS| + i_func)^(i_func<n_func).
-16. Let ga* be (|s.GLOBALS| + i_global)^(i_global<n_global).
-17. Let ta* be (|s.TABLES| + i_table)^(i_table<n_table).
-18. Let ma* be (|s.MEMS| + i_mem)^(i_mem<n_mem).
-19. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
-20. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* ++ fa*; GLOBALS: ga_ex* ++ ga*; TABLES: ta_ex* ++ ta*; MEMS: ma_ex* ++ ma*; EXPORTS: xi*; }.
-21. Let funcaddr_0 be $allocfuncs(moduleinst, func^n_func).
-22. Assert: Due to validation, (funcaddr_0 is fa*).
-23. Let globaladdr_0 be $allocglobals(globaltype^n_global, val*).
-24. Assert: Due to validation, (globaladdr_0 is ga*).
-25. Let tableaddr_0 be $alloctables(tabletype^n_table).
-26. Assert: Due to validation, (tableaddr_0 is ta*).
-27. Let memaddr_0 be $allocmems(memtype^n_mem).
-28. Assert: Due to validation, (memaddr_0 is ma*).
-29. Return moduleinst.
+1. Let ga_ex* be $globals(externaddr*).
+1. Let ma_ex* be $mems(externaddr*).
+1. Let ta_ex* be $tables(externaddr*).
+1. Assert: Due to validation, module is of the case MODULE.
+1. Let (MODULE type_0 import* func^n_func global_1 table_2 mem_3 elem* data* start? export*) be module.
+1. Assert: Due to validation, mem_3 is of the case MEMORY.
+1. Let (MEMORY memtype)^n_mem be mem_3.
+1. Assert: Due to validation, table_2 is of the case TABLE.
+1. Let (TABLE tabletype)^n_table be table_2.
+1. Assert: Due to validation, global_1 is of the case GLOBAL.
+1. Let (GLOBAL globaltype expr_1)^n_global be global_1.
+1. Assert: Due to validation, type_0 is of the case TYPE.
+1. Let (TYPE ft)* be type_0.
+1. Let fa* be (|s.FUNCS| + i_func)^(i_func<n_func).
+1. Let ga* be (|s.GLOBALS| + i_global)^(i_global<n_global).
+1. Let ta* be (|s.TABLES| + i_table)^(i_table<n_table).
+1. Let ma* be (|s.MEMS| + i_mem)^(i_mem<n_mem).
+1. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
+1. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* ++ fa*; GLOBALS: ga_ex* ++ ga*; TABLES: ta_ex* ++ ta*; MEMS: ma_ex* ++ ma*; EXPORTS: xi*; }.
+1. Let funcaddr_0 be $allocfuncs(moduleinst, func^n_func).
+1. Assert: Due to validation, (funcaddr_0 is fa*).
+1. Let globaladdr_0 be $allocglobals(globaltype^n_global, val*).
+1. Assert: Due to validation, (globaladdr_0 is ga*).
+1. Let tableaddr_0 be $alloctables(tabletype^n_table).
+1. Assert: Due to validation, (tableaddr_0 is ta*).
+1. Let memaddr_0 be $allocmems(memtype^n_mem).
+1. Assert: Due to validation, (memaddr_0 is ma*).
+1. Return moduleinst.
 
 initelem moduleinst u32_u0* funcaddr_u1*
 1. If ((u32_u0* is []) and (funcaddr_u1* is [])), then:
   a. Return.
-2. Assert: Due to validation, (|funcaddr_u1*| ≥ 1).
-3. Let [a*] ++ a'** be funcaddr_u1*.
-4. Assert: Due to validation, (|u32_u0*| ≥ 1).
-5. Let [i] ++ i'* be u32_u0*.
-6. Replace s.TABLES[moduleinst.TABLES[0]].REFS[i : |a*|] with ?(a)*.
-7. Perform $initelem(moduleinst, i'*, a'**).
-8. Return.
+1. Assert: Due to validation, (|funcaddr_u1*| ≥ 1).
+1. Let [a*] ++ a'** be funcaddr_u1*.
+1. Assert: Due to validation, (|u32_u0*| ≥ 1).
+1. Let [i] ++ i'* be u32_u0*.
+1. Replace s.TABLES[moduleinst.TABLES[0]].REFS[i : |a*|] with ?(a)*.
+1. Perform $initelem(moduleinst, i'*, a'**).
+1. Return.
 
 initdata moduleinst u32_u0* byte_u1*
 1. If ((u32_u0* is []) and (byte_u1* is [])), then:
   a. Return.
-2. Assert: Due to validation, (|byte_u1*| ≥ 1).
-3. Let [b*] ++ b'** be byte_u1*.
-4. Assert: Due to validation, (|u32_u0*| ≥ 1).
-5. Let [i] ++ i'* be u32_u0*.
-6. Replace s.MEMS[moduleinst.MEMS[0]].BYTES[i : |b*|] with b*.
-7. Perform $initdata(moduleinst, i'*, b'**).
-8. Return.
+1. Assert: Due to validation, (|byte_u1*| ≥ 1).
+1. Let [b*] ++ b'** be byte_u1*.
+1. Assert: Due to validation, (|u32_u0*| ≥ 1).
+1. Let [i] ++ i'* be u32_u0*.
+1. Replace s.MEMS[moduleinst.MEMS[0]].BYTES[i : |b*|] with b*.
+1. Perform $initdata(moduleinst, i'*, b'**).
+1. Return.
 
-<<<<<<< HEAD
-instantiate module externaddr*
-=======
-instantiate z module externval*
->>>>>>> main
+instantiate z module externaddr*
 1. Assert: Due to validation, module is of the case MODULE.
-2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
-3. Assert: Due to validation, type is of the case TYPE*.
-4. Let (TYPE functype)* be type*.
-5. Let n_F be |func*|.
-6. Assert: Due to validation, start is of the case START?.
-7. Let (START x')? be start?.
-8. Assert: Due to validation, data is of the case DATA*.
-9. Let (DATA expr_D b*)* be data*.
-10. Assert: Due to validation, elem is of the case ELEM*.
-11. Let (ELEM expr_E x*)* be elem*.
-12. Assert: Due to validation, global is of the case GLOBAL*.
-13. Let (GLOBAL globaltype expr_G)* be global*.
-14. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) ++ (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*); TABLES: []; MEMS: []; EXPORTS: []; }.
-15. Let f_init be { LOCALS: []; MODULE: moduleinst_init; }.
-16. Let z be f_init.
-17. Push the activation of z to the stack.
-18. Let [(I32.CONST i_D)]* be $eval_expr(expr_D)*.
-19. Pop the activation of _f from the stack.
-20. Push the activation of z to the stack.
-21. Let [(I32.CONST i_E)]* be $eval_expr(expr_E)*.
-22. Pop the activation of _f from the stack.
-23. Push the activation of z to the stack.
-24. Let [val]* be $eval_expr(expr_G)*.
-25. Pop the activation of _f from the stack.
-26. Let moduleinst be $allocmodule(module, externaddr*, val*).
-27. Let f be { LOCALS: []; MODULE: moduleinst; }.
-28. Perform $initelem(moduleinst, i_E*, moduleinst.FUNCS[x]**).
-29. Perform $initdata(moduleinst, i_D*, b**).
-30. Push the activation of f with arity 0 to the stack.
-31. If (CALL x')? is defined, then:
+1. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
+1. Assert: Due to validation, type is of the case TYPE*.
+1. Let (TYPE functype)* be type*.
+1. Let n_F be |func*|.
+1. Assert: Due to validation, start is of the case START?.
+1. Let (START x')? be start?.
+1. Assert: Due to validation, data is of the case DATA*.
+1. Let (DATA expr_D b*)* be data*.
+1. Assert: Due to validation, elem is of the case ELEM*.
+1. Let (ELEM expr_E x*)* be elem*.
+1. Assert: Due to validation, global is of the case GLOBAL*.
+1. Let (GLOBAL globaltype expr_G)* be global*.
+1. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) ++ (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*); TABLES: []; MEMS: []; EXPORTS: []; }.
+1. Let f_init be { LOCALS: []; MODULE: moduleinst_init; }.
+1. Let z be f_init.
+1. Push the activation of z to the stack.
+1. Let [(I32.CONST i_D)]* be $eval_expr(expr_D)*.
+1. Pop the activation of _f from the stack.
+1. Push the activation of z to the stack.
+1. Let [(I32.CONST i_E)]* be $eval_expr(expr_E)*.
+1. Pop the activation of _f from the stack.
+1. Push the activation of z to the stack.
+1. Let [val]* be $eval_expr(expr_G)*.
+1. Pop the activation of _f from the stack.
+1. Let moduleinst be $allocmodule(module, externaddr*, val*).
+1. Let f be { LOCALS: []; MODULE: moduleinst; }.
+1. Perform $initelem(moduleinst, i_E*, moduleinst.FUNCS[x]**).
+1. Perform $initdata(moduleinst, i_D*, b**).
+1. Push the activation of f with arity 0 to the stack.
+1. If (CALL x')? is defined, then:
   a. Let ?(instr_0) be (CALL x')?.
-  b. Execute the instruction instr_0.
-32. Pop the activation of f with arity 0 from the stack.
-33. Return f.MODULE.
+  a. Execute the instruction instr_0.
+1. Pop the activation of f with arity 0 from the stack.
+1. Return f.MODULE.
 
 invoke z fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; EXPORTS: []; }; }.
-2. Push the activation of f to the stack.
-3. Let (t_1^n -> t_2*) be $funcinst(z)[fa].TYPE.
-4. Pop the activation of _f from the stack.
-5. Let k be |t_2*|.
-6. Push the activation of f with arity k to the stack.
-7. Push the values val^n to the stack.
-8. Execute the instruction (CALL_ADDR fa).
-9. Pop all values val* from the top of the stack.
-10. Pop the activation of f with arity k from the stack.
-11. Push the values val* to the stack.
-12. Pop the values val^k from the stack.
-13. Return val^k.
+1. Push the activation of f to the stack.
+1. Let (t_1^n -> t_2*) be $funcinst(z)[fa].TYPE.
+1. Pop the activation of _f from the stack.
+1. Let k be |t_2*|.
+1. Push the activation of f with arity k to the stack.
+1. Push the values val^n to the stack.
+1. Execute the instruction (CALL_ADDR fa).
+1. Pop all values val* from the top of the stack.
+1. Pop the activation of f with arity k from the stack.
+1. Push the values val* to the stack.
+1. Pop the values val^k from the stack.
+1. Return val^k.
 
 Step_pure/unreachable
 1. Trap.
@@ -3902,273 +3912,287 @@ Step_pure/nop
 
 Step_pure/drop
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. Do nothing.
+1. Pop the value val from the stack.
+1. Do nothing.
 
 Step_pure/select
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST c) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value val_2 from the stack.
-5. Assert: Due to validation, a value is on the top of the stack.
-6. Pop the value val_1 from the stack.
-7. If (c is not 0), then:
+1. Pop the value (I32.CONST c) from the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value val_2 from the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value val_1 from the stack.
+1. If (c is not 0), then:
   a. Push the value val_1 to the stack.
-8. Else:
+1. Else:
   a. Push the value val_2 to the stack.
 
 Step_pure/if t? instr_1* instr_2*
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST c) from the stack.
-3. If (c is not 0), then:
+1. Pop the value (I32.CONST c) from the stack.
+1. If (c is not 0), then:
   a. Execute the instruction (BLOCK t? instr_1*).
-4. Else:
+1. Else:
   a. Execute the instruction (BLOCK t? instr_2*).
 
 Step_pure/label
 1. Pop all values val* from the top of the stack.
-2. Assert: Due to validation, a label is now on the top of the stack.
-3. Pop the current label from the stack.
-4. Push the values val* to the stack.
+1. Assert: Due to validation, a label is now on the top of the stack.
+1. Pop the current label from the stack.
+1. Push the values val* to the stack.
 
 Step_pure/br n_u0
 1. Pop all values val* from the top of the stack.
-2. Let L be the current label.
-3. Let n be the arity of L.
-4. Let instr'* be the continuation of L.
-5. Pop the current label from the stack.
-6. Let admininstr_u1* be val*.
-7. If ((n_u0 is 0) and (|admininstr_u1*| ≥ n)), then:
-  a. Let val'* ++ val^n be admininstr_u1*.
-  b. Push the values val^n to the stack.
-  c. Execute the instruction instr'*.
-8. If (n_u0 ≥ 1), then:
-  a. Let l be (n_u0 - 1).
-  b. If the type of admininstr_u1 is val*, then:
-    1) Let val* be admininstr_u1*.
-    2) Push the values val* to the stack.
-    3) Execute the instruction (BR l).
+1. Assert: Due to validation, the top of the stack is a LABEL_.
+1. Push the values val* to the stack.
+1. Let L be the current label.
+1. Let n be the arity of L.
+1. Let instr'* be the continuation of L.
+1. If (n_u0 is 0), then:
+  a. Assert: Due to validation, there are at least n values on the top of the stack.
+  a. Pop the values val^n from the stack.
+  a. Pop all values val'* from the top of the stack.
+  a. Pop the current label from the stack.
+  a. Push the values val^n to the stack.
+  a. Execute the instruction instr'*.
+1. Else:
+  a. Pop all values val* from the top of the stack.
+  a. If (n_u0 ≥ 1), then:
+    1) Let l be (n_u0 - 1).
+    1) Pop the current label from the stack.
+    1) Push the values val* to the stack.
+    1) Execute the instruction (BR l).
 
 Step_pure/br_if l
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST c) from the stack.
-3. If (c is not 0), then:
+1. Pop the value (I32.CONST c) from the stack.
+1. If (c is not 0), then:
   a. Execute the instruction (BR l).
-4. Else:
+1. Else:
   a. Do nothing.
 
 Step_pure/br_table l* l'
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST i) from the stack.
-3. If (i < |l*|), then:
+1. Pop the value (I32.CONST i) from the stack.
+1. If (i < |l*|), then:
   a. Execute the instruction (BR l*[i]).
-4. Else:
+1. Else:
   a. Execute the instruction (BR l').
 
 Step_pure/frame
 1. Let f be the current frame.
-2. Let n be the arity of f.
-3. Assert: Due to validation, there are at least n values on the top of the stack.
-4. Assert: Due to validation, there are at least n values on the top of the stack.
-5. Pop the values val^n from the stack.
-6. Assert: Due to validation, a frame is now on the top of the stack.
-7. Pop the current frame from the stack.
-8. Push the values val^n to the stack.
+1. Let n be the arity of f.
+1. Assert: Due to validation, there are at least n values on the top of the stack.
+1. Assert: Due to validation, there are at least n values on the top of the stack.
+1. Pop the values val^n from the stack.
+1. Assert: Due to validation, a frame is now on the top of the stack.
+1. Pop the current frame from the stack.
+1. Push the values val^n to the stack.
 
 Step_pure/return
 1. Pop all values val* from the top of the stack.
-2. If a frame is now on the top of the stack, then:
+1. If the top of the stack is a FRAME_, then:
+  a. Push the values val* to the stack.
   a. Let f be the current frame.
-  b. Let n be the arity of f.
-  c. Pop the current frame from the stack.
-  d. Let val'* ++ val^n be val*.
-  e. Push the values val^n to the stack.
-3. Else if a label is now on the top of the stack, then:
+  a. Let n be the arity of f.
+  a. Assert: Due to validation, there are at least n values on the top of the stack.
+  a. Pop the values val^n from the stack.
+  a. Pop all values val'* from the top of the stack.
+  a. Pop the current frame from the stack.
+  a. Push the values val^n to the stack.
+1. Else if the top of the stack is a LABEL_, then:
+  a. Push the values val* to the stack.
+  a. Pop all values val* from the top of the stack.
   a. Pop the current label from the stack.
-  b. Push the values val* to the stack.
-  c. Execute the instruction RETURN.
+  a. Push the values val* to the stack.
+  a. Execute the instruction RETURN.
 
 Step_pure/unop t unop
-1. Assert: Due to validation, a value of value type t is on the top of the stack.
-2. Pop the value (t.CONST c_1) from the stack.
-3. If (|$unop_(t, unop, c_1)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+1. Pop the value (valtype_0.CONST c_1) from the stack.
+1. Assert: Due to validation, (valtype_0 is t).
+1. If (|$unop_(t, unop, c_1)| ≤ 0), then:
   a. Trap.
-4. Let c be an element of $unop_(t, unop, c_1).
-5. Push the value (t.CONST c) to the stack.
+1. Let c be an element of $unop_(t, unop, c_1).
+1. Push the value (t.CONST c) to the stack.
 
 Step_pure/binop t binop
-1. Assert: Due to validation, a value of value type t is on the top of the stack.
-2. Pop the value (t.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type t is on the top of the stack.
-4. Pop the value (t.CONST c_1) from the stack.
-5. If (|$binop_(t, binop, c_1, c_2)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+1. Pop the value (valtype_0.CONST c_2) from the stack.
+1. Assert: Due to validation, (valtype_0 is t).
+1. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+1. Pop the value (valtype_0.CONST c_1) from the stack.
+1. If (|$binop_(t, binop, c_1, c_2)| ≤ 0), then:
   a. Trap.
-6. Let c be an element of $binop_(t, binop, c_1, c_2).
-7. Push the value (t.CONST c) to the stack.
+1. Let c be an element of $binop_(t, binop, c_1, c_2).
+1. Push the value (t.CONST c) to the stack.
 
 Step_pure/testop t testop
-1. Assert: Due to validation, a value of value type t is on the top of the stack.
-2. Pop the value (t.CONST c_1) from the stack.
-3. Let c be $testop_(t, testop, c_1).
-4. Push the value (I32.CONST c) to the stack.
+1. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+1. Pop the value (valtype_0.CONST c_1) from the stack.
+1. Assert: Due to validation, (valtype_0 is t).
+1. Let c be $testop_(t, testop, c_1).
+1. Push the value (I32.CONST c) to the stack.
 
 Step_pure/relop t relop
-1. Assert: Due to validation, a value of value type t is on the top of the stack.
-2. Pop the value (t.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type t is on the top of the stack.
-4. Pop the value (t.CONST c_1) from the stack.
-5. Let c be $relop_(t, relop, c_1, c_2).
-6. Push the value (I32.CONST c) to the stack.
+1. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+1. Pop the value (valtype_0.CONST c_2) from the stack.
+1. Assert: Due to validation, (valtype_0 is t).
+1. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+1. Pop the value (valtype_0.CONST c_1) from the stack.
+1. Let c be $relop_(t, relop, c_1, c_2).
+1. Push the value (I32.CONST c) to the stack.
 
 Step_pure/cvtop t_2 t_1 cvtop
-1. Assert: Due to validation, a value of value type t_1 is on the top of the stack.
-2. Pop the value (t_1.CONST c_1) from the stack.
-3. If (|$cvtop__(t_1, t_2, cvtop, c_1)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+1. Pop the value (valtype_0.CONST c_1) from the stack.
+1. Assert: Due to validation, (valtype_0 is t_1).
+1. If (|$cvtop__(t_1, t_2, cvtop, c_1)| ≤ 0), then:
   a. Trap.
-4. Let c be an element of $cvtop__(t_1, t_2, cvtop, c_1).
-5. Push the value (t_2.CONST c) to the stack.
+1. Let c be an element of $cvtop__(t_1, t_2, cvtop, c_1).
+1. Push the value (t_2.CONST c) to the stack.
 
 Step_pure/local.tee x
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. Push the value val to the stack.
-4. Push the value val to the stack.
-5. Execute the instruction (LOCAL.SET x).
+1. Pop the value val from the stack.
+1. Push the value val to the stack.
+1. Push the value val to the stack.
+1. Execute the instruction (LOCAL.SET x).
 
 Step_read/block t? instr*
+1. Let n be 0.
 1. If t? is not defined, then:
-  a. Let n be 0.
-2. Else:
-  a. Let n be 1.
-3. Let L be the label_n{[]}.
-4. Enter instr* with label L.
+  a. Let L be the label_n{[]}.
+  a. Enter instr* with label L.
+1. Let n be 1.
+1. If (t? is not ?()), then:
+  a. Let L be the label_n{[]}.
+  a. Enter instr* with label L.
 
 Step_read/loop t? instr*
 1. Let L be the label_0{[(LOOP t? instr*)]}.
-2. Enter instr* with label L.
+1. Enter instr* with label L.
 
 Step_read/call x
 1. Let z be the current state.
-2. Assert: Due to validation, (x < |$funcaddr(z)|).
-3. Execute the instruction (CALL_ADDR $funcaddr(z)[x]).
+1. Assert: Due to validation, (x < |$funcaddr(z)|).
+1. Execute the instruction (CALL_ADDR $funcaddr(z)[x]).
 
 Step_read/call_indirect x
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST i) from the stack.
-4. If (i ≥ |$table(z, 0).REFS|), then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. If (i ≥ |$table(z, 0).REFS|), then:
   a. Trap.
-5. If $table(z, 0).REFS[i] is not defined, then:
+1. If $table(z, 0).REFS[i] is not defined, then:
   a. Trap.
-6. Let ?(a) be $table(z, 0).REFS[i].
-7. If (a ≥ |$funcinst(z)|), then:
+1. Let ?(a) be $table(z, 0).REFS[i].
+1. If (a ≥ |$funcinst(z)|), then:
   a. Trap.
-8. If ($type(z, x) is not $funcinst(z)[a].TYPE), then:
+1. If ($type(z, x) is not $funcinst(z)[a].TYPE), then:
   a. Trap.
-9. Execute the instruction (CALL_ADDR a).
+1. Execute the instruction (CALL_ADDR a).
 
 Step_read/call_addr a
 1. Let z be the current state.
-2. Assert: Due to validation, (a < |$funcinst(z)|).
-3. Let { TYPE: (t_1^k -> t_2^n); MODULE: mm; CODE: func; } be $funcinst(z)[a].
-4. Assert: Due to validation, there are at least k values on the top of the stack.
-5. Pop the values val^k from the stack.
-6. Assert: Due to validation, func is of the case FUNC.
-7. Let (FUNC x local_0 instr*) be func.
-8. Assert: Due to validation, local_0 is of the case LOCAL.
-9. Let (LOCAL t)* be local_0.
-10. Let f be { LOCALS: val^k ++ $default_(t)*; MODULE: mm; }.
-11. Let F be the activation of f with arity n.
-12. Push F to the stack.
-13. Let L be the label_n{[]}.
-14. Enter instr* with label L.
+1. Assert: Due to validation, (a < |$funcinst(z)|).
+1. Let { TYPE: (t_1^k -> t_2^n); MODULE: mm; CODE: func; } be $funcinst(z)[a].
+1. Assert: Due to validation, there are at least k values on the top of the stack.
+1. Pop the values val^k from the stack.
+1. Assert: Due to validation, func is of the case FUNC.
+1. Let (FUNC x local_0 instr*) be func.
+1. Assert: Due to validation, local_0 is of the case LOCAL.
+1. Let (LOCAL t)* be local_0.
+1. Let f be { LOCALS: val^k ++ $default_(t)*; MODULE: mm; }.
+1. Let F be the activation of f with arity n.
+1. Push F to the stack.
+1. Let L be the label_n{[]}.
+1. Enter instr* with label L.
 
 Step_read/local.get x
 1. Let z be the current state.
-2. Push the value $local(z, x) to the stack.
+1. Push the value $local(z, x) to the stack.
 
 Step_read/global.get x
 1. Let z be the current state.
-2. Push the value $global(z, x).VALUE to the stack.
+1. Push the value $global(z, x).VALUE to the stack.
 
 Step_read/load valtype_u0 sz_sx_u1? ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST i) from the stack.
-4. If sz_sx_u1? is not defined, then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. If sz_sx_u1? is not defined, then:
   a. Let t be valtype_u0.
-  b. If (((i + ao.OFFSET) + ($size(t) / 8)) > |$mem(z, 0).BYTES|), then:
+  a. If (((i + ao.OFFSET) + ($size(t) / 8)) > |$mem(z, 0).BYTES|), then:
     1) Trap.
-  c. Let c be $bytes__1^-1(t, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(t) / 8)]).
-  d. Push the value (t.CONST c) to the stack.
-5. If the type of valtype_u0 is Inn, then:
+  a. Let c be $bytes__1^-1(t, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(t) / 8)]).
+  a. Push the value (t.CONST c) to the stack.
+1. If the type of valtype_u0 is Inn, then:
   a. If sz_sx_u1? is defined, then:
     1) Let ?(sz_sx_0) be sz_sx_u1?.
-    2) Let (n, sx) be sz_sx_0.
-    3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
+    1) Let (n, sx) be sz_sx_0.
+    1) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
-  b. Let Inn be valtype_u0.
-  c. If sz_sx_u1? is defined, then:
+  a. Let Inn be valtype_u0.
+  a. If sz_sx_u1? is defined, then:
     1) Let ?(sz_sx_0) be sz_sx_u1?.
-    2) Let (n, sx) be sz_sx_0.
-    3) Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
-    4) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
+    1) Let (n, sx) be sz_sx_0.
+    1) Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
+    1) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
 
 Step_read/memory.size
 1. Let z be the current state.
-2. Let ((n · 64) · $Ki()) be |$mem(z, 0).BYTES|.
-3. Push the value (I32.CONST n) to the stack.
+1. Let ((n · 64) · $Ki()) be |$mem(z, 0).BYTES|.
+1. Push the value (I32.CONST n) to the stack.
 
 Step/local.set x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value val from the stack.
-4. Perform $with_local(z, x, val).
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value val from the stack.
+1. Perform $with_local(z, x, val).
 
 Step/global.set x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value val from the stack.
-4. Perform $with_global(z, x, val).
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value val from the stack.
+1. Perform $with_global(z, x, val).
 
-Step/store valtype_u1 sz_u2? ao
+Step/store valtype_u0 sz_u1? ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type valtype_u0 is on the top of the stack.
-3. Pop the value (valtype_u0.CONST c) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If sz_u2? is not defined, then:
-  a. Let t be valtype_u1.
-  b. If (valtype_u0 is t), then:
-    1) If (((i + ao.OFFSET) + ($size(t) / 8)) > |$mem(z, 0).BYTES|), then:
+1. Assert: Due to validation, a value of value type valtype_u2 is on the top of the stack.
+1. Pop the value (valtype_u2.CONST c) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. Let t be valtype_u2.
+1. If ((((i + ao.OFFSET) + ($size(t) / 8)) > |$mem(z, 0).BYTES|) and ((valtype_u0 is t) and sz_u1? is not defined)), then:
+  a. Trap.
+1. If ((valtype_u0 is t) and sz_u1? is not defined), then:
+  a. Let b* be $bytes_(t, c).
+  a. Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(t) / 8), b*).
+1. If the type of valtype_u2 is Inn, then:
+  a. Let Inn be valtype_u2.
+  a. If ((valtype_u0 is Inn) and sz_u1? is defined), then:
+    1) Let ?(n) be sz_u1?.
+    1) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
-    2) Let b* be $bytes_(t, c).
-    3) Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(t) / 8), b*).
-7. Else:
-  a. Let ?(n) be sz_u2?.
-  b. If the type of valtype_u1 is Inn, then:
-    1) Let Inn be valtype_u1.
-    2) If (valtype_u0 is Inn), then:
-      a) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
-        1. Trap.
-      b) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
-      c) Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
+    1) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
+    1) Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
 
 Step/memory.grow
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Either:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Either:
   a. Let mi be $growmemory($mem(z, 0), n).
-  b. Push the value (I32.CONST (|$mem(z, 0).BYTES| / (64 · $Ki()))) to the stack.
-  c. Perform $with_meminst(z, 0, mi).
-5. Or:
+  a. Push the value (I32.CONST (|$mem(z, 0).BYTES| / (64 · $Ki()))) to the stack.
+  a. Perform $with_meminst(z, 0, mi).
+1. Or:
   a. Push the value (I32.CONST $invsigned_(32, (- 1))) to the stack.
 
 eval_expr instr*
 1. Execute the instruction instr*.
-2. Pop the value val from the stack.
-3. Return [val].
+1. Pop the value val from the stack.
+1. Return [val].
 
 == Complete.
 Generating prose for Wasm 2.0...
@@ -7012,86 +7036,86 @@ watsup 0.4 generator
 #. Return :math:`(\mathsf{ref{.}null}~\mathsf{externref})`.
 
 
-:math:`{\mathrm{funcs}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-.............................................................................................
+:math:`{\mathrm{funcs}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+..............................................................................................
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{func}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externaddr}}_0`.
 
    #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{xv}}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. Return :math:`{\mathrm{funcs}}({{\mathit{xv}}^\ast})`.
 
 
-:math:`{\mathrm{globals}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-...............................................................................................
+:math:`{\mathrm{globals}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+................................................................................................
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externaddr}}_0`.
 
    #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{xv}}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. Return :math:`{\mathrm{globals}}({{\mathit{xv}}^\ast})`.
 
 
-:math:`{\mathrm{tables}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-..............................................................................................
+:math:`{\mathrm{tables}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+...............................................................................................
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externaddr}}_0`.
 
    #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{xv}}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. Return :math:`{\mathrm{tables}}({{\mathit{xv}}^\ast})`.
 
 
-:math:`{\mathrm{mems}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-............................................................................................
+:math:`{\mathrm{mems}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+.............................................................................................
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{mem}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{mem}`, then:
 
-   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externaddr}}_0`.
 
    #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. Return :math:`{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
 
@@ -7371,88 +7395,88 @@ watsup 0.4 generator
 #. Return :math:`z{.}\mathsf{types}{}[x]`.
 
 
-:math:`{\mathrm{funcs}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-.............................................................................................
-
-
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
-
-   a. Return :math:`\epsilon`.
-
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{func}`, then:
-
-   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externval}}_0`.
-
-   #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{externval}'}^\ast})`.
-
-#. Let :math:`{\mathit{externval}}~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-#. Return :math:`{\mathrm{funcs}}({{\mathit{externval}'}^\ast})`.
-
-
-:math:`{\mathrm{globals}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-...............................................................................................
-
-
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
-
-   a. Return :math:`\epsilon`.
-
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{global}`, then:
-
-   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externval}}_0`.
-
-   #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{externval}'}^\ast})`.
-
-#. Let :math:`{\mathit{externval}}~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-#. Return :math:`{\mathrm{globals}}({{\mathit{externval}'}^\ast})`.
-
-
-:math:`{\mathrm{tables}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+:math:`{\mathrm{funcs}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
 ..............................................................................................
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{externval}'}^\ast})`.
+   #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{externaddr}'}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Return :math:`{\mathrm{tables}}({{\mathit{externval}'}^\ast})`.
-
-
-:math:`{\mathrm{mems}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-............................................................................................
+#. Return :math:`{\mathrm{funcs}}({{\mathit{externaddr}'}^\ast})`.
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+:math:`{\mathrm{globals}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+................................................................................................
+
+
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{mem}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{externval}'}^\ast})`.
+   #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{externaddr}'}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Return :math:`{\mathrm{mems}}({{\mathit{externval}'}^\ast})`.
+#. Return :math:`{\mathrm{globals}}({{\mathit{externaddr}'}^\ast})`.
+
+
+:math:`{\mathrm{tables}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+...............................................................................................
+
+
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{table}`, then:
+
+   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externaddr}}_0`.
+
+   #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{externaddr}'}^\ast})`.
+
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. Return :math:`{\mathrm{tables}}({{\mathit{externaddr}'}^\ast})`.
+
+
+:math:`{\mathrm{mems}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+.............................................................................................
+
+
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{mem}`, then:
+
+   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externaddr}}_0`.
+
+   #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{externaddr}'}^\ast})`.
+
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. Return :math:`{\mathrm{mems}}({{\mathit{externaddr}'}^\ast})`.
 
 
 :math:`{\mathrm{allocfunc}}({\mathit{moduleinst}}, {\mathit{func}})`
@@ -7661,38 +7685,38 @@ watsup 0.4 generator
 
    a. Let :math:`(\mathsf{func}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{func}~{{\mathit{fa}}^\ast}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{func}~{{\mathit{fa}}^\ast}{}[x]) \}\end{array}`.
 
 #. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{global}`, then:
 
    a. Let :math:`(\mathsf{global}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{global}~{{\mathit{ga}}^\ast}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{global}~{{\mathit{ga}}^\ast}{}[x]) \}\end{array}`.
 
 #. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{table}`, then:
 
    a. Let :math:`(\mathsf{table}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{table}~{{\mathit{ta}}^\ast}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{{\mathit{ta}}^\ast}{}[x]) \}\end{array}`.
 
 #. Assert: Due to validation, :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{mem}`.
 
 #. Let :math:`(\mathsf{mem}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-#. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{mem}~{{\mathit{ma}}^\ast}{}[x]) \}\end{array}`.
+#. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{mem}~{{\mathit{ma}}^\ast}{}[x]) \}\end{array}`.
 
 
-:math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externval}}^\ast}, {{\mathit{val}}^\ast}, {{{\mathit{ref}}^\ast}^\ast})`
-...................................................................................................................................
+:math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast}, {{{\mathit{ref}}^\ast}^\ast})`
+....................................................................................................................................
 
 
-1. Let :math:`{{\mathit{fa}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externval}}^\ast})`.
+1. Let :math:`{{\mathit{fa}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{ga}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{globals}}({{\mathit{externval}}^\ast})`.
+#. Let :math:`{{\mathit{ga}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{globals}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{ma}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{mems}}({{\mathit{externval}}^\ast})`.
+#. Let :math:`{{\mathit{ma}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{mems}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{ta}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{tables}}({{\mathit{externval}}^\ast})`.
+#. Let :math:`{{\mathit{ta}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{tables}}({{\mathit{externaddr}}^\ast})`.
 
 #. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
 
@@ -7805,8 +7829,8 @@ watsup 0.4 generator
 #. Return :math:`{{\mathit{instr}}^\ast}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}init}~i)~(\mathsf{data{.}drop}~i)`.
 
 
-:math:`{\mathrm{instantiate}}(z, {\mathit{module}}, {{\mathit{externval}}^\ast})`
-.................................................................................
+:math:`{\mathrm{instantiate}}(z, {\mathit{module}}, {{\mathit{externaddr}}^\ast})`
+..................................................................................
 
 
 1. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
@@ -7839,7 +7863,7 @@ watsup 0.4 generator
 
 #. Let :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}` be :math:`{\mathrm{concat}}({{\mathrm{runelem}}({{\mathit{elem}}^\ast}{}[i], i)^{i<n_{\mathsf{e}}}})`.
 
-#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externval}}^\ast})~{{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externval}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
 
 #. Let :math:`f_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}}_{\mathit{init}} \}\end{array}`.
 
@@ -7857,7 +7881,7 @@ watsup 0.4 generator
 
 #. Pop the activation of :math:`f` from the stack.
 
-#. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externval}}^\ast}, {{\mathit{val}}^\ast}, {{{\mathit{ref}}^\ast}^\ast})`.
+#. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast}, {{{\mathit{ref}}^\ast}^\ast})`.
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
@@ -7995,31 +8019,39 @@ watsup 0.4 generator
 
 1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
+#. Assert: Due to validation, the top of the stack is a :math:`\mathsf{label}`.
+
+#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
 #. Let :math:`L` be the current label.
 
 #. Let :math:`n` be the arity of :math:`L`.
 
 #. Let :math:`{{\mathit{instr}'}^\ast}` be the continuation of :math:`L`.
 
-#. Pop the current label from the stack.
+#. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`0`, then:
 
-#. Let :math:`{{{\mathit{instr}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` be :math:`{{\mathit{val}}^\ast}`.
+   a. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
-#. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`0` and :math:`{|{{{\mathit{instr}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`n`, then:
+   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-   a. Let :math:`{{\mathit{val}'}^\ast}~{{\mathit{val}}^{n}}` be :math:`{{{\mathit{instr}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+
+   #. Pop the current label from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
    #. Execute the instruction :math:`{{\mathit{instr}'}^\ast}`.
 
-#. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is greater than or equal to :math:`1`, then:
+#. Else:
 
-   a. Let :math:`l` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}} - 1`.
+   a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. If for all :math:`{({{\mathit{instr}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}})^\ast}`, the type of :math:`{{\mathit{instr}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is val, then:
+   #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is greater than or equal to :math:`1`, then:
 
-      1) Let :math:`{{\mathit{val}}^\ast}` be :math:`{{{\mathit{instr}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+      1) Let :math:`l` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}} - 1`.
+
+      #) Pop the current label from the stack.
 
       #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -8087,41 +8119,46 @@ watsup 0.4 generator
 
 1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-#. If a frame is now on the top of the stack, then:
+#. If the top of the stack is a :math:`\mathsf{frame}`, then:
 
-   a. Let :math:`f` be the current frame.
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Let :math:`f` be the current frame.
 
    #. Let :math:`n` be the arity of :math:`f`.
 
-   #. Pop the current frame from the stack.
+   #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
-   #. Let :math:`{{\mathit{val}'}^\ast}~{{\mathit{val}}^{n}}` be :math:`{{\mathit{val}}^\ast}`.
+   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+
+   #. Pop the current frame from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
-#. Else if a label is now on the top of the stack, then:
+#. Else if the top of the stack is a :math:`\mathsf{label}`, then:
 
-   a. Pop the current label from the stack.
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+   #. Pop the current label from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
    #. Execute the instruction :math:`\mathsf{return}`.
 
 
-:math:`\mathsf{trap}`
-.....................
-
-
-1. YetI: TODO: It is likely that the value stack of two rules are different.
-
-
 :math:`{\mathit{nt}} {.} {\mathit{unop}}`
 .........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
 
 #. If :math:`{|{{\mathit{unop}}}{{}_{{\mathit{nt}}}}{(c_1)}|}` is less than or equal to :math:`0`, then:
 
@@ -8136,13 +8173,15 @@ watsup 0.4 generator
 ..........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_1)` from the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
 #. If :math:`{|{{\mathit{binop}}}{{}_{{\mathit{nt}}}}{(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
 
@@ -8157,9 +8196,11 @@ watsup 0.4 generator
 ...........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
 
 #. Let :math:`c` be :math:`{{\mathit{testop}}}{{}_{{\mathit{nt}}}}{(c_1)}`.
 
@@ -8170,13 +8211,15 @@ watsup 0.4 generator
 ..........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_1)` from the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
 #. Let :math:`c` be :math:`{{\mathit{relop}}}{{}_{{\mathit{nt}}}}{(c_1, c_2)}`.
 
@@ -8187,9 +8230,11 @@ watsup 0.4 generator
 ............................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}_1` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}_1{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}_1`.
 
 #. If :math:`{|{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}}{(c_1)}|}` is less than or equal to :math:`0`, then:
 
@@ -8441,11 +8486,11 @@ watsup 0.4 generator
 ...........................................................
 
 
-1. Let :math:`{\mathit{nt}}_0` be :math:`{\mathrm{unpack}}({\mathsf{i}}{n})`.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}_0` is on the top of the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
-#. Pop the value :math:`({\mathit{nt}}_0{.}\mathsf{const}~c_1)` from the stack.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathrm{unpack}}({\mathsf{i}}{n})`.
 
 #. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}({{{\mathrm{pack}}}_{{\mathsf{i}}{n}}(c_1)^{N}})`.
 
@@ -8489,11 +8534,11 @@ watsup 0.4 generator
 .....................................................................
 
 
-1. Let :math:`{\mathit{nt}}_0` be :math:`{\mathrm{unpack}}({\mathsf{i}}{n})`.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}_0` is on the top of the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Pop the value :math:`({\mathit{nt}}_0{.}\mathsf{const}~c_2)` from the stack.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathrm{unpack}}({\mathsf{i}}{n})`.
 
 #. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
@@ -9031,13 +9076,13 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
+
+   a. Trap.
+
 #. If :math:`{{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
 
-   a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
-
-      1) Trap.
-
-   #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8]`.
+   a. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8]`.
 
    #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -9295,13 +9340,6 @@ watsup 0.4 generator
    #. Execute the instruction :math:`(\mathsf{memory{.}init}~x)`.
 
 
-:math:`\mathsf{ctxt}`
-.....................
-
-
-1. YetI: TODO: It is likely that the value stack of two rules are different.
-
-
 :math:`\mathsf{local{.}set}~x`
 ..............................
 
@@ -9385,51 +9423,47 @@ watsup 0.4 generator
 #. Perform :math:`z{}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = \epsilon]`.
 
 
-:math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{store}~{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}~{\mathit{ao}}`
+:math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}~{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{\mathit{ao}}`
 ...........................................................................................................................................................
 
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{const}~c)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}{.}\mathsf{const}~c)` from the stack.
 
 #. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}` is not defined, then:
+#. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{nt}}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
 
-   #. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{nt}}`, then:
+   a. Trap.
 
-      1) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+#. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{nt}}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
+
+   a. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)`.
+
+   #. Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8] = {b^\ast}]`.
+
+#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Inn, then:
+
+   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+
+   #. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathsf{i}}{n}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
+
+      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
+
+      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
          a) Trap.
 
-      #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)`.
+      #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{n}|}, n}(c))`.
 
-      #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8] = {b^\ast}]`.
-
-#. Else:
-
-   a. Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}`.
-
-   #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-      1) Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-      #) If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathsf{i}}{n}`, then:
-
-         a) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
-
-            1. Trap.
-
-         #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{n}|}, n}(c))`.
-
-         #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
+      #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
 
 
 :math:`\mathsf{vstore}~\mathsf{v{\scriptstyle 128}}~{\mathit{ao}}`
@@ -10132,68 +10166,68 @@ Ki
 min n_u0 n_u1
 1. If (n_u0 is 0), then:
   a. Return 0.
-2. If (n_u1 is 0), then:
+1. If (n_u1 is 0), then:
   a. Return 0.
-3. Assert: Due to validation, (n_u0 ≥ 1).
-4. Let i be (n_u0 - 1).
-5. Assert: Due to validation, (n_u1 ≥ 1).
-6. Let j be (n_u1 - 1).
-7. Return $min(i, j).
+1. Assert: Due to validation, (n_u0 ≥ 1).
+1. Let i be (n_u0 - 1).
+1. Assert: Due to validation, (n_u1 ≥ 1).
+1. Let j be (n_u1 - 1).
+1. Return $min(i, j).
 
 sum n_u0*
 1. If (n_u0* is []), then:
   a. Return 0.
-2. Let [n] ++ n'* be n_u0*.
-3. Return (n + $sum(n'*)).
+1. Let [n] ++ n'* be n_u0*.
+1. Return (n + $sum(n'*)).
 
 opt_ X X_u0*
 1. If (X_u0* is []), then:
   a. Return ?().
-2. Assert: Due to validation, (|X_u0*| is 1).
-3. Let [w] be X_u0*.
-4. Return ?(w).
+1. Assert: Due to validation, (|X_u0*| is 1).
+1. Let [w] be X_u0*.
+1. Return ?(w).
 
 list_ X X_u0?
 1. If X_u0? is not defined, then:
   a. Return [].
-2. Let ?(w) be X_u0?.
-3. Return [w].
+1. Let ?(w) be X_u0?.
+1. Return [w].
 
 concat_ X X_u0*
 1. If (X_u0* is []), then:
   a. Return [].
-2. Let [w*] ++ w'** be X_u0*.
-3. Return w* ++ $concat_(X, w'**).
+1. Let [w*] ++ w'** be X_u0*.
+1. Return w* ++ $concat_(X, w'**).
 
 setproduct2_ X w_1 X_u0*
 1. If (X_u0* is []), then:
   a. Return [].
-2. Let [w'*] ++ w** be X_u0*.
-3. Return [[w_1] ++ w'*] ++ $setproduct2_(X, w_1, w**).
+1. Let [w'*] ++ w** be X_u0*.
+1. Return [[w_1] ++ w'*] ++ $setproduct2_(X, w_1, w**).
 
 setproduct1_ X X_u0* w**
 1. If (X_u0* is []), then:
   a. Return [].
-2. Let [w_1] ++ w'* be X_u0*.
-3. Return $setproduct2_(X, w_1, w**) ++ $setproduct1_(X, w'*, w**).
+1. Let [w_1] ++ w'* be X_u0*.
+1. Return $setproduct2_(X, w_1, w**) ++ $setproduct1_(X, w'*, w**).
 
 setproduct_ X X_u0*
 1. If (X_u0* is []), then:
   a. Return [[]].
-2. Let [w_1*] ++ w** be X_u0*.
-3. Return $setproduct1_(X, w_1*, $setproduct_(X, w**)).
+1. Let [w_1*] ++ w** be X_u0*.
+1. Return $setproduct1_(X, w_1*, $setproduct_(X, w**)).
 
 signif N_u0
 1. If (N_u0 is 32), then:
   a. Return 23.
-2. Assert: Due to validation, (N_u0 is 64).
-3. Return 52.
+1. Assert: Due to validation, (N_u0 is 64).
+1. Return 52.
 
 expon N_u0
 1. If (N_u0 is 32), then:
   a. Return 8.
-2. Assert: Due to validation, (N_u0 is 64).
-3. Return 11.
+1. Assert: Due to validation, (N_u0 is 64).
+1. Return 11.
 
 M N
 1. Return $signif(N).
@@ -10213,13 +10247,13 @@ canon_ N
 size valtype_u0
 1. If (valtype_u0 is I32), then:
   a. Return 32.
-2. If (valtype_u0 is I64), then:
+1. If (valtype_u0 is I64), then:
   a. Return 64.
-3. If (valtype_u0 is F32), then:
+1. If (valtype_u0 is F32), then:
   a. Return 32.
-4. If (valtype_u0 is F64), then:
+1. If (valtype_u0 is F64), then:
   a. Return 64.
-5. If (valtype_u0 is V128), then:
+1. If (valtype_u0 is V128), then:
   a. Return 128.
 
 isize Inn
@@ -10228,16 +10262,16 @@ isize Inn
 psize packtype_u0
 1. If (packtype_u0 is I8), then:
   a. Return 8.
-2. Assert: Due to validation, (packtype_u0 is I16).
-3. Return 16.
+1. Assert: Due to validation, (packtype_u0 is I16).
+1. Return 16.
 
 lsize lanetype_u0
 1. If the type of lanetype_u0 is numtype, then:
   a. Let numtype be lanetype_u0.
-  b. Return $size(numtype).
-2. Assert: Due to validation, the type of lanetype_u0 is packtype.
-3. Let packtype be lanetype_u0.
-4. Return $psize(packtype).
+  a. Return $size(numtype).
+1. Assert: Due to validation, the type of lanetype_u0 is packtype.
+1. Let packtype be lanetype_u0.
+1. Return $psize(packtype).
 
 lanetype (Lnn X N)
 1. Return Lnn.
@@ -10263,9 +10297,9 @@ lsizenn2 lt
 zero numtype_u0
 1. If the type of numtype_u0 is Inn, then:
   a. Return 0.
-2. Assert: Due to validation, the type of numtype_u0 is Fnn.
-3. Let Fnn be numtype_u0.
-4. Return $fzero($size(Fnn)).
+1. Assert: Due to validation, the type of numtype_u0 is Fnn.
+1. Let Fnn be numtype_u0.
+1. Return $fzero($size(Fnn)).
 
 dim (Lnn X N)
 1. Return N.
@@ -10276,15 +10310,15 @@ shsize (Lnn X N)
 concat_bytes byte_u0*
 1. If (byte_u0* is []), then:
   a. Return [].
-2. Let [b*] ++ b'** be byte_u0*.
-3. Return b* ++ $concat_bytes(b'**).
+1. Let [b*] ++ b'** be byte_u0*.
+1. Return b* ++ $concat_bytes(b'**).
 
 unpack lanetype_u0
 1. If the type of lanetype_u0 is numtype, then:
   a. Let numtype be lanetype_u0.
-  b. Return numtype.
-2. Assert: Due to validation, the type of lanetype_u0 is packtype.
-3. Return I32.
+  a. Return numtype.
+1. Assert: Due to validation, the type of lanetype_u0 is packtype.
+1. Return I32.
 
 shunpack (Lnn X N)
 1. Return $unpack(Lnn).
@@ -10292,57 +10326,57 @@ shunpack (Lnn X N)
 funcsxt externtype_u0*
 1. If (externtype_u0* is []), then:
   a. Return [].
-2. Let [externtype_0] ++ xt* be externtype_u0*.
-3. If externtype_0 is of the case FUNC, then:
+1. Let [externtype_0] ++ xt* be externtype_u0*.
+1. If externtype_0 is of the case FUNC, then:
   a. Let (FUNC ft) be externtype_0.
-  b. Return [ft] ++ $funcsxt(xt*).
-4. Let [externtype] ++ xt* be externtype_u0*.
-5. Return $funcsxt(xt*).
+  a. Return [ft] ++ $funcsxt(xt*).
+1. Let [externtype] ++ xt* be externtype_u0*.
+1. Return $funcsxt(xt*).
 
 globalsxt externtype_u0*
 1. If (externtype_u0* is []), then:
   a. Return [].
-2. Let [externtype_0] ++ xt* be externtype_u0*.
-3. If externtype_0 is of the case GLOBAL, then:
+1. Let [externtype_0] ++ xt* be externtype_u0*.
+1. If externtype_0 is of the case GLOBAL, then:
   a. Let (GLOBAL gt) be externtype_0.
-  b. Return [gt] ++ $globalsxt(xt*).
-4. Let [externtype] ++ xt* be externtype_u0*.
-5. Return $globalsxt(xt*).
+  a. Return [gt] ++ $globalsxt(xt*).
+1. Let [externtype] ++ xt* be externtype_u0*.
+1. Return $globalsxt(xt*).
 
 tablesxt externtype_u0*
 1. If (externtype_u0* is []), then:
   a. Return [].
-2. Let [externtype_0] ++ xt* be externtype_u0*.
-3. If externtype_0 is of the case TABLE, then:
+1. Let [externtype_0] ++ xt* be externtype_u0*.
+1. If externtype_0 is of the case TABLE, then:
   a. Let (TABLE tt) be externtype_0.
-  b. Return [tt] ++ $tablesxt(xt*).
-4. Let [externtype] ++ xt* be externtype_u0*.
-5. Return $tablesxt(xt*).
+  a. Return [tt] ++ $tablesxt(xt*).
+1. Let [externtype] ++ xt* be externtype_u0*.
+1. Return $tablesxt(xt*).
 
 memsxt externtype_u0*
 1. If (externtype_u0* is []), then:
   a. Return [].
-2. Let [externtype_0] ++ xt* be externtype_u0*.
-3. If externtype_0 is of the case MEM, then:
+1. Let [externtype_0] ++ xt* be externtype_u0*.
+1. If externtype_0 is of the case MEM, then:
   a. Let (MEM mt) be externtype_0.
-  b. Return [mt] ++ $memsxt(xt*).
-4. Let [externtype] ++ xt* be externtype_u0*.
-5. Return $memsxt(xt*).
+  a. Return [mt] ++ $memsxt(xt*).
+1. Let [externtype] ++ xt* be externtype_u0*.
+1. Return $memsxt(xt*).
 
 dataidx_instr instr_u0
 1. If instr_u0 is of the case MEMORY.INIT, then:
   a. Let (MEMORY.INIT x) be instr_u0.
-  b. Return [x].
-2. If instr_u0 is of the case DATA.DROP, then:
+  a. Return [x].
+1. If instr_u0 is of the case DATA.DROP, then:
   a. Let (DATA.DROP x) be instr_u0.
-  b. Return [x].
-3. Return [].
+  a. Return [x].
+1. Return [].
 
 dataidx_instrs instr_u0*
 1. If (instr_u0* is []), then:
   a. Return [].
-2. Let [instr] ++ instr'* be instr_u0*.
-3. Return $dataidx_instr(instr) ++ $dataidx_instrs(instr'*).
+1. Let [instr] ++ instr'* be instr_u0*.
+1. Return $dataidx_instr(instr) ++ $dataidx_instrs(instr'*).
 
 dataidx_expr in*
 1. Return $dataidx_instrs(in*).
@@ -10353,8 +10387,8 @@ dataidx_func (FUNC x loc* e)
 dataidx_funcs func_u0*
 1. If (func_u0* is []), then:
   a. Return [].
-2. Let [func] ++ func'* be func_u0*.
-3. Return $dataidx_func(func) ++ $dataidx_funcs(func'*).
+1. Let [func] ++ func'* be func_u0*.
+1. Return $dataidx_func(func) ++ $dataidx_funcs(func'*).
 
 memarg0
 1. Return { ALIGN: 0; OFFSET: 0; }.
@@ -10362,162 +10396,162 @@ memarg0
 signed_ N i
 1. If (0 ≤ (2 ^ (N - 1))), then:
   a. Return i.
-2. Assert: Due to validation, ((2 ^ (N - 1)) ≤ i).
-3. Assert: Due to validation, (i < (2 ^ N)).
-4. Return (i - (2 ^ N)).
+1. Assert: Due to validation, ((2 ^ (N - 1)) ≤ i).
+1. Assert: Due to validation, (i < (2 ^ N)).
+1. Return (i - (2 ^ N)).
 
 invsigned_ N i
 1. Let j be $signed__1^-1(N, i).
-2. Return j.
+1. Return j.
 
 unop_ numtype_u1 unop__u0 num__u3
 1. If ((unop__u0 is CLZ) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN be num__u3.
-  c. Return [$iclz_($sizenn(Inn), iN)].
-2. If ((unop__u0 is CTZ) and the type of numtype_u1 is Inn), then:
+  a. Let iN be num__u3.
+  a. Return [$iclz_($sizenn(Inn), iN)].
+1. If ((unop__u0 is CTZ) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN be num__u3.
-  c. Return [$ictz_($sizenn(Inn), iN)].
-3. If ((unop__u0 is POPCNT) and the type of numtype_u1 is Inn), then:
+  a. Let iN be num__u3.
+  a. Return [$ictz_($sizenn(Inn), iN)].
+1. If ((unop__u0 is POPCNT) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN be num__u3.
-  c. Return [$ipopcnt_($sizenn(Inn), iN)].
-4. If the type of numtype_u1 is Inn, then:
+  a. Let iN be num__u3.
+  a. Return [$ipopcnt_($sizenn(Inn), iN)].
+1. If the type of numtype_u1 is Inn, then:
   a. Let Inn be numtype_u1.
-  b. Assert: Due to validation, unop__u0 is of the case EXTEND.
-  c. Let (EXTEND M) be unop__u0.
-  d. Let iN be num__u3.
-  e. Return [$extend__(M, $sizenn(Inn), S, $wrap__($sizenn(Inn), M, iN))].
-5. If ((unop__u0 is ABS) and the type of numtype_u1 is Fnn), then:
+  a. Assert: Due to validation, unop__u0 is of the case EXTEND.
+  a. Let (EXTEND M) be unop__u0.
+  a. Let iN be num__u3.
+  a. Return [$extend__(M, $sizenn(Inn), S, $wrap__($sizenn(Inn), M, iN))].
+1. If ((unop__u0 is ABS) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN be num__u3.
-  c. Return $fabs_($sizenn(Fnn), fN).
-6. If ((unop__u0 is NEG) and the type of numtype_u1 is Fnn), then:
+  a. Let fN be num__u3.
+  a. Return $fabs_($sizenn(Fnn), fN).
+1. If ((unop__u0 is NEG) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN be num__u3.
-  c. Return $fneg_($sizenn(Fnn), fN).
-7. If ((unop__u0 is SQRT) and the type of numtype_u1 is Fnn), then:
+  a. Let fN be num__u3.
+  a. Return $fneg_($sizenn(Fnn), fN).
+1. If ((unop__u0 is SQRT) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN be num__u3.
-  c. Return $fsqrt_($sizenn(Fnn), fN).
-8. If ((unop__u0 is CEIL) and the type of numtype_u1 is Fnn), then:
+  a. Let fN be num__u3.
+  a. Return $fsqrt_($sizenn(Fnn), fN).
+1. If ((unop__u0 is CEIL) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN be num__u3.
-  c. Return $fceil_($sizenn(Fnn), fN).
-9. If ((unop__u0 is FLOOR) and the type of numtype_u1 is Fnn), then:
+  a. Let fN be num__u3.
+  a. Return $fceil_($sizenn(Fnn), fN).
+1. If ((unop__u0 is FLOOR) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN be num__u3.
-  c. Return $ffloor_($sizenn(Fnn), fN).
-10. If ((unop__u0 is TRUNC) and the type of numtype_u1 is Fnn), then:
+  a. Let fN be num__u3.
+  a. Return $ffloor_($sizenn(Fnn), fN).
+1. If ((unop__u0 is TRUNC) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN be num__u3.
-  c. Return $ftrunc_($sizenn(Fnn), fN).
-11. Assert: Due to validation, (unop__u0 is NEAREST).
-12. Assert: Due to validation, the type of numtype_u1 is Fnn.
-13. Let Fnn be numtype_u1.
-14. Let fN be num__u3.
-15. Return $fnearest_($sizenn(Fnn), fN).
+  a. Let fN be num__u3.
+  a. Return $ftrunc_($sizenn(Fnn), fN).
+1. Assert: Due to validation, (unop__u0 is NEAREST).
+1. Assert: Due to validation, the type of numtype_u1 is Fnn.
+1. Let Fnn be numtype_u1.
+1. Let fN be num__u3.
+1. Return $fnearest_($sizenn(Fnn), fN).
 
 binop_ numtype_u1 binop__u0 num__u3 num__u5
 1. If ((binop__u0 is ADD) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$iadd_($sizenn(Inn), iN_1, iN_2)].
-2. If ((binop__u0 is SUB) and the type of numtype_u1 is Inn), then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. Return [$iadd_($sizenn(Inn), iN_1, iN_2)].
+1. If ((binop__u0 is SUB) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$isub_($sizenn(Inn), iN_1, iN_2)].
-3. If ((binop__u0 is MUL) and the type of numtype_u1 is Inn), then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. Return [$isub_($sizenn(Inn), iN_1, iN_2)].
+1. If ((binop__u0 is MUL) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$imul_($sizenn(Inn), iN_1, iN_2)].
-4. If the type of numtype_u1 is Inn, then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. Return [$imul_($sizenn(Inn), iN_1, iN_2)].
+1. If the type of numtype_u1 is Inn, then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. If binop__u0 is of the case DIV, then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. If binop__u0 is of the case DIV, then:
     1) Let (DIV sx) be binop__u0.
-    2) Return $list_(num_((Inn : Inn <: numtype)), $idiv_($sizenn(Inn), sx, iN_1, iN_2)).
-  e. If binop__u0 is of the case REM, then:
+    1) Return $list_(num_((Inn : Inn <: numtype)), $idiv_($sizenn(Inn), sx, iN_1, iN_2)).
+  a. If binop__u0 is of the case REM, then:
     1) Let (REM sx) be binop__u0.
-    2) Return $list_(num_((Inn : Inn <: numtype)), $irem_($sizenn(Inn), sx, iN_1, iN_2)).
-5. If ((binop__u0 is AND) and the type of numtype_u1 is Inn), then:
+    1) Return $list_(num_((Inn : Inn <: numtype)), $irem_($sizenn(Inn), sx, iN_1, iN_2)).
+1. If ((binop__u0 is AND) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$iand_($sizenn(Inn), iN_1, iN_2)].
-6. If ((binop__u0 is OR) and the type of numtype_u1 is Inn), then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. Return [$iand_($sizenn(Inn), iN_1, iN_2)].
+1. If ((binop__u0 is OR) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$ior_($sizenn(Inn), iN_1, iN_2)].
-7. If ((binop__u0 is XOR) and the type of numtype_u1 is Inn), then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. Return [$ior_($sizenn(Inn), iN_1, iN_2)].
+1. If ((binop__u0 is XOR) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$ixor_($sizenn(Inn), iN_1, iN_2)].
-8. If ((binop__u0 is SHL) and the type of numtype_u1 is Inn), then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. Return [$ixor_($sizenn(Inn), iN_1, iN_2)].
+1. If ((binop__u0 is SHL) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$ishl_($sizenn(Inn), iN_1, iN_2)].
-9. If the type of numtype_u1 is Inn, then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. Return [$ishl_($sizenn(Inn), iN_1, iN_2)].
+1. If the type of numtype_u1 is Inn, then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. If binop__u0 is of the case SHR, then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. If binop__u0 is of the case SHR, then:
     1) Let (SHR sx) be binop__u0.
-    2) Return [$ishr_($sizenn(Inn), sx, iN_1, iN_2)].
-10. If ((binop__u0 is ROTL) and the type of numtype_u1 is Inn), then:
+    1) Return [$ishr_($sizenn(Inn), sx, iN_1, iN_2)].
+1. If ((binop__u0 is ROTL) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$irotl_($sizenn(Inn), iN_1, iN_2)].
-11. If ((binop__u0 is ROTR) and the type of numtype_u1 is Inn), then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. Return [$irotl_($sizenn(Inn), iN_1, iN_2)].
+1. If ((binop__u0 is ROTR) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$irotr_($sizenn(Inn), iN_1, iN_2)].
-12. If ((binop__u0 is ADD) and the type of numtype_u1 is Fnn), then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. Return [$irotr_($sizenn(Inn), iN_1, iN_2)].
+1. If ((binop__u0 is ADD) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fadd_($sizenn(Fnn), fN_1, fN_2).
-13. If ((binop__u0 is SUB) and the type of numtype_u1 is Fnn), then:
+  a. Let fN_1 be num__u3.
+  a. Let fN_2 be num__u5.
+  a. Return $fadd_($sizenn(Fnn), fN_1, fN_2).
+1. If ((binop__u0 is SUB) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fsub_($sizenn(Fnn), fN_1, fN_2).
-14. If ((binop__u0 is MUL) and the type of numtype_u1 is Fnn), then:
+  a. Let fN_1 be num__u3.
+  a. Let fN_2 be num__u5.
+  a. Return $fsub_($sizenn(Fnn), fN_1, fN_2).
+1. If ((binop__u0 is MUL) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fmul_($sizenn(Fnn), fN_1, fN_2).
-15. If ((binop__u0 is DIV) and the type of numtype_u1 is Fnn), then:
+  a. Let fN_1 be num__u3.
+  a. Let fN_2 be num__u5.
+  a. Return $fmul_($sizenn(Fnn), fN_1, fN_2).
+1. If ((binop__u0 is DIV) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fdiv_($sizenn(Fnn), fN_1, fN_2).
-16. If ((binop__u0 is MIN) and the type of numtype_u1 is Fnn), then:
+  a. Let fN_1 be num__u3.
+  a. Let fN_2 be num__u5.
+  a. Return $fdiv_($sizenn(Fnn), fN_1, fN_2).
+1. If ((binop__u0 is MIN) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fmin_($sizenn(Fnn), fN_1, fN_2).
-17. If ((binop__u0 is MAX) and the type of numtype_u1 is Fnn), then:
+  a. Let fN_1 be num__u3.
+  a. Let fN_2 be num__u5.
+  a. Return $fmin_($sizenn(Fnn), fN_1, fN_2).
+1. If ((binop__u0 is MAX) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fmax_($sizenn(Fnn), fN_1, fN_2).
-18. Assert: Due to validation, (binop__u0 is COPYSIGN).
-19. Assert: Due to validation, the type of numtype_u1 is Fnn.
-20. Let Fnn be numtype_u1.
-21. Let fN_1 be num__u3.
-22. Let fN_2 be num__u5.
-23. Return $fcopysign_($sizenn(Fnn), fN_1, fN_2).
+  a. Let fN_1 be num__u3.
+  a. Let fN_2 be num__u5.
+  a. Return $fmax_($sizenn(Fnn), fN_1, fN_2).
+1. Assert: Due to validation, (binop__u0 is COPYSIGN).
+1. Assert: Due to validation, the type of numtype_u1 is Fnn.
+1. Let Fnn be numtype_u1.
+1. Let fN_1 be num__u3.
+1. Let fN_2 be num__u5.
+1. Return $fcopysign_($sizenn(Fnn), fN_1, fN_2).
 
 testop_ Inn EQZ iN
 1. Return $ieqz_($sizenn(Inn), iN).
@@ -10525,155 +10559,155 @@ testop_ Inn EQZ iN
 relop_ numtype_u1 relop__u0 num__u3 num__u5
 1. If ((relop__u0 is EQ) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return $ieq_($sizenn(Inn), iN_1, iN_2).
-2. If ((relop__u0 is NE) and the type of numtype_u1 is Inn), then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. Return $ieq_($sizenn(Inn), iN_1, iN_2).
+1. If ((relop__u0 is NE) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return $ine_($sizenn(Inn), iN_1, iN_2).
-3. If the type of numtype_u1 is Inn, then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. Return $ine_($sizenn(Inn), iN_1, iN_2).
+1. If the type of numtype_u1 is Inn, then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. If relop__u0 is of the case LT, then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. If relop__u0 is of the case LT, then:
     1) Let (LT sx) be relop__u0.
-    2) Return $ilt_($sizenn(Inn), sx, iN_1, iN_2).
-  e. If relop__u0 is of the case GT, then:
+    1) Return $ilt_($sizenn(Inn), sx, iN_1, iN_2).
+  a. If relop__u0 is of the case GT, then:
     1) Let (GT sx) be relop__u0.
-    2) Return $igt_($sizenn(Inn), sx, iN_1, iN_2).
-  f. If relop__u0 is of the case LE, then:
+    1) Return $igt_($sizenn(Inn), sx, iN_1, iN_2).
+  a. If relop__u0 is of the case LE, then:
     1) Let (LE sx) be relop__u0.
-    2) Return $ile_($sizenn(Inn), sx, iN_1, iN_2).
-  g. If relop__u0 is of the case GE, then:
+    1) Return $ile_($sizenn(Inn), sx, iN_1, iN_2).
+  a. If relop__u0 is of the case GE, then:
     1) Let (GE sx) be relop__u0.
-    2) Return $ige_($sizenn(Inn), sx, iN_1, iN_2).
-4. If ((relop__u0 is EQ) and the type of numtype_u1 is Fnn), then:
+    1) Return $ige_($sizenn(Inn), sx, iN_1, iN_2).
+1. If ((relop__u0 is EQ) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $feq_($sizenn(Fnn), fN_1, fN_2).
-5. If ((relop__u0 is NE) and the type of numtype_u1 is Fnn), then:
+  a. Let fN_1 be num__u3.
+  a. Let fN_2 be num__u5.
+  a. Return $feq_($sizenn(Fnn), fN_1, fN_2).
+1. If ((relop__u0 is NE) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fne_($sizenn(Fnn), fN_1, fN_2).
-6. If ((relop__u0 is LT) and the type of numtype_u1 is Fnn), then:
+  a. Let fN_1 be num__u3.
+  a. Let fN_2 be num__u5.
+  a. Return $fne_($sizenn(Fnn), fN_1, fN_2).
+1. If ((relop__u0 is LT) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $flt_($sizenn(Fnn), fN_1, fN_2).
-7. If ((relop__u0 is GT) and the type of numtype_u1 is Fnn), then:
+  a. Let fN_1 be num__u3.
+  a. Let fN_2 be num__u5.
+  a. Return $flt_($sizenn(Fnn), fN_1, fN_2).
+1. If ((relop__u0 is GT) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fgt_($sizenn(Fnn), fN_1, fN_2).
-8. If ((relop__u0 is LE) and the type of numtype_u1 is Fnn), then:
+  a. Let fN_1 be num__u3.
+  a. Let fN_2 be num__u5.
+  a. Return $fgt_($sizenn(Fnn), fN_1, fN_2).
+1. If ((relop__u0 is LE) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fle_($sizenn(Fnn), fN_1, fN_2).
-9. Assert: Due to validation, (relop__u0 is GE).
-10. Assert: Due to validation, the type of numtype_u1 is Fnn.
-11. Let Fnn be numtype_u1.
-12. Let fN_1 be num__u3.
-13. Let fN_2 be num__u5.
-14. Return $fge_($sizenn(Fnn), fN_1, fN_2).
+  a. Let fN_1 be num__u3.
+  a. Let fN_2 be num__u5.
+  a. Return $fle_($sizenn(Fnn), fN_1, fN_2).
+1. Assert: Due to validation, (relop__u0 is GE).
+1. Assert: Due to validation, the type of numtype_u1 is Fnn.
+1. Let Fnn be numtype_u1.
+1. Let fN_1 be num__u3.
+1. Let fN_2 be num__u5.
+1. Return $fge_($sizenn(Fnn), fN_1, fN_2).
 
 cvtop__ numtype_u1 numtype_u4 cvtop_u0 num__u3
 1. If the type of numtype_u1 is Inn, then:
   a. Let Inn_1 be numtype_u1.
-  b. If the type of numtype_u4 is Inn, then:
+  a. If the type of numtype_u4 is Inn, then:
     1) Let Inn_2 be numtype_u4.
-    2) Let iN_1 be num__u3.
-    3) If cvtop_u0 is of the case EXTEND, then:
+    1) Let iN_1 be num__u3.
+    1) If cvtop_u0 is of the case EXTEND, then:
       a) Let (EXTEND sx) be cvtop_u0.
-      b) Return [$extend__($sizenn1(Inn_1), $sizenn2(Inn_2), sx, iN_1)].
-2. If ((cvtop_u0 is WRAP) and the type of numtype_u1 is Inn), then:
+      a) Return [$extend__($sizenn1(Inn_1), $sizenn2(Inn_2), sx, iN_1)].
+1. If ((cvtop_u0 is WRAP) and the type of numtype_u1 is Inn), then:
   a. Let Inn_1 be numtype_u1.
-  b. If the type of numtype_u4 is Inn, then:
+  a. If the type of numtype_u4 is Inn, then:
     1) Let Inn_2 be numtype_u4.
-    2) Let iN_1 be num__u3.
-    3) Return [$wrap__($sizenn1(Inn_1), $sizenn2(Inn_2), iN_1)].
-3. If the type of numtype_u1 is Fnn, then:
+    1) Let iN_1 be num__u3.
+    1) Return [$wrap__($sizenn1(Inn_1), $sizenn2(Inn_2), iN_1)].
+1. If the type of numtype_u1 is Fnn, then:
   a. Let Fnn_1 be numtype_u1.
-  b. If the type of numtype_u4 is Inn, then:
+  a. If the type of numtype_u4 is Inn, then:
     1) Let Inn_2 be numtype_u4.
-    2) Let fN_1 be num__u3.
-    3) If cvtop_u0 is of the case TRUNC, then:
+    1) Let fN_1 be num__u3.
+    1) If cvtop_u0 is of the case TRUNC, then:
       a) Let (TRUNC sx) be cvtop_u0.
-      b) Return $list_(num_((Inn_2 : Inn <: numtype)), $trunc__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
-    4) If cvtop_u0 is of the case TRUNC_SAT, then:
+      a) Return $list_(num_((Inn_2 : Inn <: numtype)), $trunc__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
+    1) If cvtop_u0 is of the case TRUNC_SAT, then:
       a) Let (TRUNC_SAT sx) be cvtop_u0.
-      b) Return $list_(num_((Inn_2 : Inn <: numtype)), $trunc_sat__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
-4. If the type of numtype_u4 is Fnn, then:
+      a) Return $list_(num_((Inn_2 : Inn <: numtype)), $trunc_sat__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
+1. If the type of numtype_u4 is Fnn, then:
   a. Let Fnn_2 be numtype_u4.
-  b. If the type of numtype_u1 is Inn, then:
+  a. If the type of numtype_u1 is Inn, then:
     1) Let Inn_1 be numtype_u1.
-    2) Let iN_1 be num__u3.
-    3) If cvtop_u0 is of the case CONVERT, then:
+    1) Let iN_1 be num__u3.
+    1) If cvtop_u0 is of the case CONVERT, then:
       a) Let (CONVERT sx) be cvtop_u0.
-      b) Return [$convert__($sizenn1(Inn_1), $sizenn2(Fnn_2), sx, iN_1)].
-5. If ((cvtop_u0 is PROMOTE) and the type of numtype_u1 is Fnn), then:
+      a) Return [$convert__($sizenn1(Inn_1), $sizenn2(Fnn_2), sx, iN_1)].
+1. If ((cvtop_u0 is PROMOTE) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn_1 be numtype_u1.
-  b. If the type of numtype_u4 is Fnn, then:
+  a. If the type of numtype_u4 is Fnn, then:
     1) Let Fnn_2 be numtype_u4.
-    2) Let fN_1 be num__u3.
-    3) Return $promote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1).
-6. If ((cvtop_u0 is DEMOTE) and the type of numtype_u1 is Fnn), then:
+    1) Let fN_1 be num__u3.
+    1) Return $promote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1).
+1. If ((cvtop_u0 is DEMOTE) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn_1 be numtype_u1.
-  b. If the type of numtype_u4 is Fnn, then:
+  a. If the type of numtype_u4 is Fnn, then:
     1) Let Fnn_2 be numtype_u4.
-    2) Let fN_1 be num__u3.
-    3) Return $demote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1).
-7. Assert: Due to validation, (cvtop_u0 is REINTERPRET).
-8. If the type of numtype_u4 is Fnn, then:
+    1) Let fN_1 be num__u3.
+    1) Return $demote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1).
+1. Assert: Due to validation, (cvtop_u0 is REINTERPRET).
+1. If the type of numtype_u4 is Fnn, then:
   a. Let Fnn_2 be numtype_u4.
-  b. If the type of numtype_u1 is Inn, then:
+  a. If the type of numtype_u1 is Inn, then:
     1) Let Inn_1 be numtype_u1.
-    2) Let iN_1 be num__u3.
-    3) If ($size(Inn_1) is $size(Fnn_2)), then:
+    1) Let iN_1 be num__u3.
+    1) If ($size(Inn_1) is $size(Fnn_2)), then:
       a) Return [$reinterpret__(Inn_1, Fnn_2, iN_1)].
-9. Assert: Due to validation, the type of numtype_u1 is Fnn.
-10. Let Fnn_1 be numtype_u1.
-11. Assert: Due to validation, the type of numtype_u4 is Inn.
-12. Let Inn_2 be numtype_u4.
-13. Let fN_1 be num__u3.
-14. Assert: Due to validation, ($size(Fnn_1) is $size(Inn_2)).
-15. Return [$reinterpret__(Fnn_1, Inn_2, fN_1)].
+1. Assert: Due to validation, the type of numtype_u1 is Fnn.
+1. Let Fnn_1 be numtype_u1.
+1. Assert: Due to validation, the type of numtype_u4 is Inn.
+1. Let Inn_2 be numtype_u4.
+1. Let fN_1 be num__u3.
+1. Assert: Due to validation, ($size(Fnn_1) is $size(Inn_2)).
+1. Return [$reinterpret__(Fnn_1, Inn_2, fN_1)].
 
 invibytes_ N b*
 1. Let n be $ibytes__1^-1(N, b*).
-2. Return n.
+1. Return n.
 
 invfbytes_ N b*
 1. Let p be $fbytes__1^-1(N, b*).
-2. Return p.
+1. Return p.
 
 packnum_ lanetype_u0 c
 1. If the type of lanetype_u0 is numtype, then:
   a. Return c.
-2. Assert: Due to validation, the type of lanetype_u0 is packtype.
-3. Let packtype be lanetype_u0.
-4. Return $wrap__($size($unpack(packtype)), $psize(packtype), c).
+1. Assert: Due to validation, the type of lanetype_u0 is packtype.
+1. Let packtype be lanetype_u0.
+1. Return $wrap__($size($unpack(packtype)), $psize(packtype), c).
 
 unpacknum_ lanetype_u0 c
 1. If the type of lanetype_u0 is numtype, then:
   a. Return c.
-2. Assert: Due to validation, the type of lanetype_u0 is packtype.
-3. Let packtype be lanetype_u0.
-4. Return $extend__($psize(packtype), $size($unpack(packtype)), U, c).
+1. Assert: Due to validation, the type of lanetype_u0 is packtype.
+1. Let packtype be lanetype_u0.
+1. Return $extend__($psize(packtype), $size($unpack(packtype)), U, c).
 
 invlanes_ sh c*
 1. Let vc be $lanes__1^-1(sh, c*).
-2. Return vc.
+1. Return vc.
 
 half half_u0 i j
 1. If (half_u0 is LOW), then:
   a. Return i.
-2. Assert: Due to validation, (half_u0 is HIGH).
-3. Return j.
+1. Assert: Due to validation, (half_u0 is HIGH).
+1. Return j.
 
 vvunop_ V128 NOT v128
 1. Return $inot_($size(V128), v128).
@@ -10681,12 +10715,12 @@ vvunop_ V128 NOT v128
 vvbinop_ V128 vvbinop_u0 v128_1 v128_2
 1. If (vvbinop_u0 is AND), then:
   a. Return $iand_($size(V128), v128_1, v128_2).
-2. If (vvbinop_u0 is ANDNOT), then:
+1. If (vvbinop_u0 is ANDNOT), then:
   a. Return $iandnot_($size(V128), v128_1, v128_2).
-3. If (vvbinop_u0 is OR), then:
+1. If (vvbinop_u0 is OR), then:
   a. Return $ior_($size(V128), v128_1, v128_2).
-4. Assert: Due to validation, (vvbinop_u0 is XOR).
-5. Return $ixor_($size(V128), v128_1, v128_2).
+1. Assert: Due to validation, (vvbinop_u0 is XOR).
+1. Return $ixor_($size(V128), v128_1, v128_2).
 
 vvternop_ V128 BITSELECT v128_1 v128_2 v128_3
 1. Return $ibitselect_($size(V128), v128_1, v128_2, v128_3).
@@ -10694,410 +10728,410 @@ vvternop_ V128 BITSELECT v128_1 v128_2 v128_3
 vunop_ (lanetype_u1 X M) vunop__u0 v128_1
 1. If ((vunop__u0 is ABS) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let v128 be $invlanes_((Jnn X M), $iabs_($lsizenn(Jnn), lane_1)*).
-  d. Return [v128].
-2. If ((vunop__u0 is NEG) and the type of lanetype_u1 is Jnn), then:
+  a. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  a. Let v128 be $invlanes_((Jnn X M), $iabs_($lsizenn(Jnn), lane_1)*).
+  a. Return [v128].
+1. If ((vunop__u0 is NEG) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let v128 be $invlanes_((Jnn X M), $ineg_($lsizenn(Jnn), lane_1)*).
-  d. Return [v128].
-3. If ((vunop__u0 is POPCNT) and the type of lanetype_u1 is Jnn), then:
+  a. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  a. Let v128 be $invlanes_((Jnn X M), $ineg_($lsizenn(Jnn), lane_1)*).
+  a. Return [v128].
+1. If ((vunop__u0 is POPCNT) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let v128 be $invlanes_((Jnn X M), $ipopcnt_($lsizenn(Jnn), lane_1)*).
-  d. Return [v128].
-4. If ((vunop__u0 is ABS) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  a. Let v128 be $invlanes_((Jnn X M), $ipopcnt_($lsizenn(Jnn), lane_1)*).
+  a. Return [v128].
+1. If ((vunop__u0 is ABS) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fabs_($sizenn(Fnn), lane_1)*).
-  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  e. Return v128*.
-5. If ((vunop__u0 is NEG) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fabs_($sizenn(Fnn), lane_1)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. If ((vunop__u0 is NEG) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fneg_($sizenn(Fnn), lane_1)*).
-  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  e. Return v128*.
-6. If ((vunop__u0 is SQRT) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fneg_($sizenn(Fnn), lane_1)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. If ((vunop__u0 is SQRT) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fsqrt_($sizenn(Fnn), lane_1)*).
-  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  e. Return v128*.
-7. If ((vunop__u0 is CEIL) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fsqrt_($sizenn(Fnn), lane_1)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. If ((vunop__u0 is CEIL) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fceil_($sizenn(Fnn), lane_1)*).
-  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  e. Return v128*.
-8. If ((vunop__u0 is FLOOR) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fceil_($sizenn(Fnn), lane_1)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. If ((vunop__u0 is FLOOR) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $ffloor_($sizenn(Fnn), lane_1)*).
-  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  e. Return v128*.
-9. If ((vunop__u0 is TRUNC) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $ffloor_($sizenn(Fnn), lane_1)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. If ((vunop__u0 is TRUNC) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $ftrunc_($sizenn(Fnn), lane_1)*).
-  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  e. Return v128*.
-10. Assert: Due to validation, (vunop__u0 is NEAREST).
-11. Assert: Due to validation, the type of lanetype_u1 is Fnn.
-12. Let Fnn be lanetype_u1.
-13. Let lane_1* be $lanes_((Fnn X M), v128_1).
-14. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fnearest_($sizenn(Fnn), lane_1)*).
-15. Let v128* be $invlanes_((Fnn X M), lane*)*.
-16. Return v128*.
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $ftrunc_($sizenn(Fnn), lane_1)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. Assert: Due to validation, (vunop__u0 is NEAREST).
+1. Assert: Due to validation, the type of lanetype_u1 is Fnn.
+1. Let Fnn be lanetype_u1.
+1. Let lane_1* be $lanes_((Fnn X M), v128_1).
+1. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fnearest_($sizenn(Fnn), lane_1)*).
+1. Let v128* be $invlanes_((Fnn X M), lane*)*.
+1. Return v128*.
 
 vbinop_ (lanetype_u1 X M) vbinop__u0 v128_1 v128_2
 1. If ((vbinop__u0 is ADD) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let v128 be $invlanes_((Jnn X M), $iadd_($lsizenn(Jnn), lane_1, lane_2)*).
-  e. Return [v128].
-2. If ((vbinop__u0 is SUB) and the type of lanetype_u1 is Jnn), then:
+  a. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  a. Let v128 be $invlanes_((Jnn X M), $iadd_($lsizenn(Jnn), lane_1, lane_2)*).
+  a. Return [v128].
+1. If ((vbinop__u0 is SUB) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let v128 be $invlanes_((Jnn X M), $isub_($lsizenn(Jnn), lane_1, lane_2)*).
-  e. Return [v128].
-3. If the type of lanetype_u1 is Jnn, then:
+  a. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  a. Let v128 be $invlanes_((Jnn X M), $isub_($lsizenn(Jnn), lane_1, lane_2)*).
+  a. Return [v128].
+1. If the type of lanetype_u1 is Jnn, then:
   a. Let Jnn be lanetype_u1.
-  b. If vbinop__u0 is of the case MIN, then:
+  a. If vbinop__u0 is of the case MIN, then:
     1) Let (MIN sx) be vbinop__u0.
-    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
-    4) Let v128 be $invlanes_((Jnn X M), $imin_($lsizenn(Jnn), sx, lane_1, lane_2)*).
-    5) Return [v128].
-  c. If vbinop__u0 is of the case MAX, then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    1) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    1) Let v128 be $invlanes_((Jnn X M), $imin_($lsizenn(Jnn), sx, lane_1, lane_2)*).
+    1) Return [v128].
+  a. If vbinop__u0 is of the case MAX, then:
     1) Let (MAX sx) be vbinop__u0.
-    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
-    4) Let v128 be $invlanes_((Jnn X M), $imax_($lsizenn(Jnn), sx, lane_1, lane_2)*).
-    5) Return [v128].
-  d. If vbinop__u0 is of the case ADD_SAT, then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    1) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    1) Let v128 be $invlanes_((Jnn X M), $imax_($lsizenn(Jnn), sx, lane_1, lane_2)*).
+    1) Return [v128].
+  a. If vbinop__u0 is of the case ADD_SAT, then:
     1) Let (ADD_SAT sx) be vbinop__u0.
-    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
-    4) Let v128 be $invlanes_((Jnn X M), $iadd_sat_($lsizenn(Jnn), sx, lane_1, lane_2)*).
-    5) Return [v128].
-  e. If vbinop__u0 is of the case SUB_SAT, then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    1) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    1) Let v128 be $invlanes_((Jnn X M), $iadd_sat_($lsizenn(Jnn), sx, lane_1, lane_2)*).
+    1) Return [v128].
+  a. If vbinop__u0 is of the case SUB_SAT, then:
     1) Let (SUB_SAT sx) be vbinop__u0.
-    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
-    4) Let v128 be $invlanes_((Jnn X M), $isub_sat_($lsizenn(Jnn), sx, lane_1, lane_2)*).
-    5) Return [v128].
-4. If ((vbinop__u0 is MUL) and the type of lanetype_u1 is Jnn), then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    1) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    1) Let v128 be $invlanes_((Jnn X M), $isub_sat_($lsizenn(Jnn), sx, lane_1, lane_2)*).
+    1) Return [v128].
+1. If ((vbinop__u0 is MUL) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let v128 be $invlanes_((Jnn X M), $imul_($lsizenn(Jnn), lane_1, lane_2)*).
-  e. Return [v128].
-5. If ((vbinop__u0 is (AVGRU)) and the type of lanetype_u1 is Jnn), then:
+  a. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  a. Let v128 be $invlanes_((Jnn X M), $imul_($lsizenn(Jnn), lane_1, lane_2)*).
+  a. Return [v128].
+1. If ((vbinop__u0 is (AVGRU)) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let v128 be $invlanes_((Jnn X M), $iavgr_($lsizenn(Jnn), U, lane_1, lane_2)*).
-  e. Return [v128].
-6. If ((vbinop__u0 is (Q15MULR_SATS)) and the type of lanetype_u1 is Jnn), then:
+  a. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  a. Let v128 be $invlanes_((Jnn X M), $iavgr_($lsizenn(Jnn), U, lane_1, lane_2)*).
+  a. Return [v128].
+1. If ((vbinop__u0 is (Q15MULR_SATS)) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let v128 be $invlanes_((Jnn X M), $iq15mulr_sat_($lsizenn(Jnn), S, lane_1, lane_2)*).
-  e. Return [v128].
-7. If ((vbinop__u0 is ADD) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  a. Let v128 be $invlanes_((Jnn X M), $iq15mulr_sat_($lsizenn(Jnn), S, lane_1, lane_2)*).
+  a. Return [v128].
+1. If ((vbinop__u0 is ADD) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fadd_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  f. Return v128*.
-8. If ((vbinop__u0 is SUB) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fadd_($sizenn(Fnn), lane_1, lane_2)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. If ((vbinop__u0 is SUB) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fsub_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  f. Return v128*.
-9. If ((vbinop__u0 is MUL) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fsub_($sizenn(Fnn), lane_1, lane_2)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. If ((vbinop__u0 is MUL) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fmul_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  f. Return v128*.
-10. If ((vbinop__u0 is DIV) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fmul_($sizenn(Fnn), lane_1, lane_2)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. If ((vbinop__u0 is DIV) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fdiv_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  f. Return v128*.
-11. If ((vbinop__u0 is MIN) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fdiv_($sizenn(Fnn), lane_1, lane_2)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. If ((vbinop__u0 is MIN) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fmin_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  f. Return v128*.
-12. If ((vbinop__u0 is MAX) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fmin_($sizenn(Fnn), lane_1, lane_2)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. If ((vbinop__u0 is MAX) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fmax_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  f. Return v128*.
-13. If ((vbinop__u0 is PMIN) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fmax_($sizenn(Fnn), lane_1, lane_2)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. If ((vbinop__u0 is PMIN) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fpmin_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  f. Return v128*.
-14. Assert: Due to validation, (vbinop__u0 is PMAX).
-15. Assert: Due to validation, the type of lanetype_u1 is Fnn.
-16. Let Fnn be lanetype_u1.
-17. Let lane_1* be $lanes_((Fnn X M), v128_1).
-18. Let lane_2* be $lanes_((Fnn X M), v128_2).
-19. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fpmax_($sizenn(Fnn), lane_1, lane_2)*).
-20. Let v128* be $invlanes_((Fnn X M), lane*)*.
-21. Return v128*.
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fpmin_($sizenn(Fnn), lane_1, lane_2)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. Assert: Due to validation, (vbinop__u0 is PMAX).
+1. Assert: Due to validation, the type of lanetype_u1 is Fnn.
+1. Let Fnn be lanetype_u1.
+1. Let lane_1* be $lanes_((Fnn X M), v128_1).
+1. Let lane_2* be $lanes_((Fnn X M), v128_2).
+1. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fpmax_($sizenn(Fnn), lane_1, lane_2)*).
+1. Let v128* be $invlanes_((Fnn X M), lane*)*.
+1. Return v128*.
 
 vrelop_ (lanetype_u1 X M) vrelop__u0 v128_1 v128_2
 1. If ((vrelop__u0 is EQ) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ieq_($lsizenn(Jnn), lane_1, lane_2))*.
-  e. Let v128 be $invlanes_((Jnn X M), lane_3*).
-  f. Return v128.
-2. If ((vrelop__u0 is NE) and the type of lanetype_u1 is Jnn), then:
+  a. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  a. Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ieq_($lsizenn(Jnn), lane_1, lane_2))*.
+  a. Let v128 be $invlanes_((Jnn X M), lane_3*).
+  a. Return v128.
+1. If ((vrelop__u0 is NE) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ine_($lsizenn(Jnn), lane_1, lane_2))*.
-  e. Let v128 be $invlanes_((Jnn X M), lane_3*).
-  f. Return v128.
-3. If the type of lanetype_u1 is Jnn, then:
+  a. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  a. Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ine_($lsizenn(Jnn), lane_1, lane_2))*.
+  a. Let v128 be $invlanes_((Jnn X M), lane_3*).
+  a. Return v128.
+1. If the type of lanetype_u1 is Jnn, then:
   a. Let Jnn be lanetype_u1.
-  b. If vrelop__u0 is of the case LT, then:
+  a. If vrelop__u0 is of the case LT, then:
     1) Let (LT sx) be vrelop__u0.
-    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
-    4) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ilt_($lsizenn(Jnn), sx, lane_1, lane_2))*.
-    5) Let v128 be $invlanes_((Jnn X M), lane_3*).
-    6) Return v128.
-  c. If vrelop__u0 is of the case GT, then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    1) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    1) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ilt_($lsizenn(Jnn), sx, lane_1, lane_2))*.
+    1) Let v128 be $invlanes_((Jnn X M), lane_3*).
+    1) Return v128.
+  a. If vrelop__u0 is of the case GT, then:
     1) Let (GT sx) be vrelop__u0.
-    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
-    4) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $igt_($lsizenn(Jnn), sx, lane_1, lane_2))*.
-    5) Let v128 be $invlanes_((Jnn X M), lane_3*).
-    6) Return v128.
-  d. If vrelop__u0 is of the case LE, then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    1) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    1) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $igt_($lsizenn(Jnn), sx, lane_1, lane_2))*.
+    1) Let v128 be $invlanes_((Jnn X M), lane_3*).
+    1) Return v128.
+  a. If vrelop__u0 is of the case LE, then:
     1) Let (LE sx) be vrelop__u0.
-    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
-    4) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ile_($lsizenn(Jnn), sx, lane_1, lane_2))*.
-    5) Let v128 be $invlanes_((Jnn X M), lane_3*).
-    6) Return v128.
-  e. If vrelop__u0 is of the case GE, then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    1) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    1) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ile_($lsizenn(Jnn), sx, lane_1, lane_2))*.
+    1) Let v128 be $invlanes_((Jnn X M), lane_3*).
+    1) Return v128.
+  a. If vrelop__u0 is of the case GE, then:
     1) Let (GE sx) be vrelop__u0.
-    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
-    4) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ige_($lsizenn(Jnn), sx, lane_1, lane_2))*.
-    5) Let v128 be $invlanes_((Jnn X M), lane_3*).
-    6) Return v128.
-4. If ((vrelop__u0 is EQ) and the type of lanetype_u1 is Fnn), then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    1) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    1) Let lane_3* be $extend__(1, $lsizenn(Jnn), S, $ige_($lsizenn(Jnn), sx, lane_1, lane_2))*.
+    1) Let v128 be $invlanes_((Jnn X M), lane_3*).
+    1) Return v128.
+1. If ((vrelop__u0 is EQ) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $feq_($sizenn(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X M), lane_3*).
-  g. Return v128.
-5. If ((vrelop__u0 is NE) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  a. Let Inn be $isize^-1($size(Fnn)).
+  a. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $feq_($sizenn(Fnn), lane_1, lane_2))*.
+  a. Let v128 be $invlanes_((Inn X M), lane_3*).
+  a. Return v128.
+1. If ((vrelop__u0 is NE) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fne_($sizenn(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X M), lane_3*).
-  g. Return v128.
-6. If ((vrelop__u0 is LT) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  a. Let Inn be $isize^-1($size(Fnn)).
+  a. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fne_($sizenn(Fnn), lane_1, lane_2))*.
+  a. Let v128 be $invlanes_((Inn X M), lane_3*).
+  a. Return v128.
+1. If ((vrelop__u0 is LT) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $flt_($sizenn(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X M), lane_3*).
-  g. Return v128.
-7. If ((vrelop__u0 is GT) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  a. Let Inn be $isize^-1($size(Fnn)).
+  a. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $flt_($sizenn(Fnn), lane_1, lane_2))*.
+  a. Let v128 be $invlanes_((Inn X M), lane_3*).
+  a. Return v128.
+1. If ((vrelop__u0 is GT) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fgt_($sizenn(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X M), lane_3*).
-  g. Return v128.
-8. If ((vrelop__u0 is LE) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  a. Let Inn be $isize^-1($size(Fnn)).
+  a. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fgt_($sizenn(Fnn), lane_1, lane_2))*.
+  a. Let v128 be $invlanes_((Inn X M), lane_3*).
+  a. Return v128.
+1. If ((vrelop__u0 is LE) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fle_($sizenn(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X M), lane_3*).
-  g. Return v128.
-9. Assert: Due to validation, (vrelop__u0 is GE).
-10. Assert: Due to validation, the type of lanetype_u1 is Fnn.
-11. Let Fnn be lanetype_u1.
-12. Let lane_1* be $lanes_((Fnn X M), v128_1).
-13. Let lane_2* be $lanes_((Fnn X M), v128_2).
-14. Let Inn be $isize^-1($size(Fnn)).
-15. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fge_($sizenn(Fnn), lane_1, lane_2))*.
-16. Let v128 be $invlanes_((Inn X M), lane_3*).
-17. Return v128.
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  a. Let Inn be $isize^-1($size(Fnn)).
+  a. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fle_($sizenn(Fnn), lane_1, lane_2))*.
+  a. Let v128 be $invlanes_((Inn X M), lane_3*).
+  a. Return v128.
+1. Assert: Due to validation, (vrelop__u0 is GE).
+1. Assert: Due to validation, the type of lanetype_u1 is Fnn.
+1. Let Fnn be lanetype_u1.
+1. Let lane_1* be $lanes_((Fnn X M), v128_1).
+1. Let lane_2* be $lanes_((Fnn X M), v128_2).
+1. Let Inn be $isize^-1($size(Fnn)).
+1. Let lane_3* be $extend__(1, $sizenn(Fnn), S, $fge_($sizenn(Fnn), lane_1, lane_2))*.
+1. Let v128 be $invlanes_((Inn X M), lane_3*).
+1. Return v128.
 
 vcvtop__ (lanetype_u2 X M_1) (lanetype_u0 X M_2) vcvtop_u1 lane__u4
 1. If the type of lanetype_u2 is Jnn, then:
   a. Let Jnn_1 be lanetype_u2.
-  b. If the type of lanetype_u0 is Jnn, then:
+  a. If the type of lanetype_u0 is Jnn, then:
     1) Let Jnn_2 be lanetype_u0.
-    2) Let iN_1 be lane__u4.
-    3) If vcvtop_u1 is of the case EXTEND, then:
+    1) Let iN_1 be lane__u4.
+    1) If vcvtop_u1 is of the case EXTEND, then:
       a) Let (EXTEND sx) be vcvtop_u1.
-      b) Let iN_2 be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, iN_1).
-      c) Return [iN_2].
-2. If the type of lanetype_u0 is Fnn, then:
+      a) Let iN_2 be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, iN_1).
+      a) Return [iN_2].
+1. If the type of lanetype_u0 is Fnn, then:
   a. Let Fnn_2 be lanetype_u0.
-  b. If the type of lanetype_u2 is Jnn, then:
+  a. If the type of lanetype_u2 is Jnn, then:
     1) Let Jnn_1 be lanetype_u2.
-    2) Let iN_1 be lane__u4.
-    3) If vcvtop_u1 is of the case CONVERT, then:
+    1) Let iN_1 be lane__u4.
+    1) If vcvtop_u1 is of the case CONVERT, then:
       a) Let (CONVERT sx) be vcvtop_u1.
-      b) Let fN_2 be $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, iN_1).
-      c) Return [fN_2].
-3. If the type of lanetype_u2 is Fnn, then:
+      a) Let fN_2 be $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, iN_1).
+      a) Return [fN_2].
+1. If the type of lanetype_u2 is Fnn, then:
   a. Let Fnn_1 be lanetype_u2.
-  b. If the type of lanetype_u0 is Inn, then:
+  a. If the type of lanetype_u0 is Inn, then:
     1) Let Inn_2 be lanetype_u0.
-    2) Let fN_1 be lane__u4.
-    3) If vcvtop_u1 is of the case TRUNC_SAT, then:
+    1) Let fN_1 be lane__u4.
+    1) If vcvtop_u1 is of the case TRUNC_SAT, then:
       a) Let (TRUNC_SAT sx) be vcvtop_u1.
-      b) Let iN_2? be $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, fN_1).
-      c) Return $list_(lane_((Inn_2 : Inn <: lanetype)), iN_2?).
-4. If ((vcvtop_u1 is DEMOTE) and the type of lanetype_u2 is Fnn), then:
+      a) Let iN_2? be $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, fN_1).
+      a) Return $list_(lane_((Inn_2 : Inn <: lanetype)), iN_2?).
+1. If ((vcvtop_u1 is DEMOTE) and the type of lanetype_u2 is Fnn), then:
   a. Let Fnn_1 be lanetype_u2.
-  b. If the type of lanetype_u0 is Fnn, then:
+  a. If the type of lanetype_u0 is Fnn, then:
     1) Let Fnn_2 be lanetype_u0.
-    2) Let fN_1 be lane__u4.
-    3) Let fN_2* be $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
-    4) Return fN_2*.
-5. Assert: Due to validation, (vcvtop_u1 is PROMOTE).
-6. Assert: Due to validation, the type of lanetype_u2 is Fnn.
-7. Let Fnn_1 be lanetype_u2.
-8. Assert: Due to validation, the type of lanetype_u0 is Fnn.
-9. Let Fnn_2 be lanetype_u0.
-10. Let fN_1 be lane__u4.
-11. Let fN_2* be $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
-12. Return fN_2*.
+    1) Let fN_1 be lane__u4.
+    1) Let fN_2* be $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
+    1) Return fN_2*.
+1. Assert: Due to validation, (vcvtop_u1 is PROMOTE).
+1. Assert: Due to validation, the type of lanetype_u2 is Fnn.
+1. Let Fnn_1 be lanetype_u2.
+1. Assert: Due to validation, the type of lanetype_u0 is Fnn.
+1. Let Fnn_2 be lanetype_u0.
+1. Let fN_1 be lane__u4.
+1. Let fN_2* be $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
+1. Return fN_2*.
 
 vextunop__ (Inn_1 X M_1) (Inn_2 X M_2) (EXTADD_PAIRWISE sx) c_1
 1. Let ci* be $lanes_((Inn_2 X M_2), c_1).
-2. Let [cj_1, cj_2]* be $concat__1^-1(iN($lsizenn1((Inn_1 : Inn <: lanetype))), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci)*).
-3. Let c be $invlanes_((Inn_1 X M_1), $iadd_($lsizenn1(Inn_1), cj_1, cj_2)*).
-4. Return c.
+1. Let [cj_1, cj_2]* be $concat__1^-1(iN($lsizenn1((Inn_1 : Inn <: lanetype))), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci)*).
+1. Let c be $invlanes_((Inn_1 X M_1), $iadd_($lsizenn1(Inn_1), cj_1, cj_2)*).
+1. Return c.
 
 vextbinop__ (Inn_1 X M_1) (Inn_2 X M_2) vextbinop__u0 c_1 c_2
 1. If vextbinop__u0 is of the case EXTMUL, then:
   a. Let (EXTMUL sx hf) be vextbinop__u0.
-  b. Let ci_1* be $lanes_((Inn_2 X M_2), c_1)[$half(hf, 0, M_1) : M_1].
-  c. Let ci_2* be $lanes_((Inn_2 X M_2), c_2)[$half(hf, 0, M_1) : M_1].
-  d. Let c be $invlanes_((Inn_1 X M_1), $imul_($lsizenn1(Inn_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci_2))*).
-  e. Return c.
-2. Assert: Due to validation, (vextbinop__u0 is (DOTS)).
-3. Let ci_1* be $lanes_((Inn_2 X M_2), c_1).
-4. Let ci_2* be $lanes_((Inn_2 X M_2), c_2).
-5. Let [cj_1, cj_2]* be $concat__1^-1(iN($lsizenn1((Inn_1 : Inn <: lanetype))), $imul_($lsizenn1(Inn_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), S, ci_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), S, ci_2))*).
-6. Let c be $invlanes_((Inn_1 X M_1), $iadd_($lsizenn1(Inn_1), cj_1, cj_2)*).
-7. Return c.
+  a. Let ci_1* be $lanes_((Inn_2 X M_2), c_1)[$half(hf, 0, M_1) : M_1].
+  a. Let ci_2* be $lanes_((Inn_2 X M_2), c_2)[$half(hf, 0, M_1) : M_1].
+  a. Let c be $invlanes_((Inn_1 X M_1), $imul_($lsizenn1(Inn_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci_2))*).
+  a. Return c.
+1. Assert: Due to validation, (vextbinop__u0 is (DOTS)).
+1. Let ci_1* be $lanes_((Inn_2 X M_2), c_1).
+1. Let ci_2* be $lanes_((Inn_2 X M_2), c_2).
+1. Let [cj_1, cj_2]* be $concat__1^-1(iN($lsizenn1((Inn_1 : Inn <: lanetype))), $imul_($lsizenn1(Inn_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), S, ci_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), S, ci_2))*).
+1. Let c be $invlanes_((Inn_1 X M_1), $iadd_($lsizenn1(Inn_1), cj_1, cj_2)*).
+1. Return c.
 
 vshiftop_ (Jnn X M) vshiftop__u0 lane n
 1. If (vshiftop__u0 is SHL), then:
   a. Return $ishl_($lsizenn(Jnn), lane, n).
-2. Assert: Due to validation, vshiftop__u0 is of the case SHR.
-3. Let (SHR sx) be vshiftop__u0.
-4. Return $ishr_($lsizenn(Jnn), sx, lane, n).
+1. Assert: Due to validation, vshiftop__u0 is of the case SHR.
+1. Let (SHR sx) be vshiftop__u0.
+1. Return $ishr_($lsizenn(Jnn), sx, lane, n).
 
 default_ valtype_u0
 1. If (valtype_u0 is I32), then:
   a. Return (I32.CONST 0).
-2. If (valtype_u0 is I64), then:
+1. If (valtype_u0 is I64), then:
   a. Return (I64.CONST 0).
-3. If (valtype_u0 is F32), then:
+1. If (valtype_u0 is F32), then:
   a. Return (F32.CONST $fzero(32)).
-4. If (valtype_u0 is F64), then:
+1. If (valtype_u0 is F64), then:
   a. Return (F64.CONST $fzero(64)).
-5. If (valtype_u0 is V128), then:
+1. If (valtype_u0 is V128), then:
   a. Return (V128.CONST 0).
-6. If (valtype_u0 is FUNCREF), then:
+1. If (valtype_u0 is FUNCREF), then:
   a. Return (REF.NULL FUNCREF).
-7. Assert: Due to validation, (valtype_u0 is EXTERNREF).
-8. Return (REF.NULL EXTERNREF).
+1. Assert: Due to validation, (valtype_u0 is EXTERNREF).
+1. Return (REF.NULL EXTERNREF).
 
 funcsxa externaddr_u0*
 1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externaddr_0] ++ xv* be externaddr_u0*.
-3. If externaddr_0 is of the case FUNC, then:
+1. Let [externaddr_0] ++ xv* be externaddr_u0*.
+1. If externaddr_0 is of the case FUNC, then:
   a. Let (FUNC fa) be externaddr_0.
-  b. Return [fa] ++ $funcsxa(xv*).
-4. Let [externaddr] ++ xv* be externaddr_u0*.
-5. Return $funcsxa(xv*).
+  a. Return [fa] ++ $funcsxa(xv*).
+1. Let [externaddr] ++ xv* be externaddr_u0*.
+1. Return $funcsxa(xv*).
 
 globalsxa externaddr_u0*
 1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externaddr_0] ++ xv* be externaddr_u0*.
-3. If externaddr_0 is of the case GLOBAL, then:
+1. Let [externaddr_0] ++ xv* be externaddr_u0*.
+1. If externaddr_0 is of the case GLOBAL, then:
   a. Let (GLOBAL ga) be externaddr_0.
-  b. Return [ga] ++ $globalsxa(xv*).
-4. Let [externaddr] ++ xv* be externaddr_u0*.
-5. Return $globalsxa(xv*).
+  a. Return [ga] ++ $globalsxa(xv*).
+1. Let [externaddr] ++ xv* be externaddr_u0*.
+1. Return $globalsxa(xv*).
 
 tablesxa externaddr_u0*
 1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externaddr_0] ++ xv* be externaddr_u0*.
-3. If externaddr_0 is of the case TABLE, then:
+1. Let [externaddr_0] ++ xv* be externaddr_u0*.
+1. If externaddr_0 is of the case TABLE, then:
   a. Let (TABLE ta) be externaddr_0.
-  b. Return [ta] ++ $tablesxa(xv*).
-4. Let [externaddr] ++ xv* be externaddr_u0*.
-5. Return $tablesxa(xv*).
+  a. Return [ta] ++ $tablesxa(xv*).
+1. Let [externaddr] ++ xv* be externaddr_u0*.
+1. Return $tablesxa(xv*).
 
 memsxa externaddr_u0*
 1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externaddr_0] ++ xv* be externaddr_u0*.
-3. If externaddr_0 is of the case MEM, then:
+1. Let [externaddr_0] ++ xv* be externaddr_u0*.
+1. If externaddr_0 is of the case MEM, then:
   a. Let (MEM ma) be externaddr_0.
-  b. Return [ma] ++ $memsxa(xv*).
-4. Let [externaddr] ++ xv* be externaddr_u0*.
-5. Return $memsxa(xv*).
+  a. Return [ma] ++ $memsxa(xv*).
+1. Let [externaddr] ++ xv* be externaddr_u0*.
+1. Return $memsxa(xv*).
 
 store
 1. Return.
 
 frame
 1. Let f be the current frame.
-2. Return f.
+1. Return f.
 
 funcaddr
 1. Let f be the current frame.
-2. Return f.MODULE.FUNCS.
+1. Return f.MODULE.FUNCS.
 
 funcinst
 1. Return s.FUNCS.
@@ -11119,359 +11153,355 @@ datainst
 
 moduleinst
 1. Let f be the current frame.
-2. Return f.MODULE.
+1. Return f.MODULE.
 
 type x
 1. Let f be the current frame.
-2. Return f.MODULE.TYPES[x].
+1. Return f.MODULE.TYPES[x].
 
 func x
 1. Let f be the current frame.
-2. Return s.FUNCS[f.MODULE.FUNCS[x]].
+1. Return s.FUNCS[f.MODULE.FUNCS[x]].
 
 global x
 1. Let f be the current frame.
-2. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
+1. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
 
 table x
 1. Let f be the current frame.
-2. Return s.TABLES[f.MODULE.TABLES[x]].
+1. Return s.TABLES[f.MODULE.TABLES[x]].
 
 mem x
 1. Let f be the current frame.
-2. Return s.MEMS[f.MODULE.MEMS[x]].
+1. Return s.MEMS[f.MODULE.MEMS[x]].
 
 elem x
 1. Let f be the current frame.
-2. Return s.ELEMS[f.MODULE.ELEMS[x]].
+1. Return s.ELEMS[f.MODULE.ELEMS[x]].
 
 data x
 1. Let f be the current frame.
-2. Return s.DATAS[f.MODULE.DATAS[x]].
+1. Return s.DATAS[f.MODULE.DATAS[x]].
 
 local x
 1. Let f be the current frame.
-2. Return f.LOCALS[x].
+1. Return f.LOCALS[x].
 
 with_local x v
 1. Let f be the current frame.
-2. Replace f.LOCALS[x] with v.
+1. Replace f.LOCALS[x] with v.
 
 with_global x v
 1. Let f be the current frame.
-2. Replace s.GLOBALS[f.MODULE.GLOBALS[x]].VALUE with v.
+1. Replace s.GLOBALS[f.MODULE.GLOBALS[x]].VALUE with v.
 
 with_table x i r
 1. Let f be the current frame.
-2. Replace s.TABLES[f.MODULE.TABLES[x]].REFS[i] with r.
+1. Replace s.TABLES[f.MODULE.TABLES[x]].REFS[i] with r.
 
 with_tableinst x ti
 1. Let f be the current frame.
-2. Replace s.TABLES[f.MODULE.TABLES[x]] with ti.
+1. Replace s.TABLES[f.MODULE.TABLES[x]] with ti.
 
 with_mem x i j b*
 1. Let f be the current frame.
-2. Replace s.MEMS[f.MODULE.MEMS[x]].BYTES[i : j] with b*.
+1. Replace s.MEMS[f.MODULE.MEMS[x]].BYTES[i : j] with b*.
 
 with_meminst x mi
 1. Let f be the current frame.
-2. Replace s.MEMS[f.MODULE.MEMS[x]] with mi.
+1. Replace s.MEMS[f.MODULE.MEMS[x]] with mi.
 
 with_elem x r*
 1. Let f be the current frame.
-2. Replace s.ELEMS[f.MODULE.ELEMS[x]].REFS with r*.
+1. Replace s.ELEMS[f.MODULE.ELEMS[x]].REFS with r*.
 
 with_data x b*
 1. Let f be the current frame.
-2. Replace s.DATAS[f.MODULE.DATAS[x]].BYTES with b*.
+1. Replace s.DATAS[f.MODULE.DATAS[x]].BYTES with b*.
 
 growtable ti n r
 1. Let { TYPE: ((i, j), rt); REFS: r'*; } be ti.
-2. Let i' be (|r'*| + n).
-3. If (i' ≤ j), then:
+1. Let i' be (|r'*| + n).
+1. If (i' ≤ j), then:
   a. Let ti' be { TYPE: ((i', j), rt); REFS: r'* ++ r^n; }.
-  b. Return ti'.
+  a. Return ti'.
 
 growmemory mi n
 1. Let { TYPE: ((i, j) PAGE); BYTES: b*; } be mi.
-2. Let i' be ((|b*| / (64 · $Ki())) + n).
-3. If (i' ≤ j), then:
+1. Let i' be ((|b*| / (64 · $Ki())) + n).
+1. If (i' ≤ j), then:
   a. Let mi' be { TYPE: ((i', j) PAGE); BYTES: b* ++ 0^(n · (64 · $Ki())); }.
-  b. Return mi'.
+  a. Return mi'.
 
 blocktype z blocktype_u1
 1. If (blocktype_u1 is (_RESULT ?())), then:
   a. Return ([] -> []).
-2. If blocktype_u1 is of the case _RESULT, then:
+1. If blocktype_u1 is of the case _RESULT, then:
   a. Let (_RESULT valtype_0) be blocktype_u1.
-  b. If valtype_0 is defined, then:
+  a. If valtype_0 is defined, then:
     1) Let ?(t) be valtype_0.
-    2) Return ([] -> [t]).
-3. Assert: Due to validation, blocktype_u1 is of the case _IDX.
-4. Let (_IDX x) be blocktype_u1.
-5. Return $type(z, x).
+    1) Return ([] -> [t]).
+1. Assert: Due to validation, blocktype_u1 is of the case _IDX.
+1. Let (_IDX x) be blocktype_u1.
+1. Return $type(z, x).
 
 funcs externaddr_u0*
 1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externaddr_0] ++ externaddr'* be externaddr_u0*.
-3. If externaddr_0 is of the case FUNC, then:
+1. Let [externaddr_0] ++ externaddr'* be externaddr_u0*.
+1. If externaddr_0 is of the case FUNC, then:
   a. Let (FUNC fa) be externaddr_0.
-  b. Return [fa] ++ $funcs(externaddr'*).
-4. Let [externaddr] ++ externaddr'* be externaddr_u0*.
-5. Return $funcs(externaddr'*).
+  a. Return [fa] ++ $funcs(externaddr'*).
+1. Let [externaddr] ++ externaddr'* be externaddr_u0*.
+1. Return $funcs(externaddr'*).
 
 globals externaddr_u0*
 1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externaddr_0] ++ externaddr'* be externaddr_u0*.
-3. If externaddr_0 is of the case GLOBAL, then:
+1. Let [externaddr_0] ++ externaddr'* be externaddr_u0*.
+1. If externaddr_0 is of the case GLOBAL, then:
   a. Let (GLOBAL ga) be externaddr_0.
-  b. Return [ga] ++ $globals(externaddr'*).
-4. Let [externaddr] ++ externaddr'* be externaddr_u0*.
-5. Return $globals(externaddr'*).
+  a. Return [ga] ++ $globals(externaddr'*).
+1. Let [externaddr] ++ externaddr'* be externaddr_u0*.
+1. Return $globals(externaddr'*).
 
 tables externaddr_u0*
 1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externaddr_0] ++ externaddr'* be externaddr_u0*.
-3. If externaddr_0 is of the case TABLE, then:
+1. Let [externaddr_0] ++ externaddr'* be externaddr_u0*.
+1. If externaddr_0 is of the case TABLE, then:
   a. Let (TABLE ta) be externaddr_0.
-  b. Return [ta] ++ $tables(externaddr'*).
-4. Let [externaddr] ++ externaddr'* be externaddr_u0*.
-5. Return $tables(externaddr'*).
+  a. Return [ta] ++ $tables(externaddr'*).
+1. Let [externaddr] ++ externaddr'* be externaddr_u0*.
+1. Return $tables(externaddr'*).
 
 mems externaddr_u0*
 1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externaddr_0] ++ externaddr'* be externaddr_u0*.
-3. If externaddr_0 is of the case MEM, then:
+1. Let [externaddr_0] ++ externaddr'* be externaddr_u0*.
+1. If externaddr_0 is of the case MEM, then:
   a. Let (MEM ma) be externaddr_0.
-  b. Return [ma] ++ $mems(externaddr'*).
-4. Let [externaddr] ++ externaddr'* be externaddr_u0*.
-5. Return $mems(externaddr'*).
+  a. Return [ma] ++ $mems(externaddr'*).
+1. Let [externaddr] ++ externaddr'* be externaddr_u0*.
+1. Return $mems(externaddr'*).
 
 allocfunc moduleinst func
 1. Assert: Due to validation, func is of the case FUNC.
-2. Let (FUNC x local* expr) be func.
-3. Let fi be { TYPE: moduleinst.TYPES[x]; MODULE: moduleinst; CODE: func; }.
-4. Let a be |s.FUNCS|.
-5. Append fi to the s.FUNCS.
-6. Return a.
+1. Let (FUNC x local* expr) be func.
+1. Let fi be { TYPE: moduleinst.TYPES[x]; MODULE: moduleinst; CODE: func; }.
+1. Let a be |s.FUNCS|.
+1. Append fi to the s.FUNCS.
+1. Return a.
 
 allocfuncs moduleinst func_u0*
 1. If (func_u0* is []), then:
   a. Return [].
-2. Let [func] ++ func'* be func_u0*.
-3. Let fa be $allocfunc(moduleinst, func).
-4. Let fa'* be $allocfuncs(moduleinst, func'*).
-5. Return [fa] ++ fa'*.
+1. Let [func] ++ func'* be func_u0*.
+1. Let fa be $allocfunc(moduleinst, func).
+1. Let fa'* be $allocfuncs(moduleinst, func'*).
+1. Return [fa] ++ fa'*.
 
 allocglobal globaltype val
 1. Let gi be { TYPE: globaltype; VALUE: val; }.
-2. Let a be |s.GLOBALS|.
-3. Append gi to the s.GLOBALS.
-4. Return a.
+1. Let a be |s.GLOBALS|.
+1. Append gi to the s.GLOBALS.
+1. Return a.
 
 allocglobals globaltype_u0* val_u1*
 1. If (globaltype_u0* is []), then:
   a. Assert: Due to validation, (val_u1* is []).
-  b. Return [].
-2. Else:
+  a. Return [].
+1. Else:
   a. Let [globaltype] ++ globaltype'* be globaltype_u0*.
-  b. Assert: Due to validation, (|val_u1*| ≥ 1).
-  c. Let [val] ++ val'* be val_u1*.
-  d. Let ga be $allocglobal(globaltype, val).
-  e. Let ga'* be $allocglobals(globaltype'*, val'*).
-  f. Return [ga] ++ ga'*.
+  a. Assert: Due to validation, (|val_u1*| ≥ 1).
+  a. Let [val] ++ val'* be val_u1*.
+  a. Let ga be $allocglobal(globaltype, val).
+  a. Let ga'* be $allocglobals(globaltype'*, val'*).
+  a. Return [ga] ++ ga'*.
 
 alloctable ((i, j), rt)
 1. Let ti be { TYPE: ((i, j), rt); REFS: (REF.NULL rt)^i; }.
-2. Let a be |s.TABLES|.
-3. Append ti to the s.TABLES.
-4. Return a.
+1. Let a be |s.TABLES|.
+1. Append ti to the s.TABLES.
+1. Return a.
 
 alloctables tabletype_u0*
 1. If (tabletype_u0* is []), then:
   a. Return [].
-2. Let [tabletype] ++ tabletype'* be tabletype_u0*.
-3. Let ta be $alloctable(tabletype).
-4. Let ta'* be $alloctables(tabletype'*).
-5. Return [ta] ++ ta'*.
+1. Let [tabletype] ++ tabletype'* be tabletype_u0*.
+1. Let ta be $alloctable(tabletype).
+1. Let ta'* be $alloctables(tabletype'*).
+1. Return [ta] ++ ta'*.
 
 allocmem ((i, j) PAGE)
 1. Let mi be { TYPE: ((i, j) PAGE); BYTES: 0^(i · (64 · $Ki())); }.
-2. Let a be |s.MEMS|.
-3. Append mi to the s.MEMS.
-4. Return a.
+1. Let a be |s.MEMS|.
+1. Append mi to the s.MEMS.
+1. Return a.
 
 allocmems memtype_u0*
 1. If (memtype_u0* is []), then:
   a. Return [].
-2. Let [memtype] ++ memtype'* be memtype_u0*.
-3. Let ma be $allocmem(memtype).
-4. Let ma'* be $allocmems(memtype'*).
-5. Return [ma] ++ ma'*.
+1. Let [memtype] ++ memtype'* be memtype_u0*.
+1. Let ma be $allocmem(memtype).
+1. Let ma'* be $allocmems(memtype'*).
+1. Return [ma] ++ ma'*.
 
 allocelem rt ref*
 1. Let ei be { TYPE: rt; REFS: ref*; }.
-2. Let a be |s.ELEMS|.
-3. Append ei to the s.ELEMS.
-4. Return a.
+1. Let a be |s.ELEMS|.
+1. Append ei to the s.ELEMS.
+1. Return a.
 
 allocelems reftype_u0* ref_u1*
 1. If ((reftype_u0* is []) and (ref_u1* is [])), then:
   a. Return [].
-2. Assert: Due to validation, (|ref_u1*| ≥ 1).
-3. Let [ref*] ++ ref'** be ref_u1*.
-4. Assert: Due to validation, (|reftype_u0*| ≥ 1).
-5. Let [rt] ++ rt'* be reftype_u0*.
-6. Let ea be $allocelem(rt, ref*).
-7. Let ea'* be $allocelems(rt'*, ref'**).
-8. Return [ea] ++ ea'*.
+1. Assert: Due to validation, (|ref_u1*| ≥ 1).
+1. Let [ref*] ++ ref'** be ref_u1*.
+1. Assert: Due to validation, (|reftype_u0*| ≥ 1).
+1. Let [rt] ++ rt'* be reftype_u0*.
+1. Let ea be $allocelem(rt, ref*).
+1. Let ea'* be $allocelems(rt'*, ref'**).
+1. Return [ea] ++ ea'*.
 
 allocdata byte*
 1. Let di be { BYTES: byte*; }.
-2. Let a be |s.DATAS|.
-3. Append di to the s.DATAS.
-4. Return a.
+1. Let a be |s.DATAS|.
+1. Append di to the s.DATAS.
+1. Return a.
 
 allocdatas byte_u0*
 1. If (byte_u0* is []), then:
   a. Return [].
-2. Let [byte*] ++ byte'** be byte_u0*.
-3. Let da be $allocdata(byte*).
-4. Let da'* be $allocdatas(byte'**).
-5. Return [da] ++ da'*.
+1. Let [byte*] ++ byte'** be byte_u0*.
+1. Let da be $allocdata(byte*).
+1. Let da'* be $allocdatas(byte'**).
+1. Return [da] ++ da'*.
 
 instexport fa* ga* ta* ma* (EXPORT name externidx_u0)
 1. If externidx_u0 is of the case FUNC, then:
   a. Let (FUNC x) be externidx_u0.
-  b. Return { NAME: name; ADDR: (FUNC fa*[x]); }.
-2. If externidx_u0 is of the case GLOBAL, then:
+  a. Return { NAME: name; ADDR: (FUNC fa*[x]); }.
+1. If externidx_u0 is of the case GLOBAL, then:
   a. Let (GLOBAL x) be externidx_u0.
-  b. Return { NAME: name; ADDR: (GLOBAL ga*[x]); }.
-3. If externidx_u0 is of the case TABLE, then:
+  a. Return { NAME: name; ADDR: (GLOBAL ga*[x]); }.
+1. If externidx_u0 is of the case TABLE, then:
   a. Let (TABLE x) be externidx_u0.
-  b. Return { NAME: name; ADDR: (TABLE ta*[x]); }.
-4. Assert: Due to validation, externidx_u0 is of the case MEM.
-5. Let (MEM x) be externidx_u0.
-6. Return { NAME: name; ADDR: (MEM ma*[x]); }.
+  a. Return { NAME: name; ADDR: (TABLE ta*[x]); }.
+1. Assert: Due to validation, externidx_u0 is of the case MEM.
+1. Let (MEM x) be externidx_u0.
+1. Return { NAME: name; ADDR: (MEM ma*[x]); }.
 
 allocmodule module externaddr* val* ref**
 1. Let fa_ex* be $funcs(externaddr*).
-2. Let ga_ex* be $globals(externaddr*).
-3. Let ma_ex* be $mems(externaddr*).
-4. Let ta_ex* be $tables(externaddr*).
-5. Assert: Due to validation, module is of the case MODULE.
-6. Let (MODULE type_0 import* func^n_func global_1 table_2 mem_3 elem_4 data_5 start? export*) be module.
-7. Assert: Due to validation, data_5 is of the case DATA.
-8. Let (DATA byte* datamode)^n_data be data_5.
-9. Assert: Due to validation, elem_4 is of the case ELEM.
-10. Let (ELEM rt expr_2* elemmode)^n_elem be elem_4.
-11. Assert: Due to validation, mem_3 is of the case MEMORY.
-12. Let (MEMORY memtype)^n_mem be mem_3.
-13. Assert: Due to validation, table_2 is of the case TABLE.
-14. Let (TABLE tabletype)^n_table be table_2.
-15. Assert: Due to validation, global_1 is of the case GLOBAL.
-16. Let (GLOBAL globaltype expr_1)^n_global be global_1.
-17. Assert: Due to validation, type_0 is of the case TYPE.
-18. Let (TYPE ft)* be type_0.
-19. Let fa* be (|s.FUNCS| + i_func)^(i_func<n_func).
-20. Let ga* be (|s.GLOBALS| + i_global)^(i_global<n_global).
-21. Let ta* be (|s.TABLES| + i_table)^(i_table<n_table).
-22. Let ma* be (|s.MEMS| + i_mem)^(i_mem<n_mem).
-23. Let ea* be (|s.ELEMS| + i_elem)^(i_elem<n_elem).
-24. Let da* be (|s.DATAS| + i_data)^(i_data<n_data).
-25. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
-26. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* ++ fa*; GLOBALS: ga_ex* ++ ga*; TABLES: ta_ex* ++ ta*; MEMS: ma_ex* ++ ma*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
-27. Let funcaddr_0 be $allocfuncs(moduleinst, func^n_func).
-28. Assert: Due to validation, (funcaddr_0 is fa*).
-29. Let globaladdr_0 be $allocglobals(globaltype^n_global, val*).
-30. Assert: Due to validation, (globaladdr_0 is ga*).
-31. Let tableaddr_0 be $alloctables(tabletype^n_table).
-32. Assert: Due to validation, (tableaddr_0 is ta*).
-33. Let memaddr_0 be $allocmems(memtype^n_mem).
-34. Assert: Due to validation, (memaddr_0 is ma*).
-35. Let elemaddr_0 be $allocelems(rt^n_elem, ref**).
-36. Assert: Due to validation, (elemaddr_0 is ea*).
-37. Let dataaddr_0 be $allocdatas(byte*^n_data).
-38. Assert: Due to validation, (dataaddr_0 is da*).
-39. Return moduleinst.
+1. Let ga_ex* be $globals(externaddr*).
+1. Let ma_ex* be $mems(externaddr*).
+1. Let ta_ex* be $tables(externaddr*).
+1. Assert: Due to validation, module is of the case MODULE.
+1. Let (MODULE type_0 import* func^n_func global_1 table_2 mem_3 elem_4 data_5 start? export*) be module.
+1. Assert: Due to validation, data_5 is of the case DATA.
+1. Let (DATA byte* datamode)^n_data be data_5.
+1. Assert: Due to validation, elem_4 is of the case ELEM.
+1. Let (ELEM rt expr_2* elemmode)^n_elem be elem_4.
+1. Assert: Due to validation, mem_3 is of the case MEMORY.
+1. Let (MEMORY memtype)^n_mem be mem_3.
+1. Assert: Due to validation, table_2 is of the case TABLE.
+1. Let (TABLE tabletype)^n_table be table_2.
+1. Assert: Due to validation, global_1 is of the case GLOBAL.
+1. Let (GLOBAL globaltype expr_1)^n_global be global_1.
+1. Assert: Due to validation, type_0 is of the case TYPE.
+1. Let (TYPE ft)* be type_0.
+1. Let fa* be (|s.FUNCS| + i_func)^(i_func<n_func).
+1. Let ga* be (|s.GLOBALS| + i_global)^(i_global<n_global).
+1. Let ta* be (|s.TABLES| + i_table)^(i_table<n_table).
+1. Let ma* be (|s.MEMS| + i_mem)^(i_mem<n_mem).
+1. Let ea* be (|s.ELEMS| + i_elem)^(i_elem<n_elem).
+1. Let da* be (|s.DATAS| + i_data)^(i_data<n_data).
+1. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
+1. Let moduleinst be { TYPES: ft*; FUNCS: fa_ex* ++ fa*; GLOBALS: ga_ex* ++ ga*; TABLES: ta_ex* ++ ta*; MEMS: ma_ex* ++ ma*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
+1. Let funcaddr_0 be $allocfuncs(moduleinst, func^n_func).
+1. Assert: Due to validation, (funcaddr_0 is fa*).
+1. Let globaladdr_0 be $allocglobals(globaltype^n_global, val*).
+1. Assert: Due to validation, (globaladdr_0 is ga*).
+1. Let tableaddr_0 be $alloctables(tabletype^n_table).
+1. Assert: Due to validation, (tableaddr_0 is ta*).
+1. Let memaddr_0 be $allocmems(memtype^n_mem).
+1. Assert: Due to validation, (memaddr_0 is ma*).
+1. Let elemaddr_0 be $allocelems(rt^n_elem, ref**).
+1. Assert: Due to validation, (elemaddr_0 is ea*).
+1. Let dataaddr_0 be $allocdatas(byte*^n_data).
+1. Assert: Due to validation, (dataaddr_0 is da*).
+1. Return moduleinst.
 
 runelem (ELEM reftype expr* elemmode_u0) i
 1. If (elemmode_u0 is PASSIVE), then:
   a. Return [].
-2. If (elemmode_u0 is DECLARE), then:
+1. If (elemmode_u0 is DECLARE), then:
   a. Return [(ELEM.DROP i)].
-3. Assert: Due to validation, elemmode_u0 is of the case ACTIVE.
-4. Let (ACTIVE x instr*) be elemmode_u0.
-5. Let n be |expr*|.
-6. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (TABLE.INIT x i), (ELEM.DROP i)].
+1. Assert: Due to validation, elemmode_u0 is of the case ACTIVE.
+1. Let (ACTIVE x instr*) be elemmode_u0.
+1. Let n be |expr*|.
+1. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (TABLE.INIT x i), (ELEM.DROP i)].
 
 rundata (DATA byte* datamode_u0) i
 1. If (datamode_u0 is PASSIVE), then:
   a. Return [].
-2. Assert: Due to validation, datamode_u0 is of the case ACTIVE.
-3. Let (ACTIVE n_0 instr*) be datamode_u0.
-4. Assert: Due to validation, (n_0 is 0).
-5. Let n be |byte*|.
-6. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT i), (DATA.DROP i)].
+1. Assert: Due to validation, datamode_u0 is of the case ACTIVE.
+1. Let (ACTIVE n_0 instr*) be datamode_u0.
+1. Assert: Due to validation, (n_0 is 0).
+1. Let n be |byte*|.
+1. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT i), (DATA.DROP i)].
 
-<<<<<<< HEAD
-instantiate module externaddr*
-=======
-instantiate z module externval*
->>>>>>> main
+instantiate z module externaddr*
 1. Assert: Due to validation, module is of the case MODULE.
-2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
-3. Assert: Due to validation, type is of the case TYPE*.
-4. Let (TYPE functype)* be type*.
-5. Let n_D be |data*|.
-6. Let n_E be |elem*|.
-7. Let n_F be |func*|.
-8. Assert: Due to validation, start is of the case START?.
-9. Let (START x)? be start?.
-10. Assert: Due to validation, global is of the case GLOBAL*.
-11. Let (GLOBAL globaltype expr_G)* be global*.
-12. Assert: Due to validation, elem is of the case ELEM*.
-13. Let (ELEM reftype expr_E* elemmode)* be elem*.
-14. Let instr_D* be $concat_(instr, $rundata(data*[j], j)^(j<n_D)).
-15. Let instr_E* be $concat_(instr, $runelem(elem*[i], i)^(i<n_E)).
-16. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) ++ (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
-17. Let f_init be { LOCALS: []; MODULE: moduleinst_init; }.
-18. Let z be f_init.
-19. Push the activation of z to the stack.
-20. Let [val]* be $eval_expr(expr_G)*.
-21. Pop the activation of _f from the stack.
-22. Push the activation of z to the stack.
-23. Let [ref]** be $eval_expr(expr_E)**.
-24. Pop the activation of _f from the stack.
-25. Let moduleinst be $allocmodule(module, externaddr*, val*, ref**).
-26. Let f be { LOCALS: []; MODULE: moduleinst; }.
-27. Push the activation of f with arity 0 to the stack.
-28. Execute the instruction instr_E*.
-29. Execute the instruction instr_D*.
-30. If (CALL x)? is defined, then:
+1. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
+1. Assert: Due to validation, type is of the case TYPE*.
+1. Let (TYPE functype)* be type*.
+1. Let n_D be |data*|.
+1. Let n_E be |elem*|.
+1. Let n_F be |func*|.
+1. Assert: Due to validation, start is of the case START?.
+1. Let (START x)? be start?.
+1. Assert: Due to validation, global is of the case GLOBAL*.
+1. Let (GLOBAL globaltype expr_G)* be global*.
+1. Assert: Due to validation, elem is of the case ELEM*.
+1. Let (ELEM reftype expr_E* elemmode)* be elem*.
+1. Let instr_D* be $concat_(instr, $rundata(data*[j], j)^(j<n_D)).
+1. Let instr_E* be $concat_(instr, $runelem(elem*[i], i)^(i<n_E)).
+1. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) ++ (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
+1. Let f_init be { LOCALS: []; MODULE: moduleinst_init; }.
+1. Let z be f_init.
+1. Push the activation of z to the stack.
+1. Let [val]* be $eval_expr(expr_G)*.
+1. Pop the activation of _f from the stack.
+1. Push the activation of z to the stack.
+1. Let [ref]** be $eval_expr(expr_E)**.
+1. Pop the activation of _f from the stack.
+1. Let moduleinst be $allocmodule(module, externaddr*, val*, ref**).
+1. Let f be { LOCALS: []; MODULE: moduleinst; }.
+1. Push the activation of f with arity 0 to the stack.
+1. Execute the instruction instr_E*.
+1. Execute the instruction instr_D*.
+1. If (CALL x)? is defined, then:
   a. Let ?(instr_0) be (CALL x)?.
-  b. Execute the instruction instr_0.
-31. Pop the activation of f with arity 0 from the stack.
-32. Return f.MODULE.
+  a. Execute the instruction instr_0.
+1. Pop the activation of f with arity 0 from the stack.
+1. Return f.MODULE.
 
 invoke z fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
-2. Push the activation of f to the stack.
-3. Let (t_1^n -> t_2*) be $funcinst(z)[fa].TYPE.
-4. Pop the activation of _f from the stack.
-5. Let k be |t_2*|.
-6. Push the activation of f with arity k to the stack.
-7. Push the values val^n to the stack.
-8. Execute the instruction (CALL_ADDR fa).
-9. Pop all values val* from the top of the stack.
-10. Pop the activation of f with arity k from the stack.
-11. Push the values val* to the stack.
-12. Pop the values val^k from the stack.
-13. Return val^k.
+1. Push the activation of f to the stack.
+1. Let (t_1^n -> t_2*) be $funcinst(z)[fa].TYPE.
+1. Pop the activation of _f from the stack.
+1. Let k be |t_2*|.
+1. Push the activation of f with arity k to the stack.
+1. Push the values val^n to the stack.
+1. Execute the instruction (CALL_ADDR fa).
+1. Pop all values val* from the top of the stack.
+1. Pop the activation of f with arity k from the stack.
+1. Push the values val* to the stack.
+1. Pop the values val^k from the stack.
+1. Return val^k.
 
 Step_pure/unreachable
 1. Trap.
@@ -11481,766 +11511,778 @@ Step_pure/nop
 
 Step_pure/drop
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. Do nothing.
+1. Pop the value val from the stack.
+1. Do nothing.
 
 Step_pure/select t*?
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST c) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value val_2 from the stack.
-5. Assert: Due to validation, a value is on the top of the stack.
-6. Pop the value val_1 from the stack.
-7. If (c is not 0), then:
+1. Pop the value (I32.CONST c) from the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value val_2 from the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value val_1 from the stack.
+1. If (c is not 0), then:
   a. Push the value val_1 to the stack.
-8. Else:
+1. Else:
   a. Push the value val_2 to the stack.
 
 Step_pure/if bt instr_1* instr_2*
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST c) from the stack.
-3. If (c is not 0), then:
+1. Pop the value (I32.CONST c) from the stack.
+1. If (c is not 0), then:
   a. Execute the instruction (BLOCK bt instr_1*).
-4. Else:
+1. Else:
   a. Execute the instruction (BLOCK bt instr_2*).
 
 Step_pure/label
 1. Pop all values val* from the top of the stack.
-2. Assert: Due to validation, a label is now on the top of the stack.
-3. Pop the current label from the stack.
-4. Push the values val* to the stack.
+1. Assert: Due to validation, a label is now on the top of the stack.
+1. Pop the current label from the stack.
+1. Push the values val* to the stack.
 
 Step_pure/br n_u0
 1. Pop all values val* from the top of the stack.
-2. Let L be the current label.
-3. Let n be the arity of L.
-4. Let instr'* be the continuation of L.
-5. Pop the current label from the stack.
-6. Let admininstr_u1* be val*.
-7. If ((n_u0 is 0) and (|admininstr_u1*| ≥ n)), then:
-  a. Let val'* ++ val^n be admininstr_u1*.
-  b. Push the values val^n to the stack.
-  c. Execute the instruction instr'*.
-8. If (n_u0 ≥ 1), then:
-  a. Let l be (n_u0 - 1).
-  b. If the type of admininstr_u1 is val*, then:
-    1) Let val* be admininstr_u1*.
-    2) Push the values val* to the stack.
-    3) Execute the instruction (BR l).
+1. Assert: Due to validation, the top of the stack is a LABEL_.
+1. Push the values val* to the stack.
+1. Let L be the current label.
+1. Let n be the arity of L.
+1. Let instr'* be the continuation of L.
+1. If (n_u0 is 0), then:
+  a. Assert: Due to validation, there are at least n values on the top of the stack.
+  a. Pop the values val^n from the stack.
+  a. Pop all values val'* from the top of the stack.
+  a. Pop the current label from the stack.
+  a. Push the values val^n to the stack.
+  a. Execute the instruction instr'*.
+1. Else:
+  a. Pop all values val* from the top of the stack.
+  a. If (n_u0 ≥ 1), then:
+    1) Let l be (n_u0 - 1).
+    1) Pop the current label from the stack.
+    1) Push the values val* to the stack.
+    1) Execute the instruction (BR l).
 
 Step_pure/br_if l
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST c) from the stack.
-3. If (c is not 0), then:
+1. Pop the value (I32.CONST c) from the stack.
+1. If (c is not 0), then:
   a. Execute the instruction (BR l).
-4. Else:
+1. Else:
   a. Do nothing.
 
 Step_pure/br_table l* l'
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST i) from the stack.
-3. If (i < |l*|), then:
+1. Pop the value (I32.CONST i) from the stack.
+1. If (i < |l*|), then:
   a. Execute the instruction (BR l*[i]).
-4. Else:
+1. Else:
   a. Execute the instruction (BR l').
 
 Step_pure/frame
 1. Let f be the current frame.
-2. Let n be the arity of f.
-3. Assert: Due to validation, there are at least n values on the top of the stack.
-4. Assert: Due to validation, there are at least n values on the top of the stack.
-5. Pop the values val^n from the stack.
-6. Assert: Due to validation, a frame is now on the top of the stack.
-7. Pop the current frame from the stack.
-8. Push the values val^n to the stack.
+1. Let n be the arity of f.
+1. Assert: Due to validation, there are at least n values on the top of the stack.
+1. Assert: Due to validation, there are at least n values on the top of the stack.
+1. Pop the values val^n from the stack.
+1. Assert: Due to validation, a frame is now on the top of the stack.
+1. Pop the current frame from the stack.
+1. Push the values val^n to the stack.
 
 Step_pure/return
 1. Pop all values val* from the top of the stack.
-2. If a frame is now on the top of the stack, then:
+1. If the top of the stack is a FRAME_, then:
+  a. Push the values val* to the stack.
   a. Let f be the current frame.
-  b. Let n be the arity of f.
-  c. Pop the current frame from the stack.
-  d. Let val'* ++ val^n be val*.
-  e. Push the values val^n to the stack.
-3. Else if a label is now on the top of the stack, then:
+  a. Let n be the arity of f.
+  a. Assert: Due to validation, there are at least n values on the top of the stack.
+  a. Pop the values val^n from the stack.
+  a. Pop all values val'* from the top of the stack.
+  a. Pop the current frame from the stack.
+  a. Push the values val^n to the stack.
+1. Else if the top of the stack is a LABEL_, then:
+  a. Push the values val* to the stack.
+  a. Pop all values val* from the top of the stack.
   a. Pop the current label from the stack.
-  b. Push the values val* to the stack.
-  c. Execute the instruction RETURN.
+  a. Push the values val* to the stack.
+  a. Execute the instruction RETURN.
 
 Step_pure/unop nt unop
-1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (nt.CONST c_1) from the stack.
-3. If (|$unop_(nt, unop, c_1)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+1. Pop the value (numtype_0.CONST c_1) from the stack.
+1. Assert: Due to validation, (numtype_0 is nt).
+1. If (|$unop_(nt, unop, c_1)| ≤ 0), then:
   a. Trap.
-4. Let c be an element of $unop_(nt, unop, c_1).
-5. Push the value (nt.CONST c) to the stack.
+1. Let c be an element of $unop_(nt, unop, c_1).
+1. Push the value (nt.CONST c) to the stack.
 
 Step_pure/binop nt binop
-1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (nt.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type nt is on the top of the stack.
-4. Pop the value (nt.CONST c_1) from the stack.
-5. If (|$binop_(nt, binop, c_1, c_2)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+1. Pop the value (numtype_0.CONST c_2) from the stack.
+1. Assert: Due to validation, (numtype_0 is nt).
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+1. Pop the value (numtype_0.CONST c_1) from the stack.
+1. If (|$binop_(nt, binop, c_1, c_2)| ≤ 0), then:
   a. Trap.
-6. Let c be an element of $binop_(nt, binop, c_1, c_2).
-7. Push the value (nt.CONST c) to the stack.
+1. Let c be an element of $binop_(nt, binop, c_1, c_2).
+1. Push the value (nt.CONST c) to the stack.
 
 Step_pure/testop nt testop
-1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (nt.CONST c_1) from the stack.
-3. Let c be $testop_(nt, testop, c_1).
-4. Push the value (I32.CONST c) to the stack.
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+1. Pop the value (numtype_0.CONST c_1) from the stack.
+1. Assert: Due to validation, (numtype_0 is nt).
+1. Let c be $testop_(nt, testop, c_1).
+1. Push the value (I32.CONST c) to the stack.
 
 Step_pure/relop nt relop
-1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (nt.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type nt is on the top of the stack.
-4. Pop the value (nt.CONST c_1) from the stack.
-5. Let c be $relop_(nt, relop, c_1, c_2).
-6. Push the value (I32.CONST c) to the stack.
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+1. Pop the value (numtype_0.CONST c_2) from the stack.
+1. Assert: Due to validation, (numtype_0 is nt).
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+1. Pop the value (numtype_0.CONST c_1) from the stack.
+1. Let c be $relop_(nt, relop, c_1, c_2).
+1. Push the value (I32.CONST c) to the stack.
 
 Step_pure/cvtop nt_2 nt_1 cvtop
-1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
-2. Pop the value (nt_1.CONST c_1) from the stack.
-3. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+1. Pop the value (numtype_0.CONST c_1) from the stack.
+1. Assert: Due to validation, (numtype_0 is nt_1).
+1. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| ≤ 0), then:
   a. Trap.
-4. Let c be an element of $cvtop__(nt_1, nt_2, cvtop, c_1).
-5. Push the value (nt_2.CONST c) to the stack.
+1. Let c be an element of $cvtop__(nt_1, nt_2, cvtop, c_1).
+1. Push the value (nt_2.CONST c) to the stack.
 
 Step_pure/ref.is_null
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value ref from the stack.
-3. If ref is of the case REF.NULL, then:
+1. Pop the value ref from the stack.
+1. If ref is of the case REF.NULL, then:
   a. Push the value (I32.CONST 1) to the stack.
-4. Else:
+1. Else:
   a. Push the value (I32.CONST 0) to the stack.
 
 Step_pure/vvunop V128 vvunop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. Let c be $vvunop_(V128, vvunop, c_1).
-4. Push the value (V128.CONST c) to the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Let c be $vvunop_(V128, vvunop, c_1).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vvbinop V128 vvbinop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c be $vvbinop_(V128, vvbinop, c_1, c_2).
-6. Push the value (V128.CONST c) to the stack.
+1. Pop the value (V128.CONST c_2) from the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Let c be $vvbinop_(V128, vvbinop, c_1, c_2).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vvternop V128 vvternop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_3) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_2) from the stack.
-5. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-6. Pop the value (V128.CONST c_1) from the stack.
-7. Let c be $vvternop_(V128, vvternop, c_1, c_2, c_3).
-8. Push the value (V128.CONST c) to the stack.
+1. Pop the value (V128.CONST c_3) from the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c_2) from the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Let c be $vvternop_(V128, vvternop, c_1, c_2, c_3).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vvtestop V128 ANY_TRUE
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. Let c be $ine_($size(V128), c_1, 0).
-4. Push the value (I32.CONST c) to the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Let c be $ine_($size(V128), c_1, 0).
+1. Push the value (I32.CONST c) to the stack.
 
 Step_pure/vunop sh vunop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. If (|$vunop_(sh, vunop, c_1)| ≤ 0), then:
+1. Pop the value (V128.CONST c_1) from the stack.
+1. If (|$vunop_(sh, vunop, c_1)| ≤ 0), then:
   a. Trap.
-4. Let c be an element of $vunop_(sh, vunop, c_1).
-5. Push the value (V128.CONST c) to the stack.
+1. Let c be an element of $vunop_(sh, vunop, c_1).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vbinop sh vbinop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. If (|$vbinop_(sh, vbinop, c_1, c_2)| ≤ 0), then:
+1. Pop the value (V128.CONST c_2) from the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. If (|$vbinop_(sh, vbinop, c_1, c_2)| ≤ 0), then:
   a. Trap.
-6. Let c be an element of $vbinop_(sh, vbinop, c_1, c_2).
-7. Push the value (V128.CONST c) to the stack.
+1. Let c be an element of $vbinop_(sh, vbinop, c_1, c_2).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vtestop (Jnn X N) ALL_TRUE
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c) from the stack.
-3. Let ci_1* be $lanes_((Jnn X N), c).
-4. If (ci_1 is not 0)*, then:
+1. Pop the value (V128.CONST c) from the stack.
+1. Let ci_1* be $lanes_((Jnn X N), c).
+1. If (ci_1 is not 0)*, then:
   a. Push the value (I32.CONST 1) to the stack.
-5. Else:
+1. Else:
   a. Push the value (I32.CONST 0) to the stack.
 
 Step_pure/vrelop sh vrelop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c be $vrelop_(sh, vrelop, c_1, c_2).
-6. Push the value (V128.CONST c) to the stack.
+1. Pop the value (V128.CONST c_2) from the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Let c be $vrelop_(sh, vrelop, c_1, c_2).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vshiftop (Jnn X N) vshiftop
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c'* be $lanes_((Jnn X N), c_1).
-6. Let c be $invlanes_((Jnn X N), $vshiftop_((Jnn X N), vshiftop, c', n)*).
-7. Push the value (V128.CONST c) to the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Let c'* be $lanes_((Jnn X N), c_1).
+1. Let c be $invlanes_((Jnn X N), $vshiftop_((Jnn X N), vshiftop, c', n)*).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vbitmask (Jnn X N)
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c) from the stack.
-3. Let ci_1* be $lanes_((Jnn X N), c).
-4. Let ci be $ibits__1^-1(32, $ilt_($lsize(Jnn), S, ci_1, 0)*).
-5. Push the value (I32.CONST ci) to the stack.
+1. Pop the value (V128.CONST c) from the stack.
+1. Let ci_1* be $lanes_((Jnn X N), c).
+1. Let ci be $ibits__1^-1(32, $ilt_($lsize(Jnn), S, ci_1, 0)*).
+1. Push the value (I32.CONST ci) to the stack.
 
 Step_pure/vswizzle (Pnn X M)
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c'* be $lanes_((Pnn X M), c_1) ++ 0^(256 - M).
-6. Let ci* be $lanes_((Pnn X M), c_2).
-7. Assert: Due to validation, (ci*[k] < |c'*|)^(k<M).
-8. Assert: Due to validation, (k < |ci*|)^(k<M).
-9. Let c be $invlanes_((Pnn X M), c'*[ci*[k]]^(k<M)).
-10. Push the value (V128.CONST c) to the stack.
+1. Pop the value (V128.CONST c_2) from the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Let c'* be $lanes_((Pnn X M), c_1) ++ 0^(256 - M).
+1. Let ci* be $lanes_((Pnn X M), c_2).
+1. Assert: Due to validation, (ci*[k] < |c'*|)^(k<M).
+1. Assert: Due to validation, (k < |ci*|)^(k<M).
+1. Let c be $invlanes_((Pnn X M), c'*[ci*[k]]^(k<M)).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vshuffle (Pnn X N) i*
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Assert: Due to validation, (k < |i*|)^(k<N).
-6. Let c'* be $lanes_((Pnn X N), c_1) ++ $lanes_((Pnn X N), c_2).
-7. Assert: Due to validation, (i*[k] < |c'*|)^(k<N).
-8. Let c be $invlanes_((Pnn X N), c'*[i*[k]]^(k<N)).
-9. Push the value (V128.CONST c) to the stack.
+1. Pop the value (V128.CONST c_2) from the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Assert: Due to validation, (k < |i*|)^(k<N).
+1. Let c'* be $lanes_((Pnn X N), c_1) ++ $lanes_((Pnn X N), c_2).
+1. Assert: Due to validation, (i*[k] < |c'*|)^(k<N).
+1. Let c be $invlanes_((Pnn X N), c'*[i*[k]]^(k<N)).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vsplat (Lnn X N)
-1. Let nt_0 be $unpack(Lnn).
-2. Assert: Due to validation, a value of value type nt_0 is on the top of the stack.
-3. Pop the value (nt_0.CONST c_1) from the stack.
-4. Let c be $invlanes_((Lnn X N), $packnum_(Lnn, c_1)^N).
-5. Push the value (V128.CONST c) to the stack.
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+1. Pop the value (numtype_0.CONST c_1) from the stack.
+1. Assert: Due to validation, (numtype_0 is $unpack(Lnn)).
+1. Let c be $invlanes_((Lnn X N), $packnum_(Lnn, c_1)^N).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vextract_lane (lanetype_u0 X N) sx_u1? i
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. If (sx_u1? is not defined and the type of lanetype_u0 is numtype), then:
+1. Pop the value (V128.CONST c_1) from the stack.
+1. If (sx_u1? is not defined and the type of lanetype_u0 is numtype), then:
   a. Let nt be lanetype_u0.
-  b. If (i < |$lanes_((nt X N), c_1)|), then:
+  a. If (i < |$lanes_((nt X N), c_1)|), then:
     1) Let c_2 be $lanes_((nt X N), c_1)[i].
-    2) Push the value (nt.CONST c_2) to the stack.
-4. If the type of lanetype_u0 is packtype, then:
+    1) Push the value (nt.CONST c_2) to the stack.
+1. If the type of lanetype_u0 is packtype, then:
   a. Let pt be lanetype_u0.
-  b. If sx_u1? is defined, then:
+  a. If sx_u1? is defined, then:
     1) Let ?(sx) be sx_u1?.
-    2) If (i < |$lanes_((pt X N), c_1)|), then:
+    1) If (i < |$lanes_((pt X N), c_1)|), then:
       a) Let c_2 be $extend__($psize(pt), 32, sx, $lanes_((pt X N), c_1)[i]).
-      b) Push the value (I32.CONST c_2) to the stack.
+      a) Push the value (I32.CONST c_2) to the stack.
 
 Step_pure/vreplace_lane (Lnn X N) i
-1. Let nt_0 be $unpack(Lnn).
-2. Assert: Due to validation, a value of value type nt_0 is on the top of the stack.
-3. Pop the value (nt_0.CONST c_2) from the stack.
-4. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-5. Pop the value (V128.CONST c_1) from the stack.
-6. Let c be $invlanes_((Lnn X N), $lanes_((Lnn X N), c_1) with [i] replaced by $packnum_(Lnn, c_2)).
-7. Push the value (V128.CONST c) to the stack.
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+1. Pop the value (numtype_0.CONST c_2) from the stack.
+1. Assert: Due to validation, (numtype_0 is $unpack(Lnn)).
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Let c be $invlanes_((Lnn X N), $lanes_((Lnn X N), c_1) with [i] replaced by $packnum_(Lnn, c_2)).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vextunop sh_1 sh_2 vextunop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. Let c be $vextunop__(sh_1, sh_2, vextunop, c_1).
-4. Push the value (V128.CONST c) to the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Let c be $vextunop__(sh_1, sh_2, vextunop, c_1).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vextbinop sh_1 sh_2 vextbinop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c be $vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2).
-6. Push the value (V128.CONST c) to the stack.
+1. Pop the value (V128.CONST c_2) from the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Let c be $vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vnarrow (Jnn_2 X N_2) (Jnn_1 X N_1) sx
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let ci_1* be $lanes_((Jnn_1 X N_1), c_1).
-6. Let ci_2* be $lanes_((Jnn_1 X N_1), c_2).
-7. Let cj_1* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1)*.
-8. Let cj_2* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2)*.
-9. Let c be $invlanes_((Jnn_2 X N_2), cj_1* ++ cj_2*).
-10. Push the value (V128.CONST c) to the stack.
+1. Pop the value (V128.CONST c_2) from the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Let ci_1* be $lanes_((Jnn_1 X N_1), c_1).
+1. Let ci_2* be $lanes_((Jnn_1 X N_1), c_2).
+1. Let cj_1* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1)*.
+1. Let cj_2* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2)*.
+1. Let c be $invlanes_((Jnn_2 X N_2), cj_1* ++ cj_2*).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vcvtop (lanetype_u3 X n_u0) (lanetype_u4 X n_u1) vcvtop half_u2? zero_u5?
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. If (half_u2? is not defined and zero_u5? is not defined), then:
+1. Pop the value (V128.CONST c_1) from the stack.
+1. If (half_u2? is not defined and zero_u5? is not defined), then:
   a. Let Lnn_1 be lanetype_u4.
-  b. Let Lnn_2 be lanetype_u3.
-  c. Let M be n_u1.
-  d. If (n_u0 is M), then:
+  a. Let Lnn_2 be lanetype_u3.
+  a. Let M be n_u1.
+  a. If (n_u0 is M), then:
     1) Let ci* be $lanes_((Lnn_1 X M), c_1).
-    2) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__((Lnn_1 X M), (Lnn_2 X M), vcvtop, ci)*).
-    3) If (|$invlanes_((Lnn_2 X M), cj*)*| > 0), then:
+    1) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__((Lnn_1 X M), (Lnn_2 X M), vcvtop, ci)*).
+    1) If (|$invlanes_((Lnn_2 X M), cj*)*| > 0), then:
       a) Let c be an element of $invlanes_((Lnn_2 X M), cj*)*.
-      b) Push the value (V128.CONST c) to the stack.
-4. If zero_u5? is not defined, then:
+      a) Push the value (V128.CONST c) to the stack.
+1. If zero_u5? is not defined, then:
   a. Let Lnn_1 be lanetype_u4.
-  b. Let Lnn_2 be lanetype_u3.
-  c. Let M_1 be n_u1.
-  d. Let M_2 be n_u0.
-  e. If half_u2? is defined, then:
-    1) Let ?(half) be half_u2?.
-    2) Let ci* be $lanes_((Lnn_1 X M_1), c_1)[$half(half, 0, M_2) : M_2].
-    3) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__((Lnn_1 X M_1), (Lnn_2 X M_2), vcvtop, ci)*).
-    4) If (|$invlanes_((Lnn_2 X M_2), cj*)*| > 0), then:
-      a) Let c be an element of $invlanes_((Lnn_2 X M_2), cj*)*.
-      b) Push the value (V128.CONST c) to the stack.
-5. If half_u2? is not defined, then:
+  a. Let Lnn_2 be lanetype_u3.
   a. Let M_1 be n_u1.
-  b. Let M_2 be n_u0.
-  c. If the type of lanetype_u4 is numtype, then:
+  a. Let M_2 be n_u0.
+  a. If half_u2? is defined, then:
+    1) Let ?(half) be half_u2?.
+    1) Let ci* be $lanes_((Lnn_1 X M_1), c_1)[$half(half, 0, M_2) : M_2].
+    1) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__((Lnn_1 X M_1), (Lnn_2 X M_2), vcvtop, ci)*).
+    1) If (|$invlanes_((Lnn_2 X M_2), cj*)*| > 0), then:
+      a) Let c be an element of $invlanes_((Lnn_2 X M_2), cj*)*.
+      a) Push the value (V128.CONST c) to the stack.
+1. If half_u2? is not defined, then:
+  a. Let M_1 be n_u1.
+  a. Let M_2 be n_u0.
+  a. If the type of lanetype_u4 is numtype, then:
     1) Let nt_1 be lanetype_u4.
-    2) If the type of lanetype_u3 is numtype, then:
+    1) If the type of lanetype_u3 is numtype, then:
       a) Let nt_2 be lanetype_u3.
-      b) If zero_u5? is defined, then:
+      a) If zero_u5? is defined, then:
         1. Let ci* be $lanes_((nt_1 X M_1), c_1).
-        2. Let cj** be $setproduct_(lane_((nt_2 : numtype <: lanetype)), $vcvtop__((nt_1 X M_1), (nt_2 X M_2), vcvtop, ci)* ++ [$zero(nt_2)]^M_1).
-        3. If (|$invlanes_((nt_2 X M_2), cj*)*| > 0), then:
+        1. Let cj** be $setproduct_(lane_((nt_2 : numtype <: lanetype)), $vcvtop__((nt_1 X M_1), (nt_2 X M_2), vcvtop, ci)* ++ [$zero(nt_2)]^M_1).
+        1. If (|$invlanes_((nt_2 X M_2), cj*)*| > 0), then:
           a. Let c be an element of $invlanes_((nt_2 X M_2), cj*)*.
-          b. Push the value (V128.CONST c) to the stack.
+          a. Push the value (V128.CONST c) to the stack.
 
 Step_pure/local.tee x
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. Push the value val to the stack.
-4. Push the value val to the stack.
-5. Execute the instruction (LOCAL.SET x).
+1. Pop the value val from the stack.
+1. Push the value val to the stack.
+1. Push the value val to the stack.
+1. Execute the instruction (LOCAL.SET x).
 
 Step_read/block bt instr*
 1. Let z be the current state.
-2. Let (t_1^k -> t_2^n) be $blocktype(z, bt).
-3. Assert: Due to validation, there are at least k values on the top of the stack.
-4. Pop the values val^k from the stack.
-5. Let L be the label_n{[]}.
-6. Enter val^k ++ instr* with label L.
+1. Let (t_1^k -> t_2^n) be $blocktype(z, bt).
+1. Assert: Due to validation, there are at least k values on the top of the stack.
+1. Pop the values val^k from the stack.
+1. Let L be the label_n{[]}.
+1. Enter val^k ++ instr* with label L.
 
 Step_read/loop bt instr*
 1. Let z be the current state.
-2. Let (t_1^k -> t_2^n) be $blocktype(z, bt).
-3. Assert: Due to validation, there are at least k values on the top of the stack.
-4. Pop the values val^k from the stack.
-5. Let L be the label_k{[(LOOP bt instr*)]}.
-6. Enter val^k ++ instr* with label L.
+1. Let (t_1^k -> t_2^n) be $blocktype(z, bt).
+1. Assert: Due to validation, there are at least k values on the top of the stack.
+1. Pop the values val^k from the stack.
+1. Let L be the label_k{[(LOOP bt instr*)]}.
+1. Enter val^k ++ instr* with label L.
 
 Step_read/call x
 1. Let z be the current state.
-2. Assert: Due to validation, (x < |$funcaddr(z)|).
-3. Execute the instruction (CALL_ADDR $funcaddr(z)[x]).
+1. Assert: Due to validation, (x < |$funcaddr(z)|).
+1. Execute the instruction (CALL_ADDR $funcaddr(z)[x]).
 
 Step_read/call_indirect x y
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST i) from the stack.
-4. If (i ≥ |$table(z, x).REFS|), then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. If (i ≥ |$table(z, x).REFS|), then:
   a. Trap.
-5. If $table(z, x).REFS[i] is not of the case REF.FUNC_ADDR, then:
+1. If $table(z, x).REFS[i] is not of the case REF.FUNC_ADDR, then:
   a. Trap.
-6. Let (REF.FUNC_ADDR a) be $table(z, x).REFS[i].
-7. If (a ≥ |$funcinst(z)|), then:
+1. Let (REF.FUNC_ADDR a) be $table(z, x).REFS[i].
+1. If (a ≥ |$funcinst(z)|), then:
   a. Trap.
-8. If ($type(z, y) is not $funcinst(z)[a].TYPE), then:
+1. If ($type(z, y) is not $funcinst(z)[a].TYPE), then:
   a. Trap.
-9. Execute the instruction (CALL_ADDR a).
+1. Execute the instruction (CALL_ADDR a).
 
 Step_read/call_addr a
 1. Let z be the current state.
-2. Assert: Due to validation, (a < |$funcinst(z)|).
-3. Let { TYPE: (t_1^k -> t_2^n); MODULE: mm; CODE: func; } be $funcinst(z)[a].
-4. Assert: Due to validation, there are at least k values on the top of the stack.
-5. Pop the values val^k from the stack.
-6. Assert: Due to validation, func is of the case FUNC.
-7. Let (FUNC x local_0 instr*) be func.
-8. Assert: Due to validation, local_0 is of the case LOCAL.
-9. Let (LOCAL t)* be local_0.
-10. Let f be { LOCALS: val^k ++ $default_(t)*; MODULE: mm; }.
-11. Let F be the activation of f with arity n.
-12. Push F to the stack.
-13. Let L be the label_n{[]}.
-14. Enter instr* with label L.
+1. Assert: Due to validation, (a < |$funcinst(z)|).
+1. Let { TYPE: (t_1^k -> t_2^n); MODULE: mm; CODE: func; } be $funcinst(z)[a].
+1. Assert: Due to validation, there are at least k values on the top of the stack.
+1. Pop the values val^k from the stack.
+1. Assert: Due to validation, func is of the case FUNC.
+1. Let (FUNC x local_0 instr*) be func.
+1. Assert: Due to validation, local_0 is of the case LOCAL.
+1. Let (LOCAL t)* be local_0.
+1. Let f be { LOCALS: val^k ++ $default_(t)*; MODULE: mm; }.
+1. Let F be the activation of f with arity n.
+1. Push F to the stack.
+1. Let L be the label_n{[]}.
+1. Enter instr* with label L.
 
 Step_read/ref.func x
 1. Let z be the current state.
-2. Assert: Due to validation, (x < |$funcaddr(z)|).
-3. Push the value (REF.FUNC_ADDR $funcaddr(z)[x]) to the stack.
+1. Assert: Due to validation, (x < |$funcaddr(z)|).
+1. Push the value (REF.FUNC_ADDR $funcaddr(z)[x]) to the stack.
 
 Step_read/local.get x
 1. Let z be the current state.
-2. Push the value $local(z, x) to the stack.
+1. Push the value $local(z, x) to the stack.
 
 Step_read/global.get x
 1. Let z be the current state.
-2. Push the value $global(z, x).VALUE to the stack.
+1. Push the value $global(z, x).VALUE to the stack.
 
 Step_read/table.get x
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST i) from the stack.
-4. If (i ≥ |$table(z, x).REFS|), then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. If (i ≥ |$table(z, x).REFS|), then:
   a. Trap.
-5. Push the value $table(z, x).REFS[i] to the stack.
+1. Push the value $table(z, x).REFS[i] to the stack.
 
 Step_read/table.size x
 1. Let z be the current state.
-2. Let n be |$table(z, x).REFS|.
-3. Push the value (I32.CONST n) to the stack.
+1. Let n be |$table(z, x).REFS|.
+1. Push the value (I32.CONST n) to the stack.
 
 Step_read/table.fill x
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value val from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST i) from the stack.
-8. If ((i + n) > |$table(z, x).REFS|), then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value val from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. If ((i + n) > |$table(z, x).REFS|), then:
   a. Trap.
-9. If (n is 0), then:
+1. If (n is 0), then:
   a. Do nothing.
-10. Else:
+1. Else:
   a. Push the value (I32.CONST i) to the stack.
-  b. Push the value val to the stack.
-  c. Execute the instruction (TABLE.SET x).
-  d. Push the value (I32.CONST (i + 1)) to the stack.
-  e. Push the value val to the stack.
-  f. Push the value (I32.CONST (n - 1)) to the stack.
-  g. Execute the instruction (TABLE.FILL x).
+  a. Push the value val to the stack.
+  a. Execute the instruction (TABLE.SET x).
+  a. Push the value (I32.CONST (i + 1)) to the stack.
+  a. Push the value val to the stack.
+  a. Push the value (I32.CONST (n - 1)) to the stack.
+  a. Execute the instruction (TABLE.FILL x).
 
 Step_read/table.copy x y
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST j) from the stack.
-8. If ((i + n) > |$table(z, y).REFS|), then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST j) from the stack.
+1. If ((i + n) > |$table(z, y).REFS|), then:
   a. Trap.
-9. If ((j + n) > |$table(z, x).REFS|), then:
+1. If ((j + n) > |$table(z, x).REFS|), then:
   a. Trap.
-10. If (n is 0), then:
+1. If (n is 0), then:
   a. Do nothing.
-11. Else:
+1. Else:
   a. If (j ≤ i), then:
     1) Push the value (I32.CONST j) to the stack.
-    2) Push the value (I32.CONST i) to the stack.
-    3) Execute the instruction (TABLE.GET y).
-    4) Execute the instruction (TABLE.SET x).
-    5) Push the value (I32.CONST (j + 1)) to the stack.
-    6) Push the value (I32.CONST (i + 1)) to the stack.
-  b. Else:
+    1) Push the value (I32.CONST i) to the stack.
+    1) Execute the instruction (TABLE.GET y).
+    1) Execute the instruction (TABLE.SET x).
+    1) Push the value (I32.CONST (j + 1)) to the stack.
+    1) Push the value (I32.CONST (i + 1)) to the stack.
+  a. Else:
     1) Push the value (I32.CONST ((j + n) - 1)) to the stack.
-    2) Push the value (I32.CONST ((i + n) - 1)) to the stack.
-    3) Execute the instruction (TABLE.GET y).
-    4) Execute the instruction (TABLE.SET x).
-    5) Push the value (I32.CONST j) to the stack.
-    6) Push the value (I32.CONST i) to the stack.
-  c. Push the value (I32.CONST (n - 1)) to the stack.
-  d. Execute the instruction (TABLE.COPY x y).
+    1) Push the value (I32.CONST ((i + n) - 1)) to the stack.
+    1) Execute the instruction (TABLE.GET y).
+    1) Execute the instruction (TABLE.SET x).
+    1) Push the value (I32.CONST j) to the stack.
+    1) Push the value (I32.CONST i) to the stack.
+  a. Push the value (I32.CONST (n - 1)) to the stack.
+  a. Execute the instruction (TABLE.COPY x y).
 
 Step_read/table.init x y
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST j) from the stack.
-8. If ((i + n) > |$elem(z, y).REFS|), then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST j) from the stack.
+1. If ((i + n) > |$elem(z, y).REFS|), then:
   a. Trap.
-9. If ((j + n) > |$table(z, x).REFS|), then:
+1. If ((j + n) > |$table(z, x).REFS|), then:
   a. Trap.
-10. If (n is 0), then:
+1. If (n is 0), then:
   a. Do nothing.
-11. Else if (i < |$elem(z, y).REFS|), then:
+1. Else if (i < |$elem(z, y).REFS|), then:
   a. Push the value (I32.CONST j) to the stack.
-  b. Push the value $elem(z, y).REFS[i] to the stack.
-  c. Execute the instruction (TABLE.SET x).
-  d. Push the value (I32.CONST (j + 1)) to the stack.
-  e. Push the value (I32.CONST (i + 1)) to the stack.
-  f. Push the value (I32.CONST (n - 1)) to the stack.
-  g. Execute the instruction (TABLE.INIT x y).
+  a. Push the value $elem(z, y).REFS[i] to the stack.
+  a. Execute the instruction (TABLE.SET x).
+  a. Push the value (I32.CONST (j + 1)) to the stack.
+  a. Push the value (I32.CONST (i + 1)) to the stack.
+  a. Push the value (I32.CONST (n - 1)) to the stack.
+  a. Execute the instruction (TABLE.INIT x y).
 
 Step_read/load numtype_u0 sz_sx_u1? ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST i) from the stack.
-4. If sz_sx_u1? is not defined, then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. If sz_sx_u1? is not defined, then:
   a. Let nt be numtype_u0.
-  b. If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, 0).BYTES|), then:
+  a. If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, 0).BYTES|), then:
     1) Trap.
-  c. Let c be $nbytes__1^-1(nt, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(nt) / 8)]).
-  d. Push the value (nt.CONST c) to the stack.
-5. If the type of numtype_u0 is Inn, then:
+  a. Let c be $nbytes__1^-1(nt, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(nt) / 8)]).
+  a. Push the value (nt.CONST c) to the stack.
+1. If the type of numtype_u0 is Inn, then:
   a. If sz_sx_u1? is defined, then:
     1) Let ?(sz_sx_0) be sz_sx_u1?.
-    2) Let (n, sx) be sz_sx_0.
-    3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
+    1) Let (n, sx) be sz_sx_0.
+    1) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
-  b. Let Inn be numtype_u0.
-  c. If sz_sx_u1? is defined, then:
+  a. Let Inn be numtype_u0.
+  a. If sz_sx_u1? is defined, then:
     1) Let ?(sz_sx_0) be sz_sx_u1?.
-    2) Let (n, sx) be sz_sx_0.
-    3) Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
-    4) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
+    1) Let (n, sx) be sz_sx_0.
+    1) Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
+    1) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
 
 Step_read/vload V128 vloadop_u0? ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST i) from the stack.
-4. If vloadop_u0? is not defined, then:
-  a. If (((i + ao.OFFSET) + ($size(V128) / 8)) > |$mem(z, 0).BYTES|), then:
-    1) Trap.
-  b. Let c be $vbytes__1^-1(V128, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(V128) / 8)]).
-  c. Push the value (V128.CONST c) to the stack.
-5. Else:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. If ((((i + ao.OFFSET) + ($size(V128) / 8)) > |$mem(z, 0).BYTES|) and vloadop_u0? is not defined), then:
+  a. Trap.
+1. If vloadop_u0? is not defined, then:
+  a. Let c be $vbytes__1^-1(V128, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(V128) / 8)]).
+  a. Push the value (V128.CONST c) to the stack.
+1. Else:
   a. Let ?(vloadop_0) be vloadop_u0?.
-  b. If vloadop_0 is of the case SHAPE, then:
+  a. If vloadop_0 is of the case SHAPE, then:
     1) Let (SHAPE M X N sx) be vloadop_0.
-    2) If (((i + ao.OFFSET) + ((M · N) / 8)) > |$mem(z, 0).BYTES|), then:
+    1) If (((i + ao.OFFSET) + ((M · N) / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
-    3) If the type of $lsize^-1((M · 2)) is Jnn, then:
+    1) If the type of $lsize^-1((M · 2)) is Jnn, then:
       a) Let Jnn be $lsize^-1((M · 2)).
-      b) Let j^N be $ibytes__1^-1(M, $mem(z, 0).BYTES[((i + ao.OFFSET) + ((k · M) / 8)) : (M / 8)])^(k<N).
-      c) Let c be $invlanes_((Jnn X N), $extend__(M, $lsize(Jnn), sx, j)^N).
-      d) Push the value (V128.CONST c) to the stack.
-  c. If vloadop_0 is of the case SPLAT, then:
+      a) Let j^N be $ibytes__1^-1(M, $mem(z, 0).BYTES[((i + ao.OFFSET) + ((k · M) / 8)) : (M / 8)])^(k<N).
+      a) Let c be $invlanes_((Jnn X N), $extend__(M, $lsize(Jnn), sx, j)^N).
+      a) Push the value (V128.CONST c) to the stack.
+  a. If vloadop_0 is of the case SPLAT, then:
     1) Let (SPLAT N) be vloadop_0.
-    2) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
+    1) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
-    3) Let M be (128 / N).
-    4) If the type of $lsize^-1(N) is Jnn, then:
+    1) Let M be (128 / N).
+    1) If the type of $lsize^-1(N) is Jnn, then:
       a) Let Jnn be $lsize^-1(N).
-      b) Let j be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
-      c) Let c be $invlanes_((Jnn X M), j^M).
-      d) Push the value (V128.CONST c) to the stack.
-  d. If vloadop_0 is of the case ZERO, then:
+      a) Let j be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
+      a) Let c be $invlanes_((Jnn X M), j^M).
+      a) Push the value (V128.CONST c) to the stack.
+  a. If vloadop_0 is of the case ZERO, then:
     1) Let (ZERO N) be vloadop_0.
-    2) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
+    1) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
-    3) Let j be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
-    4) Let c be $extend__(N, 128, U, j).
-    5) Push the value (V128.CONST c) to the stack.
+    1) Let j be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
+    1) Let c be $extend__(N, 128, U, j).
+    1) Push the value (V128.CONST c) to the stack.
 
 Step_read/vload_lane V128 N ao j
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-3. Pop the value (V128.CONST c_1) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
   a. Trap.
-7. Let M be (128 / N).
-8. If the type of $lsize^-1(N) is Jnn, then:
+1. Let M be (128 / N).
+1. If the type of $lsize^-1(N) is Jnn, then:
   a. Let Jnn be $lsize^-1(N).
-  b. Let k be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
-  c. Let c be $invlanes_((Jnn X M), $lanes_((Jnn X M), c_1) with [j] replaced by k).
-  d. Push the value (V128.CONST c) to the stack.
+  a. Let k be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
+  a. Let c be $invlanes_((Jnn X M), $lanes_((Jnn X M), c_1) with [j] replaced by k).
+  a. Push the value (V128.CONST c) to the stack.
 
 Step_read/memory.size
 1. Let z be the current state.
-2. Let ((n · 64) · $Ki()) be |$mem(z, 0).BYTES|.
-3. Push the value (I32.CONST n) to the stack.
+1. Let ((n · 64) · $Ki()) be |$mem(z, 0).BYTES|.
+1. Push the value (I32.CONST n) to the stack.
 
 Step_read/memory.fill
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value val from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST i) from the stack.
-8. If ((i + n) > |$mem(z, 0).BYTES|), then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value val from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. If ((i + n) > |$mem(z, 0).BYTES|), then:
   a. Trap.
-9. If (n is 0), then:
+1. If (n is 0), then:
   a. Do nothing.
-10. Else:
+1. Else:
   a. Push the value (I32.CONST i) to the stack.
-  b. Push the value val to the stack.
-  c. Execute the instruction (STORE I32 ?(8) $memarg0()).
-  d. Push the value (I32.CONST (i + 1)) to the stack.
-  e. Push the value val to the stack.
-  f. Push the value (I32.CONST (n - 1)) to the stack.
-  g. Execute the instruction MEMORY.FILL.
+  a. Push the value val to the stack.
+  a. Execute the instruction (STORE I32 ?(8) $memarg0()).
+  a. Push the value (I32.CONST (i + 1)) to the stack.
+  a. Push the value val to the stack.
+  a. Push the value (I32.CONST (n - 1)) to the stack.
+  a. Execute the instruction MEMORY.FILL.
 
 Step_read/memory.copy
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST j) from the stack.
-8. If ((i + n) > |$mem(z, 0).BYTES|), then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST j) from the stack.
+1. If ((i + n) > |$mem(z, 0).BYTES|), then:
   a. Trap.
-9. If ((j + n) > |$mem(z, 0).BYTES|), then:
+1. If ((j + n) > |$mem(z, 0).BYTES|), then:
   a. Trap.
-10. If (n is 0), then:
+1. If (n is 0), then:
   a. Do nothing.
-11. Else:
+1. Else:
   a. If (j ≤ i), then:
     1) Push the value (I32.CONST j) to the stack.
-    2) Push the value (I32.CONST i) to the stack.
-    3) Execute the instruction (LOAD I32 (_) ?((8, U)) ? $memarg0()).
-    4) Execute the instruction (STORE I32 ?(8) $memarg0()).
-    5) Push the value (I32.CONST (j + 1)) to the stack.
-    6) Push the value (I32.CONST (i + 1)) to the stack.
-  b. Else:
+    1) Push the value (I32.CONST i) to the stack.
+    1) Execute the instruction (LOAD I32 (_) ?((8, U)) ? $memarg0()).
+    1) Execute the instruction (STORE I32 ?(8) $memarg0()).
+    1) Push the value (I32.CONST (j + 1)) to the stack.
+    1) Push the value (I32.CONST (i + 1)) to the stack.
+  a. Else:
     1) Push the value (I32.CONST ((j + n) - 1)) to the stack.
-    2) Push the value (I32.CONST ((i + n) - 1)) to the stack.
-    3) Execute the instruction (LOAD I32 (_) ?((8, U)) ? $memarg0()).
-    4) Execute the instruction (STORE I32 ?(8) $memarg0()).
-    5) Push the value (I32.CONST j) to the stack.
-    6) Push the value (I32.CONST i) to the stack.
-  c. Push the value (I32.CONST (n - 1)) to the stack.
-  d. Execute the instruction MEMORY.COPY.
+    1) Push the value (I32.CONST ((i + n) - 1)) to the stack.
+    1) Execute the instruction (LOAD I32 (_) ?((8, U)) ? $memarg0()).
+    1) Execute the instruction (STORE I32 ?(8) $memarg0()).
+    1) Push the value (I32.CONST j) to the stack.
+    1) Push the value (I32.CONST i) to the stack.
+  a. Push the value (I32.CONST (n - 1)) to the stack.
+  a. Execute the instruction MEMORY.COPY.
 
 Step_read/memory.init x
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST j) from the stack.
-8. If ((i + n) > |$data(z, x).BYTES|), then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST j) from the stack.
+1. If ((i + n) > |$data(z, x).BYTES|), then:
   a. Trap.
-9. If ((j + n) > |$mem(z, 0).BYTES|), then:
+1. If ((j + n) > |$mem(z, 0).BYTES|), then:
   a. Trap.
-10. If (n is 0), then:
+1. If (n is 0), then:
   a. Do nothing.
-11. Else if (i < |$data(z, x).BYTES|), then:
+1. Else if (i < |$data(z, x).BYTES|), then:
   a. Push the value (I32.CONST j) to the stack.
-  b. Push the value (I32.CONST $data(z, x).BYTES[i]) to the stack.
-  c. Execute the instruction (STORE I32 ?(8) $memarg0()).
-  d. Push the value (I32.CONST (j + 1)) to the stack.
-  e. Push the value (I32.CONST (i + 1)) to the stack.
-  f. Push the value (I32.CONST (n - 1)) to the stack.
-  g. Execute the instruction (MEMORY.INIT x).
+  a. Push the value (I32.CONST $data(z, x).BYTES[i]) to the stack.
+  a. Execute the instruction (STORE I32 ?(8) $memarg0()).
+  a. Push the value (I32.CONST (j + 1)) to the stack.
+  a. Push the value (I32.CONST (i + 1)) to the stack.
+  a. Push the value (I32.CONST (n - 1)) to the stack.
+  a. Execute the instruction (MEMORY.INIT x).
 
 Step/local.set x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value val from the stack.
-4. Perform $with_local(z, x, val).
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value val from the stack.
+1. Perform $with_local(z, x, val).
 
 Step/global.set x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value val from the stack.
-4. Perform $with_global(z, x, val).
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value val from the stack.
+1. Perform $with_global(z, x, val).
 
 Step/table.set x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value ref from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If (i ≥ |$table(z, x).REFS|), then:
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value ref from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. If (i ≥ |$table(z, x).REFS|), then:
   a. Trap.
-7. Perform $with_table(z, x, i, ref).
+1. Perform $with_table(z, x, i, ref).
 
 Step/table.grow x
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value ref from the stack.
-6. Either:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value ref from the stack.
+1. Either:
   a. Let ti be $growtable($table(z, x), n, ref).
-  b. Push the value (I32.CONST |$table(z, x).REFS|) to the stack.
-  c. Perform $with_tableinst(z, x, ti).
-7. Or:
+  a. Push the value (I32.CONST |$table(z, x).REFS|) to the stack.
+  a. Perform $with_tableinst(z, x, ti).
+1. Or:
   a. Push the value (I32.CONST $invsigned_(32, (- 1))) to the stack.
 
 Step/elem.drop x
 1. Let z be the current state.
-2. Perform $with_elem(z, x, []).
+1. Perform $with_elem(z, x, []).
 
-Step/store numtype_u1 sz_u2? ao
+Step/store numtype_u0 sz_u1? ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type numtype_u0 is on the top of the stack.
-3. Pop the value (numtype_u0.CONST c) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If sz_u2? is not defined, then:
-  a. Let nt be numtype_u1.
-  b. If (numtype_u0 is nt), then:
-    1) If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, 0).BYTES|), then:
+1. Assert: Due to validation, a value of value type numtype_u2 is on the top of the stack.
+1. Pop the value (numtype_u2.CONST c) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. Let nt be numtype_u2.
+1. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, 0).BYTES|) and ((numtype_u0 is nt) and sz_u1? is not defined)), then:
+  a. Trap.
+1. If ((numtype_u0 is nt) and sz_u1? is not defined), then:
+  a. Let b* be $nbytes_(nt, c).
+  a. Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(nt) / 8), b*).
+1. If the type of numtype_u2 is Inn, then:
+  a. Let Inn be numtype_u2.
+  a. If ((numtype_u0 is Inn) and sz_u1? is defined), then:
+    1) Let ?(n) be sz_u1?.
+    1) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
-    2) Let b* be $nbytes_(nt, c).
-    3) Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(nt) / 8), b*).
-7. Else:
-  a. Let ?(n) be sz_u2?.
-  b. If the type of numtype_u1 is Inn, then:
-    1) Let Inn be numtype_u1.
-    2) If (numtype_u0 is Inn), then:
-      a) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
-        1. Trap.
-      b) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
-      c) Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
+    1) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
+    1) Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
 
 Step/vstore V128 ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-3. Pop the value (V128.CONST c) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If (((i + ao.OFFSET) + ($size(V128) / 8)) > |$mem(z, 0).BYTES|), then:
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. If (((i + ao.OFFSET) + ($size(V128) / 8)) > |$mem(z, 0).BYTES|), then:
   a. Trap.
-7. Let b* be $vbytes_(V128, c).
-8. Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(V128) / 8), b*).
+1. Let b* be $vbytes_(V128, c).
+1. Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(V128) / 8), b*).
 
 Step/vstore_lane V128 N ao j
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-3. Pop the value (V128.CONST c) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If (((i + ao.OFFSET) + N) > |$mem(z, 0).BYTES|), then:
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. If (((i + ao.OFFSET) + N) > |$mem(z, 0).BYTES|), then:
   a. Trap.
-7. Let M be (128 / N).
-8. If the type of $lsize^-1(N) is Jnn, then:
+1. Let M be (128 / N).
+1. If the type of $lsize^-1(N) is Jnn, then:
   a. Let Jnn be $lsize^-1(N).
-  b. If (j < |$lanes_((Jnn X M), c)|), then:
+  a. If (j < |$lanes_((Jnn X M), c)|), then:
     1) Let b* be $ibytes_(N, $lanes_((Jnn X M), c)[j]).
-    2) Perform $with_mem(z, 0, (i + ao.OFFSET), (N / 8), b*).
+    1) Perform $with_mem(z, 0, (i + ao.OFFSET), (N / 8), b*).
 
 Step/memory.grow
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Either:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Either:
   a. Let mi be $growmemory($mem(z, 0), n).
-  b. Push the value (I32.CONST (|$mem(z, 0).BYTES| / (64 · $Ki()))) to the stack.
-  c. Perform $with_meminst(z, 0, mi).
-5. Or:
+  a. Push the value (I32.CONST (|$mem(z, 0).BYTES| / (64 · $Ki()))) to the stack.
+  a. Perform $with_meminst(z, 0, mi).
+1. Or:
   a. Push the value (I32.CONST $invsigned_(32, (- 1))) to the stack.
 
 Step/data.drop x
 1. Let z be the current state.
-2. Perform $with_data(z, x, []).
+1. Perform $with_data(z, x, []).
 
 eval_expr instr*
 1. Execute the instruction instr*.
-2. Pop the value val from the stack.
-3. Return [val].
+1. Pop the value val from the stack.
+1. Return [val].
 
 == Complete.
 Generating prose for Wasm 3.0...
@@ -12252,19 +12294,10 @@ watsup 0.4 generator
 == IL Validation after pass sideconditions...
 == Translating to AL...
 == Prose Generation...
-<<<<<<< HEAD
 6-typing.watsup:195.10-195.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
 6-typing.watsup:876.9-876.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
 6-typing.watsup:910.9-910.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
 6-typing.watsup:1378.9-1378.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm : name})`
-=================
- Generated prose
-=================
-=======
-6-typing.watsup:194.10-194.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
-6-typing.watsup:817.9-817.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
-6-typing.watsup:851.9-851.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
-6-typing.watsup:1309.9-1309.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm : name})`
 
 * :math:`{\mathit{numtype}}` is valid.
 
@@ -12804,6 +12837,14 @@ watsup 0.4 generator
    * :math:`{\mathit{limits}}` is valid with type :math:`{2^{16}}`.
 
 
+* :math:`{\mathit{deftype}}` is valid if and only if:
+
+
+   * :math:`{\mathit{deftype}}` is valid.
+
+   * :math:`{\mathrm{expand}}({\mathit{deftype}})` must be equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
+
+
 * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if and only if:
 
 
@@ -12827,7 +12868,11 @@ watsup 0.4 generator
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
 
-      * :math:`{\mathit{memtype}}` is valid.
+      * :math:`{\mathit{memtype}}` is valid.   * Or:
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{tag}~{\mathit{tagtype}})`.
+
+      * :math:`{\mathit{tagtype}}` is valid.
 
 
 * :math:`({t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\ast})` matches :math:`({t_{21}^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_{22}^\ast})` if and only if:
@@ -12896,6 +12941,14 @@ watsup 0.4 generator
    * :math:`{\mathit{limits}}_1` matches :math:`{\mathit{limits}}_2`.
 
 
+* :math:`{\mathit{deftype}}_1` matches :math:`{\mathit{deftype}}_2` if and only if:
+
+
+   * :math:`{\mathit{deftype}}_1` matches :math:`{\mathit{deftype}}_2`.
+
+   * :math:`{\mathit{deftype}}_2` matches :math:`{\mathit{deftype}}_1`.
+
+
 * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if and only if:
 
 
@@ -12925,7 +12978,13 @@ watsup 0.4 generator
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{mem}~{\mathit{memtype}}_2)`.
 
-      * :math:`{\mathit{memtype}}_1` matches :math:`{\mathit{memtype}}_2`.
+      * :math:`{\mathit{memtype}}_1` matches :math:`{\mathit{memtype}}_2`.   * Or:
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)`.
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{tag}~{\mathit{tagtype}}_2)`.
+
+      * :math:`{\mathit{tagtype}}_1` matches :math:`{\mathit{tagtype}}_2`.
 
 
 * :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with type :math:`({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~{\rightarrow}_{\epsilon}\,{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast})` if and only if:
@@ -12954,6 +13013,46 @@ watsup 0.4 generator
       * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`{\mathit{typeidx}}`.
 
       * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[{\mathit{typeidx}}])` must be equal to :math:`(\mathsf{func}~({t_1^\ast}~\rightarrow~{t_2^\ast}))`.
+
+
+* :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if and only if:
+
+
+   * Either:
+
+      * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{catch}~x~l)`.
+
+      * :math:`{|C{.}\mathsf{tags}|}` must be greater than :math:`x`.
+
+      * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
+
+      * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` must be equal to :math:`(\mathsf{func}~({t^\ast}~\rightarrow~\epsilon))`.
+
+      * :math:`{t^\ast}` matches :math:`C{.}\mathsf{labels}{}[l]`.
+
+   * Or:
+
+      * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{catch\_ref}~x~l)`.
+
+      * :math:`{|C{.}\mathsf{tags}|}` must be greater than :math:`x`.
+
+      * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
+
+      * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` must be equal to :math:`(\mathsf{func}~({t^\ast}~\rightarrow~\epsilon))`.
+
+      * :math:`{t^\ast}~(\mathsf{ref}~(\mathsf{null}~\epsilon~{}^?)~\mathsf{exn})` matches :math:`C{.}\mathsf{labels}{}[l]`.   * Or:
+
+      * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{catch\_all}~l)`.
+
+      * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
+
+      * :math:`\epsilon` matches :math:`C{.}\mathsf{labels}{}[l]`.   * Or:
+
+      * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{catch\_all\_ref}~l)`.
+
+      * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
+
+      * :math:`(\mathsf{ref}~(\mathsf{null}~\epsilon~{}^?)~\mathsf{exn})` matches :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 * :math:`\mathsf{nop}` is valid with type :math:`(\epsilon~{\rightarrow}_{\epsilon}\,\epsilon)`.
@@ -13173,6 +13272,34 @@ watsup 0.4 generator
    * :math:`{t_2^\ast}` matches :math:`{{t'}_2^\ast}`.
 
    * :math:`({t_3^\ast}~{\rightarrow}_{\epsilon}\,{t_4^\ast})` is valid.
+
+
+* :math:`(\mathsf{throw}~x)` is valid with type :math:`({t_1^\ast}~{t^\ast}~{\rightarrow}_{\epsilon}\,{t_2^\ast})` if and only if:
+
+
+   * :math:`{|C{.}\mathsf{tags}|}` must be greater than :math:`x`.
+
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` must be equal to :math:`(\mathsf{func}~({t^\ast}~\rightarrow~\epsilon))`.
+
+   * :math:`({t_1^\ast}~{\rightarrow}_{\epsilon}\,{t_2^\ast})` is valid.
+
+
+* :math:`\mathsf{throw\_ref}` is valid with type :math:`({t_1^\ast}~(\mathsf{ref}~(\mathsf{null}~()~{}^?)~\mathsf{exn})~{\rightarrow}_{\epsilon}\,{t_2^\ast})` if and only if:
+
+
+   * :math:`({t_1^\ast}~{\rightarrow}_{\epsilon}\,{t_2^\ast})` is valid.
+
+
+* :math:`(\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast})` is valid with type :math:`({t_1^\ast}~{\rightarrow}_{\epsilon}\,{t_2^\ast})` if and only if:
+
+
+   * :math:`{\mathit{bt}}` is valid with type :math:`({t_1^\ast}~{\rightarrow}_{\epsilon}\,{t_2^\ast})`.
+
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`({t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast})`.
+
+   * For all :math:`{\mathit{catch}}` in :math:`{{\mathit{catch}}^\ast}`,
+
+      * :math:`{\mathit{catch}}` is valid.
 
 
 * :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})` is valid with type :math:`(\epsilon~{\rightarrow}_{\epsilon}\,{\mathit{nt}})`.
@@ -13927,6 +14054,14 @@ watsup 0.4 generator
    * :math:`{\mathit{memtype}}` is valid.
 
 
+* :math:`(\mathsf{tag}~x)` is valid with type :math:`C{.}\mathsf{types}{}[x]` if and only if:
+
+
+   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
+
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
+
+
 * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with type :math:`{\mathit{rt}}` if and only if:
 
 
@@ -14042,7 +14177,15 @@ watsup 0.4 generator
 
       * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+      * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.   * Or:
+
+      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{tag}~x)`.
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{tag}~{\mathit{at}})`.
+
+      * :math:`{|C{.}\mathsf{tags}|}` must be greater than :math:`x`.
+
+      * :math:`C{.}\mathsf{tags}{}[x]` must be equal to :math:`{\mathit{at}}`.
 
 
 * :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is valid with type :math:`{\mathit{name}}` and :math:`{\mathit{xt}}` if and only if:
@@ -14091,7 +14234,7 @@ watsup 0.4 generator
       * Under the context :math:`C{}[{.}\mathsf{types} \mathrel{{=}{\oplus}} {{\mathit{dt}}_1^\ast}]`, :math:`{{\mathit{type}}^\ast}` is valid with type :math:`{{\mathit{dt}}^\ast}`.
 
 
-* :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is valid with type :math:`{{\mathrm{clos}}}_{C}(({{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast}))` if and only if:
+* :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is valid with type :math:`{{\mathrm{clos}}}_{C}(({{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast}))` if and only if:
 
 
    * :math:`{|{{\mathit{xt}}_{\mathsf{i}}^\ast}|}` must be equal to :math:`{|{{\mathit{import}}^\ast}|}`.
@@ -14099,6 +14242,8 @@ watsup 0.4 generator
    * :math:`{|{{\mathit{tt}}^\ast}|}` must be equal to :math:`{|{{\mathit{table}}^\ast}|}`.
 
    * :math:`{|{{\mathit{mt}}^\ast}|}` must be equal to :math:`{|{{\mathit{mem}}^\ast}|}`.
+
+   * :math:`{|{{\mathit{tag}}^\ast}|}` must be equal to :math:`{|{{\mathit{at}}^\ast}|}`.
 
    * :math:`{|{{\mathit{func}}^\ast}|}` must be equal to :math:`{|{{\mathit{dt}}^\ast}|}`.
 
@@ -14110,11 +14255,11 @@ watsup 0.4 generator
 
    * :math:`{|{{\mathit{xt}}_{\mathsf{e}}^\ast}|}` must be equal to :math:`{|{{\mathit{export}}^\ast}|}`.
 
-   * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~\epsilon \}\end{array}`, :math:`{{\mathit{type}}^\ast}` is valid with type :math:`{{\mathit{dt}'}^\ast}`.
+   * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~\epsilon \}\end{array}`, :math:`{{\mathit{type}}^\ast}` is valid with type :math:`{{\mathit{dt}'}^\ast}`.
 
    * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{xt}}_{\mathsf{i}}` in :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}`,
 
-      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~\epsilon \}\end{array}`, :math:`{\mathit{import}}` is valid with type :math:`{\mathit{xt}}_{\mathsf{i}}`.
+      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~\epsilon \}\end{array}`, :math:`{\mathit{import}}` is valid with type :math:`{\mathit{xt}}_{\mathsf{i}}`.
 
    * Under the context :math:`{C'}`, :math:`{{\mathit{global}}^\ast}` is valid with type :math:`{{\mathit{gt}}^\ast}`.
 
@@ -14125,6 +14270,10 @@ watsup 0.4 generator
    * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`,
 
       * Under the context :math:`{C'}`, :math:`{\mathit{mem}}` is valid with type :math:`{\mathit{mt}}`.
+
+   * For all :math:`{\mathit{at}}` in :math:`{{\mathit{at}}^\ast}` and :math:`{\mathit{tag}}` in :math:`{{\mathit{tag}}^\ast}`,
+
+      * Under the context :math:`{C'}`, :math:`{\mathit{tag}}` is valid with type :math:`{\mathit{at}}`.
 
    * For all :math:`{\mathit{dt}}` in :math:`{{\mathit{dt}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`,
 
@@ -14148,9 +14297,9 @@ watsup 0.4 generator
 
    * YetI: $disjoint_(syntax name, nm*{nm : name}).
 
-   * :math:`C` must be equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{elems}~{{\mathit{rt}}^\ast},\; \mathsf{datas}~{{\mathit{ok}}^\ast},\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
+   * :math:`C` must be equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{tags}~{{\mathit{at}}_{\mathsf{i}}^\ast}~{{\mathit{at}}^\ast},\; \mathsf{elems}~{{\mathit{rt}}^\ast},\; \mathsf{datas}~{{\mathit{ok}}^\ast},\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
 
-   * :math:`{C'}` must be equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
+   * :math:`{C'}` must be equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
 
    * :math:`{x^\ast}` must be equal to :math:`{\mathrm{funcidx}}(({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}))`.
 
@@ -14161,6 +14310,8 @@ watsup 0.4 generator
    * :math:`{{\mathit{tt}}_{\mathsf{i}}^\ast}` must be equal to :math:`{\mathrm{tables}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
    * :math:`{{\mathit{mt}}_{\mathsf{i}}^\ast}` must be equal to :math:`{\mathrm{mems}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
+
+   * :math:`{{\mathit{at}}_{\mathsf{i}}^\ast}` must be equal to :math:`{\mathrm{tags}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
 
 * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with type :math:`({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast})` if and only if:
@@ -14884,7 +15035,7 @@ watsup 0.4 generator
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
-#. Return `YetE (free ++ $free_list(free'*{free' : free}))`.
+#. Return YetE: free ++ $free_list(free'*{free' : free}).
 
 
 :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`
@@ -15162,7 +15313,7 @@ watsup 0.4 generator
 ..........................................................................................................
 
 
-1. Return `YetE ($free_resulttype(resulttype_1) ++ $free_resulttype(resulttype_2))`.
+1. Return YetE: $free_resulttype(resulttype_1) ++ $free_resulttype(resulttype_2).
 
 
 :math:`{\mathrm{free}}_{\mathit{structtype}}({{\mathit{fieldtype}}^\ast})`
@@ -15206,7 +15357,7 @@ watsup 0.4 generator
 ...........................................................................................................................
 
 
-1. Return `YetE ($free_list($free_typeuse(typeuse)*{typeuse : typeuse}) ++ $free_comptype(comptype))`.
+1. Return YetE: $free_list($free_typeuse(typeuse)*{typeuse : typeuse}) ++ $free_comptype(comptype).
 
 
 :math:`{\mathrm{free}}_{\mathit{globaltype}}(({\mathsf{mut}^?}, {\mathit{valtype}}))`
@@ -15277,7 +15428,7 @@ watsup 0.4 generator
 ..........................................................................................................................
 
 
-1. Return `YetE ($free_list($free_externtype(externtype_1)*{externtype_1 : externtype}) ++ $free_list($free_externtype(externtype_2)*{externtype_2 : externtype}))`.
+1. Return YetE: $free_list($free_externtype(externtype_1)*{externtype_1 : externtype}) ++ $free_list($free_externtype(externtype_2)*{externtype_2 : externtype}).
 
 
 :math:`{\mathrm{free}}_{\mathit{blocktype}}({\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}})`
@@ -15356,15 +15507,15 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{block}`, then:
 
-   a. Return `YetE ($free_blocktype(blocktype) ++ $free_block(instr*{instr : instr}))`.
+   a. Return YetE: $free_blocktype(blocktype) ++ $free_block(instr*{instr : instr}).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{loop}`, then:
 
-   a. Return `YetE ($free_blocktype(blocktype) ++ $free_block(instr*{instr : instr}))`.
+   a. Return YetE: $free_blocktype(blocktype) ++ $free_block(instr*{instr : instr}).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{if}`, then:
 
-   a. Return `YetE ($free_blocktype(blocktype) ++ $free_block(instr_1*{instr_1 : instr}) ++ $free_block(instr_2*{instr_2 : instr}))`.
+   a. Return YetE: $free_blocktype(blocktype) ++ $free_block(instr_1*{instr_1 : instr}) ++ $free_block(instr_2*{instr_2 : instr}).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{br}`, then:
 
@@ -15380,7 +15531,7 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{br\_table}`, then:
 
-   a. Return `YetE ($free_list($free_labelidx(labelidx)*{}) ++ $free_labelidx(labelidx))`.
+   a. Return YetE: $free_list($free_labelidx(labelidx)*{}) ++ $free_labelidx(labelidx).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{br\_on\_null}`, then:
 
@@ -15396,11 +15547,11 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{br\_on\_cast}`, then:
 
-   a. Return `YetE ($free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2))`.
+   a. Return YetE: $free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{br\_on\_cast\_fail}`, then:
 
-   a. Return `YetE ($free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2))`.
+   a. Return YetE: $free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{call}`, then:
 
@@ -15416,7 +15567,7 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{call\_indirect}`, then:
 
-   a. Return `YetE ($free_tableidx(tableidx) ++ $free_typeuse(typeuse))`.
+   a. Return YetE: $free_tableidx(tableidx) ++ $free_typeuse(typeuse).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{return}`, then:
 
@@ -15436,7 +15587,7 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{return\_call\_indirect}`, then:
 
-   a. Return `YetE ($free_tableidx(tableidx) ++ $free_typeuse(typeuse))`.
+   a. Return YetE: $free_tableidx(tableidx) ++ $free_typeuse(typeuse).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{const}`, then:
 
@@ -15470,7 +15621,7 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{cvtop}`, then:
 
-   a. Return `YetE ($free_numtype(numtype_1) ++ $free_numtype(numtype_2))`.
+   a. Return YetE: $free_numtype(numtype_1) ++ $free_numtype(numtype_2).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vconst}`, then:
 
@@ -15552,19 +15703,19 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vextunop}`, then:
 
-   a. Return `YetE ($free_shape((ishape_1 : ishape <: shape)) ++ $free_shape((ishape_2 : ishape <: shape)))`.
+   a. Return YetE: $free_shape((ishape_1 : ishape <: shape)) ++ $free_shape((ishape_2 : ishape <: shape)).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vextbinop}`, then:
 
-   a. Return `YetE ($free_shape((ishape_1 : ishape <: shape)) ++ $free_shape((ishape_2 : ishape <: shape)))`.
+   a. Return YetE: $free_shape((ishape_1 : ishape <: shape)) ++ $free_shape((ishape_2 : ishape <: shape)).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vnarrow}`, then:
 
-   a. Return `YetE ($free_shape((ishape_1 : ishape <: shape)) ++ $free_shape((ishape_2 : ishape <: shape)))`.
+   a. Return YetE: $free_shape((ishape_1 : ishape <: shape)) ++ $free_shape((ishape_2 : ishape <: shape)).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vcvtop}`, then:
 
-   a. Return `YetE ($free_shape(shape_1) ++ $free_shape(shape_2))`.
+   a. Return YetE: $free_shape(shape_1) ++ $free_shape(shape_2).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vsplat}`, then:
 
@@ -15670,11 +15821,11 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array{.}new\_data}`, then:
 
-   a. Return `YetE ($free_typeidx(typeidx) ++ $free_dataidx(dataidx))`.
+   a. Return YetE: $free_typeidx(typeidx) ++ $free_dataidx(dataidx).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array{.}new\_elem}`, then:
 
-   a. Return `YetE ($free_typeidx(typeidx) ++ $free_elemidx(elemidx))`.
+   a. Return YetE: $free_typeidx(typeidx) ++ $free_elemidx(elemidx).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array{.}get}`, then:
 
@@ -15700,15 +15851,15 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array{.}copy}`, then:
 
-   a. Return `YetE ($free_typeidx(typeidx_1) ++ $free_typeidx(typeidx_2))`.
+   a. Return YetE: $free_typeidx(typeidx_1) ++ $free_typeidx(typeidx_2).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array{.}init\_data}`, then:
 
-   a. Return `YetE ($free_typeidx(typeidx) ++ $free_dataidx(dataidx))`.
+   a. Return YetE: $free_typeidx(typeidx) ++ $free_dataidx(dataidx).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array{.}init\_elem}`, then:
 
-   a. Return `YetE ($free_typeidx(typeidx) ++ $free_elemidx(elemidx))`.
+   a. Return YetE: $free_typeidx(typeidx) ++ $free_elemidx(elemidx).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{extern{.}convert\_any}`, then:
 
@@ -15780,11 +15931,11 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{table{.}copy}`, then:
 
-   a. Return `YetE ($free_tableidx(tableidx_1) ++ $free_tableidx(tableidx_2))`.
+   a. Return YetE: $free_tableidx(tableidx_1) ++ $free_tableidx(tableidx_2).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{table{.}init}`, then:
 
-   a. Return `YetE ($free_tableidx(tableidx) ++ $free_elemidx(elemidx))`.
+   a. Return YetE: $free_tableidx(tableidx) ++ $free_elemidx(elemidx).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{elem{.}drop}`, then:
 
@@ -15798,27 +15949,27 @@ watsup 0.4 generator
 
    #. If :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is defined, then:
 
-      1) Return `YetE ($free_numtype(numtype) ++ $free_memidx(memidx))`.
+      1) Return YetE: $free_numtype(numtype) ++ $free_memidx(memidx).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{store}`, then:
 
-   a. Return `YetE ($free_numtype(numtype) ++ $free_memidx(memidx))`.
+   a. Return YetE: $free_numtype(numtype) ++ $free_memidx(memidx).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vload}`, then:
 
-   a. Return `YetE ($free_vectype(vectype) ++ $free_memidx(memidx))`.
+   a. Return YetE: $free_vectype(vectype) ++ $free_memidx(memidx).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vload\_lane}`, then:
 
-   a. Return `YetE ($free_vectype(vectype) ++ $free_memidx(memidx))`.
+   a. Return YetE: $free_vectype(vectype) ++ $free_memidx(memidx).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vstore}`, then:
 
-   a. Return `YetE ($free_vectype(vectype) ++ $free_memidx(memidx))`.
+   a. Return YetE: $free_vectype(vectype) ++ $free_memidx(memidx).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vstore\_lane}`, then:
 
-   a. Return `YetE ($free_vectype(vectype) ++ $free_memidx(memidx))`.
+   a. Return YetE: $free_vectype(vectype) ++ $free_memidx(memidx).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{memory{.}size}`, then:
 
@@ -15840,11 +15991,11 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{memory{.}copy}`, then:
 
-   a. Return `YetE ($free_memidx(memidx_1) ++ $free_memidx(memidx_2))`.
+   a. Return YetE: $free_memidx(memidx_1) ++ $free_memidx(memidx_2).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{memory{.}init}`, then:
 
-   a. Return `YetE ($free_memidx(memidx) ++ $free_dataidx(dataidx))`.
+   a. Return YetE: $free_memidx(memidx) ++ $free_dataidx(dataidx).
 
 #. Assert: Due to validation, :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{data{.}drop}`.
 
@@ -15878,21 +16029,21 @@ watsup 0.4 generator
 ...................................................................................................................
 
 
-1. Return `YetE ($free_typeidx(typeidx) ++ $free_list($free_local(local)*{local : local}) ++ $free_block(expr)[LOCALS_free = []])`.
+1. Return YetE: $free_typeidx(typeidx) ++ $free_list($free_local(local)*{local : local}) ++ $free_block(expr)[LOCALS_free = []].
 
 
 :math:`{\mathrm{free}}_{\mathit{global}}((\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}))`
 ..................................................................................................
 
 
-1. Return `YetE ($free_globaltype(globaltype) ++ $free_expr(expr))`.
+1. Return YetE: $free_globaltype(globaltype) ++ $free_expr(expr).
 
 
 :math:`{\mathrm{free}}_{\mathit{table}}((\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}}))`
 ...............................................................................................
 
 
-1. Return `YetE ($free_tabletype(tabletype) ++ $free_expr(expr))`.
+1. Return YetE: $free_tabletype(tabletype) ++ $free_expr(expr).
 
 
 :math:`{\mathrm{free}}_{\mathit{mem}}((\mathsf{memory}~{\mathit{memtype}}))`
@@ -15902,13 +16053,20 @@ watsup 0.4 generator
 1. Return :math:`{\mathrm{free}}_{\mathit{memtype}}({\mathit{memtype}})`.
 
 
+:math:`{\mathrm{free}}_{\mathit{tag}}((\mathsf{tag}~{\mathit{typeidx}}))`
+.........................................................................
+
+
+1. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
+
+
 :math:`{\mathrm{free}}_{\mathit{elemmode}}({\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}})`
 ........................................................................................................
 
 
 1. If :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{active}`, then:
 
-   a. Return `YetE ($free_tableidx(tableidx) ++ $free_expr(expr))`.
+   a. Return YetE: $free_tableidx(tableidx) ++ $free_expr(expr).
 
 #. If :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`, then:
 
@@ -15925,7 +16083,7 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{active}`, then:
 
-   a. Return `YetE ($free_memidx(memidx) ++ $free_expr(expr))`.
+   a. Return YetE: $free_memidx(memidx) ++ $free_expr(expr).
 
 #. Assert: Due to validation, :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.
 
@@ -15936,7 +16094,7 @@ watsup 0.4 generator
 ......................................................................................................................
 
 
-1. Return `YetE ($free_reftype(reftype) ++ $free_list($free_expr(expr)*{expr : expr}) ++ $free_elemmode(elemmode))`.
+1. Return YetE: $free_reftype(reftype) ++ $free_list($free_expr(expr)*{expr : expr}) ++ $free_elemmode(elemmode).
 
 
 :math:`{\mathrm{free}}_{\mathit{data}}((\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}}))`
@@ -15967,11 +16125,11 @@ watsup 0.4 generator
 1. Return :math:`{\mathrm{free}}_{\mathit{externtype}}({\mathit{externtype}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{module}}((\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast}))`
-......................................................................................................................................................................................................................................................................................................
+:math:`{\mathrm{free}}_{\mathit{module}}((\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast}))`
+............................................................................................................................................................................................................................................................................................................................
 
 
-1. Return `YetE ($free_list($free_type(type)*{type : type}) ++ $free_list($free_import(import)*{import : import}) ++ $free_list($free_func(func)*{func : func}) ++ $free_list($free_global(global)*{global : global}) ++ $free_list($free_table(table)*{table : table}) ++ $free_list($free_mem(mem)*{mem : mem}) ++ $free_list($free_elem(elem)*{elem : elem}) ++ $free_list($free_data(data)*{data : data}) ++ $free_opt($free_start(start)?{start : start}) ++ $free_list($free_export(export)*{export : export}))`.
+1. Return YetE: $free_list($free_type(type)*{type : type}) ++ $free_list($free_import(import)*{import : import}) ++ $free_list($free_func(func)*{func : func}) ++ $free_list($free_global(global)*{global : global}) ++ $free_list($free_table(table)*{table : table}) ++ $free_list($free_mem(mem)*{mem : mem}) ++ $free_list($free_tag(tag)*{tag : tag}) ++ $free_list($free_elem(elem)*{elem : elem}) ++ $free_list($free_data(data)*{data : data}) ++ $free_opt($free_start(start)?{start : start}) ++ $free_list($free_export(export)*{export : export}).
 
 
 :math:`{\mathrm{funcidx}}({\mathit{module}})`
@@ -16000,7 +16158,11 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{tu}}_1~{{\mathit{tu}'}^\ast}` be :math:`{{\mathit{typeuse}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. If :math:`{|{{\mathit{typevar}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}|}` is greater than or equal to :math:`1`, then:
+#. If :math:`{|{{\mathit{typevar}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}|}` is less than :math:`1`, then:
+
+   a. Do nothing.
+
+#. Else:
 
    a. Let :math:`{\mathit{tv}}_1~{{\mathit{tv}'}^\ast}` be :math:`{{\mathit{typevar}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -16422,6 +16584,27 @@ watsup 0.4 generator
 #. Return :math:`{\mathrm{mems}}({{\mathit{xx}}^\ast})`.
 
 
+:math:`{\mathrm{tags}}({{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+............................................................................................
+
+
+1. If :math:`{{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{externidx}}_0~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. If :math:`{\mathit{externidx}}_0` is of the case :math:`\mathsf{tag}`, then:
+
+   a. Let :math:`(\mathsf{tag}~x)` be :math:`{\mathit{externidx}}_0`.
+
+   #. Return :math:`x~{\mathrm{tags}}({{\mathit{xx}}^\ast})`.
+
+#. Let :math:`{\mathit{externidx}}~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. Return :math:`{\mathrm{tags}}({{\mathit{xx}}^\ast})`.
+
+
 :math:`{\mathrm{funcs}}({{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
 ..............................................................................................
 
@@ -16504,6 +16687,27 @@ watsup 0.4 generator
 #. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. Return :math:`{\mathrm{mems}}({{\mathit{xt}}^\ast})`.
+
+
+:math:`{\mathrm{tags}}({{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+.............................................................................................
+
+
+1. If :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. If :math:`{\mathit{externtype}}_0` is of the case :math:`\mathsf{tag}`, then:
+
+   a. Let :math:`(\mathsf{tag}~{\mathit{at}})` be :math:`{\mathit{externtype}}_0`.
+
+   #. Return :math:`{\mathit{at}}~{\mathrm{tags}}({{\mathit{xt}}^\ast})`.
+
+#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. Return :math:`{\mathrm{tags}}({{\mathit{xt}}^\ast})`.
 
 
 
@@ -18023,88 +18227,109 @@ watsup 0.4 generator
    #. Return :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{{|{\mathit{packtype}}|}, 32}^{{\mathit{sx}}}}}{(i)})`.
 
 
-:math:`{\mathrm{funcs}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-.............................................................................................
-
-
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
-
-   a. Return :math:`\epsilon`.
-
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{func}`, then:
-
-   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externval}}_0`.
-
-   #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{xv}}^\ast})`.
-
-#. Let :math:`{\mathit{externval}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-#. Return :math:`{\mathrm{funcs}}({{\mathit{xv}}^\ast})`.
-
-
-:math:`{\mathrm{globals}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-...............................................................................................
-
-
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
-
-   a. Return :math:`\epsilon`.
-
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{global}`, then:
-
-   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externval}}_0`.
-
-   #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{xv}}^\ast})`.
-
-#. Let :math:`{\mathit{externval}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-#. Return :math:`{\mathrm{globals}}({{\mathit{xv}}^\ast})`.
-
-
-:math:`{\mathrm{tables}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+:math:`{\mathrm{funcs}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
 ..............................................................................................
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{xv}}^\ast})`.
+   #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{xa}}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Return :math:`{\mathrm{tables}}({{\mathit{xv}}^\ast})`.
-
-
-:math:`{\mathrm{mems}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-............................................................................................
+#. Return :math:`{\mathrm{funcs}}({{\mathit{xa}}^\ast})`.
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+:math:`{\mathrm{globals}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+................................................................................................
+
+
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{mem}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
+   #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{xa}}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Return :math:`{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
+#. Return :math:`{\mathrm{globals}}({{\mathit{xa}}^\ast})`.
+
+
+:math:`{\mathrm{tables}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+...............................................................................................
+
+
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{table}`, then:
+
+   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externaddr}}_0`.
+
+   #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{xa}}^\ast})`.
+
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. Return :math:`{\mathrm{tables}}({{\mathit{xa}}^\ast})`.
+
+
+:math:`{\mathrm{mems}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+.............................................................................................
+
+
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{mem}`, then:
+
+   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externaddr}}_0`.
+
+   #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{xa}}^\ast})`.
+
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. Return :math:`{\mathrm{mems}}({{\mathit{xa}}^\ast})`.
+
+
+:math:`{\mathrm{tags}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+.............................................................................................
+
+
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{tag}`, then:
+
+   a. Let :math:`(\mathsf{tag}~{\mathit{ha}})` be :math:`{\mathit{externaddr}}_0`.
+
+   #. Return :math:`{\mathit{ha}}~{\mathrm{tags}}({{\mathit{xa}}^\ast})`.
+
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. Return :math:`{\mathrm{tags}}({{\mathit{xa}}^\ast})`.
 
 
 :math:`{\mathrm{store}}`
@@ -18121,6 +18346,15 @@ watsup 0.4 generator
 1. Let :math:`f` be the current frame.
 
 #. Return :math:`f`.
+
+
+:math:`{\mathrm{tagaddr}}`
+..........................
+
+
+1. Let :math:`f` be the current frame.
+
+#. Return :math:`f{.}\mathsf{module}{.}\mathsf{tags}`.
 
 
 :math:`{\mathrm{moduleinst}}`
@@ -18160,6 +18394,13 @@ watsup 0.4 generator
 1. Return :math:`s{.}\mathsf{mems}`.
 
 
+:math:`{\mathrm{taginst}}`
+..........................
+
+
+1. Return :math:`s{.}\mathsf{tags}`.
+
+
 :math:`{\mathrm{eleminst}}`
 ...........................
 
@@ -18186,6 +18427,13 @@ watsup 0.4 generator
 
 
 1. Return :math:`s{.}\mathsf{arrays}`.
+
+
+:math:`{\mathrm{exninst}}`
+..........................
+
+
+1. Return :math:`s{.}\mathsf{exns}`.
 
 
 :math:`{\mathrm{type}}(x)`
@@ -18231,6 +18479,15 @@ watsup 0.4 generator
 1. Let :math:`f` be the current frame.
 
 #. Return :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]`.
+
+
+:math:`{\mathrm{tag}}(x)`
+.........................
+
+
+1. Let :math:`f` be the current frame.
+
+#. Return :math:`s{.}\mathsf{tags}{}[f{.}\mathsf{module}{.}\mathsf{tags}{}[x]]`.
 
 
 :math:`{\mathrm{elem}}(x)`
@@ -18358,6 +18615,13 @@ watsup 0.4 generator
 
 
 1. Append :math:`{{\mathit{ai}}^\ast}` to the :math:`s{.}\mathsf{arrays}`.
+
+
+:math:`{\mathrm{add}}_{\mathit{exninst}}({{\mathit{exn}}^\ast})`
+................................................................
+
+
+1. Append :math:`{{\mathit{exn}}^\ast}` to the :math:`s{.}\mathsf{exns}`.
 
 
 :math:`{\mathrm{growtable}}({\mathit{tableinst}}, n, r)`
@@ -18582,6 +18846,36 @@ watsup 0.4 generator
 #. Return :math:`{\mathit{ma}}~{{\mathit{ma}'}^\ast}`.
 
 
+:math:`{\mathrm{alloctag}}({\mathit{at}})`
+..........................................
+
+
+1. Let :math:`{\mathit{taginst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{at}} \}\end{array}`.
+
+#. Let :math:`a` be :math:`{|s{.}\mathsf{tags}|}`.
+
+#. Append :math:`{\mathit{taginst}}` to the :math:`s{.}\mathsf{tags}`.
+
+#. Return :math:`a`.
+
+
+:math:`{\mathrm{alloctags}}({{\mathit{tagtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+...............................................................................................
+
+
+1. If :math:`{{\mathit{tagtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{at}}~{{\mathit{at}'}^\ast}` be :math:`{{\mathit{tagtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. Let :math:`{\mathit{aa}}` be :math:`{\mathrm{alloctag}}({\mathit{at}})`.
+
+#. Let :math:`{{\mathit{aa}'}^\ast}` be :math:`{\mathrm{alloctags}}({{\mathit{at}'}^\ast})`.
+
+#. Return :math:`{\mathit{aa}}~{{\mathit{aa}'}^\ast}`.
+
+
 :math:`{\mathrm{allocelem}}({\mathit{elemtype}}, {{\mathit{ref}}^\ast})`
 ........................................................................
 
@@ -18662,25 +18956,31 @@ watsup 0.4 generator
 
    a. Let :math:`(\mathsf{func}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{func}~{\mathit{moduleinst}}{.}\mathsf{funcs}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{func}~{\mathit{moduleinst}}{.}\mathsf{funcs}{}[x]) \}\end{array}`.
 
 #. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{global}`, then:
 
    a. Let :math:`(\mathsf{global}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{global}~{\mathit{moduleinst}}{.}\mathsf{globals}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{global}~{\mathit{moduleinst}}{.}\mathsf{globals}{}[x]) \}\end{array}`.
 
 #. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{table}`, then:
 
    a. Let :math:`(\mathsf{table}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{table}~{\mathit{moduleinst}}{.}\mathsf{tables}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{\mathit{moduleinst}}{.}\mathsf{tables}{}[x]) \}\end{array}`.
 
-#. Assert: Due to validation, :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{mem}`.
+#. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{mem}`, then:
 
-#. Let :math:`(\mathsf{mem}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+   a. Let :math:`(\mathsf{mem}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-#. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{mem}~{\mathit{moduleinst}}{.}\mathsf{mems}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{mem}~{\mathit{moduleinst}}{.}\mathsf{mems}{}[x]) \}\end{array}`.
+
+#. Assert: Due to validation, :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{tag}`.
+
+#. Let :math:`(\mathsf{tag}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+#. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{tag}~{\mathit{moduleinst}}{.}\mathsf{tags}{}[x]) \}\end{array}`.
 
 
 :math:`{{{\mathrm{allocexport}}^\ast}}{({\mathit{moduleinst}}, {{\mathit{export}}^\ast})}`
@@ -18690,27 +18990,31 @@ watsup 0.4 generator
 1. Return :math:`{{\mathrm{allocexport}}({\mathit{moduleinst}}, {\mathit{export}})^\ast}`.
 
 
-:math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externval}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`
-.................................................................................................................................................................................................
+:math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`
+..................................................................................................................................................................................................
 
 
-1. Let :math:`{{\mathit{fa}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externval}}^\ast})`.
+1. Let :math:`{{\mathit{fa}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{ga}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{globals}}({{\mathit{externval}}^\ast})`.
+#. Let :math:`{{\mathit{ga}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{globals}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{ma}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{mems}}({{\mathit{externval}}^\ast})`.
+#. Let :math:`{{\mathit{aa}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{tags}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{ta}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{tables}}({{\mathit{externval}}^\ast})`.
+#. Let :math:`{{\mathit{ma}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{mems}}({{\mathit{externaddr}}^\ast})`.
+
+#. Let :math:`{{\mathit{ta}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{tables}}({{\mathit{externaddr}}^\ast})`.
 
 #. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
 
-#. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
+#. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
 #. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}}`.
 
 #. Let :math:`{{\mathit{ga}}^\ast}` be :math:`{{|s{.}\mathsf{globals}|} + i_{\mathsf{g}}^{i_{\mathsf{g}}<{|{{\mathit{global}}^\ast}|}}}`.
 
 #. Let :math:`{{\mathit{ta}}^\ast}` be :math:`{{|s{.}\mathsf{tables}|} + i_{\mathsf{t}}^{i_{\mathsf{t}}<{|{{\mathit{table}}^\ast}|}}}`.
+
+#. Let :math:`{{\mathit{aa}}^\ast}` be :math:`{{|s{.}\mathsf{tags}|} + i_{\mathsf{a}}^{i_{\mathsf{a}}<{|{{\mathit{tag}}^\ast}|}}}`.
 
 #. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{{|s{.}\mathsf{mems}|} + i_{\mathsf{m}}^{i_{\mathsf{m}}<{|{{\mathit{mem}}^\ast}|}}}`.
 
@@ -18723,6 +19027,10 @@ watsup 0.4 generator
 #. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^\ast}` be :math:`{{\mathit{mem}}^\ast}`.
 
 #. Let :math:`{{\mathit{dt}}^\ast}` be :math:`{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})}`.
+
+#. Assert: Due to validation, for all :math:`{({\mathit{tag}})^\ast}`, :math:`{\mathit{tag}}` is of the case :math:`\mathsf{tag}`.
+
+#. Let :math:`{(\mathsf{tag}~y)^\ast}` be :math:`{{\mathit{tag}}^\ast}`.
 
 #. Assert: Due to validation, for all :math:`{({\mathit{data}})^\ast}`, :math:`{\mathit{data}}` is of the case :math:`\mathsf{data}`.
 
@@ -18744,33 +19052,37 @@ watsup 0.4 generator
 
 #. Let :math:`{(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}` be :math:`{{\mathit{func}}^\ast}`.
 
-#. Let :math:`{{\mathit{xi}}^\ast}` be :math:`{{{\mathrm{allocexport}}^\ast}}{(\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}, {{\mathit{export}}^\ast})}`.
+#. Let :math:`{{\mathit{xi}}^\ast}` be :math:`{{{\mathrm{allocexport}}^\ast}}{(\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast},\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}, {{\mathit{export}}^\ast})}`.
 
-#. Let :math:`{\mathit{moduleinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{elems}~{{\mathit{ea}}^\ast},\; \mathsf{datas}~{{\mathit{da}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast},\; \mathsf{elems}~{{\mathit{ea}}^\ast},\; \mathsf{datas}~{{\mathit{da}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
 
-#. Let :math:`{\mathit{funcaddr}}_0` be :math:`{\mathrm{allocfuncs}}({{{\mathit{dt}}^\ast}{}[x]^\ast}, {(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}, {{\mathit{moduleinst}}^{{|{{\mathit{func}}^\ast}|}}})`.
+#. Let :math:`n_0` be :math:`{\mathrm{allocfuncs}}({{{\mathit{dt}}^\ast}{}[x]^\ast}, {(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}, {{\mathit{moduleinst}}^{{|{{\mathit{func}}^\ast}|}}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{funcaddr}}_0` is :math:`{{\mathit{fa}}^\ast}`.
+#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{fa}}^\ast}`.
 
-#. Let :math:`{\mathit{globaladdr}}_0` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast})`.
+#. Let :math:`n_0` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast})`.
 
-#. Assert: Due to validation, :math:`{\mathit{globaladdr}}_0` is :math:`{{\mathit{ga}}^\ast}`.
+#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{ga}}^\ast}`.
 
-#. Let :math:`{\mathit{tableaddr}}_0` be :math:`{\mathrm{alloctables}}({{\mathit{tabletype}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast})`.
+#. Let :math:`n_0` be :math:`{\mathrm{alloctables}}({{\mathit{tabletype}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast})`.
 
-#. Assert: Due to validation, :math:`{\mathit{tableaddr}}_0` is :math:`{{\mathit{ta}}^\ast}`.
+#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{ta}}^\ast}`.
 
-#. Let :math:`{\mathit{memaddr}}_0` be :math:`{\mathrm{allocmems}}({{\mathit{memtype}}^\ast})`.
+#. Let :math:`n_0` be :math:`{\mathrm{allocmems}}({{\mathit{memtype}}^\ast})`.
 
-#. Assert: Due to validation, :math:`{\mathit{memaddr}}_0` is :math:`{{\mathit{ma}}^\ast}`.
+#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{ma}}^\ast}`.
 
-#. Let :math:`{\mathit{elemaddr}}_0` be :math:`{\mathrm{allocelems}}({{\mathit{elemtype}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
+#. Let :math:`n_0` be :math:`{\mathrm{alloctags}}({{{\mathit{dt}}^\ast}{}[y]^\ast})`.
 
-#. Assert: Due to validation, :math:`{\mathit{elemaddr}}_0` is :math:`{{\mathit{ea}}^\ast}`.
+#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{aa}}^\ast}`.
 
-#. Let :math:`{\mathit{dataaddr}}_0` be :math:`{\mathrm{allocdatas}}({\mathsf{ok}^{{|{{\mathit{data}}^\ast}|}}}, {{{\mathit{byte}}^\ast}^\ast})`.
+#. Let :math:`n_0` be :math:`{\mathrm{allocelems}}({{\mathit{elemtype}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
 
-#. Assert: Due to validation, :math:`{\mathit{dataaddr}}_0` is :math:`{{\mathit{da}}^\ast}`.
+#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{ea}}^\ast}`.
+
+#. Let :math:`n_0` be :math:`{\mathrm{allocdatas}}({\mathsf{ok}^{{|{{\mathit{data}}^\ast}|}}}, {{{\mathit{byte}}^\ast}^\ast})`.
+
+#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{da}}^\ast}`.
 
 #. Return :math:`{\mathit{moduleinst}}`.
 
@@ -18840,17 +19152,17 @@ watsup 0.4 generator
 #. Return :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}`.
 
 
-:math:`{\mathrm{instantiate}}(z, {\mathit{module}}, {{\mathit{externval}}^\ast})`
-.................................................................................
+:math:`{\mathrm{instantiate}}(z, {\mathit{module}}, {{\mathit{externaddr}}^\ast})`
+..................................................................................
 
 
 1. Let :math:`({{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast})` be :math:`{\mathrm{Module}}_{\mathit{ok}}({\mathit{module}})`.
 
 #. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
 
-#. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
+#. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{externval}}, {\mathit{xt}}_{\mathsf{i}})^\ast}`, :math:`{\mathrm{Externval}}_{\mathit{type}}({\mathit{externval}})` is :math:`{\mathit{xt}}_{\mathsf{i}}`.
+#. Assert: Due to validation, for all :math:`{({\mathit{externaddr}}, {\mathit{xt}}_{\mathsf{i}})^\ast}`, :math:`{\mathrm{Externaddr}}_{\mathit{type}}({\mathit{externaddr}})` is :math:`{\mathit{xt}}_{\mathsf{i}}`.
 
 #. Let :math:`{{\mathit{instr}}_{\mathsf{d}}^\ast}` be :math:`{\bigoplus}\, {{{\mathrm{rundata}}}_{i_{\mathsf{d}}}({{\mathit{data}}^\ast}{}[i_{\mathsf{d}}])^{i_{\mathsf{d}}<{|{{\mathit{data}}^\ast}|}}}`.
 
@@ -18860,7 +19172,7 @@ watsup 0.4 generator
 
 #. Let :math:`{(\mathsf{start}~x)^?}` be :math:`{{\mathit{start}}^?}`.
 
-#. Let :math:`{\mathit{moduleinst}}_0` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externval}}^\ast})~{{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externval}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}_0` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
 
 #. Assert: Due to validation, for all :math:`{({\mathit{data}})^\ast}`, :math:`{\mathit{data}}` is of the case :math:`\mathsf{data}`.
 
@@ -18898,7 +19210,7 @@ watsup 0.4 generator
 
 #. Pop the activation of :math:`f` from the stack.
 
-#. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externval}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
+#. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
@@ -18923,7 +19235,7 @@ watsup 0.4 generator
 .....................................................................
 
 
-1. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array} \}\end{array}`.
+1. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array} \}\end{array}`.
 
 #. Assert: Due to validation, :math:`{\mathrm{expand}}(s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
 
@@ -19072,35 +19384,53 @@ watsup 0.4 generator
 
 1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-#. Let :math:`L` be the current label.
+#. If the top of the stack is a :math:`\mathsf{label}`, then:
 
-#. Let :math:`n` be the arity of :math:`L`.
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-#. Let :math:`{{\mathit{instr}'}^\ast}` be the continuation of :math:`L`.
+   #. Let :math:`L` be the current label.
 
-#. Pop the current label from the stack.
+   #. Let :math:`n` be the arity of :math:`L`.
 
-#. Let :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` be :math:`{{\mathit{val}}^\ast}`.
-
-#. If :math:`{|{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}|}` is greater than or equal to :math:`n`, then:
-
-   a. Let :math:`{{\mathit{val}'}^\ast}~{{\mathit{val}}^{n}}` be :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+   #. Let :math:`{{\mathit{instr}'}^\ast}` be the continuation of :math:`L`.
 
    #. If :math:`l` is :math:`0`, then:
 
-      1) Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+      1) Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+      #) Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+      #) Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+
+      #) Pop the current label from the stack.
+
+      #) Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
       #) Execute the instruction :math:`{{\mathit{instr}'}^\ast}`.
 
-#. If for all :math:`{({\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}})^\ast}`, the type of :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is val, then:
+   #. Else:
 
-   a. Let :math:`{{\mathit{val}}^\ast}` be :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+      1) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. If :math:`l` is greater than :math:`0`, then:
+      #) If :math:`l` is greater than :math:`0`, then:
 
-      1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+         a) Pop the current label from the stack.
 
-      #) Execute the instruction :math:`(\mathsf{br}~l - 1)`.
+         #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+         #) Execute the instruction :math:`(\mathsf{br}~l - 1)`.
+
+#. Else if the top of the stack is a :math:`\mathsf{handler}`, then:
+
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+   #. Exit from :math:`\mathsf{handler}`.
+
+   #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Execute the instruction :math:`(\mathsf{br}~l)`.
 
 
 :math:`\mathsf{br\_if}~l`
@@ -19222,41 +19552,73 @@ watsup 0.4 generator
 
 1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-#. If a frame is now on the top of the stack, then:
+#. If the top of the stack is a :math:`\mathsf{frame}`, then:
 
-   a. Let :math:`f` be the current frame.
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Let :math:`f` be the current frame.
 
    #. Let :math:`n` be the arity of :math:`f`.
 
-   #. Pop the current frame from the stack.
+   #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
-   #. Let :math:`{{\mathit{val}'}^\ast}~{{\mathit{val}}^{n}}` be :math:`{{\mathit{val}}^\ast}`.
+   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+
+   #. Pop the current frame from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
-#. Else if a label is now on the top of the stack, then:
+#. Else if the top of the stack is a :math:`\mathsf{label}`, then:
 
-   a. Pop the current label from the stack.
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+   #. Pop the current label from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
    #. Execute the instruction :math:`\mathsf{return}`.
 
+#. Else:
 
-:math:`\mathsf{trap}`
-.....................
+   a. If the top of the stack is a :math:`\mathsf{handler}`, then:
+
+      1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+      #) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+      #) Exit from :math:`\mathsf{handler}`.
+
+      #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+      #) Execute the instruction :math:`\mathsf{return}`.
 
 
-1. YetI: TODO: It is likely that the value stack of two rules are different.
+:math:`\mathsf{handler}`
+........................
+
+
+1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+#. Assert: Due to validation, YetE: a handler is now on the top of the stack.
+
+#. Exit from :math:`\mathsf{handler}`.
+
+#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
 
 :math:`{\mathit{nt}} {.} {\mathit{unop}}`
 .........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
 
 #. If :math:`{|{{\mathit{unop}}}{{}_{{\mathit{nt}}}(c_1)}|}` is less than or equal to :math:`0`, then:
 
@@ -19271,13 +19633,15 @@ watsup 0.4 generator
 ..........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_1)` from the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
 #. If :math:`{|{{\mathit{binop}}}{{}_{{\mathit{nt}}}(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
 
@@ -19292,9 +19656,11 @@ watsup 0.4 generator
 ...........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
 
 #. Let :math:`c` be :math:`{{\mathit{testop}}}{{}_{{\mathit{nt}}}(c_1)}`.
 
@@ -19305,13 +19671,15 @@ watsup 0.4 generator
 ..........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_1)` from the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
 #. Let :math:`c` be :math:`{{\mathit{relop}}}{{}_{{\mathit{nt}}}(c_1, c_2)}`.
 
@@ -19322,9 +19690,11 @@ watsup 0.4 generator
 ............................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}_1` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}_1{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}_1`.
 
 #. If :math:`{|{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}(c_1)}|}` is less than or equal to :math:`0`, then:
 
@@ -19390,9 +19760,19 @@ watsup 0.4 generator
 
 #. Pop the value :math:`{\mathit{ref}}_1` from the stack.
 
-#. If :math:`{\mathit{ref}}_1` is of the case :math:`\mathsf{ref{.}null}` and :math:`{\mathit{ref}}_2` is of the case :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{ref}}_1` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
+   a. If :math:`{\mathit{ref}}_2` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
+
+   #. Else if :math:`{\mathit{ref}}_1` is :math:`{\mathit{ref}}_2`, then:
+
+      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
+
+   #. Else:
+
+      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
 
 #. Else if :math:`{\mathit{ref}}_1` is :math:`{\mathit{ref}}_2`, then:
 
@@ -19707,11 +20087,11 @@ watsup 0.4 generator
 .........................................................
 
 
-1. Let :math:`{\mathit{nt}}_0` be :math:`{\mathrm{unpack}}({\mathsf{i}}{N})`.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}_0` is on the top of the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
-#. Pop the value :math:`({\mathit{nt}}_0{.}\mathsf{const}~c_1)` from the stack.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathrm{unpack}}({\mathsf{i}}{N})`.
 
 #. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({{{\mathrm{pack}}}_{{\mathsf{i}}{N}}(c_1)^{M}})}`.
 
@@ -19755,11 +20135,11 @@ watsup 0.4 generator
 ...................................................................
 
 
-1. Let :math:`{\mathit{nt}}_0` be :math:`{\mathrm{unpack}}({\mathsf{i}}{N})`.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}_0` is on the top of the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Pop the value :math:`({\mathit{nt}}_0{.}\mathsf{const}~c_2)` from the stack.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathrm{unpack}}({\mathsf{i}}{N})`.
 
 #. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
@@ -19965,15 +20345,15 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{rt}}` be :math:`{\mathrm{Ref}}_{\mathit{type}}({\mathit{ref}})`.
 
+#. Push the value :math:`{\mathit{ref}}` to the stack.
+
 #. If :math:`{\mathit{rt}}` does not match :math:`{{\mathrm{inst}}}_{f{.}\mathsf{module}}({\mathit{rt}}_2)`, then:
 
-   a. Push the value :math:`{\mathit{ref}}` to the stack.
+   a. Do nothing.
 
 #. Else:
 
-   a. Push the value :math:`{\mathit{ref}}` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{br}~l)`.
+   a. Execute the instruction :math:`(\mathsf{br}~l)`.
 
 
 :math:`\mathsf{br\_on\_cast\_fail}~l~{\mathit{rt}}_1~{\mathit{rt}}_2`
@@ -19988,15 +20368,15 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{rt}}` be :math:`{\mathrm{Ref}}_{\mathit{type}}({\mathit{ref}})`.
 
+#. Push the value :math:`{\mathit{ref}}` to the stack.
+
 #. If :math:`{\mathit{rt}}` matches :math:`{{\mathrm{inst}}}_{f{.}\mathsf{module}}({\mathit{rt}}_2)`, then:
 
-   a. Push the value :math:`{\mathit{ref}}` to the stack.
+   a. Do nothing.
 
 #. Else:
 
-   a. Push the value :math:`{\mathit{ref}}` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{br}~l)`.
+   a. Execute the instruction :math:`(\mathsf{br}~l)`.
 
 
 :math:`\mathsf{call}~x`
@@ -20092,45 +20472,387 @@ watsup 0.4 generator
 
 #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-#. If a label is now on the top of the stack, then:
+#. If the top of the stack is a :math:`\mathsf{label}`, then:
 
-   a. Pop the current label from the stack.
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+   #. Pop the current label from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
    #. Execute the instruction :math:`(\mathsf{return\_call\_ref}~y)`.
 
-#. Else if a frame is now on the top of the stack, then:
+#. Else if the top of the stack is a :math:`\mathsf{frame}`, then:
 
-   a. Pop the current frame from the stack.
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Let :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` be :math:`{{\mathit{val}}^\ast}`.
+   #. Assert: Due to validation, a value is on the top of the stack.
+
+   #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
+
+   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+   #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+      1) Pop the current frame from the stack.
+
+      #) Trap.
+
+   #. Assert: Due to validation, a value is on the top of the stack.
+
+   #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
 
    #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}func}`, then:
 
       1) Let :math:`(\mathsf{ref{.}func}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) If :math:`{|{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`n`, then:
+      #) If :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`, then:
 
-         a) Let :math:`{{\mathit{val}'}^\ast}~{{\mathit{val}}^{n}}` be :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+         a) Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
 
-         #) If :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`, then:
+         #) Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})`.
 
-            1. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
+         #) Let :math:`({t_1^{n}}~\rightarrow~{t_2^{m}})` be :math:`{\mathit{functype}}_0`.
 
-            #. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})`.
+         #) Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
-            #. Let :math:`({t_1^{n}}~\rightarrow~{t_2^{m}})` be :math:`{\mathit{functype}}_0`.
+         #) Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-            #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+         #) Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-            #. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
+         #) Pop the current frame from the stack.
 
-            #. Execute the instruction :math:`(\mathsf{call\_ref}~y)`.
+         #) Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
-   #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}` and for all :math:`{({\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}})^\ast}`, the type of :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is val, then:
+         #) Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
 
-      1) Trap.
+         #) Execute the instruction :math:`(\mathsf{call\_ref}~y)`.
+
+
+:math:`\mathsf{throw\_ref}`
+...........................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+   a. Trap.
+
+#. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+#. If :math:`{{\mathit{val}}^\ast}` is not :math:`\epsilon`, then:
+
+   a. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
+
+      1) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+      #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+      #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+#. Else:
+
+   a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+   #. If the top of the stack is a :math:`\mathsf{label}`, then:
+
+      1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+      #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
+
+         a) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+         #) Pop the current label from the stack.
+
+         #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+         #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+   #. Else if the top of the stack is a :math:`\mathsf{frame}`, then:
+
+      1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+      #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
+
+         a) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+         #) Pop the current frame from the stack.
+
+         #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+         #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+   #. Else:
+
+      1) If the top of the stack is a :math:`\mathsf{handler}`, then:
+
+         a) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+         #) Let :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\})` be the current context.
+
+         #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
+
+            1. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+            #. If :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+
+               a. Exit from :math:`\mathsf{handler}`.
+
+               #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+               #. Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+            #. Else:
+
+               a. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+               #. If :math:`a` is greater than or equal to :math:`{|z{.}\mathsf{exns}|}`, then:
+
+                  1) Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                  #) If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all}`, then:
+
+                     a) Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
+
+                     #) Exit from :math:`\mathsf{handler}`.
+
+                     #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                  #) Else:
+
+                     a) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+                     #) Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                     #) If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all\_ref}`, then:
+
+                        1. Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
+
+                        #. Exit from :math:`\mathsf{handler}`.
+
+                        #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                        #. Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                     #) Else:
+
+                        1. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+                        #. Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                        #. Exit from :math:`\mathsf{handler}`.
+
+                        #. Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
+
+                        #. Enter :math:`\mathsf{throw\_ref}~\mathsf{handler}` with label :math:`H`.
+
+                           a. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+               #. Else:
+
+                  1) Let :math:`{{\mathit{val}}^\ast}` be :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{fields}`.
+
+                  #) Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                  #) If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch}`, then:
+
+                     a) Let :math:`(\mathsf{catch}~x~l)` be :math:`{\mathit{catch}}_0`.
+
+                     #) If :math:`x` is less than :math:`{|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag}` is :math:`z{.}\mathsf{tags}{}[x]`, then:
+
+                        1. Exit from :math:`\mathsf{handler}`.
+
+                        #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+                        #. Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                     #) Else:
+
+                        1. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                        #. Do nothing.
+
+                        #. If :math:`{\mathit{catch}}_0` is not of the case :math:`\mathsf{catch\_ref}`, then:
+
+                           a. Do nothing.
+
+                        #. Else:
+
+                           a. Do nothing.
+
+                        #. Do nothing.
+
+                        #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all}`, then:
+
+                           a. Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
+
+                           #. Exit from :math:`\mathsf{handler}`.
+
+                           #. Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                        #. Else:
+
+                           a. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+                           #. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                           #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all\_ref}`, then:
+
+                              1) Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
+
+                              #) Exit from :math:`\mathsf{handler}`.
+
+                              #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                              #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                           #. Else:
+
+                              1) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+                              #) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                              #) Exit from :math:`\mathsf{handler}`.
+
+                              #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
+
+                              #) Enter :math:`\mathsf{throw\_ref}~\mathsf{handler}` with label :math:`H`.
+
+                                 a) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                  #) Else:
+
+                     a) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+                     #) Let :math:`{{\mathit{val}}^\ast}` be :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{fields}`.
+
+                     #) Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                     #) If :math:`{\mathit{catch}}_0` is not of the case :math:`\mathsf{catch\_ref}`, then:
+
+                        1. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                        #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all}`, then:
+
+                           a. Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
+
+                           #. Exit from :math:`\mathsf{handler}`.
+
+                           #. Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                        #. Else:
+
+                           a. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+                           #. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                           #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all\_ref}`, then:
+
+                              1) Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
+
+                              #) Exit from :math:`\mathsf{handler}`.
+
+                              #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                              #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                           #. Else:
+
+                              1) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+                              #) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                              #) Exit from :math:`\mathsf{handler}`.
+
+                              #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
+
+                              #) Enter :math:`\mathsf{throw\_ref}~\mathsf{handler}` with label :math:`H`.
+
+                                 a) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                     #) Else:
+
+                        1. Let :math:`(\mathsf{catch\_ref}~x~l)` be :math:`{\mathit{catch}}_0`.
+
+                        #. If :math:`x` is less than :math:`{|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag}` is :math:`z{.}\mathsf{tags}{}[x]`, then:
+
+                           a. Exit from :math:`\mathsf{handler}`.
+
+                           #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+                           #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                           #. Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                        #. Else:
+
+                           a. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                           #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all}`, then:
+
+                              1) Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
+
+                              #) Exit from :math:`\mathsf{handler}`.
+
+                              #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                           #. Else:
+
+                              1) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+                              #) Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                              #) If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all\_ref}`, then:
+
+                                 a) Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
+
+                                 #) Exit from :math:`\mathsf{handler}`.
+
+                                 #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                                 #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                              #) Else:
+
+                                 a) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+                                 #) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                                 #) Exit from :math:`\mathsf{handler}`.
+
+                                 #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
+
+                                 #) Enter :math:`\mathsf{throw\_ref}~\mathsf{handler}` with label :math:`H`.
+
+                                    1. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+
+:math:`\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast}`
+.........................................................................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Let :math:`({t_1^{m}}~\rightarrow~{t_2^{n}})` be :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}})`.
+
+#. Assert: Due to validation, there are at least :math:`m` values on the top of the stack.
+
+#. Pop the values :math:`{{\mathit{val}}^{m}}` from the stack.
+
+#. Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}^\ast}~\})`.
+
+#. Enter :math:`\mathsf{handler}` with label :math:`H`.
+
+   a. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
+
+   #. Enter :math:`{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}` with label :math:`L`.
 
 
 :math:`\mathsf{ref{.}null}~x`
@@ -20426,7 +21148,11 @@ watsup 0.4 generator
 
    a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
+   #. If :math:`a` is greater than or equal to :math:`{|z{.}\mathsf{arrays}|}`, then:
+
+      1) Do nothing.
+
+   #. Else if :math:`i + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
 
       1) Trap.
 
@@ -20473,7 +21199,7 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
+#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
 
 #. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
@@ -20481,51 +21207,69 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}` and the type of :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is ref, then:
-
-   a. Trap.
+#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{ref{.}null}` and the type of :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is ref, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}` and the type of :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is ref, then:
 
-   a. Let :math:`(\mathsf{ref{.}array}~a_1)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+   a. Trap.
 
-   #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
 
-      1) If :math:`a_1` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i_1 + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a_1]{.}\mathsf{fields}|}`, then:
+   a. Let :math:`(\mathsf{ref{.}array}~a_1)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-         a) Trap.
-
-      #) Let :math:`(\mathsf{ref{.}array}~a_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-      #) If :math:`a_2` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i_2 + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a_2]{.}\mathsf{fields}|}`, then:
-
-         a) Trap.
-
-   #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{ref{.}array}` and :math:`n` is :math:`0`, then:
+   #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is not of the case :math:`\mathsf{ref{.}array}`, then:
 
       1) Do nothing.
 
    #. Else:
 
-      1) Let :math:`(\mathsf{ref{.}array}~a_1)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+      1) If :math:`a_1` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i_1 + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a_1]{.}\mathsf{fields}|}`, then:
 
-      #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
+         a) Trap.
 
-         a) Let :math:`(\mathsf{ref{.}array}~a_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+      #) Let :math:`(\mathsf{ref{.}array}~a_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-         #) If :math:`i_1` is less than or equal to :math:`i_2` and :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is of the case :math:`\mathsf{array}`, then:
+      #) If :math:`a_2` is greater than or equal to :math:`{|z{.}\mathsf{arrays}|}`, then:
 
-            1. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
+         a) Do nothing.
+
+      #) Else if :math:`i_2 + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a_2]{.}\mathsf{fields}|}`, then:
+
+         a) Trap.
+
+   #. If :math:`n` is not :math:`0`, then:
+
+      1) Let :math:`(\mathsf{ref{.}array}~a_1)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+
+      #) If :math:`i_1` is greater than :math:`i_2`, then:
+
+         a) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
+
+            1. Let :math:`(\mathsf{ref{.}array}~a_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+            #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is of the case :math:`\mathsf{array}`.
+
+            #. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
 
             #. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
 
             #. Let :math:`{{\mathit{sx}}^?}` be :math:`{\mathrm{sx}}({\mathit{zt}}_2)`.
+
+            #. Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
+
+            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + n - 1)` to the stack.
+
+            #. Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
+
+            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + n - 1)` to the stack.
+
+            #. Execute the instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x_2)`.
+
+            #. Execute the instruction :math:`(\mathsf{array{.}set}~x_1)`.
 
             #. Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
 
@@ -20535,59 +21279,49 @@ watsup 0.4 generator
 
             #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
 
-            #. Execute the instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x_2)`.
-
-            #. Execute the instruction :math:`(\mathsf{array{.}set}~x_1)`.
-
-            #. Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
-
-            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + 1)` to the stack.
-
-            #. Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
-
-            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + 1)` to the stack.
-
             #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
             #. Execute the instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)`.
 
-         #) Else:
+      #) Else if :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
 
-            1. Let :math:`(\mathsf{ref{.}array}~a_1)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+         a) Let :math:`(\mathsf{ref{.}array}~a_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-            #. Let :math:`(\mathsf{ref{.}array}~a_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+         #) Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is of the case :math:`\mathsf{array}`.
 
-            #. If :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is of the case :math:`\mathsf{array}`, then:
+         #) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
 
-               a. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
+         #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
 
-               #. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
+         #) Let :math:`{{\mathit{sx}}^?}` be :math:`{\mathrm{sx}}({\mathit{zt}}_2)`.
 
-               #. Let :math:`{{\mathit{sx}}^?}` be :math:`{\mathrm{sx}}({\mathit{zt}}_2)`.
+         #) Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
 
-               #. Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
 
-               #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + n - 1)` to the stack.
+         #) Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
 
-               #. Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
 
-               #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + n - 1)` to the stack.
+         #) Execute the instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x_2)`.
 
-               #. Execute the instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x_2)`.
+         #) Execute the instruction :math:`(\mathsf{array{.}set}~x_1)`.
 
-               #. Execute the instruction :math:`(\mathsf{array{.}set}~x_1)`.
+         #) Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
 
-               #. Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + 1)` to the stack.
 
-               #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
+         #) Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
 
-               #. Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + 1)` to the stack.
 
-               #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
-               #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+         #) Execute the instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)`.
 
-               #. Execute the instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)`.
+   #. Else if :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
+
+      1) Do nothing.
 
 
 :math:`\mathsf{array{.}init\_elem}~x~y`
@@ -20693,7 +21427,11 @@ watsup 0.4 generator
 
       1) Trap.
 
-   #. If :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`, then:
+   #. If :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is not of the case :math:`\mathsf{array}`, then:
+
+      1) Do nothing.
+
+   #. Else:
 
       1) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
@@ -20711,31 +21449,31 @@ watsup 0.4 generator
 
       1) Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`.
+      #) If :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`, then:
 
-      #) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+         a) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-      #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
+         #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
-      #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathit{zt}}}(c)` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[j : {|{\mathit{zt}}|} / 8]`.
+         #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathit{zt}}}(c)` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[j : {|{\mathit{zt}}|} / 8]`.
 
-      #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
+         #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
 
-      #) Push the value :math:`{\mathrm{unpack}}({\mathit{zt}}){.}\mathsf{const}~{{\mathrm{unpack}}}_{{\mathit{zt}}}(c)` to the stack.
+         #) Push the value :math:`{\mathrm{unpack}}({\mathit{zt}}){.}\mathsf{const}~{{\mathrm{unpack}}}_{{\mathit{zt}}}(c)` to the stack.
 
-      #) Execute the instruction :math:`(\mathsf{array{.}set}~x)`.
+         #) Execute the instruction :math:`(\mathsf{array{.}set}~x)`.
 
-      #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
+         #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + {|{\mathit{zt}}|} / 8)` to the stack.
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + {|{\mathit{zt}}|} / 8)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
-      #) Execute the instruction :math:`(\mathsf{array{.}init\_data}~x~y)`.
+         #) Execute the instruction :math:`(\mathsf{array{.}init\_data}~x~y)`.
 
 
 :math:`\mathsf{local{.}get}~x`
@@ -21002,13 +21740,13 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}` and :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
+
+   a. Trap.
+
 #. If :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
 
-   a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
-
-      1) Trap.
-
-   #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8]`.
+   a. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8]`.
 
    #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -21266,11 +22004,35 @@ watsup 0.4 generator
    #. Execute the instruction :math:`(\mathsf{memory{.}init}~x~y)`.
 
 
-:math:`\mathsf{ctxt}`
-.....................
+:math:`\mathsf{throw}~x`
+........................
 
 
-1. YetI: TODO: It is likely that the value stack of two rules are different.
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, :math:`x` is less than :math:`{|z{.}\mathsf{tags}|}`.
+
+#. Let :math:`a` be :math:`{|z{.}\mathsf{exns}|}`.
+
+#. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{tags}{}[x]{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
+
+#. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{tags}{}[x]{.}\mathsf{type})`.
+
+#. Let :math:`({t^{n}}~\rightarrow~{\mathit{valtype}}_1)` be :math:`{\mathit{functype}}_0`.
+
+#. Assert: Due to validation, :math:`{\mathit{valtype}}_1` is :math:`\epsilon`.
+
+#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+#. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+#. Let :math:`{\mathit{exn}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{tag}~z{.}\mathsf{tags}{}[x],\; \mathsf{fields}~{{\mathit{val}}^{n}} \}\end{array}`.
+
+#. Perform :math:`z{}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {\mathit{exn}}]`.
+
+#. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+#. Execute the instruction :math:`\mathsf{throw\_ref}`.
 
 
 :math:`\mathsf{struct{.}new}~x`
@@ -21478,45 +22240,47 @@ watsup 0.4 generator
 #. Perform :math:`z{}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = \epsilon]`.
 
 
-:math:`{{\mathit{nt}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~x~{\mathit{ao}}`
+:math:`{{\mathit{nt}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}}~x~{\mathit{ao}}`
 ...................................................................................................................
 
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{const}~c)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{const}~c)` from the stack.
 
 #. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{nt}}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
+#. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{nt}}`, then:
 
-   a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+   a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
 
       1) Trap.
 
-   #. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)`.
+   #. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
 
-   #. Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8] = {b^\ast}]`.
+      1) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)`.
 
-#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
+      #) Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8] = {b^\ast}]`.
 
-   a. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
+#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
+   a. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is defined, then:
+
+      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}`.
 
       #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
          a) Trap.
 
-   #. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+   #. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
+   #. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is defined, then:
 
-      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
+      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}`.
 
       #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{N}|}, n}(c))`.
 
@@ -21629,11 +22393,10 @@ watsup 0.4 generator
 == IL Validation after pass sideconditions...
 == Translating to AL...
 == Prose Generation...
-6-typing.watsup:194.10-194.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
-6-typing.watsup:817.9-817.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
-6-typing.watsup:851.9-851.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
-6-typing.watsup:1309.9-1309.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm : name})`
->>>>>>> main
+6-typing.watsup:195.10-195.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
+6-typing.watsup:876.9-876.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
+6-typing.watsup:910.9-910.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
+6-typing.watsup:1378.9-1378.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm : name})`
 Numtype_ok
 - the number type numtype is valid.
 
@@ -22080,7 +22843,7 @@ Catch_ok
     - |C.TAGS| is greater than x.
     - |C.LABELS| is greater than l.
     - $expanddt(C.TAGS[x]) is (FUNC (t* -> [])).
-    - the value type sequence t* ++ [(REF (NULL ?()) EXN)] matches the result type C.LABELS[l].
+    - the value type sequence t* ++ [(REF (NULL ?() ?) EXN)] matches the result type C.LABELS[l].
   - Or:
     - catch_u0 is (CATCH_ALL l).
     - |C.LABELS| is greater than l.
@@ -22088,7 +22851,7 @@ Catch_ok
   - Or:
     - catch_u0 is (CATCH_ALL_REF l).
     - |C.LABELS| is greater than l.
-    - the value type sequence [(REF (NULL ?()) EXN)] matches the result type C.LABELS[l].
+    - the value type sequence [(REF (NULL ?() ?) EXN)] matches the result type C.LABELS[l].
 
 Instr_ok/nop
 - the instr NOP is valid with the instruction type ([] ->_ [] []).
@@ -22222,19 +22985,19 @@ Instr_ok/return_call_indirect
   - the instruction type (t_3* ->_ [] t_4*) is valid.
 
 Instr_ok/throw
-- the instr (THROW x) is valid with the instruction type (t_1* ++ t* ->_ [] ++ t_2*) if and only if:
+- the instr (THROW x) is valid with the instruction type (t_1* ++ t* ->_ [] t_2*) if and only if:
   - |C.TAGS| is greater than x.
   - $expanddt(C.TAGS[x]) is (FUNC (t* -> [])).
-  - the instruction type (t_1* ->_ [] ++ t_2*) is valid.
+  - the instruction type (t_1* ->_ [] t_2*) is valid.
 
 Instr_ok/throw_ref
-- the instr THROW_REF is valid with the instruction type (t_1* ++ [(REF (NULL ?(())) EXN)] ->_ [] ++ t_2*) if and only if:
-  - the instruction type (t_1* ->_ [] ++ t_2*) is valid.
+- the instr THROW_REF is valid with the instruction type (t_1* ++ [(REF (NULL ?(()) ?) EXN)] ->_ [] t_2*) if and only if:
+  - the instruction type (t_1* ->_ [] t_2*) is valid.
 
 Instr_ok/try_table
-- the instr (TRY_TABLE bt catch* instr*) is valid with the instruction type (t_1* ->_ [] ++ t_2*) if and only if:
-  - the block type bt is valid with the instruction type (t_1* ->_ [] ++ t_2*).
-  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr* is valid with the instruction type (t_1* ->_ x* ++ t_2*).
+- the instr (TRY_TABLE bt catch* instr*) is valid with the instruction type (t_1* ->_ [] t_2*) if and only if:
+  - the block type bt is valid with the instruction type (t_1* ->_ [] t_2*).
+  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr* is valid with the instruction type (t_1* ->_ x* t_2*).
   - For all catch in catch*,
     - the catch clause catch is valid.
 
@@ -22867,15 +23630,9 @@ Module_ok
   - For all export in export* and nm in nm* and xt_E in xt_E*,
     - the export export is valid with the name nm and the external type xt_E.
   - Yet: $disjoint_(syntax name, nm*{nm : name})
-<<<<<<< HEAD
   - C is { TYPES: dt'*; RECS: []; FUNCS: dt_I* ++ dt*; GLOBALS: gt_I* ++ gt*; TABLES: tt_I* ++ tt*; MEMS: mt_I* ++ mt*; TAGS: at_I* ++ at*; ELEMS: rt*; DATAS: ok*; LOCALS: []; LABELS: []; RETURN: ?(); REFS: x*; }.
   - C' is { TYPES: dt'*; RECS: []; FUNCS: dt_I* ++ dt*; GLOBALS: gt_I*; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: x*; }.
-  - x* is $funcidx_nonfuncs(YetE (`%%%%%`_nonfuncs(global*{global : global}, table*{table : table}, mem*{mem : mem}, elem*{elem : elem}, data*{data : data}))).
-=======
-  - C is { TYPES: dt'*; RECS: []; FUNCS: dt_I* ++ dt*; GLOBALS: gt_I* ++ gt*; TABLES: tt_I* ++ tt*; MEMS: mt_I* ++ mt*; ELEMS: rt*; DATAS: ok*; LOCALS: []; LABELS: []; RETURN: ?(); REFS: x*; }.
-  - C' is { TYPES: dt'*; RECS: []; FUNCS: dt_I* ++ dt*; GLOBALS: gt_I*; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: x*; }.
   - x* is $funcidx_nonfuncs((global* table* mem* elem* data*)).
->>>>>>> main
   - dt_I* is $funcsxt(xt_I*).
   - gt_I* is $globalsxt(xt_I*).
   - tt_I* is $tablesxt(xt_I*).
@@ -22907,95 +23664,95 @@ Ki
 min n_u0 n_u1
 1. If (n_u0 is 0), then:
   a. Return 0.
-2. If (n_u1 is 0), then:
+1. If (n_u1 is 0), then:
   a. Return 0.
-3. Assert: Due to validation, (n_u0 ≥ 1).
-4. Let i be (n_u0 - 1).
-5. Assert: Due to validation, (n_u1 ≥ 1).
-6. Let j be (n_u1 - 1).
-7. Return $min(i, j).
+1. Assert: Due to validation, (n_u0 ≥ 1).
+1. Let i be (n_u0 - 1).
+1. Assert: Due to validation, (n_u1 ≥ 1).
+1. Let j be (n_u1 - 1).
+1. Return $min(i, j).
 
 sum n_u0*
 1. If (n_u0* is []), then:
   a. Return 0.
-2. Let [n] ++ n'* be n_u0*.
-3. Return (n + $sum(n'*)).
+1. Let [n] ++ n'* be n_u0*.
+1. Return (n + $sum(n'*)).
 
 opt_ X X_u0*
 1. If (X_u0* is []), then:
   a. Return ?().
-2. Assert: Due to validation, (|X_u0*| is 1).
-3. Let [w] be X_u0*.
-4. Return ?(w).
+1. Assert: Due to validation, (|X_u0*| is 1).
+1. Let [w] be X_u0*.
+1. Return ?(w).
 
 list_ X X_u0?
 1. If X_u0? is not defined, then:
   a. Return [].
-2. Let ?(w) be X_u0?.
-3. Return [w].
+1. Let ?(w) be X_u0?.
+1. Return [w].
 
 concat_ X X_u0*
 1. If (X_u0* is []), then:
   a. Return [].
-2. Let [w*] ++ w'** be X_u0*.
-3. Return w* ++ $concat_(X, w'**).
+1. Let [w*] ++ w'** be X_u0*.
+1. Return w* ++ $concat_(X, w'**).
 
 concatn_ X X_u0* n
 1. If (X_u0* is []), then:
   a. Return [].
-2. Let [w^n] ++ w'^n* be X_u0*.
-3. Return w^n ++ $concatn_(X, w'^n*, n).
+1. Let [w^n] ++ w'^n* be X_u0*.
+1. Return w^n ++ $concatn_(X, w'^n*, n).
 
 disjoint_ X X_u0*
 1. If (X_u0* is []), then:
   a. Return true.
-2. Let [w] ++ w'* be X_u0*.
-3. Return (not w <- w'* and $disjoint_(X, w'*)).
+1. Let [w] ++ w'* be X_u0*.
+1. Return (not w <- w'* and $disjoint_(X, w'*)).
 
 setminus1_ X w X_u0*
 1. If (X_u0* is []), then:
   a. Return [w].
-2. Let [w_1] ++ w'* be X_u0*.
-3. If (w is w_1), then:
+1. Let [w_1] ++ w'* be X_u0*.
+1. If (w is w_1), then:
   a. Return [].
-4. Let [w_1] ++ w'* be X_u0*.
-5. Return $setminus1_(X, w, w'*).
+1. Let [w_1] ++ w'* be X_u0*.
+1. Return $setminus1_(X, w, w'*).
 
 setminus_ X X_u0* w*
 1. If (X_u0* is []), then:
   a. Return [].
-2. Let [w_1] ++ w'* be X_u0*.
-3. Return $setminus1_(X, w_1, w*) ++ $setminus_(X, w'*, w*).
+1. Let [w_1] ++ w'* be X_u0*.
+1. Return $setminus1_(X, w_1, w*) ++ $setminus_(X, w'*, w*).
 
 setproduct2_ X w_1 X_u0*
 1. If (X_u0* is []), then:
   a. Return [].
-2. Let [w'*] ++ w** be X_u0*.
-3. Return [[w_1] ++ w'*] ++ $setproduct2_(X, w_1, w**).
+1. Let [w'*] ++ w** be X_u0*.
+1. Return [[w_1] ++ w'*] ++ $setproduct2_(X, w_1, w**).
 
 setproduct1_ X X_u0* w**
 1. If (X_u0* is []), then:
   a. Return [].
-2. Let [w_1] ++ w'* be X_u0*.
-3. Return $setproduct2_(X, w_1, w**) ++ $setproduct1_(X, w'*, w**).
+1. Let [w_1] ++ w'* be X_u0*.
+1. Return $setproduct2_(X, w_1, w**) ++ $setproduct1_(X, w'*, w**).
 
 setproduct_ X X_u0*
 1. If (X_u0* is []), then:
   a. Return [[]].
-2. Let [w_1*] ++ w** be X_u0*.
-3. Return $setproduct1_(X, w_1*, $setproduct_(X, w**)).
+1. Let [w_1*] ++ w** be X_u0*.
+1. Return $setproduct1_(X, w_1*, $setproduct_(X, w**)).
 
 signif N_u0
 1. If (N_u0 is 32), then:
   a. Return 23.
-2. Assert: Due to validation, (N_u0 is 64).
-3. Return 52.
+1. Assert: Due to validation, (N_u0 is 64).
+1. Return 52.
 
 expon N_u0
 1. If (N_u0 is 32), then:
   a. Return 8.
-2. Assert: Due to validation, (N_u0 is 64).
-3. Return 11.
+1. Assert: Due to validation, (N_u0 is 64).
+1. Return 11.
 
 M N
 1. Return $signif(N).
@@ -23014,8 +23771,8 @@ canon_ N
 
 cont b
 1. Assert: Due to validation, (128 < b).
-2. Assert: Due to validation, (b < 192).
-3. Return (b - 128).
+1. Assert: Due to validation, (b < 192).
+1. Return (b - 128).
 
 ANYREF
 1. Return (REF (NULL ?(()) ?) ANY).
@@ -23050,12 +23807,12 @@ NULLEXTERNREF
 size numtype_u0
 1. If (numtype_u0 is I32), then:
   a. Return 32.
-2. If (numtype_u0 is I64), then:
+1. If (numtype_u0 is I64), then:
   a. Return 64.
-3. If (numtype_u0 is F32), then:
+1. If (numtype_u0 is F32), then:
   a. Return 32.
-4. Assert: Due to validation, (numtype_u0 is F64).
-5. Return 64.
+1. Assert: Due to validation, (numtype_u0 is F64).
+1. Return 64.
 
 vsize V128
 1. Return 128.
@@ -23063,27 +23820,27 @@ vsize V128
 psize packtype_u0
 1. If (packtype_u0 is I8), then:
   a. Return 8.
-2. Assert: Due to validation, (packtype_u0 is I16).
-3. Return 16.
+1. Assert: Due to validation, (packtype_u0 is I16).
+1. Return 16.
 
 lsize lanetype_u0
 1. If the type of lanetype_u0 is numtype, then:
   a. Let numtype be lanetype_u0.
-  b. Return $size(numtype).
-2. Assert: Due to validation, the type of lanetype_u0 is packtype.
-3. Let packtype be lanetype_u0.
-4. Return $psize(packtype).
+  a. Return $size(numtype).
+1. Assert: Due to validation, the type of lanetype_u0 is packtype.
+1. Let packtype be lanetype_u0.
+1. Return $psize(packtype).
 
 zsize storagetype_u0
 1. If the type of storagetype_u0 is numtype, then:
   a. Let numtype be storagetype_u0.
-  b. Return $size(numtype).
-2. If the type of storagetype_u0 is vectype, then:
+  a. Return $size(numtype).
+1. If the type of storagetype_u0 is vectype, then:
   a. Let vectype be storagetype_u0.
-  b. Return $vsize(vectype).
-3. Assert: Due to validation, the type of storagetype_u0 is packtype.
-4. Let packtype be storagetype_u0.
-5. Return $psize(packtype).
+  a. Return $vsize(vectype).
+1. Assert: Due to validation, the type of storagetype_u0 is packtype.
+1. Let packtype be storagetype_u0.
+1. Return $psize(packtype).
 
 lanetype (Lnn X N)
 1. Return Lnn.
@@ -23112,9 +23869,9 @@ lsizenn2 lt
 zero numtype_u0
 1. If the type of numtype_u0 is Inn, then:
   a. Return 0.
-2. Assert: Due to validation, the type of numtype_u0 is Fnn.
-3. Let Fnn be numtype_u0.
-4. Return $fzero($size(Fnn)).
+1. Assert: Due to validation, the type of numtype_u0 is Fnn.
+1. Let Fnn be numtype_u0.
+1. Return $fzero($size(Fnn)).
 
 dim (Lnn X N)
 1. Return N.
@@ -23125,44 +23882,44 @@ shsize (Lnn X N)
 IN N_u0
 1. If (N_u0 is 32), then:
   a. Return I32.
-2. Assert: Due to validation, (N_u0 is 64).
-3. Return I64.
+1. Assert: Due to validation, (N_u0 is 64).
+1. Return I64.
 
 FN N_u0
 1. If (N_u0 is 32), then:
   a. Return F32.
-2. Assert: Due to validation, (N_u0 is 64).
-3. Return F64.
+1. Assert: Due to validation, (N_u0 is 64).
+1. Return F64.
 
 JN N_u0
 1. If (N_u0 is 8), then:
   a. Return I8.
-2. If (N_u0 is 16), then:
+1. If (N_u0 is 16), then:
   a. Return I16.
-3. If (N_u0 is 32), then:
+1. If (N_u0 is 32), then:
   a. Return I32.
-4. Assert: Due to validation, (N_u0 is 64).
-5. Return I64.
+1. Assert: Due to validation, (N_u0 is 64).
+1. Return I64.
 
 lunpack lanetype_u0
 1. If the type of lanetype_u0 is numtype, then:
   a. Let numtype be lanetype_u0.
-  b. Return numtype.
-2. Assert: Due to validation, the type of lanetype_u0 is packtype.
-3. Return I32.
+  a. Return numtype.
+1. Assert: Due to validation, the type of lanetype_u0 is packtype.
+1. Return I32.
 
 unpack storagetype_u0
 1. If the type of storagetype_u0 is valtype, then:
   a. Let valtype be storagetype_u0.
-  b. Return valtype.
-2. Assert: Due to validation, the type of storagetype_u0 is packtype.
-3. Return I32.
+  a. Return valtype.
+1. Assert: Due to validation, the type of storagetype_u0 is packtype.
+1. Return I32.
 
 nunpack storagetype_u0
 1. If the type of storagetype_u0 is numtype, then:
   a. Let numtype be storagetype_u0.
-  b. Return numtype.
-2. If the type of storagetype_u0 is packtype, then:
+  a. Return numtype.
+1. If the type of storagetype_u0 is packtype, then:
   a. Return I32.
 
 vunpack vectype
@@ -23171,26 +23928,26 @@ vunpack vectype
 cunpack storagetype_u0
 1. If the type of storagetype_u0 is consttype, then:
   a. Let consttype be storagetype_u0.
-  b. Return consttype.
-2. If the type of storagetype_u0 is packtype, then:
+  a. Return consttype.
+1. If the type of storagetype_u0 is packtype, then:
   a. Return I32.
-3. If the type of storagetype_u0 is lanetype, then:
+1. If the type of storagetype_u0 is lanetype, then:
   a. Let lanetype be storagetype_u0.
-  b. Return $lunpack(lanetype).
+  a. Return $lunpack(lanetype).
 
 sx storagetype_u0
 1. If the type of storagetype_u0 is consttype, then:
   a. Return ?().
-2. Assert: Due to validation, the type of storagetype_u0 is packtype.
-3. Return ?(S).
+1. Assert: Due to validation, the type of storagetype_u0 is packtype.
+1. Return ?(S).
 
 const consttype_u0 c
 1. If the type of consttype_u0 is numtype, then:
   a. Let numtype be consttype_u0.
-  b. Return (numtype.CONST c).
-2. Assert: Due to validation, the type of consttype_u0 is vectype.
-3. Let vectype be consttype_u0.
-4. Return (vectype.CONST c).
+  a. Return (numtype.CONST c).
+1. Assert: Due to validation, the type of consttype_u0 is vectype.
+1. Let vectype be consttype_u0.
+1. Return (vectype.CONST c).
 
 unpackshape (Lnn X N)
 1. Return $lunpack(Lnn).
@@ -23198,8 +23955,8 @@ unpackshape (Lnn X N)
 diffrt (REF nul1 ht_1) (REF (NULL _u0? ?) ht_2)
 1. If (_u0? is ?(())), then:
   a. Return (REF (NULL ?() ?) ht_1).
-2. Assert: Due to validation, _u0? is not defined.
-3. Return (REF nul1 ht_1).
+1. Assert: Due to validation, _u0? is not defined.
+1. Return (REF nul1 ht_1).
 
 idx x
 1. Return (_IDX x).
@@ -23207,13 +23964,13 @@ idx x
 free_opt free_u0?
 1. If free_u0? is not defined, then:
   a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
-2. Let ?(free) be free_u0?.
-3. Return free.
+1. Let ?(free) be free_u0?.
+1. Return free.
 
 free_list free_u0*
 1. If (free_u0* is []), then:
   a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
-2. Return YetE (free ++ $free_list(free'*{free' : free})).
+1. Return YetE (free ++ $free_list(free'*{free' : free})).
 
 free_typeidx typeidx
 1. Return { TYPES: [typeidx]; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
@@ -23245,16 +24002,16 @@ free_labelidx labelidx
 free_externidx externidx_u0
 1. If externidx_u0 is of the case FUNC, then:
   a. Let (FUNC funcidx) be externidx_u0.
-  b. Return $free_funcidx(funcidx).
-2. If externidx_u0 is of the case GLOBAL, then:
+  a. Return $free_funcidx(funcidx).
+1. If externidx_u0 is of the case GLOBAL, then:
   a. Let (GLOBAL globalidx) be externidx_u0.
-  b. Return $free_globalidx(globalidx).
-3. If externidx_u0 is of the case TABLE, then:
+  a. Return $free_globalidx(globalidx).
+1. If externidx_u0 is of the case TABLE, then:
   a. Let (TABLE tableidx) be externidx_u0.
-  b. Return $free_tableidx(tableidx).
-4. Assert: Due to validation, externidx_u0 is of the case MEM.
-5. Let (MEM memidx) be externidx_u0.
-6. Return $free_memidx(memidx).
+  a. Return $free_tableidx(tableidx).
+1. Assert: Due to validation, externidx_u0 is of the case MEM.
+1. Let (MEM memidx) be externidx_u0.
+1. Return $free_memidx(memidx).
 
 free_numtype numtype
 1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
@@ -23265,10 +24022,10 @@ free_packtype packtype
 free_lanetype lanetype_u0
 1. If the type of lanetype_u0 is numtype, then:
   a. Let numtype be lanetype_u0.
-  b. Return $free_numtype(numtype).
-2. Assert: Due to validation, the type of lanetype_u0 is packtype.
-3. Let packtype be lanetype_u0.
-4. Return $free_packtype(packtype).
+  a. Return $free_numtype(numtype).
+1. Assert: Due to validation, the type of lanetype_u0 is packtype.
+1. Let packtype be lanetype_u0.
+1. Return $free_packtype(packtype).
 
 free_vectype vectype
 1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
@@ -23276,10 +24033,10 @@ free_vectype vectype
 free_consttype consttype_u0
 1. If the type of consttype_u0 is numtype, then:
   a. Let numtype be consttype_u0.
-  b. Return $free_numtype(numtype).
-2. Assert: Due to validation, the type of consttype_u0 is vectype.
-3. Let vectype be consttype_u0.
-4. Return $free_vectype(vectype).
+  a. Return $free_numtype(numtype).
+1. Assert: Due to validation, the type of consttype_u0 is vectype.
+1. Let vectype be consttype_u0.
+1. Return $free_vectype(vectype).
 
 free_absheaptype absheaptype
 1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
@@ -23293,20 +24050,20 @@ free_deftype (DEF rectype n)
 free_typeuse typeuse_u0
 1. If typeuse_u0 is of the case _IDX, then:
   a. Let (_IDX typeidx) be typeuse_u0.
-  b. Return $free_typeidx(typeidx).
-2. If typeuse_u0 is of the case REC, then:
+  a. Return $free_typeidx(typeidx).
+1. If typeuse_u0 is of the case REC, then:
   a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
-3. Assert: Due to validation, the type of typeuse_u0 is deftype.
-4. Let deftype be typeuse_u0.
-5. Return $free_deftype(deftype).
+1. Assert: Due to validation, the type of typeuse_u0 is deftype.
+1. Let deftype be typeuse_u0.
+1. Return $free_deftype(deftype).
 
 free_heaptype heaptype_u0
 1. If the type of heaptype_u0 is absheaptype, then:
   a. Let absheaptype be heaptype_u0.
-  b. Return $free_absheaptype(absheaptype).
-2. Assert: Due to validation, the type of heaptype_u0 is typeuse.
-3. Let typeuse be heaptype_u0.
-4. Return $free_typeuse(typeuse).
+  a. Return $free_absheaptype(absheaptype).
+1. Assert: Due to validation, the type of heaptype_u0 is typeuse.
+1. Let typeuse be heaptype_u0.
+1. Return $free_typeuse(typeuse).
 
 free_reftype (REF nul heaptype)
 1. Return $free_heaptype(heaptype).
@@ -23314,15 +24071,15 @@ free_reftype (REF nul heaptype)
 free_valtype valtype_u0
 1. If the type of valtype_u0 is numtype, then:
   a. Let numtype be valtype_u0.
-  b. Return $free_numtype(numtype).
-2. If the type of valtype_u0 is vectype, then:
+  a. Return $free_numtype(numtype).
+1. If the type of valtype_u0 is vectype, then:
   a. Let vectype be valtype_u0.
-  b. Return $free_vectype(vectype).
-3. If the type of valtype_u0 is reftype, then:
+  a. Return $free_vectype(vectype).
+1. If the type of valtype_u0 is reftype, then:
   a. Let reftype be valtype_u0.
-  b. Return $free_reftype(reftype).
-4. Assert: Due to validation, (valtype_u0 is BOT).
-5. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+  a. Return $free_reftype(reftype).
+1. Assert: Due to validation, (valtype_u0 is BOT).
+1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
 
 free_resulttype valtype*
 1. Return $free_list($free_valtype(valtype)*).
@@ -23330,10 +24087,10 @@ free_resulttype valtype*
 free_storagetype storagetype_u0
 1. If the type of storagetype_u0 is valtype, then:
   a. Let valtype be storagetype_u0.
-  b. Return $free_valtype(valtype).
-2. Assert: Due to validation, the type of storagetype_u0 is packtype.
-3. Let packtype be storagetype_u0.
-4. Return $free_packtype(packtype).
+  a. Return $free_valtype(valtype).
+1. Assert: Due to validation, the type of storagetype_u0 is packtype.
+1. Let packtype be storagetype_u0.
+1. Return $free_packtype(packtype).
 
 free_fieldtype (mut, storagetype)
 1. Return $free_storagetype(storagetype).
@@ -23350,13 +24107,13 @@ free_arraytype fieldtype
 free_comptype comptype_u0
 1. If comptype_u0 is of the case STRUCT, then:
   a. Let (STRUCT structtype) be comptype_u0.
-  b. Return $free_structtype(structtype).
-2. If comptype_u0 is of the case ARRAY, then:
+  a. Return $free_structtype(structtype).
+1. If comptype_u0 is of the case ARRAY, then:
   a. Let (ARRAY arraytype) be comptype_u0.
-  b. Return $free_arraytype(arraytype).
-3. Assert: Due to validation, comptype_u0 is of the case FUNC.
-4. Let (FUNC functype) be comptype_u0.
-5. Return $free_functype(functype).
+  a. Return $free_arraytype(arraytype).
+1. Assert: Due to validation, comptype_u0 is of the case FUNC.
+1. Let (FUNC functype) be comptype_u0.
+1. Return $free_functype(functype).
 
 free_subtype (SUB fin typeuse* comptype)
 1. Return YetE ($free_list($free_typeuse(typeuse)*{typeuse : typeuse}) ++ $free_comptype(comptype)).
@@ -23379,16 +24136,16 @@ free_datatype OK
 free_externtype externtype_u0
 1. If externtype_u0 is of the case FUNC, then:
   a. Let (FUNC typeuse) be externtype_u0.
-  b. Return $free_typeuse(typeuse).
-2. If externtype_u0 is of the case GLOBAL, then:
+  a. Return $free_typeuse(typeuse).
+1. If externtype_u0 is of the case GLOBAL, then:
   a. Let (GLOBAL globaltype) be externtype_u0.
-  b. Return $free_globaltype(globaltype).
-3. If externtype_u0 is of the case TABLE, then:
+  a. Return $free_globaltype(globaltype).
+1. If externtype_u0 is of the case TABLE, then:
   a. Let (TABLE tabletype) be externtype_u0.
-  b. Return $free_tabletype(tabletype).
-4. Assert: Due to validation, externtype_u0 is of the case MEM.
-5. Let (MEM memtype) be externtype_u0.
-6. Return $free_memtype(memtype).
+  a. Return $free_tabletype(tabletype).
+1. Assert: Due to validation, externtype_u0 is of the case MEM.
+1. Let (MEM memtype) be externtype_u0.
+1. Return $free_memtype(memtype).
 
 free_moduletype (externtype_1* -> externtype_2*)
 1. Return YetE ($free_list($free_externtype(externtype_1)*{externtype_1 : externtype}) ++ $free_list($free_externtype(externtype_2)*{externtype_2 : externtype})).
@@ -23396,10 +24153,10 @@ free_moduletype (externtype_1* -> externtype_2*)
 free_blocktype blocktype_u0
 1. If blocktype_u0 is of the case _RESULT, then:
   a. Let (_RESULT valtype?) be blocktype_u0.
-  b. Return $free_opt($free_valtype(valtype)?).
-2. Assert: Due to validation, blocktype_u0 is of the case _IDX.
-3. Let (_IDX funcidx) be blocktype_u0.
-4. Return $free_funcidx(funcidx).
+  a. Return $free_opt($free_valtype(valtype)?).
+1. Assert: Due to validation, blocktype_u0 is of the case _IDX.
+1. Let (_IDX funcidx) be blocktype_u0.
+1. Return $free_funcidx(funcidx).
 
 free_shape (lanetype X dim)
 1. Return $free_lanetype(lanetype).
@@ -23407,275 +24164,275 @@ free_shape (lanetype X dim)
 shift_labelidxs labelidx_u0*
 1. If (labelidx_u0* is []), then:
   a. Return [].
-2. Let [n_0] ++ labelidx'* be labelidx_u0*.
-3. If (n_0 is 0), then:
+1. Let [n_0] ++ labelidx'* be labelidx_u0*.
+1. If (n_0 is 0), then:
   a. Return $shift_labelidxs(labelidx'*).
-4. Let [labelidx] ++ labelidx'* be labelidx_u0*.
-5. Return [(labelidx - 1)] ++ $shift_labelidxs(labelidx'*).
+1. Let [labelidx] ++ labelidx'* be labelidx_u0*.
+1. Return [(labelidx - 1)] ++ $shift_labelidxs(labelidx'*).
 
 free_block instr*
 1. Let free be $free_list($free_instr(instr)*).
-2. Return free with .LABELS replaced by $shift_labelidxs(free.LABELS).
+1. Return free with .LABELS replaced by $shift_labelidxs(free.LABELS).
 
 free_instr instr_u0
 1. If (instr_u0 is NOP), then:
   a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
-2. If (instr_u0 is UNREACHABLE), then:
+1. If (instr_u0 is UNREACHABLE), then:
   a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
-3. If (instr_u0 is DROP), then:
+1. If (instr_u0 is DROP), then:
   a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
-4. If instr_u0 is of the case SELECT, then:
+1. If instr_u0 is of the case SELECT, then:
   a. Let (SELECT() valtype*? ?) be instr_u0.
-  b. Return $free_opt($free_list($free_valtype(valtype)*)?).
-5. If instr_u0 is of the case BLOCK, then:
+  a. Return $free_opt($free_list($free_valtype(valtype)*)?).
+1. If instr_u0 is of the case BLOCK, then:
   a. Return YetE ($free_blocktype(blocktype) ++ $free_block(instr*{instr : instr})).
-6. If instr_u0 is of the case LOOP, then:
+1. If instr_u0 is of the case LOOP, then:
   a. Return YetE ($free_blocktype(blocktype) ++ $free_block(instr*{instr : instr})).
-7. If instr_u0 is of the case IF, then:
+1. If instr_u0 is of the case IF, then:
   a. Return YetE ($free_blocktype(blocktype) ++ $free_block(instr_1*{instr_1 : instr}) ++ $free_block(instr_2*{instr_2 : instr})).
-8. If instr_u0 is of the case BR, then:
+1. If instr_u0 is of the case BR, then:
   a. Let (BR labelidx) be instr_u0.
-  b. Return $free_labelidx(labelidx).
-9. If instr_u0 is of the case BR_IF, then:
+  a. Return $free_labelidx(labelidx).
+1. If instr_u0 is of the case BR_IF, then:
   a. Let (BR_IF labelidx) be instr_u0.
-  b. Return $free_labelidx(labelidx).
-10. If instr_u0 is of the case BR_TABLE, then:
+  a. Return $free_labelidx(labelidx).
+1. If instr_u0 is of the case BR_TABLE, then:
   a. Return YetE ($free_list($free_labelidx(labelidx)*{}) ++ $free_labelidx(labelidx)).
-11. If instr_u0 is of the case BR_ON_NULL, then:
+1. If instr_u0 is of the case BR_ON_NULL, then:
   a. Let (BR_ON_NULL labelidx) be instr_u0.
-  b. Return $free_labelidx(labelidx).
-12. If instr_u0 is of the case BR_ON_NON_NULL, then:
+  a. Return $free_labelidx(labelidx).
+1. If instr_u0 is of the case BR_ON_NON_NULL, then:
   a. Let (BR_ON_NON_NULL labelidx) be instr_u0.
-  b. Return $free_labelidx(labelidx).
-13. If instr_u0 is of the case BR_ON_CAST, then:
+  a. Return $free_labelidx(labelidx).
+1. If instr_u0 is of the case BR_ON_CAST, then:
   a. Return YetE ($free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2)).
-14. If instr_u0 is of the case BR_ON_CAST_FAIL, then:
+1. If instr_u0 is of the case BR_ON_CAST_FAIL, then:
   a. Return YetE ($free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2)).
-15. If instr_u0 is of the case CALL, then:
+1. If instr_u0 is of the case CALL, then:
   a. Let (CALL funcidx) be instr_u0.
-  b. Return $free_funcidx(funcidx).
-16. If instr_u0 is of the case CALL_REF, then:
+  a. Return $free_funcidx(funcidx).
+1. If instr_u0 is of the case CALL_REF, then:
   a. Let (CALL_REF typeuse) be instr_u0.
-  b. Return $free_typeuse(typeuse).
-17. If instr_u0 is of the case CALL_INDIRECT, then:
+  a. Return $free_typeuse(typeuse).
+1. If instr_u0 is of the case CALL_INDIRECT, then:
   a. Return YetE ($free_tableidx(tableidx) ++ $free_typeuse(typeuse)).
-18. If (instr_u0 is RETURN), then:
+1. If (instr_u0 is RETURN), then:
   a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
-19. If instr_u0 is of the case RETURN_CALL, then:
+1. If instr_u0 is of the case RETURN_CALL, then:
   a. Let (RETURN_CALL funcidx) be instr_u0.
-  b. Return $free_funcidx(funcidx).
-20. If instr_u0 is of the case RETURN_CALL_REF, then:
+  a. Return $free_funcidx(funcidx).
+1. If instr_u0 is of the case RETURN_CALL_REF, then:
   a. Let (RETURN_CALL_REF typeuse) be instr_u0.
-  b. Return $free_typeuse(typeuse).
-21. If instr_u0 is of the case RETURN_CALL_INDIRECT, then:
+  a. Return $free_typeuse(typeuse).
+1. If instr_u0 is of the case RETURN_CALL_INDIRECT, then:
   a. Return YetE ($free_tableidx(tableidx) ++ $free_typeuse(typeuse)).
-22. If instr_u0 is of the case CONST, then:
+1. If instr_u0 is of the case CONST, then:
   a. Let (numtype.CONST numlit) be instr_u0.
-  b. Return $free_numtype(numtype).
-23. If instr_u0 is of the case UNOP, then:
+  a. Return $free_numtype(numtype).
+1. If instr_u0 is of the case UNOP, then:
   a. Let (UNOP numtype unop) be instr_u0.
-  b. Return $free_numtype(numtype).
-24. If instr_u0 is of the case BINOP, then:
+  a. Return $free_numtype(numtype).
+1. If instr_u0 is of the case BINOP, then:
   a. Let (BINOP numtype binop) be instr_u0.
-  b. Return $free_numtype(numtype).
-25. If instr_u0 is of the case TESTOP, then:
+  a. Return $free_numtype(numtype).
+1. If instr_u0 is of the case TESTOP, then:
   a. Let (TESTOP numtype testop) be instr_u0.
-  b. Return $free_numtype(numtype).
-26. If instr_u0 is of the case RELOP, then:
+  a. Return $free_numtype(numtype).
+1. If instr_u0 is of the case RELOP, then:
   a. Let (RELOP numtype relop) be instr_u0.
-  b. Return $free_numtype(numtype).
-27. If instr_u0 is of the case CVTOP, then:
+  a. Return $free_numtype(numtype).
+1. If instr_u0 is of the case CVTOP, then:
   a. Return YetE ($free_numtype(numtype_1) ++ $free_numtype(numtype_2)).
-28. If instr_u0 is of the case VCONST, then:
+1. If instr_u0 is of the case VCONST, then:
   a. Let (vectype.CONST veclit) be instr_u0.
-  b. Return $free_vectype(vectype).
-29. If instr_u0 is of the case VVUNOP, then:
+  a. Return $free_vectype(vectype).
+1. If instr_u0 is of the case VVUNOP, then:
   a. Let (VVUNOP vectype vvunop) be instr_u0.
-  b. Return $free_vectype(vectype).
-30. If instr_u0 is of the case VVBINOP, then:
+  a. Return $free_vectype(vectype).
+1. If instr_u0 is of the case VVBINOP, then:
   a. Let (VVBINOP vectype vvbinop) be instr_u0.
-  b. Return $free_vectype(vectype).
-31. If instr_u0 is of the case VVTERNOP, then:
+  a. Return $free_vectype(vectype).
+1. If instr_u0 is of the case VVTERNOP, then:
   a. Let (VVTERNOP vectype vvternop) be instr_u0.
-  b. Return $free_vectype(vectype).
-32. If instr_u0 is of the case VVTESTOP, then:
+  a. Return $free_vectype(vectype).
+1. If instr_u0 is of the case VVTESTOP, then:
   a. Let (VVTESTOP vectype vvtestop) be instr_u0.
-  b. Return $free_vectype(vectype).
-33. If instr_u0 is of the case VUNOP, then:
+  a. Return $free_vectype(vectype).
+1. If instr_u0 is of the case VUNOP, then:
   a. Let (VUNOP shape vunop) be instr_u0.
-  b. Return $free_shape(shape).
-34. If instr_u0 is of the case VBINOP, then:
+  a. Return $free_shape(shape).
+1. If instr_u0 is of the case VBINOP, then:
   a. Let (VBINOP shape vbinop) be instr_u0.
-  b. Return $free_shape(shape).
-35. If instr_u0 is of the case VTESTOP, then:
+  a. Return $free_shape(shape).
+1. If instr_u0 is of the case VTESTOP, then:
   a. Let (VTESTOP shape vtestop) be instr_u0.
-  b. Return $free_shape(shape).
-36. If instr_u0 is of the case VRELOP, then:
+  a. Return $free_shape(shape).
+1. If instr_u0 is of the case VRELOP, then:
   a. Let (VRELOP shape vrelop) be instr_u0.
-  b. Return $free_shape(shape).
-37. If instr_u0 is of the case VSHIFTOP, then:
+  a. Return $free_shape(shape).
+1. If instr_u0 is of the case VSHIFTOP, then:
   a. Let (VSHIFTOP ishape vshiftop) be instr_u0.
-  b. Return $free_shape(ishape).
-38. If instr_u0 is of the case VBITMASK, then:
+  a. Return $free_shape(ishape).
+1. If instr_u0 is of the case VBITMASK, then:
   a. Let (VBITMASK ishape) be instr_u0.
-  b. Return $free_shape(ishape).
-39. If instr_u0 is of the case VSWIZZLE, then:
+  a. Return $free_shape(ishape).
+1. If instr_u0 is of the case VSWIZZLE, then:
   a. Let (VSWIZZLE ishape) be instr_u0.
-  b. Return $free_shape(ishape).
-40. If instr_u0 is of the case VSHUFFLE, then:
+  a. Return $free_shape(ishape).
+1. If instr_u0 is of the case VSHUFFLE, then:
   a. Let (VSHUFFLE ishape laneidx*) be instr_u0.
-  b. Return $free_shape(ishape).
-41. If instr_u0 is of the case VEXTUNOP, then:
+  a. Return $free_shape(ishape).
+1. If instr_u0 is of the case VEXTUNOP, then:
   a. Return YetE ($free_shape((ishape_1 : ishape <: shape)) ++ $free_shape((ishape_2 : ishape <: shape))).
-42. If instr_u0 is of the case VEXTBINOP, then:
+1. If instr_u0 is of the case VEXTBINOP, then:
   a. Return YetE ($free_shape((ishape_1 : ishape <: shape)) ++ $free_shape((ishape_2 : ishape <: shape))).
-43. If instr_u0 is of the case VNARROW, then:
+1. If instr_u0 is of the case VNARROW, then:
   a. Return YetE ($free_shape((ishape_1 : ishape <: shape)) ++ $free_shape((ishape_2 : ishape <: shape))).
-44. If instr_u0 is of the case VCVTOP, then:
+1. If instr_u0 is of the case VCVTOP, then:
   a. Return YetE ($free_shape(shape_1) ++ $free_shape(shape_2)).
-45. If instr_u0 is of the case VSPLAT, then:
+1. If instr_u0 is of the case VSPLAT, then:
   a. Let (VSPLAT shape) be instr_u0.
-  b. Return $free_shape(shape).
-46. If instr_u0 is of the case VEXTRACT_LANE, then:
+  a. Return $free_shape(shape).
+1. If instr_u0 is of the case VEXTRACT_LANE, then:
   a. Let (VEXTRACT_LANE shape sx? laneidx) be instr_u0.
-  b. Return $free_shape(shape).
-47. If instr_u0 is of the case VREPLACE_LANE, then:
+  a. Return $free_shape(shape).
+1. If instr_u0 is of the case VREPLACE_LANE, then:
   a. Let (VREPLACE_LANE shape laneidx) be instr_u0.
-  b. Return $free_shape(shape).
-48. If instr_u0 is of the case REF.NULL, then:
+  a. Return $free_shape(shape).
+1. If instr_u0 is of the case REF.NULL, then:
   a. Let (REF.NULL heaptype) be instr_u0.
-  b. Return $free_heaptype(heaptype).
-49. If (instr_u0 is REF.IS_NULL), then:
+  a. Return $free_heaptype(heaptype).
+1. If (instr_u0 is REF.IS_NULL), then:
   a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
-50. If (instr_u0 is REF.AS_NON_NULL), then:
+1. If (instr_u0 is REF.AS_NON_NULL), then:
   a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
-51. If (instr_u0 is REF.EQ), then:
+1. If (instr_u0 is REF.EQ), then:
   a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
-52. If instr_u0 is of the case REF.TEST, then:
+1. If instr_u0 is of the case REF.TEST, then:
   a. Let (REF.TEST reftype) be instr_u0.
-  b. Return $free_reftype(reftype).
-53. If instr_u0 is of the case REF.CAST, then:
+  a. Return $free_reftype(reftype).
+1. If instr_u0 is of the case REF.CAST, then:
   a. Let (REF.CAST reftype) be instr_u0.
-  b. Return $free_reftype(reftype).
-54. If instr_u0 is of the case REF.FUNC, then:
+  a. Return $free_reftype(reftype).
+1. If instr_u0 is of the case REF.FUNC, then:
   a. Let (REF.FUNC funcidx) be instr_u0.
-  b. Return $free_funcidx(funcidx).
-55. If (instr_u0 is REF.I31), then:
+  a. Return $free_funcidx(funcidx).
+1. If (instr_u0 is REF.I31), then:
   a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
-56. If instr_u0 is of the case I31.GET, then:
+1. If instr_u0 is of the case I31.GET, then:
   a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
-57. If instr_u0 is of the case STRUCT.NEW, then:
+1. If instr_u0 is of the case STRUCT.NEW, then:
   a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
-58. If instr_u0 is of the case STRUCT.NEW_DEFAULT, then:
+1. If instr_u0 is of the case STRUCT.NEW_DEFAULT, then:
   a. Let (STRUCT.NEW_DEFAULT typeidx) be instr_u0.
-  b. Return $free_typeidx(typeidx).
-59. If instr_u0 is of the case STRUCT.GET, then:
+  a. Return $free_typeidx(typeidx).
+1. If instr_u0 is of the case STRUCT.GET, then:
   a. Let (STRUCT.GET sx? typeidx u32) be instr_u0.
-  b. Return $free_typeidx(typeidx).
-60. If instr_u0 is of the case STRUCT.SET, then:
+  a. Return $free_typeidx(typeidx).
+1. If instr_u0 is of the case STRUCT.SET, then:
   a. Let (STRUCT.SET typeidx u32) be instr_u0.
-  b. Return $free_typeidx(typeidx).
-61. If instr_u0 is of the case ARRAY.NEW, then:
+  a. Return $free_typeidx(typeidx).
+1. If instr_u0 is of the case ARRAY.NEW, then:
   a. Let (ARRAY.NEW typeidx) be instr_u0.
-  b. Return $free_typeidx(typeidx).
-62. If instr_u0 is of the case ARRAY.NEW_DEFAULT, then:
+  a. Return $free_typeidx(typeidx).
+1. If instr_u0 is of the case ARRAY.NEW_DEFAULT, then:
   a. Let (ARRAY.NEW_DEFAULT typeidx) be instr_u0.
-  b. Return $free_typeidx(typeidx).
-63. If instr_u0 is of the case ARRAY.NEW_FIXED, then:
+  a. Return $free_typeidx(typeidx).
+1. If instr_u0 is of the case ARRAY.NEW_FIXED, then:
   a. Let (ARRAY.NEW_FIXED typeidx u32) be instr_u0.
-  b. Return $free_typeidx(typeidx).
-64. If instr_u0 is of the case ARRAY.NEW_DATA, then:
+  a. Return $free_typeidx(typeidx).
+1. If instr_u0 is of the case ARRAY.NEW_DATA, then:
   a. Return YetE ($free_typeidx(typeidx) ++ $free_dataidx(dataidx)).
-65. If instr_u0 is of the case ARRAY.NEW_ELEM, then:
+1. If instr_u0 is of the case ARRAY.NEW_ELEM, then:
   a. Return YetE ($free_typeidx(typeidx) ++ $free_elemidx(elemidx)).
-66. If instr_u0 is of the case ARRAY.GET, then:
+1. If instr_u0 is of the case ARRAY.GET, then:
   a. Let (ARRAY.GET sx? typeidx) be instr_u0.
-  b. Return $free_typeidx(typeidx).
-67. If instr_u0 is of the case ARRAY.SET, then:
+  a. Return $free_typeidx(typeidx).
+1. If instr_u0 is of the case ARRAY.SET, then:
   a. Let (ARRAY.SET typeidx) be instr_u0.
-  b. Return $free_typeidx(typeidx).
-68. If (instr_u0 is ARRAY.LEN), then:
+  a. Return $free_typeidx(typeidx).
+1. If (instr_u0 is ARRAY.LEN), then:
   a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
-69. If instr_u0 is of the case ARRAY.FILL, then:
+1. If instr_u0 is of the case ARRAY.FILL, then:
   a. Let (ARRAY.FILL typeidx) be instr_u0.
-  b. Return $free_typeidx(typeidx).
-70. If instr_u0 is of the case ARRAY.COPY, then:
+  a. Return $free_typeidx(typeidx).
+1. If instr_u0 is of the case ARRAY.COPY, then:
   a. Return YetE ($free_typeidx(typeidx_1) ++ $free_typeidx(typeidx_2)).
-71. If instr_u0 is of the case ARRAY.INIT_DATA, then:
+1. If instr_u0 is of the case ARRAY.INIT_DATA, then:
   a. Return YetE ($free_typeidx(typeidx) ++ $free_dataidx(dataidx)).
-72. If instr_u0 is of the case ARRAY.INIT_ELEM, then:
+1. If instr_u0 is of the case ARRAY.INIT_ELEM, then:
   a. Return YetE ($free_typeidx(typeidx) ++ $free_elemidx(elemidx)).
-73. If (instr_u0 is EXTERN.CONVERT_ANY), then:
+1. If (instr_u0 is EXTERN.CONVERT_ANY), then:
   a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
-74. If (instr_u0 is ANY.CONVERT_EXTERN), then:
+1. If (instr_u0 is ANY.CONVERT_EXTERN), then:
   a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
-75. If instr_u0 is of the case LOCAL.GET, then:
+1. If instr_u0 is of the case LOCAL.GET, then:
   a. Let (LOCAL.GET localidx) be instr_u0.
-  b. Return $free_localidx(localidx).
-76. If instr_u0 is of the case LOCAL.SET, then:
+  a. Return $free_localidx(localidx).
+1. If instr_u0 is of the case LOCAL.SET, then:
   a. Let (LOCAL.SET localidx) be instr_u0.
-  b. Return $free_localidx(localidx).
-77. If instr_u0 is of the case LOCAL.TEE, then:
+  a. Return $free_localidx(localidx).
+1. If instr_u0 is of the case LOCAL.TEE, then:
   a. Let (LOCAL.TEE localidx) be instr_u0.
-  b. Return $free_localidx(localidx).
-78. If instr_u0 is of the case GLOBAL.GET, then:
+  a. Return $free_localidx(localidx).
+1. If instr_u0 is of the case GLOBAL.GET, then:
   a. Let (GLOBAL.GET globalidx) be instr_u0.
-  b. Return $free_globalidx(globalidx).
-79. If instr_u0 is of the case GLOBAL.SET, then:
+  a. Return $free_globalidx(globalidx).
+1. If instr_u0 is of the case GLOBAL.SET, then:
   a. Let (GLOBAL.SET globalidx) be instr_u0.
-  b. Return $free_globalidx(globalidx).
-80. If instr_u0 is of the case TABLE.GET, then:
+  a. Return $free_globalidx(globalidx).
+1. If instr_u0 is of the case TABLE.GET, then:
   a. Let (TABLE.GET tableidx) be instr_u0.
-  b. Return $free_tableidx(tableidx).
-81. If instr_u0 is of the case TABLE.SET, then:
+  a. Return $free_tableidx(tableidx).
+1. If instr_u0 is of the case TABLE.SET, then:
   a. Let (TABLE.SET tableidx) be instr_u0.
-  b. Return $free_tableidx(tableidx).
-82. If instr_u0 is of the case TABLE.SIZE, then:
+  a. Return $free_tableidx(tableidx).
+1. If instr_u0 is of the case TABLE.SIZE, then:
   a. Let (TABLE.SIZE tableidx) be instr_u0.
-  b. Return $free_tableidx(tableidx).
-83. If instr_u0 is of the case TABLE.GROW, then:
+  a. Return $free_tableidx(tableidx).
+1. If instr_u0 is of the case TABLE.GROW, then:
   a. Let (TABLE.GROW tableidx) be instr_u0.
-  b. Return $free_tableidx(tableidx).
-84. If instr_u0 is of the case TABLE.FILL, then:
+  a. Return $free_tableidx(tableidx).
+1. If instr_u0 is of the case TABLE.FILL, then:
   a. Let (TABLE.FILL tableidx) be instr_u0.
-  b. Return $free_tableidx(tableidx).
-85. If instr_u0 is of the case TABLE.COPY, then:
+  a. Return $free_tableidx(tableidx).
+1. If instr_u0 is of the case TABLE.COPY, then:
   a. Return YetE ($free_tableidx(tableidx_1) ++ $free_tableidx(tableidx_2)).
-86. If instr_u0 is of the case TABLE.INIT, then:
+1. If instr_u0 is of the case TABLE.INIT, then:
   a. Return YetE ($free_tableidx(tableidx) ++ $free_elemidx(elemidx)).
-87. If instr_u0 is of the case ELEM.DROP, then:
+1. If instr_u0 is of the case ELEM.DROP, then:
   a. Let (ELEM.DROP elemidx) be instr_u0.
-  b. Return $free_elemidx(elemidx).
-88. If instr_u0 is of the case LOAD, then:
+  a. Return $free_elemidx(elemidx).
+1. If instr_u0 is of the case LOAD, then:
   a. Let (LOAD numtype loadop__0 memidx memarg) be instr_u0.
-  b. If loadop__0 is defined, then:
+  a. If loadop__0 is defined, then:
     1) Return YetE ($free_numtype(numtype) ++ $free_memidx(memidx)).
-89. If instr_u0 is of the case STORE, then:
+1. If instr_u0 is of the case STORE, then:
   a. Return YetE ($free_numtype(numtype) ++ $free_memidx(memidx)).
-90. If instr_u0 is of the case VLOAD, then:
+1. If instr_u0 is of the case VLOAD, then:
   a. Return YetE ($free_vectype(vectype) ++ $free_memidx(memidx)).
-91. If instr_u0 is of the case VLOAD_LANE, then:
+1. If instr_u0 is of the case VLOAD_LANE, then:
   a. Return YetE ($free_vectype(vectype) ++ $free_memidx(memidx)).
-92. If instr_u0 is of the case VSTORE, then:
+1. If instr_u0 is of the case VSTORE, then:
   a. Return YetE ($free_vectype(vectype) ++ $free_memidx(memidx)).
-93. If instr_u0 is of the case VSTORE_LANE, then:
+1. If instr_u0 is of the case VSTORE_LANE, then:
   a. Return YetE ($free_vectype(vectype) ++ $free_memidx(memidx)).
-94. If instr_u0 is of the case MEMORY.SIZE, then:
+1. If instr_u0 is of the case MEMORY.SIZE, then:
   a. Let (MEMORY.SIZE memidx) be instr_u0.
-  b. Return $free_memidx(memidx).
-95. If instr_u0 is of the case MEMORY.GROW, then:
+  a. Return $free_memidx(memidx).
+1. If instr_u0 is of the case MEMORY.GROW, then:
   a. Let (MEMORY.GROW memidx) be instr_u0.
-  b. Return $free_memidx(memidx).
-96. If instr_u0 is of the case MEMORY.FILL, then:
+  a. Return $free_memidx(memidx).
+1. If instr_u0 is of the case MEMORY.FILL, then:
   a. Let (MEMORY.FILL memidx) be instr_u0.
-  b. Return $free_memidx(memidx).
-97. If instr_u0 is of the case MEMORY.COPY, then:
+  a. Return $free_memidx(memidx).
+1. If instr_u0 is of the case MEMORY.COPY, then:
   a. Return YetE ($free_memidx(memidx_1) ++ $free_memidx(memidx_2)).
-98. If instr_u0 is of the case MEMORY.INIT, then:
+1. If instr_u0 is of the case MEMORY.INIT, then:
   a. Return YetE ($free_memidx(memidx) ++ $free_dataidx(dataidx)).
-99. Assert: Due to validation, instr_u0 is of the case DATA.DROP.
-100. Let (DATA.DROP dataidx) be instr_u0.
-101. Return $free_dataidx(dataidx).
+1. Assert: Due to validation, instr_u0 is of the case DATA.DROP.
+1. Let (DATA.DROP dataidx) be instr_u0.
+1. Return $free_dataidx(dataidx).
 
 free_expr instr*
 1. Return $free_list($free_instr(instr)*).
@@ -23704,16 +24461,16 @@ free_tag (TAG typeidx)
 free_elemmode elemmode_u0
 1. If elemmode_u0 is of the case ACTIVE, then:
   a. Return YetE ($free_tableidx(tableidx) ++ $free_expr(expr)).
-2. If (elemmode_u0 is PASSIVE), then:
+1. If (elemmode_u0 is PASSIVE), then:
   a. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
-3. Assert: Due to validation, (elemmode_u0 is DECLARE).
-4. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+1. Assert: Due to validation, (elemmode_u0 is DECLARE).
+1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
 
 free_datamode datamode_u0
 1. If datamode_u0 is of the case ACTIVE, then:
   a. Return YetE ($free_memidx(memidx) ++ $free_expr(expr)).
-2. Assert: Due to validation, (datamode_u0 is PASSIVE).
-3. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
+1. Assert: Due to validation, (datamode_u0 is PASSIVE).
+1. Return { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; }.
 
 free_elem (ELEM reftype expr* elemmode)
 1. Return YetE ($free_reftype(reftype) ++ $free_list($free_expr(expr)*{expr : expr}) ++ $free_elemmode(elemmode)).
@@ -23742,16 +24499,18 @@ dataidx_funcs func*
 subst_typevar tv typevar_u0* typeuse_u1*
 1. If ((typevar_u0* is []) and (typeuse_u1* is [])), then:
   a. Return tv.
-2. Assert: Due to validation, (|typeuse_u1*| ≥ 1).
-3. Let [tu_1] ++ tu'* be typeuse_u1*.
-4. If (|typevar_u0*| ≥ 1), then:
+1. Assert: Due to validation, (|typeuse_u1*| ≥ 1).
+1. Let [tu_1] ++ tu'* be typeuse_u1*.
+1. If (|typevar_u0*| < 1), then:
+  a. Do nothing.
+1. Else:
   a. Let [tv_1] ++ tv'* be typevar_u0*.
-  b. If (tv is tv_1), then:
+  a. If (tv is tv_1), then:
     1) Return tu_1.
-5. Let [tu_1] ++ tu'* be typeuse_u1*.
-6. Assert: Due to validation, (|typevar_u0*| ≥ 1).
-7. Let [tv_1] ++ tv'* be typevar_u0*.
-8. Return $subst_typevar(tv, tv'*, tu'*).
+1. Let [tu_1] ++ tu'* be typeuse_u1*.
+1. Assert: Due to validation, (|typevar_u0*| ≥ 1).
+1. Let [tv_1] ++ tv'* be typevar_u0*.
+1. Return $subst_typevar(tv, tv'*, tu'*).
 
 subst_packtype pt tv* tu*
 1. Return pt.
@@ -23765,20 +24524,20 @@ subst_vectype vt tv* tu*
 subst_typeuse typeuse_u0 tv* tu*
 1. If the type of typeuse_u0 is typevar, then:
   a. Let tv' be typeuse_u0.
-  b. Return $subst_typevar(tv', tv*, tu*).
-2. Assert: Due to validation, the type of typeuse_u0 is deftype.
-3. Let dt be typeuse_u0.
-4. Return $subst_deftype(dt, tv*, tu*).
+  a. Return $subst_typevar(tv', tv*, tu*).
+1. Assert: Due to validation, the type of typeuse_u0 is deftype.
+1. Let dt be typeuse_u0.
+1. Return $subst_deftype(dt, tv*, tu*).
 
 subst_heaptype heaptype_u0 tv* tu*
 1. If the type of heaptype_u0 is typevar, then:
   a. Let tv' be heaptype_u0.
-  b. Return $subst_typevar(tv', tv*, tu*).
-2. If the type of heaptype_u0 is deftype, then:
+  a. Return $subst_typevar(tv', tv*, tu*).
+1. If the type of heaptype_u0 is deftype, then:
   a. Let dt be heaptype_u0.
-  b. Return $subst_deftype(dt, tv*, tu*).
-3. Let ht be heaptype_u0.
-4. Return ht.
+  a. Return $subst_deftype(dt, tv*, tu*).
+1. Let ht be heaptype_u0.
+1. Return ht.
 
 subst_reftype (REF nul ht) tv* tu*
 1. Return (REF nul $subst_heaptype(ht, tv*, tu*)).
@@ -23786,23 +24545,23 @@ subst_reftype (REF nul ht) tv* tu*
 subst_valtype valtype_u0 tv* tu*
 1. If the type of valtype_u0 is numtype, then:
   a. Let nt be valtype_u0.
-  b. Return $subst_numtype(nt, tv*, tu*).
-2. If the type of valtype_u0 is vectype, then:
+  a. Return $subst_numtype(nt, tv*, tu*).
+1. If the type of valtype_u0 is vectype, then:
   a. Let vt be valtype_u0.
-  b. Return $subst_vectype(vt, tv*, tu*).
-3. If the type of valtype_u0 is reftype, then:
+  a. Return $subst_vectype(vt, tv*, tu*).
+1. If the type of valtype_u0 is reftype, then:
   a. Let rt be valtype_u0.
-  b. Return $subst_reftype(rt, tv*, tu*).
-4. Assert: Due to validation, (valtype_u0 is BOT).
-5. Return BOT.
+  a. Return $subst_reftype(rt, tv*, tu*).
+1. Assert: Due to validation, (valtype_u0 is BOT).
+1. Return BOT.
 
 subst_storagetype storagetype_u0 tv* tu*
 1. If the type of storagetype_u0 is valtype, then:
   a. Let t be storagetype_u0.
-  b. Return $subst_valtype(t, tv*, tu*).
-2. Assert: Due to validation, the type of storagetype_u0 is packtype.
-3. Let pt be storagetype_u0.
-4. Return $subst_packtype(pt, tv*, tu*).
+  a. Return $subst_valtype(t, tv*, tu*).
+1. Assert: Due to validation, the type of storagetype_u0 is packtype.
+1. Let pt be storagetype_u0.
+1. Return $subst_packtype(pt, tv*, tu*).
 
 subst_fieldtype (mut, zt) tv* tu*
 1. Return (mut, $subst_storagetype(zt, tv*, tu*)).
@@ -23810,13 +24569,13 @@ subst_fieldtype (mut, zt) tv* tu*
 subst_comptype comptype_u0 tv* tu*
 1. If comptype_u0 is of the case STRUCT, then:
   a. Let (STRUCT yt*) be comptype_u0.
-  b. Return (STRUCT $subst_fieldtype(yt, tv*, tu*)*).
-2. If comptype_u0 is of the case ARRAY, then:
+  a. Return (STRUCT $subst_fieldtype(yt, tv*, tu*)*).
+1. If comptype_u0 is of the case ARRAY, then:
   a. Let (ARRAY yt) be comptype_u0.
-  b. Return (ARRAY $subst_fieldtype(yt, tv*, tu*)).
-3. Assert: Due to validation, comptype_u0 is of the case FUNC.
-4. Let (FUNC ft) be comptype_u0.
-5. Return (FUNC $subst_functype(ft, tv*, tu*)).
+  a. Return (ARRAY $subst_fieldtype(yt, tv*, tu*)).
+1. Assert: Due to validation, comptype_u0 is of the case FUNC.
+1. Let (FUNC ft) be comptype_u0.
+1. Return (FUNC $subst_functype(ft, tv*, tu*)).
 
 subst_subtype (SUB fin tu'* ct) tv* tu*
 1. Return (SUB fin $subst_typeuse(tu', tv*, tu*)* $subst_comptype(ct, tv*, tu*)).
@@ -23842,16 +24601,16 @@ subst_memtype (lim PAGE) tv* tu*
 subst_externtype externtype_u0 tv* tu*
 1. If externtype_u0 is of the case FUNC, then:
   a. Let (FUNC dt) be externtype_u0.
-  b. Return (FUNC $subst_deftype(dt, tv*, tu*)).
-2. If externtype_u0 is of the case GLOBAL, then:
+  a. Return (FUNC $subst_deftype(dt, tv*, tu*)).
+1. If externtype_u0 is of the case GLOBAL, then:
   a. Let (GLOBAL gt) be externtype_u0.
-  b. Return (GLOBAL $subst_globaltype(gt, tv*, tu*)).
-3. If externtype_u0 is of the case TABLE, then:
+  a. Return (GLOBAL $subst_globaltype(gt, tv*, tu*)).
+1. If externtype_u0 is of the case TABLE, then:
   a. Let (TABLE tt) be externtype_u0.
-  b. Return (TABLE $subst_tabletype(tt, tv*, tu*)).
-4. Assert: Due to validation, externtype_u0 is of the case MEM.
-5. Let (MEM mt) be externtype_u0.
-6. Return (MEM $subst_memtype(mt, tv*, tu*)).
+  a. Return (TABLE $subst_tabletype(tt, tv*, tu*)).
+1. Assert: Due to validation, externtype_u0 is of the case MEM.
+1. Let (MEM mt) be externtype_u0.
+1. Return (MEM $subst_memtype(mt, tv*, tu*)).
 
 subst_moduletype (xt_1* -> xt_2*) tv* tu*
 1. Return ($subst_externtype(xt_1, tv*, tu*)* -> $subst_externtype(xt_2, tv*, tu*)*).
@@ -23871,133 +24630,133 @@ subst_all_moduletype mmt tu^n
 subst_all_deftypes deftype_u0* tu*
 1. If (deftype_u0* is []), then:
   a. Return [].
-2. Let [dt_1] ++ dt* be deftype_u0*.
-3. Return [$subst_all_deftype(dt_1, tu*)] ++ $subst_all_deftypes(dt*, tu*).
+1. Let [dt_1] ++ dt* be deftype_u0*.
+1. Return [$subst_all_deftype(dt_1, tu*)] ++ $subst_all_deftypes(dt*, tu*).
 
 rollrt x rectype
 1. Assert: Due to validation, rectype is of the case REC.
-2. Let (REC subtype^n) be rectype.
-3. Return (REC $subst_subtype(subtype, $idx((x + i))^(i<n), (REC i)^(i<n))^n).
+1. Let (REC subtype^n) be rectype.
+1. Return (REC $subst_subtype(subtype, $idx((x + i))^(i<n), (REC i)^(i<n))^n).
 
 unrollrt rectype
 1. Assert: Due to validation, rectype is of the case REC.
-2. Let (REC subtype^n) be rectype.
-3. Return (REC $subst_subtype(subtype, (REC i)^(i<n), (DEF rectype i)^(i<n))^n).
+1. Let (REC subtype^n) be rectype.
+1. Return (REC $subst_subtype(subtype, (REC i)^(i<n), (DEF rectype i)^(i<n))^n).
 
 rolldt x rectype
 1. Assert: Due to validation, $rollrt(x, rectype) is of the case REC.
-2. Let (REC subtype^n) be $rollrt(x, rectype).
-3. Return (DEF (REC subtype^n) i)^(i<n).
+1. Let (REC subtype^n) be $rollrt(x, rectype).
+1. Return (DEF (REC subtype^n) i)^(i<n).
 
 unrolldt (DEF rectype i)
 1. Assert: Due to validation, $unrollrt(rectype) is of the case REC.
-2. Let (REC subtype*) be $unrollrt(rectype).
-3. Return subtype*[i].
+1. Let (REC subtype*) be $unrollrt(rectype).
+1. Return subtype*[i].
 
 expanddt deftype
 1. Assert: Due to validation, $unrolldt(deftype) is of the case SUB.
-2. Let (SUB fin typeuse* comptype) be $unrolldt(deftype).
-3. Return comptype.
+1. Let (SUB fin typeuse* comptype) be $unrolldt(deftype).
+1. Return comptype.
 
 funcsxx externidx_u0*
 1. If (externidx_u0* is []), then:
   a. Return [].
-2. Let [externidx_0] ++ xx* be externidx_u0*.
-3. If externidx_0 is of the case FUNC, then:
+1. Let [externidx_0] ++ xx* be externidx_u0*.
+1. If externidx_0 is of the case FUNC, then:
   a. Let (FUNC x) be externidx_0.
-  b. Return [x] ++ $funcsxx(xx*).
-4. Let [externidx] ++ xx* be externidx_u0*.
-5. Return $funcsxx(xx*).
+  a. Return [x] ++ $funcsxx(xx*).
+1. Let [externidx] ++ xx* be externidx_u0*.
+1. Return $funcsxx(xx*).
 
 globalsxx externidx_u0*
 1. If (externidx_u0* is []), then:
   a. Return [].
-2. Let [externidx_0] ++ xx* be externidx_u0*.
-3. If externidx_0 is of the case GLOBAL, then:
+1. Let [externidx_0] ++ xx* be externidx_u0*.
+1. If externidx_0 is of the case GLOBAL, then:
   a. Let (GLOBAL x) be externidx_0.
-  b. Return [x] ++ $globalsxx(xx*).
-4. Let [externidx] ++ xx* be externidx_u0*.
-5. Return $globalsxx(xx*).
+  a. Return [x] ++ $globalsxx(xx*).
+1. Let [externidx] ++ xx* be externidx_u0*.
+1. Return $globalsxx(xx*).
 
 tablesxx externidx_u0*
 1. If (externidx_u0* is []), then:
   a. Return [].
-2. Let [externidx_0] ++ xx* be externidx_u0*.
-3. If externidx_0 is of the case TABLE, then:
+1. Let [externidx_0] ++ xx* be externidx_u0*.
+1. If externidx_0 is of the case TABLE, then:
   a. Let (TABLE x) be externidx_0.
-  b. Return [x] ++ $tablesxx(xx*).
-4. Let [externidx] ++ xx* be externidx_u0*.
-5. Return $tablesxx(xx*).
+  a. Return [x] ++ $tablesxx(xx*).
+1. Let [externidx] ++ xx* be externidx_u0*.
+1. Return $tablesxx(xx*).
 
 memsxx externidx_u0*
 1. If (externidx_u0* is []), then:
   a. Return [].
-2. Let [externidx_0] ++ xx* be externidx_u0*.
-3. If externidx_0 is of the case MEM, then:
+1. Let [externidx_0] ++ xx* be externidx_u0*.
+1. If externidx_0 is of the case MEM, then:
   a. Let (MEM x) be externidx_0.
-  b. Return [x] ++ $memsxx(xx*).
-4. Let [externidx] ++ xx* be externidx_u0*.
-5. Return $memsxx(xx*).
+  a. Return [x] ++ $memsxx(xx*).
+1. Let [externidx] ++ xx* be externidx_u0*.
+1. Return $memsxx(xx*).
 
 tagsxx externidx_u0*
 1. If (externidx_u0* is []), then:
   a. Return [].
-2. Let [externidx_0] ++ xx* be externidx_u0*.
-3. If externidx_0 is of the case TAG, then:
+1. Let [externidx_0] ++ xx* be externidx_u0*.
+1. If externidx_0 is of the case TAG, then:
   a. Let (TAG x) be externidx_0.
-  b. Return [x] ++ $tagsxx(xx*).
-4. Let [externidx] ++ xx* be externidx_u0*.
-5. Return $tagsxx(xx*).
+  a. Return [x] ++ $tagsxx(xx*).
+1. Let [externidx] ++ xx* be externidx_u0*.
+1. Return $tagsxx(xx*).
 
 funcsxt externtype_u0*
 1. If (externtype_u0* is []), then:
   a. Return [].
-2. Let [externtype_0] ++ xt* be externtype_u0*.
-3. If externtype_0 is of the case FUNC, then:
+1. Let [externtype_0] ++ xt* be externtype_u0*.
+1. If externtype_0 is of the case FUNC, then:
   a. Let (FUNC dt) be externtype_0.
-  b. Return [dt] ++ $funcsxt(xt*).
-4. Let [externtype] ++ xt* be externtype_u0*.
-5. Return $funcsxt(xt*).
+  a. Return [dt] ++ $funcsxt(xt*).
+1. Let [externtype] ++ xt* be externtype_u0*.
+1. Return $funcsxt(xt*).
 
 globalsxt externtype_u0*
 1. If (externtype_u0* is []), then:
   a. Return [].
-2. Let [externtype_0] ++ xt* be externtype_u0*.
-3. If externtype_0 is of the case GLOBAL, then:
+1. Let [externtype_0] ++ xt* be externtype_u0*.
+1. If externtype_0 is of the case GLOBAL, then:
   a. Let (GLOBAL gt) be externtype_0.
-  b. Return [gt] ++ $globalsxt(xt*).
-4. Let [externtype] ++ xt* be externtype_u0*.
-5. Return $globalsxt(xt*).
+  a. Return [gt] ++ $globalsxt(xt*).
+1. Let [externtype] ++ xt* be externtype_u0*.
+1. Return $globalsxt(xt*).
 
 tablesxt externtype_u0*
 1. If (externtype_u0* is []), then:
   a. Return [].
-2. Let [externtype_0] ++ xt* be externtype_u0*.
-3. If externtype_0 is of the case TABLE, then:
+1. Let [externtype_0] ++ xt* be externtype_u0*.
+1. If externtype_0 is of the case TABLE, then:
   a. Let (TABLE tt) be externtype_0.
-  b. Return [tt] ++ $tablesxt(xt*).
-4. Let [externtype] ++ xt* be externtype_u0*.
-5. Return $tablesxt(xt*).
+  a. Return [tt] ++ $tablesxt(xt*).
+1. Let [externtype] ++ xt* be externtype_u0*.
+1. Return $tablesxt(xt*).
 
 memsxt externtype_u0*
 1. If (externtype_u0* is []), then:
   a. Return [].
-2. Let [externtype_0] ++ xt* be externtype_u0*.
-3. If externtype_0 is of the case MEM, then:
+1. Let [externtype_0] ++ xt* be externtype_u0*.
+1. If externtype_0 is of the case MEM, then:
   a. Let (MEM mt) be externtype_0.
-  b. Return [mt] ++ $memsxt(xt*).
-4. Let [externtype] ++ xt* be externtype_u0*.
-5. Return $memsxt(xt*).
+  a. Return [mt] ++ $memsxt(xt*).
+1. Let [externtype] ++ xt* be externtype_u0*.
+1. Return $memsxt(xt*).
 
 tagsxt externtype_u0*
 1. If (externtype_u0* is []), then:
   a. Return [].
-2. Let [externtype_0] ++ xt* be externtype_u0*.
-3. If externtype_0 is of the case TAG, then:
+1. Let [externtype_0] ++ xt* be externtype_u0*.
+1. If externtype_0 is of the case TAG, then:
   a. Let (TAG at) be externtype_0.
-  b. Return [at] ++ $tagsxt(xt*).
-4. Let [externtype] ++ xt* be externtype_u0*.
-5. Return $tagsxt(xt*).
+  a. Return [at] ++ $tagsxt(xt*).
+1. Let [externtype] ++ xt* be externtype_u0*.
+1. Return $tagsxt(xt*).
 
 memarg0
 1. Return { ALIGN: 0; OFFSET: 0; }.
@@ -24005,162 +24764,162 @@ memarg0
 signed_ N i
 1. If (0 ≤ (2 ^ (N - 1))), then:
   a. Return i.
-2. Assert: Due to validation, ((2 ^ (N - 1)) ≤ i).
-3. Assert: Due to validation, (i < (2 ^ N)).
-4. Return (i - (2 ^ N)).
+1. Assert: Due to validation, ((2 ^ (N - 1)) ≤ i).
+1. Assert: Due to validation, (i < (2 ^ N)).
+1. Return (i - (2 ^ N)).
 
 invsigned_ N i
 1. Let j be $signed__1^-1(N, i).
-2. Return j.
+1. Return j.
 
 unop_ numtype_u1 unop__u0 num__u3
 1. If ((unop__u0 is CLZ) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN be num__u3.
-  c. Return [$iclz_($sizenn(Inn), iN)].
-2. If ((unop__u0 is CTZ) and the type of numtype_u1 is Inn), then:
+  a. Let iN be num__u3.
+  a. Return [$iclz_($sizenn(Inn), iN)].
+1. If ((unop__u0 is CTZ) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN be num__u3.
-  c. Return [$ictz_($sizenn(Inn), iN)].
-3. If ((unop__u0 is POPCNT) and the type of numtype_u1 is Inn), then:
+  a. Let iN be num__u3.
+  a. Return [$ictz_($sizenn(Inn), iN)].
+1. If ((unop__u0 is POPCNT) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN be num__u3.
-  c. Return [$ipopcnt_($sizenn(Inn), iN)].
-4. If the type of numtype_u1 is Inn, then:
+  a. Let iN be num__u3.
+  a. Return [$ipopcnt_($sizenn(Inn), iN)].
+1. If the type of numtype_u1 is Inn, then:
   a. Let Inn be numtype_u1.
-  b. Assert: Due to validation, unop__u0 is of the case EXTEND.
-  c. Let (EXTEND M) be unop__u0.
-  d. Let iN be num__u3.
-  e. Return [$extend__(M, $sizenn(Inn), S, $wrap__($sizenn(Inn), M, iN))].
-5. If ((unop__u0 is ABS) and the type of numtype_u1 is Fnn), then:
+  a. Assert: Due to validation, unop__u0 is of the case EXTEND.
+  a. Let (EXTEND M) be unop__u0.
+  a. Let iN be num__u3.
+  a. Return [$extend__(M, $sizenn(Inn), S, $wrap__($sizenn(Inn), M, iN))].
+1. If ((unop__u0 is ABS) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN be num__u3.
-  c. Return $fabs_($sizenn(Fnn), fN).
-6. If ((unop__u0 is NEG) and the type of numtype_u1 is Fnn), then:
+  a. Let fN be num__u3.
+  a. Return $fabs_($sizenn(Fnn), fN).
+1. If ((unop__u0 is NEG) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN be num__u3.
-  c. Return $fneg_($sizenn(Fnn), fN).
-7. If ((unop__u0 is SQRT) and the type of numtype_u1 is Fnn), then:
+  a. Let fN be num__u3.
+  a. Return $fneg_($sizenn(Fnn), fN).
+1. If ((unop__u0 is SQRT) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN be num__u3.
-  c. Return $fsqrt_($sizenn(Fnn), fN).
-8. If ((unop__u0 is CEIL) and the type of numtype_u1 is Fnn), then:
+  a. Let fN be num__u3.
+  a. Return $fsqrt_($sizenn(Fnn), fN).
+1. If ((unop__u0 is CEIL) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN be num__u3.
-  c. Return $fceil_($sizenn(Fnn), fN).
-9. If ((unop__u0 is FLOOR) and the type of numtype_u1 is Fnn), then:
+  a. Let fN be num__u3.
+  a. Return $fceil_($sizenn(Fnn), fN).
+1. If ((unop__u0 is FLOOR) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN be num__u3.
-  c. Return $ffloor_($sizenn(Fnn), fN).
-10. If ((unop__u0 is TRUNC) and the type of numtype_u1 is Fnn), then:
+  a. Let fN be num__u3.
+  a. Return $ffloor_($sizenn(Fnn), fN).
+1. If ((unop__u0 is TRUNC) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN be num__u3.
-  c. Return $ftrunc_($sizenn(Fnn), fN).
-11. Assert: Due to validation, (unop__u0 is NEAREST).
-12. Assert: Due to validation, the type of numtype_u1 is Fnn.
-13. Let Fnn be numtype_u1.
-14. Let fN be num__u3.
-15. Return $fnearest_($sizenn(Fnn), fN).
+  a. Let fN be num__u3.
+  a. Return $ftrunc_($sizenn(Fnn), fN).
+1. Assert: Due to validation, (unop__u0 is NEAREST).
+1. Assert: Due to validation, the type of numtype_u1 is Fnn.
+1. Let Fnn be numtype_u1.
+1. Let fN be num__u3.
+1. Return $fnearest_($sizenn(Fnn), fN).
 
 binop_ numtype_u1 binop__u0 num__u3 num__u5
 1. If ((binop__u0 is ADD) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$iadd_($sizenn(Inn), iN_1, iN_2)].
-2. If ((binop__u0 is SUB) and the type of numtype_u1 is Inn), then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. Return [$iadd_($sizenn(Inn), iN_1, iN_2)].
+1. If ((binop__u0 is SUB) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$isub_($sizenn(Inn), iN_1, iN_2)].
-3. If ((binop__u0 is MUL) and the type of numtype_u1 is Inn), then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. Return [$isub_($sizenn(Inn), iN_1, iN_2)].
+1. If ((binop__u0 is MUL) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$imul_($sizenn(Inn), iN_1, iN_2)].
-4. If the type of numtype_u1 is Inn, then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. Return [$imul_($sizenn(Inn), iN_1, iN_2)].
+1. If the type of numtype_u1 is Inn, then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. If binop__u0 is of the case DIV, then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. If binop__u0 is of the case DIV, then:
     1) Let (DIV sx) be binop__u0.
-    2) Return $list_(num_((Inn : Inn <: numtype)), $idiv_($sizenn(Inn), sx, iN_1, iN_2)).
-  e. If binop__u0 is of the case REM, then:
+    1) Return $list_(num_((Inn : Inn <: numtype)), $idiv_($sizenn(Inn), sx, iN_1, iN_2)).
+  a. If binop__u0 is of the case REM, then:
     1) Let (REM sx) be binop__u0.
-    2) Return $list_(num_((Inn : Inn <: numtype)), $irem_($sizenn(Inn), sx, iN_1, iN_2)).
-5. If ((binop__u0 is AND) and the type of numtype_u1 is Inn), then:
+    1) Return $list_(num_((Inn : Inn <: numtype)), $irem_($sizenn(Inn), sx, iN_1, iN_2)).
+1. If ((binop__u0 is AND) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$iand_($sizenn(Inn), iN_1, iN_2)].
-6. If ((binop__u0 is OR) and the type of numtype_u1 is Inn), then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. Return [$iand_($sizenn(Inn), iN_1, iN_2)].
+1. If ((binop__u0 is OR) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$ior_($sizenn(Inn), iN_1, iN_2)].
-7. If ((binop__u0 is XOR) and the type of numtype_u1 is Inn), then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. Return [$ior_($sizenn(Inn), iN_1, iN_2)].
+1. If ((binop__u0 is XOR) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$ixor_($sizenn(Inn), iN_1, iN_2)].
-8. If ((binop__u0 is SHL) and the type of numtype_u1 is Inn), then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. Return [$ixor_($sizenn(Inn), iN_1, iN_2)].
+1. If ((binop__u0 is SHL) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$ishl_($sizenn(Inn), iN_1, iN_2)].
-9. If the type of numtype_u1 is Inn, then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. Return [$ishl_($sizenn(Inn), iN_1, iN_2)].
+1. If the type of numtype_u1 is Inn, then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. If binop__u0 is of the case SHR, then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. If binop__u0 is of the case SHR, then:
     1) Let (SHR sx) be binop__u0.
-    2) Return [$ishr_($sizenn(Inn), sx, iN_1, iN_2)].
-10. If ((binop__u0 is ROTL) and the type of numtype_u1 is Inn), then:
+    1) Return [$ishr_($sizenn(Inn), sx, iN_1, iN_2)].
+1. If ((binop__u0 is ROTL) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$irotl_($sizenn(Inn), iN_1, iN_2)].
-11. If ((binop__u0 is ROTR) and the type of numtype_u1 is Inn), then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. Return [$irotl_($sizenn(Inn), iN_1, iN_2)].
+1. If ((binop__u0 is ROTR) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return [$irotr_($sizenn(Inn), iN_1, iN_2)].
-12. If ((binop__u0 is ADD) and the type of numtype_u1 is Fnn), then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. Return [$irotr_($sizenn(Inn), iN_1, iN_2)].
+1. If ((binop__u0 is ADD) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fadd_($sizenn(Fnn), fN_1, fN_2).
-13. If ((binop__u0 is SUB) and the type of numtype_u1 is Fnn), then:
+  a. Let fN_1 be num__u3.
+  a. Let fN_2 be num__u5.
+  a. Return $fadd_($sizenn(Fnn), fN_1, fN_2).
+1. If ((binop__u0 is SUB) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fsub_($sizenn(Fnn), fN_1, fN_2).
-14. If ((binop__u0 is MUL) and the type of numtype_u1 is Fnn), then:
+  a. Let fN_1 be num__u3.
+  a. Let fN_2 be num__u5.
+  a. Return $fsub_($sizenn(Fnn), fN_1, fN_2).
+1. If ((binop__u0 is MUL) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fmul_($sizenn(Fnn), fN_1, fN_2).
-15. If ((binop__u0 is DIV) and the type of numtype_u1 is Fnn), then:
+  a. Let fN_1 be num__u3.
+  a. Let fN_2 be num__u5.
+  a. Return $fmul_($sizenn(Fnn), fN_1, fN_2).
+1. If ((binop__u0 is DIV) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fdiv_($sizenn(Fnn), fN_1, fN_2).
-16. If ((binop__u0 is MIN) and the type of numtype_u1 is Fnn), then:
+  a. Let fN_1 be num__u3.
+  a. Let fN_2 be num__u5.
+  a. Return $fdiv_($sizenn(Fnn), fN_1, fN_2).
+1. If ((binop__u0 is MIN) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fmin_($sizenn(Fnn), fN_1, fN_2).
-17. If ((binop__u0 is MAX) and the type of numtype_u1 is Fnn), then:
+  a. Let fN_1 be num__u3.
+  a. Let fN_2 be num__u5.
+  a. Return $fmin_($sizenn(Fnn), fN_1, fN_2).
+1. If ((binop__u0 is MAX) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fmax_($sizenn(Fnn), fN_1, fN_2).
-18. Assert: Due to validation, (binop__u0 is COPYSIGN).
-19. Assert: Due to validation, the type of numtype_u1 is Fnn.
-20. Let Fnn be numtype_u1.
-21. Let fN_1 be num__u3.
-22. Let fN_2 be num__u5.
-23. Return $fcopysign_($sizenn(Fnn), fN_1, fN_2).
+  a. Let fN_1 be num__u3.
+  a. Let fN_2 be num__u5.
+  a. Return $fmax_($sizenn(Fnn), fN_1, fN_2).
+1. Assert: Due to validation, (binop__u0 is COPYSIGN).
+1. Assert: Due to validation, the type of numtype_u1 is Fnn.
+1. Let Fnn be numtype_u1.
+1. Let fN_1 be num__u3.
+1. Let fN_2 be num__u5.
+1. Return $fcopysign_($sizenn(Fnn), fN_1, fN_2).
 
 testop_ Inn EQZ iN
 1. Return $ieqz_($sizenn(Inn), iN).
@@ -24168,172 +24927,172 @@ testop_ Inn EQZ iN
 relop_ numtype_u1 relop__u0 num__u3 num__u5
 1. If ((relop__u0 is EQ) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return $ieq_($sizenn(Inn), iN_1, iN_2).
-2. If ((relop__u0 is NE) and the type of numtype_u1 is Inn), then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. Return $ieq_($sizenn(Inn), iN_1, iN_2).
+1. If ((relop__u0 is NE) and the type of numtype_u1 is Inn), then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. Return $ine_($sizenn(Inn), iN_1, iN_2).
-3. If the type of numtype_u1 is Inn, then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. Return $ine_($sizenn(Inn), iN_1, iN_2).
+1. If the type of numtype_u1 is Inn, then:
   a. Let Inn be numtype_u1.
-  b. Let iN_1 be num__u3.
-  c. Let iN_2 be num__u5.
-  d. If relop__u0 is of the case LT, then:
+  a. Let iN_1 be num__u3.
+  a. Let iN_2 be num__u5.
+  a. If relop__u0 is of the case LT, then:
     1) Let (LT sx) be relop__u0.
-    2) Return $ilt_($sizenn(Inn), sx, iN_1, iN_2).
-  e. If relop__u0 is of the case GT, then:
+    1) Return $ilt_($sizenn(Inn), sx, iN_1, iN_2).
+  a. If relop__u0 is of the case GT, then:
     1) Let (GT sx) be relop__u0.
-    2) Return $igt_($sizenn(Inn), sx, iN_1, iN_2).
-  f. If relop__u0 is of the case LE, then:
+    1) Return $igt_($sizenn(Inn), sx, iN_1, iN_2).
+  a. If relop__u0 is of the case LE, then:
     1) Let (LE sx) be relop__u0.
-    2) Return $ile_($sizenn(Inn), sx, iN_1, iN_2).
-  g. If relop__u0 is of the case GE, then:
+    1) Return $ile_($sizenn(Inn), sx, iN_1, iN_2).
+  a. If relop__u0 is of the case GE, then:
     1) Let (GE sx) be relop__u0.
-    2) Return $ige_($sizenn(Inn), sx, iN_1, iN_2).
-4. If ((relop__u0 is EQ) and the type of numtype_u1 is Fnn), then:
+    1) Return $ige_($sizenn(Inn), sx, iN_1, iN_2).
+1. If ((relop__u0 is EQ) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $feq_($sizenn(Fnn), fN_1, fN_2).
-5. If ((relop__u0 is NE) and the type of numtype_u1 is Fnn), then:
+  a. Let fN_1 be num__u3.
+  a. Let fN_2 be num__u5.
+  a. Return $feq_($sizenn(Fnn), fN_1, fN_2).
+1. If ((relop__u0 is NE) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fne_($sizenn(Fnn), fN_1, fN_2).
-6. If ((relop__u0 is LT) and the type of numtype_u1 is Fnn), then:
+  a. Let fN_1 be num__u3.
+  a. Let fN_2 be num__u5.
+  a. Return $fne_($sizenn(Fnn), fN_1, fN_2).
+1. If ((relop__u0 is LT) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $flt_($sizenn(Fnn), fN_1, fN_2).
-7. If ((relop__u0 is GT) and the type of numtype_u1 is Fnn), then:
+  a. Let fN_1 be num__u3.
+  a. Let fN_2 be num__u5.
+  a. Return $flt_($sizenn(Fnn), fN_1, fN_2).
+1. If ((relop__u0 is GT) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fgt_($sizenn(Fnn), fN_1, fN_2).
-8. If ((relop__u0 is LE) and the type of numtype_u1 is Fnn), then:
+  a. Let fN_1 be num__u3.
+  a. Let fN_2 be num__u5.
+  a. Return $fgt_($sizenn(Fnn), fN_1, fN_2).
+1. If ((relop__u0 is LE) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn be numtype_u1.
-  b. Let fN_1 be num__u3.
-  c. Let fN_2 be num__u5.
-  d. Return $fle_($sizenn(Fnn), fN_1, fN_2).
-9. Assert: Due to validation, (relop__u0 is GE).
-10. Assert: Due to validation, the type of numtype_u1 is Fnn.
-11. Let Fnn be numtype_u1.
-12. Let fN_1 be num__u3.
-13. Let fN_2 be num__u5.
-14. Return $fge_($sizenn(Fnn), fN_1, fN_2).
+  a. Let fN_1 be num__u3.
+  a. Let fN_2 be num__u5.
+  a. Return $fle_($sizenn(Fnn), fN_1, fN_2).
+1. Assert: Due to validation, (relop__u0 is GE).
+1. Assert: Due to validation, the type of numtype_u1 is Fnn.
+1. Let Fnn be numtype_u1.
+1. Let fN_1 be num__u3.
+1. Let fN_2 be num__u5.
+1. Return $fge_($sizenn(Fnn), fN_1, fN_2).
 
 cvtop__ numtype_u1 numtype_u4 cvtop___u0 num__u3
 1. If the type of numtype_u1 is Inn, then:
   a. Let Inn_1 be numtype_u1.
-  b. If the type of numtype_u4 is Inn, then:
+  a. If the type of numtype_u4 is Inn, then:
     1) Let Inn_2 be numtype_u4.
-    2) Let iN_1 be num__u3.
-    3) If cvtop___u0 is of the case EXTEND, then:
+    1) Let iN_1 be num__u3.
+    1) If cvtop___u0 is of the case EXTEND, then:
       a) Let (EXTEND sx) be cvtop___u0.
-      b) Return [$extend__($sizenn1(Inn_1), $sizenn2(Inn_2), sx, iN_1)].
-2. If ((cvtop___u0 is WRAP) and the type of numtype_u1 is Inn), then:
+      a) Return [$extend__($sizenn1(Inn_1), $sizenn2(Inn_2), sx, iN_1)].
+1. If ((cvtop___u0 is WRAP) and the type of numtype_u1 is Inn), then:
   a. Let Inn_1 be numtype_u1.
-  b. If the type of numtype_u4 is Inn, then:
+  a. If the type of numtype_u4 is Inn, then:
     1) Let Inn_2 be numtype_u4.
-    2) Let iN_1 be num__u3.
-    3) Return [$wrap__($sizenn1(Inn_1), $sizenn2(Inn_2), iN_1)].
-3. If the type of numtype_u1 is Fnn, then:
+    1) Let iN_1 be num__u3.
+    1) Return [$wrap__($sizenn1(Inn_1), $sizenn2(Inn_2), iN_1)].
+1. If the type of numtype_u1 is Fnn, then:
   a. Let Fnn_1 be numtype_u1.
-  b. If the type of numtype_u4 is Inn, then:
+  a. If the type of numtype_u4 is Inn, then:
     1) Let Inn_2 be numtype_u4.
-    2) Let fN_1 be num__u3.
-    3) If cvtop___u0 is of the case TRUNC, then:
+    1) Let fN_1 be num__u3.
+    1) If cvtop___u0 is of the case TRUNC, then:
       a) Let (TRUNC sx) be cvtop___u0.
-      b) Return $list_(num_((Inn_2 : Inn <: numtype)), $trunc__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
-    4) If cvtop___u0 is of the case TRUNC_SAT, then:
+      a) Return $list_(num_((Inn_2 : Inn <: numtype)), $trunc__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
+    1) If cvtop___u0 is of the case TRUNC_SAT, then:
       a) Let (TRUNC_SAT sx) be cvtop___u0.
-      b) Return $list_(num_((Inn_2 : Inn <: numtype)), $trunc_sat__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
-4. If the type of numtype_u4 is Fnn, then:
+      a) Return $list_(num_((Inn_2 : Inn <: numtype)), $trunc_sat__($sizenn1(Fnn_1), $sizenn2(Inn_2), sx, fN_1)).
+1. If the type of numtype_u4 is Fnn, then:
   a. Let Fnn_2 be numtype_u4.
-  b. If the type of numtype_u1 is Inn, then:
+  a. If the type of numtype_u1 is Inn, then:
     1) Let Inn_1 be numtype_u1.
-    2) Let iN_1 be num__u3.
-    3) If cvtop___u0 is of the case CONVERT, then:
+    1) Let iN_1 be num__u3.
+    1) If cvtop___u0 is of the case CONVERT, then:
       a) Let (CONVERT sx) be cvtop___u0.
-      b) Return [$convert__($sizenn1(Inn_1), $sizenn2(Fnn_2), sx, iN_1)].
-5. If ((cvtop___u0 is PROMOTE) and the type of numtype_u1 is Fnn), then:
+      a) Return [$convert__($sizenn1(Inn_1), $sizenn2(Fnn_2), sx, iN_1)].
+1. If ((cvtop___u0 is PROMOTE) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn_1 be numtype_u1.
-  b. If the type of numtype_u4 is Fnn, then:
+  a. If the type of numtype_u4 is Fnn, then:
     1) Let Fnn_2 be numtype_u4.
-    2) Let fN_1 be num__u3.
-    3) Return $promote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1).
-6. If ((cvtop___u0 is DEMOTE) and the type of numtype_u1 is Fnn), then:
+    1) Let fN_1 be num__u3.
+    1) Return $promote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1).
+1. If ((cvtop___u0 is DEMOTE) and the type of numtype_u1 is Fnn), then:
   a. Let Fnn_1 be numtype_u1.
-  b. If the type of numtype_u4 is Fnn, then:
+  a. If the type of numtype_u4 is Fnn, then:
     1) Let Fnn_2 be numtype_u4.
-    2) Let fN_1 be num__u3.
-    3) Return $demote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1).
-7. Assert: Due to validation, (cvtop___u0 is REINTERPRET).
-8. If the type of numtype_u4 is Fnn, then:
+    1) Let fN_1 be num__u3.
+    1) Return $demote__($sizenn1(Fnn_1), $sizenn2(Fnn_2), fN_1).
+1. Assert: Due to validation, (cvtop___u0 is REINTERPRET).
+1. If the type of numtype_u4 is Fnn, then:
   a. Let Fnn_2 be numtype_u4.
-  b. If the type of numtype_u1 is Inn, then:
+  a. If the type of numtype_u1 is Inn, then:
     1) Let Inn_1 be numtype_u1.
-    2) Let iN_1 be num__u3.
-    3) If ($size(Inn_1) is $size(Fnn_2)), then:
+    1) Let iN_1 be num__u3.
+    1) If ($size(Inn_1) is $size(Fnn_2)), then:
       a) Return [$reinterpret__(Inn_1, Fnn_2, iN_1)].
-9. Assert: Due to validation, the type of numtype_u1 is Fnn.
-10. Let Fnn_1 be numtype_u1.
-11. Assert: Due to validation, the type of numtype_u4 is Inn.
-12. Let Inn_2 be numtype_u4.
-13. Let fN_1 be num__u3.
-14. Assert: Due to validation, ($size(Fnn_1) is $size(Inn_2)).
-15. Return [$reinterpret__(Fnn_1, Inn_2, fN_1)].
+1. Assert: Due to validation, the type of numtype_u1 is Fnn.
+1. Let Fnn_1 be numtype_u1.
+1. Assert: Due to validation, the type of numtype_u4 is Inn.
+1. Let Inn_2 be numtype_u4.
+1. Let fN_1 be num__u3.
+1. Assert: Due to validation, ($size(Fnn_1) is $size(Inn_2)).
+1. Return [$reinterpret__(Fnn_1, Inn_2, fN_1)].
 
 invibytes_ N b*
 1. Let n be $ibytes__1^-1(N, b*).
-2. Return n.
+1. Return n.
 
 invfbytes_ N b*
 1. Let p be $fbytes__1^-1(N, b*).
-2. Return p.
+1. Return p.
 
 lpacknum_ lanetype_u0 c
 1. If the type of lanetype_u0 is numtype, then:
   a. Return c.
-2. Assert: Due to validation, the type of lanetype_u0 is packtype.
-3. Let packtype be lanetype_u0.
-4. Return $wrap__($size($lunpack(packtype)), $psize(packtype), c).
+1. Assert: Due to validation, the type of lanetype_u0 is packtype.
+1. Let packtype be lanetype_u0.
+1. Return $wrap__($size($lunpack(packtype)), $psize(packtype), c).
 
 lunpacknum_ lanetype_u0 c
 1. If the type of lanetype_u0 is numtype, then:
   a. Return c.
-2. Assert: Due to validation, the type of lanetype_u0 is packtype.
-3. Let packtype be lanetype_u0.
-4. Return $extend__($psize(packtype), $size($lunpack(packtype)), U, c).
+1. Assert: Due to validation, the type of lanetype_u0 is packtype.
+1. Let packtype be lanetype_u0.
+1. Return $extend__($psize(packtype), $size($lunpack(packtype)), U, c).
 
 cpacknum_ storagetype_u0 c
 1. If the type of storagetype_u0 is consttype, then:
   a. Return c.
-2. Assert: Due to validation, the type of storagetype_u0 is packtype.
-3. Let packtype be storagetype_u0.
-4. Return $wrap__($size($lunpack(packtype)), $psize(packtype), c).
+1. Assert: Due to validation, the type of storagetype_u0 is packtype.
+1. Let packtype be storagetype_u0.
+1. Return $wrap__($size($lunpack(packtype)), $psize(packtype), c).
 
 cunpacknum_ storagetype_u0 c
 1. If the type of storagetype_u0 is consttype, then:
   a. Return c.
-2. Assert: Due to validation, the type of storagetype_u0 is packtype.
-3. Let packtype be storagetype_u0.
-4. Return $extend__($psize(packtype), $size($lunpack(packtype)), U, c).
+1. Assert: Due to validation, the type of storagetype_u0 is packtype.
+1. Let packtype be storagetype_u0.
+1. Return $extend__($psize(packtype), $size($lunpack(packtype)), U, c).
 
 invlanes_ sh c*
 1. Let vc be $lanes__1^-1(sh, c*).
-2. Return vc.
+1. Return vc.
 
 half__ (lanetype_u1 X M_1) (lanetype_u2 X M_2) half___u0 i j
 1. If ((half___u0 is LOW) and (the type of lanetype_u1 is Jnn and the type of lanetype_u2 is Jnn)), then:
   a. Return i.
-2. If ((half___u0 is HIGH) and (the type of lanetype_u1 is Jnn and the type of lanetype_u2 is Jnn)), then:
+1. If ((half___u0 is HIGH) and (the type of lanetype_u1 is Jnn and the type of lanetype_u2 is Jnn)), then:
   a. Return j.
-3. Assert: Due to validation, (half___u0 is LOW).
-4. Assert: Due to validation, the type of lanetype_u2 is Fnn.
-5. Return i.
+1. Assert: Due to validation, (half___u0 is LOW).
+1. Assert: Due to validation, the type of lanetype_u2 is Fnn.
+1. Return i.
 
 vvunop_ V128 NOT v128
 1. Return [$inot_($vsize(V128), v128)].
@@ -24341,12 +25100,12 @@ vvunop_ V128 NOT v128
 vvbinop_ V128 vvbinop_u0 v128_1 v128_2
 1. If (vvbinop_u0 is AND), then:
   a. Return [$iand_($vsize(V128), v128_1, v128_2)].
-2. If (vvbinop_u0 is ANDNOT), then:
+1. If (vvbinop_u0 is ANDNOT), then:
   a. Return [$iandnot_($vsize(V128), v128_1, v128_2)].
-3. If (vvbinop_u0 is OR), then:
+1. If (vvbinop_u0 is OR), then:
   a. Return [$ior_($vsize(V128), v128_1, v128_2)].
-4. Assert: Due to validation, (vvbinop_u0 is XOR).
-5. Return [$ixor_($vsize(V128), v128_1, v128_2)].
+1. Assert: Due to validation, (vvbinop_u0 is XOR).
+1. Return [$ixor_($vsize(V128), v128_1, v128_2)].
 
 vvternop_ V128 BITSELECT v128_1 v128_2 v128_3
 1. Return [$ibitselect_($vsize(V128), v128_1, v128_2, v128_3)].
@@ -24354,458 +25113,458 @@ vvternop_ V128 BITSELECT v128_1 v128_2 v128_3
 vunop_ (lanetype_u1 X M) vunop__u0 v128_1
 1. If ((vunop__u0 is ABS) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let v128 be $invlanes_((Jnn X M), $iabs_($lsizenn(Jnn), lane_1)*).
-  d. Return [v128].
-2. If ((vunop__u0 is NEG) and the type of lanetype_u1 is Jnn), then:
+  a. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  a. Let v128 be $invlanes_((Jnn X M), $iabs_($lsizenn(Jnn), lane_1)*).
+  a. Return [v128].
+1. If ((vunop__u0 is NEG) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let v128 be $invlanes_((Jnn X M), $ineg_($lsizenn(Jnn), lane_1)*).
-  d. Return [v128].
-3. If ((vunop__u0 is POPCNT) and the type of lanetype_u1 is Jnn), then:
+  a. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  a. Let v128 be $invlanes_((Jnn X M), $ineg_($lsizenn(Jnn), lane_1)*).
+  a. Return [v128].
+1. If ((vunop__u0 is POPCNT) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let v128 be $invlanes_((Jnn X M), $ipopcnt_($lsizenn(Jnn), lane_1)*).
-  d. Return [v128].
-4. If ((vunop__u0 is ABS) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  a. Let v128 be $invlanes_((Jnn X M), $ipopcnt_($lsizenn(Jnn), lane_1)*).
+  a. Return [v128].
+1. If ((vunop__u0 is ABS) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fabs_($sizenn(Fnn), lane_1)*).
-  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  e. Return v128*.
-5. If ((vunop__u0 is NEG) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fabs_($sizenn(Fnn), lane_1)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. If ((vunop__u0 is NEG) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fneg_($sizenn(Fnn), lane_1)*).
-  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  e. Return v128*.
-6. If ((vunop__u0 is SQRT) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fneg_($sizenn(Fnn), lane_1)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. If ((vunop__u0 is SQRT) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fsqrt_($sizenn(Fnn), lane_1)*).
-  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  e. Return v128*.
-7. If ((vunop__u0 is CEIL) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fsqrt_($sizenn(Fnn), lane_1)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. If ((vunop__u0 is CEIL) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fceil_($sizenn(Fnn), lane_1)*).
-  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  e. Return v128*.
-8. If ((vunop__u0 is FLOOR) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fceil_($sizenn(Fnn), lane_1)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. If ((vunop__u0 is FLOOR) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $ffloor_($sizenn(Fnn), lane_1)*).
-  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  e. Return v128*.
-9. If ((vunop__u0 is TRUNC) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $ffloor_($sizenn(Fnn), lane_1)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. If ((vunop__u0 is TRUNC) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $ftrunc_($sizenn(Fnn), lane_1)*).
-  d. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  e. Return v128*.
-10. Assert: Due to validation, (vunop__u0 is NEAREST).
-11. Assert: Due to validation, the type of lanetype_u1 is Fnn.
-12. Let Fnn be lanetype_u1.
-13. Let lane_1* be $lanes_((Fnn X M), v128_1).
-14. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fnearest_($sizenn(Fnn), lane_1)*).
-15. Let v128* be $invlanes_((Fnn X M), lane*)*.
-16. Return v128*.
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $ftrunc_($sizenn(Fnn), lane_1)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. Assert: Due to validation, (vunop__u0 is NEAREST).
+1. Assert: Due to validation, the type of lanetype_u1 is Fnn.
+1. Let Fnn be lanetype_u1.
+1. Let lane_1* be $lanes_((Fnn X M), v128_1).
+1. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fnearest_($sizenn(Fnn), lane_1)*).
+1. Let v128* be $invlanes_((Fnn X M), lane*)*.
+1. Return v128*.
 
 vbinop_ (lanetype_u1 X M) vbinop__u0 v128_1 v128_2
 1. If ((vbinop__u0 is ADD) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let v128 be $invlanes_((Jnn X M), $iadd_($lsizenn(Jnn), lane_1, lane_2)*).
-  e. Return [v128].
-2. If ((vbinop__u0 is SUB) and the type of lanetype_u1 is Jnn), then:
+  a. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  a. Let v128 be $invlanes_((Jnn X M), $iadd_($lsizenn(Jnn), lane_1, lane_2)*).
+  a. Return [v128].
+1. If ((vbinop__u0 is SUB) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let v128 be $invlanes_((Jnn X M), $isub_($lsizenn(Jnn), lane_1, lane_2)*).
-  e. Return [v128].
-3. If the type of lanetype_u1 is Jnn, then:
+  a. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  a. Let v128 be $invlanes_((Jnn X M), $isub_($lsizenn(Jnn), lane_1, lane_2)*).
+  a. Return [v128].
+1. If the type of lanetype_u1 is Jnn, then:
   a. Let Jnn be lanetype_u1.
-  b. If vbinop__u0 is of the case MIN, then:
+  a. If vbinop__u0 is of the case MIN, then:
     1) Let (MIN sx) be vbinop__u0.
-    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
-    4) Let v128 be $invlanes_((Jnn X M), $imin_($lsizenn(Jnn), sx, lane_1, lane_2)*).
-    5) Return [v128].
-  c. If vbinop__u0 is of the case MAX, then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    1) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    1) Let v128 be $invlanes_((Jnn X M), $imin_($lsizenn(Jnn), sx, lane_1, lane_2)*).
+    1) Return [v128].
+  a. If vbinop__u0 is of the case MAX, then:
     1) Let (MAX sx) be vbinop__u0.
-    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
-    4) Let v128 be $invlanes_((Jnn X M), $imax_($lsizenn(Jnn), sx, lane_1, lane_2)*).
-    5) Return [v128].
-  d. If vbinop__u0 is of the case ADD_SAT, then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    1) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    1) Let v128 be $invlanes_((Jnn X M), $imax_($lsizenn(Jnn), sx, lane_1, lane_2)*).
+    1) Return [v128].
+  a. If vbinop__u0 is of the case ADD_SAT, then:
     1) Let (ADD_SAT sx) be vbinop__u0.
-    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
-    4) Let v128 be $invlanes_((Jnn X M), $iadd_sat_($lsizenn(Jnn), sx, lane_1, lane_2)*).
-    5) Return [v128].
-  e. If vbinop__u0 is of the case SUB_SAT, then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    1) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    1) Let v128 be $invlanes_((Jnn X M), $iadd_sat_($lsizenn(Jnn), sx, lane_1, lane_2)*).
+    1) Return [v128].
+  a. If vbinop__u0 is of the case SUB_SAT, then:
     1) Let (SUB_SAT sx) be vbinop__u0.
-    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
-    4) Let v128 be $invlanes_((Jnn X M), $isub_sat_($lsizenn(Jnn), sx, lane_1, lane_2)*).
-    5) Return [v128].
-4. If ((vbinop__u0 is MUL) and the type of lanetype_u1 is Jnn), then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    1) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    1) Let v128 be $invlanes_((Jnn X M), $isub_sat_($lsizenn(Jnn), sx, lane_1, lane_2)*).
+    1) Return [v128].
+1. If ((vbinop__u0 is MUL) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let v128 be $invlanes_((Jnn X M), $imul_($lsizenn(Jnn), lane_1, lane_2)*).
-  e. Return [v128].
-5. If ((vbinop__u0 is (AVGRU)) and the type of lanetype_u1 is Jnn), then:
+  a. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  a. Let v128 be $invlanes_((Jnn X M), $imul_($lsizenn(Jnn), lane_1, lane_2)*).
+  a. Return [v128].
+1. If ((vbinop__u0 is (AVGRU)) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let v128 be $invlanes_((Jnn X M), $iavgr_($lsizenn(Jnn), U, lane_1, lane_2)*).
-  e. Return [v128].
-6. If ((vbinop__u0 is (Q15MULR_SATS)) and the type of lanetype_u1 is Jnn), then:
+  a. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  a. Let v128 be $invlanes_((Jnn X M), $iavgr_($lsizenn(Jnn), U, lane_1, lane_2)*).
+  a. Return [v128].
+1. If ((vbinop__u0 is (Q15MULR_SATS)) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let v128 be $invlanes_((Jnn X M), $iq15mulr_sat_($lsizenn(Jnn), S, lane_1, lane_2)*).
-  e. Return [v128].
-7. If ((vbinop__u0 is ADD) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  a. Let v128 be $invlanes_((Jnn X M), $iq15mulr_sat_($lsizenn(Jnn), S, lane_1, lane_2)*).
+  a. Return [v128].
+1. If ((vbinop__u0 is ADD) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fadd_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  f. Return v128*.
-8. If ((vbinop__u0 is SUB) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fadd_($sizenn(Fnn), lane_1, lane_2)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. If ((vbinop__u0 is SUB) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fsub_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  f. Return v128*.
-9. If ((vbinop__u0 is MUL) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fsub_($sizenn(Fnn), lane_1, lane_2)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. If ((vbinop__u0 is MUL) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fmul_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  f. Return v128*.
-10. If ((vbinop__u0 is DIV) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fmul_($sizenn(Fnn), lane_1, lane_2)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. If ((vbinop__u0 is DIV) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fdiv_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  f. Return v128*.
-11. If ((vbinop__u0 is MIN) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fdiv_($sizenn(Fnn), lane_1, lane_2)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. If ((vbinop__u0 is MIN) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fmin_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  f. Return v128*.
-12. If ((vbinop__u0 is MAX) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fmin_($sizenn(Fnn), lane_1, lane_2)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. If ((vbinop__u0 is MAX) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fmax_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  f. Return v128*.
-13. If ((vbinop__u0 is PMIN) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fmax_($sizenn(Fnn), lane_1, lane_2)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. If ((vbinop__u0 is PMIN) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fpmin_($sizenn(Fnn), lane_1, lane_2)*).
-  e. Let v128* be $invlanes_((Fnn X M), lane*)*.
-  f. Return v128*.
-14. Assert: Due to validation, (vbinop__u0 is PMAX).
-15. Assert: Due to validation, the type of lanetype_u1 is Fnn.
-16. Let Fnn be lanetype_u1.
-17. Let lane_1* be $lanes_((Fnn X M), v128_1).
-18. Let lane_2* be $lanes_((Fnn X M), v128_2).
-19. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fpmax_($sizenn(Fnn), lane_1, lane_2)*).
-20. Let v128* be $invlanes_((Fnn X M), lane*)*.
-21. Return v128*.
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  a. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fpmin_($sizenn(Fnn), lane_1, lane_2)*).
+  a. Let v128* be $invlanes_((Fnn X M), lane*)*.
+  a. Return v128*.
+1. Assert: Due to validation, (vbinop__u0 is PMAX).
+1. Assert: Due to validation, the type of lanetype_u1 is Fnn.
+1. Let Fnn be lanetype_u1.
+1. Let lane_1* be $lanes_((Fnn X M), v128_1).
+1. Let lane_2* be $lanes_((Fnn X M), v128_2).
+1. Let lane** be $setproduct_(lane_((Fnn : Fnn <: lanetype)), $fpmax_($sizenn(Fnn), lane_1, lane_2)*).
+1. Let v128* be $invlanes_((Fnn X M), lane*)*.
+1. Return v128*.
 
 vrelop_ (lanetype_u1 X M) vrelop__u0 v128_1 v128_2
 1. If ((vrelop__u0 is EQ) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let lane* be $extend__(1, $lsizenn(Jnn), S, $ieq_($lsizenn(Jnn), lane_1, lane_2))*.
-  e. Let v128 be $invlanes_((Jnn X M), lane*).
-  f. Return v128.
-2. If ((vrelop__u0 is NE) and the type of lanetype_u1 is Jnn), then:
+  a. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  a. Let lane* be $extend__(1, $lsizenn(Jnn), S, $ieq_($lsizenn(Jnn), lane_1, lane_2))*.
+  a. Let v128 be $invlanes_((Jnn X M), lane*).
+  a. Return v128.
+1. If ((vrelop__u0 is NE) and the type of lanetype_u1 is Jnn), then:
   a. Let Jnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Jnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Jnn X M), v128_2).
-  d. Let lane* be $extend__(1, $lsizenn(Jnn), S, $ine_($lsizenn(Jnn), lane_1, lane_2))*.
-  e. Let v128 be $invlanes_((Jnn X M), lane*).
-  f. Return v128.
-3. If the type of lanetype_u1 is Jnn, then:
+  a. Let lane_1* be $lanes_((Jnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Jnn X M), v128_2).
+  a. Let lane* be $extend__(1, $lsizenn(Jnn), S, $ine_($lsizenn(Jnn), lane_1, lane_2))*.
+  a. Let v128 be $invlanes_((Jnn X M), lane*).
+  a. Return v128.
+1. If the type of lanetype_u1 is Jnn, then:
   a. Let Jnn be lanetype_u1.
-  b. If vrelop__u0 is of the case LT, then:
+  a. If vrelop__u0 is of the case LT, then:
     1) Let (LT sx) be vrelop__u0.
-    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
-    4) Let lane* be $extend__(1, $lsizenn(Jnn), S, $ilt_($lsizenn(Jnn), sx, lane_1, lane_2))*.
-    5) Let v128 be $invlanes_((Jnn X M), lane*).
-    6) Return v128.
-  c. If vrelop__u0 is of the case GT, then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    1) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    1) Let lane* be $extend__(1, $lsizenn(Jnn), S, $ilt_($lsizenn(Jnn), sx, lane_1, lane_2))*.
+    1) Let v128 be $invlanes_((Jnn X M), lane*).
+    1) Return v128.
+  a. If vrelop__u0 is of the case GT, then:
     1) Let (GT sx) be vrelop__u0.
-    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
-    4) Let lane* be $extend__(1, $lsizenn(Jnn), S, $igt_($lsizenn(Jnn), sx, lane_1, lane_2))*.
-    5) Let v128 be $invlanes_((Jnn X M), lane*).
-    6) Return v128.
-  d. If vrelop__u0 is of the case LE, then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    1) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    1) Let lane* be $extend__(1, $lsizenn(Jnn), S, $igt_($lsizenn(Jnn), sx, lane_1, lane_2))*.
+    1) Let v128 be $invlanes_((Jnn X M), lane*).
+    1) Return v128.
+  a. If vrelop__u0 is of the case LE, then:
     1) Let (LE sx) be vrelop__u0.
-    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
-    4) Let lane* be $extend__(1, $lsizenn(Jnn), S, $ile_($lsizenn(Jnn), sx, lane_1, lane_2))*.
-    5) Let v128 be $invlanes_((Jnn X M), lane*).
-    6) Return v128.
-  e. If vrelop__u0 is of the case GE, then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    1) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    1) Let lane* be $extend__(1, $lsizenn(Jnn), S, $ile_($lsizenn(Jnn), sx, lane_1, lane_2))*.
+    1) Let v128 be $invlanes_((Jnn X M), lane*).
+    1) Return v128.
+  a. If vrelop__u0 is of the case GE, then:
     1) Let (GE sx) be vrelop__u0.
-    2) Let lane_1* be $lanes_((Jnn X M), v128_1).
-    3) Let lane_2* be $lanes_((Jnn X M), v128_2).
-    4) Let lane* be $extend__(1, $lsizenn(Jnn), S, $ige_($lsizenn(Jnn), sx, lane_1, lane_2))*.
-    5) Let v128 be $invlanes_((Jnn X M), lane*).
-    6) Return v128.
-4. If ((vrelop__u0 is EQ) and the type of lanetype_u1 is Fnn), then:
+    1) Let lane_1* be $lanes_((Jnn X M), v128_1).
+    1) Let lane_2* be $lanes_((Jnn X M), v128_2).
+    1) Let lane* be $extend__(1, $lsizenn(Jnn), S, $ige_($lsizenn(Jnn), sx, lane_1, lane_2))*.
+    1) Let v128 be $invlanes_((Jnn X M), lane*).
+    1) Return v128.
+1. If ((vrelop__u0 is EQ) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. If the type of $size^-1($size(Fnn)) is Inn, then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  a. If the type of $size^-1($size(Fnn)) is Inn, then:
     1) Let Inn be $size^-1($size(Fnn)).
-    2) Let lane* be $extend__(1, $sizenn(Fnn), S, $feq_($sizenn(Fnn), lane_1, lane_2))*.
-    3) Let v128 be $invlanes_((Inn X M), lane*).
-    4) Return v128.
-5. If ((vrelop__u0 is NE) and the type of lanetype_u1 is Fnn), then:
+    1) Let lane* be $extend__(1, $sizenn(Fnn), S, $feq_($sizenn(Fnn), lane_1, lane_2))*.
+    1) Let v128 be $invlanes_((Inn X M), lane*).
+    1) Return v128.
+1. If ((vrelop__u0 is NE) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane* be $extend__(1, $sizenn(Fnn), S, $fne_($sizenn(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X M), lane*).
-  g. Return v128.
-6. If ((vrelop__u0 is LT) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  a. Let Inn be $isize^-1($size(Fnn)).
+  a. Let lane* be $extend__(1, $sizenn(Fnn), S, $fne_($sizenn(Fnn), lane_1, lane_2))*.
+  a. Let v128 be $invlanes_((Inn X M), lane*).
+  a. Return v128.
+1. If ((vrelop__u0 is LT) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane* be $extend__(1, $sizenn(Fnn), S, $flt_($sizenn(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X M), lane*).
-  g. Return v128.
-7. If ((vrelop__u0 is GT) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  a. Let Inn be $isize^-1($size(Fnn)).
+  a. Let lane* be $extend__(1, $sizenn(Fnn), S, $flt_($sizenn(Fnn), lane_1, lane_2))*.
+  a. Let v128 be $invlanes_((Inn X M), lane*).
+  a. Return v128.
+1. If ((vrelop__u0 is GT) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane* be $extend__(1, $sizenn(Fnn), S, $fgt_($sizenn(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X M), lane*).
-  g. Return v128.
-8. If ((vrelop__u0 is LE) and the type of lanetype_u1 is Fnn), then:
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  a. Let Inn be $isize^-1($size(Fnn)).
+  a. Let lane* be $extend__(1, $sizenn(Fnn), S, $fgt_($sizenn(Fnn), lane_1, lane_2))*.
+  a. Let v128 be $invlanes_((Inn X M), lane*).
+  a. Return v128.
+1. If ((vrelop__u0 is LE) and the type of lanetype_u1 is Fnn), then:
   a. Let Fnn be lanetype_u1.
-  b. Let lane_1* be $lanes_((Fnn X M), v128_1).
-  c. Let lane_2* be $lanes_((Fnn X M), v128_2).
-  d. Let Inn be $isize^-1($size(Fnn)).
-  e. Let lane* be $extend__(1, $sizenn(Fnn), S, $fle_($sizenn(Fnn), lane_1, lane_2))*.
-  f. Let v128 be $invlanes_((Inn X M), lane*).
-  g. Return v128.
-9. Assert: Due to validation, (vrelop__u0 is GE).
-10. Assert: Due to validation, the type of lanetype_u1 is Fnn.
-11. Let Fnn be lanetype_u1.
-12. Let lane_1* be $lanes_((Fnn X M), v128_1).
-13. Let lane_2* be $lanes_((Fnn X M), v128_2).
-14. Let Inn be $isize^-1($size(Fnn)).
-15. Let lane* be $extend__(1, $sizenn(Fnn), S, $fge_($sizenn(Fnn), lane_1, lane_2))*.
-16. Let v128 be $invlanes_((Inn X M), lane*).
-17. Return v128.
+  a. Let lane_1* be $lanes_((Fnn X M), v128_1).
+  a. Let lane_2* be $lanes_((Fnn X M), v128_2).
+  a. Let Inn be $isize^-1($size(Fnn)).
+  a. Let lane* be $extend__(1, $sizenn(Fnn), S, $fle_($sizenn(Fnn), lane_1, lane_2))*.
+  a. Let v128 be $invlanes_((Inn X M), lane*).
+  a. Return v128.
+1. Assert: Due to validation, (vrelop__u0 is GE).
+1. Assert: Due to validation, the type of lanetype_u1 is Fnn.
+1. Let Fnn be lanetype_u1.
+1. Let lane_1* be $lanes_((Fnn X M), v128_1).
+1. Let lane_2* be $lanes_((Fnn X M), v128_2).
+1. Let Inn be $isize^-1($size(Fnn)).
+1. Let lane* be $extend__(1, $sizenn(Fnn), S, $fge_($sizenn(Fnn), lane_1, lane_2))*.
+1. Let v128 be $invlanes_((Inn X M), lane*).
+1. Return v128.
 
 vcvtop__ (lanetype_u3 X M_1) (lanetype_u0 X M_2) vcvtop___u2 lane__u5
 1. If the type of lanetype_u3 is Jnn, then:
   a. Let Jnn_1 be lanetype_u3.
-  b. If the type of lanetype_u0 is Jnn, then:
+  a. If the type of lanetype_u0 is Jnn, then:
     1) Let Jnn_2 be lanetype_u0.
-    2) Let iN_1 be lane__u5.
-    3) If vcvtop___u2 is of the case EXTEND, then:
+    1) Let iN_1 be lane__u5.
+    1) If vcvtop___u2 is of the case EXTEND, then:
       a) Let (EXTEND sx) be vcvtop___u2.
-      b) Let iN_2 be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, iN_1).
-      c) Return [iN_2].
-2. If the type of lanetype_u0 is Fnn, then:
+      a) Let iN_2 be $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, iN_1).
+      a) Return [iN_2].
+1. If the type of lanetype_u0 is Fnn, then:
   a. Let Fnn_2 be lanetype_u0.
-  b. If the type of lanetype_u3 is Jnn, then:
+  a. If the type of lanetype_u3 is Jnn, then:
     1) Let Jnn_1 be lanetype_u3.
-    2) Let iN_1 be lane__u5.
-    3) If vcvtop___u2 is of the case CONVERT, then:
+    1) Let iN_1 be lane__u5.
+    1) If vcvtop___u2 is of the case CONVERT, then:
       a) Let (CONVERT sx) be vcvtop___u2.
-      b) Let fN_2 be $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, iN_1).
-      c) Return [fN_2].
-3. If the type of lanetype_u3 is Fnn, then:
+      a) Let fN_2 be $convert__($lsizenn1(Jnn_1), $lsizenn2(Fnn_2), sx, iN_1).
+      a) Return [fN_2].
+1. If the type of lanetype_u3 is Fnn, then:
   a. Let Fnn_1 be lanetype_u3.
-  b. If the type of lanetype_u0 is Inn, then:
+  a. If the type of lanetype_u0 is Inn, then:
     1) Let Inn_2 be lanetype_u0.
-    2) Let fN_1 be lane__u5.
-    3) If vcvtop___u2 is of the case TRUNC_SAT, then:
+    1) Let fN_1 be lane__u5.
+    1) If vcvtop___u2 is of the case TRUNC_SAT, then:
       a) Let (TRUNC_SAT sx) be vcvtop___u2.
-      b) Let iN_2? be $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, fN_1).
-      c) Return $list_(lane_((Inn_2 : Inn <: lanetype)), iN_2?).
-4. If ((vcvtop___u2 is DEMOTE) and the type of lanetype_u3 is Fnn), then:
+      a) Let iN_2? be $trunc_sat__($lsizenn1(Fnn_1), $lsizenn2(Inn_2), sx, fN_1).
+      a) Return $list_(lane_((Inn_2 : Inn <: lanetype)), iN_2?).
+1. If ((vcvtop___u2 is DEMOTE) and the type of lanetype_u3 is Fnn), then:
   a. Let Fnn_1 be lanetype_u3.
-  b. If the type of lanetype_u0 is Fnn, then:
+  a. If the type of lanetype_u0 is Fnn, then:
     1) Let Fnn_2 be lanetype_u0.
-    2) Let fN_1 be lane__u5.
-    3) Let fN_2* be $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
-    4) Return fN_2*.
-5. Assert: Due to validation, (vcvtop___u2 is PROMOTE).
-6. Assert: Due to validation, the type of lanetype_u3 is Fnn.
-7. Let Fnn_1 be lanetype_u3.
-8. Assert: Due to validation, the type of lanetype_u0 is Fnn.
-9. Let Fnn_2 be lanetype_u0.
-10. Let fN_1 be lane__u5.
-11. Let fN_2* be $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
-12. Return fN_2*.
+    1) Let fN_1 be lane__u5.
+    1) Let fN_2* be $demote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
+    1) Return fN_2*.
+1. Assert: Due to validation, (vcvtop___u2 is PROMOTE).
+1. Assert: Due to validation, the type of lanetype_u3 is Fnn.
+1. Let Fnn_1 be lanetype_u3.
+1. Assert: Due to validation, the type of lanetype_u0 is Fnn.
+1. Let Fnn_2 be lanetype_u0.
+1. Let fN_1 be lane__u5.
+1. Let fN_2* be $promote__($lsizenn1(Fnn_1), $lsizenn2(Fnn_2), fN_1).
+1. Return fN_2*.
 
 vextunop__ (Jnn_1 X M_1) (Jnn_2 X M_2) (EXTADD_PAIRWISE sx) c_1
 1. Let ci* be $lanes_((Jnn_1 X M_1), c_1).
-2. Let [cj_1, cj_2]* be $concat__1^-1(iN($lsizenn2((Jnn_2 : Jnn <: lanetype))), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci)*).
-3. Let c be $invlanes_((Jnn_2 X M_2), $iadd_($lsizenn2(Jnn_2), cj_1, cj_2)*).
-4. Return c.
+1. Let [cj_1, cj_2]* be $concat__1^-1(iN($lsizenn2((Jnn_2 : Jnn <: lanetype))), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci)*).
+1. Let c be $invlanes_((Jnn_2 X M_2), $iadd_($lsizenn2(Jnn_2), cj_1, cj_2)*).
+1. Return c.
 
 vextbinop__ (Jnn_1 X M_1) (Jnn_2 X M_2) vextbinop___u0 c_1 c_2
 1. If vextbinop___u0 is of the case EXTMUL, then:
   a. Let (EXTMUL sx half) be vextbinop___u0.
-  b. Let ci_1* be $lanes_((Jnn_1 X M_1), c_1)[$half__((Jnn_1 X M_1), (Jnn_2 X M_2), half, 0, M_2) : M_2].
-  c. Let ci_2* be $lanes_((Jnn_1 X M_1), c_2)[$half__((Jnn_1 X M_1), (Jnn_2 X M_2), half, 0, M_2) : M_2].
-  d. Let c be $invlanes_((Jnn_2 X M_2), $imul_($lsizenn2(Jnn_2), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci_1), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci_2))*).
-  e. Return c.
-2. Assert: Due to validation, (vextbinop___u0 is (DOTS)).
-3. Let ci_1* be $lanes_((Jnn_1 X M_1), c_1).
-4. Let ci_2* be $lanes_((Jnn_1 X M_1), c_2).
-5. Let [cj_1, cj_2]* be $concat__1^-1(iN($lsizenn2((Jnn_2 : Jnn <: lanetype))), $imul_($lsizenn2(Jnn_2), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), S, ci_1), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), S, ci_2))*).
-6. Let c be $invlanes_((Jnn_2 X M_2), $iadd_($lsizenn2(Jnn_2), cj_1, cj_2)*).
-7. Return c.
+  a. Let ci_1* be $lanes_((Jnn_1 X M_1), c_1)[$half__((Jnn_1 X M_1), (Jnn_2 X M_2), half, 0, M_2) : M_2].
+  a. Let ci_2* be $lanes_((Jnn_1 X M_1), c_2)[$half__((Jnn_1 X M_1), (Jnn_2 X M_2), half, 0, M_2) : M_2].
+  a. Let c be $invlanes_((Jnn_2 X M_2), $imul_($lsizenn2(Jnn_2), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci_1), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci_2))*).
+  a. Return c.
+1. Assert: Due to validation, (vextbinop___u0 is (DOTS)).
+1. Let ci_1* be $lanes_((Jnn_1 X M_1), c_1).
+1. Let ci_2* be $lanes_((Jnn_1 X M_1), c_2).
+1. Let [cj_1, cj_2]* be $concat__1^-1(iN($lsizenn2((Jnn_2 : Jnn <: lanetype))), $imul_($lsizenn2(Jnn_2), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), S, ci_1), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), S, ci_2))*).
+1. Let c be $invlanes_((Jnn_2 X M_2), $iadd_($lsizenn2(Jnn_2), cj_1, cj_2)*).
+1. Return c.
 
 vshiftop_ (Jnn X M) vshiftop__u0 lane n
 1. If (vshiftop__u0 is SHL), then:
   a. Return $ishl_($lsizenn(Jnn), lane, n).
-2. Assert: Due to validation, vshiftop__u0 is of the case SHR.
-3. Let (SHR sx) be vshiftop__u0.
-4. Return $ishr_($lsizenn(Jnn), sx, lane, n).
+1. Assert: Due to validation, vshiftop__u0 is of the case SHR.
+1. Let (SHR sx) be vshiftop__u0.
+1. Return $ishr_($lsizenn(Jnn), sx, lane, n).
 
 inst_valtype moduleinst t
 1. Let dt* be moduleinst.TYPES.
-2. Return $subst_all_valtype(t, dt*).
+1. Return $subst_all_valtype(t, dt*).
 
 inst_reftype moduleinst rt
 1. Let dt* be moduleinst.TYPES.
-2. Return $subst_all_reftype(rt, dt*).
+1. Return $subst_all_reftype(rt, dt*).
 
 default_ valtype_u0
 1. If the type of valtype_u0 is Inn, then:
   a. Let Inn be valtype_u0.
-  b. Return ?((Inn.CONST 0)).
-2. If the type of valtype_u0 is Fnn, then:
+  a. Return ?((Inn.CONST 0)).
+1. If the type of valtype_u0 is Fnn, then:
   a. Let Fnn be valtype_u0.
-  b. Return ?((Fnn.CONST $fzero($size(Fnn)))).
-3. If the type of valtype_u0 is Vnn, then:
+  a. Return ?((Fnn.CONST $fzero($size(Fnn)))).
+1. If the type of valtype_u0 is Vnn, then:
   a. Let Vnn be valtype_u0.
-  b. Return ?((Vnn.CONST 0)).
-4. Assert: Due to validation, valtype_u0 is of the case REF.
-5. Let (REF nul_0 ht) be valtype_u0.
-6. If (nul_0 is (NULL ?(()) ?)), then:
+  a. Return ?((Vnn.CONST 0)).
+1. Assert: Due to validation, valtype_u0 is of the case REF.
+1. Let (REF nul_0 ht) be valtype_u0.
+1. If (nul_0 is (NULL ?(()) ?)), then:
   a. Return ?((REF.NULL ht)).
-7. Assert: Due to validation, (nul_0 is (NULL ?() ?)).
-8. Return ?().
+1. Assert: Due to validation, (nul_0 is (NULL ?() ?)).
+1. Return ?().
 
 packfield_ storagetype_u0 val_u1
 1. Let val be val_u1.
-2. If the type of storagetype_u0 is valtype, then:
+1. If the type of storagetype_u0 is valtype, then:
   a. Return val.
-3. Assert: Due to validation, val_u1 is of the case CONST.
-4. Let (numtype_0.CONST i) be val_u1.
-5. Assert: Due to validation, (numtype_0 is I32).
-6. Assert: Due to validation, the type of storagetype_u0 is packtype.
-7. Let packtype be storagetype_u0.
-8. Return (PACK packtype $wrap__(32, $psize(packtype), i)).
+1. Assert: Due to validation, val_u1 is of the case CONST.
+1. Let (numtype_0.CONST i) be val_u1.
+1. Assert: Due to validation, (numtype_0 is I32).
+1. Assert: Due to validation, the type of storagetype_u0 is packtype.
+1. Let packtype be storagetype_u0.
+1. Return (PACK packtype $wrap__(32, $psize(packtype), i)).
 
 unpackfield_ storagetype_u0 sx_u1? fieldval_u2
 1. If sx_u1? is not defined, then:
   a. Assert: Due to validation, the type of fieldval_u2 is val.
-  b. Let val be fieldval_u2.
-  c. Assert: Due to validation, the type of storagetype_u0 is valtype.
-  d. Return val.
-2. Else:
+  a. Let val be fieldval_u2.
+  a. Assert: Due to validation, the type of storagetype_u0 is valtype.
+  a. Return val.
+1. Else:
   a. Let ?(sx) be sx_u1?.
-  b. Assert: Due to validation, fieldval_u2 is of the case PACK.
-  c. Let (PACK packtype i) be fieldval_u2.
-  d. Assert: Due to validation, (storagetype_u0 is packtype).
-  e. Return (I32.CONST $extend__($psize(packtype), 32, sx, i)).
+  a. Assert: Due to validation, fieldval_u2 is of the case PACK.
+  a. Let (PACK packtype i) be fieldval_u2.
+  a. Assert: Due to validation, (storagetype_u0 is packtype).
+  a. Return (I32.CONST $extend__($psize(packtype), 32, sx, i)).
 
 funcsxa externaddr_u0*
 1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externaddr_0] ++ xa* be externaddr_u0*.
-3. If externaddr_0 is of the case FUNC, then:
+1. Let [externaddr_0] ++ xa* be externaddr_u0*.
+1. If externaddr_0 is of the case FUNC, then:
   a. Let (FUNC fa) be externaddr_0.
-  b. Return [fa] ++ $funcsxa(xa*).
-4. Let [externaddr] ++ xa* be externaddr_u0*.
-5. Return $funcsxa(xa*).
+  a. Return [fa] ++ $funcsxa(xa*).
+1. Let [externaddr] ++ xa* be externaddr_u0*.
+1. Return $funcsxa(xa*).
 
 globalsxa externaddr_u0*
 1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externaddr_0] ++ xa* be externaddr_u0*.
-3. If externaddr_0 is of the case GLOBAL, then:
+1. Let [externaddr_0] ++ xa* be externaddr_u0*.
+1. If externaddr_0 is of the case GLOBAL, then:
   a. Let (GLOBAL ga) be externaddr_0.
-  b. Return [ga] ++ $globalsxa(xa*).
-4. Let [externaddr] ++ xa* be externaddr_u0*.
-5. Return $globalsxa(xa*).
+  a. Return [ga] ++ $globalsxa(xa*).
+1. Let [externaddr] ++ xa* be externaddr_u0*.
+1. Return $globalsxa(xa*).
 
 tablesxa externaddr_u0*
 1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externaddr_0] ++ xa* be externaddr_u0*.
-3. If externaddr_0 is of the case TABLE, then:
+1. Let [externaddr_0] ++ xa* be externaddr_u0*.
+1. If externaddr_0 is of the case TABLE, then:
   a. Let (TABLE ta) be externaddr_0.
-  b. Return [ta] ++ $tablesxa(xa*).
-4. Let [externaddr] ++ xa* be externaddr_u0*.
-5. Return $tablesxa(xa*).
+  a. Return [ta] ++ $tablesxa(xa*).
+1. Let [externaddr] ++ xa* be externaddr_u0*.
+1. Return $tablesxa(xa*).
 
 memsxa externaddr_u0*
 1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externaddr_0] ++ xa* be externaddr_u0*.
-3. If externaddr_0 is of the case MEM, then:
+1. Let [externaddr_0] ++ xa* be externaddr_u0*.
+1. If externaddr_0 is of the case MEM, then:
   a. Let (MEM ma) be externaddr_0.
-  b. Return [ma] ++ $memsxa(xa*).
-4. Let [externaddr] ++ xa* be externaddr_u0*.
-5. Return $memsxa(xa*).
+  a. Return [ma] ++ $memsxa(xa*).
+1. Let [externaddr] ++ xa* be externaddr_u0*.
+1. Return $memsxa(xa*).
 
 tagsxa externaddr_u0*
 1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externaddr_0] ++ xa* be externaddr_u0*.
-3. If externaddr_0 is of the case TAG, then:
+1. Let [externaddr_0] ++ xa* be externaddr_u0*.
+1. If externaddr_0 is of the case TAG, then:
   a. Let (TAG ha) be externaddr_0.
-  b. Return [ha] ++ $tagsxa(xa*).
-4. Let [externaddr] ++ xa* be externaddr_u0*.
-5. Return $tagsxa(xa*).
+  a. Return [ha] ++ $tagsxa(xa*).
+1. Let [externaddr] ++ xa* be externaddr_u0*.
+1. Return $tagsxa(xa*).
 
 store
 1. Return.
 
 frame
 1. Let f be the current frame.
-2. Return f.
+1. Return f.
 
 tagaddr
 1. Let f be the current frame.
-2. Return f.MODULE.TAGS.
+1. Return f.MODULE.TAGS.
 
 moduleinst
 1. Let f be the current frame.
-2. Return f.MODULE.
+1. Return f.MODULE.
 
 funcinst
 1. Return s.FUNCS.
@@ -24839,71 +25598,71 @@ exninst
 
 type x
 1. Let f be the current frame.
-2. Return f.MODULE.TYPES[x].
+1. Return f.MODULE.TYPES[x].
 
 func x
 1. Let f be the current frame.
-2. Return s.FUNCS[f.MODULE.FUNCS[x]].
+1. Return s.FUNCS[f.MODULE.FUNCS[x]].
 
 global x
 1. Let f be the current frame.
-2. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
+1. Return s.GLOBALS[f.MODULE.GLOBALS[x]].
 
 table x
 1. Let f be the current frame.
-2. Return s.TABLES[f.MODULE.TABLES[x]].
+1. Return s.TABLES[f.MODULE.TABLES[x]].
 
 mem x
 1. Let f be the current frame.
-2. Return s.MEMS[f.MODULE.MEMS[x]].
+1. Return s.MEMS[f.MODULE.MEMS[x]].
 
 tag x
 1. Let f be the current frame.
-2. Return s.TAGS[f.MODULE.TAGS[x]].
+1. Return s.TAGS[f.MODULE.TAGS[x]].
 
 elem x
 1. Let f be the current frame.
-2. Return s.ELEMS[f.MODULE.ELEMS[x]].
+1. Return s.ELEMS[f.MODULE.ELEMS[x]].
 
 data x
 1. Let f be the current frame.
-2. Return s.DATAS[f.MODULE.DATAS[x]].
+1. Return s.DATAS[f.MODULE.DATAS[x]].
 
 local x
 1. Let f be the current frame.
-2. Return f.LOCALS[x].
+1. Return f.LOCALS[x].
 
 with_local x v
 1. Let f be the current frame.
-2. Replace f.LOCALS[x] with ?(v).
+1. Replace f.LOCALS[x] with ?(v).
 
 with_global x v
 1. Let f be the current frame.
-2. Replace s.GLOBALS[f.MODULE.GLOBALS[x]].VALUE with v.
+1. Replace s.GLOBALS[f.MODULE.GLOBALS[x]].VALUE with v.
 
 with_table x i r
 1. Let f be the current frame.
-2. Replace s.TABLES[f.MODULE.TABLES[x]].REFS[i] with r.
+1. Replace s.TABLES[f.MODULE.TABLES[x]].REFS[i] with r.
 
 with_tableinst x ti
 1. Let f be the current frame.
-2. Replace s.TABLES[f.MODULE.TABLES[x]] with ti.
+1. Replace s.TABLES[f.MODULE.TABLES[x]] with ti.
 
 with_mem x i j b*
 1. Let f be the current frame.
-2. Replace s.MEMS[f.MODULE.MEMS[x]].BYTES[i : j] with b*.
+1. Replace s.MEMS[f.MODULE.MEMS[x]].BYTES[i : j] with b*.
 
 with_meminst x mi
 1. Let f be the current frame.
-2. Replace s.MEMS[f.MODULE.MEMS[x]] with mi.
+1. Replace s.MEMS[f.MODULE.MEMS[x]] with mi.
 
 with_elem x r*
 1. Let f be the current frame.
-2. Replace s.ELEMS[f.MODULE.ELEMS[x]].REFS with r*.
+1. Replace s.ELEMS[f.MODULE.ELEMS[x]].REFS with r*.
 
 with_data x b*
 1. Let f be the current frame.
-2. Replace s.DATAS[f.MODULE.DATAS[x]].BYTES with b*.
+1. Replace s.DATAS[f.MODULE.DATAS[x]].BYTES with b*.
 
 with_struct a i fv
 1. Replace s.STRUCTS[a].FIELDS[i] with fv.
@@ -24918,332 +25677,327 @@ add_arrayinst ai*
 1. Append ai* to the s.ARRAYS.
 
 add_exninst exn*
-1. Let f be the current frame.
-2. Return (s with .EXNS appended by exn*, f).
+1. Append exn* to the s.EXNS.
 
 growtable tableinst n r
 1. Let { TYPE: ((i, j), rt); REFS: r'*; } be tableinst.
-2. If ((|r'*| + n) ≤ j), then:
+1. If ((|r'*| + n) ≤ j), then:
   a. Let i' be (|r'*| + n).
-  b. Let tableinst' be { TYPE: ((i', j), rt); REFS: r'* ++ r^n; }.
-  c. Return tableinst'.
+  a. Let tableinst' be { TYPE: ((i', j), rt); REFS: r'* ++ r^n; }.
+  a. Return tableinst'.
 
 growmem meminst n
 1. Let { TYPE: ((i, j) PAGE); BYTES: b*; } be meminst.
-2. If (((|b*| / (64 · $Ki())) + n) ≤ j), then:
+1. If (((|b*| / (64 · $Ki())) + n) ≤ j), then:
   a. Let i' be ((|b*| / (64 · $Ki())) + n).
-  b. Let meminst' be { TYPE: ((i', j) PAGE); BYTES: b* ++ 0^(n · (64 · $Ki())); }.
-  c. Return meminst'.
+  a. Let meminst' be { TYPE: ((i', j) PAGE); BYTES: b* ++ 0^(n · (64 · $Ki())); }.
+  a. Return meminst'.
 
 blocktype_ z blocktype_u0
 1. If blocktype_u0 is of the case _IDX, then:
   a. Let (_IDX x) be blocktype_u0.
-  b. Assert: Due to validation, $expanddt($type(z, x)) is of the case FUNC.
-  c. Let (FUNC ft) be $expanddt($type(z, x)).
-  d. Return ft.
-2. Assert: Due to validation, blocktype_u0 is of the case _RESULT.
-3. Let (_RESULT t?) be blocktype_u0.
-4. Return ([] -> t?).
+  a. Assert: Due to validation, $expanddt($type(z, x)) is of the case FUNC.
+  a. Let (FUNC ft) be $expanddt($type(z, x)).
+  a. Return ft.
+1. Assert: Due to validation, blocktype_u0 is of the case _RESULT.
+1. Let (_RESULT t?) be blocktype_u0.
+1. Return ([] -> t?).
 
 alloctypes type_u0*
 1. If (type_u0* is []), then:
   a. Return [].
-2. Let type'* ++ [type] be type_u0*.
-3. Assert: Due to validation, type is of the case TYPE.
-4. Let (TYPE rectype) be type.
-5. Let deftype'* be $alloctypes(type'*).
-6. Let x be |deftype'*|.
-7. Let deftype* be $subst_all_deftypes($rolldt(x, rectype), deftype'*).
-8. Return deftype'* ++ deftype*.
+1. Let type'* ++ [type] be type_u0*.
+1. Assert: Due to validation, type is of the case TYPE.
+1. Let (TYPE rectype) be type.
+1. Let deftype'* be $alloctypes(type'*).
+1. Let x be |deftype'*|.
+1. Let deftype* be $subst_all_deftypes($rolldt(x, rectype), deftype'*).
+1. Return deftype'* ++ deftype*.
 
 allocfunc deftype funccode moduleinst
 1. Let funcinst be { TYPE: deftype; MODULE: moduleinst; CODE: funccode; }.
-2. Let a be |s.FUNCS|.
-3. Append funcinst to the s.FUNCS.
-4. Return a.
+1. Let a be |s.FUNCS|.
+1. Append funcinst to the s.FUNCS.
+1. Return a.
 
 allocfuncs deftype_u0* funccode_u1* moduleinst_u2*
 1. If (deftype_u0* is []), then:
   a. Assert: Due to validation, (funccode_u1* is []).
-  b. Assert: Due to validation, (moduleinst_u2* is []).
-  c. Return [].
-2. Else:
+  a. Assert: Due to validation, (moduleinst_u2* is []).
+  a. Return [].
+1. Else:
   a. Let [dt] ++ dt'* be deftype_u0*.
-  b. Assert: Due to validation, (|funccode_u1*| ≥ 1).
-  c. Let [funccode] ++ funccode'* be funccode_u1*.
-  d. Assert: Due to validation, (|moduleinst_u2*| ≥ 1).
-  e. Let [moduleinst] ++ moduleinst'* be moduleinst_u2*.
-  f. Let fa be $allocfunc(dt, funccode, moduleinst).
-  g. Let fa'* be $allocfuncs(dt'*, funccode'*, moduleinst'*).
-  h. Return [fa] ++ fa'*.
+  a. Assert: Due to validation, (|funccode_u1*| ≥ 1).
+  a. Let [funccode] ++ funccode'* be funccode_u1*.
+  a. Assert: Due to validation, (|moduleinst_u2*| ≥ 1).
+  a. Let [moduleinst] ++ moduleinst'* be moduleinst_u2*.
+  a. Let fa be $allocfunc(dt, funccode, moduleinst).
+  a. Let fa'* be $allocfuncs(dt'*, funccode'*, moduleinst'*).
+  a. Return [fa] ++ fa'*.
 
 allocglobal globaltype val
 1. Let globalinst be { TYPE: globaltype; VALUE: val; }.
-2. Let a be |s.GLOBALS|.
-3. Append globalinst to the s.GLOBALS.
-4. Return a.
+1. Let a be |s.GLOBALS|.
+1. Append globalinst to the s.GLOBALS.
+1. Return a.
 
 allocglobals globaltype_u0* val_u1*
 1. If (globaltype_u0* is []), then:
   a. Assert: Due to validation, (val_u1* is []).
-  b. Return [].
-2. Else:
+  a. Return [].
+1. Else:
   a. Let [globaltype] ++ globaltype'* be globaltype_u0*.
-  b. Assert: Due to validation, (|val_u1*| ≥ 1).
-  c. Let [val] ++ val'* be val_u1*.
-  d. Let ga be $allocglobal(globaltype, val).
-  e. Let ga'* be $allocglobals(globaltype'*, val'*).
-  f. Return [ga] ++ ga'*.
+  a. Assert: Due to validation, (|val_u1*| ≥ 1).
+  a. Let [val] ++ val'* be val_u1*.
+  a. Let ga be $allocglobal(globaltype, val).
+  a. Let ga'* be $allocglobals(globaltype'*, val'*).
+  a. Return [ga] ++ ga'*.
 
 alloctable ((i, j), rt) ref
 1. Let tableinst be { TYPE: ((i, j), rt); REFS: ref^i; }.
-2. Let a be |s.TABLES|.
-3. Append tableinst to the s.TABLES.
-4. Return a.
+1. Let a be |s.TABLES|.
+1. Append tableinst to the s.TABLES.
+1. Return a.
 
 alloctables tabletype_u0* ref_u1*
 1. If ((tabletype_u0* is []) and (ref_u1* is [])), then:
   a. Return [].
-2. Assert: Due to validation, (|ref_u1*| ≥ 1).
-3. Let [ref] ++ ref'* be ref_u1*.
-4. Assert: Due to validation, (|tabletype_u0*| ≥ 1).
-5. Let [tabletype] ++ tabletype'* be tabletype_u0*.
-6. Let ta be $alloctable(tabletype, ref).
-7. Let ta'* be $alloctables(tabletype'*, ref'*).
-8. Return [ta] ++ ta'*.
+1. Assert: Due to validation, (|ref_u1*| ≥ 1).
+1. Let [ref] ++ ref'* be ref_u1*.
+1. Assert: Due to validation, (|tabletype_u0*| ≥ 1).
+1. Let [tabletype] ++ tabletype'* be tabletype_u0*.
+1. Let ta be $alloctable(tabletype, ref).
+1. Let ta'* be $alloctables(tabletype'*, ref'*).
+1. Return [ta] ++ ta'*.
 
 allocmem ((i, j) PAGE)
 1. Let meminst be { TYPE: ((i, j) PAGE); BYTES: 0^(i · (64 · $Ki())); }.
-2. Let a be |s.MEMS|.
-3. Append meminst to the s.MEMS.
-4. Return a.
+1. Let a be |s.MEMS|.
+1. Append meminst to the s.MEMS.
+1. Return a.
 
 allocmems memtype_u0*
 1. If (memtype_u0* is []), then:
   a. Return [].
-2. Let [memtype] ++ memtype'* be memtype_u0*.
-3. Let ma be $allocmem(memtype).
-4. Let ma'* be $allocmems(memtype'*).
-5. Return [ma] ++ ma'*.
+1. Let [memtype] ++ memtype'* be memtype_u0*.
+1. Let ma be $allocmem(memtype).
+1. Let ma'* be $allocmems(memtype'*).
+1. Return [ma] ++ ma'*.
 
 alloctag at
 1. Let taginst be { TYPE: at; }.
-2. Let a be |s.TAGS|.
-3. Append taginst to the s.TAGS.
-4. Return a.
+1. Let a be |s.TAGS|.
+1. Append taginst to the s.TAGS.
+1. Return a.
 
 alloctags tagtype_u0*
 1. If (tagtype_u0* is []), then:
   a. Return [].
-2. Let [at] ++ at'* be tagtype_u0*.
-3. Let aa be $alloctag(at).
-4. Let aa'* be $alloctags(at'*).
-5. Return [aa] ++ aa'*.
+1. Let [at] ++ at'* be tagtype_u0*.
+1. Let aa be $alloctag(at).
+1. Let aa'* be $alloctags(at'*).
+1. Return [aa] ++ aa'*.
 
 allocelem elemtype ref*
 1. Let eleminst be { TYPE: elemtype; REFS: ref*; }.
-2. Let a be |s.ELEMS|.
-3. Append eleminst to the s.ELEMS.
-4. Return a.
+1. Let a be |s.ELEMS|.
+1. Append eleminst to the s.ELEMS.
+1. Return a.
 
 allocelems elemtype_u0* ref_u1*
 1. If ((elemtype_u0* is []) and (ref_u1* is [])), then:
   a. Return [].
-2. Assert: Due to validation, (|ref_u1*| ≥ 1).
-3. Let [ref*] ++ ref'** be ref_u1*.
-4. Assert: Due to validation, (|elemtype_u0*| ≥ 1).
-5. Let [rt] ++ rt'* be elemtype_u0*.
-6. Let ea be $allocelem(rt, ref*).
-7. Let ea'* be $allocelems(rt'*, ref'**).
-8. Return [ea] ++ ea'*.
+1. Assert: Due to validation, (|ref_u1*| ≥ 1).
+1. Let [ref*] ++ ref'** be ref_u1*.
+1. Assert: Due to validation, (|elemtype_u0*| ≥ 1).
+1. Let [rt] ++ rt'* be elemtype_u0*.
+1. Let ea be $allocelem(rt, ref*).
+1. Let ea'* be $allocelems(rt'*, ref'**).
+1. Return [ea] ++ ea'*.
 
 allocdata OK byte*
 1. Let datainst be { BYTES: byte*; }.
-2. Let a be |s.DATAS|.
-3. Append datainst to the s.DATAS.
-4. Return a.
+1. Let a be |s.DATAS|.
+1. Append datainst to the s.DATAS.
+1. Return a.
 
 allocdatas datatype_u0* byte_u1*
 1. If ((datatype_u0* is []) and (byte_u1* is [])), then:
   a. Return [].
-2. Assert: Due to validation, (|byte_u1*| ≥ 1).
-3. Let [b*] ++ b'** be byte_u1*.
-4. Assert: Due to validation, (|datatype_u0*| ≥ 1).
-5. Let [ok] ++ ok'* be datatype_u0*.
-6. Let da be $allocdata(ok, b*).
-7. Let da'* be $allocdatas(ok'*, b'**).
-8. Return [da] ++ da'*.
+1. Assert: Due to validation, (|byte_u1*| ≥ 1).
+1. Let [b*] ++ b'** be byte_u1*.
+1. Assert: Due to validation, (|datatype_u0*| ≥ 1).
+1. Let [ok] ++ ok'* be datatype_u0*.
+1. Let da be $allocdata(ok, b*).
+1. Let da'* be $allocdatas(ok'*, b'**).
+1. Return [da] ++ da'*.
 
 allocexport moduleinst (EXPORT name externidx_u0)
 1. If externidx_u0 is of the case FUNC, then:
   a. Let (FUNC x) be externidx_u0.
-  b. Return { NAME: name; ADDR: (FUNC moduleinst.FUNCS[x]); }.
-2. If externidx_u0 is of the case GLOBAL, then:
+  a. Return { NAME: name; ADDR: (FUNC moduleinst.FUNCS[x]); }.
+1. If externidx_u0 is of the case GLOBAL, then:
   a. Let (GLOBAL x) be externidx_u0.
-  b. Return { NAME: name; ADDR: (GLOBAL moduleinst.GLOBALS[x]); }.
-3. If externidx_u0 is of the case TABLE, then:
+  a. Return { NAME: name; ADDR: (GLOBAL moduleinst.GLOBALS[x]); }.
+1. If externidx_u0 is of the case TABLE, then:
   a. Let (TABLE x) be externidx_u0.
-  b. Return { NAME: name; ADDR: (TABLE moduleinst.TABLES[x]); }.
-4. If externidx_u0 is of the case MEM, then:
+  a. Return { NAME: name; ADDR: (TABLE moduleinst.TABLES[x]); }.
+1. If externidx_u0 is of the case MEM, then:
   a. Let (MEM x) be externidx_u0.
-  b. Return { NAME: name; ADDR: (MEM moduleinst.MEMS[x]); }.
-5. Assert: Due to validation, externidx_u0 is of the case TAG.
-6. Let (TAG x) be externidx_u0.
-7. Return { NAME: name; ADDR: (TAG moduleinst.TAGS[x]); }.
+  a. Return { NAME: name; ADDR: (MEM moduleinst.MEMS[x]); }.
+1. Assert: Due to validation, externidx_u0 is of the case TAG.
+1. Let (TAG x) be externidx_u0.
+1. Return { NAME: name; ADDR: (TAG moduleinst.TAGS[x]); }.
 
 allocexports moduleinst export*
 1. Return $allocexport(moduleinst, export)*.
 
 allocmodule module externaddr* val_G* ref_T* ref_E**
 1. Let fa_I* be $funcsxa(externaddr*).
-2. Let ga_I* be $globalsxa(externaddr*).
-3. Let aa_I* be $tagsxa(externaddr*).
-4. Let ma_I* be $memsxa(externaddr*).
-5. Let ta_I* be $tablesxa(externaddr*).
-6. Assert: Due to validation, module is of the case MODULE.
-7. Let (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) be module.
-8. Let fa* be (|s.FUNCS| + i_F)^(i_F<|func*|).
-9. Let ga* be (|s.GLOBALS| + i_G)^(i_G<|global*|).
-10. Let ta* be (|s.TABLES| + i_T)^(i_T<|table*|).
-11. Let aa* be (|s.TAGS| + i_A)^(i_A<|tag*|).
-12. Let ma* be (|s.MEMS| + i_M)^(i_M<|mem*|).
-13. Let ea* be (|s.ELEMS| + i_E)^(i_E<|elem*|).
-14. Let da* be (|s.DATAS| + i_D)^(i_D<|data*|).
-15. Assert: Due to validation, mem is of the case MEMORY*.
-16. Let (MEMORY memtype)* be mem*.
-17. Let dt* be $alloctypes(type*).
-18. Assert: Due to validation, tag is of the case TAG*.
-19. Let (TAG y)* be tag*.
-20. Assert: Due to validation, data is of the case DATA*.
-21. Let (DATA byte* datamode)* be data*.
-22. Assert: Due to validation, global is of the case GLOBAL*.
-23. Let (GLOBAL globaltype expr_G)* be global*.
-24. Assert: Due to validation, table is of the case TABLE*.
-25. Let (TABLE tabletype expr_T)* be table*.
-26. Assert: Due to validation, elem is of the case ELEM*.
-27. Let (ELEM elemtype expr_E* elemmode)* be elem*.
-28. Assert: Due to validation, func is of the case FUNC*.
-29. Let (FUNC x local* expr_F)* be func*.
-30. Let xi* be $allocexports({ TYPES: []; FUNCS: fa_I* ++ fa*; GLOBALS: ga_I* ++ ga*; TABLES: ta_I* ++ ta*; MEMS: ma_I* ++ ma*; TAGS: aa_I* ++ aa*; ELEMS: []; DATAS: []; EXPORTS: []; }, export*).
-31. Let moduleinst be { TYPES: dt*; FUNCS: fa_I* ++ fa*; GLOBALS: ga_I* ++ ga*; TABLES: ta_I* ++ ta*; MEMS: ma_I* ++ ma*; TAGS: aa_I* ++ aa*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
-32. Let n_0 be $allocfuncs(dt*[x]*, (FUNC x local* expr_F)*, moduleinst^|func*|).
-33. Assert: Due to validation, (n_0 is fa*).
-34. Let n_0 be $allocglobals(globaltype*, val_G*).
-35. Assert: Due to validation, (n_0 is ga*).
-36. Let n_0 be $alloctables(tabletype*, ref_T*).
-37. Assert: Due to validation, (n_0 is ta*).
-38. Let n_0 be $allocmems(memtype*).
-39. Assert: Due to validation, (n_0 is ma*).
-40. Let n_0 be $alloctags(dt*[y]*).
-41. Assert: Due to validation, (n_0 is aa*).
-42. Let n_0 be $allocelems(elemtype*, ref_E**).
-43. Assert: Due to validation, (n_0 is ea*).
-44. Let n_0 be $allocdatas(OK^|data*|, byte**).
-45. Assert: Due to validation, (n_0 is da*).
-46. Return moduleinst.
+1. Let ga_I* be $globalsxa(externaddr*).
+1. Let aa_I* be $tagsxa(externaddr*).
+1. Let ma_I* be $memsxa(externaddr*).
+1. Let ta_I* be $tablesxa(externaddr*).
+1. Assert: Due to validation, module is of the case MODULE.
+1. Let (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) be module.
+1. Let fa* be (|s.FUNCS| + i_F)^(i_F<|func*|).
+1. Let ga* be (|s.GLOBALS| + i_G)^(i_G<|global*|).
+1. Let ta* be (|s.TABLES| + i_T)^(i_T<|table*|).
+1. Let aa* be (|s.TAGS| + i_A)^(i_A<|tag*|).
+1. Let ma* be (|s.MEMS| + i_M)^(i_M<|mem*|).
+1. Let ea* be (|s.ELEMS| + i_E)^(i_E<|elem*|).
+1. Let da* be (|s.DATAS| + i_D)^(i_D<|data*|).
+1. Assert: Due to validation, mem is of the case MEMORY*.
+1. Let (MEMORY memtype)* be mem*.
+1. Let dt* be $alloctypes(type*).
+1. Assert: Due to validation, tag is of the case TAG*.
+1. Let (TAG y)* be tag*.
+1. Assert: Due to validation, data is of the case DATA*.
+1. Let (DATA byte* datamode)* be data*.
+1. Assert: Due to validation, global is of the case GLOBAL*.
+1. Let (GLOBAL globaltype expr_G)* be global*.
+1. Assert: Due to validation, table is of the case TABLE*.
+1. Let (TABLE tabletype expr_T)* be table*.
+1. Assert: Due to validation, elem is of the case ELEM*.
+1. Let (ELEM elemtype expr_E* elemmode)* be elem*.
+1. Assert: Due to validation, func is of the case FUNC*.
+1. Let (FUNC x local* expr_F)* be func*.
+1. Let xi* be $allocexports({ TYPES: []; FUNCS: fa_I* ++ fa*; GLOBALS: ga_I* ++ ga*; TABLES: ta_I* ++ ta*; MEMS: ma_I* ++ ma*; TAGS: aa_I* ++ aa*; ELEMS: []; DATAS: []; EXPORTS: []; }, export*).
+1. Let moduleinst be { TYPES: dt*; FUNCS: fa_I* ++ fa*; GLOBALS: ga_I* ++ ga*; TABLES: ta_I* ++ ta*; MEMS: ma_I* ++ ma*; TAGS: aa_I* ++ aa*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
+1. Let n_0 be $allocfuncs(dt*[x]*, (FUNC x local* expr_F)*, moduleinst^|func*|).
+1. Assert: Due to validation, (n_0 is fa*).
+1. Let n_0 be $allocglobals(globaltype*, val_G*).
+1. Assert: Due to validation, (n_0 is ga*).
+1. Let n_0 be $alloctables(tabletype*, ref_T*).
+1. Assert: Due to validation, (n_0 is ta*).
+1. Let n_0 be $allocmems(memtype*).
+1. Assert: Due to validation, (n_0 is ma*).
+1. Let n_0 be $alloctags(dt*[y]*).
+1. Assert: Due to validation, (n_0 is aa*).
+1. Let n_0 be $allocelems(elemtype*, ref_E**).
+1. Assert: Due to validation, (n_0 is ea*).
+1. Let n_0 be $allocdatas(OK^|data*|, byte**).
+1. Assert: Due to validation, (n_0 is da*).
+1. Return moduleinst.
 
 runelem_ x (ELEM rt e^n elemmode_u0)
 1. If (elemmode_u0 is PASSIVE), then:
   a. Return [].
-2. If (elemmode_u0 is DECLARE), then:
+1. If (elemmode_u0 is DECLARE), then:
   a. Return [(ELEM.DROP x)].
-3. Assert: Due to validation, elemmode_u0 is of the case ACTIVE.
-4. Let (ACTIVE y instr*) be elemmode_u0.
-5. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (TABLE.INIT y x), (ELEM.DROP x)].
+1. Assert: Due to validation, elemmode_u0 is of the case ACTIVE.
+1. Let (ACTIVE y instr*) be elemmode_u0.
+1. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (TABLE.INIT y x), (ELEM.DROP x)].
 
 rundata_ x (DATA b^n datamode_u0)
 1. If (datamode_u0 is PASSIVE), then:
   a. Return [].
-2. Assert: Due to validation, datamode_u0 is of the case ACTIVE.
-3. Let (ACTIVE y instr*) be datamode_u0.
-4. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT y x), (DATA.DROP x)].
+1. Assert: Due to validation, datamode_u0 is of the case ACTIVE.
+1. Let (ACTIVE y instr*) be datamode_u0.
+1. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT y x), (DATA.DROP x)].
 
 evalglobals z globaltype_u0* expr_u1*
 1. Let z be the current frame.
-2. If ((globaltype_u0* is []) and (expr_u1* is [])), then:
+1. If ((globaltype_u0* is []) and (expr_u1* is [])), then:
   a. Return [].
-3. Assert: Due to validation, (|expr_u1*| ≥ 1).
-4. Let [expr] ++ expr'* be expr_u1*.
-5. Assert: Due to validation, (|globaltype_u0*| ≥ 1).
-6. Let [gt] ++ gt'* be globaltype_u0*.
-7. Let [val] be $eval_expr(expr).
-8. Let f be z.
-9. Let a be $allocglobal(gt, val).
-10. Append a to the f.MODULE.GLOBALS.
-11. Let val'* be $evalglobals(z, gt'*, expr'*).
-12. Return [val] ++ val'*.
+1. Assert: Due to validation, (|expr_u1*| ≥ 1).
+1. Let [expr] ++ expr'* be expr_u1*.
+1. Assert: Due to validation, (|globaltype_u0*| ≥ 1).
+1. Let [gt] ++ gt'* be globaltype_u0*.
+1. Let [val] be $eval_expr(expr).
+1. Let f be z.
+1. Let a be $allocglobal(gt, val).
+1. Append a to the f.MODULE.GLOBALS.
+1. Let val'* be $evalglobals(z, gt'*, expr'*).
+1. Return [val] ++ val'*.
 
-<<<<<<< HEAD
-instantiate module externaddr*
-=======
-instantiate z module externval*
->>>>>>> main
+instantiate z module externaddr*
 1. Let (xt_I* -> xt_E*) be $Module_ok(module).
-2. Assert: Due to validation, module is of the case MODULE.
-3. Let (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) be module.
-4. Assert: Due to validation, ($Externaddr_type(externaddr) is xt_I)*.
-5. Let instr_D* be $concat_(instr, $rundata_(i_D, data*[i_D])^(i_D<|data*|)).
-6. Let instr_E* be $concat_(instr, $runelem_(i_E, elem*[i_E])^(i_E<|elem*|)).
-7. Assert: Due to validation, start is of the case START?.
-8. Let (START x)? be start?.
-9. Let moduleinst_0 be { TYPES: $alloctypes(type*); FUNCS: $funcsxa(externaddr*) ++ (|s.FUNCS| + i_F)^(i_F<|func*|); GLOBALS: $globalsxa(externaddr*); TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
-10. Assert: Due to validation, data is of the case DATA*.
-11. Assert: Due to validation, table is of the case TABLE*.
-12. Let (TABLE tabletype expr_T)* be table*.
-13. Assert: Due to validation, global is of the case GLOBAL*.
-14. Let (GLOBAL globaltype expr_G)* be global*.
-15. Assert: Due to validation, elem is of the case ELEM*.
-16. Let (ELEM reftype expr_E* elemmode)* be elem*.
-17. Let instr_S? be (CALL x)?.
-18. Let z be { LOCALS: []; MODULE: moduleinst_0; }.
-19. Push the activation of z to the stack.
-20. Let val_G* be $evalglobals(z, globaltype*, expr_G*).
-21. Pop the activation of z' from the stack.
-22. Push the activation of z' to the stack.
-23. Let [ref_T]* be $eval_expr(expr_T)*.
-24. Pop the activation of _f from the stack.
-25. Push the activation of z' to the stack.
-26. Let [ref_E]** be $eval_expr(expr_E)**.
-27. Pop the activation of _f from the stack.
-28. Let moduleinst be $allocmodule(module, externaddr*, val_G*, ref_T*, ref_E**).
-29. Let f be { LOCALS: []; MODULE: moduleinst; }.
-30. Push the activation of f with arity 0 to the stack.
-31. Execute the instruction instr_E*.
-32. Execute the instruction instr_D*.
-33. If instr_S? is defined, then:
+1. Assert: Due to validation, module is of the case MODULE.
+1. Let (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) be module.
+1. Assert: Due to validation, ($Externaddr_type(externaddr) is xt_I)*.
+1. Let instr_D* be $concat_(instr, $rundata_(i_D, data*[i_D])^(i_D<|data*|)).
+1. Let instr_E* be $concat_(instr, $runelem_(i_E, elem*[i_E])^(i_E<|elem*|)).
+1. Assert: Due to validation, start is of the case START?.
+1. Let (START x)? be start?.
+1. Let moduleinst_0 be { TYPES: $alloctypes(type*); FUNCS: $funcsxa(externaddr*) ++ (|s.FUNCS| + i_F)^(i_F<|func*|); GLOBALS: $globalsxa(externaddr*); TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
+1. Assert: Due to validation, data is of the case DATA*.
+1. Assert: Due to validation, table is of the case TABLE*.
+1. Let (TABLE tabletype expr_T)* be table*.
+1. Assert: Due to validation, global is of the case GLOBAL*.
+1. Let (GLOBAL globaltype expr_G)* be global*.
+1. Assert: Due to validation, elem is of the case ELEM*.
+1. Let (ELEM reftype expr_E* elemmode)* be elem*.
+1. Let instr_S? be (CALL x)?.
+1. Let z be { LOCALS: []; MODULE: moduleinst_0; }.
+1. Push the activation of z to the stack.
+1. Let val_G* be $evalglobals(z, globaltype*, expr_G*).
+1. Pop the activation of z' from the stack.
+1. Push the activation of z' to the stack.
+1. Let [ref_T]* be $eval_expr(expr_T)*.
+1. Pop the activation of _f from the stack.
+1. Push the activation of z' to the stack.
+1. Let [ref_E]** be $eval_expr(expr_E)**.
+1. Pop the activation of _f from the stack.
+1. Let moduleinst be $allocmodule(module, externaddr*, val_G*, ref_T*, ref_E**).
+1. Let f be { LOCALS: []; MODULE: moduleinst; }.
+1. Push the activation of f with arity 0 to the stack.
+1. Execute the instruction instr_E*.
+1. Execute the instruction instr_D*.
+1. If instr_S? is defined, then:
   a. Let ?(instr_0) be instr_S?.
-  b. Execute the instruction instr_0.
-34. Pop the activation of f with arity 0 from the stack.
-35. Return f.MODULE.
+  a. Execute the instruction instr_0.
+1. Pop the activation of f with arity 0 from the stack.
+1. Return f.MODULE.
 
 invoke funcaddr val*
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
-2. Assert: Due to validation, $expanddt(s.FUNCS[funcaddr].TYPE) is of the case FUNC.
-3. Let (FUNC functype_0) be $expanddt(s.FUNCS[funcaddr].TYPE).
-4. Let (t_1* -> t_2*) be functype_0.
-5. Assert: Due to validation, ($Val_type(val) is t_1)*.
-6. Let k be |t_2*|.
-7. Push the activation of f with arity k to the stack.
-8. Push the values val* to the stack.
-9. Push the value (REF.FUNC_ADDR funcaddr) to the stack.
-10. Execute the instruction (CALL_REF s.FUNCS[funcaddr].TYPE).
-11. Pop all values val* from the top of the stack.
-12. Pop the activation of f with arity k from the stack.
-13. Push the values val* to the stack.
-14. Pop the values val^k from the stack.
-15. Return val^k.
+1. Assert: Due to validation, $expanddt(s.FUNCS[funcaddr].TYPE) is of the case FUNC.
+1. Let (FUNC functype_0) be $expanddt(s.FUNCS[funcaddr].TYPE).
+1. Let (t_1* -> t_2*) be functype_0.
+1. Assert: Due to validation, ($Val_type(val) is t_1)*.
+1. Let k be |t_2*|.
+1. Push the activation of f with arity k to the stack.
+1. Push the values val* to the stack.
+1. Push the value (REF.FUNC_ADDR funcaddr) to the stack.
+1. Execute the instruction (CALL_REF s.FUNCS[funcaddr].TYPE).
+1. Pop all values val* from the top of the stack.
+1. Pop the activation of f with arity k from the stack.
+1. Push the values val* to the stack.
+1. Pop the values val^k from the stack.
+1. Return val^k.
 
 allocXs X Y X_u0* Y_u1*
 1. If (X_u0* is []), then:
   a. Assert: Due to validation, (Y_u1* is []).
-  b. Return [].
-2. Else:
+  a. Return [].
+1. Else:
   a. Let [X] ++ X'* be X_u0*.
-  b. Assert: Due to validation, (|Y_u1*| ≥ 1).
-  c. Let [Y] ++ Y'* be Y_u1*.
-  d. Let a be $allocX(X, Y, X, Y).
-  e. Let a'* be $allocXs(X, Y, X'*, Y'*).
-  f. Return [a] ++ a'*.
+  a. Assert: Due to validation, (|Y_u1*| ≥ 1).
+  a. Let [Y] ++ Y'* be Y_u1*.
+  a. Let a be $allocX(X, Y, X, Y).
+  a. Let a'* be $allocXs(X, Y, X'*, Y'*).
+  a. Return [a] ++ a'*.
 
 var X
 1. Return 0.
@@ -25256,1300 +26010,1486 @@ Step_pure/nop
 
 Step_pure/drop
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. Do nothing.
+1. Pop the value val from the stack.
+1. Do nothing.
 
 Step_pure/select t*?
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST c) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value val_2 from the stack.
-5. Assert: Due to validation, a value is on the top of the stack.
-6. Pop the value val_1 from the stack.
-7. If (c is not 0), then:
+1. Pop the value (I32.CONST c) from the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value val_2 from the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value val_1 from the stack.
+1. If (c is not 0), then:
   a. Push the value val_1 to the stack.
-8. Else:
+1. Else:
   a. Push the value val_2 to the stack.
 
 Step_pure/if bt instr_1* instr_2*
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST c) from the stack.
-3. If (c is not 0), then:
+1. Pop the value (I32.CONST c) from the stack.
+1. If (c is not 0), then:
   a. Execute the instruction (BLOCK bt instr_1*).
-4. Else:
+1. Else:
   a. Execute the instruction (BLOCK bt instr_2*).
 
 Step_pure/label
 1. Pop all values val* from the top of the stack.
-2. Assert: Due to validation, a label is now on the top of the stack.
-3. Pop the current label from the stack.
-4. Push the values val* to the stack.
+1. Assert: Due to validation, a label is now on the top of the stack.
+1. Pop the current label from the stack.
+1. Push the values val* to the stack.
 
 Step_pure/br l
 1. Pop all values val* from the top of the stack.
-2. If not a label is now on the top of the stack, then:
-  a. If YetE (top context is HANDLER_), then:
-    1) YetI: TODO: translate_context.
-    2) Push the values val* to the stack.
-    3) Execute the instruction (BR l).
-3. Else:
+1. If the top of the stack is a LABEL_, then:
+  a. Push the values val* to the stack.
   a. Let L be the current label.
-  b. Let n be the arity of L.
-  c. Let instr'* be the continuation of L.
-  d. Pop the current label from the stack.
-  e. Let instr_u0* be val*.
-  f. If the type of instr_u0 is val*, then:
-    1) Let val* be instr_u0*.
-    2) If (l > 0), then:
+  a. Let n be the arity of L.
+  a. Let instr'* be the continuation of L.
+  a. If (l is 0), then:
+    1) Assert: Due to validation, there are at least n values on the top of the stack.
+    1) Pop the values val^n from the stack.
+    1) Pop all values val'* from the top of the stack.
+    1) Pop the current label from the stack.
+    1) Push the values val^n to the stack.
+    1) Execute the instruction instr'*.
+  a. Else:
+    1) Pop all values val* from the top of the stack.
+    1) If (l > 0), then:
+      a) Pop the current label from the stack.
       a) Push the values val* to the stack.
-      b) Execute the instruction (BR (l - 1)).
-  g. If (|instr_u0*| ≥ n), then:
-    1) Let val'* ++ val^n be instr_u0*.
-    2) If (l is 0), then:
-      a) Push the values val^n to the stack.
-      b) Execute the instruction instr'*.
+      a) Execute the instruction (BR (l - 1)).
+1. Else if the top of the stack is a HANDLER_, then:
+  a. Push the values val* to the stack.
+  a. Pop all values val* from the top of the stack.
+  a. Exit from HANDLER_.
+  a. Push the values val* to the stack.
+  a. Execute the instruction (BR l).
 
 Step_pure/br_if l
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST c) from the stack.
-3. If (c is not 0), then:
+1. Pop the value (I32.CONST c) from the stack.
+1. If (c is not 0), then:
   a. Execute the instruction (BR l).
-4. Else:
+1. Else:
   a. Do nothing.
 
 Step_pure/br_table l* l'
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST i) from the stack.
-3. If (i < |l*|), then:
+1. Pop the value (I32.CONST i) from the stack.
+1. If (i < |l*|), then:
   a. Execute the instruction (BR l*[i]).
-4. Else:
+1. Else:
   a. Execute the instruction (BR l').
 
 Step_pure/br_on_null l
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. If val is of the case REF.NULL, then:
+1. Pop the value val from the stack.
+1. If val is of the case REF.NULL, then:
   a. Execute the instruction (BR l).
-4. Else:
+1. Else:
   a. Push the value val to the stack.
 
 Step_pure/br_on_non_null l
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. If val is of the case REF.NULL, then:
+1. Pop the value val from the stack.
+1. If val is of the case REF.NULL, then:
   a. Do nothing.
-4. Else:
+1. Else:
   a. Push the value val to the stack.
-  b. Execute the instruction (BR l).
+  a. Execute the instruction (BR l).
 
 Step_pure/call_indirect x yy
 1. Execute the instruction (TABLE.GET x).
-2. Execute the instruction (REF.CAST (REF (NULL ?(()) ?) yy)).
-3. Execute the instruction (CALL_REF yy).
+1. Execute the instruction (REF.CAST (REF (NULL ?(()) ?) yy)).
+1. Execute the instruction (CALL_REF yy).
 
 Step_pure/return_call_indirect x yy
 1. Execute the instruction (TABLE.GET x).
-2. Execute the instruction (REF.CAST (REF (NULL ?(()) ?) yy)).
-3. Execute the instruction (RETURN_CALL_REF yy).
+1. Execute the instruction (REF.CAST (REF (NULL ?(()) ?) yy)).
+1. Execute the instruction (RETURN_CALL_REF yy).
 
 Step_pure/frame
 1. Let f be the current frame.
-2. Let n be the arity of f.
-3. Assert: Due to validation, there are at least n values on the top of the stack.
-4. Assert: Due to validation, there are at least n values on the top of the stack.
-5. Pop the values val^n from the stack.
-6. Assert: Due to validation, a frame is now on the top of the stack.
-7. Pop the current frame from the stack.
-8. Push the values val^n to the stack.
+1. Let n be the arity of f.
+1. Assert: Due to validation, there are at least n values on the top of the stack.
+1. Assert: Due to validation, there are at least n values on the top of the stack.
+1. Pop the values val^n from the stack.
+1. Assert: Due to validation, a frame is now on the top of the stack.
+1. Pop the current frame from the stack.
+1. Push the values val^n to the stack.
 
 Step_pure/return
 1. Pop all values val* from the top of the stack.
-2. If a frame is now on the top of the stack, then:
+1. If the top of the stack is a FRAME_, then:
+  a. Push the values val* to the stack.
   a. Let f be the current frame.
-  b. Let n be the arity of f.
-  c. Pop the current frame from the stack.
-  d. Let val'* ++ val^n be val*.
-  e. Push the values val^n to the stack.
-3. Else if a label is now on the top of the stack, then:
+  a. Let n be the arity of f.
+  a. Assert: Due to validation, there are at least n values on the top of the stack.
+  a. Pop the values val^n from the stack.
+  a. Pop all values val'* from the top of the stack.
+  a. Pop the current frame from the stack.
+  a. Push the values val^n to the stack.
+1. Else if the top of the stack is a LABEL_, then:
+  a. Push the values val* to the stack.
+  a. Pop all values val* from the top of the stack.
   a. Pop the current label from the stack.
-  b. Push the values val* to the stack.
-  c. Execute the instruction RETURN.
-4. Else:
-  a. If YetE (top context is HANDLER_), then:
-    1) YetI: TODO: translate_context.
-    2) Push the values val* to the stack.
-    3) Execute the instruction RETURN.
+  a. Push the values val* to the stack.
+  a. Execute the instruction RETURN.
+1. Else if the top of the stack is a HANDLER_, then:
+  a. Push the values val* to the stack.
+  a. Pop all values val* from the top of the stack.
+  a. Exit from HANDLER_.
+  a. Push the values val* to the stack.
+  a. Execute the instruction RETURN.
 
-Step_pure/handler n catch* val*
+Step_pure/handler
 1. Pop all values val* from the top of the stack.
-2. Assert: Due to validation, YetE (a handler is now on the top of the stack).
-3. Exit from HANDLER_.
-4. Push the values val* to the stack.
+1. Assert: Due to validation, YetE (a handler is now on the top of the stack).
+1. Exit from HANDLER_.
+1. Push the values val* to the stack.
 
 Step_pure/unop nt unop
-1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (nt.CONST c_1) from the stack.
-3. If (|$unop_(nt, unop, c_1)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+1. Pop the value (numtype_0.CONST c_1) from the stack.
+1. Assert: Due to validation, (numtype_0 is nt).
+1. If (|$unop_(nt, unop, c_1)| ≤ 0), then:
   a. Trap.
-4. Let c be an element of $unop_(nt, unop, c_1).
-5. Push the value (nt.CONST c) to the stack.
+1. Let c be an element of $unop_(nt, unop, c_1).
+1. Push the value (nt.CONST c) to the stack.
 
 Step_pure/binop nt binop
-1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (nt.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type nt is on the top of the stack.
-4. Pop the value (nt.CONST c_1) from the stack.
-5. If (|$binop_(nt, binop, c_1, c_2)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+1. Pop the value (numtype_0.CONST c_2) from the stack.
+1. Assert: Due to validation, (numtype_0 is nt).
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+1. Pop the value (numtype_0.CONST c_1) from the stack.
+1. If (|$binop_(nt, binop, c_1, c_2)| ≤ 0), then:
   a. Trap.
-6. Let c be an element of $binop_(nt, binop, c_1, c_2).
-7. Push the value (nt.CONST c) to the stack.
+1. Let c be an element of $binop_(nt, binop, c_1, c_2).
+1. Push the value (nt.CONST c) to the stack.
 
 Step_pure/testop nt testop
-1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (nt.CONST c_1) from the stack.
-3. Let c be $testop_(nt, testop, c_1).
-4. Push the value (I32.CONST c) to the stack.
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+1. Pop the value (numtype_0.CONST c_1) from the stack.
+1. Assert: Due to validation, (numtype_0 is nt).
+1. Let c be $testop_(nt, testop, c_1).
+1. Push the value (I32.CONST c) to the stack.
 
 Step_pure/relop nt relop
-1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (nt.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type nt is on the top of the stack.
-4. Pop the value (nt.CONST c_1) from the stack.
-5. Let c be $relop_(nt, relop, c_1, c_2).
-6. Push the value (I32.CONST c) to the stack.
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+1. Pop the value (numtype_0.CONST c_2) from the stack.
+1. Assert: Due to validation, (numtype_0 is nt).
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+1. Pop the value (numtype_0.CONST c_1) from the stack.
+1. Let c be $relop_(nt, relop, c_1, c_2).
+1. Push the value (I32.CONST c) to the stack.
 
 Step_pure/cvtop nt_2 nt_1 cvtop
-1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
-2. Pop the value (nt_1.CONST c_1) from the stack.
-3. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+1. Pop the value (numtype_0.CONST c_1) from the stack.
+1. Assert: Due to validation, (numtype_0 is nt_1).
+1. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| ≤ 0), then:
   a. Trap.
-4. Let c be an element of $cvtop__(nt_1, nt_2, cvtop, c_1).
-5. Push the value (nt_2.CONST c) to the stack.
+1. Let c be an element of $cvtop__(nt_1, nt_2, cvtop, c_1).
+1. Push the value (nt_2.CONST c) to the stack.
 
 Step_pure/ref.i31
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST i) from the stack.
-3. Push the value (REF.I31_NUM $wrap__(32, 31, i)) to the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. Push the value (REF.I31_NUM $wrap__(32, 31, i)) to the stack.
 
 Step_pure/ref.is_null
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value ref from the stack.
-3. If ref is of the case REF.NULL, then:
+1. Pop the value ref from the stack.
+1. If ref is of the case REF.NULL, then:
   a. Push the value (I32.CONST 1) to the stack.
-4. Else:
+1. Else:
   a. Push the value (I32.CONST 0) to the stack.
 
 Step_pure/ref.as_non_null
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value ref from the stack.
-3. If ref is of the case REF.NULL, then:
+1. Pop the value ref from the stack.
+1. If ref is of the case REF.NULL, then:
   a. Trap.
-4. Push the value ref to the stack.
+1. Push the value ref to the stack.
 
 Step_pure/ref.eq
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value ref_2 from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value ref_1 from the stack.
-5. If (ref_1 is of the case REF.NULL and ref_2 is of the case REF.NULL), then:
+1. Pop the value ref_2 from the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value ref_1 from the stack.
+1. If ref_1 is of the case REF.NULL, then:
+  a. If ref_2 is of the case REF.NULL, then:
+    1) Push the value (I32.CONST 1) to the stack.
+  a. Else if (ref_1 is ref_2), then:
+    1) Push the value (I32.CONST 1) to the stack.
+  a. Else:
+    1) Push the value (I32.CONST 0) to the stack.
+1. Else if (ref_1 is ref_2), then:
   a. Push the value (I32.CONST 1) to the stack.
-6. Else if (ref_1 is ref_2), then:
-  a. Push the value (I32.CONST 1) to the stack.
-7. Else:
+1. Else:
   a. Push the value (I32.CONST 0) to the stack.
 
 Step_pure/i31.get sx
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value instr_u0 from the stack.
-3. If instr_u0 is of the case REF.NULL, then:
+1. Pop the value instr_u0 from the stack.
+1. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
-4. If instr_u0 is of the case REF.I31_NUM, then:
+1. If instr_u0 is of the case REF.I31_NUM, then:
   a. Let (REF.I31_NUM i) be instr_u0.
-  b. Push the value (I32.CONST $extend__(31, 32, sx, i)) to the stack.
+  a. Push the value (I32.CONST $extend__(31, 32, sx, i)) to the stack.
 
 Step_pure/array.new x
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value val from the stack.
-5. Push the values val^n to the stack.
-6. Execute the instruction (ARRAY.NEW_FIXED x n).
+1. Pop the value (I32.CONST n) from the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value val from the stack.
+1. Push the values val^n to the stack.
+1. Execute the instruction (ARRAY.NEW_FIXED x n).
 
 Step_pure/extern.convert_any
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value instr_u0 from the stack.
-3. If instr_u0 is of the case REF.NULL, then:
+1. Pop the value instr_u0 from the stack.
+1. If instr_u0 is of the case REF.NULL, then:
   a. Push the value (REF.NULL EXTERN) to the stack.
-4. If the type of instr_u0 is addrref, then:
+1. If the type of instr_u0 is addrref, then:
   a. Let addrref be instr_u0.
-  b. Push the value (REF.EXTERN addrref) to the stack.
+  a. Push the value (REF.EXTERN addrref) to the stack.
 
 Step_pure/any.convert_extern
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value instr_u0 from the stack.
-3. If instr_u0 is of the case REF.NULL, then:
+1. Pop the value instr_u0 from the stack.
+1. If instr_u0 is of the case REF.NULL, then:
   a. Push the value (REF.NULL ANY) to the stack.
-4. If instr_u0 is of the case REF.EXTERN, then:
+1. If instr_u0 is of the case REF.EXTERN, then:
   a. Let (REF.EXTERN addrref) be instr_u0.
-  b. Push the value addrref to the stack.
+  a. Push the value addrref to the stack.
 
 Step_pure/vvunop V128 vvunop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. Assert: Due to validation, (|$vvunop_(V128, vvunop, c_1)| > 0).
-4. Let c be an element of $vvunop_(V128, vvunop, c_1).
-5. Push the value (V128.CONST c) to the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Assert: Due to validation, (|$vvunop_(V128, vvunop, c_1)| > 0).
+1. Let c be an element of $vvunop_(V128, vvunop, c_1).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vvbinop V128 vvbinop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Assert: Due to validation, (|$vvbinop_(V128, vvbinop, c_1, c_2)| > 0).
-6. Let c be an element of $vvbinop_(V128, vvbinop, c_1, c_2).
-7. Push the value (V128.CONST c) to the stack.
+1. Pop the value (V128.CONST c_2) from the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Assert: Due to validation, (|$vvbinop_(V128, vvbinop, c_1, c_2)| > 0).
+1. Let c be an element of $vvbinop_(V128, vvbinop, c_1, c_2).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vvternop V128 vvternop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_3) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_2) from the stack.
-5. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-6. Pop the value (V128.CONST c_1) from the stack.
-7. Assert: Due to validation, (|$vvternop_(V128, vvternop, c_1, c_2, c_3)| > 0).
-8. Let c be an element of $vvternop_(V128, vvternop, c_1, c_2, c_3).
-9. Push the value (V128.CONST c) to the stack.
+1. Pop the value (V128.CONST c_3) from the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c_2) from the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Assert: Due to validation, (|$vvternop_(V128, vvternop, c_1, c_2, c_3)| > 0).
+1. Let c be an element of $vvternop_(V128, vvternop, c_1, c_2, c_3).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vvtestop V128 ANY_TRUE
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. Let c be $ine_($vsize(V128), c_1, 0).
-4. Push the value (I32.CONST c) to the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Let c be $ine_($vsize(V128), c_1, 0).
+1. Push the value (I32.CONST c) to the stack.
 
 Step_pure/vunop sh vunop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. If (|$vunop_(sh, vunop, c_1)| ≤ 0), then:
+1. Pop the value (V128.CONST c_1) from the stack.
+1. If (|$vunop_(sh, vunop, c_1)| ≤ 0), then:
   a. Trap.
-4. Let c be an element of $vunop_(sh, vunop, c_1).
-5. Push the value (V128.CONST c) to the stack.
+1. Let c be an element of $vunop_(sh, vunop, c_1).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vbinop sh vbinop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. If (|$vbinop_(sh, vbinop, c_1, c_2)| ≤ 0), then:
+1. Pop the value (V128.CONST c_2) from the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. If (|$vbinop_(sh, vbinop, c_1, c_2)| ≤ 0), then:
   a. Trap.
-6. Let c be an element of $vbinop_(sh, vbinop, c_1, c_2).
-7. Push the value (V128.CONST c) to the stack.
+1. Let c be an element of $vbinop_(sh, vbinop, c_1, c_2).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vtestop (Jnn X M) ALL_TRUE
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c) from the stack.
-3. Let ci_1* be $lanes_((Jnn X M), c).
-4. If (ci_1 is not 0)*, then:
+1. Pop the value (V128.CONST c) from the stack.
+1. Let ci_1* be $lanes_((Jnn X M), c).
+1. If (ci_1 is not 0)*, then:
   a. Push the value (I32.CONST 1) to the stack.
-5. Else:
+1. Else:
   a. Push the value (I32.CONST 0) to the stack.
 
 Step_pure/vrelop sh vrelop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c be $vrelop_(sh, vrelop, c_1, c_2).
-6. Push the value (V128.CONST c) to the stack.
+1. Pop the value (V128.CONST c_2) from the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Let c be $vrelop_(sh, vrelop, c_1, c_2).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vshiftop (Jnn X M) vshiftop
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c'* be $lanes_((Jnn X M), c_1).
-6. Let c be $invlanes_((Jnn X M), $vshiftop_((Jnn X M), vshiftop, c', n)*).
-7. Push the value (V128.CONST c) to the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Let c'* be $lanes_((Jnn X M), c_1).
+1. Let c be $invlanes_((Jnn X M), $vshiftop_((Jnn X M), vshiftop, c', n)*).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vbitmask (Jnn X M)
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c) from the stack.
-3. Let ci_1* be $lanes_((Jnn X M), c).
-4. Let ci be $ibits__1^-1(32, $ilt_($lsize(Jnn), S, ci_1, 0)*).
-5. Push the value (I32.CONST ci) to the stack.
+1. Pop the value (V128.CONST c) from the stack.
+1. Let ci_1* be $lanes_((Jnn X M), c).
+1. Let ci be $ibits__1^-1(32, $ilt_($lsize(Jnn), S, ci_1, 0)*).
+1. Push the value (I32.CONST ci) to the stack.
 
 Step_pure/vswizzle (Pnn X M)
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c'* be $lanes_((Pnn X M), c_1) ++ 0^(256 - M).
-6. Let ci* be $lanes_((Pnn X M), c_2).
-7. Assert: Due to validation, (ci*[k] < |c'*|)^(k<M).
-8. Assert: Due to validation, (k < |ci*|)^(k<M).
-9. Let c be $invlanes_((Pnn X M), c'*[ci*[k]]^(k<M)).
-10. Push the value (V128.CONST c) to the stack.
+1. Pop the value (V128.CONST c_2) from the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Let c'* be $lanes_((Pnn X M), c_1) ++ 0^(256 - M).
+1. Let ci* be $lanes_((Pnn X M), c_2).
+1. Assert: Due to validation, (ci*[k] < |c'*|)^(k<M).
+1. Assert: Due to validation, (k < |ci*|)^(k<M).
+1. Let c be $invlanes_((Pnn X M), c'*[ci*[k]]^(k<M)).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vshuffle (Pnn X M) i*
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Assert: Due to validation, (k < |i*|)^(k<M).
-6. Let c'* be $lanes_((Pnn X M), c_1) ++ $lanes_((Pnn X M), c_2).
-7. Assert: Due to validation, (i*[k] < |c'*|)^(k<M).
-8. Let c be $invlanes_((Pnn X M), c'*[i*[k]]^(k<M)).
-9. Push the value (V128.CONST c) to the stack.
+1. Pop the value (V128.CONST c_2) from the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Assert: Due to validation, (k < |i*|)^(k<M).
+1. Let c'* be $lanes_((Pnn X M), c_1) ++ $lanes_((Pnn X M), c_2).
+1. Assert: Due to validation, (i*[k] < |c'*|)^(k<M).
+1. Let c be $invlanes_((Pnn X M), c'*[i*[k]]^(k<M)).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vsplat (Lnn X M)
-1. Let nt_0 be $lunpack(Lnn).
-2. Assert: Due to validation, a value of value type nt_0 is on the top of the stack.
-3. Pop the value (nt_0.CONST c_1) from the stack.
-4. Let c be $invlanes_((Lnn X M), $lpacknum_(Lnn, c_1)^M).
-5. Push the value (V128.CONST c) to the stack.
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+1. Pop the value (numtype_0.CONST c_1) from the stack.
+1. Assert: Due to validation, (numtype_0 is $lunpack(Lnn)).
+1. Let c be $invlanes_((Lnn X M), $lpacknum_(Lnn, c_1)^M).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vextract_lane (lanetype_u0 X M) sx_u1? i
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. If (sx_u1? is not defined and the type of lanetype_u0 is numtype), then:
+1. Pop the value (V128.CONST c_1) from the stack.
+1. If (sx_u1? is not defined and the type of lanetype_u0 is numtype), then:
   a. Let nt be lanetype_u0.
-  b. If (i < |$lanes_((nt X M), c_1)|), then:
+  a. If (i < |$lanes_((nt X M), c_1)|), then:
     1) Let c_2 be $lanes_((nt X M), c_1)[i].
-    2) Push the value (nt.CONST c_2) to the stack.
-4. If the type of lanetype_u0 is packtype, then:
+    1) Push the value (nt.CONST c_2) to the stack.
+1. If the type of lanetype_u0 is packtype, then:
   a. Let pt be lanetype_u0.
-  b. If sx_u1? is defined, then:
+  a. If sx_u1? is defined, then:
     1) Let ?(sx) be sx_u1?.
-    2) If (i < |$lanes_((pt X M), c_1)|), then:
+    1) If (i < |$lanes_((pt X M), c_1)|), then:
       a) Let c_2 be $extend__($psize(pt), 32, sx, $lanes_((pt X M), c_1)[i]).
-      b) Push the value (I32.CONST c_2) to the stack.
+      a) Push the value (I32.CONST c_2) to the stack.
 
 Step_pure/vreplace_lane (Lnn X M) i
-1. Let nt_0 be $lunpack(Lnn).
-2. Assert: Due to validation, a value of value type nt_0 is on the top of the stack.
-3. Pop the value (nt_0.CONST c_2) from the stack.
-4. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-5. Pop the value (V128.CONST c_1) from the stack.
-6. Let c be $invlanes_((Lnn X M), $lanes_((Lnn X M), c_1) with [i] replaced by $lpacknum_(Lnn, c_2)).
-7. Push the value (V128.CONST c) to the stack.
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+1. Pop the value (numtype_0.CONST c_2) from the stack.
+1. Assert: Due to validation, (numtype_0 is $lunpack(Lnn)).
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Let c be $invlanes_((Lnn X M), $lanes_((Lnn X M), c_1) with [i] replaced by $lpacknum_(Lnn, c_2)).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vextunop sh_2 sh_1 vextunop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. Let c be $vextunop__(sh_1, sh_2, vextunop, c_1).
-4. Push the value (V128.CONST c) to the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Let c be $vextunop__(sh_1, sh_2, vextunop, c_1).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vextbinop sh_2 sh_1 vextbinop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c be $vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2).
-6. Push the value (V128.CONST c) to the stack.
+1. Pop the value (V128.CONST c_2) from the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Let c be $vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vnarrow (Jnn_2 X M_2) (Jnn_1 X M_1) sx
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let ci_1* be $lanes_((Jnn_1 X M_1), c_1).
-6. Let ci_2* be $lanes_((Jnn_1 X M_1), c_2).
-7. Let cj_1* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1)*.
-8. Let cj_2* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2)*.
-9. Let c be $invlanes_((Jnn_2 X M_2), cj_1* ++ cj_2*).
-10. Push the value (V128.CONST c) to the stack.
+1. Pop the value (V128.CONST c_2) from the stack.
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Let ci_1* be $lanes_((Jnn_1 X M_1), c_1).
+1. Let ci_2* be $lanes_((Jnn_1 X M_1), c_2).
+1. Let cj_1* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1)*.
+1. Let cj_2* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2)*.
+1. Let c be $invlanes_((Jnn_2 X M_2), cj_1* ++ cj_2*).
+1. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vcvtop (lanetype_u5 X n_u0) (lanetype_u6 X n_u1) vcvtop half___u4? zero___u13?
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. If (half___u4? is not defined and zero___u13? is not defined), then:
+1. Pop the value (V128.CONST c_1) from the stack.
+1. If (half___u4? is not defined and zero___u13? is not defined), then:
   a. Let Lnn_1 be lanetype_u6.
-  b. Let Lnn_2 be lanetype_u5.
-  c. Let M be n_u1.
-  d. If (n_u0 is M), then:
+  a. Let Lnn_2 be lanetype_u5.
+  a. Let M be n_u1.
+  a. If (n_u0 is M), then:
     1) Let ci* be $lanes_((Lnn_1 X M), c_1).
-    2) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__((Lnn_1 X M), (Lnn_2 X M), vcvtop, ci)*).
-    3) If (|$invlanes_((Lnn_2 X M), cj*)*| > 0), then:
+    1) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__((Lnn_1 X M), (Lnn_2 X M), vcvtop, ci)*).
+    1) If (|$invlanes_((Lnn_2 X M), cj*)*| > 0), then:
       a) Let c be an element of $invlanes_((Lnn_2 X M), cj*)*.
-      b) Push the value (V128.CONST c) to the stack.
-4. If zero___u13? is not defined, then:
+      a) Push the value (V128.CONST c) to the stack.
+1. If zero___u13? is not defined, then:
   a. Let Lnn_1 be lanetype_u6.
-  b. Let Lnn_2 be lanetype_u5.
-  c. Let M_1 be n_u1.
-  d. Let M_2 be n_u0.
-  e. If half___u4? is defined, then:
-    1) Let ?(half) be half___u4?.
-    2) Let ci* be $lanes_((Lnn_1 X M_1), c_1)[$half__((Lnn_1 X M_1), (Lnn_2 X M_2), half, 0, M_2) : M_2].
-    3) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__((Lnn_1 X M_1), (Lnn_2 X M_2), vcvtop, ci)*).
-    4) If (|$invlanes_((Lnn_2 X M_2), cj*)*| > 0), then:
-      a) Let c be an element of $invlanes_((Lnn_2 X M_2), cj*)*.
-      b) Push the value (V128.CONST c) to the stack.
-5. If half___u4? is not defined, then:
+  a. Let Lnn_2 be lanetype_u5.
   a. Let M_1 be n_u1.
-  b. Let M_2 be n_u0.
-  c. If the type of lanetype_u6 is numtype, then:
+  a. Let M_2 be n_u0.
+  a. If half___u4? is defined, then:
+    1) Let ?(half) be half___u4?.
+    1) Let ci* be $lanes_((Lnn_1 X M_1), c_1)[$half__((Lnn_1 X M_1), (Lnn_2 X M_2), half, 0, M_2) : M_2].
+    1) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__((Lnn_1 X M_1), (Lnn_2 X M_2), vcvtop, ci)*).
+    1) If (|$invlanes_((Lnn_2 X M_2), cj*)*| > 0), then:
+      a) Let c be an element of $invlanes_((Lnn_2 X M_2), cj*)*.
+      a) Push the value (V128.CONST c) to the stack.
+1. If half___u4? is not defined, then:
+  a. Let M_1 be n_u1.
+  a. Let M_2 be n_u0.
+  a. If the type of lanetype_u6 is numtype, then:
     1) Let nt_1 be lanetype_u6.
-    2) If the type of lanetype_u5 is numtype, then:
+    1) If the type of lanetype_u5 is numtype, then:
       a) Let nt_2 be lanetype_u5.
-      b) If zero___u13? is defined, then:
+      a) If zero___u13? is defined, then:
         1. Let ci* be $lanes_((nt_1 X M_1), c_1).
-        2. Let cj** be $setproduct_(lane_((nt_2 : numtype <: lanetype)), $vcvtop__((nt_1 X M_1), (nt_2 X M_2), vcvtop, ci)* ++ [$zero(nt_2)]^M_1).
-        3. If (|$invlanes_((nt_2 X M_2), cj*)*| > 0), then:
+        1. Let cj** be $setproduct_(lane_((nt_2 : numtype <: lanetype)), $vcvtop__((nt_1 X M_1), (nt_2 X M_2), vcvtop, ci)* ++ [$zero(nt_2)]^M_1).
+        1. If (|$invlanes_((nt_2 X M_2), cj*)*| > 0), then:
           a. Let c be an element of $invlanes_((nt_2 X M_2), cj*)*.
-          b. Push the value (V128.CONST c) to the stack.
+          a. Push the value (V128.CONST c) to the stack.
 
 Step_pure/local.tee x
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. Push the value val to the stack.
-4. Push the value val to the stack.
-5. Execute the instruction (LOCAL.SET x).
+1. Pop the value val from the stack.
+1. Push the value val to the stack.
+1. Push the value val to the stack.
+1. Execute the instruction (LOCAL.SET x).
 
 Step_read/block bt instr*
 1. Let z be the current state.
-2. Let (t_1^m -> t_2^n) be $blocktype_(z, bt).
-3. Assert: Due to validation, there are at least m values on the top of the stack.
-4. Pop the values val^m from the stack.
-5. Let L be the label_n{[]}.
-6. Enter val^m ++ instr* with label L.
+1. Let (t_1^m -> t_2^n) be $blocktype_(z, bt).
+1. Assert: Due to validation, there are at least m values on the top of the stack.
+1. Pop the values val^m from the stack.
+1. Let L be the label_n{[]}.
+1. Enter val^m ++ instr* with label L.
 
 Step_read/loop bt instr*
 1. Let z be the current state.
-2. Let (t_1^m -> t_2^n) be $blocktype_(z, bt).
-3. Assert: Due to validation, there are at least m values on the top of the stack.
-4. Pop the values val^m from the stack.
-5. Let L be the label_m{[(LOOP bt instr*)]}.
-6. Enter val^m ++ instr* with label L.
+1. Let (t_1^m -> t_2^n) be $blocktype_(z, bt).
+1. Assert: Due to validation, there are at least m values on the top of the stack.
+1. Pop the values val^m from the stack.
+1. Let L be the label_m{[(LOOP bt instr*)]}.
+1. Enter val^m ++ instr* with label L.
 
 Step_read/br_on_cast l rt_1 rt_2
 1. Let f be the current frame.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value ref from the stack.
-4. Let rt be $Ref_type(ref).
-5. If rt does not match $inst_reftype(f.MODULE, rt_2), then:
-  a. Push the value ref to the stack.
-6. Else:
-  a. Push the value ref to the stack.
-  b. Execute the instruction (BR l).
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value ref from the stack.
+1. Let rt be $Ref_type(ref).
+1. Push the value ref to the stack.
+1. If rt does not match $inst_reftype(f.MODULE, rt_2), then:
+  a. Do nothing.
+1. Else:
+  a. Execute the instruction (BR l).
 
 Step_read/br_on_cast_fail l rt_1 rt_2
 1. Let f be the current frame.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value ref from the stack.
-4. Let rt be $Ref_type(ref).
-5. If rt matches $inst_reftype(f.MODULE, rt_2), then:
-  a. Push the value ref to the stack.
-6. Else:
-  a. Push the value ref to the stack.
-  b. Execute the instruction (BR l).
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value ref from the stack.
+1. Let rt be $Ref_type(ref).
+1. Push the value ref to the stack.
+1. If rt matches $inst_reftype(f.MODULE, rt_2), then:
+  a. Do nothing.
+1. Else:
+  a. Execute the instruction (BR l).
 
 Step_read/call x
 1. Let z be the current state.
-2. Assert: Due to validation, (x < |$moduleinst(z).FUNCS|).
-3. Let a be $moduleinst(z).FUNCS[x].
-4. Assert: Due to validation, (a < |$funcinst(z)|).
-5. Push the value (REF.FUNC_ADDR a) to the stack.
-6. Execute the instruction (CALL_REF $funcinst(z)[a].TYPE).
+1. Assert: Due to validation, (x < |$moduleinst(z).FUNCS|).
+1. Let a be $moduleinst(z).FUNCS[x].
+1. Assert: Due to validation, (a < |$funcinst(z)|).
+1. Push the value (REF.FUNC_ADDR a) to the stack.
+1. Execute the instruction (CALL_REF $funcinst(z)[a].TYPE).
 
 Step_read/call_ref yy
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value instr_u0 from the stack.
-4. If instr_u0 is of the case REF.NULL, then:
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value instr_u0 from the stack.
+1. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
-5. If instr_u0 is of the case REF.FUNC_ADDR, then:
+1. If instr_u0 is of the case REF.FUNC_ADDR, then:
   a. Let (REF.FUNC_ADDR a) be instr_u0.
-  b. If (a < |$funcinst(z)|), then:
+  a. If (a < |$funcinst(z)|), then:
     1) Let fi be $funcinst(z)[a].
-    2) Assert: Due to validation, fi.CODE is of the case FUNC.
-    3) Let (FUNC x local_0 instr*) be fi.CODE.
-    4) Assert: Due to validation, local_0 is of the case LOCAL.
-    5) Let (LOCAL t)* be local_0.
-    6) Assert: Due to validation, $expanddt(fi.TYPE) is of the case FUNC.
-    7) Let (FUNC functype_0) be $expanddt(fi.TYPE).
-    8) Let (t_1^n -> t_2^m) be functype_0.
-    9) Assert: Due to validation, there are at least n values on the top of the stack.
-    10) Pop the values val^n from the stack.
-    11) Let f be { LOCALS: ?(val)^n ++ $default_(t)*; MODULE: fi.MODULE; }.
-    12) Let F be the activation of f with arity m.
-    13) Push F to the stack.
-    14) Let L be the label_m{[]}.
-    15) Enter instr* with label L.
+    1) Assert: Due to validation, fi.CODE is of the case FUNC.
+    1) Let (FUNC x local_0 instr*) be fi.CODE.
+    1) Assert: Due to validation, local_0 is of the case LOCAL.
+    1) Let (LOCAL t)* be local_0.
+    1) Assert: Due to validation, $expanddt(fi.TYPE) is of the case FUNC.
+    1) Let (FUNC functype_0) be $expanddt(fi.TYPE).
+    1) Let (t_1^n -> t_2^m) be functype_0.
+    1) Assert: Due to validation, there are at least n values on the top of the stack.
+    1) Pop the values val^n from the stack.
+    1) Let f be { LOCALS: ?(val)^n ++ $default_(t)*; MODULE: fi.MODULE; }.
+    1) Let F be the activation of f with arity m.
+    1) Push F to the stack.
+    1) Let L be the label_m{[]}.
+    1) Enter instr* with label L.
 
 Step_read/return_call x
 1. Let z be the current state.
-2. Assert: Due to validation, (x < |$moduleinst(z).FUNCS|).
-3. Let a be $moduleinst(z).FUNCS[x].
-4. Assert: Due to validation, (a < |$funcinst(z)|).
-5. Push the value (REF.FUNC_ADDR a) to the stack.
-6. Execute the instruction (RETURN_CALL_REF $funcinst(z)[a].TYPE).
+1. Assert: Due to validation, (x < |$moduleinst(z).FUNCS|).
+1. Let a be $moduleinst(z).FUNCS[x].
+1. Assert: Due to validation, (a < |$funcinst(z)|).
+1. Push the value (REF.FUNC_ADDR a) to the stack.
+1. Execute the instruction (RETURN_CALL_REF $funcinst(z)[a].TYPE).
 
 Step_read/return_call_ref yy
 1. Let z be the current state.
-2. Pop all values val* from the top of the stack.
-3. If a label is now on the top of the stack, then:
+1. Pop all values val* from the top of the stack.
+1. If the top of the stack is a LABEL_, then:
+  a. Push the values val* to the stack.
+  a. Pop all values val* from the top of the stack.
   a. Pop the current label from the stack.
-  b. Push the values val* to the stack.
-  c. Execute the instruction (RETURN_CALL_REF yy).
-4. Else if a frame is now on the top of the stack, then:
-  a. Pop the current frame from the stack.
-  b. Let instr_u1* ++ [instr_u0] be val*.
-  c. If instr_u0 is of the case REF.FUNC_ADDR, then:
-    1) Let (REF.FUNC_ADDR a) be instr_u0.
-    2) If (|instr_u1*| ≥ n), then:
-      a) Let val'* ++ val^n be instr_u1*.
-      b) If (a < |$funcinst(z)|), then:
-        1. Assert: Due to validation, $expanddt($funcinst(z)[a].TYPE) is of the case FUNC.
-        2. Let (FUNC functype_0) be $expanddt($funcinst(z)[a].TYPE).
-        3. Let (t_1^n -> t_2^m) be functype_0.
-        4. Push the values val^n to the stack.
-        5. Push the value (REF.FUNC_ADDR a) to the stack.
-        6. Execute the instruction (CALL_REF yy).
-  d. If (instr_u0 is of the case REF.NULL and the type of instr_u1 is val*), then:
+  a. Push the values val* to the stack.
+  a. Execute the instruction (RETURN_CALL_REF yy).
+1. Else if the top of the stack is a FRAME_, then:
+  a. Push the values val* to the stack.
+  a. Assert: Due to validation, a value is on the top of the stack.
+  a. Pop the value instr_u0 from the stack.
+  a. Pop all values val* from the top of the stack.
+  a. If instr_u0 is of the case REF.NULL, then:
+    1) Pop the current frame from the stack.
     1) Trap.
+  a. Assert: Due to validation, a value is on the top of the stack.
+  a. Pop the value instr_u0 from the stack.
+  a. If instr_u0 is of the case REF.FUNC_ADDR, then:
+    1) Let (REF.FUNC_ADDR a) be instr_u0.
+    1) If (a < |$funcinst(z)|), then:
+      a) Assert: Due to validation, $expanddt($funcinst(z)[a].TYPE) is of the case FUNC.
+      a) Let (FUNC functype_0) be $expanddt($funcinst(z)[a].TYPE).
+      a) Let (t_1^n -> t_2^m) be functype_0.
+      a) Assert: Due to validation, there are at least n values on the top of the stack.
+      a) Pop the values val^n from the stack.
+      a) Pop all values val'* from the top of the stack.
+      a) Pop the current frame from the stack.
+      a) Push the values val^n to the stack.
+      a) Push the value (REF.FUNC_ADDR a) to the stack.
+      a) Execute the instruction (CALL_REF yy).
 
 Step_read/throw_ref
-1. YetI: TODO: translate_rgroup with differnet contexts.
+1. Let z be the current state.
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value instr_u0 from the stack.
+1. If instr_u0 is of the case REF.NULL, then:
+  a. Trap.
+1. Pop all values val* from the top of the stack.
+1. If (val* is not []), then:
+  a. If instr_u0 is of the case REF.EXN_ADDR, then:
+    1) Let (REF.EXN_ADDR a) be instr_u0.
+    1) Push the value (REF.EXN_ADDR a) to the stack.
+    1) Execute the instruction THROW_REF.
+1. Else:
+  a. Pop all values val* from the top of the stack.
+  a. If the top of the stack is a LABEL_, then:
+    1) Push the values val* to the stack.
+    1) If instr_u0 is of the case REF.EXN_ADDR, then:
+      a) Let (REF.EXN_ADDR a) be instr_u0.
+      a) Pop the current label from the stack.
+      a) Push the value (REF.EXN_ADDR a) to the stack.
+      a) Execute the instruction THROW_REF.
+  a. Else if the top of the stack is a FRAME_, then:
+    1) Push the values val* to the stack.
+    1) If instr_u0 is of the case REF.EXN_ADDR, then:
+      a) Let (REF.EXN_ADDR a) be instr_u0.
+      a) Pop the current frame from the stack.
+      a) Push the value (REF.EXN_ADDR a) to the stack.
+      a) Execute the instruction THROW_REF.
+  a. Else if the top of the stack is a HANDLER_, then:
+    1) Push the values val* to the stack.
+    1) Let (HANDLER_ n { catch_u1* }) be the current context.
+    1) If instr_u0 is of the case REF.EXN_ADDR, then:
+      a) Let (REF.EXN_ADDR a) be instr_u0.
+      a) If (catch_u1* is []), then:
+        1. Exit from HANDLER_.
+        1. Push the value (REF.EXN_ADDR a) to the stack.
+        1. Execute the instruction THROW_REF.
+      a) Else:
+        1. Let (REF.EXN_ADDR a) be instr_u0.
+        1. If (a ≥ |$exninst(z)|), then:
+          a. Let [catch_0] ++ catch'* be catch_u1*.
+          a. If catch_0 is of the case CATCH_ALL, then:
+            1) Let (CATCH_ALL l) be catch_0.
+            1) Exit from HANDLER_.
+            1) Execute the instruction (BR l).
+          a. Else:
+            1) Let (REF.EXN_ADDR a) be instr_u0.
+            1) Let [catch_0] ++ catch'* be catch_u1*.
+            1) If catch_0 is of the case CATCH_ALL_REF, then:
+              a) Let (CATCH_ALL_REF l) be catch_0.
+              a) Exit from HANDLER_.
+              a) Push the value (REF.EXN_ADDR a) to the stack.
+              a) Execute the instruction (BR l).
+            1) Else:
+              a) Let (REF.EXN_ADDR a) be instr_u0.
+              a) Let [catch] ++ catch'* be catch_u1*.
+              a) Exit from HANDLER_.
+              a) Let H be (HANDLER_ n { catch'* }).
+              a) Enter [THROW_REF, HANDLER_] with label H.
+                1. Push the value (REF.EXN_ADDR a) to the stack.
+        1. Else:
+          a. Let val* be $exninst(z)[a].FIELDS.
+          a. Let [catch_0] ++ catch'* be catch_u1*.
+          a. If catch_0 is of the case CATCH, then:
+            1) Let (CATCH x l) be catch_0.
+            1) If ((x < |$tagaddr(z)|) and ($exninst(z)[a].TAG is $tagaddr(z)[x])), then:
+              a) Exit from HANDLER_.
+              a) Push the values val* to the stack.
+              a) Execute the instruction (BR l).
+            1) Else:
+              a) Let [catch_0] ++ catch'* be catch_u1*.
+              a) Do nothing.
+              a) If catch_0 is not of the case CATCH_REF, then:
+                1. Do nothing.
+              a) Else:
+                1. Do nothing.
+              a) Do nothing.
+              a) If catch_0 is of the case CATCH_ALL, then:
+                1. Let (CATCH_ALL l) be catch_0.
+                1. Exit from HANDLER_.
+                1. Execute the instruction (BR l).
+              a) Else:
+                1. Let (REF.EXN_ADDR a) be instr_u0.
+                1. Let [catch_0] ++ catch'* be catch_u1*.
+                1. If catch_0 is of the case CATCH_ALL_REF, then:
+                  a. Let (CATCH_ALL_REF l) be catch_0.
+                  a. Exit from HANDLER_.
+                  a. Push the value (REF.EXN_ADDR a) to the stack.
+                  a. Execute the instruction (BR l).
+                1. Else:
+                  a. Let (REF.EXN_ADDR a) be instr_u0.
+                  a. Let [catch] ++ catch'* be catch_u1*.
+                  a. Exit from HANDLER_.
+                  a. Let H be (HANDLER_ n { catch'* }).
+                  a. Enter [THROW_REF, HANDLER_] with label H.
+                    1) Push the value (REF.EXN_ADDR a) to the stack.
+          a. Else:
+            1) Let (REF.EXN_ADDR a) be instr_u0.
+            1) Let val* be $exninst(z)[a].FIELDS.
+            1) Let [catch_0] ++ catch'* be catch_u1*.
+            1) If catch_0 is not of the case CATCH_REF, then:
+              a) Let [catch_0] ++ catch'* be catch_u1*.
+              a) If catch_0 is of the case CATCH_ALL, then:
+                1. Let (CATCH_ALL l) be catch_0.
+                1. Exit from HANDLER_.
+                1. Execute the instruction (BR l).
+              a) Else:
+                1. Let (REF.EXN_ADDR a) be instr_u0.
+                1. Let [catch_0] ++ catch'* be catch_u1*.
+                1. If catch_0 is of the case CATCH_ALL_REF, then:
+                  a. Let (CATCH_ALL_REF l) be catch_0.
+                  a. Exit from HANDLER_.
+                  a. Push the value (REF.EXN_ADDR a) to the stack.
+                  a. Execute the instruction (BR l).
+                1. Else:
+                  a. Let (REF.EXN_ADDR a) be instr_u0.
+                  a. Let [catch] ++ catch'* be catch_u1*.
+                  a. Exit from HANDLER_.
+                  a. Let H be (HANDLER_ n { catch'* }).
+                  a. Enter [THROW_REF, HANDLER_] with label H.
+                    1) Push the value (REF.EXN_ADDR a) to the stack.
+            1) Else:
+              a) Let (CATCH_REF x l) be catch_0.
+              a) If ((x < |$tagaddr(z)|) and ($exninst(z)[a].TAG is $tagaddr(z)[x])), then:
+                1. Exit from HANDLER_.
+                1. Push the values val* to the stack.
+                1. Push the value (REF.EXN_ADDR a) to the stack.
+                1. Execute the instruction (BR l).
+              a) Else:
+                1. Let [catch_0] ++ catch'* be catch_u1*.
+                1. If catch_0 is of the case CATCH_ALL, then:
+                  a. Let (CATCH_ALL l) be catch_0.
+                  a. Exit from HANDLER_.
+                  a. Execute the instruction (BR l).
+                1. Else:
+                  a. Let (REF.EXN_ADDR a) be instr_u0.
+                  a. Let [catch_0] ++ catch'* be catch_u1*.
+                  a. If catch_0 is of the case CATCH_ALL_REF, then:
+                    1) Let (CATCH_ALL_REF l) be catch_0.
+                    1) Exit from HANDLER_.
+                    1) Push the value (REF.EXN_ADDR a) to the stack.
+                    1) Execute the instruction (BR l).
+                  a. Else:
+                    1) Let (REF.EXN_ADDR a) be instr_u0.
+                    1) Let [catch] ++ catch'* be catch_u1*.
+                    1) Exit from HANDLER_.
+                    1) Let H be (HANDLER_ n { catch'* }).
+                    1) Enter [THROW_REF, HANDLER_] with label H.
+                      a) Push the value (REF.EXN_ADDR a) to the stack.
 
 Step_read/try_table bt catch* instr*
 1. Let z be the current state.
-2. Let (t_1^m -> t_2^n) be $blocktype_(z, bt).
-3. Assert: Due to validation, there are at least m values on the top of the stack.
-4. Pop the values val^m from the stack.
-5. Let H be (HANDLER_ n catch*).
-6. Enter [HANDLER_] with label H.
+1. Let (t_1^m -> t_2^n) be $blocktype_(z, bt).
+1. Assert: Due to validation, there are at least m values on the top of the stack.
+1. Pop the values val^m from the stack.
+1. Let H be (HANDLER_ n { catch* }).
+1. Enter [HANDLER_] with label H.
   a. Let L be the label_n{[]}.
-  b. Enter val^m ++ instr* with label L.
+  a. Enter val^m ++ instr* with label L.
 
 Step_read/ref.null $idx(x)
 1. Let z be the current state.
-2. Push the value (REF.NULL $type(z, x)) to the stack.
+1. Push the value (REF.NULL $type(z, x)) to the stack.
 
 Step_read/ref.func x
 1. Let z be the current state.
-2. Assert: Due to validation, (x < |$moduleinst(z).FUNCS|).
-3. Push the value (REF.FUNC_ADDR $moduleinst(z).FUNCS[x]) to the stack.
+1. Assert: Due to validation, (x < |$moduleinst(z).FUNCS|).
+1. Push the value (REF.FUNC_ADDR $moduleinst(z).FUNCS[x]) to the stack.
 
 Step_read/ref.test rt
 1. Let f be the current frame.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value ref from the stack.
-4. Let rt' be $Ref_type(ref).
-5. If rt' matches $inst_reftype(f.MODULE, rt), then:
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value ref from the stack.
+1. Let rt' be $Ref_type(ref).
+1. If rt' matches $inst_reftype(f.MODULE, rt), then:
   a. Push the value (I32.CONST 1) to the stack.
-6. Else:
+1. Else:
   a. Push the value (I32.CONST 0) to the stack.
 
 Step_read/ref.cast rt
 1. Let f be the current frame.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value ref from the stack.
-4. Let rt' be $Ref_type(ref).
-5. If rt' does not match $inst_reftype(f.MODULE, rt), then:
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value ref from the stack.
+1. Let rt' be $Ref_type(ref).
+1. If rt' does not match $inst_reftype(f.MODULE, rt), then:
   a. Trap.
-6. Push the value ref to the stack.
+1. Push the value ref to the stack.
 
 Step_read/struct.new_default x
 1. Let z be the current state.
-2. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-3. Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
-4. Let (mut, zt)* be fieldtype_0.
-5. Assert: Due to validation, (|mut*| is |zt*|).
-6. Assert: Due to validation, $default_($unpack(zt)) is defined*.
-7. Let ?(val)* be $default_($unpack(zt))*.
-8. Assert: Due to validation, (|val*| is |zt*|).
-9. Push the values val* to the stack.
-10. Execute the instruction (STRUCT.NEW x).
+1. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
+1. Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
+1. Let (mut, zt)* be fieldtype_0.
+1. Assert: Due to validation, (|mut*| is |zt*|).
+1. Assert: Due to validation, $default_($unpack(zt)) is defined*.
+1. Let ?(val)* be $default_($unpack(zt))*.
+1. Assert: Due to validation, (|val*| is |zt*|).
+1. Push the values val* to the stack.
+1. Execute the instruction (STRUCT.NEW x).
 
 Step_read/struct.get sx? x i
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value instr_u0 from the stack.
-4. If instr_u0 is of the case REF.NULL, then:
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value instr_u0 from the stack.
+1. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
-5. If instr_u0 is of the case REF.STRUCT_ADDR, then:
+1. If instr_u0 is of the case REF.STRUCT_ADDR, then:
   a. Let (REF.STRUCT_ADDR a) be instr_u0.
-  b. If ((i < |$structinst(z)[a].FIELDS|) and (a < |$structinst(z)|)), then:
+  a. If ((i < |$structinst(z)[a].FIELDS|) and (a < |$structinst(z)|)), then:
     1) Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-    2) Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
-    3) Let (mut, zt)* be fieldtype_0.
-    4) If ((|mut*| is |zt*|) and (i < |zt*|)), then:
+    1) Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
+    1) Let (mut, zt)* be fieldtype_0.
+    1) If ((|mut*| is |zt*|) and (i < |zt*|)), then:
       a) Push the value $unpackfield_(zt*[i], sx?, $structinst(z)[a].FIELDS[i]) to the stack.
 
 Step_read/array.new_default x
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
-5. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-6. Let (mut, zt) be arraytype_0.
-7. Assert: Due to validation, $default_($unpack(zt)) is defined.
-8. Let ?(val) be $default_($unpack(zt)).
-9. Push the values val^n to the stack.
-10. Execute the instruction (ARRAY.NEW_FIXED x n).
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
+1. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+1. Let (mut, zt) be arraytype_0.
+1. Assert: Due to validation, $default_($unpack(zt)) is defined.
+1. Let ?(val) be $default_($unpack(zt)).
+1. Push the values val^n to the stack.
+1. Execute the instruction (ARRAY.NEW_FIXED x n).
 
 Step_read/array.new_elem x y
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If ((i + n) > |$elem(z, y).REFS|), then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. If ((i + n) > |$elem(z, y).REFS|), then:
   a. Trap.
-7. Assert: Due to validation, (|$elem(z, y).REFS[i : n]| is n).
-8. Let ref* be $elem(z, y).REFS[i : n].
-9. Push the values ref^n to the stack.
-10. Execute the instruction (ARRAY.NEW_FIXED x n).
+1. Assert: Due to validation, (|$elem(z, y).REFS[i : n]| is n).
+1. Let ref* be $elem(z, y).REFS[i : n].
+1. Push the values ref^n to the stack.
+1. Execute the instruction (ARRAY.NEW_FIXED x n).
 
 Step_read/array.new_data x y
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
-7. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-8. Let (mut, zt) be arraytype_0.
-9. If ((i + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
+1. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+1. Let (mut, zt) be arraytype_0.
+1. If ((i + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
   a. Trap.
-10. Assert: Due to validation, (|$concatn__1^-1(byte, ($zsize(zt) / 8), $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)])| is n).
-11. Let byte* be $concatn__1^-1(byte, ($zsize(zt) / 8), $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)]).
-12. Let c* be $zbytes__1^-1(zt, byte)*.
-13. Push the values $const($cunpack(zt), $cunpacknum_(zt, c))^n to the stack.
-14. Execute the instruction (ARRAY.NEW_FIXED x n).
+1. Assert: Due to validation, (|$concatn__1^-1(byte, ($zsize(zt) / 8), $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)])| is n).
+1. Let byte* be $concatn__1^-1(byte, ($zsize(zt) / 8), $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)]).
+1. Let c* be $zbytes__1^-1(zt, byte)*.
+1. Push the values $const($cunpack(zt), $cunpacknum_(zt, c))^n to the stack.
+1. Execute the instruction (ARRAY.NEW_FIXED x n).
 
 Step_read/array.get sx? x
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST i) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value instr_u0 from the stack.
-6. If instr_u0 is of the case REF.NULL, then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value instr_u0 from the stack.
+1. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
-7. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+1. If instr_u0 is of the case REF.ARRAY_ADDR, then:
   a. Let (REF.ARRAY_ADDR a) be instr_u0.
-  b. If ((a < |$arrayinst(z)|) and (i ≥ |$arrayinst(z)[a].FIELDS|)), then:
+  a. If ((a < |$arrayinst(z)|) and (i ≥ |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
-  c. If ((i < |$arrayinst(z)[a].FIELDS|) and (a < |$arrayinst(z)|)), then:
+  a. If ((i < |$arrayinst(z)[a].FIELDS|) and (a < |$arrayinst(z)|)), then:
     1) Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
-    2) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-    3) Let (mut, zt) be arraytype_0.
-    4) Push the value $unpackfield_(zt, sx?, $arrayinst(z)[a].FIELDS[i]) to the stack.
+    1) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+    1) Let (mut, zt) be arraytype_0.
+    1) Push the value $unpackfield_(zt, sx?, $arrayinst(z)[a].FIELDS[i]) to the stack.
 
 Step_read/array.len
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value instr_u0 from the stack.
-4. If instr_u0 is of the case REF.NULL, then:
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value instr_u0 from the stack.
+1. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
-5. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+1. If instr_u0 is of the case REF.ARRAY_ADDR, then:
   a. Let (REF.ARRAY_ADDR a) be instr_u0.
-  b. If (a < |$arrayinst(z)|), then:
+  a. If (a < |$arrayinst(z)|), then:
     1) Push the value (I32.CONST |$arrayinst(z)[a].FIELDS|) to the stack.
 
 Step_read/array.fill x
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value val from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST i) from the stack.
-8. Assert: Due to validation, a value is on the top of the stack.
-9. Pop the value instr_u0 from the stack.
-10. If instr_u0 is of the case REF.NULL, then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value val from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value instr_u0 from the stack.
+1. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
-11. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+1. If instr_u0 is of the case REF.ARRAY_ADDR, then:
   a. Let (REF.ARRAY_ADDR a) be instr_u0.
-  b. If ((a < |$arrayinst(z)|) and ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
-    1) Trap.
-  c. If (n is 0), then:
+  a. If (a ≥ |$arrayinst(z)|), then:
     1) Do nothing.
-  d. Else:
+  a. Else if ((i + n) > |$arrayinst(z)[a].FIELDS|), then:
+    1) Trap.
+  a. If (n is 0), then:
+    1) Do nothing.
+  a. Else:
     1) Let (REF.ARRAY_ADDR a) be instr_u0.
-    2) Push the value (REF.ARRAY_ADDR a) to the stack.
-    3) Push the value (I32.CONST i) to the stack.
-    4) Push the value val to the stack.
-    5) Execute the instruction (ARRAY.SET x).
-    6) Push the value (REF.ARRAY_ADDR a) to the stack.
-    7) Push the value (I32.CONST (i + 1)) to the stack.
-    8) Push the value val to the stack.
-    9) Push the value (I32.CONST (n - 1)) to the stack.
-    10) Execute the instruction (ARRAY.FILL x).
+    1) Push the value (REF.ARRAY_ADDR a) to the stack.
+    1) Push the value (I32.CONST i) to the stack.
+    1) Push the value val to the stack.
+    1) Execute the instruction (ARRAY.SET x).
+    1) Push the value (REF.ARRAY_ADDR a) to the stack.
+    1) Push the value (I32.CONST (i + 1)) to the stack.
+    1) Push the value val to the stack.
+    1) Push the value (I32.CONST (n - 1)) to the stack.
+    1) Execute the instruction (ARRAY.FILL x).
 
 Step_read/array.copy x_1 x_2
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i_2) from the stack.
-6. Assert: Due to validation, a value is on the top of the stack.
-7. Pop the value instr_u1 from the stack.
-8. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-9. Pop the value (I32.CONST i_1) from the stack.
-10. Assert: Due to validation, a value is on the top of the stack.
-11. Pop the value instr_u0 from the stack.
-12. If (instr_u0 is of the case REF.NULL and the type of instr_u1 is ref), then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i_2) from the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value instr_u0 from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i_1) from the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value instr_u1 from the stack.
+1. If (instr_u1 is of the case REF.NULL and the type of instr_u0 is ref), then:
   a. Trap.
-13. If (instr_u1 is of the case REF.NULL and the type of instr_u0 is ref), then:
+1. If (instr_u0 is of the case REF.NULL and the type of instr_u1 is ref), then:
   a. Trap.
-14. If instr_u0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a_1) be instr_u0.
-  b. If instr_u1 is of the case REF.ARRAY_ADDR, then:
+1. If instr_u1 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a_1) be instr_u1.
+  a. If instr_u0 is not of the case REF.ARRAY_ADDR, then:
+    1) Do nothing.
+  a. Else:
     1) If ((a_1 < |$arrayinst(z)|) and ((i_1 + n) > |$arrayinst(z)[a_1].FIELDS|)), then:
       a) Trap.
-    2) Let (REF.ARRAY_ADDR a_2) be instr_u1.
-    3) If ((a_2 < |$arrayinst(z)|) and ((i_2 + n) > |$arrayinst(z)[a_2].FIELDS|)), then:
+    1) Let (REF.ARRAY_ADDR a_2) be instr_u0.
+    1) If (a_2 ≥ |$arrayinst(z)|), then:
+      a) Do nothing.
+    1) Else if ((i_2 + n) > |$arrayinst(z)[a_2].FIELDS|), then:
       a) Trap.
-  c. If (instr_u1 is of the case REF.ARRAY_ADDR and (n is 0)), then:
-    1) Do nothing.
-  d. Else:
-    1) Let (REF.ARRAY_ADDR a_1) be instr_u0.
-    2) If instr_u1 is of the case REF.ARRAY_ADDR, then:
-      a) Let (REF.ARRAY_ADDR a_2) be instr_u1.
-      b) If ((i_1 ≤ i_2) and $expanddt($type(z, x_2)) is of the case ARRAY), then:
+  a. If (n is not 0), then:
+    1) Let (REF.ARRAY_ADDR a_1) be instr_u1.
+    1) If (i_1 > i_2), then:
+      a) If instr_u0 is of the case REF.ARRAY_ADDR, then:
+        1. Let (REF.ARRAY_ADDR a_2) be instr_u0.
+        1. Assert: Due to validation, $expanddt($type(z, x_2)) is of the case ARRAY.
         1. Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
-        2. Let (mut, zt_2) be arraytype_0.
-        3. Let sx? be $sx(zt_2).
-        4. Push the value (REF.ARRAY_ADDR a_1) to the stack.
-        5. Push the value (I32.CONST i_1) to the stack.
-        6. Push the value (REF.ARRAY_ADDR a_2) to the stack.
-        7. Push the value (I32.CONST i_2) to the stack.
-        8. Execute the instruction (ARRAY.GET sx? x_2).
-        9. Execute the instruction (ARRAY.SET x_1).
-        10. Push the value (REF.ARRAY_ADDR a_1) to the stack.
-        11. Push the value (I32.CONST (i_1 + 1)) to the stack.
-        12. Push the value (REF.ARRAY_ADDR a_2) to the stack.
-        13. Push the value (I32.CONST (i_2 + 1)) to the stack.
-        14. Push the value (I32.CONST (n - 1)) to the stack.
-        15. Execute the instruction (ARRAY.COPY x_1 x_2).
-      c) Else:
-        1. Let (REF.ARRAY_ADDR a_1) be instr_u0.
-        2. Let (REF.ARRAY_ADDR a_2) be instr_u1.
-        3. If $expanddt($type(z, x_2)) is of the case ARRAY, then:
-          a. Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
-          b. Let (mut, zt_2) be arraytype_0.
-          c. Let sx? be $sx(zt_2).
-          d. Push the value (REF.ARRAY_ADDR a_1) to the stack.
-          e. Push the value (I32.CONST ((i_1 + n) - 1)) to the stack.
-          f. Push the value (REF.ARRAY_ADDR a_2) to the stack.
-          g. Push the value (I32.CONST ((i_2 + n) - 1)) to the stack.
-          h. Execute the instruction (ARRAY.GET sx? x_2).
-          i. Execute the instruction (ARRAY.SET x_1).
-          j. Push the value (REF.ARRAY_ADDR a_1) to the stack.
-          k. Push the value (I32.CONST i_1) to the stack.
-          l. Push the value (REF.ARRAY_ADDR a_2) to the stack.
-          m. Push the value (I32.CONST i_2) to the stack.
-          n. Push the value (I32.CONST (n - 1)) to the stack.
-          o. Execute the instruction (ARRAY.COPY x_1 x_2).
+        1. Let (mut, zt_2) be arraytype_0.
+        1. Let sx? be $sx(zt_2).
+        1. Push the value (REF.ARRAY_ADDR a_1) to the stack.
+        1. Push the value (I32.CONST ((i_1 + n) - 1)) to the stack.
+        1. Push the value (REF.ARRAY_ADDR a_2) to the stack.
+        1. Push the value (I32.CONST ((i_2 + n) - 1)) to the stack.
+        1. Execute the instruction (ARRAY.GET sx? x_2).
+        1. Execute the instruction (ARRAY.SET x_1).
+        1. Push the value (REF.ARRAY_ADDR a_1) to the stack.
+        1. Push the value (I32.CONST i_1) to the stack.
+        1. Push the value (REF.ARRAY_ADDR a_2) to the stack.
+        1. Push the value (I32.CONST i_2) to the stack.
+        1. Push the value (I32.CONST (n - 1)) to the stack.
+        1. Execute the instruction (ARRAY.COPY x_1 x_2).
+    1) Else if instr_u0 is of the case REF.ARRAY_ADDR, then:
+      a) Let (REF.ARRAY_ADDR a_2) be instr_u0.
+      a) Assert: Due to validation, $expanddt($type(z, x_2)) is of the case ARRAY.
+      a) Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
+      a) Let (mut, zt_2) be arraytype_0.
+      a) Let sx? be $sx(zt_2).
+      a) Push the value (REF.ARRAY_ADDR a_1) to the stack.
+      a) Push the value (I32.CONST i_1) to the stack.
+      a) Push the value (REF.ARRAY_ADDR a_2) to the stack.
+      a) Push the value (I32.CONST i_2) to the stack.
+      a) Execute the instruction (ARRAY.GET sx? x_2).
+      a) Execute the instruction (ARRAY.SET x_1).
+      a) Push the value (REF.ARRAY_ADDR a_1) to the stack.
+      a) Push the value (I32.CONST (i_1 + 1)) to the stack.
+      a) Push the value (REF.ARRAY_ADDR a_2) to the stack.
+      a) Push the value (I32.CONST (i_2 + 1)) to the stack.
+      a) Push the value (I32.CONST (n - 1)) to the stack.
+      a) Execute the instruction (ARRAY.COPY x_1 x_2).
+  a. Else if instr_u0 is of the case REF.ARRAY_ADDR, then:
+    1) Do nothing.
 
 Step_read/array.init_elem x y
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST j) from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST i) from the stack.
-8. Assert: Due to validation, a value is on the top of the stack.
-9. Pop the value instr_u0 from the stack.
-10. If instr_u0 is of the case REF.NULL, then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST j) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value instr_u0 from the stack.
+1. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
-11. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+1. If instr_u0 is of the case REF.ARRAY_ADDR, then:
   a. Let (REF.ARRAY_ADDR a) be instr_u0.
-  b. If ((a < |$arrayinst(z)|) and ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
+  a. If ((a < |$arrayinst(z)|) and ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
-  c. If ((j + n) > |$elem(z, y).REFS|), then:
+  a. If ((j + n) > |$elem(z, y).REFS|), then:
     1) Trap.
-  d. If (n is 0), then:
+  a. If (n is 0), then:
     1) Do nothing.
-  e. Else:
+  a. Else:
     1) Let (REF.ARRAY_ADDR a) be instr_u0.
-    2) If (j < |$elem(z, y).REFS|), then:
+    1) If (j < |$elem(z, y).REFS|), then:
       a) Let ref be $elem(z, y).REFS[j].
-      b) Push the value (REF.ARRAY_ADDR a) to the stack.
-      c) Push the value (I32.CONST i) to the stack.
-      d) Push the value ref to the stack.
-      e) Execute the instruction (ARRAY.SET x).
-      f) Push the value (REF.ARRAY_ADDR a) to the stack.
-      g) Push the value (I32.CONST (i + 1)) to the stack.
-      h) Push the value (I32.CONST (j + 1)) to the stack.
-      i) Push the value (I32.CONST (n - 1)) to the stack.
-      j) Execute the instruction (ARRAY.INIT_ELEM x y).
+      a) Push the value (REF.ARRAY_ADDR a) to the stack.
+      a) Push the value (I32.CONST i) to the stack.
+      a) Push the value ref to the stack.
+      a) Execute the instruction (ARRAY.SET x).
+      a) Push the value (REF.ARRAY_ADDR a) to the stack.
+      a) Push the value (I32.CONST (i + 1)) to the stack.
+      a) Push the value (I32.CONST (j + 1)) to the stack.
+      a) Push the value (I32.CONST (n - 1)) to the stack.
+      a) Execute the instruction (ARRAY.INIT_ELEM x y).
 
 Step_read/array.init_data x y
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST j) from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST i) from the stack.
-8. Assert: Due to validation, a value is on the top of the stack.
-9. Pop the value instr_u0 from the stack.
-10. If instr_u0 is of the case REF.NULL, then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST j) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value instr_u0 from the stack.
+1. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
-11. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+1. If instr_u0 is of the case REF.ARRAY_ADDR, then:
   a. Let (REF.ARRAY_ADDR a) be instr_u0.
-  b. If ((a < |$arrayinst(z)|) and ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
+  a. If ((a < |$arrayinst(z)|) and ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
-  c. If $expanddt($type(z, x)) is of the case ARRAY, then:
-    1) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-    2) Let (mut, zt) be arraytype_0.
-    3) If ((j + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
-      a) Trap.
-  d. If (n is 0), then:
+  a. If $expanddt($type(z, x)) is not of the case ARRAY, then:
     1) Do nothing.
-  e. Else:
+  a. Else:
+    1) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+    1) Let (mut, zt) be arraytype_0.
+    1) If ((j + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
+      a) Trap.
+  a. If (n is 0), then:
+    1) Do nothing.
+  a. Else:
     1) Let (REF.ARRAY_ADDR a) be instr_u0.
-    2) Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
-    3) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-    4) Let (mut, zt) be arraytype_0.
-    5) Let c be $zbytes__1^-1(zt, $data(z, y).BYTES[j : ($zsize(zt) / 8)]).
-    6) Push the value (REF.ARRAY_ADDR a) to the stack.
-    7) Push the value (I32.CONST i) to the stack.
-    8) Push the value $const($cunpack(zt), $cunpacknum_(zt, c)) to the stack.
-    9) Execute the instruction (ARRAY.SET x).
-    10) Push the value (REF.ARRAY_ADDR a) to the stack.
-    11) Push the value (I32.CONST (i + 1)) to the stack.
-    12) Push the value (I32.CONST (j + ($zsize(zt) / 8))) to the stack.
-    13) Push the value (I32.CONST (n - 1)) to the stack.
-    14) Execute the instruction (ARRAY.INIT_DATA x y).
+    1) If $expanddt($type(z, x)) is of the case ARRAY, then:
+      a) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+      a) Let (mut, zt) be arraytype_0.
+      a) Let c be $zbytes__1^-1(zt, $data(z, y).BYTES[j : ($zsize(zt) / 8)]).
+      a) Push the value (REF.ARRAY_ADDR a) to the stack.
+      a) Push the value (I32.CONST i) to the stack.
+      a) Push the value $const($cunpack(zt), $cunpacknum_(zt, c)) to the stack.
+      a) Execute the instruction (ARRAY.SET x).
+      a) Push the value (REF.ARRAY_ADDR a) to the stack.
+      a) Push the value (I32.CONST (i + 1)) to the stack.
+      a) Push the value (I32.CONST (j + ($zsize(zt) / 8))) to the stack.
+      a) Push the value (I32.CONST (n - 1)) to the stack.
+      a) Execute the instruction (ARRAY.INIT_DATA x y).
 
 Step_read/local.get x
 1. Let z be the current state.
-2. Assert: Due to validation, $local(z, x) is defined.
-3. Let ?(val) be $local(z, x).
-4. Push the value val to the stack.
+1. Assert: Due to validation, $local(z, x) is defined.
+1. Let ?(val) be $local(z, x).
+1. Push the value val to the stack.
 
 Step_read/global.get x
 1. Let z be the current state.
-2. Let val be $global(z, x).VALUE.
-3. Push the value val to the stack.
+1. Let val be $global(z, x).VALUE.
+1. Push the value val to the stack.
 
 Step_read/table.get x
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST i) from the stack.
-4. If (i ≥ |$table(z, x).REFS|), then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. If (i ≥ |$table(z, x).REFS|), then:
   a. Trap.
-5. Push the value $table(z, x).REFS[i] to the stack.
+1. Push the value $table(z, x).REFS[i] to the stack.
 
 Step_read/table.size x
 1. Let z be the current state.
-2. Let n be |$table(z, x).REFS|.
-3. Push the value (I32.CONST n) to the stack.
+1. Let n be |$table(z, x).REFS|.
+1. Push the value (I32.CONST n) to the stack.
 
 Step_read/table.fill x
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value val from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST i) from the stack.
-8. If ((i + n) > |$table(z, x).REFS|), then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value val from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. If ((i + n) > |$table(z, x).REFS|), then:
   a. Trap.
-9. If (n is 0), then:
+1. If (n is 0), then:
   a. Do nothing.
-10. Else:
+1. Else:
   a. Push the value (I32.CONST i) to the stack.
-  b. Push the value val to the stack.
-  c. Execute the instruction (TABLE.SET x).
-  d. Push the value (I32.CONST (i + 1)) to the stack.
-  e. Push the value val to the stack.
-  f. Push the value (I32.CONST (n - 1)) to the stack.
-  g. Execute the instruction (TABLE.FILL x).
+  a. Push the value val to the stack.
+  a. Execute the instruction (TABLE.SET x).
+  a. Push the value (I32.CONST (i + 1)) to the stack.
+  a. Push the value val to the stack.
+  a. Push the value (I32.CONST (n - 1)) to the stack.
+  a. Execute the instruction (TABLE.FILL x).
 
 Step_read/table.copy x y
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST j) from the stack.
-8. If ((i + n) > |$table(z, y).REFS|), then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST j) from the stack.
+1. If ((i + n) > |$table(z, y).REFS|), then:
   a. Trap.
-9. If ((j + n) > |$table(z, x).REFS|), then:
+1. If ((j + n) > |$table(z, x).REFS|), then:
   a. Trap.
-10. If (n is 0), then:
+1. If (n is 0), then:
   a. Do nothing.
-11. Else:
+1. Else:
   a. If (j ≤ i), then:
     1) Push the value (I32.CONST j) to the stack.
-    2) Push the value (I32.CONST i) to the stack.
-    3) Execute the instruction (TABLE.GET y).
-    4) Execute the instruction (TABLE.SET x).
-    5) Push the value (I32.CONST (j + 1)) to the stack.
-    6) Push the value (I32.CONST (i + 1)) to the stack.
-  b. Else:
+    1) Push the value (I32.CONST i) to the stack.
+    1) Execute the instruction (TABLE.GET y).
+    1) Execute the instruction (TABLE.SET x).
+    1) Push the value (I32.CONST (j + 1)) to the stack.
+    1) Push the value (I32.CONST (i + 1)) to the stack.
+  a. Else:
     1) Push the value (I32.CONST ((j + n) - 1)) to the stack.
-    2) Push the value (I32.CONST ((i + n) - 1)) to the stack.
-    3) Execute the instruction (TABLE.GET y).
-    4) Execute the instruction (TABLE.SET x).
-    5) Push the value (I32.CONST j) to the stack.
-    6) Push the value (I32.CONST i) to the stack.
-  c. Push the value (I32.CONST (n - 1)) to the stack.
-  d. Execute the instruction (TABLE.COPY x y).
+    1) Push the value (I32.CONST ((i + n) - 1)) to the stack.
+    1) Execute the instruction (TABLE.GET y).
+    1) Execute the instruction (TABLE.SET x).
+    1) Push the value (I32.CONST j) to the stack.
+    1) Push the value (I32.CONST i) to the stack.
+  a. Push the value (I32.CONST (n - 1)) to the stack.
+  a. Execute the instruction (TABLE.COPY x y).
 
 Step_read/table.init x y
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST j) from the stack.
-8. If ((i + n) > |$elem(z, y).REFS|), then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST j) from the stack.
+1. If ((i + n) > |$elem(z, y).REFS|), then:
   a. Trap.
-9. If ((j + n) > |$table(z, x).REFS|), then:
+1. If ((j + n) > |$table(z, x).REFS|), then:
   a. Trap.
-10. If (n is 0), then:
+1. If (n is 0), then:
   a. Do nothing.
-11. Else if (i < |$elem(z, y).REFS|), then:
+1. Else if (i < |$elem(z, y).REFS|), then:
   a. Push the value (I32.CONST j) to the stack.
-  b. Push the value $elem(z, y).REFS[i] to the stack.
-  c. Execute the instruction (TABLE.SET x).
-  d. Push the value (I32.CONST (j + 1)) to the stack.
-  e. Push the value (I32.CONST (i + 1)) to the stack.
-  f. Push the value (I32.CONST (n - 1)) to the stack.
-  g. Execute the instruction (TABLE.INIT x y).
+  a. Push the value $elem(z, y).REFS[i] to the stack.
+  a. Execute the instruction (TABLE.SET x).
+  a. Push the value (I32.CONST (j + 1)) to the stack.
+  a. Push the value (I32.CONST (i + 1)) to the stack.
+  a. Push the value (I32.CONST (n - 1)) to the stack.
+  a. Execute the instruction (TABLE.INIT x y).
 
 Step_read/load numtype_u0 loadop__u2? x ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST i) from the stack.
-4. If loadop__u2? is not defined, then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. If loadop__u2? is not defined, then:
   a. Let nt be numtype_u0.
-  b. If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|), then:
+  a. If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|), then:
     1) Trap.
-  c. Let c be $nbytes__1^-1(nt, $mem(z, x).BYTES[(i + ao.OFFSET) : ($size(nt) / 8)]).
-  d. Push the value (nt.CONST c) to the stack.
-5. If the type of numtype_u0 is Inn, then:
+  a. Let c be $nbytes__1^-1(nt, $mem(z, x).BYTES[(i + ao.OFFSET) : ($size(nt) / 8)]).
+  a. Push the value (nt.CONST c) to the stack.
+1. If the type of numtype_u0 is Inn, then:
   a. If loadop__u2? is defined, then:
     1) Let ?(loadop__0) be loadop__u2?.
-    2) Let (n, sx) be loadop__0.
-    3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
+    1) Let (n, sx) be loadop__0.
+    1) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
-  b. Let Inn be numtype_u0.
-  c. If loadop__u2? is defined, then:
+  a. Let Inn be numtype_u0.
+  a. If loadop__u2? is defined, then:
     1) Let ?(loadop__0) be loadop__u2?.
-    2) Let (n, sx) be loadop__0.
-    3) Let c be $ibytes__1^-1(n, $mem(z, x).BYTES[(i + ao.OFFSET) : (n / 8)]).
-    4) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
+    1) Let (n, sx) be loadop__0.
+    1) Let c be $ibytes__1^-1(n, $mem(z, x).BYTES[(i + ao.OFFSET) : (n / 8)]).
+    1) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
 
 Step_read/vload V128 vloadop__u0? x ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST i) from the stack.
-4. If vloadop__u0? is not defined, then:
-  a. If (((i + ao.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|), then:
-    1) Trap.
-  b. Let c be $vbytes__1^-1(V128, $mem(z, x).BYTES[(i + ao.OFFSET) : ($vsize(V128) / 8)]).
-  c. Push the value (V128.CONST c) to the stack.
-5. Else:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. If ((((i + ao.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|) and vloadop__u0? is not defined), then:
+  a. Trap.
+1. If vloadop__u0? is not defined, then:
+  a. Let c be $vbytes__1^-1(V128, $mem(z, x).BYTES[(i + ao.OFFSET) : ($vsize(V128) / 8)]).
+  a. Push the value (V128.CONST c) to the stack.
+1. Else:
   a. Let ?(vloadop__0) be vloadop__u0?.
-  b. If vloadop__0 is of the case SHAPE, then:
+  a. If vloadop__0 is of the case SHAPE, then:
     1) Let (SHAPE M X K sx) be vloadop__0.
-    2) If (((i + ao.OFFSET) + ((M · K) / 8)) > |$mem(z, x).BYTES|), then:
+    1) If (((i + ao.OFFSET) + ((M · K) / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
-    3) If the type of $lsizenn^-1((M · 2)) is Jnn, then:
+    1) If the type of $lsizenn^-1((M · 2)) is Jnn, then:
       a) Let Jnn be $lsizenn^-1((M · 2)).
-      b) Let j^K be $ibytes__1^-1(M, $mem(z, x).BYTES[((i + ao.OFFSET) + ((k · M) / 8)) : (M / 8)])^(k<K).
-      c) Let c be $invlanes_((Jnn X K), $extend__(M, $lsizenn(Jnn), sx, j)^K).
-      d) Push the value (V128.CONST c) to the stack.
-  c. If vloadop__0 is of the case SPLAT, then:
+      a) Let j^K be $ibytes__1^-1(M, $mem(z, x).BYTES[((i + ao.OFFSET) + ((k · M) / 8)) : (M / 8)])^(k<K).
+      a) Let c be $invlanes_((Jnn X K), $extend__(M, $lsizenn(Jnn), sx, j)^K).
+      a) Push the value (V128.CONST c) to the stack.
+  a. If vloadop__0 is of the case SPLAT, then:
     1) Let (SPLAT N) be vloadop__0.
-    2) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
+    1) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
-    3) Let M be (128 / N).
-    4) If the type of $lsize^-1(N) is Jnn, then:
+    1) Let M be (128 / N).
+    1) If the type of $lsize^-1(N) is Jnn, then:
       a) Let Jnn be $lsize^-1(N).
-      b) Let j be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
-      c) Let c be $invlanes_((Jnn X M), j^M).
-      d) Push the value (V128.CONST c) to the stack.
-  d. If vloadop__0 is of the case ZERO, then:
+      a) Let j be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
+      a) Let c be $invlanes_((Jnn X M), j^M).
+      a) Push the value (V128.CONST c) to the stack.
+  a. If vloadop__0 is of the case ZERO, then:
     1) Let (ZERO N) be vloadop__0.
-    2) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
+    1) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
-    3) Let j be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
-    4) Let c be $extend__(N, 128, U, j).
-    5) Push the value (V128.CONST c) to the stack.
+    1) Let j be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
+    1) Let c be $extend__(N, 128, U, j).
+    1) Push the value (V128.CONST c) to the stack.
 
 Step_read/vload_lane V128 N x ao j
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-3. Pop the value (V128.CONST c_1) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c_1) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
   a. Trap.
-7. Let M be ($vsize(V128) / N).
-8. If the type of $lsize^-1(N) is Jnn, then:
+1. Let M be ($vsize(V128) / N).
+1. If the type of $lsize^-1(N) is Jnn, then:
   a. Let Jnn be $lsize^-1(N).
-  b. Let k be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
-  c. Let c be $invlanes_((Jnn X M), $lanes_((Jnn X M), c_1) with [j] replaced by k).
-  d. Push the value (V128.CONST c) to the stack.
+  a. Let k be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
+  a. Let c be $invlanes_((Jnn X M), $lanes_((Jnn X M), c_1) with [j] replaced by k).
+  a. Push the value (V128.CONST c) to the stack.
 
 Step_read/memory.size x
 1. Let z be the current state.
-2. Let (n · (64 · $Ki())) be |$mem(z, x).BYTES|.
-3. Push the value (I32.CONST n) to the stack.
+1. Let (n · (64 · $Ki())) be |$mem(z, x).BYTES|.
+1. Push the value (I32.CONST n) to the stack.
 
 Step_read/memory.fill x
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value val from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST i) from the stack.
-8. If ((i + n) > |$mem(z, x).BYTES|), then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value val from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. If ((i + n) > |$mem(z, x).BYTES|), then:
   a. Trap.
-9. If (n is 0), then:
+1. If (n is 0), then:
   a. Do nothing.
-10. Else:
+1. Else:
   a. Push the value (I32.CONST i) to the stack.
-  b. Push the value val to the stack.
-  c. Execute the instruction (STORE I32 ?(8) x $memarg0()).
-  d. Push the value (I32.CONST (i + 1)) to the stack.
-  e. Push the value val to the stack.
-  f. Push the value (I32.CONST (n - 1)) to the stack.
-  g. Execute the instruction (MEMORY.FILL x).
+  a. Push the value val to the stack.
+  a. Execute the instruction (STORE I32 ?(8) x $memarg0()).
+  a. Push the value (I32.CONST (i + 1)) to the stack.
+  a. Push the value val to the stack.
+  a. Push the value (I32.CONST (n - 1)) to the stack.
+  a. Execute the instruction (MEMORY.FILL x).
 
 Step_read/memory.copy x_1 x_2
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i_2) from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST i_1) from the stack.
-8. If ((i_1 + n) > |$mem(z, x_1).BYTES|), then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i_2) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i_1) from the stack.
+1. If ((i_1 + n) > |$mem(z, x_1).BYTES|), then:
   a. Trap.
-9. If ((i_2 + n) > |$mem(z, x_2).BYTES|), then:
+1. If ((i_2 + n) > |$mem(z, x_2).BYTES|), then:
   a. Trap.
-10. If (n is 0), then:
+1. If (n is 0), then:
   a. Do nothing.
-11. Else:
+1. Else:
   a. If (i_1 ≤ i_2), then:
     1) Push the value (I32.CONST i_1) to the stack.
-    2) Push the value (I32.CONST i_2) to the stack.
-    3) Execute the instruction (LOAD I32 ?((8, U)) x_2 $memarg0()).
-    4) Execute the instruction (STORE I32 ?(8) x_1 $memarg0()).
-    5) Push the value (I32.CONST (i_1 + 1)) to the stack.
-    6) Push the value (I32.CONST (i_2 + 1)) to the stack.
-  b. Else:
+    1) Push the value (I32.CONST i_2) to the stack.
+    1) Execute the instruction (LOAD I32 ?((8, U)) x_2 $memarg0()).
+    1) Execute the instruction (STORE I32 ?(8) x_1 $memarg0()).
+    1) Push the value (I32.CONST (i_1 + 1)) to the stack.
+    1) Push the value (I32.CONST (i_2 + 1)) to the stack.
+  a. Else:
     1) Push the value (I32.CONST ((i_1 + n) - 1)) to the stack.
-    2) Push the value (I32.CONST ((i_2 + n) - 1)) to the stack.
-    3) Execute the instruction (LOAD I32 ?((8, U)) x_2 $memarg0()).
-    4) Execute the instruction (STORE I32 ?(8) x_1 $memarg0()).
-    5) Push the value (I32.CONST i_1) to the stack.
-    6) Push the value (I32.CONST i_2) to the stack.
-  c. Push the value (I32.CONST (n - 1)) to the stack.
-  d. Execute the instruction (MEMORY.COPY x_1 x_2).
+    1) Push the value (I32.CONST ((i_2 + n) - 1)) to the stack.
+    1) Execute the instruction (LOAD I32 ?((8, U)) x_2 $memarg0()).
+    1) Execute the instruction (STORE I32 ?(8) x_1 $memarg0()).
+    1) Push the value (I32.CONST i_1) to the stack.
+    1) Push the value (I32.CONST i_2) to the stack.
+  a. Push the value (I32.CONST (n - 1)) to the stack.
+  a. Execute the instruction (MEMORY.COPY x_1 x_2).
 
 Step_read/memory.init x y
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST j) from the stack.
-8. If ((i + n) > |$data(z, y).BYTES|), then:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST j) from the stack.
+1. If ((i + n) > |$data(z, y).BYTES|), then:
   a. Trap.
-9. If ((j + n) > |$mem(z, x).BYTES|), then:
+1. If ((j + n) > |$mem(z, x).BYTES|), then:
   a. Trap.
-10. If (n is 0), then:
+1. If (n is 0), then:
   a. Do nothing.
-11. Else if (i < |$data(z, y).BYTES|), then:
+1. Else if (i < |$data(z, y).BYTES|), then:
   a. Push the value (I32.CONST j) to the stack.
-  b. Push the value (I32.CONST $data(z, y).BYTES[i]) to the stack.
-  c. Execute the instruction (STORE I32 ?(8) x $memarg0()).
-  d. Push the value (I32.CONST (j + 1)) to the stack.
-  e. Push the value (I32.CONST (i + 1)) to the stack.
-  f. Push the value (I32.CONST (n - 1)) to the stack.
-  g. Execute the instruction (MEMORY.INIT x y).
+  a. Push the value (I32.CONST $data(z, y).BYTES[i]) to the stack.
+  a. Execute the instruction (STORE I32 ?(8) x $memarg0()).
+  a. Push the value (I32.CONST (j + 1)) to the stack.
+  a. Push the value (I32.CONST (i + 1)) to the stack.
+  a. Push the value (I32.CONST (n - 1)) to the stack.
+  a. Execute the instruction (MEMORY.INIT x y).
 
 Step/throw x
 1. Let z be the current state.
-2. Let a be |$exninst(z)|.
-3. Assert: Due to validation, $expanddt($tag(z, x).TYPE) is of the case FUNC.
-4. Let (FUNC functype_0) be $expanddt($tag(z, x).TYPE).
-5. Let (t^n -> []) be functype_0.
-6. Assert: Due to validation, there are at least n values on the top of the stack.
-7. Pop the values val^n from the stack.
-8. Let exn be { TAG: a; FIELDS: val^n; }.
-9. Perform $add_exninst(z, [exn]).
-10. Push the value (REF.EXN_ADDR a) to the stack.
-11. Execute the instruction THROW_REF.
+1. Assert: Due to validation, (x < |$tagaddr(z)|).
+1. Let a be |$exninst(z)|.
+1. Assert: Due to validation, $expanddt($tag(z, x).TYPE) is of the case FUNC.
+1. Let (FUNC functype_0) be $expanddt($tag(z, x).TYPE).
+1. Let (t^n -> valtype_1) be functype_0.
+1. Assert: Due to validation, (valtype_1 is []).
+1. Assert: Due to validation, there are at least n values on the top of the stack.
+1. Pop the values val^n from the stack.
+1. Let exn be { TAG: $tagaddr(z)[x]; FIELDS: val^n; }.
+1. Perform $add_exninst(z, [exn]).
+1. Push the value (REF.EXN_ADDR a) to the stack.
+1. Execute the instruction THROW_REF.
 
 Step/struct.new x
 1. Let z be the current state.
-2. Let a be |$structinst(z)|.
-3. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-4. Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
-5. Let (mut, zt)^n be fieldtype_0.
-6. Assert: Due to validation, there are at least n values on the top of the stack.
-7. Pop the values val^n from the stack.
-8. Let si be { TYPE: $type(z, x); FIELDS: $packfield_(zt, val)^n; }.
-9. Push the value (REF.STRUCT_ADDR a) to the stack.
-10. Perform $add_structinst(z, [si]).
+1. Let a be |$structinst(z)|.
+1. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
+1. Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
+1. Let (mut, zt)^n be fieldtype_0.
+1. Assert: Due to validation, there are at least n values on the top of the stack.
+1. Pop the values val^n from the stack.
+1. Let si be { TYPE: $type(z, x); FIELDS: $packfield_(zt, val)^n; }.
+1. Push the value (REF.STRUCT_ADDR a) to the stack.
+1. Perform $add_structinst(z, [si]).
 
 Step/struct.set x i
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value val from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value instr_u0 from the stack.
-6. If instr_u0 is of the case REF.NULL, then:
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value val from the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value instr_u0 from the stack.
+1. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
-7. If instr_u0 is of the case REF.STRUCT_ADDR, then:
+1. If instr_u0 is of the case REF.STRUCT_ADDR, then:
   a. Let (REF.STRUCT_ADDR a) be instr_u0.
-  b. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-  c. Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
-  d. Let (mut, zt)* be fieldtype_0.
-  e. If ((|mut*| is |zt*|) and (i < |zt*|)), then:
+  a. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
+  a. Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
+  a. Let (mut, zt)* be fieldtype_0.
+  a. If ((|mut*| is |zt*|) and (i < |zt*|)), then:
     1) Perform $with_struct(z, a, i, $packfield_(zt*[i], val)).
 
 Step/array.new_fixed x n
 1. Let z be the current state.
-2. Assert: Due to validation, there are at least n values on the top of the stack.
-3. Pop the values val^n from the stack.
-4. Let a be |$arrayinst(z)|.
-5. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
-6. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-7. Let (mut, zt) be arraytype_0.
-8. Let ai be { TYPE: $type(z, x); FIELDS: $packfield_(zt, val)^n; }.
-9. Push the value (REF.ARRAY_ADDR a) to the stack.
-10. Perform $add_arrayinst(z, [ai]).
+1. Assert: Due to validation, there are at least n values on the top of the stack.
+1. Pop the values val^n from the stack.
+1. Let a be |$arrayinst(z)|.
+1. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
+1. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+1. Let (mut, zt) be arraytype_0.
+1. Let ai be { TYPE: $type(z, x); FIELDS: $packfield_(zt, val)^n; }.
+1. Push the value (REF.ARRAY_ADDR a) to the stack.
+1. Perform $add_arrayinst(z, [ai]).
 
 Step/array.set x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value val from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value is on the top of the stack.
-7. Pop the value instr_u0 from the stack.
-8. If instr_u0 is of the case REF.NULL, then:
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value val from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value instr_u0 from the stack.
+1. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
-9. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+1. If instr_u0 is of the case REF.ARRAY_ADDR, then:
   a. Let (REF.ARRAY_ADDR a) be instr_u0.
-  b. If ((a < |$arrayinst(z)|) and (i ≥ |$arrayinst(z)[a].FIELDS|)), then:
+  a. If ((a < |$arrayinst(z)|) and (i ≥ |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
-  c. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
-  d. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-  e. Let (mut, zt) be arraytype_0.
-  f. Perform $with_array(z, a, i, $packfield_(zt, val)).
+  a. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
+  a. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+  a. Let (mut, zt) be arraytype_0.
+  a. Perform $with_array(z, a, i, $packfield_(zt, val)).
 
 Step/local.set x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value val from the stack.
-4. Perform $with_local(z, x, val).
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value val from the stack.
+1. Perform $with_local(z, x, val).
 
 Step/global.set x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value val from the stack.
-4. Perform $with_global(z, x, val).
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value val from the stack.
+1. Perform $with_global(z, x, val).
 
 Step/table.set x
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value ref from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If (i ≥ |$table(z, x).REFS|), then:
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value ref from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. If (i ≥ |$table(z, x).REFS|), then:
   a. Trap.
-7. Perform $with_table(z, x, i, ref).
+1. Perform $with_table(z, x, i, ref).
 
 Step/table.grow x
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value ref from the stack.
-6. Either:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
+1. Pop the value ref from the stack.
+1. Either:
   a. Let ti be $growtable($table(z, x), n, ref).
-  b. Push the value (I32.CONST |$table(z, x).REFS|) to the stack.
-  c. Perform $with_tableinst(z, x, ti).
-7. Or:
+  a. Push the value (I32.CONST |$table(z, x).REFS|) to the stack.
+  a. Perform $with_tableinst(z, x, ti).
+1. Or:
   a. Push the value (I32.CONST $invsigned_(32, (- 1))) to the stack.
 
 Step/elem.drop x
 1. Let z be the current state.
-2. Perform $with_elem(z, x, []).
+1. Perform $with_elem(z, x, []).
 
-Step/store nt sz_u1? x ao
+Step/store nt sz_u0? x ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type numtype_u0 is on the top of the stack.
-3. Pop the value (numtype_u0.CONST c) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If ((numtype_u0 is nt) and sz_u1? is not defined), then:
-  a. If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|), then:
+1. Assert: Due to validation, a value of value type numtype_u1 is on the top of the stack.
+1. Pop the value (numtype_u1.CONST c) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. If (numtype_u1 is nt), then:
+  a. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|) and sz_u0? is not defined), then:
     1) Trap.
-  b. Let b* be $nbytes_(nt, c).
-  c. Perform $with_mem(z, x, (i + ao.OFFSET), ($size(nt) / 8), b*).
-7. If the type of numtype_u0 is Inn, then:
-  a. If sz_u1? is defined, then:
-    1) Let ?(n) be sz_u1?.
-    2) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
+  a. If sz_u0? is not defined, then:
+    1) Let b* be $nbytes_(nt, c).
+    1) Perform $with_mem(z, x, (i + ao.OFFSET), ($size(nt) / 8), b*).
+1. If the type of numtype_u1 is Inn, then:
+  a. If sz_u0? is defined, then:
+    1) Let ?(n) be sz_u0?.
+    1) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
-  b. Let Inn be numtype_u0.
-  c. If sz_u1? is defined, then:
-    1) Let ?(n) be sz_u1?.
-    2) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
-    3) Perform $with_mem(z, x, (i + ao.OFFSET), (n / 8), b*).
+  a. Let Inn be numtype_u1.
+  a. If sz_u0? is defined, then:
+    1) Let ?(n) be sz_u0?.
+    1) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
+    1) Perform $with_mem(z, x, (i + ao.OFFSET), (n / 8), b*).
 
 Step/vstore V128 x ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-3. Pop the value (V128.CONST c) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If (((i + ao.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|), then:
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. If (((i + ao.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|), then:
   a. Trap.
-7. Let b* be $vbytes_(V128, c).
-8. Perform $with_mem(z, x, (i + ao.OFFSET), ($vsize(V128) / 8), b*).
+1. Let b* be $vbytes_(V128, c).
+1. Perform $with_mem(z, x, (i + ao.OFFSET), ($vsize(V128) / 8), b*).
 
 Step/vstore_lane V128 N x ao j
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-3. Pop the value (V128.CONST c) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If (((i + ao.OFFSET) + N) > |$mem(z, x).BYTES|), then:
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+1. Pop the value (V128.CONST c) from the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST i) from the stack.
+1. If (((i + ao.OFFSET) + N) > |$mem(z, x).BYTES|), then:
   a. Trap.
-7. Let M be (128 / N).
-8. If the type of $lsize^-1(N) is Jnn, then:
+1. Let M be (128 / N).
+1. If the type of $lsize^-1(N) is Jnn, then:
   a. Let Jnn be $lsize^-1(N).
-  b. If (j < |$lanes_((Jnn X M), c)|), then:
+  a. If (j < |$lanes_((Jnn X M), c)|), then:
     1) Let b* be $ibytes_(N, $lanes_((Jnn X M), c)[j]).
-    2) Perform $with_mem(z, x, (i + ao.OFFSET), (N / 8), b*).
+    1) Perform $with_mem(z, x, (i + ao.OFFSET), (N / 8), b*).
 
 Step/memory.grow x
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Either:
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+1. Pop the value (I32.CONST n) from the stack.
+1. Either:
   a. Let mi be $growmem($mem(z, x), n).
-  b. Push the value (I32.CONST (|$mem(z, x).BYTES| / (64 · $Ki()))) to the stack.
-  c. Perform $with_meminst(z, x, mi).
-5. Or:
+  a. Push the value (I32.CONST (|$mem(z, x).BYTES| / (64 · $Ki()))) to the stack.
+  a. Perform $with_meminst(z, x, mi).
+1. Or:
   a. Push the value (I32.CONST $invsigned_(32, (- 1))) to the stack.
 
 Step/data.drop x
 1. Let z be the current state.
-2. Perform $with_data(z, x, []).
+1. Perform $with_data(z, x, []).
 
 eval_expr instr*
 1. Execute the instruction instr*.
-2. Pop the value val from the stack.
-3. Return [val].
+1. Pop the value val from the stack.
+1. Return [val].
 
 == Complete.
 ```

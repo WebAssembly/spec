@@ -531,19 +531,48 @@ and translate_context_rhs exp =
       ]
     )
   | Il.Atom "HANDLER_", [exp1; exp2; exp3] ->
-    (* TODO: This case is very similar to Frame. Perhaps the it can be generalized? *)
-    let e1 = translate_exp exp1 in (* arity *)
-    let e2 = translate_exp exp2 in (* catch *)
-    let e3 = translate_rhs exp3 in (* label *)
+    (match exp3.it with
+    | ListE [ctxt] when is_context ctxt ->
+      (* TODO: This case is very similar to Frame. Perhaps it can be generalized? *)
+      let e1 = translate_exp exp1 in (* arity *)
+      let e2 = translate_exp exp2 in (* catch *)
+      let e3 = translate_rhs exp3 in (* label *)
 
-    let eH = varE "H"                ~at:at ~note:handlerT in (* handler id *)
-    let eh = caseE (case', [e1; e2]) ~at:at ~note:handlerT in (* handler *)
+      let eH = varE "H"                ~at:at ~note:handlerT in (* handler id *)
+      let eh = caseE (case', [e1; e2]) ~at:at ~note:handlerT in (* handler *)
 
-    let e' = caseE ([[atom]], []) ~note:note in
-    [
-      letI (eH, eh) ~at:at;
-      enterI (eH, listE [e'] ~note:notes, e3) ~at:at;
-    ]
+      let e' = caseE ([[atom]], []) ~note:note in
+      [
+        letI (eH, eh) ~at:at;
+        enterI (eH, listE [e'] ~note:notes, e3) ~at:at;
+      ]
+    | _ ->
+      (* TODO: This case is very similar to Label. Perhaps it can be generalized? *)
+      let e1 = translate_exp exp1 in (* arity *)
+      let e2 = translate_exp exp2 in (* catch *)
+      let e3 = translate_exp exp3 in (* instrs *)
+
+      let eH = varE "H"                ~at:at ~note:handlerT in (* handler id *)
+      let eh = caseE (case', [e1; e2]) ~at:at ~note:handlerT in (* handler *)
+
+      let at' = exp3.at in
+      let note' = exp3.note in
+      let exp' = caseE ([[atom]], []) ~note:note in
+      let exp'' = listE ([exp']) ~at:at' ~note:note' in
+
+      (match exp3.it with
+      | Il.ListE [ve; ie] -> (* HARDCODE *)
+        [
+          letI (eH, eh) ~at:at;
+          enterI (eH, listE [translate_exp ie; exp'] ~note:note', [pushI (translate_exp ve)]) ~at:at';
+        ]
+      | _ ->
+        [
+          letI (eH, eh) ~at:at;
+          enterI (eH, catE(e3, exp'') ~note:note', []) ~at:at';
+        ]
+      )
+    )
   | _ -> error at ("unrecognized context: " ^ (Il.Print.string_of_atom atom))
 
 
@@ -1219,9 +1248,11 @@ let rec translate_rgroup' rgroup =
       let atom = case_of_case ctxt |> List.hd |> List.hd in
       let cond = ContextKindE atom $$ atom.at % boolT in
       let head_instrs, middle_instr = translate_context ctxt in
+      let is_otherwise = function [{it = OtherwiseI _; _}] -> true | _ -> false in
       let body_instrs =
         List.map (translate_reduction ~context_opt:(Some middle_instr)) u_group
-        |> List.mapi (fun i instrs -> if i = 0 then instrs else [otherwiseI instrs])
+        (* TODO: Consider inserting otherwise to normal case also *)
+        |> List.mapi (fun i instrs -> if i = 0 || is_otherwise instrs then instrs else [otherwiseI instrs])
         |> Transpile.merge_blocks in
       k, [
         ifI (
