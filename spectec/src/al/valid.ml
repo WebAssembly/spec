@@ -405,16 +405,15 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
       )
   | OptE expr_opt ->
     check_opt source expr.note;
-    (match expr_opt with
-    | Some expr' -> check_match source expr.note (iterT expr'.note Opt)
-    | None -> ()
-    )
-  | ListE [] -> check_list source expr.note
-  | ListE (h :: t) ->
+    Option.iter
+      (fun expr' -> check_match source expr.note (iterT expr'.note Opt))
+      expr_opt
+  | ListE l ->
     check_list source expr.note;
-    t
+    let elem_typ = unwrap_iter_typ expr.note in
+    l
     |> List.map note
-    |> List.iter (check_match source h.note)
+    |> List.iter (check_match source elem_typ)
   | ArityE expr1 ->
     check_num source expr.note; check_context source expr1.note
   | FrameE (expr_opt, expr1) ->
