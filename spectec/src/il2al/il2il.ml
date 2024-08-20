@@ -188,7 +188,7 @@ let replace_lhs lhs pr =
     if eq_exp lhs lhs' then
       pr
     else
-      { pr with it = LetPr (lhs, rhs, (free_exp lhs).varid |> Set.to_list) }
+      { pr with it = LetPr (lhs, rhs, (free_exp lhs).varid |> Set.elements) }
   | _ -> Error.error pr.at "prose translation" "expected a LetPr"
 
 (* x list list -> x list list list *)

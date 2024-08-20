@@ -73,7 +73,7 @@ let drop_until = drop_until' []
 let free_ids e =
   (free_exp e)
   .varid
-  |> Set.to_list
+  |> Set.elements
 
 let dim e =
   let t = (NumT NatT $ no_region) in
