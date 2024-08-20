@@ -175,18 +175,29 @@ and string_of_expr expr =
   | VarE id -> id
   | SubE (id, _) -> id
   | IterE (e, _, iter) -> string_of_expr e ^ string_of_iter iter
-  | InfixE (e1, a, e2) -> "(" ^ string_of_expr e1 ^ " " ^ string_of_atom a ^ " " ^ string_of_expr e2 ^ ")"
-  | CaseE ({ it=Atom.Atom ("CONST" | "VCONST"); _ }, hd::tl) ->
+  | CaseE ([{ it=Atom.Atom ("CONST" | "VCONST"); _ }]::_tl, hd::tl) ->
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
-  | CaseE (a, []) -> string_of_atom a
-  | CaseE (a, el) -> "(" ^ string_of_atom a ^ " " ^ string_of_exprs " " el ^ ")"
-  | CaseE2 (op, el) -> "(" ^ string_of_mixop op ^ "_" ^ string_of_exprs " " el ^ ")"
+  | CaseE ([[ atom ]], []) -> string_of_atom atom
+  | CaseE (op, el) ->
+    let op' = List.map (fun al -> String.concat "" (List.map string_of_atom al)) op in
+    (match op' with
+    | [] -> "()"
+    | hd::tl ->
+      let res =
+        List.fold_left2 (
+          fun acc a e ->
+            let a' = if a = "" then "" else " " ^ a in
+            let acc' = if acc = "" then "" else acc ^ " " in
+            acc' ^ string_of_expr e ^ a'
+        ) hd tl el in
+      "(" ^ res ^ ")"
+    )
   | OptE (Some e) -> "?(" ^ string_of_expr e ^ ")"
   | OptE None -> "?()"
   | ContextKindE a -> sprintf "context_kind(%s)" (string_of_atom a)
   | IsDefinedE e -> sprintf "%s != None" (string_of_expr e)
   | IsCaseOfE (e, a) -> sprintf "case(%s) == %s" (string_of_expr e) (string_of_atom a)
-  | HasTypeE (e, t) -> sprintf "type(%s) == %s" (string_of_expr e) t
+  | HasTypeE (e, t) -> sprintf "type(%s) == %s" (string_of_expr e) (string_of_typ t)
   | IsValidE e -> sprintf "valid(%s)" (string_of_expr e)
   | TopLabelE -> "top_label()"
     (* TODO: "type(top()) == label"*)
@@ -286,7 +297,7 @@ let rec string_of_instr' depth instr =
       (string_of_instrs' (depth + 1) il2)
       (repeat indent depth)
   | OtherwiseI il ->
-    sprintf " Otherwise:%s" 
+    sprintf " Otherwise:%s"
       (string_of_instrs' (depth + 1) il)
   | EitherI (il1, il2) ->
     sprintf " Either {%s\n%s }\n%s Or {%s\n %s}"
@@ -308,12 +319,12 @@ let rec string_of_instr' depth instr =
   | LetI (e1, e2) ->
     sprintf " Let %s = %s" (string_of_expr e1)
       (string_of_expr e2)
-  | TrapI -> sprintf " Trap" 
-  | NopI -> sprintf " Nop" 
-  | ReturnI None -> sprintf " Return" 
+  | TrapI -> sprintf " Trap"
+  | NopI -> sprintf " Nop"
+  | ReturnI None -> sprintf " Return"
   | ReturnI (Some e) -> sprintf " Return %s" (string_of_expr e)
   | EnterI (e1, e2, il) ->
-    sprintf " Enter (%s, %s) {%s \n%s }" 
+    sprintf " Enter (%s, %s) {%s \n%s }"
       (string_of_expr e1) (string_of_expr e2) (string_of_instrs' (depth + 1) il) (repeat indent depth)
   | ExecuteI e ->
     sprintf " Execute %s" (string_of_expr e)
@@ -327,7 +338,7 @@ let rec string_of_instr' depth instr =
     sprintf " %s%s := %s"
       (string_of_expr e1) (string_of_path p) (string_of_expr e2)
   | AppendI (e1, e2) ->
-    sprintf " %s :+ %s" 
+    sprintf " %s :+ %s"
       (string_of_expr e2) (string_of_expr e1)
   | YetI s -> sprintf " YetI: %s." s
 
@@ -483,7 +494,7 @@ and structured_string_of_expr expr =
     ^ structured_string_of_expr e2
     ^ ")"
   | VarE id -> "VarE (" ^ id ^ ")"
-  | SubE (id, t) -> "SubE (" ^ id ^ "," ^ t ^ ")"
+  | SubE (id, t) -> sprintf "SubE (%s, %s)" id (string_of_typ t)
   | IterE (e, ids, iter) ->
     "IterE ("
     ^ structured_string_of_expr e
@@ -492,26 +503,16 @@ and structured_string_of_expr expr =
     ^ ", "
     ^ string_of_iter iter
     ^ ")"
-  | InfixE (e1, a, e2) ->
-    "InfixE ("
-    ^ structured_string_of_expr e1
-    ^ ", "
-    ^ string_of_atom a
-    ^ ", "
-    ^ structured_string_of_expr e2
-    ^ ")"
-  | CaseE (a, el) ->
-    "CaseE (" ^ string_of_atom a
-    ^ ", [" ^ structured_string_of_exprs el ^ "])"
-  | CaseE2 (op, el) ->
-    "CaseE2 (" ^ string_of_mixop op
+  | CaseE (op, el) ->
+    "CaseE (" ^ string_of_mixop op
     ^ ", [" ^ structured_string_of_exprs el ^ "])"
   | OptE None -> "OptE"
   | OptE (Some e) -> "OptE (" ^ structured_string_of_expr e ^ ")"
   | ContextKindE a -> sprintf "ContextKindE (%s)" (string_of_atom a)
   | IsDefinedE e -> "DefinedE (" ^ structured_string_of_expr e ^ ")"
   | IsCaseOfE (e, a) -> "CaseOfE (" ^ structured_string_of_expr e ^ ", " ^ string_of_atom a ^ ")"
-  | HasTypeE (e, t) -> "HasTypeE (" ^ structured_string_of_expr e ^ ", " ^ t ^ ")"
+  | HasTypeE (e, t) ->
+    sprintf "HasTypeE (%s, %s)" (structured_string_of_expr e) (string_of_typ t)
   | IsValidE e -> "IsValidE (" ^ structured_string_of_expr e ^ ")"
   | TopLabelE -> "TopLabelE"
   | TopFrameE -> "TopFrameE"

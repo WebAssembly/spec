@@ -59,7 +59,7 @@ let module_ok = function
     |> Reference_interpreter.Valid.check_module;
     *)
     (* TODO: Moduletype *)
-    TupV [listV_of_list []; listV_of_list []]
+    CaseV ("->", [listV_of_list []; listV_of_list []])
   | vs -> Numerics.error_values "$Module_ok" vs
 
 let manual_map =

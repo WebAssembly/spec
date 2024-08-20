@@ -470,18 +470,14 @@ let rec mk_access ps base =
   | h :: t -> accE (base, h) ~note:Al.Al_util.no_note |> mk_access t
   | [] -> base
 
-let is_store expr = match expr.it with
-  | VarE s ->
-    s = "s" || String.starts_with ~prefix:"s'" s || String.starts_with ~prefix:"s_" s
+let is_store expr = match expr.note.it with
+  | Il.Ast.VarT (id, _) when id.it = "store" -> true
   | _ -> false
-let is_frame expr = match expr.it with
-  | VarE f ->
-    f = "f" || String.starts_with ~prefix:"f'" f || String.starts_with ~prefix:"f_" f
+let is_frame expr = match expr.note.it with
+  | Il.Ast.VarT (id, _) when id.it = "frame" -> true
   | _ -> false
-let is_state expr = match expr.it with
-  | TupE [ s; f ] -> is_store s && is_frame f
-  | VarE z ->
-    z = "z" || String.starts_with ~prefix:"z'" z || String.starts_with ~prefix:"z_" z
+let is_state expr = match expr.note.it with
+  | Il.Ast.VarT (id, _) when id.it = "state" -> true
   | _ -> false
 
 let is_store_arg arg = match arg.it with
@@ -511,12 +507,17 @@ let hide_state_expr expr =
 
 let hide_state instr =
   let at = instr.at in
+  let env = Al.Valid.env in
+  let set_unit_type fname =
+    let id = (fname $ no_region) in
+    let unit_type = Il.Ast.TupT [] $ no_region in
+    match Il.Env.find_def !Al.Valid.env id with
+    | (params, _, clauses) -> env := Al.Valid.Env.bind_def !env id (params, unit_type, clauses)
+  in
   match instr.it with
-  (* Return *)
-  | ReturnI (Some e) when is_state e || is_store e -> [ returnI None ~at:at ]
   (* Perform *)
-  | LetI (e, { it = CallE (fname, args); _ }) when is_state e || is_store e -> [ performI (fname, hide_state_args args) ~at:at ]
-  | PerformI (f, args) -> [ performI (f, hide_state_args args) ~at:at ]
+  | LetI (e, { it = CallE (fname, args); _ }) when is_state e || is_store e -> set_unit_type fname; [ performI (fname, hide_state_args args) ~at:at ]
+  | PerformI (f, args) -> set_unit_type f; [ performI (f, hide_state_args args) ~at:at ]
   (* Append *)
   | LetI (_, { it = ExtE (s, ps, { it = ListE [ e ]; _ }, Back); note; _ } ) when is_store s ->
     let access = { (mk_access ps s) with note } in
@@ -529,17 +530,27 @@ let hide_state instr =
       appendI (access, e1) ~at:at;
       returnI (Some addr) ~at:at ]
   (* Replace store *)
+  | ReturnI (Some ({ it = TupE [ { it = UpdE (s, ps, e); note; _ }; f ]; _ })) when is_store s && is_frame f ->
+    let hs, t = Lib.List.split_last ps in
+    let access = { (mk_access hs s) with note } in
+    [ replaceI (access, t, e) ~at:at ]
   | LetI (_, { it = UpdE (s, ps, e); note; _ })
-  | ReturnI (Some ({ it = TupE [ { it = UpdE (s, ps, e); note; _ }; { it = VarE "f"; _ } ]; _ }))
   | ReturnI (Some ({ it = UpdE (s, ps, e); note; _ })) when is_store s ->
     let hs, t = Lib.List.split_last ps in
     let access = { (mk_access hs s) with note } in
     [ replaceI (access, t, e) ~at:at ]
   (* Replace frame *)
-  | ReturnI (Some ({ it = TupE [ { it = VarE "s"; _ }; { it = UpdE (f, ps, e); note; _ } ]; _ })) when is_frame f ->
+  | ReturnI (Some ({ it = TupE [ s; { it = UpdE (f, ps, e); note; _ } ]; _ })) when is_store s && is_frame f ->
     let hs, t = Lib.List.split_last ps in
     let access = { (mk_access hs f) with note } in
     [ replaceI (access, t, e) ~at:at ]
+  (* Append store *)
+  | ReturnI (Some ({ it = TupE [ { it = ExtE (s, ps, e, Back); note; _ }; f ]; _ })) when is_store s && is_frame f ->
+    (* let hs, t = Lib.List.split_last ps in *)
+    let access = { (mk_access ps s) with note } in
+    [ appendI (access, e) ~at:at ]
+  (* Return *)
+  | ReturnI (Some e) when is_state e || is_store e -> [ returnI None ~at:at ]
   | _ -> [ instr ]
 
 let remove_state algo =
@@ -568,6 +579,60 @@ let remove_state algo =
     | rule -> rule
   }
 
+let get_state_arg_opt f =
+  let arg = ref (TypA (Il.Ast.BoolT $ no_region)) in
+  let id = f $ no_region in
+  match Il.Env.find_def !Al.Valid.env id with
+  | (params, _, _) ->
+    let param_state = List.find_opt (
+      fun param ->
+        match param.it with
+        | Il.Ast.ExpP (id, ({ at = _ ; it = VarT ({ at = _ ; it = "state"; note = _ ;}, _); note = _ } as typ)) ->
+          arg := ExpA ((VarE "z") $$ id.at % typ);
+          true
+        | _ -> false
+    ) params in
+    if Option.is_some param_state then (
+      let param_state = Option.get param_state in
+      Option.some {param_state with it = !arg}
+    ) else Option.none
+
+let recover_state algo =
+
+  let recover_state_expr expr =
+    match expr.it with
+    | CallE (f, args) ->
+      let arg_state = get_state_arg_opt f in
+      if Option.is_some arg_state then
+        let answer = {expr with it = CallE (f, Option.get arg_state :: args)} in
+        answer
+      else expr
+    | _ -> expr
+  in
+
+  let recover_state_instr instr =
+    match instr.it with
+    | PerformI (f, args) ->
+      let arg_state = get_state_arg_opt f in
+      if Option.is_some arg_state then
+        let answer = {instr with it = PerformI (f, Option.get arg_state :: args)} in
+        [answer]
+      else [instr]
+    | _ -> [instr]
+  in
+
+  let walk_config =
+      {
+        Walk.default_config with
+        (* pre_instr = ; *)
+        pre_expr = recover_state_expr;
+        pre_instr = recover_state_instr
+      }
+  in
+
+  let algo' = Walk.walk walk_config algo in
+  algo'
+
 let insert_state_binding algo =
   let state_count = ref 0 in
 
@@ -586,16 +651,24 @@ let insert_state_binding algo =
   in
 
   let algo' = Walk.walk walk_config algo in
-  { algo' with it =
-    match algo'.it with
-    | FuncA (name, params, body) when !state_count > 0 ->
-      let body = (letI (varE "z" ~note:stateT, getCurStateE () ~note:stateT)) :: body in
-      FuncA (name, params, body)
-    | RuleA (name, anchor, params, body) when !state_count > 0 ->
-      let body = (letI (varE "z" ~note:stateT, getCurStateE () ~note:stateT)) :: body in
-      RuleA (name, anchor, params, body)
-    | a -> a
-  }
+  if !state_count > 0 then (
+    match algo.it with
+    | RuleA _ ->
+      { algo' with it =
+        match algo'.it with
+        | FuncA (name, params, body) ->
+          let body = (letI (varE "z" ~note:stateT, getCurStateE () ~note:stateT)) :: body in
+          FuncA (name, params, body)
+        | RuleA (name, anchor, params, body) ->
+          let body = (letI (varE "z" ~note:stateT, getCurStateE () ~note:stateT)) :: body in
+          RuleA (name, anchor, params, body)
+      }
+    | FuncA (id, args, instrs) ->
+        let answer = {algo with it = FuncA (id, {at = no; it = ExpA (varE "z" ~note:stateT); note = ()} :: args, instrs)} in
+        answer
+  )
+  else algo'
+
 
 (* Insert "Let f be the current frame" if necessary. *)
 let insert_frame_binding instrs =
@@ -838,7 +911,7 @@ let remove_enter algo =
     match instr.it with
     | EnterI (
       ({ it = FrameE (Some e_arity, _); _ } as e_frame),
-      { it = ListE ([ { it = CaseE ({ it = Atom.Atom "FRAME_"; _ }, []); _ } ]); _ },
+      { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "FRAME_"; _ }]], []); _ } ]); _ },
       il) ->
         begin match e_arity.it with
         | NumE z when Z.to_int z = 0 ->
@@ -854,7 +927,7 @@ let remove_enter algo =
         end
     | EnterI (
       ({ it = FrameE (None, _); _ } as e_frame),
-      { it = ListE ([ { it = CaseE ({ it = Atom.Atom "FRAME_"; _ }, []); _ } ]); _ },
+      { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "FRAME_"; _ }]], []); _ } ]); _ },
       il) ->
         pushI e_frame ~at:instr.at :: il @ [ popI e_frame ~at:instr.at ]
     | _ -> [ instr ]
@@ -862,7 +935,7 @@ let remove_enter algo =
 
   let enter_frame_to_push instr =
     match instr.it with
-    | EnterI (e_frame, { it = ListE ([ { it = CaseE ({ it = Atom.Atom "FRAME_"; _ }, []); _ } ]); _ }, il) ->
+    | EnterI (e_frame, { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "FRAME_"; _ }]], []); _ } ]); _ }, il) ->
         pushI e_frame ~at:instr.at :: il
     | _ -> [ instr ]
   in
@@ -871,12 +944,12 @@ let remove_enter algo =
     match instr.it with
     | EnterI (
       e_label,
-      { it = CatE (e_instrs, { it = ListE ([ { it = CaseE ({ it = Atom.Atom "LABEL_"; _ }, []); _ } ]); _ }); note; _ },
+      { it = CatE (e_instrs, { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "LABEL_"; _ }]], []); _ } ]); _ }); note; _ },
       [ { it = PushI e_vals; _ } ]) ->
         enterI (e_label, catE (e_vals, e_instrs) ~note:note, []) ~at:instr.at
     | EnterI (
       e_label,
-      { it = CatE (e_instrs, { it = ListE ([ { it = CaseE ({ it = Atom.Atom "LABEL_"; _ }, []); _ } ]); _ }); _ },
+      { it = CatE (e_instrs, { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "LABEL_"; _ }]], []); _ } ]); _ }); _ },
       []) ->
         enterI (e_label, e_instrs, []) ~at:instr.at
     | _ -> instr

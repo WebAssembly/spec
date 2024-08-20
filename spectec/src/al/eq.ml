@@ -23,8 +23,7 @@ let rec eq_expr e1 e2 =
   | MemE (e11, e12), MemE (e21, e22) -> eq_expr e11 e21 && eq_expr e12 e22
   | LenE e1, LenE e2 -> eq_expr e1 e2
   | TupE el1, TupE el2 -> eq_exprs el1 el2
-  | CaseE (a1, el1), CaseE (a2, el2) -> El.Atom.eq a1 a2 && eq_exprs el1 el2
-  | CaseE2 (op1, el1), CaseE2 (op2, el2) -> Il.Mixop.eq op1 op2 && eq_exprs el1 el2
+  | CaseE (op1, el1), CaseE (op2, el2) -> Il.Mixop.eq op1 op2 && eq_exprs el1 el2
   | CallE (i1, al1), CallE (i2, al2) -> i1 = i2 && eq_args al1 al2
   | InvCallE (i1, nl1, al1), InvCallE (i2, nl2, al2) ->
     i1 = i2 && List.for_all2 (=) nl1 nl2 && eq_args al1 al2
@@ -32,8 +31,6 @@ let rec eq_expr e1 e2 =
     eq_expr e1 e2 && il1 = il2 && it1 = it2
   | OptE eo1, OptE eo2 -> eq_expr_opt eo1 eo2
   | ListE el1, ListE el2 -> eq_exprs el1 el2
-  | InfixE (e11, a1, e12), InfixE (e21, a2, e22) ->
-    eq_expr e11 e21 && El.Atom.eq a1 a2 && eq_expr e12 e22
   | ArityE e1, ArityE e2 -> eq_expr e1 e2
   | FrameE (eo1, e1), FrameE (eo2, e2) ->
     eq_expr_opt eo1 eo2 && eq_expr e1 e2
@@ -50,12 +47,12 @@ let rec eq_expr e1 e2 =
   | ContextKindE a1, ContextKindE a2 -> El.Atom.eq a1 a2
   | IsDefinedE e1, IsDefinedE e2 -> eq_expr e1 e2
   | MatchE (e11, e12), MatchE (e21, e22) -> eq_expr e11 e21 && eq_expr e12 e22
-  | HasTypeE (e1, t1), HasTypeE (e2, t2) -> eq_expr e1 e2 && t1 = t2
+  | HasTypeE (e1, t1), HasTypeE (e2, t2) -> eq_expr e1 e2 && Il.Eq.eq_typ t1 t2
   | TopLabelE, TopLabelE
   | TopFrameE, TopFrameE -> true
   | TopValueE eo1, TopValueE eo2 -> eq_expr_opt eo1 eo2
   | TopValuesE e1, TopValuesE e2 -> eq_expr e1 e2
-  | SubE (i1, t1), SubE (i2, t2) -> i1 = i2 && t1 = t2
+  | SubE (i1, t1), SubE (i2, t2) -> i1 = i2 && Il.Eq.eq_typ t1 t2
   | YetE s1, YetE s2 -> s1 = s2
   | _ -> false
 

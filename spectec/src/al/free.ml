@@ -31,7 +31,6 @@ let rec free_expr expr =
   | BinE (_, e1, e2)
   | CatE (e1, e2)
   | MemE (e1, e2)
-  | InfixE (e1, _, e2)
   | LabelE (e1, e2) -> free_expr e1 @ free_expr e2
   | FrameE (e_opt, e) -> free_opt free_expr e_opt @ free_expr e
   | CallE (_, al)
@@ -39,7 +38,6 @@ let rec free_expr expr =
   | TupE el
   | ListE el
   | CaseE (_, el) -> free_list free_expr el
-  | CaseE2 (_, el) -> free_list free_expr el
   | StrE r -> free_list (fun (_, e) -> free_expr !e) r
   | AccE (e, p) -> free_expr e @ free_path p
   | ExtE (e1, ps, e2, _)

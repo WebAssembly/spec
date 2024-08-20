@@ -16,12 +16,12 @@ let f64_to_const f = CaseV ("CONST", [ nullary "F64"; Construct.al_of_float64 f 
 
 (* TODO: Refactor builtin call logic *)
 let builtin () =
-  (* TODO : Change this into host fnuction instance, instead of current normal function instance *)
+  (* TODO : Change this into host function instance, instead of current normal function instance *)
   let create_funcinst (name, type_tags) =
     let winstr_tag = String.uppercase_ascii name in
     let code = nullary winstr_tag in
     let ptype = Array.map nullary type_tags in
-    let arrow = TupV [ listV ptype; listV [||] ] in
+    let arrow = CaseV ("->", [ listV ptype; listV [||] ]) in
     let ftype = CaseV ("FUNC", [ arrow ]) in
     let dt =
       CaseV ("DEF", [

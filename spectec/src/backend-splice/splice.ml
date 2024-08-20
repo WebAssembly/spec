@@ -111,7 +111,7 @@ let env_prose env prose =
 
 let env (config : config) pdsts odsts elab el pr : env =
   let latex = Backend_latex.Render.env config.latex el in
-  let prose = Backend_prose.Render.env pdsts odsts latex el pr in
+  let prose = Backend_prose.Render.env config.prose pdsts odsts latex in
   let env =
     { elab; config; latex; prose;
       syn = Map.empty;

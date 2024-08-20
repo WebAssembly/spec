@@ -177,7 +177,7 @@ and translate_exp exp =
   | Il.CatE (exp1, exp2) -> catE (translate_exp exp1, translate_exp exp2) ~at:at ~note:note
   (* Variable *)
   | Il.VarE id -> varE id.it ~at:at ~note:note
-  | Il.SubE ({ it = Il.VarE id; _}, { it = VarT (t, _); _ }, _) -> subE (id.it, t.it) ~at:at ~note:note
+  | Il.SubE ({ it = Il.VarE id; _}, t, _) -> subE (id.it, t) ~at:at ~note:note
   | Il.SubE (inner_exp, _, _) -> translate_exp inner_exp
   | Il.IterE (inner_exp, (iter, ids)) ->
     let names = List.map (fun (id, _) -> id.it) ids in
@@ -290,37 +290,15 @@ and translate_exp exp =
     (* Constructor *)
     (* TODO: Need a better way to convert these CaseE into ConstructE *)
     (* TODO: type *)
-    | [ [ {it = Il.Atom "MUT"; _} as atom ]; [ {it = Il.Quest; _} ]; [] ],
-      [ { it = Il.OptE (Some { it = Il.TupE []; _ }); _}; t ] ->
-      tupE [ caseE (atom, []) ~note:Al.Al_util.no_note; translate_exp t ] ~at:at ~note:note
-    | [ [ {it = Il.Atom "MUT"; _} ]; [ {it = Il.Quest; _} ]; [] ],
-      [ { it = Il.IterE ({ it = Il.TupE []; _ }, (Il.Opt, [])); _}; t ] ->
-      tupE [ iterE (varE "mut" ~note:Al.Al_util.no_note, ["mut"], Opt) ~note:Al.Al_util.no_note; translate_exp t ] ~at:at ~note:note
-    | [ []; [ {it = Il.Atom "PAGE"; _} as atom ] ], el ->
-      caseE (atom, List.map translate_exp el) ~at:at ~note:note
-    | [ [ {it = Il.Atom "NULL"; _} as atom ]; [ {it = Il.Quest; _} ] ], el ->
-      caseE (atom, List.map translate_exp el) ~at:at ~note:note
-    | [ {it = Il.Atom _; _} as atom ] :: ll, el
-      when List.for_all (function ([] | [ {it = (Il.Star | Il.Quest); _} ]) -> true | _ -> false) ll ->
-      caseE (atom, List.map translate_exp el) ~at:at ~note:note
-    | [ [{it = Il.LBrack; _}]; [{it = Il.Dot2; _}]; [{it = Il.RBrack; _}] ], [ e1; e2 ] ->
-      tupE [ translate_exp e1; translate_exp e2 ] ~at:at ~note:note
-    | (({it = Il.Atom _; _} as atom)::_)::_, _ ->
-      caseE (atom, translate_argexp e) ~at:at ~note:note
     | [ []; [] ], [ e1 ] -> translate_exp e1
-    | [ []; []; [] ], [ e1; e2 ] ->
-      tupE [ translate_exp e1; translate_exp e2 ] ~at:at ~note:note
+    | [ []; []; [] ], [ e1; e2 ]
+    | [ [{it = Il.LBrack; _}]; [{it = Il.Dot2; _}]; [{it = Il.RBrack; _}] ], [ e1; e2 ]
     | [ []; [{it = Il.Semicolon; _}]; [] ], [ e1; e2 ] ->
       tupE [ translate_exp e1; translate_exp e2 ] ~at:at ~note:note
-    | [ []; [{it = Il.Arrow; _} as atom]; [] ], [ e1; e2 ] ->
-      infixE (translate_exp e1, atom, translate_exp e2) ~at:at ~note:note
-    | [ []; [{it = Il.Arrow; _} as atom]; []; [] ], [ e1; e2; e3 ] ->
-      infixE (translate_exp e1, atom, catE (translate_exp e2, translate_exp e3) ~note:Al.Al_util.no_note) ~at:at ~note:note
-    | [ []; [{it = Il.ArrowSub; _} as atom]; []; [] ], [ e1; e2; e3 ] ->
-      infixE (translate_exp e1, atom, catE (translate_exp e2, translate_exp e3) ~note:Al.Al_util.no_note) ~at:at ~note:note
-    | [ []; [{it = Il.Atom _; _} as atom]; [] ], [ e1; e2 ] ->
-      infixE (translate_exp e1, atom, translate_exp e2) ~at:at ~note:note
-    | _ -> yetE (Il.Print.string_of_exp exp) ~at:at ~note:note)
+    | _, _ when List.length op = List.length exps + 1 ->
+      caseE (op, translate_argexp e) ~at:at ~note:note
+    | _ -> yetE (Il.Print.string_of_exp exp) ~at:at ~note:note
+    )
   | Il.UncaseE (e, op) ->
     (match op with
     | [ []; [] ] -> translate_exp e
@@ -384,8 +362,12 @@ let cond_of_pop_value e =
   let at = e.at in
   let bt = boolT in
   match e.it with
-  | CaseE ({ it = Atom ("CONST" | "VCONST"); _ }, [{ it = CaseE _; _ } as t; _]) ->
-    topValueE (Some t) ~note:bt
+  | CaseE (op, [t; _]) ->
+    (match get_atom op with
+    | Some {it = Il.Atom "CONST"; _} -> topValueE (Some t) ~note:bt
+    | Some {it = Il.Atom "VCONST"; _} -> topValueE (Some t) ~note:bt
+    | _ -> topValueE None ~note:bt
+    )
   | GetCurFrameE ->
     topFrameE () ~at:at ~note:bt
   | GetCurLabelE ->
@@ -439,8 +421,7 @@ let rec translate_rhs exp =
   (* Trap *)
   | Il.CaseE ([{it = Atom "TRAP"; _}]::_, _) -> [ trapI () ~at:at ]
   (* Context *)
-  | _ when is_context exp ->
-    translate_context_rhs exp
+  | _ when is_context exp -> translate_context_rhs exp
   (* Config *)
   | _ when is_config exp ->
     let state, rhs = split_config exp in
@@ -507,10 +488,12 @@ and translate_context_rhs exp =
   let note = exp.note in
   let notes = listT note in
 
-  let kind = case_of_case exp |> List.hd |> List.hd in
+  let case = case_of_case exp in
+  let atom = case |> List.hd |> List.hd in
   let args = args_of_case exp in
+  let case' = case |> Lib.List.split_last |> fst in
 
-  match kind.it, args with
+  match atom.it, args with
   | Il.Atom "FRAME_", [exp1; exp2; exp3] ->
     let e1 = translate_exp exp1 in (* arity *)
     let e2 = translate_exp exp2 in (* frame *)
@@ -519,7 +502,7 @@ and translate_context_rhs exp =
     let eF = varE "F"             ~at:at ~note:callframeT in (* frame id *)
     let ef = frameE (Some e1, e2) ~at:at ~note:callframeT in (* frame *)
 
-    let e' = caseE (kind, []) ~note:note in
+    let e' = caseE ([[atom]], []) ~note:note in
     [
       letI (eF, ef) ~at:at;
       enterI (eF, listE [e'] ~note:notes, e3) ~at:at;
@@ -534,7 +517,7 @@ and translate_context_rhs exp =
 
     let at' = exp3.at in
     let note' = exp3.note in
-    let exp'' = listE ([caseE (kind, []) ~note:note]) ~at:at' ~note:note' in
+    let exp'' = listE ([caseE ([[atom]], []) ~note:note]) ~at:at' ~note:note' in
     (match exp3.it with
     | Il.CatE (ve, ie) ->
       [
@@ -553,15 +536,15 @@ and translate_context_rhs exp =
     let e2 = translate_exp exp2 in (* catch *)
     let e3 = translate_rhs exp3 in (* label *)
 
-    let eH = varE "H"            ~at:at ~note:handlerT in (* handler id *)
-    let eh = caseE (kind, [e1; e2]) ~at:at ~note:handlerT in (* handler *)
+    let eH = varE "H"                ~at:at ~note:handlerT in (* handler id *)
+    let eh = caseE (case', [e1; e2]) ~at:at ~note:handlerT in (* handler *)
 
-    let e' = caseE (kind, []) ~note:note in
+    let e' = caseE ([[atom]], []) ~note:note in
     [
       letI (eH, eh) ~at:at;
       enterI (eH, listE [e'] ~note:notes, e3) ~at:at;
     ]
-  | _ -> error at ("unrecognized context: " ^ (Il.Print.string_of_atom kind))
+  | _ -> error at ("unrecognized context: " ^ (Il.Print.string_of_atom atom))
 
 
 (* Handle pattern matching *)
@@ -823,7 +806,8 @@ and handle_special_lhs lhs rhs free_ids =
       []
     )]
   (* Normal cases *)
-  | CaseE (tag, es) ->
+  | CaseE (op, es) ->
+    let tag = get_atom op |> Option.get in
     let bindings, es' = extract_non_names es in
     let rec inject_isCaseOf expr =
       match expr.it with
@@ -831,12 +815,17 @@ and handle_special_lhs lhs rhs free_ids =
         IterE (inject_isCaseOf inner_expr, ids, iter) $$ expr.at % boolT
       | _ -> IsCaseOfE (expr, tag) $$ rhs.at % boolT
     in
-    [ ifI (
-      inject_isCaseOf rhs,
-      letI (caseE (tag, es') ~at:lhs.at ~note:lhs.note, rhs) ~at:at
+    (match tag with
+    | { it = Il.Atom _; _} ->
+      [ ifI (
+        inject_isCaseOf rhs,
+        letI (caseE (op, es') ~at:lhs.at ~note:lhs.note, rhs) ~at:at
         :: translate_bindings free_ids bindings,
-      []
-    )]
+        []
+      )]
+    | _ ->
+      letI (caseE (op, es') ~at:lhs.at ~note:lhs.note, rhs) ~at:at
+      :: translate_bindings free_ids bindings)
   | ListE es ->
     let bindings, es' = extract_non_names es in
     if List.length es >= 2 then (* TODO: remove this. This is temporarily for a pure function returning stores *)
@@ -1253,7 +1242,7 @@ let rec translate_rgroup' rgroup =
   | [] -> []
   | _ ->
     let valTs = listT valT in
-    let e_vals = iterE (subE ("val", "val") ~note:valT, [ "val" ], List) ~note:valTs in
+    let e_vals = iterE (subE ("val", valT) ~note:valT, [ "val" ], List) ~note:valTs in
     let instr_popall = popallI e_vals in
     let instr_push = pushI e_vals in
 
@@ -1402,4 +1391,5 @@ let translate il =
     |> Animate.transform
   in
 
-  translate_helpers il' @ translate_rules il'
+  let al = (translate_helpers il' @ translate_rules il') in
+  List.map Transpile.remove_state al

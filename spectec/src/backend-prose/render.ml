@@ -15,16 +15,14 @@ module Map = Map.Make(String)
 
 type env =
   {
-    prose: prose;
+    config : Config.config;
     render_latex: Backend_latex.Render.env;
-    symbol: Symbol.env;
     macro: Macro.env;
   }
 
-let env inputs outputs render_latex el prose : env =
-  let symbol = Symbol.env el in
+let env config inputs outputs render_latex : env =
   let macro = Macro.env inputs outputs in
-  let env = { prose; render_latex; symbol; macro; } in
+  let env = { config; render_latex; macro; } in
   env
 
 (* Helpers *)
@@ -232,16 +230,14 @@ and al_to_el_expr expr =
         | _ -> ele
       in
       Some (El.Ast.IterE (ele, eliter))
-    | Al.Ast.InfixE (e1, op, e2) ->
-      let* ele1 = al_to_el_expr e1 in
-      let* ele2 = al_to_el_expr e2 in
-      Some (El.Ast.InfixE (ele1, op, ele2))
-    | Al.Ast.CaseE (a, el) ->
-      let ela = (El.Ast.AtomE a) $ no_region in
+    | Al.Ast.CaseE (op, el) ->
+      let elal = mixop_to_el_exprs op in
       let* elel = al_to_el_exprs el in
-      let ele = El.Ast.SeqE ([ ela ] @ elel) in
-      if List.length elel = 0 then Some ele
-      else Some (El.Ast.ParenE (ele $ no_region, `Insig))
+      let ele = El.Ast.SeqE (case_to_el_exprs elal elel) in
+      (match elel with
+      | _::_ -> Some (El.Ast.ParenE (ele $ no_region, `Insig))
+      | [] -> Some ele
+      )
     | Al.Ast.OptE (Some e) ->
       let* ele = al_to_el_expr e in
       Some (ele.it)
@@ -249,6 +245,23 @@ and al_to_el_expr expr =
     | _ -> None
   in
   Option.map (fun exp' -> exp' $ no_region) exp'
+
+and case_to_el_exprs al el =
+  match al with
+  | [] -> error no_region "empty mixop in a AL case expr"
+  | hd::tl ->
+    List.fold_left2 (fun acc a e -> a::Some(e)::acc) [ hd ] tl el
+    |> List.filter_map (fun x -> x)
+    |> List.rev
+
+and mixop_to_el_exprs op =
+  List.map
+    (fun al ->
+      match al with
+      | [ a ] -> Some((El.Ast.AtomE a) $ no_region)
+      | _ -> None
+    )
+  op
 
 and al_to_el_exprs exprs =
   List.fold_left
@@ -430,7 +443,7 @@ and render_expr' env expr =
     sprintf "%s is of the case %s" se sa
   | Al.Ast.HasTypeE (e, t) ->
     let se = render_expr env e in
-    sprintf "the type of %s is %s" se t
+    sprintf "the type of %s is %s" se (Il.Print.string_of_typ t)
   | Al.Ast.IsValidE e ->
     let se = render_expr env e in
     sprintf "%s is valid" se
@@ -451,8 +464,10 @@ and render_expr' env expr =
     sprintf "YetE: %s" s
   | _ ->
     let se = "`" ^ (Al.Print.string_of_expr expr) ^ "`" in
-    let msg = sprintf "expr cannot be rendered %s" se in
-    error expr.at msg
+    if env.config.panic_on_error then (
+      let msg = sprintf "expr cannot be rendered %s" se in
+      error expr.at msg);
+    se
 
 and render_path env path =
   match path.it with
@@ -679,8 +694,9 @@ let render_atom_title env name params =
     | _ -> name.it
   in
   let name = name' $$ no_region % name.note in
+  let op = [name] :: List.init (List.length params) (fun _ -> []) in
   let params = List.filter_map (fun a -> match a.it with Al.Ast.ExpA e -> Some e | _ -> None) params in
-  let expr = Al.Al_util.caseE (name, params) ~at:no_region ~note:Al.Al_util.no_note in
+  let expr = Al.Al_util.caseE (op, params) ~at:no_region ~note:Al.Al_util.no_note in
   match al_to_el_expr expr with
   | Some ({ it = El.Ast.ParenE (exp, _); _ }) -> render_el_exp env exp
   | Some exp -> render_el_exp env exp

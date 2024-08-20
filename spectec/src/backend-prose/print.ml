@@ -45,7 +45,6 @@ let rec extract_desc typ = match typ.it with
 
 
 let string_of_atom = El.Print.string_of_atom
-let string_of_mixop = Il.Print.string_of_mixop
 let string_of_typ = Il.Print.string_of_typ
 
 (* Operators *)
@@ -151,18 +150,29 @@ and string_of_expr expr =
   | VarE id -> id
   | SubE (id, _) -> id
   | IterE (e, _, iter) -> string_of_expr e ^ string_of_iter iter
-  | InfixE (e1, a, e2) -> "(" ^ string_of_expr e1 ^ " " ^ string_of_atom a ^ " " ^ string_of_expr e2 ^ ")"
-  | CaseE ({ it=El.Atom.Atom ("CONST" | "VCONST"); _ }, hd::tl) ->
+  | CaseE ([{ it=El.Atom.Atom ("CONST" | "VCONST"); _ }]::_tl, hd::tl) ->
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
-  | CaseE (a, []) -> string_of_atom a
-  | CaseE (a, el) -> "(" ^ string_of_atom a ^ " " ^ string_of_exprs " " el ^ ")"
-  | CaseE2 (op, el) -> "(" ^ string_of_mixop op ^ "_" ^ string_of_exprs " " el ^ ")"
+  | CaseE ([[ atom ]], []) -> string_of_atom atom
+  | CaseE (op, el) ->
+    let op' = List.map (fun al -> String.concat "" (List.map string_of_atom al)) op in
+    (match op' with
+    | [] -> "()"
+    | hd::tl ->
+      let res =
+        List.fold_left2 (
+          fun acc a e ->
+            let a' = if a = "" then "" else " " ^ a in
+            let acc' = if acc = "" then "" else acc ^ " " in
+            acc' ^ string_of_expr e ^ a'
+        ) hd tl el in
+      "(" ^ res ^ ")"
+    )
   | OptE (Some e) -> "?(" ^ string_of_expr e ^ ")"
   | OptE None -> "?()"
   | ContextKindE a -> sprintf "the top of the stack is a %s" (string_of_atom a)
   | IsDefinedE e -> sprintf "%s is defined" (string_of_expr e)
   | IsCaseOfE (e, a) -> sprintf "%s is of the case %s" (string_of_expr e) (string_of_atom a)
-  | HasTypeE (e, t) -> sprintf "the type of %s is %s" (string_of_expr e) t
+  | HasTypeE (e, t) -> sprintf "the type of %s is %s" (string_of_expr e) (string_of_typ t)
   | IsValidE e -> sprintf "%s is valid" (string_of_expr e)
   | TopLabelE -> "a label is now on the top of the stack"
   | TopFrameE -> "a frame is now on the top of the stack"
@@ -451,3 +461,9 @@ let string_of_def = function
 | Algo algo -> string_of_algorithm algo
 
 let string_of_prose prose = List.map string_of_def prose |> String.concat "\n"
+
+let file_of_prose file prose =
+  let prose = string_of_prose prose in
+  let oc = Out_channel.open_text file in
+  Fun.protect (fun () -> Out_channel.output_string oc prose)
+    ~finally:(fun () -> Out_channel.close oc)

@@ -52,14 +52,12 @@ let catE ?(at = no) ~note (e1, e2) = CatE (e1, e2) |> mk_expr at note
 let memE ?(at = no) ~note (e1, e2) = MemE (e1, e2) |> mk_expr at note
 let lenE ?(at = no) ~note e = LenE e |> mk_expr at note
 let tupE ?(at = no) ~note el = TupE el |> mk_expr at note
-let caseE ?(at = no) ~note (a, el) = CaseE (a, el) |> mk_expr at note
-let caseE2 ?(at = no) ~note (op, el) = CaseE2 (op, el) |> mk_expr at note
+let caseE ?(at = no) ~note (op, el) = CaseE (op, el) |> mk_expr at note
 let callE ?(at = no) ~note (id, el) = CallE (id, el) |> mk_expr at note
 let invCallE ?(at = no) ~note (id, il, el) = InvCallE (id, il, el) |> mk_expr at note
 let iterE ?(at = no) ~note (e, idl, it) = IterE (e, idl, it) |> mk_expr at note
 let optE ?(at = no) ~note e_opt = OptE e_opt |> mk_expr at note
 let listE ?(at = no) ~note el = ListE el |> mk_expr at note
-let infixE ?(at = no) ~note (e1, infix, e2) = InfixE (e1, infix, e2) |> mk_expr at note
 let arityE ?(at = no) ~note e = ArityE e |> mk_expr at note
 let frameE ?(at = no) ~note (e_opt, e) = FrameE (e_opt, e) |> mk_expr at note
 let labelE ?(at = no) ~note (e1, e2) = LabelE (e1, e2) |> mk_expr at note
@@ -241,6 +239,15 @@ let unwrap_framev: value -> value = function
   | FrameV (_, v) -> v
   | v -> fail_value "unwrap_framev" v
 
+
+(* Mixop *)
+
+let get_atom op =
+  match List.find_opt (fun al -> List.length al <> 0) op with
+  | Some al -> Some(List.hd al)
+  | None -> None
+
+let name_of_mixop = Il.Mixop.name
 
 (* Il Types *)
 

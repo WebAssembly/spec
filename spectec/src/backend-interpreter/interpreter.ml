@@ -276,7 +276,11 @@ and eval_expr env expr =
       | path :: rest -> access_path env base path |> replace rest |> replace_path env base path
       | [] -> eval_expr env e2 in
     eval_expr env e1 |> replace ps
-  | CaseE (tag, el) -> caseV (Print.string_of_atom tag, List.map (eval_expr env) el)
+  | CaseE (op, el) ->
+    (match (get_atom op) with
+    | Some a -> caseV (Print.string_of_atom a, List.map (eval_expr env) el)
+    | None -> fail_expr expr "inner mixop of caseE is empty"
+    )
   | OptE opt -> Option.map (eval_expr env) opt |> optV
   | TupE el -> List.map (eval_expr env) el |> tupV
   (* Context *)
@@ -342,7 +346,6 @@ and eval_expr env expr =
     | [], Opt -> optV None
     | [v], Opt -> Option.some v |> optV
     | l, _ -> listV_of_list l)
-  | InfixE (e1, _, e2) -> TupV [ eval_expr env e1; eval_expr env e2 ]
   (* condition *)
   | TopFrameE ->
     let ctx = WasmContext.get_top_context () in
@@ -387,11 +390,11 @@ and eval_expr env expr =
     | _ ->
       fail_expr expr "TODO: deferring validation to reference interpreter"
     )
-  | HasTypeE (e, s) ->
+  | HasTypeE (e, t) ->
     (* TODO: This shouldn't be hardcoded *)
     (* check type *)
     let v = eval_expr env e in
-    check_type s v expr
+    check_type (string_of_typ t) v expr
   | MatchE (e1, e2) ->
     (* Deferred to reference interpreter *)
     let rt1 = e1 |> eval_expr env |> Construct.al_to_ref_type in
@@ -462,17 +465,19 @@ and assign lhs rhs env =
     |> List.fold_right merge
       (List.map (fun v -> assign e v Env.empty) rhs_iter)
     |> Env.union (fun _ _ v -> Some v) env_with_length
-  | InfixE (lhs1, _, lhs2), TupV [rhs1; rhs2] ->
-    env |> assign lhs1 rhs1 |> assign lhs2 rhs2
   | TupE lhs_s, TupV rhs_s
     when List.length lhs_s = List.length rhs_s ->
     List.fold_right2 assign lhs_s rhs_s env
   | ListE lhs_s, ListV rhs_s
     when List.length lhs_s = Array.length !rhs_s ->
     List.fold_right2 assign lhs_s (Array.to_list !rhs_s) env
-  | CaseE (lhs_tag, lhs_s), CaseV (rhs_tag, rhs_s)
-    when (Print.string_of_atom lhs_tag) = rhs_tag && List.length lhs_s = List.length rhs_s ->
-    List.fold_right2 assign lhs_s rhs_s env
+  | CaseE (op, lhs_s), CaseV (rhs_tag, rhs_s) when List.length lhs_s = List.length rhs_s ->
+    (match get_atom op with
+    | Some lhs_tag when (Print.string_of_atom lhs_tag) = rhs_tag ->
+      List.fold_right2 assign lhs_s rhs_s env
+    | _ -> fail_expr lhs
+      (sprintf "invalid assignment: cannot be an assignment target for %s" (string_of_value rhs))
+    )
   | OptE (Some lhs), OptV (Some rhs) -> assign lhs rhs env
   (* Assumption: e1 is the assign target *)
   | BinE (binop, e1, e2), NumV m ->
@@ -644,8 +649,17 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     ctx
   | AppendI (e1, e2) ->
     let a = eval_expr env e1 |> unwrap_listv in
-    let v = eval_expr env e2 in
-    a := Array.append !a [|v|];
+    (match e2.note.it, eval_expr env e2 with
+    | IterT _, ListV arr_ref -> a := Array.append !a !arr_ref
+    | IterT (_, Opt), OptV opt ->
+      a := opt |> Option.to_list |> Array.of_list |> Array.append !a
+    | IterT _, v ->
+      v
+      |> string_of_value
+      |> sprintf "the expression is evaluated to %s, not a iterable data type"
+      |> fail_expr e2
+    | _, v -> a := Array.append !a [|v|]
+    );
     ctx
   | _ -> failwith "cannot step instr"
 
