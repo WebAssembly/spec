@@ -246,11 +246,9 @@ and translate_exp exp =
     (* Constructor *)
     (* TODO: Need a better way to convert these CaseE into ConstructE *)
     (* TODO: type *)
-    | [ [{it = Il.LBrack; _}]; [{it = Il.Dot2; _}]; [{it = Il.RBrack; _}] ], [ e1; e2 ] ->
-      tupE [ translate_exp e1; translate_exp e2 ] ~at:at ~note:note
     | [ []; [] ], [ e1 ] -> translate_exp e1
-    | [ []; []; [] ], [ e1; e2 ] ->
-      tupE [ translate_exp e1; translate_exp e2 ] ~at:at ~note:note
+    | [ []; []; [] ], [ e1; e2 ]
+    | [ [{it = Il.LBrack; _}]; [{it = Il.Dot2; _}]; [{it = Il.RBrack; _}] ], [ e1; e2 ]
     | [ []; [{it = Il.Semicolon; _}]; [] ], [ e1; e2 ] ->
       tupE [ translate_exp e1; translate_exp e2 ] ~at:at ~note:note
     | _, _ when List.length op = List.length exps + 1 ->
