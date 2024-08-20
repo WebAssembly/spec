@@ -243,8 +243,7 @@ let enter_block f instrs =
   res
 
 let make_index depth =
-  (* _index := !_index + 1; *)
-   _index := 1;
+  _index := !_index + 1;
 
   let num_idx = string_of_int !_index in
   let alp_idx = Char.escaped (Char.chr (96 + !_index)) in
