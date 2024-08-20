@@ -1429,86 +1429,86 @@ watsup 0.4 generator
 #. Return :math:`(\mathsf{f{\scriptstyle 64}}{.}\mathsf{const}~{+0})`.
 
 
-:math:`{\mathrm{funcs}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-.............................................................................................
+:math:`{\mathrm{funcs}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+..............................................................................................
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{func}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externaddr}}_0`.
 
    #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{xv}}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. Return :math:`{\mathrm{funcs}}({{\mathit{xv}}^\ast})`.
 
 
-:math:`{\mathrm{globals}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-...............................................................................................
+:math:`{\mathrm{globals}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+................................................................................................
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externaddr}}_0`.
 
    #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{xv}}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. Return :math:`{\mathrm{globals}}({{\mathit{xv}}^\ast})`.
 
 
-:math:`{\mathrm{tables}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-..............................................................................................
+:math:`{\mathrm{tables}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+...............................................................................................
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externaddr}}_0`.
 
    #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{xv}}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. Return :math:`{\mathrm{tables}}({{\mathit{xv}}^\ast})`.
 
 
-:math:`{\mathrm{mems}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-............................................................................................
+:math:`{\mathrm{mems}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+.............................................................................................
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{mem}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{mem}`, then:
 
-   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externaddr}}_0`.
 
    #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. Return :math:`{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
 
@@ -1713,88 +1713,88 @@ watsup 0.4 generator
    #. Return :math:`{\mathit{mi}'}`.
 
 
-:math:`{\mathrm{funcs}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-.............................................................................................
-
-
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
-
-   a. Return :math:`\epsilon`.
-
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{func}`, then:
-
-   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externval}}_0`.
-
-   #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{externval}'}^\ast})`.
-
-#. Let :math:`{\mathit{externval}}~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-#. Return :math:`{\mathrm{funcs}}({{\mathit{externval}'}^\ast})`.
-
-
-:math:`{\mathrm{globals}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-...............................................................................................
-
-
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
-
-   a. Return :math:`\epsilon`.
-
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{global}`, then:
-
-   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externval}}_0`.
-
-   #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{externval}'}^\ast})`.
-
-#. Let :math:`{\mathit{externval}}~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-#. Return :math:`{\mathrm{globals}}({{\mathit{externval}'}^\ast})`.
-
-
-:math:`{\mathrm{tables}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+:math:`{\mathrm{funcs}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
 ..............................................................................................
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{externval}'}^\ast})`.
+   #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{externaddr}'}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Return :math:`{\mathrm{tables}}({{\mathit{externval}'}^\ast})`.
-
-
-:math:`{\mathrm{mems}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-............................................................................................
+#. Return :math:`{\mathrm{funcs}}({{\mathit{externaddr}'}^\ast})`.
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+:math:`{\mathrm{globals}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+................................................................................................
+
+
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{mem}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{externval}'}^\ast})`.
+   #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{externaddr}'}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Return :math:`{\mathrm{mems}}({{\mathit{externval}'}^\ast})`.
+#. Return :math:`{\mathrm{globals}}({{\mathit{externaddr}'}^\ast})`.
+
+
+:math:`{\mathrm{tables}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+...............................................................................................
+
+
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{table}`, then:
+
+   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externaddr}}_0`.
+
+   #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{externaddr}'}^\ast})`.
+
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. Return :math:`{\mathrm{tables}}({{\mathit{externaddr}'}^\ast})`.
+
+
+:math:`{\mathrm{mems}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+.............................................................................................
+
+
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{mem}`, then:
+
+   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externaddr}}_0`.
+
+   #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{externaddr}'}^\ast})`.
+
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. Return :math:`{\mathrm{mems}}({{\mathit{externaddr}'}^\ast})`.
 
 
 :math:`{\mathrm{allocfunc}}({\mathit{moduleinst}}, {\mathit{func}})`
@@ -1937,38 +1937,38 @@ watsup 0.4 generator
 
    a. Let :math:`(\mathsf{func}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{func}~{{\mathit{fa}}^\ast}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{func}~{{\mathit{fa}}^\ast}{}[x]) \}\end{array}`.
 
 #. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{global}`, then:
 
    a. Let :math:`(\mathsf{global}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{global}~{{\mathit{ga}}^\ast}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{global}~{{\mathit{ga}}^\ast}{}[x]) \}\end{array}`.
 
 #. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{table}`, then:
 
    a. Let :math:`(\mathsf{table}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{table}~{{\mathit{ta}}^\ast}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{{\mathit{ta}}^\ast}{}[x]) \}\end{array}`.
 
 #. Assert: Due to validation, :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{mem}`.
 
 #. Let :math:`(\mathsf{mem}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-#. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{mem}~{{\mathit{ma}}^\ast}{}[x]) \}\end{array}`.
+#. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{mem}~{{\mathit{ma}}^\ast}{}[x]) \}\end{array}`.
 
 
-:math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externval}}^\ast}, {{\mathit{val}}^\ast})`
-.....................................................................................................
+:math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast})`
+......................................................................................................
 
 
-1. Let :math:`{{\mathit{fa}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externval}}^\ast})`.
+1. Let :math:`{{\mathit{fa}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{ga}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{globals}}({{\mathit{externval}}^\ast})`.
+#. Let :math:`{{\mathit{ga}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{globals}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{ma}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{mems}}({{\mathit{externval}}^\ast})`.
+#. Let :math:`{{\mathit{ma}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{mems}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{ta}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{tables}}({{\mathit{externval}}^\ast})`.
+#. Let :math:`{{\mathit{ta}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{tables}}({{\mathit{externaddr}}^\ast})`.
 
 #. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
 
@@ -2067,8 +2067,8 @@ watsup 0.4 generator
 #. Return.
 
 
-:math:`{\mathrm{instantiate}}(z, {\mathit{module}}, {{\mathit{externval}}^\ast})`
-.................................................................................
+:math:`{\mathrm{instantiate}}(z, {\mathit{module}}, {{\mathit{externaddr}}^\ast})`
+..................................................................................
 
 
 1. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
@@ -2097,7 +2097,7 @@ watsup 0.4 generator
 
 #. Let :math:`{(\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}_{\mathsf{g}})^\ast}` be :math:`{{\mathit{global}}^\ast}`.
 
-#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externval}}^\ast})~{{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externval}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
 
 #. Let :math:`f_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}}_{\mathit{init}} \}\end{array}`.
 
@@ -2121,7 +2121,7 @@ watsup 0.4 generator
 
 #. Pop the activation of :math:`f` from the stack.
 
-#. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externval}}^\ast}, {{\mathit{val}}^\ast})`.
+#. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast})`.
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
@@ -2259,31 +2259,39 @@ watsup 0.4 generator
 
 1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
+#. Assert: Due to validation, the top of the stack is a :math:`\mathsf{label}`.
+
+#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
 #. Let :math:`L` be the current label.
 
 #. Let :math:`n` be the arity of :math:`L`.
 
 #. Let :math:`{{\mathit{instr}'}^\ast}` be the continuation of :math:`L`.
 
-#. Pop the current label from the stack.
+#. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`0`, then:
 
-#. Let :math:`{{{\mathit{instr}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` be :math:`{{\mathit{val}}^\ast}`.
+   a. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
-#. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`0` and :math:`{|{{{\mathit{instr}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`n`, then:
+   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-   a. Let :math:`{{\mathit{val}'}^\ast}~{{\mathit{val}}^{n}}` be :math:`{{{\mathit{instr}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+
+   #. Pop the current label from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
    #. Execute the instruction :math:`{{\mathit{instr}'}^\ast}`.
 
-#. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is greater than or equal to :math:`1`, then:
+#. Else:
 
-   a. Let :math:`l` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}} - 1`.
+   a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. If for all :math:`{({{\mathit{instr}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}})^\ast}`, the type of :math:`{{\mathit{instr}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is val, then:
+   #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is greater than or equal to :math:`1`, then:
 
-      1) Let :math:`{{\mathit{val}}^\ast}` be :math:`{{{\mathit{instr}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+      1) Let :math:`l` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}} - 1`.
+
+      #) Pop the current label from the stack.
 
       #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -2351,41 +2359,46 @@ watsup 0.4 generator
 
 1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-#. If a frame is now on the top of the stack, then:
+#. If the top of the stack is a :math:`\mathsf{frame}`, then:
 
-   a. Let :math:`f` be the current frame.
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Let :math:`f` be the current frame.
 
    #. Let :math:`n` be the arity of :math:`f`.
 
-   #. Pop the current frame from the stack.
+   #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
-   #. Let :math:`{{\mathit{val}'}^\ast}~{{\mathit{val}}^{n}}` be :math:`{{\mathit{val}}^\ast}`.
+   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+
+   #. Pop the current frame from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
-#. Else if a label is now on the top of the stack, then:
+#. Else if the top of the stack is a :math:`\mathsf{label}`, then:
 
-   a. Pop the current label from the stack.
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+   #. Pop the current label from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
    #. Execute the instruction :math:`\mathsf{return}`.
 
 
-:math:`\mathsf{trap}`
-.....................
-
-
-1. YetI: TODO: It is likely that the value stack of two rules are different.
-
-
 :math:`t {.} {\mathit{unop}}`
 .............................
 
 
-1. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`(t{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t`.
 
 #. If :math:`{|{{\mathit{unop}}}{{}_{t}}{(c_1)}|}` is less than or equal to :math:`0`, then:
 
@@ -2400,13 +2413,15 @@ watsup 0.4 generator
 ..............................
 
 
-1. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`(t{.}\mathsf{const}~c_2)` from the stack.
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
+#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t`.
 
-#. Pop the value :math:`(t{.}\mathsf{const}~c_1)` from the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
 #. If :math:`{|{{\mathit{binop}}}{{}_{t}}{(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
 
@@ -2421,9 +2436,11 @@ watsup 0.4 generator
 ...............................
 
 
-1. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`(t{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t`.
 
 #. Let :math:`c` be :math:`{{\mathit{testop}}}{{}_{t}}{(c_1)}`.
 
@@ -2434,13 +2451,15 @@ watsup 0.4 generator
 ..............................
 
 
-1. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`(t{.}\mathsf{const}~c_2)` from the stack.
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`t` is on the top of the stack.
+#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t`.
 
-#. Pop the value :math:`(t{.}\mathsf{const}~c_1)` from the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
 #. Let :math:`c` be :math:`{{\mathit{relop}}}{{}_{t}}{(c_1, c_2)}`.
 
@@ -2451,9 +2470,11 @@ watsup 0.4 generator
 ....................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`t_1` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`(t_1{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t_1`.
 
 #. If :math:`{|{{\mathit{cvtop}}}{{}_{t_1, t_2}}{(c_1)}|}` is less than or equal to :math:`0`, then:
 
@@ -2483,17 +2504,21 @@ watsup 0.4 generator
 ....................................................
 
 
-1. If :math:`{t^?}` is not defined, then:
+1. Let :math:`n` be :math:`0`.
 
-   a. Let :math:`n` be :math:`0`.
+#. If :math:`{t^?}` is not defined, then:
 
-#. Else:
+   a. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
 
-   a. Let :math:`n` be :math:`1`.
+   #. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
 
-#. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
+#. Let :math:`n` be :math:`1`.
 
-#. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
+#. If :math:`{t^?}` is not :math:`\epsilon`, then:
+
+   a. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
+
+   #. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
 
 
 :math:`\mathsf{loop}~{t^?}~{{\mathit{instr}}^\ast}`
@@ -2656,13 +2681,6 @@ watsup 0.4 generator
 #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` to the stack.
 
 
-:math:`\mathsf{ctxt}`
-.....................
-
-
-1. YetI: TODO: It is likely that the value stack of two rules are different.
-
-
 :math:`\mathsf{local{.}set}~x`
 ..............................
 
@@ -2689,51 +2707,47 @@ watsup 0.4 generator
 #. Perform :math:`z{}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = {\mathit{val}}]`.
 
 
-:math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{store}~{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}~{\mathit{ao}}`
+:math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}~{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{\mathit{ao}}`
 ...........................................................................................................................................................
 
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{const}~c)` from the stack.
+#. Pop the value :math:`({\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}{.}\mathsf{const}~c)` from the stack.
 
 #. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}` is not defined, then:
+#. Let :math:`t` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-   a. Let :math:`t` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|t|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`t` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
 
-   #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`t`, then:
+   a. Trap.
 
-      1) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|t|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+#. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`t` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
+
+   a. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{t}(c)`.
+
+   #. Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|t|} / 8] = {b^\ast}]`.
+
+#. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Inn, then:
+
+   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+
+   #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathsf{i}}{n}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
+
+      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
+
+      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
          a) Trap.
 
-      #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{t}(c)`.
+      #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{n}|}, n}(c))`.
 
-      #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|t|} / 8] = {b^\ast}]`.
-
-#. Else:
-
-   a. Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}`.
-
-   #. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-      1) Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-      #) If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathsf{i}}{n}`, then:
-
-         a) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
-
-            1. Trap.
-
-         #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{n}|}, n}(c))`.
-
-         #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
+      #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
 
 
 :math:`\mathsf{memory{.}grow}`
@@ -3540,45 +3554,45 @@ default_ valtype_u0
 4. Assert: Due to validation, (valtype_u0 is F64).
 5. Return (F64.CONST $fzero(64)).
 
-funcsxv externval_u0*
-1. If (externval_u0* is []), then:
+funcsxa externaddr_u0*
+1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externval_0] ++ xv* be externval_u0*.
-3. If externval_0 is of the case FUNC, then:
-  a. Let (FUNC fa) be externval_0.
-  b. Return [fa] ++ $funcsxv(xv*).
-4. Let [externval] ++ xv* be externval_u0*.
-5. Return $funcsxv(xv*).
+2. Let [externaddr_0] ++ xv* be externaddr_u0*.
+3. If externaddr_0 is of the case FUNC, then:
+  a. Let (FUNC fa) be externaddr_0.
+  b. Return [fa] ++ $funcsxa(xv*).
+4. Let [externaddr] ++ xv* be externaddr_u0*.
+5. Return $funcsxa(xv*).
 
-globalsxv externval_u0*
-1. If (externval_u0* is []), then:
+globalsxa externaddr_u0*
+1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externval_0] ++ xv* be externval_u0*.
-3. If externval_0 is of the case GLOBAL, then:
-  a. Let (GLOBAL ga) be externval_0.
-  b. Return [ga] ++ $globalsxv(xv*).
-4. Let [externval] ++ xv* be externval_u0*.
-5. Return $globalsxv(xv*).
+2. Let [externaddr_0] ++ xv* be externaddr_u0*.
+3. If externaddr_0 is of the case GLOBAL, then:
+  a. Let (GLOBAL ga) be externaddr_0.
+  b. Return [ga] ++ $globalsxa(xv*).
+4. Let [externaddr] ++ xv* be externaddr_u0*.
+5. Return $globalsxa(xv*).
 
-tablesxv externval_u0*
-1. If (externval_u0* is []), then:
+tablesxa externaddr_u0*
+1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externval_0] ++ xv* be externval_u0*.
-3. If externval_0 is of the case TABLE, then:
-  a. Let (TABLE ta) be externval_0.
-  b. Return [ta] ++ $tablesxv(xv*).
-4. Let [externval] ++ xv* be externval_u0*.
-5. Return $tablesxv(xv*).
+2. Let [externaddr_0] ++ xv* be externaddr_u0*.
+3. If externaddr_0 is of the case TABLE, then:
+  a. Let (TABLE ta) be externaddr_0.
+  b. Return [ta] ++ $tablesxa(xv*).
+4. Let [externaddr] ++ xv* be externaddr_u0*.
+5. Return $tablesxa(xv*).
 
-memsxv externval_u0*
-1. If (externval_u0* is []), then:
+memsxa externaddr_u0*
+1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externval_0] ++ xv* be externval_u0*.
-3. If externval_0 is of the case MEM, then:
-  a. Let (MEM ma) be externval_0.
-  b. Return [ma] ++ $memsxv(xv*).
-4. Let [externval] ++ xv* be externval_u0*.
-5. Return $memsxv(xv*).
+2. Let [externaddr_0] ++ xv* be externaddr_u0*.
+3. If externaddr_0 is of the case MEM, then:
+  a. Let (MEM ma) be externaddr_0.
+  b. Return [ma] ++ $memsxa(xv*).
+4. Let [externaddr] ++ xv* be externaddr_u0*.
+5. Return $memsxa(xv*).
 
 store
 1. Return.
@@ -3669,45 +3683,45 @@ growmemory mi n
   a. Let mi' be { TYPE: (i', j); BYTES: b* ++ 0^(n · (64 · $Ki())); }.
   b. Return mi'.
 
-funcs externval_u0*
-1. If (externval_u0* is []), then:
+funcs externaddr_u0*
+1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externval_0] ++ externval'* be externval_u0*.
-3. If externval_0 is of the case FUNC, then:
-  a. Let (FUNC fa) be externval_0.
-  b. Return [fa] ++ $funcs(externval'*).
-4. Let [externval] ++ externval'* be externval_u0*.
-5. Return $funcs(externval'*).
+2. Let [externaddr_0] ++ externaddr'* be externaddr_u0*.
+3. If externaddr_0 is of the case FUNC, then:
+  a. Let (FUNC fa) be externaddr_0.
+  b. Return [fa] ++ $funcs(externaddr'*).
+4. Let [externaddr] ++ externaddr'* be externaddr_u0*.
+5. Return $funcs(externaddr'*).
 
-globals externval_u0*
-1. If (externval_u0* is []), then:
+globals externaddr_u0*
+1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externval_0] ++ externval'* be externval_u0*.
-3. If externval_0 is of the case GLOBAL, then:
-  a. Let (GLOBAL ga) be externval_0.
-  b. Return [ga] ++ $globals(externval'*).
-4. Let [externval] ++ externval'* be externval_u0*.
-5. Return $globals(externval'*).
+2. Let [externaddr_0] ++ externaddr'* be externaddr_u0*.
+3. If externaddr_0 is of the case GLOBAL, then:
+  a. Let (GLOBAL ga) be externaddr_0.
+  b. Return [ga] ++ $globals(externaddr'*).
+4. Let [externaddr] ++ externaddr'* be externaddr_u0*.
+5. Return $globals(externaddr'*).
 
-tables externval_u0*
-1. If (externval_u0* is []), then:
+tables externaddr_u0*
+1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externval_0] ++ externval'* be externval_u0*.
-3. If externval_0 is of the case TABLE, then:
-  a. Let (TABLE ta) be externval_0.
-  b. Return [ta] ++ $tables(externval'*).
-4. Let [externval] ++ externval'* be externval_u0*.
-5. Return $tables(externval'*).
+2. Let [externaddr_0] ++ externaddr'* be externaddr_u0*.
+3. If externaddr_0 is of the case TABLE, then:
+  a. Let (TABLE ta) be externaddr_0.
+  b. Return [ta] ++ $tables(externaddr'*).
+4. Let [externaddr] ++ externaddr'* be externaddr_u0*.
+5. Return $tables(externaddr'*).
 
-mems externval_u0*
-1. If (externval_u0* is []), then:
+mems externaddr_u0*
+1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externval_0] ++ externval'* be externval_u0*.
-3. If externval_0 is of the case MEM, then:
-  a. Let (MEM ma) be externval_0.
-  b. Return [ma] ++ $mems(externval'*).
-4. Let [externval] ++ externval'* be externval_u0*.
-5. Return $mems(externval'*).
+2. Let [externaddr_0] ++ externaddr'* be externaddr_u0*.
+3. If externaddr_0 is of the case MEM, then:
+  a. Let (MEM ma) be externaddr_0.
+  b. Return [ma] ++ $mems(externaddr'*).
+4. Let [externaddr] ++ externaddr'* be externaddr_u0*.
+5. Return $mems(externaddr'*).
 
 allocfunc moduleinst func
 1. Assert: Due to validation, func is of the case FUNC.
@@ -3774,22 +3788,22 @@ allocmems memtype_u0*
 instexport fa* ga* ta* ma* (EXPORT name externidx_u0)
 1. If externidx_u0 is of the case FUNC, then:
   a. Let (FUNC x) be externidx_u0.
-  b. Return { NAME: name; VALUE: (FUNC fa*[x]); }.
+  b. Return { NAME: name; ADDR: (FUNC fa*[x]); }.
 2. If externidx_u0 is of the case GLOBAL, then:
   a. Let (GLOBAL x) be externidx_u0.
-  b. Return { NAME: name; VALUE: (GLOBAL ga*[x]); }.
+  b. Return { NAME: name; ADDR: (GLOBAL ga*[x]); }.
 3. If externidx_u0 is of the case TABLE, then:
   a. Let (TABLE x) be externidx_u0.
-  b. Return { NAME: name; VALUE: (TABLE ta*[x]); }.
+  b. Return { NAME: name; ADDR: (TABLE ta*[x]); }.
 4. Assert: Due to validation, externidx_u0 is of the case MEM.
 5. Let (MEM x) be externidx_u0.
-6. Return { NAME: name; VALUE: (MEM ma*[x]); }.
+6. Return { NAME: name; ADDR: (MEM ma*[x]); }.
 
-allocmodule module externval* val*
-1. Let fa_ex* be $funcs(externval*).
-2. Let ga_ex* be $globals(externval*).
-3. Let ma_ex* be $mems(externval*).
-4. Let ta_ex* be $tables(externval*).
+allocmodule module externaddr* val*
+1. Let fa_ex* be $funcs(externaddr*).
+2. Let ga_ex* be $globals(externaddr*).
+3. Let ma_ex* be $mems(externaddr*).
+4. Let ta_ex* be $tables(externaddr*).
 5. Assert: Due to validation, module is of the case MODULE.
 6. Let (MODULE type_0 import* func^n_func global_1 table_2 mem_3 elem* data* start? export*) be module.
 7. Assert: Due to validation, mem_3 is of the case MEMORY.
@@ -3838,7 +3852,7 @@ initdata moduleinst u32_u0* byte_u1*
 7. Perform $initdata(moduleinst, i'*, b'**).
 8. Return.
 
-instantiate z module externval*
+instantiate z module externaddr*
 1. Assert: Due to validation, module is of the case MODULE.
 2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
 3. Assert: Due to validation, type is of the case TYPE*.
@@ -3852,7 +3866,7 @@ instantiate z module externval*
 11. Let (ELEM expr_E x*)* be elem*.
 12. Assert: Due to validation, global is of the case GLOBAL*.
 13. Let (GLOBAL globaltype expr_G)* be global*.
-14. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externval*) ++ (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externval*); TABLES: []; MEMS: []; EXPORTS: []; }.
+14. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) ++ (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*); TABLES: []; MEMS: []; EXPORTS: []; }.
 15. Let f_init be { LOCALS: []; MODULE: moduleinst_init; }.
 16. Let z be f_init.
 17. Push the activation of z to the stack.
@@ -3864,7 +3878,7 @@ instantiate z module externval*
 23. Push the activation of z to the stack.
 24. Let [val]* be $eval_expr(expr_G)*.
 25. Pop the activation of _f from the stack.
-26. Let moduleinst be $allocmodule(module, externval*, val*).
+26. Let moduleinst be $allocmodule(module, externaddr*, val*).
 27. Let f be { LOCALS: []; MODULE: moduleinst; }.
 28. Perform $initelem(moduleinst, i_E*, moduleinst.FUNCS[x]**).
 29. Perform $initdata(moduleinst, i_D*, b**).
@@ -3929,21 +3943,25 @@ Step_pure/label
 
 Step_pure/br n_u0
 1. Pop all values val* from the top of the stack.
-2. Let L be the current label.
-3. Let n be the arity of L.
-4. Let instr'* be the continuation of L.
-5. Pop the current label from the stack.
-6. Let admininstr_u1* be val*.
-7. If ((n_u0 is 0) and (|admininstr_u1*| ≥ n)), then:
-  a. Let val'* ++ val^n be admininstr_u1*.
-  b. Push the values val^n to the stack.
-  c. Execute the instruction instr'*.
-8. If (n_u0 ≥ 1), then:
-  a. Let l be (n_u0 - 1).
-  b. If the type of admininstr_u1 is val*, then:
-    1) Let val* be admininstr_u1*.
-    2) Push the values val* to the stack.
-    3) Execute the instruction (BR l).
+2. Assert: Due to validation, the top of the stack is a LABEL_.
+3. Push the values val* to the stack.
+4. Let L be the current label.
+5. Let n be the arity of L.
+6. Let instr'* be the continuation of L.
+7. If (n_u0 is 0), then:
+  a. Assert: Due to validation, there are at least n values on the top of the stack.
+  b. Pop the values val^n from the stack.
+  c. Pop all values val'* from the top of the stack.
+  d. Pop the current label from the stack.
+  e. Push the values val^n to the stack.
+  f. Execute the instruction instr'*.
+8. Else:
+  a. Pop all values val* from the top of the stack.
+  b. If (n_u0 ≥ 1), then:
+    1) Let l be (n_u0 - 1).
+    2) Pop the current label from the stack.
+    3) Push the values val* to the stack.
+    4) Execute the instruction (BR l).
 
 Step_pure/br_if l
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -3973,59 +3991,66 @@ Step_pure/frame
 
 Step_pure/return
 1. Pop all values val* from the top of the stack.
-2. If a frame is now on the top of the stack, then:
-  a. Let f be the current frame.
-  b. Let n be the arity of f.
-  c. Pop the current frame from the stack.
-  d. Let val'* ++ val^n be val*.
-  e. Push the values val^n to the stack.
-3. Else if a label is now on the top of the stack, then:
-  a. Pop the current label from the stack.
-  b. Push the values val* to the stack.
-  c. Execute the instruction RETURN.
-
-Step_pure/trap
-1. YetI: TODO: It is likely that the value stack of two rules are different.
+2. If the top of the stack is a FRAME_, then:
+  a. Push the values val* to the stack.
+  b. Let f be the current frame.
+  c. Let n be the arity of f.
+  d. Assert: Due to validation, there are at least n values on the top of the stack.
+  e. Pop the values val^n from the stack.
+  f. Pop all values val'* from the top of the stack.
+  g. Pop the current frame from the stack.
+  h. Push the values val^n to the stack.
+3. Else if the top of the stack is a LABEL_, then:
+  a. Push the values val* to the stack.
+  b. Pop all values val* from the top of the stack.
+  c. Pop the current label from the stack.
+  d. Push the values val* to the stack.
+  e. Execute the instruction RETURN.
 
 Step_pure/unop t unop
-1. Assert: Due to validation, a value of value type t is on the top of the stack.
-2. Pop the value (t.CONST c_1) from the stack.
-3. If (|$unop_(t, unop, c_1)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+2. Pop the value (valtype_0.CONST c_1) from the stack.
+3. Assert: Due to validation, (valtype_0 is t).
+4. If (|$unop_(t, unop, c_1)| ≤ 0), then:
   a. Trap.
-4. Let c be an element of $unop_(t, unop, c_1).
-5. Push the value (t.CONST c) to the stack.
+5. Let c be an element of $unop_(t, unop, c_1).
+6. Push the value (t.CONST c) to the stack.
 
 Step_pure/binop t binop
-1. Assert: Due to validation, a value of value type t is on the top of the stack.
-2. Pop the value (t.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type t is on the top of the stack.
-4. Pop the value (t.CONST c_1) from the stack.
-5. If (|$binop_(t, binop, c_1, c_2)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+2. Pop the value (valtype_0.CONST c_2) from the stack.
+3. Assert: Due to validation, (valtype_0 is t).
+4. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+5. Pop the value (valtype_0.CONST c_1) from the stack.
+6. If (|$binop_(t, binop, c_1, c_2)| ≤ 0), then:
   a. Trap.
-6. Let c be an element of $binop_(t, binop, c_1, c_2).
-7. Push the value (t.CONST c) to the stack.
+7. Let c be an element of $binop_(t, binop, c_1, c_2).
+8. Push the value (t.CONST c) to the stack.
 
 Step_pure/testop t testop
-1. Assert: Due to validation, a value of value type t is on the top of the stack.
-2. Pop the value (t.CONST c_1) from the stack.
-3. Let c be $testop_(t, testop, c_1).
-4. Push the value (I32.CONST c) to the stack.
+1. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+2. Pop the value (valtype_0.CONST c_1) from the stack.
+3. Assert: Due to validation, (valtype_0 is t).
+4. Let c be $testop_(t, testop, c_1).
+5. Push the value (I32.CONST c) to the stack.
 
 Step_pure/relop t relop
-1. Assert: Due to validation, a value of value type t is on the top of the stack.
-2. Pop the value (t.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type t is on the top of the stack.
-4. Pop the value (t.CONST c_1) from the stack.
-5. Let c be $relop_(t, relop, c_1, c_2).
-6. Push the value (I32.CONST c) to the stack.
+1. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+2. Pop the value (valtype_0.CONST c_2) from the stack.
+3. Assert: Due to validation, (valtype_0 is t).
+4. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+5. Pop the value (valtype_0.CONST c_1) from the stack.
+6. Let c be $relop_(t, relop, c_1, c_2).
+7. Push the value (I32.CONST c) to the stack.
 
 Step_pure/cvtop t_2 t_1 cvtop
-1. Assert: Due to validation, a value of value type t_1 is on the top of the stack.
-2. Pop the value (t_1.CONST c_1) from the stack.
-3. If (|$cvtop__(t_1, t_2, cvtop, c_1)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+2. Pop the value (valtype_0.CONST c_1) from the stack.
+3. Assert: Due to validation, (valtype_0 is t_1).
+4. If (|$cvtop__(t_1, t_2, cvtop, c_1)| ≤ 0), then:
   a. Trap.
-4. Let c be an element of $cvtop__(t_1, t_2, cvtop, c_1).
-5. Push the value (t_2.CONST c) to the stack.
+5. Let c be an element of $cvtop__(t_1, t_2, cvtop, c_1).
+6. Push the value (t_2.CONST c) to the stack.
 
 Step_pure/local.tee x
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -4035,12 +4060,14 @@ Step_pure/local.tee x
 5. Execute the instruction (LOCAL.SET x).
 
 Step_read/block t? instr*
-1. If t? is not defined, then:
-  a. Let n be 0.
-2. Else:
-  a. Let n be 1.
-3. Let L be the label_n{[]}.
-4. Enter instr* with label L.
+1. Let n be 0.
+2. If t? is not defined, then:
+  a. Let L be the label_n{[]}.
+  b. Enter instr* with label L.
+3. Let n be 1.
+4. If (t? is not ?()), then:
+  a. Let L be the label_n{[]}.
+  b. Enter instr* with label L.
 
 Step_read/loop t? instr*
 1. Let L be the label_0{[(LOOP t? instr*)]}.
@@ -4118,9 +4145,6 @@ Step_read/memory.size
 2. Let ((n · 64) · $Ki()) be |$mem(z, 0).BYTES|.
 3. Push the value (I32.CONST n) to the stack.
 
-Step/ctxt
-1. YetI: TODO: It is likely that the value stack of two rules are different.
-
 Step/local.set x
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
@@ -4133,28 +4157,26 @@ Step/global.set x
 3. Pop the value val from the stack.
 4. Perform $with_global(z, x, val).
 
-Step/store valtype_u1 sz_u2? ao
+Step/store valtype_u0 sz_u1? ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type valtype_u0 is on the top of the stack.
-3. Pop the value (valtype_u0.CONST c) from the stack.
+2. Assert: Due to validation, a value of value type valtype_u2 is on the top of the stack.
+3. Pop the value (valtype_u2.CONST c) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
-6. If sz_u2? is not defined, then:
-  a. Let t be valtype_u1.
-  b. If (valtype_u0 is t), then:
-    1) If (((i + ao.OFFSET) + ($size(t) / 8)) > |$mem(z, 0).BYTES|), then:
+6. Let t be valtype_u2.
+7. If ((((i + ao.OFFSET) + ($size(t) / 8)) > |$mem(z, 0).BYTES|) and ((valtype_u0 is t) and sz_u1? is not defined)), then:
+  a. Trap.
+8. If ((valtype_u0 is t) and sz_u1? is not defined), then:
+  a. Let b* be $bytes_(t, c).
+  b. Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(t) / 8), b*).
+9. If the type of valtype_u2 is Inn, then:
+  a. Let Inn be valtype_u2.
+  b. If ((valtype_u0 is Inn) and sz_u1? is defined), then:
+    1) Let ?(n) be sz_u1?.
+    2) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
-    2) Let b* be $bytes_(t, c).
-    3) Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(t) / 8), b*).
-7. Else:
-  a. Let ?(n) be sz_u2?.
-  b. If the type of valtype_u1 is Inn, then:
-    1) Let Inn be valtype_u1.
-    2) If (valtype_u0 is Inn), then:
-      a) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
-        1. Trap.
-      b) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
-      c) Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
+    3) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
+    4) Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
 
 Step/memory.grow
 1. Let z be the current state.
@@ -7014,86 +7036,86 @@ watsup 0.4 generator
 #. Return :math:`(\mathsf{ref{.}null}~\mathsf{externref})`.
 
 
-:math:`{\mathrm{funcs}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-.............................................................................................
+:math:`{\mathrm{funcs}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+..............................................................................................
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{func}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externaddr}}_0`.
 
    #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{xv}}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. Return :math:`{\mathrm{funcs}}({{\mathit{xv}}^\ast})`.
 
 
-:math:`{\mathrm{globals}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-...............................................................................................
+:math:`{\mathrm{globals}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+................................................................................................
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{global}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externaddr}}_0`.
 
    #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{xv}}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. Return :math:`{\mathrm{globals}}({{\mathit{xv}}^\ast})`.
 
 
-:math:`{\mathrm{tables}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-..............................................................................................
+:math:`{\mathrm{tables}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+...............................................................................................
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{table}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externaddr}}_0`.
 
    #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{xv}}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. Return :math:`{\mathrm{tables}}({{\mathit{xv}}^\ast})`.
 
 
-:math:`{\mathrm{mems}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-............................................................................................
+:math:`{\mathrm{mems}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+.............................................................................................
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{mem}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{mem}`, then:
 
-   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externaddr}}_0`.
 
    #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. Return :math:`{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
 
@@ -7373,88 +7395,88 @@ watsup 0.4 generator
 #. Return :math:`z{.}\mathsf{types}{}[x]`.
 
 
-:math:`{\mathrm{funcs}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-.............................................................................................
-
-
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
-
-   a. Return :math:`\epsilon`.
-
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{func}`, then:
-
-   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externval}}_0`.
-
-   #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{externval}'}^\ast})`.
-
-#. Let :math:`{\mathit{externval}}~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-#. Return :math:`{\mathrm{funcs}}({{\mathit{externval}'}^\ast})`.
-
-
-:math:`{\mathrm{globals}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-...............................................................................................
-
-
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
-
-   a. Return :math:`\epsilon`.
-
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{global}`, then:
-
-   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externval}}_0`.
-
-   #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{externval}'}^\ast})`.
-
-#. Let :math:`{\mathit{externval}}~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-#. Return :math:`{\mathrm{globals}}({{\mathit{externval}'}^\ast})`.
-
-
-:math:`{\mathrm{tables}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+:math:`{\mathrm{funcs}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
 ..............................................................................................
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{externval}'}^\ast})`.
+   #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{externaddr}'}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Return :math:`{\mathrm{tables}}({{\mathit{externval}'}^\ast})`.
-
-
-:math:`{\mathrm{mems}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-............................................................................................
+#. Return :math:`{\mathrm{funcs}}({{\mathit{externaddr}'}^\ast})`.
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+:math:`{\mathrm{globals}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+................................................................................................
+
+
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{mem}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{externval}'}^\ast})`.
+   #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{externaddr}'}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{externval}'}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Return :math:`{\mathrm{mems}}({{\mathit{externval}'}^\ast})`.
+#. Return :math:`{\mathrm{globals}}({{\mathit{externaddr}'}^\ast})`.
+
+
+:math:`{\mathrm{tables}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+...............................................................................................
+
+
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{table}`, then:
+
+   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externaddr}}_0`.
+
+   #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{externaddr}'}^\ast})`.
+
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. Return :math:`{\mathrm{tables}}({{\mathit{externaddr}'}^\ast})`.
+
+
+:math:`{\mathrm{mems}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+.............................................................................................
+
+
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{mem}`, then:
+
+   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externaddr}}_0`.
+
+   #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{externaddr}'}^\ast})`.
+
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{externaddr}'}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. Return :math:`{\mathrm{mems}}({{\mathit{externaddr}'}^\ast})`.
 
 
 :math:`{\mathrm{allocfunc}}({\mathit{moduleinst}}, {\mathit{func}})`
@@ -7663,38 +7685,38 @@ watsup 0.4 generator
 
    a. Let :math:`(\mathsf{func}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{func}~{{\mathit{fa}}^\ast}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{func}~{{\mathit{fa}}^\ast}{}[x]) \}\end{array}`.
 
 #. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{global}`, then:
 
    a. Let :math:`(\mathsf{global}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{global}~{{\mathit{ga}}^\ast}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{global}~{{\mathit{ga}}^\ast}{}[x]) \}\end{array}`.
 
 #. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{table}`, then:
 
    a. Let :math:`(\mathsf{table}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{table}~{{\mathit{ta}}^\ast}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{{\mathit{ta}}^\ast}{}[x]) \}\end{array}`.
 
 #. Assert: Due to validation, :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{mem}`.
 
 #. Let :math:`(\mathsf{mem}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-#. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{mem}~{{\mathit{ma}}^\ast}{}[x]) \}\end{array}`.
+#. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{mem}~{{\mathit{ma}}^\ast}{}[x]) \}\end{array}`.
 
 
-:math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externval}}^\ast}, {{\mathit{val}}^\ast}, {{{\mathit{ref}}^\ast}^\ast})`
-...................................................................................................................................
+:math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast}, {{{\mathit{ref}}^\ast}^\ast})`
+....................................................................................................................................
 
 
-1. Let :math:`{{\mathit{fa}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externval}}^\ast})`.
+1. Let :math:`{{\mathit{fa}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{ga}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{globals}}({{\mathit{externval}}^\ast})`.
+#. Let :math:`{{\mathit{ga}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{globals}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{ma}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{mems}}({{\mathit{externval}}^\ast})`.
+#. Let :math:`{{\mathit{ma}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{mems}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{ta}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{tables}}({{\mathit{externval}}^\ast})`.
+#. Let :math:`{{\mathit{ta}}_{\mathit{ex}}^\ast}` be :math:`{\mathrm{tables}}({{\mathit{externaddr}}^\ast})`.
 
 #. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
 
@@ -7807,8 +7829,8 @@ watsup 0.4 generator
 #. Return :math:`{{\mathit{instr}}^\ast}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}init}~i)~(\mathsf{data{.}drop}~i)`.
 
 
-:math:`{\mathrm{instantiate}}(z, {\mathit{module}}, {{\mathit{externval}}^\ast})`
-.................................................................................
+:math:`{\mathrm{instantiate}}(z, {\mathit{module}}, {{\mathit{externaddr}}^\ast})`
+..................................................................................
 
 
 1. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
@@ -7841,7 +7863,7 @@ watsup 0.4 generator
 
 #. Let :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}` be :math:`{\mathrm{concat}}({{\mathrm{runelem}}({{\mathit{elem}}^\ast}{}[i], i)^{i<n_{\mathsf{e}}}})`.
 
-#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externval}}^\ast})~{{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externval}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{functype}}^\ast},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}^{i_{\mathsf{f}}<n_{\mathsf{f}}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
 
 #. Let :math:`f_{\mathit{init}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}}_{\mathit{init}} \}\end{array}`.
 
@@ -7859,7 +7881,7 @@ watsup 0.4 generator
 
 #. Pop the activation of :math:`f` from the stack.
 
-#. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externval}}^\ast}, {{\mathit{val}}^\ast}, {{{\mathit{ref}}^\ast}^\ast})`.
+#. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}^\ast}, {{{\mathit{ref}}^\ast}^\ast})`.
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
@@ -7997,31 +8019,39 @@ watsup 0.4 generator
 
 1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
+#. Assert: Due to validation, the top of the stack is a :math:`\mathsf{label}`.
+
+#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
 #. Let :math:`L` be the current label.
 
 #. Let :math:`n` be the arity of :math:`L`.
 
 #. Let :math:`{{\mathit{instr}'}^\ast}` be the continuation of :math:`L`.
 
-#. Pop the current label from the stack.
+#. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`0`, then:
 
-#. Let :math:`{{{\mathit{instr}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` be :math:`{{\mathit{val}}^\ast}`.
+   a. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
-#. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`0` and :math:`{|{{{\mathit{instr}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`n`, then:
+   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-   a. Let :math:`{{\mathit{val}'}^\ast}~{{\mathit{val}}^{n}}` be :math:`{{{\mathit{instr}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+
+   #. Pop the current label from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
    #. Execute the instruction :math:`{{\mathit{instr}'}^\ast}`.
 
-#. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is greater than or equal to :math:`1`, then:
+#. Else:
 
-   a. Let :math:`l` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}} - 1`.
+   a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. If for all :math:`{({{\mathit{instr}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}})^\ast}`, the type of :math:`{{\mathit{instr}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is val, then:
+   #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is greater than or equal to :math:`1`, then:
 
-      1) Let :math:`{{\mathit{val}}^\ast}` be :math:`{{{\mathit{instr}}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+      1) Let :math:`l` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}} - 1`.
+
+      #) Pop the current label from the stack.
 
       #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -8089,41 +8119,46 @@ watsup 0.4 generator
 
 1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-#. If a frame is now on the top of the stack, then:
+#. If the top of the stack is a :math:`\mathsf{frame}`, then:
 
-   a. Let :math:`f` be the current frame.
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Let :math:`f` be the current frame.
 
    #. Let :math:`n` be the arity of :math:`f`.
 
-   #. Pop the current frame from the stack.
+   #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
-   #. Let :math:`{{\mathit{val}'}^\ast}~{{\mathit{val}}^{n}}` be :math:`{{\mathit{val}}^\ast}`.
+   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+
+   #. Pop the current frame from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
-#. Else if a label is now on the top of the stack, then:
+#. Else if the top of the stack is a :math:`\mathsf{label}`, then:
 
-   a. Pop the current label from the stack.
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+   #. Pop the current label from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
    #. Execute the instruction :math:`\mathsf{return}`.
 
 
-:math:`\mathsf{trap}`
-.....................
-
-
-1. YetI: TODO: It is likely that the value stack of two rules are different.
-
-
 :math:`{\mathit{nt}} {.} {\mathit{unop}}`
 .........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
 
 #. If :math:`{|{{\mathit{unop}}}{{}_{{\mathit{nt}}}}{(c_1)}|}` is less than or equal to :math:`0`, then:
 
@@ -8138,13 +8173,15 @@ watsup 0.4 generator
 ..........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_1)` from the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
 #. If :math:`{|{{\mathit{binop}}}{{}_{{\mathit{nt}}}}{(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
 
@@ -8159,9 +8196,11 @@ watsup 0.4 generator
 ...........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
 
 #. Let :math:`c` be :math:`{{\mathit{testop}}}{{}_{{\mathit{nt}}}}{(c_1)}`.
 
@@ -8172,13 +8211,15 @@ watsup 0.4 generator
 ..........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_1)` from the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
 #. Let :math:`c` be :math:`{{\mathit{relop}}}{{}_{{\mathit{nt}}}}{(c_1, c_2)}`.
 
@@ -8189,9 +8230,11 @@ watsup 0.4 generator
 ............................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}_1` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}_1{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}_1`.
 
 #. If :math:`{|{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}}{(c_1)}|}` is less than or equal to :math:`0`, then:
 
@@ -8443,11 +8486,11 @@ watsup 0.4 generator
 ...........................................................
 
 
-1. Let :math:`{\mathit{nt}}_0` be :math:`{\mathrm{unpack}}({\mathsf{i}}{n})`.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}_0` is on the top of the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
-#. Pop the value :math:`({\mathit{nt}}_0{.}\mathsf{const}~c_1)` from the stack.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathrm{unpack}}({\mathsf{i}}{n})`.
 
 #. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}({{{\mathrm{pack}}}_{{\mathsf{i}}{n}}(c_1)^{N}})`.
 
@@ -8491,11 +8534,11 @@ watsup 0.4 generator
 .....................................................................
 
 
-1. Let :math:`{\mathit{nt}}_0` be :math:`{\mathrm{unpack}}({\mathsf{i}}{n})`.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}_0` is on the top of the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Pop the value :math:`({\mathit{nt}}_0{.}\mathsf{const}~c_2)` from the stack.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathrm{unpack}}({\mathsf{i}}{n})`.
 
 #. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
@@ -9033,13 +9076,13 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
+
+   a. Trap.
+
 #. If :math:`{{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
 
-   a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
-
-      1) Trap.
-
-   #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8]`.
+   a. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8]`.
 
    #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -9297,13 +9340,6 @@ watsup 0.4 generator
    #. Execute the instruction :math:`(\mathsf{memory{.}init}~x)`.
 
 
-:math:`\mathsf{ctxt}`
-.....................
-
-
-1. YetI: TODO: It is likely that the value stack of two rules are different.
-
-
 :math:`\mathsf{local{.}set}~x`
 ..............................
 
@@ -9387,51 +9423,47 @@ watsup 0.4 generator
 #. Perform :math:`z{}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = \epsilon]`.
 
 
-:math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{store}~{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}~{\mathit{ao}}`
+:math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}~{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{\mathit{ao}}`
 ...........................................................................................................................................................
 
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{const}~c)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}{.}\mathsf{const}~c)` from the stack.
 
 #. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}` is not defined, then:
+#. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
 
-   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{nt}}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
 
-   #. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{nt}}`, then:
+   a. Trap.
 
-      1) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+#. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{nt}}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
+
+   a. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)`.
+
+   #. Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8] = {b^\ast}]`.
+
+#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Inn, then:
+
+   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+
+   #. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathsf{i}}{n}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
+
+      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
+
+      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
          a) Trap.
 
-      #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)`.
+      #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{n}|}, n}(c))`.
 
-      #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8] = {b^\ast}]`.
-
-#. Else:
-
-   a. Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}`.
-
-   #. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-      1) Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-      #) If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathsf{i}}{n}`, then:
-
-         a) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
-
-            1. Trap.
-
-         #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{n}|}, n}(c))`.
-
-         #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
+      #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
 
 
 :math:`\mathsf{vstore}~\mathsf{v{\scriptstyle 128}}~{\mathit{ao}}`
@@ -11050,45 +11082,45 @@ default_ valtype_u0
 7. Assert: Due to validation, (valtype_u0 is EXTERNREF).
 8. Return (REF.NULL EXTERNREF).
 
-funcsxv externval_u0*
-1. If (externval_u0* is []), then:
+funcsxa externaddr_u0*
+1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externval_0] ++ xv* be externval_u0*.
-3. If externval_0 is of the case FUNC, then:
-  a. Let (FUNC fa) be externval_0.
-  b. Return [fa] ++ $funcsxv(xv*).
-4. Let [externval] ++ xv* be externval_u0*.
-5. Return $funcsxv(xv*).
+2. Let [externaddr_0] ++ xv* be externaddr_u0*.
+3. If externaddr_0 is of the case FUNC, then:
+  a. Let (FUNC fa) be externaddr_0.
+  b. Return [fa] ++ $funcsxa(xv*).
+4. Let [externaddr] ++ xv* be externaddr_u0*.
+5. Return $funcsxa(xv*).
 
-globalsxv externval_u0*
-1. If (externval_u0* is []), then:
+globalsxa externaddr_u0*
+1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externval_0] ++ xv* be externval_u0*.
-3. If externval_0 is of the case GLOBAL, then:
-  a. Let (GLOBAL ga) be externval_0.
-  b. Return [ga] ++ $globalsxv(xv*).
-4. Let [externval] ++ xv* be externval_u0*.
-5. Return $globalsxv(xv*).
+2. Let [externaddr_0] ++ xv* be externaddr_u0*.
+3. If externaddr_0 is of the case GLOBAL, then:
+  a. Let (GLOBAL ga) be externaddr_0.
+  b. Return [ga] ++ $globalsxa(xv*).
+4. Let [externaddr] ++ xv* be externaddr_u0*.
+5. Return $globalsxa(xv*).
 
-tablesxv externval_u0*
-1. If (externval_u0* is []), then:
+tablesxa externaddr_u0*
+1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externval_0] ++ xv* be externval_u0*.
-3. If externval_0 is of the case TABLE, then:
-  a. Let (TABLE ta) be externval_0.
-  b. Return [ta] ++ $tablesxv(xv*).
-4. Let [externval] ++ xv* be externval_u0*.
-5. Return $tablesxv(xv*).
+2. Let [externaddr_0] ++ xv* be externaddr_u0*.
+3. If externaddr_0 is of the case TABLE, then:
+  a. Let (TABLE ta) be externaddr_0.
+  b. Return [ta] ++ $tablesxa(xv*).
+4. Let [externaddr] ++ xv* be externaddr_u0*.
+5. Return $tablesxa(xv*).
 
-memsxv externval_u0*
-1. If (externval_u0* is []), then:
+memsxa externaddr_u0*
+1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externval_0] ++ xv* be externval_u0*.
-3. If externval_0 is of the case MEM, then:
-  a. Let (MEM ma) be externval_0.
-  b. Return [ma] ++ $memsxv(xv*).
-4. Let [externval] ++ xv* be externval_u0*.
-5. Return $memsxv(xv*).
+2. Let [externaddr_0] ++ xv* be externaddr_u0*.
+3. If externaddr_0 is of the case MEM, then:
+  a. Let (MEM ma) be externaddr_0.
+  b. Return [ma] ++ $memsxa(xv*).
+4. Let [externaddr] ++ xv* be externaddr_u0*.
+5. Return $memsxa(xv*).
 
 store
 1. Return.
@@ -11213,45 +11245,45 @@ blocktype z blocktype_u1
 4. Let (_IDX x) be blocktype_u1.
 5. Return $type(z, x).
 
-funcs externval_u0*
-1. If (externval_u0* is []), then:
+funcs externaddr_u0*
+1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externval_0] ++ externval'* be externval_u0*.
-3. If externval_0 is of the case FUNC, then:
-  a. Let (FUNC fa) be externval_0.
-  b. Return [fa] ++ $funcs(externval'*).
-4. Let [externval] ++ externval'* be externval_u0*.
-5. Return $funcs(externval'*).
+2. Let [externaddr_0] ++ externaddr'* be externaddr_u0*.
+3. If externaddr_0 is of the case FUNC, then:
+  a. Let (FUNC fa) be externaddr_0.
+  b. Return [fa] ++ $funcs(externaddr'*).
+4. Let [externaddr] ++ externaddr'* be externaddr_u0*.
+5. Return $funcs(externaddr'*).
 
-globals externval_u0*
-1. If (externval_u0* is []), then:
+globals externaddr_u0*
+1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externval_0] ++ externval'* be externval_u0*.
-3. If externval_0 is of the case GLOBAL, then:
-  a. Let (GLOBAL ga) be externval_0.
-  b. Return [ga] ++ $globals(externval'*).
-4. Let [externval] ++ externval'* be externval_u0*.
-5. Return $globals(externval'*).
+2. Let [externaddr_0] ++ externaddr'* be externaddr_u0*.
+3. If externaddr_0 is of the case GLOBAL, then:
+  a. Let (GLOBAL ga) be externaddr_0.
+  b. Return [ga] ++ $globals(externaddr'*).
+4. Let [externaddr] ++ externaddr'* be externaddr_u0*.
+5. Return $globals(externaddr'*).
 
-tables externval_u0*
-1. If (externval_u0* is []), then:
+tables externaddr_u0*
+1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externval_0] ++ externval'* be externval_u0*.
-3. If externval_0 is of the case TABLE, then:
-  a. Let (TABLE ta) be externval_0.
-  b. Return [ta] ++ $tables(externval'*).
-4. Let [externval] ++ externval'* be externval_u0*.
-5. Return $tables(externval'*).
+2. Let [externaddr_0] ++ externaddr'* be externaddr_u0*.
+3. If externaddr_0 is of the case TABLE, then:
+  a. Let (TABLE ta) be externaddr_0.
+  b. Return [ta] ++ $tables(externaddr'*).
+4. Let [externaddr] ++ externaddr'* be externaddr_u0*.
+5. Return $tables(externaddr'*).
 
-mems externval_u0*
-1. If (externval_u0* is []), then:
+mems externaddr_u0*
+1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externval_0] ++ externval'* be externval_u0*.
-3. If externval_0 is of the case MEM, then:
-  a. Let (MEM ma) be externval_0.
-  b. Return [ma] ++ $mems(externval'*).
-4. Let [externval] ++ externval'* be externval_u0*.
-5. Return $mems(externval'*).
+2. Let [externaddr_0] ++ externaddr'* be externaddr_u0*.
+3. If externaddr_0 is of the case MEM, then:
+  a. Let (MEM ma) be externaddr_0.
+  b. Return [ma] ++ $mems(externaddr'*).
+4. Let [externaddr] ++ externaddr'* be externaddr_u0*.
+5. Return $mems(externaddr'*).
 
 allocfunc moduleinst func
 1. Assert: Due to validation, func is of the case FUNC.
@@ -11349,22 +11381,22 @@ allocdatas byte_u0*
 instexport fa* ga* ta* ma* (EXPORT name externidx_u0)
 1. If externidx_u0 is of the case FUNC, then:
   a. Let (FUNC x) be externidx_u0.
-  b. Return { NAME: name; VALUE: (FUNC fa*[x]); }.
+  b. Return { NAME: name; ADDR: (FUNC fa*[x]); }.
 2. If externidx_u0 is of the case GLOBAL, then:
   a. Let (GLOBAL x) be externidx_u0.
-  b. Return { NAME: name; VALUE: (GLOBAL ga*[x]); }.
+  b. Return { NAME: name; ADDR: (GLOBAL ga*[x]); }.
 3. If externidx_u0 is of the case TABLE, then:
   a. Let (TABLE x) be externidx_u0.
-  b. Return { NAME: name; VALUE: (TABLE ta*[x]); }.
+  b. Return { NAME: name; ADDR: (TABLE ta*[x]); }.
 4. Assert: Due to validation, externidx_u0 is of the case MEM.
 5. Let (MEM x) be externidx_u0.
-6. Return { NAME: name; VALUE: (MEM ma*[x]); }.
+6. Return { NAME: name; ADDR: (MEM ma*[x]); }.
 
-allocmodule module externval* val* ref**
-1. Let fa_ex* be $funcs(externval*).
-2. Let ga_ex* be $globals(externval*).
-3. Let ma_ex* be $mems(externval*).
-4. Let ta_ex* be $tables(externval*).
+allocmodule module externaddr* val* ref**
+1. Let fa_ex* be $funcs(externaddr*).
+2. Let ga_ex* be $globals(externaddr*).
+3. Let ma_ex* be $mems(externaddr*).
+4. Let ta_ex* be $tables(externaddr*).
 5. Assert: Due to validation, module is of the case MODULE.
 6. Let (MODULE type_0 import* func^n_func global_1 table_2 mem_3 elem_4 data_5 start? export*) be module.
 7. Assert: Due to validation, data_5 is of the case DATA.
@@ -11420,7 +11452,7 @@ rundata (DATA byte* datamode_u0) i
 5. Let n be |byte*|.
 6. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT i), (DATA.DROP i)].
 
-instantiate z module externval*
+instantiate z module externaddr*
 1. Assert: Due to validation, module is of the case MODULE.
 2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
 3. Assert: Due to validation, type is of the case TYPE*.
@@ -11436,7 +11468,7 @@ instantiate z module externval*
 13. Let (ELEM reftype expr_E* elemmode)* be elem*.
 14. Let instr_D* be $concat_(instr, $rundata(data*[j], j)^(j<n_D)).
 15. Let instr_E* be $concat_(instr, $runelem(elem*[i], i)^(i<n_E)).
-16. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externval*) ++ (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externval*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
+16. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) ++ (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
 17. Let f_init be { LOCALS: []; MODULE: moduleinst_init; }.
 18. Let z be f_init.
 19. Push the activation of z to the stack.
@@ -11445,7 +11477,7 @@ instantiate z module externval*
 22. Push the activation of z to the stack.
 23. Let [ref]** be $eval_expr(expr_E)**.
 24. Pop the activation of _f from the stack.
-25. Let moduleinst be $allocmodule(module, externval*, val*, ref**).
+25. Let moduleinst be $allocmodule(module, externaddr*, val*, ref**).
 26. Let f be { LOCALS: []; MODULE: moduleinst; }.
 27. Push the activation of f with arity 0 to the stack.
 28. Execute the instruction instr_E*.
@@ -11510,21 +11542,25 @@ Step_pure/label
 
 Step_pure/br n_u0
 1. Pop all values val* from the top of the stack.
-2. Let L be the current label.
-3. Let n be the arity of L.
-4. Let instr'* be the continuation of L.
-5. Pop the current label from the stack.
-6. Let admininstr_u1* be val*.
-7. If ((n_u0 is 0) and (|admininstr_u1*| ≥ n)), then:
-  a. Let val'* ++ val^n be admininstr_u1*.
-  b. Push the values val^n to the stack.
-  c. Execute the instruction instr'*.
-8. If (n_u0 ≥ 1), then:
-  a. Let l be (n_u0 - 1).
-  b. If the type of admininstr_u1 is val*, then:
-    1) Let val* be admininstr_u1*.
-    2) Push the values val* to the stack.
-    3) Execute the instruction (BR l).
+2. Assert: Due to validation, the top of the stack is a LABEL_.
+3. Push the values val* to the stack.
+4. Let L be the current label.
+5. Let n be the arity of L.
+6. Let instr'* be the continuation of L.
+7. If (n_u0 is 0), then:
+  a. Assert: Due to validation, there are at least n values on the top of the stack.
+  b. Pop the values val^n from the stack.
+  c. Pop all values val'* from the top of the stack.
+  d. Pop the current label from the stack.
+  e. Push the values val^n to the stack.
+  f. Execute the instruction instr'*.
+8. Else:
+  a. Pop all values val* from the top of the stack.
+  b. If (n_u0 ≥ 1), then:
+    1) Let l be (n_u0 - 1).
+    2) Pop the current label from the stack.
+    3) Push the values val* to the stack.
+    4) Execute the instruction (BR l).
 
 Step_pure/br_if l
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -11554,59 +11590,66 @@ Step_pure/frame
 
 Step_pure/return
 1. Pop all values val* from the top of the stack.
-2. If a frame is now on the top of the stack, then:
-  a. Let f be the current frame.
-  b. Let n be the arity of f.
-  c. Pop the current frame from the stack.
-  d. Let val'* ++ val^n be val*.
-  e. Push the values val^n to the stack.
-3. Else if a label is now on the top of the stack, then:
-  a. Pop the current label from the stack.
-  b. Push the values val* to the stack.
-  c. Execute the instruction RETURN.
-
-Step_pure/trap
-1. YetI: TODO: It is likely that the value stack of two rules are different.
+2. If the top of the stack is a FRAME_, then:
+  a. Push the values val* to the stack.
+  b. Let f be the current frame.
+  c. Let n be the arity of f.
+  d. Assert: Due to validation, there are at least n values on the top of the stack.
+  e. Pop the values val^n from the stack.
+  f. Pop all values val'* from the top of the stack.
+  g. Pop the current frame from the stack.
+  h. Push the values val^n to the stack.
+3. Else if the top of the stack is a LABEL_, then:
+  a. Push the values val* to the stack.
+  b. Pop all values val* from the top of the stack.
+  c. Pop the current label from the stack.
+  d. Push the values val* to the stack.
+  e. Execute the instruction RETURN.
 
 Step_pure/unop nt unop
-1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (nt.CONST c_1) from the stack.
-3. If (|$unop_(nt, unop, c_1)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_1) from the stack.
+3. Assert: Due to validation, (numtype_0 is nt).
+4. If (|$unop_(nt, unop, c_1)| ≤ 0), then:
   a. Trap.
-4. Let c be an element of $unop_(nt, unop, c_1).
-5. Push the value (nt.CONST c) to the stack.
+5. Let c be an element of $unop_(nt, unop, c_1).
+6. Push the value (nt.CONST c) to the stack.
 
 Step_pure/binop nt binop
-1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (nt.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type nt is on the top of the stack.
-4. Pop the value (nt.CONST c_1) from the stack.
-5. If (|$binop_(nt, binop, c_1, c_2)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_2) from the stack.
+3. Assert: Due to validation, (numtype_0 is nt).
+4. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+5. Pop the value (numtype_0.CONST c_1) from the stack.
+6. If (|$binop_(nt, binop, c_1, c_2)| ≤ 0), then:
   a. Trap.
-6. Let c be an element of $binop_(nt, binop, c_1, c_2).
-7. Push the value (nt.CONST c) to the stack.
+7. Let c be an element of $binop_(nt, binop, c_1, c_2).
+8. Push the value (nt.CONST c) to the stack.
 
 Step_pure/testop nt testop
-1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (nt.CONST c_1) from the stack.
-3. Let c be $testop_(nt, testop, c_1).
-4. Push the value (I32.CONST c) to the stack.
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_1) from the stack.
+3. Assert: Due to validation, (numtype_0 is nt).
+4. Let c be $testop_(nt, testop, c_1).
+5. Push the value (I32.CONST c) to the stack.
 
 Step_pure/relop nt relop
-1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (nt.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type nt is on the top of the stack.
-4. Pop the value (nt.CONST c_1) from the stack.
-5. Let c be $relop_(nt, relop, c_1, c_2).
-6. Push the value (I32.CONST c) to the stack.
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_2) from the stack.
+3. Assert: Due to validation, (numtype_0 is nt).
+4. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+5. Pop the value (numtype_0.CONST c_1) from the stack.
+6. Let c be $relop_(nt, relop, c_1, c_2).
+7. Push the value (I32.CONST c) to the stack.
 
 Step_pure/cvtop nt_2 nt_1 cvtop
-1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
-2. Pop the value (nt_1.CONST c_1) from the stack.
-3. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_1) from the stack.
+3. Assert: Due to validation, (numtype_0 is nt_1).
+4. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| ≤ 0), then:
   a. Trap.
-4. Let c be an element of $cvtop__(nt_1, nt_2, cvtop, c_1).
-5. Push the value (nt_2.CONST c) to the stack.
+5. Let c be an element of $cvtop__(nt_1, nt_2, cvtop, c_1).
+6. Push the value (nt_2.CONST c) to the stack.
 
 Step_pure/ref.is_null
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -11721,9 +11764,9 @@ Step_pure/vshuffle (Pnn X N) i*
 9. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vsplat (Lnn X N)
-1. Let nt_0 be $unpack(Lnn).
-2. Assert: Due to validation, a value of value type nt_0 is on the top of the stack.
-3. Pop the value (nt_0.CONST c_1) from the stack.
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_1) from the stack.
+3. Assert: Due to validation, (numtype_0 is $unpack(Lnn)).
 4. Let c be $invlanes_((Lnn X N), $packnum_(Lnn, c_1)^N).
 5. Push the value (V128.CONST c) to the stack.
 
@@ -11744,9 +11787,9 @@ Step_pure/vextract_lane (lanetype_u0 X N) sx_u1? i
       b) Push the value (I32.CONST c_2) to the stack.
 
 Step_pure/vreplace_lane (Lnn X N) i
-1. Let nt_0 be $unpack(Lnn).
-2. Assert: Due to validation, a value of value type nt_0 is on the top of the stack.
-3. Pop the value (nt_0.CONST c_2) from the stack.
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_2) from the stack.
+3. Assert: Due to validation, (numtype_0 is $unpack(Lnn)).
 4. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 5. Pop the value (V128.CONST c_1) from the stack.
 6. Let c be $invlanes_((Lnn X N), $lanes_((Lnn X N), c_1) with [i] replaced by $packnum_(Lnn, c_2)).
@@ -12005,12 +12048,12 @@ Step_read/vload V128 vloadop_u0? ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
-4. If vloadop_u0? is not defined, then:
-  a. If (((i + ao.OFFSET) + ($size(V128) / 8)) > |$mem(z, 0).BYTES|), then:
-    1) Trap.
-  b. Let c be $vbytes__1^-1(V128, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(V128) / 8)]).
-  c. Push the value (V128.CONST c) to the stack.
-5. Else:
+4. If ((((i + ao.OFFSET) + ($size(V128) / 8)) > |$mem(z, 0).BYTES|) and vloadop_u0? is not defined), then:
+  a. Trap.
+5. If vloadop_u0? is not defined, then:
+  a. Let c be $vbytes__1^-1(V128, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(V128) / 8)]).
+  b. Push the value (V128.CONST c) to the stack.
+6. Else:
   a. Let ?(vloadop_0) be vloadop_u0?.
   b. If vloadop_0 is of the case SHAPE, then:
     1) Let (SHAPE M X N sx) be vloadop_0.
@@ -12135,9 +12178,6 @@ Step_read/memory.init x
   f. Push the value (I32.CONST (n - 1)) to the stack.
   g. Execute the instruction (MEMORY.INIT x).
 
-Step/ctxt
-1. YetI: TODO: It is likely that the value stack of two rules are different.
-
 Step/local.set x
 1. Let z be the current state.
 2. Assert: Due to validation, a value is on the top of the stack.
@@ -12177,28 +12217,26 @@ Step/elem.drop x
 1. Let z be the current state.
 2. Perform $with_elem(z, x, []).
 
-Step/store numtype_u1 sz_u2? ao
+Step/store numtype_u0 sz_u1? ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type numtype_u0 is on the top of the stack.
-3. Pop the value (numtype_u0.CONST c) from the stack.
+2. Assert: Due to validation, a value of value type numtype_u2 is on the top of the stack.
+3. Pop the value (numtype_u2.CONST c) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
-6. If sz_u2? is not defined, then:
-  a. Let nt be numtype_u1.
-  b. If (numtype_u0 is nt), then:
-    1) If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, 0).BYTES|), then:
+6. Let nt be numtype_u2.
+7. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, 0).BYTES|) and ((numtype_u0 is nt) and sz_u1? is not defined)), then:
+  a. Trap.
+8. If ((numtype_u0 is nt) and sz_u1? is not defined), then:
+  a. Let b* be $nbytes_(nt, c).
+  b. Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(nt) / 8), b*).
+9. If the type of numtype_u2 is Inn, then:
+  a. Let Inn be numtype_u2.
+  b. If ((numtype_u0 is Inn) and sz_u1? is defined), then:
+    1) Let ?(n) be sz_u1?.
+    2) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
       a) Trap.
-    2) Let b* be $nbytes_(nt, c).
-    3) Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(nt) / 8), b*).
-7. Else:
-  a. Let ?(n) be sz_u2?.
-  b. If the type of numtype_u1 is Inn, then:
-    1) Let Inn be numtype_u1.
-    2) If (numtype_u0 is Inn), then:
-      a) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
-        1. Trap.
-      b) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
-      c) Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
+    3) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
+    4) Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
 
 Step/vstore V128 ao
 1. Let z be the current state.
@@ -12256,10 +12294,10 @@ watsup 0.4 generator
 == IL Validation after pass sideconditions...
 == Translating to AL...
 == Prose Generation...
-6-typing.watsup:194.10-194.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
-6-typing.watsup:817.9-817.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
-6-typing.watsup:851.9-851.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
-6-typing.watsup:1309.9-1309.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm : name})`
+6-typing.watsup:195.10-195.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
+6-typing.watsup:876.9-876.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
+6-typing.watsup:910.9-910.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
+6-typing.watsup:1378.9-1378.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm : name})`
 
 * :math:`{\mathit{numtype}}` is valid.
 
@@ -12799,6 +12837,14 @@ watsup 0.4 generator
    * :math:`{\mathit{limits}}` is valid with type :math:`{2^{16}}`.
 
 
+* :math:`{\mathit{deftype}}` is valid if and only if:
+
+
+   * :math:`{\mathit{deftype}}` is valid.
+
+   * :math:`{\mathrm{expand}}({\mathit{deftype}})` must be equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
+
+
 * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if and only if:
 
 
@@ -12822,7 +12868,11 @@ watsup 0.4 generator
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{mem}~{\mathit{memtype}})`.
 
-      * :math:`{\mathit{memtype}}` is valid.
+      * :math:`{\mathit{memtype}}` is valid.   * Or:
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{tag}~{\mathit{tagtype}})`.
+
+      * :math:`{\mathit{tagtype}}` is valid.
 
 
 * :math:`({t_{11}^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_{12}^\ast})` matches :math:`({t_{21}^\ast}~{\rightarrow}_{{x_2^\ast}}\,{t_{22}^\ast})` if and only if:
@@ -12891,6 +12941,14 @@ watsup 0.4 generator
    * :math:`{\mathit{limits}}_1` matches :math:`{\mathit{limits}}_2`.
 
 
+* :math:`{\mathit{deftype}}_1` matches :math:`{\mathit{deftype}}_2` if and only if:
+
+
+   * :math:`{\mathit{deftype}}_1` matches :math:`{\mathit{deftype}}_2`.
+
+   * :math:`{\mathit{deftype}}_2` matches :math:`{\mathit{deftype}}_1`.
+
+
 * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` matches :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` if and only if:
 
 
@@ -12920,7 +12978,13 @@ watsup 0.4 generator
 
       * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{mem}~{\mathit{memtype}}_2)`.
 
-      * :math:`{\mathit{memtype}}_1` matches :math:`{\mathit{memtype}}_2`.
+      * :math:`{\mathit{memtype}}_1` matches :math:`{\mathit{memtype}}_2`.   * Or:
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{tag}~{\mathit{tagtype}}_1)`.
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{tag}~{\mathit{tagtype}}_2)`.
+
+      * :math:`{\mathit{tagtype}}_1` matches :math:`{\mathit{tagtype}}_2`.
 
 
 * :math:`{\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with type :math:`({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~{\rightarrow}_{\epsilon}\,{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^\ast})` if and only if:
@@ -12949,6 +13013,46 @@ watsup 0.4 generator
       * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`{\mathit{typeidx}}`.
 
       * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[{\mathit{typeidx}}])` must be equal to :math:`(\mathsf{func}~({t_1^\ast}~\rightarrow~{t_2^\ast}))`.
+
+
+* :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid if and only if:
+
+
+   * Either:
+
+      * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{catch}~x~l)`.
+
+      * :math:`{|C{.}\mathsf{tags}|}` must be greater than :math:`x`.
+
+      * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
+
+      * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` must be equal to :math:`(\mathsf{func}~({t^\ast}~\rightarrow~\epsilon))`.
+
+      * :math:`{t^\ast}` matches :math:`C{.}\mathsf{labels}{}[l]`.
+
+   * Or:
+
+      * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{catch\_ref}~x~l)`.
+
+      * :math:`{|C{.}\mathsf{tags}|}` must be greater than :math:`x`.
+
+      * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
+
+      * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` must be equal to :math:`(\mathsf{func}~({t^\ast}~\rightarrow~\epsilon))`.
+
+      * :math:`{t^\ast}~(\mathsf{ref}~(\mathsf{null}~\epsilon~{}^?)~\mathsf{exn})` matches :math:`C{.}\mathsf{labels}{}[l]`.   * Or:
+
+      * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{catch\_all}~l)`.
+
+      * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
+
+      * :math:`\epsilon` matches :math:`C{.}\mathsf{labels}{}[l]`.   * Or:
+
+      * :math:`{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{catch\_all\_ref}~l)`.
+
+      * :math:`{|C{.}\mathsf{labels}|}` must be greater than :math:`l`.
+
+      * :math:`(\mathsf{ref}~(\mathsf{null}~\epsilon~{}^?)~\mathsf{exn})` matches :math:`C{.}\mathsf{labels}{}[l]`.
 
 
 * :math:`\mathsf{nop}` is valid with type :math:`(\epsilon~{\rightarrow}_{\epsilon}\,\epsilon)`.
@@ -13168,6 +13272,34 @@ watsup 0.4 generator
    * :math:`{t_2^\ast}` matches :math:`{{t'}_2^\ast}`.
 
    * :math:`({t_3^\ast}~{\rightarrow}_{\epsilon}\,{t_4^\ast})` is valid.
+
+
+* :math:`(\mathsf{throw}~x)` is valid with type :math:`({t_1^\ast}~{t^\ast}~{\rightarrow}_{\epsilon}\,{t_2^\ast})` if and only if:
+
+
+   * :math:`{|C{.}\mathsf{tags}|}` must be greater than :math:`x`.
+
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{tags}{}[x])` must be equal to :math:`(\mathsf{func}~({t^\ast}~\rightarrow~\epsilon))`.
+
+   * :math:`({t_1^\ast}~{\rightarrow}_{\epsilon}\,{t_2^\ast})` is valid.
+
+
+* :math:`\mathsf{throw\_ref}` is valid with type :math:`({t_1^\ast}~(\mathsf{ref}~(\mathsf{null}~()~{}^?)~\mathsf{exn})~{\rightarrow}_{\epsilon}\,{t_2^\ast})` if and only if:
+
+
+   * :math:`({t_1^\ast}~{\rightarrow}_{\epsilon}\,{t_2^\ast})` is valid.
+
+
+* :math:`(\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast})` is valid with type :math:`({t_1^\ast}~{\rightarrow}_{\epsilon}\,{t_2^\ast})` if and only if:
+
+
+   * :math:`{\mathit{bt}}` is valid with type :math:`({t_1^\ast}~{\rightarrow}_{\epsilon}\,{t_2^\ast})`.
+
+   * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`({t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast})`.
+
+   * For all :math:`{\mathit{catch}}` in :math:`{{\mathit{catch}}^\ast}`,
+
+      * :math:`{\mathit{catch}}` is valid.
 
 
 * :math:`({\mathit{nt}}{.}\mathsf{const}~c_{\mathit{nt}})` is valid with type :math:`(\epsilon~{\rightarrow}_{\epsilon}\,{\mathit{nt}})`.
@@ -13922,6 +14054,14 @@ watsup 0.4 generator
    * :math:`{\mathit{memtype}}` is valid.
 
 
+* :math:`(\mathsf{tag}~x)` is valid with type :math:`C{.}\mathsf{types}{}[x]` if and only if:
+
+
+   * :math:`{|C{.}\mathsf{types}|}` must be greater than :math:`x`.
+
+   * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{func}~{\mathit{functype}})`.
+
+
 * :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with type :math:`{\mathit{rt}}` if and only if:
 
 
@@ -14037,7 +14177,15 @@ watsup 0.4 generator
 
       * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
 
-      * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+      * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.   * Or:
+
+      * :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`(\mathsf{tag}~x)`.
+
+      * :math:`{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` must be equal to :math:`(\mathsf{tag}~{\mathit{at}})`.
+
+      * :math:`{|C{.}\mathsf{tags}|}` must be greater than :math:`x`.
+
+      * :math:`C{.}\mathsf{tags}{}[x]` must be equal to :math:`{\mathit{at}}`.
 
 
 * :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is valid with type :math:`{\mathit{name}}` and :math:`{\mathit{xt}}` if and only if:
@@ -14086,7 +14234,7 @@ watsup 0.4 generator
       * Under the context :math:`C{}[{.}\mathsf{types} \mathrel{{=}{\oplus}} {{\mathit{dt}}_1^\ast}]`, :math:`{{\mathit{type}}^\ast}` is valid with type :math:`{{\mathit{dt}}^\ast}`.
 
 
-* :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is valid with type :math:`{{\mathrm{clos}}}_{C}(({{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast}))` if and only if:
+* :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is valid with type :math:`{{\mathrm{clos}}}_{C}(({{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast}))` if and only if:
 
 
    * :math:`{|{{\mathit{xt}}_{\mathsf{i}}^\ast}|}` must be equal to :math:`{|{{\mathit{import}}^\ast}|}`.
@@ -14094,6 +14242,8 @@ watsup 0.4 generator
    * :math:`{|{{\mathit{tt}}^\ast}|}` must be equal to :math:`{|{{\mathit{table}}^\ast}|}`.
 
    * :math:`{|{{\mathit{mt}}^\ast}|}` must be equal to :math:`{|{{\mathit{mem}}^\ast}|}`.
+
+   * :math:`{|{{\mathit{tag}}^\ast}|}` must be equal to :math:`{|{{\mathit{at}}^\ast}|}`.
 
    * :math:`{|{{\mathit{func}}^\ast}|}` must be equal to :math:`{|{{\mathit{dt}}^\ast}|}`.
 
@@ -14105,11 +14255,11 @@ watsup 0.4 generator
 
    * :math:`{|{{\mathit{xt}}_{\mathsf{e}}^\ast}|}` must be equal to :math:`{|{{\mathit{export}}^\ast}|}`.
 
-   * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~\epsilon \}\end{array}`, :math:`{{\mathit{type}}^\ast}` is valid with type :math:`{{\mathit{dt}'}^\ast}`.
+   * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~\epsilon \}\end{array}`, :math:`{{\mathit{type}}^\ast}` is valid with type :math:`{{\mathit{dt}'}^\ast}`.
 
    * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}` and :math:`{\mathit{xt}}_{\mathsf{i}}` in :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}`,
 
-      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~\epsilon \}\end{array}`, :math:`{\mathit{import}}` is valid with type :math:`{\mathit{xt}}_{\mathsf{i}}`.
+      * Under the context :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~\epsilon \}\end{array}`, :math:`{\mathit{import}}` is valid with type :math:`{\mathit{xt}}_{\mathsf{i}}`.
 
    * Under the context :math:`{C'}`, :math:`{{\mathit{global}}^\ast}` is valid with type :math:`{{\mathit{gt}}^\ast}`.
 
@@ -14120,6 +14270,10 @@ watsup 0.4 generator
    * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}` and :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`,
 
       * Under the context :math:`{C'}`, :math:`{\mathit{mem}}` is valid with type :math:`{\mathit{mt}}`.
+
+   * For all :math:`{\mathit{at}}` in :math:`{{\mathit{at}}^\ast}` and :math:`{\mathit{tag}}` in :math:`{{\mathit{tag}}^\ast}`,
+
+      * Under the context :math:`{C'}`, :math:`{\mathit{tag}}` is valid with type :math:`{\mathit{at}}`.
 
    * For all :math:`{\mathit{dt}}` in :math:`{{\mathit{dt}}^\ast}` and :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`,
 
@@ -14143,9 +14297,9 @@ watsup 0.4 generator
 
    * YetI: $disjoint_(syntax name, nm*{nm : name}).
 
-   * :math:`C` must be equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{elems}~{{\mathit{rt}}^\ast},\; \mathsf{datas}~{{\mathit{ok}}^\ast},\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
+   * :math:`C` must be equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast}~{{\mathit{gt}}^\ast},\; \mathsf{tables}~{{\mathit{tt}}_{\mathsf{i}}^\ast}~{{\mathit{tt}}^\ast},\; \mathsf{mems}~{{\mathit{mt}}_{\mathsf{i}}^\ast}~{{\mathit{mt}}^\ast},\; \mathsf{tags}~{{\mathit{at}}_{\mathsf{i}}^\ast}~{{\mathit{at}}^\ast},\; \mathsf{elems}~{{\mathit{rt}}^\ast},\; \mathsf{datas}~{{\mathit{ok}}^\ast},\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
 
-   * :math:`{C'}` must be equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
+   * :math:`{C'}` must be equal to :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}'}^\ast},\; \mathsf{recs}~\epsilon,\; \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\; \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon,\; \mathsf{return}~\epsilon,\; \mathsf{refs}~{x^\ast} \}\end{array}`.
 
    * :math:`{x^\ast}` must be equal to :math:`{\mathrm{funcidx}}(({{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}))`.
 
@@ -14156,6 +14310,8 @@ watsup 0.4 generator
    * :math:`{{\mathit{tt}}_{\mathsf{i}}^\ast}` must be equal to :math:`{\mathrm{tables}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
    * :math:`{{\mathit{mt}}_{\mathsf{i}}^\ast}` must be equal to :math:`{\mathrm{mems}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
+
+   * :math:`{{\mathit{at}}_{\mathsf{i}}^\ast}` must be equal to :math:`{\mathrm{tags}}({{\mathit{xt}}_{\mathsf{i}}^\ast})`.
 
 
 * :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is valid with type :math:`({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\rightarrow~{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}^\ast})` if and only if:
@@ -14879,7 +15035,7 @@ watsup 0.4 generator
 
    a. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{locals}~\epsilon,\; \mathsf{labels}~\epsilon \}\end{array}`.
 
-#. Return `YetE (free ++ $free_list(free'*{free' : free}))`.
+#. Return YetE: free ++ $free_list(free'*{free' : free}).
 
 
 :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`
@@ -15157,7 +15313,7 @@ watsup 0.4 generator
 ..........................................................................................................
 
 
-1. Return `YetE ($free_resulttype(resulttype_1) ++ $free_resulttype(resulttype_2))`.
+1. Return YetE: $free_resulttype(resulttype_1) ++ $free_resulttype(resulttype_2).
 
 
 :math:`{\mathrm{free}}_{\mathit{structtype}}({{\mathit{fieldtype}}^\ast})`
@@ -15201,7 +15357,7 @@ watsup 0.4 generator
 ...........................................................................................................................
 
 
-1. Return `YetE ($free_list($free_typeuse(typeuse)*{typeuse : typeuse}) ++ $free_comptype(comptype))`.
+1. Return YetE: $free_list($free_typeuse(typeuse)*{typeuse : typeuse}) ++ $free_comptype(comptype).
 
 
 :math:`{\mathrm{free}}_{\mathit{globaltype}}(({\mathsf{mut}^?}, {\mathit{valtype}}))`
@@ -15272,7 +15428,7 @@ watsup 0.4 generator
 ..........................................................................................................................
 
 
-1. Return `YetE ($free_list($free_externtype(externtype_1)*{externtype_1 : externtype}) ++ $free_list($free_externtype(externtype_2)*{externtype_2 : externtype}))`.
+1. Return YetE: $free_list($free_externtype(externtype_1)*{externtype_1 : externtype}) ++ $free_list($free_externtype(externtype_2)*{externtype_2 : externtype}).
 
 
 :math:`{\mathrm{free}}_{\mathit{blocktype}}({\mathit{blocktype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}})`
@@ -15351,15 +15507,15 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{block}`, then:
 
-   a. Return `YetE ($free_blocktype(blocktype) ++ $free_block(instr*{instr : instr}))`.
+   a. Return YetE: $free_blocktype(blocktype) ++ $free_block(instr*{instr : instr}).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{loop}`, then:
 
-   a. Return `YetE ($free_blocktype(blocktype) ++ $free_block(instr*{instr : instr}))`.
+   a. Return YetE: $free_blocktype(blocktype) ++ $free_block(instr*{instr : instr}).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{if}`, then:
 
-   a. Return `YetE ($free_blocktype(blocktype) ++ $free_block(instr_1*{instr_1 : instr}) ++ $free_block(instr_2*{instr_2 : instr}))`.
+   a. Return YetE: $free_blocktype(blocktype) ++ $free_block(instr_1*{instr_1 : instr}) ++ $free_block(instr_2*{instr_2 : instr}).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{br}`, then:
 
@@ -15375,7 +15531,7 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{br\_table}`, then:
 
-   a. Return `YetE ($free_list($free_labelidx(labelidx)*{}) ++ $free_labelidx(labelidx))`.
+   a. Return YetE: $free_list($free_labelidx(labelidx)*{}) ++ $free_labelidx(labelidx).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{br\_on\_null}`, then:
 
@@ -15391,11 +15547,11 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{br\_on\_cast}`, then:
 
-   a. Return `YetE ($free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2))`.
+   a. Return YetE: $free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{br\_on\_cast\_fail}`, then:
 
-   a. Return `YetE ($free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2))`.
+   a. Return YetE: $free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{call}`, then:
 
@@ -15411,7 +15567,7 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{call\_indirect}`, then:
 
-   a. Return `YetE ($free_tableidx(tableidx) ++ $free_typeuse(typeuse))`.
+   a. Return YetE: $free_tableidx(tableidx) ++ $free_typeuse(typeuse).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{return}`, then:
 
@@ -15431,7 +15587,7 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{return\_call\_indirect}`, then:
 
-   a. Return `YetE ($free_tableidx(tableidx) ++ $free_typeuse(typeuse))`.
+   a. Return YetE: $free_tableidx(tableidx) ++ $free_typeuse(typeuse).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{const}`, then:
 
@@ -15465,7 +15621,7 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{cvtop}`, then:
 
-   a. Return `YetE ($free_numtype(numtype_1) ++ $free_numtype(numtype_2))`.
+   a. Return YetE: $free_numtype(numtype_1) ++ $free_numtype(numtype_2).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vconst}`, then:
 
@@ -15547,19 +15703,19 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vextunop}`, then:
 
-   a. Return `YetE ($free_shape((ishape_1 : ishape <: shape)) ++ $free_shape((ishape_2 : ishape <: shape)))`.
+   a. Return YetE: $free_shape((ishape_1 : ishape <: shape)) ++ $free_shape((ishape_2 : ishape <: shape)).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vextbinop}`, then:
 
-   a. Return `YetE ($free_shape((ishape_1 : ishape <: shape)) ++ $free_shape((ishape_2 : ishape <: shape)))`.
+   a. Return YetE: $free_shape((ishape_1 : ishape <: shape)) ++ $free_shape((ishape_2 : ishape <: shape)).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vnarrow}`, then:
 
-   a. Return `YetE ($free_shape((ishape_1 : ishape <: shape)) ++ $free_shape((ishape_2 : ishape <: shape)))`.
+   a. Return YetE: $free_shape((ishape_1 : ishape <: shape)) ++ $free_shape((ishape_2 : ishape <: shape)).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vcvtop}`, then:
 
-   a. Return `YetE ($free_shape(shape_1) ++ $free_shape(shape_2))`.
+   a. Return YetE: $free_shape(shape_1) ++ $free_shape(shape_2).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vsplat}`, then:
 
@@ -15665,11 +15821,11 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array{.}new\_data}`, then:
 
-   a. Return `YetE ($free_typeidx(typeidx) ++ $free_dataidx(dataidx))`.
+   a. Return YetE: $free_typeidx(typeidx) ++ $free_dataidx(dataidx).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array{.}new\_elem}`, then:
 
-   a. Return `YetE ($free_typeidx(typeidx) ++ $free_elemidx(elemidx))`.
+   a. Return YetE: $free_typeidx(typeidx) ++ $free_elemidx(elemidx).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array{.}get}`, then:
 
@@ -15695,15 +15851,15 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array{.}copy}`, then:
 
-   a. Return `YetE ($free_typeidx(typeidx_1) ++ $free_typeidx(typeidx_2))`.
+   a. Return YetE: $free_typeidx(typeidx_1) ++ $free_typeidx(typeidx_2).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array{.}init\_data}`, then:
 
-   a. Return `YetE ($free_typeidx(typeidx) ++ $free_dataidx(dataidx))`.
+   a. Return YetE: $free_typeidx(typeidx) ++ $free_dataidx(dataidx).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{array{.}init\_elem}`, then:
 
-   a. Return `YetE ($free_typeidx(typeidx) ++ $free_elemidx(elemidx))`.
+   a. Return YetE: $free_typeidx(typeidx) ++ $free_elemidx(elemidx).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{extern{.}convert\_any}`, then:
 
@@ -15775,11 +15931,11 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{table{.}copy}`, then:
 
-   a. Return `YetE ($free_tableidx(tableidx_1) ++ $free_tableidx(tableidx_2))`.
+   a. Return YetE: $free_tableidx(tableidx_1) ++ $free_tableidx(tableidx_2).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{table{.}init}`, then:
 
-   a. Return `YetE ($free_tableidx(tableidx) ++ $free_elemidx(elemidx))`.
+   a. Return YetE: $free_tableidx(tableidx) ++ $free_elemidx(elemidx).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{elem{.}drop}`, then:
 
@@ -15793,27 +15949,27 @@ watsup 0.4 generator
 
    #. If :math:`{\mathit{loadop\_{\scriptstyle 0}}}` is defined, then:
 
-      1) Return `YetE ($free_numtype(numtype) ++ $free_memidx(memidx))`.
+      1) Return YetE: $free_numtype(numtype) ++ $free_memidx(memidx).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{store}`, then:
 
-   a. Return `YetE ($free_numtype(numtype) ++ $free_memidx(memidx))`.
+   a. Return YetE: $free_numtype(numtype) ++ $free_memidx(memidx).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vload}`, then:
 
-   a. Return `YetE ($free_vectype(vectype) ++ $free_memidx(memidx))`.
+   a. Return YetE: $free_vectype(vectype) ++ $free_memidx(memidx).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vload\_lane}`, then:
 
-   a. Return `YetE ($free_vectype(vectype) ++ $free_memidx(memidx))`.
+   a. Return YetE: $free_vectype(vectype) ++ $free_memidx(memidx).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vstore}`, then:
 
-   a. Return `YetE ($free_vectype(vectype) ++ $free_memidx(memidx))`.
+   a. Return YetE: $free_vectype(vectype) ++ $free_memidx(memidx).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{vstore\_lane}`, then:
 
-   a. Return `YetE ($free_vectype(vectype) ++ $free_memidx(memidx))`.
+   a. Return YetE: $free_vectype(vectype) ++ $free_memidx(memidx).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{memory{.}size}`, then:
 
@@ -15835,11 +15991,11 @@ watsup 0.4 generator
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{memory{.}copy}`, then:
 
-   a. Return `YetE ($free_memidx(memidx_1) ++ $free_memidx(memidx_2))`.
+   a. Return YetE: $free_memidx(memidx_1) ++ $free_memidx(memidx_2).
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{memory{.}init}`, then:
 
-   a. Return `YetE ($free_memidx(memidx) ++ $free_dataidx(dataidx))`.
+   a. Return YetE: $free_memidx(memidx) ++ $free_dataidx(dataidx).
 
 #. Assert: Due to validation, :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{data{.}drop}`.
 
@@ -15873,21 +16029,21 @@ watsup 0.4 generator
 ...................................................................................................................
 
 
-1. Return `YetE ($free_typeidx(typeidx) ++ $free_list($free_local(local)*{local : local}) ++ $free_block(expr)[LOCALS_free = []])`.
+1. Return YetE: $free_typeidx(typeidx) ++ $free_list($free_local(local)*{local : local}) ++ $free_block(expr)[LOCALS_free = []].
 
 
 :math:`{\mathrm{free}}_{\mathit{global}}((\mathsf{global}~{\mathit{globaltype}}~{\mathit{expr}}))`
 ..................................................................................................
 
 
-1. Return `YetE ($free_globaltype(globaltype) ++ $free_expr(expr))`.
+1. Return YetE: $free_globaltype(globaltype) ++ $free_expr(expr).
 
 
 :math:`{\mathrm{free}}_{\mathit{table}}((\mathsf{table}~{\mathit{tabletype}}~{\mathit{expr}}))`
 ...............................................................................................
 
 
-1. Return `YetE ($free_tabletype(tabletype) ++ $free_expr(expr))`.
+1. Return YetE: $free_tabletype(tabletype) ++ $free_expr(expr).
 
 
 :math:`{\mathrm{free}}_{\mathit{mem}}((\mathsf{memory}~{\mathit{memtype}}))`
@@ -15897,13 +16053,20 @@ watsup 0.4 generator
 1. Return :math:`{\mathrm{free}}_{\mathit{memtype}}({\mathit{memtype}})`.
 
 
+:math:`{\mathrm{free}}_{\mathit{tag}}((\mathsf{tag}~{\mathit{typeidx}}))`
+.........................................................................
+
+
+1. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
+
+
 :math:`{\mathrm{free}}_{\mathit{elemmode}}({\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}})`
 ........................................................................................................
 
 
 1. If :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{active}`, then:
 
-   a. Return `YetE ($free_tableidx(tableidx) ++ $free_expr(expr))`.
+   a. Return YetE: $free_tableidx(tableidx) ++ $free_expr(expr).
 
 #. If :math:`{\mathit{elemmode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`, then:
 
@@ -15920,7 +16083,7 @@ watsup 0.4 generator
 
 1. If :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{active}`, then:
 
-   a. Return `YetE ($free_memidx(memidx) ++ $free_expr(expr))`.
+   a. Return YetE: $free_memidx(memidx) ++ $free_expr(expr).
 
 #. Assert: Due to validation, :math:`{\mathit{datamode}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`\mathsf{passive}`.
 
@@ -15931,7 +16094,7 @@ watsup 0.4 generator
 ......................................................................................................................
 
 
-1. Return `YetE ($free_reftype(reftype) ++ $free_list($free_expr(expr)*{expr : expr}) ++ $free_elemmode(elemmode))`.
+1. Return YetE: $free_reftype(reftype) ++ $free_list($free_expr(expr)*{expr : expr}) ++ $free_elemmode(elemmode).
 
 
 :math:`{\mathrm{free}}_{\mathit{data}}((\mathsf{data}~{{\mathit{byte}}^\ast}~{\mathit{datamode}}))`
@@ -15962,11 +16125,11 @@ watsup 0.4 generator
 1. Return :math:`{\mathrm{free}}_{\mathit{externtype}}({\mathit{externtype}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{module}}((\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast}))`
-......................................................................................................................................................................................................................................................................................................
+:math:`{\mathrm{free}}_{\mathit{module}}((\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast}))`
+............................................................................................................................................................................................................................................................................................................................
 
 
-1. Return `YetE ($free_list($free_type(type)*{type : type}) ++ $free_list($free_import(import)*{import : import}) ++ $free_list($free_func(func)*{func : func}) ++ $free_list($free_global(global)*{global : global}) ++ $free_list($free_table(table)*{table : table}) ++ $free_list($free_mem(mem)*{mem : mem}) ++ $free_list($free_elem(elem)*{elem : elem}) ++ $free_list($free_data(data)*{data : data}) ++ $free_opt($free_start(start)?{start : start}) ++ $free_list($free_export(export)*{export : export}))`.
+1. Return YetE: $free_list($free_type(type)*{type : type}) ++ $free_list($free_import(import)*{import : import}) ++ $free_list($free_func(func)*{func : func}) ++ $free_list($free_global(global)*{global : global}) ++ $free_list($free_table(table)*{table : table}) ++ $free_list($free_mem(mem)*{mem : mem}) ++ $free_list($free_tag(tag)*{tag : tag}) ++ $free_list($free_elem(elem)*{elem : elem}) ++ $free_list($free_data(data)*{data : data}) ++ $free_opt($free_start(start)?{start : start}) ++ $free_list($free_export(export)*{export : export}).
 
 
 :math:`{\mathrm{funcidx}}({\mathit{module}})`
@@ -15995,7 +16158,11 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{tu}}_1~{{\mathit{tu}'}^\ast}` be :math:`{{\mathit{typeuse}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. If :math:`{|{{\mathit{typevar}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}|}` is greater than or equal to :math:`1`, then:
+#. If :math:`{|{{\mathit{typevar}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}|}` is less than :math:`1`, then:
+
+   a. Do nothing.
+
+#. Else:
 
    a. Let :math:`{\mathit{tv}}_1~{{\mathit{tv}'}^\ast}` be :math:`{{\mathit{typevar}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
@@ -16417,6 +16584,27 @@ watsup 0.4 generator
 #. Return :math:`{\mathrm{mems}}({{\mathit{xx}}^\ast})`.
 
 
+:math:`{\mathrm{tags}}({{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+............................................................................................
+
+
+1. If :math:`{{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{externidx}}_0~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. If :math:`{\mathit{externidx}}_0` is of the case :math:`\mathsf{tag}`, then:
+
+   a. Let :math:`(\mathsf{tag}~x)` be :math:`{\mathit{externidx}}_0`.
+
+   #. Return :math:`x~{\mathrm{tags}}({{\mathit{xx}}^\ast})`.
+
+#. Let :math:`{\mathit{externidx}}~{{\mathit{xx}}^\ast}` be :math:`{{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. Return :math:`{\mathrm{tags}}({{\mathit{xx}}^\ast})`.
+
+
 :math:`{\mathrm{funcs}}({{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
 ..............................................................................................
 
@@ -16499,6 +16687,27 @@ watsup 0.4 generator
 #. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
 #. Return :math:`{\mathrm{mems}}({{\mathit{xt}}^\ast})`.
+
+
+:math:`{\mathrm{tags}}({{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+.............................................................................................
+
+
+1. If :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{externtype}}_0~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. If :math:`{\mathit{externtype}}_0` is of the case :math:`\mathsf{tag}`, then:
+
+   a. Let :math:`(\mathsf{tag}~{\mathit{at}})` be :math:`{\mathit{externtype}}_0`.
+
+   #. Return :math:`{\mathit{at}}~{\mathrm{tags}}({{\mathit{xt}}^\ast})`.
+
+#. Let :math:`{\mathit{externtype}}~{{\mathit{xt}}^\ast}` be :math:`{{\mathit{externtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. Return :math:`{\mathrm{tags}}({{\mathit{xt}}^\ast})`.
 
 
 
@@ -18018,88 +18227,109 @@ watsup 0.4 generator
    #. Return :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{{|{\mathit{packtype}}|}, 32}^{{\mathit{sx}}}}}{(i)})`.
 
 
-:math:`{\mathrm{funcs}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-.............................................................................................
-
-
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
-
-   a. Return :math:`\epsilon`.
-
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{func}`, then:
-
-   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externval}}_0`.
-
-   #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{xv}}^\ast})`.
-
-#. Let :math:`{\mathit{externval}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-#. Return :math:`{\mathrm{funcs}}({{\mathit{xv}}^\ast})`.
-
-
-:math:`{\mathrm{globals}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-...............................................................................................
-
-
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
-
-   a. Return :math:`\epsilon`.
-
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{global}`, then:
-
-   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externval}}_0`.
-
-   #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{xv}}^\ast})`.
-
-#. Let :math:`{\mathit{externval}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-#. Return :math:`{\mathrm{globals}}({{\mathit{xv}}^\ast})`.
-
-
-:math:`{\mathrm{tables}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+:math:`{\mathrm{funcs}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
 ..............................................................................................
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{table}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{func}`, then:
 
-   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{func}~{\mathit{fa}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{xv}}^\ast})`.
+   #. Return :math:`{\mathit{fa}}~{\mathrm{funcs}}({{\mathit{xa}}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Return :math:`{\mathrm{tables}}({{\mathit{xv}}^\ast})`.
-
-
-:math:`{\mathrm{mems}}({{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
-............................................................................................
+#. Return :math:`{\mathrm{funcs}}({{\mathit{xa}}^\ast})`.
 
 
-1. If :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+:math:`{\mathrm{globals}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+................................................................................................
+
+
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`{\mathit{externval}}_0~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. If :math:`{\mathit{externval}}_0` is of the case :math:`\mathsf{mem}`, then:
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{global}`, then:
 
-   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externval}}_0`.
+   a. Let :math:`(\mathsf{global}~{\mathit{ga}})` be :math:`{\mathit{externaddr}}_0`.
 
-   #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
+   #. Return :math:`{\mathit{ga}}~{\mathrm{globals}}({{\mathit{xa}}^\ast})`.
 
-#. Let :math:`{\mathit{externval}}~{{\mathit{xv}}^\ast}` be :math:`{{\mathit{externval}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
 
-#. Return :math:`{\mathrm{mems}}({{\mathit{xv}}^\ast})`.
+#. Return :math:`{\mathrm{globals}}({{\mathit{xa}}^\ast})`.
+
+
+:math:`{\mathrm{tables}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+...............................................................................................
+
+
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{table}`, then:
+
+   a. Let :math:`(\mathsf{table}~{\mathit{ta}})` be :math:`{\mathit{externaddr}}_0`.
+
+   #. Return :math:`{\mathit{ta}}~{\mathrm{tables}}({{\mathit{xa}}^\ast})`.
+
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. Return :math:`{\mathrm{tables}}({{\mathit{xa}}^\ast})`.
+
+
+:math:`{\mathrm{mems}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+.............................................................................................
+
+
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{mem}`, then:
+
+   a. Let :math:`(\mathsf{mem}~{\mathit{ma}})` be :math:`{\mathit{externaddr}}_0`.
+
+   #. Return :math:`{\mathit{ma}}~{\mathrm{mems}}({{\mathit{xa}}^\ast})`.
+
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. Return :math:`{\mathrm{mems}}({{\mathit{xa}}^\ast})`.
+
+
+:math:`{\mathrm{tags}}({{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+.............................................................................................
+
+
+1. If :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{externaddr}}_0~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. If :math:`{\mathit{externaddr}}_0` is of the case :math:`\mathsf{tag}`, then:
+
+   a. Let :math:`(\mathsf{tag}~{\mathit{ha}})` be :math:`{\mathit{externaddr}}_0`.
+
+   #. Return :math:`{\mathit{ha}}~{\mathrm{tags}}({{\mathit{xa}}^\ast})`.
+
+#. Let :math:`{\mathit{externaddr}}~{{\mathit{xa}}^\ast}` be :math:`{{\mathit{externaddr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. Return :math:`{\mathrm{tags}}({{\mathit{xa}}^\ast})`.
 
 
 :math:`{\mathrm{store}}`
@@ -18116,6 +18346,15 @@ watsup 0.4 generator
 1. Let :math:`f` be the current frame.
 
 #. Return :math:`f`.
+
+
+:math:`{\mathrm{tagaddr}}`
+..........................
+
+
+1. Let :math:`f` be the current frame.
+
+#. Return :math:`f{.}\mathsf{module}{.}\mathsf{tags}`.
 
 
 :math:`{\mathrm{moduleinst}}`
@@ -18155,6 +18394,13 @@ watsup 0.4 generator
 1. Return :math:`s{.}\mathsf{mems}`.
 
 
+:math:`{\mathrm{taginst}}`
+..........................
+
+
+1. Return :math:`s{.}\mathsf{tags}`.
+
+
 :math:`{\mathrm{eleminst}}`
 ...........................
 
@@ -18181,6 +18427,13 @@ watsup 0.4 generator
 
 
 1. Return :math:`s{.}\mathsf{arrays}`.
+
+
+:math:`{\mathrm{exninst}}`
+..........................
+
+
+1. Return :math:`s{.}\mathsf{exns}`.
 
 
 :math:`{\mathrm{type}}(x)`
@@ -18226,6 +18479,15 @@ watsup 0.4 generator
 1. Let :math:`f` be the current frame.
 
 #. Return :math:`s{.}\mathsf{mems}{}[f{.}\mathsf{module}{.}\mathsf{mems}{}[x]]`.
+
+
+:math:`{\mathrm{tag}}(x)`
+.........................
+
+
+1. Let :math:`f` be the current frame.
+
+#. Return :math:`s{.}\mathsf{tags}{}[f{.}\mathsf{module}{.}\mathsf{tags}{}[x]]`.
 
 
 :math:`{\mathrm{elem}}(x)`
@@ -18353,6 +18615,13 @@ watsup 0.4 generator
 
 
 1. Append :math:`{{\mathit{ai}}^\ast}` to the :math:`s{.}\mathsf{arrays}`.
+
+
+:math:`{\mathrm{add}}_{\mathit{exninst}}({{\mathit{exn}}^\ast})`
+................................................................
+
+
+1. Append :math:`{{\mathit{exn}}^\ast}` to the :math:`s{.}\mathsf{exns}`.
 
 
 :math:`{\mathrm{growtable}}({\mathit{tableinst}}, n, r)`
@@ -18577,6 +18846,36 @@ watsup 0.4 generator
 #. Return :math:`{\mathit{ma}}~{{\mathit{ma}'}^\ast}`.
 
 
+:math:`{\mathrm{alloctag}}({\mathit{at}})`
+..........................................
+
+
+1. Let :math:`{\mathit{taginst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~{\mathit{at}} \}\end{array}`.
+
+#. Let :math:`a` be :math:`{|s{.}\mathsf{tags}|}`.
+
+#. Append :math:`{\mathit{taginst}}` to the :math:`s{.}\mathsf{tags}`.
+
+#. Return :math:`a`.
+
+
+:math:`{\mathrm{alloctags}}({{\mathit{tagtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast})`
+...............................................................................................
+
+
+1. If :math:`{{\mathit{tagtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` is :math:`\epsilon`, then:
+
+   a. Return :math:`\epsilon`.
+
+#. Let :math:`{\mathit{at}}~{{\mathit{at}'}^\ast}` be :math:`{{\mathit{tagtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. Let :math:`{\mathit{aa}}` be :math:`{\mathrm{alloctag}}({\mathit{at}})`.
+
+#. Let :math:`{{\mathit{aa}'}^\ast}` be :math:`{\mathrm{alloctags}}({{\mathit{at}'}^\ast})`.
+
+#. Return :math:`{\mathit{aa}}~{{\mathit{aa}'}^\ast}`.
+
+
 :math:`{\mathrm{allocelem}}({\mathit{elemtype}}, {{\mathit{ref}}^\ast})`
 ........................................................................
 
@@ -18657,25 +18956,31 @@ watsup 0.4 generator
 
    a. Let :math:`(\mathsf{func}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{func}~{\mathit{moduleinst}}{.}\mathsf{funcs}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{func}~{\mathit{moduleinst}}{.}\mathsf{funcs}{}[x]) \}\end{array}`.
 
 #. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{global}`, then:
 
    a. Let :math:`(\mathsf{global}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{global}~{\mathit{moduleinst}}{.}\mathsf{globals}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{global}~{\mathit{moduleinst}}{.}\mathsf{globals}{}[x]) \}\end{array}`.
 
 #. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{table}`, then:
 
    a. Let :math:`(\mathsf{table}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{table}~{\mathit{moduleinst}}{.}\mathsf{tables}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{table}~{\mathit{moduleinst}}{.}\mathsf{tables}{}[x]) \}\end{array}`.
 
-#. Assert: Due to validation, :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{mem}`.
+#. If :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{mem}`, then:
 
-#. Let :math:`(\mathsf{mem}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+   a. Let :math:`(\mathsf{mem}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-#. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{value}~(\mathsf{mem}~{\mathit{moduleinst}}{.}\mathsf{mems}{}[x]) \}\end{array}`.
+   #. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{mem}~{\mathit{moduleinst}}{.}\mathsf{mems}{}[x]) \}\end{array}`.
+
+#. Assert: Due to validation, :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{tag}`.
+
+#. Let :math:`(\mathsf{tag}~x)` be :math:`{\mathit{externidx}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+#. Return :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{name}~{\mathit{name}},\; \mathsf{addr}~(\mathsf{tag}~{\mathit{moduleinst}}{.}\mathsf{tags}{}[x]) \}\end{array}`.
 
 
 :math:`{{{\mathrm{allocexport}}^\ast}}{({\mathit{moduleinst}}, {{\mathit{export}}^\ast})}`
@@ -18685,27 +18990,31 @@ watsup 0.4 generator
 1. Return :math:`{{\mathrm{allocexport}}({\mathit{moduleinst}}, {\mathit{export}})^\ast}`.
 
 
-:math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externval}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`
-.................................................................................................................................................................................................
+:math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`
+..................................................................................................................................................................................................
 
 
-1. Let :math:`{{\mathit{fa}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externval}}^\ast})`.
+1. Let :math:`{{\mathit{fa}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{ga}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{globals}}({{\mathit{externval}}^\ast})`.
+#. Let :math:`{{\mathit{ga}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{globals}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{ma}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{mems}}({{\mathit{externval}}^\ast})`.
+#. Let :math:`{{\mathit{aa}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{tags}}({{\mathit{externaddr}}^\ast})`.
 
-#. Let :math:`{{\mathit{ta}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{tables}}({{\mathit{externval}}^\ast})`.
+#. Let :math:`{{\mathit{ma}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{mems}}({{\mathit{externaddr}}^\ast})`.
+
+#. Let :math:`{{\mathit{ta}}_{\mathsf{i}}^\ast}` be :math:`{\mathrm{tables}}({{\mathit{externaddr}}^\ast})`.
 
 #. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
 
-#. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
+#. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
 #. Let :math:`{{\mathit{fa}}^\ast}` be :math:`{{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}}`.
 
 #. Let :math:`{{\mathit{ga}}^\ast}` be :math:`{{|s{.}\mathsf{globals}|} + i_{\mathsf{g}}^{i_{\mathsf{g}}<{|{{\mathit{global}}^\ast}|}}}`.
 
 #. Let :math:`{{\mathit{ta}}^\ast}` be :math:`{{|s{.}\mathsf{tables}|} + i_{\mathsf{t}}^{i_{\mathsf{t}}<{|{{\mathit{table}}^\ast}|}}}`.
+
+#. Let :math:`{{\mathit{aa}}^\ast}` be :math:`{{|s{.}\mathsf{tags}|} + i_{\mathsf{a}}^{i_{\mathsf{a}}<{|{{\mathit{tag}}^\ast}|}}}`.
 
 #. Let :math:`{{\mathit{ma}}^\ast}` be :math:`{{|s{.}\mathsf{mems}|} + i_{\mathsf{m}}^{i_{\mathsf{m}}<{|{{\mathit{mem}}^\ast}|}}}`.
 
@@ -18718,6 +19027,10 @@ watsup 0.4 generator
 #. Let :math:`{(\mathsf{memory}~{\mathit{memtype}})^\ast}` be :math:`{{\mathit{mem}}^\ast}`.
 
 #. Let :math:`{{\mathit{dt}}^\ast}` be :math:`{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})}`.
+
+#. Assert: Due to validation, for all :math:`{({\mathit{tag}})^\ast}`, :math:`{\mathit{tag}}` is of the case :math:`\mathsf{tag}`.
+
+#. Let :math:`{(\mathsf{tag}~y)^\ast}` be :math:`{{\mathit{tag}}^\ast}`.
 
 #. Assert: Due to validation, for all :math:`{({\mathit{data}})^\ast}`, :math:`{\mathit{data}}` is of the case :math:`\mathsf{data}`.
 
@@ -18739,33 +19052,37 @@ watsup 0.4 generator
 
 #. Let :math:`{(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}` be :math:`{{\mathit{func}}^\ast}`.
 
-#. Let :math:`{{\mathit{xi}}^\ast}` be :math:`{{{\mathrm{allocexport}}^\ast}}{(\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}, {{\mathit{export}}^\ast})}`.
+#. Let :math:`{{\mathit{xi}}^\ast}` be :math:`{{{\mathrm{allocexport}}^\ast}}{(\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast},\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}, {{\mathit{export}}^\ast})}`.
 
-#. Let :math:`{\mathit{moduleinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{elems}~{{\mathit{ea}}^\ast},\; \mathsf{datas}~{{\mathit{da}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{\mathit{dt}}^\ast},\; \mathsf{funcs}~{{\mathit{fa}}_{\mathsf{i}}^\ast}~{{\mathit{fa}}^\ast},\; \mathsf{globals}~{{\mathit{ga}}_{\mathsf{i}}^\ast}~{{\mathit{ga}}^\ast},\; \mathsf{tables}~{{\mathit{ta}}_{\mathsf{i}}^\ast}~{{\mathit{ta}}^\ast},\; \mathsf{mems}~{{\mathit{ma}}_{\mathsf{i}}^\ast}~{{\mathit{ma}}^\ast},\; \mathsf{tags}~{{\mathit{aa}}_{\mathsf{i}}^\ast}~{{\mathit{aa}}^\ast},\; \mathsf{elems}~{{\mathit{ea}}^\ast},\; \mathsf{datas}~{{\mathit{da}}^\ast},\; \mathsf{exports}~{{\mathit{xi}}^\ast} \}\end{array}`.
 
-#. Let :math:`{\mathit{funcaddr}}_0` be :math:`{\mathrm{allocfuncs}}({{{\mathit{dt}}^\ast}{}[x]^\ast}, {(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}, {{\mathit{moduleinst}}^{{|{{\mathit{func}}^\ast}|}}})`.
+#. Let :math:`n_0` be :math:`{\mathrm{allocfuncs}}({{{\mathit{dt}}^\ast}{}[x]^\ast}, {(\mathsf{func}~x~{{\mathit{local}}^\ast}~{\mathit{expr}}_{\mathsf{f}})^\ast}, {{\mathit{moduleinst}}^{{|{{\mathit{func}}^\ast}|}}})`.
 
-#. Assert: Due to validation, :math:`{\mathit{funcaddr}}_0` is :math:`{{\mathit{fa}}^\ast}`.
+#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{fa}}^\ast}`.
 
-#. Let :math:`{\mathit{globaladdr}}_0` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast})`.
+#. Let :math:`n_0` be :math:`{\mathrm{allocglobals}}({{\mathit{globaltype}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast})`.
 
-#. Assert: Due to validation, :math:`{\mathit{globaladdr}}_0` is :math:`{{\mathit{ga}}^\ast}`.
+#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{ga}}^\ast}`.
 
-#. Let :math:`{\mathit{tableaddr}}_0` be :math:`{\mathrm{alloctables}}({{\mathit{tabletype}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast})`.
+#. Let :math:`n_0` be :math:`{\mathrm{alloctables}}({{\mathit{tabletype}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast})`.
 
-#. Assert: Due to validation, :math:`{\mathit{tableaddr}}_0` is :math:`{{\mathit{ta}}^\ast}`.
+#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{ta}}^\ast}`.
 
-#. Let :math:`{\mathit{memaddr}}_0` be :math:`{\mathrm{allocmems}}({{\mathit{memtype}}^\ast})`.
+#. Let :math:`n_0` be :math:`{\mathrm{allocmems}}({{\mathit{memtype}}^\ast})`.
 
-#. Assert: Due to validation, :math:`{\mathit{memaddr}}_0` is :math:`{{\mathit{ma}}^\ast}`.
+#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{ma}}^\ast}`.
 
-#. Let :math:`{\mathit{elemaddr}}_0` be :math:`{\mathrm{allocelems}}({{\mathit{elemtype}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
+#. Let :math:`n_0` be :math:`{\mathrm{alloctags}}({{{\mathit{dt}}^\ast}{}[y]^\ast})`.
 
-#. Assert: Due to validation, :math:`{\mathit{elemaddr}}_0` is :math:`{{\mathit{ea}}^\ast}`.
+#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{aa}}^\ast}`.
 
-#. Let :math:`{\mathit{dataaddr}}_0` be :math:`{\mathrm{allocdatas}}({\mathsf{ok}^{{|{{\mathit{data}}^\ast}|}}}, {{{\mathit{byte}}^\ast}^\ast})`.
+#. Let :math:`n_0` be :math:`{\mathrm{allocelems}}({{\mathit{elemtype}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
 
-#. Assert: Due to validation, :math:`{\mathit{dataaddr}}_0` is :math:`{{\mathit{da}}^\ast}`.
+#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{ea}}^\ast}`.
+
+#. Let :math:`n_0` be :math:`{\mathrm{allocdatas}}({\mathsf{ok}^{{|{{\mathit{data}}^\ast}|}}}, {{{\mathit{byte}}^\ast}^\ast})`.
+
+#. Assert: Due to validation, :math:`n_0` is :math:`{{\mathit{da}}^\ast}`.
 
 #. Return :math:`{\mathit{moduleinst}}`.
 
@@ -18835,17 +19152,17 @@ watsup 0.4 generator
 #. Return :math:`{\mathit{val}}~{{\mathit{val}'}^\ast}`.
 
 
-:math:`{\mathrm{instantiate}}(z, {\mathit{module}}, {{\mathit{externval}}^\ast})`
-.................................................................................
+:math:`{\mathrm{instantiate}}(z, {\mathit{module}}, {{\mathit{externaddr}}^\ast})`
+..................................................................................
 
 
 1. Let :math:`({{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast})` be :math:`{\mathrm{Module}}_{\mathit{ok}}({\mathit{module}})`.
 
 #. Assert: Due to validation, :math:`{\mathit{module}}` is of the case :math:`\mathsf{module}`.
 
-#. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
+#. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{tag}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be :math:`{\mathit{module}}`.
 
-#. Assert: Due to validation, for all :math:`{({\mathit{externval}}, {\mathit{xt}}_{\mathsf{i}})^\ast}`, :math:`{\mathrm{Externval}}_{\mathit{type}}({\mathit{externval}})` is :math:`{\mathit{xt}}_{\mathsf{i}}`.
+#. Assert: Due to validation, for all :math:`{({\mathit{externaddr}}, {\mathit{xt}}_{\mathsf{i}})^\ast}`, :math:`{\mathrm{Externaddr}}_{\mathit{type}}({\mathit{externaddr}})` is :math:`{\mathit{xt}}_{\mathsf{i}}`.
 
 #. Let :math:`{{\mathit{instr}}_{\mathsf{d}}^\ast}` be :math:`{\bigoplus}\, {{{\mathrm{rundata}}}_{i_{\mathsf{d}}}({{\mathit{data}}^\ast}{}[i_{\mathsf{d}}])^{i_{\mathsf{d}}<{|{{\mathit{data}}^\ast}|}}}`.
 
@@ -18855,7 +19172,7 @@ watsup 0.4 generator
 
 #. Let :math:`{(\mathsf{start}~x)^?}` be :math:`{{\mathit{start}}^?}`.
 
-#. Let :math:`{\mathit{moduleinst}}_0` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externval}}^\ast})~{{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externval}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
+#. Let :math:`{\mathit{moduleinst}}_0` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~{{{\mathrm{alloctype}}^\ast}}{({{\mathit{type}}^\ast})},\; \mathsf{funcs}~{\mathrm{funcs}}({{\mathit{externaddr}}^\ast})~{{|s{.}\mathsf{funcs}|} + i_{\mathsf{f}}^{i_{\mathsf{f}}<{|{{\mathit{func}}^\ast}|}}},\; \mathsf{globals}~{\mathrm{globals}}({{\mathit{externaddr}}^\ast}),\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array}`.
 
 #. Assert: Due to validation, for all :math:`{({\mathit{data}})^\ast}`, :math:`{\mathit{data}}` is of the case :math:`\mathsf{data}`.
 
@@ -18893,7 +19210,7 @@ watsup 0.4 generator
 
 #. Pop the activation of :math:`f` from the stack.
 
-#. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externval}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
+#. Let :math:`{\mathit{moduleinst}}` be :math:`{\mathrm{allocmodule}}({\mathit{module}}, {{\mathit{externaddr}}^\ast}, {{\mathit{val}}_{\mathsf{g}}^\ast}, {{\mathit{ref}}_{\mathsf{t}}^\ast}, {{{\mathit{ref}}_{\mathsf{e}}^\ast}^\ast})`.
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
@@ -18918,7 +19235,7 @@ watsup 0.4 generator
 .....................................................................
 
 
-1. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array} \}\end{array}`.
+1. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~\{ \begin{array}[t]{@{}l@{}}\mathsf{types}~\epsilon,\; \mathsf{funcs}~\epsilon,\; \mathsf{globals}~\epsilon,\; \mathsf{tables}~\epsilon,\; \mathsf{mems}~\epsilon,\; \mathsf{tags}~\epsilon,\; \mathsf{elems}~\epsilon,\; \mathsf{datas}~\epsilon,\; \mathsf{exports}~\epsilon \}\end{array} \}\end{array}`.
 
 #. Assert: Due to validation, :math:`{\mathrm{expand}}(s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
 
@@ -19067,35 +19384,53 @@ watsup 0.4 generator
 
 1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-#. Let :math:`L` be the current label.
+#. If the top of the stack is a :math:`\mathsf{label}`, then:
 
-#. Let :math:`n` be the arity of :math:`L`.
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-#. Let :math:`{{\mathit{instr}'}^\ast}` be the continuation of :math:`L`.
+   #. Let :math:`L` be the current label.
 
-#. Pop the current label from the stack.
+   #. Let :math:`n` be the arity of :math:`L`.
 
-#. Let :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}` be :math:`{{\mathit{val}}^\ast}`.
-
-#. If :math:`{|{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}|}` is greater than or equal to :math:`n`, then:
-
-   a. Let :math:`{{\mathit{val}'}^\ast}~{{\mathit{val}}^{n}}` be :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+   #. Let :math:`{{\mathit{instr}'}^\ast}` be the continuation of :math:`L`.
 
    #. If :math:`l` is :math:`0`, then:
 
-      1) Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+      1) Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+      #) Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+      #) Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+
+      #) Pop the current label from the stack.
+
+      #) Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
       #) Execute the instruction :math:`{{\mathit{instr}'}^\ast}`.
 
-#. If for all :math:`{({\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}})^\ast}`, the type of :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is val, then:
+   #. Else:
 
-   a. Let :math:`{{\mathit{val}}^\ast}` be :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+      1) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. If :math:`l` is greater than :math:`0`, then:
+      #) If :math:`l` is greater than :math:`0`, then:
 
-      1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+         a) Pop the current label from the stack.
 
-      #) Execute the instruction :math:`(\mathsf{br}~l - 1)`.
+         #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+         #) Execute the instruction :math:`(\mathsf{br}~l - 1)`.
+
+#. Else if the top of the stack is a :math:`\mathsf{handler}`, then:
+
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+   #. Exit from :math:`\mathsf{handler}`.
+
+   #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Execute the instruction :math:`(\mathsf{br}~l)`.
 
 
 :math:`\mathsf{br\_if}~l`
@@ -19217,41 +19552,73 @@ watsup 0.4 generator
 
 1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-#. If a frame is now on the top of the stack, then:
+#. If the top of the stack is a :math:`\mathsf{frame}`, then:
 
-   a. Let :math:`f` be the current frame.
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Let :math:`f` be the current frame.
 
    #. Let :math:`n` be the arity of :math:`f`.
 
-   #. Pop the current frame from the stack.
+   #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
-   #. Let :math:`{{\mathit{val}'}^\ast}~{{\mathit{val}}^{n}}` be :math:`{{\mathit{val}}^\ast}`.
+   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+
+   #. Pop the current frame from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
-#. Else if a label is now on the top of the stack, then:
+#. Else if the top of the stack is a :math:`\mathsf{label}`, then:
 
-   a. Pop the current label from the stack.
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+   #. Pop the current label from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
    #. Execute the instruction :math:`\mathsf{return}`.
 
+#. Else:
 
-:math:`\mathsf{trap}`
-.....................
+   a. If the top of the stack is a :math:`\mathsf{handler}`, then:
+
+      1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+      #) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+      #) Exit from :math:`\mathsf{handler}`.
+
+      #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+      #) Execute the instruction :math:`\mathsf{return}`.
 
 
-1. YetI: TODO: It is likely that the value stack of two rules are different.
+:math:`\mathsf{handler}`
+........................
+
+
+1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+#. Assert: Due to validation, YetE: a handler is now on the top of the stack.
+
+#. Exit from :math:`\mathsf{handler}`.
+
+#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
 
 :math:`{\mathit{nt}} {.} {\mathit{unop}}`
 .........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
 
 #. If :math:`{|{{\mathit{unop}}}{{}_{{\mathit{nt}}}(c_1)}|}` is less than or equal to :math:`0`, then:
 
@@ -19266,13 +19633,15 @@ watsup 0.4 generator
 ..........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_1)` from the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
 #. If :math:`{|{{\mathit{binop}}}{{}_{{\mathit{nt}}}(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
 
@@ -19287,9 +19656,11 @@ watsup 0.4 generator
 ...........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
 
 #. Let :math:`c` be :math:`{{\mathit{testop}}}{{}_{{\mathit{nt}}}(c_1)}`.
 
@@ -19300,13 +19671,15 @@ watsup 0.4 generator
 ..........................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}` is on the top of the stack.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
 
-#. Pop the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_1)` from the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
 #. Let :math:`c` be :math:`{{\mathit{relop}}}{{}_{{\mathit{nt}}}(c_1, c_2)}`.
 
@@ -19317,9 +19690,11 @@ watsup 0.4 generator
 ............................................................................
 
 
-1. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}_1` is on the top of the stack.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{nt}}_1{.}\mathsf{const}~c_1)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}_1`.
 
 #. If :math:`{|{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}(c_1)}|}` is less than or equal to :math:`0`, then:
 
@@ -19385,9 +19760,19 @@ watsup 0.4 generator
 
 #. Pop the value :math:`{\mathit{ref}}_1` from the stack.
 
-#. If :math:`{\mathit{ref}}_1` is of the case :math:`\mathsf{ref{.}null}` and :math:`{\mathit{ref}}_2` is of the case :math:`\mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{ref}}_1` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
+   a. If :math:`{\mathit{ref}}_2` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
+
+   #. Else if :math:`{\mathit{ref}}_1` is :math:`{\mathit{ref}}_2`, then:
+
+      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
+
+   #. Else:
+
+      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
 
 #. Else if :math:`{\mathit{ref}}_1` is :math:`{\mathit{ref}}_2`, then:
 
@@ -19702,11 +20087,11 @@ watsup 0.4 generator
 .........................................................
 
 
-1. Let :math:`{\mathit{nt}}_0` be :math:`{\mathrm{unpack}}({\mathsf{i}}{N})`.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}_0` is on the top of the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
 
-#. Pop the value :math:`({\mathit{nt}}_0{.}\mathsf{const}~c_1)` from the stack.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathrm{unpack}}({\mathsf{i}}{N})`.
 
 #. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({{{\mathrm{pack}}}_{{\mathsf{i}}{N}}(c_1)^{M}})}`.
 
@@ -19750,11 +20135,11 @@ watsup 0.4 generator
 ...................................................................
 
 
-1. Let :math:`{\mathit{nt}}_0` be :math:`{\mathrm{unpack}}({\mathsf{i}}{N})`.
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{nt}}_0` is on the top of the stack.
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
 
-#. Pop the value :math:`({\mathit{nt}}_0{.}\mathsf{const}~c_2)` from the stack.
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathrm{unpack}}({\mathsf{i}}{N})`.
 
 #. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
@@ -19960,15 +20345,15 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{rt}}` be :math:`{\mathrm{Ref}}_{\mathit{type}}({\mathit{ref}})`.
 
+#. Push the value :math:`{\mathit{ref}}` to the stack.
+
 #. If :math:`{\mathit{rt}}` does not match :math:`{{\mathrm{inst}}}_{f{.}\mathsf{module}}({\mathit{rt}}_2)`, then:
 
-   a. Push the value :math:`{\mathit{ref}}` to the stack.
+   a. Do nothing.
 
 #. Else:
 
-   a. Push the value :math:`{\mathit{ref}}` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{br}~l)`.
+   a. Execute the instruction :math:`(\mathsf{br}~l)`.
 
 
 :math:`\mathsf{br\_on\_cast\_fail}~l~{\mathit{rt}}_1~{\mathit{rt}}_2`
@@ -19983,15 +20368,15 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{rt}}` be :math:`{\mathrm{Ref}}_{\mathit{type}}({\mathit{ref}})`.
 
+#. Push the value :math:`{\mathit{ref}}` to the stack.
+
 #. If :math:`{\mathit{rt}}` matches :math:`{{\mathrm{inst}}}_{f{.}\mathsf{module}}({\mathit{rt}}_2)`, then:
 
-   a. Push the value :math:`{\mathit{ref}}` to the stack.
+   a. Do nothing.
 
 #. Else:
 
-   a. Push the value :math:`{\mathit{ref}}` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{br}~l)`.
+   a. Execute the instruction :math:`(\mathsf{br}~l)`.
 
 
 :math:`\mathsf{call}~x`
@@ -20087,45 +20472,387 @@ watsup 0.4 generator
 
 #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-#. If a label is now on the top of the stack, then:
+#. If the top of the stack is a :math:`\mathsf{label}`, then:
 
-   a. Pop the current label from the stack.
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+   #. Pop the current label from the stack.
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
    #. Execute the instruction :math:`(\mathsf{return\_call\_ref}~y)`.
 
-#. Else if a frame is now on the top of the stack, then:
+#. Else if the top of the stack is a :math:`\mathsf{frame}`, then:
 
-   a. Pop the current frame from the stack.
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Let :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` be :math:`{{\mathit{val}}^\ast}`.
+   #. Assert: Due to validation, a value is on the top of the stack.
+
+   #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
+
+   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+   #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+      1) Pop the current frame from the stack.
+
+      #) Trap.
+
+   #. Assert: Due to validation, a value is on the top of the stack.
+
+   #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
 
    #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}func}`, then:
 
       1) Let :math:`(\mathsf{ref{.}func}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) If :math:`{|{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}|}` is greater than or equal to :math:`n`, then:
+      #) If :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`, then:
 
-         a) Let :math:`{{\mathit{val}'}^\ast}~{{\mathit{val}}^{n}}` be :math:`{{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+         a) Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
 
-         #) If :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`, then:
+         #) Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})`.
 
-            1. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
+         #) Let :math:`({t_1^{n}}~\rightarrow~{t_2^{m}})` be :math:`{\mathit{functype}}_0`.
 
-            #. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})`.
+         #) Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
-            #. Let :math:`({t_1^{n}}~\rightarrow~{t_2^{m}})` be :math:`{\mathit{functype}}_0`.
+         #) Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-            #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+         #) Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
 
-            #. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
+         #) Pop the current frame from the stack.
 
-            #. Execute the instruction :math:`(\mathsf{call\_ref}~y)`.
+         #) Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
-   #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}` and for all :math:`{({\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}})^\ast}`, the type of :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is val, then:
+         #) Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
 
-      1) Trap.
+         #) Execute the instruction :math:`(\mathsf{call\_ref}~y)`.
+
+
+:math:`\mathsf{throw\_ref}`
+...........................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+   a. Trap.
+
+#. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+#. If :math:`{{\mathit{val}}^\ast}` is not :math:`\epsilon`, then:
+
+   a. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
+
+      1) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+      #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+      #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+#. Else:
+
+   a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+   #. If the top of the stack is a :math:`\mathsf{label}`, then:
+
+      1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+      #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
+
+         a) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+         #) Pop the current label from the stack.
+
+         #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+         #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+   #. Else if the top of the stack is a :math:`\mathsf{frame}`, then:
+
+      1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+      #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
+
+         a) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+         #) Pop the current frame from the stack.
+
+         #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+         #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+   #. Else:
+
+      1) If the top of the stack is a :math:`\mathsf{handler}`, then:
+
+         a) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+         #) Let :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\})` be the current context.
+
+         #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
+
+            1. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+            #. If :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+
+               a. Exit from :math:`\mathsf{handler}`.
+
+               #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+               #. Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+            #. Else:
+
+               a. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+               #. If :math:`a` is greater than or equal to :math:`{|z{.}\mathsf{exns}|}`, then:
+
+                  1) Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                  #) If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all}`, then:
+
+                     a) Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
+
+                     #) Exit from :math:`\mathsf{handler}`.
+
+                     #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                  #) Else:
+
+                     a) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+                     #) Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                     #) If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all\_ref}`, then:
+
+                        1. Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
+
+                        #. Exit from :math:`\mathsf{handler}`.
+
+                        #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                        #. Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                     #) Else:
+
+                        1. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+                        #. Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                        #. Exit from :math:`\mathsf{handler}`.
+
+                        #. Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
+
+                        #. Enter :math:`\mathsf{throw\_ref}~\mathsf{handler}` with label :math:`H`.
+
+                           a. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+               #. Else:
+
+                  1) Let :math:`{{\mathit{val}}^\ast}` be :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{fields}`.
+
+                  #) Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                  #) If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch}`, then:
+
+                     a) Let :math:`(\mathsf{catch}~x~l)` be :math:`{\mathit{catch}}_0`.
+
+                     #) If :math:`x` is less than :math:`{|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag}` is :math:`z{.}\mathsf{tags}{}[x]`, then:
+
+                        1. Exit from :math:`\mathsf{handler}`.
+
+                        #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+                        #. Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                     #) Else:
+
+                        1. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                        #. Do nothing.
+
+                        #. If :math:`{\mathit{catch}}_0` is not of the case :math:`\mathsf{catch\_ref}`, then:
+
+                           a. Do nothing.
+
+                        #. Else:
+
+                           a. Do nothing.
+
+                        #. Do nothing.
+
+                        #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all}`, then:
+
+                           a. Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
+
+                           #. Exit from :math:`\mathsf{handler}`.
+
+                           #. Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                        #. Else:
+
+                           a. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+                           #. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                           #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all\_ref}`, then:
+
+                              1) Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
+
+                              #) Exit from :math:`\mathsf{handler}`.
+
+                              #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                              #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                           #. Else:
+
+                              1) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+                              #) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                              #) Exit from :math:`\mathsf{handler}`.
+
+                              #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
+
+                              #) Enter :math:`\mathsf{throw\_ref}~\mathsf{handler}` with label :math:`H`.
+
+                                 a) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                  #) Else:
+
+                     a) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+                     #) Let :math:`{{\mathit{val}}^\ast}` be :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{fields}`.
+
+                     #) Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                     #) If :math:`{\mathit{catch}}_0` is not of the case :math:`\mathsf{catch\_ref}`, then:
+
+                        1. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                        #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all}`, then:
+
+                           a. Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
+
+                           #. Exit from :math:`\mathsf{handler}`.
+
+                           #. Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                        #. Else:
+
+                           a. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+                           #. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                           #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all\_ref}`, then:
+
+                              1) Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
+
+                              #) Exit from :math:`\mathsf{handler}`.
+
+                              #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                              #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                           #. Else:
+
+                              1) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+                              #) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                              #) Exit from :math:`\mathsf{handler}`.
+
+                              #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
+
+                              #) Enter :math:`\mathsf{throw\_ref}~\mathsf{handler}` with label :math:`H`.
+
+                                 a) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                     #) Else:
+
+                        1. Let :math:`(\mathsf{catch\_ref}~x~l)` be :math:`{\mathit{catch}}_0`.
+
+                        #. If :math:`x` is less than :math:`{|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag}` is :math:`z{.}\mathsf{tags}{}[x]`, then:
+
+                           a. Exit from :math:`\mathsf{handler}`.
+
+                           #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+                           #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                           #. Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                        #. Else:
+
+                           a. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                           #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all}`, then:
+
+                              1) Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
+
+                              #) Exit from :math:`\mathsf{handler}`.
+
+                              #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                           #. Else:
+
+                              1) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+                              #) Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                              #) If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all\_ref}`, then:
+
+                                 a) Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
+
+                                 #) Exit from :math:`\mathsf{handler}`.
+
+                                 #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                                 #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                              #) Else:
+
+                                 a) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+                                 #) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                                 #) Exit from :math:`\mathsf{handler}`.
+
+                                 #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
+
+                                 #) Enter :math:`\mathsf{throw\_ref}~\mathsf{handler}` with label :math:`H`.
+
+                                    1. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+
+:math:`\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast}`
+.........................................................................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Let :math:`({t_1^{m}}~\rightarrow~{t_2^{n}})` be :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}})`.
+
+#. Assert: Due to validation, there are at least :math:`m` values on the top of the stack.
+
+#. Pop the values :math:`{{\mathit{val}}^{m}}` from the stack.
+
+#. Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}^\ast}~\})`.
+
+#. Enter :math:`\mathsf{handler}` with label :math:`H`.
+
+   a. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
+
+   #. Enter :math:`{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}` with label :math:`L`.
 
 
 :math:`\mathsf{ref{.}null}~x`
@@ -20421,7 +21148,11 @@ watsup 0.4 generator
 
    a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-   #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
+   #. If :math:`a` is greater than or equal to :math:`{|z{.}\mathsf{arrays}|}`, then:
+
+      1) Do nothing.
+
+   #. Else if :math:`i + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
 
       1) Trap.
 
@@ -20468,7 +21199,7 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
+#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
 
 #. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
@@ -20476,51 +21207,69 @@ watsup 0.4 generator
 
 #. Assert: Due to validation, a value is on the top of the stack.
 
-#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}` and the type of :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is ref, then:
-
-   a. Trap.
+#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
 
 #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{ref{.}null}` and the type of :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is ref, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}` and the type of :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is ref, then:
 
-   a. Let :math:`(\mathsf{ref{.}array}~a_1)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+   a. Trap.
 
-   #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
 
-      1) If :math:`a_1` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i_1 + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a_1]{.}\mathsf{fields}|}`, then:
+   a. Let :math:`(\mathsf{ref{.}array}~a_1)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-         a) Trap.
-
-      #) Let :math:`(\mathsf{ref{.}array}~a_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-      #) If :math:`a_2` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i_2 + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a_2]{.}\mathsf{fields}|}`, then:
-
-         a) Trap.
-
-   #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{ref{.}array}` and :math:`n` is :math:`0`, then:
+   #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is not of the case :math:`\mathsf{ref{.}array}`, then:
 
       1) Do nothing.
 
    #. Else:
 
-      1) Let :math:`(\mathsf{ref{.}array}~a_1)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+      1) If :math:`a_1` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i_1 + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a_1]{.}\mathsf{fields}|}`, then:
 
-      #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
+         a) Trap.
 
-         a) Let :math:`(\mathsf{ref{.}array}~a_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+      #) Let :math:`(\mathsf{ref{.}array}~a_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-         #) If :math:`i_1` is less than or equal to :math:`i_2` and :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is of the case :math:`\mathsf{array}`, then:
+      #) If :math:`a_2` is greater than or equal to :math:`{|z{.}\mathsf{arrays}|}`, then:
 
-            1. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
+         a) Do nothing.
+
+      #) Else if :math:`i_2 + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a_2]{.}\mathsf{fields}|}`, then:
+
+         a) Trap.
+
+   #. If :math:`n` is not :math:`0`, then:
+
+      1) Let :math:`(\mathsf{ref{.}array}~a_1)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+
+      #) If :math:`i_1` is greater than :math:`i_2`, then:
+
+         a) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
+
+            1. Let :math:`(\mathsf{ref{.}array}~a_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+            #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is of the case :math:`\mathsf{array}`.
+
+            #. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
 
             #. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
 
             #. Let :math:`{{\mathit{sx}}^?}` be :math:`{\mathrm{sx}}({\mathit{zt}}_2)`.
+
+            #. Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
+
+            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + n - 1)` to the stack.
+
+            #. Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
+
+            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + n - 1)` to the stack.
+
+            #. Execute the instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x_2)`.
+
+            #. Execute the instruction :math:`(\mathsf{array{.}set}~x_1)`.
 
             #. Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
 
@@ -20530,59 +21279,49 @@ watsup 0.4 generator
 
             #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
 
-            #. Execute the instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x_2)`.
-
-            #. Execute the instruction :math:`(\mathsf{array{.}set}~x_1)`.
-
-            #. Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
-
-            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + 1)` to the stack.
-
-            #. Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
-
-            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + 1)` to the stack.
-
             #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
             #. Execute the instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)`.
 
-         #) Else:
+      #) Else if :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
 
-            1. Let :math:`(\mathsf{ref{.}array}~a_1)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+         a) Let :math:`(\mathsf{ref{.}array}~a_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-            #. Let :math:`(\mathsf{ref{.}array}~a_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+         #) Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is of the case :math:`\mathsf{array}`.
 
-            #. If :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is of the case :math:`\mathsf{array}`, then:
+         #) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
 
-               a. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
+         #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
 
-               #. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
+         #) Let :math:`{{\mathit{sx}}^?}` be :math:`{\mathrm{sx}}({\mathit{zt}}_2)`.
 
-               #. Let :math:`{{\mathit{sx}}^?}` be :math:`{\mathrm{sx}}({\mathit{zt}}_2)`.
+         #) Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
 
-               #. Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
 
-               #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + n - 1)` to the stack.
+         #) Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
 
-               #. Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
 
-               #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + n - 1)` to the stack.
+         #) Execute the instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x_2)`.
 
-               #. Execute the instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x_2)`.
+         #) Execute the instruction :math:`(\mathsf{array{.}set}~x_1)`.
 
-               #. Execute the instruction :math:`(\mathsf{array{.}set}~x_1)`.
+         #) Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
 
-               #. Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + 1)` to the stack.
 
-               #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
+         #) Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
 
-               #. Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + 1)` to the stack.
 
-               #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
-               #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+         #) Execute the instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)`.
 
-               #. Execute the instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)`.
+   #. Else if :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
+
+      1) Do nothing.
 
 
 :math:`\mathsf{array{.}init\_elem}~x~y`
@@ -20688,7 +21427,11 @@ watsup 0.4 generator
 
       1) Trap.
 
-   #. If :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`, then:
+   #. If :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is not of the case :math:`\mathsf{array}`, then:
+
+      1) Do nothing.
+
+   #. Else:
 
       1) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
@@ -20706,31 +21449,31 @@ watsup 0.4 generator
 
       1) Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-      #) Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`.
+      #) If :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`, then:
 
-      #) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+         a) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
-      #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
+         #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
 
-      #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathit{zt}}}(c)` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[j : {|{\mathit{zt}}|} / 8]`.
+         #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathit{zt}}}(c)` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[j : {|{\mathit{zt}}|} / 8]`.
 
-      #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
+         #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
 
-      #) Push the value :math:`{\mathrm{unpack}}({\mathit{zt}}){.}\mathsf{const}~{{\mathrm{unpack}}}_{{\mathit{zt}}}(c)` to the stack.
+         #) Push the value :math:`{\mathrm{unpack}}({\mathit{zt}}){.}\mathsf{const}~{{\mathrm{unpack}}}_{{\mathit{zt}}}(c)` to the stack.
 
-      #) Execute the instruction :math:`(\mathsf{array{.}set}~x)`.
+         #) Execute the instruction :math:`(\mathsf{array{.}set}~x)`.
 
-      #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
+         #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + {|{\mathit{zt}}|} / 8)` to the stack.
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + {|{\mathit{zt}}|} / 8)` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
-      #) Execute the instruction :math:`(\mathsf{array{.}init\_data}~x~y)`.
+         #) Execute the instruction :math:`(\mathsf{array{.}init\_data}~x~y)`.
 
 
 :math:`\mathsf{local{.}get}~x`
@@ -20997,13 +21740,13 @@ watsup 0.4 generator
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}` and :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
+
+   a. Trap.
+
 #. If :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
 
-   a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
-
-      1) Trap.
-
-   #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8]`.
+   a. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8]`.
 
    #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
@@ -21261,11 +22004,35 @@ watsup 0.4 generator
    #. Execute the instruction :math:`(\mathsf{memory{.}init}~x~y)`.
 
 
-:math:`\mathsf{ctxt}`
-.....................
+:math:`\mathsf{throw}~x`
+........................
 
 
-1. YetI: TODO: It is likely that the value stack of two rules are different.
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, :math:`x` is less than :math:`{|z{.}\mathsf{tags}|}`.
+
+#. Let :math:`a` be :math:`{|z{.}\mathsf{exns}|}`.
+
+#. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{tags}{}[x]{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
+
+#. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{tags}{}[x]{.}\mathsf{type})`.
+
+#. Let :math:`({t^{n}}~\rightarrow~{\mathit{valtype}}_1)` be :math:`{\mathit{functype}}_0`.
+
+#. Assert: Due to validation, :math:`{\mathit{valtype}}_1` is :math:`\epsilon`.
+
+#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+#. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+#. Let :math:`{\mathit{exn}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{tag}~z{.}\mathsf{tags}{}[x],\; \mathsf{fields}~{{\mathit{val}}^{n}} \}\end{array}`.
+
+#. Perform :math:`z{}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {\mathit{exn}}]`.
+
+#. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+#. Execute the instruction :math:`\mathsf{throw\_ref}`.
 
 
 :math:`\mathsf{struct{.}new}~x`
@@ -21473,45 +22240,47 @@ watsup 0.4 generator
 #. Perform :math:`z{}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = \epsilon]`.
 
 
-:math:`{{\mathit{nt}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~x~{\mathit{ao}}`
+:math:`{{\mathit{nt}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}}~x~{\mathit{ao}}`
 ...................................................................................................................
 
 
 1. Let :math:`z` be the current state.
 
-#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is on the top of the stack.
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is on the top of the stack.
 
-#. Pop the value :math:`({\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{const}~c)` from the stack.
+#. Pop the value :math:`({\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{const}~c)` from the stack.
 
 #. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{nt}}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
+#. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{nt}}`, then:
 
-   a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+   a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
 
       1) Trap.
 
-   #. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)`.
+   #. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
 
-   #. Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8] = {b^\ast}]`.
+      1) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)`.
 
-#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
+      #) Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8] = {b^\ast}]`.
 
-   a. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
+#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
 
-      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
+   a. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is defined, then:
+
+      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}`.
 
       #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
          a) Trap.
 
-   #. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+   #. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
+   #. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is defined, then:
 
-      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
+      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}`.
 
       #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{N}|}, n}(c))`.
 
@@ -21624,10 +22393,10 @@ watsup 0.4 generator
 == IL Validation after pass sideconditions...
 == Translating to AL...
 == Prose Generation...
-6-typing.watsup:194.10-194.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
-6-typing.watsup:817.9-817.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
-6-typing.watsup:851.9-851.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
-6-typing.watsup:1309.9-1309.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm : name})`
+6-typing.watsup:195.10-195.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
+6-typing.watsup:876.9-876.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
+6-typing.watsup:910.9-910.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
+6-typing.watsup:1378.9-1378.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm : name})`
 Numtype_ok
 - the number type numtype is valid.
 
@@ -21956,6 +22725,11 @@ Memtype_ok
 - the memory type (limits PAGE) is valid if and only if:
   - the limits limits is valid with the nat (2 ^ 16).
 
+Tagtype_ok
+- the memory type deftype is valid if and only if:
+  - the defined type deftype is valid.
+  - $expanddt(deftype) is (FUNC functype).
+
 Externtype_ok
 - the external type externtype_u0 is valid if and only if:
   - Either:
@@ -21971,6 +22745,9 @@ Externtype_ok
   - Or:
     - externtype_u0 is (MEM memtype).
     - the memory type memtype is valid.
+  - Or:
+    - externtype_u0 is (TAG tagtype).
+    - the memory type tagtype is valid.
 
 Instrtype_sub
 - the instruction type (t_11* ->_ x_1* t_12*) matches the instruction type (t_21* ->_ x_2* t_22*) if and only if:
@@ -22010,6 +22787,11 @@ Memtype_sub
 - the memory type (limits_1 PAGE) matches the memory type (limits_2 PAGE) if and only if:
   - the limits limits_1 matches the limits limits_2.
 
+Tagtype_sub
+- the memory type deftype_1 matches the memory type deftype_2 if and only if:
+  - the defined type deftype_1 matches the defined type deftype_2.
+  - the defined type deftype_2 matches the defined type deftype_1.
+
 Externtype_sub
 - the external type externtype_u0 matches the external type externtype_u1 if and only if:
   - Either:
@@ -22028,6 +22810,10 @@ Externtype_sub
     - externtype_u0 is (MEM memtype_1).
     - externtype_u1 is (MEM memtype_2).
     - the memory type memtype_1 matches the memory type memtype_2.
+  - Or:
+    - externtype_u0 is (TAG tagtype_1).
+    - externtype_u1 is (TAG tagtype_2).
+    - the memory type tagtype_1 matches the memory type tagtype_2.
 
 Blocktype_ok
 - the block type blocktype_u0 is valid with the instruction type (valtype_u1* ->_ [] valtype_u2*) if and only if:
@@ -22043,6 +22829,29 @@ Blocktype_ok
     - valtype_u2* is t_2*.
     - |C.TYPES| is greater than typeidx.
     - $expanddt(C.TYPES[typeidx]) is (FUNC (t_1* -> t_2*)).
+
+Catch_ok
+- the catch clause catch_u0 is valid if and only if:
+  - Either:
+    - catch_u0 is (CATCH x l).
+    - |C.TAGS| is greater than x.
+    - |C.LABELS| is greater than l.
+    - $expanddt(C.TAGS[x]) is (FUNC (t* -> [])).
+    - the value type sequence t* matches the result type C.LABELS[l].
+  - Or:
+    - catch_u0 is (CATCH_REF x l).
+    - |C.TAGS| is greater than x.
+    - |C.LABELS| is greater than l.
+    - $expanddt(C.TAGS[x]) is (FUNC (t* -> [])).
+    - the value type sequence t* ++ [(REF (NULL ?() ?) EXN)] matches the result type C.LABELS[l].
+  - Or:
+    - catch_u0 is (CATCH_ALL l).
+    - |C.LABELS| is greater than l.
+    - the value type sequence [] matches the result type C.LABELS[l].
+  - Or:
+    - catch_u0 is (CATCH_ALL_REF l).
+    - |C.LABELS| is greater than l.
+    - the value type sequence [(REF (NULL ?() ?) EXN)] matches the result type C.LABELS[l].
 
 Instr_ok/nop
 - the instr NOP is valid with the instruction type ([] ->_ [] []).
@@ -22174,6 +22983,23 @@ Instr_ok/return_call_indirect
   - C.RETURN is ?(t'_2*).
   - the value type sequence t_2* matches the value type sequence t'_2*.
   - the instruction type (t_3* ->_ [] t_4*) is valid.
+
+Instr_ok/throw
+- the instr (THROW x) is valid with the instruction type (t_1* ++ t* ->_ [] t_2*) if and only if:
+  - |C.TAGS| is greater than x.
+  - $expanddt(C.TAGS[x]) is (FUNC (t* -> [])).
+  - the instruction type (t_1* ->_ [] t_2*) is valid.
+
+Instr_ok/throw_ref
+- the instr THROW_REF is valid with the instruction type (t_1* ++ [(REF (NULL ?(()) ?) EXN)] ->_ [] t_2*) if and only if:
+  - the instruction type (t_1* ->_ [] t_2*) is valid.
+
+Instr_ok/try_table
+- the instr (TRY_TABLE bt catch* instr*) is valid with the instruction type (t_1* ->_ [] t_2*) if and only if:
+  - the block type bt is valid with the instruction type (t_1* ->_ [] t_2*).
+  - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr* is valid with the instruction type (t_1* ->_ x* t_2*).
+  - For all catch in catch*,
+    - the catch clause catch is valid.
 
 Instr_ok/const
 - the instr (nt.CONST c_nt) is valid with the instruction type ([] ->_ [] [nt]).
@@ -22667,6 +23493,11 @@ Mem_ok
 - the memory (MEMORY memtype) is valid with the memory type memtype if and only if:
   - the memory type memtype is valid.
 
+Tag_ok
+- the tag (TAG x) is valid with the memory type C.TYPES[x] if and only if:
+  - |C.TYPES| is greater than x.
+  - $expanddt(C.TYPES[x]) is (FUNC functype).
+
 Elemmode_ok
 - the elemmode elemmode_u0 is valid with the element type rt if and only if:
   - Either:
@@ -22735,6 +23566,11 @@ Externidx_ok
     - externtype_u1 is (MEM mt).
     - |C.MEMS| is greater than x.
     - C.MEMS[x] is mt.
+  - Or:
+    - externidx_u0 is (TAG x).
+    - externtype_u1 is (TAG at).
+    - |C.TAGS| is greater than x.
+    - C.TAGS[x] is at.
 
 Export_ok
 - the export (EXPORT name externidx) is valid with the name name and the external type xt if and only if:
@@ -22763,23 +23599,26 @@ Types_ok
     - Under the context C with .TYPES appended by dt_1*, the type definition sequence type* is valid with the defined type sequence dt*.
 
 Module_ok
-- the module (MODULE type* import* func* global* table* mem* elem* data* start? export*) is valid with the module type $clos_moduletype(C, (xt_I* -> xt_E*)) if and only if:
+- the module (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) is valid with the module type $clos_moduletype(C, (xt_I* -> xt_E*)) if and only if:
   - |xt_I*| is |import*|.
   - |tt*| is |table*|.
   - |mt*| is |mem*|.
+  - |tag*| is |at*|.
   - |func*| is |dt*|.
   - |rt*| is |elem*|.
   - |ok*| is |data*|.
   - |nm*| is |export*|.
   - |xt_E*| is |export*|.
-  - Under the context { TYPES: []; RECS: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: []; }, the type definition sequence type* is valid with the defined type sequence dt'*.
+  - Under the context { TYPES: []; RECS: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: []; }, the type definition sequence type* is valid with the defined type sequence dt'*.
   - For all import in import* and xt_I in xt_I*,
-    - Under the context { TYPES: dt'*; RECS: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: []; }, the import import is valid with the external type xt_I.
+    - Under the context { TYPES: dt'*; RECS: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: []; }, the import import is valid with the external type xt_I.
   - Under the context C', the global sequence global* is valid with the global type sequence gt*.
   - For all table in table* and tt in tt*,
     - Under the context C', the table table is valid with the table type tt.
   - For all mem in mem* and mt in mt*,
     - Under the context C', the memory mem is valid with the memory type mt.
+  - For all at in at* and tag in tag*,
+    - Under the context C', the tag tag is valid with the memory type at.
   - For all dt in dt* and func in func*,
     - the function func is valid with the defined type dt.
   - For all elem in elem* and rt in rt*,
@@ -22791,13 +23630,14 @@ Module_ok
   - For all export in export* and nm in nm* and xt_E in xt_E*,
     - the export export is valid with the name nm and the external type xt_E.
   - Yet: $disjoint_(syntax name, nm*{nm : name})
-  - C is { TYPES: dt'*; RECS: []; FUNCS: dt_I* ++ dt*; GLOBALS: gt_I* ++ gt*; TABLES: tt_I* ++ tt*; MEMS: mt_I* ++ mt*; ELEMS: rt*; DATAS: ok*; LOCALS: []; LABELS: []; RETURN: ?(); REFS: x*; }.
-  - C' is { TYPES: dt'*; RECS: []; FUNCS: dt_I* ++ dt*; GLOBALS: gt_I*; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: x*; }.
+  - C is { TYPES: dt'*; RECS: []; FUNCS: dt_I* ++ dt*; GLOBALS: gt_I* ++ gt*; TABLES: tt_I* ++ tt*; MEMS: mt_I* ++ mt*; TAGS: at_I* ++ at*; ELEMS: rt*; DATAS: ok*; LOCALS: []; LABELS: []; RETURN: ?(); REFS: x*; }.
+  - C' is { TYPES: dt'*; RECS: []; FUNCS: dt_I* ++ dt*; GLOBALS: gt_I*; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; LOCALS: []; LABELS: []; RETURN: ?(); REFS: x*; }.
   - x* is $funcidx_nonfuncs((global* table* mem* elem* data*)).
   - dt_I* is $funcsxt(xt_I*).
   - gt_I* is $globalsxt(xt_I*).
   - tt_I* is $tablesxt(xt_I*).
   - mt_I* is $memsxt(xt_I*).
+  - at_I* is $tagsxt(xt_I*).
 
 NotationTypingInstrScheme
 - the instr sequence [instr_u0] is valid with the function type (valtype_u1* -> valtype_u3*) if and only if:
@@ -23615,6 +24455,9 @@ free_table (TABLE tabletype expr)
 free_mem (MEMORY memtype)
 1. Return $free_memtype(memtype).
 
+free_tag (TAG typeidx)
+1. Return $free_typeidx(typeidx).
+
 free_elemmode elemmode_u0
 1. If elemmode_u0 is of the case ACTIVE, then:
   a. Return YetE ($free_tableidx(tableidx) ++ $free_expr(expr)).
@@ -23644,8 +24487,8 @@ free_export (EXPORT name externidx)
 free_import (IMPORT name_1 name_2 externtype)
 1. Return $free_externtype(externtype).
 
-free_module (MODULE type* import* func* global* table* mem* elem* data* start? export*)
-1. Return YetE ($free_list($free_type(type)*{type : type}) ++ $free_list($free_import(import)*{import : import}) ++ $free_list($free_func(func)*{func : func}) ++ $free_list($free_global(global)*{global : global}) ++ $free_list($free_table(table)*{table : table}) ++ $free_list($free_mem(mem)*{mem : mem}) ++ $free_list($free_elem(elem)*{elem : elem}) ++ $free_list($free_data(data)*{data : data}) ++ $free_opt($free_start(start)?{start : start}) ++ $free_list($free_export(export)*{export : export})).
+free_module (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*)
+1. Return YetE ($free_list($free_type(type)*{type : type}) ++ $free_list($free_import(import)*{import : import}) ++ $free_list($free_func(func)*{func : func}) ++ $free_list($free_global(global)*{global : global}) ++ $free_list($free_table(table)*{table : table}) ++ $free_list($free_mem(mem)*{mem : mem}) ++ $free_list($free_tag(tag)*{tag : tag}) ++ $free_list($free_elem(elem)*{elem : elem}) ++ $free_list($free_data(data)*{data : data}) ++ $free_opt($free_start(start)?{start : start}) ++ $free_list($free_export(export)*{export : export})).
 
 funcidx_module module
 1. Return $free_module(module).FUNCS.
@@ -23658,14 +24501,16 @@ subst_typevar tv typevar_u0* typeuse_u1*
   a. Return tv.
 2. Assert: Due to validation, (|typeuse_u1*| ≥ 1).
 3. Let [tu_1] ++ tu'* be typeuse_u1*.
-4. If (|typevar_u0*| ≥ 1), then:
+4. If (|typevar_u0*| < 1), then:
+  a. Do nothing.
+5. Else:
   a. Let [tv_1] ++ tv'* be typevar_u0*.
   b. If (tv is tv_1), then:
     1) Return tu_1.
-5. Let [tu_1] ++ tu'* be typeuse_u1*.
-6. Assert: Due to validation, (|typevar_u0*| ≥ 1).
-7. Let [tv_1] ++ tv'* be typevar_u0*.
-8. Return $subst_typevar(tv, tv'*, tu'*).
+6. Let [tu_1] ++ tu'* be typeuse_u1*.
+7. Assert: Due to validation, (|typevar_u0*| ≥ 1).
+8. Let [tv_1] ++ tv'* be typevar_u0*.
+9. Return $subst_typevar(tv, tv'*, tu'*).
 
 subst_packtype pt tv* tu*
 1. Return pt.
@@ -23853,6 +24698,16 @@ memsxx externidx_u0*
 4. Let [externidx] ++ xx* be externidx_u0*.
 5. Return $memsxx(xx*).
 
+tagsxx externidx_u0*
+1. If (externidx_u0* is []), then:
+  a. Return [].
+2. Let [externidx_0] ++ xx* be externidx_u0*.
+3. If externidx_0 is of the case TAG, then:
+  a. Let (TAG x) be externidx_0.
+  b. Return [x] ++ $tagsxx(xx*).
+4. Let [externidx] ++ xx* be externidx_u0*.
+5. Return $tagsxx(xx*).
+
 funcsxt externtype_u0*
 1. If (externtype_u0* is []), then:
   a. Return [].
@@ -23892,6 +24747,16 @@ memsxt externtype_u0*
   b. Return [mt] ++ $memsxt(xt*).
 4. Let [externtype] ++ xt* be externtype_u0*.
 5. Return $memsxt(xt*).
+
+tagsxt externtype_u0*
+1. If (externtype_u0* is []), then:
+  a. Return [].
+2. Let [externtype_0] ++ xt* be externtype_u0*.
+3. If externtype_0 is of the case TAG, then:
+  a. Let (TAG at) be externtype_0.
+  b. Return [at] ++ $tagsxt(xt*).
+4. Let [externtype] ++ xt* be externtype_u0*.
+5. Return $tagsxt(xt*).
 
 memarg0
 1. Return { ALIGN: 0; OFFSET: 0; }.
@@ -24636,45 +25501,55 @@ unpackfield_ storagetype_u0 sx_u1? fieldval_u2
   d. Assert: Due to validation, (storagetype_u0 is packtype).
   e. Return (I32.CONST $extend__($psize(packtype), 32, sx, i)).
 
-funcsxv externval_u0*
-1. If (externval_u0* is []), then:
+funcsxa externaddr_u0*
+1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externval_0] ++ xv* be externval_u0*.
-3. If externval_0 is of the case FUNC, then:
-  a. Let (FUNC fa) be externval_0.
-  b. Return [fa] ++ $funcsxv(xv*).
-4. Let [externval] ++ xv* be externval_u0*.
-5. Return $funcsxv(xv*).
+2. Let [externaddr_0] ++ xa* be externaddr_u0*.
+3. If externaddr_0 is of the case FUNC, then:
+  a. Let (FUNC fa) be externaddr_0.
+  b. Return [fa] ++ $funcsxa(xa*).
+4. Let [externaddr] ++ xa* be externaddr_u0*.
+5. Return $funcsxa(xa*).
 
-globalsxv externval_u0*
-1. If (externval_u0* is []), then:
+globalsxa externaddr_u0*
+1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externval_0] ++ xv* be externval_u0*.
-3. If externval_0 is of the case GLOBAL, then:
-  a. Let (GLOBAL ga) be externval_0.
-  b. Return [ga] ++ $globalsxv(xv*).
-4. Let [externval] ++ xv* be externval_u0*.
-5. Return $globalsxv(xv*).
+2. Let [externaddr_0] ++ xa* be externaddr_u0*.
+3. If externaddr_0 is of the case GLOBAL, then:
+  a. Let (GLOBAL ga) be externaddr_0.
+  b. Return [ga] ++ $globalsxa(xa*).
+4. Let [externaddr] ++ xa* be externaddr_u0*.
+5. Return $globalsxa(xa*).
 
-tablesxv externval_u0*
-1. If (externval_u0* is []), then:
+tablesxa externaddr_u0*
+1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externval_0] ++ xv* be externval_u0*.
-3. If externval_0 is of the case TABLE, then:
-  a. Let (TABLE ta) be externval_0.
-  b. Return [ta] ++ $tablesxv(xv*).
-4. Let [externval] ++ xv* be externval_u0*.
-5. Return $tablesxv(xv*).
+2. Let [externaddr_0] ++ xa* be externaddr_u0*.
+3. If externaddr_0 is of the case TABLE, then:
+  a. Let (TABLE ta) be externaddr_0.
+  b. Return [ta] ++ $tablesxa(xa*).
+4. Let [externaddr] ++ xa* be externaddr_u0*.
+5. Return $tablesxa(xa*).
 
-memsxv externval_u0*
-1. If (externval_u0* is []), then:
+memsxa externaddr_u0*
+1. If (externaddr_u0* is []), then:
   a. Return [].
-2. Let [externval_0] ++ xv* be externval_u0*.
-3. If externval_0 is of the case MEM, then:
-  a. Let (MEM ma) be externval_0.
-  b. Return [ma] ++ $memsxv(xv*).
-4. Let [externval] ++ xv* be externval_u0*.
-5. Return $memsxv(xv*).
+2. Let [externaddr_0] ++ xa* be externaddr_u0*.
+3. If externaddr_0 is of the case MEM, then:
+  a. Let (MEM ma) be externaddr_0.
+  b. Return [ma] ++ $memsxa(xa*).
+4. Let [externaddr] ++ xa* be externaddr_u0*.
+5. Return $memsxa(xa*).
+
+tagsxa externaddr_u0*
+1. If (externaddr_u0* is []), then:
+  a. Return [].
+2. Let [externaddr_0] ++ xa* be externaddr_u0*.
+3. If externaddr_0 is of the case TAG, then:
+  a. Let (TAG ha) be externaddr_0.
+  b. Return [ha] ++ $tagsxa(xa*).
+4. Let [externaddr] ++ xa* be externaddr_u0*.
+5. Return $tagsxa(xa*).
 
 store
 1. Return.
@@ -24682,6 +25557,10 @@ store
 frame
 1. Let f be the current frame.
 2. Return f.
+
+tagaddr
+1. Let f be the current frame.
+2. Return f.MODULE.TAGS.
 
 moduleinst
 1. Let f be the current frame.
@@ -24699,6 +25578,9 @@ tableinst
 meminst
 1. Return s.MEMS.
 
+taginst
+1. Return s.TAGS.
+
 eleminst
 1. Return s.ELEMS.
 
@@ -24710,6 +25592,9 @@ structinst
 
 arrayinst
 1. Return s.ARRAYS.
+
+exninst
+1. Return s.EXNS.
 
 type x
 1. Let f be the current frame.
@@ -24730,6 +25615,10 @@ table x
 mem x
 1. Let f be the current frame.
 2. Return s.MEMS[f.MODULE.MEMS[x]].
+
+tag x
+1. Let f be the current frame.
+2. Return s.TAGS[f.MODULE.TAGS[x]].
 
 elem x
 1. Let f be the current frame.
@@ -24786,6 +25675,9 @@ add_structinst si*
 
 add_arrayinst ai*
 1. Append ai* to the s.ARRAYS.
+
+add_exninst exn*
+1. Append exn* to the s.EXNS.
 
 growtable tableinst n r
 1. Let { TYPE: ((i, j), rt); REFS: r'*; } be tableinst.
@@ -24892,6 +25784,20 @@ allocmems memtype_u0*
 4. Let ma'* be $allocmems(memtype'*).
 5. Return [ma] ++ ma'*.
 
+alloctag at
+1. Let taginst be { TYPE: at; }.
+2. Let a be |s.TAGS|.
+3. Append taginst to the s.TAGS.
+4. Return a.
+
+alloctags tagtype_u0*
+1. If (tagtype_u0* is []), then:
+  a. Return [].
+2. Let [at] ++ at'* be tagtype_u0*.
+3. Let aa be $alloctag(at).
+4. Let aa'* be $alloctags(at'*).
+5. Return [aa] ++ aa'*.
+
 allocelem elemtype ref*
 1. Let eleminst be { TYPE: elemtype; REFS: ref*; }.
 2. Let a be |s.ELEMS|.
@@ -24929,61 +25835,70 @@ allocdatas datatype_u0* byte_u1*
 allocexport moduleinst (EXPORT name externidx_u0)
 1. If externidx_u0 is of the case FUNC, then:
   a. Let (FUNC x) be externidx_u0.
-  b. Return { NAME: name; VALUE: (FUNC moduleinst.FUNCS[x]); }.
+  b. Return { NAME: name; ADDR: (FUNC moduleinst.FUNCS[x]); }.
 2. If externidx_u0 is of the case GLOBAL, then:
   a. Let (GLOBAL x) be externidx_u0.
-  b. Return { NAME: name; VALUE: (GLOBAL moduleinst.GLOBALS[x]); }.
+  b. Return { NAME: name; ADDR: (GLOBAL moduleinst.GLOBALS[x]); }.
 3. If externidx_u0 is of the case TABLE, then:
   a. Let (TABLE x) be externidx_u0.
-  b. Return { NAME: name; VALUE: (TABLE moduleinst.TABLES[x]); }.
-4. Assert: Due to validation, externidx_u0 is of the case MEM.
-5. Let (MEM x) be externidx_u0.
-6. Return { NAME: name; VALUE: (MEM moduleinst.MEMS[x]); }.
+  b. Return { NAME: name; ADDR: (TABLE moduleinst.TABLES[x]); }.
+4. If externidx_u0 is of the case MEM, then:
+  a. Let (MEM x) be externidx_u0.
+  b. Return { NAME: name; ADDR: (MEM moduleinst.MEMS[x]); }.
+5. Assert: Due to validation, externidx_u0 is of the case TAG.
+6. Let (TAG x) be externidx_u0.
+7. Return { NAME: name; ADDR: (TAG moduleinst.TAGS[x]); }.
 
 allocexports moduleinst export*
 1. Return $allocexport(moduleinst, export)*.
 
-allocmodule module externval* val_G* ref_T* ref_E**
-1. Let fa_I* be $funcsxv(externval*).
-2. Let ga_I* be $globalsxv(externval*).
-3. Let ma_I* be $memsxv(externval*).
-4. Let ta_I* be $tablesxv(externval*).
-5. Assert: Due to validation, module is of the case MODULE.
-6. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
-7. Let fa* be (|s.FUNCS| + i_F)^(i_F<|func*|).
-8. Let ga* be (|s.GLOBALS| + i_G)^(i_G<|global*|).
-9. Let ta* be (|s.TABLES| + i_T)^(i_T<|table*|).
-10. Let ma* be (|s.MEMS| + i_M)^(i_M<|mem*|).
-11. Let ea* be (|s.ELEMS| + i_E)^(i_E<|elem*|).
-12. Let da* be (|s.DATAS| + i_D)^(i_D<|data*|).
-13. Assert: Due to validation, mem is of the case MEMORY*.
-14. Let (MEMORY memtype)* be mem*.
-15. Let dt* be $alloctypes(type*).
-16. Assert: Due to validation, data is of the case DATA*.
-17. Let (DATA byte* datamode)* be data*.
-18. Assert: Due to validation, global is of the case GLOBAL*.
-19. Let (GLOBAL globaltype expr_G)* be global*.
-20. Assert: Due to validation, table is of the case TABLE*.
-21. Let (TABLE tabletype expr_T)* be table*.
-22. Assert: Due to validation, elem is of the case ELEM*.
-23. Let (ELEM elemtype expr_E* elemmode)* be elem*.
-24. Assert: Due to validation, func is of the case FUNC*.
-25. Let (FUNC x local* expr_F)* be func*.
-26. Let xi* be $allocexports({ TYPES: []; FUNCS: fa_I* ++ fa*; GLOBALS: ga_I* ++ ga*; TABLES: ta_I* ++ ta*; MEMS: ma_I* ++ ma*; ELEMS: []; DATAS: []; EXPORTS: []; }, export*).
-27. Let moduleinst be { TYPES: dt*; FUNCS: fa_I* ++ fa*; GLOBALS: ga_I* ++ ga*; TABLES: ta_I* ++ ta*; MEMS: ma_I* ++ ma*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
-28. Let funcaddr_0 be $allocfuncs(dt*[x]*, (FUNC x local* expr_F)*, moduleinst^|func*|).
-29. Assert: Due to validation, (funcaddr_0 is fa*).
-30. Let globaladdr_0 be $allocglobals(globaltype*, val_G*).
-31. Assert: Due to validation, (globaladdr_0 is ga*).
-32. Let tableaddr_0 be $alloctables(tabletype*, ref_T*).
-33. Assert: Due to validation, (tableaddr_0 is ta*).
-34. Let memaddr_0 be $allocmems(memtype*).
-35. Assert: Due to validation, (memaddr_0 is ma*).
-36. Let elemaddr_0 be $allocelems(elemtype*, ref_E**).
-37. Assert: Due to validation, (elemaddr_0 is ea*).
-38. Let dataaddr_0 be $allocdatas(OK^|data*|, byte**).
-39. Assert: Due to validation, (dataaddr_0 is da*).
-40. Return moduleinst.
+allocmodule module externaddr* val_G* ref_T* ref_E**
+1. Let fa_I* be $funcsxa(externaddr*).
+2. Let ga_I* be $globalsxa(externaddr*).
+3. Let aa_I* be $tagsxa(externaddr*).
+4. Let ma_I* be $memsxa(externaddr*).
+5. Let ta_I* be $tablesxa(externaddr*).
+6. Assert: Due to validation, module is of the case MODULE.
+7. Let (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) be module.
+8. Let fa* be (|s.FUNCS| + i_F)^(i_F<|func*|).
+9. Let ga* be (|s.GLOBALS| + i_G)^(i_G<|global*|).
+10. Let ta* be (|s.TABLES| + i_T)^(i_T<|table*|).
+11. Let aa* be (|s.TAGS| + i_A)^(i_A<|tag*|).
+12. Let ma* be (|s.MEMS| + i_M)^(i_M<|mem*|).
+13. Let ea* be (|s.ELEMS| + i_E)^(i_E<|elem*|).
+14. Let da* be (|s.DATAS| + i_D)^(i_D<|data*|).
+15. Assert: Due to validation, mem is of the case MEMORY*.
+16. Let (MEMORY memtype)* be mem*.
+17. Let dt* be $alloctypes(type*).
+18. Assert: Due to validation, tag is of the case TAG*.
+19. Let (TAG y)* be tag*.
+20. Assert: Due to validation, data is of the case DATA*.
+21. Let (DATA byte* datamode)* be data*.
+22. Assert: Due to validation, global is of the case GLOBAL*.
+23. Let (GLOBAL globaltype expr_G)* be global*.
+24. Assert: Due to validation, table is of the case TABLE*.
+25. Let (TABLE tabletype expr_T)* be table*.
+26. Assert: Due to validation, elem is of the case ELEM*.
+27. Let (ELEM elemtype expr_E* elemmode)* be elem*.
+28. Assert: Due to validation, func is of the case FUNC*.
+29. Let (FUNC x local* expr_F)* be func*.
+30. Let xi* be $allocexports({ TYPES: []; FUNCS: fa_I* ++ fa*; GLOBALS: ga_I* ++ ga*; TABLES: ta_I* ++ ta*; MEMS: ma_I* ++ ma*; TAGS: aa_I* ++ aa*; ELEMS: []; DATAS: []; EXPORTS: []; }, export*).
+31. Let moduleinst be { TYPES: dt*; FUNCS: fa_I* ++ fa*; GLOBALS: ga_I* ++ ga*; TABLES: ta_I* ++ ta*; MEMS: ma_I* ++ ma*; TAGS: aa_I* ++ aa*; ELEMS: ea*; DATAS: da*; EXPORTS: xi*; }.
+32. Let n_0 be $allocfuncs(dt*[x]*, (FUNC x local* expr_F)*, moduleinst^|func*|).
+33. Assert: Due to validation, (n_0 is fa*).
+34. Let n_0 be $allocglobals(globaltype*, val_G*).
+35. Assert: Due to validation, (n_0 is ga*).
+36. Let n_0 be $alloctables(tabletype*, ref_T*).
+37. Assert: Due to validation, (n_0 is ta*).
+38. Let n_0 be $allocmems(memtype*).
+39. Assert: Due to validation, (n_0 is ma*).
+40. Let n_0 be $alloctags(dt*[y]*).
+41. Assert: Due to validation, (n_0 is aa*).
+42. Let n_0 be $allocelems(elemtype*, ref_E**).
+43. Assert: Due to validation, (n_0 is ea*).
+44. Let n_0 be $allocdatas(OK^|data*|, byte**).
+45. Assert: Due to validation, (n_0 is da*).
+46. Return moduleinst.
 
 runelem_ x (ELEM rt e^n elemmode_u0)
 1. If (elemmode_u0 is PASSIVE), then:
@@ -25016,16 +25931,16 @@ evalglobals z globaltype_u0* expr_u1*
 11. Let val'* be $evalglobals(z, gt'*, expr'*).
 12. Return [val] ++ val'*.
 
-instantiate z module externval*
+instantiate z module externaddr*
 1. Let (xt_I* -> xt_E*) be $Module_ok(module).
 2. Assert: Due to validation, module is of the case MODULE.
-3. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
-4. Assert: Due to validation, ($Externval_type(externval) is xt_I)*.
+3. Let (MODULE type* import* func* global* table* mem* tag* elem* data* start? export*) be module.
+4. Assert: Due to validation, ($Externaddr_type(externaddr) is xt_I)*.
 5. Let instr_D* be $concat_(instr, $rundata_(i_D, data*[i_D])^(i_D<|data*|)).
 6. Let instr_E* be $concat_(instr, $runelem_(i_E, elem*[i_E])^(i_E<|elem*|)).
 7. Assert: Due to validation, start is of the case START?.
 8. Let (START x)? be start?.
-9. Let moduleinst_0 be { TYPES: $alloctypes(type*); FUNCS: $funcsxv(externval*) ++ (|s.FUNCS| + i_F)^(i_F<|func*|); GLOBALS: $globalsxv(externval*); TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
+9. Let moduleinst_0 be { TYPES: $alloctypes(type*); FUNCS: $funcsxa(externaddr*) ++ (|s.FUNCS| + i_F)^(i_F<|func*|); GLOBALS: $globalsxa(externaddr*); TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; EXPORTS: []; }.
 10. Assert: Due to validation, data is of the case DATA*.
 11. Assert: Due to validation, table is of the case TABLE*.
 12. Let (TABLE tabletype expr_T)* be table*.
@@ -25044,7 +25959,7 @@ instantiate z module externval*
 25. Push the activation of z' to the stack.
 26. Let [ref_E]** be $eval_expr(expr_E)**.
 27. Pop the activation of _f from the stack.
-28. Let moduleinst be $allocmodule(module, externval*, val_G*, ref_T*, ref_E**).
+28. Let moduleinst be $allocmodule(module, externaddr*, val_G*, ref_T*, ref_E**).
 29. Let f be { LOCALS: []; MODULE: moduleinst; }.
 30. Push the activation of f with arity 0 to the stack.
 31. Execute the instruction instr_E*.
@@ -25056,7 +25971,7 @@ instantiate z module externval*
 35. Return f.MODULE.
 
 invoke funcaddr val*
-1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
+1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
 2. Assert: Due to validation, $expanddt(s.FUNCS[funcaddr].TYPE) is of the case FUNC.
 3. Let (FUNC functype_0) be $expanddt(s.FUNCS[funcaddr].TYPE).
 4. Let (t_1* -> t_2*) be functype_0.
@@ -25126,21 +26041,30 @@ Step_pure/label
 
 Step_pure/br l
 1. Pop all values val* from the top of the stack.
-2. Let L be the current label.
-3. Let n be the arity of L.
-4. Let instr'* be the continuation of L.
-5. Pop the current label from the stack.
-6. Let instr_u0* be val*.
-7. If (|instr_u0*| ≥ n), then:
-  a. Let val'* ++ val^n be instr_u0*.
-  b. If (l is 0), then:
-    1) Push the values val^n to the stack.
-    2) Execute the instruction instr'*.
-8. If the type of instr_u0 is val*, then:
-  a. Let val* be instr_u0*.
-  b. If (l > 0), then:
-    1) Push the values val* to the stack.
-    2) Execute the instruction (BR (l - 1)).
+2. If the top of the stack is a LABEL_, then:
+  a. Push the values val* to the stack.
+  b. Let L be the current label.
+  c. Let n be the arity of L.
+  d. Let instr'* be the continuation of L.
+  e. If (l is 0), then:
+    1) Assert: Due to validation, there are at least n values on the top of the stack.
+    2) Pop the values val^n from the stack.
+    3) Pop all values val'* from the top of the stack.
+    4) Pop the current label from the stack.
+    5) Push the values val^n to the stack.
+    6) Execute the instruction instr'*.
+  f. Else:
+    1) Pop all values val* from the top of the stack.
+    2) If (l > 0), then:
+      a) Pop the current label from the stack.
+      b) Push the values val* to the stack.
+      c) Execute the instruction (BR (l - 1)).
+3. Else if the top of the stack is a HANDLER_, then:
+  a. Push the values val* to the stack.
+  b. Pop all values val* from the top of the stack.
+  c. Exit from HANDLER_.
+  d. Push the values val* to the stack.
+  e. Execute the instruction (BR l).
 
 Step_pure/br_if l
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -25197,59 +26121,78 @@ Step_pure/frame
 
 Step_pure/return
 1. Pop all values val* from the top of the stack.
-2. If a frame is now on the top of the stack, then:
-  a. Let f be the current frame.
-  b. Let n be the arity of f.
-  c. Pop the current frame from the stack.
-  d. Let val'* ++ val^n be val*.
-  e. Push the values val^n to the stack.
-3. Else if a label is now on the top of the stack, then:
-  a. Pop the current label from the stack.
-  b. Push the values val* to the stack.
-  c. Execute the instruction RETURN.
+2. If the top of the stack is a FRAME_, then:
+  a. Push the values val* to the stack.
+  b. Let f be the current frame.
+  c. Let n be the arity of f.
+  d. Assert: Due to validation, there are at least n values on the top of the stack.
+  e. Pop the values val^n from the stack.
+  f. Pop all values val'* from the top of the stack.
+  g. Pop the current frame from the stack.
+  h. Push the values val^n to the stack.
+3. Else if the top of the stack is a LABEL_, then:
+  a. Push the values val* to the stack.
+  b. Pop all values val* from the top of the stack.
+  c. Pop the current label from the stack.
+  d. Push the values val* to the stack.
+  e. Execute the instruction RETURN.
+4. Else if the top of the stack is a HANDLER_, then:
+  a. Push the values val* to the stack.
+  b. Pop all values val* from the top of the stack.
+  c. Exit from HANDLER_.
+  d. Push the values val* to the stack.
+  e. Execute the instruction RETURN.
 
-Step_pure/trap
-1. YetI: TODO: It is likely that the value stack of two rules are different.
+Step_pure/handler
+1. Pop all values val* from the top of the stack.
+2. Assert: Due to validation, YetE (a handler is now on the top of the stack).
+3. Exit from HANDLER_.
+4. Push the values val* to the stack.
 
 Step_pure/unop nt unop
-1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (nt.CONST c_1) from the stack.
-3. If (|$unop_(nt, unop, c_1)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_1) from the stack.
+3. Assert: Due to validation, (numtype_0 is nt).
+4. If (|$unop_(nt, unop, c_1)| ≤ 0), then:
   a. Trap.
-4. Let c be an element of $unop_(nt, unop, c_1).
-5. Push the value (nt.CONST c) to the stack.
+5. Let c be an element of $unop_(nt, unop, c_1).
+6. Push the value (nt.CONST c) to the stack.
 
 Step_pure/binop nt binop
-1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (nt.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type nt is on the top of the stack.
-4. Pop the value (nt.CONST c_1) from the stack.
-5. If (|$binop_(nt, binop, c_1, c_2)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_2) from the stack.
+3. Assert: Due to validation, (numtype_0 is nt).
+4. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+5. Pop the value (numtype_0.CONST c_1) from the stack.
+6. If (|$binop_(nt, binop, c_1, c_2)| ≤ 0), then:
   a. Trap.
-6. Let c be an element of $binop_(nt, binop, c_1, c_2).
-7. Push the value (nt.CONST c) to the stack.
+7. Let c be an element of $binop_(nt, binop, c_1, c_2).
+8. Push the value (nt.CONST c) to the stack.
 
 Step_pure/testop nt testop
-1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (nt.CONST c_1) from the stack.
-3. Let c be $testop_(nt, testop, c_1).
-4. Push the value (I32.CONST c) to the stack.
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_1) from the stack.
+3. Assert: Due to validation, (numtype_0 is nt).
+4. Let c be $testop_(nt, testop, c_1).
+5. Push the value (I32.CONST c) to the stack.
 
 Step_pure/relop nt relop
-1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (nt.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type nt is on the top of the stack.
-4. Pop the value (nt.CONST c_1) from the stack.
-5. Let c be $relop_(nt, relop, c_1, c_2).
-6. Push the value (I32.CONST c) to the stack.
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_2) from the stack.
+3. Assert: Due to validation, (numtype_0 is nt).
+4. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+5. Pop the value (numtype_0.CONST c_1) from the stack.
+6. Let c be $relop_(nt, relop, c_1, c_2).
+7. Push the value (I32.CONST c) to the stack.
 
 Step_pure/cvtop nt_2 nt_1 cvtop
-1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
-2. Pop the value (nt_1.CONST c_1) from the stack.
-3. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| ≤ 0), then:
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_1) from the stack.
+3. Assert: Due to validation, (numtype_0 is nt_1).
+4. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| ≤ 0), then:
   a. Trap.
-4. Let c be an element of $cvtop__(nt_1, nt_2, cvtop, c_1).
-5. Push the value (nt_2.CONST c) to the stack.
+5. Let c be an element of $cvtop__(nt_1, nt_2, cvtop, c_1).
+6. Push the value (nt_2.CONST c) to the stack.
 
 Step_pure/ref.i31
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -25276,8 +26219,13 @@ Step_pure/ref.eq
 2. Pop the value ref_2 from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop the value ref_1 from the stack.
-5. If (ref_1 is of the case REF.NULL and ref_2 is of the case REF.NULL), then:
-  a. Push the value (I32.CONST 1) to the stack.
+5. If ref_1 is of the case REF.NULL, then:
+  a. If ref_2 is of the case REF.NULL, then:
+    1) Push the value (I32.CONST 1) to the stack.
+  b. Else if (ref_1 is ref_2), then:
+    1) Push the value (I32.CONST 1) to the stack.
+  c. Else:
+    1) Push the value (I32.CONST 0) to the stack.
 6. Else if (ref_1 is ref_2), then:
   a. Push the value (I32.CONST 1) to the stack.
 7. Else:
@@ -25426,9 +26374,9 @@ Step_pure/vshuffle (Pnn X M) i*
 9. Push the value (V128.CONST c) to the stack.
 
 Step_pure/vsplat (Lnn X M)
-1. Let nt_0 be $lunpack(Lnn).
-2. Assert: Due to validation, a value of value type nt_0 is on the top of the stack.
-3. Pop the value (nt_0.CONST c_1) from the stack.
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_1) from the stack.
+3. Assert: Due to validation, (numtype_0 is $lunpack(Lnn)).
 4. Let c be $invlanes_((Lnn X M), $lpacknum_(Lnn, c_1)^M).
 5. Push the value (V128.CONST c) to the stack.
 
@@ -25449,9 +26397,9 @@ Step_pure/vextract_lane (lanetype_u0 X M) sx_u1? i
       b) Push the value (I32.CONST c_2) to the stack.
 
 Step_pure/vreplace_lane (Lnn X M) i
-1. Let nt_0 be $lunpack(Lnn).
-2. Assert: Due to validation, a value of value type nt_0 is on the top of the stack.
-3. Pop the value (nt_0.CONST c_2) from the stack.
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_2) from the stack.
+3. Assert: Due to validation, (numtype_0 is $lunpack(Lnn)).
 4. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 5. Pop the value (V128.CONST c_1) from the stack.
 6. Let c be $invlanes_((Lnn X M), $lanes_((Lnn X M), c_1) with [i] replaced by $lpacknum_(Lnn, c_2)).
@@ -25550,22 +26498,22 @@ Step_read/br_on_cast l rt_1 rt_2
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value ref from the stack.
 4. Let rt be $Ref_type(ref).
-5. If rt does not match $inst_reftype(f.MODULE, rt_2), then:
-  a. Push the value ref to the stack.
-6. Else:
-  a. Push the value ref to the stack.
-  b. Execute the instruction (BR l).
+5. Push the value ref to the stack.
+6. If rt does not match $inst_reftype(f.MODULE, rt_2), then:
+  a. Do nothing.
+7. Else:
+  a. Execute the instruction (BR l).
 
 Step_read/br_on_cast_fail l rt_1 rt_2
 1. Let f be the current frame.
 2. Assert: Due to validation, a value is on the top of the stack.
 3. Pop the value ref from the stack.
 4. Let rt be $Ref_type(ref).
-5. If rt matches $inst_reftype(f.MODULE, rt_2), then:
-  a. Push the value ref to the stack.
-6. Else:
-  a. Push the value ref to the stack.
-  b. Execute the instruction (BR l).
+5. Push the value ref to the stack.
+6. If rt matches $inst_reftype(f.MODULE, rt_2), then:
+  a. Do nothing.
+7. Else:
+  a. Execute the instruction (BR l).
 
 Step_read/call x
 1. Let z be the current state.
@@ -25611,26 +26559,195 @@ Step_read/return_call x
 Step_read/return_call_ref yy
 1. Let z be the current state.
 2. Pop all values val* from the top of the stack.
-3. If a label is now on the top of the stack, then:
-  a. Pop the current label from the stack.
-  b. Push the values val* to the stack.
-  c. Execute the instruction (RETURN_CALL_REF yy).
-4. Else if a frame is now on the top of the stack, then:
-  a. Pop the current frame from the stack.
-  b. Let instr_u1* ++ [instr_u0] be val*.
-  c. If instr_u0 is of the case REF.FUNC_ADDR, then:
+3. If the top of the stack is a LABEL_, then:
+  a. Push the values val* to the stack.
+  b. Pop all values val* from the top of the stack.
+  c. Pop the current label from the stack.
+  d. Push the values val* to the stack.
+  e. Execute the instruction (RETURN_CALL_REF yy).
+4. Else if the top of the stack is a FRAME_, then:
+  a. Push the values val* to the stack.
+  b. Assert: Due to validation, a value is on the top of the stack.
+  c. Pop the value instr_u0 from the stack.
+  d. Pop all values val* from the top of the stack.
+  e. If instr_u0 is of the case REF.NULL, then:
+    1) Pop the current frame from the stack.
+    2) Trap.
+  f. Assert: Due to validation, a value is on the top of the stack.
+  g. Pop the value instr_u0 from the stack.
+  h. If instr_u0 is of the case REF.FUNC_ADDR, then:
     1) Let (REF.FUNC_ADDR a) be instr_u0.
-    2) If (|instr_u1*| ≥ n), then:
-      a) Let val'* ++ val^n be instr_u1*.
-      b) If (a < |$funcinst(z)|), then:
-        1. Assert: Due to validation, $expanddt($funcinst(z)[a].TYPE) is of the case FUNC.
-        2. Let (FUNC functype_0) be $expanddt($funcinst(z)[a].TYPE).
-        3. Let (t_1^n -> t_2^m) be functype_0.
-        4. Push the values val^n to the stack.
-        5. Push the value (REF.FUNC_ADDR a) to the stack.
-        6. Execute the instruction (CALL_REF yy).
-  d. If (instr_u0 is of the case REF.NULL and the type of instr_u1 is val*), then:
-    1) Trap.
+    2) If (a < |$funcinst(z)|), then:
+      a) Assert: Due to validation, $expanddt($funcinst(z)[a].TYPE) is of the case FUNC.
+      b) Let (FUNC functype_0) be $expanddt($funcinst(z)[a].TYPE).
+      c) Let (t_1^n -> t_2^m) be functype_0.
+      d) Assert: Due to validation, there are at least n values on the top of the stack.
+      e) Pop the values val^n from the stack.
+      f) Pop all values val'* from the top of the stack.
+      g) Pop the current frame from the stack.
+      h) Push the values val^n to the stack.
+      i) Push the value (REF.FUNC_ADDR a) to the stack.
+      j) Execute the instruction (CALL_REF yy).
+
+Step_read/throw_ref
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value instr_u0 from the stack.
+4. If instr_u0 is of the case REF.NULL, then:
+  a. Trap.
+5. Pop all values val* from the top of the stack.
+6. If (val* is not []), then:
+  a. If instr_u0 is of the case REF.EXN_ADDR, then:
+    1) Let (REF.EXN_ADDR a) be instr_u0.
+    2) Push the value (REF.EXN_ADDR a) to the stack.
+    3) Execute the instruction THROW_REF.
+7. Else:
+  a. Pop all values val* from the top of the stack.
+  b. If the top of the stack is a LABEL_, then:
+    1) Push the values val* to the stack.
+    2) If instr_u0 is of the case REF.EXN_ADDR, then:
+      a) Let (REF.EXN_ADDR a) be instr_u0.
+      b) Pop the current label from the stack.
+      c) Push the value (REF.EXN_ADDR a) to the stack.
+      d) Execute the instruction THROW_REF.
+  c. Else if the top of the stack is a FRAME_, then:
+    1) Push the values val* to the stack.
+    2) If instr_u0 is of the case REF.EXN_ADDR, then:
+      a) Let (REF.EXN_ADDR a) be instr_u0.
+      b) Pop the current frame from the stack.
+      c) Push the value (REF.EXN_ADDR a) to the stack.
+      d) Execute the instruction THROW_REF.
+  d. Else if the top of the stack is a HANDLER_, then:
+    1) Push the values val* to the stack.
+    2) Let (HANDLER_ n { catch_u1* }) be the current context.
+    3) If instr_u0 is of the case REF.EXN_ADDR, then:
+      a) Let (REF.EXN_ADDR a) be instr_u0.
+      b) If (catch_u1* is []), then:
+        1. Exit from HANDLER_.
+        2. Push the value (REF.EXN_ADDR a) to the stack.
+        3. Execute the instruction THROW_REF.
+      c) Else:
+        1. Let (REF.EXN_ADDR a) be instr_u0.
+        2. If (a ≥ |$exninst(z)|), then:
+          a. Let [catch_0] ++ catch'* be catch_u1*.
+          b. If catch_0 is of the case CATCH_ALL, then:
+            1) Let (CATCH_ALL l) be catch_0.
+            2) Exit from HANDLER_.
+            3) Execute the instruction (BR l).
+          c. Else:
+            1) Let (REF.EXN_ADDR a) be instr_u0.
+            2) Let [catch_0] ++ catch'* be catch_u1*.
+            3) If catch_0 is of the case CATCH_ALL_REF, then:
+              a) Let (CATCH_ALL_REF l) be catch_0.
+              b) Exit from HANDLER_.
+              c) Push the value (REF.EXN_ADDR a) to the stack.
+              d) Execute the instruction (BR l).
+            4) Else:
+              a) Let (REF.EXN_ADDR a) be instr_u0.
+              b) Let [catch] ++ catch'* be catch_u1*.
+              c) Exit from HANDLER_.
+              d) Let H be (HANDLER_ n { catch'* }).
+              e) Enter [THROW_REF, HANDLER_] with label H.
+                1. Push the value (REF.EXN_ADDR a) to the stack.
+        3. Else:
+          a. Let val* be $exninst(z)[a].FIELDS.
+          b. Let [catch_0] ++ catch'* be catch_u1*.
+          c. If catch_0 is of the case CATCH, then:
+            1) Let (CATCH x l) be catch_0.
+            2) If ((x < |$tagaddr(z)|) and ($exninst(z)[a].TAG is $tagaddr(z)[x])), then:
+              a) Exit from HANDLER_.
+              b) Push the values val* to the stack.
+              c) Execute the instruction (BR l).
+            3) Else:
+              a) Let [catch_0] ++ catch'* be catch_u1*.
+              b) Do nothing.
+              c) If catch_0 is not of the case CATCH_REF, then:
+                1. Do nothing.
+              d) Else:
+                1. Do nothing.
+              e) Do nothing.
+              f) If catch_0 is of the case CATCH_ALL, then:
+                1. Let (CATCH_ALL l) be catch_0.
+                2. Exit from HANDLER_.
+                3. Execute the instruction (BR l).
+              g) Else:
+                1. Let (REF.EXN_ADDR a) be instr_u0.
+                2. Let [catch_0] ++ catch'* be catch_u1*.
+                3. If catch_0 is of the case CATCH_ALL_REF, then:
+                  a. Let (CATCH_ALL_REF l) be catch_0.
+                  b. Exit from HANDLER_.
+                  c. Push the value (REF.EXN_ADDR a) to the stack.
+                  d. Execute the instruction (BR l).
+                4. Else:
+                  a. Let (REF.EXN_ADDR a) be instr_u0.
+                  b. Let [catch] ++ catch'* be catch_u1*.
+                  c. Exit from HANDLER_.
+                  d. Let H be (HANDLER_ n { catch'* }).
+                  e. Enter [THROW_REF, HANDLER_] with label H.
+                    1) Push the value (REF.EXN_ADDR a) to the stack.
+          d. Else:
+            1) Let (REF.EXN_ADDR a) be instr_u0.
+            2) Let val* be $exninst(z)[a].FIELDS.
+            3) Let [catch_0] ++ catch'* be catch_u1*.
+            4) If catch_0 is not of the case CATCH_REF, then:
+              a) Let [catch_0] ++ catch'* be catch_u1*.
+              b) If catch_0 is of the case CATCH_ALL, then:
+                1. Let (CATCH_ALL l) be catch_0.
+                2. Exit from HANDLER_.
+                3. Execute the instruction (BR l).
+              c) Else:
+                1. Let (REF.EXN_ADDR a) be instr_u0.
+                2. Let [catch_0] ++ catch'* be catch_u1*.
+                3. If catch_0 is of the case CATCH_ALL_REF, then:
+                  a. Let (CATCH_ALL_REF l) be catch_0.
+                  b. Exit from HANDLER_.
+                  c. Push the value (REF.EXN_ADDR a) to the stack.
+                  d. Execute the instruction (BR l).
+                4. Else:
+                  a. Let (REF.EXN_ADDR a) be instr_u0.
+                  b. Let [catch] ++ catch'* be catch_u1*.
+                  c. Exit from HANDLER_.
+                  d. Let H be (HANDLER_ n { catch'* }).
+                  e. Enter [THROW_REF, HANDLER_] with label H.
+                    1) Push the value (REF.EXN_ADDR a) to the stack.
+            5) Else:
+              a) Let (CATCH_REF x l) be catch_0.
+              b) If ((x < |$tagaddr(z)|) and ($exninst(z)[a].TAG is $tagaddr(z)[x])), then:
+                1. Exit from HANDLER_.
+                2. Push the values val* to the stack.
+                3. Push the value (REF.EXN_ADDR a) to the stack.
+                4. Execute the instruction (BR l).
+              c) Else:
+                1. Let [catch_0] ++ catch'* be catch_u1*.
+                2. If catch_0 is of the case CATCH_ALL, then:
+                  a. Let (CATCH_ALL l) be catch_0.
+                  b. Exit from HANDLER_.
+                  c. Execute the instruction (BR l).
+                3. Else:
+                  a. Let (REF.EXN_ADDR a) be instr_u0.
+                  b. Let [catch_0] ++ catch'* be catch_u1*.
+                  c. If catch_0 is of the case CATCH_ALL_REF, then:
+                    1) Let (CATCH_ALL_REF l) be catch_0.
+                    2) Exit from HANDLER_.
+                    3) Push the value (REF.EXN_ADDR a) to the stack.
+                    4) Execute the instruction (BR l).
+                  d. Else:
+                    1) Let (REF.EXN_ADDR a) be instr_u0.
+                    2) Let [catch] ++ catch'* be catch_u1*.
+                    3) Exit from HANDLER_.
+                    4) Let H be (HANDLER_ n { catch'* }).
+                    5) Enter [THROW_REF, HANDLER_] with label H.
+                      a) Push the value (REF.EXN_ADDR a) to the stack.
+
+Step_read/try_table bt catch* instr*
+1. Let z be the current state.
+2. Let (t_1^m -> t_2^n) be $blocktype_(z, bt).
+3. Assert: Due to validation, there are at least m values on the top of the stack.
+4. Pop the values val^m from the stack.
+5. Let H be (HANDLER_ n { catch* }).
+6. Enter [HANDLER_] with label H.
+  a. Let L be the label_n{[]}.
+  b. Enter val^m ++ instr* with label L.
 
 Step_read/ref.null $idx(x)
 1. Let z be the current state.
@@ -25772,11 +26889,13 @@ Step_read/array.fill x
   a. Trap.
 11. If instr_u0 is of the case REF.ARRAY_ADDR, then:
   a. Let (REF.ARRAY_ADDR a) be instr_u0.
-  b. If ((a < |$arrayinst(z)|) and ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
-    1) Trap.
-  c. If (n is 0), then:
+  b. If (a ≥ |$arrayinst(z)|), then:
     1) Do nothing.
-  d. Else:
+  c. Else if ((i + n) > |$arrayinst(z)[a].FIELDS|), then:
+    1) Trap.
+  d. If (n is 0), then:
+    1) Do nothing.
+  e. Else:
     1) Let (REF.ARRAY_ADDR a) be instr_u0.
     2) Push the value (REF.ARRAY_ADDR a) to the stack.
     3) Push the value (I32.CONST i) to the stack.
@@ -25795,64 +26914,68 @@ Step_read/array.copy x_1 x_2
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i_2) from the stack.
 6. Assert: Due to validation, a value is on the top of the stack.
-7. Pop the value instr_u1 from the stack.
+7. Pop the value instr_u0 from the stack.
 8. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 9. Pop the value (I32.CONST i_1) from the stack.
 10. Assert: Due to validation, a value is on the top of the stack.
-11. Pop the value instr_u0 from the stack.
-12. If (instr_u0 is of the case REF.NULL and the type of instr_u1 is ref), then:
+11. Pop the value instr_u1 from the stack.
+12. If (instr_u1 is of the case REF.NULL and the type of instr_u0 is ref), then:
   a. Trap.
-13. If (instr_u1 is of the case REF.NULL and the type of instr_u0 is ref), then:
+13. If (instr_u0 is of the case REF.NULL and the type of instr_u1 is ref), then:
   a. Trap.
-14. If instr_u0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a_1) be instr_u0.
-  b. If instr_u1 is of the case REF.ARRAY_ADDR, then:
+14. If instr_u1 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a_1) be instr_u1.
+  b. If instr_u0 is not of the case REF.ARRAY_ADDR, then:
+    1) Do nothing.
+  c. Else:
     1) If ((a_1 < |$arrayinst(z)|) and ((i_1 + n) > |$arrayinst(z)[a_1].FIELDS|)), then:
       a) Trap.
-    2) Let (REF.ARRAY_ADDR a_2) be instr_u1.
-    3) If ((a_2 < |$arrayinst(z)|) and ((i_2 + n) > |$arrayinst(z)[a_2].FIELDS|)), then:
+    2) Let (REF.ARRAY_ADDR a_2) be instr_u0.
+    3) If (a_2 ≥ |$arrayinst(z)|), then:
+      a) Do nothing.
+    4) Else if ((i_2 + n) > |$arrayinst(z)[a_2].FIELDS|), then:
       a) Trap.
-  c. If (instr_u1 is of the case REF.ARRAY_ADDR and (n is 0)), then:
+  d. If (n is not 0), then:
+    1) Let (REF.ARRAY_ADDR a_1) be instr_u1.
+    2) If (i_1 > i_2), then:
+      a) If instr_u0 is of the case REF.ARRAY_ADDR, then:
+        1. Let (REF.ARRAY_ADDR a_2) be instr_u0.
+        2. Assert: Due to validation, $expanddt($type(z, x_2)) is of the case ARRAY.
+        3. Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
+        4. Let (mut, zt_2) be arraytype_0.
+        5. Let sx? be $sx(zt_2).
+        6. Push the value (REF.ARRAY_ADDR a_1) to the stack.
+        7. Push the value (I32.CONST ((i_1 + n) - 1)) to the stack.
+        8. Push the value (REF.ARRAY_ADDR a_2) to the stack.
+        9. Push the value (I32.CONST ((i_2 + n) - 1)) to the stack.
+        10. Execute the instruction (ARRAY.GET sx? x_2).
+        11. Execute the instruction (ARRAY.SET x_1).
+        12. Push the value (REF.ARRAY_ADDR a_1) to the stack.
+        13. Push the value (I32.CONST i_1) to the stack.
+        14. Push the value (REF.ARRAY_ADDR a_2) to the stack.
+        15. Push the value (I32.CONST i_2) to the stack.
+        16. Push the value (I32.CONST (n - 1)) to the stack.
+        17. Execute the instruction (ARRAY.COPY x_1 x_2).
+    3) Else if instr_u0 is of the case REF.ARRAY_ADDR, then:
+      a) Let (REF.ARRAY_ADDR a_2) be instr_u0.
+      b) Assert: Due to validation, $expanddt($type(z, x_2)) is of the case ARRAY.
+      c) Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
+      d) Let (mut, zt_2) be arraytype_0.
+      e) Let sx? be $sx(zt_2).
+      f) Push the value (REF.ARRAY_ADDR a_1) to the stack.
+      g) Push the value (I32.CONST i_1) to the stack.
+      h) Push the value (REF.ARRAY_ADDR a_2) to the stack.
+      i) Push the value (I32.CONST i_2) to the stack.
+      j) Execute the instruction (ARRAY.GET sx? x_2).
+      k) Execute the instruction (ARRAY.SET x_1).
+      l) Push the value (REF.ARRAY_ADDR a_1) to the stack.
+      m) Push the value (I32.CONST (i_1 + 1)) to the stack.
+      n) Push the value (REF.ARRAY_ADDR a_2) to the stack.
+      o) Push the value (I32.CONST (i_2 + 1)) to the stack.
+      p) Push the value (I32.CONST (n - 1)) to the stack.
+      q) Execute the instruction (ARRAY.COPY x_1 x_2).
+  e. Else if instr_u0 is of the case REF.ARRAY_ADDR, then:
     1) Do nothing.
-  d. Else:
-    1) Let (REF.ARRAY_ADDR a_1) be instr_u0.
-    2) If instr_u1 is of the case REF.ARRAY_ADDR, then:
-      a) Let (REF.ARRAY_ADDR a_2) be instr_u1.
-      b) If ((i_1 ≤ i_2) and $expanddt($type(z, x_2)) is of the case ARRAY), then:
-        1. Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
-        2. Let (mut, zt_2) be arraytype_0.
-        3. Let sx? be $sx(zt_2).
-        4. Push the value (REF.ARRAY_ADDR a_1) to the stack.
-        5. Push the value (I32.CONST i_1) to the stack.
-        6. Push the value (REF.ARRAY_ADDR a_2) to the stack.
-        7. Push the value (I32.CONST i_2) to the stack.
-        8. Execute the instruction (ARRAY.GET sx? x_2).
-        9. Execute the instruction (ARRAY.SET x_1).
-        10. Push the value (REF.ARRAY_ADDR a_1) to the stack.
-        11. Push the value (I32.CONST (i_1 + 1)) to the stack.
-        12. Push the value (REF.ARRAY_ADDR a_2) to the stack.
-        13. Push the value (I32.CONST (i_2 + 1)) to the stack.
-        14. Push the value (I32.CONST (n - 1)) to the stack.
-        15. Execute the instruction (ARRAY.COPY x_1 x_2).
-      c) Else:
-        1. Let (REF.ARRAY_ADDR a_1) be instr_u0.
-        2. Let (REF.ARRAY_ADDR a_2) be instr_u1.
-        3. If $expanddt($type(z, x_2)) is of the case ARRAY, then:
-          a. Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
-          b. Let (mut, zt_2) be arraytype_0.
-          c. Let sx? be $sx(zt_2).
-          d. Push the value (REF.ARRAY_ADDR a_1) to the stack.
-          e. Push the value (I32.CONST ((i_1 + n) - 1)) to the stack.
-          f. Push the value (REF.ARRAY_ADDR a_2) to the stack.
-          g. Push the value (I32.CONST ((i_2 + n) - 1)) to the stack.
-          h. Execute the instruction (ARRAY.GET sx? x_2).
-          i. Execute the instruction (ARRAY.SET x_1).
-          j. Push the value (REF.ARRAY_ADDR a_1) to the stack.
-          k. Push the value (I32.CONST i_1) to the stack.
-          l. Push the value (REF.ARRAY_ADDR a_2) to the stack.
-          m. Push the value (I32.CONST i_2) to the stack.
-          n. Push the value (I32.CONST (n - 1)) to the stack.
-          o. Execute the instruction (ARRAY.COPY x_1 x_2).
 
 Step_read/array.init_elem x y
 1. Let z be the current state.
@@ -25904,28 +27027,30 @@ Step_read/array.init_data x y
   a. Let (REF.ARRAY_ADDR a) be instr_u0.
   b. If ((a < |$arrayinst(z)|) and ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
-  c. If $expanddt($type(z, x)) is of the case ARRAY, then:
+  c. If $expanddt($type(z, x)) is not of the case ARRAY, then:
+    1) Do nothing.
+  d. Else:
     1) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
     2) Let (mut, zt) be arraytype_0.
     3) If ((j + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
       a) Trap.
-  d. If (n is 0), then:
+  e. If (n is 0), then:
     1) Do nothing.
-  e. Else:
+  f. Else:
     1) Let (REF.ARRAY_ADDR a) be instr_u0.
-    2) Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
-    3) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-    4) Let (mut, zt) be arraytype_0.
-    5) Let c be $zbytes__1^-1(zt, $data(z, y).BYTES[j : ($zsize(zt) / 8)]).
-    6) Push the value (REF.ARRAY_ADDR a) to the stack.
-    7) Push the value (I32.CONST i) to the stack.
-    8) Push the value $const($cunpack(zt), $cunpacknum_(zt, c)) to the stack.
-    9) Execute the instruction (ARRAY.SET x).
-    10) Push the value (REF.ARRAY_ADDR a) to the stack.
-    11) Push the value (I32.CONST (i + 1)) to the stack.
-    12) Push the value (I32.CONST (j + ($zsize(zt) / 8))) to the stack.
-    13) Push the value (I32.CONST (n - 1)) to the stack.
-    14) Execute the instruction (ARRAY.INIT_DATA x y).
+    2) If $expanddt($type(z, x)) is of the case ARRAY, then:
+      a) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+      b) Let (mut, zt) be arraytype_0.
+      c) Let c be $zbytes__1^-1(zt, $data(z, y).BYTES[j : ($zsize(zt) / 8)]).
+      d) Push the value (REF.ARRAY_ADDR a) to the stack.
+      e) Push the value (I32.CONST i) to the stack.
+      f) Push the value $const($cunpack(zt), $cunpacknum_(zt, c)) to the stack.
+      g) Execute the instruction (ARRAY.SET x).
+      h) Push the value (REF.ARRAY_ADDR a) to the stack.
+      i) Push the value (I32.CONST (i + 1)) to the stack.
+      j) Push the value (I32.CONST (j + ($zsize(zt) / 8))) to the stack.
+      k) Push the value (I32.CONST (n - 1)) to the stack.
+      l) Execute the instruction (ARRAY.INIT_DATA x y).
 
 Step_read/local.get x
 1. Let z be the current state.
@@ -26054,12 +27179,12 @@ Step_read/vload V128 vloadop__u0? x ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
-4. If vloadop__u0? is not defined, then:
-  a. If (((i + ao.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|), then:
-    1) Trap.
-  b. Let c be $vbytes__1^-1(V128, $mem(z, x).BYTES[(i + ao.OFFSET) : ($vsize(V128) / 8)]).
-  c. Push the value (V128.CONST c) to the stack.
-5. Else:
+4. If ((((i + ao.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|) and vloadop__u0? is not defined), then:
+  a. Trap.
+5. If vloadop__u0? is not defined, then:
+  a. Let c be $vbytes__1^-1(V128, $mem(z, x).BYTES[(i + ao.OFFSET) : ($vsize(V128) / 8)]).
+  b. Push the value (V128.CONST c) to the stack.
+6. Else:
   a. Let ?(vloadop__0) be vloadop__u0?.
   b. If vloadop__0 is of the case SHAPE, then:
     1) Let (SHAPE M X K sx) be vloadop__0.
@@ -26184,8 +27309,20 @@ Step_read/memory.init x y
   f. Push the value (I32.CONST (n - 1)) to the stack.
   g. Execute the instruction (MEMORY.INIT x y).
 
-Step/ctxt
-1. YetI: TODO: It is likely that the value stack of two rules are different.
+Step/throw x
+1. Let z be the current state.
+2. Assert: Due to validation, (x < |$tagaddr(z)|).
+3. Let a be |$exninst(z)|.
+4. Assert: Due to validation, $expanddt($tag(z, x).TYPE) is of the case FUNC.
+5. Let (FUNC functype_0) be $expanddt($tag(z, x).TYPE).
+6. Let (t^n -> valtype_1) be functype_0.
+7. Assert: Due to validation, (valtype_1 is []).
+8. Assert: Due to validation, there are at least n values on the top of the stack.
+9. Pop the values val^n from the stack.
+10. Let exn be { TAG: $tagaddr(z)[x]; FIELDS: val^n; }.
+11. Perform $add_exninst(z, [exn]).
+12. Push the value (REF.EXN_ADDR a) to the stack.
+13. Execute the instruction THROW_REF.
 
 Step/struct.new x
 1. Let z be the current state.
@@ -26285,25 +27422,26 @@ Step/elem.drop x
 1. Let z be the current state.
 2. Perform $with_elem(z, x, []).
 
-Step/store nt sz_u1? x ao
+Step/store nt sz_u0? x ao
 1. Let z be the current state.
-2. Assert: Due to validation, a value of value type numtype_u0 is on the top of the stack.
-3. Pop the value (numtype_u0.CONST c) from the stack.
+2. Assert: Due to validation, a value of value type numtype_u1 is on the top of the stack.
+3. Pop the value (numtype_u1.CONST c) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
-6. If ((numtype_u0 is nt) and sz_u1? is not defined), then:
-  a. If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|), then:
+6. If (numtype_u1 is nt), then:
+  a. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|) and sz_u0? is not defined), then:
     1) Trap.
-  b. Let b* be $nbytes_(nt, c).
-  c. Perform $with_mem(z, x, (i + ao.OFFSET), ($size(nt) / 8), b*).
-7. If the type of numtype_u0 is Inn, then:
-  a. If sz_u1? is defined, then:
-    1) Let ?(n) be sz_u1?.
+  b. If sz_u0? is not defined, then:
+    1) Let b* be $nbytes_(nt, c).
+    2) Perform $with_mem(z, x, (i + ao.OFFSET), ($size(nt) / 8), b*).
+7. If the type of numtype_u1 is Inn, then:
+  a. If sz_u0? is defined, then:
+    1) Let ?(n) be sz_u0?.
     2) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
       a) Trap.
-  b. Let Inn be numtype_u0.
-  c. If sz_u1? is defined, then:
-    1) Let ?(n) be sz_u1?.
+  b. Let Inn be numtype_u1.
+  c. If sz_u0? is defined, then:
+    1) Let ?(n) be sz_u0?.
     2) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
     3) Perform $with_mem(z, x, (i + ao.OFFSET), (n / 8), b*).
 

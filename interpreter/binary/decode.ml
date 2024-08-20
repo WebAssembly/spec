@@ -146,6 +146,9 @@ let sized f s =
 
 open Types
 
+let zero s = expect 0x00 s "zero byte expected"
+let var s = u32 s
+
 let mutability s =
   match byte s with
   | 0 -> Cons
@@ -177,6 +180,7 @@ let heap_type s =
     (fun s -> VarHT (var_type s33 s));
     (fun s ->
       match s7 s with
+      | -0x0c -> NoExnHT
       | -0x0d -> NoFuncHT
       | -0x0e -> NoExternHT
       | -0x0f -> NoneHT
@@ -187,6 +191,7 @@ let heap_type s =
       | -0x14 -> I31HT
       | -0x15 -> StructHT
       | -0x16 -> ArrayHT
+      | -0x17 -> ExnHT
       | _ -> error s pos "malformed heap type"
     )
   ] s
@@ -194,6 +199,7 @@ let heap_type s =
 let ref_type s =
   let pos = pos s in
   match s7 s with
+  | -0x0c -> (Null, NoExnHT)
   | -0x0d -> (Null, NoFuncHT)
   | -0x0e -> (Null, NoExternHT)
   | -0x0f -> (Null, NoneHT)
@@ -204,6 +210,7 @@ let ref_type s =
   | -0x14 -> (Null, I31HT)
   | -0x15 -> (Null, StructHT)
   | -0x16 -> (Null, ArrayHT)
+  | -0x17 -> (Null, ExnHT)
   | -0x1c -> (NoNull, heap_type s)
   | -0x1d -> (Null, heap_type s)
   | _ -> error s pos "malformed reference type"
@@ -291,17 +298,17 @@ let global_type s =
   let mut = mutability s in
   GlobalT (mut, t)
 
+let tag_type s =
+  zero s; at var s
+
 
 (* Instructions *)
 
 open Ast
 open Operators
 
-let var s = u32 s
-
 let op s = byte s
 let end_ s = expect 0x0b s "END opcode expected"
-let zero s = expect 0x00 s "zero byte expected"
 
 let memop s =
   let pos = pos s in
@@ -365,7 +372,10 @@ let rec instr s =
     end
 
   | 0x05 -> error s pos "misplaced ELSE opcode"
-  | 0x06| 0x07 | 0x08 | 0x09 | 0x0a as b -> illegal s pos b
+  | 0x06 | 0x07 as b -> illegal s pos b
+  | 0x08 -> throw (at var s)
+  | 0x09 as b -> illegal s pos b
+  | 0x0a -> throw_ref
   | 0x0b -> error s pos "misplaced END opcode"
 
   | 0x0c -> br (at var s)
@@ -396,7 +406,14 @@ let rec instr s =
   | 0x1b -> select None
   | 0x1c -> select (Some (vec val_type s))
 
-  | 0x1d | 0x1e | 0x1f as b -> illegal s pos b
+  | 0x1d | 0x1e as b -> illegal s pos b
+
+  | 0x1f ->
+    let bt = block_type s in
+    let cs = vec (at catch) s in
+    let es = instr_block s in
+    end_ s;
+    try_table bt cs es
 
   | 0x20 -> local_get (at var s)
   | 0x21 -> local_set (at var s)
@@ -961,6 +978,20 @@ and instr_block' s es =
     let e' = instr s in
     instr_block' s ((e' @@ region s pos pos) :: es)
 
+and catch s =
+  match byte s with
+  | 0x00 ->
+    let x1 = at var s in
+    let x2 = at var s in
+    Operators.catch x1 x2
+  | 0x01 ->
+    let x1 = at var s in
+    let x2 = at var s in
+    catch_ref x1 x2
+  | 0x02 -> catch_all (at var s)
+  | 0x03 -> catch_all_ref (at var s)
+  | _ -> error s (pos s - 1) "malformed catch clause"
+
 let const s =
   let c = at instr_block s in
   end_ s;
@@ -986,6 +1017,7 @@ let id s =
     | 10 -> Custom.Code
     | 11 -> Custom.Data
     | 12 -> Custom.DataCount
+    | 13 -> Custom.Tag
     | _ -> error s (pos s) "malformed section id"
     ) bo
 
@@ -1014,6 +1046,7 @@ let import_desc s =
   | 0x01 -> TableImport (table_type s)
   | 0x02 -> MemoryImport (memory_type s)
   | 0x03 -> GlobalImport (global_type s)
+  | 0x04 -> TagImport (tag_type s)
   | _ -> error s (pos s - 1) "malformed import kind"
 
 let import s =
@@ -1064,6 +1097,16 @@ let memory_section s =
   section Custom.Memory (vec (at memory)) [] s
 
 
+(* Tag section *)
+
+let tag s =
+  let tgtype = tag_type s in
+  {tgtype}
+
+let tag_section s =
+  section Custom.Tag (vec (at tag)) [] s
+
+
 (* Global section *)
 
 let global s =
@@ -1083,6 +1126,7 @@ let export_desc s =
   | 0x01 -> TableExport (at var s)
   | 0x02 -> MemoryExport (at var s)
   | 0x03 -> GlobalExport (at var s)
+  | 0x04 -> TagExport (at var s)
   | _ -> error s (pos s - 1) "malformed export kind"
 
 let export s =
@@ -1261,6 +1305,8 @@ let module_ s =
   let customs = customs @ iterate (custom_section (After Table)) s in
   let memories = memory_section s in
   let customs = customs @ iterate (custom_section (After Memory)) s in
+  let tags = tag_section s in
+  let customs = customs @ iterate (custom_section (After Tag)) s in
   let globals = global_section s in
   let customs = customs @ iterate (custom_section (After Global)) s in
   let exports = export_section s in
@@ -1287,7 +1333,8 @@ let module_ s =
     List.map2 Source.(fun t f -> {f.it with ftype = t} @@ f.at)
       func_types func_bodies
   in
-  {types; tables; memories; globals; funcs; imports; exports; elems; datas; start},
+  { types; tables; memories; tags; globals; funcs;
+    imports; exports; elems; datas; start },
   customs
 
 

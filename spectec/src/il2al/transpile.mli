@@ -1,5 +1,6 @@
 open Al.Ast
 
+val insert_nop : instr list -> instr list
 val merge_blocks : instr list list -> instr list
 val push_either :instr -> instr list
 val simplify_record_concat : expr -> expr

@@ -202,7 +202,8 @@ and string_of_prem prem =
   | RulePr (id, mixop, e) ->
     id.it ^ ": " ^ string_of_mixop mixop ^ string_of_exp_args e
   | IfPr e -> "if " ^ string_of_exp e
-  | LetPr (e1, e2, _ids) -> "where " ^ string_of_exp e1 ^ " = " ^ string_of_exp e2
+  | LetPr (e1, e2, xs) ->
+    "where " ^ string_of_exp e1 ^ " = " ^ string_of_exp e2 ^ " {" ^ (String.concat ", " xs) ^ "}"
   | ElsePr -> "otherwise"
   | IterPr ({it = IterPr _; _} as prem', iter) ->
     string_of_prem prem' ^ string_of_iterexp iter

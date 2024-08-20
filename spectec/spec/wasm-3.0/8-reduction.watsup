@@ -88,13 +88,16 @@ rule Step_pure/label-vals:
 ;; Branch instructions
 
 ;; TODO(4, rossberg): may want a label context instead of bubbling up
-rule Step_pure/br-zero:
+rule Step_pure/br-label-zero:
   (LABEL_ n `{instr'*} val'* val^n (BR l) instr*)  ~>  val^n instr'*
   -- if l = 0
 
-rule Step_pure/br-succ:
+rule Step_pure/br-label-succ:
   (LABEL_ n `{instr'*} val* (BR l) instr*)  ~>  val* (BR $(l - 1))
   -- if l > 0
+
+rule Step_pure/br-handler:
+  (HANDLER_ n `{catch*} val* (BR l) instr*)  ~>  val* (BR l)
 
 
 rule Step_pure/br_if-true:
@@ -205,6 +208,63 @@ rule Step_pure/return-frame:
 
 rule Step_pure/return-label:
   (LABEL_ n `{instr'*} val* RETURN instr*)  ~>  val* RETURN
+
+rule Step_pure/return-handler:
+  (HANDLER_ n `{catch*} val* RETURN instr*)  ~>  val* RETURN
+
+
+;; Exceptions
+
+rule Step/throw:
+  ;; TODO: Appropriate variable name for execption instance `exn`
+  z; val^n (THROW x)  ~>  $add_exninst(z, exn); (REF.EXN_ADDR a) THROW_REF
+  -- Expand: $tag(z, x).TYPE ~~ FUNC (t^n -> eps)
+  -- if a = |$exninst(z)|
+  -- if exn = {TAG $tagaddr(z)[x], FIELDS val^n}
+
+rule Step_read/throw_ref-null:
+  z; (REF.NULL ht) THROW_REF  ~>  TRAP
+
+rule Step_read/throw_ref-vals:
+  z; val* (REF.EXN_ADDR a) THROW_REF instr*  ~>  (REF.EXN_ADDR a) THROW_REF
+  -- if val* =/= eps \/ instr* =/= eps
+
+rule Step_read/throw_ref-label:
+  z; (LABEL_ n `{instr'*} (REF.EXN_ADDR a) THROW_REF)  ~>  (REF.EXN_ADDR a) THROW_REF
+
+rule Step_read/throw_ref-frame:
+  z; (FRAME_ n `{f} (REF.EXN_ADDR a) THROW_REF)  ~>  (REF.EXN_ADDR a) THROW_REF
+
+rule Step_read/throw_ref-handler-empty:
+  z; (HANDLER_ n `{eps} (REF.EXN_ADDR a) THROW_REF)  ~>  (REF.EXN_ADDR a) THROW_REF
+
+rule Step_read/throw_ref-handler-catch:
+  z; (HANDLER_ n `{(CATCH x l) catch'*} (REF.EXN_ADDR a) THROW_REF)  ~>  val* (BR l)
+  -- if $exninst(z)[a].TAG = $tagaddr(z)[x]
+  -- if val* = $exninst(z)[a].FIELDS  ;; TODO(rossberg, 3): inline
+
+rule Step_read/throw_ref-handler-catch_ref:
+  z; (HANDLER_ n `{(CATCH_REF x l) catch'*} (REF.EXN_ADDR a) THROW_REF)  ~>  val* (REF.EXN_ADDR a) (BR l)
+  -- if $exninst(z)[a].TAG = $tagaddr(z)[x]
+  -- if val* = $exninst(z)[a].FIELDS  ;; TODO(rossberg, 3): inline
+
+rule Step_read/throw_ref-handler-catch_all:
+  z; (HANDLER_ n `{(CATCH_ALL l) catch'*} (REF.EXN_ADDR a) THROW_REF)  ~>  (BR l)
+
+rule Step_read/throw_ref-handler-catch_all_ref:
+  z; (HANDLER_ n `{(CATCH_ALL_REF l) catch'*} (REF.EXN_ADDR a) THROW_REF)  ~>  (REF.EXN_ADDR a) (BR l)
+
+rule Step_read/throw_ref-handler-next:
+  z; (HANDLER_ n `{catch catch'*} (REF.EXN_ADDR a) THROW_REF)  ~>  (HANDLER_ n `{catch'*} (REF.EXN_ADDR a) THROW_REF)
+  -- otherwise
+
+rule Step_read/try_table:
+  z; val^m (TRY_TABLE bt catch* instr*)  ~>  (HANDLER_ n `{catch*} (LABEL_ n `{eps} val^m instr*))
+  -- if $blocktype_(z, bt) = t_1^m -> t_2^n
+
+
+rule Step_pure/handler-vals:
+  (HANDLER_ n `{catch*} val*)  ~>  val*
 
 
 ;; Traps

@@ -184,7 +184,7 @@ and prem = prem' phrase
 and prem' =
   | RulePr of id * mixop * exp                        (* premise *)
   | IfPr of exp                                       (* side condition *)
-  | LetPr of exp * exp * id list                      (* assignment *)
+  | LetPr of exp * exp * string list                  (* binding *)
   | ElsePr                                            (* otherwise *)
   | IterPr of prem * iterexp                          (* iteration *)
 

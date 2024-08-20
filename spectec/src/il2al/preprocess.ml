@@ -60,6 +60,35 @@ let remove_or def =
     DecD (id, params, typ, List.concat_map remove_or_clause clauses) $ def.at
   | _ -> def
 
+(* HARDCODE: Remove a reduction rule for the block context, specifically, for THROW_REF *)
+let is_block_context_exp e =
+  match e.it with
+  (* instr* =/= [] *)
+  | CmpE (NeOp, e1, e2) ->
+    begin match e1.it, e2.it with
+    | IterE (var, (List, _)), ListE []
+    | ListE [], IterE (var, (List, _)) ->
+      begin match var.it with
+      | VarE id -> id.it = "instr"
+      | _ -> false
+      end
+    | _ -> false
+    end
+  | _ -> false
+let is_block_context_prem prem =
+  match prem.it with
+  | IfPr e -> is_block_context_exp e
+  | _ -> false
+let is_block_context_rule rule =
+  match rule.it with
+  | RuleD (_, _, _, _, [prem]) -> is_block_context_prem prem
+  | _ -> false
+let remove_block_context def =
+  match def.it with
+  | RelD (id, mixop, typ, rules) ->
+    RelD (id, mixop, typ, Util.Lib.List.filter_not is_block_context_rule rules) $ def.at
+  | _ -> def
+
 
 (* Pre-process a premise *)
 let rec preprocess_prem prem =
@@ -128,7 +157,13 @@ let preprocess_clause (clause: clause) : clause =
   DefD (binds, args, exp, List.concat_map preprocess_prem prems) $ clause.at
 
 let rec preprocess_def (def: def) : def =
-  match (remove_or def).it with
+  let def' =
+    def
+    |> remove_or
+    |> remove_block_context
+  in
+
+  match def'.it with
   | RelD (id, mixop, typ, rules) ->
     RelD (id, mixop, typ, List.map preprocess_rule rules) $ def.at
   | DecD (id, params, typ, clauses) ->

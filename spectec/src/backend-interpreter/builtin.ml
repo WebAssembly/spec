@@ -81,6 +81,7 @@ let builtin () =
     listV zeros
     |> create_meminst (CaseV ("PAGE", [ TupV [ numV Z.one; numV (Z.of_int 2) ] ]));
   ] in
+  let tags = [] in
 
   let append kind (name, inst) extern =
 
@@ -94,7 +95,7 @@ let builtin () =
       | _ -> assert false
     in
     let new_extern =
-      StrV [ "NAME", ref (TextV name); "VALUE", ref (CaseV (kind, [ numV addr ])) ]
+      StrV [ "NAME", ref (TextV name); "ADDR", ref (CaseV (kind, [ numV addr ])) ]
     in
 
     (* Update Store *)
@@ -110,6 +111,7 @@ let builtin () =
   let global_extern = List.fold_right (append "GLOBAL") globals in
   let table_extern = List.fold_right (append "TABLE") tables in
   let memory_extern = List.fold_right (append "MEM") memories in
+  let tag_extern = List.fold_right (append "TAG") tags in
 
   let extern =
     []
@@ -117,6 +119,7 @@ let builtin () =
     |> global_extern
     |> table_extern
     |> memory_extern
+    |> tag_extern
     |> Array.of_list in
 
   let moduleinst =
@@ -125,6 +128,7 @@ let builtin () =
     |> Record.add "GLOBALS" (listV [||])
     |> Record.add "TABLES" (listV [||])
     |> Record.add "MEMS" (listV [||])
+    |> Record.add "TAGS" (listV [||])
     |> Record.add "ELEMS" (listV [||])
     |> Record.add "DATAS" (listV [||])
     |> Record.add "EXPORTS" (listV extern) in

@@ -13,7 +13,7 @@ The only exception are :ref:`structured control instructions <binary-instr-contr
    Gaps in the byte code ranges for encoding instructions are reserved for future extensions.
 
 
-.. index:: control instructions, structured control, label, block, branch, result type, value type, block type, label index, function index, type index, list, polymorphism, LEB128
+.. index:: control instructions, structured control, exception handling, label, block, branch, result type, value type, block type, label index, function index, tag index, type index, list, polymorphism, LEB128
    pair: binary format; instruction
    pair: binary format; block type
 .. _binary-instr-control:
@@ -21,7 +21,7 @@ The only exception are :ref:`structured control instructions <binary-instr-contr
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-:ref:`Control instructions <syntax-instr-control>` have varying encodings. For structured instructions, the instruction sequences forming nested blocks are terminated with explicit opcodes for ${:END} and ${:ELSE}.
+:ref:`Control instructions <syntax-instr-control>` have varying encodings. For structured instructions, the instruction sequences forming nested blocks are delimited with explicit opcodes for ${:END} and ${:ELSE}.
 
 :ref:`Block types <syntax-blocktype>` are encoded in special compressed form, by either the byte ${:0x40} indicating the empty type, as a single :ref:`value type <binary-valtype>`, or as a :ref:`type index <binary-typeidx>` encoded as a positive :ref:`signed integer <binary-sint>`.
 
@@ -41,8 +41,12 @@ Control Instructions
 .. _binary-return_call:
 .. _binary-return_call_ref:
 .. _binary-return_call_indirect:
+.. _binary-throw:
+.. _binary-throw_ref:
+.. _binary-try_table:
+.. _binary-catch:
 
-$${grammar: Bblocktype Binstr/control}
+$${grammar: Bblocktype Binstr/control Bcatch}
 
 .. note::
    The ${:ELSE} opcode ${:0x05} in the encoding of an ${:IF} instruction can be omitted if the following instruction sequence is empty.
@@ -99,7 +103,6 @@ Generic :ref:`reference instructions <syntax-instr-ref>` are represented by sing
 
 $${grammar: {Binstr/ref Binstr/struct Binstr/array Binstr/cast Binstr/extern Binstr/i31} Bcastop}
 $${syntax-ignore: castop}
-
 
 .. index:: parametric instruction, value type, polymorphism
    pair: binary format; instruction

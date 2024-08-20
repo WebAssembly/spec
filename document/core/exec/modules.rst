@@ -10,7 +10,19 @@ For modules, the execution semantics primarily defines :ref:`instantiation <exec
 Allocation
 ~~~~~~~~~~
 
-New instances of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, and :ref:`globals <syntax-globalinst>` are *allocated* in a :ref:`store <syntax-store>` ${:s}, as defined by the following auxiliary functions.
+New instances of
+:ref:`functions <syntax-funcinst>`,
+:ref:`tables <syntax-tableinst>`,
+:ref:`memories <syntax-meminst>`,
+:ref:`globals <syntax-globalinst>`,
+:ref:`tags <syntax-taginst>`,
+:ref:`element segments <syntax-eleminst>`, and
+:ref:`data segments <syntax-datainst>`,
+as well as of dynamic data types like
+:ref:`structures <syntax-structinst>`,
+:ref:`arrays <syntax-arrayinst>`, or
+:ref:`exceptions <syntax-exninst>`,
+are *allocated* in a :ref:`store <syntax-store>` ${:s}, as defined by the following auxiliary functions.
 
 
 .. index:: function, function instance, function address, module instance, function type
@@ -78,6 +90,58 @@ $${definition: alloctable}
 6. Return :math:`a`.
 
 $${definition: allocmem}
+
+
+.. index:: tag, tag instance, tag address, tag type
+.. _alloc-tag:
+
+:ref:`Tags <syntax-taginst>`
+............................
+
+1. Let :math:`\tagtype` be the :ref:`tag type <syntax-tagtype>` to allocate.
+
+2. Let :math:`a` be the first free :ref:`tag address <syntax-tagaddr>` in :math:`S`.
+
+3. Let :math:`\taginst` be the :ref:`tag instance <syntax-taginst>` :math:`\{ \HITYPE~\tagtype \}`.
+
+4. Append :math:`\taginst` to the |STAGS| of :math:`S`.
+
+5. Return :math:`a`.
+
+.. math::
+   \begin{array}{rlll}
+   \alloctag(S, \tagtype) &=& S', \tagaddr \\[1ex]
+   \mbox{where:} \hfill \\
+   \tagaddr &=& |S.\STAGS| \\
+   \taginst &=& \{\HITYPE~\tagtype\} \\
+   S' &=& S \compose \{\STAGS~\taginst\} \\
+   \end{array}
+
+
+.. index:: exception, exception instance, exception address, tag address
+.. _alloc-exception:
+
+:ref:`Exceptions <syntax-exninst>`
+..................................
+
+1. Let :math:`ta` be the :ref:`tag address <syntax-tagaddr>` associated with the exception to allocate and :math:`\EIFIELDS~\val^\ast` be the values to initialize the exception with.
+
+2. Let :math:`a` be the first free :ref:`exception address <syntax-exnaddr>` in :math:`S`.
+
+3. Let :math:`\exninst` be the :ref:`exception instance <syntax-exninst>` :math:`\{ \EITAG~ta, \EIFIELDS~\val^\ast \}`.
+
+4. Append :math:`\exninst` to the |SEXNS| of :math:`S`.
+
+5. Return :math:`a`.
+
+.. math::
+   \begin{array}{rlll}
+   \allocexn(S, \tagaddr, \val^\ast) &=& S', \exnaddr \\[1ex]
+   \mbox{where:} \hfill \\
+   \exnaddr &=& |S.\SEXNS| \\
+   \exninst &=& \{ \EITAG~\tagaddr, \EIFIELDS~\val^\ast \} \\
+   S' &=& S \compose \{\SEXNS~\exninst\} \\
+   \end{array}
 
 
 .. index:: global, global instance, global address, global type, value type, mutability, value
@@ -189,7 +253,7 @@ Growing :ref:`memories <syntax-meminst>`
 $${definition: growmem}
 
 
-.. index:: module, module instance, function instance, table instance, memory instance, global instance, export instance, function address, table address, memory address, global address, function index, table index, memory index, global index, type, function, table, memory, global, import, export, external value, external type, matching
+.. index:: module, module instance, function instance, table instance, memory instance, tag instance, global instance, export instance, function address, table address, memory address, tag address, global address, function index, table index, memory index, tag index, global index, type, function, table, memory, tag, global, import, export, external address, external type, matching
 .. _alloc-module:
 
 :ref:`Modules <syntax-moduleinst>`
@@ -197,11 +261,11 @@ $${definition: growmem}
 
 .. todo:: update prose for types
 
-The allocation function for :ref:`modules <syntax-module>` requires a suitable list of :ref:`external values <syntax-externval>` that are assumed to :ref:`match <match-externtype>` the :ref:`import <syntax-import>` list of the module,
+The allocation function for :ref:`modules <syntax-module>` requires a suitable list of :ref:`external addresses <syntax-externaddr>` that are assumed to :ref:`match <match-externtype>` the :ref:`import <syntax-import>` list of the module,
 a list of initialization :ref:`values <syntax-val>` for the module's :ref:`globals <syntax-global>`,
 and list of :ref:`reference <syntax-ref>` lists for the module's :ref:`element segments <syntax-elem>`.
 
-1. Let :math:`\module` be the :ref:`module <syntax-module>` to allocate and :math:`\externval_{\F{im}}^\ast` the list of :ref:`external values <syntax-externval>` providing the module's imports, :math:`\val_{\F{g}}^\ast` the initialization :ref:`values <syntax-val>` of the module's :ref:`globals <syntax-global>`, :math:`\reff_{\F{t}}^\ast` the initializer :ref:`reference <syntax-ref>` of the module's :ref:`tables <syntax-table>`, and :math:`(\reff_{\F{e}}^\ast)^\ast` the :ref:`reference <syntax-ref>` lists of the module's :ref:`element segments <syntax-elem>`.
+1. Let :math:`\module` be the :ref:`module <syntax-module>` to allocate and :math:`\externaddr_{\F{im}}^\ast` the list of :ref:`external addresses <syntax-externaddr>` providing the module's imports, :math:`\val_{\F{g}}^\ast` the initialization :ref:`values <syntax-val>` of the module's :ref:`globals <syntax-global>`, :math:`\reff_{\F{t}}^\ast` the initializer :ref:`reference <syntax-ref>` of the module's :ref:`tables <syntax-table>`, and :math:`(\reff_{\F{e}}^\ast)^\ast` the :ref:`reference <syntax-ref>` lists of the module's :ref:`element segments <syntax-elem>`.
 
 2. For each :ref:`defined type <syntax-deftype>` :math:`\deftype'_i` in :math:`\module.\MTYPES`, do:
 
@@ -229,56 +293,68 @@ and list of :ref:`reference <syntax-ref>` lists for the module's :ref:`element s
 
    b. Let :math:`\globaladdr_i` be the :ref:`global address <syntax-globaladdr>` resulting from :ref:`allocating <alloc-global>` :math:`\globaltype_i` with initializer value :math:`\val_{\F{g}}^\ast[i]`.
 
-7. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEMS`, do:
+7. For each :ref:`tag <syntax-tag>` :math:`\tag_i` in :math:`\module.\MTAGS`, do:
+
+   a. Let :math:`\tagtype` be the :ref:`tag type <syntax-tagtype>` :math:`\module.\MTYPES[\tag_i.\TAGTYPE]`.
+
+   b. Let :math:`\tagaddr_i` be the :ref:`tag address <syntax-tagaddr>` resulting from :ref:`allocating <alloc-tag>` :math:`\tagtype`.
+
+8. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEMS`, do:
 
    a. Let :math:`\reftype_i` be the element :ref:`reference type <syntax-reftype>` obtained by `instantiating <type-inst>` :math:`\elem_i.\ETYPE` in :math:`\moduleinst` defined below.
 
    b. Let :math:`\elemaddr_i` be the :ref:`element address <syntax-elemaddr>` resulting from :ref:`allocating <alloc-elem>` a :ref:`element instance <syntax-eleminst>` of :ref:`reference type <syntax-reftype>` :math:`\reftype_i` with contents :math:`(\reff_{\F{e}}^\ast)^\ast[i]`.
 
-8. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATAS`, do:
+
+9. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATAS`, do:
 
    a. Let :math:`\dataaddr_i` be the :ref:`data address <syntax-dataaddr>` resulting from :ref:`allocating <alloc-data>` a :ref:`data instance <syntax-datainst>` with contents :math:`\data_i.\DINIT`.
 
-9. Let :math:`\deftype^\ast` be the concatenation of the :ref:`defined types <syntax-deftype>` :math:`\deftype_i` in index order.
+10. Let :math:`\deftype^\ast` be the concatenation of the :ref:`defined types <syntax-deftype>` :math:`\deftype_i` in index order.
 
-10. Let :math:`\funcaddr^\ast` be the concatenation of the :ref:`function addresses <syntax-funcaddr>` :math:`\funcaddr_i` in index order.
+11. Let :math:`\funcaddr^\ast` be the concatenation of the :ref:`function addresses <syntax-funcaddr>` :math:`\funcaddr_i` in index order.
 
-11. Let :math:`\tableaddr^\ast` be the concatenation of the :ref:`table addresses <syntax-tableaddr>` :math:`\tableaddr_i` in index order.
+12. Let :math:`\tableaddr^\ast` be the concatenation of the :ref:`table addresses <syntax-tableaddr>` :math:`\tableaddr_i` in index order.
 
-12. Let :math:`\memaddr^\ast` be the concatenation of the :ref:`memory addresses <syntax-memaddr>` :math:`\memaddr_i` in index order.
+13. Let :math:`\memaddr^\ast` be the concatenation of the :ref:`memory addresses <syntax-memaddr>` :math:`\memaddr_i` in index order.
 
-13. Let :math:`\globaladdr^\ast` be the concatenation of the :ref:`global addresses <syntax-globaladdr>` :math:`\globaladdr_i` in index order.
+14. Let :math:`\globaladdr^\ast` be the concatenation of the :ref:`global addresses <syntax-globaladdr>` :math:`\globaladdr_i` in index order.
 
-14. Let :math:`\elemaddr^\ast` be the concatenation of the :ref:`element addresses <syntax-elemaddr>` :math:`\elemaddr_i` in index order.
+15. Let :math:`\tagaddr^\ast` be the concatenation of the :ref:`tag addresses <syntax-tagaddr>` :math:`\tagaddr_i` in index order.
 
-15. Let :math:`\dataaddr^\ast` be the concatenation of the :ref:`data addresses <syntax-dataaddr>` :math:`\dataaddr_i` in index order.
+16. Let :math:`\elemaddr^\ast` be the concatenation of the :ref:`element addresses <syntax-elemaddr>` :math:`\elemaddr_i` in index order.
 
-16. Let :math:`\funcaddr_{\F{mod}}^\ast` be the list of :ref:`function addresses <syntax-funcaddr>` extracted from :math:`\externval_{\F{im}}^\ast`, concatenated with :math:`\funcaddr^\ast`.
+17. Let :math:`\dataaddr^\ast` be the concatenation of the :ref:`data addresses <syntax-dataaddr>` :math:`\dataaddr_i` in index order.
 
-17. Let :math:`\tableaddr_{\F{mod}}^\ast` be the list of :ref:`table addresses <syntax-tableaddr>` extracted from :math:`\externval_{\F{im}}^\ast`, concatenated with :math:`\tableaddr^\ast`.
+18. Let :math:`\funcaddr_{\F{mod}}^\ast` be the list of :ref:`function addresses <syntax-funcaddr>` extracted from :math:`\externaddr_{\F{im}}^\ast`, concatenated with :math:`\funcaddr^\ast`.
 
-18. Let :math:`\memaddr_{\F{mod}}^\ast` be the list of :ref:`memory addresses <syntax-memaddr>` extracted from :math:`\externval_{\F{im}}^\ast`, concatenated with :math:`\memaddr^\ast`.
+19. Let :math:`\tableaddr_{\F{mod}}^\ast` be the list of :ref:`table addresses <syntax-tableaddr>` extracted from :math:`\externaddr_{\F{im}}^\ast`, concatenated with :math:`\tableaddr^\ast`.
 
-19. Let :math:`\globaladdr_{\F{mod}}^\ast` be the list of :ref:`global addresses <syntax-globaladdr>` extracted from :math:`\externval_{\F{im}}^\ast`, concatenated with :math:`\globaladdr^\ast`.
+20. Let :math:`\memaddr_{\F{mod}}^\ast` be the list of :ref:`memory addresses <syntax-memaddr>` extracted from :math:`\externaddr_{\F{im}}^\ast`, concatenated with :math:`\memaddr^\ast`.
 
-20. For each :ref:`export <syntax-export>` :math:`\export_i` in :math:`\module.\MEXPORTS`, do:
+21. Let :math:`\globaladdr_{\F{mod}}^\ast` be the list of :ref:`global addresses <syntax-globaladdr>` extracted from :math:`\externaddr_{\F{im}}^\ast`, concatenated with :math:`\globaladdr^\ast`.
 
-    a. If :math:`\export_i` is a function export for :ref:`function index <syntax-funcidx>` :math:`x`, then let :math:`\externval_i` be the :ref:`external value <syntax-externval>` :math:`\EVFUNC~(\funcaddr_{\F{mod}}^\ast[x])`.
+22. Let :math:`\tagaddr_{\F{mod}}^\ast` be the list of :ref:`tag addresses <syntax-tagaddr>` extracted from :math:`\externaddr_{\F{im}}^\ast`, concatenated with :math:`\tagaddr^\ast`.
 
-    b. Else, if :math:`\export_i` is a table export for :ref:`table index <syntax-tableidx>` :math:`x`, then let :math:`\externval_i` be the :ref:`external value <syntax-externval>` :math:`\EVTABLE~(\tableaddr_{\F{mod}}^\ast[x])`.
+23. For each :ref:`export <syntax-export>` :math:`\export_i` in :math:`\module.\MEXPORTS`, do:
 
-    c. Else, if :math:`\export_i` is a memory export for :ref:`memory index <syntax-memidx>` :math:`x`, then let :math:`\externval_i` be the :ref:`external value <syntax-externval>` :math:`\EVMEM~(\memaddr_{\F{mod}}^\ast[x])`.
+    a. If :math:`\export_i` is a function export for :ref:`function index <syntax-funcidx>` :math:`x`, then let :math:`\externaddr_i` be the :ref:`external address <syntax-externaddr>` :math:`\XAFUNC~(\funcaddr_{\F{mod}}^\ast[x])`.
 
-    d. Else, if :math:`\export_i` is a global export for :ref:`global index <syntax-globalidx>` :math:`x`, then let :math:`\externval_i` be the :ref:`external value <syntax-externval>` :math:`\EVGLOBAL~(\globaladdr_{\F{mod}}^\ast[x])`.
+    b. Else, if :math:`\export_i` is a table export for :ref:`table index <syntax-tableidx>` :math:`x`, then let :math:`\externaddr_i` be the :ref:`external address <syntax-externaddr>` :math:`\XATABLE~(\tableaddr_{\F{mod}}^\ast[x])`.
 
-    e. Let :math:`\exportinst_i` be the :ref:`export instance <syntax-exportinst>` :math:`\{\EINAME~(\export_i.\ENAME), \EIVALUE~\externval_i\}`.
+    c. Else, if :math:`\export_i` is a memory export for :ref:`memory index <syntax-memidx>` :math:`x`, then let :math:`\externaddr_i` be the :ref:`external address <syntax-externaddr>` :math:`\XAMEM~(\memaddr_{\F{mod}}^\ast[x])`.
 
-21. Let :math:`\exportinst^\ast` be the concatenation of the :ref:`export instances <syntax-exportinst>` :math:`\exportinst_i` in index order.
+    d. Else, if :math:`\export_i` is a global export for :ref:`global index <syntax-globalidx>` :math:`x`, then let :math:`\externaddr_i` be the :ref:`external address <syntax-externaddr>` :math:`\XAGLOBAL~(\globaladdr_{\F{mod}}^\ast[x])`.
 
-22. Let :math:`\moduleinst` be the :ref:`module instance <syntax-moduleinst>` :math:`\{\MITYPES~\deftype^\ast,` :math:`\MIFUNCS~\funcaddr_{\F{mod}}^\ast,` :math:`\MITABLES~\tableaddr_{\F{mod}}^\ast,` :math:`\MIMEMS~\memaddr_{\F{mod}}^\ast,` :math:`\MIGLOBALS~\globaladdr_{\F{mod}}^\ast,` :math:`\MIEXPORTS~\exportinst^\ast\}`.
+    e. Else, if :math:`\export_i` is a tag export for :ref:`tag index <syntax-tagidx>` :math:`x`, then let :math:`\externaddr_i` be the :ref:`external address <syntax-externaddr>` :math:`\XATAG~(\tagaddr_{\F{mod}}^\ast[x])`.
 
-23. Return :math:`\moduleinst`.
+    f. Let :math:`\exportinst_i` be the :ref:`export instance <syntax-exportinst>` :math:`\{\XINAME~(\export_i.\XNAME), \XIADDR~\externaddr_i\}`.
 
+24. Let :math:`\exportinst^\ast` be the concatenation of the :ref:`export instances <syntax-exportinst>` :math:`\exportinst_i` in index order.
+
+25. Let :math:`\moduleinst` be the :ref:`module instance <syntax-moduleinst>` :math:`\{\MITYPES~\deftype^\ast,` :math:`\MIFUNCS~\funcaddr_{\F{mod}}^\ast,` :math:`\MITABLES~\tableaddr_{\F{mod}}^\ast,` :math:`\MIMEMS~\memaddr_{\F{mod}}^\ast,` :math:`\MIGLOBALS~\globaladdr_{\F{mod}}^\ast,` :math:`\MITAGS~\tagaddr_{\F{mod}}^\ast`, :math:`\MIEXPORTS~\exportinst^\ast\}`.
+
+26. Return :math:`\moduleinst`.
 
 $${definition: allocmodule}
 
@@ -305,18 +381,18 @@ $${definition: {allocexports allocexport}}
 
 
 
-.. index:: ! instantiation, module, instance, store, trap
+.. index:: ! instantiation, module, instance, store, trap, exception
 .. _exec-module:
 .. _exec-instantiation:
 
 Instantiation
 ~~~~~~~~~~~~~
 
-Given a :ref:`store <syntax-store>` ${:s}, a ${:module} is instantiated with a list of :ref:`external values <syntax-externval>` ${:externval*} supplying the required imports as follows.
+Given a :ref:`store <syntax-store>` ${:s}, a ${:module} is instantiated with a list of :ref:`external addresses <syntax-externaddr>` ${:externaddr*} supplying the required imports as follows.
 
 Instantiation checks that the module is :ref:`valid <valid>` and the provided imports :ref:`match <match-externtype>` the declared types,
 and may *fail* with an error otherwise.
-Instantiation can also result in a :ref:`trap <trap>` from initializing a table or memory from an active segment or from executing the start function.
+Instantiation can also result in an :ref:`exception <exception>` or :ref:`trap <trap>` when initializing a :ref:`table <syntax-table>` or :ref:`memory <syntax-mem>` from an :ref:`active segment <syntax-data>` or when executing the :ref:`start <syntax-start>` function.
 It is up to the :ref:`embedder <embedder>` to define how such conditions are reported.
 
 1. If :math:`\module` is not :ref:`valid <valid-module>`, then:
@@ -325,13 +401,13 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
 2. Assert: :math:`\module` is :ref:`valid <valid-module>` with :ref:`external types <syntax-externtype>` :math:`\externtype_{\F{im}}^m` classifying its :ref:`imports <syntax-import>`.
 
-3. If the number :math:`m` of :ref:`imports <syntax-import>` is not equal to the number :math:`n` of provided :ref:`external values <syntax-externval>`, then:
+3. If the number :math:`m` of :ref:`imports <syntax-import>` is not equal to the number :math:`n` of provided :ref:`external addresses <syntax-externaddr>`, then:
 
    a. Fail.
 
-4. For each :ref:`external value <syntax-externval>` :math:`\externval_i` in :math:`\externval^n` and :ref:`external type <syntax-externtype>` :math:`\externtype'_i` in :math:`\externtype_{\F{im}}^n`, do:
+4. For each :ref:`external address <syntax-externaddr>` :math:`\externaddr_i` in :math:`\externaddr^n` and :ref:`external type <syntax-externtype>` :math:`\externtype'_i` in :math:`\externtype_{\F{im}}^n`, do:
 
-   a. If :math:`\externval_i` is not :ref:`valid <valid-externval>` with an :ref:`external type <syntax-externtype>` :math:`\externtype_i` in store :math:`S`, then:
+   a. If :math:`\externaddr_i` is not :ref:`valid <valid-externaddr>` with an :ref:`external type <syntax-externtype>` :math:`\externtype_i` in store :math:`S`, then:
 
       i. Fail.
 
@@ -347,7 +423,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
 7. Push the frame :math:`F` to the stack.
 
-8. Let :math:`\val_{\F{g}}^\ast` be the list of :ref:`global <syntax-global>` initialization :ref:`values <syntax-val>` determined by :math:`\module` and :math:`\externval^n`. These may be calculated as follows.
+8. Let :math:`\val_{\F{g}}^\ast` be the list of :ref:`global <syntax-global>` initialization :ref:`values <syntax-val>` determined by :math:`\module` and :math:`\externaddr^n`. These may be calculated as follows.
 
    a. For each :ref:`global <syntax-global>` :math:`\global_i` in :math:`\module.\MGLOBALS`, do:
 
@@ -357,7 +433,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
    c. Let :math:`\val_{\F{g}}^\ast` be the concatenation of :math:`\val_{\F{g}i}` in index order.
 
-9. Let :math:`\reff_{\F{t}}^\ast` be the list of :ref:`table <syntax-table>` initialization :ref:`references <syntax-ref>` determined by :math:`\module` and :math:`\externval^n`. These may be calculated as follows.
+9. Let :math:`\reff_{\F{t}}^\ast` be the list of :ref:`table <syntax-table>` initialization :ref:`references <syntax-ref>` determined by :math:`\module` and :math:`\externaddr^n`. These may be calculated as follows.
 
    a. For each :ref:`table <syntax-table>` :math:`\table_i` in :math:`\module.\MTABLES`, do:
 
@@ -381,7 +457,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
     c. Let :math:`(\reff_{\F{e}}^\ast)^\ast` be the concatenation of function element lists :math:`\reff^\ast_i` in order of index :math:`i`.
 
-11. Let :math:`\moduleinst` be a new module instance :ref:`allocated <alloc-module>` from :math:`\module` in store :math:`S` with imports :math:`\externval^n`, global initializer values :math:`\val_{\F{g}}^\ast`, table initializer values :math:`\reff_{\F{t}}^\ast`, and element segment contents :math:`(\reff_{\F{e}}^\ast)^\ast`, and let :math:`S'` be the extended store produced by module allocation.
+11. Let :math:`\moduleinst` be a new module instance :ref:`allocated <alloc-module>` from :math:`\module` in store :math:`S` with imports :math:`\externaddr^n`, global initializer values :math:`\val_{\F{g}}^\ast`, table initializer values :math:`\reff_{\F{t}}^\ast`, and element segment contents :math:`(\reff_{\F{e}}^\ast)^\ast`, and let :math:`S'` be the extended store produced by module allocation.
 
 12. For each :ref:`element segment <syntax-elem>` :math:`\elem_i` in :math:`\module.\MELEMS` whose :ref:`mode <syntax-elemmode>` is of the form :math:`\EACTIVE~\{ \ETABLE~\tableidx_i, \EOFFSET~\X{einstr}^\ast_i~\END \}`, do:
 
@@ -458,7 +534,7 @@ $${definition: runelem_ rundata_}
    :ref:`Evaluation <exec-expr>` of :ref:`constant expressions <valid-constant>` does not affect the store.
 
 
-.. index:: ! invocation, module, module instance, function, export, function address, function instance, function type, value, stack, trap, store
+.. index:: ! invocation, module, module instance, function, export, function address, function instance, function type, value, stack, trap, exception, store
 .. _exec-invocation:
 
 Invocation
@@ -467,11 +543,11 @@ Invocation
 Once a :ref:`module <syntax-module>` has been :ref:`instantiated <exec-instantiation>`, any exported function can be *invoked* externally via its :ref:`function address <syntax-funcaddr>` ${:funcaddr} in the :ref:`store <syntax-store>` ${:s} and an appropriate list ${:val*} of argument :ref:`values <syntax-val>`.
 
 Invocation may *fail* with an error if the arguments do not fit the :ref:`function type <syntax-functype>`.
-Invocation can also result in a :ref:`trap <trap>`.
+Invocation can also result in an :ref:`exception <exception>` or :ref:`trap <trap>`.
 It is up to the :ref:`embedder <embedder>` to define how such conditions are reported.
 
 .. note::
-   If the :ref:`embedder <embedder>` API performs type checks itself, either statically or dynamically, before performing an invocation, then no failure other than traps can occur.
+   If the :ref:`embedder <embedder>` API performs type checks itself, either statically or dynamically, before performing an invocation, then no failure other than traps or exceptions can occur.
 
 The following steps are performed:
 

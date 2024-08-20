@@ -175,7 +175,7 @@ and prem pr =
   | IfPr e -> exp e
   | ElsePr -> ()
   | IterPr (pr1, it) -> prem pr1; iterexp it
-  | LetPr (e1, e2, xs) -> exp e1; exp e2; list varid xs
+  | LetPr (e1, e2, _) -> exp e1; exp e2
 
 and prems prs = list prem prs
 

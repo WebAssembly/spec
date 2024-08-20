@@ -548,9 +548,9 @@ and valid_prem env prem =
     valid_expmix env mixop e (mixop, t) e.at
   | IfPr e ->
     valid_exp env e (BoolT $ e.at)
-  | LetPr (e1, e2, ids) ->
+  | LetPr (e1, e2, xs) ->
     valid_exp env (CmpE (EqOp, e1, e2) $$ prem.at % (BoolT $ prem.at))  (BoolT $ prem.at);
-    let target_ids = Free.(free_list free_varid ids) in
+    let target_ids = Free.({empty with varid = Set.of_list xs}) in
     let free_ids = Free.(free_exp e1) in
     if not (Free.subset target_ids free_ids) then
       error prem.at ("target identifier(s) " ^

@@ -160,6 +160,8 @@ and al_to_heap_type: value -> heap_type = function
     | "ARRAY" -> ArrayHT
     | "FUNC" | "FUNCREF" -> FuncHT
     | "NOFUNC" -> NoFuncHT
+    | "EXN" | "EXNREF" -> ExnHT
+    | "NOEXN" -> NoExnHT
     | "EXTERN" | "EXTERNREF" -> ExternHT
     | "NOEXTERN" -> NoExternHT
     | _ -> error_value "abstract heap type" v)
@@ -211,6 +213,9 @@ let al_to_table_type: value -> table_type = function
 let al_to_memory_type: value -> memory_type = function
   | CaseV ("PAGE", [ limits ]) -> MemoryT (al_to_limits default_memory_max limits)
   | v -> error_value "memory type" v
+
+let al_to_tag_type: value -> tag_type = function
+  | dt -> TagT (al_to_def_type dt)
 
 
 (* Destruct operator *)
@@ -850,6 +855,11 @@ let al_to_memory': value -> memory' = function
   | v -> error_value "memory" v
 let al_to_memory: value -> memory = al_to_phrase al_to_memory'
 
+let al_to_tag': value -> tag' = function
+  | CaseV ("TAG", [ idx ]) -> { tgtype = al_to_idx idx }
+  | v -> error_value "tag" v
+let al_to_tag: value -> tag = al_to_phrase al_to_tag'
+
 let al_to_segment': value -> segment_mode' = function
   | CaseV ("PASSIVE", []) -> Passive
   | CaseV ("ACTIVE", [ idx; const ]) ->
@@ -899,6 +909,7 @@ let al_to_export_desc': value -> export_desc' = function
   | CaseV ("TABLE", [ idx ]) -> TableExport (al_to_idx idx)
   | CaseV ("MEM", [ idx ]) -> MemoryExport (al_to_idx idx)
   | CaseV ("GLOBAL", [ idx ]) -> GlobalExport (al_to_idx idx)
+  | CaseV ("TAG", [ idx ]) -> TagExport (al_to_idx idx)
   | v -> error_value "export desc" v
 let al_to_export_desc: value -> export_desc = al_to_phrase al_to_export_desc'
 
@@ -913,10 +924,16 @@ let al_to_export': value -> export' = function
   | v -> error_value "export" v
 let al_to_export: value -> export = al_to_phrase al_to_export'
 
-let al_to_module': value -> module_' = function
+let rec al_to_module': value -> module_' = function
   | CaseV ("MODULE", [
-    types; _imports; funcs; globals; tables; memories; elems; datas; start; exports
-  ]) ->
+      types; _imports; funcs; globals; tables; memories; elems; datas; start; exports
+    ]) when !version < 3 ->
+    al_to_module' (CaseV ("MODULE", [
+      types; _imports; funcs; globals; tables; memories; listV [||]; elems; datas; start; exports
+    ]))
+  | CaseV ("MODULE", [
+      types; _imports; funcs; globals; tables; memories; tags; elems; datas; start; exports
+    ]) ->
     {
       types = al_to_list al_to_type types;
       (* TODO: imports = al_to_list (al_to_import module_) imports;*)
@@ -925,6 +942,7 @@ let al_to_module': value -> module_' = function
       globals = al_to_list al_to_global globals;
       tables = al_to_list al_to_table tables;
       memories = al_to_list al_to_memory memories;
+      tags = al_to_list al_to_tag tags;
       elems = al_to_list al_to_elem elems;
       datas = al_to_list al_to_data datas;
       start = al_to_opt al_to_start start;
@@ -965,6 +983,21 @@ and al_to_struct: value -> Aggr.struct_ = function
       al_to_list al_to_field (Record.find "FIELDS" r)
     )
   | v -> error_value "struct" v
+
+and al_to_tag: value -> Tag.t = function
+  | StrV r when Record.mem "TYPE" r ->
+    Tag.alloc (al_to_tag_type (Record.find "TYPE" r))
+  | v -> error_value "tag" v
+
+and al_to_exn: value -> Exn.exn_ = function
+  | StrV r when Record.mem "TAG" r && Record.mem "FIELDS" r ->
+    let tag_insts = Ds.Store.access "TAGS" in
+    let tag = Record.find "TAG" r |> al_to_int |> listv_nth tag_insts |> al_to_tag in
+    Exn.Exn (
+      tag,
+      al_to_list al_to_value (Record.find "FIELDS" r)
+    )
+  | v -> error_value "exn" v
 
 and al_to_funcinst: value -> Instance.func_inst = function
   | StrV r when Record.mem "TYPE" r && Record.mem "MODULE" r && Record.mem "CODE" r ->
@@ -1295,8 +1328,8 @@ let al_of_float_relop = function
 let al_of_relop = al_of_op al_of_int_relop al_of_float_relop
 
 let al_of_int_cvtop num_bits = function
-  | IntOp.ExtendSI32 -> "I64", "EXTEND", [ nullary "S" ]
-  | IntOp.ExtendUI32 -> "I64", "EXTEND", [ nullary "U" ]
+  | IntOp.ExtendSI32 -> "I32", "EXTEND", [ nullary "S" ]
+  | IntOp.ExtendUI32 -> "I32", "EXTEND", [ nullary "U" ]
   | IntOp.WrapI64 -> "I64", "WRAP", []
   | IntOp.TruncSF32 -> "F32", "TRUNC", [ nullary "S" ]
   | IntOp.TruncUF32 -> "F32", "TRUNC", [ nullary "U" ]
@@ -1729,6 +1762,13 @@ let al_of_vlaneop idx vlaneop laneidx =
 
 (* Construct instruction *)
 
+let al_of_catch catch =
+  match catch.it with
+  | Catch (idx1, idx2) -> CaseV ("CATCH", [ al_of_idx idx1; al_of_idx idx2 ])
+  | CatchRef (idx1, idx2) -> CaseV ("CATCH_REF", [ al_of_idx idx1; al_of_idx idx2 ])
+  | CatchAll idx -> CaseV ("CATCH_ALL", [ al_of_idx idx ])
+  | CatchAllRef idx -> CaseV ("CATCH_ALL_REF", [ al_of_idx idx ])
+
 let rec al_of_instr instr =
   match instr.it with
   (* wasm values *)
@@ -1805,6 +1845,14 @@ let rec al_of_instr instr =
   | ReturnCallRef idx -> CaseV ("RETURN_CALL_REF", [ optV (Some (al_of_typeuse idx)) ])
   | ReturnCallIndirect (idx1, idx2) ->
     CaseV ("RETURN_CALL_INDIRECT", [ al_of_idx idx1; al_of_typeuse idx2 ])
+  | Throw idx -> CaseV ("THROW", [ al_of_idx idx ])
+  | ThrowRef -> nullary "THROW_REF"
+  | TryTable (bt, catches, instrs) ->
+    CaseV ("TRY_TABLE", [
+      al_of_blocktype bt;
+      al_of_list al_of_catch catches;
+      al_of_list al_of_instr instrs
+    ])
   | Load (idx, loadop) -> CaseV ("LOAD", al_of_loadop idx loadop)
   | Store (idx, storeop) -> CaseV ("STORE", al_of_storeop idx storeop)
   | VecLoad (idx, vloadop) -> CaseV ("VLOAD", al_of_vloadop idx vloadop)
@@ -1907,6 +1955,9 @@ let al_of_memory memory =
   in
   CaseV ("MEMORY", [ arg' ])
 
+let al_of_tag tag =
+  CaseV ("TAG", [ al_of_idx tag.it.tgtype ])
+
 let al_of_segment segment =
   match segment.it with
   | Passive -> nullary "PASSIVE"
@@ -1947,6 +1998,10 @@ let al_of_import_desc module_ idesc =
   | TableImport tt -> CaseV ("TABLE", [ al_of_table_type tt ])
   | MemoryImport mt -> CaseV ("MEM", [ al_of_memory_type mt ])
   | GlobalImport gt -> CaseV ("GLOBAL", [ al_of_global_type gt ])
+  | TagImport x ->
+    let dts = def_types_of module_ in
+    let dt = x.it |> Int32.to_int |> List.nth dts |> al_of_def_type in
+    CaseV ("TAG", [ dt ])
 
 let al_of_import module_ import =
   CaseV ("IMPORT", [
@@ -1960,6 +2015,7 @@ let al_of_export_desc export_desc = match export_desc.it with
   | TableExport idx -> CaseV ("TABLE", [ al_of_idx idx ])
   | MemoryExport idx -> CaseV ("MEM", [ al_of_idx idx ])
   | GlobalExport idx -> CaseV ("GLOBAL", [ al_of_idx idx ])
+  | TagExport idx -> CaseV ("TAG", [ al_of_idx idx ])
 
 let al_of_start start = CaseV ("START", [ al_of_idx start.it.sfunc ])
 
@@ -1974,6 +2030,9 @@ let al_of_module module_ =
     al_of_list al_of_global module_.it.globals;
     al_of_list al_of_table module_.it.tables;
     al_of_list al_of_memory module_.it.memories;
+  ] @
+    (if !version < 3 then [] else [al_of_list al_of_tag module_.it.tags])
+  @ [
     al_of_list al_of_elem module_.it.elems;
     al_of_list al_of_data module_.it.datas;
     al_of_opt al_of_start module_.it.start;

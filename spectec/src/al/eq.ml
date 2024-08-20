@@ -44,7 +44,7 @@ let rec eq_expr e1 e2 =
   | ChooseE e1, ChooseE e2 -> eq_expr e1 e2
   | IsCaseOfE (e1, a1), IsCaseOfE (e2, a2) -> eq_expr e1 e2 && El.Atom.eq a1 a2
   | IsValidE e1, IsValidE e2 -> eq_expr e1 e2
-  | ContextKindE (a1, e1), ContextKindE (a2, e2) -> El.Atom.eq a1 a2 && eq_expr e1 e2
+  | ContextKindE a1, ContextKindE a2 -> El.Atom.eq a1 a2
   | IsDefinedE e1, IsDefinedE e2 -> eq_expr e1 e2
   | MatchE (e11, e12), MatchE (e21, e22) -> eq_expr e11 e21 && eq_expr e12 e22
   | HasTypeE (e1, t1), HasTypeE (e2, t2) -> eq_expr e1 e2 && Il.Eq.eq_typ t1 t2

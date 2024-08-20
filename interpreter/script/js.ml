@@ -134,6 +134,11 @@ function assert_trap(action) {
   throw new Error("Wasm trap expected");
 }
 
+function assert_exception(action) {
+  try { action() } catch (e) { return; }
+  throw new Error("exception expected");
+}
+
 let StackOverflow;
 try { (function f() { 1 + f() })() } catch (e) { StackOverflow = e.constructor }
 
@@ -398,7 +403,7 @@ let assert_return ress ts at =
         BrIf (0l @@ at) @@ at ]
     | RefResult (RefPat _) ->
       assert false
-    | RefResult (RefTypePat ExternHT) ->
+    | RefResult (RefTypePat (ExnHT | ExternHT)) ->
       [ BrOnNull (0l @@ at) @@ at ]
     | RefResult (RefTypePat t) ->
       [ RefTest (NoNull, t) @@ at;
@@ -458,6 +463,7 @@ let is_js_vec_type = function
   | _ -> false
 
 let is_js_ref_type = function
+  | (_, ExnHT) -> false
   | _ -> true
 
 let is_js_val_type = function
@@ -629,6 +635,8 @@ let of_assertion mods ass =
     of_assertion' mods act "assert_trap" [] None
   | AssertExhaustion (act, _) ->
     of_assertion' mods act "assert_exhaustion" [] None
+  | AssertException act ->
+    of_assertion' mods act "assert_exception" [] None
 
 let of_command mods cmd =
   "\n// " ^ Filename.basename cmd.at.left.file ^

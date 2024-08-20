@@ -169,6 +169,10 @@ rule token = parse
       | "nofunc" -> NOFUNC
       | "funcref" -> FUNCREF
       | "nullfuncref" -> NULLFUNCREF
+      | "exn" -> EXN
+      | "noexn" -> NOEXN
+      | "exnref" -> EXNREF
+      | "nullexnref" -> NULLEXNREF
       | "extern" -> EXTERN
       | "noextern" -> NOEXTERN
       | "externref" -> EXTERNREF
@@ -208,6 +212,13 @@ rule token = parse
       | "return_call" -> RETURN_CALL
       | "return_call_ref" -> RETURN_CALL_REF
       | "return_call_indirect" -> RETURN_CALL_INDIRECT
+      | "throw" -> THROW
+      | "throw_ref" -> THROW_REF
+      | "try_table" -> TRY_TABLE
+      | "catch" -> CATCH
+      | "catch_ref" -> CATCH_REF
+      | "catch_all" -> CATCH_ALL
+      | "catch_all_ref" -> CATCH_ALL_REF
 
       | "local.get" -> LOCAL_GET
       | "local.set" -> LOCAL_SET
@@ -316,6 +327,7 @@ rule token = parse
       | "ref.func" -> REF_FUNC
       | "ref.struct" -> REF_STRUCT
       | "ref.array" -> REF_ARRAY
+      | "ref.exn" -> REF_EXN
       | "ref.extern" -> REF_EXTERN
       | "ref.host" -> REF_HOST
 
@@ -739,6 +751,7 @@ rule token = parse
       | "global" -> GLOBAL
       | "table" -> TABLE
       | "memory" -> MEMORY
+      | "tag" -> TAG
       | "elem" -> ELEM
       | "data" -> DATA
       | "declare" -> DECLARE
@@ -762,6 +775,7 @@ rule token = parse
       | "assert_unlinkable" -> ASSERT_UNLINKABLE
       | "assert_return" -> ASSERT_RETURN
       | "assert_trap" -> ASSERT_TRAP
+      | "assert_exception" -> ASSERT_EXCEPTION
       | "assert_exhaustion" -> ASSERT_EXHAUSTION
       | "nan:canonical" -> NAN Script.CanonicalNan
       | "nan:arithmetic" -> NAN Script.ArithmeticNan

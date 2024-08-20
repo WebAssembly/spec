@@ -142,7 +142,7 @@ and check_type ty v expr =
   let vnn_types = [ "V128"; ] in
   let abs_heap_types = [
     "ANY"; "EQ"; "I31"; "STRUCT"; "ARRAY"; "NONE"; "FUNC";
-    "NOFUNC"; "EXTERN"; "NOEXTERN"
+    "NOFUNC"; "EXN"; "NOEXN"; "EXTERN"; "NOEXTERN"
   ] in
   match v with
   (* addrref *)
@@ -308,6 +308,10 @@ and eval_expr env expr =
     let v2 = eval_expr env e2 in
     LabelV (v1, v2)
   | GetCurLabelE -> WasmContext.get_current_label ()
+  | GetCurContextE ->
+    (match WasmContext.get_top_context () with
+    | None -> fail_expr expr "cannot get the current context"
+    | Some ctxt -> ctxt)
   | ContE e ->
     (match eval_expr env e with
     | LabelV (_, vs) -> vs
@@ -352,6 +356,13 @@ and eval_expr env expr =
     let ctx = WasmContext.get_top_context () in
     (match ctx with
     | Some (LabelV _) -> boolV true
+    | _ -> boolV false)
+  | ContextKindE a ->
+    let ctx = WasmContext.get_top_context () in
+    (match a.it, ctx with
+    | Atom "FRAME_", Some (FrameV _) -> boolV true
+    | Atom "LABEL_", Some (LabelV _) -> boolV true
+    | Atom case, Some (CaseV (case', _)) -> boolV (case = case')
     | _ -> boolV false)
   | IsDefinedE e ->
     e
@@ -724,7 +735,6 @@ and create_context (name: string) (args: value list) : AlContext.mode =
   let algo = lookup_algo name in
   let params = params_of_algo algo in
   let body = body_of_algo algo in
-
   let params = params |> extract_expargs in
 
   if List.length args <> List.length params then (

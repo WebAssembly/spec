@@ -7,7 +7,7 @@ Type Soundness
 The :ref:`type system <type-system>` of WebAssembly is *sound*, implying both *type safety* and *memory safety* with respect to the WebAssembly semantics. For example:
 
 * All types declared and derived during validation are respected at run time;
-  e.g., every :ref:`local <syntax-local>` or :ref:`global <syntax-global>` variable will only contain type-correct values, every :ref:`instruction <syntax-instr>` will only be applied to operands of the expected type, and every :ref:`function <syntax-func>` :ref:`invocation <exec-invocation>` always evaluates to a result of the right type (if it does not :ref:`trap <trap>` or diverge).
+  e.g., every :ref:`local <syntax-local>` or :ref:`global <syntax-global>` variable will only contain type-correct values, every :ref:`instruction <syntax-instr>` will only be applied to operands of the expected type, and every :ref:`function <syntax-func>` :ref:`invocation <exec-invocation>` always evaluates to a result of the right type (if it does not diverge, throw an exception, or :ref:`trap <trap>`).
 
 * No memory location will be read or written except those explicitly defined by the program, i.e., as a :ref:`local <syntax-local>`, a :ref:`global <syntax-global>`, an element in a :ref:`table <syntax-table>`, or a location within a linear :ref:`memory <syntax-mem>`.
 
@@ -219,7 +219,7 @@ In a :ref:`rolled-up <aux-roll-rectype>` :ref:`recursive type <syntax-rectype>`,
    This rule is only invoked when checking :ref:`validity <valid-rectype-ext>` of :ref:`rolled-up <aux-roll-rectype>` :ref:`recursive types <syntax-rectype>`.
 
 
-.. index:: value, value type, result, result type, trap
+.. index:: value, value type, result, result type, trap, exception, throw
 .. _valid-result:
 
 Results
@@ -246,6 +246,23 @@ Results
    }
 
 
+:ref:`Results <syntax-result>` :math:`(\REFEXNADDR~a)~\THROWREF`
+................................................................
+
+* The value :math:`\REFEXNADDR~a` must be :ref:`valid <valid-val>`.
+
+* Then the result is valid with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`, for any :ref:`valid <valid-resulttype>` :ref:`closed <type-closed>` :ref:`result types <syntax-resulttype>`.
+
+.. math::
+   \frac{
+     S \vdashval REFEXNADDR~a : REF~EXN
+     \qquad
+     \vdashresulttype [t^\ast] : \OKresulttype
+   }{
+     S \vdashresult (\REFEXNADDR~a)~\THROWREF : [{t'}^\ast]
+   }
+
+
 :ref:`Results <syntax-result>` :math:`\TRAP`
 ............................................
 
@@ -267,14 +284,37 @@ Store Validity
 
 The following typing rules specify when a runtime :ref:`store <syntax-store>` :math:`S` is *valid*.
 A valid store must consist of
-:ref:`function <syntax-funcinst>`, :ref:`table <syntax-tableinst>`, :ref:`memory <syntax-meminst>`, :ref:`global <syntax-globalinst>`, and :ref:`module <syntax-moduleinst>` instances that are themselves valid, relative to :math:`S`.
+:ref:`function <syntax-funcinst>`,
+:ref:`table <syntax-tableinst>`,
+:ref:`memory <syntax-meminst>`,
+:ref:`global <syntax-globalinst>`,
+:ref:`tag <syntax-taginst>`,
+:ref:`element <syntax-eleminst>`,
+:ref:`data <syntax-datainst>`,
+:ref:`structure <syntax-structinst>`,
+:ref:`array <syntax-arrayinst>`,
+:ref:`exception <syntax-exninst>`,
+and
+:ref:`module <syntax-moduleinst>`
+instances that are themselves valid, relative to :math:`S`.
 
-To that end, each kind of instance is classified by a respective :ref:`function <syntax-functype>`, :ref:`table <syntax-tabletype>`, :ref:`memory <syntax-memtype>`, or :ref:`global <syntax-globaltype>` type.
+To that end, each kind of instance is classified by a respective
+:ref:`function <syntax-functype>`,
+:ref:`table <syntax-tabletype>`,
+:ref:`memory <syntax-memtype>`,
+:ref:`global <syntax-globaltype>`,
+:ref:`tag <syntax-tagtype>`,
+:ref:`element <syntax-eleminst>`, or
+:ref:`data <syntax-datainst>`
+type, or just ${:OK} in the case of
+:ref:`structures <syntax-structinst>`,
+:ref:`arrays <syntax-arrayinst>`, or
+:ref:`exceptions <syntax-exninst>`.
 Module instances are classified by *module contexts*, which are regular :ref:`contexts <context>` repurposed as module types describing the :ref:`index spaces <syntax-index>` defined by a module.
 
 
 
-.. index:: store, function instance, table instance, memory instance, structure instance, array instance, global instance, function type, table type, memory type, global type, defined type, structure type, array type
+.. index:: store, function instance, table instance, memory instance, structure instance, array instance, global instance, tag instance, function type, table type, memory type, global type, tag type, defined type, structure type, array type
 
 :ref:`Store <syntax-store>` :math:`S`
 .....................................
@@ -287,6 +327,8 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * Each :ref:`global instance <syntax-globalinst>` :math:`\globalinst_i` in :math:`S.\SGLOBALS` must be :ref:`valid <valid-globalinst>` with some  :ref:`global type <syntax-globaltype>` :math:`\globaltype_i`.
 
+* Each :ref:`tag instance <syntax-taginst>` :math:`\taginst_i` in :math:`S.\STAGS` must be :ref:`valid <valid-taginst>` with some :ref:`tag type <syntax-tagtype>` :math:`\tagtype_i`.
+
 * Each :ref:`element instance <syntax-eleminst>` :math:`\eleminst_i` in :math:`S.\SELEMS` must be :ref:`valid <valid-eleminst>` with some :ref:`reference type <syntax-reftype>` :math:`\reftype_i`.
 
 * Each :ref:`data instance <syntax-datainst>` :math:`\datainst_i` in :math:`S.\SDATAS` must be :ref:`valid <valid-datainst>`.
@@ -295,9 +337,13 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * Each :ref:`array instance <syntax-arrayinst>` :math:`\arrayinst_i` in :math:`S.\SARRAYS` must be :ref:`valid <valid-arrayinst>`.
 
-* No :ref:`reference <syntax-ref>` to a bound :ref:`structure address <syntax-structaddr>` must be reachable from itself through a path consisting only of indirections through immutable structure or array :ref:`fields <syntax-fieldtype>`.
+* Each :ref:`exception instance <syntax-exninst>` :math:`\exninst_i` in :math:`S.\SEXNS` must be :ref:`valid <valid-exninst>`.
 
-* No :ref:`reference <syntax-ref>` to a bound :ref:`array address <syntax-arrayaddr>` must be reachable from itself through a path consisting only of indirections through immutable structure or array :ref:`fields <syntax-fieldtype>`.
+* No :ref:`reference <syntax-ref>` to a bound :ref:`structure address <syntax-structaddr>` must be reachable from itself through a path consisting only of indirections through immutable structure, or array :ref:`fields <syntax-fieldtype>` or fields of :ref:`exception instances <syntax-exninst>`.
+
+* No :ref:`reference <syntax-ref>` to a bound :ref:`array address <syntax-arrayaddr>` must be reachable from itself through a path consisting only of indirections through immutable structure or array :ref:`fields <syntax-fieldtype>` or fields of :ref:`exception instances <syntax-exninst>`.
+
+* No :ref:`reference <syntax-ref>` to a bound :ref:`exception address <syntax-exnaddr>` must be reachable from itself through a path consisting only of indirections through immutable structure or array :ref:`fields <syntax-fieldtype>` or fields of :ref:`exception instances <syntax-exninst>`.
 
 * Then the store is valid.
 
@@ -313,6 +359,8 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      \qquad
      (S \vdashglobalinst \globalinst : \globaltype)^\ast
      \\
+     (S \vdashtaginst \taginst : \tagtype)^\ast
+     \\
      (S \vdasheleminst \eleminst : \reftype)^\ast
      \qquad
      (S \vdashdatainst \datainst : \OKdatainst)^\ast
@@ -320,17 +368,21 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      (S \vdashstructinst \structinst : \OKstructinst)^\ast
      \qquad
      (S \vdasharrayinst \arrayinst : \OKarrayinst)^\ast
+     \qquad
+     (S \vdashexninst \exninst : \OKexninst)^\ast
      \\
      S = \{
        \begin{array}[t]{@{}l@{}}
        \SFUNCS~\funcinst^\ast,
        \SGLOBALS~\globalinst^\ast,
        \STABLES~\tableinst^\ast,
-       \SMEMS~\meminst^\ast, \\
+       \SMEMS~\meminst^\ast,
+       \STAGS~\taginst^\ast, \\
        \SELEMS~\eleminst^\ast,
        \SDATAS~\datainst^\ast,
        \SSTRUCTS~\structinst^\ast,
-       \SARRAYS~\arrayinst^\ast \}
+       \SARRAYS~\arrayinst^\ast,
+       \SEXNS~\exninst^\ast \}
        \end{array}
      \\
      (S.\SSTRUCTS[a_{\F{s}}] = \structinst)^\ast
@@ -340,6 +392,10 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      (S.\SARRAYS[a_{\F{a}}] = \arrayinst)^\ast
      \qquad
      ((\REFARRAYADDR~a_{\F{a}}) \not\gg^+_S (\REFARRAYADDR~a_{\F{a}}))^\ast
+     \\
+     (S.\SEXNS[a_{\F{e}}] = \exninst)^\ast
+     \qquad
+     ((\REFEXNADDR~a_{\F{e}}) \not\gg^+_S (\REFEXNADDR~a_{\F{e}}))^\ast
      \end{array}
    }{
      \vdashstore S : \OKstore
@@ -347,7 +403,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 .. index:: reachability
 
-where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the following *reachability* relation on :ref:`values <syntax-val>`:
+where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the following *immutable reachability* relation on :ref:`values <syntax-val>`:
 
 .. math::
    \begin{array}{@{}lcll@{}}
@@ -355,6 +411,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
      & \iff \expanddt(S.\SSTRUCTS[a].\SITYPE) = \TSTRUCT~\X{ft}_1^i~(\MCONST~\X{st})~\X{ft}_2^\ast \\
    (\REFARRAYADDR~a) &\gg_S& S.\SARRAYS[a].\AIFIELDS[i]
      & \iff \expanddt(S.\SARRAYS[a].\AITYPE) = \TARRAY~(\MCONST~\X{st}) \\
+   (\REFEXNADDR~a) &\gg_S& S.\SEXNS[a].\EIFIELDS[i] \\
    (\REFEXTERN~\reff) &\gg_S& \reff \\
    \end{array}
 
@@ -532,6 +589,24 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
    }
 
 
+.. index:: tag type, tag instance
+.. _valid-taginst:
+
+:ref:`Tag Instances <syntax-taginst>` :math:`\{ \HITYPE~\tagtype \}`
+....................................................................
+
+* The :ref:`tag type <syntax-tagtype>` :math:`\tagtype` must be :ref:`valid <valid-tagtype>` under the empty :ref:`context <context>`.
+
+* Then the tag instance is valid with :ref:`tag type <syntax-tagtype>` :math:`\tagtype`.
+
+.. math::
+   \frac{
+     \vdashtagtype \tagtype : \OKtagtype
+   }{
+     S \vdashtaginst \{ \HITYPE~\tagtype \} : \tagtype
+   }
+
+
 .. index:: element instance, reference
 .. _valid-eleminst:
 
@@ -581,7 +656,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 :ref:`Structure Instances <syntax-structinst>` :math:`\{ \SITYPE~\deftype, \SIFIELDS~\fieldval^\ast \}`
 .......................................................................................................
 
-* The :ref:`defined type <syntax-deftype>` :math:`\deftype` must be :ref:`valid <valid-deftype>`.
+* The :ref:`defined type <syntax-deftype>` :math:`\deftype` must be :ref:`valid <valid-deftype>` under the empty :ref:`context <context>`.
 
 * The :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` must be a :ref:`structure type <syntax-structtype>` :math:`\TSTRUCT~\fieldtype^\ast`.
 
@@ -613,7 +688,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 :ref:`Array Instances <syntax-arrayinst>` :math:`\{ \AITYPE~\deftype, \AIFIELDS~\fieldval^\ast \}`
 ..................................................................................................
 
-* The :ref:`defined type <syntax-deftype>` :math:`\deftype` must be :ref:`valid <valid-deftype>`.
+* The :ref:`defined type <syntax-deftype>` :math:`\deftype` must be :ref:`valid <valid-deftype>` under the empty :ref:`context <context>`.
 
 * The :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
 
@@ -663,21 +738,49 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
    }
 
 
-.. index:: external type, export instance, name, external value
+.. index:: exception instance, tag, tag address
+.. _valid-exninst:
+
+:ref:`Exception Instances <syntax-exninst>` :math:`\{ \EITAG~a, \EIFIELDS~\val^\ast \}`
+.......................................................................................
+
+* The store entry :math:`S.\STAGS[a]` must exist.
+
+* Let :math:`[t^\ast] \toF [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`S.\STAGS[a].\HITYPE`.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[{t'}^\ast]` must be empty.
+
+* The sequence :math:`\val^ast` of :ref:`values <syntax-val>` must have the same length as the sequence :math:`t^\ast` of :ref:`value types <syntax-valtype>`.
+
+* For each value :math:`\val_i` in :math:`\val^ast` and corresponding value type :math:`t_i` in :math:`t^\ast`, the value :math:`\val_i` must be valid with type :math:`t_i`.
+
+* Then the exception instance is valid.
+
+.. math::
+   \frac{
+     S.\STAGS[a] = \{\HITYPE = [t^\ast] \toF []\}
+     \qquad
+     (S \vdashval \val : t)^\ast
+   }{
+     S \vdashexninst \{ \EITAG~a, \EIFIELDS~\val^\ast \} : \OKexninst
+   }
+
+
+.. index:: external type, export instance, name, external address
 .. _valid-exportinst:
 
-:ref:`Export Instances <syntax-exportinst>` :math:`\{ \EINAME~\name, \EIVALUE~\externval \}`
-.......................................................................................................
+:ref:`Export Instances <syntax-exportinst>` :math:`\{ \XINAME~\name, \XIADDR~\externaddr \}`
+............................................................................................
 
-* The :ref:`external value <syntax-externval>` :math:`\externval` must be :ref:`valid <valid-externval>` with some :ref:`external type <syntax-externtype>` :math:`\externtype`.
+* The :ref:`external address <syntax-externaddr>` :math:`\externaddr` must be :ref:`valid <valid-externaddr>` with some :ref:`external type <syntax-externtype>` :math:`\externtype`.
 
 * Then the export instance is valid.
 
 .. math::
    \frac{
-     S \vdashexternval \externval : \externtype
+     S \vdashexternaddr \externaddr : \externtype
    }{
-     S \vdashexportinst \{ \EINAME~\name, \EIVALUE~\externval \} : \OKexportinst
+     S \vdashexportinst \{ \XINAME~\name, \XIADDR~\externaddr \} : \OKexportinst
    }
 
 
@@ -689,13 +792,15 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 * Each :ref:`defined type <syntax-deftype>` :math:`\deftype_i` in :math:`\moduleinst.\MITYPES` must be :ref:`valid <valid-deftype>` under the empty :ref:`context <context>`.
 
-* For each :ref:`function address <syntax-funcaddr>` :math:`\funcaddr_i` in :math:`\moduleinst.\MIFUNCS`, the :ref:`external value <syntax-externval>` :math:`\EVFUNC~\funcaddr_i` must be :ref:`valid <valid-externval-func>` with some :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\functype_i`.
+* For each :ref:`function address <syntax-funcaddr>` :math:`\funcaddr_i` in :math:`\moduleinst.\MIFUNCS`, the :ref:`external address <syntax-externaddr>` :math:`\XAFUNC~\funcaddr_i` must be :ref:`valid <valid-externaddr-func>` with some :ref:`external type <syntax-externtype>` :math:`\XTFUNC~\functype_i`.
 
-* For each :ref:`table address <syntax-tableaddr>` :math:`\tableaddr_i` in :math:`\moduleinst.\MITABLES`, the :ref:`external value <syntax-externval>` :math:`\EVTABLE~\tableaddr_i` must be :ref:`valid <valid-externval-table>` with some :ref:`external type <syntax-externtype>` :math:`\ETTABLE~\tabletype_i`.
+* For each :ref:`table address <syntax-tableaddr>` :math:`\tableaddr_i` in :math:`\moduleinst.\MITABLES`, the :ref:`external address <syntax-externaddr>` :math:`\XATABLE~\tableaddr_i` must be :ref:`valid <valid-externaddr-table>` with some :ref:`external type <syntax-externtype>` :math:`\XTTABLE~\tabletype_i`.
 
-* For each :ref:`memory address <syntax-memaddr>` :math:`\memaddr_i` in :math:`\moduleinst.\MIMEMS`, the :ref:`external value <syntax-externval>` :math:`\EVMEM~\memaddr_i` must be :ref:`valid <valid-externval-mem>` with some :ref:`external type <syntax-externtype>` :math:`\ETMEM~\memtype_i`.
+* For each :ref:`memory address <syntax-memaddr>` :math:`\memaddr_i` in :math:`\moduleinst.\MIMEMS`, the :ref:`external address <syntax-externaddr>` :math:`\XAMEM~\memaddr_i` must be :ref:`valid <valid-externaddr-mem>` with some :ref:`external type <syntax-externtype>` :math:`\XTMEM~\memtype_i`.
 
-* For each :ref:`global address <syntax-globaladdr>` :math:`\globaladdr_i` in :math:`\moduleinst.\MIGLOBALS`, the :ref:`external value <syntax-externval>` :math:`\EVGLOBAL~\globaladdr_i` must be :ref:`valid <valid-externval-global>` with some :ref:`external type <syntax-externtype>` :math:`\ETGLOBAL~\globaltype_i`.
+* For each :ref:`global address <syntax-globaladdr>` :math:`\globaladdr_i` in :math:`\moduleinst.\MIGLOBALS`, the :ref:`external address <syntax-externaddr>` :math:`\XAGLOBAL~\globaladdr_i` must be :ref:`valid <valid-externaddr-global>` with some :ref:`external type <syntax-externtype>` :math:`\XTGLOBAL~\globaltype_i`.
+
+* For each :ref:`tag address <syntax-tagaddr>` :math:`\tagaddr_i` in :math:`\moduleinst.\MITAGS`, the :ref:`external address <syntax-externaddr>` :math:`\XATAG~\tagaddr_i` must be :ref:`valid <valid-externaddr-tag>` with some :ref:`external type <syntax-externtype>` :math:`\XTTAG~\tagtype_i`.
 
 * For each :ref:`element address <syntax-elemaddr>` :math:`\elemaddr_i` in :math:`\moduleinst.\MIELEMS`, the :ref:`element instance <syntax-eleminst>` :math:`S.\SELEMS[\elemaddr_i]` must be :ref:`valid <valid-eleminst>` with some :ref:`reference type <syntax-reftype>` :math:`\reftype_i`.
 
@@ -703,7 +808,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 * Each :ref:`export instance <syntax-exportinst>` :math:`\exportinst_i` in :math:`\moduleinst.\MIEXPORTS` must be :ref:`valid <valid-exportinst>`.
 
-* For each :ref:`export instance <syntax-exportinst>` :math:`\exportinst_i` in :math:`\moduleinst.\MIEXPORTS`, the :ref:`name <syntax-name>` :math:`\exportinst_i.\EINAME` must be different from any other name occurring in :math:`\moduleinst.\MIEXPORTS`.
+* For each :ref:`export instance <syntax-exportinst>` :math:`\exportinst_i` in :math:`\moduleinst.\MIEXPORTS`, the :ref:`name <syntax-name>` :math:`\exportinst_i.\XINAME` must be different from any other name occurring in :math:`\moduleinst.\MIEXPORTS`.
 
 * Let :math:`\deftype^\ast` be the concatenation of all :math:`\deftype_i` in order.
 
@@ -715,6 +820,8 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 
 * Let :math:`\globaltype^\ast` be the concatenation of all :math:`\globaltype_i` in order.
 
+* Let :math:`\tagtype^\ast` be the concatenation of all :math:`\tagtype_i` in order.
+
 * Let :math:`\reftype^\ast` be the concatenation of all :math:`\reftype_i` in order.
 
 * Let :math:`\X{ok}^\ast` be the concatenation of all :math:`\X{ok}_i` in order.
@@ -724,7 +831,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 * Let :math:`x^\ast` be the sequence of :ref:`function indices <syntax-funcidx>` from :math:`0` to :math:`m-1`.
 
 * Then the module instance is valid with :ref:`context <context>`
-  :math:`\{\CTYPES~\deftype^\ast,` :math:`\CFUNCS~\functype^\ast,` :math:`\CTABLES~\tabletype^\ast,` :math:`\CMEMS~\memtype^\ast,` :math:`\CGLOBALS~\globaltype^\ast,` :math:`\CELEMS~\reftype^\ast,` :math:`\CDATAS~\X{ok}^\ast,` :math:`\CREFS~x^\ast\}`.
+  :math:`\{\CTYPES~\deftype^\ast,` :math:`\CFUNCS~\functype^\ast,` :math:`\CTABLES~\tabletype^\ast,` :math:`\CMEMS~\memtype^\ast,` :math:`\CGLOBALS~\globaltype^\ast,` \CTAGS~\tagtype^\ast, :math:`\CELEMS~\reftype^\ast,` :math:`\CDATAS~\X{ok}^\ast,` :math:`\CREFS~x^\ast\}`.
 
 .. math::
    ~\\[-1ex]
@@ -732,13 +839,15 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
      \begin{array}{@{}c@{}}
      (\vdashdeftype \deftype : \OKdeftype)^\ast
      \\
-     (S \vdashexternval \EVFUNC~\funcaddr : \ETFUNC~\functype)^\ast
+     (S \vdashexternaddr \XAFUNC~\funcaddr : \XTFUNC~\functype)^\ast
      \qquad
-     (S \vdashexternval \EVTABLE~\tableaddr : \ETTABLE~\tabletype)^\ast
+     (S \vdashexternaddr \XATABLE~\tableaddr : \XTTABLE~\tabletype)^\ast
      \\
-     (S \vdashexternval \EVMEM~\memaddr : \ETMEM~\memtype)^\ast
+     (S \vdashexternaddr \XAMEM~\memaddr : \XTMEM~\memtype)^\ast
      \qquad
-     (S \vdashexternval \EVGLOBAL~\globaladdr : \ETGLOBAL~\globaltype)^\ast
+     (S \vdashexternaddr \XAGLOBAL~\globaladdr : \XTGLOBAL~\globaltype)^\ast
+     \\
+     (S \vdashexternaddr \XATAG~\tagaddr : \XTTAG~\tagtype)^\ast
      \\
      (S \vdasheleminst S.\SELEMS[\elemaddr] : \reftype)^\ast
      \qquad
@@ -746,7 +855,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
      \\
      (S \vdashexportinst \exportinst : \OKexportinst)^\ast
      \qquad
-     (\exportinst.\EINAME)^\ast ~\mbox{disjoint}
+     (\exportinst.\XINAME)^\ast ~\mbox{disjoint}
      \end{array}
    }{
      S \vdashmoduleinst \{
@@ -756,6 +865,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
        \MITABLES & \tableaddr^\ast, \\
        \MIMEMS & \memaddr^\ast, \\
        \MIGLOBALS & \globaladdr^\ast, \\
+       \MITAGS & \tagaddr^\ast, \\
        \MIELEMS & \elemaddr^\ast, \\
        \MIDATAS & \dataaddr^\ast, \\
        \MIEXPORTS & \exportinst^\ast ~\} : \{
@@ -765,6 +875,7 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
          \CTABLES & \tabletype^\ast, \\
          \CMEMS & \memtype^\ast, \\
          \CGLOBALS & \globaltype^\ast, \\
+         \CTAGS & \tagtype^\ast, \\
          \CELEMS & \reftype^\ast, \\
          \CDATAS & \X{ok}^\ast, \\
          \CREFS & 0 \dots (|\funcaddr^\ast|-1) ~\}
@@ -959,7 +1070,7 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 :math:`\INVOKE~\funcaddr`
 .........................
 
-* The :ref:`external function value <syntax-externval>` :math:`\EVFUNC~\funcaddr` must be :ref:`valid <valid-externval-func>` with :ref:`external function type <syntax-externtype>` :math:`\ETFUNC \functype'`.
+* The :ref:`external function address <syntax-externaddr>` :math:`\XAFUNC~\funcaddr` must be :ref:`valid <valid-externaddr-func>` with :ref:`external function type <syntax-externtype>` :math:`\XTFUNC~\functype'`.
 
 * Let :math:`[t_1^\ast] \toF [t_2^\ast])` be the :ref:`function type <syntax-functype>` :math:`\functype`.
 
@@ -967,7 +1078,7 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 .. math::
    \frac{
-     S \vdashexternval \EVFUNC~\funcaddr : \ETFUNC~[t_1^\ast] \toF [t_2^\ast]
+     S \vdashexternaddr \XAFUNC~\funcaddr : \XTFUNC~[t_1^\ast] \toF [t_2^\ast]
    }{
      S; C \vdashadmininstr \INVOKE~\funcaddr : [t_1^\ast] \to [t_2^\ast]
    }
@@ -1000,7 +1111,7 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 .. index:: frame, instruction, result type
 
 :math:`\FRAME_n\{F\}~\instr^\ast~\END`
-...........................................
+......................................
 
 * Under the :ref:`valid <valid-resulttype>` return type :math:`[t^n]`,
   the :ref:`thread <syntax-frame>` :math:`F; \instr^\ast` must be :ref:`valid <valid-frame>` with :ref:`result type <syntax-resulttype>` :math:`[t^n]`.
@@ -1014,6 +1125,29 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
      S; [t^n] \vdashinstrs F; \instr^\ast : [t^n]
    }{
      S; C \vdashadmininstr \FRAME_n\{F\}~\instr^\ast~\END : [] \to [t^n]
+   }
+
+
+.. index:: handler, throw context
+
+:math:`\HANDLER_n\{\catch^\ast\}~\instr^\ast~\END`
+..................................................
+
+* For every :ref:`catch clause <syntax-catch>` :math:`\catch_i` in :math:`\catch^\ast`, :math:`\catch_i` must be :ref:`valid <valid-catch>`.
+
+* The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instrs>` with some type :math:`[t_1^\ast] \to [t_2^\ast]`.
+
+* Then the compound instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
+
+.. math::
+   \frac{
+     \begin{array}{c}
+     (C \vdashcatch \catch : \OKcatch)^\ast
+     \qquad
+     S; C \vdashinstrs \instr^\ast : [t_1^\ast] \to [t_2^\ast] \\
+     \end{array}
+   }{
+     S; C \vdashadmininstr \HANDLER_n\{\catch^\ast\}~\instr^\ast~\END : [t_1^\ast] \to [t_2^\ast]
    }
 
 
@@ -1050,6 +1184,8 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 
 * The length of :math:`S.\SGLOBALS` must not shrink.
 
+* The length of :math:`S.\STAGS` must not shrink.
+
 * The length of :math:`S.\SELEMS` must not shrink.
 
 * The length of :math:`S.\SDATAS` must not shrink.
@@ -1057,6 +1193,8 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 * The length of :math:`S.\SSTRUCTS` must not shrink.
 
 * The length of :math:`S.\SARRAYS` must not shrink.
+
+* The length of :math:`S.\SEXNS` must not shrink.
 
 * For each :ref:`function instance <syntax-funcinst>` :math:`\funcinst_i` in the original :math:`S.\SFUNCS`, the new function instance must be an :ref:`extension <extend-funcinst>` of the old.
 
@@ -1066,6 +1204,8 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 
 * For each :ref:`global instance <syntax-globalinst>` :math:`\globalinst_i` in the original :math:`S.\SGLOBALS`, the new global instance must be an :ref:`extension <extend-globalinst>` of the old.
 
+* For each :ref:`tag instance <syntax-taginst>` :math:`\taginst_i` in the original :math:`S.\STAGS`, the new tag instance must be an :ref:`extension <extend-taginst>` of the old.
+
 * For each :ref:`element instance <syntax-eleminst>` :math:`\eleminst_i` in the original :math:`S.\SELEMS`, the new element instance must be an :ref:`extension <extend-eleminst>` of the old.
 
 * For each :ref:`data instance <syntax-datainst>` :math:`\datainst_i` in the original :math:`S.\SDATAS`, the new data instance must be an :ref:`extension <extend-datainst>` of the old.
@@ -1073,6 +1213,8 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 * For each :ref:`structure instance <syntax-structinst>` :math:`\structinst_i` in the original :math:`S.\SSTRUCTS`, the new structure instance must be an :ref:`extension <extend-structinst>` of the old.
 
 * For each :ref:`array instance <syntax-arrayinst>` :math:`\arrayinst_i` in the original :math:`S.\SARRAYS`, the new array instance must be an :ref:`extension <extend-arrayinst>` of the old.
+
+* For each :ref:`exception instance <syntax-exninst>` :math:`\exninst_i` in the original :math:`S.\SEXNS`, the new exception instance must be an :ref:`extension <extend-datainst>` of the old.
 
 .. math::
    \frac{
@@ -1089,6 +1231,9 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
      S_1.\SGLOBALS = \globalinst_1^\ast &
      S_2.\SGLOBALS = {\globalinst'_1}^\ast~\globalinst_2^\ast &
      (\vdashglobalinstextends \globalinst_1 \extendsto \globalinst'_1)^\ast \\
+     S_1.\STAGS = \taginst_1^\ast &
+     S_2.\STAGS = {\taginst'_1}^\ast~\taginst_2^\ast &
+     (\vdashtaginstextends \taginst_1 \extendsto \taginst'_1)^\ast \\
      S_1.\SELEMS = \eleminst_1^\ast &
      S_2.\SELEMS = {\eleminst'_1}^\ast~\eleminst_2^\ast &
      (\vdasheleminstextends \eleminst_1 \extendsto \eleminst'_1)^\ast \\
@@ -1101,6 +1246,9 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
      S_1.\SARRAYS = \arrayinst_1^\ast &
      S_2.\SARRAYS = {\arrayinst'_1}^\ast~\arrayinst_2^\ast &
      (\vdasharrayinstextends \arrayinst_1 \extendsto \arrayinst'_1)^\ast \\
+     S_1.\SEXNS = \exninst_1^\ast &
+     S_2.\SEXNS = {\exninst'_1}^\ast~\exninst_2^\ast &
+     (\vdashexninstextends \exninst_1 \extendsto \exninst'_1)^\ast \\
      \end{array}
    }{
      \vdashstoreextends S_1 \extendsto S_2
@@ -1175,6 +1323,21 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
      \mut = \MVAR \vee \val_1 = \val_2
    }{
      \vdashglobalinstextends \{\GITYPE~(\mut~t), \GIVALUE~\val_1\} \extendsto \{\GITYPE~(\mut~t), \GIVALUE~\val_2\}
+   }
+
+
+.. index:: tag instance
+.. _extend-taginst:
+
+:ref:`Tag Instance <syntax-taginst>` :math:`\taginst`
+.....................................................
+
+* A tag instance must remain unchanged.
+
+.. math::
+   \frac{
+   }{
+     \vdashtaginstextends \taginst \extendsto \taginst
    }
 
 
@@ -1286,6 +1449,21 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
    }
 
 
+.. index:: exception instance
+.. _extend-exninst:
+
+:ref:`Exception Instance <syntax-exninst>` :math:`\exninst`
+...........................................................
+
+* An exception instance must remain unchanged.
+
+.. math::
+   \frac{
+   }{
+     \vdashexninstextends \exninst \extendsto \exninst
+   }
+
+
 
 .. index:: ! preservation, ! progress, soundness, configuration, thread, terminal configuration, instantiation, invocation, validity, module
 .. _soundness-statement:
@@ -1317,7 +1495,7 @@ If a :ref:`configuration <syntax-config>` :math:`S;T` is :ref:`valid <valid-conf
 then it either diverges or takes a finite number of steps to reach a terminal configuration :math:`S';T'` (i.e., :math:`S;T \stepto^\ast S';T'`) that is valid with the same result type (i.e., :math:`\vdashconfig S';T' : [t^\ast]`)
 and where :math:`S'` is an :ref:`extension <extend-store>` of :math:`S` (i.e., :math:`\vdashstoreextends S \extendsto S'`).
 
-In other words, every thread in a valid configuration either runs forever, traps, or terminates with a result that has the expected type.
+In other words, every thread in a valid configuration either runs forever, traps, throws an exception, or terminates with a result that has the expected type.
 Consequently, given a :ref:`valid store <valid-store>`, no computation defined by :ref:`instantiation <exec-instantiation>` or :ref:`invocation <exec-invocation>` of a valid module can "crash" or otherwise (mis)behave in ways not covered by the :ref:`execution <exec>` semantics given in this specification.
 
 

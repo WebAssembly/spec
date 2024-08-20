@@ -182,6 +182,22 @@ Global Types
 $${grammar: Bglobaltype}
 
 
+.. index:: tag type, function type, exception tag
+   pair: binary format; tag type
+.. _binary-tagtype:
+
+Tag Types
+~~~~~~~~~
+
+:ref:`Tag types <syntax-tagtype>` are encoded by a :ref:`type index <syntax-typeidx>` denoting a :ref:`function type <syntax-functype>`.
+
+$${grammar: Btagtype}
+
+.. note::
+   In future versions of WebAssembly,
+   the preceding zero byte may encode additional flags.
+
+
 .. index:: external type
    pair: binary format; external type
 .. _binary-externtype:

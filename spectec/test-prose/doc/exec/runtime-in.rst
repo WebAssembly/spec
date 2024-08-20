@@ -179,44 +179,44 @@ Export Instances
 
 $${syntax: exportinst}
 
-.. _syntax-externval:
+.. _syntax-externaddr:
 
-External Values
-~~~~~~~~~~~~~~~
+External Addresses
+~~~~~~~~~~~~~~~~~~
 
-$${syntax: externval}
+$${syntax: externaddr}
 
-.. _def-funcsxv:
+.. _def-funcsxa:
 
-$${definition-prose: funcsxv}
-
-\
-
-$${definition: funcsxv}
-
-.. _def-tablesxv:
-
-$${definition-prose: tablesxv}
+$${definition-prose: funcsxa}
 
 \
 
-$${definition: tablesxv}
+$${definition: funcsxa}
 
-.. _def-memsxv:
+.. _def-tablesxa:
 
-$${definition-prose: memsxv}
-
-\
-
-$${definition: memsxv}
-
-.. _def-globalsxv:
-
-$${definition-prose: globalsxv}
+$${definition-prose: tablesxa}
 
 \
 
-$${definition: globalsxv}
+$${definition: tablesxa}
+
+.. _def-memsxa:
+
+$${definition-prose: memsxa}
+
+\
+
+$${definition: memsxa}
+
+.. _def-globalsxa:
+
+$${definition-prose: globalsxa}
+
+\
+
+$${definition: globalsxa}
 
 .. _syntax-structinst:
 .. _syntax-arrayinst:

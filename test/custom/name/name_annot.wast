@@ -18,3 +18,21 @@
   (module quote "(module (start $f (@name \"M\")) (func $f))")
   "misplaced @name annotation"
 )
+
+
+;; Function names
+
+(module
+  (type $t (func))
+  (func (@name "λ") (type $t))
+  (func $lambda (@name "λ") (type $t))
+)
+
+
+;; Tag names
+
+(module
+  (type $t (func))
+  (tag (@name "θ") (type $t))
+  (tag $theta (@name "θ") (type $t))
+)

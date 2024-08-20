@@ -356,7 +356,7 @@ The ${:DATA.DROP} instruction prevents further use of a passive data segment. Th
    This restriction may be lifted in future versions.
 
 
-.. index:: ! control instruction, ! structured control, ! label, ! block, ! block type, ! branch, ! unwinding, stack type, label index, function index, type index, list, trap, function, table, function type, value type, type index
+.. index:: ! control instruction, ! structured control, ! exception, ! label, ! block, ! block type, ! branch, ! unwinding, stack type, label index, function index, type index, list, trap, function, table, tag, function type, value type, tag type, try block, type index
    pair: abstract syntax; instruction
    pair: abstract syntax; block type
    pair: block; type
@@ -378,15 +378,20 @@ The ${:DATA.DROP} instruction prevents further use of a passive data segment. Th
 .. _syntax-call_indirect:
 .. _syntax-instrs:
 .. _syntax-instr-control:
+.. _syntax-throw:
+.. _syntax-throw_ref:
+.. _syntax-try_table:
+.. _syntax-catch:
+.. _exception:
 
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
 Instructions in this group affect the flow of control.
 
-$${syntax: blocktype {instr/block instr/br instr/call}}
+$${syntax: blocktype {instr/block instr/br instr/call instr/exn} catch}
 
-The ${:BLOCK}, ${:LOOP} and ${:IF} instructions are *structured* instructions.
+The ${:BLOCK}, ${:LOOP}, ${:IF} and ${:TRY_TABLE} instructions are *structured* instructions.
 They bracket nested sequences of instructions, called *blocks*, terminated with, or separated by, ${:END} or ${:ELSE} pseudo-instructions.
 As the grammar prescribes, they must be well-nested.
 
@@ -433,6 +438,10 @@ the callee is dynamically checked against the :ref:`function type <syntax-functy
 The ${:RETURN_CALL}, ${:RETURN_CALL_REF}, and ${:RETURN_CALL_INDIRECT} instructions are *tail-call* variants of the previous ones.
 That is, they first return from the current function before actually performing the respective call.
 It is guaranteed that no sequence of nested calls using only these instructions can cause resource exhaustion due to hitting an :ref:`implementation's limit <impl-exec>` on the number of active calls.
+
+The instructions ${:THROW}, ${:THROW_REF}, and ${:TRY_TABLE} are concerned with *exceptions*.
+The ${:THROW} and ${:THROW_REF} instructions raise and reraise an exception, respectively, and transfers control to the innermost enclosing exception handler that has a matching catch clause.
+The ${:TRY_TABLE} instruction installs an exception *handler* that handles exceptions as specified by its catch clauses.
 
 
 .. index:: ! expression, constant, global, offset, element, data, instruction
