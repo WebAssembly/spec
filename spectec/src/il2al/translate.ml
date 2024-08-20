@@ -1086,7 +1086,7 @@ let extract_context r =
   |> Option.map lhs_of_prem (* TODO: Collect helper functions into one place *)
 
 let group_by_context rs =
-  let eq_context = Option.equal Il.Eq.eq_exp in
+  let eq_context = Option.equal (fun c1 c2 -> Il.Mixop.eq (case_of_case c1) (case_of_case c2)) in
   List.fold_left (fun acc r -> acc |> add eq_context (extract_context r) r) [] rs
 
 let exit_context context_opt instrs =
@@ -1161,11 +1161,9 @@ let translate_context ctx =
       letI (translate_exp n, arityE frame ~note:n.note) ~at:at;
     ],
     exitI atom ~at:at
-  | Il.CaseE ([atom]::_, { it = Il.TupE (n :: _); _ }) ->
-    let ctxt = VarE "ctxt" $$ atom.at % topT in
+  | Il.CaseE ([atom]::_, _) ->
     [
-      letI (ctxt, yetE "current context" ~note:ctx.note) ~at:at;
-      letI (translate_exp n, arityE ctxt ~note:n.note) ~at:at;
+      letI (translate_exp ctx, getCurContextE () ~note:ctx.note) ~at:at;
     ],
     exitI atom ~at:at
   | _ -> [ yetI "TODO: translate_context" ~at:at ], yetI "TODO: translate_context"
@@ -1221,13 +1219,14 @@ let rec translate_rgroup' rgroup =
       in
       k, inner_pop_instrs @ instrs
     (* Context case *)
-    | Some ctxt ->
+    | Some _ ->
       let popped_vars = List.concat_map (fun p ->
         match p.it with
         | Il.LetPr (_, _, ids) -> ids
         | _ -> assert false
       ) pops in
       let u_group = Il2il.unify_ctxt popped_vars subgroup in
+      let ctxt = extract_context (List.hd u_group) |> Option.get in
       let atom = case_of_case ctxt |> List.hd |> List.hd in
       let cond = ContextKindE atom $$ atom.at % boolT in
       let head_instrs, middle_instr = translate_context ctxt in

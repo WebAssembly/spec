@@ -220,7 +220,7 @@ rule Step/throw:
   z; val^n (THROW x)  ~>  $add_exninst(z, exn); (REF.EXN_ADDR a) THROW_REF
   -- Expand: $tag(z, x).TYPE ~~ FUNC (t^n -> eps)
   -- if a = |$exninst(z)|
-  -- if exn = {TAG a, FIELDS val^n}
+  -- if exn = {TAG $tagaddr(z)[x], FIELDS val^n}
 
 rule Step_read/throw_ref-null:
   z; (REF.NULL ht) THROW_REF  ~>  TRAP

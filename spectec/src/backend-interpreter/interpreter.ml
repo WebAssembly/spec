@@ -304,6 +304,10 @@ and eval_expr env expr =
     let v2 = eval_expr env e2 in
     LabelV (v1, v2)
   | GetCurLabelE -> WasmContext.get_current_label ()
+  | GetCurContextE ->
+    (match WasmContext.get_top_context () with
+    | None -> fail_expr expr "cannot get the current context"
+    | Some ctxt -> ctxt)
   | ContE e ->
     (match eval_expr env e with
     | LabelV (_, vs) -> vs
