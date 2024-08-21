@@ -434,7 +434,8 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
     1. [=list/iterate|For each=] |builtinSetName| of |builtinSetNames|,
         1. Assert: |builtinOrStringImports| does not contain |builtinSetName|
         1. Let |exportsObject| be the result of [=instantiate a builtin set=] with |builtinSetName|
-        1. [=map/set|Set=] |builtinOrStringImports|[|builtinSetName|] to |exportsObject|
+        1. Let |builtinSetQualifiedName| be |builtinSetName| prefixed with "wasm:"
+        1. [=map/set|Set=] |builtinOrStringImports|[|builtinSetQualifiedName|] to |exportsObject|
     1. If |importedStringModule| is not null,
         1. Let |exportsObject| be the result of [=instantiate imported strings=] with |module| and |importedStringModule|
         1. [=map/set|Set=] |builtinOrStringImports|[|importedStringModule|] to |exportsObject|
@@ -1725,7 +1726,7 @@ Note: It is not currently possible to define this behavior using Web IDL.
 
 The JS-API defines sets of builtin functions which can be imported through {{WebAssemblyCompileOptions|options}} when compiling a module. WebAssembly builtin functions mirror existing JavaScript builtins, but adapt them to be useable directly as WebAssembly functions with minimal overhead.
 
-All builtin functions are grouped into sets. Every builtin set has a unique name that [=read the imports|is used during import lookup=]. All names are prefixed by the `wasm:` namespace (e.g. `wasm:js-string`).
+All builtin functions are grouped into sets. Every builtin set has a |name| that is used in {{WebAssemblyCompileOptions}}, and a |qualified name| with a `wasm:` prefix that [=read the imports|is used during import lookup=].
 
 <div algorithm>
 To <dfn>get the builtins for a builtin set</dfn> with |builtinSetName|, perform the following steps:
@@ -1741,7 +1742,8 @@ To <dfn>find a builtin</dfn> with |import| and enabled builtins |builtinSetNames
 1. Let |importModuleName| be |import|[0]
 1. Let |importName| be |import|[1]
 1.  [=list/iterate|For each=] |builtinSetName| of |builtinSetNames|,
-    1. If |importModuleName| equals |builtinSetName|
+    1. Let |builtinSetQualifiedName| be |builtinSetName| prefixed with "wasm:"
+    1. If |importModuleName| equals |builtinSetQualifiedName|
         1. Let |builtins| be the result of [=get the builtins for a builtin set=] |builtinSetName|
         1. [=list/iterate|For each=] |builtin| of |builtins|
             1. Let |builtinName| be |builtin|[0]
@@ -1803,7 +1805,7 @@ To <dfn>validate an import for builtins</dfn> with |import|, enabled builtins |b
 
 <h3 id="builtins-js-string">String Builtins</h3>
 
-String builtins adapt the interface of the [=String=] builtin object. The import name for this set is `wasm:js-string`.
+String builtins adapt the interface of the [=String=] builtin object. The |name| for this set is `js-string`.
 
 <h4 id="builtins-js-string-abstract-ops">Abstract operations</h4>
 <div algorithm>
