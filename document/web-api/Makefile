@@ -1,3 +1,4 @@
+W3C_STATUS    = ED
 BUILDDIR      = _build
 STATICDIR     = _static
 DOWNLOADDIR   = _download
@@ -8,7 +9,7 @@ TAR           = tar
 .PHONY: all
 all:
 	mkdir -p $(BUILDDIR)/html
-	bikeshed spec index.bs $(BUILDDIR)/html/index.html
+	bikeshed spec --md-status=$(W3C_STATUS) index.bs $(BUILDDIR)/html/index.html
 	@echo "Build finished. The HTML pages are in `pwd`/$(BUILDDIR)/html."
 
 .PHONY: publish
@@ -33,7 +34,7 @@ diff: all
 # macOS tar has no “--transform” option (only GNU tar does), so on macOS,
 # do “brew install tar” & run “make” like this: “TAR=gtar make -e WD-tar”
 WD-tar: all
-	bikeshed spec --md-status=WD index.bs $(BUILDDIR)/html/index.html
+	bikeshed spec --md-status=$(W3C_STATUS) index.bs $(BUILDDIR)/html/index.html
 	$(TAR) -C $(BUILDDIR)/html --transform="s/index.html/Overview.html/" -cf $(BUILDDIR)/WD.tar index.html
 	@echo "Built $(BUILDDIR)/WD.tar."
 
@@ -62,4 +63,4 @@ WD-echidna-CI: WD-tar
 		-F "token=$(W3C_ECHIDNA_TOKEN_WEBAPI)" \
 		-F "decision=$(DECISION_URL)" | tee $(BUILDDIR)/WD-echidna-id.txt
 	@echo
-	@echo "Published working draft. Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"
+	@echo "Published $(W3C_STATUS). Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"
