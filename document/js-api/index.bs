@@ -1807,6 +1807,8 @@ To <dfn>validate an import for builtins</dfn> with |import|, enabled builtins |b
 
 String builtins adapt the interface of the [=String=] builtin object. The |name| for this set is `js-string`.
 
+Note: The algorithms in this section refer to JS builtins defined on [=String=]. These refer to the actual builtin and do not perform a dynamic lookup on the [=String=] object.
+
 <h4 id="builtins-js-string-abstract-ops">Abstract operations</h4>
 <div algorithm>
 
