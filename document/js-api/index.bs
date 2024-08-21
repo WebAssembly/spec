@@ -1863,8 +1863,6 @@ When this builtin is invoked with parameter |v|, the following steps must be run
 The |funcType| of this builtin is `(func (param (ref null (array (mut i16))) i32 i32) (result externref))`.
 
 Note: This function only takes a mutable i16 array defined in its own recursion group.
-If this is an issue for toolchains, we can look into how to relax the function type
-while still maintaining good performance.
 
 <div algorithm="js-string-fromCharCodeArray">
 When this builtin is invoked with parameters |array|, |start|, and |end|, the following steps must be run:
@@ -1890,8 +1888,6 @@ When this builtin is invoked with parameters |array|, |start|, and |end|, the fo
 The |funcType| of this builtin is `(func (param externref (ref null (array (mut i16))) i32) (result i32))`.
 
 Note: This function only takes a mutable i16 array defined in its own recursion group.
-If this is an issue for toolchains, we can look into how to relax the function type
-while still maintaining good performance.
 
 <div algorithm="js-string-intoCharCodeArray">
 When this builtin is invoked with parameters |string|, |array|, and |start|, the following steps must be run:
@@ -1901,7 +1897,7 @@ When this builtin is invoked with parameters |string|, |array|, and |start|, the
 1. Let |string| be [=?=] [$UnwrapString$](|string|).
 1. Let |stringLength| be the [=string/length=] of |string|.
 1. Let |arrayLength| be the number of elements in |array|.
-1. If |start| + |length| > |arrayLength|
+1. If |start| + |stringLength| > |arrayLength|
     1. Throw a {{RuntimeError}} exception. TODO: this needs to not be catchable, like a trap.
 1. Let |i| be 0.
 1. While |i| < |stringLength|:
