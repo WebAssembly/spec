@@ -46,7 +46,9 @@ Each subsection consists of a
      n{:}\Bname & (\iff n = \text{name}) \\ &&&
      \Bmodulenamesubsec^? \\ &&&
      \Bfuncnamesubsec^? \\ &&&
-     \Blocalnamesubsec^? \\
+     \Blocalnamesubsec^? \\ &&&
+     \Btypenamesubsec^? \\ &&&
+     \Bfieldnamesubsec^? \\
    \production{name subsection} & \Bnamesubsection_N(\B{B}) &::=&
      N{:}\Bbyte~~\X{size}{:}\Bu32~~\B{B}
        & (\iff \X{size} = ||\B{B}||) \\
