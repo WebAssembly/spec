@@ -7,6 +7,10 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      w3c-status:
+        required: true
+        type: string
 
 jobs:
   publish-to-w3c-TR:
@@ -30,7 +34,7 @@ jobs:
       - name: Publish all specs to their https://www.w3.org/TR/ URLs
         run: cd document && make -e WD-echidna-CI
         env:
-          W3C_STATUS: WD
+          W3C_STATUS: ${{ github.event_name == 'push' && 'WD' || inputs.w3c-status }}
           W3C_ECHIDNA_TOKEN_CORE: ${{ secrets.W3C_ECHIDNA_TOKEN_CORE }}
           W3C_ECHIDNA_TOKEN_JSAPI: ${{ secrets.W3C_ECHIDNA_TOKEN_JSAPI }}
           W3C_ECHIDNA_TOKEN_WEBAPI: ${{ secrets.W3C_ECHIDNA_TOKEN_WEBAPI }}
