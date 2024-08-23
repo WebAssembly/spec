@@ -433,6 +433,7 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
     1. Let |builtinOrStringImports| be the ordered map « ».
     1. [=list/iterate|For each=] |builtinSetName| of |builtinSetNames|,
         1. Assert: |builtinOrStringImports| does not contain |builtinSetName|
+        1. If |builtinSetName| does not refer to a builtin set, then [=iteration/continue=].
         1. Let |exportsObject| be the result of [=instantiate a builtin set=] with |builtinSetName|
         1. Let |builtinSetQualifiedName| be |builtinSetName| prefixed with "wasm:"
         1. [=map/set|Set=] |builtinOrStringImports|[|builtinSetQualifiedName|] to |exportsObject|
@@ -1742,6 +1743,7 @@ To <dfn>find a builtin</dfn> with |import| and enabled builtins |builtinSetNames
 1. Let |importModuleName| be |import|[0]
 1. Let |importName| be |import|[1]
 1.  [=list/iterate|For each=] |builtinSetName| of |builtinSetNames|,
+    1. If |builtinSetName| does not refer to a builtin set, then [=iteration/continue=].
     1. Let |builtinSetQualifiedName| be |builtinSetName| prefixed with "wasm:"
     1. If |importModuleName| equals |builtinSetQualifiedName|
         1. Let |builtins| be the result of [=get the builtins for a builtin set=] |builtinSetName|
@@ -1756,8 +1758,6 @@ To <dfn>find a builtin</dfn> with |import| and enabled builtins |builtinSetNames
 To <dfn>validate builtin set names</dfn> with |builtinSetNames|, perform the following steps:
 
 1. If |builtinSetNames| contains any duplicates, return false.
-1. [=list/iterate|For each=] |builtinSetName| of |builtinSetNames|,
-    1. If |builtinSetName| does not equal the name of one of the builtin sets defined in this section, return false.
 1. Return false.
 
 </div>
