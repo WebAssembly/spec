@@ -329,6 +329,8 @@ let rec string_of_instr' depth instr =
     sprintf "%s Let %s be %s." (make_index depth) (string_of_expr e1)
       (string_of_expr e2)
   | TrapI -> sprintf "%s Trap." (make_index depth)
+  | ThrowI e ->
+    sprintf "%s Throw the exception %s as a result." (make_index depth) (string_of_expr e)
   | NopI -> sprintf "%s Do nothing." (make_index depth)
   | ReturnI None -> sprintf "%s Return." (make_index depth)
   | ReturnI (Some e) -> sprintf "%s Return %s." (make_index depth) (string_of_expr e)

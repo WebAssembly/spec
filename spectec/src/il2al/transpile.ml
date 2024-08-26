@@ -452,6 +452,8 @@ let reduce_comp expr =
     ) inner_expr record
   | _ -> expr
 
+let loop_max = 100
+let loop_cnt = ref loop_max
 let rec enhance_readability instrs =
   let walk_config =
     {
@@ -472,7 +474,14 @@ let rec enhance_readability instrs =
     |> Walk.walk_instrs walk_config
   in
 
-  if Eq.eq_instrs instrs instrs' then instrs else enhance_readability instrs'
+  if !loop_cnt = 0 || Eq.eq_instrs instrs instrs' then (
+    if !loop_cnt = 0 then print_endline "[WARNING] enhance_readability did not reach fixpoint. (Hint: Missed case for eq.ml?)";
+    loop_cnt := loop_max;
+    instrs
+  ) else (
+    loop_cnt := !loop_cnt - 1;
+    enhance_readability instrs'
+  )
 
 let flatten_if instrs =
   let flatten_if' instr =

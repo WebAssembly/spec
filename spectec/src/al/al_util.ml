@@ -26,6 +26,7 @@ let popsI ?(at = no) e _ = PopI e |> mk_instr at (* TODO *)
 let popallI ?(at = no) e = PopAllI e |> mk_instr at
 let letI ?(at = no) (e1, e2) = LetI (e1, e2) |> mk_instr at
 let trapI ?(at = no) () = TrapI |> mk_instr at
+let throwI ?(at = no) e = ThrowI e |> mk_instr at
 let nopI ?(at = no) () = NopI |> mk_instr at
 let returnI ?(at = no) e_opt = ReturnI e_opt |> mk_instr at
 let executeI ?(at = no) e = ExecuteI e |> mk_instr at

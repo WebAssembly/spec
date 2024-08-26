@@ -1190,7 +1190,7 @@ let extract_pops rgroup =
   extracted, List.map2 set_prems rgroup new_premss
 
 
-let rec translate_rgroup' rgroup =
+let rec translate_rgroup' instr_name rgroup =
   let pops, rgroup' = extract_pops rgroup in
   let subgroups = group_by_context rgroup' in
 
@@ -1240,6 +1240,13 @@ let rec translate_rgroup' rgroup =
     | (None, b) -> Some b, List.tl blocks
   in
 
+  (* HARDCODE: Insert ThrowI if the current wasm instruction is throw_ref *)
+  let throw_block = if instr_name <> "throw_ref" then [] else
+    match List.hd pops |> lhs_of_prem |> it with
+    | TupE (e :: _) -> [throwI (translate_exp e)]
+    | _ -> assert false
+  in
+
   let ctxt_block = match ctxt_blocks with
   | [] -> []
   | _ ->
@@ -1255,7 +1262,7 @@ let rec translate_rgroup' rgroup =
       match if_instr.it with
       | IfI (c, instrs1, []) -> [{if_instr with it = IfI (c, instr_push :: instrs1, acc)}]
       | _ -> assert false
-    ) (List.map snd ctxt_blocks) []
+    ) (List.map snd ctxt_blocks) throw_block
   in
 
   let body_instrs =
@@ -1275,7 +1282,7 @@ and translate_rgroup (instr_name, rel_id, rgroup) =
   let unified_rgroup = Il2il.unify_pop_and_winstr rgroup in
 
   let winstr = extract_winstr (List.hd unified_rgroup) in
-  let instrs = translate_rgroup' unified_rgroup in
+  let instrs = translate_rgroup' instr_name unified_rgroup in
 
   let name =
     match case_of_case winstr with

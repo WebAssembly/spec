@@ -90,7 +90,7 @@ let rec free_instr instr =
   | OtherwiseI il -> free_list free_instr il
   | EitherI (il1, il2) -> free_list free_instr il1 @ free_list free_instr il2
   | TrapI | NopI | ReturnI None | ExitI _ | YetI _ -> IdSet.empty
-  | PushI e | PopI e | PopAllI e | ReturnI (Some e)
+  | ThrowI e | PushI e | PopI e | PopAllI e | ReturnI (Some e)
   | ExecuteI e | ExecuteSeqI e ->
     free_expr e
   | LetI (e1, e2) | AppendI (e1, e2) | FieldWiseAppendI (e1, e2) -> free_expr e1 @ free_expr e2

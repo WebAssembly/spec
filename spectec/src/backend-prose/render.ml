@@ -650,6 +650,8 @@ let rec render_al_instr env algoname index depth instr =
     sprintf "%s Let %s be %s." (render_order index depth) (render_expr env n)
       (render_expr env e)
   | Al.Ast.TrapI -> sprintf "%s Trap." (render_order index depth)
+  | Al.Ast.ThrowI e ->
+    sprintf "%s Throw the exception %s as a result." (render_order index depth) (render_expr env e)
   | Al.Ast.NopI -> sprintf "%s Do nothing." (render_order index depth)
   | Al.Ast.ReturnI e_opt ->
     sprintf "%s Return%s." (render_order index depth)

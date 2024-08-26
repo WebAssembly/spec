@@ -70,7 +70,7 @@ let walk_instr (walker: unit_walker) (instr: instr) : unit =
     walker.walk_expr walker e1; walker.walk_expr walker e2;
     List.iter (walker.walk_instr walker) il
   | TrapI | NopI | ReturnI None | ExitI _ | YetI _ -> ()
-  | AssertI e | PushI e | PopI e | PopAllI e
+  | AssertI e | ThrowI e | PushI e | PopI e | PopAllI e
   | ReturnI (Some e)| ExecuteI e | ExecuteSeqI e -> walker.walk_expr walker e
   | LetI (e1, e2) | AppendI (e1, e2) | FieldWiseAppendI (e1, e2) ->
     walker.walk_expr walker e1; walker.walk_expr walker e2
@@ -184,6 +184,7 @@ let walk_instr (walker: walker) (instr: instr) : instr =
     | PopAllI e -> PopAllI (walk_expr e)
     | LetI (e1, e2) -> LetI (walk_expr e1, walk_expr e2)
     | TrapI -> TrapI
+    | ThrowI e -> ThrowI (walk_expr e)
     | NopI -> NopI
     | ReturnI e_opt -> ReturnI (Option.map walk_expr e_opt)
     | ExecuteI e -> ExecuteI (walk_expr e)
@@ -333,6 +334,7 @@ let rec walk_instr f (instr:instr) : instr list =
       | PopAllI e -> PopAllI (new_e e)
       | LetI (e1, e2) -> LetI (new_e e1, new_e e2)
       | TrapI -> TrapI
+      | ThrowI e -> ThrowI (new_e e)
       | NopI -> NopI
       | ReturnI e_opt -> ReturnI (Option.map new_e e_opt)
       | EnterI (e1, e2, il) -> EnterI (new_e e1, new_e e2, new_ il)

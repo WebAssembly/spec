@@ -100,6 +100,7 @@ let rec eq_instr i1 i2 =
   | EnterI (e11, e12, il1), EnterI (e21, e22, il2) ->
     eq_expr e11 e21 && eq_expr e12 e22 && eq_instrs il1 il2
   | AssertI e1, AssertI e2
+  | ThrowI e1, ThrowI e2
   | PushI e1, PushI e2
   | PopI e1, PopI e2
   | PopAllI e1, PopAllI e2 -> eq_expr e1 e2

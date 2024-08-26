@@ -20795,7 +20795,11 @@ watsup 0.4 generator
 
    #. Else:
 
-      1) If the top of the stack is a :math:`\mathsf{handler}`, then:
+      1) If not the top of the stack is a :math:`\mathsf{handler}`, then:
+
+         a) Throw the exception :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` as a result.
+
+      #) Else:
 
          a) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
@@ -26887,7 +26891,9 @@ Step_read/throw_ref
       b) Pop the current frame from the stack.
       c) Push the value (REF.EXN_ADDR a) to the stack.
       d) Execute the instruction THROW_REF.
-  d. Else if the top of the stack is a HANDLER_, then:
+  d. Else if not the top of the stack is a HANDLER_, then:
+    1) Throw the exception instr_u0 as a result.
+  e. Else:
     1) Push the values val* to the stack.
     2) Let (HANDLER_ n { catch_u1* }) be the current context.
     3) If instr_u0 is of the case REF.EXN_ADDR, then:

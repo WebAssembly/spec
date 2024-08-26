@@ -322,6 +322,7 @@ let rec string_of_instr' depth instr =
     sprintf " Let %s = %s" (string_of_expr e1)
       (string_of_expr e2)
   | TrapI -> sprintf " Trap"
+  | ThrowI e -> sprintf " Throw %s" (string_of_expr e)
   | NopI -> sprintf " Nop"
   | ReturnI None -> sprintf " Return"
   | ReturnI (Some e) -> sprintf " Return %s" (string_of_expr e)
@@ -597,6 +598,7 @@ let rec structured_string_of_instr' depth instr =
     ^ structured_string_of_expr e2
     ^ ")"
   | TrapI -> "TrapI"
+  | ThrowI e -> "ThrowI (" ^ structured_string_of_expr e ^ ")"
   | NopI -> "NopI"
   | ReturnI None -> "ReturnI"
   | ReturnI (Some e) -> "ReturnI (" ^ structured_string_of_expr e ^ ")"
