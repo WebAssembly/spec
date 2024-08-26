@@ -150,12 +150,14 @@ let rec if_expr_to_instrs e =
   | Ast.BinE (Ast.AndOp, e1, e2) ->
     if_expr_to_instrs e1 @ if_expr_to_instrs e2
   | Ast.BinE (Ast.OrOp, e1, e2) ->
-    let neg_cond = if_expr_to_instrs e1 in
-    let body = if_expr_to_instrs e2 in
-    [ match neg_cond with
+    let cond1 = if_expr_to_instrs e1 in
+    let cond2 = if_expr_to_instrs e2 in
+    [ match cond1 with
       | [ CmpI ({ it = IterE ({ it = VarE name; _ }, _, Opt); _ }, Eq, { it = OptE None; _ }) ] ->
-        IfI (isDefinedE (varE name ~note:no_note) ~note:no_note, body)
-      | _ -> print_yet_exp e "if_expr_to_instrs"; YetI (Il.Print.string_of_exp e) ]
+        (* ~P \/ Q is equivalent to P -> Q *)
+        IfI (isDefinedE (varE name ~note:no_note) ~note:no_note, cond2)
+      | _ ->
+        EitherI [cond1; cond2] ]
   | Ast.BinE (Ast.EquivOp, e1, e2) ->
       [ EquivI (exp_to_expr e1, exp_to_expr e2) ]
   | Ast.MemE (e1, e2) ->
@@ -211,7 +213,7 @@ type vrule_group =
 
 (** Main translation for typing rules **)
 let vrule_group_to_prose ((rule_name, rel_id, vrules): vrule_group) =
-  let (winstr, t, prems, _tenv) = vrules |> List.hd in
+  let (winstr, t, _prems, _tenv) = vrules |> List.hd in
 
   (* anchor *)
   let anchor = rel_id.it ^ "/" ^ rule_name in
@@ -220,7 +222,14 @@ let vrule_group_to_prose ((rule_name, rel_id, vrules): vrule_group) =
   (* concl *)
   let concl = IsValidI (None, expr, [exp_to_expr t]) in
   (* prems *)
-  let prems = (List.concat_map prem_to_instrs prems) in
+  let prems =
+    vrules
+    |> List.map (fun (_, _, prems, _) -> prems)
+    |> List.map (List.concat_map prem_to_instrs)
+    |> (function
+        | [ instrs ] -> instrs
+        | instrss -> [ EitherI instrss ])
+  in
 
   (* Predicate *)
   Iff (anchor, expr, concl, prems)
@@ -278,7 +287,7 @@ let rec group_vrules = function
       let same_rules, diff_rules =
         List.partition (fun (_, rule) -> name_of_rule rule = rule_name) t in
       let same_rules = List.map snd same_rules in
-      let group = (rule_name, rel_id, List.map pack_pair_rule (rule :: same_rules)) in
+      let group = (rule_name, rel_id, List.map pack_pair_rule (rule :: same_rules |> Il2al.Il2il.unify_rules)) in
       group :: group_vrules diff_rules
 
 (* TODO: The codes below are too repetitive. Should be factored. *)

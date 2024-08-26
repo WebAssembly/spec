@@ -226,10 +226,18 @@ watsup 0.4 generator
 * :math:`(t {.} {\mathit{relop}}_t)` is valid with type :math:`(t~t~\rightarrow~\mathsf{i{\scriptstyle 32}})`.
 
 
-* :math:`({\mathit{nt}}_1 {.} {\mathsf{reinterpret}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with type :math:`({\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1)` if and only if:
+* :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with type :math:`({\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1)` if and only if:
 
 
-   * :math:`{|{\mathit{nt}}_1|}` must be equal to :math:`{|{\mathit{nt}}_2|}`.
+   * Either:
+
+      * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{reinterpret}`.
+
+      * :math:`{|{\mathit{nt}}_1|}` must be equal to :math:`{|{\mathit{nt}}_2|}`.
+
+   * Or:
+
+      * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{cvtop}}`.
 
 
 * :math:`(\mathsf{local{.}get}~x)` is valid with type :math:`(\epsilon~\rightarrow~t)` if and only if:
@@ -2939,8 +2947,12 @@ Instr_ok/relop
 - the instr (RELOP t relop_t) is valid with the function type ([t, t] -> [I32]).
 
 Instr_ok/cvtop
-- the instr (CVTOP nt_1 nt_2 REINTERPRET) is valid with the function type ([nt_2] -> [nt_1]) if and only if:
-  - $size(nt_1) is $size(nt_2).
+- the instr (CVTOP nt_1 nt_2 cvtop_u0) is valid with the function type ([nt_2] -> [nt_1]) if and only if:
+  - Either:
+    - cvtop_u0 is REINTERPRET.
+    - $size(nt_1) is $size(nt_2).
+  - Or:
+    - cvtop_u0 is cvtop.
 
 Instr_ok/local.get
 - the instr (LOCAL.GET x) is valid with the function type ([] -> [t]) if and only if:
@@ -4368,7 +4380,26 @@ watsup 0.4 generator
 * :math:`\mathsf{drop}` is valid with type :math:`(t~\rightarrow~\epsilon)`.
 
 
-* :math:`(t~{}^?)` is valid with type :math:`(t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t)`.
+* :math:`({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?)` is valid with type :math:`(t~t~\mathsf{i{\scriptstyle 32}}~\rightarrow~t)` if and only if:
+
+
+   * Either:
+
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`t`.
+
+   * Or:
+
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`\epsilon`.
+
+      * :math:`t` matches :math:`{t'}`.
+
+      * Either:
+
+         * :math:`{t'}` must be equal to :math:`{\mathit{numtype}}`.
+
+      * Or:
+
+         * :math:`{t'}` must be equal to :math:`{\mathit{vectype}}`.
 
 
 * :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})` if and only if:
@@ -4470,10 +4501,18 @@ watsup 0.4 generator
 * :math:`({\mathit{nt}} {.} {\mathit{relop}}_{\mathit{nt}})` is valid with type :math:`({\mathit{nt}}~{\mathit{nt}}~\rightarrow~\mathsf{i{\scriptstyle 32}})`.
 
 
-* :math:`({\mathit{nt}}_1 {.} {\mathsf{reinterpret}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with type :math:`({\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1)` if and only if:
+* :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is valid with type :math:`({\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1)` if and only if:
 
 
-   * :math:`{|{\mathit{nt}}_1|}` must be equal to :math:`{|{\mathit{nt}}_2|}`.
+   * Either:
+
+      * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`\mathsf{reinterpret}`.
+
+      * :math:`{|{\mathit{nt}}_1|}` must be equal to :math:`{|{\mathit{nt}}_2|}`.
+
+   * Or:
+
+      * :math:`{\mathit{cvtop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{cvtop}}`.
 
 
 * :math:`(\mathsf{ref{.}null}~{\mathit{rt}})` is valid with type :math:`(\epsilon~\rightarrow~{\mathit{rt}})`.
@@ -4767,14 +4806,36 @@ watsup 0.4 generator
       * :math:`{\mathit{nt}}` must be equal to :math:`{\mathsf{i}}{n}`.
 
 
-* :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({M}{\mathsf{x}}{\mathsf{x}}{\mathsf{\_}}{N})~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}})` if and only if:
+* :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}})` if and only if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
+   * Either:
 
-   * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
+      * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`({M}{\mathsf{x}}{\mathsf{x}}{\mathsf{\_}}{N})`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`M / 8 \cdot N`.
+      * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
+
+      * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
+
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`M / 8 \cdot N`.
+
+   * Or:
+
+      * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`({n}{\mathsf{\_}}{\mathsf{splat}})`.
+
+      * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
+
+      * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
+
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`n / 8`.   * Or:
+
+      * :math:`{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`({n}{\mathsf{\_}}{\mathsf{zero}})`.
+
+      * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`0`.
+
+      * :math:`C{.}\mathsf{mems}{}[0]` must be equal to :math:`{\mathit{mt}}`.
+
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`n / 8`.
 
 
 * :math:`(\mathsf{vload\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\mathit{memarg}}~{\mathit{laneidx}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}})` if and only if:
@@ -9680,7 +9741,16 @@ Instr_ok/drop
 - the instr DROP is valid with the function type ([t] -> []).
 
 Instr_ok/select
-- the instr (SELECT() ?([t]) ?) is valid with the function type ([t, t, I32] -> [t]).
+- the instr (SELECT() valtype_u0? ?) is valid with the function type ([t, t, I32] -> [t]) if and only if:
+  - Either:
+    - valtype_u0? is ?([t]).
+  - Or:
+    - valtype_u0? is ?().
+    - the value type t matches the value type t'.
+    - Either:
+      - t' is numtype.
+    - Or:
+      - t' is vectype.
 
 Instr_ok/block
 - the instr (BLOCK bt instr*) is valid with the function type (t_1* -> t_2*) if and only if:
@@ -9749,8 +9819,12 @@ Instr_ok/relop
 - the instr (RELOP nt relop_nt) is valid with the function type ([nt, nt] -> [I32]).
 
 Instr_ok/cvtop
-- the instr (CVTOP nt_1 nt_2 REINTERPRET) is valid with the function type ([nt_2] -> [nt_1]) if and only if:
-  - $size(nt_1) is $size(nt_2).
+- the instr (CVTOP nt_1 nt_2 cvtop_u0) is valid with the function type ([nt_2] -> [nt_1]) if and only if:
+  - Either:
+    - cvtop_u0 is REINTERPRET.
+    - $size(nt_1) is $size(nt_2).
+  - Or:
+    - cvtop_u0 is cvtop.
 
 Instr_ok/ref.null
 - the instr (REF.NULL rt) is valid with the function type ([] -> [rt]).
@@ -9952,10 +10026,22 @@ Instr_ok/store
     - nt is Inn.
 
 Instr_ok/vload
-- the instr (VLOAD V128 ?((SHAPE M X N sx)) memarg) is valid with the function type ([I32] -> [V128]) if and only if:
-  - |C.MEMS| is greater than 0.
-  - C.MEMS[0] is mt.
-  - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) · N).
+- the instr (VLOAD V128 ?(vloadop_u0) memarg) is valid with the function type ([I32] -> [V128]) if and only if:
+  - Either:
+    - vloadop_u0 is (SHAPE M X N sx).
+    - |C.MEMS| is greater than 0.
+    - C.MEMS[0] is mt.
+    - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) · N).
+  - Or:
+    - vloadop_u0 is (SPLAT n).
+    - |C.MEMS| is greater than 0.
+    - C.MEMS[0] is mt.
+    - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
+  - Or:
+    - vloadop_u0 is (ZERO n).
+    - |C.MEMS| is greater than 0.
+    - C.MEMS[0] is mt.
+    - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
 
 Instr_ok/vload_lane
 - the instr (VLOAD_LANE V128 n memarg laneidx) is valid with the function type ([I32, V128] -> [V128]) if and only if:
@@ -12295,8 +12381,6 @@ watsup 0.4 generator
 == Translating to AL...
 == Prose Generation...
 6-typing.watsup:195.10-195.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
-6-typing.watsup:876.9-876.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
-6-typing.watsup:910.9-910.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
 6-typing.watsup:1378.9-1378.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm : name})`
 
 * :math:`{\mathit{numtype}}` is valid.
@@ -13070,10 +13154,30 @@ watsup 0.4 generator
    * :math:`t` is valid.
 
 
-* :math:`(t~{}^?)` is valid with type :math:`(t~t~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,t)` if and only if:
+* :math:`({{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{}^?)` is valid with type :math:`(t~t~\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,t)` if and only if:
 
 
-   * :math:`t` is valid.
+   * Either:
+
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`t`.
+
+      * :math:`t` is valid.
+
+   * Or:
+
+      * :math:`{{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`\epsilon`.
+
+      * :math:`t` is valid.
+
+      * :math:`t` matches :math:`{t'}`.
+
+      * Either:
+
+         * :math:`{t'}` must be equal to :math:`{\mathit{numtype}}`.
+
+      * Or:
+
+         * :math:`{t'}` must be equal to :math:`{\mathit{vectype}}`.
 
 
 * :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast})` is valid with type :math:`({t_1^\ast}~{\rightarrow}_{\epsilon}\,{t_2^\ast})` if and only if:
@@ -13478,7 +13582,13 @@ watsup 0.4 generator
 
    * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~({\mathsf{mut}^?}, {\mathit{zt}}))`.
 
-   * YetI: (($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype))).
+   * Either:
+
+      * :math:`{\mathrm{unpack}}({\mathit{zt}})` must be equal to :math:`{\mathit{numtype}}`.
+
+   * Or:
+
+      * :math:`{\mathrm{unpack}}({\mathit{zt}})` must be equal to :math:`{\mathit{vectype}}`.
 
    * :math:`C{.}\mathsf{datas}{}[y]` must be equal to :math:`\mathsf{ok}`.
 
@@ -13552,7 +13662,13 @@ watsup 0.4 generator
 
    * :math:`{\mathrm{expand}}(C{.}\mathsf{types}{}[x])` must be equal to :math:`(\mathsf{array}~((\mathsf{mut}~()~{}^?), {\mathit{zt}}))`.
 
-   * YetI: (($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype))).
+   * Either:
+
+      * :math:`{\mathrm{unpack}}({\mathit{zt}})` must be equal to :math:`{\mathit{numtype}}`.
+
+   * Or:
+
+      * :math:`{\mathrm{unpack}}({\mathit{zt}})` must be equal to :math:`{\mathit{vectype}}`.
 
    * :math:`C{.}\mathsf{datas}{}[y]` must be equal to :math:`\mathsf{ok}`.
 
@@ -13806,34 +13922,108 @@ watsup 0.4 generator
    * :math:`C{.}\mathsf{datas}{}[x]` must be equal to :math:`\mathsf{ok}`.
 
 
-* :math:`({{\mathit{nt}}{.}\mathsf{load}}{\epsilon}~x~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,{\mathit{nt}})` if and only if:
+* :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}}~x~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}})` if and only if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
+   * Either:
 
-   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+      * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{nt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+      * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` must be equal to :math:`\epsilon`.
+
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` must be equal to :math:`{\mathit{nt}}`.
+
+      * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
+
+      * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+
+   * Or:
+
+      * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathsf{i}}{N}`.
+
+      * :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` must be equal to :math:`(M, {\mathit{sx}})`.
+
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` must be equal to :math:`{\mathsf{i}}{N}`.
+
+      * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
+
+      * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`M / 8`.
 
 
-* :math:`({{\mathit{nt}}{.}\mathsf{store}}{\epsilon}~x~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
+* :math:`({{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~x~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}~{\rightarrow}_{\epsilon}\,\epsilon)` if and only if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
+   * Either:
 
-   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+      * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathit{nt}}`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+      * :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` must be equal to :math:`\epsilon`.
+
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` must be equal to :math:`{\mathit{nt}}`.
+
+      * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
+
+      * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
+
+   * Or:
+
+      * :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` must be equal to :math:`{\mathsf{i}}{N}`.
+
+      * :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` must be equal to :math:`M`.
+
+      * :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` must be equal to :math:`{\mathsf{i}}{N}`.
+
+      * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
+
+      * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`M / 8`.
 
 
-* :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{\epsilon}~x~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,\mathsf{v{\scriptstyle 128}})` if and only if:
+* :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}}~x~{\mathit{memarg}})` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~{\rightarrow}_{\epsilon}\,\mathsf{v{\scriptstyle 128}})` if and only if:
 
 
-   * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
+   * Either:
 
-   * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+      * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`\epsilon`.
 
-   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+      * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
+
+      * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+
+   * Or:
+
+      * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
+
+      * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
+
+      * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`M / 8 \cdot N`.   * Or:
+
+      * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`({N}{\mathsf{\_}}{\mathsf{splat}})`.
+
+      * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
+
+      * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`N / 8`.   * Or:
+
+      * :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` must be equal to :math:`({N}{\mathsf{\_}}{\mathsf{zero}})`.
+
+      * :math:`{|C{.}\mathsf{mems}|}` must be greater than :math:`x`.
+
+      * :math:`C{.}\mathsf{mems}{}[x]` must be equal to :math:`{\mathit{mt}}`.
+
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` must be less than or equal to :math:`N / 8`.
 
 
 * :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{memarg}}~i)` is valid with type :math:`(\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~{\rightarrow}_{\epsilon}\,\mathsf{v{\scriptstyle 128}})` if and only if:
@@ -22394,8 +22584,6 @@ watsup 0.4 generator
 == Translating to AL...
 == Prose Generation...
 6-typing.watsup:195.10-195.32: if_expr_to_instrs: Yet `$before(typeuse, x, i)`
-6-typing.watsup:876.9-876.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
-6-typing.watsup:910.9-910.55: if_expr_to_instrs: Yet `(($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))`
 6-typing.watsup:1378.9-1378.30: if_expr_to_instrs: Yet `$disjoint_(syntax name, nm*{nm : name})`
 Numtype_ok
 - the number type numtype is valid.
@@ -22865,8 +23053,18 @@ Instr_ok/drop
   - the value type t is valid.
 
 Instr_ok/select
-- the instr (SELECT() ?([t]) ?) is valid with the instruction type ([t, t, I32] ->_ [] [t]) if and only if:
-  - the value type t is valid.
+- the instr (SELECT() valtype_u0? ?) is valid with the instruction type ([t, t, I32] ->_ [] [t]) if and only if:
+  - Either:
+    - valtype_u0? is ?([t]).
+    - the value type t is valid.
+  - Or:
+    - valtype_u0? is ?().
+    - the value type t is valid.
+    - the value type t matches the value type t'.
+    - Either:
+      - t' is numtype.
+    - Or:
+      - t' is vectype.
 
 Instr_ok/block
 - the instr (BLOCK bt instr*) is valid with the instruction type (t_1* ->_ [] t_2*) if and only if:
@@ -23117,7 +23315,10 @@ Instr_ok/array.new_data
   - |C.TYPES| is greater than x.
   - |C.DATAS| is greater than y.
   - $expanddt(C.TYPES[x]) is (ARRAY (mut, zt)).
-  - Yet: (($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))
+  - Either:
+    - $unpack(zt) is numtype.
+  - Or:
+    - $unpack(zt) is vectype.
   - C.DATAS[y] is OK.
 
 Instr_ok/array.get
@@ -23161,7 +23362,10 @@ Instr_ok/array.init_data
   - |C.TYPES| is greater than x.
   - |C.DATAS| is greater than y.
   - $expanddt(C.TYPES[x]) is (ARRAY ((MUT ?(()) ?), zt)).
-  - Yet: (($unpack(zt) = (numtype : numtype <: valtype)) \/ ($unpack(zt) = (vectype : vectype <: valtype)))
+  - Either:
+    - $unpack(zt) is numtype.
+  - Or:
+    - $unpack(zt) is vectype.
   - C.DATAS[y] is OK.
 
 Instr_ok/extern.convert_any
@@ -23340,22 +23544,61 @@ Instr_ok/data.drop
   - C.DATAS[x] is OK.
 
 Instr_ok/load
-- the instr (LOAD nt ?() x memarg) is valid with the instruction type ([I32] ->_ [] [nt]) if and only if:
-  - |C.MEMS| is greater than x.
-  - C.MEMS[x] is mt.
-  - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
+- the instr (LOAD numtype_u0 loadop__u2? x memarg) is valid with the instruction type ([I32] ->_ [] [valtype_u3]) if and only if:
+  - Either:
+    - numtype_u0 is nt.
+    - loadop__u2? is ?().
+    - valtype_u3 is nt.
+    - |C.MEMS| is greater than x.
+    - C.MEMS[x] is mt.
+    - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
+  - Or:
+    - numtype_u0 is Inn.
+    - loadop__u2? is ?((M, sx)).
+    - valtype_u3 is Inn.
+    - |C.MEMS| is greater than x.
+    - C.MEMS[x] is mt.
+    - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/store
-- the instr (STORE nt ?() x memarg) is valid with the instruction type ([I32, nt] ->_ [] []) if and only if:
-  - |C.MEMS| is greater than x.
-  - C.MEMS[x] is mt.
-  - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
+- the instr (STORE numtype_u0 sz_u1? x memarg) is valid with the instruction type ([I32, valtype_u2] ->_ [] []) if and only if:
+  - Either:
+    - numtype_u0 is nt.
+    - sz_u1? is ?().
+    - valtype_u2 is nt.
+    - |C.MEMS| is greater than x.
+    - C.MEMS[x] is mt.
+    - (2 ^ memarg.ALIGN) is less than or equal to ($size(nt) / 8).
+  - Or:
+    - numtype_u0 is Inn.
+    - sz_u1? is ?(M).
+    - valtype_u2 is Inn.
+    - |C.MEMS| is greater than x.
+    - C.MEMS[x] is mt.
+    - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/vload
-- the instr (VLOAD V128 ?() x memarg) is valid with the instruction type ([I32] ->_ [] [V128]) if and only if:
-  - |C.MEMS| is greater than x.
-  - C.MEMS[x] is mt.
-  - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
+- the instr (VLOAD V128 vloadop__u0? x memarg) is valid with the instruction type ([I32] ->_ [] [V128]) if and only if:
+  - Either:
+    - vloadop__u0? is ?().
+    - |C.MEMS| is greater than x.
+    - C.MEMS[x] is mt.
+    - (2 ^ memarg.ALIGN) is less than or equal to ($vsize(V128) / 8).
+  - Or:
+    - vloadop__u0? is ?((SHAPE M X N sx)).
+    - |C.MEMS| is greater than x.
+    - C.MEMS[x] is mt.
+    - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) · N).
+  - Or:
+    - vloadop__u0? is ?((SPLAT N)).
+    - |C.MEMS| is greater than x.
+    - C.MEMS[x] is mt.
+    - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
+  - Or:
+    - vloadop__u0? is ?((ZERO N)).
+    - |C.MEMS| is greater than x.
+    - C.MEMS[x] is mt.
+    - (2 ^ memarg.ALIGN) is less than or equal to (N / 8).
 
 Instr_ok/vload_lane
 - the instr (VLOAD_LANE V128 N x memarg i) is valid with the instruction type ([I32, V128] ->_ [] [V128]) if and only if:
