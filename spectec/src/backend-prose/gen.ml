@@ -1,4 +1,6 @@
 open Prose
+open Eq
+
 open Il
 open Al.Al_util
 open Il2al.Translate
@@ -467,6 +469,46 @@ let prose_of_rel rel = match get_rel_kind rel with
 
 let prose_of_rels = List.concat_map prose_of_rel
 
+(** Postprocess of generated prose **)
+let unify_either instrs =
+  let f instr =
+    match instr with
+    | EitherI iss ->
+      let unified, bodies = List.fold_left (fun (commons, instrss) i ->
+        let pairs = List.map (List.partition (eq_instr i)) instrss in
+        let fsts = List.map fst pairs in
+        let snds = List.map snd pairs in
+        if List.for_all (fun l -> List.length l = 1) fsts then
+          i :: commons, snds
+        else
+          commons, instrss
+      ) ([], iss) (List.hd iss) in
+      let unified = List.rev unified in
+      unified @ [ EitherI bodies ]
+    | _ -> [instr]
+  in
+  let rec walk instrs = List.concat_map walk' instrs
+  and walk' instr =
+    f instr
+    |> List.map (function
+      | IfI (e, il) -> IfI (e, walk il)
+      | ForallI (vars, il) -> ForallI (vars, walk il)
+      | EitherI ill -> EitherI (List.map walk ill)
+      | i -> i
+    )
+  in
+  walk instrs
+
+let postprocess_prose defs =
+  List.map (fun def ->
+    match def with
+    | Iff (anchor, e, i, il) ->
+      let new_il = unify_either il in
+      Iff (anchor, e, i, new_il)
+    | Algo _ -> def
+  ) defs
+
+
 (** Entry for generating validation prose **)
 let gen_validation_prose () =
   prose_of_rels !Langs.il
@@ -494,6 +536,7 @@ let gen_prose el il al =
   let execution_prose = gen_execution_prose () in
 
   validation_prose @ execution_prose
+  |> postprocess_prose
 
 (** Main entry for generating stringified prose **)
 let gen_string cfg_latex cfg_prose el il al =
