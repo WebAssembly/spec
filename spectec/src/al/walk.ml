@@ -40,8 +40,8 @@ let walk_expr (walker: unit_walker) (expr: expr) : unit =
   | UnE (_, e) | LenE e | ArityE e | ContE e
   | IsDefinedE e | IsCaseOfE (e, _) | HasTypeE (e, _) | IsValidE e
   | TopValueE (Some e) | TopValuesE e | ChooseE e -> walker.walk_expr walker e
-
-  | BinE (_, e1, e2) | CatE (e1, e2) | MemE (e1, e2)
+  
+  | BinE (_, e1, e2) | CompE (e1, e2) | CatE (e1, e2) | MemE (e1, e2)
   | LabelE (e1, e2) | MatchE (e1, e2) ->
     walker.walk_expr walker e1; walker.walk_expr walker e2
   | FrameE (e_opt, e) ->
@@ -72,7 +72,7 @@ let walk_instr (walker: unit_walker) (instr: instr) : unit =
   | TrapI | NopI | ReturnI None | ExitI _ | YetI _ -> ()
   | AssertI e | PushI e | PopI e | PopAllI e
   | ReturnI (Some e)| ExecuteI e | ExecuteSeqI e -> walker.walk_expr walker e
-  | LetI (e1, e2) | AppendI (e1, e2) ->
+  | LetI (e1, e2) | AppendI (e1, e2) | FieldWiseAppendI (e1, e2) ->
     walker.walk_expr walker e1; walker.walk_expr walker e2
   | PerformI (_, al) -> List.iter (walker.walk_arg walker) al
   | ReplaceI (e1, p, e2) ->
@@ -136,6 +136,7 @@ let walk_expr (walker: walker) (expr: expr) : expr =
     | CallE (id, al) -> CallE (id, List.map walk_arg al)
     | InvCallE (id, nl, al) -> InvCallE (id, nl, List.map walk_arg al)
     | ListE el -> ListE (List.map walk_expr el)
+    | CompE (e1, e2) -> CompE (walk_expr e1, walk_expr e2)
     | CatE (e1, e2) -> CatE (walk_expr e1, walk_expr e2)
     | MemE (e1, e2) -> MemE (walk_expr e1, walk_expr e2)
     | LenE e -> LenE (walk_expr e)
@@ -191,6 +192,7 @@ let walk_instr (walker: walker) (instr: instr) : instr =
     | ExitI _ -> instr.it
     | ReplaceI (e1, p, e2) -> ReplaceI (walk_expr e1, walk_path p, walk_expr e2)
     | AppendI (e1, e2) -> AppendI (walk_expr e1, walk_expr e2)
+    | FieldWiseAppendI (e1, e2) -> FieldWiseAppendI (walk_expr e1, walk_expr e2)
     | YetI _ -> instr.it
   in
   { instr with it }
@@ -254,6 +256,7 @@ let rec walk_expr f e =
       | InvCallE (id, nl, el) -> InvCallE (id, nl, List.map (walk_arg f) el)
       (* TODO: Implement walker for iter *)
       | ListE el -> ListE (List.map new_ el)
+      | CompE (e1, e2) -> CompE (new_ e1, new_ e2)
       | CatE (e1, e2) -> CatE (new_ e1, new_ e2)
       | MemE (e1, e2) -> MemE (new_ e1, new_ e2)
       | LenE e' -> LenE (new_ e')
@@ -339,6 +342,7 @@ let rec walk_instr f (instr:instr) : instr list =
       | ExitI _ -> i.it
       | ReplaceI (e1, p, e2) -> ReplaceI (new_e e1, walk_path f p, new_e e2)
       | AppendI (e1, e2) -> AppendI (new_e e1, new_e e2)
+      | FieldWiseAppendI (e1, e2) -> FieldWiseAppendI (new_e e1, new_e e2)
       | YetI _ -> i.it in
     { i with it = i' }
   in

@@ -185,37 +185,8 @@ and translate_exp exp =
   (* property access *)
   | Il.DotE (inner_exp, ({it = Atom _; _} as atom)) ->
     accE (translate_exp inner_exp, dotP atom) ~at:at ~note:note
-  (* conacatenation of records *)
-  | Il.CompE (inner_exp, { it = Il.StrE expfields; _ }) ->
-    (* assumption: CompE is only used with at least one literal *)
-    let nonempty e = (match e.it with ListE [] | OptE None -> false | _ -> true) in
-    List.fold_left
-      (fun acc extend_exp ->
-        match extend_exp with
-        | {it = Il.Atom _; _} as atom, fieldexp ->
-          let extend_expr = translate_exp fieldexp in
-          if nonempty extend_expr then
-            extE (acc, [ dotP atom ], extend_expr, Back) ~at:at ~note:note
-          else
-            acc
-        | _ -> error_exp exp "AL record expression"
-      )
-      (translate_exp inner_exp) expfields
-  | Il.CompE ({ it = Il.StrE expfields; _ }, inner_exp) ->
-    (* assumption: CompE is only used with at least one literal *)
-    let nonempty e = (match e.it with ListE [] | OptE None -> false | _ -> true) in
-    List.fold_left
-      (fun acc extend_exp ->
-        match extend_exp with
-        | {it = Il.Atom _; _} as atom, fieldexp ->
-          let extend_expr = translate_exp fieldexp in
-          if nonempty extend_expr then
-            extE (acc, [ dotP atom ], extend_expr, Front) ~at:at ~note:note
-          else
-            acc
-        | _ -> error_exp exp "AL record expression"
-      )
-      (translate_exp inner_exp) expfields
+  (* concatenation of records *)
+  | Il.CompE (exp1, exp2) -> compE (translate_exp exp1, translate_exp exp2) ~at:at ~note:note
   (* extension of record field *)
   | Il.ExtE (base, path, v) -> extE (translate_exp base, translate_path path, translate_exp v, Back) ~at:at ~note:note
   (* update of record field *)
@@ -1386,7 +1357,7 @@ let translate_rules il =
   |> group_rules
   (* Translate reduction group into algorithm *)
   |> List.map translate_rgroup
-
+  
 let rec collect_def env def =
   let open Il in
   match def.it with
@@ -1424,3 +1395,4 @@ let translate il =
 
   let al = (translate_helpers il' @ translate_rules il') in
   List.map Transpile.remove_state al
+  

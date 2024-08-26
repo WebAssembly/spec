@@ -244,6 +244,9 @@ and eval_expr env expr =
     )
   (* Data Structure *)
   | ListE el -> List.map (eval_expr env) el |> listV_of_list
+  (* | CompE (_, _) ->
+    (* TODO: interpret CompE *)
+    raise (Exception.MissingReturnValue "CompE") *)
   | CatE (e1, e2) ->
     let a1 = eval_expr env e1 |> unwrap_listv_to_array in
     let a2 = eval_expr env e2 |> unwrap_listv_to_array in
@@ -660,6 +663,22 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
       |> fail_expr e2
     | _, v -> a := Array.append !a [|v|]
     );
+    ctx
+  | FieldWiseAppendI (e1, e2) ->
+    let s1 = eval_expr env e1 |> unwrap_strv in
+    let s2 = eval_expr env e2 |> unwrap_strv in
+    Record.iter
+    (fun (id, v) ->
+    let arr1 = match !v with
+    | ListV arr_ref -> arr_ref
+    | _ -> failwith (sprintf "`%s` is not a list" (string_of_value !v))
+    in
+    let arr2 = match Record.find id s2 with
+    | ListV arr_ref -> arr_ref
+    | v -> failwith (sprintf "`%s` is not a list" (string_of_value v))
+    in
+    arr1 := Array.append !arr1 !arr2
+    ) s1;
     ctx
   | _ -> failwith "cannot step instr"
 

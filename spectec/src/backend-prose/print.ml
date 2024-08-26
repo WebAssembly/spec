@@ -119,8 +119,10 @@ and string_of_expr expr =
         |> sprintf "%s_%s" id
     in
     sprintf "$%s^-1(%s)" id' (string_of_args ", " al)
-  | CatE (e1, e2) ->
+  | CompE (e1, e2) ->
     sprintf "%s ++ %s" (string_of_expr e1) (string_of_expr e2)
+  | CatE (e1, e2) ->
+    sprintf "%s :: %s" (string_of_expr e1) (string_of_expr e2)
   | MemE (e1, e2) ->
     sprintf "%s <- %s" (string_of_expr e1) (string_of_expr e2)
   | LenE e -> sprintf "|%s|" (string_of_expr e)
@@ -346,6 +348,9 @@ let rec string_of_instr' depth instr =
       (string_of_expr e1) (string_of_path p) (string_of_expr e2)
   | AppendI (e1, e2) ->
     sprintf "%s Append %s to the %s." (make_index depth)
+      (string_of_expr e2) (string_of_expr e1)
+  | FieldWiseAppendI (e1, e2) ->
+    sprintf "%s Append %s to the %s, fieldwise." (make_index depth)
       (string_of_expr e2) (string_of_expr e1)
   | YetI s -> sprintf "%s YetI: %s." (make_index depth) s
 

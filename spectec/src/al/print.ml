@@ -144,8 +144,10 @@ and string_of_expr expr =
         |> sprintf "%s_%s" id
     in
     sprintf "$%s^-1(%s)" id' (string_of_args ", " al)
-  | CatE (e1, e2) ->
+  | CompE (e1, e2) ->
     sprintf "%s ++ %s" (string_of_expr e1) (string_of_expr e2)
+  | CatE (e1, e2) ->
+    sprintf "%s :: %s" (string_of_expr e1) (string_of_expr e2)
   | MemE (e1, e2) ->
     sprintf "%s <- %s" (string_of_expr e1) (string_of_expr e2)
   | LenE e -> sprintf "|%s|" (string_of_expr e)
@@ -340,6 +342,9 @@ let rec string_of_instr' depth instr =
   | AppendI (e1, e2) ->
     sprintf " %s :+ %s"
       (string_of_expr e2) (string_of_expr e1)
+  | FieldWiseAppendI (e1, e2) ->
+    sprintf " %s :⨁ %s"
+      (string_of_expr e2) (string_of_expr e1)
   | YetI s -> sprintf " YetI: %s." s
 
 and string_of_instrs' depth instrs =
@@ -440,6 +445,12 @@ and structured_string_of_expr expr =
     let nl = List.filter_map (fun x -> x) nl in
     sprintf "InvCallE (%s, [%s], [%s])"
       id (string_of_list string_of_int "" nl) (structured_string_of_args al)
+  | CompE (e1, e2) ->
+    "CompE ("
+    ^ structured_string_of_expr e1
+    ^ ", "
+    ^ structured_string_of_expr e2
+    ^ ")"
   | CatE (e1, e2) ->
     "CatE ("
     ^ structured_string_of_expr e1
@@ -611,6 +622,12 @@ let rec structured_string_of_instr' depth instr =
     ^ ")"
   | AppendI (e1, e2) ->
     "AppendI ("
+    ^ structured_string_of_expr e1
+    ^ ", "
+    ^ structured_string_of_expr e2
+    ^ ")"
+  | FieldWiseAppendI (e1, e2) ->
+    "FieldWiseAppendI ("
     ^ structured_string_of_expr e1
     ^ ", "
     ^ structured_string_of_expr e2

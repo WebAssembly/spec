@@ -34,6 +34,7 @@ let performI ?(at = no) (id, el) = PerformI (id, el) |> mk_instr at
 let exitI ?(at = no) a = ExitI a |> mk_instr at
 let replaceI ?(at = no) (e1, p, e2) = ReplaceI (e1, p, e2) |> mk_instr at
 let appendI ?(at = no) (e1, e2) = AppendI (e1, e2) |> mk_instr at
+let fieldwiseappendI ?(at = no) (e1, e2) = FieldWiseAppendI (e1, e2) |> mk_instr at
 let otherwiseI ?(at = no) il = OtherwiseI il |> mk_instr at
 let yetI ?(at = no) s = YetI s |> mk_instr at
 
@@ -48,6 +49,7 @@ let accE ?(at = no) ~note (e, p) = AccE (e, p) |> mk_expr at note
 let updE ?(at = no) ~note (e1, pl, e2) = UpdE (e1, pl, e2) |> mk_expr at note
 let extE ?(at = no) ~note (e1, pl, e2, dir) = ExtE (e1, pl, e2, dir) |> mk_expr at note
 let strE ?(at = no) ~note r = StrE r |> mk_expr at note
+let compE ?(at = no) ~note (e1, e2) = CompE (e1, e2) |> mk_expr at note
 let catE ?(at = no) ~note (e1, e2) = CatE (e1, e2) |> mk_expr at note
 let memE ?(at = no) ~note (e1, e2) = MemE (e1, e2) |> mk_expr at note
 let lenE ?(at = no) ~note e = LenE e |> mk_expr at note

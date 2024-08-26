@@ -29,6 +29,7 @@ let rec free_expr expr =
   | ContE e
   | ChooseE e -> free_expr e
   | BinE (_, e1, e2)
+  | CompE (e1, e2)
   | CatE (e1, e2)
   | MemE (e1, e2)
   | LabelE (e1, e2) -> free_expr e1 @ free_expr e2
@@ -92,7 +93,7 @@ let rec free_instr instr =
   | PushI e | PopI e | PopAllI e | ReturnI (Some e)
   | ExecuteI e | ExecuteSeqI e ->
     free_expr e
-  | LetI (e1, e2) | AppendI (e1, e2) -> free_expr e1 @ free_expr e2
+  | LetI (e1, e2) | AppendI (e1, e2) | FieldWiseAppendI (e1, e2) -> free_expr e1 @ free_expr e2
   | EnterI (e1, e2, il) -> free_expr e1 @ free_expr e2 @ free_list free_instr il
   | AssertI e -> free_expr e
   | PerformI (_, al) -> free_list free_arg al

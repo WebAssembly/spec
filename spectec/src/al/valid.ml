@@ -250,6 +250,15 @@ let check_field source source_typ expr_record typfield =
   | Some (_, expr_ref) -> check_match source !expr_ref.note typ
   | None -> error_field source source_typ atom
 
+let check_struct source typ =
+  match typ.it with
+  | VarT (id, args) -> (
+    let deftyps = get_deftyps id args in
+    if not (List.exists (fun deftyp -> match deftyp.it with StructT _ -> true | _ -> false) deftyps) then
+      error_valid "not a struct" source ""
+  )
+  | _ -> error_valid "not a struct" source ""
+
 let check_tuple source exprs typ =
   match (ground_typ_of typ).it with
   | TupT etl when List.length exprs = List.length etl ->
@@ -316,7 +325,7 @@ let check_inv_call source id indices args result_typ =
     match result_args with
     | [arg] -> (
       match arg.it with
-    | ExpA exp -> exp.note
+      | ExpA exp -> exp.note
       | a -> error_valid (Printf.sprintf "wrong result argument: %s" (Print.string_of_arg (a $ no_region))) source ""
     )
     | _ -> 
@@ -379,6 +388,9 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
   | StrE r ->
     let typfields = get_typfields expr.note in
     List.iter (check_field source expr.note r) typfields
+  | CompE (expr1, expr2) -> 
+    check_struct source expr1.note; check_struct source expr2.note;
+    check_match source expr.note expr1.note; check_match source expr1.note expr2.note
   | CatE (expr1, expr2) ->
     check_list source expr1.note; check_list source expr2.note;
     check_match source expr.note expr1.note; check_match source expr1.note expr2.note
@@ -473,6 +485,7 @@ let valid_instr (walker: unit_walker) (instr: instr) : unit =
   | ReplaceI (expr1, path, expr2) ->
     access source expr1.note path |> check_match source expr2.note
   | AppendI (expr1, _expr2) -> check_list source expr1.note
+  | FieldWiseAppendI (expr1, expr2) -> check_struct source expr1.note; check_struct source expr2.note
   | OtherwiseI _ | YetI _ -> error_valid "invalid instruction" source ""
   | _ -> ()
   );

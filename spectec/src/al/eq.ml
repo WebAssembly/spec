@@ -19,6 +19,7 @@ let rec eq_expr e1 e2 =
   | ExtE (e11, pl1, e12, d1), ExtE (e21, pl2, e22, d2) ->
     eq_expr e11 e21 && eq_paths pl1 pl2 && eq_expr e12 e22 && d1 = d2
   | StrE r1, StrE r2 -> eq_expr_record r1 r2
+  | CompE (e11, e12), CompE (e21, e22) -> eq_expr e11 e21 && eq_expr e12 e22
   | CatE (e11, e12), CatE (e21, e22) -> eq_expr e11 e21 && eq_expr e12 e22
   | MemE (e11, e12), MemE (e21, e22) -> eq_expr e11 e21 && eq_expr e12 e22
   | LenE e1, LenE e2 -> eq_expr e1 e2
@@ -113,6 +114,7 @@ let rec eq_instr i1 i2 =
   | ReplaceI (e11, p1, e12), ReplaceI (e21, p2, e22) ->
     eq_expr e11 e21 && eq_path p1 p2 && eq_expr e12 e22
   | AppendI (e11, e12), AppendI (e21, e22) -> eq_expr e11 e21 && eq_expr e12 e22
+  | FieldWiseAppendI (e11, e12),FieldWiseAppendI (e21, e22) -> eq_expr e11 e21 && eq_expr e12 e22
   | OtherwiseI il1, OtherwiseI il2 -> eq_instrs il1 il2
   | YetI s1, YetI s2 -> s1 = s2
   | _ -> false

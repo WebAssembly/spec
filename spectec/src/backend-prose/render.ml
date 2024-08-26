@@ -672,6 +672,9 @@ let rec render_al_instr env algoname index depth instr =
   | Al.Ast.AppendI (e1, e2) ->
     sprintf "%s Append %s to the %s." (render_order index depth)
       (render_expr env e2) (render_expr env e1)
+  | Al.Ast.FieldWiseAppendI (e1, e2) ->
+    sprintf "%s Append %s to the %s, fieldwise" (render_order index depth)
+      (render_expr env e2) (render_expr env e1)
   | Al.Ast.YetI s -> sprintf "%s YetI: %s." (render_order index depth) s
 
 and render_al_instrs env algoname depth instrs =

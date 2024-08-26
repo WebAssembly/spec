@@ -425,11 +425,38 @@ let infer_case_assert instrs =
   in
   rewrite_il instrs
 
+let reduce_comp expr =
+  let nonempty e = (match e.it with ListE [] | OptE None -> false | _ -> true) in
+  match expr.it with
+  | CompE (inner_expr, { it = StrE record; _ }) ->
+    Record.fold_left
+    (fun acc extend_exp ->
+      match extend_exp with
+      | ({ it = El.Atom.Atom _; _ } as atom, fieldexp) -> 
+        if nonempty !fieldexp then
+          extE (acc, [ dotP atom ], !fieldexp, Back) ~at:expr.at ~note:expr.note
+        else
+          acc
+      | _ -> acc
+    ) inner_expr record
+  | CompE ({ it = StrE record; _ }, inner_expr) ->
+    Record.fold_left
+    (fun acc extend_exp ->
+      match extend_exp with
+      | ({ it = El.Atom.Atom _; _ } as atom, fieldexp) -> 
+        if nonempty !fieldexp then
+          extE (acc, [ dotP atom ], !fieldexp, Front) ~at:expr.at ~note:expr.note
+        else
+          acc
+      | _ -> acc
+    ) inner_expr record
+  | _ -> expr
+
 let rec enhance_readability instrs =
   let walk_config =
     {
       Walk.default_config with
-      pre_expr = simplify_record_concat |> composite if_not_defined;
+      pre_expr = simplify_record_concat |> composite if_not_defined |> composite reduce_comp;
       post_instr =
         unify_if_head @@ unify_if_tail @@ (lift swap_if) @@ early_return @@ (lift merge_three_branches);
     } in
@@ -529,6 +556,12 @@ let hide_state instr =
     [ letI (addr, e2) ~at:at;
       appendI (access, e1) ~at:at;
       returnI (Some addr) ~at:at ]
+  (* Fieldwise Append & Return *)
+  | ReturnI (Some ({ it = TupE [ { it = CompE (e1, e2); _ } as s; e ]; _  })) when is_store s ->
+    let addr = varE "a" ~note:e.note in
+    [ letI (addr, e) ~at:at;
+      fieldwiseappendI (e1, e2) ~at:at;
+      returnI (Some addr) ~at:at ]
   (* Replace store *)
   | ReturnI (Some ({ it = TupE [ { it = UpdE (s, ps, e); note; _ }; f ]; _ })) when is_store s && is_frame f ->
     let hs, t = Lib.List.split_last ps in
@@ -546,9 +579,12 @@ let hide_state instr =
     [ replaceI (access, t, e) ~at:at ]
   (* Append store *)
   | ReturnI (Some ({ it = TupE [ { it = ExtE (s, ps, e, Back); note; _ }; f ]; _ })) when is_store s && is_frame f ->
-    (* let hs, t = Lib.List.split_last ps in *)
     let access = { (mk_access ps s) with note } in
     [ appendI (access, e) ~at:at ]
+  (* Fieldwise append store / frame *)
+  | ReturnI (Some ({ it = TupE [ { it = CompE (e1, e2); _ } as s; f ]; _ }))
+  | ReturnI (Some ({ it = TupE [ s; { it = CompE (e1, e2); _ } as f ]; _ })) when is_store s && is_frame f ->
+    [ fieldwiseappendI (e1, e2) ~at:at ]
   (* Return *)
   | ReturnI (Some e) when is_state e || is_store e -> [ returnI None ~at:at ]
   | _ -> [ instr ]

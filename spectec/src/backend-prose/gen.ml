@@ -136,7 +136,7 @@ let get_rel_kind def =
 
 let transpile_expr =
   Al.Walk.walk_expr { Al.Walk.default_config with
-    post_expr = Il2al.Transpile.simplify_record_concat
+    post_expr = fun expr -> expr |> Il2al.Transpile.simplify_record_concat |> Il2al.Transpile.reduce_comp
   }
 
 let exp_to_expr e = translate_exp e |> transpile_expr
