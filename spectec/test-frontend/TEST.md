@@ -5798,6 +5798,10 @@ relation Step_read: `%~>%`(config, instr*)
     `%~>%`(`%;%`_config(z, [`LABEL_%{%}%`_instr(k, instr'*{instr' : instr}, (val : val <: instr)*{val : val} :: [RETURN_CALL_REF_instr(yy)] :: instr*{instr : instr})]), (val : val <: instr)*{val : val} :: [RETURN_CALL_REF_instr(yy)])
 
   ;; 8-reduction.watsup
+  rule return_call_ref-handler{z : state, k : nat, catch* : catch*, val* : val*, yy : typeuse, instr* : instr*}:
+    `%~>%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(k, catch*{catch : catch}, (val : val <: instr)*{val : val} :: [RETURN_CALL_REF_instr(yy)] :: instr*{instr : instr})]), (val : val <: instr)*{val : val} :: [RETURN_CALL_REF_instr(yy)])
+
+  ;; 8-reduction.watsup
   rule return_call_ref-frame-null{z : state, k : nat, f : frame, val* : val*, ht : heaptype, yy : typeuse, instr* : instr*}:
     `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_instr(k, f, (val : val <: instr)*{val : val} :: [REF.NULL_instr(ht)] :: [RETURN_CALL_REF_instr(yy)] :: instr*{instr : instr})]), [TRAP_instr])
 
@@ -6295,142 +6299,142 @@ relation Step: `%~>%`(config, config)
     `%~>%`(`%;%`_config(z, instr*{instr : instr}), `%;%`_config(z, instr'*{instr' : instr}))
     -- Step_read: `%~>%`(`%;%`_config(z, instr*{instr : instr}), instr'*{instr' : instr})
 
-  ;; 8-reduction.watsup:218.1-223.49
+  ;; 8-reduction.watsup:221.1-226.49
   rule throw{z : state, val^n : val^n, n : n, x : idx, exn : exninst, a : addr, t^n : valtype^n}:
     `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val : val} :: [THROW_instr(x)]), `%;%`_config($add_exninst(z, [exn]), [REF.EXN_ADDR_instr(a) THROW_REF_instr]))
     -- Expand: `%~~%`($tag(z, x).TYPE_taginst, FUNC_comptype(`%->%`_functype(`%`_resulttype(t^n{t : valtype}), `%`_resulttype([]))))
     -- if (a = |$exninst(z)|)
     -- if (exn = {TAG $tagaddr(z)[x!`%`_idx.0], FIELDS val^n{val : val}})
 
-  ;; 8-reduction.watsup:285.1-287.36
+  ;; 8-reduction.watsup:288.1-290.36
   rule ctxt-label{z : state, n : n, instr_0* : instr*, instr* : instr*, z' : state, instr'* : instr*}:
     `%~>%`(`%;%`_config(z, [`LABEL_%{%}%`_instr(n, instr_0*{instr_0 : instr}, instr*{instr : instr})]), `%;%`_config(z', [`LABEL_%{%}%`_instr(n, instr_0*{instr_0 : instr}, instr'*{instr' : instr})]))
     -- Step: `%~>%`(`%;%`_config(z, instr*{instr : instr}), `%;%`_config(z', instr'*{instr' : instr}))
 
-  ;; 8-reduction.watsup:289.1-291.44
+  ;; 8-reduction.watsup:292.1-294.44
   rule ctxt-frame{s : store, f : frame, n : n, f' : frame, instr* : instr*, s' : store, instr'* : instr*}:
     `%~>%`(`%;%`_config(`%;%`_state(s, f), [`FRAME_%{%}%`_instr(n, f', instr*{instr : instr})]), `%;%`_config(`%;%`_state(s', f), [`FRAME_%{%}%`_instr(n, f', instr'*{instr' : instr})]))
     -- Step: `%~>%`(`%;%`_config(`%;%`_state(s, f'), instr*{instr : instr}), `%;%`_config(`%;%`_state(s', f'), instr'*{instr' : instr}))
 
-  ;; 8-reduction.watsup:409.1-413.65
+  ;; 8-reduction.watsup:412.1-416.65
   rule struct.new{z : state, val^n : val^n, n : n, x : idx, si : structinst, a : addr, mut^n : mut^n, zt^n : storagetype^n}:
     `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val : val} :: [STRUCT.NEW_instr(x)]), `%;%`_config($add_structinst(z, [si]), [REF.STRUCT_ADDR_instr(a)]))
     -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%`_structtype(`%%`_fieldtype(mut, zt)^n{mut : mut, zt : storagetype})))
     -- if (a = |$structinst(z)|)
     -- if (si = {TYPE $type(z, x), FIELDS $packfield_(zt, val)^n{val : val, zt : storagetype}})
 
-  ;; 8-reduction.watsup:429.1-430.53
+  ;; 8-reduction.watsup:432.1-433.53
   rule struct.set-null{z : state, ht : heaptype, val : val, x : idx, i : nat}:
     `%~>%`(`%;%`_config(z, [REF.NULL_instr(ht) (val : val <: instr) STRUCT.SET_instr(x, `%`_u32(i))]), `%;%`_config(z, [TRAP_instr]))
 
-  ;; 8-reduction.watsup:432.1-434.45
+  ;; 8-reduction.watsup:435.1-437.45
   rule struct.set-struct{z : state, a : addr, val : val, x : idx, i : nat, zt* : storagetype*, mut* : mut*}:
     `%~>%`(`%;%`_config(z, [REF.STRUCT_ADDR_instr(a) (val : val <: instr) STRUCT.SET_instr(x, `%`_u32(i))]), `%;%`_config($with_struct(z, a, i, $packfield_(zt*{zt : storagetype}[i], val)), []))
     -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%`_structtype(`%%`_fieldtype(mut, zt)*{mut : mut, zt : storagetype})))
 
-  ;; 8-reduction.watsup:447.1-452.65
+  ;; 8-reduction.watsup:450.1-455.65
   rule array.new_fixed{z : state, val^n : val^n, n : n, x : idx, ai : arrayinst, a : addr, mut : mut, zt : storagetype}:
     `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val : val} :: [ARRAY.NEW_FIXED_instr(x, `%`_u32(n))]), `%;%`_config($add_arrayinst(z, [ai]), [REF.ARRAY_ADDR_instr(a)]))
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
     -- if ((a = |$arrayinst(z)|) /\ (ai = {TYPE $type(z, x), FIELDS $packfield_(zt, val)^n{val : val}}))
 
-  ;; 8-reduction.watsup:492.1-493.64
+  ;; 8-reduction.watsup:495.1-496.64
   rule array.set-null{z : state, ht : heaptype, i : nat, val : val, x : idx}:
     `%~>%`(`%;%`_config(z, [REF.NULL_instr(ht) CONST_instr(I32_numtype, `%`_num_(i)) (val : val <: instr) ARRAY.SET_instr(x)]), `%;%`_config(z, [TRAP_instr]))
 
-  ;; 8-reduction.watsup:495.1-497.39
+  ;; 8-reduction.watsup:498.1-500.39
   rule array.set-oob{z : state, a : addr, i : nat, val : val, x : idx}:
     `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, `%`_num_(i)) (val : val <: instr) ARRAY.SET_instr(x)]), `%;%`_config(z, [TRAP_instr]))
     -- if (i >= |$arrayinst(z)[a].FIELDS_arrayinst|)
 
-  ;; 8-reduction.watsup:499.1-502.43
+  ;; 8-reduction.watsup:502.1-505.43
   rule array.set-array{z : state, a : addr, i : nat, val : val, x : idx, zt : storagetype, mut : mut}:
     `%~>%`(`%;%`_config(z, [REF.ARRAY_ADDR_instr(a) CONST_instr(I32_numtype, `%`_num_(i)) (val : val <: instr) ARRAY.SET_instr(x)]), `%;%`_config($with_array(z, a, i, $packfield_(zt, val)), []))
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_arraytype(mut, zt)))
 
-  ;; 8-reduction.watsup:803.1-804.56
+  ;; 8-reduction.watsup:806.1-807.56
   rule local.set{z : state, val : val, x : idx}:
     `%~>%`(`%;%`_config(z, [(val : val <: instr) LOCAL.SET_instr(x)]), `%;%`_config($with_local(z, x, val), []))
 
-  ;; 8-reduction.watsup:816.1-817.58
+  ;; 8-reduction.watsup:819.1-820.58
   rule global.set{z : state, val : val, x : idx}:
     `%~>%`(`%;%`_config(z, [(val : val <: instr) GLOBAL.SET_instr(x)]), `%;%`_config($with_global(z, x, val), []))
 
-  ;; 8-reduction.watsup:830.1-832.33
+  ;; 8-reduction.watsup:833.1-835.33
   rule table.set-oob{z : state, i : nat, ref : ref, x : idx}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) (ref : ref <: instr) TABLE.SET_instr(x)]), `%;%`_config(z, [TRAP_instr]))
     -- if (i >= |$table(z, x).REFS_tableinst|)
 
-  ;; 8-reduction.watsup:834.1-836.32
+  ;; 8-reduction.watsup:837.1-839.32
   rule table.set-val{z : state, i : nat, ref : ref, x : idx}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) (ref : ref <: instr) TABLE.SET_instr(x)]), `%;%`_config($with_table(z, x, i, ref), []))
     -- if (i < |$table(z, x).REFS_tableinst|)
 
-  ;; 8-reduction.watsup:844.1-847.46
+  ;; 8-reduction.watsup:847.1-850.46
   rule table.grow-succeed{z : state, ref : ref, n : n, x : idx, ti : tableinst}:
     `%~>%`(`%;%`_config(z, [(ref : ref <: instr) CONST_instr(I32_numtype, `%`_num_(n)) TABLE.GROW_instr(x)]), `%;%`_config($with_tableinst(z, x, ti), [CONST_instr(I32_numtype, `%`_num_(|$table(z, x).REFS_tableinst|))]))
     -- if (ti = $growtable($table(z, x), n, ref))
 
-  ;; 8-reduction.watsup:849.1-850.81
+  ;; 8-reduction.watsup:852.1-853.81
   rule table.grow-fail{z : state, ref : ref, n : n, x : idx}:
     `%~>%`(`%;%`_config(z, [(ref : ref <: instr) CONST_instr(I32_numtype, `%`_num_(n)) TABLE.GROW_instr(x)]), `%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_($invsigned_(32, - (1 : nat <: int))))]))
 
-  ;; 8-reduction.watsup:910.1-911.51
+  ;; 8-reduction.watsup:913.1-914.51
   rule elem.drop{z : state, x : idx}:
     `%~>%`(`%;%`_config(z, [ELEM.DROP_instr(x)]), `%;%`_config($with_elem(z, x, []), []))
 
-  ;; 8-reduction.watsup:994.1-997.60
+  ;; 8-reduction.watsup:997.1-1000.60
   rule store-num-oob{z : state, i : nat, nt : numtype, c : num_(nt), x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr(nt, c) STORE_instr(nt, ?(), x, ao)]), `%;%`_config(z, [TRAP_instr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + ($size(nt) / 8)) > |$mem(z, x).BYTES_meminst|)
 
-  ;; 8-reduction.watsup:999.1-1003.29
+  ;; 8-reduction.watsup:1002.1-1006.29
   rule store-num-val{z : state, i : nat, nt : numtype, c : num_(nt), x : idx, ao : memarg, b* : byte*}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr(nt, c) STORE_instr(nt, ?(), x, ao)]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), ($size(nt) / 8), b*{b : byte}), []))
     -- if (b*{b : byte} = $nbytes_(nt, c))
 
-  ;; 8-reduction.watsup:1005.1-1008.52
+  ;; 8-reduction.watsup:1008.1-1011.52
   rule store-pack-oob{z : state, i : nat, Inn : Inn, c : num_((Inn : Inn <: numtype)), nt : numtype, n : n, x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr((Inn : Inn <: numtype), c) STORE_instr(nt, ?(`%`_sz(n)), x, ao)]), `%;%`_config(z, [TRAP_instr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + (n / 8)) > |$mem(z, x).BYTES_meminst|)
 
-  ;; 8-reduction.watsup:1010.1-1014.52
+  ;; 8-reduction.watsup:1013.1-1017.52
   rule store-pack-val{z : state, i : nat, Inn : Inn, c : num_((Inn : Inn <: numtype)), nt : numtype, n : n, x : idx, ao : memarg, b* : byte*}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) CONST_instr((Inn : Inn <: numtype), c) STORE_instr(nt, ?(`%`_sz(n)), x, ao)]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), (n / 8), b*{b : byte}), []))
     -- if (b*{b : byte} = $ibytes_(n, $wrap__($size((Inn : Inn <: numtype)), n, c)))
 
-  ;; 8-reduction.watsup:1016.1-1018.63
+  ;; 8-reduction.watsup:1019.1-1021.63
   rule vstore-oob{z : state, i : nat, c : vec_(V128_Vnn), x : idx, ao : memarg}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VCONST_instr(V128_vectype, c) VSTORE_instr(V128_vectype, x, ao)]), `%;%`_config(z, [TRAP_instr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + ($vsize(V128_vectype) / 8)) > |$mem(z, x).BYTES_meminst|)
 
-  ;; 8-reduction.watsup:1020.1-1022.31
+  ;; 8-reduction.watsup:1023.1-1025.31
   rule vstore-val{z : state, i : nat, c : vec_(V128_Vnn), x : idx, ao : memarg, b* : byte*}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VCONST_instr(V128_vectype, c) VSTORE_instr(V128_vectype, x, ao)]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), ($vsize(V128_vectype) / 8), b*{b : byte}), []))
     -- if (b*{b : byte} = $vbytes_(V128_vectype, c))
 
-  ;; 8-reduction.watsup:1025.1-1027.50
+  ;; 8-reduction.watsup:1028.1-1030.50
   rule vstore_lane-oob{z : state, i : nat, c : vec_(V128_Vnn), N : N, x : idx, ao : memarg, j : nat}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VCONST_instr(V128_vectype, c) VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, ao, `%`_laneidx(j))]), `%;%`_config(z, [TRAP_instr]))
     -- if (((i + ao.OFFSET_memarg!`%`_u32.0) + N) > |$mem(z, x).BYTES_meminst|)
 
-  ;; 8-reduction.watsup:1029.1-1033.49
+  ;; 8-reduction.watsup:1032.1-1036.49
   rule vstore_lane-val{z : state, i : nat, c : vec_(V128_Vnn), N : N, x : idx, ao : memarg, j : nat, b* : byte*, Jnn : Jnn, M : M}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(i)) VCONST_instr(V128_vectype, c) VSTORE_LANE_instr(V128_vectype, `%`_sz(N), x, ao, `%`_laneidx(j))]), `%;%`_config($with_mem(z, x, (i + ao.OFFSET_memarg!`%`_u32.0), (N / 8), b*{b : byte}), []))
     -- if (N = $lsize((Jnn : Jnn <: lanetype)))
     -- if (M = (128 / N))
     -- if (b*{b : byte} = $ibytes_(N, `%`_iN($lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), `%`_dim(M)), c)[j]!`%`_lane_.0)))
 
-  ;; 8-reduction.watsup:1041.1-1044.37
+  ;; 8-reduction.watsup:1044.1-1047.37
   rule memory.grow-succeed{z : state, n : n, x : idx, mi : meminst}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(n)) MEMORY.GROW_instr(x)]), `%;%`_config($with_meminst(z, x, mi), [CONST_instr(I32_numtype, `%`_num_((|$mem(z, x).BYTES_meminst| / (64 * $Ki))))]))
     -- if (mi = $growmem($mem(z, x), n))
 
-  ;; 8-reduction.watsup:1046.1-1047.78
+  ;; 8-reduction.watsup:1049.1-1050.78
   rule memory.grow-fail{z : state, n : n, x : idx}:
     `%~>%`(`%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_(n)) MEMORY.GROW_instr(x)]), `%;%`_config(z, [CONST_instr(I32_numtype, `%`_num_($invsigned_(32, - (1 : nat <: int))))]))
 
-  ;; 8-reduction.watsup:1107.1-1108.51
+  ;; 8-reduction.watsup:1110.1-1111.51
   rule data.drop{z : state, x : idx}:
     `%~>%`(`%;%`_config(z, [DATA.DROP_instr(x)]), `%;%`_config($with_data(z, x, []), []))
 }

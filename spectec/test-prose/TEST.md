@@ -2137,15 +2137,7 @@ watsup 0.4 generator
 
 #. Perform :math:`{\mathrm{initdata}}({\mathit{moduleinst}}, {i_{\mathsf{d}}^\ast}, {{b^\ast}^\ast})`.
 
-#. Push the activation of :math:`f` with arity :math:`0` to the stack.
-
-#. If :math:`{(\mathsf{call}~{x'})^?}` is defined, then:
-
-   a. Let :math:`{\mathit{instr}}_0` be :math:`{(\mathsf{call}~{x'})^?}`.
-
-   #. Execute the instruction :math:`{\mathit{instr}}_0`.
-
-#. Pop the activation of :math:`f` with arity :math:`0` from the stack.
+#. Enter :math:`{(\mathsf{call}~{x'})^?}~\mathsf{frame}` with label the activation of :math:`f` with arity :math:`0`.
 
 #. Return :math:`f{.}\mathsf{module}`.
 
@@ -2164,17 +2156,9 @@ watsup 0.4 generator
 
 #. Let :math:`k` be :math:`{|{t_2^\ast}|}`.
 
-#. Push the activation of :math:`f` with arity :math:`k` to the stack.
+#. Enter :math:`(\mathsf{call}~{\mathit{fa}})~\mathsf{frame}` with label the activation of :math:`f` with arity :math:`k`.
 
-#. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
-
-#. Execute the instruction :math:`(\mathsf{call}~{\mathit{fa}})`.
-
-#. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-#. Pop the activation of :math:`f` with arity :math:`k` from the stack.
-
-#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+   a. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
 #. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
 
@@ -3894,12 +3878,8 @@ instantiate z module externaddr*
 27. Let f be { LOCALS: []; MODULE: moduleinst; }.
 28. Perform $initelem(moduleinst, i_E*, moduleinst.FUNCS[x]**).
 29. Perform $initdata(moduleinst, i_D*, b**).
-30. Push the activation of f with arity 0 to the stack.
-31. If (CALL x')? is defined, then:
-  a. Let ?(instr_0) be (CALL x')?.
-  b. Execute the instruction instr_0.
-32. Pop the activation of f with arity 0 from the stack.
-33. Return f.MODULE.
+30. Enter (CALL x')? ++ [FRAME_] with label the activation of f with arity 0.
+31. Return f.MODULE.
 
 invoke z fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; EXPORTS: []; }; }.
@@ -3907,14 +3887,10 @@ invoke z fa val^n
 3. Let (t_1^n -> t_2*) be $funcinst(z)[fa].TYPE.
 4. Pop the activation of _f from the stack.
 5. Let k be |t_2*|.
-6. Push the activation of f with arity k to the stack.
-7. Push the values val^n to the stack.
-8. Execute the instruction (CALL_ADDR fa).
-9. Pop all values val* from the top of the stack.
-10. Pop the activation of f with arity k from the stack.
-11. Push the values val* to the stack.
-12. Pop the values val^k from the stack.
-13. Return val^k.
+6. Enter [(CALL_ADDR fa)] ++ [FRAME_] with label the activation of f with arity k.
+  a. Push the values val^n to the stack.
+7. Pop the values val^k from the stack.
+8. Return val^k.
 
 Step_pure/unreachable
 1. Trap.
@@ -7938,19 +7914,7 @@ watsup 0.4 generator
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
-#. Push the activation of :math:`f` with arity :math:`0` to the stack.
-
-#. Execute the instruction :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}`.
-
-#. Execute the instruction :math:`{{\mathit{instr}}_{\mathsf{d}}^\ast}`.
-
-#. If :math:`{(\mathsf{call}~x)^?}` is defined, then:
-
-   a. Let :math:`{\mathit{instr}}_0` be :math:`{(\mathsf{call}~x)^?}`.
-
-   #. Execute the instruction :math:`{\mathit{instr}}_0`.
-
-#. Pop the activation of :math:`f` with arity :math:`0` from the stack.
+#. Enter :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}~{{\mathit{instr}}_{\mathsf{d}}^\ast}~{(\mathsf{call}~x)^?}~\mathsf{frame}` with label the activation of :math:`f` with arity :math:`0`.
 
 #. Return :math:`f{.}\mathsf{module}`.
 
@@ -7969,17 +7933,9 @@ watsup 0.4 generator
 
 #. Let :math:`k` be :math:`{|{t_2^\ast}|}`.
 
-#. Push the activation of :math:`f` with arity :math:`k` to the stack.
+#. Enter :math:`(\mathsf{call}~{\mathit{fa}})~\mathsf{frame}` with label the activation of :math:`f` with arity :math:`k`.
 
-#. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
-
-#. Execute the instruction :math:`(\mathsf{call}~{\mathit{fa}})`.
-
-#. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-#. Pop the activation of :math:`f` with arity :math:`k` from the stack.
-
-#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+   a. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
 #. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
 
@@ -11553,14 +11509,8 @@ instantiate z module externaddr*
 24. Pop the activation of _f from the stack.
 25. Let moduleinst be $allocmodule(module, externaddr*, val*, ref**).
 26. Let f be { LOCALS: []; MODULE: moduleinst; }.
-27. Push the activation of f with arity 0 to the stack.
-28. Execute the instruction instr_E*.
-29. Execute the instruction instr_D*.
-30. If (CALL x)? is defined, then:
-  a. Let ?(instr_0) be (CALL x)?.
-  b. Execute the instruction instr_0.
-31. Pop the activation of f with arity 0 from the stack.
-32. Return f.MODULE.
+27. Enter instr_E* ++ instr_D* ++ (CALL x)? ++ [FRAME_] with label the activation of f with arity 0.
+28. Return f.MODULE.
 
 invoke z fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
@@ -11568,14 +11518,10 @@ invoke z fa val^n
 3. Let (t_1^n -> t_2*) be $funcinst(z)[fa].TYPE.
 4. Pop the activation of _f from the stack.
 5. Let k be |t_2*|.
-6. Push the activation of f with arity k to the stack.
-7. Push the values val^n to the stack.
-8. Execute the instruction (CALL_ADDR fa).
-9. Pop all values val* from the top of the stack.
-10. Pop the activation of f with arity k from the stack.
-11. Push the values val* to the stack.
-12. Pop the values val^k from the stack.
-13. Return val^k.
+6. Enter [(CALL_ADDR fa)] ++ [FRAME_] with label the activation of f with arity k.
+  a. Push the values val^n to the stack.
+7. Pop the values val^k from the stack.
+8. Return val^k.
 
 Step_pure/unreachable
 1. Trap.
@@ -19418,19 +19364,7 @@ watsup 0.4 generator
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
-#. Push the activation of :math:`f` with arity :math:`0` to the stack.
-
-#. Execute the instruction :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}`.
-
-#. Execute the instruction :math:`{{\mathit{instr}}_{\mathsf{d}}^\ast}`.
-
-#. If :math:`{{\mathit{instr}}_{\mathsf{s}}^?}` is defined, then:
-
-   a. Let :math:`{\mathit{instr}}_0` be :math:`{{\mathit{instr}}_{\mathsf{s}}^?}`.
-
-   #. Execute the instruction :math:`{\mathit{instr}}_0`.
-
-#. Pop the activation of :math:`f` with arity :math:`0` from the stack.
+#. Enter :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}~{{\mathit{instr}}_{\mathsf{d}}^\ast}~{{\mathit{instr}}_{\mathsf{s}}^?}~\mathsf{frame}` with label the activation of :math:`f` with arity :math:`0`.
 
 #. Return :math:`f{.}\mathsf{module}`.
 
@@ -19451,19 +19385,11 @@ watsup 0.4 generator
 
 #. Let :math:`k` be :math:`{|{t_2^\ast}|}`.
 
-#. Push the activation of :math:`f` with arity :math:`k` to the stack.
+#. Enter :math:`(\mathsf{call\_ref}~s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type})~\mathsf{frame}` with label the activation of :math:`f` with arity :math:`k`.
 
-#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-#. Push the value :math:`(\mathsf{ref{.}func}~{\mathit{funcaddr}})` to the stack.
-
-#. Execute the instruction :math:`(\mathsf{call\_ref}~s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type})`.
-
-#. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-#. Pop the activation of :math:`f` with arity :math:`k` from the stack.
-
-#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+   #. Push the value :math:`(\mathsf{ref{.}func}~{\mathit{funcaddr}})` to the stack.
 
 #. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
 
@@ -20688,51 +20614,61 @@ watsup 0.4 generator
 
    #. Execute the instruction :math:`(\mathsf{return\_call\_ref}~y)`.
 
-#. Else if the top of the stack is a :math:`\mathsf{frame}`, then:
+#. Else if the top of the stack is a :math:`\mathsf{handler}`, then:
 
    a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Assert: Due to validation, a value is on the top of the stack.
-
-   #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
-
    #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-   #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+   #. Exit from :math:`\mathsf{handler}`.
 
-      1) Pop the current frame from the stack.
+   #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-      #) Trap.
+   #. Execute the instruction :math:`(\mathsf{return\_call\_ref}~y)`.
 
-   #. Assert: Due to validation, a value is on the top of the stack.
+#. Else:
 
-   #. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
+   a. If the top of the stack is a :math:`\mathsf{frame}`, then:
 
-   #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}func}`, then:
+      1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-      1) Let :math:`(\mathsf{ref{.}func}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+      #) Assert: Due to validation, a value is on the top of the stack.
 
-      #) If :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`, then:
+      #) Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
 
-         a) Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
+      #) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-         #) Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})`.
+      #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
 
-         #) Let :math:`({t_1^{n}}~\rightarrow~{t_2^{m}})` be :math:`{\mathit{functype}}_0`.
+         a) Pop the current frame from the stack.
 
-         #) Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+         #) Trap.
 
-         #) Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+      #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}func}`, then:
 
-         #) Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+         a) Let :math:`(\mathsf{ref{.}func}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-         #) Pop the current frame from the stack.
+         #) If :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`, then:
 
-         #) Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+            1. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
 
-         #) Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
+            #. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})`.
 
-         #) Execute the instruction :math:`(\mathsf{call\_ref}~y)`.
+            #. Let :math:`({t_1^{n}}~\rightarrow~{t_2^{m}})` be :math:`{\mathit{functype}}_0`.
+
+            #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+            #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+            #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+
+            #. Pop the current frame from the stack.
+
+            #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+
+            #. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
+
+            #. Execute the instruction :math:`(\mathsf{call\_ref}~y)`.
 
 
 :math:`\mathsf{throw\_ref}`
@@ -26235,14 +26171,8 @@ instantiate z module externaddr*
 27. Pop the activation of _f from the stack.
 28. Let moduleinst be $allocmodule(module, externaddr*, val_G*, ref_T*, ref_E**).
 29. Let f be { LOCALS: []; MODULE: moduleinst; }.
-30. Push the activation of f with arity 0 to the stack.
-31. Execute the instruction instr_E*.
-32. Execute the instruction instr_D*.
-33. If instr_S? is defined, then:
-  a. Let ?(instr_0) be instr_S?.
-  b. Execute the instruction instr_0.
-34. Pop the activation of f with arity 0 from the stack.
-35. Return f.MODULE.
+30. Enter instr_E* ++ instr_D* ++ instr_S? ++ [FRAME_] with label the activation of f with arity 0.
+31. Return f.MODULE.
 
 invoke funcaddr val*
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
@@ -26251,15 +26181,11 @@ invoke funcaddr val*
 4. Let (t_1* -> t_2*) be functype_0.
 5. Assert: Due to validation, ($Val_type(val) is t_1)*.
 6. Let k be |t_2*|.
-7. Push the activation of f with arity k to the stack.
-8. Push the values val* to the stack.
-9. Push the value (REF.FUNC_ADDR funcaddr) to the stack.
-10. Execute the instruction (CALL_REF s.FUNCS[funcaddr].TYPE).
-11. Pop all values val* from the top of the stack.
-12. Pop the activation of f with arity k from the stack.
-13. Push the values val* to the stack.
-14. Pop the values val^k from the stack.
-15. Return val^k.
+7. Enter [(CALL_REF s.FUNCS[funcaddr].TYPE)] ++ [FRAME_] with label the activation of f with arity k.
+  a. Push the values val* to the stack.
+  b. Push the value (REF.FUNC_ADDR funcaddr) to the stack.
+8. Pop the values val^k from the stack.
+9. Return val^k.
 
 allocXs X Y X_u0* Y_u1*
 1. If (X_u0* is []), then:
@@ -26839,7 +26765,13 @@ Step_read/return_call_ref yy
   c. Pop the current label from the stack.
   d. Push the values val* to the stack.
   e. Execute the instruction (RETURN_CALL_REF yy).
-4. Else if the top of the stack is a FRAME_, then:
+4. Else if the top of the stack is a HANDLER_, then:
+  a. Push the values val* to the stack.
+  b. Pop all values val* from the top of the stack.
+  c. Exit from HANDLER_.
+  d. Push the values val* to the stack.
+  e. Execute the instruction (RETURN_CALL_REF yy).
+5. Else if the top of the stack is a FRAME_, then:
   a. Push the values val* to the stack.
   b. Assert: Due to validation, a value is on the top of the stack.
   c. Pop the value instr_u0 from the stack.
@@ -26847,9 +26779,7 @@ Step_read/return_call_ref yy
   e. If instr_u0 is of the case REF.NULL, then:
     1) Pop the current frame from the stack.
     2) Trap.
-  f. Assert: Due to validation, a value is on the top of the stack.
-  g. Pop the value instr_u0 from the stack.
-  h. If instr_u0 is of the case REF.FUNC_ADDR, then:
+  f. If instr_u0 is of the case REF.FUNC_ADDR, then:
     1) Let (REF.FUNC_ADDR a) be instr_u0.
     2) If (a < |$funcinst(z)|), then:
       a) Assert: Due to validation, $expanddt($funcinst(z)[a].TYPE) is of the case FUNC.

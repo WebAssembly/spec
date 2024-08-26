@@ -9,6 +9,7 @@ open Ds
 
 (* Errors *)
 
+module Assert = Reference_interpreter.Error.Make ()
 let error_interpret at msg = Error.error at "interpreter" msg
 
 (* Logging *)
@@ -169,6 +170,11 @@ let test_assertion assertion =
       Run.assert_message assertion.at "instantiation" "module instance" re;
       fail
     with Exception.Trap -> success
+  )
+  | AssertException action -> (
+    match run_action action with
+    | exception Exception.Throw -> success
+    | _ -> Assert.error assertion.at "expected exception"
   )
   (* ignore other kinds of assertions *)
   | _ -> pass

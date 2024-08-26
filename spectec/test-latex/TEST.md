@@ -8196,6 +8196,7 @@ $$
 $$
 \begin{array}{@{}l@{}rcl@{}l@{}}
 {[\textsc{\scriptsize E{-}return\_call\_ref{-}label}]} \quad & z ; ({{\mathsf{label}}_{k}}{\{ {{\mathit{instr}'}^\ast} \}}~{{\mathit{val}}^\ast}~(\mathsf{return\_call\_ref}~y)~{{\mathit{instr}}^\ast}) &\hookrightarrow& {{\mathit{val}}^\ast}~(\mathsf{return\_call\_ref}~y) \\
+{[\textsc{\scriptsize E{-}return\_call\_ref{-}handler}]} \quad & z ; ({{\mathsf{handler}}_{k}}{\{ {{\mathit{catch}}^\ast} \}}~{{\mathit{val}}^\ast}~(\mathsf{return\_call\_ref}~y)~{{\mathit{instr}}^\ast}) &\hookrightarrow& {{\mathit{val}}^\ast}~(\mathsf{return\_call\_ref}~y) \\
 {[\textsc{\scriptsize E{-}return\_call\_ref{-}frame{-}null}]} \quad & z ; ({{\mathsf{frame}}_{k}}{\{ f \}}~{{\mathit{val}}^\ast}~(\mathsf{ref{.}null}~{\mathit{ht}})~(\mathsf{return\_call\_ref}~y)~{{\mathit{instr}}^\ast}) &\hookrightarrow& \mathsf{trap} \\
 {[\textsc{\scriptsize E{-}return\_call\_ref{-}frame{-}addr}]} \quad & z ; ({{\mathsf{frame}}_{k}}{\{ f \}}~{{\mathit{val}'}^\ast}~{{\mathit{val}}^{n}}~(\mathsf{ref{.}func}~a)~(\mathsf{return\_call\_ref}~y)~{{\mathit{instr}}^\ast}) &\hookrightarrow& \multicolumn{2}{l@{}}{ {{\mathit{val}}^{n}}~(\mathsf{ref{.}func}~a)~(\mathsf{call\_ref}~y) } \\
   &&& \multicolumn{2}{l@{}}{\quad \mbox{if}~z{.}\mathsf{funcs}{}[a]{.}\mathsf{type} \approx \mathsf{func}~({t_1^{n}} \rightarrow {t_2^{m}})} \\

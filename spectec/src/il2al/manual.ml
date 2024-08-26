@@ -36,14 +36,15 @@ let manual_algos = [eval_expr]
 
 let return_instrs_of_instantiate config =
   let store, frame, rhs = config in
+  let vals, instrs = rhs in
   let ty = listT admininstrT in
   let ty' = varT "moduleinst" [] in
   let ty'' = Il.Ast.TupT (List.map (fun t -> no_name, t) [store.note; ty']) $ no_region in
   [
     enterI (
       frameE (Some (numE Z.zero ~note:natT), frame) ~note:callframeT,
-      listE ([ caseE ([[atom_of_name "FRAME_" "admininstr"]], []) ~note:admininstrT]) ~note:ty,
-      rhs
+      catE (instrs, (listE [caseE ([[atom_of_name "FRAME_" "admininstr"]], []) ~note:admininstrT] ~note:ty)) ~note:ty,
+      vals
     );
     returnI (Some (tupE [
       store;
@@ -52,6 +53,7 @@ let return_instrs_of_instantiate config =
   ]
 let return_instrs_of_invoke config =
   let _, frame, rhs = config in
+  let vals, instrs = rhs in
   let arity = varE "k" ~note:natT in
   let value = varE "val" ~note:valT in
   let ty = listT admininstrT in
@@ -64,8 +66,8 @@ let return_instrs_of_invoke config =
     letI (arity,  len_expr);
     enterI (
       frameE (Some (arity), frame) ~note:callframeT,
-      listE ([caseE ([[atom_of_name "FRAME_" "admininstr"]], []) ~note:admininstrT]) ~note:ty,
-      rhs
+      catE (instrs, listE [caseE ([[atom_of_name "FRAME_" "admininstr"]], []) ~note:admininstrT] ~note:ty) ~note:ty,
+      vals
     );
     popI (iterE (value, ["val"], ListN (arity, None)) ~note:ty');
     returnI (Some (iterE (value, ["val"], ListN (arity, None)) ~note:ty'))

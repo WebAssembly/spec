@@ -1398,10 +1398,10 @@ watsup 0.4 generator
 - 4/4 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/throw.wast =====
-- 3/3 (100.00%)
+- 10/10 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/throw_ref.wast =====
-- 6/6 (100.00%)
+- 13/13 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/token.wast =====
 - 35/35 (100.00%)
@@ -1410,7 +1410,7 @@ watsup 0.4 generator
 - 36/36 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/try_table.wast =====
-- 45/45 (100.00%)
+- 49/49 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/type-canon.wast =====
 - 2/2 (100.00%)
@@ -1448,7 +1448,7 @@ watsup 0.4 generator
 ===== ../../test-interpreter/spec-test-3/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [46963/46963] (100.00%)
+Total [46981/46981] (100.00%)
 
 == Complete.
 ```

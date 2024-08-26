@@ -191,6 +191,10 @@ let unwrap_listv: value -> value growable_array = function
 let unwrap_listv_to_array (v: value): value array = !(unwrap_listv v)
 let unwrap_listv_to_list (v: value): value list = unwrap_listv_to_array v |> Array.to_list
 
+let unwrap_seq_to_array: value -> value array = function
+  | OptV opt -> opt |> Option.to_list |> Array.of_list
+  | v -> unwrap_listv_to_array v
+
 let unwrap_textv: value -> string = function
   | TextV str -> str
   | v -> fail_value "unwrap_textv" v

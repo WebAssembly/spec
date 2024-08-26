@@ -1042,6 +1042,7 @@ warning: rule `Step_read/call_ref-null` was never spliced
 warning: rule `Step_read/call_ref-func` was never spliced
 warning: rule `Step_read/return_call` was never spliced
 warning: rule `Step_read/return_call_ref-label` was never spliced
+warning: rule `Step_read/return_call_ref-handler` was never spliced
 warning: rule `Step_read/return_call_ref-frame-null` was never spliced
 warning: rule `Step_read/return_call_ref-frame-addr` was never spliced
 warning: rule `Step_read/throw_ref-null` was never spliced

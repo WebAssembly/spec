@@ -248,8 +248,8 @@ and eval_expr env expr =
     (* TODO: interpret CompE *)
     raise (Exception.MissingReturnValue "CompE") *)
   | CatE (e1, e2) ->
-    let a1 = eval_expr env e1 |> unwrap_listv_to_array in
-    let a2 = eval_expr env e2 |> unwrap_listv_to_array in
+    let a1 = eval_expr env e1 |> unwrap_seq_to_array in
+    let a2 = eval_expr env e2 |> unwrap_seq_to_array in
     Array.append a1 a2 |> listV
   | LenE e ->
     eval_expr env e |> unwrap_listv_to_array |> Array.length |> Z.of_int |> numV
@@ -609,6 +609,7 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     call_func f args |> ignore;
     ctx
   | TrapI -> raise Exception.Trap
+  | ThrowI _ -> raise Exception.Throw
   | NopI -> ctx
   | ReturnI None -> AlContext.tl ctx
   | ReturnI (Some e) ->

@@ -150,6 +150,54 @@ let lhs_of_prem pr =
   | Il.LetPr (lhs, _, _) -> lhs
   | _ -> Error.error pr.at "prose translation" "expected a LetPr"
 
+let rec is_wasm_value e =
+  (* TODO: use hint? *)
+  match e.it with
+  | Il.SubE (e, _, _) -> is_wasm_value e
+  | Il.CaseE ([{it = Atom id; _}]::_, _) when
+    List.mem id [
+      "CONST";
+      "VCONST";
+      "REF.I31_NUM";
+      "REF.STRUCT_ADDR";
+      "REF.ARRAY_ADDR";
+      "REF.EXN_ADDR";
+      "REF.FUNC_ADDR";
+      "REF.HOST_ADDR";
+      "REF.EXTERN";
+      "REF.NULL"
+    ] -> true
+  | Il.CallE (id, _) when id.it = "const" -> true
+  | _ -> Valid.sub_typ e.note valT
+let is_wasm_instr e =
+  (* TODO: use hint? *)
+  Valid.sub_typ e.note instrT || Valid.sub_typ e.note admininstrT
+
+let split_vals (exp: Il.exp): Il.exp list * Il.exp list =
+  (* ASSUMPTION: exp is of the form v* i* *)
+  let rec spread_cat e =
+    match e.it with
+    | Il.CatE (e1, e2) -> spread_cat e1 @ spread_cat e2
+    | Il.ListE es -> List.map (fun e' -> {e' with it = Il.ListE [e']; note = e.note}) es
+    | _ -> [e]
+  in
+  let is_wasm_values e =
+    match e.it with
+    | Il.IterE (e, _) -> is_wasm_value e
+    | Il.ListE es -> List.for_all is_wasm_value es
+    | _ -> false
+  in
+
+  spread_cat exp
+  |> List.partition is_wasm_values
+
+let concat_exprs es =
+  match es with
+  | [] -> assert false
+  | hd :: tl -> List.fold_left (fun e1 e2 ->
+    catE (e1, e2) ~at:(over_region [e1.at; e2.at]) ~note:hd.note
+  ) hd tl
+
 (** Translation *)
 
 (* `Il.iter` -> `iter` *)
@@ -431,27 +479,9 @@ let rec translate_rhs exp =
     let instrs = translate_rhs inner_exp in
     List.map (walker.walk_instr walker) instrs
   (* Value *)
-  | _ when Valid.sub_typ exp.note valT -> [ pushI (translate_exp exp) ]
-  | Il.CaseE ([{it = Atom id; _}]::_, _) when List.mem id [
-      (* TODO: Consider automating this *)
-      "CONST";
-      "VCONST";
-      "REF.I31_NUM";
-      "REF.STRUCT_ADDR";
-      "REF.ARRAY_ADDR";
-      "REF.EXN_ADDR";
-      "REF.FUNC_ADDR";
-      "REF.HOST_ADDR";
-      "REF.EXTERN";
-      "REF.NULL"
-  ] -> [ pushI { (translate_exp exp) with note=valT } ~at:at ]
-  (* TODO: use hint *)
-  | Il.CallE (id, _) when id.it = "const" ->
-    [ pushI { (translate_exp exp) with note=valT } ~at:at ]
+  | _ when is_wasm_value exp -> [ pushI {(translate_exp exp) with note = valT} ]
   (* Instr *)
-  (* TODO: use hint *)
-  | _ when Valid.sub_typ exp.note instrT || Valid.sub_typ exp.note admininstrT ->
-    [ executeI (translate_exp exp) ]
+  | _ when is_wasm_instr exp -> [ executeI (translate_exp exp) ]
   | _ -> error_exp exp "expression on rhs of reduction"
 
 and translate_context_rhs exp =
@@ -989,13 +1019,21 @@ and translate_prem prem =
 let translate_prems =
   List.fold_right (fun prem il -> translate_prem prem |> insert_instrs il)
 
-(* s; f; e -> `expr * expr * instr list` *)
+(* s; f; e -> `expr * expr * instr list * expr list` *)
 let get_config_return_instrs name exp at =
   assert(is_config exp);
   let state, rhs = split_config exp in
   let store, f = split_state state in
+  let vals, instrs = split_vals rhs in
 
-  let config = translate_exp store, translate_exp f, translate_rhs rhs in
+  let config =
+    translate_exp store,
+    translate_exp f,
+    (
+      List.concat_map translate_rhs vals,
+      List.map translate_exp instrs |> concat_exprs
+    )
+  in
   (* HARDCODE: hardcoding required for config returning helper functions *)
   match name with
   | "instantiate" -> Manual.return_instrs_of_instantiate config
@@ -1215,6 +1253,7 @@ let rec translate_rgroup' instr_name rgroup =
         | _ -> assert false
       ) pops in
       let u_group = Il2il.unify_ctxt popped_vars subgroup in
+      let pops, u_group = extract_pops u_group in
       let ctxt = extract_context (List.hd u_group) |> Option.get in
       let atom = case_of_case ctxt |> List.hd |> List.hd in
       let cond = ContextKindE atom $$ atom.at % boolT in
@@ -1224,7 +1263,8 @@ let rec translate_rgroup' instr_name rgroup =
         List.map (translate_reduction ~context_opt:(Some middle_instr)) u_group
         (* TODO: Consider inserting otherwise to normal case also *)
         |> List.mapi (fun i instrs -> if i = 0 || is_otherwise instrs then instrs else [otherwiseI instrs])
-        |> Transpile.merge_blocks in
+        |> Transpile.merge_blocks
+        |> translate_prems pops in
       k, [
         ifI (
           cond,
