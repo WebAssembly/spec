@@ -2556,7 +2556,7 @@ $${rule: {Step_pure/return_call_indirect}}
 
 .. _exec-throw:
 
-$${rule-prose: exec/throw}
+$${rule-prose: Step/throw}
 
 .. todo:: check prose
 
@@ -2589,9 +2589,7 @@ $${rule: Step/throw}
 
 .. _exec-throw_ref:
 
-$${rule-prose: exec/throw_ref}
-
-.. todo:: check prose
+.. todo:: Too deeply nested
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
@@ -2674,7 +2672,7 @@ $${rule: Step_read/throw_ref-*}
 
 .. _exec-try_table:
 
-$${rule-prose: exec/try_table}
+$${rule-prose: Step_read/try_table}
 
 .. todo:: check prose
 
