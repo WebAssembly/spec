@@ -20863,9 +20863,9 @@ watsup 0.4 generator
 
                         #. Push the handler :math:`H` to the stack.
 
-                        #. Execute the instruction :math:`\mathsf{throw\_ref}`.
-
                         #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                        #. Execute the instruction :math:`\mathsf{throw\_ref}`.
 
                #. Else:
 
@@ -20937,9 +20937,9 @@ watsup 0.4 generator
 
                               #) Push the handler :math:`H` to the stack.
 
-                              #) Execute the instruction :math:`\mathsf{throw\_ref}`.
-
                               #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                              #) Execute the instruction :math:`\mathsf{throw\_ref}`.
 
                   #) Else:
 
@@ -20989,9 +20989,9 @@ watsup 0.4 generator
 
                               #) Push the handler :math:`H` to the stack.
 
-                              #) Execute the instruction :math:`\mathsf{throw\_ref}`.
-
                               #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                              #) Execute the instruction :math:`\mathsf{throw\_ref}`.
 
                      #) Else:
 
@@ -21047,9 +21047,9 @@ watsup 0.4 generator
 
                                  #) Push the handler :math:`H` to the stack.
 
-                                 #) Execute the instruction :math:`\mathsf{throw\_ref}`.
-
                                  #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                                 #) Execute the instruction :math:`\mathsf{throw\_ref}`.
 
 
 :math:`\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast}`
@@ -26937,8 +26937,8 @@ Step_read/throw_ref
               c) Exit from HANDLER_.
               d) Let H be (HANDLER_ n { catch'* }).
               e) Push the handler H to the stack.
-              f) Execute the instruction THROW_REF.
-              g) Push the value (REF.EXN_ADDR a) to the stack.
+              f) Push the value (REF.EXN_ADDR a) to the stack.
+              g) Execute the instruction THROW_REF.
         3. Else:
           a. Let val* be $exninst(z)[a].FIELDS.
           b. Let [catch_0] :: catch'* be catch_u1*.
@@ -26974,8 +26974,8 @@ Step_read/throw_ref
                   c. Exit from HANDLER_.
                   d. Let H be (HANDLER_ n { catch'* }).
                   e. Push the handler H to the stack.
-                  f. Execute the instruction THROW_REF.
-                  g. Push the value (REF.EXN_ADDR a) to the stack.
+                  f. Push the value (REF.EXN_ADDR a) to the stack.
+                  g. Execute the instruction THROW_REF.
           d. Else:
             1) Let (REF.EXN_ADDR a) be instr_u0.
             2) Let val* be $exninst(z)[a].FIELDS.
@@ -27000,8 +27000,8 @@ Step_read/throw_ref
                   c. Exit from HANDLER_.
                   d. Let H be (HANDLER_ n { catch'* }).
                   e. Push the handler H to the stack.
-                  f. Execute the instruction THROW_REF.
-                  g. Push the value (REF.EXN_ADDR a) to the stack.
+                  f. Push the value (REF.EXN_ADDR a) to the stack.
+                  g. Execute the instruction THROW_REF.
             5) Else:
               a) Let (CATCH_REF x l) be catch_0.
               b) If ((x < |$tagaddr(z)|) and ($exninst(z)[a].TAG is $tagaddr(z)[x])), then:
@@ -27029,8 +27029,8 @@ Step_read/throw_ref
                     3) Exit from HANDLER_.
                     4) Let H be (HANDLER_ n { catch'* }).
                     5) Push the handler H to the stack.
-                    6) Execute the instruction THROW_REF.
-                    7) Push the value (REF.EXN_ADDR a) to the stack.
+                    6) Push the value (REF.EXN_ADDR a) to the stack.
+                    7) Execute the instruction THROW_REF.
 
 Step_read/try_table bt catch* instr*
 1. Let z be the current state.

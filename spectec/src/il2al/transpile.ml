@@ -1036,8 +1036,7 @@ let remove_enter algo =
       let instrs, h = Lib.List.split_last instrs in
       if is_case h && (atom_of_case h).it = Atom.Atom "HANDLER_" then
         pushI e_handler ~at:instr.at
-        :: (List.map (fun e -> executeI e ~at:e.at) instrs)
-        @ il
+        :: (il @ (List.map (fun e -> executeI e ~at:e.at) instrs))
       else
         [ instr ]
     | _ -> [ instr ]
