@@ -368,6 +368,29 @@ let remove_dead_assignment il =
   in
   remove_dead_assignment' il ([], IdSet.empty) |> fst
 
+let remove_redundant_assignment il =
+  let rec remove_redundant_assignment' binds il =
+    List.fold_left_map
+      (fun acc instr ->
+        let at = instr.at in
+        match instr.it with
+        | IfI (e, il1, il2) ->
+          let il1' = remove_redundant_assignment' acc il1 in
+          let il2' = remove_redundant_assignment' acc il2 in
+          acc, [ifI (e, il1', il2') ~at:at]
+        | LetI (e1, e2) ->
+          if List.exists (fun (e1', e2') -> Eq.eq_expr e1 e1' && Eq.eq_expr e2 e2') acc then
+            acc, []
+          else
+            (e1, e2) :: acc, [instr]
+        | _ ->
+          acc, [instr]
+      ) binds il
+    |> snd
+    |> List.concat
+  in
+  remove_redundant_assignment' [] il
+
 let remove_sub e =
   let e' =
     match e.it with
@@ -502,6 +525,7 @@ let rec enhance_readability instrs =
   let instrs' =
     instrs
     |> remove_dead_assignment
+    |> remove_redundant_assignment
     |> unify_if
     |> infer_else
     |> List.concat_map remove_unnecessary_branch

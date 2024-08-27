@@ -14610,8 +14610,6 @@ watsup 0.4 generator
 
    a. Return :math:`\epsilon`.
 
-#. Let :math:`w_1~{{w'}^\ast}` be :math:`{X_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
 #. Return :math:`{{\mathrm{setminus{\kern-0.1em\scriptstyle 1}}}}_{{\mathit{TODO}}}(w, {{w'}^\ast})`.
 
 
@@ -16356,23 +16354,13 @@ watsup 0.4 generator
 
 #. Let :math:`{\mathit{tu}}_1~{{\mathit{tu}'}^\ast}` be :math:`{{\mathit{typeuse}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-#. If :math:`{|{{\mathit{typevar}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}|}` is less than :math:`1`, then:
-
-   a. Do nothing.
-
-#. Else:
-
-   a. Let :math:`{\mathit{tv}}_1~{{\mathit{tv}'}^\ast}` be :math:`{{\mathit{typevar}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
-
-   #. If :math:`{\mathit{tv}}` is :math:`{\mathit{tv}}_1`, then:
-
-      1) Return :math:`{\mathit{tu}}_1`.
-
-#. Let :math:`{\mathit{tu}}_1~{{\mathit{tu}'}^\ast}` be :math:`{{\mathit{typeuse}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
-
 #. Assert: Due to validation, :math:`{|{{\mathit{typevar}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}|}` is greater than or equal to :math:`1`.
 
 #. Let :math:`{\mathit{tv}}_1~{{\mathit{tv}'}^\ast}` be :math:`{{\mathit{typevar}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^\ast}`.
+
+#. If :math:`{\mathit{tv}}` is :math:`{\mathit{tv}}_1`, then:
+
+   a. Return :math:`{\mathit{tu}}_1`.
 
 #. Return :math:`{{\mathit{tv}}}{{}[ {{\mathit{tv}'}^\ast} := {{\mathit{tu}'}^\ast} ]}`.
 
@@ -20819,15 +20807,105 @@ watsup 0.4 generator
 
                #. Execute the instruction :math:`\mathsf{throw\_ref}`.
 
+            #. Else if :math:`a` is greater than or equal to :math:`{|z{.}\mathsf{exns}|}`, then:
+
+               a. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+               #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all}`, then:
+
+                  1) Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
+
+                  #) Exit from :math:`\mathsf{handler}`.
+
+                  #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+               #. Else if :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all\_ref}`, then:
+
+                  1) Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
+
+                  #) Exit from :math:`\mathsf{handler}`.
+
+                  #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                  #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+               #. Else:
+
+                  1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                  #) Exit from :math:`\mathsf{handler}`.
+
+                  #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
+
+                  #) Push the handler :math:`H` to the stack.
+
+                  #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                  #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+
             #. Else:
 
-               a. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+               a. Let :math:`{{\mathit{val}}^\ast}` be :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{fields}`.
 
-               #. If :math:`a` is greater than or equal to :math:`{|z{.}\mathsf{exns}|}`, then:
+               #. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-                  1) Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+               #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch}`, then:
 
-                  #) If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all}`, then:
+                  1) Let :math:`(\mathsf{catch}~x~l)` be :math:`{\mathit{catch}}_0`.
+
+                  #) If :math:`x` is less than :math:`{|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag}` is :math:`z{.}\mathsf{tags}{}[x]`, then:
+
+                     a) Exit from :math:`\mathsf{handler}`.
+
+                     #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+                     #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                  #) Else:
+
+                     a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                     #) Exit from :math:`\mathsf{handler}`.
+
+                     #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
+
+                     #) Push the handler :math:`H` to the stack.
+
+                     #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                     #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+               #. Else if :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_ref}`, then:
+
+                  1) Let :math:`(\mathsf{catch\_ref}~x~l)` be :math:`{\mathit{catch}}_0`.
+
+                  #) If :math:`x` is less than :math:`{|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag}` is :math:`z{.}\mathsf{tags}{}[x]`, then:
+
+                     a) Exit from :math:`\mathsf{handler}`.
+
+                     #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+                     #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                     #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                  #) Else:
+
+                     a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                     #) Exit from :math:`\mathsf{handler}`.
+
+                     #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
+
+                     #) Push the handler :math:`H` to the stack.
+
+                     #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                     #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+               #. Else:
+
+                  1) If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all}`, then:
 
                      a) Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
 
@@ -20835,153 +20913,29 @@ watsup 0.4 generator
 
                      #) Execute the instruction :math:`(\mathsf{br}~l)`.
 
-                  #) Else:
+                  #) Else if :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all\_ref}`, then:
 
-                     a) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+                     a) Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
 
-                     #) Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+                     #) Exit from :math:`\mathsf{handler}`.
 
-                     #) If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all\_ref}`, then:
+                     #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
-                        1. Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
-
-                        #. Exit from :math:`\mathsf{handler}`.
-
-                        #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                        #. Execute the instruction :math:`(\mathsf{br}~l)`.
-
-                     #) Else:
-
-                        1. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-                        #. Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
-
-                        #. Exit from :math:`\mathsf{handler}`.
-
-                        #. Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
-
-                        #. Push the handler :math:`H` to the stack.
-
-                        #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                        #. Execute the instruction :math:`\mathsf{throw\_ref}`.
-
-               #. Else:
-
-                  1) Let :math:`{{\mathit{val}}^\ast}` be :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{fields}`.
-
-                  #) Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
-
-                  #) If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch}`, then:
-
-                     a) Let :math:`(\mathsf{catch}~x~l)` be :math:`{\mathit{catch}}_0`.
-
-                     #) If :math:`x` is less than :math:`{|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag}` is :math:`z{.}\mathsf{tags}{}[x]`, then:
-
-                        1. Exit from :math:`\mathsf{handler}`.
-
-                        #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-                        #. Execute the instruction :math:`(\mathsf{br}~l)`.
-
-                     #) Else:
-
-                        1. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-                        #. Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
-
-                        #. Exit from :math:`\mathsf{handler}`.
-
-                        #. Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
-
-                        #. Push the handler :math:`H` to the stack.
-
-                        #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                        #. Execute the instruction :math:`\mathsf{throw\_ref}`.
+                     #) Execute the instruction :math:`(\mathsf{br}~l)`.
 
                   #) Else:
 
-                     a) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+                     a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-                     #) Let :math:`{{\mathit{val}}^\ast}` be :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{fields}`.
+                     #) Exit from :math:`\mathsf{handler}`.
 
-                     #) Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+                     #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
 
-                     #) If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_ref}`, then:
+                     #) Push the handler :math:`H` to the stack.
 
-                        1. Let :math:`(\mathsf{catch\_ref}~x~l)` be :math:`{\mathit{catch}}_0`.
+                     #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
-                        #. If :math:`x` is less than :math:`{|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag}` is :math:`z{.}\mathsf{tags}{}[x]`, then:
-
-                           a. Exit from :math:`\mathsf{handler}`.
-
-                           #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-                           #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                           #. Execute the instruction :math:`(\mathsf{br}~l)`.
-
-                        #. Else:
-
-                           a. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-                           #. Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
-
-                           #. Exit from :math:`\mathsf{handler}`.
-
-                           #. Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
-
-                           #. Push the handler :math:`H` to the stack.
-
-                           #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                           #. Execute the instruction :math:`\mathsf{throw\_ref}`.
-
-                     #) Else:
-
-                        1. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
-
-                        #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all}`, then:
-
-                           a. Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
-
-                           #. Exit from :math:`\mathsf{handler}`.
-
-                           #. Execute the instruction :math:`(\mathsf{br}~l)`.
-
-                        #. Else:
-
-                           a. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-                           #. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
-
-                           #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all\_ref}`, then:
-
-                              1) Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
-
-                              #) Exit from :math:`\mathsf{handler}`.
-
-                              #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                              #) Execute the instruction :math:`(\mathsf{br}~l)`.
-
-                           #. Else:
-
-                              1) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-                              #) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
-
-                              #) Exit from :math:`\mathsf{handler}`.
-
-                              #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
-
-                              #) Push the handler :math:`H` to the stack.
-
-                              #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                              #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+                     #) Execute the instruction :math:`\mathsf{throw\_ref}`.
 
 
 :math:`\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast}`
@@ -21312,9 +21266,7 @@ watsup 0.4 generator
 
    #. Else:
 
-      1) Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-      #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
+      1) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
 
       #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
 
@@ -21371,11 +21323,7 @@ watsup 0.4 generator
 
    a. Let :math:`(\mathsf{ref{.}array}~a_1)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
 
-   #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is not of the case :math:`\mathsf{ref{.}array}`, then:
-
-      1) Do nothing.
-
-   #. Else:
+   #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
 
       1) If :math:`a_1` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i_1 + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a_1]{.}\mathsf{fields}|}`, then:
 
@@ -21391,55 +21339,13 @@ watsup 0.4 generator
 
          a) Trap.
 
-   #. If :math:`n` is not :math:`0`, then:
+      #) If :math:`n` is :math:`0`, then:
 
-      1) Let :math:`(\mathsf{ref{.}array}~a_1)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+         a) Do nothing.
 
-      #) If :math:`i_1` is greater than :math:`i_2`, then:
+      #) Else if :math:`i_1` is less than or equal to :math:`i_2` and :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is of the case :math:`\mathsf{array}`, then:
 
-         a) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
-
-            1. Let :math:`(\mathsf{ref{.}array}~a_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-            #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is of the case :math:`\mathsf{array}`.
-
-            #. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
-
-            #. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
-
-            #. Let :math:`{{\mathit{sx}}^?}` be :math:`{\mathrm{sx}}({\mathit{zt}}_2)`.
-
-            #. Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
-
-            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + n - 1)` to the stack.
-
-            #. Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
-
-            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + n - 1)` to the stack.
-
-            #. Execute the instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x_2)`.
-
-            #. Execute the instruction :math:`(\mathsf{array{.}set}~x_1)`.
-
-            #. Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
-
-            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
-
-            #. Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
-
-            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
-
-            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
-
-            #. Execute the instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)`.
-
-      #) Else if :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
-
-         a) Let :math:`(\mathsf{ref{.}array}~a_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-         #) Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is of the case :math:`\mathsf{array}`.
-
-         #) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
+         a) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
 
          #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
 
@@ -21469,7 +21375,41 @@ watsup 0.4 generator
 
          #) Execute the instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)`.
 
-   #. Else if :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
+      #) Else:
+
+         a) If :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is of the case :math:`\mathsf{array}`, then:
+
+            1. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
+
+            #. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
+
+            #. Let :math:`{{\mathit{sx}}^?}` be :math:`{\mathrm{sx}}({\mathit{zt}}_2)`.
+
+            #. Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
+
+            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + n - 1)` to the stack.
+
+            #. Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
+
+            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + n - 1)` to the stack.
+
+            #. Execute the instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x_2)`.
+
+            #. Execute the instruction :math:`(\mathsf{array{.}set}~x_1)`.
+
+            #. Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
+
+            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
+
+            #. Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
+
+            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
+
+            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+
+            #. Execute the instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)`.
+
+   #. Else if :math:`n` is not :math:`0`, then:
 
       1) Do nothing.
 
@@ -21516,31 +21456,27 @@ watsup 0.4 generator
 
       1) Do nothing.
 
-   #. Else:
+   #. Else if :math:`j` is less than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
 
-      1) Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+      1) Let :math:`{\mathit{ref}}` be :math:`z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[j]`.
 
-      #) If :math:`j` is less than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
+      #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
 
-         a) Let :math:`{\mathit{ref}}` be :math:`z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[j]`.
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
 
-         #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
+      #) Push the value :math:`{\mathit{ref}}` to the stack.
 
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+      #) Execute the instruction :math:`(\mathsf{array{.}set}~x)`.
 
-         #) Push the value :math:`{\mathit{ref}}` to the stack.
+      #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
 
-         #) Execute the instruction :math:`(\mathsf{array{.}set}~x)`.
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
 
-         #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
 
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
-
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
-
-         #) Execute the instruction :math:`(\mathsf{array{.}init\_elem}~x~y)`.
+      #) Execute the instruction :math:`(\mathsf{array{.}init\_elem}~x~y)`.
 
 
 :math:`\mathsf{array{.}init\_data}~x~y`
@@ -21577,11 +21513,7 @@ watsup 0.4 generator
 
       1) Trap.
 
-   #. If :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is not of the case :math:`\mathsf{array}`, then:
-
-      1) Do nothing.
-
-   #. Else:
+   #. If :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`, then:
 
       1) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
 
@@ -21591,21 +21523,13 @@ watsup 0.4 generator
 
          a) Trap.
 
-   #. If :math:`n` is :math:`0`, then:
+      #) If :math:`n` is :math:`0`, then:
 
-      1) Do nothing.
+         a) Do nothing.
 
-   #. Else:
+      #) Else:
 
-      1) Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-      #) If :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`, then:
-
-         a) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
-
-         #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
-
-         #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathit{zt}}}(c)` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[j : {|{\mathit{zt}}|} / 8]`.
+         a) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathit{zt}}}(c)` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[j : {|{\mathit{zt}}|} / 8]`.
 
          #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
 
@@ -21624,6 +21548,10 @@ watsup 0.4 generator
          #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
          #) Execute the instruction :math:`(\mathsf{array{.}init\_data}~x~y)`.
+
+   #. Else if :math:`n` is :math:`0`, then:
+
+      1) Do nothing.
 
 
 :math:`\mathsf{local{.}get}~x`
@@ -23901,8 +23829,7 @@ setminus1_ X w X_u0*
 2. Let [w_1] :: w'* be X_u0*.
 3. If (w is w_1), then:
   a. Return [].
-4. Let [w_1] :: w'* be X_u0*.
-5. Return $setminus1_(X, w, w'*).
+4. Return $setminus1_(X, w, w'*).
 
 setminus_ X X_u0* w*
 1. If (X_u0* is []), then:
@@ -24717,16 +24644,11 @@ subst_typevar tv typevar_u0* typeuse_u1*
   a. Return tv.
 2. Assert: Due to validation, (|typeuse_u1*| ≥ 1).
 3. Let [tu_1] :: tu'* be typeuse_u1*.
-4. If (|typevar_u0*| < 1), then:
-  a. Do nothing.
-5. Else:
-  a. Let [tv_1] :: tv'* be typevar_u0*.
-  b. If (tv is tv_1), then:
-    1) Return tu_1.
-6. Let [tu_1] :: tu'* be typeuse_u1*.
-7. Assert: Due to validation, (|typevar_u0*| ≥ 1).
-8. Let [tv_1] :: tv'* be typevar_u0*.
-9. Return $subst_typevar(tv, tv'*, tu'*).
+4. Assert: Due to validation, (|typevar_u0*| ≥ 1).
+5. Let [tv_1] :: tv'* be typevar_u0*.
+6. If (tv is tv_1), then:
+  a. Return tu_1.
+7. Return $subst_typevar(tv, tv'*, tu'*).
 
 subst_packtype pt tv* tu*
 1. Return pt.
@@ -26847,88 +26769,70 @@ Step_read/throw_ref
         1. Exit from HANDLER_.
         2. Push the value (REF.EXN_ADDR a) to the stack.
         3. Execute the instruction THROW_REF.
-      c) Else:
-        1. Let (REF.EXN_ADDR a) be instr_u0.
-        2. If (a ≥ |$exninst(z)|), then:
-          a. Let [catch_0] :: catch'* be catch_u1*.
-          b. If catch_0 is of the case CATCH_ALL, then:
-            1) Let (CATCH_ALL l) be catch_0.
-            2) Exit from HANDLER_.
+      c) Else if (a ≥ |$exninst(z)|), then:
+        1. Let [catch_0] :: catch'* be catch_u1*.
+        2. If catch_0 is of the case CATCH_ALL, then:
+          a. Let (CATCH_ALL l) be catch_0.
+          b. Exit from HANDLER_.
+          c. Execute the instruction (BR l).
+        3. Else if catch_0 is of the case CATCH_ALL_REF, then:
+          a. Let (CATCH_ALL_REF l) be catch_0.
+          b. Exit from HANDLER_.
+          c. Push the value (REF.EXN_ADDR a) to the stack.
+          d. Execute the instruction (BR l).
+        4. Else:
+          a. Let [catch] :: catch'* be catch_u1*.
+          b. Exit from HANDLER_.
+          c. Let H be (HANDLER_ n { catch'* }).
+          d. Push the handler H to the stack.
+          e. Push the value (REF.EXN_ADDR a) to the stack.
+          f. Execute the instruction THROW_REF.
+      d) Else:
+        1. Let val* be $exninst(z)[a].FIELDS.
+        2. Let [catch_0] :: catch'* be catch_u1*.
+        3. If catch_0 is of the case CATCH, then:
+          a. Let (CATCH x l) be catch_0.
+          b. If ((x < |$tagaddr(z)|) and ($exninst(z)[a].TAG is $tagaddr(z)[x])), then:
+            1) Exit from HANDLER_.
+            2) Push the values val* to the stack.
             3) Execute the instruction (BR l).
           c. Else:
-            1) Let (REF.EXN_ADDR a) be instr_u0.
-            2) Let [catch_0] :: catch'* be catch_u1*.
-            3) If catch_0 is of the case CATCH_ALL_REF, then:
-              a) Let (CATCH_ALL_REF l) be catch_0.
-              b) Exit from HANDLER_.
-              c) Push the value (REF.EXN_ADDR a) to the stack.
-              d) Execute the instruction (BR l).
-            4) Else:
-              a) Let (REF.EXN_ADDR a) be instr_u0.
-              b) Let [catch] :: catch'* be catch_u1*.
-              c) Exit from HANDLER_.
-              d) Let H be (HANDLER_ n { catch'* }).
-              e) Push the handler H to the stack.
-              f) Push the value (REF.EXN_ADDR a) to the stack.
-              g) Execute the instruction THROW_REF.
-        3. Else:
-          a. Let val* be $exninst(z)[a].FIELDS.
-          b. Let [catch_0] :: catch'* be catch_u1*.
-          c. If catch_0 is of the case CATCH, then:
-            1) Let (CATCH x l) be catch_0.
-            2) If ((x < |$tagaddr(z)|) and ($exninst(z)[a].TAG is $tagaddr(z)[x])), then:
-              a) Exit from HANDLER_.
-              b) Push the values val* to the stack.
-              c) Execute the instruction (BR l).
-            3) Else:
-              a) Let (REF.EXN_ADDR a) be instr_u0.
-              b) Let [catch] :: catch'* be catch_u1*.
-              c) Exit from HANDLER_.
-              d) Let H be (HANDLER_ n { catch'* }).
-              e) Push the handler H to the stack.
-              f) Push the value (REF.EXN_ADDR a) to the stack.
-              g) Execute the instruction THROW_REF.
-          d. Else:
-            1) Let (REF.EXN_ADDR a) be instr_u0.
-            2) Let val* be $exninst(z)[a].FIELDS.
-            3) Let [catch_0] :: catch'* be catch_u1*.
-            4) If catch_0 is of the case CATCH_REF, then:
-              a) Let (CATCH_REF x l) be catch_0.
-              b) If ((x < |$tagaddr(z)|) and ($exninst(z)[a].TAG is $tagaddr(z)[x])), then:
-                1. Exit from HANDLER_.
-                2. Push the values val* to the stack.
-                3. Push the value (REF.EXN_ADDR a) to the stack.
-                4. Execute the instruction (BR l).
-              c) Else:
-                1. Let (REF.EXN_ADDR a) be instr_u0.
-                2. Let [catch] :: catch'* be catch_u1*.
-                3. Exit from HANDLER_.
-                4. Let H be (HANDLER_ n { catch'* }).
-                5. Push the handler H to the stack.
-                6. Push the value (REF.EXN_ADDR a) to the stack.
-                7. Execute the instruction THROW_REF.
-            5) Else:
-              a) Let [catch_0] :: catch'* be catch_u1*.
-              b) If catch_0 is of the case CATCH_ALL, then:
-                1. Let (CATCH_ALL l) be catch_0.
-                2. Exit from HANDLER_.
-                3. Execute the instruction (BR l).
-              c) Else:
-                1. Let (REF.EXN_ADDR a) be instr_u0.
-                2. Let [catch_0] :: catch'* be catch_u1*.
-                3. If catch_0 is of the case CATCH_ALL_REF, then:
-                  a. Let (CATCH_ALL_REF l) be catch_0.
-                  b. Exit from HANDLER_.
-                  c. Push the value (REF.EXN_ADDR a) to the stack.
-                  d. Execute the instruction (BR l).
-                4. Else:
-                  a. Let (REF.EXN_ADDR a) be instr_u0.
-                  b. Let [catch] :: catch'* be catch_u1*.
-                  c. Exit from HANDLER_.
-                  d. Let H be (HANDLER_ n { catch'* }).
-                  e. Push the handler H to the stack.
-                  f. Push the value (REF.EXN_ADDR a) to the stack.
-                  g. Execute the instruction THROW_REF.
+            1) Let [catch] :: catch'* be catch_u1*.
+            2) Exit from HANDLER_.
+            3) Let H be (HANDLER_ n { catch'* }).
+            4) Push the handler H to the stack.
+            5) Push the value (REF.EXN_ADDR a) to the stack.
+            6) Execute the instruction THROW_REF.
+        4. Else if catch_0 is of the case CATCH_REF, then:
+          a. Let (CATCH_REF x l) be catch_0.
+          b. If ((x < |$tagaddr(z)|) and ($exninst(z)[a].TAG is $tagaddr(z)[x])), then:
+            1) Exit from HANDLER_.
+            2) Push the values val* to the stack.
+            3) Push the value (REF.EXN_ADDR a) to the stack.
+            4) Execute the instruction (BR l).
+          c. Else:
+            1) Let [catch] :: catch'* be catch_u1*.
+            2) Exit from HANDLER_.
+            3) Let H be (HANDLER_ n { catch'* }).
+            4) Push the handler H to the stack.
+            5) Push the value (REF.EXN_ADDR a) to the stack.
+            6) Execute the instruction THROW_REF.
+        5. Else if catch_0 is of the case CATCH_ALL, then:
+          a. Let (CATCH_ALL l) be catch_0.
+          b. Exit from HANDLER_.
+          c. Execute the instruction (BR l).
+        6. Else if catch_0 is of the case CATCH_ALL_REF, then:
+          a. Let (CATCH_ALL_REF l) be catch_0.
+          b. Exit from HANDLER_.
+          c. Push the value (REF.EXN_ADDR a) to the stack.
+          d. Execute the instruction (BR l).
+        7. Else:
+          a. Let [catch] :: catch'* be catch_u1*.
+          b. Exit from HANDLER_.
+          c. Let H be (HANDLER_ n { catch'* }).
+          d. Push the handler H to the stack.
+          e. Push the value (REF.EXN_ADDR a) to the stack.
+          f. Execute the instruction THROW_REF.
 
 Step_read/try_table bt catch* instr*
 1. Let z be the current state.
@@ -27087,16 +26991,15 @@ Step_read/array.fill x
   d. If (n is 0), then:
     1) Do nothing.
   e. Else:
-    1) Let (REF.ARRAY_ADDR a) be instr_u0.
-    2) Push the value (REF.ARRAY_ADDR a) to the stack.
-    3) Push the value (I32.CONST i) to the stack.
-    4) Push the value val to the stack.
-    5) Execute the instruction (ARRAY.SET x).
-    6) Push the value (REF.ARRAY_ADDR a) to the stack.
-    7) Push the value (I32.CONST (i + 1)) to the stack.
-    8) Push the value val to the stack.
-    9) Push the value (I32.CONST (n - 1)) to the stack.
-    10) Execute the instruction (ARRAY.FILL x).
+    1) Push the value (REF.ARRAY_ADDR a) to the stack.
+    2) Push the value (I32.CONST i) to the stack.
+    3) Push the value val to the stack.
+    4) Execute the instruction (ARRAY.SET x).
+    5) Push the value (REF.ARRAY_ADDR a) to the stack.
+    6) Push the value (I32.CONST (i + 1)) to the stack.
+    7) Push the value val to the stack.
+    8) Push the value (I32.CONST (n - 1)) to the stack.
+    9) Execute the instruction (ARRAY.FILL x).
 
 Step_read/array.copy x_1 x_2
 1. Let z be the current state.
@@ -27116,9 +27019,7 @@ Step_read/array.copy x_1 x_2
   a. Trap.
 14. If instr_u1 is of the case REF.ARRAY_ADDR, then:
   a. Let (REF.ARRAY_ADDR a_1) be instr_u1.
-  b. If instr_u0 is not of the case REF.ARRAY_ADDR, then:
-    1) Do nothing.
-  c. Else:
+  b. If instr_u0 is of the case REF.ARRAY_ADDR, then:
     1) If ((a_1 < |$arrayinst(z)|) and ((i_1 + n) > |$arrayinst(z)[a_1].FIELDS|)), then:
       a) Trap.
     2) Let (REF.ARRAY_ADDR a_2) be instr_u0.
@@ -27126,46 +27027,41 @@ Step_read/array.copy x_1 x_2
       a) Do nothing.
     4) Else if ((i_2 + n) > |$arrayinst(z)[a_2].FIELDS|), then:
       a) Trap.
-  d. If (n is not 0), then:
-    1) Let (REF.ARRAY_ADDR a_1) be instr_u1.
-    2) If (i_1 > i_2), then:
-      a) If instr_u0 is of the case REF.ARRAY_ADDR, then:
-        1. Let (REF.ARRAY_ADDR a_2) be instr_u0.
-        2. Assert: Due to validation, $expanddt($type(z, x_2)) is of the case ARRAY.
-        3. Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
-        4. Let (mut, zt_2) be arraytype_0.
-        5. Let sx? be $sx(zt_2).
-        6. Push the value (REF.ARRAY_ADDR a_1) to the stack.
-        7. Push the value (I32.CONST ((i_1 + n) - 1)) to the stack.
-        8. Push the value (REF.ARRAY_ADDR a_2) to the stack.
-        9. Push the value (I32.CONST ((i_2 + n) - 1)) to the stack.
-        10. Execute the instruction (ARRAY.GET sx? x_2).
-        11. Execute the instruction (ARRAY.SET x_1).
-        12. Push the value (REF.ARRAY_ADDR a_1) to the stack.
-        13. Push the value (I32.CONST i_1) to the stack.
-        14. Push the value (REF.ARRAY_ADDR a_2) to the stack.
-        15. Push the value (I32.CONST i_2) to the stack.
-        16. Push the value (I32.CONST (n - 1)) to the stack.
-        17. Execute the instruction (ARRAY.COPY x_1 x_2).
-    3) Else if instr_u0 is of the case REF.ARRAY_ADDR, then:
-      a) Let (REF.ARRAY_ADDR a_2) be instr_u0.
-      b) Assert: Due to validation, $expanddt($type(z, x_2)) is of the case ARRAY.
-      c) Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
-      d) Let (mut, zt_2) be arraytype_0.
-      e) Let sx? be $sx(zt_2).
-      f) Push the value (REF.ARRAY_ADDR a_1) to the stack.
-      g) Push the value (I32.CONST i_1) to the stack.
-      h) Push the value (REF.ARRAY_ADDR a_2) to the stack.
-      i) Push the value (I32.CONST i_2) to the stack.
-      j) Execute the instruction (ARRAY.GET sx? x_2).
-      k) Execute the instruction (ARRAY.SET x_1).
-      l) Push the value (REF.ARRAY_ADDR a_1) to the stack.
-      m) Push the value (I32.CONST (i_1 + 1)) to the stack.
-      n) Push the value (REF.ARRAY_ADDR a_2) to the stack.
-      o) Push the value (I32.CONST (i_2 + 1)) to the stack.
-      p) Push the value (I32.CONST (n - 1)) to the stack.
-      q) Execute the instruction (ARRAY.COPY x_1 x_2).
-  e. Else if instr_u0 is of the case REF.ARRAY_ADDR, then:
+    5) If (n is 0), then:
+      a) Do nothing.
+    6) Else if ((i_1 ≤ i_2) and $expanddt($type(z, x_2)) is of the case ARRAY), then:
+      a) Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
+      b) Let (mut, zt_2) be arraytype_0.
+      c) Let sx? be $sx(zt_2).
+      d) Push the value (REF.ARRAY_ADDR a_1) to the stack.
+      e) Push the value (I32.CONST i_1) to the stack.
+      f) Push the value (REF.ARRAY_ADDR a_2) to the stack.
+      g) Push the value (I32.CONST i_2) to the stack.
+      h) Execute the instruction (ARRAY.GET sx? x_2).
+      i) Execute the instruction (ARRAY.SET x_1).
+      j) Push the value (REF.ARRAY_ADDR a_1) to the stack.
+      k) Push the value (I32.CONST (i_1 + 1)) to the stack.
+      l) Push the value (REF.ARRAY_ADDR a_2) to the stack.
+      m) Push the value (I32.CONST (i_2 + 1)) to the stack.
+      n) Push the value (I32.CONST (n - 1)) to the stack.
+      o) Execute the instruction (ARRAY.COPY x_1 x_2).
+    7) Else if $expanddt($type(z, x_2)) is of the case ARRAY, then:
+      a) Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
+      b) Let (mut, zt_2) be arraytype_0.
+      c) Let sx? be $sx(zt_2).
+      d) Push the value (REF.ARRAY_ADDR a_1) to the stack.
+      e) Push the value (I32.CONST ((i_1 + n) - 1)) to the stack.
+      f) Push the value (REF.ARRAY_ADDR a_2) to the stack.
+      g) Push the value (I32.CONST ((i_2 + n) - 1)) to the stack.
+      h) Execute the instruction (ARRAY.GET sx? x_2).
+      i) Execute the instruction (ARRAY.SET x_1).
+      j) Push the value (REF.ARRAY_ADDR a_1) to the stack.
+      k) Push the value (I32.CONST i_1) to the stack.
+      l) Push the value (REF.ARRAY_ADDR a_2) to the stack.
+      m) Push the value (I32.CONST i_2) to the stack.
+      n) Push the value (I32.CONST (n - 1)) to the stack.
+      o) Execute the instruction (ARRAY.COPY x_1 x_2).
+  c. Else if (n is not 0), then:
     1) Do nothing.
 
 Step_read/array.init_elem x y
@@ -27188,19 +27084,17 @@ Step_read/array.init_elem x y
     1) Trap.
   d. If (n is 0), then:
     1) Do nothing.
-  e. Else:
-    1) Let (REF.ARRAY_ADDR a) be instr_u0.
-    2) If (j < |$elem(z, y).REFS|), then:
-      a) Let ref be $elem(z, y).REFS[j].
-      b) Push the value (REF.ARRAY_ADDR a) to the stack.
-      c) Push the value (I32.CONST i) to the stack.
-      d) Push the value ref to the stack.
-      e) Execute the instruction (ARRAY.SET x).
-      f) Push the value (REF.ARRAY_ADDR a) to the stack.
-      g) Push the value (I32.CONST (i + 1)) to the stack.
-      h) Push the value (I32.CONST (j + 1)) to the stack.
-      i) Push the value (I32.CONST (n - 1)) to the stack.
-      j) Execute the instruction (ARRAY.INIT_ELEM x y).
+  e. Else if (j < |$elem(z, y).REFS|), then:
+    1) Let ref be $elem(z, y).REFS[j].
+    2) Push the value (REF.ARRAY_ADDR a) to the stack.
+    3) Push the value (I32.CONST i) to the stack.
+    4) Push the value ref to the stack.
+    5) Execute the instruction (ARRAY.SET x).
+    6) Push the value (REF.ARRAY_ADDR a) to the stack.
+    7) Push the value (I32.CONST (i + 1)) to the stack.
+    8) Push the value (I32.CONST (j + 1)) to the stack.
+    9) Push the value (I32.CONST (n - 1)) to the stack.
+    10) Execute the instruction (ARRAY.INIT_ELEM x y).
 
 Step_read/array.init_data x y
 1. Let z be the current state.
@@ -27218,30 +27112,26 @@ Step_read/array.init_data x y
   a. Let (REF.ARRAY_ADDR a) be instr_u0.
   b. If ((a < |$arrayinst(z)|) and ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
     1) Trap.
-  c. If $expanddt($type(z, x)) is not of the case ARRAY, then:
-    1) Do nothing.
-  d. Else:
+  c. If $expanddt($type(z, x)) is of the case ARRAY, then:
     1) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
     2) Let (mut, zt) be arraytype_0.
     3) If ((j + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
       a) Trap.
-  e. If (n is 0), then:
+    4) If (n is 0), then:
+      a) Do nothing.
+    5) Else:
+      a) Let c be $zbytes__1^-1(zt, $data(z, y).BYTES[j : ($zsize(zt) / 8)]).
+      b) Push the value (REF.ARRAY_ADDR a) to the stack.
+      c) Push the value (I32.CONST i) to the stack.
+      d) Push the value $const($cunpack(zt), $cunpacknum_(zt, c)) to the stack.
+      e) Execute the instruction (ARRAY.SET x).
+      f) Push the value (REF.ARRAY_ADDR a) to the stack.
+      g) Push the value (I32.CONST (i + 1)) to the stack.
+      h) Push the value (I32.CONST (j + ($zsize(zt) / 8))) to the stack.
+      i) Push the value (I32.CONST (n - 1)) to the stack.
+      j) Execute the instruction (ARRAY.INIT_DATA x y).
+  d. Else if (n is 0), then:
     1) Do nothing.
-  f. Else:
-    1) Let (REF.ARRAY_ADDR a) be instr_u0.
-    2) If $expanddt($type(z, x)) is of the case ARRAY, then:
-      a) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-      b) Let (mut, zt) be arraytype_0.
-      c) Let c be $zbytes__1^-1(zt, $data(z, y).BYTES[j : ($zsize(zt) / 8)]).
-      d) Push the value (REF.ARRAY_ADDR a) to the stack.
-      e) Push the value (I32.CONST i) to the stack.
-      f) Push the value $const($cunpack(zt), $cunpacknum_(zt, c)) to the stack.
-      g) Execute the instruction (ARRAY.SET x).
-      h) Push the value (REF.ARRAY_ADDR a) to the stack.
-      i) Push the value (I32.CONST (i + 1)) to the stack.
-      j) Push the value (I32.CONST (j + ($zsize(zt) / 8))) to the stack.
-      k) Push the value (I32.CONST (n - 1)) to the stack.
-      l) Execute the instruction (ARRAY.INIT_DATA x y).
 
 Step_read/local.get x
 1. Let z be the current state.
