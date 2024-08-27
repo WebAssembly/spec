@@ -31,6 +31,8 @@ let error_struct source typ =
   error_valid "invalid struct type" source (Il.Print.string_of_typ typ)
 let error_tuple source typ =
   error_valid "invalid tuple type" source (Il.Print.string_of_typ typ)
+let error_case source typ =
+  error_valid "invalid case type" source (Il.Print.string_of_typ typ)
 
 
 let (let*) = Option.bind
@@ -263,7 +265,6 @@ let check_tuple source exprs typ =
   | TupT etl when List.length exprs = List.length etl ->
     let f expr (_, typ) = check_match source expr.note typ in
     List.iter2 f exprs etl
-  | _ when List.length exprs = 1 -> check_match source (List.hd exprs).note typ
   | _ -> error_tuple source typ
 
 let check_call source id args result_typ =
@@ -338,6 +339,13 @@ let check_inv_call source id indices args result_typ =
   in
   check_call source id merged_args new_result_typ
 
+let check_case source exprs typ =
+  match typ.it with
+  | TupT etl when List.length exprs = List.length etl ->
+    let f expr (_, typ) = check_match source expr.note typ in
+    List.iter2 f exprs etl
+  | _ -> error_case source typ
+
 let find_case source cases op =
   match List.find_opt (fun (op', _, _) -> Il.Mixop.eq op' op) cases with
   | Some (_op, x, _hints) -> x
@@ -349,13 +357,13 @@ let get_typcases source typ =
     | VarT (id, args) ->
       (match get_deftyps id args with
       | [ dt ] -> dt
-      | _ -> error_valid "invalid case type" source (string_of_typ typ)
+      | _ -> error_case source typ
       )
-    | _ -> error_valid "invalid case type" source (string_of_typ typ)
+    | _ -> error_case source typ
   in
   match dt.it with
   | VariantT tcs -> tcs
-  | _ -> error_valid "invalid case type" source (string_of_typ typ)
+  | _ -> error_case source typ
 
 let access (source: source) (typ: typ) (path: path) : typ =
   match path.it with
@@ -422,7 +430,7 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
   | CaseE (op, exprs) ->
     let tcs = get_typcases source expr.note in
     let _binds, typ, _prems = find_case source tcs op in
-    check_tuple source exprs typ
+    check_case source exprs typ
   | CallE (id, args) -> check_call source id args expr.note
   | InvCallE (id, indices, args) -> check_inv_call source id indices args expr.note;
   | IterE (expr1, _, iter) ->
