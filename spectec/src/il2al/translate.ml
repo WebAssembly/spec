@@ -428,7 +428,7 @@ let insert_pop e e_n =
     | ListE [e'], _ ->
       popI { e' with note = valT } ~at:e'.at
     | _, NumE z when z = Z.minus_one ->
-      popallI { e with note = valsT } ~at:e.at
+      popAllI { e with note = valsT } ~at:e.at
     | _ ->
       popsI { e with note = valsT } (Some e_n) ~at:e.at
   in
@@ -1164,7 +1164,7 @@ let translate_context_winstr winstr =
     let vals = Lib.List.last args in
     [
       (* TODO: append Jump instr *)
-      popallI ({ (translate_exp vals) with note=(listT valT)}) ~at:vals.at;
+      popAllI ({ (translate_exp vals) with note=(listT valT)}) ~at:vals.at;
       insert_assert winstr;
       exitI kind ~at:at
     ]
@@ -1292,7 +1292,7 @@ let rec translate_rgroup' instr_name rgroup =
   | _ ->
     let valTs = listT valT in
     let e_vals = iterE (subE ("val", valT) ~note:valT, [ "val" ], List) ~note:valTs in
-    let instr_popall = popallI e_vals in
+    let instr_popall = popAllI e_vals in
     let instr_push = pushI e_vals in
 
     instr_popall ::

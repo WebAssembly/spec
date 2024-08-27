@@ -3878,7 +3878,7 @@ instantiate z module externaddr*
 27. Let f be { LOCALS: []; MODULE: moduleinst; }.
 28. Perform $initelem(moduleinst, i_E*, moduleinst.FUNCS[x]**).
 29. Perform $initdata(moduleinst, i_D*, b**).
-30. Enter (CALL x')? ++ [FRAME_] with label the activation of f with arity 0.
+30. Enter (CALL x')? :: [FRAME_] with label the activation of f with arity 0.
 31. Return f.MODULE.
 
 invoke z fa val^n
@@ -3887,7 +3887,7 @@ invoke z fa val^n
 3. Let (t_1^n -> t_2*) be $funcinst(z)[fa].TYPE.
 4. Pop the activation of _f from the stack.
 5. Let k be |t_2*|.
-6. Enter [(CALL_ADDR fa)] ++ [FRAME_] with label the activation of f with arity k.
+6. Enter [(CALL_ADDR fa)] :: [FRAME_] with label the activation of f with arity k.
   a. Push the values val^n to the stack.
 7. Pop the values val^k from the stack.
 8. Return val^k.
@@ -11509,7 +11509,7 @@ instantiate z module externaddr*
 24. Pop the activation of _f from the stack.
 25. Let moduleinst be $allocmodule(module, externaddr*, val*, ref**).
 26. Let f be { LOCALS: []; MODULE: moduleinst; }.
-27. Enter instr_E* ++ instr_D* ++ (CALL x)? ++ [FRAME_] with label the activation of f with arity 0.
+27. Enter instr_E* :: instr_D* :: (CALL x)? :: [FRAME_] with label the activation of f with arity 0.
 28. Return f.MODULE.
 
 invoke z fa val^n
@@ -11518,7 +11518,7 @@ invoke z fa val^n
 3. Let (t_1^n -> t_2*) be $funcinst(z)[fa].TYPE.
 4. Pop the activation of _f from the stack.
 5. Let k be |t_2*|.
-6. Enter [(CALL_ADDR fa)] ++ [FRAME_] with label the activation of f with arity k.
+6. Enter [(CALL_ADDR fa)] :: [FRAME_] with label the activation of f with arity k.
   a. Push the values val^n to the stack.
 7. Pop the values val^k from the stack.
 8. Return val^k.
@@ -26171,7 +26171,7 @@ instantiate z module externaddr*
 27. Pop the activation of _f from the stack.
 28. Let moduleinst be $allocmodule(module, externaddr*, val_G*, ref_T*, ref_E**).
 29. Let f be { LOCALS: []; MODULE: moduleinst; }.
-30. Enter instr_E* ++ instr_D* ++ instr_S? ++ [FRAME_] with label the activation of f with arity 0.
+30. Enter instr_E* :: instr_D* :: instr_S? :: [FRAME_] with label the activation of f with arity 0.
 31. Return f.MODULE.
 
 invoke funcaddr val*
@@ -26181,7 +26181,7 @@ invoke funcaddr val*
 4. Let (t_1* -> t_2*) be functype_0.
 5. Assert: Due to validation, ($Val_type(val) is t_1)*.
 6. Let k be |t_2*|.
-7. Enter [(CALL_REF s.FUNCS[funcaddr].TYPE)] ++ [FRAME_] with label the activation of f with arity k.
+7. Enter [(CALL_REF s.FUNCS[funcaddr].TYPE)] :: [FRAME_] with label the activation of f with arity k.
   a. Push the values val* to the stack.
   b. Push the value (REF.FUNC_ADDR funcaddr) to the stack.
 8. Pop the values val^k from the stack.

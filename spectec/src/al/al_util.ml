@@ -23,19 +23,19 @@ let assertI ?(at = no) c = AssertI c |> mk_instr at
 let pushI ?(at = no) e = PushI e |> mk_instr at
 let popI ?(at = no) e = PopI e |> mk_instr at
 let popsI ?(at = no) e _ = PopI e |> mk_instr at (* TODO *)
-let popallI ?(at = no) e = PopAllI e |> mk_instr at
+let popAllI ?(at = no) e = PopAllI e |> mk_instr at
 let letI ?(at = no) (e1, e2) = LetI (e1, e2) |> mk_instr at
 let trapI ?(at = no) () = TrapI |> mk_instr at
 let throwI ?(at = no) e = ThrowI e |> mk_instr at
 let nopI ?(at = no) () = NopI |> mk_instr at
 let returnI ?(at = no) e_opt = ReturnI e_opt |> mk_instr at
 let executeI ?(at = no) e = ExecuteI e |> mk_instr at
-let executeseqI ?(at = no) e = ExecuteSeqI e |> mk_instr at
+let executeSeqI ?(at = no) e = ExecuteSeqI e |> mk_instr at
 let performI ?(at = no) (id, el) = PerformI (id, el) |> mk_instr at
 let exitI ?(at = no) a = ExitI a |> mk_instr at
 let replaceI ?(at = no) (e1, p, e2) = ReplaceI (e1, p, e2) |> mk_instr at
 let appendI ?(at = no) (e1, e2) = AppendI (e1, e2) |> mk_instr at
-let fieldwiseappendI ?(at = no) (e1, e2) = FieldWiseAppendI (e1, e2) |> mk_instr at
+let fieldWiseAppendI ?(at = no) (e1, e2) = FieldWiseAppendI (e1, e2) |> mk_instr at
 let otherwiseI ?(at = no) il = OtherwiseI il |> mk_instr at
 let yetI ?(at = no) s = YetI s |> mk_instr at
 

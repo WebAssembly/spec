@@ -569,7 +569,7 @@ let hide_state instr =
   | ReturnI (Some ({ it = TupE [ { it = CompE (e1, e2); _ } as s; e ]; _  })) when is_store s ->
     let addr = varE "a" ~note:e.note in
     [ letI (addr, e) ~at:at;
-      fieldwiseappendI (e1, e2) ~at:at;
+      fieldWiseAppendI (e1, e2) ~at:at;
       returnI (Some addr) ~at:at ]
   (* Replace store *)
   | ReturnI (Some ({ it = TupE [ { it = UpdE (s, ps, e); note; _ }; f ]; _ })) when is_store s && is_frame f ->
@@ -593,7 +593,7 @@ let hide_state instr =
   (* Fieldwise append store / frame *)
   | ReturnI (Some ({ it = TupE [ { it = CompE (e1, e2); _ } as s; f ]; _ }))
   | ReturnI (Some ({ it = TupE [ s; { it = CompE (e1, e2); _ } as f ]; _ })) when is_store s && is_frame f ->
-    [ fieldwiseappendI (e1, e2) ~at:at ]
+    [ fieldWiseAppendI (e1, e2) ~at:at ]
   (* Return *)
   | ReturnI (Some e) when is_state e || is_store e -> [ returnI None ~at:at ]
   | _ -> [ instr ]
@@ -965,7 +965,7 @@ let remove_enter algo =
           let ty_vals = listT valT in
           let e_tmp = iterE (varE ("val") ~note:valT, [ "val" ], List) ~note:ty_vals in
           pushI e_frame ~at:instr.at :: il @ [
-            popallI e_tmp ~at:instr.at;
+            popAllI e_tmp ~at:instr.at;
             popI e_frame ~at:instr.at;
             pushI e_tmp ~at:instr.at;
           ]
