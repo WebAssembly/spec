@@ -61,7 +61,6 @@ let is_trivial_mixop = List.for_all (fun atoms -> List.length atoms = 0)
 let get_deftyps (id: Il.Ast.id) (args: Il.Ast.arg list): deftyp list =
   match Env.find_opt_typ !env id with
   | Some (_, insts) ->
-
     let get_deftyp inst =
       let typ_of_arg arg =
         match (Eval.reduce_arg !env arg).it with
@@ -93,7 +92,7 @@ let rec unify_deftyp_opt (deftyp: deftyp) : typ option =
   | StructT _ -> None
   | VariantT typcases
   when List.for_all (fun (mixop', _, _) -> is_trivial_mixop mixop') typcases ->
-    typcases |> List.map (fun (_, (_, typ, _), _) -> typ) |> unify_typs_opt
+    typcases |> List.map (fun (_mixop, (_bs, typ, _ps), _hs) -> typ) |> unify_typs_opt
   | _ -> None
 
 and unify_deftyps_opt : deftyp list -> typ option = function
@@ -264,6 +263,7 @@ let check_tuple source exprs typ =
   | TupT etl when List.length exprs = List.length etl ->
     let f expr (_, typ) = check_match source expr.note typ in
     List.iter2 f exprs etl
+  | _ when List.length exprs = 1 -> check_match source (List.hd exprs).note typ
   | _ -> error_tuple source typ
 
 let check_call source id args result_typ =
@@ -328,7 +328,7 @@ let check_inv_call source id indices args result_typ =
       | ExpA exp -> exp.note
       | a -> error_valid (Printf.sprintf "wrong result argument: %s" (Print.string_of_arg (a $ no_region))) source ""
     )
-    | _ -> 
+    | _ ->
       let arg2typ arg = (
         match arg.it with
         | ExpA exp -> (Il.Ast.VarE ("" $ no_region) $$ no_region % exp.note, exp.note)
@@ -337,6 +337,25 @@ let check_inv_call source id indices args result_typ =
       TupT (List.map arg2typ result_args) $ no_region
   in
   check_call source id merged_args new_result_typ
+
+let find_case source cases op =
+  match List.find_opt (fun (op', _, _) -> Il.Mixop.eq op' op) cases with
+  | Some (_op, x, _hints) -> x
+  | None -> error_valid "unknown case" source (string_of_mixop op)
+
+let get_typcases source typ =
+  let dt =
+    match typ.it with
+    | VarT (id, args) ->
+      (match get_deftyps id args with
+      | [ dt ] -> dt
+      | _ -> error_valid "invalid case type" source (string_of_typ typ)
+      )
+    | _ -> error_valid "invalid case type" source (string_of_typ typ)
+  in
+  match dt.it with
+  | VariantT tcs -> tcs
+  | _ -> error_valid "invalid case type" source (string_of_typ typ)
 
 let access (source: source) (typ: typ) (path: path) : typ =
   match path.it with
@@ -388,7 +407,7 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
   | StrE r ->
     let typfields = get_typfields expr.note in
     List.iter (check_field source expr.note r) typfields
-  | CompE (expr1, expr2) -> 
+  | CompE (expr1, expr2) ->
     check_struct source expr1.note; check_struct source expr2.note;
     check_match source expr.note expr1.note; check_match source expr1.note expr2.note
   | CatE (expr1, expr2) ->
@@ -400,7 +419,10 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
   | LenE expr' ->
     check_list source expr'.note; check_num source expr.note
   | TupE exprs -> check_tuple source exprs expr.note
-  | CaseE _ -> () (* TODO *)
+  | CaseE (op, exprs) ->
+    let tcs = get_typcases source expr.note in
+    let _binds, typ, _prems = find_case source tcs op in
+    check_tuple source exprs typ
   | CallE (id, args) -> check_call source id args expr.note
   | InvCallE (id, indices, args) -> check_inv_call source id indices args expr.note;
   | IterE (expr1, _, iter) ->
