@@ -97,6 +97,32 @@ let unify_tail l1 l2 =
   List.rev unified, List.rev l1', List.rev l2'
 
 
+let is_case e =
+  match e.it with
+  | CaseE _ -> true
+  | _ -> false
+
+let atom_of_case e =
+  match e.it with
+  | CaseE ((atom :: _) :: _, _) -> atom
+  | _ -> Error.error e.at "prose transformation" "expected a CaseE"
+
+let rec uncat e =
+  match e.it with
+  | CatE (e1, e2) -> uncat e1 @ uncat e2
+  | _ -> [e]
+
+let seq2exec e =
+  match e.it with
+  | IterE (e', _, Opt) ->
+    ifI (
+      isDefinedE e ~at:e.at ~note:boolT,
+      [executeI e' ~at:e.at],
+      []
+    ) ~at:e.at
+  | ListE [e] -> executeI e ~at:e.at
+  | _ -> executeSeqI e ~at:e.at
+
 (* AL -> AL transpilers *)
 
 (* Explictly insert nop into empty instr list to prevent the optimization *)
@@ -432,7 +458,7 @@ let reduce_comp expr =
     Record.fold_left
     (fun acc extend_exp ->
       match extend_exp with
-      | ({ it = El.Atom.Atom _; _ } as atom, fieldexp) -> 
+      | ({ it = El.Atom.Atom _; _ } as atom, fieldexp) ->
         if nonempty !fieldexp then
           extE (acc, [ dotP atom ], !fieldexp, Back) ~at:expr.at ~note:expr.note
         else
@@ -443,7 +469,7 @@ let reduce_comp expr =
     Record.fold_left
     (fun acc extend_exp ->
       match extend_exp with
-      | ({ it = El.Atom.Atom _; _ } as atom, fieldexp) -> 
+      | ({ it = El.Atom.Atom _; _ } as atom, fieldexp) ->
         if nonempty !fieldexp then
           extE (acc, [ dotP atom ], !fieldexp, Front) ~at:expr.at ~note:expr.note
         else
@@ -950,21 +976,25 @@ let remove_exit algo =
 
   Walk.walk walk_config algo
 
-(* EnterI on FrameE to PushI *)
+(* EnterI to PushI *)
 let remove_enter algo =
   let enter_frame_to_push_then_pop instr =
     match instr.it with
     | EnterI (
       ({ it = FrameE (Some e_arity, _); _ } as e_frame),
-      { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "FRAME_"; _ }]], []); _ } ]); _ },
+      { it = CatE (instrs, { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "FRAME_"; _ }]], []); _ } ]); _ }); _ },
       il) ->
         begin match e_arity.it with
         | NumE z when Z.to_int z = 0 ->
-          pushI e_frame ~at:instr.at :: il @ [ popI e_frame ~at:instr.at ]
+          pushI e_frame ~at:instr.at :: il @
+          (uncat instrs |> List.map (fun e -> seq2exec e)) @ [
+            popI e_frame ~at:instr.at
+          ]
         | _ ->
           let ty_vals = listT valT in
           let e_tmp = iterE (varE ("val") ~note:valT, [ "val" ], List) ~note:ty_vals in
-          pushI e_frame ~at:instr.at :: il @ [
+          pushI e_frame ~at:instr.at :: il @
+          (uncat instrs |> List.map (fun e -> seq2exec e)) @ [
             popAllI e_tmp ~at:instr.at;
             popI e_frame ~at:instr.at;
             pushI e_tmp ~at:instr.at;
@@ -1000,6 +1030,19 @@ let remove_enter algo =
     | _ -> instr
   in
 
+  let enter_handler_to_push instr =
+    match instr.it with
+    | EnterI (e_handler, { it = ListE (_ :: _ as instrs); _ }, il) ->
+      let instrs, h = Lib.List.split_last instrs in
+      if is_case h && (atom_of_case h).it = Atom.Atom "HANDLER_" then
+        pushI e_handler ~at:instr.at
+        :: (List.map (fun e -> executeI e ~at:e.at) instrs)
+        @ il
+      else
+        [ instr ]
+    | _ -> [ instr ]
+  in
+
   let remove_enter' = Source.map (function
     | FuncA (name, params, body) ->
         let walk_config =
@@ -1014,7 +1057,7 @@ let remove_enter algo =
         let walk_config =
           {
             Walk.default_config with
-            pre_instr = enter_frame_to_push @@ (lift enter_label_to_push);
+            pre_instr = enter_frame_to_push @@ (lift enter_label_to_push) @@ enter_handler_to_push;
           }
         in
         let body = Walk.walk_instrs walk_config body in

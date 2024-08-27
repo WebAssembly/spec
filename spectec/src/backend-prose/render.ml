@@ -561,6 +561,7 @@ let render_stack_prefix expr =
   | Al.Ast.FrameE _
   | Al.Ast.LabelE _
   | Al.Ast.VarE ("F" | "L") -> ""
+  | _ when Il.Eq.eq_typ expr.note Al.Al_util.handlerT -> "the handler "
   | Al.Ast.IterE _ -> "the values "
   | _ -> "the value "
 

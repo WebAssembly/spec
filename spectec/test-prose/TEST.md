@@ -2137,7 +2137,13 @@ watsup 0.4 generator
 
 #. Perform :math:`{\mathrm{initdata}}({\mathit{moduleinst}}, {i_{\mathsf{d}}^\ast}, {{b^\ast}^\ast})`.
 
-#. Enter :math:`{(\mathsf{call}~{x'})^?}~\mathsf{frame}` with label the activation of :math:`f` with arity :math:`0`.
+#. Push the activation of :math:`f` with arity :math:`0` to the stack.
+
+#. If :math:`{(\mathsf{call}~{x'})^?}` is defined, then:
+
+   a. Execute the instruction :math:`(\mathsf{call}~{x'})`.
+
+#. Pop the activation of :math:`f` with arity :math:`0` from the stack.
 
 #. Return :math:`f{.}\mathsf{module}`.
 
@@ -2156,9 +2162,17 @@ watsup 0.4 generator
 
 #. Let :math:`k` be :math:`{|{t_2^\ast}|}`.
 
-#. Enter :math:`(\mathsf{call}~{\mathit{fa}})~\mathsf{frame}` with label the activation of :math:`f` with arity :math:`k`.
+#. Push the activation of :math:`f` with arity :math:`k` to the stack.
 
-   a. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+#. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+
+#. Execute the instruction :math:`(\mathsf{call}~{\mathit{fa}})`.
+
+#. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+#. Pop the activation of :math:`f` with arity :math:`k` from the stack.
+
+#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
 #. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
 
@@ -3878,8 +3892,11 @@ instantiate z module externaddr*
 27. Let f be { LOCALS: []; MODULE: moduleinst; }.
 28. Perform $initelem(moduleinst, i_E*, moduleinst.FUNCS[x]**).
 29. Perform $initdata(moduleinst, i_D*, b**).
-30. Enter (CALL x')? :: [FRAME_] with label the activation of f with arity 0.
-31. Return f.MODULE.
+30. Push the activation of f with arity 0 to the stack.
+31. If (CALL x')? is defined, then:
+  a. Execute the instruction (CALL x').
+32. Pop the activation of f with arity 0 from the stack.
+33. Return f.MODULE.
 
 invoke z fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; EXPORTS: []; }; }.
@@ -3887,10 +3904,14 @@ invoke z fa val^n
 3. Let (t_1^n -> t_2*) be $funcinst(z)[fa].TYPE.
 4. Pop the activation of _f from the stack.
 5. Let k be |t_2*|.
-6. Enter [(CALL_ADDR fa)] :: [FRAME_] with label the activation of f with arity k.
-  a. Push the values val^n to the stack.
-7. Pop the values val^k from the stack.
-8. Return val^k.
+6. Push the activation of f with arity k to the stack.
+7. Push the values val^n to the stack.
+8. Execute the instruction (CALL_ADDR fa).
+9. Pop all values val* from the top of the stack.
+10. Pop the activation of f with arity k from the stack.
+11. Push the values val* to the stack.
+12. Pop the values val^k from the stack.
+13. Return val^k.
 
 Step_pure/unreachable
 1. Trap.
@@ -7914,7 +7935,17 @@ watsup 0.4 generator
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
-#. Enter :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}~{{\mathit{instr}}_{\mathsf{d}}^\ast}~{(\mathsf{call}~x)^?}~\mathsf{frame}` with label the activation of :math:`f` with arity :math:`0`.
+#. Push the activation of :math:`f` with arity :math:`0` to the stack.
+
+#. Execute the sequence :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}`.
+
+#. Execute the sequence :math:`{{\mathit{instr}}_{\mathsf{d}}^\ast}`.
+
+#. If :math:`{(\mathsf{call}~x)^?}` is defined, then:
+
+   a. Execute the instruction :math:`(\mathsf{call}~x)`.
+
+#. Pop the activation of :math:`f` with arity :math:`0` from the stack.
 
 #. Return :math:`f{.}\mathsf{module}`.
 
@@ -7933,9 +7964,17 @@ watsup 0.4 generator
 
 #. Let :math:`k` be :math:`{|{t_2^\ast}|}`.
 
-#. Enter :math:`(\mathsf{call}~{\mathit{fa}})~\mathsf{frame}` with label the activation of :math:`f` with arity :math:`k`.
+#. Push the activation of :math:`f` with arity :math:`k` to the stack.
 
-   a. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+#. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+
+#. Execute the instruction :math:`(\mathsf{call}~{\mathit{fa}})`.
+
+#. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+#. Pop the activation of :math:`f` with arity :math:`k` from the stack.
+
+#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
 #. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
 
@@ -11509,8 +11548,13 @@ instantiate z module externaddr*
 24. Pop the activation of _f from the stack.
 25. Let moduleinst be $allocmodule(module, externaddr*, val*, ref**).
 26. Let f be { LOCALS: []; MODULE: moduleinst; }.
-27. Enter instr_E* :: instr_D* :: (CALL x)? :: [FRAME_] with label the activation of f with arity 0.
-28. Return f.MODULE.
+27. Push the activation of f with arity 0 to the stack.
+28. Execute the sequence (instr_E*).
+29. Execute the sequence (instr_D*).
+30. If (CALL x)? is defined, then:
+  a. Execute the instruction (CALL x).
+31. Pop the activation of f with arity 0 from the stack.
+32. Return f.MODULE.
 
 invoke z fa val^n
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
@@ -11518,10 +11562,14 @@ invoke z fa val^n
 3. Let (t_1^n -> t_2*) be $funcinst(z)[fa].TYPE.
 4. Pop the activation of _f from the stack.
 5. Let k be |t_2*|.
-6. Enter [(CALL_ADDR fa)] :: [FRAME_] with label the activation of f with arity k.
-  a. Push the values val^n to the stack.
-7. Pop the values val^k from the stack.
-8. Return val^k.
+6. Push the activation of f with arity k to the stack.
+7. Push the values val^n to the stack.
+8. Execute the instruction (CALL_ADDR fa).
+9. Pop all values val* from the top of the stack.
+10. Pop the activation of f with arity k from the stack.
+11. Push the values val* to the stack.
+12. Pop the values val^k from the stack.
+13. Return val^k.
 
 Step_pure/unreachable
 1. Trap.
@@ -19364,7 +19412,17 @@ watsup 0.4 generator
 
 #. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~\epsilon,\; \mathsf{module}~{\mathit{moduleinst}} \}\end{array}`.
 
-#. Enter :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}~{{\mathit{instr}}_{\mathsf{d}}^\ast}~{{\mathit{instr}}_{\mathsf{s}}^?}~\mathsf{frame}` with label the activation of :math:`f` with arity :math:`0`.
+#. Push the activation of :math:`f` with arity :math:`0` to the stack.
+
+#. Execute the sequence :math:`{{\mathit{instr}}_{\mathsf{e}}^\ast}`.
+
+#. Execute the sequence :math:`{{\mathit{instr}}_{\mathsf{d}}^\ast}`.
+
+#. If :math:`{{\mathit{instr}}_{\mathsf{s}}^?}` is defined, then:
+
+   a. Execute the instruction :math:`{\mathit{instr}}_{\mathsf{s}}`.
+
+#. Pop the activation of :math:`f` with arity :math:`0` from the stack.
 
 #. Return :math:`f{.}\mathsf{module}`.
 
@@ -19385,11 +19443,19 @@ watsup 0.4 generator
 
 #. Let :math:`k` be :math:`{|{t_2^\ast}|}`.
 
-#. Enter :math:`(\mathsf{call\_ref}~s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type})~\mathsf{frame}` with label the activation of :math:`f` with arity :math:`k`.
+#. Push the activation of :math:`f` with arity :math:`k` to the stack.
 
-   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Push the value :math:`(\mathsf{ref{.}func}~{\mathit{funcaddr}})` to the stack.
+#. Push the value :math:`(\mathsf{ref{.}func}~{\mathit{funcaddr}})` to the stack.
+
+#. Execute the instruction :math:`(\mathsf{call\_ref}~s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type})`.
+
+#. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+#. Pop the activation of :math:`f` with arity :math:`k` from the stack.
+
+#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
 #. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
 
@@ -20795,9 +20861,11 @@ watsup 0.4 generator
 
                         #. Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
 
-                        #. Enter :math:`\mathsf{throw\_ref}~\mathsf{handler}` with label :math:`H`.
+                        #. Push the handler :math:`H` to the stack.
 
-                           a. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+                        #. Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+                        #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
                #. Else:
 
@@ -20867,9 +20935,11 @@ watsup 0.4 generator
 
                               #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
 
-                              #) Enter :math:`\mathsf{throw\_ref}~\mathsf{handler}` with label :math:`H`.
+                              #) Push the handler :math:`H` to the stack.
 
-                                 a) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+                              #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+                              #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
                   #) Else:
 
@@ -20917,9 +20987,11 @@ watsup 0.4 generator
 
                               #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
 
-                              #) Enter :math:`\mathsf{throw\_ref}~\mathsf{handler}` with label :math:`H`.
+                              #) Push the handler :math:`H` to the stack.
 
-                                 a) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+                              #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+                              #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
                      #) Else:
 
@@ -20973,9 +21045,11 @@ watsup 0.4 generator
 
                                  #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
 
-                                 #) Enter :math:`\mathsf{throw\_ref}~\mathsf{handler}` with label :math:`H`.
+                                 #) Push the handler :math:`H` to the stack.
 
-                                    1. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+                                 #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+                                 #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
 
 :math:`\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast}`
@@ -20992,11 +21066,11 @@ watsup 0.4 generator
 
 #. Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}^\ast}~\})`.
 
-#. Enter :math:`\mathsf{handler}` with label :math:`H`.
+#. Push the handler :math:`H` to the stack.
 
-   a. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
+#. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
 
-   #. Enter :math:`{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}` with label :math:`L`.
+#. Enter :math:`{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}` with label :math:`L`.
 
 
 :math:`\mathsf{ref{.}null}~x`
@@ -26171,8 +26245,13 @@ instantiate z module externaddr*
 27. Pop the activation of _f from the stack.
 28. Let moduleinst be $allocmodule(module, externaddr*, val_G*, ref_T*, ref_E**).
 29. Let f be { LOCALS: []; MODULE: moduleinst; }.
-30. Enter instr_E* :: instr_D* :: instr_S? :: [FRAME_] with label the activation of f with arity 0.
-31. Return f.MODULE.
+30. Push the activation of f with arity 0 to the stack.
+31. Execute the sequence (instr_E*).
+32. Execute the sequence (instr_D*).
+33. If instr_S? is defined, then:
+  a. Execute the instruction instr_S.
+34. Pop the activation of f with arity 0 from the stack.
+35. Return f.MODULE.
 
 invoke funcaddr val*
 1. Let f be { LOCALS: []; MODULE: { TYPES: []; FUNCS: []; GLOBALS: []; TABLES: []; MEMS: []; TAGS: []; ELEMS: []; DATAS: []; EXPORTS: []; }; }.
@@ -26181,11 +26260,15 @@ invoke funcaddr val*
 4. Let (t_1* -> t_2*) be functype_0.
 5. Assert: Due to validation, ($Val_type(val) is t_1)*.
 6. Let k be |t_2*|.
-7. Enter [(CALL_REF s.FUNCS[funcaddr].TYPE)] :: [FRAME_] with label the activation of f with arity k.
-  a. Push the values val* to the stack.
-  b. Push the value (REF.FUNC_ADDR funcaddr) to the stack.
-8. Pop the values val^k from the stack.
-9. Return val^k.
+7. Push the activation of f with arity k to the stack.
+8. Push the values val* to the stack.
+9. Push the value (REF.FUNC_ADDR funcaddr) to the stack.
+10. Execute the instruction (CALL_REF s.FUNCS[funcaddr].TYPE).
+11. Pop all values val* from the top of the stack.
+12. Pop the activation of f with arity k from the stack.
+13. Push the values val* to the stack.
+14. Pop the values val^k from the stack.
+15. Return val^k.
 
 allocXs X Y X_u0* Y_u1*
 1. If (X_u0* is []), then:
@@ -26853,8 +26936,9 @@ Step_read/throw_ref
               b) Let [catch] :: catch'* be catch_u1*.
               c) Exit from HANDLER_.
               d) Let H be (HANDLER_ n { catch'* }).
-              e) Enter [THROW_REF, HANDLER_] with label H.
-                1. Push the value (REF.EXN_ADDR a) to the stack.
+              e) Push the handler H to the stack.
+              f) Execute the instruction THROW_REF.
+              g) Push the value (REF.EXN_ADDR a) to the stack.
         3. Else:
           a. Let val* be $exninst(z)[a].FIELDS.
           b. Let [catch_0] :: catch'* be catch_u1*.
@@ -26889,8 +26973,9 @@ Step_read/throw_ref
                   b. Let [catch] :: catch'* be catch_u1*.
                   c. Exit from HANDLER_.
                   d. Let H be (HANDLER_ n { catch'* }).
-                  e. Enter [THROW_REF, HANDLER_] with label H.
-                    1) Push the value (REF.EXN_ADDR a) to the stack.
+                  e. Push the handler H to the stack.
+                  f. Execute the instruction THROW_REF.
+                  g. Push the value (REF.EXN_ADDR a) to the stack.
           d. Else:
             1) Let (REF.EXN_ADDR a) be instr_u0.
             2) Let val* be $exninst(z)[a].FIELDS.
@@ -26914,8 +26999,9 @@ Step_read/throw_ref
                   b. Let [catch] :: catch'* be catch_u1*.
                   c. Exit from HANDLER_.
                   d. Let H be (HANDLER_ n { catch'* }).
-                  e. Enter [THROW_REF, HANDLER_] with label H.
-                    1) Push the value (REF.EXN_ADDR a) to the stack.
+                  e. Push the handler H to the stack.
+                  f. Execute the instruction THROW_REF.
+                  g. Push the value (REF.EXN_ADDR a) to the stack.
             5) Else:
               a) Let (CATCH_REF x l) be catch_0.
               b) If ((x < |$tagaddr(z)|) and ($exninst(z)[a].TAG is $tagaddr(z)[x])), then:
@@ -26942,8 +27028,9 @@ Step_read/throw_ref
                     2) Let [catch] :: catch'* be catch_u1*.
                     3) Exit from HANDLER_.
                     4) Let H be (HANDLER_ n { catch'* }).
-                    5) Enter [THROW_REF, HANDLER_] with label H.
-                      a) Push the value (REF.EXN_ADDR a) to the stack.
+                    5) Push the handler H to the stack.
+                    6) Execute the instruction THROW_REF.
+                    7) Push the value (REF.EXN_ADDR a) to the stack.
 
 Step_read/try_table bt catch* instr*
 1. Let z be the current state.
@@ -26951,9 +27038,9 @@ Step_read/try_table bt catch* instr*
 3. Assert: Due to validation, there are at least m values on the top of the stack.
 4. Pop the values val^m from the stack.
 5. Let H be (HANDLER_ n { catch* }).
-6. Enter [HANDLER_] with label H.
-  a. Let L be the label_n{[]}.
-  b. Enter val^m :: instr* with label L.
+6. Push the handler H to the stack.
+7. Let L be the label_n{[]}.
+8. Enter val^m :: instr* with label L.
 
 Step_read/ref.null $idx(x)
 1. Let z be the current state.

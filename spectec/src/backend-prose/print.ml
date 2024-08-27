@@ -267,6 +267,7 @@ let string_of_stack_prefix expr =
   | LabelE _
   | FrameE _
   | VarE ("F" | "L") -> ""
+  | _ when Il.Eq.eq_typ expr.note Al.Al_util.handlerT -> "the handler "
   | IterE _ -> "the values "
   | _ -> "the value "
 
