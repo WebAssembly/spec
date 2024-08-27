@@ -608,6 +608,606 @@ watsup 0.4 generator
    * :math:`{{\mathit{imt}}^\ast}` must be equal to :math:`{\mathrm{mems}}({{\mathit{ixt}}^\ast})`.
 
 
+:math:`\mathsf{unreachable}`
+............................
+
+
+1. Trap.
+
+
+:math:`\mathsf{nop}`
+....................
+
+
+1. Do nothing.
+
+
+:math:`\mathsf{drop}`
+.....................
+
+
+1. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}` from the stack.
+
+#. Do nothing.
+
+
+:math:`\mathsf{select}`
+.......................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}_2` from the stack.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}_1` from the stack.
+
+#. If :math:`c` is not :math:`0`, then:
+
+   a. Push the value :math:`{\mathit{val}}_1` to the stack.
+
+#. Else:
+
+   a. Push the value :math:`{\mathit{val}}_2` to the stack.
+
+
+:math:`\mathsf{if}~{t^?}~{{\mathit{instr}}_1^\ast}~{{\mathit{instr}}_2^\ast}`
+.............................................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
+
+#. If :math:`c` is not :math:`0`, then:
+
+   a. Execute the instruction :math:`(\mathsf{block}~{t^?}~{{\mathit{instr}}_1^\ast})`.
+
+#. Else:
+
+   a. Execute the instruction :math:`(\mathsf{block}~{t^?}~{{\mathit{instr}}_2^\ast})`.
+
+
+:math:`\mathsf{label}`
+......................
+
+
+1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+#. Assert: Due to validation, a label is now on the top of the stack.
+
+#. Pop the current label from the stack.
+
+#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+
+:math:`\mathsf{br}~n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`
+.............................................................
+
+
+1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+#. Assert: Due to validation, the top of the stack is a :math:`\mathsf{label}`.
+
+#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+#. Let :math:`L` be the current label.
+
+#. Let :math:`n` be the arity of :math:`L`.
+
+#. Let :math:`{{\mathit{instr}'}^\ast}` be the continuation of :math:`L`.
+
+#. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`0`, then:
+
+   a. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+
+   #. Pop the current label from the stack.
+
+   #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+
+   #. Execute the instruction :math:`{{\mathit{instr}'}^\ast}`.
+
+#. Else:
+
+   a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+   #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is greater than or equal to :math:`1`, then:
+
+      1) Let :math:`l` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}} - 1`.
+
+      #) Pop the current label from the stack.
+
+      #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+      #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+
+:math:`\mathsf{br\_if}~l`
+.........................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
+
+#. If :math:`c` is not :math:`0`, then:
+
+   a. Execute the instruction :math:`(\mathsf{br}~l)`.
+
+#. Else:
+
+   a. Do nothing.
+
+
+:math:`\mathsf{br\_table}~{l^\ast}~{l'}`
+........................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i` is less than :math:`{|{l^\ast}|}`, then:
+
+   a. Execute the instruction :math:`(\mathsf{br}~{l^\ast}{}[i])`.
+
+#. Else:
+
+   a. Execute the instruction :math:`(\mathsf{br}~{l'})`.
+
+
+:math:`\mathsf{frame}`
+......................
+
+
+1. Let :math:`f` be the current frame.
+
+#. Let :math:`n` be the arity of :math:`f`.
+
+#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+#. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+#. Assert: Due to validation, a frame is now on the top of the stack.
+
+#. Pop the current frame from the stack.
+
+#. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+
+
+:math:`\mathsf{return}`
+.......................
+
+
+1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+#. If the top of the stack is a :math:`\mathsf{frame}`, then:
+
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Let :math:`f` be the current frame.
+
+   #. Let :math:`n` be the arity of :math:`f`.
+
+   #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+
+   #. Pop the current frame from the stack.
+
+   #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+
+#. Else if the top of the stack is a :math:`\mathsf{label}`, then:
+
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+   #. Pop the current label from the stack.
+
+   #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Execute the instruction :math:`\mathsf{return}`.
+
+
+:math:`t {.} {\mathit{unop}}`
+.............................
+
+
+1. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t`.
+
+#. If :math:`{|{{\mathit{unop}}}{{}_{t}}{(c_1)}|}` is less than or equal to :math:`0`, then:
+
+   a. Trap.
+
+#. Let :math:`c` be an element of :math:`{{\mathit{unop}}}{{}_{t}}{(c_1)}`.
+
+#. Push the value :math:`(t{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`t {.} {\mathit{binop}}`
+..............................
+
+
+1. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_2)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t`.
+
+#. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. If :math:`{|{{\mathit{binop}}}{{}_{t}}{(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
+
+   a. Trap.
+
+#. Let :math:`c` be an element of :math:`{{\mathit{binop}}}{{}_{t}}{(c_1, c_2)}`.
+
+#. Push the value :math:`(t{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`t {.} {\mathit{testop}}`
+...............................
+
+
+1. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t`.
+
+#. Let :math:`c` be :math:`{{\mathit{testop}}}{{}_{t}}{(c_1)}`.
+
+#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`t {.} {\mathit{relop}}`
+..............................
+
+
+1. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_2)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t`.
+
+#. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Let :math:`c` be :math:`{{\mathit{relop}}}{{}_{t}}{(c_1, c_2)}`.
+
+#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`t_2 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{t_1}`
+....................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t_1`.
+
+#. If :math:`{|{{\mathit{cvtop}}}{{}_{t_1, t_2}}{(c_1)}|}` is less than or equal to :math:`0`, then:
+
+   a. Trap.
+
+#. Let :math:`c` be an element of :math:`{{\mathit{cvtop}}}{{}_{t_1, t_2}}{(c_1)}`.
+
+#. Push the value :math:`(t_2{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`\mathsf{local{.}tee}~x`
+..............................
+
+
+1. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}` from the stack.
+
+#. Push the value :math:`{\mathit{val}}` to the stack.
+
+#. Push the value :math:`{\mathit{val}}` to the stack.
+
+#. Execute the instruction :math:`(\mathsf{local{.}set}~x)`.
+
+
+:math:`\mathsf{block}~{t^?}~{{\mathit{instr}}^\ast}`
+....................................................
+
+
+1. Let :math:`n` be :math:`0`.
+
+#. If :math:`{t^?}` is not defined, then:
+
+   a. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
+
+   #. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
+
+#. Let :math:`n` be :math:`1`.
+
+#. If :math:`{t^?}` is not :math:`\epsilon`, then:
+
+   a. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
+
+   #. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
+
+
+:math:`\mathsf{loop}~{t^?}~{{\mathit{instr}}^\ast}`
+...................................................
+
+
+1. Let :math:`L` be the label whose arity is :math:`0` and whose continuation is :math:`(\mathsf{loop}~{t^?}~{{\mathit{instr}}^\ast})`.
+
+#. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
+
+
+:math:`\mathsf{call}~x`
+.......................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, :math:`x` is less than :math:`{|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
+
+#. Execute the instruction :math:`(\mathsf{call}~z{.}\mathsf{module}{.}\mathsf{funcs}{}[x])`.
+
+
+:math:`\mathsf{call\_indirect}~x`
+.................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[0]{.}\mathsf{refs}|}`, then:
+
+   a. Trap.
+
+#. If :math:`z{.}\mathsf{tables}{}[0]{.}\mathsf{refs}{}[i]` is not defined, then:
+
+   a. Trap.
+
+#. Let :math:`a` be :math:`z{.}\mathsf{tables}{}[0]{.}\mathsf{refs}{}[i]`.
+
+#. If :math:`a` is greater than or equal to :math:`{|z{.}\mathsf{funcs}|}`, then:
+
+   a. Trap.
+
+#. If :math:`z{.}\mathsf{types}{}[x]` is not :math:`z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}`, then:
+
+   a. Trap.
+
+#. Execute the instruction :math:`(\mathsf{call}~a)`.
+
+
+:math:`\mathsf{call}~a`
+.......................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`.
+
+#. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({t_1^{k}}~\rightarrow~{t_2^{n}}),\; \mathsf{module}~{\mathit{mm}},\; \mathsf{code}~{\mathit{func}} \}\end{array}` be :math:`z{.}\mathsf{funcs}{}[a]`.
+
+#. Assert: Due to validation, there are at least :math:`k` values on the top of the stack.
+
+#. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{func}}` is of the case :math:`\mathsf{func}`.
+
+#. Let :math:`(\mathsf{func}~x~{\mathit{local}}_0~{{\mathit{instr}}^\ast})` be :math:`{\mathit{func}}`.
+
+#. Assert: Due to validation, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`.
+
+#. Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{\mathit{local}}_0`.
+
+#. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{mm}} \}\end{array}`.
+
+#. Let :math:`F` be the activation of :math:`f` with arity :math:`n`.
+
+#. Push :math:`F` to the stack.
+
+#. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
+
+#. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
+
+
+:math:`\mathsf{local{.}get}~x`
+..............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Push the value :math:`z{.}\mathsf{locals}{}[x]` to the stack.
+
+
+:math:`\mathsf{global{.}get}~x`
+...............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Push the value :math:`z{.}\mathsf{globals}{}[x]{.}\mathsf{value}` to the stack.
+
+
+:math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{load}~{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}~{\mathit{ao}}`
+..........................................................................................................................................................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is not defined, then:
+
+   a. Let :math:`t` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|t|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+
+      1) Trap.
+
+   #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{t}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|t|} / 8]`.
+
+   #. Push the value :math:`(t{.}\mathsf{const}~c)` to the stack.
+
+#. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
+
+   a. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is defined, then:
+
+      1) Let :math:`{\mathit{sz}}_{{\mathit{sx}}_0}` be :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}`.
+
+      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{sz}}_{{\mathit{sx}}_0}`.
+
+      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+
+         a) Trap.
+
+   #. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is defined, then:
+
+      1) Let :math:`{\mathit{sz}}_{{\mathit{sx}}_0}` be :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}`.
+
+      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{sz}}_{{\mathit{sx}}_0}`.
+
+      #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
+
+      #) Push the value :math:`({\mathsf{i}}{n}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(c)})` to the stack.
+
+
+:math:`\mathsf{memory{.}size}`
+..............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Let :math:`n \cdot 64 \cdot {\mathrm{Ki}}` be :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`.
+
+#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` to the stack.
+
+
+:math:`\mathsf{local{.}set}~x`
+..............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}` from the stack.
+
+#. Perform :math:`z{}[{.}\mathsf{locals}{}[x] = {\mathit{val}}]`.
+
+
+:math:`\mathsf{global{.}set}~x`
+...............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}` from the stack.
+
+#. Perform :math:`z{}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = {\mathit{val}}]`.
+
+
+:math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}~{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{\mathit{ao}}`
+...........................................................................................................................................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}{.}\mathsf{const}~c)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. Let :math:`t` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|t|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`t` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
+
+   a. Trap.
+
+#. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`t` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
+
+   a. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{t}(c)`.
+
+   #. Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|t|} / 8] = {b^\ast}]`.
+
+#. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Inn, then:
+
+   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+
+   #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathsf{i}}{n}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
+
+      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
+
+      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+
+         a) Trap.
+
+      #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{n}|}, n}(c))`.
+
+      #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
+
+
+:math:`\mathsf{memory{.}grow}`
+..............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Either:
+
+   a. Let :math:`{\mathit{mi}}` be :math:`{\mathrm{growmemory}}(z{.}\mathsf{mems}{}[0], n)`.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|} / 64 \, {\mathrm{Ki}})` to the stack.
+
+   #. Perform :math:`z{}[{.}\mathsf{mems}{}[0] = {\mathit{mi}}]`.
+
+#. Or:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{32}^{{-1}}}}{({-1})})` to the stack.
+
+
 :math:`{\mathrm{Ki}}`
 .....................
 
@@ -2179,606 +2779,6 @@ watsup 0.4 generator
 #. Return :math:`{{\mathit{val}}^{k}}`.
 
 
-:math:`\mathsf{unreachable}`
-............................
-
-
-1. Trap.
-
-
-:math:`\mathsf{nop}`
-....................
-
-
-1. Do nothing.
-
-
-:math:`\mathsf{drop}`
-.....................
-
-
-1. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}` from the stack.
-
-#. Do nothing.
-
-
-:math:`\mathsf{select}`
-.......................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}_2` from the stack.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}_1` from the stack.
-
-#. If :math:`c` is not :math:`0`, then:
-
-   a. Push the value :math:`{\mathit{val}}_1` to the stack.
-
-#. Else:
-
-   a. Push the value :math:`{\mathit{val}}_2` to the stack.
-
-
-:math:`\mathsf{if}~{t^?}~{{\mathit{instr}}_1^\ast}~{{\mathit{instr}}_2^\ast}`
-.............................................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
-
-#. If :math:`c` is not :math:`0`, then:
-
-   a. Execute the instruction :math:`(\mathsf{block}~{t^?}~{{\mathit{instr}}_1^\ast})`.
-
-#. Else:
-
-   a. Execute the instruction :math:`(\mathsf{block}~{t^?}~{{\mathit{instr}}_2^\ast})`.
-
-
-:math:`\mathsf{label}`
-......................
-
-
-1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-#. Assert: Due to validation, a label is now on the top of the stack.
-
-#. Pop the current label from the stack.
-
-#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-
-:math:`\mathsf{br}~n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`
-.............................................................
-
-
-1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-#. Assert: Due to validation, the top of the stack is a :math:`\mathsf{label}`.
-
-#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-#. Let :math:`L` be the current label.
-
-#. Let :math:`n` be the arity of :math:`L`.
-
-#. Let :math:`{{\mathit{instr}'}^\ast}` be the continuation of :math:`L`.
-
-#. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`0`, then:
-
-   a. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
-
-   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
-
-   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
-
-   #. Pop the current label from the stack.
-
-   #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
-
-   #. Execute the instruction :math:`{{\mathit{instr}'}^\ast}`.
-
-#. Else:
-
-   a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-   #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is greater than or equal to :math:`1`, then:
-
-      1) Let :math:`l` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}} - 1`.
-
-      #) Pop the current label from the stack.
-
-      #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-      #) Execute the instruction :math:`(\mathsf{br}~l)`.
-
-
-:math:`\mathsf{br\_if}~l`
-.........................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
-
-#. If :math:`c` is not :math:`0`, then:
-
-   a. Execute the instruction :math:`(\mathsf{br}~l)`.
-
-#. Else:
-
-   a. Do nothing.
-
-
-:math:`\mathsf{br\_table}~{l^\ast}~{l'}`
-........................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`i` is less than :math:`{|{l^\ast}|}`, then:
-
-   a. Execute the instruction :math:`(\mathsf{br}~{l^\ast}{}[i])`.
-
-#. Else:
-
-   a. Execute the instruction :math:`(\mathsf{br}~{l'})`.
-
-
-:math:`\mathsf{frame}`
-......................
-
-
-1. Let :math:`f` be the current frame.
-
-#. Let :math:`n` be the arity of :math:`f`.
-
-#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
-
-#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
-
-#. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
-
-#. Assert: Due to validation, a frame is now on the top of the stack.
-
-#. Pop the current frame from the stack.
-
-#. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
-
-
-:math:`\mathsf{return}`
-.......................
-
-
-1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-#. If the top of the stack is a :math:`\mathsf{frame}`, then:
-
-   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-   #. Let :math:`f` be the current frame.
-
-   #. Let :math:`n` be the arity of :math:`f`.
-
-   #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
-
-   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
-
-   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
-
-   #. Pop the current frame from the stack.
-
-   #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
-
-#. Else if the top of the stack is a :math:`\mathsf{label}`, then:
-
-   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-   #. Pop the current label from the stack.
-
-   #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-   #. Execute the instruction :math:`\mathsf{return}`.
-
-
-:math:`t {.} {\mathit{unop}}`
-.............................
-
-
-1. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t`.
-
-#. If :math:`{|{{\mathit{unop}}}{{}_{t}}{(c_1)}|}` is less than or equal to :math:`0`, then:
-
-   a. Trap.
-
-#. Let :math:`c` be an element of :math:`{{\mathit{unop}}}{{}_{t}}{(c_1)}`.
-
-#. Push the value :math:`(t{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`t {.} {\mathit{binop}}`
-..............................
-
-
-1. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t`.
-
-#. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. If :math:`{|{{\mathit{binop}}}{{}_{t}}{(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
-
-   a. Trap.
-
-#. Let :math:`c` be an element of :math:`{{\mathit{binop}}}{{}_{t}}{(c_1, c_2)}`.
-
-#. Push the value :math:`(t{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`t {.} {\mathit{testop}}`
-...............................
-
-
-1. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t`.
-
-#. Let :math:`c` be :math:`{{\mathit{testop}}}{{}_{t}}{(c_1)}`.
-
-#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`t {.} {\mathit{relop}}`
-..............................
-
-
-1. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t`.
-
-#. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Let :math:`c` be :math:`{{\mathit{relop}}}{{}_{t}}{(c_1, c_2)}`.
-
-#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`t_2 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{t_1}`
-....................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{valtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{valtype}}_0` is :math:`t_1`.
-
-#. If :math:`{|{{\mathit{cvtop}}}{{}_{t_1, t_2}}{(c_1)}|}` is less than or equal to :math:`0`, then:
-
-   a. Trap.
-
-#. Let :math:`c` be an element of :math:`{{\mathit{cvtop}}}{{}_{t_1, t_2}}{(c_1)}`.
-
-#. Push the value :math:`(t_2{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`\mathsf{local{.}tee}~x`
-..............................
-
-
-1. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}` from the stack.
-
-#. Push the value :math:`{\mathit{val}}` to the stack.
-
-#. Push the value :math:`{\mathit{val}}` to the stack.
-
-#. Execute the instruction :math:`(\mathsf{local{.}set}~x)`.
-
-
-:math:`\mathsf{block}~{t^?}~{{\mathit{instr}}^\ast}`
-....................................................
-
-
-1. Let :math:`n` be :math:`0`.
-
-#. If :math:`{t^?}` is not defined, then:
-
-   a. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
-
-   #. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
-
-#. Let :math:`n` be :math:`1`.
-
-#. If :math:`{t^?}` is not :math:`\epsilon`, then:
-
-   a. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
-
-   #. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
-
-
-:math:`\mathsf{loop}~{t^?}~{{\mathit{instr}}^\ast}`
-...................................................
-
-
-1. Let :math:`L` be the label whose arity is :math:`0` and whose continuation is :math:`(\mathsf{loop}~{t^?}~{{\mathit{instr}}^\ast})`.
-
-#. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
-
-
-:math:`\mathsf{call}~x`
-.......................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, :math:`x` is less than :math:`{|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
-
-#. Execute the instruction :math:`(\mathsf{call}~z{.}\mathsf{module}{.}\mathsf{funcs}{}[x])`.
-
-
-:math:`\mathsf{call\_indirect}~x`
-.................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[0]{.}\mathsf{refs}|}`, then:
-
-   a. Trap.
-
-#. If :math:`z{.}\mathsf{tables}{}[0]{.}\mathsf{refs}{}[i]` is not defined, then:
-
-   a. Trap.
-
-#. Let :math:`a` be :math:`z{.}\mathsf{tables}{}[0]{.}\mathsf{refs}{}[i]`.
-
-#. If :math:`a` is greater than or equal to :math:`{|z{.}\mathsf{funcs}|}`, then:
-
-   a. Trap.
-
-#. If :math:`z{.}\mathsf{types}{}[x]` is not :math:`z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}`, then:
-
-   a. Trap.
-
-#. Execute the instruction :math:`(\mathsf{call}~a)`.
-
-
-:math:`\mathsf{call}~a`
-.......................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`.
-
-#. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({t_1^{k}}~\rightarrow~{t_2^{n}}),\; \mathsf{module}~{\mathit{mm}},\; \mathsf{code}~{\mathit{func}} \}\end{array}` be :math:`z{.}\mathsf{funcs}{}[a]`.
-
-#. Assert: Due to validation, there are at least :math:`k` values on the top of the stack.
-
-#. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{func}}` is of the case :math:`\mathsf{func}`.
-
-#. Let :math:`(\mathsf{func}~x~{\mathit{local}}_0~{{\mathit{instr}}^\ast})` be :math:`{\mathit{func}}`.
-
-#. Assert: Due to validation, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`.
-
-#. Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{\mathit{local}}_0`.
-
-#. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{mm}} \}\end{array}`.
-
-#. Let :math:`F` be the activation of :math:`f` with arity :math:`n`.
-
-#. Push :math:`F` to the stack.
-
-#. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
-
-#. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
-
-
-:math:`\mathsf{local{.}get}~x`
-..............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Push the value :math:`z{.}\mathsf{locals}{}[x]` to the stack.
-
-
-:math:`\mathsf{global{.}get}~x`
-...............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Push the value :math:`z{.}\mathsf{globals}{}[x]{.}\mathsf{value}` to the stack.
-
-
-:math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{load}~{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}~{\mathit{ao}}`
-..........................................................................................................................................................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is not defined, then:
-
-   a. Let :math:`t` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|t|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
-
-      1) Trap.
-
-   #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{t}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|t|} / 8]`.
-
-   #. Push the value :math:`(t{.}\mathsf{const}~c)` to the stack.
-
-#. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
-
-   a. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is defined, then:
-
-      1) Let :math:`{\mathit{sz}}_{{\mathit{sx}}_0}` be :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}`.
-
-      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{sz}}_{{\mathit{sx}}_0}`.
-
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
-
-         a) Trap.
-
-   #. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is defined, then:
-
-      1) Let :math:`{\mathit{sz}}_{{\mathit{sx}}_0}` be :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}`.
-
-      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{sz}}_{{\mathit{sx}}_0}`.
-
-      #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
-
-      #) Push the value :math:`({\mathsf{i}}{n}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(c)})` to the stack.
-
-
-:math:`\mathsf{memory{.}size}`
-..............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Let :math:`n \cdot 64 \cdot {\mathrm{Ki}}` be :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`.
-
-#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` to the stack.
-
-
-:math:`\mathsf{local{.}set}~x`
-..............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}` from the stack.
-
-#. Perform :math:`z{}[{.}\mathsf{locals}{}[x] = {\mathit{val}}]`.
-
-
-:math:`\mathsf{global{.}set}~x`
-...............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}` from the stack.
-
-#. Perform :math:`z{}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = {\mathit{val}}]`.
-
-
-:math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}~{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{\mathit{ao}}`
-...........................................................................................................................................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}{.}\mathsf{const}~c)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. Let :math:`t` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
-
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|t|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`t` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
-
-   a. Trap.
-
-#. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`t` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
-
-   a. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{t}(c)`.
-
-   #. Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|t|} / 8] = {b^\ast}]`.
-
-#. If the type of :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
-
-   #. If :math:`{\mathit{valtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathsf{i}}{n}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
-
-      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
-
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
-
-         a) Trap.
-
-      #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{n}|}, n}(c))`.
-
-      #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
-
-
-:math:`\mathsf{memory{.}grow}`
-..............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Either:
-
-   a. Let :math:`{\mathit{mi}}` be :math:`{\mathrm{growmemory}}(z{.}\mathsf{mems}{}[0], n)`.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|} / 64 \, {\mathrm{Ki}})` to the stack.
-
-   #. Perform :math:`z{}[{.}\mathsf{mems}{}[0] = {\mathit{mi}}]`.
-
-#. Or:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{32}^{{-1}}}}{({-1})})` to the stack.
-
-
 :math:`{\mathrm{eval}}_{\mathit{expr}}({{\mathit{instr}}^\ast})`
 ................................................................
 
@@ -3163,6 +3163,291 @@ Module_ok
   - igt* is $globalsxt(ixt*).
   - itt* is $tablesxt(ixt*).
   - imt* is $memsxt(ixt*).
+
+Step_pure/unreachable
+1. Trap.
+
+Step_pure/nop
+1. Do nothing.
+
+Step_pure/drop
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value val from the stack.
+3. Do nothing.
+
+Step_pure/select
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop the value (I32.CONST c) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop the value val_2 from the stack.
+5. Assert: Due to validation, a value is on the top of the stack.
+6. Pop the value val_1 from the stack.
+7. If (c is not 0), then:
+  a. Push the value val_1 to the stack.
+8. Else:
+  a. Push the value val_2 to the stack.
+
+Step_pure/if t? instr_1* instr_2*
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop the value (I32.CONST c) from the stack.
+3. If (c is not 0), then:
+  a. Execute the instruction (BLOCK t? instr_1*).
+4. Else:
+  a. Execute the instruction (BLOCK t? instr_2*).
+
+Step_pure/label
+1. Pop all values val* from the top of the stack.
+2. Assert: Due to validation, a label is now on the top of the stack.
+3. Pop the current label from the stack.
+4. Push the values val* to the stack.
+
+Step_pure/br n_u0
+1. Pop all values val* from the top of the stack.
+2. Assert: Due to validation, the top of the stack is a LABEL_.
+3. Push the values val* to the stack.
+4. Let L be the current label.
+5. Let n be the arity of L.
+6. Let instr'* be the continuation of L.
+7. If (n_u0 is 0), then:
+  a. Assert: Due to validation, there are at least n values on the top of the stack.
+  b. Pop the values val^n from the stack.
+  c. Pop all values val'* from the top of the stack.
+  d. Pop the current label from the stack.
+  e. Push the values val^n to the stack.
+  f. Execute the instruction instr'*.
+8. Else:
+  a. Pop all values val* from the top of the stack.
+  b. If (n_u0 ≥ 1), then:
+    1) Let l be (n_u0 - 1).
+    2) Pop the current label from the stack.
+    3) Push the values val* to the stack.
+    4) Execute the instruction (BR l).
+
+Step_pure/br_if l
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop the value (I32.CONST c) from the stack.
+3. If (c is not 0), then:
+  a. Execute the instruction (BR l).
+4. Else:
+  a. Do nothing.
+
+Step_pure/br_table l* l'
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop the value (I32.CONST i) from the stack.
+3. If (i < |l*|), then:
+  a. Execute the instruction (BR l*[i]).
+4. Else:
+  a. Execute the instruction (BR l').
+
+Step_pure/frame
+1. Let f be the current frame.
+2. Let n be the arity of f.
+3. Assert: Due to validation, there are at least n values on the top of the stack.
+4. Assert: Due to validation, there are at least n values on the top of the stack.
+5. Pop the values val^n from the stack.
+6. Assert: Due to validation, a frame is now on the top of the stack.
+7. Pop the current frame from the stack.
+8. Push the values val^n to the stack.
+
+Step_pure/return
+1. Pop all values val* from the top of the stack.
+2. If the top of the stack is a FRAME_, then:
+  a. Push the values val* to the stack.
+  b. Let f be the current frame.
+  c. Let n be the arity of f.
+  d. Assert: Due to validation, there are at least n values on the top of the stack.
+  e. Pop the values val^n from the stack.
+  f. Pop all values val'* from the top of the stack.
+  g. Pop the current frame from the stack.
+  h. Push the values val^n to the stack.
+3. Else if the top of the stack is a LABEL_, then:
+  a. Push the values val* to the stack.
+  b. Pop all values val* from the top of the stack.
+  c. Pop the current label from the stack.
+  d. Push the values val* to the stack.
+  e. Execute the instruction RETURN.
+
+Step_pure/unop t unop
+1. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+2. Pop the value (valtype_0.CONST c_1) from the stack.
+3. Assert: Due to validation, (valtype_0 is t).
+4. If (|$unop_(t, unop, c_1)| ≤ 0), then:
+  a. Trap.
+5. Let c be an element of $unop_(t, unop, c_1).
+6. Push the value (t.CONST c) to the stack.
+
+Step_pure/binop t binop
+1. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+2. Pop the value (valtype_0.CONST c_2) from the stack.
+3. Assert: Due to validation, (valtype_0 is t).
+4. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+5. Pop the value (valtype_0.CONST c_1) from the stack.
+6. If (|$binop_(t, binop, c_1, c_2)| ≤ 0), then:
+  a. Trap.
+7. Let c be an element of $binop_(t, binop, c_1, c_2).
+8. Push the value (t.CONST c) to the stack.
+
+Step_pure/testop t testop
+1. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+2. Pop the value (valtype_0.CONST c_1) from the stack.
+3. Assert: Due to validation, (valtype_0 is t).
+4. Let c be $testop_(t, testop, c_1).
+5. Push the value (I32.CONST c) to the stack.
+
+Step_pure/relop t relop
+1. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+2. Pop the value (valtype_0.CONST c_2) from the stack.
+3. Assert: Due to validation, (valtype_0 is t).
+4. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+5. Pop the value (valtype_0.CONST c_1) from the stack.
+6. Let c be $relop_(t, relop, c_1, c_2).
+7. Push the value (I32.CONST c) to the stack.
+
+Step_pure/cvtop t_2 t_1 cvtop
+1. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
+2. Pop the value (valtype_0.CONST c_1) from the stack.
+3. Assert: Due to validation, (valtype_0 is t_1).
+4. If (|$cvtop__(t_1, t_2, cvtop, c_1)| ≤ 0), then:
+  a. Trap.
+5. Let c be an element of $cvtop__(t_1, t_2, cvtop, c_1).
+6. Push the value (t_2.CONST c) to the stack.
+
+Step_pure/local.tee x
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value val from the stack.
+3. Push the value val to the stack.
+4. Push the value val to the stack.
+5. Execute the instruction (LOCAL.SET x).
+
+Step_read/block t? instr*
+1. Let n be 0.
+2. If t? is not defined, then:
+  a. Let L be the label_n{[]}.
+  b. Enter instr* with label L.
+3. Let n be 1.
+4. If (t? is not ?()), then:
+  a. Let L be the label_n{[]}.
+  b. Enter instr* with label L.
+
+Step_read/loop t? instr*
+1. Let L be the label_0{[(LOOP t? instr*)]}.
+2. Enter instr* with label L.
+
+Step_read/call x
+1. Let z be the current state.
+2. Assert: Due to validation, (x < |$funcaddr(z)|).
+3. Execute the instruction (CALL_ADDR $funcaddr(z)[x]).
+
+Step_read/call_indirect x
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST i) from the stack.
+4. If (i ≥ |$table(z, 0).REFS|), then:
+  a. Trap.
+5. If $table(z, 0).REFS[i] is not defined, then:
+  a. Trap.
+6. Let ?(a) be $table(z, 0).REFS[i].
+7. If (a ≥ |$funcinst(z)|), then:
+  a. Trap.
+8. If ($type(z, x) is not $funcinst(z)[a].TYPE), then:
+  a. Trap.
+9. Execute the instruction (CALL_ADDR a).
+
+Step_read/call_addr a
+1. Let z be the current state.
+2. Assert: Due to validation, (a < |$funcinst(z)|).
+3. Let { TYPE: (t_1^k -> t_2^n); MODULE: mm; CODE: func; } be $funcinst(z)[a].
+4. Assert: Due to validation, there are at least k values on the top of the stack.
+5. Pop the values val^k from the stack.
+6. Assert: Due to validation, func is of the case FUNC.
+7. Let (FUNC x local_0 instr*) be func.
+8. Assert: Due to validation, local_0 is of the case LOCAL.
+9. Let (LOCAL t)* be local_0.
+10. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm; }.
+11. Let F be the activation of f with arity n.
+12. Push F to the stack.
+13. Let L be the label_n{[]}.
+14. Enter instr* with label L.
+
+Step_read/local.get x
+1. Let z be the current state.
+2. Push the value $local(z, x) to the stack.
+
+Step_read/global.get x
+1. Let z be the current state.
+2. Push the value $global(z, x).VALUE to the stack.
+
+Step_read/load valtype_u0 sz_sx_u1? ao
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST i) from the stack.
+4. If sz_sx_u1? is not defined, then:
+  a. Let t be valtype_u0.
+  b. If (((i + ao.OFFSET) + ($size(t) / 8)) > |$mem(z, 0).BYTES|), then:
+    1) Trap.
+  c. Let c be $bytes__1^-1(t, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(t) / 8)]).
+  d. Push the value (t.CONST c) to the stack.
+5. If the type of valtype_u0 is Inn, then:
+  a. If sz_sx_u1? is defined, then:
+    1) Let ?(sz_sx_0) be sz_sx_u1?.
+    2) Let (n, sx) be sz_sx_0.
+    3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
+      a) Trap.
+  b. Let Inn be valtype_u0.
+  c. If sz_sx_u1? is defined, then:
+    1) Let ?(sz_sx_0) be sz_sx_u1?.
+    2) Let (n, sx) be sz_sx_0.
+    3) Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
+    4) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
+
+Step_read/memory.size
+1. Let z be the current state.
+2. Let ((n · 64) · $Ki()) be |$mem(z, 0).BYTES|.
+3. Push the value (I32.CONST n) to the stack.
+
+Step/local.set x
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value val from the stack.
+4. Perform $with_local(z, x, val).
+
+Step/global.set x
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value val from the stack.
+4. Perform $with_global(z, x, val).
+
+Step/store valtype_u0 sz_u1? ao
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type valtype_u2 is on the top of the stack.
+3. Pop the value (valtype_u2.CONST c) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. Let t be valtype_u2.
+7. If ((((i + ao.OFFSET) + ($size(t) / 8)) > |$mem(z, 0).BYTES|) and ((valtype_u0 is t) and sz_u1? is not defined)), then:
+  a. Trap.
+8. If ((valtype_u0 is t) and sz_u1? is not defined), then:
+  a. Let b* be $bytes_(t, c).
+  b. Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(t) / 8), b*).
+9. If the type of valtype_u2 is Inn, then:
+  a. Let Inn be valtype_u2.
+  b. If ((valtype_u0 is Inn) and sz_u1? is defined), then:
+    1) Let ?(n) be sz_u1?.
+    2) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
+      a) Trap.
+    3) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
+    4) Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
+
+Step/memory.grow
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Either:
+  a. Let mi be $growmemory($mem(z, 0), n).
+  b. Push the value (I32.CONST (|$mem(z, 0).BYTES| / (64 · $Ki()))) to the stack.
+  c. Perform $with_meminst(z, 0, mi).
+5. Or:
+  a. Push the value (I32.CONST $invsigned_(32, (- 1))) to the stack.
 
 Ki
 1. Return 1024.
@@ -3912,291 +4197,6 @@ invoke z fa val^n
 11. Push the values val* to the stack.
 12. Pop the values val^k from the stack.
 13. Return val^k.
-
-Step_pure/unreachable
-1. Trap.
-
-Step_pure/nop
-1. Do nothing.
-
-Step_pure/drop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. Do nothing.
-
-Step_pure/select
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST c) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value val_2 from the stack.
-5. Assert: Due to validation, a value is on the top of the stack.
-6. Pop the value val_1 from the stack.
-7. If (c is not 0), then:
-  a. Push the value val_1 to the stack.
-8. Else:
-  a. Push the value val_2 to the stack.
-
-Step_pure/if t? instr_1* instr_2*
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST c) from the stack.
-3. If (c is not 0), then:
-  a. Execute the instruction (BLOCK t? instr_1*).
-4. Else:
-  a. Execute the instruction (BLOCK t? instr_2*).
-
-Step_pure/label
-1. Pop all values val* from the top of the stack.
-2. Assert: Due to validation, a label is now on the top of the stack.
-3. Pop the current label from the stack.
-4. Push the values val* to the stack.
-
-Step_pure/br n_u0
-1. Pop all values val* from the top of the stack.
-2. Assert: Due to validation, the top of the stack is a LABEL_.
-3. Push the values val* to the stack.
-4. Let L be the current label.
-5. Let n be the arity of L.
-6. Let instr'* be the continuation of L.
-7. If (n_u0 is 0), then:
-  a. Assert: Due to validation, there are at least n values on the top of the stack.
-  b. Pop the values val^n from the stack.
-  c. Pop all values val'* from the top of the stack.
-  d. Pop the current label from the stack.
-  e. Push the values val^n to the stack.
-  f. Execute the instruction instr'*.
-8. Else:
-  a. Pop all values val* from the top of the stack.
-  b. If (n_u0 ≥ 1), then:
-    1) Let l be (n_u0 - 1).
-    2) Pop the current label from the stack.
-    3) Push the values val* to the stack.
-    4) Execute the instruction (BR l).
-
-Step_pure/br_if l
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST c) from the stack.
-3. If (c is not 0), then:
-  a. Execute the instruction (BR l).
-4. Else:
-  a. Do nothing.
-
-Step_pure/br_table l* l'
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST i) from the stack.
-3. If (i < |l*|), then:
-  a. Execute the instruction (BR l*[i]).
-4. Else:
-  a. Execute the instruction (BR l').
-
-Step_pure/frame
-1. Let f be the current frame.
-2. Let n be the arity of f.
-3. Assert: Due to validation, there are at least n values on the top of the stack.
-4. Assert: Due to validation, there are at least n values on the top of the stack.
-5. Pop the values val^n from the stack.
-6. Assert: Due to validation, a frame is now on the top of the stack.
-7. Pop the current frame from the stack.
-8. Push the values val^n to the stack.
-
-Step_pure/return
-1. Pop all values val* from the top of the stack.
-2. If the top of the stack is a FRAME_, then:
-  a. Push the values val* to the stack.
-  b. Let f be the current frame.
-  c. Let n be the arity of f.
-  d. Assert: Due to validation, there are at least n values on the top of the stack.
-  e. Pop the values val^n from the stack.
-  f. Pop all values val'* from the top of the stack.
-  g. Pop the current frame from the stack.
-  h. Push the values val^n to the stack.
-3. Else if the top of the stack is a LABEL_, then:
-  a. Push the values val* to the stack.
-  b. Pop all values val* from the top of the stack.
-  c. Pop the current label from the stack.
-  d. Push the values val* to the stack.
-  e. Execute the instruction RETURN.
-
-Step_pure/unop t unop
-1. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
-2. Pop the value (valtype_0.CONST c_1) from the stack.
-3. Assert: Due to validation, (valtype_0 is t).
-4. If (|$unop_(t, unop, c_1)| ≤ 0), then:
-  a. Trap.
-5. Let c be an element of $unop_(t, unop, c_1).
-6. Push the value (t.CONST c) to the stack.
-
-Step_pure/binop t binop
-1. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
-2. Pop the value (valtype_0.CONST c_2) from the stack.
-3. Assert: Due to validation, (valtype_0 is t).
-4. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
-5. Pop the value (valtype_0.CONST c_1) from the stack.
-6. If (|$binop_(t, binop, c_1, c_2)| ≤ 0), then:
-  a. Trap.
-7. Let c be an element of $binop_(t, binop, c_1, c_2).
-8. Push the value (t.CONST c) to the stack.
-
-Step_pure/testop t testop
-1. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
-2. Pop the value (valtype_0.CONST c_1) from the stack.
-3. Assert: Due to validation, (valtype_0 is t).
-4. Let c be $testop_(t, testop, c_1).
-5. Push the value (I32.CONST c) to the stack.
-
-Step_pure/relop t relop
-1. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
-2. Pop the value (valtype_0.CONST c_2) from the stack.
-3. Assert: Due to validation, (valtype_0 is t).
-4. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
-5. Pop the value (valtype_0.CONST c_1) from the stack.
-6. Let c be $relop_(t, relop, c_1, c_2).
-7. Push the value (I32.CONST c) to the stack.
-
-Step_pure/cvtop t_2 t_1 cvtop
-1. Assert: Due to validation, a value of value type valtype_0 is on the top of the stack.
-2. Pop the value (valtype_0.CONST c_1) from the stack.
-3. Assert: Due to validation, (valtype_0 is t_1).
-4. If (|$cvtop__(t_1, t_2, cvtop, c_1)| ≤ 0), then:
-  a. Trap.
-5. Let c be an element of $cvtop__(t_1, t_2, cvtop, c_1).
-6. Push the value (t_2.CONST c) to the stack.
-
-Step_pure/local.tee x
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. Push the value val to the stack.
-4. Push the value val to the stack.
-5. Execute the instruction (LOCAL.SET x).
-
-Step_read/block t? instr*
-1. Let n be 0.
-2. If t? is not defined, then:
-  a. Let L be the label_n{[]}.
-  b. Enter instr* with label L.
-3. Let n be 1.
-4. If (t? is not ?()), then:
-  a. Let L be the label_n{[]}.
-  b. Enter instr* with label L.
-
-Step_read/loop t? instr*
-1. Let L be the label_0{[(LOOP t? instr*)]}.
-2. Enter instr* with label L.
-
-Step_read/call x
-1. Let z be the current state.
-2. Assert: Due to validation, (x < |$funcaddr(z)|).
-3. Execute the instruction (CALL_ADDR $funcaddr(z)[x]).
-
-Step_read/call_indirect x
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST i) from the stack.
-4. If (i ≥ |$table(z, 0).REFS|), then:
-  a. Trap.
-5. If $table(z, 0).REFS[i] is not defined, then:
-  a. Trap.
-6. Let ?(a) be $table(z, 0).REFS[i].
-7. If (a ≥ |$funcinst(z)|), then:
-  a. Trap.
-8. If ($type(z, x) is not $funcinst(z)[a].TYPE), then:
-  a. Trap.
-9. Execute the instruction (CALL_ADDR a).
-
-Step_read/call_addr a
-1. Let z be the current state.
-2. Assert: Due to validation, (a < |$funcinst(z)|).
-3. Let { TYPE: (t_1^k -> t_2^n); MODULE: mm; CODE: func; } be $funcinst(z)[a].
-4. Assert: Due to validation, there are at least k values on the top of the stack.
-5. Pop the values val^k from the stack.
-6. Assert: Due to validation, func is of the case FUNC.
-7. Let (FUNC x local_0 instr*) be func.
-8. Assert: Due to validation, local_0 is of the case LOCAL.
-9. Let (LOCAL t)* be local_0.
-10. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm; }.
-11. Let F be the activation of f with arity n.
-12. Push F to the stack.
-13. Let L be the label_n{[]}.
-14. Enter instr* with label L.
-
-Step_read/local.get x
-1. Let z be the current state.
-2. Push the value $local(z, x) to the stack.
-
-Step_read/global.get x
-1. Let z be the current state.
-2. Push the value $global(z, x).VALUE to the stack.
-
-Step_read/load valtype_u0 sz_sx_u1? ao
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST i) from the stack.
-4. If sz_sx_u1? is not defined, then:
-  a. Let t be valtype_u0.
-  b. If (((i + ao.OFFSET) + ($size(t) / 8)) > |$mem(z, 0).BYTES|), then:
-    1) Trap.
-  c. Let c be $bytes__1^-1(t, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(t) / 8)]).
-  d. Push the value (t.CONST c) to the stack.
-5. If the type of valtype_u0 is Inn, then:
-  a. If sz_sx_u1? is defined, then:
-    1) Let ?(sz_sx_0) be sz_sx_u1?.
-    2) Let (n, sx) be sz_sx_0.
-    3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
-      a) Trap.
-  b. Let Inn be valtype_u0.
-  c. If sz_sx_u1? is defined, then:
-    1) Let ?(sz_sx_0) be sz_sx_u1?.
-    2) Let (n, sx) be sz_sx_0.
-    3) Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
-    4) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
-
-Step_read/memory.size
-1. Let z be the current state.
-2. Let ((n · 64) · $Ki()) be |$mem(z, 0).BYTES|.
-3. Push the value (I32.CONST n) to the stack.
-
-Step/local.set x
-1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value val from the stack.
-4. Perform $with_local(z, x, val).
-
-Step/global.set x
-1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value val from the stack.
-4. Perform $with_global(z, x, val).
-
-Step/store valtype_u0 sz_u1? ao
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type valtype_u2 is on the top of the stack.
-3. Pop the value (valtype_u2.CONST c) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. Let t be valtype_u2.
-7. If ((((i + ao.OFFSET) + ($size(t) / 8)) > |$mem(z, 0).BYTES|) and ((valtype_u0 is t) and sz_u1? is not defined)), then:
-  a. Trap.
-8. If ((valtype_u0 is t) and sz_u1? is not defined), then:
-  a. Let b* be $bytes_(t, c).
-  b. Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(t) / 8), b*).
-9. If the type of valtype_u2 is Inn, then:
-  a. Let Inn be valtype_u2.
-  b. If ((valtype_u0 is Inn) and sz_u1? is defined), then:
-    1) Let ?(n) be sz_u1?.
-    2) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
-      a) Trap.
-    3) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
-    4) Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
-
-Step/memory.grow
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Either:
-  a. Let mi be $growmemory($mem(z, 0), n).
-  b. Push the value (I32.CONST (|$mem(z, 0).BYTES| / (64 · $Ki()))) to the stack.
-  c. Perform $with_meminst(z, 0, mi).
-5. Or:
-  a. Push the value (I32.CONST $invsigned_(32, (- 1))) to the stack.
 
 eval_expr instr*
 1. Execute the instruction instr*.
@@ -5173,6 +5173,1625 @@ watsup 0.4 generator
    * :math:`{{\mathit{itt}}^\ast}` must be equal to :math:`{\mathrm{tables}}({{\mathit{ixt}}^\ast})`.
 
    * :math:`{{\mathit{imt}}^\ast}` must be equal to :math:`{\mathrm{mems}}({{\mathit{ixt}}^\ast})`.
+
+
+:math:`\mathsf{unreachable}`
+............................
+
+
+1. Trap.
+
+
+:math:`\mathsf{nop}`
+....................
+
+
+1. Do nothing.
+
+
+:math:`\mathsf{drop}`
+.....................
+
+
+1. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}` from the stack.
+
+#. Do nothing.
+
+
+:math:`\mathsf{select}~{({t^\ast})^?}`
+......................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}_2` from the stack.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}_1` from the stack.
+
+#. If :math:`c` is not :math:`0`, then:
+
+   a. Push the value :math:`{\mathit{val}}_1` to the stack.
+
+#. Else:
+
+   a. Push the value :math:`{\mathit{val}}_2` to the stack.
+
+
+:math:`\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~{{\mathit{instr}}_2^\ast}`
+.....................................................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
+
+#. If :math:`c` is not :math:`0`, then:
+
+   a. Execute the instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast})`.
+
+#. Else:
+
+   a. Execute the instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_2^\ast})`.
+
+
+:math:`\mathsf{label}`
+......................
+
+
+1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+#. Assert: Due to validation, a label is now on the top of the stack.
+
+#. Pop the current label from the stack.
+
+#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+
+:math:`\mathsf{br}~n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`
+.............................................................
+
+
+1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+#. Assert: Due to validation, the top of the stack is a :math:`\mathsf{label}`.
+
+#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+#. Let :math:`L` be the current label.
+
+#. Let :math:`n` be the arity of :math:`L`.
+
+#. Let :math:`{{\mathit{instr}'}^\ast}` be the continuation of :math:`L`.
+
+#. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`0`, then:
+
+   a. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+
+   #. Pop the current label from the stack.
+
+   #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+
+   #. Execute the instruction :math:`{{\mathit{instr}'}^\ast}`.
+
+#. Else:
+
+   a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+   #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is greater than or equal to :math:`1`, then:
+
+      1) Let :math:`l` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}} - 1`.
+
+      #) Pop the current label from the stack.
+
+      #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+      #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+
+:math:`\mathsf{br\_if}~l`
+.........................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
+
+#. If :math:`c` is not :math:`0`, then:
+
+   a. Execute the instruction :math:`(\mathsf{br}~l)`.
+
+#. Else:
+
+   a. Do nothing.
+
+
+:math:`\mathsf{br\_table}~{l^\ast}~{l'}`
+........................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i` is less than :math:`{|{l^\ast}|}`, then:
+
+   a. Execute the instruction :math:`(\mathsf{br}~{l^\ast}{}[i])`.
+
+#. Else:
+
+   a. Execute the instruction :math:`(\mathsf{br}~{l'})`.
+
+
+:math:`\mathsf{frame}`
+......................
+
+
+1. Let :math:`f` be the current frame.
+
+#. Let :math:`n` be the arity of :math:`f`.
+
+#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+#. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+#. Assert: Due to validation, a frame is now on the top of the stack.
+
+#. Pop the current frame from the stack.
+
+#. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+
+
+:math:`\mathsf{return}`
+.......................
+
+
+1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+#. If the top of the stack is a :math:`\mathsf{frame}`, then:
+
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Let :math:`f` be the current frame.
+
+   #. Let :math:`n` be the arity of :math:`f`.
+
+   #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+
+   #. Pop the current frame from the stack.
+
+   #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+
+#. Else if the top of the stack is a :math:`\mathsf{label}`, then:
+
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+   #. Pop the current label from the stack.
+
+   #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Execute the instruction :math:`\mathsf{return}`.
+
+
+:math:`{\mathit{nt}} {.} {\mathit{unop}}`
+.........................................
+
+
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
+
+#. If :math:`{|{{\mathit{unop}}}{{}_{{\mathit{nt}}}}{(c_1)}|}` is less than or equal to :math:`0`, then:
+
+   a. Trap.
+
+#. Let :math:`c` be an element of :math:`{{\mathit{unop}}}{{}_{{\mathit{nt}}}}{(c_1)}`.
+
+#. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{\mathit{nt}} {.} {\mathit{binop}}`
+..........................................
+
+
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
+
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. If :math:`{|{{\mathit{binop}}}{{}_{{\mathit{nt}}}}{(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
+
+   a. Trap.
+
+#. Let :math:`c` be an element of :math:`{{\mathit{binop}}}{{}_{{\mathit{nt}}}}{(c_1, c_2)}`.
+
+#. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{\mathit{nt}} {.} {\mathit{testop}}`
+...........................................
+
+
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
+
+#. Let :math:`c` be :math:`{{\mathit{testop}}}{{}_{{\mathit{nt}}}}{(c_1)}`.
+
+#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{\mathit{nt}} {.} {\mathit{relop}}`
+..........................................
+
+
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
+
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Let :math:`c` be :math:`{{\mathit{relop}}}{{}_{{\mathit{nt}}}}{(c_1, c_2)}`.
+
+#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{\mathit{nt}}_2 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_1}`
+............................................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}_1`.
+
+#. If :math:`{|{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}}{(c_1)}|}` is less than or equal to :math:`0`, then:
+
+   a. Trap.
+
+#. Let :math:`c` be an element of :math:`{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}}{(c_1)}`.
+
+#. Push the value :math:`({\mathit{nt}}_2{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`\mathsf{ref{.}is\_null}`
+...............................
+
+
+1. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{ref}}` from the stack.
+
+#. If :math:`{\mathit{ref}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
+
+#. Else:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
+
+
+:math:`\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvunop}}`
+..........................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Let :math:`c` be :math:`{{\mathit{vvunop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1)}`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvbinop}}`
+...........................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Let :math:`c` be :math:`{{\mathit{vvbinop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1, c_2)}`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvternop}}`
+............................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_3)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Let :math:`c` be :math:`{{\mathit{vvternop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1, c_2, c_3)}`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`\mathsf{v{\scriptstyle 128}} {.} \mathsf{any\_true}`
+...........................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Let :math:`c` be :math:`{{\mathrm{ine}}}_{{|\mathsf{v{\scriptstyle 128}}|}}(c_1, 0)`.
+
+#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{\mathit{sh}} {.} {\mathit{vunop}}`
+..........................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. If :math:`{|{{\mathit{vunop}}}{{}_{{\mathit{sh}}}}{(c_1)}|}` is less than or equal to :math:`0`, then:
+
+   a. Trap.
+
+#. Let :math:`c` be an element of :math:`{{\mathit{vunop}}}{{}_{{\mathit{sh}}}}{(c_1)}`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{\mathit{sh}} {.} {\mathit{vbinop}}`
+...........................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. If :math:`{|{{\mathit{vbinop}}}{{}_{{\mathit{sh}}}}{(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
+
+   a. Trap.
+
+#. Let :math:`c` be an element of :math:`{{\mathit{vbinop}}}{{}_{{\mathit{sh}}}}{(c_1, c_2)}`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`({{\mathsf{i}}{n}}{\mathsf{x}}{N}) {.} \mathsf{all\_true}`
+.................................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
+
+#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}(c)`.
+
+#. If for all :math:`{({\mathit{ci}}_1)^\ast}`, :math:`{\mathit{ci}}_1` is not :math:`0`, then:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
+
+#. Else:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
+
+
+:math:`{\mathit{sh}} {.} {\mathit{vrelop}}`
+...........................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Let :math:`c` be :math:`{{\mathit{vrelop}}}{{}_{{\mathit{sh}}}}{(c_1, c_2)}`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`({{\mathsf{i}}{n}}{\mathsf{x}}{N}) {.} {\mathit{vshiftop}}`
+..................................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}(c_1)`.
+
+#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}({{{{\mathit{vshiftop}}}{\mathsf{\_}}~({{\mathsf{i}}{n}}{\mathsf{x}}{N})}{({c'}, n)}^\ast})`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`({{\mathsf{i}}{n}}{\mathsf{x}}{N}){.}\mathsf{bitmask}`
+.............................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
+
+#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}(c)`.
+
+#. Let :math:`{\mathit{ci}}` be the result for which :math:`{{\mathrm{bits}}}_{{\mathsf{i}}{32}}({\mathit{ci}})` :math:`=` :math:`{{{{{\mathrm{ilt}}}_{{|{\mathsf{i}}{n}|}}^{\mathsf{s}}}}{({\mathit{ci}}_1, 0)}^\ast}`.
+
+#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{\mathit{ci}})` to the stack.
+
+
+:math:`({{\mathsf{i}}{n}}{\mathsf{x}}{M}){.}\mathsf{swizzle}`
+.............................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}(c_1)~{0^{256 - M}}`.
+
+#. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}(c_2)`.
+
+#. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`{{\mathit{ci}}^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}`.
+
+#. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`k` is less than :math:`{|{{\mathit{ci}}^\ast}|}`.
+
+#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{c'}^\ast}{}[{{\mathit{ci}}^\ast}{}[k]]^{k<M}})`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`({{\mathsf{i}}{n}}{\mathsf{x}}{N}){.}\mathsf{shuffle}~{i^\ast}`
+......................................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, for all :math:`{(k)^{k<N}}`, :math:`k` is less than :math:`{|{i^\ast}|}`.
+
+#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}(c_1)~{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}(c_2)`.
+
+#. Assert: Due to validation, for all :math:`{(k)^{k<N}}`, :math:`{i^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}`.
+
+#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}({{{c'}^\ast}{}[{i^\ast}{}[k]]^{k<N}})`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`({{\mathsf{i}}{n}}{\mathsf{x}}{N}){.}\mathsf{splat}`
+...........................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathrm{unpack}}({\mathsf{i}}{n})`.
+
+#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}({{{\mathrm{pack}}}_{{\mathsf{i}}{n}}(c_1)^{N}})`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{({{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{x}}{N}){.}\mathsf{extract\_lane}}{{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~i`
+..............................................................................................................................................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. If :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is numtype, then:
+
+   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{({{\mathit{nt}}}{\mathsf{x}}{N})}(c_1)|}`, then:
+
+      1) Let :math:`c_2` be :math:`{{\mathrm{lanes}}}_{({{\mathit{nt}}}{\mathsf{x}}{N})}(c_1){}[i]`.
+
+      #) Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` to the stack.
+
+#. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype, then:
+
+   a. Let :math:`{\mathit{pt}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. If :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
+
+      1) Let :math:`{\mathit{sx}}` be :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
+
+      #) If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{({{\mathit{pt}}}{\mathsf{x}}{N})}(c_1)|}`, then:
+
+         a) Let :math:`c_2` be :math:`{{{{\mathrm{extend}}}_{{|{\mathit{pt}}|}, 32}^{{\mathit{sx}}}}}{({{\mathrm{lanes}}}_{({{\mathit{pt}}}{\mathsf{x}}{N})}(c_1){}[i])}`.
+
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c_2)` to the stack.
+
+
+:math:`({{\mathsf{i}}{n}}{\mathsf{x}}{N}){.}\mathsf{replace\_lane}~i`
+.....................................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathrm{unpack}}({\mathsf{i}}{n})`.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}({{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}(c_1){}[{}[i] = {{\mathrm{pack}}}_{{\mathsf{i}}{n}}(c_2)])`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`\mathsf{vextunop}~{\mathit{sh}}_1~{\mathit{sh}}_2~{\mathit{vextunop}}`
+.............................................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Let :math:`c` be :math:`{{\mathrm{vextunop}}}_{{\mathit{sh}}_1, {\mathit{sh}}_2}({\mathit{vextunop}}, c_1)`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`\mathsf{vextbinop}~{\mathit{sh}}_1~{\mathit{sh}}_2~{\mathit{vextbinop}}`
+...............................................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Let :math:`c` be :math:`{{\mathrm{vextbinop}}}_{{\mathit{sh}}_1, {\mathit{sh}}_2}({\mathit{vextbinop}}, c_1, c_2)`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{N_2}){.}\mathsf{narrow}}{\mathsf{\_}}{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{N_1})}{\mathsf{\_}}{{\mathit{sx}}}`
+.......................................................................................................................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{N_1})}(c_1)`.
+
+#. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{N_1})}(c_2)`.
+
+#. Let :math:`{{\mathit{cj}}_1^\ast}` be :math:`{{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{n}}_1|}, {|{{\mathsf{i}}{n}}_2|}}^{{\mathit{sx}}}}}{{\mathit{ci}}_1}^\ast}`.
+
+#. Let :math:`{{\mathit{cj}}_2^\ast}` be :math:`{{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{n}}_1|}, {|{{\mathsf{i}}{n}}_2|}}^{{\mathit{sx}}}}}{{\mathit{ci}}_2}^\ast}`.
+
+#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{N_2})}({{\mathit{cj}}_1^\ast}~{{\mathit{cj}}_2^\ast})`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`({{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}}{\mathsf{x}}{n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}) {.} {({{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}}{\mathsf{x}}{n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}})}{\mathsf{\_}}{{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}}{\mathsf{\_}}{{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}^?}}`
+...............................................................................................................................................................................................................................................................................................................................................................................................................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}` is not defined and :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}^?}` is not defined, then:
+
+   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
+
+   #. Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
+
+   #. Let :math:`M` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+
+   #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`M`, then:
+
+      1) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M})}(c_1)`.
+
+      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M}), ({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M})}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
+
+      #) If :math:`{|{{{\mathrm{invlanes}}}_{({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M})}({{\mathit{cj}}^\ast})^\ast}|}` is greater than :math:`0`, then:
+
+         a) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M})}({{\mathit{cj}}^\ast})^\ast}`.
+
+         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+#. If :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}^?}` is not defined, then:
+
+   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
+
+   #. Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
+
+   #. Let :math:`M_1` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+
+   #. Let :math:`M_2` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}` is defined, then:
+
+      1) Let :math:`{\mathit{half}}` be :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}`.
+
+      #) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1})}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
+
+      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2})}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
+
+      #) If :math:`{|{{{\mathrm{invlanes}}}_{({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2})}({{\mathit{cj}}^\ast})^\ast}|}` is greater than :math:`0`, then:
+
+         a) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2})}({{\mathit{cj}}^\ast})^\ast}`.
+
+         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+#. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}` is not defined, then:
+
+   a. Let :math:`M_1` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+
+   #. Let :math:`M_2` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is numtype, then:
+
+      1) Let :math:`{\mathit{nt}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
+
+      #) If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is numtype, then:
+
+         a) Let :math:`{\mathit{nt}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
+
+         #) If :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}^?}` is defined, then:
+
+            1. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathit{nt}}_1}{\mathsf{x}}{M_1})}(c_1)`.
+
+            #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{({{\mathit{nt}}_1}{\mathsf{x}}{M_1}), ({{\mathit{nt}}_2}{\mathsf{x}}{M_2})}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}~{{\mathrm{zero}}({\mathit{nt}}_2)^{M_1}}`.
+
+            #. If :math:`{|{{{\mathrm{invlanes}}}_{({{\mathit{nt}}_2}{\mathsf{x}}{M_2})}({{\mathit{cj}}^\ast})^\ast}|}` is greater than :math:`0`, then:
+
+               a. Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{({{\mathit{nt}}_2}{\mathsf{x}}{M_2})}({{\mathit{cj}}^\ast})^\ast}`.
+
+               #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`\mathsf{local{.}tee}~x`
+..............................
+
+
+1. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}` from the stack.
+
+#. Push the value :math:`{\mathit{val}}` to the stack.
+
+#. Push the value :math:`{\mathit{val}}` to the stack.
+
+#. Execute the instruction :math:`(\mathsf{local{.}set}~x)`.
+
+
+:math:`\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast}`
+............................................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Let :math:`({t_1^{k}}~\rightarrow~{t_2^{n}})` be :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}})`.
+
+#. Assert: Due to validation, there are at least :math:`k` values on the top of the stack.
+
+#. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
+
+#. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
+
+#. Enter :math:`{{\mathit{val}}^{k}}~{{\mathit{instr}}^\ast}` with label :math:`L`.
+
+
+:math:`\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast}`
+...........................................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Let :math:`({t_1^{k}}~\rightarrow~{t_2^{n}})` be :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}})`.
+
+#. Assert: Due to validation, there are at least :math:`k` values on the top of the stack.
+
+#. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
+
+#. Let :math:`L` be the label whose arity is :math:`k` and whose continuation is :math:`(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast})`.
+
+#. Enter :math:`{{\mathit{val}}^{k}}~{{\mathit{instr}}^\ast}` with label :math:`L`.
+
+
+:math:`\mathsf{call}~x`
+.......................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, :math:`x` is less than :math:`{|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
+
+#. Execute the instruction :math:`(\mathsf{call}~z{.}\mathsf{module}{.}\mathsf{funcs}{}[x])`.
+
+
+:math:`\mathsf{call\_indirect}~x~y`
+...................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
+
+   a. Trap.
+
+#. If :math:`z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i]` is not of the case :math:`\mathsf{ref{.}func\_addr}`, then:
+
+   a. Trap.
+
+#. Let :math:`(\mathsf{ref{.}func\_addr}~a)` be :math:`z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i]`.
+
+#. If :math:`a` is greater than or equal to :math:`{|z{.}\mathsf{funcs}|}`, then:
+
+   a. Trap.
+
+#. If :math:`z{.}\mathsf{types}{}[y]` is not :math:`z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}`, then:
+
+   a. Trap.
+
+#. Execute the instruction :math:`(\mathsf{call}~a)`.
+
+
+:math:`\mathsf{call}~a`
+.......................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`.
+
+#. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({t_1^{k}}~\rightarrow~{t_2^{n}}),\; \mathsf{module}~{\mathit{mm}},\; \mathsf{code}~{\mathit{func}} \}\end{array}` be :math:`z{.}\mathsf{funcs}{}[a]`.
+
+#. Assert: Due to validation, there are at least :math:`k` values on the top of the stack.
+
+#. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{func}}` is of the case :math:`\mathsf{func}`.
+
+#. Let :math:`(\mathsf{func}~x~{\mathit{local}}_0~{{\mathit{instr}}^\ast})` be :math:`{\mathit{func}}`.
+
+#. Assert: Due to validation, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`.
+
+#. Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{\mathit{local}}_0`.
+
+#. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{mm}} \}\end{array}`.
+
+#. Let :math:`F` be the activation of :math:`f` with arity :math:`n`.
+
+#. Push :math:`F` to the stack.
+
+#. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
+
+#. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
+
+
+:math:`\mathsf{ref{.}func}~x`
+.............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, :math:`x` is less than :math:`{|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
+
+#. Push the value :math:`(\mathsf{ref{.}func}~z{.}\mathsf{module}{.}\mathsf{funcs}{}[x])` to the stack.
+
+
+:math:`\mathsf{local{.}get}~x`
+..............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Push the value :math:`z{.}\mathsf{locals}{}[x]` to the stack.
+
+
+:math:`\mathsf{global{.}get}~x`
+...............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Push the value :math:`z{.}\mathsf{globals}{}[x]{.}\mathsf{value}` to the stack.
+
+
+:math:`\mathsf{table{.}get}~x`
+..............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
+
+   a. Trap.
+
+#. Push the value :math:`z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i]` to the stack.
+
+
+:math:`\mathsf{table{.}size}~x`
+...............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Let :math:`n` be :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`.
+
+#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` to the stack.
+
+
+:math:`\mathsf{table{.}fill}~x`
+...............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
+
+   a. Trap.
+
+#. If :math:`n` is :math:`0`, then:
+
+   a. Do nothing.
+
+#. Else:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+
+   #. Push the value :math:`{\mathit{val}}` to the stack.
+
+   #. Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+
+   #. Push the value :math:`{\mathit{val}}` to the stack.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+
+   #. Execute the instruction :math:`(\mathsf{table{.}fill}~x)`.
+
+
+:math:`\mathsf{table{.}copy}~x~y`
+.................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
+
+#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{tables}{}[y]{.}\mathsf{refs}|}`, then:
+
+   a. Trap.
+
+#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
+
+   a. Trap.
+
+#. If :math:`n` is :math:`0`, then:
+
+   a. Do nothing.
+
+#. Else:
+
+   a. If :math:`j` is less than or equal to :math:`i`, then:
+
+      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+
+      #) Execute the instruction :math:`(\mathsf{table{.}get}~y)`.
+
+      #) Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+
+   #. Else:
+
+      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + n - 1)` to the stack.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + n - 1)` to the stack.
+
+      #) Execute the instruction :math:`(\mathsf{table{.}get}~y)`.
+
+      #) Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+
+   #. Execute the instruction :math:`(\mathsf{table{.}copy}~x~y)`.
+
+
+:math:`\mathsf{table{.}init}~x~y`
+.................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
+
+#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
+
+   a. Trap.
+
+#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
+
+   a. Trap.
+
+#. If :math:`n` is :math:`0`, then:
+
+   a. Do nothing.
+
+#. Else if :math:`i` is less than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
+
+   #. Push the value :math:`z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[i]` to the stack.
+
+   #. Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+
+   #. Execute the instruction :math:`(\mathsf{table{.}init}~x~y)`.
+
+
+:math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{load}~{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}~{\mathit{ao}}`
+..........................................................................................................................................................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is not defined, then:
+
+   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+
+      1) Trap.
+
+   #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8]`.
+
+   #. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` to the stack.
+
+#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
+
+   a. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is defined, then:
+
+      1) Let :math:`{\mathit{sz}}_{{\mathit{sx}}_0}` be :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}`.
+
+      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{sz}}_{{\mathit{sx}}_0}`.
+
+      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+
+         a) Trap.
+
+   #. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is defined, then:
+
+      1) Let :math:`{\mathit{sz}}_{{\mathit{sx}}_0}` be :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}`.
+
+      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{sz}}_{{\mathit{sx}}_0}`.
+
+      #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
+
+      #) Push the value :math:`({\mathsf{i}}{n}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(c)})` to the stack.
+
+
+:math:`\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{\mathit{ao}}`
+.................................................................................................................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
+
+   a. Trap.
+
+#. If :math:`{{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
+
+   a. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8]`.
+
+   #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+#. Else:
+
+   a. Let :math:`{\mathit{vloadop}}_0` be :math:`{{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}`.
+
+   #. If :math:`{\mathit{vloadop}}_0` is of the case :math:`\mathsf{shape}`, then:
+
+      1) Let :math:`({M}{\mathsf{x}}{\mathsf{x}}{\mathsf{\_}}{N})` be :math:`{\mathit{vloadop}}_0`.
+
+      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + M \cdot N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+
+         a) Trap.
+
+      #) If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`M \cdot 2` is Jnn, then:
+
+         a) Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`M \cdot 2`.
+
+         #) Let :math:`{j^{N}}` be the result for which for all :math:`{(k)^{k<N}}`, :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{N}})` is :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8]`.
+
+         #) Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}({{{{{\mathrm{extend}}}_{M, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(j)}^{N}})`.
+
+         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+   #. If :math:`{\mathit{vloadop}}_0` is of the case :math:`\mathsf{splat}`, then:
+
+      1) Let :math:`({N}{\mathsf{\_}}{\mathsf{splat}})` be :math:`{\mathit{vloadop}}_0`.
+
+      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+
+         a) Trap.
+
+      #) Let :math:`M` be :math:`128 / N`.
+
+      #) If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`N` is Jnn, then:
+
+         a) Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
+
+         #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
+
+         #) Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({j^{M}})`.
+
+         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+   #. If :math:`{\mathit{vloadop}}_0` is of the case :math:`\mathsf{zero}`, then:
+
+      1) Let :math:`({N}{\mathsf{\_}}{\mathsf{zero}})` be :math:`{\mathit{vloadop}}_0`.
+
+      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+
+         a) Trap.
+
+      #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
+
+      #) Let :math:`c` be :math:`{{{{\mathrm{extend}}}_{N, 128}^{\mathsf{u}}}}{(j)}`.
+
+      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`\mathsf{vload\_lane}~\mathsf{v{\scriptstyle 128}}~N~{\mathit{ao}}~j`
+...........................................................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+
+   a. Trap.
+
+#. Let :math:`M` be :math:`128 / N`.
+
+#. If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`N` is Jnn, then:
+
+   a. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
+
+   #. Let :math:`k` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(k)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
+
+   #. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}(c_1){}[{}[j] = k])`.
+
+   #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`\mathsf{memory{.}size}`
+..............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Let :math:`n \cdot 64 \cdot {\mathrm{Ki}}` be :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`.
+
+#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` to the stack.
+
+
+:math:`\mathsf{memory{.}fill}`
+..............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+
+   a. Trap.
+
+#. If :math:`n` is :math:`0`, then:
+
+   a. Do nothing.
+
+#. Else:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+
+   #. Push the value :math:`{\mathit{val}}` to the stack.
+
+   #. Execute the instruction :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}~8)`.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+
+   #. Push the value :math:`{\mathit{val}}` to the stack.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+
+   #. Execute the instruction :math:`\mathsf{memory{.}fill}`.
+
+
+:math:`\mathsf{memory{.}copy}`
+..............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
+
+#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+
+   a. Trap.
+
+#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+
+   a. Trap.
+
+#. If :math:`n` is :math:`0`, then:
+
+   a. Do nothing.
+
+#. Else:
+
+   a. If :math:`j` is less than or equal to :math:`i`, then:
+
+      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+
+      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})}~{}^?)`.
+
+      #) Execute the instruction :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}~8)`.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+
+   #. Else:
+
+      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + n - 1)` to the stack.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + n - 1)` to the stack.
+
+      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})}~{}^?)`.
+
+      #) Execute the instruction :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}~8)`.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+
+   #. Execute the instruction :math:`\mathsf{memory{.}copy}`.
+
+
+:math:`\mathsf{memory{.}init}~x`
+................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
+
+#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{datas}{}[x]{.}\mathsf{bytes}|}`, then:
+
+   a. Trap.
+
+#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+
+   a. Trap.
+
+#. If :math:`n` is :math:`0`, then:
+
+   a. Do nothing.
+
+#. Else if :math:`i` is less than :math:`{|z{.}\mathsf{datas}{}[x]{.}\mathsf{bytes}|}`, then:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~z{.}\mathsf{datas}{}[x]{.}\mathsf{bytes}{}[i])` to the stack.
+
+   #. Execute the instruction :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}~8)`.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+
+   #. Execute the instruction :math:`(\mathsf{memory{.}init}~x)`.
+
+
+:math:`\mathsf{local{.}set}~x`
+..............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}` from the stack.
+
+#. Perform :math:`z{}[{.}\mathsf{locals}{}[x] = {\mathit{val}}]`.
+
+
+:math:`\mathsf{global{.}set}~x`
+...............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}` from the stack.
+
+#. Perform :math:`z{}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = {\mathit{val}}]`.
+
+
+:math:`\mathsf{table{.}set}~x`
+..............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{ref}}` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
+
+   a. Trap.
+
+#. Perform :math:`z{}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = {\mathit{ref}}]`.
+
+
+:math:`\mathsf{table{.}grow}~x`
+...............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{ref}}` from the stack.
+
+#. Either:
+
+   a. Let :math:`{\mathit{ti}}` be :math:`{\mathrm{growtable}}(z{.}\mathsf{tables}{}[x], n, {\mathit{ref}})`.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|})` to the stack.
+
+   #. Perform :math:`z{}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}]`.
+
+#. Or:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{32}^{{-1}}}}{({-1})})` to the stack.
+
+
+:math:`\mathsf{elem{.}drop}~x`
+..............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Perform :math:`z{}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = \epsilon]`.
+
+
+:math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}~{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{\mathit{ao}}`
+...........................................................................................................................................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}{.}\mathsf{const}~c)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{nt}}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
+
+   a. Trap.
+
+#. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{nt}}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
+
+   a. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)`.
+
+   #. Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8] = {b^\ast}]`.
+
+#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Inn, then:
+
+   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
+
+   #. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathsf{i}}{n}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
+
+      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
+
+      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+
+         a) Trap.
+
+      #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{n}|}, n}(c))`.
+
+      #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
+
+
+:math:`\mathsf{vstore}~\mathsf{v{\scriptstyle 128}}~{\mathit{ao}}`
+..................................................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+
+   a. Trap.
+
+#. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)`.
+
+#. Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8] = {b^\ast}]`.
+
+
+:math:`\mathsf{vstore\_lane}~\mathsf{v{\scriptstyle 128}}~N~{\mathit{ao}}~j`
+............................................................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+
+   a. Trap.
+
+#. Let :math:`M` be :math:`128 / N`.
+
+#. If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`N` is Jnn, then:
+
+   a. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
+
+   #. If :math:`j` is less than :math:`{|{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}(c)|}`, then:
+
+      1) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}({{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}(c){}[j])`.
+
+      #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8] = {b^\ast}]`.
+
+
+:math:`\mathsf{memory{.}grow}`
+..............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Either:
+
+   a. Let :math:`{\mathit{mi}}` be :math:`{\mathrm{growmemory}}(z{.}\mathsf{mems}{}[0], n)`.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|} / 64 \, {\mathrm{Ki}})` to the stack.
+
+   #. Perform :math:`z{}[{.}\mathsf{mems}{}[0] = {\mathit{mi}}]`.
+
+#. Or:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{32}^{{-1}}}}{({-1})})` to the stack.
+
+
+:math:`\mathsf{data{.}drop}~x`
+..............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Perform :math:`z{}[{.}\mathsf{datas}{}[x]{.}\mathsf{bytes} = \epsilon]`.
 
 
 :math:`{\mathrm{Ki}}`
@@ -7981,1625 +9600,6 @@ watsup 0.4 generator
 #. Return :math:`{{\mathit{val}}^{k}}`.
 
 
-:math:`\mathsf{unreachable}`
-............................
-
-
-1. Trap.
-
-
-:math:`\mathsf{nop}`
-....................
-
-
-1. Do nothing.
-
-
-:math:`\mathsf{drop}`
-.....................
-
-
-1. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}` from the stack.
-
-#. Do nothing.
-
-
-:math:`\mathsf{select}~{({t^\ast})^?}`
-......................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}_2` from the stack.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}_1` from the stack.
-
-#. If :math:`c` is not :math:`0`, then:
-
-   a. Push the value :math:`{\mathit{val}}_1` to the stack.
-
-#. Else:
-
-   a. Push the value :math:`{\mathit{val}}_2` to the stack.
-
-
-:math:`\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~{{\mathit{instr}}_2^\ast}`
-.....................................................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
-
-#. If :math:`c` is not :math:`0`, then:
-
-   a. Execute the instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast})`.
-
-#. Else:
-
-   a. Execute the instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_2^\ast})`.
-
-
-:math:`\mathsf{label}`
-......................
-
-
-1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-#. Assert: Due to validation, a label is now on the top of the stack.
-
-#. Pop the current label from the stack.
-
-#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-
-:math:`\mathsf{br}~n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`
-.............................................................
-
-
-1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-#. Assert: Due to validation, the top of the stack is a :math:`\mathsf{label}`.
-
-#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-#. Let :math:`L` be the current label.
-
-#. Let :math:`n` be the arity of :math:`L`.
-
-#. Let :math:`{{\mathit{instr}'}^\ast}` be the continuation of :math:`L`.
-
-#. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`0`, then:
-
-   a. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
-
-   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
-
-   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
-
-   #. Pop the current label from the stack.
-
-   #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
-
-   #. Execute the instruction :math:`{{\mathit{instr}'}^\ast}`.
-
-#. Else:
-
-   a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-   #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is greater than or equal to :math:`1`, then:
-
-      1) Let :math:`l` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}} - 1`.
-
-      #) Pop the current label from the stack.
-
-      #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-      #) Execute the instruction :math:`(\mathsf{br}~l)`.
-
-
-:math:`\mathsf{br\_if}~l`
-.........................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
-
-#. If :math:`c` is not :math:`0`, then:
-
-   a. Execute the instruction :math:`(\mathsf{br}~l)`.
-
-#. Else:
-
-   a. Do nothing.
-
-
-:math:`\mathsf{br\_table}~{l^\ast}~{l'}`
-........................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`i` is less than :math:`{|{l^\ast}|}`, then:
-
-   a. Execute the instruction :math:`(\mathsf{br}~{l^\ast}{}[i])`.
-
-#. Else:
-
-   a. Execute the instruction :math:`(\mathsf{br}~{l'})`.
-
-
-:math:`\mathsf{frame}`
-......................
-
-
-1. Let :math:`f` be the current frame.
-
-#. Let :math:`n` be the arity of :math:`f`.
-
-#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
-
-#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
-
-#. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
-
-#. Assert: Due to validation, a frame is now on the top of the stack.
-
-#. Pop the current frame from the stack.
-
-#. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
-
-
-:math:`\mathsf{return}`
-.......................
-
-
-1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-#. If the top of the stack is a :math:`\mathsf{frame}`, then:
-
-   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-   #. Let :math:`f` be the current frame.
-
-   #. Let :math:`n` be the arity of :math:`f`.
-
-   #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
-
-   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
-
-   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
-
-   #. Pop the current frame from the stack.
-
-   #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
-
-#. Else if the top of the stack is a :math:`\mathsf{label}`, then:
-
-   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-   #. Pop the current label from the stack.
-
-   #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-   #. Execute the instruction :math:`\mathsf{return}`.
-
-
-:math:`{\mathit{nt}} {.} {\mathit{unop}}`
-.........................................
-
-
-1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
-
-#. If :math:`{|{{\mathit{unop}}}{{}_{{\mathit{nt}}}}{(c_1)}|}` is less than or equal to :math:`0`, then:
-
-   a. Trap.
-
-#. Let :math:`c` be an element of :math:`{{\mathit{unop}}}{{}_{{\mathit{nt}}}}{(c_1)}`.
-
-#. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{\mathit{nt}} {.} {\mathit{binop}}`
-..........................................
-
-
-1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
-
-#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. If :math:`{|{{\mathit{binop}}}{{}_{{\mathit{nt}}}}{(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
-
-   a. Trap.
-
-#. Let :math:`c` be an element of :math:`{{\mathit{binop}}}{{}_{{\mathit{nt}}}}{(c_1, c_2)}`.
-
-#. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{\mathit{nt}} {.} {\mathit{testop}}`
-...........................................
-
-
-1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
-
-#. Let :math:`c` be :math:`{{\mathit{testop}}}{{}_{{\mathit{nt}}}}{(c_1)}`.
-
-#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{\mathit{nt}} {.} {\mathit{relop}}`
-..........................................
-
-
-1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
-
-#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Let :math:`c` be :math:`{{\mathit{relop}}}{{}_{{\mathit{nt}}}}{(c_1, c_2)}`.
-
-#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{\mathit{nt}}_2 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_1}`
-............................................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}_1`.
-
-#. If :math:`{|{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}}{(c_1)}|}` is less than or equal to :math:`0`, then:
-
-   a. Trap.
-
-#. Let :math:`c` be an element of :math:`{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}}{(c_1)}`.
-
-#. Push the value :math:`({\mathit{nt}}_2{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`\mathsf{ref{.}is\_null}`
-...............................
-
-
-1. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{ref}}` from the stack.
-
-#. If :math:`{\mathit{ref}}` is of the case :math:`\mathsf{ref{.}null}`, then:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
-
-#. Else:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
-
-
-:math:`\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvunop}}`
-..........................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Let :math:`c` be :math:`{{\mathit{vvunop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1)}`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvbinop}}`
-...........................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Let :math:`c` be :math:`{{\mathit{vvbinop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1, c_2)}`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvternop}}`
-............................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_3)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Let :math:`c` be :math:`{{\mathit{vvternop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1, c_2, c_3)}`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`\mathsf{v{\scriptstyle 128}} {.} \mathsf{any\_true}`
-...........................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Let :math:`c` be :math:`{{\mathrm{ine}}}_{{|\mathsf{v{\scriptstyle 128}}|}}(c_1, 0)`.
-
-#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{\mathit{sh}} {.} {\mathit{vunop}}`
-..........................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. If :math:`{|{{\mathit{vunop}}}{{}_{{\mathit{sh}}}}{(c_1)}|}` is less than or equal to :math:`0`, then:
-
-   a. Trap.
-
-#. Let :math:`c` be an element of :math:`{{\mathit{vunop}}}{{}_{{\mathit{sh}}}}{(c_1)}`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{\mathit{sh}} {.} {\mathit{vbinop}}`
-...........................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. If :math:`{|{{\mathit{vbinop}}}{{}_{{\mathit{sh}}}}{(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
-
-   a. Trap.
-
-#. Let :math:`c` be an element of :math:`{{\mathit{vbinop}}}{{}_{{\mathit{sh}}}}{(c_1, c_2)}`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`({{\mathsf{i}}{n}}{\mathsf{x}}{N}) {.} \mathsf{all\_true}`
-.................................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
-
-#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}(c)`.
-
-#. If for all :math:`{({\mathit{ci}}_1)^\ast}`, :math:`{\mathit{ci}}_1` is not :math:`0`, then:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
-
-#. Else:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
-
-
-:math:`{\mathit{sh}} {.} {\mathit{vrelop}}`
-...........................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Let :math:`c` be :math:`{{\mathit{vrelop}}}{{}_{{\mathit{sh}}}}{(c_1, c_2)}`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`({{\mathsf{i}}{n}}{\mathsf{x}}{N}) {.} {\mathit{vshiftop}}`
-..................................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}(c_1)`.
-
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}({{{{\mathit{vshiftop}}}{\mathsf{\_}}~({{\mathsf{i}}{n}}{\mathsf{x}}{N})}{({c'}, n)}^\ast})`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`({{\mathsf{i}}{n}}{\mathsf{x}}{N}){.}\mathsf{bitmask}`
-.............................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
-
-#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}(c)`.
-
-#. Let :math:`{\mathit{ci}}` be the result for which :math:`{{\mathrm{bits}}}_{{\mathsf{i}}{32}}({\mathit{ci}})` :math:`=` :math:`{{{{{\mathrm{ilt}}}_{{|{\mathsf{i}}{n}|}}^{\mathsf{s}}}}{({\mathit{ci}}_1, 0)}^\ast}`.
-
-#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{\mathit{ci}})` to the stack.
-
-
-:math:`({{\mathsf{i}}{n}}{\mathsf{x}}{M}){.}\mathsf{swizzle}`
-.............................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}(c_1)~{0^{256 - M}}`.
-
-#. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}(c_2)`.
-
-#. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`{{\mathit{ci}}^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}`.
-
-#. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`k` is less than :math:`{|{{\mathit{ci}}^\ast}|}`.
-
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{{c'}^\ast}{}[{{\mathit{ci}}^\ast}{}[k]]^{k<M}})`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`({{\mathsf{i}}{n}}{\mathsf{x}}{N}){.}\mathsf{shuffle}~{i^\ast}`
-......................................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, for all :math:`{(k)^{k<N}}`, :math:`k` is less than :math:`{|{i^\ast}|}`.
-
-#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}(c_1)~{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}(c_2)`.
-
-#. Assert: Due to validation, for all :math:`{(k)^{k<N}}`, :math:`{i^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}`.
-
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}({{{c'}^\ast}{}[{i^\ast}{}[k]]^{k<N}})`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`({{\mathsf{i}}{n}}{\mathsf{x}}{N}){.}\mathsf{splat}`
-...........................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathrm{unpack}}({\mathsf{i}}{n})`.
-
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}({{{\mathrm{pack}}}_{{\mathsf{i}}{n}}(c_1)^{N}})`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{({{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{x}}{N}){.}\mathsf{extract\_lane}}{{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~i`
-..............................................................................................................................................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. If :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is numtype, then:
-
-   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{({{\mathit{nt}}}{\mathsf{x}}{N})}(c_1)|}`, then:
-
-      1) Let :math:`c_2` be :math:`{{\mathrm{lanes}}}_{({{\mathit{nt}}}{\mathsf{x}}{N})}(c_1){}[i]`.
-
-      #) Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` to the stack.
-
-#. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype, then:
-
-   a. Let :math:`{\mathit{pt}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
-
-      1) Let :math:`{\mathit{sx}}` be :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
-
-      #) If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{({{\mathit{pt}}}{\mathsf{x}}{N})}(c_1)|}`, then:
-
-         a) Let :math:`c_2` be :math:`{{{{\mathrm{extend}}}_{{|{\mathit{pt}}|}, 32}^{{\mathit{sx}}}}}{({{\mathrm{lanes}}}_{({{\mathit{pt}}}{\mathsf{x}}{N})}(c_1){}[i])}`.
-
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c_2)` to the stack.
-
-
-:math:`({{\mathsf{i}}{n}}{\mathsf{x}}{N}){.}\mathsf{replace\_lane}~i`
-.....................................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathrm{unpack}}({\mathsf{i}}{n})`.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}({{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}(c_1){}[{}[i] = {{\mathrm{pack}}}_{{\mathsf{i}}{n}}(c_2)])`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`\mathsf{vextunop}~{\mathit{sh}}_1~{\mathit{sh}}_2~{\mathit{vextunop}}`
-.............................................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Let :math:`c` be :math:`{{\mathrm{vextunop}}}_{{\mathit{sh}}_1, {\mathit{sh}}_2}({\mathit{vextunop}}, c_1)`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`\mathsf{vextbinop}~{\mathit{sh}}_1~{\mathit{sh}}_2~{\mathit{vextbinop}}`
-...............................................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Let :math:`c` be :math:`{{\mathrm{vextbinop}}}_{{\mathit{sh}}_1, {\mathit{sh}}_2}({\mathit{vextbinop}}, c_1, c_2)`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{N_2}){.}\mathsf{narrow}}{\mathsf{\_}}{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{N_1})}{\mathsf{\_}}{{\mathit{sx}}}`
-.......................................................................................................................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{N_1})}(c_1)`.
-
-#. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{N_1})}(c_2)`.
-
-#. Let :math:`{{\mathit{cj}}_1^\ast}` be :math:`{{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{n}}_1|}, {|{{\mathsf{i}}{n}}_2|}}^{{\mathit{sx}}}}}{{\mathit{ci}}_1}^\ast}`.
-
-#. Let :math:`{{\mathit{cj}}_2^\ast}` be :math:`{{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{n}}_1|}, {|{{\mathsf{i}}{n}}_2|}}^{{\mathit{sx}}}}}{{\mathit{ci}}_2}^\ast}`.
-
-#. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{N_2})}({{\mathit{cj}}_1^\ast}~{{\mathit{cj}}_2^\ast})`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`({{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}}{\mathsf{x}}{n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}) {.} {({{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}}{\mathsf{x}}{n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}})}{\mathsf{\_}}{{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}}{\mathsf{\_}}{{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}^?}}`
-...............................................................................................................................................................................................................................................................................................................................................................................................................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}` is not defined and :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}^?}` is not defined, then:
-
-   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
-
-   #. Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`M` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`M`, then:
-
-      1) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M})}(c_1)`.
-
-      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M}), ({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M})}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
-
-      #) If :math:`{|{{{\mathrm{invlanes}}}_{({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M})}({{\mathit{cj}}^\ast})^\ast}|}` is greater than :math:`0`, then:
-
-         a) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M})}({{\mathit{cj}}^\ast})^\ast}`.
-
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-#. If :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}^?}` is not defined, then:
-
-   a. Let :math:`{{\mathsf{i}}{n}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
-
-   #. Let :math:`{{\mathsf{i}}{n}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
-
-   #. Let :math:`M_1` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`M_2` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}` is defined, then:
-
-      1) Let :math:`{\mathit{half}}` be :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}`.
-
-      #) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1})}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
-
-      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2})}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
-
-      #) If :math:`{|{{{\mathrm{invlanes}}}_{({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2})}({{\mathit{cj}}^\ast})^\ast}|}` is greater than :math:`0`, then:
-
-         a) Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{({{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2})}({{\mathit{cj}}^\ast})^\ast}`.
-
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-#. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}^?}` is not defined, then:
-
-   a. Let :math:`M_1` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`M_2` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}` is numtype, then:
-
-      1) Let :math:`{\mathit{nt}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}`.
-
-      #) If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}` is numtype, then:
-
-         a) Let :math:`{\mathit{nt}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 3}}}`.
-
-         #) If :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}^?}` is defined, then:
-
-            1. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathit{nt}}_1}{\mathsf{x}}{M_1})}(c_1)`.
-
-            #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{({{\mathit{nt}}_1}{\mathsf{x}}{M_1}), ({{\mathit{nt}}_2}{\mathsf{x}}{M_2})}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}~{{\mathrm{zero}}({\mathit{nt}}_2)^{M_1}}`.
-
-            #. If :math:`{|{{{\mathrm{invlanes}}}_{({{\mathit{nt}}_2}{\mathsf{x}}{M_2})}({{\mathit{cj}}^\ast})^\ast}|}` is greater than :math:`0`, then:
-
-               a. Let :math:`c` be an element of :math:`{{{\mathrm{invlanes}}}_{({{\mathit{nt}}_2}{\mathsf{x}}{M_2})}({{\mathit{cj}}^\ast})^\ast}`.
-
-               #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`\mathsf{local{.}tee}~x`
-..............................
-
-
-1. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}` from the stack.
-
-#. Push the value :math:`{\mathit{val}}` to the stack.
-
-#. Push the value :math:`{\mathit{val}}` to the stack.
-
-#. Execute the instruction :math:`(\mathsf{local{.}set}~x)`.
-
-
-:math:`\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast}`
-............................................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Let :math:`({t_1^{k}}~\rightarrow~{t_2^{n}})` be :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}})`.
-
-#. Assert: Due to validation, there are at least :math:`k` values on the top of the stack.
-
-#. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
-
-#. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
-
-#. Enter :math:`{{\mathit{val}}^{k}}~{{\mathit{instr}}^\ast}` with label :math:`L`.
-
-
-:math:`\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast}`
-...........................................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Let :math:`({t_1^{k}}~\rightarrow~{t_2^{n}})` be :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}})`.
-
-#. Assert: Due to validation, there are at least :math:`k` values on the top of the stack.
-
-#. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
-
-#. Let :math:`L` be the label whose arity is :math:`k` and whose continuation is :math:`(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast})`.
-
-#. Enter :math:`{{\mathit{val}}^{k}}~{{\mathit{instr}}^\ast}` with label :math:`L`.
-
-
-:math:`\mathsf{call}~x`
-.......................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, :math:`x` is less than :math:`{|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
-
-#. Execute the instruction :math:`(\mathsf{call}~z{.}\mathsf{module}{.}\mathsf{funcs}{}[x])`.
-
-
-:math:`\mathsf{call\_indirect}~x~y`
-...................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
-
-   a. Trap.
-
-#. If :math:`z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i]` is not of the case :math:`\mathsf{ref{.}func\_addr}`, then:
-
-   a. Trap.
-
-#. Let :math:`(\mathsf{ref{.}func\_addr}~a)` be :math:`z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i]`.
-
-#. If :math:`a` is greater than or equal to :math:`{|z{.}\mathsf{funcs}|}`, then:
-
-   a. Trap.
-
-#. If :math:`z{.}\mathsf{types}{}[y]` is not :math:`z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}`, then:
-
-   a. Trap.
-
-#. Execute the instruction :math:`(\mathsf{call}~a)`.
-
-
-:math:`\mathsf{call}~a`
-.......................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`.
-
-#. Let :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~({t_1^{k}}~\rightarrow~{t_2^{n}}),\; \mathsf{module}~{\mathit{mm}},\; \mathsf{code}~{\mathit{func}} \}\end{array}` be :math:`z{.}\mathsf{funcs}{}[a]`.
-
-#. Assert: Due to validation, there are at least :math:`k` values on the top of the stack.
-
-#. Pop the values :math:`{{\mathit{val}}^{k}}` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{func}}` is of the case :math:`\mathsf{func}`.
-
-#. Let :math:`(\mathsf{func}~x~{\mathit{local}}_0~{{\mathit{instr}}^\ast})` be :math:`{\mathit{func}}`.
-
-#. Assert: Due to validation, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`.
-
-#. Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{\mathit{local}}_0`.
-
-#. Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{k}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{mm}} \}\end{array}`.
-
-#. Let :math:`F` be the activation of :math:`f` with arity :math:`n`.
-
-#. Push :math:`F` to the stack.
-
-#. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
-
-#. Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
-
-
-:math:`\mathsf{ref{.}func}~x`
-.............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, :math:`x` is less than :math:`{|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
-
-#. Push the value :math:`(\mathsf{ref{.}func}~z{.}\mathsf{module}{.}\mathsf{funcs}{}[x])` to the stack.
-
-
-:math:`\mathsf{local{.}get}~x`
-..............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Push the value :math:`z{.}\mathsf{locals}{}[x]` to the stack.
-
-
-:math:`\mathsf{global{.}get}~x`
-...............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Push the value :math:`z{.}\mathsf{globals}{}[x]{.}\mathsf{value}` to the stack.
-
-
-:math:`\mathsf{table{.}get}~x`
-..............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
-
-   a. Trap.
-
-#. Push the value :math:`z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i]` to the stack.
-
-
-:math:`\mathsf{table{.}size}~x`
-...............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Let :math:`n` be :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`.
-
-#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` to the stack.
-
-
-:math:`\mathsf{table{.}fill}~x`
-...............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
-
-   a. Trap.
-
-#. If :math:`n` is :math:`0`, then:
-
-   a. Do nothing.
-
-#. Else:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
-
-   #. Push the value :math:`{\mathit{val}}` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
-
-   #. Push the value :math:`{\mathit{val}}` to the stack.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{table{.}fill}~x)`.
-
-
-:math:`\mathsf{table{.}copy}~x~y`
-.................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
-
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{tables}{}[y]{.}\mathsf{refs}|}`, then:
-
-   a. Trap.
-
-#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
-
-   a. Trap.
-
-#. If :math:`n` is :math:`0`, then:
-
-   a. Do nothing.
-
-#. Else:
-
-   a. If :math:`j` is less than or equal to :math:`i`, then:
-
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
-
-      #) Execute the instruction :math:`(\mathsf{table{.}get}~y)`.
-
-      #) Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
-
-   #. Else:
-
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + n - 1)` to the stack.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + n - 1)` to the stack.
-
-      #) Execute the instruction :math:`(\mathsf{table{.}get}~y)`.
-
-      #) Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{table{.}copy}~x~y)`.
-
-
-:math:`\mathsf{table{.}init}~x~y`
-.................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
-
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
-
-   a. Trap.
-
-#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
-
-   a. Trap.
-
-#. If :math:`n` is :math:`0`, then:
-
-   a. Do nothing.
-
-#. Else if :math:`i` is less than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
-
-   #. Push the value :math:`z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[i]` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{table{.}init}~x~y)`.
-
-
-:math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{load}~{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}~{\mathit{ao}}`
-..........................................................................................................................................................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is not defined, then:
-
-   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
-
-      1) Trap.
-
-   #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8]`.
-
-   #. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` to the stack.
-
-#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
-
-   a. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is defined, then:
-
-      1) Let :math:`{\mathit{sz}}_{{\mathit{sx}}_0}` be :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}`.
-
-      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{sz}}_{{\mathit{sx}}_0}`.
-
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
-
-         a) Trap.
-
-   #. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}` is defined, then:
-
-      1) Let :math:`{\mathit{sz}}_{{\mathit{sx}}_0}` be :math:`{{\mathit{sz}}_{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}^?}`.
-
-      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{sz}}_{{\mathit{sx}}_0}`.
-
-      #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
-
-      #) Push the value :math:`({\mathsf{i}}{n}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(c)})` to the stack.
-
-
-:math:`\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}~{\mathit{ao}}`
-.................................................................................................................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
-
-   a. Trap.
-
-#. If :math:`{{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
-
-   a. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8]`.
-
-   #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-#. Else:
-
-   a. Let :math:`{\mathit{vloadop}}_0` be :math:`{{\mathit{vloadop}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}`.
-
-   #. If :math:`{\mathit{vloadop}}_0` is of the case :math:`\mathsf{shape}`, then:
-
-      1) Let :math:`({M}{\mathsf{x}}{\mathsf{x}}{\mathsf{\_}}{N})` be :math:`{\mathit{vloadop}}_0`.
-
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + M \cdot N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
-
-         a) Trap.
-
-      #) If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`M \cdot 2` is Jnn, then:
-
-         a) Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`M \cdot 2`.
-
-         #) Let :math:`{j^{N}}` be the result for which for all :math:`{(k)^{k<N}}`, :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{N}})` is :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8]`.
-
-         #) Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{N})}({{{{{\mathrm{extend}}}_{M, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(j)}^{N}})`.
-
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-   #. If :math:`{\mathit{vloadop}}_0` is of the case :math:`\mathsf{splat}`, then:
-
-      1) Let :math:`({N}{\mathsf{\_}}{\mathsf{splat}})` be :math:`{\mathit{vloadop}}_0`.
-
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
-
-         a) Trap.
-
-      #) Let :math:`M` be :math:`128 / N`.
-
-      #) If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`N` is Jnn, then:
-
-         a) Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
-
-         #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
-
-         #) Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({j^{M}})`.
-
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-   #. If :math:`{\mathit{vloadop}}_0` is of the case :math:`\mathsf{zero}`, then:
-
-      1) Let :math:`({N}{\mathsf{\_}}{\mathsf{zero}})` be :math:`{\mathit{vloadop}}_0`.
-
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
-
-         a) Trap.
-
-      #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
-
-      #) Let :math:`c` be :math:`{{{{\mathrm{extend}}}_{N, 128}^{\mathsf{u}}}}{(j)}`.
-
-      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`\mathsf{vload\_lane}~\mathsf{v{\scriptstyle 128}}~N~{\mathit{ao}}~j`
-...........................................................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
-
-   a. Trap.
-
-#. Let :math:`M` be :math:`128 / N`.
-
-#. If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`N` is Jnn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
-
-   #. Let :math:`k` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(k)` :math:`=` :math:`z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
-
-   #. Let :math:`c` be :math:`{{\mathrm{invlanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}({{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}(c_1){}[{}[j] = k])`.
-
-   #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`\mathsf{memory{.}size}`
-..............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Let :math:`n \cdot 64 \cdot {\mathrm{Ki}}` be :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`.
-
-#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` to the stack.
-
-
-:math:`\mathsf{memory{.}fill}`
-..............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
-
-   a. Trap.
-
-#. If :math:`n` is :math:`0`, then:
-
-   a. Do nothing.
-
-#. Else:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
-
-   #. Push the value :math:`{\mathit{val}}` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}~8)`.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
-
-   #. Push the value :math:`{\mathit{val}}` to the stack.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
-
-   #. Execute the instruction :math:`\mathsf{memory{.}fill}`.
-
-
-:math:`\mathsf{memory{.}copy}`
-..............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
-
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
-
-   a. Trap.
-
-#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
-
-   a. Trap.
-
-#. If :math:`n` is :math:`0`, then:
-
-   a. Do nothing.
-
-#. Else:
-
-   a. If :math:`j` is less than or equal to :math:`i`, then:
-
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
-
-      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})}~{}^?)`.
-
-      #) Execute the instruction :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}~8)`.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
-
-   #. Else:
-
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + n - 1)` to the stack.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + n - 1)` to the stack.
-
-      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})}~{}^?)`.
-
-      #) Execute the instruction :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}~8)`.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
-
-   #. Execute the instruction :math:`\mathsf{memory{.}copy}`.
-
-
-:math:`\mathsf{memory{.}init}~x`
-................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
-
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{datas}{}[x]{.}\mathsf{bytes}|}`, then:
-
-   a. Trap.
-
-#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
-
-   a. Trap.
-
-#. If :math:`n` is :math:`0`, then:
-
-   a. Do nothing.
-
-#. Else if :math:`i` is less than :math:`{|z{.}\mathsf{datas}{}[x]{.}\mathsf{bytes}|}`, then:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~z{.}\mathsf{datas}{}[x]{.}\mathsf{bytes}{}[i])` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}~8)`.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{memory{.}init}~x)`.
-
-
-:math:`\mathsf{local{.}set}~x`
-..............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}` from the stack.
-
-#. Perform :math:`z{}[{.}\mathsf{locals}{}[x] = {\mathit{val}}]`.
-
-
-:math:`\mathsf{global{.}set}~x`
-...............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}` from the stack.
-
-#. Perform :math:`z{}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = {\mathit{val}}]`.
-
-
-:math:`\mathsf{table{.}set}~x`
-..............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{ref}}` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
-
-   a. Trap.
-
-#. Perform :math:`z{}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = {\mathit{ref}}]`.
-
-
-:math:`\mathsf{table{.}grow}~x`
-...............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{ref}}` from the stack.
-
-#. Either:
-
-   a. Let :math:`{\mathit{ti}}` be :math:`{\mathrm{growtable}}(z{.}\mathsf{tables}{}[x], n, {\mathit{ref}})`.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|})` to the stack.
-
-   #. Perform :math:`z{}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}]`.
-
-#. Or:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{32}^{{-1}}}}{({-1})})` to the stack.
-
-
-:math:`\mathsf{elem{.}drop}~x`
-..............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Perform :math:`z{}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = \epsilon]`.
-
-
-:math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{store}~{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}~{\mathit{ao}}`
-...........................................................................................................................................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}{.}\mathsf{const}~c)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
-
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}` and :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{nt}}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
-
-   a. Trap.
-
-#. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathit{nt}}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined, then:
-
-   a. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)`.
-
-   #. Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8] = {b^\ast}]`.
-
-#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}` is Inn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 2}}}`.
-
-   #. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`{\mathsf{i}}{n}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
-
-      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
-
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
-
-         a) Trap.
-
-      #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{n}|}, n}(c))`.
-
-      #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
-
-
-:math:`\mathsf{vstore}~\mathsf{v{\scriptstyle 128}}~{\mathit{ao}}`
-..................................................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
-
-   a. Trap.
-
-#. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)`.
-
-#. Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8] = {b^\ast}]`.
-
-
-:math:`\mathsf{vstore\_lane}~\mathsf{v{\scriptstyle 128}}~N~{\mathit{ao}}~j`
-............................................................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N` is greater than :math:`{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
-
-   a. Trap.
-
-#. Let :math:`M` be :math:`128 / N`.
-
-#. If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`N` is Jnn, then:
-
-   a. Let :math:`{\mathsf{i}}{n}` be the result for which :math:`{|{\mathsf{i}}{n}|}` :math:`=` :math:`N`.
-
-   #. If :math:`j` is less than :math:`{|{{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}(c)|}`, then:
-
-      1) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}({{\mathrm{lanes}}}_{({{\mathsf{i}}{n}}{\mathsf{x}}{M})}(c){}[j])`.
-
-      #) Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8] = {b^\ast}]`.
-
-
-:math:`\mathsf{memory{.}grow}`
-..............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Either:
-
-   a. Let :math:`{\mathit{mi}}` be :math:`{\mathrm{growmemory}}(z{.}\mathsf{mems}{}[0], n)`.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|} / 64 \, {\mathrm{Ki}})` to the stack.
-
-   #. Perform :math:`z{}[{.}\mathsf{mems}{}[0] = {\mathit{mi}}]`.
-
-#. Or:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{32}^{{-1}}}}{({-1})})` to the stack.
-
-
-:math:`\mathsf{data{.}drop}~x`
-..............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Perform :math:`z{}[{.}\mathsf{datas}{}[x]{.}\mathsf{bytes} = \epsilon]`.
-
-
 :math:`{\mathrm{eval}}_{\mathit{expr}}({{\mathit{instr}}^\ast})`
 ................................................................
 
@@ -10228,6 +10228,782 @@ Module_ok
   - igt* is $globalsxt(ixt*).
   - itt* is $tablesxt(ixt*).
   - imt* is $memsxt(ixt*).
+
+Step_pure/unreachable
+1. Trap.
+
+Step_pure/nop
+1. Do nothing.
+
+Step_pure/drop
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value val from the stack.
+3. Do nothing.
+
+Step_pure/select t*?
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop the value (I32.CONST c) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop the value val_2 from the stack.
+5. Assert: Due to validation, a value is on the top of the stack.
+6. Pop the value val_1 from the stack.
+7. If (c is not 0), then:
+  a. Push the value val_1 to the stack.
+8. Else:
+  a. Push the value val_2 to the stack.
+
+Step_pure/if bt instr_1* instr_2*
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop the value (I32.CONST c) from the stack.
+3. If (c is not 0), then:
+  a. Execute the instruction (BLOCK bt instr_1*).
+4. Else:
+  a. Execute the instruction (BLOCK bt instr_2*).
+
+Step_pure/label
+1. Pop all values val* from the top of the stack.
+2. Assert: Due to validation, a label is now on the top of the stack.
+3. Pop the current label from the stack.
+4. Push the values val* to the stack.
+
+Step_pure/br n_u0
+1. Pop all values val* from the top of the stack.
+2. Assert: Due to validation, the top of the stack is a LABEL_.
+3. Push the values val* to the stack.
+4. Let L be the current label.
+5. Let n be the arity of L.
+6. Let instr'* be the continuation of L.
+7. If (n_u0 is 0), then:
+  a. Assert: Due to validation, there are at least n values on the top of the stack.
+  b. Pop the values val^n from the stack.
+  c. Pop all values val'* from the top of the stack.
+  d. Pop the current label from the stack.
+  e. Push the values val^n to the stack.
+  f. Execute the instruction instr'*.
+8. Else:
+  a. Pop all values val* from the top of the stack.
+  b. If (n_u0 ≥ 1), then:
+    1) Let l be (n_u0 - 1).
+    2) Pop the current label from the stack.
+    3) Push the values val* to the stack.
+    4) Execute the instruction (BR l).
+
+Step_pure/br_if l
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop the value (I32.CONST c) from the stack.
+3. If (c is not 0), then:
+  a. Execute the instruction (BR l).
+4. Else:
+  a. Do nothing.
+
+Step_pure/br_table l* l'
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop the value (I32.CONST i) from the stack.
+3. If (i < |l*|), then:
+  a. Execute the instruction (BR l*[i]).
+4. Else:
+  a. Execute the instruction (BR l').
+
+Step_pure/frame
+1. Let f be the current frame.
+2. Let n be the arity of f.
+3. Assert: Due to validation, there are at least n values on the top of the stack.
+4. Assert: Due to validation, there are at least n values on the top of the stack.
+5. Pop the values val^n from the stack.
+6. Assert: Due to validation, a frame is now on the top of the stack.
+7. Pop the current frame from the stack.
+8. Push the values val^n to the stack.
+
+Step_pure/return
+1. Pop all values val* from the top of the stack.
+2. If the top of the stack is a FRAME_, then:
+  a. Push the values val* to the stack.
+  b. Let f be the current frame.
+  c. Let n be the arity of f.
+  d. Assert: Due to validation, there are at least n values on the top of the stack.
+  e. Pop the values val^n from the stack.
+  f. Pop all values val'* from the top of the stack.
+  g. Pop the current frame from the stack.
+  h. Push the values val^n to the stack.
+3. Else if the top of the stack is a LABEL_, then:
+  a. Push the values val* to the stack.
+  b. Pop all values val* from the top of the stack.
+  c. Pop the current label from the stack.
+  d. Push the values val* to the stack.
+  e. Execute the instruction RETURN.
+
+Step_pure/unop nt unop
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_1) from the stack.
+3. Assert: Due to validation, (numtype_0 is nt).
+4. If (|$unop_(nt, unop, c_1)| ≤ 0), then:
+  a. Trap.
+5. Let c be an element of $unop_(nt, unop, c_1).
+6. Push the value (nt.CONST c) to the stack.
+
+Step_pure/binop nt binop
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_2) from the stack.
+3. Assert: Due to validation, (numtype_0 is nt).
+4. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+5. Pop the value (numtype_0.CONST c_1) from the stack.
+6. If (|$binop_(nt, binop, c_1, c_2)| ≤ 0), then:
+  a. Trap.
+7. Let c be an element of $binop_(nt, binop, c_1, c_2).
+8. Push the value (nt.CONST c) to the stack.
+
+Step_pure/testop nt testop
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_1) from the stack.
+3. Assert: Due to validation, (numtype_0 is nt).
+4. Let c be $testop_(nt, testop, c_1).
+5. Push the value (I32.CONST c) to the stack.
+
+Step_pure/relop nt relop
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_2) from the stack.
+3. Assert: Due to validation, (numtype_0 is nt).
+4. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+5. Pop the value (numtype_0.CONST c_1) from the stack.
+6. Let c be $relop_(nt, relop, c_1, c_2).
+7. Push the value (I32.CONST c) to the stack.
+
+Step_pure/cvtop nt_2 nt_1 cvtop
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_1) from the stack.
+3. Assert: Due to validation, (numtype_0 is nt_1).
+4. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| ≤ 0), then:
+  a. Trap.
+5. Let c be an element of $cvtop__(nt_1, nt_2, cvtop, c_1).
+6. Push the value (nt_2.CONST c) to the stack.
+
+Step_pure/ref.is_null
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value ref from the stack.
+3. If ref is of the case REF.NULL, then:
+  a. Push the value (I32.CONST 1) to the stack.
+4. Else:
+  a. Push the value (I32.CONST 0) to the stack.
+
+Step_pure/vvunop V128 vvunop
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_1) from the stack.
+3. Let c be $vvunop_(V128, vvunop, c_1).
+4. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vvbinop V128 vvbinop
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_2) from the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+4. Pop the value (V128.CONST c_1) from the stack.
+5. Let c be $vvbinop_(V128, vvbinop, c_1, c_2).
+6. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vvternop V128 vvternop
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_3) from the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+4. Pop the value (V128.CONST c_2) from the stack.
+5. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+6. Pop the value (V128.CONST c_1) from the stack.
+7. Let c be $vvternop_(V128, vvternop, c_1, c_2, c_3).
+8. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vvtestop V128 ANY_TRUE
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_1) from the stack.
+3. Let c be $ine_($size(V128), c_1, 0).
+4. Push the value (I32.CONST c) to the stack.
+
+Step_pure/vunop sh vunop
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_1) from the stack.
+3. If (|$vunop_(sh, vunop, c_1)| ≤ 0), then:
+  a. Trap.
+4. Let c be an element of $vunop_(sh, vunop, c_1).
+5. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vbinop sh vbinop
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_2) from the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+4. Pop the value (V128.CONST c_1) from the stack.
+5. If (|$vbinop_(sh, vbinop, c_1, c_2)| ≤ 0), then:
+  a. Trap.
+6. Let c be an element of $vbinop_(sh, vbinop, c_1, c_2).
+7. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vtestop (Jnn X N) ALL_TRUE
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c) from the stack.
+3. Let ci_1* be $lanes_((Jnn X N), c).
+4. If (ci_1 is not 0)*, then:
+  a. Push the value (I32.CONST 1) to the stack.
+5. Else:
+  a. Push the value (I32.CONST 0) to the stack.
+
+Step_pure/vrelop sh vrelop
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_2) from the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+4. Pop the value (V128.CONST c_1) from the stack.
+5. Let c be $vrelop_(sh, vrelop, c_1, c_2).
+6. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vshiftop (Jnn X N) vshiftop
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop the value (I32.CONST n) from the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+4. Pop the value (V128.CONST c_1) from the stack.
+5. Let c'* be $lanes_((Jnn X N), c_1).
+6. Let c be $invlanes_((Jnn X N), $vshiftop_((Jnn X N), vshiftop, c', n)*).
+7. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vbitmask (Jnn X N)
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c) from the stack.
+3. Let ci_1* be $lanes_((Jnn X N), c).
+4. Let ci be $ibits__1^-1(32, $ilt_($lsize(Jnn), S, ci_1, 0)*).
+5. Push the value (I32.CONST ci) to the stack.
+
+Step_pure/vswizzle (Pnn X M)
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_2) from the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+4. Pop the value (V128.CONST c_1) from the stack.
+5. Let c'* be $lanes_((Pnn X M), c_1) :: 0^(256 - M).
+6. Let ci* be $lanes_((Pnn X M), c_2).
+7. Assert: Due to validation, (ci*[k] < |c'*|)^(k<M).
+8. Assert: Due to validation, (k < |ci*|)^(k<M).
+9. Let c be $invlanes_((Pnn X M), c'*[ci*[k]]^(k<M)).
+10. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vshuffle (Pnn X N) i*
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_2) from the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+4. Pop the value (V128.CONST c_1) from the stack.
+5. Assert: Due to validation, (k < |i*|)^(k<N).
+6. Let c'* be $lanes_((Pnn X N), c_1) :: $lanes_((Pnn X N), c_2).
+7. Assert: Due to validation, (i*[k] < |c'*|)^(k<N).
+8. Let c be $invlanes_((Pnn X N), c'*[i*[k]]^(k<N)).
+9. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vsplat (Lnn X N)
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_1) from the stack.
+3. Assert: Due to validation, (numtype_0 is $unpack(Lnn)).
+4. Let c be $invlanes_((Lnn X N), $packnum_(Lnn, c_1)^N).
+5. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vextract_lane (lanetype_u0 X N) sx_u1? i
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_1) from the stack.
+3. If (sx_u1? is not defined and the type of lanetype_u0 is numtype), then:
+  a. Let nt be lanetype_u0.
+  b. If (i < |$lanes_((nt X N), c_1)|), then:
+    1) Let c_2 be $lanes_((nt X N), c_1)[i].
+    2) Push the value (nt.CONST c_2) to the stack.
+4. If the type of lanetype_u0 is packtype, then:
+  a. Let pt be lanetype_u0.
+  b. If sx_u1? is defined, then:
+    1) Let ?(sx) be sx_u1?.
+    2) If (i < |$lanes_((pt X N), c_1)|), then:
+      a) Let c_2 be $extend__($psize(pt), 32, sx, $lanes_((pt X N), c_1)[i]).
+      b) Push the value (I32.CONST c_2) to the stack.
+
+Step_pure/vreplace_lane (Lnn X N) i
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_2) from the stack.
+3. Assert: Due to validation, (numtype_0 is $unpack(Lnn)).
+4. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+5. Pop the value (V128.CONST c_1) from the stack.
+6. Let c be $invlanes_((Lnn X N), $lanes_((Lnn X N), c_1) with [i] replaced by $packnum_(Lnn, c_2)).
+7. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vextunop sh_1 sh_2 vextunop
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_1) from the stack.
+3. Let c be $vextunop__(sh_1, sh_2, vextunop, c_1).
+4. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vextbinop sh_1 sh_2 vextbinop
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_2) from the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+4. Pop the value (V128.CONST c_1) from the stack.
+5. Let c be $vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2).
+6. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vnarrow (Jnn_2 X N_2) (Jnn_1 X N_1) sx
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_2) from the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+4. Pop the value (V128.CONST c_1) from the stack.
+5. Let ci_1* be $lanes_((Jnn_1 X N_1), c_1).
+6. Let ci_2* be $lanes_((Jnn_1 X N_1), c_2).
+7. Let cj_1* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1)*.
+8. Let cj_2* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2)*.
+9. Let c be $invlanes_((Jnn_2 X N_2), cj_1* :: cj_2*).
+10. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vcvtop (lanetype_u3 X n_u0) (lanetype_u4 X n_u1) vcvtop half_u2? zero_u5?
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_1) from the stack.
+3. If (half_u2? is not defined and zero_u5? is not defined), then:
+  a. Let Lnn_1 be lanetype_u4.
+  b. Let Lnn_2 be lanetype_u3.
+  c. Let M be n_u1.
+  d. If (n_u0 is M), then:
+    1) Let ci* be $lanes_((Lnn_1 X M), c_1).
+    2) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__((Lnn_1 X M), (Lnn_2 X M), vcvtop, ci)*).
+    3) If (|$invlanes_((Lnn_2 X M), cj*)*| > 0), then:
+      a) Let c be an element of $invlanes_((Lnn_2 X M), cj*)*.
+      b) Push the value (V128.CONST c) to the stack.
+4. If zero_u5? is not defined, then:
+  a. Let Lnn_1 be lanetype_u4.
+  b. Let Lnn_2 be lanetype_u3.
+  c. Let M_1 be n_u1.
+  d. Let M_2 be n_u0.
+  e. If half_u2? is defined, then:
+    1) Let ?(half) be half_u2?.
+    2) Let ci* be $lanes_((Lnn_1 X M_1), c_1)[$half(half, 0, M_2) : M_2].
+    3) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__((Lnn_1 X M_1), (Lnn_2 X M_2), vcvtop, ci)*).
+    4) If (|$invlanes_((Lnn_2 X M_2), cj*)*| > 0), then:
+      a) Let c be an element of $invlanes_((Lnn_2 X M_2), cj*)*.
+      b) Push the value (V128.CONST c) to the stack.
+5. If half_u2? is not defined, then:
+  a. Let M_1 be n_u1.
+  b. Let M_2 be n_u0.
+  c. If the type of lanetype_u4 is numtype, then:
+    1) Let nt_1 be lanetype_u4.
+    2) If the type of lanetype_u3 is numtype, then:
+      a) Let nt_2 be lanetype_u3.
+      b) If zero_u5? is defined, then:
+        1. Let ci* be $lanes_((nt_1 X M_1), c_1).
+        2. Let cj** be $setproduct_(lane_((nt_2 : numtype <: lanetype)), $vcvtop__((nt_1 X M_1), (nt_2 X M_2), vcvtop, ci)* :: [$zero(nt_2)]^M_1).
+        3. If (|$invlanes_((nt_2 X M_2), cj*)*| > 0), then:
+          a. Let c be an element of $invlanes_((nt_2 X M_2), cj*)*.
+          b. Push the value (V128.CONST c) to the stack.
+
+Step_pure/local.tee x
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value val from the stack.
+3. Push the value val to the stack.
+4. Push the value val to the stack.
+5. Execute the instruction (LOCAL.SET x).
+
+Step_read/block bt instr*
+1. Let z be the current state.
+2. Let (t_1^k -> t_2^n) be $blocktype(z, bt).
+3. Assert: Due to validation, there are at least k values on the top of the stack.
+4. Pop the values val^k from the stack.
+5. Let L be the label_n{[]}.
+6. Enter val^k :: instr* with label L.
+
+Step_read/loop bt instr*
+1. Let z be the current state.
+2. Let (t_1^k -> t_2^n) be $blocktype(z, bt).
+3. Assert: Due to validation, there are at least k values on the top of the stack.
+4. Pop the values val^k from the stack.
+5. Let L be the label_k{[(LOOP bt instr*)]}.
+6. Enter val^k :: instr* with label L.
+
+Step_read/call x
+1. Let z be the current state.
+2. Assert: Due to validation, (x < |$funcaddr(z)|).
+3. Execute the instruction (CALL_ADDR $funcaddr(z)[x]).
+
+Step_read/call_indirect x y
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST i) from the stack.
+4. If (i ≥ |$table(z, x).REFS|), then:
+  a. Trap.
+5. If $table(z, x).REFS[i] is not of the case REF.FUNC_ADDR, then:
+  a. Trap.
+6. Let (REF.FUNC_ADDR a) be $table(z, x).REFS[i].
+7. If (a ≥ |$funcinst(z)|), then:
+  a. Trap.
+8. If ($type(z, y) is not $funcinst(z)[a].TYPE), then:
+  a. Trap.
+9. Execute the instruction (CALL_ADDR a).
+
+Step_read/call_addr a
+1. Let z be the current state.
+2. Assert: Due to validation, (a < |$funcinst(z)|).
+3. Let { TYPE: (t_1^k -> t_2^n); MODULE: mm; CODE: func; } be $funcinst(z)[a].
+4. Assert: Due to validation, there are at least k values on the top of the stack.
+5. Pop the values val^k from the stack.
+6. Assert: Due to validation, func is of the case FUNC.
+7. Let (FUNC x local_0 instr*) be func.
+8. Assert: Due to validation, local_0 is of the case LOCAL.
+9. Let (LOCAL t)* be local_0.
+10. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm; }.
+11. Let F be the activation of f with arity n.
+12. Push F to the stack.
+13. Let L be the label_n{[]}.
+14. Enter instr* with label L.
+
+Step_read/ref.func x
+1. Let z be the current state.
+2. Assert: Due to validation, (x < |$funcaddr(z)|).
+3. Push the value (REF.FUNC_ADDR $funcaddr(z)[x]) to the stack.
+
+Step_read/local.get x
+1. Let z be the current state.
+2. Push the value $local(z, x) to the stack.
+
+Step_read/global.get x
+1. Let z be the current state.
+2. Push the value $global(z, x).VALUE to the stack.
+
+Step_read/table.get x
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST i) from the stack.
+4. If (i ≥ |$table(z, x).REFS|), then:
+  a. Trap.
+5. Push the value $table(z, x).REFS[i] to the stack.
+
+Step_read/table.size x
+1. Let z be the current state.
+2. Let n be |$table(z, x).REFS|.
+3. Push the value (I32.CONST n) to the stack.
+
+Step_read/table.fill x
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value is on the top of the stack.
+5. Pop the value val from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST i) from the stack.
+8. If ((i + n) > |$table(z, x).REFS|), then:
+  a. Trap.
+9. If (n is 0), then:
+  a. Do nothing.
+10. Else:
+  a. Push the value (I32.CONST i) to the stack.
+  b. Push the value val to the stack.
+  c. Execute the instruction (TABLE.SET x).
+  d. Push the value (I32.CONST (i + 1)) to the stack.
+  e. Push the value val to the stack.
+  f. Push the value (I32.CONST (n - 1)) to the stack.
+  g. Execute the instruction (TABLE.FILL x).
+
+Step_read/table.copy x y
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST j) from the stack.
+8. If ((i + n) > |$table(z, y).REFS|), then:
+  a. Trap.
+9. If ((j + n) > |$table(z, x).REFS|), then:
+  a. Trap.
+10. If (n is 0), then:
+  a. Do nothing.
+11. Else:
+  a. If (j ≤ i), then:
+    1) Push the value (I32.CONST j) to the stack.
+    2) Push the value (I32.CONST i) to the stack.
+    3) Execute the instruction (TABLE.GET y).
+    4) Execute the instruction (TABLE.SET x).
+    5) Push the value (I32.CONST (j + 1)) to the stack.
+    6) Push the value (I32.CONST (i + 1)) to the stack.
+  b. Else:
+    1) Push the value (I32.CONST ((j + n) - 1)) to the stack.
+    2) Push the value (I32.CONST ((i + n) - 1)) to the stack.
+    3) Execute the instruction (TABLE.GET y).
+    4) Execute the instruction (TABLE.SET x).
+    5) Push the value (I32.CONST j) to the stack.
+    6) Push the value (I32.CONST i) to the stack.
+  c. Push the value (I32.CONST (n - 1)) to the stack.
+  d. Execute the instruction (TABLE.COPY x y).
+
+Step_read/table.init x y
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST j) from the stack.
+8. If ((i + n) > |$elem(z, y).REFS|), then:
+  a. Trap.
+9. If ((j + n) > |$table(z, x).REFS|), then:
+  a. Trap.
+10. If (n is 0), then:
+  a. Do nothing.
+11. Else if (i < |$elem(z, y).REFS|), then:
+  a. Push the value (I32.CONST j) to the stack.
+  b. Push the value $elem(z, y).REFS[i] to the stack.
+  c. Execute the instruction (TABLE.SET x).
+  d. Push the value (I32.CONST (j + 1)) to the stack.
+  e. Push the value (I32.CONST (i + 1)) to the stack.
+  f. Push the value (I32.CONST (n - 1)) to the stack.
+  g. Execute the instruction (TABLE.INIT x y).
+
+Step_read/load numtype_u0 sz_sx_u1? ao
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST i) from the stack.
+4. If sz_sx_u1? is not defined, then:
+  a. Let nt be numtype_u0.
+  b. If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, 0).BYTES|), then:
+    1) Trap.
+  c. Let c be $nbytes__1^-1(nt, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(nt) / 8)]).
+  d. Push the value (nt.CONST c) to the stack.
+5. If the type of numtype_u0 is Inn, then:
+  a. If sz_sx_u1? is defined, then:
+    1) Let ?(sz_sx_0) be sz_sx_u1?.
+    2) Let (n, sx) be sz_sx_0.
+    3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
+      a) Trap.
+  b. Let Inn be numtype_u0.
+  c. If sz_sx_u1? is defined, then:
+    1) Let ?(sz_sx_0) be sz_sx_u1?.
+    2) Let (n, sx) be sz_sx_0.
+    3) Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
+    4) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
+
+Step_read/vload V128 vloadop_u0? ao
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST i) from the stack.
+4. If ((((i + ao.OFFSET) + ($size(V128) / 8)) > |$mem(z, 0).BYTES|) and vloadop_u0? is not defined), then:
+  a. Trap.
+5. If vloadop_u0? is not defined, then:
+  a. Let c be $vbytes__1^-1(V128, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(V128) / 8)]).
+  b. Push the value (V128.CONST c) to the stack.
+6. Else:
+  a. Let ?(vloadop_0) be vloadop_u0?.
+  b. If vloadop_0 is of the case SHAPE, then:
+    1) Let (SHAPE M X N sx) be vloadop_0.
+    2) If (((i + ao.OFFSET) + ((M · N) / 8)) > |$mem(z, 0).BYTES|), then:
+      a) Trap.
+    3) If the type of $lsize^-1((M · 2)) is Jnn, then:
+      a) Let Jnn be $lsize^-1((M · 2)).
+      b) Let j^N be $ibytes__1^-1(M, $mem(z, 0).BYTES[((i + ao.OFFSET) + ((k · M) / 8)) : (M / 8)])^(k<N).
+      c) Let c be $invlanes_((Jnn X N), $extend__(M, $lsize(Jnn), sx, j)^N).
+      d) Push the value (V128.CONST c) to the stack.
+  c. If vloadop_0 is of the case SPLAT, then:
+    1) Let (SPLAT N) be vloadop_0.
+    2) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
+      a) Trap.
+    3) Let M be (128 / N).
+    4) If the type of $lsize^-1(N) is Jnn, then:
+      a) Let Jnn be $lsize^-1(N).
+      b) Let j be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
+      c) Let c be $invlanes_((Jnn X M), j^M).
+      d) Push the value (V128.CONST c) to the stack.
+  d. If vloadop_0 is of the case ZERO, then:
+    1) Let (ZERO N) be vloadop_0.
+    2) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
+      a) Trap.
+    3) Let j be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
+    4) Let c be $extend__(N, 128, U, j).
+    5) Push the value (V128.CONST c) to the stack.
+
+Step_read/vload_lane V128 N ao j
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+3. Pop the value (V128.CONST c_1) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
+  a. Trap.
+7. Let M be (128 / N).
+8. If the type of $lsize^-1(N) is Jnn, then:
+  a. Let Jnn be $lsize^-1(N).
+  b. Let k be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
+  c. Let c be $invlanes_((Jnn X M), $lanes_((Jnn X M), c_1) with [j] replaced by k).
+  d. Push the value (V128.CONST c) to the stack.
+
+Step_read/memory.size
+1. Let z be the current state.
+2. Let ((n · 64) · $Ki()) be |$mem(z, 0).BYTES|.
+3. Push the value (I32.CONST n) to the stack.
+
+Step_read/memory.fill
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value is on the top of the stack.
+5. Pop the value val from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST i) from the stack.
+8. If ((i + n) > |$mem(z, 0).BYTES|), then:
+  a. Trap.
+9. If (n is 0), then:
+  a. Do nothing.
+10. Else:
+  a. Push the value (I32.CONST i) to the stack.
+  b. Push the value val to the stack.
+  c. Execute the instruction (STORE I32 ?(8) $memarg0()).
+  d. Push the value (I32.CONST (i + 1)) to the stack.
+  e. Push the value val to the stack.
+  f. Push the value (I32.CONST (n - 1)) to the stack.
+  g. Execute the instruction MEMORY.FILL.
+
+Step_read/memory.copy
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST j) from the stack.
+8. If ((i + n) > |$mem(z, 0).BYTES|), then:
+  a. Trap.
+9. If ((j + n) > |$mem(z, 0).BYTES|), then:
+  a. Trap.
+10. If (n is 0), then:
+  a. Do nothing.
+11. Else:
+  a. If (j ≤ i), then:
+    1) Push the value (I32.CONST j) to the stack.
+    2) Push the value (I32.CONST i) to the stack.
+    3) Execute the instruction (LOAD I32 (_) ?((8, U)) ? $memarg0()).
+    4) Execute the instruction (STORE I32 ?(8) $memarg0()).
+    5) Push the value (I32.CONST (j + 1)) to the stack.
+    6) Push the value (I32.CONST (i + 1)) to the stack.
+  b. Else:
+    1) Push the value (I32.CONST ((j + n) - 1)) to the stack.
+    2) Push the value (I32.CONST ((i + n) - 1)) to the stack.
+    3) Execute the instruction (LOAD I32 (_) ?((8, U)) ? $memarg0()).
+    4) Execute the instruction (STORE I32 ?(8) $memarg0()).
+    5) Push the value (I32.CONST j) to the stack.
+    6) Push the value (I32.CONST i) to the stack.
+  c. Push the value (I32.CONST (n - 1)) to the stack.
+  d. Execute the instruction MEMORY.COPY.
+
+Step_read/memory.init x
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST j) from the stack.
+8. If ((i + n) > |$data(z, x).BYTES|), then:
+  a. Trap.
+9. If ((j + n) > |$mem(z, 0).BYTES|), then:
+  a. Trap.
+10. If (n is 0), then:
+  a. Do nothing.
+11. Else if (i < |$data(z, x).BYTES|), then:
+  a. Push the value (I32.CONST j) to the stack.
+  b. Push the value (I32.CONST $data(z, x).BYTES[i]) to the stack.
+  c. Execute the instruction (STORE I32 ?(8) $memarg0()).
+  d. Push the value (I32.CONST (j + 1)) to the stack.
+  e. Push the value (I32.CONST (i + 1)) to the stack.
+  f. Push the value (I32.CONST (n - 1)) to the stack.
+  g. Execute the instruction (MEMORY.INIT x).
+
+Step/local.set x
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value val from the stack.
+4. Perform $with_local(z, x, val).
+
+Step/global.set x
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value val from the stack.
+4. Perform $with_global(z, x, val).
+
+Step/table.set x
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value ref from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If (i ≥ |$table(z, x).REFS|), then:
+  a. Trap.
+7. Perform $with_table(z, x, i, ref).
+
+Step/table.grow x
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value is on the top of the stack.
+5. Pop the value ref from the stack.
+6. Either:
+  a. Let ti be $growtable($table(z, x), n, ref).
+  b. Push the value (I32.CONST |$table(z, x).REFS|) to the stack.
+  c. Perform $with_tableinst(z, x, ti).
+7. Or:
+  a. Push the value (I32.CONST $invsigned_(32, (- 1))) to the stack.
+
+Step/elem.drop x
+1. Let z be the current state.
+2. Perform $with_elem(z, x, []).
+
+Step/store numtype_u0 sz_u1? ao
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type numtype_u2 is on the top of the stack.
+3. Pop the value (numtype_u2.CONST c) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. Let nt be numtype_u2.
+7. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, 0).BYTES|) and ((numtype_u0 is nt) and sz_u1? is not defined)), then:
+  a. Trap.
+8. If ((numtype_u0 is nt) and sz_u1? is not defined), then:
+  a. Let b* be $nbytes_(nt, c).
+  b. Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(nt) / 8), b*).
+9. If the type of numtype_u2 is Inn, then:
+  a. Let Inn be numtype_u2.
+  b. If ((numtype_u0 is Inn) and sz_u1? is defined), then:
+    1) Let ?(n) be sz_u1?.
+    2) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
+      a) Trap.
+    3) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
+    4) Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
+
+Step/vstore V128 ao
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+3. Pop the value (V128.CONST c) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If (((i + ao.OFFSET) + ($size(V128) / 8)) > |$mem(z, 0).BYTES|), then:
+  a. Trap.
+7. Let b* be $vbytes_(V128, c).
+8. Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(V128) / 8), b*).
+
+Step/vstore_lane V128 N ao j
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+3. Pop the value (V128.CONST c) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If (((i + ao.OFFSET) + N) > |$mem(z, 0).BYTES|), then:
+  a. Trap.
+7. Let M be (128 / N).
+8. If the type of $lsize^-1(N) is Jnn, then:
+  a. Let Jnn be $lsize^-1(N).
+  b. If (j < |$lanes_((Jnn X M), c)|), then:
+    1) Let b* be $ibytes_(N, $lanes_((Jnn X M), c)[j]).
+    2) Perform $with_mem(z, 0, (i + ao.OFFSET), (N / 8), b*).
+
+Step/memory.grow
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Either:
+  a. Let mi be $growmemory($mem(z, 0), n).
+  b. Push the value (I32.CONST (|$mem(z, 0).BYTES| / (64 · $Ki()))) to the stack.
+  c. Perform $with_meminst(z, 0, mi).
+5. Or:
+  a. Push the value (I32.CONST $invsigned_(32, (- 1))) to the stack.
+
+Step/data.drop x
+1. Let z be the current state.
+2. Perform $with_data(z, x, []).
 
 Ki
 1. Return 1024.
@@ -11570,782 +12346,6 @@ invoke z fa val^n
 11. Push the values val* to the stack.
 12. Pop the values val^k from the stack.
 13. Return val^k.
-
-Step_pure/unreachable
-1. Trap.
-
-Step_pure/nop
-1. Do nothing.
-
-Step_pure/drop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. Do nothing.
-
-Step_pure/select t*?
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST c) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value val_2 from the stack.
-5. Assert: Due to validation, a value is on the top of the stack.
-6. Pop the value val_1 from the stack.
-7. If (c is not 0), then:
-  a. Push the value val_1 to the stack.
-8. Else:
-  a. Push the value val_2 to the stack.
-
-Step_pure/if bt instr_1* instr_2*
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST c) from the stack.
-3. If (c is not 0), then:
-  a. Execute the instruction (BLOCK bt instr_1*).
-4. Else:
-  a. Execute the instruction (BLOCK bt instr_2*).
-
-Step_pure/label
-1. Pop all values val* from the top of the stack.
-2. Assert: Due to validation, a label is now on the top of the stack.
-3. Pop the current label from the stack.
-4. Push the values val* to the stack.
-
-Step_pure/br n_u0
-1. Pop all values val* from the top of the stack.
-2. Assert: Due to validation, the top of the stack is a LABEL_.
-3. Push the values val* to the stack.
-4. Let L be the current label.
-5. Let n be the arity of L.
-6. Let instr'* be the continuation of L.
-7. If (n_u0 is 0), then:
-  a. Assert: Due to validation, there are at least n values on the top of the stack.
-  b. Pop the values val^n from the stack.
-  c. Pop all values val'* from the top of the stack.
-  d. Pop the current label from the stack.
-  e. Push the values val^n to the stack.
-  f. Execute the instruction instr'*.
-8. Else:
-  a. Pop all values val* from the top of the stack.
-  b. If (n_u0 ≥ 1), then:
-    1) Let l be (n_u0 - 1).
-    2) Pop the current label from the stack.
-    3) Push the values val* to the stack.
-    4) Execute the instruction (BR l).
-
-Step_pure/br_if l
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST c) from the stack.
-3. If (c is not 0), then:
-  a. Execute the instruction (BR l).
-4. Else:
-  a. Do nothing.
-
-Step_pure/br_table l* l'
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST i) from the stack.
-3. If (i < |l*|), then:
-  a. Execute the instruction (BR l*[i]).
-4. Else:
-  a. Execute the instruction (BR l').
-
-Step_pure/frame
-1. Let f be the current frame.
-2. Let n be the arity of f.
-3. Assert: Due to validation, there are at least n values on the top of the stack.
-4. Assert: Due to validation, there are at least n values on the top of the stack.
-5. Pop the values val^n from the stack.
-6. Assert: Due to validation, a frame is now on the top of the stack.
-7. Pop the current frame from the stack.
-8. Push the values val^n to the stack.
-
-Step_pure/return
-1. Pop all values val* from the top of the stack.
-2. If the top of the stack is a FRAME_, then:
-  a. Push the values val* to the stack.
-  b. Let f be the current frame.
-  c. Let n be the arity of f.
-  d. Assert: Due to validation, there are at least n values on the top of the stack.
-  e. Pop the values val^n from the stack.
-  f. Pop all values val'* from the top of the stack.
-  g. Pop the current frame from the stack.
-  h. Push the values val^n to the stack.
-3. Else if the top of the stack is a LABEL_, then:
-  a. Push the values val* to the stack.
-  b. Pop all values val* from the top of the stack.
-  c. Pop the current label from the stack.
-  d. Push the values val* to the stack.
-  e. Execute the instruction RETURN.
-
-Step_pure/unop nt unop
-1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_1) from the stack.
-3. Assert: Due to validation, (numtype_0 is nt).
-4. If (|$unop_(nt, unop, c_1)| ≤ 0), then:
-  a. Trap.
-5. Let c be an element of $unop_(nt, unop, c_1).
-6. Push the value (nt.CONST c) to the stack.
-
-Step_pure/binop nt binop
-1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_2) from the stack.
-3. Assert: Due to validation, (numtype_0 is nt).
-4. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
-5. Pop the value (numtype_0.CONST c_1) from the stack.
-6. If (|$binop_(nt, binop, c_1, c_2)| ≤ 0), then:
-  a. Trap.
-7. Let c be an element of $binop_(nt, binop, c_1, c_2).
-8. Push the value (nt.CONST c) to the stack.
-
-Step_pure/testop nt testop
-1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_1) from the stack.
-3. Assert: Due to validation, (numtype_0 is nt).
-4. Let c be $testop_(nt, testop, c_1).
-5. Push the value (I32.CONST c) to the stack.
-
-Step_pure/relop nt relop
-1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_2) from the stack.
-3. Assert: Due to validation, (numtype_0 is nt).
-4. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
-5. Pop the value (numtype_0.CONST c_1) from the stack.
-6. Let c be $relop_(nt, relop, c_1, c_2).
-7. Push the value (I32.CONST c) to the stack.
-
-Step_pure/cvtop nt_2 nt_1 cvtop
-1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_1) from the stack.
-3. Assert: Due to validation, (numtype_0 is nt_1).
-4. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| ≤ 0), then:
-  a. Trap.
-5. Let c be an element of $cvtop__(nt_1, nt_2, cvtop, c_1).
-6. Push the value (nt_2.CONST c) to the stack.
-
-Step_pure/ref.is_null
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value ref from the stack.
-3. If ref is of the case REF.NULL, then:
-  a. Push the value (I32.CONST 1) to the stack.
-4. Else:
-  a. Push the value (I32.CONST 0) to the stack.
-
-Step_pure/vvunop V128 vvunop
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. Let c be $vvunop_(V128, vvunop, c_1).
-4. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vvbinop V128 vvbinop
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c be $vvbinop_(V128, vvbinop, c_1, c_2).
-6. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vvternop V128 vvternop
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_3) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_2) from the stack.
-5. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-6. Pop the value (V128.CONST c_1) from the stack.
-7. Let c be $vvternop_(V128, vvternop, c_1, c_2, c_3).
-8. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vvtestop V128 ANY_TRUE
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. Let c be $ine_($size(V128), c_1, 0).
-4. Push the value (I32.CONST c) to the stack.
-
-Step_pure/vunop sh vunop
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. If (|$vunop_(sh, vunop, c_1)| ≤ 0), then:
-  a. Trap.
-4. Let c be an element of $vunop_(sh, vunop, c_1).
-5. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vbinop sh vbinop
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. If (|$vbinop_(sh, vbinop, c_1, c_2)| ≤ 0), then:
-  a. Trap.
-6. Let c be an element of $vbinop_(sh, vbinop, c_1, c_2).
-7. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vtestop (Jnn X N) ALL_TRUE
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c) from the stack.
-3. Let ci_1* be $lanes_((Jnn X N), c).
-4. If (ci_1 is not 0)*, then:
-  a. Push the value (I32.CONST 1) to the stack.
-5. Else:
-  a. Push the value (I32.CONST 0) to the stack.
-
-Step_pure/vrelop sh vrelop
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c be $vrelop_(sh, vrelop, c_1, c_2).
-6. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vshiftop (Jnn X N) vshiftop
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c'* be $lanes_((Jnn X N), c_1).
-6. Let c be $invlanes_((Jnn X N), $vshiftop_((Jnn X N), vshiftop, c', n)*).
-7. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vbitmask (Jnn X N)
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c) from the stack.
-3. Let ci_1* be $lanes_((Jnn X N), c).
-4. Let ci be $ibits__1^-1(32, $ilt_($lsize(Jnn), S, ci_1, 0)*).
-5. Push the value (I32.CONST ci) to the stack.
-
-Step_pure/vswizzle (Pnn X M)
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c'* be $lanes_((Pnn X M), c_1) :: 0^(256 - M).
-6. Let ci* be $lanes_((Pnn X M), c_2).
-7. Assert: Due to validation, (ci*[k] < |c'*|)^(k<M).
-8. Assert: Due to validation, (k < |ci*|)^(k<M).
-9. Let c be $invlanes_((Pnn X M), c'*[ci*[k]]^(k<M)).
-10. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vshuffle (Pnn X N) i*
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Assert: Due to validation, (k < |i*|)^(k<N).
-6. Let c'* be $lanes_((Pnn X N), c_1) :: $lanes_((Pnn X N), c_2).
-7. Assert: Due to validation, (i*[k] < |c'*|)^(k<N).
-8. Let c be $invlanes_((Pnn X N), c'*[i*[k]]^(k<N)).
-9. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vsplat (Lnn X N)
-1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_1) from the stack.
-3. Assert: Due to validation, (numtype_0 is $unpack(Lnn)).
-4. Let c be $invlanes_((Lnn X N), $packnum_(Lnn, c_1)^N).
-5. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vextract_lane (lanetype_u0 X N) sx_u1? i
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. If (sx_u1? is not defined and the type of lanetype_u0 is numtype), then:
-  a. Let nt be lanetype_u0.
-  b. If (i < |$lanes_((nt X N), c_1)|), then:
-    1) Let c_2 be $lanes_((nt X N), c_1)[i].
-    2) Push the value (nt.CONST c_2) to the stack.
-4. If the type of lanetype_u0 is packtype, then:
-  a. Let pt be lanetype_u0.
-  b. If sx_u1? is defined, then:
-    1) Let ?(sx) be sx_u1?.
-    2) If (i < |$lanes_((pt X N), c_1)|), then:
-      a) Let c_2 be $extend__($psize(pt), 32, sx, $lanes_((pt X N), c_1)[i]).
-      b) Push the value (I32.CONST c_2) to the stack.
-
-Step_pure/vreplace_lane (Lnn X N) i
-1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_2) from the stack.
-3. Assert: Due to validation, (numtype_0 is $unpack(Lnn)).
-4. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-5. Pop the value (V128.CONST c_1) from the stack.
-6. Let c be $invlanes_((Lnn X N), $lanes_((Lnn X N), c_1) with [i] replaced by $packnum_(Lnn, c_2)).
-7. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vextunop sh_1 sh_2 vextunop
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. Let c be $vextunop__(sh_1, sh_2, vextunop, c_1).
-4. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vextbinop sh_1 sh_2 vextbinop
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c be $vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2).
-6. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vnarrow (Jnn_2 X N_2) (Jnn_1 X N_1) sx
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let ci_1* be $lanes_((Jnn_1 X N_1), c_1).
-6. Let ci_2* be $lanes_((Jnn_1 X N_1), c_2).
-7. Let cj_1* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1)*.
-8. Let cj_2* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2)*.
-9. Let c be $invlanes_((Jnn_2 X N_2), cj_1* :: cj_2*).
-10. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vcvtop (lanetype_u3 X n_u0) (lanetype_u4 X n_u1) vcvtop half_u2? zero_u5?
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. If (half_u2? is not defined and zero_u5? is not defined), then:
-  a. Let Lnn_1 be lanetype_u4.
-  b. Let Lnn_2 be lanetype_u3.
-  c. Let M be n_u1.
-  d. If (n_u0 is M), then:
-    1) Let ci* be $lanes_((Lnn_1 X M), c_1).
-    2) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__((Lnn_1 X M), (Lnn_2 X M), vcvtop, ci)*).
-    3) If (|$invlanes_((Lnn_2 X M), cj*)*| > 0), then:
-      a) Let c be an element of $invlanes_((Lnn_2 X M), cj*)*.
-      b) Push the value (V128.CONST c) to the stack.
-4. If zero_u5? is not defined, then:
-  a. Let Lnn_1 be lanetype_u4.
-  b. Let Lnn_2 be lanetype_u3.
-  c. Let M_1 be n_u1.
-  d. Let M_2 be n_u0.
-  e. If half_u2? is defined, then:
-    1) Let ?(half) be half_u2?.
-    2) Let ci* be $lanes_((Lnn_1 X M_1), c_1)[$half(half, 0, M_2) : M_2].
-    3) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__((Lnn_1 X M_1), (Lnn_2 X M_2), vcvtop, ci)*).
-    4) If (|$invlanes_((Lnn_2 X M_2), cj*)*| > 0), then:
-      a) Let c be an element of $invlanes_((Lnn_2 X M_2), cj*)*.
-      b) Push the value (V128.CONST c) to the stack.
-5. If half_u2? is not defined, then:
-  a. Let M_1 be n_u1.
-  b. Let M_2 be n_u0.
-  c. If the type of lanetype_u4 is numtype, then:
-    1) Let nt_1 be lanetype_u4.
-    2) If the type of lanetype_u3 is numtype, then:
-      a) Let nt_2 be lanetype_u3.
-      b) If zero_u5? is defined, then:
-        1. Let ci* be $lanes_((nt_1 X M_1), c_1).
-        2. Let cj** be $setproduct_(lane_((nt_2 : numtype <: lanetype)), $vcvtop__((nt_1 X M_1), (nt_2 X M_2), vcvtop, ci)* :: [$zero(nt_2)]^M_1).
-        3. If (|$invlanes_((nt_2 X M_2), cj*)*| > 0), then:
-          a. Let c be an element of $invlanes_((nt_2 X M_2), cj*)*.
-          b. Push the value (V128.CONST c) to the stack.
-
-Step_pure/local.tee x
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. Push the value val to the stack.
-4. Push the value val to the stack.
-5. Execute the instruction (LOCAL.SET x).
-
-Step_read/block bt instr*
-1. Let z be the current state.
-2. Let (t_1^k -> t_2^n) be $blocktype(z, bt).
-3. Assert: Due to validation, there are at least k values on the top of the stack.
-4. Pop the values val^k from the stack.
-5. Let L be the label_n{[]}.
-6. Enter val^k :: instr* with label L.
-
-Step_read/loop bt instr*
-1. Let z be the current state.
-2. Let (t_1^k -> t_2^n) be $blocktype(z, bt).
-3. Assert: Due to validation, there are at least k values on the top of the stack.
-4. Pop the values val^k from the stack.
-5. Let L be the label_k{[(LOOP bt instr*)]}.
-6. Enter val^k :: instr* with label L.
-
-Step_read/call x
-1. Let z be the current state.
-2. Assert: Due to validation, (x < |$funcaddr(z)|).
-3. Execute the instruction (CALL_ADDR $funcaddr(z)[x]).
-
-Step_read/call_indirect x y
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST i) from the stack.
-4. If (i ≥ |$table(z, x).REFS|), then:
-  a. Trap.
-5. If $table(z, x).REFS[i] is not of the case REF.FUNC_ADDR, then:
-  a. Trap.
-6. Let (REF.FUNC_ADDR a) be $table(z, x).REFS[i].
-7. If (a ≥ |$funcinst(z)|), then:
-  a. Trap.
-8. If ($type(z, y) is not $funcinst(z)[a].TYPE), then:
-  a. Trap.
-9. Execute the instruction (CALL_ADDR a).
-
-Step_read/call_addr a
-1. Let z be the current state.
-2. Assert: Due to validation, (a < |$funcinst(z)|).
-3. Let { TYPE: (t_1^k -> t_2^n); MODULE: mm; CODE: func; } be $funcinst(z)[a].
-4. Assert: Due to validation, there are at least k values on the top of the stack.
-5. Pop the values val^k from the stack.
-6. Assert: Due to validation, func is of the case FUNC.
-7. Let (FUNC x local_0 instr*) be func.
-8. Assert: Due to validation, local_0 is of the case LOCAL.
-9. Let (LOCAL t)* be local_0.
-10. Let f be { LOCALS: val^k :: $default_(t)*; MODULE: mm; }.
-11. Let F be the activation of f with arity n.
-12. Push F to the stack.
-13. Let L be the label_n{[]}.
-14. Enter instr* with label L.
-
-Step_read/ref.func x
-1. Let z be the current state.
-2. Assert: Due to validation, (x < |$funcaddr(z)|).
-3. Push the value (REF.FUNC_ADDR $funcaddr(z)[x]) to the stack.
-
-Step_read/local.get x
-1. Let z be the current state.
-2. Push the value $local(z, x) to the stack.
-
-Step_read/global.get x
-1. Let z be the current state.
-2. Push the value $global(z, x).VALUE to the stack.
-
-Step_read/table.get x
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST i) from the stack.
-4. If (i ≥ |$table(z, x).REFS|), then:
-  a. Trap.
-5. Push the value $table(z, x).REFS[i] to the stack.
-
-Step_read/table.size x
-1. Let z be the current state.
-2. Let n be |$table(z, x).REFS|.
-3. Push the value (I32.CONST n) to the stack.
-
-Step_read/table.fill x
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value val from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST i) from the stack.
-8. If ((i + n) > |$table(z, x).REFS|), then:
-  a. Trap.
-9. If (n is 0), then:
-  a. Do nothing.
-10. Else:
-  a. Push the value (I32.CONST i) to the stack.
-  b. Push the value val to the stack.
-  c. Execute the instruction (TABLE.SET x).
-  d. Push the value (I32.CONST (i + 1)) to the stack.
-  e. Push the value val to the stack.
-  f. Push the value (I32.CONST (n - 1)) to the stack.
-  g. Execute the instruction (TABLE.FILL x).
-
-Step_read/table.copy x y
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST j) from the stack.
-8. If ((i + n) > |$table(z, y).REFS|), then:
-  a. Trap.
-9. If ((j + n) > |$table(z, x).REFS|), then:
-  a. Trap.
-10. If (n is 0), then:
-  a. Do nothing.
-11. Else:
-  a. If (j ≤ i), then:
-    1) Push the value (I32.CONST j) to the stack.
-    2) Push the value (I32.CONST i) to the stack.
-    3) Execute the instruction (TABLE.GET y).
-    4) Execute the instruction (TABLE.SET x).
-    5) Push the value (I32.CONST (j + 1)) to the stack.
-    6) Push the value (I32.CONST (i + 1)) to the stack.
-  b. Else:
-    1) Push the value (I32.CONST ((j + n) - 1)) to the stack.
-    2) Push the value (I32.CONST ((i + n) - 1)) to the stack.
-    3) Execute the instruction (TABLE.GET y).
-    4) Execute the instruction (TABLE.SET x).
-    5) Push the value (I32.CONST j) to the stack.
-    6) Push the value (I32.CONST i) to the stack.
-  c. Push the value (I32.CONST (n - 1)) to the stack.
-  d. Execute the instruction (TABLE.COPY x y).
-
-Step_read/table.init x y
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST j) from the stack.
-8. If ((i + n) > |$elem(z, y).REFS|), then:
-  a. Trap.
-9. If ((j + n) > |$table(z, x).REFS|), then:
-  a. Trap.
-10. If (n is 0), then:
-  a. Do nothing.
-11. Else if (i < |$elem(z, y).REFS|), then:
-  a. Push the value (I32.CONST j) to the stack.
-  b. Push the value $elem(z, y).REFS[i] to the stack.
-  c. Execute the instruction (TABLE.SET x).
-  d. Push the value (I32.CONST (j + 1)) to the stack.
-  e. Push the value (I32.CONST (i + 1)) to the stack.
-  f. Push the value (I32.CONST (n - 1)) to the stack.
-  g. Execute the instruction (TABLE.INIT x y).
-
-Step_read/load numtype_u0 sz_sx_u1? ao
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST i) from the stack.
-4. If sz_sx_u1? is not defined, then:
-  a. Let nt be numtype_u0.
-  b. If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, 0).BYTES|), then:
-    1) Trap.
-  c. Let c be $nbytes__1^-1(nt, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(nt) / 8)]).
-  d. Push the value (nt.CONST c) to the stack.
-5. If the type of numtype_u0 is Inn, then:
-  a. If sz_sx_u1? is defined, then:
-    1) Let ?(sz_sx_0) be sz_sx_u1?.
-    2) Let (n, sx) be sz_sx_0.
-    3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
-      a) Trap.
-  b. Let Inn be numtype_u0.
-  c. If sz_sx_u1? is defined, then:
-    1) Let ?(sz_sx_0) be sz_sx_u1?.
-    2) Let (n, sx) be sz_sx_0.
-    3) Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
-    4) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
-
-Step_read/vload V128 vloadop_u0? ao
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST i) from the stack.
-4. If ((((i + ao.OFFSET) + ($size(V128) / 8)) > |$mem(z, 0).BYTES|) and vloadop_u0? is not defined), then:
-  a. Trap.
-5. If vloadop_u0? is not defined, then:
-  a. Let c be $vbytes__1^-1(V128, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(V128) / 8)]).
-  b. Push the value (V128.CONST c) to the stack.
-6. Else:
-  a. Let ?(vloadop_0) be vloadop_u0?.
-  b. If vloadop_0 is of the case SHAPE, then:
-    1) Let (SHAPE M X N sx) be vloadop_0.
-    2) If (((i + ao.OFFSET) + ((M · N) / 8)) > |$mem(z, 0).BYTES|), then:
-      a) Trap.
-    3) If the type of $lsize^-1((M · 2)) is Jnn, then:
-      a) Let Jnn be $lsize^-1((M · 2)).
-      b) Let j^N be $ibytes__1^-1(M, $mem(z, 0).BYTES[((i + ao.OFFSET) + ((k · M) / 8)) : (M / 8)])^(k<N).
-      c) Let c be $invlanes_((Jnn X N), $extend__(M, $lsize(Jnn), sx, j)^N).
-      d) Push the value (V128.CONST c) to the stack.
-  c. If vloadop_0 is of the case SPLAT, then:
-    1) Let (SPLAT N) be vloadop_0.
-    2) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
-      a) Trap.
-    3) Let M be (128 / N).
-    4) If the type of $lsize^-1(N) is Jnn, then:
-      a) Let Jnn be $lsize^-1(N).
-      b) Let j be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
-      c) Let c be $invlanes_((Jnn X M), j^M).
-      d) Push the value (V128.CONST c) to the stack.
-  d. If vloadop_0 is of the case ZERO, then:
-    1) Let (ZERO N) be vloadop_0.
-    2) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
-      a) Trap.
-    3) Let j be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
-    4) Let c be $extend__(N, 128, U, j).
-    5) Push the value (V128.CONST c) to the stack.
-
-Step_read/vload_lane V128 N ao j
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-3. Pop the value (V128.CONST c_1) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
-  a. Trap.
-7. Let M be (128 / N).
-8. If the type of $lsize^-1(N) is Jnn, then:
-  a. Let Jnn be $lsize^-1(N).
-  b. Let k be $ibytes__1^-1(N, $mem(z, 0).BYTES[(i + ao.OFFSET) : (N / 8)]).
-  c. Let c be $invlanes_((Jnn X M), $lanes_((Jnn X M), c_1) with [j] replaced by k).
-  d. Push the value (V128.CONST c) to the stack.
-
-Step_read/memory.size
-1. Let z be the current state.
-2. Let ((n · 64) · $Ki()) be |$mem(z, 0).BYTES|.
-3. Push the value (I32.CONST n) to the stack.
-
-Step_read/memory.fill
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value val from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST i) from the stack.
-8. If ((i + n) > |$mem(z, 0).BYTES|), then:
-  a. Trap.
-9. If (n is 0), then:
-  a. Do nothing.
-10. Else:
-  a. Push the value (I32.CONST i) to the stack.
-  b. Push the value val to the stack.
-  c. Execute the instruction (STORE I32 ?(8) $memarg0()).
-  d. Push the value (I32.CONST (i + 1)) to the stack.
-  e. Push the value val to the stack.
-  f. Push the value (I32.CONST (n - 1)) to the stack.
-  g. Execute the instruction MEMORY.FILL.
-
-Step_read/memory.copy
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST j) from the stack.
-8. If ((i + n) > |$mem(z, 0).BYTES|), then:
-  a. Trap.
-9. If ((j + n) > |$mem(z, 0).BYTES|), then:
-  a. Trap.
-10. If (n is 0), then:
-  a. Do nothing.
-11. Else:
-  a. If (j ≤ i), then:
-    1) Push the value (I32.CONST j) to the stack.
-    2) Push the value (I32.CONST i) to the stack.
-    3) Execute the instruction (LOAD I32 (_) ?((8, U)) ? $memarg0()).
-    4) Execute the instruction (STORE I32 ?(8) $memarg0()).
-    5) Push the value (I32.CONST (j + 1)) to the stack.
-    6) Push the value (I32.CONST (i + 1)) to the stack.
-  b. Else:
-    1) Push the value (I32.CONST ((j + n) - 1)) to the stack.
-    2) Push the value (I32.CONST ((i + n) - 1)) to the stack.
-    3) Execute the instruction (LOAD I32 (_) ?((8, U)) ? $memarg0()).
-    4) Execute the instruction (STORE I32 ?(8) $memarg0()).
-    5) Push the value (I32.CONST j) to the stack.
-    6) Push the value (I32.CONST i) to the stack.
-  c. Push the value (I32.CONST (n - 1)) to the stack.
-  d. Execute the instruction MEMORY.COPY.
-
-Step_read/memory.init x
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST j) from the stack.
-8. If ((i + n) > |$data(z, x).BYTES|), then:
-  a. Trap.
-9. If ((j + n) > |$mem(z, 0).BYTES|), then:
-  a. Trap.
-10. If (n is 0), then:
-  a. Do nothing.
-11. Else if (i < |$data(z, x).BYTES|), then:
-  a. Push the value (I32.CONST j) to the stack.
-  b. Push the value (I32.CONST $data(z, x).BYTES[i]) to the stack.
-  c. Execute the instruction (STORE I32 ?(8) $memarg0()).
-  d. Push the value (I32.CONST (j + 1)) to the stack.
-  e. Push the value (I32.CONST (i + 1)) to the stack.
-  f. Push the value (I32.CONST (n - 1)) to the stack.
-  g. Execute the instruction (MEMORY.INIT x).
-
-Step/local.set x
-1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value val from the stack.
-4. Perform $with_local(z, x, val).
-
-Step/global.set x
-1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value val from the stack.
-4. Perform $with_global(z, x, val).
-
-Step/table.set x
-1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value ref from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If (i ≥ |$table(z, x).REFS|), then:
-  a. Trap.
-7. Perform $with_table(z, x, i, ref).
-
-Step/table.grow x
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value ref from the stack.
-6. Either:
-  a. Let ti be $growtable($table(z, x), n, ref).
-  b. Push the value (I32.CONST |$table(z, x).REFS|) to the stack.
-  c. Perform $with_tableinst(z, x, ti).
-7. Or:
-  a. Push the value (I32.CONST $invsigned_(32, (- 1))) to the stack.
-
-Step/elem.drop x
-1. Let z be the current state.
-2. Perform $with_elem(z, x, []).
-
-Step/store numtype_u0 sz_u1? ao
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type numtype_u2 is on the top of the stack.
-3. Pop the value (numtype_u2.CONST c) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. Let nt be numtype_u2.
-7. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, 0).BYTES|) and ((numtype_u0 is nt) and sz_u1? is not defined)), then:
-  a. Trap.
-8. If ((numtype_u0 is nt) and sz_u1? is not defined), then:
-  a. Let b* be $nbytes_(nt, c).
-  b. Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(nt) / 8), b*).
-9. If the type of numtype_u2 is Inn, then:
-  a. Let Inn be numtype_u2.
-  b. If ((numtype_u0 is Inn) and sz_u1? is defined), then:
-    1) Let ?(n) be sz_u1?.
-    2) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, 0).BYTES|), then:
-      a) Trap.
-    3) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
-    4) Perform $with_mem(z, 0, (i + ao.OFFSET), (n / 8), b*).
-
-Step/vstore V128 ao
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-3. Pop the value (V128.CONST c) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If (((i + ao.OFFSET) + ($size(V128) / 8)) > |$mem(z, 0).BYTES|), then:
-  a. Trap.
-7. Let b* be $vbytes_(V128, c).
-8. Perform $with_mem(z, 0, (i + ao.OFFSET), ($size(V128) / 8), b*).
-
-Step/vstore_lane V128 N ao j
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-3. Pop the value (V128.CONST c) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If (((i + ao.OFFSET) + N) > |$mem(z, 0).BYTES|), then:
-  a. Trap.
-7. Let M be (128 / N).
-8. If the type of $lsize^-1(N) is Jnn, then:
-  a. Let Jnn be $lsize^-1(N).
-  b. If (j < |$lanes_((Jnn X M), c)|), then:
-    1) Let b* be $ibytes_(N, $lanes_((Jnn X M), c)[j]).
-    2) Perform $with_mem(z, 0, (i + ao.OFFSET), (N / 8), b*).
-
-Step/memory.grow
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Either:
-  a. Let mi be $growmemory($mem(z, 0), n).
-  b. Push the value (I32.CONST (|$mem(z, 0).BYTES| / (64 · $Ki()))) to the stack.
-  c. Perform $with_meminst(z, 0, mi).
-5. Or:
-  a. Push the value (I32.CONST $invsigned_(32, (- 1))) to the stack.
-
-Step/data.drop x
-1. Let z be the current state.
-2. Perform $with_data(z, x, []).
 
 eval_expr instr*
 1. Execute the instruction instr*.
@@ -14484,6 +14484,2975 @@ watsup 0.4 generator
       * :math:`{\mathit{blocktype}}` is valid with type :math:`({t_1^\ast}~{\rightarrow}_{\epsilon}\,{t_2^\ast})`.
 
       * Under the context :math:`C{}[{.}\mathsf{labels} \mathrel{{=}{\oplus}} {t_2^\ast}]`, :math:`{{\mathit{instr}}^\ast}` is valid with type :math:`({t_1^\ast}~\rightarrow~{t_2^\ast})`.
+
+
+:math:`\mathsf{unreachable}`
+............................
+
+
+1. Trap.
+
+
+:math:`\mathsf{nop}`
+....................
+
+
+1. Do nothing.
+
+
+:math:`\mathsf{drop}`
+.....................
+
+
+1. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}` from the stack.
+
+#. Do nothing.
+
+
+:math:`\mathsf{select}~{({t^\ast})^?}`
+......................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}_2` from the stack.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}_1` from the stack.
+
+#. If :math:`c` is not :math:`0`, then:
+
+   a. Push the value :math:`{\mathit{val}}_1` to the stack.
+
+#. Else:
+
+   a. Push the value :math:`{\mathit{val}}_2` to the stack.
+
+
+:math:`\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~{{\mathit{instr}}_2^\ast}`
+.....................................................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
+
+#. If :math:`c` is not :math:`0`, then:
+
+   a. Execute the instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast})`.
+
+#. Else:
+
+   a. Execute the instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_2^\ast})`.
+
+
+:math:`\mathsf{label}`
+......................
+
+
+1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+#. Assert: Due to validation, a label is now on the top of the stack.
+
+#. Pop the current label from the stack.
+
+#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+
+:math:`\mathsf{br}~l`
+.....................
+
+
+1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+#. If the top of the stack is a :math:`\mathsf{label}`, then:
+
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Let :math:`L` be the current label.
+
+   #. Let :math:`n` be the arity of :math:`L`.
+
+   #. Let :math:`{{\mathit{instr}'}^\ast}` be the continuation of :math:`L`.
+
+   #. If :math:`l` is :math:`0`, then:
+
+      1) Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+      #) Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+      #) Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+
+      #) Pop the current label from the stack.
+
+      #) Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+
+      #) Execute the instruction :math:`{{\mathit{instr}'}^\ast}`.
+
+   #. Else:
+
+      1) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+      #) If :math:`l` is greater than :math:`0`, then:
+
+         a) Pop the current label from the stack.
+
+         #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+         #) Execute the instruction :math:`(\mathsf{br}~l - 1)`.
+
+#. Else if the top of the stack is a :math:`\mathsf{handler}`, then:
+
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+   #. Exit from :math:`\mathsf{handler}`.
+
+   #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Execute the instruction :math:`(\mathsf{br}~l)`.
+
+
+:math:`\mathsf{br\_if}~l`
+.........................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
+
+#. If :math:`c` is not :math:`0`, then:
+
+   a. Execute the instruction :math:`(\mathsf{br}~l)`.
+
+#. Else:
+
+   a. Do nothing.
+
+
+:math:`\mathsf{br\_table}~{l^\ast}~{l'}`
+........................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i` is less than :math:`{|{l^\ast}|}`, then:
+
+   a. Execute the instruction :math:`(\mathsf{br}~{l^\ast}{}[i])`.
+
+#. Else:
+
+   a. Execute the instruction :math:`(\mathsf{br}~{l'})`.
+
+
+:math:`\mathsf{br\_on\_null}~l`
+...............................
+
+
+1. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}` from the stack.
+
+#. If :math:`{\mathit{val}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+   a. Execute the instruction :math:`(\mathsf{br}~l)`.
+
+#. Else:
+
+   a. Push the value :math:`{\mathit{val}}` to the stack.
+
+
+:math:`\mathsf{br\_on\_non\_null}~l`
+....................................
+
+
+1. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}` from the stack.
+
+#. If :math:`{\mathit{val}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+   a. Do nothing.
+
+#. Else:
+
+   a. Push the value :math:`{\mathit{val}}` to the stack.
+
+   #. Execute the instruction :math:`(\mathsf{br}~l)`.
+
+
+:math:`\mathsf{call\_indirect}~x~y`
+...................................
+
+
+1. Execute the instruction :math:`(\mathsf{table{.}get}~x)`.
+
+#. Execute the instruction :math:`(\mathsf{ref{.}cast}~(\mathsf{ref}~(\mathsf{null}~()~{}^?)~y))`.
+
+#. Execute the instruction :math:`(\mathsf{call\_ref}~y)`.
+
+
+:math:`\mathsf{return\_call\_indirect}~x~y`
+...........................................
+
+
+1. Execute the instruction :math:`(\mathsf{table{.}get}~x)`.
+
+#. Execute the instruction :math:`(\mathsf{ref{.}cast}~(\mathsf{ref}~(\mathsf{null}~()~{}^?)~y))`.
+
+#. Execute the instruction :math:`(\mathsf{return\_call\_ref}~y)`.
+
+
+:math:`\mathsf{frame}`
+......................
+
+
+1. Let :math:`f` be the current frame.
+
+#. Let :math:`n` be the arity of :math:`f`.
+
+#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+#. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+#. Assert: Due to validation, a frame is now on the top of the stack.
+
+#. Pop the current frame from the stack.
+
+#. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+
+
+:math:`\mathsf{return}`
+.......................
+
+
+1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+#. If the top of the stack is a :math:`\mathsf{frame}`, then:
+
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Let :math:`f` be the current frame.
+
+   #. Let :math:`n` be the arity of :math:`f`.
+
+   #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+
+   #. Pop the current frame from the stack.
+
+   #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+
+#. Else if the top of the stack is a :math:`\mathsf{label}`, then:
+
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+   #. Pop the current label from the stack.
+
+   #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Execute the instruction :math:`\mathsf{return}`.
+
+#. Else:
+
+   a. If the top of the stack is a :math:`\mathsf{handler}`, then:
+
+      1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+      #) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+      #) Exit from :math:`\mathsf{handler}`.
+
+      #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+      #) Execute the instruction :math:`\mathsf{return}`.
+
+
+:math:`\mathsf{handler}`
+........................
+
+
+1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+#. Assert: Due to validation, YetE: a handler is now on the top of the stack.
+
+#. Exit from :math:`\mathsf{handler}`.
+
+#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+
+:math:`{\mathit{nt}} {.} {\mathit{unop}}`
+.........................................
+
+
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
+
+#. If :math:`{|{{\mathit{unop}}}{{}_{{\mathit{nt}}}(c_1)}|}` is less than or equal to :math:`0`, then:
+
+   a. Trap.
+
+#. Let :math:`c` be an element of :math:`{{\mathit{unop}}}{{}_{{\mathit{nt}}}(c_1)}`.
+
+#. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{\mathit{nt}} {.} {\mathit{binop}}`
+..........................................
+
+
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
+
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. If :math:`{|{{\mathit{binop}}}{{}_{{\mathit{nt}}}(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
+
+   a. Trap.
+
+#. Let :math:`c` be an element of :math:`{{\mathit{binop}}}{{}_{{\mathit{nt}}}(c_1, c_2)}`.
+
+#. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{\mathit{nt}} {.} {\mathit{testop}}`
+...........................................
+
+
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
+
+#. Let :math:`c` be :math:`{{\mathit{testop}}}{{}_{{\mathit{nt}}}(c_1)}`.
+
+#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{\mathit{nt}} {.} {\mathit{relop}}`
+..........................................
+
+
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
+
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Let :math:`c` be :math:`{{\mathit{relop}}}{{}_{{\mathit{nt}}}(c_1, c_2)}`.
+
+#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{\mathit{nt}}_2 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_1}`
+............................................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}_1`.
+
+#. If :math:`{|{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}(c_1)}|}` is less than or equal to :math:`0`, then:
+
+   a. Trap.
+
+#. Let :math:`c` be an element of :math:`{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}(c_1)}`.
+
+#. Push the value :math:`({\mathit{nt}}_2{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`\mathsf{ref{.}i{\scriptstyle 31}}`
+.........................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. Push the value :math:`(\mathsf{ref{.}i{\scriptstyle 31}}~{{\mathrm{wrap}}}_{32, 31}(i))` to the stack.
+
+
+:math:`\mathsf{ref{.}is\_null}`
+...............................
+
+
+1. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{ref}}` from the stack.
+
+#. If :math:`{\mathit{ref}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
+
+#. Else:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
+
+
+:math:`\mathsf{ref{.}as\_non\_null}`
+....................................
+
+
+1. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{ref}}` from the stack.
+
+#. If :math:`{\mathit{ref}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+   a. Trap.
+
+#. Push the value :math:`{\mathit{ref}}` to the stack.
+
+
+:math:`\mathsf{ref{.}eq}`
+.........................
+
+
+1. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{ref}}_2` from the stack.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{ref}}_1` from the stack.
+
+#. If :math:`{\mathit{ref}}_1` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+   a. If :math:`{\mathit{ref}}_2` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
+
+   #. Else if :math:`{\mathit{ref}}_1` is :math:`{\mathit{ref}}_2`, then:
+
+      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
+
+   #. Else:
+
+      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
+
+#. Else if :math:`{\mathit{ref}}_1` is :math:`{\mathit{ref}}_2`, then:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
+
+#. Else:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
+
+
+:math:`{\mathsf{i{\scriptstyle 31}{.}get}}{\mathsf{\_}}{{\mathit{sx}}}`
+.......................................................................
+
+
+1. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+   a. Trap.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}i{\scriptstyle 31}}`, then:
+
+   a. Let :math:`(\mathsf{ref{.}i{\scriptstyle 31}}~i)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{31, 32}^{{\mathit{sx}}}}}{(i)})` to the stack.
+
+
+:math:`\mathsf{array{.}new}~x`
+..............................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}` from the stack.
+
+#. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+
+#. Execute the instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)`.
+
+
+:math:`\mathsf{extern{.}convert\_any}`
+......................................
+
+
+1. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+   a. Push the value :math:`(\mathsf{ref{.}null}~\mathsf{extern})` to the stack.
+
+#. If the type of :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is addrref, then:
+
+   a. Let :math:`{\mathit{addrref}}` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. Push the value :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` to the stack.
+
+
+:math:`\mathsf{any{.}convert\_extern}`
+......................................
+
+
+1. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+   a. Push the value :math:`(\mathsf{ref{.}null}~\mathsf{any})` to the stack.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}extern}`, then:
+
+   a. Let :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. Push the value :math:`{\mathit{addrref}}` to the stack.
+
+
+:math:`\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvunop}}`
+..........................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{|{{\mathit{vvunop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1)}|}` is greater than :math:`0`.
+
+#. Let :math:`c` be an element of :math:`{{\mathit{vvunop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1)}`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvbinop}}`
+...........................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{|{{\mathit{vvbinop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1, c_2)}|}` is greater than :math:`0`.
+
+#. Let :math:`c` be an element of :math:`{{\mathit{vvbinop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1, c_2)}`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvternop}}`
+............................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_3)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{|{{\mathit{vvternop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1, c_2, c_3)}|}` is greater than :math:`0`.
+
+#. Let :math:`c` be an element of :math:`{{\mathit{vvternop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1, c_2, c_3)}`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`\mathsf{v{\scriptstyle 128}} {.} \mathsf{any\_true}`
+...........................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Let :math:`c` be :math:`{{\mathrm{ine}}}_{{|\mathsf{v{\scriptstyle 128}}|}}(c_1, 0)`.
+
+#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{\mathit{sh}} {.} {\mathit{vunop}}`
+..........................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. If :math:`{|{{\mathit{vunop}}}{{}_{{\mathit{sh}}}(c_1)}|}` is less than or equal to :math:`0`, then:
+
+   a. Trap.
+
+#. Let :math:`c` be an element of :math:`{{\mathit{vunop}}}{{}_{{\mathit{sh}}}(c_1)}`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{\mathit{sh}} {.} {\mathit{vbinop}}`
+...........................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. If :math:`{|{{\mathit{vbinop}}}{{}_{{\mathit{sh}}}(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
+
+   a. Trap.
+
+#. Let :math:`c` be an element of :math:`{{\mathit{vbinop}}}{{}_{{\mathit{sh}}}(c_1, c_2)}`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{{\mathsf{i}}{N}}{\mathsf{x}}{M} {.} \mathsf{all\_true}`
+...............................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
+
+#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c)`.
+
+#. If for all :math:`{({\mathit{ci}}_1)^\ast}`, :math:`{\mathit{ci}}_1` is not :math:`0`, then:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
+
+#. Else:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
+
+
+:math:`{\mathit{sh}} {.} {\mathit{vrelop}}`
+...........................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Let :math:`c` be :math:`{{\mathit{vrelop}}}{{}_{{\mathit{sh}}}(c_1, c_2)}`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{{\mathsf{i}}{N}}{\mathsf{x}}{M} {.} {\mathit{vshiftop}}`
+................................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_1)`.
+
+#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({{{\mathit{vshiftop}}}{{}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}}{({c'}, n)}^\ast})}`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{{\mathsf{i}}{N}}{\mathsf{x}}{M}{.}\mathsf{bitmask}`
+...........................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
+
+#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c)`.
+
+#. Let :math:`{\mathit{ci}}` be the result for which :math:`{{\mathrm{bits}}}_{{\mathsf{i}}{32}}({\mathit{ci}})` :math:`=` :math:`{{{{{\mathrm{ilt}}}_{{|{\mathsf{i}}{N}|}}^{\mathsf{s}}}}{({\mathit{ci}}_1, 0)}^\ast}`.
+
+#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{\mathit{ci}})` to the stack.
+
+
+:math:`{{\mathsf{i}}{N}}{\mathsf{x}}{M}{.}\mathsf{swizzle}`
+...........................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_1)~{0^{256 - M}}`.
+
+#. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_2)`.
+
+#. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`{{\mathit{ci}}^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}`.
+
+#. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`k` is less than :math:`{|{{\mathit{ci}}^\ast}|}`.
+
+#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({{{c'}^\ast}{}[{{\mathit{ci}}^\ast}{}[k]]^{k<M}})}`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{{\mathsf{i}}{N}}{\mathsf{x}}{M}{.}\mathsf{shuffle}~{i^\ast}`
+....................................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`k` is less than :math:`{|{i^\ast}|}`.
+
+#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_1)~{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_2)`.
+
+#. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`{i^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}`.
+
+#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({{{c'}^\ast}{}[{i^\ast}{}[k]]^{k<M}})}`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{{\mathsf{i}}{N}}{\mathsf{x}}{M}{.}\mathsf{splat}`
+.........................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathrm{unpack}}({\mathsf{i}}{N})`.
+
+#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({{{\mathrm{pack}}}_{{\mathsf{i}}{N}}(c_1)^{M}})}`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{{{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{x}}{M}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~i`
+.........................................................................................................................................................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. If :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is numtype, then:
+
+   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{({{\mathit{nt}}}{\mathsf{x}}{M})}(c_1)|}`, then:
+
+      1) Let :math:`c_2` be :math:`{{\mathrm{lanes}}}_{({{\mathit{nt}}}{\mathsf{x}}{M})}(c_1){}[i]`.
+
+      #) Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` to the stack.
+
+#. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype, then:
+
+   a. Let :math:`{\mathit{pt}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. If :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
+
+      1) Let :math:`{\mathit{sx}}` be :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
+
+      #) If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{({{\mathit{pt}}}{\mathsf{x}}{M})}(c_1)|}`, then:
+
+         a) Let :math:`c_2` be :math:`{{{{\mathrm{extend}}}_{{|{\mathit{pt}}|}, 32}^{{\mathit{sx}}}}}{({{\mathrm{lanes}}}_{({{\mathit{pt}}}{\mathsf{x}}{M})}(c_1){}[i])}`.
+
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c_2)` to the stack.
+
+
+:math:`{{\mathsf{i}}{N}}{\mathsf{x}}{M}{.}\mathsf{replace\_lane}~i`
+...................................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathrm{unpack}}({\mathsf{i}}{N})`.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_1){}[{}[i] = {{\mathrm{pack}}}_{{\mathsf{i}}{N}}(c_2)])}`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{\mathit{sh}}_2 {.} {{\mathit{vextunop}}}{\mathsf{\_}}{{\mathit{sh}}_1}`
+...............................................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Let :math:`c` be :math:`{{\mathit{vextunop}}}{{}_{{\mathit{sh}}_1, {\mathit{sh}}_2}(c_1)}`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{\mathit{sh}}_2 {.} {{\mathit{vextbinop}}}{\mathsf{\_}}{{\mathit{sh}}_1}`
+................................................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Let :math:`c` be :math:`{{\mathit{vextbinop}}}{{}_{{\mathit{sh}}_1, {\mathit{sh}}_2}(c_1, c_2)}`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}{.}\mathsf{narrow}}{\mathsf{\_}}{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}{\mathsf{\_}}{{\mathit{sx}}}`
+...................................................................................................................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_1)`.
+
+#. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_2)`.
+
+#. Let :math:`{{\mathit{cj}}_1^\ast}` be :math:`{{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{N}}_1|}, {|{{\mathsf{i}}{N}}_2|}}^{{\mathit{sx}}}}}{{\mathit{ci}}_1}^\ast}`.
+
+#. Let :math:`{{\mathit{cj}}_2^\ast}` be :math:`{{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{N}}_1|}, {|{{\mathsf{i}}{N}}_2|}}^{{\mathit{sx}}}}}{{\mathit{ci}}_2}^\ast}`.
+
+#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{\mathit{cj}}_1^\ast}~{{\mathit{cj}}_2^\ast})}`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}}{\mathsf{x}}{n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}} {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 13}}}^?}}{\mathsf{\_}}{{{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 6}}}}{\mathsf{x}}{n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}}{\mathsf{\_}}{{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}}`
+............................................................................................................................................................................................................................................................................................................................................................................................................................................
+
+
+1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}` is not defined and :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 13}}}^?}` is not defined, then:
+
+   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 6}}}`.
+
+   #. Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}`.
+
+   #. Let :math:`M` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+
+   #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`M`, then:
+
+      1) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M})}(c_1)`.
+
+      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M})}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
+
+      #) If :math:`{|{{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M})}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}|}` is greater than :math:`0`, then:
+
+         a) Let :math:`c` be an element of :math:`{{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M})}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}`.
+
+         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+#. If :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 13}}}^?}` is not defined, then:
+
+   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 6}}}`.
+
+   #. Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}`.
+
+   #. Let :math:`M_1` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+
+   #. Let :math:`M_2` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}` is defined, then:
+
+      1) Let :math:`{\mathit{half}}` be :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}`.
+
+      #) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
+
+      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
+
+      #) If :math:`{|{{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}|}` is greater than :math:`0`, then:
+
+         a) Let :math:`c` be an element of :math:`{{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}`.
+
+         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+#. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}` is not defined, then:
+
+   a. Let :math:`M_1` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+
+   #. Let :math:`M_2` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 6}}}` is numtype, then:
+
+      1) Let :math:`{\mathit{nt}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 6}}}`.
+
+      #) If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}` is numtype, then:
+
+         a) Let :math:`{\mathit{nt}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}`.
+
+         #) If :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 13}}}^?}` is defined, then:
+
+            1. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathit{nt}}_1}{\mathsf{x}}{M_1})}(c_1)`.
+
+            #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{({{\mathit{nt}}_1}{\mathsf{x}}{M_1}), ({{\mathit{nt}}_2}{\mathsf{x}}{M_2})}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}~{0^{M_1}}`.
+
+            #. If :math:`{|{{{{{\mathrm{lanes}}}_{({{\mathit{nt}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}|}` is greater than :math:`0`, then:
+
+               a. Let :math:`c` be an element of :math:`{{{{{\mathrm{lanes}}}_{({{\mathit{nt}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}`.
+
+               #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`\mathsf{local{.}tee}~x`
+..............................
+
+
+1. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}` from the stack.
+
+#. Push the value :math:`{\mathit{val}}` to the stack.
+
+#. Push the value :math:`{\mathit{val}}` to the stack.
+
+#. Execute the instruction :math:`(\mathsf{local{.}set}~x)`.
+
+
+:math:`\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast}`
+............................................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Let :math:`({t_1^{m}}~\rightarrow~{t_2^{n}})` be :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}})`.
+
+#. Assert: Due to validation, there are at least :math:`m` values on the top of the stack.
+
+#. Pop the values :math:`{{\mathit{val}}^{m}}` from the stack.
+
+#. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
+
+#. Enter :math:`{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}` with label :math:`L`.
+
+
+:math:`\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast}`
+...........................................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Let :math:`({t_1^{m}}~\rightarrow~{t_2^{n}})` be :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}})`.
+
+#. Assert: Due to validation, there are at least :math:`m` values on the top of the stack.
+
+#. Pop the values :math:`{{\mathit{val}}^{m}}` from the stack.
+
+#. Let :math:`L` be the label whose arity is :math:`m` and whose continuation is :math:`(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast})`.
+
+#. Enter :math:`{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}` with label :math:`L`.
+
+
+:math:`\mathsf{br\_on\_cast}~l~{\mathit{rt}}_1~{\mathit{rt}}_2`
+...............................................................
+
+
+1. Let :math:`f` be the current frame.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{ref}}` from the stack.
+
+#. Let :math:`{\mathit{rt}}` be :math:`{\mathrm{Ref}}_{\mathit{type}}({\mathit{ref}})`.
+
+#. Push the value :math:`{\mathit{ref}}` to the stack.
+
+#. If :math:`{\mathit{rt}}` does not match :math:`{{\mathrm{inst}}}_{f{.}\mathsf{module}}({\mathit{rt}}_2)`, then:
+
+   a. Do nothing.
+
+#. Else:
+
+   a. Execute the instruction :math:`(\mathsf{br}~l)`.
+
+
+:math:`\mathsf{br\_on\_cast\_fail}~l~{\mathit{rt}}_1~{\mathit{rt}}_2`
+.....................................................................
+
+
+1. Let :math:`f` be the current frame.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{ref}}` from the stack.
+
+#. Let :math:`{\mathit{rt}}` be :math:`{\mathrm{Ref}}_{\mathit{type}}({\mathit{ref}})`.
+
+#. Push the value :math:`{\mathit{ref}}` to the stack.
+
+#. If :math:`{\mathit{rt}}` matches :math:`{{\mathrm{inst}}}_{f{.}\mathsf{module}}({\mathit{rt}}_2)`, then:
+
+   a. Do nothing.
+
+#. Else:
+
+   a. Execute the instruction :math:`(\mathsf{br}~l)`.
+
+
+:math:`\mathsf{call}~x`
+.......................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, :math:`x` is less than :math:`{|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
+
+#. Let :math:`a` be :math:`z{.}\mathsf{module}{.}\mathsf{funcs}{}[x]`.
+
+#. Assert: Due to validation, :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`.
+
+#. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
+
+#. Execute the instruction :math:`(\mathsf{call\_ref}~z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})`.
+
+
+:math:`\mathsf{call\_ref}~y`
+............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+   a. Trap.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}func}`, then:
+
+   a. Let :math:`(\mathsf{ref{.}func}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. If :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`, then:
+
+      1) Let :math:`{\mathit{fi}}` be :math:`z{.}\mathsf{funcs}{}[a]`.
+
+      #) Assert: Due to validation, :math:`{\mathit{fi}}{.}\mathsf{code}` is of the case :math:`\mathsf{func}`.
+
+      #) Let :math:`(\mathsf{func}~x~{\mathit{local}}_0~{{\mathit{instr}}^\ast})` be :math:`{\mathit{fi}}{.}\mathsf{code}`.
+
+      #) Assert: Due to validation, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`.
+
+      #) Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{\mathit{local}}_0`.
+
+      #) Assert: Due to validation, :math:`{\mathrm{expand}}({\mathit{fi}}{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
+
+      #) Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}({\mathit{fi}}{.}\mathsf{type})`.
+
+      #) Let :math:`({t_1^{n}}~\rightarrow~{t_2^{m}})` be :math:`{\mathit{functype}}_0`.
+
+      #) Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+      #) Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+      #) Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{n}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{fi}}{.}\mathsf{module} \}\end{array}`.
+
+      #) Let :math:`F` be the activation of :math:`f` with arity :math:`m`.
+
+      #) Push :math:`F` to the stack.
+
+      #) Let :math:`L` be the label whose arity is :math:`m` and whose continuation is :math:`\epsilon`.
+
+      #) Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
+
+
+:math:`\mathsf{return\_call}~x`
+...............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, :math:`x` is less than :math:`{|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
+
+#. Let :math:`a` be :math:`z{.}\mathsf{module}{.}\mathsf{funcs}{}[x]`.
+
+#. Assert: Due to validation, :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`.
+
+#. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
+
+#. Execute the instruction :math:`(\mathsf{return\_call\_ref}~z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})`.
+
+
+:math:`\mathsf{return\_call\_ref}~y`
+....................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+#. If the top of the stack is a :math:`\mathsf{label}`, then:
+
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+   #. Pop the current label from the stack.
+
+   #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Execute the instruction :math:`(\mathsf{return\_call\_ref}~y)`.
+
+#. Else if the top of the stack is a :math:`\mathsf{handler}`, then:
+
+   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+   #. Exit from :math:`\mathsf{handler}`.
+
+   #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+   #. Execute the instruction :math:`(\mathsf{return\_call\_ref}~y)`.
+
+#. Else:
+
+   a. If the top of the stack is a :math:`\mathsf{frame}`, then:
+
+      1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+      #) Assert: Due to validation, a value is on the top of the stack.
+
+      #) Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
+
+      #) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+      #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+         a) Pop the current frame from the stack.
+
+         #) Trap.
+
+      #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}func}`, then:
+
+         a) Let :math:`(\mathsf{ref{.}func}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+         #) If :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`, then:
+
+            1. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
+
+            #. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})`.
+
+            #. Let :math:`({t_1^{n}}~\rightarrow~{t_2^{m}})` be :math:`{\mathit{functype}}_0`.
+
+            #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+            #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+            #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
+
+            #. Pop the current frame from the stack.
+
+            #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+
+            #. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
+
+            #. Execute the instruction :math:`(\mathsf{call\_ref}~y)`.
+
+
+:math:`\mathsf{throw\_ref}`
+...........................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+   a. Trap.
+
+#. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+#. If :math:`{{\mathit{val}}^\ast}` is not :math:`\epsilon`, then:
+
+   a. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
+
+      1) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+      #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+      #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+#. Else:
+
+   a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+
+   #. If the top of the stack is a :math:`\mathsf{label}`, then:
+
+      1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+      #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
+
+         a) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+         #) Pop the current label from the stack.
+
+         #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+         #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+   #. Else if the top of the stack is a :math:`\mathsf{frame}`, then:
+
+      1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+      #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
+
+         a) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+         #) Pop the current frame from the stack.
+
+         #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+         #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+   #. Else:
+
+      1) If not the top of the stack is a :math:`\mathsf{handler}`, then:
+
+         a) Throw the exception :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` as a result.
+
+      #) Else:
+
+         a) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+         #) Let :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\})` be the current context.
+
+         #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
+
+            1. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+            #. If :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
+
+               a. Exit from :math:`\mathsf{handler}`.
+
+               #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+               #. Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+            #. Else if :math:`a` is greater than or equal to :math:`{|z{.}\mathsf{exns}|}`, then:
+
+               a. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+               #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all}`, then:
+
+                  1) Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
+
+                  #) Exit from :math:`\mathsf{handler}`.
+
+                  #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+               #. Else if :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all\_ref}`, then:
+
+                  1) Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
+
+                  #) Exit from :math:`\mathsf{handler}`.
+
+                  #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                  #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+               #. Else:
+
+                  1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                  #) Exit from :math:`\mathsf{handler}`.
+
+                  #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
+
+                  #) Push the handler :math:`H` to the stack.
+
+                  #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                  #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+            #. Else:
+
+               a. Let :math:`{{\mathit{val}}^\ast}` be :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{fields}`.
+
+               #. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+               #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch}`, then:
+
+                  1) Let :math:`(\mathsf{catch}~x~l)` be :math:`{\mathit{catch}}_0`.
+
+                  #) If :math:`x` is less than :math:`{|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag}` is :math:`z{.}\mathsf{tags}{}[x]`, then:
+
+                     a) Exit from :math:`\mathsf{handler}`.
+
+                     #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+                     #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                  #) Else:
+
+                     a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                     #) Exit from :math:`\mathsf{handler}`.
+
+                     #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
+
+                     #) Push the handler :math:`H` to the stack.
+
+                     #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                     #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+               #. Else if :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_ref}`, then:
+
+                  1) Let :math:`(\mathsf{catch\_ref}~x~l)` be :math:`{\mathit{catch}}_0`.
+
+                  #) If :math:`x` is less than :math:`{|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag}` is :math:`z{.}\mathsf{tags}{}[x]`, then:
+
+                     a) Exit from :math:`\mathsf{handler}`.
+
+                     #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+                     #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                     #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                  #) Else:
+
+                     a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                     #) Exit from :math:`\mathsf{handler}`.
+
+                     #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
+
+                     #) Push the handler :math:`H` to the stack.
+
+                     #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                     #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+               #. Else:
+
+                  1) If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all}`, then:
+
+                     a) Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
+
+                     #) Exit from :math:`\mathsf{handler}`.
+
+                     #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                  #) Else if :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all\_ref}`, then:
+
+                     a) Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
+
+                     #) Exit from :math:`\mathsf{handler}`.
+
+                     #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                     #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                  #) Else:
+
+                     a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                     #) Exit from :math:`\mathsf{handler}`.
+
+                     #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
+
+                     #) Push the handler :math:`H` to the stack.
+
+                     #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                     #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+
+:math:`\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast}`
+.........................................................................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Let :math:`({t_1^{m}}~\rightarrow~{t_2^{n}})` be :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}})`.
+
+#. Assert: Due to validation, there are at least :math:`m` values on the top of the stack.
+
+#. Pop the values :math:`{{\mathit{val}}^{m}}` from the stack.
+
+#. Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}^\ast}~\})`.
+
+#. Push the handler :math:`H` to the stack.
+
+#. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
+
+#. Enter :math:`{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}` with label :math:`L`.
+
+
+:math:`\mathsf{ref{.}null}~x`
+.............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Push the value :math:`(\mathsf{ref{.}null}~z{.}\mathsf{types}{}[x])` to the stack.
+
+
+:math:`\mathsf{ref{.}func}~x`
+.............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, :math:`x` is less than :math:`{|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
+
+#. Push the value :math:`(\mathsf{ref{.}func}~z{.}\mathsf{module}{.}\mathsf{funcs}{}[x])` to the stack.
+
+
+:math:`\mathsf{ref{.}test}~{\mathit{rt}}`
+.........................................
+
+
+1. Let :math:`f` be the current frame.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{ref}}` from the stack.
+
+#. Let :math:`{\mathit{rt}'}` be :math:`{\mathrm{Ref}}_{\mathit{type}}({\mathit{ref}})`.
+
+#. If :math:`{\mathit{rt}'}` matches :math:`{{\mathrm{inst}}}_{f{.}\mathsf{module}}({\mathit{rt}})`, then:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
+
+#. Else:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
+
+
+:math:`\mathsf{ref{.}cast}~{\mathit{rt}}`
+.........................................
+
+
+1. Let :math:`f` be the current frame.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{ref}}` from the stack.
+
+#. Let :math:`{\mathit{rt}'}` be :math:`{\mathrm{Ref}}_{\mathit{type}}({\mathit{ref}})`.
+
+#. If :math:`{\mathit{rt}'}` does not match :math:`{{\mathrm{inst}}}_{f{.}\mathsf{module}}({\mathit{rt}})`, then:
+
+   a. Trap.
+
+#. Push the value :math:`{\mathit{ref}}` to the stack.
+
+
+:math:`\mathsf{struct{.}new\_default}~x`
+........................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
+
+#. Let :math:`(\mathsf{struct}~{\mathit{fieldtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+
+#. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{\mathit{fieldtype}}_0`.
+
+#. Assert: Due to validation, :math:`{|{{\mathsf{mut}^?}^\ast}|}` is :math:`{|{{\mathit{zt}}^\ast}|}`.
+
+#. Assert: Due to validation, for all :math:`{({\mathit{zt}})^\ast}`, :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is defined.
+
+#. Let :math:`{{\mathit{val}}^\ast}` be :math:`{{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}^\ast}`.
+
+#. Assert: Due to validation, :math:`{|{{\mathit{val}}^\ast}|}` is :math:`{|{{\mathit{zt}}^\ast}|}`.
+
+#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+
+#. Execute the instruction :math:`(\mathsf{struct{.}new}~x)`.
+
+
+:math:`{\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x~i`
+...................................................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+   a. Trap.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}struct}`, then:
+
+   a. Let :math:`(\mathsf{ref{.}struct}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. If :math:`i` is less than :math:`{|z{.}\mathsf{structs}{}[a]{.}\mathsf{fields}|}` and :math:`a` is less than :math:`{|z{.}\mathsf{structs}|}`, then:
+
+      1) Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
+
+      #) Let :math:`(\mathsf{struct}~{\mathit{fieldtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+
+      #) Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{\mathit{fieldtype}}_0`.
+
+      #) If :math:`{|{{\mathsf{mut}^?}^\ast}|}` is :math:`{|{{\mathit{zt}}^\ast}|}` and :math:`i` is less than :math:`{|{{\mathit{zt}}^\ast}|}`, then:
+
+         a) Push the value :math:`{{{{\mathrm{unpack}}}_{{{\mathit{zt}}^\ast}{}[i]}^{{{\mathit{sx}}^?}}}}{(z{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i])}` to the stack.
+
+
+:math:`\mathsf{array{.}new\_default}~x`
+.......................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`.
+
+#. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+
+#. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
+
+#. Assert: Due to validation, :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is defined.
+
+#. Let :math:`{\mathit{val}}` be :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}`.
+
+#. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+
+#. Execute the instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)`.
+
+
+:math:`\mathsf{array{.}new\_elem}~x~y`
+......................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
+
+   a. Trap.
+
+#. Assert: Due to validation, :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[i : n]|}` is :math:`n`.
+
+#. Let :math:`{{\mathit{ref}}^\ast}` be :math:`z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[i : n]`.
+
+#. Push the values :math:`{{\mathit{ref}}^{n}}` to the stack.
+
+#. Execute the instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)`.
+
+
+:math:`\mathsf{array{.}new\_data}~x~y`
+......................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`.
+
+#. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+
+#. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
+
+#. If :math:`i + n \cdot {|{\mathit{zt}}|} / 8` is greater than :math:`{|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
+
+   a. Trap.
+
+#. Assert: Due to validation, the length of :math:`({\mathit{fresh}}_1)` for which :math:`{\bigoplus}\, {\mathit{fresh}}_1` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[i : n \cdot {|{\mathit{zt}}|} / 8]` is :math:`n`.
+
+#. Let :math:`{{\mathit{byte}}^\ast}` be the result for which :math:`{\bigoplus}\, {{\mathit{byte}}^\ast}` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[i : n \cdot {|{\mathit{zt}}|} / 8]`.
+
+#. Let :math:`{c^\ast}` be the result for which for all :math:`{({\mathit{byte}})^\ast}`, :math:`{{\mathrm{bytes}}}_{{\mathit{zt}}}({c^\ast})` is :math:`{\mathit{byte}}`.
+
+#. Push the values :math:`{{\mathrm{unpack}}({\mathit{zt}}){.}\mathsf{const}~{{\mathrm{unpack}}}_{{\mathit{zt}}}(c)^{n}}` to the stack.
+
+#. Execute the instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)`.
+
+
+:math:`{\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x`
+................................................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+   a. Trap.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
+
+   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
+
+      1) Trap.
+
+   #. If :math:`i` is less than :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}` and :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}`, then:
+
+      1) Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`.
+
+      #) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+
+      #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
+
+      #) Push the value :math:`{{{{\mathrm{unpack}}}_{{\mathit{zt}}}^{{{\mathit{sx}}^?}}}}{(z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i])}` to the stack.
+
+
+:math:`\mathsf{array{.}len}`
+............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+   a. Trap.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
+
+   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}`, then:
+
+      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|})` to the stack.
+
+
+:math:`\mathsf{array{.}fill}~x`
+...............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+   a. Trap.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
+
+   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. If :math:`a` is greater than or equal to :math:`{|z{.}\mathsf{arrays}|}`, then:
+
+      1) Do nothing.
+
+   #. Else if :math:`i + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
+
+      1) Trap.
+
+   #. If :math:`n` is :math:`0`, then:
+
+      1) Do nothing.
+
+   #. Else:
+
+      1) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+
+      #) Push the value :math:`{\mathit{val}}` to the stack.
+
+      #) Execute the instruction :math:`(\mathsf{array{.}set}~x)`.
+
+      #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+
+      #) Push the value :math:`{\mathit{val}}` to the stack.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+
+      #) Execute the instruction :math:`(\mathsf{array{.}fill}~x)`.
+
+
+:math:`\mathsf{array{.}copy}~x_1~x_2`
+.....................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` from the stack.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` from the stack.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{ref{.}null}` and the type of :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is ref, then:
+
+   a. Trap.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}` and the type of :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is ref, then:
+
+   a. Trap.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
+
+   a. Let :math:`(\mathsf{ref{.}array}~a_1)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+
+   #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
+
+      1) If :math:`a_1` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i_1 + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a_1]{.}\mathsf{fields}|}`, then:
+
+         a) Trap.
+
+      #) Let :math:`(\mathsf{ref{.}array}~a_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+      #) If :math:`a_2` is greater than or equal to :math:`{|z{.}\mathsf{arrays}|}`, then:
+
+         a) Do nothing.
+
+      #) Else if :math:`i_2 + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a_2]{.}\mathsf{fields}|}`, then:
+
+         a) Trap.
+
+      #) If :math:`n` is :math:`0`, then:
+
+         a) Do nothing.
+
+      #) Else if :math:`i_1` is less than or equal to :math:`i_2` and :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is of the case :math:`\mathsf{array}`, then:
+
+         a) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
+
+         #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
+
+         #) Let :math:`{{\mathit{sx}}^?}` be :math:`{\mathrm{sx}}({\mathit{zt}}_2)`.
+
+         #) Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
+
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
+
+         #) Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
+
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
+
+         #) Execute the instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x_2)`.
+
+         #) Execute the instruction :math:`(\mathsf{array{.}set}~x_1)`.
+
+         #) Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
+
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + 1)` to the stack.
+
+         #) Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
+
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + 1)` to the stack.
+
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+
+         #) Execute the instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)`.
+
+      #) Else:
+
+         a) If :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is of the case :math:`\mathsf{array}`, then:
+
+            1. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
+
+            #. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
+
+            #. Let :math:`{{\mathit{sx}}^?}` be :math:`{\mathrm{sx}}({\mathit{zt}}_2)`.
+
+            #. Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
+
+            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + n - 1)` to the stack.
+
+            #. Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
+
+            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + n - 1)` to the stack.
+
+            #. Execute the instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x_2)`.
+
+            #. Execute the instruction :math:`(\mathsf{array{.}set}~x_1)`.
+
+            #. Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
+
+            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
+
+            #. Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
+
+            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
+
+            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+
+            #. Execute the instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)`.
+
+   #. Else if :math:`n` is not :math:`0`, then:
+
+      1) Do nothing.
+
+
+:math:`\mathsf{array{.}init\_elem}~x~y`
+.......................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+   a. Trap.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
+
+   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
+
+      1) Trap.
+
+   #. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
+
+      1) Trap.
+
+   #. If :math:`n` is :math:`0`, then:
+
+      1) Do nothing.
+
+   #. Else if :math:`j` is less than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
+
+      1) Let :math:`{\mathit{ref}}` be :math:`z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[j]`.
+
+      #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+
+      #) Push the value :math:`{\mathit{ref}}` to the stack.
+
+      #) Execute the instruction :math:`(\mathsf{array{.}set}~x)`.
+
+      #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+
+      #) Execute the instruction :math:`(\mathsf{array{.}init\_elem}~x~y)`.
+
+
+:math:`\mathsf{array{.}init\_data}~x~y`
+.......................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+   a. Trap.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
+
+   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
+
+      1) Trap.
+
+   #. If :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`, then:
+
+      1) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+
+      #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
+
+      #) If :math:`j + n \cdot {|{\mathit{zt}}|} / 8` is greater than :math:`{|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
+
+         a) Trap.
+
+      #) If :math:`n` is :math:`0`, then:
+
+         a) Do nothing.
+
+      #) Else:
+
+         a) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathit{zt}}}(c)` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[j : {|{\mathit{zt}}|} / 8]`.
+
+         #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
+
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+
+         #) Push the value :math:`{\mathrm{unpack}}({\mathit{zt}}){.}\mathsf{const}~{{\mathrm{unpack}}}_{{\mathit{zt}}}(c)` to the stack.
+
+         #) Execute the instruction :math:`(\mathsf{array{.}set}~x)`.
+
+         #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
+
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + {|{\mathit{zt}}|} / 8)` to the stack.
+
+         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+
+         #) Execute the instruction :math:`(\mathsf{array{.}init\_data}~x~y)`.
+
+   #. Else if :math:`n` is :math:`0`, then:
+
+      1) Do nothing.
+
+
+:math:`\mathsf{local{.}get}~x`
+..............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, :math:`z{.}\mathsf{locals}{}[x]` is defined.
+
+#. Let :math:`{\mathit{val}}` be :math:`z{.}\mathsf{locals}{}[x]`.
+
+#. Push the value :math:`{\mathit{val}}` to the stack.
+
+
+:math:`\mathsf{global{.}get}~x`
+...............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Let :math:`{\mathit{val}}` be :math:`z{.}\mathsf{globals}{}[x]{.}\mathsf{value}`.
+
+#. Push the value :math:`{\mathit{val}}` to the stack.
+
+
+:math:`\mathsf{table{.}get}~x`
+..............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
+
+   a. Trap.
+
+#. Push the value :math:`z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i]` to the stack.
+
+
+:math:`\mathsf{table{.}size}~x`
+...............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Let :math:`n` be :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`.
+
+#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` to the stack.
+
+
+:math:`\mathsf{table{.}fill}~x`
+...............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
+
+   a. Trap.
+
+#. If :math:`n` is :math:`0`, then:
+
+   a. Do nothing.
+
+#. Else:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+
+   #. Push the value :math:`{\mathit{val}}` to the stack.
+
+   #. Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+
+   #. Push the value :math:`{\mathit{val}}` to the stack.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+
+   #. Execute the instruction :math:`(\mathsf{table{.}fill}~x)`.
+
+
+:math:`\mathsf{table{.}copy}~x~y`
+.................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
+
+#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{tables}{}[y]{.}\mathsf{refs}|}`, then:
+
+   a. Trap.
+
+#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
+
+   a. Trap.
+
+#. If :math:`n` is :math:`0`, then:
+
+   a. Do nothing.
+
+#. Else:
+
+   a. If :math:`j` is less than or equal to :math:`i`, then:
+
+      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+
+      #) Execute the instruction :math:`(\mathsf{table{.}get}~y)`.
+
+      #) Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+
+   #. Else:
+
+      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + n - 1)` to the stack.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + n - 1)` to the stack.
+
+      #) Execute the instruction :math:`(\mathsf{table{.}get}~y)`.
+
+      #) Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+
+   #. Execute the instruction :math:`(\mathsf{table{.}copy}~x~y)`.
+
+
+:math:`\mathsf{table{.}init}~x~y`
+.................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
+
+#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
+
+   a. Trap.
+
+#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
+
+   a. Trap.
+
+#. If :math:`n` is :math:`0`, then:
+
+   a. Do nothing.
+
+#. Else if :math:`i` is less than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
+
+   #. Push the value :math:`z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[i]` to the stack.
+
+   #. Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+
+   #. Execute the instruction :math:`(\mathsf{table{.}init}~x~y)`.
+
+
+:math:`{{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}}~x~{\mathit{ao}}`
+.........................................................................................................................................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is not defined, then:
+
+   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+
+      1) Trap.
+
+   #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8]`.
+
+   #. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` to the stack.
+
+#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
+
+   a. If :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is defined, then:
+
+      1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}`.
+
+      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+
+      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+
+         a) Trap.
+
+   #. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. If :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is defined, then:
+
+      1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}`.
+
+      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
+
+      #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
+
+      #) Push the value :math:`({\mathsf{i}}{N}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathsf{i}}{N}|}}^{{\mathit{sx}}}}}{(c)})` to the stack.
+
+
+:math:`{\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}}~x~{\mathit{ao}}`
+............................................................................................................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}` and :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
+
+   a. Trap.
+
+#. If :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
+
+   a. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8]`.
+
+   #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+#. Else:
+
+   a. Let :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}`.
+
+   #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{shape}`, then:
+
+      1) Let :math:`({M}{\mathsf{x}}{K}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vloadop\_{\scriptstyle 0}}}`.
+
+      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + M \cdot K / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+
+         a) Trap.
+
+      #) If the type of :math:`N` for which :math:`N` :math:`=` :math:`M \cdot 2` is Jnn, then:
+
+         a) Let :math:`{\mathsf{i}}{N}` be the result for which :math:`N` :math:`=` :math:`M \cdot 2`.
+
+         #) Let :math:`{j^{K}}` be the result for which for all :math:`{(k)^{k<K}}`, :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{K}})` is :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8]`.
+
+         #) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{K})}^{{-1}}}}{({{{{{\mathrm{extend}}}_{M, N}^{{\mathit{sx}}}}}{(j)}^{K}})}`.
+
+         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+   #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{splat}`, then:
+
+      1) Let :math:`({N}{\mathsf{\_}}{\mathsf{splat}})` be :math:`{\mathit{vloadop\_{\scriptstyle 0}}}`.
+
+      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+
+         a) Trap.
+
+      #) Let :math:`M` be :math:`128 / N`.
+
+      #) If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`N` is Jnn, then:
+
+         a) Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
+
+         #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
+
+         #) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({j^{M}})}`.
+
+         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+   #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{zero}`, then:
+
+      1) Let :math:`({N}{\mathsf{\_}}{\mathsf{zero}})` be :math:`{\mathit{vloadop\_{\scriptstyle 0}}}`.
+
+      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+
+         a) Trap.
+
+      #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
+
+      #) Let :math:`c` be :math:`{{{{\mathrm{extend}}}_{N, 128}^{\mathsf{u}}}}{(j)}`.
+
+      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`{\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~j`
+.......................................................................................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+
+   a. Trap.
+
+#. Let :math:`M` be :math:`{|\mathsf{v{\scriptstyle 128}}|} / N`.
+
+#. If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`N` is Jnn, then:
+
+   a. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
+
+   #. Let :math:`k` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(k)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
+
+   #. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_1){}[{}[j] = k])}`.
+
+   #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
+:math:`\mathsf{memory{.}size}~x`
+................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Let :math:`n \cdot 64 \, {\mathrm{Ki}}` be :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`.
+
+#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` to the stack.
+
+
+:math:`\mathsf{memory{.}fill}~x`
+................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+
+   a. Trap.
+
+#. If :math:`n` is :math:`0`, then:
+
+   a. Do nothing.
+
+#. Else:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
+
+   #. Push the value :math:`{\mathit{val}}` to the stack.
+
+   #. Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x)`.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+
+   #. Push the value :math:`{\mathit{val}}` to the stack.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+
+   #. Execute the instruction :math:`(\mathsf{memory{.}fill}~x)`.
+
+
+:math:`\mathsf{memory{.}copy}~x_1~x_2`
+......................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` from the stack.
+
+#. If :math:`i_1 + n` is greater than :math:`{|z{.}\mathsf{mems}{}[x_1]{.}\mathsf{bytes}|}`, then:
+
+   a. Trap.
+
+#. If :math:`i_2 + n` is greater than :math:`{|z{.}\mathsf{mems}{}[x_2]{.}\mathsf{bytes}|}`, then:
+
+   a. Trap.
+
+#. If :math:`n` is :math:`0`, then:
+
+   a. Do nothing.
+
+#. Else:
+
+   a. If :math:`i_1` is less than or equal to :math:`i_2`, then:
+
+      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
+
+      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})}~x_2)`.
+
+      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1)`.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + 1)` to the stack.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + 1)` to the stack.
+
+   #. Else:
+
+      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + n - 1)` to the stack.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + n - 1)` to the stack.
+
+      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})}~x_2)`.
+
+      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1)`.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
+
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+
+   #. Execute the instruction :math:`(\mathsf{memory{.}copy}~x_1~x_2)`.
+
+
+:math:`\mathsf{memory{.}init}~x~y`
+..................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
+
+#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
+
+   a. Trap.
+
+#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+
+   a. Trap.
+
+#. If :math:`n` is :math:`0`, then:
+
+   a. Do nothing.
+
+#. Else if :math:`i` is less than :math:`{|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[i])` to the stack.
+
+   #. Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x)`.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
+
+   #. Execute the instruction :math:`(\mathsf{memory{.}init}~x~y)`.
+
+
+:math:`\mathsf{throw}~x`
+........................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, :math:`x` is less than :math:`{|z{.}\mathsf{tags}|}`.
+
+#. Let :math:`a` be :math:`{|z{.}\mathsf{exns}|}`.
+
+#. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{tags}{}[x]{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
+
+#. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{tags}{}[x]{.}\mathsf{type})`.
+
+#. Let :math:`({t^{n}}~\rightarrow~{\mathit{valtype}}_1)` be :math:`{\mathit{functype}}_0`.
+
+#. Assert: Due to validation, :math:`{\mathit{valtype}}_1` is :math:`\epsilon`.
+
+#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+#. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+#. Let :math:`{\mathit{exn}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{tag}~z{.}\mathsf{tags}{}[x],\; \mathsf{fields}~{{\mathit{val}}^{n}} \}\end{array}`.
+
+#. Perform :math:`z{}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {\mathit{exn}}]`.
+
+#. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+#. Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+
+:math:`\mathsf{struct{.}new}~x`
+...............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Let :math:`a` be :math:`{|z{.}\mathsf{structs}|}`.
+
+#. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
+
+#. Let :math:`(\mathsf{struct}~{\mathit{fieldtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+
+#. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^{n}}` be :math:`{\mathit{fieldtype}}_0`.
+
+#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+#. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+#. Let :math:`{\mathit{si}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~z{.}\mathsf{types}{}[x],\; \mathsf{fields}~{{{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}})^{n}} \}\end{array}`.
+
+#. Push the value :math:`(\mathsf{ref{.}struct}~a)` to the stack.
+
+#. Perform :math:`z{}[{.}\mathsf{structs} \mathrel{{=}{\oplus}} {\mathit{si}}]`.
+
+
+:math:`\mathsf{struct{.}set}~x~i`
+.................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}` from the stack.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+   a. Trap.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}struct}`, then:
+
+   a. Let :math:`(\mathsf{ref{.}struct}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
+
+   #. Let :math:`(\mathsf{struct}~{\mathit{fieldtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+
+   #. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{\mathit{fieldtype}}_0`.
+
+   #. If :math:`{|{{\mathsf{mut}^?}^\ast}|}` is :math:`{|{{\mathit{zt}}^\ast}|}` and :math:`i` is less than :math:`{|{{\mathit{zt}}^\ast}|}`, then:
+
+      1) Perform :math:`z{}[{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i] = {{\mathrm{pack}}}_{{{\mathit{zt}}^\ast}{}[i]}({\mathit{val}})]`.
+
+
+:math:`\mathsf{array{.}new\_fixed}~x~n`
+.......................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+#. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+#. Let :math:`a` be :math:`{|z{.}\mathsf{arrays}|}`.
+
+#. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`.
+
+#. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+
+#. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
+
+#. Let :math:`{\mathit{ai}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~z{.}\mathsf{types}{}[x],\; \mathsf{fields}~{{{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}})^{n}} \}\end{array}`.
+
+#. Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
+
+#. Perform :math:`z{}[{.}\mathsf{arrays} \mathrel{{=}{\oplus}} {\mathit{ai}}]`.
+
+
+:math:`\mathsf{array{.}set}~x`
+..............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
+
+   a. Trap.
+
+#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
+
+   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+   #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
+
+      1) Trap.
+
+   #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`.
+
+   #. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
+
+   #. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
+
+   #. Perform :math:`z{}[{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i] = {{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}})]`.
+
+
+:math:`\mathsf{local{.}set}~x`
+..............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}` from the stack.
+
+#. Perform :math:`z{}[{.}\mathsf{locals}{}[x] = {\mathit{val}}]`.
+
+
+:math:`\mathsf{global{.}set}~x`
+...............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}` from the stack.
+
+#. Perform :math:`z{}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = {\mathit{val}}]`.
+
+
+:math:`\mathsf{table{.}set}~x`
+..............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{ref}}` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
+
+   a. Trap.
+
+#. Perform :math:`z{}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = {\mathit{ref}}]`.
+
+
+:math:`\mathsf{table{.}grow}~x`
+...............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{ref}}` from the stack.
+
+#. Either:
+
+   a. Let :math:`{\mathit{ti}}` be :math:`{\mathrm{growtable}}(z{.}\mathsf{tables}{}[x], n, {\mathit{ref}})`.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|})` to the stack.
+
+   #. Perform :math:`z{}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}]`.
+
+#. Or:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{32}^{{-1}}}}{({-1})})` to the stack.
+
+
+:math:`\mathsf{elem{.}drop}~x`
+..............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Perform :math:`z{}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = \epsilon]`.
+
+
+:math:`{{\mathit{nt}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}}~x~{\mathit{ao}}`
+...................................................................................................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{const}~c)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{nt}}`, then:
+
+   a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
+
+      1) Trap.
+
+   #. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
+
+      1) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)`.
+
+      #) Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8] = {b^\ast}]`.
+
+#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
+
+   a. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is defined, then:
+
+      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}`.
+
+      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+
+         a) Trap.
+
+   #. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
+
+   #. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is defined, then:
+
+      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}`.
+
+      #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{N}|}, n}(c))`.
+
+      #) Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
+
+
+:math:`\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit{ao}}`
+.....................................................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+
+   a. Trap.
+
+#. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)`.
+
+#. Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8] = {b^\ast}]`.
+
+
+:math:`{\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~j`
+........................................................................................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+
+   a. Trap.
+
+#. Let :math:`M` be :math:`128 / N`.
+
+#. If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`N` is Jnn, then:
+
+   a. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
+
+   #. If :math:`j` is less than :math:`{|{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c)|}`, then:
+
+      1) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}({{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c){}[j])`.
+
+      #) Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8] = {b^\ast}]`.
+
+
+:math:`\mathsf{memory{.}grow}~x`
+................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
+
+#. Either:
+
+   a. Let :math:`{\mathit{mi}}` be :math:`{\mathrm{growmem}}(z{.}\mathsf{mems}{}[x], n)`.
+
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} / 64 \, {\mathrm{Ki}})` to the stack.
+
+   #. Perform :math:`z{}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}]`.
+
+#. Or:
+
+   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{32}^{{-1}}}}{({-1})})` to the stack.
+
+
+:math:`\mathsf{data{.}drop}~x`
+..............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Perform :math:`z{}[{.}\mathsf{datas}{}[x]{.}\mathsf{bytes} = \epsilon]`.
 
 
 :math:`{\mathrm{Ki}}`
@@ -19482,2975 +22451,6 @@ watsup 0.4 generator
 1. Return :math:`0`.
 
 
-:math:`\mathsf{unreachable}`
-............................
-
-
-1. Trap.
-
-
-:math:`\mathsf{nop}`
-....................
-
-
-1. Do nothing.
-
-
-:math:`\mathsf{drop}`
-.....................
-
-
-1. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}` from the stack.
-
-#. Do nothing.
-
-
-:math:`\mathsf{select}~{({t^\ast})^?}`
-......................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}_2` from the stack.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}_1` from the stack.
-
-#. If :math:`c` is not :math:`0`, then:
-
-   a. Push the value :math:`{\mathit{val}}_1` to the stack.
-
-#. Else:
-
-   a. Push the value :math:`{\mathit{val}}_2` to the stack.
-
-
-:math:`\mathsf{if}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast}~{{\mathit{instr}}_2^\ast}`
-.....................................................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
-
-#. If :math:`c` is not :math:`0`, then:
-
-   a. Execute the instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_1^\ast})`.
-
-#. Else:
-
-   a. Execute the instruction :math:`(\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}_2^\ast})`.
-
-
-:math:`\mathsf{label}`
-......................
-
-
-1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-#. Assert: Due to validation, a label is now on the top of the stack.
-
-#. Pop the current label from the stack.
-
-#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-
-:math:`\mathsf{br}~l`
-.....................
-
-
-1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-#. If the top of the stack is a :math:`\mathsf{label}`, then:
-
-   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-   #. Let :math:`L` be the current label.
-
-   #. Let :math:`n` be the arity of :math:`L`.
-
-   #. Let :math:`{{\mathit{instr}'}^\ast}` be the continuation of :math:`L`.
-
-   #. If :math:`l` is :math:`0`, then:
-
-      1) Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
-
-      #) Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
-
-      #) Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
-
-      #) Pop the current label from the stack.
-
-      #) Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
-
-      #) Execute the instruction :math:`{{\mathit{instr}'}^\ast}`.
-
-   #. Else:
-
-      1) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-      #) If :math:`l` is greater than :math:`0`, then:
-
-         a) Pop the current label from the stack.
-
-         #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-         #) Execute the instruction :math:`(\mathsf{br}~l - 1)`.
-
-#. Else if the top of the stack is a :math:`\mathsf{handler}`, then:
-
-   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-   #. Exit from :math:`\mathsf{handler}`.
-
-   #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{br}~l)`.
-
-
-:math:`\mathsf{br\_if}~l`
-.........................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` from the stack.
-
-#. If :math:`c` is not :math:`0`, then:
-
-   a. Execute the instruction :math:`(\mathsf{br}~l)`.
-
-#. Else:
-
-   a. Do nothing.
-
-
-:math:`\mathsf{br\_table}~{l^\ast}~{l'}`
-........................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`i` is less than :math:`{|{l^\ast}|}`, then:
-
-   a. Execute the instruction :math:`(\mathsf{br}~{l^\ast}{}[i])`.
-
-#. Else:
-
-   a. Execute the instruction :math:`(\mathsf{br}~{l'})`.
-
-
-:math:`\mathsf{br\_on\_null}~l`
-...............................
-
-
-1. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}` from the stack.
-
-#. If :math:`{\mathit{val}}` is of the case :math:`\mathsf{ref{.}null}`, then:
-
-   a. Execute the instruction :math:`(\mathsf{br}~l)`.
-
-#. Else:
-
-   a. Push the value :math:`{\mathit{val}}` to the stack.
-
-
-:math:`\mathsf{br\_on\_non\_null}~l`
-....................................
-
-
-1. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}` from the stack.
-
-#. If :math:`{\mathit{val}}` is of the case :math:`\mathsf{ref{.}null}`, then:
-
-   a. Do nothing.
-
-#. Else:
-
-   a. Push the value :math:`{\mathit{val}}` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{br}~l)`.
-
-
-:math:`\mathsf{call\_indirect}~x~y`
-...................................
-
-
-1. Execute the instruction :math:`(\mathsf{table{.}get}~x)`.
-
-#. Execute the instruction :math:`(\mathsf{ref{.}cast}~(\mathsf{ref}~(\mathsf{null}~()~{}^?)~y))`.
-
-#. Execute the instruction :math:`(\mathsf{call\_ref}~y)`.
-
-
-:math:`\mathsf{return\_call\_indirect}~x~y`
-...........................................
-
-
-1. Execute the instruction :math:`(\mathsf{table{.}get}~x)`.
-
-#. Execute the instruction :math:`(\mathsf{ref{.}cast}~(\mathsf{ref}~(\mathsf{null}~()~{}^?)~y))`.
-
-#. Execute the instruction :math:`(\mathsf{return\_call\_ref}~y)`.
-
-
-:math:`\mathsf{frame}`
-......................
-
-
-1. Let :math:`f` be the current frame.
-
-#. Let :math:`n` be the arity of :math:`f`.
-
-#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
-
-#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
-
-#. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
-
-#. Assert: Due to validation, a frame is now on the top of the stack.
-
-#. Pop the current frame from the stack.
-
-#. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
-
-
-:math:`\mathsf{return}`
-.......................
-
-
-1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-#. If the top of the stack is a :math:`\mathsf{frame}`, then:
-
-   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-   #. Let :math:`f` be the current frame.
-
-   #. Let :math:`n` be the arity of :math:`f`.
-
-   #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
-
-   #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
-
-   #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
-
-   #. Pop the current frame from the stack.
-
-   #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
-
-#. Else if the top of the stack is a :math:`\mathsf{label}`, then:
-
-   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-   #. Pop the current label from the stack.
-
-   #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-   #. Execute the instruction :math:`\mathsf{return}`.
-
-#. Else:
-
-   a. If the top of the stack is a :math:`\mathsf{handler}`, then:
-
-      1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-      #) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-      #) Exit from :math:`\mathsf{handler}`.
-
-      #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-      #) Execute the instruction :math:`\mathsf{return}`.
-
-
-:math:`\mathsf{handler}`
-........................
-
-
-1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-#. Assert: Due to validation, YetE: a handler is now on the top of the stack.
-
-#. Exit from :math:`\mathsf{handler}`.
-
-#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-
-:math:`{\mathit{nt}} {.} {\mathit{unop}}`
-.........................................
-
-
-1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
-
-#. If :math:`{|{{\mathit{unop}}}{{}_{{\mathit{nt}}}(c_1)}|}` is less than or equal to :math:`0`, then:
-
-   a. Trap.
-
-#. Let :math:`c` be an element of :math:`{{\mathit{unop}}}{{}_{{\mathit{nt}}}(c_1)}`.
-
-#. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{\mathit{nt}} {.} {\mathit{binop}}`
-..........................................
-
-
-1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
-
-#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. If :math:`{|{{\mathit{binop}}}{{}_{{\mathit{nt}}}(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
-
-   a. Trap.
-
-#. Let :math:`c` be an element of :math:`{{\mathit{binop}}}{{}_{{\mathit{nt}}}(c_1, c_2)}`.
-
-#. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{\mathit{nt}} {.} {\mathit{testop}}`
-...........................................
-
-
-1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
-
-#. Let :math:`c` be :math:`{{\mathit{testop}}}{{}_{{\mathit{nt}}}(c_1)}`.
-
-#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{\mathit{nt}} {.} {\mathit{relop}}`
-..........................................
-
-
-1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}`.
-
-#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Let :math:`c` be :math:`{{\mathit{relop}}}{{}_{{\mathit{nt}}}(c_1, c_2)}`.
-
-#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{\mathit{nt}}_2 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_1}`
-............................................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathit{nt}}_1`.
-
-#. If :math:`{|{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}(c_1)}|}` is less than or equal to :math:`0`, then:
-
-   a. Trap.
-
-#. Let :math:`c` be an element of :math:`{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}(c_1)}`.
-
-#. Push the value :math:`({\mathit{nt}}_2{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`\mathsf{ref{.}i{\scriptstyle 31}}`
-.........................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. Push the value :math:`(\mathsf{ref{.}i{\scriptstyle 31}}~{{\mathrm{wrap}}}_{32, 31}(i))` to the stack.
-
-
-:math:`\mathsf{ref{.}is\_null}`
-...............................
-
-
-1. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{ref}}` from the stack.
-
-#. If :math:`{\mathit{ref}}` is of the case :math:`\mathsf{ref{.}null}`, then:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
-
-#. Else:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
-
-
-:math:`\mathsf{ref{.}as\_non\_null}`
-....................................
-
-
-1. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{ref}}` from the stack.
-
-#. If :math:`{\mathit{ref}}` is of the case :math:`\mathsf{ref{.}null}`, then:
-
-   a. Trap.
-
-#. Push the value :math:`{\mathit{ref}}` to the stack.
-
-
-:math:`\mathsf{ref{.}eq}`
-.........................
-
-
-1. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{ref}}_2` from the stack.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{ref}}_1` from the stack.
-
-#. If :math:`{\mathit{ref}}_1` is of the case :math:`\mathsf{ref{.}null}`, then:
-
-   a. If :math:`{\mathit{ref}}_2` is of the case :math:`\mathsf{ref{.}null}`, then:
-
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
-
-   #. Else if :math:`{\mathit{ref}}_1` is :math:`{\mathit{ref}}_2`, then:
-
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
-
-   #. Else:
-
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
-
-#. Else if :math:`{\mathit{ref}}_1` is :math:`{\mathit{ref}}_2`, then:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
-
-#. Else:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
-
-
-:math:`{\mathsf{i{\scriptstyle 31}{.}get}}{\mathsf{\_}}{{\mathit{sx}}}`
-.......................................................................
-
-
-1. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
-
-   a. Trap.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}i{\scriptstyle 31}}`, then:
-
-   a. Let :math:`(\mathsf{ref{.}i{\scriptstyle 31}}~i)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{31, 32}^{{\mathit{sx}}}}}{(i)})` to the stack.
-
-
-:math:`\mathsf{array{.}new}~x`
-..............................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}` from the stack.
-
-#. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
-
-#. Execute the instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)`.
-
-
-:math:`\mathsf{extern{.}convert\_any}`
-......................................
-
-
-1. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
-
-   a. Push the value :math:`(\mathsf{ref{.}null}~\mathsf{extern})` to the stack.
-
-#. If the type of :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is addrref, then:
-
-   a. Let :math:`{\mathit{addrref}}` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. Push the value :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` to the stack.
-
-
-:math:`\mathsf{any{.}convert\_extern}`
-......................................
-
-
-1. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
-
-   a. Push the value :math:`(\mathsf{ref{.}null}~\mathsf{any})` to the stack.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}extern}`, then:
-
-   a. Let :math:`(\mathsf{ref{.}extern}~{\mathit{addrref}})` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. Push the value :math:`{\mathit{addrref}}` to the stack.
-
-
-:math:`\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvunop}}`
-..........................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{|{{\mathit{vvunop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1)}|}` is greater than :math:`0`.
-
-#. Let :math:`c` be an element of :math:`{{\mathit{vvunop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1)}`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvbinop}}`
-...........................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{|{{\mathit{vvbinop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1, c_2)}|}` is greater than :math:`0`.
-
-#. Let :math:`c` be an element of :math:`{{\mathit{vvbinop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1, c_2)}`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvternop}}`
-............................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_3)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{|{{\mathit{vvternop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1, c_2, c_3)}|}` is greater than :math:`0`.
-
-#. Let :math:`c` be an element of :math:`{{\mathit{vvternop}}}{{}_{\mathsf{v{\scriptstyle 128}}}(c_1, c_2, c_3)}`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`\mathsf{v{\scriptstyle 128}} {.} \mathsf{any\_true}`
-...........................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Let :math:`c` be :math:`{{\mathrm{ine}}}_{{|\mathsf{v{\scriptstyle 128}}|}}(c_1, 0)`.
-
-#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{\mathit{sh}} {.} {\mathit{vunop}}`
-..........................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. If :math:`{|{{\mathit{vunop}}}{{}_{{\mathit{sh}}}(c_1)}|}` is less than or equal to :math:`0`, then:
-
-   a. Trap.
-
-#. Let :math:`c` be an element of :math:`{{\mathit{vunop}}}{{}_{{\mathit{sh}}}(c_1)}`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{\mathit{sh}} {.} {\mathit{vbinop}}`
-...........................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. If :math:`{|{{\mathit{vbinop}}}{{}_{{\mathit{sh}}}(c_1, c_2)}|}` is less than or equal to :math:`0`, then:
-
-   a. Trap.
-
-#. Let :math:`c` be an element of :math:`{{\mathit{vbinop}}}{{}_{{\mathit{sh}}}(c_1, c_2)}`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{{\mathsf{i}}{N}}{\mathsf{x}}{M} {.} \mathsf{all\_true}`
-...............................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
-
-#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c)`.
-
-#. If for all :math:`{({\mathit{ci}}_1)^\ast}`, :math:`{\mathit{ci}}_1` is not :math:`0`, then:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
-
-#. Else:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
-
-
-:math:`{\mathit{sh}} {.} {\mathit{vrelop}}`
-...........................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Let :math:`c` be :math:`{{\mathit{vrelop}}}{{}_{{\mathit{sh}}}(c_1, c_2)}`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{{\mathsf{i}}{N}}{\mathsf{x}}{M} {.} {\mathit{vshiftop}}`
-................................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_1)`.
-
-#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({{{\mathit{vshiftop}}}{{}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}}{({c'}, n)}^\ast})}`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{{\mathsf{i}}{N}}{\mathsf{x}}{M}{.}\mathsf{bitmask}`
-...........................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
-
-#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c)`.
-
-#. Let :math:`{\mathit{ci}}` be the result for which :math:`{{\mathrm{bits}}}_{{\mathsf{i}}{32}}({\mathit{ci}})` :math:`=` :math:`{{{{{\mathrm{ilt}}}_{{|{\mathsf{i}}{N}|}}^{\mathsf{s}}}}{({\mathit{ci}}_1, 0)}^\ast}`.
-
-#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{\mathit{ci}})` to the stack.
-
-
-:math:`{{\mathsf{i}}{N}}{\mathsf{x}}{M}{.}\mathsf{swizzle}`
-...........................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_1)~{0^{256 - M}}`.
-
-#. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_2)`.
-
-#. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`{{\mathit{ci}}^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}`.
-
-#. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`k` is less than :math:`{|{{\mathit{ci}}^\ast}|}`.
-
-#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({{{c'}^\ast}{}[{{\mathit{ci}}^\ast}{}[k]]^{k<M}})}`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{{\mathsf{i}}{N}}{\mathsf{x}}{M}{.}\mathsf{shuffle}~{i^\ast}`
-....................................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`k` is less than :math:`{|{i^\ast}|}`.
-
-#. Let :math:`{{c'}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_1)~{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_2)`.
-
-#. Assert: Due to validation, for all :math:`{(k)^{k<M}}`, :math:`{i^\ast}{}[k]` is less than :math:`{|{{c'}^\ast}|}`.
-
-#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({{{c'}^\ast}{}[{i^\ast}{}[k]]^{k<M}})}`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{{\mathsf{i}}{N}}{\mathsf{x}}{M}{.}\mathsf{splat}`
-.........................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathrm{unpack}}({\mathsf{i}}{N})`.
-
-#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({{{\mathrm{pack}}}_{{\mathsf{i}}{N}}(c_1)^{M}})}`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{{{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}}{\mathsf{x}}{M}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}}~i`
-.........................................................................................................................................................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. If :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is not defined and the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is numtype, then:
-
-   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{({{\mathit{nt}}}{\mathsf{x}}{M})}(c_1)|}`, then:
-
-      1) Let :math:`c_2` be :math:`{{\mathrm{lanes}}}_{({{\mathit{nt}}}{\mathsf{x}}{M})}(c_1){}[i]`.
-
-      #) Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_2)` to the stack.
-
-#. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is packtype, then:
-
-   a. Let :math:`{\mathit{pt}}` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}` is defined, then:
-
-      1) Let :math:`{\mathit{sx}}` be :math:`{{\mathit{sx}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^?}`.
-
-      #) If :math:`i` is less than :math:`{|{{\mathrm{lanes}}}_{({{\mathit{pt}}}{\mathsf{x}}{M})}(c_1)|}`, then:
-
-         a) Let :math:`c_2` be :math:`{{{{\mathrm{extend}}}_{{|{\mathit{pt}}|}, 32}^{{\mathit{sx}}}}}{({{\mathrm{lanes}}}_{({{\mathit{pt}}}{\mathsf{x}}{M})}(c_1){}[i])}`.
-
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c_2)` to the stack.
-
-
-:math:`{{\mathsf{i}}{N}}{\mathsf{x}}{M}{.}\mathsf{replace\_lane}~i`
-...................................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_0` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathit{numtype}}_0` is :math:`{\mathrm{unpack}}({\mathsf{i}}{N})`.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_1){}[{}[i] = {{\mathrm{pack}}}_{{\mathsf{i}}{N}}(c_2)])}`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{\mathit{sh}}_2 {.} {{\mathit{vextunop}}}{\mathsf{\_}}{{\mathit{sh}}_1}`
-...............................................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Let :math:`c` be :math:`{{\mathit{vextunop}}}{{}_{{\mathit{sh}}_1, {\mathit{sh}}_2}(c_1)}`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{\mathit{sh}}_2 {.} {{\mathit{vextbinop}}}{\mathsf{\_}}{{\mathit{sh}}_1}`
-................................................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Let :math:`c` be :math:`{{\mathit{vextbinop}}}{{}_{{\mathit{sh}}_1, {\mathit{sh}}_2}(c_1, c_2)}`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}{.}\mathsf{narrow}}{\mathsf{\_}}{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}{\mathsf{\_}}{{\mathit{sx}}}`
-...................................................................................................................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_1)`.
-
-#. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_2)`.
-
-#. Let :math:`{{\mathit{cj}}_1^\ast}` be :math:`{{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{N}}_1|}, {|{{\mathsf{i}}{N}}_2|}}^{{\mathit{sx}}}}}{{\mathit{ci}}_1}^\ast}`.
-
-#. Let :math:`{{\mathit{cj}}_2^\ast}` be :math:`{{{{{\mathrm{narrow}}}_{{|{{\mathsf{i}}{N}}_1|}, {|{{\mathsf{i}}{N}}_2|}}^{{\mathit{sx}}}}}{{\mathit{ci}}_2}^\ast}`.
-
-#. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{\mathit{cj}}_1^\ast}~{{\mathit{cj}}_2^\ast})}`.
-
-#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}}{\mathsf{x}}{n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}} {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 13}}}^?}}{\mathsf{\_}}{{{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 6}}}}{\mathsf{x}}{n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}}}{\mathsf{\_}}{{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}}`
-............................................................................................................................................................................................................................................................................................................................................................................................................................................
-
-
-1. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}` is not defined and :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 13}}}^?}` is not defined, then:
-
-   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 6}}}`.
-
-   #. Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Let :math:`M` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. If :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is :math:`M`, then:
-
-      1) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M})}(c_1)`.
-
-      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M})}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
-
-      #) If :math:`{|{{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M})}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}|}` is greater than :math:`0`, then:
-
-         a) Let :math:`c` be an element of :math:`{{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M})}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}`.
-
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-#. If :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 13}}}^?}` is not defined, then:
-
-   a. Let :math:`{{\mathsf{i}}{N}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 6}}}`.
-
-   #. Let :math:`{{\mathsf{i}}{N}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}`.
-
-   #. Let :math:`M_1` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`M_2` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}` is defined, then:
-
-      1) Let :math:`{\mathit{half}}` be :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}`.
-
-      #) Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1})}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
-
-      #) Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{({{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}), ({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
-
-      #) If :math:`{|{{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}|}` is greater than :math:`0`, then:
-
-         a) Let :math:`c` be an element of :math:`{{{{{\mathrm{lanes}}}_{({{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}`.
-
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-#. If :math:`{{\mathit{half}}_{\mathit{u{\kern-0.1em\scriptstyle 4}}}^?}` is not defined, then:
-
-   a. Let :math:`M_1` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. Let :math:`M_2` be :math:`n_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 6}}}` is numtype, then:
-
-      1) Let :math:`{\mathit{nt}}_1` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 6}}}`.
-
-      #) If the type of :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}` is numtype, then:
-
-         a) Let :math:`{\mathit{nt}}_2` be :math:`{\mathit{lanetype}}_{\mathit{u{\kern-0.1em\scriptstyle 5}}}`.
-
-         #) If :math:`{{\mathit{zero}}_{\mathit{u{\kern-0.1em\scriptstyle 13}}}^?}` is defined, then:
-
-            1. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{({{\mathit{nt}}_1}{\mathsf{x}}{M_1})}(c_1)`.
-
-            #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`\Large\times~{{{\mathrm{vcvtop}}}_{({{\mathit{nt}}_1}{\mathsf{x}}{M_1}), ({{\mathit{nt}}_2}{\mathsf{x}}{M_2})}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}~{0^{M_1}}`.
-
-            #. If :math:`{|{{{{{\mathrm{lanes}}}_{({{\mathit{nt}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}|}` is greater than :math:`0`, then:
-
-               a. Let :math:`c` be an element of :math:`{{{{{\mathrm{lanes}}}_{({{\mathit{nt}}_2}{\mathsf{x}}{M_2})}^{{-1}}}}{({{\mathit{cj}}^\ast})}^\ast}`.
-
-               #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`\mathsf{local{.}tee}~x`
-..............................
-
-
-1. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}` from the stack.
-
-#. Push the value :math:`{\mathit{val}}` to the stack.
-
-#. Push the value :math:`{\mathit{val}}` to the stack.
-
-#. Execute the instruction :math:`(\mathsf{local{.}set}~x)`.
-
-
-:math:`\mathsf{block}~{\mathit{bt}}~{{\mathit{instr}}^\ast}`
-............................................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Let :math:`({t_1^{m}}~\rightarrow~{t_2^{n}})` be :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}})`.
-
-#. Assert: Due to validation, there are at least :math:`m` values on the top of the stack.
-
-#. Pop the values :math:`{{\mathit{val}}^{m}}` from the stack.
-
-#. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
-
-#. Enter :math:`{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}` with label :math:`L`.
-
-
-:math:`\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast}`
-...........................................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Let :math:`({t_1^{m}}~\rightarrow~{t_2^{n}})` be :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}})`.
-
-#. Assert: Due to validation, there are at least :math:`m` values on the top of the stack.
-
-#. Pop the values :math:`{{\mathit{val}}^{m}}` from the stack.
-
-#. Let :math:`L` be the label whose arity is :math:`m` and whose continuation is :math:`(\mathsf{loop}~{\mathit{bt}}~{{\mathit{instr}}^\ast})`.
-
-#. Enter :math:`{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}` with label :math:`L`.
-
-
-:math:`\mathsf{br\_on\_cast}~l~{\mathit{rt}}_1~{\mathit{rt}}_2`
-...............................................................
-
-
-1. Let :math:`f` be the current frame.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{ref}}` from the stack.
-
-#. Let :math:`{\mathit{rt}}` be :math:`{\mathrm{Ref}}_{\mathit{type}}({\mathit{ref}})`.
-
-#. Push the value :math:`{\mathit{ref}}` to the stack.
-
-#. If :math:`{\mathit{rt}}` does not match :math:`{{\mathrm{inst}}}_{f{.}\mathsf{module}}({\mathit{rt}}_2)`, then:
-
-   a. Do nothing.
-
-#. Else:
-
-   a. Execute the instruction :math:`(\mathsf{br}~l)`.
-
-
-:math:`\mathsf{br\_on\_cast\_fail}~l~{\mathit{rt}}_1~{\mathit{rt}}_2`
-.....................................................................
-
-
-1. Let :math:`f` be the current frame.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{ref}}` from the stack.
-
-#. Let :math:`{\mathit{rt}}` be :math:`{\mathrm{Ref}}_{\mathit{type}}({\mathit{ref}})`.
-
-#. Push the value :math:`{\mathit{ref}}` to the stack.
-
-#. If :math:`{\mathit{rt}}` matches :math:`{{\mathrm{inst}}}_{f{.}\mathsf{module}}({\mathit{rt}}_2)`, then:
-
-   a. Do nothing.
-
-#. Else:
-
-   a. Execute the instruction :math:`(\mathsf{br}~l)`.
-
-
-:math:`\mathsf{call}~x`
-.......................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, :math:`x` is less than :math:`{|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
-
-#. Let :math:`a` be :math:`z{.}\mathsf{module}{.}\mathsf{funcs}{}[x]`.
-
-#. Assert: Due to validation, :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`.
-
-#. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
-
-#. Execute the instruction :math:`(\mathsf{call\_ref}~z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})`.
-
-
-:math:`\mathsf{call\_ref}~y`
-............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
-
-   a. Trap.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}func}`, then:
-
-   a. Let :math:`(\mathsf{ref{.}func}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`, then:
-
-      1) Let :math:`{\mathit{fi}}` be :math:`z{.}\mathsf{funcs}{}[a]`.
-
-      #) Assert: Due to validation, :math:`{\mathit{fi}}{.}\mathsf{code}` is of the case :math:`\mathsf{func}`.
-
-      #) Let :math:`(\mathsf{func}~x~{\mathit{local}}_0~{{\mathit{instr}}^\ast})` be :math:`{\mathit{fi}}{.}\mathsf{code}`.
-
-      #) Assert: Due to validation, :math:`{\mathit{local}}_0` is of the case :math:`\mathsf{local}`.
-
-      #) Let :math:`{(\mathsf{local}~t)^\ast}` be :math:`{\mathit{local}}_0`.
-
-      #) Assert: Due to validation, :math:`{\mathrm{expand}}({\mathit{fi}}{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
-
-      #) Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}({\mathit{fi}}{.}\mathsf{type})`.
-
-      #) Let :math:`({t_1^{n}}~\rightarrow~{t_2^{m}})` be :math:`{\mathit{functype}}_0`.
-
-      #) Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
-
-      #) Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
-
-      #) Let :math:`f` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{locals}~{{\mathit{val}}^{n}}~{{{\mathrm{default}}}_{t}^\ast},\; \mathsf{module}~{\mathit{fi}}{.}\mathsf{module} \}\end{array}`.
-
-      #) Let :math:`F` be the activation of :math:`f` with arity :math:`m`.
-
-      #) Push :math:`F` to the stack.
-
-      #) Let :math:`L` be the label whose arity is :math:`m` and whose continuation is :math:`\epsilon`.
-
-      #) Enter :math:`{{\mathit{instr}}^\ast}` with label :math:`L`.
-
-
-:math:`\mathsf{return\_call}~x`
-...............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, :math:`x` is less than :math:`{|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
-
-#. Let :math:`a` be :math:`z{.}\mathsf{module}{.}\mathsf{funcs}{}[x]`.
-
-#. Assert: Due to validation, :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`.
-
-#. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
-
-#. Execute the instruction :math:`(\mathsf{return\_call\_ref}~z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})`.
-
-
-:math:`\mathsf{return\_call\_ref}~y`
-....................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-#. If the top of the stack is a :math:`\mathsf{label}`, then:
-
-   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-   #. Pop the current label from the stack.
-
-   #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{return\_call\_ref}~y)`.
-
-#. Else if the top of the stack is a :math:`\mathsf{handler}`, then:
-
-   a. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-   #. Exit from :math:`\mathsf{handler}`.
-
-   #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{return\_call\_ref}~y)`.
-
-#. Else:
-
-   a. If the top of the stack is a :math:`\mathsf{frame}`, then:
-
-      1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-      #) Assert: Due to validation, a value is on the top of the stack.
-
-      #) Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
-
-      #) Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-      #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
-
-         a) Pop the current frame from the stack.
-
-         #) Trap.
-
-      #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}func}`, then:
-
-         a) Let :math:`(\mathsf{ref{.}func}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-         #) If :math:`a` is less than :math:`{|z{.}\mathsf{funcs}|}`, then:
-
-            1. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
-
-            #. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})`.
-
-            #. Let :math:`({t_1^{n}}~\rightarrow~{t_2^{m}})` be :math:`{\mathit{functype}}_0`.
-
-            #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
-
-            #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
-
-            #. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
-
-            #. Pop the current frame from the stack.
-
-            #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
-
-            #. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
-
-            #. Execute the instruction :math:`(\mathsf{call\_ref}~y)`.
-
-
-:math:`\mathsf{throw\_ref}`
-...........................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
-
-   a. Trap.
-
-#. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-#. If :math:`{{\mathit{val}}^\ast}` is not :math:`\epsilon`, then:
-
-   a. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
-
-      1) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-      #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-      #) Execute the instruction :math:`\mathsf{throw\_ref}`.
-
-#. Else:
-
-   a. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-   #. If the top of the stack is a :math:`\mathsf{label}`, then:
-
-      1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-      #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
-
-         a) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-         #) Pop the current label from the stack.
-
-         #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-         #) Execute the instruction :math:`\mathsf{throw\_ref}`.
-
-   #. Else if the top of the stack is a :math:`\mathsf{frame}`, then:
-
-      1) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-      #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
-
-         a) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-         #) Pop the current frame from the stack.
-
-         #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-         #) Execute the instruction :math:`\mathsf{throw\_ref}`.
-
-   #. Else:
-
-      1) If not the top of the stack is a :math:`\mathsf{handler}`, then:
-
-         a) Throw the exception :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` as a result.
-
-      #) Else:
-
-         a) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-         #) Let :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}~\})` be the current context.
-
-         #) If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
-
-            1. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-            #. If :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}` is :math:`\epsilon`, then:
-
-               a. Exit from :math:`\mathsf{handler}`.
-
-               #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-               #. Execute the instruction :math:`\mathsf{throw\_ref}`.
-
-            #. Else if :math:`a` is greater than or equal to :math:`{|z{.}\mathsf{exns}|}`, then:
-
-               a. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
-
-               #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all}`, then:
-
-                  1) Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
-
-                  #) Exit from :math:`\mathsf{handler}`.
-
-                  #) Execute the instruction :math:`(\mathsf{br}~l)`.
-
-               #. Else if :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all\_ref}`, then:
-
-                  1) Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
-
-                  #) Exit from :math:`\mathsf{handler}`.
-
-                  #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                  #) Execute the instruction :math:`(\mathsf{br}~l)`.
-
-               #. Else:
-
-                  1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
-
-                  #) Exit from :math:`\mathsf{handler}`.
-
-                  #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
-
-                  #) Push the handler :math:`H` to the stack.
-
-                  #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                  #) Execute the instruction :math:`\mathsf{throw\_ref}`.
-
-            #. Else:
-
-               a. Let :math:`{{\mathit{val}}^\ast}` be :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{fields}`.
-
-               #. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
-
-               #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch}`, then:
-
-                  1) Let :math:`(\mathsf{catch}~x~l)` be :math:`{\mathit{catch}}_0`.
-
-                  #) If :math:`x` is less than :math:`{|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag}` is :math:`z{.}\mathsf{tags}{}[x]`, then:
-
-                     a) Exit from :math:`\mathsf{handler}`.
-
-                     #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-                     #) Execute the instruction :math:`(\mathsf{br}~l)`.
-
-                  #) Else:
-
-                     a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
-
-                     #) Exit from :math:`\mathsf{handler}`.
-
-                     #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
-
-                     #) Push the handler :math:`H` to the stack.
-
-                     #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                     #) Execute the instruction :math:`\mathsf{throw\_ref}`.
-
-               #. Else if :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_ref}`, then:
-
-                  1) Let :math:`(\mathsf{catch\_ref}~x~l)` be :math:`{\mathit{catch}}_0`.
-
-                  #) If :math:`x` is less than :math:`{|z{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag}` is :math:`z{.}\mathsf{tags}{}[x]`, then:
-
-                     a) Exit from :math:`\mathsf{handler}`.
-
-                     #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-                     #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                     #) Execute the instruction :math:`(\mathsf{br}~l)`.
-
-                  #) Else:
-
-                     a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
-
-                     #) Exit from :math:`\mathsf{handler}`.
-
-                     #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
-
-                     #) Push the handler :math:`H` to the stack.
-
-                     #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                     #) Execute the instruction :math:`\mathsf{throw\_ref}`.
-
-               #. Else:
-
-                  1) If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all}`, then:
-
-                     a) Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
-
-                     #) Exit from :math:`\mathsf{handler}`.
-
-                     #) Execute the instruction :math:`(\mathsf{br}~l)`.
-
-                  #) Else if :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all\_ref}`, then:
-
-                     a) Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
-
-                     #) Exit from :math:`\mathsf{handler}`.
-
-                     #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                     #) Execute the instruction :math:`(\mathsf{br}~l)`.
-
-                  #) Else:
-
-                     a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
-
-                     #) Exit from :math:`\mathsf{handler}`.
-
-                     #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
-
-                     #) Push the handler :math:`H` to the stack.
-
-                     #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                     #) Execute the instruction :math:`\mathsf{throw\_ref}`.
-
-
-:math:`\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast}`
-.........................................................................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Let :math:`({t_1^{m}}~\rightarrow~{t_2^{n}})` be :math:`{{\mathrm{blocktype}}}_{z}({\mathit{bt}})`.
-
-#. Assert: Due to validation, there are at least :math:`m` values on the top of the stack.
-
-#. Pop the values :math:`{{\mathit{val}}^{m}}` from the stack.
-
-#. Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}}^\ast}~\})`.
-
-#. Push the handler :math:`H` to the stack.
-
-#. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is :math:`\epsilon`.
-
-#. Enter :math:`{{\mathit{val}}^{m}}~{{\mathit{instr}}^\ast}` with label :math:`L`.
-
-
-:math:`\mathsf{ref{.}null}~x`
-.............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Push the value :math:`(\mathsf{ref{.}null}~z{.}\mathsf{types}{}[x])` to the stack.
-
-
-:math:`\mathsf{ref{.}func}~x`
-.............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, :math:`x` is less than :math:`{|z{.}\mathsf{module}{.}\mathsf{funcs}|}`.
-
-#. Push the value :math:`(\mathsf{ref{.}func}~z{.}\mathsf{module}{.}\mathsf{funcs}{}[x])` to the stack.
-
-
-:math:`\mathsf{ref{.}test}~{\mathit{rt}}`
-.........................................
-
-
-1. Let :math:`f` be the current frame.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{ref}}` from the stack.
-
-#. Let :math:`{\mathit{rt}'}` be :math:`{\mathrm{Ref}}_{\mathit{type}}({\mathit{ref}})`.
-
-#. If :math:`{\mathit{rt}'}` matches :math:`{{\mathrm{inst}}}_{f{.}\mathsf{module}}({\mathit{rt}})`, then:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
-
-#. Else:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)` to the stack.
-
-
-:math:`\mathsf{ref{.}cast}~{\mathit{rt}}`
-.........................................
-
-
-1. Let :math:`f` be the current frame.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{ref}}` from the stack.
-
-#. Let :math:`{\mathit{rt}'}` be :math:`{\mathrm{Ref}}_{\mathit{type}}({\mathit{ref}})`.
-
-#. If :math:`{\mathit{rt}'}` does not match :math:`{{\mathrm{inst}}}_{f{.}\mathsf{module}}({\mathit{rt}})`, then:
-
-   a. Trap.
-
-#. Push the value :math:`{\mathit{ref}}` to the stack.
-
-
-:math:`\mathsf{struct{.}new\_default}~x`
-........................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
-
-#. Let :math:`(\mathsf{struct}~{\mathit{fieldtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
-
-#. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{\mathit{fieldtype}}_0`.
-
-#. Assert: Due to validation, :math:`{|{{\mathsf{mut}^?}^\ast}|}` is :math:`{|{{\mathit{zt}}^\ast}|}`.
-
-#. Assert: Due to validation, for all :math:`{({\mathit{zt}})^\ast}`, :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is defined.
-
-#. Let :math:`{{\mathit{val}}^\ast}` be :math:`{{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}^\ast}`.
-
-#. Assert: Due to validation, :math:`{|{{\mathit{val}}^\ast}|}` is :math:`{|{{\mathit{zt}}^\ast}|}`.
-
-#. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-#. Execute the instruction :math:`(\mathsf{struct{.}new}~x)`.
-
-
-:math:`{\mathsf{struct{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x~i`
-...................................................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
-
-   a. Trap.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}struct}`, then:
-
-   a. Let :math:`(\mathsf{ref{.}struct}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If :math:`i` is less than :math:`{|z{.}\mathsf{structs}{}[a]{.}\mathsf{fields}|}` and :math:`a` is less than :math:`{|z{.}\mathsf{structs}|}`, then:
-
-      1) Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
-
-      #) Let :math:`(\mathsf{struct}~{\mathit{fieldtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
-
-      #) Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{\mathit{fieldtype}}_0`.
-
-      #) If :math:`{|{{\mathsf{mut}^?}^\ast}|}` is :math:`{|{{\mathit{zt}}^\ast}|}` and :math:`i` is less than :math:`{|{{\mathit{zt}}^\ast}|}`, then:
-
-         a) Push the value :math:`{{{{\mathrm{unpack}}}_{{{\mathit{zt}}^\ast}{}[i]}^{{{\mathit{sx}}^?}}}}{(z{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i])}` to the stack.
-
-
-:math:`\mathsf{array{.}new\_default}~x`
-.......................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`.
-
-#. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
-
-#. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
-
-#. Assert: Due to validation, :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}` is defined.
-
-#. Let :math:`{\mathit{val}}` be :math:`{{\mathrm{default}}}_{{\mathrm{unpack}}({\mathit{zt}})}`.
-
-#. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
-
-#. Execute the instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)`.
-
-
-:math:`\mathsf{array{.}new\_elem}~x~y`
-......................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
-
-   a. Trap.
-
-#. Assert: Due to validation, :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[i : n]|}` is :math:`n`.
-
-#. Let :math:`{{\mathit{ref}}^\ast}` be :math:`z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[i : n]`.
-
-#. Push the values :math:`{{\mathit{ref}}^{n}}` to the stack.
-
-#. Execute the instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)`.
-
-
-:math:`\mathsf{array{.}new\_data}~x~y`
-......................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`.
-
-#. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
-
-#. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
-
-#. If :math:`i + n \cdot {|{\mathit{zt}}|} / 8` is greater than :math:`{|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
-
-   a. Trap.
-
-#. Assert: Due to validation, the length of :math:`({\mathit{fresh}}_1)` for which :math:`{\bigoplus}\, {\mathit{fresh}}_1` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[i : n \cdot {|{\mathit{zt}}|} / 8]` is :math:`n`.
-
-#. Let :math:`{{\mathit{byte}}^\ast}` be the result for which :math:`{\bigoplus}\, {{\mathit{byte}}^\ast}` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[i : n \cdot {|{\mathit{zt}}|} / 8]`.
-
-#. Let :math:`{c^\ast}` be the result for which for all :math:`{({\mathit{byte}})^\ast}`, :math:`{{\mathrm{bytes}}}_{{\mathit{zt}}}({c^\ast})` is :math:`{\mathit{byte}}`.
-
-#. Push the values :math:`{{\mathrm{unpack}}({\mathit{zt}}){.}\mathsf{const}~{{\mathrm{unpack}}}_{{\mathit{zt}}}(c)^{n}}` to the stack.
-
-#. Execute the instruction :math:`(\mathsf{array{.}new\_fixed}~x~n)`.
-
-
-:math:`{\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x`
-................................................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
-
-   a. Trap.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
-
-   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
-
-      1) Trap.
-
-   #. If :math:`i` is less than :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}` and :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}`, then:
-
-      1) Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`.
-
-      #) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
-
-      #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
-
-      #) Push the value :math:`{{{{\mathrm{unpack}}}_{{\mathit{zt}}}^{{{\mathit{sx}}^?}}}}{(z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i])}` to the stack.
-
-
-:math:`\mathsf{array{.}len}`
-............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
-
-   a. Trap.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
-
-   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}`, then:
-
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|})` to the stack.
-
-
-:math:`\mathsf{array{.}fill}~x`
-...............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
-
-   a. Trap.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
-
-   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If :math:`a` is greater than or equal to :math:`{|z{.}\mathsf{arrays}|}`, then:
-
-      1) Do nothing.
-
-   #. Else if :math:`i + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
-
-      1) Trap.
-
-   #. If :math:`n` is :math:`0`, then:
-
-      1) Do nothing.
-
-   #. Else:
-
-      1) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
-
-      #) Push the value :math:`{\mathit{val}}` to the stack.
-
-      #) Execute the instruction :math:`(\mathsf{array{.}set}~x)`.
-
-      #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
-
-      #) Push the value :math:`{\mathit{val}}` to the stack.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
-
-      #) Execute the instruction :math:`(\mathsf{array{.}fill}~x)`.
-
-
-:math:`\mathsf{array{.}copy}~x_1~x_2`
-.....................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` from the stack.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` from the stack.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` from the stack.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{ref{.}null}` and the type of :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is ref, then:
-
-   a. Trap.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}` and the type of :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is ref, then:
-
-   a. Trap.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
-
-   a. Let :math:`(\mathsf{ref{.}array}~a_1)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
-
-      1) If :math:`a_1` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i_1 + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a_1]{.}\mathsf{fields}|}`, then:
-
-         a) Trap.
-
-      #) Let :math:`(\mathsf{ref{.}array}~a_2)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-      #) If :math:`a_2` is greater than or equal to :math:`{|z{.}\mathsf{arrays}|}`, then:
-
-         a) Do nothing.
-
-      #) Else if :math:`i_2 + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a_2]{.}\mathsf{fields}|}`, then:
-
-         a) Trap.
-
-      #) If :math:`n` is :math:`0`, then:
-
-         a) Do nothing.
-
-      #) Else if :math:`i_1` is less than or equal to :math:`i_2` and :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is of the case :math:`\mathsf{array}`, then:
-
-         a) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
-
-         #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
-
-         #) Let :math:`{{\mathit{sx}}^?}` be :math:`{\mathrm{sx}}({\mathit{zt}}_2)`.
-
-         #) Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
-
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
-
-         #) Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
-
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
-
-         #) Execute the instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x_2)`.
-
-         #) Execute the instruction :math:`(\mathsf{array{.}set}~x_1)`.
-
-         #) Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
-
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + 1)` to the stack.
-
-         #) Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
-
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + 1)` to the stack.
-
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
-
-         #) Execute the instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)`.
-
-      #) Else:
-
-         a) If :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])` is of the case :math:`\mathsf{array}`, then:
-
-            1. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x_2])`.
-
-            #. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}}_2)` be :math:`{\mathit{arraytype}}_0`.
-
-            #. Let :math:`{{\mathit{sx}}^?}` be :math:`{\mathrm{sx}}({\mathit{zt}}_2)`.
-
-            #. Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
-
-            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + n - 1)` to the stack.
-
-            #. Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
-
-            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + n - 1)` to the stack.
-
-            #. Execute the instruction :math:`({\mathsf{array{.}get}}{\mathsf{\_}}{{{\mathit{sx}}^?}}~x_2)`.
-
-            #. Execute the instruction :math:`(\mathsf{array{.}set}~x_1)`.
-
-            #. Push the value :math:`(\mathsf{ref{.}array}~a_1)` to the stack.
-
-            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
-
-            #. Push the value :math:`(\mathsf{ref{.}array}~a_2)` to the stack.
-
-            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
-
-            #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
-
-            #. Execute the instruction :math:`(\mathsf{array{.}copy}~x_1~x_2)`.
-
-   #. Else if :math:`n` is not :math:`0`, then:
-
-      1) Do nothing.
-
-
-:math:`\mathsf{array{.}init\_elem}~x~y`
-.......................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
-
-   a. Trap.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
-
-   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
-
-      1) Trap.
-
-   #. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
-
-      1) Trap.
-
-   #. If :math:`n` is :math:`0`, then:
-
-      1) Do nothing.
-
-   #. Else if :math:`j` is less than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
-
-      1) Let :math:`{\mathit{ref}}` be :math:`z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[j]`.
-
-      #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
-
-      #) Push the value :math:`{\mathit{ref}}` to the stack.
-
-      #) Execute the instruction :math:`(\mathsf{array{.}set}~x)`.
-
-      #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
-
-      #) Execute the instruction :math:`(\mathsf{array{.}init\_elem}~x~y)`.
-
-
-:math:`\mathsf{array{.}init\_data}~x~y`
-.......................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
-
-   a. Trap.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
-
-   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i + n` is greater than :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
-
-      1) Trap.
-
-   #. If :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`, then:
-
-      1) Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
-
-      #) Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
-
-      #) If :math:`j + n \cdot {|{\mathit{zt}}|} / 8` is greater than :math:`{|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
-
-         a) Trap.
-
-      #) If :math:`n` is :math:`0`, then:
-
-         a) Do nothing.
-
-      #) Else:
-
-         a) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathit{zt}}}(c)` :math:`=` :math:`z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[j : {|{\mathit{zt}}|} / 8]`.
-
-         #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
-
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
-
-         #) Push the value :math:`{\mathrm{unpack}}({\mathit{zt}}){.}\mathsf{const}~{{\mathrm{unpack}}}_{{\mathit{zt}}}(c)` to the stack.
-
-         #) Execute the instruction :math:`(\mathsf{array{.}set}~x)`.
-
-         #) Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
-
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
-
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + {|{\mathit{zt}}|} / 8)` to the stack.
-
-         #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
-
-         #) Execute the instruction :math:`(\mathsf{array{.}init\_data}~x~y)`.
-
-   #. Else if :math:`n` is :math:`0`, then:
-
-      1) Do nothing.
-
-
-:math:`\mathsf{local{.}get}~x`
-..............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, :math:`z{.}\mathsf{locals}{}[x]` is defined.
-
-#. Let :math:`{\mathit{val}}` be :math:`z{.}\mathsf{locals}{}[x]`.
-
-#. Push the value :math:`{\mathit{val}}` to the stack.
-
-
-:math:`\mathsf{global{.}get}~x`
-...............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Let :math:`{\mathit{val}}` be :math:`z{.}\mathsf{globals}{}[x]{.}\mathsf{value}`.
-
-#. Push the value :math:`{\mathit{val}}` to the stack.
-
-
-:math:`\mathsf{table{.}get}~x`
-..............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
-
-   a. Trap.
-
-#. Push the value :math:`z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i]` to the stack.
-
-
-:math:`\mathsf{table{.}size}~x`
-...............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Let :math:`n` be :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`.
-
-#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` to the stack.
-
-
-:math:`\mathsf{table{.}fill}~x`
-...............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
-
-   a. Trap.
-
-#. If :math:`n` is :math:`0`, then:
-
-   a. Do nothing.
-
-#. Else:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
-
-   #. Push the value :math:`{\mathit{val}}` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
-
-   #. Push the value :math:`{\mathit{val}}` to the stack.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{table{.}fill}~x)`.
-
-
-:math:`\mathsf{table{.}copy}~x~y`
-.................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
-
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{tables}{}[y]{.}\mathsf{refs}|}`, then:
-
-   a. Trap.
-
-#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
-
-   a. Trap.
-
-#. If :math:`n` is :math:`0`, then:
-
-   a. Do nothing.
-
-#. Else:
-
-   a. If :math:`j` is less than or equal to :math:`i`, then:
-
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
-
-      #) Execute the instruction :math:`(\mathsf{table{.}get}~y)`.
-
-      #) Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
-
-   #. Else:
-
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + n - 1)` to the stack.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + n - 1)` to the stack.
-
-      #) Execute the instruction :math:`(\mathsf{table{.}get}~y)`.
-
-      #) Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{table{.}copy}~x~y)`.
-
-
-:math:`\mathsf{table{.}init}~x~y`
-.................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
-
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
-
-   a. Trap.
-
-#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
-
-   a. Trap.
-
-#. If :math:`n` is :math:`0`, then:
-
-   a. Do nothing.
-
-#. Else if :math:`i` is less than :math:`{|z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}|}`, then:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
-
-   #. Push the value :math:`z{.}\mathsf{elems}{}[y]{.}\mathsf{refs}{}[i]` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{table{.}set}~x)`.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{table{.}init}~x~y)`.
-
-
-:math:`{{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}{.}\mathsf{load}}{{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}}~x~{\mathit{ao}}`
-.........................................................................................................................................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is not defined, then:
-
-   a. Let :math:`{\mathit{nt}}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
-
-      1) Trap.
-
-   #. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8]`.
-
-   #. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c)` to the stack.
-
-#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is Inn, then:
-
-   a. If :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is defined, then:
-
-      1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}`.
-
-      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
-
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
-
-         a) Trap.
-
-   #. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}` is defined, then:
-
-      1) Let :math:`{\mathit{loadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{loadop\_u{\kern-0.1em\scriptstyle 2}}}^?}`.
-
-      #) Let :math:`(n, {\mathit{sx}})` be :math:`{\mathit{loadop\_{\scriptstyle 0}}}`.
-
-      #) Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]`.
-
-      #) Push the value :math:`({\mathsf{i}}{N}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathsf{i}}{N}|}}^{{\mathit{sx}}}}}{(c)})` to the stack.
-
-
-:math:`{\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}}~x~{\mathit{ao}}`
-............................................................................................................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}` and :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
-
-   a. Trap.
-
-#. If :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
-
-   a. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8]`.
-
-   #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-#. Else:
-
-   a. Let :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` be :math:`{{\mathit{vloadop\_u{\kern-0.1em\scriptstyle 0}}}^?}`.
-
-   #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{shape}`, then:
-
-      1) Let :math:`({M}{\mathsf{x}}{K}{\mathsf{\_}}{{\mathit{sx}}})` be :math:`{\mathit{vloadop\_{\scriptstyle 0}}}`.
-
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + M \cdot K / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
-
-         a) Trap.
-
-      #) If the type of :math:`N` for which :math:`N` :math:`=` :math:`M \cdot 2` is Jnn, then:
-
-         a) Let :math:`{\mathsf{i}}{N}` be the result for which :math:`N` :math:`=` :math:`M \cdot 2`.
-
-         #) Let :math:`{j^{K}}` be the result for which for all :math:`{(k)^{k<K}}`, :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{M}}({j^{K}})` is :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} + k \cdot M / 8 : M / 8]`.
-
-         #) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{K})}^{{-1}}}}{({{{{{\mathrm{extend}}}_{M, N}^{{\mathit{sx}}}}}{(j)}^{K}})}`.
-
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-   #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{splat}`, then:
-
-      1) Let :math:`({N}{\mathsf{\_}}{\mathsf{splat}})` be :math:`{\mathit{vloadop\_{\scriptstyle 0}}}`.
-
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
-
-         a) Trap.
-
-      #) Let :math:`M` be :math:`128 / N`.
-
-      #) If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`N` is Jnn, then:
-
-         a) Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
-
-         #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
-
-         #) Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({j^{M}})}`.
-
-         #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-   #. If :math:`{\mathit{vloadop\_{\scriptstyle 0}}}` is of the case :math:`\mathsf{zero}`, then:
-
-      1) Let :math:`({N}{\mathsf{\_}}{\mathsf{zero}})` be :math:`{\mathit{vloadop\_{\scriptstyle 0}}}`.
-
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
-
-         a) Trap.
-
-      #) Let :math:`j` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(j)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
-
-      #) Let :math:`c` be :math:`{{{{\mathrm{extend}}}_{N, 128}^{\mathsf{u}}}}{(j)}`.
-
-      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~j`
-.......................................................................................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
-
-   a. Trap.
-
-#. Let :math:`M` be :math:`{|\mathsf{v{\scriptstyle 128}}|} / N`.
-
-#. If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`N` is Jnn, then:
-
-   a. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
-
-   #. Let :math:`k` be the result for which :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}(k)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8]`.
-
-   #. Let :math:`c` be :math:`{{{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}^{{-1}}}}{({{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c_1){}[{}[j] = k])}`.
-
-   #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`\mathsf{memory{.}size}~x`
-................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Let :math:`n \cdot 64 \, {\mathrm{Ki}}` be :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`.
-
-#. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` to the stack.
-
-
-:math:`\mathsf{memory{.}fill}~x`
-................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
-
-   a. Trap.
-
-#. If :math:`n` is :math:`0`, then:
-
-   a. Do nothing.
-
-#. Else:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` to the stack.
-
-   #. Push the value :math:`{\mathit{val}}` to the stack.
-
-   #. Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x)`.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
-
-   #. Push the value :math:`{\mathit{val}}` to the stack.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{memory{.}fill}~x)`.
-
-
-:math:`\mathsf{memory{.}copy}~x_1~x_2`
-......................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` from the stack.
-
-#. If :math:`i_1 + n` is greater than :math:`{|z{.}\mathsf{mems}{}[x_1]{.}\mathsf{bytes}|}`, then:
-
-   a. Trap.
-
-#. If :math:`i_2 + n` is greater than :math:`{|z{.}\mathsf{mems}{}[x_2]{.}\mathsf{bytes}|}`, then:
-
-   a. Trap.
-
-#. If :math:`n` is :math:`0`, then:
-
-   a. Do nothing.
-
-#. Else:
-
-   a. If :math:`i_1` is less than or equal to :math:`i_2`, then:
-
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
-
-      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})}~x_2)`.
-
-      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1)`.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + 1)` to the stack.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + 1)` to the stack.
-
-   #. Else:
-
-      1) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1 + n - 1)` to the stack.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2 + n - 1)` to the stack.
-
-      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{(8, \mathsf{u})}~x_2)`.
-
-      #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1)`.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_1)` to the stack.
-
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i_2)` to the stack.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{memory{.}copy}~x_1~x_2)`.
-
-
-:math:`\mathsf{memory{.}init}~x~y`
-..................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` from the stack.
-
-#. If :math:`i + n` is greater than :math:`{|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
-
-   a. Trap.
-
-#. If :math:`j + n` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
-
-   a. Trap.
-
-#. If :math:`n` is :math:`0`, then:
-
-   a. Do nothing.
-
-#. Else if :math:`i` is less than :math:`{|z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}|}`, then:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j)` to the stack.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[i])` to the stack.
-
-   #. Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x)`.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{memory{.}init}~x~y)`.
-
-
-:math:`\mathsf{throw}~x`
-........................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, :math:`x` is less than :math:`{|z{.}\mathsf{tags}|}`.
-
-#. Let :math:`a` be :math:`{|z{.}\mathsf{exns}|}`.
-
-#. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{tags}{}[x]{.}\mathsf{type})` is of the case :math:`\mathsf{func}`.
-
-#. Let :math:`(\mathsf{func}~{\mathit{functype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{tags}{}[x]{.}\mathsf{type})`.
-
-#. Let :math:`({t^{n}}~\rightarrow~{\mathit{valtype}}_1)` be :math:`{\mathit{functype}}_0`.
-
-#. Assert: Due to validation, :math:`{\mathit{valtype}}_1` is :math:`\epsilon`.
-
-#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
-
-#. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
-
-#. Let :math:`{\mathit{exn}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{tag}~z{.}\mathsf{tags}{}[x],\; \mathsf{fields}~{{\mathit{val}}^{n}} \}\end{array}`.
-
-#. Perform :math:`z{}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {\mathit{exn}}]`.
-
-#. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-#. Execute the instruction :math:`\mathsf{throw\_ref}`.
-
-
-:math:`\mathsf{struct{.}new}~x`
-...............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Let :math:`a` be :math:`{|z{.}\mathsf{structs}|}`.
-
-#. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
-
-#. Let :math:`(\mathsf{struct}~{\mathit{fieldtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
-
-#. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^{n}}` be :math:`{\mathit{fieldtype}}_0`.
-
-#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
-
-#. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
-
-#. Let :math:`{\mathit{si}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~z{.}\mathsf{types}{}[x],\; \mathsf{fields}~{{{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}})^{n}} \}\end{array}`.
-
-#. Push the value :math:`(\mathsf{ref{.}struct}~a)` to the stack.
-
-#. Perform :math:`z{}[{.}\mathsf{structs} \mathrel{{=}{\oplus}} {\mathit{si}}]`.
-
-
-:math:`\mathsf{struct{.}set}~x~i`
-.................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}` from the stack.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
-
-   a. Trap.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}struct}`, then:
-
-   a. Let :math:`(\mathsf{ref{.}struct}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{struct}`.
-
-   #. Let :math:`(\mathsf{struct}~{\mathit{fieldtype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
-
-   #. Let :math:`{({\mathsf{mut}^?}, {\mathit{zt}})^\ast}` be :math:`{\mathit{fieldtype}}_0`.
-
-   #. If :math:`{|{{\mathsf{mut}^?}^\ast}|}` is :math:`{|{{\mathit{zt}}^\ast}|}` and :math:`i` is less than :math:`{|{{\mathit{zt}}^\ast}|}`, then:
-
-      1) Perform :math:`z{}[{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i] = {{\mathrm{pack}}}_{{{\mathit{zt}}^\ast}{}[i]}({\mathit{val}})]`.
-
-
-:math:`\mathsf{array{.}new\_fixed}~x~n`
-.......................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
-
-#. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
-
-#. Let :math:`a` be :math:`{|z{.}\mathsf{arrays}|}`.
-
-#. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`.
-
-#. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
-
-#. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
-
-#. Let :math:`{\mathit{ai}}` be :math:`\{ \begin{array}[t]{@{}l@{}}\mathsf{type}~z{.}\mathsf{types}{}[x],\; \mathsf{fields}~{{{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}})^{n}} \}\end{array}`.
-
-#. Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
-
-#. Perform :math:`z{}[{.}\mathsf{arrays} \mathrel{{=}{\oplus}} {\mathit{ai}}]`.
-
-
-:math:`\mathsf{array{.}set}~x`
-..............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` from the stack.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}null}`, then:
-
-   a. Trap.
-
-#. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}array}`, then:
-
-   a. Let :math:`(\mathsf{ref{.}array}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-   #. If :math:`a` is less than :math:`{|z{.}\mathsf{arrays}|}` and :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}|}`, then:
-
-      1) Trap.
-
-   #. Assert: Due to validation, :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])` is of the case :math:`\mathsf{array}`.
-
-   #. Let :math:`(\mathsf{array}~{\mathit{arraytype}}_0)` be :math:`{\mathrm{expand}}(z{.}\mathsf{types}{}[x])`.
-
-   #. Let :math:`({\mathsf{mut}^?}, {\mathit{zt}})` be :math:`{\mathit{arraytype}}_0`.
-
-   #. Perform :math:`z{}[{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i] = {{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}})]`.
-
-
-:math:`\mathsf{local{.}set}~x`
-..............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}` from the stack.
-
-#. Perform :math:`z{}[{.}\mathsf{locals}{}[x] = {\mathit{val}}]`.
-
-
-:math:`\mathsf{global{.}set}~x`
-...............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}}` from the stack.
-
-#. Perform :math:`z{}[{.}\mathsf{globals}{}[x]{.}\mathsf{value} = {\mathit{val}}]`.
-
-
-:math:`\mathsf{table{.}set}~x`
-..............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{ref}}` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`i` is greater than or equal to :math:`{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|}`, then:
-
-   a. Trap.
-
-#. Perform :math:`z{}[{.}\mathsf{tables}{}[x]{.}\mathsf{refs}{}[i] = {\mathit{ref}}]`.
-
-
-:math:`\mathsf{table{.}grow}~x`
-...............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{ref}}` from the stack.
-
-#. Either:
-
-   a. Let :math:`{\mathit{ti}}` be :math:`{\mathrm{growtable}}(z{.}\mathsf{tables}{}[x], n, {\mathit{ref}})`.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{tables}{}[x]{.}\mathsf{refs}|})` to the stack.
-
-   #. Perform :math:`z{}[{.}\mathsf{tables}{}[x] = {\mathit{ti}}]`.
-
-#. Or:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{32}^{{-1}}}}{({-1})})` to the stack.
-
-
-:math:`\mathsf{elem{.}drop}~x`
-..............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Perform :math:`z{}[{.}\mathsf{elems}{}[x]{.}\mathsf{refs} = \epsilon]`.
-
-
-:math:`{{\mathit{nt}}{.}\mathsf{store}}{{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}}~x~{\mathit{ao}}`
-...................................................................................................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}{.}\mathsf{const}~c)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is :math:`{\mathit{nt}}`, then:
-
-   a. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|{\mathit{nt}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}` and :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
-
-      1) Trap.
-
-   #. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is not defined, then:
-
-      1) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathit{nt}}}(c)`.
-
-      #) Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|{\mathit{nt}}|} / 8] = {b^\ast}]`.
-
-#. If the type of :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}` is Inn, then:
-
-   a. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is defined, then:
-
-      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}`.
-
-      #) If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + n / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
-
-         a) Trap.
-
-   #. Let :math:`{\mathsf{i}}{N}` be :math:`{\mathit{numtype}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}`.
-
-   #. If :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}` is defined, then:
-
-      1) Let :math:`n` be :math:`{{\mathit{sz}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}^?}`.
-
-      #) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{n}}({{\mathrm{wrap}}}_{{|{\mathsf{i}}{N}|}, n}(c))`.
-
-      #) Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
-
-
-:math:`\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~x~{\mathit{ao}}`
-.....................................................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
-
-   a. Trap.
-
-#. Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)`.
-
-#. Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8] = {b^\ast}]`.
-
-
-:math:`{\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~j`
-........................................................................................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` from the stack.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
-
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N` is greater than :math:`{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
-
-   a. Trap.
-
-#. Let :math:`M` be :math:`128 / N`.
-
-#. If the type of :math:`{\mathit{fresh}}` for which :math:`{|{\mathit{fresh}}|}` :math:`=` :math:`N` is Jnn, then:
-
-   a. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`{|{\mathsf{i}}{N}|}` :math:`=` :math:`N`.
-
-   #. If :math:`j` is less than :math:`{|{{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c)|}`, then:
-
-      1) Let :math:`{b^\ast}` be :math:`{{\mathrm{bytes}}}_{{\mathsf{i}}{N}}({{\mathrm{lanes}}}_{({{\mathsf{i}}{N}}{\mathsf{x}}{M})}(c){}[j])`.
-
-      #) Perform :math:`z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8] = {b^\ast}]`.
-
-
-:math:`\mathsf{memory{.}grow}~x`
-................................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value of value type :math:`\mathsf{i{\scriptstyle 32}}` is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)` from the stack.
-
-#. Either:
-
-   a. Let :math:`{\mathit{mi}}` be :math:`{\mathrm{growmem}}(z{.}\mathsf{mems}{}[x], n)`.
-
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} / 64 \, {\mathrm{Ki}})` to the stack.
-
-   #. Perform :math:`z{}[{.}\mathsf{mems}{}[x] = {\mathit{mi}}]`.
-
-#. Or:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{{{\mathrm{signed}}}_{32}^{{-1}}}}{({-1})})` to the stack.
-
-
-:math:`\mathsf{data{.}drop}~x`
-..............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Perform :math:`z{}[{.}\mathsf{datas}{}[x]{.}\mathsf{bytes} = \epsilon]`.
-
-
 :math:`{\mathrm{eval}}_{\mathit{expr}}({{\mathit{instr}}^\ast})`
 ................................................................
 
@@ -23771,6 +23771,1434 @@ NotationTypingInstrScheme
     - valtype_u3* is t_2*.
     - the block type blocktype is valid with the instruction type (t_1* ->_ [] t_2*).
     - Under the context C with .LABELS prepended by [t_2*], the instr sequence instr* is valid with the function type (t_1* -> t_2*).
+
+Step_pure/unreachable
+1. Trap.
+
+Step_pure/nop
+1. Do nothing.
+
+Step_pure/drop
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value val from the stack.
+3. Do nothing.
+
+Step_pure/select t*?
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop the value (I32.CONST c) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop the value val_2 from the stack.
+5. Assert: Due to validation, a value is on the top of the stack.
+6. Pop the value val_1 from the stack.
+7. If (c is not 0), then:
+  a. Push the value val_1 to the stack.
+8. Else:
+  a. Push the value val_2 to the stack.
+
+Step_pure/if bt instr_1* instr_2*
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop the value (I32.CONST c) from the stack.
+3. If (c is not 0), then:
+  a. Execute the instruction (BLOCK bt instr_1*).
+4. Else:
+  a. Execute the instruction (BLOCK bt instr_2*).
+
+Step_pure/label
+1. Pop all values val* from the top of the stack.
+2. Assert: Due to validation, a label is now on the top of the stack.
+3. Pop the current label from the stack.
+4. Push the values val* to the stack.
+
+Step_pure/br l
+1. Pop all values val* from the top of the stack.
+2. If the top of the stack is a LABEL_, then:
+  a. Push the values val* to the stack.
+  b. Let L be the current label.
+  c. Let n be the arity of L.
+  d. Let instr'* be the continuation of L.
+  e. If (l is 0), then:
+    1) Assert: Due to validation, there are at least n values on the top of the stack.
+    2) Pop the values val^n from the stack.
+    3) Pop all values val'* from the top of the stack.
+    4) Pop the current label from the stack.
+    5) Push the values val^n to the stack.
+    6) Execute the instruction instr'*.
+  f. Else:
+    1) Pop all values val* from the top of the stack.
+    2) If (l > 0), then:
+      a) Pop the current label from the stack.
+      b) Push the values val* to the stack.
+      c) Execute the instruction (BR (l - 1)).
+3. Else if the top of the stack is a HANDLER_, then:
+  a. Push the values val* to the stack.
+  b. Pop all values val* from the top of the stack.
+  c. Exit from HANDLER_.
+  d. Push the values val* to the stack.
+  e. Execute the instruction (BR l).
+
+Step_pure/br_if l
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop the value (I32.CONST c) from the stack.
+3. If (c is not 0), then:
+  a. Execute the instruction (BR l).
+4. Else:
+  a. Do nothing.
+
+Step_pure/br_table l* l'
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop the value (I32.CONST i) from the stack.
+3. If (i < |l*|), then:
+  a. Execute the instruction (BR l*[i]).
+4. Else:
+  a. Execute the instruction (BR l').
+
+Step_pure/br_on_null l
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value val from the stack.
+3. If val is of the case REF.NULL, then:
+  a. Execute the instruction (BR l).
+4. Else:
+  a. Push the value val to the stack.
+
+Step_pure/br_on_non_null l
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value val from the stack.
+3. If val is of the case REF.NULL, then:
+  a. Do nothing.
+4. Else:
+  a. Push the value val to the stack.
+  b. Execute the instruction (BR l).
+
+Step_pure/call_indirect x yy
+1. Execute the instruction (TABLE.GET x).
+2. Execute the instruction (REF.CAST (REF (NULL ?(()) ?) yy)).
+3. Execute the instruction (CALL_REF yy).
+
+Step_pure/return_call_indirect x yy
+1. Execute the instruction (TABLE.GET x).
+2. Execute the instruction (REF.CAST (REF (NULL ?(()) ?) yy)).
+3. Execute the instruction (RETURN_CALL_REF yy).
+
+Step_pure/frame
+1. Let f be the current frame.
+2. Let n be the arity of f.
+3. Assert: Due to validation, there are at least n values on the top of the stack.
+4. Assert: Due to validation, there are at least n values on the top of the stack.
+5. Pop the values val^n from the stack.
+6. Assert: Due to validation, a frame is now on the top of the stack.
+7. Pop the current frame from the stack.
+8. Push the values val^n to the stack.
+
+Step_pure/return
+1. Pop all values val* from the top of the stack.
+2. If the top of the stack is a FRAME_, then:
+  a. Push the values val* to the stack.
+  b. Let f be the current frame.
+  c. Let n be the arity of f.
+  d. Assert: Due to validation, there are at least n values on the top of the stack.
+  e. Pop the values val^n from the stack.
+  f. Pop all values val'* from the top of the stack.
+  g. Pop the current frame from the stack.
+  h. Push the values val^n to the stack.
+3. Else if the top of the stack is a LABEL_, then:
+  a. Push the values val* to the stack.
+  b. Pop all values val* from the top of the stack.
+  c. Pop the current label from the stack.
+  d. Push the values val* to the stack.
+  e. Execute the instruction RETURN.
+4. Else if the top of the stack is a HANDLER_, then:
+  a. Push the values val* to the stack.
+  b. Pop all values val* from the top of the stack.
+  c. Exit from HANDLER_.
+  d. Push the values val* to the stack.
+  e. Execute the instruction RETURN.
+
+Step_pure/handler
+1. Pop all values val* from the top of the stack.
+2. Assert: Due to validation, YetE (a handler is now on the top of the stack).
+3. Exit from HANDLER_.
+4. Push the values val* to the stack.
+
+Step_pure/unop nt unop
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_1) from the stack.
+3. Assert: Due to validation, (numtype_0 is nt).
+4. If (|$unop_(nt, unop, c_1)| ≤ 0), then:
+  a. Trap.
+5. Let c be an element of $unop_(nt, unop, c_1).
+6. Push the value (nt.CONST c) to the stack.
+
+Step_pure/binop nt binop
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_2) from the stack.
+3. Assert: Due to validation, (numtype_0 is nt).
+4. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+5. Pop the value (numtype_0.CONST c_1) from the stack.
+6. If (|$binop_(nt, binop, c_1, c_2)| ≤ 0), then:
+  a. Trap.
+7. Let c be an element of $binop_(nt, binop, c_1, c_2).
+8. Push the value (nt.CONST c) to the stack.
+
+Step_pure/testop nt testop
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_1) from the stack.
+3. Assert: Due to validation, (numtype_0 is nt).
+4. Let c be $testop_(nt, testop, c_1).
+5. Push the value (I32.CONST c) to the stack.
+
+Step_pure/relop nt relop
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_2) from the stack.
+3. Assert: Due to validation, (numtype_0 is nt).
+4. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+5. Pop the value (numtype_0.CONST c_1) from the stack.
+6. Let c be $relop_(nt, relop, c_1, c_2).
+7. Push the value (I32.CONST c) to the stack.
+
+Step_pure/cvtop nt_2 nt_1 cvtop
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_1) from the stack.
+3. Assert: Due to validation, (numtype_0 is nt_1).
+4. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| ≤ 0), then:
+  a. Trap.
+5. Let c be an element of $cvtop__(nt_1, nt_2, cvtop, c_1).
+6. Push the value (nt_2.CONST c) to the stack.
+
+Step_pure/ref.i31
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop the value (I32.CONST i) from the stack.
+3. Push the value (REF.I31_NUM $wrap__(32, 31, i)) to the stack.
+
+Step_pure/ref.is_null
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value ref from the stack.
+3. If ref is of the case REF.NULL, then:
+  a. Push the value (I32.CONST 1) to the stack.
+4. Else:
+  a. Push the value (I32.CONST 0) to the stack.
+
+Step_pure/ref.as_non_null
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value ref from the stack.
+3. If ref is of the case REF.NULL, then:
+  a. Trap.
+4. Push the value ref to the stack.
+
+Step_pure/ref.eq
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value ref_2 from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop the value ref_1 from the stack.
+5. If ref_1 is of the case REF.NULL, then:
+  a. If ref_2 is of the case REF.NULL, then:
+    1) Push the value (I32.CONST 1) to the stack.
+  b. Else if (ref_1 is ref_2), then:
+    1) Push the value (I32.CONST 1) to the stack.
+  c. Else:
+    1) Push the value (I32.CONST 0) to the stack.
+6. Else if (ref_1 is ref_2), then:
+  a. Push the value (I32.CONST 1) to the stack.
+7. Else:
+  a. Push the value (I32.CONST 0) to the stack.
+
+Step_pure/i31.get sx
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value instr_u0 from the stack.
+3. If instr_u0 is of the case REF.NULL, then:
+  a. Trap.
+4. If instr_u0 is of the case REF.I31_NUM, then:
+  a. Let (REF.I31_NUM i) be instr_u0.
+  b. Push the value (I32.CONST $extend__(31, 32, sx, i)) to the stack.
+
+Step_pure/array.new x
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop the value (I32.CONST n) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop the value val from the stack.
+5. Push the values val^n to the stack.
+6. Execute the instruction (ARRAY.NEW_FIXED x n).
+
+Step_pure/extern.convert_any
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value instr_u0 from the stack.
+3. If instr_u0 is of the case REF.NULL, then:
+  a. Push the value (REF.NULL EXTERN) to the stack.
+4. If the type of instr_u0 is addrref, then:
+  a. Let addrref be instr_u0.
+  b. Push the value (REF.EXTERN addrref) to the stack.
+
+Step_pure/any.convert_extern
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value instr_u0 from the stack.
+3. If instr_u0 is of the case REF.NULL, then:
+  a. Push the value (REF.NULL ANY) to the stack.
+4. If instr_u0 is of the case REF.EXTERN, then:
+  a. Let (REF.EXTERN addrref) be instr_u0.
+  b. Push the value addrref to the stack.
+
+Step_pure/vvunop V128 vvunop
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_1) from the stack.
+3. Assert: Due to validation, (|$vvunop_(V128, vvunop, c_1)| > 0).
+4. Let c be an element of $vvunop_(V128, vvunop, c_1).
+5. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vvbinop V128 vvbinop
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_2) from the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+4. Pop the value (V128.CONST c_1) from the stack.
+5. Assert: Due to validation, (|$vvbinop_(V128, vvbinop, c_1, c_2)| > 0).
+6. Let c be an element of $vvbinop_(V128, vvbinop, c_1, c_2).
+7. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vvternop V128 vvternop
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_3) from the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+4. Pop the value (V128.CONST c_2) from the stack.
+5. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+6. Pop the value (V128.CONST c_1) from the stack.
+7. Assert: Due to validation, (|$vvternop_(V128, vvternop, c_1, c_2, c_3)| > 0).
+8. Let c be an element of $vvternop_(V128, vvternop, c_1, c_2, c_3).
+9. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vvtestop V128 ANY_TRUE
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_1) from the stack.
+3. Let c be $ine_($vsize(V128), c_1, 0).
+4. Push the value (I32.CONST c) to the stack.
+
+Step_pure/vunop sh vunop
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_1) from the stack.
+3. If (|$vunop_(sh, vunop, c_1)| ≤ 0), then:
+  a. Trap.
+4. Let c be an element of $vunop_(sh, vunop, c_1).
+5. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vbinop sh vbinop
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_2) from the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+4. Pop the value (V128.CONST c_1) from the stack.
+5. If (|$vbinop_(sh, vbinop, c_1, c_2)| ≤ 0), then:
+  a. Trap.
+6. Let c be an element of $vbinop_(sh, vbinop, c_1, c_2).
+7. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vtestop (Jnn X M) ALL_TRUE
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c) from the stack.
+3. Let ci_1* be $lanes_((Jnn X M), c).
+4. If (ci_1 is not 0)*, then:
+  a. Push the value (I32.CONST 1) to the stack.
+5. Else:
+  a. Push the value (I32.CONST 0) to the stack.
+
+Step_pure/vrelop sh vrelop
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_2) from the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+4. Pop the value (V128.CONST c_1) from the stack.
+5. Let c be $vrelop_(sh, vrelop, c_1, c_2).
+6. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vshiftop (Jnn X M) vshiftop
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop the value (I32.CONST n) from the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+4. Pop the value (V128.CONST c_1) from the stack.
+5. Let c'* be $lanes_((Jnn X M), c_1).
+6. Let c be $invlanes_((Jnn X M), $vshiftop_((Jnn X M), vshiftop, c', n)*).
+7. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vbitmask (Jnn X M)
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c) from the stack.
+3. Let ci_1* be $lanes_((Jnn X M), c).
+4. Let ci be $ibits__1^-1(32, $ilt_($lsize(Jnn), S, ci_1, 0)*).
+5. Push the value (I32.CONST ci) to the stack.
+
+Step_pure/vswizzle (Pnn X M)
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_2) from the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+4. Pop the value (V128.CONST c_1) from the stack.
+5. Let c'* be $lanes_((Pnn X M), c_1) :: 0^(256 - M).
+6. Let ci* be $lanes_((Pnn X M), c_2).
+7. Assert: Due to validation, (ci*[k] < |c'*|)^(k<M).
+8. Assert: Due to validation, (k < |ci*|)^(k<M).
+9. Let c be $invlanes_((Pnn X M), c'*[ci*[k]]^(k<M)).
+10. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vshuffle (Pnn X M) i*
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_2) from the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+4. Pop the value (V128.CONST c_1) from the stack.
+5. Assert: Due to validation, (k < |i*|)^(k<M).
+6. Let c'* be $lanes_((Pnn X M), c_1) :: $lanes_((Pnn X M), c_2).
+7. Assert: Due to validation, (i*[k] < |c'*|)^(k<M).
+8. Let c be $invlanes_((Pnn X M), c'*[i*[k]]^(k<M)).
+9. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vsplat (Lnn X M)
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_1) from the stack.
+3. Assert: Due to validation, (numtype_0 is $lunpack(Lnn)).
+4. Let c be $invlanes_((Lnn X M), $lpacknum_(Lnn, c_1)^M).
+5. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vextract_lane (lanetype_u0 X M) sx_u1? i
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_1) from the stack.
+3. If (sx_u1? is not defined and the type of lanetype_u0 is numtype), then:
+  a. Let nt be lanetype_u0.
+  b. If (i < |$lanes_((nt X M), c_1)|), then:
+    1) Let c_2 be $lanes_((nt X M), c_1)[i].
+    2) Push the value (nt.CONST c_2) to the stack.
+4. If the type of lanetype_u0 is packtype, then:
+  a. Let pt be lanetype_u0.
+  b. If sx_u1? is defined, then:
+    1) Let ?(sx) be sx_u1?.
+    2) If (i < |$lanes_((pt X M), c_1)|), then:
+      a) Let c_2 be $extend__($psize(pt), 32, sx, $lanes_((pt X M), c_1)[i]).
+      b) Push the value (I32.CONST c_2) to the stack.
+
+Step_pure/vreplace_lane (Lnn X M) i
+1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
+2. Pop the value (numtype_0.CONST c_2) from the stack.
+3. Assert: Due to validation, (numtype_0 is $lunpack(Lnn)).
+4. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+5. Pop the value (V128.CONST c_1) from the stack.
+6. Let c be $invlanes_((Lnn X M), $lanes_((Lnn X M), c_1) with [i] replaced by $lpacknum_(Lnn, c_2)).
+7. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vextunop sh_2 sh_1 vextunop
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_1) from the stack.
+3. Let c be $vextunop__(sh_1, sh_2, vextunop, c_1).
+4. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vextbinop sh_2 sh_1 vextbinop
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_2) from the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+4. Pop the value (V128.CONST c_1) from the stack.
+5. Let c be $vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2).
+6. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vnarrow (Jnn_2 X M_2) (Jnn_1 X M_1) sx
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_2) from the stack.
+3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+4. Pop the value (V128.CONST c_1) from the stack.
+5. Let ci_1* be $lanes_((Jnn_1 X M_1), c_1).
+6. Let ci_2* be $lanes_((Jnn_1 X M_1), c_2).
+7. Let cj_1* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1)*.
+8. Let cj_2* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2)*.
+9. Let c be $invlanes_((Jnn_2 X M_2), cj_1* :: cj_2*).
+10. Push the value (V128.CONST c) to the stack.
+
+Step_pure/vcvtop (lanetype_u5 X n_u0) (lanetype_u6 X n_u1) vcvtop half___u4? zero___u13?
+1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+2. Pop the value (V128.CONST c_1) from the stack.
+3. If (half___u4? is not defined and zero___u13? is not defined), then:
+  a. Let Lnn_1 be lanetype_u6.
+  b. Let Lnn_2 be lanetype_u5.
+  c. Let M be n_u1.
+  d. If (n_u0 is M), then:
+    1) Let ci* be $lanes_((Lnn_1 X M), c_1).
+    2) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__((Lnn_1 X M), (Lnn_2 X M), vcvtop, ci)*).
+    3) If (|$invlanes_((Lnn_2 X M), cj*)*| > 0), then:
+      a) Let c be an element of $invlanes_((Lnn_2 X M), cj*)*.
+      b) Push the value (V128.CONST c) to the stack.
+4. If zero___u13? is not defined, then:
+  a. Let Lnn_1 be lanetype_u6.
+  b. Let Lnn_2 be lanetype_u5.
+  c. Let M_1 be n_u1.
+  d. Let M_2 be n_u0.
+  e. If half___u4? is defined, then:
+    1) Let ?(half) be half___u4?.
+    2) Let ci* be $lanes_((Lnn_1 X M_1), c_1)[$half__((Lnn_1 X M_1), (Lnn_2 X M_2), half, 0, M_2) : M_2].
+    3) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__((Lnn_1 X M_1), (Lnn_2 X M_2), vcvtop, ci)*).
+    4) If (|$invlanes_((Lnn_2 X M_2), cj*)*| > 0), then:
+      a) Let c be an element of $invlanes_((Lnn_2 X M_2), cj*)*.
+      b) Push the value (V128.CONST c) to the stack.
+5. If half___u4? is not defined, then:
+  a. Let M_1 be n_u1.
+  b. Let M_2 be n_u0.
+  c. If the type of lanetype_u6 is numtype, then:
+    1) Let nt_1 be lanetype_u6.
+    2) If the type of lanetype_u5 is numtype, then:
+      a) Let nt_2 be lanetype_u5.
+      b) If zero___u13? is defined, then:
+        1. Let ci* be $lanes_((nt_1 X M_1), c_1).
+        2. Let cj** be $setproduct_(lane_((nt_2 : numtype <: lanetype)), $vcvtop__((nt_1 X M_1), (nt_2 X M_2), vcvtop, ci)* :: [$zero(nt_2)]^M_1).
+        3. If (|$invlanes_((nt_2 X M_2), cj*)*| > 0), then:
+          a. Let c be an element of $invlanes_((nt_2 X M_2), cj*)*.
+          b. Push the value (V128.CONST c) to the stack.
+
+Step_pure/local.tee x
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value val from the stack.
+3. Push the value val to the stack.
+4. Push the value val to the stack.
+5. Execute the instruction (LOCAL.SET x).
+
+Step_read/block bt instr*
+1. Let z be the current state.
+2. Let (t_1^m -> t_2^n) be $blocktype_(z, bt).
+3. Assert: Due to validation, there are at least m values on the top of the stack.
+4. Pop the values val^m from the stack.
+5. Let L be the label_n{[]}.
+6. Enter val^m :: instr* with label L.
+
+Step_read/loop bt instr*
+1. Let z be the current state.
+2. Let (t_1^m -> t_2^n) be $blocktype_(z, bt).
+3. Assert: Due to validation, there are at least m values on the top of the stack.
+4. Pop the values val^m from the stack.
+5. Let L be the label_m{[(LOOP bt instr*)]}.
+6. Enter val^m :: instr* with label L.
+
+Step_read/br_on_cast l rt_1 rt_2
+1. Let f be the current frame.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value ref from the stack.
+4. Let rt be $Ref_type(ref).
+5. Push the value ref to the stack.
+6. If rt does not match $inst_reftype(f.MODULE, rt_2), then:
+  a. Do nothing.
+7. Else:
+  a. Execute the instruction (BR l).
+
+Step_read/br_on_cast_fail l rt_1 rt_2
+1. Let f be the current frame.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value ref from the stack.
+4. Let rt be $Ref_type(ref).
+5. Push the value ref to the stack.
+6. If rt matches $inst_reftype(f.MODULE, rt_2), then:
+  a. Do nothing.
+7. Else:
+  a. Execute the instruction (BR l).
+
+Step_read/call x
+1. Let z be the current state.
+2. Assert: Due to validation, (x < |$moduleinst(z).FUNCS|).
+3. Let a be $moduleinst(z).FUNCS[x].
+4. Assert: Due to validation, (a < |$funcinst(z)|).
+5. Push the value (REF.FUNC_ADDR a) to the stack.
+6. Execute the instruction (CALL_REF $funcinst(z)[a].TYPE).
+
+Step_read/call_ref yy
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value instr_u0 from the stack.
+4. If instr_u0 is of the case REF.NULL, then:
+  a. Trap.
+5. If instr_u0 is of the case REF.FUNC_ADDR, then:
+  a. Let (REF.FUNC_ADDR a) be instr_u0.
+  b. If (a < |$funcinst(z)|), then:
+    1) Let fi be $funcinst(z)[a].
+    2) Assert: Due to validation, fi.CODE is of the case FUNC.
+    3) Let (FUNC x local_0 instr*) be fi.CODE.
+    4) Assert: Due to validation, local_0 is of the case LOCAL.
+    5) Let (LOCAL t)* be local_0.
+    6) Assert: Due to validation, $expanddt(fi.TYPE) is of the case FUNC.
+    7) Let (FUNC functype_0) be $expanddt(fi.TYPE).
+    8) Let (t_1^n -> t_2^m) be functype_0.
+    9) Assert: Due to validation, there are at least n values on the top of the stack.
+    10) Pop the values val^n from the stack.
+    11) Let f be { LOCALS: ?(val)^n :: $default_(t)*; MODULE: fi.MODULE; }.
+    12) Let F be the activation of f with arity m.
+    13) Push F to the stack.
+    14) Let L be the label_m{[]}.
+    15) Enter instr* with label L.
+
+Step_read/return_call x
+1. Let z be the current state.
+2. Assert: Due to validation, (x < |$moduleinst(z).FUNCS|).
+3. Let a be $moduleinst(z).FUNCS[x].
+4. Assert: Due to validation, (a < |$funcinst(z)|).
+5. Push the value (REF.FUNC_ADDR a) to the stack.
+6. Execute the instruction (RETURN_CALL_REF $funcinst(z)[a].TYPE).
+
+Step_read/return_call_ref yy
+1. Let z be the current state.
+2. Pop all values val* from the top of the stack.
+3. If the top of the stack is a LABEL_, then:
+  a. Push the values val* to the stack.
+  b. Pop all values val* from the top of the stack.
+  c. Pop the current label from the stack.
+  d. Push the values val* to the stack.
+  e. Execute the instruction (RETURN_CALL_REF yy).
+4. Else if the top of the stack is a HANDLER_, then:
+  a. Push the values val* to the stack.
+  b. Pop all values val* from the top of the stack.
+  c. Exit from HANDLER_.
+  d. Push the values val* to the stack.
+  e. Execute the instruction (RETURN_CALL_REF yy).
+5. Else if the top of the stack is a FRAME_, then:
+  a. Push the values val* to the stack.
+  b. Assert: Due to validation, a value is on the top of the stack.
+  c. Pop the value instr_u0 from the stack.
+  d. Pop all values val* from the top of the stack.
+  e. If instr_u0 is of the case REF.NULL, then:
+    1) Pop the current frame from the stack.
+    2) Trap.
+  f. If instr_u0 is of the case REF.FUNC_ADDR, then:
+    1) Let (REF.FUNC_ADDR a) be instr_u0.
+    2) If (a < |$funcinst(z)|), then:
+      a) Assert: Due to validation, $expanddt($funcinst(z)[a].TYPE) is of the case FUNC.
+      b) Let (FUNC functype_0) be $expanddt($funcinst(z)[a].TYPE).
+      c) Let (t_1^n -> t_2^m) be functype_0.
+      d) Assert: Due to validation, there are at least n values on the top of the stack.
+      e) Pop the values val^n from the stack.
+      f) Pop all values val'* from the top of the stack.
+      g) Pop the current frame from the stack.
+      h) Push the values val^n to the stack.
+      i) Push the value (REF.FUNC_ADDR a) to the stack.
+      j) Execute the instruction (CALL_REF yy).
+
+Step_read/throw_ref
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value instr_u0 from the stack.
+4. If instr_u0 is of the case REF.NULL, then:
+  a. Trap.
+5. Pop all values val* from the top of the stack.
+6. If (val* is not []), then:
+  a. If instr_u0 is of the case REF.EXN_ADDR, then:
+    1) Let (REF.EXN_ADDR a) be instr_u0.
+    2) Push the value (REF.EXN_ADDR a) to the stack.
+    3) Execute the instruction THROW_REF.
+7. Else:
+  a. Pop all values val* from the top of the stack.
+  b. If the top of the stack is a LABEL_, then:
+    1) Push the values val* to the stack.
+    2) If instr_u0 is of the case REF.EXN_ADDR, then:
+      a) Let (REF.EXN_ADDR a) be instr_u0.
+      b) Pop the current label from the stack.
+      c) Push the value (REF.EXN_ADDR a) to the stack.
+      d) Execute the instruction THROW_REF.
+  c. Else if the top of the stack is a FRAME_, then:
+    1) Push the values val* to the stack.
+    2) If instr_u0 is of the case REF.EXN_ADDR, then:
+      a) Let (REF.EXN_ADDR a) be instr_u0.
+      b) Pop the current frame from the stack.
+      c) Push the value (REF.EXN_ADDR a) to the stack.
+      d) Execute the instruction THROW_REF.
+  d. Else if not the top of the stack is a HANDLER_, then:
+    1) Throw the exception instr_u0 as a result.
+  e. Else:
+    1) Push the values val* to the stack.
+    2) Let (HANDLER_ n { catch_u1* }) be the current context.
+    3) If instr_u0 is of the case REF.EXN_ADDR, then:
+      a) Let (REF.EXN_ADDR a) be instr_u0.
+      b) If (catch_u1* is []), then:
+        1. Exit from HANDLER_.
+        2. Push the value (REF.EXN_ADDR a) to the stack.
+        3. Execute the instruction THROW_REF.
+      c) Else if (a ≥ |$exninst(z)|), then:
+        1. Let [catch_0] :: catch'* be catch_u1*.
+        2. If catch_0 is of the case CATCH_ALL, then:
+          a. Let (CATCH_ALL l) be catch_0.
+          b. Exit from HANDLER_.
+          c. Execute the instruction (BR l).
+        3. Else if catch_0 is of the case CATCH_ALL_REF, then:
+          a. Let (CATCH_ALL_REF l) be catch_0.
+          b. Exit from HANDLER_.
+          c. Push the value (REF.EXN_ADDR a) to the stack.
+          d. Execute the instruction (BR l).
+        4. Else:
+          a. Let [catch] :: catch'* be catch_u1*.
+          b. Exit from HANDLER_.
+          c. Let H be (HANDLER_ n { catch'* }).
+          d. Push the handler H to the stack.
+          e. Push the value (REF.EXN_ADDR a) to the stack.
+          f. Execute the instruction THROW_REF.
+      d) Else:
+        1. Let val* be $exninst(z)[a].FIELDS.
+        2. Let [catch_0] :: catch'* be catch_u1*.
+        3. If catch_0 is of the case CATCH, then:
+          a. Let (CATCH x l) be catch_0.
+          b. If ((x < |$tagaddr(z)|) and ($exninst(z)[a].TAG is $tagaddr(z)[x])), then:
+            1) Exit from HANDLER_.
+            2) Push the values val* to the stack.
+            3) Execute the instruction (BR l).
+          c. Else:
+            1) Let [catch] :: catch'* be catch_u1*.
+            2) Exit from HANDLER_.
+            3) Let H be (HANDLER_ n { catch'* }).
+            4) Push the handler H to the stack.
+            5) Push the value (REF.EXN_ADDR a) to the stack.
+            6) Execute the instruction THROW_REF.
+        4. Else if catch_0 is of the case CATCH_REF, then:
+          a. Let (CATCH_REF x l) be catch_0.
+          b. If ((x < |$tagaddr(z)|) and ($exninst(z)[a].TAG is $tagaddr(z)[x])), then:
+            1) Exit from HANDLER_.
+            2) Push the values val* to the stack.
+            3) Push the value (REF.EXN_ADDR a) to the stack.
+            4) Execute the instruction (BR l).
+          c. Else:
+            1) Let [catch] :: catch'* be catch_u1*.
+            2) Exit from HANDLER_.
+            3) Let H be (HANDLER_ n { catch'* }).
+            4) Push the handler H to the stack.
+            5) Push the value (REF.EXN_ADDR a) to the stack.
+            6) Execute the instruction THROW_REF.
+        5. Else if catch_0 is of the case CATCH_ALL, then:
+          a. Let (CATCH_ALL l) be catch_0.
+          b. Exit from HANDLER_.
+          c. Execute the instruction (BR l).
+        6. Else if catch_0 is of the case CATCH_ALL_REF, then:
+          a. Let (CATCH_ALL_REF l) be catch_0.
+          b. Exit from HANDLER_.
+          c. Push the value (REF.EXN_ADDR a) to the stack.
+          d. Execute the instruction (BR l).
+        7. Else:
+          a. Let [catch] :: catch'* be catch_u1*.
+          b. Exit from HANDLER_.
+          c. Let H be (HANDLER_ n { catch'* }).
+          d. Push the handler H to the stack.
+          e. Push the value (REF.EXN_ADDR a) to the stack.
+          f. Execute the instruction THROW_REF.
+
+Step_read/try_table bt catch* instr*
+1. Let z be the current state.
+2. Let (t_1^m -> t_2^n) be $blocktype_(z, bt).
+3. Assert: Due to validation, there are at least m values on the top of the stack.
+4. Pop the values val^m from the stack.
+5. Let H be (HANDLER_ n { catch* }).
+6. Push the handler H to the stack.
+7. Let L be the label_n{[]}.
+8. Enter val^m :: instr* with label L.
+
+Step_read/ref.null $idx(x)
+1. Let z be the current state.
+2. Push the value (REF.NULL $type(z, x)) to the stack.
+
+Step_read/ref.func x
+1. Let z be the current state.
+2. Assert: Due to validation, (x < |$moduleinst(z).FUNCS|).
+3. Push the value (REF.FUNC_ADDR $moduleinst(z).FUNCS[x]) to the stack.
+
+Step_read/ref.test rt
+1. Let f be the current frame.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value ref from the stack.
+4. Let rt' be $Ref_type(ref).
+5. If rt' matches $inst_reftype(f.MODULE, rt), then:
+  a. Push the value (I32.CONST 1) to the stack.
+6. Else:
+  a. Push the value (I32.CONST 0) to the stack.
+
+Step_read/ref.cast rt
+1. Let f be the current frame.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value ref from the stack.
+4. Let rt' be $Ref_type(ref).
+5. If rt' does not match $inst_reftype(f.MODULE, rt), then:
+  a. Trap.
+6. Push the value ref to the stack.
+
+Step_read/struct.new_default x
+1. Let z be the current state.
+2. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
+3. Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
+4. Let (mut, zt)* be fieldtype_0.
+5. Assert: Due to validation, (|mut*| is |zt*|).
+6. Assert: Due to validation, $default_($unpack(zt)) is defined*.
+7. Let ?(val)* be $default_($unpack(zt))*.
+8. Assert: Due to validation, (|val*| is |zt*|).
+9. Push the values val* to the stack.
+10. Execute the instruction (STRUCT.NEW x).
+
+Step_read/struct.get sx? x i
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value instr_u0 from the stack.
+4. If instr_u0 is of the case REF.NULL, then:
+  a. Trap.
+5. If instr_u0 is of the case REF.STRUCT_ADDR, then:
+  a. Let (REF.STRUCT_ADDR a) be instr_u0.
+  b. If ((i < |$structinst(z)[a].FIELDS|) and (a < |$structinst(z)|)), then:
+    1) Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
+    2) Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
+    3) Let (mut, zt)* be fieldtype_0.
+    4) If ((|mut*| is |zt*|) and (i < |zt*|)), then:
+      a) Push the value $unpackfield_(zt*[i], sx?, $structinst(z)[a].FIELDS[i]) to the stack.
+
+Step_read/array.new_default x
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
+5. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+6. Let (mut, zt) be arraytype_0.
+7. Assert: Due to validation, $default_($unpack(zt)) is defined.
+8. Let ?(val) be $default_($unpack(zt)).
+9. Push the values val^n to the stack.
+10. Execute the instruction (ARRAY.NEW_FIXED x n).
+
+Step_read/array.new_elem x y
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If ((i + n) > |$elem(z, y).REFS|), then:
+  a. Trap.
+7. Assert: Due to validation, (|$elem(z, y).REFS[i : n]| is n).
+8. Let ref* be $elem(z, y).REFS[i : n].
+9. Push the values ref^n to the stack.
+10. Execute the instruction (ARRAY.NEW_FIXED x n).
+
+Step_read/array.new_data x y
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
+7. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+8. Let (mut, zt) be arraytype_0.
+9. If ((i + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
+  a. Trap.
+10. Assert: Due to validation, (|$concatn__1^-1(byte, ($zsize(zt) / 8), $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)])| is n).
+11. Let byte* be $concatn__1^-1(byte, ($zsize(zt) / 8), $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)]).
+12. Let c* be $zbytes__1^-1(zt, byte)*.
+13. Push the values $const($cunpack(zt), $cunpacknum_(zt, c))^n to the stack.
+14. Execute the instruction (ARRAY.NEW_FIXED x n).
+
+Step_read/array.get sx? x
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST i) from the stack.
+4. Assert: Due to validation, a value is on the top of the stack.
+5. Pop the value instr_u0 from the stack.
+6. If instr_u0 is of the case REF.NULL, then:
+  a. Trap.
+7. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be instr_u0.
+  b. If ((a < |$arrayinst(z)|) and (i ≥ |$arrayinst(z)[a].FIELDS|)), then:
+    1) Trap.
+  c. If ((i < |$arrayinst(z)[a].FIELDS|) and (a < |$arrayinst(z)|)), then:
+    1) Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
+    2) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+    3) Let (mut, zt) be arraytype_0.
+    4) Push the value $unpackfield_(zt, sx?, $arrayinst(z)[a].FIELDS[i]) to the stack.
+
+Step_read/array.len
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value instr_u0 from the stack.
+4. If instr_u0 is of the case REF.NULL, then:
+  a. Trap.
+5. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be instr_u0.
+  b. If (a < |$arrayinst(z)|), then:
+    1) Push the value (I32.CONST |$arrayinst(z)[a].FIELDS|) to the stack.
+
+Step_read/array.fill x
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value is on the top of the stack.
+5. Pop the value val from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST i) from the stack.
+8. Assert: Due to validation, a value is on the top of the stack.
+9. Pop the value instr_u0 from the stack.
+10. If instr_u0 is of the case REF.NULL, then:
+  a. Trap.
+11. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be instr_u0.
+  b. If (a ≥ |$arrayinst(z)|), then:
+    1) Do nothing.
+  c. Else if ((i + n) > |$arrayinst(z)[a].FIELDS|), then:
+    1) Trap.
+  d. If (n is 0), then:
+    1) Do nothing.
+  e. Else:
+    1) Push the value (REF.ARRAY_ADDR a) to the stack.
+    2) Push the value (I32.CONST i) to the stack.
+    3) Push the value val to the stack.
+    4) Execute the instruction (ARRAY.SET x).
+    5) Push the value (REF.ARRAY_ADDR a) to the stack.
+    6) Push the value (I32.CONST (i + 1)) to the stack.
+    7) Push the value val to the stack.
+    8) Push the value (I32.CONST (n - 1)) to the stack.
+    9) Execute the instruction (ARRAY.FILL x).
+
+Step_read/array.copy x_1 x_2
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i_2) from the stack.
+6. Assert: Due to validation, a value is on the top of the stack.
+7. Pop the value instr_u0 from the stack.
+8. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+9. Pop the value (I32.CONST i_1) from the stack.
+10. Assert: Due to validation, a value is on the top of the stack.
+11. Pop the value instr_u1 from the stack.
+12. If (instr_u1 is of the case REF.NULL and the type of instr_u0 is ref), then:
+  a. Trap.
+13. If (instr_u0 is of the case REF.NULL and the type of instr_u1 is ref), then:
+  a. Trap.
+14. If instr_u1 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a_1) be instr_u1.
+  b. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+    1) If ((a_1 < |$arrayinst(z)|) and ((i_1 + n) > |$arrayinst(z)[a_1].FIELDS|)), then:
+      a) Trap.
+    2) Let (REF.ARRAY_ADDR a_2) be instr_u0.
+    3) If (a_2 ≥ |$arrayinst(z)|), then:
+      a) Do nothing.
+    4) Else if ((i_2 + n) > |$arrayinst(z)[a_2].FIELDS|), then:
+      a) Trap.
+    5) If (n is 0), then:
+      a) Do nothing.
+    6) Else if ((i_1 ≤ i_2) and $expanddt($type(z, x_2)) is of the case ARRAY), then:
+      a) Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
+      b) Let (mut, zt_2) be arraytype_0.
+      c) Let sx? be $sx(zt_2).
+      d) Push the value (REF.ARRAY_ADDR a_1) to the stack.
+      e) Push the value (I32.CONST i_1) to the stack.
+      f) Push the value (REF.ARRAY_ADDR a_2) to the stack.
+      g) Push the value (I32.CONST i_2) to the stack.
+      h) Execute the instruction (ARRAY.GET sx? x_2).
+      i) Execute the instruction (ARRAY.SET x_1).
+      j) Push the value (REF.ARRAY_ADDR a_1) to the stack.
+      k) Push the value (I32.CONST (i_1 + 1)) to the stack.
+      l) Push the value (REF.ARRAY_ADDR a_2) to the stack.
+      m) Push the value (I32.CONST (i_2 + 1)) to the stack.
+      n) Push the value (I32.CONST (n - 1)) to the stack.
+      o) Execute the instruction (ARRAY.COPY x_1 x_2).
+    7) Else if $expanddt($type(z, x_2)) is of the case ARRAY, then:
+      a) Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
+      b) Let (mut, zt_2) be arraytype_0.
+      c) Let sx? be $sx(zt_2).
+      d) Push the value (REF.ARRAY_ADDR a_1) to the stack.
+      e) Push the value (I32.CONST ((i_1 + n) - 1)) to the stack.
+      f) Push the value (REF.ARRAY_ADDR a_2) to the stack.
+      g) Push the value (I32.CONST ((i_2 + n) - 1)) to the stack.
+      h) Execute the instruction (ARRAY.GET sx? x_2).
+      i) Execute the instruction (ARRAY.SET x_1).
+      j) Push the value (REF.ARRAY_ADDR a_1) to the stack.
+      k) Push the value (I32.CONST i_1) to the stack.
+      l) Push the value (REF.ARRAY_ADDR a_2) to the stack.
+      m) Push the value (I32.CONST i_2) to the stack.
+      n) Push the value (I32.CONST (n - 1)) to the stack.
+      o) Execute the instruction (ARRAY.COPY x_1 x_2).
+  c. Else if (n is not 0), then:
+    1) Do nothing.
+
+Step_read/array.init_elem x y
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST j) from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST i) from the stack.
+8. Assert: Due to validation, a value is on the top of the stack.
+9. Pop the value instr_u0 from the stack.
+10. If instr_u0 is of the case REF.NULL, then:
+  a. Trap.
+11. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be instr_u0.
+  b. If ((a < |$arrayinst(z)|) and ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
+    1) Trap.
+  c. If ((j + n) > |$elem(z, y).REFS|), then:
+    1) Trap.
+  d. If (n is 0), then:
+    1) Do nothing.
+  e. Else if (j < |$elem(z, y).REFS|), then:
+    1) Let ref be $elem(z, y).REFS[j].
+    2) Push the value (REF.ARRAY_ADDR a) to the stack.
+    3) Push the value (I32.CONST i) to the stack.
+    4) Push the value ref to the stack.
+    5) Execute the instruction (ARRAY.SET x).
+    6) Push the value (REF.ARRAY_ADDR a) to the stack.
+    7) Push the value (I32.CONST (i + 1)) to the stack.
+    8) Push the value (I32.CONST (j + 1)) to the stack.
+    9) Push the value (I32.CONST (n - 1)) to the stack.
+    10) Execute the instruction (ARRAY.INIT_ELEM x y).
+
+Step_read/array.init_data x y
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST j) from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST i) from the stack.
+8. Assert: Due to validation, a value is on the top of the stack.
+9. Pop the value instr_u0 from the stack.
+10. If instr_u0 is of the case REF.NULL, then:
+  a. Trap.
+11. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be instr_u0.
+  b. If ((a < |$arrayinst(z)|) and ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
+    1) Trap.
+  c. If $expanddt($type(z, x)) is of the case ARRAY, then:
+    1) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+    2) Let (mut, zt) be arraytype_0.
+    3) If ((j + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
+      a) Trap.
+    4) If (n is 0), then:
+      a) Do nothing.
+    5) Else:
+      a) Let c be $zbytes__1^-1(zt, $data(z, y).BYTES[j : ($zsize(zt) / 8)]).
+      b) Push the value (REF.ARRAY_ADDR a) to the stack.
+      c) Push the value (I32.CONST i) to the stack.
+      d) Push the value $const($cunpack(zt), $cunpacknum_(zt, c)) to the stack.
+      e) Execute the instruction (ARRAY.SET x).
+      f) Push the value (REF.ARRAY_ADDR a) to the stack.
+      g) Push the value (I32.CONST (i + 1)) to the stack.
+      h) Push the value (I32.CONST (j + ($zsize(zt) / 8))) to the stack.
+      i) Push the value (I32.CONST (n - 1)) to the stack.
+      j) Execute the instruction (ARRAY.INIT_DATA x y).
+  d. Else if (n is 0), then:
+    1) Do nothing.
+
+Step_read/local.get x
+1. Let z be the current state.
+2. Assert: Due to validation, $local(z, x) is defined.
+3. Let ?(val) be $local(z, x).
+4. Push the value val to the stack.
+
+Step_read/global.get x
+1. Let z be the current state.
+2. Let val be $global(z, x).VALUE.
+3. Push the value val to the stack.
+
+Step_read/table.get x
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST i) from the stack.
+4. If (i ≥ |$table(z, x).REFS|), then:
+  a. Trap.
+5. Push the value $table(z, x).REFS[i] to the stack.
+
+Step_read/table.size x
+1. Let z be the current state.
+2. Let n be |$table(z, x).REFS|.
+3. Push the value (I32.CONST n) to the stack.
+
+Step_read/table.fill x
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value is on the top of the stack.
+5. Pop the value val from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST i) from the stack.
+8. If ((i + n) > |$table(z, x).REFS|), then:
+  a. Trap.
+9. If (n is 0), then:
+  a. Do nothing.
+10. Else:
+  a. Push the value (I32.CONST i) to the stack.
+  b. Push the value val to the stack.
+  c. Execute the instruction (TABLE.SET x).
+  d. Push the value (I32.CONST (i + 1)) to the stack.
+  e. Push the value val to the stack.
+  f. Push the value (I32.CONST (n - 1)) to the stack.
+  g. Execute the instruction (TABLE.FILL x).
+
+Step_read/table.copy x y
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST j) from the stack.
+8. If ((i + n) > |$table(z, y).REFS|), then:
+  a. Trap.
+9. If ((j + n) > |$table(z, x).REFS|), then:
+  a. Trap.
+10. If (n is 0), then:
+  a. Do nothing.
+11. Else:
+  a. If (j ≤ i), then:
+    1) Push the value (I32.CONST j) to the stack.
+    2) Push the value (I32.CONST i) to the stack.
+    3) Execute the instruction (TABLE.GET y).
+    4) Execute the instruction (TABLE.SET x).
+    5) Push the value (I32.CONST (j + 1)) to the stack.
+    6) Push the value (I32.CONST (i + 1)) to the stack.
+  b. Else:
+    1) Push the value (I32.CONST ((j + n) - 1)) to the stack.
+    2) Push the value (I32.CONST ((i + n) - 1)) to the stack.
+    3) Execute the instruction (TABLE.GET y).
+    4) Execute the instruction (TABLE.SET x).
+    5) Push the value (I32.CONST j) to the stack.
+    6) Push the value (I32.CONST i) to the stack.
+  c. Push the value (I32.CONST (n - 1)) to the stack.
+  d. Execute the instruction (TABLE.COPY x y).
+
+Step_read/table.init x y
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST j) from the stack.
+8. If ((i + n) > |$elem(z, y).REFS|), then:
+  a. Trap.
+9. If ((j + n) > |$table(z, x).REFS|), then:
+  a. Trap.
+10. If (n is 0), then:
+  a. Do nothing.
+11. Else if (i < |$elem(z, y).REFS|), then:
+  a. Push the value (I32.CONST j) to the stack.
+  b. Push the value $elem(z, y).REFS[i] to the stack.
+  c. Execute the instruction (TABLE.SET x).
+  d. Push the value (I32.CONST (j + 1)) to the stack.
+  e. Push the value (I32.CONST (i + 1)) to the stack.
+  f. Push the value (I32.CONST (n - 1)) to the stack.
+  g. Execute the instruction (TABLE.INIT x y).
+
+Step_read/load numtype_u0 loadop__u2? x ao
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST i) from the stack.
+4. If loadop__u2? is not defined, then:
+  a. Let nt be numtype_u0.
+  b. If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|), then:
+    1) Trap.
+  c. Let c be $nbytes__1^-1(nt, $mem(z, x).BYTES[(i + ao.OFFSET) : ($size(nt) / 8)]).
+  d. Push the value (nt.CONST c) to the stack.
+5. If the type of numtype_u0 is Inn, then:
+  a. If loadop__u2? is defined, then:
+    1) Let ?(loadop__0) be loadop__u2?.
+    2) Let (n, sx) be loadop__0.
+    3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
+      a) Trap.
+  b. Let Inn be numtype_u0.
+  c. If loadop__u2? is defined, then:
+    1) Let ?(loadop__0) be loadop__u2?.
+    2) Let (n, sx) be loadop__0.
+    3) Let c be $ibytes__1^-1(n, $mem(z, x).BYTES[(i + ao.OFFSET) : (n / 8)]).
+    4) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
+
+Step_read/vload V128 vloadop__u0? x ao
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST i) from the stack.
+4. If ((((i + ao.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|) and vloadop__u0? is not defined), then:
+  a. Trap.
+5. If vloadop__u0? is not defined, then:
+  a. Let c be $vbytes__1^-1(V128, $mem(z, x).BYTES[(i + ao.OFFSET) : ($vsize(V128) / 8)]).
+  b. Push the value (V128.CONST c) to the stack.
+6. Else:
+  a. Let ?(vloadop__0) be vloadop__u0?.
+  b. If vloadop__0 is of the case SHAPE, then:
+    1) Let (SHAPE M X K sx) be vloadop__0.
+    2) If (((i + ao.OFFSET) + ((M · K) / 8)) > |$mem(z, x).BYTES|), then:
+      a) Trap.
+    3) If the type of $lsizenn^-1((M · 2)) is Jnn, then:
+      a) Let Jnn be $lsizenn^-1((M · 2)).
+      b) Let j^K be $ibytes__1^-1(M, $mem(z, x).BYTES[((i + ao.OFFSET) + ((k · M) / 8)) : (M / 8)])^(k<K).
+      c) Let c be $invlanes_((Jnn X K), $extend__(M, $lsizenn(Jnn), sx, j)^K).
+      d) Push the value (V128.CONST c) to the stack.
+  c. If vloadop__0 is of the case SPLAT, then:
+    1) Let (SPLAT N) be vloadop__0.
+    2) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
+      a) Trap.
+    3) Let M be (128 / N).
+    4) If the type of $lsize^-1(N) is Jnn, then:
+      a) Let Jnn be $lsize^-1(N).
+      b) Let j be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
+      c) Let c be $invlanes_((Jnn X M), j^M).
+      d) Push the value (V128.CONST c) to the stack.
+  d. If vloadop__0 is of the case ZERO, then:
+    1) Let (ZERO N) be vloadop__0.
+    2) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
+      a) Trap.
+    3) Let j be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
+    4) Let c be $extend__(N, 128, U, j).
+    5) Push the value (V128.CONST c) to the stack.
+
+Step_read/vload_lane V128 N x ao j
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+3. Pop the value (V128.CONST c_1) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
+  a. Trap.
+7. Let M be ($vsize(V128) / N).
+8. If the type of $lsize^-1(N) is Jnn, then:
+  a. Let Jnn be $lsize^-1(N).
+  b. Let k be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
+  c. Let c be $invlanes_((Jnn X M), $lanes_((Jnn X M), c_1) with [j] replaced by k).
+  d. Push the value (V128.CONST c) to the stack.
+
+Step_read/memory.size x
+1. Let z be the current state.
+2. Let (n · (64 · $Ki())) be |$mem(z, x).BYTES|.
+3. Push the value (I32.CONST n) to the stack.
+
+Step_read/memory.fill x
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value is on the top of the stack.
+5. Pop the value val from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST i) from the stack.
+8. If ((i + n) > |$mem(z, x).BYTES|), then:
+  a. Trap.
+9. If (n is 0), then:
+  a. Do nothing.
+10. Else:
+  a. Push the value (I32.CONST i) to the stack.
+  b. Push the value val to the stack.
+  c. Execute the instruction (STORE I32 ?(8) x $memarg0()).
+  d. Push the value (I32.CONST (i + 1)) to the stack.
+  e. Push the value val to the stack.
+  f. Push the value (I32.CONST (n - 1)) to the stack.
+  g. Execute the instruction (MEMORY.FILL x).
+
+Step_read/memory.copy x_1 x_2
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i_2) from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST i_1) from the stack.
+8. If ((i_1 + n) > |$mem(z, x_1).BYTES|), then:
+  a. Trap.
+9. If ((i_2 + n) > |$mem(z, x_2).BYTES|), then:
+  a. Trap.
+10. If (n is 0), then:
+  a. Do nothing.
+11. Else:
+  a. If (i_1 ≤ i_2), then:
+    1) Push the value (I32.CONST i_1) to the stack.
+    2) Push the value (I32.CONST i_2) to the stack.
+    3) Execute the instruction (LOAD I32 ?((8, U)) x_2 $memarg0()).
+    4) Execute the instruction (STORE I32 ?(8) x_1 $memarg0()).
+    5) Push the value (I32.CONST (i_1 + 1)) to the stack.
+    6) Push the value (I32.CONST (i_2 + 1)) to the stack.
+  b. Else:
+    1) Push the value (I32.CONST ((i_1 + n) - 1)) to the stack.
+    2) Push the value (I32.CONST ((i_2 + n) - 1)) to the stack.
+    3) Execute the instruction (LOAD I32 ?((8, U)) x_2 $memarg0()).
+    4) Execute the instruction (STORE I32 ?(8) x_1 $memarg0()).
+    5) Push the value (I32.CONST i_1) to the stack.
+    6) Push the value (I32.CONST i_2) to the stack.
+  c. Push the value (I32.CONST (n - 1)) to the stack.
+  d. Execute the instruction (MEMORY.COPY x_1 x_2).
+
+Step_read/memory.init x y
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+7. Pop the value (I32.CONST j) from the stack.
+8. If ((i + n) > |$data(z, y).BYTES|), then:
+  a. Trap.
+9. If ((j + n) > |$mem(z, x).BYTES|), then:
+  a. Trap.
+10. If (n is 0), then:
+  a. Do nothing.
+11. Else if (i < |$data(z, y).BYTES|), then:
+  a. Push the value (I32.CONST j) to the stack.
+  b. Push the value (I32.CONST $data(z, y).BYTES[i]) to the stack.
+  c. Execute the instruction (STORE I32 ?(8) x $memarg0()).
+  d. Push the value (I32.CONST (j + 1)) to the stack.
+  e. Push the value (I32.CONST (i + 1)) to the stack.
+  f. Push the value (I32.CONST (n - 1)) to the stack.
+  g. Execute the instruction (MEMORY.INIT x y).
+
+Step/throw x
+1. Let z be the current state.
+2. Assert: Due to validation, (x < |$tagaddr(z)|).
+3. Let a be |$exninst(z)|.
+4. Assert: Due to validation, $expanddt($tag(z, x).TYPE) is of the case FUNC.
+5. Let (FUNC functype_0) be $expanddt($tag(z, x).TYPE).
+6. Let (t^n -> valtype_1) be functype_0.
+7. Assert: Due to validation, (valtype_1 is []).
+8. Assert: Due to validation, there are at least n values on the top of the stack.
+9. Pop the values val^n from the stack.
+10. Let exn be { TAG: $tagaddr(z)[x]; FIELDS: val^n; }.
+11. Perform $add_exninst(z, [exn]).
+12. Push the value (REF.EXN_ADDR a) to the stack.
+13. Execute the instruction THROW_REF.
+
+Step/struct.new x
+1. Let z be the current state.
+2. Let a be |$structinst(z)|.
+3. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
+4. Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
+5. Let (mut, zt)^n be fieldtype_0.
+6. Assert: Due to validation, there are at least n values on the top of the stack.
+7. Pop the values val^n from the stack.
+8. Let si be { TYPE: $type(z, x); FIELDS: $packfield_(zt, val)^n; }.
+9. Push the value (REF.STRUCT_ADDR a) to the stack.
+10. Perform $add_structinst(z, [si]).
+
+Step/struct.set x i
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value val from the stack.
+4. Assert: Due to validation, a value is on the top of the stack.
+5. Pop the value instr_u0 from the stack.
+6. If instr_u0 is of the case REF.NULL, then:
+  a. Trap.
+7. If instr_u0 is of the case REF.STRUCT_ADDR, then:
+  a. Let (REF.STRUCT_ADDR a) be instr_u0.
+  b. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
+  c. Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
+  d. Let (mut, zt)* be fieldtype_0.
+  e. If ((|mut*| is |zt*|) and (i < |zt*|)), then:
+    1) Perform $with_struct(z, a, i, $packfield_(zt*[i], val)).
+
+Step/array.new_fixed x n
+1. Let z be the current state.
+2. Assert: Due to validation, there are at least n values on the top of the stack.
+3. Pop the values val^n from the stack.
+4. Let a be |$arrayinst(z)|.
+5. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
+6. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+7. Let (mut, zt) be arraytype_0.
+8. Let ai be { TYPE: $type(z, x); FIELDS: $packfield_(zt, val)^n; }.
+9. Push the value (REF.ARRAY_ADDR a) to the stack.
+10. Perform $add_arrayinst(z, [ai]).
+
+Step/array.set x
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value val from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. Assert: Due to validation, a value is on the top of the stack.
+7. Pop the value instr_u0 from the stack.
+8. If instr_u0 is of the case REF.NULL, then:
+  a. Trap.
+9. If instr_u0 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be instr_u0.
+  b. If ((a < |$arrayinst(z)|) and (i ≥ |$arrayinst(z)[a].FIELDS|)), then:
+    1) Trap.
+  c. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
+  d. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
+  e. Let (mut, zt) be arraytype_0.
+  f. Perform $with_array(z, a, i, $packfield_(zt, val)).
+
+Step/local.set x
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value val from the stack.
+4. Perform $with_local(z, x, val).
+
+Step/global.set x
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value val from the stack.
+4. Perform $with_global(z, x, val).
+
+Step/table.set x
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value ref from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If (i ≥ |$table(z, x).REFS|), then:
+  a. Trap.
+7. Perform $with_table(z, x, i, ref).
+
+Step/table.grow x
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Assert: Due to validation, a value is on the top of the stack.
+5. Pop the value ref from the stack.
+6. Either:
+  a. Let ti be $growtable($table(z, x), n, ref).
+  b. Push the value (I32.CONST |$table(z, x).REFS|) to the stack.
+  c. Perform $with_tableinst(z, x, ti).
+7. Or:
+  a. Push the value (I32.CONST $invsigned_(32, (- 1))) to the stack.
+
+Step/elem.drop x
+1. Let z be the current state.
+2. Perform $with_elem(z, x, []).
+
+Step/store nt sz_u0? x ao
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type numtype_u1 is on the top of the stack.
+3. Pop the value (numtype_u1.CONST c) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If (numtype_u1 is nt), then:
+  a. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|) and sz_u0? is not defined), then:
+    1) Trap.
+  b. If sz_u0? is not defined, then:
+    1) Let b* be $nbytes_(nt, c).
+    2) Perform $with_mem(z, x, (i + ao.OFFSET), ($size(nt) / 8), b*).
+7. If the type of numtype_u1 is Inn, then:
+  a. If sz_u0? is defined, then:
+    1) Let ?(n) be sz_u0?.
+    2) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
+      a) Trap.
+  b. Let Inn be numtype_u1.
+  c. If sz_u0? is defined, then:
+    1) Let ?(n) be sz_u0?.
+    2) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
+    3) Perform $with_mem(z, x, (i + ao.OFFSET), (n / 8), b*).
+
+Step/vstore V128 x ao
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+3. Pop the value (V128.CONST c) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If (((i + ao.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|), then:
+  a. Trap.
+7. Let b* be $vbytes_(V128, c).
+8. Perform $with_mem(z, x, (i + ao.OFFSET), ($vsize(V128) / 8), b*).
+
+Step/vstore_lane V128 N x ao j
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
+3. Pop the value (V128.CONST c) from the stack.
+4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+5. Pop the value (I32.CONST i) from the stack.
+6. If (((i + ao.OFFSET) + N) > |$mem(z, x).BYTES|), then:
+  a. Trap.
+7. Let M be (128 / N).
+8. If the type of $lsize^-1(N) is Jnn, then:
+  a. Let Jnn be $lsize^-1(N).
+  b. If (j < |$lanes_((Jnn X M), c)|), then:
+    1) Let b* be $ibytes_(N, $lanes_((Jnn X M), c)[j]).
+    2) Perform $with_mem(z, x, (i + ao.OFFSET), (N / 8), b*).
+
+Step/memory.grow x
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+3. Pop the value (I32.CONST n) from the stack.
+4. Either:
+  a. Let mi be $growmem($mem(z, x), n).
+  b. Push the value (I32.CONST (|$mem(z, x).BYTES| / (64 · $Ki()))) to the stack.
+  c. Perform $with_meminst(z, x, mi).
+5. Or:
+  a. Push the value (I32.CONST $invsigned_(32, (- 1))) to the stack.
+
+Step/data.drop x
+1. Let z be the current state.
+2. Perform $with_data(z, x, []).
 
 Ki
 1. Return 1024.
@@ -26138,1434 +27566,6 @@ allocXs X Y X_u0* Y_u1*
 
 var X
 1. Return 0.
-
-Step_pure/unreachable
-1. Trap.
-
-Step_pure/nop
-1. Do nothing.
-
-Step_pure/drop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. Do nothing.
-
-Step_pure/select t*?
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST c) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value val_2 from the stack.
-5. Assert: Due to validation, a value is on the top of the stack.
-6. Pop the value val_1 from the stack.
-7. If (c is not 0), then:
-  a. Push the value val_1 to the stack.
-8. Else:
-  a. Push the value val_2 to the stack.
-
-Step_pure/if bt instr_1* instr_2*
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST c) from the stack.
-3. If (c is not 0), then:
-  a. Execute the instruction (BLOCK bt instr_1*).
-4. Else:
-  a. Execute the instruction (BLOCK bt instr_2*).
-
-Step_pure/label
-1. Pop all values val* from the top of the stack.
-2. Assert: Due to validation, a label is now on the top of the stack.
-3. Pop the current label from the stack.
-4. Push the values val* to the stack.
-
-Step_pure/br l
-1. Pop all values val* from the top of the stack.
-2. If the top of the stack is a LABEL_, then:
-  a. Push the values val* to the stack.
-  b. Let L be the current label.
-  c. Let n be the arity of L.
-  d. Let instr'* be the continuation of L.
-  e. If (l is 0), then:
-    1) Assert: Due to validation, there are at least n values on the top of the stack.
-    2) Pop the values val^n from the stack.
-    3) Pop all values val'* from the top of the stack.
-    4) Pop the current label from the stack.
-    5) Push the values val^n to the stack.
-    6) Execute the instruction instr'*.
-  f. Else:
-    1) Pop all values val* from the top of the stack.
-    2) If (l > 0), then:
-      a) Pop the current label from the stack.
-      b) Push the values val* to the stack.
-      c) Execute the instruction (BR (l - 1)).
-3. Else if the top of the stack is a HANDLER_, then:
-  a. Push the values val* to the stack.
-  b. Pop all values val* from the top of the stack.
-  c. Exit from HANDLER_.
-  d. Push the values val* to the stack.
-  e. Execute the instruction (BR l).
-
-Step_pure/br_if l
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST c) from the stack.
-3. If (c is not 0), then:
-  a. Execute the instruction (BR l).
-4. Else:
-  a. Do nothing.
-
-Step_pure/br_table l* l'
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST i) from the stack.
-3. If (i < |l*|), then:
-  a. Execute the instruction (BR l*[i]).
-4. Else:
-  a. Execute the instruction (BR l').
-
-Step_pure/br_on_null l
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. If val is of the case REF.NULL, then:
-  a. Execute the instruction (BR l).
-4. Else:
-  a. Push the value val to the stack.
-
-Step_pure/br_on_non_null l
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. If val is of the case REF.NULL, then:
-  a. Do nothing.
-4. Else:
-  a. Push the value val to the stack.
-  b. Execute the instruction (BR l).
-
-Step_pure/call_indirect x yy
-1. Execute the instruction (TABLE.GET x).
-2. Execute the instruction (REF.CAST (REF (NULL ?(()) ?) yy)).
-3. Execute the instruction (CALL_REF yy).
-
-Step_pure/return_call_indirect x yy
-1. Execute the instruction (TABLE.GET x).
-2. Execute the instruction (REF.CAST (REF (NULL ?(()) ?) yy)).
-3. Execute the instruction (RETURN_CALL_REF yy).
-
-Step_pure/frame
-1. Let f be the current frame.
-2. Let n be the arity of f.
-3. Assert: Due to validation, there are at least n values on the top of the stack.
-4. Assert: Due to validation, there are at least n values on the top of the stack.
-5. Pop the values val^n from the stack.
-6. Assert: Due to validation, a frame is now on the top of the stack.
-7. Pop the current frame from the stack.
-8. Push the values val^n to the stack.
-
-Step_pure/return
-1. Pop all values val* from the top of the stack.
-2. If the top of the stack is a FRAME_, then:
-  a. Push the values val* to the stack.
-  b. Let f be the current frame.
-  c. Let n be the arity of f.
-  d. Assert: Due to validation, there are at least n values on the top of the stack.
-  e. Pop the values val^n from the stack.
-  f. Pop all values val'* from the top of the stack.
-  g. Pop the current frame from the stack.
-  h. Push the values val^n to the stack.
-3. Else if the top of the stack is a LABEL_, then:
-  a. Push the values val* to the stack.
-  b. Pop all values val* from the top of the stack.
-  c. Pop the current label from the stack.
-  d. Push the values val* to the stack.
-  e. Execute the instruction RETURN.
-4. Else if the top of the stack is a HANDLER_, then:
-  a. Push the values val* to the stack.
-  b. Pop all values val* from the top of the stack.
-  c. Exit from HANDLER_.
-  d. Push the values val* to the stack.
-  e. Execute the instruction RETURN.
-
-Step_pure/handler
-1. Pop all values val* from the top of the stack.
-2. Assert: Due to validation, YetE (a handler is now on the top of the stack).
-3. Exit from HANDLER_.
-4. Push the values val* to the stack.
-
-Step_pure/unop nt unop
-1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_1) from the stack.
-3. Assert: Due to validation, (numtype_0 is nt).
-4. If (|$unop_(nt, unop, c_1)| ≤ 0), then:
-  a. Trap.
-5. Let c be an element of $unop_(nt, unop, c_1).
-6. Push the value (nt.CONST c) to the stack.
-
-Step_pure/binop nt binop
-1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_2) from the stack.
-3. Assert: Due to validation, (numtype_0 is nt).
-4. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
-5. Pop the value (numtype_0.CONST c_1) from the stack.
-6. If (|$binop_(nt, binop, c_1, c_2)| ≤ 0), then:
-  a. Trap.
-7. Let c be an element of $binop_(nt, binop, c_1, c_2).
-8. Push the value (nt.CONST c) to the stack.
-
-Step_pure/testop nt testop
-1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_1) from the stack.
-3. Assert: Due to validation, (numtype_0 is nt).
-4. Let c be $testop_(nt, testop, c_1).
-5. Push the value (I32.CONST c) to the stack.
-
-Step_pure/relop nt relop
-1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_2) from the stack.
-3. Assert: Due to validation, (numtype_0 is nt).
-4. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
-5. Pop the value (numtype_0.CONST c_1) from the stack.
-6. Let c be $relop_(nt, relop, c_1, c_2).
-7. Push the value (I32.CONST c) to the stack.
-
-Step_pure/cvtop nt_2 nt_1 cvtop
-1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_1) from the stack.
-3. Assert: Due to validation, (numtype_0 is nt_1).
-4. If (|$cvtop__(nt_1, nt_2, cvtop, c_1)| ≤ 0), then:
-  a. Trap.
-5. Let c be an element of $cvtop__(nt_1, nt_2, cvtop, c_1).
-6. Push the value (nt_2.CONST c) to the stack.
-
-Step_pure/ref.i31
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST i) from the stack.
-3. Push the value (REF.I31_NUM $wrap__(32, 31, i)) to the stack.
-
-Step_pure/ref.is_null
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value ref from the stack.
-3. If ref is of the case REF.NULL, then:
-  a. Push the value (I32.CONST 1) to the stack.
-4. Else:
-  a. Push the value (I32.CONST 0) to the stack.
-
-Step_pure/ref.as_non_null
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value ref from the stack.
-3. If ref is of the case REF.NULL, then:
-  a. Trap.
-4. Push the value ref to the stack.
-
-Step_pure/ref.eq
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value ref_2 from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value ref_1 from the stack.
-5. If ref_1 is of the case REF.NULL, then:
-  a. If ref_2 is of the case REF.NULL, then:
-    1) Push the value (I32.CONST 1) to the stack.
-  b. Else if (ref_1 is ref_2), then:
-    1) Push the value (I32.CONST 1) to the stack.
-  c. Else:
-    1) Push the value (I32.CONST 0) to the stack.
-6. Else if (ref_1 is ref_2), then:
-  a. Push the value (I32.CONST 1) to the stack.
-7. Else:
-  a. Push the value (I32.CONST 0) to the stack.
-
-Step_pure/i31.get sx
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value instr_u0 from the stack.
-3. If instr_u0 is of the case REF.NULL, then:
-  a. Trap.
-4. If instr_u0 is of the case REF.I31_NUM, then:
-  a. Let (REF.I31_NUM i) be instr_u0.
-  b. Push the value (I32.CONST $extend__(31, 32, sx, i)) to the stack.
-
-Step_pure/array.new x
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop the value val from the stack.
-5. Push the values val^n to the stack.
-6. Execute the instruction (ARRAY.NEW_FIXED x n).
-
-Step_pure/extern.convert_any
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value instr_u0 from the stack.
-3. If instr_u0 is of the case REF.NULL, then:
-  a. Push the value (REF.NULL EXTERN) to the stack.
-4. If the type of instr_u0 is addrref, then:
-  a. Let addrref be instr_u0.
-  b. Push the value (REF.EXTERN addrref) to the stack.
-
-Step_pure/any.convert_extern
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value instr_u0 from the stack.
-3. If instr_u0 is of the case REF.NULL, then:
-  a. Push the value (REF.NULL ANY) to the stack.
-4. If instr_u0 is of the case REF.EXTERN, then:
-  a. Let (REF.EXTERN addrref) be instr_u0.
-  b. Push the value addrref to the stack.
-
-Step_pure/vvunop V128 vvunop
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. Assert: Due to validation, (|$vvunop_(V128, vvunop, c_1)| > 0).
-4. Let c be an element of $vvunop_(V128, vvunop, c_1).
-5. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vvbinop V128 vvbinop
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Assert: Due to validation, (|$vvbinop_(V128, vvbinop, c_1, c_2)| > 0).
-6. Let c be an element of $vvbinop_(V128, vvbinop, c_1, c_2).
-7. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vvternop V128 vvternop
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_3) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_2) from the stack.
-5. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-6. Pop the value (V128.CONST c_1) from the stack.
-7. Assert: Due to validation, (|$vvternop_(V128, vvternop, c_1, c_2, c_3)| > 0).
-8. Let c be an element of $vvternop_(V128, vvternop, c_1, c_2, c_3).
-9. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vvtestop V128 ANY_TRUE
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. Let c be $ine_($vsize(V128), c_1, 0).
-4. Push the value (I32.CONST c) to the stack.
-
-Step_pure/vunop sh vunop
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. If (|$vunop_(sh, vunop, c_1)| ≤ 0), then:
-  a. Trap.
-4. Let c be an element of $vunop_(sh, vunop, c_1).
-5. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vbinop sh vbinop
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. If (|$vbinop_(sh, vbinop, c_1, c_2)| ≤ 0), then:
-  a. Trap.
-6. Let c be an element of $vbinop_(sh, vbinop, c_1, c_2).
-7. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vtestop (Jnn X M) ALL_TRUE
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c) from the stack.
-3. Let ci_1* be $lanes_((Jnn X M), c).
-4. If (ci_1 is not 0)*, then:
-  a. Push the value (I32.CONST 1) to the stack.
-5. Else:
-  a. Push the value (I32.CONST 0) to the stack.
-
-Step_pure/vrelop sh vrelop
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c be $vrelop_(sh, vrelop, c_1, c_2).
-6. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vshiftop (Jnn X M) vshiftop
-1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-2. Pop the value (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c'* be $lanes_((Jnn X M), c_1).
-6. Let c be $invlanes_((Jnn X M), $vshiftop_((Jnn X M), vshiftop, c', n)*).
-7. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vbitmask (Jnn X M)
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c) from the stack.
-3. Let ci_1* be $lanes_((Jnn X M), c).
-4. Let ci be $ibits__1^-1(32, $ilt_($lsize(Jnn), S, ci_1, 0)*).
-5. Push the value (I32.CONST ci) to the stack.
-
-Step_pure/vswizzle (Pnn X M)
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c'* be $lanes_((Pnn X M), c_1) :: 0^(256 - M).
-6. Let ci* be $lanes_((Pnn X M), c_2).
-7. Assert: Due to validation, (ci*[k] < |c'*|)^(k<M).
-8. Assert: Due to validation, (k < |ci*|)^(k<M).
-9. Let c be $invlanes_((Pnn X M), c'*[ci*[k]]^(k<M)).
-10. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vshuffle (Pnn X M) i*
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Assert: Due to validation, (k < |i*|)^(k<M).
-6. Let c'* be $lanes_((Pnn X M), c_1) :: $lanes_((Pnn X M), c_2).
-7. Assert: Due to validation, (i*[k] < |c'*|)^(k<M).
-8. Let c be $invlanes_((Pnn X M), c'*[i*[k]]^(k<M)).
-9. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vsplat (Lnn X M)
-1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_1) from the stack.
-3. Assert: Due to validation, (numtype_0 is $lunpack(Lnn)).
-4. Let c be $invlanes_((Lnn X M), $lpacknum_(Lnn, c_1)^M).
-5. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vextract_lane (lanetype_u0 X M) sx_u1? i
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. If (sx_u1? is not defined and the type of lanetype_u0 is numtype), then:
-  a. Let nt be lanetype_u0.
-  b. If (i < |$lanes_((nt X M), c_1)|), then:
-    1) Let c_2 be $lanes_((nt X M), c_1)[i].
-    2) Push the value (nt.CONST c_2) to the stack.
-4. If the type of lanetype_u0 is packtype, then:
-  a. Let pt be lanetype_u0.
-  b. If sx_u1? is defined, then:
-    1) Let ?(sx) be sx_u1?.
-    2) If (i < |$lanes_((pt X M), c_1)|), then:
-      a) Let c_2 be $extend__($psize(pt), 32, sx, $lanes_((pt X M), c_1)[i]).
-      b) Push the value (I32.CONST c_2) to the stack.
-
-Step_pure/vreplace_lane (Lnn X M) i
-1. Assert: Due to validation, a value of value type numtype_0 is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_2) from the stack.
-3. Assert: Due to validation, (numtype_0 is $lunpack(Lnn)).
-4. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-5. Pop the value (V128.CONST c_1) from the stack.
-6. Let c be $invlanes_((Lnn X M), $lanes_((Lnn X M), c_1) with [i] replaced by $lpacknum_(Lnn, c_2)).
-7. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vextunop sh_2 sh_1 vextunop
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. Let c be $vextunop__(sh_1, sh_2, vextunop, c_1).
-4. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vextbinop sh_2 sh_1 vextbinop
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let c be $vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2).
-6. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vnarrow (Jnn_2 X M_2) (Jnn_1 X M_1) sx
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-4. Pop the value (V128.CONST c_1) from the stack.
-5. Let ci_1* be $lanes_((Jnn_1 X M_1), c_1).
-6. Let ci_2* be $lanes_((Jnn_1 X M_1), c_2).
-7. Let cj_1* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_1)*.
-8. Let cj_2* be $narrow__($lsize(Jnn_1), $lsize(Jnn_2), sx, ci_2)*.
-9. Let c be $invlanes_((Jnn_2 X M_2), cj_1* :: cj_2*).
-10. Push the value (V128.CONST c) to the stack.
-
-Step_pure/vcvtop (lanetype_u5 X n_u0) (lanetype_u6 X n_u1) vcvtop half___u4? zero___u13?
-1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-2. Pop the value (V128.CONST c_1) from the stack.
-3. If (half___u4? is not defined and zero___u13? is not defined), then:
-  a. Let Lnn_1 be lanetype_u6.
-  b. Let Lnn_2 be lanetype_u5.
-  c. Let M be n_u1.
-  d. If (n_u0 is M), then:
-    1) Let ci* be $lanes_((Lnn_1 X M), c_1).
-    2) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__((Lnn_1 X M), (Lnn_2 X M), vcvtop, ci)*).
-    3) If (|$invlanes_((Lnn_2 X M), cj*)*| > 0), then:
-      a) Let c be an element of $invlanes_((Lnn_2 X M), cj*)*.
-      b) Push the value (V128.CONST c) to the stack.
-4. If zero___u13? is not defined, then:
-  a. Let Lnn_1 be lanetype_u6.
-  b. Let Lnn_2 be lanetype_u5.
-  c. Let M_1 be n_u1.
-  d. Let M_2 be n_u0.
-  e. If half___u4? is defined, then:
-    1) Let ?(half) be half___u4?.
-    2) Let ci* be $lanes_((Lnn_1 X M_1), c_1)[$half__((Lnn_1 X M_1), (Lnn_2 X M_2), half, 0, M_2) : M_2].
-    3) Let cj** be $setproduct_(lane_(Lnn_2), $vcvtop__((Lnn_1 X M_1), (Lnn_2 X M_2), vcvtop, ci)*).
-    4) If (|$invlanes_((Lnn_2 X M_2), cj*)*| > 0), then:
-      a) Let c be an element of $invlanes_((Lnn_2 X M_2), cj*)*.
-      b) Push the value (V128.CONST c) to the stack.
-5. If half___u4? is not defined, then:
-  a. Let M_1 be n_u1.
-  b. Let M_2 be n_u0.
-  c. If the type of lanetype_u6 is numtype, then:
-    1) Let nt_1 be lanetype_u6.
-    2) If the type of lanetype_u5 is numtype, then:
-      a) Let nt_2 be lanetype_u5.
-      b) If zero___u13? is defined, then:
-        1. Let ci* be $lanes_((nt_1 X M_1), c_1).
-        2. Let cj** be $setproduct_(lane_((nt_2 : numtype <: lanetype)), $vcvtop__((nt_1 X M_1), (nt_2 X M_2), vcvtop, ci)* :: [$zero(nt_2)]^M_1).
-        3. If (|$invlanes_((nt_2 X M_2), cj*)*| > 0), then:
-          a. Let c be an element of $invlanes_((nt_2 X M_2), cj*)*.
-          b. Push the value (V128.CONST c) to the stack.
-
-Step_pure/local.tee x
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value val from the stack.
-3. Push the value val to the stack.
-4. Push the value val to the stack.
-5. Execute the instruction (LOCAL.SET x).
-
-Step_read/block bt instr*
-1. Let z be the current state.
-2. Let (t_1^m -> t_2^n) be $blocktype_(z, bt).
-3. Assert: Due to validation, there are at least m values on the top of the stack.
-4. Pop the values val^m from the stack.
-5. Let L be the label_n{[]}.
-6. Enter val^m :: instr* with label L.
-
-Step_read/loop bt instr*
-1. Let z be the current state.
-2. Let (t_1^m -> t_2^n) be $blocktype_(z, bt).
-3. Assert: Due to validation, there are at least m values on the top of the stack.
-4. Pop the values val^m from the stack.
-5. Let L be the label_m{[(LOOP bt instr*)]}.
-6. Enter val^m :: instr* with label L.
-
-Step_read/br_on_cast l rt_1 rt_2
-1. Let f be the current frame.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value ref from the stack.
-4. Let rt be $Ref_type(ref).
-5. Push the value ref to the stack.
-6. If rt does not match $inst_reftype(f.MODULE, rt_2), then:
-  a. Do nothing.
-7. Else:
-  a. Execute the instruction (BR l).
-
-Step_read/br_on_cast_fail l rt_1 rt_2
-1. Let f be the current frame.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value ref from the stack.
-4. Let rt be $Ref_type(ref).
-5. Push the value ref to the stack.
-6. If rt matches $inst_reftype(f.MODULE, rt_2), then:
-  a. Do nothing.
-7. Else:
-  a. Execute the instruction (BR l).
-
-Step_read/call x
-1. Let z be the current state.
-2. Assert: Due to validation, (x < |$moduleinst(z).FUNCS|).
-3. Let a be $moduleinst(z).FUNCS[x].
-4. Assert: Due to validation, (a < |$funcinst(z)|).
-5. Push the value (REF.FUNC_ADDR a) to the stack.
-6. Execute the instruction (CALL_REF $funcinst(z)[a].TYPE).
-
-Step_read/call_ref yy
-1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value instr_u0 from the stack.
-4. If instr_u0 is of the case REF.NULL, then:
-  a. Trap.
-5. If instr_u0 is of the case REF.FUNC_ADDR, then:
-  a. Let (REF.FUNC_ADDR a) be instr_u0.
-  b. If (a < |$funcinst(z)|), then:
-    1) Let fi be $funcinst(z)[a].
-    2) Assert: Due to validation, fi.CODE is of the case FUNC.
-    3) Let (FUNC x local_0 instr*) be fi.CODE.
-    4) Assert: Due to validation, local_0 is of the case LOCAL.
-    5) Let (LOCAL t)* be local_0.
-    6) Assert: Due to validation, $expanddt(fi.TYPE) is of the case FUNC.
-    7) Let (FUNC functype_0) be $expanddt(fi.TYPE).
-    8) Let (t_1^n -> t_2^m) be functype_0.
-    9) Assert: Due to validation, there are at least n values on the top of the stack.
-    10) Pop the values val^n from the stack.
-    11) Let f be { LOCALS: ?(val)^n :: $default_(t)*; MODULE: fi.MODULE; }.
-    12) Let F be the activation of f with arity m.
-    13) Push F to the stack.
-    14) Let L be the label_m{[]}.
-    15) Enter instr* with label L.
-
-Step_read/return_call x
-1. Let z be the current state.
-2. Assert: Due to validation, (x < |$moduleinst(z).FUNCS|).
-3. Let a be $moduleinst(z).FUNCS[x].
-4. Assert: Due to validation, (a < |$funcinst(z)|).
-5. Push the value (REF.FUNC_ADDR a) to the stack.
-6. Execute the instruction (RETURN_CALL_REF $funcinst(z)[a].TYPE).
-
-Step_read/return_call_ref yy
-1. Let z be the current state.
-2. Pop all values val* from the top of the stack.
-3. If the top of the stack is a LABEL_, then:
-  a. Push the values val* to the stack.
-  b. Pop all values val* from the top of the stack.
-  c. Pop the current label from the stack.
-  d. Push the values val* to the stack.
-  e. Execute the instruction (RETURN_CALL_REF yy).
-4. Else if the top of the stack is a HANDLER_, then:
-  a. Push the values val* to the stack.
-  b. Pop all values val* from the top of the stack.
-  c. Exit from HANDLER_.
-  d. Push the values val* to the stack.
-  e. Execute the instruction (RETURN_CALL_REF yy).
-5. Else if the top of the stack is a FRAME_, then:
-  a. Push the values val* to the stack.
-  b. Assert: Due to validation, a value is on the top of the stack.
-  c. Pop the value instr_u0 from the stack.
-  d. Pop all values val* from the top of the stack.
-  e. If instr_u0 is of the case REF.NULL, then:
-    1) Pop the current frame from the stack.
-    2) Trap.
-  f. If instr_u0 is of the case REF.FUNC_ADDR, then:
-    1) Let (REF.FUNC_ADDR a) be instr_u0.
-    2) If (a < |$funcinst(z)|), then:
-      a) Assert: Due to validation, $expanddt($funcinst(z)[a].TYPE) is of the case FUNC.
-      b) Let (FUNC functype_0) be $expanddt($funcinst(z)[a].TYPE).
-      c) Let (t_1^n -> t_2^m) be functype_0.
-      d) Assert: Due to validation, there are at least n values on the top of the stack.
-      e) Pop the values val^n from the stack.
-      f) Pop all values val'* from the top of the stack.
-      g) Pop the current frame from the stack.
-      h) Push the values val^n to the stack.
-      i) Push the value (REF.FUNC_ADDR a) to the stack.
-      j) Execute the instruction (CALL_REF yy).
-
-Step_read/throw_ref
-1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value instr_u0 from the stack.
-4. If instr_u0 is of the case REF.NULL, then:
-  a. Trap.
-5. Pop all values val* from the top of the stack.
-6. If (val* is not []), then:
-  a. If instr_u0 is of the case REF.EXN_ADDR, then:
-    1) Let (REF.EXN_ADDR a) be instr_u0.
-    2) Push the value (REF.EXN_ADDR a) to the stack.
-    3) Execute the instruction THROW_REF.
-7. Else:
-  a. Pop all values val* from the top of the stack.
-  b. If the top of the stack is a LABEL_, then:
-    1) Push the values val* to the stack.
-    2) If instr_u0 is of the case REF.EXN_ADDR, then:
-      a) Let (REF.EXN_ADDR a) be instr_u0.
-      b) Pop the current label from the stack.
-      c) Push the value (REF.EXN_ADDR a) to the stack.
-      d) Execute the instruction THROW_REF.
-  c. Else if the top of the stack is a FRAME_, then:
-    1) Push the values val* to the stack.
-    2) If instr_u0 is of the case REF.EXN_ADDR, then:
-      a) Let (REF.EXN_ADDR a) be instr_u0.
-      b) Pop the current frame from the stack.
-      c) Push the value (REF.EXN_ADDR a) to the stack.
-      d) Execute the instruction THROW_REF.
-  d. Else if not the top of the stack is a HANDLER_, then:
-    1) Throw the exception instr_u0 as a result.
-  e. Else:
-    1) Push the values val* to the stack.
-    2) Let (HANDLER_ n { catch_u1* }) be the current context.
-    3) If instr_u0 is of the case REF.EXN_ADDR, then:
-      a) Let (REF.EXN_ADDR a) be instr_u0.
-      b) If (catch_u1* is []), then:
-        1. Exit from HANDLER_.
-        2. Push the value (REF.EXN_ADDR a) to the stack.
-        3. Execute the instruction THROW_REF.
-      c) Else if (a ≥ |$exninst(z)|), then:
-        1. Let [catch_0] :: catch'* be catch_u1*.
-        2. If catch_0 is of the case CATCH_ALL, then:
-          a. Let (CATCH_ALL l) be catch_0.
-          b. Exit from HANDLER_.
-          c. Execute the instruction (BR l).
-        3. Else if catch_0 is of the case CATCH_ALL_REF, then:
-          a. Let (CATCH_ALL_REF l) be catch_0.
-          b. Exit from HANDLER_.
-          c. Push the value (REF.EXN_ADDR a) to the stack.
-          d. Execute the instruction (BR l).
-        4. Else:
-          a. Let [catch] :: catch'* be catch_u1*.
-          b. Exit from HANDLER_.
-          c. Let H be (HANDLER_ n { catch'* }).
-          d. Push the handler H to the stack.
-          e. Push the value (REF.EXN_ADDR a) to the stack.
-          f. Execute the instruction THROW_REF.
-      d) Else:
-        1. Let val* be $exninst(z)[a].FIELDS.
-        2. Let [catch_0] :: catch'* be catch_u1*.
-        3. If catch_0 is of the case CATCH, then:
-          a. Let (CATCH x l) be catch_0.
-          b. If ((x < |$tagaddr(z)|) and ($exninst(z)[a].TAG is $tagaddr(z)[x])), then:
-            1) Exit from HANDLER_.
-            2) Push the values val* to the stack.
-            3) Execute the instruction (BR l).
-          c. Else:
-            1) Let [catch] :: catch'* be catch_u1*.
-            2) Exit from HANDLER_.
-            3) Let H be (HANDLER_ n { catch'* }).
-            4) Push the handler H to the stack.
-            5) Push the value (REF.EXN_ADDR a) to the stack.
-            6) Execute the instruction THROW_REF.
-        4. Else if catch_0 is of the case CATCH_REF, then:
-          a. Let (CATCH_REF x l) be catch_0.
-          b. If ((x < |$tagaddr(z)|) and ($exninst(z)[a].TAG is $tagaddr(z)[x])), then:
-            1) Exit from HANDLER_.
-            2) Push the values val* to the stack.
-            3) Push the value (REF.EXN_ADDR a) to the stack.
-            4) Execute the instruction (BR l).
-          c. Else:
-            1) Let [catch] :: catch'* be catch_u1*.
-            2) Exit from HANDLER_.
-            3) Let H be (HANDLER_ n { catch'* }).
-            4) Push the handler H to the stack.
-            5) Push the value (REF.EXN_ADDR a) to the stack.
-            6) Execute the instruction THROW_REF.
-        5. Else if catch_0 is of the case CATCH_ALL, then:
-          a. Let (CATCH_ALL l) be catch_0.
-          b. Exit from HANDLER_.
-          c. Execute the instruction (BR l).
-        6. Else if catch_0 is of the case CATCH_ALL_REF, then:
-          a. Let (CATCH_ALL_REF l) be catch_0.
-          b. Exit from HANDLER_.
-          c. Push the value (REF.EXN_ADDR a) to the stack.
-          d. Execute the instruction (BR l).
-        7. Else:
-          a. Let [catch] :: catch'* be catch_u1*.
-          b. Exit from HANDLER_.
-          c. Let H be (HANDLER_ n { catch'* }).
-          d. Push the handler H to the stack.
-          e. Push the value (REF.EXN_ADDR a) to the stack.
-          f. Execute the instruction THROW_REF.
-
-Step_read/try_table bt catch* instr*
-1. Let z be the current state.
-2. Let (t_1^m -> t_2^n) be $blocktype_(z, bt).
-3. Assert: Due to validation, there are at least m values on the top of the stack.
-4. Pop the values val^m from the stack.
-5. Let H be (HANDLER_ n { catch* }).
-6. Push the handler H to the stack.
-7. Let L be the label_n{[]}.
-8. Enter val^m :: instr* with label L.
-
-Step_read/ref.null $idx(x)
-1. Let z be the current state.
-2. Push the value (REF.NULL $type(z, x)) to the stack.
-
-Step_read/ref.func x
-1. Let z be the current state.
-2. Assert: Due to validation, (x < |$moduleinst(z).FUNCS|).
-3. Push the value (REF.FUNC_ADDR $moduleinst(z).FUNCS[x]) to the stack.
-
-Step_read/ref.test rt
-1. Let f be the current frame.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value ref from the stack.
-4. Let rt' be $Ref_type(ref).
-5. If rt' matches $inst_reftype(f.MODULE, rt), then:
-  a. Push the value (I32.CONST 1) to the stack.
-6. Else:
-  a. Push the value (I32.CONST 0) to the stack.
-
-Step_read/ref.cast rt
-1. Let f be the current frame.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value ref from the stack.
-4. Let rt' be $Ref_type(ref).
-5. If rt' does not match $inst_reftype(f.MODULE, rt), then:
-  a. Trap.
-6. Push the value ref to the stack.
-
-Step_read/struct.new_default x
-1. Let z be the current state.
-2. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-3. Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
-4. Let (mut, zt)* be fieldtype_0.
-5. Assert: Due to validation, (|mut*| is |zt*|).
-6. Assert: Due to validation, $default_($unpack(zt)) is defined*.
-7. Let ?(val)* be $default_($unpack(zt))*.
-8. Assert: Due to validation, (|val*| is |zt*|).
-9. Push the values val* to the stack.
-10. Execute the instruction (STRUCT.NEW x).
-
-Step_read/struct.get sx? x i
-1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value instr_u0 from the stack.
-4. If instr_u0 is of the case REF.NULL, then:
-  a. Trap.
-5. If instr_u0 is of the case REF.STRUCT_ADDR, then:
-  a. Let (REF.STRUCT_ADDR a) be instr_u0.
-  b. If ((i < |$structinst(z)[a].FIELDS|) and (a < |$structinst(z)|)), then:
-    1) Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-    2) Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
-    3) Let (mut, zt)* be fieldtype_0.
-    4) If ((|mut*| is |zt*|) and (i < |zt*|)), then:
-      a) Push the value $unpackfield_(zt*[i], sx?, $structinst(z)[a].FIELDS[i]) to the stack.
-
-Step_read/array.new_default x
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
-5. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-6. Let (mut, zt) be arraytype_0.
-7. Assert: Due to validation, $default_($unpack(zt)) is defined.
-8. Let ?(val) be $default_($unpack(zt)).
-9. Push the values val^n to the stack.
-10. Execute the instruction (ARRAY.NEW_FIXED x n).
-
-Step_read/array.new_elem x y
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If ((i + n) > |$elem(z, y).REFS|), then:
-  a. Trap.
-7. Assert: Due to validation, (|$elem(z, y).REFS[i : n]| is n).
-8. Let ref* be $elem(z, y).REFS[i : n].
-9. Push the values ref^n to the stack.
-10. Execute the instruction (ARRAY.NEW_FIXED x n).
-
-Step_read/array.new_data x y
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
-7. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-8. Let (mut, zt) be arraytype_0.
-9. If ((i + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
-  a. Trap.
-10. Assert: Due to validation, (|$concatn__1^-1(byte, ($zsize(zt) / 8), $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)])| is n).
-11. Let byte* be $concatn__1^-1(byte, ($zsize(zt) / 8), $data(z, y).BYTES[i : ((n · $zsize(zt)) / 8)]).
-12. Let c* be $zbytes__1^-1(zt, byte)*.
-13. Push the values $const($cunpack(zt), $cunpacknum_(zt, c))^n to the stack.
-14. Execute the instruction (ARRAY.NEW_FIXED x n).
-
-Step_read/array.get sx? x
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST i) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value instr_u0 from the stack.
-6. If instr_u0 is of the case REF.NULL, then:
-  a. Trap.
-7. If instr_u0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be instr_u0.
-  b. If ((a < |$arrayinst(z)|) and (i ≥ |$arrayinst(z)[a].FIELDS|)), then:
-    1) Trap.
-  c. If ((i < |$arrayinst(z)[a].FIELDS|) and (a < |$arrayinst(z)|)), then:
-    1) Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
-    2) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-    3) Let (mut, zt) be arraytype_0.
-    4) Push the value $unpackfield_(zt, sx?, $arrayinst(z)[a].FIELDS[i]) to the stack.
-
-Step_read/array.len
-1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value instr_u0 from the stack.
-4. If instr_u0 is of the case REF.NULL, then:
-  a. Trap.
-5. If instr_u0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be instr_u0.
-  b. If (a < |$arrayinst(z)|), then:
-    1) Push the value (I32.CONST |$arrayinst(z)[a].FIELDS|) to the stack.
-
-Step_read/array.fill x
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value val from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST i) from the stack.
-8. Assert: Due to validation, a value is on the top of the stack.
-9. Pop the value instr_u0 from the stack.
-10. If instr_u0 is of the case REF.NULL, then:
-  a. Trap.
-11. If instr_u0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be instr_u0.
-  b. If (a ≥ |$arrayinst(z)|), then:
-    1) Do nothing.
-  c. Else if ((i + n) > |$arrayinst(z)[a].FIELDS|), then:
-    1) Trap.
-  d. If (n is 0), then:
-    1) Do nothing.
-  e. Else:
-    1) Push the value (REF.ARRAY_ADDR a) to the stack.
-    2) Push the value (I32.CONST i) to the stack.
-    3) Push the value val to the stack.
-    4) Execute the instruction (ARRAY.SET x).
-    5) Push the value (REF.ARRAY_ADDR a) to the stack.
-    6) Push the value (I32.CONST (i + 1)) to the stack.
-    7) Push the value val to the stack.
-    8) Push the value (I32.CONST (n - 1)) to the stack.
-    9) Execute the instruction (ARRAY.FILL x).
-
-Step_read/array.copy x_1 x_2
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i_2) from the stack.
-6. Assert: Due to validation, a value is on the top of the stack.
-7. Pop the value instr_u0 from the stack.
-8. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-9. Pop the value (I32.CONST i_1) from the stack.
-10. Assert: Due to validation, a value is on the top of the stack.
-11. Pop the value instr_u1 from the stack.
-12. If (instr_u1 is of the case REF.NULL and the type of instr_u0 is ref), then:
-  a. Trap.
-13. If (instr_u0 is of the case REF.NULL and the type of instr_u1 is ref), then:
-  a. Trap.
-14. If instr_u1 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a_1) be instr_u1.
-  b. If instr_u0 is of the case REF.ARRAY_ADDR, then:
-    1) If ((a_1 < |$arrayinst(z)|) and ((i_1 + n) > |$arrayinst(z)[a_1].FIELDS|)), then:
-      a) Trap.
-    2) Let (REF.ARRAY_ADDR a_2) be instr_u0.
-    3) If (a_2 ≥ |$arrayinst(z)|), then:
-      a) Do nothing.
-    4) Else if ((i_2 + n) > |$arrayinst(z)[a_2].FIELDS|), then:
-      a) Trap.
-    5) If (n is 0), then:
-      a) Do nothing.
-    6) Else if ((i_1 ≤ i_2) and $expanddt($type(z, x_2)) is of the case ARRAY), then:
-      a) Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
-      b) Let (mut, zt_2) be arraytype_0.
-      c) Let sx? be $sx(zt_2).
-      d) Push the value (REF.ARRAY_ADDR a_1) to the stack.
-      e) Push the value (I32.CONST i_1) to the stack.
-      f) Push the value (REF.ARRAY_ADDR a_2) to the stack.
-      g) Push the value (I32.CONST i_2) to the stack.
-      h) Execute the instruction (ARRAY.GET sx? x_2).
-      i) Execute the instruction (ARRAY.SET x_1).
-      j) Push the value (REF.ARRAY_ADDR a_1) to the stack.
-      k) Push the value (I32.CONST (i_1 + 1)) to the stack.
-      l) Push the value (REF.ARRAY_ADDR a_2) to the stack.
-      m) Push the value (I32.CONST (i_2 + 1)) to the stack.
-      n) Push the value (I32.CONST (n - 1)) to the stack.
-      o) Execute the instruction (ARRAY.COPY x_1 x_2).
-    7) Else if $expanddt($type(z, x_2)) is of the case ARRAY, then:
-      a) Let (ARRAY arraytype_0) be $expanddt($type(z, x_2)).
-      b) Let (mut, zt_2) be arraytype_0.
-      c) Let sx? be $sx(zt_2).
-      d) Push the value (REF.ARRAY_ADDR a_1) to the stack.
-      e) Push the value (I32.CONST ((i_1 + n) - 1)) to the stack.
-      f) Push the value (REF.ARRAY_ADDR a_2) to the stack.
-      g) Push the value (I32.CONST ((i_2 + n) - 1)) to the stack.
-      h) Execute the instruction (ARRAY.GET sx? x_2).
-      i) Execute the instruction (ARRAY.SET x_1).
-      j) Push the value (REF.ARRAY_ADDR a_1) to the stack.
-      k) Push the value (I32.CONST i_1) to the stack.
-      l) Push the value (REF.ARRAY_ADDR a_2) to the stack.
-      m) Push the value (I32.CONST i_2) to the stack.
-      n) Push the value (I32.CONST (n - 1)) to the stack.
-      o) Execute the instruction (ARRAY.COPY x_1 x_2).
-  c. Else if (n is not 0), then:
-    1) Do nothing.
-
-Step_read/array.init_elem x y
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST j) from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST i) from the stack.
-8. Assert: Due to validation, a value is on the top of the stack.
-9. Pop the value instr_u0 from the stack.
-10. If instr_u0 is of the case REF.NULL, then:
-  a. Trap.
-11. If instr_u0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be instr_u0.
-  b. If ((a < |$arrayinst(z)|) and ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
-    1) Trap.
-  c. If ((j + n) > |$elem(z, y).REFS|), then:
-    1) Trap.
-  d. If (n is 0), then:
-    1) Do nothing.
-  e. Else if (j < |$elem(z, y).REFS|), then:
-    1) Let ref be $elem(z, y).REFS[j].
-    2) Push the value (REF.ARRAY_ADDR a) to the stack.
-    3) Push the value (I32.CONST i) to the stack.
-    4) Push the value ref to the stack.
-    5) Execute the instruction (ARRAY.SET x).
-    6) Push the value (REF.ARRAY_ADDR a) to the stack.
-    7) Push the value (I32.CONST (i + 1)) to the stack.
-    8) Push the value (I32.CONST (j + 1)) to the stack.
-    9) Push the value (I32.CONST (n - 1)) to the stack.
-    10) Execute the instruction (ARRAY.INIT_ELEM x y).
-
-Step_read/array.init_data x y
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST j) from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST i) from the stack.
-8. Assert: Due to validation, a value is on the top of the stack.
-9. Pop the value instr_u0 from the stack.
-10. If instr_u0 is of the case REF.NULL, then:
-  a. Trap.
-11. If instr_u0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be instr_u0.
-  b. If ((a < |$arrayinst(z)|) and ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
-    1) Trap.
-  c. If $expanddt($type(z, x)) is of the case ARRAY, then:
-    1) Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-    2) Let (mut, zt) be arraytype_0.
-    3) If ((j + ((n · $zsize(zt)) / 8)) > |$data(z, y).BYTES|), then:
-      a) Trap.
-    4) If (n is 0), then:
-      a) Do nothing.
-    5) Else:
-      a) Let c be $zbytes__1^-1(zt, $data(z, y).BYTES[j : ($zsize(zt) / 8)]).
-      b) Push the value (REF.ARRAY_ADDR a) to the stack.
-      c) Push the value (I32.CONST i) to the stack.
-      d) Push the value $const($cunpack(zt), $cunpacknum_(zt, c)) to the stack.
-      e) Execute the instruction (ARRAY.SET x).
-      f) Push the value (REF.ARRAY_ADDR a) to the stack.
-      g) Push the value (I32.CONST (i + 1)) to the stack.
-      h) Push the value (I32.CONST (j + ($zsize(zt) / 8))) to the stack.
-      i) Push the value (I32.CONST (n - 1)) to the stack.
-      j) Execute the instruction (ARRAY.INIT_DATA x y).
-  d. Else if (n is 0), then:
-    1) Do nothing.
-
-Step_read/local.get x
-1. Let z be the current state.
-2. Assert: Due to validation, $local(z, x) is defined.
-3. Let ?(val) be $local(z, x).
-4. Push the value val to the stack.
-
-Step_read/global.get x
-1. Let z be the current state.
-2. Let val be $global(z, x).VALUE.
-3. Push the value val to the stack.
-
-Step_read/table.get x
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST i) from the stack.
-4. If (i ≥ |$table(z, x).REFS|), then:
-  a. Trap.
-5. Push the value $table(z, x).REFS[i] to the stack.
-
-Step_read/table.size x
-1. Let z be the current state.
-2. Let n be |$table(z, x).REFS|.
-3. Push the value (I32.CONST n) to the stack.
-
-Step_read/table.fill x
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value val from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST i) from the stack.
-8. If ((i + n) > |$table(z, x).REFS|), then:
-  a. Trap.
-9. If (n is 0), then:
-  a. Do nothing.
-10. Else:
-  a. Push the value (I32.CONST i) to the stack.
-  b. Push the value val to the stack.
-  c. Execute the instruction (TABLE.SET x).
-  d. Push the value (I32.CONST (i + 1)) to the stack.
-  e. Push the value val to the stack.
-  f. Push the value (I32.CONST (n - 1)) to the stack.
-  g. Execute the instruction (TABLE.FILL x).
-
-Step_read/table.copy x y
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST j) from the stack.
-8. If ((i + n) > |$table(z, y).REFS|), then:
-  a. Trap.
-9. If ((j + n) > |$table(z, x).REFS|), then:
-  a. Trap.
-10. If (n is 0), then:
-  a. Do nothing.
-11. Else:
-  a. If (j ≤ i), then:
-    1) Push the value (I32.CONST j) to the stack.
-    2) Push the value (I32.CONST i) to the stack.
-    3) Execute the instruction (TABLE.GET y).
-    4) Execute the instruction (TABLE.SET x).
-    5) Push the value (I32.CONST (j + 1)) to the stack.
-    6) Push the value (I32.CONST (i + 1)) to the stack.
-  b. Else:
-    1) Push the value (I32.CONST ((j + n) - 1)) to the stack.
-    2) Push the value (I32.CONST ((i + n) - 1)) to the stack.
-    3) Execute the instruction (TABLE.GET y).
-    4) Execute the instruction (TABLE.SET x).
-    5) Push the value (I32.CONST j) to the stack.
-    6) Push the value (I32.CONST i) to the stack.
-  c. Push the value (I32.CONST (n - 1)) to the stack.
-  d. Execute the instruction (TABLE.COPY x y).
-
-Step_read/table.init x y
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST j) from the stack.
-8. If ((i + n) > |$elem(z, y).REFS|), then:
-  a. Trap.
-9. If ((j + n) > |$table(z, x).REFS|), then:
-  a. Trap.
-10. If (n is 0), then:
-  a. Do nothing.
-11. Else if (i < |$elem(z, y).REFS|), then:
-  a. Push the value (I32.CONST j) to the stack.
-  b. Push the value $elem(z, y).REFS[i] to the stack.
-  c. Execute the instruction (TABLE.SET x).
-  d. Push the value (I32.CONST (j + 1)) to the stack.
-  e. Push the value (I32.CONST (i + 1)) to the stack.
-  f. Push the value (I32.CONST (n - 1)) to the stack.
-  g. Execute the instruction (TABLE.INIT x y).
-
-Step_read/load numtype_u0 loadop__u2? x ao
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST i) from the stack.
-4. If loadop__u2? is not defined, then:
-  a. Let nt be numtype_u0.
-  b. If (((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|), then:
-    1) Trap.
-  c. Let c be $nbytes__1^-1(nt, $mem(z, x).BYTES[(i + ao.OFFSET) : ($size(nt) / 8)]).
-  d. Push the value (nt.CONST c) to the stack.
-5. If the type of numtype_u0 is Inn, then:
-  a. If loadop__u2? is defined, then:
-    1) Let ?(loadop__0) be loadop__u2?.
-    2) Let (n, sx) be loadop__0.
-    3) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
-      a) Trap.
-  b. Let Inn be numtype_u0.
-  c. If loadop__u2? is defined, then:
-    1) Let ?(loadop__0) be loadop__u2?.
-    2) Let (n, sx) be loadop__0.
-    3) Let c be $ibytes__1^-1(n, $mem(z, x).BYTES[(i + ao.OFFSET) : (n / 8)]).
-    4) Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
-
-Step_read/vload V128 vloadop__u0? x ao
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST i) from the stack.
-4. If ((((i + ao.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|) and vloadop__u0? is not defined), then:
-  a. Trap.
-5. If vloadop__u0? is not defined, then:
-  a. Let c be $vbytes__1^-1(V128, $mem(z, x).BYTES[(i + ao.OFFSET) : ($vsize(V128) / 8)]).
-  b. Push the value (V128.CONST c) to the stack.
-6. Else:
-  a. Let ?(vloadop__0) be vloadop__u0?.
-  b. If vloadop__0 is of the case SHAPE, then:
-    1) Let (SHAPE M X K sx) be vloadop__0.
-    2) If (((i + ao.OFFSET) + ((M · K) / 8)) > |$mem(z, x).BYTES|), then:
-      a) Trap.
-    3) If the type of $lsizenn^-1((M · 2)) is Jnn, then:
-      a) Let Jnn be $lsizenn^-1((M · 2)).
-      b) Let j^K be $ibytes__1^-1(M, $mem(z, x).BYTES[((i + ao.OFFSET) + ((k · M) / 8)) : (M / 8)])^(k<K).
-      c) Let c be $invlanes_((Jnn X K), $extend__(M, $lsizenn(Jnn), sx, j)^K).
-      d) Push the value (V128.CONST c) to the stack.
-  c. If vloadop__0 is of the case SPLAT, then:
-    1) Let (SPLAT N) be vloadop__0.
-    2) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
-      a) Trap.
-    3) Let M be (128 / N).
-    4) If the type of $lsize^-1(N) is Jnn, then:
-      a) Let Jnn be $lsize^-1(N).
-      b) Let j be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
-      c) Let c be $invlanes_((Jnn X M), j^M).
-      d) Push the value (V128.CONST c) to the stack.
-  d. If vloadop__0 is of the case ZERO, then:
-    1) Let (ZERO N) be vloadop__0.
-    2) If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
-      a) Trap.
-    3) Let j be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
-    4) Let c be $extend__(N, 128, U, j).
-    5) Push the value (V128.CONST c) to the stack.
-
-Step_read/vload_lane V128 N x ao j
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-3. Pop the value (V128.CONST c_1) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
-  a. Trap.
-7. Let M be ($vsize(V128) / N).
-8. If the type of $lsize^-1(N) is Jnn, then:
-  a. Let Jnn be $lsize^-1(N).
-  b. Let k be $ibytes__1^-1(N, $mem(z, x).BYTES[(i + ao.OFFSET) : (N / 8)]).
-  c. Let c be $invlanes_((Jnn X M), $lanes_((Jnn X M), c_1) with [j] replaced by k).
-  d. Push the value (V128.CONST c) to the stack.
-
-Step_read/memory.size x
-1. Let z be the current state.
-2. Let (n · (64 · $Ki())) be |$mem(z, x).BYTES|.
-3. Push the value (I32.CONST n) to the stack.
-
-Step_read/memory.fill x
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value val from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST i) from the stack.
-8. If ((i + n) > |$mem(z, x).BYTES|), then:
-  a. Trap.
-9. If (n is 0), then:
-  a. Do nothing.
-10. Else:
-  a. Push the value (I32.CONST i) to the stack.
-  b. Push the value val to the stack.
-  c. Execute the instruction (STORE I32 ?(8) x $memarg0()).
-  d. Push the value (I32.CONST (i + 1)) to the stack.
-  e. Push the value val to the stack.
-  f. Push the value (I32.CONST (n - 1)) to the stack.
-  g. Execute the instruction (MEMORY.FILL x).
-
-Step_read/memory.copy x_1 x_2
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i_2) from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST i_1) from the stack.
-8. If ((i_1 + n) > |$mem(z, x_1).BYTES|), then:
-  a. Trap.
-9. If ((i_2 + n) > |$mem(z, x_2).BYTES|), then:
-  a. Trap.
-10. If (n is 0), then:
-  a. Do nothing.
-11. Else:
-  a. If (i_1 ≤ i_2), then:
-    1) Push the value (I32.CONST i_1) to the stack.
-    2) Push the value (I32.CONST i_2) to the stack.
-    3) Execute the instruction (LOAD I32 ?((8, U)) x_2 $memarg0()).
-    4) Execute the instruction (STORE I32 ?(8) x_1 $memarg0()).
-    5) Push the value (I32.CONST (i_1 + 1)) to the stack.
-    6) Push the value (I32.CONST (i_2 + 1)) to the stack.
-  b. Else:
-    1) Push the value (I32.CONST ((i_1 + n) - 1)) to the stack.
-    2) Push the value (I32.CONST ((i_2 + n) - 1)) to the stack.
-    3) Execute the instruction (LOAD I32 ?((8, U)) x_2 $memarg0()).
-    4) Execute the instruction (STORE I32 ?(8) x_1 $memarg0()).
-    5) Push the value (I32.CONST i_1) to the stack.
-    6) Push the value (I32.CONST i_2) to the stack.
-  c. Push the value (I32.CONST (n - 1)) to the stack.
-  d. Execute the instruction (MEMORY.COPY x_1 x_2).
-
-Step_read/memory.init x y
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-7. Pop the value (I32.CONST j) from the stack.
-8. If ((i + n) > |$data(z, y).BYTES|), then:
-  a. Trap.
-9. If ((j + n) > |$mem(z, x).BYTES|), then:
-  a. Trap.
-10. If (n is 0), then:
-  a. Do nothing.
-11. Else if (i < |$data(z, y).BYTES|), then:
-  a. Push the value (I32.CONST j) to the stack.
-  b. Push the value (I32.CONST $data(z, y).BYTES[i]) to the stack.
-  c. Execute the instruction (STORE I32 ?(8) x $memarg0()).
-  d. Push the value (I32.CONST (j + 1)) to the stack.
-  e. Push the value (I32.CONST (i + 1)) to the stack.
-  f. Push the value (I32.CONST (n - 1)) to the stack.
-  g. Execute the instruction (MEMORY.INIT x y).
-
-Step/throw x
-1. Let z be the current state.
-2. Assert: Due to validation, (x < |$tagaddr(z)|).
-3. Let a be |$exninst(z)|.
-4. Assert: Due to validation, $expanddt($tag(z, x).TYPE) is of the case FUNC.
-5. Let (FUNC functype_0) be $expanddt($tag(z, x).TYPE).
-6. Let (t^n -> valtype_1) be functype_0.
-7. Assert: Due to validation, (valtype_1 is []).
-8. Assert: Due to validation, there are at least n values on the top of the stack.
-9. Pop the values val^n from the stack.
-10. Let exn be { TAG: $tagaddr(z)[x]; FIELDS: val^n; }.
-11. Perform $add_exninst(z, [exn]).
-12. Push the value (REF.EXN_ADDR a) to the stack.
-13. Execute the instruction THROW_REF.
-
-Step/struct.new x
-1. Let z be the current state.
-2. Let a be |$structinst(z)|.
-3. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-4. Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
-5. Let (mut, zt)^n be fieldtype_0.
-6. Assert: Due to validation, there are at least n values on the top of the stack.
-7. Pop the values val^n from the stack.
-8. Let si be { TYPE: $type(z, x); FIELDS: $packfield_(zt, val)^n; }.
-9. Push the value (REF.STRUCT_ADDR a) to the stack.
-10. Perform $add_structinst(z, [si]).
-
-Step/struct.set x i
-1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value val from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value instr_u0 from the stack.
-6. If instr_u0 is of the case REF.NULL, then:
-  a. Trap.
-7. If instr_u0 is of the case REF.STRUCT_ADDR, then:
-  a. Let (REF.STRUCT_ADDR a) be instr_u0.
-  b. Assert: Due to validation, $expanddt($type(z, x)) is of the case STRUCT.
-  c. Let (STRUCT fieldtype_0) be $expanddt($type(z, x)).
-  d. Let (mut, zt)* be fieldtype_0.
-  e. If ((|mut*| is |zt*|) and (i < |zt*|)), then:
-    1) Perform $with_struct(z, a, i, $packfield_(zt*[i], val)).
-
-Step/array.new_fixed x n
-1. Let z be the current state.
-2. Assert: Due to validation, there are at least n values on the top of the stack.
-3. Pop the values val^n from the stack.
-4. Let a be |$arrayinst(z)|.
-5. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
-6. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-7. Let (mut, zt) be arraytype_0.
-8. Let ai be { TYPE: $type(z, x); FIELDS: $packfield_(zt, val)^n; }.
-9. Push the value (REF.ARRAY_ADDR a) to the stack.
-10. Perform $add_arrayinst(z, [ai]).
-
-Step/array.set x
-1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value val from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. Assert: Due to validation, a value is on the top of the stack.
-7. Pop the value instr_u0 from the stack.
-8. If instr_u0 is of the case REF.NULL, then:
-  a. Trap.
-9. If instr_u0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be instr_u0.
-  b. If ((a < |$arrayinst(z)|) and (i ≥ |$arrayinst(z)[a].FIELDS|)), then:
-    1) Trap.
-  c. Assert: Due to validation, $expanddt($type(z, x)) is of the case ARRAY.
-  d. Let (ARRAY arraytype_0) be $expanddt($type(z, x)).
-  e. Let (mut, zt) be arraytype_0.
-  f. Perform $with_array(z, a, i, $packfield_(zt, val)).
-
-Step/local.set x
-1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value val from the stack.
-4. Perform $with_local(z, x, val).
-
-Step/global.set x
-1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value val from the stack.
-4. Perform $with_global(z, x, val).
-
-Step/table.set x
-1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value ref from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If (i ≥ |$table(z, x).REFS|), then:
-  a. Trap.
-7. Perform $with_table(z, x, i, ref).
-
-Step/table.grow x
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Assert: Due to validation, a value is on the top of the stack.
-5. Pop the value ref from the stack.
-6. Either:
-  a. Let ti be $growtable($table(z, x), n, ref).
-  b. Push the value (I32.CONST |$table(z, x).REFS|) to the stack.
-  c. Perform $with_tableinst(z, x, ti).
-7. Or:
-  a. Push the value (I32.CONST $invsigned_(32, (- 1))) to the stack.
-
-Step/elem.drop x
-1. Let z be the current state.
-2. Perform $with_elem(z, x, []).
-
-Step/store nt sz_u0? x ao
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type numtype_u1 is on the top of the stack.
-3. Pop the value (numtype_u1.CONST c) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If (numtype_u1 is nt), then:
-  a. If ((((i + ao.OFFSET) + ($size(nt) / 8)) > |$mem(z, x).BYTES|) and sz_u0? is not defined), then:
-    1) Trap.
-  b. If sz_u0? is not defined, then:
-    1) Let b* be $nbytes_(nt, c).
-    2) Perform $with_mem(z, x, (i + ao.OFFSET), ($size(nt) / 8), b*).
-7. If the type of numtype_u1 is Inn, then:
-  a. If sz_u0? is defined, then:
-    1) Let ?(n) be sz_u0?.
-    2) If (((i + ao.OFFSET) + (n / 8)) > |$mem(z, x).BYTES|), then:
-      a) Trap.
-  b. Let Inn be numtype_u1.
-  c. If sz_u0? is defined, then:
-    1) Let ?(n) be sz_u0?.
-    2) Let b* be $ibytes_(n, $wrap__($size(Inn), n, c)).
-    3) Perform $with_mem(z, x, (i + ao.OFFSET), (n / 8), b*).
-
-Step/vstore V128 x ao
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-3. Pop the value (V128.CONST c) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If (((i + ao.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|), then:
-  a. Trap.
-7. Let b* be $vbytes_(V128, c).
-8. Perform $with_mem(z, x, (i + ao.OFFSET), ($vsize(V128) / 8), b*).
-
-Step/vstore_lane V128 N x ao j
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type V128 is on the top of the stack.
-3. Pop the value (V128.CONST c) from the stack.
-4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-5. Pop the value (I32.CONST i) from the stack.
-6. If (((i + ao.OFFSET) + N) > |$mem(z, x).BYTES|), then:
-  a. Trap.
-7. Let M be (128 / N).
-8. If the type of $lsize^-1(N) is Jnn, then:
-  a. Let Jnn be $lsize^-1(N).
-  b. If (j < |$lanes_((Jnn X M), c)|), then:
-    1) Let b* be $ibytes_(N, $lanes_((Jnn X M), c)[j]).
-    2) Perform $with_mem(z, x, (i + ao.OFFSET), (N / 8), b*).
-
-Step/memory.grow x
-1. Let z be the current state.
-2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
-3. Pop the value (I32.CONST n) from the stack.
-4. Either:
-  a. Let mi be $growmem($mem(z, x), n).
-  b. Push the value (I32.CONST (|$mem(z, x).BYTES| / (64 · $Ki()))) to the stack.
-  c. Perform $with_meminst(z, x, mi).
-5. Or:
-  a. Push the value (I32.CONST $invsigned_(32, (- 1))) to the stack.
-
-Step/data.drop x
-1. Let z be the current state.
-2. Perform $with_data(z, x, []).
 
 eval_expr instr*
 1. Execute the instruction instr*.

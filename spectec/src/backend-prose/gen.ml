@@ -289,7 +289,7 @@ let rec group_vrules = function
       let same_rules, diff_rules =
         List.partition (fun (_, rule) -> name_of_rule rule = rule_name) t in
       let same_rules = List.map snd same_rules in
-      let group = (rule_name, rel_id, List.map pack_pair_rule (rule :: same_rules |> Il2al.Il2il.unify_rules)) in
+      let group = (rule_name, rel_id, List.map pack_pair_rule (rule :: same_rules |> Il2al.Unify.unify_rules)) in
       group :: group_vrules diff_rules
 
 (* TODO: The codes below are too repetitive. Should be factored. *)
@@ -320,7 +320,7 @@ let prose_of_valid_rules rel_id rules =
 
 let prose_of_valid_rel def =
   match def.it with
-  | Ast.RelD (rel_id, _, _, rules) -> prose_of_valid_rules rel_id (Il2al.Il2il.unify_rules rules)
+  | Ast.RelD (rel_id, _, _, rules) -> prose_of_valid_rules rel_id (Il2al.Unify.unify_rules rules)
   | _ -> assert false
 
 (** 2. C |- instr : type **)
@@ -356,7 +356,7 @@ let prose_of_valid_with_rules rel_id rules =
 
 let prose_of_valid_with_rel def =
   match def.it with
-  | Ast.RelD (rel_id, _, _, rules) -> prose_of_valid_with_rules rel_id (Il2al.Il2il.unify_rules rules)
+  | Ast.RelD (rel_id, _, _, rules) -> prose_of_valid_with_rules rel_id (Il2al.Unify.unify_rules rules)
   | _ -> assert false
 
 (** 4. C |- type <: type **)
@@ -385,7 +385,7 @@ let prose_of_match_rules rel_id rules =
 
 let prose_of_match_rel def =
   match def.it with
-  | Ast.RelD (rel_id, _, _, rules) -> prose_of_match_rules rel_id (Il2al.Il2il.unify_rules rules)
+  | Ast.RelD (rel_id, _, _, rules) -> prose_of_match_rules rel_id (Il2al.Unify.unify_rules rules)
   | _ -> assert false
 
 
@@ -415,7 +415,7 @@ let prose_of_const_rules rel_id rules =
 
 let prose_of_const_rel def =
   match def.it with
-  | Ast.RelD (rel_id, _, _, rules) -> prose_of_const_rules rel_id (Il2al.Il2il.unify_rules rules)
+  | Ast.RelD (rel_id, _, _, rules) -> prose_of_const_rules rel_id (Il2al.Unify.unify_rules rules)
   | _ -> assert false
 
 (** 6. C |- e : e CONST **)
@@ -447,7 +447,7 @@ let prose_of_valid_with2_rules rel_id rules =
 
 let prose_of_valid_with2_rel def =
   match def.it with
-  | Ast.RelD (rel_id, _, _, rules) -> prose_of_valid_with2_rules rel_id (Il2al.Il2il.unify_rules rules)
+  | Ast.RelD (rel_id, _, _, rules) -> prose_of_valid_with2_rules rel_id (Il2al.Unify.unify_rules rules)
   | _ -> assert false
 
 (** 8. Others **)

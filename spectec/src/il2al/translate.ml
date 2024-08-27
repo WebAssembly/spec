@@ -5,6 +5,8 @@ open Al_util
 open Printf
 open Util
 open Source
+open Def
+open Il2al_util
 
 module Il =
 struct
@@ -48,11 +50,6 @@ let split_state (exp: Il.exp): Il.exp * Il.exp =
   when is_store e1 && is_frame e2 -> e1, e2
   | _ -> assert(false)
 
-let flatten_rec def =
-  match def.it with
-  | Il.RecD defs -> defs
-  | _ -> [ def ]
-
 let args_of_call e =
   match e.it with
   | CallE (_, args) -> args
@@ -70,11 +67,6 @@ let is_case e =
   match e.it with
   | Il.CaseE _ -> true
   | _ -> false
-let case_of_case e =
-  match e.it with
-  | Il.CaseE (mixop, _) -> mixop
-  | _ -> error e.at
-    (sprintf "cannot get case of case expression `%s`" (Il.Print.string_of_exp e))
 let args_of_case e =
   match e.it with
   | Il.CaseE (_, { it = Il.TupE exps; _ }) -> exps
@@ -133,16 +125,6 @@ let has_branch = List.exists (fun i ->
   | OtherwiseI _ -> true
   | _ -> false
 )
-
-let is_let_prem_with_rhs_type t prem =
-  match prem.it with
-  | Il.LetPr (_, e, _) ->
-    (match e.note.it with
-    | Il.VarT (id, []) -> id.it = t
-    | _ -> false)
-  | _ -> false
-let is_pop = is_let_prem_with_rhs_type "stackT"
-let is_ctxt_prem = is_let_prem_with_rhs_type "contextT"
 let is_winstr_prem = is_let_prem_with_rhs_type "inputT"
 
 let lhs_of_prem pr =
@@ -1053,68 +1035,34 @@ let translate_helper_body name clause =
   translate_prems prems return_instrs
 
 (* Main translation for helper functions *)
-let translate_helper partial_funcs def =
-  match def.it with
-  | Il.DecD (id, _, _, clauses) when List.length clauses > 0 ->
-    let name = id.it in
-    let unified_clauses = Il2il.unify_defs clauses in
-    let args = List.hd unified_clauses |> args_of_clause in
-    let params =
-      args
-      |> translate_args
-      |> List.map
-        Walk.(walk_arg { default_config with pre_expr = Transpile.remove_sub })
-    in
-    let blocks = List.map (translate_helper_body name) unified_clauses in
-    let body =
-      Transpile.merge_blocks blocks
-      (* |> Transpile.insert_frame_binding *)
-      |> Transpile.handle_frame params
-      |> Walk.(walk_instrs { default_config with pre_expr = Transpile.remove_sub })
-      |> Transpile.enhance_readability
-      |> (if List.mem id partial_funcs then Fun.id else Transpile.ensure_return)
-      |> Transpile.flatten_if in
-
-    Some (FuncA (name, params, body) $ def.at)
-  | _ -> None
-
-
-(* Translating helper functions *)
-let translate_helpers il =
-  (* Get list of partial functions *)
-  let get_partial_func def =
-    let is_partial_hint hint = hint.Il.hintid.it = "partial" in
-    match def.it with
-    | Il.HintD { it = Il.DecH (id, hints); _ } when List.exists is_partial_hint hints ->
-      Some (id)
-    | _ -> None
+let translate_helper helper =
+  let id, clauses, partial = helper.it in
+  let name = id.it in
+  let args = List.hd clauses |> args_of_clause in
+  let params =
+    args
+    |> translate_args
+    |> List.map
+      Walk.(walk_arg { default_config with pre_expr = Transpile.remove_sub })
   in
-  let partial_funcs = List.filter_map get_partial_func il in
+  let blocks = List.map (translate_helper_body name) clauses in
+  let body =
+    Transpile.merge_blocks blocks
+    (* |> Transpile.insert_frame_binding *)
+    |> Transpile.handle_frame params
+    |> Walk.(walk_instrs { default_config with pre_expr = Transpile.remove_sub })
+    |> Transpile.enhance_readability
+    |> (if partial = Partial then Fun.id else Transpile.ensure_return)
+    |> Transpile.flatten_if in
 
-  List.filter_map (translate_helper partial_funcs) il
+   FuncA (name, params, body) $ helper.at
 
-let rec add eq k v = function (* add a (k,v) to an assoc list *)
-  | [] -> [(k, [v])]
-  | (k', vs) :: tl ->
-    if eq k k' then
-      (k', vs @ [v]) :: tl
-    else
-      (k', vs) :: add eq k v tl
 
-let extract_winstr r =
-  let (_, _, prems) = r.it in
+let extract_winstr r at =
+  let _, _, prems = r in
   match List.find_opt is_winstr_prem prems with
   | Some p -> lhs_of_prem p (* TODO: Collect helper functions into one place *)
-  | None -> error r.at "Failed to extract the target wasm instruction"
-
-let extract_context r =
-  let (_, _, prems) = r.it in
-  List.find_opt is_ctxt_prem prems
-  |> Option.map lhs_of_prem (* TODO: Collect helper functions into one place *)
-
-let group_by_context rs =
-  let eq_context = Option.equal (fun c1 c2 -> Il.Mixop.eq (case_of_case c1) (case_of_case c2)) in
-  List.fold_left (fun acc r -> acc |> add eq_context (extract_context r) r) [] rs
+  | None -> error at "Failed to extract the target wasm instruction"
 
 let exit_context context_opt instrs =
   match context_opt with
@@ -1123,7 +1071,7 @@ let exit_context context_opt instrs =
 
 (* `reduction` -> `instr list` *)
 let translate_reduction ?(context_opt=None) reduction =
-  let _, rhs, prems = reduction.it in
+  let _, rhs, prems = reduction in
 
   (* Translate rhs *)
   translate_rhs rhs
@@ -1195,48 +1143,18 @@ let translate_context ctx =
     exitI atom ~at:at
   | _ -> [ yetI "TODO: translate_context" ~at:at ], yetI "TODO: translate_context"
 
-let extract_pops rgroup =
-  (* Helpers *)
-  let rec extract_pops' acc prems premss =
-    match prems with
-    | hd :: tl when is_pop hd ->
-      let partitions = List.map (List.partition (Il.Eq.eq_prem hd)) premss in
-      let fsts = List.map fst partitions in
-      let snds = List.map snd partitions in
-
-      if List.for_all (fun l -> List.length l = 1) fsts then
-        extract_pops' (hd :: acc) tl snds
-      else
-        List.rev acc, prems :: premss
-    | _ -> List.rev acc, prems :: premss
-  in
-
-  let get_prems r =
-    let (_, _, prems) = r.it in
-    prems
-  in
-  let set_prems r prems =
-    let (lhs, rhs, _) = r.it in
-    { r with it = (lhs, rhs, prems) }
-  in
-  (* End of helpers *)
-
-  let hd = List.hd rgroup in
-  let tl = List.tl rgroup in
-
-  let extracted, new_premss = extract_pops' [] (get_prems hd) (List.map get_prems tl) in
-  extracted, List.map2 set_prems rgroup new_premss
 
 
-let rec translate_rgroup' instr_name rgroup =
+let rec translate_rgroup' (rule: rule_def) =
+  let instr_name, _, rgroup = rule.it in
   let pops, rgroup' = extract_pops rgroup in
   let subgroups = group_by_context rgroup' in
 
-  let blocks = List.map (fun (k, subgroup) ->
+  let blocks = List.map (fun (k, (subgroup: rule_clause list)) ->
     match k with
     (* Normal case *)
     | None ->
-      let winstr = extract_winstr (List.hd subgroup) in
+      let winstr = extract_winstr (List.hd subgroup) rule.at in
       let inner_pop_instrs = translate_context_winstr winstr in
       let blocks = List.map translate_reduction subgroup in
       let instrs =
@@ -1247,13 +1165,7 @@ let rec translate_rgroup' instr_name rgroup =
       k, inner_pop_instrs @ instrs
     (* Context case *)
     | Some _ ->
-      let popped_vars = List.concat_map (fun p ->
-        match p.it with
-        | Il.LetPr (_, _, ids) -> ids
-        | _ -> assert false
-      ) pops in
-      let u_group = Il2il.unify_ctxt popped_vars subgroup in
-      let pops, u_group = extract_pops u_group in
+      let pops, u_group = extract_pops subgroup in
       let ctxt = extract_context (List.hd u_group) |> Option.get in
       let atom = case_of_case ctxt |> List.hd |> List.hd in
       let cond = ContextKindE atom $$ atom.at % boolT in
@@ -1318,11 +1230,11 @@ let rec translate_rgroup' instr_name rgroup =
 (* Main translation for reduction rules
  * `rgroup` -> `Al.Algo` *)
 
-and translate_rgroup (instr_name, rel_id, rgroup) =
-  let unified_rgroup = Il2il.unify_pop_and_winstr rgroup in
+and translate_rgroup (rule: rule_def) =
 
-  let winstr = extract_winstr (List.hd unified_rgroup) in
-  let instrs = translate_rgroup' instr_name unified_rgroup in
+  let instr_name, rel_id, rgroup = rule.it in
+  let winstr = extract_winstr (List.hd rgroup) rule.at in
+  let instrs = translate_rgroup' rule in
 
   let name =
     match case_of_case winstr with
@@ -1352,94 +1264,14 @@ and translate_rgroup (instr_name, rel_id, rgroup) =
     |> Transpile.flatten_if
   in
 
-  let at = rgroup
-    |> List.map at
-    |> over_region in
-  RuleA (name, anchor, al_params', body) $ at
+  RuleA (name, anchor, al_params', body) $ rule.at
 
-
-let rule_to_tup rule =
-  match rule.it with
-  | Il.RuleD (_, _, _, exp, prems) ->
-    match exp.it with
-    | Il.TupE [ lhs; rhs ] -> (lhs, rhs, prems) $ rule.at
-    | _ -> error_exp exp "form of reduction rule"
-
-
-(* group reduction rules that have same name *)
-let rec group_rules = function
-  | [] -> []
-  | h :: t ->
-    let (rel_id, rule) = h in
-    let name = name_of_rule rule in
-    let t1, t2 =
-      List.partition (fun (_, rule) -> name_of_rule rule = name) t in
-    let rules = rule :: List.map (fun (rel_id', rule') ->
-      if rel_id = rel_id' then rule' else
-        error rule'.at
-        "this reduction rule uses a different relation compared to the previous rules"
-    ) t1 in
-    let tups = List.map rule_to_tup rules in
-    (name, rel_id, tups) :: group_rules t2
-
-(* extract reduction rules for wasm instructions *)
-let extract_rules def =
-  match def.it with
-  | Il.RelD (id, _, _, rules) when List.mem id.it [ "Step"; "Step_read"; "Step_pure" ] ->
-    List.filter_map (fun rule ->
-      (* HARDCODE: Exclude administrative rules *)
-      if List.mem (name_of_rule rule) ["pure"; "read"; "trap"; "ctxt"] then
-        None
-      else
-        Some (id, rule)
-    ) rules
-  | _ -> []
-
-(* Translating reduction rules *)
-let translate_rules il =
-  (* Extract rules *)
-  il
-  |> List.concat_map extract_rules
-  (* Group rules that have the same names *)
-  |> group_rules
-  (* Translate reduction group into algorithm *)
-  |> List.map translate_rgroup
-  
-let rec collect_def env def =
-  let open Il in
-  match def.it with
-  | TypD (id, ps, insts) -> Env.bind_typ env id (ps, insts)
-  | RelD (id, mixop, t, rules) -> Env.bind_rel env id (mixop, t, rules)
-  | DecD (id, ps, t, clauses) ->  Env.bind_def env id (ps, t, clauses)
-  | GramD (id, ps, t, prods) -> Env.bind_gram env id (ps, t, prods)
-  | RecD ds -> List.fold_left collect_def env ds
-  | HintD _ -> env
-
-let initialize_env il =
-  Al.Valid.env := List.fold_left collect_def !Al.Valid.env il
 
 (* Entry *)
 let translate il =
-
-  initialize_env il;
-
-  let not_translate = ["typing.watsup"] in
-  let is_al_target def =
-    let f = fun name -> String.ends_with ~suffix:name def.at.left.file in
-    match def.it with
-    | _ when List.exists f not_translate -> false
-    | Il.DecD (id, _, _, _) when id.it = "utf8" -> false
-    | _ -> true
+  let rules, helpers = Preprocess.preprocess il in
+  let al =
+    List.map translate_rgroup rules @ List.map translate_helper helpers
   in
-  let il' =
-    il
-    |> Preprocess.preprocess
-    |> Encode.transform
-    |> List.concat_map flatten_rec
-    |> List.filter is_al_target
-    |> Animate.transform
-  in
-
-  let al = (translate_helpers il' @ translate_rules il') in
   List.map Transpile.remove_state al
   

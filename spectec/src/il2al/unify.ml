@@ -6,9 +6,11 @@ open Il.Ast
 open Il.Eq
 open Il.Free
 open Util
-open Util.Source
+open Source
+open Def
+open Il2al_util
 
-type rgroup = (exp * exp * (prem list)) phrase list
+let error at msg = Error.error at "prose translation" msg
 
 (* Helpers *)
 
@@ -157,14 +159,14 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
     (* HARDCODE: Unifying CatE with non-CatE *)
     | CatE (_, e1), _ -> collect_unified e1 e
     | _ ->
-      Util.Error.error e.at "prose transformation" "cannot unify the expression with previous rule for the same instruction"
+      error e.at "cannot unify the expression with previous rule for the same instruction"
 
 and collect_unified_arg template a = if eq_arg template a then [], [] else match template.it, a.it with
   | ExpA template', ExpA e -> collect_unified template' e
   | TypA _, TypA _
   | DefA _, DefA _
   | GramA _, GramA _ -> [], []
-  | _ -> Util.Error.error a.at "prose transformation" "cannot unify the argument"
+  | _ -> error a.at "cannot unify the argument"
 
 and collect_unified_args as1 as2 =
   List.fold_left2 (fun acc a1 a2 -> pairwise_concat acc (collect_unified_arg a1 a2)) ([], []) as1 as2
@@ -174,22 +176,6 @@ let prioritize_else prems =
   let other, non_others = List.partition (fun p -> p.it = ElsePr) prems in
   other @ non_others
 
-let lhs_of_prem pr =
-  match pr.it with
-  | LetPr (lhs, _, _) -> lhs
-  | _ -> Error.error pr.at "prose translation" "expected a LetPr"
-let rhs_of_prem pr =
-  match pr.it with
-  | LetPr (_, rhs, _) -> rhs
-  | _ -> Error.error pr.at "prose translation" "expected a LetPr"
-let replace_lhs lhs pr =
-  match pr.it with
-  | LetPr (lhs', rhs, _) ->
-    if eq_exp lhs lhs' then
-      pr
-    else
-      { pr with it = LetPr (lhs, rhs, (free_exp lhs).varid |> Set.elements) }
-  | _ -> Error.error pr.at "prose translation" "expected a LetPr"
 
 (* x list list -> x list list list *)
 let lift = List.map (fun xs -> List.map (fun x -> [x]) xs)
@@ -293,26 +279,83 @@ let rec filter_unifiable encss =
         filter_unifiable (tl :: snds)
 
 let replace_prems r prems =
-  let (lhs, rhs, _prems) = r.it in
-  { r with it = (lhs, rhs, prems) }
+  let lhs, rhs, _ = r in
+  lhs, rhs, prems
 
-let unify_rgroup pred input_vars rgroup =
-  let premss = List.map (fun g -> let (_, _, prems) = g.it in prems) rgroup in
+let unify_rule_clauses pred input_vars (clauses: rule_clause list) =
+  let premss = List.map (fun g -> let _, _, prems = g in prems) clauses in
   let encss = List.map (extract_encs pred) premss in
   let unifiable_encss = filter_unifiable encss in
   let new_premss = List.fold_left unify_enc (lift premss) unifiable_encss |> unlift in
   let animated_premss = List.map (Animate.animate_prems {empty with varid = Set.of_list (input_vars @ Encode.input_vars)}) new_premss in
 
-  List.map2 replace_prems rgroup animated_premss
+  List.map2 replace_prems clauses animated_premss
 
-let unify_ctxt input_vars rgroup =
+let rule_to_tup rule =
+  match rule.it with
+  | RuleD (_, _, _, exp, prems) ->
+    match exp.it with
+    | TupE [ lhs; rhs ] -> (lhs, rhs, prems)
+    | _ -> error exp.at "form of reduction rule"
+
+(* group reduction rules that have same name *)
+let rec group_rules : (id * rule) list -> rule_def list = function
+  | [] -> []
+  | h :: t ->
+    let (rel_id, rule) = h in
+    let name = name_of_rule rule in
+    let t1, t2 =
+      List.partition (fun (_, rule) -> name_of_rule rule = name) t in
+    let rules = rule :: List.map (fun (rel_id', rule') ->
+      if rel_id = rel_id' then rule' else
+        error rule'.at
+        "this reduction rule uses a different relation compared to the previous rules"
+    ) t1 in
+    let tups = List.map rule_to_tup rules in
+    let at = rules |> List.map at |> over_region in
+
+    ((name, rel_id, tups) $ at) :: group_rules t2
+
+(* extract reduction rules for wasm instructions *)
+let extract_rules def =
+  match def.it with
+  | RelD (id, _, _, rules) -> List.map (fun rule -> id, rule) rules
+  | _ -> []
+
+let unify_ctxt (input_vars: string list) (clauses: rule_clause list) : rule_clause list =
   soft_init_unified_idx();
-  unify_rgroup is_encoded_ctxt input_vars rgroup
-let unify_pop_and_winstr rgroup =
+  unify_rule_clauses is_encoded_ctxt input_vars clauses
+let unify_pop_and_winstr rule_def =
   init_unified_idx();
-  unify_rgroup is_encoded_pop_or_winstr [] rgroup
+  unify_rule_clauses is_encoded_pop_or_winstr [] rule_def
+let unify_rule_def (rule: rule_def) : rule_def =
+  let instr_name, rel_id, clauses = rule.it in
+  let unified_clauses = unify_pop_and_winstr clauses in
+  let pops, clauses' = extract_pops unified_clauses in
+  let subgroups = group_by_context clauses' in
+  let new_clauses =
+    List.concat_map
+      (function
+        | None, subgroup ->
+          List.map (fun (lhs, rhs, prems) -> lhs, rhs, pops @ prems) subgroup
+        | _, subgroup ->
+          let popped_vars =
+            List.concat_map
+              (fun p ->
+                match p.it with
+                | LetPr (_, _, ids) -> ids
+                | _ -> assert false
+              )
+              pops
+          in
+          subgroup
+          |> unify_ctxt popped_vars
+          |> List.map (fun (lhs, rhs, prems) -> lhs, rhs, pops @ prems)
+      )
+      subgroups
+  in
+  (instr_name, rel_id, new_clauses) $ rule.at
 
-(** 3. Functions **)
 
 let apply_template_to_def template def =
   match def.it with
@@ -329,3 +372,32 @@ let unify_defs defs =
   let tl = List.tl lhs_s in
   let template = List.fold_left (List.map2 overlap_arg) hd tl in
   List.map (apply_template_to_def template) defs
+
+let extract_helpers partial_funcs def =
+  match def.it with
+  | DecD (id, _, _, clauses) when List.length clauses > 0 ->
+    let partial = if List.mem id partial_funcs then Partial else Total in
+    Some ((id, unify_defs clauses, partial) $ def.at)
+  | _ -> None
+
+let unify (il: script) : rule_def list * helper_def list =
+  let rule_defs =
+    il
+    |> List.concat_map extract_rules
+    |> group_rules
+    |> List.map unify_rule_def
+  in
+
+  let partial_funcs =
+    let get_partial_func def =
+      let is_partial_hint hint = hint.hintid.it = "partial" in
+      match def.it with
+      | HintD { it = DecH (id, hints); _ } when List.exists is_partial_hint hints ->
+        Some (id)
+      | _ -> None
+    in
+    List.filter_map get_partial_func il
+  in
+  let helper_defs = List.filter_map (extract_helpers partial_funcs) il in
+
+  rule_defs, helper_defs
