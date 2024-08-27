@@ -20887,59 +20887,19 @@ watsup 0.4 generator
 
                      #) Else:
 
-                        1. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+                        1. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-                        #. Do nothing.
+                        #. Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-                        #. If :math:`{\mathit{catch}}_0` is not of the case :math:`\mathsf{catch\_ref}`, then:
+                        #. Exit from :math:`\mathsf{handler}`.
 
-                           a. Do nothing.
+                        #. Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
 
-                        #. Else:
+                        #. Push the handler :math:`H` to the stack.
 
-                           a. Do nothing.
+                        #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
-                        #. Do nothing.
-
-                        #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all}`, then:
-
-                           a. Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
-
-                           #. Exit from :math:`\mathsf{handler}`.
-
-                           #. Execute the instruction :math:`(\mathsf{br}~l)`.
-
-                        #. Else:
-
-                           a. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-                           #. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
-
-                           #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all\_ref}`, then:
-
-                              1) Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
-
-                              #) Exit from :math:`\mathsf{handler}`.
-
-                              #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                              #) Execute the instruction :math:`(\mathsf{br}~l)`.
-
-                           #. Else:
-
-                              1) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-                              #) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
-
-                              #) Exit from :math:`\mathsf{handler}`.
-
-                              #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
-
-                              #) Push the handler :math:`H` to the stack.
-
-                              #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                              #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+                        #. Execute the instruction :math:`\mathsf{throw\_ref}`.
 
                   #) Else:
 
@@ -20949,51 +20909,7 @@ watsup 0.4 generator
 
                      #) Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-                     #) If :math:`{\mathit{catch}}_0` is not of the case :math:`\mathsf{catch\_ref}`, then:
-
-                        1. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
-
-                        #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all}`, then:
-
-                           a. Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
-
-                           #. Exit from :math:`\mathsf{handler}`.
-
-                           #. Execute the instruction :math:`(\mathsf{br}~l)`.
-
-                        #. Else:
-
-                           a. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-                           #. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
-
-                           #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all\_ref}`, then:
-
-                              1) Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
-
-                              #) Exit from :math:`\mathsf{handler}`.
-
-                              #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                              #) Execute the instruction :math:`(\mathsf{br}~l)`.
-
-                           #. Else:
-
-                              1) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-                              #) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
-
-                              #) Exit from :math:`\mathsf{handler}`.
-
-                              #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
-
-                              #) Push the handler :math:`H` to the stack.
-
-                              #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                              #) Execute the instruction :math:`\mathsf{throw\_ref}`.
-
-                     #) Else:
+                     #) If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_ref}`, then:
 
                         1. Let :math:`(\mathsf{catch\_ref}~x~l)` be :math:`{\mathit{catch}}_0`.
 
@@ -21009,13 +20925,45 @@ watsup 0.4 generator
 
                         #. Else:
 
-                           a. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+                           a. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-                           #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all}`, then:
+                           #. Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-                              1) Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
+                           #. Exit from :math:`\mathsf{handler}`.
+
+                           #. Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
+
+                           #. Push the handler :math:`H` to the stack.
+
+                           #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+                           #. Execute the instruction :math:`\mathsf{throw\_ref}`.
+
+                     #) Else:
+
+                        1. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                        #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all}`, then:
+
+                           a. Let :math:`(\mathsf{catch\_all}~l)` be :math:`{\mathit{catch}}_0`.
+
+                           #. Exit from :math:`\mathsf{handler}`.
+
+                           #. Execute the instruction :math:`(\mathsf{br}~l)`.
+
+                        #. Else:
+
+                           a. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+
+                           #. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+
+                           #. If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all\_ref}`, then:
+
+                              1) Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
 
                               #) Exit from :math:`\mathsf{handler}`.
+
+                              #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
                               #) Execute the instruction :math:`(\mathsf{br}~l)`.
 
@@ -21023,33 +20971,17 @@ watsup 0.4 generator
 
                               1) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-                              #) Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
+                              #) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
 
-                              #) If :math:`{\mathit{catch}}_0` is of the case :math:`\mathsf{catch\_all\_ref}`, then:
+                              #) Exit from :math:`\mathsf{handler}`.
 
-                                 a) Let :math:`(\mathsf{catch\_all\_ref}~l)` be :math:`{\mathit{catch}}_0`.
+                              #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
 
-                                 #) Exit from :math:`\mathsf{handler}`.
+                              #) Push the handler :math:`H` to the stack.
 
-                                 #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+                              #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
-                                 #) Execute the instruction :math:`(\mathsf{br}~l)`.
-
-                              #) Else:
-
-                                 a) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
-
-                                 #) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}}_{\mathit{u{\kern-0.1em\scriptstyle 1}}}^\ast}`.
-
-                                 #) Exit from :math:`\mathsf{handler}`.
-
-                                 #) Let :math:`H` be :math:`({{\mathsf{handler}}_{n}}{\{}~{{\mathit{catch}'}^\ast}~\})`.
-
-                                 #) Push the handler :math:`H` to the stack.
-
-                                 #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                                 #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+                              #) Execute the instruction :math:`\mathsf{throw\_ref}`.
 
 
 :math:`\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast}`
@@ -26949,38 +26881,33 @@ Step_read/throw_ref
               b) Push the values val* to the stack.
               c) Execute the instruction (BR l).
             3) Else:
-              a) Let [catch_0] :: catch'* be catch_u1*.
-              b) Do nothing.
-              c) If catch_0 is not of the case CATCH_REF, then:
-                1. Do nothing.
-              d) Else:
-                1. Do nothing.
-              e) Do nothing.
-              f) If catch_0 is of the case CATCH_ALL, then:
-                1. Let (CATCH_ALL l) be catch_0.
-                2. Exit from HANDLER_.
-                3. Execute the instruction (BR l).
-              g) Else:
-                1. Let (REF.EXN_ADDR a) be instr_u0.
-                2. Let [catch_0] :: catch'* be catch_u1*.
-                3. If catch_0 is of the case CATCH_ALL_REF, then:
-                  a. Let (CATCH_ALL_REF l) be catch_0.
-                  b. Exit from HANDLER_.
-                  c. Push the value (REF.EXN_ADDR a) to the stack.
-                  d. Execute the instruction (BR l).
-                4. Else:
-                  a. Let (REF.EXN_ADDR a) be instr_u0.
-                  b. Let [catch] :: catch'* be catch_u1*.
-                  c. Exit from HANDLER_.
-                  d. Let H be (HANDLER_ n { catch'* }).
-                  e. Push the handler H to the stack.
-                  f. Push the value (REF.EXN_ADDR a) to the stack.
-                  g. Execute the instruction THROW_REF.
+              a) Let (REF.EXN_ADDR a) be instr_u0.
+              b) Let [catch] :: catch'* be catch_u1*.
+              c) Exit from HANDLER_.
+              d) Let H be (HANDLER_ n { catch'* }).
+              e) Push the handler H to the stack.
+              f) Push the value (REF.EXN_ADDR a) to the stack.
+              g) Execute the instruction THROW_REF.
           d. Else:
             1) Let (REF.EXN_ADDR a) be instr_u0.
             2) Let val* be $exninst(z)[a].FIELDS.
             3) Let [catch_0] :: catch'* be catch_u1*.
-            4) If catch_0 is not of the case CATCH_REF, then:
+            4) If catch_0 is of the case CATCH_REF, then:
+              a) Let (CATCH_REF x l) be catch_0.
+              b) If ((x < |$tagaddr(z)|) and ($exninst(z)[a].TAG is $tagaddr(z)[x])), then:
+                1. Exit from HANDLER_.
+                2. Push the values val* to the stack.
+                3. Push the value (REF.EXN_ADDR a) to the stack.
+                4. Execute the instruction (BR l).
+              c) Else:
+                1. Let (REF.EXN_ADDR a) be instr_u0.
+                2. Let [catch] :: catch'* be catch_u1*.
+                3. Exit from HANDLER_.
+                4. Let H be (HANDLER_ n { catch'* }).
+                5. Push the handler H to the stack.
+                6. Push the value (REF.EXN_ADDR a) to the stack.
+                7. Execute the instruction THROW_REF.
+            5) Else:
               a) Let [catch_0] :: catch'* be catch_u1*.
               b) If catch_0 is of the case CATCH_ALL, then:
                 1. Let (CATCH_ALL l) be catch_0.
@@ -27002,35 +26929,6 @@ Step_read/throw_ref
                   e. Push the handler H to the stack.
                   f. Push the value (REF.EXN_ADDR a) to the stack.
                   g. Execute the instruction THROW_REF.
-            5) Else:
-              a) Let (CATCH_REF x l) be catch_0.
-              b) If ((x < |$tagaddr(z)|) and ($exninst(z)[a].TAG is $tagaddr(z)[x])), then:
-                1. Exit from HANDLER_.
-                2. Push the values val* to the stack.
-                3. Push the value (REF.EXN_ADDR a) to the stack.
-                4. Execute the instruction (BR l).
-              c) Else:
-                1. Let [catch_0] :: catch'* be catch_u1*.
-                2. If catch_0 is of the case CATCH_ALL, then:
-                  a. Let (CATCH_ALL l) be catch_0.
-                  b. Exit from HANDLER_.
-                  c. Execute the instruction (BR l).
-                3. Else:
-                  a. Let (REF.EXN_ADDR a) be instr_u0.
-                  b. Let [catch_0] :: catch'* be catch_u1*.
-                  c. If catch_0 is of the case CATCH_ALL_REF, then:
-                    1) Let (CATCH_ALL_REF l) be catch_0.
-                    2) Exit from HANDLER_.
-                    3) Push the value (REF.EXN_ADDR a) to the stack.
-                    4) Execute the instruction (BR l).
-                  d. Else:
-                    1) Let (REF.EXN_ADDR a) be instr_u0.
-                    2) Let [catch] :: catch'* be catch_u1*.
-                    3) Exit from HANDLER_.
-                    4) Let H be (HANDLER_ n { catch'* }).
-                    5) Push the handler H to the stack.
-                    6) Push the value (REF.EXN_ADDR a) to the stack.
-                    7) Execute the instruction THROW_REF.
 
 Step_read/try_table bt catch* instr*
 1. Let z be the current state.

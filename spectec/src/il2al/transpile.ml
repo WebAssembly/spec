@@ -70,11 +70,21 @@ let both_non_empty cond1 cond2 =
   | Some e1, Some e2 -> Eq.eq_expr e1 e2
   | _ -> false
 
+let diff_case cond1 cond2 =
+  match cond1.it, cond2.it with
+  | IsCaseOfE (e1, a1), IsCaseOfE (e2, a2) ->
+    Eq.eq_expr e1 e2
+    && not (El.Atom.eq a1 a2)
+  | _ -> false
+
 let eq_cond cond1 cond2 =
   Eq.eq_expr cond1 cond2
   || both_empty cond1 cond2
   || both_non_empty cond1 cond2
 
+let conflicts cond1 cond2 =
+  eq_cond (neg cond1) cond2
+  || diff_case cond1 cond2
 
 let rec count_instrs instrs =
   instrs
@@ -279,8 +289,8 @@ let remove_unnecessary_branch =
     let instr_at = instr.at in
     match instr.it with
     | IfI (c, il1, il2) ->
-      if List.exists (eq_cond c) path_cond then il1
-      else if List.exists (eq_cond (neg c)) path_cond then il2
+      if List.exists (conflicts (neg c)) path_cond then il1
+      else if List.exists (conflicts c) path_cond then il2
       else
         let new_il1 = List.concat_map (remove_unnecessary_branch' (c :: path_cond)) il1 in
         let new_il2 = List.concat_map (remove_unnecessary_branch' (neg c :: path_cond)) il2 in
