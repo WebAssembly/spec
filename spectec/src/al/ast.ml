@@ -36,6 +36,7 @@ and value =
   | TupV of value list                 (* tuple of values *)
   | FrameV of value option * value     (* TODO: desugar using CaseV? *)
   | LabelV of value * value            (* TODO: desugar using CaseV? *)
+  | FnameV of id                       (* name of the first order function *)
 
 type extend_dir =                      (* direction of extension *)
   | Front                              (* extend from the front *)
@@ -134,6 +135,7 @@ and arg = arg' phrase
 and arg' =
   | ExpA of expr
   | TypA of typ
+  | DefA of id
 
 (* Instructions *)
 

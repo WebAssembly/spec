@@ -60,7 +60,8 @@ let expr2arg e = ExpA e $ e.at
 let arg2expr a =
   match a.it with
   | ExpA e -> e
-  | TypA _ -> error a.at "Argument is not an expression"
+  | TypA _
+  | DefA _ -> error a.at "Argument is not an expression"
 
 (* Utils for IL *)
 let is_case e =
@@ -326,7 +327,7 @@ and translate_args args = List.concat_map ( fun arg ->
   match arg.it with
   | Il.ExpA e -> [ ExpA (translate_exp e) $ arg.at ]
   | Il.TypA typ -> [ TypA typ $ arg.at ]
-  | Il.DefA _ -> [] (* TODO: handle functions *)
+  | Il.DefA id -> [ DefA id.it $ arg.at ]
   | Il.GramA _ -> [] ) args
 
 (* `Il.path` -> `path list` *)
@@ -633,6 +634,7 @@ and call_lhs_to_inverse_call_rhs lhs rhs free_ids =
     match a.it with
     | ExpA e -> contains_ids free_ids e
     | TypA _ -> false
+    | DefA _ -> false
   in
   let rhs2args e =
     (match e.it with

@@ -91,6 +91,7 @@ let lookup_env key env =
     |> freeVar
     |> raise
 
+let lookup_env_opt key env = Env.find_opt key env
 
 (* Info *)
 

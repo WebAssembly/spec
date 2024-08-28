@@ -50,12 +50,16 @@ let transpose matrix =
       new_row :: new_rows in
   transpose' matrix
 
-let extract_exp a =
+let is_not_typarg a =
   match a.it with
-  | ExpA e -> Some e
-  | TypA _ -> None
-let extract_expargs = List.filter_map extract_exp
+  | TypA _ -> false
+  | _ -> true
+let remove_typargs = List.filter is_not_typarg
 
+let dispatch_fname f env =
+  match lookup_env_opt ("$" ^ f) env with
+  | Some (FnameV f') -> f'
+  | _ -> f
 
 let rec create_sub_al_context names iter env =
   let option_name_to_list name = lookup_env name env |> unwrap_optv |> Option.to_list in
@@ -228,17 +232,19 @@ and eval_expr env expr =
     eval_expr env e2 |> unwrap_listv_to_array |> Array.exists ((=) v1) |> boolV
   (* Function Call *)
   | CallE (fname, al) ->
-    let el = extract_expargs al in
-    let args = List.map (eval_expr env) el in
-    (match call_func fname args  with
+    let fname' = dispatch_fname fname env in
+    let el = remove_typargs al in
+    let args = List.map (eval_arg env) el in
+    (match call_func fname' args  with
     | Some v -> v
     | _ -> raise (Exception.MissingReturnValue fname)
     )
   | InvCallE (fname, _, al) ->
-    let el = extract_expargs al in
+    let fname' = dispatch_fname fname env in
+    let el = remove_typargs al in
     (* TODO: refactor numerics function name *)
-    let args = List.map (eval_expr env) el in
-    (match call_func ("inverse_of_"^fname) args  with
+    let args = List.map (eval_arg env) el in
+    (match call_func ("inverse_of_"^fname') args  with
     | Some v -> v
     | _ -> raise (Exception.MissingReturnValue fname)
     )
@@ -423,6 +429,11 @@ and eval_expr env expr =
     boolV (List.length (WasmContext.get_value_stack ()) >= i)
   | _ -> fail_expr expr "cannot evaluate expr"
 
+and eval_arg env a =
+  match a.it with
+  | ExpA e -> eval_expr env e
+  | TypA _ -> assert false
+  | DefA id -> FnameV (dispatch_fname id env)
 
 (* Assignment *)
 
@@ -544,6 +555,11 @@ and assign_split lhs vs env =
     env |> assign ep prefix |> assign es suffix
   )
 
+and assign_param lhs rhs env =
+  match lhs.it with
+  | ExpA e -> assign e rhs env
+  | TypA _ -> assert false
+  | DefA id -> Env.add ("$" ^ id) rhs env
 
 (* Step *)
 
@@ -616,8 +632,8 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     let new_env = ctx |> AlContext.get_env |> assign e1 (eval_expr env e2) in
     AlContext.set_env new_env ctx
   | PerformI (f, al) ->
-    let el = extract_expargs al in
-    let args = List.map (eval_expr env) el in
+    let el = remove_typargs al in
+    let args = List.map (eval_arg env) el in
     call_func f args |> ignore;
     ctx
   | TrapI -> raise Exception.Trap
@@ -767,7 +783,7 @@ and create_context (name: string) (args: value list) : AlContext.mode =
   let algo = lookup_algo name in
   let params = params_of_algo algo in
   let body = body_of_algo algo in
-  let params = params |> extract_expargs in
+  let params = params |> remove_typargs in
 
   if List.length args <> List.length params then (
     error
@@ -781,7 +797,7 @@ and create_context (name: string) (args: value list) : AlContext.mode =
 
   let env =
     Env.empty
-    |> List.fold_right2 assign params args
+    |> List.fold_right2 assign_param params args
   in
 
   AlContext.al (name, body, env)

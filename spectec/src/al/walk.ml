@@ -18,7 +18,8 @@ type unit_walker = {
 let walk_arg (walker: unit_walker) (arg: arg) : unit =
   match arg.it with
   | ExpA e -> walker.walk_expr walker e
-  | TypA _ -> ()
+  | TypA _
+  | DefA _ -> ()
 
 let walk_iter (walker: unit_walker) (iter: iter) : unit =
   match iter with
@@ -104,7 +105,8 @@ let walk_arg (walker: walker) (arg: arg) : arg =
   let walk_expr = walker.walk_expr walker in
   match arg.it with
   | ExpA e -> { arg with it = ExpA (walk_expr e) }
-  | TypA _ -> arg
+  | TypA _
+  | DefA _ -> arg
 
 let walk_iter (walker: walker) (iter: iter) : iter =
   let walk_expr = walker.walk_expr walker in
@@ -314,7 +316,8 @@ and walk_path f p =
 and walk_arg f a =
   match a.it with
   | ExpA e -> { a with it = ExpA (walk_expr f e) }
-  | TypA _ -> a
+  | TypA _
+  | DefA _ -> a
 
 let rec walk_instr f (instr:instr) : instr list =
   let { pre_instr = pre; post_instr = post; stop_cond_instr = stop_cond; _ } = f in
