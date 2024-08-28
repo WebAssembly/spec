@@ -75,7 +75,10 @@ Parametric Instructions
 
 :math:`\NOP`
 ............
+$${rule-prose: Instr_ok/nop}
 
+.. todo::
+ below is the official specification 
 * The instruction is valid with type :math:`[] \to []`.
 
 $${rule: Instr_ok/nop}
@@ -85,6 +88,10 @@ $${rule: Instr_ok/nop}
 
 :math:`\UNREACHABLE`
 ....................
+$${rule-prose: Instr_ok/unreachable}
+
+.. todo::
+ below is the official specification 
 
 * The instruction is valid with any :ref:`valid <valid-instrtype>` type of the form :math:`[t_1^\ast] \to [t_2^\ast]`.
 
@@ -98,6 +105,11 @@ $${rule: Instr_ok/unreachable}
 
 :math:`\DROP`
 .............
+$${rule-prose: Instr_ok/drop}
+
+.. todo::
+   
+ below is the official specification 
 
 * The instruction is valid with type :math:`[t] \to []`, for any :ref:`valid <valid-valtype>` :ref:`value type <syntax-valtype>` :math:`t`.
 
@@ -111,6 +123,17 @@ $${rule: Instr_ok/drop}
 
 :math:`\SELECT~(t^\ast)^?`
 ..........................
+$${rule-prose: Instr_ok/select}
+.. todo::
+ below is the official specification 
+ Need more specific information. 
+
+ (*) - [Add "t* is present" condition for Either-Or branch.]
+
+ (*) - [Add select infront of "valtype"]
+ 
+
+ 
 
 * If :math:`t^\ast` is present, then:
 
@@ -142,6 +165,10 @@ Numeric Instructions
 
 :math:`t\K{.}\CONST~c`
 ......................
+$${rule-prose: Instr_ok/const}
+
+.. todo::
+ below is the official specification 
 
 * The instruction is valid with type :math:`[] \to [t]`.
 
@@ -152,6 +179,10 @@ $${rule: Instr_ok/const}
 
 :math:`t\K{.}\unop`
 ...................
+$${rule-prose: Instr_ok/unop}
+
+.. todo::
+ below is the official specification 
 
 * The instruction is valid with type :math:`[t] \to [t]`.
 
@@ -162,6 +193,10 @@ $${rule: Instr_ok/unop}
 
 :math:`t\K{.}\binop`
 ....................
+$${rule-prose: Instr_ok/binop}
+
+.. todo::
+ below is the official specification 
 
 * The instruction is valid with type :math:`[t~t] \to [t]`.
 
@@ -172,6 +207,10 @@ $${rule: Instr_ok/binop}
 
 :math:`t\K{.}\testop`
 .....................
+$${rule-prose: Instr_ok/testop}
+
+.. todo::
+ below is the official specification 
 
 * The instruction is valid with type :math:`[t] \to [\I32]`.
 
@@ -182,6 +221,10 @@ $${rule: Instr_ok/testop}
 
 :math:`t\K{.}\relop`
 ....................
+$${rule-prose: Instr_ok/relop}
+
+.. todo::
+ below is the official specification 
 
 * The instruction is valid with type :math:`[t~t] \to [\I32]`.
 
@@ -192,6 +235,12 @@ $${rule: Instr_ok/relop}
 
 :math:`t_2\K{.}\cvtop\K{\_}t_1\K{\_}\sx^?`
 ..........................................
+$${rule-prose: Instr_ok/cvtop}
+
+.. todo::
+(*) indices are switched making hard to understand.  
+
+ below is the official specification 
 
 * The instruction is valid with type :math:`[t_1] \to [t_2]`.
 
@@ -210,6 +259,13 @@ Reference Instructions
 
 :math:`\REFNULL~\X{ht}`
 .......................
+$${rule-prose: Instr_ok/ref.null}
+
+.. todo::
+   (1)
+
+   (3) - [ht to heap type]
+ below is the official specification 
 
 * The :ref:`heap type <syntax-heaptype>` :math:`\X{ht}` must be :ref:`valid <valid-heaptype>`.
 
@@ -222,6 +278,15 @@ $${rule: Instr_ok/ref.null}
 
 :math:`\REFFUNC~x`
 ..................
+$${rule-prose: Instr_ok/ref.func}
+
+.. todo::
+   (2) - [in the result type]
+
+   (3) - [dt to defined type, x to function index.]
+
+   (4) -[need to erase null.]
+ below is the official specification 
 
 * The function :math:`C.\CFUNCS[x]` must be defined in the context.
 
@@ -238,6 +303,13 @@ $${rule: Instr_ok/ref.func}
 
 :math:`\REFISNULL`
 ..................
+$${rule-prose: Instr_ok/ref.is_null}
+
+.. todo::
+   (1)
+
+   (3) - [ht to heap type]
+ below is the official specification 
 
 * The instruction is valid with type :math:`[(\REF~\NULL~\X{ht})] \to [\I32]`, for any :ref:`valid <valid-heaptype>` :ref:`heap type <syntax-heaptype>` :math:`\X{ht}`.
 
@@ -248,6 +320,15 @@ $${rule: Instr_ok/ref.is_null}
 
 :math:`\REFASNONNULL`
 .....................
+$${rule-prose: Instr_ok/ref.as_non_null}
+
+.. todo::
+   (1)
+
+   (3) - [ht to heap type]
+
+   (4) - [need to erase "null" in the range(2nd type) type.]
+ below is the official specification 
 
 * The instruction is valid with type :math:`[(\REF~\NULL~\X{ht})] \to [(\REF~\X{ht})]`, for any :ref:`valid <valid-heaptype>` :ref:`heap type <syntax-heaptype>` :math:`\X{ht}`.
 
@@ -258,6 +339,11 @@ $${rule: Instr_ok/ref.as_non_null}
 
 :math:`\REFEQ`
 ..............
+$${rule-prose: Instr_ok/ref.eq}
+
+.. todo::
+   (1)
+ below is the official specification 
 
 * The instruction is valid with type :math:`[(\REF~\NULL~\EQT) (\REF~\NULL~\EQT)] \to [\I32]`.
 
@@ -268,6 +354,12 @@ $${rule: Instr_ok/ref.eq}
 
 :math:`\REFTEST~\X{rt}`
 .......................
+$${rule-prose: Instr_ok/ref.test}
+
+.. todo::
+   
+   (3) - [rt to reference type]
+ below is the official specification 
 
 * The :ref:`reference type <syntax-reftype>` :math:`\X{rt}` must be :ref:`valid <valid-reftype>`.
 
@@ -283,6 +375,12 @@ $${rule: Instr_ok/ref.test}
 
 :math:`\REFCAST~\X{rt}`
 .......................
+$${rule-prose: Instr_ok/ref.cast}
+
+.. todo::
+   
+   (3) - [rt to reference type]
+ below is the official specification 
 
 * The :ref:`reference type <syntax-reftype>` :math:`\X{rt}` must be :ref:`valid <valid-reftype>`.
 
@@ -303,6 +401,25 @@ Aggregate Reference Instructions
 
 :math:`\STRUCTNEW~x`
 ....................
+$${rule-prose: Instr_ok/struct.new}
+
+.. todo::     
+   below is the official specification 
+
+   (L2) - [unpack(zt)* to [(unpack(zt))*], "mut ?" to "mut" in the premise, "double ~" to "expand" ]
+
+   (1)
+
+   (2)
+
+   (3) - [add "structure type","field type", etc]
+
+   (4) - [unpack(zt)* to [(unpack(zt))*], erase "null" in the range type] 
+   
+   (6)
+
+   (*) - Need more specific description.
+
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
@@ -325,6 +442,24 @@ $${rule: Instr_ok/struct.new}
 
 :math:`\STRUCTNEWDEFAULT~x`
 ...........................
+$${rule-prose: Instr_ok/struct.new_default}
+
+.. todo::
+ below is the official specification 
+
+ (L2) - ["mut ?" to "mut" in the premise, "double ~" to "expand", change defaultable notation in the premise. ]
+ 
+ (1)
+
+ (3) - [add "structure type","field type", etc]
+
+ (4) - [Erase "null" in the range type]
+ 
+ (6)
+
+ (7)
+
+ (*) - Need more specific description.
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
@@ -351,6 +486,25 @@ $${rule: Instr_ok/struct.new_default}
 
 :math:`\STRUCTGET\K{\_}\sx^?~x~y`
 .................................
+$${rule-prose: Instr_ok/struct.get}
+
+.. todo::
+ below is the official specification 
+ 
+ (L2) - ["mut ?" to "mut" in the premise, name of the variables are changed.]
+
+ (1)
+
+ (2)
+
+ (3) - [add "structure type","field type", etc]
+ 
+ (5) - ["y" is change to variable "i"]
+
+ (6)
+
+ (*) - It has some different variable names. 
+
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
@@ -371,6 +525,25 @@ $${rule: Instr_ok/struct.get}
 
 :math:`\STRUCTSET~x~y`
 ......................
+$${rule-prose: Instr_ok/struct.set}
+
+.. todo::
+ below is the official specification 
+
+ (L2) - [name of the variables are changed, "mut" to "var" in the premise, "double ~" to "expand"]
+
+ (1)
+
+ (2)
+ 
+ (3) - [add "structure type","field type", etc]
+
+ (5) - ["y" is change to variable "i"]
+
+ (6)
+
+ (8)
+
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
@@ -391,7 +564,22 @@ $${rule: Instr_ok/struct.set}
 
 :math:`\ARRAYNEW~x`
 ...................
+$${rule-prose: Instr_ok/array.new}
 
+.. todo::
+ below is the official specification 
+
+ (L2) - ["double ~" to expand, "mut ?" to "mut"]
+
+ (1)
+
+ (2)
+
+ (3) - [add "structure type","field type", etc]
+
+ (4) - [Erase "null" in the range type] 
+ 
+ (6)
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
 * The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
@@ -409,6 +597,25 @@ $${rule: Instr_ok/array.new}
 
 :math:`\ARRAYNEWDEFAULT~x`
 ..........................
+$${rule-prose: Instr_ok/array.new_default}
+
+.. todo::
+ below is the official specification 
+
+ (L2) - ["mut ?" to "mut" in the premise, "double ~" to "expand", change defaultable notation in the premise ]
+
+ (1)
+
+ (2)
+
+ (3) - [add "structure type","field type", etc]
+
+ (4) - [Erase "null" in the range type]
+ 
+ (6)
+
+ (7)
+
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
@@ -429,6 +636,22 @@ $${rule: Instr_ok/array.new_default}
 
 :math:`\ARRAYNEWFIXED~x~n`
 ..........................
+$${rule-prose: Instr_ok/array.new_fixed}
+
+.. todo::
+ below is the official specification 
+
+ (L2) - [ "mut ?" to "mut" in the premise, "double ~" to "expand" ]
+
+ (1)
+
+ (2)
+
+ (3) - [add "structure type","field type", etc]
+
+ (4) - [Erase "null" in the range type]
+ 
+ (6)
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
@@ -447,6 +670,22 @@ $${rule: Instr_ok/array.new_fixed}
 
 :math:`\ARRAYNEWELEM~x~y`
 .........................
+$${rule-prose: Instr_ok/array.new_elem}
+
+.. todo::
+ below is the official specification 
+
+ (L2) - ["mut ?" to "mut" in the premise, "double ~" to "expand" ]
+ 
+ (1)
+
+ (2)
+
+ (3) - [add "structure type","field type", etc]
+ 
+ (4) - [Erase "null" in the range type]
+ 
+ (6)
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
@@ -471,6 +710,24 @@ $${rule: Instr_ok/array.new_elem}
 
 :math:`\ARRAYNEWDATA~x~y`
 .........................
+$${rule-prose: Instr_ok/array.new_data}
+
+.. todo::
+ below is the official specification 
+
+ (L2) - [ "mut ?" to "mut" in the premise, "double ~" to "expand" ]
+ 
+ (1)
+
+ (2)
+ 
+ (3) - [add "structure type","field type", etc]
+ 
+ (4) - [Erase "null" in the range type]
+ 
+ (6)
+
+ (*) merge the "Either-Or" statement.
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
@@ -495,6 +752,20 @@ $${rule: Instr_ok/array.new_data}
 
 :math:`\ARRAYGET\K{\_}\sx^?~x`
 ..............................
+$${rule-prose: Instr_ok/array.get}
+
+.. todo::
+ below is the official specification 
+
+ (L2) - ["mut ?" to "mut" in the premise, "double ~" to "expand" ]
+
+ (1)
+ 
+ (2)
+ 
+ (3) - [add "structure type","field type", etc]
+ 
+ (6)
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
@@ -515,6 +786,22 @@ $${rule: Instr_ok/array.get}
 
 :math:`\ARRAYSET~x`
 ...................
+$${rule-prose: Instr_ok/array.set}
+
+.. todo::
+ below is the official specification 
+
+ (L2) - ["mut" to "var" in the premise, "double ~" to "expand" ]
+  
+ (1)
+ 
+ (2)
+ 
+ (3) - [add "structure type","field type", etc]
+ 
+ (6)
+
+ (8)
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
@@ -535,6 +822,16 @@ $${rule: Instr_ok/array.set}
 
 :math:`\ARRAYLEN`
 .................
+$${rule-prose: Instr_ok/array.len}
+
+.. todo::
+ below is the official specification 
+
+ (L2) - [Erase the premise.]
+  
+ (1)
+
+ (*) - Do not need any description.
 
 * The the instruction is valid with type :math:`[(\REF~\NULL~\ARRAY)] \to [\I32]`.
 
@@ -545,6 +842,25 @@ $${rule: Instr_ok/array.len}
 
 :math:`\ARRAYFILL~x`
 ....................
+$${rule-prose: Instr_ok/array.fill}
+
+.. todo::
+ below is the official specification 
+
+  (L2) - ["mut" to "var" in the premise, "double ~" to "expand" ]
+ 
+ (1)
+ 
+ (2)
+ 
+ (3) - [add "structure type","field type", etc]
+
+ (6)
+
+ (8)
+
+ (9)
+
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
@@ -565,6 +881,24 @@ $${rule: Instr_ok/array.fill}
 
 :math:`\ARRAYCOPY~x~y`
 ......................
+$${rule-prose: Instr_ok/array.copy}
+
+.. todo::
+ below is the official specification 
+
+ (L2) - ["mut" to "var" for x_1 ,"mut ?" to "mut" for x_2,  "double ~" to "expand", x_1 to x amd x_2 to y ]
+ 
+ (1)
+ 
+ (2)
+ 
+ (3) - [add "structure type","field type", etc]
+ 
+ (6)
+ 
+ (8) - [for x_1]
+
+ (*) - [variables have different name]
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
@@ -591,6 +925,22 @@ $${rule: Instr_ok/array.copy}
 
 :math:`\ARRAYINITELEM~x~y`
 ..........................
+$${rule-prose: Instr_ok/array.init_elem}
+
+.. todo::
+ below is the official specification
+
+ (L2) - ["mut" to "var" in the premise, "double ~" to "expand" ]
+ 
+ (1)
+ 
+ (2)
+ 
+ (3) - [add "structure type","field type", etc]
+
+ (6)
+ 
+ (8)
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
@@ -617,6 +967,25 @@ $${rule: Instr_ok/array.init_elem}
 
 :math:`\ARRAYINITDATA~x~y`
 ..........................
+$${rule-prose: Instr_ok/array.init_data}
+
+.. todo::
+ below is the official specification 
+
+ (L2) - ["mut" to "var" in the premise, "double ~" to "expand" ]
+ 
+ (1)
+ 
+ (2)
+ 
+ (3) - [add "structure type","field type", etc]
+ 
+ (6)
+ 
+ (8)
+
+ (*) merge the "Either-Or" statement.
+
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
@@ -646,6 +1015,11 @@ Scalar Reference Instructions
 
 :math:`\REFI31`
 ...............
+$${rule-prose: Instr_ok/ref.i31}
+
+.. todo::
+   (4) - [Erase "null" in the range type]
+ below is the official specification 
 
 * The instruction is valid with type :math:`[\I32] \to [(\REF~\I31)]`.
 
@@ -656,6 +1030,11 @@ $${rule: Instr_ok/ref.i31}
 
 :math:`\I31GET\K{\_}\sx`
 ........................
+$${rule-prose: Instr_ok/i31.get}
+
+.. todo::
+   (1)
+ below is the official specification 
 
 * The instruction is valid with type :math:`[(\REF~\NULL~\I31)] \to [\I32]`.
 
@@ -672,6 +1051,14 @@ External Reference Instructions
 
 :math:`\ANYCONVERTEXTERN`
 .........................
+$${rule-prose: Instr_ok/any.convert_extern}
+
+.. todo::
+ (*) below is the official specification
+
+ (L2) - [Need to discrimintate two "null" with "null_1" and "null_2", Add "null_1 ? = null_2 ?" condition in the premise]
+
+ (*) - [Need to discrimintate two "null" with "null_1" and "null_2", Add "null_1 ? = null_2 ?" condition ]
 
 * The instruction is valid with type :math:`[(\REF~\NULL_1^?~\EXTERN)] \to [(\REF~\NULL_2^?~\ANY)]` for any :math:`\NULL_1^?` that equals :math:`\NULL_2^?`.
 
@@ -682,6 +1069,15 @@ $${rule: Instr_ok/any.convert_extern}
 
 :math:`\EXTERNCONVERTANY`
 .........................
+$${rule-prose: Instr_ok/extern.convert_any}
+
+
+.. todo::
+ (*) below is the official specification 
+
+ (L2) - [Need to discrimintate two "null" with "null_1" and "null_2", Add "null_1 ? = null_2 ?" condition in the premise]
+
+ (*) - [Need to discrimintate two "null" with "null_1" and "null_2", Add "null_1 ? = null_2 ?" condition ]
 
 * The instruction is valid with type :math:`[(\REF~\NULL_1^?~\ANY)] \to [(\REF~\NULL_2^?~\EXTERN)]` for any :math:`\NULL_1^?` that equals :math:`\NULL_2^?`.
 
@@ -697,8 +1093,15 @@ $${rule: Instr_ok/extern.convert_any}
 
 Vector Instructions
 ~~~~~~~~~~~~~~~~~~~
-
 Vector instructions can have a prefix to describe the :ref:`shape <syntax-shape>` of the operand. Packed numeric types, ${packtype:I8} and ${packtype:I16}, are not :ref:`value types <syntax-valtype>`. An auxiliary function maps such packed type shapes to value types:
+$${definition-prose: unpackshape}
+
+.. todo::
+   (*) Erase description
+
+   (*) Add "dimension"
+
+   (*) Change "iN" to "t"
 
 $${definition: unpackshape}
 
@@ -707,6 +1110,10 @@ $${definition: unpackshape}
 
 :math:`\V128\K{.}\VCONST~c`
 ...........................
+$${rule-prose: Instr_ok/vconst}
+
+.. todo::
+ below is the official specification 
 
 * The instruction is valid with type :math:`[] \to [\V128]`.
 
@@ -717,6 +1124,10 @@ $${rule: Instr_ok/vconst}
 
 :math:`\V128\K{.}\vvunop`
 .........................
+$${rule-prose: Instr_ok/vvunop}
+
+.. todo::
+ below is the official specification 
 
 * The instruction is valid with type :math:`[\V128] \to [\V128]`.
 
@@ -727,14 +1138,21 @@ $${rule: Instr_ok/vvunop}
 
 :math:`\V128\K{.}\vvbinop`
 ..........................
+$${rule-prose: Instr_ok/vvbinop}
+.. todo::
+ below is the official specification 
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
-
+$${rule: Instr_ok/vvbinop}
 
 .. _valid-vvternop:
 
 :math:`\V128\K{.}\vvternop`
 ...........................
+$${rule-prose: Instr_ok/vvternop}
+
+.. todo::
+ below is the official specification 
 
 * The instruction is valid with type :math:`[\V128~\V128~\V128] \to [\V128]`.
 
@@ -745,6 +1163,10 @@ $${rule: Instr_ok/vvternop}
 
 :math:`\V128\K{.}\vvtestop`
 ...........................
+$${rule-prose: Instr_ok/vvtestop}
+
+.. todo::
+ below is the official specification 
 
 * The instruction is valid with type :math:`[\V128] \to [\I32]`.
 
@@ -757,6 +1179,15 @@ $${rule: Instr_ok/vvtestop}
 
 :math:`\shape\K{.}\vunop`
 .........................
+$${rule-prose: Instr_ok/vunop}
+
+.. todo::
+ below is the official specification 
+
+ (L1) - [change "sh" to "shape"]
+
+ (5) - [change "sh" to "shape"]
+   
 
 * The instruction is valid with type :math:`[\V128] \to [\V128]`.
 
@@ -767,6 +1198,14 @@ $${rule: Instr_ok/vunop}
 
 :math:`\shape\K{.}\vbinop`
 ..........................
+$${rule-prose: Instr_ok/vbinop}
+
+.. todo::
+ below is the official specification 
+
+ (L1) - [change "sh" to "shape"]
+
+ (5) - [change "sh" to "shape"]
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
@@ -777,6 +1216,15 @@ $${rule: Instr_ok/vbinop}
 
 :math:`\shape\K{.}\vtestop`
 ...........................
+$${rule-prose: Instr_ok/vtestop}
+
+.. todo::
+ below is the official specification 
+
+ (L1) - [change "sh" to "shape"]
+
+ (5) - [change "sh" to "shape"]
+
 
 * The instruction is valid with type :math:`[\V128] \to [\I32]`.
 
@@ -787,6 +1235,14 @@ $${rule: Instr_ok/vtestop}
 
 :math:`\shape\K{.}\vrelop`
 ..........................
+$${rule-prose: Instr_ok/vrelop}
+
+.. todo::
+ below is the official specification 
+
+ (L1) - [change "sh" to "shape"]
+
+ (5) - [change "sh" to "shape"]
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
@@ -797,6 +1253,14 @@ $${rule: Instr_ok/vrelop}
 
 :math:`\ishape\K{.}\vishiftop`
 ..............................
+$${rule-prose: Instr_ok/vshiftop}
+
+.. todo::
+  below is the official specification 
+
+ (L1) - [change "sh" to "ishape"]
+
+ (5) - [change "sh" to "ishape"]
 
 * The instruction is valid with type :math:`[\V128~\I32] \to [\V128]`.
 
@@ -807,6 +1271,14 @@ $${rule: Instr_ok/vshiftop}
 
 :math:`\ishape\K{.}\VBITMASK`
 .............................
+$${rule-prose: Instr_ok/vbitmask}
+
+.. todo::
+  below is the official specification 
+
+ (L1) - [change "sh" to "ishape"]
+
+ (5) - [change "sh" to "ishape"]
 
 * The instruction is valid with type :math:`[\V128] \to [\I32]`.
 
@@ -817,6 +1289,14 @@ $${rule: Instr_ok/vbitmask}
 
 :math:`\K{i8x16.}\VSWIZZLE`
 ...........................
+$${rule-prose: Instr_ok/vswizzle}
+
+.. todo::
+  below is the official specification 
+
+ (L1) - [change "sh" to "i8x16"]
+
+ (5) - [change "sh" to "i8x16"]
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
@@ -827,6 +1307,15 @@ $${rule: Instr_ok/vswizzle}
 
 :math:`\K{i8x16.}\VSHUFFLE~\laneidx^{16}`
 .........................................
+$${rule-prose: Instr_ok/vshuffle}
+
+.. todo::
+   (L2) - [change "i" to "laneidx", change "*" to 16, change "2 * dim(sh)" to 32, change "sh" to i8x16]
+   
+   (5) - [change "i" to "laneidx", change "*" to 16, change "sh" to i8x16]
+
+   (*) - [change "2 * dim(sh)" to 32]
+ below is the official specification 
 
 * For all :math:`\laneidx_i`, in :math:`\laneidx^{16}`, :math:`\laneidx_i` must be smaller than :math:`32`.
 
@@ -839,6 +1328,15 @@ $${rule: Instr_ok/vshuffle}
 
 :math:`\shape\K{.}\VSPLAT`
 ..........................
+$${rule-prose: Instr_ok/vsplat}
+
+.. todo::
+
+   (L1) - [change "sh" to "shape"]
+
+   (5) - [change "sh" to "shape"]
+
+ below is the official specification 
 
 * Let :math:`t` be :math:`\unpackshape(\shape)`.
 
@@ -851,6 +1349,14 @@ $${rule: Instr_ok/vsplat}
 
 :math:`\shape\K{.}\VEXTRACTLANE\K{\_}\sx^?~\laneidx`
 ....................................................
+$${rule-prose: Instr_ok/vextract_lane}
+
+.. todo::
+  (L1) - [change "i" to "laneidx",change "sh" to "shape"]
+
+   (5) - [change "sh" to "shape"]
+
+ below is the official specification 
 
 * The lane index :math:`\laneidx` must be smaller than :math:`\shdim(\shape)`.
 
@@ -865,6 +1371,14 @@ $${rule: Instr_ok/vextract_lane}
 
 :math:`\shape\K{.}\VREPLACELANE~\laneidx`
 .........................................
+$${rule-prose: Instr_ok/vreplace_lane}
+
+.. todo::
+   (L1) - [change "i" to "laneidx",change "sh" to "shape"]
+
+   (5) - [change "sh" to "shape"]
+
+ below is the official specification 
 
 * The lane index :math:`\laneidx` must be smaller than :math:`\shdim(\shape)`.
 
@@ -879,6 +1393,15 @@ $${rule: Instr_ok/vreplace_lane}
 
 :math:`\ishape_1\K{.}\VEXTADDPAIRWISE\K{\_}\ishape_2\K{\_}\sx`
 ..............................................................
+$${rule-prose: Instr_ok/vextunop}
+
+.. todo::
+
+   (L2) - [change "sh1.vextunop_sh2" to "ishape1_extadd_pairwise_ishape 2 _sx"]
+   
+   (5) - [change "sh1.vextunop_sh2" to "ishape1_extadd_pairwise_ishape 2 _sx"]
+ 
+ below is the official specification 
 
 * The instruction is valid with type :math:`[\V128] \to [\V128]`.
 
@@ -889,6 +1412,14 @@ $${rule: Instr_ok/vextunop}
 
 :math:`\ishape_1\K{.}\VEXTMUL\K{\_}\half\K{\_}\ishape_2\K{\_}\sx`
 .................................................................
+$${rule-prose: Instr_ok/vextbinop}
+
+.. todo::
+ (L2) - [change "sh1.vextbinop_sh2" to "ishape1.extmul_half _ishape2_sx"]
+   
+ (5) - [change "sh1.vextbinop_sh2" to "ishape1.extmul_half _ishape2_sx"]
+
+below is the official specification 
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
@@ -899,6 +1430,14 @@ $${rule: Instr_ok/vextbinop}
 
 :math:`\ishape_1\K{.}\VNARROW\K{\_}\ishape_2\K{\_}\sx`
 ......................................................
+$${rule-prose: Instr_ok/vnarrow}
+
+.. todo::
+ (L1) - [change "sh1" to "ishpae1" and "sh2" to "ishape2"]
+   
+ (5) - [change "sh1" to "ishpae1" and "sh2" to "ishape2"]
+
+ below is the official specification 
 
 * The instruction is valid with type :math:`[\V128~\V128] \to [\V128]`.
 
@@ -909,6 +1448,14 @@ $${rule: Instr_ok/vnarrow}
 
 :math:`\shape\K{.}\vcvtop\K{\_}\half^?\K{\_}\shape\K{\_}\sx^?\K{\_zero}^?`
 ..........................................................................
+$${rule-prose: Instr_ok/vcvtop}
+
+.. todo::
+ (L1) - [change "sh1.vcvtop_zero?_sh2_half ?" to "shape.vcvtop_half ?_shape_sx?_zero?"]
+   
+ (5) - [change "sh1.vcvtop_zero?_sh2_half ?" to "shape.vcvtop_half ?_shape_sx?_zero?"]
+
+ below is the official specification 
 
 * The instruction is valid with type :math:`[\V128] \to [\V128]`.
 
@@ -927,6 +1474,17 @@ Variable Instructions
 
 :math:`\LOCALGET~x`
 ...................
+$${rule-prose: Instr_ok/local.get}
+
+.. todo::
+   
+   (1) - [Erase comma]
+
+   (2)
+
+   (3) - ["t" to local type]
+   
+ below is the official specification 
 
 * The local :math:`C.\CLOCALS[x]` must be defined in the context.
 
@@ -943,6 +1501,17 @@ $${rule: Instr_ok/local.get}
 
 :math:`\LOCALSET~x`
 ...................
+$${rule-prose: Instr_ok/local.set}
+
+.. todo::
+
+   (1) - [Erase comma]
+
+   (2)
+
+   (3) - ["t" to local type]
+   
+ below is the official specification 
 
 * The local :math:`C.\CLOCALS[x]` must be defined in the context.
 
@@ -957,6 +1526,17 @@ $${rule: Instr_ok/local.set}
 
 :math:`\LOCALTEE~x`
 ...................
+$${rule-prose: Instr_ok/local.tee}
+
+.. todo::
+   (1) - [Erase ","]
+
+   (2)
+
+   (3) - ["t" to local type]
+   
+   
+ below is the official specification 
 
 * The local :math:`C.\CLOCALS[x]` must be defined in the context.
 
@@ -971,6 +1551,16 @@ $${rule: Instr_ok/local.tee}
 
 :math:`\GLOBALGET~x`
 ....................
+$${rule-prose: Instr_ok/global.get}
+
+.. todo::
+   (L2) - ["mut ?" to "mut" in premise]
+   
+   (1) - [Erase "," and "?"]
+   
+   (2)
+
+ below is the official specification 
 
 * The global :math:`C.\CGLOBALS[x]` must be defined in the context.
 
@@ -985,6 +1575,18 @@ $${rule: Instr_ok/global.get}
 
 :math:`\GLOBALSET~x`
 ....................
+$${rule-prose: Instr_ok/global.set}
+
+.. todo::
+   (L2) - ["mut" to "var"]
+   
+   (1)
+   
+   (2)
+   
+   (4)
+   
+ below is the official specification 
 
 * The global :math:`C.\CGLOBALS[x]` must be defined in the context.
 
@@ -1009,6 +1611,20 @@ Table Instructions
 
 :math:`\TABLEGET~x`
 ...................
+$${rule-prose: Instr_ok/table.get}
+
+.. todo::
+   (L1) - [change "lim" to "limits"]
+   
+   (1)
+   
+   (2)
+   
+   (3) - ["limits t" to "table type"]
+   
+   (5) - [change "lim" to "limits"]
+   
+ below is the official specification 
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
@@ -1023,6 +1639,20 @@ $${rule: Instr_ok/table.get}
 
 :math:`\TABLESET~x`
 ...................
+$${rule-prose: Instr_ok/table.set}
+
+.. todo::
+   (L1) - [change "lim" to "limits"]
+   
+   (1)
+   
+   (2)
+   
+   (3) - ["limits t" to "table type"]
+   
+   (5) - [change "lim" to "limits"]
+   
+ below is the official specification 
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
@@ -1037,6 +1667,15 @@ $${rule: Instr_ok/table.set}
 
 :math:`\TABLESIZE~x`
 ....................
+$${rule-prose: Instr_ok/table.size}
+
+.. todo::
+   (L2) - [change "lim rt" to "table type"]
+   
+   (1)
+   
+   (*) - [Erase last statement]
+ below is the official specification 
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
@@ -1049,6 +1688,20 @@ $${rule: Instr_ok/table.size}
 
 :math:`\TABLEGROW~x`
 ....................
+$${rule-prose: Instr_ok/table.grow}
+
+.. todo::
+   (L1) - [change "lim" to "limits"]
+   
+   (1)
+   
+   (2)
+   
+   (3) - ["limits t" to "table type"]
+   
+   (5) - [change "lim" to "limits"]
+   
+ below is the official specification 
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
@@ -1063,6 +1716,20 @@ $${rule: Instr_ok/table.grow}
 
 :math:`\TABLEFILL~x`
 ....................
+$${rule-prose: Instr_ok/table.fill}
+
+.. todo::
+    (L1) - [change "lim" to "limits"]
+   
+   (1)
+   
+   (2)
+   
+   (3) - ["limits t" to "table type"]
+   
+   (5) - [change "lim" to "limits"]
+
+ below is the official specification 
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
@@ -1077,6 +1744,19 @@ $${rule: Instr_ok/table.fill}
 
 :math:`\TABLECOPY~x~y`
 ......................
+$${rule-prose: Instr_ok/table.copy}
+
+.. todo::
+   (L1) - [change "lim" to "limits", change "x_1" to "x", "x_2" to "y"]
+   
+   (1)
+   
+   (2)
+   
+   (3) - ["limits t" to "table type", "t" to "reference type"]
+   
+   (5) - [change "lim" to "limits", change "x_1" to "x", "x_2" to "y"]
+ below is the official specification 
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
@@ -1097,6 +1777,18 @@ $${rule: Instr_ok/table.copy}
 
 :math:`\TABLEINIT~x~y`
 ......................
+$${rule-prose: Instr_ok/table.init}
+
+.. todo::
+   
+   (1)
+   
+   (2)
+   
+   (3) - ["limits t" to "table type", "t" to "reference type"]
+   
+   (5) - [change "lim" to "limits"]
+ below is the official specification 
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
@@ -1117,6 +1809,12 @@ $${rule: Instr_ok/table.init}
 
 :math:`\ELEMDROP~x`
 ...................
+$${rule-prose: Instr_ok/elem.drop}
+
+.. todo::
+   
+   (2)
+ below is the official specification 
 
 * The element segment :math:`C.\CELEMS[x]` must be defined in the context.
 
@@ -1138,6 +1836,12 @@ Memory Instructions
 
 :math:`t\K{.}\LOAD~x~\memarg`
 .............................
+$${rule-prose: Instr_ok/load}
+
+.. todo::
+ below is the official specification 
+
+
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -1153,6 +1857,12 @@ $${rule: Instr_ok/load-val}
 :math:`t\K{.}\LOAD{N}\K{\_}\sx~x~\memarg`
 .........................................
 
+.. todo::
+ below is the official specification 
+
+
+ (*) -[change "M,sx" to "M_sx"]
+
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
@@ -1166,6 +1876,11 @@ $${rule: Instr_ok/load-pack}
 
 :math:`t\K{.}\STORE~x~\memarg`
 ..............................
+$${rule-prose: Instr_ok/store}
+
+.. todo::
+ below is the official specification 
+
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -1181,6 +1896,10 @@ $${rule: Instr_ok/store-val}
 :math:`t\K{.}\STORE{N}~x~\memarg`
 .................................
 
+.. todo::
+ below is the official specification 
+
+
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
@@ -1194,6 +1913,10 @@ $${rule: Instr_ok/store-pack}
 
 :math:`\K{v128.}\K{.}\LOAD~x~\memarg`
 .....................................
+$${rule-prose: Instr_ok/vload}
+.. todo::
+ below is the official specification 
+
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -1209,6 +1932,9 @@ $${rule: Instr_ok/vload-val}
 :math:`\K{v128.}\LOAD{N}\K{x}M\_\sx~x~\memarg`
 ..............................................
 
+.. todo::
+ below is the official specification 
+
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8 \cdot M`.
@@ -1222,6 +1948,9 @@ $${rule: Instr_ok/vload-pack}
 
 :math:`\K{v128.}\LOAD{N}\K{\_splat}~x~\memarg`
 ..............................................
+
+.. todo::
+ below is the official specification 
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -1237,6 +1966,9 @@ $${rule: Instr_ok/vload-splat}
 :math:`\K{v128.}\LOAD{N}\K{\_zero}~x~\memarg`
 .............................................
 
+.. todo::
+ below is the official specification 
+
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
 * The alignment :math:`2^{\memarg.\ALIGN}` must not be larger than :math:`N/8`.
@@ -1250,6 +1982,13 @@ $${rule: Instr_ok/vload-zero}
 
 :math:`\K{v128.}\LOAD{N}\K{\_lane}~x~\memarg~\laneidx`
 ......................................................
+$${rule-prose: Instr_ok/vload_lane}
+.. todo::
+ below is the official specification 
+
+ (L1) - [change "i" to "laneidx"]
+
+ (5) - [change "i" to "laneidx"]
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -1266,6 +2005,10 @@ $${rule: Instr_ok/vload_lane}
 
 :math:`\K{v128.}\STORE~x~\memarg`
 .................................
+$${rule-prose: Instr_ok/vstore}
+.. todo::
+ below is the official specification 
+ (1)
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -1280,6 +2023,13 @@ $${rule: Instr_ok/vstore}
 
 :math:`\K{v128.}\STORE{N}\K{\_lane}~x~\memarg~\laneidx`
 .......................................................
+$${rule-prose: Instr_ok/vstore_lane}
+.. todo::
+ below is the official specification 
+
+ (L1) - [change "i" to "laneidx"]
+
+ (5) - [change "i" to "laneidx"]
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -1296,6 +2046,16 @@ $${rule: Instr_ok/vstore_lane}
 
 :math:`\MEMORYSIZE~x`
 .....................
+$${rule-prose: Instr_ok/memory.size}
+
+.. todo::
+ below is the official specification 
+
+ (L1) - [change "mt" to "memtype"]
+
+ (2)
+
+ (3) - [change "mt" to "memtype"]
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -1308,6 +2068,17 @@ $${rule: Instr_ok/memory.size}
 
 :math:`\MEMORYGROW~x`
 .....................
+$${rule-prose: Instr_ok/memory.grow}
+
+.. todo::
+ below is the official specification 
+
+ (L1) - [change "mt" to "memtype"]
+
+ (2)
+
+ (3) - [change "mt" to "memtype"]
+
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -1320,6 +2091,17 @@ $${rule: Instr_ok/memory.grow}
 
 :math:`\MEMORYFILL~x`
 .....................
+$${rule-prose: Instr_ok/memory.fill}
+
+.. todo::
+ below is the official specification 
+
+ (L1) - [change "mt" to "memtype"]
+
+ (2)
+
+ (3) - [change "mt" to "memtype"]
+
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -1332,6 +2114,10 @@ $${rule: Instr_ok/memory.fill}
 
 :math:`\MEMORYCOPY~x~y`
 .......................
+$${rule-prose: Instr_ok/memory.copy}
+
+.. todo::
+ below is the official specification 
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -1346,6 +2132,12 @@ $${rule: Instr_ok/memory.copy}
 
 :math:`\MEMORYINIT~x~y`
 .......................
+$${rule-prose: Instr_ok/memory.init}
+
+.. todo::
+ below is the official specification 
+
+
 
 * The memory :math:`C.\CMEMS[x]` must be defined in the context.
 
@@ -1360,6 +2152,14 @@ $${rule: Instr_ok/memory.init}
 
 :math:`\DATADROP~x`
 ...................
+$${rule-prose: Instr_ok/data.drop}
+
+.. todo::
+ below is the official specification 
+
+ (2)
+
+
 
 * The data segment :math:`C.\CDATAS[x]` must be defined in the context.
 
@@ -1381,6 +2181,17 @@ Control Instructions
 
 :math:`\BLOCK~\blocktype~\instr^\ast~\END`
 ..........................................
+$${rule-prose: Instr_ok/block}
+
+.. todo::
+ below is the official specification
+ 
+ (L1) - [change "bt" to "block type", change the name of the instruction, Erase "x*" below the second arrow in the premise] 
+
+ (3) - [change "bt" to block type, add instruction type, etc]
+
+ (*) - [Erase unneccessary symbols below the arrow, change notation for context]
+
 
 * The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`instruction type <syntax-instrtype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
 
@@ -1402,6 +2213,17 @@ $${rule: Instr_ok/block}
 
 :math:`\LOOP~\blocktype~\instr^\ast~\END`
 .........................................
+$${rule-prose: Instr_ok/loop}
+
+.. todo::
+ below is the official specification 
+ 
+ (L1) - [change "bt" to "block type", change the name of the instruction, Erase "x*" below the second arrow in the premise] 
+
+ (3) - [change "bt" to block type, add instruction type, etc]
+
+ (*) - [Erase unneccessary symbols below the arrow, change notation for context]
+
 
 * The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`instruction type <syntax-functype>` :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]`.
 
@@ -1419,6 +2241,18 @@ $${rule: Instr_ok/loop}
 
 :math:`\IF~\blocktype~\instr_1^\ast~\ELSE~\instr_2^\ast~\END`
 .............................................................
+$${rule-prose: Instr_ok/if}
+
+.. todo::
+ below is the official specification 
+  
+ (L1) - [change "bt" to "block type", change the name of the instruction, Erase "x*" below the second arrow in the premise] 
+
+ (3) - [change "bt" to block type, add instruction type, etc]
+
+ (*) - [Erase unneccessary symbols below the arrow, change notation for context]
+
+
 
 * The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`instruction type <syntax-instrtype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
 
@@ -1440,7 +2274,10 @@ $${rule: Instr_ok/if}
 
 :math:`\TRYTABLE~\blocktype~\catch^\ast~\instr^\ast~\END`
 .........................................................
+$${rule-prose: Instr_ok/try_table}
 
+.. todo::
+   below is the official specification.
 * The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 * For every :ref:`catch clause <syntax-catch>` :math:`\catch_i` in :math:`\catch^\ast`, :math:`\catch_i` must be :ref:`valid <valid-catch>`.
@@ -1452,11 +2289,18 @@ $${rule: Instr_ok/if}
 
 * Then the compound instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
+$${rule: Instr_ok/try_table}
 
 .. _valid-catch:
 
 :math:`\CATCH~x~l`
 ..................
+$${rule-prose: Catch_ok}
+
+.. todo::
+   below is the official specification
+
+   (*) - [ Make "Or" branches more visible to seperate "catch_all" and "catch_all_ref" cases]
 
 * The tag :math:`C.\CTAGS[x]` must be defined in the context.
 
@@ -1494,6 +2338,8 @@ $${rule: Catch_ok/catch_ref}
 :math:`\CATCHALL~l`
 ...................
 
+
+
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
 * The :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l]` must be empty.
@@ -1520,6 +2366,20 @@ $${rule: Catch_ok/catch_all_ref}
 
 :math:`\BR~l`
 .............
+$${rule-prose: Instr_ok/br}
+
+.. todo::
+ below is the official specification 
+  
+  (L2) - [ change "t1*" to  "t1* t*" in the premise]
+
+  (2)
+
+  (3) - [add result type]
+
+  (*) - [ change "t1*" to  "t1* t*" in the last statement]
+
+ 
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
@@ -1540,6 +2400,15 @@ $${rule: Instr_ok/br}
 
 :math:`\BRIF~l`
 ...............
+$${rule-prose: Instr_ok/br_if}
+
+.. todo::
+ below is the official specification
+ 
+ (2)
+
+ (3) - [add result type]
+
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
@@ -1554,6 +2423,22 @@ $${rule: Instr_ok/br_if}
 
 :math:`\BRTABLE~l^\ast~l_N`
 ...........................
+$${rule-prose: Instr_ok/br_table}
+
+.. todo::
+ below is the official specification 
+
+ (L2) -[change l` to "l_N", every arrow type in the function type must be "t1* t* i32 -> t2*"]
+
+ (2)
+
+ (3) - [add label, value type, etc]
+ 
+ (4) - [the result type should be "t1* t* i32 -> t2*"]
+
+ (5) - [change l' to "l_N"]
+
+ (*) - [change the last line to "t1* t* i32 -> t2*" is valid]
 
 * The :ref:`label <syntax-label>` :math:`C.\CLABELS[l_N]` must be defined in the context.
 
@@ -1583,6 +2468,19 @@ $${rule: Instr_ok/br_table}
 
 :math:`\BRONNULL~l`
 ...................
+$${rule-prose: Instr_ok/br_on_null}
+
+.. todo::
+ below is the official specification 
+ 
+ (1)
+ 
+ (2)
+
+ (3) - [change "ht" to heap type]
+ 
+ (4) [erase null in the range type]
+
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
@@ -1597,6 +2495,16 @@ $${rule: Instr_ok/br_on_null}
 
 :math:`\BRONNONNULL~l`
 ......................
+$${rule-prose: Instr_ok/br_on_non_null}
+
+.. todo::
+ below is the official specification 
+ 
+ (1)
+ 
+ (2)
+
+ (*) - Need more specific description.
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
@@ -1617,6 +2525,14 @@ $${rule: Instr_ok/br_on_non_null}
 
 :math:`\BRONCAST~l~\X{rt}_1~\X{rt}_2`
 .....................................
+$${rule-prose: Instr_ok/br_on_cast}
+
+.. todo::
+ below is the official specification 
+ 
+ (2)
+
+ (3) - [add reference type]
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
@@ -1643,6 +2559,14 @@ $${rule: Instr_ok/br_on_cast}
 
 :math:`\BRONCASTFAIL~l~\X{rt}_1~\X{rt}_2`
 .........................................
+$${rule-prose: Instr_ok/br_on_cast_fail}
+
+.. todo::
+ below is the official specification 
+ 
+ (2)
+
+ (3) - [add reference type]
 
 * The label :math:`C.\CLABELS[l]` must be defined in the context.
 
@@ -1669,6 +2593,16 @@ $${rule: Instr_ok/br_on_cast_fail}
 
 :math:`\CALL~x`
 ...............
+$${rule-prose: Instr_ok/call}
+
+.. todo::
+ below is the official specification 
+ 
+ (L2) - [change "double ~" to expand]
+ 
+ (2)
+
+ (6)
 
 * The function :math:`C.\CFUNCS[x]` must be defined in the context.
 
@@ -1683,6 +2617,16 @@ $${rule: Instr_ok/call}
 
 :math:`\CALLREF~x`
 ..................
+$${rule-prose: Instr_ok/call_ref}
+
+.. todo::
+ below is the official specification 
+ 
+ (L2) - [change "double ~" to expand]
+ 
+ (2)
+
+ (6)
 
 * The type :math:`C.\CTYPES[x]` must be defined in the context.
 
@@ -1697,6 +2641,20 @@ $${rule: Instr_ok/call_ref}
 
 :math:`\CALLINDIRECT~x~y`
 .........................
+$${rule-prose: Instr_ok/call_indirect}
+
+.. todo::
+ below is the official specification 
+ 
+ (L2) - [change "lim" to "limits" ,change "double ~" to expand]
+ 
+ (1) 
+ 
+ (2)
+ 
+ (5) - [change "lim" to "limits"]
+ 
+ (6)
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
@@ -1717,6 +2675,15 @@ $${rule: Instr_ok/call_indirect}
 
 :math:`\RETURN`
 ...............
+$${rule-prose: Instr_ok/return}
+
+.. todo::
+ below is the official specification 
+ 
+ (L2) - [change "t1* -> t2*" to "t1* t* -> t2*"]
+
+ (*) - [change "t1* -> t2*" to "t1* t* -> t2*"]
+
 
 * The return type :math:`C.\CRETURN` must not be absent in the context.
 
@@ -1738,6 +2705,19 @@ $${rule: Instr_ok/return}
 
 :math:`\RETURNCALL~x`
 .....................
+$${rule-prose: Instr_ok/return_call}
+
+.. todo::
+ below is the official specification 
+ 
+ (L1) - [Do not need "t2`*" and "C |- t3* -> t4* : ok" in the premise]
+ 
+ (2)
+ 
+ (6)
+ 
+ (*) - [Do not need "t2`*" and validity of "t3* -> t4* " ]
+ 
 
 * The return type :math:`C.\CRETURN` must not be absent in the context.
 
@@ -1759,7 +2739,20 @@ $${rule: Instr_ok/return_call}
 
 :math:`\RETURNCALLREF~x`
 ........................
+$${rule-prose: Instr_ok/return_call_ref}
 
+.. todo::
+ below is the official specification 
+ 
+ (L1) - [Do not need "t2`*" and "C |- t3* -> t4* : ok" in the premise]
+ 
+ (1)
+ 
+ (2)
+ 
+ (6)
+ 
+ (*) - [Do not need "t2`*" and validity of "t3* -> t4* " ]
 * The type :math:`C.\CTYPES[x]` must be defined in the context.
 
 * The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[x]` must be a :ref:`function type <syntax-functype>` :math:`\TFUNC~[t_1^\ast] \toF [t_2^\ast]`.
@@ -1778,6 +2771,22 @@ $${rule: Instr_ok/return_call_ref}
 
 :math:`\RETURNCALLINDIRECT~x~y`
 ...............................
+$${rule-prose: Instr_ok/return_call_indirect}
+
+.. todo::
+ below is the official specification 
+
+ (L1) - [Do not need "t2`*" and "C |- t3* -> t4* : ok" in the premise, change "lim" to "limits"]
+ 
+ (1)
+ 
+ (2)
+ 
+ (5) - [change "lim" to "limits"]
+
+ (6)
+ 
+ (*) - [Do not need "t2`*" and validity of "t3* -> t4* " ]
 
 * The return type :math:`C.\CRETURN` must not be empty in the context.
 
@@ -1805,7 +2814,12 @@ $${rule: Instr_ok/return_call_indirect}
 
 :math:`\THROW~x`
 ................
+$${rule-prose: Instr_ok/throw}
 
+.. todo::
+   below is the official specification.
+
+   (L2) - [double ~ to expand]
 * The tag :math:`C.\CTAGS[x]` must be defined in the context.
 
 * Let :math:`[t^\ast] \to [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`C.\CTAGS[x]`.
@@ -1824,10 +2838,15 @@ $${rule: Instr_ok/throw}
 
 :math:`\THROWREF`
 .................
+$${rule-prose: Instr_ok/throw_ref}
 
+.. todo::
+   below is the official specification.
+
+   (1)
 * The instruction is valid with type :math:`[t_1^\ast~\EXNREF] \to [t_2^\ast]`, for any sequences of  :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
 
-$${rule: Instr_ok/throw}
+$${rule: Instr_ok/throw_ref}
 
 .. note::
    The ${:THROW_REF} instruction is :ref:`stack-polymorphic <polymorphism>`.
@@ -1844,14 +2863,22 @@ Typing of instruction sequences is defined recursively.
 
 Empty Instruction Sequence: :math:`\epsilon`
 ............................................
+$${rule-prose: Instrs_ok}
+
+.. todo::
+ below is the official specification
 
 * The empty instruction sequence is valid with type :math:`[] \to []`.
-
 $${rule: Instrs_ok/empty}
 
 
 Non-empty Instruction Sequence: :math:`\instr~{\instr'}^\ast`
 .............................................................
+
+.. todo::
+ below is the official specification 
+
+ (L2)
 
 * The instruction :math:`\instr` must be valid with some type :math:`[t_1^\ast] \to_{x_1^\ast} [t_2^\ast]`.
 
@@ -1869,6 +2896,9 @@ $${rule: Instrs_ok/seq}
 
 Subsumption for :math:`\instr^\ast`
 ...................................
+
+.. todo::
+ below is the official specification 
 
 * The instruction sequence :math:`\instr^\ast` must be valid with some type :math:`\instrtype`.
 
@@ -1911,6 +2941,13 @@ Expressions ${:expr} are classified by :ref:`result types <syntax-resulttype>` $
 
 :math:`\instr^\ast~\END`
 ........................
+$${rule-prose: Expr_ok}
+
+.. todo::
+ below is the official specification
+
+ (L1) - [instruction name should be "instr* end"] 
+ 
 
 * The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instrs>` with :ref:`type <syntax-instrtype>` :math:`[] \to [t^\ast]`.
 
@@ -1924,6 +2961,15 @@ $${rule: Expr_ok}
 
 Constant Expressions
 ....................
+$${rule-prose: Expr_const}
+$${rule-prose: Instr_const}
+
+.. todo::
+ below is the official specification 
+
+ (L1) - [instruction name should be "instr* end", erase "n" in the "array_new_fixed x n"] 
+ 
+ (*)  - [ Make "Or" more visible, simplify the case where 'instr' is 'gloabl.get x']
 
 * In a *constant* expression :math:`\instr^\ast~\END` all instructions in :math:`\instr^\ast` must be constant.
 
