@@ -10,7 +10,7 @@ type target =
  | Check
  | Latex
  | Prose of bool
- | Splice of Backend_splice.Config.t
+ (* | Splice of Backend_splice.Config.t *)
  | Interpreter of string list
 
 type pass =
@@ -115,7 +115,7 @@ let argspec = Arg.align
   "-d", Arg.Set dry, " Dry run (when -p) ";
   "-o", Arg.Unit (fun () -> file_kind := Output), " Output files";
   "-l", Arg.Set logging, " Log execution steps";
-  "-ll", Arg.Set Backend_interpreter.Runner.logging, " Log interpreter execution";
+  (* "-ll", Arg.Set Backend_interpreter.Runner.logging, " Log interpreter execution"; *)
   "-w", Arg.Unit (fun () -> warn_math := true; warn_prose := true),
     " Warn about unused or multiply used splices";
   "--warn-math", Arg.Set warn_math,
@@ -125,10 +125,10 @@ let argspec = Arg.align
 
   "--check", Arg.Unit (fun () -> target := Check), " Check only (default)";
   "--latex", Arg.Unit (fun () -> target := Latex), " Generate Latex";
-  "--splice-latex", Arg.Unit (fun () -> target := Splice Backend_splice.Config.latex),
+  (* "--splice-latex", Arg.Unit (fun () -> target := Splice Backend_splice.Config.latex),
     " Splice Sphinx";
   "--splice-sphinx", Arg.Unit (fun () -> target := Splice Backend_splice.Config.sphinx),
-    " Splice Sphinx";
+    " Splice Sphinx"; *)
   "--prose", Arg.Unit (fun () -> target := Prose true), " Generate prose";
   "--prose-rst", Arg.Unit (fun () -> target := Prose false), " Generate prose";
   "--interpreter", Arg.Rest_all (fun args -> target := Interpreter args),
@@ -146,7 +146,7 @@ let argspec = Arg.align
 ] @ List.map pass_argspec all_passes @ [
   "--all-passes", Arg.Unit (fun () -> List.iter enable_pass all_passes)," Run all passes";
 
-  "--test-version", Arg.Int (fun i -> Backend_interpreter.Construct.version := i), " The version of wasm, default to 3";
+  (* "--test-version", Arg.Int (fun i -> Backend_interpreter.Construct.version := i), " The version of wasm, default to 3"; *)
 
   "-help", Arg.Unit ignore, "";
   "--help", Arg.Unit ignore, "";
@@ -167,13 +167,13 @@ let () =
     if !print_el then
       Printf.printf "%s\n%!" (El.Print.string_of_script el);
     log "Elaboration...";
-    let il, elab_env = Frontend.Elab.elab el in
+    let il, _elab_env = Frontend.Elab.elab el in
     if !print_elab_il || !print_all_il then print_il il;
     log "IL Validation...";
     Il.Valid.valid il;
 
     (match !target with
-    | Prose _ | Splice _ | Interpreter _ ->
+    | Prose _ (* | Splice _ *) | Interpreter _ ->
       enable_pass Sideconditions;
     | _ when !print_al || !print_al_o <> "" ->
       enable_pass Sideconditions;
@@ -232,7 +232,7 @@ let () =
 
     | Latex ->
       log "Latex Generation...";
-      let config =
+      (* let config =
         Backend_latex.Config.{default with macros_for_ids = !latex_macros} in
       (match !odsts with
       | [] -> print_endline (Backend_latex.Gen.gen_string config el)
@@ -240,11 +240,11 @@ let () =
       | _ ->
         prerr_endline "too many output file names";
         exit 2
-      )
+      ) *)
 
-    | Prose as_plaintext ->
+    | Prose _as_plaintext ->
       log "Prose Generation...";
-      let config_latex = Backend_latex.Config.default in
+      (* let config_latex = Backend_latex.Config.default in
       let config_prose = Backend_prose.Config.{panic_on_error = false} in
       (match !odsts with
       | [] ->
@@ -263,9 +263,9 @@ let () =
       | _ ->
         prerr_endline "too many output file names";
         exit 2
-      )
+      ) *)
 
-    | Splice config ->
+    (* | Splice config ->
       if !in_place then
         odsts := !pdsts
       else
@@ -290,13 +290,13 @@ let () =
       let env = Backend_splice.Splice.(env config' !pdsts !odsts elab_env el prose) in
       List.iter2 (Backend_splice.Splice.splice_file ~dry:!dry env) !pdsts !odsts;
       if !warn_math then Backend_splice.Splice.warn_math env;
-      if !warn_prose then Backend_splice.Splice.warn_prose env;
+      if !warn_prose then Backend_splice.Splice.warn_prose env; *)
 
-    | Interpreter args ->
+    | Interpreter _args ->
       log "Initializing interpreter...";
-      Backend_interpreter.Ds.init al;
+      (* Backend_interpreter.Ds.init al;
       log "Interpreting...";
-      Backend_interpreter.Runner.run args
+      Backend_interpreter.Runner.run args *)
     );
     log "Complete."
   with

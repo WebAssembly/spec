@@ -16,24 +16,19 @@ let rec free_expr expr =
   | NumE _
   | BoolE _
   | GetCurStateE
-  | GetCurLabelE
-  | GetCurContextE
-  | GetCurFrameE
+  | GetCurContextE _
   | ContextKindE _
   | YetE _ -> IdSet.empty
   | VarE id
   | SubE (id, _) -> IdSet.singleton id
   | UnE (_, e)
   | LenE e
-  | ArityE e
   | ContE e
   | ChooseE e -> free_expr e
   | BinE (_, e1, e2)
   | CompE (e1, e2)
   | CatE (e1, e2)
-  | MemE (e1, e2)
-  | LabelE (e1, e2) -> free_expr e1 @ free_expr e2
-  | FrameE (e_opt, e) -> free_opt free_expr e_opt @ free_expr e
+  | MemE (e1, e2) -> free_expr e1 @ free_expr e2
   | CallE (_, al)
   | InvCallE (_, _, al) ->  free_list free_arg al
   | TupE el
@@ -46,8 +41,7 @@ let rec free_expr expr =
   | OptE e_opt -> free_opt free_expr e_opt
   | IterE (e, _, i) -> free_expr e @ free_iter i
   | MatchE (e1, e2) -> free_expr e1 @ free_expr e2
-  | TopLabelE
-  | TopFrameE
+  | TopContextE _
   | TopValueE None -> IdSet.empty
   | IsDefinedE e
   | IsCaseOfE (e, _)

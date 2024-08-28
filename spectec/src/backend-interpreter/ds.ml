@@ -274,21 +274,18 @@ module WasmContext = struct
     if List.length vs = 0 then Some ctx 
     else None
 
-  let get_current_frame () =
-    let match_frame = function
-      | FrameV _ -> true
+  let get_current_context typ =
+    let match_context = function
+      | CaseV (t, _) when t = typ -> true
       | _ -> false
-    in get_value_with_condition match_frame
+    in get_value_with_condition match_context
 
-  let get_current_label () =
-    let match_label = function
-      | LabelV _ -> true
-      | _ -> false
-    in get_value_with_condition match_label
+  let get_current_frame () =
+    get_current_context "FRAME_"
 
   let get_module_instance () =
     match get_current_frame () with
-    | FrameV (_, mm) -> mm
+    | CaseV (_, [_; mm]) -> mm
     | _ -> failwith "Invalid frame"
 
   (* Value stack *)

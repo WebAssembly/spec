@@ -456,19 +456,9 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
     l
     |> List.map note
     |> List.iter (check_match source elem_typ)
-  | ArityE expr1 ->
-    check_num source expr.note; check_context source expr1.note
-  | FrameE (expr_opt, expr1) ->
-    check_context source expr.note;
-    Option.iter (fun expr2 -> check_num source expr2.note) expr_opt;
-    check_match source expr1.note (varT "frame")
-  | LabelE (expr1, expr2) ->
-    check_context source expr.note;
-    check_num source expr1.note;
-    check_match source expr2.note (iterT (varT "instr") List)
-  | GetCurStateE | GetCurFrameE | GetCurLabelE | GetCurContextE ->
+  | GetCurStateE | GetCurContextE _ ->
     check_context source expr.note
-  | BoolE _  | IsCaseOfE _ | IsValidE _ | MatchE _ | HasTypeE _ | TopFrameE | TopLabelE ->
+  | BoolE _  | IsCaseOfE _ | IsValidE _ | MatchE _ | HasTypeE _ | TopContextE _ ->
     check_bool source expr.note
   | ContE expr1 ->
     check_match source expr.note (iterT (varT "instr") List);

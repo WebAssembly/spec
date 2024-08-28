@@ -582,16 +582,16 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
   *)
   | PushI e ->
     (match eval_expr env e with
-    | FrameV _ as v -> WasmContext.push_context (v, [], [])
+    | CaseV ("FRAME_", _) as v -> WasmContext.push_context (v, [], [])
     | ListV vs -> Array.iter WasmContext.push_value !vs
     | v -> WasmContext.push_value v
     );
     ctx
   | PopI e ->
     (match e.it with
-    | FrameE (_, inner_e) ->
+    | CaseE ([[{it = El.Atom.Atom "FRAME_"; _}]], [_; inner_e]) ->
       (match WasmContext.pop_context () with
-      | FrameV (_, inner_v), _, _ ->
+      | CaseV ("FRAME_", [_; inner_v]), _, _ ->
         let new_env = assign inner_e inner_v env in
         AlContext.set_env new_env ctx
       | v, _, _ -> failwith (sprintf "current context `%s` is not a frame" (string_of_value v))
