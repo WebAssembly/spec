@@ -280,11 +280,8 @@ module WasmContext = struct
       | _ -> false
     in get_value_with_condition match_context
 
-  let get_current_frame () =
-    get_current_context "FRAME_"
-
   let get_module_instance () =
-    match get_current_frame () with
+    match get_current_context "FRAME_" with
     | CaseV (_, [_; mm]) -> mm
     | _ -> failwith "Invalid frame"
 

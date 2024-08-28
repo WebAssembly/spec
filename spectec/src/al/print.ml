@@ -159,7 +159,6 @@ and string_of_expr expr =
   | UpdE (e1, ps, e2) ->
     sprintf "update(%s%s, %s)" (string_of_expr e1) (string_of_paths ps) (string_of_expr e2)
   | StrE r -> string_of_record_expr r
-  | ContE e -> sprintf "cont(%s)" (string_of_expr e)
   | ChooseE e -> sprintf "choose(%s)" (string_of_expr e)
   | VarE id -> id
   | SubE (id, _) -> id
@@ -191,7 +190,6 @@ and string_of_expr expr =
   | IsCaseOfE (e, a) -> sprintf "case(%s) == %s" (string_of_expr e) (string_of_atom a)
   | HasTypeE (e, t) -> sprintf "type(%s) == %s" (string_of_expr e) (string_of_typ t)
   | IsValidE e -> sprintf "valid(%s)" (string_of_expr e)
-  | TopContextE a -> sprintf "top_context(%s)" (string_of_atom a)
   | TopValueE (Some e) -> sprintf "top_value(%s)" (string_of_expr e)
   | TopValueE None -> "top_value()"
   | TopValuesE e -> sprintf "top_values(%s)" (string_of_expr e)
@@ -243,7 +241,6 @@ let enter_block f instrs =
 let string_of_stack_prefix expr =
   match expr.it with
   | GetCurContextE _
-  | ContE _
   | VarE ("F" | "L") -> ""
   | IterE _ -> ""
   | _ -> ""
@@ -475,7 +472,6 @@ and structured_string_of_expr expr =
     ^ structured_string_of_expr e2
     ^ ")"
   | StrE r -> "StrE (" ^ structured_string_of_record_expr r ^ ")"
-  | ContE e1 -> "ContE (" ^ structured_string_of_expr e1 ^ ")"
   | ChooseE e1 -> "ChooseE (" ^ structured_string_of_expr e1 ^ ")"
   | VarE id -> "VarE (" ^ id ^ ")"
   | SubE (id, t) -> sprintf "SubE (%s, %s)" id (string_of_typ t)
@@ -498,7 +494,6 @@ and structured_string_of_expr expr =
   | HasTypeE (e, t) ->
     sprintf "HasTypeE (%s, %s)" (structured_string_of_expr e) (string_of_typ t)
   | IsValidE e -> "IsValidE (" ^ structured_string_of_expr e ^ ")"
-  | TopContextE a -> "TopContextE (" ^ string_of_atom a ^ ")"
   | TopValueE None -> "TopValueE"
   | TopValueE (Some e) -> "TopValueE (" ^ structured_string_of_expr e ^ ")"
   | TopValuesE e -> "TopValuesE (" ^ structured_string_of_expr e ^ ")"

@@ -69,8 +69,7 @@ module WasmContext : sig
   val string_of_context_stack : unit -> string
 
   val get_top_context : unit -> value option
-  val get_current_frame : unit -> value
-  val get_current_label : unit -> value
+  val get_current_context : id -> value
   val get_module_instance : unit -> value
 
   val get_value_stack : unit -> value list

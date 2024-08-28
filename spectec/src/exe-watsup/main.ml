@@ -115,7 +115,7 @@ let argspec = Arg.align
   "-d", Arg.Set dry, " Dry run (when -p) ";
   "-o", Arg.Unit (fun () -> file_kind := Output), " Output files";
   "-l", Arg.Set logging, " Log execution steps";
-  (* "-ll", Arg.Set Backend_interpreter.Runner.logging, " Log interpreter execution"; *)
+  "-ll", Arg.Set Backend_interpreter.Runner.logging, " Log interpreter execution";
   "-w", Arg.Unit (fun () -> warn_math := true; warn_prose := true),
     " Warn about unused or multiply used splices";
   "--warn-math", Arg.Set warn_math,
@@ -146,7 +146,7 @@ let argspec = Arg.align
 ] @ List.map pass_argspec all_passes @ [
   "--all-passes", Arg.Unit (fun () -> List.iter enable_pass all_passes)," Run all passes";
 
-  (* "--test-version", Arg.Int (fun i -> Backend_interpreter.Construct.version := i), " The version of wasm, default to 3"; *)
+  "--test-version", Arg.Int (fun i -> Backend_interpreter.Construct.version := i), " The version of wasm, default to 3";
 
   "-help", Arg.Unit ignore, "";
   "--help", Arg.Unit ignore, "";
@@ -292,11 +292,11 @@ let () =
       if !warn_math then Backend_splice.Splice.warn_math env;
       if !warn_prose then Backend_splice.Splice.warn_prose env; *)
 
-    | Interpreter _args ->
+    | Interpreter args ->
       log "Initializing interpreter...";
-      (* Backend_interpreter.Ds.init al;
+      Backend_interpreter.Ds.init al;
       log "Interpreting...";
-      Backend_interpreter.Runner.run args *)
+      Backend_interpreter.Runner.run args
     );
     log "Complete."
   with

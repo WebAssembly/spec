@@ -23,7 +23,6 @@ let rec free_expr expr =
   | SubE (id, _) -> IdSet.singleton id
   | UnE (_, e)
   | LenE e
-  | ContE e
   | ChooseE e -> free_expr e
   | BinE (_, e1, e2)
   | CompE (e1, e2)
@@ -41,7 +40,6 @@ let rec free_expr expr =
   | OptE e_opt -> free_opt free_expr e_opt
   | IterE (e, _, i) -> free_expr e @ free_iter i
   | MatchE (e1, e2) -> free_expr e1 @ free_expr e2
-  | TopContextE _
   | TopValueE None -> IdSet.empty
   | IsDefinedE e
   | IsCaseOfE (e, _)

@@ -458,14 +458,10 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
     |> List.iter (check_match source elem_typ)
   | GetCurStateE | GetCurContextE _ ->
     check_context source expr.note
-  | BoolE _  | IsCaseOfE _ | IsValidE _ | MatchE _ | HasTypeE _ | TopContextE _ ->
+  | BoolE _  | IsCaseOfE _ | IsValidE _ | MatchE _ | HasTypeE _ | ContextKindE _ ->
     check_bool source expr.note
-  | ContE expr1 ->
-    check_match source expr.note (iterT (varT "instr") List);
-    check_match source expr1.note (varT "label")
   | ChooseE expr1 ->
     check_list source expr1.note; check_match source expr1.note (iterT expr.note List)
-  | ContextKindE _ -> () (* TODO: Not used anymore *)
   | IsDefinedE expr1 ->
     check_opt source expr1.note; check_bool source expr.note
   | TopValueE expr_opt ->

@@ -34,10 +34,10 @@ let walk_path (walker: unit_walker) (path: path) : unit =
 let walk_expr (walker: unit_walker) (expr: expr) : unit =
   match expr.it with
   | VarE _ | SubE _ | NumE _ | BoolE _ | GetCurStateE
-  | GetCurContextE _ | YetE _ | TopContextE _
+  | GetCurContextE _ | YetE _
   | TopValueE None | ContextKindE _ -> ()
 
-  | UnE (_, e) | LenE e | ContE e
+  | UnE (_, e) | LenE e
   | IsDefinedE e | IsCaseOfE (e, _) | HasTypeE (e, _) | IsValidE e
   | TopValueE (Some e) | TopValuesE e | ChooseE e -> walker.walk_expr walker e
 
@@ -128,7 +128,7 @@ let walk_expr (walker: walker) (expr: expr) : expr =
   let it =
     match expr.it with
     | NumE _ | BoolE _ | VarE _ | SubE _ | GetCurStateE
-    | GetCurContextE _ | ContextKindE _ | TopContextE _ | YetE _ -> expr.it
+    | GetCurContextE _ | ContextKindE _ | YetE _ -> expr.it
     | UnE (op, e) -> UnE (op, walk_expr e)
     | BinE (op, e1, e2) -> BinE (op, walk_expr e1, walk_expr e2)
     | CallE (id, al) -> CallE (id, List.map walk_arg al)
@@ -146,7 +146,6 @@ let walk_expr (walker: walker) (expr: expr) : expr =
     | CaseE (a, el) -> CaseE (a, List.map walk_expr el)
     | OptE e -> OptE (Option.map walk_expr e)
     | TupE el -> TupE (List.map walk_expr el)
-    | ContE e' -> ContE (walk_expr e')
     | ChooseE e' -> ChooseE (walk_expr e')
     | IterE (e, ids, iter) -> IterE (walk_expr e, ids, walk_iter iter)
     | IsCaseOfE (e, a) -> IsCaseOfE (walk_expr e, a)
@@ -261,7 +260,6 @@ let rec walk_expr f e =
       | CaseE (a, el) -> CaseE (a, List.map new_ el)
       | OptE e -> OptE (Option.map new_ e)
       | TupE el -> TupE (List.map new_ el)
-      | ContE e' -> ContE (new_ e')
       | ChooseE e' -> ChooseE (new_ e')
       | VarE id -> VarE id
       | SubE (id, t) -> SubE (id, t)
@@ -271,7 +269,6 @@ let rec walk_expr f e =
       | IsDefinedE e -> IsDefinedE (new_ e)
       | HasTypeE (e, t) -> HasTypeE(new_ e, t)
       | IsValidE e -> IsValidE (new_ e)
-      | TopContextE _ -> e.it
       | TopValueE (Some e) -> TopValueE (Some (new_ e))
       | TopValueE _ -> e.it
       | TopValuesE e -> TopValuesE (new_ e)

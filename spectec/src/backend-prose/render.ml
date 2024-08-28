@@ -421,9 +421,6 @@ and render_expr' env expr =
     let se1 = render_expr env e1 in
     let se2 = render_expr env e2 in
     sprintf "the activation of %s with arity %s" se2 se1
-  | Al.Ast.ContE e ->
-    let se = render_expr env e in
-    sprintf "the continuation of %s" se
   | Al.Ast.ChooseE e ->
     let se = render_expr env e in
     sprintf "an element of %s" se

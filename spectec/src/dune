@@ -10,7 +10,7 @@
     ; (re_export backend_latex)
     ; (re_export backend_prose)
     ; (re_export backend_splice)
-    ; (re_export backend_interpreter)
+    (re_export backend_interpreter)
     (re_export il2al)
   )
 )

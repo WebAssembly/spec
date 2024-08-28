@@ -341,7 +341,7 @@ let insert_assert exp =
   let at = exp.at in
   match exp.it with
   | Il.CaseE ([{it = Il.Atom id; _}]::_, _) when List.mem id context_names ->
-    assertI (topContextE (atom_of_name id "evalctx") ~note:boolT) ~at:at
+    assertI (contextKindE (atom_of_name id "evalctx") ~note:boolT) ~at:at
   | Il.IterE (_, (Il.ListN (e, None), _)) ->
     assertI (topValuesE (translate_exp e) ~at:at ~note:boolT) ~at:at
   | Il.CaseE ([{it = Il.Atom "CONST"; _}]::_, { it = Il.TupE (ty' :: _); _ }) ->
@@ -360,7 +360,7 @@ let cond_of_pop_value e =
     | _ -> topValueE None ~note:bt
     )
   | GetCurContextE (Some a) ->
-    topContextE a ~at:at ~note:bt
+    contextKindE a ~at:at ~note:bt
   (* TODO: Remove this when pops is done *)
   | IterE (_, _, ListN (e', _)) ->
     topValuesE e' ~at:at ~note:bt

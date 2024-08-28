@@ -63,7 +63,6 @@ let optE ?(at = no) ~note e_opt = OptE e_opt |> mk_expr at note
 let listE ?(at = no) ~note el = ListE el |> mk_expr at note
 let getCurStateE ?(at = no) ~note () = GetCurStateE |> mk_expr at note
 let getCurContextE ?(at = no) ~note e = GetCurContextE e |> mk_expr at note
-let contE ?(at = no) ~note e = ContE e |> mk_expr at note
 let chooseE ?(at = no) ~note e = ChooseE e |> mk_expr at note
 let isCaseOfE ?(at = no) ~note (e, a) = IsCaseOfE (e, a) |> mk_expr at note
 let isValidE ?(at = no) ~note e = IsValidE e |> mk_expr at note
@@ -71,7 +70,6 @@ let contextKindE ?(at = no) ~note a = ContextKindE a |> mk_expr at note
 let isDefinedE ?(at = no) ~note e = IsDefinedE e |> mk_expr at note
 let matchE ?(at = no) ~note (e1, e2) = MatchE (e1, e2) |> mk_expr at note
 let hasTypeE ?(at = no) ~note (e, ty) = HasTypeE (e, ty) |> mk_expr at note
-let topContextE ?(at = no) ~note (id) = TopContextE id |> mk_expr at note
 let topValueE ?(at = no) ~note e_opt = TopValueE e_opt |> mk_expr at note
 let topValuesE ?(at = no) ~note e = TopValuesE e |> mk_expr at note
 let subE ?(at = no) ~note (id, ty) = SubE (id, ty) |> mk_expr at note
@@ -237,6 +235,14 @@ let body_of_algo algo = match algo.it with
 let args_of_casev = function
   | CaseV (_, vl) -> vl
   | v -> fail_value "args_of_casev" v
+
+let arity_of_framev: value -> value = function
+  | CaseV ("FRAME_", [v; _]) -> v
+  | v -> fail_value "arity_of_framev" v
+
+let unwrap_framev: value -> value = function
+  | CaseV ("FRAME_", [_; v]) -> v
+  | v -> fail_value "unwrap_framev" v
 
 
 (* Mixop *)

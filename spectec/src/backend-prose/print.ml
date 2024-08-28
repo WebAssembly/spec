@@ -145,7 +145,6 @@ and string_of_expr expr =
   | UpdE (e1, ps, e2) ->
     sprintf "%s with %s replaced by %s" (string_of_expr e1) (string_of_paths ps) (string_of_expr e2)
   | StrE r -> string_of_record_expr r
-  | ContE e -> sprintf "the continuation of %s" (string_of_expr e)
   | ChooseE e -> sprintf "an element of %s" (string_of_expr e)
   | LabelE (e1, e2) ->
     sprintf "the label_%s{%s}" (string_of_expr e1) (string_of_expr e2)
@@ -263,7 +262,6 @@ let string_of_stack_prefix expr =
   | GetCurContextE
   | GetCurFrameE
   | GetCurLabelE
-  | ContE _
   | LabelE _
   | FrameE _
   | VarE ("F" | "L") -> ""
