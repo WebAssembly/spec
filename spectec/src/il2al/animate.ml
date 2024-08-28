@@ -1,7 +1,7 @@
 (*
 This transformation
  1) reorders premises and
- 2) explicitly denotate a premise if it is an assignment.
+ 2) explicitly denote a premise if it is an assignment.
 by performing dataflow analysis.
 *)
 
@@ -20,31 +20,7 @@ let list_count pred = list_count' pred 0
 
 let not_ f x = not (f x)
 
-(* Remove or *)
-let remove_or_exp e = match e.it with (* TODO: recursive *)
-| BinE (OrOp, e1, e2) -> [ e1; e2 ]
-| _ -> [ e ]
-
-let remove_or_prem prem = match prem.it with (* TODO: iterPr *)
-| IfPr e -> remove_or_exp e |> List.map (fun e' -> { prem with it = IfPr e' })
-| _ -> [ prem ]
-
-let remove_or rule = match rule.it with
-| RuleD(id, binds, mixop, args, prems) ->
-  let premss = List.map remove_or_prem prems in
-  let premss' = List.fold_right (fun ps pss ->
-    (* Duplice pss *)
-    List.concat_map (fun cur ->
-      List.map (fun p -> p :: cur) ps
-    ) pss
-  ) premss [[]] in
-
-  if List.length premss' = 1 then [ rule ] else
-
-  List.mapi (fun i prems' ->
-    let id' = { id with it = id.it ^ "-" ^ string_of_int i } in
-    { rule with it = RuleD (id', binds, mixop, args, prems') }
-  ) premss'
+let (--) xs ys = List.filter (fun x -> not (List.mem x ys)) xs
 
 (* Helper for handling free-var set *)
 let subset x y = Set.subset x.varid y.varid
@@ -54,6 +30,7 @@ type tag =
   | Assign of string list
 (* type row = tag * prem * int list *)
 let unwrap (_, p, _) = p
+let targets (t, _, _) = match t with Assign targets -> targets | _ -> assert false
 
 (* are all free variables in the premise known? *)
 let is_tight env (tag, prem, _) =
@@ -67,9 +44,35 @@ let is_assign env (tag, prem, _) =
   | Assign frees -> subset (diff (free_prem false prem) {empty with varid = (Set.of_list frees)}) env
   | _ -> false
 
-(* iteratively select condition and assignment premises,
+(* is this assign premise encoded premise for pop? *)
+let is_pop env row =
+  is_assign env row &&
+  match (unwrap row).it with
+  | LetPr (_, rhs, _) -> Il.Print.string_of_typ rhs.note = "stackT"
+  | _ -> false
+
+(* iteratively select pop, condition and assignment premises,
  * effectively sorting the premises as a result. *)
-let rec select_tight prems acc env fb =
+let rec select_pops prems acc env fb =
+  match prems with
+  | [] -> Some acc
+  | _ ->
+    let (pops, non_pops) = List.partition (is_pop env) prems in
+    match pops with
+    | [] ->
+      select_tight prems acc env fb
+    | _ ->
+      let pops' = List.map unwrap pops in
+      let new_env = pops
+        |> List.map targets
+        |> List.concat
+        |> List.fold_left (fun env x ->
+          union env { empty with varid = Set.singleton x }
+        ) env
+      in
+      select_pops non_pops (acc @ pops') new_env fb
+
+and select_tight prems acc env fb =
   match prems with
   | [] -> Some acc
   | _ ->
@@ -80,7 +83,13 @@ and select_assign prems acc env fb =
   match prems with
   | [] -> Some acc
   | _ ->
-    let (assigns, non_assigns) = List.partition (is_assign env) prems in
+    let (pops, non_pops) = List.partition (is_pop env) prems in
+    let (assigns, non_assigns) =
+      if pops = [] then
+        List.partition (is_assign env) prems
+      else
+        pops, non_pops
+    in
     match assigns with
     | [] ->
       let len = List.length acc in
@@ -89,7 +98,13 @@ and select_assign prems acc env fb =
       None
     | _ ->
       let assigns' = List.map unwrap assigns in
-      let new_env = assigns' |> List.map (free_prem false) |> List.fold_left union env in
+      let new_env = assigns
+        |> List.map targets
+        |> List.concat
+        |> List.fold_left (fun env x ->
+          union env { empty with varid = Set.singleton x }
+        ) env
+      in
       select_tight non_assigns (acc @ assigns') new_env fb
 
 let select_target_col rows cols =
@@ -171,13 +186,12 @@ let subset_selector e =
   else large_enough_subsets
 
 let rows_of_eq vars len i l r at =
-  free_exp_list l
+  (free_exp_list l -- free_exp_list r)
   |> subset_selector l
   |> List.filter_map (fun frees ->
     let covering_vars = List.filter_map (index_of len vars) frees in
     if List.length frees = List.length covering_vars then (
-      let ids = List.map (fun x -> x $ no_region) frees in (* TODO: restore source *)
-      Some (Assign frees, LetPr (l, r, ids) $ at, [i] @ covering_vars) )
+      Some (Assign frees, LetPr (l, r, frees) $ at, [i] @ covering_vars) )
     else
       None
   )
@@ -195,8 +209,7 @@ let rec rows_of_prem vars len i p =
         @ rows_of_eq vars len i l { r with it = TheE r } p.at
       | _ -> [ Condition, p, [i] ]
     )
-  | LetPr (_, _, ids) ->
-    let targets = List.map it ids in
+  | LetPr (_, _, targets) ->
     let covering_vars = List.filter_map (index_of len vars) targets in
     [ Assign targets, p, [i] @ covering_vars ]
   | RulePr (_, _, { it = TupE args; _ }) ->
@@ -221,53 +234,32 @@ let build_matrix prems known_vars =
   let cols = List.init (len_prem + List.length unknown_vars) (fun i -> i) in
   rows, cols
 
-(* Pre-process a premise *)
-let rec pre_process prem = match prem.it with
-  | IterPr (prem, iterexp) ->
-    List.map (fun pr -> { prem with it=IterPr (pr, iterexp) }) (pre_process prem)
-  (* HARDCODE: translation of `Expand: dt ~~ ct` into `$expanddt(dt) = ct` *)
-  | RulePr (
-      { it = "Expand"; _ },
-      [[]; [{it = Approx; _}]; []],
-      { it = TupE [dt; ct]; _ }
-    ) ->
-      let expanded_dt = { dt with it = CallE ("expanddt" $ no_region, [ExpA dt $ no_region]); note = ct.note } in
-      [ { prem with it = IfPr (CmpE (EqOp, expanded_dt, ct) $$ no_region % (BoolT $ no_region)) } ]
-  | RulePr (id, mixop, exp) ->
-    let open El.Atom in
-    (match mixop, exp.it with
-    (* |- `lhs` : `rhs` *)
-    | [[turnstile]; [colon]; []], TupE [lhs; rhs]
-    (* `C` |- `lhs` : `rhs` *)
-    | [[]; [turnstile]; [colon]; []], TupE [_; lhs; rhs]
-    when turnstile.it = Turnstile && colon.it = Colon ->
-      let typing_function_call = CallE (id, [ExpA lhs $ lhs.at]) $$ exp.at % rhs.note in
-      [ { prem with it=IfPr (CmpE (EqOp, typing_function_call, rhs) $$ exp.at % exp.note) } ]
-    | _ -> [ prem ]
-    )
-  (* Split -- if e1 /\ e2 *)
-  | IfPr ( { it = BinE (AndOp, e1, e2); _ } ) ->
-    let p1 = { prem with it = IfPr ( e1 ) } in
-    let p2 = { prem with it = IfPr ( e2 ) } in
-    pre_process p1 @ pre_process p2
-  | _ -> [ prem ]
-
 
 (* Animate the list of premises *)
 
 let animate_prems known_vars prems =
-  let pp_prems = List.concat_map pre_process prems in
   (* Set --otherwise prem to be the first prem (if any) *)
   let is_other = function {it = ElsePr; _} -> true | _ -> false in
-  let (other, non_other) = List.partition is_other pp_prems in
+  let (other, non_other) = List.partition is_other prems in
   let rows, cols = build_matrix non_other known_vars in
+
+  (* 1. Run knuth *)
   best := (List.length cols + 1, []);
-  let candidates = match knuth rows cols [] with
-    | [] -> [ snd !best ]
-    | xs -> List.map List.rev xs in
+  let (candidates, k_fail) =
+    match knuth rows cols [] with
+    | [] -> [ snd !best ], true
+    | xs -> List.map List.rev xs, false
+  in
+
+  (* 2. Reorder *)
   let best' = ref (-1, []) in
-  match List.find_map (fun cand -> select_tight cand other known_vars best') candidates with
-  | None -> snd !best'
+  match List.find_map (fun cand -> select_pops cand other known_vars best') candidates with
+  | None ->
+    if (not k_fail) then
+      let unhandled_prems = Lib.List.drop (fst !best') (snd !best') in
+      Error.error (over_region (List.map at unhandled_prems)) "prose translation" "There might be a cyclic binding"
+    else
+      snd !best'
   | Some x -> x
 
 (* Animate rule *)
@@ -275,13 +267,9 @@ let animate_rule r = match r.it with
   | RuleD(id, _ , _, _, _) when id.it = "pure" || id.it = "read" -> r (* TODO: remove this line *)
   | RuleD(id, binds, mixop, args, prems) -> (
     match (mixop, args.it) with
-    (* c |- e : t *)
-    | ([ [] ; [{it = Turnstile; _}] ; [{it = Colon; _}] ; []] , TupE ([c; e; _t])) ->
-      let new_prems = animate_prems (union (free_exp false c) (free_exp false e)) prems in
-      RuleD(id, binds, mixop, args, new_prems) $ r.at
     (* lhs ~> rhs *)
-    | ([ [] ; [{it = SqArrow; _}] ; []] , TupE ([lhs; _rhs])) ->
-      let new_prems = animate_prems (free_exp true lhs) prems in
+    | ([ [] ; [{it = SqArrow; _}] ; []] , TupE ([_lhs; _rhs])) ->
+      let new_prems = animate_prems {empty with varid = Set.of_list Encode.input_vars} prems in
       RuleD(id, binds, mixop, args, new_prems) $ r.at
     | _ -> r
   )
@@ -295,14 +283,13 @@ let animate_clause c = match c.it with
 (* Animate defs *)
 let rec animate_def d = match d.it with
   | RelD (id, mixop, t, rules) ->
-    let rules1 = List.concat_map remove_or rules in
-    let rules2 = List.map animate_rule rules1 in
-    RelD (id, mixop, t, rules2) $ d.at
+    let rules' = List.map animate_rule rules in
+    RelD (id, mixop, t, rules') $ d.at
   | DecD (id, t1, t2, clauses) ->
     let new_clauses = List.map animate_clause clauses in
     DecD (id, t1, t2, new_clauses) $ d.at
   | RecD ds -> RecD (List.map animate_def ds) $ d.at
-  | TypD _ | HintD _ -> d
+  | TypD _ | GramD _ | HintD _ -> d
 
 (* Main entry *)
 let transform (defs : script) =

@@ -9,6 +9,7 @@ open Ds
 
 (* Errors *)
 
+module Assert = Reference_interpreter.Error.Make ()
 let error_interpret at msg = Error.error at "interpreter" msg
 
 (* Logging *)
@@ -85,11 +86,11 @@ let get_export name modulename =
   |> listv_find
     (fun export -> al_to_string (strv_access "NAME" export) = name)
 
-let get_externval import =
+let get_externaddr import =
   import.it.module_name
   |> Utf8.encode
   |> get_export (Utf8.encode import.it.Ast.item_name)
-  |> strv_access "VALUE"
+  |> strv_access "ADDR"
 
 let textual_to_module textual =
   match (snd textual).it with
@@ -100,7 +101,7 @@ let get_export_addr name modulename =
   let vl =
     modulename
     |> get_export name
-    |> strv_access "VALUE"
+    |> strv_access "ADDR"
     |> args_of_casev
   in
   try List.hd vl with Failure _ ->
@@ -130,9 +131,9 @@ let instantiate module_ =
   log "[Instantiating module...]\n";
 
   let al_module = al_of_module module_ in
-  let externvals = List.map get_externval module_.it.imports in
+  let externaddrs = List.map get_externaddr module_.it.imports in
 
-  Interpreter.instantiate [ al_module; listV_of_list externvals ]
+  Interpreter.instantiate [ al_module; listV_of_list externaddrs ]
 
 
 (** Wast runner **)
@@ -169,6 +170,11 @@ let test_assertion assertion =
       Run.assert_message assertion.at "instantiation" "module instance" re;
       fail
     with Exception.Trap -> success
+  )
+  | AssertException action -> (
+    match run_action action with
+    | exception Exception.Throw -> success
+    | _ -> Assert.error assertion.at "expected exception"
   )
   (* ignore other kinds of assertions *)
   | _ -> pass

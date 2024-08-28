@@ -99,10 +99,6 @@ Recursive Types
 
 .. _def-before:
 
-$${definition-prose: before}
-
-\
-
 $${definition: before}
 
 .. _syntax-oktypeidx:

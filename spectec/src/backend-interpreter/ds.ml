@@ -25,7 +25,7 @@ let to_map algos =
   let f acc algo =
     let rmap, fmap = acc in
     match algo.it with
-    | RuleA (atom, _, _) ->
+    | RuleA (atom, _, _, _) ->
         let name = Print.string_of_atom atom in
         Map.add name algo rmap, fmap
     | FuncA (name, _, _) -> rmap, Map.add name algo fmap
@@ -55,10 +55,12 @@ module Store = struct
       |> Record.add "GLOBALS" (listV [||])
       |> Record.add "TABLES" (listV [||])
       |> Record.add "MEMS" (listV [||])
+      |> Record.add "TAGS" (listV [||])
       |> Record.add "ELEMS" (listV [||])
       |> Record.add "DATAS" (listV [||])
       |> Record.add "STRUCTS" (listV [||])
       |> Record.add "ARRAYS" (listV [||])
+      |> Record.add "EXNS" (listV [||])
 
   let get () = strV !store
 
@@ -335,7 +337,6 @@ end
 (* Initialization *)
 
 let init algos =
-  let algos = List.map Il2al.Transpile.remove_state algos in
 
   (* Initialize info_map *)
   let init_info algo =

@@ -43,26 +43,31 @@ def $unpackfield_(packtype, sx, PACK packtype i) = CONST I32 $extend__($psize(pa
 
 ;; Projections
 
-def $funcsxv(externval*) : funcaddr*     hint(show $funcs(%))   hint(macro "funcsxv")
-def $globalsxv(externval*) : globaladdr* hint(show $globals(%)) hint(macro "globalsxv")
-def $tablesxv(externval*) : tableaddr*   hint(show $tables(%))  hint(macro "tablesxv")
-def $memsxv(externval*) : memaddr*       hint(show $mems(%))    hint(macro "memsxv")
+def $funcsxa(externaddr*) : funcaddr*     hint(show $funcs(%))   hint(macro "funcsxa")
+def $globalsxa(externaddr*) : globaladdr* hint(show $globals(%)) hint(macro "globalsxa")
+def $tablesxa(externaddr*) : tableaddr*   hint(show $tables(%))  hint(macro "tablesxa")
+def $memsxa(externaddr*) : memaddr*       hint(show $mems(%))    hint(macro "memsxa")
+def $tagsxa(externaddr*) : tagaddr*       hint(show $tags(%))    hint(macro "tagsxa")
 
-def $funcsxv(eps) = eps
-def $funcsxv((FUNC fa) xv*) = fa $funcsxv(xv*)
-def $funcsxv(externval xv*) = $funcsxv(xv*)  -- otherwise
+def $funcsxa(eps) = eps
+def $funcsxa((FUNC fa) xa*) = fa $funcsxa(xa*)
+def $funcsxa(externaddr xa*) = $funcsxa(xa*)  -- otherwise
 
-def $globalsxv(eps) = eps
-def $globalsxv((GLOBAL ga) xv*) = ga $globalsxv(xv*)
-def $globalsxv(externval xv*) = $globalsxv(xv*)  -- otherwise
+def $globalsxa(eps) = eps
+def $globalsxa((GLOBAL ga) xa*) = ga $globalsxa(xa*)
+def $globalsxa(externaddr xa*) = $globalsxa(xa*)  -- otherwise
 
-def $tablesxv(eps) = eps
-def $tablesxv((TABLE ta) xv*) = ta $tablesxv(xv*)
-def $tablesxv(externval xv*) = $tablesxv(xv*)  -- otherwise
+def $tablesxa(eps) = eps
+def $tablesxa((TABLE ta) xa*) = ta $tablesxa(xa*)
+def $tablesxa(externaddr xa*) = $tablesxa(xa*)  -- otherwise
 
-def $memsxv(eps) = eps
-def $memsxv((MEM ma) xv*) = ma $memsxv(xv*)
-def $memsxv(externval xv*) = $memsxv(xv*)  -- otherwise
+def $memsxa(eps) = eps
+def $memsxa((MEM ma) xa*) = ma $memsxa(xa*)
+def $memsxa(externaddr xa*) = $memsxa(xa*)  -- otherwise
+
+def $tagsxa(eps) = eps
+def $tagsxa((TAG ha) xa*) = ha $tagsxa(xa*)
+def $tagsxa(externaddr xa*) = $tagsxa(xa*)  -- otherwise
 
 
 ;;
@@ -77,31 +82,39 @@ def $frame(state) : frame             hint(show %.FRAME) hint(macro "Z%")
 def $store((s; f)) = s
 def $frame((s; f)) = f
 
+def $tagaddr(state) : tagaddr*        hint(show %.TAGS)    hint(macro "Z%")
+def $tagaddr((s; f)) = f.MODULE.TAGS
+
 def $moduleinst(state) : moduleinst   hint(show %.MODULE)  hint(macro "Z%")
 def $funcinst(state) : funcinst*      hint(show %.FUNCS)   hint(macro "Z%")
 def $globalinst(state) : globalinst*  hint(show %.GLOBALS) hint(macro "Z%")
 def $tableinst(state) : tableinst*    hint(show %.TABLES)  hint(macro "Z%")
 def $meminst(state) : meminst*        hint(show %.MEMS)    hint(macro "Z%")
+def $taginst(state) : taginst*        hint(show %.TAGS)    hint(macro "Z%")
 def $eleminst(state) : eleminst*      hint(show %.ELEMS)   hint(macro "Z%")
 def $datainst(state) : datainst*      hint(show %.DATAS)   hint(macro "Z%")
 def $structinst(state) : structinst*  hint(show %.STRUCTS) hint(macro "Z%")
 def $arrayinst(state) : arrayinst*    hint(show %.ARRAYS)  hint(macro "Z%")
+def $exninst(state) : exninst*        hint(show %.EXNS)    hint(macro "Z%")
 
 def $moduleinst((s; f)) = f.MODULE
 def $funcinst((s; f)) = s.FUNCS
 def $globalinst((s; f)) = s.GLOBALS
 def $tableinst((s; f)) = s.TABLES
 def $meminst((s; f)) = s.MEMS
+def $taginst((s; f)) = s.TAGS
 def $eleminst((s; f)) = s.ELEMS
 def $datainst((s; f)) = s.DATAS
 def $structinst((s; f)) = s.STRUCTS
 def $arrayinst((s; f)) = s.ARRAYS
+def $exninst((s; f)) = s.EXNS
 
 def $type(state, typeidx) : deftype         hint(show %.TYPES[%])   hint(macro "Z%")
 def $func(state, funcidx) : funcinst        hint(show %.FUNCS[%])   hint(macro "Z%")
 def $global(state, globalidx) : globalinst  hint(show %.GLOBALS[%]) hint(macro "Z%")
 def $table(state, tableidx) : tableinst     hint(show %.TABLES[%])  hint(macro "Z%")
 def $mem(state, memidx) : meminst           hint(show %.MEMS[%])    hint(macro "Z%")
+def $tag(state, tagidx) : taginst           hint(show %.TAGS[%])    hint(macro "Z%")
 def $elem(state, tableidx) : eleminst       hint(show %.ELEMS[%])   hint(macro "Z%")
 def $data(state, dataidx) : datainst        hint(show %.DATAS[%])   hint(macro "Z%")
 def $local(state, localidx) : val?          hint(show %.LOCALS[%])  hint(macro "Z%")
@@ -111,6 +124,7 @@ def $func((s; f), x) = s.FUNCS[f.MODULE.FUNCS[x]]
 def $global((s; f), x) = s.GLOBALS[f.MODULE.GLOBALS[x]]
 def $table((s; f), x) = s.TABLES[f.MODULE.TABLES[x]]
 def $mem((s; f), x) = s.MEMS[f.MODULE.MEMS[x]]
+def $tag((s; f), x) = s.TAGS[f.MODULE.TAGS[x]]
 def $elem((s; f), x) = s.ELEMS[f.MODULE.ELEMS[x]]
 def $data((s; f), x) = s.DATAS[f.MODULE.DATAS[x]]
 def $local((s; f), x) = f.LOCALS[x]
@@ -142,9 +156,12 @@ def $with_array((s; f), a, i, fv) = s[.ARRAYS[a].FIELDS[i] = fv]; f
 
 def $add_structinst(state, structinst*) : state  hint(show %[.STRUCTS =++ %]) hint(macro "Z%")
 def $add_arrayinst(state, arrayinst*) : state    hint(show %[.ARRAYS =++ %])  hint(macro "Z%")
+def $add_exninst(state, exninst*) : state        hint(show %[.EXNS =++ %])    hint(macro "Z%")
 
 def $add_structinst((s; f), si*) = s[.STRUCTS =++ si*]; f
 def $add_arrayinst((s; f), ai*) = s[.ARRAYS =++ ai*]; f
+;; TODO: variable name for exninst? (ei and xi are both taken)
+def $add_exninst((s; f), exn*) = s[.EXNS =++ exn*]; f
 
 
 ;; Growing

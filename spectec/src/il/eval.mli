@@ -1,10 +1,6 @@
 open Ast
 
-module Map : Map.S with type key = string with type 'a t = 'a Map.Make(String).t
-
-type typ_def = inst list
-type def_def = clause list
-type env = {vars : typ Map.t; typs : typ_def Map.t; defs : def_def Map.t}
+type env = Env.t
 type subst = Subst.t
 
 val (let*) : subst option -> (subst -> subst option) -> subst option

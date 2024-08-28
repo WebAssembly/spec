@@ -55,7 +55,7 @@ type syntax = {sdef : El.Ast.def; sfragments : (string * El.Ast.def * use) list}
 type grammar = {gdef : El.Ast.def; gfragments : (string * El.Ast.def * use) list}
 type relation = {rdef : El.Ast.def; rules : (string * El.Ast.def * use) list}
 type definition = {fdef : El.Ast.def; clauses : El.Ast.def list; use : use}
-type relation_prose = {ralgos : (string * Backend_prose.Prose.def * use) list}
+type rule_prose = {ralgo : Backend_prose.Prose.def; use : use}
 type definition_prose = {falgo : Backend_prose.Prose.def; use : use}
 
 type env =
@@ -67,7 +67,7 @@ type env =
     mutable gram : grammar Map.t;
     mutable rel : relation Map.t;
     mutable def : definition Map.t;
-    mutable rel_prose : relation_prose Map.t;
+    mutable rule_prose : rule_prose Map.t;
     mutable def_prose : definition_prose Map.t;
   }
 
@@ -100,51 +100,25 @@ let env_def env def =
   | FamD _ | VarD _ | SepD | HintD _ ->
     ()
 
-let valid_id = "valid"
-let exec_id = "exec"
-
-let normalize_id id =
-  let id' =
-    if id = "" || id.[String.length id - 1] <> '_' then id else
-    String.sub id 0 (String.length id - 1)
-  in String.lowercase_ascii id'
-
 let env_prose env prose =
   match prose with
-  (*
-  | Pred ((id, typ), _, _) ->
-    let id = El.Atom.to_string (id $$ (no_region, ref typ)) in
-    let relation = Map.find valid_id env.rel_prose in
-    let ralgos = (normalize_id id, prose, ref 0) :: relation.ralgos in
-    env.rel_prose <- Map.add valid_id {ralgos} env.rel_prose
-  *)
-  | Iff (_, expr, _, _) -> (* TODO *)
-    let id =
-      match expr.it with
-      | CaseE ((id, typ), _) -> El.Atom.to_string (id $$ (no_region, ref typ))
-      | _ -> Al.Print.string_of_expr expr
-    in
-    let relation = Map.find valid_id env.rel_prose in
-    let ralgos = (normalize_id id, prose, ref 0) :: relation.ralgos in
-    env.rel_prose <- Map.add valid_id {ralgos} env.rel_prose
-  | Algo ({ it = Al.Ast.RuleA ((id, typ), _, _); _ }) ->
-    let id = El.Atom.to_string (id $$ (no_region, ref typ)) in
-    let relation = Map.find exec_id env.rel_prose in
-    let ralgos = (normalize_id id, prose, ref 0) :: relation.ralgos in
-    env.rel_prose <- Map.add exec_id {ralgos} env.rel_prose
+  | Iff (anchor, _, _, _) -> (* TODO *)
+    env.rule_prose <- Map.add anchor {ralgo = prose; use = ref 0} env.rule_prose
+  | Algo ({ it = Al.Ast.RuleA (_, anchor, _, _); _ }) ->
+    env.rule_prose <- Map.add anchor {ralgo = prose; use = ref 0} env.rule_prose
   | Algo ({ it = Al.Ast.FuncA (id, _, _); _}) ->
     env.def_prose <- Map.add id {falgo = prose; use = ref 0} env.def_prose
 
 let env (config : config) pdsts odsts elab el pr : env =
   let latex = Backend_latex.Render.env config.latex el in
-  let prose = Backend_prose.Render.env pdsts odsts latex el pr in
+  let prose = Backend_prose.Render.env config.prose pdsts odsts latex in
   let env =
     { elab; config; latex; prose;
       syn = Map.empty;
       gram = Map.empty;
       rel = Map.empty;
       def = Map.empty;
-      rel_prose = Map.(add valid_id {ralgos = []} (add exec_id {ralgos = []} empty));
+      rule_prose = Map.empty;
       def_prose = Map.empty;
     }
   in
@@ -174,9 +148,9 @@ let warn_math env =
   ) env.def
 
 let warn_prose env =
-  Map.iter (fun id1 {ralgos} ->
-    List.iter (fun (id2, _, use) -> warn_use use "rule prose" id1 id2) ralgos
-  ) env.rel_prose;
+  Map.iter (fun id1 ({use; _} : rule_prose) ->
+    warn_use use "rule prose" id1 ""
+  ) env.rule_prose;
   Map.iter (fun id1 ({use; _} : definition_prose) ->
     warn_use use "definition prose" id1 ""
   ) env.def_prose
@@ -197,12 +171,12 @@ let find_entries space src id1 id2 entries =
     error src ("unknown " ^ space ^ " identifier `" ^ id1 ^ "/" ^ id2' ^ "`");
   List.map (fun (_, def, use) -> incr use; def) defs
 
-let find_entry space src id1 id2 entries =
-  match find_entries space src id1 id2 entries with
-  | [def] -> def
-  | defs ->
-    Printf.eprintf "warning: %s `%s/%s` has multiple definitions\n%!" space id1 id2;
-    List.hd defs
+(* let find_entry space src id1 id2 entries = *)
+(*   match find_entries space src id1 id2 entries with *)
+(*   | [def] -> def *)
+(*   | defs -> *)
+(*     Printf.eprintf "warning: %s `%s/%s` has multiple definitions\n%!" space id1 id2; *)
+(*     List.hd defs *)
 (* TODO(2, rossberg): this should be an error, once the last hard-coded prose rule is gone
     error src ("duplicate " ^ space ^ " identifier `" ^ id1 ^ "/" ^ id2 ^ "`")
 *)
@@ -244,9 +218,10 @@ let find_def env src id1 id2 =
     incr definition.use; [definition.clauses]
 
 let find_rule_prose env src id1 id2 =
-  match Map.find_opt id1 env.rel_prose with
-  | None -> error src ("unknown prose relation identifier `" ^ id1 ^ "`")
-  | Some relation -> find_entry "prose rule" src id1 id2 relation.ralgos
+  let id = if id2 <> "" then id1 ^ "/" ^ id2 else id1 in
+  match Map.find_opt id env.rule_prose with
+  | None -> error src ("unknown prose relation identifier `" ^ id ^ "`")
+  | Some rule -> incr rule.use; rule.ralgo
 
 let find_def_prose env src id1 id2 =
   find_nosub "definition" src id1 id2;

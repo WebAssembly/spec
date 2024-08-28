@@ -30,10 +30,10 @@ let rec repeat str num =
 
 (* Terminals *)
 
-let string_of_atom atom =
-  let atom', typ = atom in
-  let ilatom = atom' $$ (no_region, ref typ) in
-  Atom.to_string ilatom
+let string_of_atom = El.Print.string_of_atom
+let string_of_mixop = Il.Print.string_of_mixop
+
+let string_of_typ = Il.Print.string_of_typ
 
 
 (* Directions *)
@@ -60,9 +60,8 @@ and string_of_value =
   function
   | LabelV (v1, v2) ->
     sprintf "Label_%s %s" (string_of_value v1) (string_of_value v2)
-  (*| FrameV (None, v2) -> sprintf "(Frame %s)" (string_of_value v2)
-  | FrameV (Some v1, v2) -> sprintf "(Frame %s %s)" (string_of_value v1) (string_of_value v2) *)
-  | FrameV _ -> "FrameV"
+  | FrameV (None, v2) -> sprintf "(Frame %s)" (string_of_value v2)
+  | FrameV (Some v1, v2) -> sprintf "(Frame %s %s)" (string_of_value v1) (string_of_value v2)
   | ListV lv -> "[" ^ string_of_values ", " (Array.to_list !lv) ^ "]"
   | NumV n -> "0x" ^ Z.format "%X" n
   | BoolV b -> string_of_bool b
@@ -82,12 +81,12 @@ and string_of_values sep = string_of_list string_of_value sep
 (* Operators *)
 
 let string_of_unop = function
-  | NotOp -> "not"
+  | NotOp -> "!"
   | MinusOp -> "-"
 
 let string_of_binop = function
-  | AndOp -> "and"
-  | OrOp -> "or"
+  | AndOp -> "&&"
+  | OrOp -> "||"
   | ImplOp -> "=>"
   | EquivOp -> "<=>"
   | AddOp -> "+"
@@ -96,8 +95,8 @@ let string_of_binop = function
   | DivOp -> "/"
   | ModOp -> "\\"
   | ExpOp -> "^"
-  | EqOp -> "is"
-  | NeOp -> "is not"
+  | EqOp -> "=="
+  | NeOp -> "!="
   | LtOp -> "<"
   | GtOp -> ">"
   | LeOp -> "≤"
@@ -129,21 +128,12 @@ and string_of_expr expr =
   match expr.it with
   | NumE i -> Z.to_string i
   | BoolE b -> string_of_bool b
-  | UnE (NotOp, { it = IsCaseOfE (e, a); _ }) ->
-    sprintf "%s is not of the case %s" (string_of_expr e) (string_of_atom a)
-  | UnE (NotOp, { it = IsDefinedE e; _ }) ->
-    sprintf "%s is not defined" (string_of_expr e)
-  | UnE (NotOp, { it = IsValidE e; _ }) ->
-    sprintf "%s is not valid" (string_of_expr e)
-  | UnE (NotOp, { it = MatchE (e1, e2); _ }) ->
-    sprintf "%s does not match %s" (string_of_expr e1) (string_of_expr e2)
-  | UnE (NotOp, e) -> sprintf "not %s" (string_of_expr e)
-  | UnE (op, e) -> sprintf "(%s %s)" (string_of_unop op) (string_of_expr e)
+  | UnE (op, e) -> sprintf "%s(%s)" (string_of_unop op) (string_of_expr e)
   | BinE (op, e1, e2) ->
     sprintf "(%s %s %s)" (string_of_expr e1) (string_of_binop op) (string_of_expr e2)
   | TupE el -> "(" ^ string_of_exprs ", " el ^ ")"
-  | CallE (id, el) -> sprintf "$%s(%s)" id (string_of_exprs ", " el)
-  | InvCallE (id, nl, el) ->
+  | CallE (id, al) -> sprintf "$%s(%s)" id (string_of_args ", " al)
+  | InvCallE (id, nl, al) ->
     let id' =
       if List.for_all Option.is_some nl then id
       else
@@ -153,57 +143,73 @@ and string_of_expr expr =
         |> List.fold_left (^) ""
         |> sprintf "%s_%s" id
     in
-    sprintf "$%s^-1(%s)" id' (string_of_exprs ", " el)
-  | CatE (e1, e2) ->
+    sprintf "$%s^-1(%s)" id' (string_of_args ", " al)
+  | CompE (e1, e2) ->
     sprintf "%s ++ %s" (string_of_expr e1) (string_of_expr e2)
+  | CatE (e1, e2) ->
+    sprintf "%s :: %s" (string_of_expr e1) (string_of_expr e2)
   | MemE (e1, e2) ->
     sprintf "%s <- %s" (string_of_expr e1) (string_of_expr e2)
   | LenE e -> sprintf "|%s|" (string_of_expr e)
-  | ArityE e -> sprintf "the arity of %s" (string_of_expr e)
-  | GetCurStateE -> "the current state"
-  | GetCurLabelE -> "the current label"
-  | GetCurFrameE -> "the current frame"
-  | GetCurContextE -> "the current context"
+  | ArityE e -> sprintf "arity(%s)" (string_of_expr e)
+  | GetCurStateE -> "current_state()"
+  | GetCurLabelE -> "current_label()"
+  | GetCurFrameE -> "current_frame()"
+  | GetCurContextE -> "current_context()"
   | FrameE (None, e2) ->
-    sprintf "the activation of %s" (string_of_expr e2)
+    sprintf "callframe(%s)" (string_of_expr e2)
   | FrameE (Some e1, e2) ->
-    sprintf "the activation of %s with arity %s" (string_of_expr e2)
-      (string_of_expr e1)
+    sprintf "callframe(%s, %s)" (string_of_expr e1)
+      (string_of_expr e2)
   | ListE el -> "[" ^ string_of_exprs ", " el ^ "]"
   | AccE (e, p) -> sprintf "%s%s" (string_of_expr e) (string_of_path p)
   | ExtE (e1, ps, e2, dir) -> (
     match dir with
-    | Front -> sprintf "%s with %s prepended by %s" (string_of_expr e1) (string_of_paths ps) (string_of_expr e2)
-    | Back -> sprintf "%s with %s appended by %s" (string_of_expr e1) (string_of_paths ps) (string_of_expr e2))
+    | Front -> sprintf "prepend(%s%s, %s)" (string_of_expr e1) (string_of_paths ps) (string_of_expr e2)
+    | Back -> sprintf "append(%s%s, %s)" (string_of_expr e1) (string_of_paths ps) (string_of_expr e2))
   | UpdE (e1, ps, e2) ->
-    sprintf "%s with %s replaced by %s" (string_of_expr e1) (string_of_paths ps) (string_of_expr e2)
+    sprintf "update(%s%s, %s)" (string_of_expr e1) (string_of_paths ps) (string_of_expr e2)
   | StrE r -> string_of_record_expr r
-  | ContE e -> sprintf "the continuation of %s" (string_of_expr e)
-  | ChooseE e -> sprintf "an element of %s" (string_of_expr e)
+  | ContE e -> sprintf "cont(%s)" (string_of_expr e)
+  | ChooseE e -> sprintf "choose(%s)" (string_of_expr e)
   | LabelE (e1, e2) ->
-    sprintf "the label_%s{%s}" (string_of_expr e1) (string_of_expr e2)
+    sprintf "label(%s, %s)" (string_of_expr e1) (string_of_expr e2)
   | VarE id -> id
   | SubE (id, _) -> id
   | IterE (e, _, iter) -> string_of_expr e ^ string_of_iter iter
-  | InfixE (e1, a, e2) -> "(" ^ string_of_expr e1 ^ " " ^ string_of_atom a ^ " " ^ string_of_expr e2 ^ ")"
-  | CaseE ((Atom.Atom ("CONST" | "VCONST"), _), hd::tl) ->
+  | CaseE ([{ it=Atom.Atom ("CONST" | "VCONST"); _ }]::_tl, hd::tl) ->
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
-  | CaseE (a, []) -> string_of_atom a
-  | CaseE (a, el) -> "(" ^ string_of_atom a ^ " " ^ string_of_exprs " " el ^ ")"
+  | CaseE ([[ atom ]], []) -> string_of_atom atom
+  | CaseE (op, el) ->
+    let op' = List.map (fun al -> String.concat "" (List.map string_of_atom al)) op in
+    (match op' with
+    | [] -> "()"
+    | hd::tl ->
+      let res =
+        List.fold_left2 (
+          fun acc a e ->
+            let a' = if a = "" then "" else " " ^ a in
+            let acc' = if acc = "" then "" else acc ^ " " in
+            acc' ^ string_of_expr e ^ a'
+        ) hd tl el in
+      "(" ^ res ^ ")"
+    )
   | OptE (Some e) -> "?(" ^ string_of_expr e ^ ")"
   | OptE None -> "?()"
-  | ContextKindE (a, e) -> sprintf "%s is %s" (string_of_expr e) (string_of_atom a)
-  | IsDefinedE e -> sprintf "%s is defined" (string_of_expr e)
-  | IsCaseOfE (e, a) -> sprintf "%s is of the case %s" (string_of_expr e) (string_of_atom a)
-  | HasTypeE (e, t) -> sprintf "the type of %s is %s" (string_of_expr e) t
-  | IsValidE e -> sprintf "%s is valid" (string_of_expr e)
-  | TopLabelE -> "a label is now on the top of the stack"
-  | TopFrameE -> "a frame is now on the top of the stack"
-  | TopValueE (Some e) -> sprintf "a value of value type %s is on the top of the stack" (string_of_expr e)
-  | TopValueE None -> "a value is on the top of the stack"
-  | TopValuesE e -> sprintf "there are at least %s values on the top of the stack" (string_of_expr e)
+  | ContextKindE a -> sprintf "context_kind(%s)" (string_of_atom a)
+  | IsDefinedE e -> sprintf "%s != None" (string_of_expr e)
+  | IsCaseOfE (e, a) -> sprintf "case(%s) == %s" (string_of_expr e) (string_of_atom a)
+  | HasTypeE (e, t) -> sprintf "type(%s) == %s" (string_of_expr e) (string_of_typ t)
+  | IsValidE e -> sprintf "valid(%s)" (string_of_expr e)
+  | TopLabelE -> "top_label()"
+    (* TODO: "type(top()) == label"*)
+  | TopFrameE -> "top_frame()"
+    (* TODO: "type(top()) == frame"*)
+  | TopValueE (Some e) -> sprintf "top_value(%s)" (string_of_expr e)
+  | TopValueE None -> "top_value()"
+  | TopValuesE e -> sprintf "top_values(%s)" (string_of_expr e)
   | MatchE (e1, e2) ->
-    sprintf "%s matches %s"
+    sprintf "%s <: %s"
       (string_of_expr e1)
       (string_of_expr e2)
   | YetE s -> sprintf "YetE (%s)" s
@@ -223,6 +229,15 @@ and string_of_path path =
 and string_of_paths paths = List.map string_of_path paths |> List.fold_left (^) ""
 
 
+(* Args *)
+
+and string_of_arg arg =
+  match arg.it with
+  | ExpA e -> string_of_expr e
+  | TypA typ -> string_of_typ typ
+
+and string_of_args sep = string_of_list string_of_arg sep
+
 
 (* Instructions *)
 
@@ -237,19 +252,6 @@ let enter_block f instrs =
   set_index index;
   res
 
-let make_index depth =
-  _index := !_index + 1;
-
-  let num_idx = string_of_int !_index in
-  let alp_idx = Char.escaped (Char.chr (96 + !_index)) in
-
-  match depth mod 4 with
-  | 0 -> num_idx ^ "."
-  | 1 -> alp_idx ^ "."
-  | 2 -> num_idx ^ ")"
-  | 3 -> alp_idx ^ ")"
-  | _ -> assert false
-
 (* Prefix for stack push/pop operations *)
 let string_of_stack_prefix expr =
   match expr.it with
@@ -260,89 +262,91 @@ let string_of_stack_prefix expr =
   | LabelE _
   | FrameE _
   | VarE ("F" | "L") -> ""
-  | IterE _ -> "the values "
-  | _ -> "the value "
+  | IterE _ -> ""
+  | _ -> ""
 
 let rec string_of_instr' depth instr =
   match instr.it with
   | IfI (e, il, []) ->
-    sprintf "%s If %s, then:%s" (make_index depth) (string_of_expr e)
-      (string_of_instrs' (depth + 1) il)
+    sprintf " If (%s) {%s\n%s }" (string_of_expr e)
+      (string_of_instrs' (depth + 1) il) (repeat indent depth)
   | IfI (e, il1, [ { it = IfI (inner_e, inner_il1, []); _ } ]) ->
-    let if_index = make_index depth in
-    let else_if_index = make_index depth in
-    sprintf "%s If %s, then:%s\n%s Else if %s, then:%s"
-      if_index
+    sprintf " If (%s) {%s\n%s }\n%s Else if (%s) {%s\n%s }"
       (string_of_expr e)
       (string_of_instrs' (depth + 1) il1)
-      (repeat indent depth ^ else_if_index)
+      (repeat indent depth)
+      (repeat indent depth)
       (string_of_expr inner_e)
       (string_of_instrs' (depth + 1) inner_il1)
+      (repeat indent depth)
   | IfI (e, il1, [ { it = IfI (inner_e, inner_il1, inner_il2); _ } ]) ->
-    let if_index = make_index depth in
-    let else_if_index = make_index depth in
-    let else_index = make_index depth in
-    sprintf "%s If %s, then:%s\n%s Else if %s, then:%s\n%s Else:%s"
-      if_index
+    sprintf " If (%s) {%s\n%s }\n%s Else if (%s) {%s\n%s }\n%s Else {%s\n%s }"
       (string_of_expr e)
       (string_of_instrs' (depth + 1) il1)
-      (repeat indent depth ^ else_if_index)
+      (repeat indent depth)
+      (repeat indent depth)
       (string_of_expr inner_e)
       (string_of_instrs' (depth + 1) inner_il1)
-      (repeat indent depth ^ else_index)
+      (repeat indent depth)
+      (repeat indent depth)
       (string_of_instrs' (depth + 1) inner_il2)
+      (repeat indent depth)
   | IfI (e, il1, il2) ->
-    let if_index = make_index depth in
-    let else_index = make_index depth in
-    sprintf "%s If %s, then:%s\n%s Else:%s" if_index (string_of_expr e)
+    sprintf " If (%s) {%s\n%s }\n%s Else {%s\n%s }" (string_of_expr e)
       (string_of_instrs' (depth + 1) il1)
-      (repeat indent depth ^ else_index)
+      (repeat indent depth)
+      (repeat indent depth)
       (string_of_instrs' (depth + 1) il2)
+      (repeat indent depth)
   | OtherwiseI il ->
-    sprintf "%s Otherwise:%s" (make_index depth)
+    sprintf " Otherwise:%s"
       (string_of_instrs' (depth + 1) il)
   | EitherI (il1, il2) ->
-    let either_index = make_index depth in
-    let or_index = make_index depth in
-    sprintf "%s Either:%s\n%s Or:%s" either_index
+    sprintf " Either {%s\n%s }\n%s Or {%s\n %s}"
       (string_of_instrs' (depth + 1) il1)
-      (repeat indent depth ^ or_index)
+      (repeat indent depth)
+      (repeat indent depth)
       (string_of_instrs' (depth + 1) il2)
-  | AssertI e -> sprintf "%s Assert: Due to validation, %s." (make_index depth) (string_of_expr e)
+      (repeat indent depth)
+  | AssertI e -> sprintf " Assert (%s)" (string_of_expr e)
   | PushI e ->
-    sprintf "%s Push %s%s to the stack." (make_index depth)
+    sprintf " Push %s%s"
       (string_of_stack_prefix e) (string_of_expr e)
   | PopI e ->
-    sprintf "%s Pop %s%s from the stack." (make_index depth)
+    sprintf " Pop %s%s"
       (string_of_stack_prefix e) (string_of_expr e)
   | PopAllI e ->
-    sprintf "%s Pop all values %s from the top of the stack." (make_index depth)
+    sprintf " Pop_all %s"
       (string_of_expr e)
   | LetI (e1, e2) ->
-    sprintf "%s Let %s be %s." (make_index depth) (string_of_expr e1)
+    sprintf " Let %s = %s" (string_of_expr e1)
       (string_of_expr e2)
-  | TrapI -> sprintf "%s Trap." (make_index depth)
-  | NopI -> sprintf "%s Do nothing." (make_index depth)
-  | ReturnI None -> sprintf "%s Return." (make_index depth)
-  | ReturnI (Some e) -> sprintf "%s Return %s." (make_index depth) (string_of_expr e)
+  | TrapI -> sprintf " Trap"
+  | ThrowI e -> sprintf " Throw %s" (string_of_expr e)
+  | NopI -> sprintf " Nop"
+  | ReturnI None -> sprintf " Return"
+  | ReturnI (Some e) -> sprintf " Return %s" (string_of_expr e)
   | EnterI (e1, e2, il) ->
-    sprintf "%s Enter %s with label %s.%s" (make_index depth)
-      (string_of_expr e1) (string_of_expr e2) (string_of_instrs' (depth + 1) il)
+    sprintf " Enter (%s, %s) {%s \n%s }"
+      (string_of_expr e1) (string_of_expr e2) (string_of_instrs' (depth + 1) il) (repeat indent depth)
   | ExecuteI e ->
-    sprintf "%s Execute the instruction %s." (make_index depth) (string_of_expr e)
+    sprintf " Execute %s" (string_of_expr e)
   | ExecuteSeqI e ->
-    sprintf "%s Execute the sequence (%s)." (make_index depth) (string_of_expr e)
+    sprintf " Execute %s" (string_of_expr e)
   | PerformI (id, el) ->
-    sprintf "%s Perform %s." (make_index depth) (string_of_expr (CallE (id, el) $$ instr.at % (Il.Ast.VarT ("TODO" $ no_region, []) $ no_region)))
+    sprintf " %s" (string_of_expr (CallE (id, el) $$ instr.at % (Il.Ast.VarT ("TODO" $ no_region, []) $ no_region)))
   | ExitI a ->
-    sprintf "%s Exit from %s." (make_index depth) (string_of_atom a)
+    sprintf " Exit %s" (string_of_atom a)
   | ReplaceI (e1, p, e2) ->
-    sprintf "%s Replace %s%s with %s." (make_index depth)
+    sprintf " %s%s := %s"
       (string_of_expr e1) (string_of_path p) (string_of_expr e2)
   | AppendI (e1, e2) ->
-    sprintf "%s Append %s to the %s." (make_index depth)
+    sprintf " %s :+ %s"
       (string_of_expr e2) (string_of_expr e1)
-  | YetI s -> sprintf "%s YetI: %s." (make_index depth) s
+  | FieldWiseAppendI (e1, e2) ->
+    sprintf " %s :⨁ %s"
+      (string_of_expr e2) (string_of_expr e1)
+  | YetI s -> sprintf " YetI: %s." s
 
 and string_of_instrs' depth instrs =
   let f acc i =
@@ -354,19 +358,22 @@ let string_of_instr instr =
   string_of_instr' 0 instr
 let string_of_instrs = string_of_instrs' 0
 
-let string_of_algorithm algo = match algo.it with
-  | RuleA (a, params, instrs) ->
-    "execution_of_" ^ string_of_atom a
+let string_of_algorithm algo =
+  match algo.it with
+  | RuleA (_a, anchor, params, instrs) ->
+    anchor
     ^ List.fold_left
-        (fun acc p -> acc ^ " " ^ string_of_expr p)
+        (fun acc p -> acc ^ " " ^ string_of_arg p)
         "" params
-    ^ string_of_instrs instrs ^ "\n"
+    ^ " {"
+    ^ string_of_instrs instrs ^ "\n}\n"
   | FuncA (id, params, instrs) ->
     id
     ^ List.fold_left
-        (fun acc p -> acc ^ " " ^ string_of_expr p)
+        (fun acc p -> acc ^ " " ^ string_of_arg p)
         "" params
-    ^ string_of_instrs instrs ^ "\n"
+    ^ " {"
+    ^ string_of_instrs instrs ^ "\n}\n"
 
 
 (* Structured stringfier *)
@@ -421,7 +428,7 @@ and structured_string_of_expr expr =
   | BoolE b -> string_of_bool b
   | UnE (op, e) ->
     "UnE ("
-    ^ string_of_unop op 
+    ^ string_of_unop op
     ^ ", "
     ^ structured_string_of_expr e
     ^ ")"
@@ -434,11 +441,17 @@ and structured_string_of_expr expr =
     ^ structured_string_of_expr e2
     ^ ")"
   | TupE el -> "TupE (" ^ structured_string_of_exprs el ^ ")"
-  | CallE (id, el) -> "CallE (" ^ id ^ ", [ " ^ structured_string_of_exprs el ^ " ])"
-  | InvCallE (id, nl, el) ->
+  | CallE (id, al) -> "CallE (" ^ id ^ ", [ " ^ structured_string_of_args al ^ " ])"
+  | InvCallE (id, nl, al) ->
     let nl = List.filter_map (fun x -> x) nl in
     sprintf "InvCallE (%s, [%s], [%s])"
-      id (string_of_list string_of_int "" nl) (structured_string_of_exprs el)
+      id (string_of_list string_of_int "" nl) (structured_string_of_args al)
+  | CompE (e1, e2) ->
+    "CompE ("
+    ^ structured_string_of_expr e1
+    ^ ", "
+    ^ structured_string_of_expr e2
+    ^ ")"
   | CatE (e1, e2) ->
     "CatE ("
     ^ structured_string_of_expr e1
@@ -493,7 +506,7 @@ and structured_string_of_expr expr =
     ^ structured_string_of_expr e2
     ^ ")"
   | VarE id -> "VarE (" ^ id ^ ")"
-  | SubE (id, t) -> "SubE (" ^ id ^ "," ^ t ^ ")"
+  | SubE (id, t) -> sprintf "SubE (%s, %s)" id (string_of_typ t)
   | IterE (e, ids, iter) ->
     "IterE ("
     ^ structured_string_of_expr e
@@ -502,23 +515,16 @@ and structured_string_of_expr expr =
     ^ ", "
     ^ string_of_iter iter
     ^ ")"
-  | InfixE (e1, a, e2) ->
-    "InfixE ("
-    ^ structured_string_of_expr e1
-    ^ ", "
-    ^ string_of_atom a 
-    ^ ", "
-    ^ structured_string_of_expr e2
-    ^ ")"
-  | CaseE (a, el) ->
-    "CaseE (" ^ string_of_atom a 
+  | CaseE (op, el) ->
+    "CaseE (" ^ string_of_mixop op
     ^ ", [" ^ structured_string_of_exprs el ^ "])"
   | OptE None -> "OptE"
   | OptE (Some e) -> "OptE (" ^ structured_string_of_expr e ^ ")"
-  | ContextKindE (a, e) -> sprintf "ContextKindE (%s, %s)" (string_of_atom a) (structured_string_of_expr e)
+  | ContextKindE a -> sprintf "ContextKindE (%s)" (string_of_atom a)
   | IsDefinedE e -> "DefinedE (" ^ structured_string_of_expr e ^ ")"
   | IsCaseOfE (e, a) -> "CaseOfE (" ^ structured_string_of_expr e ^ ", " ^ string_of_atom a ^ ")"
-  | HasTypeE (e, t) -> "HasTypeE (" ^ structured_string_of_expr e ^ ", " ^ t ^ ")"
+  | HasTypeE (e, t) ->
+    sprintf "HasTypeE (%s, %s)" (structured_string_of_expr e) (string_of_typ t)
   | IsValidE e -> "IsValidE (" ^ structured_string_of_expr e ^ ")"
   | TopLabelE -> "TopLabelE"
   | TopFrameE -> "TopFrameE"
@@ -548,6 +554,15 @@ and structured_string_of_path path =
 and structured_string_of_paths paths =
   List.map string_of_path paths |> List.fold_left (^) ""
 
+
+(* Args *)
+
+and structured_string_of_arg arg =
+  match arg.it with
+  | ExpA e -> sprintf "ExpA (%s)" (structured_string_of_expr e)
+  | TypA typ -> sprintf "TypA (%s)" (string_of_typ typ)
+
+and structured_string_of_args al = string_of_list structured_string_of_arg ", " al
 
 (* Instructions *)
 
@@ -583,6 +598,7 @@ let rec structured_string_of_instr' depth instr =
     ^ structured_string_of_expr e2
     ^ ")"
   | TrapI -> "TrapI"
+  | ThrowI e -> "ThrowI (" ^ structured_string_of_expr e ^ ")"
   | NopI -> "NopI"
   | ReturnI None -> "ReturnI"
   | ReturnI (Some e) -> "ReturnI (" ^ structured_string_of_expr e ^ ")"
@@ -596,7 +612,7 @@ let rec structured_string_of_instr' depth instr =
     ^ ")"
   | ExecuteI e -> "ExecuteI (" ^ structured_string_of_expr e ^ ")"
   | ExecuteSeqI e -> "ExecuteSeqI (" ^ structured_string_of_expr e ^ ")"
-  | PerformI (id, el) -> "PerformI (" ^ id ^ ",[ " ^ structured_string_of_exprs el ^ " ])"
+  | PerformI (id, el) -> "PerformI (" ^ id ^ ",[ " ^ structured_string_of_args el ^ " ])"
   | ExitI a -> "ExitI (" ^ string_of_atom a ^ ")"
   | ReplaceI (e1, p, e2) ->
     "ReplaceI ("
@@ -612,6 +628,12 @@ let rec structured_string_of_instr' depth instr =
     ^ ", "
     ^ structured_string_of_expr e2
     ^ ")"
+  | FieldWiseAppendI (e1, e2) ->
+    "FieldWiseAppendI ("
+    ^ structured_string_of_expr e1
+    ^ ", "
+    ^ structured_string_of_expr e2
+    ^ ")"
   | YetI s -> "YetI " ^ s
 
 and structured_string_of_instrs' depth instrs =
@@ -623,17 +645,17 @@ let structured_string_of_instr = structured_string_of_instr' 0
 let structured_string_of_instrs = structured_string_of_instrs' 0
 
 let structured_string_of_algorithm algo = match algo.it with
-  | RuleA (a, params, instrs) ->
-      "execution_of_" ^ string_of_atom a
+  | RuleA (_a, anchor, params, instrs) ->
+      anchor
       ^ List.fold_left
-          (fun acc p -> acc ^ " " ^ structured_string_of_expr p)
+          (fun acc p -> acc ^ " " ^ structured_string_of_arg p)
           "" params
       ^ ":\n"
       ^ structured_string_of_instrs' 1 instrs
   | FuncA (id, params, instrs) ->
       id
       ^ List.fold_left
-          (fun acc p -> acc ^ " " ^ structured_string_of_expr p)
+          (fun acc p -> acc ^ " " ^ structured_string_of_arg p)
           "" params
       ^ ":\n"
       ^ structured_string_of_instrs' 1 instrs

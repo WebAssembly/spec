@@ -891,15 +891,6 @@
   "constant expression required"
 )
 
-(assert_invalid
-  (module
-    (func $f (result i32) (i32.const 9))
-    (table 1 funcref)
-    (elem (i32.const 0) funcref (item (call $f)))
-  )
-  "constant expression required"
-)
-
 
 ;; Two elements target the same slot
 

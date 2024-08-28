@@ -15,16 +15,14 @@ module Map = Map.Make(String)
 
 type env =
   {
-    prose: prose;
+    config : Config.config;
     render_latex: Backend_latex.Render.env;
-    symbol: Symbol.env;
     macro: Macro.env;
   }
 
-let env inputs outputs render_latex el prose : env =
-  let symbol = Symbol.env el in
+let env config inputs outputs render_latex : env =
   let macro = Macro.env inputs outputs in
-  let env = { prose; render_latex; symbol; macro; } in
+  let env = { config; render_latex; macro; } in
   env
 
 (* Helpers *)
@@ -64,39 +62,39 @@ let render_order index depth =
   | _ -> assert false
 
 (* Translation from Al inverse call exp to Al binary exp *)
+let e2a e = Al.Ast.ExpA e $ e.at
+let a2e a =
+  match a.it with
+  | Al.Ast.ExpA e -> e
+  | Al.Ast.TypA _ -> error a.at "Caannot render inverse function with type argument"
 
-let al_invcalle_to_al_bine e id nl el =
+let al_invcalle_to_al_bine e id nl al =
   let efree = (match e.it with Al.Ast.TupE el -> el | _ -> [ e ]) in
-  let ebound, erhs =
+  let abound, arhs =
     let nbound = List.length nl - List.length efree in
-    Util.Lib.List.split nbound el
+    Util.Lib.List.split nbound al
   in
-  let eargs, _, _ =
+
+  let args, _, _ =
     List.fold_left
-      (fun (eargs, efree, ebound) n ->
+      (fun (args, efree, abound) n ->
         match n with
-        | Some _ -> (match efree with
-          | e :: efree -> eargs @ [ e ], efree, ebound
-          | _ -> assert false)
-        | None -> (match ebound with
-          | e :: ebound -> eargs @ [ e ], efree, ebound
-          | _ -> assert false))
-      ([], efree, ebound) nl
+        | Some _ -> args @ [ List.hd efree |> e2a ], List.tl efree, abound
+        | None ->   args @ [ List.hd abound ],       efree,         List.tl abound)
+      ([], efree, abound) nl
   in
-  let elhs = Al.Al_util.callE (id, eargs) in
+  let erhs = List.map a2e arhs in
+
+  let elhs = Al.Al_util.callE (id, args) ~note:Al.Al_util.no_note in
   let erhs = (match erhs with
     | [ e ] -> e
-    | _ -> Al.Al_util.tupE erhs)
+    | _ -> Al.Al_util.tupE erhs ~note:Al.Al_util.no_note)
   in
   elhs, erhs
 
 (* Translation from Al exp to El exp *)
 
 let (let*) = Option.bind
-
-let al_to_el_atom atom =
-  let atom', typ = atom in
-  atom' $$ (no_region, El.Atom.info typ)
 
 let al_to_el_unop = function
   | Al.Ast.MinusOp -> Some El.Ast.MinusOp
@@ -131,14 +129,30 @@ and al_to_el_path pl =
         let* eleh = al_to_el_expr eh in
         Some (El.Ast.SliceP (elp, elel, eleh))
       | Al.Ast.DotP a ->
-        let ela = al_to_el_atom a in
-        Some (El.Ast.DotP (elp, ela)))
+        Some (El.Ast.DotP (elp, a)))
     in
     Option.map (fun elp' -> elp' $ no_region) elp'
   in
   List.fold_left
     (fun elp p -> Option.bind elp (fold_path p))
     (Some (El.Ast.RootP $ no_region)) pl
+
+and al_to_el_arg arg =
+  match arg.it with
+  | Al.Ast.ExpA e ->
+    let* ele = al_to_el_expr e in
+    Some (El.Ast.ExpA ele)
+  | Al.Ast.TypA _typ ->
+    (* TODO: Require Il.Ast.typ to El.Ast.typ translation *)
+    Some (El.Ast.(TypA (VarT ("TODO" $ arg.at, []) $ arg.at)))
+
+and al_to_el_args args =
+  List.fold_left
+    (fun args a ->
+      let* args = args in
+      let* arg = al_to_el_arg a in
+      Some (args @ [ arg ]))
+    (Some []) args
 
 and al_to_el_expr expr =
   let exp' =
@@ -158,16 +172,15 @@ and al_to_el_expr expr =
     | Al.Ast.TupE el ->
       let* elel = al_to_el_exprs el in
       Some (El.Ast.TupE elel)
-    | Al.Ast.CallE (id, el) ->
+    | Al.Ast.CallE (id, al) ->
       let elid = id $ no_region in
-      let* elel = al_to_el_exprs el in
-      let elel = List.map
-        (fun ele ->
-          let elarg = El.Ast.ExpA ele in
+      let* elal = al_to_el_args al in
+      let elal = List.map
+        (fun elarg ->
           (ref elarg) $ no_region)
-        elel
+        elal
       in
-      Some (El.Ast.CallE (elid, elel))
+      Some (El.Ast.CallE (elid, elal))
     | Al.Ast.CatE (e1, e2) ->
       let* ele1 = al_to_el_expr e1 in
       let* ele2 = al_to_el_expr e2 in
@@ -190,8 +203,7 @@ and al_to_el_expr expr =
           let* eleh = al_to_el_expr eh in
           Some (El.Ast.SliceE (ele, elel, eleh))
       | DotP a ->
-          let ela = al_to_el_atom a in
-          Some (El.Ast.DotE (ele, ela)))
+          Some (El.Ast.DotE (ele, a)))
     | Al.Ast.UpdE (e1, pl, e2) ->
       let* ele1 = al_to_el_expr e1 in
       let* elp = al_to_el_path pl in
@@ -218,18 +230,14 @@ and al_to_el_expr expr =
         | _ -> ele
       in
       Some (El.Ast.IterE (ele, eliter))
-    | Al.Ast.InfixE (e1, op, e2) ->
-      let* ele1 = al_to_el_expr e1 in
-      let elop = al_to_el_atom op in
-      let* ele2 = al_to_el_expr e2 in
-      Some (El.Ast.InfixE (ele1, elop, ele2))
-    | Al.Ast.CaseE (a, el) ->
-      let ela = al_to_el_atom a in
-      let ela = (El.Ast.AtomE ela) $ no_region in
+    | Al.Ast.CaseE (op, el) ->
+      let elal = mixop_to_el_exprs op in
       let* elel = al_to_el_exprs el in
-      let ele = El.Ast.SeqE ([ ela ] @ elel) in
-      if List.length elel = 0 then Some ele
-      else Some (El.Ast.ParenE (ele $ no_region, `Insig))
+      let ele = El.Ast.SeqE (case_to_el_exprs elal elel) in
+      (match elel with
+      | _::_ -> Some (El.Ast.ParenE (ele $ no_region, `Insig))
+      | [] -> Some ele
+      )
     | Al.Ast.OptE (Some e) ->
       let* ele = al_to_el_expr e in
       Some (ele.it)
@@ -237,6 +245,23 @@ and al_to_el_expr expr =
     | _ -> None
   in
   Option.map (fun exp' -> exp' $ no_region) exp'
+
+and case_to_el_exprs al el =
+  match al with
+  | [] -> error no_region "empty mixop in a AL case expr"
+  | hd::tl ->
+    List.fold_left2 (fun acc a e -> a::Some(e)::acc) [ hd ] tl el
+    |> List.filter_map (fun x -> x)
+    |> List.rev
+
+and mixop_to_el_exprs op =
+  List.map
+    (fun al ->
+      match al with
+      | [ a ] -> Some((El.Ast.AtomE a) $ no_region)
+      | _ -> None
+    )
+  op
 
 and al_to_el_exprs exprs =
   List.fold_left
@@ -251,8 +276,7 @@ and al_to_el_record record =
     (fun a e expfield ->
       let* expfield = expfield in
       let* ele = al_to_el_expr e in
-      let ela = al_to_el_atom a in
-      let elelem = El.Ast.Elem (ela, ele) in
+      let elelem = El.Ast.Elem (a, ele) in
       Some (expfield @ [ elelem ]))
     record (Some [])
 
@@ -292,8 +316,7 @@ let render_al_binop = function
 (* Names *)
 
 let render_atom env a =
-  let ela = al_to_el_atom a in
-  let sela = Backend_latex.Render.render_atom env.render_latex ela in
+  let sela = Backend_latex.Render.render_atom env.render_latex a in
   render_math sela
 
 
@@ -358,27 +381,30 @@ and render_expr' env expr =
     (match dir with
     | Al.Ast.Front -> sprintf "%s with %s prepended by %s" se1 sps se2
     | Al.Ast.Back -> sprintf "%s with %s appended by %s" se1 sps se2)
-  | Al.Ast.InvCallE (id, nl, el) ->
+  | Al.Ast.InvCallE (id, nl, al) ->
     let e =
-      if id = "lsizenn" || id = "lsizenn1" || id = "lsizenn2" then Al.Al_util.varE "N"
-      else if List.length nl = 1 then Al.Al_util.varE "fresh"
+      if id = "lsizenn" || id = "lsizenn1" || id = "lsizenn2" then Al.Al_util.varE "N" ~note:Al.Al_util.no_note
+      else if List.length nl = 1 then Al.Al_util.varE "fresh" ~note:Al.Al_util.no_note
       else
         let el =
           nl
-          |> List.filter_map (Option.map (fun x -> Al.Al_util.varE ("fresh_" ^ (string_of_int x))))
+          |> List.filter_map (Option.map (fun x -> Al.Al_util.varE ("fresh_" ^ (string_of_int x)) ~note:Al.Al_util.no_note))
         in
-        Al.Al_util.tupE el
+        Al.Al_util.tupE el ~note:Al.Al_util.no_note
     in
-    let elhs, erhs = al_invcalle_to_al_bine e id nl el in
+    let elhs, erhs = al_invcalle_to_al_bine e id nl al in
     sprintf "%s for which %s %s %s"
       (render_expr env e)
       (render_expr env elhs)
       (render_math "=")
       (render_expr env erhs)
+  | Al.Ast.LenE e ->
+    let se = render_expr env e in
+    sprintf "the length of %s" se
   | Al.Ast.IterE (e, ids, iter) when al_to_el_expr e = None ->
     let se = render_expr env e in
-    let ids = Al.Al_util.tupE (List.map Al.Al_util.varE ids) in
-    let loop = Al.Al_util.iterE (ids, [], iter) in
+    let ids = Al.Al_util.tupE (List.map (Al.Al_util.varE ~note:Al.Al_util.no_note) ids) ~note:Al.Al_util.no_note in
+    let loop = Al.Al_util.iterE (ids, [], iter) ~note:Al.Al_util.no_note in
     let sloop = render_expr env loop in
     sprintf "for all %s, %s" sloop se
   | Al.Ast.ArityE e ->
@@ -405,10 +431,9 @@ and render_expr' env expr =
     let se1 = render_expr env e1 in
     let se2 = render_expr env e2 in
     sprintf "the label whose arity is %s and whose continuation is %s" se1 se2
-  | Al.Ast.ContextKindE (a, e) ->
+  | Al.Ast.ContextKindE a ->
     let sa = render_atom env a in
-    let se = render_expr env e in
-    sprintf "%s is %s" se sa
+    sprintf "the top of the stack is a %s" sa
   | Al.Ast.IsDefinedE e ->
     let se = render_expr env e in
     sprintf "%s is defined" se
@@ -418,7 +443,7 @@ and render_expr' env expr =
     sprintf "%s is of the case %s" se sa
   | Al.Ast.HasTypeE (e, t) ->
     let se = render_expr env e in
-    sprintf "the type of %s is %s" se t
+    sprintf "the type of %s is %s" se (Il.Print.string_of_typ t)
   | Al.Ast.IsValidE e ->
     let se = render_expr env e in
     sprintf "%s is valid" se
@@ -435,10 +460,14 @@ and render_expr' env expr =
     let se1 = render_expr env e1 in
     let se2 = render_expr env e2 in
     sprintf "%s matches %s" se1 se2
+  | Al.Ast.YetE s ->
+    sprintf "YetE: %s" s
   | _ ->
     let se = "`" ^ (Al.Print.string_of_expr expr) ^ "`" in
-    let msg = sprintf "expr cannot be rendered %s" se in
-    error expr.at msg
+    if env.config.panic_on_error then (
+      let msg = sprintf "expr cannot be rendered %s" se in
+      error expr.at msg);
+    se
 
 and render_path env path =
   match path.it with
@@ -473,35 +502,46 @@ let rec render_prose_instr env depth = function
     sprintf "* %s must be contained in %s."
       (String.capitalize_ascii (render_expr env e1))
       (render_expr env e2)
-  | IsValidI (c_opt, e, es) ->
+  | IsValidI (c_opt, e, el) ->
     sprintf "* %s%s is valid%s."
       (render_opt "Under the context " (render_expr env) ", " c_opt)
       (render_expr env e)
-      (if es = [] then "" else " with type " ^ render_list (render_expr env) " and " es)
+      (if el = [] then "" else " with type " ^ render_list (render_expr env) " and " el)
   | MatchesI (e1, e2) ->
     sprintf "* %s matches %s."
-      (render_expr env e1)
+      (String.capitalize_ascii (render_expr env e1))
       (render_expr env e2)
   | IsConstI (c_opt, e) ->
     sprintf "* %s%s is const."
       (render_opt "Under the context " (render_expr env) ", " c_opt)
       (render_expr env e)
-  | IfI (c, is) ->
+  | IfI (c, il) ->
     sprintf "* If %s,%s"
       (render_expr env c)
-      (render_prose_instrs env (depth + 1) is)
-  | ForallI (iters, is) ->
+      (render_prose_instrs env (depth + 1) il)
+  | ForallI (iters, il) ->
     let render_iter env (e1, e2) = (render_expr env e1) ^ " in " ^ (render_expr env e2) in
     let render_iters env iters = List.map (render_iter env) iters |> String.concat " and " in
     sprintf "* For all %s,%s"
       (render_iters env iters)
-      (render_prose_instrs env (depth + 1) is)
+      (render_prose_instrs env (depth + 1) il)
   | EquivI (c1, c2) ->
     sprintf "* %s if and only if %s."
       (String.capitalize_ascii (render_expr env c1))
       (render_expr env c2)
-  | EitherI _ ->
-    sprintf "* Either: (TODO)"
+  | EitherI ill ->
+    let il_head, ill = List.hd ill, List.tl ill in
+    let sil_head = render_prose_instrs env (depth + 1) il_head in
+    let sill =
+      List.fold_left
+        (fun sill il ->
+          sprintf "%s%s* Or:%s"
+            sill
+            (repeat indent depth)
+            (render_prose_instrs env (depth + 1) il))
+        "" ill
+    in
+    sprintf "* Either:%s\n\n%s" sil_head sill
   | YetI s ->
     sprintf "* YetI: %s." s
 
@@ -521,6 +561,7 @@ let render_stack_prefix expr =
   | Al.Ast.FrameE _
   | Al.Ast.LabelE _
   | Al.Ast.VarE ("F" | "L") -> ""
+  | _ when Il.Eq.eq_typ expr.note Al.Al_util.handlerT -> "the handler "
   | Al.Ast.IterE _ -> "the values "
   | _ -> "the value "
 
@@ -590,16 +631,16 @@ let rec render_al_instr env algoname index depth instr =
   | Al.Ast.PopAllI e ->
     sprintf "%s Pop all values %s from the top of the stack." (render_order index depth)
       (render_expr env e)
-  | Al.Ast.LetI (e, { it = Al.Ast.IterE ({ it = Al.Ast.InvCallE (id, nl, el); _ }, ids, iter); _ }) ->
-    let elhs, erhs = al_invcalle_to_al_bine e id nl el in
-    let ebin = Al.Al_util.binE (Al.Ast.EqOp, elhs, erhs) in
-    let eiter = Al.Al_util.iterE (ebin, ids, iter) in
+  | Al.Ast.LetI (e, { it = Al.Ast.IterE ({ it = Al.Ast.InvCallE (id, nl, al); _ }, ids, iter); _ }) ->
+    let elhs, erhs = al_invcalle_to_al_bine e id nl al in
+    let ebin = Al.Al_util.binE (Al.Ast.EqOp, elhs, erhs) ~note:Al.Al_util.no_note in
+    let eiter = Al.Al_util.iterE (ebin, ids, iter) ~note:Al.Al_util.no_note in
     sprintf "%s Let %s be the result for which %s."
       (render_order index depth)
       (render_expr env e)
       (render_expr env eiter)
-  | Al.Ast.LetI (e, { it = Al.Ast.InvCallE (id, nl, el); _ }) ->
-    let elhs, erhs = al_invcalle_to_al_bine e id nl el in
+  | Al.Ast.LetI (e, { it = Al.Ast.InvCallE (id, nl, al); _ }) ->
+    let elhs, erhs = al_invcalle_to_al_bine e id nl al in
     sprintf "%s Let %s be the result for which %s %s %s."
       (render_order index depth)
       (render_expr env e)
@@ -610,27 +651,32 @@ let rec render_al_instr env algoname index depth instr =
     sprintf "%s Let %s be %s." (render_order index depth) (render_expr env n)
       (render_expr env e)
   | Al.Ast.TrapI -> sprintf "%s Trap." (render_order index depth)
+  | Al.Ast.ThrowI e ->
+    sprintf "%s Throw the exception %s as a result." (render_order index depth) (render_expr env e)
   | Al.Ast.NopI -> sprintf "%s Do nothing." (render_order index depth)
   | Al.Ast.ReturnI e_opt ->
     sprintf "%s Return%s." (render_order index depth)
       (render_opt " " (render_expr env) "" e_opt)
   | Al.Ast.EnterI (e1, e2, il) ->
     sprintf "%s Enter %s with label %s.%s" (render_order index depth)
-      (render_expr env e1) (render_expr env e2)
+      (render_expr env e2) (render_expr env e1)
       (render_al_instrs env algoname (depth + 1) il)
   | Al.Ast.ExecuteI e ->
     sprintf "%s Execute the instruction %s." (render_order index depth) (render_expr env e)
   | Al.Ast.ExecuteSeqI e ->
     sprintf "%s Execute the sequence %s." (render_order index depth) (render_expr env e)
   | Al.Ast.PerformI (n, es) ->
-    sprintf "%s Perform %s." (render_order index depth) (render_expr env (Al.Al_util.callE (n, es) ~at:no_region))
+    sprintf "%s Perform %s." (render_order index depth) (render_expr env (Al.Al_util.callE (n, es) ~at:no_region ~note:Al.Al_util.no_note))
   | Al.Ast.ExitI a ->
     sprintf "%s Exit from %s." (render_order index depth) (render_atom env a)
   | Al.Ast.ReplaceI (e1, p, e2) ->
     sprintf "%s Replace %s with %s." (render_order index depth)
-      (render_expr env (Al.Al_util.accE (e1, p) ~at:no_region)) (render_expr env e2)
+      (render_expr env (Al.Al_util.accE (e1, p) ~note:Al.Al_util.no_note ~at:no_region)) (render_expr env e2)
   | Al.Ast.AppendI (e1, e2) ->
     sprintf "%s Append %s to the %s." (render_order index depth)
+      (render_expr env e2) (render_expr env e1)
+  | Al.Ast.FieldWiseAppendI (e1, e2) ->
+    sprintf "%s Append %s to the %s, fieldwise" (render_order index depth)
       (render_expr env e2) (render_expr env e1)
   | Al.Ast.YetI s -> sprintf "%s YetI: %s." (render_order index depth) s
 
@@ -646,29 +692,39 @@ and render_al_instrs env algoname depth instrs =
 let render_atom_title env name params =
   (* TODO a workaround, for algorithms named label or name
      that are defined as LABEL_ or FRAME_ in the dsl *)
-  let name', typ = name in
   let name' =
-    match name' with
+    match name.it with
     | El.Atom.Atom "label" -> El.Atom.Atom "LABEL_"
     | El.Atom.Atom "frame" -> El.Atom.Atom "FRAME_"
     | El.Atom.Atom s -> El.Atom.Atom (String.uppercase_ascii s)
-    | _ -> name'
+    | _ -> name.it
   in
-  let name = (name', typ) in
-  let expr = Al.Al_util.caseE (name, params) ~at:no_region in
+  let name = name' $$ no_region % name.note in
+  let op = [name] :: List.init (List.length params) (fun _ -> []) in
+  let params = List.filter_map (fun a -> match a.it with Al.Ast.ExpA e -> Some e | _ -> None) params in
+  let expr = Al.Al_util.caseE (op, params) ~at:no_region ~note:Al.Al_util.no_note in
   match al_to_el_expr expr with
   | Some ({ it = El.Ast.ParenE (exp, _); _ }) -> render_el_exp env exp
   | Some exp -> render_el_exp env exp
   | None -> render_expr' env expr
 
 let render_funcname_title env fname params =
-  render_expr env (Al.Al_util.callE (fname, params) ~at:no_region)
+  render_expr env (Al.Al_util.callE (fname, params) ~at:no_region ~note:Al.Al_util.no_note)
 
 let _render_pred env name params instrs =
   let title = render_atom_title env name params in
   title ^ "\n" ^
   String.make (String.length title) '.' ^ "\n" ^
   render_prose_instrs env 0 instrs
+
+let render_iff env concl prems =
+  match prems with
+  | [] -> render_prose_instr env 0 concl
+  | _ ->
+      let sconcl = render_prose_instr env 0 concl in
+      let sconcl = String.sub sconcl 0 (String.length sconcl - 1) in
+      let sprems = render_prose_instrs env 1 prems in
+      sprintf "%s if and only if:\n%s" sconcl sprems
 
 let render_rule env name params instrs =
   let title = render_atom_title env name params in
@@ -684,9 +740,10 @@ let render_func env fname params instrs =
   render_al_instrs env fname 0 instrs
 
 let render_def env = function
-  | Iff _ -> "TODO: render_iff"
+  | Iff (_, _, concl, prems) ->
+      "\n" ^ render_iff env concl prems ^ "\n\n"
   | Algo algo -> (match algo.it with
-    | Al.Ast.RuleA (name, params, instrs) ->
+    | Al.Ast.RuleA (name, _, params, instrs) ->
       "\n" ^ render_rule env name params instrs ^ "\n\n"
     | Al.Ast.FuncA (name, params, instrs) ->
       "\n" ^ render_func env name params instrs ^ "\n\n")

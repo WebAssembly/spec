@@ -1,5 +1,6 @@
 open Prose
-open Print
+open Eq
+
 open Il
 open Al.Al_util
 open Il2al.Translate
@@ -135,7 +136,7 @@ let get_rel_kind def =
 
 let transpile_expr =
   Al.Walk.walk_expr { Al.Walk.default_config with
-    post_expr = Il2al.Transpile.simplify_record_concat
+    post_expr = fun expr -> expr |> Il2al.Transpile.simplify_record_concat |> Il2al.Transpile.reduce_comp
   }
 
 let exp_to_expr e = translate_exp e |> transpile_expr
@@ -151,12 +152,14 @@ let rec if_expr_to_instrs e =
   | Ast.BinE (Ast.AndOp, e1, e2) ->
     if_expr_to_instrs e1 @ if_expr_to_instrs e2
   | Ast.BinE (Ast.OrOp, e1, e2) ->
-    let neg_cond = if_expr_to_instrs e1 in
-    let body = if_expr_to_instrs e2 in
-    [ match neg_cond with
+    let cond1 = if_expr_to_instrs e1 in
+    let cond2 = if_expr_to_instrs e2 in
+    [ match cond1 with
       | [ CmpI ({ it = IterE ({ it = VarE name; _ }, _, Opt); _ }, Eq, { it = OptE None; _ }) ] ->
-        IfI (isDefinedE (varE name), body)
-      | _ -> print_yet_exp e "if_expr_to_instrs"; YetI (Il.Print.string_of_exp e) ]
+        (* ~P \/ Q is equivalent to P -> Q *)
+        IfI (isDefinedE (varE name ~note:no_note) ~note:no_note, cond2)
+      | _ ->
+        EitherI [cond1; cond2] ]
   | Ast.BinE (Ast.EquivOp, e1, e2) ->
       [ EquivI (exp_to_expr e1, exp_to_expr e2) ]
   | Ast.MemE (e1, e2) ->
@@ -194,11 +197,11 @@ let rec prem_to_instrs prem =
     | _,              _             -> assert false )
   | Ast.IterPr (prem, iter) ->
     (match iter with
-    | Ast.Opt, [(id, _)] -> [ IfI (isDefinedE (varE id.it), prem_to_instrs prem) ]
+    | Ast.Opt, [(id, _)] -> [ IfI (isDefinedE (varE id.it ~note:no_note) ~note:no_note, prem_to_instrs prem) ]
     | Ast.(List | ListN _), vars ->
         let to_iter (id, _) =
-          let name = varE id.it in
-          name, iterE (name, [id.it], Al.Ast.List)
+          let name = varE id.it ~note:no_note in
+          name, iterE (name, [id.it], Al.Ast.List) ~note:no_note
         in
         [ ForallI (List.map to_iter vars, prem_to_instrs prem) ]
     | _ -> print_yet_prem prem "prem_to_instrs"; [ YetI "TODO: prem_to_intrs iter" ]
@@ -208,31 +211,36 @@ let rec prem_to_instrs prem =
     print_yet_prem prem "prem_to_instrs"; [ YetI s ]
 
 type vrule_group =
-  string * (Ast.exp * Ast.exp * Ast.prem list * Ast.bind list) list
+  string * Ast.id * (Ast.exp * Ast.exp * Ast.prem list * Ast.bind list) list
 
 (** Main translation for typing rules **)
-let vrule_group_to_prose ((_name, vrules): vrule_group) =
-  let (winstr, t, prems, _tenv) = vrules |> List.hd in
+let vrule_group_to_prose ((rule_name, rel_id, vrules): vrule_group) =
+  let (winstr, t, _prems, _tenv) = vrules |> List.hd in
 
-  (* name *)
-  let name = match winstr.it with
-  | Ast.CaseE (({it = (El.Atom.Atom name); _}::_)::_, _) -> name
-  | _ -> assert false
-  in
+  (* anchor *)
+  let anchor = rel_id.it ^ "/" ^ rule_name in
   (* expr *)
   let expr = exp_to_expr winstr in
   (* concl *)
   let concl = IsValidI (None, expr, [exp_to_expr t]) in
   (* prems *)
-  let prems = (List.concat_map prem_to_instrs prems) in
+  let prems =
+    vrules
+    |> List.map (fun (_, _, prems, _) -> prems)
+    |> List.map (List.concat_map prem_to_instrs)
+    |> (function
+        | [ instrs ] -> instrs
+        | instrss -> [ EitherI instrss ])
+  in
 
   (* Predicate *)
-  Iff (name, expr, concl, prems)
+  Iff (anchor, expr, concl, prems)
 
 let rec extract_vrules def =
   match def.it with
   | Ast.RecD defs -> List.concat_map extract_vrules defs
-  | Ast.RelD (id, _, _, rules) when id.it = "Instr_ok" -> rules
+  | Ast.RelD (id, _, _, rules) when id.it = "Instr_ok" ->
+      List.map (fun rule -> (id, rule)) rules
   | _ -> []
 
 let pack_single_rule rule =
@@ -272,26 +280,27 @@ let pack_triplet_rule rule =
 
 
 (* group typing rules that have same name *)
-(* Il.rule list -> vrule_group list *)
+(* (Il.id * Il.rule) list -> vrule_group list *)
 let rec group_vrules = function
   | [] -> []
   | h :: t ->
-      let name = name_of_rule h in
+      let (rel_id, rule) = h in
+      let rule_name = name_of_rule rule in
       let same_rules, diff_rules =
-        List.partition (fun rule -> name_of_rule rule = name) t in
-      let group = (name, List.map pack_pair_rule (h :: same_rules)) in
+        List.partition (fun (_, rule) -> name_of_rule rule = rule_name) t in
+      let same_rules = List.map snd same_rules in
+      let group = (rule_name, rel_id, List.map pack_pair_rule (rule :: same_rules |> Il2al.Unify.unify_rules)) in
       group :: group_vrules diff_rules
 
 (* TODO: The codes below are too repetitive. Should be factored. *)
 
 (** 1. C |- expr : OK *)
-let prose_of_valid_rules rules =
+let prose_of_valid_rules rel_id rules =
   let rule = List.hd rules in
   let (e, _, _) = pack_single_rule rule in
-  let typ = Print.string_of_typ e.note in
 
-  (* name *)
-  let name = "valid_" ^ typ in
+  (* anchor *)
+  let anchor = rel_id.it in
   (* expr *)
   let expr = exp_to_expr e in
   (* concl *)
@@ -307,10 +316,11 @@ let prose_of_valid_rules rules =
         | instrss -> [ EitherI instrss ])
   ) in
 
-  Iff (name, expr, concl, prems)
+  Iff (anchor, expr, concl, prems)
+
 let prose_of_valid_rel def =
   match def.it with
-  | Ast.RelD (_, _, _, rules) -> prose_of_valid_rules (Il2al.Il2il.unify_rules rules)
+  | Ast.RelD (rel_id, _, _, rules) -> prose_of_valid_rules rel_id (Il2al.Unify.unify_rules rules)
   | _ -> assert false
 
 (** 2. C |- instr : type **)
@@ -321,13 +331,12 @@ let proses_of_valid_instr_rel rel =
   |> List.map vrule_group_to_prose
 
 (** 3. C |- e : e **)
-let prose_of_valid_with_rules rules =
+let prose_of_valid_with_rules rel_id rules =
   let rule = List.hd rules in
   let (e1, e2, _, _) = pack_pair_rule rule in
-  let typ = Print.string_of_typ e1.note in
 
-  (* name *)
-  let name = "valid_" ^ typ in
+  (* anchor *)
+  let anchor = rel_id.it in
   (* expr *)
   let expr = exp_to_expr e1 in
   (* concl *)
@@ -343,20 +352,20 @@ let prose_of_valid_with_rules rules =
         | instrss -> [ EitherI instrss ])
   ) in
 
-  Iff (name, expr, concl, prems)
+  Iff (anchor, expr, concl, prems)
+
 let prose_of_valid_with_rel def =
   match def.it with
-  | Ast.RelD (_, _, _, rules) -> prose_of_valid_with_rules (Il2al.Il2il.unify_rules rules)
+  | Ast.RelD (rel_id, _, _, rules) -> prose_of_valid_with_rules rel_id (Il2al.Unify.unify_rules rules)
   | _ -> assert false
 
 (** 4. C |- type <: type **)
-let prose_of_match_rules rules =
+let prose_of_match_rules rel_id rules =
   let rule = List.hd rules in
   let (e1, e2, _, _) = pack_pair_rule rule in
-  let typ = Print.string_of_typ e1.note in
 
-  (* name *)
-  let name = "matching_" ^ typ in
+  (* anchor *)
+  let anchor = rel_id.it in
   (* expr *)
   let expr = exp_to_expr e1 in
   (* concl *)
@@ -372,21 +381,21 @@ let prose_of_match_rules rules =
         | instrss -> [ EitherI instrss ])
   ) in
 
-  Iff (name, expr, concl, prems)
+  Iff (anchor, expr, concl, prems)
+
 let prose_of_match_rel def =
   match def.it with
-  | Ast.RelD (_, _, _, rules) -> prose_of_match_rules (Il2al.Il2il.unify_rules rules)
+  | Ast.RelD (rel_id, _, _, rules) -> prose_of_match_rules rel_id (Il2al.Unify.unify_rules rules)
   | _ -> assert false
 
 
 (** 5. C |- x CONST **)
-let prose_of_const_rules rules =
+let prose_of_const_rules rel_id rules =
   let rule = List.hd rules in
   let (e, _, _) = pack_single_rule rule in
-  let typ = Print.string_of_typ e.note in
 
-  (* name *)
-  let name = "const_" ^ typ in
+  (* anchor *)
+  let anchor = rel_id.it in
   (* expr *)
   let expr = exp_to_expr e in
   (* concl *)
@@ -402,23 +411,23 @@ let prose_of_const_rules rules =
         | instrss -> [ EitherI instrss ])
   ) in
 
-  Iff (name, expr, concl, prems)
+  Iff (anchor, expr, concl, prems)
+
 let prose_of_const_rel def =
   match def.it with
-  | Ast.RelD (_, _, _, rules) -> prose_of_const_rules (Il2al.Il2il.unify_rules rules)
+  | Ast.RelD (rel_id, _, _, rules) -> prose_of_const_rules rel_id (Il2al.Unify.unify_rules rules)
   | _ -> assert false
 
 (** 6. C |- e : e CONST **)
 let proses_of_valid_const_rel _def = [] (* Do not generate prose *)
 
 (** 7. C |- e : e e **)
-let prose_of_valid_with2_rules rules =
+let prose_of_valid_with2_rules rel_id rules =
   let rule = List.hd rules in
   let (e1, e2, e3, _, _) = pack_triplet_rule rule in
-  let typ = Print.string_of_typ e1.note in
 
-  (* name *)
-  let name = "valid_" ^ typ in
+  (* anchor *)
+  let anchor = rel_id.it in
   (* expr *)
   let expr = exp_to_expr e1 in
   (* concl *)
@@ -434,16 +443,17 @@ let prose_of_valid_with2_rules rules =
         | instrss -> [ EitherI instrss ])
   ) in
 
-  Iff (name, expr, concl, prems)
+  Iff (anchor, expr, concl, prems)
+
 let prose_of_valid_with2_rel def =
   match def.it with
-  | Ast.RelD (_, _, _, rules) -> prose_of_valid_with2_rules (Il2al.Il2il.unify_rules rules)
+  | Ast.RelD (rel_id, _, _, rules) -> prose_of_valid_with2_rules rel_id (Il2al.Unify.unify_rules rules)
   | _ -> assert false
 
 (** 8. Others **)
 let proses_of_other_rel rel = ( match rel.it with
-  | Ast.RelD (id, mixop, args, _) ->
-    "Untranslated relation " ^ id.it ^ ": " ^ Print.string_of_mixop mixop ^ Print.string_of_typ args |> print_endline;
+  | Ast.RelD (rel_id, mixop, args, _) ->
+    "Untranslated relation " ^ rel_id.it ^ ": " ^ Print.string_of_mixop mixop ^ Print.string_of_typ args |> print_endline;
   | _ -> ());
   []
 
@@ -456,7 +466,48 @@ let prose_of_rel rel = match get_rel_kind rel with
   | ValidConstRel -> proses_of_valid_const_rel rel
   | ValidWith2Rel -> [ prose_of_valid_with2_rel rel ]
   | OtherRel      -> proses_of_other_rel rel
+
 let prose_of_rels = List.concat_map prose_of_rel
+
+(** Postprocess of generated prose **)
+let unify_either instrs =
+  let f instr =
+    match instr with
+    | EitherI iss ->
+      let unified, bodies = List.fold_left (fun (commons, instrss) i ->
+        let pairs = List.map (List.partition (eq_instr i)) instrss in
+        let fsts = List.map fst pairs in
+        let snds = List.map snd pairs in
+        if List.for_all (fun l -> List.length l = 1) fsts then
+          i :: commons, snds
+        else
+          commons, instrss
+      ) ([], iss) (List.hd iss) in
+      let unified = List.rev unified in
+      unified @ [ EitherI bodies ]
+    | _ -> [instr]
+  in
+  let rec walk instrs = List.concat_map walk' instrs
+  and walk' instr =
+    f instr
+    |> List.map (function
+      | IfI (e, il) -> IfI (e, walk il)
+      | ForallI (vars, il) -> ForallI (vars, walk il)
+      | EitherI ill -> EitherI (List.map walk ill)
+      | i -> i
+    )
+  in
+  walk instrs
+
+let postprocess_prose defs =
+  List.map (fun def ->
+    match def with
+    | Iff (anchor, e, i, il) ->
+      let new_il = unify_either il in
+      Iff (anchor, e, i, new_il)
+    | Algo _ -> def
+  ) defs
+
 
 (** Entry for generating validation prose **)
 let gen_validation_prose () =
@@ -466,12 +517,10 @@ let gen_validation_prose () =
 let gen_execution_prose () =
   List.map
     (fun algo ->
-      let handle_state = match algo.it with
-      | Al.Ast.RuleA _ -> Il2al.Transpile.insert_state_binding
-      | Al.Ast.FuncA _ -> Il2al.Transpile.remove_state
-      in
       let algo =
-        handle_state algo
+        algo
+        |> Il2al.Transpile.recover_state
+        |> Il2al.Transpile.insert_state_binding
         |> Il2al.Transpile.remove_exit
         |> Il2al.Transpile.remove_enter
       in
@@ -487,6 +536,18 @@ let gen_prose el il al =
   let execution_prose = gen_execution_prose () in
 
   validation_prose @ execution_prose
+  |> postprocess_prose
 
 (** Main entry for generating stringified prose **)
-let gen_string el il al = string_of_prose (gen_prose el il al)
+let gen_string cfg_latex cfg_prose el il al =
+  let env_latex = Backend_latex.Render.env cfg_latex el in
+  let prose = gen_prose el il al in
+  let env_prose = Render.env cfg_prose [] [] env_latex in
+  Render.render_prose env_prose prose
+
+(** Main entry for generating prose file **)
+let gen_file cfg_latex cfg_prose file el il al =
+  let prose = gen_string cfg_latex cfg_prose el il al in
+  let oc = Out_channel.open_text file in
+  Fun.protect (fun () -> Out_channel.output_string oc prose)
+    ~finally:(fun () -> Out_channel.close oc)

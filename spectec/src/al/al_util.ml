@@ -22,63 +22,66 @@ let enterI ?(at = no) (e1, e2, il) = EnterI (e1, e2, il) |> mk_instr at
 let assertI ?(at = no) c = AssertI c |> mk_instr at
 let pushI ?(at = no) e = PushI e |> mk_instr at
 let popI ?(at = no) e = PopI e |> mk_instr at
-let popallI ?(at = no) e = PopAllI e |> mk_instr at
+let popsI ?(at = no) e _ = PopI e |> mk_instr at (* TODO *)
+let popAllI ?(at = no) e = PopAllI e |> mk_instr at
 let letI ?(at = no) (e1, e2) = LetI (e1, e2) |> mk_instr at
 let trapI ?(at = no) () = TrapI |> mk_instr at
+let throwI ?(at = no) e = ThrowI e |> mk_instr at
 let nopI ?(at = no) () = NopI |> mk_instr at
 let returnI ?(at = no) e_opt = ReturnI e_opt |> mk_instr at
 let executeI ?(at = no) e = ExecuteI e |> mk_instr at
-let executeseqI ?(at = no) e = ExecuteSeqI e |> mk_instr at
+let executeSeqI ?(at = no) e = ExecuteSeqI e |> mk_instr at
 let performI ?(at = no) (id, el) = PerformI (id, el) |> mk_instr at
 let exitI ?(at = no) a = ExitI a |> mk_instr at
 let replaceI ?(at = no) (e1, p, e2) = ReplaceI (e1, p, e2) |> mk_instr at
 let appendI ?(at = no) (e1, e2) = AppendI (e1, e2) |> mk_instr at
+let fieldWiseAppendI ?(at = no) (e1, e2) = FieldWiseAppendI (e1, e2) |> mk_instr at
 let otherwiseI ?(at = no) il = OtherwiseI il |> mk_instr at
 let yetI ?(at = no) s = YetI s |> mk_instr at
 
 let mk_expr at note it = it $$ at % note
 
-let varE ?(at = no) ?(note = no_note) id = VarE id |> mk_expr at note
-let boolE ?(at = no) ?(note = no_note) b = BoolE b |> mk_expr at note
-let numE ?(at = no) ?(note = no_note) i = NumE i |> mk_expr at note
-let unE ?(at = no) ?(note = no_note) (unop, e) = UnE (unop, e) |> mk_expr at note
-let binE ?(at = no) ?(note = no_note) (binop, e1, e2) = BinE (binop, e1, e2) |> mk_expr at note
-let accE ?(at = no) ?(note = no_note) (e, p) = AccE (e, p) |> mk_expr at note
-let updE ?(at = no) ?(note = no_note) (e1, pl, e2) = UpdE (e1, pl, e2) |> mk_expr at note
-let extE ?(at = no) ?(note = no_note) (e1, pl, e2, dir) = ExtE (e1, pl, e2, dir) |> mk_expr at note
-let strE ?(at = no) ?(note = no_note) r = StrE r |> mk_expr at note
-let catE ?(at = no) ?(note = no_note) (e1, e2) = CatE (e1, e2) |> mk_expr at note
-let memE ?(at = no) ?(note = no_note) (e1, e2) = MemE (e1, e2) |> mk_expr at note
-let lenE ?(at = no) ?(note = no_note) e = LenE e |> mk_expr at note
-let tupE ?(at = no) ?(note = no_note) el = TupE el |> mk_expr at note
-let caseE ?(at = no) ?(note = no_note) (a, el) = CaseE (a, el) |> mk_expr at note
-let callE ?(at = no) ?(note = no_note) (id, el) = CallE (id, el) |> mk_expr at note
-let invCallE ?(at = no) ?(note = no_note) (id, il, el) = InvCallE (id, il, el) |> mk_expr at note
-let iterE ?(at = no) ?(note = no_note) (e, idl, it) = IterE (e, idl, it) |> mk_expr at note
-let optE ?(at = no) ?(note = no_note) e_opt = OptE e_opt |> mk_expr at note
-let listE ?(at = no) ?(note = no_note) el = ListE el |> mk_expr at note
-let infixE ?(at = no) ?(note = no_note) (e1, infix, e2) = InfixE (e1, infix, e2) |> mk_expr at note
-let arityE ?(at = no) ?(note = no_note) e = ArityE e |> mk_expr at note
-let frameE ?(at = no) ?(note = no_note) (e_opt, e) = FrameE (e_opt, e) |> mk_expr at note
-let labelE ?(at = no) ?(note = no_note) (e1, e2) = LabelE (e1, e2) |> mk_expr at note
-let getCurStateE ?(at = no) ?(note = no_note) () = GetCurStateE |> mk_expr at note
-let getCurFrameE ?(at = no) ?(note = no_note) () = GetCurFrameE |> mk_expr at note
-let getCurLabelE ?(at = no) ?(note = no_note) () = GetCurLabelE |> mk_expr at note
-let getCurContextE ?(at = no) ?(note = no_note) () = GetCurContextE |> mk_expr at note
-let contE ?(at = no) ?(note = no_note) e = ContE e |> mk_expr at note
-let chooseE ?(at = no) ?(note = no_note) e = ChooseE e |> mk_expr at note
-let isCaseOfE ?(at = no) ?(note = no_note) (e, a) = IsCaseOfE (e, a) |> mk_expr at note
-let isValidE ?(at = no) ?(note = no_note) e = IsValidE e |> mk_expr at note
-let contextKindE ?(at = no) ?(note = no_note) (a, e) = ContextKindE (a, e) |> mk_expr at note
-let isDefinedE ?(at = no) ?(note = no_note) e = IsDefinedE e |> mk_expr at note
-let matchE ?(at = no) ?(note = no_note) (e1, e2) = MatchE (e1, e2) |> mk_expr at note
-let hasTypeE ?(at = no) ?(note = no_note) (e, ty) = HasTypeE (e, ty) |> mk_expr at note
-let topLabelE ?(at = no) ?(note = no_note) () = TopLabelE |> mk_expr at note
-let topFrameE ?(at = no) ?(note = no_note) () = TopFrameE |> mk_expr at note
-let topValueE ?(at = no) ?(note = no_note) e_opt = TopValueE e_opt |> mk_expr at note
-let topValuesE ?(at = no) ?(note = no_note) e = TopValuesE e |> mk_expr at note
-let subE ?(at = no) ?(note = no_note) (id, ty) = SubE (id, ty) |> mk_expr at note
-let yetE ?(at = no) ?(note = no_note) s = YetE s |> mk_expr at note
+let varE ?(at = no) ~note id = VarE id |> mk_expr at note
+let boolE ?(at = no) ~note b = BoolE b |> mk_expr at note
+let numE ?(at = no) ~note i = NumE i |> mk_expr at note
+let unE ?(at = no) ~note (unop, e) = UnE (unop, e) |> mk_expr at note
+let binE ?(at = no) ~note (binop, e1, e2) = BinE (binop, e1, e2) |> mk_expr at note
+let accE ?(at = no) ~note (e, p) = AccE (e, p) |> mk_expr at note
+let updE ?(at = no) ~note (e1, pl, e2) = UpdE (e1, pl, e2) |> mk_expr at note
+let extE ?(at = no) ~note (e1, pl, e2, dir) = ExtE (e1, pl, e2, dir) |> mk_expr at note
+let strE ?(at = no) ~note r = StrE r |> mk_expr at note
+let compE ?(at = no) ~note (e1, e2) = CompE (e1, e2) |> mk_expr at note
+let catE ?(at = no) ~note (e1, e2) = CatE (e1, e2) |> mk_expr at note
+let memE ?(at = no) ~note (e1, e2) = MemE (e1, e2) |> mk_expr at note
+let lenE ?(at = no) ~note e = LenE e |> mk_expr at note
+let tupE ?(at = no) ~note el = TupE el |> mk_expr at note
+let caseE ?(at = no) ~note (op, el) = CaseE (op, el) |> mk_expr at note
+let callE ?(at = no) ~note (id, el) = CallE (id, el) |> mk_expr at note
+let invCallE ?(at = no) ~note (id, il, el) = InvCallE (id, il, el) |> mk_expr at note
+let iterE ?(at = no) ~note (e, idl, it) = IterE (e, idl, it) |> mk_expr at note
+let optE ?(at = no) ~note e_opt = OptE e_opt |> mk_expr at note
+let listE ?(at = no) ~note el = ListE el |> mk_expr at note
+let arityE ?(at = no) ~note e = ArityE e |> mk_expr at note
+let frameE ?(at = no) ~note (e_opt, e) = FrameE (e_opt, e) |> mk_expr at note
+let labelE ?(at = no) ~note (e1, e2) = LabelE (e1, e2) |> mk_expr at note
+let getCurStateE ?(at = no) ~note () = GetCurStateE |> mk_expr at note
+let getCurFrameE ?(at = no) ~note () = GetCurFrameE |> mk_expr at note
+let getCurLabelE ?(at = no) ~note () = GetCurLabelE |> mk_expr at note
+let getCurContextE ?(at = no) ~note () = GetCurContextE |> mk_expr at note
+let contE ?(at = no) ~note e = ContE e |> mk_expr at note
+let chooseE ?(at = no) ~note e = ChooseE e |> mk_expr at note
+let isCaseOfE ?(at = no) ~note (e, a) = IsCaseOfE (e, a) |> mk_expr at note
+let isValidE ?(at = no) ~note e = IsValidE e |> mk_expr at note
+let contextKindE ?(at = no) ~note a = ContextKindE a |> mk_expr at note
+let isDefinedE ?(at = no) ~note e = IsDefinedE e |> mk_expr at note
+let matchE ?(at = no) ~note (e1, e2) = MatchE (e1, e2) |> mk_expr at note
+let hasTypeE ?(at = no) ~note (e, ty) = HasTypeE (e, ty) |> mk_expr at note
+let topLabelE ?(at = no) ~note () = TopLabelE |> mk_expr at note
+let topFrameE ?(at = no) ~note () = TopFrameE |> mk_expr at note
+let topValueE ?(at = no) ~note e_opt = TopValueE e_opt |> mk_expr at note
+let topValuesE ?(at = no) ~note e = TopValuesE e |> mk_expr at note
+let subE ?(at = no) ~note (id, ty) = SubE (id, ty) |> mk_expr at note
+let yetE ?(at = no) ~note s = YetE s |> mk_expr at note
 
 let mk_path at it = Util.Source.($) it at
 
@@ -162,6 +165,18 @@ let iter_type_of_value: value -> iter = function
   | OptV _ -> Opt
   | v -> fail_value "iter_type_of_value" v
 
+let rec typ_to_var_name ty =
+  match ty.it with
+  (* TODO: guess this for "var" in el? *)
+  | Il.Ast.VarT (id, _) -> id.it
+  | Il.Ast.BoolT -> "b"
+  | Il.Ast.NumT NatT -> "n"
+  | Il.Ast.NumT IntT -> "i"
+  | Il.Ast.NumT RatT -> "q"
+  | Il.Ast.NumT RealT -> "r"
+  | Il.Ast.TextT -> "s"
+  | Il.Ast.TupT tys -> List.map typ_to_var_name (List.map snd tys) |> String.concat "_"
+  | Il.Ast.IterT (t, _) -> typ_to_var_name t
 
 (* Destruct *)
 
@@ -175,6 +190,10 @@ let unwrap_listv: value -> value growable_array = function
 
 let unwrap_listv_to_array (v: value): value array = !(unwrap_listv v)
 let unwrap_listv_to_list (v: value): value list = unwrap_listv_to_array v |> Array.to_list
+
+let unwrap_seq_to_array: value -> value array = function
+  | OptV opt -> opt |> Option.to_list |> Array.of_list
+  | v -> unwrap_listv_to_array v
 
 let unwrap_textv: value -> string = function
   | TextV str -> str
@@ -204,15 +223,15 @@ let unwrap_cate e =
   | _ -> fail_expr "unwrap_cate" e
 
 let name_of_algo algo = match algo.it with
-  | RuleA (name, _, _) -> Print.string_of_atom name
+  | RuleA (name, _, _, _) -> Print.string_of_atom name
   | FuncA (name, _, _) -> name
 
 let params_of_algo algo = match algo.it with
-  | RuleA (_, params, _) -> params
+  | RuleA (_, _, params, _) -> params
   | FuncA (_, params, _) -> params
 
 let body_of_algo algo = match algo.it with
-  | RuleA (_, _, body) -> body
+  | RuleA (_, _, _, body) -> body
   | FuncA (_, _, body) -> body
 
 let args_of_casev = function
@@ -226,3 +245,33 @@ let arity_of_framev: value -> value = function
 let unwrap_framev: value -> value = function
   | FrameV (_, v) -> v
   | v -> fail_value "unwrap_framev" v
+
+
+(* Mixop *)
+
+let get_atom op =
+  match List.find_opt (fun al -> List.length al <> 0) op with
+  | Some al -> Some(List.hd al)
+  | None -> None
+
+let name_of_mixop = Il.Mixop.name
+
+(* Il Types *)
+
+(* name for tuple type *)
+let no_name = Il.Ast.VarE ("_" $ no_region) $$ no_region % (Il.Ast.TextT $ no_region)
+let varT id args = Il.Ast.VarT (id $ no_region, args) $ no_region
+let iterT ty iter = Il.Ast.IterT (ty, iter) $ no_region
+let listT ty = iterT ty Il.Ast.List
+let listnT ty n = Il.Ast.IterT (ty, Il.Ast.ListN (n, None)) $ no_region
+let boolT = Il.Ast.BoolT $ no_region
+let natT = Il.Ast.NumT Il.Ast.NatT $ no_region
+let topT = varT "TOP" []
+let valT = varT "val" []
+let callframeT = varT "callframe" []
+let frameT = varT "frame" []
+let labelT = varT "label" []
+let handlerT = varT "handler" []
+let stateT = varT "state" []
+let instrT = varT "instr" []
+let admininstrT = varT "admininstr" []

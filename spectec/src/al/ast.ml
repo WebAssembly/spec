@@ -2,16 +2,20 @@ open Util.Source
 
 (* Terminals *)
 
-type atom = atom' * string
-and atom' = El.Atom.atom'
+type atom = El.Atom.atom
+type mixop = Il.Ast.mixop
 
 (* Types *)
 
-type ty = string (* TODO *)
+type typ = Il.Ast.typ
 
 (* Identifiers *)
 
 type id = string
+
+(* Anchors *)
+
+type anchor = string
 
 (* Values *)
 
@@ -84,17 +88,17 @@ and expr' =
   | UpdE of expr * path list * expr               (* expr `[` path* `]` `:=` expr *)
   | ExtE of expr * path list * expr * extend_dir  (* expr `[` path* `]` `:+` expr *)
   | StrE of (atom, expr) record                   (* `{` (atom `->` expr)* `}` *)
-  | CatE of expr * expr                           (* expr `++` expr *)
+  | CompE of expr * expr                          (* expr `++` expr *)
+  | CatE of expr * expr                           (* expr `::` expr *)
   | MemE of expr * expr                           (* expr `<-` expr *)
   | LenE of expr                                  (* `|` expr `|` *)
   | TupE of expr list                             (* `(` (expr `,`)* `)` *)
-  | CaseE of atom * expr list                     (* atom `(` expr* `)` -- MixE/CaseE *)
-  | CallE of id * expr list                       (* id `(` expr* `)` *)
-  | InvCallE of id * int option list * expr list  (* id`_`int*`^-1(` expr* `)` *)
+  | CaseE of mixop * expr list                    (* mixop `(` expr* `)` -- CaseE *)
+  | CallE of id * arg list                        (* id `(` expr* `)` *)
+  | InvCallE of id * int option list * arg list   (* id`_`int*`^-1(` expr* `)` *)
   | IterE of expr * id list * iter                (* expr (`{` id* `}`)* *)
   | OptE of expr option                           (* expr?  *)
   | ListE of expr list                            (* `[` expr* `]` *)
-  | InfixE of expr * atom * expr                  (* "expr infix expr" *) (* TODO: Remove InfixE using hint *)
   | ArityE of expr                                (* "the arity of expr" *)
   | FrameE of expr option * expr                  (* "the activation of expr (with arity expr)?" *)
   | LabelE of expr * expr                         (* "the label whose arity is expr and whose continuation is expr" *)
@@ -105,19 +109,19 @@ and expr' =
   | ContE of expr                                 (* "the continuation of" expr *)
   | ChooseE of expr                               (* "an element of" expr *)
   (* Conditions *)
-  | IsCaseOfE of expr * atom                      (* expr is of the case kwd *)
+  | IsCaseOfE of expr * atom                      (* expr is of the case atom *)
   | IsValidE of expr                              (* expr is valid *)
-  | ContextKindE of atom * expr                   (* TODO: desugar using IsCaseOf? *)
+  | ContextKindE of atom                          (* "the top of the stack is a" atom *)
   | IsDefinedE of expr                            (* expr is defined *)
   | MatchE of expr * expr                         (* expr matches expr *)
-  | HasTypeE of expr * ty                         (* the type of expr is ty *)
+  | HasTypeE of expr * typ                        (* the type of expr is ty *)
   | TopFrameE                                     (* "a frame is now on the top of the stack" *)
   | TopLabelE                                     (* "a label is now on the top of the stack" *)
   (* Conditions used in assertions *)
   | TopValueE of expr option                      (* "a value (of type expr)? is now on the top of the stack" *)
   | TopValuesE of expr                            (* "at least expr number of values on the top of the stack" *)
   (* Administrative Instructions *)
-  | SubE of id * ty                               (* varid, with specific type *)
+  | SubE of id * typ                              (* varid, with specific type *)
   | YetE of string                                (* for future not yet implemented feature *)
 
 and path = path' phrase
@@ -125,6 +129,11 @@ and path' =
   | IdxP of expr                    (* `[` expr `]` *)
   | SliceP of expr * expr           (* `[` expr `:` expr `]` *)
   | DotP of atom                    (* `.` atom *)
+
+and arg = arg' phrase
+and arg' =
+  | ExpA of expr
+  | TypA of typ
 
 (* Instructions *)
 
@@ -139,14 +148,16 @@ and instr' =
   | PopAllI of expr                       (* `popall` expr *)
   | LetI of expr * expr                   (* `let` expr `=` expr *)
   | TrapI                                 (* `trap` *)
+  | ThrowI of expr                        (* `throw` *)
   | NopI                                  (* `nop` *)
   | ReturnI of expr option                (* `return` expr? *)
   | ExecuteI of expr                      (* `execute` expr *)
   | ExecuteSeqI of expr                   (* `executeseq` expr *)
-  | PerformI of id * expr list            (* `perform` id expr* *)
+  | PerformI of id * arg list             (* `perform` id expr* *)
   | ExitI of atom                         (* `exit` *)
   | ReplaceI of expr * path * expr        (* `replace` expr `->` path `with` expr *)
-  | AppendI of expr * expr                (* `append` expr expr *)
+  | AppendI of expr * expr                (* `append` expr `to the` expr *)
+  | FieldWiseAppendI of expr * expr       (* `append` expr `to the` expr `, fieldwise` *)
   (* Administrative instructions *)
   | OtherwiseI of instr list              (* only during the intermediate processing of il->al *)
   | YetI of string                        (* for future not yet implemented feature *)
@@ -154,9 +165,9 @@ and instr' =
 (* Algorithms *)
 
 type algorithm = algorithm' phrase
-and algorithm' =                          (* `algorithm` f`(`expr*`)` `{`instr*`}` *)
-  | RuleA of atom * expr list * instr list (* reduction rule *)
-  | FuncA of id * expr list * instr list   (* helper function *)
+and algorithm' =                                    (* `algorithm` f`(`expr*`)` `{`instr*`}` *)
+  | RuleA of atom * anchor * arg list * instr list  (* reduction rule *)
+  | FuncA of id * arg list * instr list             (* helper function *)
 
 
 (* Scripts *)

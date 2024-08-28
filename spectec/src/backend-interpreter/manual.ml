@@ -10,6 +10,7 @@ let ref_type =
   let nonull = caseV ("NULL", [ optV None ]) in
   let none = nullary "NONE" in
   let nofunc = nullary "NOFUNC" in
+  let noexn = nullary "NOEXN" in
   let noextern = nullary "NOEXTERN" in
 
   let match_heap_type v1 v2 =
@@ -26,6 +27,8 @@ let ref_type =
       CaseV ("REF", [ null; none])
     else if match_heap_type nofunc ht then
       CaseV ("REF", [ null; nofunc])
+    else if match_heap_type noexn ht then
+      CaseV ("REF", [ null; noexn])
     else if match_heap_type noextern ht then
       CaseV ("REF", [ null; noextern])
     else
@@ -34,6 +37,8 @@ let ref_type =
   | [CaseV ("REF.I31_NUM", [ _ ])] -> CaseV ("REF", [ nonull; nullary "I31"])
   (* host *)
   | [CaseV ("REF.HOST_ADDR", [ _ ])] -> CaseV ("REF", [ nonull; nullary "ANY"])
+  (* exception *)
+  | [CaseV ("REF.EXN_ADDR", [ _ ])] -> CaseV ("REF", [ nonull; nullary "EXN"])
   (* array/func/struct addr *)
   | [CaseV (name, [ NumV i ])]
   when String.starts_with ~prefix:"REF." name && String.ends_with ~suffix:"_ADDR" name ->
@@ -54,7 +59,7 @@ let module_ok = function
     |> Reference_interpreter.Valid.check_module;
     *)
     (* TODO: Moduletype *)
-    TupV [listV_of_list []; listV_of_list []]
+    CaseV ("->", [listV_of_list []; listV_of_list []])
   | vs -> Numerics.error_values "$Module_ok" vs
 
 let manual_map =

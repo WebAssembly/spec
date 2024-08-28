@@ -2,12 +2,13 @@ Modules
 -------
 
 
-.. index:: index, type index, function index, table index, memory index, global index, element index, data index, local index, label index
+.. index:: index, type index, function index, table index, memory index, global index, tag index, element index, data index, local index, label index
    pair: text format; type index
    pair: text format; function index
    pair: text format; table index
    pair: text format; memory index
    pair: text format; global index
+   pair: text format; tag index
    pair: text format; element index
    pair: text format; data index
    pair: text format; local index
@@ -16,9 +17,10 @@ Modules
 .. _text-funcidx:
 .. _text-tableidx:
 .. _text-memidx:
+.. _text-globalidx:
+.. _text-tagidx:
 .. _text-elemidx:
 .. _text-dataidx:
-.. _text-globalidx:
 .. _text-localidx:
 .. _text-labelidx:
 .. _text-fieldidx:
@@ -47,6 +49,9 @@ Such identifiers are looked up in the suitable space of the :ref:`identifier con
    \production{global index} & \Tglobalidx_I &::=&
      x{:}\Tu32 &\Rightarrow& x \\&&|&
      v{:}\Tid &\Rightarrow& x & (\iff I.\IGLOBALS[x] = v) \\
+   \production{tag index} & \Ttagidx_I &::=&
+     x{:}\Tu32 &\Rightarrow& x \\&&|&
+     v{:}\Tid &\Rightarrow& x & (\iff I.\ITAGS[x] = v) \\
    \production{element index} & \Telemidx_I &::=&
      x{:}\Tu32 &\Rightarrow& x \\&&|&
      v{:}\Tid &\Rightarrow& x & (\iff I.\IELEM[x] = v) \\
@@ -140,7 +145,7 @@ If no such index exists, then a new :ref:`recursive type <text-rectype>` of the 
 Abbreviations are expanded in the order they appear, such that previously inserted type definitions are reused by consecutive expansions.
 
 
-.. index:: import, name, function type, table type, memory type, global type
+.. index:: import, name, function type, table type, memory type, global type, tag type
    pair: text format; import
 .. _text-importdesc:
 .. _text-import:
@@ -148,7 +153,7 @@ Abbreviations are expanded in the order they appear, such that previously insert
 Imports
 ~~~~~~~
 
-The descriptors in imports can bind a symbolic function, table, memory, or global :ref:`identifier <text-id>`.
+The descriptors in imports can bind a symbolic function, table, memory, tag, or global :ref:`identifier <text-id>`.
 
 .. math::
    \begin{array}{llclll}
@@ -163,14 +168,22 @@ The descriptors in imports can bind a symbolic function, table, memory, or globa
      \text{(}~\text{memory}~~\Tid^?~~\X{mt}{:}\Tmemtype_I~\text{)}
        &\Rightarrow& \IDMEM~~\X{mt} \\ &&|&
      \text{(}~\text{global}~~\Tid^?~~\X{gt}{:}\Tglobaltype_I~\text{)}
-       &\Rightarrow& \IDGLOBAL~\X{gt} \\
+       &\Rightarrow& \IDGLOBAL~\X{gt} \\ &&|&
+     \text{(}~\text{tag}~~\Tid^?~~\X{tt}{:}\Ttag~\text{)}
+       &\Rightarrow& \IDTAG~\X{tt} \\
    \end{array}
 
 
 Abbreviations
 .............
 
-As an abbreviation, imports may also be specified inline with :ref:`function <text-func>`, :ref:`table <text-table>`, :ref:`memory <text-mem>`, or :ref:`global <text-global>` definitions; see the respective sections.
+As an abbreviation, imports may also be specified inline with
+:ref:`function <text-func>`,
+:ref:`table <text-table>`,
+:ref:`memory <text-mem>`,
+:ref:`global <text-global>`, or
+:ref:`tag <text-tag>`
+definitions; see the respective sections.
 
 
 
@@ -438,7 +451,54 @@ Globals can be defined as :ref:`imports <text-import>` or :ref:`exports <text-ex
    Consequently, a global declaration can contain any number of exports, possibly followed by an import.
 
 
-.. index:: export, name, index, function index, table index, memory index, global index
+.. index:: tag, tag type, identifier, function type, exception tag
+   pair: text format; tag
+.. _text-tag:
+
+Tags
+~~~~
+
+An tag definition can bind a symbolic :ref:`tag identifier <text-id>`.
+
+.. math::
+   \begin{array}{llcl}
+   \production{tag} & \Ttag_I &::=&
+     \text{(}~\text{tag}~~\Tid^?~~x,I'{:}\Ttypeuse_I~\text{)} \\ &&& \qquad
+       \Rightarrow\quad \{ \TAGTYPE~x \} \\
+   \end{array}
+
+.. index:: import, name
+   pair: text format; import
+.. index:: export, name, index, tag index
+   pair: text format; export
+.. index:: tag
+.. _text-tag-abbrev:
+
+Abbreviations
+.............
+
+Tags can be defined as :ref:`imports <text-import>` or :ref:`exports <text-export>` inline:
+
+.. math::
+   \begin{array}{llclll}
+   \production{module field} &
+     \text{(}~\text{tag}~~\Tid^?~~\text{(}~\text{import}~~\Tname_1~~\Tname_2~\text{)}~~\Ttypeuse~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{import}~~\Tname_1~~\Tname_2~~\text{(}~\text{tag}~~\Tid^?~~\Ttypeuse~\text{)}~\text{)}
+       \\[1ex] &
+     \text{(}~\text{tag}~~\Tid^?~~\text{(}~\text{export}~~\Tname~\text{)}~~\dots~\text{)} \quad\equiv \\ & \qquad
+       \text{(}~\text{export}~~\Tname~~\text{(}~\text{tag}~~\Tid'~\text{)}~\text{)}~~
+       \text{(}~\text{tag}~~\Tid'~~\dots~\text{)}
+       \\ & \qquad\qquad
+       (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
+   \end{array}
+
+.. note::
+   The latter abbreviation can be applied repeatedly, if ":math:`\dots`" contains additional export clauses.
+   Consequently, a memory declaration can contain any number of exports, possibly followed by an import.
+
+
+
+.. index:: export, name, index, function index, table index, memory index, global index, tag index
    pair: text format; export
 .. _text-exportdesc:
 .. _text-export:
@@ -452,23 +512,31 @@ The syntax for exports mirrors their :ref:`abstract syntax <syntax-export>` dire
    \begin{array}{llclll}
    \production{export} & \Texport_I &::=&
      \text{(}~\text{export}~~\X{nm}{:}\Tname~~d{:}\Texportdesc_I~\text{)}
-       &\Rightarrow& \{ \ENAME~\X{nm}, \EDESC~d \} \\
+       &\Rightarrow& \{ \XNAME~\X{nm}, \XDESC~d \} \\
    \production{export description} & \Texportdesc_I &::=&
      \text{(}~\text{func}~~x{:}\Tfuncidx_I~\text{)}
-       &\Rightarrow& \EDFUNC~x \\ &&|&
+       &\Rightarrow& \XDFUNC~x \\ &&|&
      \text{(}~\text{table}~~x{:}\Ttableidx_I~\text{)}
-       &\Rightarrow& \EDTABLE~x \\ &&|&
+       &\Rightarrow& \XDTABLE~x \\ &&|&
      \text{(}~\text{memory}~~x{:}\Tmemidx_I~\text{)}
-       &\Rightarrow& \EDMEM~x \\ &&|&
+       &\Rightarrow& \XDMEM~x \\ &&|&
      \text{(}~\text{global}~~x{:}\Tglobalidx_I~\text{)}
-       &\Rightarrow& \EDGLOBAL~x \\
+       &\Rightarrow& \XDGLOBAL~x \\&&|&
+     \text{(}~\text{tag}~~x{:}\Ttagidx_I~\text{)}
+       &\Rightarrow& \XDTAG~x \\
    \end{array}
 
 
 Abbreviations
 .............
 
-As an abbreviation, exports may also be specified inline with :ref:`function <text-func>`, :ref:`table <text-table>`, :ref:`memory <text-mem>`, or :ref:`global <text-global>` definitions; see the respective sections.
+As an abbreviation, exports may also be specified inline with
+:ref:`function <text-func>`,
+:ref:`table <text-table>`,
+:ref:`memory <text-mem>`,
+:ref:`global <text-global>`, or
+:ref:`tag <text-tag>`
+definitions; see the respective sections.
 
 
 .. index:: start function, function index
@@ -623,7 +691,7 @@ Also, a memory use can be omitted, defaulting to :math:`\T{0}`.
 As another abbreviation, data segments may also be specified inline with :ref:`memory <text-mem>` definitions; see the respective section.
 
 
-.. index:: module, type definition, function type, function, table, memory, global, element, data, start function, import, export, identifier context, identifier, name section
+.. index:: module, type definition, function type, function, table, memory, global, tag, element, data, start function, import, export, identifier context, identifier, name section
    pair: text format; module
    single: section; name
 .. _text-modulefield:
@@ -659,10 +727,11 @@ The name serves a documentary role only.
      \X{ta}{:}\Ttable_I &\Rightarrow& \{\MTABLES~\X{ta}\} \\ |&
      \X{me}{:}\Tmem_I &\Rightarrow& \{\MMEMS~\X{me}\} \\ |&
      \X{gl}{:}\Tglobal_I &\Rightarrow& \{\MGLOBALS~\X{gl}\} \\ |&
-     \X{ex}{:}\Texport_I &\Rightarrow& \{\MEXPORTS~\X{ex}\} \\ |&
-     \X{st}{:}\Tstart_I &\Rightarrow& \{\MSTART~\X{st}\} \\ |&
+     \X{tg}{:}\Ttag_I &\Rightarrow& \{\MTAGS~\X{tg}\} \\ |&
      \X{el}{:}\Telem_I &\Rightarrow& \{\MELEMS~\X{el}\} \\ |&
-     \X{da}{:}\Tdata_I &\Rightarrow& \{\MDATAS~\X{da}\} \\
+     \X{da}{:}\Tdata_I &\Rightarrow& \{\MDATAS~\X{da}\} \\ |&
+     \X{st}{:}\Tstart_I &\Rightarrow& \{\MSTART~\X{st}\} \\ |&
+     \X{ex}{:}\Texport_I &\Rightarrow& \{\MEXPORTS~\X{ex}\} \\
    \end{array}
    \end{array}
 
@@ -670,11 +739,16 @@ The following restrictions are imposed on the composition of :ref:`modules <synt
 
 * :math:`m_1.\MSTART = \epsilon \vee m_2.\MSTART = \epsilon`
 
-* :math:`m_1.\MFUNCS = m_1.\MTABLES = m_1.\MMEMS = m_1.\MGLOBALS = \epsilon \vee m_2.\MIMPORTS = \epsilon`
+* :math:`m_1.\MFUNCS = m_1.\MTABLES = m_1.\MMEMS = m_1.\MGLOBALS = m_1.\MTAGS = \epsilon \vee m_2.\MIMPORTS = \epsilon`
 
 .. note::
    The first condition ensures that there is at most one start function.
-   The second condition enforces that all :ref:`imports <text-import>` must occur before any regular definition of a :ref:`function <text-func>`, :ref:`table <text-table>`, :ref:`memory <text-mem>`, or :ref:`global <text-global>`,
+   The second condition enforces that all :ref:`imports <text-import>` must occur before any regular definition of a
+   :ref:`function <text-func>`,
+   :ref:`table <text-table>`,
+   :ref:`memory <text-mem>`,
+   :ref:`global <text-global>`, or
+   :ref:`tag <text-tag>`,
    thereby maintaining the ordering of the respective :ref:`index spaces <syntax-index>`.
 
    The :ref:`well-formedness <text-context-wf>` condition on :math:`I` in the grammar for |Tmodule| ensures that no namespace contains duplicate identifiers.
@@ -695,6 +769,8 @@ The definition of the initial :ref:`identifier context <text-context>` :math:`I`
      \{\IMEMS~(v^?)\} \\
    \F{idc}(\text{(}~\text{global}~v^?{:}\Tid^?~\dots~\text{)}) &=&
      \{\IGLOBALS~(v^?)\} \\
+   \F{idc}(\text{(}~\text{tag}~v^?{:}\Tid^?~\dots~\text{)}) &=&
+     \{\ITAGS~(v^?)\} \\
    \F{idc}(\text{(}~\text{elem}~v^?{:}\Tid^?~\dots~\text{)}) &=&
      \{\IELEM~(v^?)\} \\
    \F{idc}(\text{(}~\text{data}~v^?{:}\Tid^?~\dots~\text{)}) &=&

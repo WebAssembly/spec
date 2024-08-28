@@ -51,13 +51,14 @@ and parse_annot m annot =
   let place, items'' = parse_place_opt items' in
   let content, items''' = parse_content items'' in
   parse_end items''';
-  let Ast.{types; globals; tables; memories; funcs; start;
+  let Ast.{types; tags; globals; tables; memories; funcs; start;
     elems; datas; imports; exports} = m.it in
   let outside x =
     if annot.at.left >= x.at.left && annot.at.right <= x.at.right then
       parse_error annot.at "misplaced @custom annotation"
   in
   List.iter outside types;
+  List.iter outside tags;
   List.iter outside globals;
   List.iter outside tables;
   List.iter outside memories;
@@ -96,6 +97,7 @@ and parse_direction at = function
 
 and parse_section at = function
   | {it = Atom "type"; _} :: items -> Type, items
+  | {it = Atom "tag"; _} :: items -> Tag, items
   | {it = Atom "import"; _} :: items -> Import, items
   | {it = Atom "func"; _} :: items -> Func, items
   | {it = Atom "table"; _} :: items -> Table, items
@@ -144,6 +146,7 @@ and arrange_place = function
 and arrange_sec = function
   | Custom -> assert false
   | Type -> "type"
+  | Tag -> "tag"
   | Import -> "import"
   | Func -> "func"
   | Table -> "table"

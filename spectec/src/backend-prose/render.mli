@@ -5,7 +5,7 @@ open Al.Ast
 
 type env
 
-val env : string list -> string list -> Backend_latex.Render.env -> El.Ast.script -> Prose.prose -> env
+val env : Config.config -> string list -> string list -> Backend_latex.Render.env -> env
 
 
 (* Generators *)

@@ -18,6 +18,7 @@ and format' =
   locals : indirect_name_map;
   types : name_map;
   fields : indirect_name_map;
+  tags : name_map;
 }
 
 
@@ -28,6 +29,7 @@ let empty =
   locals = IdxMap.empty;
   types = IdxMap.empty;
   fields = IdxMap.empty;
+  tags = IdxMap.empty;
 }
 
 let name = Utf8.decode "name"
@@ -128,6 +130,7 @@ let decode_funcs s = decode_name_map s
 let decode_locals s = decode_indirect_name_map s
 let decode_types s = decode_name_map s
 let decode_fields s = decode_indirect_name_map s
+let decode_tags s = decode_name_map s
 
 let decode_subsec id f default s =
   match peek s with
@@ -144,13 +147,14 @@ let decode_subsec id f default s =
 let decode _m _bs custom =
   let s = stream custom.it.content in
   try
-    let module_ = decode_subsec 0x00 decode_module None s in
-    let funcs = decode_subsec 0x01 decode_funcs IdxMap.empty s in
-    let locals = decode_subsec 0x02 decode_locals IdxMap.empty s in
-    let types = decode_subsec 0x04 decode_types IdxMap.empty s in
-    let fields = decode_subsec 0x0a decode_fields IdxMap.empty s in
+    let module_ = decode_subsec 0 decode_module None s in
+    let funcs = decode_subsec 1 decode_funcs IdxMap.empty s in
+    let locals = decode_subsec 2 decode_locals IdxMap.empty s in
+    let types = decode_subsec 4 decode_types IdxMap.empty s in
+    let fields = decode_subsec 10 decode_fields IdxMap.empty s in
+    let tags = decode_subsec 11 decode_tags IdxMap.empty s in
     require (eos s) (pos s) "invalid name subsection id";
-    {module_; funcs; locals; types; fields} @@ custom.at
+    {module_; funcs; locals; types; fields; tags} @@ custom.at
   with EOS -> decode_error (pos s) "unexpected end of name section"
 
 
@@ -210,46 +214,54 @@ let encode_module buf name_opt =
   match name_opt with
   | None -> ()
   | Some name ->
-    let subsec = encode_subsec_begin buf 0x00 in
+    let subsec = encode_subsec_begin buf 0 in
     encode_name buf name.it;
     encode_subsec_end buf subsec
 
 let encode_funcs buf name_map =
   if not (IdxMap.is_empty name_map) then begin
-    let subsec = encode_subsec_begin buf 0x01 in
+    let subsec = encode_subsec_begin buf 1 in
     encode_name_map buf name_map;
     encode_subsec_end buf subsec
   end
 
 let encode_locals buf name_map_map =
   if not (IdxMap.is_empty name_map_map) then begin
-    let subsec = encode_subsec_begin buf 0x02 in
+    let subsec = encode_subsec_begin buf 2 in
     encode_indirect_name_map buf name_map_map;
     encode_subsec_end buf subsec
   end
 
 let encode_types buf name_map =
   if not (IdxMap.is_empty name_map) then begin
-    let subsec = encode_subsec_begin buf 0x04 in
+    let subsec = encode_subsec_begin buf 4 in
     encode_name_map buf name_map;
     encode_subsec_end buf subsec
   end
 
 let encode_fields buf name_map_map =
   if not (IdxMap.is_empty name_map_map) then begin
-    let subsec = encode_subsec_begin buf 0x0a in
+    let subsec = encode_subsec_begin buf 10 in
     encode_indirect_name_map buf name_map_map;
     encode_subsec_end buf subsec
   end
 
+let encode_tags buf name_map =
+  if not (IdxMap.is_empty name_map) then begin
+    let subsec = encode_subsec_begin buf 11 in
+    encode_name_map buf name_map;
+    encode_subsec_end buf subsec
+  end
+
 let encode _m _bs sec =
-  let {module_; funcs; locals; types; fields} = sec.it in
+  let {module_; funcs; locals; types; fields; tags} = sec.it in
   let buf = Buffer.create 200 in
   encode_module buf module_;
   encode_funcs buf funcs;
   encode_locals buf locals;
   encode_types buf types;
   encode_fields buf fields;
+  encode_tags buf tags;
   let content = Buffer.contents buf in
   {name = Utf8.decode "name"; content; place = After last} @@ sec.at
 
@@ -290,6 +302,7 @@ let merge s1 s2 =
     locals = merge_indirect_name_map s1.it.locals s2.it.locals;
     types = merge_name_map s1.it.types s2.it.types;
     fields = merge_indirect_name_map s1.it.fields s2.it.fields;
+    tags = merge_name_map s1.it.tags s2.it.tags;
   } @@ {left = s1.at.left; right = s2.at.right}
 
 
@@ -305,6 +318,12 @@ let locate_func bs x name at (f : func) =
   else
     parse_error at "@name annotation: misplaced annotation"
 
+let locate_tag bs x name at (tag : tag) =
+  if is_left at tag.it.tgtype.at then
+    {empty with tags = IdxMap.singleton x name}
+  else
+    parse_error at "@name annotation: misplaced annotation"
+
 let locate_type bs x name at (ty : type_) =
   (* TODO re-parse types from bs *)
   parse_error at "@name annotation: type and field names not yet supported"
@@ -312,10 +331,11 @@ let locate_type bs x name at (ty : type_) =
 let locate_module bs name at (m : module_) =
   if not (is_contained at m.at) then
     parse_error at "misplaced @name annotation";
-  let {types; globals; tables; memories; funcs; start;
+  let {types; tags; globals; tables; memories; funcs; start;
     elems; datas; imports; exports} = m.it in
   let ats =
     List.map (fun p -> p.at) types @
+    List.map (fun p -> p.at) tags @
     List.map (fun p -> p.at) globals @
     List.map (fun p -> p.at) tables @
     List.map (fun p -> p.at) memories @
@@ -330,8 +350,11 @@ let locate_module bs name at (m : module_) =
   | [] -> {empty with module_ = Some name}
   | at1::_ when is_left at at1 -> {empty with module_ = Some name}
   | _ ->
-    match Lib.List.index_where (fun f -> is_contained at f.at) types with
+    match Lib.List.index_where (fun t -> is_contained at t.at) types with
     | Some x -> locate_type bs (Int32.of_int x) name at (List.nth types x)
+    | None ->
+    match Lib.List.index_where (fun t -> is_contained at t.at) tags with
+    | Some x -> locate_tag bs (Int32.of_int x) name at (List.nth tags x)
     | None ->
     match Lib.List.index_where (fun f -> is_contained at f.at) funcs with
     | Some x -> locate_func bs (Int32.of_int x) name at (List.nth funcs x)

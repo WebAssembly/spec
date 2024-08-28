@@ -75,6 +75,7 @@ grammar Bfuncidx : funcidx = x:Bu32 => x
 grammar Bglobalidx : globalidx = x:Bu32 => x
 grammar Btableidx : tableidx = x:Bu32 => x
 grammar Bmemidx : memidx = x:Bu32 => x
+grammar Btagidx : tagidx = x:Bu32 => x
 grammar Belemidx : elemidx = x:Bu32 => x
 grammar Bdataidx : dataidx = x:Bu32 => x
 grammar Blocalidx : localidx = x:Bu32 => x
@@ -85,6 +86,7 @@ grammar Bexternidx : externidx =
   | 0x01 x:Btableidx => TABLE x
   | 0x02 x:Bmemidx => MEM x
   | 0x03 x:Bglobalidx => GLOBAL x
+  | 0x04 x:Btagidx => TAG x
 
 
 ;;
@@ -103,6 +105,7 @@ grammar Bvectype : vectype =
   | 0x7B => V128
 
 grammar Babsheaptype : heaptype =
+  | 0x69 => EXN
   | 0x6A => ARRAY
   | 0x6B => STRUCT
   | 0x6C => I31
@@ -113,6 +116,7 @@ grammar Babsheaptype : heaptype =
   | 0x71 => NONE
   | 0x72 => NOEXTERN
   | 0x73 => NOFUNC
+  | 0x74 => NOEXN
 
 grammar Bheaptype : heaptype =
   | ht:Babsheaptype => ht
@@ -180,12 +184,16 @@ grammar Btabletype : tabletype =
 grammar Bmemtype : memtype =
   | lim:Blimits => lim PAGE
 
+grammar Btagtype : typeidx =
+  | 0x00 x:Btypeidx => x
+
 
 grammar Bexterntype : externtype =
   | 0x00 x:Btypeidx => FUNC $idx(x)
   | 0x01 tt:Btabletype => TABLE tt
   | 0x02 mt:Bmemtype => MEM mt
   | 0x03 gt:Bglobaltype => GLOBAL gt
+  | 0x04 x:Btagtype => TAG $idx(x)
 
 
 ;;
@@ -213,6 +221,8 @@ grammar Binstr/control : instr =
 
 
     0x05 (in_2:Binstr)* 0x0B => IF bt in_1* ELSE in_2*
+  | 0x08 x:Btagidx => THROW x
+  | 0x0A => THROW_REF
   | 0x0C l:Blabelidx => BR l
   | 0x0D l:Blabelidx => BR_IF l
   | 0x0E l*:Blist(Blabelidx) l_n:Blabelidx => BR_TABLE l* l_n
@@ -221,7 +231,15 @@ grammar Binstr/control : instr =
   | 0x11 y:Btypeidx x:Btableidx => CALL_INDIRECT x $idx(y)
   | 0x12 x:Bfuncidx => RETURN_CALL x
   | 0x13 y:Btypeidx x:Btableidx => RETURN_CALL_INDIRECT x $idx(y)
+  | 0x1F bt:Bblocktype c*:Blist(Bcatch) (in:Binstr)* 0x0B =>
+      TRY_TABLE bt c* in*
   | ...
+
+grammar Bcatch : catch =
+  | 0x00 x:Btagidx l:Blabelidx => CATCH x l
+  | 0x01 x:Btagidx l:Blabelidx => CATCH_REF x l
+  | 0x02 l:Blabelidx => CATCH_ALL l
+  | 0x03 l:Blabelidx => CATCH_ALL_REF l
 
 
 ;; Reference instructions
@@ -1141,6 +1159,15 @@ grammar Bdatacntsec : u32? hint(desc "data count section") =
   | nopt:Bsection_(12, Bdatacnt) => $opt_(u32, nopt)
 
 
+;; Tag section
+
+grammar Btag : tag =
+  | x:Btypeidx => TAG x
+
+grammar Btagsec : tag* hint(desc "tag section") =
+  | tag*:Bsection_(13, Blist(Btag)) => tag*
+
+
 ;; Modules
 
 ;; TODO(2, rossberg): avoid double empty lines
@@ -1172,6 +1199,10 @@ grammar Bmodule : module =
 
 
     Bcustomsec*
+    tag*:Btagsec
+
+
+    Bcustomsec*
     global*:Bglobalsec
 
 
@@ -1200,7 +1231,7 @@ grammar Bmodule : module =
 
 
     Bcustomsec* =>
-      MODULE type* import* func* global* table* mem* elem* data* start? export*
+      MODULE type* import* func* global* table* mem* tag* elem* data* start? export*
     ----
     -- (if n = |data*|)?
     -- if n? =/= eps \/ $dataidx_funcs(func*) = eps

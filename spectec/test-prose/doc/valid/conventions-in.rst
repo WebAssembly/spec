@@ -274,10 +274,6 @@ $${definition: unrolldt}
 
 .. _def-unrollht:
 
-$${definition-prose: unrollht}
-
-\
-
 $${definition: unrollht}
 
 .. _def-expanddt:
@@ -319,16 +315,8 @@ $${syntax: context}
 
 .. _def-clos_deftype:
 
-$${definition-prose: clos_deftype}
-
-\
-
 $${definition: clos_deftype}
 
 .. _def-clos_deftypes:
-
-$${definition-prose: clos_deftypes}
-
-\
 
 $${definition: clos_deftypes}

@@ -1,4 +1,5 @@
 exception Trap
+exception Throw
 exception OutOfMemory
 exception Timeout
 exception MissingReturnValue of string

@@ -1,5 +1,5 @@
 (library
   (name il)
   (libraries util zarith el)
-  (modules mixop ast eq free subst iter eval print debug valid)
+  (modules mixop ast eq free subst iter env eval print debug valid)
 )

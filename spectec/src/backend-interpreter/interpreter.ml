@@ -17,13 +17,13 @@ let empty = ""
 let error at msg step = raise (Exception.Error (at, msg, step))
 
 let fail_expr expr msg =
-  failwith ("on expr `" ^ structured_string_of_expr expr ^ "` " ^ msg)
+  failwith ("on expr `" ^ string_of_expr expr ^ "` " ^ msg)
 
 let fail_path path msg =
-  failwith ("on path `" ^ structured_string_of_path path ^ "` " ^ msg)
+  failwith ("on path `" ^ string_of_path path ^ "` " ^ msg)
 
 let try_with_error fname at stringifier f step =
-  let prefix = if fname <> empty then fname ^ ": " else fname in
+  let prefix = if fname <> empty then "$" ^ fname ^ ": " else fname in
   try f step with
   | Construct.InvalidConversion msg
   | Exception.InvalidArg msg
@@ -49,6 +49,12 @@ let transpose matrix =
       let new_rows = transpose' (xs :: List.map List.tl xss) in
       new_row :: new_rows in
   transpose' matrix
+
+let extract_exp a =
+  match a.it with
+  | ExpA e -> Some e
+  | TypA _ -> None
+let extract_expargs = List.filter_map extract_exp
 
 
 let rec create_sub_al_context names iter env =
@@ -136,7 +142,7 @@ and check_type ty v expr =
   let vnn_types = [ "V128"; ] in
   let abs_heap_types = [
     "ANY"; "EQ"; "I31"; "STRUCT"; "ARRAY"; "NONE"; "FUNC";
-    "NOFUNC"; "EXTERN"; "NOEXTERN"
+    "NOFUNC"; "EXN"; "NOEXN"; "EXTERN"; "NOEXTERN"
   ] in
   match v with
   (* addrref *)
@@ -221,13 +227,15 @@ and eval_expr env expr =
     let v1 = eval_expr env e1 in
     eval_expr env e2 |> unwrap_listv_to_array |> Array.exists ((=) v1) |> boolV
   (* Function Call *)
-  | CallE (fname, el) ->
+  | CallE (fname, al) ->
+    let el = extract_expargs al in
     let args = List.map (eval_expr env) el in
     (match call_func fname args  with
     | Some v -> v
     | _ -> raise (Exception.MissingReturnValue fname)
     )
-  | InvCallE (fname, _, el) ->
+  | InvCallE (fname, _, al) ->
+    let el = extract_expargs al in
     (* TODO: refactor numerics function name *)
     let args = List.map (eval_expr env) el in
     (match call_func ("inverse_of_"^fname) args  with
@@ -236,9 +244,24 @@ and eval_expr env expr =
     )
   (* Data Structure *)
   | ListE el -> List.map (eval_expr env) el |> listV_of_list
+  | CompE (e1, e2) ->
+    let s1 = eval_expr env e1 |> unwrap_strv in
+    let s2 = eval_expr env e2 |> unwrap_strv in
+    List.map
+    (fun (id, v) ->
+    let arr1 = match !v with
+    | ListV arr_ref -> arr_ref
+    | _ -> failwith (sprintf "`%s` is not a list" (string_of_value !v))
+    in
+    let arr2 = match Record.find id s2 with
+    | ListV arr_ref -> arr_ref
+    | v -> failwith (sprintf "`%s` is not a list" (string_of_value v))
+    in
+    (id, Array.append !arr1 !arr2 |> listV |> ref)
+    ) s1 |> strV
   | CatE (e1, e2) ->
-    let a1 = eval_expr env e1 |> unwrap_listv_to_array in
-    let a2 = eval_expr env e2 |> unwrap_listv_to_array in
+    let a1 = eval_expr env e1 |> unwrap_seq_to_array in
+    let a2 = eval_expr env e2 |> unwrap_seq_to_array in
     Array.append a1 a2 |> listV
   | LenE e ->
     eval_expr env e |> unwrap_listv_to_array |> Array.length |> Z.of_int |> numV
@@ -268,7 +291,11 @@ and eval_expr env expr =
       | path :: rest -> access_path env base path |> replace rest |> replace_path env base path
       | [] -> eval_expr env e2 in
     eval_expr env e1 |> replace ps
-  | CaseE (tag, el) -> caseV (Print.string_of_atom tag, List.map (eval_expr env) el)
+  | CaseE (op, el) ->
+    (match (get_atom op) with
+    | Some a -> caseV (Print.string_of_atom a, List.map (eval_expr env) el)
+    | None -> fail_expr expr "inner mixop of caseE is empty"
+    )
   | OptE opt -> Option.map (eval_expr env) opt |> optV
   | TupE el -> List.map (eval_expr env) el |> tupV
   (* Context *)
@@ -296,6 +323,10 @@ and eval_expr env expr =
     let v2 = eval_expr env e2 in
     LabelV (v1, v2)
   | GetCurLabelE -> WasmContext.get_current_label ()
+  | GetCurContextE ->
+    (match WasmContext.get_top_context () with
+    | None -> fail_expr expr "cannot get the current context"
+    | Some ctxt -> ctxt)
   | ContE e ->
     (match eval_expr env e with
     | LabelV (_, vs) -> vs
@@ -330,7 +361,6 @@ and eval_expr env expr =
     | [], Opt -> optV None
     | [v], Opt -> Option.some v |> optV
     | l, _ -> listV_of_list l)
-  | InfixE (e1, _, e2) -> TupV [ eval_expr env e1; eval_expr env e2 ]
   (* condition *)
   | TopFrameE ->
     let ctx = WasmContext.get_top_context () in
@@ -341,6 +371,13 @@ and eval_expr env expr =
     let ctx = WasmContext.get_top_context () in
     (match ctx with
     | Some (LabelV _) -> boolV true
+    | _ -> boolV false)
+  | ContextKindE a ->
+    let ctx = WasmContext.get_top_context () in
+    (match a.it, ctx with
+    | Atom "FRAME_", Some (FrameV _) -> boolV true
+    | Atom "LABEL_", Some (LabelV _) -> boolV true
+    | Atom case, Some (CaseV (case', _)) -> boolV (case = case')
     | _ -> boolV false)
   | IsDefinedE e ->
     e
@@ -368,16 +405,22 @@ and eval_expr env expr =
     | _ ->
       fail_expr expr "TODO: deferring validation to reference interpreter"
     )
-  | HasTypeE (e, s) ->
+  | HasTypeE (e, t) ->
     (* TODO: This shouldn't be hardcoded *)
     (* check type *)
     let v = eval_expr env e in
-    check_type s v expr
+    check_type (string_of_typ t) v expr
   | MatchE (e1, e2) ->
     (* Deferred to reference interpreter *)
     let rt1 = e1 |> eval_expr env |> Construct.al_to_ref_type in
     let rt2 = e2 |> eval_expr env |> Construct.al_to_ref_type in
     boolV (Match.match_ref_type [] rt1 rt2)
+  | TopValueE _ ->
+    (* TODO: type check *)
+    boolV (List.length (WasmContext.get_value_stack ()) > 0)
+  | TopValuesE e ->
+    let i = eval_expr env e |> al_to_int in
+    boolV (List.length (WasmContext.get_value_stack ()) >= i)
   | _ -> fail_expr expr "cannot evaluate expr"
 
 
@@ -437,17 +480,19 @@ and assign lhs rhs env =
     |> List.fold_right merge
       (List.map (fun v -> assign e v Env.empty) rhs_iter)
     |> Env.union (fun _ _ v -> Some v) env_with_length
-  | InfixE (lhs1, _, lhs2), TupV [rhs1; rhs2] ->
-    env |> assign lhs1 rhs1 |> assign lhs2 rhs2
   | TupE lhs_s, TupV rhs_s
     when List.length lhs_s = List.length rhs_s ->
     List.fold_right2 assign lhs_s rhs_s env
   | ListE lhs_s, ListV rhs_s
     when List.length lhs_s = Array.length !rhs_s ->
     List.fold_right2 assign lhs_s (Array.to_list !rhs_s) env
-  | CaseE (lhs_tag, lhs_s), CaseV (rhs_tag, rhs_s)
-    when (Print.string_of_atom lhs_tag) = rhs_tag && List.length lhs_s = List.length rhs_s ->
-    List.fold_right2 assign lhs_s rhs_s env
+  | CaseE (op, lhs_s), CaseV (rhs_tag, rhs_s) when List.length lhs_s = List.length rhs_s ->
+    (match get_atom op with
+    | Some lhs_tag when (Print.string_of_atom lhs_tag) = rhs_tag ->
+      List.fold_right2 assign lhs_s rhs_s env
+    | _ -> fail_expr lhs
+      (sprintf "invalid assignment: cannot be an assignment target for %s" (string_of_value rhs))
+    )
   | OptE (Some lhs), OptV (Some rhs) -> assign lhs rhs env
   (* Assumption: e1 is the assign target *)
   | BinE (binop, e1, e2), NumV m ->
@@ -505,15 +550,17 @@ and assign_split lhs vs env =
 and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.t =
   (Info.find instr.note).covered <- true;
 
+  let rec is_true = function
+    | BoolV true -> true
+    | OptV v_opt -> v_opt |> Option.map is_true |> Option.value ~default:true
+    | ListV a -> Array.for_all is_true !a
+    | _ -> false
+  in
+
+
   match instr.it with
   (* Block instruction *)
   | IfI (e, il1, il2) ->
-    let rec is_true = function
-      | BoolV true -> true
-      | ListV a -> Array.for_all is_true !a
-      | _ -> false
-    in
-
     if is_true (eval_expr env e) then
       AlContext.add_instrs il1 ctx
     else
@@ -526,7 +573,13 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     | Exception.OutOfMemory ->
       AlContext.add_instrs il2 ctx
     )
-  | AssertI _ -> ctx (*assert (eval_cond env c);*)
+  | AssertI _e -> ctx
+  (*
+    if is_true (eval_expr env e) then
+      ctx
+    else
+      fail_expr e "assertion fail"
+  *)
   | PushI e ->
     (match eval_expr env e with
     | FrameV _ as v -> WasmContext.push_context (v, [], [])
@@ -536,9 +589,11 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     ctx
   | PopI e ->
     (match e.it with
-    | FrameE _ ->
+    | FrameE (_, inner_e) ->
       (match WasmContext.pop_context () with
-      | FrameV _, _, _ -> ctx
+      | FrameV (_, inner_v), _, _ ->
+        let new_env = assign inner_e inner_v env in
+        AlContext.set_env new_env ctx
       | v, _, _ -> failwith (sprintf "current context `%s` is not a frame" (string_of_value v))
       )
     | IterE ({ it = VarE name; _ }, [name'], ListN (e', None)) when name = name' ->
@@ -560,11 +615,13 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
   | LetI (e1, e2) ->
     let new_env = ctx |> AlContext.get_env |> assign e1 (eval_expr env e2) in
     AlContext.set_env new_env ctx
-  | PerformI (f, el) ->
+  | PerformI (f, al) ->
+    let el = extract_expargs al in
     let args = List.map (eval_expr env) el in
     call_func f args |> ignore;
     ctx
   | TrapI -> raise Exception.Trap
+  | ThrowI _ -> raise Exception.Throw
   | NopI -> ctx
   | ReturnI None -> AlContext.tl ctx
   | ReturnI (Some e) ->
@@ -608,13 +665,38 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     ctx
   | AppendI (e1, e2) ->
     let a = eval_expr env e1 |> unwrap_listv in
-    let v = eval_expr env e2 in
-    a := Array.append !a [|v|];
+    (match e2.note.it, eval_expr env e2 with
+    | IterT _, ListV arr_ref -> a := Array.append !a !arr_ref
+    | IterT (_, Opt), OptV opt ->
+      a := opt |> Option.to_list |> Array.of_list |> Array.append !a
+    | IterT _, v ->
+      v
+      |> string_of_value
+      |> sprintf "the expression is evaluated to %s, not a iterable data type"
+      |> fail_expr e2
+    | _, v -> a := Array.append !a [|v|]
+    );
+    ctx
+  | FieldWiseAppendI (e1, e2) ->
+    let s1 = eval_expr env e1 |> unwrap_strv in
+    let s2 = eval_expr env e2 |> unwrap_strv in
+    Record.iter
+    (fun (id, v) ->
+    let arr1 = match !v with
+    | ListV arr_ref -> arr_ref
+    | _ -> failwith (sprintf "`%s` is not a list" (string_of_value !v))
+    in
+    let arr2 = match Record.find id s2 with
+    | ListV arr_ref -> arr_ref
+    | v -> failwith (sprintf "`%s` is not a list" (string_of_value v))
+    in
+    arr1 := Array.append !arr1 !arr2
+    ) s1;
     ctx
   | _ -> failwith "cannot step instr"
 
 and try_step_instr fname ctx env instr =
-  try_with_error fname instr.at structured_string_of_instr (step_instr fname ctx env) instr
+  try_with_error fname instr.at string_of_instr (step_instr fname ctx env) instr
 
 and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
   (* TODO: Change ref.null semantics *)
@@ -685,6 +767,7 @@ and create_context (name: string) (args: value list) : AlContext.mode =
   let algo = lookup_algo name in
   let params = params_of_algo algo in
   let body = body_of_algo algo in
+  let params = params |> extract_expargs in
 
   if List.length args <> List.length params then (
     error
