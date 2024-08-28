@@ -126,16 +126,9 @@ and string_of_expr expr =
   | MemE (e1, e2) ->
     sprintf "%s <- %s" (string_of_expr e1) (string_of_expr e2)
   | LenE e -> sprintf "|%s|" (string_of_expr e)
-  | ArityE e -> sprintf "the arity of %s" (string_of_expr e)
   | GetCurStateE -> "the current state"
-  | GetCurLabelE -> "the current label"
-  | GetCurFrameE -> "the current frame"
-  | GetCurContextE -> "the current context"
-  | FrameE (None, e2) ->
-    sprintf "the activation of %s" (string_of_expr e2)
-  | FrameE (Some e1, e2) ->
-    sprintf "the activation of %s with arity %s" (string_of_expr e2)
-      (string_of_expr e1)
+  | GetCurContextE None -> "the current context"
+  | GetCurContextE (Some a) -> sprintf "the current %s context" (string_of_atom a)
   | ListE el -> "[" ^ string_of_exprs ", " el ^ "]"
   | AccE (e, p) -> sprintf "%s%s" (string_of_expr e) (string_of_path p)
   | ExtE (e1, ps, e2, dir) -> (
@@ -146,8 +139,6 @@ and string_of_expr expr =
     sprintf "%s with %s replaced by %s" (string_of_expr e1) (string_of_paths ps) (string_of_expr e2)
   | StrE r -> string_of_record_expr r
   | ChooseE e -> sprintf "an element of %s" (string_of_expr e)
-  | LabelE (e1, e2) ->
-    sprintf "the label_%s{%s}" (string_of_expr e1) (string_of_expr e2)
   | VarE id -> id
   | SubE (id, _) -> id
   | IterE (e, _, iter) -> string_of_expr e ^ string_of_iter iter
@@ -175,8 +166,6 @@ and string_of_expr expr =
   | IsCaseOfE (e, a) -> sprintf "%s is of the case %s" (string_of_expr e) (string_of_atom a)
   | HasTypeE (e, t) -> sprintf "the type of %s is %s" (string_of_expr e) (string_of_typ t)
   | IsValidE e -> sprintf "%s is valid" (string_of_expr e)
-  | TopLabelE -> "a label is now on the top of the stack"
-  | TopFrameE -> "a frame is now on the top of the stack"
   | TopValueE (Some e) -> sprintf "a value of value type %s is on the top of the stack" (string_of_expr e)
   | TopValueE None -> "a value is on the top of the stack"
   | TopValuesE e -> sprintf "there are at least %s values on the top of the stack" (string_of_expr e)
@@ -259,13 +248,9 @@ let make_index depth =
 (* Prefix for stack push/pop operations *)
 let string_of_stack_prefix expr =
   match expr.it with
-  | GetCurContextE
-  | GetCurFrameE
-  | GetCurLabelE
-  | LabelE _
-  | FrameE _
+  | GetCurContextE _
   | VarE ("F" | "L") -> ""
-  | _ when Il.Eq.eq_typ expr.note Al.Al_util.handlerT -> "the handler "
+  | _ when Il.Eq.eq_typ expr.note Al.Al_util.evalctxT -> "the evaluation context "
   | IterE _ -> "the values "
   | _ -> "the value "
 

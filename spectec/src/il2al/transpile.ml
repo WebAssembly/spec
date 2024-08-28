@@ -1016,9 +1016,8 @@ let remove_exit algo =
 let remove_enter algo =
   let enter_frame_to_push_then_pop instr =
     match instr.it with
-    (* TODO: fix *)
-    (* | EnterI (
-      ({ it = FrameE (Some e_arity, _); _ } as e_frame),
+    | EnterI (
+      ({ it = CaseE ([{ it = Atom.Atom "FRAME_"; _ }] :: _, [e_arity; _]); _ } as e_frame),
       { it = CatE (instrs, { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "FRAME_"; _ }]], []); _ } ]); _ }); _ },
       il) ->
         begin match e_arity.it with
@@ -1037,11 +1036,6 @@ let remove_enter algo =
             pushI e_tmp ~at:instr.at;
           ]
         end
-    | EnterI (
-      ({ it = FrameE (None, _); _ } as e_frame),
-      { it = ListE ([ { it = CaseE ([[{ it = Atom.Atom "FRAME_"; _ }]], []); _ } ]); _ },
-      il) ->
-        pushI e_frame ~at:instr.at :: il @ [ popI e_frame ~at:instr.at ] *)
     | _ -> [ instr ]
   in
 

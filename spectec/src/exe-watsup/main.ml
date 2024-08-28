@@ -10,7 +10,7 @@ type target =
  | Check
  | Latex
  | Prose of bool
- (* | Splice of Backend_splice.Config.t *)
+ | Splice of Backend_splice.Config.t
  | Interpreter of string list
 
 type pass =
@@ -125,10 +125,10 @@ let argspec = Arg.align
 
   "--check", Arg.Unit (fun () -> target := Check), " Check only (default)";
   "--latex", Arg.Unit (fun () -> target := Latex), " Generate Latex";
-  (* "--splice-latex", Arg.Unit (fun () -> target := Splice Backend_splice.Config.latex),
+  "--splice-latex", Arg.Unit (fun () -> target := Splice Backend_splice.Config.latex),
     " Splice Sphinx";
   "--splice-sphinx", Arg.Unit (fun () -> target := Splice Backend_splice.Config.sphinx),
-    " Splice Sphinx"; *)
+    " Splice Sphinx";
   "--prose", Arg.Unit (fun () -> target := Prose true), " Generate prose";
   "--prose-rst", Arg.Unit (fun () -> target := Prose false), " Generate prose";
   "--interpreter", Arg.Rest_all (fun args -> target := Interpreter args),
@@ -167,7 +167,7 @@ let () =
     if !print_el then
       Printf.printf "%s\n%!" (El.Print.string_of_script el);
     log "Elaboration...";
-    let il, _elab_env = Frontend.Elab.elab el in
+    let il, elab_env = Frontend.Elab.elab el in
     if !print_elab_il || !print_all_il then print_il il;
     log "IL Validation...";
     Il.Valid.valid il;
@@ -232,7 +232,7 @@ let () =
 
     | Latex ->
       log "Latex Generation...";
-      (* let config =
+      let config =
         Backend_latex.Config.{default with macros_for_ids = !latex_macros} in
       (match !odsts with
       | [] -> print_endline (Backend_latex.Gen.gen_string config el)
@@ -240,11 +240,11 @@ let () =
       | _ ->
         prerr_endline "too many output file names";
         exit 2
-      ) *)
+      )
 
-    | Prose _as_plaintext ->
+    | Prose as_plaintext ->
       log "Prose Generation...";
-      (* let config_latex = Backend_latex.Config.default in
+      let config_latex = Backend_latex.Config.default in
       let config_prose = Backend_prose.Config.{panic_on_error = false} in
       (match !odsts with
       | [] ->
@@ -263,9 +263,9 @@ let () =
       | _ ->
         prerr_endline "too many output file names";
         exit 2
-      ) *)
+      )
 
-    (* | Splice config ->
+    | Splice config ->
       if !in_place then
         odsts := !pdsts
       else
@@ -290,7 +290,7 @@ let () =
       let env = Backend_splice.Splice.(env config' !pdsts !odsts elab_env el prose) in
       List.iter2 (Backend_splice.Splice.splice_file ~dry:!dry env) !pdsts !odsts;
       if !warn_math then Backend_splice.Splice.warn_math env;
-      if !warn_prose then Backend_splice.Splice.warn_prose env; *)
+      if !warn_prose then Backend_splice.Splice.warn_prose env;
 
     | Interpreter args ->
       log "Initializing interpreter...";
