@@ -4,7 +4,7 @@
 
 ;; Vectors
 
-grammar Bvec(grammar BX : el) : el* =
+grammar Blist(grammar BX : el) : el* =
   | n:Bu32 (el:BX)^n => el^n
 
 
@@ -54,7 +54,7 @@ def $utf8(ch) = b_1 b_2 b_3 b_4  -- if (U+10000 <= ch < U+11000) /\ ch = $(2^18*
 def $utf8(ch*) = $concat_(byte, $utf8(ch)*)
 
 grammar Bname : name =
-  | b*:Bvec(Bbyte) => name  -- if $utf8(name) = b*
+  | b*:Blist(Bbyte) => name  -- if $utf8(name) = b*
 
 
 ;; Indices
@@ -102,7 +102,7 @@ grammar Bvaltype : valtype =
 
 
 grammar Bresulttype : resulttype =
-  | t*:Bvec(Bvaltype) => t*
+  | t*:Blist(Bvaltype) => t*
 
 
 ;; Type definitions
@@ -161,7 +161,7 @@ grammar Binstr/control : instr =
   | 0x04 bt:Bblocktype (in_1:Binstr)* 0x05 (in_2:Binstr)* 0x0B => IF bt in_1* ELSE in_2*
   | 0x0C l:Blabelidx => BR l
   | 0x0D l:Blabelidx => BR_IF l
-  | 0x0E l*:Bvec(Blabelidx) l_N:Blabelidx => BR_TABLE l* l_N
+  | 0x0E l*:Blist(Blabelidx) l_N:Blabelidx => BR_TABLE l* l_N
   | 0x0F => RETURN
   | 0x10 x:Bfuncidx => CALL x
   | 0x11 y:Btypeidx x:Btableidx => CALL_INDIRECT x y
@@ -182,7 +182,7 @@ grammar Binstr/reference : instr = ...
 grammar Binstr/parametric : instr = ...
   | 0x1A => DROP
   | 0x1B => SELECT eps
-  | 0x1C ts:Bvec(Bvaltype) => SELECT ts
+  | 0x1C ts:Blist(Bvaltype) => SELECT ts
   | ...
 
 
@@ -783,7 +783,7 @@ grammar Btype : type =
   | ft:Bfunctype => TYPE ft
 
 grammar Btypesec : type* hint(desc "type section") =
-  | ty*:Bsection_(1, Bvec(Btype)) => ty*
+  | ty*:Bsection_(1, Blist(Btype)) => ty*
 
 
 ;; Import section
@@ -792,13 +792,13 @@ grammar Bimport : import =
   | nm_1:Bname nm_2:Bname xt:Bexterntype => IMPORT nm_1 nm_2 xt
 
 grammar Bimportsec : import* hint(desc "import section") =
-  | im*:Bsection_(2, Bvec(Bimport)) => im*
+  | im*:Bsection_(2, Blist(Bimport)) => im*
 
 
 ;; Function section
 
 grammar Bfuncsec : typeidx* hint(desc "function section") =
-  | x*:Bsection_(3, Bvec(Btypeidx)) => x*
+  | x*:Bsection_(3, Blist(Btypeidx)) => x*
 
 
 ;; Table section
@@ -807,7 +807,7 @@ grammar Btable : table =
   | tt:Btabletype => TABLE tt
 
 grammar Btablesec : table* hint(desc "table section") =
-  | tab*:Bsection_(4, Bvec(Btable)) => tab*
+  | tab*:Bsection_(4, Blist(Btable)) => tab*
 
 
 ;; Memory section
@@ -816,7 +816,7 @@ grammar Bmem : mem =
   | mt:Bmemtype => MEMORY mt
 
 grammar Bmemsec : mem* hint(desc "memory section") =
-  | mem*:Bsection_(5, Bvec(Bmem)) => mem*
+  | mem*:Bsection_(5, Blist(Bmem)) => mem*
 
 
 ;; Global section
@@ -825,7 +825,7 @@ grammar Bglobal : global =
   | gt:Bglobaltype e:Bexpr => GLOBAL gt e
 
 grammar Bglobalsec : global* hint(desc "global section") =
-  | glob*:Bsection_(6, Bvec(Bglobal)) => glob*
+  | glob*:Bsection_(6, Blist(Bglobal)) => glob*
 
 
 ;; Export section
@@ -834,7 +834,7 @@ grammar Bexport : export =
   | nm:Bname xx:Bexternidx => EXPORT nm xx
 
 grammar Bexportsec : export* hint(desc "export section") =
-  | ex*:Bsection_(7, Bvec(Bexport)) => ex*
+  | ex*:Bsection_(7, Blist(Bexport)) => ex*
 
 
 ;; Start section
@@ -854,25 +854,25 @@ grammar Belemkind : reftype hint(desc "element kind") =
   | 0x00 => FUNCREF
 
 grammar Belem : elem =
-  | 0:Bu32 e_o:Bexpr y*:Bvec(Bfuncidx) =>
+  | 0:Bu32 e_o:Bexpr y*:Blist(Bfuncidx) =>
       ELEM FUNCREF (REF.FUNC y)* (ACTIVE 0 e_o)
-  | 1:Bu32 rt:Belemkind y*:Bvec(Bfuncidx) =>
+  | 1:Bu32 rt:Belemkind y*:Blist(Bfuncidx) =>
       ELEM rt (REF.FUNC y)* PASSIVE
-  | 2:Bu32 x:Btableidx expr:Bexpr rt:Belemkind y*:Bvec(Bfuncidx) =>
+  | 2:Bu32 x:Btableidx expr:Bexpr rt:Belemkind y*:Blist(Bfuncidx) =>
       ELEM rt (REF.FUNC y)* (ACTIVE x expr)
-  | 3:Bu32 rt:Belemkind y*:Bvec(Bfuncidx) =>
+  | 3:Bu32 rt:Belemkind y*:Blist(Bfuncidx) =>
       ELEM rt (REF.FUNC y)* DECLARE
-  | 4:Bu32 e_o:Bexpr e*:Bvec(Bexpr) =>
+  | 4:Bu32 e_o:Bexpr e*:Blist(Bexpr) =>
       ELEM FUNCREF e* (ACTIVE 0 e_o)
-  | 5:Bu32 rt:Breftype e*:Bvec(Bexpr) =>
+  | 5:Bu32 rt:Breftype e*:Blist(Bexpr) =>
       ELEM rt e* PASSIVE
-  | 6:Bu32 x:Btableidx expr:Bexpr e*:Bvec(Bexpr) =>
+  | 6:Bu32 x:Btableidx expr:Bexpr e*:Blist(Bexpr) =>
       ELEM FUNCREF e* (ACTIVE x expr)
-  | 7:Bu32 rt:Breftype e*:Bvec(Bexpr) =>
+  | 7:Bu32 rt:Breftype e*:Blist(Bexpr) =>
       ELEM rt e* DECLARE
 
 grammar Belemsec : elem* hint(desc "element section") =
-  | elem*:Bsection_(9, Bvec(Belem)) => elem*
+  | elem*:Bsection_(9, Blist(Belem)) => elem*
 
 
 ;; Code section
@@ -883,24 +883,24 @@ grammar Blocals : local* hint(desc "local") =
   | n:Bu32 t:Bvaltype => (LOCAL t)^n
 
 grammar Bfunc : code =
-  | local**:Bvec(Blocals) expr:Bexpr => ($concat_(local, local**), expr)
+  | local**:Blist(Blocals) expr:Bexpr => ($concat_(local, local**), expr)
 
 grammar Bcode : code =
   | len:Bu32 code:Bfunc => code  -- if len = ||Bfunc||
 
 grammar Bcodesec : code* hint(desc "code section") =
-  | code*:Bsection_(10, Bvec(Bcode)) => code*
+  | code*:Bsection_(10, Blist(Bcode)) => code*
 
 
 ;; Data section
 
 grammar Bdata : data =
-  | 0:Bu32 e:Bexpr b*:Bvec(Bbyte) => DATA b* (ACTIVE 0 e)
-  | 1:Bu32 b*:Bvec(Bbyte) => DATA b* PASSIVE
-  | 2:Bu32 x:Bmemidx e:Bexpr b*:Bvec(Bbyte) => DATA b* (ACTIVE x e)
+  | 0:Bu32 e:Bexpr b*:Blist(Bbyte) => DATA b* (ACTIVE 0 e)
+  | 1:Bu32 b*:Blist(Bbyte) => DATA b* PASSIVE
+  | 2:Bu32 x:Bmemidx e:Bexpr b*:Blist(Bbyte) => DATA b* (ACTIVE x e)
 
 grammar Bdatasec : data* hint(desc "data section") =
-  | data*:Bsection_(11, Bvec(Bdata)) => data*
+  | data*:Bsection_(11, Blist(Bdata)) => data*
 
 
 ;; Data count section
