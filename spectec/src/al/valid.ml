@@ -370,7 +370,7 @@ let valid_expr (walker: unit_walker) (expr: expr) : unit =
   | CaseE _ | CaseE2 _ -> () (* TODO *)
   | CallE (id, args) -> check_call source id args expr.note
   | InvCallE (id, indices, args) -> check_inv_call source id indices args expr.note;
-  | IterE (expr1, _, iter) ->
+  | IterE (expr1, (iter, _xes)) -> (* TODO *)
     if not (expr1.note.it = BoolT && expr.note.it = BoolT) then
       (match iter with
       | Opt ->

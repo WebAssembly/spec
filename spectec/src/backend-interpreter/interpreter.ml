@@ -57,7 +57,8 @@ let extract_exp a =
 let extract_expargs = List.filter_map extract_exp
 
 
-let rec create_sub_al_context names iter env =
+let rec create_sub_al_context xes iter env =
+  (*
   let option_name_to_list name = lookup_env name env |> unwrap_optv |> Option.to_list in
   let name_to_list name = lookup_env name env |> unwrap_listv_to_list in
   let length_to_list l = List.init l al_of_int in
@@ -72,10 +73,16 @@ let rec create_sub_al_context names iter env =
     | _ -> name_to_list name
   in
 
-  names
+  xes
   |> List.map name_to_values
   |> transpose
   |> List.map (fun vs -> List.fold_right2 Env.add names vs env)
+  *)
+  ignore xes;
+  ignore iter;
+  ignore env;
+  ignore transpose;
+  failwith "TODO: create_sub_al_context"
 
 and access_path env base path =
   match path.it with
@@ -317,20 +324,20 @@ and eval_expr env expr =
   | VarE "s" -> Store.get ()
   | VarE name -> lookup_env name env
   (* Optimized getter for simple IterE(VarE, ...) *)
-  | IterE ({ it = VarE name; _ }, [name'], _) when name = name' ->
+  | IterE ({ it = VarE name; _ }, (_, [name', _])) when name = name' ->
     lookup_env name env
   (* Optimized getter for list init *)
-  | IterE (e1, [], ListN (e2, None)) ->
+  | IterE (e1, (ListN (e2, None), [])) ->
     let v = eval_expr env e1 in
     let i = eval_expr env e2 |> al_to_int in
     if i > 1024 * 64 * 1024 (* 1024 pages *) then
       raise Exception.OutOfMemory
     else
       Array.make i v |> listV
-  | IterE (inner_e, ids, iter) ->
+  | IterE (inner_e, (iter, xes)) ->
     let vs =
       env
-      |> create_sub_al_context ids iter
+      |> create_sub_al_context xes iter
       |> List.map (fun env' -> eval_expr env' inner_e)
     in
 
@@ -416,9 +423,11 @@ and merge env acc =
 
 and assign lhs rhs env =
   match lhs.it, rhs with
-  | IterE ({ it = VarE name; _ }, _, (List|List1)), ListV _
+  | IterE ({ it = VarE name; _ }, ((List|List1), _)), ListV _
   | VarE name, _ -> Env.add name rhs env
-  | IterE (e, ids, iter), _ ->
+  | IterE (e, (iter, xes)), _ ->
+    (* MYTODO *)
+    let ids = List.map (fun (x, _) -> x) xes in
     (* Convert rhs to iterable list *)
     let rhs_default, rhs_iter =
       match rhs with
@@ -489,7 +498,7 @@ and assign_split lhs vs env =
     let get_fixed_length e =
       match e.it with
       | ListE es -> Some (List.length es)
-      | IterE (_, _, ListN (e, None)) -> Some (al_to_int (eval_expr env e))
+      | IterE (_, (ListN (e, None), _)) -> Some (al_to_int (eval_expr env e))
       | _ -> None
     in
     match get_fixed_length ep, get_fixed_length es with
@@ -565,7 +574,7 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
         AlContext.set_env new_env ctx
       | v, _, _ -> failwith (sprintf "current context `%s` is not a frame" (string_of_value v))
       )
-    | IterE ({ it = VarE name; _ }, [name'], ListN (e', None)) when name = name' ->
+    | IterE ({ it = VarE name; _ }, (ListN (e', None), [name', _])) when name = name' -> (* MYTODO *)
       let i = eval_expr env e' |> al_to_int in
       let v =
         List.init i (fun _ -> WasmContext.pop_value ())

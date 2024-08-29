@@ -14,7 +14,7 @@ let expA e = ExpA e $ e.at
 let eval_expr =
   let ty_instrs = listT instrT in
   let ty_vals = listT valT in
-  let instrs = iterE (varE "instr" ~note:instrT, ["instr"], List) ~note:ty_instrs in
+  let instrs = iterE (varE "instr" ~note:instrT, (List, [])) ~note:ty_instrs in (* MYTODO *)
   let result = varE "val" ~note:valT in
 
   (* Add function definition to AL environment *)
@@ -58,7 +58,7 @@ let return_instrs_of_invoke config =
   let ty' = listnT valT (Il.Ast.VarE ("k" $ no_region) $$ no_region % natT) in
   let valtype = varT "valtype" [] in
   let len_expr =
-    lenE (iterE (varE "t_2" ~note:valtype, ["t_2"], List) ~note:(iterT valtype List))~note:natT
+    lenE (iterE (varE "t_2" ~note:valtype, (List, [])) ~note:(iterT valtype List))~note:natT (* MYTODO *)
   in
   [
     letI (arity,  len_expr);
@@ -67,8 +67,8 @@ let return_instrs_of_invoke config =
       listE ([caseE (atom_of_name "FRAME_" "admininstr", []) ~note:admininstrT]) ~note:ty,
       rhs
     );
-    popI (iterE (value, ["val"], ListN (arity, None)) ~note:ty');
-    returnI (Some (iterE (value, ["val"], ListN (arity, None)) ~note:ty'))
+    popI (iterE (value, (ListN (arity, None), [])) ~note:ty'); (* MYTODO *)
+    returnI (Some (iterE (value, (ListN (arity, None), [])) ~note:ty')) (* MYTODO *)
   ]
 
 

@@ -56,7 +56,7 @@ let caseE ?(at = no) ~note (a, el) = CaseE (a, el) |> mk_expr at note
 let caseE2 ?(at = no) ~note (op, el) = CaseE2 (op, el) |> mk_expr at note
 let callE ?(at = no) ~note (id, el) = CallE (id, el) |> mk_expr at note
 let invCallE ?(at = no) ~note (id, il, el) = InvCallE (id, il, el) |> mk_expr at note
-let iterE ?(at = no) ~note (e, idl, it) = IterE (e, idl, it) |> mk_expr at note
+let iterE ?(at = no) ~note (e, ite) = IterE (e, ite) |> mk_expr at note
 let optE ?(at = no) ~note e_opt = OptE e_opt |> mk_expr at note
 let listE ?(at = no) ~note el = ListE el |> mk_expr at note
 let infixE ?(at = no) ~note (e1, infix, e2) = InfixE (e1, infix, e2) |> mk_expr at note

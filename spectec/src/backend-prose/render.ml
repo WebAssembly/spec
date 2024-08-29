@@ -220,7 +220,7 @@ and al_to_el_expr expr =
     | Al.Ast.VarE id | Al.Ast.SubE (id, _) ->
       let elid = id $ no_region in
       Some (El.Ast.VarE (elid, []))
-    | Al.Ast.IterE (e, _, iter) ->
+    | Al.Ast.IterE (e, (iter, _)) ->
       let* ele = al_to_el_expr e in
       let* eliter = al_to_el_iter iter in
       let ele =
@@ -386,12 +386,14 @@ and render_expr' env expr =
   | Al.Ast.LenE e ->
     let se = render_expr env e in
     sprintf "the length of %s" se
-  | Al.Ast.IterE (e, ids, iter) when al_to_el_expr e = None ->
+  (*
+  | Al.Ast.IterE (e, (iter, xes)) when al_to_el_expr e = None ->
     let se = render_expr env e in
     let ids = Al.Al_util.tupE (List.map (Al.Al_util.varE ~note:Al.Al_util.no_note) ids) ~note:Al.Al_util.no_note in
     let loop = Al.Al_util.iterE (ids, [], iter) ~note:Al.Al_util.no_note in
     let sloop = render_expr env loop in
     sprintf "for all %s, %s" sloop se
+  *) (* MYTODO *)
   | Al.Ast.ArityE e ->
     let se = render_expr env e in
     sprintf "the arity of %s" se
@@ -614,10 +616,10 @@ let rec render_al_instr env algoname index depth instr =
   | Al.Ast.PopAllI e ->
     sprintf "%s Pop all values %s from the top of the stack." (render_order index depth)
       (render_expr env e)
-  | Al.Ast.LetI (e, { it = Al.Ast.IterE ({ it = Al.Ast.InvCallE (id, nl, al); _ }, ids, iter); _ }) ->
+  | Al.Ast.LetI (e, { it = Al.Ast.IterE ({ it = Al.Ast.InvCallE (id, nl, al); _ }, iterexp); _ }) ->
     let elhs, erhs = al_invcalle_to_al_bine e id nl al in
     let ebin = Al.Al_util.binE (Al.Ast.EqOp, elhs, erhs) ~note:Al.Al_util.no_note in
-    let eiter = Al.Al_util.iterE (ebin, ids, iter) ~note:Al.Al_util.no_note in
+    let eiter = Al.Al_util.iterE (ebin, iterexp) ~note:Al.Al_util.no_note in
     sprintf "%s Let %s be the result for which %s."
       (render_order index depth)
       (render_expr env e)

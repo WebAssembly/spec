@@ -10,6 +10,7 @@ module IdSet = Set.Make (String)
 let (@) = IdSet.union
 let free_opt free_x xo = Option.(value (map free_x xo) ~default:IdSet.empty)
 let free_list free_x xs = List.(fold_left IdSet.union IdSet.empty (map free_x xs))
+let free_pair free_x free_y (x, y) = free_x x @ free_y y
 
 let rec free_expr expr =
   match expr.it with
@@ -44,7 +45,7 @@ let rec free_expr expr =
   | ExtE (e1, ps, e2, _)
   | UpdE (e1, ps, e2) -> free_expr e1 @ free_list free_path ps @ free_expr e2
   | OptE e_opt -> free_opt free_expr e_opt
-  | IterE (e, _, i) -> free_expr e @ free_iter i
+  | IterE (e, ie) -> free_expr e @ free_iterexp ie
   | MatchE (e1, e2) -> free_expr e1 @ free_expr e2
   | TopLabelE
   | TopFrameE
@@ -77,10 +78,17 @@ and free_path path =
 
 
 (* Args *)
+
 and free_arg arg =
   match arg.it with
   | ExpA e -> free_expr e
   | TypA _ -> IdSet.empty
+
+
+(* Iter exps *)
+
+and free_iterexp (iter, xes) =
+  free_iter iter @ free_list (free_pair IdSet.singleton free_expr) xes
 
 
 (* Instructions *)

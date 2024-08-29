@@ -4,10 +4,14 @@ open Source
 
 let eq_list eq l1 l2 =
   List.length l1 = List.length l2 && List.for_all2 eq l1 l2
+let eq_pair eqx eqy (x1, y1) (x2, y2) =
+  eqx x1 x2 && eqy y1 y2
+
+let eq_id = (=)
 
 let rec eq_expr e1 e2 =
   match e1.it, e2.it with
-  | VarE id1, VarE id2 -> id1 = id2
+  | VarE id1, VarE id2 -> eq_id id1 id2
   | NumE n1, NumE n2 -> n1 = n2
   | BoolE b1, BoolE b2 -> b1 = b2
   | UnE (unop1, e1), UnE (unop2, e2) -> unop1 = unop2 && eq_expr e1 e2
@@ -28,8 +32,8 @@ let rec eq_expr e1 e2 =
   | CallE (i1, al1), CallE (i2, al2) -> i1 = i2 && eq_args al1 al2
   | InvCallE (i1, nl1, al1), InvCallE (i2, nl2, al2) ->
     i1 = i2 && List.for_all2 (=) nl1 nl2 && eq_args al1 al2
-  | IterE (e1, il1, it1), IterE (e2, il2, it2) ->
-    eq_expr e1 e2 && il1 = il2 && it1 = it2
+  | IterE (e1, ie1), IterE (e2, ie2) ->
+    eq_expr e1 e2 && eq_iterexp ie1 ie2
   | OptE eo1, OptE eo2 -> eq_expr_opt eo1 eo2
   | ListE el1, ListE el2 -> eq_exprs el1 el2
   | InfixE (e11, a1, e12), InfixE (e21, a2, e22) ->
@@ -75,6 +79,15 @@ and eq_expr_record r1 r2 =
 and eq_exprs el1 el2 = eq_list eq_expr el1 el2
 
 
+and eq_iter i1 i2 =
+  match i1, i2 with
+  | Opt, Opt -> true
+  | List, List -> true
+  | List1, List1 -> true
+  | ListN (e1, id_opt1), ListN (e2, id_opt2) -> eq_expr e1 e2 && Option.equal eq_id id_opt1 id_opt2
+  | _ -> false
+
+
 and eq_path p1 p2 =
   match p1.it, p2.it with
   | IdxP e1, IdxP e2 -> eq_expr e1 e2
@@ -92,6 +105,11 @@ and eq_arg a1 a2 =
   | _ -> false
 
 and eq_args al1 al2 = eq_list eq_arg al1 al2
+
+
+and eq_iterexp (iter1, xes1) (iter2, xes2) =
+  eq_iter iter1 iter2 && eq_list (eq_pair eq_id eq_expr) xes1 xes2
+
 
 let rec eq_instr i1 i2 =
   match i1.it, i2.it with
@@ -111,7 +129,7 @@ let rec eq_instr i1 i2 =
   | ReturnI e_opt1, ReturnI e_opt2 -> eq_expr_opt e_opt1 e_opt2
   | ExecuteI e1, ExecuteI e2
   | ExecuteSeqI e1, ExecuteSeqI e2 -> eq_expr e1 e2
-  | PerformI (id1, al1), PerformI (id2, al2) -> id1 = id2 && eq_args al1 al2
+  | PerformI (id1, al1), PerformI (id2, al2) -> eq_id id1 id2 && eq_args al1 al2
   | ExitI a1, ExitI a2 -> El.Atom.eq a1 a2
   | ReplaceI (e11, p1, e12), ReplaceI (e21, p2, e22) ->
     eq_expr e11 e21 && eq_path p1 p2 && eq_expr e12 e22

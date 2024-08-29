@@ -135,9 +135,10 @@ and translate_exp exp =
   | Il.VarE id -> varE id.it ~at:at ~note:note
   | Il.SubE ({ it = Il.VarE id; _}, { it = VarT (t, _); _ }, _) -> subE (id.it, t.it) ~at:at ~note:note
   | Il.SubE (inner_exp, _, _) -> translate_exp inner_exp
-  | Il.IterE (inner_exp, (iter, ids)) ->
-    let names = List.map (fun (id, _) -> id.it) ids in
-    iterE (translate_exp inner_exp, names, translate_iter iter) ~at:at ~note:note
+  | Il.IterE (inner_exp, (iter, xes)) ->
+    (* TODO: translate_iterexp *)
+    let xes' = List.map (fun (id, exp) -> (id.it, translate_exp exp)) xes in
+    iterE (translate_exp inner_exp, (translate_iter iter, xes')) ~at:at ~note:note
   (* property access *)
   | Il.DotE (inner_exp, ({it = Atom _; _} as atom)) ->
     accE (translate_exp inner_exp, dotP atom) ~at:at ~note:note
@@ -251,7 +252,7 @@ and translate_exp exp =
       tupE [ caseE (atom, []) ~note:Al.Al_util.no_note; translate_exp t ] ~at:at ~note:note
     | [ [ {it = Il.Atom "MUT"; _} ]; [ {it = Il.Quest; _} ]; [] ],
       [ { it = Il.IterE ({ it = Il.TupE []; _ }, (Il.Opt, [])); _}; t ] ->
-      tupE [ iterE (varE "mut" ~note:Al.Al_util.no_note, ["mut"], Opt) ~note:Al.Al_util.no_note; translate_exp t ] ~at:at ~note:note
+      tupE [ iterE (varE "mut" ~note:Al.Al_util.no_note, (Opt, [])) ~note:Al.Al_util.no_note; translate_exp t ] ~at:at ~note:note (* MYTODO *)
     | [ []; [ {it = Il.Atom "PAGE"; _} as atom ] ], el ->
       caseE (atom, List.map translate_exp el) ~at:at ~note:note
     | [ [ {it = Il.Atom "NULL"; _} as atom ]; [ {it = Il.Quest; _} ] ], el ->
@@ -345,7 +346,7 @@ let assert_cond_of_pop_value e =
   | GetCurLabelE ->
     topLabelE () ~at:at ~note:bt
   (* TODO: Remove this when pops is done *)
-  | IterE (_, _, ListN (e', _)) ->
+  | IterE (_, (ListN (e', _), _)) ->
     topValuesE e' ~at:at ~note:bt
   | _ ->
     topValueE None ~note:bt
@@ -478,11 +479,11 @@ let rec translate_rhs exp =
       letI (OptE (Some (translate_exp tmp_name)) $$ exp.at % exp.note, translate_exp exp) ~at:at :: translate_rhs tmp_name,
       []
     ) ~at:at ]
-  | Il.IterE (inner_exp, (iter, itl)) ->
-    let iter_ids = itl |> List.map fst |> List.map it in
+  | Il.IterE (inner_exp, (iter, xes)) ->
+    let xes' = List.map (fun (x, e) -> (x.it, translate_exp e)) xes in
     let walk_expr _walker (expr: expr): expr =
       let typ = Il.IterT (expr.note, Il.List) $ no_region in
-      IterE (expr, iter_ids, translate_iter iter) $$ exp.at % typ
+      IterE (expr, (translate_iter iter, xes')) $$ exp.at % typ
     in
     let walker = { Walk.base_walker with walk_expr } in
 
@@ -526,7 +527,7 @@ let get_lhs_name e =
 (* Helper functions *)
 let rec contains_name e = match e.it with
   | VarE _ | SubE _ -> true
-  | IterE (e', _, _) -> contains_name e'
+  | IterE (e', _) -> contains_name e'
   | _ -> false
 
 let extract_non_names =
@@ -647,9 +648,13 @@ and call_lhs_to_inverse_call_rhs lhs rhs free_ids =
   (* No argument is free *)
 
   else
+    (*
     Print.string_of_expr lhs
     |> sprintf "lhs expression %s doesn't contain free variable"
     |> error lhs.at
+    *)
+    yetE "lhs" ~note:topT, yetE "rhs" ~note:topT
+    
 
 and handle_call_lhs lhs rhs free_ids =
 
@@ -688,7 +693,7 @@ and handle_call_lhs lhs rhs free_ids =
       List.fold_right
         (fun iter e ->
           let iter_typ = Il.IterT (e.note, iter) $ no_region in
-          IterE (e, [var_name], translate_iter iter) $$ e.at % iter_typ
+          IterE (e, (translate_iter iter, [])) $$ e.at % iter_typ (* MYTODO *)
         )
         map_iters
     in
@@ -704,7 +709,8 @@ and handle_iter_lhs lhs rhs free_ids =
 
   let inner_lhs, iter_ids, iter =
     match lhs.it with
-    | IterE (inner_lhs, iter_ids, iter) ->
+    | IterE (inner_lhs, (iter, xes)) ->
+      let iter_ids = List.map (fun (x, _) -> x) xes in
       inner_lhs, iter_ids, iter
     | _ -> assert (false);
   in
@@ -726,7 +732,8 @@ and handle_iter_lhs lhs rhs free_ids =
           List, Il.IterT (expr.note, Il.List) $ no_region
         | _ -> iter, Il.IterT (expr.note, Il.List) $ no_region
       in
-      IterE (expr, iter_ids_of expr, iter') $$ lhs.at % typ
+      ignore (iter_ids_of expr);
+      IterE (expr, (iter', [])) $$ lhs.at % typ (* MYTODO *)
     else
       (Option.get walker.super).walk_expr walker expr
   in
@@ -758,8 +765,8 @@ and handle_special_lhs lhs rhs free_ids =
   | SubE (s, t) ->
     let rec inject_hasType expr =
       match expr.it with
-      | IterE (inner_expr, ids, iter) ->
-        IterE (inject_hasType inner_expr, ids, iter) $$ expr.at % boolT
+      | IterE (inner_expr, iterexp) ->
+        IterE (inject_hasType inner_expr, iterexp) $$ expr.at % boolT
       | _ -> HasTypeE (expr, t) $$ rhs.at % boolT
     in
     [ ifI (
@@ -772,8 +779,8 @@ and handle_special_lhs lhs rhs free_ids =
     let bindings, es' = extract_non_names es in
     let rec inject_isCaseOf expr =
       match expr.it with
-      | IterE (inner_expr, ids, iter) ->
-        IterE (inject_isCaseOf inner_expr, ids, iter) $$ expr.at % boolT
+      | IterE (inner_expr, iterexp) ->
+        IterE (inject_isCaseOf inner_expr, iterexp) $$ expr.at % boolT
       | _ -> IsCaseOfE (expr, tag) $$ rhs.at % boolT
     in
     [ ifI (
@@ -828,7 +835,7 @@ and handle_special_lhs lhs rhs free_ids =
       | ListE es ->
         let bindings', es' = extract_non_names es in
         Some (numE (Z.of_int (List.length es)) ~note:natT), bindings', listE es' ~note:e.note
-      | IterE (({ it = VarE _; _ } | { it = SubE _; _ }), _, ListN (e', None)) ->
+      | IterE (({ it = VarE _; _ } | { it = SubE _; _ }), (ListN (e', None), _)) ->
         Some e', [], e
       | _ ->
         None, [], e in
@@ -908,13 +915,13 @@ let rec translate_iterpr pr (iter, ids) =
   in
 
   let distribute_iter lhs rhs =
-    let lhs_ids = IdSet.elements (IdSet.inter (free_expr lhs) ids') in
-    let rhs_ids = IdSet.elements (IdSet.inter (free_expr rhs) ids') in
+    let _lhs_ids = IdSet.elements (IdSet.inter (free_expr lhs) ids') in
+    let _rhs_ids = IdSet.elements (IdSet.inter (free_expr rhs) ids') in
     let ty = handle_iter_ty lhs.note in
     let ty' = handle_iter_ty rhs.note in
 
-    assert (List.length (lhs_ids @ rhs_ids) > 0);
-    iterE (lhs, lhs_ids, lhs_iter) ~at:lhs.at ~note:ty, iterE (rhs, rhs_ids, iter') ~at:rhs.at ~note:ty'
+    (* assert (List.length (lhs_ids @ rhs_ids) > 0); *)
+    iterE (lhs, (lhs_iter, [])) ~at:lhs.at ~note:ty, iterE (rhs, (iter', [])) ~at:rhs.at ~note:ty' (* MYTODO *)
   in
 
   let post_instr i =
@@ -922,9 +929,9 @@ let rec translate_iterpr pr (iter, ids) =
     match i.it with
     | LetI (lhs, rhs) -> [ letI (distribute_iter lhs rhs) ~at:at ]
     | IfI (cond, il1, il2) ->
-        let cond_ids = IdSet.elements (IdSet.inter (free_expr cond) ids') in
+        let _cond_ids = IdSet.elements (IdSet.inter (free_expr cond) ids') in
         let ty = handle_iter_ty cond.note in
-        [ ifI (iterE (cond, cond_ids, iter') ~at:cond.at ~note:ty, il1, il2) ~at:at ]
+        [ ifI (iterE (cond, (iter', [])) ~at:cond.at ~note:ty, il1, il2) ~at:at ] (* MYTODO *)
     | _ -> [ i ]
   in
   let walk_config = { Al.Walk.default_config with post_instr } in
@@ -1118,7 +1125,7 @@ let translate_context_winstr winstr =
 let translate_context ctx vs =
   let at = ctx.at in
   let ty = listT valT in
-  let e_vals = iterE (subE ("val", "val") ~note:valT, [ "val" ], List) ~note:ty in
+  let e_vals = iterE (subE ("val", "val") ~note:valT, (List, [])) ~note:ty in (* MYTODO *)
   let vs = List.rev vs in
   let instr_popall = popallI e_vals in
   let instr_pop_context =
@@ -1162,7 +1169,7 @@ let translate_context ctx vs =
 
 let translate_context_rgroup lhss sub_algos inner_params =
   let ty = listT valT in
-  let e_vals = iterE (varE "val" ~note:valT, [ "val" ], List) ~note:ty in
+  let e_vals = iterE (varE "val" ~note:valT, (List, [])) ~note:ty in (* MYTODO *)
   let instr_popall = popallI e_vals in
   let instrs_context =
     List.fold_right2 (fun lhs algo acc ->

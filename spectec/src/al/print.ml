@@ -174,7 +174,7 @@ and string_of_expr expr =
     sprintf "label(%s, %s)" (string_of_expr e1) (string_of_expr e2)
   | VarE id -> id
   | SubE (id, _) -> id
-  | IterE (e, _, iter) -> string_of_expr e ^ string_of_iter iter
+  | IterE (e, ie) -> string_of_expr e ^ string_of_iterexp ie
   | InfixE (e1, a, e2) -> "(" ^ string_of_expr e1 ^ " " ^ string_of_atom a ^ " " ^ string_of_expr e2 ^ ")"
   | CaseE ({ it=Atom.Atom ("CONST" | "VCONST"); _ }, hd::tl) ->
     "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
@@ -224,6 +224,14 @@ and string_of_arg arg =
   | TypA typ -> string_of_typ typ
 
 and string_of_args sep = string_of_list string_of_arg sep
+
+
+
+(* Iter exps *)
+
+and string_of_iterexp (iter, xes) =
+  string_of_iter iter ^ "{" ^ String.concat ", "
+    (List.map (fun (id, e) -> id ^ " <- " ^ string_of_expr e) xes) ^ "}"
 
 
 (* Instructions *)
@@ -286,7 +294,7 @@ let rec string_of_instr' depth instr =
       (string_of_instrs' (depth + 1) il2)
       (repeat indent depth)
   | OtherwiseI il ->
-    sprintf " Otherwise:%s" 
+    sprintf " Otherwise:%s"
       (string_of_instrs' (depth + 1) il)
   | EitherI (il1, il2) ->
     sprintf " Either {%s\n%s }\n%s Or {%s\n %s}"
@@ -308,12 +316,12 @@ let rec string_of_instr' depth instr =
   | LetI (e1, e2) ->
     sprintf " Let %s = %s" (string_of_expr e1)
       (string_of_expr e2)
-  | TrapI -> sprintf " Trap" 
-  | NopI -> sprintf " Nop" 
-  | ReturnI None -> sprintf " Return" 
+  | TrapI -> sprintf " Trap"
+  | NopI -> sprintf " Nop"
+  | ReturnI None -> sprintf " Return"
   | ReturnI (Some e) -> sprintf " Return %s" (string_of_expr e)
   | EnterI (e1, e2, il) ->
-    sprintf " Enter (%s, %s) {%s \n%s }" 
+    sprintf " Enter (%s, %s) {%s \n%s }"
       (string_of_expr e1) (string_of_expr e2) (string_of_instrs' (depth + 1) il) (repeat indent depth)
   | ExecuteI e ->
     sprintf " Execute %s" (string_of_expr e)
@@ -327,7 +335,7 @@ let rec string_of_instr' depth instr =
     sprintf " %s%s := %s"
       (string_of_expr e1) (string_of_path p) (string_of_expr e2)
   | AppendI (e1, e2) ->
-    sprintf " %s :+ %s" 
+    sprintf " %s :+ %s"
       (string_of_expr e2) (string_of_expr e1)
   | YetI s -> sprintf " YetI: %s." s
 
@@ -362,11 +370,6 @@ let string_of_algorithm algo =
 (* Structured stringfier *)
 
 (* Wasm type *)
-
-(* Names *)
-
-let structured_string_of_ids ids =
-  "[" ^ String.concat ", " ids ^ "]"
 
 
 (* Values *)
@@ -484,14 +487,14 @@ and structured_string_of_expr expr =
     ^ ")"
   | VarE id -> "VarE (" ^ id ^ ")"
   | SubE (id, t) -> "SubE (" ^ id ^ "," ^ t ^ ")"
-  | IterE (e, ids, iter) ->
+  | IterE (e, (iter, xes)) ->
     "IterE ("
     ^ structured_string_of_expr e
-    ^ ", "
-    ^ structured_string_of_ids ids
-    ^ ", "
-    ^ string_of_iter iter
-    ^ ")"
+    ^ ", ("
+    ^ structured_string_of_iter iter
+    ^ ", {"
+    ^ string_of_list (fun (x, e) -> x ^ structured_string_of_expr e) ", " xes
+    ^ "}))"
   | InfixE (e1, a, e2) ->
     "InfixE ("
     ^ structured_string_of_expr e1

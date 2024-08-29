@@ -96,7 +96,7 @@ and expr' =
   | CaseE2 of mixop * expr list                   (* mixop `(` expr* `)` -- CaseE *) (* TODO: Migrate CaseE to CaseE2*)
   | CallE of id * arg list                        (* id `(` expr* `)` *)
   | InvCallE of id * int option list * arg list   (* id`_`int*`^-1(` expr* `)` *)
-  | IterE of expr * id list * iter                (* expr (`{` id* `}`)* *)
+  | IterE of expr * iterexp                       (* expr (`{` id* `}`)* *)
   | OptE of expr option                           (* expr?  *)
   | ListE of expr list                            (* `[` expr* `]` *)
   | InfixE of expr * atom * expr                  (* "expr infix expr" *) (* TODO: Remove InfixE using hint *)
@@ -137,6 +137,8 @@ and arg = arg' phrase
 and arg' =
   | ExpA of expr
   | TypA of typ
+
+and iterexp = iter * (id * expr) list
 
 (* Instructions *)
 

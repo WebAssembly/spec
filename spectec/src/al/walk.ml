@@ -56,7 +56,10 @@ let walk_expr (walker: unit_walker) (expr: expr) : unit =
     walker.walk_expr walker e1; List.iter (walk_path walker) ps;
     walker.walk_expr walker e2
   | OptE e_opt -> Option.iter (walker.walk_expr walker) e_opt
-  | IterE (e, _, i) -> walker.walk_expr walker e; walk_iter walker i
+  | IterE (e, (iter, xes)) ->
+    walker.walk_expr walker e;
+    walker.walk_iter walker iter;
+    List.iter (fun (_, e) -> walker.walk_expr walker e) xes
 
 let walk_instr (walker: unit_walker) (instr: instr) : unit =
   match instr.it with
@@ -154,7 +157,7 @@ let walk_expr (walker: walker) (expr: expr) : expr =
     | LabelE (e1, e2) -> LabelE (walk_expr e1, walk_expr e2)
     | ContE e' -> ContE (walk_expr e')
     | ChooseE e' -> ChooseE (walk_expr e')
-    | IterE (e, ids, iter) -> IterE (walk_expr e, ids, walk_iter iter)
+    | IterE (e, (iter, xes)) -> IterE (walk_expr e, (walk_iter iter, List.map (fun (x, e) -> (x, walk_expr e)) xes))
     | ContextKindE (a, e) -> ContextKindE (a, walk_expr e)
     | IsCaseOfE (e, a) -> IsCaseOfE (walk_expr e, a)
     | IsDefinedE e -> IsDefinedE (walk_expr e)
@@ -276,7 +279,7 @@ let rec walk_expr f e =
       | ChooseE e' -> ChooseE (new_ e')
       | VarE id -> VarE id
       | SubE (id, t) -> SubE (id, t)
-      | IterE (e, ids, iter) -> IterE (new_ e, ids, iter)
+      | IterE (e, (iter, xes)) -> IterE (new_ e, (iter, List.map (fun (x, e) -> (x, new_ e)) xes))
       | ContextKindE (a, e) -> ContextKindE (a, new_ e)
       | IsCaseOfE (e, a) -> IsCaseOfE (new_ e, a)
       | IsDefinedE e -> IsDefinedE (new_ e)

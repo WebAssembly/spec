@@ -153,7 +153,7 @@ let rec if_expr_to_instrs e =
     let neg_cond = if_expr_to_instrs e1 in
     let body = if_expr_to_instrs e2 in
     [ match neg_cond with
-      | [ CmpI ({ it = IterE ({ it = VarE name; _ }, _, Opt); _ }, Eq, { it = OptE None; _ }) ] ->
+      | [ CmpI ({ it = IterE ({ it = VarE name; _ }, (Opt, _)); _ }, Eq, { it = OptE None; _ }) ] ->
         IfI (isDefinedE (varE name ~note:no_note) ~note:no_note, body)
       | _ -> print_yet_exp e "if_expr_to_instrs"; YetI (Il.Print.string_of_exp e) ]
   | Ast.BinE (Ast.EquivOp, e1, e2) ->
@@ -197,7 +197,7 @@ let rec prem_to_instrs prem =
     | Ast.(List | ListN _), vars ->
         let to_iter (id, _) =
           let name = varE id.it ~note:no_note in
-          name, iterE (name, [id.it], Al.Ast.List) ~note:no_note
+          name, iterE (name, (Al.Ast.List, [])) ~note:no_note (* MYTODO *)
         in
         [ ForallI (List.map to_iter vars, prem_to_instrs prem) ]
     | _ -> print_yet_prem prem "prem_to_instrs"; [ YetI "TODO: prem_to_intrs iter" ]

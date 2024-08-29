@@ -288,7 +288,7 @@ let remove_dead_assignment il =
           let bindings = free_expr e11 @ free_expr e12 in
           let get_bounds_iters e =
             match e.it with
-            | IterE (_, _, ListN (e_iter, _)) -> free_expr e_iter
+            | IterE (_, (ListN (e_iter, _), _)) -> free_expr e_iter
             | _ -> IdSet.empty
           in
           let bounds_iters = (get_bounds_iters e11) @ (get_bounds_iters e12) in
@@ -670,7 +670,7 @@ let insert_frame_binding instrs =
       let bindings' = free_expr e11 @ free_expr e12 in
       let get_bounds_iters e =
         match e.it with
-        | IterE (_, _, ListN (e_iter, _)) -> free_expr e_iter
+        | IterE (_, (ListN (e_iter, _), _)) -> free_expr e_iter
         | _ -> IdSet.empty
       in
       let bounds_iters = (get_bounds_iters e11) @ (get_bounds_iters e12) in
@@ -896,7 +896,7 @@ let remove_enter algo =
           pushI e_frame ~at:instr.at :: il @ [ popI e_frame ~at:instr.at ]
         | _ ->
           let ty_vals = listT valT in
-          let e_tmp = iterE (varE ("val") ~note:valT, [ "val" ], List) ~note:ty_vals in
+          let e_tmp = iterE (varE ("val") ~note:valT, (List, [])) ~note:ty_vals in (* MYTODO *)
           pushI e_frame ~at:instr.at :: il @ [
             popallI e_tmp ~at:instr.at;
             popI e_frame ~at:instr.at;
