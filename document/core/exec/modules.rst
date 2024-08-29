@@ -479,19 +479,17 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
 
 14. For each :ref:`data segment <syntax-data>` :math:`\data_i` in :math:`\module.\MDATAS` whose :ref:`mode <syntax-datamode>` is of the form :math:`\DACTIVE~\{ \DMEM~\memidx_i, \DOFFSET~\X{dinstr}^\ast_i~\END \}`, do:
 
-    a. Assert: :math:`\memidx_i` is :math:`0`.
+    a. Let :math:`n` be the length of the list :math:`\data_i.\DINIT`.
 
-    b. Let :math:`n` be the length of the list :math:`\data_i.\DINIT`.
+    b. :ref:`Execute <exec-instrs>` the instruction sequence :math:`\X{dinstr}^\ast_i`.
 
-    c. :ref:`Execute <exec-instrs>` the instruction sequence :math:`\X{dinstr}^\ast_i`.
+    c. :ref:`Execute <exec-const>` the instruction :math:`\I32.\CONST~0`.
 
-    d. :ref:`Execute <exec-const>` the instruction :math:`\I32.\CONST~0`.
+    d. :ref:`Execute <exec-const>` the instruction :math:`\I32.\CONST~n`.
 
-    e. :ref:`Execute <exec-const>` the instruction :math:`\I32.\CONST~n`.
+    e. :ref:`Execute <exec-memory.init>` the instruction :math:`\MEMORYINIT~i`.
 
-    f. :ref:`Execute <exec-memory.init>` the instruction :math:`\MEMORYINIT~i`.
-
-    g. :ref:`Execute <exec-data.drop>` the instruction :math:`\DATADROP~i`.
+    f. :ref:`Execute <exec-data.drop>` the instruction :math:`\DATADROP~i`.
 
 15. If the :ref:`start function <syntax-start>` :math:`\module.\MSTART` is not empty, then:
 
