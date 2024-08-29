@@ -40,8 +40,8 @@ jobs:
         run: cd spectec && opam exec make
       - name: Build main spec
         run: cd document/core && opam exec make main
-      - name: Run Bikeshed
-        run: cd document/core && opam exec make bikeshed
+      #- name: Run Bikeshed
+      #  run: cd document/core && opam exec make bikeshed
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
@@ -55,8 +55,8 @@ jobs:
         uses: actions/checkout@v2
       - name: Setup Bikeshed
         run: pip install bikeshed && bikeshed update
-      #- name: Run Bikeshed
-      #  run: bikeshed spec "document/js-api/index.bs" "document/js-api/index.html"
+      - name: Run Bikeshed
+        run: bikeshed spec "document/js-api/index.bs" "document/js-api/index.html"
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
