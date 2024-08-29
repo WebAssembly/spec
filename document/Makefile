@@ -28,21 +28,21 @@ diff: $(DIRS:%=diff-%)
 # macOS: do “brew install tar” & run “make” as: TAR=gtar make -e WD-tar
 .PHONY: WD-tar
 WD-tar:
-	for dir in $(DIRS); \
-		do STATUS=--md-status=WD TAR=$(TAR) $(MAKE) -e -C $$dir $@;\
+	for dir in $(DIRS); do \
+		TAR=$(TAR) $(MAKE) -e -C $$dir $@ || exit 1; \
 	done
 
 # macOS: do “brew install tar” & run “make” as: TAR=gtar make -e WD-echidna
 .PHONY: WD-echidna
 WD-echidna:
-	for dir in $(DIRS); \
-		do $(MAKE) -e -C $$dir $@;\
+	for dir in $(DIRS); do \
+		$(MAKE) -e -C $$dir $@ || exit 1; \
 	done
 
 .PHONY: WD-echidna-CI
 WD-echidna-CI:
-	for dir in $(DIRS); \
-		do $(MAKE) -e -C $$dir $@;\
+	for dir in $(DIRS); do \
+		$(MAKE) -e -C $$dir $@ || exit 1; \
 	done
 
 # Directory-specific targets.
