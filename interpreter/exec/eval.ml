@@ -286,15 +286,16 @@ let rec step (c : config) : config =
             Plain (TableCopy (x, y));
           ]
         else (* d > s *)
+          let n' = I32.sub n 1l in
           vs', List.map (at e.at) [
-            Plain (Const (I32 (I32.add d 1l) @@ e.at));
-            Plain (Const (I32 (I32.add s 1l) @@ e.at));
-            Plain (Const (I32 (I32.sub n 1l) @@ e.at));
-            Plain (TableCopy (x, y));
-            Plain (Const (I32 d @@ e.at));
-            Plain (Const (I32 s @@ e.at));
+            Plain (Const (I32 (I32.add d n') @@ e.at));
+            Plain (Const (I32 (I32.add s n') @@ e.at));
             Plain (TableGet y);
             Plain (TableSet x);
+            Plain (Const (I32 d @@ e.at));
+            Plain (Const (I32 s @@ e.at));
+            Plain (Const (I32 n' @@ e.at));
+            Plain (TableCopy (x, y));
           ]
 
       | TableInit (x, y), Num (I32 n) :: Num (I32 s) :: Num (I32 d) :: vs' ->
@@ -447,17 +448,18 @@ let rec step (c : config) : config =
             Plain (MemoryCopy (x, y));
           ]
         else (* d > s *)
+          let n' = I32.sub n 1l in
           vs', List.map (at e.at) [
-            Plain (Const (I32 (I32.add d 1l) @@ e.at));
-            Plain (Const (I32 (I32.add s 1l) @@ e.at));
-            Plain (Const (I32 (I32.sub n 1l) @@ e.at));
-            Plain (MemoryCopy (x, y));
-            Plain (Const (I32 d @@ e.at));
-            Plain (Const (I32 s @@ e.at));
+            Plain (Const (I32 (I32.add d n') @@ e.at));
+            Plain (Const (I32 (I32.add s n') @@ e.at));
             Plain (Load
               (y, {ty = I32Type; align = 0; offset = 0l; pack = Some (Pack8, ZX)}));
             Plain (Store
               (x, {ty = I32Type; align = 0; offset = 0l; pack = Some Pack8}));
+            Plain (Const (I32 d @@ e.at));
+            Plain (Const (I32 s @@ e.at));
+            Plain (Const (I32 n' @@ e.at));
+            Plain (MemoryCopy (x, y));
           ]
 
       | MemoryInit (x, y), Num (I32 n) :: Num (I32 s) :: Num (I32 d) :: vs' ->

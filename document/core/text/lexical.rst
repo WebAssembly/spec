@@ -71,8 +71,9 @@ Any token that does not fall into any of the other categories is considered *res
 
 .. index:: ! white space, character, ASCII
    single: text format; white space
-.. _text-format:
 .. _text-space:
+.. _text-format:
+.. _text-newline:
 
 White Space
 ~~~~~~~~~~~
@@ -85,7 +86,9 @@ The allowed formatting characters correspond to a subset of the |ASCII|_ *format
    \production{white space} & \Tspace &::=&
      (\text{~~} ~|~ \Tformat ~|~ \Tcomment)^\ast \\
    \production{format} & \Tformat &::=&
-     \unicode{09} ~|~ \unicode{0A} ~|~ \unicode{0D} \\
+     \Tnewline ~|~ \unicode{09} \\
+   \production{newline} & \Tnewline &::=&
+     \unicode{0A} ~|~ \unicode{0D} ~|~ \unicode{0D}~\unicode{0A} \\
    \end{array}
 
 The only relevance of white space is to separate :ref:`tokens <text-token>`. It is otherwise ignored.
@@ -107,13 +110,13 @@ Block comments can be nested.
    \production{comment} & \Tcomment &::=&
      \Tlinecomment ~|~ \Tblockcomment \\
    \production{line comment} & \Tlinecomment &::=&
-     \Tcommentd~~\Tlinechar^\ast~~(\unicode{0A} ~|~ \T{eof}) \\
+     \Tcommentd~~\Tlinechar^\ast~~(\Tnewline ~|~ \T{eof}) \\
    \production{line character} & \Tlinechar &::=&
-     c{:}\Tchar & (\iff c \neq \unicode{0A}) \\
+     c{:}\Tchar & (\iff c \neq \unicode{0A} \land c \neq \unicode{0D}) \\
    \production{block comment} & \Tblockcomment &::=&
      \Tcommentl~~\Tblockchar^\ast~~\Tcommentr \\
    \production{block character} & \Tblockchar &::=&
-     c{:}\Tchar & (\iff c \neq \text{;} \wedge c \neq \text{(}) \\ &&|&
+     c{:}\Tchar & (\iff c \neq \text{;} \land c \neq \text{(}) \\ &&|&
      \text{;} & (\iff~\mbox{the next character is not}~\text{)}) \\ &&|&
      \text{(} & (\iff~\mbox{the next character is not}~\text{;}) \\ &&|&
      \Tblockcomment \\

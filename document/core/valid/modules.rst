@@ -151,7 +151,7 @@ Element segments :math:`\elem` are classified by the :ref:`reference type <synta
 
   * The expression :math:`e_i` must be :ref:`valid <valid-expr>` with some :ref:`result type <syntax-resulttype>` :math:`[t]`.
 
-  * The expression :math:`e_i` must be :ref:`constant <valid-const>`.
+  * The expression :math:`e_i` must be :ref:`constant <valid-constant>`.
 
 * The element mode :math:`\elemmode` must be valid with :ref:`reference type <syntax-reftype>` :math:`t`.
 
@@ -536,32 +536,10 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
   * :math:`C.\CREFS` is the set :math:`\freefuncidx(\module \with \MFUNCS = \epsilon \with \MSTART = \epsilon)`, i.e., the set of :ref:`function indices <syntax-funcidx>` occurring in the module, except in its :ref:`functions <syntax-func>` or :ref:`start function <syntax-start>`.
 
-* Let :math:`C'` be the :ref:`context <context>` where:
-
-  * :math:`C'.\CGLOBALS` is the sequence :math:`\etglobals(\X{it}^\ast)`,
-
-  * :math:`C'.\CFUNCS` is the same as :math:`C.\CFUNCS`,
-
-  * :math:`C'.\CREFS` is the same as :math:`C.\CREFS`,
-
-  * all other fields are empty.
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, except that :math:`C'.\CGLOBALS` is just the sequence :math:`\etglobals(\X{it}^\ast)`.
 
 * For each :math:`\functype_i` in :math:`\module.\MTYPES`,
   the :ref:`function type <syntax-functype>` :math:`\functype_i` must be :ref:`valid <valid-functype>`.
-
-* Under the context :math:`C`:
-
-  * For each :math:`\func_i` in :math:`\module.\MFUNCS`,
-    the definition :math:`\func_i` must be :ref:`valid <valid-func>` with a :ref:`function type <syntax-functype>` :math:`\X{ft}_i`.
-
-  * If :math:`\module.\MSTART` is non-empty,
-    then :math:`\module.\MSTART` must be :ref:`valid <valid-start>`.
-
-  * For each :math:`\import_i` in :math:`\module.\MIMPORTS`,
-    the segment :math:`\import_i` must be :ref:`valid <valid-import>` with an :ref:`external type <syntax-externtype>` :math:`\X{it}_i`.
-
-  * For each :math:`\export_i` in :math:`\module.\MEXPORTS`,
-    the segment :math:`\export_i` must be :ref:`valid <valid-export>` with :ref:`external type <syntax-externtype>` :math:`\X{et}_i`.
 
 * Under the context :math:`C'`:
 
@@ -579,6 +557,20 @@ Instead, the context :math:`C` for validation of the module's content is constru
 
   * For each :math:`\data_i` in :math:`\module.\MDATAS`,
     the segment :math:`\data_i` must be :ref:`valid <valid-data>`.
+
+* Under the context :math:`C`:
+
+  * For each :math:`\func_i` in :math:`\module.\MFUNCS`,
+    the definition :math:`\func_i` must be :ref:`valid <valid-func>` with a :ref:`function type <syntax-functype>` :math:`\X{ft}_i`.
+
+  * If :math:`\module.\MSTART` is non-empty,
+    then :math:`\module.\MSTART` must be :ref:`valid <valid-start>`.
+
+  * For each :math:`\import_i` in :math:`\module.\MIMPORTS`,
+    the segment :math:`\import_i` must be :ref:`valid <valid-import>` with an :ref:`external type <syntax-externtype>` :math:`\X{it}_i`.
+
+  * For each :math:`\export_i` in :math:`\module.\MEXPORTS`,
+    the segment :math:`\export_i` must be :ref:`valid <valid-export>` with :ref:`external type <syntax-externtype>` :math:`\X{et}_i`.
 
 * The length of :math:`C.\CMEMS` must not be larger than :math:`1`.
 
@@ -635,7 +627,7 @@ Instead, the context :math:`C` for validation of the module's content is constru
      \\
      C = \{ \CTYPES~\type^\ast, \CFUNCS~\X{ift}^\ast\,\X{ft}^\ast, \CTABLES~\X{itt}^\ast\,\X{tt}^\ast, \CMEMS~\X{imt}^\ast\,\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast\,\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~{\ok}^n, \CREFS~x^\ast \}
      \\
-     C' = \{ \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS) \}
+     C' = C \with \CGLOBALS = \X{igt}^\ast
      \qquad
      (\export.\ENAME)^\ast ~\F{disjoint}
      \\

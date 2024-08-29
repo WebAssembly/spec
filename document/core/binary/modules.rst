@@ -60,7 +60,7 @@ Each section consists of
 
 * a one-byte section *id*,
 * the |U32| *size* of the contents, in bytes,
-* the actual *contents*, whose structure is depended on the section id.
+* the actual *contents*, whose structure is dependent on the section id.
 
 Every section is optional; an omitted section is equivalent to the section being present with empty contents.
 
@@ -101,6 +101,9 @@ Id  Section
 11  :ref:`data section <binary-datasec>`           
 12  :ref:`data count section <binary-datacountsec>`
 ==  ===============================================
+
+.. note::
+   Section ids do not always correspond to the :ref:`order of sections <binary-module>` in the encoding of a module.
 
 
 .. index:: ! custom section
@@ -357,7 +360,7 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
 
 .. note::
    The initial integer can be interpreted as a bitfield.
-   Bit 0 indicates a passive or declarative segment,
+   Bit 0 distinguishes a passive or declarative segment from an active segment,
    bit 1 indicates the presence of an explicit table index for an active segment and otherwise distinguishes passive from declarative segments,
    bit 2 indicates the use of element type and element :ref:`expressions <binary-expr>` instead of element kind and element indices.
 

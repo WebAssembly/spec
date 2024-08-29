@@ -10,18 +10,6 @@ struct
     if n = 0 then () else (f x; repeat (n - 1) f x)
 end
 
-module Int =
-struct
-  let log2 n =
-    if n <= 0 then failwith "log2";
-    let rec loop acc n = if n = 1 then acc else loop (acc + 1) (n lsr 1) in
-    loop 0 n
-
-  let is_power_of_two n =
-    if n < 0 then failwith "is_power_of_two";
-    n <> 0 && n land (n - 1) = 0
-end
-
 module String =
 struct
   let implode cs =
@@ -156,7 +144,7 @@ module Array32 =
 struct
   let make n x =
     if n < 0l || Int64.of_int32 n > Int64.of_int max_int then
-      raise (Invalid_argument "Array32.make");
+      invalid_arg "Array32.make";
     Array.make (Int32.to_int n) x
 
   let length a = Int32.of_int (Array.length a)
@@ -179,7 +167,7 @@ struct
   struct
     let create kind layout n =
       if n < 0L || n > Int64.of_int max_int then
-        raise (Invalid_argument "Bigarray.Array1_64.create");
+        invalid_arg "Bigarray.Array1_64.create";
       Array1.create kind layout (Int64.to_int n)
 
     let dim a = Int64.of_int (Array1.dim a)
@@ -204,7 +192,7 @@ struct
   let force o =
     match o with
     | Some y -> y
-    | None -> raise (Invalid_argument "Option.force")
+    | None -> invalid_arg "Option.force"
 
   let map f = function
     | Some x -> Some (f x)
@@ -213,4 +201,46 @@ struct
   let app f = function
     | Some x -> f x
     | None -> ()
+end
+
+module Int =
+struct
+  let log2 n =
+    if n <= 0 then failwith "log2";
+    let rec loop acc n = if n = 1 then acc else loop (acc + 1) (n lsr 1) in
+    loop 0 n
+
+  let is_power_of_two n =
+    if n < 0 then failwith "is_power_of_two";
+    n <> 0 && n land (n - 1) = 0
+end
+
+module Int32 =
+struct
+  let log2 n =
+    if n <= 0l then failwith "log2";
+    let rec loop acc n =
+      if n = 1l then acc else loop (Int32.add acc 1l) (Int32.shift_right_logical n 1) in
+    loop 0l n
+
+  let is_power_of_two n =
+    if n < 0l then failwith "is_power_of_two";
+    n <> 0l && Int32.(logand n (sub n 1l)) = 0l
+end
+
+module Int64 =
+struct
+  let log2_unsigned n =
+    let rec loop acc n =
+      if n = 1L then acc else loop (Int64.add acc 1L) (Int64.shift_right_logical n 1) in
+    loop 0L n
+
+  let log2 n =
+    if n <= 0L then failwith "log2" else log2_unsigned n
+
+  let is_power_of_two_unsigned n =
+    n <> 0L && Int64.(logand n (sub n 1L)) = 0L
+
+  let is_power_of_two n =
+    if n < 0L then failwith "is_power_of_two" else is_power_of_two_unsigned n
 end

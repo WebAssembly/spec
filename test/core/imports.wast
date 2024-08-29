@@ -238,12 +238,18 @@
   (func (export "get-1") (result i32) (global.get 1))
   (func (export "get-x") (result i32) (global.get $x))
   (func (export "get-y") (result i32) (global.get $y))
+  (func (export "get-4") (result i64) (global.get 4))
+  (func (export "get-5") (result f32) (global.get 5))
+  (func (export "get-6") (result f64) (global.get 6))
 )
 
 (assert_return (invoke "get-0") (i32.const 666))
 (assert_return (invoke "get-1") (i32.const 666))
 (assert_return (invoke "get-x") (i32.const 666))
 (assert_return (invoke "get-y") (i32.const 666))
+(assert_return (invoke "get-4") (i64.const 666))
+(assert_return (invoke "get-5") (f32.const 666.6))
+(assert_return (invoke "get-6") (f64.const 666.6))
 
 (module (import "test" "global-i32" (global i32)))
 (module (import "test" "global-f32" (global f32)))
@@ -371,7 +377,6 @@
 (assert_return (invoke "call" (i32.const 2)) (i32.const 22))
 (assert_trap (invoke "call" (i32.const 3)) "uninitialized element")
 (assert_trap (invoke "call" (i32.const 100)) "undefined element")
-
 
 (module
   (import "spectest" "table" (table 0 funcref))
@@ -558,26 +563,6 @@
 (assert_return (invoke "grow" (i32.const 0)) (i32.const 2))
 (assert_return (invoke "grow" (i32.const 1)) (i32.const -1))
 (assert_return (invoke "grow" (i32.const 0)) (i32.const 2))
-
-(module $Mgm
-  (memory (export "memory") 1) ;; initial size is 1
-  (func (export "grow") (result i32) (memory.grow (i32.const 1)))
-)
-(register "grown-memory" $Mgm)
-(assert_return (invoke $Mgm "grow") (i32.const 1)) ;; now size is 2
-(module $Mgim1
-  ;; imported memory limits should match, because external memory size is 2 now
-  (memory (export "memory") (import "grown-memory" "memory") 2) 
-  (func (export "grow") (result i32) (memory.grow (i32.const 1)))
-)
-(register "grown-imported-memory" $Mgim1)
-(assert_return (invoke $Mgim1 "grow") (i32.const 2)) ;; now size is 3
-(module $Mgim2
-  ;; imported memory limits should match, because external memory size is 3 now
-  (import "grown-imported-memory" "memory" (memory 3))
-  (func (export "size") (result i32) (memory.size))
-)
-(assert_return (invoke $Mgim2 "size") (i32.const 3))
 
 
 ;; Syntax errors

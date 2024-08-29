@@ -1,6 +1,7 @@
-DIRS     = core js-api web-api
+DIRS     = js-api web-api core
 FILES    = index.html
 BUILDDIR = _build
+TAR      = tar
 
 # Global targets.
 
@@ -24,6 +25,25 @@ clean: $(DIRS:%=clean-%)
 .PHONY: diff
 diff: $(DIRS:%=diff-%)
 
+# macOS: do “brew install tar” & run “make” as: TAR=gtar make -e WD-tar
+.PHONY: WD-tar
+WD-tar:
+	for dir in $(DIRS); do \
+		TAR=$(TAR) $(MAKE) -e -C $$dir $@ || exit 1; \
+	done
+
+# macOS: do “brew install tar” & run “make” as: TAR=gtar make -e WD-echidna
+.PHONY: WD-echidna
+WD-echidna:
+	for dir in $(DIRS); do \
+		$(MAKE) -e -C $$dir $@ || exit 1; \
+	done
+
+.PHONY: WD-echidna-CI
+WD-echidna-CI:
+	for dir in $(DIRS); do \
+		$(MAKE) -e -C $$dir $@ || exit 1; \
+	done
 
 # Directory-specific targets.
 

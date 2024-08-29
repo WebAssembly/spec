@@ -3,14 +3,17 @@ Title: WebAssembly Web API
 Shortname: wasm-web-api
 Group: wasm
 Status: ED
+Issue Tracking: GitHub https://github.com/WebAssembly/spec/issues
 Level: 2
 TR: https://www.w3.org/TR/wasm-web-api-2/
 ED: https://webassembly.github.io/spec/web-api/
-Editor: Ms2ger, Igalia
+Implementation Report: https://webassembly.org/features/
+Editor: Ms2ger, w3cid 46309, Igalia
 Repository: WebAssembly/spec
 Abstract: This document describes the integration of WebAssembly with the broader web platform.
 Markup Shorthands: css no, markdown yes
 Prepare For TR: true
+Date: now
 </pre>
 
 <pre class='biblio'>

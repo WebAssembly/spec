@@ -75,6 +75,20 @@ sig
   val is_power_of_two : int -> bool
 end
 
+module Int32 :
+sig
+  val log2 : int32 -> int32
+  val is_power_of_two : int32 -> bool
+end
+
+module Int64 :
+sig
+  val log2 : int64 -> int64
+  val log2_unsigned : int64 -> int64
+  val is_power_of_two : int64 -> bool
+  val is_power_of_two_unsigned : int64 -> bool
+end
+
 module String :
 sig
   val implode : char list -> string

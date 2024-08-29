@@ -1,0 +1,101 @@
+name: CI for specs
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ .github/**, document/** ]
+
+  pull_request:
+    branches: [ main ]
+    paths: [ .github/**, document/** ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build-core-spec:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        with:
+          submodules: "recursive"
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Setup Bikeshed
+        run: pip install bikeshed && bikeshed update
+      - name: Setup TexLive
+        run: sudo apt-get update -y && sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
+      - name: Setup Sphinx
+        run: pip install six && pip install sphinx==5.1.0
+      - name: Build main spec
+        run: cd document/core && make main
+      - name: Run Bikeshed
+        run: cd document/core && make bikeshed
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: core-rendered
+          path: document/core/_build/html
+
+  build-js-api-spec:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Setup Bikeshed
+        run: pip install bikeshed && bikeshed update
+      - name: Run Bikeshed
+        run: bikeshed spec "document/js-api/index.bs" "document/js-api/index.html"
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: js-api-rendered
+          path: document/js-api/index.html
+
+  build-web-api-spec:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Setup Bikeshed
+        run: pip install bikeshed && bikeshed update
+      - name: Run Bikeshed
+        run: bikeshed spec "document/web-api/index.bs" "document/web-api/index.html"
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: web-api-rendered
+          path: document/web-api/index.html
+
+  publish-spec:
+    runs-on: ubuntu-latest
+    needs: [build-core-spec, build-js-api-spec, build-web-api-spec]
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Create output directory
+        run: mkdir _output && cp document/index.html _output/index.html
+      - name: Download core spec artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: core-rendered
+          path: _output/core
+      - name: Download JS API spec artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: js-api-rendered
+          path: _output/js-api
+      - name: Download Web API spec artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: web-api-rendered
+          path: _output/web-api
+      - name: Publish to GitHub Pages
+        if: github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          publish_dir: ./_output
+          github_token: ${{ secrets.GITHUB_TOKEN }}
