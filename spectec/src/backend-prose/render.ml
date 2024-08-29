@@ -67,6 +67,7 @@ let a2e a =
   match a.it with
   | Al.Ast.ExpA e -> e
   | Al.Ast.TypA _ -> error a.at "Caannot render inverse function with type argument"
+  | Al.Ast.DefA _ -> error a.at "Caannot render inverse function with def argument"
 
 let al_invcalle_to_al_bine e id nl al =
   let efree = (match e.it with Al.Ast.TupE el -> el | _ -> [ e ]) in
@@ -145,6 +146,8 @@ and al_to_el_arg arg =
   | Al.Ast.TypA _typ ->
     (* TODO: Require Il.Ast.typ to El.Ast.typ translation *)
     Some (El.Ast.(TypA (VarT ("TODO" $ arg.at, []) $ arg.at)))
+  | Al.Ast.DefA id ->
+    Some (El.Ast.DefA (id $ no_region))
 
 and al_to_el_args args =
   List.fold_left

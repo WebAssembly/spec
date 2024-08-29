@@ -1329,6 +1329,9 @@ warning: definition `funcidx_nonfuncs` was never spliced
 warning: definition `funcsxa` was never spliced
 warning: definition `funcsxt` was never spliced
 warning: definition `funcsxx` was never spliced
+warning: definition `fvbinop_` was never spliced
+warning: definition `fvrelop_` was never spliced
+warning: definition `fvunop_` was never spliced
 warning: definition `fzero` was never spliced
 warning: definition `global` was never spliced
 warning: definition `globalinst` was never spliced
@@ -1383,6 +1386,11 @@ warning: definition `ishr_` was never spliced
 warning: definition `isize` was never spliced
 warning: definition `isub_` was never spliced
 warning: definition `isub_sat_` was never spliced
+warning: definition `ivbinop_` was never spliced
+warning: definition `ivbinopsx_` was never spliced
+warning: definition `ivrelop_` was never spliced
+warning: definition `ivrelopsx_` was never spliced
+warning: definition `ivunop_` was never spliced
 warning: definition `ixor_` was never spliced
 warning: definition `lanes_` was never spliced
 warning: definition `lanetype` was never spliced
@@ -1913,6 +1921,9 @@ warning: definition prose `funcinst` was never spliced
 warning: definition prose `funcsxa` was never spliced
 warning: definition prose `funcsxt` was never spliced
 warning: definition prose `funcsxx` was never spliced
+warning: definition prose `fvbinop_` was never spliced
+warning: definition prose `fvrelop_` was never spliced
+warning: definition prose `fvunop_` was never spliced
 warning: definition prose `fzero` was never spliced
 warning: definition prose `global` was never spliced
 warning: definition prose `globalinst` was never spliced
@@ -1931,6 +1942,11 @@ warning: definition prose `invibytes_` was never spliced
 warning: definition prose `invlanes_` was never spliced
 warning: definition prose `invoke` was never spliced
 warning: definition prose `invsigned_` was never spliced
+warning: definition prose `ivbinop_` was never spliced
+warning: definition prose `ivbinopsx_` was never spliced
+warning: definition prose `ivrelop_` was never spliced
+warning: definition prose `ivrelopsx_` was never spliced
+warning: definition prose `ivunop_` was never spliced
 warning: definition prose `lanetype` was never spliced
 warning: definition prose `list_` was never spliced
 warning: definition prose `local` was never spliced

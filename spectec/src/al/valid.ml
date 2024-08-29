@@ -45,7 +45,7 @@ module Set = Free.IdSet
 let bound_set: Set.t ref = ref Set.empty
 let add_bound_var id = bound_set := Set.add id !bound_set
 let add_bound_vars expr = bound_set := Set.union (Free.free_expr expr) !bound_set
-let add_bound_param arg = match arg.it with ExpA e -> add_bound_vars e | TypA _ -> ()
+let add_bound_param arg = match arg.it with ExpA e -> add_bound_vars e | TypA _ | DefA _ -> ()
 
 (* Type Env *)
 

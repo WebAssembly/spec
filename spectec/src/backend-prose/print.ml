@@ -217,6 +217,7 @@ and string_of_arg arg =
   match arg.it with
   | ExpA e -> string_of_expr e
   | TypA typ -> string_of_typ typ
+  | DefA id -> "$" ^ id
 
 and string_of_args sep =
   let string_of_list stringifier sep = function

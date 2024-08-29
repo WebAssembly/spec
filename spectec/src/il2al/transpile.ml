@@ -578,13 +578,16 @@ let is_state expr = match expr.note.it with
 
 let is_store_arg arg = match arg.it with
   | ExpA e -> is_store e
-  | TypA _ -> false
+  | TypA _
+  | DefA _ -> false
 let is_frame_arg arg = match arg.it with
   | ExpA e -> is_frame e
-  | TypA _ -> false
+  | TypA _
+  | DefA _ -> false
 let is_state_arg arg = match arg.it with
   | ExpA e -> is_state e
-  | TypA _ -> false
+  | TypA _
+  | DefA _ -> false
 
 let hide_state_args args =
   args
@@ -687,8 +690,8 @@ let remove_state algo =
 let get_state_arg_opt f =
   let arg = ref (TypA (Il.Ast.BoolT $ no_region)) in
   let id = f $ no_region in
-  match Il.Env.find_def !Al.Valid.env id with
-  | (params, _, _) ->
+  match Il.Env.find_opt_def !Al.Valid.env id with
+  | Some (params, _, _) ->
     let param_state = List.find_opt (
       fun param ->
         match param.it with
@@ -699,8 +702,9 @@ let get_state_arg_opt f =
     ) params in
     if Option.is_some param_state then (
       let param_state = Option.get param_state in
-      Option.some {param_state with it = !arg}
-    ) else Option.none
+      Some {param_state with it = !arg}
+    ) else None
+  | None -> None
 
 let recover_state algo =
 
@@ -850,7 +854,7 @@ There are two kinds of auxilirary functions:
 
 (* Case 1 *)
 let handle_framed_algo a instrs =
-  let e_zf = match a.it with | ExpA e -> e | TypA _ -> assert false in
+  let e_zf = match a.it with | ExpA e -> e | TypA _ | DefA _ -> assert false in
   let e_f = match e_zf.it with | TupE [_s; f] -> f | _ -> e_zf in
 
   (* Helpers *)
