@@ -11,18 +11,6 @@ struct
     if n = 0 then x else repeat (n - 1) f (f x)
 end
 
-module Int =
-struct
-  let log2 n =
-    if n <= 0 then failwith "log2";
-    let rec loop acc n = if n = 1 then acc else loop (acc + 1) (n lsr 1) in
-    loop 0 n
-
-  let is_power_of_two n =
-    if n < 0 then failwith "is_power_of_two";
-    n <> 0 && n land (n - 1) = 0
-end
-
 module Char =
 struct
   let is_digit_ascii c = '0' <= c && c <= '9'
@@ -256,4 +244,46 @@ struct
   let fulfill p x = if !p = None then p := Some x else raise Promise
   let value_opt p = !p
   let value p = match !p with Some x -> x | None -> raise Promise
+end
+
+module Int =
+struct
+  let log2 n =
+    if n <= 0 then failwith "log2";
+    let rec loop acc n = if n = 1 then acc else loop (acc + 1) (n lsr 1) in
+    loop 0 n
+
+  let is_power_of_two n =
+    if n < 0 then failwith "is_power_of_two";
+    n <> 0 && n land (n - 1) = 0
+end
+
+module Int32 =
+struct
+  let log2 n =
+    if n <= 0l then failwith "log2";
+    let rec loop acc n =
+      if n = 1l then acc else loop (Int32.add acc 1l) (Int32.shift_right_logical n 1) in
+    loop 0l n
+
+  let is_power_of_two n =
+    if n < 0l then failwith "is_power_of_two";
+    n <> 0l && Int32.(logand n (sub n 1l)) = 0l
+end
+
+module Int64 =
+struct
+  let log2_unsigned n =
+    let rec loop acc n =
+      if n = 1L then acc else loop (Int64.add acc 1L) (Int64.shift_right_logical n 1) in
+    loop 0L n
+
+  let log2 n =
+    if n <= 0L then failwith "log2" else log2_unsigned n
+
+  let is_power_of_two_unsigned n =
+    n <> 0L && Int64.(logand n (sub n 1L)) = 0L
+
+  let is_power_of_two n =
+    if n < 0L then failwith "is_power_of_two" else is_power_of_two_unsigned n
 end
