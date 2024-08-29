@@ -15636,15 +15636,13 @@ watsup 0.4 generator
 
 #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
 
-#. If :math:`{{\mathit{val}}^\ast}` is not :math:`\epsilon`, then:
+#. If :math:`{{\mathit{val}}^\ast}` is not :math:`\epsilon` and :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
 
-   a. If :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}` is of the case :math:`\mathsf{ref{.}exn}`, then:
+   a. Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
 
-      1) Let :math:`(\mathsf{ref{.}exn}~a)` be :math:`{\mathit{instr}}_{\mathit{u{\kern-0.1em\scriptstyle 0}}}`.
+   #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
-      #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-      #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+   #. Execute the instruction :math:`\mathsf{throw\_ref}`.
 
 #. Else if the first non-value entry of the stack is a :math:`\mathsf{label}`, then:
 
@@ -24234,11 +24232,10 @@ Step_read/throw_ref
 4. If instr_u0 is of the case REF.NULL, then:
   a. Trap.
 5. Pop all values val* from the top of the stack.
-6. If (val* is not []), then:
-  a. If instr_u0 is of the case REF.EXN_ADDR, then:
-    1) Let (REF.EXN_ADDR a) be instr_u0.
-    2) Push the value (REF.EXN_ADDR a) to the stack.
-    3) Execute the instruction THROW_REF.
+6. If ((val* is not []) and instr_u0 is of the case REF.EXN_ADDR), then:
+  a. Let (REF.EXN_ADDR a) be instr_u0.
+  b. Push the value (REF.EXN_ADDR a) to the stack.
+  c. Execute the instruction THROW_REF.
 7. Else if the first non-value entry of the stack is a LABEL_, then:
   a. If instr_u0 is of the case REF.EXN_ADDR, then:
     1) Let (REF.EXN_ADDR a) be instr_u0.

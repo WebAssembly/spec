@@ -1118,9 +1118,10 @@ let rec translate_rgroup' (rule: rule_def) =
   let body_instrs =
     match normal_block_opt, ctxt_block with
     | None, b -> b
+    | Some b, [] -> b
     | Some b1, b2 ->
       (* Assert: b1 must have the else-less IfI as inner most instruction *)
-      insert_instrs_to_else b2 b1
+      insert_instrs_to_else b2 (Transpile.flatten_if b1)
   in
 
   translate_prems pops body_instrs
