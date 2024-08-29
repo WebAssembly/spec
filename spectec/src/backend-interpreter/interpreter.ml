@@ -297,10 +297,7 @@ and eval_expr env expr =
   | OptE opt -> Option.map (eval_expr env) opt |> optV
   | TupE el -> List.map (eval_expr env) el |> tupV
   (* Context *)
-  | GetCurContextE None ->
-    (match WasmContext.get_top_context () with
-    | None -> fail_expr expr "cannot get the current context"
-    | Some ctxt -> ctxt)
+  | GetCurContextE None -> WasmContext.get_top_context ()
   | GetCurContextE (Some { it = Atom a; _ }) when List.mem a context_names ->
     WasmContext.get_current_context a
   | ChooseE e ->
@@ -337,7 +334,7 @@ and eval_expr env expr =
   | ContextKindE a ->
     let ctx = WasmContext.get_top_context () in
     (match a.it, ctx with
-    | Atom case, Some (CaseV (case', _)) -> boolV (case = case')
+    | Atom case, CaseV (case', _) -> boolV (case = case')
     | _ -> boolV false)
   | IsDefinedE e ->
     e

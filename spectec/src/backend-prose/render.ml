@@ -416,7 +416,7 @@ and render_expr' env expr =
     sprintf "an element of %s" se
   | Al.Ast.ContextKindE a ->
     let sa = render_atom env a in
-    sprintf "the top of the stack is a %s" sa
+    sprintf "the first non-value entry of the stack is a %s" sa
   | Al.Ast.IsDefinedE e ->
     let se = render_expr env e in
     sprintf "%s is defined" se

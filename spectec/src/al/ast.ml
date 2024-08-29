@@ -103,7 +103,7 @@ and expr' =
   (* Conditions *)
   | IsCaseOfE of expr * atom                      (* expr is of the case atom *)
   | IsValidE of expr                              (* expr is valid *)
-  | ContextKindE of atom                          (* "the top of the stack is a" atom *)
+  | ContextKindE of atom                          (* "the fisrt non-value entry of the stack is a" atom *)
   | IsDefinedE of expr                            (* expr is defined *)
   | MatchE of expr * expr                         (* expr matches expr *)
   | HasTypeE of expr * typ                        (* the type of expr is ty *)

@@ -270,9 +270,8 @@ module WasmContext = struct
     | None -> failwith "Wasm context stack underflow"
 
   let get_top_context () =
-    let ctx, vs, _ = get_context () in
-    if List.length vs = 0 then Some ctx 
-    else None
+    let ctx, _, _ = get_context () in
+    ctx
 
   let get_current_context typ =
     let match_context = function

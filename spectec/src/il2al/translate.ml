@@ -1106,17 +1106,11 @@ let rec translate_rgroup' (rule: rule_def) =
   let ctxt_block = match ctxt_blocks with
   | [] -> []
   | _ ->
-    let valTs = listT valT in
-    let e_vals = iterE (subE ("val", valT) ~note:valT, [ "val" ], List) ~note:valTs in
-    let instr_popall = popAllI e_vals in
-    let instr_push = pushI e_vals in
-
-    instr_popall ::
     List.fold_right (fun instrs acc ->
       assert (List.length instrs = 1);
       let if_instr = List.hd instrs in
       match if_instr.it with
-      | IfI (c, instrs1, []) -> [{if_instr with it = IfI (c, instr_push :: instrs1, acc)}]
+      | IfI (c, instrs1, []) -> [{if_instr with it = IfI (c, instrs1, acc)}]
       | _ -> assert false
     ) (List.map snd ctxt_blocks) throw_block
   in
