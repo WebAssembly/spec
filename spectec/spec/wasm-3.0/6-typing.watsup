@@ -171,7 +171,7 @@ rule Comptype_ok/func:
 
 
 rule Subtype_ok:
-  C |- SUB FINAL? $idx(typeidx)* comptype : OK(x_0)
+  C |- SUB FINAL? $idx(x)* comptype : OK(x_0)
   -- if |x*| <= 1
   -- (if x < x_0)*
   -- (if $unrolldt(C.TYPES[x]) = SUB $idx(x')* comptype')*
