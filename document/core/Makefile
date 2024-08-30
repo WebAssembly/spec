@@ -10,7 +10,7 @@ BUILDDIR      = _build
 STATICDIR     = _static
 DOWNLOADDIR   = _download
 NAME          = WebAssembly
-DECISION_URL  = https://github.com/WebAssembly/meetings/blob/main/main/2017/WG-12-06.md
+DECISION_URL  = https://github.com/WebAssembly/meetings/blob/main/main/2024/WG-06-12.md
 TAR           = tar
 
 # Internal variables.
