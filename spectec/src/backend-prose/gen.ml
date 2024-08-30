@@ -197,7 +197,7 @@ let rec prem_to_instrs prem =
     | Ast.(List | ListN _), vars ->
         let to_iter (id, _) =
           let name = varE id.it ~note:no_note in
-          name, iterE (name, (Al.Ast.List, [])) ~note:no_note (* MYTODO *)
+          name, iter_var id.it List no_note
         in
         [ ForallI (List.map to_iter vars, prem_to_instrs prem) ]
     | _ -> print_yet_prem prem "prem_to_instrs"; [ YetI "TODO: prem_to_intrs iter" ]

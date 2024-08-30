@@ -135,10 +135,8 @@ and translate_exp exp =
   | Il.VarE id -> varE id.it ~at:at ~note:note
   | Il.SubE ({ it = Il.VarE id; _}, { it = VarT (t, _); _ }, _) -> subE (id.it, t.it) ~at:at ~note:note
   | Il.SubE (inner_exp, _, _) -> translate_exp inner_exp
-  | Il.IterE (inner_exp, (iter, xes)) ->
-    (* TODO: translate_iterexp *)
-    let xes' = List.map (fun (id, exp) -> (id.it, translate_exp exp)) xes in
-    iterE (translate_exp inner_exp, (translate_iter iter, xes')) ~at:at ~note:note
+  | Il.IterE (inner_exp, iterexp) ->
+    iterE (translate_exp inner_exp, translate_iterexp iterexp) ~at:at ~note:note
   (* property access *)
   | Il.DotE (inner_exp, ({it = Atom _; _} as atom)) ->
     accE (translate_exp inner_exp, dotP atom) ~at:at ~note:note
@@ -252,7 +250,7 @@ and translate_exp exp =
       tupE [ caseE (atom, []) ~note:Al.Al_util.no_note; translate_exp t ] ~at:at ~note:note
     | [ [ {it = Il.Atom "MUT"; _} ]; [ {it = Il.Quest; _} ]; [] ],
       [ { it = Il.IterE ({ it = Il.TupE []; _ }, (Il.Opt, [])); _}; t ] ->
-      tupE [ iterE (varE "mut" ~note:Al.Al_util.no_note, (Opt, [])) ~note:Al.Al_util.no_note; translate_exp t ] ~at:at ~note:note (* MYTODO *)
+      tupE [ iter_var "mut" Opt no_note ~at:at; translate_exp t ] ~at:at ~note:note
     | [ []; [ {it = Il.Atom "PAGE"; _} as atom ] ], el ->
       caseE (atom, List.map translate_exp el) ~at:at ~note:note
     | [ [ {it = Il.Atom "NULL"; _} as atom ]; [ {it = Il.Quest; _} ] ], el ->
@@ -320,6 +318,11 @@ and translate_path path =
     | _ -> assert false
   in
   translate_path' path
+
+(* Il.iterexp -> iterexp *)
+and translate_iterexp (iter, xes) =
+  let translate_xe (id, exp) = id.it, translate_exp exp in
+  translate_iter iter, List.map translate_xe xes
 
 let insert_assert exp =
   let at = exp.at in
@@ -1125,7 +1128,7 @@ let translate_context_winstr winstr =
 let translate_context ctx vs =
   let at = ctx.at in
   let ty = listT valT in
-  let e_vals = iterE (subE ("val", "val") ~note:valT, (List, [])) ~note:ty in (* MYTODO *)
+  let e_vals = iter_var "val" List ty in
   let vs = List.rev vs in
   let instr_popall = popallI e_vals in
   let instr_pop_context =
@@ -1169,7 +1172,7 @@ let translate_context ctx vs =
 
 let translate_context_rgroup lhss sub_algos inner_params =
   let ty = listT valT in
-  let e_vals = iterE (varE "val" ~note:valT, (List, [])) ~note:ty in (* MYTODO *)
+  let e_vals = iter_var "val" List ty in
   let instr_popall = popallI e_vals in
   let instrs_context =
     List.fold_right2 (fun lhs algo acc ->

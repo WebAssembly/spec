@@ -57,10 +57,10 @@ and free_path ignore_listN p =
     union (fp p1) (union (f e1) (f e2))
   | DotP (p1, _) -> fp p1
 
-and free_iterexp ignore_listN (iter, vs) =
+and free_iterexp ignore_listN (iter, xes) =
   let f = free_exp ignore_listN in
-  let bound = free_list free_varid (List.map fst vs) in
-  let free = free_list f (List.map snd vs) in
+  let bound = free_list free_varid (List.map fst xes) in
+  let free = free_list f (List.map snd xes) in
   match iter with
   | ListN (e, None) ->
     bound, if ignore_listN then free else union free (f e)

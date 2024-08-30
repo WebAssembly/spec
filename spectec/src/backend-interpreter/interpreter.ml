@@ -57,32 +57,25 @@ let extract_exp a =
 let extract_expargs = List.filter_map extract_exp
 
 
-let rec create_sub_al_context xes iter env =
-  (*
-  let option_name_to_list name = lookup_env name env |> unwrap_optv |> Option.to_list in
-  let name_to_list name = lookup_env name env |> unwrap_listv_to_list in
+let rec create_sub_env (iter, xes) env =
   let length_to_list l = List.init l al_of_int in
 
-  let name_to_values name =
+  let xe_to_values (x, e) =
     match iter with
-    | Opt -> option_name_to_list name
-    | ListN (e_n, Some n') when name = n' ->
-      eval_expr env e_n
-      |> al_to_int
-      |> length_to_list
-    | _ -> name_to_list name
+    | ListN (e_n, Some x') when x = x' ->
+      eval_expr env e_n |> al_to_int |> length_to_list
+    | Opt ->
+      eval_expr env e |> unwrap_optv |> Option.to_list
+    | _ ->
+      eval_expr env e |> unwrap_listv_to_list
   in
 
+  let xs = List.map fst xes in
+
   xes
-  |> List.map name_to_values
+  |> List.map xe_to_values
   |> transpose
-  |> List.map (fun vs -> List.fold_right2 Env.add names vs env)
-  *)
-  ignore xes;
-  ignore iter;
-  ignore env;
-  ignore transpose;
-  failwith "TODO: create_sub_al_context"
+  |> List.map (fun vs -> List.fold_right2 Env.add xs vs env)
 
 and access_path env base path =
   match path.it with
@@ -324,8 +317,8 @@ and eval_expr env expr =
   | VarE "s" -> Store.get ()
   | VarE name -> lookup_env name env
   (* Optimized getter for simple IterE(VarE, ...) *)
-  | IterE ({ it = VarE name; _ }, (_, [name', _])) when name = name' ->
-    lookup_env name env
+  | IterE ({ it = VarE name; _ }, (_, [name', e])) when name = name' ->
+    eval_expr env e
   (* Optimized getter for list init *)
   | IterE (e1, (ListN (e2, None), [])) ->
     let v = eval_expr env e1 in
@@ -337,7 +330,7 @@ and eval_expr env expr =
   | IterE (inner_e, (iter, xes)) ->
     let vs =
       env
-      |> create_sub_al_context xes iter
+      |> create_sub_env (iter, xes)
       |> List.map (fun env' -> eval_expr env' inner_e)
     in
 
@@ -409,57 +402,35 @@ and has_same_keys re rv =
   let k2 = Record.keys rv |> List.sort String.compare in
   k1 = k2
 
-and merge env acc =
-  let f _ v1 v2 =
-    let wrapped =
-      match iter_type_of_value v2 with
-      | List | List1 | ListN _ ->
-        unwrap_listv_to_array v2 |> Array.append [| v1 |] |> listV
-      | Opt -> optV (Some v1)
-    in
-    Some wrapped
-  in
-  Env.union f env acc
-
 and assign lhs rhs env =
   match lhs.it, rhs with
-  | IterE ({ it = VarE name; _ }, ((List|List1), _)), ListV _
   | VarE name, _ -> Env.add name rhs env
+  | IterE ({ it = VarE x1; _ }, ((List|List1), [x2, lhs'])), ListV _ when x1 = x2 ->
+    assign lhs' rhs env
   | IterE (e, (iter, xes)), _ ->
-    (* MYTODO *)
-    let ids = List.map (fun (x, _) -> x) xes in
-    (* Convert rhs to iterable list *)
-    let rhs_default, rhs_iter =
-      match rhs with
-      | OptV opt -> optV None, Option.to_list opt
-      | ListV arr -> empty_list, Array.to_list !arr
-      | _ ->
-        fail_expr lhs
-          (sprintf
-            "invalid assignment: %s is not an iterable value" (string_of_value rhs)
-          )
-    in
+    let vs = unwrap_seqv_to_list rhs in
+    let envs = List.map (fun v -> assign e v Env.empty) vs in
 
     (* Assign length variable *)
-    let env_with_length =
+    let env' =
       match iter with
-      | ListN (expr, opt) ->
-        if Option.is_some opt then
-          fail_expr lhs "invalid assignment: iter with index cannot be an assignment target"
-        else
-          let length = numV_of_int (List.length rhs_iter) in
-          assign expr length env
+      | ListN (expr, None) ->
+        let length = numV_of_int (List.length vs) in
+        assign expr length env
+      | ListN _ ->
+        fail_expr lhs "invalid assignment: iter with index cannot be an assignment target"
       | _ -> env
     in
 
-    (* Assign iter variable *)
-    ids
-    |> List.map (fun n -> n, rhs_default)
-    |> List.to_seq
-    |> Env.of_seq
-    |> List.fold_right merge
-      (List.map (fun v -> assign e v Env.empty) rhs_iter)
-    |> Env.union (fun _ _ v -> Some v) env_with_length
+    List.fold_left (fun env (x, e) ->
+      let vs = List.map (lookup_env x) envs in
+      let v =
+        match iter with
+        | Opt -> optV (List.nth_opt vs 0)
+        | _ -> listV_of_list vs
+      in
+      assign e v env
+    ) env' xes
   | InfixE (lhs1, _, lhs2), TupV [rhs1; rhs2] ->
     env |> assign lhs1 rhs1 |> assign lhs2 rhs2
   | TupE lhs_s, TupV rhs_s

@@ -104,6 +104,10 @@ let zero = numV Z.zero
 let one = numV Z.one
 let empty_list = listV [||]
 let singleton v = listV [|v|]
+let iter_var ?(at = no) x iter t =
+  let xs = x ^ (match iter with Opt -> "?" | _ -> "*") in
+  let il_iter = match iter with Opt -> Il.Ast.Opt | _ -> Il.Ast.List in
+  iterE (varE x ~at:at ~note:t, (iter, [x, varE xs ~at:at ~note:(Il.Ast.IterT (t, il_iter) $ t.at)])) ~at:at ~note:t
 
 
 let some x = caseV (x, [optV (Some (tupV []))])
@@ -189,6 +193,11 @@ let unwrap_listv: value -> value growable_array = function
 
 let unwrap_listv_to_array (v: value): value array = !(unwrap_listv v)
 let unwrap_listv_to_list (v: value): value list = unwrap_listv_to_array v |> Array.to_list
+
+let unwrap_seqv_to_list = function
+  | OptV opt -> Option.to_list opt
+  | ListV arr -> Array.to_list !arr
+  | v -> fail_value "unwrap_seqv_to_list" v
 
 let unwrap_textv: value -> string = function
   | TextV str -> str
