@@ -5,11 +5,12 @@ DOWNLOADDIR   = _download
 NAME          = WebAssembly
 DECISION_URL  = https://github.com/WebAssembly/meetings/blob/main/main/2024/WG-06-12.md
 TAR           = tar
+DEADLINE      = $(shell python3 ../deadline.py)
 
 .PHONY: all
 all:
 	mkdir -p $(BUILDDIR)/html
-	bikeshed spec --md-status=$(W3C_STATUS) index.bs $(BUILDDIR)/html/index.html
+	bikeshed spec --md-status=$(W3C_STATUS) --md-deadline=$(DEADLINE) index.bs $(BUILDDIR)/html/index.html
 	@echo "Build finished. The HTML pages are in `pwd`/$(BUILDDIR)/html."
 
 .PHONY: publish
@@ -34,7 +35,7 @@ diff: all
 # macOS tar has no “--transform” option (only GNU tar does), so on macOS,
 # do “brew install tar” & run “make” like this: “TAR=gtar make -e WD-tar”
 WD-tar: all
-	bikeshed spec --md-status=$(W3C_STATUS) index.bs $(BUILDDIR)/html/index.html
+	bikeshed spec --md-status=$(W3C_STATUS) --md-deadline=$(DEADLINE) index.bs $(BUILDDIR)/html/index.html
 	$(TAR) -C $(BUILDDIR)/html --transform="s/index.html/Overview.html/" -cf $(BUILDDIR)/WD.tar index.html
 	@echo "Built $(BUILDDIR)/WD.tar."
 
