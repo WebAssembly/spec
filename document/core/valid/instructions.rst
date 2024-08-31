@@ -285,7 +285,7 @@ $${rule-prose: Instr_ok/ref.func}
 
    (3) - [dt to defined type, x to function index.]
 
-   (4) -[need to erase null.]
+   (4) - [need to erase null in the range type]
  below is the official specification 
 
 * The function :math:`C.\CFUNCS[x]` must be defined in the context.
